@@ -161,6 +161,9 @@ class PredictionEngine {
         const probabilities = {};
         const totalDraws = data.length;
 
+        // 先計算最大遺漏值，用於正規化
+        const maxMissing = Math.max(...Object.values(missing));
+
         for (let i = 1; i <= 49; i++) {
             // 頻率分數 (40%)
             const freqScore = (frequency[i] / totalDraws) * 0.4;
@@ -168,17 +171,16 @@ class PredictionEngine {
             // 趨勢分數 (30%)
             const trendScore = (weighted[i] / data.length) * 0.3;
 
-            // 遺漏值分數 (30%) - 遺漏越久分數越高
-            const maxMissing = Math.max(...Object.values(missing));
+            // 遺漏值分數 (30%) - 遺漏越久分數越高，正規化到 0~1 再乘以 0.3
             const missingScore = maxMissing > 0 ? (missing[i] / maxMissing) * 0.3 : 0;
 
             probabilities[i] = freqScore + trendScore + missingScore;
         }
 
-        // 正規化
-        const total = Object.values(probabilities).reduce((a, b) => a + b, 0);
+        // 正規化整體機率，使總和為 1
+        const sumProb = Object.values(probabilities).reduce((a, b) => a + b, 0);
         for (let i = 1; i <= 49; i++) {
-            probabilities[i] = probabilities[i] / total;
+            probabilities[i] = probabilities[i] / sumProb;
         }
 
         // 選擇機率最高的6個號碼
@@ -393,18 +395,15 @@ class PredictionEngine {
     }
 
     /**
-     * 計算預測信心度
+     * 計算預測信心度（使用熵）
      */
     calculateConfidence(sortedNumbers) {
-        // 基於機率分佈的標準差計算信心度
-        const probabilities = sortedNumbers.map(item => item.probability);
-        const mean = probabilities.reduce((a, b) => a + b, 0) / probabilities.length;
-        const variance = probabilities.reduce((sum, prob) => sum + Math.pow(prob - mean, 2), 0) / probabilities.length;
-        const stdDev = Math.sqrt(variance);
-
-        // 標準差越小，信心度越高
-        const confidence = Math.max(0, Math.min(100, (1 - stdDev * 10) * 100));
-
+        // 熵越低表示分布越集中，信心度越高
+        const probs = sortedNumbers.map(item => item.probability);
+        const entropy = -probs.reduce((sum, p) => sum + (p > 0 ? p * Math.log2(p) : 0), 0);
+        // 最大熵發生在均勻分布 (6 個相等機率) -> log2(6) ≈ 2.585
+        const maxEntropy = Math.log2(6);
+        const confidence = (1 - entropy / maxEntropy) * 100;
         return Math.round(confidence);
     }
 

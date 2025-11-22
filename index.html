@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>大樂透智能分析系統 - Lottery Analysis</title>
+    <meta name="description" content="專業的大樂透號碼分析系統，使用數學回歸分析預測下一期開獎機率">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@300;400;500;700;900&family=Orbitron:wght@400;500;700;900&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+</head>
+
+<body>
+    <div class="background-animation">
+        <div class="orb orb-1"></div>
+        <div class="orb orb-2"></div>
+        <div class="orb orb-3"></div>
+    </div>
+
+    <header class="header">
+        <div class="container">
+            <div class="header-content">
+                <div class="logo">
+                    <div class="logo-icon">🎰</div>
+                    <div class="logo-text">
+                        <h1>大樂透智能分析</h1>
+                        <p>Lottery Intelligence System</p>
+                    </div>
+                </div>
+                <nav class="nav">
+                    <button class="nav-btn active" data-section="upload">
+                        <span class="icon">📤</span>
+                        <span>數據上傳</span>
+                    </button>
+                    <button class="nav-btn" data-section="analysis">
+                        <span class="icon">📊</span>
+                        <span>統計分析</span>
+                    </button>
+                    <button class="nav-btn" data-section="prediction">
+                        <span class="icon">🔮</span>
+                        <span>智能預測</span>
+                    </button>
+                    <button class="nav-btn" data-section="history">
+                        <span class="icon">📜</span>
+                        <span>歷史記錄</span>
+                    </button>
+                </nav>
+            </div>
+        </div>
+    </header>
+
+    <main class="main">
+        <div class="container">
+            <!-- Upload Section -->
+            <section id="upload-section" class="section active">
+                <div class="section-header">
+                    <h2>數據上傳中心</h2>
+                    <p>上傳歷史開獎數據以進行深度分析</p>
+                </div>
+
+                <div class="upload-area">
+                    <div class="upload-card">
+                        <div class="upload-icon">📁</div>
+                        <h3>上傳CSV檔案</h3>
+                        <p>支援格式：台灣彩券官方CSV 或 期數,日期,號碼1~6,特別號</p>
+                        <input type="file" id="file-input" accept=".csv" hidden>
+                        <button class="btn btn-primary" id="upload-btn">
+                            <span class="btn-icon">📤</span>
+                            選擇檔案
+                        </button>
+                        <div class="file-info" id="file-info"></div>
+                    </div>
+
+                    <div class="upload-card">
+                        <div class="upload-icon">🎲</div>
+                        <h3>使用範例數據</h3>
+                        <p>載入預設的大樂透歷史數據進行測試</p>
+                        <button class="btn btn-secondary" id="sample-data-btn">
+                            <span class="btn-icon">⚡</span>
+                            載入範例數據
+                        </button>
+                    </div>
+                </div>
+
+                <div class="data-summary" id="data-summary" style="display: none;">
+                    <h3>數據概覽</h3>
+                    <div class="summary-grid">
+                        <div class="summary-item">
+                            <div class="summary-label">總期數</div>
+                            <div class="summary-value" id="total-draws">0</div>
+                        </div>
+                        <div class="summary-item">
+                            <div class="summary-label">數據範圍</div>
+                            <div class="summary-value" id="date-range">-</div>
+                        </div>
+                        <div class="summary-item">
+                            <div class="summary-label">最新期數</div>
+                            <div class="summary-value" id="latest-draw">-</div>
+                        </div>
+                        <div class="summary-item">
+                            <div class="summary-label">數據狀態</div>
+                            <div class="summary-value status-ready">✓ 就緒</div>
+                        </div>
+                    </div>
+                    <div style="margin-top: 20px; text-align: center;">
+                        <button class="btn btn-danger" id="clear-data-btn">
+                            <span class="btn-icon">🗑️</span>
+                            清除數據
+                        </button>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Analysis Section -->
+            <section id="analysis-section" class="section">
+                <div class="section-header">
+                    <h2>統計分析儀表板</h2>
+                    <p>深度分析歷史開獎數據</p>
+                </div>
+
+                <div class="analysis-grid">
+                    <div class="analysis-card">
+                        <h3>號碼出現頻率</h3>
+                        <canvas id="frequency-chart"></canvas>
+                    </div>
+
+                    <div class="analysis-card">
+                        <h3>冷熱號分析</h3>
+                        <div class="hot-cold-container">
+                            <div class="hot-numbers">
+                                <h4>🔥 熱門號碼 (Top 10)</h4>
+                                <div id="hot-numbers" class="number-list"></div>
+                            </div>
+                            <div class="cold-numbers">
+                                <h4>❄️ 冷門號碼 (Top 10)</h4>
+                                <div id="cold-numbers" class="number-list"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="analysis-card">
+                        <h3>號碼遺漏值分析</h3>
+                        <canvas id="missing-chart"></canvas>
+                    </div>
+
+                    <div class="analysis-card">
+                        <h3>號碼分佈趨勢</h3>
+                        <canvas id="distribution-chart"></canvas>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Prediction Section -->
+            <section id="prediction-section" class="section">
+                <div class="section-header">
+                    <h2>智能預測系統</h2>
+                    <p>基於數學回歸分析的機率預測</p>
+                </div>
+
+                <div class="prediction-controls">
+                    <div class="control-group">
+                        <label for="prediction-method">預測方法</label>
+                        <select id="prediction-method" class="select-input">
+                            <option value="frequency">頻率回歸分析</option>
+                            <option value="trend">趨勢回歸分析</option>
+                            <option value="combined">綜合回歸模型</option>
+                            <option value="ml">機器學習模型</option>
+                        </select>
+                    </div>
+                    <div class="control-group">
+                        <label for="sample-size">樣本大小</label>
+                        <select id="sample-size" class="select-input">
+                            <option value="30">最近30期</option>
+                            <option value="50" selected>最近50期</option>
+                            <option value="100">最近100期</option>
+                            <option value="all">全部數據</option>
+                        </select>
+                    </div>
+                    <button class="btn btn-primary" id="predict-btn">
+                        <span class="btn-icon">🔮</span>
+                        開始預測
+                    </button>
+                </div>
+
+                <div class="prediction-results" id="prediction-results">
+                    <div class="prediction-card">
+                        <h3>預測號碼</h3>
+                        <div class="predicted-numbers" id="predicted-numbers"></div>
+                        <div class="confidence-meter">
+                            <label>預測信心度</label>
+                            <div class="meter">
+                                <div class="meter-fill" id="confidence-fill"></div>
+                            </div>
+                            <span class="confidence-value" id="confidence-value">0%</span>
+                        </div>
+                    </div>
+
+                    <div class="prediction-card">
+                        <h3>機率分佈</h3>
+                        <canvas id="probability-chart"></canvas>
+                    </div>
+
+                    <div class="prediction-card full-width">
+                        <h3>預測分析報告</h3>
+                        <div id="prediction-report" class="report-content"></div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- History Section -->
+            <section id="history-section" class="section">
+                <div class="section-header">
+                    <h2>歷史開獎記錄</h2>
+                    <p>查看完整的開獎歷史數據</p>
+                </div>
+
+                <div class="history-controls">
+                    <input type="text" id="search-input" class="search-input" placeholder="搜尋期數或日期...">
+                    <select id="sort-select" class="select-input">
+                        <option value="desc">最新優先</option>
+                        <option value="asc">最舊優先</option>
+                    </select>
+                </div>
+
+                <div class="history-table-container">
+                    <table class="history-table" id="history-table">
+                        <thead>
+                            <tr>
+                                <th>期數</th>
+                                <th>開獎日期</th>
+                                <th>開獎號碼</th>
+                                <th>特別號</th>
+                            </tr>
+                        </thead>
+                        <tbody id="history-tbody"></tbody>
+                    </table>
+                </div>
+
+                <div class="pagination" id="pagination"></div>
+            </section>
+        </div>
+    </main>
+
+    <footer class="footer">
+        <div class="container">
+            <p>&copy; 2025 大樂透智能分析系統. 僅供參考，請理性投注。</p>
+        </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+    <script src="js/dataProcessor.js"></script>
+    <script src="js/analysis.js"></script>
+    <script src="js/prediction.js"></script>
+    <script src="js/app.js"></script>
+</body>
+
+</html>

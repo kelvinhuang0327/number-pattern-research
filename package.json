@@ -1,0 +1,23 @@
+{
+  "name": "lottery-analysis-system",
+  "version": "1.0.0",
+  "description": "專業的大樂透號碼分析與預測系統",
+  "main": "index.html",
+  "scripts": {
+    "start": "python3 -m http.server 8081",
+    "dev": "python3 -m http.server 8081"
+  },
+  "keywords": [
+    "lottery",
+    "analysis",
+    "prediction",
+    "taiwan",
+    "lotto"
+  ],
+  "author": "",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": ""
+  }
+}

@@ -48,6 +48,14 @@
                         <span class="icon">📜</span>
                         <span>歷史記錄</span>
                     </button>
+                    <button class="nav-btn" data-section="simulation">
+                        <span class="icon">🧪</span>
+                        <span>模擬測試</span>
+                    </button>
+                    <button class="nav-btn" data-section="smartbetting">
+                        <span class="icon">🎯</span>
+                        <span>聰明包牌</span>
+                    </button>
                 </nav>
             </div>
         </div>
@@ -68,10 +76,17 @@
                         <h3>上傳CSV檔案</h3>
                         <p>支援格式：台灣彩券官方CSV 或 期數,日期,號碼1~6,特別號</p>
                         <input type="file" id="file-input" accept=".csv" hidden>
-                        <button class="btn btn-primary" id="upload-btn">
-                            <span class="btn-icon">📤</span>
-                            選擇檔案
-                        </button>
+                        <input type="file" id="multiple-input" accept=".csv" multiple webkitdirectory directory hidden>
+                        <div style="display: flex; gap: 10px; justify-content: center; flex-wrap: wrap;">
+                            <button class="btn btn-primary" id="upload-btn">
+                                <span class="btn-icon">📤</span>
+                                選擇檔案
+                            </button>
+                            <button class="btn btn-primary" id="folder-btn">
+                                <span class="btn-icon">📂</span>
+                                選擇多個檔案
+                            </button>
+                        </div>
                         <div class="file-info" id="file-info"></div>
                     </div>
 
@@ -154,6 +169,54 @@
                 </div>
             </section>
 
+            <!-- Simulation Section -->
+            <section id="simulation-section" class="section">
+                <div class="section-header">
+                    <h2>預測模擬測試</h2>
+                    <p>選擇年度月份，模擬預測並比對結果</p>
+                </div>
+                <div class="simulation-controls" style="margin: 20px 0; display: flex; gap: 10px; align-items: center;">
+                    <label for="simulation-year-month" style="color: #fff;">年度月份：</label>
+                    <input type="month" id="simulation-year-month" value="2025-01"
+                        style="padding: 6px 10px; border-radius: 4px; border: none;" />
+                    <label for="simulation-method" style="color: #fff; margin-left: 10px;">預測方法：</label>
+                    <select id="simulation-method" class="select-input">
+                        <option value="frequency">頻率回歸分析</option>
+                        <option value="trend">趨勢回歸分析</option>
+                        <option value="combined" selected>綜合回歸模型</option>
+                        <option value="ml">機器學習模型</option>
+                        <option value="tf">TensorFlow.js 神經網路</option>
+                        <option value="markov">馬可夫鏈 (Markov Chain)</option>
+                        <option value="montecarlo">蒙地卡羅模擬 (Monte Carlo)</option>
+                        <option value="cooccurrence">共現分析 (Co-occurrence)</option>
+                        <option value="lstm">LSTM 深度學習 (Deep Learning)</option>
+                        <option value="ensemble">菁英投票策略 (Ensemble)</option>
+                    </select>
+                    <button class="btn btn-primary" id="simulation-btn">
+                        <span class="btn-icon">🧪</span>開始模擬
+                    </button>
+                </div>
+                <div id="simulation-results" style="display:none;">
+                    <h3>模擬結果</h3>
+                    <div class="simulation-summary" style="margin-bottom:10px; color:#fff;">成功率：<span
+                            id="simulation-rate"></span>%</div>
+                    <table class="simulation-table" id="simulation-table" style="width:100%; border-collapse:collapse;">
+                        <thead>
+                            <tr style="color:#fff;">
+                                <th>期數</th>
+                                <th>日期</th>
+                                <th>預測號碼 (前10強)</th>
+                                <th>實際號碼</th>
+                                <th>命中數</th>
+                                <th>參考起訖期數</th>
+                                <th>成功</th>
+                            </tr>
+                        </thead>
+                        <tbody></tbody>
+                    </table>
+                </div>
+            </section>
+
             <!-- Prediction Section -->
             <section id="prediction-section" class="section">
                 <div class="section-header">
@@ -167,8 +230,14 @@
                         <select id="prediction-method" class="select-input">
                             <option value="frequency">頻率回歸分析</option>
                             <option value="trend">趨勢回歸分析</option>
-                            <option value="combined">綜合回歸模型</option>
+                            <option value="combined" selected>綜合回歸模型</option>
                             <option value="ml">機器學習模型</option>
+                            <option value="tf">TensorFlow 神經網路</option>
+                            <option value="markov">馬可夫鏈 (Markov Chain)</option>
+                            <option value="montecarlo">蒙地卡羅模擬 (Monte Carlo)</option>
+                            <option value="cooccurrence">共現分析 (Co-occurrence)</option>
+                            <option value="lstm">LSTM 深度學習 (Deep Learning)</option>
+                            <option value="ensemble">菁英投票策略 (Ensemble)</option>
                         </select>
                     </div>
                     <div class="control-group">
@@ -242,6 +311,182 @@
 
                 <div class="pagination" id="pagination"></div>
             </section>
+
+            <!-- Smart Betting Styles -->
+            <style>
+                .smart-betting-container {
+                    display: grid;
+                    grid-template-columns: 1fr 1fr;
+                    gap: 20px;
+                }
+
+                .betting-card {
+                    background: rgba(255, 255, 255, 0.05);
+                    border-radius: 12px;
+                    padding: 20px;
+                    border: 1px solid rgba(255, 255, 255, 0.1);
+                }
+
+                .betting-card.full-width {
+                    grid-column: 1 / -1;
+                }
+
+                .number-grid {
+                    display: grid;
+                    grid-template-columns: repeat(7, 1fr);
+                    gap: 8px;
+                    margin-top: 15px;
+                }
+
+                .number-ball {
+                    width: 35px;
+                    height: 35px;
+                    border-radius: 50%;
+                    background: #333;
+                    color: #fff;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    font-weight: bold;
+                    font-size: 14px;
+                    transition: all 0.2s;
+                    border: 2px solid transparent;
+                }
+
+                .number-ball:hover {
+                    background: #444;
+                    transform: scale(1.1);
+                }
+
+                .number-ball.active {
+                    background: var(--primary-color);
+                    box-shadow: 0 0 10px var(--primary-color);
+                    border-color: #fff;
+                }
+
+                .hint {
+                    color: #aaa;
+                    font-size: 0.9em;
+                    margin-bottom: 10px;
+                }
+
+                .filter-options {
+                    display: flex;
+                    flex-direction: column;
+                    gap: 10px;
+                    margin-top: 10px;
+                }
+
+                .checkbox-label {
+                    display: flex;
+                    align-items: center;
+                    gap: 10px;
+                    cursor: pointer;
+                    color: #ddd;
+                }
+
+                .combinations-list {
+                    display: grid;
+                    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+                    gap: 10px;
+                    margin-top: 15px;
+                }
+
+                .combination-row {
+                    background: rgba(0, 0, 0, 0.3);
+                    padding: 10px;
+                    border-radius: 8px;
+                    display: flex;
+                    align-items: center;
+                    gap: 10px;
+                    border-left: 3px solid var(--primary-color);
+                }
+
+                .combo-index {
+                    color: #aaa;
+                    font-size: 0.8em;
+                    width: 30px;
+                }
+
+                .combo-numbers {
+                    display: flex;
+                    gap: 5px;
+                }
+
+                .number-ball.small {
+                    width: 25px;
+                    height: 25px;
+                    font-size: 12px;
+                    background: var(--secondary-color);
+                }
+
+                @media (max-width: 768px) {
+                    .smart-betting-container {
+                        grid-template-columns: 1fr;
+                    }
+
+                    .number-grid {
+                        grid-template-columns: repeat(6, 1fr);
+                    }
+                }
+            </style>
+            <!-- Smart Betting Section -->
+            <section id="smartbetting-section" class="section">
+                <div class="section-header">
+                    <h2>聰明包牌系統</h2>
+                    <p>使用旋轉矩陣策略，用最少注數覆蓋最多可能</p>
+                </div>
+
+                <div class="smart-betting-container">
+                    <!-- 號碼選擇區 -->
+                    <div class="betting-card">
+                        <h3>1. 選擇號碼 (10-16 個)</h3>
+                        <p class="hint">點擊號碼進行選擇，已選 <span id="selected-count-val">0</span> 個</p>
+                        <div id="number-selector" class="number-grid"></div>
+                    </div>
+
+                    <!-- 策略選擇區 -->
+                    <div class="betting-card">
+                        <h3>2. 選擇包牌策略</h3>
+                        <div class="control-group">
+                            <label for="wheeling-system">旋轉矩陣系統</label>
+                            <select id="wheeling-system" class="select-input">
+                                <option value="pick10_win3">10 選 6 中 3 保證 (約 10 注)</option>
+                                <option value="pick12_win4">12 選 6 中 4 保證 (約 20 注)</option>
+                                <option value="pick10_win5">10 選 6 中 5 保證 (約 50 注)</option>
+                            </select>
+                        </div>
+
+                        <h4 style="margin-top: 20px;">智慧過濾條件</h4>
+                        <div class="filter-options">
+                            <label class="checkbox-label">
+                                <input type="checkbox" id="filter-consecutive" checked>
+                                <span>排除 3 連號以上</span>
+                            </label>
+                            <label class="checkbox-label">
+                                <input type="checkbox" id="filter-odd-even" checked>
+                                <span>排除全奇或全偶</span>
+                            </label>
+                            <label class="checkbox-label">
+                                <input type="checkbox" id="filter-extreme" checked>
+                                <span>排除全大或全小</span>
+                            </label>
+                        </div>
+
+                        <button class="btn btn-primary" id="generate-smart-bet-btn"
+                            style="margin-top: 20px; width: 100%;">
+                            <span class="btn-icon">🎯</span>
+                            產生聰明組合
+                        </button>
+                    </div>
+
+                    <!-- 結果顯示區 -->
+                    <div class="betting-card full-width" id="smart-bet-results" style="display: none;">
+                        <h3>3. 產生的投注組合</h3>
+                        <div id="betting-combinations" class="combinations-list"></div>
+                    </div>
+                </div>
+            </section>
         </div>
     </main>
 
@@ -252,6 +497,8 @@
     </footer>
 
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@4.9.0/dist/tf.min.js"></script>
+    <script src="js/lotteryRules.js"></script>
     <script src="js/dataProcessor.js"></script>
     <script src="js/analysis.js"></script>
     <script src="js/prediction.js"></script>

@@ -22,11 +22,11 @@ class DataProcessor {
             drawDate.setDate(startDate.getDate() + (i * 3)); // 每3天一期
 
             // 生成6個不重複的號碼 (1-49)
-            const numbers = this.generateRandomNumbers(6, 1, 49);
+            const numbers = this.generateRandomNumbers(LOTTERY_RULES.pickCount, LOTTERY_RULES.numberRange.min, LOTTERY_RULES.numberRange.max);
             // 生成特別號 (1-49，不與主號碼重複)
             let specialNumber;
             do {
-                specialNumber = Math.floor(Math.random() * 49) + 1;
+                specialNumber = Math.floor(Math.random() * LOTTERY_RULES.numberRange.max) + LOTTERY_RULES.numberRange.min;
             } while (numbers.includes(specialNumber));
 
             data.push({
@@ -123,9 +123,9 @@ class DataProcessor {
                         }
 
                         // 驗證數據有效性
-                        const validNumbers = numbers.filter(n => !isNaN(n) && n >= 1 && n <= 49);
+                        const validNumbers = numbers.filter(n => !isNaN(n) && n >= LOTTERY_RULES.numberRange.min && n <= LOTTERY_RULES.numberRange.max);
 
-                        if (validNumbers.length === 6 && !isNaN(special) && special >= 1 && special <= 49) {
+                        if (validNumbers.length === LOTTERY_RULES.pickCount && !isNaN(special) && special >= LOTTERY_RULES.numberRange.min && special <= LOTTERY_RULES.numberRange.max) {
                             data.push({
                                 draw: draw,
                                 date: date,
@@ -159,11 +159,60 @@ class DataProcessor {
     }
 
     /**
-     * 載入CSV數據
+     * 載入CSV數據（含重複檢核）
      */
     async loadCSVData(file) {
-        this.lotteryData = await this.parseCSV(file);
-        return this.lotteryData;
+        const newData = await this.parseCSV(file);
+
+        // 檢查重複
+        const duplicateInfo = this.checkDuplicates(newData);
+
+        // 合併數據（去除重複）
+        this.lotteryData = duplicateInfo.mergedData;
+
+        return {
+            data: this.lotteryData,
+            duplicates: duplicateInfo.duplicates,
+            duplicateCount: duplicateInfo.duplicateCount,
+            newCount: duplicateInfo.newCount,
+            totalCount: duplicateInfo.totalCount
+        };
+    }
+
+    /**
+     * 檢查重複數據
+     */
+    checkDuplicates(newData) {
+        const existingDraws = new Set(this.lotteryData.map(d => d.draw));
+        const duplicates = [];
+        const uniqueNew = [];
+
+        newData.forEach(draw => {
+            if (existingDraws.has(draw.draw)) {
+                duplicates.push(draw);
+            } else {
+                uniqueNew.push(draw);
+                existingDraws.add(draw.draw);
+            }
+        });
+
+        // 合併現有數據和新數據（去重）
+        const mergedData = [...this.lotteryData, ...uniqueNew];
+
+        // 按期數排序（降序，最新的在前）
+        mergedData.sort((a, b) => {
+            const drawA = parseInt(a.draw);
+            const drawB = parseInt(b.draw);
+            return drawB - drawA;
+        });
+
+        return {
+            mergedData: mergedData,
+            duplicates: duplicates,
+            duplicateCount: duplicates.length,
+            newCount: uniqueNew.length,
+            totalCount: mergedData.length
+        };
     }
 
     /**
@@ -210,7 +259,7 @@ class DataProcessor {
         const frequency = {};
 
         // 初始化1-49的頻率為0
-        for (let i = 1; i <= 49; i++) {
+        for (let i = LOTTERY_RULES.numberRange.min; i <= LOTTERY_RULES.numberRange.max; i++) {
             frequency[i] = 0;
         }
 
@@ -231,7 +280,7 @@ class DataProcessor {
         const missing = {};
 
         // 初始化
-        for (let i = 1; i <= 49; i++) {
+        for (let i = LOTTERY_RULES.numberRange.min; i <= LOTTERY_RULES.numberRange.max; i++) {
             missing[i] = 0;
         }
 
@@ -240,7 +289,7 @@ class DataProcessor {
             const draw = this.lotteryData[i];
 
             // 增加所有號碼的遺漏值
-            for (let num = 1; num <= 49; num++) {
+            for (let num = LOTTERY_RULES.numberRange.min; num <= LOTTERY_RULES.numberRange.max; num++) {
                 if (!draw.numbers.includes(num)) {
                     missing[num]++;
                 }
@@ -303,6 +352,7 @@ class DataProcessor {
 
     /**
      * 計算號碼分佈（按區間）
+     * 以百分比形式返回，避免隨著資料累積而持續增長。
      */
     calculateDistribution() {
         const distribution = {
@@ -313,6 +363,7 @@ class DataProcessor {
             '41-49': 0
         };
 
+        // 計算每個區間的出現次數
         this.lotteryData.forEach(draw => {
             draw.numbers.forEach(num => {
                 if (num <= 10) distribution['1-10']++;
@@ -322,6 +373,14 @@ class DataProcessor {
                 else distribution['41-49']++;
             });
         });
+
+        // 轉換為百分比（總次數 = 抽獎期數 * 每期號碼數）
+        const totalDraws = this.lotteryData.length * LOTTERY_RULES.pickCount;
+        if (totalDraws > 0) {
+            for (const zone in distribution) {
+                distribution[zone] = ((distribution[zone] / totalDraws) * 100).toFixed(1);
+            }
+        }
 
         return distribution;
     }

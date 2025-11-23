@@ -19,6 +19,7 @@ class LotteryApp {
      */
     init() {
         this.setupEventListeners();
+        this.initSmartBetting(); // 初始化聰明包牌
         this.showSection('upload');
     }
 
@@ -48,6 +49,163 @@ class LotteryApp {
                 if (file) {
                     await this.handleFileUpload(file);
                 }
+            });
+        }
+
+        // 多檔案上傳
+        const folderBtn = document.getElementById('folder-btn');
+        const multipleInput = document.getElementById('multiple-input');
+
+        if (folderBtn && multipleInput) {
+            folderBtn.addEventListener('click', () => {
+                multipleInput.click();
+            });
+
+            multipleInput.addEventListener('change', async (e) => {
+                const files = Array.from(e.target.files).filter(f => f.name.endsWith('.csv'));
+                if (files.length > 0) {
+                    await this.handleFolderUpload(files);
+                } else {
+                    this.showNotification('請選擇 CSV 檔案', 'warning');
+                }
+            });
+        }
+
+        // -------------------
+        // 模擬測試功能
+        // -------------------
+        const simulationBtn = document.getElementById('simulation-btn');
+        const simulationMonthInput = document.getElementById('simulation-year-month');
+        const simulationResultsDiv = document.getElementById('simulation-results');
+        const simulationRateSpan = document.getElementById('simulation-rate');
+        const simulationTableBody = document.querySelector('#simulation-table tbody');
+
+        if (simulationBtn && simulationMonthInput && simulationResultsDiv) {
+            simulationBtn.addEventListener('click', async () => {
+                const monthValue = simulationMonthInput.value; // format YYYY-MM
+                if (!monthValue) {
+                    this.showNotification('請選擇模擬月份', 'warning');
+                    return;
+                }
+                const [yearStr, monthStr] = monthValue.split('-');
+                const targetYear = parseInt(yearStr, 10);
+                const targetMonth = parseInt(monthStr, 10);
+
+                // 取得所有已上傳的資料
+                const allData = this.dataProcessor.getData();
+                if (!allData || allData.length === 0) {
+                    this.showNotification('請先上傳資料', 'warning');
+                    return;
+                }
+
+                // 過濾出目標月份的抽獎結果，假設 draw.date 為 YYYY/MM/DD 或 YYYY-MM-DD
+                const monthPrefix = `${targetYear}-${String(targetMonth).padStart(2, '0')}`;
+                const monthDraws = allData.filter(d => {
+                    // 允許日期格式為 YYYY/MM/DD、YYYY-MM-DD 或 ISO
+                    const normalized = d.date.replace(/\//g, '-');
+                    return normalized.startsWith(monthPrefix);
+                }).sort((a, b) => new Date(a.date) - new Date(b.date));
+
+                if (monthDraws.length === 0) {
+                    this.showNotification('該月份沒有資料可供模擬', 'warning');
+                    return;
+                }
+
+                // 取得使用者選擇的預測方法（從模擬區塊的下拉選單）
+                const methodSelect = document.getElementById('simulation-method');
+                const method = methodSelect ? methodSelect.value : 'frequency';
+
+                console.log(`Starting simulation for ${monthPrefix} with method: ${method}. Found ${monthDraws.length} draws.`);
+
+                let successCount = 0;
+                const results = [];
+
+                for (let i = 0; i < monthDraws.length; i++) {
+                    const currentDraw = monthDraws[i];
+                    // 取出當前抽獎之前的所有資料作為訓練集
+                    const trainingData = allData.filter(d => new Date(d.date) < new Date(currentDraw.date));
+
+                    // 取得訓練資料的起訖期數
+                    let rangeString = '無資料';
+                    if (trainingData.length > 0) {
+                        // 找出日期最大（最近）和最小（最遠）的那一筆
+                        const latest = trainingData.reduce((prev, current) => (new Date(prev.date) > new Date(current.date)) ? prev : current);
+                        const earliest = trainingData.reduce((prev, current) => (new Date(prev.date) < new Date(current.date)) ? prev : current);
+                        rangeString = `${earliest.draw} - ${latest.draw}`;
+                    }
+
+                    // 建立臨時 DataProcessor
+                    const tempDP = new DataProcessor();
+                    // 重要：預測模型需要「時間正序 (Old -> New)」的資料來計算趨勢與轉移
+                    // 但 allData 是降序 (New -> Old)，所以這裡必須反轉或重新排序
+                    const sortedTrainingData = [...trainingData].sort((a, b) => new Date(a.date) - new Date(b.date));
+                    tempDP.lotteryData = sortedTrainingData; // 設定排序後的資料
+
+                    const tempPE = new PredictionEngine(tempDP);
+                    const prediction = await tempPE.predictWithData(method, sortedTrainingData);
+
+                    // 取得所有預測號碼及其機率，取前 10 名作為觀察名單
+                    // 注意：prediction.numbers 通常只回傳前 6 個，我們需要修改 prediction.js 讓它回傳更多，
+                    // 或者直接從 prediction.probabilities 排序取出
+                    const allProbs = Object.entries(prediction.probabilities)
+                        .map(([num, prob]) => ({ number: parseInt(num), probability: prob }))
+                        .sort((a, b) => b.probability - a.probability)
+                        .slice(0, 10) // 取前 10 名
+                        .map(item => item.number)
+                        .sort((a, b) => a - b); // 號碼排序方便閱讀
+
+                    const predictedNumbers = allProbs; // 使用前 10 個號碼進行比對
+                    const actualNumbers = currentDraw.numbers;
+
+                    // 計算命中 (在 10 個預測號碼中中了幾個)
+                    const hitCount = predictedNumbers.filter(n => actualNumbers.includes(n)).length;
+
+                    // 標記命中的號碼 (HTML)
+                    const predictedDisplay = predictedNumbers.map(n => {
+                        return actualNumbers.includes(n)
+                            ? `<span style="color: #ff4444; font-weight: bold;">${n}</span>`
+                            : `<span style="color: #cccccc;">${n}</span>`;
+                    }).join(', ');
+
+                    // 成功定義：如果 10 個號碼裡包含所有 6 個開獎號碼 (這很難)，或者中 3 個以上算及格
+                    const success = hitCount >= 3; // 放寬標準：中3個就算有參考價值
+                    if (success) successCount++;
+
+                    results.push({
+                        draw: currentDraw.draw,
+                        date: currentDraw.date,
+                        predicted: predictedDisplay, // 使用帶顏色的 HTML
+                        actual: actualNumbers.join(', '),
+                        hit: hitCount,
+                        baseRange: rangeString,
+                        success: hitCount >= 3 ? (hitCount >= 5 ? '🌟' : '✅') : '❌'
+                    });
+                }
+
+                // 計算成功率
+                const successRate = ((successCount / monthDraws.length) * 100).toFixed(2);
+                simulationRateSpan.textContent = successRate;
+
+                // 填充表格
+                simulationTableBody.innerHTML = results.map(r => `
+                    <tr style="color:#fff;">
+                        <td>${r.draw}</td>
+                        <td>${r.date}</td>
+                        <td>${r.predicted}</td>
+                        <td>${r.actual}</td>
+                        <td>${r.hit}</td>
+                        <td>${r.baseRange}</td>
+                        <td>${r.success}</td>
+                    </tr>`).join('');
+
+                // 顯示 debug 日誌 (已移除)
+                const debugDiv = document.getElementById('simulation-debug');
+                if (debugDiv) {
+                    debugDiv.style.display = 'none';
+                }
+
+                simulationResultsDiv.style.display = 'block';
+                this.showNotification('模擬完成！成功率 ' + successRate + '%', 'success');
             });
         }
 
@@ -136,18 +294,102 @@ class LotteryApp {
         try {
             this.showNotification('正在解析檔案...', 'info');
 
-            await this.dataProcessor.loadCSVData(file);
+            const result = await this.dataProcessor.loadCSVData(file);
 
             const fileInfo = document.getElementById('file-info');
             if (fileInfo) {
-                fileInfo.textContent = `✓ 已載入: ${file.name}`;
+                let message = `✓ 已載入: ${file.name}`;
+
+                // 顯示重複資訊
+                if (result.duplicateCount > 0) {
+                    message += `\n⚠️ 發現 ${result.duplicateCount} 筆重複資料已自動過濾`;
+                }
+
+                message += `\n📊 新增 ${result.newCount} 筆，總計 ${result.totalCount} 筆`;
+
+                fileInfo.innerHTML = message.replace(/\n/g, '<br>');
+                fileInfo.style.whiteSpace = 'pre-line';
             }
 
             this.updateDataSummary();
-            this.showNotification('數據載入成功！', 'success');
+
+            // 根據重複情況顯示不同通知
+            if (result.duplicateCount > 0) {
+                this.showNotification(
+                    `數據載入成功！發現 ${result.duplicateCount} 筆重複已過濾，新增 ${result.newCount} 筆`,
+                    'warning'
+                );
+            } else {
+                this.showNotification(`數據載入成功！新增 ${result.newCount} 筆`, 'success');
+            }
 
         } catch (error) {
             this.showNotification('檔案載入失敗: ' + error.message, 'error');
+            console.error(error);
+        }
+    }
+
+    /**
+     * 處理資料夾上傳（批量處理多個檔案）
+     */
+    async handleFolderUpload(files) {
+        try {
+            this.showNotification(`正在處理 ${files.length} 個檔案...`, 'info');
+
+            let totalNew = 0;
+            let totalDuplicates = 0;
+            let successCount = 0;
+            let failedFiles = [];
+
+            for (const file of files) {
+                try {
+                    const result = await this.dataProcessor.loadCSVData(file);
+                    totalNew += result.newCount;
+                    totalDuplicates += result.duplicateCount;
+                    successCount++;
+                } catch (error) {
+                    failedFiles.push(file.name);
+                    console.error(`Failed to load ${file.name}:`, error);
+                }
+            }
+
+            const fileInfo = document.getElementById('file-info');
+            if (fileInfo) {
+                let message = `✓ 已處理 ${successCount}/${files.length} 個檔案`;
+
+                if (failedFiles.length > 0) {
+                    message += `\n❌ 失敗: ${failedFiles.join(', ')}`;
+                }
+
+                if (totalDuplicates > 0) {
+                    message += `\n⚠️ 發現 ${totalDuplicates} 筆重複資料已自動過濾`;
+                }
+
+                message += `\n📊 新增 ${totalNew} 筆，總計 ${this.dataProcessor.getData().length} 筆`;
+
+                fileInfo.innerHTML = message.replace(/\n/g, '<br>');
+                fileInfo.style.whiteSpace = 'pre-line';
+            }
+
+            this.updateDataSummary();
+
+            // 顯示結果通知
+            if (failedFiles.length > 0) {
+                this.showNotification(
+                    `處理完成！成功 ${successCount} 個，失敗 ${failedFiles.length} 個，新增 ${totalNew} 筆`,
+                    'warning'
+                );
+            } else if (totalDuplicates > 0) {
+                this.showNotification(
+                    `全部載入成功！發現 ${totalDuplicates} 筆重複已過濾，新增 ${totalNew} 筆`,
+                    'success'
+                );
+            } else {
+                this.showNotification(`全部載入成功！新增 ${totalNew} 筆`, 'success');
+            }
+
+        } catch (error) {
+            this.showNotification('資料夾處理失敗: ' + error.message, 'error');
             console.error(error);
         }
     }
@@ -205,7 +447,7 @@ class LotteryApp {
     /**
      * 執行預測
      */
-    runPrediction() {
+    async runPrediction() {
         const method = document.getElementById('prediction-method').value;
         const sampleSize = document.getElementById('sample-size').value;
 
@@ -220,12 +462,15 @@ class LotteryApp {
 
         this.showNotification('正在分析預測...', 'info');
 
-        // 模擬計算延遲，增加真實感
-        setTimeout(() => {
-            const prediction = this.predictionEngine.predict(method, sampleSize);
+        try {
+            // 使用 await 支援 async 預測方法（如 TensorFlow）
+            const prediction = await this.predictionEngine.predict(method, sampleSize);
             this.predictionEngine.displayPrediction(prediction);
             this.showNotification('預測完成！', 'success');
-        }, 500);
+        } catch (error) {
+            this.showNotification('預測失敗: ' + error.message, 'error');
+            console.error('Prediction error:', error);
+        }
     }
 
     /**
@@ -459,6 +704,176 @@ class LotteryApp {
                 document.body.removeChild(notification);
             }, 300);
         }, 3000);
+    }
+    // 初始化聰明包牌區塊
+    initSmartBetting() {
+        const numberSelector = document.getElementById('number-selector');
+        const selectedCountVal = document.getElementById('selected-count-val');
+        const generateBtn = document.getElementById('generate-smart-bet-btn');
+        const resultsDiv = document.getElementById('smart-bet-results');
+        const combinationsDiv = document.getElementById('betting-combinations');
+
+        let selectedNumbers = new Set();
+
+        // 1. 生成 1-49 號碼按鈕
+        numberSelector.innerHTML = ''; // 清空舊內容
+        for (let i = 1; i <= 49; i++) {
+            const btn = document.createElement('div');
+            btn.className = 'number-ball';
+            btn.textContent = i;
+            btn.style.cursor = 'pointer';
+
+            btn.addEventListener('click', () => {
+                if (selectedNumbers.has(i)) {
+                    selectedNumbers.delete(i);
+                    btn.classList.remove('active');
+                } else {
+                    if (selectedNumbers.size >= 16) {
+                        this.showNotification('最多只能選擇 16 個號碼', 'error');
+                        return;
+                    }
+                    selectedNumbers.add(i);
+                    btn.classList.add('active');
+                }
+                selectedCountVal.textContent = selectedNumbers.size;
+            });
+            numberSelector.appendChild(btn);
+        }
+
+        // 2. 產生組合按鈕事件
+        generateBtn.addEventListener('click', () => {
+            if (selectedNumbers.size < 8) {
+                this.showNotification('請至少選擇 8 個號碼', 'error');
+                return;
+            }
+
+            const system = document.getElementById('wheeling-system').value;
+            const nums = Array.from(selectedNumbers).sort((a, b) => a - b);
+
+            // 根據選擇的系統生成組合
+            let combinations = this.generateWheelingSystem(nums, system);
+
+            // 3. 智慧過濾
+            const filterConsecutive = document.getElementById('filter-consecutive').checked;
+            const filterOddEven = document.getElementById('filter-odd-even').checked;
+            const filterExtreme = document.getElementById('filter-extreme').checked;
+
+            const originalCount = combinations.length;
+            combinations = combinations.filter(combo => {
+                if (filterConsecutive && this.hasConsecutive(combo, 3)) return false;
+                if (filterOddEven && this.isAllOddOrEven(combo)) return false;
+                if (filterExtreme && this.isExtreme(combo)) return false;
+                return true;
+            });
+
+            // 顯示結果
+            combinationsDiv.innerHTML = '';
+            if (combinations.length === 0) {
+                combinationsDiv.innerHTML = '<div class="no-data">過濾後無符合條件的組合，請放寬過濾條件或增加選號。</div>';
+            } else {
+                combinations.forEach((combo, index) => {
+                    const row = document.createElement('div');
+                    row.className = 'combination-row';
+                    row.innerHTML = `
+                        <span class="combo-index">#${index + 1}</span>
+                        <div class="combo-numbers">
+                            ${combo.map(n => `<span class="number-ball small">${n}</span>`).join('')}
+                        </div>
+                    `;
+                    combinationsDiv.appendChild(row);
+                });
+            }
+
+            resultsDiv.style.display = 'block';
+            this.showNotification(`已生成 ${combinations.length} 組聰明組合 (原 ${originalCount} 組)`, 'success');
+
+            // 滾動到結果區
+            resultsDiv.scrollIntoView({ behavior: 'smooth' });
+        });
+    }
+
+    // 聰明包牌邏輯 (Wheeling System)
+    generateWheelingSystem(nums, system) {
+        const combinations = [];
+        const n = nums.length;
+
+        // 這裡使用簡化的隨機抽樣模擬旋轉矩陣
+        // 在真實應用中，應該使用預先計算好的旋轉矩陣表 (Covering Design)
+        // 但為了彈性適應任意 N 個選號，我們使用蒙地卡羅法來逼近最佳覆蓋
+
+        let targetCount = 10;
+        let guarantee = 3; // 預設保3
+
+        if (system === 'pick10_win3') { targetCount = 10; guarantee = 3; }
+        else if (system === 'pick12_win4') { targetCount = 20; guarantee = 4; }
+        else if (system === 'pick10_win5') { targetCount = 50; guarantee = 5; }
+
+        // 根據選號數量動態調整注數上限，避免過少
+        if (n > 12 && targetCount < 20) targetCount = 20;
+        if (n > 14 && targetCount < 30) targetCount = 30;
+
+        const seen = new Set();
+        let attempts = 0;
+        const maxAttempts = 5000;
+
+        // 策略：隨機生成大量組合，然後挑選彼此「差異最大」的組合以最大化覆蓋率
+        while (combinations.length < targetCount && attempts < maxAttempts) {
+            attempts++;
+            // 隨機選 6 個
+            const shuffled = [...nums].sort(() => 0.5 - Math.random());
+            const combo = shuffled.slice(0, 6).sort((a, b) => a - b);
+            const key = combo.join(',');
+
+            if (!seen.has(key)) {
+                // 檢查覆蓋率：如果這組號碼跟已選的組合太像 (例如只差 1 個號碼)，就跳過
+                // 這樣可以讓組合分散，覆蓋更多可能性
+                let isRedundant = false;
+                for (const existing of combinations) {
+                    const overlap = this.countOverlap(combo, existing);
+                    if (overlap >= guarantee + 1) { // 如果已經有組合能保證中獎，這組就多餘了
+                        isRedundant = true;
+                        break;
+                    }
+                }
+
+                if (!isRedundant || attempts > 1000) { // 後期放寬標準以免選不滿
+                    seen.add(key);
+                    combinations.push(combo);
+                }
+            }
+        }
+
+        return combinations.sort((a, b) => a[0] - b[0]);
+    }
+
+    // 計算兩個組合的重疊數
+    countOverlap(arr1, arr2) {
+        return arr1.filter(n => arr2.includes(n)).length;
+    }
+
+    // 輔助過濾函式
+    hasConsecutive(nums, count) {
+        let current = 1;
+        for (let i = 0; i < nums.length - 1; i++) {
+            if (nums[i + 1] === nums[i] + 1) {
+                current++;
+                if (current >= count) return true;
+            } else {
+                current = 1;
+            }
+        }
+        return false;
+    }
+
+    isAllOddOrEven(nums) {
+        const odds = nums.filter(n => n % 2 !== 0).length;
+        return odds === 0 || odds === nums.length;
+    }
+
+    isExtreme(nums) {
+        const allSmall = nums.every(n => n <= 24);
+        const allBig = nums.every(n => n >= 25);
+        return allSmall || allBig;
     }
 }
 

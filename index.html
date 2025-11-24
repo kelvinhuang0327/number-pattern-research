@@ -181,16 +181,34 @@
                         style="padding: 6px 10px; border-radius: 4px; border: none;" />
                     <label for="simulation-method" style="color: #fff; margin-left: 10px;">預測方法：</label>
                     <select id="simulation-method" class="select-input">
-                        <option value="frequency">頻率回歸分析</option>
-                        <option value="trend">趨勢回歸分析</option>
-                        <option value="combined" selected>綜合回歸模型</option>
-                        <option value="ml">機器學習模型</option>
-                        <option value="tf">TensorFlow.js 神經網路</option>
-                        <option value="markov">馬可夫鏈 (Markov Chain)</option>
-                        <option value="montecarlo">蒙地卡羅模擬 (Monte Carlo)</option>
-                        <option value="cooccurrence">共現分析 (Co-occurrence)</option>
-                        <option value="lstm">LSTM 深度學習 (Deep Learning)</option>
-                        <option value="ensemble">菁英投票策略 (Ensemble)</option>
+                        <optgroup label="📊 基礎統計方法">
+                            <option value="frequency">頻率回歸分析</option>
+                            <option value="trend">趨勢回歸分析</option>
+                            <option value="combined" selected>綜合回歸模型</option>
+                            <option value="weighted">特徵加權模型</option>
+                        </optgroup>
+                        <optgroup label="🧠 深度學習方法">
+                            <option value="ml">機器學習模型</option>
+                            <option value="tf">TensorFlow.js 神經網路</option>
+                            <option value="lstm">LSTM 深度學習</option>
+                            <option value="attention">Attention LSTM 深度學習</option>
+                        </optgroup>
+                        <optgroup label="📈 序列與機率方法">
+                            <option value="markov">馬可夫鏈 (Markov Chain)</option>
+                            <option value="montecarlo">蒙地卡羅模擬 (Monte Carlo)</option>
+                            <option value="cooccurrence">共現分析 (Co-occurrence)</option>
+                            <option value="bayesian">貝葉斯機率模型</option>
+                            <option value="deviation">偏差追蹤模型</option>
+                            <option value="boosting">梯度提升集成模型</option>
+                        </optgroup>
+                        <optgroup label="🔗 智能集成框架 (推薦)">
+                            <option value="adaptive_ensemble">⭐ 自適應集成 (Adaptive)</option>
+                            <option value="consensus_voting">👥 共識投票 (Consensus)</option>
+                            <option value="pipeline">🔄 管道模型 (Pipeline)</option>
+                            <option value="hybrid_strategy">🎯 混合策略 (Hybrid)</option>
+                            <option value="all_ensemble">全模型綜合投票 (All Models)</option>
+                            <option value="tactical_relay">戰術接力模式 (Tactical Relay)</option>
+                        </optgroup>
                     </select>
                     <button class="btn btn-primary" id="simulation-btn">
                         <span class="btn-icon">🧪</span>開始模擬
@@ -228,16 +246,35 @@
                     <div class="control-group">
                         <label for="prediction-method">預測方法</label>
                         <select id="prediction-method" class="select-input">
-                            <option value="frequency">頻率回歸分析</option>
-                            <option value="trend">趨勢回歸分析</option>
-                            <option value="combined" selected>綜合回歸模型</option>
-                            <option value="ml">機器學習模型</option>
-                            <option value="tf">TensorFlow 神經網路</option>
-                            <option value="markov">馬可夫鏈 (Markov Chain)</option>
-                            <option value="montecarlo">蒙地卡羅模擬 (Monte Carlo)</option>
-                            <option value="cooccurrence">共現分析 (Co-occurrence)</option>
-                            <option value="lstm">LSTM 深度學習 (Deep Learning)</option>
-                            <option value="ensemble">菁英投票策略 (Ensemble)</option>
+                            <optgroup label="📊 基礎統計方法">
+                                <option value="frequency">頻率回歸分析</option>
+                                <option value="trend">趨勢回歸分析</option>
+                                <option value="combined">綜合回歸模型</option>
+                                <option value="weighted">特徵加權模型</option>
+                            </optgroup>
+                            <optgroup label="🧠 深度學習方法">
+                                <option value="ml">機器學習模型</option>
+                                <option value="tf">TensorFlow 神經網路</option>
+                                <option value="lstm">LSTM 深度學習</option>
+                                <option value="attention">Attention LSTM 深度學習</option>
+                            </optgroup>
+                            <optgroup label="📈 序列與機率方法">
+                                <option value="markov">馬可夫鏈 (Markov Chain)</option>
+                                <option value="montecarlo">蒙地卡羅模擬 (Monte Carlo)</option>
+                                <option value="cooccurrence">共現分析 (Co-occurrence)</option>
+                                <option value="bayesian">貝葉斯機率模型</option>
+                                <option value="deviation">偏差追蹤模型</option>
+                                <option value="boosting">梯度提升集成模型</option>
+                            </optgroup>
+                            <optgroup label="🔗 集成方法">
+                                <option value="ensemble">菁英投票策略</option>
+                                <option value="all_ensemble">全模型綜合投票</option>
+                            </optgroup>
+                            <optgroup label="🚀 協作預測系統 (推薦)">
+                                <option value="relay" selected>🏃 接力預測 (三階段篩選)</option>
+                                <option value="collaborative">🤝 協作預測 (七模型投票)</option>
+                                <option value="adaptive">🧠 自適應接力 (智能策略)</option>
+                            </optgroup>
                         </select>
                     </div>
                     <div class="control-group">
@@ -312,124 +349,6 @@
                 <div class="pagination" id="pagination"></div>
             </section>
 
-            <!-- Smart Betting Styles -->
-            <style>
-                .smart-betting-container {
-                    display: grid;
-                    grid-template-columns: 1fr 1fr;
-                    gap: 20px;
-                }
-
-                .betting-card {
-                    background: rgba(255, 255, 255, 0.05);
-                    border-radius: 12px;
-                    padding: 20px;
-                    border: 1px solid rgba(255, 255, 255, 0.1);
-                }
-
-                .betting-card.full-width {
-                    grid-column: 1 / -1;
-                }
-
-                .number-grid {
-                    display: grid;
-                    grid-template-columns: repeat(7, 1fr);
-                    gap: 8px;
-                    margin-top: 15px;
-                }
-
-                .number-ball {
-                    width: 35px;
-                    height: 35px;
-                    border-radius: 50%;
-                    background: #333;
-                    color: #fff;
-                    display: flex;
-                    align-items: center;
-                    justify-content: center;
-                    font-weight: bold;
-                    font-size: 14px;
-                    transition: all 0.2s;
-                    border: 2px solid transparent;
-                }
-
-                .number-ball:hover {
-                    background: #444;
-                    transform: scale(1.1);
-                }
-
-                .number-ball.active {
-                    background: var(--primary-color);
-                    box-shadow: 0 0 10px var(--primary-color);
-                    border-color: #fff;
-                }
-
-                .hint {
-                    color: #aaa;
-                    font-size: 0.9em;
-                    margin-bottom: 10px;
-                }
-
-                .filter-options {
-                    display: flex;
-                    flex-direction: column;
-                    gap: 10px;
-                    margin-top: 10px;
-                }
-
-                .checkbox-label {
-                    display: flex;
-                    align-items: center;
-                    gap: 10px;
-                    cursor: pointer;
-                    color: #ddd;
-                }
-
-                .combinations-list {
-                    display: grid;
-                    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-                    gap: 10px;
-                    margin-top: 15px;
-                }
-
-                .combination-row {
-                    background: rgba(0, 0, 0, 0.3);
-                    padding: 10px;
-                    border-radius: 8px;
-                    display: flex;
-                    align-items: center;
-                    gap: 10px;
-                    border-left: 3px solid var(--primary-color);
-                }
-
-                .combo-index {
-                    color: #aaa;
-                    font-size: 0.8em;
-                    width: 30px;
-                }
-
-                .combo-numbers {
-                    display: flex;
-                    gap: 5px;
-                }
-
-                .number-ball.small {
-                    width: 25px;
-                    height: 25px;
-                    font-size: 12px;
-                    background: var(--secondary-color);
-                }
-
-                @media (max-width: 768px) {
-                    .smart-betting-container {
-                        grid-template-columns: 1fr;
-                    }
-
-                    .number-grid {
-                        grid-template-columns: repeat(6, 1fr);
-                    }
-                }
-            </style>
             <!-- Smart Betting Section -->
             <section id="smartbetting-section" class="section">
                 <div class="section-header">
@@ -478,12 +397,29 @@
                             <span class="btn-icon">🎯</span>
                             產生聰明組合
                         </button>
+
+                        <button class="btn btn-secondary" id="generate-hedging-btn"
+                            style="margin-top: 10px; width: 100%; background: linear-gradient(45deg, #FF512F, #DD2476);">
+                            <span class="btn-icon">⚡️</span>
+                            快速生成 2 注對沖 (熱門 vs 冷門)
+                        </button>
                     </div>
 
                     <!-- 結果顯示區 -->
                     <div class="betting-card full-width" id="smart-bet-results" style="display: none;">
                         <h3>3. 產生的投注組合</h3>
                         <div id="betting-combinations" class="combinations-list"></div>
+
+                        <!-- 科學分析儀表板模板 (隱藏，由 JS 動態生成) -->
+                        <template id="analysis-dashboard-template">
+                            <div class="analysis-dashboard"
+                                style="margin-top: 5px; padding-top: 5px; border-top: 1px solid rgba(255,255,255,0.1); font-size: 0.85em; display: flex; gap: 15px; color: #aaa;">
+                                <span class="metric-sum">和值: <b style="color: #fff;">-</b></span>
+                                <span class="metric-oe">奇偶: <b style="color: #fff;">-</b></span>
+                                <span class="metric-hl">大小: <b style="color: #fff;">-</b></span>
+                                <span class="metric-ac">AC值: <b style="color: #fff;">-</b></span>
+                            </div>
+                        </template>
                     </div>
                 </div>
             </section>
@@ -498,11 +434,7 @@
 
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@4.9.0/dist/tf.min.js"></script>
-    <script src="js/lotteryRules.js"></script>
-    <script src="js/dataProcessor.js"></script>
-    <script src="js/analysis.js"></script>
-    <script src="js/prediction.js"></script>
-    <script src="js/app.js"></script>
+    <script type="module" src="src/main.js?v=1"></script>
 </body>
 
 </html>

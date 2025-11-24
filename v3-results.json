@@ -1,0 +1,40 @@
+{
+  "avgSuccessRate": "13.33",
+  "rounds": [
+    {
+      "version": "v3.0",
+      "successRate": 25,
+      "total": 20,
+      "success": 5,
+      "hitDist": {
+        "1": 7,
+        "2": 8,
+        "3": 5
+      }
+    },
+    {
+      "version": "v3.0",
+      "successRate": 10,
+      "total": 20,
+      "success": 2,
+      "hitDist": {
+        "0": 5,
+        "1": 6,
+        "2": 7,
+        "3": 2
+      }
+    },
+    {
+      "version": "v3.0",
+      "successRate": 5,
+      "total": 20,
+      "success": 1,
+      "hitDist": {
+        "0": 4,
+        "1": 7,
+        "2": 8,
+        "3": 1
+      }
+    }
+  ]
+}

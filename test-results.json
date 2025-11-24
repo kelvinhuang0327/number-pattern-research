@@ -1,0 +1,36 @@
+{
+  "timestamp": "2025-11-24T05:02:02.585Z",
+  "results": [
+    {
+      "config": "強化型",
+      "successRate": 10,
+      "successful": 1,
+      "total": 10
+    },
+    {
+      "config": "激進型",
+      "successRate": 10,
+      "successful": 1,
+      "total": 10
+    },
+    {
+      "config": "平衡型",
+      "successRate": 0,
+      "successful": 0,
+      "total": 10
+    },
+    {
+      "config": "保守型",
+      "successRate": 0,
+      "successful": 0,
+      "total": 10
+    },
+    {
+      "config": "區間優先",
+      "successRate": 0,
+      "successful": 0,
+      "total": 10
+    }
+  ],
+  "bestConfig": "強化型"
+}

@@ -1,0 +1,68 @@
+{
+  "avgSuccessRate": "21.00",
+  "rounds": [
+    {
+      "version": "v2+_r1",
+      "successRate": "30.00",
+      "total": 20,
+      "success": 6,
+      "hitDist": {
+        "0": 1,
+        "1": 6,
+        "2": 7,
+        "3": 6
+      }
+    },
+    {
+      "version": "v2+_r2",
+      "successRate": "20.00",
+      "total": 20,
+      "success": 4,
+      "hitDist": {
+        "0": 5,
+        "1": 9,
+        "2": 2,
+        "3": 3,
+        "4": 1
+      }
+    },
+    {
+      "version": "v2+_r3",
+      "successRate": "20.00",
+      "total": 20,
+      "success": 4,
+      "hitDist": {
+        "0": 2,
+        "1": 8,
+        "2": 6,
+        "3": 3,
+        "4": 1
+      }
+    },
+    {
+      "version": "v2+_r4",
+      "successRate": "20.00",
+      "total": 20,
+      "success": 4,
+      "hitDist": {
+        "0": 4,
+        "1": 9,
+        "2": 3,
+        "3": 3,
+        "5": 1
+      }
+    },
+    {
+      "version": "v2+_r5",
+      "successRate": "15.00",
+      "total": 20,
+      "success": 3,
+      "hitDist": {
+        "0": 3,
+        "1": 9,
+        "2": 5,
+        "3": 3
+      }
+    }
+  ]
+}

@@ -772,15 +772,7 @@ class LotteryApp {
                 combinationsDiv.innerHTML = '<div class="no-data">過濾後無符合條件的組合，請放寬過濾條件或增加選號。</div>';
             } else {
                 combinations.forEach((combo, index) => {
-                    const row = document.createElement('div');
-                    row.className = 'combination-row';
-                    row.innerHTML = `
-                        <span class="combo-index">#${index + 1}</span>
-                        <div class="combo-numbers">
-                            ${combo.map(n => `<span class="number-ball small">${n}</span>`).join('')}
-                        </div>
-                    `;
-                    combinationsDiv.appendChild(row);
+                    this.renderCombinationRow(combinationsDiv, combo, `#${index + 1}`, null);
                 });
             }
 
@@ -790,6 +782,97 @@ class LotteryApp {
             // 滾動到結果區
             resultsDiv.scrollIntoView({ behavior: 'smooth' });
         });
+
+        // 快速生成 2 注對沖按鈕事件
+        const hedgingBtn = document.getElementById('generate-hedging-btn');
+        if (hedgingBtn) {
+            hedgingBtn.addEventListener('click', async () => {
+                if (!this.dataProcessor.lotteryData || this.dataProcessor.lotteryData.length === 0) {
+                    this.showNotification('請先上傳或載入數據', 'error');
+                    return;
+                }
+
+                // 1. 獲取熱門號碼 (使用頻率分析)
+                const frequency = this.predictionEngine.calculateFrequency(this.dataProcessor.lotteryData);
+                const hotNumbers = Object.entries(frequency)
+                    .sort((a, b) => b[1] - a[1])
+                    .slice(0, 6)
+                    .map(([num]) => parseInt(num))
+                    .sort((a, b) => a - b);
+
+                // 2. 獲取冷門號碼 (使用遺漏值分析)
+                const missing = this.predictionEngine.calculateMissing(this.dataProcessor.lotteryData);
+                const coldNumbers = Object.entries(missing)
+                    .sort((a, b) => b[1] - a[1])
+                    .slice(0, 6)
+                    .map(([num]) => parseInt(num))
+                    .sort((a, b) => a - b);
+
+                // 顯示結果
+                combinationsDiv.innerHTML = '';
+
+                // 熱門注
+                this.renderCombinationRow(combinationsDiv, hotNumbers, '🔥', '#FF512F', '(正統熱門)');
+
+                // 冷門注
+                this.renderCombinationRow(combinationsDiv, coldNumbers, '❄️', '#3498db', '(冷門翻身)');
+
+                resultsDiv.style.display = 'block';
+                this.showNotification('已生成 2 注風險對沖組合', 'success');
+                resultsDiv.scrollIntoView({ behavior: 'smooth' });
+            });
+        }
+    }
+
+    // 渲染組合行 (包含科學分析儀表板)
+    renderCombinationRow(container, numbers, icon, color, label = '') {
+        const row = document.createElement('div');
+        row.className = 'combination-row';
+        if (color) row.style.borderLeft = `3px solid ${color}`;
+
+        // 計算科學指標
+        const sum = numbers.reduce((a, b) => a + b, 0);
+        const oddCount = numbers.filter(n => n % 2 !== 0).length;
+        const evenCount = numbers.length - oddCount;
+        const bigCount = numbers.filter(n => n >= 25).length;
+        const smallCount = numbers.length - bigCount;
+        const acValue = this.calculateAC(numbers);
+
+        // 判斷指標健康度 (簡單紅綠燈)
+        const isSumGood = sum >= 120 && sum <= 180;
+        const isOEGood = oddCount >= 2 && oddCount <= 4;
+        const isHLGood = bigCount >= 2 && bigCount <= 4;
+        const isACGood = acValue >= 7;
+
+        row.innerHTML = `
+            <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 5px;">
+                <span class="combo-index">${icon}</span>
+                <div class="combo-numbers">
+                    ${numbers.map(n => `<span class="number-ball small" style="${color ? `background: ${color};` : ''}">${n}</span>`).join('')}
+                </div>
+                ${label ? `<span style="color: #aaa; font-size: 0.8em;">${label}</span>` : ''}
+            </div>
+            
+            <!-- 科學分析儀表板 -->
+            <div class="analysis-dashboard" style="margin-top: 5px; padding-top: 5px; border-top: 1px solid rgba(255,255,255,0.1); font-size: 0.85em; display: flex; gap: 15px; color: #aaa;">
+                <span class="metric-sum" style="color: ${isSumGood ? '#4caf50' : '#ff9800'};">和值: <b>${sum}</b></span>
+                <span class="metric-oe" style="color: ${isOEGood ? '#4caf50' : '#ff9800'};">奇偶: <b>${oddCount}:${evenCount}</b></span>
+                <span class="metric-hl" style="color: ${isHLGood ? '#4caf50' : '#ff9800'};">大小: <b>${bigCount}:${smallCount}</b></span>
+                <span class="metric-ac" style="color: ${isACGood ? '#4caf50' : '#ff9800'};">AC值: <b>${acValue}</b></span>
+            </div>
+        `;
+        container.appendChild(row);
+    }
+
+    // 計算 AC 值 (Arithmetic Complexity)
+    calculateAC(numbers) {
+        const diffs = new Set();
+        for (let i = 0; i < numbers.length; i++) {
+            for (let j = i + 1; j < numbers.length; j++) {
+                diffs.add(Math.abs(numbers[i] - numbers[j]));
+            }
+        }
+        return diffs.size - (numbers.length - 1);
     }
 
     // 聰明包牌邏輯 (Wheeling System)

@@ -1,0 +1,16 @@
+{
+  "freqWeight": 0.48839062397754723,
+  "pairWeight": 0.35,
+  "timeDecay": 0.15216158556645878,
+  "candidateCount": 14,
+  "iterations": 125.57342038158126,
+  "selectionPower": 2.2,
+  "zoneBonus": 6,
+  "oddBonus": 3.9496251055242877,
+  "oddEvenPerfect": 110,
+  "oddEvenGood": 65,
+  "zoneDistribution": 45.34795894874316,
+  "sumRangePerfect": 46.10722992306234,
+  "sumRangeGood": 30,
+  "consecutivePenalty": 29.741665522233788
+}

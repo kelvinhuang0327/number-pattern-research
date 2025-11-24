@@ -22,6 +22,23 @@ export class EnsembleStrategy {
             { name: 'FeatureWeighted', strategy: new FeatureWeightedStrategy(statisticsService), weight: 1.5 },
             { name: 'Deviation', strategy: new DeviationStrategy(statisticsService), weight: 1.3 }
         ];
+
+        this.weights = {
+            freqWeight: 0.488,     // 頻率權重 (優化後)
+            pairWeight: 0.35,      // 配對權重
+            timeDecay: 0.152,      // 時間衰減係數 (優化後)
+            candidateCount: 14,    // 候選號碼數量
+            iterations: 126,       // 蒙特卡羅模擬次數 (優化後)
+            selectionPower: 2.2,   // 選擇指數
+            zoneBonus: 6,          // 黃金區間加分
+            oddBonus: 3.95,        // 奇數加分 (優化後)
+            oddEvenPerfect: 110,   // 奇偶比 3:3 完美加分
+            oddEvenGood: 65,       // 奇偶比 2:4 或 4:2 加分
+            zoneDistribution: 45,  // 區間分佈加分
+            sumRangePerfect: 46,   // 總和完美區間加分 (優化後)
+            sumRangeGood: 30,      // 總和好區間加分
+            consecutivePenalty: 30 // 連號懲罰
+        };
     }
 
     async predict(data) {
@@ -130,7 +147,7 @@ export class EnsembleStrategy {
                 const available = [...candidates];
 
                 while (combo.length < LOTTERY_RULES.pickCount && available.length > 0) {
-                    const weights = available.map((n, i) => Math.pow(2.2, available.length - i));
+                    const weights = available.map((n, i) => Math.pow(this.weights.selectionPower, available.length - i));
                     const totalWeight = weights.reduce((a, b) => a + b, 0);
                     let random = Math.random() * totalWeight;
 
@@ -155,8 +172,8 @@ export class EnsembleStrategy {
 
                     // 奇偶
                     const oddCount = combo.filter(n => n % 2 === 1).length;
-                    if (oddCount === 3) s += 110;
-                    else if (oddCount === 2 || oddCount === 4) s += 65;
+                    if (oddCount === 3) s += this.weights.oddEvenPerfect;
+                    else if (oddCount === 2 || oddCount === 4) s += this.weights.oddEvenGood;
 
                     // 區間
                     const zones = new Set(combo.map(n => Math.floor((n - 1) / 10)));

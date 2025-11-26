@@ -1,4 +1,5 @@
 import { LOTTERY_RULES } from '../utils/Constants.js';
+import { getLotteryTypeById } from '../utils/LotteryTypes.js';
 
 /**
  * 統計服務
@@ -11,15 +12,30 @@ export class StatisticsService {
 
     /**
      * 獲取數據統計摘要
+     * @param {string} lotteryTypeId - 可選的彩券類型 ID，用於過濾
      */
-    getDataStats() {
-        const data = this.dataProcessor.getData();
+    getDataStats(lotteryTypeId = null) {
+        let data = this.dataProcessor.getData();
         if (data.length === 0) {
             return null;
         }
 
+        // 如果指定了彩券類型，進行過濾
+        if (lotteryTypeId) {
+            data = data.filter(d => d.lotteryType === lotteryTypeId);
+            if (data.length === 0) return null;
+        }
+
         const dates = data.map(d => d.date);
         const sortedDates = [...dates].sort();
+
+        // 統計各彩券類型的數量
+        const allData = this.dataProcessor.getData();
+        const typeCount = {};
+        allData.forEach(d => {
+            const type = d.lotteryType || 'UNKNOWN';
+            typeCount[type] = (typeCount[type] || 0) + 1;
+        });
 
         return {
             totalDraws: data.length,
@@ -27,26 +43,41 @@ export class StatisticsService {
                 start: sortedDates[0],
                 end: sortedDates[sortedDates.length - 1]
             },
-            latestDraw: data[0].draw // 假設數據是降序
+            latestDraw: data[0].draw,
+            latestDate: sortedDates[sortedDates.length - 1],
+            lotteryTypeCount: typeCount,  // 新增：各彩券類型數量
+            filteredType: lotteryTypeId    // 新增：當前過濾的類型
         };
     }
 
     /**
      * 計算號碼出現頻率
+     * @param {Array} data - 數據陣列（可選）
+     * @param {string} lotteryTypeId - 彩券類型 ID（可選）
      */
-    calculateFrequency(data = null) {
-        const targetData = data || this.dataProcessor.getData();
+    calculateFrequency(data = null, lotteryTypeId = null) {
+        let targetData = data || this.dataProcessor.getData();
+
+        // 如果指定了彩券類型，進行過濾
+        if (lotteryTypeId) {
+            targetData = targetData.filter(d => d.lotteryType === lotteryTypeId);
+        }
+
+        // 獲取彩券規則
+        const lotteryRules = this._getLotteryRules(lotteryTypeId);
         const frequency = {};
 
-        // 初始化1-49的頻率為0
-        for (let i = LOTTERY_RULES.numberRange.min; i <= LOTTERY_RULES.numberRange.max; i++) {
+        // 使用動態範圍初始化頻率
+        for (let i = lotteryRules.numberRange.min; i <= lotteryRules.numberRange.max; i++) {
             frequency[i] = 0;
         }
 
         // 計算每個號碼出現次數
         targetData.forEach(draw => {
             draw.numbers.forEach(num => {
-                frequency[num]++;
+                if (frequency.hasOwnProperty(num)) {
+                    frequency[num]++;
+                }
             });
         });
 
@@ -55,13 +86,22 @@ export class StatisticsService {
 
     /**
      * 計算號碼遺漏值（距離上次出現的期數）
+     * @param {string} lotteryTypeId - 彩券類型 ID（可選）
      */
-    calculateMissingValues(data = null) {
-        const targetData = data || this.dataProcessor.getData();
+    calculateMissingValues(lotteryTypeId = null) {
+        let targetData = this.dataProcessor.getData();
+
+        // 如果指定了彩券類型，進行過濾
+        if (lotteryTypeId) {
+            targetData = targetData.filter(d => d.lotteryType === lotteryTypeId);
+        }
+
+        // 獲取彩券規則
+        const lotteryRules = this._getLotteryRules(lotteryTypeId);
         const missing = {};
 
         // 初始化
-        for (let i = LOTTERY_RULES.numberRange.min; i <= LOTTERY_RULES.numberRange.max; i++) {
+        for (let i = lotteryRules.numberRange.min; i <= lotteryRules.numberRange.max; i++) {
             missing[i] = 0;
         }
 
@@ -76,7 +116,7 @@ export class StatisticsService {
         // 對於每個號碼，從 index 0 開始找，找到第一次出現的位置 index，該 index 就是遺漏值
         // 如果都沒出現，遺漏值就是 length
 
-        for (let num = LOTTERY_RULES.numberRange.min; num <= LOTTERY_RULES.numberRange.max; num++) {
+        for (let num = lotteryRules.numberRange.min; num <= lotteryRules.numberRange.max; num++) {
             let found = false;
             for (let i = 0; i < targetData.length; i++) {
                 if (targetData[i].numbers.includes(num)) {
@@ -95,10 +135,19 @@ export class StatisticsService {
 
     /**
      * 獲取熱門號碼（出現頻率最高）
+     * @param {number} count - 要返回的號碼數量
+     * @param {string} lotteryTypeId - 彩券類型 ID（可選）
      */
-    getHotNumbers(count = 10) {
-        const frequency = this.calculateFrequency();
-        const totalDraws = this.dataProcessor.getData().length;
+    getHotNumbers(count = 10, lotteryTypeId = null) {
+        const frequency = this.calculateFrequency(null, lotteryTypeId);
+        let targetData = this.dataProcessor.getData();
+
+        // 如果指定了彩券類型，進行過濾
+        if (lotteryTypeId) {
+            targetData = targetData.filter(d => d.lotteryType === lotteryTypeId);
+        }
+
+        const totalDraws = targetData.length;
         const sorted = Object.entries(frequency)
             .sort((a, b) => b[1] - a[1])
             .slice(0, count);
@@ -106,16 +155,25 @@ export class StatisticsService {
         return sorted.map(([num, freq]) => ({
             number: parseInt(num),
             frequency: freq,
-            percentage: ((freq / totalDraws) * 100).toFixed(1)
+            percentage: totalDraws > 0 ? ((freq / totalDraws) * 100).toFixed(1) : '0.0'
         }));
     }
 
     /**
      * 獲取冷門號碼（出現頻率最低）
+     * @param {number} count - 要返回的號碼數量
+     * @param {string} lotteryTypeId - 彩券類型 ID（可選）
      */
-    getColdNumbers(count = 10) {
-        const frequency = this.calculateFrequency();
-        const totalDraws = this.dataProcessor.getData().length;
+    getColdNumbers(count = 10, lotteryTypeId = null) {
+        const frequency = this.calculateFrequency(null, lotteryTypeId);
+        let targetData = this.dataProcessor.getData();
+
+        // 如果指定了彩券類型，進行過濾
+        if (lotteryTypeId) {
+            targetData = targetData.filter(d => d.lotteryType === lotteryTypeId);
+        }
+
+        const totalDraws = targetData.length;
         const sorted = Object.entries(frequency)
             .sort((a, b) => a[1] - b[1])
             .slice(0, count);
@@ -123,36 +181,52 @@ export class StatisticsService {
         return sorted.map(([num, freq]) => ({
             number: parseInt(num),
             frequency: freq,
-            percentage: ((freq / totalDraws) * 100).toFixed(1)
+            percentage: totalDraws > 0 ? ((freq / totalDraws) * 100).toFixed(1) : '0.0'
         }));
     }
 
     /**
      * 計算號碼分佈（按區間）
+     * @param {string} lotteryTypeId - 彩券類型 ID（可選）
      */
-    calculateDistribution() {
-        const data = this.dataProcessor.getData();
-        const distribution = {
-            '1-10': 0,
-            '11-20': 0,
-            '21-30': 0,
-            '31-40': 0,
-            '41-49': 0
-        };
+    calculateDistribution(lotteryTypeId = null) {
+        let data = this.dataProcessor.getData();
+
+        // 如果指定了彩券類型，進行過濾
+        if (lotteryTypeId) {
+            data = data.filter(d => d.lotteryType === lotteryTypeId);
+        }
+
+        // 獲取彩券規則
+        const lotteryRules = this._getLotteryRules(lotteryTypeId);
+        const { min, max } = lotteryRules.numberRange;
+        const range = max - min + 1;
+        const zoneSize = Math.ceil(range / 5);
+
+        // 動態創建區間
+        const distribution = {};
+        for (let i = 0; i < 5; i++) {
+            const zoneStart = min + (i * zoneSize);
+            const zoneEnd = Math.min(zoneStart + zoneSize - 1, max);
+            const zoneKey = `${zoneStart}-${zoneEnd}`;
+            distribution[zoneKey] = 0;
+        }
 
         // 計算每個區間的出現次數
         data.forEach(draw => {
             draw.numbers.forEach(num => {
-                if (num <= 10) distribution['1-10']++;
-                else if (num <= 20) distribution['11-20']++;
-                else if (num <= 30) distribution['21-30']++;
-                else if (num <= 40) distribution['31-40']++;
-                else distribution['41-49']++;
+                for (const zoneKey in distribution) {
+                    const [start, end] = zoneKey.split('-').map(Number);
+                    if (num >= start && num <= end) {
+                        distribution[zoneKey]++;
+                        break;
+                    }
+                }
             });
         });
 
         // 轉換為百分比
-        const totalNumbers = data.length * LOTTERY_RULES.pickCount;
+        const totalNumbers = data.length * lotteryRules.pickCount;
         if (totalNumbers > 0) {
             for (const zone in distribution) {
                 distribution[zone] = ((distribution[zone] / totalNumbers) * 100).toFixed(1);
@@ -160,5 +234,32 @@ export class StatisticsService {
         }
 
         return distribution;
+    }
+
+    /**
+     * 獲取彩券規則
+     * @param {string} lotteryTypeId - 彩券類型 ID
+     * @returns {Object} 彩券規則
+     * @private
+     */
+    _getLotteryRules(lotteryTypeId) {
+        if (!lotteryTypeId) {
+            return LOTTERY_RULES; // 預設為大樂透
+        }
+
+        // 從 LotteryTypes 中獲取規則
+        const lotteryType = getLotteryTypeById(lotteryTypeId);
+
+        if (!lotteryType) {
+            return LOTTERY_RULES; // 找不到時使用預設值
+        }
+
+        // 轉換為 LOTTERY_RULES 格式
+        return {
+            numberRange: lotteryType.numberRange,
+            pickCount: lotteryType.pickCount,
+            hasSpecialNumber: lotteryType.hasSpecialNumber,
+            specialNumberRange: lotteryType.specialNumberRange || lotteryType.numberRange
+        };
     }
 }

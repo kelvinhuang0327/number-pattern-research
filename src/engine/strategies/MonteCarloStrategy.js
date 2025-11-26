@@ -5,30 +5,31 @@ export class MonteCarloStrategy {
         this.statisticsService = statisticsService;
     }
 
-    predict(data) {
-        const range = LOTTERY_RULES.numberRange.max;
+    predict(data, lotteryRules = LOTTERY_RULES) {
+        const { min, max } = lotteryRules.numberRange;
+        const pickCount = lotteryRules.pickCount;
         const simulations = 10000; // 模擬次數
         const frequency = this.statisticsService.calculateFrequency(data);
         const totalDraws = data.length;
 
         // 建立權重池 (基於歷史頻率)
         const pool = [];
-        for (let i = 1; i <= range; i++) {
+        for (let i = min; i <= max; i++) {
             // 基礎權重 1，加上頻率權重
             // 頻率越高，在池中佔比越高
-            const weight = 1 + (frequency[i] / totalDraws) * 10;
+            const weight = 1 + ((frequency[i] || 0) / totalDraws) * 10;
             for (let k = 0; k < Math.floor(weight * 10); k++) {
                 pool.push(i);
             }
         }
 
         const simulationResults = {};
-        for (let i = 1; i <= range; i++) simulationResults[i] = 0;
+        for (let i = min; i <= max; i++) simulationResults[i] = 0;
 
         // 執行模擬
         for (let i = 0; i < simulations; i++) {
             const draw = new Set();
-            while (draw.size < LOTTERY_RULES.pickCount) {
+            while (draw.size < pickCount) {
                 const randomIndex = Math.floor(Math.random() * pool.length);
                 draw.add(pool[randomIndex]);
             }
@@ -37,13 +38,13 @@ export class MonteCarloStrategy {
 
         // 計算機率
         const probabilities = {};
-        for (let i = 1; i <= range; i++) {
+        for (let i = min; i <= max; i++) {
             probabilities[i] = simulationResults[i] / simulations;
         }
 
         const sortedNumbers = Object.entries(probabilities)
             .sort((a, b) => b[1] - a[1])
-            .slice(0, LOTTERY_RULES.pickCount)
+            .slice(0, pickCount)
             .map(([num, prob]) => ({ number: parseInt(num), probability: prob }));
 
         const predictedNumbers = sortedNumbers.map(item => item.number).sort((a, b) => a - b);

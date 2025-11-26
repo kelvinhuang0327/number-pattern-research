@@ -5,25 +5,26 @@ export class DeviationStrategy {
         this.statisticsService = statisticsService;
     }
 
-    predict(data) {
-        const range = LOTTERY_RULES.numberRange.max;
+    predict(data, lotteryRules = LOTTERY_RULES) {
+        const { min, max } = lotteryRules.numberRange;
+        const totalNumbers = max - min + 1;
         const probabilities = {};
 
         // 計算每個號碼的理論平均出現次數
-        const expectedFreq = (data.length * 6) / 49;
+        const expectedFreq = (data.length * lotteryRules.pickCount) / totalNumbers;
         const frequency = this.statisticsService.calculateFrequency(data);
 
         // 計算標準差 (Standard Deviation)
         let sumSqDiff = 0;
-        for (let i = 1; i <= range; i++) {
+        for (let i = min; i <= max; i++) {
             const diff = (frequency[i] || 0) - expectedFreq;
             sumSqDiff += diff * diff;
         }
-        const stdDev = Math.sqrt(sumSqDiff / 49);
+        const stdDev = Math.sqrt(sumSqDiff / totalNumbers);
 
-        for (let i = 1; i <= range; i++) {
+        for (let i = min; i <= max; i++) {
             const freq = frequency[i] || 0;
-            const zScore = (freq - expectedFreq) / stdDev;
+            const zScore = stdDev > 0 ? (freq - expectedFreq) / stdDev : 0;
 
             // 評分邏輯
             if (zScore < -1.5) {
@@ -42,11 +43,13 @@ export class DeviationStrategy {
 
         // 正規化
         const totalProb = Object.values(probabilities).reduce((a, b) => a + b, 0);
-        for (let i = 1; i <= range; i++) probabilities[i] /= totalProb;
+        for (let i = min; i <= max; i++) {
+            probabilities[i] = totalProb > 0 ? probabilities[i] / totalProb : 1 / totalNumbers;
+        }
 
         const sortedNumbers = Object.entries(probabilities)
             .sort((a, b) => b[1] - a[1])
-            .slice(0, LOTTERY_RULES.pickCount)
+            .slice(0, lotteryRules.pickCount)
             .map(([num, prob]) => ({ number: parseInt(num), probability: prob }));
 
         const predictedNumbers = sortedNumbers.map(item => item.number).sort((a, b) => a - b);

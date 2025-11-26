@@ -1,148 +1,9 @@
-import { LOTTERY_RULES } from '../utils/Constants.js';
+import { DataProcessor } from './DataProcessor.js';
 import { StatisticsService } from '../data/StatisticsService.js';
 import { PredictionEngine } from '../engine/PredictionEngine.js';
 import { UIManager } from '../ui/UIManager.js';
 import { ChartManager } from '../ui/ChartManager.js';
 import { SmartBettingComponent } from '../ui/components/SmartBettingComponent.js';
-
-/**
- * 數據處理模組 (Inlined for reliability)
- */
-class DataProcessor {
-    constructor() {
-        this.lotteryData = [];
-        this.sampleData = this.generateSampleData();
-    }
-
-    generateSampleData() {
-        const data = [];
-        const startDate = new Date('2023-01-01');
-        const totalDraws = 500; // 增加至500期，確保完整覆蓋2025年全年
-
-        for (let i = 0; i < totalDraws; i++) {
-            const drawDate = new Date(startDate);
-            drawDate.setDate(startDate.getDate() + (i * 3)); // 每3天一期
-
-            const numbers = this.generateRandomNumbers(LOTTERY_RULES.pickCount, LOTTERY_RULES.numberRange.min, LOTTERY_RULES.numberRange.max);
-            let specialNumber;
-            do {
-                specialNumber = Math.floor(Math.random() * LOTTERY_RULES.numberRange.max) + LOTTERY_RULES.numberRange.min;
-            } while (numbers.includes(specialNumber));
-
-            data.push({
-                draw: String(113000000 + i + 1).padStart(9, '0'),
-                date: drawDate.toISOString().split('T')[0],
-                numbers: numbers.sort((a, b) => a - b),
-                special: specialNumber
-            });
-        }
-        return data;
-    }
-
-    generateRandomNumbers(count, min, max) {
-        const numbers = new Set();
-        while (numbers.size < count) {
-            numbers.add(Math.floor(Math.random() * (max - min + 1)) + min);
-        }
-        return Array.from(numbers);
-    }
-
-    async parseCSV(file) {
-        return new Promise((resolve, reject) => {
-            const reader = new FileReader();
-            reader.onload = (e) => {
-                try {
-                    const text = e.target.result;
-                    const lines = text.split('\n').filter(line => line.trim());
-                    const data = [];
-                    if (lines.length < 2) { reject(new Error('檔案內容為空或格式錯誤')); return; }
-
-                    const firstLine = lines[0].trim();
-                    const secondLine = lines.length > 1 ? lines[1].trim() : '';
-                    const isOfficialFormat = firstLine.includes('遊戲名稱') || (secondLine && (secondLine.includes('大樂透') || secondLine.includes('Lotto')));
-
-                    for (let i = 1; i < lines.length; i++) {
-                        const line = lines[i].trim();
-                        if (!line) continue;
-                        const parts = line.split(',').map(p => p.trim().replace(/^"|"$/g, ''));
-                        let draw, date, numbers, special;
-
-                        if (isOfficialFormat) {
-                            if (!parts[0].includes('大樂透') && !parts[0].includes('Lotto')) continue;
-                            if (parts.length < 13) continue;
-                            draw = parts[1];
-                            // 統一將日期格式轉換為 YYYY-MM-DD
-                            date = parts[2].replace(/\//g, '-');
-                            numbers = [parseInt(parts[6]), parseInt(parts[7]), parseInt(parts[8]), parseInt(parts[9]), parseInt(parts[10]), parseInt(parts[11])];
-                            special = parseInt(parts[12]);
-                        } else {
-                            if (parts.length < 8) continue;
-                            draw = parts[0];
-                            // 統一將日期格式轉換為 YYYY-MM-DD
-                            date = parts[1].replace(/\//g, '-');
-                            numbers = [parseInt(parts[2]), parseInt(parts[3]), parseInt(parts[4]), parseInt(parts[5]), parseInt(parts[6]), parseInt(parts[7])];
-                            special = parseInt(parts[8]);
-                        }
-
-                        const validNumbers = numbers.filter(n => !isNaN(n) && n >= LOTTERY_RULES.numberRange.min && n <= LOTTERY_RULES.numberRange.max);
-                        if (validNumbers.length === LOTTERY_RULES.pickCount && !isNaN(special) && special >= LOTTERY_RULES.numberRange.min && special <= LOTTERY_RULES.numberRange.max) {
-                            data.push({ draw, date, numbers: validNumbers.sort((a, b) => a - b), special });
-                        }
-                    }
-                    if (data.length === 0) reject(new Error('無法解析CSV檔案'));
-                    else resolve(data);
-                } catch (error) { reject(new Error('CSV解析錯誤: ' + error.message)); }
-            };
-            reader.onerror = () => reject(new Error('檔案讀取失敗'));
-            reader.readAsText(file, 'UTF-8');
-        });
-    }
-
-    loadSampleData() {
-        this.lotteryData = [...this.sampleData];
-        return this.lotteryData;
-    }
-
-    async loadCSVData(file) {
-        const newData = await this.parseCSV(file);
-        const duplicateInfo = this.checkDuplicates(newData);
-        this.lotteryData = duplicateInfo.mergedData;
-        return {
-            data: this.lotteryData,
-            duplicates: duplicateInfo.duplicates,
-            duplicateCount: duplicateInfo.duplicateCount,
-            newCount: duplicateInfo.newCount,
-            totalCount: duplicateInfo.totalCount
-        };
-    }
-
-    checkDuplicates(newData) {
-        const existingDraws = new Set(this.lotteryData.map(d => d.draw));
-        const duplicates = [];
-        const uniqueNew = [];
-        newData.forEach(draw => {
-            if (existingDraws.has(draw.draw)) duplicates.push(draw);
-            else { uniqueNew.push(draw); existingDraws.add(draw.draw); }
-        });
-        const mergedData = [...this.lotteryData, ...uniqueNew];
-        mergedData.sort((a, b) => parseInt(b.draw) - parseInt(a.draw));
-        return { mergedData, duplicates, duplicateCount: duplicates.length, newCount: uniqueNew.length, totalCount: mergedData.length };
-    }
-
-    getData() { return this.lotteryData; }
-    getDataRange(sampleSize) {
-        if (sampleSize === 'all') return this.lotteryData;
-        return this.lotteryData.slice(0, parseInt(sampleSize));
-    }
-    clearData() { this.lotteryData = []; return this.lotteryData; }
-    searchData(query) {
-        if (!query) return this.lotteryData;
-        return this.lotteryData.filter(draw => draw.draw.includes(query) || draw.date.includes(query));
-    }
-    sortData(order = 'desc') {
-        return [...this.lotteryData].sort((a, b) => order === 'desc' ? b.draw.localeCompare(a.draw) : a.draw.localeCompare(b.draw));
-    }
-}
 
 /**
  * 主應用程式
@@ -159,6 +20,7 @@ export class App {
 
         this.currentPage = 1;
         this.itemsPerPage = 20;
+        this.currentLotteryType = ''; // '' means all types
 
         this.init();
     }
@@ -226,12 +88,21 @@ export class App {
             autoOptimizeBtn.addEventListener('click', () => this.runAutoOptimization());
         }
 
+        // 彩券類型篩選
+        const lotteryTypeFilter = document.getElementById('lottery-type-filter');
+        if (lotteryTypeFilter) {
+            lotteryTypeFilter.addEventListener('change', (e) => {
+                this.currentLotteryType = e.target.value;
+                this.handleLotteryTypeChange();
+            });
+        }
+
         // 導航切換時的額外邏輯
         document.querySelectorAll('.nav-btn').forEach(btn => {
             btn.addEventListener('click', (e) => {
                 const section = e.currentTarget.dataset.section;
                 if (section === 'analysis') {
-                    setTimeout(() => this.chartManager.initializeCharts(), 100);
+                    setTimeout(() => this.chartManager.initializeCharts(this.currentLotteryType), 100);
                 } else if (section === 'history') {
                     this.displayHistory();
                 }
@@ -245,10 +116,40 @@ export class App {
             const result = await this.dataProcessor.loadCSVData(file);
 
             this.updateDataSummary();
-            this.uiManager.showNotification(`數據載入成功！新增 ${result.newCount} 筆`, 'success');
+
+            // 獲取統計信息以顯示彩券類型分佈
+            const stats = this.statisticsService.getDataStats();
+            const typeNames = {
+                'BIG_LOTTO': '大樂透',
+                'BIG_LOTTO_BONUS': '大樂透加開',
+                'STAR_3': '三星彩',
+                'STAR_4': '四星彩',
+                'LOTTO_39': '39樂合彩',
+                'DAILY_CASH_539': '今彩539'
+            };
+
+            // 建立詳細訊息
+            let detailMsg = `數據載入成功！新增 ${result.newCount} 筆\n\n`;
+            if (stats && stats.lotteryTypeCount) {
+                detailMsg += '各彩券類型數量：\n';
+                Object.entries(stats.lotteryTypeCount).forEach(([type, count]) => {
+                    detailMsg += `• ${typeNames[type] || type}: ${count} 筆\n`;
+                });
+            }
+
+            this.uiManager.showNotification(detailMsg, 'success');
 
             const fileInfo = document.getElementById('file-info');
-            if (fileInfo) fileInfo.textContent = `✓ 已載入: ${file.name}`;
+            if (fileInfo) {
+                fileInfo.innerHTML = `
+                    <div style="color: #22c55e; font-weight: 500;">
+                        ✓ 已載入: ${file.name}
+                        <div style="font-size: 0.9em; margin-top: 5px;">
+                            新增 ${result.newCount} 筆數據
+                        </div>
+                    </div>
+                `;
+            }
 
         } catch (error) {
             this.uiManager.showNotification('檔案載入失敗: ' + error.message, 'error');
@@ -261,22 +162,69 @@ export class App {
             this.uiManager.showNotification(`正在解析 ${files.length} 個檔案...`, 'info');
             let totalNew = 0;
             let successCount = 0;
+            const fileResults = [];
 
             for (let i = 0; i < files.length; i++) {
                 try {
                     const result = await this.dataProcessor.loadCSVData(files[i]);
                     totalNew += result.newCount;
                     successCount++;
+                    fileResults.push({ name: files[i].name, count: result.newCount, success: true });
                 } catch (err) {
                     console.warn(`File ${files[i].name} failed:`, err);
+                    fileResults.push({ name: files[i].name, error: err.message, success: false });
                 }
             }
 
             this.updateDataSummary();
-            this.uiManager.showNotification(`批次載入完成！成功 ${successCount}/${files.length} 檔，新增 ${totalNew} 筆數據`, 'success');
+
+            // 獲取統計信息
+            const stats = this.statisticsService.getDataStats();
+            const typeNames = {
+                'BIG_LOTTO': '大樂透',
+                'BIG_LOTTO_BONUS': '大樂透加開',
+                'STAR_3': '三星彩',
+                'STAR_4': '四星彩',
+                'LOTTO_39': '39樂合彩',
+                'DAILY_CASH_539': '今彩539'
+            };
+
+            // 建立詳細訊息
+            let detailMsg = `批次載入完成！\n成功: ${successCount}/${files.length} 檔\n新增: ${totalNew} 筆\n\n`;
+
+            if (stats && stats.lotteryTypeCount) {
+                detailMsg += '各彩券類型總數：\n';
+                Object.entries(stats.lotteryTypeCount).forEach(([type, count]) => {
+                    detailMsg += `• ${typeNames[type] || type}: ${count} 筆\n`;
+                });
+            }
+
+            this.uiManager.showNotification(detailMsg, 'success');
 
             const fileInfo = document.getElementById('file-info');
-            if (fileInfo) fileInfo.textContent = `✓ 已批次載入 ${successCount} 個檔案`;
+            if (fileInfo) {
+                const successFiles = fileResults.filter(f => f.success);
+                const failedFiles = fileResults.filter(f => !f.success);
+
+                let html = `<div style="color: #22c55e; font-weight: 500;">`;
+                html += `✓ 已批次載入 ${successCount} 個檔案<br>`;
+                html += `<div style="font-size: 0.85em; margin-top: 8px; line-height: 1.6;">`;
+
+                successFiles.forEach(f => {
+                    html += `• ${f.name}: ${f.count} 筆<br>`;
+                });
+
+                if (failedFiles.length > 0) {
+                    html += `</div><div style="color: #ef4444; margin-top: 8px;">`;
+                    html += `✗ 失敗 ${failedFiles.length} 個檔案<br>`;
+                    failedFiles.forEach(f => {
+                        html += `• ${f.name}<br>`;
+                    });
+                }
+
+                html += `</div></div>`;
+                fileInfo.innerHTML = html;
+            }
 
         } catch (error) {
             this.uiManager.showNotification('批次載入失敗: ' + error.message, 'error');
@@ -293,8 +241,39 @@ export class App {
         if (fileInfo) fileInfo.textContent = '✓ 已載入範例數據';
     }
 
+    handleLotteryTypeChange() {
+        // 更新數據摘要
+        this.updateDataSummary();
+
+        // 如果在分析頁面，重新初始化圖表
+        const analysisSection = document.getElementById('analysis-section');
+        if (analysisSection && analysisSection.classList.contains('active')) {
+            setTimeout(() => this.chartManager.initializeCharts(this.currentLotteryType), 100);
+        }
+
+        // 如果在歷史頁面，重新顯示歷史
+        const historySection = document.getElementById('history-section');
+        if (historySection && historySection.classList.contains('active')) {
+            this.currentPage = 1; // 重置到第一頁
+            this.displayHistory();
+        }
+
+        // 顯示通知
+        const typeNames = {
+            'BIG_LOTTO': '大樂透',
+            'BIG_LOTTO_BONUS': '大樂透加開',
+            'STAR_3': '三星彩',
+            'STAR_4': '四星彩',
+            'LOTTO_39': '39樂合彩',
+            'DAILY_CASH_539': '今彩539',
+            'POWER_BALL': '威力彩'
+        };
+        const typeName = this.currentLotteryType ? typeNames[this.currentLotteryType] || this.currentLotteryType : '全部';
+        this.uiManager.showNotification(`已切換至：${typeName}`, 'info');
+    }
+
     updateDataSummary() {
-        const stats = this.statisticsService.getDataStats();
+        const stats = this.statisticsService.getDataStats(this.currentLotteryType);
         this.uiManager.updateDataSummary(stats);
 
         // 自動設定模擬月份為最新數據的月份
@@ -307,6 +286,21 @@ export class App {
                 simInput.value = `${year}-${month}`;
             }
         }
+
+        // 同步數據到 localStorage，供其他頁面使用
+        const data = this.dataProcessor.getData();
+        if (data && data.length > 0) {
+            try {
+                localStorage.setItem('lotteryData', JSON.stringify(data));
+            } catch (e) {
+                console.warn('LocalStorage quota exceeded. Data will not be persisted for next session.', e);
+                // 只有在第一次失敗時顯示通知，避免太頻繁打擾
+                if (!this._storageWarningShown) {
+                    this.uiManager.showNotification('注意：數據量過大，無法儲存到瀏覽器快取。\n重新整理頁面後需要重新上傳檔案。', 'warning');
+                    this._storageWarningShown = true;
+                }
+            }
+        }
     }
 
     clearData() {
@@ -317,6 +311,9 @@ export class App {
         this.uiManager.updateDataSummary(null);
         this.uiManager.showNotification('數據已清除', 'success');
         this.uiManager.showSection('upload');
+
+        // 同步清除 localStorage
+        localStorage.removeItem('lotteryData');
     }
 
     async runSimulation() {
@@ -422,6 +419,112 @@ export class App {
 
         } catch (error) {
             this.uiManager.showNotification('模擬失敗: ' + error.message, 'error');
+            console.error(error);
+        }
+    }
+
+    async runCollaborativeSimulation() {
+        const method = document.getElementById('collab-method').value;
+        const yearMonth = document.getElementById('collab-year-month').value;
+
+        if (!yearMonth) {
+            this.uiManager.showNotification('請選擇年度月份', 'warning');
+            return;
+        }
+
+        const [year, month] = yearMonth.split('-');
+        const targetYear = year;
+
+        try {
+            this.uiManager.showNotification('正在進行協作模擬測試...', 'info');
+
+            const allData = this.dataProcessor.getData();
+            if (allData.length < 50) {
+                throw new Error('數據量不足，無法進行模擬 (至少需要 50 期)');
+            }
+
+            const testTargets = allData.filter(draw => draw.date.split('-')[0] === targetYear);
+            if (testTargets.length === 0) {
+                const availableYears = new Set(allData.map(d => d.date.split('-')[0]));
+                throw new Error(`該年份 (${targetYear}) 無開獎資料。可用年份: ${Array.from(availableYears).join(', ')}`);
+            }
+
+            testTargets.sort((a, b) => {
+                const dateA = a.date.replace(/\//g, '-');
+                const dateB = b.date.replace(/\//g, '-');
+                return dateA.localeCompare(dateB);
+            });
+
+            const results = [];
+            let successCount = 0;
+
+            for (const targetDraw of testTargets) {
+                const targetDate = targetDraw.date.replace(/\//g, '-');
+                const trainingData = allData.filter(d => {
+                    const drawDate = d.date.replace(/\//g, '-');
+                    return drawDate < targetDate;
+                });
+
+                if (trainingData.length < 30) continue;
+
+                const strategy = this.predictionEngine.strategies[method];
+                if (!strategy) {
+                    throw new Error('策略不存在');
+                }
+
+                console.log(`📊 協作預測 ${targetDraw.draw}: 使用 ${trainingData.length} 期資料`);
+                const prediction = await strategy.predict(trainingData);
+
+                const hits = targetDraw.numbers.filter(n => prediction.numbers.includes(n));
+                const isSuccess = hits.length >= 3;
+                if (isSuccess) successCount++;
+
+                const refRange = trainingData.length > 0
+                    ? `${trainingData[0].draw} - ${trainingData[trainingData.length - 1].draw} (共${trainingData.length}期)`
+                    : '-';
+
+                results.push({
+                    draw: targetDraw.draw,
+                    date: targetDraw.date,
+                    predicted: prediction.numbers,
+                    actual: targetDraw.numbers,
+                    hits: hits.length,
+                    isSuccess: isSuccess,
+                    refRange: refRange
+                });
+            }
+
+            // Display results in collaborative section
+            const tbody = document.querySelector('#collab-simulation-table tbody');
+            const rateSpan = document.getElementById('collab-simulation-rate');
+            const resultsDiv = document.getElementById('collab-simulation-results');
+
+            if (tbody && rateSpan && resultsDiv) {
+                const rate = results.length > 0 ? Math.round((successCount / results.length) * 100) : 0;
+                rateSpan.textContent = rate;
+
+                tbody.innerHTML = results.map(r => `
+                    <tr class="${r.isSuccess ? 'success-row' : ''}">
+                        <td>${r.draw}</td>
+                        <td>${r.date}</td>
+                        <td>${r.predicted.join(', ')}</td>
+                        <td>${r.actual.join(', ')}</td>
+                        <td><span class="hit-badge ${r.hits >= 3 ? 'high-hit' : ''}">${r.hits}</span></td>
+                        <td>${r.refRange}</td>
+                        <td>${r.isSuccess ? '✅' : '❌'}</td>
+                    </tr>
+                `).join('');
+
+                resultsDiv.style.display = 'block';
+            }
+
+            this.uiManager.showNotification(
+                `協作模擬完成！測試 ${results.length} 期，成功 ${successCount} 期，成功率: ${results.length > 0 ? Math.round((successCount / results.length) * 100) : 0}%`,
+                'success'
+            );
+
+        } catch (error) {
+            this.uiManager.showNotification('協作模擬失敗: ' + error.message, 'error');
             console.error(error);
         }
     }
@@ -572,10 +675,11 @@ export class App {
     async runPrediction() {
         const method = document.getElementById('prediction-method').value;
         const sampleSize = document.getElementById('sample-size').value;
+        const lotteryType = this.currentLotteryType;
 
         try {
             this.uiManager.showNotification('正在分析預測...', 'info');
-            const result = await this.predictionEngine.predict(method, sampleSize);
+            const result = await this.predictionEngine.predict(method, sampleSize, lotteryType);
             this.displayPredictionResult(result);
             this.uiManager.showNotification('預測完成！', 'success');
         } catch (error) {
@@ -601,7 +705,13 @@ export class App {
     }
 
     displayHistory() {
-        const data = this.dataProcessor.getData();
+        let data = this.dataProcessor.getData();
+
+        // 根據選擇的彩券類型篩選數據
+        if (this.currentLotteryType) {
+            data = data.filter(draw => draw.lotteryType === this.currentLotteryType);
+        }
+
         this.uiManager.updateHistoryTable(data, this.currentPage, this.itemsPerPage);
         this.uiManager.updatePagination(data.length, this.currentPage, this.itemsPerPage, (page) => {
             this.currentPage = page;

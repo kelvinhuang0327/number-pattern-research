@@ -4,10 +4,12 @@ export class TrendStrategy {
     constructor() {
     }
 
-    predict(data) {
+    predict(data, lotteryRules = LOTTERY_RULES) {
         const weightedFrequency = {};
+        const { min, max } = lotteryRules.numberRange;
+
         // 初始化
-        for (let i = LOTTERY_RULES.numberRange.min; i <= LOTTERY_RULES.numberRange.max; i++) {
+        for (let i = min; i <= max; i++) {
             weightedFrequency[i] = 0;
         }
 
@@ -25,19 +27,21 @@ export class TrendStrategy {
             const weight = Math.exp(-lambda * age);
 
             draw.numbers.forEach(num => {
-                weightedFrequency[num] += weight;
+                if (weightedFrequency.hasOwnProperty(num)) {
+                    weightedFrequency[num] += weight;
+                }
             });
         });
 
         const totalWeight = Object.values(weightedFrequency).reduce((a, b) => a + b, 0);
         const probabilities = {};
-        for (let i = LOTTERY_RULES.numberRange.min; i <= LOTTERY_RULES.numberRange.max; i++) {
+        for (let i = min; i <= max; i++) {
             probabilities[i] = weightedFrequency[i] / totalWeight;
         }
 
         const sortedNumbers = Object.entries(probabilities)
             .sort((a, b) => b[1] - a[1])
-            .slice(0, LOTTERY_RULES.pickCount)
+            .slice(0, lotteryRules.pickCount)
             .map(([num, prob]) => ({ number: parseInt(num), probability: prob }));
 
         const predictedNumbers = sortedNumbers.map(item => item.number).sort((a, b) => a - b);

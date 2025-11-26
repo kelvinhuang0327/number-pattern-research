@@ -4,14 +4,14 @@ export class MarkovStrategy {
     constructor() {
     }
 
-    predict(data) {
-        const range = LOTTERY_RULES.numberRange.max;
+    predict(data, lotteryRules = LOTTERY_RULES) {
+        const { min, max } = lotteryRules.numberRange;
         const transitionMatrix = {}; // { currentNum: { nextNum: count } }
 
         // 初始化矩陣
-        for (let i = 1; i <= range; i++) {
+        for (let i = min; i <= max; i++) {
             transitionMatrix[i] = {};
-            for (let j = 1; j <= range; j++) {
+            for (let j = min; j <= max; j++) {
                 transitionMatrix[i][j] = 0;
             }
         }
@@ -33,13 +33,13 @@ export class MarkovStrategy {
         // 根據最新一期預測下一期
         const lastDraw = data[0].numbers;
         const nextProbabilities = {};
-        for (let i = 1; i <= range; i++) nextProbabilities[i] = 0;
+        for (let i = min; i <= max; i++) nextProbabilities[i] = 0;
 
         lastDraw.forEach(prevNum => {
             const transitions = transitionMatrix[prevNum];
             const totalTransitions = Object.values(transitions).reduce((a, b) => a + b, 0) || 1;
 
-            for (let nextNum = 1; nextNum <= range; nextNum++) {
+            for (let nextNum = min; nextNum <= max; nextNum++) {
                 // P(next | prev)
                 const prob = transitions[nextNum] / totalTransitions;
                 nextProbabilities[nextNum] += prob;
@@ -48,13 +48,13 @@ export class MarkovStrategy {
 
         // 正規化
         const totalProb = Object.values(nextProbabilities).reduce((a, b) => a + b, 0);
-        for (let i = 1; i <= range; i++) {
-            nextProbabilities[i] /= totalProb;
+        for (let i = min; i <= max; i++) {
+            nextProbabilities[i] = totalProb > 0 ? nextProbabilities[i] / totalProb : 1 / (max - min + 1);
         }
 
         const sortedNumbers = Object.entries(nextProbabilities)
             .sort((a, b) => b[1] - a[1])
-            .slice(0, LOTTERY_RULES.pickCount)
+            .slice(0, lotteryRules.pickCount)
             .map(([num, prob]) => ({ number: parseInt(num), probability: prob }));
 
         const predictedNumbers = sortedNumbers.map(item => item.number).sort((a, b) => a - b);

@@ -5,16 +5,17 @@ export class BayesianStrategy {
         this.statisticsService = statisticsService;
     }
 
-    predict(data) {
-        const range = LOTTERY_RULES.numberRange.max;
+    predict(data, lotteryRules = LOTTERY_RULES) {
+        const { min, max } = lotteryRules.numberRange;
+        const pickCount = lotteryRules.pickCount;
         const probabilities = {};
 
         // 先驗機率 P(A): 每個號碼的歷史出現率
         const frequency = this.statisticsService.calculateFrequency(data);
         const totalDraws = data.length;
         const priorProb = {};
-        for (let i = 1; i <= range; i++) {
-            priorProb[i] = (frequency[i] || 0) / (totalDraws * 6);
+        for (let i = min; i <= max; i++) {
+            priorProb[i] = (frequency[i] || 0) / (totalDraws * pickCount);
         }
 
         // 似然函數 P(B|A): 條件機率
@@ -37,7 +38,7 @@ export class BayesianStrategy {
         }
 
         // 計算後驗機率 P(A|B) ∝ P(B|A) * P(A)
-        for (let i = 1; i <= range; i++) {
+        for (let i = min; i <= max; i++) {
             let likelihoodScore = 0;
             lastDraw.forEach(prevNum => {
                 const count = (transitionCounts[prevNum] && transitionCounts[prevNum][i]) || 0;
@@ -51,11 +52,13 @@ export class BayesianStrategy {
 
         // 正規化
         const totalProb = Object.values(probabilities).reduce((a, b) => a + b, 0);
-        for (let i = 1; i <= range; i++) probabilities[i] /= totalProb;
+        for (let i = min; i <= max; i++) {
+            probabilities[i] = totalProb > 0 ? probabilities[i] / totalProb : 1 / (max - min + 1);
+        }
 
         const sortedNumbers = Object.entries(probabilities)
             .sort((a, b) => b[1] - a[1])
-            .slice(0, LOTTERY_RULES.pickCount)
+            .slice(0, pickCount)
             .map(([num, prob]) => ({ number: parseInt(num), probability: prob }));
 
         const predictedNumbers = sortedNumbers.map(item => item.number).sort((a, b) => a - b);

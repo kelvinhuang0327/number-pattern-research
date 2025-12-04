@@ -1,346 +1,256 @@
-# 🎰 大樂透智能分析系統
+# Lottery Prediction System
 
-專業的大樂透號碼分析與預測系統，使用數學回歸分析和機器學習算法進行智能預測。
+This repository now includes a consolidated documentation entry point: `docs/MASTER_GUIDE.md`. Start there for architecture, strategy catalog, backend APIs, optimization flow, performance practices, testing, and troubleshooting.
 
-![Version](https://img.shields.io/badge/version-1.0.0-blue.svg)
+## Quick Links
+- Master Guide: `docs/MASTER_GUIDE.md`
+- Frontend entry: `index.html`
+- Backend start: `start_backend.sh` and `http://localhost:5001/health`
+- Data samples: `data/` folder and upload UI
+
+For detailed historical and specialized docs, see the index inside the master guide.
+# 🎰 大數據智能分析系統
+
+專業的大樂透號碼分析與預測系統，採用協作預測與統計分析技術。
+
+![Version](https://img.shields.io/badge/version-2.0-blue.svg)
+![Tests](https://img.shields.io/badge/tests-109%20passed-success.svg)
+![Coverage](https://img.shields.io/badge/coverage-74%25-yellow.svg)
 ![License](https://img.shields.io/badge/license-MIT-green.svg)
 
-## ✨ 功能特色
+## ✨ 核心功能
+
+### 🎯 智能預測（13種策略）
+
+#### 協作預測系統 ⭐ 推薦
+- **🧠 自適應接力** - 智能分析數據特徵，自動選擇最佳策略
+- **🏃 接力預測** - 三階段層層篩選（49→20→10→6）
+- **🤝 協作預測** - 七模型投票共識決策
+
+#### 核心統計方法（6種）
+- 頻率分析、趨勢分析、綜合回歸
+- 偏差追蹤、蒙地卡羅、馬可夫鏈
+
+#### 統一集成策略（5種模式）
+- 加權集成、提升集成、綜合集成
+- 共現分析、特徵加權
+
+#### 機器學習（3種算法）
+- 特徵加權機器學習
+- 隨機森林
+- 遺傳算法
+
+#### 民間策略（4種）
+- 奇偶平衡、區間分佈
+- 冷熱混合、和值範圍
 
 ### 📊 統計分析
-- **號碼出現頻率分析**：柱狀圖顯示每個號碼的歷史出現次數
-- **冷熱號分析**：識別熱門號碼（Top 10）和冷門號碼（Top 10）
-- **號碼遺漏值分析**：折線圖顯示每個號碼距離上次出現的期數
-- **號碼分佈趨勢**：環形圖展示號碼在不同區間的分佈
+- 號碼出現頻率分析（柱狀圖）
+- 冷熱號分析（Top 10）
+- 號碼遺漏值分析（折線圖）
+- 號碼分佈趨勢（環形圖）
 
-### 🔮 智能預測
-提供 **16種** 預測算法，包含三大類別：
-
-#### 📊 基礎統計方法
-1. **頻率回歸分析** - 基於歷史出現頻率
-2. **趨勢回歸分析** - 近期數據加權分析
-3. **綜合回歸模型** - 多維度全面分析
-4. **特徵加權模型** - 六大特徵融合
-
-#### 🧠 深度學習方法
-5. **機器學習模型** - 模式識別與特徵提取
-6. **TensorFlow 神經網路** - 深度學習序列分析
-7. **LSTM 深度學習** - 時間序列預測
-8. **Attention LSTM** - 注意力機制增強
-
-#### 📈 序列與機率方法
-9. **馬可夫鏈** - 狀態轉移機率分析
-10. **蒙地卡羅模擬** - 10,000次隨機抽樣
-11. **共現分析** - 號碼關聯性追蹤
-12. **貝葉斯機率** - 先驗與後驗推理
-13. **偏差追蹤** - 冷熱號平衡策略
-14. **梯度提升** - 集成學習優化
-
-#### 🚀 協作預測系統（創新！推薦）
-15. **🏃 接力預測** - 三階段層層篩選（49→20→10→6）
-16. **🤝 協作預測** - 七模型投票決策
-17. **🧠 自適應接力** - 智能策略自動調整
-
-> **新功能亮點**：協作預測系統採用多模型接力與協作機制，讓不同算法發揮各自優勢，層層優化，大幅提升預測品質！詳見 [協作預測系統說明](./COLLABORATIVE_PREDICTION.md)
-
-### 📜 歷史記錄
-- 完整的開獎歷史表格
-- 搜尋功能（期數或日期）
-- 排序功能（最新/最舊優先）
-- 分頁瀏覽
-
-### 🗑️ 數據管理
+### 📜 數據管理
 - 上傳 CSV 檔案
 - 載入範例數據
-- 清除已載入數據
+- 完整歷史記錄查詢
 
 ## 🚀 快速開始
 
-### 方式一：直接開啟（簡單）
-
 ```bash
-# 在瀏覽器中打開
+# 1. 安裝依賴
+npm install
+
+# 2. 運行測試（可選）
+npm test
+
+# 3. 啟動應用
+npm start
+# 訪問 http://localhost:8081
+
+# 或使用 Python
+python3 -m http.server 8081
+
+# 或直接開啟
 open index.html
 ```
 
-或直接雙擊 `index.html` 檔案
-
-### 方式二：使用本地伺服器（推薦）
-
-```bash
-# 進入專案目錄
-cd /Users/kelvin/Kelvin-WorkSpace/Lottery
-
-# 使用 Python 啟動 HTTP 伺服器
-python3 -m http.server 8081
-
-# 在瀏覽器中打開
-# http://localhost:8081
+### 基本流程
+```
+1. 載入數據（範例或上傳 CSV）
+2. 選擇預測方法（推薦：🧠 自適應接力）
+3. 開始預測
+4. 查看結果和統計圖表
 ```
 
-## 📂 專案結構
+### ⚡ 記憶體優化
+處理大量數據時，系統已內建雙重優化機制：
+
+#### 1. IndexedDB 按需載入 ⭐ 推薦
+- **主存儲**：所有數據存儲在 IndexedDB（磁碟）
+- **按需載入**：記憶體只保留當前需要的數據
+- **效果**：支援無限量數據，記憶體使用減少 98%
+
+#### 2. 記憶體自動限制
+- **自動限制**：記憶體中最多保留 30,000 筆數據
+- **智能監控**：每 10 秒檢查記憶體使用率
+- **建議系統**：自動提供優化建議
+
+**詳細說明**：
+- [INDEXEDDB_OPTIMIZATION.md](./INDEXEDDB_OPTIMIZATION.md) - IndexedDB 按需載入原理 ⭐
+- [MEMORY_OPTIMIZATION.md](./MEMORY_OPTIMIZATION.md) - 記憶體優化指南
+
+### CSV 格式
+```csv
+期號,日期,號碼1,號碼2,號碼3,號碼4,號碼5,號碼6,特別號
+113000001,2024-01-01,05,12,18,23,35,42,16
+```
+
+---
+
+## 📚 文檔
+
+- **[GUIDE.md](./GUIDE.md)** - 完整使用與開發指南（含測試指南）
+- **[TEST_REPORT.md](./TEST_REPORT.md)** - 詳細測試報告（109 測試案例）
+- **[INDEXEDDB_OPTIMIZATION.md](./INDEXEDDB_OPTIMIZATION.md)** - IndexedDB 按需載入原理 ⚡ NEW
+- **[MEMORY_OPTIMIZATION.md](./MEMORY_OPTIMIZATION.md)** - 記憶體優化指南 ⚡ NEW
+- **[HISTORY.md](./HISTORY.md)** - 重構歷史、架構演進
+- **[tools/README.md](./tools/README.md)** - Python 數據工具說明
+- **[docs/STRATEGY_AND_OPTIMIZATION.md](./docs/STRATEGY_AND_OPTIMIZATION.md)** - 策略矩陣 + 優化計劃（整合文件）
+
+## 📂 專案架構
 
 ```
 Lottery/
+├── README.md               # 本文件
+├── GUIDE.md                # 完整使用與開發指南（含測試）
+├── HISTORY.md              # 重構歷史與架構
+├── TEST_REPORT.md          # 測試報告（109 測試）
 ├── index.html              # 主頁面
-├── styles.css              # 完整的 CSS 設計系統
-├── README.md              # 本文檔
-├── js/                    # JavaScript 模組
-│   ├── app.js            # 主應用程式
-│   ├── dataProcessor.js  # 數據處理模組
-│   ├── analysis.js       # 統計分析引擎
-│   ├── prediction.js     # 預測引擎（16種算法）
-│   ├── collaborativePrediction.js # 協作預測系統 ⭐新增
-│   └── lotteryRules.js   # 彩票規則配置
-├── data/                  # 數據文件
-│   ├── sample-data.csv   # 範例數據
-│   ├── converted_2024.csv # 2024年轉換數據
-│   └── lotto649_realistic_data.csv
-└── tools/                 # Python 工具腳本
-    ├── convert_taiwan_lottery_csv.py  # CSV 轉換工具
-    ├── download_lottery_data.py       # 數據下載工具
-    ├── generate_realistic_data.py     # 數據生成工具
-    ├── scrape_lottery_data.py         # 數據爬取工具
-    └── universal_downloader.py        # 通用下載器
+├── styles.css              # 樣式
+├── package.json            # 專案配置
+├── jest.config.js          # Jest 測試配置
+├── babel.config.js         # Babel 轉譯配置
+│
+├── src/                    # 主程式碼（v2.0 重構）
+│   ├── main.js
+│   ├── core/               # 核心功能
+│   │   ├── App.js
+│   │   └── DataProcessor.js
+│   ├── engine/             # 預測引擎
+│   │   ├── PredictionEngine.js
+│   │   └── strategies/     # 21 種策略
+│   ├── data/               # 數據服務
+│   │   └── StatisticsService.js
+│   ├── ui/                 # UI組件
+│   │   ├── UIManager.js
+│   │   └── ChartManager.js
+│   └── utils/              # 工具
+│       └── Constants.js
+│
+├── __tests__/              # 測試檔案（6 套件）
+│   ├── Constants.test.js
+│   ├── DataProcessor.test.js
+│   ├── StatisticsService.test.js
+│   ├── FrequencyStrategy.test.js
+│   ├── CollaborativeStrategy.test.js
+│   └── PredictionEngine.integration.test.js
+│
+├── data/                   # 數據檔案
+├── archive/                # 歸檔檔案
+└── tools/                  # Python 工具腳本
+    └── *.py
 ```
 
-## 📖 使用指南
+**詳細架構說明**：請參考 [HISTORY.md](./HISTORY.md#系統架構)
 
-### 1️⃣ 載入數據
+---
 
-**選項 A：使用範例數據（最快）**
-- 點擊「使用範例數據」按鈕
-- 系統會自動載入 100 期的模擬大樂透數據
+## 🎯 預測方法推薦
 
-**選項 B：上傳自己的 CSV 檔案**
-- 點擊「選擇檔案」按鈕
-- 選擇符合格式的 CSV 檔案
+| 使用場景 | 推薦方法 | 原因 |
+|---------|---------|------|
+| 新手使用 | 🧠 自適應接力 | 自動選擇最佳策略 |
+| 數據 < 50期 | 🧠 自適應接力 | 智能適應小樣本 |
+| 數據 50-500期 | 🏃 接力預測 | 三階段高效篩選 |
+| 數據 500+期 | 🤝 協作預測 | 多模型交叉驗證 |
+| 快速參考 | 綜合回歸 | 平衡穩健 |
 
-**CSV 檔案格式範例：**
-```csv
-期數,日期,號碼1,號碼2,號碼3,號碼4,號碼5,號碼6,特別號
-113000001,2024-01-02,5,12,18,23,35,42,7
-113000002,2024-01-05,3,15,22,28,36,44,11
-```
+**詳細說明**：請參考 [GUIDE.md](./GUIDE.md#預測方法)
 
-**格式要求：**
-- 第一行必須是標題行
-- 號碼必須在 1-49 之間
-- 日期格式：YYYY-MM-DD
-- 六個主要號碼不能重複
-
-### 2️⃣ 查看統計分析
-
-點擊導航列的「統計分析」，查看：
-- 號碼出現頻率圖表
-- 冷熱號分析
-- 號碼遺漏值分析
-- 號碼分佈趨勢
-
-### 3️⃣ 進行智能預測
-
-1. 點擊導航列的「智能預測」
-2. 選擇預測方法：
-   - **基礎統計**：頻率、趨勢、綜合、特徵加權
-   - **深度學習**：機器學習、TensorFlow、LSTM、Attention
-   - **序列機率**：馬可夫鏈、蒙地卡羅、貝葉斯等
-   - **協作預測**（推薦）：
-     - 🏃 接力預測 - 三階段篩選，快速高效
-     - 🤝 協作預測 - 七模型投票，穩健可靠
-     - 🧠 自適應接力 - 智能策略，自動調整
-3. 選擇樣本大小（30/50/100期或全部）
-4. 點擊「開始預測」
-5. 查看預測結果、信心度和詳細報告
-
-**新手推薦**：選擇「🧠 自適應接力」，系統會自動根據數據特徵選擇最佳策略！
-
-### 4️⃣ 查看歷史記錄
-
-點擊導航列的「歷史記錄」：
-- 瀏覽完整開獎記錄
-- 使用搜尋功能查找特定期數或日期
-- 切換排序方式
-
-### 5️⃣ 清除數據
-
-在數據概覽區域點擊「清除數據」按鈕，可以清空所有已載入的數據並重置系統。
-
-## 🛠️ 技術架構
-
-### 前端技術
-- **HTML5**：語義化標籤
-- **CSS3**：
-  - CSS Variables 設計系統
-  - Flexbox & Grid 佈局
-  - 動畫與過渡效果
-  - 玻璃擬態風格
-- **JavaScript (ES6+)**：
-  - 模組化架構
-  - 類別導向設計
-  - 事件驅動編程
-
-### 數據視覺化
-- **Chart.js 4.4.0**：圖表渲染
-
-### 設計特色
-- ✨ 現代化深色主題
-- 🎨 漸層色彩設計
-- 📱 完全響應式設計
-- 🎭 流暢的動畫效果
-- 🔮 互動式圖表
-
-## 🔧 開發工具
-
-### CSV 轉換工具
-```bash
-# 轉換台灣彩券官方 CSV 格式
-python3 tools/convert_taiwan_lottery_csv.py
-```
-
-### 數據生成工具
-```bash
-# 生成模擬數據用於測試
-python3 tools/generate_realistic_data.py
-```
+---
 
 ## ⚠️ 重要提醒
 
-1. **僅供參考**：本系統的預測結果僅供學習和研究使用
-2. **隨機性**：彩票開獎具有完全的隨機性
-3. **理性投注**：請理性看待預測結果，量力而行
-4. **無保證**：任何預測方法都無法保證準確性
+**理性認知**：
+- 樂透是純隨機事件，無法保證預測準確性
+- 預測結果僅供學習研究參考
+- 請理性投注，適度娛樂
 
-## 🎯 預測算法說明
+---
 
-### 頻率回歸分析
-```javascript
-// 計算每個號碼的歷史出現頻率
-score = (frequency / totalDraws)
-```
+## 🔧 技術棧
 
-### 趨勢回歸分析
-```javascript
-// 對近期數據賦予更高權重
-score = Σ(appearance × weight) / totalWeight
-```
+- **前端**：HTML5 + CSS3 + JavaScript ES6+
+- **圖表**：Chart.js 4.4.0
+- **架構**：MVC + Strategy Pattern
+- **環境**：瀏覽器（無需構建工具）
 
-### 綜合回歸模型
-```javascript
-// 多維度加權計算
-score = frequency × 0.4 + trend × 0.3 + missing × 0.3
-```
-
-### 機器學習模型
-- 連號模式分析
-- 區間平衡評估
-- 奇偶比例優化
-- 多維度特徵提取
-
-## 📊 系統架構
-
-```
-┌─────────────────────────────────────────┐
-│           User Interface (HTML)          │
-│  ┌─────────┬──────────┬──────────────┐  │
-│  │ Upload  │ Analysis │ Prediction   │  │
-│  │ Section │ Section  │ Section      │  │
-│  └─────────┴──────────┴──────────────┘  │
-└─────────────────────────────────────────┘
-                    │
-                    ▼
-┌─────────────────────────────────────────┐
-│        Application Layer (app.js)        │
-│  • Event Handling                        │
-│  • UI State Management                   │
-│  • Navigation Control                    │
-└─────────────────────────────────────────┘
-                    │
-        ┌───────────┴───────────┐
-        ▼                       ▼
-┌──────────────────┐   ┌──────────────────┐
-│ DataProcessor    │   │ AnalysisEngine   │
-│ • CSV Parsing    │   │ • Chart Rendering│
-│ • Data Storage   │   │ • Statistics     │
-│ • Validation     │   │ • Visualization  │
-└──────────────────┘   └──────────────────┘
-                              │
-                              ▼
-                    ┌──────────────────┐
-                    │ PredictionEngine │
-                    │ • 4 Algorithms   │
-                    │ • Confidence     │
-                    │ • Reporting      │
-                    └──────────────────┘
-```
-
-## 🎨 自訂設定
-
-### 調整預測權重
-
-編輯 `js/prediction.js`：
-
-```javascript
-// 綜合模型的權重分配
-const freqScore = (frequency[i] / totalDraws) * 0.4;  // 頻率 40%
-const trendScore = (weighted[i] / data.length) * 0.3; // 趨勢 30%
-const missingScore = (missing[i] / maxMissing) * 0.3; // 遺漏 30%
-```
-
-### 修改配色方案
-
-編輯 `styles.css` 中的 CSS Variables：
-
-```css
-:root {
-    --primary-hue: 260;      /* 主色調 */
-    --secondary-hue: 200;    /* 次要色調 */
-    --accent-hue: 320;       /* 強調色調 */
-}
-```
-
-## 🐛 疑難排解
-
-### 問題：無法載入 CSV 檔案
-- 確認檔案格式正確
-- 檢查是否包含標題行
-- 確認數據在有效範圍內（1-49）
-
-### 問題：圖表無法顯示
-- 確認已載入數據
-- 檢查瀏覽器控制台是否有錯誤
-- 確認 Chart.js 已正確載入
-
-### 問題：預測結果不準確
-- 這是正常的，彩票具有隨機性
-- 增加樣本大小可能提高參考價值
-- 嘗試不同的預測方法
+---
 
 ## 📝 更新日誌
 
-### v2.0.0 (2025-11-23) ⭐ 重大更新
-- 🚀 新增協作預測系統（三種創新模式）
-- 🏃 接力預測：三階段層層篩選優化
-- 🤝 協作預測：七模型民主投票機制
-- 🧠 自適應接力：智能策略自動調整
-- 📊 預測算法總數增至 17 種
-- 📖 新增詳細的協作預測說明文檔
-- ✨ 優化 UI，新增協作預測選項組
-- 🔧 改進模組架構，提升可維護性
+### v2.1.0 (2025-12-02) 🚀 性能與穩定性更新
+
+#### ⚡ 連線穩定性優化
+- **後端異步處理**：引入 Thread Pool Executor，將 CPU 密集型預測任務移出主事件循環，徹底解決高負載時的阻塞問題。
+- **前端自動重試**：實作指數退避（Exponential Backoff）重試機制，自動處理瞬時網絡錯誤與超時。
+- **非阻塞架構**：健康檢查與輕量請求不再受重型預測任務影響，系統響應速度顯著提升。
+
+#### 🔧 技術改進
+- **並發處理**：支援多個預測請求並發執行。
+- **錯誤處理**：優化超時與網絡錯誤的提示訊息。
+
+### v2.0.0 (2025-11-25) ⭐ 重大更新
+
+#### ✨ 新功能
+- **測試框架** - Jest 整合，109 測試案例（100% 通過）
+- **協作預測系統** - 3 種模式（接力/合作/混合）
+- **統一集成策略** - 5 種集成模式
+- **機器學習策略** - 3 種 ML 算法
+
+#### 🔧 重構改進
+- **Phase 1** - 基礎清理（29→21 策略）
+- **Phase 2** - 協作預測整合
+- **Phase 3** - 文檔整理（13→3 核心文檔）
+- **Phase 4** - 測試框架建立（109 測試全通過）
+
+#### 📊 測試統計
+- ✅ **測試案例**: 109 個（100% 通過）
+- ✅ **測試套件**: 6 個
+- ✅ **核心引擎覆蓋率**: 100%
+- ✅ **策略覆蓋率**: 97.9%
+- ✅ **執行時間**: 1.47 秒
+
+#### 🏗️ 架構優化
+- 模組化設計
+- ES6+ 語法
+- 策略模式
+- 依賴注入
+- 完整測試覆蓋
+
+詳細內容請參閱：
+- [重構歷程](./HISTORY.md)
+- [測試報告](./TEST_REPORT.md)
 
 ### v1.0.0 (2025-11-22)
 - ✨ 初始版本發布
-- 📊 四種基礎預測算法
-- 📈 完整統計分析功能
-- 🎨 現代化 UI 設計
-- 🗑️ 數據清除功能
+
+---
 
 ## 📄 授權
 
 MIT License
-
-## 👨‍💻 開發者
-
-如有問題或建議，歡迎提出 Issue 或 Pull Request。
 
 ---
 

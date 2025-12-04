@@ -12,24 +12,32 @@ export class ChartManager {
      * 初始化所有圖表
      * @param {string} lotteryType - 彩券類型 ID (可選，空字串表示全部)
      */
-    initializeCharts(lotteryType = '') {
-        this.createFrequencyChart(lotteryType);
-        this.createMissingChart(lotteryType);
-        this.createDistributionChart(lotteryType);
-        this.updateHotColdNumbers(lotteryType);
+    /**
+     * 初始化所有圖表
+     * @param {string} lotteryType - 彩券類型 ID (可選，空字串表示全部)
+     */
+    async initializeCharts(lotteryType = '') {
+        await this.createFrequencyChart(lotteryType);
+        await this.createMissingChart(lotteryType);
+        await this.createDistributionChart(lotteryType);
+        await this.updateHotColdNumbers(lotteryType);
     }
 
     /**
      * 創建號碼頻率圖表
      * @param {string} lotteryType - 彩券類型 ID
      */
-    createFrequencyChart(lotteryType = '') {
+    async createFrequencyChart(lotteryType = '') {
         const ctx = document.getElementById('frequency-chart');
         if (!ctx) return;
 
-        const frequency = this.statisticsService.calculateFrequency(null, lotteryType);
+        const frequency = await this.statisticsService.calculateFrequency(null, lotteryType);
         const labels = Object.keys(frequency);
         const data = Object.values(frequency);
+
+        // 預先獲取統計數據供 callback 使用
+        const stats = await this.statisticsService.getDataStats(lotteryType);
+        const totalDraws = stats ? stats.totalDraws : 0;
 
         // 銷毀舊圖表
         if (this.charts.frequency) {
@@ -67,9 +75,7 @@ export class ChartManager {
                         displayColors: false,
                         callbacks: {
                             label: (context) => {
-                                const stats = this.statisticsService.getDataStats(lotteryType);
-                                const total = stats.totalDraws;
-                                const percentage = ((context.parsed.y / total) * 100).toFixed(1);
+                                const percentage = totalDraws > 0 ? ((context.parsed.y / totalDraws) * 100).toFixed(1) : '0.0';
                                 return `出現 ${context.parsed.y} 次 (${percentage}%)`;
                             }
                         }
@@ -104,11 +110,11 @@ export class ChartManager {
      * 創建遺漏值圖表
      * @param {string} lotteryType - 彩券類型 ID
      */
-    createMissingChart(lotteryType = '') {
+    async createMissingChart(lotteryType = '') {
         const ctx = document.getElementById('missing-chart');
         if (!ctx) return;
 
-        const missing = this.statisticsService.calculateMissingValues(lotteryType);
+        const missing = await this.statisticsService.calculateMissingValues(lotteryType);
         const labels = Object.keys(missing);
         const data = Object.values(missing);
 
@@ -186,11 +192,11 @@ export class ChartManager {
      * 創建分佈圖表
      * @param {string} lotteryType - 彩券類型 ID
      */
-    createDistributionChart(lotteryType = '') {
+    async createDistributionChart(lotteryType = '') {
         const ctx = document.getElementById('distribution-chart');
         if (!ctx) return;
 
-        const distribution = this.statisticsService.calculateDistribution(lotteryType);
+        const distribution = await this.statisticsService.calculateDistribution(lotteryType);
         const labels = Object.keys(distribution);
         const data = Object.values(distribution);
 
@@ -261,9 +267,9 @@ export class ChartManager {
      * 更新冷熱號顯示
      * @param {string} lotteryType - 彩券類型 ID
      */
-    updateHotColdNumbers(lotteryType = '') {
-        const hotNumbers = this.statisticsService.getHotNumbers(10, lotteryType);
-        const coldNumbers = this.statisticsService.getColdNumbers(10, lotteryType);
+    async updateHotColdNumbers(lotteryType = '') {
+        const hotNumbers = await this.statisticsService.getHotNumbers(10, lotteryType);
+        const coldNumbers = await this.statisticsService.getColdNumbers(10, lotteryType);
 
         // 顯示熱門號碼
         const hotContainer = document.getElementById('hot-numbers');

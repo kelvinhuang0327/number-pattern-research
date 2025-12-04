@@ -1,0 +1,15 @@
+fastapi==0.104.1
+uvicorn[standard]==0.24.0
+prophet==1.1.5
+pandas==2.1.3
+numpy==1.26.2
+python-dotenv==1.0.0
+pydantic==2.5.0
+pydantic-settings==2.1.0
+xgboost==2.0.2
+scikit-learn==1.3.2
+autogluon.tabular
+lightgbm
+catboost
+APScheduler==3.10.4
+tensorflow>=2.15.0 # For LSTM model

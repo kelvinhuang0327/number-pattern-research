@@ -14,14 +14,53 @@ export class StatisticsService {
      * 獲取數據統計摘要
      * @param {string} lotteryTypeId - 可選的彩券類型 ID，用於過濾
      */
-    getDataStats(lotteryTypeId = null) {
-        let data = this.dataProcessor.getData();
+    /**
+     * 獲取數據統計摘要
+     * @param {string} lotteryTypeId - 可選的彩券類型 ID，用於過濾
+     */
+    async getDataStats(lotteryTypeId = null) {
+        // 如果使用 IndexedDB，直接獲取統計信息，不載入所有數據
+        if (this.dataProcessor.useIndexedDB && this.dataProcessor.indexedDBManager) {
+            const stats = await this.dataProcessor.getStats();
+
+            // 如果指定了類型，嘗試獲取該類型的最新一期（需要優化，目前先不獲取詳細日期）
+            let latestDraw = 'N/A';
+            let latestDate = 'N/A';
+
+            // 嘗試獲取最新一期數據（僅1筆）
+            if (lotteryTypeId) {
+                try {
+                    const latestData = await this.dataProcessor.getDataSmart(lotteryTypeId, 1);
+                    if (latestData && latestData.length > 0) {
+                        latestDraw = latestData[0].draw;
+                        latestDate = latestData[0].date;
+                    }
+                } catch (e) {
+                    console.warn('無法獲取最新一期數據:', e);
+                }
+            }
+
+            return {
+                totalDraws: stats.totalCount,
+                dateRange: {
+                    start: 'N/A', // IndexedDB 模式下暫不計算完整日期範圍
+                    end: latestDate
+                },
+                latestDraw: latestDraw,
+                latestDate: latestDate,
+                lotteryTypeCount: stats.byType,
+                filteredType: lotteryTypeId
+            };
+        }
+
+        // 降級模式：記憶體數據（保持原有邏輯）
+        let data = await this.dataProcessor.getDataSmart(lotteryTypeId);
         if (data.length === 0) {
             return null;
         }
 
-        // 如果指定了彩券類型，進行過濾
-        if (lotteryTypeId) {
+        // 如果指定了彩券類型，getDataSmart 已經過濾了
+        if (lotteryTypeId && !this.dataProcessor.useIndexedDB) {
             data = data.filter(d => d.lotteryType === lotteryTypeId);
             if (data.length === 0) return null;
         }
@@ -30,12 +69,7 @@ export class StatisticsService {
         const sortedDates = [...dates].sort();
 
         // 統計各彩券類型的數量
-        const allData = this.dataProcessor.getData();
-        const typeCount = {};
-        allData.forEach(d => {
-            const type = d.lotteryType || 'UNKNOWN';
-            typeCount[type] = (typeCount[type] || 0) + 1;
-        });
+        const stats = await this.dataProcessor.getStats();
 
         return {
             totalDraws: data.length,
@@ -45,8 +79,8 @@ export class StatisticsService {
             },
             latestDraw: data[0].draw,
             latestDate: sortedDates[sortedDates.length - 1],
-            lotteryTypeCount: typeCount,  // 新增：各彩券類型數量
-            filteredType: lotteryTypeId    // 新增：當前過濾的類型
+            lotteryTypeCount: stats.byType,
+            filteredType: lotteryTypeId
         };
     }
 
@@ -55,11 +89,14 @@ export class StatisticsService {
      * @param {Array} data - 數據陣列（可選）
      * @param {string} lotteryTypeId - 彩券類型 ID（可選）
      */
-    calculateFrequency(data = null, lotteryTypeId = null) {
-        let targetData = data || this.dataProcessor.getData();
+    async calculateFrequency(data = null, lotteryTypeId = null) {
+        let targetData = data;
+        if (!targetData) {
+            targetData = await this.dataProcessor.getDataSmart(lotteryTypeId);
+        }
 
-        // 如果指定了彩券類型，進行過濾
-        if (lotteryTypeId) {
+        // 如果指定了彩券類型且數據未過濾 (memory mode fallback)
+        if (lotteryTypeId && !data && !this.dataProcessor.useIndexedDB) {
             targetData = targetData.filter(d => d.lotteryType === lotteryTypeId);
         }
 
@@ -88,11 +125,11 @@ export class StatisticsService {
      * 計算號碼遺漏值（距離上次出現的期數）
      * @param {string} lotteryTypeId - 彩券類型 ID（可選）
      */
-    calculateMissingValues(lotteryTypeId = null) {
-        let targetData = this.dataProcessor.getData();
+    async calculateMissingValues(lotteryTypeId = null) {
+        let targetData = await this.dataProcessor.getDataSmart(lotteryTypeId);
 
-        // 如果指定了彩券類型，進行過濾
-        if (lotteryTypeId) {
+        // 如果指定了彩券類型且數據未過濾
+        if (lotteryTypeId && !this.dataProcessor.useIndexedDB) {
             targetData = targetData.filter(d => d.lotteryType === lotteryTypeId);
         }
 
@@ -106,16 +143,6 @@ export class StatisticsService {
         }
 
         // 從最新一期往回計算
-        // 注意：targetData 預設是降序（最新在前），所以我們應該正向遍歷，或者如果是升序則反向
-        // 這裡假設 targetData 是降序 (index 0 is latest)
-
-        // 為了計算準確，我們需要知道每個號碼"最近一次"出現的位置
-        // 其實遺漏值就是：目前期數 - 最近一次出現的期數
-        // 簡單算法：遍歷數據，如果號碼出現了，且還沒記錄過遺漏值（或遺漏值為0代表剛出），則...
-        // 更簡單的算法：
-        // 對於每個號碼，從 index 0 開始找，找到第一次出現的位置 index，該 index 就是遺漏值
-        // 如果都沒出現，遺漏值就是 length
-
         for (let num = lotteryRules.numberRange.min; num <= lotteryRules.numberRange.max; num++) {
             let found = false;
             for (let i = 0; i < targetData.length; i++) {
@@ -138,12 +165,11 @@ export class StatisticsService {
      * @param {number} count - 要返回的號碼數量
      * @param {string} lotteryTypeId - 彩券類型 ID（可選）
      */
-    getHotNumbers(count = 10, lotteryTypeId = null) {
-        const frequency = this.calculateFrequency(null, lotteryTypeId);
-        let targetData = this.dataProcessor.getData();
+    async getHotNumbers(count = 10, lotteryTypeId = null) {
+        const frequency = await this.calculateFrequency(null, lotteryTypeId);
+        let targetData = await this.dataProcessor.getDataSmart(lotteryTypeId);
 
-        // 如果指定了彩券類型，進行過濾
-        if (lotteryTypeId) {
+        if (lotteryTypeId && !this.dataProcessor.useIndexedDB) {
             targetData = targetData.filter(d => d.lotteryType === lotteryTypeId);
         }
 
@@ -164,12 +190,11 @@ export class StatisticsService {
      * @param {number} count - 要返回的號碼數量
      * @param {string} lotteryTypeId - 彩券類型 ID（可選）
      */
-    getColdNumbers(count = 10, lotteryTypeId = null) {
-        const frequency = this.calculateFrequency(null, lotteryTypeId);
-        let targetData = this.dataProcessor.getData();
+    async getColdNumbers(count = 10, lotteryTypeId = null) {
+        const frequency = await this.calculateFrequency(null, lotteryTypeId);
+        let targetData = await this.dataProcessor.getDataSmart(lotteryTypeId);
 
-        // 如果指定了彩券類型，進行過濾
-        if (lotteryTypeId) {
+        if (lotteryTypeId && !this.dataProcessor.useIndexedDB) {
             targetData = targetData.filter(d => d.lotteryType === lotteryTypeId);
         }
 
@@ -189,11 +214,10 @@ export class StatisticsService {
      * 計算號碼分佈（按區間）
      * @param {string} lotteryTypeId - 彩券類型 ID（可選）
      */
-    calculateDistribution(lotteryTypeId = null) {
-        let data = this.dataProcessor.getData();
+    async calculateDistribution(lotteryTypeId = null) {
+        let data = await this.dataProcessor.getDataSmart(lotteryTypeId);
 
-        // 如果指定了彩券類型，進行過濾
-        if (lotteryTypeId) {
+        if (lotteryTypeId && !this.dataProcessor.useIndexedDB) {
             data = data.filter(d => d.lotteryType === lotteryTypeId);
         }
 

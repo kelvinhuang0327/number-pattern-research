@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>測試統計快取</title>
+</head>
+<body>
+    <h1>測試統計資訊快取</h1>
+    <div id="output"></div>
+
+    <script type="module">
+        import { IndexedDBManager } from './src/utils/IndexedDBManager.js';
+
+        const output = document.getElementById('output');
+        const manager = new IndexedDBManager();
+
+        async function test() {
+            try {
+                output.innerHTML += '<p>初始化 IndexedDB...</p>';
+                await manager.init();
+
+                // 測試 1: 第一次讀取（需要計算）
+                output.innerHTML += '<p><strong>測試 1: 第一次讀取統計（需要計算）</strong></p>';
+                const start1 = performance.now();
+                const stats1 = await manager.getStats();
+                const time1 = (performance.now() - start1).toFixed(2);
+                output.innerHTML += `<p>✅ 耗時: ${time1}ms</p>`;
+                output.innerHTML += `<p>總數: ${stats1.total.toLocaleString()}</p>`;
+                output.innerHTML += `<p>遊戲類型: ${Object.keys(stats1.byType).length}</p>`;
+
+                // 測試 2: 第二次讀取（使用快取）
+                output.innerHTML += '<p><strong>測試 2: 第二次讀取統計（使用快取）</strong></p>';
+                const start2 = performance.now();
+                const stats2 = await manager.getStats();
+                const time2 = (performance.now() - start2).toFixed(2);
+                output.innerHTML += `<p>⚡ 耗時: ${time2}ms</p>`;
+                output.innerHTML += `<p>總數: ${stats2.total.toLocaleString()}</p>`;
+
+                // 計算速度提升
+                const speedup = (time1 / time2).toFixed(1);
+                output.innerHTML += `<p><strong>🚀 速度提升: ${speedup}x 倍</strong></p>`;
+                output.innerHTML += `<p>快取更新時間: ${stats2.lastUpdated}</p>`;
+
+            } catch (error) {
+                output.innerHTML += `<p style="color: red;">錯誤: ${error.message}</p>`;
+                console.error(error);
+            }
+        }
+
+        test();
+    </script>
+</body>
+</html>

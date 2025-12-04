@@ -1,0 +1,39 @@
+[
+  {
+    "timestamp": "2025-12-03T17:34:04.951000",
+    "method": "multi_stage",
+    "best_fitness": 0.0458,
+    "best_config": {
+      "population_size": 50,
+      "generations": 200,
+      "mutation_rate": 0.1,
+      "crossover_rate": 0.7,
+      "elite_size": 5,
+      "tournament_size": 3,
+      "early_stopping": true,
+      "target_fitness": 0.01,
+      "patience": 10,
+      "adaptive_mutation": true,
+      "adaptive_crossover": true,
+      "weights": {
+        "frequency": 0.25,
+        "gap": 0.2,
+        "hot_cold": 0.15,
+        "sum_range": 0.15,
+        "odd_even": 0.1,
+        "sequential": 0.05,
+        "high_low": 0.1
+      },
+      "analysis_windows": {
+        "short_term": 50,
+        "medium_term": 100,
+        "long_term": 200
+      }
+    },
+    "details": {
+      "coarse_fitness": 0.0458,
+      "fine_fitness": 0.041,
+      "micro_fitness": 0.0313
+    }
+  }
+]

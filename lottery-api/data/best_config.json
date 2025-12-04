@@ -1,0 +1,14 @@
+{
+  "timestamp": "2025-12-03T10:04:27.568862",
+  "config": {
+    "frequency_weight": 0.11199703519482938,
+    "missing_weight": 0.1637647085989807,
+    "hot_cold_weight": 0.18531203864630053,
+    "trend_weight": 0.12665256292449067,
+    "zone_weight": 0.1290800591298452,
+    "last_digit_weight": 0.10419082016165628,
+    "odd_even_weight": 0.17900277534389716,
+    "recent_window": 50,
+    "long_window": 187
+  }
+}

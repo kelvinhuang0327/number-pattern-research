@@ -1,9 +1,11 @@
 import { LOTTERY_RULES, detectLotteryType, LOTTERY_TYPES } from '../utils/Constants.js';
 import { isValidNumber, isValidSpecialNumber } from '../utils/LotteryTypes.js';
+import { apiClient } from '../services/ApiClient.js';
 
 /**
  * 數據處理模組
  * 負責處理樂透數據的加載、解析、驗證和管理
+ * 🚀 優化：完全依賴後端數據，前端僅做暫存與顯示
  */
 export class DataProcessor {
     constructor() {
@@ -12,13 +14,41 @@ export class DataProcessor {
     }
 
     /**
+     * 從後端獲取所有歷史數據
+     */
+    async fetchDataFromBackend() {
+        try {
+            console.log('🔄 Fetching history from backend...');
+            const data = await apiClient.getAllHistory();
+
+            // 排序：最新的在前面
+            data.sort((a, b) => {
+                const dateA = a.date.replace(/\//g, '-');
+                const dateB = b.date.replace(/\//g, '-');
+                return dateB.localeCompare(dateA);
+            });
+
+            this.lotteryData = data;
+            console.log(`✅ Loaded ${data.length} records from backend`);
+            return data;
+        } catch (error) {
+            console.error('Failed to load from backend:', error);
+            // 如果失敗，載入示範數據以免空白
+            if (this.lotteryData.length === 0) {
+                console.warn('⚠️ Backend unreachable, loading sample data');
+                this.loadSampleData();
+            }
+            return this.lotteryData;
+        }
+    }
+
+    /**
      * 生成示範數據（大樂透）
-     * @returns {Array} 示範樂透數據
      */
     generateSampleData() {
         const data = [];
         const startDate = new Date('2023-01-01');
-        const totalDraws = 500; // 增加至500期，確保完整覆蓋2025年全年
+        const totalDraws = 50;
 
         for (let i = 0; i < totalDraws; i++) {
             const drawDate = new Date(startDate);
@@ -33,7 +63,7 @@ export class DataProcessor {
             data.push({
                 draw: String(113000000 + i + 1).padStart(9, '0'),
                 date: drawDate.toISOString().split('T')[0],
-                lotteryType: 'BIG_LOTTO',  // 新增：示範數據為大樂透
+                lotteryType: 'BIG_LOTTO',
                 numbers: numbers.sort((a, b) => a - b),
                 special: specialNumber
             });
@@ -41,13 +71,6 @@ export class DataProcessor {
         return data;
     }
 
-    /**
-     * 生成隨機數字集合
-     * @param {number} count - 需要生成的數字個數
-     * @param {number} min - 最小值
-     * @param {number} max - 最大值
-     * @returns {Array} 隨機數字陣列
-     */
     generateRandomNumbers(count, min, max) {
         const numbers = new Set();
         while (numbers.size < count) {
@@ -56,17 +79,6 @@ export class DataProcessor {
         return Array.from(numbers);
     }
 
-    /**
-     * 解析CSV檔案
-     * @param {File} file - CSV檔案
-     * @returns {Promise<Array>} 解析後的樂透數據
-     */
-    /**
-     * 讀取檔案內容
-     * @param {File} file - 檔案
-     * @param {string} encoding - 編碼
-     * @returns {Promise<string>} 檔案內容
-     */
     readFileContent(file, encoding = 'UTF-8') {
         return new Promise((resolve, reject) => {
             const reader = new FileReader();
@@ -76,14 +88,9 @@ export class DataProcessor {
         });
     }
 
-    /**
-     * 檢查內容是否有效
-     * @param {string} text - 檔案內容
-     * @returns {boolean} 是否有效
-     */
     isValidContent(text) {
         if (!text) return false;
-        const firstLines = text.slice(0, 500); // 只檢查前500字元
+        const firstLines = text.slice(0, 500);
         return firstLines.includes('遊戲名稱') ||
             firstLines.includes('期別') ||
             firstLines.includes('大樂透') ||
@@ -91,14 +98,8 @@ export class DataProcessor {
             firstLines.includes('春節加碼活動');
     }
 
-    /**
-     * 解析CSV檔案
-     * @param {File} file - CSV檔案
-     * @returns {Promise<Array>} 解析後的樂透數據
-     */
     async parseCSV(file) {
         try {
-            // 嘗試讀取內容 (先試 UTF-8, 失敗試 Big5)
             let text = await this.readFileContent(file, 'UTF-8');
             if (!this.isValidContent(text)) {
                 console.log('UTF-8 parsing failed/invalid, retrying with Big5...');
@@ -109,15 +110,12 @@ export class DataProcessor {
             if (lines.length < 2) throw new Error('檔案內容為空');
 
             let data = [];
-
-            // 1. 嘗試標準解析 (基於已知格式)
             try {
                 data = this.parseStandardFormat(lines);
             } catch (e) {
                 console.warn('Standard parsing failed, trying heuristic:', e);
             }
 
-            // 2. 如果標準解析失敗或沒資料，嘗試啟發式解析 (抓取關鍵數字)
             if (data.length === 0) {
                 console.log('Using heuristic parsing...');
                 data = this.parseHeuristic(lines);
@@ -135,14 +133,9 @@ export class DataProcessor {
         }
     }
 
-    /**
-     * 標準格式解析（支援多彩券類型）
-     */
     parseStandardFormat(lines) {
         const data = [];
         const firstLine = lines[0].trim();
-
-        // 檢查是否有遊戲名稱欄位
         const hasGameNameColumn = firstLine.includes('遊戲名稱');
 
         if (!hasGameNameColumn) {
@@ -157,27 +150,25 @@ export class DataProcessor {
             if (!line) continue;
 
             const parts = line.split(',').map(p => p.trim().replace(/^"|"$/g, ''));
-
-            // 第一個欄位是遊戲名稱
             const gameName = parts[0];
 
-            // 偵測彩券類型
-            const lotteryType = detectLotteryType(gameName);
-            if (!lotteryType) {
-                console.warn(`無法識別的彩券類型: ${gameName}`);
+            if (gameName.includes('賓果') || gameName.toUpperCase().includes('BINGO')) {
                 continue;
             }
 
-            // 解析基本資訊
-            if (parts.length < 6 + lotteryType.pickCount) {
-                console.warn(`Line ${i}: 欄位數量不足 (需要 ${6 + lotteryType.pickCount}, 實際 ${parts.length})`);
+            const lotteryType = detectLotteryType(gameName);
+            if (!lotteryType) {
+                continue;
+            }
+
+            const minFields = 6 + lotteryType.pickCount;
+            if (parts.length < minFields) {
                 continue;
             }
 
             const rawDraw = parts[1];
             const date = parts[2].replace(/\//g, '-');
 
-            // 處理重複期數 ID（主要用於加開獎項）
             const counterKey = `${lotteryType.id}_${rawDraw}`;
             if (!drawCounters[counterKey]) {
                 drawCounters[counterKey] = 1;
@@ -185,42 +176,32 @@ export class DataProcessor {
                 drawCounters[counterKey]++;
             }
 
-            // 如果是加開獎項或有重複，加上後綴
             const draw = (drawCounters[counterKey] > 1 || lotteryType.id === 'BIG_LOTTO_BONUS')
                 ? `${rawDraw}-${String(drawCounters[counterKey]).padStart(2, '0')}`
                 : rawDraw;
 
-            // 提取號碼（從第7個欄位開始，取 pickCount 個）
             const numberStartIndex = 6;
             const numbers = parts.slice(numberStartIndex, numberStartIndex + lotteryType.pickCount)
                 .map(n => parseInt(n));
 
-            // 提取特別號（如果有）
             let special = 0;
             if (lotteryType.hasSpecialNumber && parts.length > numberStartIndex + lotteryType.pickCount) {
                 special = parseInt(parts[numberStartIndex + lotteryType.pickCount]);
             }
 
-            // 驗證號碼
             if (this.validateDraw(numbers, special, lotteryType)) {
                 data.push({
                     draw,
                     date,
-                    lotteryType: lotteryType.id,  // 新增：記錄彩券類型
+                    lotteryType: lotteryType.id,
                     numbers: numbers.sort((a, b) => a - b),
                     special
                 });
-            } else {
-                console.warn(`Line ${i}: 號碼驗證失敗 for ${lotteryType.displayName}`);
             }
         }
         return data;
     }
 
-    /**
-     * 啟發式解析 (智慧提取 - 滑動窗口策略)
-     * 尋找符合規則的行：日期 + 連續6個有效號碼
-     */
     parseHeuristic(lines) {
         const data = [];
         const drawCounters = {};
@@ -229,17 +210,12 @@ export class DataProcessor {
 
         for (let i = 0; i < lines.length; i++) {
             const line = lines[i];
-            // 移除引號，將逗號、空白、Tab視為分隔符
             const parts = line.replace(/"/g, '').split(/[,，\s\t]+/).map(p => p.trim()).filter(p => p);
 
-            if (parts.length < 7) continue; // 至少要有日期+6個號碼
+            if (parts.length < 7) continue;
 
-            // 1. 尋找日期
             let date = null;
             let dateIndex = -1;
-
-            // 支援 YYYY/MM/DD, YYYY-MM-DD, YYY/MM/DD (民國年)
-            // 增加對 8位數日期 (20250124) 的支援
             const dateRegex = /^(\d{3,4})[\/\-](\d{1,2})[\/\-](\d{1,2})$/;
 
             for (let j = 0; j < parts.length; j++) {
@@ -248,7 +224,7 @@ export class DataProcessor {
                     let year = parseInt(match[1]);
                     const month = parseInt(match[2]);
                     const day = parseInt(match[3]);
-                    if (year < 1000) year += 1911; // 民國年轉西元
+                    if (year < 1000) year += 1911;
                     date = `${year}-${String(month).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
                     dateIndex = j;
                     break;
@@ -257,14 +233,11 @@ export class DataProcessor {
 
             if (!date) continue;
 
-            // 2. 尋找連續的 6 個號碼 (1-49)
-            // 滑動窗口：檢查連續 6 個元素是否都是 1-49 的整數
             let numbers = [];
             let special = 0;
             let foundSequence = false;
 
             for (let j = 0; j <= parts.length - 6; j++) {
-                // 跳過日期欄位
                 if (j === dateIndex) continue;
 
                 const window = parts.slice(j, j + 6);
@@ -274,8 +247,6 @@ export class DataProcessor {
                 });
 
                 if (validWindow) {
-                    // 找到一組候選號碼
-                    // 檢查是否有第 7 個號碼 (特別號)
                     const nextPart = (j + 6 < parts.length) ? parts[j + 6] : null;
                     const nextNum = nextPart ? parseInt(nextPart) : NaN;
                     const hasSpecial = !isNaN(nextNum) && nextNum >= 1 && nextNum <= 49;
@@ -283,26 +254,20 @@ export class DataProcessor {
                     numbers = window.map(n => parseInt(n));
                     special = hasSpecial ? nextNum : 0;
 
-                    // 簡單驗證：號碼不重複
                     const unique = new Set(numbers);
                     if (unique.size === 6) {
                         foundSequence = true;
-                        break; // 找到第一組符合的就停止 (通常是獎號)
+                        break;
                     }
                 }
             }
 
             if (foundSequence) {
-                // 3. 決定期數 ID
-                // 嘗試找 9 位數以上的數字作為期數
                 let rawDraw = parts.find(p => /^\d{9,}$/.test(p));
-
-                // 如果找不到長 ID，嘗試用日期生成
                 if (!rawDraw) {
                     rawDraw = date.replace(/-/g, '');
                 }
 
-                // 處理重複期數
                 if (!drawCounters[rawDraw]) drawCounters[rawDraw] = 1;
                 else drawCounters[rawDraw]++;
 
@@ -310,15 +275,15 @@ export class DataProcessor {
                     ? `${rawDraw}-${String(drawCounters[rawDraw]).padStart(2, '0')}`
                     : rawDraw;
 
+                const lotteryType = this.detectLotteryTypeFromNumbers(numbers, special);
+
                 data.push({
                     draw,
                     date,
+                    lotteryType,
                     numbers: numbers.sort((a, b) => a - b),
                     special
                 });
-            } else {
-                // Debug: Log why line failed if it looked promising (had date)
-                // console.log(`Line ${i} has date ${date} but no valid number sequence.`);
             }
         }
 
@@ -326,125 +291,100 @@ export class DataProcessor {
         return data;
     }
 
-    /**
-     * 驗證號碼是否有效（支援多彩券類型）
-     * @param {Array} numbers - 號碼陣列
-     * @param {number} special - 特別號
-     * @param {Object} lotteryType - 彩券類型配置（可選，預設為大樂透）
-     * @returns {boolean} 是否有效
-     */
+    detectLotteryTypeFromNumbers(numbers, special) {
+        if (!numbers || numbers.length === 0) {
+            return 'BIG_LOTTO';
+        }
+
+        const maxNum = Math.max(...numbers);
+        const minNum = Math.min(...numbers);
+        const count = numbers.length;
+
+        if (count === 6 && maxNum <= 49 && minNum >= 1) {
+            return special > 0 ? 'BIG_LOTTO' : 'BIG_LOTTO';
+        } else if (count === 5 && maxNum <= 39 && minNum >= 1) {
+            return 'DAILY_CASH_539';
+        } else if (count === 6 && maxNum <= 38 && minNum >= 1) {
+            return 'LOTTO_39';
+        } else if (count === 3) {
+            return 'STAR_3';
+        } else if (count === 4) {
+            return 'STAR_4';
+        }
+
+        return 'BIG_LOTTO';
+    }
+
     validateDraw(numbers, special, lotteryType = LOTTERY_TYPES.BIG_LOTTO) {
         if (!Array.isArray(numbers) || numbers.length !== lotteryType.pickCount) return false;
-
-        // 驗證所有號碼都在有效範圍內
         const validNumbers = numbers.filter(n => isValidNumber(n, lotteryType));
-
         if (validNumbers.length !== lotteryType.pickCount) return false;
-
-        // 檢查號碼不重複（但三星彩和四星彩允許重複）
         const allowDuplicates = ['STAR_3', 'STAR_4'].includes(lotteryType.id);
         if (!allowDuplicates) {
             const uniqueNumbers = new Set(validNumbers);
             if (uniqueNumbers.size !== validNumbers.length) return false;
         }
-
-        // 驗證特別號
         if (!isValidSpecialNumber(special, lotteryType)) return false;
-
         return true;
     }
 
-    /**
-     * 載入示範數據
-     * @returns {Array} 樂透數據
-     */
     loadSampleData() {
         this.lotteryData = [...this.sampleData];
         return this.lotteryData;
     }
 
     /**
-     * 載入CSV檔案數據
-     * @param {File} file - CSV檔案
-     * @returns {Promise<Object>} 載入結果，包含數據和統計資訊
+     * 載入CSV檔案數據 (僅解析，不保存到本地)
      */
     async loadCSVData(file) {
+        console.log(`📂 Loading ${file.name}...`);
+        if (file.name.includes('賓果') || file.name.toUpperCase().includes('BINGO')) {
+            console.warn(`⚠️ 跳過檔案 ${file.name}：不支援賓果賓果數據`);
+            return { newCount: 0, totalCount: this.lotteryData.length, skipped: true, message: '已跳過賓果賓果檔案' };
+        }
+
         const newData = await this.parseCSV(file);
-        const duplicateInfo = this.checkDuplicates(newData);
-        this.lotteryData = duplicateInfo.mergedData;
+        console.log(`  → Parsed ${newData.length} records from ${file.name}`);
 
+        // 注意：這裡不再合併到 this.lotteryData，而是返回解析結果
+        // 由 App.js 負責上傳到後端，然後重新 fetch
         return {
-            data: this.lotteryData,
-            duplicates: duplicateInfo.duplicates,
-            duplicateCount: duplicateInfo.duplicateCount,
-            newCount: duplicateInfo.newCount,
-            totalCount: duplicateInfo.totalCount
+            data: newData,
+            parsedCount: newData.length
         };
     }
 
-    /**
-     * 檢查重複數據
-     * @param {Array} newData - 新數據
-     * @returns {Object} 重複檢查結果
-     */
     checkDuplicates(newData) {
-        const existingDraws = new Set(this.lotteryData.map(d => d.draw));
-        const duplicates = [];
-        const uniqueNew = [];
-
-        newData.forEach(draw => {
-            if (existingDraws.has(draw.draw)) {
-                duplicates.push(draw);
-            } else {
-                uniqueNew.push(draw);
-                existingDraws.add(draw.draw);
-            }
-        });
-
-        const mergedData = [...this.lotteryData, ...uniqueNew];
-        mergedData.sort((a, b) => parseInt(b.draw) - parseInt(a.draw));
-
-        return {
-            mergedData,
-            duplicates,
-            duplicateCount: duplicates.length,
-            newCount: uniqueNew.length,
-            totalCount: mergedData.length
-        };
+        // 保留此方法以防萬一，但目前主要依賴後端去重
+        return { mergedData: newData, duplicates: [], duplicateCount: 0, newCount: newData.length, totalCount: newData.length };
     }
 
-    /**
-     * 獲取所有數據
-     * @returns {Array} 樂透數據
-     */
     getData() {
         return this.lotteryData;
     }
 
-    /**
-     * 獲取指定範圍的數據
-     * @param {string|number} sampleSize - 樣本大小或 'all'
-     * @returns {Array} 指定範圍的樂透數據
-     */
-    getDataRange(sampleSize) {
-        if (sampleSize === 'all') return this.lotteryData;
-        return this.lotteryData.slice(0, parseInt(sampleSize));
+    async getDataRange(sampleSize, lotteryType = null) {
+        let data = this.lotteryData;
+        if (lotteryType) {
+            data = data.filter(d => d.lotteryType === lotteryType);
+        }
+
+        if (sampleSize === 'all') {
+            return data;
+        }
+        const requestedSize = parseInt(sampleSize);
+        return data.slice(0, requestedSize);
     }
 
-    /**
-     * 清空數據
-     * @returns {Array} 清空後的數據（空陣列）
-     */
+    async getDataSmart(lotteryType = null, sampleSize = 0) {
+        return this.getDataRange(sampleSize || 'all', lotteryType);
+    }
+
     clearData() {
         this.lotteryData = [];
         return this.lotteryData;
     }
 
-    /**
-     * 搜尋數據
-     * @param {string} query - 搜尋關鍵字
-     * @returns {Array} 符合條件的樂透數據
-     */
     searchData(query) {
         if (!query) return this.lotteryData;
         return this.lotteryData.filter(draw =>
@@ -453,16 +393,24 @@ export class DataProcessor {
         );
     }
 
-    /**
-     * 排序數據
-     * @param {string} order - 排序方式 ('desc' 或 'asc')
-     * @returns {Array} 排序後的樂透數據
-     */
     sortData(order = 'desc') {
         return [...this.lotteryData].sort((a, b) =>
             order === 'desc' ?
                 b.draw.localeCompare(a.draw) :
                 a.draw.localeCompare(b.draw)
         );
+    }
+
+    async getStats() {
+        const typeCount = {};
+        this.lotteryData.forEach(d => {
+            const type = d.lotteryType || 'UNKNOWN';
+            typeCount[type] = (typeCount[type] || 0) + 1;
+        });
+
+        return {
+            total: this.lotteryData.length,
+            byType: typeCount
+        };
     }
 }

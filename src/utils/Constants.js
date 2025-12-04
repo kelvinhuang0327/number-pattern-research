@@ -68,3 +68,39 @@ export const LOTTERY_RULES = {
         }
     }
 };
+
+/**
+ * 多彩券類型支援
+ * 導入彩券類型定義
+ */
+import {
+    LOTTERY_TYPES,
+    detectLotteryType,
+    getLotteryTypeById,
+    getAllLotteryTypes,
+    getBaseType,
+    getRelatedTypes
+} from './LotteryTypes.js';
+
+export {
+    LOTTERY_TYPES,
+    detectLotteryType,
+    getLotteryTypeById,
+    getAllLotteryTypes,
+    getBaseType,
+    getRelatedTypes
+};
+
+/**
+ * 根據彩券類型 ID 獲取規則
+ * @param {string} typeId - 彩券類型 ID，若未指定則返回大樂透規則
+ * @returns {Object} 彩券規則
+ */
+export function getLotteryRules(typeId = 'BIG_LOTTO') {
+    const lotteryType = getLotteryTypeById(typeId);
+    if (!lotteryType) {
+        console.warn(`Unknown lottery type: ${typeId}, using BIG_LOTTO as default`);
+        return LOTTERY_TYPES.BIG_LOTTO;
+    }
+    return lotteryType;
+}

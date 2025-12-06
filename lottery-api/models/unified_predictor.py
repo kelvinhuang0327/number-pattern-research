@@ -7,11 +7,170 @@ import pandas as pd
 from typing import List, Dict, Tuple, Optional
 from collections import Counter, defaultdict
 import logging
+import random
 from scipy import stats
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.preprocessing import StandardScaler
 
+# 延遲導入高級策略（避免循環依賴）
+_advanced_strategies = None
+
+def get_advanced_strategies():
+    global _advanced_strategies
+    if _advanced_strategies is None:
+        from .advanced_strategies import AdvancedStrategies
+        _advanced_strategies = AdvancedStrategies()
+    return _advanced_strategies
+
 logger = logging.getLogger(__name__)
+
+def get_data_range_info(history: List[Dict]) -> Dict:
+    """
+    獲取數據範圍信息（用於日誌和返回結果）
+
+    Args:
+        history: 歷史數據列表
+
+    Returns:
+        包含數據範圍信息的字典
+    """
+    if not history:
+        return {
+            'startDraw': None,
+            'endDraw': None,
+            'startDate': None,
+            'endDate': None,
+            'totalPeriods': 0
+        }
+
+    return {
+        'startDraw': history[0].get('draw'),
+        'endDraw': history[-1].get('draw'),
+        'startDate': history[0].get('date'),
+        'endDate': history[-1].get('date'),
+        'totalPeriods': len(history)
+    }
+
+def log_data_range(method_name: str, history: List[Dict]):
+    """
+    記錄數據範圍日誌
+
+    Args:
+        method_name: 預測方法名稱
+        history: 歷史數據列表
+    """
+    if not history:
+        logger.warning(f"📊 [{method_name}] 數據範圍: 無數據")
+        return
+
+    info = get_data_range_info(history)
+    logger.info(
+        f"📊 [{method_name}] 數據範圍: "
+        f"{info['startDraw']} - {info['endDraw']} "
+        f"({info['startDate']} ~ {info['endDate']}) "
+        f"共 {info['totalPeriods']} 期"
+    )
+
+def predict_special_number(
+    history: List[Dict],
+    lottery_rules: Dict,
+    main_predicted_numbers: List[int] = None
+) -> Optional[int]:
+    """
+    預測特別號碼（統一輔助函數）
+
+    Args:
+        history: 歷史數據
+        lottery_rules: 彩票規則
+        main_predicted_numbers: 主號碼預測結果（用於排除重複）
+
+    Returns:
+        預測的特別號碼，如果不需要則返回 None
+    """
+    # 檢查是否有特別號碼
+    has_special = lottery_rules.get('hasSpecialNumber', False)
+    if not has_special:
+        return None
+
+    # 獲取特別號碼範圍
+    special_range = lottery_rules.get('specialNumberRange')
+    if not special_range:
+        special_range = lottery_rules.get('numberRange', {'min': 1, 'max': 49})
+
+    min_special = special_range.get('min', 1)
+    max_special = special_range.get('max', 49)
+
+    # 統計歷史特別號碼頻率
+    special_frequency = Counter()
+    valid_specials = 0
+
+    for draw in history:
+        special = draw.get('special')
+        if special and isinstance(special, (int, float)) and min_special <= special <= max_special:
+            special_frequency[int(special)] += 1
+            valid_specials += 1
+
+    # 如果沒有足夠的歷史數據，使用頻率+隨機混合策略
+    if valid_specials < 10:
+        # 使用主號碼的頻率作為參考
+        all_numbers = [num for draw in history for num in draw.get('numbers', [])]
+        general_frequency = Counter(all_numbers)
+
+        # 結合主號碼頻率和隨機性
+        probabilities = {}
+        for num in range(min_special, max_special + 1):
+            # 基礎概率
+            base_prob = 1.0 / (max_special - min_special + 1)
+            # 如果這個號碼在主號碼中出現過，稍微提高概率
+            freq_bonus = general_frequency.get(num, 0) / len(history) if history else 0
+            probabilities[num] = base_prob + freq_bonus * 0.1
+    else:
+        # 使用特別號碼歷史頻率
+        total = sum(special_frequency.values())
+        probabilities = {}
+
+        for num in range(min_special, max_special + 1):
+            freq = special_frequency.get(num, 0)
+            # 頻率分析 + 輕微均值回歸
+            expected_freq = total / (max_special - min_special + 1)
+            deviation = freq - expected_freq
+
+            # 如果低於預期，稍微提高概率（均值回歸理論）
+            if deviation < 0:
+                probabilities[num] = (freq + abs(deviation) * 0.3) / total
+            else:
+                probabilities[num] = freq / total
+
+    # 排除與主號碼重複（針對大樂透等特別號與主號不重複的彩票）
+    # 威力彩的特別號範圍不同，不會與主號碼重複
+    if main_predicted_numbers and max_special == lottery_rules.get('numberRange', {}).get('max', 49):
+        for num in main_predicted_numbers:
+            if min_special <= num <= max_special and num in probabilities:
+                probabilities[num] *= 0.05  # 大幅降低重複概率
+
+    # 歸一化概率
+    total_prob = sum(probabilities.values())
+    if total_prob > 0:
+        for num in probabilities:
+            probabilities[num] /= total_prob
+
+    # 選擇概率最高的號碼（帶隨機性）
+    if probabilities:
+        sorted_probs = sorted(probabilities.items(), key=lambda x: x[1], reverse=True)
+
+        # 70% 選擇最高概率，30% 從前5名中隨機
+        if random.random() < 0.7:
+            predicted_special = sorted_probs[0][0]
+        else:
+            top_5 = sorted_probs[:min(5, len(sorted_probs))]
+            weights = [prob for _, prob in top_5]
+            predicted_special = random.choices([num for num, _ in top_5], weights=weights, k=1)[0]
+
+        logger.debug(f"預測特別號碼: {predicted_special} (範圍: {min_special}-{max_special})")
+        return int(predicted_special)
+
+    # 兜底：完全隨機
+    return random.randint(min_special, max_special)
 
 class UnifiedPredictionEngine:
     """
@@ -26,13 +185,16 @@ class UnifiedPredictionEngine:
     # ===== 核心統計策略 =====
     
     def trend_predict(
-        self, 
-        history: List[Dict], 
+        self,
+        history: List[Dict],
         lottery_rules: Dict
     ) -> Dict:
         """
         趨勢分析策略 (指數衰減)
         """
+        # 🔧 記錄數據範圍
+        log_data_range('趨勢回歸分析', history)
+
         pick_count = lottery_rules.get('pickCount', 6)
         min_num = lottery_rules.get('minNumber', 1)
         max_num = lottery_rules.get('maxNumber', 49)
@@ -59,12 +221,22 @@ class UnifiedPredictionEngine:
         sorted_numbers = sorted(probabilities.items(), key=lambda x: x[1], reverse=True)
         predicted_numbers = sorted([num for num, _ in sorted_numbers[:pick_count]])
         
-        return {
+        # 🔧 預測特別號碼
+        predicted_special = predict_special_number(history, lottery_rules, predicted_numbers)
+
+        result = {
             'numbers': predicted_numbers,
             'confidence': 0.75,
             'method': '趨勢回歸分析 (指數衰減)',
-            'probabilities': [prob for _, prob in sorted_numbers[:pick_count]]
+            'probabilities': [prob for _, prob in sorted_numbers[:pick_count]],
+            'dataRange': get_data_range_info(history)  # 🔧 添加數據範圍信息
         }
+
+        # 🔧 添加特別號碼
+        if predicted_special is not None:
+            result['special'] = predicted_special
+
+        return result
 
     def deviation_predict(
         self, 
@@ -119,12 +291,21 @@ class UnifiedPredictionEngine:
         sorted_numbers = sorted(probabilities.items(), key=lambda x: x[1], reverse=True)
         predicted_numbers = sorted([num for num, _ in sorted_numbers[:pick_count]])
         
-        return {
+        # 🔧 預測特別號碼
+        predicted_special = predict_special_number(history, lottery_rules, predicted_numbers)
+        
+        result = {
             'numbers': predicted_numbers,
             'confidence': 0.76,
             'method': '偏差追蹤模型',
             'probabilities': [prob for _, prob in sorted_numbers[:pick_count]]
         }
+        
+        # 🔧 添加特別號碼
+        if predicted_special is not None:
+            result['special'] = predicted_special
+        
+        return result
 
     
     def frequency_predict(
@@ -137,6 +318,9 @@ class UnifiedPredictionEngine:
         不僅統計次數，還考慮時間權重，最近的號碼權重更高
         ✨ 優化：根據號碼出現頻率動態調整衰減係數
         """
+        # 🔧 記錄數據範圍
+        log_data_range('頻率分析', history)
+
         pick_count = lottery_rules.get('pickCount', 6)
         min_num = lottery_rules.get('minNumber', 1)
         max_num = lottery_rules.get('maxNumber', 49)
@@ -188,12 +372,22 @@ class UnifiedPredictionEngine:
 
         final_confidence = min(0.90, base_confidence + data_bonus + concentration_bonus)
 
-        return {
+        # 🔧 預測特別號碼
+        predicted_special = predict_special_number(history, lottery_rules, predicted_numbers)
+        
+        result = {
             'numbers': predicted_numbers,
             'confidence': float(final_confidence),
             'method': '自適應頻率分析',
-            'probabilities': [float(w / total_weight) for _, w in sorted_numbers[:pick_count]]
+            'probabilities': [float(w / total_weight) for _, w in sorted_numbers[:pick_count]],
+            'dataRange': get_data_range_info(history)  # 🔧 添加數據範圍信息
         }
+
+        # 🔧 添加特別號碼
+        if predicted_special is not None:
+            result['special'] = predicted_special
+
+        return result
 
     def _adaptive_decay_rate(self, number_frequency: int, avg_frequency: float) -> float:
         """
@@ -290,12 +484,21 @@ class UnifiedPredictionEngine:
         data_bonus = min(total_draws / 200, 0.06)  # 數據量加成 (最多 +6%)
         final_confidence = min(0.82, base_confidence + stability_bonus + data_bonus)
 
-        return {
+        # 🔧 預測特別號碼
+        predicted_special = predict_special_number(history, lottery_rules, predicted_numbers)
+        
+        result = {
             'numbers': predicted_numbers,
             'confidence': float(final_confidence),
             'method': f'貝葉斯統計 (動態權重: {likelihood_weight:.1%}/{prior_weight:.1%})',
             'probabilities': [float(prob) for _, prob in sorted_numbers[:pick_count]]
         }
+        
+        # 🔧 添加特別號碼
+        if predicted_special is not None:
+            result['special'] = predicted_special
+        
+        return result
 
     def _adaptive_bayesian_weights(self, history_size: int, recent_stability: float) -> Tuple[float, float]:
         """
@@ -414,12 +617,21 @@ class UnifiedPredictionEngine:
 
         final_confidence = min(0.77, base_confidence + order_bonus + data_bonus + order_confidence)
 
-        return {
+        # 🔧 預測特別號碼
+        predicted_special = predict_special_number(history, lottery_rules, predicted_numbers)
+        
+        result = {
             'numbers': predicted_numbers,
             'confidence': final_confidence,
             'method': method_name,
             'probabilities': [float(next_probs[num]) for num in predicted_numbers]
         }
+        
+        # 🔧 添加特別號碼
+        if predicted_special is not None:
+            result['special'] = predicted_special
+        
+        return result
 
     def _find_optimal_markov_order(
         self,
@@ -705,12 +917,21 @@ class UnifiedPredictionEngine:
         most_common = simulation_results.most_common(pick_count)
         predicted_numbers = sorted([num for num, _ in most_common])
         
-        return {
+        # 🔧 預測特別號碼
+        predicted_special = predict_special_number(history, lottery_rules, predicted_numbers)
+        
+        result = {
             'numbers': predicted_numbers,
             'confidence': 0.72,
             'method': f'蒙地卡羅模擬 ({simulations}次)',
             'probabilities': [count / simulations for _, count in most_common]
         }
+        
+        # 🔧 添加特別號碼
+        if predicted_special is not None:
+            result['special'] = predicted_special
+        
+        return result
     
     # ===== 民間策略 (保持不變，因為邏輯簡單且固定) =====
     
@@ -1610,12 +1831,21 @@ class UnifiedPredictionEngine:
             concentration = 0.4
         confidence = min(0.86, base_confidence + concentration * 0.12)
 
-        return {
+        # 🔧 預測特別號碼
+        predicted_special = predict_special_number(history, lottery_rules, predicted_numbers)
+        
+        result = {
             'numbers': predicted_numbers,
             'confidence': float(confidence),
             'method': '模式識別 (Pattern Recognition)',
             'probabilities': [float(score) for _, score in sorted_candidates[:pick_count]]
         }
+        
+        # 🔧 添加特別號碼
+        if predicted_special is not None:
+            result['special'] = predicted_special
+        
+        return result
 
     def cycle_analysis_predict(self, history, lottery_rules) -> Dict:
         """
@@ -1656,12 +1886,21 @@ class UnifiedPredictionEngine:
         top_scores = [data['score'] for _, data in sorted_by_cycle[:pick_count]]
         confidence = min(0.85, 0.65 + (np.mean(top_scores) if top_scores else 0) * 0.2)
 
-        return {
+        # 🔧 預測特別號碼
+        predicted_special = predict_special_number(history, lottery_rules, predicted_numbers)
+        
+        result = {
             'numbers': predicted_numbers,
             'confidence': float(confidence),
             'method': '週期分析 (Cycle Analysis)',
             'probabilities': [float(s) for s in top_scores] if top_scores else None
         }
+        
+        # 🔧 添加特別號碼
+        if predicted_special is not None:
+            result['special'] = predicted_special
+        
+        return result
 
     def wheeling_predict(self, history, lottery_rules):
         """組合輪轉策略"""
@@ -1862,12 +2101,21 @@ class UnifiedPredictionEngine:
         most_common = next_numbers_counter.most_common(pick_count)
         predicted_numbers = sorted([num for num, _ in most_common])
         
-        return {
+        # 🔧 預測特別號碼
+        predicted_special = predict_special_number(history, lottery_rules, predicted_numbers)
+        
+        result = {
             'numbers': predicted_numbers,
             'confidence': 0.75,
             'method': '特徵相似度匹配 (KNN)',
             'probabilities': [count / total_weight for _, count in most_common]
         }
+        
+        # 🔧 添加特別號碼
+        if predicted_special is not None:
+            result['special'] = predicted_special
+        
+        return result
 
     def ensemble_advanced_predict(
         self,
@@ -2010,7 +2258,10 @@ class UnifiedPredictionEngine:
         consistency_bonus = consistency * 0.12
         final_confidence = min(0.92, base_confidence + boosting_bonus + consistency_bonus)
 
-        return {
+        # 🔧 預測特別號碼
+        predicted_special = predict_special_number(history, lottery_rules, predicted_numbers)
+        
+        result = {
             'numbers': predicted_numbers,
             'confidence': float(final_confidence),
             'method': f'進階集成 (Boosting:{len(weak_strategies)} + 關聯分析 + 特徵加權)',
@@ -2022,6 +2273,12 @@ class UnifiedPredictionEngine:
                 'consistency_score': float(consistency)
             }
         }
+        
+        # 🔧 添加特別號碼
+        if predicted_special is not None:
+            result['special'] = predicted_special
+        
+        return result
 
     def ensemble_predict(
         self,
@@ -2147,7 +2404,10 @@ class UnifiedPredictionEngine:
             method_desc += f' + {len(ai_models_included)} AI模型'
         method_desc += ')'
         
-        return {
+        # 🔧 預測特別號碼
+        predicted_special = predict_special_number(history, lottery_rules, predicted_numbers)
+        
+        result = {
             'numbers': predicted_numbers,
             'confidence': float(final_confidence),
             'method': method_desc,
@@ -2160,6 +2420,12 @@ class UnifiedPredictionEngine:
                 'consistency_score': float(consistency_factor)
             }
         }
+        
+        # 🔧 添加特別號碼
+        if predicted_special is not None:
+            result['special'] = predicted_special
+        
+        return result
     
     def _run_async_predict(self, coro):
         """
@@ -2205,6 +2471,70 @@ class UnifiedPredictionEngine:
     
     def _extract_enhanced_features(self, history, index, pick_count, min_num, max_num):
         return np.array([])
+    
+    # ===== 高級預測策略 (新增) =====
+    
+    def entropy_predict(self, history: List[Dict], lottery_rules: Dict) -> Dict:
+        """
+        信息熵分析策略
+        使用信息熵識別號碼的「隨機性異常」，發現隱藏規律
+        """
+        try:
+            advanced = get_advanced_strategies()
+            return advanced.entropy_analysis_predict(history, lottery_rules)
+        except Exception as e:
+            logger.error(f"信息熵預測失敗: {str(e)}", exc_info=True)
+            # 回退到頻率分析
+            return self.frequency_predict(history, lottery_rules)
+    
+    def clustering_predict(self, history: List[Dict], lottery_rules: Dict) -> Dict:
+        """
+        號碼聚類策略
+        使用 K-Means/DBSCAN 發現號碼組合模式
+        """
+        try:
+            advanced = get_advanced_strategies()
+            return advanced.clustering_predict(history, lottery_rules)
+        except Exception as e:
+            logger.error(f"聚類預測失敗: {str(e)}", exc_info=True)
+            return self.frequency_predict(history, lottery_rules)
+    
+    def dynamic_ensemble_predict(self, history: List[Dict], lottery_rules: Dict) -> Dict:
+        """
+        動態權重集成策略
+        根據近期表現自適應調整策略權重
+        """
+        try:
+            advanced = get_advanced_strategies()
+            return advanced.dynamic_ensemble_predict(history, lottery_rules)
+        except Exception as e:
+            logger.error(f"動態集成預測失敗: {str(e)}", exc_info=True)
+            return self.ensemble_predict(history, lottery_rules)
+    
+    def temporal_predict(self, history: List[Dict], lottery_rules: Dict) -> Dict:
+        """
+        增強時間序列策略
+        FFT 週期分析 + 多尺度趨勢
+        """
+        try:
+            advanced = get_advanced_strategies()
+            return advanced.temporal_enhanced_predict(history, lottery_rules)
+        except Exception as e:
+            logger.error(f"時間序列預測失敗: {str(e)}", exc_info=True)
+            return self.trend_predict(history, lottery_rules)
+    
+    def feature_engineering_predict(self, history: List[Dict], lottery_rules: Dict) -> Dict:
+        """
+        多維特徵工程策略
+        整合 12+ 維度特徵進行綜合預測
+        """
+        try:
+            advanced = get_advanced_strategies()
+            return advanced.feature_engineering_predict(history, lottery_rules)
+        except Exception as e:
+            logger.error(f"特徵工程預測失敗: {str(e)}", exc_info=True)
+            return self.statistical_predict(history, lottery_rules)
 
 # 全局預測引擎實例
 prediction_engine = UnifiedPredictionEngine()
+

@@ -290,11 +290,16 @@ export class UIManager {
 
         // 有特別號的彩券類型
         const hasSpecialNumber = (lotteryType) => {
-            return ['BIG_LOTTO', 'POWER_BALL'].includes(lotteryType);
+            if (!lotteryType) return false;
+            const type = String(lotteryType).trim();
+            // Debug: 檢查實際的彩券類型值
+            // console.log('Checking lottery type:', type);
+            return ['BIG_LOTTO', 'POWER_BALL', '大樂透', '威力彩'].includes(type);
         };
 
         // 檢查當前頁面是否有任何資料需要特別號欄位
         const needsSpecialColumn = pageData.some(draw => hasSpecialNumber(draw.lotteryType));
+        console.log('Needs special column:', needsSpecialColumn, 'Page data sample type:', pageData[0]?.lotteryType);
 
         // 動態更新表頭
         if (thead) {
@@ -338,8 +343,8 @@ export class UIManager {
                         <td>
                             <div class="draw-numbers">
                                 ${hasSpecial && draw.special ?
-                                    `<div class="draw-number special">${String(draw.special).padStart(2, '0')}</div>` :
-                                    '<span style="color: #999;">-</span>'}
+                        `<div class="draw-number special">${String(draw.special).padStart(2, '0')}</div>` :
+                        '<span style="color: #999;">-</span>'}
                             </div>
                         </td>
                     ` : ''}

@@ -15,7 +15,10 @@ import os
 
 logger = logging.getLogger(__name__)
 
-DATA_FILE = "data/lottery_history.json"
+# 使用絕對路徑，確保從任何目錄執行都能正確找到配置文件
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+DATA_DIR = os.path.join(BASE_DIR, "data")
+DATA_FILE = os.path.join(DATA_DIR, "lottery_history.json")
 
 class AutoLearningScheduler:
     """
@@ -355,21 +358,41 @@ class AutoLearningScheduler:
     def get_best_config(self, lottery_type: Optional[str] = None) -> dict:
         """
         獲取最佳配置
+        優先順序：1. 指定彩種的文件配置 2. 內存配置 3. 通用文件配置
         """
-        cfg = self.engine.get_best_config()
+        # 1. 先嘗試加載指定彩種的配置文件
         if lottery_type:
             file_cfg = self.load_config(lottery_type)
             if file_cfg:
+                logger.info(f"使用 {lottery_type} 專屬配置")
                 return file_cfg
-        return cfg
+        
+        # 2. 嘗試使用內存中的配置
+        cfg = self.engine.get_best_config()
+        if cfg:
+            return cfg
+        
+        # 3. 回退到通用配置文件
+        general_cfg = self.load_config(None)
+        if general_cfg:
+            logger.info("使用通用配置文件")
+            return general_cfg
+        
+        # 4. 如果還沒有，嘗試加載 BIG_LOTTO 作為默認
+        default_cfg = self.load_config('BIG_LOTTO')
+        if default_cfg:
+            logger.info("使用 BIG_LOTTO 默認配置")
+            return default_cfg
+            
+        return {}
     
     def _save_config(self, config: dict, lottery_type: Optional[str] = None):
         """
         保存配置到文件
         """
         try:
-            # ✅ 統一保存到 data 目錄（支持彩種）
-            fname = 'data/best_config.json' if not lottery_type else f'data/best_config_{lottery_type}.json'
+            os.makedirs(DATA_DIR, exist_ok=True)
+            fname = os.path.join(DATA_DIR, 'best_config.json') if not lottery_type else os.path.join(DATA_DIR, f'best_config_{lottery_type}.json')
             with open(fname, 'w', encoding='utf-8') as f:
                 json.dump({
                     'timestamp': datetime.now().isoformat(),
@@ -384,8 +407,7 @@ class AutoLearningScheduler:
         從文件加載配置
         """
         try:
-            # ✅ 統一從 data 目錄加載（支持彩種）
-            fname = 'data/best_config.json' if not lottery_type else f'data/best_config_{lottery_type}.json'
+            fname = os.path.join(DATA_DIR, 'best_config.json') if not lottery_type else os.path.join(DATA_DIR, f'best_config_{lottery_type}.json')
             with open(fname, 'r', encoding='utf-8') as f:
                 data = json.load(f)
                 logger.info(f"配置已加載: {data.get('timestamp', 'Unknown')} ({fname})")

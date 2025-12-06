@@ -22,7 +22,7 @@ export class BackendOptimizedStrategy {
 
     /**
      * 執行預測
-     * @param {Array} data - 歷史數據（不使用，僅為了保持接口一致）
+     * @param {Array} data - 歷史數據（用於提取期數範圍）
      * @param {Object} lotteryRules - 彩券規則
      */
     async predict(data, lotteryRules) {
@@ -32,10 +32,30 @@ export class BackendOptimizedStrategy {
             // 獲取當前彩券類型
             const lotteryType = lotteryRules.lotteryType || 'BIG_LOTTO';
 
-            // 準備請求數據（只需要彩券類型）
-            const requestData = {
+            // 🎯 提取數據範圍（如果有數據）
+            let requestData = {
                 lotteryType: lotteryType
             };
+
+            // 如果有傳入數據，提取期數範圍
+            if (data && data.length > 0) {
+                // 排序數據以獲取正確的範圍
+                const sortedData = [...data].sort((a, b) => {
+                    const drawA = parseInt((a.draw || '').toString().replace(/\D/g, '')) || 0;
+                    const drawB = parseInt((b.draw || '').toString().replace(/\D/g, '')) || 0;
+                    return drawA - drawB;
+                });
+
+                const startDraw = sortedData[0].draw;
+                const endDraw = sortedData[sortedData.length - 1].draw;
+
+                requestData.startDraw = startDraw;
+                requestData.endDraw = endDraw;
+
+                console.log(`🎯 使用範圍查詢模式: ${startDraw} - ${endDraw} (${data.length}期)`);
+            } else {
+                console.log(`⚠️ 無數據範圍，後端將使用全部數據`);
+            }
 
             // 發送 API 請求
             const response = await fetch(this.apiEndpoint, {
@@ -113,5 +133,15 @@ export class BackendOptimizedStrategy {
         report += `• 建議啟用自動排程，每天自動優化\n`;
 
         return report;
+    }
+
+    /**
+     * 帶緩存的預測（用於模擬）
+     * BackendOptimized 策略不使用緩存，直接調用 predict
+     */
+    async predictWithCache(data, lotteryRules, cache = null) {
+        console.log(`🚫 BackendOptimized: 緩存已禁用，動態查詢`);
+        // 直接調用 predict，不使用緩存
+        return await this.predict(data, lotteryRules);
     }
 }

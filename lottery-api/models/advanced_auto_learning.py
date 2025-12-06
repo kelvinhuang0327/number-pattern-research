@@ -11,6 +11,18 @@ from typing import List, Dict, Tuple, Optional
 import numpy as np
 from collections import Counter
 
+# 導入高級策略
+try:
+    from .advanced_strategies import AdvancedStrategies
+    _advanced_strategies = None
+    def get_advanced_strategies():
+        global _advanced_strategies
+        if _advanced_strategies is None:
+            _advanced_strategies = AdvancedStrategies()
+        return _advanced_strategies
+except ImportError:
+    get_advanced_strategies = lambda: None
+
 logger = logging.getLogger(__name__)
 
 HISTORY_FILE = "data/advanced_optimization_history.json"
@@ -85,8 +97,10 @@ class AdvancedAutoLearningEngine:
             min_number = lottery_rules.get('minNumber', 1)
             max_number = lottery_rules.get('maxNumber', 49)
 
-            if len(history) < 100:
-                raise ValueError("多階段優化至少需要 100 期數據")
+            # 檢查最小數據量
+            min_required = 30
+            if len(history) < min_required:
+                raise ValueError(f"多階段優化至少需要 {min_required} 期數據（目前 {len(history)} 期）")
 
             # 數據分割
             split_idx = int(len(history) * 0.8)
@@ -282,9 +296,29 @@ class AdvancedAutoLearningEngine:
             min_number = lottery_rules.get('minNumber', 1)
             max_number = lottery_rules.get('maxNumber', 49)
 
-            # 測試不同窗口大小
-            window_sizes = [100, 200, 300, 500, len(history)]
-            window_sizes = [w for w in window_sizes if w <= len(history)]
+            # 檢查最小數據量（至少需要 30 期用於訓練和驗證）
+            min_required = 30
+            if len(history) < min_required:
+                raise ValueError(f"自適應窗口優化至少需要 {min_required} 期數據（目前 {len(history)} 期）")
+
+            # 根據實際數據量動態生成測試窗口
+            data_count = len(history)
+            if data_count >= 500:
+                base_windows = [100, 200, 300, 500]
+            elif data_count >= 300:
+                base_windows = [50, 100, 200, 300]
+            elif data_count >= 100:
+                base_windows = [30, 50, 100]
+            else:
+                # 數據量較少時，使用更小的窗口
+                base_windows = [int(data_count * 0.4), int(data_count * 0.6), int(data_count * 0.8)]
+            
+            # 添加全部數據作為一個窗口選項
+            window_sizes = [w for w in base_windows if w <= data_count] + [data_count]
+            # 去重並排序
+            window_sizes = sorted(list(set(window_sizes)))
+            
+            logger.info(f"📊 數據量: {data_count} 期，測試窗口: {window_sizes}")
 
             best_window_result = None
             best_window_fitness = 0
@@ -354,7 +388,9 @@ class AdvancedAutoLearningEngine:
         weight_keys = [
             'frequency_weight', 'missing_weight', 'hot_cold_weight', 'trend_weight',
             'zone_weight', 'last_digit_weight', 'odd_even_weight',
-            'pair_weight', 'sum_band_weight', 'ac_band_weight', 'dynamic_zone_weight'
+            'pair_weight', 'sum_band_weight', 'ac_band_weight', 'dynamic_zone_weight',
+            # 新增高級策略權重
+            'entropy_weight', 'clustering_weight', 'temporal_weight', 'feature_eng_weight'
         ]
 
         for _ in range(size):
@@ -370,6 +406,11 @@ class AdvancedAutoLearningEngine:
                 'sum_band_weight': np.random.uniform(0.02, 0.2),
                 'ac_band_weight': np.random.uniform(0.02, 0.2),
                 'dynamic_zone_weight': np.random.uniform(0.02, 0.2),
+                # 新增高級策略權重
+                'entropy_weight': np.random.uniform(0.05, 0.3),
+                'clustering_weight': np.random.uniform(0.05, 0.3),
+                'temporal_weight': np.random.uniform(0.05, 0.3),
+                'feature_eng_weight': np.random.uniform(0.05, 0.3),
                 'recent_window': int(np.random.uniform(20, 100)),
                 'long_window': int(np.random.uniform(100, 300))
             }
@@ -440,8 +481,18 @@ class AdvancedAutoLearningEngine:
                 config, training_data, pick_count, min_num, max_num
             )
 
-            # 命中3個或以上算成功
-            hits = len(set(target['numbers']) & set(predicted))
+            # 🔧 構建目標號碼集合（主號碼 + 特別號 = 7個目標）
+            target_numbers = set(target['numbers'])
+            special = target.get('special')
+            if special is not None:
+                try:
+                    target_numbers.add(int(special))  # 加入特別號
+                except (ValueError, TypeError):
+                    pass
+            
+            # 命中3個或以上算成功（對7個目標號碼）
+            hits = len(target_numbers & set(predicted))
+
             if hits >= 3:
                 success_count += 1
 
@@ -456,7 +507,7 @@ class AdvancedAutoLearningEngine:
         min_num: int,
         max_num: int
     ) -> List[int]:
-        """使用配置進行預測（簡化版）"""
+        """使用配置進行預測（整合高級策略）"""
         # 統計號碼頻率
         number_scores = {num: 0.0 for num in range(min_num, max_num + 1)}
 
@@ -490,6 +541,55 @@ class AdvancedAutoLearningEngine:
             for num in number_scores.keys():
                 hot_count = hot_counter.get(num, 0)
                 number_scores[num] += (hot_count / max_hot) * hot_cold_weight
+
+        # ===== 整合高級策略 =====
+        advanced = get_advanced_strategies()
+        if advanced and len(history) >= 30:
+            lottery_rules = {'pickCount': pick_count, 'minNumber': min_num, 'maxNumber': max_num}
+            
+            # 信息熵分析
+            entropy_weight = config.get('entropy_weight', 0.1)
+            if entropy_weight > 0.01:
+                try:
+                    entropy_result = advanced.entropy_analysis_predict(history, lottery_rules)
+                    for num in entropy_result.get('numbers', []):
+                        if min_num <= num <= max_num:
+                            number_scores[num] += entropy_weight * 0.5
+                except Exception:
+                    pass
+            
+            # 聚類分析
+            clustering_weight = config.get('clustering_weight', 0.1)
+            if clustering_weight > 0.01:
+                try:
+                    clustering_result = advanced.clustering_predict(history, lottery_rules)
+                    for num in clustering_result.get('numbers', []):
+                        if min_num <= num <= max_num:
+                            number_scores[num] += clustering_weight * 0.5
+                except Exception:
+                    pass
+            
+            # 時間序列增強
+            temporal_weight = config.get('temporal_weight', 0.1)
+            if temporal_weight > 0.01:
+                try:
+                    temporal_result = advanced.temporal_enhanced_predict(history, lottery_rules)
+                    for num in temporal_result.get('numbers', []):
+                        if min_num <= num <= max_num:
+                            number_scores[num] += temporal_weight * 0.5
+                except Exception:
+                    pass
+            
+            # 多維特徵工程
+            feature_eng_weight = config.get('feature_eng_weight', 0.1)
+            if feature_eng_weight > 0.01:
+                try:
+                    feature_result = advanced.feature_engineering_predict(history, lottery_rules)
+                    for num in feature_result.get('numbers', []):
+                        if min_num <= num <= max_num:
+                            number_scores[num] += feature_eng_weight * 0.5
+                except Exception:
+                    pass
 
         # 添加隨機性
         for num in number_scores.keys():

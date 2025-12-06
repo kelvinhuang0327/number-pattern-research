@@ -231,8 +231,19 @@ class AutoLearningEngine:
                 config, training_data, pick_count, min_num, max_num
             )
             
-            # 評估命中數
+            # 評估命中數（主號碼）
             hits = len(set(target['numbers']) & set(predicted))
+
+            # 🔧 評估特別號碼（如果有）
+            if 'special' in target and target.get('special'):
+                try:
+                    target_numbers_set = set(target['numbers'])
+                    target_numbers_set.add(int(target['special']))
+                    # 重新計算命中數（包含特別號）
+                    hits = len(target_numbers_set & set(predicted))
+                except (ValueError, TypeError):
+                    pass
+
             if hits >= 3:
                 success_count += 1
         

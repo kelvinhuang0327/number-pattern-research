@@ -195,13 +195,20 @@ export class AutoOptimizeStrategy {
     }
 
     /**
-     * 智能預測（用於模擬，帶緩存）- 記憶體優化版
+     * 智能預測（用於模擬）- 每次動態評估，不使用緩存
      * @param {Array} data - 訓練數據
      * @param {Object} lotteryRules - 彩券規則
-     * @param {Object} cache - 緩存對象（可選）
+     * @param {Object} cache - 緩存對象（忽略，不使用）
      * @returns {Object} 預測結果
      */
     async predictWithCache(data, lotteryRules, cache = null) {
+        // 🎯 數據範圍追蹤（僅用於日誌）
+        const lastDraw = data && data.length > 0 ? data[0].draw : null;
+        const firstDraw = data && data.length > 0 ? data[data.length - 1].draw : null;
+        
+        console.log(`🔍 AutoOptimize 訓練資料範圍: ${firstDraw} ~ ${lastDraw} (${data.length}期)`);
+        console.log(`⚠️ 緩存已禁用：每次動態從數據評估策略`);
+        
         // 🔧 記憶體保護：限制數據量
         const MAX_DATA_SIZE = 300; // 模擬時使用更少的數據
         if (data.length > MAX_DATA_SIZE) {
@@ -209,24 +216,8 @@ export class AutoOptimizeStrategy {
             data = data.slice(0, MAX_DATA_SIZE);
         }
 
-        // 🔧 修復：檢查是否需要完整評估（改進緩存失效邏輯）
-        const needsFullEvaluation =
-            !cache ||                                                    // 沒有緩存
-            !cache.topStrategies ||                                     // 沒有策略列表
-            cache.topStrategies.length === 0 ||                         // 策略列表為空
-            cache.evaluationCount >= 10 ||                              // 已使用快速模式10次，需重新評估
-            !cache.lastEvaluationSize ||                                // 沒有記錄上次評估的數據大小
-            Math.abs(data.length - cache.lastEvaluationSize) > Math.max(5, Math.floor(cache.lastEvaluationSize * 0.1)); // 數據量變化 >10% 或 >5期
-
-        if (needsFullEvaluation) {
-            console.log('🔄 執行完整策略評估...');
-            if (cache && cache.evaluationCount >= 10) {
-                console.log('   原因: 快速模式已使用10次，需重新校準');
-            } else if (cache && cache.lastEvaluationSize && data.length !== cache.lastEvaluationSize) {
-                console.log(`   原因: 數據量變化 (${cache.lastEvaluationSize} → ${data.length} 期)`);
-            } else {
-                console.log('   原因: 首次評估或緩存失效');
-            }
+        // 🚫 緩存已禁用：每次都進行完整評估，確保使用最新數據
+        console.log('🔄 執行完整策略評估（動態模式，不使用緩存）...');
 
             // 限制完整評估時的測試集大小（記憶體優化）
             const testSize = Math.min(5, Math.floor(data.length * 0.1)); // 降到 10%，最多5期
@@ -332,95 +323,8 @@ export class AutoOptimizeStrategy {
                     testedStrategies: results.length,
                     mode: 'full'
                 },
-                cache: {
-                    topStrategies: results.slice(0, 2).map(r => r.strategy), // 只保留 Top 2
-                    evaluationCount: 0,
-                    lastEvaluationSize: data.length
-                }
             };
-        }
-
-        // 使用緩存的 Top 策略（超快速模式）
-        console.log(`⚡ 快速模式 (使用 ${cache.topStrategies.length} 個已驗證策略)`);
-        console.log(`   緩存使用次數: ${cache.evaluationCount}/10`);
-
-        // 極簡測試：只用最近 3 期
-        const testSize = Math.min(3, Math.floor(data.length * 0.05));
-        const trainData = data.slice(testSize);
-        const testData = data.slice(0, testSize);
-
-        // 🚀 並行測試緩存策略
-        const startTime = Date.now();
-        const testResults = await Promise.allSettled(
-            cache.topStrategies.map(strategyName =>
-                this.evaluateStrategyFast(
-                    strategyName,
-                    trainData,
-                    testData,
-                    lotteryRules
-                ).then(performance => ({
-                    strategy: strategyName,
-                    successRate: performance.successRate,
-                    avgHits: performance.avgHits
-                }))
-            )
-        );
-
-        // 處理結果
-        const results = [];
-        let failedCount = 0;
-
-        for (let i = 0; i < testResults.length; i++) {
-            const result = testResults[i];
-            const strategyName = cache.topStrategies[i];
-
-            if (result.status === 'fulfilled') {
-                results.push(result.value);
-            } else {
-                console.warn(`⚠️ ${strategyName} 快速測試失敗:`, result.reason?.message || '未知錯誤');
-                failedCount++;
-            }
-        }
-
-        const elapsedTime = ((Date.now() - startTime) / 1000).toFixed(2);
-        console.log(`   ⚡ 快速測試完成，耗時 ${elapsedTime} 秒`);
-
-        if (results.length === 0) {
-            console.warn(`⚠️ 所有緩存策略 (${cache.topStrategies.length}) 測試失敗，回退到完整評估`);
-            // 回退到完整評估
-            return await this.predictWithCache(data, lotteryRules, null);
-        }
-
-        if (failedCount > 0) {
-            console.log(`   ⚠️ ${failedCount}/${cache.topStrategies.length} 個策略測試失敗`);
-        }
-
-        // 選擇最佳策略
-        results.sort((a, b) => b.successRate - a.successRate || b.avgHits - a.avgHits);
-        const bestResult = results[0];
-        const bestStrategy = bestResult.strategy;
-
-        // 使用最佳策略預測
-        const strategy = this.predictionEngine.strategies[bestStrategy];
-        const finalPrediction = await strategy.predict(data, lotteryRules);
-
-        return {
-            numbers: finalPrediction.numbers,
-            probabilities: finalPrediction.probabilities,
-            confidence: this.calculateConfidence(bestResult),
-            method: `AI 優化 (${this.getStrategyName(bestStrategy)}) ⚡`,
-            report: `快速: ${this.getStrategyName(bestStrategy)}`,
-            optimization: {
-                bestStrategy: bestStrategy,
-                successRate: bestResult.successRate,
-                mode: 'fast'
-            },
-            cache: {
-                topStrategies: cache.topStrategies,
-                evaluationCount: cache.evaluationCount + 1,
-                lastEvaluationSize: cache.lastEvaluationSize
-            }
-        };
+        // 🚫 緩存已完全禁用，不再有快速模式分支
     }
 
     /**

@@ -32,6 +32,14 @@ try:
     print(">>> [9/10] Imported model_cache.")
     from models.advanced_auto_learning import AdvancedAutoLearningEngine
     print(">>> [9.5/10] Imported AdvancedAutoLearningEngine.")
+    from models.optimized_ensemble import OptimizedEnsemblePredictor
+    print(">>> [9.6/10] Imported OptimizedEnsemblePredictor.")
+    from models.transformer_model import TransformerPredictor
+    print(">>> [9.7/10] Imported TransformerPredictor.")
+    from models.bayesian_ensemble import BayesianEnsemblePredictor
+    print(">>> [9.8/10] Imported BayesianEnsemblePredictor.")
+    from models.meta_learning import MAMLPredictor
+    print(">>> [9.9/10] Imported MAMLPredictor.")
     from database import db_manager
     print(">>> [10/10] Imported db_manager.")
 except Exception as e:
@@ -94,6 +102,7 @@ class DrawData(BaseModel):
     draw: str
     numbers: List[int]
     lotteryType: str
+    special: Optional[int] = 0  # 特別號（大樂透、威力彩等）
 
 class PredictRequest(BaseModel):
     history: List[DrawData]
@@ -111,6 +120,12 @@ class PredictResponse(BaseModel):
     seasonality: Optional[str] = None
     modelInfo: Optional[Dict] = None
     notes: Optional[str] = None
+    dataRange: Optional[Dict] = None  # 🔧 添加數據範圍信息
+    special: Optional[int] = None  # 🔧 添加特別號碼
+    # 🔧 雙注預測支持
+    bet1: Optional[Dict] = None
+    bet2: Optional[Dict] = None
+    strategy_weights: Optional[Dict] = None
 
 # ===== 延遲初始化模型（避免啟動時掛起）=====
 print(">>> Models will be initialized on first use (lazy loading).")
@@ -118,6 +133,9 @@ _prophet_predictor = None
 _xgboost_predictor = None
 _autogluon_predictor = None
 _lstm_predictor = None
+_transformer_predictor = None
+_bayesian_ensemble_predictor = None
+_maml_predictor = None
 
 def get_prophet_predictor():
     global _prophet_predictor
@@ -151,6 +169,30 @@ def get_lstm_predictor():
         print(">>> LSTMPredictor initialized.")
     return _lstm_predictor
 
+def get_transformer_predictor():
+    global _transformer_predictor
+    if _transformer_predictor is None:
+        print(">>> Initializing TransformerPredictor...")
+        _transformer_predictor = TransformerPredictor()
+        print(">>> TransformerPredictor initialized.")
+    return _transformer_predictor
+
+def get_bayesian_ensemble_predictor():
+    global _bayesian_ensemble_predictor
+    if _bayesian_ensemble_predictor is None:
+        print(">>> Initializing BayesianEnsemblePredictor...")
+        _bayesian_ensemble_predictor = BayesianEnsemblePredictor(prediction_engine)
+        print(">>> BayesianEnsemblePredictor initialized.")
+    return _bayesian_ensemble_predictor
+
+def get_maml_predictor():
+    global _maml_predictor
+    if _maml_predictor is None:
+        print(">>> Initializing MAMLPredictor...")
+        _maml_predictor = MAMLPredictor()
+        print(">>> MAMLPredictor initialized.")
+    return _maml_predictor
+
 # ===== 策略分派表 (非深度 AI 部分) =====
 # 使用 lambda 延遲執行以保持與現有 prediction_engine API 一致
 MODEL_DISPATCH = {
@@ -173,6 +215,20 @@ MODEL_DISPATCH = {
     "ensemble": lambda h, r: prediction_engine.ensemble_predict(h, r),
     "ensemble_advanced": lambda h, r: prediction_engine.ensemble_advanced_predict(h, r),
     "random_forest": lambda h, r: prediction_engine.random_forest_predict(h, r),
+    # ===== 高級分析策略 (新增) =====
+    "entropy": lambda h, r: prediction_engine.entropy_predict(h, r),
+    "clustering": lambda h, r: prediction_engine.clustering_predict(h, r),
+    "dynamic_ensemble": lambda h, r: prediction_engine.dynamic_ensemble_predict(h, r),
+    "temporal": lambda h, r: prediction_engine.temporal_predict(h, r),
+    "feature_engineering": lambda h, r: prediction_engine.feature_engineering_predict(h, r),
+}
+
+# ===== 异步深度学习模型（需要特殊处理）=====
+# Transformer 和贝叶斯优化集成需要异步调用
+ASYNC_MODEL_DISPATCH = {
+    "transformer": lambda h, r: get_transformer_predictor().predict(h, r),
+    "bayesian_ensemble": lambda h, r: get_bayesian_ensemble_predictor().predict(h, r),
+    "maml": lambda h, r: get_maml_predictor().predict(h, r),
 }
 
 # ===== Thread Pool for CPU-bound tasks =====
@@ -210,7 +266,7 @@ async def health_check():
             "prophet": "available",
             "xgboost": "available",
             "autogluon": "available",
-            "lstm": "not_implemented"
+            "lstm": "available"
         }
     }
 
@@ -243,7 +299,7 @@ async def predict(request: PredictRequest):
             )
         
         # AI 深度模型分支
-        if request.modelType in ("prophet", "xgboost", "autogluon", "lstm"):
+        if request.modelType in ("prophet", "xgboost", "autogluon", "lstm", "transformer"):
             history_dicts = [draw.dict() for draw in request.history]
             if request.modelType == "prophet":
                 result = await get_prophet_predictor().predict(history=history_dicts, lottery_rules=request.lotteryRules)
@@ -253,6 +309,12 @@ async def predict(request: PredictRequest):
                 result = await get_autogluon_predictor().predict(history=history_dicts, lottery_rules=request.lotteryRules)
             elif request.modelType == "lstm":
                 result = await get_lstm_predictor().predict(history=history_dicts, lottery_rules=request.lotteryRules)
+            elif request.modelType == "transformer":
+                result = await get_transformer_predictor().predict(history=history_dicts, lottery_rules=request.lotteryRules)
+        elif request.modelType in ASYNC_MODEL_DISPATCH:
+            # 异步集成模型（如贝叶斯优化集成）
+            history_dicts = [draw.dict() for draw in request.history]
+            result = await ASYNC_MODEL_DISPATCH[request.modelType](history_dicts, request.lotteryRules)
         elif request.modelType in MODEL_DISPATCH:
             history_dicts = [draw.dict() for draw in request.history]
             # Run synchronous prediction in thread pool to avoid blocking event loop
@@ -280,6 +342,8 @@ async def predict(request: PredictRequest):
 
 class PredictFromBackendRequest(BaseModel):
     lotteryType: str
+    startDraw: Optional[str] = None  # 🎯 新增：起始期號
+    endDraw: Optional[str] = None    # 🎯 新增：結束期號
     modelType: str = "prophet"
 
 class PredictWithRangeRequest(BaseModel):
@@ -332,6 +396,28 @@ def _load_backend_history(lottery_type: str, min_required: int = 10):
         raise HTTPException(status_code=400, detail=f"彩券類型 {lottery_type} 的數據不足（需要至少 {min_required} 期，目前 {len(history)} 期）")
     return history, scheduler.lottery_rules
 
+def _get_data_range_info(history: list) -> dict:
+    """生成數據區間信息"""
+    if not history:
+        return {
+            "total_count": 0,
+            "date_range": "無數據",
+            "draw_range": "無數據"
+        }
+    
+    first_draw = history[0]
+    last_draw = history[-1]
+    
+    return {
+        "total_count": len(history),
+        "date_range": f"{first_draw.get('date', 'N/A')} ~ {last_draw.get('date', 'N/A')}",
+        "draw_range": f"{first_draw.get('draw', 'N/A')} ~ {last_draw.get('draw', 'N/A')}",
+        "first_date": first_draw.get('date', 'N/A'),
+        "last_date": last_draw.get('date', 'N/A'),
+        "first_draw": first_draw.get('draw', 'N/A'),
+        "last_draw": last_draw.get('draw', 'N/A')
+    }
+
 @app.post("/api/predict-from-backend", response_model=PredictResponse)
 async def predict_from_backend(request: PredictFromBackendRequest):
     """
@@ -348,7 +434,8 @@ async def predict_from_backend(request: PredictFromBackendRequest):
         
         # 1. 載入數據（統一方法）
         history, lottery_rules = _load_backend_history(lottery_type, min_required=10)
-        logger.info(f"使用後端數據: {len(history)} 期")
+        data_range = _get_data_range_info(history)
+        logger.info(f"📊 使用數據: {data_range['total_count']} 期 | 日期: {data_range['date_range']} | 期號: {data_range['draw_range']}")
         
         # 3. 檢查模型緩存 (加入最佳配置簽名以便 backend_optimized 變更失效)
         extra_sig = None
@@ -379,11 +466,15 @@ async def predict_from_backend(request: PredictFromBackendRequest):
             result = await get_xgboost_predictor().predict(history, lottery_rules)
         elif request.modelType == "autogluon":
             result = await get_autogluon_predictor().predict(history, lottery_rules)
+        elif request.modelType == "transformer":
+            result = await get_transformer_predictor().predict(history, lottery_rules)
+        elif request.modelType == "bayesian_ensemble":
+            result = await get_bayesian_ensemble_predictor().predict(history, lottery_rules)
+        elif request.modelType == "maml":
+            result = await get_maml_predictor().predict(history, lottery_rules)
         elif request.modelType == "lstm":
-            raise HTTPException(
-                status_code=501,
-                detail="LSTM 模型尚未實現，敬請期待"
-            )
+            # LSTM 需要特殊的處理或尚未適配此端點
+            result = await get_lstm_predictor().predict(history, lottery_rules)
         # ===== Backend Optimized (自動優化策略快捷模式) =====
         elif request.modelType == "backend_optimized":
             # 合併後端優化邏輯 (頻率 + 遺漏 + 輕量噪聲 + 最佳配置權重)
@@ -432,6 +523,7 @@ async def predict_from_backend(request: PredictFromBackendRequest):
             result = {
                 "numbers": predicted,
                 "confidence": 0.85,
+                "method": "優化混合策略 (Optimized)",
                 "lotteryType": request.lotteryType
             }
 
@@ -532,91 +624,81 @@ async def predict_with_range(request: PredictWithRangeRequest):
     """
     try:
         logger.info(f"收到範圍預測請求: 彩券={request.lotteryType}, 模型={request.modelType}")
-        
+        logger.info(f"📝 請求參數: startDraw={request.startDraw}, endDraw={request.endDraw}, startDate={request.startDate}, endDate={request.endDate}, recentCount={request.recentCount}")
+
         # Normalize lottery type
         lottery_type = normalize_lottery_type(request.lotteryType)
-        
-        # 1. 載入後端全部數據
-        if not scheduler.latest_data or not scheduler.lottery_rules:
-            scheduler.load_data()
-            if not scheduler.latest_data or not scheduler.lottery_rules:
-                raise HTTPException(status_code=400, detail="後端沒有數據，請先同步數據到後端")
-        
-        # 2. 根據彩券類型過濾
-        all_history = scheduler.get_data(lottery_type)
-        if len(all_history) < 10:
-            all_history = [d for d in scheduler.latest_data if d.get('lotteryType') == lottery_type or d.get('lotteryType') == normalize_lottery_type(d.get('lotteryType', ''))]
-        
-        if len(all_history) < 10:
-            raise HTTPException(
-                status_code=400, 
-                detail=f"彩券類型 {request.lotteryType} ({lottery_type}) 的數據不足（至少需要10期）"
-            )
-        
-        # 3. 根據範圍參數篩選數據
-        filtered_history = []
-        
-        # 優先使用期數範圍（但兩者都要有值才使用）
+
+        # 🔧 新架構：直接從數據庫查詢範圍數據，不依賴 scheduler.latest_data
+        # 1. 使用期數範圍（優先）
         if request.startDraw and request.endDraw:
-            logger.info(f"使用期數範圍: {request.startDraw} - {request.endDraw}")
-            # 轉換為整數進行比較
-            start_draw_int = int(request.startDraw)
-            end_draw_int = int(request.endDraw)
-            
-            for draw in all_history:
-                draw_num = draw.get('draw', '')
-                # 處理帶後綴的期數（例如：114000001-01）
-                draw_base = draw_num.split('-')[0] if '-' in draw_num else draw_num
-                
-                try:
-                    draw_int = int(draw_base)
-                    if draw_int < start_draw_int:
-                        continue
-                    if draw_int > end_draw_int:
-                        continue
-                    filtered_history.append(draw)
-                except (ValueError, TypeError):
-                    # 無法轉換為整數的期數，跳過
-                    logger.warning(f"無效的期數格式: {draw_base}")
-                    continue
-        
-        # 使用日期範圍
+            logger.info(f"從數據庫查詢期數範圍: {request.startDraw} - {request.endDraw}")
+            filtered_history = db_manager.get_draws_by_range(
+                lottery_type=lottery_type,
+                start_draw=request.startDraw,
+                end_draw=request.endDraw
+            )
+
+        # 2. 使用日期範圍
         elif request.startDate or request.endDate:
-            logger.info(f"使用日期範圍: {request.startDate} - {request.endDate}")
-            for draw in all_history:
+            logger.info(f"從數據庫查詢日期範圍: {request.startDate} - {request.endDate}")
+            # 先獲取所有該彩券類型的數據
+            all_draws = db_manager.get_all_draws(lottery_type=lottery_type)
+            filtered_history = []
+
+            for draw in all_draws:
                 draw_date = draw.get('date', '').replace('/', '-')
-                compare_date = draw_date
-                
+
                 if request.startDate:
                     start_compare = request.startDate.replace('/', '-')
-                    if compare_date < start_compare:
+                    if draw_date < start_compare:
                         continue
-                
+
                 if request.endDate:
                     end_compare = request.endDate.replace('/', '-')
-                    if compare_date > end_compare:
+                    if draw_date > end_compare:
                         continue
-                
+
                 filtered_history.append(draw)
-        
-        # 使用最近N期
+
+        # 3. 使用最近N期
         elif request.recentCount:
-            logger.info(f"使用最近 {request.recentCount} 期")
-            filtered_history = all_history[-request.recentCount:]
-        
-        # 沒有任何範圍參數，使用全部數據
+            logger.info(f"從數據庫查詢最近 {request.recentCount} 期")
+            all_draws = db_manager.get_all_draws(lottery_type=lottery_type)
+            filtered_history = all_draws[-request.recentCount:] if len(all_draws) >= request.recentCount else all_draws
+
+        # 4. 沒有任何範圍參數，使用全部數據
         else:
-            logger.info("未指定範圍，使用全部數據")
-            filtered_history = all_history
-        
+            logger.info("從數據庫查詢全部數據")
+            filtered_history = db_manager.get_all_draws(lottery_type=lottery_type)
+
+        # 數據檢查
         if len(filtered_history) < 10:
             raise HTTPException(
                 status_code=400,
-                detail=f"篩選後的數據不足（需要至少10期，目前{len(filtered_history)}期）"
+                detail=f"查詢結果數據不足（需要至少10期，目前{len(filtered_history)}期）"
             )
         
-        logger.info(f"篩選後數據: {len(filtered_history)} 期")
-        lottery_rules = scheduler.lottery_rules
+        data_range = _get_data_range_info(filtered_history)
+        logger.info(f"✅ 查詢成功: {data_range['total_count']} 期")
+        logger.info(f"📊 範圍預測數據: {data_range['total_count']} 期 | 日期: {data_range['date_range']} | 期號: {data_range['draw_range']}")
+
+        # 獲取彩券規則（優先從請求參數，否則從 scheduler）
+        if hasattr(request, 'lotteryRules') and request.lotteryRules:
+            lottery_rules = request.lotteryRules.dict() if hasattr(request.lotteryRules, 'dict') else request.lotteryRules
+        elif scheduler.lottery_rules:
+            lottery_rules = scheduler.lottery_rules
+        else:
+            # 使用默認規則
+            lottery_rules = {
+                'pickCount': 6,
+                'minNumber': 1,
+                'maxNumber': 49,
+                'hasSpecialNumber': True,
+                'specialMinNumber': 1,
+                'specialMaxNumber': 49
+            }
+            logger.warning(f"使用默認彩券規則: {lottery_rules}")
         
         # 4. 執行預測（與 predict 端點相同的邏輯）
         if request.modelType == "prophet":
@@ -625,55 +707,81 @@ async def predict_with_range(request: PredictWithRangeRequest):
             result = await get_xgboost_predictor().predict(filtered_history, lottery_rules)
         elif request.modelType == "autogluon":
             result = await get_autogluon_predictor().predict(filtered_history, lottery_rules)
+        elif request.modelType == "transformer":
+            result = await get_transformer_predictor().predict(filtered_history, lottery_rules)
+        elif request.modelType == "bayesian_ensemble":
+            result = await get_bayesian_ensemble_predictor().predict(filtered_history, lottery_rules)
+        elif request.modelType == "maml":
+            result = await get_maml_predictor().predict(filtered_history, lottery_rules)
         elif request.modelType == "lstm":
-            raise HTTPException(status_code=501, detail="LSTM 模型尚未實現")
+            # LSTM 需要特殊的處理或尚未適配此端點
+            result = await get_lstm_predictor().predict(filtered_history, lottery_rules)
         elif request.modelType == "backend_optimized":
-            # 使用優化策略
-            best_config = scheduler.engine.get_best_config() if hasattr(scheduler, 'engine') else {}
+            # 使用 AdvancedAutoLearningEngine 進行預測（包含高級策略）
+            from models.advanced_auto_learning import AdvancedAutoLearningEngine
+            
+            # 獲取最佳配置（優先使用彩種專屬配置）
+            best_config = scheduler.get_best_config(request.lotteryType)
+            if not best_config:
+                best_config = scheduler.get_best_config()
+            
+            if not best_config:
+                raise HTTPException(status_code=400, detail="沒有可用的優化配置，請先執行自動優化")
+            
             pick_count = lottery_rules.get('pickCount', 6)
             min_num = lottery_rules.get('minNumber', 1)
             max_num = lottery_rules.get('maxNumber', 49)
-
-            recent_window = min(200, len(filtered_history))
-            freq_counter = {}
-            for draw in filtered_history[-recent_window:]:
-                for n in draw.get('numbers', []):
-                    freq_counter[n] = freq_counter.get(n, 0) + 1
-
-            missing_map = {n: 0 for n in range(min_num, max_num + 1)}
-            for num in missing_map.keys():
-                count = 0
-                for d in reversed(filtered_history):
-                    if num not in d.get('numbers', []):
-                        count += 1
-                    else:
-                        break
-                missing_map[num] = count
-
-            max_freq = max(freq_counter.values()) if freq_counter else 1
-            max_missing = max(missing_map.values()) if missing_map else 1
-
-            fw = best_config.get('frequency_weight', 0.5)
-            mw = best_config.get('missing_weight', 0.3)
-            rw = best_config.get('random_weight', 0.2)
-
-            import random
-            scores = {}
-            for num in range(min_num, max_num + 1):
-                f_score = freq_counter.get(num, 0) / max_freq
-                m_score = missing_map.get(num, 0) / max_missing if max_missing > 0 else 0
-                r_score = random.random()
-                scores[num] = fw * f_score + mw * m_score + rw * r_score
-
-            sorted_nums = sorted(scores.items(), key=lambda x: x[1], reverse=True)
-            predicted = [n for n, s in sorted_nums[:pick_count]]
+            
+            # 使用 AdvancedAutoLearningEngine 進行預測
+            engine = AdvancedAutoLearningEngine()
+            predicted = engine._predict_with_config(
+                best_config,
+                filtered_history,
+                pick_count,
+                min_num,
+                max_num
+            )
+            
+            # 計算信心度
+            advanced_keys = ['entropy_weight', 'clustering_weight', 'temporal_weight', 'feature_eng_weight']
+            advanced_weight = sum(best_config.get(k, 0) for k in advanced_keys)
+            confidence = min(0.15, 0.08 + advanced_weight * 0.1)
+            
+            logger.info(f"✅ 後端優化預測（範圍模式）: {predicted}, 高級策略權重: {advanced_weight:.2%}")
             
             result = {
                 "numbers": predicted,
-                "confidence": 0.75,
-                "method": "Backend Optimized Strategy (Range Mode)",
-                "notes": f"使用 {len(filtered_history)} 期數據進行優化預測"
+                "confidence": confidence,
+                "method": "優化混合策略 (Advanced Range)",
+                "notes": f"使用 {len(filtered_history)} 期數據 + 高級策略進行範圍預測"
             }
+        # 優化集成預測（動態權重 + 共識過濾）
+        elif request.modelType == "optimized_ensemble":
+            logger.info("🎯 使用優化集成預測（動態權重回測）")
+            
+            # 創建優化集成預測器
+            ensemble_predictor = OptimizedEnsemblePredictor(prediction_engine)
+            
+            # 執行預測
+            loop = asyncio.get_running_loop()
+            ensemble_result = await loop.run_in_executor(
+                executor,
+                ensemble_predictor.predict,
+                filtered_history,
+                lottery_rules
+            )
+            
+            # 返回雙注結果
+            result = {
+                "numbers": ensemble_result['bet1']['numbers'],
+                "confidence": ensemble_result['bet1']['confidence'],
+                "method": "優化集成預測",
+                "bet1": ensemble_result['bet1'],
+                "bet2": ensemble_result['bet2'],
+                "strategy_weights": ensemble_result.get('strategy_weights', {}),
+                "notes": f"使用 {len(filtered_history)} 期數據，動態權重集成"
+            }
+            logger.info(f"✅ 優化集成預測完成 - 第一注: {result['bet1']}, 第二注: {result['bet2']}")
         # 其他策略
         elif request.modelType in MODEL_DISPATCH:
             predict_func = MODEL_DISPATCH[request.modelType]
@@ -688,7 +796,13 @@ async def predict_with_range(request: PredictWithRangeRequest):
                 "numbers": raw_result.get("numbers", []),
                 "confidence": raw_result.get("confidence", 0.5),
                 "method": raw_result.get("method", request.modelType),
-                "notes": f"使用 {len(filtered_history)} 期數據 ({request.modelType})"
+                "notes": f"使用 {len(filtered_history)} 期數據 ({request.modelType})",
+                "dataRange": raw_result.get("dataRange"),  # 🔧 保留數據範圍信息
+                "probabilities": raw_result.get("probabilities"),
+                "trend": raw_result.get("trend"),
+                "seasonality": raw_result.get("seasonality"),
+                "modelInfo": raw_result.get("modelInfo"),
+                "special": raw_result.get("special")  # 🔧 保留特別號碼
             }
         else:
             raise HTTPException(
@@ -952,7 +1066,8 @@ async def run_optimization(request: OptimizationRequest):
         else:
             logger.info(f"快速獲取 {request.lotteryType} 數據: {len(target_data)} 期")
         
-        logger.info(f"使用後端數據進行優化: {len(target_data)} 期")
+        data_range = _get_data_range_info(target_data)
+        logger.info(f"📊 優化使用數據: {data_range['total_count']} 期 | 日期: {data_range['date_range']} | 期號: {data_range['draw_range']}")
         
         # 3. 使用本地數據執行優化
         result = await scheduler.run_manual_optimization(
@@ -1395,12 +1510,15 @@ async def evaluate_strategies(request: StrategyEvaluationRequest):
 
         logger.info(f"使用後端數據評估: {len(history)} 期")
 
-        # 3. 執行評估
-        result = strategy_evaluator.evaluate_all_strategies(
-            history=history,
-            lottery_rules=lottery_rules,
-            test_ratio=request.test_ratio,
-            min_train_size=request.min_train_size
+        # 3. 執行評估 (移至線程池以避免阻塞事件循環)
+        loop = asyncio.get_running_loop()
+        result = await loop.run_in_executor(
+            executor,
+            strategy_evaluator.evaluate_all_strategies,
+            history,
+            lottery_rules,
+            request.test_ratio,
+            request.min_train_size
         )
 
         logger.info(f"✅ 策略評估完成: 最佳策略 = {result['best_strategy']['strategy_name']}")
@@ -1481,10 +1599,13 @@ async def predict_with_best_strategy(request: PredictFromBackendRequest):
             'lotteryType': request.lotteryType
         }
 
-        # 3. 使用最佳策略預測
-        result = strategy_evaluator.predict_with_best(
-            history=history,
-            lottery_rules=lottery_rules
+        # 3. 使用最佳策略預測 (移至線程池)
+        loop = asyncio.get_running_loop()
+        result = await loop.run_in_executor(
+            executor,
+            strategy_evaluator.predict_with_best,
+            history,
+            lottery_rules
         )
 
         logger.info(f"✅ 最佳策略預測完成: {result['numbers']}, 使用策略: {result.get('strategy_name')}")
@@ -1516,13 +1637,15 @@ async def run_multi_stage_optimization_api(background_tasks: BackgroundTasks, re
         lottery_type = request.get('lotteryType', 'BIG_LOTTO')
         logger.info(f"🚀 開始多階段優化: 彩券類型={lottery_type}")
 
-        # 從後端加載數據
-        history = scheduler.get_data(lottery_type)
+        # 從數據庫加載數據（不依賴 scheduler 緩存）
+        history = db_manager.get_all_draws(lottery_type)
+        data_range = _get_data_range_info(history)
+        logger.info(f"📊 多階段優化數據: {data_range['total_count']} 期 | 日期: {data_range['date_range']} | 期號: {data_range['draw_range']}")
 
-        if not history or len(history) < 100:
+        if not history or len(history) < 30:
             raise HTTPException(
                 status_code=400,
-                detail=f'數據不足（目前 {len(history)} 期，至少需要 100 期）'
+                detail=f'數據不足（目前 {len(history)} 期，至少需要 30 期）'
             )
 
         lottery_rules = scheduler.lottery_rules or {
@@ -1582,13 +1705,15 @@ async def run_adaptive_window_optimization_api(background_tasks: BackgroundTasks
         lottery_type = request.get('lotteryType', 'BIG_LOTTO')
         logger.info(f"🔍 開始自適應窗口優化: 彩券類型={lottery_type}")
 
-        # 從後端加載數據
-        history = scheduler.get_data(lottery_type)
+        # 從數據庫加載數據（不依賴 scheduler 緩存）
+        history = db_manager.get_all_draws(lottery_type)
+        data_range = _get_data_range_info(history)
+        logger.info(f"📊 自適應窗口優化數據: {data_range['total_count']} 期 | 日期: {data_range['date_range']} | 期號: {data_range['draw_range']}")
 
-        if not history or len(history) < 100:
+        if not history or len(history) < 30:
             raise HTTPException(
                 status_code=400,
-                detail=f'數據不足（目前 {len(history)} 期，至少需要 100 期）'
+                detail=f'數據不足（目前 {len(history)} 期，至少需要 30 期）'
             )
 
         lottery_rules = scheduler.lottery_rules or {
@@ -1633,6 +1758,49 @@ async def run_adaptive_window_optimization_api(background_tasks: BackgroundTasks
         raise HTTPException(status_code=500, detail=f"優化失敗: {str(e)}")
 
 
+@app.get("/api/auto-learning/advanced/status")
+async def get_advanced_optimization_status():
+    """
+    📊 查詢進階優化狀態
+
+    返回進階優化的歷史記錄和最新狀態
+    """
+    try:
+        # 獲取進階優化歷史
+        history = advanced_engine.optimization_history
+
+        # 如果有歷史記錄，返回最新的一條
+        latest = history[-1] if history else None
+
+        # 判斷是否正在優化（簡化版：如果最近 30 分鐘內有記錄，認為可能剛完成）
+        is_optimizing = False
+        if latest:
+            from datetime import datetime, timedelta
+            latest_time = datetime.fromisoformat(latest['timestamp'])
+            time_diff = datetime.now() - latest_time
+            # 如果記錄是 30 分鐘內的，且沒有明確的完成標記，可能還在運行
+            # 但由於我們的實現會立即保存結果，所以這裡簡化為：有記錄就是完成了
+            is_optimizing = False
+
+        return {
+            'success': True,
+            'is_optimizing': is_optimizing,
+            'optimization_history': history[-10:] if len(history) > 10 else history,  # 返回最近 10 條
+            'latest_optimization': latest,
+            'total_optimizations': len(history)
+        }
+
+    except Exception as e:
+        logger.error(f"查詢進階優化狀態失敗: {str(e)}", exc_info=True)
+        return {
+            'success': False,
+            'error': str(e),
+            'is_optimizing': False,
+            'optimization_history': [],
+            'latest_optimization': None
+        }
+
+
 # ===== 錯誤處理 =====
 
 @app.exception_handler(Exception)
@@ -1647,14 +1815,17 @@ async def global_exception_handler(request, exc):
 async def predict_optimized(request: PredictFromBackendRequest):
     """
     使用自動學習優化的參數進行預測
+    支持範圍查詢（startDraw/endDraw）以用於模擬測試
     """
     try:
         logger.info(f"收到優化預測請求: 彩券={request.lotteryType}")
+        if request.startDraw and request.endDraw:
+            logger.info(f"📝 範圍參數: startDraw={request.startDraw}, endDraw={request.endDraw}")
         
-        # 1. 獲取最佳配置
-        best_config = scheduler.get_best_config()
+        # 1. 獲取最佳配置（優先使用彩種專屬配置）
+        best_config = scheduler.get_best_config(request.lotteryType)
         if not best_config:
-            best_config = scheduler.load_config()
+            best_config = scheduler.get_best_config()
         
         if not best_config:
             raise HTTPException(
@@ -1662,36 +1833,56 @@ async def predict_optimized(request: PredictFromBackendRequest):
                 detail="沒有可用的優化配置，請先執行自動優化"
             )
         
-        # 2. 從後端加載數據
-        if not scheduler.latest_data or not scheduler.lottery_rules:
-            scheduler.load_data()
+        # 2. 🎯 根據是否有範圍參數選擇數據源
+        if request.startDraw and request.endDraw:
+            # 使用範圍查詢（模擬測試）
+            logger.info(f"從數據庫查詢期數範圍: {request.startDraw} - {request.endDraw}")
+            history = db_manager.get_draws_by_range(
+                lottery_type=request.lotteryType,
+                start_draw=request.startDraw,
+                end_draw=request.endDraw
+            )
             
-            if not scheduler.latest_data or not scheduler.lottery_rules:
+            if len(history) < 10:
                 raise HTTPException(
                     status_code=400,
-                    detail="後端沒有數據，請先同步數據到後端"
+                    detail=f"查詢結果數據不足（需要至少10期，目前{len(history)}期）"
                 )
-        
-        # 3. 篩選指定彩券類型的數據
-        history = [
-            draw for draw in scheduler.latest_data 
-            if draw.get('lotteryType') == request.lotteryType
-        ]
-        
-        if len(history) < 10:
-            raise HTTPException(
-                status_code=400,
-                detail=f"彩券類型 {request.lotteryType} 的數據不足"
-            )
+            
+            logger.info(f"✅ 範圍查詢成功: {len(history)} 期")
+        else:
+            # 使用全局緩存數據（一般預測）
+            if not scheduler.latest_data or not scheduler.lottery_rules:
+                scheduler.load_data()
+                
+                if not scheduler.latest_data or not scheduler.lottery_rules:
+                    raise HTTPException(
+                        status_code=400,
+                        detail="後端沒有數據，請先同步數據到後端"
+                    )
+            
+            # 3. 篩選指定彩券類型的數據
+            history = [
+                draw for draw in scheduler.latest_data 
+                if draw.get('lotteryType') == request.lotteryType
+            ]
+            
+            if len(history) < 10:
+                raise HTTPException(
+                    status_code=400,
+                    detail=f"彩券類型 {request.lotteryType} 的數據不足"
+                )
+            
+            logger.info(f"✅ 使用全局數據: {len(history)} 期")
         
         lottery_rules = scheduler.lottery_rules
         pick_count = lottery_rules.get('pickCount', 6)
         min_number = lottery_rules.get('minNumber', 1)
         max_number = lottery_rules.get('maxNumber', 49)
         
-        # 4. 使用優化配置進行預測
-        from models.auto_learning import AutoLearningEngine
-        engine = AutoLearningEngine()
+        # 4. 使用 AdvancedAutoLearningEngine 進行預測（包含高級策略）
+        from models.advanced_auto_learning import AdvancedAutoLearningEngine
+        engine = AdvancedAutoLearningEngine()
         
         predicted_numbers = engine._predict_with_config(
             best_config,
@@ -1701,16 +1892,18 @@ async def predict_optimized(request: PredictFromBackendRequest):
             max_number
         )
         
-        # 5. 計算信心度（基於優化時的成功率）
-        confidence = 0.10  # 10% 的基礎信心度
+        # 5. 計算信心度（基於配置中的權重）
+        advanced_keys = ['entropy_weight', 'clustering_weight', 'temporal_weight', 'feature_eng_weight']
+        advanced_weight = sum(best_config.get(k, 0) for k in advanced_keys)
+        confidence = min(0.15, 0.08 + advanced_weight * 0.1)
         
-        logger.info(f"優化預測成功: {predicted_numbers}, 信心度: {confidence:.2%}")
+        logger.info(f"優化預測成功: {predicted_numbers}, 信心度: {confidence:.2%}, 高級策略權重: {advanced_weight:.2%}")
         
         return {
             "numbers": predicted_numbers,
             "confidence": confidence,
-            "method": "優化混合策略 (Optimized)",
-            "notes": f"使用自動學習優化的參數進行預測"
+            "method": "優化混合策略 (Advanced)",
+            "notes": f"使用自動學習優化的參數進行預測（含高級策略）"
         }
         
     except HTTPException:
@@ -2018,7 +2211,11 @@ async def manual_strategy_evaluation(request: dict):
         if not lottery_type:
             raise HTTPException(status_code=400, detail="缺少 lotteryType 參數")
 
-        result = await smart_scheduler.manual_evaluation(lottery_type)
+        loop = asyncio.get_running_loop()
+        result = await loop.run_in_executor(
+            executor,
+            lambda: asyncio.run(smart_scheduler.manual_evaluation(lottery_type))
+        )
         return result
     except HTTPException:
         raise

@@ -205,22 +205,12 @@ export class ApiClient {
     async getDraws(filters = {}) {
         const cacheKey = `draws_${this._getStableKey(filters)}`;
 
-        // 檢查緩存
-        if (this.cache.has(cacheKey)) {
-            const cached = this.cache.get(cacheKey);
-            if (Date.now() - cached.timestamp < this.cacheTimeout) {
-                console.log('📦 Using cached draws');
-                return cached.data;
-            }
-        }
+        // 🚫 緩存已禁用：每次都從 API 獲取最新數據
+        // console.log('🔄 從 API 動態獲取最新數據');
 
         const result = await this.get('/api/data/draws', filters);
 
-        // 緩存結果
-        this.cache.set(cacheKey, {
-            data: result,
-            timestamp: Date.now()
-        });
+        // 🚫 不再緩存結果
 
         return result;
     }
@@ -232,23 +222,13 @@ export class ApiClient {
     async getAllHistory(lotteryType = null) {
         const cacheKey = `history_${lotteryType || 'all'}`;
 
-        // 檢查緩存
-        if (this.cache.has(cacheKey)) {
-            const cached = this.cache.get(cacheKey);
-            if (Date.now() - cached.timestamp < this.cacheTimeout) {
-                console.log('📦 Using cached history');
-                return cached.data;
-            }
-        }
+        // 🚫 緩存已禁用：每次都從 API 獲取最新歷史數據
+        // console.log('🔄 從 API 動態獲取最新歷史數據');
 
         const params = lotteryType ? { lottery_type: lotteryType } : {};
         const result = await this.get('/api/history', params);
 
-        // 緩存結果
-        this.cache.set(cacheKey, {
-            data: result,
-            timestamp: Date.now()
-        });
+        // 🚫 不再緩存結果
 
         return result;
     }

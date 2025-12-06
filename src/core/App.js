@@ -332,6 +332,12 @@ export class App {
             dualBetPredictBtn.addEventListener('click', () => this.handleDualBetPredict());
         }
 
+        // 聰明包牌 - 智能雙注預測按鈕
+        const smartDualBetBtn = document.getElementById('smart-dual-bet-btn');
+        if (smartDualBetBtn) {
+            smartDualBetBtn.addEventListener('click', () => this.handleSmartDualBetPredict());
+        }
+
         // 模擬按鈕 (with debounce)
         const simulationBtn = document.getElementById('simulation-btn');
         if (simulationBtn) {
@@ -948,7 +954,7 @@ export class App {
      * @param {string} lotteryType - 彩券類型
      * @returns {Object} { hits, isSuccess }
      */
-    evaluatePrediction(actualNumbers, predictedNumbers, lotteryType) {
+    evaluatePrediction(actualNumbers, predictedNumbers, lotteryType, actualSpecial = null) {
         // 判斷是否為順序遊戲（3星彩、4星彩）
         const isOrderedGame = ['STAR_3', 'STAR_4'].includes(lotteryType);
 
@@ -968,8 +974,13 @@ export class App {
 
         } else {
             // 非順序遊戲（大樂透、威力彩等）：檢查號碼是否出現（不考慮順序）
-            // 使用 Set 避免重複計算
+            // 🔧 大樂透/威力彩：把特別號也加入目標集合 (6+1=7個目標)
             const actualSet = new Set(actualNumbers);
+            if (actualSpecial !== null && actualSpecial !== undefined &&
+                ['BIG_LOTTO', 'POWER_LOTTO'].includes(lotteryType)) {
+                actualSet.add(parseInt(actualSpecial));  // 加入特別號
+            }
+
             const predictedSet = new Set(predictedNumbers);
 
             hits = 0;
@@ -979,7 +990,7 @@ export class App {
                 }
             }
 
-            // 大樂透等遊戲：中3個以上算成功
+            // 大樂透等遊戲：中3個以上算成功（對7個目標）
             isSuccess = hits >= 3;
         }
 
@@ -1341,6 +1352,7 @@ export class App {
             let successCount = 0;
 
             for (const targetDraw of testTargets) {
+                console.log(`\n🔄 ========== 模擬測試階段：第 ${testTargets.indexOf(targetDraw) + 1}/${testTargets.length} 期 ==========`);
                 // 取得該期之前的所有資料作為訓練集
                 const targetDate = targetDraw.date.replace(/\//g, '-');
                 const trainingData = allData.filter(d => {
@@ -1353,6 +1365,16 @@ export class App {
                     console.warn(`期數 ${targetDraw.draw} 訓練資料不足 (${trainingData.length} 期)，跳過`);
                     continue;
                 }
+
+                // 🔍 Debug: 檢查訓練資料的期數範圍
+                const sortedTraining = [...trainingData].sort((a, b) => {
+                    const drawA = parseInt((a.draw || '').toString().replace(/\D/g, '')) || 0;
+                    const drawB = parseInt((b.draw || '').toString().replace(/\D/g, '')) || 0;
+                    return drawA - drawB;
+                });
+                console.log(`🔍 目標期數 ${targetDraw.draw} (${targetDate}): 訓練資料 ${trainingData.length} 期`);
+                console.log(`   期數範圍: ${sortedTraining[0]?.draw} ~ ${sortedTraining[sortedTraining.length - 1]?.draw}`);
+                console.log(`   日期範圍: ${sortedTraining[0]?.date} ~ ${sortedTraining[sortedTraining.length - 1]?.date}`);
 
                 // 獲取彩券規則
                 const lotteryRules = this.getLotteryRulesFromType(targetDraw.lotteryType);
@@ -1369,27 +1391,22 @@ export class App {
 
                 // 提取預測結果 (predictWithData 返回的是完整對象)
                 const prediction = {
-                    numbers: predictionResult.numbers
+                    numbers: predictionResult.numbers,
+                    special: predictionResult.special  // 🔧 提取特別號碼
                 };
 
                 console.log(`📊 目標期數 ${targetDraw.draw}: 使用 ${trainingData.length} 期資料預測`);
 
-                // 驗證結果 - 根據彩券類型使用不同的評分邏輯
+                // 驗證結果 - 根據彩券類型使用不同的評分邏輯（含特別號）
                 const { hits, isSuccess } = this.evaluatePrediction(
                     targetDraw.numbers,
                     prediction.numbers,
-                    targetDraw.lotteryType
+                    targetDraw.lotteryType,
+                    targetDraw.special  // 🔧 傳入特別號，讓7號比對生效
                 );
                 if (isSuccess) successCount++;
 
-                // 排序訓練數據以正確顯示起訖期數
-                const sortedTraining = [...trainingData].sort((a, b) => {
-                    // 提取純數字部分進行比較（忽略 -01, -02 等後綴）
-                    const aNum = parseInt(a.draw.split('-')[0]);
-                    const bNum = parseInt(b.draw.split('-')[0]);
-                    return aNum - bNum;
-                });
-
+                // 使用已排序的 sortedTraining 來顯示起訖期數
                 const refRange = sortedTraining.length > 0
                     ? `${sortedTraining[0].draw} - ${sortedTraining[sortedTraining.length - 1].draw} (共${trainingData.length}期)`
                     : '-';
@@ -1398,7 +1415,9 @@ export class App {
                     draw: targetDraw.draw,
                     date: targetDraw.date,
                     predicted: prediction.numbers,
+                    predictedSpecial: prediction.special || null,  // 🔧 添加預測特別號
                     actual: targetDraw.numbers,
+                    actualSpecial: targetDraw.special || null,  // 🔧 添加實際特別號
                     hits: hits,  // hits 現在是數字，不需要 .length
                     isSuccess: isSuccess,
                     refRange: refRange
@@ -1409,16 +1428,17 @@ export class App {
             // 3️⃣ 顯示結果與成功率
             // -------------------------------------------------
             this.displaySimulationResults(results, successCount);
-            
+
             // -------------------------------------------------
             // 4️⃣ 執行最新一期的雙注預測（使用全部歷史資料）
             // -------------------------------------------------
+            console.log(`\n\n🌟 ========== 未來預測階段：預測下一期（使用全部 ${allData.length} 期歷史數據）==========\n`);
             try {
                 await this.generateNextPeriodPrediction(allData);
             } catch (error) {
                 console.error('最新一期預測失敗:', error);
             }
-            
+
             this.uiManager.showNotification(
                 `模擬完成！測試 ${results.length} 期，成功 ${successCount} 期，成功率: ${results.length > 0 ? Math.round((successCount / results.length) * 100) : 0}%`,
                 'success'
@@ -1495,11 +1515,12 @@ export class App {
                     numbers: predictionResult.numbers
                 };
 
-                // 使用正確的評分邏輯
+                // 使用正確的評分邏輯（含特別號）
                 const { hits, isSuccess } = this.evaluatePrediction(
                     targetDraw.numbers,
                     prediction.numbers,
-                    targetDraw.lotteryType
+                    targetDraw.lotteryType,
+                    targetDraw.special  // 🔧 傳入特別號，讓7號比對生效
                 );
                 if (isSuccess) successCount++;
 
@@ -1518,7 +1539,9 @@ export class App {
                     draw: targetDraw.draw,
                     date: targetDraw.date,
                     predicted: prediction.numbers,
+                    predictedSpecial: prediction.special || null,  // 🔧 添加預測特別號
                     actual: targetDraw.numbers,
+                    actualSpecial: targetDraw.special || null,  // 🔧 添加實際特別號
                     hits: hits,  // hits 現在是數字，不需要 .length
                     isSuccess: isSuccess,
                     refRange: refRange
@@ -1724,8 +1747,8 @@ export class App {
                 <tr class="${r.isSuccess ? 'success-row' : ''}">
                     <td>${r.draw}</td>
                     <td>${r.date}</td>
-                    <td>${r.predicted.join(', ')}</td>
-                    <td>${r.actual.join(', ')}</td>
+                    <td>${r.predicted.join(', ')}${r.predictedSpecial ? ' <strong style="color: #e74c3c;">+ ' + r.predictedSpecial + '</strong>' : ''}</td>
+                    <td>${r.actual.join(', ')}${r.actualSpecial ? ' <strong style="color: #e74c3c;">+ ' + r.actualSpecial + '</strong>' : ''}</td>
                     <td><span class="hit-badge ${r.hits >= 3 ? 'high-hit' : ''}">${r.hits}</span></td>
                     <td>${r.refRange || '-'}</td>
                     <td>${r.isSuccess ? '✅' : '❌'}</td>
@@ -1774,26 +1797,32 @@ export class App {
      */
     async generateNextPeriodPrediction(allData) {
         const nextPredictionPanel = document.getElementById('simulation-next-prediction');
-        
+
         if (!nextPredictionPanel) {
             console.warn('找不到最新一期預測面板');
             return;
         }
-        
+
+        console.log(`🎯 開始未來預測：使用全部 ${allData.length} 期歷史數據（這是正確的！）`);
+
         try {
-            // 整合所有14種策略的預測結果
+            // 整合所有策略的預測結果（包含後端優化策略）
             const strategies = [
                 'frequency', 'trend', 'bayesian', 'markov', 'montecarlo', 'deviation',
                 'odd_even', 'zone_balance', 'hot_cold', 'sum_range', 'number_pairs',
-                'ensemble_weighted', 'ensemble_combined', 'ensemble_advanced'
+                'ensemble_weighted', 'ensemble_combined', 'ensemble_advanced',
+                'backend_optimized'  // 添加後端優化策略
             ];
-            
+
             const allPredictions = [];
             const lotteryRules = this.getLotteryRulesFromType(this.currentLotteryType);
             const maxNumber = lotteryRules.maxNumber;
-            
+
             // 對每個策略執行預測
-            for (const strategy of strategies) {
+            console.log(`📋 準備用 ${strategies.length} 種策略預測未來下一期...`);
+            for (let i = 0; i < strategies.length; i++) {
+                const strategy = strategies[i];
+                console.log(`\n🔮 [${i + 1}/${strategies.length}] 使用策略: ${strategy.toUpperCase()}`);
                 try {
                     const result = await this.predictionEngine.predictWithData(
                         strategy,
@@ -1801,8 +1830,9 @@ export class App {
                         this.currentLotteryType,
                         true
                     );
-                    
+
                     if (result && result.numbers && result.numbers.length > 0) {
+                        console.log(`   ✅ ${strategy} 預測成功: ${result.numbers.join(', ')} (信心度: ${result.confidence || 50}%)`);
                         allPredictions.push({
                             strategy: strategy,
                             numbers: result.numbers,
@@ -1810,20 +1840,20 @@ export class App {
                         });
                     }
                 } catch (error) {
-                    console.warn(`策略 ${strategy} 預測失敗:`, error.message);
+                    console.warn(`   ❌ 策略 ${strategy} 預測失敗:`, error.message);
                 }
             }
-            
+
             if (allPredictions.length === 0) {
                 throw new Error('所有策略都無法執行預測');
             }
-            
+
             // 計算每個號碼的加權分數
             const numberScores = {};
             for (let i = 1; i <= maxNumber; i++) {
                 numberScores[i] = 0;
             }
-            
+
             allPredictions.forEach(pred => {
                 const { numbers, confidence } = pred;
                 numbers.forEach((num, index) => {
@@ -1833,27 +1863,27 @@ export class App {
                     numberScores[num] = (numberScores[num] || 0) + score;
                 });
             });
-            
+
             // 選出分數最高的12個號碼
             const sortedNumbers = Object.entries(numberScores)
                 .map(([num, score]) => ({ num: parseInt(num), score }))
                 .sort((a, b) => b.score - a.score)
                 .slice(0, 12);
-            
+
             // 分成兩注（前6和後6）
             const bet1Numbers = sortedNumbers.slice(0, 6).map(n => n.num).sort((a, b) => a - b);
             const bet2Numbers = sortedNumbers.slice(6, 12).map(n => n.num).sort((a, b) => a - b);
-            
+
             // 計算信心度
             const maxScore = Math.max(...Object.values(numberScores));
             const bet1Score = sortedNumbers.slice(0, 6).reduce((sum, n) => sum + n.score, 0) / 6;
             const bet2Score = sortedNumbers.slice(6, 12).reduce((sum, n) => sum + n.score, 0) / 6;
             const overallScore = sortedNumbers.slice(0, 12).reduce((sum, n) => sum + n.score, 0) / 12;
-            
+
             const bet1Confidence = Math.min(95, Math.round((bet1Score / maxScore) * 100));
             const bet2Confidence = Math.min(95, Math.round((bet2Score / maxScore) * 100));
             const overallConfidence = Math.min(95, Math.round((overallScore / maxScore) * 100));
-            
+
             // 顯示結果
             this.displayNextPeriodPrediction({
                 bet1: { numbers: bet1Numbers, confidence: bet1Confidence },
@@ -1863,15 +1893,15 @@ export class App {
                 basePeriod: allData.length > 0 ? `${allData[0].draw} - ${allData[allData.length - 1].draw}` : '-',
                 topStrategies: allPredictions.slice(0, 5).map(p => p.strategy)
             });
-            
+
             nextPredictionPanel.style.display = 'block';
-            
+
         } catch (error) {
             console.error('生成最新一期預測失敗:', error);
             nextPredictionPanel.style.display = 'none';
         }
     }
-    
+
     /**
      * 顯示最新一期的雙注預測結果
      */
@@ -1883,7 +1913,7 @@ export class App {
                 .map(num => `<div class="predicted-number">${num}</div>`)
                 .join('');
         }
-        
+
         // 顯示第二注號碼
         const bet2Container = document.getElementById('next-bet-numbers-2');
         if (bet2Container) {
@@ -1891,34 +1921,34 @@ export class App {
                 .map(num => `<div class="predicted-number">${num}</div>`)
                 .join('');
         }
-        
+
         // 更新信心度
         const bet1ConfidenceEl = document.getElementById('next-bet-confidence-1');
         if (bet1ConfidenceEl) {
             bet1ConfidenceEl.textContent = `${result.bet1.confidence}%`;
         }
-        
+
         const bet2ConfidenceEl = document.getElementById('next-bet-confidence-2');
         if (bet2ConfidenceEl) {
             bet2ConfidenceEl.textContent = `${result.bet2.confidence}%`;
         }
-        
+
         // 更新統計資訊
         const strategyCountEl = document.getElementById('next-bet-strategy-count');
         if (strategyCountEl) {
             strategyCountEl.textContent = result.strategyCount;
         }
-        
+
         const overallConfidenceEl = document.getElementById('next-bet-overall-confidence');
         if (overallConfidenceEl) {
             overallConfidenceEl.textContent = `${result.overallConfidence}%`;
         }
-        
+
         const basePeriodEl = document.getElementById('next-bet-base-period');
         if (basePeriodEl) {
             basePeriodEl.textContent = result.basePeriod;
         }
-        
+
         // 生成詳細報告
         const reportEl = document.getElementById('next-bet-report');
         if (reportEl) {
@@ -1956,11 +1986,12 @@ export class App {
             this.setButtonLoading(dualBetBtn, true);
             this.uiManager.showNotification('正在執行雙注優化預測，整合所有策略中...', 'info');
 
-            // 所有可用策略列表
+            // 所有可用策略列表（包含後端優化策略）
             const strategies = [
                 'frequency', 'trend', 'bayesian', 'markov', 'montecarlo', 'deviation',
                 'odd_even', 'zone_balance', 'hot_cold', 'sum_range', 'number_pairs',
-                'ensemble_weighted', 'ensemble_combined', 'ensemble_advanced'
+                'ensemble_weighted', 'ensemble_combined', 'ensemble_advanced',
+                'backend_optimized'  // 添加後端優化策略
             ];
 
             // 收集所有策略的預測結果
@@ -2043,6 +2074,386 @@ export class App {
         }
     }
 
+    /**
+     * 聰明包牌 - 智能雙注預測
+     * 使用選定的預測方法，基於該遊戲的全部歷史數據，生成最有機會的雙注號碼
+     */
+    async handleSmartDualBetPredict() {
+        const smartDualBetBtn = document.getElementById('smart-dual-bet-btn');
+        const strategySelect = document.getElementById('dual-bet-strategy-select');
+        const selectedStrategy = strategySelect ? strategySelect.value : 'dual_bet_hybrid';
+        const lotteryType = this.currentLotteryType || 'BIG_LOTTO';
+
+        try {
+            this.setButtonLoading(smartDualBetBtn, true);
+            this.uiManager.showNotification(`正在使用「${this.getStrategyDisplayName(selectedStrategy)}」預測雙注號碼...`, 'info');
+
+            // 獲取彩券規則
+            const lotteryRules = this.getLotteryRulesFromType(lotteryType);
+            const pickCount = lotteryRules.pickCount || 6;
+            const minNum = lotteryRules.minNumber || 1;
+            const maxNum = lotteryRules.maxNumber || 49;
+
+            // 使用全部數據進行預測
+            const sampleSize = 'all';
+            let result;
+
+            // 根據策略類型選擇不同的處理方式
+            switch (selectedStrategy) {
+                case 'optimized_ensemble':
+                    result = await this.predictOptimizedEnsemble(lotteryType, pickCount);
+                    break;
+                case 'dual_bet_hybrid':
+                    result = await this.predictDualBetHybrid(lotteryType, sampleSize, pickCount, minNum, maxNum);
+                    break;
+                case 'hot_cold_split':
+                    result = await this.predictHotColdSplit(lotteryType, sampleSize, pickCount, minNum, maxNum);
+                    break;
+                default:
+                    result = await this.predictGenericDualBet(selectedStrategy, lotteryType, sampleSize, pickCount, minNum, maxNum);
+                    break;
+            }
+
+            // 顯示結果
+            this.displaySmartDualBetResult(result);
+            this.uiManager.showNotification(`智能雙注預測完成！使用「${result.method}」策略`, 'success');
+
+        } catch (error) {
+            console.error('智能雙注預測錯誤:', error);
+            this.uiManager.showNotification('智能雙注預測失敗: ' + error.message, 'error');
+        } finally {
+            this.setButtonLoading(smartDualBetBtn, false);
+        }
+    }
+
+    /**
+     * 優化集成預測 - 調用後端動態權重集成
+     */
+    async predictOptimizedEnsemble(lotteryType, pickCount) {
+        console.log('🏆 正在調用優化集成預測 (動態權重回測)...');
+
+        // 獲取數據範圍（使用全部數據）
+        const data = await this.dataProcessor.getDataRange('all', lotteryType);
+        if (!data || data.length < 50) {
+            throw new Error('數據量不足，優化集成需要至少 50 期');
+        }
+
+        // 獲取期號範圍
+        const sortedData = [...data].sort((a, b) => parseInt(a.draw) - parseInt(b.draw));
+        const startDraw = sortedData[0].draw;
+        const endDraw = sortedData[sortedData.length - 1].draw;
+
+        // 調用後端 API
+        const response = await fetch('http://127.0.0.1:5001/api/predict-with-range', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                lotteryType: lotteryType,
+                modelType: 'optimized_ensemble',
+                startDraw: startDraw,
+                endDraw: endDraw
+            })
+        });
+
+        if (!response.ok) {
+            const error = await response.json();
+            throw new Error(error.detail || '優化集成預測失敗');
+        }
+
+        const result = await response.json();
+        console.log('✅ 優化集成預測完成:', result);
+
+        // 返回格式化的雙注結果
+        return {
+            bet1: result.bet1 || { numbers: result.numbers, confidence: result.confidence },
+            bet2: result.bet2 || { numbers: [], confidence: 0 },
+            method: '優化集成預測',
+            strategy: 'optimized_ensemble',
+            report: `使用 ${data.length} 期數據進行動態權重回測集成`,
+            strategyWeights: result.strategy_weights
+        };
+    }
+
+    /**
+     * 雙注混合策略 - 綜合多種方法產生最佳雙注
+     */
+    async predictDualBetHybrid(lotteryType, sampleSize, pickCount, minNum, maxNum) {
+        // 使用多種高穩定性策略
+        const strategies = ['ensemble_combined', 'bayesian', 'statistical', 'hot_cold'];
+        const numberScores = {};
+
+        for (let i = minNum; i <= maxNum; i++) {
+            numberScores[i] = 0;
+        }
+
+        let successCount = 0;
+        for (const strategy of strategies) {
+            try {
+                console.log(`🔍 [雙注混合] 正在執行策略: ${strategy}`);
+                const result = await this.predictionEngine.predict(strategy, sampleSize, lotteryType, true);
+                console.log(`✅ [雙注混合] 策略 ${strategy} 返回:`, result.numbers, '信心度:', result.confidence);
+                if (result && result.numbers && result.numbers.length > 0) {
+                    const weight = (result.confidence <= 1 ? result.confidence : result.confidence / 100);
+                    result.numbers.forEach((num, idx) => {
+                        const rankScore = (pickCount - idx) / pickCount;
+                        numberScores[num] += rankScore * weight * 10;
+                    });
+                    // 注意：不再使用 probabilities，因為後端返回的是原始分數而非正規化機率
+                    // 這會導致不在預測結果中的號碼獲得過高分數
+                    successCount++;
+                }
+            } catch (err) {
+                console.warn(`❌ [雙注混合] 策略 ${strategy} 執行失敗:`, err);
+            }
+        }
+
+        if (successCount === 0) {
+            throw new Error('所有策略執行失敗');
+        }
+
+        // 選出最高分的 12 個號碼
+        const sortedNumbers = Object.entries(numberScores)
+            .filter(([, score]) => score > 0)
+            .sort((a, b) => b[1] - a[1])
+            .slice(0, pickCount * 2)
+            .map(([num]) => parseInt(num));
+
+        // 補充不足的號碼
+        this.fillMissingNumbers(sortedNumbers, pickCount * 2, minNum, maxNum);
+
+        const bet1Numbers = sortedNumbers.slice(0, pickCount).sort((a, b) => a - b);
+        const bet2Numbers = sortedNumbers.slice(pickCount, pickCount * 2).sort((a, b) => a - b);
+
+        console.log(`✅ [雙注混合] 綜合 ${successCount} 種策略 - 第一注:`, bet1Numbers, '第二注:', bet2Numbers);
+
+        const bet1Score = bet1Numbers.reduce((sum, num) => sum + numberScores[num], 0) / pickCount;
+        const bet2Score = bet2Numbers.reduce((sum, num) => sum + numberScores[num], 0) / pickCount;
+        const maxScore = Math.max(...Object.values(numberScores).filter(s => s > 0), 1);
+
+        return {
+            bet1: { numbers: bet1Numbers, confidence: Math.min(95, (bet1Score / maxScore) * 100) },
+            bet2: { numbers: bet2Numbers, confidence: Math.min(90, (bet2Score / maxScore) * 100) },
+            method: '雙注混合策略',
+            strategy: 'dual_bet_hybrid',
+            report: `綜合 ${successCount} 種策略 (${strategies.join(', ')}) 的投票結果`
+        };
+    }
+
+    /**
+     * 熱冷分離策略 - 第一注熱號，第二注冷號
+     */
+    async predictHotColdSplit(lotteryType, sampleSize, pickCount, minNum, maxNum) {
+        // 獲取頻率統計
+        const data = await this.dataProcessor.getDataRange('all', lotteryType);
+        if (!data || data.length < 10) {
+            throw new Error('數據量不足，至少需要 10 期');
+        }
+
+        // 計算頻率
+        const frequency = {};
+        for (let i = minNum; i <= maxNum; i++) {
+            frequency[i] = 0;
+        }
+        data.forEach(draw => {
+            if (draw.numbers) {
+                draw.numbers.forEach(num => {
+                    frequency[num] = (frequency[num] || 0) + 1;
+                });
+            }
+        });
+
+        // 排序：熱門號碼（頻率高）和冷門號碼（頻率低）
+        const sortedByFreq = Object.entries(frequency)
+            .sort((a, b) => b[1] - a[1])
+            .map(([num]) => parseInt(num));
+
+        // 第一注：取最熱門的號碼
+        const hotNumbers = sortedByFreq.slice(0, pickCount).sort((a, b) => a - b);
+
+        // 第二注：取最冷門的號碼（從尾部取）
+        const coldNumbers = sortedByFreq.slice(-pickCount).sort((a, b) => a - b);
+
+        // 計算信心度
+        const maxFreq = Math.max(...Object.values(frequency));
+        const hotFreqSum = hotNumbers.reduce((sum, num) => sum + frequency[num], 0);
+        const coldFreqSum = coldNumbers.reduce((sum, num) => sum + frequency[num], 0);
+
+        return {
+            bet1: {
+                numbers: hotNumbers,
+                confidence: Math.min(92, (hotFreqSum / (maxFreq * pickCount)) * 100)
+            },
+            bet2: {
+                numbers: coldNumbers,
+                confidence: Math.min(85, 50 + (1 - coldFreqSum / (maxFreq * pickCount)) * 35)
+            },
+            method: '熱冷分離策略',
+            strategy: 'hot_cold_split',
+            report: `第一注選用歷史頻率最高的 ${pickCount} 個熱門號碼，第二注選用頻率最低的 ${pickCount} 個冷門號碼（均值回歸理論）`
+        };
+    }
+
+    /**
+     * 通用雙注預測 - 使用單一策略
+     */
+    async predictGenericDualBet(strategy, lotteryType, sampleSize, pickCount, minNum, maxNum) {
+        const numberScores = {};
+        for (let i = minNum; i <= maxNum; i++) {
+            numberScores[i] = 0;
+        }
+
+        const iterations = 3;
+        let successCount = 0;
+        let methodName = '';
+
+        for (let iter = 0; iter < iterations; iter++) {
+            try {
+                const result = await this.predictionEngine.predict(strategy, sampleSize, lotteryType, true);
+                if (result && result.numbers && result.numbers.length > 0) {
+                    methodName = result.method || this.getStrategyDisplayName(strategy);
+                    result.numbers.forEach((num, idx) => {
+                        const rankScore = (pickCount - idx) / pickCount;
+                        const confidenceWeight = (result.confidence <= 1 ? result.confidence : result.confidence / 100);
+                        numberScores[num] += rankScore * confidenceWeight * 10;
+                    });
+                    if (result.probabilities) {
+                        Object.entries(result.probabilities).forEach(([num, prob]) => {
+                            numberScores[parseInt(num)] += prob * 5;
+                        });
+                    }
+                    successCount++;
+                }
+            } catch (err) {
+                console.warn(`策略執行第 ${iter + 1} 次失敗:`, err);
+            }
+        }
+
+        if (successCount === 0) {
+            throw new Error('預測策略執行失敗，請檢查數據或更換策略');
+        }
+
+        const sortedNumbers = Object.entries(numberScores)
+            .filter(([, score]) => score > 0)
+            .sort((a, b) => b[1] - a[1])
+            .slice(0, pickCount * 2)
+            .map(([num]) => parseInt(num));
+
+        this.fillMissingNumbers(sortedNumbers, pickCount * 2, minNum, maxNum);
+
+        const bet1Numbers = sortedNumbers.slice(0, pickCount).sort((a, b) => a - b);
+        const bet2Numbers = sortedNumbers.slice(pickCount, pickCount * 2).sort((a, b) => a - b);
+
+        const bet1Score = bet1Numbers.reduce((sum, num) => sum + numberScores[num], 0) / pickCount;
+        const bet2Score = bet2Numbers.reduce((sum, num) => sum + numberScores[num], 0) / pickCount;
+        const maxScore = Math.max(...Object.values(numberScores).filter(s => s > 0), 1);
+
+        return {
+            bet1: { numbers: bet1Numbers, confidence: Math.min(95, (bet1Score / maxScore) * 100) },
+            bet2: { numbers: bet2Numbers, confidence: Math.min(90, (bet2Score / maxScore) * 100) },
+            method: methodName,
+            strategy: strategy
+        };
+    }
+
+    /**
+     * 補充不足的號碼
+     */
+    fillMissingNumbers(numbers, targetCount, minNum, maxNum) {
+        if (numbers.length >= targetCount) return;
+        const usedNums = new Set(numbers);
+        for (let i = minNum; i <= maxNum && numbers.length < targetCount; i++) {
+            if (!usedNums.has(i)) {
+                numbers.push(i);
+            }
+        }
+    }
+
+    /**
+     * 獲取策略顯示名稱
+     */
+    getStrategyDisplayName(strategy) {
+        const strategyNames = {
+            'frequency': '頻率分析',
+            'trend': '趨勢回歸',
+            'bayesian': '貝葉斯推論',
+            'markov': '馬可夫鏈',
+            'montecarlo': '蒙地卡羅模擬',
+            'deviation': '偏差追蹤',
+            'backend_optimized': '後端優化策略',
+            'prophet': 'Prophet時序預測',
+            'xgboost': 'XGBoost機器學習',
+            'ai_prophet': 'Prophet時序預測',
+            'ai_xgboost': 'XGBoost機器學習',
+            'ensemble_weighted': '加權集成',
+            'ensemble_combined': '綜合集成',
+            'ensemble_advanced': '進階集成',
+            // 雙注專用策略
+            'optimized_ensemble': '🏆 優化集成預測',
+            'dual_bet_hybrid': '🎯 雙注混合策略',
+            'hot_cold_split': '🔥❄️ 熱冷分離策略',
+            'collaborative_hybrid': '🤝 協作混合模式',
+            'statistical': '多維統計分析',
+            'ml_forest': '隨機森林',
+            'hot_cold': '冷熱號混合'
+        };
+        return strategyNames[strategy] || strategy;
+    }
+
+    /**
+     * 顯示智能雙注預測結果
+     */
+    displaySmartDualBetResult(result) {
+        // 顯示結果區域
+        const resultsDiv = document.getElementById('smart-dual-bet-results');
+        if (resultsDiv) {
+            resultsDiv.style.display = 'block';
+        }
+
+        // 第一注號碼 + 特別號
+        const bet1Container = document.getElementById('smart-dual-bet-numbers-1');
+        if (bet1Container) {
+            let html = result.bet1.numbers.map(num =>
+                `<div class="predicted-number">${num}</div>`
+            ).join('');
+            // 添加特別號（如果有）
+            if (result.bet1.special) {
+                html += `<div class="predicted-number special-number" style="background: linear-gradient(135deg, #FFD700, #FFA500); color: #000; border: 2px solid #FF8C00;" title="特別號">★${result.bet1.special}</div>`;
+            }
+            bet1Container.innerHTML = html;
+        }
+
+        // 第二注號碼 + 特別號
+        const bet2Container = document.getElementById('smart-dual-bet-numbers-2');
+        if (bet2Container) {
+            let html = result.bet2.numbers.map(num =>
+                `<div class="predicted-number">${num}</div>`
+            ).join('');
+            // 添加特別號（如果有）
+            if (result.bet2.special) {
+                html += `<div class="predicted-number special-number" style="background: linear-gradient(135deg, #FFD700, #FFA500); color: #000; border: 2px solid #FF8C00;" title="特別號">★${result.bet2.special}</div>`;
+            }
+            bet2Container.innerHTML = html;
+        }
+
+        // 信心度
+        const conf1 = document.getElementById('smart-dual-bet-confidence-1');
+        const conf2 = document.getElementById('smart-dual-bet-confidence-2');
+        if (conf1) conf1.textContent = `${result.bet1.confidence.toFixed(1)}%`;
+        if (conf2) conf2.textContent = `${result.bet2.confidence.toFixed(1)}%`;
+
+        // 使用的方法說明
+        const methodDiv = document.getElementById('smart-dual-bet-method');
+        if (methodDiv) {
+            const specialNote = (result.bet1.special || result.bet2.special) ? ' (含特別號預測)' : '';
+            methodDiv.innerHTML = `使用策略：<strong>${result.method}</strong>${specialNote} | 基於全部歷史數據分析`;
+        }
+
+        // 滾動到結果區域
+        if (resultsDiv) {
+            resultsDiv.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
+    }
+
     displayDualBetResult(result) {
         // 顯示雙注結果（保持單注結果可見）
         const dualResult = document.getElementById('dual-bet-results');
@@ -2095,7 +2506,7 @@ export class App {
         // 顯示單注結果，隱藏雙注結果
         const singleResult = document.getElementById('prediction-results');
         const dualResult = document.getElementById('dual-bet-results');
-        
+
         if (singleResult) singleResult.style.display = 'block';
         if (dualResult) dualResult.style.display = 'none';
 

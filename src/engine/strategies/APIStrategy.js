@@ -172,13 +172,15 @@ export class APIStrategy {
 
         // 排序數據以確保正確的起訖期數（數值排序）
         const sortedData = [...data].sort((a, b) => {
-            const drawA = parseInt((a.draw || '').split('-')[0]) || 0;
-            const drawB = parseInt((b.draw || '').split('-')[0]) || 0;
+            // 提取純數字期數（處理可能的格式：96000001, 2024-001, 001 等）
+            const drawA = parseInt((a.draw || '').toString().replace(/\D/g, '')) || 0;
+            const drawB = parseInt((b.draw || '').toString().replace(/\D/g, '')) || 0;
             return drawA - drawB;  // 數值比較
         });
 
-        startDraw = sortedData[0].draw?.split('-')[0];
-        endDraw = sortedData[sortedData.length - 1].draw?.split('-')[0];
+        // 直接使用原始 draw 值（不做分割處理）
+        startDraw = sortedData[0].draw?.toString();
+        endDraw = sortedData[sortedData.length - 1].draw?.toString();
 
         // 驗證期數是否有效
         if (!startDraw || !endDraw) {
@@ -210,7 +212,7 @@ export class APIStrategy {
     async executeRangeRequest(requestData, lotteryRules) {
         // Debug: 記錄實際發送的參數
         console.log('🔍 predict-with-range 請求參數:', JSON.stringify(requestData, null, 2));
-        
+
         // 發送 API 請求到範圍查詢端點
         const response = await fetch(this.apiEndpoint.replace('/predict', '/predict-with-range'), {
             method: 'POST',
@@ -275,7 +277,10 @@ export class APIStrategy {
             'prophet': 'Prophet 時間序列',
             'xgboost': 'XGBoost 梯度提升',
             'autogluon': 'AutoGluon AutoML',
-            'lstm': 'LSTM 神經網絡'
+            'lstm': 'LSTM 神經網絡',
+            'transformer': 'Transformer (PatchTST)',
+            'bayesian_ensemble': '貝叶斯優化集成',
+            'maml': '元學習 (MAML)'
         };
         return names[this.modelType] || this.modelType;
     }

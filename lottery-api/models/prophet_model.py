@@ -4,6 +4,7 @@ import numpy as np
 from typing import List, Dict
 import logging
 from collections import Counter
+from .unified_predictor import predict_special_number, log_data_range, get_data_range_info
 from datetime import datetime, timedelta
 
 logger = logging.getLogger(__name__)
@@ -30,8 +31,11 @@ class ProphetPredictor:
             包含預測號碼、信心度、趨勢分析等的字典
         """
         try:
+            # 🔧 記錄數據範圍
+            log_data_range('Prophet時序預測', history)
+
             logger.info(f"開始 Prophet 預測，歷史數據量: {len(history)}")
-            
+
             # 1. 提取參數
             pick_count = lottery_rules.get('pickCount', 6)
             min_number = lottery_rules.get('minNumber', 1)
@@ -82,7 +86,10 @@ class ProphetPredictor:
             
             logger.info(f"Prophet 預測完成: {predicted_numbers}, 信心度: {confidence:.2%}")
             
-            return {
+            # 🔧 預測特別號碼
+            predicted_special = predict_special_number(history, lottery_rules, predicted_numbers)
+
+            result = {
                 "numbers": predicted_numbers,
                 "confidence": confidence,
                 "method": "Prophet 時間序列分析",
@@ -94,8 +101,15 @@ class ProphetPredictor:
                     "version": "1.0",
                     "algorithm": "Prophet (Facebook)"
                 },
-                "notes": "基於歷史數據的時間序列趨勢和週期性分析，結合頻率統計確保預測的穩定性"
+                "notes": "基於歷史數據的時間序列趨勢和週期性分析，結合頻率統計確保預測的穩定性",
+                "dataRange": get_data_range_info(history)  # 🔧 添加數據範圍信息
             }
+
+            # 🔧 添加特別號碼
+            if predicted_special is not None:
+                result['special'] = predicted_special
+
+            return result
             
         except Exception as e:
             logger.error(f"Prophet 預測失敗: {str(e)}", exc_info=True)
@@ -135,7 +149,9 @@ class ProphetPredictor:
                 seasonality_prior_scale=10.0    # 控制季節性的強度
             )
             
-            # 訓練模型
+            # 訓練模型（抑制 cmdstan 輸出）
+            import logging
+            logging.getLogger('cmdstanpy').setLevel(logging.WARNING)
             model.fit(df)
             
             # 預測未來 1 期
@@ -159,7 +175,8 @@ class ProphetPredictor:
             return predicted_number
             
         except Exception as e:
-            logger.warning(f"Prophet 單號碼預測失敗: {e}")
+            # Prophet 預測失敗時的備用方案
+            logger.debug(f"Prophet 單號碼預測使用備用方案 (位置 {position}): {type(e).__name__}")
             # 備用：返回頻率基準
             if position < len(frequency_baseline):
                 return frequency_baseline[position]

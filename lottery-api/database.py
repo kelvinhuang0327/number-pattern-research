@@ -107,6 +107,10 @@ class DatabaseManager:
             # 準備批次插入的數據
             batch_data = []
             
+            # Debug: Log first item to check structure
+            if len(draws) > 0:
+                logger.info(f"🔍 First draw data sample: {draws[0]}")
+            
             for draw in draws:
                 # 處理 numbers 字段，防止雙重序列化
                 numbers = draw.get('numbers', [])
@@ -412,6 +416,78 @@ class DatabaseManager:
             logger.info("✅ Database vacuumed")
         except Exception as e:
             logger.error(f"❌ Vacuum failed: {e}")
+            raise
+        finally:
+            conn.close()
+
+    def get_draws_by_range(
+        self,
+        lottery_type: str,
+        start_draw: Optional[str] = None,
+        end_draw: Optional[str] = None
+    ) -> List[Dict]:
+        """
+        根據期數範圍查詢開獎記錄
+
+        Args:
+            lottery_type: 彩券類型
+            start_draw: 起始期數（包含），None 表示從最早開始
+            end_draw: 結束期數（包含），None 表示到最新為止
+
+        Returns:
+            開獎記錄列表（按日期和期數升序排序）
+        """
+        conn = self._get_connection()
+        cursor = conn.cursor()
+
+        try:
+            # 構建查詢條件
+            conditions = ["lottery_type = ?"]
+            params = [lottery_type]
+
+            if start_draw:
+                # 使用 CAST 將 draw 轉為整數進行比較
+                conditions.append("CAST(draw AS INTEGER) >= ?")
+                params.append(int(start_draw))
+
+            if end_draw:
+                # 使用 CAST 將 draw 轉為整數進行比較
+                conditions.append("CAST(draw AS INTEGER) <= ?")
+                params.append(int(end_draw))
+
+            where_clause = " AND ".join(conditions)
+
+            # 查詢數據（按期號整數升序排列）
+            query = f"""
+                SELECT draw, date, lottery_type, numbers, special
+                FROM draws
+                WHERE {where_clause}
+                ORDER BY CAST(draw AS INTEGER) ASC
+            """
+
+            logger.info(f"🔍 SQL Query: {query}")
+            logger.info(f"🔍 Params: {params}")
+
+            cursor.execute(query, params)
+
+            rows = cursor.fetchall()
+            draws = []
+
+            for row in rows:
+                draws.append({
+                    'draw': row['draw'],
+                    'date': row['date'],
+                    'lotteryType': row['lottery_type'],
+                    'numbers': json.loads(row['numbers']),
+                    'special': row['special']
+                })
+
+            logger.info(f"✅ 查詢範圍預測數據: {lottery_type} {start_draw or '最早'} - {end_draw or '最新'}, 共 {len(draws)} 期")
+
+            return draws
+
+        except Exception as e:
+            logger.error(f"❌ Range query failed: {e}")
             raise
         finally:
             conn.close()

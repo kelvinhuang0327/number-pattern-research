@@ -5,6 +5,7 @@ from typing import List, Dict, Tuple
 import logging
 from sklearn.multioutput import MultiOutputClassifier
 from sklearn.preprocessing import MultiLabelBinarizer
+from .unified_predictor import predict_special_number, log_data_range, get_data_range_info
 
 logger = logging.getLogger(__name__)
 
@@ -22,8 +23,11 @@ class XGBoostPredictor:
         預測下一期彩票號碼
         """
         try:
+            # 🔧 記錄數據範圍
+            log_data_range('XGBoost梯度提升', history)
+
             logger.info(f"開始 XGBoost 預測，歷史數據量: {len(history)}")
-            
+
             # 1. 參數設定
             pick_count = lottery_rules.get('pickCount', 6)
             min_number = lottery_rules.get('minNumber', 1)
@@ -83,7 +87,10 @@ class XGBoostPredictor:
             
             logger.info(f"XGBoost 預測完成: {top_numbers}, 信心度: {confidence:.2%}")
             
-            return {
+            # 🔧 預測特別號碼
+            predicted_special = predict_special_number(history, lottery_rules, top_numbers)
+
+            result = {
                 "numbers": top_numbers,
                 "confidence": float(confidence),
                 "method": "XGBoost 梯度提升決策樹",
@@ -97,6 +104,12 @@ class XGBoostPredictor:
                 },
                 "notes": "基於歷史開獎模式的機器學習預測，分析號碼間的關聯性"
             }
+
+            # 🔧 添加特別號碼
+            if predicted_special is not None:
+                result['special'] = predicted_special
+
+            return result
             
         except Exception as e:
             logger.error(f"XGBoost 預測失敗: {str(e)}", exc_info=True)

@@ -83,7 +83,11 @@ export class PredictionEngine {
             'ai_prophet': new APIStrategy('prophet'),
             'ai_xgboost': new APIStrategy('xgboost'),
             'ai_autogluon': new APIStrategy('autogluon'),
+
             'ai_lstm': new APIStrategy('lstm'),
+            'ai_transformer': new APIStrategy('transformer'),
+            'ai_bayesian_ensemble': new APIStrategy('bayesian_ensemble'),
+            'ai_maml': new APIStrategy('maml'),
 
             // ===== 民間策略 =====
             'odd_even': new OddEvenBalanceStrategy(statisticsService),
@@ -92,7 +96,14 @@ export class PredictionEngine {
             'sum_range': new SumRangeStrategy(statisticsService),
             'wheeling': new WheelingStrategy(statisticsService),
             'number_pairs': new NumberPairsStrategy(statisticsService),
-            'statistical': new StatisticalAnalysisStrategy(statisticsService)
+            'statistical': new StatisticalAnalysisStrategy(statisticsService),
+
+            // ===== 高級分析策略 (新增) =====
+            'entropy': new APIStrategy('entropy'),
+            'clustering': new APIStrategy('clustering'),
+            'dynamic_ensemble': new APIStrategy('dynamic_ensemble'),
+            'temporal': new APIStrategy('temporal'),
+            'feature_engineering': new APIStrategy('feature_engineering')
         };
     }
 
@@ -190,7 +201,18 @@ export class PredictionEngine {
             'collaborative_hybrid': 'ensemble',
 
             // AI 自動優化 -> 映射到後端優化預測
-            'auto_optimize': 'backend_optimized'
+            'auto_optimize': 'backend_optimized',
+
+            // 高級分析策略 (新增)
+            'entropy': 'entropy',
+            'clustering': 'clustering',
+            'dynamic_ensemble': 'dynamic_ensemble',
+            'temporal': 'temporal',
+            'feature_engineering': 'feature_engineering',
+
+            'ai_transformer': 'transformer',
+            'ai_bayesian_ensemble': 'bayesian_ensemble',
+            'ai_maml': 'maml'
         };
 
         let result;
@@ -314,7 +336,18 @@ export class PredictionEngine {
             'collaborative_relay': 'ensemble',  // 整合
             'collaborative_coop': 'ensemble',   // 整合
             'collaborative_hybrid': 'ensemble',
-            'auto_optimize': 'backend_optimized'
+            'auto_optimize': 'backend_optimized',
+
+            // 高級分析策略 (新增)
+            'entropy': 'entropy',
+            'clustering': 'clustering',
+            'dynamic_ensemble': 'dynamic_ensemble',
+            'temporal': 'temporal',
+            'feature_engineering': 'feature_engineering',
+
+            'ai_transformer': 'transformer',
+            'ai_bayesian_ensemble': 'bayesian_ensemble',
+            'ai_maml': 'maml'
         };
 
         const backendModelType = STRATEGY_MAPPING[method];

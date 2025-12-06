@@ -1768,16 +1768,16 @@ export class AutoLearningManager {
 
             this.updateAdvancedProgress(progress, statusMessage, method);
 
-            // 檢查是否完成（透過 API 狀態）
+            // 🔧 檢查進階優化專用狀態端點
             try {
-                const response = await fetch(`${API_BASE_URL}/schedule/status`);
+                const response = await fetch(`${API_BASE_URL}/advanced/status`);
                 if (response.ok) {
                     const data = await response.json();
 
-                    // 檢查進階優化歷史（新增）
-                    if (data.advanced_optimization_history && data.advanced_optimization_history.length > 0) {
-                        const latestAdvanced = data.advanced_optimization_history[data.advanced_optimization_history.length - 1];
-                        
+                    // 檢查是否有最新的優化記錄
+                    if (data.success && data.latest_optimization) {
+                        const latestAdvanced = data.latest_optimization;
+
                         // 檢查是否是當前方法的最新結果
                         if (latestAdvanced.method === method) {
                             const timestamp = new Date(latestAdvanced.timestamp);
@@ -1786,6 +1786,7 @@ export class AutoLearningManager {
 
                             // 如果是最近2分鐘內完成的
                             if (diffMinutes < 2) {
+                                console.log('✅ 檢測到優化完成:', latestAdvanced);
                                 clearInterval(this.advancedOptimizationPollInterval);
                                 this.updateAdvancedProgress(100, '優化完成！', method);
                                 setTimeout(() => {
@@ -1795,25 +1796,37 @@ export class AutoLearningManager {
                             }
                         }
                     }
-
-                    // 舊的檢查邏輯（向後兼容）
-                    if (!data.is_optimizing && data.optimization_history && data.optimization_history.length > 0) {
-                        const latestOptimization = data.optimization_history[data.optimization_history.length - 1];
-
-                        // 檢查是否是最近完成的（5分鐘內）
-                        const timestamp = new Date(latestOptimization.timestamp);
-                        const now = new Date();
-                        const diffMinutes = (now - timestamp) / 1000 / 60;
-
-                        if (diffMinutes < 5) {
-                            // 優化已完成
-                            clearInterval(this.advancedOptimizationPollInterval);
-                            this.showAdvancedOptimizationResult(latestOptimization, method);
-                        }
-                    }
                 }
             } catch (error) {
-                console.warn('檢查優化狀態失敗:', error);
+                console.warn('檢查進階優化狀態失敗:', error);
+                // 降級：嘗試檢查常規狀態端點
+                try {
+                    const response = await fetch(`${API_BASE_URL}/schedule/status`);
+                    if (response.ok) {
+                        const data = await response.json();
+
+                        if (data.advanced_optimization_history && data.advanced_optimization_history.length > 0) {
+                            const latestAdvanced = data.advanced_optimization_history[data.advanced_optimization_history.length - 1];
+
+                            if (latestAdvanced.method === method) {
+                                const timestamp = new Date(latestAdvanced.timestamp);
+                                const now = new Date();
+                                const diffMinutes = (now - timestamp) / 1000 / 60;
+
+                                if (diffMinutes < 2) {
+                                    clearInterval(this.advancedOptimizationPollInterval);
+                                    this.updateAdvancedProgress(100, '優化完成！', method);
+                                    setTimeout(() => {
+                                        this.showAdvancedOptimizationResult(latestAdvanced, method);
+                                    }, 500);
+                                    return;
+                                }
+                            }
+                        }
+                    }
+                } catch (fallbackError) {
+                    console.warn('降級檢查也失敗:', fallbackError);
+                }
             }
 
             // 超時保護（最多輪詢30分鐘）

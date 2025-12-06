@@ -179,11 +179,15 @@ class StrategyEvaluator:
                 )
 
                 # 驗證結果
-                actual_numbers = history[i]['numbers']
-                predicted_numbers = prediction['numbers']
+                # 驗證結果
+                actual_numbers = set(history[i]['numbers'])
+                if history[i].get('special'):
+                    actual_numbers.add(int(history[i]['special']))
+                
+                predicted_numbers = set(prediction['numbers'])
 
                 # 計算命中數
-                hits = len(set(actual_numbers) & set(predicted_numbers))
+                hits = len(actual_numbers & predicted_numbers)
                 hit_distribution[hits] += 1
 
                 # 判斷是否成功（中3個以上）

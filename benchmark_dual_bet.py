@@ -233,72 +233,154 @@ def run_backtest(data, strategy_func, strategy_name, window_size=100, test_count
 
 def predict_optimized_ensemble(historical_data, pick_count=6, min_num=1, max_num=49):
     """
-    優化集成策略模擬（簡化版本，使用動態權重）
-    模擬後端 OptimizedEnsemblePredictor 的邏輯
+    優化集成策略模擬（完整版）
+    模擬後端 OptimizedEnsemblePredictor 的完整邏輯
+    包含：區域平衡、奇偶平衡、頻率、貝葉斯、蒙地卡羅、冷熱
     """
     if len(historical_data) < 50:
         return None, None
     
-    # 模擬策略回測計算權重
+    # 權重設定 (參考 optimized_ensemble.py RECOMMENDED_WEIGHTS)
     strategies = {
-        'frequency': 0.25,  # 預設權重（實際會通過回測動態計算）
-        'bayesian': 0.20,
-        'trend': 0.20,
-        'deviation': 0.15,
-        'hot_cold': 0.20
+        'zone_balance': 0.25,
+        'odd_even': 0.22,
+        'frequency': 0.18,
+        'bayesian': 0.15,
+        'monte_carlo': 0.12,
+        'hot_cold': 0.08
     }
     
     scores = defaultdict(float)
+    import numpy as np
+    import random
     
-    # 頻率分析
+    # 1. 頻率分析 (Frequency)
     freq = calculate_frequency(historical_data)
     max_freq = max(freq.values()) if freq else 1
     for num in range(min_num, max_num + 1):
-        scores[num] += (freq.get(num, 0) / max_freq) * strategies['frequency'] * 10
-    
-    # 近期趨勢 (最近30期)
-    recent_freq = calculate_frequency(historical_data[:30])
-    max_recent = max(recent_freq.values()) if recent_freq else 1
-    for num in range(min_num, max_num + 1):
-        scores[num] += (recent_freq.get(num, 0) / max_recent) * strategies['trend'] * 10
-    
-    # 偏差追蹤（遺漏值回歸）
-    missing_counts = {}
-    for num in range(min_num, max_num + 1):
-        missing = 0
-        for draw in historical_data:
-            if num in draw['numbers']:
-                break
-            missing += 1
-        missing_counts[num] = missing
-    
-    max_missing = max(missing_counts.values()) if missing_counts else 1
-    for num in range(min_num, max_num + 1):
-        # 遺漏越久，越可能出現（均值回歸）
-        normalized_missing = missing_counts[num] / max_missing
-        # 但不要過度加權，使用遞減函數
-        regression_score = normalized_missing / (1 + normalized_missing)
-        scores[num] += regression_score * strategies['deviation'] * 10
-    
-    # 貝葉斯（先驗 + 似然）
+        # 基礎頻率分
+        f_score = freq.get(num, 0) / max_freq
+        scores[num] += f_score * strategies['frequency'] * 10
+
+    # 2. 貝葉斯 (Bayesian - Simplified)
     total_draws = len(historical_data)
+    recent_window = 20
+    recent_freq = calculate_frequency(historical_data[:recent_window])
     for num in range(min_num, max_num + 1):
         prior = freq.get(num, 0) / (total_draws * pick_count) if total_draws > 0 else 0
-        likelihood = recent_freq.get(num, 0) / 30 if len(historical_data) >= 30 else 0
+        likelihood = recent_freq.get(num, 0) / recent_window if recent_window > 0 else 0
         posterior = prior * 0.4 + likelihood * 0.6
-        scores[num] += posterior * strategies['bayesian'] * 100
+        # Normalize posterior roughly to 0-1 range for scoring
+        scores[num] += posterior * 100 * strategies['bayesian']
+
+    # 3. 蒙地卡羅 (Monte Carlo)
+    # 建立加權池
+    mc_weights = []
+    for num in range(min_num, max_num + 1):
+        # 頻率權重 + 隨機擾動
+        w = (freq.get(num, 0) / total_draws) * 10 + 1.0
+        mc_weights.append(w)
     
-    # 共識加成：如果一個號碼在多個維度都有高分，額外加分
-    score_list = list(scores.values())
-    avg_score = sum(score_list) / len(score_list) if score_list else 0
-    for num in scores:
-        if scores[num] > avg_score * 1.5:
-            scores[num] *= 1.1  # 10% 共識加成
+    mc_weights = np.array(mc_weights)
+    mc_weights /= mc_weights.sum()
     
+    mc_results = defaultdict(int)
+    simulations = 1000  # 模擬次數 (benchmarking 時減少次數以加快速度)
+    
+    valid_range = np.arange(min_num, max_num + 1)
+    for _ in range(simulations):
+        # 這裡需要注意：numpy choice 的 p 參數長度必須與 valid_range 一致
+        if len(valid_range) == len(mc_weights):
+            selected = np.random.choice(valid_range, size=pick_count, replace=False, p=mc_weights)
+            for s in selected:
+                mc_results[s] += 1
+                
+    max_mc = max(mc_results.values()) if mc_results else 1
+    for num in range(min_num, max_num + 1):
+        scores[num] += (mc_results.get(num, 0) / max_mc) * strategies['monte_carlo'] * 10
+
+    # 4. 區域平衡 (Zone Balance)
+    # 簡化版：固定三區 (1-16, 17-33, 34-49)
+    zones = [
+        range(1, 17),
+        range(17, 34),
+        range(34, 50)
+    ]
+    # 分析近期(10期)區域出號分佈
+    recent_10 = historical_data[:10]
+    zone_counts = [0, 0, 0]
+    for draw in recent_10:
+        for num in draw['numbers']:
+            for i, z in enumerate(zones):
+                if num in z:
+                    zone_counts[i] += 1
+    
+    # 計算期望值 (平均分佈)
+    total_recent = sum(zone_counts) if sum(zone_counts) > 0 else 1
+    expected_ratio = 1.0 / 3.0
+    
+    # 如果某區出號少，該區號碼加分 (均值回歸)
+    for i, z in enumerate(zones):
+        ratio = zone_counts[i] / total_recent
+        if ratio < expected_ratio:
+            # 該區偏冷，加分
+            boost = (expected_ratio - ratio) * 5
+        else:
+            boost = 0
+            
+        for num in z:
+            scores[num] += boost * strategies['zone_balance']
+
+    # 5. 奇偶平衡 (Odd/Even)
+    # 分析近期奇偶比
+    odd_count = 0
+    total_nums = 0
+    for draw in recent_10:
+        for num in draw['numbers']:
+            if num % 2 == 1:
+                odd_count += 1
+            total_nums += 1
+            
+    odd_ratio = odd_count / total_nums if total_nums > 0 else 0.5
+    
+    # 如果奇數少，奇數加分；偶數少，偶數加分
+    target_ratio = 0.5
+    if odd_ratio < target_ratio:
+        # 奇數偏少，加分奇數
+        odd_boost = (target_ratio - odd_ratio) * 5
+        even_boost = 0
+    else:
+        # 偶數偏少，加分偶數
+        odd_boost = 0
+        even_boost = (odd_ratio - target_ratio) * 5
+        
+    for num in range(min_num, max_num + 1):
+        if num % 2 == 1:
+            scores[num] += odd_boost * strategies['odd_even']
+        else:
+            scores[num] += even_boost * strategies['odd_even']
+
+    # 6. 冷熱混合 (Hot/Cold) - 簡化版
+    # 這裡我們已經有 freq 分數了，這策略給予極冷和極熱號碼額外關注
+    sorted_freq = sorted(freq.items(), key=lambda x: x[1], reverse=True)
+    hot_nums = {n for n, _ in sorted_freq[:10]}
+    cold_nums = {n for n, _ in sorted_freq[-10:]}
+    
+    for num in range(min_num, max_num + 1):
+        if num in hot_nums:
+            scores[num] += 1.0 * strategies['hot_cold'] # 熱號追熱
+        elif num in cold_nums:
+            scores[num] += 0.5 * strategies['hot_cold'] # 冷號防回補
+
     # 選出最高分的號碼
     sorted_nums = sorted(scores.items(), key=lambda x: x[1], reverse=True)
-    top_12 = [num for num, score in sorted_nums[:12]]
+    top_12 = [num for num, score in sorted_nums[:15]] # 取前15個比較保險
     
+    # 確保有足夠號碼
+    if len(top_12) < pick_count * 2:
+        remain = [n for n in range(min_num, max_num+1) if n not in top_12]
+        top_12.extend(remain[:pick_count*2 - len(top_12)])
+        
     bet1 = sorted(top_12[:pick_count])
     bet2 = sorted(top_12[pick_count:pick_count*2])
     

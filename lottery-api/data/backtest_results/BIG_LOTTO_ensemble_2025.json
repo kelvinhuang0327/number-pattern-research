@@ -1,0 +1,57 @@
+{
+  "summary": {
+    "lottery_type": "BIG_LOTTO",
+    "method_name": "ensemble",
+    "window_size": 200,
+    "test_periods": 116,
+    "win_count": 3,
+    "win_rate": 0.02586206896551724,
+    "avg_matches": 0.7758620689655172,
+    "max_matches": 3,
+    "total_matches": 90,
+    "periods_per_win": 38.666666666666664,
+    "expected_cost_per_win": 1933.3333333333333,
+    "test_start_date": "2025-01-03",
+    "test_end_date": "2025/12/23",
+    "backtest_timestamp": "2025-12-29T13:51:08.941176"
+  },
+  "details": [
+    {
+      "draw_id": "114000116",
+      "draw_date": "2025/12/23",
+      "predicted_numbers": [
+        2,
+        4,
+        13,
+        33,
+        37,
+        40
+      ],
+      "predicted_special": 17,
+      "actual_numbers": [
+        1,
+        3,
+        12,
+        33,
+        39,
+        41
+      ],
+      "actual_special": 29,
+      "matches": 1,
+      "matched_numbers": [
+        33
+      ],
+      "is_win": false,
+      "confidence": 0.95,
+      "method_name": "ensemble",
+      "window_size": 200,
+      "training_periods": 200
+    },
+    {
+      "draw_id": "114000115",
+      "draw_date": "2025/12/19",
+      "predicted_numbers": [
+        2,
+        4,
+        7,
+        

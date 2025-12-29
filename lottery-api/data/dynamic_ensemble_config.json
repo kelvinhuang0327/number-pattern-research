@@ -1,0 +1,34 @@
+{
+  "weights": {
+    "consecutive_friendly": 0.06640395749105656,
+    "cold_comeback": 0.06702511760161245,
+    "constrained": 0.06767897034956602,
+    "multi_window_fusion": 0.06836723640004347,
+    "coverage_optimized": 0.06909172697949342,
+    "enhanced_ensemble": 0.06985434864207231,
+    "zone_balance": 0.0706571082868922,
+    "hot_cold_mix": 0.07150211843933417,
+    "sum_range": 0.07239160281032574,
+    "trend_predict": 0.07332790214821158,
+    "bayesian": 0.07431348039861775,
+    "monte_carlo": 0.07535093118851897,
+    "ensemble_vote": 0.0764429846515729,
+    "deviation_predict": 0.07759251461268227
+  },
+  "scores": {
+    "consecutive_friendly": 1.77731004995471,
+    "cold_comeback": 1.8708526841628528,
+    "constrained": 1.9693186149082662,
+    "multi_window_fusion": 2.072966963061333,
+    "coverage_optimized": 2.1820704874329824,
+    "enhanced_ensemble": 2.296916302561034,
+    "zone_balance": 2.417806634274773,
+    "hot_cold_mix": 2.545059615026077,
+    "sum_range": 2.679010121080081,
+    "trend_predict": 2.8200106537685063,
+    "bayesian": 2.9684322671247436,
+    "monte_carlo": 3.1246655443418354,
+    "ensemble_vote": 3.2891216256229847,
+    "deviation_predict": 3.4622332901294577
+  }
+}

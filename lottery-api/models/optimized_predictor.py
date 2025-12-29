@@ -27,17 +27,17 @@ logger = logging.getLogger(__name__)
 class OptimizedPredictor:
     """優化預測器 - 統一入口"""
 
-    # 經過驗證的最佳配置
+    # 經過驗證的最佳配置 (2025年回測驗證)
     OPTIMAL_CONFIGS = {
         'BIG_LOTTO': {
             'single_bet': {
                 'method': 'zone_balance',
                 'window': 500,
-                'expected_win_rate': 0.0431,  # 4.31%
+                'expected_win_rate': 0.0431,  # 4.31% (116期驗證)
             },
             'multi_bet': {
                 'recommended_bets': 6,
-                'expected_win_rate': 0.1379,  # 13.79%
+                'expected_win_rate': 0.1379,  # 13.79% (116期驗證)
                 'max_bets': 8,
                 'max_win_rate': 0.1552,  # 15.52%
             }
@@ -46,7 +46,7 @@ class OptimizedPredictor:
             'single_bet': {
                 'method': 'sum_range',
                 'window': 300,
-                'expected_win_rate': 0.0225,  # 2.25%
+                'expected_win_rate': 0.0225,  # 2.25% (估計值，數據不足)
             },
             'multi_bet': {
                 'recommended_bets': 6,
@@ -57,11 +57,13 @@ class OptimizedPredictor:
             'single_bet': {
                 'method': 'ensemble',
                 'window': 100,
-                'expected_win_rate': 0.035,  # 3.5%
+                'expected_win_rate': 0.0421,  # 4.21% (95期驗證)
             },
             'multi_bet': {
                 'recommended_bets': 6,
-                'expected_win_rate': 0.10,  # 估計值
+                'expected_win_rate': 0.2211,  # 22.11% (95期驗證)
+                'max_bets': 8,
+                'max_win_rate': 0.3158,  # 31.58% (95期驗證)
             }
         }
     }
@@ -161,10 +163,17 @@ class OptimizedPredictor:
             draws, lottery_rules, num_bets
         )
 
-        # 計算預期中獎率
-        base_rate = config['single_bet']['expected_win_rate']
-        # 簡化估算：每增加一注約增加 1.5% 中獎率（基於回測結果）
-        estimated_win_rate = min(0.25, base_rate + (num_bets - 1) * 0.018)
+        # 計算預期中獎率 - 使用驗證後的數值
+        if num_bets >= 8 and 'max_win_rate' in multi_config:
+            estimated_win_rate = multi_config['max_win_rate']
+        elif num_bets >= 6:
+            estimated_win_rate = multi_config['expected_win_rate']
+        else:
+            # 線性插值估算
+            base_rate = config['single_bet']['expected_win_rate']
+            six_bet_rate = multi_config['expected_win_rate']
+            rate_per_bet = (six_bet_rate - base_rate) / 5
+            estimated_win_rate = base_rate + (num_bets - 1) * rate_per_bet
 
         return {
             'bets': result['bets'],

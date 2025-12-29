@@ -1,13 +1,24 @@
 {
   "BIG_LOTTO": {
     "lottery_type": "BIG_LOTTO",
-    "method_name": "sum_range",
+    "method_name": "zone_balance",
     "window_size": 500,
-    "win_rate": 0.05172413793103448,
-    "avg_matches": 0.8362068965517241,
-    "periods_per_win": 19.333333333333332,
-    "expected_cost": 966.6666666666666,
+    "win_rate": 0.0431,
+    "avg_matches": 1.82,
+    "periods_per_win": 23.2,
+    "expected_cost": 1160.0,
     "test_periods": 116,
-    "last_updated": "2025-12-29T14:52:16.716225"
+    "last_updated": "2025-12-29T15:55:13.970099"
+  },
+  "POWER_LOTTO": {
+    "lottery_type": "POWER_LOTTO",
+    "method_name": "ensemble",
+    "window_size": 100,
+    "win_rate": 0.0737,
+    "avg_matches": 1.85,
+    "periods_per_win": 13.57,
+    "expected_cost": 1357.0,
+    "test_periods": 95,
+    "last_updated": "2025-12-29T15:55:13.970104"
   }
 }

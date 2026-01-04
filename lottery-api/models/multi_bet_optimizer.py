@@ -20,6 +20,7 @@ from collections import Counter, defaultdict
 from typing import List, Dict, Tuple, Set
 from itertools import combinations
 import random
+from .wobble_optimizer import WobbleOptimizer
 
 
 class MultiBetOptimizer:
@@ -28,20 +29,28 @@ class MultiBetOptimizer:
     def __init__(self):
         self.name = "MultiBetOptimizer"
         self._load_strategies()
+        self.wobble_opt = WobbleOptimizer()
 
     def _load_strategies(self):
         """載入策略"""
         from .unified_predictor import prediction_engine
         from .enhanced_predictor import EnhancedPredictor
+        from .gap_predictor import GapAnalysisPredictor, ConsensusPredictor
+        from .anti_consensus_predictor import AntiConsensusPredictor, HighValuePredictor
 
         self.enhanced = EnhancedPredictor()
         self.engine = prediction_engine
+        self.gap_predictor = GapAnalysisPredictor()
+        self.consensus_predictor = ConsensusPredictor()
+        self.anti_consensus = AntiConsensusPredictor()
+        self.high_value = HighValuePredictor()
 
-        # 定義策略池，按多樣性分組
+        # 定義策略池，按多樣性分組 (P0+P1 優化)
+        # 2026-01-03 P0優化: 加入馬可夫鏈、大間隔策略、低和值策略
         self.strategy_groups = {
             'frequency_based': [
                 ('hot_cold_mix', lambda h, r: self.engine.hot_cold_mix_predict(h, r), 100),
-                ('trend_predict', lambda h, r: self.engine.trend_predict(h, r), 200),
+                ('trend_predict', lambda h, r: self.engine.trend_predict(h, r), 300),
             ],
             'statistical': [
                 ('zone_balance', lambda h, r: self.engine.zone_balance_predict(h, r), 500),
@@ -51,19 +60,48 @@ class MultiBetOptimizer:
             'probabilistic': [
                 ('bayesian', lambda h, r: self.engine.bayesian_predict(h, r), 300),
                 ('monte_carlo', lambda h, r: self.engine.monte_carlo_predict(h, r), 200),
+                # 🔥 P0優化: 馬可夫鏈 - 捕捉轉移模式 (表現最佳)
+                ('markov', lambda h, r: self.engine.markov_predict(h, r), 300),
             ],
             'pattern_based': [
                 ('cold_comeback', lambda h, r: self.enhanced.cold_number_comeback_predict(h, r), 100),
                 ('consecutive', lambda h, r: self.enhanced.consecutive_friendly_predict(h, r), 100),
+                # P0 新增：間隔分析
+                ('gap_analysis', lambda h, r: self.gap_predictor.predict(h, r), 300),
             ],
             'ensemble': [
                 ('ensemble', lambda h, r: self.engine.ensemble_predict(h, r), 200),
                 ('constrained', lambda h, r: self.enhanced.constrained_predict(h, r), 100),
+                # P0 新增：共識投票
+                ('consensus', lambda h, r: self.consensus_predictor.predict(h, r), 200),
+            ],
+            # P1 新增：反共識策略組
+            'contrarian': [
+                ('anti_consensus', lambda h, r: self.anti_consensus.predict(h, r), 200),
+                ('contrarian', lambda h, r: self.anti_consensus.predict_contrarian(h, r), 200),
+                ('high_value', lambda h, r: self.high_value.predict(h, r), 200),
+            ],
+            # 🔥 P0優化: 大間隔/雙峰策略組 - 覆蓋42%的大間隔開獎
+            'bimodal': [
+                ('bimodal_gap', lambda h, r: self._bimodal_gap_predict(h, r), 500),
+                ('low_sum', lambda h, r: self._low_sum_predict(h, r), 500),
+            ],
+            # 🔥 P1優化: 間隔/和值/區間多樣化策略組
+            'p1_advanced': [
+                ('gap_sensitive', lambda h, r: self.engine.gap_sensitive_predict(h, r), 300),
+                ('extended_sum', lambda h, r: self.engine.extended_sum_range_predict(h, r), 500),
+                ('diverse_zone', lambda h, r: self.engine.diverse_zone_predict(h, r), 500),
+            ],
+            # 🔥 P2優化: 共現社群 + 動態權重策略組 (2026-01-04)
+            'p2_advanced': [
+                ('community', lambda h, r: self.engine.community_predict(h, r), 200),
+                ('adaptive_weight', lambda h, r: self.engine.adaptive_weight_predict(h, r), 300),
             ]
         }
 
     def generate_diversified_bets(self, draws: List[Dict], lottery_rules: Dict,
-                                  num_bets: int = 6) -> Dict:
+                                  num_bets: int = 6,
+                                  meta_config: Dict = None) -> Dict:
         """
         生成多樣化的多注組合
 
@@ -71,9 +109,9 @@ class MultiBetOptimizer:
             draws: 歷史數據
             lottery_rules: 彩票規則
             num_bets: 生成注數
-
-        Returns:
-            多注預測結果
+            meta_config: 元配置（用於優化測試）
+                - 'wobble_ratio': 鄰域擾動注數比例 (0.0 - 1.0)
+                - 'base_strategy': 基於哪個策略進行擾動，預設為 'top_score'
         """
         pick_count = lottery_rules.get('pickCount', lottery_rules.get('pick_count', 6))
         min_num = lottery_rules.get('minNumber', lottery_rules.get('min_number', 1))
@@ -100,73 +138,78 @@ class MultiBetOptimizer:
         # 生成多注組合
         bets = []
         used_combos = set()
+        meta_config = meta_config or {}
+        wobble_ratio = meta_config.get('wobble_ratio', 0.2) 
+        num_wobble = int(num_bets * wobble_ratio)
+        num_base = num_bets - num_wobble
 
-        # 策略1: 每個策略組選一注 (保證多樣性)
+        # 策略1: 基礎策略 (選分組中第一名或指定的策略)
+        base_strategy_name = meta_config.get('base_strategy', 'top_score')
+        
+        # 準備基礎注
+        available_strategies = []
         for group_name, strategies in self.strategy_groups.items():
-            if len(bets) >= num_bets:
-                break
-
             for name, _, _ in strategies:
                 if name in all_predictions:
-                    bet = sorted(all_predictions[name]['numbers'])
-                    if tuple(bet) not in used_combos:
-                        bets.append({
-                            'numbers': bet,
-                            'source': name,
-                            'group': group_name
-                        })
-                        used_combos.add(tuple(bet))
-                        break
+                    available_strategies.append((name, group_name, all_predictions[name]['confidence']))
 
-        # 策略2: 高分號碼變異組合
-        top_numbers = sorted(number_scores.keys(), key=lambda x: -number_scores[x])[:15]
+        # 排序策略 (依據信心度或指定名稱)
+        if base_strategy_name != 'top_score':
+            # 優先將指定策略排在前面
+            available_strategies.sort(key=lambda x: (x[0] != base_strategy_name, -x[2]))
+        else:
+            available_strategies.sort(key=lambda x: -x[2])
 
-        while len(bets) < num_bets:
-            # 生成新組合，最小化與現有注的重疊
-            best_combo = None
-            best_diversity_score = -1
-
-            for _ in range(100):  # 嘗試100次找最佳組合
-                # 加權隨機選擇
-                probs = np.array([number_scores[n] for n in top_numbers])
-                probs = probs / probs.sum()
-
-                try:
-                    candidate = np.random.choice(top_numbers, size=pick_count, replace=False, p=probs)
-                    candidate = tuple(sorted(candidate.tolist()))
-
-                    if candidate in used_combos:
-                        continue
-
-                    # 計算多樣性分數 (與現有注的差異度)
-                    diversity = self._calculate_diversity(candidate, [b['numbers'] for b in bets])
-
-                    if diversity > best_diversity_score:
-                        best_diversity_score = diversity
-                        best_combo = candidate
-                except:
-                    continue
-
-            if best_combo:
-                bets.append({
-                    'numbers': list(best_combo),
-                    'source': 'diversity_optimized',
-                    'diversity_score': best_diversity_score
-                })
-                used_combos.add(best_combo)
-            else:
-                # 備用：隨機生成
-                remaining = list(set(range(min_num, max_num + 1)) -
-                               set(n for b in bets for n in b['numbers']))
-                if len(remaining) >= pick_count:
-                    bet = sorted(random.sample(remaining, pick_count))
-                else:
-                    bet = sorted(random.sample(range(min_num, max_num + 1), pick_count))
+        # 填注 1: 基礎多樣性注
+        for name, group_name, _ in available_strategies:
+            if len(bets) >= num_base:
+                break
+            bet = sorted(all_predictions[name]['numbers'])
+            if tuple(bet) not in used_combos:
                 bets.append({
                     'numbers': bet,
-                    'source': 'random_fill'
+                    'source': name,
+                    'group': group_name
                 })
                 used_combos.add(tuple(bet))
+
+        # 填注 2: 鄰域擾動 (Wobble) - P2優化：使用智能擾動
+        if num_wobble > 0 and bets:
+            # 基於第一注（通常是信心度最高）進行擾動
+            base_bet = bets[0]['numbers']
+
+            # P2優化：選擇擾動策略
+            wobble_method = meta_config.get('wobble_method', 'smart')  # smart | cooccurrence | systematic
+
+            if wobble_method == 'smart':
+                # 智能擾動：根據頻率和共現選擇最佳擾動方向
+                wobble_variants = self.wobble_opt.smart_wobble(
+                    base_bet, num_bets=num_wobble + 1, history=draws[:200]
+                )
+            elif wobble_method == 'cooccurrence':
+                # 共現感知擾動：優先擾動到共現頻繁的號碼
+                wobble_variants = self.wobble_opt.cooccurrence_aware_wobble(
+                    base_bet, num_bets=num_wobble + 1, history=draws[:200]
+                )
+            else:
+                # 原始系統化擾動
+                wobble_variants = self.wobble_opt.systematic_wobble(base_bet, num_bets=num_wobble + 1)
+
+            for variant in wobble_variants[1:]: # 跳過原始注
+                if len(bets) >= num_bets:
+                    break
+                if tuple(variant) not in used_combos:
+                    bets.append({
+                        'numbers': variant,
+                        'source': f'wobble_{wobble_method}({bets[0]["source"]})'
+                    })
+                    used_combos.add(tuple(variant))
+
+        # 應用區間斷層修正 (Zone Gap Correction)
+        # 如果某個區塊很久沒開，強制在一注中補強該區塊
+        bets = self._apply_zone_gap_correction(bets, draws, lottery_rules)
+
+        # 計算覆蓋統計
 
         # 計算覆蓋統計
         all_covered = set()
@@ -188,6 +231,56 @@ class MultiBetOptimizer:
             'total_unique_numbers': len(all_covered),
             'strategies_used': list(set(b.get('source', 'unknown') for b in bets))
         }
+
+    def _apply_zone_gap_correction(self, bets: List[Dict], draws: List[Dict], lottery_rules: Dict) -> List[Dict]:
+        """
+        區間斷層修正：識別長期未開出的區塊並在多注中進行補強
+        """
+        if not draws or not bets:
+            return bets
+            
+        pick_count = lottery_rules.get('pickCount', 6)
+        min_num = lottery_rules.get('minNumber', 1)
+        max_num = lottery_rules.get('maxNumber', 49)
+        
+        # 定義 5 個區塊
+        zone_size = (max_num - min_num + 1) // 5
+        zones = []
+        for i in range(5):
+            z_min = min_num + i * zone_size
+            z_max = min_num + (i+1) * zone_size - 1 if i < 4 else max_num
+            zones.append((z_min, z_max))
+            
+        # 統計各區塊最近 20 期的開出頻率
+        recent_draws = draws[:20]
+        zone_counts = [0] * 5
+        for d in recent_draws:
+            for n in d['numbers']:
+                for i, (z_min, z_max) in enumerate(zones):
+                    if z_min <= n <= z_max:
+                        zone_counts[i] += 1
+                        break
+                        
+        # 找出最冷門的區塊 (可能出現斷層回補)
+        coldest_zone_idx = np.argmin(zone_counts)
+        z_min, z_max = zones[coldest_zone_idx]
+        
+        # 檢查現有注項是否覆蓋了冷門區塊
+        covered = any(any(z_min <= n <= z_max for n in b['numbers']) for b in bets)
+        
+        if not covered and len(bets) > 1:
+            # 修正最後一注，強制加入一個來自冷門區塊的號碼
+            target_bet = bets[-1]
+            # 找到冷門區塊中歷史頻率較高的號碼
+            all_nums_in_zone = list(range(z_min, z_max + 1))
+            # 簡單隨機選一個或補償
+            new_num = random.choice(all_nums_in_zone)
+            if new_num not in target_bet['numbers']:
+                target_bet['numbers'][-1] = new_num # 替換最後一個號碼
+                target_bet['numbers'].sort()
+                target_bet['source'] += " + zone_gap_corrected"
+                
+        return bets
 
     def _calculate_number_scores(self, predictions: Dict, min_num: int, max_num: int) -> Dict[int, float]:
         """計算號碼綜合分數"""
@@ -254,7 +347,8 @@ class MultiBetOptimizer:
         return specials[:num_bets]
 
     def backtest_multi_bet(self, draws: List[Dict], lottery_rules: Dict,
-                           num_bets: int = 6, test_periods: int = 100) -> Dict:
+                           num_bets: int = 6, test_periods: int = 100,
+                           meta_config: Dict = None) -> Dict:
         """
         多注策略回測
 
@@ -276,7 +370,7 @@ class MultiBetOptimizer:
                 continue
 
             try:
-                prediction = self.generate_diversified_bets(history, lottery_rules, num_bets)
+                prediction = self.generate_diversified_bets(history, lottery_rules, num_bets, meta_config)
 
                 # 檢查每一注
                 bet_matches = []
@@ -337,6 +431,131 @@ class MultiBetOptimizer:
             'avg_best_match': total_best_matches / test_count if test_count > 0 else 0,
             'bet_position_stats': dict(bet_position_stats),
             'details': results
+        }
+
+    # ========================================================================
+    # 🔥 P0優化: 新增策略方法 (2026-01-03)
+    # ========================================================================
+
+    def _bimodal_gap_predict(self, draws: List[Dict], lottery_rules: Dict) -> Dict:
+        """
+        雙峰/大間隔預測策略
+
+        專門生成「低區群聚 + 高區群聚」的號碼組合
+        覆蓋歷史上 42% 的大間隔開獎模式
+        """
+        pick_count = lottery_rules.get('pickCount', 6)
+        min_num = lottery_rules.get('minNumber', 1)
+        max_num = lottery_rules.get('maxNumber', 49)
+
+        # 統計各區號碼頻率
+        freq = Counter()
+        for d in draws[:200]:
+            freq.update(d['numbers'])
+
+        # 定義低區和高區
+        low_range = range(min_num, min_num + (max_num - min_num) // 3)  # 1-16 for 49
+        high_range = range(max_num - (max_num - min_num) // 3, max_num + 1)  # 33-49 for 49
+
+        # 從低區選 3-4 個高頻號碼
+        low_nums = [(n, freq.get(n, 0)) for n in low_range]
+        low_nums.sort(key=lambda x: -x[1])
+        low_selected = [n for n, _ in low_nums[:4]]
+
+        # 從高區選 2-3 個高頻號碼
+        high_nums = [(n, freq.get(n, 0)) for n in high_range]
+        high_nums.sort(key=lambda x: -x[1])
+        high_selected = [n for n, _ in high_nums[:3]]
+
+        # 組合：低區 4 個 + 高區 2 個 = 6 個
+        # 製造大間隔 (類似 19→40)
+        numbers = low_selected[:4] + high_selected[:2]
+        numbers = sorted(set(numbers))[:pick_count]
+
+        # 補足不夠的
+        if len(numbers) < pick_count:
+            all_nums = list(range(min_num, max_num + 1))
+            random.shuffle(all_nums)
+            for n in all_nums:
+                if n not in numbers:
+                    numbers.append(n)
+                    if len(numbers) >= pick_count:
+                        break
+
+        return {
+            'numbers': sorted(numbers[:pick_count]),
+            'confidence': 0.65,
+            'method': 'bimodal_gap',
+            'description': '雙峰分布策略 - 低區群聚 + 高區群聚'
+        }
+
+    def _low_sum_predict(self, draws: List[Dict], lottery_rules: Dict) -> Dict:
+        """
+        低和值預測策略
+
+        專門生成和值 < 130 的號碼組合
+        覆蓋歷史上 26% 的低和值開獎
+        """
+        pick_count = lottery_rules.get('pickCount', 6)
+        min_num = lottery_rules.get('minNumber', 1)
+        max_num = lottery_rules.get('maxNumber', 49)
+
+        # 目標和值範圍
+        target_sum_min = 90
+        target_sum_max = 130
+
+        # 統計號碼頻率
+        freq = Counter()
+        for d in draws[:200]:
+            freq.update(d['numbers'])
+
+        # 偏好較小的號碼，但要考慮頻率
+        candidates = []
+        for n in range(min_num, max_num + 1):
+            # 分數 = 頻率加成 - 號碼大小懲罰
+            score = freq.get(n, 0) * 0.5 - n * 0.3
+            candidates.append((n, score))
+
+        candidates.sort(key=lambda x: -x[1])
+
+        # 貪心選擇：在和值約束下選擇高分號碼
+        numbers = []
+        current_sum = 0
+
+        for n, _ in candidates:
+            if len(numbers) >= pick_count:
+                break
+            # 預估加入後的和值
+            if current_sum + n <= target_sum_max:
+                numbers.append(n)
+                current_sum += n
+
+        # 如果和值太低，補充一些中等號碼
+        if current_sum < target_sum_min and len(numbers) < pick_count:
+            mid_nums = [n for n in range(20, 35) if n not in numbers]
+            random.shuffle(mid_nums)
+            for n in mid_nums:
+                if len(numbers) >= pick_count:
+                    break
+                if current_sum + n <= target_sum_max + 10:
+                    numbers.append(n)
+                    current_sum += n
+
+        # 補足不夠的
+        if len(numbers) < pick_count:
+            small_nums = [n for n in range(min_num, 25) if n not in numbers]
+            random.shuffle(small_nums)
+            for n in small_nums:
+                if n not in numbers:
+                    numbers.append(n)
+                    if len(numbers) >= pick_count:
+                        break
+
+        return {
+            'numbers': sorted(numbers[:pick_count]),
+            'confidence': 0.60,
+            'method': 'low_sum',
+            'description': f'低和值策略 - 目標和值 {target_sum_min}-{target_sum_max}'
         }
 
 

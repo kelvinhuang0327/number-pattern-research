@@ -1,0 +1,55 @@
+# 樂透預測優化器配置檔
+# Auto Optimizer V2 Configuration
+
+# 投票機制設定
+voting:
+  enabled: true
+  mode: weighted  # majority | weighted | consensus
+  min_votes: 2    # 多數投票時的最低票數門檻
+  consensus_threshold: 0.5  # 共識門檻 (0-1)
+
+# 熱號分析設定
+hot_numbers:
+  window_size: 50      # 熱號分析窗口大小
+  weight: 0.25         # 在投票中的權重
+  top_n: 20            # 取前 N 個熱號
+
+# 共現分析設定
+cooccurrence:
+  window_size: 100     # 共現分析窗口大小
+  threshold: 0.15      # 共現率閾值
+  weight: 0.3          # 共現權重在選號中的比例
+
+# 權重優化設定
+weight_optimization:
+  enabled: true
+  iterations: 30
+  algorithm: simple    # simple | bayesian | genetic
+  backtest_periods: 50
+  training_window: 100
+
+# 策略權重 (手動設定，用於 weight_optimization.enabled = false 時)
+strategy_weights:
+  zone_balance: 0.20
+  frequency: 0.15
+  bayesian: 0.15
+  trend: 0.15
+  deviation: 0.10
+  hot_cooccurrence: 0.25
+
+# 回測設定
+backtest:
+  default_year: 2025
+  win_conditions:
+    min_main_matches: 3     # 主號命中門檻
+    main_with_special: 2    # 主號 + 特別號的命中門檻
+
+# Zone Balance 設定
+zone_balance:
+  window_size: 500     # Zone Balance 使用的窗口大小
+
+# 輸出設定
+output:
+  verbose: true
+  show_scores: true
+  show_weights: true

@@ -277,6 +277,8 @@ export class UIManager {
             'BIG_LOTTO': '大樂透',
             'BIG_LOTTO_BONUS': '大樂透加開',
             'POWER_BALL': '威力彩',
+            'POWER_LOTTO': '威力彩',
+            'DAILY_539': '今彩539',
             'DAILY_CASH_539': '今彩539',
             'STAR_3': '三星彩',
             'STAR_4': '四星彩',
@@ -294,7 +296,8 @@ export class UIManager {
             const type = String(lotteryType).trim();
             // Debug: 檢查實際的彩券類型值
             // console.log('Checking lottery type:', type);
-            return ['BIG_LOTTO', 'POWER_BALL', '大樂透', '威力彩'].includes(type);
+            // 威力彩 (POWER_LOTTO) 和大樂透 (BIG_LOTTO) 都有特別號
+            return ['BIG_LOTTO', 'POWER_LOTTO', 'POWER_BALL', '大樂透', '威力彩'].includes(type);
         };
 
         // 檢查當前頁面是否有任何資料需要特別號欄位

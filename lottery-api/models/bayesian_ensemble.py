@@ -443,10 +443,7 @@ class BayesianEnsemblePredictor:
         bet1 = sorted(top_numbers[:pick_count])
         bet2 = sorted(top_numbers[pick_count:pick_count * 2])
 
-        # 预测特别号
-        from .unified_predictor import predict_special_number
-        special1 = predict_special_number(history, lottery_rules, bet1)
-        special2 = predict_special_number(history, lottery_rules, bet2)
+        # ⚠️ 大樂透特別號不預測！玩家只選6個主號碼
 
         # 计算信心度
         bet1_score = sum(number_scores.get(n, 0) for n in bet1) / pick_count
@@ -457,18 +454,15 @@ class BayesianEnsemblePredictor:
         bet2_confidence = min(0.90, bet2_score / max_score)
 
         logger.info(f"✅ 贝叶斯优化预测完成 - 第一注: {bet1}, 第二注: {bet2}")
-        logger.info(f"   特别号: 第一注={special1}, 第二注={special2}")
 
         return {
             'bet1': {
                 'numbers': bet1,
-                'confidence': float(bet1_confidence),
-                'special': special1
+                'confidence': float(bet1_confidence)
             },
             'bet2': {
                 'numbers': bet2,
-                'confidence': float(bet2_confidence),
-                'special': special2
+                'confidence': float(bet2_confidence)
             },
             'method': '贝叶斯优化集成',
             'overall_confidence': float((bet1_confidence + bet2_confidence) / 2),

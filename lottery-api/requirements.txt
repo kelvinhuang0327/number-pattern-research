@@ -13,3 +13,4 @@ lightgbm
 catboost
 APScheduler==3.10.4
 tensorflow>=2.15.0 # For LSTM model
+python-multipart==0.0.20

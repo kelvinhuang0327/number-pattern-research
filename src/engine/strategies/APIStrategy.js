@@ -15,7 +15,7 @@ export class APIStrategy {
         // 開發環境
         if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
             // 使用 127.0.0.1 以避免在 macOS 上因 IPv6 (::1) 導致連線失敗
-            return 'http://127.0.0.1:5001/api/predict';
+            return 'http://127.0.0.1:8002/api/predict';
         }
 
         // 生產環境（稍後配置）

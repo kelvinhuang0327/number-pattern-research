@@ -5,7 +5,7 @@ import logging
 import json
 import os
 from collections import Counter
-from .unified_predictor import predict_special_number
+# ⚠️ 特別號不預測！玩家只選6個主號碼
 
 logger = logging.getLogger(__name__)
 
@@ -50,8 +50,7 @@ class AutoGluonPredictor:
             
             logger.info(f"AutoGluon 預測完成: {predicted_numbers}, 信心度: {confidence:.2%}")
             
-            # 🔧 預測特別號碼
-            predicted_special = predict_special_number(history, lottery_rules, predicted_numbers)
+            # ⚠️ 大樂透特別號不預測！玩家只選6個主號碼
 
             result = {
                 "numbers": predicted_numbers,
@@ -67,10 +66,6 @@ class AutoGluonPredictor:
                 },
                 "notes": "採用輕量級混合策略，結合頻率分析、遺漏值、冷熱號分析等多種特徵"
             }
-
-            # 🔧 添加特別號碼
-            if predicted_special is not None:
-                result['special'] = predicted_special
 
             return result
             

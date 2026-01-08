@@ -360,17 +360,14 @@ class TransformerPredictor:
             # 轻量级统计预测
             predicted_numbers = self._predict_lightweight(history, lottery_rules)
 
-        # 预测特别号
-        from .unified_predictor import predict_special_number
-        special = predict_special_number(history, lottery_rules, predicted_numbers)
+        # ⚠️ 大樂透特別號不預測！玩家只選6個主號碼
 
         confidence = 0.75 if self.use_torch else 0.65
 
-        logger.info(f"✓ Transformer 预测完成: {predicted_numbers} (特别号: {special})")
+        logger.info(f"✓ Transformer 预测完成: {predicted_numbers}")
 
         return {
             'numbers': predicted_numbers,
-            'special': special,
             'confidence': confidence,
             'method': 'Transformer (PatchTST)' if self.use_torch else 'Transformer (轻量级)'
         }

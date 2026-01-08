@@ -9,7 +9,7 @@ from datetime import datetime, time
 from typing import Optional
 from apscheduler.schedulers.asyncio import AsyncIOScheduler
 from apscheduler.triggers.cron import CronTrigger
-from models.auto_learning import AutoLearningEngine
+from models.advanced_auto_learning import AdvancedAutoLearningEngine
 
 import os
 
@@ -27,7 +27,7 @@ class AutoLearningScheduler:
     
     def __init__(self):
         self.scheduler = AsyncIOScheduler()
-        self.engine = AutoLearningEngine()
+        self.engine = AdvancedAutoLearningEngine()
         self.is_running = False
         # 🚀 優化：分類存儲數據（按彩券類型）
         self.data_by_type = {}  # {'BIG_LOTTO': [...], 'POWER_LOTTO': [...]}
@@ -85,66 +85,70 @@ class AutoLearningScheduler:
     
     async def _run_optimization(self):
         """
-        執行優化任務（內部方法）
+        執行多彩種優化任務（內部方法）
         """
         try:
             self.is_optimizing = True
-            self.optimization_message = "正在初始化優化任務..."
-            logger.info("開始執行排程優化任務...")
+            self.optimization_message = "正在初始化多彩種優化..."
+            logger.info("開始執行多彩種排程優化任務...")
 
-            # 如果沒有數據，嘗試加載
-            if not self.latest_data:
-                self.load_data()
+            # 確保數據已加載
+            if not self.data_by_type:
+                self.load_data_from_disk()
 
-            if not self.latest_data or not self.lottery_rules:
-                logger.warning("缺少數據或規則，跳過優化")
+            if not self.data_by_type:
+                logger.warning("沒有可用數據，跳過優化")
                 self.is_optimizing = False
-                self.optimization_message = "缺少數據或規則"
+                self.optimization_message = "缺少數據"
                 return
 
-            # 定義進度回調
-            async def progress_callback(progress):
-                self.current_progress = progress
-                self.current_generation = int(progress / 100 * self.total_generations)
-                self.optimization_message = f"正在優化第 {self.current_generation}/{self.total_generations} 代..."
+            # 延遲導入避免循環依賴
+            from common import get_lottery_rules
 
-            self.current_progress = 0
-            self.total_generations = 30
-            self.optimization_message = "開始優化..."
+            all_types = list(self.data_by_type.keys())
+            total_types = len(all_types)
             
-            # 🔧 排程優化使用完整數據（max_data_limit=None）
-            # 將重運算優化移交至執行緒池，避免阻塞事件迴圈
-            loop = asyncio.get_running_loop()
-            def _run_opt():
-                return asyncio.run(self.engine.optimize(
-                    history=self.latest_data,
-                    lottery_rules=self.lottery_rules,
-                    generations=self.total_generations,
-                    population_size=50,
-                    progress_callback=progress_callback,
-                    max_data_limit=None,  # 排程優化不限制數據量
-                    target_fitness=self.target_fitness  # 🎯 目標適應度早停
-                ))
-            result = await loop.run_in_executor(None, _run_opt)
-            
+            for idx, lottery_type in enumerate(all_types):
+                history = self.data_by_type[lottery_type]
+                if len(history) < 30:
+                    logger.info(f"彩種 {lottery_type} 數據不足 ({len(history)} 期)，跳過")
+                    continue
+
+                logger.info(f"📍 正在優化 [{lottery_type}] ({idx+1}/{total_types})，數據量: {len(history)} 期")
+                rules = get_lottery_rules(lottery_type)
+                
+                # 更新全局狀態供前端顯示
+                self.optimization_message = f"正在優化 {lottery_type} ({idx+1}/{total_types})..."
+                
+                # 進度回調（調整為針對當前彩種的局部比例）
+                async def progress_callback(p):
+                    # 全局進度 = (已完成彩種數 + 當前彩種進度) / 總彩種數
+                    global_p = ((idx + (p / 100)) / total_types) * 100
+                    self.current_progress = global_p
+                
+                loop = asyncio.get_running_loop()
+                def _run_opt():
+                    return asyncio.run(self.engine.multi_stage_optimize(
+                        history=history,
+                        lottery_rules=rules,
+                        progress_callback=progress_callback
+                    ))
+                
+                result = await loop.run_in_executor(None, _run_opt)
+                
+                if result['success']:
+                    logger.info(f"✅ {lottery_type} 優化成功: 適應度 {result['best_fitness']:.4f}")
+                    self._save_config(result['best_config'], lottery_type)
+                else:
+                    logger.error(f"❌ {lottery_type} 優化失敗: {result.get('error', 'Unknown')}")
+
             self.current_progress = 100
-
-            if result['success']:
-                logger.info(f"優化成功: 適應度 {result['best_fitness']:.4f}")
-                # 保存配置到文件
-                lt = self._infer_lottery_type(self.latest_data)
-                self._save_config(result['best_config'], lt)
-                self.optimization_message = f"優化完成！適應度: {result['best_fitness']:.4f}"
-                self.last_optimization_at = datetime.now().isoformat()
-            else:
-                logger.error(f"優化失敗: {result.get('error', 'Unknown')}")
-                self.optimization_message = f"優化失敗: {result.get('error', 'Unknown')}"
-
+            self.optimization_message = "所有彩種優化完成！"
+            self.last_optimization_at = datetime.now().isoformat()
             self.is_optimizing = False
 
         except Exception as e:
-            logger.error(f"執行優化任務失敗: {str(e)}", exc_info=True)
-            self.current_progress = 0
+            logger.error(f"多彩種優化任務失敗: {str(e)}", exc_info=True)
             self.is_optimizing = False
             self.optimization_message = f"優化失敗: {str(e)}"
     
@@ -163,13 +167,12 @@ class AutoLearningScheduler:
         # 將重運算優化移交至執行緒池，避免阻塞事件迴圈
         loop = asyncio.get_running_loop()
         def _run_opt_manual():
-            return asyncio.run(self.engine.optimize(
+            # 手動觸發時，如果 generations 較小，執行自定義優化或多階段
+            # 這裡為了統一，優先觸發多階段優化
+            return asyncio.run(self.engine.multi_stage_optimize(
                 history=history,
                 lottery_rules=lottery_rules,
-                generations=generations,
-                population_size=population_size,
-                max_data_limit=None,  # 使用完整數據進行優化
-                target_fitness=target_fitness  # 🎯 支持目標適應度
+                progress_callback=None
             ))
         result = await loop.run_in_executor(None, _run_opt_manual)
         

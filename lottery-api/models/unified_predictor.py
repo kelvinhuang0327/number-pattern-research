@@ -194,6 +194,7 @@ class UnifiedPredictionEngine:
         self.scaler = StandardScaler()
         self.analyzer = LotteryFeatureAnalyzer()
         self._sota_models = {} # 緩存不同彩種的 SOTA 模型
+        self._ai_models = {}   # 🚀 緩存 AI 模型 (Prophet, XGBoost, LSTM)
         logger.info("UnifiedPredictionEngine 初始化完成 (優化版)")
 
     def filter_by_global_constraints(self, history: List[Dict], predicted_numbers: List[int], lottery_rules: Dict) -> List[int]:
@@ -215,11 +216,11 @@ class UnifiedPredictionEngine:
         
         while attempt < max_attempts:
             current_sum = self.analyzer.calculate_sum(adjusted)
-            # 判斷總和是否在 [avg - 1.5*std, avg + 1.5*std] 範圍內
-            if abs(current_sum - stats_data['sum_avg']) <= 1.5 * stats_data['sum_std']:
+            # 判斷總和是否在 [avg - 2.5*std, avg + 2.5*std] 範圍內 (Relaxed from 1.5 for heavy tails)
+            if abs(current_sum - stats_data['sum_avg']) <= 2.5 * stats_data['sum_std']:
                 break
                 
-            if current_sum > stats_data['sum_avg'] + 1.5 * stats_data['sum_std']:
+            if current_sum > stats_data['sum_avg'] + 2.5 * stats_data['sum_std']:
                 # 總和太高，把最大的一個號碼減 1
                 max_val = max(adjusted)
                 idx = adjusted.index(max_val)
@@ -2546,6 +2547,107 @@ class UnifiedPredictionEngine:
         
         return result
 
+    def entropy_predict(self, history: List[Dict], lottery_rules: Dict) -> Dict:
+        """
+        🧬 熵值驅動預測 (Entropy-Driven Prediction)
+        
+        原理：
+        1. 計算號碼池中每個號碼加入後的預期熵值變化。
+        2. 優先選擇能使組合熵值接近「黃金熵」(歷史平均熵) 的號碼。
+        3. 用於過濾過於規則或過於混亂的「序列對抗」號碼。
+        """
+        pick_count = lottery_rules.get('pickCount', 6)
+        max_num = lottery_rules.get('maxNumber', 38)
+        
+        # 獲取歷史平均熵
+        hist_entropies = [self.analyzer.calculate_entropy(d['numbers'], max_num) for d in history[:100]]
+        target_entropy = np.mean(hist_entropies) if hist_entropies else 3.5
+        
+        # 獲取基礎高頻號碼作為備選
+        freq = Counter()
+        for d in history[:200]:
+            freq.update(d['numbers'])
+        top_candidates = [n for n, c in freq.most_common(20)]
+        
+        best_numbers = []
+        # 使用貪婪算法尋找最接近目標熵的組合
+        current_numbers = []
+        for _ in range(pick_count):
+            best_num = None
+            min_diff = float('inf')
+            
+            for n in range(1, max_num + 1):
+                if n in current_numbers: continue
+                test_combo = current_numbers + [n]
+                ent = self.analyzer.calculate_entropy(test_combo, max_num)
+                diff = abs(ent - target_entropy)
+                
+                # 加入頻率加權
+                weighted_diff = diff / (freq[n] + 1)
+                
+                if weighted_diff < min_diff:
+                    min_diff = weighted_diff
+                    best_num = n
+            
+            if best_num:
+                current_numbers.append(best_num)
+                
+        return {
+            'numbers': sorted(current_numbers),
+            'confidence': 0.7,
+            'method': 'entropy_driven'
+        }
+
+    def interval_predict(self, history: List[Dict], lottery_rules: Dict) -> Dict:
+        """
+        📐 間隔結構預測 (Interval-Based Prediction)
+        
+        原理：
+        1. 預測號碼之間的「物理間隔」(Intervals)。
+        2. 從最小值 (min_num) 開始，根據預測的間隔序列重建注項。
+        3. 專注於空間斷層 (Space Gaps) 而非絕對數值。
+        """
+        pick_count = lottery_rules.get('pickCount', 6)
+        max_num = lottery_rules.get('maxNumber', 38)
+        
+        # 提取歷史間隔
+        all_intervals = []
+        for d in history[:100]:
+            nums = sorted(d['numbers'])
+            intervals = [nums[0]] + [nums[i+1] - nums[i] for i in range(len(nums)-1)]
+            all_intervals.append(intervals)
+            
+        # 計算每個位置的平均間隔與方差
+        avg_intervals = []
+        for i in range(pick_count):
+            pos_intervals = [intervals[i] for intervals in all_intervals if i < len(intervals)]
+            if pos_intervals:
+                # 使用中位數避免極端離群值 (長斷層)
+                avg_intervals.append(int(np.median(pos_intervals)))
+            else:
+                avg_intervals.append(6) # 預設
+
+        # 重建號碼
+        predicted_numbers = []
+        current_val = 0
+        for gap in avg_intervals:
+            # 加入微小擾動
+            wobble = random.choice([-1, 0, 1])
+            next_val = current_val + gap + wobble
+            
+            # 邊界檢查
+            if next_val <= current_val: next_val = current_val + 1
+            if next_val > max_num: next_val = max_num - (pick_count - len(predicted_numbers))
+            
+            predicted_numbers.append(int(next_val))
+            current_val = next_val
+            
+        return {
+            'numbers': sorted(list(set(predicted_numbers))), # 確保唯一
+            'confidence': 0.65,
+            'method': 'interval_reconstruction'
+        }
+
     def ensemble_predict(
         self,
         history: List[Dict],
@@ -2594,8 +2696,10 @@ class UnifiedPredictionEngine:
         # Prophet（需要至少 30 期）
         if data_size >= 30:
             try:
-                from models.prophet_model import ProphetPredictor
-                prophet = ProphetPredictor()
+                if 'prophet' not in self._ai_models:
+                    from models.prophet_model import ProphetPredictor
+                    self._ai_models['prophet'] = ProphetPredictor()
+                prophet = self._ai_models['prophet']
                 strategies.append(('ai_prophet', lambda h, r: self._run_async_predict(prophet.predict(h, r)), 2.0))
                 ai_models_included.append('Prophet')
             except Exception as e:
@@ -2604,8 +2708,10 @@ class UnifiedPredictionEngine:
         # XGBoost（需要至少 50 期）
         if data_size >= 50:
             try:
-                from models.xgboost_model import XGBoostPredictor
-                xgboost = XGBoostPredictor()
+                if 'xgboost' not in self._ai_models:
+                    from models.xgboost_model import XGBoostPredictor
+                    self._ai_models['xgboost'] = XGBoostPredictor()
+                xgboost = self._ai_models['xgboost']
                 strategies.append(('ai_xgboost', lambda h, r: self._run_async_predict(xgboost.predict(h, r)), 2.2))
                 ai_models_included.append('XGBoost')
             except Exception as e:
@@ -2614,8 +2720,10 @@ class UnifiedPredictionEngine:
         # LSTM（需要至少 70 期，且數據量越多權重越高）
         if data_size >= 70:
             try:
-                from models.lstm_model import LSTMPredictor
-                lstm = LSTMPredictor()
+                if 'lstm' not in self._ai_models:
+                    from models.lstm_model import LSTMPredictor
+                    self._ai_models['lstm'] = LSTMPredictor()
+                lstm = self._ai_models['lstm']
                 # 數據量越多，LSTM 權重越高（200+ 期時達到最高 3.0）
                 lstm_weight = min(3.0, 2.0 + (data_size - 70) / 200)
                 strategies.append(('ai_lstm', lambda h, r: self._run_async_predict(lstm.predict(h, r)), lstm_weight))

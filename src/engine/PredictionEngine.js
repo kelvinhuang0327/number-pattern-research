@@ -130,22 +130,12 @@ export class PredictionEngine {
             method = newMethod;
         }
 
-        // 獲取數據（異步）
+        // 獲取數據（DataProcessor 已經處理相關類型過濾）
         let data = await this.dataProcessor.getDataRange(sampleSize, lotteryTypeId);
 
-        // 如果指定了彩券類型，進行過濾（包含相關類型）
-        if (lotteryTypeId) {
-            // 獲取所有相關類型（例如：大樂透 + 大樂透加開獎項）
-            const relatedTypes = getRelatedTypes(lotteryTypeId);
-            data = data.filter(d => relatedTypes.includes(d.lotteryType));
-
-            if (data.length === 0) {
-                throw new Error(`無 ${lotteryTypeId} 類型的數據`);
-            }
-        }
-
+        // 驗證數據
         if (data.length === 0) {
-            throw new Error('無數據可供預測');
+            throw new Error(lotteryTypeId ? `無 ${lotteryTypeId} 類型的數據` : '無數據可供預測');
         }
 
 

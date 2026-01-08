@@ -1,5 +1,5 @@
 import { LOTTERY_RULES, detectLotteryType, LOTTERY_TYPES } from '../utils/Constants.js';
-import { isValidNumber, isValidSpecialNumber } from '../utils/LotteryTypes.js';
+import { isValidNumber, isValidSpecialNumber, getRelatedTypes } from '../utils/LotteryTypes.js';
 import { apiClient } from '../services/ApiClient.js';
 
 /**
@@ -149,7 +149,13 @@ export class DataProcessor {
             const line = lines[i].trim();
             if (!line) continue;
 
-            const parts = line.split(',').map(p => p.trim().replace(/^"|"$/g, ''));
+            let parts = line.split(',').map(p => p.trim().replace(/^"|"$/g, ''));
+
+            // 嘗試使用空白分隔（如果逗號分隔無效）
+            if (parts.length <= 1) {
+                parts = line.trim().split(/[\s\t]+/).map(p => p.trim());
+            }
+
             const gameName = parts[0];
 
             if (gameName.includes('賓果') || gameName.toUpperCase().includes('BINGO')) {
@@ -162,8 +168,10 @@ export class DataProcessor {
             }
 
             const minFields = 6 + lotteryType.pickCount;
-            if (parts.length < minFields) {
-                continue;
+
+            // 🌟 修正：如果欄位不足，自動補空白
+            while (parts.length < minFields) {
+                parts.push('');
             }
 
             const rawDraw = parts[1];
@@ -303,13 +311,13 @@ export class DataProcessor {
         if (count === 6 && maxNum <= 49 && minNum >= 1) {
             return special > 0 ? 'BIG_LOTTO' : 'BIG_LOTTO';
         } else if (count === 5 && maxNum <= 39 && minNum >= 1) {
-            return 'DAILY_CASH_539';
+            return 'DAILY_539';
         } else if (count === 6 && maxNum <= 38 && minNum >= 1) {
-            return 'LOTTO_39';
+            return '39_LOTTO';
         } else if (count === 3) {
-            return 'STAR_3';
+            return '3_STAR';
         } else if (count === 4) {
-            return 'STAR_4';
+            return '4_STAR';
         }
 
         return 'BIG_LOTTO';
@@ -334,16 +342,30 @@ export class DataProcessor {
     }
 
     /**
-     * 載入CSV檔案數據 (僅解析，不保存到本地)
+     * 載入CSV/TXT檔案數據 (僅解析，不保存到本地)
+     * @param {File} file - 要處理的文件
+     * @param {string} playMode - 玩法模式（可選，適用於樂合彩系列）
      */
-    async loadCSVData(file) {
+    async loadCSVData(file, playMode = null) {
         console.log(`📂 Loading ${file.name}...`);
         if (file.name.includes('賓果') || file.name.toUpperCase().includes('BINGO')) {
             console.warn(`⚠️ 跳過檔案 ${file.name}：不支援賓果賓果數據`);
             return { newCount: 0, totalCount: this.lotteryData.length, skipped: true, message: '已跳過賓果賓果檔案' };
         }
 
-        const newData = await this.parseCSV(file);
+        // 判斷文件類型
+        const fileExt = file.name.toLowerCase().split('.').pop();
+
+        let newData;
+        if (fileExt === 'txt') {
+            // TXT 格式：調用後端 API 進行解析
+            console.log(`  → Detected TXT format, using backend parser...`);
+            newData = await this.parseTXTViaBackend(file, playMode);
+        } else {
+            // CSV 格式：使用前端解析
+            newData = await this.parseCSV(file);
+        }
+
         console.log(`  → Parsed ${newData.length} records from ${file.name}`);
 
         // 注意：這裡不再合併到 this.lotteryData，而是返回解析結果
@@ -352,6 +374,73 @@ export class DataProcessor {
             data: newData,
             parsedCount: newData.length
         };
+    }
+
+    /**
+     * 通過後端 API 解析 TXT 文件（今彩539格式）
+     * @param {File} file - 要解析的文件
+     * @param {string} playMode - 玩法模式（可選，僅適用於樂合彩系列）
+     */
+    async parseTXTViaBackend(file, playMode = null) {
+        try {
+            // 從文件名推斷彩券類型
+            let lotteryType = 'DAILY_539'; // 默認
+            if (file.name.includes('今彩539')) {
+                lotteryType = 'DAILY_539';
+            } else if (file.name.includes('大樂透')) {
+                lotteryType = 'BIG_LOTTO';
+            } else if (file.name.includes('威力彩')) {
+                lotteryType = 'POWER_LOTTO';
+            } else if (file.name.includes('49樂合彩')) {
+                lotteryType = '49_LOTTO';
+            } else if (file.name.includes('39樂合彩')) {
+                lotteryType = '39_LOTTO';
+            } else if (file.name.includes('38樂合彩')) {
+                lotteryType = '38_LOTTO';
+            } else if (file.name.includes('4星彩') || file.name.includes('四星彩')) {
+                lotteryType = '4_STAR';
+            } else if (file.name.includes('3星彩') || file.name.includes('三星彩')) {
+                lotteryType = '3_STAR';
+            } else if (file.name.includes('雙贏彩')) {
+                lotteryType = 'DOUBLE_WIN';
+            } else if (file.name.includes('6/38')) {
+                lotteryType = 'LOTTO_6_38';
+            }
+
+            // 調用後端驗證API
+            const formData = new FormData();
+            formData.append('file', file);
+            formData.append('lottery_type', lotteryType);
+
+            // 如果指定了玩法模式，添加到請求中
+            if (playMode) {
+                formData.append('play_mode', playMode);
+                console.log(`  → Using play mode: ${playMode}`);
+            }
+
+            const response = await fetch('http://localhost:8002/api/data/validate-csv', {
+                method: 'POST',
+                body: formData
+            });
+
+            if (!response.ok) {
+                throw new Error(`後端解析失敗: ${response.statusText}`);
+            }
+
+            const result = await response.json();
+
+            if (!result.valid) {
+                const errorMsg = result.errors.map(e => `行 ${e.line}: ${e.message}`).join('\n');
+                throw new Error(`TXT 驗證失敗:\n${errorMsg}`);
+            }
+
+            console.log(`  ✓ Backend validation: ${result.stats.valid_rows} valid rows`);
+            return result.parsed_data;
+
+        } catch (error) {
+            console.error('TXT parsing error:', error);
+            throw new Error('TXT解析錯誤: ' + error.message);
+        }
     }
 
     checkDuplicates(newData) {
@@ -366,7 +455,9 @@ export class DataProcessor {
     async getDataRange(sampleSize, lotteryType = null) {
         let data = this.lotteryData;
         if (lotteryType) {
-            data = data.filter(d => d.lotteryType === lotteryType);
+            // ✅ 使用 getRelatedTypes 獲取相關類型（例如：大樂透 + 大樂透加開）
+            const relatedTypes = getRelatedTypes(lotteryType);
+            data = data.filter(d => relatedTypes.includes(d.lotteryType));
         }
 
         if (sampleSize === 'all') {

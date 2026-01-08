@@ -8,7 +8,7 @@ import json
 from datetime import datetime
 from apscheduler.schedulers.asyncio import AsyncIOScheduler
 from apscheduler.triggers.cron import CronTrigger
-from models.auto_learning import AutoLearningEngine
+from models.advanced_auto_learning import AdvancedAutoLearningEngine
 from models.strategy_evaluator import StrategyEvaluator
 
 import os
@@ -38,7 +38,7 @@ class SmartLearningScheduler:
             success_threshold: 成功率閾值（默認30%，即至少命中3個號碼的比例）
         """
         self.scheduler = AsyncIOScheduler()
-        self.auto_learning_engine = AutoLearningEngine()
+        self.auto_learning_engine = AdvancedAutoLearningEngine()
         self.strategy_evaluator = StrategyEvaluator()
 
         self.is_running = False
@@ -240,13 +240,10 @@ class SmartLearningScheduler:
                     'maxNumber': 49
                 })
 
-                # 執行參數優化
-                optimization_result = await self.auto_learning_engine.optimize(
+                # 執行多階段參數優化
+                optimization_result = await self.auto_learning_engine.multi_stage_optimize(
                     history=history,
-                    lottery_rules=lottery_rules,
-                    generations=30,
-                    population_size=50,
-                    max_data_limit=None  # 使用完整數據
+                    lottery_rules=lottery_rules
                 )
 
                 if optimization_result.get('success'):

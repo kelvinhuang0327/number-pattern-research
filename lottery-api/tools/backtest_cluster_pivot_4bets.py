@@ -9,6 +9,8 @@ ClusterPivot 4注策略回測驗證腳本
 import sys
 import os
 import json
+import argparse
+from typing import List, Optional
 from datetime import datetime
 from collections import defaultdict, Counter
 
@@ -44,7 +46,7 @@ def validate_no_leakage(target_draw: dict, train_data: list) -> bool:
     return True
 
 
-def run_cluster_pivot_backtest(num_bets: int = 4):
+def run_cluster_pivot_backtest(num_bets: int = 4, anchors: Optional[List[int]] = None):
     """
     執行 ClusterPivot 多注策略回測
 
@@ -89,6 +91,9 @@ def run_cluster_pivot_backtest(num_bets: int = 4):
         'resilience': True,
         'window_size': 50,
     }
+
+    if anchors:
+        meta_config['forced_anchors'] = anchors
 
     print(f"\n配置: {json.dumps(meta_config, indent=2)}")
     print("-" * 70)
@@ -247,10 +252,14 @@ def run_cluster_pivot_backtest(num_bets: int = 4):
         'all_results': results,
     })
 
+    anchor_suffix = ''
+    if anchors:
+        anchor_suffix = '_anchors_' + '-'.join(str(a) for a in anchors)
+
     output_path = os.path.join(
         os.path.dirname(os.path.dirname(os.path.abspath(__file__))),
         'data', 'backtest_results',
-        f'POWER_LOTTO_cluster_pivot_{num_bets}bets_2025.json'
+        f'POWER_LOTTO_cluster_pivot_{num_bets}bets_2025{anchor_suffix}.json'
     )
 
     os.makedirs(os.path.dirname(output_path), exist_ok=True)
@@ -280,6 +289,13 @@ def run_cluster_pivot_backtest(num_bets: int = 4):
 
 
 if __name__ == '__main__':
-    # 可選：指定注數
-    num_bets = int(sys.argv[1]) if len(sys.argv) > 1 else 4
-    run_cluster_pivot_backtest(num_bets)
+    parser = argparse.ArgumentParser(description='ClusterPivot 多注策略回測 (POWER_LOTTO, 2025)')
+    parser.add_argument('--num-bets', type=int, default=4, help='注數 (預設 4)')
+    parser.add_argument('--anchors', type=str, default='', help='強制錨點 (例如: 11,17)')
+    args = parser.parse_args()
+
+    anchors = None
+    if args.anchors:
+        anchors = [int(x.strip()) for x in args.anchors.split(',') if x.strip()]
+
+    run_cluster_pivot_backtest(args.num_bets, anchors=anchors)

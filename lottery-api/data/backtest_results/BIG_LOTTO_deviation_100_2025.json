@@ -1,0 +1,574 @@
+{
+  "summary": {
+    "lottery_type": "BIG_LOTTO",
+    "method_name": "deviation_100",
+    "window_size": 100,
+    "test_periods": 18,
+    "win_count": 0,
+    "win_rate": 0.0,
+    "avg_matches": 1.0555555555555556,
+    "max_matches": 2,
+    "total_matches": 19,
+    "periods_per_win": Infinity,
+    "expected_cost_per_win": Infinity,
+    "test_start_date": "2025-02-04",
+    "test_end_date": "2025-01-03",
+    "backtest_timestamp": "2026-01-02T10:45:11.842941"
+  },
+  "details": [
+    {
+      "draw_id": "114000001",
+      "draw_date": "2025-01-03",
+      "predicted_numbers": [
+        28,
+        29,
+        30,
+        32,
+        33,
+        34
+      ],
+      "predicted_special": 27,
+      "actual_numbers": [
+        6,
+        9,
+        15,
+        29,
+        30,
+        48
+      ],
+      "actual_special": 23,
+      "matches": 2,
+      "matched_numbers": [
+        29,
+        30
+      ],
+      "is_win": false,
+      "confidence": 0.815700197221661,
+      "method_name": "deviation_100",
+      "window_size": 100,
+      "training_periods": 100
+    },
+    {
+      "draw_id": "114000002",
+      "draw_date": "2025-01-07",
+      "predicted_numbers": [
+        28,
+        29,
+        30,
+        32,
+        33,
+        34
+      ],
+      "predicted_special": 27,
+      "actual_numbers": [
+        1,
+        8,
+        20,
+        26,
+        29,
+        35
+      ],
+      "actual_special": 19,
+      "matches": 1,
+      "matched_numbers": [
+        29
+      ],
+      "is_win": false,
+      "confidence": 0.8249874866126448,
+      "method_name": "deviation_100",
+      "window_size": 100,
+      "training_periods": 100
+    },
+    {
+      "draw_id": "114000003",
+      "draw_date": "2025-01-10",
+      "predicted_numbers": [
+        28,
+        29,
+        30,
+        33,
+        34,
+        36
+      ],
+      "predicted_special": 27,
+      "actual_numbers": [
+        14,
+        29,
+        35,
+        36,
+        37,
+        49
+      ],
+      "actual_special": 40,
+      "matches": 2,
+      "matched_numbers": [
+        29,
+        36
+      ],
+      "is_win": false,
+      "confidence": 0.838153336016866,
+      "method_name": "deviation_100",
+      "window_size": 100,
+      "training_periods": 100
+    },
+    {
+      "draw_id": "114000004",
+      "draw_date": "2025-01-14",
+      "predicted_numbers": [
+        28,
+        29,
+        30,
+        33,
+        34,
+        36
+      ],
+      "predicted_special": 1,
+      "actual_numbers": [
+        1,
+        3,
+        13,
+        15,
+        37,
+        48
+      ],
+      "actual_special": 42,
+      "matches": 0,
+      "matched_numbers": [],
+      "is_win": false,
+      "confidence": 0.8378284929630273,
+      "method_name": "deviation_100",
+      "window_size": 100,
+      "training_periods": 100
+    },
+    {
+      "draw_id": "114000005",
+      "draw_date": "2025-01-17",
+      "predicted_numbers": [
+        28,
+        29,
+        30,
+        32,
+        33,
+        34
+      ],
+      "predicted_special": 23,
+      "actual_numbers": [
+        11,
+        18,
+        32,
+        39,
+        44,
+        49
+      ],
+      "actual_special": 46,
+      "matches": 1,
+      "matched_numbers": [
+        32
+      ],
+      "is_win": false,
+      "confidence": 0.838859240320727,
+      "method_name": "deviation_100",
+      "window_size": 100,
+      "training_periods": 100
+    },
+    {
+      "draw_id": "114000006",
+      "draw_date": "2025-01-21",
+      "predicted_numbers": [
+        28,
+        29,
+        30,
+        32,
+        33,
+        34
+      ],
+      "predicted_special": 23,
+      "actual_numbers": [
+        6,
+        21,
+        35,
+        36,
+        38,
+        42
+      ],
+      "actual_special": 22,
+      "matches": 0,
+      "matched_numbers": [],
+      "is_win": false,
+      "confidence": 0.8645961252486868,
+      "method_name": "deviation_100",
+      "window_size": 100,
+      "training_periods": 100
+    },
+    {
+      "draw_id": "114000007",
+      "draw_date": "2025-01-24",
+      "predicted_numbers": [
+        28,
+        29,
+        30,
+        32,
+        33,
+        36
+      ],
+      "predicted_special": 27,
+      "actual_numbers": [
+        6,
+        22,
+        23,
+        30,
+        36,
+        37
+      ],
+      "actual_special": 13,
+      "matches": 2,
+      "matched_numbers": [
+        30,
+        36
+      ],
+      "is_win": false,
+      "confidence": 0.8734423637596975,
+      "method_name": "deviation_100",
+      "window_size": 100,
+      "training_periods": 100
+    },
+    {
+      "draw_id": "114000008",
+      "draw_date": "2025-01-25",
+      "predicted_numbers": [
+        28,
+        29,
+        32,
+        33,
+        34,
+        36
+      ],
+      "predicted_special": 27,
+      "actual_numbers": [
+        2,
+        3,
+        10,
+        12,
+        34,
+        40
+      ],
+      "actual_special": 41,
+      "matches": 1,
+      "matched_numbers": [
+        34
+      ],
+      "is_win": false,
+      "confidence": 0.8769814200512617,
+      "method_name": "deviation_100",
+      "window_size": 100,
+      "training_periods": 100
+    },
+    {
+      "draw_id": "114000009",
+      "draw_date": "2025-01-26",
+      "predicted_numbers": [
+        28,
+        29,
+        32,
+        33,
+        34,
+        36
+      ],
+      "predicted_special": 27,
+      "actual_numbers": [
+        7,
+        12,
+        16,
+        31,
+        40,
+        43
+      ],
+      "actual_special": 34,
+      "matches": 0,
+      "matched_numbers": [],
+      "is_win": false,
+      "confidence": 0.8719994788567276,
+      "method_name": "deviation_100",
+      "window_size": 100,
+      "training_periods": 100
+    },
+    {
+      "draw_id": "114000010",
+      "draw_date": "2025-01-27",
+      "predicted_numbers": [
+        28,
+        29,
+        30,
+        33,
+        35,
+        36
+      ],
+      "predicted_special": 27,
+      "actual_numbers": [
+        11,
+        22,
+        30,
+        35,
+        37,
+        38
+      ],
+      "actual_special": 33,
+      "matches": 2,
+      "matched_numbers": [
+        30,
+        35
+      ],
+      "is_win": false,
+      "confidence": 0.8720365291933183,
+      "method_name": "deviation_100",
+      "window_size": 100,
+      "training_periods": 100
+    },
+    {
+      "draw_id": "114000011",
+      "draw_date": "2025-01-28",
+      "predicted_numbers": [
+        28,
+        29,
+        31,
+        34,
+        35,
+        36
+      ],
+      "predicted_special": 27,
+      "actual_numbers": [
+        4,
+        8,
+        20,
+        26,
+        31,
+        34
+      ],
+      "actual_special": 16,
+      "matches": 2,
+      "matched_numbers": [
+        31,
+        34
+      ],
+      "is_win": false,
+      "confidence": 0.8821490276596291,
+      "method_name": "deviation_100",
+      "window_size": 100,
+      "training_periods": 100
+    },
+    {
+      "draw_id": "114000012",
+      "draw_date": "2025-01-29",
+      "predicted_numbers": [
+        29,
+        31,
+        32,
+        34,
+        35,
+        36
+      ],
+      "predicted_special": 27,
+      "actual_numbers": [
+        15,
+        17,
+        22,
+        26,
+        32,
+        42
+      ],
+      "actual_special": 12,
+      "matches": 1,
+      "matched_numbers": [
+        32
+      ],
+      "is_win": false,
+      "confidence": 0.8899039221659572,
+      "method_name": "deviation_100",
+      "window_size": 100,
+      "training_periods": 100
+    },
+    {
+      "draw_id": "114000013",
+      "draw_date": "2025-01-30",
+      "predicted_numbers": [
+        30,
+        31,
+        32,
+        34,
+        35,
+        36
+      ],
+      "predicted_special": 27,
+      "actual_numbers": [
+        5,
+        8,
+        27,
+        29,
+        30,
+        48
+      ],
+      "actual_special": 35,
+      "matches": 1,
+      "matched_numbers": [
+        30
+      ],
+      "is_win": false,
+      "confidence": 0.8736083468031571,
+      "method_name": "deviation_100",
+      "window_size": 100,
+      "training_periods": 100
+    },
+    {
+      "draw_id": "114000014",
+      "draw_date": "2025-01-31",
+      "predicted_numbers": [
+        30,
+        31,
+        33,
+        34,
+        35,
+        36
+      ],
+      "predicted_special": 10,
+      "actual_numbers": [
+        7,
+        11,
+        13,
+        23,
+        39,
+        42
+      ],
+      "actual_special": 15,
+      "matches": 0,
+      "matched_numbers": [],
+      "is_win": false,
+      "confidence": 0.8865677644263792,
+      "method_name": "deviation_100",
+      "window_size": 100,
+      "training_periods": 100
+    },
+    {
+      "draw_id": "114000015",
+      "draw_date": "2025-02-01",
+      "predicted_numbers": [
+        30,
+        31,
+        33,
+        34,
+        35,
+        36
+      ],
+      "predicted_special": 10,
+      "actual_numbers": [
+        2,
+        9,
+        10,
+        18,
+        39,
+        40
+      ],
+      "actual_special": 8,
+      "matches": 0,
+      "matched_numbers": [],
+      "is_win": false,
+      "confidence": 0.8874482165789843,
+      "method_name": "deviation_100",
+      "window_size": 100,
+      "training_periods": 100
+    },
+    {
+      "draw_id": "114000016",
+      "draw_date": "2025-02-02",
+      "predicted_numbers": [
+        28,
+        31,
+        33,
+        34,
+        35,
+        36
+      ],
+      "predicted_special": 10,
+      "actual_numbers": [
+        10,
+        16,
+        25,
+        28,
+        33,
+        37
+      ],
+      "actual_special": 13,
+      "matches": 2,
+      "matched_numbers": [
+        28,
+        33
+      ],
+      "is_win": false,
+      "confidence": 0.9,
+      "method_name": "deviation_100",
+      "window_size": 100,
+      "training_periods": 100
+    },
+    {
+      "draw_id": "114000017",
+      "draw_date": "2025-02-03",
+      "predicted_numbers": [
+        28,
+        29,
+        31,
+        34,
+        35,
+        36
+      ],
+      "predicted_special": 10,
+      "actual_numbers": [
+        7,
+        20,
+        29,
+        32,
+        33,
+        39
+      ],
+      "actual_special": 47,
+      "matches": 1,
+      "matched_numbers": [
+        29
+      ],
+      "is_win": false,
+      "confidence": 0.9,
+      "method_name": "deviation_100",
+      "window_size": 100,
+      "training_periods": 100
+    },
+    {
+      "draw_id": "114000018",
+      "draw_date": "2025-02-04",
+      "predicted_numbers": [
+        28,
+        29,
+        30,
+        31,
+        34,
+        36
+      ],
+      "predicted_special": 10,
+      "actual_numbers": [
+        15,
+        17,
+        21,
+        26,
+        30,
+        47
+      ],
+      "actual_special": 48,
+      "matches": 1,
+      "matched_numbers": [
+        30
+      ],
+      "is_win": false,
+      "confidence": 0.9,
+      "method_name": "deviation_100",
+      "window_size": 100,
+      "training_periods": 100
+    }
+  ]
+}

@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TXT 上傳測試</title>
+    <style>
+        body {
+            font-family: 'Noto Sans TC', sans-serif;
+            max-width: 800px;
+            margin: 50px auto;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #333;
+            text-align: center;
+        }
+        .upload-area {
+            border: 2px dashed #4CAF50;
+            padding: 40px;
+            text-align: center;
+            border-radius: 8px;
+            margin: 20px 0;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        .upload-area:hover {
+            background: #f0f8f0;
+            border-color: #45a049;
+        }
+        button {
+            background: #4CAF50;
+            color: white;
+            padding: 12px 24px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            margin: 10px 5px;
+        }
+        button:hover {
+            background: #45a049;
+        }
+        button:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+        }
+        .result {
+            margin-top: 20px;
+            padding: 15px;
+            border-radius: 5px;
+            display: none;
+        }
+        .result.success {
+            background: #d4edda;
+            border: 1px solid #c3e6cb;
+            color: #155724;
+        }
+        .result.error {
+            background: #f8d7da;
+            border: 1px solid #f5c6cb;
+            color: #721c24;
+        }
+        .result.info {
+            background: #d1ecf1;
+            border: 1px solid #bee5eb;
+            color: #0c5460;
+        }
+        .file-info {
+            margin-top: 10px;
+            padding: 10px;
+            background: #f8f9fa;
+            border-radius: 5px;
+            display: none;
+        }
+        pre {
+            background: #f4f4f4;
+            padding: 15px;
+            border-radius: 5px;
+            overflow-x: auto;
+            max-height: 400px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>📤 今彩539 TXT 上傳測試</h1>
+
+        <div class="upload-area" onclick="document.getElementById('file-input').click()">
+            <div style="font-size: 48px; margin-bottom: 10px;">📁</div>
+            <div style="font-size: 18px; color: #666;">點擊選擇 TXT 檔案</div>
+            <div style="font-size: 14px; color: #999; margin-top: 5px;">支援今彩539官方格式</div>
+        </div>
+
+        <input type="file" id="file-input" accept=".txt" style="display: none;" onchange="handleFileSelect(event)">
+
+        <div class="file-info" id="file-info"></div>
+
+        <div style="text-align: center;">
+            <button id="validate-btn" onclick="validateFile()" disabled>驗證檔案</button>
+            <button id="upload-btn" onclick="uploadFile()" disabled>上傳到資料庫</button>
+            <button onclick="clearResult()">清除結果</button>
+        </div>
+
+        <div class="result" id="result"></div>
+    </div>
+
+    <script>
+        let selectedFile = null;
+        let validatedData = null;
+
+        function handleFileSelect(event) {
+            selectedFile = event.target.files[0];
+            if (selectedFile) {
+                document.getElementById('file-info').innerHTML = `
+                    <strong>已選擇檔案：</strong> ${selectedFile.name}<br>
+                    <strong>大小：</strong> ${(selectedFile.size / 1024).toFixed(2)} KB
+                `;
+                document.getElementById('file-info').style.display = 'block';
+                document.getElementById('validate-btn').disabled = false;
+                clearResult();
+            }
+        }
+
+        async function validateFile() {
+            if (!selectedFile) {
+                showResult('請先選擇檔案', 'error');
+                return;
+            }
+
+            showResult('正在驗證檔案...', 'info');
+
+            try {
+                const formData = new FormData();
+                formData.append('file', selectedFile);
+                formData.append('lottery_type', 'DAILY_539');
+
+                const response = await fetch('http://localhost:8002/api/data/validate-csv', {
+                    method: 'POST',
+                    body: formData
+                });
+
+                if (!response.ok) {
+                    throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+                }
+
+                const result = await response.json();
+
+                if (result.valid) {
+                    validatedData = result.parsed_data;
+                    document.getElementById('upload-btn').disabled = false;
+                    showResult(`✅ 驗證成功！\n\n統計資訊：\n- 總行數：${result.stats.total_rows}\n- 有效數據：${result.stats.valid_rows} 筆\n- 錯誤數據：${result.stats.error_rows} 筆\n\n解析的數據（前3筆）：\n${JSON.stringify(result.parsed_data.slice(0, 3), null, 2)}`, 'success');
+                } else {
+                    validatedData = null;
+                    document.getElementById('upload-btn').disabled = true;
+                    const errorMsg = result.errors.map(e => `行 ${e.line}: ${e.message}`).join('\n');
+                    showResult(`❌ 驗證失敗！\n\n錯誤列表：\n${errorMsg}`, 'error');
+                }
+
+            } catch (error) {
+                console.error('Validation error:', error);
+                showResult(`❌ 驗證失敗：${error.message}`, 'error');
+            }
+        }
+
+        async function uploadFile() {
+            if (!validatedData || validatedData.length === 0) {
+                showResult('請先驗證檔案', 'error');
+                return;
+            }
+
+            showResult('正在上傳到資料庫...', 'info');
+
+            try {
+                const lotteryRules = {
+                    minNumber: 1,
+                    maxNumber: 39,
+                    pickCount: 5,
+                    hasSpecialNumber: false
+                };
+
+                const response = await fetch('http://localhost:8002/api/data/upload', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        history: validatedData,
+                        lotteryRules: lotteryRules
+                    })
+                });
+
+                if (!response.ok) {
+                    throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+                }
+
+                const result = await response.json();
+
+                if (result.success) {
+                    showResult(`✅ 上傳成功！\n\n- 新增：${result.inserted} 筆\n- 重複：${result.duplicates} 筆\n- 總計：${result.total} 筆\n\n${result.message}`, 'success');
+                    document.getElementById('upload-btn').disabled = true;
+                } else {
+                    showResult(`❌ 上傳失敗`, 'error');
+                }
+
+            } catch (error) {
+                console.error('Upload error:', error);
+                showResult(`❌ 上傳失敗：${error.message}`, 'error');
+            }
+        }
+
+        function showResult(message, type) {
+            const resultDiv = document.getElementById('result');
+            resultDiv.innerHTML = `<pre>${message}</pre>`;
+            resultDiv.className = `result ${type}`;
+            resultDiv.style.display = 'block';
+        }
+
+        function clearResult() {
+            const resultDiv = document.getElementById('result');
+            resultDiv.style.display = 'none';
+            validatedData = null;
+            document.getElementById('upload-btn').disabled = true;
+        }
+    </script>
+</body>
+</html>

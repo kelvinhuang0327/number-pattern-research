@@ -205,17 +205,14 @@ class MAMLPredictor:
             # 轻量级预测
             predicted_numbers = self._predict_lightweight(history, lottery_rules)
 
-        # 预测特别号
-        from .unified_predictor import predict_special_number
-        special = predict_special_number(history, lottery_rules, predicted_numbers)
+        # ⚠️ 大樂透特別號不預測！玩家只選6個主號碼
 
         confidence = 0.70 if self.use_torch else 0.60
 
-        logger.info(f"✓ 元学习预测完成: {predicted_numbers} (特别号: {special})")
+        logger.info(f"✓ 元学习预测完成: {predicted_numbers}")
 
         return {
             'numbers': predicted_numbers,
-            'special': special,
             'confidence': confidence,
             'method': '元学习 (MAML)' if self.use_torch else '元学习 (轻量级)'
         }

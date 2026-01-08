@@ -15,7 +15,7 @@ logger = logging.getLogger(__name__)
 class DatabaseManager:
     """SQLite 數據庫管理器"""
     
-    def __init__(self, db_path: str = "data/lottery.db"):
+    def __init__(self, db_path: str = "data/lottery_v2.db"):
         """
         初始化數據庫管理器
         
@@ -188,19 +188,25 @@ class DatabaseManager:
             # 構建查詢條件
             conditions = []
             params = []
-            
+
             if lottery_type:
-                conditions.append("lottery_type = ?")
-                params.append(lottery_type)
-            
+                # ✅ 使用相關類型查詢
+                from common import get_related_lottery_types
+                related_types = get_related_lottery_types(lottery_type)
+
+                # 使用 IN 子句支持多個類型
+                placeholders = ','.join('?' * len(related_types))
+                conditions.append(f"lottery_type IN ({placeholders})")
+                params.extend(related_types)
+
             if start_date:
                 conditions.append("date >= ?")
                 params.append(start_date)
-            
+
             if end_date:
                 conditions.append("date <= ?")
                 params.append(end_date)
-            
+
             where_clause = " AND ".join(conditions) if conditions else "1=1"
             
             # 查詢總數
@@ -252,26 +258,39 @@ class DatabaseManager:
     
     def get_all_draws(self, lottery_type: Optional[str] = None) -> List[Dict]:
         """
-        獲取所有開獎記錄（不分頁）
-        
+        獲取所有開獎記錄（不分頁）- 支持相關類型查詢
+
         Args:
-            lottery_type: 可選的彩券類型篩選
-            
+            lottery_type: 可選的彩券類型篩選（會自動包含相關類型）
+
         Returns:
             開獎記錄列表
         """
         conn = self._get_connection()
         cursor = conn.cursor()
-        
+
         try:
+            logger.info(f"🔍 [get_all_draws] Using database: {self.db_path}")
+
             if lottery_type:
-                query = """
+                # ✅ 導入並使用 get_related_lottery_types
+                from common import get_related_lottery_types
+
+                # 獲取相關類型（例如：BIG_LOTTO -> [BIG_LOTTO, BIG_LOTTO_BONUS]）
+                related_types = get_related_lottery_types(lottery_type)
+                logger.info(f"🔍 [get_all_draws] Related types: {related_types}")
+
+                # 使用 IN 查詢支持多個相關類型
+                placeholders = ','.join('?' * len(related_types))
+                query = f"""
                     SELECT id, draw, date, lottery_type, numbers, special
                     FROM draws
-                    WHERE lottery_type = ?
+                    WHERE lottery_type IN ({placeholders})
                     ORDER BY date DESC, draw DESC
                 """
-                cursor.execute(query, (lottery_type,))
+                logger.info(f"🔍 [get_all_draws] Query: {query}")
+                logger.info(f"🔍 [get_all_draws] Params: {related_types}")
+                cursor.execute(query, related_types)
             else:
                 query = """
                     SELECT id, draw, date, lottery_type, numbers, special
@@ -279,10 +298,12 @@ class DatabaseManager:
                     ORDER BY date DESC, draw DESC
                 """
                 cursor.execute(query)
-            
+
             rows = cursor.fetchall()
+            logger.info(f"🔍 [get_all_draws] SQL fetchall() returned {len(rows)} rows")
+
             draws = []
-            
+
             for row in rows:
                 draws.append({
                     'draw': row['draw'],
@@ -291,9 +312,10 @@ class DatabaseManager:
                     'numbers': json.loads(row['numbers']),
                     'special': row['special']
                 })
-            
+
+            logger.info(f"🔍 [get_all_draws] Parsed {len(draws)} draws, returning...")
             return draws
-            
+
         except Exception as e:
             logger.error(f"❌ Get all draws failed: {e}")
             raise
@@ -420,6 +442,46 @@ class DatabaseManager:
         finally:
             conn.close()
 
+    def get_draw(self, lottery_type: str, draw_number: str) -> Optional[Dict]:
+        """
+        根據期號獲取開獎記錄
+        
+        Args:
+            lottery_type: 彩券類型
+            draw_number: 期號
+            
+        Returns:
+            開獎記錄字典或 None
+        """
+        conn = self._get_connection()
+        cursor = conn.cursor()
+        
+        try:
+            cursor.execute("""
+                SELECT id, draw, date, lottery_type, numbers, special
+                FROM draws
+                WHERE lottery_type = ? AND draw = ?
+            """, (lottery_type, draw_number))
+            
+            row = cursor.fetchone()
+            if not row:
+                return None
+                
+            return {
+                'id': row['id'],
+                'draw': row['draw'],
+                'date': row['date'],
+                'lotteryType': row['lottery_type'],
+                'numbers': json.loads(row['numbers']),
+                'special': row['special']
+            }
+            
+        except Exception as e:
+            logger.error(f"❌ Get draw failed: {e}")
+            raise
+        finally:
+            conn.close()
+
     def get_draws_by_range(
         self,
         lottery_type: str,
@@ -427,10 +489,10 @@ class DatabaseManager:
         end_draw: Optional[str] = None
     ) -> List[Dict]:
         """
-        根據期數範圍查詢開獎記錄
+        根據期數範圍查詢開獎記錄 - 支持相關類型
 
         Args:
-            lottery_type: 彩券類型
+            lottery_type: 彩券類型（會自動包含相關類型）
             start_draw: 起始期數（包含），None 表示從最早開始
             end_draw: 結束期數（包含），None 表示到最新為止
 
@@ -441,9 +503,14 @@ class DatabaseManager:
         cursor = conn.cursor()
 
         try:
+            # ✅ 使用相關類型查詢
+            from common import get_related_lottery_types
+            related_types = get_related_lottery_types(lottery_type)
+
             # 構建查詢條件
-            conditions = ["lottery_type = ?"]
-            params = [lottery_type]
+            placeholders = ','.join('?' * len(related_types))
+            conditions = [f"lottery_type IN ({placeholders})"]
+            params = list(related_types)
 
             if start_draw:
                 # 使用 CAST 將 draw 轉為整數進行比較

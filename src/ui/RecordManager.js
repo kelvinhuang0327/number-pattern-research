@@ -65,6 +65,32 @@ export class RecordManager {
                 this.closeModal();
             }
         });
+
+        // 監聽彩券類型變更
+        const typeSelect = document.getElementById('record-lottery-type');
+        if (typeSelect) {
+            typeSelect.addEventListener('change', () => this.handleLotteryTypeChange());
+        }
+    }
+
+    /**
+     * 處理彩券類型變更
+     */
+    handleLotteryTypeChange() {
+        const typeSelect = document.getElementById('record-lottery-type');
+        const specialInput = document.getElementById('record-special');
+        if (!typeSelect || !specialInput) return;
+
+        const type = typeSelect.value;
+        if (type === 'POWER_LOTTO') {
+            specialInput.max = 8;
+            specialInput.placeholder = '1-8';
+            // 如果當前值超過8，清空
+            if (specialInput.value > 8) specialInput.value = '';
+        } else {
+            specialInput.max = 49;
+            specialInput.placeholder = '例如：7';
+        }
     }
 
     /**
@@ -85,6 +111,9 @@ export class RecordManager {
         // 設定預設彩券類型為大樂透
         document.getElementById('record-lottery-type').value = 'BIG_LOTTO';
 
+        // 初始化輸入限制
+        this.handleLotteryTypeChange();
+
         // 顯示彈窗
         this.modal.style.display = 'block';
     }
@@ -101,6 +130,9 @@ export class RecordManager {
         document.getElementById('record-draw').value = drawData.draw || '';
         document.getElementById('record-date').value = drawData.date || '';
         document.getElementById('record-lottery-type').value = drawData.lotteryType || 'BIG_LOTTO';
+
+        // 更新輸入限制
+        this.handleLotteryTypeChange();
 
         // 填充號碼
         if (drawData.numbers && Array.isArray(drawData.numbers)) {
@@ -158,8 +190,9 @@ export class RecordManager {
         }
 
         // 驗證特別號
-        if (isNaN(recordData.special) || recordData.special < 1 || recordData.special > 49) {
-            alert('特別號必須在 1-49 之間');
+        const specialMax = document.getElementById('record-special').max || 49;
+        if (isNaN(recordData.special) || recordData.special < 1 || recordData.special > specialMax) {
+            alert(`特別號必須在 1-${specialMax} 之間`);
             return;
         }
 
@@ -189,7 +222,7 @@ export class RecordManager {
      * 新增記錄到後端
      */
     async createRecord(recordData) {
-        const response = await fetch('http://localhost:5001/api/draws', {
+        const response = await fetch('http://localhost:8002/api/draws', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
@@ -218,7 +251,7 @@ export class RecordManager {
      * 更新記錄到後端
      */
     async updateRecord(drawId, recordData) {
-        const response = await fetch(`http://localhost:5001/api/draws/${drawId}`, {
+        const response = await fetch(`http://localhost:8002/api/draws/${drawId}`, {
             method: 'PUT',
             headers: {
                 'Content-Type': 'application/json'
@@ -259,7 +292,7 @@ export class RecordManager {
      */
     async deleteRecord(drawId) {
         try {
-            const response = await fetch(`http://localhost:5001/api/draws/${drawId}`, {
+            const response = await fetch(`http://localhost:8002/api/draws/${drawId}`, {
                 method: 'DELETE'
             });
 

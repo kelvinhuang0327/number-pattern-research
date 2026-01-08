@@ -1,0 +1,26 @@
+{
+  "chi_square": {
+    "pass": true,
+    "p_value": 0.8483265829054453
+  },
+  "runs_test": {
+    "pass": false,
+    "p_value": 0.0
+  },
+  "entropy": {
+    "pass": true,
+    "ratio": 0.9996061666201744
+  },
+  "consecutive": {
+    "avg": 0.6253006253006252,
+    "expected": 0.6122448979591837,
+    "deviation": 0.013055727341441559
+  },
+  "odd_even": {
+    "pass": false,
+    "p_value": 0.0008850843479669035
+  },
+  "autocorr": {
+    "pass": true
+  }
+}

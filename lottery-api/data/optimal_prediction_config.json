@@ -1,0 +1,55 @@
+{
+  "version": "1.0",
+  "updated": "2025-12-22",
+  "description": "各彩票類型的最佳預測配置，基於回測驗證結果",
+  "configs": {
+    "POWER_LOTTO": {
+      "name": "威力彩",
+      "optimal_method": "ensemble_predict",
+      "optimal_window": 100,
+      "backup_method": "bayesian_predict",
+      "backtest_result": {
+        "avg_match": 1.27,
+        "win_rate": 0.10,
+        "test_periods": 30,
+        "test_date": "2025-12-22"
+      },
+      "notes": "Ensemble 集成策略在威力彩表現最佳，100期數據量最優"
+    },
+    "DAILY_539": {
+      "name": "今彩539",
+      "optimal_method": "monte_carlo_predict",
+      "optimal_window": 100,
+      "backup_method": "bayesian_predict",
+      "backtest_result": {
+        "avg_match": 0.90,
+        "win_rate": 0.033,
+        "test_periods": 30,
+        "test_date": "2025-12-22"
+      },
+      "notes": "Monte Carlo 蒙地卡羅模擬在今彩539表現最佳，100期數據量最優"
+    },
+    "BIG_LOTTO": {
+      "name": "大樂透",
+      "optimal_method": "bayesian_predict",
+      "optimal_window": 300,
+      "backup_method": "trend_predict",
+      "backtest_result": {
+        "avg_match": 0.75,
+        "win_rate": 0.042,
+        "test_periods": 113,
+        "test_date": "2025-12-16"
+      },
+      "notes": "Bayesian 貝葉斯統計在大樂透表現最佳，使用300期滾動窗口"
+    }
+  },
+  "method_mapping": {
+    "ensemble_predict": "超級集成預測 (14策略+3AI模型)",
+    "monte_carlo_predict": "蒙地卡羅模擬 (20000次)",
+    "bayesian_predict": "貝葉斯統計預測",
+    "trend_predict": "趨勢分析預測",
+    "frequency_predict": "頻率分析預測",
+    "hot_cold_mix_predict": "冷熱混合預測",
+    "sota_predict": "SOTA Transformer預測"
+  }
+}

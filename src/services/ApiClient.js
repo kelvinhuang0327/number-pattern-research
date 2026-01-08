@@ -4,7 +4,7 @@
  */
 
 // 使用 127.0.0.1 以避免在 macOS 上因 IPv6 (::1) 解析造成的連線問題
-const API_BASE_URL = 'http://127.0.0.1:5001';
+const API_BASE_URL = 'http://127.0.0.1:8002';
 
 export class ApiClient {
     constructor() {

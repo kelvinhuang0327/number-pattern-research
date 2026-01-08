@@ -12,7 +12,7 @@ from typing import List, Dict, Optional
 from collections import Counter
 import os
 
-from .unified_predictor import predict_special_number, log_data_range, get_data_range_info
+from .unified_predictor import log_data_range, get_data_range_info
 
 logger = logging.getLogger(__name__)
 
@@ -175,7 +175,6 @@ class LSTMPredictor:
         confidence = float(np.mean([prob for _, prob in sorted_numbers[:pick_count]]))
         
         # 預測特別號碼
-        predicted_special = predict_special_number(history, lottery_rules, predicted_numbers)
 
         result = {
             "numbers": predicted_numbers,
@@ -193,8 +192,6 @@ class LSTMPredictor:
             "dataRange": get_data_range_info(history)
         }
 
-        if predicted_special is not None:
-            result['special'] = predicted_special
 
         return result
 
@@ -293,7 +290,6 @@ class LSTMPredictor:
         confidence = np.mean(top_scores) / max(top_scores) if top_scores else 0.5
         confidence = min(0.85, max(0.3, confidence))
         
-        predicted_special = predict_special_number(history, lottery_rules, predicted_numbers)
 
         result = {
             "numbers": predicted_numbers,
@@ -309,8 +305,6 @@ class LSTMPredictor:
             "dataRange": get_data_range_info(history)
         }
 
-        if predicted_special is not None:
-            result['special'] = predicted_special
 
         logger.info(f"✅ 序列預測完成: {predicted_numbers}")
         return result

@@ -5,7 +5,7 @@ from typing import List, Dict, Tuple
 import logging
 from sklearn.multioutput import MultiOutputClassifier
 from sklearn.preprocessing import MultiLabelBinarizer
-from .unified_predictor import predict_special_number, log_data_range, get_data_range_info
+from .unified_predictor import log_data_range, get_data_range_info
 
 logger = logging.getLogger(__name__)
 
@@ -87,8 +87,7 @@ class XGBoostPredictor:
             
             logger.info(f"XGBoost 預測完成: {top_numbers}, 信心度: {confidence:.2%}")
             
-            # 🔧 預測特別號碼
-            predicted_special = predict_special_number(history, lottery_rules, top_numbers)
+            # ⚠️ 大樂透特別號不預測！玩家只選6個主號碼
 
             result = {
                 "numbers": top_numbers,
@@ -104,10 +103,6 @@ class XGBoostPredictor:
                 },
                 "notes": "基於歷史開獎模式的機器學習預測，分析號碼間的關聯性"
             }
-
-            # 🔧 添加特別號碼
-            if predicted_special is not None:
-                result['special'] = predicted_special
 
             return result
             

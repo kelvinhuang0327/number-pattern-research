@@ -26,6 +26,12 @@ export class SmartBettingComponent {
         if (hedgingBtn) {
             hedgingBtn.addEventListener('click', () => this.generateHedging());
         }
+
+        // 熵驅動 8 注預測按鈕
+        const entropy8BetsBtn = document.getElementById('entropy-8-bets-btn');
+        if (entropy8BetsBtn) {
+            entropy8BetsBtn.addEventListener('click', () => this.generateEntropy8Bets());
+        }
     }
 
     renderNumberSelector() {
@@ -157,5 +163,84 @@ export class SmartBettingComponent {
     async generateHedging() {
         // 需要 PredictionEngine 支援
         this.uiManager.showNotification('對沖功能需要預測引擎支援', 'info');
+    }
+
+    /**
+     * 熵驅動 8 注預測
+     * 調用後端 API 生成 8 注熵優化號碼
+     */
+    async generateEntropy8Bets() {
+        const btn = document.getElementById('entropy-8-bets-btn');
+        const resultsDiv = document.getElementById('entropy-8-bets-results');
+        const gridDiv = document.getElementById('entropy-8-bets-grid');
+        const strategy = document.getElementById('entropy-8-bets-strategy')?.value || 'balanced';
+
+        // 獲取當前彩券類型
+        const lotteryTypeSelect = document.getElementById('lottery-type-filter');
+        const lotteryType = lotteryTypeSelect?.value || 'BIG_LOTTO';
+
+        try {
+            // 顯示載入狀態
+            btn.disabled = true;
+            btn.innerHTML = '<span class="btn-icon">⏳</span> 生成中...';
+            this.uiManager.showNotification('正在生成熵優化 8 注...', 'info');
+
+            // 調用後端 API
+            const response = await fetch('http://localhost:8002/api/predict-entropy-8-bets', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ lotteryType, strategy })
+            });
+
+            if (!response.ok) {
+                throw new Error(`API 錯誤: ${response.status}`);
+            }
+
+            const data = await response.json();
+
+            // 渲染 8 注號碼
+            gridDiv.innerHTML = '';
+            data.bets.forEach((bet, idx) => {
+                const betCard = document.createElement('div');
+                betCard.style.cssText = 'background: rgba(255,255,255,0.1); padding: 12px; border-radius: 8px;';
+
+                const typeIcon = bet.type === 'hot' ? '🔥' : '❄️';
+                const typeLabel = bet.type === 'hot' ? '熱門' : '冷門';
+
+                betCard.innerHTML = `
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+                        <span style="font-weight: bold;">第${idx + 1}注 ${typeIcon} ${typeLabel}</span>
+                        <span style="font-size: 0.85em; opacity: 0.8;">概率: ${(bet.avg_prob * 100).toFixed(1)}%</span>
+                    </div>
+                    <div class="predicted-numbers" style="display: flex; gap: 6px; flex-wrap: wrap;">
+                        ${bet.numbers.map(n => `<span class="number-ball" style="background: linear-gradient(135deg, #10B981, #059669); color: white; width: 32px; height: 32px; display: flex; align-items: center; justify-content: center; border-radius: 50%; font-weight: bold;">${String(n).padStart(2, '0')}</span>`).join('')}
+                    </div>
+                    <div style="margin-top: 6px; font-size: 0.8em; opacity: 0.7;">奇數: ${bet.odd_count}/6 | 和值: ${bet.sum}</div>
+                `;
+                gridDiv.appendChild(betCard);
+            });
+
+            // 更新分析數據
+            document.getElementById('entropy-coverage-rate').textContent =
+                `${(data.analysis.coverage_rate * 100).toFixed(1)}%`;
+            document.getElementById('entropy-unique-numbers').textContent =
+                `${data.analysis.unique_numbers}/${data.analysis.total_numbers}`;
+            document.getElementById('entropy-diversity-score').textContent =
+                data.analysis.diversity_score.toFixed(3);
+
+            // 顯示結果區域
+            resultsDiv.style.display = 'block';
+            resultsDiv.scrollIntoView({ behavior: 'smooth' });
+
+            this.uiManager.showNotification('✅ 已生成 8 注熵優化號碼', 'success');
+
+        } catch (error) {
+            console.error('熵 8 注預測失敗:', error);
+            this.uiManager.showNotification(`預測失敗: ${error.message}`, 'error');
+        } finally {
+            // 恢復按鈕狀態
+            btn.disabled = false;
+            btn.innerHTML = '<span class="btn-icon">🎲</span> 生成熵優化 8 注';
+        }
     }
 }

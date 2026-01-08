@@ -26,7 +26,7 @@ export const LOTTERY_TYPES = {
         displayName: '大樂透加開獎項',
         csvName: '春節加碼活動',
         aliases: ['春節加碼活動', '端午節加碼活動', '中秋節加碼活動', '大樂透加開獎項'],
-        // 不設置 baseType，表示這是獨立的彩券類型，不與大樂透合併
+        baseType: 'BIG_LOTTO',  // ✅ 設置 baseType，與大樂透合併訓練數據
         numberRange: { min: 1, max: 49 },
         pickCount: 6,
         hasSpecialNumber: false,  // 加開獎項沒有特別號
@@ -37,58 +37,70 @@ export const LOTTERY_TYPES = {
         gradient: 'linear-gradient(135deg, #EF4444, #DC2626)',
         recommendedSampleSize: 200  // 因為每期有多組號碼，建議使用更多樣本
     },
-    STAR_3: {
-        id: 'STAR_3',
-        name: '三星彩',
-        displayName: '三星彩',
+    '3_STAR': {
+        id: '3_STAR',
+        name: '3星彩',
+        displayName: '3星彩',
         csvName: '三星彩',
         aliases: ['3星彩', '三星彩'],
         numberRange: { min: 0, max: 9 },
         pickCount: 3,
         hasSpecialNumber: false,
-        description: '從 0~9 中開出 3 個號碼',
+        repeatsAllowed: true,
+        isPermutation: true,
+        description: '從 0~9 中開出 3 個號碼（可重複，順序有意義）',
         // Visual metadata
         icon: '3️⃣',
         color: 'hsl(200, 80%, 55%)',
         gradient: 'linear-gradient(135deg, #3B82F6, #2563EB)',
         recommendedSampleSize: 100
     },
-    STAR_4: {
-        id: 'STAR_4',
-        name: '四星彩',
-        displayName: '四星彩',
+    '4_STAR': {
+        id: '4_STAR',
+        name: '4星彩',
+        displayName: '4星彩',
         csvName: '四星彩',
         aliases: ['4星彩', '四星彩'],
         numberRange: { min: 0, max: 9 },
         pickCount: 4,
         hasSpecialNumber: false,
-        description: '從 0~9 中開出 4 個號碼',
+        repeatsAllowed: true,
+        isPermutation: true,
+        description: '從 0~9 中開出 4 個號碼（可重複，順序有意義）',
         // Visual metadata
         icon: '4️⃣',
         color: 'hsl(260, 85%, 65%)',
         gradient: 'linear-gradient(135deg, #8B5CF6, #7C3AED)',
         recommendedSampleSize: 100
     },
-    LOTTO_39: {
-        id: 'LOTTO_39',
+    '39_LOTTO': {
+        id: '39_LOTTO',
         name: '39樂合彩',
         displayName: '39樂合彩',
         csvName: '39樂合彩',
         numberRange: { min: 1, max: 39 },
-        pickCount: 5,
+        pickCount: 5, // 主遊戲的號碼數量
         hasSpecialNumber: false,
-        description: '從 01~39 中任選 5 個號碼',
+        dependsOn: 'DAILY_539',
+        isSubGame: true,
+        playModes: {
+            '二合': { pickCount: 2, matchRequired: 2 },
+            '三合': { pickCount: 3, matchRequired: 3 },
+            '四合': { pickCount: 4, matchRequired: 4 }
+        },
+        description: '依附今彩539，可選2/3/4個號碼（二合/三合/四合）',
         // Visual metadata
         icon: '🔢',
         color: 'hsl(280, 70%, 60%)',
         gradient: 'linear-gradient(135deg, #A855F7, #9333EA)',
         recommendedSampleSize: 50
     },
-    DAILY_CASH_539: {
-        id: 'DAILY_CASH_539',
+    DAILY_539: {
+        id: 'DAILY_539',
         name: '今彩539',
         displayName: '今彩539',
         csvName: '今彩539',
+        aliases: ['DAILY_539', 'Daily 539', '今彩539'],
         numberRange: { min: 1, max: 39 },
         pickCount: 5,
         hasSpecialNumber: false,
@@ -100,8 +112,8 @@ export const LOTTERY_TYPES = {
         recommendedSampleSize: 50
     },
     // 新增其他彩券類型（暫不支援預測，但可以載入數據）
-    POWER_BALL: {
-        id: 'POWER_BALL',
+    POWER_LOTTO: {
+        id: 'POWER_LOTTO',
         name: '威力彩',
         displayName: '威力彩',
         csvName: '威力彩',
@@ -116,30 +128,44 @@ export const LOTTERY_TYPES = {
         gradient: 'linear-gradient(135deg, #EF4444, #DC2626)',
         recommendedSampleSize: 50
     },
-    LOTTO_38: {
-        id: 'LOTTO_38',
+    '38_LOTTO': {
+        id: '38_LOTTO',
         name: '38樂合彩',
         displayName: '38樂合彩',
         csvName: '38樂合彩',
         numberRange: { min: 1, max: 38 },
-        pickCount: 6,
+        pickCount: 6, // 主遊戲的號碼數量
         hasSpecialNumber: false,
-        description: '從 01~38 中任選 6 個號碼',
+        dependsOn: 'POWER_LOTTO',
+        isSubGame: true,
+        playModes: {
+            '二合': { pickCount: 2, matchRequired: 2 },
+            '三合': { pickCount: 3, matchRequired: 3 },
+            '四合': { pickCount: 4, matchRequired: 4 }
+        },
+        description: '依附威力彩第一區，可選2/3/4個號碼（二合/三合/四合）',
         // Visual metadata
         icon: '3️⃣8️⃣',
         color: 'hsl(180, 70%, 55%)',
         gradient: 'linear-gradient(135deg, #14B8A6, #0D9488)',
         recommendedSampleSize: 50
     },
-    LOTTO_49: {
-        id: 'LOTTO_49',
+    '49_LOTTO': {
+        id: '49_LOTTO',
         name: '49樂合彩',
         displayName: '49樂合彩',
         csvName: '49樂合彩',
         numberRange: { min: 1, max: 49 },
-        pickCount: 6,
+        pickCount: 6, // 主遊戲的號碼數量
         hasSpecialNumber: false,
-        description: '從 01~49 中任選 6 個號碼',
+        dependsOn: 'BIG_LOTTO',
+        isSubGame: true,
+        playModes: {
+            '二合': { pickCount: 2, matchRequired: 2 },
+            '三合': { pickCount: 3, matchRequired: 3 },
+            '四合': { pickCount: 4, matchRequired: 4 }
+        },
+        description: '依附大樂透（不含特別號），可選2/3/4個號碼（二合/三合/四合）',
         // Visual metadata
         icon: '4️⃣9️⃣',
         color: 'hsl(320, 85%, 65%)',

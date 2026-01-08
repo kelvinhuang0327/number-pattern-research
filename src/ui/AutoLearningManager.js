@@ -7,7 +7,7 @@ import { apiClient } from '../services/ApiClient.js';
 
 // 🔧 定義 API 基礎 URL（文件級常量，避免實例屬性問題）
 const API_BASE_URL = (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1')
-    ? 'http://localhost:5001/api/auto-learning'
+    ? 'http://localhost:8002/api/auto-learning'
     : 'https://your-api-domain.com/api/auto-learning';
 
 export class AutoLearningManager {
@@ -47,10 +47,10 @@ export class AutoLearningManager {
         // 使用兩個候選 URL 避免單一失敗：優先 127.0.0.1 其次 localhost
         // 先嘗試極速 /api/ping，再回退 /health
         const urls = [
-            'http://127.0.0.1:5001/api/ping',
-            'http://localhost:5001/api/ping',
-            'http://127.0.0.1:5001/health',
-            'http://localhost:5001/health'
+            'http://127.0.0.1:8002/api/ping',
+            'http://localhost:8002/api/ping',
+            'http://127.0.0.1:8002/health',
+            'http://localhost:8002/health'
         ];
         const TIMEOUT_MS = 15000; // 增加至 15 秒，避免優化期間暫時阻塞
         const MAX_ATTEMPTS = 2;   // 至少連續 2 次失敗才判定離線
@@ -225,7 +225,7 @@ export class AutoLearningManager {
                 <div style="flex: 1;">
                     <strong>離線模式</strong> - 無法連接到後端 API
                     <br>
-                    <small>請確保後端服務已啟動 (端口 5001)</small>
+                    <small>請確保後端服務已啟動 (端口 8002)</small>
                 </div>
                 <button id="retry-connection-btn" style="
                     background: rgba(255,255,255,0.2);
@@ -1198,7 +1198,7 @@ export class AutoLearningManager {
 
             // 調用後端 API
             const apiUrl = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
-                ? 'http://localhost:5001/api/auto-learning/evaluate-strategies'
+                ? 'http://localhost:8002/api/auto-learning/evaluate-strategies'
                 : 'https://your-api-domain.com/api/auto-learning/evaluate-strategies';
 
             progressBar.style.width = '30%';

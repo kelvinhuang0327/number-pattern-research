@@ -23,6 +23,11 @@ from collections import defaultdict
 import numpy as np
 
 
+class DataLeakageError(Exception):
+    """當回測中發現預測器接觸到未來數據（當期或之後的開獎結果）時拋出"""
+    pass
+
+
 @dataclass
 class PredictionResult:
     """單次預測結果"""
@@ -128,13 +133,26 @@ class StrategyAdapter:
 class RollingBacktester:
     """
     滾動回測器 - 標準化的回測執行引擎
+
+    P0 優化：支援可配置的中獎門檻 (min_match)
+    - min_match=3: 傳統標準，符合台彩官方最低獎項
+    - min_match=2: 寬鬆標準，更能區分預測方法好壞
     """
 
-    # 各彩種的中獎門檻
-    WIN_THRESHOLDS = {
-        'BIG_LOTTO': 3,      # 中3個以上
-        'DAILY_539': 3,      # 中3個以上
-        'POWER_LOTTO': 3,    # 中3個以上
+    # 各彩種的預設中獎門檻
+    # 今彩539 改為中2個（39選5，隨機中2個機率約9.3%，門檻較低更能區分方法好壞）
+    DEFAULT_WIN_THRESHOLDS = {
+        'BIG_LOTTO': 3,      # 中3個以上（49選6）
+        'DAILY_539': 2,      # 中2個以上（39選5）⭐ 調整
+        'POWER_LOTTO': 3,    # 中3個以上（38選6）
+    }
+
+    # 各彩種的隨機基準線（用於評估預測方法是否有效）
+    RANDOM_BASELINES = {
+        # min_match=2 的隨機中獎機率
+        'BIG_LOTTO': {'match_2': 0.085, 'match_3': 0.012},      # 6選49
+        'DAILY_539': {'match_2': 0.085, 'match_3': 0.012},      # 5選39
+        'POWER_LOTTO': {'match_2': 0.095, 'match_3': 0.015},    # 6選38
     }
 
     # 各彩種的單注價格
@@ -165,6 +183,7 @@ class RollingBacktester:
             lottery_type: str,
             test_year: int = 2025,
             window_override: int = None,
+            min_match: int = None,
             verbose: bool = True) -> BacktestSummary:
         """
         執行滾動回測
@@ -176,13 +195,14 @@ class RollingBacktester:
             lottery_type: 彩票類型
             test_year: 測試年份
             window_override: 覆蓋策略的最佳窗口
+            min_match: 中獎門檻（預設使用彩種預設值，可設為2降低門檻）
             verbose: 是否顯示進度
 
         Returns:
             回測摘要
         """
         window = window_override or strategy.optimal_window
-        win_threshold = self.WIN_THRESHOLDS.get(lottery_type, 3)
+        win_threshold = min_match if min_match is not None else self.DEFAULT_WIN_THRESHOLDS.get(lottery_type, 3)
         bet_price = self.BET_PRICES.get(lottery_type, 50)
 
         # 分離測試集和訓練集
@@ -213,8 +233,14 @@ class RollingBacktester:
             if target_idx < 0:
                 continue
 
-            # 取得目標期之前的歷史數據
+            # 取得目標期之前的歷史數據 (嚴格不包含 target_idx)
             available_history = draws[target_idx + 1:]
+            
+            # ✨ 誠實保障：二次驗證 (Secondary Integrity Check)
+            # 確保 history 中絕對不含當期期號
+            for d in available_history:
+                if d['draw'] == target['draw']:
+                    raise DataLeakageError(f"CRITICAL: Data Leakage in {target['draw']}! history includes target draw.")
 
             if len(available_history) < window:
                 if verbose:
@@ -321,16 +347,20 @@ class RollingBacktester:
                       lottery_type: str,
                       num_bets: int = 6,
                       test_year: int = 2025,
+                      min_match: int = None,
                       verbose: bool = True) -> BacktestSummary:
         """
         執行多注覆蓋策略回測
 
-        判定標準：任一注中 >= 3 個視為中獎
+        Args:
+            min_match: 中獎門檻（預設3，可設為2降低門檻）
+
+        判定標準：任一注中 >= min_match 個視為中獎
         """
         from .multi_bet_optimizer import MultiBetOptimizer
 
         optimizer = MultiBetOptimizer()
-        win_threshold = self.WIN_THRESHOLDS.get(lottery_type, 3)
+        win_threshold = min_match if min_match is not None else self.DEFAULT_WIN_THRESHOLDS.get(lottery_type, 3)
         bet_price = self.BET_PRICES.get(lottery_type, 50)
 
         test_draws = self._filter_by_year(draws, test_year)
@@ -437,9 +467,13 @@ class RollingBacktester:
                         lottery_rules: Dict,
                         lottery_type: str,
                         test_year: int = 2025,
+                        min_match: int = None,
                         verbose: bool = True) -> List[BacktestSummary]:
         """
         比較所有可用的預測方法
+
+        Args:
+            min_match: 中獎門檻（預設使用彩種預設值，可設為2降低門檻）
 
         Returns:
             按中獎率排序的回測摘要列表
@@ -447,9 +481,12 @@ class RollingBacktester:
         strategies = self._get_all_strategies()
         results = []
 
+        win_threshold = min_match if min_match is not None else self.DEFAULT_WIN_THRESHOLDS.get(lottery_type, 3)
+
         if verbose:
             print(f"\n{'='*60}")
             print(f"方法比較: {lottery_type} ({test_year}年)")
+            print(f"中獎門檻: >= {win_threshold} 個號碼")
             print(f"{'='*60}")
             print(f"共 {len(strategies)} 個策略待測試")
 
@@ -461,6 +498,7 @@ class RollingBacktester:
                     lottery_rules=lottery_rules,
                     lottery_type=lottery_type,
                     test_year=test_year,
+                    min_match=min_match,
                     verbose=False
                 )
                 results.append(summary)
@@ -507,8 +545,15 @@ class RollingBacktester:
         """獲取所有可用的預測策略"""
         from .unified_predictor import prediction_engine
         from .enhanced_predictor import EnhancedPredictor
+        from .gap_predictor import GapAnalysisPredictor, ConsensusPredictor
+        from .anti_consensus_predictor import AntiConsensusPredictor, HighValuePredictor
+        from .daily539_predictor import daily539_predictor
 
         enhanced = EnhancedPredictor()
+        gap_predictor = GapAnalysisPredictor()
+        consensus_predictor = ConsensusPredictor()
+        anti_consensus = AntiConsensusPredictor()
+        high_value = HighValuePredictor()
 
         strategies = [
             # 統一預測引擎方法
@@ -529,6 +574,39 @@ class RollingBacktester:
             StrategyAdapter('multi_window', enhanced.multi_window_fusion_predict, 100),
             StrategyAdapter('coverage_opt', enhanced.coverage_optimized_predict, 100),
             StrategyAdapter('enhanced_ensemble', enhanced.enhanced_ensemble_predict, 100),
+            # P0 新增：間隔分析和共識投票
+            StrategyAdapter('gap_analysis', gap_predictor.predict, 300),
+            StrategyAdapter('gap_analysis_500', gap_predictor.predict, 500),
+            StrategyAdapter('consensus', consensus_predictor.predict, 200),
+            StrategyAdapter('consensus_300', consensus_predictor.predict, 300),
+            # P1 新增：反共識策略
+            StrategyAdapter('anti_consensus', anti_consensus.predict, 200),
+            StrategyAdapter('contrarian', anti_consensus.predict_contrarian, 200),
+            StrategyAdapter('high_value', high_value.predict, 200),
+            # P2 新增：今彩539專用方法
+            StrategyAdapter('539_constraint', daily539_predictor.constraint_predict, 100),
+            StrategyAdapter('539_constraint_200', daily539_predictor.constraint_predict, 200),
+            StrategyAdapter('539_cycle', daily539_predictor.cycle_predict, 100),
+            StrategyAdapter('539_cycle_200', daily539_predictor.cycle_predict, 200),
+            StrategyAdapter('539_consecutive', daily539_predictor.consecutive_predict, 100),
+            StrategyAdapter('539_tail', daily539_predictor.tail_number_predict, 100),
+            StrategyAdapter('539_zone_opt', daily539_predictor.zone_optimized_predict, 100),
+            StrategyAdapter('539_zone_opt_200', daily539_predictor.zone_optimized_predict, 200),
+            StrategyAdapter('539_hot_cold_alt', daily539_predictor.hot_cold_alternate_predict, 100),
+            StrategyAdapter('539_comprehensive', daily539_predictor.comprehensive_predict, 100),
+            StrategyAdapter('539_comprehensive_200', daily539_predictor.comprehensive_predict, 200),
+            # P3 新增：進階組合約束方法
+            StrategyAdapter('539_adv_constraint', daily539_predictor.advanced_constraint_predict, 100),
+            StrategyAdapter('539_adv_constraint_200', daily539_predictor.advanced_constraint_predict, 200),
+            StrategyAdapter('539_adv_constraint_300', daily539_predictor.advanced_constraint_predict, 300),
+            StrategyAdapter('539_ac_optimized', daily539_predictor.ac_optimized_predict, 100),
+            StrategyAdapter('539_ac_optimized_200', daily539_predictor.ac_optimized_predict, 200),
+            StrategyAdapter('539_pattern_match', daily539_predictor.pattern_match_predict, 200),
+            StrategyAdapter('539_pattern_match_300', daily539_predictor.pattern_match_predict, 300),
+            # P4 新增：多方法組合預測器
+            StrategyAdapter('539_ensemble_voting', daily539_predictor.ensemble_voting_predict, 200),
+            StrategyAdapter('539_best_duo', daily539_predictor.best_duo_predict, 200),
+            StrategyAdapter('539_dynamic_ensemble', daily539_predictor.dynamic_ensemble_predict, 200),
         ]
 
         return strategies

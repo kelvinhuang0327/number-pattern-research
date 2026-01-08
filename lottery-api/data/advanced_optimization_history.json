@@ -1,5 +1,5 @@
 {
-  "updated_at": "2025-12-05T14:10:57.597257",
+  "updated_at": "2025-12-23T12:05:15.596226",
   "history": [
     {
       "timestamp": "2025-12-03T17:34:04.951000",
@@ -574,6 +574,83 @@
         "recent_window": 27,
         "long_window": 177
       }
+    },
+    {
+      "timestamp": "2025-12-23T10:54:19.267664",
+      "method": "multi_stage",
+      "best_fitness": 0.11666666666666667,
+      "config": {
+        "frequency_weight": 0.10749426703078077,
+        "missing_weight": 0.008403532010686434,
+        "hot_cold_weight": 0.10070287621667488,
+        "trend_weight": 0.07609673153847113,
+        "zone_weight": 0.008403532010686434,
+        "last_digit_weight": 0.18724748080744685,
+        "odd_even_weight": 0.04036989536375276,
+        "pair_weight": 0.008403532010686434,
+        "sum_band_weight": 0.08187512299738678,
+        "ac_band_weight": 0.08684912419683911,
+        "dynamic_zone_weight": 0.017290927120103983,
+        "entropy_weight": 0.17523995518673885,
+        "clustering_weight": 0.008403532010686434,
+        "temporal_weight": 0.024111800168288396,
+        "feature_eng_weight": 0.06910769133077053,
+        "recent_window": 11,
+        "long_window": 97
+      },
+      "stage_results": [
+        {
+          "stage": "coarse",
+          "fitness": 0.1
+        },
+        {
+          "stage": "fine",
+          "fitness": 0.1
+        },
+        {
+          "stage": "micro",
+          "fitness": 0.11666666666666667
+        }
+      ]
+    },
+    {
+      "timestamp": "2025-12-23T12:05:15.594455",
+      "method": "multi_stage",
+      "best_fitness": 0.5333333333333333,
+      "config": {
+        "frequency_weight": 0.028007981158241595,
+        "missing_weight": 0.34616581003547925,
+        "hot_cold_weight": 0.06957006842151828,
+        "trend_weight": 0.007903344463551676,
+        "zone_weight": 0.21851227934592293,
+        "last_digit_weight": 0.017848419621571694,
+        "odd_even_weight": 0.008221942660969806,
+        "pair_weight": 0.0649791971484423,
+        "sum_band_weight": 0.05223271331817244,
+        "ac_band_weight": 0.0471066756609212,
+        "dynamic_zone_weight": 0.008248661608392674,
+        "entropy_weight": 0.008494254735685457,
+        "clustering_weight": 0.11181662302812988,
+        "temporal_weight": 0.02303586973380241,
+        "feature_eng_weight": 0.07359901264377028,
+        "correlation_weight": 0.00771980767444444,
+        "recent_window": 56,
+        "long_window": 265
+      },
+      "stage_results": [
+        {
+          "stage": "coarse",
+          "fitness": 0.5166666666666667
+        },
+        {
+          "stage": "fine",
+          "fitness": 0.5166666666666667
+        },
+        {
+          "stage": "micro",
+          "fitness": 0.5333333333333333
+        }
+      ]
     }
   ]
 }

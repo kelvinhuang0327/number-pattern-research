@@ -13,7 +13,7 @@ export class BackendOptimizedStrategy {
     getApiEndpoint() {
         // 開發環境
         if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
-            return 'http://localhost:5001/api/predict-optimized';
+            return 'http://localhost:8002/api/predict-optimized';
         }
 
         // 生產環境（稍後配置）

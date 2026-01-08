@@ -390,7 +390,8 @@ class AdvancedAutoLearningEngine:
             'zone_weight', 'last_digit_weight', 'odd_even_weight',
             'pair_weight', 'sum_band_weight', 'ac_band_weight', 'dynamic_zone_weight',
             # 新增高級策略權重
-            'entropy_weight', 'clustering_weight', 'temporal_weight', 'feature_eng_weight'
+            'entropy_weight', 'clustering_weight', 'temporal_weight', 'feature_eng_weight',
+            'correlation_weight', 'pair_weight'
         ]
 
         for _ in range(size):
@@ -411,6 +412,7 @@ class AdvancedAutoLearningEngine:
                 'clustering_weight': np.random.uniform(0.05, 0.3),
                 'temporal_weight': np.random.uniform(0.05, 0.3),
                 'feature_eng_weight': np.random.uniform(0.05, 0.3),
+                'correlation_weight': np.random.uniform(0.05, 0.3),
                 'recent_window': int(np.random.uniform(20, 100)),
                 'long_window': int(np.random.uniform(100, 300))
             }
@@ -469,8 +471,8 @@ class AdvancedAutoLearningEngine:
         min_num: int,
         max_num: int
     ) -> float:
-        """評估配置的適應度（滾動式預測）"""
-        success_count = 0
+        """評估配置的適應度（滾動式預測 + 分級權重積分）"""
+        total_score = 0
         all_data = train_data + val_data
 
         for i, target in enumerate(val_data):
@@ -481,23 +483,49 @@ class AdvancedAutoLearningEngine:
                 config, training_data, pick_count, min_num, max_num
             )
 
-            # 🔧 構建目標號碼集合（主號碼 + 特別號 = 7個目標）
+            # 🔧 構建目標號碼集合
             target_numbers = set(target['numbers'])
             special = target.get('special')
             if special is not None:
                 try:
-                    target_numbers.add(int(special))  # 加入特別號
+                    target_numbers.add(int(special))
                 except (ValueError, TypeError):
                     pass
             
-            # 命中3個或以上算成功（對7個目標號碼）
+            # 命中計算
             hits = len(target_numbers & set(predicted))
 
-            if hits >= 3:
-                success_count += 1
+            # 🏆 強化型積分機制：獎勵高命中而非僅僅是及格
+            if hits == 3:
+                total_score += 1     # 普獎
+            elif hits == 4:
+                total_score += 5     # 伍獎量級
+            elif hits == 5:
+                total_score += 25    # 參獎/貳獎量級
+            elif hits >= 6:
+                total_score += 100   # 頭獎量級
 
-        fitness = success_count / len(val_data) if len(val_data) > 0 else 0
+        # 基礎勝率為主要考量
+        fitness = total_score / len(val_data) if len(val_data) > 0 else 0
         return fitness
+
+    def _get_cooccurrence_matrix(self, history: List[Dict], min_num: int, max_num: int) -> np.ndarray:
+        """計算號碼共現矩陣"""
+        matrix = np.zeros((max_num + 1, max_num + 1))
+        for draw in history:
+            nums = draw['numbers']
+            for i in range(len(nums)):
+                for j in range(i + 1, len(nums)):
+                    n1, n2 = nums[i], nums[j]
+                    if min_num <= n1 <= max_num and min_num <= n2 <= max_num:
+                        matrix[n1][n2] += 1
+                        matrix[n2][n1] += 1
+        
+        # 歸一化
+        max_val = matrix.max()
+        if max_val > 0:
+            matrix /= max_val
+        return matrix
 
     def _predict_with_config(
         self,
@@ -588,6 +616,25 @@ class AdvancedAutoLearningEngine:
                     for num in feature_result.get('numbers', []):
                         if min_num <= num <= max_num:
                             number_scores[num] += feature_eng_weight * 0.5
+                except Exception:
+                    pass
+            
+            # 🍎 新增：號碼關聯增強 (Correlation Adjustment)
+            correlation_weight = config.get('correlation_weight', 0.1)
+            if correlation_weight > 0.01 and len(history) >= 100:
+                try:
+                    # 找出目前得分較高的候選號碼
+                    top_candidates = sorted(number_scores.items(), key=lambda x: x[1], reverse=True)[:10]
+                    top_nums = [n for n, s in top_candidates]
+                    
+                    matrix = self._get_cooccurrence_matrix(history[-200:], min_num, max_num)
+                    
+                    # 如果候選號碼與其他高分號碼有強關聯，各加分
+                    for n1 in top_nums:
+                        for n2 in top_nums:
+                            if n1 != n2:
+                                bonus = matrix[n1][n2] * correlation_weight * 0.2
+                                number_scores[n1] += bonus
                 except Exception:
                     pass
 

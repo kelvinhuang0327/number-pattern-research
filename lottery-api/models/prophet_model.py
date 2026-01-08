@@ -4,7 +4,7 @@ import numpy as np
 from typing import List, Dict
 import logging
 from collections import Counter
-from .unified_predictor import predict_special_number, log_data_range, get_data_range_info
+from .unified_predictor import log_data_range, get_data_range_info
 from datetime import datetime, timedelta
 
 logger = logging.getLogger(__name__)
@@ -87,7 +87,6 @@ class ProphetPredictor:
             logger.info(f"Prophet 預測完成: {predicted_numbers}, 信心度: {confidence:.2%}")
             
             # 🔧 預測特別號碼
-            predicted_special = predict_special_number(history, lottery_rules, predicted_numbers)
 
             result = {
                 "numbers": predicted_numbers,
@@ -106,8 +105,6 @@ class ProphetPredictor:
             }
 
             # 🔧 添加特別號碼
-            if predicted_special is not None:
-                result['special'] = predicted_special
 
             return result
             

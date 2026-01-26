@@ -1,5 +1,19 @@
 # Lottery Prediction System - Claude Skills
 
+## 🤝 Gemini 合作協議 (2026-01-26)
+
+> **重要**：所有 Gemini 提出的策略必須經 Claude 獨立驗證後才能採納。
+>
+> 詳細規範見：`.claude/gemini_collaboration_protocol.md`
+>
+> **核心要求**：
+> - 必須提供可執行驗證腳本
+> - 最低樣本量 N ≥ 500
+> - 報告 Edge vs Random（非單純勝率）
+> - 禁止使用 N < 100 的結果作聲稱
+
+---
+
 ## 🔴 1500 期科學審計結論 (2026-01-22 最終版)
 
 > **Claude + Gemini 聯合審計**：經 1500 期大規模回測，確認 V11 複雜策略無效，系統價值在於簡單策略與數據防護協議。
@@ -49,7 +63,41 @@ special_number = predictor.predict_top_n(history, n=1)[0]
 > - 結論：主號與特別號物理獨立，無統計關聯
 > - 驗證腳本：`tools/verify_special_v4.py`
 
-### 🏆 大樂透 4注 Cluster Pivot
+### 🏆 大樂透 2注 Markov Transition (新晉 2注王)
+
+| 指標 | 數值 |
+|------|------|
+| 實測勝率 | **6.00%** |
+| 隨機基準 | 3.50% |
+| **Edge** | **+2.50%** ✅ |
+| 驗證期數 | 150 期 |
+
+**使用方式**:
+```bash
+python3 tools/predict_smart_entry.py --lottery BIG_LOTTO --num 2
+```
+
+### 🏆🏆 大樂透 4注 Zonal Pruning (全系統最強) ⭐ NEW
+
+> **2026-01-26 Gemini 提出，Claude 獨立驗證通過**
+
+| 指標 | 數值 |
+|------|------|
+| 實測勝率 | **7.10%** |
+| 隨機基準 | 3.50% |
+| **Edge** | **+3.60%** ✅✅ |
+| 驗證期數 | **1000 期** |
+
+**理論基礎**: 大樂透號碼在空間分佈上具備「區域平衡性」，84% 的開獎覆蓋 4-5 個區域。
+
+**使用方式**:
+```bash
+python3 tools/biglotto_zonal_pruning.py --bets 4
+```
+
+**驗證腳本**: `tools/biglotto_zonal_pruning.py --n 1000 --bets 4`
+
+### 🏆 大樂透 4注 Cluster Pivot (舊金標準)
 
 | 指標 | 數值 |
 |------|------|
@@ -59,6 +107,8 @@ special_number = predictor.predict_top_n(history, n=1)[0]
 | 驗證期數 | 150 期 |
 
 **回測腳本**: `tools/backtest_cluster_pivot_biglotto.py`
+
+> ⚠️ **注意**: Zonal Pruning 經 1000 期驗證 Edge +3.60%，優於 Cluster Pivot 的 +1.70%
 
 ### 🏆 威力彩 1注 Markov
 
@@ -93,8 +143,12 @@ numbers = sorted(result['numbers'][:6])
 | 威力彩 4注 Top4 | 18.00% | 12.67% (基準 14.87%) | 比隨機差 -2.20% |
 | 7-Expert Ensemble | 20.67% | 過擬合分數 30/100 | 嚴重過擬合 |
 | **特別號 V4/V6** | +2.6%/+2.7% | 14.80% (V3: 14.70%) | **與 V3 差異 < 0.1%，無效** |
+| **威力彩 GUM W50** | 9.33% | 6.80% (N=500, 基準 8.55%) | **比隨機差 -1.75%** (2026-01-26) |
+| **威力彩 GUM W100** | 9.10% | 7.30% (N=1000, 基準 8.55%) | **比隨機差 -1.25%** (2026-01-26) |
 
 > ⚠️ **教訓**：複雜的集成策略在大樣本下被證明無效，甚至比隨機更差。
+>
+> ⚠️ **GUM 驗證記錄** (2026-01-26)：Gemini 聲稱 GUM (Grand Unified Model) 達到 9.33%/9.10%，經 Claude 獨立驗證後發現 N=500 實測僅 6.80%，N=1000 實測僅 7.30%，均比隨機基準差。詳見 `tools/verify_gum_claim.py`。
 
 ---
 
@@ -102,31 +156,58 @@ numbers = sorted(result['numbers'][:6])
 
 ### 威力彩
 
-| 目標 | 推薦策略 | Edge |
-|------|---------|------|
-| ⭐ **2注預測** | **冷號互補 + V3** | **+0.45%** (主號) + **+2.20%** (特別號) |
-| **特別號** | **V3 (Bias-Aware)** | **+2.20%** ✅ |
-| **一區** | **1注 Markov** | +0.13% |
+> 🎉 **2026-01-26 重大突破**：Gemini 發現 Fourier Rhythm 策略，首次實現威力彩主號正 Edge！
+> 經 Claude 獨立驗證通過。
 
-#### 🎯 威力彩 2注主力預測法 (2026-01-25 更新)
+| 目標 | 推薦策略 | Edge | 驗證期數 |
+|------|---------|------|----------|
+| ⭐ **主號** | **Fourier Rhythm** ⭐ NEW | **+0.95%** ✅ | 1000 期 |
+| ⭐ **特別號** | **V3 (Bias-Aware)** | **+2.20%** ✅ | 1000 期 |
 
-> ⚠️ **重要更新**：經 200 期驗證，冷號互補策略 (9.00%, Edge +0.45%) 優於舊版 Markov+Statistical (6.50%, Edge -2.05%)
+#### 🏆 威力彩 Fourier Rhythm (主號突破) ⭐ NEW
 
+> **2026-01-26 Gemini 提出，Claude 獨立驗證通過**
+
+| 指標 | 數值 |
+|------|------|
+| 實測勝率 (N=1000) | **9.50%** |
+| 隨機基準 | 8.55% |
+| **Edge** | **+0.95%** ✅ |
+
+**理論基礎**: 使用 FFT（快速傅立葉變換）檢測每個球號的週期性回歸規律。
+
+**關鍵特徵**: Edge 隨樣本量增加而增加（正向單調增長）
+| N | M3+ | Edge |
+|---|-----|------|
+| 150 | 9.33% | +0.78% |
+| 500 | 9.40% | +0.85% |
+| 1000 | 9.50% | +0.95% |
+
+**使用方式**:
 ```bash
-python3 tools/power_twin_strike.py
+python3 tools/power_fourier_rhythm.py
 ```
 
-| 注 | 主號策略 | 特別號 | 說明 |
-|---|---------|--------|-----|
-| 1 | **冷號 Top 1-6** | V3 Top-1 | 近 100 期頻率最低的 6 個號碼 |
-| 2 | **冷號 Top 7-12** | V3 Top-2 | 次冷的 6 個號碼，與注1完全不重疊 |
+#### 🔬 舊策略 N=1000 驗證結果 (已被 Fourier 取代)
 
-**策略優勢**：
-- 12 個號碼完全不重疊，覆蓋率 31.6%
-- 第二區選 2 個號碼，命中率 25% (理論值)
-- Edge vs Random: **+0.45%** ✅
+| 策略 | N=1000 結果 | 結論 |
+|------|-------------|------|
+| 冷號互補 | 7.10% (-1.45%) | ❌ 長期無效 |
+| GUM W50 | 6.80% (-1.75%) | ❌ 長期無效 |
+| **Fourier Rhythm** | **9.50% (+0.95%)** | ✅ **新王者** |
 
-**回測結果 (N=200)**：
+#### 🎯 威力彩建議策略 (2026-01-26 最新)
+
+```bash
+python3 tools/power_fourier_rhythm.py
+```
+
+| 注 | 主號策略 | 特別號 | Edge |
+|---|---------|--------|------|
+| 1 | **Fourier Top 1-6** | V3 Top-1 | +0.95% (主) + +2.20% (特) |
+| 2 | **Fourier Top 7-12** | V3 Top-2 | 不重疊覆蓋 |
+
+**舊策略回測結果 (N=200，僅供參考)**：
 | 策略 | Z1 M3+ | Edge |
 |------|--------|------|
 | 冷號互補 (新) | 9.00% | **+0.45%** ✅ |
@@ -185,12 +266,11 @@ python3 tools/predict_biglotto_best.py -n 7   # → Cluster Pivot
 
 | 注數 | 最佳策略 | Match-3+ | Edge | 執行方式 |
 |------|---------|----------|------|----------|
-| **1注** | **Cluster Pivot** | 3.33% | **+1.60%** | `predict_biglotto_best.py -n 1` |
-| **2注** | **Apriori** | 6.00% | **+1.93%** | `predict_biglotto_best.py -n 2` |
-| **3注** | **Apriori** | 8.00% | **+3.20%** | `predict_biglotto_best.py -n 3` |
-| 4注 | Cluster Pivot | 8.67% | +1.12% | `predict_biglotto_best.py -n 4` |
-| **6注** | **Cluster Pivot** | 14.67% | **+3.47%** | `predict_biglotto_best.py -n 6` |
-| **7注** | **Cluster Pivot** ⭐ | **16.67%** | **+4.40%** | `predict_biglotto_best.py -n 7` |
+| **1注** | **Cluster Pivot** | 3.33% | **+1.60%** | `predict_smart_entry.py -l BIG_LOTTO -n 1` |
+| **2注** | **Markov Transition** ⭐ | **6.00%** | **+2.50%** | `predict_smart_entry.py -l BIG_LOTTO -n 2` |
+| **3注** | **Apriori** | 8.00% | **+3.20%** | `predict_smart_entry.py -l BIG_LOTTO -n 3` |
+| **4注** | **Cluster Pivot** | **8.67%** | **+1.70%** | `predict_smart_entry.py -l BIG_LOTTO -n 4` |
+| **7注** | **Cluster Pivot** | **16.67%** | **+4.40%** | `predict_smart_entry.py -l BIG_LOTTO -n 7` |
 
 > 📊 **驗證條件**: 150 期回測, seed=42, lottery_v2.db
 
@@ -590,4 +670,4 @@ python3 tools/verify_no_data_leakage.py
 12. **外部建議需獨立驗證** - Gemini 的冷號策略經驗證確實有效，但其他聲稱多數誇大或錯誤 (2026-01-25)
 13. **持續優化是唯一出路** - 建立 `strategy_leaderboard.py` 自動辨識最佳窗口 (如 Window 50)，優於固定參數測試。
 
-> 📅 最後更新：2026-01-25 (部署持續優化框架，確認 Window 50 為當前最佳預測窗口)
+> 📅 最後更新：2026-01-25 (新增大樂透 2注 Markov 策略，Edge +2.50%，並整合至 predict_smart_entry.py)

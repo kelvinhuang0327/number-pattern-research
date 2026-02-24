@@ -38,6 +38,7 @@ def get_power_lotto_strategies_inline():
     """威力彩策略 — inline 定義"""
     from tools.power_fourier_rhythm import fourier_rhythm_predict
     from tools.power_2bet_hedging import bet1_fourier30, bet2_markov30, diversify_bets
+    from tools.predict_power_orthogonal_5bet import generate_orthogonal_5bet
 
     def fourier_2bet(history):
         return fourier_rhythm_predict(history, n_bets=2, window=500)
@@ -51,10 +52,14 @@ def get_power_lotto_strategies_inline():
         b1, b2 = diversify_bets(b1, b2, history, max_overlap=3)
         return [b1, b2]
 
+    def orthogonal_5bet(history):
+        return generate_orthogonal_5bet(history)
+
     return [
         {'name': 'fourier_rhythm_2bet', 'predict_func': fourier_2bet, 'num_bets': 2},
         {'name': 'fourier_rhythm_3bet', 'predict_func': fourier_3bet, 'num_bets': 3},
         {'name': 'fourier30_markov30_2bet', 'predict_func': hedging_2bet, 'num_bets': 2},
+        {'name': 'orthogonal_5bet', 'predict_func': orthogonal_5bet, 'num_bets': 5},
     ]
 
 
@@ -65,6 +70,9 @@ def get_big_lotto_strategies_inline():
     )
     from tools.predict_biglotto_deviation_2bet import deviation_complement_2bet
     from tools.predict_biglotto_echo_3bet import echo_aware_mixed_3bet
+    from tools.backtest_biglotto_5bet_ts3markov import (
+        generate_ts3_markov_4bet, generate_ts3_markov_freq_5bet
+    )
 
     def fourier_2bet(history):
         bet1 = fourier_rhythm_bet(history, window=500)
@@ -80,11 +88,19 @@ def get_big_lotto_strategies_inline():
     def echo_3bet(history):
         return echo_aware_mixed_3bet(history)
 
+    def ts3_markov_4bet(history):
+        return generate_ts3_markov_4bet(history, markov_window=30)
+
+    def ts3_markov_freq_5bet(history):
+        return generate_ts3_markov_freq_5bet(history, markov_window=30)
+
     return [
         {'name': 'fourier_rhythm_2bet', 'predict_func': fourier_2bet, 'num_bets': 2},
         {'name': 'deviation_complement_2bet', 'predict_func': deviation_2bet, 'num_bets': 2},
         {'name': 'triple_strike_3bet', 'predict_func': triple_strike_3bet, 'num_bets': 3},
         {'name': 'echo_aware_3bet', 'predict_func': echo_3bet, 'num_bets': 3},
+        {'name': 'ts3_markov_4bet_w30', 'predict_func': ts3_markov_4bet, 'num_bets': 4},
+        {'name': 'ts3_markov_freq_5bet_w30', 'predict_func': ts3_markov_freq_5bet, 'num_bets': 5},
     ]
 
 

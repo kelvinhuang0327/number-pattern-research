@@ -1,15 +1,21 @@
 {
   "strategy_id": "big_lotto/5bet_ts3_markov_freq",
   "updated": "2026-02-24",
-  "rsm_source": "PENDING",
-  "note": "5注策略於2026-02-24採納，RSM尚未針對此策略建立監控條目，待首次RSM掃描後更新",
+  "rsm_source": "data/rolling_monitor_BIG_LOTTO.json",
+  "rsm_run_date": "2026-02-24",
+  "rsm_name": "ts3_markov_freq_5bet_w30",
+  "total_records": 300,
   "windows": {
-    "30p":  { "edge_pct": null, "trend": "PENDING" },
-    "100p": { "edge_pct": null, "trend": "PENDING" },
-    "300p": { "edge_pct": null, "trend": "PENDING" }
+    "30p":  { "m3_count": 3,  "m3_rate_pct": 10.00, "edge_pct": 1.04, "trend": "POSITIVE" },
+    "100p": { "m3_count": 9,  "m3_rate_pct": 9.00,  "edge_pct": 0.04, "trend": "NEUTRAL" },
+    "300p": { "m3_count": 34, "m3_rate_pct": 11.33, "edge_pct": 2.37, "trend": "POSITIVE" }
   },
-  "overall_trend": "PENDING",
-  "recommendation": "★採納 (RSM監控待建立)",
-  "alerts": [],
-  "next_review": "首次RSM掃描後更新"
+  "overall_trend": "STABLE",
+  "z_short_long": -0.22,
+  "confidence": 0.97,
+  "recommendation": "★推薦 (RSM STABLE；100p Edge接近中性(+0.04%)但300p強(+2.37%)，長期信號清晰)",
+  "alerts": [
+    "100p Edge幾乎中性(+0.04%)：近100期小幅回落，但屬正常波動(z=-0.22 < 1.0門檻)，無需行動"
+  ],
+  "next_review": "每100期新資料後重跑RSM；若100p連續轉負則觸發重評"
 }

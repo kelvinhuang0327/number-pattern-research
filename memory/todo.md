@@ -46,7 +46,7 @@
 
 ### 系統建設
 
-- [ ] **建立策略生命週期文件夾**
+- [x] **建立策略生命週期文件夾**
   - 依 CLAUDE.md 規範建立 `strategies/` 目錄
   - 每個採納策略需有 `strategy.yaml` + `backtest_report.md`
 
@@ -68,7 +68,7 @@
   - 已有 Edge 數據，但缺少 Stability / Significance / Complexity 欄位
   - 補充 Score 公式計算結果
 
-- [ ] **建立 strategies/ 目錄**
+- [x] **建立 strategies/ 目錄**
   - 為現有採納策略補充 strategy.yaml（Idea 階段文件）
 
 ---
@@ -80,6 +80,7 @@
 - [x] 建立 `rejected/` 目錄 + 12個已拒絕策略歸檔
 - [x] 建立 `memory/lessons.md`（22條教訓）
 - [x] 建立 `memory/todo.md`（本檔）
+- [x] 建立 `strategies/` 目錄（8個採納策略完整生命週期文件）
 
 ### 1500期全面驗證 (2026-02-10)
 - [x] 大樂透 8策略 × 3窗口驗證完成
@@ -101,6 +102,11 @@
 > 每個任務完成後在此記錄：結果摘要、遇到的問題、後續影響
 
 ### 2026-02-24 — Workflow 基礎建設
-- 結果：CLAUDE.md + rejected/ + memory/ 三件套建立完成
+- 結果：CLAUDE.md + rejected/ + memory/ + strategies/ 四件套建立完成
 - 問題：`tasks/` 路徑不符合專案結構，已改為 `memory/`
 - 影響：後續所有教訓追蹤統一寫入 `memory/lessons.md`
+
+### 2026-02-24 — strategies/ 目錄建立
+- 結果：8個採納策略（大樂透5、威力彩3）建立完整生命週期文件
+- 文件：strategy.yaml / backtest_report.md / stat_test.txt / version_tag.txt
+- 待補：sim_result.json / performance_log.json（Monitor 階段尚未建立）

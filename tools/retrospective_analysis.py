@@ -5,10 +5,10 @@ import json
 import io
 from collections import Counter
 
-# Add project root and lottery-api to path
+# Add project root and lottery_api to path
 project_root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 sys.path.insert(0, project_root)
-sys.path.insert(0, os.path.join(project_root, 'lottery-api'))
+sys.path.insert(0, os.path.join(project_root, 'lottery_api'))
 
 from models.unified_predictor import UnifiedPredictionEngine, get_advanced_strategies
 from database import DatabaseManager
@@ -33,7 +33,7 @@ def main():
     print(f"實際號碼: [3, 7, 16, 19, 40, 42] 特別號: 12")
     print("=" * 80)
 
-    db_path = os.path.join(project_root, 'lottery-api', 'data', 'lottery_v2.db')
+    db_path = os.path.join(project_root, 'lottery_api', 'data', 'lottery_v2.db')
     db = DatabaseManager(db_path=db_path)
     lottery_type = 'BIG_LOTTO'
     rules = get_lottery_rules(lottery_type)

@@ -3,12 +3,12 @@ import os
 
 project_root = "/Users/kelvin/Kelvin-WorkSpace/LotteryNew"
 sys.path.insert(0, project_root)
-sys.path.insert(0, os.path.join(project_root, 'lottery-api'))
+sys.path.insert(0, os.path.join(project_root, 'lottery_api'))
 
 from database import DatabaseManager
 
 def update_db():
-    db = DatabaseManager(db_path=os.path.join(project_root, 'lottery-api/data/lottery_v2.db'))
+    db = DatabaseManager(db_path=os.path.join(project_root, 'lottery_api/data/lottery_v2.db'))
     
     # Check if draw exists
     draw_id = "115000002"

@@ -1,0 +1,52 @@
+{
+  "timestamp": "2026-01-27T15:49:22.086127",
+  "seed": 42,
+  "order": [
+    1,
+    0,
+    0
+  ],
+  "test_periods": 500,
+  "results": {
+    "威力彩": {
+      "test_periods": 500,
+      "m3_plus": 4.0,
+      "m4_plus": 0.2,
+      "avg_match": 0.968,
+      "baseline": 7.46,
+      "edge": -3.46,
+      "match_distribution": {
+        "0": 153,
+        "1": 231,
+        "2": 96,
+        "3": 19,
+        "4": 1
+      }
+    },
+    "大樂透": {
+      "test_periods": 500,
+      "m3_plus": 3.0,
+      "m4_plus": 0.2,
+      "avg_match": 0.856,
+      "baseline": 6.859999999999999,
+      "edge": -3.8599999999999994,
+      "match_distribution": {
+        "0": 188,
+        "1": 212,
+        "2": 85,
+        "3": 14,
+        "4": 1
+      }
+    }
+  },
+  "gemini_claims": {
+    "威力彩": {
+      "edge": 0.29,
+      "periods": 118
+    },
+    "大樂透": {
+      "edge": 0.84,
+      "periods": 118
+    }
+  }
+}

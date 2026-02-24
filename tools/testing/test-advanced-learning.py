@@ -8,7 +8,7 @@ import sys
 import os
 
 # 添加項目路徑
-sys.path.insert(0, os.path.join(os.path.dirname(__file__), 'lottery-api'))
+sys.path.insert(0, os.path.join(os.path.dirname(__file__), 'lottery_api'))
 
 from models.advanced_auto_learning import AdvancedAutoLearningEngine
 from models.database import Database

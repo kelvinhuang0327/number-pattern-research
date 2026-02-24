@@ -11,7 +11,7 @@ from collections import Counter
 # Add project root
 project_root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 sys.path.insert(0, project_root)
-sys.path.insert(0, os.path.join(project_root, 'lottery-api'))
+sys.path.insert(0, os.path.join(project_root, 'lottery_api'))
 
 from models.multi_bet_optimizer import MultiBetOptimizer
 from database import DatabaseManager
@@ -21,7 +21,7 @@ from common import get_lottery_rules
 sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding='utf-8')
 
 def evaluate_individual_strategies(lottery_type='BIG_LOTTO', year=2025):
-    db = DatabaseManager(db_path=os.path.join(project_root, 'lottery-api', 'data', 'lottery_v2.db'))
+    db = DatabaseManager(db_path=os.path.join(project_root, 'lottery_api', 'data', 'lottery_v2.db'))
     all_draws = list(reversed(db.get_all_draws(lottery_type=lottery_type)))
     rules = get_lottery_rules(lottery_type)
     optimizer = MultiBetOptimizer()

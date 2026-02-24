@@ -13,7 +13,7 @@
 ### 步驟 1: 啟動後端服務
 
 \`\`\`bash
-cd lottery-api
+cd lottery_api
 python app.py
 \`\`\`
 
@@ -138,7 +138,7 @@ curl -X POST http://localhost:5001/api/predict-from-backend \\
 ### Q: 後端啟動失敗？
 A: 確認 Python 依賴已安裝：
 \`\`\`bash
-cd lottery-api
+cd lottery_api
 pip install -r requirements.txt
 \`\`\`
 
@@ -182,7 +182,7 @@ curl -X POST http://localhost:5001/api/cache/clear
 
 - \`PYTHON_STRATEGY_MIGRATION.md\` - 策略遷移詳細說明
 - \`SYNC_DATA_OPTIMIZATION_PLAN.md\` - 數據同步優化方案
-- \`lottery-api/README.md\` - 後端 API 文檔
+- \`lottery_api/README.md\` - 後端 API 文檔
 
 ---
 

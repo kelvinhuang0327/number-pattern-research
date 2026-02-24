@@ -298,7 +298,7 @@ showApiUnavailableWarning() {
             <div class="api-unavailable-warning">
                 <h3>⚠️ 後端 API 未運行</h3>
                 <p>自動學習功能需要後端 API 支持</p>
-                <p>請啟動 API 服務器: <code>cd lottery-api && python app.py</code></p>
+                <p>請啟動 API 服務器: <code>cd lottery_api && python app.py</code></p>
             </div>
         `;
     }

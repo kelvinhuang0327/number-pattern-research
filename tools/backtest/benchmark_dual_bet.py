@@ -10,7 +10,7 @@ from collections import defaultdict
 from datetime import datetime
 
 # 數據庫路徑
-DB_PATH = os.path.join(os.path.dirname(__file__), 'lottery-api', 'data', 'lottery.db')
+DB_PATH = os.path.join(os.path.dirname(__file__), 'lottery_api', 'data', 'lottery.db')
 
 def load_data(lottery_type='BIG_LOTTO', limit=None):
     """載入歷史數據（含特別號）"""

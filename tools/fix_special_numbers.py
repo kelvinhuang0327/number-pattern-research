@@ -6,7 +6,7 @@ import re
 import sys
 
 def add_special_number_support():
-    file_path = '/Users/kelvin/Kelvin-WorkSpace/Lottery/lottery-api/models/unified_predictor.py'
+    file_path = '/Users/kelvin/Kelvin-WorkSpace/Lottery/lottery_api/models/unified_predictor.py'
 
     print(f"讀取文件: {file_path}")
     with open(file_path, 'r', encoding='utf-8') as f:

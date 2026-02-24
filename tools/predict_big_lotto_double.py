@@ -19,7 +19,7 @@ from collections import Counter
 # Add project root
 project_root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 sys.path.insert(0, project_root)
-sys.path.insert(0, os.path.join(project_root, 'lottery-api'))
+sys.path.insert(0, os.path.join(project_root, 'lottery_api'))
 
 from models.unified_predictor import UnifiedPredictionEngine
 from database import DatabaseManager
@@ -34,7 +34,7 @@ def run_phase1_prediction(args):
     print("大樂透雙注預測 (Phase 1 熱號+共現)")
     print("=" * 80)
     
-    db_path = os.path.join(project_root, 'lottery-api', 'data', 'lottery_v2.db')
+    db_path = os.path.join(project_root, 'lottery_api', 'data', 'lottery_v2.db')
     db = DatabaseManager(db_path=db_path)
     lottery_type = 'BIG_LOTTO'
     draws_desc = db.get_all_draws(lottery_type=lottery_type)

@@ -172,7 +172,7 @@ async predict(method = 'frequency', sampleSize = 50, lotteryTypeId = null, useBa
 
 #### 修改 database.py 支持相關類型查詢
 
-**新增輔助函數 `lottery-api/database.py`:**
+**新增輔助函數 `lottery_api/database.py`:**
 
 ```python
 def get_related_lottery_types(lottery_type: str) -> list:

@@ -1,7 +1,7 @@
 # 🔍 後端預測邏輯完整驗證報告
 
 **驗證日期**: 2025-11-30
-**驗證範圍**: 所有後端預測方法 (lottery-api/models/unified_predictor.py)
+**驗證範圍**: 所有後端預測方法 (lottery_api/models/unified_predictor.py)
 **驗證目的**: 確認所有後端預測方法遵循滾動預測邏輯
 
 ---
@@ -34,7 +34,7 @@
 
 時間先後的控制發生在**調用層級**，而非預測方法內部：
 
-**文件**: [lottery-api/models/strategy_evaluator.py:144-180](lottery-api/models/strategy_evaluator.py#L144-L180)
+**文件**: [lottery_api/models/strategy_evaluator.py:144-180](lottery_api/models/strategy_evaluator.py#L144-L180)
 
 ```python
 def _rolling_validation(self, strategy_id, history, lottery_rules, test_size, min_train_size):
@@ -99,7 +99,7 @@ test_data = history[3]    # 結果: 期4
 
 #### 詳細驗證案例 1: **frequency_predict**
 
-**文件**: [unified_predictor.py:130-178](lottery-api/models/unified_predictor.py#L130-L178)
+**文件**: [unified_predictor.py:130-178](lottery_api/models/unified_predictor.py#L130-L178)
 
 ```python
 def frequency_predict(self, history: List[Dict], lottery_rules: Dict) -> Dict:
@@ -125,7 +125,7 @@ def frequency_predict(self, history: List[Dict], lottery_rules: Dict) -> Dict:
 
 #### 詳細驗證案例 2: **bayesian_predict**
 
-**文件**: [unified_predictor.py:180-236](lottery-api/models/unified_predictor.py#L180-L236)
+**文件**: [unified_predictor.py:180-236](lottery_api/models/unified_predictor.py#L180-L236)
 
 ```python
 def bayesian_predict(self, history: List[Dict], lottery_rules: Dict) -> Dict:
@@ -166,7 +166,7 @@ def bayesian_predict(self, history: List[Dict], lottery_rules: Dict) -> Dict:
 
 #### 詳細驗證案例 3: **odd_even_balance_predict**
 
-**文件**: [unified_predictor.py:373-390](lottery-api/models/unified_predictor.py#L373-L390)
+**文件**: [unified_predictor.py:373-390](lottery_api/models/unified_predictor.py#L373-L390)
 
 ```python
 def odd_even_balance_predict(self, history, lottery_rules):
@@ -193,7 +193,7 @@ def odd_even_balance_predict(self, history, lottery_rules):
 
 #### 詳細驗證案例 4: **_knn_like_predict**
 
-**文件**: [unified_predictor.py:708-759](lottery-api/models/unified_predictor.py#L708-L759)
+**文件**: [unified_predictor.py:708-759](lottery_api/models/unified_predictor.py#L708-L759)
 
 ```python
 def _knn_like_predict(self, history, lottery_rules):
@@ -222,7 +222,7 @@ def _knn_like_predict(self, history, lottery_rules):
 
 #### 詳細驗證案例 5: **ensemble_advanced_predict**
 
-**文件**: [unified_predictor.py:761-913](lottery-api/models/unified_predictor.py#L761-L913)
+**文件**: [unified_predictor.py:761-913](lottery_api/models/unified_predictor.py#L761-L913)
 
 ```python
 def ensemble_advanced_predict(self, history: List[Dict], lottery_rules: Dict) -> Dict:
@@ -433,7 +433,7 @@ const trainingData = allData.filter(d => {
 
 ### 後端滾動驗證邏輯
 
-**文件**: [lottery-api/models/strategy_evaluator.py:165-167](lottery-api/models/strategy_evaluator.py#L165-L167)
+**文件**: [lottery_api/models/strategy_evaluator.py:165-167](lottery_api/models/strategy_evaluator.py#L165-L167)
 
 ```python
 for i in range(test_start_idx, len(history)):

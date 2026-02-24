@@ -207,7 +207,7 @@ python3 test-advanced-learning.py
 **A**: 目前需要添加API端點（計劃中），暫時請使用：
 ```bash
 # 後端運行
-cd lottery-api
+cd lottery_api
 python3 -m tools.run_advanced_optimization
 
 # 查看結果
@@ -217,7 +217,7 @@ cat data/best_config_BIG_LOTTO.json
 ## 📚 延伸閱讀
 
 - [完整使用指南](ADVANCED_AUTO_LEARNING_GUIDE.md) - 詳細原理和API
-- [技術文檔](lottery-api/models/advanced_auto_learning.py) - 源代碼
+- [技術文檔](lottery_api/models/advanced_auto_learning.py) - 源代碼
 - [測試腳本](test-advanced-learning.py) - 示例代碼
 
 ---

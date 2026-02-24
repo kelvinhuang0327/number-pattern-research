@@ -248,7 +248,7 @@ Content-Type: application/json
 
 ```bash
 # 1. 確保後端運行
-cd lottery-api && python3 app.py
+cd lottery_api && python3 app.py
 
 # 2. 在前端啟動優化
 # 進入「自動學習」頁面
@@ -264,10 +264,10 @@ cd lottery-api && python3 app.py
 
 ```bash
 # 查看歷史配置文件
-ls -lh lottery-api/data/best_config*.json
+ls -lh lottery_api/data/best_config*.json
 
 # 查看最新配置
-cat lottery-api/data/best_config_BIG_LOTTO.json
+cat lottery_api/data/best_config_BIG_LOTTO.json
 ```
 
 ---

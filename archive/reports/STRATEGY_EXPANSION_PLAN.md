@@ -8,7 +8,7 @@
 
 ### 現有系統（11 種統計方法）
 
-**位置**: `lottery-api/models/auto_learning.py` 和 `advanced_auto_learning.py`
+**位置**: `lottery_api/models/auto_learning.py` 和 `advanced_auto_learning.py`
 
 **優化對象**：
 ```python
@@ -45,7 +45,7 @@ individual = {
 
 ### 可用策略（23 種完整預測方法）
 
-**位置**: `lottery-api/models/strategy_evaluator.py`
+**位置**: `lottery_api/models/strategy_evaluator.py`
 
 ```python
 available_strategies = [
@@ -210,7 +210,7 @@ individual = {
 
 ### 第一步：創建擴展優化引擎
 
-**文件**: `lottery-api/models/ensemble_auto_learning.py` (新建)
+**文件**: `lottery_api/models/ensemble_auto_learning.py` (新建)
 
 **核心功能**：
 1. `_initialize_ensemble_population()` - 初始化種群（策略組合）
@@ -251,7 +251,7 @@ async def ensemble_optimize(
 
 ### 第三步：添加 API 端點
 
-**文件**: `lottery-api/app.py`
+**文件**: `lottery_api/app.py`
 
 ```python
 @app.post("/api/auto-learning/advanced/ensemble")
@@ -426,10 +426,10 @@ def strategy_mutation(individual, mutation_rate=0.2):
 
 ## 📚 參考文檔
 
-- [策略評估器實現](lottery-api/models/strategy_evaluator.py)
-- [統一預測引擎](lottery-api/models/unified_predictor.py)
-- [進階自動學習](lottery-api/models/advanced_auto_learning.py)
-- [基礎自動學習](lottery-api/models/auto_learning.py)
+- [策略評估器實現](lottery_api/models/strategy_evaluator.py)
+- [統一預測引擎](lottery_api/models/unified_predictor.py)
+- [進階自動學習](lottery_api/models/advanced_auto_learning.py)
+- [基礎自動學習](lottery_api/models/auto_learning.py)
 
 ## ✅ 實現檢查清單
 

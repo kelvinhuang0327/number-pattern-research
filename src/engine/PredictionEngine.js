@@ -10,6 +10,8 @@ import { CollaborativeStrategy } from './strategies/CollaborativeStrategy.js';
 import { AutoOptimizeStrategy } from './strategies/AutoOptimizeStrategy.js';
 import { APIStrategy } from './strategies/APIStrategy.js';
 import { BackendOptimizedStrategy } from './strategies/BackendOptimizedStrategy.js';
+import { ZoneSplitStrategy } from './strategies/ZoneSplitStrategy.js';
+import { CoreSatelliteStrategy } from './strategies/CoreSatelliteStrategy.js';
 import { getLotteryRules, getRelatedTypes } from '../utils/Constants.js';
 
 // 民間策略
@@ -103,7 +105,11 @@ export class PredictionEngine {
             'clustering': new APIStrategy('clustering'),
             'dynamic_ensemble': new APIStrategy('dynamic_ensemble'),
             'temporal': new APIStrategy('temporal'),
-            'feature_engineering': new APIStrategy('feature_engineering')
+            'feature_engineering': new APIStrategy('feature_engineering'),
+
+            // ===== 策略化覆蓋 (Diversification) =====
+            'zone_split': new ZoneSplitStrategy(),
+            'core_satellite': new CoreSatelliteStrategy()
         };
     }
 

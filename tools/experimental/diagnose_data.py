@@ -13,7 +13,7 @@ def analyze_data():
     
     # 1. 檢查後端數據
     try:
-        with open('lottery-api/data/lottery_data.json', 'r', encoding='utf-8') as f:
+        with open('lottery_api/data/lottery_data.json', 'r', encoding='utf-8') as f:
             backend_data = json.load(f)
         print(f"✅ 後端數據: {len(backend_data)} 期")
         
@@ -41,7 +41,7 @@ def analyze_data():
     
     # 2. 檢查最佳配置
     try:
-        with open('lottery-api/data/best_config.json', 'r', encoding='utf-8') as f:
+        with open('lottery_api/data/best_config.json', 'r', encoding='utf-8') as f:
             config = json.load(f)
         print(f"✅ 最佳配置:")
         for key, value in config.items():
@@ -56,7 +56,7 @@ def analyze_data():
     
     # 3. 檢查優化歷史
     try:
-        with open('lottery-api/data/latest_history.json', 'r', encoding='utf-8') as f:
+        with open('lottery_api/data/latest_history.json', 'r', encoding='utf-8') as f:
             history = json.load(f)
         print(f"✅ 優化歷史:")
         print(f"   - 訓練數據量: {history.get('data_count', 'N/A')} 期")

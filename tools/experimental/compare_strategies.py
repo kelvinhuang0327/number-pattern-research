@@ -5,9 +5,9 @@ import json
 from typing import List
 
 # Setup path to import backend modules
-sys.path.append(os.path.join(os.getcwd(), 'lottery-api'))
+sys.path.append(os.path.join(os.getcwd(), 'lottery_api'))
 
-# Import directly from the modules in lottery-api
+# Import directly from the modules in lottery_api
 from predictors import (
     get_bayesian_ensemble_predictor, 
     get_prophet_predictor,

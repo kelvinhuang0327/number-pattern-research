@@ -85,7 +85,7 @@ return result;
 
 ### 3. **後端 API** - 已經正確實現動態查詢
 
-#### 文件：`lottery-api/app.py`
+#### 文件：`lottery_api/app.py`
 
 **現狀確認：**
 
@@ -281,5 +281,5 @@ Claude AI Assistant
 ## 📌 相關文件
 - `src/engine/strategies/AutoOptimizeStrategy.js`
 - `src/services/ApiClient.js`
-- `lottery-api/app.py`
+- `lottery_api/app.py`
 - `src/core/App.js`

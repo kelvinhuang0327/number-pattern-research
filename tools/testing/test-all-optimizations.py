@@ -18,8 +18,8 @@
 import sys
 import os
 
-# 添加 lottery-api 目錄到路徑
-sys.path.insert(0, os.path.join(os.path.dirname(__file__), 'lottery-api'))
+# 添加 lottery_api 目錄到路徑
+sys.path.insert(0, os.path.join(os.path.dirname(__file__), 'lottery_api'))
 
 from models.unified_predictor import prediction_engine
 import random

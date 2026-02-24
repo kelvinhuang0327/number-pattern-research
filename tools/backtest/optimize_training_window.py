@@ -8,7 +8,7 @@ import os
 from collections import defaultdict
 import json
 
-sys.path.insert(0, os.path.join(os.path.dirname(__file__), 'lottery-api'))
+sys.path.insert(0, os.path.join(os.path.dirname(__file__), 'lottery_api'))
 
 from database import DatabaseManager
 from common import get_lottery_rules
@@ -69,7 +69,7 @@ def main():
     print("="*80)
 
     # 載入數據
-    db_path = os.path.join(os.path.dirname(__file__), 'lottery-api', 'data', 'lottery_v2.db')
+    db_path = os.path.join(os.path.dirname(__file__), 'lottery_api', 'data', 'lottery_v2.db')
     db = DatabaseManager(db_path=db_path)
     all_draws = db.get_all_draws('BIG_LOTTO')
     draws_2025 = [d for d in all_draws if d['date'].startswith('2025') or d['date'].startswith('114')]

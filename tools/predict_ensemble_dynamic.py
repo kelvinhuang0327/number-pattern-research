@@ -52,7 +52,7 @@ def run_prediction():
     # For now, we just log it as a bias factor.
     
     # 3. Final Selection
-    history = lb.all_draws
+    history = lb.draws
     # Generate Twin Strike using best window
     # Recalculate cold numbers manually for control
     recent = history[-best_window:]

@@ -8,7 +8,7 @@ Welcome to the consolidated Lottery prediction workspace. This directory has bee
 
 ### 📊 Prediction Reports (2025)
 - **Big Lotto (大樂透)**: [TOP3_METHODS_2025_ANALYSIS.md](TOP3_METHODS_2025_ANALYSIS.md)
-- **Daily 539 (今彩539)**: [lottery-api/REPORT_539_ODDEVEN.md](lottery-api/REPORT_539_ODDEVEN.md)
+- **Daily 539 (今彩539)**: [lottery_api/REPORT_539_ODDEVEN.md](lottery_api/REPORT_539_ODDEVEN.md)
 - **Strategy Matrix**: [docs/STRATEGY_AND_OPTIMIZATION.md](docs/STRATEGY_AND_OPTIMIZATION.md)
 
 ### 🛠 Active Tools
@@ -22,7 +22,7 @@ Welcome to the consolidated Lottery prediction workspace. This directory has bee
 
 | Folder | Description |
 | :--- | :--- |
-| **`lottery-api/`** | Core Python Backend (Flask API + Prediction Engine) |
+| **`lottery_api/`** | Core Python Backend (Flask API + Prediction Engine) |
 | **`src/`** | Frontend Application (Vite/React) |
 | **`docs/`** | Technical documentation and optimization plans |
 | **`tools/`** | Active prediction, backtesting, and maintenance scripts |

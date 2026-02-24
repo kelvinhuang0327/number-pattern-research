@@ -182,4 +182,4 @@ IF 命中率 < 17%:
 
 - 詳細分析: [POWER_LOTTO_20PERCENT_OPTIMIZATION_STRATEGY.md](POWER_LOTTO_20PERCENT_OPTIMIZATION_STRATEGY.md)
 - 既有驗證: [POWER_LOTTO_MULTI_BET_BACKTEST_REPORT.md](POWER_LOTTO_MULTI_BET_BACKTEST_REPORT.md)
-- 回測代碼: `lottery-api/backtest_power_2025.py`
+- 回測代碼: `lottery_api/backtest_power_2025.py`

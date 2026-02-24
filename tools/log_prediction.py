@@ -12,7 +12,7 @@ from pathlib import Path
 # Add project root
 project_root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 sys.path.insert(0, project_root)
-sys.path.insert(0, os.path.join(project_root, 'lottery-api'))
+sys.path.insert(0, os.path.join(project_root, 'lottery_api'))
 
 from models.multi_bet_optimizer import MultiBetOptimizer
 from database import DatabaseManager
@@ -68,7 +68,7 @@ def log_prediction(target_draw, bets, meta_info):
 
 def generate_and_log_prediction():
     """生成預測並自動記錄"""
-    db = DatabaseManager(db_path=os.path.join(project_root, 'lottery-api', 'data', 'lottery_v2.db'))
+    db = DatabaseManager(db_path=os.path.join(project_root, 'lottery_api', 'data', 'lottery_v2.db'))
     history = db.get_all_draws(lottery_type='POWER_LOTTO')
     
     if not history:

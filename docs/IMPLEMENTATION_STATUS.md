@@ -106,7 +106,7 @@ final_numbers = numbers if is_permutation else sorted(numbers)
 | 38樂合彩 | 38 | 2/3/4 | 4/6/8 | ✅ 充足 |
 | 賓果賓果 | 80 | 20 | 40 | ✅ 充足 |
 
-**預測邏輯**: [optimized_ensemble.py](lottery-api/models/optimized_ensemble.py:206-310)
+**預測邏輯**: [optimized_ensemble.py](lottery_api/models/optimized_ensemble.py:206-310)
 - 動態讀取 `pickCount` 從 `lottery_rules`
 - 選出 `pickCount * 2` 個最佳號碼
 - 分成兩注，各 `pickCount` 個號碼
@@ -134,7 +134,7 @@ final_numbers = numbers if is_permutation else sorted(numbers)
 ```
 
 **實現位置**:
-- 後端: [csv_validator.py](lottery-api/utils/csv_validator.py:76-166) `_validate_txt()`
+- 後端: [csv_validator.py](lottery_api/utils/csv_validator.py:76-166) `_validate_txt()`
 - 前端: [DataProcessor.js](src/core/DataProcessor.js:372-416) `parseTXTViaBackend()`
 
 ---
@@ -245,10 +245,10 @@ final_numbers = numbers if is_permutation else sorted(numbers)
 ## 📁 關鍵檔案清單
 
 ### 後端配置
-- `lottery-api/data/lottery_types.json` - 彩券類型配置
-- `lottery-api/config.py` - 配置加載器
-- `lottery-api/utils/csv_validator.py` - 數據驗證器
-- `lottery-api/routes/data.py` - API端點
+- `lottery_api/data/lottery_types.json` - 彩券類型配置
+- `lottery_api/config.py` - 配置加載器
+- `lottery_api/utils/csv_validator.py` - 數據驗證器
+- `lottery_api/routes/data.py` - API端點
 
 ### 前端配置
 - `src/utils/LotteryTypes.js` - 彩券類型定義
@@ -256,13 +256,13 @@ final_numbers = numbers if is_permutation else sorted(numbers)
 - `index.html` - UI界面（玩法選擇器）
 
 ### 預測引擎
-- `lottery-api/models/optimized_ensemble.py` - 雙注預測
-- `lottery-api/models/bayesian_ensemble.py` - 貝葉斯預測
+- `lottery_api/models/optimized_ensemble.py` - 雙注預測
+- `lottery_api/models/bayesian_ensemble.py` - 貝葉斯預測
 
 ### 測試腳本
-- `lottery-api/test_play_mode.py`
-- `lottery-api/test_double_bet_coverage.py`
-- `lottery-api/test_star_lottery_logic.py`
+- `lottery_api/test_play_mode.py`
+- `lottery_api/test_double_bet_coverage.py`
+- `lottery_api/test_star_lottery_logic.py`
 - `tools/verify_id_unification.js`
 
 ---

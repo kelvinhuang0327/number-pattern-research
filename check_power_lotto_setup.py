@@ -15,7 +15,7 @@ def check_unified_predictor():
     print("🔍 檢查 1: unified_predictor.py 必需方法")
     print("="*70)
     
-    sys.path.insert(0, os.path.join(os.getcwd(), 'lottery-api'))
+    sys.path.insert(0, os.path.join(os.getcwd(), 'lottery_api'))
     
     try:
         from models.unified_predictor import UnifiedPredictionEngine
@@ -54,6 +54,12 @@ def check_database():
     
     try:
         from database import db_manager
+        # Fix path for check
+        import os
+        db_path = os.path.join(os.getcwd(), 'lottery_api', 'data', 'lottery_v2.db')
+        if os.path.exists(db_path):
+            db_manager.db_path = db_path
+            print(f"DEBUG: Updated DB path to {db_path}")
         
         # 檢查威力彩數據
         power_lotto_draws = db_manager.get_all_draws('POWER_LOTTO')
@@ -92,15 +98,15 @@ def check_backtest_framework():
     print("="*70)
     
     try:
-        from lottery_api.backtest_framework import RollingBacktester
+        from models.backtest_framework import RollingBacktester
         
         print("\n✅ RollingBacktester 類存在")
         
         # 檢查必需方法
         required_methods = [
-            'run_rolling_backtest',
-            'get_historical_data',
-            'predict_and_validate'
+            'run',
+            'run_multi_bet',
+            'compare_methods'
         ]
         
         print("\n回測框架方法:")

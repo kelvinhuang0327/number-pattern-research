@@ -19,7 +19,7 @@
 
 ### 1️⃣ 後端修改
 
-#### [auto_learning.py](lottery-api/models/auto_learning.py)
+#### [auto_learning.py](lottery_api/models/auto_learning.py)
 
 **新增參數** `max_data_limit`:
 ```python
@@ -38,7 +38,7 @@ async def optimize(
 - `max_data_limit = None`: 使用所有數據（排程優化）
 - `max_data_limit = 500`: 限制 500 期（手動優化）
 
-#### [scheduler.py](lottery-api/utils/scheduler.py)
+#### [scheduler.py](lottery_api/utils/scheduler.py)
 
 **排程優化**：
 ```python
@@ -63,7 +63,7 @@ return await self.engine.optimize(
 )
 ```
 
-#### [app.py](lottery-api/app.py)
+#### [app.py](lottery_api/app.py)
 
 **新增 API 端點** `/api/auto-learning/sync-data`:
 ```python
@@ -138,7 +138,7 @@ async startSchedule() {
 - **用途**: 前端展示、手動優化（限制 300 期）
 
 ### 後端（JSON 文件）
-- **位置**: `lottery-api/data/latest_history.json`
+- **位置**: `lottery_api/data/latest_history.json`
 - **數據量**: 同步時的完整數據
 - **結構**:
   ```json
@@ -240,7 +240,7 @@ async startSchedule() {
 
 3. **檢查文件大小**:
    ```bash
-   ls -lh lottery-api/data/latest_history.json
+   ls -lh lottery_api/data/latest_history.json
    # 應該顯示 ~2-3 MB（視數據量而定）
    ```
 

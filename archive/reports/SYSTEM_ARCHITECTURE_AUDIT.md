@@ -100,11 +100,11 @@ PredictionEngine.predict()
 |------|------|------|
 | [PredictionEngine.js](src/engine/PredictionEngine.js) | 前端預測引擎，管理所有策略 | 前端 |
 | [APIStrategy.js](src/engine/strategies/APIStrategy.js) | API 策略，調用後端模型 | 前端 |
-| [app.py:90-262](lottery-api/app.py#L90-L262) | `/api/predict` 和 `/api/predict-from-backend` 端點 | 後端 |
-| [unified_predictor.py](lottery-api/models/unified_predictor.py) | 統一預測引擎，整合所有策略 | 後端 |
-| [prophet_model.py](lottery-api/models/prophet_model.py) | Prophet 時間序列模型 | 後端 |
-| [xgboost_model.py](lottery-api/models/xgboost_model.py) | XGBoost 梯度提升模型 | 後端 |
-| [autogluon_model.py](lottery-api/models/autogluon_model.py) | AutoGluon AutoML 模型 | 後端 |
+| [app.py:90-262](lottery_api/app.py#L90-L262) | `/api/predict` 和 `/api/predict-from-backend` 端點 | 後端 |
+| [unified_predictor.py](lottery_api/models/unified_predictor.py) | 統一預測引擎，整合所有策略 | 後端 |
+| [prophet_model.py](lottery_api/models/prophet_model.py) | Prophet 時間序列模型 | 後端 |
+| [xgboost_model.py](lottery_api/models/xgboost_model.py) | XGBoost 梯度提升模型 | 後端 |
+| [autogluon_model.py](lottery_api/models/autogluon_model.py) | AutoGluon AutoML 模型 | 後端 |
 
 #### 📊 可用預測策略
 
@@ -320,9 +320,9 @@ AutoLearningManager.runOptimization()
 | 文件 | 職責 | 位置 |
 |------|------|------|
 | [AutoLearningManager.js](src/ui/AutoLearningManager.js) | 前端自動學習管理器 | 前端 |
-| [app.py:388-457](lottery-api/app.py#L388-L457) | 自動學習 API 端點 | 後端 |
-| [auto_learning.py](lottery-api/models/auto_learning.py) | 遺傳算法優化引擎 | 後端 |
-| [scheduler.py](lottery-api/utils/scheduler.py) | 排程管理器 | 後端 |
+| [app.py:388-457](lottery_api/app.py#L388-L457) | 自動學習 API 端點 | 後端 |
+| [auto_learning.py](lottery_api/models/auto_learning.py) | 遺傳算法優化引擎 | 後端 |
+| [scheduler.py](lottery_api/utils/scheduler.py) | 排程管理器 | 後端 |
 
 #### 🛡️ 安全性優化 (已完成)
 
@@ -668,7 +668,7 @@ POST /api/data/clear          - 清除後端數據文件
 
 ### 啟動後端
 ```bash
-cd lottery-api
+cd lottery_api
 python app.py
 
 # 服務運行在 http://localhost:5001
@@ -741,7 +741,7 @@ curl http://localhost:5001/health
 
 - [AUTOLEARNING_FIX_REPORT.md](AUTOLEARNING_FIX_REPORT.md) - 自動學習功能修復報告
 - [GUIDE.md](GUIDE.md) - 用戶使用指南
-- [lottery-api/README.md](lottery-api/README.md) - 後端 API 文檔
+- [lottery_api/README.md](lottery_api/README.md) - 後端 API 文檔
 
 ---
 

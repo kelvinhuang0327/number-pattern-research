@@ -5,8 +5,8 @@ import json
 from collections import defaultdict
 from datetime import datetime
 
-# Add lottery-api to path
-sys.path.insert(0, os.path.join(os.path.dirname(__file__), 'lottery-api'))
+# Add lottery_api to path
+sys.path.insert(0, os.path.join(os.path.dirname(__file__), 'lottery_api'))
 
 from database import DatabaseManager
 from common import get_lottery_rules
@@ -62,7 +62,7 @@ def backtest_window(method_name, window_size, draws_2025, all_draws, rules):
     }
 
 def main():
-    db_path = os.path.join(os.path.dirname(__file__), 'lottery-api', 'data', 'lottery_v2.db')
+    db_path = os.path.join(os.path.dirname(__file__), 'lottery_api', 'data', 'lottery_v2.db')
     db = DatabaseManager(db_path=db_path)
     all_draws = db.get_all_draws('DAILY_539')
     

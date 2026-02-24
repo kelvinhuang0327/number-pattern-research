@@ -25,7 +25,7 @@ from dataclasses import dataclass
 # Add project root
 project_root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 sys.path.insert(0, project_root)
-sys.path.insert(0, os.path.join(project_root, 'lottery-api'))
+sys.path.insert(0, os.path.join(project_root, 'lottery_api'))
 
 from models.unified_predictor import UnifiedPredictionEngine
 from database import DatabaseManager
@@ -218,7 +218,7 @@ class AdaptiveWeightOptimizer:
         self.lottery_type = lottery_type
         self.rules = get_lottery_rules(lottery_type)
         self.db = DatabaseManager(
-            db_path=os.path.join(project_root, 'lottery-api', 'data', 'lottery_v2.db')
+            db_path=os.path.join(project_root, 'lottery_api', 'data', 'lottery_v2.db')
         )
         
     def get_data(self) -> List[Dict]:
@@ -416,7 +416,7 @@ class IntegratedPredictor:
         self.lottery_type = lottery_type
         self.rules = get_lottery_rules(lottery_type)
         self.db = DatabaseManager(
-            db_path=os.path.join(project_root, 'lottery-api', 'data', 'lottery_v2.db')
+            db_path=os.path.join(project_root, 'lottery_api', 'data', 'lottery_v2.db')
         )
         self.engine = UnifiedPredictionEngine()
         self.analyzer = HotCooccurrenceAnalyzer(lottery_type)
@@ -575,6 +575,260 @@ class IntegratedPredictor:
             'weights': self.weights,
             'kill_list': kill_list
         }
+
+    def predict_best_5_bets(
+        self,
+        optimize_weights: bool = True,
+        use_genetic: bool = True,
+        use_kill: bool = True,
+        kill_count: int = 5
+    ) -> Dict:
+        """
+        產生最佳五注預測 (Phase 3.5 Best 5 Bets)
+        
+        策略組成:
+        1. Bet 1 (穩健): 加權投票 Top 6
+        2. Bet 2 (平衡): Zone Balance (500期)
+        3. Bet 3 (趨勢): Short-term Hot (熱號+共現)
+        4. Bet 4 (回補): Deviation (乖離率)
+        5. Bet 5 (綜合): Consensus (共識決)
+        """
+        history = self.get_data()
+        
+        # 1. 優化權重 (for Bet 1 & Consensus)
+        if optimize_weights:
+            if use_genetic:
+                self.weights = self.optimizer.optimize_with_genetic()
+            else:
+                self.weights = self.optimizer.calculate_optimal_weights()
+            self.voting.set_weights(self.weights)
+            
+        # 2. 產生殺號清單
+        kill_list = []
+        if use_kill:
+            kill_list = self.selector.predict_kill_numbers(count=kill_count)
+            logger.info(f"🔪 負向排除 (Phase 3.5): {kill_list}")
+            
+        pick_count = self.rules['pickCount']
+        
+        def filter_and_fill(numbers, source_name="strategy"):
+            """過濾殺號並補足號碼"""
+            valid_nums = [n for n in numbers if n not in kill_list]
+            if len(valid_nums) < pick_count:
+                # 若號碼不足，從 Consensus 中補，且不重複、不殺號
+                consensus_pool = sorted(list(self.voting.get_consensus_numbers(history, self.rules, 0.3)))
+                for c in consensus_pool:
+                    if len(valid_nums) >= pick_count:
+                        break
+                    if c not in valid_nums and c not in kill_list:
+                        valid_nums.append(c)
+            
+            # 若還是不足 (極少見)，隨機補
+            while len(valid_nums) < pick_count:
+                import random
+                r = random.randint(self.rules['minNumber'], self.rules['maxNumber'])
+                if r not in valid_nums and r not in kill_list:
+                    valid_nums.append(r)
+            
+            return sorted(valid_nums[:pick_count])
+
+        # --- Bet 1: 加權投票 (Weighted Vote) ---
+        raw_bet1, scores = self.voting.weighted_vote(history, self.rules, kill_list=kill_list)
+        bet1 = filter_and_fill(raw_bet1, "Weighted")
+        
+        # --- Bet 2: 分區平衡 (Zone Balance) ---
+        try:
+            zb_result = self.engine.zone_balance_predict(history[-500:], self.rules)
+            bet2 = filter_and_fill(zb_result.get('numbers', []), "ZoneBalance")
+        except:
+            bet2 = filter_and_fill([], "ZoneBalance_Error")
+
+        # --- Bet 3: 短期熱號 + 共現 (Hot + Cooccurrence) ---
+        # 使用 20 期窗口捕捉短期趨勢
+        hot_nums_20 = [n for n, _ in self.analyzer.get_hot_numbers(history, 20)]
+        co_matrix = self.analyzer.build_cooccurrence_matrix(history, 50)
+        # 取前 15 個熱號進行共現分析
+        raw_bet3 = self.analyzer.apply_cooccurrence_rules(hot_nums_20[:15], co_matrix, pick_count)
+        bet3 = filter_and_fill(raw_bet3, "HotCooccurrence")
+
+        # --- Bet 4: 乖離率回補 (Deviation) ---
+        try:
+            dev_result = self.engine.deviation_predict(history, self.rules)
+            bet4 = filter_and_fill(dev_result.get('numbers', []), "Deviation")
+        except:
+             bet4 = filter_and_fill([], "Deviation_Error")
+             
+        # --- Bet 5: 綜合共識 (Consensus) ---
+        # 提高閾值取得高信賴度集合
+        consensus_set = self.voting.get_consensus_numbers(history, self.rules, 0.4)
+        bet5 = filter_and_fill(list(consensus_set), "Consensus")
+        
+        return {
+            'bet1': bet1, 'desc1': '穩健型 (加權投票)',
+            'bet2': bet2, 'desc2': '平衡型 (分區平衡)',
+            'bet3': bet3, 'desc3': '趨勢型 (熱號共現)',
+            'bet4': bet4, 'desc4': '回補型 (乖離率)',
+            'bet5': bet5, 'desc5': '綜合型 (多模共識)',
+            'kill_list': kill_list,
+            'weights': self.weights
+        }
+    
+    def backtest_5bets(
+        self,
+        year: int = 2025,
+        use_genetic: bool = True,
+        kill_count: int = 5
+    ) -> Dict:
+        """
+        執行 Phase 3.5 最佳五注回測
+        """
+        all_draws = self.get_data()
+        test_draws = [d for d in all_draws if d['date'].startswith(str(year))]
+
+        if not test_draws:
+            return {'error': f'No data for {year}'}
+
+        start_idx = all_draws.index(test_draws[0])
+
+        # 預先計算權重 (在回測前)
+        pre_test_data = all_draws[:start_idx]
+        if len(pre_test_data) > 100:
+            if use_genetic:
+                self.weights = self.optimizer.optimize_with_genetic()
+            else:
+                self.weights = self.optimizer.calculate_optimal_weights()
+            self.voting.set_weights(self.weights)
+
+        total_draws = 0
+        total_wins = 0
+        bet_wins = {f'bet{i}': 0 for i in range(1, 6)}
+        match_counts = Counter()
+        max_match = 0
+
+        # Kill stats
+        total_killed_winners = 0
+        draws_with_kill_mistakes = 0
+
+        print(f"\n🔄 回測進行中 (Phase 3.5 最佳五注, 年份: {year}, 共 {len(test_draws)} 期)...")
+
+        for i, target in enumerate(test_draws):
+            current_idx = start_idx + i
+            history = all_draws[:current_idx]
+
+            # 產生殺號清單 (使用歷史數據)
+            kill_list = []
+            if kill_count > 0:
+                kill_list = self.selector.predict_kill_numbers(count=kill_count, history=history)
+
+            # 統計誤殺 (Winning numbers in kill list)
+            actual_set = set(target['numbers'])
+            killed_winners = list(actual_set & set(kill_list))
+            if len(killed_winners) > 0:
+                total_killed_winners += len(killed_winners)
+                draws_with_kill_mistakes += 1
+
+            pick_count = self.rules['pickCount']
+
+            def filter_and_fill_backtest(numbers, current_history, current_kill_list):
+                """過濾殺號並補足號碼 (回測專用)"""
+                valid_nums = [n for n in numbers if n not in current_kill_list]
+                if len(valid_nums) < pick_count:
+                    # 從 Consensus 中補，且不重複、不殺號
+                    consensus_pool = sorted(list(self.voting.get_consensus_numbers(current_history, self.rules, 0.3)))
+                    for c in consensus_pool:
+                        if len(valid_nums) >= pick_count:
+                            break
+                        if c not in valid_nums and c not in current_kill_list:
+                            valid_nums.append(c)
+
+                # 若還是不足，隨機補
+                while len(valid_nums) < pick_count:
+                    import random
+                    r = random.randint(self.rules['minNumber'], self.rules['maxNumber'])
+                    if r not in valid_nums and r not in current_kill_list:
+                        valid_nums.append(r)
+
+                return sorted(valid_nums[:pick_count])
+
+            # --- Bet 1: 加權投票 (Weighted Vote) ---
+            raw_bet1, _ = self.voting.weighted_vote(history, self.rules, kill_list=kill_list)
+            bet1 = filter_and_fill_backtest(raw_bet1, history, kill_list)
+
+            # --- Bet 2: 分區平衡 (Zone Balance) ---
+            try:
+                zb_result = self.engine.zone_balance_predict(history[-500:], self.rules)
+                bet2 = filter_and_fill_backtest(zb_result.get('numbers', []), history, kill_list)
+            except:
+                bet2 = filter_and_fill_backtest([], history, kill_list)
+
+            # --- Bet 3: 短期熱號 + 共現 (Hot + Cooccurrence) ---
+            hot_nums_20 = [n for n, _ in self.analyzer.get_hot_numbers(history, 20)]
+            co_matrix = self.analyzer.build_cooccurrence_matrix(history, 50)
+            raw_bet3 = self.analyzer.apply_cooccurrence_rules(hot_nums_20[:15], co_matrix, pick_count)
+            bet3 = filter_and_fill_backtest(raw_bet3, history, kill_list)
+
+            # --- Bet 4: 乖離率回補 (Deviation) ---
+            try:
+                dev_result = self.engine.deviation_predict(history, self.rules)
+                bet4 = filter_and_fill_backtest(dev_result.get('numbers', []), history, kill_list)
+            except:
+                bet4 = filter_and_fill_backtest([], history, kill_list)
+
+            # --- Bet 5: 綜合共識 (Consensus) ---
+            consensus_set = self.voting.get_consensus_numbers(history, self.rules, 0.4)
+            bet5 = filter_and_fill_backtest(list(consensus_set), history, kill_list)
+
+            # 評估
+            actual = target['numbers']
+            special = target['special']
+
+            bets = [bet1, bet2, bet3, bet4, bet5]
+            current_best_match = 0
+            current_draw_won = False
+
+            for idx, bet in enumerate(bets):
+                main_matches = len(set(bet) & set(actual))
+                special_match = special in bet
+                
+                # 判斷是否中獎 (3個主號或2個主號+特別號)
+                won = main_matches >= 3 or (main_matches == 2 and special_match)
+                if won:
+                    bet_wins[f'bet{idx+1}'] += 1
+                    current_draw_won = True
+                
+                # 記錄最佳命中 (主號)
+                current_best_match = max(current_best_match, main_matches)
+                
+                # 記錄含特別號的情況
+                if special_match:
+                    match_counts[f"{main_matches}+1"] = match_counts.get(f"{main_matches}+1", 0) + 1
+                else:
+                    match_counts[main_matches] = match_counts.get(main_matches, 0) + 1
+
+            if current_draw_won:
+                total_wins += 1
+                if current_best_match >= 4:
+                    print(f"  ✨ 期數 {target['draw']}: 命中 {current_best_match} 號!")
+                elif (any(len(set(b) & set(actual)) == 3 and special in b for b in bets)):
+                    print(f"  ✨ 期數 {target['draw']}: 命中 3+1 (特別號)!")
+
+            max_match = max(max_match, current_best_match)
+            total_draws += 1
+
+        win_rate = total_wins / total_draws if total_draws > 0 else 0
+
+        return {
+            'year': year,
+            'total_draws': total_draws,
+            'total_wins': total_wins,
+            'win_rate': win_rate,
+            'bet_wins': bet_wins,
+            'weights': self.weights,
+            'match_counts': dict(match_counts),
+            'max_match': max_match,
+            'total_killed_winners': total_killed_winners,
+            'draws_with_kill_mistakes': draws_with_kill_mistakes
+        }
     
     def backtest(
         self, 
@@ -618,13 +872,6 @@ class IntegratedPredictor:
             current_idx = start_idx + i
             history = all_draws[:current_idx]
             
-            # Kill List (move creation here to ensure it uses history correct context if needed, 
-            # though selector uses db. currently selector uses full db? Wait.
-            # NegativeSelector.predict_kill_numbers uses self.get_data() which gets ALL data.
-            # This is a DATA LEAKAGE in backtest if selector reads future data!
-            # We must fix NegativeSelector or pass history to it.
-            # The current NegativeSelector reads DB directly.
-            # For strict backtest, we really should pass history.
             # Let's check NegativeSelector implementation deeply later.
             # For now, let's assume it might peek if not careful, but `predict_kill_numbers` 
             # takes last 100. If DB has future data, it peeks.

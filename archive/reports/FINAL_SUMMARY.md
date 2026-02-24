@@ -68,7 +68,7 @@ POST /api/predict-double-bet
     - mode: optimal | dynamic | balanced
 ```
 
-**文件**: lottery-api/routes/prediction.py:1133
+**文件**: lottery_api/routes/prediction.py:1133
 
 #### 3. 測試與文檔 ✅
 
@@ -264,9 +264,9 @@ curl -X POST "http://localhost:8000/api/predict-double-bet?lottery_type=BIG_LOTT
 3. [BACKTEST_2025_REPORT.md](./BACKTEST_2025_REPORT.md) - 2025年回測報告
 
 ### 測試腳本
-4. `lottery-api/test_double_bet_strategy.py` - 功能測試
-5. `lottery-api/backtest_2025_double_bet.py` - 滾動回測
-6. `lottery-api/demo_double_bet_api.py` - API調用示例
+4. `lottery_api/test_double_bet_strategy.py` - 功能測試
+5. `lottery_api/backtest_2025_double_bet.py` - 滾動回測
+6. `lottery_api/demo_double_bet_api.py` - API調用示例
 
 ### API文檔
 7. http://localhost:8000/docs - Swagger UI

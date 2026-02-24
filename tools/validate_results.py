@@ -11,7 +11,7 @@ from collections import Counter
 # Add project root
 project_root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 sys.path.insert(0, project_root)
-sys.path.insert(0, os.path.join(project_root, 'lottery-api'))
+sys.path.insert(0, os.path.join(project_root, 'lottery_api'))
 
 from database import DatabaseManager
 
@@ -54,7 +54,7 @@ def get_prize_tier(match_count, special_match):
 
 def validate_predictions():
     """驗證所有未驗證的預測"""
-    db = DatabaseManager(db_path=os.path.join(project_root, 'lottery-api', 'data', 'lottery_v2.db'))
+    db = DatabaseManager(db_path=os.path.join(project_root, 'lottery_api', 'data', 'lottery_v2.db'))
     all_draws = {int(d['draw']): d for d in db.get_all_draws(lottery_type='POWER_LOTTO')}
     
     log_data = load_predictions_log()

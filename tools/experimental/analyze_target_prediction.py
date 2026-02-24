@@ -5,8 +5,8 @@
 import sys
 import os
 
-# 添加 lottery-api 到路径
-sys.path.insert(0, os.path.join(os.path.dirname(__file__), 'lottery-api'))
+# 添加 lottery_api 到路径
+sys.path.insert(0, os.path.join(os.path.dirname(__file__), 'lottery_api'))
 
 from database import DatabaseManager
 from common import get_lottery_rules
@@ -36,7 +36,7 @@ def analyze_predictions_for_target():
     print("="*80)
 
     # 获取历史数据（使用正确的数据库路径）
-    db_path = os.path.join(os.path.dirname(__file__), 'lottery-api', 'data', 'lottery_v2.db')
+    db_path = os.path.join(os.path.dirname(__file__), 'lottery_api', 'data', 'lottery_v2.db')
     db = DatabaseManager(db_path=db_path)
     draws = db.get_all_draws('BIG_LOTTO')
 

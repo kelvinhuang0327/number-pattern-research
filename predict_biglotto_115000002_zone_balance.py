@@ -8,7 +8,7 @@ import os
 
 # 設置正確的路徑
 script_dir = os.path.dirname(os.path.abspath(__file__))
-lottery_api_path = os.path.join(script_dir, 'lottery-api')
+lottery_api_path = os.path.join(script_dir, 'lottery_api')
 sys.path.insert(0, lottery_api_path)
 os.chdir(lottery_api_path)
 

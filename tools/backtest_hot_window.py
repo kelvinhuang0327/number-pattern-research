@@ -16,7 +16,7 @@ from typing import List, Dict, Tuple
 # Add project root
 project_root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 sys.path.insert(0, project_root)
-sys.path.insert(0, os.path.join(project_root, 'lottery-api'))
+sys.path.insert(0, os.path.join(project_root, 'lottery_api'))
 
 from models.unified_predictor import UnifiedPredictionEngine
 from database import DatabaseManager
@@ -34,7 +34,7 @@ class HotWindowBacktester:
     def __init__(self, lottery_type: str = 'BIG_LOTTO'):
         self.lottery_type = lottery_type
         self.db = DatabaseManager(
-            db_path=os.path.join(project_root, 'lottery-api', 'data', 'lottery_v2.db')
+            db_path=os.path.join(project_root, 'lottery_api', 'data', 'lottery_v2.db')
         )
         self.rules = get_lottery_rules(lottery_type)
         self.engine = UnifiedPredictionEngine()

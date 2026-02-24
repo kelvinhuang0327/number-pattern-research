@@ -93,7 +93,7 @@
 
 ### 2️⃣ 文件更新
 
-#### ✅ CLAUDE.md (lottery-api/CLAUDE.md)
+#### ✅ CLAUDE.md (lottery_api/CLAUDE.md)
 
 **更新內容**:
 

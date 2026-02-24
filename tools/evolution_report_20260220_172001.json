@@ -1,0 +1,188 @@
+{
+  "timestamp": "2026-02-20T17:20:01.298522",
+  "total_draws": 2102,
+  "total_strategies_tested": 331,
+  "bonferroni_threshold": 0.00015105740181268882,
+  "generations": 5,
+  "1_leaderboard": [
+    {
+      "name": "Freq_cold_w30",
+      "numbers": [
+        5,
+        14,
+        17,
+        19,
+        38,
+        47
+      ],
+      "edge_>=3": 0.0264,
+      "hit_rates": {
+        ">=2": 0.18,
+        ">=3": 0.045,
+        "edge_>=3": 0.0264,
+        "leakage_flag": false
+      },
+      "extreme_best": 3,
+      "generation": 1,
+      "params": {
+        "window": 30,
+        "mode": "cold",
+        "top_n": 6,
+        "p_value": 0.006644518272425249
+      }
+    },
+    {
+      "name": "Freq_cold_w100",
+      "numbers": [
+        4,
+        5,
+        13,
+        22,
+        38,
+        43
+      ],
+      "edge_>=3": 0.0264,
+      "hit_rates": {
+        ">=2": 0.195,
+        ">=3": 0.045,
+        "edge_>=3": 0.0264,
+        "leakage_flag": false
+      },
+      "extreme_best": 3,
+      "generation": 1,
+      "params": {
+        "window": 100,
+        "mode": "cold",
+        "top_n": 6,
+        "p_value": 0.006644518272425249
+      }
+    },
+    {
+      "name": "Deviation_under_w100",
+      "numbers": [
+        4,
+        5,
+        13,
+        22,
+        38,
+        43
+      ],
+      "edge_>=3": 0.0264,
+      "hit_rates": {
+        ">=2": 0.195,
+        ">=3": 0.045,
+        "edge_>=3": 0.0264,
+        "leakage_flag": false
+      },
+      "extreme_best": 3,
+      "generation": 1,
+      "params": {
+        "window": 100,
+        "direction": "under",
+        "p_value": 0.006644518272425249
+      }
+    },
+    {
+      "name": "Ensemble(Freq_mixed+Deviation_+Freq_cold_)",
+      "numbers": [
+        4,
+        5,
+        13,
+        22,
+        38,
+        43
+      ],
+      "edge_>=3": 0.0264,
+      "hit_rates": {
+        ">=2": 0.195,
+        ">=3": 0.045,
+        "edge_>=3": 0.0264,
+        "leakage_flag": false
+      },
+      "extreme_best": 3,
+      "generation": 2,
+      "params": {
+        "n_strategies": 3,
+        "weights": [
+          0.344780844446966,
+          0.08566472476352013,
+          0.5695544307895138
+        ],
+        "p_value": 0.006644518272425249
+      }
+    },
+    {
+      "name": "Ensemble(Ensemble(F+Freq_mixed)",
+      "numbers": [
+        4,
+        5,
+        13,
+        22,
+        38,
+        43
+      ],
+      "edge_>=3": 0.0264,
+      "hit_rates": {
+        ">=2": 0.195,
+        ">=3": 0.045,
+        "edge_>=3": 0.0264,
+        "leakage_flag": false
+      },
+      "extreme_best": 3,
+      "generation": 3,
+      "params": {
+        "n_strategies": 2,
+        "weights": [
+          0.5637690538767607,
+          0.4362309461232393
+        ],
+        "p_value": 0.006644518272425249
+      }
+    }
+  ],
+  "6_pattern_exists": false,
+  "8_why_no_pattern": "All strategies failed the P3 Permutation test or Bonferroni corrected significance threshold. No predictive edge above M3+ 1.86% baseline.",
+  "evolution_history": [
+    {
+      "generation": 1,
+      "pop_size": 41,
+      "best_name": "Freq_cold_w30",
+      "best_edge": 0.0264,
+      "best_hit3": 0.045,
+      "elapsed": 183.6095049381256
+    },
+    {
+      "generation": 2,
+      "pop_size": 56,
+      "best_name": "Freq_cold_w30",
+      "best_edge": 0.0264,
+      "best_hit3": 0.045,
+      "elapsed": 26.625951051712036
+    },
+    {
+      "generation": 3,
+      "pop_size": 75,
+      "best_name": "Freq_cold_w30",
+      "best_edge": 0.0264,
+      "best_hit3": 0.045,
+      "elapsed": 41.161957025527954
+    },
+    {
+      "generation": 4,
+      "pop_size": 108,
+      "best_name": "Freq_cold_w30",
+      "best_edge": 0.0264,
+      "best_hit3": 0.045,
+      "elapsed": 58.10524296760559
+    },
+    {
+      "generation": 5,
+      "pop_size": 151,
+      "best_name": "Freq_cold_w30",
+      "best_edge": 0.0264,
+      "best_hit3": 0.045,
+      "elapsed": 94.17401790618896
+    }
+  ],
+  "total_elapsed_seconds": 403.6950521469116
+}

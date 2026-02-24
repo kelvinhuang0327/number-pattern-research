@@ -1,0 +1,12 @@
+# Git ignore for .claude directory
+
+# Personal settings (not shared)
+settings.local.json
+
+# Temporary files
+*.tmp
+*.log
+
+# OS files
+.DS_Store
+Thumbs.db

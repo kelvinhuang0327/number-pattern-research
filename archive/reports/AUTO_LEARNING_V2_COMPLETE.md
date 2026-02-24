@@ -46,7 +46,7 @@
 
 ### 1. 後端 - 策略評估器
 
-**文件**: [lottery-api/models/strategy_evaluator.py](lottery-api/models/strategy_evaluator.py)
+**文件**: [lottery_api/models/strategy_evaluator.py](lottery_api/models/strategy_evaluator.py)
 
 **核心類**: `StrategyEvaluator`
 
@@ -90,7 +90,7 @@ class StrategyEvaluator:
 
 ### 2. 後端 API 端點
 
-**文件**: [lottery-api/app.py](lottery-api/app.py)
+**文件**: [lottery_api/app.py](lottery_api/app.py)
 
 **新增端點**:
 
@@ -457,7 +457,7 @@ except Exception as e:
 **功能狀態**: ✅ **100% 完整實現，待測試驗證**
 
 **下一步**:
-1. 啟動後端服務 (`python lottery-api/app.py`)
+1. 啟動後端服務 (`python lottery_api/app.py`)
 2. 上傳 CSV 數據並同步到後端
 3. 測試智能策略評估功能
 4. 查看並使用最佳策略

@@ -7,12 +7,12 @@ from collections import Counter, defaultdict
 # Add project root
 project_root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 sys.path.insert(0, project_root)
-sys.path.insert(0, os.path.join(project_root, 'lottery-api'))
+sys.path.insert(0, os.path.join(project_root, 'lottery_api'))
 
 from database import DatabaseManager
 
 def analyze_cross_section_correlation():
-    db = DatabaseManager(db_path=os.path.join(project_root, 'lottery-api', 'data', 'lottery_v2.db'))
+    db = DatabaseManager(db_path=os.path.join(project_root, 'lottery_api', 'data', 'lottery_v2.db'))
     all_draws = db.get_all_draws(lottery_type='POWER_LOTTO')
     
     # 按照第一區總和分組，統計第二區分佈

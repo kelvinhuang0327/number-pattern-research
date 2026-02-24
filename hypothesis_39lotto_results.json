@@ -1,0 +1,155 @@
+{
+  "H1_frequency": {
+    "chi2": 32.47908508057529,
+    "p_value": 0.7221786825360575,
+    "df": 38
+  },
+  "H4_odd_even": {
+    "chi2": 2.9282290178518036,
+    "p_value": 0.7110499072339351
+  },
+  "H5_zone": {
+    "chi2": 0.1090278981112459,
+    "p_value": 0.9469452997730397,
+    "observed": [
+      9644,
+      9600,
+      9611
+    ],
+    "expected": [
+      9618.333333333332,
+      9618.333333333332,
+      9618.333333333332
+    ]
+  },
+  "H6_lag2": {
+    "actual_mean": 0.6592130351880742,
+    "expected_mean": 0.6410256410256411,
+    "t_stat": 1.9617758498646356,
+    "p_value": 0.04983660865659637
+  },
+  "H6_lag1": {
+    "actual_mean": 0.6457538994800693,
+    "expected_mean": 0.6410256410256411,
+    "t_stat": 0.5071028488655407,
+    "p_value": 0.6121020388017915
+  },
+  "H7_markov": {
+    "significant_rows_bonferroni": 0,
+    "total_rows": 39,
+    "min_p": 0.08906837624611362,
+    "mean_p": 0.6782050773909611
+  },
+  "H8_fourier": {
+    "test_number": 37,
+    "n_significant_above_99pct": 26,
+    "total_frequencies": 2885,
+    "max_power_period": 2.5995495495495495,
+    "mean_power": 690.6651646447141,
+    "max_power": 6282.119940032923,
+    "threshold_99": 3180.6306247223933
+  },
+  "H9_drift": {
+    "n_segment_pairs": 10,
+    "significant_pairs": 0,
+    "details": [
+      {
+        "segment_pair": "0-1",
+        "ks": 0.0308,
+        "p": 0.18652997330992627
+      },
+      {
+        "segment_pair": "1-2",
+        "ks": 0.0228,
+        "p": 0.5343361578012819
+      },
+      {
+        "segment_pair": "2-3",
+        "ks": 0.0124,
+        "p": 0.990702299172658
+      },
+      {
+        "segment_pair": "3-4",
+        "ks": 0.022,
+        "p": 0.5807130357968455
+      },
+      {
+        "segment_pair": "4-5",
+        "ks": 0.0272,
+        "p": 0.3134230930210464
+      },
+      {
+        "segment_pair": "5-6",
+        "ks": 0.0336,
+        "p": 0.11890524587095791
+      },
+      {
+        "segment_pair": "6-7",
+        "ks": 0.0148,
+        "p": 0.9471624219062289
+      },
+      {
+        "segment_pair": "7-8",
+        "ks": 0.0216,
+        "p": 0.6042988472142462
+      },
+      {
+        "segment_pair": "8-9",
+        "ks": 0.024,
+        "p": 0.4676356159241176
+      },
+      {
+        "segment_pair": "9-10",
+        "ks": 0.0088,
+        "p": 0.9999767485065314
+      }
+    ]
+  },
+  "H10_fourier_all": {
+    "total": 39,
+    "with_signal": 0
+  },
+  "H11_pairs": {
+    "total_pairs": 741,
+    "bonferroni_alpha": 6.747638326585695e-05,
+    "significant_after_bonferroni": 0,
+    "most_extreme": {
+      "pair": [
+        25,
+        37
+      ],
+      "count": 105,
+      "p_value": 0.002957875081567019
+    },
+    "expected_count": 77.88124156545209
+  },
+  "H13_consecutive": {
+    "actual_mean": 0.5073644082481372,
+    "mc_mean": 0.5145,
+    "t_stat": -0.8551568676113973,
+    "p_value": 0.39249981719910376
+  },
+  "H14_sum_range": {
+    "actual_mean": 99.96534396118524,
+    "actual_std": 23.970043789506892,
+    "mc_mean": 99.86934,
+    "mc_std": 23.84510238947193,
+    "ks_stat": 0.006512732628660589,
+    "p_value": 0.9736377057581611
+  },
+  "H15_cond_entropy": {
+    "avg_mi_real": 0.00010388013709277809,
+    "avg_mi_shuffle": 0.00012432149662067966,
+    "p_value": 0.73
+  },
+  "H24_tails": {
+    "chi2": 11.244775602148689,
+    "p_value": 0.25930331322762595
+  },
+  "auto_discovery": {
+    "features_tested": 21,
+    "bonferroni_alpha": 0.002380952380952381,
+    "passed": 0,
+    "significant": []
+  }
+}

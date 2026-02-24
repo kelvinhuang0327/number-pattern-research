@@ -246,7 +246,7 @@ class StrategySelector:
 
 ```bash
 # 安裝依賴
-cd lottery-api
+cd lottery_api
 pip install tensorflow
 
 # 重啟後端

@@ -1,0 +1,19 @@
+{
+  "big_lotto": {
+    "total_combos": 13983816,
+    "full_coverage_cost": 699190800,
+    "fixed_return": 229150000,
+    "ev_fixed_per_bet": 16.38680028398543,
+    "j_threshold_pretax": 593896000.0,
+    "historical_max_jackpot": 3100000000
+  },
+  "power_lotto": {
+    "total_combos": 22085448,
+    "full_coverage_cost": 2208544800,
+    "fixed_return": 508849600,
+    "ev_fixed_per_bet": 23.040039758306012,
+    "j_threshold_pretax": 2147659000.0,
+    "historical_max_jackpot": 4400000000
+  },
+  "verdict": "B_THEORETICAL_NOT_PRACTICAL"
+}

@@ -322,7 +322,7 @@ Bayesian:  平均0.75個 → 中獎率4.20% ✅
 ---
 
 **報告完成**: 2025-12-16
-**數據來源**: lottery-api/data/lottery_v2.db
+**數據來源**: lottery_api/data/lottery_v2.db
 **測試期數**: 2025年BIG_LOTTO全年113期
 **最佳方法**: Bayesian (4.20%中獎率) 🥇
 **驗證狀態**: Phase 2優化成功 ✅

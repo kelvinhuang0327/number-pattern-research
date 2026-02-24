@@ -5,7 +5,7 @@
 ### Step 1: 運行測試驗證
 
 ```bash
-cd lottery-api
+cd lottery_api
 python3 test_double_bet_strategy.py
 ```
 
@@ -16,7 +16,7 @@ python3 test_double_bet_strategy.py
 ### Step 2: 啟動後端服務
 
 ```bash
-cd lottery-api
+cd lottery_api
 python3 app.py
 ```
 
@@ -165,7 +165,7 @@ python3 app.py
 ### 問題2: 返回錯誤
 ```bash
 # 查看日志
-tail -f lottery-api/logs/app.log
+tail -f lottery_api/logs/app.log
 ```
 
 ### 問題3: 數據不足
@@ -180,8 +180,8 @@ python3 -c "from database import db_manager; print(db_manager.get_stats())"
 
 - 完整文檔: [DOUBLE_BET_IMPLEMENTATION.md](./DOUBLE_BET_IMPLEMENTATION.md)
 - API文檔: http://localhost:8000/docs
-- 測試腳本: `lottery-api/test_double_bet_strategy.py`
-- 示例腳本: `lottery-api/demo_double_bet_api.py`
+- 測試腳本: `lottery_api/test_double_bet_strategy.py`
+- 示例腳本: `lottery_api/demo_double_bet_api.py`
 
 ---
 

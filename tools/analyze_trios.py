@@ -13,7 +13,7 @@ from itertools import combinations
 # Add project root
 project_root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 sys.path.insert(0, project_root)
-sys.path.insert(0, os.path.join(project_root, 'lottery-api'))
+sys.path.insert(0, os.path.join(project_root, 'lottery_api'))
 
 from database import DatabaseManager
 
@@ -21,7 +21,7 @@ from database import DatabaseManager
 sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding='utf-8')
 
 def analyze_trios(lottery_type='BIG_LOTTO'):
-    db = DatabaseManager(db_path=os.path.join(project_root, 'lottery-api', 'data', 'lottery_v2.db'))
+    db = DatabaseManager(db_path=os.path.join(project_root, 'lottery_api', 'data', 'lottery_v2.db'))
     all_draws = db.get_all_draws(lottery_type=lottery_type)
     
     # 使用所有歷史數據以獲得足夠樣本

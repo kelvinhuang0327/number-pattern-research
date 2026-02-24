@@ -13,7 +13,7 @@ import json
 from pathlib import Path
 
 # 資料庫路徑（後端）
-DB_PATH = os.path.join(os.path.dirname(__file__), '..', 'lottery-api', 'data', 'lottery.db')
+DB_PATH = os.path.join(os.path.dirname(__file__), '..', 'lottery_api', 'data', 'lottery.db')
 
 def parse_csv_file(file_path):
     """解析 CSV 檔案（台灣彩券官方格式）"""

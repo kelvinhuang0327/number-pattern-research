@@ -5,14 +5,14 @@ import json
 # Setup path
 project_root = "/Users/kelvin/Kelvin-WorkSpace/LotteryNew"
 sys.path.insert(0, project_root)
-sys.path.insert(0, os.path.join(project_root, 'lottery-api'))
+sys.path.insert(0, os.path.join(project_root, 'lottery_api'))
 
 from database import DatabaseManager
 from common import get_lottery_rules
 from models.multi_bet_optimizer import MultiBetOptimizer
 
 def predict():
-    db = DatabaseManager(db_path=os.path.join(project_root, 'lottery-api/data/lottery_v2.db'))
+    db = DatabaseManager(db_path=os.path.join(project_root, 'lottery_api/data/lottery_v2.db'))
     all_draws = db.get_all_draws('BIG_LOTTO')
     rules = get_lottery_rules('BIG_LOTTO')
     optimizer = MultiBetOptimizer()

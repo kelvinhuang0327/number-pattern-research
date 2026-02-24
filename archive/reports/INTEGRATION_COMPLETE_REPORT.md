@@ -27,7 +27,7 @@
 
 ### 1. 後端實作 ✅
 
-**文件**: [lottery-api/models/unified_predictor.py](lottery-api/models/unified_predictor.py#L761-L913)
+**文件**: [lottery_api/models/unified_predictor.py](lottery_api/models/unified_predictor.py#L761-L913)
 
 **新增方法**:
 ```python
@@ -54,7 +54,7 @@ def ensemble_advanced_predict(self, history, lottery_rules):
 
 ### 2. 後端 API 路由更新 ✅
 
-**文件**: [lottery-api/app.py](lottery-api/app.py)
+**文件**: [lottery_api/app.py](lottery_api/app.py)
 
 **更新點**:
 1. `/api/predict` 端點 (line 131):

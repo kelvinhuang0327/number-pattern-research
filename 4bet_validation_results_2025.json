@@ -1,0 +1,641 @@
+{
+  "hit_rate": 25.961538461538463,
+  "winning_periods": 27,
+  "total_periods": 104,
+  "match_distribution": {
+    "2": 50,
+    "1": 33,
+    "3": 18,
+    "4": 2,
+    "0": 1,
+    "5": 0,
+    "6": 0
+  },
+  "special_hits": 40,
+  "details": [
+    {
+      "draw": "114000001",
+      "win": false,
+      "best_m": 2,
+      "best_s": true
+    },
+    {
+      "draw": "114000002",
+      "win": false,
+      "best_m": 2,
+      "best_s": false
+    },
+    {
+      "draw": "114000003",
+      "win": false,
+      "best_m": 2,
+      "best_s": true
+    },
+    {
+      "draw": "114000004",
+      "win": false,
+      "best_m": 2,
+      "best_s": true
+    },
+    {
+      "draw": "114000005",
+      "win": false,
+      "best_m": 1,
+      "best_s": false
+    },
+    {
+      "draw": "114000006",
+      "win": true,
+      "best_m": 3,
+      "best_s": true
+    },
+    {
+      "draw": "114000007",
+      "win": false,
+      "best_m": 1,
+      "best_s": true
+    },
+    {
+      "draw": "114000008",
+      "win": false,
+      "best_m": 2,
+      "best_s": false
+    },
+    {
+      "draw": "114000009",
+      "win": false,
+      "best_m": 2,
+      "best_s": false
+    },
+    {
+      "draw": "114000010",
+      "win": true,
+      "best_m": 2,
+      "best_s": true
+    },
+    {
+      "draw": "114000011",
+      "win": true,
+      "best_m": 3,
+      "best_s": false
+    },
+    {
+      "draw": "114000012",
+      "win": false,
+      "best_m": 1,
+      "best_s": false
+    },
+    {
+      "draw": "114000013",
+      "win": true,
+      "best_m": 4,
+      "best_s": false
+    },
+    {
+      "draw": "114000014",
+      "win": false,
+      "best_m": 1,
+      "best_s": false
+    },
+    {
+      "draw": "114000015",
+      "win": false,
+      "best_m": 2,
+      "best_s": false
+    },
+    {
+      "draw": "114000016",
+      "win": true,
+      "best_m": 2,
+      "best_s": true
+    },
+    {
+      "draw": "114000017",
+      "win": false,
+      "best_m": 1,
+      "best_s": false
+    },
+    {
+      "draw": "114000018",
+      "win": false,
+      "best_m": 1,
+      "best_s": true
+    },
+    {
+      "draw": "114000019",
+      "win": true,
+      "best_m": 2,
+      "best_s": true
+    },
+    {
+      "draw": "114000020",
+      "win": false,
+      "best_m": 1,
+      "best_s": true
+    },
+    {
+      "draw": "114000021",
+      "win": false,
+      "best_m": 1,
+      "best_s": true
+    },
+    {
+      "draw": "114000022",
+      "win": false,
+      "best_m": 2,
+      "best_s": false
+    },
+    {
+      "draw": "114000023",
+      "win": false,
+      "best_m": 2,
+      "best_s": false
+    },
+    {
+      "draw": "114000024",
+      "win": false,
+      "best_m": 2,
+      "best_s": false
+    },
+    {
+      "draw": "114000025",
+      "win": false,
+      "best_m": 1,
+      "best_s": false
+    },
+    {
+      "draw": "114000026",
+      "win": false,
+      "best_m": 1,
+      "best_s": false
+    },
+    {
+      "draw": "114000027",
+      "win": true,
+      "best_m": 3,
+      "best_s": false
+    },
+    {
+      "draw": "114000028",
+      "win": false,
+      "best_m": 1,
+      "best_s": false
+    },
+    {
+      "draw": "114000029",
+      "win": false,
+      "best_m": 1,
+      "best_s": true
+    },
+    {
+      "draw": "114000030",
+      "win": true,
+      "best_m": 3,
+      "best_s": true
+    },
+    {
+      "draw": "114000031",
+      "win": true,
+      "best_m": 3,
+      "best_s": false
+    },
+    {
+      "draw": "114000032",
+      "win": false,
+      "best_m": 1,
+      "best_s": false
+    },
+    {
+      "draw": "114000033",
+      "win": false,
+      "best_m": 2,
+      "best_s": false
+    },
+    {
+      "draw": "114000034",
+      "win": true,
+      "best_m": 3,
+      "best_s": true
+    },
+    {
+      "draw": "114000035",
+      "win": true,
+      "best_m": 2,
+      "best_s": true
+    },
+    {
+      "draw": "114000036",
+      "win": false,
+      "best_m": 2,
+      "best_s": true
+    },
+    {
+      "draw": "114000037",
+      "win": false,
+      "best_m": 1,
+      "best_s": false
+    },
+    {
+      "draw": "114000038",
+      "win": false,
+      "best_m": 1,
+      "best_s": true
+    },
+    {
+      "draw": "114000039",
+      "win": false,
+      "best_m": 2,
+      "best_s": false
+    },
+    {
+      "draw": "114000040",
+      "win": false,
+      "best_m": 2,
+      "best_s": false
+    },
+    {
+      "draw": "114000041",
+      "win": false,
+      "best_m": 2,
+      "best_s": true
+    },
+    {
+      "draw": "114000042",
+      "win": true,
+      "best_m": 2,
+      "best_s": true
+    },
+    {
+      "draw": "114000043",
+      "win": false,
+      "best_m": 0,
+      "best_s": false
+    },
+    {
+      "draw": "114000044",
+      "win": false,
+      "best_m": 1,
+      "best_s": true
+    },
+    {
+      "draw": "114000045",
+      "win": false,
+      "best_m": 1,
+      "best_s": true
+    },
+    {
+      "draw": "114000046",
+      "win": false,
+      "best_m": 2,
+      "best_s": false
+    },
+    {
+      "draw": "114000047",
+      "win": false,
+      "best_m": 1,
+      "best_s": true
+    },
+    {
+      "draw": "114000048",
+      "win": false,
+      "best_m": 1,
+      "best_s": false
+    },
+    {
+      "draw": "114000049",
+      "win": false,
+      "best_m": 2,
+      "best_s": false
+    },
+    {
+      "draw": "114000050",
+      "win": false,
+      "best_m": 2,
+      "best_s": false
+    },
+    {
+      "draw": "114000051",
+      "win": false,
+      "best_m": 1,
+      "best_s": true
+    },
+    {
+      "draw": "114000052",
+      "win": false,
+      "best_m": 2,
+      "best_s": false
+    },
+    {
+      "draw": "114000053",
+      "win": true,
+      "best_m": 3,
+      "best_s": true
+    },
+    {
+      "draw": "114000054",
+      "win": true,
+      "best_m": 3,
+      "best_s": false
+    },
+    {
+      "draw": "114000055",
+      "win": true,
+      "best_m": 3,
+      "best_s": false
+    },
+    {
+      "draw": "114000056",
+      "win": false,
+      "best_m": 2,
+      "best_s": false
+    },
+    {
+      "draw": "114000057",
+      "win": false,
+      "best_m": 1,
+      "best_s": true
+    },
+    {
+      "draw": "114000058",
+      "win": false,
+      "best_m": 2,
+      "best_s": false
+    },
+    {
+      "draw": "114000059",
+      "win": true,
+      "best_m": 3,
+      "best_s": false
+    },
+    {
+      "draw": "114000060",
+      "win": false,
+      "best_m": 1,
+      "best_s": false
+    },
+    {
+      "draw": "114000061",
+      "win": false,
+      "best_m": 2,
+      "best_s": false
+    },
+    {
+      "draw": "114000062",
+      "win": false,
+      "best_m": 1,
+      "best_s": true
+    },
+    {
+      "draw": "114000063",
+      "win": true,
+      "best_m": 2,
+      "best_s": true
+    },
+    {
+      "draw": "114000064",
+      "win": false,
+      "best_m": 2,
+      "best_s": true
+    },
+    {
+      "draw": "114000065",
+      "win": false,
+      "best_m": 2,
+      "best_s": false
+    },
+    {
+      "draw": "114000066",
+      "win": false,
+      "best_m": 2,
+      "best_s": false
+    },
+    {
+      "draw": "114000067",
+      "win": false,
+      "best_m": 2,
+      "best_s": true
+    },
+    {
+      "draw": "114000068",
+      "win": false,
+      "best_m": 2,
+      "best_s": false
+    },
+    {
+      "draw": "114000069",
+      "win": true,
+      "best_m": 4,
+      "best_s": false
+    },
+    {
+      "draw": "114000070",
+      "win": false,
+      "best_m": 2,
+      "best_s": true
+    },
+    {
+      "draw": "114000071",
+      "win": true,
+      "best_m": 3,
+      "best_s": false
+    },
+    {
+      "draw": "114000072",
+      "win": true,
+      "best_m": 3,
+      "best_s": true
+    },
+    {
+      "draw": "114000073",
+      "win": false,
+      "best_m": 1,
+      "best_s": false
+    },
+    {
+      "draw": "114000074",
+      "win": true,
+      "best_m": 3,
+      "best_s": false
+    },
+    {
+      "draw": "114000075",
+      "win": false,
+      "best_m": 1,
+      "best_s": true
+    },
+    {
+      "draw": "114000076",
+      "win": false,
+      "best_m": 2,
+      "best_s": false
+    },
+    {
+      "draw": "114000077",
+      "win": false,
+      "best_m": 2,
+      "best_s": true
+    },
+    {
+      "draw": "114000078",
+      "win": false,
+      "best_m": 2,
+      "best_s": false
+    },
+    {
+      "draw": "114000079",
+      "win": false,
+      "best_m": 2,
+      "best_s": false
+    },
+    {
+      "draw": "114000080",
+      "win": false,
+      "best_m": 2,
+      "best_s": false
+    },
+    {
+      "draw": "114000081",
+      "win": false,
+      "best_m": 2,
+      "best_s": false
+    },
+    {
+      "draw": "114000082",
+      "win": false,
+      "best_m": 1,
+      "best_s": false
+    },
+    {
+      "draw": "114000083",
+      "win": true,
+      "best_m": 2,
+      "best_s": true
+    },
+    {
+      "draw": "114000084",
+      "win": false,
+      "best_m": 1,
+      "best_s": false
+    },
+    {
+      "draw": "114000085",
+      "win": true,
+      "best_m": 3,
+      "best_s": false
+    },
+    {
+      "draw": "114000086",
+      "win": false,
+      "best_m": 2,
+      "best_s": true
+    },
+    {
+      "draw": "114000087",
+      "win": false,
+      "best_m": 2,
+      "best_s": true
+    },
+    {
+      "draw": "114000088",
+      "win": false,
+      "best_m": 1,
+      "best_s": true
+    },
+    {
+      "draw": "114000089",
+      "win": false,
+      "best_m": 2,
+      "best_s": false
+    },
+    {
+      "draw": "114000090",
+      "win": false,
+      "best_m": 1,
+      "best_s": true
+    },
+    {
+      "draw": "114000091",
+      "win": false,
+      "best_m": 2,
+      "best_s": false
+    },
+    {
+      "draw": "114000092",
+      "win": false,
+      "best_m": 1,
+      "best_s": true
+    },
+    {
+      "draw": "114000093",
+      "win": false,
+      "best_m": 2,
+      "best_s": false
+    },
+    {
+      "draw": "114000094",
+      "win": true,
+      "best_m": 3,
+      "best_s": false
+    },
+    {
+      "draw": "114000095",
+      "win": true,
+      "best_m": 3,
+      "best_s": false
+    },
+    {
+      "draw": "114000096",
+      "win": false,
+      "best_m": 2,
+      "best_s": false
+    },
+    {
+      "draw": "114000097",
+      "win": false,
+      "best_m": 2,
+      "best_s": false
+    },
+    {
+      "draw": "114000098",
+      "win": false,
+      "best_m": 2,
+      "best_s": false
+    },
+    {
+      "draw": "114000099",
+      "win": false,
+      "best_m": 2,
+      "best_s": false
+    },
+    {
+      "draw": "114000100",
+      "win": false,
+      "best_m": 1,
+      "best_s": false
+    },
+    {
+      "draw": "114000101",
+      "win": true,
+      "best_m": 3,
+      "best_s": true
+    },
+    {
+      "draw": "114000102",
+      "win": false,
+      "best_m": 1,
+      "best_s": false
+    },
+    {
+      "draw": "114000103",
+      "win": false,
+      "best_m": 1,
+      "best_s": false
+    },
+    {
+      "draw": "114000104",
+      "win": true,
+      "best_m": 3,
+      "best_s": false
+    }
+  ]
+}

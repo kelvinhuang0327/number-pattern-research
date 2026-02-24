@@ -250,7 +250,7 @@
 ### 第 1 階段：後端整合（2-3 小時）
 
 ```python
-# lottery-api/models/unified_predictor.py
+# lottery_api/models/unified_predictor.py
 
 def ensemble_advanced_predict(self, history, lottery_rules):
     """
@@ -402,11 +402,11 @@ if (DEPRECATED_MAPPING[method]) {
 ### 已完成項目
 
 ✅ **後端實作**:
-- 新增 `ensemble_advanced_predict()` 方法到 [lottery-api/models/unified_predictor.py](lottery-api/models/unified_predictor.py#L761-L913)
+- 新增 `ensemble_advanced_predict()` 方法到 [lottery_api/models/unified_predictor.py](lottery_api/models/unified_predictor.py#L761-L913)
 - 整合 Boosting、Co-occurrence、Feature-weighted 三大功能
 
 ✅ **後端 API 路由**:
-- 更新 [lottery-api/app.py](lottery-api/app.py#L131) 添加 `ensemble_advanced` 支持
+- 更新 [lottery_api/app.py](lottery_api/app.py#L131) 添加 `ensemble_advanced` 支持
 - 兩個端點已支持：`/api/predict` 和 `/api/predict-from-backend`
 
 ✅ **前端策略映射**:

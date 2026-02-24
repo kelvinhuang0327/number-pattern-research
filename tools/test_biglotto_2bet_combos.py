@@ -11,7 +11,7 @@ from itertools import combinations
 
 project_root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 sys.path.insert(0, project_root)
-sys.path.insert(0, os.path.join(project_root, 'lottery-api'))
+sys.path.insert(0, os.path.join(project_root, 'lottery_api'))
 
 from database import DatabaseManager
 from common import get_lottery_rules
@@ -81,7 +81,7 @@ def test_2bet_combination(combo_name, func1, func2, history, rules, test_periods
 
 def run_biglotto_2bet_tests():
     """运行大乐透双注测试"""
-    db = DatabaseManager(db_path=os.path.join(project_root, 'lottery-api', 'data', 'lottery_v2.db'))
+    db = DatabaseManager(db_path=os.path.join(project_root, 'lottery_api', 'data', 'lottery_v2.db'))
     all_draws = list(reversed(db.get_all_draws(lottery_type='BIG_LOTTO')))
     rules = get_lottery_rules('BIG_LOTTO')
     

@@ -33,11 +33,11 @@
 - ✅ `/index.html` - 更新兩處select選項
 
 ### 2. **後端配置**
-- ✅ `/lottery-api/data/lottery_types.json` - 新增3個前端獨有的ID
+- ✅ `/lottery_api/data/lottery_types.json` - 新增3個前端獨有的ID
 
 ### 3. **備份文件**
 - ✅ `/src/utils/LotteryTypes.js.backup`
-- ✅ `/lottery-api/data/lottery_types.json.backup`
+- ✅ `/lottery_api/data/lottery_types.json.backup`
 
 ---
 
@@ -161,7 +161,7 @@
 cp src/utils/LotteryTypes.js.backup src/utils/LotteryTypes.js
 
 # 恢復後端配置
-cp lottery-api/data/lottery_types.json.backup lottery-api/data/lottery_types.json
+cp lottery_api/data/lottery_types.json.backup lottery_api/data/lottery_types.json
 
 # 重啟後端服務
 ```

@@ -3,15 +3,15 @@ import os
 import json
 import numpy as np
 
-# Add lottery-api to path
-sys.path.insert(0, os.path.join(os.getcwd(), 'lottery-api'))
+# Add lottery_api to path
+sys.path.insert(0, os.path.join(os.getcwd(), 'lottery_api'))
 
 from database import DatabaseManager
 from common import get_lottery_rules
 from cvaa_predictor import CVAAPredictor
 
 def main():
-    db_path = os.path.join(os.getcwd(), 'lottery-api/data/lottery_v2.db')
+    db_path = os.path.join(os.getcwd(), 'lottery_api/data/lottery_v2.db')
     db = DatabaseManager(db_path=db_path)
     all_draws = db.get_all_draws('DAILY_539')
     rules = get_lottery_rules('DAILY_539')

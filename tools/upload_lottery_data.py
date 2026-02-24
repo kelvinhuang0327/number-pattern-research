@@ -16,7 +16,7 @@ import json
 from pathlib import Path
 
 # 資料庫路徑
-DB_PATH = os.path.join(os.path.dirname(__file__), '..', 'lottery-api', 'data', 'lottery.db')
+DB_PATH = os.path.join(os.path.dirname(__file__), '..', 'lottery_api', 'data', 'lottery.db')
 
 # 搜尋路徑
 SEARCH_PATH = Path('/Users/kelvin/Downloads/number')

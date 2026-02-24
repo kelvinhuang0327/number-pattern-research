@@ -243,7 +243,7 @@ def xxx_predict(self, history, lottery_rules):
 ## 🏗️ 系統架構
 
 ```
-lottery-api/
+lottery_api/
 ├── models/
 │   ├── unified_predictor.py          # 統一預測引擎（已更新）
 │   ├── entropy_transformer.py        # 熵驅動 Transformer

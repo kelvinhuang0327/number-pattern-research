@@ -5,6 +5,34 @@
 export class UIManager {
     constructor() {
         this.setupNavigation();
+        this.initWaterline();
+    }
+
+    initWaterline() {
+        this.updateWaterline();
+        // Refresh every 5 minutes
+        setInterval(() => this.updateWaterline(), 300000);
+    }
+
+    async updateWaterline() {
+        try {
+            const response = await fetch('/api/performance/regime');
+            if (!response.ok) return;
+
+            const data = await response.json();
+            const dot = document.getElementById('waterline-status-dot');
+            const regimeSpan = document.getElementById('waterline-regime');
+            const adviceDiv = document.getElementById('waterline-advice');
+
+            if (dot && regimeSpan && adviceDiv) {
+                regimeSpan.textContent = data.regime;
+                adviceDiv.textContent = data.recommendation;
+                dot.style.background = data.color;
+                dot.style.boxShadow = `0 0 10px ${data.color}80`;
+            }
+        } catch (error) {
+            console.error('Failed to update waterline:', error);
+        }
     }
 
     setupNavigation() {

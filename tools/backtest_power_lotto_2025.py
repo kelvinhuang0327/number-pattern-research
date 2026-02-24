@@ -6,10 +6,10 @@ import sys
 import os
 import io
 
-# Add project root and lottery-api to path
+# Add project root and lottery_api to path
 project_root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 sys.path.insert(0, project_root)
-sys.path.insert(0, os.path.join(project_root, 'lottery-api'))
+sys.path.insert(0, os.path.join(project_root, 'lottery_api'))
 
 from models.power_lotto_predictor import power_lotto_predictor
 from models.backtest_framework import RollingBacktester, StrategyAdapter
@@ -25,7 +25,7 @@ def main():
     print("================================================================================")
 
     # 1. Load Data
-    db_path = os.path.join(project_root, 'lottery-api', 'data', 'lottery_v2.db')
+    db_path = os.path.join(project_root, 'lottery_api', 'data', 'lottery_v2.db')
     db = DatabaseManager(db_path=db_path)
     lottery_type = 'POWER_LOTTO'
     draws = db.get_all_draws(lottery_type=lottery_type)

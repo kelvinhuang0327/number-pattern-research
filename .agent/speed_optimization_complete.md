@@ -81,7 +81,7 @@ history = scheduler.get_data('BIG_LOTTO')
 ### 1. Scheduler 優化（已完成）
 
 ```python
-# lottery-api/utils/scheduler.py
+# lottery_api/utils/scheduler.py
 
 class AutoLearningScheduler:
     def __init__(self):
@@ -111,7 +111,7 @@ class AutoLearningScheduler:
 ### 2. API 端點優化（已完成）
 
 ```python
-# lottery-api/app.py
+# lottery_api/app.py
 
 @app.post("/api/predict-from-backend")
 async def predict_from_backend(request):
@@ -241,7 +241,7 @@ await app.syncDataToBackend();
 ### 驗證方式
 ```bash
 # 重啟後端（如果正在運行）
-cd lottery-api
+cd lottery_api
 python3 app.py
 
 # 查看啟動日誌

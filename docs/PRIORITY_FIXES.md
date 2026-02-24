@@ -27,8 +27,8 @@
 
 **修正文件**:
 - 前端: `/src/utils/LotteryTypes.js`
-- 後端: `/lottery-api/data/lottery_types.json`
-- 配置: `/lottery-api/config.py`
+- 後端: `/lottery_api/data/lottery_types.json`
+- 配置: `/lottery_api/config.py`
 
 **預計時間**: 1-2 小時
 
@@ -164,7 +164,7 @@
 ```bash
 # 1. 備份現有配置
 cp src/utils/LotteryTypes.js src/utils/LotteryTypes.js.backup
-cp lottery-api/data/lottery_types.json lottery-api/data/lottery_types.json.backup
+cp lottery_api/data/lottery_types.json lottery_api/data/lottery_types.json.backup
 
 # 2. 執行ID統一修正
 # 3. 測試所有功能

@@ -103,7 +103,7 @@ if (data.length === 0) {
 
 ## 🔧 後端修改 (Backend)
 
-### 修改 1: `lottery-api/common.py`
+### 修改 1: `lottery_api/common.py`
 
 **新增 get_related_lottery_types 函數**
 
@@ -135,7 +135,7 @@ def get_related_lottery_types(lottery_type: str) -> list:
 
 ---
 
-### 修改 2: `lottery-api/database.py`
+### 修改 2: `lottery_api/database.py`
 
 #### 2.1 修改 `get_all_draws()` 方法
 
@@ -369,7 +369,7 @@ NEW_BONUS_TYPE: {
 }
 ```
 
-**後端 (`lottery-api/common.py`):**
+**後端 (`lottery_api/common.py`):**
 
 ```python
 RELATED_TYPES = {

@@ -77,7 +77,7 @@ async getDataRange(sampleSize, lotteryType = null) {
 
 ### 1.2 後端修改
 
-#### 文件 1: `lottery-api/common.py`
+#### 文件 1: `lottery_api/common.py`
 
 **新增函數:**
 ```python
@@ -91,7 +91,7 @@ def get_related_lottery_types(lottery_type: str) -> list:
     return RELATED_TYPES.get(normalized_type, [normalized_type])
 ```
 
-#### 文件 2: `lottery-api/database.py`
+#### 文件 2: `lottery_api/database.py`
 
 **修改 3 個查詢方法:**
 
@@ -508,9 +508,9 @@ log(3.49) ≈ 1.25
 
 ### 測試腳本
 
-1. `lottery-api/test_related_types.py` - 後端函數測試
-2. `lottery-api/comprehensive_strategy_evaluation.py` - 全面策略評估
-3. `lottery-api/quick_strategy_evaluation.py` - 快速策略評估
+1. `lottery_api/test_related_types.py` - 後端函數測試
+2. `lottery_api/comprehensive_strategy_evaluation.py` - 全面策略評估
+3. `lottery_api/quick_strategy_evaluation.py` - 快速策略評估
 
 ---
 

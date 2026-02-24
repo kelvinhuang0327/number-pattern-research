@@ -154,7 +154,7 @@ async def main():
     except Exception as e:
         print(f"❌ Cannot connect to backend: {e}")
         print("\nPlease start the backend first:")
-        print("  cd lottery-api && ./start.sh")
+        print("  cd lottery_api && ./start.sh")
         return
     
     # Run tests

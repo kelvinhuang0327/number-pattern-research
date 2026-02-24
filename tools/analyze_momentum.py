@@ -7,14 +7,14 @@ from collections import Counter, defaultdict
 # Add project root
 project_root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 sys.path.insert(0, project_root)
-sys.path.insert(0, os.path.join(project_root, 'lottery-api'))
+sys.path.insert(0, os.path.join(project_root, 'lottery_api'))
 
 from models.unified_predictor import UnifiedPredictionEngine
 from database import DatabaseManager
 from common import get_lottery_rules
 
 def simulate_strategy_momentum():
-    db = DatabaseManager(db_path=os.path.join(project_root, 'lottery-api', 'data', 'lottery_v2.db'))
+    db = DatabaseManager(db_path=os.path.join(project_root, 'lottery_api', 'data', 'lottery_v2.db'))
     all_draws = list(reversed(db.get_all_draws(lottery_type='POWER_LOTTO')))
     rules = get_lottery_rules('POWER_LOTTO')
     engine = UnifiedPredictionEngine()

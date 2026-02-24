@@ -1,0 +1,1 @@
+strategy: 5bet_orthogonal\nlottery: power_lotto\nadopted: 2026-02-24\nstatus: ACTIVE

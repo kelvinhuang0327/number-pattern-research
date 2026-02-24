@@ -20,7 +20,7 @@ from typing import List, Dict, Tuple, Set, Optional
 # Add project root
 project_root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 sys.path.insert(0, project_root)
-sys.path.insert(0, os.path.join(project_root, 'lottery-api'))
+sys.path.insert(0, os.path.join(project_root, 'lottery_api'))
 
 from database import DatabaseManager
 from common import get_lottery_rules
@@ -41,7 +41,7 @@ class HotCooccurrenceAnalyzer:
     
     def __init__(self, lottery_type: str = 'BIG_LOTTO'):
         self.lottery_type = lottery_type
-        self.db_path = os.path.join(project_root, 'lottery-api', 'data', 'lottery_v2.db')
+        self.db_path = os.path.join(project_root, 'lottery_api', 'data', 'lottery_v2.db')
         self.db = DatabaseManager(db_path=self.db_path)
         self.rules = get_lottery_rules(lottery_type)
         self.min_num = self.rules['minNumber']

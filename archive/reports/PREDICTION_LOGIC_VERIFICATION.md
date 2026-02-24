@@ -166,7 +166,7 @@ const rate = results.length > 0
 
 #### 3. 後端策略評估邏輯
 
-**文件**: [lottery-api/models/strategy_evaluator.py:144-206](lottery-api/models/strategy_evaluator.py#L144-L206)
+**文件**: [lottery_api/models/strategy_evaluator.py:144-206](lottery_api/models/strategy_evaluator.py#L144-L206)
 
 ```python
 def _rolling_validation(self, strategy_id, history, lottery_rules, test_size, min_train_size):

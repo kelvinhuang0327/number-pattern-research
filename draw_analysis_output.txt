@@ -1,0 +1,276 @@
+Total Power Lotto draws in DB: 1882
+Target Draw: 115000011
+Target Numbers: [7, 22, 28, 34, 36, 37], Special: 7
+Draws before 115000011: 1882
+Last 10 draws for context: 115000010 ~ 115000001
+
+======================================================================
+  1. Basic Feature Analysis (Draw 115000011: [7, 22, 28, 34, 36, 37], Special: 4)
+======================================================================
+
+  Sum: 164
+    Theoretical expected: (1+38)/2 * 6 = 117
+    Deviation: +47 (high)
+
+  Odd:Even ratio: 2:4
+    Odd:  [7, 37]
+    Even: [22, 28, 34, 36]
+
+  Big:Small ratio (threshold=19): 5:1
+    Big (>=20): [22, 28, 34, 36, 37]
+    Small(<20): [7]
+
+  Zone distribution:
+    Z1 (01-09): 1 numbers [7]
+    Z2 (10-19): 0 numbers []
+    Z3 (20-29): 2 numbers [22, 28]
+    Z4 (30-38): 3 numbers [34, 36, 37]
+
+  Consecutive groups:
+    [36, 37] (run of 2)
+
+  Tail digit distribution:
+    Tail 2: 1 number(s) [22]
+    Tail 4: 1 number(s) [34]
+    Tail 6: 1 number(s) [36]
+    Tail 7: 2 number(s) [7, 37]
+    Tail 8: 1 number(s) [28]
+    ** Duplicate tails: tail-7(2x)
+
+  Span: 30 (min=7, max=37)
+
+======================================================================
+  2. Historical Comparison
+======================================================================
+
+  [Sum Comparison]
+    This draw: 164
+    Last 30 avg: 121.6 (range: 74~170)
+    Last 100 avg: 113.6 (range: 55~170)
+    Sum 164 percentile in last 30: 29/30 (97th)
+    Sum 164 percentile in last 100: 99/100 (99th)
+
+  [Odd:Even Ratio Distribution]
+    This draw: 2:4
+    Last 30 draws:
+      4:2 : 13 times (43.3%)
+      3:3 : 7 times (23.3%)
+      1:5 : 4 times (13.3%)
+      5:1 : 3 times (10.0%)
+      2:4 : 3 times (10.0%) <<<
+    Last 100 draws:
+      4:2 : 31 times (31.0%)
+      3:3 : 29 times (29.0%)
+      2:4 : 16 times (16.0%) <<<
+      5:1 : 11 times (11.0%)
+      1:5 : 10 times (10.0%)
+      0:6 : 3 times (3.0%)
+
+  [Big:Small Ratio Distribution]
+    This draw: 5:1
+    Last 30 draws:
+      3:3 : 12 times (40.0%)
+      4:2 : 9 times (30.0%)
+      2:4 : 7 times (23.3%)
+      1:5 : 1 times (3.3%)
+      5:1 : 1 times (3.3%) <<<
+    Last 100 draws:
+      3:3 : 33 times (33.0%)
+      4:2 : 27 times (27.0%)
+      2:4 : 26 times (26.0%)
+      1:5 : 9 times (9.0%)
+      5:1 : 3 times (3.0%) <<<
+      0:6 : 2 times (2.0%)
+
+  [Zone Distribution Comparison]
+    Z1 (01-09): this=1 | 30avg=1.23 | 100avg=1.55
+    Z2 (10-19): this=0 | 30avg=1.70 | 100avg=1.62
+    Z3 (20-29): this=2 | 30avg=1.47 | 100avg=1.53
+    Z4 (30-38): this=3 | 30avg=1.60 | 100avg=1.30
+
+  [Consecutive Number Comparison]
+    This draw consecutive groups: 1
+    Last 30 with consecutives: 15/30 (50.0%)
+    Last 100 with consecutives: 60/100 (60.0%)
+
+  [Number Temperature - Last 30 Draws]
+    Expected frequency per number: 30 * 6/38 = 4.74
+
+    Number  7:  5 times #####                [HOT]
+    Number 22:  3 times ###                  [NORMAL]
+    Number 28:  4 times ####                 [HOT]
+    Number 34:  8 times ########             [VERY HOT]
+    Number 36:  2 times ##                   [COLD]
+    Number 37:  7 times #######              [VERY HOT]
+
+    --- Full Hot/Cold Table (Last 30) ---
+    Very Hot (>=6): [5, 9, 11, 14, 15, 16, 17, 20, 26, 29, 32, 34, 35, 37]
+    Hot (4-5): [1, 3, 6, 7, 8, 10, 12, 18, 19, 21, 25, 28, 31, 33]
+    Normal (3): [22, 23, 27, 38]
+    Cold (1-2): [2, 4, 13, 24, 30, 36]
+    Ice (0): None
+
+    This draw's numbers classified:
+      Very Hot (>=6): [34, 37]
+      Hot (4-5):      [7, 28]
+      Normal (3):     [22]
+      Cold (<3):      [36]
+
+  [Number Temperature - Last 100 Draws]
+    Expected frequency: 100 * 6/38 = 15.79
+    Number  7: 21 times (deviation: +33.0%)
+    Number 22: 13 times (deviation: -17.7%)
+    Number 28: 11 times (deviation: -30.3%)
+    Number 34: 15 times (deviation: -5.0%)
+    Number 36: 14 times (deviation: -11.3%)
+    Number 37: 16 times (deviation: +1.3%)
+
+======================================================================
+  3. Comparison with Previous Draw (115000010: [1,12,14,15,27,29] sp=5)
+======================================================================
+
+  Number overlap: 0 None
+  New numbers:     [7, 22, 28, 34, 36, 37]
+  Gone numbers:    [1, 12, 14, 15, 27, 29]
+
+  Zone transition:
+    Z1 (01-09): 1 -> 1 (=)
+            prev: [1]  curr: [7]
+    Z2 (10-19): 3 -> 0 (-3)
+            prev: [12, 14, 15]  curr: []
+    Z3 (20-29): 2 -> 2 (=)
+            prev: [27, 29]  curr: [22, 28]
+    Z4 (30-38): 0 -> 3 (+)
+            prev: []  curr: [34, 36, 37]
+
+  Sum change:       98 -> 164 (+66)
+  Odd:Even change:  4:2 -> 2:4
+  Big:Small change: 2:4 -> 5:1
+
+  Consecutive change:
+    Prev: [[14, 15]]
+    Curr: [[36, 37]]
+
+  Special number change: 5 -> 7 (+2)
+
+  [Historical overlap distribution (last 30 consecutive draw pairs)]
+    0 overlap: 9 times
+    1 overlap: 14 times
+    2 overlap: 6 times
+    3 overlap: 1 times
+    4+ overlap: 0 times
+    This draw: 0 overlap (vs prev)
+
+======================================================================
+  4. Special Number Analysis (Special: 4)
+======================================================================
+
+  Special 7 frequency:
+    Last 30:  3 times (10.0%)
+    Last 100: 8 times (8.0%)
+    Expected: 1/8 per draw = 12.5%
+
+  Special number distribution (last 30):
+    Special 1:  2 times (6.7%) ##
+    Special 2:  4 times (13.3%) ####
+    Special 3:  2 times (6.7%) ##
+    Special 4:  5 times (16.7%) #####
+    Special 5:  5 times (16.7%) #####
+    Special 6:  5 times (16.7%) #####
+    Special 7:  3 times (10.0%) ### <<<
+    Special 8:  4 times (13.3%) ####
+
+  Special 7 periodicity (including this draw):
+    Recent occurrences (up to 15):
+      114000099 (2025/12/11)  (gap: 5 draws)
+      114000094 (2025-11-24)  (gap: 1 draws)
+      114000093 (2025-11-20)  (gap: 14 draws)
+      114000079 (2025-10-02)  (gap: 16 draws)
+      114000063 (2025-08-07)  (gap: 20 draws)
+      114000043 (2025-05-29)  (gap: 16 draws)
+      114000027 (2025-04-03)  (gap: 6 draws)
+      114000021 (2025-03-13)  (gap: 8 draws)
+      114000013 (2025-02-13)  (gap: 11 draws)
+      114000002 (2025-01-06)  (gap: 9 draws)
+      113000101 (2024-12-16)  (gap: 2 draws)
+      113000096 (2024-11-28)  (gap: 11 draws)
+      113000085 (2024-10-21)  (gap: 12 draws)
+      113000073 (2024-09-09)  (gap: 13 draws)
+      113000060 (2024-07-25)
+
+    Gap stats: mean=10.3, min=1, max=20
+    Gap distribution: [1, 2, 5, 6, 8, 9, 11, 11, 12, 13, 14, 16, 16, 20]
+
+======================================================================
+  5. Echo Pattern Analysis (Last 10 Draws)
+======================================================================
+
+  Last 10 draws (before this draw):
+    1 ago | 115000010 (2026/02/02): [1, 12, 14, 15, 27, 29] sp=5
+    2 ago | 115000009 (2026/01/29): [5, 10, 15, 17, 23, 25] sp=5
+    3 ago | 115000008 (2026/01/26): [3, 8, 12, 26, 32, 38] sp=4
+    4 ago | 115000007 (2026/01/22): [11, 17, 29, 30, 34, 35] sp=6
+    5 ago | 115000006 (2026/01/19): [10, 16, 20, 23, 35, 37] sp=5
+    6 ago | 115000005 (2026/01/15): [8, 10, 16, 26, 31, 38] sp=5
+    7 ago | 115000004 (2026/01/12): [1, 9, 14, 17, 33, 38] sp=3
+    8 ago | 115000003 (2026/01/08): [7, 17, 25, 26, 27, 33] sp=3
+    9 ago | 115000002 (2026/01/05): [11, 14, 19, 25, 34, 37] sp=4
+    10 ago | 115000001 (2026/01/01): [7, 14, 22, 23, 31, 35] sp=1
+
+  Echo sources for [7, 22, 28, 34, 36, 37]:
+    Number  7: LONG echo (6-10) | 2x in last 10 | 8 ago(115000003), 10 ago(115000001)
+    Number 22: LONG echo (6-10) | 1x in last 10 | 10 ago(115000001)
+    Number 28: *** FRESH *** (not in last 10 draws)
+    Number 34: MID echo (3-5) | 2x in last 10 | 4 ago(115000007), 9 ago(115000002)
+    Number 36: *** FRESH *** (not in last 10 draws)
+    Number 37: MID echo (3-5) | 2x in last 10 | 5 ago(115000006), 9 ago(115000002)
+
+  Echo Summary:
+    From prev draw (1 ago):  []
+    From 2-5 draws ago:      [34, 37]
+    From 6-10 draws ago only:[7, 22]
+    Completely fresh:        [28, 36]
+    Echo rate: 4/6 = 66.7%
+
+  Special 7 echo:
+    As special: not in last 10
+    As main number: 8 ago (115000003)
+    As main number: 10 ago (115000001)
+
+======================================================================
+  COMPREHENSIVE SUMMARY
+======================================================================
+
+  Draw 115000011: [7, 22, 28, 34, 36, 37], Special: 7
+
+  1. Structural Features:
+     - Sum 164 is HIGH (expected 117, +47)
+     - Odd:Even = 2:4 (odd-heavy)
+     - Big:Small = 5:1 (big-heavy)
+     - Zones: Z1=1 Z2=0 Z3=2 Z4=3
+       Heavily skewed to Z3+Z4 (5 of 6 numbers >= 20)
+     - Consecutives: [[36, 37]]
+     - Span: 30 (moderate)
+     - Duplicate tails: tail-7(2x)
+
+  2. Temperature Composition (30 draws):
+     - Very Hot (>=6): [34, 37]
+     - Hot (4-5):      [7, 28]
+     - Normal (3):     [22]
+     - Cold (<3):      [36]
+
+  3. vs Previous Draw (115000010):
+     - ZERO overlap: complete set change
+     - Massive shift from small to big numbers
+     - Sum jumped: 98 -> 164 (+66)
+     - Special: 5 -> 7
+
+  4. Special Number 4:
+     - Appeared 3x in last 30 (expected ~3.75)
+     - Appeared 8x in last 100 (expected ~12.5)
+
+  5. Echo Analysis:
+     - Echo numbers: [7, 22, 34, 37]
+     - Fresh numbers: [28, 36]
+     - Echo rate: 67%
+

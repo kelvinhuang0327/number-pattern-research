@@ -1,0 +1,19 @@
+{
+  "name": "Markov 2注",
+  "lottery": "BIG_LOTTO",
+  "rejected_date": "2026-01-30",
+  "failure_reason": "SHORT_MOMENTUM — 150期正向但1000期負向，長期無效",
+  "pattern": "SHORT_MOMENTUM",
+  "stats": {
+    "edge_150p": "+0.31%",
+    "edge_500p": null,
+    "edge_1500p": null,
+    "baseline": "3.68% (2注)",
+    "p_value": null,
+    "z_score": null,
+    "edge_1000p": "-0.49%"
+  },
+  "applicable_conditions": "極短期（150期）曾正向",
+  "retest_conditions": "不建議單獨使用。Markov需與Fourier正交搭配才有效",
+  "notes": "廢棄日期 2026-01-30。配對：Apriori 3注同日廢棄"
+}

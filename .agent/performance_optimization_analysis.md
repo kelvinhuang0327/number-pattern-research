@@ -84,7 +84,7 @@ for generation in range(20):
 
 #### 實作
 ```python
-# lottery-api/utils/scheduler.py
+# lottery_api/utils/scheduler.py
 
 class AutoLearningScheduler:
     def __init__(self):
@@ -122,7 +122,7 @@ class AutoLearningScheduler:
 
 #### 修改 API 端點
 ```python
-# lottery-api/app.py
+# lottery_api/app.py
 
 @app.post("/api/predict-from-backend")
 async def predict_from_backend(request: PredictFromBackendRequest):

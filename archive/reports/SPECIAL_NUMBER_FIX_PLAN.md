@@ -12,7 +12,7 @@
 需要修復的文件和方法：
 
 ### 1. 核心預測引擎
-**文件**: `lottery-api/models/unified_predictor.py`
+**文件**: `lottery_api/models/unified_predictor.py`
 
 所有預測方法的返回格式：
 ```python
@@ -27,21 +27,21 @@ return {
 **缺失**: `'special': predicted_special_number`
 
 ### 2. 策略評估器
-**文件**: `lottery-api/models/strategy_evaluator.py`
+**文件**: `lottery_api/models/strategy_evaluator.py`
 
 調用 `unified_predictor` 的方法並返回結果，需確保傳遞特別號碼。
 
 ### 3. 機器學習模型
 需要修復的文件：
-- `lottery-api/models/prophet_model.py`
-- `lottery-api/models/xgboost_model.py`
-- `lottery-api/models/autogluon_model.py`
-- `lottery-api/models/lstm_model.py`
+- `lottery_api/models/prophet_model.py`
+- `lottery_api/models/xgboost_model.py`
+- `lottery_api/models/autogluon_model.py`
+- `lottery_api/models/lstm_model.py`
 
 ### 4. 自動學習引擎
 需要檢查評估時是否考慮特別號碼：
-- `lottery-api/models/auto_learning.py`
-- `lottery-api/models/advanced_auto_learning.py`
+- `lottery_api/models/auto_learning.py`
+- `lottery_api/models/advanced_auto_learning.py`
 
 ## 🔍 數據格式確認
 

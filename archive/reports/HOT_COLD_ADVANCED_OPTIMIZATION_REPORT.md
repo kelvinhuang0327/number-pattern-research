@@ -235,7 +235,7 @@ confidence = base * 1.0
 
 ## 📦 代碼修改位置
 
-**文件**：`lottery-api/models/unified_predictor.py`
+**文件**：`lottery_api/models/unified_predictor.py`
 
 ### 主要修改
 

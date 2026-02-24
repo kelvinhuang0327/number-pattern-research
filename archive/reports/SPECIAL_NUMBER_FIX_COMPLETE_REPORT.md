@@ -37,14 +37,14 @@
 ### 1. 移除預測階段的特別號生成 ✅
 
 **修改的檔案：**
-- `lottery-api/routes/prediction.py` - 移除 `predict_from_backend_eval` 端點的特別號調用
-- `lottery-api/models/xgboost_model.py` - 移除特別號預測
-- `lottery-api/models/autogluon_model.py` - 移除特別號預測
-- `lottery-api/models/lstm_model.py` - 移除兩處特別號預測（PyTorch 版和 Fallback 版）
-- `lottery-api/models/prophet_model.py` - 移除特別號預測
-- `lottery-api/models/bayesian_ensemble.py` - 移除雙注的特別號預測
-- `lottery-api/models/transformer_model.py` - 移除特別號預測
-- `lottery-api/models/meta_learning.py` - 移除特別號預測
+- `lottery_api/routes/prediction.py` - 移除 `predict_from_backend_eval` 端點的特別號調用
+- `lottery_api/models/xgboost_model.py` - 移除特別號預測
+- `lottery_api/models/autogluon_model.py` - 移除特別號預測
+- `lottery_api/models/lstm_model.py` - 移除兩處特別號預測（PyTorch 版和 Fallback 版）
+- `lottery_api/models/prophet_model.py` - 移除特別號預測
+- `lottery_api/models/bayesian_ensemble.py` - 移除雙注的特別號預測
+- `lottery_api/models/transformer_model.py` - 移除特別號預測
+- `lottery_api/models/meta_learning.py` - 移除特別號預測
 
 **修改結果：**
 ```json
@@ -58,7 +58,7 @@
 
 ### 2. 更新8注預測腳本 ✅
 
-**修改檔案：** `lottery-api/tools/predict_8_bets_lotto.py`
+**修改檔案：** `lottery_api/tools/predict_8_bets_lotto.py`
 
 **變更：**
 - 驗證函數只檢查 6 個主號碼
@@ -84,7 +84,7 @@
 
 ### 3. 創建正確的回測邏輯 ✅
 
-**新檔案：** `lottery-api/tools/backtest_biglotto.py`
+**新檔案：** `lottery_api/tools/backtest_biglotto.py`
 
 **功能：**
 1. 用 6 個預測號碼去比對歷史的 7 個開獎號碼（6主+1特別）
@@ -111,13 +111,13 @@
 
 ### 預測測試 ✅
 ```bash
-python3 lottery-api/tools/predict_8_bets_lotto.py
+python3 lottery_api/tools/predict_8_bets_lotto.py
 ```
 **結果：** 所有模型都只返回 6 個主號碼，無特別號欄位
 
 ### 回測測試 ✅
 ```bash
-python3 lottery-api/tools/backtest_biglotto.py
+python3 lottery_api/tools/backtest_biglotto.py
 ```
 **結果：** 正確判定中獎等級，特別號邏輯正確（transformer 中了六獎 = 3主號碼+特別號）
 
@@ -146,18 +146,18 @@ python3 lottery-api/tools/backtest_biglotto.py
 ## 檔案清單
 
 ### 修改的檔案
-1. `lottery-api/routes/prediction.py`
-2. `lottery-api/models/xgboost_model.py`
-3. `lottery-api/models/autogluon_model.py`
-4. `lottery-api/models/lstm_model.py`
-5. `lottery-api/models/prophet_model.py`
-6. `lottery-api/models/bayesian_ensemble.py`
-7. `lottery-api/models/transformer_model.py`
-8. `lottery-api/models/meta_learning.py`
-9. `lottery-api/tools/predict_8_bets_lotto.py`
+1. `lottery_api/routes/prediction.py`
+2. `lottery_api/models/xgboost_model.py`
+3. `lottery_api/models/autogluon_model.py`
+4. `lottery_api/models/lstm_model.py`
+5. `lottery_api/models/prophet_model.py`
+6. `lottery_api/models/bayesian_ensemble.py`
+7. `lottery_api/models/transformer_model.py`
+8. `lottery_api/models/meta_learning.py`
+9. `lottery_api/tools/predict_8_bets_lotto.py`
 
 ### 新增的檔案
-1. `lottery-api/tools/backtest_biglotto.py` - 正確的大樂透回測工具
+1. `lottery_api/tools/backtest_biglotto.py` - 正確的大樂透回測工具
 
 ## 總結
 

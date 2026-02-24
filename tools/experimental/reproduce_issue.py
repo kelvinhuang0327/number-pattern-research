@@ -1,6 +1,6 @@
 import sys
 import os
-sys.path.append(os.path.join(os.getcwd(), 'lottery-api'))
+sys.path.append(os.path.join(os.getcwd(), 'lottery_api'))
 
 from utils.csv_validator import csv_validator
 import logging

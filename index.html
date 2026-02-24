@@ -39,51 +39,66 @@
                         </div>
                     </div>
                 </div>
-                <!-- Current Game Type Indicator (Interactive) -->
-                <div id="current-game-badge" class="current-game-badge" style="display: none;">
-                    <span class="badge-icon">🎲</span>
-                    <span class="badge-text">大樂透</span>
-                    <span class="badge-arrow">▼</span>
 
-                    <!-- Dropdown Menu -->
-                    <div class="game-selector-dropdown" id="game-selector-dropdown">
-                        <div class="dropdown-header">切換彩券類型</div>
-                        <div class="dropdown-list" id="header-game-list">
-                            <!-- Populated by JS -->
+                <!-- Level 3: Dynamic Variance Monitor (Performance Tracking) -->
+                <div id="waterline-monitor" class="waterline-monitor" title="方差監控：紀錄系統近期命中偏離情況，用於資金停損管理。"
+                    style="display: flex; align-items: center; gap: 10px; padding: 8px 15px; background: rgba(0,0,0,0.3); border-radius: 50px; border: 1px solid rgba(255,255,255,0.1); margin-left: auto; margin-right: 20px; cursor: help;">
+                    <div class="waterline-pulse" id="waterline-status-dot"
+                        style="width: 10px; height: 10px; border-radius: 50%; background: #6c757d; box-shadow: 0 0 10px rgba(108, 117, 125, 0.5);">
+                    </div>
+                    <div class="waterline-text" style="font-size: 13px;">
+                        <span id="waterline-regime" style="color: #cbd5e1; font-weight: bold;">STANDBY</span>
+                        <div id="waterline-advice" style="font-size: 10px; color: #94a3b8; line-height: 1;">追蹤系統方差...
                         </div>
                     </div>
                 </div>
-                <nav class="nav">
-                    <button class="nav-btn active" data-section="upload">
-                        <span class="icon">📤</span>
-                        <span>數據上傳</span>
-                    </button>
-                    <button class="nav-btn" data-section="analysis">
-                        <span class="icon">📊</span>
-                        <span>統計分析</span>
-                    </button>
-                    <button class="nav-btn" data-section="prediction">
-                        <span class="icon">🔮</span>
-                        <span>智能預測</span>
-                    </button>
-                    <button class="nav-btn" data-section="history">
-                        <span class="icon">📜</span>
-                        <span>歷史記錄</span>
-                    </button>
-                    <button class="nav-btn" data-section="simulation">
-                        <span class="icon">🧪</span>
-                        <span>模擬測試</span>
-                    </button>
-                    <button class="nav-btn" data-section="smartbetting">
-                        <span class="icon">🎯</span>
-                        <span>聰明包牌</span>
-                    </button>
-                    <button class="nav-btn" data-section="autolearning">
-                        <span class="icon">🤖</span>
-                        <span>自動學習</span>
-                    </button>
-                </nav>
             </div>
+
+            <!-- Current Game Type Indicator (Interactive) -->
+            <div id="current-game-badge" class="current-game-badge" style="display: none;">
+                <span class="badge-icon">🎲</span>
+                <span class="badge-text">大樂透</span>
+                <span class="badge-arrow">▼</span>
+
+                <!-- Dropdown Menu -->
+                <div class="game-selector-dropdown" id="game-selector-dropdown">
+                    <div class="dropdown-header">切換彩券類型</div>
+                    <div class="dropdown-list" id="header-game-list">
+                        <!-- Populated by JS -->
+                    </div>
+                </div>
+            </div>
+            <nav class="nav">
+                <button class="nav-btn active" data-section="upload">
+                    <span class="icon">📤</span>
+                    <span>數據上傳</span>
+                </button>
+                <button class="nav-btn" data-section="analysis">
+                    <span class="icon">📊</span>
+                    <span>統計分析</span>
+                </button>
+                <button class="nav-btn" data-section="prediction">
+                    <span class="icon">🔮</span>
+                    <span>智能預測</span>
+                </button>
+                <button class="nav-btn" data-section="history">
+                    <span class="icon">📜</span>
+                    <span>歷史記錄</span>
+                </button>
+                <button class="nav-btn" data-section="simulation">
+                    <span class="icon">🧪</span>
+                    <span>模擬測試</span>
+                </button>
+                <button class="nav-btn" data-section="smartbetting">
+                    <span class="icon">🎯</span>
+                    <span>聰明包牌</span>
+                </button>
+                <button class="nav-btn" data-section="autolearning">
+                    <span class="icon">🤖</span>
+                    <span>自動學習</span>
+                </button>
+            </nav>
+        </div>
         </div>
         <header>
             <h1>Lottery Prediction System</h1>
@@ -310,8 +325,10 @@
                             <option value="ml_forest">隨機森林 (Random Forest)</option>
                             <option value="ml_genetic">遺傳優化 (Genetic)</option>
                         </optgroup>
-                        <optgroup label="🤝 協作預測">
+                        <optgroup label="🤝 協作預測與正交分散">
                             <option value="collaborative_hybrid">⭐ 混合協作模式</option>
+                            <option value="zone_split">🚀 正交區間分散 (🟢 穩定分散型)</option>
+                            <option value="core_satellite">🎯 核心-衛星集約 (🔴 聯動集中型)</option>
                         </optgroup>
                         <optgroup label="🧠 AI 自動優化">
                             <option value="auto_optimize">🤖 智能自動優化</option>
@@ -499,8 +516,10 @@
                                 <option value="ml_forest">隨機森林 (Random Forest)</option>
                                 <option value="ml_genetic">遺傳優化 (Genetic)</option>
                             </optgroup>
-                            <optgroup label="🤝 協作預測">
+                            <optgroup label="🤝 協作預測與正交分散">
                                 <option value="collaborative_hybrid" selected>⭐ 混合協作模式</option>
+                                <option value="zone_split">🚀 正交區間分散 (🟢 穩定分散型)</option>
+                                <option value="core_satellite">🎯 核心-衛星集約 (🔴 聯動集中型)</option>
                             </optgroup>
                             <optgroup label="🧠 AI 自動優化">
                                 <option value="auto_optimize">🤖 智能自動優化 (推薦)</option>

@@ -8,7 +8,7 @@ import re
 
 def fix_prophet_model():
     """修復 Prophet 模型"""
-    file_path = '/Users/kelvin/Kelvin-WorkSpace/Lottery/lottery-api/models/prophet_model.py'
+    file_path = '/Users/kelvin/Kelvin-WorkSpace/Lottery/lottery_api/models/prophet_model.py'
 
     with open(file_path, 'r', encoding='utf-8') as f:
         content = f.read()
@@ -73,7 +73,7 @@ def fix_prophet_model():
 
 def fix_xgboost_model():
     """修復 XGBoost 模型"""
-    file_path = '/Users/kelvin/Kelvin-WorkSpace/Lottery/lottery-api/models/xgboost_model.py'
+    file_path = '/Users/kelvin/Kelvin-WorkSpace/Lottery/lottery_api/models/xgboost_model.py'
 
     with open(file_path, 'r', encoding='utf-8') as f:
         content = f.read()
@@ -136,7 +136,7 @@ def fix_xgboost_model():
 
 def fix_autogluon_model():
     """修復 AutoGluon 模型"""
-    file_path = '/Users/kelvin/Kelvin-WorkSpace/Lottery/lottery-api/models/autogluon_model.py'
+    file_path = '/Users/kelvin/Kelvin-WorkSpace/Lottery/lottery_api/models/autogluon_model.py'
 
     with open(file_path, 'r', encoding='utf-8') as f:
         content = f.read()
@@ -199,7 +199,7 @@ def fix_autogluon_model():
 
 def fix_lstm_model():
     """修復 LSTM 模型"""
-    file_path = '/Users/kelvin/Kelvin-WorkSpace/Lottery/lottery-api/models/lstm_model.py'
+    file_path = '/Users/kelvin/Kelvin-WorkSpace/Lottery/lottery_api/models/lstm_model.py'
 
     with open(file_path, 'r', encoding='utf-8') as f:
         content = f.read()

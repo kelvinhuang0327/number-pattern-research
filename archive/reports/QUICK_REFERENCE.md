@@ -4,7 +4,7 @@
 
 ### 步驟 1: 啟動後端
 ```bash
-cd lottery-api
+cd lottery_api
 python app.py
 # ✅ 服務運行在 http://localhost:5001
 ```

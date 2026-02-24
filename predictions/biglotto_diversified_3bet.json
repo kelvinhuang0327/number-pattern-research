@@ -1,0 +1,41 @@
+[
+  {
+    "numbers": [
+      14,
+      16,
+      19,
+      35,
+      37,
+      46
+    ],
+    "special": 14,
+    "type": "Consensus (Bayesian/Freq)",
+    "strategy_id": "DIVERSIFIED_BET_1"
+  },
+  {
+    "numbers": [
+      10,
+      18,
+      20,
+      21,
+      40,
+      41
+    ],
+    "special": 20,
+    "type": "Synergy (Graph Centrality)",
+    "strategy_id": "DIVERSIFIED_BET_2"
+  },
+  {
+    "numbers": [
+      4,
+      7,
+      12,
+      18,
+      34,
+      36
+    ],
+    "special": 28,
+    "type": "Disruptor (1:5 Skew)",
+    "strategy_id": "DIVERSIFIED_BET_3"
+  }
+]

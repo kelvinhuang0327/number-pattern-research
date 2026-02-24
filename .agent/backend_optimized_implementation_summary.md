@@ -105,7 +105,7 @@ HTTP POST /api/predict-optimized
 
 1. **啟動後端服務**
    ```bash
-   cd lottery-api
+   cd lottery_api
    python app.py
    ```
 
@@ -179,7 +179,7 @@ async def predict_optimized(request: PredictFromBackendRequest):
 ```
 錯誤: Failed to fetch
 原因: 後端服務未運行
-解決: cd lottery-api && python app.py
+解決: cd lottery_api && python app.py
 ```
 
 ### 2. 沒有優化配置
@@ -239,8 +239,8 @@ async def predict_optimized(request: PredictFromBackendRequest):
 ### 核心代碼
 - `/src/engine/strategies/BackendOptimizedStrategy.js` - 前端策略
 - `/src/engine/PredictionEngine.js` - 預測引擎
-- `/lottery-api/app.py` - 後端 API
-- `/lottery-api/models/auto_learning.py` - 優化引擎
+- `/lottery_api/app.py` - 後端 API
+- `/lottery_api/models/auto_learning.py` - 優化引擎
 
 ### 文檔
 - `BACKEND_OPTIMIZED_QUICKSTART.md` - 快速開始

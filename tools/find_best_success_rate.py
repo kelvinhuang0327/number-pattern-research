@@ -4,7 +4,7 @@ import json
 from datetime import datetime
 
 # Add the project root to sys.path
-sys.path.append(os.path.join(os.getcwd(), 'lottery-api'))
+sys.path.append(os.path.join(os.getcwd(), 'lottery_api'))
 
 from database import DatabaseManager
 from models.multi_bet_optimizer import MultiBetOptimizer
@@ -13,7 +13,7 @@ def run_benchmark():
     # Use the absolute path or relative path to the correct DB
     current_dir = os.path.dirname(os.path.abspath(__file__))
     project_root = os.path.dirname(current_dir)
-    db_path = os.path.join(project_root, 'lottery-api', 'data', 'lottery_v2.db')
+    db_path = os.path.join(project_root, 'lottery_api', 'data', 'lottery_v2.db')
     
     db = DatabaseManager(db_path=db_path)
     optimizer = MultiBetOptimizer()

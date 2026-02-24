@@ -93,7 +93,7 @@
 ### 使用說明
 ```bash
 # 重啟後端服務（若已在執行）
-cd lottery-api
+cd lottery_api
 python3 app.py
 ```
 啟動日誌會顯示：
@@ -108,8 +108,8 @@ AutoLearningScheduler 初始化完成（已啟用分類存儲優化）
 
 | 檔案 | 變更類型 | 主要內容 |
 |------|----------|----------|
-| `lottery-api/utils/scheduler.py` | 新增分類存儲、`get_data`、`get_all_types` | O(1) 取資料、向後兼容
-| `lottery-api/app.py` | API 改寫 | 使用 `scheduler.get_data`，加入回退機制
+| `lottery_api/utils/scheduler.py` | 新增分類存儲、`get_data`、`get_all_types` | O(1) 取資料、向後兼容
+| `lottery_api/app.py` | API 改寫 | 使用 `scheduler.get_data`，加入回退機制
 | `src/core/App.js` | 同步函式升級 | 支援 `onlyCurrentType`、日誌統計、傳送 `lotteryType`
 | `src/engine/strategies/BackendOptimizedStrategy.js` | 無變更（僅說明文件更新） |
 | `.agent/*.md` | 文檔合併（本文件） |

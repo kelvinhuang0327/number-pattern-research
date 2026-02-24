@@ -415,7 +415,7 @@ ROI: -77.9%
 
 完整回测数据已保存：
 ```
-lottery-api/data/monte_carlo_backtest_results.json
+lottery_api/data/monte_carlo_backtest_results.json
 ```
 
 包含：

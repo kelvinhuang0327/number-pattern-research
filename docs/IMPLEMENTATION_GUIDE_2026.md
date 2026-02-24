@@ -12,7 +12,7 @@
 ### 1.1 Single-Method Strategy Implementation
 
 ```python
-# File: lottery-api/strategies/zone_balance_strategy.py
+# File: lottery_api/strategies/zone_balance_strategy.py
 
 from typing import List, Dict, Optional
 from abc import ABC, abstractmethod
@@ -173,7 +173,7 @@ def predict_biglotto():
 ### 1.2 Multi-Bet Strategy Implementation
 
 ```python
-# File: lottery-api/strategies/multi_bet_strategy.py
+# File: lottery_api/strategies/multi_bet_strategy.py
 
 from typing import List, Dict, Tuple
 from .zone_balance_strategy import ZoneBalanceStrategy
@@ -399,7 +399,7 @@ class MultiBetStrategy:
 ### 2.1 Unit Test Template
 
 ```python
-# File: lottery-api/tests/test_zone_balance_strategy.py
+# File: lottery_api/tests/test_zone_balance_strategy.py
 
 import pytest
 from datetime import datetime, timedelta
@@ -519,7 +519,7 @@ class TestZoneBalanceStrategy:
 ### 2.2 Integration Test Template
 
 ```python
-# File: lottery-api/tests/test_multi_bet_strategy_integration.py
+# File: lottery_api/tests/test_multi_bet_strategy_integration.py
 
 import pytest
 from strategies.multi_bet_strategy import MultiBetStrategy

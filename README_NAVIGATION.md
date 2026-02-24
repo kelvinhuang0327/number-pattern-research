@@ -157,7 +157,7 @@ $ /Users/kelvin/Kelvin-WorkSpace/LotteryNew/.venv/bin/python check_power_lotto_s
 預期輸出: 所有檢查通過 ✅
 
 第二步: 執行 4注回測 (60-90 分鐘)
-$ cd lottery-api
+$ cd lottery_api
 $ /Users/kelvin/Kelvin-WorkSpace/LotteryNew/.venv/bin/python backtest_power_2025.py
 
 預期輸出: 命中率 >= 19% (目標 20%+)

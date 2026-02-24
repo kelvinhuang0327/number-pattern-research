@@ -10,7 +10,7 @@
 
 ### 1. ✅ 建立回測驗證系統（最高優先）
 
-**文件**: `lottery-api/backtest_framework.py`
+**文件**: `lottery_api/backtest_framework.py`
 
 **實施內容**:
 - 創建完整的回測框架類 `BacktestFramework`
@@ -49,7 +49,7 @@ framework.generate_report(comparison, output_file='report.md')
 
 ### 2. ✅ 修復熵驅動信心度計算（高優先）
 
-**文件**: `lottery-api/models/unified_predictor.py`
+**文件**: `lottery_api/models/unified_predictor.py`
 **方法**: `entropy_transformer_predict()`
 **行數**: 2484-2493
 
@@ -79,7 +79,7 @@ confidence = min(0.85, max(0.60, 0.60 + raw_confidence * 4))
 
 ### 3. ✅ 頻率分析加入遺漏值權重（高優先）
 
-**文件**: `lottery-api/models/unified_predictor.py`
+**文件**: `lottery_api/models/unified_predictor.py`
 **方法**: `frequency_predict()`
 **行數**: 311-416
 
@@ -126,7 +126,7 @@ for num in range(min_num, max_num + 1):
 
 ### 4. ✅ 改進異常檢測簡化版（中優先）
 
-**文件**: `lottery-api/models/anomaly_predictor.py`
+**文件**: `lottery_api/models/anomaly_predictor.py`
 **方法**: `_calculate_anomaly_score_simple()`
 **行數**: 170-217
 
@@ -239,7 +239,7 @@ mahalanobis_dist = np.sqrt(diff @ inv_cov @ diff.T)
 
 ```bash
 # 快速測試（10期）
-cd lottery-api
+cd lottery_api
 python3 test_backtest.py
 
 # 完整回測（100期）

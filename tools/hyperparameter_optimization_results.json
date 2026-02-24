@@ -1,0 +1,21 @@
+{
+  "lottery_type": "POWER_LOTTO",
+  "data_periods": 500,
+  "validation_periods": 80,
+  "trend_lambda": {
+    "best_lambda": 0.01,
+    "match_3_plus_rate": 5.0
+  },
+  "markov_order": {
+    "best_order": 1,
+    "match_3_plus_rate": 3.75
+  },
+  "ensemble_weights": {
+    "weights": {
+      "statistical_predict": 0.5,
+      "deviation_predict": 0.25,
+      "markov_predict": 0.25
+    },
+    "match_3_plus_rate": 3.75
+  }
+}

@@ -77,8 +77,8 @@ Expected overall uplift: +8–15%
 ---
 
 ## 🔗 Related Files
-- `lottery-api/app.py`: endpoints, dispatch map, backend_optimized unified
-- `lottery-api/utils/model_cache.py`: enhanced caching
+- `lottery_api/app.py`: endpoints, dispatch map, backend_optimized unified
+- `lottery_api/utils/model_cache.py`: enhanced caching
 - `tools/sync_converted_2024.py`: CSV → backend sync + smoke predictions
 - `styles.css`: disabled backend option styling
 

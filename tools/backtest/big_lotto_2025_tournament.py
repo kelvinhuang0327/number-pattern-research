@@ -6,9 +6,9 @@ import numpy as np
 from collections import defaultdict, Counter
 from datetime import datetime
 
-# Add lottery-api to path
+# Add lottery_api to path
 base_path = os.getcwd()
-sys.path.insert(0, os.path.join(base_path, 'lottery-api'))
+sys.path.insert(0, os.path.join(base_path, 'lottery_api'))
 
 from database import DatabaseManager
 from common import get_lottery_rules
@@ -40,7 +40,7 @@ class BigLottoCVAA:
 
 class TournamentRunner:
     def __init__(self):
-        self.db_path = 'lottery-api/data/lottery_v2.db'
+        self.db_path = 'lottery_api/data/lottery_v2.db'
         self.db = DatabaseManager(db_path=self.db_path)
         self.rules = get_lottery_rules('BIG_LOTTO')
         self.engine = prediction_engine

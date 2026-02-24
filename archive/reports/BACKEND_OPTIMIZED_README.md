@@ -31,7 +31,7 @@
 或手動啟動：
 
 ```bash
-cd lottery-api
+cd lottery_api
 python3 app.py
 ```
 
@@ -104,7 +104,7 @@ python3 app.py
 - **API 端點**: `POST /api/predict-optimized`
 
 ### 後端
-- **API 實現**: `lottery-api/app.py` (第 563-637 行)
+- **API 實現**: `lottery_api/app.py` (第 563-637 行)
 - **優化引擎**: `models/auto_learning.py`
 - **配置存儲**: `data/best_config.json`
 
@@ -189,8 +189,8 @@ POST /api/predict-optimized
 ### 核心代碼
 - `/src/engine/strategies/BackendOptimizedStrategy.js` - 前端策略
 - `/src/engine/PredictionEngine.js` - 預測引擎
-- `/lottery-api/app.py` - 後端 API
-- `/lottery-api/models/auto_learning.py` - 優化引擎
+- `/lottery_api/app.py` - 後端 API
+- `/lottery_api/models/auto_learning.py` - 優化引擎
 
 ### 腳本
 - `start_backend.sh` - 啟動後端服務

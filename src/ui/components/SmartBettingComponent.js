@@ -51,64 +51,92 @@ export class SmartBettingComponent {
                     this.selectedNumbers.delete(i);
                     btn.classList.remove('active');
                 } else {
-                    if (this.selectedNumbers.size >= 16) {
-                        this.uiManager.showNotification('最多只能選擇 16 個號碼', 'error');
+                    if (this.selectedNumbers.size >= 24) {
+                        this.uiManager.showNotification('最多只能選擇 24 個號碼', 'error');
                         return;
                     }
                     this.selectedNumbers.add(i);
                     btn.classList.add('active');
                 }
                 if (selectedCountVal) selectedCountVal.textContent = this.selectedNumbers.size;
+                this.updateAvailableGuarantees();
             });
             numberSelector.appendChild(btn);
         }
     }
 
-    generateCombinations() {
+    async updateAvailableGuarantees() {
+        const poolSize = this.selectedNumbers.size;
+        const select = document.getElementById('wheeling-system');
+        if (!select || poolSize < 8) {
+            if (select) select.innerHTML = '<option value="">請選擇至少 8 個號碼</option>';
+            return;
+        }
+
+        try {
+            const response = await fetch(`/api/wheel/available-guarantees?pool_size=${poolSize}`);
+            const data = await response.json();
+
+            select.innerHTML = '';
+            if (data.available_guarantees && data.available_guarantees.length > 0) {
+                data.available_guarantees.forEach(g => {
+                    const opt = document.createElement('option');
+                    opt.value = `${g.guarantee_t}_${g.condition_m}`;
+                    opt.textContent = g.description;
+                    select.appendChild(opt);
+                });
+            } else {
+                select.innerHTML = '<option value="greedy">隨機優化覆蓋 (Heuristic)</option>';
+            }
+        } catch (error) {
+            console.error('Failed to fetch guarantees:', error);
+        }
+    }
+
+    async generateCombinations() {
         if (this.selectedNumbers.size < 8) {
             this.uiManager.showNotification('請至少選擇 8 個號碼', 'error');
             return;
         }
 
-        const system = document.getElementById('wheeling-system').value;
+        const systemVal = document.getElementById('wheeling-system').value;
+        const [guarantee_t, condition_m] = systemVal.split('_').map(Number);
         const nums = Array.from(this.selectedNumbers).sort((a, b) => a - b);
+        const generateBtn = document.getElementById('generate-smart-bet-btn');
 
-        // 根據選擇的系統生成組合 (這裡簡化處理，實際應調用更複雜的旋轉矩陣算法)
-        // 暫時使用簡單的組合生成作為示例
-        let combinations = this.simpleWheeling(nums, system);
+        try {
+            generateBtn.disabled = true;
+            generateBtn.innerHTML = '<span class="btn-icon">⏳</span> 運算中...';
 
-        // 智慧過濾
-        const filterConsecutive = document.getElementById('filter-consecutive').checked;
-        const filterOddEven = document.getElementById('filter-odd-even').checked;
-        const filterExtreme = document.getElementById('filter-extreme').checked;
+            // 調用後端實際的旋轉矩陣生成接口
+            const response = await fetch(`/api/wheel/generate?pool=${JSON.stringify(nums)}&guarantee_t=${guarantee_t || 3}&condition_m=${condition_m || 4}`);
+            const data = await response.json();
 
-        const originalCount = combinations.length;
-        combinations = combinations.filter(combo => {
-            if (filterConsecutive && this.hasConsecutive(combo, 3)) return false;
-            if (filterOddEven && this.isAllOddOrEven(combo)) return false;
-            if (filterExtreme && this.isExtreme(combo)) return false;
-            return true;
-        });
+            if (!response.ok) throw new Error(data.detail || '生成失敗');
 
-        this.renderResults(combinations, originalCount);
-    }
+            let combinations = data.tickets;
+            const originalCount = combinations.length;
 
-    // 簡單的旋轉矩陣模擬 (實際專案應引入完整的旋轉矩陣庫)
-    simpleWheeling(nums, system) {
-        const combinations = [];
-        // 這裡僅作示範：隨機選取若干組
-        const countMap = {
-            'pick10_win3': 10,
-            'pick12_win4': 20,
-            'pick10_win5': 50
-        };
-        const count = countMap[system] || 10;
+            // 智慧過濾 (在大規模包牌時由前端進一步篩選)
+            const filterConsecutive = document.getElementById('filter-consecutive').checked;
+            const filterOddEven = document.getElementById('filter-odd-even').checked;
+            const filterExtreme = document.getElementById('filter-extreme').checked;
 
-        for (let i = 0; i < count; i++) {
-            const shuffled = [...nums].sort(() => 0.5 - Math.random());
-            combinations.push(shuffled.slice(0, 6).sort((a, b) => a - b));
+            combinations = combinations.filter(combo => {
+                if (filterConsecutive && this.hasConsecutive(combo, 3)) return false;
+                if (filterOddEven && this.isAllOddOrEven(combo)) return false;
+                if (filterExtreme && this.isExtreme(combo)) return false;
+                return true;
+            });
+
+            this.renderResults(combinations, originalCount, data);
+        } catch (error) {
+            console.error('Wheel generation failed:', error);
+            this.uiManager.showNotification(`生成失敗: ${error.message}`, 'error');
+        } finally {
+            generateBtn.disabled = false;
+            generateBtn.innerHTML = '<span class="btn-icon">🎯</span> 產生聰明組合';
         }
-        return combinations;
     }
 
     hasConsecutive(numbers, count) {
@@ -134,13 +162,31 @@ export class SmartBettingComponent {
         return sum < 60 || sum > 240; // 簡單的大小判斷
     }
 
-    renderResults(combinations, originalCount) {
+    renderResults(combinations, originalCount, metadata = {}) {
         const resultsDiv = document.getElementById('smart-bet-results');
         const combinationsDiv = document.getElementById('betting-combinations');
 
         combinationsDiv.innerHTML = '';
+
+        // 新增：顯示生成元數據 (來源與驗證)
+        const metaInfo = document.createElement('div');
+        metaInfo.style.cssText = 'margin-bottom: 15px; padding: 10px; background: rgba(0,0,0,0.2); border-radius: 8px; font-size: 0.9em;';
+        const isVerified = metadata.coverage_verified ? '✅ 已通過組合數學驗證' : '⚠️ 隨機優化結果 (未完全覆蓋)';
+        const source = metadata.source === 'lookup_table' ? '精確矩陣 (Optimal Table)' : '啟發式搜索 (Heuristic)';
+
+        metaInfo.innerHTML = `
+            <div style="display: flex; justify-content: space-between;">
+                <span>策略來源: <b>${source}</b></span>
+                <span style="color: ${metadata.coverage_verified ? '#10B981' : '#F59E0B'}">${isVerified}</span>
+            </div>
+            <div style="margin-top: 5px; opacity: 0.8; font-size: 0.85em;">
+                ${metadata.honest_disclaimer || ''}
+            </div>
+        `;
+        combinationsDiv.appendChild(metaInfo);
+
         if (combinations.length === 0) {
-            combinationsDiv.innerHTML = '<div class="no-data">過濾後無符合條件的組合，請放寬過濾條件或增加選號。</div>';
+            combinationsDiv.innerHTML += '<div class="no-data">過濾後無符合條件的組合，請放寬過濾條件或增加選號。</div>';
         } else {
             combinations.forEach((combo, index) => {
                 const row = document.createElement('div');
@@ -156,7 +202,7 @@ export class SmartBettingComponent {
         }
 
         resultsDiv.style.display = 'block';
-        this.uiManager.showNotification(`已生成 ${combinations.length} 組聰明組合 (原 ${originalCount} 組)`, 'success');
+        this.uiManager.showNotification(`已生成 ${combinations.length} 組聰明組合 (來自 ${originalCount} 組)`, 'success');
         resultsDiv.scrollIntoView({ behavior: 'smooth' });
     }
 

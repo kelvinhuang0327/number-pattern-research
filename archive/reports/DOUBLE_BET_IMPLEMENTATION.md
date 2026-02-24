@@ -16,7 +16,7 @@
 
 ### 1. 新增預測策略（6個）
 
-**位置**: `lottery-api/models/unified_predictor.py`
+**位置**: `lottery_api/models/unified_predictor.py`
 
 | 策略方法 | 說明 | 應用場景 |
 |---------|------|----------|
@@ -33,7 +33,7 @@
 
 ### 2. 雙注預測API端點
 
-**位置**: `lottery-api/routes/prediction.py`
+**位置**: `lottery_api/routes/prediction.py`
 
 **端點**: `POST /api/predict-double-bet`
 
@@ -75,7 +75,7 @@
 
 ### 3. 測試與驗證
 
-#### 測試腳本: `lottery-api/test_double_bet_strategy.py`
+#### 測試腳本: `lottery_api/test_double_bet_strategy.py`
 
 **測試內容**:
 1. 單獨策略表現測試
@@ -100,7 +100,7 @@
 
 ### 4. API調用示例
 
-**文件**: `lottery-api/demo_double_bet_api.py`
+**文件**: `lottery_api/demo_double_bet_api.py`
 
 **示例命令**:
 
@@ -188,13 +188,13 @@ for mode in ['optimal', 'dynamic', 'balanced']:
 ## 📁 文件清單
 
 ### 新增文件
-1. `lottery-api/test_double_bet_strategy.py` - 測試腳本
-2. `lottery-api/demo_double_bet_api.py` - API調用示例
+1. `lottery_api/test_double_bet_strategy.py` - 測試腳本
+2. `lottery_api/demo_double_bet_api.py` - API調用示例
 3. `DOUBLE_BET_IMPLEMENTATION.md` - 本文檔
 
 ### 修改文件
-1. `lottery-api/models/unified_predictor.py` - 新增6個策略方法（+400行）
-2. `lottery-api/routes/prediction.py` - 新增雙注API端點（+75行）
+1. `lottery_api/models/unified_predictor.py` - 新增6個策略方法（+400行）
+2. `lottery_api/routes/prediction.py` - 新增雙注API端點（+75行）
 
 ---
 

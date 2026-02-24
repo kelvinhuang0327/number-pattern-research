@@ -22,7 +22,7 @@
 ### 1. 啟動後端服務
 
 ```bash
-cd lottery-api
+cd lottery_api
 python app.py
 ```
 
@@ -96,7 +96,7 @@ POST /api/predict-optimized
 **原因**: 後端服務未運行
 **解決**: 
 ```bash
-cd lottery-api
+cd lottery_api
 python app.py
 ```
 
@@ -167,6 +167,6 @@ console.log('信心度:', result.confidence);
 
 - 前端策略: `/src/engine/strategies/BackendOptimizedStrategy.js`
 - 預測引擎: `/src/engine/PredictionEngine.js`
-- 後端 API: `/lottery-api/app.py`
-- 優化引擎: `/lottery-api/models/auto_learning.py`
+- 後端 API: `/lottery_api/app.py`
+- 優化引擎: `/lottery_api/models/auto_learning.py`
 - HTML 界面: `/index.html`

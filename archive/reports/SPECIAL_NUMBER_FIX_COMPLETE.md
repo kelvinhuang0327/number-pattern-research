@@ -27,7 +27,7 @@
 
 ### 步驟 1：添加特別號碼預測輔助函數
 
-**文件**: [unified_predictor.py:17-116](lottery-api/models/unified_predictor.py#L17-L116)
+**文件**: [unified_predictor.py:17-116](lottery_api/models/unified_predictor.py#L17-L116)
 
 添加了 `predict_special_number()` 函數，實現智能特別號碼預測：
 
@@ -232,7 +232,7 @@ else:
 ### 後端啟動測試
 ```bash
 $ lsof -ti:5001 | xargs kill -9
-$ cd lottery-api && python3 app.py
+$ cd lottery_api && python3 app.py
 $ curl http://127.0.0.1:5001/health
 ```
 
@@ -321,7 +321,7 @@ return result
 ### 驗證結果
 
 ```bash
-$ grep -n "predicted_special = predict_special_number" lottery-api/models/*.py
+$ grep -n "predicted_special = predict_special_number" lottery_api/models/*.py
 prophet_model.py:87
 xgboost_model.py:88
 autogluon_model.py:54

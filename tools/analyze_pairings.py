@@ -13,7 +13,7 @@ from itertools import combinations
 # Add project root
 project_root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 sys.path.insert(0, project_root)
-sys.path.insert(0, os.path.join(project_root, 'lottery-api'))
+sys.path.insert(0, os.path.join(project_root, 'lottery_api'))
 
 from database import DatabaseManager
 
@@ -21,7 +21,7 @@ from database import DatabaseManager
 sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding='utf-8')
 
 def analyze_pairings(lottery_type='BIG_LOTTO', top_n=30):
-    db = DatabaseManager(db_path=os.path.join(project_root, 'lottery-api', 'data', 'lottery_v2.db'))
+    db = DatabaseManager(db_path=os.path.join(project_root, 'lottery_api', 'data', 'lottery_v2.db'))
     all_draws = db.get_all_draws(lottery_type=lottery_type)
     
     # 限制在最近 300 期，捕捉近期相關性，但也看全局

@@ -4,7 +4,7 @@ import asyncio
 import json
 
 # Setup path to import backend modules
-sys.path.append(os.path.join(os.getcwd(), 'lottery-api'))
+sys.path.append(os.path.join(os.getcwd(), 'lottery_api'))
 
 from models.unified_predictor import prediction_engine
 from common import normalize_lottery_type, load_backend_history, get_lottery_rules

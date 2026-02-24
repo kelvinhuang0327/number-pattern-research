@@ -125,7 +125,7 @@ clf = RandomForestClassifier(
 ### 1. 啟動後端服務
 
 ```bash
-cd lottery-api
+cd lottery_api
 python app.py
 ```
 

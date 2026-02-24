@@ -14,7 +14,7 @@ if [ ! -z "$BACKEND_PID" ]; then
     echo "   端口: 8002"
 else
     echo "1. 啟動後台服務..."
-    cd lottery-api
+    cd lottery_api
     
     # 檢查 Python
     if ! command -v python3 &> /dev/null; then

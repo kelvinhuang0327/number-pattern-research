@@ -12,7 +12,7 @@ from itertools import combinations
 # Add project root
 project_root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 sys.path.insert(0, project_root)
-sys.path.insert(0, os.path.join(project_root, 'lottery-api'))
+sys.path.insert(0, os.path.join(project_root, 'lottery_api'))
 
 from database import DatabaseManager
 from common import get_lottery_rules
@@ -139,7 +139,7 @@ def backtest_method(method_name, predict_func, history, rules, test_periods=118)
 
 def run_comprehensive_backtest():
     """執行全面回測"""
-    db = DatabaseManager(db_path=os.path.join(project_root, 'lottery-api', 'data', 'lottery_v2.db'))
+    db = DatabaseManager(db_path=os.path.join(project_root, 'lottery_api', 'data', 'lottery_v2.db'))
     all_draws = list(reversed(db.get_all_draws(lottery_type='POWER_LOTTO')))
     rules = get_lottery_rules('POWER_LOTTO')
     

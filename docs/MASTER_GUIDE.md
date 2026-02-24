@@ -10,7 +10,7 @@
 
 ## 系統架構概覽
 - 前端：`src/` 下的模組化原生 JS（App、PredictionEngine、UI、各策略）。
-- 後端：`lottery-api/` 下的 FastAPI（預測、集成、優化、自動學習）。
+- 後端：`lottery_api/` 下的 FastAPI（預測、集成、優化、自動學習）。
 - 數據：CSV 匯入；後端持久化；前端讀取展示。
 - 韌性：健康檢查指數退避；後端失效自動停用相關策略。
 
@@ -79,7 +79,7 @@
 ## 檔案地圖與參考
 - 前端核心：`src/core/App.js`、`src/engine/PredictionEngine.js`。
 - 策略：`src/engine/strategies/*`（含 `BackendOptimizedStrategy.js`）。
-- 後端：`lottery-api/`（主應用與 unified predictor）。
+- 後端：`lottery_api/`（主應用與 unified predictor）。
 - 樣式：`styles.css`、`styles_stats.css`、`styles_autolearning.css`。
 - 更多文件：見下方「文件索引」。
 

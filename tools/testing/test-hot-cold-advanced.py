@@ -8,7 +8,7 @@
 
 import sys
 import os
-sys.path.append(os.path.join(os.path.dirname(__file__), 'lottery-api'))
+sys.path.append(os.path.join(os.path.dirname(__file__), 'lottery_api'))
 
 from models.unified_predictor import UnifiedPredictionEngine
 import random

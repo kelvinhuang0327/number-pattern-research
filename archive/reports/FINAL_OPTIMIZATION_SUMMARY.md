@@ -191,7 +191,7 @@ levels = ['very_hot', 'hot', 'warm', 'cool', 'cold', 'very_cold']
 
 ## 📦 代碼修改統計
 
-**文件**：`lottery-api/models/unified_predictor.py`
+**文件**：`lottery_api/models/unified_predictor.py`
 
 | 策略 | 修改行數 | 新增方法 | 主要變更 |
 |------|----------|----------|----------|

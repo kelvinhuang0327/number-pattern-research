@@ -10,7 +10,7 @@
 
 ### 1. ✅ 多維度偏差分析（高優先）
 
-**文件**: `lottery-api/models/unified_predictor.py`
+**文件**: `lottery_api/models/unified_predictor.py`
 **方法**: `deviation_predict()`
 **行數**: 241-407
 
@@ -83,7 +83,7 @@ scores += gap_scores * 0.1
 
 ### 2. ✅ 元學習動態權重調整器（高優先）
 
-**文件**: `lottery-api/models/dynamic_weight_adjuster.py`
+**文件**: `lottery_api/models/dynamic_weight_adjuster.py`
 **類**: `DynamicWeightAdjuster`
 
 **實施內容**:
@@ -147,7 +147,7 @@ summary = adjuster.get_performance_summary()
 
 ### 3. ✅ 自適應時間窗口計算器（中優先）
 
-**文件**: `lottery-api/models/adaptive_window.py`
+**文件**: `lottery_api/models/adaptive_window.py`
 **類**: `AdaptiveWindowCalculator`
 
 **實施內容**:

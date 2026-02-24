@@ -181,7 +181,7 @@ python3 tools/upload_daily539_txt.py
 
 ## 資料庫位置
 
-資料庫檔案: `lottery-api/data/lottery.db`
+資料庫檔案: `lottery_api/data/lottery.db`
 
 ## 驗證上傳結果
 
@@ -189,13 +189,13 @@ python3 tools/upload_daily539_txt.py
 
 ```bash
 # 查看所有數據統計
-sqlite3 lottery-api/data/lottery.db "SELECT lottery_type, COUNT(*) FROM draws GROUP BY lottery_type"
+sqlite3 lottery_api/data/lottery.db "SELECT lottery_type, COUNT(*) FROM draws GROUP BY lottery_type"
 
 # 查看今彩539最新數據
-sqlite3 lottery-api/data/lottery.db "SELECT draw, date, numbers FROM draws WHERE lottery_type = 'DAILY_539' ORDER BY draw DESC LIMIT 10"
+sqlite3 lottery_api/data/lottery.db "SELECT draw, date, numbers FROM draws WHERE lottery_type = 'DAILY_539' ORDER BY draw DESC LIMIT 10"
 
 # 查看大樂透最新數據
-sqlite3 lottery-api/data/lottery.db "SELECT draw, date, numbers, special FROM draws WHERE lottery_type = 'BIG_LOTTO' ORDER BY draw DESC LIMIT 10"
+sqlite3 lottery_api/data/lottery.db "SELECT draw, date, numbers, special FROM draws WHERE lottery_type = 'BIG_LOTTO' ORDER BY draw DESC LIMIT 10"
 ```
 
 ## 注意事項

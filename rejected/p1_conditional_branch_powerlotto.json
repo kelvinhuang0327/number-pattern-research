@@ -1,0 +1,18 @@
+{
+  "name": "P1 條件機率分支",
+  "lottery": "POWER_LOTTO",
+  "rejected_date": "2026-02-09",
+  "failure_reason": "條件偏移是統計假象；Bonferroni校正後0/16個偏移號碼通過；3注全部更差",
+  "pattern": "STATISTICAL_ILLUSION",
+  "stats": {
+    "edge_150p": null,
+    "edge_500p": null,
+    "edge_1500p": null,
+    "baseline": "Fourier Rhythm",
+    "p_value": "Bonferroni校正後全部不顯著 (門檻 p<0.0013)",
+    "z_score": "最佳方法B: z=0.39（不顯著）"
+  },
+  "applicable_conditions": "無",
+  "retest_conditions": "條件偏移幅度太小（4-7%）在38選6中無法改變號碼排名，不建議重測",
+  "notes": "系統測試5種regime (low_sum, high_sum, many_big, few_big, has_consec)。方法A最佳+2 M3+/1000期，方法B最佳+4 M3+/1000期，統計皆不顯著。3注版本：原始140 vs 最佳條件139。教訓：38個號碼多重比較必須Bonferroni校正"
+}

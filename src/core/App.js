@@ -1377,6 +1377,15 @@ export class App {
                 );
                 if (isSuccess) successCount++;
 
+                // Level 3: 記錄績效到後端以更新動態水線
+                try {
+                    await apiClient.recordPerformanceHit(hits >= 3 ? 1 : 0);
+                    // 隨插即用：更新 UI 儀表板
+                    this.uiManager.updateWaterline();
+                } catch (e) {
+                    console.warn('錄入水線績效失敗:', e);
+                }
+
                 // 使用已排序的 sortedTraining 來顯示起訖期數
                 const refRange = sortedTraining.length > 0
                     ? `${sortedTraining[0].draw} - ${sortedTraining[sortedTraining.length - 1].draw} (共${trainingData.length}期)`

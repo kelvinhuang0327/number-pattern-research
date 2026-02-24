@@ -9,19 +9,16 @@ from collections import Counter
 
 project_root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 sys.path.insert(0, project_root)
-sys.path.insert(0, os.path.join(project_root, 'lottery-api'))
+# sys.path.insert(0, os.path.join(project_root, 'lottery_api')) # Removed to avoid top-level package confusion
 
-from database import DatabaseManager
-from common import get_lottery_rules
-from models.biglotto_2bet_optimizer_v2 import BigLotto2BetOptimizerV2
-from models.unified_predictor import UnifiedPredictionEngine
+from lottery_api.database import DatabaseManager
+from lottery_api.common import get_lottery_rules
+from lottery_api.models.biglotto_2bet_optimizer_v2 import BigLotto2BetOptimizerV2
+from lottery_api.models.unified_predictor import UnifiedPredictionEngine
 
 sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding='utf-8')
 
-def backtest_v2():
-    db = DatabaseManager(db_path=os.path.join(project_root, 'lottery-api', 'data', 'lottery_v2.db'))
-    all_draws = list(reversed(db.get_all_draws(lottery_type='BIG_LOTTO')))
-    rules = get_lottery_rules('BIG_LOTTO')
+def backtest_v2(db, all_draws, rules):
     
     test_periods = min(150, len(all_draws) - 50)
     
@@ -119,4 +116,14 @@ def backtest_v2():
         print(f"⚠️ 仍需優化。提升 {improvement:.2f}% < 5%")
 
 if __name__ == '__main__':
-    backtest_v2()
+    from lottery_api.database import DatabaseManager
+    from lottery_api.common import get_lottery_rules
+    
+    # Initialize resources
+    db = DatabaseManager(db_path=os.path.join(project_root, 'lottery_api', 'data', 'lottery_v2.db'))
+    all_draws = list(reversed(db.get_all_draws(lottery_type='BIG_LOTTO')))
+    rules = get_lottery_rules('BIG_LOTTO')
+    
+    # Run backtest
+    backtest_v2(db, all_draws, rules)
+

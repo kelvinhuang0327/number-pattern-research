@@ -18,7 +18,7 @@
 打開終端，執行：
 
 ```bash
-cd lottery-api
+cd lottery_api
 python app.py
 ```
 
@@ -66,7 +66,7 @@ INFO:     Uvicorn running on http://0.0.0.0:5001
 ### Q1: 提示「無法連接到後端服務器」？
 **A**: 後端服務未運行，請執行：
 ```bash
-cd lottery-api
+cd lottery_api
 python app.py
 ```
 

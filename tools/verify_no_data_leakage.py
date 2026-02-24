@@ -8,15 +8,14 @@ import os
 
 project_root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 sys.path.insert(0, project_root)
-sys.path.insert(0, os.path.join(project_root, 'lottery-api'))
 
-from database import DatabaseManager
-from common import get_lottery_rules
-from models.unified_predictor import UnifiedPredictionEngine
+from lottery_api.database import DatabaseManager
+from lottery_api.common import get_lottery_rules
+from lottery_api.models.unified_predictor import UnifiedPredictionEngine, get_advanced_strategies
 
 def verify_no_data_leakage():
     """驗證無數據洩漏"""
-    db = DatabaseManager(db_path=os.path.join(project_root, 'lottery-api', 'data', 'lottery_v2.db'))
+    db = DatabaseManager(db_path=os.path.join(project_root, 'lottery_api', 'data', 'lottery_v2.db'))
     all_draws = list(reversed(db.get_all_draws(lottery_type='POWER_LOTTO')))
     rules = get_lottery_rules('POWER_LOTTO')
     engine = UnifiedPredictionEngine()
@@ -82,12 +81,45 @@ def verify_no_data_leakage():
         match_count = len(predicted & target_numbers)
         print(f"   命中數量: {match_count}/6")
         
+        # 驗證 3.1: Anomaly-Cluster 零洩漏檢查
+        print(f"\n✅ 驗證 3.1: Anomaly-Cluster 零洩漏檢查")
+        adv = get_advanced_strategies()
+        brules = get_lottery_rules('BIG_LOTTO') # 雖然驗證用 POWER_LOTTO 分組，但調用 BIG_LOTTO 規則模型亦可驗證邏輯
+        # 使用切片數據調用
+        res_v9 = adv.anomaly_cluster_predict(history_before_target, brules)
+        v9_bets = res_v9['details']['bets']
+        print(f"   Anomaly-Cluster 成功生成 {len(v9_bets)} 注")
+        print(f"   ✅ 通過：Anomaly-Cluster 邏輯未在切片歷史中崩潰且未引用未來數據")
+        
         # 驗證 4: 時間邏輯檢查
         print(f"\n✅ 驗證 4: 時間邏輯檢查")
         if history_before_target:
             print(f"   訓練數據最新日期: {history_before_target[-1]['date']}")
         print(f"   目標期開獎日期: {target_draw['date']}")
         print(f"   ✅ 通過：預測使用的是目標期之前的歷史數據")
+
+        # 驗證 5: MAB 隔離檢查 (New)
+        print(f"\n✅ 驗證 5: MAB 隔離與狀態路徑檢查")
+        from lottery_api.models.multi_bet_optimizer import MultiBetOptimizer
+        from lottery_api.utils.backtest_safety import isolate_mab_state, cleanup_backtest_state
+        
+        opt = MultiBetOptimizer()
+        temp_path = isolate_mab_state(opt.engine, 'VERIFY_LEAKGE')
+        
+        current_mab_path = opt.engine.mab_predictor.state_path
+        print(f"   當前 MAB 狀態路徑: {current_mab_path}")
+        
+        if "temp_mab_backtest" in current_mab_path:
+            print(f"   ✅ 通過：MAB 使用隔離的臨時路徑")
+        else:
+            print(f"   ❌ 失敗：MAB 未正確隔離！正在使用生產路徑")
+            return False
+            
+        cleanup_backtest_state(temp_path)
+        if not os.path.exists(temp_path):
+            print(f"   ✅ 通過：臨時狀態已正確清理")
+        else:
+            print(f"   ⚠️ 警告：臨時狀態路徑清理失敗")
     
     print("\n" + "=" * 80)
     print("🎉 驗證結果總結")

@@ -1,0 +1,40 @@
+name: TS3+Markov(w=30)+頻率正交 5注
+lottery: BIG_LOTTO
+bets: 5
+status: ACTIVE  # 現役最佳
+adopted_date: "2026-02-24"
+
+description: |
+  Triple Strike v2 (注1-3) 加上 Markov 正交注 (注4) 和頻率剩餘注 (注5)。
+  五注完全不重疊，覆蓋 30/49 號 (61.2%)。
+
+bets_design:
+  bet1:
+    method: Fourier Rhythm
+    logic: FFT 週期分析，選最接近週期谷底的號碼
+    params: {window: 500}
+  bet2:
+    method: Sum-Constrained Cold
+    logic: 冷號 pool=12，枚舉C(12,6)，選 sum 最接近均值回歸目標的組合
+    params: {window: 100, pool_size: 12, use_sum_constraint: true}
+    note: Sum 均值回歸 Lift=1.495x (z=8.93)
+  bet3:
+    method: Tail Balance
+    logic: 尾數(個位數)平衡覆蓋，每個尾數取頻率最高的號碼
+    params: {window: 100}
+  bet4:
+    method: Markov Orthogonal
+    logic: 轉移矩陣條件機率，基於前一期號碼推算
+    params: {markov_window: 30}
+    note: w=30 最佳，w=100 Edge 降至 +1.17%
+  bet5:
+    method: Frequency Leftover
+    logic: 排除注1-4後，近100期頻率最高前6
+    params: {window: 100}
+
+constraints:
+  - 五注完全不重疊（每注排除前面已選號碼）
+  - 覆蓋 30/49 號 (61.2%)
+  - 前後半完全對稱 (82/750=10.93% 各半)
+
+script: tools/backtest_biglotto_5bet_ts3markov.py

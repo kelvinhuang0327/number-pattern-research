@@ -5,9 +5,9 @@ import json
 import numpy as np
 from collections import defaultdict, Counter
 
-# Add lottery-api to path
+# Add lottery_api to path
 base_path = os.getcwd()
-sys.path.insert(0, os.path.join(base_path, 'lottery-api'))
+sys.path.insert(0, os.path.join(base_path, 'lottery_api'))
 
 from database import DatabaseManager
 from common import get_lottery_rules
@@ -36,7 +36,7 @@ class BigLottoCVAA:
         return {"numbers": sorted(candidates[:self.pick_count]), "confidence": 0.60}
 
 def predict_114000118():
-    db_path = 'lottery-api/data/lottery_v2.db'
+    db_path = 'lottery_api/data/lottery_v2.db'
     db = DatabaseManager(db_path=db_path)
     rules = get_lottery_rules('BIG_LOTTO')
     

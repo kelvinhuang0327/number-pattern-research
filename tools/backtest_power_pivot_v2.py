@@ -13,7 +13,7 @@ from itertools import combinations
 # Add project root
 project_root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 sys.path.insert(0, project_root)
-sys.path.insert(0, os.path.join(project_root, 'lottery-api'))
+sys.path.insert(0, os.path.join(project_root, 'lottery_api'))
 
 from models.multi_bet_optimizer import MultiBetOptimizer
 from models.unified_predictor import UnifiedPredictionEngine
@@ -47,7 +47,7 @@ def get_deep_correlation_maps(history):
     return correlation_map, trio_map
 
 def run_v2_backtest():
-    db = DatabaseManager(db_path=os.path.join(project_root, 'lottery-api', 'data', 'lottery_v2.db'))
+    db = DatabaseManager(db_path=os.path.join(project_root, 'lottery_api', 'data', 'lottery_v2.db'))
     all_draws = list(reversed(db.get_all_draws(lottery_type='POWER_LOTTO')))
     rules = get_lottery_rules('POWER_LOTTO')
     optimizer = MultiBetOptimizer()

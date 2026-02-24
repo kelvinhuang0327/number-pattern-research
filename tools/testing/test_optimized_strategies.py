@@ -8,14 +8,14 @@ import sys
 import os
 
 # 添加項目路徑
-sys.path.insert(0, '/Users/kelvin/Kelvin-WorkSpace/Lottery/lottery-api')
+sys.path.insert(0, '/Users/kelvin/Kelvin-WorkSpace/Lottery/lottery_api')
 
 from database import DatabaseManager
 from models.unified_predictor import UnifiedPredictionEngine
 from models.optimized_ensemble import OptimizedEnsemblePredictor
 
 # 初始化數據庫管理器 - 使用絕對路徑
-db_manager = DatabaseManager('/Users/kelvin/Kelvin-WorkSpace/Lottery/lottery-api/data/lottery.db')
+db_manager = DatabaseManager('/Users/kelvin/Kelvin-WorkSpace/Lottery/lottery_api/data/lottery.db')
 
 # 彩票規則
 LOTTERY_RULES = {

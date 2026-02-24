@@ -70,7 +70,7 @@
 
 ```bash
 # 1. 確保後端運行
-cd lottery-api && python3 app.py
+cd lottery_api && python3 app.py
 
 # 2. 打開前端（在瀏覽器中）
 open index.html
@@ -203,7 +203,7 @@ A: 查看以下指標：
 **原因**: 後端 API 未運行或崩潰
 **解決**:
 ```bash
-cd lottery-api
+cd lottery_api
 python3 app.py
 ```
 

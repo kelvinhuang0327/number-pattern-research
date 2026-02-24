@@ -304,7 +304,7 @@ score = (
 
 - [系統架構盤點](SYSTEM_ARCHITECTURE_AUDIT.md)
 - [自動學習修復報告](AUTOLEARNING_FIX_REPORT.md)
-- [後端 API 文檔](lottery-api/README.md)
+- [後端 API 文檔](lottery_api/README.md)
 
 ---
 

@@ -1,0 +1,23 @@
+name: 偏差互補 2注
+lottery: BIG_LOTTO
+bets: 2
+status: ACTIVE
+adopted_date: "2026-02-10"
+
+description: |
+  頻率偏差互補選號。確定性策略（無隨機成分），10種子方差=0。
+  LATE_BLOOMER 模式：150期 -2.36% 但 1500期 +0.51%，短期看起來差但長期穩定。
+
+bets_design:
+  bet1:
+    method: Frequency Deviation (positive)
+    logic: 選近期出現頻率高於期望的號碼（正偏差）
+  bet2:
+    method: Frequency Deviation (negative complement)
+    logic: 選近期出現頻率低於期望的號碼（負偏差互補）
+
+note: |
+  無隨機成分，完全確定性。
+  LATE_BLOOMER — 勿因短期負Edge拒絕，需看 1500期 結果。
+
+script: tools/predict_biglotto_deviation_2bet.py

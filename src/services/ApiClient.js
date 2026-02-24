@@ -365,6 +365,13 @@ export class ApiClient {
     clearCacheByKey(key) {
         this.cache.delete(key);
     }
+    /**
+     * 記錄預測績效（用於 Level 3 水位管理）
+     * @param {number} hitCount - 命中數
+     */
+    async recordPerformanceHit(hitCount) {
+        return this.post(`/api/performance/record-hit?hit_count=${hitCount}`);
+    }
 }
 
 // 導出單例

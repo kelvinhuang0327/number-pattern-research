@@ -1,0 +1,19 @@
+{
+  "name": "鄰號共現注入 (Neighbor Injection)",
+  "lottery": "BIG_LOTTO",
+  "rejected_date": "2026-02-10",
+  "failure_reason": "鄰號是負相關（Lift<1.0）；注入後嚴重損害預測品質",
+  "pattern": "STATISTICAL_ILLUSION",
+  "stats": {
+    "edge_150p": null,
+    "edge_500p": null,
+    "edge_1500p": null,
+    "baseline": "原始策略",
+    "p_value": null,
+    "z_score": null,
+    "delta_m3": "-8 M3+/1000期"
+  },
+  "applicable_conditions": "無。此為直覺假象",
+  "retest_conditions": "嚴格禁止。Lift(13|14)=0.87x, Lift(33|34)=0.73x，鄰號呈負相關，任何形式的鄰號加分都有害",
+  "notes": "動機：115000012期出現[13,14,16,33,34,37]等多組鄰號。實證：鄰號Lift<1.0，共現率低於基準。教訓：直觀的『鄰號會一起出現』完全是假象，Lift<1.0時嚴禁使用。Z1+Z3同時空缺概率1.4%，屬不可預測低概率事件"
+}

@@ -6,7 +6,7 @@
 
 import sys
 import os
-sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..', 'lottery-api'))
+sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..', 'lottery_api'))
 
 from utils.csv_validator import csv_validator
 

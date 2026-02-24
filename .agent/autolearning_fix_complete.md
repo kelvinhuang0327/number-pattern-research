@@ -99,7 +99,7 @@ section.addEventListener('click', (e) => {
 
 ```bash
 # 已啟動的服務
-cd /Users/kelvin/Kelvin-WorkSpace/Lottery/lottery-api
+cd /Users/kelvin/Kelvin-WorkSpace/Lottery/lottery_api
 python3 app.py
 
 # 服務狀態
@@ -176,7 +176,7 @@ curl http://localhost:5001/api/auto-learning/schedule/status
 
 1. **確保後端 API 運行**
    ```bash
-   cd /Users/kelvin/Kelvin-WorkSpace/Lottery/lottery-api
+   cd /Users/kelvin/Kelvin-WorkSpace/Lottery/lottery_api
    python3 app.py
    ```
    
@@ -282,7 +282,7 @@ lsof -i :5001
 ```
 
 **解決方案**:
-1. 啟動後端 API：`cd lottery-api && python3 app.py`
+1. 啟動後端 API：`cd lottery_api && python3 app.py`
 2. 檢查防火牆設置
 3. 確認端口 5001 未被其他程序佔用
 

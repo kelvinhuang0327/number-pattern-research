@@ -28,7 +28,7 @@
 
 ### 1. 新增專用 API 端點
 
-**文件**: [lottery-api/app.py:1636-1677](lottery-api/app.py#L1636-L1677)
+**文件**: [lottery_api/app.py:1636-1677](lottery_api/app.py#L1636-L1677)
 
 ```python
 @app.get("/api/auto-learning/advanced/status")
@@ -187,7 +187,7 @@ $ curl http://127.0.0.1:5001/api/auto-learning/advanced/status | python3 -m json
 
 ### 1. 後端修改
 
-- **lottery-api/app.py** (第 1636-1677 行)
+- **lottery_api/app.py** (第 1636-1677 行)
   - 新增 `/api/auto-learning/advanced/status` GET 端點
   - 返回進階優化歷史和最新狀態
 
@@ -208,7 +208,7 @@ $ curl http://127.0.0.1:5001/api/auto-learning/advanced/status | python3 -m json
 ### 啟動後端
 
 ```bash
-cd lottery-api
+cd lottery_api
 python3 app.py
 ```
 

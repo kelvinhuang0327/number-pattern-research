@@ -1,0 +1,345 @@
+{
+  "metadata": {
+    "strategy": "TS3+M+FO 5-Bet Orthogonal",
+    "lottery": "BIG_LOTTO (1-49, pick 6)",
+    "baseline_5bet": "8.96%",
+    "windows_tested": [
+      150,
+      500,
+      1500
+    ]
+  },
+  "cross_window_comparison": {
+    "150": {
+      "best_combo_edge": 2.806666666666672,
+      "best_combo": [
+        "B1_Fourier"
+      ],
+      "best_per_budget": {
+        "1": {
+          "combo": [
+            "B1_Fourier"
+          ],
+          "indices": [
+            0
+          ],
+          "edge_pct": 2.806666666666672,
+          "z_score": 2.5442335040293034,
+          "baseline_pct": 1.859999999999995,
+          "m3_rate_pct": 4.666666666666667,
+          "max_drought": 42
+        },
+        "2": {
+          "combo": [
+            "B1_Fourier",
+            "B3_TailBalance"
+          ],
+          "indices": [
+            0,
+            2
+          ],
+          "edge_pct": 2.314596000000008,
+          "z_score": 1.504638682056203,
+          "baseline_pct": 3.685403999999992,
+          "m3_rate_pct": 6.0,
+          "max_drought": 40
+        },
+        "3": {
+          "combo": [
+            "B1_Fourier",
+            "B3_TailBalance",
+            "B4_Markov"
+          ],
+          "indices": [
+            0,
+            2,
+            3
+          ],
+          "edge_pct": 1.8564778477333483,
+          "z_score": 0.9993110269005041,
+          "baseline_pct": 5.476855485599986,
+          "m3_rate_pct": 7.333333333333333,
+          "max_drought": 30
+        },
+        "4": {
+          "combo": [
+            "B1_Fourier",
+            "B2_Cold",
+            "B3_TailBalance",
+            "B4_Markov"
+          ],
+          "indices": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "edge_pct": 0.7650140264321801,
+          "z_score": 0.36166299416614495,
+          "baseline_pct": 7.23498597356782,
+          "m3_rate_pct": 8.0,
+          "max_drought": 25
+        },
+        "5": {
+          "combo": [
+            "B1_Fourier",
+            "B2_Cold",
+            "B3_TailBalance",
+            "B4_Markov",
+            "B5_FreqOrtho"
+          ],
+          "indices": [
+            0,
+            1,
+            2,
+            3,
+            4
+          ],
+          "edge_pct": -0.960415234459451,
+          "z_score": -0.411837100772036,
+          "baseline_pct": 8.96041523445945,
+          "m3_rate_pct": 8.0,
+          "max_drought": 25
+        }
+      }
+    },
+    "500": {
+      "best_combo_edge": 2.36501402643218,
+      "best_combo": [
+        "B1_Fourier",
+        "B2_Cold",
+        "B3_TailBalance",
+        "B4_Markov"
+      ],
+      "best_per_budget": {
+        "1": {
+          "combo": [
+            "B1_Fourier"
+          ],
+          "indices": [
+            0
+          ],
+          "edge_pct": 0.7400000000000049,
+          "z_score": 1.2247211644546052,
+          "baseline_pct": 1.859999999999995,
+          "m3_rate_pct": 2.6,
+          "max_drought": 109
+        },
+        "2": {
+          "combo": [
+            "B1_Fourier",
+            "B2_Cold"
+          ],
+          "indices": [
+            0,
+            1
+          ],
+          "edge_pct": 1.5145960000000076,
+          "z_score": 1.7976005927519467,
+          "baseline_pct": 3.685403999999992,
+          "m3_rate_pct": 5.2,
+          "max_drought": 89
+        },
+        "3": {
+          "combo": [
+            "B1_Fourier",
+            "B2_Cold",
+            "B3_TailBalance"
+          ],
+          "indices": [
+            0,
+            1,
+            2
+          ],
+          "edge_pct": 1.9231445144000145,
+          "z_score": 1.8900017284588497,
+          "baseline_pct": 5.476855485599986,
+          "m3_rate_pct": 7.3999999999999995,
+          "max_drought": 57
+        },
+        "4": {
+          "combo": [
+            "B1_Fourier",
+            "B2_Cold",
+            "B3_TailBalance",
+            "B4_Markov"
+          ],
+          "indices": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "edge_pct": 2.36501402643218,
+          "z_score": 2.0413043870475973,
+          "baseline_pct": 7.23498597356782,
+          "m3_rate_pct": 9.6,
+          "max_drought": 42
+        },
+        "5": {
+          "combo": [
+            "B1_Fourier",
+            "B2_Cold",
+            "B3_TailBalance",
+            "B4_Markov",
+            "B5_FreqOrtho"
+          ],
+          "indices": [
+            0,
+            1,
+            2,
+            3,
+            4
+          ],
+          "edge_pct": 1.4395847655405483,
+          "z_score": 1.1270496338284706,
+          "baseline_pct": 8.96041523445945,
+          "m3_rate_pct": 10.4,
+          "max_drought": 42
+        }
+      }
+    },
+    "1500": {
+      "best_combo_edge": 1.506251432207216,
+      "best_combo": [
+        "B1_Fourier",
+        "B2_Cold",
+        "B3_TailBalance",
+        "B4_Markov",
+        "B5_FreqOrtho"
+      ],
+      "best_per_budget": {
+        "1": {
+          "combo": [
+            "B1_Fourier"
+          ],
+          "indices": [
+            0
+          ],
+          "edge_pct": 0.540000000000005,
+          "z_score": 1.5479605570915707,
+          "baseline_pct": 1.859999999999995,
+          "m3_rate_pct": 2.4,
+          "max_drought": 196
+        },
+        "2": {
+          "combo": [
+            "B1_Fourier",
+            "B2_Cold"
+          ],
+          "indices": [
+            0,
+            1
+          ],
+          "edge_pct": 1.047929333333341,
+          "z_score": 2.1542148810535893,
+          "baseline_pct": 3.685403999999992,
+          "m3_rate_pct": 4.733333333333333,
+          "max_drought": 123
+        },
+        "3": {
+          "combo": [
+            "B1_Fourier",
+            "B2_Cold",
+            "B4_Markov"
+          ],
+          "indices": [
+            0,
+            1,
+            3
+          ],
+          "edge_pct": 1.2564778477333478,
+          "z_score": 2.138778178520336,
+          "baseline_pct": 5.476855485599986,
+          "m3_rate_pct": 6.7333333333333325,
+          "max_drought": 83
+        },
+        "4": {
+          "combo": [
+            "B1_Fourier",
+            "B2_Cold",
+            "B4_Markov",
+            "B5_FreqOrtho"
+          ],
+          "indices": [
+            0,
+            1,
+            3,
+            4
+          ],
+          "edge_pct": 1.4316806930988468,
+          "z_score": 2.1403305174272385,
+          "baseline_pct": 7.23498597356782,
+          "m3_rate_pct": 8.666666666666668,
+          "max_drought": 63
+        },
+        "5": {
+          "combo": [
+            "B1_Fourier",
+            "B2_Cold",
+            "B3_TailBalance",
+            "B4_Markov",
+            "B5_FreqOrtho"
+          ],
+          "indices": [
+            0,
+            1,
+            2,
+            3,
+            4
+          ],
+          "edge_pct": 1.506251432207216,
+          "z_score": 2.0425086309939986,
+          "baseline_pct": 8.96041523445945,
+          "m3_rate_pct": 10.466666666666667,
+          "max_drought": 44
+        }
+      }
+    }
+  },
+  "timing_verdict": "SIGNAL",
+  "recommendations": [
+    "Long-term optimal: ('B1_Fourier', 'B2_Cold', 'B3_TailBalance', 'B4_Markov', 'B5_FreqOrtho') edge=+1.51%",
+    "Budget priority order: Full 5-bet > Any 4-bet > Top 3-bet. Never play single bets (all have negative or marginal individual edge).",
+    "Timing: Weak signal detected. Requires 3x more data to confirm.",
+    "Risk: Maintain bankroll = 20× per-draw cost minimum. Expected max drought ~20-30 consecutive losses."
+  ],
+  "expert_reviews": {
+    "expert1_theory": {
+      "role": "方法理論專家",
+      "focus": "數學合理性、統計方法正確性",
+      "points": [
+        "Edge trajectory: DECAYING across windows",
+        "150p: Max inter-bet correlation = nan (WARNING high corr)",
+        "500p: Max inter-bet correlation = 0.027 (GOOD orthogonal)",
+        "1500p: Max inter-bet correlation = 0.024 (GOOD orthogonal)",
+        "Timing signal detected — requires further validation",
+        "Mean-Variance framework adapted: lottery payoff is binary per-bet, covariance = joint hit probability product. Baseline adjustment for N-bet is exact: P(N)=1-(1-p)^N",
+        "Multiple comparison issue: 31 subsets tested. Bonferroni α_adj = 0.05/31 ≈ 0.0016. Only z > 2.95 survives correction."
+      ]
+    },
+    "expert2_practical": {
+      "role": "技術務實專家",
+      "focus": "系統可行性、效率、實際操作",
+      "points": [
+        "Total backtest runtime: 4.0s — acceptable",
+        "Fourier (Bet1) is O(49 × 500 × FFT) per period — dominates computation. Other bets are O(49) per period.",
+        "5-bet portfolio generates 30/49 unique numbers per period — 61% coverage. Bet 1: Fourier Rhythm (6 nums), Bet 2: Cold (6 nums), Bet 3: Tail Balance (6 nums), Bet 4: Markov (6 nums), Bet 5: Freq Orthogonal (6 nums). Zero inter-bet overlap.",
+        "Weekly draw frequency: ~2 draws/week (Tue+Fri). At $100/draw × 5 bets = $500/draw = $1000/week."
+      ]
+    },
+    "expert3_architecture": {
+      "role": "程式架構專家",
+      "focus": "開發成本、維護性、Pipeline 可實現性",
+      "points": [
+        "Pipeline: load_draws() → per_bet_backtest() → analyze_*() → report. Clean DAG, no circular dependencies.",
+        "Data leakage prevention: all_draws[:target_idx] enforced at backtest level. Feature extraction uses same strict boundary.",
+        "Scalability: 31 subset evaluations × 3 windows = 93 evaluations. But per_bet_backtest() only needs to run once per window (O(1) extra for subsets).",
+        "Maintenance: Adding a 6th bet requires updating BET_LABELS and ts3_markov_freqortho_5bet_predict(). Subset analysis scales to 2^6-1=63.",
+        "Strategy source: strategies_phase1.ts3_markov_freqortho_5bet_predict (verified +1.77%, z=2.40, p=0.008 at 1500p). Deterministic (no np.random calls). Results are reproducible across runs.",
+        "Production readiness: Current code is research-grade. For production, add: config file, logging, scheduled execution via cron."
+      ]
+    }
+  },
+  "total_runtime": 7.4592368602752686
+}

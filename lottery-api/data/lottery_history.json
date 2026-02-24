@@ -1,7 +1,35 @@
 {
-  "timestamp": "2026-01-08T15:37:03.706816",
+  "timestamp": "2026-01-15T16:37:42.315541",
   "data_by_type": {
     "BIG_LOTTO": [
+      {
+        "date": "2008-03-07",
+        "draw": "97000020",
+        "numbers": [
+          12,
+          25,
+          28,
+          40,
+          41,
+          42
+        ],
+        "lotteryType": "BIG_LOTTO",
+        "special": 29
+      },
+      {
+        "date": "2008-03-11",
+        "draw": "97000021",
+        "numbers": [
+          7,
+          8,
+          21,
+          30,
+          36,
+          44
+        ],
+        "lotteryType": "BIG_LOTTO",
+        "special": 4
+      },
       {
         "date": "2008-03-14",
         "draw": "97000022",

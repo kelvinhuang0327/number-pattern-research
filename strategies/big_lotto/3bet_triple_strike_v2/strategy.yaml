@@ -1,0 +1,23 @@
+name: Triple Strike v2 3注
+lottery: BIG_LOTTO
+bets: 3
+status: ACTIVE
+adopted_date: "2026-02-23"
+
+description: |
+  Fourier + 冷號(Sum-Constraint) + Tail Balance 的三注正交策略。
+  注2 從原版冷號改為 pool=12 + Sum-Range Constraint (均值回歸 Lift=1.495x)。
+
+bets_design:
+  bet1:
+    method: Fourier Rhythm
+    params: {window: 500}
+  bet2:
+    method: Sum-Constrained Cold (v2)
+    params: {window: 100, pool_size: 12, use_sum_constraint: true}
+    upgrade: 較原版 +0.40%，三窗口全正
+  bet3:
+    method: Tail Balance
+    params: {window: 100}
+
+script: tools/predict_biglotto_triple_strike.py

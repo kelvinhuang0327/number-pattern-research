@@ -156,7 +156,7 @@ class ModelCache:
 ### Step 1: 確認數據同步
 ```bash
 # 1. 啟動後端
-cd lottery-api
+cd lottery_api
 python app.py
 
 # 2. 前端點擊「同步數據到後端」按鈕
@@ -185,7 +185,7 @@ async predict(data, lotteryRules, useBackendData = false) {
 ### 1. 檢查數據同步
 ```bash
 # 後端應該有這個文件
-cat lottery-api/data/latest_history.json
+cat lottery_api/data/latest_history.json
 ```
 
 ### 2. 測試預測速度

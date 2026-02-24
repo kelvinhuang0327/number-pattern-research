@@ -30,7 +30,7 @@ logger.info(f"🔍 [get_all_draws] Using database: {self.db_path}")
 
 ```bash
 pwd
-# /Users/kelvin/Kelvin-WorkSpace/LotteryNew/lottery-api
+# /Users/kelvin/Kelvin-WorkSpace/LotteryNew/lottery_api
 
 ls -lh data/lottery_v2.db
 # 14M, 更新於 12月16日
@@ -45,7 +45,7 @@ ls -lh /Users/kelvin/Kelvin-WorkSpace/LotteryNew/data/lottery_v2.db
 
 ## 📊 兩個數據庫對比
 
-### 數據庫 A: `lottery-api/data/lottery_v2.db` ✅
+### 數據庫 A: `lottery_api/data/lottery_v2.db` ✅
 
 **API 實際使用的數據庫**
 
@@ -107,7 +107,7 @@ ls -lh /Users/kelvin/Kelvin-WorkSpace/LotteryNew/data/lottery_v2.db
 
 ### API 行為正確
 
-API 正確地從 `lottery-api/data/lottery_v2.db` 讀取數據，這個數據庫包含：
+API 正確地從 `lottery_api/data/lottery_v2.db` 讀取數據，這個數據庫包含：
 - ✅ 7,257 期有效數據
 - ✅ 100% 可用於訓練
 - ✅ 格式完整、無錯誤
@@ -163,7 +163,7 @@ API 正確地從 `lottery-api/data/lottery_v2.db` 讀取數據，這個數據庫
 ## 📝 總結
 
 1. ✅ **沒有任何隱藏的過濾邏輯**
-2. ✅ **API 使用正確的數據庫**（lottery-api/data/lottery_v2.db）
+2. ✅ **API 使用正確的數據庫**（lottery_api/data/lottery_v2.db）
 3. ✅ **數據量 7,257 期完全正確**
 4. ✅ **前後端邏輯完美同步**
 5. ✅ **相關類型合併功能正常**

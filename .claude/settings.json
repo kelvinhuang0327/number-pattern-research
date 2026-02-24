@@ -1,0 +1,40 @@
+{
+    "hooks": {
+        "PreToolUse": [
+            {
+                "matcher": "Edit|Write",
+                "hooks": [
+                    {
+                        "type": "command",
+                        "command": "[ \"$(git branch --show-current)\" != \"main\" ] || { echo '{\"block\": true, \"message\": \"⚠️ 無法在 main 分支直接編輯，請切換到開發分支\"}' >&2; exit 2; }",
+                        "timeout": 5
+                    }
+                ]
+            }
+        ],
+        "PostToolUse": [
+            {
+                "matcher": "Write.*\\.py$",
+                "hooks": [
+                    {
+                        "type": "command",
+                        "command": "python3 -m py_compile \"$FILE\" 2>&1 && echo '{\"feedback\": \"✅ Python 語法檢查通過\"}' || echo '{\"feedback\": \"⚠️ Python 語法錯誤\"}'",
+                        "timeout": 10
+                    }
+                ]
+            },
+            {
+                "matcher": "Write.*backtest.*\\.py$",
+                "hooks": [
+                    {
+                        "type": "command",
+                        "command": "grep -q 'assert.*date.*<.*target' \"$FILE\" && echo '{\"feedback\": \"✅ 檢測到數據洩漏防護邏輯\"}' || echo '{\"feedback\": \"⚠️ 建議加入數據洩漏驗證\"}'",
+                        "timeout": 5
+                    }
+                ]
+            }
+        ]
+    },
+    "enableAllProjectMcpServers": false,
+    "enabledMcpjsonServers": []
+}

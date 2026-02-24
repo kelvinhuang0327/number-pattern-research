@@ -5,7 +5,7 @@
 """
 
 import sys
-sys.path.insert(0, '/Users/kelvin/Kelvin-WorkSpace/Lottery/lottery-api')
+sys.path.insert(0, '/Users/kelvin/Kelvin-WorkSpace/Lottery/lottery_api')
 
 from database import DatabaseManager
 from models.unified_predictor import UnifiedPredictionEngine
@@ -13,7 +13,7 @@ from models.optimized_ensemble import OptimizedEnsemblePredictor
 from collections import Counter
 
 # 初始化
-db_manager = DatabaseManager('/Users/kelvin/Kelvin-WorkSpace/Lottery/lottery-api/data/lottery.db')
+db_manager = DatabaseManager('/Users/kelvin/Kelvin-WorkSpace/Lottery/lottery_api/data/lottery.db')
 
 LOTTERY_RULES = {
     'id': 'BIG_LOTTO',

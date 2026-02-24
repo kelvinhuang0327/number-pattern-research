@@ -152,7 +152,7 @@ pip install scikit-learn scipy
 使用测试脚本评估新模型性能：
 
 ```bash
-cd lottery-api
+cd lottery_api
 python tools/test_advanced_models.py
 ```
 

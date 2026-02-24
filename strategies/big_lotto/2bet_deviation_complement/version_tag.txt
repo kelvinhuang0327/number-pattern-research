@@ -1,0 +1,1 @@
+strategy: 2bet_deviation_complement\nlottery: big_lotto\nadopted: 2026-02-24\nstatus: ACTIVE

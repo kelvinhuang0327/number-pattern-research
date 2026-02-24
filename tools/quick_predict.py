@@ -3,14 +3,15 @@
 快速預測腳本 - 供 /predict 命令使用
 用法: python3 tools/quick_predict.py [彩票類型] [注數]
 
-策略對照 (2026-02-23 更新):
+策略對照 (2026-02-24 更新):
   大樂透 2注: 偏差互補+回聲 P0 (Edge +1.21%, 確定性)
   大樂透 3注: Triple Strike (Edge +0.98%, 1500期 STABLE)
   大樂透 4注: TS3+Markov(w=30) (Edge +1.23%, 1500期)
   大樂透 5注: TS3+Markov+FreqOrt (Edge +1.77%, 1500期 z=2.40 ★最佳)
   威力彩 2注: Fourier Rhythm (Edge +1.91%)
-  威力彩 3注: Power Precision (Edge +2.30%, 1500期 STABLE)
+  威力彩 3注: Power Precision (Edge +2.23%, 1500期 STABLE, z=2.74)
   威力彩 特別號: V3 (Edge +2.20%)
+  威力彩 冷號預警: cold_alert (監控用，McNemar不顯著故未替換PP3)
   今彩539 3注: SumRange+Bayesian+ZoneBalance
 """
 import sys
@@ -57,7 +58,7 @@ STRATEGY_INFO = {
     },
     'POWER_LOTTO': {
         2: {'strategy': 'Fourier Rhythm', 'edge': '+1.91%', 'verified': '1000期'},
-        3: {'strategy': 'Power Precision', 'edge': '+2.30%', 'verified': '1500期 STABLE'},
+        3: {'strategy': 'Power Precision', 'edge': '+2.23%', 'verified': '1500期 STABLE z=2.74'},
     },
     'DAILY_539': {
         3: {'strategy': 'SumRange+Bayesian+ZoneBalance', 'edge': 'N/A', 'verified': ''},
@@ -240,7 +241,7 @@ def predict_power(history, rules, num_bets=2):
         strategy = 'Fourier Rhythm (Edge +1.91%)'
     else:
         bets = power_precision_3bet(history)[:num_bets]
-        strategy = 'Power Precision (Edge +2.30%)'
+        strategy = 'Power Precision (Edge +2.23%)'
 
     # 附加特別號到每注
     for bet in bets:
@@ -356,6 +357,17 @@ def print_prediction(lottery_type, bets, strategy, history, num_bets):
     if lottery_type == 'POWER_LOTTO':
         sp_top = power_special_v3(history)
         print(f'  特別號 Top3 (V3): {sp_top}')
+
+        # 冷號預警 (P3: 監控用，不影響選號)
+        try:
+            from tools.cold_alert import get_cold_alert_info
+            cold_info = get_cold_alert_info(history)
+            print(f'  冷號預警: {cold_info["message"]}')
+            if cold_info['is_alert']:
+                top6 = ', '.join(f'{n:02d}' for n in cold_info['top_cold'])
+                print(f'  冷號參考: {top6} (score={cold_info["alert_score"]:.2f})')
+        except Exception:
+            pass
 
     print('-' * 60)
     print(f'  策略: {strategy}')

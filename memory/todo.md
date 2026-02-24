@@ -70,6 +70,10 @@
 
 - [x] **建立 strategies/ 目錄**
   - 為現有採納策略補充 strategy.yaml（Idea 階段文件）
+  - **補齊 sim_result.json + performance_log.json (2026-02-24)**
+    - 8策略 × 2文件 = 16個文件，數據來源：MEMORY.md + CLAUDE.md
+    - RSM有數據：BL 3注/2注(2個)、PL 3注/2注 已填入真實值
+    - RSM PENDING：BL 4注/5注、PL 5注（需首次RSM掃描）
 
 - [x] **補齊 2注策略 backtest_report.md**
   - big_lotto/2bet_fourier_rhythm, 2bet_deviation_complement
@@ -117,4 +121,7 @@
 ### 2026-02-24 — strategies/ 目錄建立
 - 結果：8個採納策略（大樂透5、威力彩3）建立完整生命週期文件
 - 文件：strategy.yaml / backtest_report.md / stat_test.txt / version_tag.txt
-- 待補：sim_result.json / performance_log.json（Monitor 階段尚未建立）
+- 補完：sim_result.json + performance_log.json 全部建立（2026-02-24）
+  - RSM數據：BL 3注 STABLE(30p+4.51/100p+2.51/300p+1.84), 2注偏差 LATE_BLOOMER, 2注Fourier STABLE
+  - RSM數據：PL 3注 ACCELERATING(30p+22.16/z=2.63), 2注Fourier STABLE
+  - RSM PENDING：BL 4注/5注、PL 5注（策略新採納，待首次RSM掃描）

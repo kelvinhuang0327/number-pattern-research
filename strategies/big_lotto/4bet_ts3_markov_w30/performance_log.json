@@ -1,0 +1,15 @@
+{
+  "strategy_id": "big_lotto/4bet_ts3_markov_w30",
+  "updated": "2026-02-24",
+  "rsm_source": "PENDING",
+  "note": "4注策略於2026-02-24採納（Sum-Constraint v2升級），RSM尚未建立監控條目",
+  "windows": {
+    "30p":  { "edge_pct": null, "trend": "PENDING" },
+    "100p": { "edge_pct": null, "trend": "PENDING" },
+    "300p": { "edge_pct": null, "trend": "PENDING" }
+  },
+  "overall_trend": "PENDING",
+  "recommendation": "★採納 (RSM監控待建立)",
+  "alerts": [],
+  "next_review": "首次RSM掃描後更新"
+}

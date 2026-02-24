@@ -1,0 +1,35 @@
+{
+  "strategy_id": "power_lotto/3bet_power_precision",
+  "version": "v1.0.0",
+  "generated_date": "2026-02-24",
+  "lottery_type": "POWER_LOTTO",
+  "n_bets": 3,
+  "random_baseline_pct": 11.17,
+  "backtest": {
+    "150p": { "m3_rate_pct": 14.67, "edge_pct": 3.50, "status": "PASS" },
+    "500p": { "m3_rate_pct": 13.60, "edge_pct": 2.43, "status": "PASS" },
+    "1500p":{ "m3_rate_pct": 13.47, "edge_pct": 2.30, "status": "PASS" }
+  },
+  "pattern": "STABLE",
+  "statistics": {
+    "z_score": 2.18,
+    "p_value": 0.029,
+    "significant": true
+  },
+  "permutation_test": {
+    "shuffles": 200,
+    "p_value": 0.015,
+    "cohen_d": 2.18,
+    "verdict": "SIGNAL_DETECTED"
+  },
+  "notes": "F2+Echo/Cold：注1=Fourier Rhythm, 注2=Echo加分Cold補充, 注3=純Cold正交；通過Bonferroni修正(p=0.015 < α/2=0.025)",
+  "coverage": {
+    "unique_numbers": 18,
+    "pool_size": 38,
+    "overlap": 0,
+    "coverage_rate": 0.474
+  },
+  "seed": 42,
+  "script": "tools/predict_power_precision_3bet.py",
+  "verdict": "ADOPTED"
+}

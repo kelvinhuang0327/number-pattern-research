@@ -1,0 +1,16 @@
+{
+  "strategy_id": "big_lotto/2bet_fourier_rhythm",
+  "updated": "2026-02-24",
+  "rsm_source": "data/rolling_monitor_BIG_LOTTO.json",
+  "rsm_run_date": "2026-02-10",
+  "windows": {
+    "30p":  { "edge_pct": 2.98, "trend": "POSITIVE" },
+    "100p": { "edge_pct": 2.31, "trend": "POSITIVE" },
+    "300p": { "edge_pct": 0.98, "trend": "POSITIVE" }
+  },
+  "overall_trend": "STABLE",
+  "z_score": null,
+  "recommendation": "★推薦 (三窗口全正，RSM STABLE)",
+  "alerts": [],
+  "next_review": "每100期新資料後重跑RSM；注意MODERATE_DECAY長期趨勢"
+}

@@ -1,0 +1,15 @@
+{
+  "strategy_id": "power_lotto/5bet_orthogonal",
+  "updated": "2026-02-24",
+  "rsm_source": "PENDING",
+  "note": "5注正交策略尚未針對此配置建立RSM監控條目；PP3(注1-3)的RSM近30期有+22.16%爆發，但整體5注結果未單獨追蹤",
+  "windows": {
+    "30p":  { "edge_pct": null, "trend": "PENDING" },
+    "100p": { "edge_pct": null, "trend": "PENDING" },
+    "300p": { "edge_pct": null, "trend": "PENDING" }
+  },
+  "overall_trend": "PENDING",
+  "recommendation": "★採納 (RSM監控待建立)",
+  "alerts": [],
+  "next_review": "首次RSM掃描後更新"
+}

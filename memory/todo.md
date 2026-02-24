@@ -71,6 +71,14 @@
 - [x] **建立 strategies/ 目錄**
   - 為現有採納策略補充 strategy.yaml（Idea 階段文件）
 
+- [x] **補齊 2注策略 backtest_report.md**
+  - big_lotto/2bet_fourier_rhythm, 2bet_deviation_complement
+  - power_lotto/2bet_fourier_rhythm
+
+- [x] **建立 research_plan_template.md**
+  - 路徑：`memory/research_plan_template.md`
+  - 新研究開始前複製使用
+
 ---
 
 ## 已完成 (Done)

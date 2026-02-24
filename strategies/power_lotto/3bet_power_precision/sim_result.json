@@ -2,18 +2,20 @@
   "strategy_id": "power_lotto/3bet_power_precision",
   "version": "v1.0.0",
   "generated_date": "2026-02-24",
+  "last_updated": "2026-02-24",
   "lottery_type": "POWER_LOTTO",
   "n_bets": 3,
   "random_baseline_pct": 11.17,
   "backtest": {
     "150p": { "m3_rate_pct": 14.67, "edge_pct": 3.50, "status": "PASS" },
     "500p": { "m3_rate_pct": 13.60, "edge_pct": 2.43, "status": "PASS" },
-    "1500p":{ "m3_rate_pct": 13.47, "edge_pct": 2.30, "status": "PASS" }
+    "1500p":{ "m3_rate_pct": 13.40, "edge_pct": 2.23, "status": "PASS" }
   },
   "pattern": "STABLE",
+  "db_periods_at_update": 1888,
   "statistics": {
-    "z_score": 2.18,
-    "p_value": 0.029,
+    "z_score": 2.74,
+    "p_value": 0.003,
     "significant": true
   },
   "permutation_test": {

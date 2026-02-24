@@ -94,7 +94,7 @@
 | ❌ 威力彩 | **2注 ROI-Stacked (MEL)** | 2 | **7.60%** | 7.59% | **+0.01%** | **500 期驗證：與隨機無異，廢棄** |
 | ✅ 威力彩 | **2注 Fourier30+Markov30** | 2 | **8.50%** | 7.59% | **+0.91%** | **1000期驗證，穩定有效 (2026-02-05)** |
 | ✅ 威力彩 | **2注 偏差互補+回聲 (P0)** | 2 | **8.70%** | 7.59% | **+1.11%** | **1000期+10種子 ±0.00% 確定性，Lag-2回聲67.3% (2026-02-11)** |
-| ✅ 威力彩 | **3注 Power Precision (F2+Echo/Cold)** | 3 | **13.47%** | 11.17% | **+2.30%** | **1500期 三窗口全正, P3 p=0.015 SIGNAL DETECTED ★威力彩最佳 (2026-02-18 P3 VERIFIED)** |
+| ✅ 威力彩 | **3注 Power Precision (F2+Echo/Cold)** | 3 | **13.40%** | 11.17% | **+2.23%** | **1888期更新 三窗口全正, P3 p=0.015 SIGNAL DETECTED ★威力彩最佳 z=2.74 (2026-02-24 P1修正)** |
 | ~~✅~~ 威力彩 | ~~3注 混合+灰色地帶 (P0+P1)~~ | 3 | ~~12.18%~~ | 11.17% | ~~+1.01%~~ | ~~已被 Power Precision 取代 (2026-02-11)~~ |
 | ✅ 大樂透 | **2注 偏差互補+回聲 (P0)** | 2 | **4.90%** | 3.69% | **+1.21%** | **1000期+10種子 ±0.00% 確定性，Claude 獨立驗證通過 (2026-02-11)** |
 | ⚠️ 大樂透 | **3注 混合+灰色地帶 (P0+P1)** | 3 | **6.59%** | 5.49% | **+1.10%** | **1000期+10種子 ±0.30%，但150p/500p退化 (Claude 2026-02-11 驗證)** |
@@ -377,7 +377,7 @@ python3 tools/power_2bet_hedging.py --diversified  # 強制多樣化模式
 | **2注** | **Fourier Rhythm** | **9.50%** | 7.59% | **+1.91%** ✅ | 1000 |
 | **2注** | **偏差互補+回聲 P0** | **8.70%** | 7.59% | **+1.11%** ✅ | 1000+10種子 |
 | **2注** | 冷號互補 | 9.00% | 7.59% | **+1.41%** ✅ | 200 |
-| **3注** | **Power Precision (F2+Echo/Cold)** | **13.47%** | 11.17% | **+2.30%** ✅ | 1500期 STABLE |
+| **3注** | **Power Precision (F2+Echo/Cold)** | **13.40%** | 11.17% | **+2.23%** ✅ | 1888期 STABLE |
 | ~~3注~~ | ~~混合+灰色地帶 P0+P1~~ | ~~12.18%~~ | ~~11.17%~~ | ~~+1.01%~~ | ~~已被 Power Precision 取代~~ |
 | ~~3注~~ | ~~Triple Strike~~ | ~~11.60%~~ | ~~11.17%~~ | ~~+0.43%~~ | ~~已被 Power Precision 取代~~ |
 | - | **特別號 V3** | **14.70%** | 12.50% | **+2.20%** ✅ | 1000 |
@@ -475,7 +475,7 @@ bet2 = sorted_nums[6:12] # 次冷 7-12
 
 | 排名 | 策略 | 注數 | Edge | 驗證期數 | 狀態 |
 |------|------|------|------|----------|------|
-| 🥇 | **Power Precision (F2+Echo/Cold)** | 3注 | **+2.30%** | 1500期 STABLE | ✅ **3注推薦** |
+| 🥇 | **Power Precision (F2+Echo/Cold)** | 3注 | **+2.23%** | 1888期 STABLE | ✅ **3注推薦** |
 | 🥈 | **Fourier Rhythm** | 2注 | **+1.91%** | 1000 期 | ✅ **2注推薦** |
 | 🥉 | 冷號互補 | 2注 | +1.41% | 200 期 | ✅ 備選 |
 | 4 | **偏差互補+回聲 P0** | 2注 | **+1.11%** | 1000期+10種子 | ✅ **確定性** |
@@ -496,7 +496,7 @@ python3 tools/backtest_p0p1_power.py        # 2注/3注 P0+P1 (確定性, Edge +
 |------|-----|--------|------|
 | **2注** | **Fourier Rhythm** | V3 | +1.91% (主) + +2.20% (特) |
 | **2注** | **偏差互補+回聲 P0** | V3 | +1.11% (確定性) + +2.20% (特) |
-| **3注** | **Power Precision (F2+Echo/Cold)** | V3 | **+2.30%** + +2.20% (特) ★推薦 |
+| **3注** | **Power Precision (F2+Echo/Cold)** | V3 | **+2.23%** + +2.20% (特) ★推薦 |
 
 ### 大樂透 (2026-02-18 更新版)
 
@@ -768,7 +768,7 @@ print(f"過擬合分數: {result['overall_score']}/100")
 | 大樂透 | 3注 | Triple Strike v2 | **+1.46%** | 1500期 z=2.48 ROBUST |
 | 大樂透 | 2注 | 偏差互補+回聲 P0 | +1.21% | 1000期+10種子 |
 | 威力彩 | 2注 (默認) | Fourier Rhythm | +1.91% | 1000期 |
-| 威力彩 | 3注 | Power Precision (F2+Echo/Cold) | +2.30% | 1500期 STABLE |
+| 威力彩 | 3注 | Power Precision (F2+Echo/Cold) | +2.23% | 1888期 STABLE |
 | 威力彩 | 特別號 | V3 MAB | +2.20% | 1000期 |
 
 **執行方式**:
@@ -788,7 +788,7 @@ python3 tools/quick_predict.py all             # 全部彩種
 | `tools/predict_biglotto_deviation_2bet.py` | 大樂透 2注 偏差互補 (舊版，無 P0 回聲) | +0.91% |
 | `tools/predict_biglotto_triple_strike.py` | 大樂透 3注 Triple Strike | +0.98% |
 | `tools/power_fourier_rhythm.py --predict` | 威力彩 2注 Fourier Rhythm | +1.91% |
-| `tools/predict_power_precision_3bet.py` | 威力彩 3注 Power Precision (F2+Echo/Cold) | +2.30% |
+| `tools/predict_power_precision_3bet.py` | 威力彩 3注 Power Precision (F2+Echo/Cold) | +2.23% |
 | `tools/power_triple_strike.py` | 威力彩 3注 Triple Strike (已被 Power Precision 取代) | +0.43% |
 
 ### `tools/power_twin_strike.py` - 威力彩 2注備選預測
@@ -878,7 +878,7 @@ python3 tools/scientific_baseline_report.py
 - `tools/predict_biglotto_deviation_2bet.py` - 大樂透 2注 偏差互補 (舊版，無 P0 回聲)
 - ⭐ `tools/predict_biglotto_triple_strike.py` - **大樂透 3注預測 (Triple Strike)** ✅ (2026-02-10 升級)
 - ⭐ `tools/power_fourier_rhythm.py` - **威力彩 2注主力預測 (Fourier Rhythm)** ✅ (2026-01-28 升級)
-- ⭐ `tools/predict_power_precision_3bet.py` - **威力彩 3注主力預測 (Power Precision F2+Echo/Cold)** ✅ (Edge +2.30%, 1500期 STABLE)
+- ⭐ `tools/predict_power_precision_3bet.py` - **威力彩 3注主力預測 (Power Precision F2+Echo/Cold)** ✅ (Edge +2.23%, 1888期 STABLE)
 - `tools/power_triple_strike.py` - 威力彩 3注 Triple Strike (Edge +0.43%, 已被 Power Precision 取代)
 - `tools/power_twin_strike.py` - 威力彩 2注備選預測 (冷號互補 + V3)
 - `tools/scientific_baseline_report.py` - 科學基準報表 (7注完整版)

@@ -1,0 +1,17 @@
+{
+  "strategy_id": "daily_539/5bet_fourier4_cold",
+  "scan_date": "2026-02-25",
+  "db_periods": 5792,
+  "windows": {
+    "150p": { "m3_count": 11, "m3_rate_pct": 7.33, "edge_pct": 2.41, "trend": "POSITIVE" },
+    "500p": { "m3_count": 28, "m3_rate_pct": 5.60, "edge_pct": 0.68, "trend": "POSITIVE" },
+    "1500p":{ "m3_count": 94, "m3_rate_pct": 6.27, "edge_pct": 1.35, "trend": "POSITIVE" }
+  },
+  "overall_trend": "STABLE",
+  "z_score_1500p": 2.4,
+  "alerts": [
+    "PROVISIONAL: Permutation p=0.030，差Bonferroni/2門檻0.025，需200期後重驗",
+    "首個通過三窗口驗證的今彩539策略，歷史 Backlog 達成"
+  ],
+  "next_review_at_periods": 5992
+}

@@ -17,9 +17,11 @@ _（目前無進行中任務）_
 
 ### 策略研究
 
-- [ ] **每日539策略驗證**
-  - 目前 MEMORY.md 無今彩539已驗證策略記錄
-  - 需建立 baseline 並驗證至少一個 Edge > 0 的方法
+- [x] **每日539策略驗證** ✅ 2026-02-25 完成
+  - 首個通過三窗口驗證策略: `5bet_fourier4_cold` (PROVISIONAL)
+  - 1500p Edge +1.35% (z=2.4), Permutation p=0.030 (SIGNAL_DETECTED)
+  - 腳本: `tools/predict_539_5bet_f4cold.py`
+  - **⚠️ 下次驗證: 5992期 (再200期後)**
 
 - [ ] **大樂透 RSM 持續監控**
   - `data/rolling_monitor_BIG_LOTTO.json` 需定期更新（下次建議每100期）

@@ -25,7 +25,8 @@
 
 | 策略 | Real Edge | Shuffle Mean | p-value | Cohen's d | 判定 |
 |------|-----------|-------------|---------|-----------|------|
-| **BL 5-bet TS3+M4+FO** | **+1.97%** | +0.22% | **0.030** | **2.13** | **SIGNAL DETECTED** (P3 以舊版 +1.77% 驗證) |
+| ~~BL 5-bet TS3+M4+FO~~ | ~~+1.97%~~ | +0.22% | 0.030 | 2.13 | SIGNAL DETECTED (P3 以舊版驗證，已被 P1+偏差互補+Sum 取代 2026-02-26) |
+| **BL 5-bet P1+Dev+Sum** | **+2.71%** | — | perm p=0.062 | — | **ROBUST 三窗口全正** (2026-02-26 升級，SUPERSEDED舊版) |
 | BL 4-bet TS3+M4 | +1.70% | +0.14% | 0.055 | 1.75 | MARGINAL (Sum-Constraint v2 更新) |
 | **PL PP3 3-bet** | **+2.17%** | +0.31% | **0.015** | **2.18** | **SIGNAL DETECTED** |
 
@@ -88,7 +89,8 @@
 | ❌ 大樂透 | **2注 Markov** | 2 | **3.20%** | 3.69% | **-0.49%** | **長期回歸失效，廢棄** |
 | ✅ 威力彩 | **2注 Fourier Rhythm** | 2 | **9.50%** | 7.59% | **+1.91%** | **修正後反而更強** |
 | ⚠️ 大樂透 | **4注 Cluster Pivot** | 4 | **8.67%** | 7.25% | **+1.42%** | **150期有效，1500期 Edge -0.45% SHORT_MOMENTUM (2026-02-10 審計)** |
-| ✅ 大樂透 | **5注 TS3+Markov+頻率正交** | 5 | **10.93%** | 8.96% | **+1.97%** | **1500期 z=2.68 (p<0.01), P3 p=0.030, ROBUST 三窗口全正 ★大樂透最佳 (2026-02-24 Sum-Constraint v2)** |
+| ~~✅~~ 大樂透 | ~~5注 TS3+Markov+頻率正交~~ | 5 | ~~10.93%~~ | 8.96% | ~~+1.97%~~ | ~~已被 P1+偏差互補+Sum均值約束 取代 (2026-02-26 SUPERSEDED)~~ |
+| ✅ 大樂透 | **5注 P1+偏差互補+Sum均值約束** | 5 | **11.60%** | 8.96% | **+2.71%** | **1500期 ROBUST 三窗口全正, perm p=0.062 ★大樂透最佳 (2026-02-26)** |
 | ✅ 威力彩 | **2注 冷號互補** | 2 | **9.00%** | 7.59% | **+1.41%** | **修正後反而更強** |
 | ⚠️ 威力彩 | **1注 Markov** | 1 | **4.00%** | 3.87% | **+0.13%** | **微弱** |
 | ❌ 威力彩 | **2注 ROI-Stacked (MEL)** | 2 | **7.60%** | 7.59% | **+0.01%** | **500 期驗證：與隨機無異，廢棄** |
@@ -500,21 +502,19 @@ python3 tools/backtest_p0p1_power.py        # 2注/3注 P0+P1 (確定性, Edge +
 
 ### 大樂透 (2026-02-18 更新版)
 
-> **2026-02-18 P3 對抗驗證通過**：BL 5-bet P3 p=0.030, Cohen's d=2.13, **SIGNAL DETECTED**。
-> 結合標準回測 z=2.40 (p=0.008)，雙重確認 Edge 來自時序訊號 (88%)。
-> **2026-02-24 Sum-Constraint v2 全面更新**：注2 Cold 改用 pool=12 + C(12,6) Sum均值回歸約束 (Lift=1.495x)。
-> 3注: +1.46% z=2.48 | 4注: +1.70% z=2.54 | 5注: **+1.97%** z=2.68，全部 ROBUST 三窗口全正。
-> 5注腳本: `tools/backtest_biglotto_5bet_ts3markov.py` (正式替代 backtest_big_lotto_orthogonal_5bet.py)
-> **2026-02-14 5注正交策略通過驗證**：TS3+Markov(w=30)+頻率正交，1500期 Edge **+1.77%** (舊版), z=2.40 (p=0.008)。
-> McNemar vs 4注: χ²=28.03, p≈0.000 (b=0, c=30)，5注**顯著**優於4注。
+> **2026-02-26 策略升級**：5注改為 **P1+偏差互補+Sum均值約束**，Edge +2.71% > 舊版 +1.97%。
+> 舊版 TS3+Markov+頻率正交 已 SUPERSEDED，歸檔 `rejected/ts3_markov_freq_5bet_biglotto.json`。
+> **2026-02-24 Sum-Constraint v2**：注2 Cold 改用 pool=12 + C(12,6) Sum均值回歸約束 (Lift=1.495x)。
+> 3注: +1.46% z=2.48 | 4注: +2.17% z=3.24 p=0.010 | 5注: **+2.71%** ROBUST 三窗口全正。
+> 5注腳本: `tools/backtest_p1dev_5bet.py`；Production: `tools/quick_predict.py :: biglotto_p1_deviation_5bet()`
 
 #### ⭐ 一鍵預測工具 (2026-02-14 統一入口)
 
 ```bash
 # 統一預測入口 (自動選擇最佳策略)
-python3 tools/quick_predict.py 大樂透          # 5注正交 (Edge +1.97%) ★推薦
+python3 tools/quick_predict.py 大樂透          # 5注 P1+偏差互補+Sum均值約束 (Edge +2.71%) ★推薦
 python3 tools/quick_predict.py 大樂透 3        # 3注 Triple Strike v2 (Edge +1.46%)
-python3 tools/quick_predict.py 大樂透 2        # 2注 P0 回聲 (Edge +1.21%)
+python3 tools/quick_predict.py 大樂透 2        # 2注 P1鄰號+冷號 v2 (Edge +1.41%)
 python3 tools/quick_predict.py all             # 全部彩種
 
 # 獨立腳本 (仍可用)
@@ -526,30 +526,27 @@ python3 tools/backtest_p0p1_upgrade.py --periods 1000
 python3 tools/backtest_p0p1_upgrade.py --all            # 150+500+1000+1500
 ```
 
-#### 🏆 大樂透 5注正交 (2026-02-18 P3 VERIFIED ★大樂透最佳)
+#### ~~🏆 大樂透 5注正交 (TS3+Markov+頻率正交)~~ ← SUPERSEDED 2026-02-26
+
+> ⚠️ 此策略已被 **P1+偏差互補+Sum均值約束** 取代，歸檔：`rejected/ts3_markov_freq_5bet_biglotto.json`
+
+#### 🏆 大樂透 5注 P1+偏差互補+Sum均值約束 (2026-02-26 升級 ★大樂透最佳)
 
 | 驗證條件 | M3+ 勝率 | 隨機基準 | Edge | z-score |
 |----------|----------|----------|------|---------|
-| 150期 | 9.33% | 8.96% | **+0.37%** | +0.14 |
-| 500期 | **11.60%** | 8.96% | **+2.64%** | **+2.19** |
-| **1500期** | **10.93%** | **8.96%** | **+1.97%** | **+2.68 (p<0.01)** |
-| 衰減分析 | 前半10.93% | 後半10.93% | | **ROBUST (三窗口全正)** |
-| **P3 對抗驗證** | 200 shuffles | p=**0.030** | d=**2.13** | **SIGNAL DETECTED** (舊版驗證) |
+| 150期 | 11.89% | 8.96% | **+2.92%** | — |
+| 500期 | 11.31% | 8.96% | **+2.35%** | — |
+| **1500期** | **11.60%** | **8.96%** | **+2.71%** | **ROBUST 三窗口全正** |
+| perm 驗證 | — | — | perm p=0.062 | MARGINAL (注2 Sum p=0.003 STABLE) |
 
-**策略組合** (5注完全零重疊，覆蓋 30/49 號):
-- **注1 (Fourier Rhythm)**: FFT 週期分析 (window=500)，取週期信號最強的6個
-- **注2 (Cold Numbers v2)**: pool=12冷號候選 + C(12,6)枚舉Sum均值回歸約束，排除注1 (Lift=1.495x)
-- **注3 (Tail Balance)**: 尾數(0-9)均衡覆蓋，排除注1-2
-- **注4 (Markov w=30)**: 條件轉移矩陣，排除注1-3 (正交)
-- **注5 (頻率正交)**: 剩餘30號按近100期頻率排序取前6，排除注1-4
+**策略組合** (5注零重疊，覆蓋 30/49 號):
+- **注1 (P1 鄰域)**: 上期號碼 ±1 鄰域池 → Fourier+Markov 排名 Top-6
+- **注2 (冷號+固定Sum)**: pool=12 最冷號 + C(12,6) Sum目標 [μ-0.5σ, μ+0.5σ]，排除注1 (Lift=1.495x)
+- **注3 (偏差互補 Hot)**: 近50期頻率偏高號碼，排除注1-2
+- **注4 (偏差互補 Cold)**: 近50期頻率偏低號碼，排除注1-3
+- **注5 (殘差+條件式Sum)**: 剩餘號碼池 → 依上期Sum高低決定目標範圍
 
-**邊際分析** (注5 新增):
-- 邊際 30/1500 期 (2.00%)，注5 獨力將 4注miss 翻轉為 5注M3+
-- McNemar vs 4注: χ²=28.03, p≈0.000 (b=0, c=30)
-- 邊際 Edge: +0.14% (vs 隨機第5注 1.86%)
-- 注5 各注命中: Fourier=36, Cold=41, Tail=27, Markov=30, FreqOrth=31 (1500期)
-
-**確定性**: 全策略無隨機成分，不同 seed 結果完全一致。
+**Production**: `tools/quick_predict.py :: biglotto_p1_deviation_5bet()`
 
 #### 📊 各注數最佳策略排名 (2026-02-14 更新版)
 
@@ -559,8 +556,8 @@ python3 tools/backtest_p0p1_upgrade.py --all            # 150+500+1000+1500
 | **2注** | **偏差互補+回聲 P0** | **4.90%** | 3.69% | **+1.21%** | **1000期+10種子** | `tools/backtest_p0p1_upgrade.py` |
 | **3注** | **Triple Strike v2** | **6.93%** | 5.48% | **+1.46%** | **1500期 z=2.48** | `tools/predict_biglotto_triple_strike.py` |
 | **3注** | 混合+灰色地帶 P0+P1 | 6.59% | 5.49% | +1.10% | 1000期+10種子 (150/500p退化) | `tools/backtest_p0p1_upgrade.py` |
-| **4注** | TS3+Markov(w=30) | 8.93% | 7.23% | **+1.70%** | **1500期 z=2.54 ROBUST** | `tools/backtest_biglotto_markov_4bet.py` |
-| **5注** | **TS3+Markov+頻率正交** | **10.93%** | **8.96%** | **+1.97%** | **1500期 z=2.68, P3 p=0.030 ROBUST ★最佳** | `tools/backtest_biglotto_5bet_ts3markov.py` |
+| **4注** | **P1+偏差互補** | **9.73%** | 7.25% | **+2.17%** | **1500期 z=3.24 p=0.010, perm p=0.010 ROBUST** | `tools/backtest_p1_deviation_4bet.py` |
+| **5注** | **P1+偏差互補+Sum均值約束** | **11.60%** | **8.96%** | **+2.71%** | **1500期 ROBUST 三窗口全正 ★最佳** | `tools/quick_predict.py :: biglotto_p1_deviation_5bet()` |
 
 > 📊 **驗證標準**: 2-3注經 1000期+10種子嚴格驗證，5注經 1500期三階驗證 (2026-02-14)
 > ⚠️ **所有 Edge 已使用正確的 N 注基準 `1-(1-p)^N` 計算**
@@ -573,15 +570,16 @@ python3 tools/backtest_p0p1_upgrade.py --all            # 150+500+1000+1500
 | **2注** | **偏差互補+回聲 P0** | **+1.21%** | 確定性，10種子 ±0.00%，含Lag-2回聲 (2026-02-11) |
 | **3注** | **Triple Strike** | **+0.98%** | 1500期三窗口皆穩 (STABLE)，RSM 推薦 (2026-02-10) |
 | **3注備選** | 混合+灰色地帶 P0+P1 | +1.10% | 1000期優但 150/500期退化，短中期不穩 |
-| **4注** | TS3+Markov(w=30) | **+1.70%** | **1500期 z=2.54 ROBUST (2026-02-24 Sum-Constraint v2)** |
-| **5注** | **TS3+Markov+頻率正交** | **+1.97%** | **1500期 z=2.68, P3 p=0.030 ROBUST 三窗口全正 ★推薦 (2026-02-24)** |
+| **4注** | **P1+偏差互補** | **+2.17%** | **1500期 z=3.24 p=0.010, perm p=0.010 ROBUST (2026-02-25)** |
+| **5注** | **P1+偏差互補+Sum均值約束** | **+2.71%** | **1500期 ROBUST 三窗口全正 ★推薦 (2026-02-26)** |
 
 #### ✅ 經驗證有效的方法 (2026-02-18 更新)
 
 | 方法 | 最佳注數 | Edge | 驗證條件 | 特點 |
 |------|---------|------|----------|------|
-| **TS3+Markov+頻率正交** | **5注** | **+1.97%** | **1500期 z=2.68, P3 p=0.030, ROBUST** | ★大樂透最佳 (2026-02-24 Sum-Constraint v2) |
-| TS3+Markov(w=30) | 4注 | **+1.70%** | **1500期 z=2.54 ROBUST** | (2026-02-24 Sum-Constraint v2) |
+| **P1+偏差互補+Sum均值約束** | **5注** | **+2.71%** | **1500期 ROBUST 三窗口全正, perm p=0.062** | ★大樂透最佳 (2026-02-26) |
+| **P1+偏差互補** | **4注** | **+2.17%** | **1500期 z=3.24 p=0.010, perm p=0.010 ROBUST** | (2026-02-25) |
+| ~~TS3+Markov+頻率正交~~ | ~~5注~~ | ~~+1.97%~~ | ~~SUPERSEDED~~ | ~~歸檔 rejected/ts3_markov_freq_5bet_biglotto.json~~ |
 | **偏差互補+回聲 P0** | **2注** | **+1.21%** | **1000期+10種子** | 確定性，Lag-2回聲加分 (2026-02-11) |
 | **Triple Strike v2** | **3注** | **+1.46%** | **1500期 z=2.48 ROBUST** | Sum-Constraint Cold pool=12 (2026-02-24) |
 | 混合+灰色地帶 P0+P1 | 3注 | +1.10% | 1000期+10種子 | 1000期優，但 150/500期退化 (Claude 驗證) |
@@ -608,9 +606,45 @@ python3 tools/backtest_p0p1_upgrade.py --all            # 150+500+1000+1500
 
 ### 今彩539
 
-| 目標 | 推薦策略 | 勝率 |
-|------|---------|------|
-| **3注** | 覆蓋策略 | **37.14%** |
+> 最後更新：2026-03-03（13策略全面回測，5798期，backtest_539_rrf_v2.py）
+> 生產入口：`tools/quick_predict.py :: predict_539()`
+
+#### ✅ 已採納策略
+
+| 注數 | 策略 | Edge(1500p) | z | Perm_p | 150p | 500p | 狀態 |
+|------|------|------------|---|--------|------|------|------|
+| **1注** | **ACB 異常捕捉** | **+3.00%** | 3.66 | 0.005 | +2.60% | +1.80% | ✅ **ADOPTED** |
+| **2注** | **MidFreq+ACB 正交** | **+5.06%** | 4.77 | 0.005 | +10.46% | +5.46% | ✅ **ADOPTED** |
+| **3注** | **ACB+Markov+Fourier 正交** | **+6.43%** | 5.41 | 0.005 | +3.50% | +3.90% | ⚠️ **PROVISIONAL** |
+
+**注意**：3注為 PROVISIONAL，McNemar vs F4Cold p=0.2200（未達 L48 門檻 p<0.05）。
+監控 200 期 RSM，命中率持續 >+6% 後升格 ADOPTED。
+
+#### 策略設計
+
+**1注 ACB（anomaly_capture_bet）**
+- `score = (freq_deficit×0.4 + gap_score×0.6) × boundary_bonus × mod3_bonus`
+- boundary_bonus：n≤5 或 n≥35 → 1.2x；mod3_bonus：n%3==0 → 1.1x
+- cross-zone 約束：強制 ≥2 個 zone（Z1=1-13, Z2=14-26, Z3=27-39）
+- window=100
+
+**2注 MidFreq+ACB 正交**
+- 注1：MidFreq Top-5（近100期頻率最接近期望值的號碼，均值回歸）
+- 注2：ACB Top-5（排除注1）
+
+**3注 ACB+Markov+Fourier 正交**
+- 注1：ACB Top-5（全池，最強信號優先）
+- 注2：Markov Top-5（排除注1，轉移機率）
+- 注3：Fourier Top-5（排除注1+注2，週期共振，window=500）
+
+#### ❌ 已淘汰策略
+
+| 策略 | Edge(1500p) | 原因 |
+|------|------------|------|
+| F4Cold 3注（Fourier純切片） | +4.50% | LATE_BLOOMER（150p=-0.50%），perm p=0.035，信號單一 |
+| RRF 融合（等權） | +2.83% | perm p=0.199 FAIL，等權稀釋強信號 |
+| Markov 1注 | +1.47% | perm p=0.085 未達門檻，歸檔 `rejected/markov_1bet_539.json` |
+| P1+偏差互補（移植自大樂透） | ≈0% | 539全資料 Edge=0，信號不跨彩種通用 |
 
 ---
 
@@ -764,18 +798,19 @@ print(f"過擬合分數: {result['overall_score']}/100")
 
 | 彩種 | 注數 | 策略 | Edge | 驗證 |
 |------|------|------|------|------|
-| 大樂透 | 5注 (默認) | **TS3+Markov+頻率正交** | **+1.97%** | **1500期 z=2.68 ROBUST ★最佳** |
+| 大樂透 | 5注 (默認) | **P1+偏差互補+Sum均值約束** | **+2.71%** | **1500期 ROBUST 三窗口全正 ★最佳** |
+| 大樂透 | 4注 | P1+偏差互補 | **+2.17%** | 1500期 z=3.24 p=0.010 ROBUST |
 | 大樂透 | 3注 | Triple Strike v2 | **+1.46%** | 1500期 z=2.48 ROBUST |
-| 大樂透 | 2注 | 偏差互補+回聲 P0 | +1.21% | 1000期+10種子 |
+| 大樂透 | 2注 | P1鄰號+冷號 v2 | +1.41% | 1500期 z=2.89 p=0.003 |
 | 威力彩 | 2注 (默認) | Fourier Rhythm | +1.91% | 1000期 |
 | 威力彩 | 3注 | Power Precision (F2+Echo/Cold) | +2.23% | 1888期 STABLE |
 | 威力彩 | 特別號 | V3 MAB | +2.20% | 1000期 |
 
 **執行方式**:
 ```bash
-python3 tools/quick_predict.py 大樂透          # 5注正交 (Edge +1.97%) ★推薦
+python3 tools/quick_predict.py 大樂透          # 5注 P1+偏差互補+Sum均值約束 (Edge +2.71%) ★推薦
 python3 tools/quick_predict.py 大樂透 3        # 3注 Triple Strike
-python3 tools/quick_predict.py 大樂透 2        # 2注 P0 回聲
+python3 tools/quick_predict.py 大樂透 2        # 2注 P1鄰號+冷號 v2 (Edge +1.41%)
 python3 tools/quick_predict.py 威力彩          # 2注 Fourier Rhythm + 特別號 V3
 python3 tools/quick_predict.py 威力彩 3        # 3注 Power Precision + 特別號 V3
 python3 tools/quick_predict.py all             # 全部彩種
@@ -1165,4 +1200,4 @@ curl "http://localhost:8000/api/wheel/available-guarantees?pool_size=12"
 
 23. **P0+P1 跨彩種有效** - 大樂透開發的 P0 回聲加分 + P1 灰色地帶取樣，移植至威力彩 (1-38選6) 後同樣有效：2注 P0 Edge +1.11% (1000期)，3注 P0+P1 Edge +1.01% (1000期)。威力彩的 Lag-2 回聲更強 (67.3% vs 56.9%)，驗證了這是普遍統計現象而非特定彩種的巧合。(2026-02-11 跨彩種驗證)
 
-> 📅 最後更新：2026-02-24 (Sum-Constraint v2 全面升級: 大樂透3注+1.46% z=2.48, 4注+1.70% z=2.54, 5注+1.97% z=2.68; 全部ROBUST三窗口全正; 5注腳本: tools/backtest_biglotto_5bet_ts3markov.py)
+> 📅 最後更新：2026-03-03 (大樂透5注升級為P1+偏差互補+Sum均值約束 Edge +2.71%; 舊版TS3+Markov+頻率正交 SUPERSEDED歸檔; 4注改為P1+偏差互補 +2.17%; 2注改為P1鄰號+冷號v2 +1.41%)

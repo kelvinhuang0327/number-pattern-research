@@ -44,7 +44,7 @@
 > P3 原始數據：`docs/P3_SHUFFLE_PERMUTATION_RESULTS.json` (PL), `docs/P3_BL_5BET_PERMUTATION_RESULTS.json` (BL)
 > P3 測試腳本：`tools/p3_shuffle_permutation_test.py`
 
-### 12 個永久淘汰方法
+### 12 個暫停研究方法 (L55: 無永久淘汰，只有暫停)
 
 | # | 方法 | 淘汰原因 |
 |---|------|---------|
@@ -349,7 +349,7 @@ python3 tools/power_2bet_hedging.py --diversified  # 強制多樣化模式
 >
 > ⚠️ **ROI-Stacked 驗證記錄** (2026-02-04)：Gemini 聲稱 ROI-Stacked (MEL) 2注達 10.67% (Edge +3.17%)，經 Claude 500 期獨立驗證後發現實為 7.60% (Edge +0.01%)，與隨機基準無異。典型「幸運窗口」案例。驗證腳本：`tools/verify_roi_stacked_500.py`。
 >
-> ⚠️ **RA Ensemble 5-bet 驗證記錄** (2026-02-04)：早期回測聲稱的 20.70% (Phase 67) 被證明為無效數據（過擬合或數據洩漏）。即時驗證顯示其實際 M3+ 僅 3.46%，遠低於 18.20% 基準。**絕對禁止使用。**
+> ⚠️ **RA Ensemble 5-bet 驗證記錄** (2026-02-04)：早期回測聲稱的 20.70% (Phase 67) 被證明為無效數據（過擬合或數據洩漏）。即時驗證顯示其實際 M3+ 僅 3.46%，遠低於 18.20% 基準。**暫停使用。重啟條件：重新設計並通過去洩漏驗證後重測。**
 >
 > ⚠️ **GUM 驗證記錄** (2026-01-26)：Gemini 聲稱 GUM 達到 9.33%/9.10%，經 Claude 獨立驗證後發現均比隨機基準差。詳見 `tools/verify_gum_claim.py`。
 >
@@ -380,8 +380,10 @@ python3 tools/power_2bet_hedging.py --diversified  # 強制多樣化模式
 | **2注** | **偏差互補+回聲 P0** | **8.70%** | 7.59% | **+1.11%** ✅ | 1000+10種子 |
 | **2注** | 冷號互補 | 9.00% | 7.59% | **+1.41%** ✅ | 200 |
 | **3注** | **Power Precision (F2+Echo/Cold)** | **13.40%** | 11.17% | **+2.23%** ✅ | 1888期 STABLE |
+| **4注** | **PP3+FreqOrt** | **17.93%** | 14.60% | **+3.33%** ✅ | 1890期 STABLE, perm p=0.000 |
 | ~~3注~~ | ~~混合+灰色地帶 P0+P1~~ | ~~12.18%~~ | ~~11.17%~~ | ~~+1.01%~~ | ~~已被 Power Precision 取代~~ |
 | ~~3注~~ | ~~Triple Strike~~ | ~~11.60%~~ | ~~11.17%~~ | ~~+0.43%~~ | ~~已被 Power Precision 取代~~ |
+| **5注** | **正交5注 (PP3+FreqOrt×2)** | **21.80%** | 17.91% | **+3.89%** ✅ | 1890期 STABLE |
 | - | **特別號 V3** | **14.70%** | 12.50% | **+2.20%** ✅ | 1000 |
 
 #### 🏆 威力彩 2注 Fourier Rhythm (主號最強)
@@ -473,32 +475,35 @@ bet1 = sorted_nums[:6]   # 最冷 1-6
 bet2 = sorted_nums[6:12] # 次冷 7-12
 ```
 
-#### 🔬 威力彩主號策略排名 (2026-02-11 更新版)
+#### 🔬 威力彩主號策略排名 (2026-03-03 更新版)
 
 | 排名 | 策略 | 注數 | Edge | 驗證期數 | 狀態 |
 |------|------|------|------|----------|------|
-| 🥇 | **Power Precision (F2+Echo/Cold)** | 3注 | **+2.23%** | 1888期 STABLE | ✅ **3注推薦** |
-| 🥈 | **Fourier Rhythm** | 2注 | **+1.91%** | 1000 期 | ✅ **2注推薦** |
-| 🥉 | 冷號互補 | 2注 | +1.41% | 200 期 | ✅ 備選 |
-| 4 | **偏差互補+回聲 P0** | 2注 | **+1.11%** | 1000期+10種子 | ✅ **確定性** |
-| 5 | Fourier30+Markov30 | 2注 | +0.91% | 1000 期 | ✅ 備選 |
-| 6 | Markov | 1注 | +0.13% | 150 期 | ⚠️ 微弱 |
-| ~~7~~ | ~~混合+灰色地帶 P0+P1~~ | ~~3注~~ | ~~+1.01%~~ | | ~~已被 Power Precision 取代~~ |
-| ~~8~~ | ~~Attention LSTM~~ | ~~2注~~ | ~~-0.19%~~ | ~~500 期~~ | ❌ 廢棄 |
+| 🥇 | **正交5注 (PP3+FreqOrt×2)** | 5注 | **+3.89%** | 1890期 STABLE | ✅ **5注推薦** |
+| 🥈 | **PP3+FreqOrt** | 4注 | **+3.33%** | 1890期 STABLE, perm p=0.000 | ✅ **4注推薦** ★新增 |
+| 🥉 | **Power Precision (F2+Echo/Cold)** | 3注 | **+2.43%** | 1890期 STABLE | ✅ **3注推薦** |
+| 4 | **Fourier Rhythm** | 2注 | **+1.91%** | 1000 期 | ✅ **2注推薦** |
+| 5 | 冷號互補 | 2注 | +1.41% | 200 期 | ✅ 備選 |
+| 6 | **偏差互補+回聲 P0** | 2注 | **+1.11%** | 1000期+10種子 | ✅ **確定性** |
+| 7 | Fourier30+Markov30 | 2注 | +0.91% | 1000 期 | ✅ 備選 |
+| 8 | Markov | 1注 | +0.13% | 150 期 | ⚠️ 微弱 |
+| ~~9~~ | ~~混合+灰色地帶 P0+P1~~ | ~~3注~~ | ~~+1.01%~~ | | ~~已被 Power Precision 取代~~ |
+| ~~10~~ | ~~Attention LSTM~~ | ~~2注~~ | ~~-0.19%~~ | ~~500 期~~ | ❌ 廢棄 |
 
-#### 🎯 威力彩建議策略 (2026-02-11 最新)
+#### 🎯 威力彩建議策略 (2026-03-03 更新)
 
 ```bash
-python3 tools/power_fourier_rhythm.py      # 2注主力 (Fourier Rhythm, Edge +1.91%)
-python3 tools/power_twin_strike.py          # 2注備選 (冷號互補, Edge +1.41%)
-python3 tools/backtest_p0p1_power.py        # 2注/3注 P0+P1 (確定性, Edge +1.11%/+1.01%)
+python3 tools/predict_power_orthogonal_5bet.py  # 5注正交 (Edge +3.89%)
+python3 tools/power_fourier_rhythm.py            # 2注主力 (Fourier Rhythm, Edge +1.91%)
 ```
 
 | 注數 | 策略 | 特別號 | Edge |
 |------|-----|--------|------|
 | **2注** | **Fourier Rhythm** | V3 | +1.91% (主) + +2.20% (特) |
 | **2注** | **偏差互補+回聲 P0** | V3 | +1.11% (確定性) + +2.20% (特) |
-| **3注** | **Power Precision (F2+Echo/Cold)** | V3 | **+2.23%** + +2.20% (特) ★推薦 |
+| **3注** | **Power Precision (F2+Echo/Cold)** | V3 | **+2.43%** + +2.20% (特) |
+| **4注** | **PP3+FreqOrt** | V3 | **+3.33%** + +2.20% (特) ★新增 |
+| **5注** | **正交5注** | V3 | **+3.89%** + +2.20% (特) ★推薦 |
 
 ### 大樂透 (2026-02-18 更新版)
 
@@ -637,7 +642,7 @@ python3 tools/backtest_p0p1_upgrade.py --all            # 150+500+1000+1500
 - 注2：Markov Top-5（排除注1，轉移機率）
 - 注3：Fourier Top-5（排除注1+注2，週期共振，window=500）
 
-#### ❌ 已淘汰策略
+#### ⚠️ 暫停研究策略 (附重啟條件)
 
 | 策略 | Edge(1500p) | 原因 |
 |------|------------|------|
@@ -803,7 +808,9 @@ print(f"過擬合分數: {result['overall_score']}/100")
 | 大樂透 | 3注 | Triple Strike v2 | **+1.46%** | 1500期 z=2.48 ROBUST |
 | 大樂透 | 2注 | P1鄰號+冷號 v2 | +1.41% | 1500期 z=2.89 p=0.003 |
 | 威力彩 | 2注 (默認) | Fourier Rhythm | +1.91% | 1000期 |
-| 威力彩 | 3注 | Power Precision (F2+Echo/Cold) | +2.23% | 1888期 STABLE |
+| 威力彩 | 3注 | Power Precision (F2+Echo/Cold) | +2.43% | 1890期 STABLE |
+| 威力彩 | **4注** | **PP3+FreqOrt** | **+3.33%** | **1890期 STABLE, perm p=0.000 ★新增** |
+| 威力彩 | **5注** | **正交5注 (PP3+FreqOrt×2)** | **+3.89%** | **1890期 STABLE** |
 | 威力彩 | 特別號 | V3 MAB | +2.20% | 1000期 |
 
 **執行方式**:
@@ -813,6 +820,8 @@ python3 tools/quick_predict.py 大樂透 3        # 3注 Triple Strike
 python3 tools/quick_predict.py 大樂透 2        # 2注 P1鄰號+冷號 v2 (Edge +1.41%)
 python3 tools/quick_predict.py 威力彩          # 2注 Fourier Rhythm + 特別號 V3
 python3 tools/quick_predict.py 威力彩 3        # 3注 Power Precision + 特別號 V3
+python3 tools/quick_predict.py 威力彩 4        # 4注 PP3+FreqOrt + 特別號 V3 ★新增
+python3 tools/quick_predict.py 威力彩 5        # 5注 正交5注 + 特別號 V3
 python3 tools/quick_predict.py all             # 全部彩種
 ```
 
@@ -823,7 +832,8 @@ python3 tools/quick_predict.py all             # 全部彩種
 | `tools/predict_biglotto_deviation_2bet.py` | 大樂透 2注 偏差互補 (舊版，無 P0 回聲) | +0.91% |
 | `tools/predict_biglotto_triple_strike.py` | 大樂透 3注 Triple Strike | +0.98% |
 | `tools/power_fourier_rhythm.py --predict` | 威力彩 2注 Fourier Rhythm | +1.91% |
-| `tools/predict_power_precision_3bet.py` | 威力彩 3注 Power Precision (F2+Echo/Cold) | +2.23% |
+| `tools/predict_power_precision_3bet.py` | 威力彩 3注 Power Precision (F2+Echo/Cold) | +2.43% |
+| `tools/predict_power_orthogonal_5bet.py` | 威力彩 4注/5注 正交 (4注=前4注, 5注=完整) | 4注+3.33% / 5注+3.89% |
 | `tools/power_triple_strike.py` | 威力彩 3注 Triple Strike (已被 Power Precision 取代) | +0.43% |
 
 ### `tools/power_twin_strike.py` - 威力彩 2注備選預測

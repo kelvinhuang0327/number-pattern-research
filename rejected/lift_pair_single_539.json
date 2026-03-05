@@ -1,0 +1,17 @@
+{
+  "strategy": "lift_pair_single_539",
+  "lottery": "DAILY_539",
+  "n_bets": 1,
+  "description": "共現Lift pair錨定策略 — 找歷史上共現頻率顯著高於隨機的號碼對，以高Lift pair為錨點選號",
+  "test_date": "2026-03-01",
+  "trigger": "115000054期檢討",
+  "reason": "1500期 Edge 為負 (-0.38%)，三窗口不一致",
+  "results": {
+    "150p": {"rate": 12.67, "edge": "+1.02%"},
+    "500p": {"rate": 13.00, "edge": "+1.35%"},
+    "1500p": {"rate": 11.27, "edge": "-0.38%"}
+  },
+  "stability": "UNSTABLE",
+  "conclusion": "短期有微弱正 Edge 但長期消失，不符合三窗口一致性標準。共現 Lift 在單注層級不具備可靠信號，可能是配對數據量不足（C(39,2)=741 pair x 500期）。共現信號可能更適合作為輔助特徵而非主策略。",
+  "retest_condition": "當數據量超過8000期時重新測試，或結合其他維度（如 Markov+Lift fusion）再研究"
+}

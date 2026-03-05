@@ -1,0 +1,19 @@
+{
+  "strategy": "P0_Neighbor_Injection_3bet",
+  "date": "2026-02-25",
+  "description": "Triple Strike + 鄰號注入 (每注注入1個最佳鄰號替換最末位)",
+  "result": "ARCHIVE",
+  "failure_reason": "1500p Edge +1.46% 與 Baseline TS3 完全相同，無改善；500p有微幅提升(+2.32% vs +2.12%)但不足以替換",
+  "statistics": {
+    "150p": {"m3_plus": 10, "total": 150, "rate": 6.67, "edge": 1.19, "z": 0.64},
+    "500p": {"m3_plus": 39, "total": 500, "rate": 7.80, "edge": 2.32, "z": 2.28},
+    "1500p": {"m3_plus": 104, "total": 1500, "rate": 6.93, "edge": 1.46, "z": 2.48}
+  },
+  "pattern": "STABLE",
+  "applicable_conditions": "可作為 500p 短窗口的替代選擇",
+  "retest_conditions": [
+    "若發現連續期鄰號命中率上升趨勢",
+    "若增加 n_inject=2 能改善 1500p",
+    "若結合 P3 State-Aware 的區間收窄"
+  ]
+}

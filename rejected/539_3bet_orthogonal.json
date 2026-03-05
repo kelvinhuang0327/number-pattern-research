@@ -1,0 +1,84 @@
+{
+  "strategy": "SumRange + GapPressure(excl) + ZoneShift(excl) — Orthogonal 3-bet 539",
+  "date": "2026-02-26",
+  "trigger": "L30 根因修正 — chain exclusion 消除 bet overlap",
+  "decision": "FAIL",
+  "reason": "正交化解決 overlap (13.4→15 unique), 但個別信號品質不足以通過 permutation test (p=0.2388)",
+
+  "results": {
+    "three_window_ortho": {
+      "150p": {"m2_rate": 0.3467, "edge": "+4.22%", "z": 1.12, "p": 0.1305},
+      "500p": {"m2_rate": 0.3400, "edge": "+3.56%", "z": 1.73, "p": 0.0420},
+      "1500p": {"m2_rate": 0.3267, "edge": "+2.22%", "z": 1.87, "p": 0.0306}
+    },
+    "three_window_old": {
+      "150p": {"m2_rate": 0.2800, "edge": "-2.44%", "z": -0.65, "p": 0.7422},
+      "500p": {"m2_rate": 0.2600, "edge": "-4.44%", "z": -2.16, "p": 0.9846},
+      "1500p": {"m2_rate": 0.2867, "edge": "-1.78%", "z": -1.50, "p": 0.9326}
+    },
+    "permutation_test": {
+      "actual_m2": 0.3400,
+      "random_mean": 0.3256,
+      "random_std": 0.0209,
+      "signal_edge": 0.0144,
+      "z_score": 0.69,
+      "p_value": 0.2388,
+      "cohen_d": 0.69
+    },
+    "mcnemar": {
+      "ortho_rate": 0.3400,
+      "old_rate": 0.2600,
+      "ortho_only": 89,
+      "old_only": 49,
+      "advantage": 40,
+      "chi2": 11.02,
+      "p_value": 0.0009
+    },
+    "overlap_check": {
+      "avg_unique_nums": 15.0,
+      "avg_overlap": 0.0,
+      "zero_overlap": true
+    },
+    "pass_criteria": {
+      "perm_p_lt_005": false,
+      "positive_edge": true,
+      "ortho_beats_old": true,
+      "three_window_stable": true,
+      "zero_overlap": true
+    }
+  },
+
+  "improvement_vs_non_ortho": {
+    "overlap_fixed": "13.4 → 15.0 unique nums",
+    "m2_improvement": "31.60% → 34.00% (+2.40pp)",
+    "edge_improvement": "-0.96% → +1.44% (+2.40pp)",
+    "conclusion": "L30 根因正確 — 正交化消除 overlap 後 M2+ 提升 2.4pp，但仍不足以通過 perm test"
+  },
+
+  "root_cause_analysis": {
+    "primary": "GapPressure 和 ZoneShift 的個別預測品質不夠強。即使 overlap=0，這兩個信號的選號能力僅略優於 random (edge +1.44%, Z=0.69)。",
+    "secondary": "Random 3-bet 不重疊 baseline 本身已有 32.56% M2+，要顯著超越需要各注都有強信號，不只是避免 overlap。",
+    "lesson": "覆蓋率是必要條件但非充分條件。解決 L30 的 overlap 問題後，瓶頸轉移到個別注的信號品質。"
+  },
+
+  "positive_findings": {
+    "orthogonalization_works": "排除機制確認有效 — 可用於任何未來多注策略",
+    "coverage_gain": "+2.40pp M2+ 直接來自 overlap 消除，驗證 L30 根因診斷",
+    "ortho_vs_old": "McNemar chi2=11.02, p=0.0009 — 正交版顯著優於現行 3-bet 策略",
+    "three_window_all_positive": "150/500/1500 窗口均正 (+4.22/+3.56/+2.22%)"
+  },
+
+  "modules_kept": [
+    "lottery_api/models/gap_pressure.py (with exclude param)",
+    "lottery_api/models/zone_shift_detector.py (with exclude param)"
+  ],
+
+  "future_retest_conditions": [
+    "Replace GapPressure/ZoneShift with stronger signals (e.g. Fourier-based) as bet2/bet3",
+    "Test SumRange + Fourier(excl) + Cold(excl) 3-bet orthogonal structure",
+    "Consider adapting 5bet_fourier4_cold's first 3 bets as 3-bet strategy",
+    "Add signal quality pre-check: each bet must individually have positive edge before combining"
+  ],
+
+  "old_strategy_status": "STILL UNVERIFIED — SumRange+Bayesian+ZoneBalance shows -1.78% to -4.44% edge. Both old and orthogonal fail permutation test."
+}

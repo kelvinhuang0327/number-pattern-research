@@ -1,0 +1,19 @@
+{
+  "strategy": "P2_MAB_Fusion_3bet",
+  "date": "2026-02-25",
+  "description": "Thompson Sampling 動態調整 Fourier/Cold/Markov/Neighbor 融合權重",
+  "result": "REJECTED",
+  "failure_reason": "1500p Edge +0.86% 低於 TS3 的 +1.46%，150p 微負(-0.14%)，全窗口均未達統計顯著性，且計算成本高(200s/1500p)",
+  "statistics": {
+    "150p": {"m3_plus": 8, "total": 150, "rate": 5.33, "edge": -0.14, "z": -0.08},
+    "500p": {"m3_plus": 35, "total": 500, "rate": 7.00, "edge": 1.52, "z": 1.50},
+    "1500p": {"m3_plus": 95, "total": 1500, "rate": 6.33, "edge": 0.86, "z": 1.46}
+  },
+  "pattern": "LATE_BLOOMER",
+  "applicable_conditions": "115000025回顧中MAB是唯一命中M3+的策略，但屬於隨機偶發",
+  "retest_conditions": [
+    "若 lookback 窗口改為動態(20-100)並做參數搜索",
+    "若改用 UCB1 或 EXP3 替代 Thompson Sampling",
+    "若計算效率優化到 <10s/1500p"
+  ]
+}

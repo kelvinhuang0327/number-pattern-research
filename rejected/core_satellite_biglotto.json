@@ -13,6 +13,6 @@
     "z_score": null
   },
   "applicable_conditions": "無",
-  "retest_conditions": "不建議。L2投注結構無法彌補L1預測信號缺失",
+  "retest_conditions": "暫停研究。原因：L2投注結構無法彌補L1預測信號缺失。重啟條件：L1信號強度顯著提升（單注Edge>3%）後，重新評估核心-衛星架構的覆蓋優化效果",
   "notes": "同時在威力彩測試：Edge -2.39%。確認Layer 1/Layer 2分離原則：投注結構優化無法補救信號品質不足"
 }

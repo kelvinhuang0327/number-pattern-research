@@ -1,0 +1,29 @@
+{
+  "strategy_name": "hot_stop_rebound_biglotto",
+  "lottery_type": "BIG_LOTTO",
+  "date_rejected": "2026-03-03",
+  "triggered_by": "115000031期 #25 (freq100=18, gap=15)",
+  "verdict": "REJECT",
+  "reason": "1500期 Edge=+0.01% (幾乎精確等於0)，z=+0.02，p=0.4924。信號統計上不顯著，三窗口雖全正但僅因四捨五入。熱號休停模式在大樂透無預測力。",
+  "signal_definition": {
+    "freq100_threshold": "≥ 15 (近100期出現≥15次)",
+    "gap_threshold": "≥ 12 (最近12期未出現，最佳參數)",
+    "score": "freq100 × gap"
+  },
+  "parameter_sensitivity": {
+    "best_params": {"freq_threshold": 15, "gap_threshold": 12},
+    "best_1500p_edge": "+0.01%",
+    "all_combos_near_zero": true,
+    "note": "所有參數組合的1500期Edge均在-0.39%到+0.01%之間，無可操作信號"
+  },
+  "backtest_results": {
+    "window_150": {"edge": "+0.81%", "z": "+0.73", "p": "0.2323"},
+    "window_500": {"edge": "+0.94%", "z": "+1.56", "p": "0.0599"},
+    "window_1500": {"edge": "+0.01%", "z": "+0.02", "p": "0.4924"},
+    "signal_rate_1500p": "74.1%",
+    "avg_candidates": 1.2
+  },
+  "lesson": "L52: 熱號休停回歸(freq高+gap大)在大樂透無預測力 (p=0.4924)。115000031期 #25 是單期倖存者偏差，不能作為策略開發依據。'熱號停止後回歸'直覺上合理但統計上無效。",
+  "future_test_condition": "暫停研究。原因：線性框架下Edge≈0。重啟條件：非線性衰減模型，或dataset>3000期，或發現特定前置條件能提升過濾效率。",
+  "script": "tools/backtest_biglotto_hot_stop_rebound.py"
+}

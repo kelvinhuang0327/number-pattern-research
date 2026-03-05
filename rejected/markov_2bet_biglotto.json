@@ -14,6 +14,6 @@
     "edge_1000p": "-0.49%"
   },
   "applicable_conditions": "極短期（150期）曾正向",
-  "retest_conditions": "不建議單獨使用。Markov需與Fourier正交搭配才有效",
+  "retest_conditions": "暫停單獨研究。原因：Markov需與Fourier正交搭配才有效。重啟條件：探索非線性Markov（如HSMM）或穿插式注結構裡Markov獨立貢獻>1.5%",
   "notes": "廢棄日期 2026-01-30。配對：Apriori 3注同日廢棄"
 }

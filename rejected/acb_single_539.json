@@ -1,0 +1,46 @@
+{
+  "strategy": "P1_anomaly_capture_single_539",
+  "rejected_date": "2026-02-27",
+  "reason": "McNemar vs Cold p=0.0527 (MARGINAL), vs StateSpace p=0.194, vs Markov p=0.173 — 均不顯著",
+  "stats": {
+    "acb_rate_1500p": "14.27% (214/1500)",
+    "cold_rate_1500p": "13.13% (197/1500)",
+    "state_space_rate_1500p": "12.60% (189/1500)",
+    "markov_rate_1500p": "12.53% (188/1500)",
+    "mcnemar_vs_cold": {
+      "chi2": 3.753,
+      "z": 1.94,
+      "p": 0.0527,
+      "b": 47,
+      "c": 30
+    },
+    "mcnemar_vs_state_space": {
+      "chi2": 1.685,
+      "z": 1.3,
+      "p": 0.194,
+      "b": 198,
+      "c": 173
+    },
+    "mcnemar_vs_markov": {
+      "chi2": 1.857,
+      "z": 1.36,
+      "p": 0.173,
+      "b": 195,
+      "c": 169
+    }
+  },
+  "three_window": {
+    "150p": "+1.27%",
+    "500p": "+1.80%",
+    "1500p": "+2.80%",
+    "stability": "STABLE"
+  },
+  "verdict": "ARCHIVED — ACB單注方向有利但McNemar不顯著，不做替換",
+  "complementarity": {
+    "acb_vs_cold_overlap": "68.4%",
+    "acb_vs_state_space_overlap": "4.1%",
+    "acb_vs_markov_overlap": "5.0%",
+    "note": "ACB與SS/MK極低重疊(4-5%)是互補價值核心"
+  },
+  "future_use": "ACB已成功作為SS/MK的互補注(2注/3注均顯著), 保留互補用途"
+}

@@ -1,0 +1,15 @@
+{
+    "strategy_id": "sgp_v10_hybrid",
+    "status": "REJECTED",
+    "reject_date": "2026-02-24",
+    "critique": {
+        "primary_failure": "Ensemble negative edge (M3+ 10.0% vs Random 11.17%).",
+        "structural_defect": "Correlated Fourier signals in Bet1 and Bet2. Fourier duplication error not fixed from V9.",
+        "testing_oversight": "sgp_predict was accidentally hardcoded to n_bets=1 in unified_predictor.py, masking true ensemble failure during automated tests.",
+        "methodology_errors": [
+            "Dishonest reporting of quick_predict.py status (failed edits not verified).",
+            "Unreproducible 13.47% M3+ claim (actual coverage 10.0%)."
+        ]
+    },
+    "lessons_learned": "SGP independent architectures are structurally prone to correlated error. The only path forward is to inject Period-Gap into Bet3 of an existing orthogonal system (PP3)."
+}

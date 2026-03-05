@@ -1,0 +1,38 @@
+{
+  "strategy_name": "539 P0-C 3注 F500Top5 + ColdTop5 + Cold次批(6-10)",
+  "date_tested": "2026-02-27",
+  "research_context": "P0-B意外發現: 3bet_F_Cold_only 1500p M2+ +5.16% (z=4.34)",
+  "decision": "FAIL → 分布偏好假象",
+  "rejection_reason": "Signal Edge = -0.176%（負），幾何覆蓋效益(+2.13%)偽造三窗口Edge。與P0-B相同根因。",
+
+  "three_window_m2_edge": {
+    "150p": "+0.89% (z=0.24)",
+    "500p": "+1.96% (z=0.95)",
+    "1500p": "+5.16% (z=4.34)"
+  },
+  "permutation_test": {
+    "actual_m2_500p": "32.40%",
+    "shuffle_mean": "32.58%",
+    "shuffle_bias": "+2.133%",
+    "signal_edge": "-0.176%",
+    "p_empirical": 0.5622,
+    "cohen_d": -0.08,
+    "result": "NO_SIGNAL"
+  },
+
+  "key_insight": "539 所有3注設計(4種)的共同問題: 非重疊15/39(38.5%)的幾何覆蓋效益=+2.133%，高於任何3注信號能產生的 Signal Edge。三窗口全正是幾何假象，非時序信號。",
+
+  "539_3bet_research_summary": {
+    "GapPressure_ZoneShift_ortho": "perm p=0.24, Signal Edge ≈ 0",
+    "P0-B_F_Cold_Fmid": "perm p=0.71, Signal Edge = -0.976%",
+    "P0-C_F_Cold_x2": "perm p=0.56, Signal Edge = -0.176%",
+    "conclusion": "539 目前無3注策略能通過 Permutation。唯一有效: 5注 5bet_fourier4_cold (perm p=0.030)"
+  },
+
+  "why_5bet_passes_but_3bet_fails": "5注覆蓋25/39(64%)，Fourier信號在5注正交覆蓋下有足夠的信噪比(SNR)超過shuffle。3注只覆蓋15/39(38%)，幾何效益主導，Fourier信號被淹沒在覆蓋效益中。",
+
+  "retest_conditions": "暫停研究。原因：539 3注的幾何覆蓋效益主導(+2.13%)，淡沒信號。重啟條件：發現單注 Signal Edge > 2% 的強信號源，或三注框架的幾何效益消除方法。",
+
+  "backtest_script": "tools/backtest_539_3bet_f_cold_x2.py",
+  "results_file": "backtest_539_3bet_f_cold_x2_results.json"
+}

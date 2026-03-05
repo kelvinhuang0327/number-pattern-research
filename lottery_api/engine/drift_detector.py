@@ -213,7 +213,7 @@ def check_drift(
     -------
     DriftReport
     """
-    all_draws = _load_draws(lottery_type, limit=baseline_n + current_n + 100)
+    all_draws = _load_draws(lottery_type, limit=10000)  # load all, then slice tail
 
     if len(all_draws) < baseline_n + current_n:
         logger.warning(f"[DriftDetector] Not enough data for {lottery_type}: "

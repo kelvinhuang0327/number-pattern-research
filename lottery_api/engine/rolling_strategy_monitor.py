@@ -35,6 +35,20 @@ logger = logging.getLogger(__name__)
 BASELINES = {
     'POWER_LOTTO': {1: 0.0387, 2: 0.0759, 3: 0.1117, 4: 0.1460, 5: 0.1791},
     'BIG_LOTTO':   {1: 0.0186, 2: 0.0369, 3: 0.0549, 4: 0.0725, 5: 0.0896},
+    'DAILY_539':   {1: 0.1140, 2: 0.2154, 3: 0.3050, 4: 0.3843, 5: 0.4539},  # M2+ baselines
+}
+
+# 539 uses M2+ as primary metric (M3+ is only ~1% per bet, too rare)
+# BIG_LOTTO and POWER_LOTTO use M3+
+METRIC_KEY = {
+    'POWER_LOTTO': 'is_m3plus',
+    'BIG_LOTTO':   'is_m3plus',
+    'DAILY_539':   'is_m2plus',
+}
+METRIC_LABEL = {
+    'POWER_LOTTO': 'M3+',
+    'BIG_LOTTO':   'M3+',
+    'DAILY_539':   'M2+',
 }
 
 
@@ -206,6 +220,7 @@ class RollingPerformanceTracker:
 
         best_match = max(match_counts) if match_counts else 0
         is_m3plus = best_match >= 3
+        is_m2plus = best_match >= 2
 
         record = {
             'draw_id': str(draw_id),
@@ -215,6 +230,7 @@ class RollingPerformanceTracker:
             'match_counts': match_counts,
             'best_match': best_match,
             'is_m3plus': is_m3plus,
+            'is_m2plus': is_m2plus,
             'num_bets': num_bets,
         }
 
@@ -257,13 +273,19 @@ class MultiWindowAnalyzer:
     def __init__(self, baselines: Dict[int, float]):
         self.baselines = baselines
 
-    def analyze(self, records: List[Dict], num_bets: int) -> Dict[str, Dict]:
+    def analyze(self, records: List[Dict], num_bets: int,
+                metric_key: str = 'is_m3plus') -> Dict[str, Dict]:
         """
         計算三窗口統計
 
+        Args:
+            records: 策略紀錄列表
+            num_bets: 注數
+            metric_key: 'is_m3plus' (大樂透/威力彩) 或 'is_m2plus' (539)
+
         Returns:
             {
-              'short':  {'n': 30,  'm3_count': 2, 'rate': 0.067, 'edge': -0.009, 'baseline': 0.076},
+              'short':  {'n': 30,  'hit_count': 2, 'rate': 0.067, 'edge': -0.009, 'baseline': 0.076},
               'medium': {'n': 100, ...},
               'long':   {'n': 300, ...},
             }
@@ -276,18 +298,18 @@ class MultiWindowAnalyzer:
             n = len(recent)
             if n == 0:
                 result[label] = {
-                    'n': 0, 'm3_count': 0, 'rate': 0.0,
+                    'n': 0, 'hit_count': 0, 'rate': 0.0,
                     'edge': 0.0, 'baseline': baseline
                 }
                 continue
 
-            m3_count = sum(1 for r in recent if r.get('is_m3plus', False))
-            rate = m3_count / n
+            hit_count = sum(1 for r in recent if r.get(metric_key, False))
+            rate = hit_count / n
             edge = rate - baseline
 
             result[label] = {
                 'n': n,
-                'm3_count': m3_count,
+                'hit_count': hit_count,
                 'rate': round(rate, 5),
                 'edge': round(edge, 5),
                 'baseline': baseline,
@@ -325,6 +347,8 @@ class RollingStrategyMonitor:
         self.tracker = RollingPerformanceTracker(lottery_type, data_dir)
         self.analyzer = MultiWindowAnalyzer(baselines)
         self.classifier = TrendClassifier()
+        self.metric_key = METRIC_KEY.get(lottery_type, 'is_m3plus')
+        self.metric_label = METRIC_LABEL.get(lottery_type, 'M3+')
 
         # 切換冷卻追蹤
         self._switch_history: Dict[int, Dict] = {}  # num_bets -> {last_switch_draw, cooldown}
@@ -412,7 +436,7 @@ class RollingStrategyMonitor:
         if not records:
             return {'error': f'No records for {strategy_name}'}
 
-        windows = self.analyzer.analyze(records, num_bets)
+        windows = self.analyzer.analyze(records, num_bets, self.metric_key)
         trend_info = self.classifier.classify(windows)
 
         return {
@@ -504,7 +528,7 @@ class RollingStrategyMonitor:
             ],
         }
 
-    def print_report(self, strategy_configs: List[Dict]):
+    def print_report(self, strategy_configs: List[Dict], draws: Optional[List[Dict]] = None):
         """印出完整報告"""
         print()
         print("=" * 72)
@@ -552,13 +576,14 @@ class RollingStrategyMonitor:
                 }
                 arrow = arrows.get(trend_label, '?')
 
+                metric_lbl = self.metric_label
                 print(f"\n  策略: {a['strategy']}  [{trend_label} {arrow}]")
-                print(f"  {'':4}{'窗口':>8}{'M3+':>8}{'期數':>6}{'命中率':>10}{'Edge':>10}{'信號':>6}")
+                print(f"  {'':4}{'窗口':>8}{metric_lbl:>8}{'期數':>6}{'命中率':>10}{'Edge':>10}{'信號':>6}")
 
                 for label in ['short', 'medium', 'long']:
                     wdata = w.get(label, {})
                     n = wdata.get('n', 0)
-                    m3 = wdata.get('m3_count', 0)
+                    hits = wdata.get('hit_count', 0)
                     rate = wdata.get('rate', 0)
                     edge = wdata.get('edge', 0)
 
@@ -567,7 +592,7 @@ class RollingStrategyMonitor:
                     signal = '▲' if edge > 0.005 else ('▼' if edge < -0.005 else '→')
 
                     label_map = {'short': '30期', 'medium': '100期', 'long': '300期'}
-                    print(f"  {'':4}{label_map[label]:>8}{m3:>8}{n:>6}{rate_str:>10}{edge_str:>10}{signal:>6}")
+                    print(f"  {'':4}{label_map[label]:>8}{hits:>8}{n:>6}{rate_str:>10}{edge_str:>10}{signal:>6}")
 
                 print(f"  {'':4}z(短/長)={z_sl:+.2f}  信心={t.get('confidence', 0):.2f}")
 
@@ -578,12 +603,120 @@ class RollingStrategyMonitor:
                 rt = rec.get('recommended_trend', {})
                 print(f"    趨勢: {rt.get('trend', '?')} (z={rt.get('z_short_long', 0):+.2f})")
 
+        # Zone 監控區塊（資訊性）
+        if draws:
+            zone_info = zone_status_from_draws(draws, self.lottery_type, recent_n=30)
+            if zone_info:
+                print()
+                print(f"{'─' * 72}")
+                print("  Zone 分布監控 (資訊性指標)")
+                last = zone_info['last_draw']
+                z0_flag = any(v == 0 for v in [last['z1'], last['z2'], last['z3']])
+                z4_flag = any(v >= 4 for v in [last['z1'], last['z2'], last['z3']])
+                flags = []
+                if z0_flag:
+                    flags.append("⚠️ Zone=0")
+                if z4_flag:
+                    flags.append("⚠️ Zone>=4")
+                flag_str = '  '.join(flags) if flags else '正常'
+                print(f"  上期Zone分布: Z1={last['z1']} Z2={last['z2']} Z3={last['z3']}  "
+                      f"[ {flag_str} ]")
+                r30 = zone_info['recent_30']
+                print(f"  近30期: Zone=0觸發率={r30['zone0_rate']:.1%}  "
+                      f"Zone>=4觸發率={r30['zone4_rate']:.1%}  "
+                      f"平均Z1/Z2/Z3={r30['avg_z1']:.1f}/{r30['avg_z2']:.1f}/{r30['avg_z3']:.1f}")
+                print(f"  ℹ️  2113期回測: Zone=0效果方向正確但不顯著(p=0.16)，"
+                      f"Z2=0最強(-5.8pp)。此為資訊性指標，不觸發自動升注。")
+
         print()
         print("=" * 72)
         print("  趨勢說明: STABLE(→穩定) ACCELERATING(▲加速) "
               "DECELERATING(▼減速) REGIME_SHIFT(◆環境變化)")
         print("  判定標準: |z|<1.0=穩定, z>1.5=加速, z<-1.5=減速, |z|>2.0+中期偏離=環境變化")
         print("=" * 72)
+
+
+# ============================================================
+# Zone 監控輔助函數 (L54 資訊性指標)
+# ============================================================
+_ZONE_BOUNDS = {
+    'BIG_LOTTO':   [(1, 16), (17, 32), (33, 49)],
+    'POWER_LOTTO': [(1, 13), (14, 26), (27, 38)],
+    'DAILY_539':   [(1, 13), (14, 26), (27, 39)],
+}
+
+
+def _zone_counts(numbers: List[int], lottery_type: str) -> Tuple[int, int, int]:
+    """計算 Z1/Z2/Z3 球數"""
+    bounds = _ZONE_BOUNDS.get(lottery_type, [(1, 16), (17, 32), (33, 49)])
+    z = [0, 0, 0]
+    for n in numbers:
+        for i, (lo, hi) in enumerate(bounds):
+            if lo <= n <= hi:
+                z[i] += 1
+                break
+    return z[0], z[1], z[2]
+
+
+def zone_status_from_draws(
+    draws: List[Dict],
+    lottery_type: str,
+    recent_n: int = 30,
+) -> Optional[Dict]:
+    """
+    從開獎記錄計算 Zone 分布監控狀態。
+
+    Returns dict with:
+      last_draw: {z1, z2, z3, zone0, zone4, numbers}
+      recent_30: {zone0_rate, zone4_rate, avg_z1, avg_z2, avg_z3}
+
+    Zone=0 效果統計 (BIG_LOTTO 2113期回測):
+      - Zone=0觸發率: 21.25%, 覆蓋率差異: -2.84pp, p=0.16 (不顯著)
+      - Zone>=4 chi2 p=0.037 (邊界顯著), t-test p=0.28 (不顯著)
+      - Z2=0 最強: cov>=2 從43.15%→37.1% (-5.84pp)
+      → 此為資訊性指標，不觸發自動升注策略
+    """
+    if not draws or len(draws) < 2:
+        return None
+
+    last_draw = draws[-1]
+    last_nums = last_draw.get('numbers', [])
+    z1, z2, z3 = _zone_counts(last_nums, lottery_type)
+
+    recent = draws[-recent_n:] if len(draws) >= recent_n else draws
+
+    zone0_count = 0
+    zone4_count = 0
+    z1_sum = z2_sum = z3_sum = 0
+
+    for d in recent:
+        nums = d.get('numbers', [])
+        r1, r2, r3 = _zone_counts(nums, lottery_type)
+        if r1 == 0 or r2 == 0 or r3 == 0:
+            zone0_count += 1
+        if r1 >= 4 or r2 >= 4 or r3 >= 4:
+            zone4_count += 1
+        z1_sum += r1
+        z2_sum += r2
+        z3_sum += r3
+
+    n = len(recent)
+    return {
+        'last_draw': {
+            'numbers': last_nums,
+            'z1': z1, 'z2': z2, 'z3': z3,
+            'zone0': (z1 == 0 or z2 == 0 or z3 == 0),
+            'zone4': (z1 >= 4 or z2 >= 4 or z3 >= 4),
+        },
+        'recent_30': {
+            'n': n,
+            'zone0_rate': zone0_count / n if n else 0,
+            'zone4_rate': zone4_count / n if n else 0,
+            'avg_z1': z1_sum / n if n else 0,
+            'avg_z2': z2_sum / n if n else 0,
+            'avg_z3': z3_sum / n if n else 0,
+        },
+    }
 
 
 # ============================================================

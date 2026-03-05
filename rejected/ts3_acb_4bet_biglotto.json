@@ -1,0 +1,66 @@
+{
+  "strategy": "TS3+ACB 4bet",
+  "description": "Triple Strike 3注 + ACB 1注 (freq_deficit+gap)",
+  "date": "2026-02-28",
+  "verdict": "REJECTED",
+
+  "failure_reasons": [
+    "三窗口未全正: 150p=-5.29%, 500p=+0.23%, 1500p=+1.10%",
+    "Permutation p=0.072 (MARGINAL，未達 0.05 門檻)",
+    "ACB 救援效率僅 73.1% of random (sub-random)",
+    "ACB 與 TS3 號碼重疊 3/6 (50%)，信號空間重疊嚴重",
+    "P1+偏差互補 4注三窗口全正 (+0.59%/+2.97%/+2.60%), perm p=0.002"
+  ],
+
+  "statistics": {
+    "windows": {
+      "150p": {"edge": -5.29},
+      "500p": {"edge": 0.23},
+      "1500p": {"edge": 1.10}
+    },
+    "permutation": {
+      "z": 1.48,
+      "p_value": 0.072,
+      "random_mean": 7.28,
+      "real_rate": 8.35
+    },
+    "marginal_rescue": {
+      "ts3_hits": 99,
+      "ts3_acb_hits": 117,
+      "acb_rescued": 18,
+      "rescue_rate_pct": 1.28,
+      "random_expected_pct": 1.758,
+      "efficiency": 73.1
+    },
+    "mcnemar_vs_p1dev": {
+      "both_hit": 37,
+      "ts3acb_only": 80,
+      "p1dev_only": 101,
+      "neither": 1183,
+      "chi2": 2.21,
+      "p_value": 0.137,
+      "overlap_rate_pct": 17.0
+    }
+  },
+
+  "comparison_vs_champion": {
+    "champion": "P1+偏差互補 4注",
+    "champion_edge": "+2.60%",
+    "ts3_acb_edge": "+1.10%",
+    "mcnemar_p": 0.137,
+    "significant": false,
+    "direction": "P1+偏差互補 領先 (101 vs 80 獨贏期)"
+  },
+
+  "key_findings": {
+    "overlap_problem": "ACB 與 TS3 冷號注 (bet2) 選號空間重疊 — 兩者都瞄準近期低頻號碼",
+    "coverage_degradation": "4注僅覆蓋 21/49 (42.9%) vs P1+Dev 4注零重疊 ~24/49 (49%)",
+    "acb_signal_in_residual": "ACB 信號在 TS3 殘餘空間中衰減 (呼應 L40)"
+  },
+
+  "retest_conditions": [
+    "ACB 大樂透 window 優化突破: 若找到 w≠30 且三窗口全正的 ACB 配置",
+    "ACB 正交化: 強制排除 TS3 已選號碼後重新評估",
+    "ACB 信號維度擴展: 加入非頻率域特徵 (如尾數/Zone/Sum)"
+  ]
+}

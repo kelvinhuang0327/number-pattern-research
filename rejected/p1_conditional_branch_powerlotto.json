@@ -13,6 +13,6 @@
     "z_score": "最佳方法B: z=0.39（不顯著）"
   },
   "applicable_conditions": "無",
-  "retest_conditions": "條件偏移幅度太小（4-7%）在38選6中無法改變號碼排名，不建議重測",
+  "retest_conditions": "暫停研究。原因：條件偏移幅度太小（4-7%）在38選6中無法改變號碼排名。重啟條件：發現偏移幅度>15%的特定條件子集，或非鞋碼式條件運用（如加權而非分支）",
   "notes": "系統測試5種regime (low_sum, high_sum, many_big, few_big, has_consec)。方法A最佳+2 M3+/1000期，方法B最佳+4 M3+/1000期，統計皆不顯著。3注版本：原始140 vs 最佳條件139。教訓：38個號碼多重比較必須Bonferroni校正"
 }

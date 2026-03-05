@@ -13,6 +13,6 @@
     "z_score": null
   },
   "applicable_conditions": "短期窗口曾有效",
-  "retest_conditions": "不建議重測。Fourier Rhythm（單純Fourier）已足夠，Markov組合在大樂透無額外效益",
+  "retest_conditions": "暫停研究。原因：單純Fourier已足夠，Markov組合在大樂透無額外效益。重啟條件：Markov窗口或轉移矩陣計算方式重大更新，或dataset>3000期",
   "notes": "注意：Fourier30+Markov30 在威力彩有效（Edge +0.91% / 1000期），但大樂透無效。兩個彩種不可混用結論"
 }

@@ -1,0 +1,22 @@
+{
+    "strategy_name": "Hot_HighGap_Return",
+    "lottery_type": "BIG_LOTTO",
+    "test_date": "2026-03-03",
+    "description": "熱號休停回歸偵測：freq100 >= 15 且 gap >= 10 作為附加信號或 bet5 殘差池候選排名因子。",
+    "rules": {
+        "freq100": ">= 15",
+        "gap": ">= 10"
+    },
+    "results": {
+        "test_periods": 1500,
+        "periods_with_signal": 1315,
+        "total_candidates": 2633,
+        "total_hits": 308,
+        "hit_rate": 0.11697683251044436,
+        "baseline_rate": 0.12244897959183673,
+        "edge": -0.005472147081392374,
+        "z_score": -0.8552194380614833
+    },
+    "conclusion": "無顯著差異 (NO SIGNAL)。命中率比基準稍低（邊距為 -0.55%）。確認 031 期的 #25 (freq=18, gap=15) 屬於倖存者偏差，此模式在長期統計中並未表現出高於隨機的命中率，因此不納入殘差池選擇。",
+    "future_test_conditions": "暫停研究。原因：線性框架下 Edge=-0.55%。重啟條件：非線性衰減模型、特定前置條件（週期共振/鄰域）能提升過濾效率，或dataset>3000期。"
+}

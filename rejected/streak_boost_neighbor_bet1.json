@@ -1,0 +1,17 @@
+{
+  "name": "streak_boost_neighbor_bet1",
+  "date": "2026-02-26",
+  "draw": "115000027",
+  "reason": "與多窗口Fusion組合時出現交互抵消效應，1500期Edge僅+0.65%低於原始+1.05%，perm p=0.103不顯著",
+  "results": {
+    "150p": "+1.26%",
+    "500p": "+1.63%",
+    "1500p": "+0.65%",
+    "perm_p": 0.103,
+    "z": 1.35
+  },
+  "verdict": "REJECTED",
+  "theory": "#22 3連勝目標正確，但Streak Boost改變注1選號導致注2空間改變，整體效益抵消",
+  "condition_for_retest": "若未來出現5+連勝號碼，可考慮單獨在注1層加streak filter而不改變pool排名",
+  "isolated_effect": "純Streak Boost注1+原始冷號注2 (策略A) 1500期Edge +1.27%，三窗口全正，但未進行perm test — 可作為未來研究方向"
+}

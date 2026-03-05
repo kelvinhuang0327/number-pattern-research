@@ -1,0 +1,15 @@
+{
+    "strategy_id": "sgp_v11_orthogonal",
+    "status": "REJECTED",
+    "reject_date": "2026-02-24",
+    "critique": {
+        "primary_failure": "LATE_BLOOMER profile. Severe decay in recent windows.",
+        "performance_breakdown": {
+            "150p": "8.00% (Edge -28.4%)",
+            "500p": "10.60% (Edge -5.1%)",
+            "1388p": "13.04% (Edge +1.87%)"
+        },
+        "reason": "Gap Pressure signal (SGP) has fundamentally failed in the modern Power Lotto environment (recent 1-2 years). The positive edge in the maximum window is entirely driven by ancient history, making it deceptive and dangerous for current inference."
+    },
+    "lessons_learned": "Gap Pressure signal (SGP) suspended for Power Lotto under current linear framework. 5 SGP versions and 16 group tests showed no viable edge in recent data. Restart conditions: non-linear Gap theory orthogonal to frequency, or dataset doubling. Power Precision (F2+Echo/Cold) remains current standard."
+}

@@ -1,0 +1,57 @@
+{
+  "strategy_name": "pp3_sum_reversal_filter",
+  "lottery": "POWER_LOTTO",
+  "status": "PROVISIONAL",
+  "proposed_date": "2026-03-03",
+  "provisional_date": "2026-03-03",
+  "source": "115000018期P18 — Sum=104(z=-0.52)低值，前期高Sum後出現低Sum反轉",
+  "hypothesis": "當 prev_sum ≥ 145 時，次期 bet3 從候選池中選 sum ≤ 110 的組合以捕捉低Sum反轉",
+
+  "backtest_results": {
+    "trigger_analysis": {
+      "trigger_count": 427,
+      "trigger_rate": "23.9% (427/1789期)",
+      "actual_sum_lift": "+0.1% (41.1% vs 41.0% baseline)",
+      "note": "P18報告聲稱42.7%，實測僅41.1%，信號幾乎為零"
+    },
+    "PP3_orig_baseline": {
+      "150p_edge": "+3.50%",
+      "500p_edge": "+2.23%",
+      "1500p_edge": "+2.23%"
+    },
+    "PP3_SumReversal": {
+      "150p_edge": "+3.50%",
+      "500p_edge": "+2.57%",
+      "1500p_edge": "+2.57%",
+      "vs_orig_150p": "0.00%",
+      "vs_orig_500p": "+0.34%",
+      "vs_orig_1500p": "+0.34%",
+      "three_window_pass": true,
+      "perm_p": 0.000,
+      "verdict": "SIGNAL_DETECTED",
+      "mcnemar_net": 5,
+      "mcnemar_p": 0.180,
+      "mcnemar_significant": false
+    }
+  },
+
+  "provisional_reason": "三窗口全正 + perm p=0.000 SIGNAL_DETECTED，但 McNemar p=0.180 未達顯著，改善可能來自 combinatorial diversity 而非 Sum 信號本身",
+
+  "adoption_conditions": [
+    "RSM 監控 100 期後 Edge > +2.5% (目前 +2.57%，維持即可)",
+    "McNemar net 累積至 ≥ 10 (目前 +5)",
+    "或 perm_p 持續低於 0.01 in OOS validation"
+  ],
+
+  "rejection_conditions": [
+    "RSM 100 期 Edge 回落至低於 PP3_orig +2.23%",
+    "新 McNemar test 後 net 變為負數"
+  ],
+
+  "implementation_note": "腳本: tools/backtest_power_sum_reversal_pp3.py；觸發條件 SUM_TRIGGER=145, SUM_TARGET_MAX=110；僅修改 bet3，bet1/bet2 不受影響",
+
+  "lessons": [
+    "L49_C: Sum Lift 實測 vs 理論的重要性 — 報告值42.7%實測僅41.1%",
+    "L09_reconfirmed: Sum 信號的改善可能來自 portfolio 多樣性而非個別 Sum 均值回歸信號"
+  ]
+}

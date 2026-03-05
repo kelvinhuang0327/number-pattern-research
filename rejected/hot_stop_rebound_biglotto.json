@@ -24,6 +24,6 @@
     "avg_candidates": 1.2
   },
   "lesson": "L52: 熱號休停回歸(freq高+gap大)在大樂透無預測力 (p=0.4924)。115000031期 #25 是單期倖存者偏差，不能作為策略開發依據。'熱號停止後回歸'直覺上合理但統計上無效。",
-  "future_test_condition": "無。此信號模式已被完整測試，不建議重新測試除非有理論性架構改變。",
+  "future_test_condition": "暫停研究。原因：線性框架下Edge≈0。重啟條件：非線性衰減模型，或dataset>3000期，或發現特定前置條件能提升過濾效率。",
   "script": "tools/backtest_biglotto_hot_stop_rebound.py"
 }

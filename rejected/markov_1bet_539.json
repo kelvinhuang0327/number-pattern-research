@@ -1,0 +1,25 @@
+{
+  "strategy": "markov_1bet_539",
+  "lottery": "DAILY_539",
+  "n_bets": 1,
+  "description": "Markov 轉移矩陣單注 — 從上期號碼出發，按30期轉移機率排序選號",
+  "test_date": "2026-03-01",
+  "trigger": "115000054期檢討",
+  "reason": "z=1.22 (p≈0.11)，未通過統計顯著性門檻 (p<0.05)",
+  "results": {
+    "150p": {"rate": 12.67, "edge": "+1.02%"},
+    "500p": {"rate": 13.00, "edge": "+1.35%"},
+    "1500p": {"rate": 12.87, "edge": "+1.22%"}
+  },
+  "permutation": {
+    "real_rate": 12.87,
+    "perm_mean": 11.65,
+    "z_score": 1.22,
+    "p_from_z": 0.111,
+    "p_empirical": 0.005,
+    "note": "p_empirical=0.005 是200次shuffle的報告下限，實際p≈0.11 (from z)"
+  },
+  "stability": "STABLE (三窗口全正)",
+  "conclusion": "三窗口全正但z=1.22不顯著。Markov轉移信號在單注層級統計力不足。作為正交多注中的一注有組合價值(P3a中貢獻互補)，但獨立使用不可靠。",
+  "retest_condition": "暫停單獨研究。原因：z=1.22不顯著。已作為P3a組件使用。重啟條件：窗口優化後單注z>1.96，或轉移矩陣計算方式重大更新"
+}

@@ -11,9 +11,9 @@ Research-driven, tracking strategy performance and documenting findings.
 
 ## Screenshots
 
-| Simulation Test | Draw History | Data Upload |
+| Strategy Backtest | Simulation Test | Draw History |
 |---|---|---|
-| ![Simulation](docs/screenshots/simulation.png) | ![History](docs/screenshots/history.png) | ![Upload](docs/screenshots/upload.png) |
+| ![Strategy Backtest](docs/screenshots/strategy-backtest.png) | ![Simulation](docs/screenshots/simulation.png) | ![History](docs/screenshots/history.png) |
 
 ---
 

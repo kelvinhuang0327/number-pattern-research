@@ -1,0 +1,25 @@
+{
+  "id": "H003",
+  "name": "ΔACB 頻率動量（ACB 補充過濾器）",
+  "lottery": "DAILY_539",
+  "archived_at": "2026-03-15",
+  "hypothesis": "在 ACB top-20 候選中，優先選取 ΔACB（近期頻率加速下降）也高的號碼",
+  "rejection_reason": "參數掃描 alpha=[0.2,0.5,1.0,2.0] 全部不顯著。最佳 alpha=1.0: McNemar net=+23 p=0.25。alpha=0.2 邊界 p=0.087，但 Bonferroni 校正後 0.087×4=0.35 不顯著。",
+  "gate_result": "Gate PROCEED (Ljung-Box p=0.000)，但 Top-5 Lift=0.985<1.0 已為警示信號",
+  "statistical_results": {
+    "metric": "M2+",
+    "n_periods": 5510,
+    "baseline_acb_1bet": {"e150": -4.07, "e500": 1.00, "e1500": 0.00},
+    "param_scan": [
+      {"alpha": 0.2, "e150": -1.40, "e500": 1.80, "e1500": 0.27, "mcn_net": 21, "mcn_p": 0.0871},
+      {"alpha": 0.5, "e150": -1.40, "e500": 2.20, "e1500": -0.07, "mcn_net": 27, "mcn_p": 0.1033},
+      {"alpha": 1.0, "e150": -0.73, "e500": 3.00, "e1500": 0.60, "mcn_net": 23, "mcn_p": 0.2521},
+      {"alpha": 2.0, "e150": -0.73, "e500": 1.20, "e1500": -0.07, "mcn_net": 15, "mcn_p": 0.5381}
+    ],
+    "best_alpha": 1.0,
+    "best_perm_p": 0.135,
+    "verdict": "REJECT"
+  },
+  "root_cause": "Gate 通過的原因是滑動窗口差值的數學自相關（L80），而非真實預測信號。Top-5 ΔACB Lift=0.985 < 1.0 已是直接負面信號。當作 ACB 過濾器使用雖有輕微改善（+0.60pp），但參數掃描後 Bonferroni 校正不顯著，且短期（150p）表現一致弱（-0.73~-1.40pp），整體 LATE_BLOOMER 或噪音。",
+  "future_reconsideration": "若改用更短/更長的窗口對（如 10期 vs 200期），或非線性 ΔACB（如 sign(ΔACB) × sqrt(|ΔACB|)），可考慮重新測試。重啟條件：數據達到 8000 期後，或有理論支持特定窗口長度。"
+}

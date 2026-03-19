@@ -1,274 +1,244 @@
 """
-大樂透 6注回測驗證
-注1-5：TS3+Markov+FreqOrtho（已驗證）
-注6：lag2_echo_w50_e1.5 正交加入
+大樂透 6注策略回測
+==================
+研究第6注是否能超過幾何基準，為現有5注策略提供有效補充。
 
-目的：驗證第6注的邊際 Edge 是否顯著正值
+三種 Bet6 方法（全部從注1-5剩餘號碼池中選取）：
+  A. Zone Balance: Z1/Z2/Z3 各取2個，按100期頻率排序
+  B. Residual Hot: 剩餘池按頻率降序 Top-6
+  C. Residual Cold: 剩餘池按頻率升序 Top-6
+
+評估標準:
+  - 6注 Edge > 10.65% (6注隨機基準)
+  - McNemar net > 0 (vs 5注)
+  - z-score p < 0.05
 """
-
-import os
 import sys
-import copy
+import os
+import json
+import math
+import random
 import numpy as np
 from collections import Counter
-from scipy.fft import fft, fftfreq
-from scipy.stats import norm
+from itertools import combinations
 
-PROJECT_ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-sys.path.insert(0, PROJECT_ROOT)
-sys.path.insert(0, os.path.join(PROJECT_ROOT, 'lottery_api'))
+sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+sys.path.insert(0, os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), 'lottery_api'))
 
-from lottery_api.database import DatabaseManager
+from database import DatabaseManager
+from tools.quick_predict import biglotto_p1_deviation_5bet, enforce_tail_diversity
 
 MAX_NUM = 49
-PICK = 6
-P1 = 1 - sum(
-    __import__('math').comb(6, k) * __import__('math').comb(43, 6 - k) / __import__('math').comb(49, 6)
-    for k in range(3)
-)  # ≈ 0.018599
+P_SINGLE = 0.0186
+BASELINES = {
+    5: 1 - (1 - P_SINGLE) ** 5,
+    6: 1 - (1 - P_SINGLE) ** 6,
+}
+WINDOWS = [150, 500, 1500]
+MIN_BUF = 200
+SEED = 42
+N_PERM = 200
+
+ZONES = {
+    'Z1': list(range(1, 17)),
+    'Z2': list(range(17, 33)),
+    'Z3': list(range(33, 50)),
+}
 
 
-def n_bet_baseline(n):
-    return (1 - (1 - P1) ** n) * 100
-
-
-def marginal_baseline(n):
-    """P(Nbet M3+) - P((N-1)bet M3+) = (1-P1)^(N-1) * P1"""
-    return ((1 - P1) ** (n - 1)) * P1 * 100
-
-
-# ────────────────────────────────────────────────────────────
-# 核心選號邏輯
-# ────────────────────────────────────────────────────────────
-
-def get_fourier_rank(history, window=500):
-    h = history[-window:] if len(history) >= window else history
-    w = len(h)
-    scores = np.zeros(MAX_NUM + 1)
-    for n in range(1, MAX_NUM + 1):
-        bits = np.array([1 if n in d['numbers'] else 0 for d in h], dtype=float)
-        if bits.sum() < 2:
-            continue
-        yf = fft(bits - bits.mean())
-        xf = fftfreq(w, 1)
-        pos = xf > 0
-        if pos.sum() == 0:
-            continue
-        peak = np.argmax(np.abs(yf[pos]))
-        freq_val = xf[pos][peak]
-        if freq_val == 0:
-            continue
-        period = 1 / freq_val
-        last_hit = np.where(bits == 1)[0]
-        if len(last_hit) == 0:
-            continue
-        gap = (w - 1) - last_hit[-1]
-        scores[n] = 1.0 / (abs(gap - period) + 1.0)
-    return np.argsort(scores[1:])[::-1] + 1  # 1-indexed, descending
-
-
-def lag2_echo_scores(history, window=50, echo_boost=1.5):
+def _freq(history, window=100):
     recent = history[-window:] if len(history) >= window else history
-    freq = Counter(n for d in recent for n in d['numbers'][:PICK] if n <= MAX_NUM)
-    lag2 = set(history[-2]['numbers'][:PICK]) if len(history) >= 2 else set()
-    scores = {}
-    for n in range(1, MAX_NUM + 1):
-        s = freq.get(n, 0)
-        if n in lag2:
-            s *= echo_boost
-        scores[n] = s
-    return scores
+    return Counter(n for d in recent for n in d['numbers'])
 
 
-def generate_5bet(history):
-    """注1-5：TS3(Fourier/Echo/Cold) + Markov正交 + 頻率正交"""
-    f_rank = get_fourier_rank(history)
-
-    # 注1：Fourier top 6
-    bet1 = sorted(f_rank[:6].tolist())
-
-    # 注2：Fourier next 6
-    bet2 = sorted(f_rank[6:12].tolist())
-
-    # 注3：Echo + Cold
-    exclude12 = set(bet1) | set(bet2)
-    recent100 = history[-100:]
-    freq100 = Counter(n for d in recent100 for n in d['numbers'][:PICK] if n <= MAX_NUM)
-
-    if len(history) >= 2:
-        echo_nums = [n for n in history[-2]['numbers'][:PICK]
-                     if n <= MAX_NUM and n not in exclude12]
-    else:
-        echo_nums = []
-
-    rem3 = [n for n in range(1, MAX_NUM + 1) if n not in exclude12 and n not in echo_nums]
-    rem3.sort(key=lambda x: freq100.get(x, 0))  # coldest first
-    bet3 = sorted((echo_nums + rem3)[:6])
-
-    # 注4-5：剩餘號碼按近100期頻率排序
-    used3 = set(bet1) | set(bet2) | set(bet3)
-    leftover = [n for n in range(1, MAX_NUM + 1) if n not in used3]
-    leftover.sort(key=lambda x: freq100.get(x, 0), reverse=True)
-
-    bet4 = sorted(leftover[:6])
-    bet5 = sorted(leftover[6:12])
-
-    return [bet1, bet2, bet3, bet4, bet5]
+def bet6_zone_balance(remaining, history):
+    freq = _freq(history)
+    rem_set = set(remaining)
+    pools = {z: sorted([n for n in nums if n in rem_set], key=lambda x: -freq.get(x, 0))
+             for z, nums in ZONES.items()}
+    selected = []
+    needs = {'Z1': 2, 'Z2': 2, 'Z3': 2}
+    for z, pool in pools.items():
+        take = min(needs[z], len(pool))
+        selected.extend(pool[:take])
+        needs[z] -= take
+    deficit = sum(needs.values())
+    if deficit > 0:
+        extra = sorted([n for n in remaining if n not in selected], key=lambda x: -freq.get(x, 0))
+        selected.extend(extra[:deficit])
+    return sorted(selected[:6])
 
 
-def generate_6bet(history):
-    """注1-5 同上，注6：lag2_echo 正交"""
-    bets5 = generate_5bet(history)
-    used5 = set(n for b in bets5 for n in b)
-
-    # 注6：從剩餘 19 個號碼中，按 lag2_echo 分數排序取前 6
-    remaining = [n for n in range(1, MAX_NUM + 1) if n not in used5]
-    echo_sc = lag2_echo_scores(history, window=50, echo_boost=1.5)
-    remaining.sort(key=lambda x: echo_sc.get(x, 0), reverse=True)
-    bet6 = sorted(remaining[:6])
-
-    return bets5 + [bet6]
+def bet6_residual_hot(remaining, history):
+    freq = _freq(history)
+    return sorted(sorted(remaining, key=lambda x: -freq.get(x, 0))[:6])
 
 
-# ────────────────────────────────────────────────────────────
-# 回測引擎
-# ────────────────────────────────────────────────────────────
+def bet6_residual_cold(remaining, history):
+    freq = _freq(history)
+    return sorted(sorted(remaining, key=lambda x: freq.get(x, 0))[:6])
 
-def run_backtest_single(all_draws, strategy_fn, periods, min_history=200):
-    test_start = len(all_draws) - periods
-    hits = 0
-    total = 0
-    half = periods // 2
-    h1_hits = h1_total = h2_hits = h2_total = 0
 
-    for i in range(periods):
-        idx = test_start + i
-        if idx < min_history:
-            continue
-        hist = all_draws[:idx]
-        actual = set(all_draws[idx]['numbers'][:PICK])
+BET6_METHODS = {
+    'zone_balance': bet6_zone_balance,
+    'residual_hot': bet6_residual_hot,
+    'residual_cold': bet6_residual_cold,
+}
+
+
+def m3plus(bet, actual_set):
+    return len(set(bet) & actual_set) >= 3
+
+
+def _norm_cdf(x):
+    return (1.0 + math.erf(x / math.sqrt(2))) / 2
+
+
+def edge_stats(hits, n, baseline):
+    rate = hits / n if n else 0
+    edge = rate - baseline
+    z = edge / math.sqrt(baseline * (1 - baseline) / n) if n > 0 else 0
+    p = (1 - _norm_cdf(abs(z))) * 2
+    return {'n': n, 'hits': hits, 'rate': round(rate*100, 3),
+            'edge': round(edge*100, 3), 'z': round(z, 3), 'p': round(p, 4)}
+
+
+def mcnemar_test(a_hits, b_hits):
+    a_only = sum(1 for a, b in zip(a_hits, b_hits) if a and not b)
+    b_only = sum(1 for a, b in zip(a_hits, b_hits) if b and not a)
+    n_disc = a_only + b_only
+    if n_disc == 0:
+        return {'a_only': 0, 'b_only': 0, 'chi2': 0, 'p': 1.0, 'net': 0}
+    chi2 = (abs(a_only - b_only) - 1) ** 2 / n_disc
+    import scipy.stats as st
+    p = 1 - st.chi2.cdf(chi2, df=1)
+    return {'a_only': a_only, 'b_only': b_only,
+            'chi2': round(chi2, 3), 'p': round(p, 4), 'net': a_only - b_only}
+
+
+def permutation_test(hits, n_perm, baseline):
+    actual_edge = sum(hits) / len(hits) - baseline
+    count = 0
+    arr = list(hits)
+    for _ in range(n_perm):
+        random.shuffle(arr)
+        if (sum(arr) / len(arr) - baseline) >= actual_edge:
+            count += 1
+    return round(count / n_perm, 4)
+
+
+def run_backtest(history):
+    total = len(history)
+    print(f"  總期數: {total}，OOS: {total - MIN_BUF} 期", flush=True)
+
+    hits5 = []
+    hits6 = {m: [] for m in BET6_METHODS}
+
+    for i in range(MIN_BUF, total):
+        train = history[:i]
+        actual = set(history[i]['numbers'])
+
         try:
-            bets = strategy_fn(hist)
+            bets = biglotto_p1_deviation_5bet(train)
+            bets = enforce_tail_diversity(bets, max_same_tail=2,
+                                          max_num=49, history=train)
+            bets_nums = [b['numbers'] for b in bets]
         except Exception:
+            hits5.append(False)
+            for m in BET6_METHODS:
+                hits6[m].append(False)
             continue
 
-        hit = any(len(set(b) & actual) >= 3 for b in bets)
-        if hit:
-            hits += 1
-        total += 1
+        hit5 = any(m3plus(b, actual) for b in bets_nums)
+        hits5.append(hit5)
 
-        if i < half:
-            h1_total += 1
-            if hit:
-                h1_hits += 1
-        else:
-            h2_total += 1
-            if hit:
-                h2_hits += 1
+        used = set(n for b in bets_nums for n in b)
+        remaining = [n for n in range(1, MAX_NUM + 1) if n not in used]
 
-    m3_rate = hits / total * 100 if total > 0 else 0
-    n_bets = len(strategy_fn(all_draws[-10:]))  # detect bet count
-    baseline = n_bet_baseline(n_bets)
-    edge = m3_rate - baseline
-    z = edge / (baseline * (100 - baseline) / 100 / total) ** 0.5 if total > 0 else 0
-    p = 1 - norm.cdf(z)
+        for name, fn in BET6_METHODS.items():
+            try:
+                b6 = fn(remaining, train)
+                hit6 = hit5 or m3plus(b6, actual)
+            except Exception:
+                hit6 = hit5
+            hits6[name].append(hit6)
 
-    h1_rate = h1_hits / h1_total * 100 if h1_total > 0 else 0
-    h2_rate = h2_hits / h2_total * 100 if h2_total > 0 else 0
-    h1_edge = h1_rate - baseline
-    h2_edge = h2_rate - baseline
+        if (i - MIN_BUF) % 500 == 0:
+            print(f"  ... {i - MIN_BUF}/{total - MIN_BUF}", flush=True)
 
-    return {
-        'periods': total, 'm3_rate': m3_rate, 'baseline': baseline,
-        'edge': edge, 'z': z, 'p': p,
-        'h1_edge': h1_edge, 'h2_edge': h2_edge,
-        'hits': hits,
-    }
+    return hits5, hits6
 
 
-def permutation_test(all_draws, strategy_fn, periods, n_shuffles=200, seed=42):
-    real = run_backtest_single(all_draws, strategy_fn, periods)
-    real_edge = real['edge']
+def print_report(hits5, hits6):
+    n = len(hits5)
+    bl5, bl6 = BASELINES[5], BASELINES[6]
 
-    rng = np.random.RandomState(seed)
-    shuffle_edges = []
-    for _ in range(n_shuffles):
-        shuffled = copy.deepcopy(all_draws)
-        pool_nums = [d['numbers'][:] for d in shuffled]
-        idx = rng.permutation(len(pool_nums))
-        for i, d in enumerate(shuffled):
-            d['numbers'] = pool_nums[idx[i]]
-        r = run_backtest_single(shuffled, strategy_fn, periods)
-        shuffle_edges.append(r['edge'])
+    print(f"\n{'='*70}")
+    print(f"  大樂透 6注策略研究報告  OOS={n}期")
+    print(f"  5注基準={bl5*100:.2f}%  6注基準={bl6*100:.2f}%  差={( bl6-bl5)*100:.2f}%")
+    print(f"{'='*70}")
 
-    arr = np.array(shuffle_edges)
-    p = float(np.mean(arr >= real_edge))
-    d = float((real_edge - arr.mean()) / (arr.std() + 1e-10))
-    return {
-        'real_edge': real_edge,
-        'shuffle_mean': arr.mean(),
-        'p_value': p,
-        'cohens_d': d,
-        'verdict': 'SIGNAL' if p < 0.05 else 'MARGINAL' if p < 0.10 else 'NO_SIGNAL',
-    }
+    print(f"\n  ── 5注 基線（對照） ──")
+    for w in WINDOWS:
+        h = hits5[-w:] if len(hits5) >= w else hits5
+        s = edge_stats(sum(h), len(h), bl5)
+        print(f"    {w:>5}p  edge={s['edge']:>+6.2f}%  z={s['z']:>+5.2f}  p={s['p']:.4f}")
 
+    all_results = {}
+    for method, h6_all in hits6.items():
+        print(f"\n  ── Bet6: {method} ──")
+        w_results = {}
+        for w in WINDOWS:
+            h = h6_all[-w:] if len(h6_all) >= w else h6_all
+            s = edge_stats(sum(h), len(h), bl6)
+            flag = '▲' if s['edge'] > 0 else '▼'
+            print(f"    {w:>5}p  edge={s['edge']:>+6.2f}%  z={s['z']:>+5.2f}  p={s['p']:.4f}  {flag}")
+            w_results[w] = s
 
-# ────────────────────────────────────────────────────────────
-# 主程式
-# ────────────────────────────────────────────────────────────
+        nmc = min(1500, len(h6_all))
+        mc = mcnemar_test(h6_all[-nmc:], hits5[-nmc:])
+        print(f"    McNemar(1500p): 6注獨贏={mc['a_only']} 5注獨贏={mc['b_only']} net={mc['net']} p={mc['p']:.4f}")
 
-def main():
-    db_path = os.path.join(PROJECT_ROOT, 'lottery_api', 'data', 'lottery_v2.db')
-    db = DatabaseManager(db_path)
-    all_draws = sorted(db.get_all_draws('BIG_LOTTO'), key=lambda x: (x['date'], x['draw']))
-    print(f"總期數: {len(all_draws)}")
-    print(f"P(1注 M3+) = {P1*100:.4f}%")
-    print(f"5注基準 = {n_bet_baseline(5):.4f}%")
-    print(f"6注基準 = {n_bet_baseline(6):.4f}%")
-    print(f"注6 邊際基準 = {marginal_baseline(6):.4f}%")
+        h_perm = h6_all[-1500:] if len(h6_all) >= 1500 else h6_all
+        perm_p = permutation_test(h_perm, N_PERM, bl6)
+        print(f"    Perm(N={N_PERM}): p={perm_p}")
 
-    print("\n" + "=" * 70)
-    print("三窗口對比：5注 vs 6注")
-    print("=" * 70)
-    print(f"{'視窗':>6}  {'策略':>8}  {'M3+%':>6}  {'基準%':>6}  {'Edge%':>7}  "
-          f"{'z':>5}  {'p':>6}  {'H1%':>7}  {'H2%':>7}")
-    print("-" * 70)
+        e1500 = w_results.get(1500, w_results.get(500, {})).get('edge', -999)
+        verdict = 'PASS ✅' if (e1500 > 0 and mc['net'] > 0 and perm_p < 0.05) else 'FAIL ❌'
+        print(f"    → {verdict}  (edge_1500={e1500:+.2f}% net={mc['net']} perm_p={perm_p})")
 
-    for periods in [150, 500, 1500]:
-        for label, fn in [('5注', generate_5bet), ('6注', generate_6bet)]:
-            r = run_backtest_single(all_draws, fn, periods)
-            print(f"{periods:6d}  {label:>8}  {r['m3_rate']:6.2f}  {r['baseline']:6.2f}  "
-                  f"{r['edge']:+7.2f}  {r['z']:5.2f}  {r['p']:6.4f}  "
-                  f"{r['h1_edge']:+7.2f}  {r['h2_edge']:+7.2f}")
-        print()
+        all_results[method] = {
+            'windows': {str(w): s for w, s in w_results.items()},
+            'mcnemar': mc, 'perm_p': perm_p, 'verdict': verdict,
+        }
 
-    # 邊際 Edge 計算
-    print("=" * 70)
-    print("注6 邊際 Edge（6注 - 5注，以隨機邊際基準校正）")
-    print("=" * 70)
-    marg_base = marginal_baseline(6)
-    for periods in [150, 500, 1500]:
-        r5 = run_backtest_single(all_draws, generate_5bet, periods)
-        r6 = run_backtest_single(all_draws, generate_6bet, periods)
-        # 邊際：有多少期 6注命中而 5注未命中
-        # 用 hit6_rate - hit5_rate vs marginal_baseline
-        marginal_hit = r6['m3_rate'] - r5['m3_rate']
-        marginal_edge = marginal_hit - marg_base
-        print(f"  {periods}p：邊際命中率增量={marginal_hit:+.2f}%  "
-              f"邊際基準={marg_base:.2f}%  邊際Edge={marginal_edge:+.2f}%")
-
-    # 500p 排列檢定
-    print()
-    print("=" * 70)
-    print("500p 排列檢定 (n=200)：6注整體")
-    print("=" * 70)
-    perm = permutation_test(all_draws, generate_6bet, 500, n_shuffles=200)
-    print(f"  Real Edge:    {perm['real_edge']:+.2f}%")
-    print(f"  Shuffle mean: {perm['shuffle_mean']:+.4f}%")
-    print(f"  p-value:      {perm['p_value']:.4f}")
-    print(f"  Cohen's d:    {perm['cohens_d']:.3f}")
-    print(f"  Verdict:      {perm['verdict']}")
+    print(f"\n{'='*70}")
+    return all_results
 
 
 if __name__ == '__main__':
-    main()
+    random.seed(SEED)
+    np.random.seed(SEED)
+
+    db = DatabaseManager(db_path=os.path.join(
+        os.path.dirname(os.path.dirname(os.path.abspath(__file__))),
+        'lottery_api', 'data', 'lottery_v2.db'))
+
+    print("\n[BIG_LOTTO] 載入歷史資料...", end=' ', flush=True)
+    history = sorted(db.get_all_draws(lottery_type='BIG_LOTTO'),
+                     key=lambda x: (x['date'], x['draw']))
+    print(f"{len(history)} 期")
+    print("[BIG_LOTTO] 執行回測...", flush=True)
+
+    hits5, hits6 = run_backtest(history)
+    results = print_report(hits5, hits6)
+
+    out = {
+        'lottery': 'BIG_LOTTO', 'n_oos': len(hits5),
+        'baseline_5bet': round(BASELINES[5]*100, 3),
+        'baseline_6bet': round(BASELINES[6]*100, 3),
+        'results': results,
+    }
+    with open('backtest_biglotto_6bet_results.json', 'w', encoding='utf-8') as f:
+        json.dump(out, f, indent=2, ensure_ascii=False)
+    print("\n結果已存至 backtest_biglotto_6bet_results.json")

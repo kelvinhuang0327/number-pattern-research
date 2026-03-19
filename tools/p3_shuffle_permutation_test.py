@@ -40,7 +40,8 @@ import time
 import json
 import argparse
 import numpy as np
-from collections import Counter
+from collections import Counter, defaultdict
+from itertools import combinations as _icombs
 from scipy.fft import fft, fftfreq
 
 project_root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -205,6 +206,174 @@ def bl_ts3_markov4_freqortho5(history):
 
 
 # ============================================================
+# Big Lotto P1+偏差互補 4-bet (PROVISIONAL candidate)
+# ============================================================
+_BL_SUM_WIN = 300
+
+
+def _bl_sum_target(history):
+    h = history[-_BL_SUM_WIN:] if len(history) >= _BL_SUM_WIN else history
+    sums = [sum(d['numbers']) for d in h]
+    mu, sg = np.mean(sums), np.std(sums)
+    last_s = sum(history[-1]['numbers'])
+    if last_s < mu - 0.5 * sg:
+        return mu, mu + sg
+    if last_s > mu + 0.5 * sg:
+        return mu - sg, mu
+    return mu - 0.5 * sg, mu + 0.5 * sg
+
+
+def _bl_fourier_scores_dict(history, window=500):
+    h_slice = history[-window:] if len(history) >= window else history
+    w = len(h_slice)
+    bitstreams = {i: np.zeros(w) for i in range(1, BL_MAX_NUM + 1)}
+    for idx, d in enumerate(h_slice):
+        for n in d['numbers']:
+            if n <= BL_MAX_NUM:
+                bitstreams[n][idx] = 1
+    scores = {}
+    for n in range(1, BL_MAX_NUM + 1):
+        bh = bitstreams[n]
+        if sum(bh) < 2:
+            scores[n] = 0.0
+            continue
+        yf = fft(bh - np.mean(bh))
+        xf = fftfreq(w, 1)
+        idx_pos = np.where(xf > 0)
+        pos_xf = xf[idx_pos]
+        pos_yf = np.abs(yf[idx_pos])
+        peak_idx = np.argmax(pos_yf)
+        freq_val = pos_xf[peak_idx]
+        if freq_val == 0:
+            scores[n] = 0.0
+            continue
+        period = 1 / freq_val
+        if 2 < period < w / 2:
+            last_hit = np.where(bh == 1)[0][-1]
+            gap = (w - 1) - last_hit
+            scores[n] = 1.0 / (abs(gap - period) + 1.0)
+        else:
+            scores[n] = 0.0
+    return scores
+
+
+def _bl_markov_scores_dict(history, window=30):
+    recent = history[-window:] if len(history) >= window else history
+    transitions = defaultdict(Counter)
+    for i in range(len(recent) - 1):
+        curr = recent[i]['numbers']
+        nxt = recent[i + 1]['numbers']
+        for cn in curr:
+            for nn in nxt:
+                transitions[cn][nn] += 1
+    prev_nums = history[-1]['numbers']
+    scores = Counter()
+    for pn in prev_nums:
+        trans = transitions.get(pn, Counter())
+        total = sum(trans.values())
+        if total > 0:
+            for n, cnt in trans.items():
+                scores[n] += cnt / total
+    return dict(scores)
+
+
+def _bl_cold_sum_constrained(history, exclude=None, pool_size=12):
+    exclude = exclude or set()
+    recent = history[-100:] if len(history) >= 100 else history
+    freq = Counter(n for d in recent for n in d['numbers'])
+    candidates = [n for n in range(1, BL_MAX_NUM + 1) if n not in exclude]
+    sorted_cold = sorted(candidates, key=lambda x: freq.get(x, 0))
+    if len(history) < 2 or pool_size <= 6:
+        return sorted(sorted_cold[:6])
+    pool = sorted_cold[:pool_size]
+    tlo, thi = _bl_sum_target(history)
+    tmid = (tlo + thi) / 2.0
+    best_combo, best_dist, best_in_range = None, float('inf'), False
+    for combo in _icombs(pool, 6):
+        s = sum(combo)
+        in_range = (tlo <= s <= thi)
+        dist = abs(s - tmid)
+        if in_range and (not best_in_range or dist < best_dist):
+            best_combo, best_dist, best_in_range = combo, dist, True
+        elif not in_range and not best_in_range and dist < best_dist:
+            best_combo, best_dist = combo, dist
+    return sorted(best_combo) if best_combo else sorted(pool[:6])
+
+
+def _bl_p1_neighbor_cold_2bet(history):
+    prev_nums = history[-1]['numbers']
+    neighbor_pool = set()
+    for n in prev_nums:
+        for d in range(-1, 2):
+            nn = n + d
+            if 1 <= nn <= BL_MAX_NUM:
+                neighbor_pool.add(nn)
+    f_scores = _bl_fourier_scores_dict(history, window=500)
+    mk = _bl_markov_scores_dict(history, window=30)
+    f_max = max(f_scores.values()) if f_scores else 1
+    mk_max = max(mk.values()) if mk else 1
+    neighbor_scores = {}
+    for n in neighbor_pool:
+        fs = f_scores.get(n, 0) / (f_max or 1)
+        ms = mk.get(n, 0) / (mk_max or 1)
+        neighbor_scores[n] = fs + 0.5 * ms
+    ranked = sorted(neighbor_scores.items(), key=lambda x: -x[1])
+    bet1 = sorted([n for n, _ in ranked[:BL_PICK]])
+    bet2 = _bl_cold_sum_constrained(history, exclude=set(bet1))
+    return [bet1, bet2]
+
+
+def _bl_deviation_complement_2bet(history, exclude=None, window=50):
+    exclude = exclude or set()
+    recent = history[-window:] if len(history) > window else history
+    total = len(recent)
+    expected = total * BL_PICK / BL_MAX_NUM
+    freq = Counter(n for d in recent for n in d['numbers'])
+    hot, cold = [], []
+    for n in range(1, BL_MAX_NUM + 1):
+        if n in exclude:
+            continue
+        f = freq.get(n, 0)
+        dev = f - expected
+        if dev > 1:
+            hot.append((n, dev))
+        elif dev < -1:
+            cold.append((n, abs(dev)))
+    hot.sort(key=lambda x: -x[1])
+    cold.sort(key=lambda x: -x[1])
+    bet1 = [n for n, _ in hot[:BL_PICK]]
+    used = set(bet1) | exclude
+    if len(bet1) < BL_PICK:
+        mid = sorted(
+            [n for n in range(1, BL_MAX_NUM + 1) if n not in used],
+            key=lambda n: abs(freq.get(n, 0) - expected)
+        )
+        for n in mid:
+            if len(bet1) < BL_PICK:
+                bet1.append(n)
+                used.add(n)
+    bet2 = []
+    for n, _ in cold:
+        if n not in used and len(bet2) < BL_PICK:
+            bet2.append(n)
+            used.add(n)
+    if len(bet2) < BL_PICK:
+        for n in range(1, BL_MAX_NUM + 1):
+            if n not in used and len(bet2) < BL_PICK:
+                bet2.append(n)
+                used.add(n)
+    return [sorted(bet1[:BL_PICK]), sorted(bet2[:BL_PICK])]
+
+
+def bl_p1_deviation_4bet(history):
+    """P1+偏差互補 4注: 注1+2=P1鄰號+冷號, 注3+4=偏差互補(排除P1)"""
+    p1_bets = _bl_p1_neighbor_cold_2bet(history)
+    used_p1 = set(n for b in p1_bets for n in b)
+    dev_bets = _bl_deviation_complement_2bet(history, exclude=used_p1)
+    return p1_bets + dev_bets
+
+
+# ============================================================
 # Power Lotto PowerPrecision 3bet Strategy
 # ============================================================
 def pl_fourier_rhythm_bet(history, window=500, top_n=6, skip=0):
@@ -263,6 +432,12 @@ def pl_power_precision_3bet(history):
     used = set(bet1) | set(bet2)
     bet3 = pl_lag2_echo_bet(history, window=100, exclude=used)
     return [bet1, bet2, bet3]
+
+def pl_sgp_v9_3bet(history):
+    from lottery_api.models.sgp_strategy import SGPStrategy
+    sgp = SGPStrategy()
+    # history in test is Oldest-First, SGP needs Newest-First
+    return sgp.generate_bets(history[::-1], n_bets=3, lottery_type='POWER_LOTTO')
 
 
 # ============================================================
@@ -462,6 +637,46 @@ def main():
         print(f"  Verdict: {verdict}")
 
         results['BIG_LOTTO_4BET'] = bl4_result
+
+        # --- P1+偏差互補 4-bet (PROVISIONAL) ---
+        print("\n" + "-" * 80)
+        print("  Big Lotto: P1+偏差互補 (4-bet PROVISIONAL)")
+        print("-" * 80)
+
+        t0 = time.time()
+        bl_p1dev_result = run_permutation_test(
+            bl_draws, bl_p1_deviation_4bet, 4, args.periods,
+            BL_P_SINGLE, args.shuffles, args.seed
+        )
+        elapsed = time.time() - t0
+
+        print(f"\n  Real edge:     {bl_p1dev_result['real_edge']*100:+.2f}%")
+        print(f"  Shuffle mean:  {bl_p1dev_result['shuffle_mean']*100:+.2f}%")
+        print(f"  Shuffle std:   {bl_p1dev_result['shuffle_std']*100:.2f}%")
+        print(f"  Permutation p: {bl_p1dev_result['p_value']:.4f}")
+        print(f"  Cohen's d:     {bl_p1dev_result['cohens_d']:.2f}")
+        print(f"  Time: {elapsed:.1f}s")
+
+        if bl_p1dev_result['p_value'] <= 0.05:
+            verdict = "SIGNAL DETECTED"
+        elif bl_p1dev_result['p_value'] <= 0.10:
+            verdict = "MARGINAL"
+        else:
+            verdict = "NO SIGNAL (likely artifact)"
+        print(f"  Verdict: {verdict}")
+
+        edges_sorted = sorted(bl_p1dev_result['shuffle_edges'])
+        print(f"\n  Shuffle distribution summary (n={args.shuffles}):")
+        print(f"    Min: {min(edges_sorted)*100:+.2f}%")
+        print(f"    25%: {np.percentile(edges_sorted, 25)*100:+.2f}%")
+        print(f"    50%: {np.percentile(edges_sorted, 50)*100:+.2f}%")
+        print(f"    75%: {np.percentile(edges_sorted, 75)*100:+.2f}%")
+        print(f"    95%: {np.percentile(edges_sorted, 95)*100:+.2f}%")
+        print(f"    Max: {max(edges_sorted)*100:+.2f}%")
+        print(f"    Real: {bl_p1dev_result['real_edge']*100:+.2f}% "
+              f"(rank: top {bl_p1dev_result['p_value']*100:.1f}%)")
+
+        results['BIG_LOTTO_P1DEV_4BET'] = bl_p1dev_result
 
     # ====== Power Lotto ======
     if args.lottery in ['POWER_LOTTO', 'BOTH']:

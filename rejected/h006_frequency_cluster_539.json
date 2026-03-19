@@ -1,0 +1,20 @@
+{
+  "id": "H006",
+  "name": "號碼 Frequency Cluster 輪替偏向",
+  "lottery": "DAILY_539",
+  "archived_at": "2026-03-15",
+  "hypothesis": "K-means 頻率聚類後，上期主導 Cluster 的資訊可用於調整下期選號偏向",
+  "rejection_reason": "McNemar net=+12 p=0.450 不顯著。1500p Edge +0.87pp 看似改善，但統計上無意義。",
+  "gate_result": "Gate PROCEED (Ljung-Box p=0.000, ACF lag1=0.08)，但效應本已偏小",
+  "statistical_results": {
+    "metric": "M2+",
+    "n_periods": 5460,
+    "start": 350,
+    "baseline_acb": {"e150": -4.07, "e500": 1.00, "e1500": -0.13},
+    "h006_cluster_bias": {"e150": -2.07, "e500": 2.20, "e1500": 0.87},
+    "mcnemar": {"net": 12, "n01": 100, "n10": 112, "p": 0.45},
+    "verdict": "REJECT"
+  },
+  "root_cause": "K-means 頻率聚類雖然 Ljung-Box 通過 Gate，但 ACF lag1=0.08 效應本就偏小（L80）。Cluster 標籤的輪替規律不夠強，只能帶來 1.0pp 的邊際改善，遠低於統計顯著的門檻（需 McNemar net≥20+ 才能達到 p<0.1）。根本原因：頻率聚類是頻率信號的另一種表示，與 ACB/MidFreq 高度相關，無法提供獨立信息。",
+  "future_reconsideration": "若使用更多特徵做聚類（不只頻率，包含 gap、boundary 等），可能產生更有意義的分群。重啟條件：數據達到 10000 期，或找到與頻率維度正交的聚類特徵。"
+}

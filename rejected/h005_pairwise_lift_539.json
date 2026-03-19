@@ -1,0 +1,23 @@
+{
+  "id": "H005",
+  "name": "配對共現異常（Pairwise Co-occurrence Lift）",
+  "lottery": "DAILY_539",
+  "archived_at": "2026-03-15",
+  "rejection_stage": "FAST_GATE",
+  "hypothesis": "特定號碼對 (i,j) 的共現率顯著高於獨立假設 P(i)×P(j)，Lift > 1.3x",
+  "rejection_reason": "741 對中 0 對達到 Lift ≥ 1.3x。最高 Lift=1.054（pair 16,21）遠低於門檻。0 對通過未校正 p<0.05（預期隨機 ~37 對），說明彩票抽獎獨立性極強。",
+  "statistical_results": {
+    "n_draws": 5810,
+    "n_pairs": 741,
+    "bonferroni_threshold": 6.75e-5,
+    "lift_13_plus_count": 0,
+    "sig_uncorrected_count": 0,
+    "sig_bonferroni_count": 0,
+    "pass_both_count": 0,
+    "max_lift": 1.0539,
+    "max_lift_pair": [16, 21],
+    "verdict": "FAST_REJECT"
+  },
+  "root_cause": "今彩539為隨機抽獎，號碼間的共現率與獨立假設幾乎完全一致。5810期資料中最高Lift僅1.054，遠低於1.3x門檻。未校正p值全部>0.29，連隨機預期的假陽性（~37對）都沒有出現，彰顯極強的統計獨立性。Markov lag-1單號轉移的Lift=1.134x（見BL cases）已是最高，配對共現更難超過此值。",
+  "future_reconsideration": "此結果非常確定，不建議重新開啟。若未來研究發現特定號碼對在 > 20000 期中持續高共現，可重新考慮。但在隨機彩票設計下，此類信號理論上不應存在。"
+}

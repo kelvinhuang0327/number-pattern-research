@@ -1,0 +1,103 @@
+{
+  "methods": {
+    "frequency": {
+      "description": "Frequency-based signals (hot, cold, midfreq, deficit, ACB)",
+      "variants": [
+        "Hot frequency (window 10-300)",
+        "Cold frequency",
+        "MidFreq (closest to expected)",
+        "Frequency deficit (fd)",
+        "ACB (fd*0.4 + gs*0.6 + boundary + mod3)",
+        "EWMA weighted frequency"
+      ],
+      "parameters_tested": "windows: [10,20,30,50,80,100,150,200,300], fd/gs weights: 6 combos",
+      "best_edge": "+0.303% (ACB, p=0.07 MARGINAL)",
+      "param_space_size": 54
+    },
+    "gap": {
+      "description": "Gap-based signals (time since last appearance)",
+      "variants": [
+        "Raw gap score",
+        "Normalized gap",
+        "Gap pressure",
+        "Gap dynamic threshold",
+        "Gap entropy (H004)"
+      ],
+      "parameters_tested": "windows: [50,100,200], thresholds: [1.0-3.0]",
+      "best_edge": "Absorbed by frequency signals",
+      "param_space_size": 15
+    },
+    "markov": {
+      "description": "Transition probability models",
+      "variants": [
+        "Markov order-1 (bigram)",
+        "Markov order-2 (trigram)",
+        "Conditional Markov (H002)",
+        "Delta-ACB Markov (H003)"
+      ],
+      "parameters_tested": "orders: [1,2], windows: [30,50,100,200,500]",
+      "best_edge": "+0.192% (p=0.42 NO_SIGNAL)",
+      "param_space_size": 10
+    },
+    "spectral": {
+      "description": "Fourier/FFT spectral analysis",
+      "variants": [
+        "FFT dominant frequency",
+        "Fourier rhythm (weighted amplitude)",
+        "Fourier window 100/500/1000 (H007)",
+        "Wavelet decomposition"
+      ],
+      "parameters_tested": "windows: [100,200,500,1000]",
+      "best_edge": "+0.414% (Fourier, p=0.14 NO_SIGNAL)",
+      "param_space_size": 12
+    },
+    "regime": {
+      "description": "Regime detection / state-space models",
+      "variants": [
+        "Sum regime (high/low)",
+        "Parity regime",
+        "Zone regime",
+        "Drift detection (PSI)"
+      ],
+      "parameters_tested": "thresholds: [mu-sigma, mu, mu+sigma], windows: [100,300,500]",
+      "best_edge": "+0.081% (p=0.27 NO_SIGNAL)",
+      "param_space_size": 12
+    },
+    "neighbor_structural": {
+      "description": "Neighbor/structural signals",
+      "variants": [
+        "P1 neighbor (prev draw +/-1)",
+        "Lag-2 echo",
+        "Pairwise lift (H005)",
+        "Tail balance",
+        "Consecutive number injection"
+      ],
+      "parameters_tested": "lag: [1,2,3], echo_boost: [0.5-2.0]",
+      "best_edge": "+0.081% (P1_Neighbor, p=0.48 NO_SIGNAL)",
+      "param_space_size": 12
+    },
+    "evolutionary": {
+      "description": "Machine learning / evolutionary strategies",
+      "variants": [
+        "MicroFish (33 features, pop=200, gen=50)",
+        "Strategy evolution (7 signals, pop=200, gen=50)",
+        "Product score (H001)",
+        "Frequency cluster (H006)",
+        "Cross-game transfer signals"
+      ],
+      "parameters_tested": "pop: [100,200], gen: [30,50], features: [2-8], eval: [300,500]",
+      "best_edge": "+0.303% (MicroFish, p=0.28, overfit 10.35x)",
+      "param_space_size": 40
+    }
+  },
+  "total_families": 7,
+  "total_variants": 33,
+  "total_param_space": 155,
+  "coverage_ratio": 0.886,
+  "untested_areas": [
+    "Deep learning (LSTM/Transformer) \u2014 rejected: low baseline causes overfit (L89)",
+    "Topological data analysis \u2014 not attempted",
+    "Causal inference \u2014 not applicable to iid-like data",
+    "External data sources \u2014 not available"
+  ]
+}

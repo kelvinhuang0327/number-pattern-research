@@ -1,0 +1,20 @@
+{
+  "timestamp": "2026-02-27T21:35:23.171380",
+  "test_periods": 1500,
+  "n_perms": 500,
+  "actual_M2": 0.14266666666666666,
+  "actual_hits": 214,
+  "actual_total": 1500,
+  "perm_mean": 0.11462800000000001,
+  "perm_std": 0.00804525819784867,
+  "perm_min": 0.092,
+  "perm_max": 0.138,
+  "z_score": 3.4851170686062374,
+  "p_empirical": 0.001996007984031936,
+  "p_normal": 0.0002459608841919314,
+  "cohen_d": 3.4851170686062374,
+  "shuffle_bias": 0.0006545702370965578,
+  "signal_edge": 0.028038666666666656,
+  "total_edge": 0.028693236903763214,
+  "decision": "PASS \u2192 ADOPT (Bonf\u901a\u904e)"
+}

@@ -4,11 +4,9 @@
  */
 import { getLotteryTypeById } from '../utils/LotteryTypes.js';
 import { apiClient } from '../services/ApiClient.js';
+import { getApiOrigin, getApiUrl } from '../config/apiConfig.js';
 
-// 🔧 定義 API 基礎 URL（文件級常量，避免實例屬性問題）
-const API_BASE_URL = (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1')
-    ? 'http://localhost:8002/api/auto-learning'
-    : 'https://your-api-domain.com/api/auto-learning';
+const API_BASE_URL = `${getApiOrigin()}/api/auto-learning`;
 
 export class AutoLearningManager {
     constructor(dataProcessor, uiManager) {
@@ -46,11 +44,10 @@ export class AutoLearningManager {
     async checkApiHealth() {
         // 使用兩個候選 URL 避免單一失敗：優先 127.0.0.1 其次 localhost
         // 先嘗試極速 /api/ping，再回退 /health
+        const origin = getApiOrigin();
         const urls = [
-            'http://127.0.0.1:8002/api/ping',
-            'http://localhost:8002/api/ping',
-            'http://127.0.0.1:8002/health',
-            'http://localhost:8002/health'
+            `${origin}/api/ping`,
+            `${origin}/health`
         ];
         const TIMEOUT_MS = 15000; // 增加至 15 秒，避免優化期間暫時阻塞
         const MAX_ATTEMPTS = 2;   // 至少連續 2 次失敗才判定離線
@@ -745,8 +742,8 @@ export class AutoLearningManager {
 
             this.uiManager.showNotification('正在同步數據到後端...', 'info');
 
-            // 🔧 獲取完整數據（不限制數量，limit=0 表示獲取所有數據）
-            const history = await this.dataProcessor.getDataFromIndexedDB(lotteryType, 0);
+            // 使用 DataProcessor 既有 API 取得完整資料，避免呼叫不存在方法。
+            const history = await this.dataProcessor.getDataRange('all', lotteryType);
 
             if (!history || history.length === 0) {
                 throw new Error('無法獲取數據，請確保已載入彩票數據');
@@ -1197,9 +1194,7 @@ export class AutoLearningManager {
             this.uiManager.showNotification('開始評估所有策略，請稍候...', 'info');
 
             // 調用後端 API
-            const apiUrl = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
-                ? 'http://localhost:8002/api/auto-learning/evaluate-strategies'
-                : 'https://your-api-domain.com/api/auto-learning/evaluate-strategies';
+            const apiUrl = getApiUrl('/api/auto-learning/evaluate-strategies');
 
             progressBar.style.width = '30%';
             statusText.textContent = '正在評估策略...';

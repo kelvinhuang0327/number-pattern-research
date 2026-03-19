@@ -1,0 +1,25 @@
+{
+  "id": "H002",
+  "name": "條件 ACB（前期熱號 Markov 條件化）",
+  "lottery": "DAILY_539",
+  "archived_at": "2026-03-15",
+  "hypothesis": "conditional_acb(n,t) = acb(n,t) × (1 + mult × relative_markov(n))，其中 relative_markov(n) = avg P(n|j_prev) / P(n) - 1",
+  "rejection_reason": "參數掃描 mult=[0.1,0.2,0.3,0.5,0.8,1.0] 全部不顯著。最佳 McNemar net=+13 p=0.275 遠超拒絕門檻 p<0.1",
+  "statistical_results": {
+    "metric": "M2+",
+    "n_periods": 5210,
+    "markov_window": 500,
+    "param_scan": [
+      {"mult": 0.1, "e150": -1.40, "e500": 1.80, "e1500": 0.13, "mcnemar_net": 13, "mcnemar_p": 0.2753},
+      {"mult": 0.2, "e150": -0.73, "e500": 2.20, "e1500": 0.33, "mcnemar_net": 12, "mcnemar_p": 0.3933},
+      {"mult": 0.3, "e150": -1.40, "e500": 2.20, "e1500": 0.33, "mcnemar_net": 10, "mcnemar_p": 0.5225},
+      {"mult": 0.5, "e150": -1.40, "e500": 1.20, "e1500": 0.13, "mcnemar_net": 10, "mcnemar_p": 0.5495},
+      {"mult": 0.8, "e150": -2.73, "e500": 0.80, "e1500": -0.20, "mcnemar_net": -3, "mcnemar_p": 0.8996},
+      {"mult": 1.0, "e150": -2.73, "e500": 0.60, "e1500": -0.40, "mcnemar_net": -9, "mcnemar_p": 0.6232}
+    ],
+    "baseline_acb_1bet": {"e150": -4.07, "e500": 1.00, "e1500": -0.13},
+    "verdict": "REJECT"
+  },
+  "root_cause": "Markov lag-1 信號已在 L（BL lessons）確認為弱信號（Lift=1.134x，boost=0.1 僅+2 hits/1500）。將弱的 Markov 信號乘入 ACB 評分不能放大信號，因為：(1) 平均 P(n|j)/P(n) 的波動約±20%，相對 ACB 的得分差異太小；(2) Markov 信號用乘法而非加法影響候選排序效果有限。mult>0.5 時開始退化，說明過強的 Markov 修正會干擾 ACB 原有信號。",
+  "future_reconsideration": "若 Markov 信號在更長時間尺度（lag-2, lag-3）或更高 Lift（>1.3x）的特定號碼對上顯著，可重新考慮加法（而非乘法）形式的條件 ACB。或等待數據達到 10000 期後重驗。"
+}

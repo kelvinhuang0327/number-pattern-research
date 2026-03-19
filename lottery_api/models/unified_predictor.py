@@ -156,6 +156,7 @@ def predict_pool_numbers(
         'hot_cold': engine.hot_cold_mix_predict,
         'markov': engine.markov_predict,
         'arima': engine.arima_predict,
+        'sgp': engine.sgp_predict,
         'anomaly_cluster_v11': get_advanced_strategies().anomaly_cluster_v11_predict,
         'power_anomaly_cluster_v11': get_advanced_strategies().power_anomaly_cluster_v11_predict
     }
@@ -167,11 +168,16 @@ def predict_pool_numbers(
         
         # 處理特別號與主號重複的情況（如果範圍重疊，如大樂透）
         if pool_type == 'special' and main_predicted and max_num == lottery_rules.get('maxNumber'):
-            # 如果預測的特別號已經在主號中，嘗試換一個
-            if result['numbers'][0] in main_predicted:
-                # 簡單退回到概率次高的
-                # 這裡為了簡單，直接從未被選中的號碼中隨機選一個高頻的
-                pass 
+            if result['numbers'] and result['numbers'][0] in main_predicted:
+                # 從歷史中找頻率最高且不在主號中的特別號
+                sp_freq = Counter(
+                    d.get('special') for d in history
+                    if d.get('special') is not None and d.get('special') not in main_predicted
+                )
+                if sp_freq:
+                    result = dict(result)
+                    result['numbers'] = [sp_freq.most_common(1)[0][0]]
+                    logger.debug(f"Special number collision resolved: {result['numbers'][0]}")
         
         return result
     except Exception as e:
@@ -213,9 +219,8 @@ class UnifiedPredictionEngine:
     統一預測引擎
     整合多種預測策略，提供統一的預測接口
     """
-    _shared_prediction_cache = {}
-    
     def __init__(self):
+        self._shared_prediction_cache = {}  # instance variable，避免跨實例快取污染
         self.scaler = StandardScaler()
         self.analyzer = LotteryFeatureAnalyzer()
         self._sota_models = {} # 緩存不同彩種的 SOTA 模型
@@ -250,6 +255,7 @@ class UnifiedPredictionEngine:
                     'statistical': self.statistical_predict,
                     'deviation': self.deviation_predict,
                     'arima': self.arima_predict,
+                    'sgp': self.sgp_predict,
                     'monte_carlo': self.monte_carlo_predict,
                     'gnn': self.gnn_predict
                 }
@@ -302,8 +308,8 @@ class UnifiedPredictionEngine:
     def _make_cached(self, func, name):
         def wrapper(history, lottery_rules, *args, **kwargs):
             if not history: return func(history, lottery_rules, *args, **kwargs)
-            # 使用最新一期的 ID 和歷史長度作為唯一標識
-            draw_id = history[0].get('draw')
+            # 使用 ASC 排序下的最新一期 ID 和歷史長度作為唯一標識
+            draw_id = history[-1].get('draw')
             h_len = len(history)
             l_name = lottery_rules.get('name', '')
             cache_key = (name, draw_id, h_len, l_name, str(args), str(kwargs))
@@ -315,7 +321,7 @@ class UnifiedPredictionEngine:
             
             # 限制緩存大小，避免內存溢出
             if len(self._shared_prediction_cache) > 50000:
-                self._shared_prediction_cache.clear()
+                self._shared_prediction_cache = {}
                 
             self._shared_prediction_cache[cache_key] = res
             return res
@@ -333,7 +339,7 @@ class UnifiedPredictionEngine:
             'diverse_zone_predict', 'community_predict', 'adaptive_weight_predict',
             'entropy_predict', 'interval_predict', 'anti_consensus_predict',
             'cluster_pivot_predict', 'lag_reversion_predict', 'fourier_main_predict',
-            'gnn_predict', 'vae_predict'
+            'gnn_predict', 'vae_predict', 'sgp_predict'
         ]
         for name in strategy_names:
             if hasattr(self, name):
@@ -637,7 +643,8 @@ class UnifiedPredictionEngine:
         # ============ 維度5: 遺漏值偏差（權重10%）============
         gaps = {}
         for num in range(min_num, max_num + 1):
-            for i, draw in enumerate(history):
+            # ASC order -> reversed enumeration makes i represent the gap from newest
+            for i, draw in enumerate(reversed(history)):
                 if num in draw['numbers']:
                     gaps[num] = i
                     break
@@ -4929,6 +4936,47 @@ class UnifiedPredictionEngine:
             return gnn_predict(history, lottery_rules)
         except Exception as e:
             logger.error(f"GNN 預測失敗: {e}")
+            return self.statistical_predict(history, lottery_rules)
+
+
+    def sgp_predict(self, history: List[Dict], lottery_rules: Dict) -> Dict:
+        """
+        🚀 Phase 63: Spectral Gap Pressure (SGP)
+        融合傅立葉規律與遺漏壓力，特別針對洗牌期優化
+        """
+        try:
+            from .sgp_strategy import SGPStrategy
+            sgp = SGPStrategy()
+            max_num = lottery_rules.get('maxNumber', 38)
+            lottery_type = lottery_rules.get('name', 'POWER_LOTTO')
+            
+            # 生成多注 (對其規則要求的注數)
+            num_bets = lottery_rules.get('bets', 3)
+            bets = sgp.generate_bets(history, n_bets=num_bets, lottery_type=lottery_type)
+            predicted_numbers = bets[0]
+            
+            # 獲取分數地圖供日誌
+            scores = sgp.calculate_sgp_scores(history, max_num)
+            top_scores = [scores.get(n, 0) for n in predicted_numbers]
+            
+            # 預測特別號 (選用 Special V3 如果是威力彩)
+            predicted_special = predict_special_number(history, lottery_rules, predicted_numbers, strategy_name='sgp')
+            
+            result = {
+                'numbers': predicted_numbers,
+                'confidence': 0.82,
+                'method': 'Spectral Gap Pressure (SGP) 融合分析',
+                'probabilities': top_scores,
+                'regime': sgp.detect_regime(history)
+            }
+            if predicted_special is not None:
+                result['special'] = predicted_special
+                
+            return self.auto_identify_stability(lottery_type, 'sgp', result)
+            
+        except Exception as e:
+            logger.error(f"SGP 預測失敗: {e}")
+            import traceback; logger.error(traceback.format_exc())
             return self.statistical_predict(history, lottery_rules)
 
 

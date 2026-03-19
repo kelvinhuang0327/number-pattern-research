@@ -16,7 +16,10 @@ project_root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 sys.path.insert(0, project_root)
 sys.path.insert(0, os.path.join(project_root, 'lottery_api'))
 
-from tools.strategy_leaderboard import StrategyLeaderboard
+try:
+    from tools.strategy_leaderboard import StrategyLeaderboard
+except ImportError:
+    StrategyLeaderboard = None
 
 def detect_dominant_period(ball_history):
     # ball_history is an array of 0s and 1s

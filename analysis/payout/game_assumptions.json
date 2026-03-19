@@ -1,0 +1,37 @@
+{
+  "BIG_LOTTO": {
+    "ticket_cost": 50,
+    "jackpot_assumption": 100000000,
+    "jackpot_tax_rate": 0.2,
+    "breakeven_jackpot": 593896000,
+    "historical_max_jackpot": 3100000000,
+    "estimated_active_tickets": 3200000,
+    "crowd_scale": 2.8,
+    "min_ev_floor": -10.0
+  },
+  "POWER_LOTTO": {
+    "ticket_cost": 100,
+    "jackpot_assumption": 200000000,
+    "jackpot_tax_rate": 0.2,
+    "breakeven_jackpot": 2147659000,
+    "historical_max_jackpot": 4400000000,
+    "estimated_active_tickets": 2100000,
+    "crowd_scale": 2.5,
+    "min_ev_floor": -20.0
+  },
+  "DAILY_539": {
+    "ticket_cost": 50,
+    "jackpot_assumption": 8000000,
+    "jackpot_tax_rate": 0.2,
+    "breakeven_jackpot": 25891062,
+    "historical_max_jackpot": 8000000,
+    "estimated_active_tickets": 900000,
+    "crowd_scale": 3.2,
+    "min_ev_floor": -25.0,
+    "official_prizes": {
+      "2": 50,
+      "3": 300,
+      "4": 20000
+    }
+  }
+}

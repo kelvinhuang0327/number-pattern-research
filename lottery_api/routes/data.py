@@ -3,6 +3,7 @@ from typing import List, Dict, Optional
 import logging
 import os
 import json
+import sys
 
 from schemas import (
     OptimizationRequest, CreateDrawRequest, UpdateDrawRequest, DrawData
@@ -12,6 +13,10 @@ from utils.scheduler import scheduler
 from utils.model_cache import model_cache
 from common import normalize_lottery_type
 from utils.csv_validator import csv_validator 
+
+project_root = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+sys.path.insert(0, project_root)
+from analysis.payout.sync import refresh_hedge_fund_outputs
 
 router = APIRouter()
 logger = logging.getLogger(__name__)
@@ -63,6 +68,8 @@ async def upload_data(request: OptimizationRequest):
         logger.info(f"✅ 數據插入完成: 新增 {inserted} 筆，重複 {duplicates} 筆")
         
         scheduler.update_data(history, request.lotteryRules)
+        if inserted > 0:
+            refresh_hedge_fund_outputs(project_root)
         
         return {
             "success": True,
@@ -189,6 +196,7 @@ async def create_draw(request: CreateDrawRequest):
         inserted, _ = db_manager.insert_draws([draw_data])
         if inserted > 0:
             scheduler.load_data() # Reload to sync
+            refresh_hedge_fund_outputs(project_root)
             return {"success": True, "message": "新增成功", "data": draw_data}
         else:
             raise HTTPException(status_code=500, detail="新增失敗")
@@ -249,6 +257,7 @@ async def update_draw(draw_id: str, request: UpdateDrawRequest):
 
             conn.commit()
             logger.info(f"✅ 更新成功: {draw_id}")
+            refresh_hedge_fund_outputs(project_root)
 
             return {
                 "success": True,

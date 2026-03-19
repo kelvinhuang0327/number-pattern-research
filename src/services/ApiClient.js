@@ -2,9 +2,9 @@
  * API 客戶端服務
  * 統一管理所有後端 API 調用
  */
+import { getApiOrigin } from '../config/apiConfig.js';
 
-// 使用 127.0.0.1 以避免在 macOS 上因 IPv6 (::1) 解析造成的連線問題
-const API_BASE_URL = 'http://127.0.0.1:8002';
+const API_BASE_URL = getApiOrigin();
 
 export class ApiClient {
     constructor() {

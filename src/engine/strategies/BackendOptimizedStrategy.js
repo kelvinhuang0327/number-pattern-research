@@ -2,6 +2,8 @@
  * Backend Optimized Strategy - 調用後端優化的預測
  * 使用遺傳算法優化過的參數進行預測，獲得接近 10% 的成功率
  */
+import { getApiUrl } from '../../config/apiConfig.js';
+
 export class BackendOptimizedStrategy {
     constructor() {
         this.apiEndpoint = this.getApiEndpoint();
@@ -11,13 +13,7 @@ export class BackendOptimizedStrategy {
      * 獲取 API 端點
      */
     getApiEndpoint() {
-        // 開發環境
-        if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
-            return 'http://localhost:8002/api/predict-optimized';
-        }
-
-        // 生產環境（稍後配置）
-        return 'https://your-api-domain.com/api/predict-optimized';
+        return getApiUrl('/api/predict-optimized');
     }
 
     /**

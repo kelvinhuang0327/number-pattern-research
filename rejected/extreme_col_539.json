@@ -1,0 +1,15 @@
+{
+  "strategy_name": "ExtremeCol series (gap>=25)",
+  "description": "四個 ExtremeCol 策略：standalone, MidFreq+, ACB+, ACB+Markov+",
+  "rejection_date": "2026-03-10",
+  "trigger": "115000061期38號(gap=33)極端冷號未被捕捉",
+  "failure_reason": "ExtremeCol 的硬閾值篩選(gap≥25)不優於 ACB 的連續評分。ACB 的 gap_score 本身已對高 gap 號碼給予高分，額外的硬閾值篩選反而限制了候選池、降低靈活性。McNemar 全部 winner=B。MidFreq+ExtremeCol 顯著劣於 MidFreq+ACB (p=0.002)。",
+  "statistical_results": {
+    "ExtremeCol_1bet": {"edge_1500p": 0.13, "perm_p": 0.363, "stability": "LATE_BLOOMER"},
+    "MidFreq_ExtremeCol_2bet": {"edge_1500p": 2.19, "perm_p": 0.040, "stability": "STABLE", "mcnemar_p": 0.002, "mcnemar_winner": "B"},
+    "ACB_ExtremeCol_2bet": {"edge_1500p": 3.33, "perm_p": 0.005, "stability": "STABLE", "mcnemar_p": 0.124, "mcnemar_winner": "B"},
+    "ACB_Markov_ExtremeCol_3bet": {"edge_1500p": 4.97, "perm_p": 0.015, "stability": "STABLE", "mcnemar_p": 0.300, "mcnemar_winner": "B"}
+  },
+  "insight": "ACB 連續評分 > ExtremeCol 硬閾值。gap≥25 只是 ACB 高分號碼的子集，獨立篩選無附加價值",
+  "retest_conditions": ["若 ACB 的 gap_score 權重被修改，重新評估 ExtremeCol 是否有獨立價值", "若彩種規則改變（如號碼範圍或選號數變更），重測閾值"]
+}

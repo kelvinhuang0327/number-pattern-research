@@ -1,0 +1,409 @@
+{
+  "phase2": {
+    "acb": {
+      "edge_150p": -0.01864,
+      "rate_150p": 0.0,
+      "edge_500p": 0.00336,
+      "rate_500p": 0.022,
+      "edge_1500p": 0.00403,
+      "rate_1500p": 0.02267,
+      "full_rate": 0.02167,
+      "full_edge": 0.00303,
+      "n_hits": 39,
+      "n_oos": 1800,
+      "z_score": 0.95,
+      "three_window_pass": false,
+      "perm": {
+        "real_edge": 0.00303,
+        "p_emp": 0.06,
+        "cohens_d": 1.587,
+        "verdict": "MARGINAL"
+      }
+    },
+    "midfreq": {
+      "edge_150p": 0.00803,
+      "rate_150p": 0.02667,
+      "edge_500p": 0.00736,
+      "rate_500p": 0.026,
+      "edge_1500p": -0.00064,
+      "rate_1500p": 0.018,
+      "full_rate": 0.01944,
+      "full_edge": 0.00081,
+      "n_hits": 35,
+      "n_oos": 1800,
+      "z_score": 0.253,
+      "three_window_pass": false,
+      "perm": {
+        "real_edge": 0.00081,
+        "p_emp": 0.4,
+        "cohens_d": 0.295,
+        "verdict": "NO_SIGNAL"
+      }
+    },
+    "markov": {
+      "edge_150p": 0.00803,
+      "rate_150p": 0.02667,
+      "edge_500p": 0.00536,
+      "rate_500p": 0.024,
+      "edge_1500p": 0.00136,
+      "rate_1500p": 0.02,
+      "full_rate": 0.02056,
+      "full_edge": 0.00192,
+      "n_hits": 37,
+      "n_oos": 1800,
+      "z_score": 0.602,
+      "three_window_pass": true,
+      "perm": {
+        "real_edge": 0.00192,
+        "p_emp": 0.42,
+        "cohens_d": 0.32,
+        "verdict": "NO_SIGNAL"
+      }
+    },
+    "fourier": {
+      "edge_150p": 0.02136,
+      "rate_150p": 0.04,
+      "edge_500p": 0.00536,
+      "rate_500p": 0.024,
+      "edge_1500p": 0.00536,
+      "rate_1500p": 0.024,
+      "full_rate": 0.02278,
+      "full_edge": 0.00414,
+      "n_hits": 41,
+      "n_oos": 1800,
+      "z_score": 1.299,
+      "three_window_pass": true,
+      "perm": {
+        "real_edge": 0.00414,
+        "p_emp": 0.14,
+        "cohens_d": 1.193,
+        "verdict": "NO_SIGNAL"
+      }
+    },
+    "regime": {
+      "edge_150p": -0.01864,
+      "rate_150p": 0.0,
+      "edge_500p": 0.00336,
+      "rate_500p": 0.022,
+      "edge_1500p": 0.00136,
+      "rate_1500p": 0.02,
+      "full_rate": 0.01944,
+      "full_edge": 0.00081,
+      "n_hits": 35,
+      "n_oos": 1800,
+      "z_score": 0.253,
+      "three_window_pass": false,
+      "perm": {
+        "real_edge": 0.00081,
+        "p_emp": 0.27,
+        "cohens_d": 0.806,
+        "verdict": "NO_SIGNAL"
+      }
+    },
+    "p1_neighbor": {
+      "edge_150p": 0.00136,
+      "rate_150p": 0.02,
+      "edge_500p": 0.00336,
+      "rate_500p": 0.022,
+      "edge_1500p": 3e-05,
+      "rate_1500p": 0.01867,
+      "full_rate": 0.01944,
+      "full_edge": 0.00081,
+      "n_hits": 35,
+      "n_oos": 1800,
+      "z_score": 0.253,
+      "three_window_pass": true,
+      "perm": {
+        "real_edge": 0.00081,
+        "p_emp": 0.48,
+        "cohens_d": 0.225,
+        "verdict": "NO_SIGNAL"
+      }
+    },
+    "microfish": {
+      "edge_150p": 0.02803,
+      "rate_150p": 0.04667,
+      "edge_500p": 0.03136,
+      "rate_500p": 0.05,
+      "edge_1500p": 0.00336,
+      "rate_1500p": 0.022,
+      "full_rate": 0.02167,
+      "full_edge": 0.00303,
+      "n_hits": 39,
+      "n_oos": 1800,
+      "z_score": 0.95,
+      "three_window_pass": true,
+      "perm": {
+        "real_edge": 0.00303,
+        "p_emp": 0.28,
+        "cohens_d": 0.626,
+        "verdict": "NO_SIGNAL"
+      }
+    }
+  },
+  "phase3": {
+    "1": {
+      "n_bets": 1,
+      "signals": [
+        "fourier"
+      ],
+      "baseline": 0.01864,
+      "rate": 0.02278,
+      "edge": 0.00414,
+      "z_score": 1.299,
+      "n_hits": 41,
+      "three_window_pass": true,
+      "edge_150p": 0.02136,
+      "edge_500p": 0.00536,
+      "edge_1500p": 0.00536
+    },
+    "2": {
+      "n_bets": 2,
+      "signals": [
+        "fourier",
+        "acb"
+      ],
+      "baseline": 0.03693,
+      "rate": 0.04333,
+      "edge": 0.00641,
+      "z_score": 1.441,
+      "n_hits": 78,
+      "three_window_pass": true,
+      "edge_150p": 0.00307,
+      "edge_500p": 0.00507,
+      "edge_1500p": 0.00841
+    },
+    "3": {
+      "n_bets": 3,
+      "signals": [
+        "fourier",
+        "acb",
+        "microfish"
+      ],
+      "baseline": 0.05488,
+      "rate": 0.06222,
+      "edge": 0.00735,
+      "z_score": 1.368,
+      "n_hits": 112,
+      "three_window_pass": true,
+      "edge_150p": 0.01179,
+      "edge_500p": 0.02912,
+      "edge_1500p": 0.00912
+    },
+    "4": {
+      "n_bets": 4,
+      "signals": [
+        "fourier",
+        "acb",
+        "microfish",
+        "markov"
+      ],
+      "baseline": 0.07249,
+      "rate": 0.08,
+      "edge": 0.00751,
+      "z_score": 1.228,
+      "n_hits": 144,
+      "three_window_pass": true,
+      "edge_150p": 0.00084,
+      "edge_500p": 0.01951,
+      "edge_1500p": 0.00684
+    },
+    "5": {
+      "n_bets": 5,
+      "signals": [
+        "fourier",
+        "acb",
+        "microfish",
+        "markov",
+        "midfreq"
+      ],
+      "baseline": 0.08978,
+      "rate": 0.095,
+      "edge": 0.00522,
+      "z_score": 0.775,
+      "n_hits": 171,
+      "three_window_pass": false,
+      "edge_150p": -0.00978,
+      "edge_500p": 0.01622,
+      "edge_1500p": 0.00356
+    }
+  },
+  "phase4": {
+    "1": {
+      "signal_weights": [
+        0.38131071002855116,
+        0.14188815160838658,
+        0.18523469330360343,
+        0.010960825648726004,
+        0.009712873513232724,
+        0.26580390593414494,
+        0.005088839963355357
+      ],
+      "fusion_type": "rank_product",
+      "nonlinear": "log",
+      "gate_signal": 6,
+      "gate_threshold": 0.8817821459070656,
+      "n_bets": 1,
+      "orthogonal": true,
+      "fitness": 0.0313624549979777,
+      "full_edge": 0.003029121664644363
+    },
+    "2": {
+      "signal_weights": [
+        0.18067472310518423,
+        0.128700295782498,
+        0.17755498913831236,
+        0.21257395367531062,
+        0.08385396772781564,
+        0.11466388251169812,
+        0.10197818805918112
+      ],
+      "fusion_type": "voting",
+      "nonlinear": "square",
+      "gate_signal": 6,
+      "gate_threshold": 0.8705159270595451,
+      "n_bets": 2,
+      "orthogonal": true,
+      "fitness": 0.04907226807965784,
+      "full_edge": 0.005850045857435621
+    },
+    "3": {
+      "signal_weights": [
+        0.12490102497898431,
+        0.21619424237203644,
+        0.09813375766974158,
+        0.23844616401147425,
+        0.1067336190677869,
+        0.11622648271064841,
+        0.09936470918932808
+      ],
+      "fusion_type": "voting",
+      "nonlinear": "square",
+      "gate_signal": 6,
+      "gate_threshold": 0.8805599218674887,
+      "n_bets": 3,
+      "orthogonal": true,
+      "fitness": 0.06112296534312346,
+      "full_edge": 0.011789632009790121
+    }
+  },
+  "phase5": {
+    "1": {
+      "edge": 0.00414,
+      "marginal": 0.00414,
+      "cost": 50,
+      "eff": 0.828
+    },
+    "2": {
+      "edge": 0.00641,
+      "marginal": 0.0022700000000000003,
+      "cost": 100,
+      "eff": 0.641
+    },
+    "3": {
+      "edge": 0.00735,
+      "marginal": 0.0009399999999999999,
+      "cost": 150,
+      "eff": 0.49
+    },
+    "4": {
+      "edge": 0.00751,
+      "marginal": 0.00016000000000000042,
+      "cost": 200,
+      "eff": 0.376
+    },
+    "5": {
+      "edge": 0.00522,
+      "marginal": -0.0022900000000000004,
+      "cost": 250,
+      "eff": 0.209
+    }
+  },
+  "phase6": {
+    "fourier_perm200": {
+      "real_edge": 0.00414,
+      "p_emp": 0.1393,
+      "cohens_d": 1.176,
+      "verdict": "NO_SIGNAL"
+    },
+    "acb_perm200": {
+      "real_edge": 0.00303,
+      "p_emp": 0.0697,
+      "cohens_d": 1.582,
+      "verdict": "MARGINAL"
+    },
+    "microfish_perm200": {
+      "real_edge": 0.00303,
+      "p_emp": 0.2786,
+      "cohens_d": 0.677,
+      "verdict": "NO_SIGNAL"
+    },
+    "mcnemar_top2": {
+      "net": 2,
+      "chi2": 0.013,
+      "p_value": 0.9087,
+      "a_only": 39,
+      "b_only": 37
+    },
+    "2bet_perm200": {
+      "real_edge": 0.00641,
+      "p_emp": 0.0697,
+      "verdict": "MARGINAL"
+    },
+    "3bet_perm200": {
+      "real_edge": 0.00735,
+      "p_emp": 0.1244,
+      "verdict": "NO_SIGNAL"
+    },
+    "mcnemar_vs_production_3bet": {
+      "net": -6,
+      "chi2": 0.266,
+      "p_value": 0.6061,
+      "a_only": 44,
+      "b_only": 50
+    }
+  },
+  "phase7": {
+    "ev_base": 17.38,
+    "roi_base": -65.24,
+    "ev_edge": 21.24,
+    "roi_edge": -57.52,
+    "probs": {
+      "M0": 0.435965,
+      "M1": 0.413019,
+      "M2": 0.132378,
+      "M3": 0.01765,
+      "M4": 0.000969,
+      "M5": 1.8e-05,
+      "M6": 0.0
+    },
+    "monte_carlo": {
+      "5000": {
+        "ruin_rate": 99.96,
+        "median_final": 50.0
+      },
+      "10000": {
+        "ruin_rate": 99.91,
+        "median_final": 50.0
+      },
+      "50000": {
+        "ruin_rate": 97.72,
+        "median_final": 50.0
+      }
+    }
+  },
+  "signal_order": [
+    "fourier",
+    "acb",
+    "microfish",
+    "markov",
+    "midfreq",
+    "regime",
+    "p1_neighbor"
+  ],
+  "microfish_info": {
+    "n_features": 33,
+    "evo_edge": 0.031362454997977664,
+    "full_edge": 0.00303
+  }
+}

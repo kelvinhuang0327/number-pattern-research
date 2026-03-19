@@ -4,20 +4,33 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>大數據智能分析系統 - Lottery Analysis</title>
-    <meta name="description" content="專業的大樂透號碼分析系統，使用數學回歸分析預測下一期開獎機率">
+    <title>Lottery AI Quant Research Platform</title>
+    <meta name="description" content="專業的彩券大數據量化研究平台 - Automated Strategy Discovery & Statistical Validation">
+    
+    <!-- Professional Typography -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link
-        href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@300;400;500;700;900&family=Orbitron:wght@400;500;700;900&display=swap"
-        rel="stylesheet">
-    <link rel="stylesheet" href="styles.css">
-    <link rel="stylesheet" href="styles_stats.css">
-    <link rel="stylesheet" href="styles_autolearning.css">
+    <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;600;700&family=Fira+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    
+    <!-- Style Systems -->
+    <link rel="stylesheet" href="styles.css?v=15">
+    <link rel="stylesheet" href="professional-design.css?v=15">
     <link rel="stylesheet" href="src/ui/progress.css">
+    
+    <!-- Visibility Guard -->
+    <style>
+        body { background-color: #010409 !important; color: #e6edf3 !important; opacity: 1 !important; }
+        .header { display: block !important; opacity: 1 !important; z-index: 1000 !important; }
+        .container { display: block !important; opacity: 1 !important; }
+        .section.active { display: block !important; opacity: 1 !important; visibility: visible !important; }
+        header, main, section { min-height: 10px; }
+    </style>
 </head>
 
-<body>
+<body class="theme-professional">
     <div class="background-animation">
         <div class="orb orb-1"></div>
         <div class="orb orb-2"></div>
@@ -28,155 +41,131 @@
         <div class="container">
             <div class="header-content">
                 <div class="logo">
-                    <div class="logo-icon">🎰</div>
+                    <div class="logo-icon">
+                        <i data-lucide="layout-dashboard"></i>
+                    </div>
                     <div class="logo-text">
-                        <h1>大數據智能分析</h1>
-                        <p>Lottery Intelligence System</p>
-                        <div class="db-status"
-                            style="font-size: 11px; color: #4ade80; margin-top: 4px; display: flex; align-items: center; gap: 4px; opacity: 0.8;">
-                            <span>🗄️</span>
-                            <span>DB: lottery_v2.db</span>
-                        </div>
+                        <h1>Lottery AI Quant</h1>
+                        <p>Research Platform v2.0</p>
                     </div>
                 </div>
 
-                <!-- Level 3: Dynamic Variance Monitor (Performance Tracking) -->
-                <div id="waterline-monitor" class="waterline-monitor" title="方差監控：紀錄系統近期命中偏離情況，用於資金停損管理。"
-                    style="display: flex; align-items: center; gap: 10px; padding: 8px 15px; background: rgba(0,0,0,0.3); border-radius: 50px; border: 1px solid rgba(255,255,255,0.1); margin-left: auto; margin-right: 20px; cursor: help;">
-                    <div class="waterline-pulse" id="waterline-status-dot"
-                        style="width: 10px; height: 10px; border-radius: 50%; background: #6c757d; box-shadow: 0 0 10px rgba(108, 117, 125, 0.5);">
-                    </div>
-                    <div class="waterline-text" style="font-size: 13px;">
-                        <span id="waterline-regime" style="color: #cbd5e1; font-weight: bold;">STANDBY</span>
-                        <div id="waterline-advice" style="font-size: 10px; color: #94a3b8; line-height: 1;">追蹤系統方差...
-                        </div>
+                <div class="db-status-badge">
+                    <i data-lucide="database" class="icon-sm"></i>
+                    <span>lottery_v2.db</span>
+                </div>
+
+                <!-- Game Switcher Badge -->
+                <div id="current-game-badge" class="current-game-badge" style="display:none;">
+                    <span class="badge-icon"></span>
+                    <span class="badge-text">選擇彩券</span>
+                    <i data-lucide="chevron-down" class="badge-arrow icon-xs"></i>
+                    <div class="game-selector-dropdown">
+                        <div id="header-game-list" class="game-list"></div>
                     </div>
                 </div>
-            </div>
 
-            <!-- Current Game Type Indicator (Interactive) -->
-            <div id="current-game-badge" class="current-game-badge" style="display: none;">
-                <span class="badge-icon">🎲</span>
-                <span class="badge-text">大樂透</span>
-                <span class="badge-arrow">▼</span>
-
-                <!-- Dropdown Menu -->
-                <div class="game-selector-dropdown" id="game-selector-dropdown">
-                    <div class="dropdown-header">切換彩券類型</div>
-                    <div class="dropdown-list" id="header-game-list">
-                        <!-- Populated by JS -->
+                <!-- Level 3: Dynamic Variance Monitor -->
+                <div id="waterline-monitor" class="waterline-monitor" title="方差監控：紀錄系統近期命中偏離情況">
+                    <div class="waterline-status">
+                        <div class="pulse-dot" id="waterline-status-dot"></div>
+                        <span id="waterline-regime">STANDBY</span>
                     </div>
+                    <div id="waterline-advice" class="waterline-advice">追蹤系統方差...</div>
                 </div>
             </div>
+
             <nav class="nav">
                 <button class="nav-btn active" data-section="upload">
-                    <span class="icon">📤</span>
+                    <i data-lucide="upload-cloud" class="icon"></i>
                     <span>數據上傳</span>
                 </button>
-                <button class="nav-btn" data-section="analysis">
-                    <span class="icon">📊</span>
+                <button class="nav-btn ui-hidden" data-section="analysis">
+                    <i data-lucide="bar-chart-3" class="icon"></i>
                     <span>統計分析</span>
                 </button>
-                <button class="nav-btn" data-section="prediction">
-                    <span class="icon">🔮</span>
+                <button class="nav-btn ui-hidden" data-section="prediction">
+                    <i data-lucide="sparkles" class="icon"></i>
                     <span>智能預測</span>
                 </button>
                 <button class="nav-btn" data-section="history">
-                    <span class="icon">📜</span>
+                    <i data-lucide="history" class="icon"></i>
                     <span>歷史記錄</span>
                 </button>
                 <button class="nav-btn" data-section="simulation">
-                    <span class="icon">🧪</span>
+                    <i data-lucide="test-tube-2" class="icon"></i>
                     <span>模擬測試</span>
                 </button>
-                <button class="nav-btn" data-section="smartbetting">
-                    <span class="icon">🎯</span>
+                <button class="nav-btn ui-hidden" data-section="smartbetting">
+                    <i data-lucide="target" class="icon"></i>
                     <span>聰明包牌</span>
                 </button>
-                <button class="nav-btn" data-section="autolearning">
-                    <span class="icon">🤖</span>
+                <button class="nav-btn ui-hidden" data-section="autolearning">
+                    <i data-lucide="cpu" class="icon"></i>
                     <span>自動學習</span>
                 </button>
             </nav>
         </div>
-        </div>
-        <header>
-            <h1>Lottery Prediction System</h1>
-            <nav style="margin-top:8px;font-size:0.95em;">
-                <a href="docs/MASTER_GUIDE.md" target="_blank" rel="noopener" style="color:#22c55e;">📚 Master Guide</a>
-            </nav>
-        </header>
-        <div class="container">
+    </header>
+
+    <main class="container">
             <!-- Upload Section -->
             <section id="upload-section" class="section active">
                 <div class="section-header">
                     <h2>數據上傳中心</h2>
-                    <p>上傳歷史開獎數據以進行深度分析</p>
+                    <p>專業的大數據分析，從歷史數據開始</p>
                 </div>
 
                 <div class="upload-area">
                     <div class="upload-card">
-                        <div class="upload-icon">📁</div>
+                        <div class="upload-icon">
+                            <i data-lucide="file-up"></i>
+                        </div>
                         <h3>上傳彩券數據</h3>
-                        <p>⚠️ 支援多種彩券類型與格式</p>
-                        <p style="font-size: 0.85em; color: #94a3b8; margin-top: 5px;">
-                            CSV: 大樂透、威力彩（官方格式）<br>
-                            TXT: 今彩539（官方格式）
-                        </p>
-
-                        <!-- Upload Filter Dropdown -->
-                        <div style="margin-bottom: 15px;">
-                            <label for="upload-filter-select"
-                                style="display: block; color: #cbd5e1; margin-bottom: 5px; font-size: 0.9em;">選擇上傳類型:</label>
-                            <select id="upload-filter-select" class="select-input"
-                                style="width: 100%; padding: 8px; background: rgba(0,0,0,0.2); border: 1px solid rgba(255,255,255,0.1);">
+                        <p>支援 CSV / TXT 格式開獎資料</p>
+                        
+                        <div class="upload-filter-group">
+                            <label for="upload-filter-select">選擇上傳類型:</label>
+                            <select id="upload-filter-select" class="select-input">
                                 <option value="ALL">全部 (忽略賓果賓果)</option>
                                 <optgroup label="主要彩券">
-                                    <option value="BIG_LOTTO">僅上傳 大樂透</option>
-                                    <option value="BIG_LOTTO_BONUS">僅上傳 大樂透加開獎項</option>
-                                    <option value="DAILY_539">僅上傳 今彩539</option>
-                                    <option value="POWER_LOTTO">僅上傳 威力彩</option>
-                                </optgroup>
-                                <optgroup label="數字型彩券">
-                                    <option value="STAR_3">僅上傳 3星彩</option>
-                                    <option value="STAR_4">僅上傳 4星彩</option>
-                                </optgroup>
-                                <optgroup label="樂合彩">
-                                    <option value="LOTTO_39">僅上傳 39樂合彩</option>
-                                    <option value="LOTTO_49">僅上傳 49樂合彩</option>
+                                    <option value="BIG_LOTTO">大樂透</option>
+                                    <option value="DAILY_539">今彩539</option>
+                                    <option value="POWER_LOTTO">威力彩</option>
                                 </optgroup>
                             </select>
                         </div>
 
                         <input type="file" id="file-input" accept=".csv,.txt" hidden>
-                        <input type="file" id="multiple-input" accept=".csv,.txt" multiple webkitdirectory directory
-                            hidden>
-                        <div style="display: flex; gap: 10px; justify-content: center; flex-wrap: wrap;">
+                        <input type="file" id="multiple-input" accept=".csv,.txt" multiple webkitdirectory directory hidden>
+                        
+                        <div class="btn-group">
                             <button class="btn btn-primary" id="upload-btn">
-                                <span class="btn-icon">📤</span>
+                                <i data-lucide="upload" class="icon-sm"></i>
                                 選擇檔案
                             </button>
-                            <button class="btn btn-primary" id="folder-btn">
-                                <span class="btn-icon">📂</span>
-                                選擇多個檔案
+                            <button class="btn btn-secondary" id="folder-btn">
+                                <i data-lucide="folder" class="icon-sm"></i>
+                                選擇目錄
                             </button>
                         </div>
-                        <div class="file-info" id="file-info"></div>
                     </div>
 
                     <div class="upload-card">
-                        <div class="upload-icon">🎲</div>
+                        <div class="upload-icon">
+                            <i data-lucide="database-backup"></i>
+                        </div>
                         <h3>使用範例數據</h3>
-                        <p>載入預設的大樂透歷史數據進行測試</p>
+                        <p>載入系統預置的大樂透歷史數據</p>
                         <button class="btn btn-secondary" id="sample-data-btn">
-                            <span class="btn-icon">⚡</span>
-                            載入範例數據
+                            <i data-lucide="zap" class="icon-sm"></i>
+                            載入範例
                         </button>
                     </div>
                 </div>
 
                 <!-- Upload Guidance (Hidden by default) -->
-                <div id="upload-guidance" class="upload-guidance" style="display: none;">
+                <div id="upload-guidance" class="upload-guidance ui-hidden">
                     <div class="guidance-icon">💡</div>
                     <div class="guidance-content">
                         <h4>上傳成功！下一步：</h4>
@@ -185,13 +174,13 @@
                 </div>
 
                 <!-- Lottery Type Filter (Prominent) -->
-                <div class="lottery-type-selector-container" id="lottery-type-container" style="display: none;">
+                <div class="lottery-type-selector-container ui-hidden" id="lottery-type-container">
                     <h3>選擇彩券類型</h3>
                     <div class="lottery-type-grid" id="lottery-type-grid">
                         <!-- Will be populated by JS -->
                     </div>
                     <!-- Hidden select for programmatic access -->
-                    <select id="lottery-type-filter" class="form-control" style="display: none;">
+                    <select id="lottery-type-filter" class="form-control ui-hidden">
                         <option value="">全部彩券類型</option>
                         <optgroup label="主要彩券">
                             <option value="BIG_LOTTO">大樂透</option>
@@ -214,41 +203,36 @@
                 </div>
 
                 <!-- Play Mode Selector (for 樂合彩 series) -->
-                <div class="play-mode-selector-container" id="play-mode-container"
-                    style="display: none; margin-top: 20px;">
+                <div class="play-mode-selector-container ui-hidden ui-mt-20" id="play-mode-container">
                     <h3>選擇玩法模式</h3>
-                    <p style="font-size: 0.9em; color: #94a3b8; margin-bottom: 15px;">
+                    <p class="ui-fs-09 ui-text-muted ui-mb-15">
                         樂合彩系列支援多種玩法，請選擇您要上傳的玩法類型
                     </p>
-                    <div style="display: flex; gap: 10px; justify-content: center; flex-wrap: wrap;">
-                        <button class="btn btn-play-mode" data-mode="二合"
-                            style="background: linear-gradient(135deg, #3B82F6, #2563EB);">
-                            <span style="font-size: 1.2em;">二合</span>
-                            <small style="display: block; font-size: 0.8em; opacity: 0.9;">選2個號碼</small>
+                    <div class="ui-flex-wrap-center-gap10">
+                        <button class="btn btn-play-mode ui-playmode-btn ui-playmode-btn-blue" data-mode="二合">
+                            <span class="ui-fs-12">二合</span>
+                            <small class="ui-playmode-help">選2個號碼</small>
                         </button>
-                        <button class="btn btn-play-mode" data-mode="三合"
-                            style="background: linear-gradient(135deg, #8B5CF6, #7C3AED);">
-                            <span style="font-size: 1.2em;">三合</span>
-                            <small style="display: block; font-size: 0.8em; opacity: 0.9;">選3個號碼</small>
+                        <button class="btn btn-play-mode ui-playmode-btn ui-playmode-btn-violet" data-mode="三合">
+                            <span class="ui-fs-12">三合</span>
+                            <small class="ui-playmode-help">選3個號碼</small>
                         </button>
-                        <button class="btn btn-play-mode" data-mode="四合"
-                            style="background: linear-gradient(135deg, #EC4899, #DB2777);">
-                            <span style="font-size: 1.2em;">四合</span>
-                            <small style="display: block; font-size: 0.8em; opacity: 0.9;">選4個號碼</small>
+                        <button class="btn btn-play-mode ui-playmode-btn ui-playmode-btn-rose" data-mode="四合">
+                            <span class="ui-fs-12">四合</span>
+                            <small class="ui-playmode-help">選4個號碼</small>
                         </button>
                     </div>
-                    <div id="selected-play-mode"
-                        style="margin-top: 15px; text-align: center; color: #4ade80; font-weight: 500; display: none;">
+                    <div id="selected-play-mode" class="ui-hidden ui-mt-15 ui-text-center ui-text-success ui-fw-500">
                         已選擇：<span id="selected-play-mode-text"></span>
                     </div>
                 </div>
 
-                <div class="data-summary" id="data-summary" style="display: none;">
+                <div class="data-summary ui-hidden" id="data-summary">
                     <h3>數據概覽</h3>
                     <div class="summary-grid" id="summary-content">
                         <!-- Content populated by JS -->
                     </div>
-                    <div style="margin-top: 20px; text-align: center;">
+                    <div class="ui-mt-20 ui-text-center">
                         <button class="btn btn-danger" id="clear-data-btn">
                             <span class="btn-icon">🗑️</span>
                             清除數據
@@ -257,11 +241,11 @@
                 </div>
             </section>
 
-            <!-- Analysis Section -->
-            <section id="analysis-section" class="section">
+            <!-- Analysis Section (Hidden by User Request) -->
+            <section id="analysis-section" class="section ui-hidden">
                 <div class="section-header">
                     <h2>統計分析儀表板</h2>
-                    <p>深度分析歷史開獎數據</p>
+                    <p>深度探勘開獎模式與頻率特徵</p>
                 </div>
 
                 <div class="analysis-grid">
@@ -274,11 +258,11 @@
                         <h3>冷熱號分析</h3>
                         <div class="hot-cold-container">
                             <div class="hot-numbers">
-                                <h4>🔥 熱門號碼 (Top 10)</h4>
+                                <h4>熱門號碼 (Top 10)</h4>
                                 <div id="hot-numbers" class="number-list"></div>
                             </div>
                             <div class="cold-numbers">
-                                <h4>❄️ 冷門號碼 (Top 10)</h4>
+                                <h4>冷門號碼 (Top 10)</h4>
                                 <div id="cold-numbers" class="number-list"></div>
                             </div>
                         </div>
@@ -302,13 +286,13 @@
                     <h2>預測模擬測試</h2>
                     <p>選擇年度月份，模擬預測並比對結果</p>
                 </div>
-                <div class="simulation-controls" style="margin: 20px 0; display: flex; gap: 10px; align-items: center;">
-                    <label for="simulation-year-month" style="color: #fff;">年度月份：</label>
+                <div class="simulation-controls ui-row-controls">
+                    <label for="simulation-year-month">年度月份：</label>
                     <input type="month" id="simulation-year-month" value="2025-01"
-                        style="padding: 6px 10px; border-radius: 4px; border: none;" />
-                    <label for="simulation-method" style="color: #fff; margin-left: 10px;">預測方法：</label>
+                        class="select-input" />
+                    <label for="simulation-method">預測方法：</label>
                     <select id="simulation-method" class="select-input">
-                        <optgroup label="📊 核心統計策略">
+                        <optgroup label="核心統計策略">
                             <option value="frequency" selected>頻率分析</option>
                             <option value="trend">趨勢分析</option>
                             <option value="bayesian">貝葉斯機率</option>
@@ -316,23 +300,13 @@
                             <option value="markov">馬可夫鏈</option>
                             <option value="deviation">偏差追蹤</option>
                         </optgroup>
-                        <optgroup label="🎯 集成預測">
+                        <optgroup label="集成預測">
                             <option value="ensemble_weighted">集成預測 (Ensemble)</option>
                             <option value="ensemble_combined">綜合集成 (最強)</option>
-                            <option value="ensemble_advanced">⭐ 進階集成 (Boosting+關聯+特徵)</option>
                         </optgroup>
-                        <optgroup label="🧠 機器學習">
-                            <option value="ml_forest">隨機森林 (Random Forest)</option>
-                            <option value="ml_genetic">遺傳優化 (Genetic)</option>
-                        </optgroup>
-                        <optgroup label="🤝 協作預測與正交分散">
-                            <option value="collaborative_hybrid">⭐ 混合協作模式</option>
-                            <option value="zone_split">🚀 正交區間分散 (🟢 穩定分散型)</option>
-                            <option value="core_satellite">🎯 核心-衛星集約 (🔴 聯動集中型)</option>
-                        </optgroup>
-                        <optgroup label="🧠 AI 自動優化">
-                            <option value="auto_optimize">🤖 智能自動優化</option>
-                            <option value="backend_optimized">🚀 後端優化預測 (10%成功率)</option>
+                        <optgroup label="AI 自動優化">
+                            <option value="auto_optimize">智能自動優化</option>
+                            <option value="backend_optimized">後端優化預測</option>
                         </optgroup>
                         <optgroup label="🔮 AI 深度學習模型">
                             <option value="ai_prophet">⭐ Prophet 時間序列</option>
@@ -363,96 +337,75 @@
                         </optgroup>
                     </select>
                     <button class="btn btn-primary" id="simulation-btn">
-                        <span class="btn-icon">🧪</span>開始模擬
+                        <i data-lucide="play" class="icon-sm"></i>
+                        開始模擬
                     </button>
                 </div>
 
-                <!-- 🆕 預測方法說明 + 參數自動優化 (同一行) -->
-                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin: 20px 0;">
+                <!-- 預測方法說明 + 參數自動優化 -->
+                <div class="grid-2">
                     <!-- 預測方法說明卡片 -->
-                    <div id="method-description-card" class="autolearning-card"
-                        style="margin: 0; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); padding: 20px; border-radius: 12px;">
-                        <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 12px;">
-                            <span id="method-icon" style="font-size: 28px;">📊</span>
-                            <h3 id="method-title" style="color: white; margin: 0;">頻率分析</h3>
+                    <div id="method-description-card" class="autolearning-card theme-indigo">
+                        <div class="card-header">
+                            <span id="method-icon" class="ui-fs-24">📊</span>
+                            <h3 id="method-title">策略說明</h3>
                         </div>
-                        <div id="method-description"
-                            style="color: rgba(255,255,255,0.95); font-size: 0.95em; line-height: 1.6;">
-                            <p style="margin: 0 0 10px 0;">分析歷史開獎號碼的出現頻率，選擇高頻號碼作為預測依據。</p>
-                            <div
-                                style="background: rgba(255,255,255,0.15); padding: 12px; border-radius: 8px; margin-top: 10px;">
-                                <strong style="display: block; margin-bottom: 6px;">📌 預測邏輯：</strong>
-                                <ul style="margin: 5px 0; padding-left: 20px;">
-                                    <li>統計每個號碼在歷史記錄中的出現次數</li>
-                                    <li>計算出現頻率並排序</li>
-                                    <li>選擇頻率最高的號碼組合</li>
-                                </ul>
-                            </div>
+                        <div id="method-description" class="method-body">
+                            <p>請選擇預測方法以查看詳細說明。</p>
                         </div>
                     </div>
 
                     <!-- 參數自動優化卡片 -->
-                    <div class="autolearning-card"
-                        style="margin: 0; background: linear-gradient(135deg, #10B981, #059669); padding: 20px; border-radius: 12px;">
-                        <h3 style="color: white; margin-bottom: 15px;">⚡ 參數自動優化</h3>
-                        <p style="color: rgba(255,255,255,0.9); font-size: 0.9em; margin-bottom: 15px;">
-                            使用遺傳算法自動優化策略權重參數，提升預測準確率
-                        </p>
-                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 15px;">
+                    <div class="autolearning-card theme-emerald">
+                        <div class="card-header">
+                            <i data-lucide="zap" class="icon"></i>
+                            <h3>參數自動優化</h3>
+                        </div>
+                        <p class="card-desc">使用遺傳算法自動優化策略權重</p>
+                        <div class="input-grid">
                             <div class="control-group">
-                                <label style="color: white;">遺傳代數:</label>
-                                <input type="number" id="generations" class="select-input" value="20" min="5" max="100">
+                                <label>遺傳代數:</label>
+                                <input type="number" id="generations" class="select-input" value="20">
                             </div>
                             <div class="control-group">
-                                <label style="color: white;">種群大小:</label>
-                                <input type="number" id="population-size" class="select-input" value="30" min="10"
-                                    max="100">
+                                <label>種群大小:</label>
+                                <input type="number" id="population-size" class="select-input" value="30">
                             </div>
                         </div>
-                        <button class="btn btn-primary" id="run-optimization-btn"
-                            style="background: white; color: #059669; font-weight: bold;">
-                            <span class="btn-icon">🚀</span>
+                        <button class="btn btn-primary btn-emerald" id="run-optimization-btn">
+                            <i data-lucide="rocket" class="icon-sm"></i>
                             開始優化
                         </button>
-                        <div id="optimization-progress" style="display: none; margin-top: 15px;">
-                            <div class="progress-bar">
-                                <div class="progress-fill" id="optimization-progress-bar"></div>
-                            </div>
-                            <div class="progress-text" id="optimization-status" style="color: white;">準備就緒</div>
-                        </div>
                     </div>
                 </div>
 
-                <div id="simulation-results" style="display:none;">
+                <div id="simulation-results" class="ui-hidden">
                     <h3>模擬結果</h3>
-                    <div class="simulation-summary" style="margin-bottom:10px; color:#fff;">成功率：<span
+                        <div class="simulation-summary ui-mb-10">成功率：<span
                             id="simulation-rate"></span>%</div>
 
                     <!-- 最新一期雙注預測（移到最上方） -->
-                    <div id="simulation-next-prediction" class="next-prediction-panel"
-                        style="display:none; margin-bottom: 30px;">
-                        <h3 style="color: #fff; margin-bottom: 15px;">🔮 最新一期雙注優化預測（純預測，無實際開獎資料）</h3>
-                        <div class="dual-bet-container"
-                            style="background: rgba(102, 126, 234, 0.1); padding: 20px; border-radius: 12px; border: 2px solid #667eea;">
-                            <div class="bet-group" style="margin-bottom: 15px;">
-                                <h4 style="color: #667eea;">第一注（最高信心）</h4>
+                    <div id="simulation-next-prediction" class="next-prediction-panel ui-hidden ui-mb-30">
+                        <h3 class="ui-title-light ui-mb-15">🔮 最新一期雙注優化預測（純預測，無實際開獎資料）</h3>
+                        <div class="dual-bet-container ui-dualbet-container">
+                            <div class="bet-group ui-mb-15">
+                                <h4 class="ui-dualbet-title-a">第一注（最高信心）</h4>
                                 <div class="predicted-numbers" id="next-bet-numbers-1"></div>
-                                <div class="mini-confidence">
+                                <div class="mini-confidence ui-mini-confidence">
                                     <span>信心度：</span>
                                     <span id="next-bet-confidence-1" class="confidence-badge">0%</span>
                                 </div>
                             </div>
-                            <div class="bet-divider"
-                                style="text-align: center; margin: 10px 0; font-size: 1.5rem; color: #667eea;">+</div>
+                            <div class="bet-divider ui-bet-divider">+</div>
                             <div class="bet-group">
-                                <h4 style="color: #764ba2;">第二注（次高信心）</h4>
+                                <h4 class="ui-dualbet-title-b">第二注（次高信心）</h4>
                                 <div class="predicted-numbers" id="next-bet-numbers-2"></div>
-                                <div class="mini-confidence">
+                                <div class="mini-confidence ui-mini-confidence">
                                     <span>信心度：</span>
                                     <span id="next-bet-confidence-2" class="confidence-badge">0%</span>
                                 </div>
                             </div>
-                            <div class="dual-bet-stats" style="margin-top: 20px;">
+                            <div class="dual-bet-stats ui-mt-20">
                                 <div class="stat-item">
                                     <span class="stat-label">整合策略數：</span>
                                     <span class="stat-value" id="next-bet-strategy-count">0</span>
@@ -466,14 +419,14 @@
                                     <span class="stat-value" id="next-bet-base-period">-</span>
                                 </div>
                             </div>
-                            <div class="dual-bet-report" id="next-bet-report" style="margin-top: 15px;"></div>
+                            <div class="dual-bet-report ui-mt-15" id="next-bet-report"></div>
                         </div>
                     </div>
 
                     <!-- 每期預測結果表格 -->
-                    <table class="simulation-table" id="simulation-table" style="width:100%; border-collapse:collapse;">
+                    <table class="simulation-table ui-table-full" id="simulation-table">
                         <thead>
-                            <tr style="color:#fff;">
+                            <tr>
                                 <th>期數</th>
                                 <th>日期</th>
                                 <th>預測號碼 (前10強)</th>
@@ -488,8 +441,8 @@
                 </div>
             </section>
 
-            <!-- Prediction Section -->
-            <section id="prediction-section" class="section">
+            <!-- Prediction Section (Hidden by User Request) -->
+            <section id="prediction-section" class="section ui-hidden">
                 <div class="section-header">
                     <h2>智能預測系統</h2>
                     <p>基於數學回歸分析的機率預測</p>
@@ -534,6 +487,9 @@
                                 <option value="ai_transformer">⭐ Transformer (PatchTST)</option>
                                 <option value="ai_bayesian_ensemble">🎯 貝叶斯優化集成</option>
                                 <option value="ai_maml">🧬 元學習 (MAML)</option>
+                                <option value="coordinator">🧭 Coordinator (RSM 加權)</option>
+                                <option value="coordinator_direct">🧭 Coordinator Direct</option>
+                                <option value="coordinator_hybrid">🧭 Coordinator Hybrid</option>
                             </optgroup>
                             <optgroup label="🎲 民間實戰策略">
                                 <option value="odd_even">奇偶比例策略</option>
@@ -563,14 +519,29 @@
                             <option value="all">全部數據</option>
                         </select>
                     </div>
-                    <div style="display: flex; gap: 10px; width: 100%;">
-                        <button class="btn btn-primary" id="predict-btn" style="flex: 2;">
-                            <span class="btn-icon">🔮</span>
+                    <div class="control-group ui-hidden" id="coord-mode-group">
+                        <label for="coord-mode">Coordinator 模式</label>
+                        <select id="coord-mode" class="select-input">
+                            <option value="direct" selected>Direct</option>
+                            <option value="hybrid">Hybrid</option>
+                        </select>
+                    </div>
+                    <div class="control-group ui-hidden" id="coord-bets-group">
+                        <label for="coord-bets">Coordinator 注數</label>
+                        <select id="coord-bets" class="select-input">
+                            <option value="2">2 注</option>
+                            <option value="3" selected>3 注</option>
+                            <option value="4">4 注</option>
+                            <option value="5">5 注</option>
+                        </select>
+                    </div>
+                    <div class="ui-flex-gap-10 ui-w-full">
+                        <button class="btn btn-primary ui-flex-2" id="predict-btn">
+                            <i data-lucide="sparkles" class="icon-sm"></i>
                             開始預測
                         </button>
-                        <button class="btn btn-secondary" id="quick-predict-btn"
-                            style="flex: 1; background: linear-gradient(135deg, #FF512F, #DD2476);">
-                            <span class="btn-icon">⚡</span>
+                        <button class="btn btn-secondary ui-flex-1" id="quick-predict-btn">
+                            <i data-lucide="zap" class="icon-sm"></i>
                             一鍵預測
                         </button>
                     </div>
@@ -586,7 +557,7 @@
                                 <div class="meter-fill" id="confidence-fill"></div>
                             </div>
                             <span class="confidence-value" id="confidence-value">0%</span>
-                            <div class="confidence-note" style="font-size: 0.85em; color: #9aa3af; margin-top: 6px;">
+                            <div class="confidence-note ui-note-sm ui-mt-6">
                                 此指標反映模型對本次預測的把握度（策略一致性/數據穩定性等），非中獎機率。
                             </div>
                         </div>
@@ -609,16 +580,22 @@
                 <div class="section-header">
                     <h2>歷史開獎記錄</h2>
                     <p>查看完整的開獎歷史數據</p>
+                    <div id="history-stats-container" class="ui-mt-15 ui-hidden">
+                        <!-- Stats initialized by JS -->
+                    </div>
                 </div>
 
                 <div class="history-controls">
-                    <input type="text" id="search-input" class="search-input" placeholder="搜尋期數或日期...">
+                    <div class="search-wrapper">
+                        <i data-lucide="search" class="icon-search"></i>
+                        <input type="text" id="search-input" class="search-input" placeholder="搜尋期數或日期...">
+                    </div>
                     <select id="sort-select" class="select-input">
                         <option value="desc">最新優先</option>
                         <option value="asc">最舊優先</option>
                     </select>
                     <button class="btn btn-primary" id="add-record-btn">
-                        <span class="btn-icon">➕</span>
+                        <i data-lucide="plus" class="icon-sm"></i>
                         新增記錄
                     </button>
                 </div>
@@ -632,7 +609,7 @@
                                 <th>開獎日期</th>
                                 <th>開獎號碼</th>
                                 <th>特別號</th>
-                                <th style="width: 120px;">操作</th>
+                                <th class="ui-th-actions">操作</th>
                             </tr>
                         </thead>
                         <tbody id="history-tbody"></tbody>
@@ -642,147 +619,97 @@
                 <div class="pagination" id="pagination"></div>
             </section>
 
-            <!-- Smart Betting Section -->
-            <section id="smartbetting-section" class="section">
+            <!-- Smart Betting Section (Hidden by User Request) -->
+            <section id="smartbetting-section" class="section ui-hidden">
                 <div class="section-header">
                     <h2>聰明包牌系統</h2>
                     <p>使用旋轉矩陣策略，用最少注數覆蓋最多可能</p>
                 </div>
 
                 <div class="smart-betting-container">
-                    <!-- 🆕 智能雙注預測區 -->
-                    <div class="betting-card full-width"
-                        style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; margin-bottom: 20px;">
-                        <h3 style="color: white;">🎯 智能雙注預測</h3>
-                        <p style="color: rgba(255,255,255,0.9); font-size: 0.9em; margin-bottom: 15px;">
-                            基於全部歷史數據,使用選定的預測方法生成最有機會的兩注號碼
+                    <!-- Smart Betting Section -->
+                    <div class="betting-card full-width theme-indigo">
+                        <div class="card-header">
+                            <i data-lucide="crosshair" class="icon"></i>
+                            <h3>智能雙注預測</h3>
+                        </div>
+                        <p class="card-desc">
+                            基於全部歷史數據，使用選定的預測方法生成最高信心度的兩注號碼
                         </p>
 
-                        <div style="display: flex; align-items: end; gap: 15px; flex-wrap: wrap;">
-                            <div style="flex: 1; min-width: 200px;">
-                                <label
-                                    style="color: white; display: block; margin-bottom: 5px; font-size: 0.9em;">選擇預測方法:</label>
-                                <select id="dual-bet-strategy-select" class="select-input" style="width: 100%;">
-                                    <optgroup label="⭐ 雙注專用推薦">
-                                        <option value="optimized_ensemble" selected>🏆 優化集成預測 (最佳推薦)</option>
-                                        <option value="dual_bet_hybrid">🎯 雙注混合策略</option>
-                                        <option value="hot_cold_split">🔥❄️ 熱冷分離策略</option>
-                                        <option value="collaborative_hybrid">🤝 協作混合模式</option>
-                                    </optgroup>
-                                    <optgroup label="📊 高穩定性策略">
-                                        <option value="ensemble_combined">綜合集成</option>
-                                        <option value="statistical">多維統計分析</option>
-                                        <option value="bayesian">貝葉斯推論</option>
-                                        <option value="ml_forest">隨機森林</option>
-                                    </optgroup>
-                                    <optgroup label="🎲 其他策略">
-                                        <option value="frequency">頻率分析</option>
-                                        <option value="trend">趨勢回歸</option>
-                                        <option value="markov">馬可夫鏈</option>
-                                        <option value="montecarlo">蒙地卡羅模擬</option>
-                                        <option value="backend_optimized">後端優化策略</option>
+                        <div class="ui-row-controls">
+                            <div class="input-group">
+                                <label for="dual-bet-strategy-select">選擇預測方法:</label>
+                                <select id="dual-bet-strategy-select" class="select-input">
+                                    <optgroup label="雙注專用推薦">
+                                        <option value="optimized_ensemble" selected>優化集成預測 (最佳推薦)</option>
+                                        <option value="dual_bet_hybrid">雙注混合策略</option>
                                     </optgroup>
                                 </select>
                             </div>
 
-                            <button class="btn btn-primary" id="smart-dual-bet-btn"
-                                style="background: white; color: #667eea; font-weight: bold; min-width: 180px;">
-                                <span class="btn-icon">🚀</span>
+                            <button class="btn btn-primary" id="smart-dual-bet-btn">
+                                <i data-lucide="rocket" class="icon-sm"></i>
                                 生成智能雙注
                             </button>
-                        </div>
-
-                        <!-- 雙注結果顯示區 -->
-                        <div id="smart-dual-bet-results"
-                            style="display: none; margin-top: 20px; padding-top: 20px; border-top: 1px solid rgba(255,255,255,0.2);">
-                            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
-                                <div style="background: rgba(255,255,255,0.15); padding: 15px; border-radius: 10px;">
-                                    <h4 style="color: white; margin-bottom: 10px;">第一注（最高信心）</h4>
-                                    <div class="predicted-numbers" id="smart-dual-bet-numbers-1"></div>
-                                    <div style="margin-top: 10px; font-size: 0.9em;">
-                                        <span>信心度：</span>
-                                        <span id="smart-dual-bet-confidence-1"
-                                            style="font-weight: bold; font-size: 1.1em;">0%</span>
-                                    </div>
-                                </div>
-                                <div style="background: rgba(255,255,255,0.1); padding: 15px; border-radius: 10px;">
-                                    <h4 style="color: white; margin-bottom: 10px;">第二注（次高信心）</h4>
-                                    <div class="predicted-numbers" id="smart-dual-bet-numbers-2"></div>
-                                    <div style="margin-top: 10px; font-size: 0.9em;">
-                                        <span>信心度：</span>
-                                        <span id="smart-dual-bet-confidence-2"
-                                            style="font-weight: bold; font-size: 1.1em;">0%</span>
-                                    </div>
-                                </div>
-                            </div>
-                            <div style="margin-top: 15px; text-align: center; font-size: 0.9em;">
-                                <p id="smart-dual-bet-method" style="color: rgba(255,255,255,0.8);"></p>
-                            </div>
                         </div>
                     </div>
 
                     <!-- 🆕 熵驅動 8 注預測區 -->
-                    <div class="betting-card full-width"
-                        style="background: linear-gradient(135deg, #10B981 0%, #059669 100%); color: white; margin-bottom: 20px;">
-                        <h3 style="color: white;">🧠 熵驅動 Transformer 8 注預測</h3>
-                        <p style="color: rgba(255,255,255,0.9); font-size: 0.9em; margin-bottom: 15px;">
+                    <div class="betting-card full-width ui-card-theme-emerald ui-card-tight ui-card-mb-20">
+                        <h3 class="ui-title-light">🧠 熵驅動 Transformer 8 注預測</h3>
+                        <p class="ui-text-light ui-fs-09 ui-mb-15">
                             革命性的熵最大化方法，生成 8 注差異化號碼組合，避開傳統方法的「共識陷阱」
                         </p>
 
-                        <div style="display: flex; align-items: end; gap: 15px; flex-wrap: wrap;">
-                            <div style="flex: 1; min-width: 200px;">
-                                <label
-                                    style="color: white; display: block; margin-bottom: 5px; font-size: 0.9em;">選擇策略:</label>
-                                <select id="entropy-8-bets-strategy" class="select-input" style="width: 100%;">
+                        <div class="ui-row-controls ui-align-end ui-gap-15">
+                            <div class="ui-grow-min-200">
+                                <label for="entropy-8-bets-strategy" class="ui-label-sm">選擇策略:</label>
+                                <select id="entropy-8-bets-strategy" class="select-input ui-input-full">
                                     <option value="balanced" selected>⚖️ 平衡策略（4熱門+4冷門）</option>
                                     <option value="aggressive">🔥 激進策略（偏向冷門，高覆蓋率）</option>
                                     <option value="conservative">🛡️ 保守策略（偏向熱門，穩健投注）</option>
                                 </select>
                             </div>
 
-                            <button class="btn btn-primary" id="entropy-8-bets-btn"
-                                style="background: white; color: #059669; font-weight: bold; min-width: 180px;">
+                            <button class="btn btn-primary ui-btn-light-emerald ui-minw-180" id="entropy-8-bets-btn">
                                 <span class="btn-icon">🎲</span>
                                 生成熵優化 8 注
                             </button>
                         </div>
 
                         <!-- 結果顯示區 -->
-                        <div id="entropy-8-bets-results"
-                            style="display: none; margin-top: 20px; padding-top: 20px; border-top: 1px solid rgba(255,255,255,0.2);">
+                        <div id="entropy-8-bets-results" class="ui-hidden ui-divider-top">
 
                             <!-- 8 注號碼網格 -->
-                            <div id="entropy-8-bets-grid"
-                                style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px;">
+                            <div id="entropy-8-bets-grid" class="ui-grid-2-tight ui-grid-2-tight-cards">
                                 <!-- 動態生成 8 注 -->
                             </div>
 
                             <!-- 分析摘要 -->
-                            <div
-                                style="margin-top: 20px; padding: 15px; background: rgba(255,255,255,0.1); border-radius: 10px;">
-                                <h4 style="color: white; margin-bottom: 12px;">📊 多樣性分析</h4>
-                                <div
-                                    style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; text-align: center;">
+                            <div class="ui-subtle-panel-strong ui-mt-20">
+                                <h4 class="ui-title-light ui-mb-12">📊 多樣性分析</h4>
+                                <div class="ui-grid-3 ui-grid-center">
                                     <div>
-                                        <div style="font-size: 1.8em; font-weight: bold;" id="entropy-coverage-rate">-
+                                        <div class="ui-metric-value" id="entropy-coverage-rate">-
                                         </div>
-                                        <div style="font-size: 0.85em; opacity: 0.8;">覆蓋率</div>
+                                        <div class="ui-metric-label">覆蓋率</div>
                                     </div>
                                     <div>
-                                        <div style="font-size: 1.8em; font-weight: bold;" id="entropy-unique-numbers">-
+                                        <div class="ui-metric-value" id="entropy-unique-numbers">-
                                         </div>
-                                        <div style="font-size: 0.85em; opacity: 0.8;">覆蓋號碼數</div>
+                                        <div class="ui-metric-label">覆蓋號碼數</div>
                                     </div>
                                     <div>
-                                        <div style="font-size: 1.8em; font-weight: bold;" id="entropy-diversity-score">-
+                                        <div class="ui-metric-value" id="entropy-diversity-score">-
                                         </div>
-                                        <div style="font-size: 0.85em; opacity: 0.8;">多樣性分數</div>
+                                        <div class="ui-metric-label">多樣性分數</div>
                                     </div>
                                 </div>
                             </div>
 
                             <!-- 投注金額 -->
-                            <div style="margin-top: 15px; text-align: center; font-size: 1.1em;">
+                            <div class="ui-text-light ui-mt-15 ui-text-center ui-fs-11">
                                 💰 投注金額: <strong>NT$ 800</strong> (8 注 × 100)
                             </div>
                         </div>
@@ -807,7 +734,7 @@
                             </select>
                         </div>
 
-                        <h4 style="margin-top: 20px;">智慧過濾條件</h4>
+                        <h4 class="ui-mt-20">智慧過濾條件</h4>
                         <div class="filter-options">
                             <label class="checkbox-label">
                                 <input type="checkbox" id="filter-consecutive" checked>
@@ -823,32 +750,29 @@
                             </label>
                         </div>
 
-                        <button class="btn btn-primary" id="generate-smart-bet-btn"
-                            style="margin-top: 20px; width: 100%;">
+                        <button class="btn btn-primary ui-btn-full ui-mt-20" id="generate-smart-bet-btn">
                             <span class="btn-icon">🎯</span>
                             產生聰明組合
                         </button>
 
-                        <button class="btn btn-secondary" id="generate-hedging-btn"
-                            style="margin-top: 10px; width: 100%; background: linear-gradient(45deg, #FF512F, #DD2476);">
+                        <button class="btn btn-secondary ui-btn-full ui-mt-10 ui-btn-gradient-rose" id="generate-hedging-btn">
                             <span class="btn-icon">⚡️</span>
                             快速生成 2 注對沖 (熱門 vs 冷門)
                         </button>
                     </div>
 
                     <!-- 結果顯示區 -->
-                    <div class="betting-card full-width" id="smart-bet-results" style="display: none;">
+                    <div class="betting-card full-width ui-hidden" id="smart-bet-results">
                         <h3>3. 產生的投注組合</h3>
                         <div id="betting-combinations" class="combinations-list"></div>
 
                         <!-- 科學分析儀表板模板 (隱藏，由 JS 動態生成) -->
                         <template id="analysis-dashboard-template">
-                            <div class="analysis-dashboard"
-                                style="margin-top: 5px; padding-top: 5px; border-top: 1px solid rgba(255,255,255,0.1); font-size: 0.85em; display: flex; gap: 15px; color: #aaa;">
-                                <span class="metric-sum">和值: <b style="color: #fff;">-</b></span>
-                                <span class="metric-oe">奇偶: <b style="color: #fff;">-</b></span>
-                                <span class="metric-hl">大小: <b style="color: #fff;">-</b></span>
-                                <span class="metric-ac">AC值: <b style="color: #fff;">-</b></span>
+                            <div class="analysis-dashboard ui-analysis-dashboard">
+                                <span class="metric-sum">和值: <b class="ui-dashboard-value">-</b></span>
+                                <span class="metric-oe">奇偶: <b class="ui-dashboard-value">-</b></span>
+                                <span class="metric-hl">大小: <b class="ui-dashboard-value">-</b></span>
+                                <span class="metric-ac">AC值: <b class="ui-dashboard-value">-</b></span>
                             </div>
                         </template>
                     </div>
@@ -856,8 +780,8 @@
         </div>
         </section>
 
-        <!-- ===== 自動學習 Section ===== -->
-        <section id="autolearning-section" class="section">
+        <!-- ===== 自動學習 Section (Hidden by User Request) ===== -->
+        <section id="autolearning-section" class="section ui-hidden">
             <div class="section-header">
                 <h2>🤖 AI 自動學習系統</h2>
                 <p>智能評估策略效能、自動排程優化，找出最佳預測配置</p>
@@ -865,141 +789,124 @@
 
             <div class="autolearning-grid">
                 <!-- 🆕 智能策略評估卡片 -->
-                <div class="autolearning-card full-width"
-                    style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);">
-                    <h3 style="color: white;">🎯 智能策略評估</h3>
-                    <p style="color: rgba(255,255,255,0.9); font-size: 0.9em; margin-top: 5px; margin-bottom: 15px;">
+                <div class="autolearning-card full-width ui-card-theme-indigo ui-card-tight">
+                    <h3 class="ui-title-light">🎯 智能策略評估</h3>
+                    <p class="ui-text-light ui-fs-09 ui-mt-5 ui-mb-15">
                         自動測試所有預測策略（頻率、貝葉斯、馬可夫、蒙地卡羅、集成等），找出最佳方法
                     </p>
-                    <div style="display: flex; align-items: center; gap: 15px; flex-wrap: wrap;">
+                    <div class="ui-row-controls ui-items-center ui-gap-15 ui-m-0">
                         <div>
-                            <label
-                                style="color: white; display: block; margin-bottom: 5px; font-size: 0.9em;">測試集比例:</label>
-                            <select id="test-ratio-select" class="select-input" style="min-width: 150px;">
+                            <label for="test-ratio-select" class="ui-label-sm">測試集比例:</label>
+                            <select id="test-ratio-select" class="select-input ui-minw-150">
                                 <option value="0.1">10% (快速)</option>
                                 <option value="0.2" selected>20% (推薦)</option>
                                 <option value="0.3">30% (詳細)</option>
                             </select>
                         </div>
-                        <button class="btn btn-primary" id="evaluate-strategies-btn"
-                            style="margin-top: 20px; padding: 10px 20px;">
+                        <button class="btn btn-primary ui-btn-pad-10x20" id="evaluate-strategies-btn">
                             <span class="btn-icon">🔍</span>
                             開始評估策略
                         </button>
                     </div>
 
                     <!-- 評估進度 -->
-                    <div id="evaluation-progress" style="display: none; margin-top: 15px;">
+                    <div id="evaluation-progress" class="ui-hidden ui-mt-15">
                         <div class="progress-bar">
                             <div class="progress-fill" id="evaluation-progress-bar"></div>
                         </div>
-                        <div class="progress-text" id="evaluation-status" style="color: white;">準備中...</div>
+                        <div class="progress-text ui-text-light" id="evaluation-status">準備中...</div>
                     </div>
 
                     <!-- 最佳策略信息 -->
-                    <div id="best-strategy-info"
-                        style="display: none; margin-top: 15px; background: rgba(255,255,255,0.15); padding: 15px; border-radius: 8px;">
-                        <h4 style="color: white; margin: 0 0 10px 0;">🏆 最佳策略</h4>
-                        <div id="best-strategy-content" style="color: white;"></div>
+                    <div id="best-strategy-info" class="ui-subtle-panel-strong ui-hidden ui-mt-15">
+                        <h4 class="ui-title-light ui-m-0 ui-mb-10">🏆 最佳策略</h4>
+                        <div id="best-strategy-content" class="ui-text-light"></div>
                     </div>
                 </div>
 
                 <!-- 🆕 雙注優化預測結果 -->
-                <div class="autolearning-card full-width" id="eval-dual-bet-card" style="display: none;">
+                <div class="autolearning-card full-width ui-hidden" id="eval-dual-bet-card">
                     <h3>🎯 雙注優化預測（基於最佳策略）</h3>
-                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
-                        <div
-                            style="background: rgba(102, 126, 234, 0.1); padding: 20px; border-radius: 12px; border: 2px solid #667eea;">
-                            <h4 style="color: #667eea; margin-bottom: 15px;">第一注（最高信心）</h4>
-                            <div class="predicted-numbers" id="eval-dual-bet-numbers-1" style="margin-bottom: 10px;">
+                    <div class="ui-grid-2 ui-grid-no-margin">
+                        <div class="ui-dualbet-panel ui-dualbet-panel-a">
+                            <h4 class="ui-dualbet-title-a">第一注（最高信心）</h4>
+                            <div class="predicted-numbers ui-mb-10" id="eval-dual-bet-numbers-1">
                             </div>
                             <div class="mini-confidence">
-                                <span style="color: #999;">信心度：</span>
-                                <span id="eval-dual-bet-confidence-1" class="confidence-badge"
-                                    style="font-size: 1.2em; font-weight: bold; color: #667eea;">0%</span>
+                                <span class="ui-text-muted">信心度：</span>
+                                <span id="eval-dual-bet-confidence-1" class="confidence-badge ui-fs-12 ui-fw-bold ui-dualbet-title-a">0%</span>
                             </div>
                         </div>
-                        <div
-                            style="background: rgba(118, 75, 162, 0.1); padding: 20px; border-radius: 12px; border: 2px solid #764ba2;">
-                            <h4 style="color: #764ba2; margin-bottom: 15px;">第二注（次高信心）</h4>
-                            <div class="predicted-numbers" id="eval-dual-bet-numbers-2" style="margin-bottom: 10px;">
+                        <div class="ui-dualbet-panel ui-dualbet-panel-b">
+                            <h4 class="ui-dualbet-title-b">第二注（次高信心）</h4>
+                            <div class="predicted-numbers ui-mb-10" id="eval-dual-bet-numbers-2">
                             </div>
                             <div class="mini-confidence">
-                                <span style="color: #999;">信心度：</span>
-                                <span id="eval-dual-bet-confidence-2" class="confidence-badge"
-                                    style="font-size: 1.2em; font-weight: bold; color: #764ba2;">0%</span>
+                                <span class="ui-text-muted">信心度：</span>
+                                <span id="eval-dual-bet-confidence-2" class="confidence-badge ui-fs-12 ui-fw-bold ui-dualbet-title-b">0%</span>
                             </div>
                         </div>
                     </div>
-                    <div
-                        style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; margin-top: 20px; background: rgba(0,0,0,0.2); padding: 15px; border-radius: 8px;">
-                        <div style="text-align: center;">
-                            <div style="font-size: 0.85em; color: #999; margin-bottom: 5px;">使用策略</div>
-                            <div id="eval-dual-bet-strategy" style="font-size: 1.1em; font-weight: bold;">-</div>
+                    <div class="ui-subtle-panel ui-grid-3 ui-mt-20">
+                        <div class="ui-text-center">
+                            <div class="ui-label-sm ui-m-0">使用策略</div>
+                            <div id="eval-dual-bet-strategy" class="ui-fs-11 ui-fw-bold">-</div>
                         </div>
-                        <div style="text-align: center;">
-                            <div style="font-size: 0.85em; color: #999; margin-bottom: 5px;">綜合信心度</div>
-                            <div id="eval-dual-bet-overall-confidence"
-                                style="font-size: 1.1em; font-weight: bold; color: #667eea;">0%</div>
+                        <div class="ui-text-center">
+                            <div class="ui-label-sm ui-m-0">綜合信心度</div>
+                            <div id="eval-dual-bet-overall-confidence" class="ui-fs-11 ui-fw-bold ui-dualbet-title-a">0%</div>
                         </div>
-                        <div style="text-align: center;">
-                            <div style="font-size: 0.85em; color: #999; margin-bottom: 5px;">覆蓋範圍</div>
-                            <div style="font-size: 1.1em; font-weight: bold;">12個號碼</div>
+                        <div class="ui-text-center">
+                            <div class="ui-label-sm ui-m-0">覆蓋範圍</div>
+                            <div class="ui-fs-11 ui-fw-bold">12個號碼</div>
                         </div>
                     </div>
-                    <div id="eval-dual-bet-report" style="margin-top: 15px;"></div>
+                    <div id="eval-dual-bet-report" class="ui-mt-15"></div>
                 </div>
 
                 <!-- 評估結果詳情 -->
-                <div class="autolearning-card full-width" id="all-strategies-card" style="display: none;">
+                <div class="autolearning-card full-width ui-hidden" id="all-strategies-card">
                     <h3>📊 所有策略評估結果</h3>
-                    <div id="all-strategies-table" style="overflow-x: auto;"></div>
+                    <div id="all-strategies-table" class="ui-overflow-x"></div>
                 </div>
 
                 <!-- 排程管理區域 (1:1:1 等寬) -->
-                <div class="schedule-row"
-                    style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; margin-bottom: 20px; grid-column: 1 / -1;">
+                <div class="schedule-row ui-schedule-row">
                     <!-- 自動排程 -->
-                    <div class="autolearning-card" style="margin: 0;">
+                    <div class="autolearning-card ui-card-tight">
                         <h3>⏰ 自動排程</h3>
-                        <div class="control-group" style="margin-bottom: 15px;">
-                            <label
-                                style="font-size: 0.9em; color: #999; display: block; margin-bottom: 5px;">每日執行時間</label>
-                            <input type="time" id="schedule-time" class="select-input" value="02:00"
-                                style="width: 100%;">
+                        <div class="control-group ui-mb-15">
+                            <label for="schedule-time" class="ui-label-sm">每日執行時間</label>
+                            <input type="time" id="schedule-time" class="select-input ui-input-full" value="02:00">
                         </div>
 
                         <!-- 🎯 目標適應度設定 -->
-                        <div class="control-group" style="margin-bottom: 15px;">
-                            <label style="font-size: 0.9em; color: #999; display: block; margin-bottom: 5px;">
+                        <div class="control-group ui-mb-15">
+                            <label for="target-fitness-input" class="ui-label-sm">
                                 🎯 目標適應度 (達標後自動停止)
                             </label>
-                            <div style="display: flex; gap: 8px; align-items: center;">
-                                <input type="number" id="target-fitness-input" class="select-input"
-                                    placeholder="例如: 0.05 (5%)" step="0.01" min="0.01" max="1.0" style="flex: 1;">
-                                <button class="btn btn-primary" id="set-target-fitness-btn"
-                                    style="padding: 8px 16px; font-size: 0.85em;">
+                            <div class="ui-flex-gap-8">
+                                <input type="number" id="target-fitness-input" class="select-input ui-flex-1"
+                                    placeholder="例如: 0.05 (5%)" step="0.01" min="0.01" max="1.0">
+                                <button class="btn btn-primary ui-btn-sm" id="set-target-fitness-btn">
                                     設定
                                 </button>
                             </div>
-                            <div style="font-size: 0.8em; color: #666; margin-top: 5px;">
+                            <div class="ui-note-sm ui-mt-5">
                                 <span id="target-fitness-display">未設定（將執行完整 30 代）</span>
                             </div>
                         </div>
 
-                        <div style="display: flex; flex-direction: column; gap: 8px;">
-                            <button class="btn btn-primary" id="start-schedule-btn"
-                                style="width: 100%; font-size: 0.9em; padding: 10px;">
+                        <div class="ui-stack-8">
+                            <button class="btn btn-primary ui-btn-full" id="start-schedule-btn">
                                 <span class="btn-icon">▶️</span>
                                 啟動排程
                             </button>
-                            <button class="btn btn-success" id="run-schedule-now-btn"
-                                style="width: 100%; font-size: 0.9em; padding: 10px;">
+                            <button class="btn btn-success ui-btn-full" id="run-schedule-now-btn">
                                 <span class="btn-icon">⚡</span>
                                 立即執行一次
                             </button>
-                            <button class="btn btn-danger" id="stop-schedule-btn"
-                                style="width: 100%; font-size: 0.9em; padding: 10px;">
+                            <button class="btn btn-danger ui-btn-full" id="stop-schedule-btn">
                                 <span class="btn-icon">⏹️</span>
                                 停止排程
                             </button>
@@ -1009,37 +916,34 @@
                     <!-- 系統狀態 -->
                     <div class="autolearning-card">
                         <h3>📊 系統狀態</h3>
-                        <div class="status-display" style="margin-bottom: 15px;">
-                            <div class="status-item" style="margin-bottom: 10px;">
-                                <span class="label" style="color: #999; font-size: 0.9em;">排程狀態:</span>
-                                <span class="value" id="schedule-status" style="font-weight: bold;">未啟動</span>
+                        <div class="status-display ui-mb-15">
+                            <div class="status-item ui-mb-10">
+                                <span class="label ui-label-sm">排程狀態:</span>
+                                <span class="value ui-fw-bold" id="schedule-status">未啟動</span>
                             </div>
-                            <div class="status-item" style="margin-bottom: 10px;">
-                                <span class="label" style="color: #999; font-size: 0.9em;">下次執行:</span>
-                                <span class="value" id="next-run-time" style="font-weight: bold;">-</span>
+                            <div class="status-item ui-mb-10">
+                                <span class="label ui-label-sm">下次執行:</span>
+                                <span class="value ui-fw-bold" id="next-run-time">-</span>
                             </div>
                             <div class="status-item">
-                                <span class="label" style="color: #999; font-size: 0.9em;">最佳適應度:</span>
-                                <span class="value" id="best-fitness"
-                                    style="font-weight: bold; color: #667eea;">-</span>
+                                <span class="label ui-label-sm">最佳適應度:</span>
+                                <span class="value ui-fw-bold ui-text-accent" id="best-fitness">-</span>
                             </div>
                         </div>
-                        <button class="btn btn-secondary" id="refresh-status-btn"
-                            style="width: 100%; font-size: 0.9em; padding: 10px;">
+                        <button class="btn btn-secondary ui-btn-full" id="refresh-status-btn">
                             <span class="btn-icon">🔄</span>
                             刷新狀態
                         </button>
                     </div>
 
                     <!-- 使用說明 -->
-                    <div class="autolearning-card"
-                        style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);">
-                        <h3 style="color: white;">💡 使用說明</h3>
-                        <div style="color: rgba(255,255,255,0.95); font-size: 0.85em; line-height: 1.6;">
-                            <p style="margin: 10px 0;"><strong>⏰ 自動排程</strong><br>設定每日自動執行優化時間</p>
-                            <p style="margin: 10px 0;"><strong>⚡ 立即執行</strong><br>不等待排程，立即優化參數</p>
-                            <p style="margin: 10px 0;"><strong>📊 系統狀態</strong><br>查看排程運行狀態和結果</p>
-                            <p style="margin: 10px 0; padding-top: 10px; border-top: 1px solid rgba(255,255,255,0.3);">
+                    <div class="autolearning-card ui-card-theme-indigo ui-card-tight">
+                        <h3 class="ui-title-light">💡 使用說明</h3>
+                        <div class="ui-text-light ui-fs-085 ui-lh-16">
+                            <p class="ui-my-10"><strong>⏰ 自動排程</strong><br>設定每日自動執行優化時間</p>
+                            <p class="ui-my-10"><strong>⚡ 立即執行</strong><br>不等待排程，立即優化參數</p>
+                            <p class="ui-my-10"><strong>📊 系統狀態</strong><br>查看排程運行狀態和結果</p>
+                            <p class="ui-my-10 ui-pt-10 ui-border-top-light">
                                 <small>提示：排程會自動從資料庫讀取最新數據進行優化</small>
                             </p>
                         </div>
@@ -1047,61 +951,52 @@
                 </div>
 
                 <!-- 🚀 進階優化區域 (全寬) -->
-                <div class="autolearning-card full-width"
-                    style="background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); margin-bottom: 20px;">
-                    <h3 style="color: white;">🚀 進階優化系統 (預期提升 2-4 倍成功率)</h3>
-                    <p style="color: rgba(255,255,255,0.9); font-size: 0.9em; margin-top: 5px; margin-bottom: 15px;">
+                <div class="autolearning-card full-width ui-card-theme-rose ui-card-tight ui-card-mb-20">
+                    <h3 class="ui-title-light">🚀 進階優化系統 (預期提升 2-4 倍成功率)</h3>
+                    <p class="ui-text-light ui-fs-09 ui-mt-5 ui-mb-15">
                         使用多階段優化和自適應窗口技術，大幅提升預測準確度（從 3-5% 提升至 8-15%）
                     </p>
 
-                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-top: 15px;">
+                    <div class="ui-grid-2 ui-mt-15">
                         <!-- 多階段優化 -->
-                        <div style="background: rgba(255,255,255,0.15); padding: 20px; border-radius: 12px;">
-                            <h4 style="color: white; margin-bottom: 10px;">
+                        <div class="ui-subtle-panel-strong">
+                            <h4 class="ui-title-light ui-mb-10">
                                 🎯 多階段優化
-                                <span
-                                    style="background: rgba(255,255,255,0.3); padding: 2px 8px; border-radius: 4px; font-size: 0.7em; margin-left: 8px;">推薦</span>
+                                <span class="ui-chip-light">推薦</span>
                             </h4>
-                            <ul
-                                style="color: rgba(255,255,255,0.95); font-size: 0.85em; line-height: 1.8; padding-left: 20px; margin-bottom: 15px;">
+                            <ul class="ui-list-light">
                                 <li>階段1：粗調 (50代) - 快速探索</li>
                                 <li>階段2：精調 (100代) - 深度優化</li>
                                 <li>階段3：微調 (50代) - 精確調整</li>
                             </ul>
-                            <div
-                                style="background: rgba(0,0,0,0.2); padding: 10px; border-radius: 6px; margin-bottom: 10px; color: rgba(255,255,255,0.9); font-size: 0.85em;">
+                            <div class="ui-panel-dark ui-text-light ui-mb-10 ui-fs-085">
                                 <div>⏱️ 預計耗時: 10-15 分鐘</div>
                                 <div>📈 預期提升: 50-100% 適應度</div>
                                 <div>🎯 目標成功率: 8-12%</div>
                             </div>
-                            <button class="btn btn-primary" id="advanced-multi-stage-btn"
-                                style="width: 100%; padding: 12px; font-size: 0.95em; background: white; color: #f5576c; font-weight: bold;">
+                            <button class="btn btn-primary ui-btn-light-rose ui-btn-lg" id="advanced-multi-stage-btn">
                                 <span class="btn-icon">🚀</span>
                                 執行多階段優化
                             </button>
                         </div>
 
                         <!-- 自適應窗口優化 -->
-                        <div style="background: rgba(255,255,255,0.15); padding: 20px; border-radius: 12px;">
-                            <h4 style="color: white; margin-bottom: 10px;">
+                        <div class="ui-subtle-panel-strong">
+                            <h4 class="ui-title-light ui-mb-10">
                                 🔍 自適應窗口優化
-                                <span
-                                    style="background: rgba(255,255,255,0.3); padding: 2px 8px; border-radius: 4px; font-size: 0.7em; margin-left: 8px;">快速</span>
+                                <span class="ui-chip-light">快速</span>
                             </h4>
-                            <ul
-                                style="color: rgba(255,255,255,0.95); font-size: 0.85em; line-height: 1.8; padding-left: 20px; margin-bottom: 15px;">
+                            <ul class="ui-list-light">
                                 <li>測試多種數據窗口 (100/200/300/500/全部)</li>
                                 <li>自動找出最佳訓練數據量</li>
                                 <li>排除過時模式，提高時效性</li>
                             </ul>
-                            <div
-                                style="background: rgba(0,0,0,0.2); padding: 10px; border-radius: 6px; margin-bottom: 10px; color: rgba(255,255,255,0.9); font-size: 0.85em;">
+                            <div class="ui-panel-dark ui-text-light ui-mb-10 ui-fs-085">
                                 <div>⏱️ 預計耗時: 5-8 分鐘</div>
                                 <div>📈 預期提升: 20-30% 適應度</div>
                                 <div>🎯 目標成功率: 6-10%</div>
                             </div>
-                            <button class="btn btn-primary" id="advanced-adaptive-window-btn"
-                                style="width: 100%; padding: 12px; font-size: 0.95em; background: white; color: #f093fb; font-weight: bold;">
+                            <button class="btn btn-primary ui-btn-light-rose ui-btn-lg" id="advanced-adaptive-window-btn">
                                 <span class="btn-icon">🔍</span>
                                 執行自適應窗口優化
                             </button>
@@ -1109,65 +1004,51 @@
                     </div>
 
                     <!-- 進階優化進度顯示 -->
-                    <div id="advanced-optimization-progress"
-                        style="display: none; margin-top: 20px; background: rgba(0,0,0,0.3); padding: 20px; border-radius: 12px;">
-                        <h4 style="color: white; margin-bottom: 10px; display: flex; align-items: center; gap: 10px;">
-                            <span id="advanced-progress-icon" style="font-size: 1.2em;">⏳</span>
+                    <div id="advanced-optimization-progress" class="ui-panel-dark-20 ui-hidden ui-mt-20">
+                        <h4 class="ui-title-light ui-flex-between ui-flex-start ui-mb-10">
+                            <span id="advanced-progress-icon" class="ui-fs-12">⏳</span>
                             <span id="advanced-progress-title">正在優化中...</span>
                         </h4>
-                        <div
-                            style="background: rgba(0,0,0,0.3); border-radius: 8px; overflow: hidden; height: 30px; margin-bottom: 15px;">
-                            <div id="advanced-progress-bar"
-                                style="height: 100%; background: linear-gradient(90deg, #4ade80, #22c55e); width: 0%; transition: width 0.3s; display: flex; align-items: center; justify-content: center; color: white; font-weight: bold; font-size: 0.9em;">
+                        <div class="ui-progress-shell">
+                            <div id="advanced-progress-bar" class="ui-progress-fill">
                                 <span id="advanced-progress-percentage">0%</span>
                             </div>
                         </div>
-                        <div id="advanced-progress-status"
-                            style="color: rgba(255,255,255,0.9); font-size: 0.9em; line-height: 1.6;">
+                        <div id="advanced-progress-status" class="ui-text-light ui-fs-09 ui-lh-16">
                             正在初始化...
                         </div>
                     </div>
 
                     <!-- 進階優化結果顯示 -->
-                    <div id="advanced-optimization-result"
-                        style="display: none; margin-top: 20px; background: rgba(0,0,0,0.3); padding: 20px; border-radius: 12px;">
-                        <h4 style="color: white; margin-bottom: 15px; display: flex; align-items: center; gap: 10px;">
-                            <span style="font-size: 1.2em;">🎉</span>
+                    <div id="advanced-optimization-result" class="ui-panel-dark-20 ui-hidden ui-mt-20">
+                        <h4 class="ui-title-light ui-flex-between ui-flex-start ui-mb-15">
+                            <span class="ui-fs-12">🎉</span>
                             <span>優化完成！</span>
                         </h4>
-                        <div
-                            style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; margin-bottom: 15px;">
-                            <div
-                                style="background: rgba(255,255,255,0.1); padding: 15px; border-radius: 8px; text-align: center;">
-                                <div style="color: rgba(255,255,255,0.7); font-size: 0.85em; margin-bottom: 5px;">最佳適應度
+                        <div class="ui-grid-3 ui-mb-15">
+                            <div class="ui-subtle-panel ui-text-center">
+                                <div class="ui-metric-caption">最佳適應度
                                 </div>
-                                <div id="advanced-result-fitness"
-                                    style="color: #4ade80; font-size: 1.8em; font-weight: bold;">-</div>
+                                <div id="advanced-result-fitness" class="ui-metric-value ui-text-success">-</div>
                             </div>
-                            <div
-                                style="background: rgba(255,255,255,0.1); padding: 15px; border-radius: 8px; text-align: center;">
-                                <div style="color: rgba(255,255,255,0.7); font-size: 0.85em; margin-bottom: 5px;">提升幅度
+                            <div class="ui-subtle-panel ui-text-center">
+                                <div class="ui-metric-caption">提升幅度
                                 </div>
-                                <div id="advanced-result-improvement"
-                                    style="color: #fbbf24; font-size: 1.8em; font-weight: bold;">-</div>
+                                <div id="advanced-result-improvement" class="ui-metric-value ui-text-warn">-</div>
                             </div>
-                            <div
-                                style="background: rgba(255,255,255,0.1); padding: 15px; border-radius: 8px; text-align: center;">
-                                <div style="color: rgba(255,255,255,0.7); font-size: 0.85em; margin-bottom: 5px;">優化方法
+                            <div class="ui-subtle-panel ui-text-center">
+                                <div class="ui-metric-caption">優化方法
                                 </div>
-                                <div id="advanced-result-method"
-                                    style="color: #60a5fa; font-size: 1.2em; font-weight: bold;">-</div>
+                                <div id="advanced-result-method" class="ui-metric-method ui-text-info">-</div>
                             </div>
                         </div>
-                        <div id="advanced-result-details"
-                            style="background: rgba(0,0,0,0.2); padding: 15px; border-radius: 8px; color: rgba(255,255,255,0.9); font-size: 0.9em; line-height: 1.6;">
+                        <div id="advanced-result-details" class="ui-panel-dark ui-text-light ui-fs-09 ui-lh-16">
                             <!-- 詳細信息將在這裡顯示 -->
                         </div>
                     </div>
 
                     <!-- 進階優化說明 -->
-                    <div
-                        style="margin-top: 15px; background: rgba(0,0,0,0.2); padding: 12px; border-radius: 8px; color: rgba(255,255,255,0.95); font-size: 0.85em;">
+                    <div class="ui-panel-dark ui-text-light ui-mt-15 ui-fs-085">
                         <strong>💡 使用建議：</strong>
                         首次使用建議先執行「自適應窗口優化」（較快），確認效果後再執行「多階段優化」（最佳效果）。
                         兩者都會在後台執行，不會阻塞其他操作。
@@ -1175,44 +1056,40 @@
                 </div>
 
                 <!-- 最佳配置 (全寬，橫向卡片) -->
-                <div class="autolearning-card full-width" style="margin-bottom: 20px;">
-                    <div
-                        style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
-                        <h3 style="margin: 0;">🏆 最佳配置與優化結果</h3>
-                        <div style="display: flex; gap: 10px;">
-                            <button class="btn btn-secondary" id="view-optimization-results-btn"
-                                style="font-size: 0.9em; padding: 8px 16px;">
+                <div class="autolearning-card full-width ui-card-mb-20">
+                    <div class="ui-flex-between ui-mb-15">
+                        <h3 class="ui-m-0">🏆 最佳配置與優化結果</h3>
+                        <div class="ui-flex-gap-10">
+                            <button class="btn btn-secondary ui-btn-sm" id="view-optimization-results-btn">
                                 <span class="btn-icon">📊</span>
                                 查看優化結果
                             </button>
-                            <button class="btn btn-secondary" id="load-config-btn"
-                                style="font-size: 0.9em; padding: 8px 16px;">
+                            <button class="btn btn-secondary ui-btn-sm" id="load-config-btn">
                                 <span class="btn-icon">📥</span>
                                 查詢目前配置
                             </button>
                         </div>
                     </div>
-                    <div id="best-config-display" style="font-size: 0.9em;">
+                    <div id="best-config-display" class="ui-fs-09">
                         <p class="placeholder-text">尚無優化記錄</p>
                     </div>
 
                     <!-- 優化結果詳情面板 -->
-                    <div id="optimization-results-panel"
-                        style="display: none; margin-top: 20px; background: rgba(0,0,0,0.2); padding: 20px; border-radius: 12px;">
-                        <h4 style="color: white; margin-bottom: 15px; display: flex; align-items: center; gap: 10px;">
-                            <span style="font-size: 1.2em;">📊</span>
+                    <div id="optimization-results-panel" class="ui-panel-dark-20 ui-hidden ui-mt-20">
+                        <h4 class="ui-title-light ui-flex-between ui-flex-start ui-mb-15">
+                            <span class="ui-fs-12">📊</span>
                             <span>優化結果詳情</span>
                         </h4>
-                        <div id="optimization-results-content" style="color: rgba(255,255,255,0.9);">
+                        <div id="optimization-results-content" class="ui-text-light">
                             <!-- 動態內容 -->
                         </div>
                     </div>
                 </div>
 
                 <!-- 進化趨勢圖 (全寬) -->
-                <div class="autolearning-card full-width" style="margin-bottom: 20px;">
+                <div class="autolearning-card full-width ui-card-mb-20">
                     <h3>📈 進化趨勢圖</h3>
-                    <div class="chart-container" style="position: relative; height: 320px; width: 100%;">
+                    <div class="chart-container ui-chart-320">
                         <canvas id="evolution-chart"></canvas>
                     </div>
                 </div>
@@ -1251,7 +1128,7 @@
         </footer>
 
         <!-- 記錄編輯彈窗 -->
-        <div id="record-modal" class="modal" style="display: none;">
+        <div id="record-modal" class="modal ui-hidden">
             <div class="modal-content">
                 <div class="modal-header">
                     <h3 id="modal-title">新增記錄</h3>
@@ -1280,7 +1157,7 @@
                         </div>
                         <div class="form-group">
                             <label>開獎號碼 * (請輸入6個號碼，範圍1-49)</label>
-                            <div style="display: grid; grid-template-columns: repeat(6, 1fr); gap: 10px;">
+                            <div class="ui-grid-6-gap10">
                                 <input type="number" id="record-num-1" class="form-control" min="1" max="49" required
                                     placeholder="1">
                                 <input type="number" id="record-num-2" class="form-control" min="1" max="49" required
@@ -1314,7 +1191,11 @@
 
         <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
         <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@4.9.0/dist/tf.min.js"></script>
-        <script type="module" src="src/main.js?v=5"></script>
+        <script>
+            // Initialize Lucide Icons
+            lucide.createIcons();
+        </script>
+        <script type="module" src="src/main.js?v=11"></script>
 </body>
 
 </html>

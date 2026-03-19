@@ -17,21 +17,29 @@ class PowerLottoSpecialPredictor:
         self.max_num = lottery_rules.get('specialMaxNumber', 8)
         self.lottery_type = lottery_rules.get('name', '')
         self._weight_cache = {}
+        self._shared_strategy_cache = {}
         self.markov2nd = MarkovChain2ndOrderPredictor() # ✨ Phase Zone2 Optimization
+
+    def _ensure_asc(self, history: List[Dict]) -> List[Dict]:
+        if not history: return history
+        if history[0].get('date', '0') > history[-1].get('date', '9'):
+            return list(reversed(history))
+        return history
 
     def predict(self, history: List[Dict], main_numbers: List[int] = None) -> int:
         """預測最可能的單個第二區號碼"""
+        history = self._ensure_asc(history)
         top_n = self.predict_top_n(history, n=1, main_numbers=main_numbers)
         return top_n[0]
 
-    _shared_strategy_cache = {}
+    
 
     def _get_strategy_scores(self, strategy_id: str, history: List[Dict], main_numbers: List[int] = None) -> Dict[int, float]:
         """使用快取獲取策略分數"""
         if not history:
             return {num: 0.5 for num in range(self.min_num, self.max_num + 1)}
             
-        draw_id = history[0].get('draw')
+        draw_id = history[-1].get('draw')
         h_len = len(history)
         # 針對 sectional_corr，主號也是 key 的一部分
         main_key = tuple(sorted(main_numbers)) if main_numbers else None
@@ -43,13 +51,13 @@ class PowerLottoSpecialPredictor:
         # 執行實際策略
         if strategy_id == 'bias': res = self._calculate_long_term_bias(history)
         elif strategy_id == 'markov': res = self._markov_v1_strategy(history)
-        elif strategy_id == 'hot': res = self._recent_hot_strategy(history[:15])
+        elif strategy_id == 'hot': res = self._recent_hot_strategy(history[-15:])
         elif strategy_id == 'cycle': res = self._cycle_v2_strategy(history)
         elif strategy_id == 'corr': res = self._sectional_correlation_strategy(history, main_numbers)
         elif strategy_id == 'seasonal': res = self._seasonal_bias_strategy(history)
         elif strategy_id == 'gap': res = self._gap_pressure_strategy(history)
         elif strategy_id == 'fourier': res = self._fourier_rhythm_strategy_exec(history)
-        elif strategy_id == 'oscillation': res = self._oscillation_booster_strategy(history)
+        elif strategy_id in ('oscillation', 'repeat'): res = self._oscillation_booster_strategy(history)
         elif strategy_id == 'sgp': res = self._spectral_gap_pressure_strategy(history)
         elif strategy_id == 'zonal_lift': res = self._zonal_sectional_lift_strategy(history)
         elif strategy_id == 'markov2nd': res = self.markov2nd.predict_with_confidence(history)['probabilities']
@@ -69,6 +77,7 @@ class PowerLottoSpecialPredictor:
         """
         if not history:
             return [2, 5, 4][:n]
+        history = self._ensure_asc(history)
 
         scores = {num: 0.0 for num in range(self.min_num, self.max_num + 1)}
 
@@ -81,7 +90,7 @@ class PowerLottoSpecialPredictor:
         seasonal = self._get_strategy_scores('seasonal', history)
         gap_p = self._get_strategy_scores('gap', history)
         fourier = self._get_strategy_scores('fourier', history)
-        repeat = self._get_strategy_scores('repeat', history)
+        oscillation = self._get_strategy_scores('oscillation', history)
         
         # 2. 獲取 Regime-Aware 混合權重
         weights = self._get_hybrid_regime_weights(history, main_numbers)
@@ -96,7 +105,7 @@ class PowerLottoSpecialPredictor:
                 seasonal[num] * weights['seasonal'] +
                 gap_p[num] * weights['gap'] +
                 fourier[num] * weights.get('fourier', 0.10) +
-                repeat[num] * weights.get('oscillation', 0.15) +
+                oscillation[num] * weights.get('oscillation', 0.15) +
                 self._get_strategy_scores('zonal_lift', history)[num] * weights.get('zonal_lift', 0.10) +
                 self._get_strategy_scores('sgp', history)[num] * weights.get('sgp', 0.05) +
                 self._get_strategy_scores('markov2nd', history)[num] * weights.get('markov2nd', 0.15) +
@@ -105,7 +114,46 @@ class PowerLottoSpecialPredictor:
 
         # 排序並返回前 N 個
         sorted_nums = sorted(scores.items(), key=lambda x: x[1], reverse=True)
-        return [item[0] for item in sorted_nums[:n]]
+        top_n = [item[0] for item in sorted_nums[:n]]
+
+        # Cold Safety Net (020期優化): Gap≥20 的特別號強制納入候選
+        # 回測驗證: Gap≥20 edge=+2.62% (最佳閾值)
+        top_n = self._apply_cold_safety_net(history, top_n, gap_threshold=20)
+
+        return top_n[:n]
+
+    def _apply_cold_safety_net(self, history, top_n, gap_threshold=20):
+        """Cold Safety Net: 極長遺漏特別號強制納入
+        
+        020期教訓: #8 連續21期未出, V3 MAB 未能預測
+        Gap≥20 閾值是回測最佳點 (edge=+2.62%)
+        """
+        if not history:
+            return top_n
+
+        # history 已由 _ensure_asc 統一為 ASC (history[-1]=最新期)
+        # 保留 LAST occurrence（最近），gap = len(history) - last_idx
+        last_seen = {}
+        for i, d in enumerate(history):
+            sp_val = d.get('special')
+            if sp_val:
+                last_seen[sp_val] = i  # 持續覆蓋 → 最終保留最近出現的 index
+
+        current_idx = len(history)
+        cold_specials = []
+        for n in range(self.min_num, self.max_num + 1):
+            gap = current_idx - last_seen.get(n, -1)  # 從未出現 → len(history)+1
+            if gap >= gap_threshold and n not in top_n:
+                cold_specials.append((n, gap))
+
+        if cold_specials:
+            cold_specials.sort(key=lambda x: -x[1])
+            coldest = cold_specials[0][0]
+            # 替換 top_n 的最後一個
+            result = list(top_n[:-1]) + [coldest]
+            return result
+
+        return top_n
 
     def _calculate_long_term_bias(self, history: List[Dict]) -> Dict[int, float]:
         """計算全歷史物理偏差"""
@@ -129,7 +177,7 @@ class PowerLottoSpecialPredictor:
         if not history: return {n: 0.5 for n in range(self.min_num, self.max_num + 1)}
         
         scores = {n: 0.5 for n in range(self.min_num, self.max_num + 1)}
-        specials = [d.get('special') for d in history[:10] if d.get('special')]
+        specials = [d.get('special') for d in reversed(history[-10:]) if d.get('special')]
         
         if len(specials) >= 1:
             # 1. 連開 (Repeat)
@@ -188,7 +236,7 @@ class PowerLottoSpecialPredictor:
         if not history: return {n: 0.5 for n in range(self.min_num, self.max_num + 1)}
         
         scores = {n: 0.5 for n in range(self.min_num, self.max_num + 1)}
-        recent_s = [d.get('special') for d in history[:10] if d.get('special')]
+        recent_s = [d.get('special') for d in reversed(history[-10:]) if d.get('special')]
         
         if not recent_s: return scores
         
@@ -219,7 +267,7 @@ class PowerLottoSpecialPredictor:
         scores = {n: 0.5 for n in range(self.min_num, self.max_num + 1)}
         if not history: return scores
         
-        specials = list(reversed([d.get('special') for d in history if d.get('special')]))
+        specials = [d.get('special') for d in history if d.get('special')]
         if len(specials) < 2: return scores
         
         transitions = defaultdict(Counter)
@@ -242,7 +290,7 @@ class PowerLottoSpecialPredictor:
         if not history: return scores
         
         last_seen = {n: 99 for n in range(1, 9)}
-        for i, d in enumerate(history):
+        for i, d in enumerate(reversed(history)):
             s = d.get('special')
             if s and last_seen[s] == 99:
                 last_seen[s] = i
@@ -268,7 +316,7 @@ class PowerLottoSpecialPredictor:
         avg = total / 8.0 # 1-8 均勻期望
         
         # 使用最近 20 期作為標竿，對比長期期望
-        recent_counts = Counter(specials[:20])
+        recent_counts = Counter(specials[-20:])
         
         for n in range(1, 9):
             # 長期偏移量
@@ -291,7 +339,7 @@ class PowerLottoSpecialPredictor:
         # 計算 lambda (期望次數)
         lmbda = 10 / 8.0 # 在 10 期內的期望
         
-        recent_10 = specials[:10]
+        recent_10 = specials[-10:]
         recent_counts = Counter(recent_10)
         
         from scipy.stats import poisson
@@ -309,7 +357,7 @@ class PowerLottoSpecialPredictor:
         scores = {n: 0.5 for n in range(self.min_num, self.max_num + 1)}
         if len(history) < 50: return scores
         
-        specials = list(reversed([d.get('special') for d in history if d.get('special')]))
+        specials = [d.get('special') for d in history if d.get('special')]
         
         # 建立 2 階轉移矩陣
         transitions = defaultdict(Counter)
@@ -343,10 +391,9 @@ class PowerLottoSpecialPredictor:
         if not history:
             return scores
 
-        for i, d in enumerate(history):
+        for i, d in enumerate(reversed(history)):
             special = d.get('special')
             if special and self.min_num <= special <= self.max_num:
-                # 越近期權重越高 (指數衰減)
                 weight = np.exp(-i * 0.2)
                 scores[special] += weight
 
@@ -416,12 +463,12 @@ class PowerLottoSpecialPredictor:
         if len(history) < 5:
             return scores
 
-        special_nums = [d.get('special') for d in history[:10] if d.get('special')]
+        special_nums = [d.get('special') for d in history[-10:] if d.get('special')]
         if len(special_nums) < 3:
             return scores
 
         # 計算最近的趨勢 (上升/下降)
-        recent_avg = sum(special_nums[:5]) / 5 if len(special_nums) >= 5 else sum(special_nums) / len(special_nums)
+        recent_avg = sum(special_nums[-5:]) / 5 if len(special_nums) >= 5 else sum(special_nums) / len(special_nums)
 
         # 如果趨勢向上，給高數字較高分數
         # 如果趨勢向下，給低數字較高分數
@@ -570,7 +617,7 @@ class PowerLottoSpecialPredictor:
         # 2. 獲取當前遺漏期數
         current_gaps = {n: 99 for n in range(1, 9)}
         for n in range(1, 9):
-            try: current_gaps[n] = specials.index(n)
+            try: current_gaps[n] = len(specials) - 1 - max(i for i, x in enumerate(specials) if x == n)
             except: pass
             
         # 3. 計算壓力得分
@@ -600,7 +647,7 @@ class PowerLottoSpecialPredictor:
         if len(history) < 20: return mab_weights
         
         # 1. 計算局部熵值 (Local Entropy)
-        recent_s = [d.get('special') for d in history[:15] if d.get('special')]
+        recent_s = [d.get('special') for d in history[-15:] if d.get('special')]
         counts = Counter(recent_s)
         probs = [c/len(recent_s) for c in counts.values()]
         entropy = -sum(p * np.log2(p) for p in probs)
@@ -648,13 +695,14 @@ class PowerLottoSpecialPredictor:
         if cache_key in self._weight_cache:
             return self._weight_cache[cache_key]
         # 初始化 Alpha (成功數) / Total (樣本數)
-        arms = {k: {'win': 1, 'total': 2} for k in default_weights.keys()}
+        arms = {k: {'win': 1, 'total': 2} for k in list(default_weights.keys())}
         
         # 為了效能，我們只測試最近 20 期
         for i in range(20):
-            target = history[i]
-            # 使用滑動窗口，確保不洩露當前測試期的資訊
-            prev_history = history[i+1:i+151] 
+            if len(history) - 1 - i < 0: break
+            target = history[-(i+1)]
+            # 使用滑動窗口，確保不洩露當前測試期的資訊 (取 target 之前的 150 期)
+            prev_history = history[max(0, len(history)-151-i):-(i+1)] 
             actual = target.get('special')
             
             if not actual: continue

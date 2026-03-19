@@ -90,6 +90,9 @@ export class PredictionEngine {
             'ai_transformer': new APIStrategy('transformer'),
             'ai_bayesian_ensemble': new APIStrategy('bayesian_ensemble'),
             'ai_maml': new APIStrategy('maml'),
+            'coordinator': new APIStrategy('coordinator'),
+            'coordinator_direct': new APIStrategy('coordinator_direct'),
+            'coordinator_hybrid': new APIStrategy('coordinator_hybrid'),
 
             // ===== 民間策略 =====
             'odd_even': new OddEvenBalanceStrategy(statisticsService),
@@ -208,7 +211,10 @@ export class PredictionEngine {
 
             'ai_transformer': 'transformer',
             'ai_bayesian_ensemble': 'bayesian_ensemble',
-            'ai_maml': 'maml'
+            'ai_maml': 'maml',
+            'coordinator': 'coordinator',
+            'coordinator_direct': 'coordinator_direct',
+            'coordinator_hybrid': 'coordinator_hybrid'
         };
 
         let result;

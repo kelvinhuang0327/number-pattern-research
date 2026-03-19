@@ -33,6 +33,9 @@ class PredictWithRangeRequest(BaseModel):
     endDate: Optional[str] = None    # 例如：'2024/12/31'
     # 或使用最近N期
     recentCount: Optional[int] = None  # 例如：50
+    # Coordinator 可選參數
+    coordMode: Optional[str] = "direct"  # direct | hybrid
+    coordBets: Optional[int] = 3          # 1~5
 
 class PredictResponse(BaseModel):
     numbers: List[int]

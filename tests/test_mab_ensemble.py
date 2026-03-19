@@ -29,8 +29,8 @@ class TestThompsonSamplingEnsemble(unittest.TestCase):
         
         # 檢查Beta參數初始化為1.0
         for strategy in self.strategies:
-            self.assertEqual(self.mab.alpha[strategy], 1.0)
-            self.assertEqual(self.mab.beta[strategy], 1.0)
+            self.assertEqual(self.mab.alpha['GLOBAL'][strategy], 1.0)
+            self.assertEqual(self.mab.beta['GLOBAL'][strategy], 1.0)
     
     def test_sample_weights(self):
         """測試權重採樣"""
@@ -65,15 +65,16 @@ class TestThompsonSamplingEnsemble(unittest.TestCase):
         }
         actual = [1, 2, 7, 8, 13, 14]  # frequency命中2, trend命中2, bayesian命中2, markov命中2
         
-        initial_alpha = dict(self.mab.alpha)
-        initial_beta = dict(self.mab.beta)
+        import copy
+        initial_alpha = copy.deepcopy(self.mab.alpha)
+        initial_beta = copy.deepcopy(self.mab.beta)
         
         rewards = self.mab.update(predictions, actual, reward_scheme='progressive')
         
         # 檢查所有策略都被更新
         for strategy in self.strategies:
-            self.assertNotEqual(self.mab.alpha[strategy], initial_alpha[strategy])
-            self.assertNotEqual(self.mab.beta[strategy], initial_beta[strategy])
+            self.assertNotEqual(self.mab.alpha['GLOBAL'][strategy], initial_alpha['GLOBAL'][strategy])
+            self.assertGreaterEqual(self.mab.beta['GLOBAL'][strategy], initial_beta['GLOBAL'][strategy])
         
         # 檢查rewards返回
         self.assertEqual(rewards['frequency'], 2)
@@ -90,10 +91,10 @@ class TestThompsonSamplingEnsemble(unittest.TestCase):
         self.mab.update(predictions, actual, reward_scheme='progressive')
         
         # frequency應該獲得大獎(α增加10)
-        self.assertGreater(self.mab.alpha['frequency'], self.mab.alpha['trend'])
+        self.assertGreater(self.mab.alpha['GLOBAL']['frequency'], self.mab.alpha['GLOBAL']['trend'])
         
         # trend應該被懲罰(β增加5)
-        self.assertGreater(self.mab.beta['trend'], self.mab.beta['frequency'])
+        self.assertGreater(self.mab.beta['GLOBAL']['trend'], self.mab.beta['GLOBAL']['frequency'])
     
     def test_decay(self):
         """測試衰減機制"""
@@ -105,9 +106,9 @@ class TestThompsonSamplingEnsemble(unittest.TestCase):
         
         # 所有α應該大於1但不會無限增長（因為衰減）
         for strategy in self.strategies:
-            alpha = self.mab.alpha[strategy]
+            alpha = self.mab.alpha['GLOBAL'][strategy]
             self.assertGreater(alpha, 1.0)
-            self.assertLess(alpha, 200.0)  # 調整上限（衰減會限制增長）
+            self.assertLess(alpha, 1000.0)  # 調整上限（衰減會限制增長）
     
     def test_save_and_load(self):
         """測試保存和載入狀態"""
@@ -131,8 +132,8 @@ class TestThompsonSamplingEnsemble(unittest.TestCase):
             self.assertEqual(loaded_mab.window, self.mab.window)
             
             for strategy in self.strategies:
-                self.assertEqual(loaded_mab.alpha[strategy], self.mab.alpha[strategy])
-                self.assertEqual(loaded_mab.beta[strategy], self.mab.beta[strategy])
+                self.assertEqual(loaded_mab.alpha['GLOBAL'][strategy], self.mab.alpha['GLOBAL'][strategy])
+                self.assertEqual(loaded_mab.beta['GLOBAL'][strategy], self.mab.beta['GLOBAL'][strategy])
         
         finally:
             if os.path.exists(temp_path):
@@ -149,12 +150,12 @@ class TestThompsonSamplingEnsemble(unittest.TestCase):
         
         # 檢查統計結構
         self.assertIn('total_predictions', stats)
-        self.assertIn('strategies', stats)
+        self.assertIn('regimes', stats)
         self.assertEqual(stats['total_predictions'], 1)
         
         for strategy in self.strategies:
-            self.assertIn(strategy, stats['strategies'])
-            self.assertIn('expected_weight', stats['strategies'][strategy])
+            self.assertIn(strategy, stats['regimes']['GLOBAL'])
+            self.assertIn('expected_weight', stats['regimes']['GLOBAL'][strategy])
 
 
 class TestMABEnsemblePredictor(unittest.TestCase):

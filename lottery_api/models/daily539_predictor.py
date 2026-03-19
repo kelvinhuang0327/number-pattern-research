@@ -79,18 +79,18 @@ class Daily539Predictor:
         best_combo = None
         best_score = -1
 
-        for _ in range(1000):
-            # 選擇候選號碼
-            candidates = list(range(1, 40))
-            weights = [freq.get(n, 1) + 1 for n in candidates]
-            weights = [w / sum(weights) for w in weights]
+        # 固定 seed 確保可重現性（以最新期號為 seed）
+        draw_id = history[0].get('draw', '') if history else ''
+        seed_val = int(str(draw_id)) % (2 ** 31) if str(draw_id).isdigit() else 42
+        rng = np.random.RandomState(seed_val)
 
-            combo = sorted(random.choices(candidates, weights=weights, k=5))
-            combo = list(dict.fromkeys(combo))  # 去重
+        candidates = np.arange(1, 40)
+        raw_w = np.array([freq.get(n, 1) + 1 for n in candidates], dtype=float)
+        norm_w = raw_w / raw_w.sum()
 
-            if len(combo) < 5:
-                continue
-            combo = combo[:5]
+        for i in range(1000):
+            # replace=False 確保無重複號碼
+            combo = sorted(rng.choice(candidates, size=5, replace=False, p=norm_w).tolist())
 
             # 計算約束得分
             score = 0
@@ -1327,17 +1327,15 @@ class Daily539Predictor:
     # ========== 方法15: 3注覆蓋預測器 (達成33%目標) ==========
     def triple_bet_predict(self, history: List[Dict], lottery_rules: Dict) -> Dict:
         """
-        3注覆蓋預測器 - 達成 36.42% 中獎率
+        3注覆蓋預測器
 
-        回測驗證結果 (2025年313期):
-        - 單注最佳: 15.34%
-        - 2注覆蓋: 28.12%
-        - 3注覆蓋: 36.42% ✅ 達成33%目標
-
-        最佳組合:
+        注組設計:
         - 第1注: sum_range 方法 (窗口300期) — 和值範圍分析
-        - 第2注: bayesian 方法 (窗口300期) — 貝葉斯統計分析
-        - 第3注: zone_opt 方法 (窗口200期) — 區間優化分析
+        - 第2注: bayesian (窗口300期) — 貝葉斯後驗分析
+        - 第3注: zone_opt (窗口200期) — 區間平衡優化
+
+        注: gap_pressure + zone_shift 組合已測試但未通過 permutation test
+            (見 rejected/zone_gap_3bet_539.json)
         """
         # 延遲導入避免循環依賴
         from models.unified_predictor import prediction_engine
@@ -1361,7 +1359,7 @@ class Daily539Predictor:
         except Exception as e:
             bets.append(self._generate_fallback_bet(1, 'sum_range', history, lottery_rules))
 
-        # === 第2注: bayesian (貝葉斯統計分析) ===
+        # === 第2注: bayesian (貝葉斯後驗分析) ===
         try:
             result2 = prediction_engine.bayesian_predict(history[:300], lottery_rules)
             bets.append({
@@ -1369,20 +1367,20 @@ class Daily539Predictor:
                 'numbers': [int(n) for n in sorted(result2['numbers'])],
                 'method': 'bayesian',
                 'window': 300,
-                'description': '貝葉斯統計分析'
+                'description': '貝葉斯後驗分析'
             })
         except Exception as e:
             bets.append(self._generate_fallback_bet(2, 'bayesian', history, lottery_rules))
 
-        # === 第3注: zone_opt (區間優化分析) ===
+        # === 第3注: zone_opt (區間平衡優化) ===
         try:
-            result3 = self.zone_optimized_predict(history[:200], lottery_rules)
+            result3 = prediction_engine.zone_balance_predict(history[:200], lottery_rules)
             bets.append({
                 'bet_number': 3,
                 'numbers': [int(n) for n in sorted(result3['numbers'])],
                 'method': 'zone_opt',
                 'window': 200,
-                'description': '區間優化分析'
+                'description': '區間平衡優化'
             })
         except Exception as e:
             bets.append(self._generate_fallback_bet(3, 'zone_opt', history, lottery_rules))
@@ -1635,10 +1633,10 @@ class Daily539Predictor:
             freq.update(d.get('numbers', []))
 
         selected = [n for n, _ in freq.most_common(5)]
-        while len(selected) < 5:
-            n = random.randint(1, 39)
-            if n not in selected:
-                selected.append(n)
+        if len(selected) < 5:
+            # 從低頻號碼補足，確保確定性（無需 random）
+            cold = [n for n in range(1, 40) if n not in selected]
+            selected.extend(cold[:5 - len(selected)])
 
         return {
             'numbers': sorted(selected),

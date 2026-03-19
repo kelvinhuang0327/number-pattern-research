@@ -1,0 +1,1108 @@
+{
+  "timestamp": "2026-03-15 16:22:38",
+  "total_draws": 5810,
+  "total_elapsed": 134.587575674057,
+  "phase1_inventory": {
+    "ACB_1bet": {
+      "n_bets": 1,
+      "windows": {
+        "150": {
+          "rate": 0.15333333333333332,
+          "edge": 0.03933333333333332,
+          "z": 1.515783221627026,
+          "hits": 23,
+          "total": 150,
+          "n_bets": 1,
+          "baseline": 0.114
+        },
+        "500": {
+          "rate": 0.14,
+          "edge": 0.02600000000000001,
+          "z": 1.8293173925506236,
+          "hits": 70,
+          "total": 500,
+          "n_bets": 1,
+          "baseline": 0.114
+        },
+        "1500": {
+          "rate": 0.146,
+          "edge": 0.03199999999999999,
+          "z": 3.8996562056210435,
+          "hits": 219,
+          "total": 1500,
+          "n_bets": 1,
+          "baseline": 0.114
+        }
+      },
+      "edge_1500": 0.03199999999999999,
+      "rate_1500": 0.146,
+      "z_1500": 3.8996562056210435,
+      "perm_p": 1.0,
+      "perm_signal": 0.0,
+      "stability": "STABLE",
+      "complexity": 1
+    },
+    "Markov_1bet": {
+      "n_bets": 1,
+      "windows": {
+        "150": {
+          "rate": 0.11333333333333333,
+          "edge": -0.0006666666666666765,
+          "z": -0.025691241044526254,
+          "hits": 17,
+          "total": 150,
+          "n_bets": 1,
+          "baseline": 0.114
+        },
+        "500": {
+          "rate": 0.13,
+          "edge": 0.016,
+          "z": 1.1257337800311527,
+          "hits": 65,
+          "total": 500,
+          "n_bets": 1,
+          "baseline": 0.114
+        },
+        "1500": {
+          "rate": 0.12933333333333333,
+          "edge": 0.015333333333333324,
+          "z": 1.8685852651934163,
+          "hits": 194,
+          "total": 1500,
+          "n_bets": 1,
+          "baseline": 0.114
+        }
+      },
+      "edge_1500": 0.015333333333333324,
+      "rate_1500": 0.12933333333333333,
+      "z_1500": 1.8685852651934163,
+      "perm_p": 1.0,
+      "perm_signal": 0.0,
+      "stability": "UNSTABLE",
+      "complexity": 1
+    },
+    "MidFreq_1bet": {
+      "n_bets": 1,
+      "windows": {
+        "150": {
+          "rate": 0.18,
+          "edge": 0.06599999999999999,
+          "z": 2.543432863408061,
+          "hits": 27,
+          "total": 150,
+          "n_bets": 1,
+          "baseline": 0.114
+        },
+        "500": {
+          "rate": 0.14,
+          "edge": 0.02600000000000001,
+          "z": 1.8293173925506236,
+          "hits": 70,
+          "total": 500,
+          "n_bets": 1,
+          "baseline": 0.114
+        },
+        "1500": {
+          "rate": 0.12866666666666668,
+          "edge": 0.014666666666666675,
+          "z": 1.7873424275763135,
+          "hits": 193,
+          "total": 1500,
+          "n_bets": 1,
+          "baseline": 0.114
+        }
+      },
+      "edge_1500": 0.014666666666666675,
+      "rate_1500": 0.12866666666666668,
+      "z_1500": 1.7873424275763135,
+      "perm_p": 1.0,
+      "perm_signal": 0.0,
+      "stability": "STABLE",
+      "complexity": 1
+    },
+    "Fourier_1bet": {
+      "n_bets": 1,
+      "windows": {
+        "150": {
+          "rate": 0.09333333333333334,
+          "edge": -0.020666666666666667,
+          "z": -0.7964284723803021,
+          "hits": 14,
+          "total": 150,
+          "n_bets": 1,
+          "baseline": 0.114
+        },
+        "500": {
+          "rate": 0.124,
+          "edge": 0.009999999999999995,
+          "z": 0.70358361251947,
+          "hits": 62,
+          "total": 500,
+          "n_bets": 1,
+          "baseline": 0.114
+        },
+        "1500": {
+          "rate": 0.13133333333333333,
+          "edge": 0.017333333333333326,
+          "z": 2.1123137780447316,
+          "hits": 197,
+          "total": 1500,
+          "n_bets": 1,
+          "baseline": 0.114
+        }
+      },
+      "edge_1500": 0.017333333333333326,
+      "rate_1500": 0.13133333333333333,
+      "z_1500": 2.1123137780447316,
+      "perm_p": 1.0,
+      "perm_signal": 0.0,
+      "stability": "UNSTABLE",
+      "complexity": 1
+    },
+    "MidFreq_ACB_2bet": {
+      "n_bets": 2,
+      "windows": {
+        "150": {
+          "rate": 0.3333333333333333,
+          "edge": 0.1179333333333333,
+          "z": 3.5134615245984695,
+          "hits": 50,
+          "total": 150,
+          "n_bets": 2,
+          "baseline": 0.2154
+        },
+        "500": {
+          "rate": 0.28,
+          "edge": 0.06460000000000002,
+          "z": 3.5137472505344896,
+          "hits": 140,
+          "total": 500,
+          "n_bets": 2,
+          "baseline": 0.2154
+        },
+        "1500": {
+          "rate": 0.27,
+          "edge": 0.05460000000000001,
+          "z": 5.143885239215366,
+          "hits": 405,
+          "total": 1500,
+          "n_bets": 2,
+          "baseline": 0.2154
+        }
+      },
+      "edge_1500": 0.05460000000000001,
+      "rate_1500": 0.27,
+      "z_1500": 5.143885239215366,
+      "perm_p": 1.0,
+      "perm_signal": 0.0,
+      "stability": "STABLE",
+      "complexity": 1
+    },
+    "ACB_Markov_2bet": {
+      "n_bets": 2,
+      "windows": {
+        "150": {
+          "rate": 0.24,
+          "edge": 0.024599999999999983,
+          "z": 0.7328814599077641,
+          "hits": 36,
+          "total": 150,
+          "n_bets": 2,
+          "baseline": 0.2154
+        },
+        "500": {
+          "rate": 0.254,
+          "edge": 0.038599999999999995,
+          "z": 2.0995455707528055,
+          "hits": 127,
+          "total": 500,
+          "n_bets": 2,
+          "baseline": 0.2154
+        },
+        "1500": {
+          "rate": 0.26466666666666666,
+          "edge": 0.04926666666666665,
+          "z": 4.641430026593595,
+          "hits": 397,
+          "total": 1500,
+          "n_bets": 2,
+          "baseline": 0.2154
+        }
+      },
+      "edge_1500": 0.04926666666666665,
+      "rate_1500": 0.26466666666666666,
+      "z_1500": 4.641430026593595,
+      "perm_p": 1.0,
+      "perm_signal": -5.551115123125783e-17,
+      "stability": "STABLE",
+      "complexity": 1
+    },
+    "ACB_Fourier_2bet": {
+      "n_bets": 2,
+      "windows": {
+        "150": {
+          "rate": 0.24,
+          "edge": 0.024599999999999983,
+          "z": 0.7328814599077641,
+          "hits": 36,
+          "total": 150,
+          "n_bets": 2,
+          "baseline": 0.2154
+        },
+        "500": {
+          "rate": 0.256,
+          "edge": 0.0406,
+          "z": 2.2083303153513967,
+          "hits": 128,
+          "total": 500,
+          "n_bets": 2,
+          "baseline": 0.2154
+        },
+        "1500": {
+          "rate": 0.2673333333333333,
+          "edge": 0.051933333333333304,
+          "z": 4.892657632904478,
+          "hits": 401,
+          "total": 1500,
+          "n_bets": 2,
+          "baseline": 0.2154
+        }
+      },
+      "edge_1500": 0.051933333333333304,
+      "rate_1500": 0.2673333333333333,
+      "z_1500": 4.892657632904478,
+      "perm_p": 1.0,
+      "perm_signal": 5.551115123125783e-17,
+      "stability": "STABLE",
+      "complexity": 1
+    },
+    "ACB_Markov_Fourier_3bet": {
+      "n_bets": 3,
+      "windows": {
+        "150": {
+          "rate": 0.34,
+          "edge": 0.03500000000000003,
+          "z": 0.931046457273791,
+          "hits": 51,
+          "total": 150,
+          "n_bets": 3,
+          "baseline": 0.305
+        },
+        "500": {
+          "rate": 0.354,
+          "edge": 0.04899999999999999,
+          "z": 2.3797906847592483,
+          "hits": 177,
+          "total": 500,
+          "n_bets": 3,
+          "baseline": 0.305
+        },
+        "1500": {
+          "rate": 0.372,
+          "edge": 0.067,
+          "z": 5.636092475195999,
+          "hits": 558,
+          "total": 1500,
+          "n_bets": 3,
+          "baseline": 0.305
+        }
+      },
+      "edge_1500": 0.067,
+      "rate_1500": 0.372,
+      "z_1500": 5.636092475195999,
+      "perm_p": 1.0,
+      "perm_signal": 5.551115123125783e-17,
+      "stability": "STABLE",
+      "complexity": 1
+    },
+    "RRF_3bet": {
+      "n_bets": 3,
+      "windows": {
+        "150": {
+          "rate": 0.37333333333333335,
+          "edge": 0.06833333333333336,
+          "z": 1.8177573689631148,
+          "hits": 56,
+          "total": 150,
+          "n_bets": 3,
+          "baseline": 0.305
+        },
+        "500": {
+          "rate": 0.376,
+          "edge": 0.07100000000000001,
+          "z": 3.4482681350593203,
+          "hits": 188,
+          "total": 500,
+          "n_bets": 3,
+          "baseline": 0.305
+        },
+        "1500": {
+          "rate": 0.3466666666666667,
+          "edge": 0.041666666666666685,
+          "z": 3.505032633828359,
+          "hits": 520,
+          "total": 1500,
+          "n_bets": 3,
+          "baseline": 0.305
+        }
+      },
+      "edge_1500": 0.041666666666666685,
+      "rate_1500": 0.3466666666666667,
+      "z_1500": 3.505032633828359,
+      "perm_p": 1.0,
+      "perm_signal": 0.0,
+      "stability": "STABLE",
+      "complexity": 1
+    },
+    "MicroFish_evolved_1": {
+      "n_bets": 1,
+      "windows": {
+        "150": {
+          "rate": 0.17333333333333334,
+          "edge": 0.059333333333333335,
+          "z": 2.286520452962803,
+          "hits": 26,
+          "total": 150,
+          "n_bets": 1,
+          "baseline": 0.114
+        },
+        "500": {
+          "rate": 0.176,
+          "edge": 0.061999999999999986,
+          "z": 4.362218397620715,
+          "hits": 88,
+          "total": 500,
+          "n_bets": 1,
+          "baseline": 0.114
+        },
+        "1500": {
+          "rate": 0.16133333333333333,
+          "edge": 0.047333333333333324,
+          "z": 5.768241470814462,
+          "hits": 242,
+          "total": 1500,
+          "n_bets": 1,
+          "baseline": 0.114
+        }
+      },
+      "edge_1500": 0.047333333333333324,
+      "rate_1500": 0.16133333333333333,
+      "z_1500": 5.768241470814462,
+      "perm_p": 1.0,
+      "perm_signal": 2.7755575615628914e-17,
+      "stability": "STABLE",
+      "complexity": 5,
+      "genome": {
+        "rank": 1,
+        "features": [
+          "freq_raw_150",
+          "parity_even_boost_80",
+          "markov_lag1_100",
+          "nl_sq_freq_deficit_100",
+          "nl_sqrt_freq_zscore_100"
+        ],
+        "weights": [
+          0.305635895196539,
+          0.07162214759447198,
+          0.1709089078997401,
+          0.2711519739452084,
+          0.1806810753640405
+        ],
+        "fitness": 0.16133333333333333,
+        "edge_1500": 0.047333333333333324,
+        "edge_500": 0.061999999999999986,
+        "edge_150": 0.059333333333333335,
+        "perm_p": 0.004975124378109453,
+        "signal": 0.05093,
+        "all_positive": true,
+        "status": "VALID"
+      }
+    },
+    "MicroFish_evolved_2": {
+      "n_bets": 1,
+      "windows": {
+        "150": {
+          "rate": 0.17333333333333334,
+          "edge": 0.059333333333333335,
+          "z": 2.286520452962803,
+          "hits": 26,
+          "total": 150,
+          "n_bets": 1,
+          "baseline": 0.114
+        },
+        "500": {
+          "rate": 0.174,
+          "edge": 0.059999999999999984,
+          "z": 4.221501675116821,
+          "hits": 87,
+          "total": 500,
+          "n_bets": 1,
+          "baseline": 0.114
+        },
+        "1500": {
+          "rate": 0.16133333333333333,
+          "edge": 0.047333333333333324,
+          "z": 5.768241470814462,
+          "hits": 242,
+          "total": 1500,
+          "n_bets": 1,
+          "baseline": 0.114
+        }
+      },
+      "edge_1500": 0.047333333333333324,
+      "rate_1500": 0.16133333333333333,
+      "z_1500": 5.768241470814462,
+      "perm_p": 1.0,
+      "perm_signal": 2.7755575615628914e-17,
+      "stability": "STABLE",
+      "complexity": 5,
+      "genome": {
+        "rank": 2,
+        "features": [
+          "freq_raw_150",
+          "markov_lag1_100",
+          "nl_sq_freq_deficit_100",
+          "nl_sqrt_freq_zscore_100",
+          "nl_log_markov_lag1_100"
+        ],
+        "weights": [
+          0.2438372360268146,
+          0.08898126487089597,
+          0.20676198008459193,
+          0.0956819535012833,
+          0.3647375655164141
+        ],
+        "fitness": 0.16133333333333333,
+        "edge_1500": 0.047333333333333324,
+        "edge_500": 0.059999999999999984,
+        "edge_150": 0.059333333333333335,
+        "perm_p": 0.004975124378109453,
+        "signal": 0.05057666666666666,
+        "all_positive": true,
+        "status": "VALID"
+      }
+    },
+    "MicroFish_evolved_3": {
+      "n_bets": 1,
+      "windows": {
+        "150": {
+          "rate": 0.17333333333333334,
+          "edge": 0.059333333333333335,
+          "z": 2.286520452962803,
+          "hits": 26,
+          "total": 150,
+          "n_bets": 1,
+          "baseline": 0.114
+        },
+        "500": {
+          "rate": 0.176,
+          "edge": 0.061999999999999986,
+          "z": 4.362218397620715,
+          "hits": 88,
+          "total": 500,
+          "n_bets": 1,
+          "baseline": 0.114
+        },
+        "1500": {
+          "rate": 0.16066666666666668,
+          "edge": 0.046666666666666676,
+          "z": 5.6869986331973585,
+          "hits": 241,
+          "total": 1500,
+          "n_bets": 1,
+          "baseline": 0.114
+        }
+      },
+      "edge_1500": 0.046666666666666676,
+      "rate_1500": 0.16066666666666668,
+      "z_1500": 5.6869986331973585,
+      "perm_p": 1.0,
+      "perm_signal": 0.0,
+      "stability": "STABLE",
+      "complexity": 6,
+      "genome": {
+        "rank": 3,
+        "features": [
+          "freq_raw_150",
+          "parity_even_boost_80",
+          "markov_lag1_100",
+          "nl_sq_freq_deficit_100",
+          "nl_sqrt_freq_zscore_100",
+          "nl_sq_markov_lag1_100"
+        ],
+        "weights": [
+          0.27554388815825376,
+          0.07477388467617052,
+          0.12089070797896088,
+          0.23822174070471464,
+          0.12674838231479482,
+          0.1638213961671053
+        ],
+        "fitness": 0.16066666666666668,
+        "edge_1500": 0.046666666666666676,
+        "edge_500": 0.061999999999999986,
+        "edge_150": 0.059333333333333335,
+        "perm_p": 0.004975124378109453,
+        "signal": 0.05020666666666669,
+        "all_positive": true,
+        "status": "VALID"
+      }
+    },
+    "MicroFish_evolved_2bet": {
+      "n_bets": 2,
+      "windows": {
+        "150": {
+          "rate": 0.3,
+          "edge": 0.08459999999999998,
+          "z": 2.5203972157803607,
+          "hits": 45,
+          "total": 150,
+          "n_bets": 2,
+          "baseline": 0.2154
+        },
+        "500": {
+          "rate": 0.276,
+          "edge": 0.060600000000000015,
+          "z": 3.2961777613373076,
+          "hits": 138,
+          "total": 500,
+          "n_bets": 2,
+          "baseline": 0.2154
+        },
+        "1500": {
+          "rate": 0.258,
+          "edge": 0.0426,
+          "z": 4.013361010816384,
+          "hits": 387,
+          "total": 1500,
+          "n_bets": 2,
+          "baseline": 0.2154
+        }
+      },
+      "edge_1500": 0.0426,
+      "rate_1500": 0.258,
+      "z_1500": 4.013361010816384,
+      "perm_p": 1.0,
+      "perm_signal": 0.0,
+      "stability": "STABLE",
+      "complexity": 5
+    }
+  },
+  "phase2_meta_selector": {
+    "oracle_rate": 0.49066666666666664,
+    "oracle_edge_pct": 37.666666666666664,
+    "selectors": {
+      "Meta_ACBconf_p25": {
+        "rate": 0.15266666666666667,
+        "edge": 0.03866666666666667,
+        "edge_pct": 3.8666666666666667,
+        "strategy_a": "ACB_1bet",
+        "strategy_b": "MicroFish_evolved_1",
+        "threshold": 2.285899817943573
+      },
+      "Meta_ACBconf_p50": {
+        "rate": 0.16,
+        "edge": 0.046,
+        "edge_pct": 4.6,
+        "strategy_a": "ACB_1bet",
+        "strategy_b": "MicroFish_evolved_1",
+        "threshold": 2.4973206520080566
+      },
+      "Meta_ACBconf_p75": {
+        "rate": 0.16266666666666665,
+        "edge": 0.04866666666666665,
+        "edge_pct": 4.866666666666665,
+        "strategy_a": "ACB_1bet",
+        "strategy_b": "MicroFish_evolved_1",
+        "threshold": 2.758965492248535,
+        "perm_p": 1.0,
+        "mcnemar_vs_best": {
+          "both_hit": 233,
+          "a_only": 11,
+          "b_only": 9,
+          "both_miss": 1247,
+          "chi2": 0.2,
+          "p": 0.6547208460185772,
+          "winner": "A"
+        }
+      },
+      "Meta_agreement_0.1": {
+        "rate": 0.13933333333333334,
+        "edge": 0.025333333333333333,
+        "edge_pct": 2.533333333333333
+      },
+      "Meta_agreement_0.2": {
+        "rate": 0.146,
+        "edge": 0.03199999999999999,
+        "edge_pct": 3.199999999999999
+      },
+      "Meta_agreement_0.3": {
+        "rate": 0.146,
+        "edge": 0.03199999999999999,
+        "edge_pct": 3.199999999999999
+      },
+      "Meta_momentum_20": {
+        "rate": 0.14,
+        "edge": 0.02600000000000001,
+        "edge_pct": 2.600000000000001
+      },
+      "Meta_momentum_30": {
+        "rate": 0.14533333333333334,
+        "edge": 0.03133333333333334,
+        "edge_pct": 3.1333333333333337
+      },
+      "Meta_momentum_50": {
+        "rate": 0.15333333333333332,
+        "edge": 0.03933333333333332,
+        "edge_pct": 3.933333333333332
+      },
+      "Meta_regime_z-0.5": {
+        "rate": 0.156,
+        "edge": 0.041999999999999996,
+        "edge_pct": 4.199999999999999
+      },
+      "Meta_regime_z0.0": {
+        "rate": 0.15333333333333332,
+        "edge": 0.03933333333333332,
+        "edge_pct": 3.933333333333332
+      },
+      "Meta_regime_z0.5": {
+        "rate": 0.14866666666666667,
+        "edge": 0.034666666666666665,
+        "edge_pct": 3.4666666666666663
+      }
+    },
+    "best_selector": "Meta_ACBconf_p75",
+    "indicator_names": [
+      "acb_confidence",
+      "markov_confidence",
+      "strategy_agreement",
+      "recent_hit_rate",
+      "entropy_signal",
+      "regime_indicator"
+    ]
+  },
+  "phase3_allocation": {
+    "best_1bet": {
+      "policy": "single best strategy",
+      "strategy": "MicroFish_evolved_1",
+      "n_bets": 1,
+      "edge_pct": 4.7333333333333325,
+      "cost": 50
+    },
+    "best_2bet": {
+      "policy": "single best 2-bet strategy",
+      "strategy": "MidFreq_ACB_2bet",
+      "n_bets": 2,
+      "edge_pct": 5.460000000000001,
+      "cost": 100
+    },
+    "best_3bet": {
+      "policy": "single best 3-bet strategy",
+      "strategy": "ACB_Markov_Fourier_3bet",
+      "n_bets": 3,
+      "edge_pct": 6.7,
+      "cost": 150
+    },
+    "MicroFish_evolved_1+MidFreq_1bet_cross2bet": {
+      "rate": 0.284,
+      "edge": 0.06859999999999997,
+      "edge_pct": 6.859999999999997
+    },
+    "MicroFish_evolved_2+MidFreq_1bet_cross2bet": {
+      "rate": 0.284,
+      "edge": 0.06859999999999997,
+      "edge_pct": 6.859999999999997
+    },
+    "MicroFish_evolved_3+MidFreq_1bet_cross2bet": {
+      "rate": 0.2833333333333333,
+      "edge": 0.06793333333333332,
+      "edge_pct": 6.793333333333332
+    },
+    "Markov_1bet+MicroFish_evolved_2_cross2bet": {
+      "rate": 0.274,
+      "edge": 0.05860000000000001,
+      "edge_pct": 5.860000000000001
+    },
+    "Fourier_1bet+MicroFish_evolved_1_cross2bet": {
+      "rate": 0.2733333333333333,
+      "edge": 0.05793333333333331,
+      "edge_pct": 5.793333333333331
+    },
+    "Dynamic_agreement_p50": {
+      "rate": 0.15266666666666667,
+      "edge": 0.03866666666666667,
+      "edge_pct": 3.8666666666666667,
+      "avg_bets_per_draw": 1.1273333333333333,
+      "total_cost": 84550,
+      "hits": 229,
+      "total_draws": 1500
+    },
+    "Dynamic_agreement_p75": {
+      "rate": 0.16133333333333333,
+      "edge": 0.047333333333333324,
+      "edge_pct": 4.7333333333333325,
+      "avg_bets_per_draw": 1.0013333333333334,
+      "total_cost": 75100,
+      "hits": 242,
+      "total_draws": 1500
+    },
+    "Dynamic_acb_spread_p50": {
+      "rate": 0.21733333333333332,
+      "edge": 0.0019333333333333147,
+      "edge_pct": 0.19333333333333147,
+      "avg_bets_per_draw": 1.5,
+      "total_cost": 112500,
+      "hits": 326,
+      "total_draws": 1500
+    },
+    "Dynamic_acb_spread_p75": {
+      "rate": 0.27,
+      "edge": 0.05460000000000001,
+      "edge_pct": 5.460000000000001,
+      "avg_bets_per_draw": 2.0,
+      "total_cost": 150000,
+      "hits": 405,
+      "total_draws": 1500
+    },
+    "marginal_1bet": {
+      "n_bets": 1,
+      "edge_pct": 4.7333333333333325,
+      "cost_NTD": 50,
+      "edge_per_NTD": 0.09466666666666665
+    },
+    "marginal_2bet": {
+      "n_bets": 2,
+      "edge_pct": 5.460000000000001,
+      "cost_NTD": 100,
+      "edge_per_NTD": 0.05460000000000001
+    },
+    "marginal_3bet": {
+      "n_bets": 3,
+      "edge_pct": 6.7,
+      "cost_NTD": 150,
+      "edge_per_NTD": 0.04466666666666667
+    }
+  },
+  "phase4_skip_model": {
+    "always_bet": {
+      "coverage": 1.0,
+      "conditional_rate": 0.16133333333333333,
+      "unconditional_rate": 0.16133333333333333,
+      "edge_pct": 4.7333333333333325,
+      "draws_bet": 1500,
+      "draws_skipped": 0
+    },
+    "Skip_low_consensus_2": {
+      "coverage": 0.208,
+      "conditional_rate": 0.7724358974358975,
+      "unconditional_rate": 0.16066666666666668,
+      "edge_pct": 65.84358974358975,
+      "draws_bet": 312,
+      "draws_skipped": 1188,
+      "min_agree": 2
+    },
+    "Skip_low_consensus_3": {
+      "coverage": 0.162,
+      "conditional_rate": 0.9835390946502057,
+      "unconditional_rate": 0.15933333333333333,
+      "edge_pct": 86.95390946502057,
+      "draws_bet": 243,
+      "draws_skipped": 1257,
+      "min_agree": 3
+    },
+    "Skip_low_consensus_4": {
+      "coverage": 0.12733333333333333,
+      "conditional_rate": 1.0,
+      "unconditional_rate": 0.12733333333333333,
+      "edge_pct": 88.6,
+      "draws_bet": 191,
+      "draws_skipped": 1309,
+      "min_agree": 4
+    },
+    "Skip_coldstreak_lb10_r0.05": {
+      "coverage": 0.834,
+      "conditional_rate": 0.16466826538768986,
+      "edge_pct": 5.066826538768986,
+      "draws_bet": 1251,
+      "draws_skipped": 249
+    },
+    "Skip_coldstreak_lb10_r0.08": {
+      "coverage": 0.834,
+      "conditional_rate": 0.16466826538768986,
+      "edge_pct": 5.066826538768986,
+      "draws_bet": 1251,
+      "draws_skipped": 249
+    },
+    "Skip_coldstreak_lb10_r0.1": {
+      "coverage": 0.834,
+      "conditional_rate": 0.16466826538768986,
+      "edge_pct": 5.066826538768986,
+      "draws_bet": 1251,
+      "draws_skipped": 249
+    },
+    "Skip_coldstreak_lb20_r0.05": {
+      "coverage": 0.9713333333333334,
+      "conditional_rate": 0.16129032258064516,
+      "edge_pct": 4.729032258064516,
+      "draws_bet": 1457,
+      "draws_skipped": 43
+    },
+    "Skip_coldstreak_lb20_r0.08": {
+      "coverage": 0.8806666666666667,
+      "conditional_rate": 0.1566994700984103,
+      "edge_pct": 4.269947009841029,
+      "draws_bet": 1321,
+      "draws_skipped": 179
+    },
+    "Skip_coldstreak_lb20_r0.1": {
+      "coverage": 0.8806666666666667,
+      "conditional_rate": 0.1566994700984103,
+      "edge_pct": 4.269947009841029,
+      "draws_bet": 1321,
+      "draws_skipped": 179
+    },
+    "Skip_coldstreak_lb30_r0.05": {
+      "coverage": 0.9806666666666667,
+      "conditional_rate": 0.16043507817811012,
+      "edge_pct": 4.643507817811011,
+      "draws_bet": 1471,
+      "draws_skipped": 29
+    },
+    "Skip_coldstreak_lb30_r0.08": {
+      "coverage": 0.896,
+      "conditional_rate": 0.1644345238095238,
+      "edge_pct": 5.04345238095238,
+      "draws_bet": 1344,
+      "draws_skipped": 156
+    },
+    "Skip_coldstreak_lb30_r0.1": {
+      "coverage": 0.896,
+      "conditional_rate": 0.1644345238095238,
+      "edge_pct": 5.04345238095238,
+      "draws_bet": 1344,
+      "draws_skipped": 156
+    },
+    "Skip_low_entropy_p25": {
+      "coverage": 0.75,
+      "conditional_rate": 0.16977777777777778,
+      "edge_pct": 5.5777777777777775,
+      "draws_bet": 1125,
+      "draws_skipped": 375
+    },
+    "Skip_low_entropy_p50": {
+      "coverage": 0.5,
+      "conditional_rate": 0.18,
+      "edge_pct": 6.599999999999999,
+      "draws_bet": 750,
+      "draws_skipped": 750
+    },
+    "oracle_analysis": {
+      "all_miss_draws": 764,
+      "all_miss_pct": 50.93333333333333,
+      "some_hit_draws": 736,
+      "note": "764 draws (50.9%) are missed by ALL strategies"
+    }
+  },
+  "phase5_error_decomposition": {
+    "error_taxonomy": {
+      "signal_miss": 0,
+      "ranking_error": 0,
+      "coverage_error": 494,
+      "allocation_error": 301,
+      "noise_dominated": 463
+    },
+    "total_misses": 1258,
+    "total_draws": 1500,
+    "coverage_strategy_details": {
+      "Markov_1bet": 168,
+      "MidFreq_1bet": 184,
+      "ACB_1bet": 44,
+      "Fourier_1bet": 168,
+      "MicroFish_evolved_2": 4,
+      "MicroFish_evolved_3": 1
+    },
+    "recoverable": 795,
+    "irreducible": 463,
+    "potential_rate": 0.6913333333333334,
+    "potential_edge_pct": 57.733333333333334
+  },
+  "phase6_payout_aware": {
+    "ACB_1bet": {
+      "n_bets": 1,
+      "match_dist": {
+        "0": 681,
+        "1": 600,
+        "2": 204,
+        "3": 15,
+        "4": 0,
+        "5": 0
+      },
+      "total_payout": 91200,
+      "total_cost": 75000,
+      "ev": 16200,
+      "roi_pct": 21.599999999999998,
+      "payout_per_draw": 60.8,
+      "cost_per_draw": 50
+    },
+    "Markov_1bet": {
+      "n_bets": 1,
+      "match_dist": {
+        "0": 733,
+        "1": 573,
+        "2": 175,
+        "3": 18,
+        "4": 1,
+        "5": 0
+      },
+      "total_payout": 108500,
+      "total_cost": 75000,
+      "ev": 33500,
+      "roi_pct": 44.66666666666668,
+      "payout_per_draw": 72.33333333333333,
+      "cost_per_draw": 50
+    },
+    "MidFreq_1bet": {
+      "n_bets": 1,
+      "match_dist": {
+        "0": 720,
+        "1": 587,
+        "2": 174,
+        "3": 19,
+        "4": 0,
+        "5": 0
+      },
+      "total_payout": 90200,
+      "total_cost": 75000,
+      "ev": 15200,
+      "roi_pct": 20.266666666666676,
+      "payout_per_draw": 60.13333333333333,
+      "cost_per_draw": 50
+    },
+    "Fourier_1bet": {
+      "n_bets": 1,
+      "match_dist": {
+        "0": 703,
+        "1": 600,
+        "2": 183,
+        "3": 14,
+        "4": 0,
+        "5": 0
+      },
+      "total_payout": 82900,
+      "total_cost": 75000,
+      "ev": 7900,
+      "roi_pct": 10.533333333333328,
+      "payout_per_draw": 55.266666666666666,
+      "cost_per_draw": 50
+    },
+    "MidFreq_ACB_2bet": {
+      "n_bets": 2,
+      "match_dist": {
+        "0": 259,
+        "1": 836,
+        "2": 371,
+        "3": 34,
+        "4": 0,
+        "5": 0
+      },
+      "total_payout": 179300,
+      "total_cost": 150000,
+      "ev": 29300,
+      "roi_pct": 19.533333333333335,
+      "payout_per_draw": 119.53333333333333,
+      "cost_per_draw": 100
+    },
+    "ACB_Markov_2bet": {
+      "n_bets": 2,
+      "match_dist": {
+        "0": 297,
+        "1": 806,
+        "2": 365,
+        "3": 30,
+        "4": 2,
+        "5": 0
+      },
+      "total_payout": 209500,
+      "total_cost": 150000,
+      "ev": 59500,
+      "roi_pct": 39.66666666666667,
+      "payout_per_draw": 139.66666666666666,
+      "cost_per_draw": 100
+    },
+    "ACB_Fourier_2bet": {
+      "n_bets": 2,
+      "match_dist": {
+        "0": 286,
+        "1": 813,
+        "2": 373,
+        "3": 28,
+        "4": 0,
+        "5": 0
+      },
+      "total_payout": 167900,
+      "total_cost": 150000,
+      "ev": 17900,
+      "roi_pct": 11.93333333333333,
+      "payout_per_draw": 111.93333333333334,
+      "cost_per_draw": 100
+    },
+    "ACB_Markov_Fourier_3bet": {
+      "n_bets": 3,
+      "match_dist": {
+        "0": 98,
+        "1": 844,
+        "2": 507,
+        "3": 49,
+        "4": 2,
+        "5": 0
+      },
+      "total_payout": 290100,
+      "total_cost": 225000,
+      "ev": 65100,
+      "roi_pct": 28.933333333333344,
+      "payout_per_draw": 193.4,
+      "cost_per_draw": 150
+    },
+    "RRF_3bet": {
+      "n_bets": 3,
+      "match_dist": {
+        "0": 96,
+        "1": 884,
+        "2": 471,
+        "3": 49,
+        "4": 0,
+        "5": 0
+      },
+      "total_payout": 239300,
+      "total_cost": 225000,
+      "ev": 14300,
+      "roi_pct": 6.355555555555559,
+      "payout_per_draw": 159.53333333333333,
+      "cost_per_draw": 150
+    }
+  },
+  "phase7_ceiling": {
+    "signal_ceiling": 5.1,
+    "current_best_1bet": 4.7333333333333325,
+    "utilization_pct": 92.81045751633987,
+    "oracle_meta_edge": 37.666666666666664,
+    "best_meta_edge": 4.866666666666665,
+    "remaining_gap": 0.36666666666666714,
+    "verdict": "NEAR_CEILING",
+    "edge_sources": {
+      "meta_selection": 32.8,
+      "skip_model": 83.86666666666666,
+      "allocation": 53.0,
+      "multi_bet_2": 5.460000000000001,
+      "multi_bet_3": 6.7
+    },
+    "ceilings": {
+      "1. Signal ceiling (feature-level)": 5.1,
+      "2. Meta-selector ceiling (oracle)": 37.666666666666664,
+      "3. Skip-model ceiling": 88.6,
+      "4. Error-recovery ceiling": 57.733333333333334,
+      "5. Current best (actual)": 4.7333333333333325
+    }
+  }
+}

@@ -211,9 +211,9 @@ before being trusted.
 
 ---
 
-## STEP 8: Method Permanent Elimination
+## STEP 8: Method Suspension (L55: No Permanent Elimination)
 
-### 10 Methods Permanently Eliminated
+### 10 Methods Suspended (with restart conditions in rejected/ archive)
 
 | Method | Reason | Evidence |
 |--------|--------|----------|

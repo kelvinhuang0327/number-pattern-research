@@ -1,0 +1,932 @@
+{
+  "BIG_LOTTO": {
+    "config": {
+      "max_num": 49,
+      "pick": 6,
+      "boundary_low": 8,
+      "boundary_high": 44,
+      "cost": 50,
+      "prizes": {
+        "3": 400,
+        "4": 5000,
+        "5": 200000,
+        "6": 25000000
+      },
+      "match_threshold": 3
+    },
+    "n_draws": 2117,
+    "signal_order": [
+      "fourier",
+      "acb",
+      "markov",
+      "midfreq"
+    ],
+    "phase2": {
+      "acb": {
+        "edge_150p": -0.01864,
+        "rate_150p": 0.0,
+        "edge_500p": 0.00536,
+        "rate_500p": 0.024,
+        "edge_1500p": 0.00403,
+        "rate_1500p": 0.02267,
+        "full_rate": 0.02111,
+        "full_edge": 0.00247,
+        "n_hits": 38,
+        "n_oos": 1800,
+        "z_score": 0.776,
+        "three_window_pass": false,
+        "perm": {
+          "real_edge": 0.00247,
+          "real_rate": 0.02111,
+          "p_emp": 0.07,
+          "cohens_d": 1.354,
+          "verdict": "MARGINAL",
+          "n_perm": 99,
+          "shuffle_mean": -0.00143,
+          "shuffle_std": 0.00288
+        }
+      },
+      "midfreq": {
+        "edge_150p": 0.00803,
+        "rate_150p": 0.02667,
+        "edge_500p": 0.00736,
+        "rate_500p": 0.026,
+        "edge_1500p": -0.00064,
+        "rate_1500p": 0.018,
+        "full_rate": 0.01944,
+        "full_edge": 0.00081,
+        "n_hits": 35,
+        "n_oos": 1800,
+        "z_score": 0.253,
+        "three_window_pass": false,
+        "perm": {
+          "real_edge": 0.00081,
+          "real_rate": 0.01944,
+          "p_emp": 0.4,
+          "cohens_d": 0.295,
+          "verdict": "NO_SIGNAL",
+          "n_perm": 99,
+          "shuffle_mean": -0.00018,
+          "shuffle_std": 0.00332
+        }
+      },
+      "markov": {
+        "edge_150p": 0.00803,
+        "rate_150p": 0.02667,
+        "edge_500p": 0.00536,
+        "rate_500p": 0.024,
+        "edge_1500p": 0.00136,
+        "rate_1500p": 0.02,
+        "full_rate": 0.02056,
+        "full_edge": 0.00192,
+        "n_hits": 37,
+        "n_oos": 1800,
+        "z_score": 0.602,
+        "three_window_pass": true,
+        "perm": {
+          "real_edge": 0.00192,
+          "real_rate": 0.02056,
+          "p_emp": 0.42,
+          "cohens_d": 0.32,
+          "verdict": "NO_SIGNAL",
+          "n_perm": 99,
+          "shuffle_mean": 0.0008,
+          "shuffle_std": 0.00351
+        }
+      },
+      "fourier": {
+        "edge_150p": 0.02136,
+        "rate_150p": 0.04,
+        "edge_500p": 0.00536,
+        "rate_500p": 0.024,
+        "edge_1500p": 0.00536,
+        "rate_1500p": 0.024,
+        "full_rate": 0.02278,
+        "full_edge": 0.00414,
+        "n_hits": 41,
+        "n_oos": 1800,
+        "z_score": 1.299,
+        "three_window_pass": true,
+        "perm": {
+          "real_edge": 0.00414,
+          "real_rate": 0.02278,
+          "p_emp": 0.14,
+          "cohens_d": 1.193,
+          "verdict": "NO_SIGNAL",
+          "n_perm": 99,
+          "shuffle_mean": 0.00015,
+          "shuffle_std": 0.00335
+        }
+      }
+    },
+    "phase3": {
+      "1": {
+        "n_bets": 1,
+        "signals": [
+          "fourier"
+        ],
+        "baseline": 0.01864,
+        "rate": 0.02278,
+        "edge": 0.00414,
+        "z_score": 1.299,
+        "n_hits": 41,
+        "n_oos": 1800,
+        "three_window_pass": true,
+        "marginal_edge": 0.00414,
+        "edge_150p": 0.02136,
+        "rate_150p": 0.04,
+        "edge_500p": 0.00536,
+        "rate_500p": 0.024,
+        "edge_1500p": 0.00536,
+        "rate_1500p": 0.024
+      },
+      "2": {
+        "n_bets": 2,
+        "signals": [
+          "fourier",
+          "acb"
+        ],
+        "baseline": 0.03693,
+        "rate": 0.04389,
+        "edge": 0.00696,
+        "z_score": 1.566,
+        "n_hits": 79,
+        "n_oos": 1800,
+        "three_window_pass": true,
+        "marginal_edge": 0.00282,
+        "edge_150p": 0.00307,
+        "rate_150p": 0.04,
+        "edge_500p": 0.00507,
+        "rate_500p": 0.042,
+        "edge_1500p": 0.00907,
+        "rate_1500p": 0.046
+      },
+      "3": {
+        "n_bets": 3,
+        "signals": [
+          "fourier",
+          "acb",
+          "markov"
+        ],
+        "baseline": 0.05488,
+        "rate": 0.06556,
+        "edge": 0.01068,
+        "z_score": 1.989,
+        "n_hits": 118,
+        "n_oos": 1800,
+        "three_window_pass": true,
+        "marginal_edge": 0.00372,
+        "edge_150p": 0.00512,
+        "rate_150p": 0.06,
+        "edge_500p": 0.00912,
+        "rate_500p": 0.064,
+        "edge_1500p": 0.01312,
+        "rate_1500p": 0.068
+      },
+      "4": {
+        "n_bets": 4,
+        "signals": [
+          "fourier",
+          "acb",
+          "markov",
+          "midfreq"
+        ],
+        "baseline": 0.07249,
+        "rate": 0.08111,
+        "edge": 0.00862,
+        "z_score": 1.41,
+        "n_hits": 146,
+        "n_oos": 1800,
+        "three_window_pass": false,
+        "marginal_edge": -0.00206,
+        "edge_150p": -0.00583,
+        "rate_150p": 0.06667,
+        "edge_500p": 0.00551,
+        "rate_500p": 0.078,
+        "edge_1500p": 0.01217,
+        "rate_1500p": 0.08467
+      }
+    },
+    "phase4": {
+      "1": {
+        "signal_weights": [
+          0.1787637550544977,
+          0.15222545273525462,
+          0.19964337335451876,
+          0.46936741885572886
+        ],
+        "fusion_type": "voting",
+        "nonlinear": "log",
+        "gate_signal": 3,
+        "gate_threshold": 0.39312779546465454,
+        "n_bets": 1,
+        "orthogonal": true,
+        "diversity_bonus": 0.22038632758054846,
+        "fitness": 0.028029121664644364,
+        "full_edge": 0.008029121664644364
+      },
+      "2": {
+        "signal_weights": [
+          0.33047583568732963,
+          0.13389713188664407,
+          0.2511732749373715,
+          0.2844537574886548
+        ],
+        "fusion_type": "voting",
+        "nonlinear": "square",
+        "gate_signal": 3,
+        "gate_threshold": 0.718600466562746,
+        "n_bets": 2,
+        "orthogonal": true,
+        "diversity_bonus": 0.0787554719161266,
+        "fitness": 0.049738934746324515,
+        "full_edge": 0.0025167125241022867
+      },
+      "3": {
+        "signal_weights": [
+          0.21646191011592297,
+          0.17050031814532132,
+          0.27411670186608306,
+          0.33892106987267273
+        ],
+        "fusion_type": "voting",
+        "nonlinear": "sigmoid",
+        "gate_signal": 3,
+        "gate_threshold": 0.669158266062714,
+        "n_bets": 3,
+        "orthogonal": true,
+        "diversity_bonus": 0.23952461981507175,
+        "fitness": 0.06512296534312345,
+        "full_edge": 0.0012340764542345672
+      }
+    },
+    "phase5": {
+      "pool_expansion": {
+        "acb_pool6": {
+          "rate": 0.02111,
+          "edge": 0.00247
+        },
+        "midfreq_pool6": {
+          "rate": 0.01944,
+          "edge": 0.00081
+        },
+        "markov_pool6": {
+          "rate": 0.02056,
+          "edge": 0.00192
+        },
+        "fourier_pool6": {
+          "rate": 0.02278,
+          "edge": 0.00414
+        },
+        "acb_pool8": {
+          "rate": 0.04556,
+          "edge": 0.02692
+        },
+        "midfreq_pool8": {
+          "rate": 0.04222,
+          "edge": 0.02358
+        },
+        "markov_pool8": {
+          "rate": 0.05,
+          "edge": 0.03136
+        },
+        "fourier_pool8": {
+          "rate": 0.05556,
+          "edge": 0.03692
+        },
+        "acb_pool10": {
+          "rate": 0.02111,
+          "edge": 0.00247
+        },
+        "midfreq_pool10": {
+          "rate": 0.01944,
+          "edge": 0.00081
+        },
+        "markov_pool10": {
+          "rate": 0.02056,
+          "edge": 0.00192
+        },
+        "fourier_pool10": {
+          "rate": 0.02278,
+          "edge": 0.00414
+        },
+        "acb_pool12": {
+          "rate": 0.02111,
+          "edge": 0.00247
+        },
+        "midfreq_pool12": {
+          "rate": 0.01944,
+          "edge": 0.00081
+        },
+        "markov_pool12": {
+          "rate": 0.02056,
+          "edge": 0.00192
+        },
+        "fourier_pool12": {
+          "rate": 0.02278,
+          "edge": 0.00414
+        }
+      },
+      "efficiency_frontier": {
+        "1": {
+          "n_bets": 1,
+          "baseline": 0.01864,
+          "rate": 0.02278,
+          "edge": 0.00414,
+          "marginal_edge": 0.00414,
+          "cost": 50,
+          "efficiency": 0.828
+        },
+        "2": {
+          "n_bets": 2,
+          "baseline": 0.03693,
+          "rate": 0.04389,
+          "edge": 0.00696,
+          "marginal_edge": 0.00282,
+          "cost": 100,
+          "efficiency": 0.696
+        },
+        "3": {
+          "n_bets": 3,
+          "baseline": 0.05488,
+          "rate": 0.06556,
+          "edge": 0.01068,
+          "marginal_edge": 0.00372,
+          "cost": 150,
+          "efficiency": 0.712
+        },
+        "4": {
+          "n_bets": 4,
+          "baseline": 0.07249,
+          "rate": 0.08111,
+          "edge": 0.00862,
+          "marginal_edge": -0.00206,
+          "cost": 200,
+          "efficiency": 0.431
+        },
+        "5": {
+          "n_bets": 5,
+          "baseline": 0.08978,
+          "rate": 0.08111,
+          "edge": -0.00867,
+          "marginal_edge": -0.01729,
+          "cost": 250,
+          "efficiency": -0.347
+        }
+      }
+    },
+    "phase6": {
+      "fourier_full_perm": {
+        "real_edge": 0.00414,
+        "real_rate": 0.02278,
+        "p_emp": 0.1393,
+        "cohens_d": 1.176,
+        "verdict": "NO_SIGNAL",
+        "n_perm": 200,
+        "shuffle_mean": 0.00012,
+        "shuffle_std": 0.00342
+      },
+      "acb_full_perm": {
+        "real_edge": 0.00247,
+        "real_rate": 0.02111,
+        "p_emp": 0.0846,
+        "cohens_d": 1.301,
+        "verdict": "MARGINAL",
+        "n_perm": 200,
+        "shuffle_mean": -0.00119,
+        "shuffle_std": 0.00281
+      },
+      "markov_full_perm": {
+        "real_edge": 0.00192,
+        "real_rate": 0.02056,
+        "p_emp": 0.3881,
+        "cohens_d": 0.356,
+        "verdict": "NO_SIGNAL",
+        "n_perm": 200,
+        "shuffle_mean": 0.00067,
+        "shuffle_std": 0.0035
+      },
+      "mcnemar_top2": {
+        "net": 3,
+        "chi2": 0.053,
+        "p_value": 0.8174,
+        "a_only": 39,
+        "b_only": 36,
+        "both": 2,
+        "neither": 1723
+      },
+      "2bet_perm": {
+        "real_edge": 0.00696,
+        "p_emp": 0.0597,
+        "verdict": "MARGINAL",
+        "n_perm": 200
+      },
+      "3bet_perm": {
+        "real_edge": 0.01068,
+        "p_emp": 0.0547,
+        "verdict": "MARGINAL",
+        "n_perm": 200
+      }
+    },
+    "phase7": {
+      "ev_base": 17.38,
+      "roi_base": -65.24,
+      "ev_with_edge": 21.24,
+      "roi_with_edge": -57.52,
+      "match_probabilities": {
+        "M0": 0.435965,
+        "M1": 0.413019,
+        "M2": 0.132378,
+        "M3": 0.01765,
+        "M4": 0.000969,
+        "M5": 1.8e-05,
+        "M6": 0.0
+      },
+      "monte_carlo": {
+        "5000": {
+          "ruin_rate": 99.96,
+          "median_final": 50.0,
+          "p5_final": 0.0,
+          "median_max_drawdown": 99.0
+        },
+        "10000": {
+          "ruin_rate": 99.9,
+          "median_final": 50.0,
+          "p5_final": 0.0,
+          "median_max_drawdown": 99.5
+        },
+        "50000": {
+          "ruin_rate": 97.55,
+          "median_final": 50.0,
+          "p5_final": 0.0,
+          "median_max_drawdown": 99.9
+        }
+      }
+    }
+  },
+  "POWER_LOTTO": {
+    "config": {
+      "max_num": 38,
+      "pick": 6,
+      "boundary_low": 6,
+      "boundary_high": 33,
+      "cost": 100,
+      "prizes": {
+        "3": 400,
+        "4": 1000,
+        "5": 20000,
+        "6": 100000000
+      },
+      "match_threshold": 3
+    },
+    "n_draws": 1893,
+    "signal_order": [
+      "midfreq",
+      "fourier",
+      "markov",
+      "acb"
+    ],
+    "phase2": {
+      "acb": {
+        "edge_150p": -0.00536,
+        "rate_150p": 0.03333,
+        "edge_500p": -0.0047,
+        "rate_500p": 0.034,
+        "edge_1500p": -0.00403,
+        "rate_1500p": 0.03467,
+        "full_rate": 0.03485,
+        "full_edge": -0.00385,
+        "n_hits": 59,
+        "n_oos": 1693,
+        "z_score": -0.821,
+        "three_window_pass": false,
+        "perm": {
+          "real_edge": -0.00385,
+          "real_rate": 0.03485,
+          "p_emp": 0.68,
+          "cohens_d": -0.45,
+          "verdict": "NO_SIGNAL",
+          "n_perm": 99,
+          "shuffle_mean": -0.00198,
+          "shuffle_std": 0.00415
+        }
+      },
+      "midfreq": {
+        "edge_150p": -0.00536,
+        "rate_150p": 0.03333,
+        "edge_500p": 0.0213,
+        "rate_500p": 0.06,
+        "edge_1500p": 0.00997,
+        "rate_1500p": 0.04867,
+        "full_rate": 0.05139,
+        "full_edge": 0.01269,
+        "n_hits": 87,
+        "n_oos": 1693,
+        "z_score": 2.707,
+        "three_window_pass": false,
+        "perm": {
+          "real_edge": 0.01269,
+          "real_rate": 0.05139,
+          "p_emp": 0.02,
+          "cohens_d": 2.57,
+          "verdict": "SIGNAL_DETECTED",
+          "n_perm": 99,
+          "shuffle_mean": 0.0003,
+          "shuffle_std": 0.00482
+        }
+      },
+      "markov": {
+        "edge_150p": 0.01464,
+        "rate_150p": 0.05333,
+        "edge_500p": 0.0033,
+        "rate_500p": 0.042,
+        "edge_1500p": -0.0027,
+        "rate_1500p": 0.036,
+        "full_rate": 0.03898,
+        "full_edge": 0.00029,
+        "n_hits": 66,
+        "n_oos": 1693,
+        "z_score": 0.061,
+        "three_window_pass": false,
+        "perm": {
+          "real_edge": 0.00029,
+          "real_rate": 0.03898,
+          "p_emp": 0.59,
+          "cohens_d": -0.195,
+          "verdict": "NO_SIGNAL",
+          "n_perm": 99,
+          "shuffle_mean": 0.00116,
+          "shuffle_std": 0.00446
+        }
+      },
+      "fourier": {
+        "edge_150p": 0.0013,
+        "rate_150p": 0.04,
+        "edge_500p": 0.0033,
+        "rate_500p": 0.042,
+        "edge_1500p": 0.0113,
+        "rate_1500p": 0.05,
+        "full_rate": 0.04903,
+        "full_edge": 0.01033,
+        "n_hits": 83,
+        "n_oos": 1693,
+        "z_score": 2.203,
+        "three_window_pass": true,
+        "perm": {
+          "real_edge": 0.01033,
+          "real_rate": 0.04903,
+          "p_emp": 0.02,
+          "cohens_d": 2.021,
+          "verdict": "SIGNAL_DETECTED",
+          "n_perm": 99,
+          "shuffle_mean": 0.00109,
+          "shuffle_std": 0.00457
+        }
+      }
+    },
+    "phase3": {
+      "1": {
+        "n_bets": 1,
+        "signals": [
+          "midfreq"
+        ],
+        "baseline": 0.0387,
+        "rate": 0.05139,
+        "edge": 0.01269,
+        "z_score": 2.707,
+        "n_hits": 87,
+        "n_oos": 1693,
+        "three_window_pass": false,
+        "marginal_edge": 0.01269,
+        "edge_150p": -0.00536,
+        "rate_150p": 0.03333,
+        "edge_500p": 0.0213,
+        "rate_500p": 0.06,
+        "edge_1500p": 0.00997,
+        "rate_1500p": 0.04867
+      },
+      "2": {
+        "n_bets": 2,
+        "signals": [
+          "midfreq",
+          "fourier"
+        ],
+        "baseline": 0.0759,
+        "rate": 0.09864,
+        "edge": 0.02274,
+        "z_score": 3.533,
+        "n_hits": 167,
+        "n_oos": 1693,
+        "three_window_pass": true,
+        "marginal_edge": 0.01005,
+        "edge_150p": 0.0041,
+        "rate_150p": 0.08,
+        "edge_500p": 0.0321,
+        "rate_500p": 0.108,
+        "edge_1500p": 0.02143,
+        "rate_1500p": 0.09733
+      },
+      "3": {
+        "n_bets": 3,
+        "signals": [
+          "midfreq",
+          "fourier",
+          "markov"
+        ],
+        "baseline": 0.11166,
+        "rate": 0.13644,
+        "edge": 0.02478,
+        "z_score": 3.238,
+        "n_hits": 231,
+        "n_oos": 1693,
+        "three_window_pass": true,
+        "marginal_edge": 0.00204,
+        "edge_150p": 0.00834,
+        "rate_150p": 0.12,
+        "edge_500p": 0.03234,
+        "rate_500p": 0.144,
+        "edge_1500p": 0.01967,
+        "rate_1500p": 0.13133
+      },
+      "4": {
+        "n_bets": 4,
+        "signals": [
+          "midfreq",
+          "fourier",
+          "markov",
+          "acb"
+        ],
+        "baseline": 0.14604,
+        "rate": 0.15948,
+        "edge": 0.01344,
+        "z_score": 1.566,
+        "n_hits": 270,
+        "n_oos": 1693,
+        "three_window_pass": false,
+        "marginal_edge": -0.01134,
+        "edge_150p": -0.00604,
+        "rate_150p": 0.14,
+        "edge_500p": 0.01796,
+        "rate_500p": 0.164,
+        "edge_1500p": 0.00863,
+        "rate_1500p": 0.15467
+      }
+    },
+    "phase4": {
+      "1": {
+        "signal_weights": [
+          0.4175042505377229,
+          0.03803869299817863,
+          0.1990381061301144,
+          0.34541895033398407
+        ],
+        "fusion_type": "weighted_rank",
+        "nonlinear": "log",
+        "gate_signal": 2,
+        "gate_threshold": 0.3779349465750715,
+        "n_bets": 1,
+        "orthogonal": true,
+        "diversity_bonus": 0.2956491765023222,
+        "fitness": 0.057968606296779676,
+        "full_edge": 0.009736670876421341
+      },
+      "2": {
+        "signal_weights": [
+          0.6304480012525899,
+          0.08513055672664735,
+          0.05588388490066727,
+          0.22853755712009535
+        ],
+        "fusion_type": "weighted_rank",
+        "nonlinear": "sigmoid",
+        "gate_signal": 1,
+        "gate_threshold": 0.5974360791843314,
+        "n_bets": 2,
+        "orthogonal": true,
+        "diversity_bonus": 0.19877644667703967,
+        "fitness": 0.08076808580328415,
+        "full_edge": 0.01860821181234104
+      },
+      "3": {
+        "signal_weights": [
+          0.22310051243332776,
+          0.2579096128115266,
+          0.19089867930297139,
+          0.32809119545217436
+        ],
+        "fusion_type": "score_blend",
+        "nonlinear": "none",
+        "gate_signal": 1,
+        "gate_threshold": 0.5392178758008596,
+        "n_bets": 3,
+        "orthogonal": true,
+        "diversity_bonus": 0.055093205341265834,
+        "fitness": 0.09167381996430377,
+        "full_edge": 0.0318726780072256
+      }
+    },
+    "phase5": {
+      "pool_expansion": {
+        "acb_pool6": {
+          "rate": 0.03485,
+          "edge": -0.00385
+        },
+        "midfreq_pool6": {
+          "rate": 0.05139,
+          "edge": 0.01269
+        },
+        "markov_pool6": {
+          "rate": 0.03898,
+          "edge": 0.00029
+        },
+        "fourier_pool6": {
+          "rate": 0.04903,
+          "edge": 0.01033
+        },
+        "acb_pool8": {
+          "rate": 0.08978,
+          "edge": 0.05108
+        },
+        "midfreq_pool8": {
+          "rate": 0.1075,
+          "edge": 0.0688
+        },
+        "markov_pool8": {
+          "rate": 0.1075,
+          "edge": 0.0688
+        },
+        "fourier_pool8": {
+          "rate": 0.11045,
+          "edge": 0.07176
+        },
+        "acb_pool10": {
+          "rate": 0.03485,
+          "edge": -0.00385
+        },
+        "midfreq_pool10": {
+          "rate": 0.05139,
+          "edge": 0.01269
+        },
+        "markov_pool10": {
+          "rate": 0.03898,
+          "edge": 0.00029
+        },
+        "fourier_pool10": {
+          "rate": 0.04903,
+          "edge": 0.01033
+        },
+        "acb_pool12": {
+          "rate": 0.03485,
+          "edge": -0.00385
+        },
+        "midfreq_pool12": {
+          "rate": 0.05139,
+          "edge": 0.01269
+        },
+        "markov_pool12": {
+          "rate": 0.03898,
+          "edge": 0.00029
+        },
+        "fourier_pool12": {
+          "rate": 0.04903,
+          "edge": 0.01033
+        }
+      },
+      "efficiency_frontier": {
+        "1": {
+          "n_bets": 1,
+          "baseline": 0.0387,
+          "rate": 0.05139,
+          "edge": 0.01269,
+          "marginal_edge": 0.01269,
+          "cost": 100,
+          "efficiency": 1.269
+        },
+        "2": {
+          "n_bets": 2,
+          "baseline": 0.0759,
+          "rate": 0.09864,
+          "edge": 0.02274,
+          "marginal_edge": 0.01005,
+          "cost": 200,
+          "efficiency": 1.137
+        },
+        "3": {
+          "n_bets": 3,
+          "baseline": 0.11166,
+          "rate": 0.13644,
+          "edge": 0.02478,
+          "marginal_edge": 0.00204,
+          "cost": 300,
+          "efficiency": 0.826
+        },
+        "4": {
+          "n_bets": 4,
+          "baseline": 0.14604,
+          "rate": 0.15948,
+          "edge": 0.01344,
+          "marginal_edge": -0.01134,
+          "cost": 400,
+          "efficiency": 0.336
+        },
+        "5": {
+          "n_bets": 5,
+          "baseline": 0.17908,
+          "rate": 0.15948,
+          "edge": -0.0196,
+          "marginal_edge": -0.03305,
+          "cost": 500,
+          "efficiency": -0.392
+        }
+      }
+    },
+    "phase6": {
+      "midfreq_full_perm": {
+        "real_edge": 0.01269,
+        "real_rate": 0.05139,
+        "p_emp": 0.01,
+        "cohens_d": 2.75,
+        "verdict": "SIGNAL_DETECTED",
+        "n_perm": 200,
+        "shuffle_mean": -0.00039,
+        "shuffle_std": 0.00476
+      },
+      "fourier_full_perm": {
+        "real_edge": 0.01033,
+        "real_rate": 0.04903,
+        "p_emp": 0.0348,
+        "cohens_d": 1.931,
+        "verdict": "SIGNAL_DETECTED",
+        "n_perm": 200,
+        "shuffle_mean": 0.00123,
+        "shuffle_std": 0.00471
+      },
+      "markov_full_perm": {
+        "real_edge": 0.00029,
+        "real_rate": 0.03898,
+        "p_emp": 0.6219,
+        "cohens_d": -0.243,
+        "verdict": "NO_SIGNAL",
+        "n_perm": 200,
+        "shuffle_mean": 0.00141,
+        "shuffle_std": 0.00463
+      },
+      "mcnemar_top2": {
+        "net": 4,
+        "chi2": 0.055,
+        "p_value": 0.8148,
+        "a_only": 84,
+        "b_only": 80,
+        "both": 3,
+        "neither": 1526
+      },
+      "2bet_perm": {
+        "real_edge": 0.02274,
+        "p_emp": 0.005,
+        "verdict": "SIGNAL_DETECTED",
+        "n_perm": 200
+      },
+      "3bet_perm": {
+        "real_edge": 0.02478,
+        "p_emp": 0.0149,
+        "verdict": "SIGNAL_DETECTED",
+        "n_perm": 200
+      }
+    },
+    "phase7": {
+      "ev_base": 54.68,
+      "roi_base": -45.32,
+      "ev_with_edge": 72.61,
+      "roi_with_edge": -27.39,
+      "match_probabilities": {
+        "M0": 0.328249,
+        "M1": 0.437666,
+        "M2": 0.195387,
+        "M3": 0.035933,
+        "M4": 0.002695,
+        "M5": 7e-05,
+        "M6": 0.0
+      },
+      "monte_carlo": {
+        "5000": {
+          "ruin_rate": 99.99,
+          "median_final": 100.0,
+          "p5_final": 0.0,
+          "median_max_drawdown": 98.0
+        },
+        "10000": {
+          "ruin_rate": 100.0,
+          "median_final": 100.0,
+          "p5_final": 0.0,
+          "median_max_drawdown": 99.0
+        },
+        "50000": {
+          "ruin_rate": 99.96,
+          "median_final": 100.0,
+          "p5_final": 0.0,
+          "median_max_drawdown": 99.8
+        }
+      }
+    }
+  }
+}

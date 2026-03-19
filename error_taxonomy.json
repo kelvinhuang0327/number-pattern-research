@@ -1,0 +1,23 @@
+{
+  "error_taxonomy": {
+    "signal_miss": 0,
+    "ranking_error": 0,
+    "coverage_error": 494,
+    "allocation_error": 301,
+    "noise_dominated": 463
+  },
+  "total_misses": 1258,
+  "total_draws": 1500,
+  "coverage_strategy_details": {
+    "Markov_1bet": 168,
+    "MidFreq_1bet": 184,
+    "ACB_1bet": 44,
+    "Fourier_1bet": 168,
+    "MicroFish_evolved_2": 4,
+    "MicroFish_evolved_3": 1
+  },
+  "recoverable": 795,
+  "irreducible": 463,
+  "potential_rate": 0.6913333333333334,
+  "potential_edge_pct": 57.733333333333334
+}

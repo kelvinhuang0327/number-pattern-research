@@ -1,0 +1,94 @@
+{
+  "oracle_rate": 0.49066666666666664,
+  "oracle_edge_pct": 37.666666666666664,
+  "selectors": {
+    "Meta_ACBconf_p25": {
+      "rate": 0.15266666666666667,
+      "edge": 0.03866666666666667,
+      "edge_pct": 3.8666666666666667,
+      "strategy_a": "ACB_1bet",
+      "strategy_b": "MicroFish_evolved_1",
+      "threshold": 2.285899817943573
+    },
+    "Meta_ACBconf_p50": {
+      "rate": 0.16,
+      "edge": 0.046,
+      "edge_pct": 4.6,
+      "strategy_a": "ACB_1bet",
+      "strategy_b": "MicroFish_evolved_1",
+      "threshold": 2.4973206520080566
+    },
+    "Meta_ACBconf_p75": {
+      "rate": 0.16266666666666665,
+      "edge": 0.04866666666666665,
+      "edge_pct": 4.866666666666665,
+      "strategy_a": "ACB_1bet",
+      "strategy_b": "MicroFish_evolved_1",
+      "threshold": 2.758965492248535,
+      "perm_p": 1.0,
+      "mcnemar_vs_best": {
+        "both_hit": 233,
+        "a_only": 11,
+        "b_only": 9,
+        "both_miss": 1247,
+        "chi2": 0.2,
+        "p": 0.6547208460185772,
+        "winner": "A"
+      }
+    },
+    "Meta_agreement_0.1": {
+      "rate": 0.13933333333333334,
+      "edge": 0.025333333333333333,
+      "edge_pct": 2.533333333333333
+    },
+    "Meta_agreement_0.2": {
+      "rate": 0.146,
+      "edge": 0.03199999999999999,
+      "edge_pct": 3.199999999999999
+    },
+    "Meta_agreement_0.3": {
+      "rate": 0.146,
+      "edge": 0.03199999999999999,
+      "edge_pct": 3.199999999999999
+    },
+    "Meta_momentum_20": {
+      "rate": 0.14,
+      "edge": 0.02600000000000001,
+      "edge_pct": 2.600000000000001
+    },
+    "Meta_momentum_30": {
+      "rate": 0.14533333333333334,
+      "edge": 0.03133333333333334,
+      "edge_pct": 3.1333333333333337
+    },
+    "Meta_momentum_50": {
+      "rate": 0.15333333333333332,
+      "edge": 0.03933333333333332,
+      "edge_pct": 3.933333333333332
+    },
+    "Meta_regime_z-0.5": {
+      "rate": 0.156,
+      "edge": 0.041999999999999996,
+      "edge_pct": 4.199999999999999
+    },
+    "Meta_regime_z0.0": {
+      "rate": 0.15333333333333332,
+      "edge": 0.03933333333333332,
+      "edge_pct": 3.933333333333332
+    },
+    "Meta_regime_z0.5": {
+      "rate": 0.14866666666666667,
+      "edge": 0.034666666666666665,
+      "edge_pct": 3.4666666666666663
+    }
+  },
+  "best_selector": "Meta_ACBconf_p75",
+  "indicator_names": [
+    "acb_confidence",
+    "markov_confidence",
+    "strategy_agreement",
+    "recent_hit_rate",
+    "entropy_signal",
+    "regime_indicator"
+  ]
+}

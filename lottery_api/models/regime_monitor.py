@@ -61,15 +61,15 @@ class RegimeMonitor:
         baseline = 0.06
         
         if ma_hit_rate < baseline * 0.5:
-            regime = "DRAWDOWN (負向離群)"
-            recommendation = "LOW WATERLINE (防禦停損)"
+            regime = "DRAWDOWN (Negative Outlier)"
+            recommendation = "LOW WATERLINE (Defense Mode)"
             color = "#dc3545" # Red
         elif ma_hit_rate > baseline * 1.5:
-            regime = "SURPLUS (正向離群)"
-            recommendation = "NORMAL WATERLINE (均值預警)"
+            regime = "SURPLUS (Positive Outlier)"
+            recommendation = "NORMAL WATERLINE (Mean Reversion)"
             color = "#28a745" # Green
         else:
-            regime = "STABLE (隨機波動)"
+            regime = "STABLE (Random Walk)"
             recommendation = "STANDARD WATERLINE"
             color = "#ffc107" # Yellow or Amber
 

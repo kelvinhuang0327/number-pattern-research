@@ -653,6 +653,64 @@ python3 tools/backtest_p0p1_upgrade.py --all            # 150+500+1000+1500
 
 ---
 
+## 📊 策略評分 (Strategy Scoring) — 2026-03-13
+
+> **公式**：`Score = (ROI × Stability × Significance) ÷ Complexity`
+>
+> | 欄位 | 定義 | 計算方式 |
+> |------|------|----------|
+> | ROI | 平均回報率 | mean(150p, 500p, 1500p) edge % |
+> | Stability | 三窗口一致性 | min_window / max_window（若有負值則 × 0.5 懲罰） |
+> | Significance | 統計顯著性 | −log₁₀(perm_p)，perm_p=0.000 取 0.005 |
+> | Complexity | 設計複雜度 | 核心信號數(Feature) × 關鍵超參數數(Param) |
+
+### 各彩種採納策略 Score 排名
+
+| 彩種 | 策略 | 注 | ROI(%) | Stability | Sig | C | **Score** |
+|------|------|----|--------|-----------|-----|---|-----------|
+| 今彩539 | MidFreq+ACB 正交 | 2 | 6.99 | 0.48 | 2.30 | 6 | **1.30** |
+| 今彩539 | ACB 異常捕捉 | 1 | 2.47 | 0.60 | 2.30 | 3 | **1.14** |
+| 今彩539 | ACB+Markov+Fourier | 3 | 4.61 | 0.55 | 2.30 | 9 | **0.64** |
+| 威力彩 | PP3+FreqOrt | 4 | 4.11 | 0.62 | 2.30 | 12 | **0.49** |
+| 威力彩 | PP3+FreqOrt×2 | 5 | 4.33 | 0.68 | 2.30 | 20 | **0.34** |
+| 威力彩 | PP3 | 3 | 2.72 | 0.64 | 1.60 | 9 | **0.31** |
+| 大樂透 | P1+冷號 | 2 | 1.69 | 0.63 | 2.52 | 12 | **0.22** |
+| 大樂透 | P1+Dev+Sum+Tail | 5 | 2.77 | 0.77 | 2.30 | 30 | **0.16** |
+| 大樂透 | TS3+Sum Regime | 3 | 2.32 | 0.52 | 2.30 | 20 | **0.14** |
+| 大樂透 | P1+Dev | 4 | 1.64 | 0.36 | 2.00 | 18 | **0.07** |
+
+> **Score 基準線**（通過門檻）：Score > 0.05（即顯著優於隨機 + 可重現信號）
+
+### 關鍵洞察
+
+1. **539 策略 Score 顯著高於其他彩種**：因 M2+命中率基準更高（~13%），任何 +5% Edge 代表極強信號
+2. **威力彩 4注 > 5注 Score**：架構更簡潔（C=12 vs 20），且 Edge 幾乎等同 → 效率更高
+3. **大樂透 2注 Score 相對高**：信號最純（2個機制），perm p=0.003 最顯著
+4. **大樂透 4注 Score 最低**：150p僅+0.77%，Stability=0.36 嚴重懲罰 → 需長期窗口才顯效
+
+### Permutation Test 共用模組
+
+新策略自動跑 permutation test：
+
+```python
+from lottery_api.engine.perm_test import perm_test, perm_test_report
+
+result = perm_test(
+    history=draws,          # list of draw dicts
+    predict_fn=my_fn,       # callable(history) -> list[list[int]]
+    baseline=0.0896,        # n-bet geometric baseline
+    n_perm=200,
+    seed=42,
+    verbose=True,
+)
+perm_test_report(result, label='MyStrategy')
+# result keys: p_emp, cohens_d, z_score, verdict, n_oos
+```
+
+> 模組路徑：`lottery_api/engine/perm_test.py`
+
+---
+
 ## 🛡️ 抗數據洩漏協議 (Anti-Data-Leakage Protocol)
 
 > 這是系統最重要的資產之一，確保回測結果的真實性。
@@ -1156,6 +1214,27 @@ curl -X POST "http://localhost:8000/api/wheel/generate?pool=2&pool=7&pool=11&poo
 # 查詢可用選項
 curl "http://localhost:8000/api/wheel/available-guarantees?pool_size=12"
 ```
+
+#### Coordinator 預測端點 (2026-03-13 新增)
+```bash
+# 新端點：直接呼叫 RSM 加權多代理
+curl -X POST "http://localhost:8000/api/predict-coordinator?lottery_type=BIG_LOTTO&num_bets=3&mode=hybrid&recent_count=500"
+
+# 舊端點相容：modelType 直接切換為 coordinator
+curl -X POST "http://localhost:8000/api/predict-from-backend?coord_bets=2" \
+  -H "Content-Type: application/json" \
+  -d '{"lotteryType":"POWER_LOTTO","modelType":"coordinator_direct"}'
+
+# 區間端點：可在 body 指定 coordMode / coordBets
+curl -X POST "http://localhost:8000/api/predict-with-range" \
+  -H "Content-Type: application/json" \
+  -d '{"lotteryType":"DAILY_539","modelType":"coordinator","recentCount":500,"coordMode":"direct","coordBets":3}'
+```
+
+> `modelType` 新增：
+> - `coordinator`
+> - `coordinator_direct`
+> - `coordinator_hybrid`
 
 ### 關鍵檔案
 - `lottery_api/models/wheel_tables.py` - 核心模組 + 預計算覆蓋表

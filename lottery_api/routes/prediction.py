@@ -22,11 +22,13 @@ from models.enhanced_predictor import EnhancedPredictor
 from models.smart_multi_bet import SmartMultiBetSystem
 from models.daily539_predictor import Daily539Predictor
 from models.multi_bet_optimizer import MultiBetOptimizer
-from database import db_manager
+from models.special_predictor import get_enhanced_special_prediction
+from database import db_manager, DatabaseManager
 from common import normalize_lottery_type, load_backend_history, get_data_range_info, get_lottery_rules
 from config import optimal_prediction_config
 from models.strategy_adapter import strategy_adapter
 from models.regime_monitor import get_regime_monitor
+from engine.strategy_coordinator import coordinator_predict
 
 # Initialize enhanced predictors
 enhanced_predictor = EnhancedPredictor()
@@ -37,6 +39,144 @@ regime_monitor = get_regime_monitor()
 
 router = APIRouter()
 logger = logging.getLogger(__name__)
+
+
+def _build_coordinator_result(
+    history: List[Dict],
+    lottery_type: str,
+    lottery_rules: Dict,
+    num_bets: int,
+    mode: str
+) -> Dict:
+    """Coordinator 預測結果封裝（供多個端點重用）"""
+    bets, desc = coordinator_predict(lottery_type, history, n_bets=num_bets, mode=mode)
+    if not bets:
+        raise HTTPException(status_code=500, detail="Coordinator 未返回有效投注組合")
+
+    payload_bets = []
+    for i, b in enumerate(bets, 1):
+        item = {"numbers": sorted(b), "source": f"coordinator_{mode}_{i}"}
+        if lottery_type == "POWER_LOTTO":
+            sp = get_enhanced_special_prediction(history, lottery_rules, item["numbers"])
+            if sp is not None:
+                item["special"] = int(sp)
+        payload_bets.append(item)
+
+    primary = payload_bets[0]["numbers"]
+    result = {
+        "numbers": primary,
+        "confidence": 0.78 if num_bets in (2, 3) else 0.72,
+        "method": desc,
+        "notes": f"Coordinator mode={mode}, n_bets={num_bets}, periods={len(history)}",
+        "modelInfo": {
+            "bets": payload_bets,
+            "analysis": {
+                "num_bets": len(payload_bets),
+                "mode": mode,
+                "lottery_type": lottery_type,
+                "total_unique_numbers": len(set(n for bet in payload_bets for n in bet["numbers"]))
+            }
+        }
+    }
+    if lottery_type == "POWER_LOTTO" and payload_bets and "special" in payload_bets[0]:
+        result["special"] = int(payload_bets[0]["special"])
+
+    # Track B: Player Behavior / Split-Risk Advisory (never affects prediction)
+    try:
+        from analysis.player_behavior import analyze_tickets
+        result["modelInfo"]["player_behavior"] = analyze_tickets(payload_bets, lottery_type)
+    except Exception:
+        pass  # Advisory module failure never blocks prediction
+
+    return result
+
+
+def _load_history_with_db_fallback(lottery_type: str, min_required: int = 10):
+    """
+    載入歷史資料；若 scheduler/db_manager 不足則回退到 lottery_v2.db。
+    """
+    try:
+        return load_backend_history(lottery_type, min_required=min_required)
+    except HTTPException as e:
+        if e.status_code != 400:
+            raise
+        alt_db = DatabaseManager(db_path="lottery_api/data/lottery_v2.db")
+        history = sorted(alt_db.get_all_draws(lottery_type), key=lambda x: (x.get('date', ''), x.get('draw', '')))
+        if len(history) < min_required:
+            raise
+        lottery_rules = get_lottery_rules(lottery_type)
+        return history, lottery_rules
+
+
+def _normalize_numbers(numbers, lottery_rules: Dict) -> List[int]:
+    """Normalize prediction numbers by rule range, uniqueness, and pick count."""
+    if not isinstance(numbers, list):
+        return []
+    min_num = int(lottery_rules.get("minNumber", 1))
+    max_num = int(lottery_rules.get("maxNumber", 49))
+    pick_count = int(lottery_rules.get("pickCount", 6))
+    deduped = []
+    seen = set()
+    for n in numbers:
+        try:
+            v = int(n)
+        except Exception:
+            continue
+        if v < min_num or v > max_num or v in seen:
+            continue
+        seen.add(v)
+        deduped.append(v)
+    return sorted(deduped[:pick_count])
+
+
+def _normalize_prediction_payload(payload: Dict, lottery_rules: Dict, fallback_method: str = "prediction") -> Dict:
+    """
+    Normalize payload shape across heterogeneous predictors:
+    - numbers: unique + in-range + pickCount length cap
+    - confidence: default to 0.5 if missing/invalid
+    - method: always present
+    - nested bets: normalize numbers as well
+    """
+    if not isinstance(payload, dict):
+        return payload
+
+    normalized = dict(payload)
+
+    if "numbers" in normalized:
+        normalized["numbers"] = _normalize_numbers(normalized.get("numbers"), lottery_rules)
+
+    conf = normalized.get("confidence", 0.5)
+    try:
+        conf = float(conf)
+    except Exception:
+        conf = 0.5
+    if conf < 0:
+        conf = 0.0
+    if conf > 1:
+        conf = 1.0
+    normalized["confidence"] = conf
+
+    method = normalized.get("method")
+    normalized["method"] = str(method) if method else fallback_method
+
+    # Normalize common nested structures.
+    for key in ("bet1", "bet2"):
+        if isinstance(normalized.get(key), dict) and "numbers" in normalized[key]:
+            normalized[key] = {**normalized[key], "numbers": _normalize_numbers(normalized[key].get("numbers"), lottery_rules)}
+
+    if isinstance(normalized.get("modelInfo"), dict) and isinstance(normalized["modelInfo"].get("bets"), list):
+        bets = []
+        for bet in normalized["modelInfo"]["bets"]:
+            if not isinstance(bet, dict):
+                continue
+            if "numbers" in bet:
+                bets.append({**bet, "numbers": _normalize_numbers(bet.get("numbers"), lottery_rules)})
+            else:
+                bets.append(bet)
+        normalized["modelInfo"]["bets"] = bets
+
+    return normalized
+
 
 @router.post("/api/predict", response_model=PredictResponse)
 async def predict(request: PredictRequest):
@@ -96,7 +236,11 @@ async def predict(request: PredictRequest):
         )
 
 @router.post("/api/predict-from-backend", response_model=PredictResponse)
-async def predict_from_backend(request: PredictFromBackendRequest):
+async def predict_from_backend(
+    request: PredictFromBackendRequest,
+    coord_mode: Optional[str] = Query(None, description="Coordinator 模式: direct 或 hybrid"),
+    coord_bets: int = Query(3, ge=1, le=5, description="Coordinator 注數")
+):
     """
     使用後端已存儲的數據進行預測（優化版）
     """
@@ -104,12 +248,19 @@ async def predict_from_backend(request: PredictFromBackendRequest):
         logger.info(f"收到後端預測請求: 彩券={request.lotteryType}, 模型={request.modelType}")
         
         lottery_type = normalize_lottery_type(request.lotteryType)
-        
-        history, lottery_rules = load_backend_history(lottery_type, min_required=10)
+        history, lottery_rules = _load_history_with_db_fallback(lottery_type, min_required=10)
         data_range = get_data_range_info(history)
         logger.info(f"📊 使用數據: {data_range['total_count']} 期 | 日期: {data_range['date_range']} | 期號: {data_range['draw_range']}")
         
         extra_sig = None
+        resolved_coord_mode = None
+        if request.modelType in ("coordinator", "coordinator_direct", "coordinator_hybrid"):
+            resolved_coord_mode = coord_mode or ("hybrid" if request.modelType == "coordinator_hybrid" else "direct")
+            if resolved_coord_mode not in ("direct", "hybrid"):
+                raise HTTPException(status_code=400, detail="coord_mode 僅支援 direct 或 hybrid")
+            # Coordinator cache key must include mode and bet count.
+            extra_sig = f"coord:{resolved_coord_mode}:{coord_bets}"
+
         if request.modelType == "backend_optimized":
             best_config = getattr(scheduler, 'get_best_config', lambda lt: {})(lottery_type)
             
@@ -133,7 +284,9 @@ async def predict_from_backend(request: PredictFromBackendRequest):
             logger.info(f"✅ 使用緩存結果，跳過模型訓練")
             return cached_result
         
-        if request.modelType == "prophet":
+        if request.modelType in ("coordinator", "coordinator_direct", "coordinator_hybrid"):
+            result = _build_coordinator_result(history, lottery_type, lottery_rules, coord_bets, resolved_coord_mode)
+        elif request.modelType == "prophet":
             result = await get_prophet_predictor().predict(history, lottery_rules)
         elif request.modelType == "xgboost":
             result = await get_xgboost_predictor().predict(history, lottery_rules)
@@ -225,9 +378,11 @@ async def predict_from_backend(request: PredictFromBackendRequest):
                 status_code=400,
                 detail=f"不支持的模型類型: {request.modelType}"
             )
+
+        result = _normalize_prediction_payload(result, lottery_rules, fallback_method=request.modelType)
         
         model_cache.set(
-            request.lotteryType,
+            lottery_type,
             request.modelType,
             result,
             history,
@@ -248,7 +403,12 @@ async def predict_from_backend(request: PredictFromBackendRequest):
         )
 
 @router.post("/api/predict-from-backend-eval", response_model=PredictResponse)
-async def predict_from_backend_eval(request: PredictFromBackendRequest, recent_count: int = Query(200, ge=10, le=1000)):
+async def predict_from_backend_eval(
+    request: PredictFromBackendRequest,
+    recent_count: int = Query(200, ge=10, le=1000),
+    coord_mode: Optional[str] = Query(None, description="Coordinator 模式: direct 或 hybrid"),
+    coord_bets: int = Query(3, ge=1, le=5, description="Coordinator 注數")
+):
     """
     評估專用預測端點（固定配置、禁用快取）
     
@@ -264,7 +424,7 @@ async def predict_from_backend_eval(request: PredictFromBackendRequest, recent_c
         lottery_type = normalize_lottery_type(request.lotteryType)
         
         # Load history and apply window
-        history, lottery_rules = load_backend_history(lottery_type, min_required=10)
+        history, lottery_rules = _load_history_with_db_fallback(lottery_type, min_required=10)
         if len(history) > recent_count:
             history = history[-recent_count:]
         
@@ -273,7 +433,13 @@ async def predict_from_backend_eval(request: PredictFromBackendRequest, recent_c
         
         # NO CACHE for evaluation
         
-        if request.modelType == "prophet":
+        if request.modelType in ("coordinator", "coordinator_direct", "coordinator_hybrid"):
+            default_mode = "hybrid" if request.modelType == "coordinator_hybrid" else "direct"
+            mode = coord_mode or default_mode
+            if mode not in ("direct", "hybrid"):
+                raise HTTPException(status_code=400, detail="coord_mode 僅支援 direct 或 hybrid")
+            result = _build_coordinator_result(history, lottery_type, lottery_rules, coord_bets, mode)
+        elif request.modelType == "prophet":
             result = await get_prophet_predictor().predict(history, lottery_rules)
         elif request.modelType == "xgboost":
             result = await get_xgboost_predictor().predict(history, lottery_rules)
@@ -363,6 +529,8 @@ async def predict_from_backend_eval(request: PredictFromBackendRequest, recent_c
             result = await optimized.predict(history, lottery_rules)
         else:
             raise HTTPException(status_code=400, detail=f"不支持的模型類型: {request.modelType}")
+
+        result = _normalize_prediction_payload(result, lottery_rules, fallback_method=request.modelType)
         
         # ⚠️ 大樂透特別號不預測！
         # 玩家只選6個主號碼，特別號是開獎時從剩餘43個號碼中抽取的
@@ -417,6 +585,25 @@ async def predict_with_range(request: PredictWithRangeRequest):
             filtered_history = db_manager.get_all_draws(lottery_type=lottery_type)
 
         if len(filtered_history) < 10:
+            alt_db = DatabaseManager(db_path="lottery_api/data/lottery_v2.db")
+            alt_all = sorted(alt_db.get_all_draws(lottery_type), key=lambda x: (x.get('date', ''), x.get('draw', '')))
+            if request.startDraw and request.endDraw:
+                filtered_history = [d for d in alt_all if request.startDraw <= str(d.get('draw', '')) <= request.endDraw]
+            elif request.startDate or request.endDate:
+                filtered_history = []
+                for draw in alt_all:
+                    draw_date = str(draw.get('date', '')).replace('/', '-')
+                    if request.startDate and draw_date < request.startDate.replace('/', '-'):
+                        continue
+                    if request.endDate and draw_date > request.endDate.replace('/', '-'):
+                        continue
+                    filtered_history.append(draw)
+            elif request.recentCount:
+                filtered_history = alt_all[-request.recentCount:] if len(alt_all) >= request.recentCount else alt_all
+            else:
+                filtered_history = alt_all
+
+        if len(filtered_history) < 10:
             raise HTTPException(
                 status_code=400,
                 detail=f"查詢結果數據不足（需要至少10期，目前{len(filtered_history)}期）"
@@ -428,9 +615,17 @@ async def predict_with_range(request: PredictWithRangeRequest):
         if hasattr(request, 'lotteryRules') and request.lotteryRules:
             lottery_rules = request.lotteryRules.dict() if hasattr(request.lotteryRules, 'dict') else request.lotteryRules
         else:
-            lottery_rules = get_lottery_rules(request.lotteryType)
+            lottery_rules = get_lottery_rules(lottery_type)
         
-        if request.modelType == "prophet":
+        if request.modelType in ("coordinator", "coordinator_direct", "coordinator_hybrid"):
+            mode = request.coordMode or ("hybrid" if request.modelType == "coordinator_hybrid" else "direct")
+            n_bets = request.coordBets or 3
+            if mode not in ("direct", "hybrid"):
+                raise HTTPException(status_code=400, detail="coordMode 僅支援 direct 或 hybrid")
+            if n_bets < 1 or n_bets > 5:
+                raise HTTPException(status_code=400, detail="coordBets 範圍需為 1~5")
+            result = _build_coordinator_result(filtered_history, lottery_type, lottery_rules, n_bets, mode)
+        elif request.modelType == "prophet":
             result = await get_prophet_predictor().predict(filtered_history, lottery_rules)
         elif request.modelType == "xgboost":
             result = await get_xgboost_predictor().predict(filtered_history, lottery_rules)
@@ -445,12 +640,25 @@ async def predict_with_range(request: PredictWithRangeRequest):
         elif request.modelType == "lstm":
             result = await get_lstm_predictor().predict(filtered_history, lottery_rules)
         elif request.modelType == "backend_optimized":
-            best_config = scheduler.get_best_config(request.lotteryType)
+            best_config = None
+            try:
+                best_config = scheduler.get_best_config(lottery_type)
+            except Exception as e:
+                logger.warning(f"scheduler.get_best_config({lottery_type}) 失敗，改用預設配置: {e}")
+
             if not best_config:
-                best_config = scheduler.get_best_config()
-            
+                try:
+                    best_config = scheduler.get_best_config()
+                except Exception as e:
+                    logger.warning(f"scheduler.get_best_config() 失敗，改用預設配置: {e}")
+
             if not best_config:
-                raise HTTPException(status_code=400, detail="沒有可用的優化配置，請先執行自動優化")
+                best_config = {
+                    "frequency_weight": 0.5,
+                    "missing_weight": 0.3,
+                    "hot_cold_weight": 0.1,
+                    "trend_weight": 0.1,
+                }
             
             pick_count = lottery_rules.get('pickCount', 6)
             min_num = lottery_rules.get('minNumber', 1)
@@ -504,6 +712,7 @@ async def predict_with_range(request: PredictWithRangeRequest):
         else:
             raise HTTPException(status_code=400, detail=f"不支持的模型類型: {request.modelType} (in predict-with-range)")
 
+        result = _normalize_prediction_payload(result, lottery_rules, fallback_method=request.modelType)
         return result
     except HTTPException: raise
     except Exception as e:
@@ -536,7 +745,7 @@ async def predict_entropy_8_bets_route(request: PredictFromBackendRequest):
         logger.info(f"收到熵8注預測請求: 彩券={request.lotteryType}")
         
         lottery_type = normalize_lottery_type(request.lotteryType)
-        history, lottery_rules = load_backend_history(lottery_type, min_required=10)
+        history, lottery_rules = _load_history_with_db_fallback(lottery_type, min_required=10)
         
         # 使用最近100期
         history = history[:100]
@@ -676,7 +885,7 @@ async def predict_expert_certified_route(
     """
     try:
         lottery_type = normalize_lottery_type(lottery_type)
-        history, lottery_rules = load_backend_history(lottery_type, min_required=10)
+        history, lottery_rules = _load_history_with_db_fallback(lottery_type, min_required=10)
         
         loop = asyncio.get_running_loop()
         
@@ -998,7 +1207,7 @@ async def predict_enhanced(request: PredictFromBackendRequest):
         logger.info(f"收到增強預測請求: 彩券={request.lotteryType}")
 
         lottery_type = normalize_lottery_type(request.lotteryType)
-        history, lottery_rules = load_backend_history(lottery_type, min_required=10)
+        history, lottery_rules = _load_history_with_db_fallback(lottery_type, min_required=10)
 
         # 獲取預測方法
         method_name = getattr(request, 'method', 'enhanced_ensemble') or 'enhanced_ensemble'
@@ -1024,10 +1233,11 @@ async def predict_enhanced(request: PredictFromBackendRequest):
             history,
             lottery_rules
         )
+        result = _normalize_prediction_payload(result, lottery_rules, fallback_method=f"enhanced:{method_name}")
 
         return {
-            "numbers": result['numbers'],
-            "confidence": result['confidence'],
+            "numbers": result.get('numbers', []),
+            "confidence": result.get('confidence', 0.5),
             "method": f"增強預測 - {method_name}",
             "lotteryType": request.lotteryType,
             "dataUsed": len(history)
@@ -1047,7 +1257,7 @@ async def predict_enhanced_all(request: PredictFromBackendRequest):
         logger.info(f"收到全部增強預測請求: 彩券={request.lotteryType}")
 
         lottery_type = normalize_lottery_type(request.lotteryType)
-        history, lottery_rules = load_backend_history(lottery_type, min_required=10)
+        history, lottery_rules = _load_history_with_db_fallback(lottery_type, min_required=10)
 
         methods = [
             ('consecutive_friendly', '連號友善', enhanced_predictor.consecutive_friendly_predict),
@@ -1063,17 +1273,18 @@ async def predict_enhanced_all(request: PredictFromBackendRequest):
 
         for method_id, method_name, method_func in methods:
             try:
-                result = await loop.run_in_executor(
+                raw = await loop.run_in_executor(
                     executor,
                     method_func,
                     history,
                     lottery_rules
                 )
+                norm = _normalize_prediction_payload(raw, lottery_rules, fallback_method=f"enhanced:{method_name}")
                 results.append({
                     "methodId": method_id,
                     "methodName": method_name,
-                    "numbers": result['numbers'],
-                    "confidence": result['confidence']
+                    "numbers": norm.get('numbers', []),
+                    "confidence": norm.get('confidence', 0.5)
                 })
             except Exception as e:
                 logger.warning(f"方法 {method_name} 失敗: {e}")
@@ -1109,7 +1320,7 @@ async def predict_smart_multi_bet(
         logger.info(f"收到智能多組預測請求: 彩券={request.lotteryType}, 組數={num_bets}")
 
         lottery_type = normalize_lottery_type(request.lotteryType)
-        history, lottery_rules = load_backend_history(lottery_type, min_required=10)
+        history, lottery_rules = _load_history_with_db_fallback(lottery_type, min_required=10)
 
         # 執行多組預測
         loop = asyncio.get_running_loop()
@@ -1121,12 +1332,32 @@ async def predict_smart_multi_bet(
             num_bets
         )
 
+        pick_count = lottery_rules.get('pickCount', 6)
+        normalized_bets = []
+        for bet in result.get('bets', []):
+            numbers = bet.get('numbers', [])
+            deduped = []
+            seen = set()
+            for n in numbers:
+                if n in seen:
+                    continue
+                seen.add(n)
+                deduped.append(int(n))
+            normalized_bets.append({
+                **bet,
+                "numbers": deduped[:pick_count]
+            })
+
+        unique_numbers = sorted(set(n for b in normalized_bets for n in b.get('numbers', [])))
+        max_num = lottery_rules.get('maxNumber', 49)
+        coverage_rate = (len(unique_numbers) / max_num) if max_num else 0.0
+
         return {
-            "bets": result['bets'],
-            "totalBets": result['total_bets'],
-            "uniqueNumbers": result['unique_numbers'],
-            "coverageRate": result['coverage_rate'],
-            "allNumbers": result['numbers_list'],
+            "bets": normalized_bets,
+            "totalBets": len(normalized_bets),
+            "uniqueNumbers": len(unique_numbers),
+            "coverageRate": coverage_rate,
+            "allNumbers": unique_numbers,
             "lotteryType": request.lotteryType,
             "dataUsed": len(history),
             "method": "智能多組號碼系統"
@@ -1217,7 +1448,7 @@ async def predict_optimal(request: PredictFromBackendRequest):
         logger.info(f"📊 最佳配置: 方法={optimal_method}, 窗口={optimal_window}")
 
         # 載入數據
-        history, lottery_rules = load_backend_history(lottery_type, min_required=10)
+        history, lottery_rules = _load_history_with_db_fallback(lottery_type, min_required=10)
 
         # 應用最佳窗口大小
         if len(history) > optimal_window:
@@ -1248,6 +1479,7 @@ async def predict_optimal(request: PredictFromBackendRequest):
             history,
             lottery_rules
         )
+        result = _normalize_prediction_payload(result, lottery_rules, fallback_method=optimal_method)
 
         # 獲取方法描述
         method_desc = optimal_prediction_config.get_method_description(optimal_method)
@@ -1299,6 +1531,43 @@ async def get_optimal_configs():
     }
 
 
+@router.post("/api/predict-coordinator")
+async def predict_coordinator_route(
+    lottery_type: str = Query(..., description="彩券類型: BIG_LOTTO, POWER_LOTTO, DAILY_539"),
+    num_bets: int = Query(3, ge=1, le=5, description="注數"),
+    mode: str = Query("direct", description="Coordinator 模式: direct 或 hybrid"),
+    recent_count: int = Query(500, ge=50, le=3000, description="使用最近 N 期資料")
+):
+    """
+    RSM 加權多代理協調預測（Coordinator）
+
+    - 2/3注為推薦用法（可比較 direct vs hybrid）
+    - 威力彩會自動補特別號（Special V3）
+    """
+    try:
+        lt = normalize_lottery_type(lottery_type)
+        if mode not in ("direct", "hybrid"):
+            raise HTTPException(status_code=400, detail="mode 僅支援 direct 或 hybrid")
+
+        history, lottery_rules = _load_history_with_db_fallback(lt, min_required=10)
+        if len(history) > recent_count:
+            history = history[-recent_count:]
+
+        data_range = get_data_range_info(history)
+        logger.info(f"收到 Coordinator 預測請求: {lt}, bets={num_bets}, mode={mode}, periods={len(history)}")
+        result = _build_coordinator_result(history, lt, lottery_rules, num_bets, mode)
+        result["dataRange"] = data_range
+        # Backward-compatible fields for existing callers of /api/predict-coordinator
+        result["bets"] = result.get("modelInfo", {}).get("bets", [])
+        result["analysis"] = result.get("modelInfo", {}).get("analysis", {})
+        return result
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"Coordinator 預測失敗: {str(e)}", exc_info=True)
+        raise HTTPException(status_code=500, detail=f"Coordinator 預測失敗: {str(e)}")
+
+
 @router.post("/api/predict-double-bet")
 async def predict_double_bet(
     lottery_type: str,
@@ -1322,7 +1591,7 @@ async def predict_double_bet(
         lottery_type = normalize_lottery_type(lottery_type)
 
         # 載入數據
-        history, lottery_rules = load_backend_history(lottery_type, min_required=20)
+        history, lottery_rules = _load_history_with_db_fallback(lottery_type, min_required=20)
 
         # 執行雙注預測
         loop = asyncio.get_running_loop()
@@ -1406,7 +1675,7 @@ async def predict_hyper_precision_2bet(
         lottery_type = normalize_lottery_type(lottery_type)
 
         # 載入數據
-        history, lottery_rules = load_backend_history(lottery_type, min_required=500)
+        history, lottery_rules = _load_history_with_db_fallback(lottery_type, min_required=500)
 
         # 獲取數據範圍
         data_range = get_data_range_info(history)
@@ -1489,7 +1758,7 @@ async def predict_dual_bet_539():
         logger.info("收到今彩539 2注覆蓋預測請求")
 
         # 載入數據
-        history, lottery_rules = load_backend_history('DAILY_539', min_required=300)
+        history, lottery_rules = _load_history_with_db_fallback('DAILY_539', min_required=300)
 
         # 獲取數據範圍
         data_range = get_data_range_info(history)
@@ -1562,7 +1831,7 @@ async def predict_triple_bet_539():
         logger.info("收到今彩539 3注覆蓋預測請求")
 
         # 載入數據
-        history, lottery_rules = load_backend_history('DAILY_539', min_required=300)
+        history, lottery_rules = _load_history_with_db_fallback('DAILY_539', min_required=300)
 
         # 獲取數據範圍
         data_range = get_data_range_info(history)
@@ -1639,7 +1908,7 @@ async def predict_consecutive_539():
         logger.info("收到今彩539連號強化預測請求 (追求大獎)")
 
         # 載入數據
-        history, lottery_rules = load_backend_history('DAILY_539', min_required=100)
+        history, lottery_rules = _load_history_with_db_fallback('DAILY_539', min_required=100)
 
         # 獲取數據範圍
         data_range = get_data_range_info(history)

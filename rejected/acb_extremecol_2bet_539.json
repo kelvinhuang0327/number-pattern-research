@@ -1,0 +1,27 @@
+{
+  "strategy": "ACB_ExtremeCol_2bet",
+  "lottery": "539",
+  "rejected_date": "2026-03-10",
+  "trigger": "115000061 review — alternative 2-bet with ExtremeCol",
+  "design": "ACB bet1 + ExtremeCol(gap>=25) bet2, orthogonal exclusion",
+  "threshold_gap": 25,
+  "results": {
+    "edge_150p": 3.79,
+    "edge_500p": 1.06,
+    "edge_1500p": 3.33,
+    "perm_p": 0.005,
+    "stability": "STABLE",
+    "z_1500p": 3.13
+  },
+  "mcnemar_vs_adopted": {
+    "a_only": 130,
+    "b_only": 156,
+    "chi2": 2.364,
+    "p_value": 0.1242,
+    "winner": "B (MidFreq+ACB)",
+    "net": -26
+  },
+  "failure_reason": "STABLE and perm_p=0.005, but edge +3.33% vs ADOPTED +5.06%. McNemar not significant (p=0.124) but directionally inferior. ACB already captures extreme cold via gap_score; adding ExtremeCol as bet2 is redundant overlap.",
+  "champion_comparison": "MidFreq+ACB 2bet: edge +5.06% (ADOPTED)",
+  "retest_conditions": "None — ACB subsumes ExtremeCol signal"
+}

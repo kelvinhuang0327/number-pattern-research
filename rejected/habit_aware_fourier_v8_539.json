@@ -1,0 +1,44 @@
+{
+  "strategy": "HabitFourier V8 (Zone Rebalancing + Echo + Neighbor bias)",
+  "date": "2026-03-11",
+  "status": "REJECTED",
+  "verdict": "三項全不通過：150期Edge=-0.98%、Perm p=0.175、McNemar p=0.360",
+
+  "claimed_results": {
+    "source": "用戶提交報告（未經驗證）",
+    "claimed_m3_1500p": "3.53%",
+    "claimed_z": "5.62",
+    "note": "z-score 5.62 無法重現，數學計算應為 ~5.24，報告數據不可信"
+  },
+
+  "actual_backtest": {
+    "150p":  { "control_m3": "3.33%", "test_m3": "2.00%", "test_edge": "-0.98%", "p_perm": 0.825, "mcnemar_net": -2 },
+    "500p":  { "control_m3": "3.20%", "test_m3": "3.20%", "test_edge": "+0.22%", "p_perm": 0.395, "mcnemar_net": 0  },
+    "1500p": { "control_m3": "3.20%", "test_m3": "3.40%", "test_edge": "+0.42%", "p_perm": 0.175, "mcnemar_net": 3  }
+  },
+
+  "root_cause": [
+    "1. Zone Density FFT threshold=60 為任意值，無超參數選擇依據",
+    "2. Echo/Neighbor bias 與注2 Markov 高度重疊（第二次出現相同問題）",
+    "3. HabitFourier Pool 限縮至 Top-10 後再 bias，多樣性下降",
+    "4. 150期 M3+ Edge = -0.98%，顯著劣化（不是噪音）",
+    "5. 用戶提交報告的 z-score=5.62 無法數學重現，可信度存疑"
+  ],
+
+  "process_violation": [
+    "連續第二次出現：策略部署 → 事後尋求驗證的反向流程",
+    "單期(062)事後分析被用作「實例佐證」— 違反 L60",
+    "ADOPTED 標籤在未通過 permutation test 前就標記"
+  ],
+
+  "restart_conditions": [
+    "Zone FFT threshold 需透過 sensitivity analysis 確定（不能任意設60）",
+    "Zone 信號需在獨立單注回測中 perm p < 0.05",
+    "Echo/Neighbor bias 需證明與 Markov 正交（McNemar 互補）"
+  ],
+
+  "related_files": [
+    "tools/backtest_539_momentum_regime.py (habit 模式)",
+    "backtest_539_habit_fourier_results.json"
+  ]
+}

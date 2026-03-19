@@ -2,16 +2,15 @@
  * Zone Split Strategy - 正交型區間分散策略
  * 基於 Phase 74 研究結論，通過空間分散最大化多注覆蓋率
  */
+import { getApiUrl } from '../../config/apiConfig.js';
+
 export class ZoneSplitStrategy {
     constructor() {
         this.apiEndpoint = this.getApiEndpoint();
     }
 
     getApiEndpoint() {
-        if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
-            return 'http://127.0.0.1:8002/api/predict/zone-split';
-        }
-        return '/api/predict/zone-split';
+        return getApiUrl('/api/predict/zone-split');
     }
 
     /**

@@ -107,6 +107,30 @@ Score = (ROI × Stability × Significance) ÷ Complexity
 
 ---
 
+---
+
+## Dev Server Management
+
+### 啟動服務 (Start All)
+```bash
+./start_all.sh
+```
+- 後台 API: http://localhost:8002
+- 前台網頁: http://localhost:8081
+- 日誌: `backend.log`, `frontend.log`
+
+### 停止服務 (Stop All)
+```bash
+./stop_all.sh
+```
+
+### 自動啟動 (macOS LaunchAgent)
+系統已配置 `com.kelvin.lottery.dev.plist`。
+- 載入並啟動: `launchctl load -w com.kelvin.lottery.dev.plist`
+- 停止並解除: `launchctl unload com.kelvin.lottery.dev.plist`
+
+---
+
 ## Workflow Orchestration
 
 ### 1. Plan Node Default

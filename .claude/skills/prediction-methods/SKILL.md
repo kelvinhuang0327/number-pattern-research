@@ -98,9 +98,9 @@ special = predictor.predict_v3(history)
 # 返回: int (1-8)
 ```
 
-## 已否決策略（不要使用！）
+## 暫停研究策略（附重啟條件，見 rejected/ 目錄）
 
-| 策略 | 否決原因 |
+| 策略 | 暫停原因 |
 |------|---------|
 | ~~UnifiedPredictionEngine~~ | 全部方法 Edge < 0，已廢棄 |
 | ~~BigLotto3BetOptimizer~~ | 過時，已被 Triple Strike 取代 |

@@ -2,6 +2,8 @@
  * 聰明包牌組件
  * 負責處理包牌邏輯和UI交互
  */
+import { getApiUrl } from '../../config/apiConfig.js';
+
 export class SmartBettingComponent {
     constructor(dataProcessor, predictionEngine, uiManager) {
         this.dataProcessor = dataProcessor;
@@ -232,7 +234,7 @@ export class SmartBettingComponent {
             this.uiManager.showNotification('正在生成熵優化 8 注...', 'info');
 
             // 調用後端 API
-            const response = await fetch('http://localhost:8002/api/predict-entropy-8-bets', {
+            const response = await fetch(getApiUrl('/api/predict-entropy-8-bets'), {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ lotteryType, strategy })

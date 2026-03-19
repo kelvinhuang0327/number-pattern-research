@@ -1,0 +1,22 @@
+{
+  "id": "H008",
+  "name": "ACB 非線性 Gap 加權（gap^1.5 vs linear）",
+  "lottery": "DAILY_539",
+  "archived_at": "2026-03-15",
+  "hypothesis": "gap_score = min((gap/20)^p, 1.0)，p>1.0 對超長缺席號碼有更強偏好",
+  "rejection_reason": "參數掃描 gap^{1.2,1.5,2.0} 全部 McNemar p>0.19。最佳 gap^1.2 net=+7 p=0.39 不顯著。",
+  "statistical_results": {
+    "metric": "M2+",
+    "n_periods": 5510,
+    "start": 300,
+    "baseline_acb_p1": {"e150": -4.07, "e500": 1.00, "e1500": -0.13},
+    "param_scan": [
+      {"power": 1.2, "e150": -1.40, "e500": 2.20, "e1500": 0.47, "mcn_net": 7, "mcn_p": 0.3916},
+      {"power": 1.5, "e150": -1.40, "e500": 1.80, "e1500": 0.33, "mcn_net": 13, "mcn_p": 0.1980},
+      {"power": 2.0, "e150": -1.40, "e500": 1.60, "e1500": 0.20, "mcn_net": 6, "mcn_p": 0.6510}
+    ],
+    "verdict": "REJECT"
+  },
+  "root_cause": "ACB gap 的線性截斷 min(gap/20, 1.0) 已是合理上界。非線性加權 gap^p 只改變截斷前的曲線形狀，對最終 Top-5 選擇影響有限（gap>20 後全部截斷到 1.0，冪次無效）。gap^1.2 略有改善可能來自 gap=10~19 的重新排序，但效果太小無統計意義。",
+  "future_reconsideration": "若移除截斷上限（允許 gap score > 1.0），非線性效果可能更明顯。重啟條件：與 freq_deficit 的相對加權也同時調整（fd*0.4 gs*0.6 比例是人工設定），系統性搜索 fd/gs 加權比例。"
+}

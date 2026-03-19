@@ -2,6 +2,8 @@
  * API Strategy - 調用後端 AI 模型進行預測
  * 支持 Prophet, XGBoost, LSTM 等模型
  */
+import { getApiUrl } from '../../config/apiConfig.js';
+
 export class APIStrategy {
     constructor(modelType = 'prophet') {
         this.modelType = modelType; // 'prophet' | 'xgboost' | 'lstm'
@@ -12,14 +14,21 @@ export class APIStrategy {
      * 獲取 API 端點
      */
     getApiEndpoint() {
-        // 開發環境
-        if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
-            // 使用 127.0.0.1 以避免在 macOS 上因 IPv6 (::1) 導致連線失敗
-            return 'http://127.0.0.1:8002/api/predict';
-        }
+        return getApiUrl('/api/predict');
+    }
 
-        // 生產環境（稍後配置）
-        return 'https://your-api-domain.com/api/predict';
+    /**
+     * 從 UI 讀取 coordinator 控制參數
+     */
+    getCoordinatorConfig() {
+        const modeEl = document.getElementById('coord-mode');
+        const betsEl = document.getElementById('coord-bets');
+        const mode = (modeEl?.value || 'direct').toLowerCase();
+        const bets = parseInt(betsEl?.value || '3', 10);
+        return {
+            mode: mode === 'hybrid' ? 'hybrid' : 'direct',
+            bets: Number.isFinite(bets) ? Math.min(Math.max(bets, 1), 5) : 3
+        };
     }
 
     /**
@@ -75,8 +84,15 @@ export class APIStrategy {
             modelType: this.modelType
         };
 
+        const { mode, bets } = this.getCoordinatorConfig();
+        const endpoint = new URL(this.apiEndpoint.replace('/predict', '/predict-from-backend'));
+        if (this.modelType.startsWith('coordinator')) {
+            endpoint.searchParams.set('coord_mode', mode);
+            endpoint.searchParams.set('coord_bets', String(bets));
+        }
+
         // 發送 API 請求到優化端點
-        const response = await fetch(this.apiEndpoint.replace('/predict', '/predict-from-backend'), {
+        const response = await fetch(endpoint.toString(), {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -198,6 +214,12 @@ export class APIStrategy {
             endDraw: endDraw
         };
 
+        if (this.modelType.startsWith('coordinator')) {
+            const { mode, bets } = this.getCoordinatorConfig();
+            requestData.coordMode = mode;
+            requestData.coordBets = bets;
+        }
+
         try {
             return await this.executeRangeRequest(requestData, lotteryRules);
         } catch (error) {
@@ -280,7 +302,10 @@ export class APIStrategy {
             'lstm': 'LSTM 神經網絡',
             'transformer': 'Transformer (PatchTST)',
             'bayesian_ensemble': '貝叶斯優化集成',
-            'maml': '元學習 (MAML)'
+            'maml': '元學習 (MAML)',
+            'coordinator': 'Coordinator (RSM 加權)',
+            'coordinator_direct': 'Coordinator Direct',
+            'coordinator_hybrid': 'Coordinator Hybrid'
         };
         return names[this.modelType] || this.modelType;
     }
@@ -310,6 +335,30 @@ export class APIStrategy {
 
         if (result.notes) {
             report += `\n**備註:**\n${result.notes}\n`;
+        }
+
+        // Track B: Player Behavior / Split-Risk Advisory
+        if (result.modelInfo && result.modelInfo.player_behavior) {
+            const pb = result.modelInfo.player_behavior;
+            if (pb.bets && pb.bets.length > 0) {
+                report += `\n---\n### Player Behavior / Split-Risk Analysis (Advisory Only)\n\n`;
+                pb.bets.forEach((bet, idx) => {
+                    const nums = (bet.numbers || []).map(n => String(n).padStart(2, '0')).join(', ');
+                    const score = bet.popularity?.popularity_score || 0;
+                    const level = bet.split_risk?.split_risk_level || 'LOW';
+                    const flags = (bet.popularity?.bias_flags || []).join(', ');
+                    report += `**注${idx + 1}**: ${nums}\n`;
+                    report += `- Popularity: **${score.toFixed(0)}/100** (${level})\n`;
+                    if (flags) report += `- Bias flags: ${flags}\n`;
+                    report += `- ${bet.split_risk?.expected_dilution || ''}\n`;
+                    if (bet.anti_crowd?.alternative) {
+                        const alt = bet.anti_crowd.alternative.map(n => String(n).padStart(2, '0')).join(', ');
+                        report += `- Alternative: ${alt} (score ${(bet.anti_crowd.alternative_score || 0).toFixed(0)}, -${(bet.anti_crowd.improvement || 0).toFixed(0)}pts)\n`;
+                    }
+                    report += `\n`;
+                });
+                report += `> *This section is ADVISORY ONLY. It does NOT affect prediction accuracy or ranking.*\n`;
+            }
         }
 
         return report;

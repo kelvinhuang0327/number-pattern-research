@@ -720,6 +720,186 @@ def zone_status_from_draws(
 
 
 # ============================================================
+# StrategyState — 標準化狀態機 (Phase 1-C, MiroFish Phase 1)
+# ============================================================
+from dataclasses import dataclass, field, asdict
+
+
+@dataclass
+class StrategyState:
+    """
+    策略滾動狀態快照 — 標準化 dataclass + JSON 序列化
+
+    設計借鑑 MiroFish SimulationState，使 RSM 狀態可以：
+      1. 直接 JSON 序列化/反序列化
+      2. 作為 API 回應格式
+      3. 被 LLM 研究智能體讀取（Phase 2 準備）
+
+    Usage:
+        state = StrategyState.from_analysis(analysis_dict)
+        json.dumps(state.to_dict())
+        StrategyState.from_dict(json.loads(blob))
+    """
+    name: str
+    lottery_type: str
+    num_bets: int
+    total_records: int
+
+    # 三窗口 Edge
+    edge_30p: float = 0.0
+    edge_100p: float = 0.0
+    edge_300p: float = 0.0
+
+    # 命中率
+    rate_30p: float = 0.0
+    rate_100p: float = 0.0
+    rate_300p: float = 0.0
+
+    # 趨勢
+    trend: str = 'STABLE'       # STABLE / ACCELERATING / DECELERATING / REGIME_SHIFT
+    z_score: float = 0.0        # z(short vs long)
+
+    # 風險調整報酬
+    sharpe_300p: float = 0.0     # Sharpe = edge_300p / std_300p (Bernoulli)
+
+    # 警報計數（連續負 Edge）
+    consecutive_neg_30p: int = 0
+    alert: bool = False
+
+    # 元資料
+    last_updated: str = field(default_factory=lambda: datetime.now().isoformat())
+    note: str = ''
+
+    def to_dict(self) -> Dict:
+        return asdict(self)
+
+    @classmethod
+    def from_dict(cls, d: Dict) -> 'StrategyState':
+        valid_fields = {f for f in cls.__dataclass_fields__}
+        filtered = {k: v for k, v in d.items() if k in valid_fields}
+        return cls(**filtered)
+
+    @classmethod
+    def from_analysis(cls, analysis: Dict, lottery_type: str) -> 'StrategyState':
+        """從 RollingStrategyMonitor.get_strategy_analysis() 結果建立"""
+        import math
+        w = analysis.get('windows', {})
+        t = analysis.get('trend', {})
+
+        def _edge(label): return w.get(label, {}).get('edge', 0.0)
+        def _rate(label): return w.get(label, {}).get('rate', 0.0)
+
+        trend_str = t.get('trend', 'STABLE')
+        z = t.get('z_short_long', 0.0)
+
+        rate300 = _rate('long')
+        edge300 = _edge('long')
+        # Bernoulli Sharpe: edge / sqrt(rate*(1-rate))
+        _std = math.sqrt(rate300 * (1.0 - rate300)) if 0 < rate300 < 1 else 1.0
+        sharpe = round(edge300 / _std, 4) if _std > 0 else 0.0
+
+        return cls(
+            name=analysis.get('strategy', ''),
+            lottery_type=lottery_type,
+            num_bets=analysis.get('num_bets', 0),
+            total_records=analysis.get('total_records', 0),
+            edge_30p=round(_edge('short'), 5),
+            edge_100p=round(_edge('medium'), 5),
+            edge_300p=round(_edge('long'), 5),
+            rate_30p=round(_rate('short'), 5),
+            rate_100p=round(_rate('medium'), 5),
+            rate_300p=round(_rate('long'), 5),
+            sharpe_300p=sharpe,
+            trend=trend_str,
+            z_score=round(z, 3),
+            alert=trend_str in ('DECELERATING', 'REGIME_SHIFT'),
+        )
+
+    def is_healthy(self) -> bool:
+        """三窗口均正才算健康"""
+        return self.edge_30p > 0 and self.edge_100p > 0 and self.edge_300p > 0
+
+    def status_line(self) -> str:
+        arrows = {'STABLE': '→', 'ACCELERATING': '▲', 'DECELERATING': '▼', 'REGIME_SHIFT': '◆'}
+        arrow = arrows.get(self.trend, '?')
+        alert_str = ' ⚠️' if self.alert else ''
+        sharpe_ok = '✓' if self.sharpe_300p > 0 else '✗'
+        return (
+            f"{self.name} [{self.trend}{arrow}]{alert_str}  "
+            f"30p={self.edge_30p*100:+.2f}%  "
+            f"100p={self.edge_100p*100:+.2f}%  "
+            f"300p={self.edge_300p*100:+.2f}%  "
+            f"Sharpe={self.sharpe_300p:.3f}{sharpe_ok}"
+        )
+
+
+class StrategyStateStore:
+    """
+    策略狀態持久化 — 取代散落的 rolling_monitor_*.json
+
+    支援讀寫 StrategyState dataclass，路徑：
+        lottery_api/data/strategy_states_{lottery_type}.json
+    """
+
+    def __init__(self, lottery_type: str, data_dir: str = None):
+        self.lottery_type = lottery_type
+        if data_dir is None:
+            data_dir = os.path.join(os.path.dirname(__file__), '..', 'data')
+        self.filepath = os.path.join(data_dir, f'strategy_states_{lottery_type}.json')
+
+    def load_all(self) -> Dict[str, StrategyState]:
+        if not os.path.exists(self.filepath):
+            return {}
+        with open(self.filepath, 'r', encoding='utf-8') as f:
+            raw = json.load(f)
+        return {k: StrategyState.from_dict(v) for k, v in raw.items()}
+
+    def save_all(self, states: Dict[str, StrategyState]):
+        data = {k: v.to_dict() for k, v in states.items()}
+        with open(self.filepath, 'w', encoding='utf-8') as f:
+            json.dump(data, f, indent=2, ensure_ascii=False)
+
+    def update_from_monitor(self, monitor: 'RollingStrategyMonitor', strategy_configs: List[Dict]):
+        """從 RSM 分析結果同步更新所有策略狀態"""
+        states = self.load_all()
+        for cfg in strategy_configs:
+            analysis = monitor.get_strategy_analysis(cfg['name'], cfg['num_bets'])
+            if 'error' in analysis:
+                continue
+            new_state = StrategyState.from_analysis(analysis, self.lottery_type)
+
+            # 追蹤連續負 Edge（30期）
+            old = states.get(cfg['name'])
+            if old and old.edge_30p < 0 and new_state.edge_30p < 0:
+                new_state.consecutive_neg_30p = old.consecutive_neg_30p + 1
+            else:
+                new_state.consecutive_neg_30p = 0
+
+            states[cfg['name']] = new_state
+
+        self.save_all(states)
+        return states
+
+    def print_dashboard(self):
+        """印出策略狀態儀表板"""
+        states = self.load_all()
+        if not states:
+            print(f"  [{self.lottery_type}] 無策略狀態資料")
+            return
+
+        print(f"\n{'='*68}")
+        print(f"  Strategy State Dashboard — {self.lottery_type}")
+        print(f"  Updated: {datetime.now().strftime('%Y-%m-%d %H:%M')}")
+        print(f"{'='*68}")
+        for name, s in sorted(states.items(), key=lambda x: -x[1].edge_300p):
+            health = '✅' if s.is_healthy() else ('⚠️ ' if s.edge_300p > 0 else '❌')
+            print(f"  {health}  {s.status_line()}")
+            if s.consecutive_neg_30p >= 10:
+                print(f"      ⚠️  連續 {s.consecutive_neg_30p} 期 30p負Edge，需注意")
+        print(f"{'='*68}\n")
+
+
+# ============================================================
 # Convenience: load strategies by lottery type
 # ============================================================
 def get_power_lotto_strategies() -> List[Dict]:

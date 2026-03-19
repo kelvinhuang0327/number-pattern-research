@@ -1,6 +1,7 @@
 import { LOTTERY_RULES, detectLotteryType, LOTTERY_TYPES } from '../utils/Constants.js';
 import { isValidNumber, isValidSpecialNumber, getRelatedTypes } from '../utils/LotteryTypes.js';
 import { apiClient } from '../services/ApiClient.js';
+import { getApiUrl } from '../config/apiConfig.js';
 
 /**
  * 數據處理模組
@@ -418,7 +419,7 @@ export class DataProcessor {
                 console.log(`  → Using play mode: ${playMode}`);
             }
 
-            const response = await fetch('http://localhost:8002/api/data/validate-csv', {
+            const response = await fetch(getApiUrl('/api/data/validate-csv'), {
                 method: 'POST',
                 body: formData
             });

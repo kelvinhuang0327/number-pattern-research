@@ -12,9 +12,33 @@ def normalize_lottery_type(lottery_type: str) -> str:
     """
     將中文彩券名稱或前端 ID 轉換為後端使用的標準英文代碼
     """
+    if lottery_type is None:
+        return lottery_type
+
+    raw = str(lottery_type).strip()
+    if not raw:
+        return raw
+
+    normalized = raw.replace("-", "_").replace(" ", "_").upper()
+    canonical = {
+        "BIG_LOTTO",
+        "BIG_LOTTO_BONUS",
+        "POWER_LOTTO",
+        "DAILY_539",
+        "DOUBLE_WIN",
+        "3_STAR",
+        "4_STAR",
+        "38_LOTTO",
+        "39_LOTTO",
+        "49_LOTTO",
+        "BINGO_BINGO",
+        "LOTTO_6_38",
+    }
+
     mapping = {
         # 中文映射
         "大樂透": "BIG_LOTTO",
+        "大樂透加開獎項": "BIG_LOTTO_BONUS",
         "威力彩": "POWER_LOTTO",
         "今彩539": "DAILY_539",
         "雙贏彩": "DOUBLE_WIN",
@@ -26,14 +50,26 @@ def normalize_lottery_type(lottery_type: str) -> str:
 
         # 前端 ID 映射 (處理 index.html 中的定義不一致)
         "DAILY_CASH_539": "DAILY_539",
+        "DAILY539": "DAILY_539",
         "POWER_BALL": "POWER_LOTTO",
+        "POWERLOTTO": "POWER_LOTTO",
+        "BIGLOTTO": "BIG_LOTTO",
+        "STAR3": "3_STAR",
+        "STAR4": "4_STAR",
         "STAR_3": "3_STAR",
         "STAR_4": "4_STAR",
         "LOTTO_38": "38_LOTTO",
         "LOTTO_49": "49_LOTTO",
         "LOTTO_39": "39_LOTTO"
     }
-    return mapping.get(lottery_type, lottery_type)
+
+    if raw in mapping:
+        return mapping[raw]
+    if normalized in mapping:
+        return mapping[normalized]
+    if normalized in canonical:
+        return normalized
+    return raw
 
 def get_related_lottery_types(lottery_type: str) -> list:
     """

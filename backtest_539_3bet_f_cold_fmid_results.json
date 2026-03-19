@@ -1,0 +1,212 @@
+{
+  "timestamp": "2026-02-27T15:45:13.295949",
+  "strategy": "F500Top5 + Cold100Top5_ortho + Fmid_rank21-25_ortho",
+  "research_context": "115000051期 #31(Fmid rank22)結構性盲區",
+  "n_bets": 3,
+  "baselines": {
+    "M2+_3bet": 0.30443096953397364,
+    "M3+_3bet": 0.02982064838854559,
+    "M3+_5bet": 0.0492053877090568,
+    "M2+_1bet": 0.11397342976290345
+  },
+  "data_size": 5794,
+  "sanity_check": {
+    "avg_unique": 15.0,
+    "avg_overlap": 0.0,
+    "zero_overlap": true
+  },
+  "three_window": {
+    "3bet_F_Cold_Fmid": {
+      "150": {
+        "total": 150,
+        "ge2_hits": 51,
+        "ge2_rate": 0.34,
+        "ge2_edge": 0.035569030466026386,
+        "ge3_hits": 4,
+        "ge3_rate": 0.02666666666666667,
+        "ge3_edge": -0.0031539817218789214,
+        "avg_unique_nums": 15.0,
+        "avg_overlap": 0.0,
+        "avg_coverage": 1.9666666666666666
+      },
+      "500": {
+        "total": 500,
+        "ge2_hits": 158,
+        "ge2_rate": 0.316,
+        "ge2_edge": 0.011569030466026364,
+        "ge3_hits": 12,
+        "ge3_rate": 0.024,
+        "ge3_edge": -0.005820648388545589,
+        "avg_unique_nums": 15.0,
+        "avg_overlap": 0.0,
+        "avg_coverage": 1.95
+      },
+      "1500": {
+        "total": 1500,
+        "ge2_hits": 514,
+        "ge2_rate": 0.3426666666666667,
+        "ge2_edge": 0.038235697132693036,
+        "ge3_hits": 41,
+        "ge3_rate": 0.027333333333333334,
+        "ge3_edge": -0.0024873150552122553,
+        "avg_unique_nums": 15.0,
+        "avg_overlap": 0.0,
+        "avg_coverage": 1.9586666666666666
+      }
+    },
+    "3bet_F_only": {
+      "150": {
+        "total": 150,
+        "ge2_hits": 46,
+        "ge2_rate": 0.30666666666666664,
+        "ge2_edge": 0.002235697132693004,
+        "ge3_hits": 5,
+        "ge3_rate": 0.03333333333333333,
+        "ge3_edge": 0.003512684944787743,
+        "avg_unique_nums": 15.0,
+        "avg_overlap": 0.0,
+        "avg_coverage": 1.9266666666666667
+      },
+      "500": {
+        "total": 500,
+        "ge2_hits": 163,
+        "ge2_rate": 0.326,
+        "ge2_edge": 0.021569030466026373,
+        "ge3_hits": 15,
+        "ge3_rate": 0.03,
+        "ge3_edge": 0.00017935161145440914,
+        "avg_unique_nums": 15.0,
+        "avg_overlap": 0.0,
+        "avg_coverage": 1.944
+      },
+      "1500": {
+        "total": 1500,
+        "ge2_hits": 524,
+        "ge2_rate": 0.34933333333333333,
+        "ge2_edge": 0.04490236379935969,
+        "ge3_hits": 49,
+        "ge3_rate": 0.03266666666666666,
+        "ge3_edge": 0.0028460182781210736,
+        "avg_unique_nums": 15.0,
+        "avg_overlap": 0.0,
+        "avg_coverage": 1.9553333333333334
+      }
+    },
+    "3bet_F_Cold_only": {
+      "150": {
+        "total": 150,
+        "ge2_hits": 47,
+        "ge2_rate": 0.31333333333333335,
+        "ge2_edge": 0.008902363799359714,
+        "ge3_hits": 3,
+        "ge3_rate": 0.02,
+        "ge3_edge": -0.00982064838854559,
+        "avg_unique_nums": 15.0,
+        "avg_overlap": 0.0,
+        "avg_coverage": 1.9466666666666668
+      },
+      "500": {
+        "total": 500,
+        "ge2_hits": 162,
+        "ge2_rate": 0.324,
+        "ge2_edge": 0.01956903046602637,
+        "ge3_hits": 12,
+        "ge3_rate": 0.024,
+        "ge3_edge": -0.005820648388545589,
+        "avg_unique_nums": 15.0,
+        "avg_overlap": 0.0,
+        "avg_coverage": 1.956
+      },
+      "1500": {
+        "total": 1500,
+        "ge2_hits": 534,
+        "ge2_rate": 0.356,
+        "ge2_edge": 0.051569030466026344,
+        "ge3_hits": 41,
+        "ge3_rate": 0.027333333333333334,
+        "ge3_edge": -0.0024873150552122553,
+        "avg_unique_nums": 15.0,
+        "avg_overlap": 0.0,
+        "avg_coverage": 1.97
+      }
+    }
+  },
+  "permutation_test": {
+    "actual_rate": 0.316,
+    "actual_hits": 158,
+    "actual_total": 500,
+    "perm_mean": 0.32576,
+    "perm_std": 0.020800618467805617,
+    "perm_min": 0.256,
+    "perm_max": 0.384,
+    "z_score": -0.4692168175242547,
+    "p_value_empirical": 0.7114427860696517,
+    "p_value_normal": 0.6805426671335681,
+    "cohen_d": -0.4692168175242547,
+    "n_perms": 200,
+    "shuffle_mean_edge": 0.021329030466026355,
+    "signal_edge": -0.009759999999999991,
+    "total_edge": 0.011569030466026364
+  },
+  "mcnemar_vs_5bet": {
+    "total": 500,
+    "both_hit": 10,
+    "bet3_only": 148,
+    "bet5_only": 18,
+    "both_miss": 324,
+    "bet3_M2_rate": 0.316,
+    "bet5_M3_rate": 0.056,
+    "net_advantage": 130,
+    "chi2": 100.24698795180723,
+    "p_value": 0.0,
+    "significant": true,
+    "note": "3注M2+ vs 5注M3+ (各注各自主指標)"
+  },
+  "mcnemar_vs_controls": {
+    "vs_F_only": {
+      "label_a": "3bet_F_Cold_Fmid",
+      "label_b": "3bet_F_only",
+      "total": 500,
+      "both_hit": 76,
+      "a_only": 82,
+      "b_only": 87,
+      "both_miss": 255,
+      "rate_a": 0.316,
+      "rate_b": 0.326,
+      "net_advantage_a": -5,
+      "chi2": 0.09467455621301775,
+      "p_value": 0.7583164735262904,
+      "significant": false
+    },
+    "vs_F_Cold_only": {
+      "label_a": "3bet_F_Cold_Fmid",
+      "label_b": "3bet_F_Cold_only",
+      "total": 500,
+      "both_hit": 124,
+      "a_only": 34,
+      "b_only": 38,
+      "both_miss": 304,
+      "rate_a": 0.316,
+      "rate_b": 0.324,
+      "net_advantage_a": -4,
+      "chi2": 0.125,
+      "p_value": 0.7236736098317629,
+      "significant": false
+    }
+  },
+  "random_calibration": {
+    "m2_mean": 0.32910000000000006,
+    "m2_std": 0.00956678280998023,
+    "m3_mean": 0.029133333333333334,
+    "m3_std": 0.0031699982474583306
+  },
+  "pass_criteria": {
+    "三窗口全正_M2+": true,
+    "perm_p_le_005": false,
+    "零重疊": true,
+    "total_edge_positive": true
+  },
+  "decision": "FAIL → MARGINAL (時序信號不顯著)",
+  "decision_note": "三窗口全正但時序信號不顯著，記錄為 LATE_BLOOMER 候選。",
+  "elapsed_seconds": 48.6
+}

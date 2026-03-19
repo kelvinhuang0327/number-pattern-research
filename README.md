@@ -1,174 +1,159 @@
-> ⚠️ **本專案為學術統計研究，不提供投注建議，與台灣彩券股份有限公司無關。**
+> ⚠️ **This project is for academic statistical research only. It does not provide betting advice and is not affiliated with any lottery operator.**
 
-# Lotto Insight Platform
+# Number Pattern Research Platform
 
-台灣彩券（今彩539 / 大樂透 / 威力彩）統計研究與分析平台。
-本系統以實證研究為導向，追蹤策略表現並記錄研究發現。
+A statistical research platform for public draw games: Pick5 (5/39), Pick6 (6/49), and PowerPick (6/38+8).
+Research-driven, tracking strategy performance and documenting findings.
 
-**本系統不是預測工具，不提供投注建議。**
+**This is not a prediction tool and does not provide betting advice.**
 
 ---
 
-## 系統截圖
+## Screenshots
 
-| 預測模擬測試 | 歷史開獎記錄 | 數據上傳中心 |
+| Simulation Test | Draw History | Data Upload |
 |---|---|---|
-| ![模擬測試](docs/screenshots/simulation.png) | ![歷史記錄](docs/screenshots/history.png) | ![數據上傳](docs/screenshots/upload.png) |
+| ![Simulation](docs/screenshots/simulation.png) | ![History](docs/screenshots/history.png) | ![Upload](docs/screenshots/upload.png) |
 
 ---
 
-## 研究核心結論（2026-03-19 更新）
+## Research Findings (Updated 2026-03-19)
 
-| 遊戲 | 研究狀態 | 核心結論 |
-|------|---------|---------|
-| 今彩 539 | 維護模式 | 信號空間窮盡（L82）：H001~H008 全部 REJECT，現有策略 RSM 監控中 |
-| 大樂透 | 維護模式 | 與公平隨機過程無法區分（L91）：6 項隨機性檢驗全通過，49C6 無可操作信號 |
-| 威力彩 | RSM 監控中 | 部分策略持正 300p Edge，但所有遊戲 ruin_prob = 1.000 |
+| Game | Status | Conclusion |
+|------|--------|------------|
+| Pick5 (5/39) | Maintenance | Signal space exhausted (L82): H001~H008 all REJECTED, active strategies under RSM monitoring |
+| Pick6 (6/49) | Maintenance | Indistinguishable from fair random process (L91): 6 randomness tests passed, no actionable signal in 49C6 |
+| PowerPick (6/38+8) | RSM Monitoring | Some strategies hold positive 300p Edge, but ruin_prob = 1.000 for all games |
 
-**重要**：所有遊戲長期負期望值已確認。「下期預測」頁面為研究成果視覺化，非投注推薦。
+**Important**: Negative expected value confirmed for all games. The "Next Draw" page visualizes research outputs only — not betting recommendations.
 
 ---
 
-## 系統架構
+## Architecture
 
 ```
-後端 API   → http://localhost:8002   (FastAPI, lottery_api/)
-前端介面   → http://localhost:8081   (Vanilla JS SPA, src/)
-預測入口   → tools/quick_predict.py
-策略監控   → RSM (lottery_api/engine/rolling_strategy_monitor.py)
+Backend API  → http://localhost:8002   (FastAPI)
+Frontend     → http://localhost:8081   (Vanilla JS SPA)
+Prediction   → tools/quick_predict.py
+Strategy Mon → RSM (lottery_api/engine/rolling_strategy_monitor.py)
 ```
 
 ---
 
-## 專案規模
+## Project Scale
 
-| 類型 | 檔案數 | 行數 |
-|------|--------|------|
+| Type | Files | Lines |
+|------|-------|-------|
 | Python `.py` | 4,551 | 1,811,215 |
 | JavaScript `.js` | 112 | 30,385 |
 | Markdown `.md` | 365 | 73,018 |
 | HTML `.html` | 37 | 17,846 |
 | CSS | — | 6,186 |
-| **總計** | **8,293 檔** | **~190 萬行** |
+| **Total** | **8,293** | **~1.9M** |
 
 ---
 
-## 快速啟動
+## Quick Start
 
 ```bash
-# 啟動所有服務（前端 + 後端）
+# Start all services (frontend + backend)
 ./start_all.sh
 
-# 停止所有服務
+# Stop all services
 ./stop_all.sh
 
-# 執行預測（命令列）
+# Run prediction (CLI)
 python3 tools/quick_predict.py all
 
-# 查看前端介面
+# Open frontend
 open http://localhost:8081
 ```
 
-服務啟動後開啟 http://localhost:8081，在「下期預測」頁面查看 RSM 協調器輸出。
+---
+
+## Directory Structure
+
+| Path | Description |
+|------|-------------|
+| `lottery_api/` | FastAPI backend, prediction engine, RSM monitoring |
+| `src/` | Vanilla JS single-page app |
+| `tools/` | Backtest, research, and maintenance scripts |
+| `docs/` | Technical documents and research reports |
+| `memory/` | Auto-memory (persists across sessions) |
+| `research/` | Research scripts and exploratory analysis |
+| `rejected/` | Rejected strategy archive (with failure reasons) |
+| `data/` | Strategy monitoring cache (RSM state) |
 
 ---
 
-## 目錄結構
+## Documentation
 
-| 路徑 | 說明 |
-|------|------|
-| `lottery_api/` | FastAPI 後端、預測引擎、RSM 監控 |
-| `src/` | Vanilla JS 前端單頁應用 |
-| `tools/` | 回測、研究、維護腳本 |
-| `docs/` | 技術文件與研究報告 |
-| `memory/` | AI 自動記憶（跨 session 保存） |
-| `research/` | 研究腳本與探索性分析 |
-| `rejected/` | 已拒絕策略歸檔（含失敗原因） |
-| `data/` | 策略監控快取（RSM 狀態） |
-
----
-
-## 文件導覽
-
-| 文件 | 說明 |
-|------|------|
-| [docs/MASTER_GUIDE.md](docs/MASTER_GUIDE.md) | 系統架構與當前策略現況 |
-| [docs/EXECUTIVE_SUMMARY_2026.md](docs/EXECUTIVE_SUMMARY_2026.md) | 2026 研究成果執行摘要 |
-| [docs/BACKTEST_PROTOCOL.md](docs/BACKTEST_PROTOCOL.md) | 回測規範與驗證標準 |
-| [docs/BACKTEST_REPORTS_INDEX.md](docs/BACKTEST_REPORTS_INDEX.md) | 回測報告索引 |
-| [docs/sb3_final_recommendation.md](docs/sb3_final_recommendation.md) | RL 研究最終結案 |
-| [docs/decision_payout_report.md](docs/decision_payout_report.md) | 決策層分析報告 |
-| [lottery_api/CLAUDE.md](lottery_api/CLAUDE.md) | 策略規範（主要參考） |
+| File | Description |
+|------|-------------|
+| [docs/MASTER_GUIDE.md](docs/MASTER_GUIDE.md) | System architecture and current strategy status |
+| [docs/EXECUTIVE_SUMMARY_2026.md](docs/EXECUTIVE_SUMMARY_2026.md) | 2026 research executive summary |
+| [docs/BACKTEST_PROTOCOL.md](docs/BACKTEST_PROTOCOL.md) | Backtest protocol and validation standards |
+| [docs/BACKTEST_REPORTS_INDEX.md](docs/BACKTEST_REPORTS_INDEX.md) | Backtest report index |
+| [docs/sb3_final_recommendation.md](docs/sb3_final_recommendation.md) | RL research final report |
+| [docs/decision_payout_report.md](docs/decision_payout_report.md) | Decision layer analysis |
+| [lottery_api/CLAUDE.md](lottery_api/CLAUDE.md) | Strategy specification (primary reference) |
 
 ---
 
-## 現役策略快覽
+## Active Strategies
 
-### 今彩 539（維護模式）
+### Pick5 — 5/39 (Maintenance Mode)
 
-| 注數 | 策略 | 300p Edge | 狀態 |
-|------|------|-----------|------|
-| 1注 | acb_1bet | +3.27% | PRODUCTION |
-| 2注 | midfreq_acb_2bet | +8.46% | PRODUCTION |
-| 3注 | acb_markov_midfreq_3bet | +8.50% | PRODUCTION |
-| 5注 | f4cold_5bet | +6.61% | PRODUCTION |
+| Bets | Strategy | 300p Edge | Status |
+|------|----------|-----------|--------|
+| 1 | acb_1bet | +3.27% | PRODUCTION |
+| 2 | midfreq_acb_2bet | +8.46% | PRODUCTION |
+| 3 | acb_markov_midfreq_3bet | +8.50% | PRODUCTION |
+| 5 | f4cold_5bet | +6.61% | PRODUCTION |
 
-### 大樂透（維護模式）
+### Pick6 — 6/49 (Maintenance Mode)
 
-| 注數 | 策略 | 300p Edge | 狀態 |
-|------|------|-----------|------|
-| 2注 | regime_2bet | +3.64% | PRODUCTION |
-| 3注 | ts3_regime_3bet | +3.51% | PRODUCTION |
-| 5注 | p1_dev_sum5bet | +3.71% | PRODUCTION |
+| Bets | Strategy | 300p Edge | Status |
+|------|----------|-----------|--------|
+| 2 | regime_2bet | +3.64% | PRODUCTION |
+| 3 | ts3_regime_3bet | +3.51% | PRODUCTION |
+| 5 | p1_dev_sum5bet | +3.71% | PRODUCTION |
 
-### 威力彩（RSM 監控中）
+### PowerPick — 6/38+8 (RSM Monitoring)
 
-| 注數 | 策略 | 300p Edge | 狀態 |
-|------|------|-----------|------|
-| 3注 | fourier_rhythm_3bet | +3.16% | PRODUCTION |
-| 4注 | pp3_freqort_4bet | +3.40% | PRODUCTION |
-| 5注 | orthogonal_5bet | +2.76% | WATCH |
+| Bets | Strategy | 300p Edge | Status |
+|------|----------|-----------|--------|
+| 3 | fourier_rhythm_3bet | +3.16% | PRODUCTION |
+| 4 | pp3_freqort_4bet | +3.40% | PRODUCTION |
+| 5 | orthogonal_5bet | +2.76% | WATCH |
 
 ---
 
-## 風險聲明
-
-### 繁體中文
-
-> 本專案為學術研究與統計分析用途，**不構成任何投資或投注建議**。
->
-> - 本系統不保證任何形式的中獎或盈利
-> - 所有彩種均為負期望值遊戲（Expected Value < 0），持續參與必然虧損
-> - 所有策略分析僅反映歷史統計特性，不代表未來表現
-> - 使用本系統所衍生的任何損失，概由使用者自行承擔
-> - 本系統為研究平台，非投注工具；「下期預測」頁面為研究成果視覺化，非中獎號碼推薦
-
-**請理性對待彩券，量力而為。如有賭博問題，請聯繫：1800 諮詢專線。**
-
-### English
+## Risk Disclaimer
 
 > This project is for **research and statistical analysis purposes only**.
 >
 > - **Not financial advice**: Nothing in this system constitutes investment or betting advice
-> - **No guarantee of winning**: Past statistical patterns do not predict future lottery outcomes
-> - **Negative expected value**: All lottery games have negative EV; continued play results in guaranteed long-term losses (ruin probability = 1.000)
+> - **No guarantee of winning**: Past statistical patterns do not predict future draw outcomes
+> - **Negative expected value**: All draw games have negative EV; continued play results in guaranteed long-term losses (ruin probability = 1.000)
 > - **Use at your own risk**: The authors are not liable for any financial losses incurred from using this system
-> - **Research system only**: The "Next Draw" page visualizes research outputs, not winning number recommendations
+> - **Research system only**: All outputs visualize research findings, not winning number recommendations
 
 **If you have a gambling problem, please seek help.**
 
 ---
 
-## 交流與貢獻
+## Discussion & Contribution
 
-本專案在統計信號探索上已遇到瓶頸（今彩539 L82 / 大樂透 L91），若你對機率分析、時間序列、彩券統計有興趣，歡迎一起交流新思路。
+This project has hit a wall in statistical signal exploration (Pick5 L82 / Pick6 L91).
+If you are interested in probability analysis, time series, or draw game statistics, feel free to exchange ideas.
 
-- 有新的分析角度或假設？歡迎開 **Issue** 討論
-- 發現 bug 或資料問題？**PR 歡迎**
-- 純粹想聊聊研究方向？也可以直接開 Issue
+- New analysis angle or hypothesis? Open an **Issue**
+- Found a bug or data issue? **PRs welcome**
+- Just want to discuss research direction? Open an Issue
 
 ---
 
-## 授權條款 / License
+## License
 
 MIT License — Copyright (c) 2026 Kelvin. See [LICENSE](LICENSE) for details.

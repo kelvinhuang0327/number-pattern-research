@@ -7,6 +7,16 @@
 
 ---
 
+## 系統截圖
+
+| 下期開獎預測 | 歷史開獎記錄 |
+|---|---|
+| ![下期預測](docs/screenshots/next-draw.png) | ![歷史記錄](docs/screenshots/history.png) |
+
+![數據上傳中心](docs/screenshots/upload.png)
+
+---
+
 ## 研究核心結論（2026-03-19 更新）
 
 | 遊戲 | 研究狀態 | 核心結論 |

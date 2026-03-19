@@ -1,0 +1,20 @@
+{
+  "strategy": "P3_StateAware_3bet",
+  "date": "2026-02-25",
+  "description": "和值/區間狀態感知 — 根據上期和值偏移調整選號範圍權重",
+  "result": "ARCHIVE",
+  "failure_reason": "1500p Edge +0.92% 低於 TS3 +1.46%，500p和1500p均未達統計顯著性；150p表現突出(+3.19%)但樣本小",
+  "statistics": {
+    "150p": {"m3_plus": 13, "total": 150, "rate": 8.67, "edge": 3.19, "z": 1.72},
+    "500p": {"m3_plus": 31, "total": 500, "rate": 6.20, "edge": 0.72, "z": 0.71},
+    "1500p": {"m3_plus": 96, "total": 1500, "rate": 6.40, "edge": 0.92, "z": 1.57}
+  },
+  "pattern": "STABLE",
+  "applicable_conditions": "150p Edge +3.19% 值得注意，可能在短期趨勢捕捉上有優勢",
+  "retest_conditions": [
+    "作為 TS3 的後處理過濾器而非替代方案",
+    "僅在和值偏離 >1σ 時才觸發",
+    "結合 P0 鄰號注入使用",
+    "等待300期新數據再重測"
+  ]
+}

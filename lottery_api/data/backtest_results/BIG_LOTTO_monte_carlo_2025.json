@@ -1,0 +1,23 @@
+{
+  "summary": {
+    "lottery_type": "BIG_LOTTO",
+    "method_name": "monte_carlo",
+    "window_size": 200,
+    "test_periods": 116,
+    "win_count": 1,
+    "win_rate": 0.008620689655172414,
+    "avg_matches": 0.6724137931034483,
+    "max_matches": 3,
+    "total_matches": 78,
+    "periods_per_win": 116.0,
+    "expected_cost_per_win": 5800.0,
+    "test_start_date": "2025-01-03",
+    "test_end_date": "2025/12/23",
+    "backtest_timestamp": "2025-12-29T13:47:12.368242"
+  },
+  "details": [
+    {
+      "draw_id": "114000116",
+      "draw_date": "2025/12/23",
+      "predicted_numbers": [
+        

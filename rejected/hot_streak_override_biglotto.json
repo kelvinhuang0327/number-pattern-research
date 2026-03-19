@@ -1,0 +1,30 @@
+{
+  "strategy_name": "hot_streak_override",
+  "lottery_type": "BIG_LOTTO",
+  "rejected_date": "2026-03-14",
+  "description": "Hot-Streak Override: Multi-window (W=8,10,12,15,20,30) frequency z-score detection. z > 2.0 → boost (z-2.0) × 0.06 × max_score",
+  "parameters": {
+    "windows": [8, 10, 12, 15, 20, 30],
+    "z_threshold": 2.0,
+    "boost_rate": 0.06
+  },
+  "failure_reason": "Counterproductive in ALL configurations. Param scan across hs_rate=[0.02,0.03,0.05,0.08] showed Hot-Streak alone NEVER passes three-window test. Combined with Zone Cascade, it reduces total hits vs Zone-only. The boost displaces better-ranked candidates with short-term hot numbers that are already mean-reverting.",
+  "validation_results": {
+    "param_scan_hs_only": {
+      "hr_0.02": {"edge_pct": 0.72, "three_window_pass": false, "diff": 0},
+      "hr_0.03": {"edge_pct": 0.72, "three_window_pass": false, "diff": 0},
+      "hr_0.05": {"edge_pct": 0.72, "three_window_pass": false, "diff": 0},
+      "hr_0.08": {"edge_pct": 0.72, "three_window_pass": false, "diff": 0}
+    },
+    "combined_guards_full_validation": {
+      "2bet": {"verdict": "REJECTED", "checks_passed": "1/4"},
+      "3bet": {"verdict": "REJECTED", "checks_passed": "2/4"}
+    }
+  },
+  "key_insight": "Hot-streak detection captures real short-term frequency spikes, but these spikes are already mean-reverting by the time they're detectable (z>2.0 typically signals peak, not continuation). Boosting these numbers actively hurts by displacing cold-rebound candidates that have higher expected value. The existing agents (especially markov + neighbor) already capture usable short-term momentum without the noise of explicit z-score boosting.",
+  "retest_conditions": [
+    "Evidence that hot streaks in lottery data persist beyond detection window (currently they don't)",
+    "Alternative formulation: z-score as a VETO rather than a BOOST (suppress very cold numbers instead)",
+    "Regime-conditional activation (only in specific distributional regimes)"
+  ]
+}

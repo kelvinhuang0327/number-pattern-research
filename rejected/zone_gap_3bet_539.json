@@ -1,0 +1,70 @@
+{
+  "strategy": "SumRange + GapPressure + ZoneShift (3-bet 539)",
+  "date": "2026-02-26",
+  "trigger": "115000050期檢討會議 P0 action items",
+  "decision": "FAIL",
+  "reason": "未通過 permutation test — 策略 M2+ 不優於 random 3-bet baseline",
+
+  "results": {
+    "three_window_new": {
+      "150p": {"m2_rate": 0.3200, "edge": "+1.56%", "z": 0.41, "p": 0.3393},
+      "500p": {"m2_rate": 0.3160, "edge": "+1.16%", "z": 0.56, "p": 0.2870},
+      "1500p": {"m2_rate": 0.3147, "edge": "+1.02%", "z": 0.86, "p": 0.1945}
+    },
+    "three_window_old": {
+      "150p": {"m2_rate": 0.2733, "edge": "-3.11%", "z": -0.83, "p": 0.7961},
+      "500p": {"m2_rate": 0.2580, "edge": "-4.64%", "z": -2.26, "p": 0.9880},
+      "1500p": {"m2_rate": 0.2860, "edge": "-1.84%", "z": -1.55, "p": 0.9396}
+    },
+    "permutation_test": {
+      "actual_m2": 0.3160,
+      "random_mean": 0.3256,
+      "random_std": 0.0209,
+      "signal_edge": -0.0096,
+      "z_score": -0.46,
+      "p_value": 0.7114,
+      "cohen_d": -0.46
+    },
+    "mcnemar": {
+      "new_rate": 0.3160,
+      "old_rate": 0.2580,
+      "new_only": 81,
+      "old_only": 52,
+      "advantage": 29,
+      "chi2": 5.89,
+      "p_value": 0.0152
+    },
+    "pass_criteria": {
+      "perm_p_lt_005": false,
+      "positive_edge": false,
+      "new_beats_old": true,
+      "three_window_stable": true
+    }
+  },
+
+  "root_cause_analysis": {
+    "primary": "Bet overlap reduces effective coverage. Strategy 3-bets average 13.4 unique numbers (34.4% of 39). Random non-overlapping 3-bets cover 15 unique numbers (38.5% of 39). The ~4% coverage gap translates directly to lower M2+ rate.",
+    "secondary": "GapPressure and ZoneShift tend to select similar numbers as SumRange when zone deviation is not extreme, causing high overlap between bets.",
+    "note": "The old strategy (SumRange+Bayesian+ZoneBalance) is ALSO below random baseline (-1.84% to -4.64% edge). Neither strategy passes permutation test."
+  },
+
+  "positive_findings": {
+    "new_vs_old": "NEW significantly better than OLD (McNemar chi2=5.89, p=0.0152)",
+    "new_vs_theoretical": "NEW consistently above theoretical baseline (+1.02% to +1.56%)",
+    "modules_valid": "GapPressureScorer and ZoneShiftDetector are valid building blocks — the issue is combination overlap, not individual prediction quality"
+  },
+
+  "modules_kept": [
+    "lottery_api/models/gap_pressure.py",
+    "lottery_api/models/zone_shift_detector.py"
+  ],
+
+  "future_retest_conditions": [
+    "Add orthogonalization layer to enforce minimum 14+ unique numbers across bets",
+    "Use exclude set to prevent bet overlap (pass used numbers to subsequent predictors)",
+    "Consider 4-bet or 5-bet structure where coverage naturally increases",
+    "Test bet diversity scoring: penalize combos with high inter-bet overlap"
+  ],
+
+  "old_strategy_status": "ALSO UNVERIFIED — SumRange+Bayesian+ZoneBalance shows -1.84% to -4.64% edge vs baseline. Neither old nor new passes random 3-bet baseline."
+}

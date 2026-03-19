@@ -1,0 +1,345 @@
+{
+  "timestamp": "2026-02-27T22:23:20",
+  "S1_results": {
+    "POWER_LOTTO": {
+      "label": "威力彩",
+      "best_window": 200,
+      "best_edge_pct": 0.73,
+      "stability": "INEFFECTIVE",
+      "three_window": {
+        "150": {
+          "rate": 3.333,
+          "edge": -0.537,
+          "z": -0.34
+        },
+        "500": {
+          "rate": 3.2,
+          "edge": -0.67,
+          "z": -0.78
+        },
+        "1500": {
+          "rate": 3.333,
+          "edge": -0.537,
+          "z": -1.08
+        }
+      },
+      "permutation": {
+        "actual_rate": 4.6,
+        "perm_mean": 3.828,
+        "signal_edge": 0.772,
+        "z": 1.57,
+        "p": 0.0697
+      },
+      "passed": false
+    },
+    "BIG_LOTTO": {
+      "label": "大樂透",
+      "best_window": 30,
+      "best_edge_pct": 0.873,
+      "stability": "LATE_BLOOMER",
+      "three_window": {
+        "150": {
+          "rate": 0.0,
+          "edge": -1.86,
+          "z": -1.69
+        },
+        "500": {
+          "rate": 2.4,
+          "edge": 0.54,
+          "z": 0.89
+        },
+        "1500": {
+          "rate": 2.4,
+          "edge": 0.54,
+          "z": 1.55
+        }
+      },
+      "permutation": {
+        "actual_rate": 2.733,
+        "perm_mean": 1.875,
+        "signal_edge": 0.858,
+        "z": 2.56,
+        "p": 0.0149
+      },
+      "passed": true
+    }
+  },
+  "S2_feature_matrix": {
+    "POWER_LOTTO": {
+      "fourier_500": {
+        "edge": 1.13,
+        "z": 2.27
+      },
+      "ema_cross": {
+        "edge": 0.33,
+        "z": 0.66
+      },
+      "echo_lag2": {
+        "edge": 0.13,
+        "z": 0.26
+      },
+      "freq_deficit": {
+        "edge": -0.003,
+        "z": -0.01
+      },
+      "cold_100": {
+        "edge": -0.003,
+        "z": -0.01
+      },
+      "gap_score": {
+        "edge": -0.07,
+        "z": -0.14
+      },
+      "tail_balance": {
+        "edge": -0.137,
+        "z": -0.27
+      },
+      "neighbor": {
+        "edge": -0.27,
+        "z": -0.54
+      },
+      "hot_50": {
+        "edge": -0.403,
+        "z": -0.81
+      },
+      "markov_30": {
+        "edge": -0.47,
+        "z": -0.94
+      },
+      "ACB_100": {
+        "edge": -0.537,
+        "z": -1.08
+      },
+      "dev_hot_200": {
+        "edge": -0.537,
+        "z": -1.08
+      }
+    },
+    "BIG_LOTTO": {
+      "hot_50": {
+        "edge": 0.607,
+        "z": 1.74
+      },
+      "ACB_100": {
+        "edge": 0.54,
+        "z": 1.55
+      },
+      "fourier_500": {
+        "edge": 0.54,
+        "z": 1.55
+      },
+      "echo_lag2": {
+        "edge": 0.407,
+        "z": 1.17
+      },
+      "freq_deficit": {
+        "edge": 0.273,
+        "z": 0.78
+      },
+      "cold_100": {
+        "edge": 0.273,
+        "z": 0.78
+      },
+      "tail_balance": {
+        "edge": 0.273,
+        "z": 0.78
+      },
+      "ema_cross": {
+        "edge": 0.207,
+        "z": 0.59
+      },
+      "neighbor": {
+        "edge": -0.127,
+        "z": -0.36
+      },
+      "gap_score": {
+        "edge": -0.327,
+        "z": -0.94
+      },
+      "markov_30": {
+        "edge": -0.393,
+        "z": -1.13
+      },
+      "dev_hot_200": {
+        "edge": -0.46,
+        "z": -1.32
+      }
+    },
+    "DAILY_539": {
+      "ACB_100": {
+        "edge": 3.133,
+        "z": 3.82
+      },
+      "freq_deficit": {
+        "edge": 2.333,
+        "z": 2.84
+      },
+      "cold_100": {
+        "edge": 2.333,
+        "z": 2.84
+      },
+      "fourier_500": {
+        "edge": 1.6,
+        "z": 1.95
+      },
+      "ema_cross": {
+        "edge": 1.4,
+        "z": 1.71
+      },
+      "markov_30": {
+        "edge": 0.6,
+        "z": 0.73
+      },
+      "echo_lag2": {
+        "edge": 0.067,
+        "z": 0.08
+      },
+      "tail_balance": {
+        "edge": 0.067,
+        "z": 0.08
+      },
+      "neighbor": {
+        "edge": 0.0,
+        "z": 0.0
+      },
+      "hot_50": {
+        "edge": -0.133,
+        "z": -0.16
+      },
+      "gap_score": {
+        "edge": -0.267,
+        "z": -0.32
+      },
+      "dev_hot_200": {
+        "edge": -0.6,
+        "z": -0.73
+      }
+    }
+  },
+  "S3_best_2bet": {
+    "POWER_LOTTO": {
+      "best": "fourier+echo_lag2",
+      "edge": 1.343,
+      "z": 1.96,
+      "all_combos_sorted": [
+        {
+          "combo": "fourier+echo_lag2",
+          "edge": 1.343,
+          "z": 1.96
+        },
+        {
+          "combo": "cold+fourier",
+          "edge": 1.01,
+          "z": 1.48
+        },
+        {
+          "combo": "fourier+tail_balance",
+          "edge": 0.943,
+          "z": 1.38
+        },
+        {
+          "combo": "fourier+neighbor",
+          "edge": 0.743,
+          "z": 1.09
+        },
+        {
+          "combo": "ACB+fourier",
+          "edge": 0.543,
+          "z": 0.79
+        },
+        {
+          "combo": "fourier+markov",
+          "edge": 0.543,
+          "z": 0.79
+        }
+      ]
+    },
+    "BIG_LOTTO": {
+      "best": "ACB+hot",
+      "edge": 1.181,
+      "z": 2.43,
+      "all_combos_sorted": [
+        {
+          "combo": "ACB+hot",
+          "edge": 1.181,
+          "z": 2.43
+        },
+        {
+          "combo": "ACB+fourier",
+          "edge": 0.981,
+          "z": 2.02
+        },
+        {
+          "combo": "fourier+echo_lag2",
+          "edge": 0.981,
+          "z": 2.02
+        },
+        {
+          "combo": "ACB+echo_lag2",
+          "edge": 0.848,
+          "z": 1.74
+        },
+        {
+          "combo": "ACB+tail_balance",
+          "edge": 0.848,
+          "z": 1.74
+        },
+        {
+          "combo": "cold+fourier",
+          "edge": 0.715,
+          "z": 1.47
+        }
+      ]
+    }
+  },
+  "S4_best_3bet": {
+    "POWER_LOTTO": {
+      "combo": "fourier+echo_lag2+ema_cross",
+      "stability": "STABLE",
+      "three_window": {
+        "150": {
+          "edge": 2.167,
+          "z": 0.84
+        },
+        "500": {
+          "edge": 0.034,
+          "z": 0.02
+        },
+        "1500": {
+          "edge": 1.434,
+          "z": 1.76
+        }
+      },
+      "permutation": {
+        "signal_edge": 1.435,
+        "z": 1.7,
+        "p": 0.0398,
+        "passed": true
+      }
+    },
+    "BIG_LOTTO": {
+      "combo": "ACB+hot+fourier",
+      "stability": "STABLE",
+      "three_window": {
+        "150": {
+          "edge": 0.523,
+          "z": 0.28
+        },
+        "500": {
+          "edge": 2.723,
+          "z": 2.68
+        },
+        "1500": {
+          "edge": 1.656,
+          "z": 2.82
+        }
+      },
+      "permutation": {
+        "signal_edge": 1.713,
+        "z": 2.94,
+        "p": 0.01,
+        "passed": true
+      }
+    }
+  }
+}

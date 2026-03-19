@@ -1,0 +1,115 @@
+{
+  "total_periods": 5809,
+  "first_period": "96000001",
+  "latest_period": "115000065",
+  "zone_stats": {
+    "Z1_mean": 1.673,
+    "Z1_std": 1.005,
+    "Z2_mean": 1.662,
+    "Z2_std": 1.007,
+    "Z3_mean": 1.665,
+    "Z3_std": 1.003,
+    "sum_mean": 99.933,
+    "sum_std": 23.965
+  },
+  "current_zpi_100p": {
+    "Z1": 13.7,
+    "Z2": -12.2,
+    "Z3": -1.5
+  },
+  "z1_acf": [
+    0.0005,
+    0.0241,
+    0.0266,
+    0.0247,
+    -0.0019
+  ],
+  "z2_acf": [
+    0.0036,
+    0.0049,
+    0.0044,
+    0.0063,
+    0.0067
+  ],
+  "z3_acf": [
+    0.0017,
+    -0.0074,
+    -0.0014,
+    -0.0032,
+    -0.007
+  ],
+  "sum_acf": [
+    0.0004,
+    0.0092,
+    0.0058,
+    0.0018,
+    -0.0139
+  ],
+  "z1_ljung_box_p": 0.1684,
+  "z2_ljung_box_p": 0.6958,
+  "z3_ljung_box_p": 0.935,
+  "sum_ljung_box_p": 0.9006,
+  "zpi_v1_vs_v2": {
+    "Z1": {
+      "baseline": 0.2009,
+      "v1_deficit_burst": {
+        "n": 4569,
+        "match": 926,
+        "p_cond": 0.2027,
+        "lift": 1.0088,
+        "p_val": 0.7677
+      },
+      "v2_momentum": {
+        "n": 1166,
+        "match": 255,
+        "p_cond": 0.2187,
+        "lift": 1.0886,
+        "p_val": 0.1339
+      }
+    },
+    "Z2": {
+      "baseline": 0.1957,
+      "v1_deficit_burst": {
+        "n": 3106,
+        "match": 622,
+        "p_cond": 0.2003,
+        "lift": 1.0231,
+        "p_val": 0.5266
+      },
+      "v2_momentum": {
+        "n": 1137,
+        "match": 231,
+        "p_cond": 0.2032,
+        "lift": 1.038,
+        "p_val": 0.5252
+      }
+    },
+    "Z3": {
+      "baseline": 0.1957,
+      "v1_deficit_burst": {
+        "n": 685,
+        "match": 152,
+        "p_cond": 0.2219,
+        "lift": 1.1337,
+        "p_val": 0.0917
+      },
+      "v2_momentum": {
+        "n": 1137,
+        "match": 217,
+        "p_cond": 0.1909,
+        "lift": 0.9751,
+        "p_val": 0.7086
+      }
+    }
+  },
+  "momentum_lift": {
+    "Z1": {
+      "lag1": {
+        "threshold": 2.18,
+        "n_condition": 1166,
+        "n_match": 255,
+        "p_conditional": 0.2187,
+        "p_baseline": 0.2009,
+        "lift": 1.0884,
+        "p_value": 0.0709,
+        "significant": 

@@ -1,0 +1,62 @@
+{
+  "draw_number": "115000003",
+  "lottery_type": "POWER_LOTTO",
+  "prediction_date": "2026-01-06 14:03:14",
+  "method": "ClusterPivot_4bet_anchors_7-15",
+  "backtest_success_rate": "18.63% (19/102)",
+  "bets": [
+    {
+      "numbers": [
+        11,
+        14,
+        17,
+        25,
+        34,
+        37
+      ],
+      "special": 4,
+      "source": "dual_max_base"
+    },
+    {
+      "numbers": [
+        11,
+        14,
+        17,
+        25,
+        33,
+        37
+      ],
+      "special": 2,
+      "source": "dual_max_wobble_1"
+    },
+    {
+      "numbers": [
+        11,
+        15,
+        17,
+        25,
+        34,
+        37
+      ],
+      "special": 5,
+      "source": "dual_max_wobble_2"
+    },
+    {
+      "numbers": [
+        11,
+        13,
+        17,
+        25,
+        34,
+        37
+      ],
+      "special": 8,
+      "source": "dual_max_wobble_3"
+    }
+  ],
+  "anchors": [
+    7,
+    15
+  ],
+  "history_window": 500
+}

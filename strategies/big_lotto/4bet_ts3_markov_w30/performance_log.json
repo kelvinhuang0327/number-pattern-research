@@ -1,0 +1,19 @@
+{
+  "strategy_id": "big_lotto/4bet_ts3_markov_w30",
+  "updated": "2026-02-24",
+  "rsm_source": "data/rolling_monitor_BIG_LOTTO.json",
+  "rsm_run_date": "2026-02-24",
+  "rsm_name": "ts3_markov_4bet_w30",
+  "total_records": 300,
+  "windows": {
+    "30p":  { "m3_count": 3,  "m3_rate_pct": 10.00, "edge_pct": 2.75, "trend": "POSITIVE" },
+    "100p": { "m3_count": 9,  "m3_rate_pct": 9.00,  "edge_pct": 1.75, "trend": "POSITIVE" },
+    "300p": { "m3_count": 29, "m3_rate_pct": 9.67,  "edge_pct": 2.42, "trend": "POSITIVE" }
+  },
+  "overall_trend": "STABLE",
+  "z_short_long": 0.06,
+  "confidence": 0.99,
+  "recommendation": "★推薦 (三窗口全正，RSM STABLE 三窗口Edge+2.75%/+1.75%/+2.42%)",
+  "alerts": [],
+  "next_review": "每100期新資料後重跑RSM"
+}

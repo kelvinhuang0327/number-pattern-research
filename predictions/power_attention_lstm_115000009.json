@@ -1,0 +1,42 @@
+{
+  "draw": "115000009",
+  "timestamp": "2026-01-27T10:26:27.393342",
+  "method": "Attention LSTM + V3",
+  "config": {
+    "window_size": 10,
+    "hidden_size": 64,
+    "train_window": 70
+  },
+  "predictions": [
+    {
+      "bet": 1,
+      "numbers": [
+        9,
+        11,
+        14,
+        16,
+        18,
+        20
+      ],
+      "special": 1,
+      "method": "Top-6 確定性"
+    },
+    {
+      "bet": 2,
+      "numbers": [
+        3,
+        7,
+        14,
+        20,
+        27,
+        37
+      ],
+      "special": 7,
+      "method": "Temperature 採樣"
+    }
+  ],
+  "edge_info": {
+    "main_numbers": "+3.68% (500期驗證)",
+    "special": "+2.20% (1000期驗證)"
+  }
+}

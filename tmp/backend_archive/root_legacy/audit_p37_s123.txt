@@ -1,0 +1,52 @@
+
+================================================================================
+🚀 TARGETED SUCCESS RATE AUDIT (150 / 500 / 1500 Periods)
+================================================================================
+Horizon      | Win Rate (3+)   | Strategy ROI    | Random ROI   | Alpha
+--------------------------------------------------------------------------------
+🎬 Starting DIVERSIFIED Backtest (N=150)...
+  0%|          | 0/150 [00:00<?, ?it/s]  0%|          | 0/150 [00:00<?, ?it/s]
+🔨 构建号码关联图 (使用最近 250 期數據)
+✅ 图构建完成
+   节点数: 49
+   边数: 726
+   平均度: 29.63
+
+============================================================
+📊 图属性分析
+============================================================
+
+🔗 度中心性 Top 5 (最多连接的号码):
+   34: 0.854 (连接 41 个号码)
+   33: 0.792 (连接 38 个号码)
+   38: 0.792 (连接 38 个号码)
+   19: 0.750 (连接 36 个号码)
+   21: 0.750 (连接 36 个号码)
+
+🌉 介数中心性 Top 5 (最重要的桥梁号码):
+   27: 0.022
+   21: 0.019
+   12: 0.019
+   31: 0.017
+   37: 0.017
+
+🔺 平均聚类系数: 0.247
+
+👥 社群数量: 2
+   社群 1: [1, 3, 4, 5, 7, 10, 11, 12, 13, 15]...
+   社群 2: [2, 6, 8, 9, 14, 18, 20, 21, 26, 27]...
+🔨 构建号码关联图 (使用最近 250 期數據)
+✅ 图构建完成
+   节点数: 49
+   边数: 726
+   平均度: 29.63
+Traceback (most recent call last):
+  File "/Users/kelvin/Kelvin-WorkSpace/LotteryNew/tools/backtest_diversified_3bet.py", line 157, in <module>
+    run_comprehensive_audit()
+  File "/Users/kelvin/Kelvin-WorkSpace/LotteryNew/tools/backtest_diversified_3bet.py", line 129, in run_comprehensive_audit
+    res_strat = run_backtest(h, strategy='DIVERSIFIED')
+  File "/Users/kelvin/Kelvin-WorkSpace/LotteryNew/tools/backtest_diversified_3bet.py", line 78, in run_backtest
+    bets = ensemble.predict_3bets(history=history_before)
+  File "/Users/kelvin/Kelvin-WorkSpace/LotteryNew/tools/biglotto_diversified_ensemble.py", line 336, in predict_3bets
+    outlier_res = self.advanced.entropy_outlier_predict(history, self.rules)
+AttributeError: 'AdvancedStrategies' object has no attribute 'entropy_outlier_predict'

@@ -1,0 +1,30 @@
+{
+  "strategy_id": "big_lotto/3bet_triple_strike_v2",
+  "version": "v2.0.0",
+  "generated_date": "2026-02-24",
+  "lottery_type": "BIG_LOTTO",
+  "n_bets": 3,
+  "random_baseline_pct": 5.49,
+  "backtest": {
+    "150p": { "m3_rate_pct": 7.35, "edge_pct": 1.86, "status": "PASS" },
+    "500p": { "m3_rate_pct": 7.61, "edge_pct": 2.12, "status": "PASS" },
+    "1500p":{ "m3_rate_pct": 6.93, "edge_pct": 1.46, "status": "PASS" }
+  },
+  "pattern": "ROBUST",
+  "statistics": {
+    "z_score": 2.48,
+    "p_value": 0.007,
+    "significant": true
+  },
+  "permutation_test": null,
+  "notes": "v2 升級：注2 Cold 改為 pool=12 + Sum-Range Constraint (Lift=1.495x)；較 v1 提升 +0.40%",
+  "coverage": {
+    "unique_numbers": 18,
+    "pool_size": 49,
+    "overlap": 0,
+    "coverage_rate": 0.367
+  },
+  "seed": 42,
+  "script": "tools/backtest_biglotto_triple_strike_v2.py",
+  "verdict": "ADOPTED"
+}

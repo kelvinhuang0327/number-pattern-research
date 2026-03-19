@@ -1,0 +1,18 @@
+{
+  "strategy_id": "power_lotto/2bet_fourier_rhythm",
+  "updated": "2026-02-24",
+  "rsm_source": "data/rolling_monitor_POWER_LOTTO.json",
+  "rsm_run_date": "2026-02-10",
+  "windows": {
+    "30p":  { "edge_pct": 5.74,  "trend": "POSITIVE" },
+    "100p": { "edge_pct": -1.59, "trend": "NEGATIVE" },
+    "300p": { "edge_pct": 1.08,  "trend": "POSITIVE" }
+  },
+  "overall_trend": "STABLE",
+  "z_score": null,
+  "recommendation": "★推薦 (RSM STABLE，100p短期負Edge但不觸發DECELERATING門檻)",
+  "alerts": [
+    "100p Edge=-1.59%：中期略低，但300p(+1.08%)與30p(+5.74%)正常，整體STABLE"
+  ],
+  "next_review": "每100期新資料後重跑RSM"
+}

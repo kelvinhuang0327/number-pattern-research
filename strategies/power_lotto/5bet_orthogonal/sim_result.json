@@ -1,0 +1,30 @@
+{
+  "strategy_id": "power_lotto/5bet_orthogonal",
+  "version": "v1.0.0",
+  "generated_date": "2026-02-24",
+  "lottery_type": "POWER_LOTTO",
+  "n_bets": 5,
+  "random_baseline_pct": 17.91,
+  "backtest": {
+    "150p": { "m3_rate_pct": 22.38, "edge_pct": 4.47, "status": "PASS" },
+    "500p": { "m3_rate_pct": 20.91, "edge_pct": 3.00, "status": "PASS" },
+    "1500p":{ "m3_rate_pct": 21.44, "edge_pct": 3.53, "status": "PASS" }
+  },
+  "pattern": "ALL_POSITIVE",
+  "statistics": {
+    "z_score": null,
+    "p_value": null,
+    "significant": null
+  },
+  "permutation_test": null,
+  "notes": "零重疊正交設計：PP3(注1-3) + 剩餘20號按頻率分2注(注4-5)；覆蓋30/38號",
+  "coverage": {
+    "unique_numbers": 30,
+    "pool_size": 38,
+    "overlap": 0,
+    "coverage_rate": 0.789
+  },
+  "seed": 42,
+  "script": "tools/predict_power_orthogonal_5bet.py",
+  "verdict": "ADOPTED"
+}

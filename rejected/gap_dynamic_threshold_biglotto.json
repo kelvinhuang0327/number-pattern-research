@@ -1,0 +1,18 @@
+{
+  "name": "Gap Dynamic Threshold",
+  "lottery": "BIG_LOTTO",
+  "rejected_date": "2026-02-23",
+  "failure_reason": "全部16組grid search均無改善，gap信號已被頻率窗口部分吸收，雙重加權造成扭曲",
+  "pattern": "INEFFECTIVE",
+  "stats": {
+    "edge_150p": "部分改善",
+    "edge_500p": "部分改善",
+    "edge_1500p": "最佳僅 -0.20%（Δ vs 基準）",
+    "baseline": "Triple Strike 1500p +1.04%",
+    "p_value": null,
+    "z_score": null
+  },
+  "applicable_conditions": "短期（150/500期）有些改善，但1500期全部劣化",
+  "retest_conditions": "當發現非頻率域的新gap信號源時可重測。不應直接混入Bet2選號邏輯",
+  "notes": "動機：115000016期 #04(gap=13)、#10(gap=19) 未被預測。Grid search: gap_threshold=[10,12,15,18] × gap_weight=[0.5,1.0,1.5,2.0] = 16組，全部失敗。腳本: tools/backtest_gap_dynamic_1500.py"
+}

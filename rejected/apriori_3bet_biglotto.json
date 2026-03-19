@@ -1,0 +1,19 @@
+{
+  "name": "Apriori 3注",
+  "lottery": "BIG_LOTTO",
+  "rejected_date": "2026-01-30",
+  "failure_reason": "全期Edge嚴重負向，短期亦無優勢",
+  "pattern": "INEFFECTIVE",
+  "stats": {
+    "edge_150p": "-0.16%",
+    "edge_500p": null,
+    "edge_1500p": null,
+    "baseline": "5.48% (3注)",
+    "p_value": null,
+    "z_score": null,
+    "edge_full_period": "-1.53%"
+  },
+  "applicable_conditions": "無",
+  "retest_conditions": "暫停研究。原因：Apriori關聯規則在彩票獨立性強的環境下共現信號弱。重啟條件：探索序列性Apriori（考慮時序）或dataset>5000期以提高共現Lift估計穩定性",
+  "notes": "廢棄日期 2026-01-30。Apriori依賴共現規則，彩票號碼獨立性強，共現Lift普遍偏低"
+}

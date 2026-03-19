@@ -1,0 +1,451 @@
+#!/usr/bin/env python3
+"""
+嚴謹的長期回測驗證
+- 100-150 期回測
+- 統計顯著性檢驗 (t-test, chi-square, binomial test)
+- 信賴區間計算
+- 效應量分析 (Cohen's d)
+"""
+import sys
+import os
+import json
+import numpy as np
+from collections import Counter
+from scipy import stats
+from typing import List, Dict, Tuple
+
+project_root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+sys.path.insert(0, os.path.join(project_root, 'lottery_api'))
+
+from database import DatabaseManager
+from common import get_lottery_rules
+from models.unified_predictor import UnifiedPredictionEngine
+from models.optimized_bayesian_predictor import OptimizedBayesianPredictor
+
+
+class StatisticalValidator:
+    """統計驗證器"""
+    
+    @staticmethod
+    def binomial_test(successes: int, trials: int, p0: float = 0.125) -> Dict:
+        """
+        二項檢驗
+        H0: 成功率 = p0 (第二區隨機猜測為 1/8 = 0.125)
+        """
+        # scipy 1.7+ deprecated binom_test, use binomtest
+        from scipy.stats import binomtest
+        result = binomtest(successes, trials, p0, alternative='greater')
+        p_value = result.pvalue
+        observed_rate = successes / trials if trials > 0 else 0
+        
+        # 95% 信賴區間 (Wilson score interval)
+        
+        return {
+            'successes': successes,
+            'trials': trials,
+            'observed_rate': observed_rate,
+            'expected_rate': p0,
+            'p_value': p_value,
+            'ci_95': (ci_low, ci_high),
+            'significant': p_value < 0.05
+        }
+    
+    @staticmethod
+    def t_test_independent(data1: List[float], data2: List[float]) -> Dict:
+        """
+        獨立樣本 t 檢驗
+        比較兩組平均命中數
+        """
+        t_stat, p_value = stats.ttest_ind(data1, data2)
+        
+        mean1 = np.mean(data1)
+        mean2 = np.mean(data2)
+        std1 = np.std(data1, ddof=1)
+        std2 = np.std(data2, ddof=1)
+        
+        # Cohen's d (效應量)
+        pooled_std = np.sqrt((std1**2 + std2**2) / 2)
+        cohens_d = (mean2 - mean1) / pooled_std if pooled_std > 0 else 0
+        
+        # 95% 信賴區間
+        se1 = std1 / np.sqrt(len(data1))
+        se2 = std2 / np.sqrt(len(data2))
+        ci1 = (mean1 - 1.96 * se1, mean1 + 1.96 * se1)
+        ci2 = (mean2 - 1.96 * se2, mean2 + 1.96 * se2)
+        
+        return {
+            'group1_mean': mean1,
+            'group2_mean': mean2,
+            'group1_ci': ci1,
+            'group2_ci': ci2,
+            't_statistic': t_stat,
+            'p_value': p_value,
+            'cohens_d': cohens_d,
+            'significant': p_value < 0.05,
+            'effect_size': StatisticalValidator._interpret_cohens_d(cohens_d)
+        }
+    
+    @staticmethod
+    def chi_square_test(observed_dist: Dict, expected_dist: Dict) -> Dict:
+        """
+        卡方檢驗
+        比較命中分布是否有顯著差異
+        """
+        # 對齊類別
+        categories = sorted(set(observed_dist.keys()) | set(expected_dist.keys()))
+        
+        observed = np.array([observed_dist.get(c, 0) for c in categories])
+        expected = np.array([expected_dist.get(c, 0) for c in categories])
+        
+        # 確保期望值都 >= 5
+        if np.any(expected < 5):
+            return {
+                'warning': 'Expected frequencies < 5, chi-square may not be reliable',
+                'valid': False
+            }
+        
+        chi2_stat, p_value = stats.chisquare(observed, expected)
+        
+        return {
+            'chi2_statistic': chi2_stat,
+            'p_value': p_value,
+            'degrees_of_freedom': len(categories) - 1,
+            'significant': p_value < 0.05,
+            'valid': True
+        }
+    
+    @staticmethod
+    def _interpret_cohens_d(d: float) -> str:
+        """解釋 Cohen's d 效應量"""
+        abs_d = abs(d)
+        if abs_d < 0.2:
+            return 'negligible'
+        elif abs_d < 0.5:
+            return 'small'
+        elif abs_d < 0.8:
+            return 'medium'
+        else:
+            return 'large'
+
+
+def evaluate_prediction(predicted_nums, predicted_special, actual_nums, actual_special):
+    """評估單次預測"""
+    main_hits = len(set(predicted_nums) & set(actual_nums))
+    special_hit = (predicted_special == actual_special)
+    
+    return {
+        'main_hits': main_hits,
+        'special_hit': special_hit,
+    }
+
+
+def backtest_method(method_name, predict_func, history, test_size=100):
+    """回測單一方法"""
+    results = []
+    rules = get_lottery_rules('POWER_LOTTO')
+    
+    print(f"  回測 {method_name}... (0/{test_size})", end='', flush=True)
+    
+    for i in range(test_size):
+        if (i + 1) % 20 == 0:
+            print(f"\r  回測 {method_name}... ({i+1}/{test_size})", end='', flush=True)
+        
+        train_history = history[i+1:]
+        test_draw = history[i]
+        
+        try:
+            prediction = predict_func(train_history, rules)
+            pred_nums = prediction.get('numbers', [])
+            pred_special = prediction.get('special', 0)
+            
+            actual_nums = test_draw.get('numbers', [])
+            actual_special = test_draw.get('special', 0)
+            
+            eval_result = evaluate_prediction(pred_nums, pred_special, actual_nums, actual_special)
+            eval_result['draw'] = test_draw.get('draw')
+            results.append(eval_result)
+            
+        except Exception as e:
+            print(f"\r  {method_name} - Draw {test_draw.get('draw')}: Error - {e}")
+    
+    print(f"\r  回測 {method_name}... ({test_size}/{test_size}) ✓")
+    
+    return results
+
+
+def analyze_no_consecutive_hypothesis(history: List[Dict]) -> Dict:
+    """
+    分析「無連號」假設是否成立
+    """
+    consecutive_counts = []
+    
+    for draw in history[:200]:  # 分析近200期
+        nums = sorted(draw.get('numbers', []))
+        consecutive = 0
+        for i in range(len(nums) - 1):
+            if nums[i+1] - nums[i] == 1:
+                consecutive += 1
+        consecutive_counts.append(consecutive)
+    
+    # 統計
+    counter = Counter(consecutive_counts)
+    total = len(consecutive_counts)
+    
+    no_consecutive_rate = counter.get(0, 0) / total if total > 0 else 0
+    has_consecutive_rate = 1 - no_consecutive_rate
+    
+    return {
+        'total_samples': total,
+        'distribution': dict(counter),
+        'no_consecutive_rate': no_consecutive_rate,
+        'has_consecutive_rate': has_consecutive_rate,
+        'mean_consecutive_pairs': np.mean(consecutive_counts),
+        'conclusion': 'No-consecutive draws are relatively rare (~20-25%)' if no_consecutive_rate < 0.3 else 'No-consecutive draws are common'
+    }
+
+
+def main():
+    print("=" * 100)
+    print("嚴謹的長期回測驗證 (100-150 期)")
+    print("=" * 100)
+    
+    # 載入數據
+    db_path = os.path.join(project_root, 'lottery_api', 'data', 'lottery_v2.db')
+    db = DatabaseManager(db_path=db_path)
+    all_history = db.get_all_draws(lottery_type='POWER_LOTTO')
+    
+    if not all_history or len(all_history) < 150:
+        print(f"❌ 歷史數據不足 (需要至少150期，當前: {len(all_history)})")
+        return
+    
+    # 決定測試期數
+    test_size = min(150, len(all_history) - 20)
+    history = all_history[:test_size + 20]
+    
+    print(f"\n回測設定:")
+    print(f"  測試期數: {test_size} 期")
+    print(f"  期數範圍: {history[test_size-1]['draw']} ~ {history[0]['draw']}")
+    print(f"  統計顯著性水準: α = 0.05")
+    print()
+    
+    # 首先分析「無連號」假設
+    print("=" * 100)
+    print("1. 檢驗「無連號」假設")
+    print("=" * 100)
+    
+    no_consec_analysis = analyze_no_consecutive_hypothesis(all_history)
+    
+    print(f"\n歷史數據分析 (近 {no_consec_analysis['total_samples']} 期):")
+    print(f"  無連號比例: {no_consec_analysis['no_consecutive_rate']:.1%}")
+    print(f"  有連號比例: {no_consec_analysis['has_consecutive_rate']:.1%}")
+    print(f"  平均連號對數: {no_consec_analysis['mean_consecutive_pairs']:.2f}")
+    print(f"\n  連號對數分布:")
+    for pairs, count in sorted(no_consec_analysis['distribution'].items()):
+        rate = count / no_consec_analysis['total_samples'] * 100
+        print(f"    {pairs} 對: {count:4d} 次 ({rate:5.1f}%)")
+    
+    print(f"\n  ⚠️ 結論: {no_consec_analysis['conclusion']}")
+    print(f"  ⚠️ 過度強調「無連號」可能導致預測偏離實際分布")
+    
+    # 定義測試方法
+    print("\n" + "=" * 100)
+    print("2. 長期回測執行")
+    print("=" * 100)
+    
+    baseline_engine = UnifiedPredictionEngine()
+    optimized_bayesian = OptimizedBayesianPredictor()
+    
+    methods = [
+        ('Baseline_Bayesian', baseline_engine.bayesian_predict),
+        ('Optimized_Bayesian', optimized_bayesian.predict),
+    ]
+    
+    # 執行回測
+    all_results = {}
+    
+    for method_name, predict_func in methods:
+        results = backtest_method(method_name, predict_func, history, test_size)
+        all_results[method_name] = results
+    
+    # 統計分析
+    print("\n" + "=" * 100)
+    print("3. 統計顯著性檢驗")
+    print("=" * 100)
+    
+    validator = StatisticalValidator()
+    
+    # 3.1 第二區預測 - 二項檢驗
+    print("\n【第二區預測檢驗】")
+    print("-" * 100)
+    
+    for method_name, results in all_results.items():
+        special_hits = sum(1 for r in results if r['special_hit'])
+        trials = len(results)
+        
+        binom_result = validator.binomial_test(special_hits, trials, p0=0.125)
+        
+        print(f"\n{method_name}:")
+        print(f"  觀察命中率: {binom_result['observed_rate']:.1%} ({binom_result['successes']}/{binom_result['trials']})")
+        print(f"  隨機期望: {binom_result['expected_rate']:.1%}")
+        print(f"  95% CI: [{binom_result['ci_95'][0]:.1%}, {binom_result['ci_95'][1]:.1%}]")
+        print(f"  p-value: {binom_result['p_value']:.4f}")
+        print(f"  顯著性: {'✓ 顯著優於隨機' if binom_result['significant'] else '✗ 未顯著優於隨機'}")
+    
+    # 3.2 第一區命中數 - t 檢驗
+    print("\n\n【第一區平均命中數比較】")
+    print("-" * 100)
+    
+    baseline_hits = [r['main_hits'] for r in all_results['Baseline_Bayesian']]
+    optimized_hits = [r['main_hits'] for r in all_results['Optimized_Bayesian']]
+    
+    t_result = validator.t_test_independent(baseline_hits, optimized_hits)
+    
+    print(f"\nBaseline Bayesian:")
+    print(f"  平均命中: {t_result['group1_mean']:.3f}/6")
+    print(f"  95% CI: [{t_result['group1_ci'][0]:.3f}, {t_result['group1_ci'][1]:.3f}]")
+    
+    print(f"\nOptimized Bayesian:")
+    print(f"  平均命中: {t_result['group2_mean']:.3f}/6")
+    print(f"  95% CI: [{t_result['group2_ci'][0]:.3f}, {t_result['group2_ci'][1]:.3f}]")
+    
+    print(f"\nt-test 結果:")
+    print(f"  t-statistic: {t_result['t_statistic']:.3f}")
+    print(f"  p-value: {t_result['p_value']:.4f}")
+    print(f"  Cohen's d: {t_result['cohens_d']:.3f} ({t_result['effect_size']})")
+    print(f"  顯著性: {'✓ 有顯著差異' if t_result['significant'] else '✗ 無顯著差異'}")
+    
+    if t_result['group2_mean'] < t_result['group1_mean']:
+        print(f"  ⚠️ 警告: Optimized 方法表現更差！")
+    
+    # 3.3 命中分布 - 卡方檢驗
+    print("\n\n【命中分布比較 (Chi-square)】")
+    print("-" * 100)
+    
+    baseline_dist = Counter(baseline_hits)
+    optimized_dist = Counter(optimized_hits)
+    
+    chi_result = validator.chi_square_test(optimized_dist, baseline_dist)
+    
+    if chi_result.get('valid', False):
+        print(f"\nχ² = {chi_result['chi2_statistic']:.3f}")
+        print(f"p-value: {chi_result['p_value']:.4f}")
+        print(f"顯著性: {'✓ 分布有顯著差異' if chi_result['significant'] else '✗ 分布無顯著差異'}")
+    else:
+        print(f"\n⚠️ {chi_result.get('warning', 'Invalid test')}")
+    
+    # 詳細分布
+    print("\n命中分布詳細:")
+    print(f"  {'命中數':<8} | {'Baseline':<15} | {'Optimized':<15}")
+    print("-" * 50)
+    
+    all_hits = sorted(set(baseline_dist.keys()) | set(optimized_dist.keys()))
+    for hits in all_hits:
+        b_count = baseline_dist.get(hits, 0)
+        o_count = optimized_dist.get(hits, 0)
+        b_rate = b_count / len(baseline_hits) * 100
+        o_rate = o_count / len(optimized_hits) * 100
+        print(f"  {hits:<8} | {b_count:4d} ({b_rate:5.1f}%) | {o_count:4d} ({o_rate:5.1f}%)")
+    
+    # 計算高命中率
+    baseline_3plus = sum(1 for h in baseline_hits if h >= 3)
+    optimized_3plus = sum(1 for h in optimized_hits if h >= 3)
+    
+    print(f"\n3+ 命中率:")
+    print(f"  Baseline: {baseline_3plus}/{len(baseline_hits)} = {baseline_3plus/len(baseline_hits):.1%}")
+    print(f"  Optimized: {optimized_3plus}/{len(optimized_hits)} = {optimized_3plus/len(optimized_hits):.1%}")
+    
+    # 總結
+    print("\n" + "=" * 100)
+    print("4. 總結與建議")
+    print("=" * 100)
+    
+    print("\n【統計結論】")
+    
+    # 判斷第二區
+    baseline_special = sum(1 for r in all_results['Baseline_Bayesian'] if r['special_hit'])
+    optimized_special = sum(1 for r in all_results['Optimized_Bayesian'] if r['special_hit'])
+    
+    baseline_special_rate = baseline_special / len(all_results['Baseline_Bayesian'])
+    optimized_special_rate = optimized_special / len(all_results['Optimized_Bayesian'])
+    
+    if optimized_special_rate > baseline_special_rate:
+        special_improvement = (optimized_special_rate - baseline_special_rate) * 100
+        print(f"  ✓ 第二區: 改進 {special_improvement:.1f}pp ({baseline_special_rate:.1%} → {optimized_special_rate:.1%})")
+    else:
+        print(f"  ✗ 第二區: 無明顯改進")
+    
+    # 判斷第一區
+    if t_result['significant']:
+        if t_result['group2_mean'] > t_result['group1_mean']:
+            print(f"  ✓ 第一區: 顯著改進 (p={t_result['p_value']:.4f}, d={t_result['cohens_d']:.3f})")
+        else:
+            print(f"  ✗ 第一區: 顯著惡化 (p={t_result['p_value']:.4f}, d={t_result['cohens_d']:.3f})")
+            print(f"     → 優化策略方向錯誤，需要重新設計")
+    else:
+        print(f"  ⊝ 第一區: 無顯著差異 (p={t_result['p_value']:.4f})")
+    
+    print("\n【建議】")
+    
+    if optimized_3plus < baseline_3plus:
+        print("  1. ⚠️ 「無連號」策略導致 3+ 命中率下降")
+        print("     → 建議: 移除或大幅降低無連號約束")
+    
+    if no_consec_analysis['no_consecutive_rate'] < 0.3:
+        print(f"  2. ⚠️ 歷史數據顯示僅 {no_consec_analysis['no_consecutive_rate']:.1%} 開獎為無連號")
+        print("     → 建議: 不應過度優化罕見模式")
+    
+    if not any([binom_result['significant'] for _, results in all_results.items()
+               for binom_result in [validator.binomial_test(
+                   sum(1 for r in results if r['special_hit']), len(results))]]):
+        print("  3. ⊝ 第二區預測未達統計顯著性")
+        print("     → 建議: 需要更多數據或改進方法")
+    
+    # 保存結果
+    output = {
+        'test_size': test_size,
+        'no_consecutive_analysis': no_consec_analysis,
+        'statistical_tests': {
+            'special_number_binomial': {
+                method: validator.binomial_test(
+                    sum(1 for r in results if r['special_hit']), 
+                    len(results)
+                )
+                for method, results in all_results.items()
+            },
+            'main_hits_ttest': t_result,
+            'distribution_chisquare': chi_result
+        },
+        'summary': {
+            'baseline_special_rate': baseline_special_rate,
+            'optimized_special_rate': optimized_special_rate,
+            'baseline_mean_hits': t_result['group1_mean'],
+            'optimized_mean_hits': t_result['group2_mean'],
+            'baseline_3plus_rate': baseline_3plus / len(baseline_hits),
+            'optimized_3plus_rate': optimized_3plus / len(optimized_hits)
+        }
+    }
+    
+    output_file = os.path.join(project_root, 'tools', 'rigorous_validation_results.json')
+    with open(output_file, 'w', encoding='utf-8') as f:
+        # Convert numpy types to Python types
+        def convert(obj):
+            if isinstance(obj, np.integer):
+                return int(obj)
+            elif isinstance(obj, np.floating):
+                return float(obj)
+            elif isinstance(obj, np.ndarray):
+                return obj.tolist()
+            elif isinstance(obj, dict):
+                return {k: convert(v) for k, v in obj.items()}
+            elif isinstance(obj, (list, tuple)):
+                return [convert(item) for item in obj]
+            return obj
+        
+        json.dump(convert(output), f, indent=2, ensure_ascii=False)
+    
+    print(f"\n💾 詳細結果已保存: {output_file}")
+    print("=" * 100)
+
+
+if __name__ == '__main__':
+    main()

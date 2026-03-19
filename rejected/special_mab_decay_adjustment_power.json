@@ -1,0 +1,42 @@
+{
+  "strategy_name": "special_predictor_mab_decay_adjustment",
+  "lottery": "POWER_LOTTO_SPECIAL",
+  "proposed_date": "2026-03-03",
+  "rejected_date": "2026-03-03",
+  "source": "115000018期P18 — V3 MAB 偏向 #2 (近3期連開) 而非 #5 (長期高頻)",
+  "hypothesis": "延長 MAB 評估窗口 (20→30/40) 或加指數衰減可減少recency bias",
+
+  "backtest_results": {
+    "V3_orig_baseline": {
+      "500p_top1": "14.80% (+2.30%)", "500p_top3": "38.40% (+0.90%)",
+      "1000p_top1": "14.90% (+2.40%)", "1000p_top3": "38.30% (+0.80%)"
+    },
+    "V3_w30_window30": {
+      "1000p_top1": "14.70% (+2.20%)", "1000p_top3": "38.70% (+1.20%)",
+      "vs_orig_top1": "-0.20%"
+    },
+    "V3_w40_window40": {
+      "1000p_top1": "14.50% (+2.00%)", "1000p_top3": "39.10% (+1.60%)",
+      "vs_orig_top1": "-0.40%"
+    },
+    "V3_decay_exp09": {
+      "1000p_top1": "14.80% (+2.30%)", "1000p_top3": "37.80% (+0.30%)",
+      "vs_orig_top1": "-0.10%"
+    }
+  },
+
+  "failure_reasons": [
+    "V3_orig 仍為最高 Top-1 Edge (+2.40%)",
+    "延長窗口 (w30/w40) 反而降低 Top-1 準確率",
+    "MAB recency bias 對 Top-1 預測反而有幫助 (short-term momentum 有效)",
+    "P18 單期預測錯誤是正常統計事件, 不足以觸發架構修改"
+  ],
+
+  "lessons_confirmed": [
+    "L12: 單期觀測不可作為策略依據 (P18 #5 vs #2 是個別事件)",
+    "L06: 改善幅度 < 統計噪音時不採納 (V3_orig Top-1 最高)",
+    "近期偏差 (recency bias) 在特別號預測中實際上有效 (短期momentum)"
+  ],
+
+  "future_retesting_conditions": "若 V3 Top-1 率降至 < 13.0% 持續50期, 可考慮 w30 調整. 目前 14.9% 遠優於基準."
+}

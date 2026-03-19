@@ -1,0 +1,28 @@
+{
+  "trend": {
+    "lambda": 0.01,
+    "win_rate": 0.02
+  },
+  "deviation": {
+    "weights": {
+      "frequency": 0.3,
+      "zone": 0.25,
+      "odd_even": 0.2,
+      "high_low": 0.15,
+      "gap": 0.1
+    },
+    "win_rate": 0.06
+  },
+  "statistical": {
+    "params": {
+      "sum_range_mult": 0.4,
+      "ac_min_mult": 0.15,
+      "ac_max_mult": 0.35,
+      "odd_tolerance": 2,
+      "spread_mult": 0.4,
+      "unique_last_digits_min": 4,
+      "weight_power": 0.5
+    },
+    "win_rate": 0.06
+  }
+}

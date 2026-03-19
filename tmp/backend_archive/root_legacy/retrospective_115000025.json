@@ -1,0 +1,409 @@
+{
+  "draw": "115000025",
+  "actual": [
+    12,
+    19,
+    22,
+    27,
+    28,
+    31
+  ],
+  "special": 45,
+  "method_scores": [
+    {
+      "method": "冷號Top12分2注(w100)",
+      "n_bets": 2,
+      "best_hit": 3,
+      "coverage_hit": 4,
+      "total_coverage": 12,
+      "any_m3": true,
+      "all_hits": [
+        [
+          [
+            19,
+            27,
+            28
+          ],
+          3
+        ],
+        [
+          [
+            31
+          ],
+          1
+        ]
+      ]
+    },
+    {
+      "method": "上期鄰號±1",
+      "n_bets": 2,
+      "best_hit": 3,
+      "coverage_hit": 3,
+      "total_coverage": 12,
+      "any_m3": true,
+      "all_hits": [
+        [
+          [],
+          0
+        ],
+        [
+          [
+            22,
+            27,
+            28
+          ],
+          3
+        ]
+      ]
+    },
+    {
+      "method": "5注正交",
+      "n_bets": 5,
+      "best_hit": 2,
+      "coverage_hit": 6,
+      "total_coverage": 30,
+      "any_m3": false,
+      "all_hits": [
+        [
+          [
+            28,
+            31
+          ],
+          2
+        ],
+        [
+          [
+            19,
+            27
+          ],
+          2
+        ],
+        [
+          [],
+          0
+        ],
+        [
+          [
+            12,
+            22
+          ],
+          2
+        ],
+        [
+          [],
+          0
+        ]
+      ]
+    },
+    {
+      "method": "TripleStrike(3注)",
+      "n_bets": 3,
+      "best_hit": 2,
+      "coverage_hit": 4,
+      "total_coverage": 18,
+      "any_m3": false,
+      "all_hits": [
+        [
+          [
+            28,
+            31
+          ],
+          2
+        ],
+        [
+          [
+            19,
+            27
+          ],
+          2
+        ],
+        [
+          [],
+          0
+        ]
+      ]
+    },
+    {
+      "method": "Cold單注",
+      "n_bets": 1,
+      "best_hit": 2,
+      "coverage_hit": 2,
+      "total_coverage": 6,
+      "any_m3": false,
+      "all_hits": [
+        [
+          [
+            19,
+            27
+          ],
+          2
+        ]
+      ]
+    },
+    {
+      "method": "Fourier單注",
+      "n_bets": 1,
+      "best_hit": 2,
+      "coverage_hit": 2,
+      "total_coverage": 6,
+      "any_m3": false,
+      "all_hits": [
+        [
+          [
+            28,
+            31
+          ],
+          2
+        ]
+      ]
+    },
+    {
+      "method": "Fourier獨立(w500)",
+      "n_bets": 1,
+      "best_hit": 2,
+      "coverage_hit": 2,
+      "total_coverage": 6,
+      "any_m3": false,
+      "all_hits": [
+        [
+          [
+            28,
+            31
+          ],
+          2
+        ]
+      ]
+    },
+    {
+      "method": "Markov單注",
+      "n_bets": 1,
+      "best_hit": 2,
+      "coverage_hit": 2,
+      "total_coverage": 6,
+      "any_m3": false,
+      "all_hits": [
+        [
+          [
+            12,
+            22
+          ],
+          2
+        ]
+      ]
+    },
+    {
+      "method": "隨機基準(10注)",
+      "n_bets": 10,
+      "best_hit": 1,
+      "coverage_hit": 4,
+      "total_coverage": 37,
+      "any_m3": false,
+      "all_hits": [
+        [
+          [],
+          0
+        ],
+        [
+          [],
+          0
+        ],
+        [
+          [
+            28
+          ],
+          1
+        ],
+        [
+          [],
+          0
+        ],
+        [
+          [
+            27
+          ],
+          1
+        ],
+        [
+          [
+            28
+          ],
+          1
+        ],
+        [
+          [
+            22
+          ],
+          1
+        ],
+        [
+          [],
+          0
+        ],
+        [
+          [],
+          0
+        ],
+        [
+          [
+            19
+          ],
+          1
+        ]
+      ]
+    },
+    {
+      "method": "上2期Echo",
+      "n_bets": 1,
+      "best_hit": 1,
+      "coverage_hit": 1,
+      "total_coverage": 6,
+      "any_m3": false,
+      "all_hits": [
+        [
+          [
+            22
+          ],
+          1
+        ]
+      ]
+    },
+    {
+      "method": "冷號Top6(w100)",
+      "n_bets": 1,
+      "best_hit": 1,
+      "coverage_hit": 1,
+      "total_coverage": 6,
+      "any_m3": false,
+      "all_hits": [
+        [
+          [
+            31
+          ],
+          1
+        ]
+      ]
+    },
+    {
+      "method": "P0偏差互補+回聲(2注)",
+      "n_bets": 2,
+      "best_hit": 1,
+      "coverage_hit": 1,
+      "total_coverage": 12,
+      "any_m3": false,
+      "all_hits": [
+        [
+          [],
+          0
+        ],
+        [
+          [
+            19
+          ],
+          1
+        ]
+      ]
+    },
+    {
+      "method": "頻率Top12分2注(w100)",
+      "n_bets": 2,
+      "best_hit": 1,
+      "coverage_hit": 1,
+      "total_coverage": 12,
+      "any_m3": false,
+      "all_hits": [
+        [
+          [],
+          0
+        ],
+        [
+          [
+            22
+          ],
+          1
+        ]
+      ]
+    },
+    {
+      "method": "FreqOrt單注",
+      "n_bets": 1,
+      "best_hit": 0,
+      "coverage_hit": 0,
+      "total_coverage": 6,
+      "any_m3": false,
+      "all_hits": [
+        [
+          [],
+          0
+        ]
+      ]
+    },
+    {
+      "method": "Tail單注",
+      "n_bets": 1,
+      "best_hit": 0,
+      "coverage_hit": 0,
+      "total_coverage": 6,
+      "any_m3": false,
+      "all_hits": [
+        [
+          [],
+          0
+        ]
+      ]
+    },
+    {
+      "method": "頻率Top6(w100)",
+      "n_bets": 1,
+      "best_hit": 0,
+      "coverage_hit": 0,
+      "total_coverage": 6,
+      "any_m3": false,
+      "all_hits": [
+        [
+          [],
+          0
+        ]
+      ]
+    },
+    {
+      "method": "頻率Top6(w50)",
+      "n_bets": 1,
+      "best_hit": 0,
+      "coverage_hit": 0,
+      "total_coverage": 6,
+      "any_m3": false,
+      "all_hits": [
+        [
+          [],
+          0
+        ]
+      ]
+    }
+  ],
+  "signal_domains": {
+    "fourier_hit": [
+      12,
+      28,
+      31
+    ],
+    "cold_hit": [
+      19
+    ],
+    "hot_hit": [
+      22
+    ],
+    "markov_hit": [
+      22,
+      28
+    ],
+    "echo_hit": [
+      22
+    ],
+    "neighbor_hit": [
+      22,
+      27,
+      28
+    ],
+    "uncovered": []
+  }
+}

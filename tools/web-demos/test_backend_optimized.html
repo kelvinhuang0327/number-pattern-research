@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>後端優化預測 - 功能測試</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Noto Sans TC', sans-serif;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            color: white;
+            padding: 40px 20px;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        h1 {
+            text-align: center;
+            margin-bottom: 40px;
+            font-size: 2.5em;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .test-section {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 20px;
+            padding: 30px;
+            margin-bottom: 30px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .test-section h2 {
+            margin-bottom: 20px;
+            color: #667eea;
+        }
+
+        .status {
+            padding: 15px;
+            border-radius: 10px;
+            margin: 10px 0;
+            font-size: 1.1em;
+        }
+
+        .status.success {
+            background: rgba(16, 185, 129, 0.2);
+            border: 1px solid #10b981;
+        }
+
+        .status.error {
+            background: rgba(239, 68, 68, 0.2);
+            border: 1px solid #ef4444;
+        }
+
+        .status.warning {
+            background: rgba(245, 158, 11, 0.2);
+            border: 1px solid #f59e0b;
+        }
+
+        .code {
+            background: rgba(0, 0, 0, 0.3);
+            padding: 15px;
+            border-radius: 10px;
+            font-family: 'Courier New', monospace;
+            margin: 10px 0;
+            overflow-x: auto;
+        }
+
+        button {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 10px;
+            font-size: 1.1em;
+            cursor: pointer;
+            margin: 10px 10px 10px 0;
+            transition: transform 0.2s;
+        }
+
+        button:hover {
+            transform: translateY(-2px);
+        }
+
+        button:active {
+            transform: translateY(0);
+        }
+
+        .result {
+            margin-top: 20px;
+            padding: 20px;
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: 10px;
+        }
+
+        .number-display {
+            display: flex;
+            gap: 10px;
+            margin: 20px 0;
+            flex-wrap: wrap;
+        }
+
+        .number {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5em;
+            font-weight: bold;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <h1>🚀 後端優化預測 - 功能測試</h1>
+
+        <!-- 檢查清單 -->
+        <div class="test-section">
+            <h2>📋 檢查清單</h2>
+            <div id="checklist">
+                <div class="status warning">⏳ 正在檢查...</div>
+            </div>
+        </div>
+
+        <!-- 測試按鈕 -->
+        <div class="test-section">
+            <h2>🧪 功能測試</h2>
+            <button onclick="testBackendConnection()">1️⃣ 測試後端連接</button>
+            <button onclick="testBackendOptimizedPrediction()">2️⃣ 測試後端優化預測</button>
+            <button onclick="testStrategyRegistration()">3️⃣ 測試策略註冊</button>
+            <div id="test-result" class="result" style="display: none;"></div>
+        </div>
+
+        <!-- 預測結果 -->
+        <div class="test-section" id="prediction-section" style="display: none;">
+            <h2>🔮 預測結果</h2>
+            <div id="prediction-result"></div>
+        </div>
+    </div>
+
+    <script type="module">
+        // 檢查清單
+        async function runChecklist() {
+            const checklist = document.getElementById('checklist');
+            let html = '';
+
+            // 1. 檢查策略文件
+            try {
+                const { BackendOptimizedStrategy } = await import('./src/engine/strategies/BackendOptimizedStrategy.js');
+                html += '<div class="status success">✅ BackendOptimizedStrategy.js 載入成功</div>';
+            } catch (e) {
+                html += `<div class="status error">❌ BackendOptimizedStrategy.js 載入失敗: ${e.message}</div>`;
+            }
+
+            // 2. 檢查 PredictionEngine
+            try {
+                const { PredictionEngine } = await import('./src/engine/PredictionEngine.js');
+                html += '<div class="status success">✅ PredictionEngine.js 載入成功</div>';
+            } catch (e) {
+                html += `<div class="status error">❌ PredictionEngine.js 載入失敗: ${e.message}</div>`;
+            }
+
+            // 3. 檢查後端連接
+            try {
+                const response = await fetch('http://localhost:5001/health');
+                if (response.ok) {
+                    html += '<div class="status success">✅ 後端服務運行中</div>';
+                } else {
+                    html += '<div class="status warning">⚠️ 後端服務響應異常</div>';
+                }
+            } catch (e) {
+                html += '<div class="status error">❌ 後端服務未運行 - 請執行: cd lottery-api && python3 app.py</div>';
+            }
+
+            checklist.innerHTML = html;
+        }
+
+        // 測試後端連接
+        window.testBackendConnection = async function () {
+            const resultDiv = document.getElementById('test-result');
+            resultDiv.style.display = 'block';
+            resultDiv.innerHTML = '<div class="status warning">⏳ 測試中...</div>';
+
+            try {
+                const response = await fetch('http://localhost:5001/health');
+                const data = await response.json();
+
+                resultDiv.innerHTML = `
+                    <div class="status success">✅ 後端連接成功</div>
+                    <div class="code">${JSON.stringify(data, null, 2)}</div>
+                `;
+            } catch (e) {
+                resultDiv.innerHTML = `
+                    <div class="status error">❌ 後端連接失敗: ${e.message}</div>
+                    <div class="code">請確認後端服務是否運行:\ncd lottery-api\npython3 app.py</div>
+                `;
+            }
+        };
+
+        // 測試後端優化預測
+        window.testBackendOptimizedPrediction = async function () {
+            const resultDiv = document.getElementById('test-result');
+            const predictionSection = document.getElementById('prediction-section');
+            const predictionResult = document.getElementById('prediction-result');
+
+            resultDiv.style.display = 'block';
+            resultDiv.innerHTML = '<div class="status warning">⏳ 調用後端優化預測 API...</div>';
+
+            try {
+                const response = await fetch('http://localhost:5001/api/predict-optimized', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        lotteryType: 'BIG_LOTTO'
+                    })
+                });
+
+                if (!response.ok) {
+                    const error = await response.json();
+                    throw new Error(error.detail || response.statusText);
+                }
+
+                const data = await response.json();
+
+                resultDiv.innerHTML = `
+                    <div class="status success">✅ 預測成功</div>
+                    <div class="code">${JSON.stringify(data, null, 2)}</div>
+                `;
+
+                // 顯示預測號碼
+                predictionSection.style.display = 'block';
+                predictionResult.innerHTML = `
+                    <p><strong>預測方法:</strong> ${data.method}</p>
+                    <p><strong>信心度:</strong> ${(data.confidence * 100).toFixed(1)}%</p>
+                    <p><strong>預測號碼:</strong></p>
+                    <div class="number-display">
+                        ${data.numbers.map(n => `<div class="number">${n}</div>`).join('')}
+                    </div>
+                    ${data.notes ? `<p><strong>備註:</strong> ${data.notes}</p>` : ''}
+                `;
+            } catch (e) {
+                resultDiv.innerHTML = `
+                    <div class="status error">❌ 預測失敗: ${e.message}</div>
+                    <div class="code">可能的原因:\n1. 後端服務未運行\n2. 未執行過自動優化\n3. 未同步數據到後端</div>
+                `;
+                predictionSection.style.display = 'none';
+            }
+        };
+
+        // 測試策略註冊
+        window.testStrategyRegistration = async function () {
+            const resultDiv = document.getElementById('test-result');
+            resultDiv.style.display = 'block';
+            resultDiv.innerHTML = '<div class="status warning">⏳ 檢查策略註冊...</div>';
+
+            try {
+                const { PredictionEngine } = await import('./src/engine/PredictionEngine.js');
+                const { DataProcessor } = await import('./src/data/DataProcessor.js');
+                const { StatisticsService } = await import('./src/services/StatisticsService.js');
+
+                const dataProcessor = new DataProcessor();
+                const statsService = new StatisticsService(dataProcessor);
+                const engine = new PredictionEngine(dataProcessor, statsService);
+
+                const hasStrategy = engine.strategies.hasOwnProperty('backend_optimized');
+
+                if (hasStrategy) {
+                    const strategy = engine.strategies['backend_optimized'];
+                    resultDiv.innerHTML = `
+                        <div class="status success">✅ backend_optimized 策略已成功註冊</div>
+                        <div class="code">策略類型: ${strategy.constructor.name}\nAPI 端點: ${strategy.apiEndpoint}</div>
+                    `;
+                } else {
+                    resultDiv.innerHTML = `
+                        <div class="status error">❌ backend_optimized 策略未註冊</div>
+                        <div class="code">可用策略: ${Object.keys(engine.strategies).join(', ')}</div>
+                    `;
+                }
+            } catch (e) {
+                resultDiv.innerHTML = `
+                    <div class="status error">❌ 策略檢查失敗: ${e.message}</div>
+                `;
+            }
+        };
+
+        // 頁面載入時運行檢查清單
+        runChecklist();
+    </script>
+</body>
+
+</html>

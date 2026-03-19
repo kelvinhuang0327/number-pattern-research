@@ -1,0 +1,16 @@
+{
+  "name": "consecutive_pair_detector_539",
+  "date": "2026-02-28",
+  "hypothesis": "連號對 (n, n+1) 出現頻率可用於預測，作為選號約束或加分條件",
+  "analysis": {
+    "observed_rate": "43.6% of 539 draws contain at least one consecutive pair",
+    "random_baseline": "40.4% (hypergeometric expectation for 5-from-39)",
+    "lift": 1.08,
+    "sample_periods": 1500,
+    "note": "Lift 幾乎 = 1，無可操作增益"
+  },
+  "final_verdict": "REJECTED",
+  "reason": "Lift 1.08x 不可操作 — 連號對出現率僅比隨機基準高 3.2pp，無法轉化為選號策略。即使強制加入連號對約束，最多影響 1 個號碼的選擇，信號太弱且無法穩定利用。",
+  "future_condition": "如果發現特定號碼對 (e.g. 13-14) 的 Lift > 1.5x 且持續 300 期以上，可重新研究",
+  "filed": "rejected/consecutive_pair_detector_539.json"
+}

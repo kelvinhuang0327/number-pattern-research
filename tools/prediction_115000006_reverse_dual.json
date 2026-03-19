@@ -1,0 +1,34 @@
+{
+  "draw": "115000006",
+  "method": "reverse_optimization_dual_bet",
+  "bet1": {
+    "numbers": [
+      14,
+      20,
+      21,
+      32,
+      35,
+      36
+    ],
+    "special": 4,
+    "strategy": "高區優先(32-38) + 避生日月份 + 避7,8"
+  },
+  "bet2": {
+    "numbers": [
+      15,
+      16,
+      24,
+      31,
+      33,
+      34
+    ],
+    "special": 5,
+    "strategy": "中區優先(14-25) + 避生日月份 + 避7,8"
+  },
+  "coverage": {
+    "overlap": 0,
+    "total": 12,
+    "special_coverage": 2
+  },
+  "generated_at": "2026-01-19"
+}

@@ -1,0 +1,50 @@
+[
+  {
+    "Lottery": "POWER_LOTTO",
+    "Term": "短期 (20期)",
+    "Method": "ARIMA (Optimized: 1,0,0)",
+    "M3+ Rate": "10.00%",
+    "Avg Match": "1.15",
+    "Edge": "+6.05%"
+  },
+  {
+    "Lottery": "POWER_LOTTO",
+    "Term": "短期 (20期)",
+    "Method": "Ensemble (含 Optimized ARIMA)",
+    "M3+ Rate": "0.00%",
+    "Avg Match": "1.00",
+    "Edge": "-3.95%"
+  },
+  {
+    "Lottery": "POWER_LOTTO",
+    "Term": "中期 (50期)",
+    "Method": "ARIMA (Optimized: 1,0,0)",
+    "M3+ Rate": "6.00%",
+    "Avg Match": "1.04",
+    "Edge": "+2.05%"
+  },
+  {
+    "Lottery": "POWER_LOTTO",
+    "Term": "中期 (50期)",
+    "Method": "Ensemble (含 Optimized ARIMA)",
+    "M3+ Rate": "0.00%",
+    "Avg Match": "0.90",
+    "Edge": "-3.95%"
+  },
+  {
+    "Lottery": "POWER_LOTTO",
+    "Term": "長期 (118期)",
+    "Method": "ARIMA (Optimized: 1,0,0)",
+    "M3+ Rate": "4.24%",
+    "Avg Match": "0.86",
+    "Edge": "+0.29%"
+  },
+  {
+    "Lottery": "POWER_LOTTO",
+    "Term": "長期 (118期)",
+    "Method": "Ensemble (含 Optimized ARIMA)",
+    "M3+ Rate": "2.54%",
+    "Avg Match": "0.97",
+    "Edge": "-1.41%"
+  }
+]

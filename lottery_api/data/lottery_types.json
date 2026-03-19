@@ -1,0 +1,123 @@
+{
+    "BIG_LOTTO": {
+        "name": "大樂透",
+        "minNumber": 1,
+        "maxNumber": 49,
+        "pickCount": 6,
+        "hasSpecialNumber": true,
+        "playerSelectsSpecial": false,
+        "specialMinNumber": 1,
+        "specialMaxNumber": 49,
+        "note": "特別號由開獎產生，玩家不選，用於判定二獎等"
+    },
+    "POWER_LOTTO": {
+        "name": "威力彩",
+        "minNumber": 1,
+        "maxNumber": 38,
+        "pickCount": 6,
+        "hasSpecialNumber": true,
+        "playerSelectsSpecial": true,
+        "specialMinNumber": 1,
+        "specialMaxNumber": 8,
+        "note": "第二區號碼，玩家必須選擇"
+    },
+    "DAILY_539": {
+        "name": "今彩539",
+        "minNumber": 1,
+        "maxNumber": 39,
+        "pickCount": 5,
+        "hasSpecialNumber": false
+    },
+    "DOUBLE_WIN": {
+        "name": "雙贏彩",
+        "minNumber": 1,
+        "maxNumber": 24,
+        "pickCount": 12,
+        "hasSpecialNumber": false
+    },
+    "3_STAR": {
+        "name": "3星彩",
+        "minNumber": 0,
+        "maxNumber": 9,
+        "pickCount": 3,
+        "hasSpecialNumber": false,
+        "repeatsAllowed": true,
+        "isPermutation": true
+    },
+    "4_STAR": {
+        "name": "4星彩",
+        "minNumber": 0,
+        "maxNumber": 9,
+        "pickCount": 4,
+        "hasSpecialNumber": false,
+        "repeatsAllowed": true,
+        "isPermutation": true
+    },
+    "38_LOTTO": {
+        "name": "38樂合彩",
+        "minNumber": 1,
+        "maxNumber": 38,
+        "pickCount": 6,
+        "hasSpecialNumber": false,
+        "dependsOn": "POWER_LOTTO",
+        "isSubGame": true,
+        "playModes": {
+            "二合": {"pickCount": 2, "matchRequired": 2},
+            "三合": {"pickCount": 3, "matchRequired": 3},
+            "四合": {"pickCount": 4, "matchRequired": 4}
+        },
+        "note": "依附威力彩第一區號碼，可選2/3/4個號碼"
+    },
+    "39_LOTTO": {
+        "name": "39樂合彩",
+        "minNumber": 1,
+        "maxNumber": 39,
+        "pickCount": 5,
+        "hasSpecialNumber": false,
+        "dependsOn": "DAILY_539",
+        "isSubGame": true,
+        "playModes": {
+            "二合": {"pickCount": 2, "matchRequired": 2},
+            "三合": {"pickCount": 3, "matchRequired": 3},
+            "四合": {"pickCount": 4, "matchRequired": 4}
+        },
+        "note": "依附今彩539號碼，可選2/3/4個號碼"
+    },
+    "49_LOTTO": {
+        "name": "49樂合彩",
+        "minNumber": 1,
+        "maxNumber": 49,
+        "pickCount": 6,
+        "hasSpecialNumber": false,
+        "dependsOn": "BIG_LOTTO",
+        "isSubGame": true,
+        "playModes": {
+            "二合": {"pickCount": 2, "matchRequired": 2},
+            "三合": {"pickCount": 3, "matchRequired": 3},
+            "四合": {"pickCount": 4, "matchRequired": 4}
+        },
+        "note": "依附大樂透號碼（不含特別號），可選2/3/4個號碼"
+    },
+    "BIG_LOTTO_BONUS": {
+        "name": "大樂透加開獎項",
+        "minNumber": 1,
+        "maxNumber": 49,
+        "pickCount": 6,
+        "hasSpecialNumber": false
+    },
+    "BINGO_BINGO": {
+        "name": "賓果賓果",
+        "minNumber": 1,
+        "maxNumber": 80,
+        "pickCount": 20,
+        "hasSpecialNumber": false
+    },
+    "LOTTO_6_38": {
+        "name": "6/38樂透彩",
+        "minNumber": 1,
+        "maxNumber": 38,
+        "pickCount": 6,
+        "hasSpecialNumber": false,
+        "note": "舊版樂透彩"
+    }
+}

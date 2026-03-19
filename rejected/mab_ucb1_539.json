@@ -1,0 +1,57 @@
+{
+  "strategy": "MAB UCB1 方法選擇器 (今彩539 3-bet)",
+  "rejected_date": "2026-03-06",
+  "trigger": "058期檢討: 嘗試動態方法選擇替代固定組合",
+
+  "failure_reasons": [
+    "MAB 3-bet Edge +4.97% 低於現行固定組合 +6.37%, 差距 -1.40%",
+    "UCB1 探索成本過高 — 對 EWMA_warm/Repeat 方法分配了 23.6% 的使用率但貢獻低",
+    "McNemar vs 現行 p=0.3463, 無統計差異但方向不利",
+    "短窗口 (150p) Edge 僅 +1.50%, 遠低於固定組合 +3.50%",
+    "MAB 最終收斂到 ACB+Markov 為主 (49.5%), 等於弱化版固定組合"
+  ],
+
+  "statistical_results": {
+    "mab_adaptive_3bet": {
+      "150p": {"rate": 32.00, "edge": 1.50, "z": 0.40},
+      "500p": {"rate": 34.00, "edge": 3.50, "z": 1.70},
+      "1500p": {"rate": 35.47, "edge": 4.97, "z": 4.18},
+      "perm_p": 0.0196,
+      "pattern": "STABLE"
+    },
+    "method_usage_distribution": {
+      "ACB": "25.0%",
+      "Markov": "24.5%",
+      "MidFreq": "14.0%",
+      "EWMA_hot": "12.9%",
+      "Repeat": "12.8%",
+      "EWMA_warm": "10.8%"
+    }
+  },
+
+  "conditions_for_retest": [
+    "新增更多差異化方法 (當前方法間相似性太高)",
+    "探索 EXP3 或 Thompson Sampling 替代 UCB1",
+    "若方法性能隨時間變化明顯 (regime change), MAB 的自適應價值會提升",
+    "搭配 context-aware bandit (考慮期數特徵作為 context)",
+    "在大樂透/威力彩測試 (更多方法、更大號碼池)"
+  ],
+
+  "lessons_learned": [
+    "固定最優組合 > 動態選擇 (當方法表現穩定時)",
+    "UCB1 的探索-利用平衡在方法數量少 (6個) 時不利 — 探索成本佔比太高",
+    "MAB 自然收斂結果確認 ACB+Markov 是最強雙方法",
+    "今彩539 號碼池小 (39), 各方法的 edge 差異有限, MAB 無法充分利用"
+  ],
+
+  "also_rejected": {
+    "momentum_guard": {
+      "reason": "Edge 從 +6.37% 降至 +5.83%, McNemar p=0.043 方向不利",
+      "detail": "超熱號注入會破壞原有排列的最優性"
+    },
+    "repeat_momentum_bet": {
+      "reason": "MAB 中 Repeat 使用率僅 12.8%, 表現不佳",
+      "detail": "重複號碼策略基於 1.1% 機率事件, 常態下拖累組合"
+    }
+  }
+}

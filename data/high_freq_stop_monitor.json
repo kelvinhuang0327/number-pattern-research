@@ -1,0 +1,32 @@
+{
+  "timestamp": "2026-03-01T00:05:12.591376",
+  "definition": "freq100 > expected AND gap > 20",
+  "test_periods": 200,
+  "window": 100,
+  "current_hfs": [
+    {
+      "number": 30,
+      "freq100": 13,
+      "gap": 29,
+      "expected": 12.82,
+      "freq_deficit": -0.18,
+      "gap_score": 0.58,
+      "acb_score_approx": 0.304
+    }
+  ],
+  "backtest": {
+    "test_periods": 200,
+    "periods_with_hfs": 100,
+    "pct_periods_with_hfs": 50.0,
+    "avg_hfs_per_period": 0.64,
+    "total_hfs_numbers": 127,
+    "total_hits": 15,
+    "hit_rate": 11.811,
+    "random_baseline": 12.821,
+    "edge": -1.009,
+    "z_score": -0.34,
+    "binom_p": 0.6724,
+    "significant": false
+  },
+  "decision": "NOT_ACTIONABLE — 高頻突斷無統計顯著信號，維持 ACB 不變"
+}

@@ -1,0 +1,94 @@
+{
+  "strategy": "P1_NeighborCold_2bet",
+  "neighbor_definition": {
+    "bet1": "上期6個開獎號各自±1含自身 → Fourier+0.5*Markov排名 → Top6",
+    "bet2": "近100期最冷號Top12 → Sum-Constrained組合 → Top6",
+    "overlap": "零重疊",
+    "delta": 1,
+    "pool_size_typical": "12~18"
+  },
+  "script_paths": {
+    "strategy_impl": "tools/backtest_p0_p3_optimization.py::neighbor_cold_2bet",
+    "production": "tools/quick_predict.py::biglotto_p1_neighbor_cold_2bet",
+    "validation": "tools/validate_p1_full.py"
+  },
+  "three_window": {
+    "150": {
+      "m3_plus": 6,
+      "total": 150,
+      "rate": 4.0,
+      "edge": 0.3146,
+      "z": 0.2045
+    },
+    "500": {
+      "m3_plus": 21,
+      "total": 500,
+      "rate": 4.2,
+      "edge": 0.5146,
+      "z": 0.6107
+    },
+    "1500": {
+      "m3_plus": 71,
+      "total": 1500,
+      "rate": 4.7333,
+      "edge": 1.0479,
+      "z": 2.1542
+    }
+  },
+  "permutation": {
+    "real_edge": 1.0479,
+    "perm_mean": -0.0111,
+    "perm_std": 0.4933,
+    "p_value": 0.02,
+    "n_perm": 200
+  },
+  "multi_seed": {
+    "mean_edge": 1.7146,
+    "std_edge": 0.0,
+    "is_deterministic": "True"
+  },
+  "walk_forward": [
+    {
+      "fold": 0,
+      "edge": 0.3146,
+      "tested": 300
+    },
+    {
+      "fold": 1,
+      "edge": 0.9813,
+      "tested": 300
+    },
+    {
+      "fold": 2,
+      "edge": 4.3146,
+      "tested": 300
+    },
+    {
+      "fold": 3,
+      "edge": -0.0187,
+      "tested": 300
+    },
+    {
+      "fold": 4,
+      "edge": -0.3521,
+      "tested": 300
+    }
+  ],
+  "mcnemar_vs_p0": {
+    "p1_hits": 71,
+    "p0_hits": 70,
+    "p1_only": 61,
+    "p0_only": 60,
+    "chi2": 0.0,
+    "p_one_sided": 0.5
+  },
+  "checks": {
+    "三窗口全正": true,
+    "1500p z>1.96": "True",
+    "Permutation p<0.05": "True",
+    "確定性 (std=0)": "True",
+    "WF OOS ≥3/5 正": true,
+    "WF Avg Edge>0": "True"
+  },
+  "all_pass": true
+}

@@ -1,0 +1,142 @@
+{
+  "acb": {
+    "edge_150p": -0.01864,
+    "rate_150p": 0.0,
+    "edge_500p": 0.00336,
+    "rate_500p": 0.022,
+    "edge_1500p": 0.00403,
+    "rate_1500p": 0.02267,
+    "full_rate": 0.02167,
+    "full_edge": 0.00303,
+    "n_hits": 39,
+    "n_oos": 1800,
+    "z_score": 0.95,
+    "three_window_pass": false,
+    "perm": {
+      "real_edge": 0.00303,
+      "p_emp": 0.06,
+      "cohens_d": 1.587,
+      "verdict": "MARGINAL"
+    }
+  },
+  "midfreq": {
+    "edge_150p": 0.00803,
+    "rate_150p": 0.02667,
+    "edge_500p": 0.00736,
+    "rate_500p": 0.026,
+    "edge_1500p": -0.00064,
+    "rate_1500p": 0.018,
+    "full_rate": 0.01944,
+    "full_edge": 0.00081,
+    "n_hits": 35,
+    "n_oos": 1800,
+    "z_score": 0.253,
+    "three_window_pass": false,
+    "perm": {
+      "real_edge": 0.00081,
+      "p_emp": 0.4,
+      "cohens_d": 0.295,
+      "verdict": "NO_SIGNAL"
+    }
+  },
+  "markov": {
+    "edge_150p": 0.00803,
+    "rate_150p": 0.02667,
+    "edge_500p": 0.00536,
+    "rate_500p": 0.024,
+    "edge_1500p": 0.00136,
+    "rate_1500p": 0.02,
+    "full_rate": 0.02056,
+    "full_edge": 0.00192,
+    "n_hits": 37,
+    "n_oos": 1800,
+    "z_score": 0.602,
+    "three_window_pass": true,
+    "perm": {
+      "real_edge": 0.00192,
+      "p_emp": 0.42,
+      "cohens_d": 0.32,
+      "verdict": "NO_SIGNAL"
+    }
+  },
+  "fourier": {
+    "edge_150p": 0.02136,
+    "rate_150p": 0.04,
+    "edge_500p": 0.00536,
+    "rate_500p": 0.024,
+    "edge_1500p": 0.00536,
+    "rate_1500p": 0.024,
+    "full_rate": 0.02278,
+    "full_edge": 0.00414,
+    "n_hits": 41,
+    "n_oos": 1800,
+    "z_score": 1.299,
+    "three_window_pass": true,
+    "perm": {
+      "real_edge": 0.00414,
+      "p_emp": 0.14,
+      "cohens_d": 1.193,
+      "verdict": "NO_SIGNAL"
+    }
+  },
+  "regime": {
+    "edge_150p": -0.01864,
+    "rate_150p": 0.0,
+    "edge_500p": 0.00336,
+    "rate_500p": 0.022,
+    "edge_1500p": 0.00136,
+    "rate_1500p": 0.02,
+    "full_rate": 0.01944,
+    "full_edge": 0.00081,
+    "n_hits": 35,
+    "n_oos": 1800,
+    "z_score": 0.253,
+    "three_window_pass": false,
+    "perm": {
+      "real_edge": 0.00081,
+      "p_emp": 0.27,
+      "cohens_d": 0.806,
+      "verdict": "NO_SIGNAL"
+    }
+  },
+  "p1_neighbor": {
+    "edge_150p": 0.00136,
+    "rate_150p": 0.02,
+    "edge_500p": 0.00336,
+    "rate_500p": 0.022,
+    "edge_1500p": 3e-05,
+    "rate_1500p": 0.01867,
+    "full_rate": 0.01944,
+    "full_edge": 0.00081,
+    "n_hits": 35,
+    "n_oos": 1800,
+    "z_score": 0.253,
+    "three_window_pass": true,
+    "perm": {
+      "real_edge": 0.00081,
+      "p_emp": 0.48,
+      "cohens_d": 0.225,
+      "verdict": "NO_SIGNAL"
+    }
+  },
+  "microfish": {
+    "edge_150p": 0.02803,
+    "rate_150p": 0.04667,
+    "edge_500p": 0.03136,
+    "rate_500p": 0.05,
+    "edge_1500p": 0.00336,
+    "rate_1500p": 0.022,
+    "full_rate": 0.02167,
+    "full_edge": 0.00303,
+    "n_hits": 39,
+    "n_oos": 1800,
+    "z_score": 0.95,
+    "three_window_pass": true,
+    "perm": {
+      "real_edge": 0.00303,
+      "p_emp": 0.28,
+      "cohens_d": 0.626,
+      "verdict": "NO_SIGNAL"
+    }
+  }
+}

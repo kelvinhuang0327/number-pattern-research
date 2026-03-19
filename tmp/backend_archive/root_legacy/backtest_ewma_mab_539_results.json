@@ -1,0 +1,82 @@
+{
+  "timestamp": "2026-03-05 23:46:55",
+  "ranking": [
+    {
+      "name": "ACB+Markov+Fourier (current)",
+      "edge": 6.366666666666667,
+      "pattern": "STABLE",
+      "perm_p": 0.0196078431372549,
+      "n_bets": 3
+    },
+    {
+      "name": "ACB+Markov+MidFreq",
+      "edge": 6.033333333333331,
+      "pattern": "STABLE",
+      "perm_p": 0.0196078431372549,
+      "n_bets": 3
+    },
+    {
+      "name": "Current+MomentumGuard",
+      "edge": 5.833333333333336,
+      "pattern": "STABLE",
+      "perm_p": 0.0196078431372549,
+      "n_bets": 3
+    },
+    {
+      "name": "EWMA+ACB+Markov",
+      "edge": 5.633333333333333,
+      "pattern": "STABLE",
+      "perm_p": 0.0196078431372549,
+      "n_bets": 3
+    },
+    {
+      "name": "MAB_adaptive",
+      "edge": 4.966666666666669,
+      "pattern": "",
+      "perm_p": 1.0,
+      "n_bets": 3
+    },
+    {
+      "name": "MidFreq+ACB (current)",
+      "edge": 4.860000000000003,
+      "pattern": "STABLE",
+      "perm_p": 0.0196078431372549,
+      "n_bets": 2
+    },
+    {
+      "name": "EWMA+Markov+MidFreq",
+      "edge": 3.9666666666666686,
+      "pattern": "STABLE",
+      "perm_p": 0.058823529411764705,
+      "n_bets": 3
+    },
+    {
+      "name": "MidFreq+Markov",
+      "edge": 3.0600000000000023,
+      "pattern": "STABLE",
+      "perm_p": 0.0196078431372549,
+      "n_bets": 2
+    },
+    {
+      "name": "ACB (current)",
+      "edge": 2.9333333333333336,
+      "pattern": "STABLE",
+      "perm_p": 0.0196078431372549,
+      "n_bets": 1
+    },
+    {
+      "name": "EWMA+Markov",
+      "edge": 2.193333333333335,
+      "pattern": "LATE_BLOOMER",
+      "perm_p": 0.11764705882352941,
+      "n_bets": 2
+    },
+    {
+      "name": "EWMA hot",
+      "edge": 0.5333333333333332,
+      "pattern": "LATE_BLOOMER",
+      "perm_p": 0.2549019607843137,
+      "n_bets": 1
+    }
+  ]
+}

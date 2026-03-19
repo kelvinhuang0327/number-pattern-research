@@ -1,0 +1,72 @@
+{
+  "strategy": "P1_deviation_complement_4bet",
+  "structure": {
+    "bet1": "P1 Neighbor (prev±1 → Fourier+0.5*Markov Top-6)",
+    "bet2": "P1 Cold (Sum-Constrained pool=12)",
+    "bet3": "DevComp Hot (deviation>1, window=50)",
+    "bet4": "DevComp Cold (deviation<-1, window=50)"
+  },
+  "three_window": {
+    "150": {
+      "edge_pct": 0.77,
+      "z": 0.36,
+      "p": 0.7176
+    },
+    "500": {
+      "edge_pct": 1.77,
+      "z": 1.52,
+      "p": 0.1277
+    },
+    "1500": {
+      "edge_pct": 2.17,
+      "z": 3.24,
+      "p": 0.0012
+    }
+  },
+  "permutation": {
+    "real_edge_pct": 2.17,
+    "p_value": 0.005
+  },
+  "walk_forward": [
+    {
+      "fold": 1,
+      "edge_pct": 1.1
+    },
+    {
+      "fold": 2,
+      "edge_pct": 2.43
+    },
+    {
+      "fold": 3,
+      "edge_pct": 2.77
+    },
+    {
+      "fold": 4,
+      "edge_pct": 2.77
+    },
+    {
+      "fold": 5,
+      "edge_pct": 1.77
+    }
+  ],
+  "seed_stability": {
+    "mean": 2.17,
+    "std": 0.0
+  },
+  "mcnemar_vs_ts3m": {
+    "chi2": 0.25,
+    "p": 0.6171,
+    "ts3m_only": 94,
+    "p1dev_only": 102
+  },
+  "checks": {
+    "1. 三窗口 Edge 全正": true,
+    "2. Permutation p<0.05": "True",
+    "3. Walk-Forward ≥3/5正": true,
+    "4. 10-seed std<0.5%": "True",
+    "5. McNemar 互補分析": true,
+    "6. Per-bet 分佈均衡": true
+  },
+  "passed": "6",
+  "verdict": "PROMOTED"
+}

@@ -1,0 +1,356 @@
+{
+  "timestamp": "2026-03-05T11:46:01.304915",
+  "python": "3.9.6",
+  "numpy": "1.26.2",
+  "seed": 20260305,
+  "outputs": {
+    "system_gap_analysis.md": "901c6ad7744cac6398ca55642a8247698a888aa844b34c823e89273bc26cc3fa",
+    "feature_space_matrix.json": "42d50ec723cba62bafecc66205b29a89c57b7a59e21718d5abacd8706b20f1c0",
+    "model_performance_table.json": "e550783726370b19faf87dcced1b4c593fcf7fa173c8da98da73dcc2c892db64",
+    "micro_signal_registry.json": "e7718560f9ef8e52bc4ea98aa4f0aa63f0de52772306db58328df347dd1991e3",
+    "predictability_ceiling_report.md": "1701e198ea8df6cb4ada10da4092bf879310150611b1cb071efbbf6532afcfb9",
+    "continuous_optimization_architecture.md": "1e57cc31c1a2b0645dd150a16ca3c339a494d733f7f465c36831a948c713aac7",
+    "research_process_and_conclusion_zh_tw.md": "987add2164f7b0b9f278b01f0fac2332272094d3e17edff60d6128332e0cf8b1",
+    "research_assumptions_log.json": "5a0d59bcbc239f8ad51f3f36c122d5e53f617884b4245dc1f02a781b60bfd419"
+  },
+  "tests": {
+    "all_passed": true,
+    "tests": [
+      {
+        "name": "data_nonempty_POWER_LOTTO",
+        "pass": true,
+        "detail": "rows=1890"
+      },
+      {
+        "name": "matrix_shape_POWER_LOTTO",
+        "pass": true,
+        "detail": "(1890, 38)"
+      },
+      {
+        "name": "data_nonempty_BIG_LOTTO",
+        "pass": true,
+        "detail": "rows=2114"
+      },
+      {
+        "name": "matrix_shape_BIG_LOTTO",
+        "pass": true,
+        "detail": "(2114, 49)"
+      },
+      {
+        "name": "data_nonempty_DAILY_539",
+        "pass": true,
+        "detail": "rows=5800"
+      },
+      {
+        "name": "matrix_shape_DAILY_539",
+        "pass": true,
+        "detail": "(5800, 39)"
+      },
+      {
+        "name": "feature_class_count",
+        "pass": true,
+        "detail": "19"
+      },
+      {
+        "name": "feature_has_game_1_POWER_LOTTO",
+        "pass": true,
+        "detail": "missing game"
+      },
+      {
+        "name": "feature_has_game_1_BIG_LOTTO",
+        "pass": true,
+        "detail": "missing game"
+      },
+      {
+        "name": "feature_has_game_1_DAILY_539",
+        "pass": true,
+        "detail": "missing game"
+      },
+      {
+        "name": "feature_has_game_2_POWER_LOTTO",
+        "pass": true,
+        "detail": "missing game"
+      },
+      {
+        "name": "feature_has_game_2_BIG_LOTTO",
+        "pass": true,
+        "detail": "missing game"
+      },
+      {
+        "name": "feature_has_game_2_DAILY_539",
+        "pass": true,
+        "detail": "missing game"
+      },
+      {
+        "name": "feature_has_game_3_POWER_LOTTO",
+        "pass": true,
+        "detail": "missing game"
+      },
+      {
+        "name": "feature_has_game_3_BIG_LOTTO",
+        "pass": true,
+        "detail": "missing game"
+      },
+      {
+        "name": "feature_has_game_3_DAILY_539",
+        "pass": true,
+        "detail": "missing game"
+      },
+      {
+        "name": "feature_has_game_4_POWER_LOTTO",
+        "pass": true,
+        "detail": "missing game"
+      },
+      {
+        "name": "feature_has_game_4_BIG_LOTTO",
+        "pass": true,
+        "detail": "missing game"
+      },
+      {
+        "name": "feature_has_game_4_DAILY_539",
+        "pass": true,
+        "detail": "missing game"
+      },
+      {
+        "name": "feature_has_game_5_POWER_LOTTO",
+        "pass": true,
+        "detail": "missing game"
+      },
+      {
+        "name": "feature_has_game_5_BIG_LOTTO",
+        "pass": true,
+        "detail": "missing game"
+      },
+      {
+        "name": "feature_has_game_5_DAILY_539",
+        "pass": true,
+        "detail": "missing game"
+      },
+      {
+        "name": "feature_has_game_6_POWER_LOTTO",
+        "pass": true,
+        "detail": "missing game"
+      },
+      {
+        "name": "feature_has_game_6_BIG_LOTTO",
+        "pass": true,
+        "detail": "missing game"
+      },
+      {
+        "name": "feature_has_game_6_DAILY_539",
+        "pass": true,
+        "detail": "missing game"
+      },
+      {
+        "name": "feature_has_game_7_POWER_LOTTO",
+        "pass": true,
+        "detail": "missing game"
+      },
+      {
+        "name": "feature_has_game_7_BIG_LOTTO",
+        "pass": true,
+        "detail": "missing game"
+      },
+      {
+        "name": "feature_has_game_7_DAILY_539",
+        "pass": true,
+        "detail": "missing game"
+      },
+      {
+        "name": "feature_has_game_8_POWER_LOTTO",
+        "pass": true,
+        "detail": "missing game"
+      },
+      {
+        "name": "feature_has_game_8_BIG_LOTTO",
+        "pass": true,
+        "detail": "missing game"
+      },
+      {
+        "name": "feature_has_game_8_DAILY_539",
+        "pass": true,
+        "detail": "missing game"
+      },
+      {
+        "name": "feature_has_game_9_POWER_LOTTO",
+        "pass": true,
+        "detail": "missing game"
+      },
+      {
+        "name": "feature_has_game_9_BIG_LOTTO",
+        "pass": true,
+        "detail": "missing game"
+      },
+      {
+        "name": "feature_has_game_9_DAILY_539",
+        "pass": true,
+        "detail": "missing game"
+      },
+      {
+        "name": "feature_has_game_10_POWER_LOTTO",
+        "pass": true,
+        "detail": "missing game"
+      },
+      {
+        "name": "feature_has_game_10_BIG_LOTTO",
+        "pass": true,
+        "detail": "missing game"
+      },
+      {
+        "name": "feature_has_game_10_DAILY_539",
+        "pass": true,
+        "detail": "missing game"
+      },
+      {
+        "name": "feature_has_game_11_POWER_LOTTO",
+        "pass": true,
+        "detail": "missing game"
+      },
+      {
+        "name": "feature_has_game_11_BIG_LOTTO",
+        "pass": true,
+        "detail": "missing game"
+      },
+      {
+        "name": "feature_has_game_11_DAILY_539",
+        "pass": true,
+        "detail": "missing game"
+      },
+      {
+        "name": "feature_has_game_12_POWER_LOTTO",
+        "pass": true,
+        "detail": "missing game"
+      },
+      {
+        "name": "feature_has_game_12_BIG_LOTTO",
+        "pass": true,
+        "detail": "missing game"
+      },
+      {
+        "name": "feature_has_game_12_DAILY_539",
+        "pass": true,
+        "detail": "missing game"
+      },
+      {
+        "name": "feature_has_game_13_POWER_LOTTO",
+        "pass": true,
+        "detail": "missing game"
+      },
+      {
+        "name": "feature_has_game_13_BIG_LOTTO",
+        "pass": true,
+        "detail": "missing game"
+      },
+      {
+        "name": "feature_has_game_13_DAILY_539",
+        "pass": true,
+        "detail": "missing game"
+      },
+      {
+        "name": "feature_has_game_14_POWER_LOTTO",
+        "pass": true,
+        "detail": "missing game"
+      },
+      {
+        "name": "feature_has_game_14_BIG_LOTTO",
+        "pass": true,
+        "detail": "missing game"
+      },
+      {
+        "name": "feature_has_game_14_DAILY_539",
+        "pass": true,
+        "detail": "missing game"
+      },
+      {
+        "name": "feature_has_game_15_POWER_LOTTO",
+        "pass": true,
+        "detail": "missing game"
+      },
+      {
+        "name": "feature_has_game_15_BIG_LOTTO",
+        "pass": true,
+        "detail": "missing game"
+      },
+      {
+        "name": "feature_has_game_15_DAILY_539",
+        "pass": true,
+        "detail": "missing game"
+      },
+      {
+        "name": "feature_has_game_16_POWER_LOTTO",
+        "pass": true,
+        "detail": "missing game"
+      },
+      {
+        "name": "feature_has_game_16_BIG_LOTTO",
+        "pass": true,
+        "detail": "missing game"
+      },
+      {
+        "name": "feature_has_game_16_DAILY_539",
+        "pass": true,
+        "detail": "missing game"
+      },
+      {
+        "name": "feature_has_game_17_POWER_LOTTO",
+        "pass": true,
+        "detail": "missing game"
+      },
+      {
+        "name": "feature_has_game_17_BIG_LOTTO",
+        "pass": true,
+        "detail": "missing game"
+      },
+      {
+        "name": "feature_has_game_17_DAILY_539",
+        "pass": true,
+        "detail": "missing game"
+      },
+      {
+        "name": "feature_has_game_18_POWER_LOTTO",
+        "pass": true,
+        "detail": "missing game"
+      },
+      {
+        "name": "feature_has_game_18_BIG_LOTTO",
+        "pass": true,
+        "detail": "missing game"
+      },
+      {
+        "name": "feature_has_game_18_DAILY_539",
+        "pass": true,
+        "detail": "missing game"
+      },
+      {
+        "name": "feature_has_game_19_POWER_LOTTO",
+        "pass": true,
+        "detail": "missing game"
+      },
+      {
+        "name": "feature_has_game_19_BIG_LOTTO",
+        "pass": true,
+        "detail": "missing game"
+      },
+      {
+        "name": "feature_has_game_19_DAILY_539",
+        "pass": true,
+        "detail": "missing game"
+      },
+      {
+        "name": "model_result_count",
+        "pass": true,
+        "detail": "24"
+      },
+      {
+        "name": "determinism_markov1",
+        "pass": true,
+        "detail": "markov mismatch"
+      },
+      {
+        "name": "micro_registry_present",
+        "pass": true,
+        "detail": "missing signals"
+      }
+    ]
+  }
+}

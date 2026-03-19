@@ -1,0 +1,62 @@
+{
+  "lottery_type": "POWER_LOTTO",
+  "test_year": 2025,
+  "test_periods": "114000095",
+  "results": [
+    {
+      "num_bets": 1,
+      "win_rate": 0.042105263157894736,
+      "win_count": 4,
+      "test_count": 95,
+      "avg_best_match": 0.9052631578947369,
+      "periods_per_win": 23.75,
+      "cost_per_win": 2375.0
+    },
+    {
+      "num_bets": 2,
+      "win_rate": 0.08421052631578947,
+      "win_count": 8,
+      "test_count": 95,
+      "avg_best_match": 1.3473684210526315,
+      "periods_per_win": 11.875,
+      "cost_per_win": 2375.0
+    },
+    {
+      "num_bets": 3,
+      "win_rate": 0.12631578947368421,
+      "win_count": 12,
+      "test_count": 95,
+      "avg_best_match": 1.6,
+      "periods_per_win": 7.916666666666667,
+      "cost_per_win": 2375.0
+    },
+    {
+      "num_bets": 4,
+      "win_rate": 0.16842105263157894,
+      "win_count": 16,
+      "test_count": 95,
+      "avg_best_match": 1.8,
+      "periods_per_win": 5.9375,
+      "cost_per_win": 2375.0
+    },
+    {
+      "num_bets": 6,
+      "win_rate": 0.22105263157894736,
+      "win_count": 21,
+      "test_count": 95,
+      "avg_best_match": 1.9684210526315788,
+      "periods_per_win": 4.523809523809524,
+      "cost_per_win": 2714.285714285714
+    },
+    {
+      "num_bets": 8,
+      "win_rate": 0.3157894736842105,
+      "win_count": 30,
+      "test_count": 95,
+      "avg_best_match": 2.0842105263157893,
+      "periods_per_win": 3.1666666666666665,
+      "cost_per_win": 2533.333333333333
+    }
+  ],
+  "generated_at": "2025-12-29T16:16:23.504308"
+}

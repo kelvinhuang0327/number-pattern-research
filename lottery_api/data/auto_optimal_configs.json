@@ -1,0 +1,152 @@
+{
+  "BIG_LOTTO": {
+    "lottery_type": "BIG_LOTTO",
+    "method_name": "zone_balance",
+    "window_size": 500,
+    "win_rate": 0.0431,
+    "avg_matches": 1.82,
+    "periods_per_win": 23.2,
+    "expected_cost": 1160.0,
+    "test_periods": 116,
+    "last_updated": "2025-12-29T15:55:13.970099"
+  },
+  "POWER_LOTTO": {
+    "lottery_type": "POWER_LOTTO",
+    "method_name": "ensemble",
+    "window_size": 100,
+    "win_rate": 0.0737,
+    "avg_matches": 1.85,
+    "periods_per_win": 13.57,
+    "expected_cost": 1357.0,
+    "test_periods": 95,
+    "last_updated": "2025-12-29T15:55:13.970104"
+  },
+  "DAILY_539": {
+    "optimal_method": "sum_range_predict",
+    "optimal_window": 300,
+    "win_rate": 0.1534,
+    "win_threshold": 2,
+    "periods_per_win": 6.5,
+    "improvement_ratio": 1.65,
+    "random_baseline": 0.093,
+    "validated_at": "2025-12-31",
+    "test_year": 2025,
+    "test_periods": 313,
+    "top_5_methods": [
+      {
+        "rank": 1,
+        "method": "sum_range_predict",
+        "window": 300,
+        "win_rate": 0.1534,
+        "improvement": 1.65
+      },
+      {
+        "rank": 2,
+        "method": "539_tail_predict",
+        "window": 100,
+        "win_rate": 0.147,
+        "improvement": 1.58
+      },
+      {
+        "rank": 3,
+        "method": "bayesian_predict",
+        "window": 300,
+        "win_rate": 0.1438,
+        "improvement": 1.55
+      },
+      {
+        "rank": 4,
+        "method": "anti_consensus_predict",
+        "window": 200,
+        "win_rate": 0.1438,
+        "improvement": 1.55
+      },
+      {
+        "rank": 5,
+        "method": "539_zone_opt_predict",
+        "window": 200,
+        "win_rate": 0.1406,
+        "improvement": 1.51
+      }
+    ],
+    "multi_bet_strategy": [
+      {
+        "num_bets": 2,
+        "win_rate": 0.2812,
+        "periods_per_win": 3.6,
+        "improvement_vs_single": 1.83,
+        "improvement_vs_random": 3.02,
+        "note": "已驗證",
+        "validated_at": "2025-12-31"
+      },
+      {
+        "num_bets": 3,
+        "win_rate": 0.3642,
+        "periods_per_win": 2.7,
+        "improvement_vs_single": 2.37,
+        "improvement_vs_random": 3.92,
+        "note": "已驗證 - 達成33%目標",
+        "validated_at": "2025-12-31",
+        "recommended": true
+      },
+      {
+        "num_bets": 4,
+        "est_win_rate": 0.42,
+        "note": "估計值"
+      },
+      {
+        "num_bets": 6,
+        "est_win_rate": 0.52,
+        "note": "估計值"
+      }
+    ],
+    "dual_bet_config": {
+      "bet1": {
+        "method": "sum_range_predict",
+        "window": 300,
+        "description": "和值範圍分析"
+      },
+      "bet2": {
+        "method": "tail_number_predict",
+        "window": 100,
+        "description": "尾數分布分析"
+      },
+      "expected_win_rate": 0.2812,
+      "periods_per_win": 3.6,
+      "win_threshold": 2,
+      "success_criteria": "任一注中2個號碼以上",
+      "api_endpoint": "/api/predict-dual-bet-539",
+      "validated_at": "2025-12-31",
+      "test_periods": 313
+    },
+    "triple_bet_config": {
+      "bet1": {
+        "method": "sum_range_predict",
+        "window": 300,
+        "description": "和值範圍分析"
+      },
+      "bet2": {
+        "method": "bayesian_predict",
+        "window": 300,
+        "description": "貝葉斯統計分析"
+      },
+      "bet3": {
+        "method": "zone_optimized_predict",
+        "window": 200,
+        "description": "區間優化分析"
+      },
+      "expected_win_rate": 0.3642,
+      "periods_per_win": 2.7,
+      "win_threshold": 2,
+      "success_criteria": "任一注中2個號碼以上",
+      "api_endpoint": "/api/predict-triple-bet-539",
+      "validated_at": "2025-12-31",
+      "test_periods": 313,
+      "combinations_tested": 35,
+      "combinations_above_33pct": 9,
+      "improvement_vs_single": "2.37x",
+      "improvement_vs_dual": "1.29x",
+      "improvement_vs_random": "3.92x"
+    }
+  }
+}

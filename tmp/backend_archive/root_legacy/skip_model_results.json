@@ -1,0 +1,120 @@
+{
+  "always_bet": {
+    "coverage": 1.0,
+    "conditional_rate": 0.16133333333333333,
+    "unconditional_rate": 0.16133333333333333,
+    "edge_pct": 4.7333333333333325,
+    "draws_bet": 1500,
+    "draws_skipped": 0
+  },
+  "Skip_low_consensus_2": {
+    "coverage": 0.208,
+    "conditional_rate": 0.7724358974358975,
+    "unconditional_rate": 0.16066666666666668,
+    "edge_pct": 65.84358974358975,
+    "draws_bet": 312,
+    "draws_skipped": 1188,
+    "min_agree": 2
+  },
+  "Skip_low_consensus_3": {
+    "coverage": 0.162,
+    "conditional_rate": 0.9835390946502057,
+    "unconditional_rate": 0.15933333333333333,
+    "edge_pct": 86.95390946502057,
+    "draws_bet": 243,
+    "draws_skipped": 1257,
+    "min_agree": 3
+  },
+  "Skip_low_consensus_4": {
+    "coverage": 0.12733333333333333,
+    "conditional_rate": 1.0,
+    "unconditional_rate": 0.12733333333333333,
+    "edge_pct": 88.6,
+    "draws_bet": 191,
+    "draws_skipped": 1309,
+    "min_agree": 4
+  },
+  "Skip_coldstreak_lb10_r0.05": {
+    "coverage": 0.834,
+    "conditional_rate": 0.16466826538768986,
+    "edge_pct": 5.066826538768986,
+    "draws_bet": 1251,
+    "draws_skipped": 249
+  },
+  "Skip_coldstreak_lb10_r0.08": {
+    "coverage": 0.834,
+    "conditional_rate": 0.16466826538768986,
+    "edge_pct": 5.066826538768986,
+    "draws_bet": 1251,
+    "draws_skipped": 249
+  },
+  "Skip_coldstreak_lb10_r0.1": {
+    "coverage": 0.834,
+    "conditional_rate": 0.16466826538768986,
+    "edge_pct": 5.066826538768986,
+    "draws_bet": 1251,
+    "draws_skipped": 249
+  },
+  "Skip_coldstreak_lb20_r0.05": {
+    "coverage": 0.9713333333333334,
+    "conditional_rate": 0.16129032258064516,
+    "edge_pct": 4.729032258064516,
+    "draws_bet": 1457,
+    "draws_skipped": 43
+  },
+  "Skip_coldstreak_lb20_r0.08": {
+    "coverage": 0.8806666666666667,
+    "conditional_rate": 0.1566994700984103,
+    "edge_pct": 4.269947009841029,
+    "draws_bet": 1321,
+    "draws_skipped": 179
+  },
+  "Skip_coldstreak_lb20_r0.1": {
+    "coverage": 0.8806666666666667,
+    "conditional_rate": 0.1566994700984103,
+    "edge_pct": 4.269947009841029,
+    "draws_bet": 1321,
+    "draws_skipped": 179
+  },
+  "Skip_coldstreak_lb30_r0.05": {
+    "coverage": 0.9806666666666667,
+    "conditional_rate": 0.16043507817811012,
+    "edge_pct": 4.643507817811011,
+    "draws_bet": 1471,
+    "draws_skipped": 29
+  },
+  "Skip_coldstreak_lb30_r0.08": {
+    "coverage": 0.896,
+    "conditional_rate": 0.1644345238095238,
+    "edge_pct": 5.04345238095238,
+    "draws_bet": 1344,
+    "draws_skipped": 156
+  },
+  "Skip_coldstreak_lb30_r0.1": {
+    "coverage": 0.896,
+    "conditional_rate": 0.1644345238095238,
+    "edge_pct": 5.04345238095238,
+    "draws_bet": 1344,
+    "draws_skipped": 156
+  },
+  "Skip_low_entropy_p25": {
+    "coverage": 0.75,
+    "conditional_rate": 0.16977777777777778,
+    "edge_pct": 5.5777777777777775,
+    "draws_bet": 1125,
+    "draws_skipped": 375
+  },
+  "Skip_low_entropy_p50": {
+    "coverage": 0.5,
+    "conditional_rate": 0.18,
+    "edge_pct": 6.599999999999999,
+    "draws_bet": 750,
+    "draws_skipped": 750
+  },
+  "oracle_analysis": {
+    "all_miss_draws": 764,
+    "all_miss_pct": 50.93333333333333,
+    "some_hit_draws": 736,
+    "note": "764 draws (50.9%) are missed by ALL strategies"
+  }
+}

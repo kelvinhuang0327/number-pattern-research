@@ -1,0 +1,781 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>集成與協作模型 - Ensemble & Collaborative</title>
+    <meta name="description" content="集成學習與協作預測系統，整合多種基礎模型進行智能預測">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@300;400;500;700;900&family=Orbitron:wght@400;500;700;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        .model-info {
+            background: rgba(100, 255, 218, 0.05);
+            border: 1px solid rgba(100, 255, 218, 0.2);
+            border-radius: 12px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+        .model-info h4 {
+            color: #64ffda;
+            margin-bottom: 10px;
+        }
+        .model-info p {
+            color: #8892b0;
+            font-size: 0.9rem;
+            line-height: 1.6;
+        }
+        .model-info .tag {
+            display: inline-block;
+            background: rgba(100, 255, 218, 0.2);
+            color: #64ffda;
+            padding: 3px 10px;
+            border-radius: 15px;
+            font-size: 0.75rem;
+            margin-right: 5px;
+            margin-top: 8px;
+        }
+        .section-nav {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+        }
+        .section-nav-btn {
+            background: rgba(100, 255, 218, 0.1);
+            border: 1px solid rgba(100, 255, 218, 0.3);
+            color: #ccd6f6;
+            padding: 12px 24px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 0.95rem;
+        }
+        .section-nav-btn:hover {
+            border-color: #64ffda;
+            background: rgba(100, 255, 218, 0.2);
+        }
+        .section-nav-btn.active {
+            background: linear-gradient(135deg, #64ffda, #00bcd4);
+            color: #0a192f;
+            border-color: #64ffda;
+            font-weight: 600;
+        }
+        .ens-section {
+            display: none;
+        }
+        .ens-section.active {
+            display: block;
+        }
+        .simulation-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 15px;
+        }
+        .simulation-table th, .simulation-table td {
+            padding: 10px;
+            text-align: left;
+            border-bottom: 1px solid rgba(100, 255, 218, 0.1);
+        }
+        .simulation-table th {
+            color: #64ffda;
+            font-weight: 600;
+            background: rgba(100, 255, 218, 0.05);
+        }
+        .simulation-table td { color: #ccd6f6; }
+        .simulation-table .success-row { background: rgba(100, 255, 218, 0.1); }
+        .hit-badge {
+            display: inline-block;
+            padding: 2px 8px;
+            border-radius: 10px;
+            font-size: 0.85rem;
+            background: rgba(100, 255, 218, 0.2);
+        }
+        .hit-badge.high-hit { background: #64ffda; color: #0a192f; font-weight: 600; }
+        .stats-summary {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            margin: 20px 0;
+            flex-wrap: wrap;
+        }
+        .stat-item { text-align: center; }
+        .stat-item .value { font-size: 2rem; font-weight: 700; color: #64ffda; }
+        .stat-item .label { font-size: 0.85rem; color: #8892b0; }
+    </style>
+</head>
+
+<body>
+    <div class="background-animation">
+        <div class="orb orb-1"></div>
+        <div class="orb orb-2"></div>
+        <div class="orb orb-3"></div>
+    </div>
+
+    <header class="header">
+        <div class="container">
+            <div class="header-content">
+                <div class="logo">
+                    <div class="logo-icon">🤝</div>
+                    <div class="logo-text">
+                        <h1>集成與協作模型</h1>
+                        <p>Ensemble & Collaborative System</p>
+                    </div>
+                </div>
+                <nav class="nav">
+                    <a href="index.html" class="nav-btn" style="text-decoration: none;">
+                        <span class="icon">🏠</span>
+                        <span>基礎模型</span>
+                    </a>
+                </nav>
+            </div>
+        </div>
+    </header>
+
+    <main class="main">
+        <div class="container">
+            <!-- 內部導航 -->
+            <div class="section-nav">
+                <button class="section-nav-btn active" data-section="data">
+                    <span>📊</span> 資料基底
+                </button>
+                <button class="section-nav-btn" data-section="predict">
+                    <span>🔮</span> 智能預測
+                </button>
+                <button class="section-nav-btn" data-section="simulation">
+                    <span>🧪</span> 模擬測試
+                </button>
+            </div>
+
+            <!-- ==================== 資料基底區塊 ==================== -->
+            <section id="data-section" class="ens-section active section">
+                <div class="section-header">
+                    <h2>資料基底</h2>
+                    <p>上傳或同步歷史開獎數據</p>
+                </div>
+
+                <div class="upload-area">
+                    <div class="upload-card">
+                        <div class="upload-icon">📁</div>
+                        <h3>上傳CSV檔案</h3>
+                        <p>支援台灣彩券官方CSV格式</p>
+                        <input type="file" id="ens-file-input" accept=".csv" hidden>
+                        <button class="btn btn-primary" id="ens-upload-btn">
+                            <span class="btn-icon">📤</span> 選擇檔案
+                        </button>
+                        <div class="file-info" id="ens-file-info"></div>
+                    </div>
+
+                    <div class="upload-card">
+                        <div class="upload-icon">🔄</div>
+                        <h3>從主頁面同步</h3>
+                        <p>載入主頁面已上傳的數據</p>
+                        <button class="btn btn-secondary" id="ens-sync-btn">
+                            <span class="btn-icon">⚡</span> 同步數據
+                        </button>
+                    </div>
+                </div>
+
+                <div class="data-summary" id="ens-data-summary" style="display: none;">
+                    <h3>數據概覽</h3>
+                    <div class="summary-grid">
+                        <div class="summary-item">
+                            <div class="summary-label">總期數</div>
+                            <div class="summary-value" id="ens-total-draws">0</div>
+                        </div>
+                        <div class="summary-item">
+                            <div class="summary-label">數據範圍</div>
+                            <div class="summary-value" id="ens-date-range">-</div>
+                        </div>
+                        <div class="summary-item">
+                            <div class="summary-label">最新期數</div>
+                            <div class="summary-value" id="ens-latest-draw">-</div>
+                        </div>
+                        <div class="summary-item">
+                            <div class="summary-label">數據狀態</div>
+                            <div class="summary-value status-ready">✓ 就緒</div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ==================== 智能預測區塊 ==================== -->
+            <section id="predict-section" class="ens-section section">
+                <div class="section-header">
+                    <h2>集成與協作預測</h2>
+                    <p>使用多模型組合進行智能預測</p>
+                </div>
+
+                <div class="prediction-controls">
+                    <div class="control-group">
+                        <label for="ens-method">預測方法</label>
+                        <select id="ens-method" class="select-input">
+                            <optgroup label="🔗 內部集成模型">
+                                <option value="boosting">梯度提升集成 (Boosting)</option>
+                                <option value="random_forest">🌳 隨機森林 (50棵樹)</option>
+                            </optgroup>
+                            <optgroup label="🎯 EnsembleStrategy 系列">
+                                <option value="ensemble">菁英投票策略</option>
+                                <option value="adaptive_ensemble">⭐ 自適應集成 (Adaptive)</option>
+                                <option value="consensus_voting">👥 共識投票 (Consensus)</option>
+                                <option value="pipeline">🔄 管道模型 (Pipeline)</option>
+                                <option value="hybrid_strategy">🎯 混合策略 (Hybrid)</option>
+                                <option value="all_ensemble">全模型綜合投票 (All)</option>
+                                <option value="tactical_relay">戰術接力模式 (Relay)</option>
+                            </optgroup>
+                            <optgroup label="🤝 CollaborativeStrategy 系列">
+                                <option value="collaborative_hybrid" selected>⭐ 混合模式 (接力+合作)</option>
+                                <option value="collaborative_relay">🏃 接力模式 (三階段篩選)</option>
+                                <option value="collaborative_coop">🤝 合作模式 (專家投票)</option>
+                            </optgroup>
+                        </select>
+                    </div>
+                    <div class="control-group">
+                        <label for="ens-sample-size">樣本大小</label>
+                        <select id="ens-sample-size" class="select-input">
+                            <option value="30">最近 30 期</option>
+                            <option value="50" selected>最近 50 期</option>
+                            <option value="100">最近 100 期</option>
+                            <option value="200">最近 200 期</option>
+                            <option value="all">全部數據</option>
+                        </select>
+                    </div>
+                    <button class="btn btn-primary" id="ens-predict-btn">
+                        <span class="btn-icon">🔮</span> 開始預測
+                    </button>
+                </div>
+
+                <!-- 模型說明 -->
+                <div class="model-info" id="model-info">
+                    <h4>⭐ 混合模式 (Collaborative Hybrid)</h4>
+                    <p>結合接力過濾與合作決策的協作預測系統。將 11 個基礎策略分為 5 個專家組進行三階段篩選 (49→25→12→6)，最後由專家組投票決定最終號碼。</p>
+                    <span class="tag">11 個策略</span>
+                    <span class="tag">5 專家組</span>
+                    <span class="tag">三階段篩選</span>
+                </div>
+
+                <!-- 預測結果 -->
+                <div class="prediction-results" id="ens-predict-results" style="display: none;">
+                    <div class="prediction-card">
+                        <h3>預測號碼</h3>
+                        <div class="predicted-numbers" id="ens-predicted-numbers"></div>
+                        <div class="confidence-meter">
+                            <label>預測信心度</label>
+                            <div class="meter">
+                                <div class="meter-fill" id="ens-confidence-fill" style="width: 0%"></div>
+                            </div>
+                            <span class="confidence-value" id="ens-confidence-value">0%</span>
+                        </div>
+                    </div>
+                    <div class="prediction-card full-width">
+                        <h3>分析報告</h3>
+                        <div id="ens-prediction-report" class="report-content"></div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ==================== 模擬測試區塊 ==================== -->
+            <section id="simulation-section" class="ens-section section">
+                <div class="section-header">
+                    <h2>模擬比對測試</h2>
+                    <p>選擇年度進行滾動預測模擬，比對實際開獎結果</p>
+                </div>
+
+                <div class="simulation-controls" style="margin: 20px 0; display: flex; gap: 15px; align-items: center; justify-content: center; flex-wrap: wrap;">
+                    <div class="control-group">
+                        <label style="color: #ccd6f6;">測試年度</label>
+                        <input type="month" id="ens-sim-year-month" value="2025-01" class="select-input" style="padding: 8px 12px;">
+                    </div>
+                    <div class="control-group">
+                        <label style="color: #ccd6f6;">預測方法</label>
+                        <select id="ens-sim-method" class="select-input">
+                            <optgroup label="🔗 內部集成模型">
+                                <option value="boosting">梯度提升集成 (Boosting)</option>
+                                <option value="random_forest">🌳 隨機森林 (50棵樹)</option>
+                            </optgroup>
+                            <optgroup label="🎯 EnsembleStrategy 系列">
+                                <option value="ensemble">菁英投票策略</option>
+                                <option value="adaptive_ensemble">⭐ 自適應集成 (Adaptive)</option>
+                                <option value="consensus_voting">👥 共識投票 (Consensus)</option>
+                                <option value="pipeline">🔄 管道模型 (Pipeline)</option>
+                                <option value="hybrid_strategy">🎯 混合策略 (Hybrid)</option>
+                                <option value="all_ensemble">全模型綜合投票 (All)</option>
+                                <option value="tactical_relay">戰術接力模式 (Relay)</option>
+                            </optgroup>
+                            <optgroup label="🤝 CollaborativeStrategy 系列">
+                                <option value="collaborative_hybrid" selected>⭐ 混合模式 (接力+合作)</option>
+                                <option value="collaborative_relay">🏃 接力模式 (三階段篩選)</option>
+                                <option value="collaborative_coop">🤝 合作模式 (專家投票)</option>
+                            </optgroup>
+                        </select>
+                    </div>
+                    <button class="btn btn-primary" id="ens-sim-btn">
+                        <span class="btn-icon">🧪</span> 開始模擬
+                    </button>
+                </div>
+
+                <!-- 模擬結果 -->
+                <div id="ens-sim-results" style="display: none;">
+                    <div class="stats-summary">
+                        <div class="stat-item">
+                            <div class="value" id="ens-sim-total">0</div>
+                            <div class="label">測試期數</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="value" id="ens-sim-success">0</div>
+                            <div class="label">成功期數</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="value" id="ens-sim-rate">0%</div>
+                            <div class="label">成功率</div>
+                        </div>
+                    </div>
+
+                    <div style="overflow-x: auto;">
+                        <table class="simulation-table" id="ens-sim-table">
+                            <thead>
+                                <tr>
+                                    <th>期數</th>
+                                    <th>日期</th>
+                                    <th>預測號碼 (Top 6)</th>
+                                    <th>實際號碼</th>
+                                    <th>命中數</th>
+                                    <th>訓練期數</th>
+                                    <th>成功</th>
+                                </tr>
+                            </thead>
+                            <tbody></tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </main>
+
+    <!-- Loading Overlay -->
+    <div class="loading-overlay" id="loading-overlay" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(10, 25, 47, 0.9); z-index: 1000; justify-content: center; align-items: center; flex-direction: column;">
+        <div style="width: 50px; height: 50px; border: 4px solid rgba(100, 255, 218, 0.2); border-top-color: #64ffda; border-radius: 50%; animation: spin 1s linear infinite;"></div>
+        <div style="color: #64ffda; font-size: 1.1rem; margin-top: 20px;" id="loading-text">處理中...</div>
+    </div>
+    <style>@keyframes spin { to { transform: rotate(360deg); } }</style>
+
+    <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@4.10.0/dist/tf.min.js"></script>
+    <script type="module">
+        import { LOTTERY_RULES } from './src/utils/Constants.js';
+        import { StatisticsService } from './src/data/StatisticsService.js';
+        import { PredictionEngine } from './src/engine/PredictionEngine.js';
+
+        // 簡化版 DataProcessor
+        class DataProcessor {
+            constructor() {
+                this.lotteryData = [];
+            }
+
+            async parseCSV(file) {
+                return new Promise((resolve, reject) => {
+                    const reader = new FileReader();
+                    reader.onload = (e) => {
+                        try {
+                            const text = e.target.result;
+                            const lines = text.split('\n').filter(line => line.trim());
+                            const data = [];
+                            if (lines.length < 2) { reject(new Error('檔案內容為空')); return; }
+
+                            const firstLine = lines[0].trim();
+                            const secondLine = lines.length > 1 ? lines[1].trim() : '';
+                            const isOfficialFormat = firstLine.includes('遊戲名稱') || (secondLine && secondLine.includes('大樂透'));
+
+                            for (let i = 1; i < lines.length; i++) {
+                                const line = lines[i].trim();
+                                if (!line) continue;
+                                const parts = line.split(',').map(p => p.trim().replace(/^"|"$/g, ''));
+                                let draw, date, numbers, special;
+
+                                if (isOfficialFormat) {
+                                    if (!parts[0].includes('大樂透')) continue;
+                                    if (parts.length < 13) continue;
+                                    draw = parts[1];
+                                    date = parts[2].replace(/\//g, '-');
+                                    numbers = [parseInt(parts[6]), parseInt(parts[7]), parseInt(parts[8]), parseInt(parts[9]), parseInt(parts[10]), parseInt(parts[11])];
+                                    special = parseInt(parts[12]);
+                                } else {
+                                    if (parts.length < 8) continue;
+                                    draw = parts[0];
+                                    date = parts[1].replace(/\//g, '-');
+                                    numbers = [parseInt(parts[2]), parseInt(parts[3]), parseInt(parts[4]), parseInt(parts[5]), parseInt(parts[6]), parseInt(parts[7])];
+                                    special = parseInt(parts[8]);
+                                }
+
+                                const validNumbers = numbers.filter(n => !isNaN(n) && n >= 1 && n <= 49);
+                                if (validNumbers.length === 6 && !isNaN(special)) {
+                                    data.push({ draw, date, numbers: validNumbers.sort((a, b) => a - b), special });
+                                }
+                            }
+                            if (data.length === 0) reject(new Error('無法解析'));
+                            else resolve(data);
+                        } catch (error) { reject(error); }
+                    };
+                    reader.onerror = () => reject(new Error('讀取失敗'));
+                    reader.readAsText(file, 'UTF-8');
+                });
+            }
+
+            getData() { return this.lotteryData; }
+            getDataRange(sampleSize) {
+                if (sampleSize === 'all') return this.lotteryData;
+                return this.lotteryData.slice(0, parseInt(sampleSize));
+            }
+        }
+
+        // 模型說明資料
+        const MODEL_INFO = {
+            'boosting': {
+                title: '梯度提升集成 (Boosting)',
+                desc: '內部調用 frequency, trend, markov 作為弱學習器，透過 3 輪迭代優化進行 Boosting 集成。',
+                tags: ['內部集成', '3 輪迭代', '弱學習器融合']
+            },
+            'random_forest': {
+                title: '🌳 隨機森林 (Random Forest)',
+                desc: '內部包含 50 棵決策樹，使用 Bootstrap 採樣與特徵隨機選擇，最終投票融合結果。',
+                tags: ['50 棵樹', 'Bootstrap', '特徵採樣']
+            },
+            'ensemble': {
+                title: '菁英投票策略 (Ensemble)',
+                desc: '調用 8 個基礎策略 (frequency, trend, combined, ml, markov, montecarlo, weighted, deviation) 進行加權投票。',
+                tags: ['8 個策略', '加權投票', 'EnsembleStrategy']
+            },
+            'adaptive_ensemble': {
+                title: '⭐ 自適應集成 (Adaptive)',
+                desc: '根據各策略歷史表現動態調整權重，使表現好的策略獲得更高話語權。',
+                tags: ['動態權重', '自適應', '8 個策略']
+            },
+            'consensus_voting': {
+                title: '👥 共識投票 (Consensus)',
+                desc: '採用多數決原則，只有獲得多數策略支持的號碼才會被選中。',
+                tags: ['多數決', '共識', '8 個策略']
+            },
+            'pipeline': {
+                title: '🔄 管道模型 (Pipeline)',
+                desc: '將多個策略以管道方式串聯，前一策略的輸出作為後一策略的參考。',
+                tags: ['管道串聯', '加權投票', '8 個策略']
+            },
+            'hybrid_strategy': {
+                title: '🎯 混合策略 (Hybrid)',
+                desc: '結合自適應權重與共識投票的混合方法。',
+                tags: ['混合方法', '動態權重', '8 個策略']
+            },
+            'all_ensemble': {
+                title: '全模型綜合投票 (All Models)',
+                desc: '使用所有可用的基礎策略進行綜合投票，覆蓋面最廣。',
+                tags: ['全模型', '加權投票', '最廣覆蓋']
+            },
+            'tactical_relay': {
+                title: '戰術接力模式 (Tactical Relay)',
+                desc: '三階段接力過濾：探索層 (49→25)、精煉層 (25→12)、決策層 (12→6)。',
+                tags: ['三階段', '接力過濾', '8 個策略']
+            },
+            'collaborative_hybrid': {
+                title: '⭐ 混合模式 (Collaborative Hybrid)',
+                desc: '結合接力過濾與合作決策。將 11 個基礎策略分為 5 個專家組 (統計、機率、序列、特徵、優化) 進行三階段篩選，最後由專家組投票決定。',
+                tags: ['11 個策略', '5 專家組', '接力+合作']
+            },
+            'collaborative_relay': {
+                title: '🏃 接力模式 (Collaborative Relay)',
+                desc: '純接力過濾模式，由 5 個專家組依序進行三階段篩選 (49→25→12→6)。',
+                tags: ['11 個策略', '三階段', '純接力']
+            },
+            'collaborative_coop': {
+                title: '🤝 合作模式 (Collaborative Cooperative)',
+                desc: '全專家組平行投票，每個專家組獨立評分，最後綜合加權決定結果。',
+                tags: ['11 個策略', '平行投票', '專家權重']
+            }
+        };
+
+        class EnsembleApp {
+            constructor() {
+                this.dataProcessor = new DataProcessor();
+                this.statisticsService = null;
+                this.predictionEngine = null;
+                this.init();
+            }
+
+            init() {
+                this.bindNavigation();
+                this.bindDataEvents();
+                this.bindPredictEvents();
+                this.bindSimulationEvents();
+                this.tryLoadFromStorage();
+            }
+
+            // ========== 導航 ==========
+            bindNavigation() {
+                document.querySelectorAll('.section-nav-btn').forEach(btn => {
+                    btn.addEventListener('click', () => {
+                        document.querySelectorAll('.section-nav-btn').forEach(b => b.classList.remove('active'));
+                        document.querySelectorAll('.ens-section').forEach(s => s.classList.remove('active'));
+                        btn.classList.add('active');
+                        const sectionId = btn.dataset.section + '-section';
+                        document.getElementById(sectionId).classList.add('active');
+                    });
+                });
+            }
+
+            // ========== 資料基底 ==========
+            bindDataEvents() {
+                const uploadBtn = document.getElementById('ens-upload-btn');
+                const fileInput = document.getElementById('ens-file-input');
+                const syncBtn = document.getElementById('ens-sync-btn');
+
+                uploadBtn?.addEventListener('click', () => fileInput.click());
+                fileInput?.addEventListener('change', async (e) => {
+                    const file = e.target.files[0];
+                    if (file) await this.handleFileUpload(file);
+                    e.target.value = '';
+                });
+                syncBtn?.addEventListener('click', () => this.syncFromMainPage());
+            }
+
+            async handleFileUpload(file) {
+                this.showLoading('正在解析檔案...');
+                try {
+                    const data = await this.dataProcessor.parseCSV(file);
+                    this.dataProcessor.lotteryData = data.sort((a, b) => parseInt(b.draw) - parseInt(a.draw));
+                    this.initServices();
+                    this.updateDataSummary();
+                    this.saveToStorage();
+                    document.getElementById('ens-file-info').textContent = `✓ 已載入: ${file.name}`;
+                    alert(`成功載入 ${data.length} 期數據！`);
+                } catch (error) {
+                    alert('載入失敗: ' + error.message);
+                } finally {
+                    this.hideLoading();
+                }
+            }
+
+            syncFromMainPage() {
+                const savedData = localStorage.getItem('lotteryData');
+                if (savedData) {
+                    const parsed = JSON.parse(savedData);
+                    this.dataProcessor.lotteryData = parsed;
+                    this.initServices();
+                    this.updateDataSummary();
+                    alert(`已同步 ${parsed.length} 期數據！`);
+                } else {
+                    alert('主頁面尚無數據，請先在主頁面上傳！');
+                }
+            }
+
+            tryLoadFromStorage() {
+                const savedData = localStorage.getItem('ensLotteryData') || localStorage.getItem('lotteryData');
+                if (savedData) {
+                    const parsed = JSON.parse(savedData);
+                    this.dataProcessor.lotteryData = parsed;
+                    this.initServices();
+                    this.updateDataSummary();
+                }
+            }
+
+            saveToStorage() {
+                localStorage.setItem('ensLotteryData', JSON.stringify(this.dataProcessor.lotteryData));
+            }
+
+            initServices() {
+                this.statisticsService = new StatisticsService(this.dataProcessor);
+                this.predictionEngine = new PredictionEngine(this.dataProcessor, this.statisticsService);
+            }
+
+            updateDataSummary() {
+                const data = this.dataProcessor.lotteryData;
+                if (data.length === 0) return;
+
+                document.getElementById('ens-data-summary').style.display = 'block';
+                document.getElementById('ens-total-draws').textContent = data.length;
+
+                const dates = data.map(d => d.date).sort();
+                document.getElementById('ens-date-range').textContent = `${dates[0]} ~ ${dates[dates.length - 1]}`;
+                document.getElementById('ens-latest-draw').textContent = data[0].draw;
+
+                const latestDate = data[0].date;
+                const [year, month] = latestDate.split('-');
+                const simInput = document.getElementById('ens-sim-year-month');
+                if (simInput) simInput.value = `${year}-${month}`;
+            }
+
+            // ========== 智能預測 ==========
+            bindPredictEvents() {
+                document.getElementById('ens-predict-btn')?.addEventListener('click', () => this.runPrediction());
+
+                // 更新模型說明
+                document.getElementById('ens-method')?.addEventListener('change', (e) => {
+                    this.updateModelInfo(e.target.value);
+                });
+            }
+
+            updateModelInfo(method) {
+                const info = MODEL_INFO[method];
+                if (info) {
+                    const infoDiv = document.getElementById('model-info');
+                    infoDiv.innerHTML = `
+                        <h4>${info.title}</h4>
+                        <p>${info.desc}</p>
+                        ${info.tags.map(tag => `<span class="tag">${tag}</span>`).join('')}
+                    `;
+                }
+            }
+
+            async runPrediction() {
+                if (!this.predictionEngine) {
+                    alert('請先載入數據！');
+                    return;
+                }
+
+                const method = document.getElementById('ens-method').value;
+                const sampleSize = document.getElementById('ens-sample-size').value;
+
+                this.showLoading('預測進行中...');
+                try {
+                    const result = await this.predictionEngine.predict(method, sampleSize);
+                    this.displayPredictionResult(result);
+                } catch (error) {
+                    alert('預測失敗: ' + error.message);
+                    console.error(error);
+                } finally {
+                    this.hideLoading();
+                }
+            }
+
+            displayPredictionResult(result) {
+                document.getElementById('ens-predict-results').style.display = 'block';
+
+                const numbersContainer = document.getElementById('ens-predicted-numbers');
+                numbersContainer.innerHTML = result.numbers.map(num =>
+                    `<div class="number-ball">${num}</div>`
+                ).join('');
+
+                document.getElementById('ens-confidence-fill').style.width = `${result.confidence}%`;
+                document.getElementById('ens-confidence-value').textContent = `${result.confidence}%`;
+                document.getElementById('ens-prediction-report').textContent = result.report;
+            }
+
+            // ========== 模擬比對 ==========
+            bindSimulationEvents() {
+                document.getElementById('ens-sim-btn')?.addEventListener('click', () => this.runSimulation());
+            }
+
+            async runSimulation() {
+                if (!this.predictionEngine) {
+                    alert('請先載入數據！');
+                    return;
+                }
+
+                const yearMonth = document.getElementById('ens-sim-year-month').value;
+                const method = document.getElementById('ens-sim-method').value;
+
+                if (!yearMonth) {
+                    alert('請選擇測試年度');
+                    return;
+                }
+
+                const [year] = yearMonth.split('-');
+                const allData = this.dataProcessor.getData();
+
+                if (allData.length < 50) {
+                    alert('數據量不足 (至少需要 50 期)');
+                    return;
+                }
+
+                const testTargets = allData.filter(d => d.date.split('-')[0] === year);
+                if (testTargets.length === 0) {
+                    const availableYears = [...new Set(allData.map(d => d.date.split('-')[0]))];
+                    alert(`該年份 (${year}) 無資料。可用年份: ${availableYears.join(', ')}`);
+                    return;
+                }
+
+                testTargets.sort((a, b) => a.date.localeCompare(b.date));
+
+                this.showLoading(`模擬測試中 (0/${testTargets.length})...`);
+
+                try {
+                    const results = [];
+                    let successCount = 0;
+                    const strategy = this.predictionEngine.strategies[method];
+
+                    for (let i = 0; i < testTargets.length; i++) {
+                        const targetDraw = testTargets[i];
+                        const targetDate = targetDraw.date;
+                        const trainingData = allData.filter(d => d.date < targetDate);
+
+                        if (trainingData.length < 30) continue;
+
+                        document.getElementById('loading-text').textContent =
+                            `模擬測試中 (${i + 1}/${testTargets.length})...`;
+
+                        const prediction = await strategy.predict(trainingData);
+                        const hits = targetDraw.numbers.filter(n => prediction.numbers.includes(n));
+                        const isSuccess = hits.length >= 3;
+                        if (isSuccess) successCount++;
+
+                        results.push({
+                            draw: targetDraw.draw,
+                            date: targetDraw.date,
+                            predicted: prediction.numbers,
+                            actual: targetDraw.numbers,
+                            hits: hits.length,
+                            isSuccess,
+                            trainingCount: trainingData.length
+                        });
+                    }
+
+                    this.displaySimulationResults(results, successCount);
+                } catch (error) {
+                    alert('模擬失敗: ' + error.message);
+                    console.error(error);
+                } finally {
+                    this.hideLoading();
+                }
+            }
+
+            displaySimulationResults(results, successCount) {
+                document.getElementById('ens-sim-results').style.display = 'block';
+
+                const rate = results.length > 0 ? Math.round((successCount / results.length) * 100) : 0;
+                document.getElementById('ens-sim-total').textContent = results.length;
+                document.getElementById('ens-sim-success').textContent = successCount;
+                document.getElementById('ens-sim-rate').textContent = rate + '%';
+
+                const tbody = document.querySelector('#ens-sim-table tbody');
+                tbody.innerHTML = results.map(r => `
+                    <tr class="${r.isSuccess ? 'success-row' : ''}">
+                        <td>${r.draw}</td>
+                        <td>${r.date}</td>
+                        <td>${r.predicted.join(', ')}</td>
+                        <td>${r.actual.join(', ')}</td>
+                        <td><span class="hit-badge ${r.hits >= 3 ? 'high-hit' : ''}">${r.hits}</span></td>
+                        <td>${r.trainingCount} 期</td>
+                        <td>${r.isSuccess ? '✅' : '❌'}</td>
+                    </tr>
+                `).join('');
+            }
+
+            // ========== 工具方法 ==========
+            showLoading(text = '處理中...') {
+                document.getElementById('loading-text').textContent = text;
+                document.getElementById('loading-overlay').style.display = 'flex';
+            }
+
+            hideLoading() {
+                document.getElementById('loading-overlay').style.display = 'none';
+            }
+        }
+
+        // 初始化
+        window.addEventListener('DOMContentLoaded', () => {
+            new EnsembleApp();
+        });
+    </script>
+</body>
+
+</html>

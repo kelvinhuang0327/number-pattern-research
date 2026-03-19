@@ -1,0 +1,29 @@
+{
+  "strategy": "CondFourier_0.4_3bet",
+  "lottery": "539",
+  "rejected_date": "2026-03-10",
+  "trigger": "115000061 review — Fourier bet 0/5 miss, hypothesize Fourier weak signal detection",
+  "design": "ACB bet1 + Markov bet2 + Conditional(Fourier>0.40→Fourier, else→LagEcho) bet3",
+  "fourier_threshold": 0.40,
+  "all_thresholds_tested": [0.25, 0.30, 0.35, 0.40],
+  "results": {
+    "edge_150p": 2.83,
+    "edge_500p": 4.10,
+    "edge_1500p": 6.17,
+    "perm_p": 0.010,
+    "stability": "STABLE",
+    "z_1500p": 5.19
+  },
+  "mcnemar_vs_champion": {
+    "a_only": 1,
+    "b_only": 0,
+    "chi2": 1.000,
+    "p_value": 0.3173,
+    "winner": "A (conditional)",
+    "net": 1
+  },
+  "failure_reason": "NO-OP — Fourier max_score almost ALWAYS exceeds 0.40 in 539 (5804-draw FFT has stable spectral representation for all numbers). The LagEcho fallback path triggers in only ~1/1500 draws. All four thresholds (0.25-0.40) produce nearly identical results to pure Fourier. Conditional mechanism design is valid but premise is wrong: Fourier signal is 'always on' in 539.",
+  "key_insight": "539 has 5804+ daily draws — FFT window=500 always has rich data. Unlike lower-frequency lotteries, there is no 'Fourier dead zone'. Conditional switching is unnecessary.",
+  "champion_comparison": "ACB+Markov+Fourier 3bet: edge +6.10% (PROVISIONAL) — effectively identical",
+  "retest_conditions": "If applied to lower-frequency lottery (e.g., Big Lotto with weekly draws) where FFT may genuinely have weak periods"
+}

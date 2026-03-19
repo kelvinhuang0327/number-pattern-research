@@ -1,0 +1,242 @@
+{
+  "timestamp": "20251210_171046",
+  "lottery_type": "DAILY_539",
+  "lottery_rules": {
+    "name": "今彩539",
+    "minNumber": 1,
+    "maxNumber": 39,
+    "pickCount": 5,
+    "hasSpecialNumber": false,
+    "specialMinNumber": null,
+    "specialMaxNumber": null,
+    "dependsOn": null,
+    "isSubGame": false,
+    "playModes": null,
+    "repeatsAllowed": false,
+    "isPermutation": false,
+    "note": null,
+    "lotteryType": "DAILY_539"
+  },
+  "results": {
+    "hot_cold": {
+      "name": "冷熱混合",
+      "score": 10.339027243386468,
+      "metrics": {
+        "total_tests": 67,
+        "success_count": 1,
+        "success_rate": 0.014925373134328358,
+        "avg_hits": 0.7910447761194029,
+        "avg_confidence": 0.7368642413762274,
+        "hit_distribution": {
+          "0": 26,
+          "2": 10,
+          "1": 30,
+          "3": 1
+        },
+        "hit_dist_pct": {
+          "0": 38.80597014925373,
+          "2": 14.925373134328357,
+          "1": 44.776119402985074,
+          "3": 1.4925373134328357
+        },
+        "vs_theory": 0.8456302059109551
+      },
+      "error": null
+    },
+    "frequency": {
+      "name": "加權頻率分析",
+      "score": 10.115146646371542,
+      "metrics": {
+        "total_tests": 67,
+        "success_count": 1,
+        "success_rate": 0.014925373134328358,
+        "avg_hits": 0.746268656716418,
+        "avg_confidence": 0.8404867051200114,
+        "hit_distribution": {
+          "0": 26,
+          "1": 33,
+          "2": 7,
+          "3": 1
+        },
+        "hit_dist_pct": {
+          "0": 38.80597014925373,
+          "1": 49.25373134328358,
+          "2": 10.44776119402985,
+          "3": 1.4925373134328357
+        },
+        "vs_theory": 0.8456302059109551
+      },
+      "error": null
+    },
+    "bayesian": {
+      "name": "貝葉斯統計",
+      "score": 3.731343283582089,
+      "metrics": {
+        "total_tests": 67,
+        "success_count": 0,
+        "success_rate": 0.0,
+        "avg_hits": 0.746268656716418,
+        "avg_confidence": 0.7930350328074028,
+        "hit_distribution": {
+          "0": 31,
+          "1": 22,
+          "2": 14
+        },
+        "hit_dist_pct": {
+          "0": 46.26865671641791,
+          "1": 32.83582089552239,
+          "2": 20.8955223880597
+        },
+        "vs_theory": 0.0
+      },
+      "error": null
+    },
+    "zone_balance": {
+      "name": "區域平衡",
+      "score": 3.2089552238805967,
+      "metrics": {
+        "total_tests": 67,
+        "success_count": 0,
+        "success_rate": 0.0,
+        "avg_hits": 0.6417910447761194,
+        "avg_confidence": 0.6984984352850944,
+        "hit_distribution": {
+          "0": 30,
+          "1": 31,
+          "2": 6
+        },
+        "hit_dist_pct": {
+          "0": 44.776119402985074,
+          "1": 46.26865671641791,
+          "2": 8.955223880597014
+        },
+        "vs_theory": 0.0
+      },
+      "error": null
+    },
+    "random_forest": {
+      "name": "隨機森林/KNN相似度",
+      "score": 3.2089552238805967,
+      "metrics": {
+        "total_tests": 67,
+        "success_count": 0,
+        "success_rate": 0.0,
+        "avg_hits": 0.6417910447761194,
+        "avg_confidence": 0.75,
+        "hit_distribution": {
+          "0": 32,
+          "1": 27,
+          "2": 8
+        },
+        "hit_dist_pct": {
+          "0": 47.76119402985074,
+          "1": 40.298507462686565,
+          "2": 11.940298507462686
+        },
+        "vs_theory": 0.0
+      },
+      "error": null
+    },
+    "odd_even": {
+      "name": "奇偶平衡",
+      "score": 3.134328358208956,
+      "metrics": {
+        "total_tests": 67,
+        "success_count": 0,
+        "success_rate": 0.0,
+        "avg_hits": 0.6268656716417911,
+        "avg_confidence": 0.6912034914268785,
+        "hit_distribution": {
+          "0": 33,
+          "1": 26,
+          "2": 8
+        },
+        "hit_dist_pct": {
+          "0": 49.25373134328358,
+          "1": 38.80597014925373,
+          "2": 11.940298507462686
+        },
+        "vs_theory": 0.0
+      },
+      "error": null
+    },
+    "monte_carlo": {
+      "name": "蒙地卡羅模擬",
+      "score": 3.059701492537313,
+      "metrics": {
+        "total_tests": 67,
+        "success_count": 0,
+        "success_rate": 0.0,
+        "avg_hits": 0.6119402985074627,
+        "avg_confidence": 0.7199999999999999,
+        "hit_distribution": {
+          "0": 36,
+          "1": 21,
+          "2": 10
+        },
+        "hit_dist_pct": {
+          "0": 53.73134328358209,
+          "1": 31.343283582089555,
+          "2": 14.925373134328357
+        },
+        "vs_theory": 0.0
+      },
+      "error": null
+    },
+    "ensemble": {
+      "name": "集成預測",
+      "score": 3.059701492537313,
+      "metrics": {
+        "total_tests": 67,
+        "success_count": 0,
+        "success_rate": 0.0,
+        "avg_hits": 0.6119402985074627,
+        "avg_confidence": 0.947898679521313,
+        "hit_distribution": {
+          "0": 32,
+          "2": 6,
+          "1": 29
+        },
+        "hit_dist_pct": {
+          "0": 47.76119402985074,
+          "2": 8.955223880597014,
+          "1": 43.28358208955223
+        },
+        "vs_theory": 0.0
+      },
+      "error": null
+    },
+    "markov": {
+      "name": "馬可夫鏈",
+      "score": 0.0,
+      "metrics": null,
+      "error": "沒有成功的預測結果"
+    }
+  },
+  "best_strategy": {
+    "strategy_id": "hot_cold",
+    "strategy_name": "冷熱混合",
+    "metrics": {
+      "total_tests": 67,
+      "success_count": 1,
+      "success_rate": 0.014925373134328358,
+      "avg_hits": 0.7910447761194029,
+      "avg_confidence": 0.7368642413762274,
+      "hit_distribution": {
+        "0": 26,
+        "2": 10,
+        "1": 30,
+        "3": 1
+      },
+      "hit_dist_pct": {
+        "0": 38.80597014925373,
+        "2": 14.925373134328357,
+        "1": 44.776119402985074,
+        "3": 1.4925373134328357
+      },
+      "vs_theory": 0.8456302059109551
+    },
+    "score": 10.339027243386468,
+    "timestamp": "2025-12-10T17:10:46.152548"
+  }
+}

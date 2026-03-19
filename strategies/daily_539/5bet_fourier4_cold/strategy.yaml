@@ -1,0 +1,36 @@
+strategy_id: daily_539/5bet_fourier4_cold
+lottery_type: DAILY_539
+n_bets: 5
+status: PROVISIONAL  # p=0.030 通過 p<0.05，但僅差 Bonferroni α/2=0.025，需再監控200期
+
+description: >
+  5注 Fourier 4組正交 + Cold 補充注
+  注1-4: Fourier 500p 得分排名，每注各取5個號碼，四注零重疊正交
+  注5: 排除前4注後，近100期冷號前5個
+
+bet_structure:
+  bet1: Fourier 500p rank 1-5
+  bet2: Fourier 500p rank 6-10 (正交)
+  bet3: Fourier 500p rank 11-15 (正交)
+  bet4: Fourier 500p rank 16-20 (正交)
+  bet5: Cold(w=100) 排除前4注正交前5
+
+coverage:
+  numbers_selected: 25
+  pool_size: 39
+  coverage_rate: 0.641  # 64.1% 覆蓋率
+  overlap: 0
+
+validated_date: 2026-02-25
+db_periods_at_validation: 5792
+history_draw: 115000048
+
+notes: >
+  第一個通過三窗口驗證的今彩539策略。
+  Permutation Test p=0.030 通過 SIGNAL_DETECTED，但僅差 Bonferroni/2 門檻(0.025)。
+  Cohen's d=2.19 與大樂透5注(d=2.13)、威力彩PP3(d=2.18)相當。
+  採PROVISIONAL狀態，需在下次200期後重新驗證確認穩定性。
+  Shuffle均值+0.138% 顯示有輕微號碼分布偏好（非純時序信號），
+  真實Edge +1.35% = 時序信號 +1.21% + 分布偏好 +0.14%。
+
+script: tools/predict_539_5bet_f4cold.py

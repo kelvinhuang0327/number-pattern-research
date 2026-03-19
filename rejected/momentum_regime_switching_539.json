@@ -1,0 +1,44 @@
+{
+  "strategy": "539 Momentum Regime 切換 (EnhancedSerial if MOMENTUM else Fourier)",
+  "date": "2026-03-11",
+  "status": "REJECTED",
+  "verdict": "三項全不通過：150期Edge負、Perm p=0.145、McNemar p=0.262",
+
+  "backtest_results": {
+    "150p":  { "old_m3": "3.33%", "new_m3": "2.67%", "old_edge": "+0.35%", "new_edge": "-0.32%", "p_perm": 0.655, "mcnemar_net": -1 },
+    "500p":  { "old_m3": "3.20%", "new_m3": "3.40%", "old_edge": "+0.22%", "new_edge": "+0.42%", "p_perm": 0.295, "mcnemar_net": 1  },
+    "1500p": { "old_m3": "3.20%", "new_m3": "3.47%", "old_edge": "+0.22%", "new_edge": "+0.48%", "p_perm": 0.145, "mcnemar_net": 4  }
+  },
+
+  "regime_trigger": {
+    "1500p_momentum_pct": "70.2%",
+    "note": "Regime 觸發率達 70%，閾值 0.6 過低，幾乎等同全期使用 EnhancedSerial"
+  },
+
+  "m2_degradation": {
+    "150p": { "old": "37.33%", "new": "32.67%", "delta": "-4.66pp" },
+    "500p": { "old": "36.80%", "new": "33.60%", "delta": "-3.20pp" },
+    "1500p": { "old": "36.87%", "new": "36.60%", "delta": "-0.27pp" },
+    "note": "M2+ 在所有窗口均劣化，主因 EnhancedSerial 偏重序列信號，覆蓋廣度不足"
+  },
+
+  "root_cause": [
+    "1. Regime threshold=0.6 過低，70%期數觸發 MOMENTUM，等同幾乎不切換",
+    "2. EnhancedSerial (Markov+Echo+Neighbor) 與 ACB+Markov(注1+2) 信號高度重疊",
+    "3. 150期 Edge 為負 (-0.32%)，違反三窗口全正要求",
+    "4. 單期 062 事後分析誤導策略設計（L60 原則：單期驗證=事後偏誤）"
+  ],
+
+  "restart_conditions": [
+    "找到觸發率 <30% 的更精準 Regime 指標（非簡單平均重複號）",
+    "EnhancedSerial 在獨立單注回測中 perm p < 0.05 且 Edge > ACB",
+    "三窗口 M2+ 不劣化"
+  ],
+
+  "related_files": [
+    "tools/backtest_539_momentum_regime.py",
+    "research/539_momentum_regime_study.py",
+    "research/539_regime_backtest_full.py",
+    "backtest_539_momentum_regime_results.json"
+  ]
+}

@@ -1,0 +1,1232 @@
+{
+  "timestamp": "2026-01-15T16:37:42.315541",
+  "data_by_type": {
+    "BIG_LOTTO": [
+      {
+        "date": "2008-03-07",
+        "draw": "97000020",
+        "numbers": [
+          12,
+          25,
+          28,
+          40,
+          41,
+          42
+        ],
+        "lotteryType": "BIG_LOTTO",
+        "special": 29
+      },
+      {
+        "date": "2008-03-11",
+        "draw": "97000021",
+        "numbers": [
+          7,
+          8,
+          21,
+          30,
+          36,
+          44
+        ],
+        "lotteryType": "BIG_LOTTO",
+        "special": 4
+      },
+      {
+        "date": "2008-03-14",
+        "draw": "97000022",
+        "numbers": [
+          3,
+          21,
+          30,
+          34,
+          44,
+          49
+        ],
+        "lotteryType": "BIG_LOTTO",
+        "special": 13
+      },
+      {
+        "date": "2008-03-18",
+        "draw": "97000023",
+        "numbers": [
+          1,
+          9,
+          27,
+          33,
+          38,
+          49
+        ],
+        "lotteryType": "BIG_LOTTO",
+        "special": 31
+      },
+      {
+        "date": "2008-03-21",
+        "draw": "97000024",
+        "numbers": [
+          11,
+          14,
+          27,
+          32,
+          34,
+          49
+        ],
+        "lotteryType": "BIG_LOTTO",
+        "special": 28
+      },
+      {
+        "date": "2008-03-25",
+        "draw": "97000025",
+        "numbers": [
+          2,
+          3,
+          5,
+          13,
+          33,
+          49
+        ],
+        "lotteryType": "BIG_LOTTO",
+        "special": 10
+      },
+      {
+        "date": "2008-03-28",
+        "draw": "97000026",
+        "numbers": [
+          1,
+          8,
+          9,
+          12,
+          19,
+          26
+        ],
+        "lotteryType": "BIG_LOTTO",
+        "special": 49
+      },
+      {
+        "date": "2008-04-01",
+        "draw": "97000027",
+        "numbers": [
+          8,
+          16,
+          24,
+          25,
+          32,
+          33
+        ],
+        "lotteryType": "BIG_LOTTO",
+        "special": 12
+      },
+      {
+        "date": "2008-04-04",
+        "draw": "97000028",
+        "numbers": [
+          13,
+          23,
+          28,
+          30,
+          38,
+          44
+        ],
+        "lotteryType": "BIG_LOTTO",
+        "special": 26
+      },
+      {
+        "date": "2008-04-08",
+        "draw": "97000029",
+        "numbers": [
+          11,
+          23,
+          29,
+          32,
+          37,
+          39
+        ],
+        "lotteryType": "BIG_LOTTO",
+        "special": 31
+      },
+      {
+        "date": "2008-04-11",
+        "draw": "97000030",
+        "numbers": [
+          5,
+          6,
+          23,
+          25,
+          28,
+          42
+        ],
+        "lotteryType": "BIG_LOTTO",
+        "special": 43
+      },
+      {
+        "date": "2008-04-15",
+        "draw": "97000031",
+        "numbers": [
+          13,
+          20,
+          32,
+          33,
+          43,
+          47
+        ],
+        "lotteryType": "BIG_LOTTO",
+        "special": 28
+      },
+      {
+        "date": "2008-04-18",
+        "draw": "97000032",
+        "numbers": [
+          4,
+          13,
+          25,
+          35,
+          38,
+          43
+        ],
+        "lotteryType": "BIG_LOTTO",
+        "special": 30
+      },
+      {
+        "date": "2008-04-22",
+        "draw": "97000033",
+        "numbers": [
+          10,
+          15,
+          31,
+          36,
+          44,
+          49
+        ],
+        "lotteryType": "BIG_LOTTO",
+        "special": 7
+      },
+      {
+        "date": "2008-04-25",
+        "draw": "97000034",
+        "numbers": [
+          4,
+          15,
+          20,
+          45,
+          47,
+          48
+        ],
+        "lotteryType": "BIG_LOTTO",
+        "special": 34
+      },
+      {
+        "date": "2008-04-29",
+        "draw": "97000035",
+        "numbers": [
+          2,
+          3,
+          11,
+          32,
+          35,
+          42
+        ],
+        "lotteryType": "BIG_LOTTO",
+        "special": 18
+      },
+      {
+        "date": "2008-05-02",
+        "draw": "97000036",
+        "numbers": [
+          11,
+          13,
+          14,
+          33,
+          39,
+          45
+        ],
+        "lotteryType": "BIG_LOTTO",
+        "special": 41
+      },
+      {
+        "date": "2008-05-06",
+        "draw": "97000037",
+        "numbers": [
+          9,
+          10,
+          15,
+          23,
+          46,
+          48
+        ],
+        "lotteryType": "BIG_LOTTO",
+        "special": 38
+      },
+      {
+        "date": "2008-05-09",
+        "draw": "97000038",
+        "numbers": [
+          15,
+          17,
+          23,
+          36,
+          43,
+          48
+        ],
+        "lotteryType": "BIG_LOTTO",
+        "special": 21
+      },
+      {
+        "date": "2008-05-13",
+        "draw": "97000039",
+        "numbers": [
+          11,
+          31,
+          37,
+          38,
+          41,
+          47
+        ],
+        "lotteryType": "BIG_LOTTO",
+        "special": 18
+      },
+      {
+        "date": "2008-05-16",
+        "draw": "97000040",
+        "numbers": [
+          3,
+          7,
+          21,
+          22,
+          26,
+          40
+        ],
+        "lotteryType": "BIG_LOTTO",
+        "special": 41
+      },
+      {
+        "date": "2008-05-20",
+        "draw": "97000041",
+        "numbers": [
+          8,
+          14,
+          17,
+          42,
+          45,
+          47
+        ],
+        "lotteryType": "BIG_LOTTO",
+        "special": 39
+      },
+      {
+        "date": "2008-05-23",
+        "draw": "97000042",
+        "numbers": [
+          2,
+          10,
+          11,
+          29,
+          37,
+          44
+        ],
+        "lotteryType": "BIG_LOTTO",
+        "special": 13
+      },
+      {
+        "date": "2008-05-27",
+        "draw": "97000043",
+        "numbers": [
+          4,
+          7,
+          15,
+          24,
+          41,
+          49
+        ],
+        "lotteryType": "BIG_LOTTO",
+        "special": 30
+      },
+      {
+        "date": "2008-05-30",
+        "draw": "97000044",
+        "numbers": [
+          8,
+          11,
+          12,
+          20,
+          32,
+          42
+        ],
+        "lotteryType": "BIG_LOTTO",
+        "special": 30
+      },
+      {
+        "date": "2008-06-03",
+        "draw": "97000045",
+        "numbers": [
+          1,
+          20,
+          24,
+          27,
+          29,
+          31
+        ],
+        "lotteryType": "BIG_LOTTO",
+        "special": 4
+      },
+      {
+        "date": "2008-06-06",
+        "draw": "97000046",
+        "numbers": [
+          1,
+          20,
+          22,
+          31,
+          40,
+          42
+        ],
+        "lotteryType": "BIG_LOTTO",
+        "special": 38
+      },
+      {
+        "date": "2008-06-10",
+        "draw": "97000047",
+        "numbers": [
+          14,
+          19,
+          20,
+          22,
+          34,
+          39
+        ],
+        "lotteryType": "BIG_LOTTO",
+        "special": 37
+      },
+      {
+        "date": "2008-06-13",
+        "draw": "97000048",
+        "numbers": [
+          7,
+          8,
+          20,
+          21,
+          31,
+          39
+        ],
+        "lotteryType": "BIG_LOTTO",
+        "special": 6
+      },
+      {
+        "date": "2008-06-17",
+        "draw": "97000049",
+        "numbers": [
+          1,
+          7,
+          15,
+          32,
+          40,
+          41
+        ],
+        "lotteryType": "BIG_LOTTO",
+        "special": 9
+      },
+      {
+        "date": "2008-06-20",
+        "draw": "97000050",
+        "numbers": [
+          3,
+          20,
+          21,
+          24,
+          28,
+          39
+        ],
+        "lotteryType": "BIG_LOTTO",
+        "special": 23
+      },
+      {
+        "date": "2008-06-24",
+        "draw": "97000051",
+        "numbers": [
+          2,
+          7,
+          8,
+          20,
+          33,
+          43
+        ],
+        "lotteryType": "BIG_LOTTO",
+        "special": 4
+      },
+      {
+        "date": "2008-06-27",
+        "draw": "97000052",
+        "numbers": [
+          1,
+          2,
+          9,
+          10,
+          38,
+          41
+        ],
+        "lotteryType": "BIG_LOTTO",
+        "special": 31
+      },
+      {
+        "date": "2008-07-01",
+        "draw": "97000053",
+        "numbers": [
+          15,
+          20,
+          24,
+          35,
+          43,
+          48
+        ],
+        "lotteryType": "BIG_LOTTO",
+        "special": 9
+      },
+      {
+        "date": "2008-07-04",
+        "draw": "97000054",
+        "numbers": [
+          6,
+          10,
+          17,
+          21,
+          43,
+          49
+        ],
+        "lotteryType": "BIG_LOTTO",
+        "special": 33
+      },
+      {
+        "date": "2008-07-08",
+        "draw": "97000055",
+        "numbers": [
+          14,
+          23,
+          32,
+          33,
+          36,
+          42
+        ],
+        "lotteryType": "BIG_LOTTO",
+        "special": 3
+      },
+      {
+        "date": "2008-07-11",
+        "draw": "97000056",
+        "numbers": [
+          7,
+          21,
+          22,
+          23,
+          34,
+          36
+        ],
+        "lotteryType": "BIG_LOTTO",
+        "special": 11
+      },
+      {
+        "date": "2008-07-15",
+        "draw": "97000057",
+        "numbers": [
+          6,
+          16,
+          21,
+          36,
+          37,
+          45
+        ],
+        "lotteryType": "BIG_LOTTO",
+        "special": 40
+      },
+      {
+        "date": "2008-07-18",
+        "draw": "97000058",
+        "numbers": [
+          4,
+          6,
+          9,
+          15,
+          20,
+          38
+        ],
+        "lotteryType": "BIG_LOTTO",
+        "special": 27
+      },
+      {
+        "date": "2008-07-22",
+        "draw": "97000059",
+        "numbers": [
+          1,
+          17,
+          25,
+          29,
+          30,
+          33
+        ],
+        "lotteryType": "BIG_LOTTO",
+        "special": 47
+      },
+      {
+        "date": "2008-07-25",
+        "draw": "97000060",
+        "numbers": [
+          7,
+          19,
+          25,
+          29,
+          35,
+          43
+        ],
+        "lotteryType": "BIG_LOTTO",
+        "special": 1
+      },
+      {
+        "date": "2008-07-29",
+        "draw": "97000061",
+        "numbers": [
+          16,
+          39,
+          41,
+          42,
+          43,
+          45
+        ],
+        "lotteryType": "BIG_LOTTO",
+        "special": 14
+      },
+      {
+        "date": "2008-08-01",
+        "draw": "97000062",
+        "numbers": [
+          7,
+          11,
+          18,
+          22,
+          37,
+          38
+        ],
+        "lotteryType": "BIG_LOTTO",
+        "special": 30
+      },
+      {
+        "date": "2008-08-05",
+        "draw": "97000063",
+        "numbers": [
+          5,
+          10,
+          29,
+          41,
+          44,
+          45
+        ],
+        "lotteryType": "BIG_LOTTO",
+        "special": 6
+      },
+      {
+        "date": "2008-08-08",
+        "draw": "97000064",
+        "numbers": [
+          8,
+          16,
+          20,
+          33,
+          35,
+          49
+        ],
+        "lotteryType": "BIG_LOTTO",
+        "special": 24
+      },
+      {
+        "date": "2008-08-12",
+        "draw": "97000065",
+        "numbers": [
+          16,
+          22,
+          24,
+          33,
+          43,
+          49
+        ],
+        "lotteryType": "BIG_LOTTO",
+        "special": 45
+      },
+      {
+        "date": "2008-08-15",
+        "draw": "97000066",
+        "numbers": [
+          8,
+          14,
+          23,
+          24,
+          43,
+          44
+        ],
+        "lotteryType": "BIG_LOTTO",
+        "special": 4
+      },
+      {
+        "date": "2008-08-19",
+        "draw": "97000067",
+        "numbers": [
+          2,
+          16,
+          25,
+          35,
+          39,
+          43
+        ],
+        "lotteryType": "BIG_LOTTO",
+        "special": 26
+      },
+      {
+        "date": "2008-08-22",
+        "draw": "97000068",
+        "numbers": [
+          4,
+          5,
+          8,
+          26,
+          31,
+          37
+        ],
+        "lotteryType": "BIG_LOTTO",
+        "special": 10
+      },
+      {
+        "date": "2008-08-26",
+        "draw": "97000069",
+        "numbers": [
+          2,
+          4,
+          6,
+          18,
+          23,
+          24
+        ],
+        "lotteryType": "BIG_LOTTO",
+        "special": 32
+      },
+      {
+        "date": "2008-08-29",
+        "draw": "97000070",
+        "numbers": [
+          2,
+          24,
+          25,
+          26,
+          28,
+          46
+        ],
+        "lotteryType": "BIG_LOTTO",
+        "special": 49
+      },
+      {
+        "date": "2008-09-02",
+        "draw": "97000071",
+        "numbers": [
+          2,
+          3,
+          10,
+          21,
+          25,
+          34
+        ],
+        "lotteryType": "BIG_LOTTO",
+        "special": 47
+      },
+      {
+        "date": "2008-09-05",
+        "draw": "97000072",
+        "numbers": [
+          2,
+          3,
+          14,
+          22,
+          32,
+          33
+        ],
+        "lotteryType": "BIG_LOTTO",
+        "special": 24
+      },
+      {
+        "date": "2008-09-09",
+        "draw": "97000073",
+        "numbers": [
+          10,
+          23,
+          27,
+          28,
+          35,
+          46
+        ],
+        "lotteryType": "BIG_LOTTO",
+        "special": 2
+      },
+      {
+        "date": "2008-09-12",
+        "draw": "97000074",
+        "numbers": [
+          1,
+          9,
+          16,
+          18,
+          34,
+          37
+        ],
+        "lotteryType": "BIG_LOTTO",
+        "special": 12
+      },
+      {
+        "date": "2008-09-16",
+        "draw": "97000075",
+        "numbers": [
+          2,
+          25,
+          31,
+          32,
+          44,
+          46
+        ],
+        "lotteryType": "BIG_LOTTO",
+        "special": 7
+      },
+      {
+        "date": "2008-09-19",
+        "draw": "97000076",
+        "numbers": [
+          2,
+          13,
+          23,
+          28,
+          35,
+          48
+        ],
+        "lotteryType": "BIG_LOTTO",
+        "special": 18
+      },
+      {
+        "date": "2008-09-23",
+        "draw": "97000077",
+        "numbers": [
+          2,
+          9,
+          20,
+          22,
+          29,
+          35
+        ],
+        "lotteryType": "BIG_LOTTO",
+        "special": 38
+      },
+      {
+        "date": "2008-09-26",
+        "draw": "97000078",
+        "numbers": [
+          15,
+          29,
+          30,
+          36,
+          41,
+          42
+        ],
+        "lotteryType": "BIG_LOTTO",
+        "special": 39
+      },
+      {
+        "date": "2008-09-30",
+        "draw": "97000079",
+        "numbers": [
+          1,
+          7,
+          9,
+          13,
+          22,
+          27
+        ],
+        "lotteryType": "BIG_LOTTO",
+        "special": 34
+      },
+      {
+        "date": "2008-10-03",
+        "draw": "97000080",
+        "numbers": [
+          18,
+          19,
+          37,
+          41,
+          45,
+          48
+        ],
+        "lotteryType": "BIG_LOTTO",
+        "special": 9
+      },
+      {
+        "date": "2008-10-07",
+        "draw": "97000081",
+        "numbers": [
+          1,
+          20,
+          28,
+          29,
+          33,
+          34
+        ],
+        "lotteryType": "BIG_LOTTO",
+        "special": 40
+      },
+      {
+        "date": "2008-10-10",
+        "draw": "97000082",
+        "numbers": [
+          13,
+          14,
+          20,
+          24,
+          41,
+          47
+        ],
+        "lotteryType": "BIG_LOTTO",
+        "special": 6
+      },
+      {
+        "date": "2008-10-14",
+        "draw": "97000083",
+        "numbers": [
+          8,
+          28,
+          30,
+          43,
+          44,
+          46
+        ],
+        "lotteryType": "BIG_LOTTO",
+        "special": 12
+      },
+      {
+        "date": "2008-10-17",
+        "draw": "97000084",
+        "numbers": [
+          5,
+          11,
+          15,
+          19,
+          28,
+          36
+        ],
+        "lotteryType": "BIG_LOTTO",
+        "special": 46
+      },
+      {
+        "date": "2008-10-21",
+        "draw": "97000085",
+        "numbers": [
+          2,
+          4,
+          7,
+          8,
+          18,
+          30
+        ],
+        "lotteryType": "BIG_LOTTO",
+        "special": 33
+      },
+      {
+        "date": "2008-10-24",
+        "draw": "97000086",
+        "numbers": [
+          5,
+          6,
+          8,
+          9,
+          14,
+          49
+        ],
+        "lotteryType": "BIG_LOTTO",
+        "special": 3
+      },
+      {
+        "date": "2008-10-28",
+        "draw": "97000087",
+        "numbers": [
+          2,
+          7,
+          12,
+          14,
+          36,
+          41
+        ],
+        "lotteryType": "BIG_LOTTO",
+        "special": 35
+      },
+      {
+        "date": "2008-10-31",
+        "draw": "97000088",
+        "numbers": [
+          1,
+          3,
+          9,
+          11,
+          19,
+          47
+        ],
+        "lotteryType": "BIG_LOTTO",
+        "special": 40
+      },
+      {
+        "date": "2008-11-04",
+        "draw": "97000089",
+        "numbers": [
+          11,
+          13,
+          19,
+          20,
+          32,
+          40
+        ],
+        "lotteryType": "BIG_LOTTO",
+        "special": 9
+      },
+      {
+        "date": "2008-11-07",
+        "draw": "97000090",
+        "numbers": [
+          15,
+          25,
+          30,
+          33,
+          40,
+          46
+        ],
+        "lotteryType": "BIG_LOTTO",
+        "special": 18
+      },
+      {
+        "date": "2008-11-11",
+        "draw": "97000091",
+        "numbers": [
+          11,
+          13,
+          33,
+          34,
+          39,
+          45
+        ],
+        "lotteryType": "BIG_LOTTO",
+        "special": 15
+      },
+      {
+        "date": "2008-11-14",
+        "draw": "97000092",
+        "numbers": [
+          7,
+          15,
+          23,
+          35,
+          36,
+          43
+        ],
+        "lotteryType": "BIG_LOTTO",
+        "special": 8
+      },
+      {
+        "date": "2008-11-18",
+        "draw": "97000093",
+        "numbers": [
+          14,
+          17,
+          20,
+          29,
+          34,
+          39
+        ],
+        "lotteryType": "BIG_LOTTO",
+        "special": 7
+      },
+      {
+        "date": "2008-11-21",
+        "draw": "97000094",
+        "numbers": [
+          16,
+          17,
+          21,
+          28,
+          30,
+          37
+        ],
+        "lotteryType": "BIG_LOTTO",
+        "special": 9
+      },
+      {
+        "date": "2008-11-25",
+        "draw": "97000095",
+        "numbers": [
+          4,
+          15,
+          26,
+          39,
+          46,
+          49
+        ],
+        "lotteryType": "BIG_LOTTO",
+        "special": 11
+      },
+      {
+        "date": "2008-11-28",
+        "draw": "97000096",
+        "numbers": [
+          1,
+          5,
+          7,
+          16,
+          17,
+          41
+        ],
+        "lotteryType": "BIG_LOTTO",
+        "special": 20
+      },
+      {
+        "date": "2008-12-02",
+        "draw": "97000097",
+        "numbers": [
+          7,
+          21,
+          29,
+          30,
+          37,
+          49
+        ],
+        "lotteryType": "BIG_LOTTO",
+        "special": 36
+      },
+      {
+        "date": "2008-12-05",
+        "draw": "97000098",
+        "numbers": [
+          2,
+          3,
+          8,
+          31,
+          40,
+          44
+        ],
+        "lotteryType": "BIG_LOTTO",
+        "special": 45
+      },
+      {
+        "date": "2008-12-09",
+        "draw": "97000099",
+        "numbers": [
+          1,
+          5,
+          6,
+          16,
+          26,
+          41
+        ],
+        "lotteryType": "BIG_LOTTO",
+        "special": 48
+      },
+      {
+        "date": "2008-12-12",
+        "draw": "97000100",
+        "numbers": [
+          2,
+          28,
+          34,
+          36,
+          39,
+          42
+        ],
+        "lotteryType": "BIG_LOTTO",
+        "special": 24
+      },
+      {
+        "date": "2008-12-16",
+        "draw": "97000101",
+        "numbers": [
+          14,
+          25,
+          26,
+          35,
+          39,
+          40
+        ],
+        "lotteryType": "BIG_LOTTO",
+        "special": 37
+      },
+      {
+        "date": "2008-12-19",
+        "draw": "97000102",
+        "numbers": [
+          3,
+          10,
+          15,
+          30,
+          38,
+          45
+        ],
+        "lotteryType": "BIG_LOTTO",
+        "special": 41
+      },
+      {
+        "date": "2008-12-23",
+        "draw": "97000103",
+        "numbers": [
+          2,
+          7,
+          23,
+          25,
+          39,
+          45
+        ],
+        "lotteryType": "BIG_LOTTO",
+        "special": 22
+      },
+      {
+        "date": "2008-12-26",
+        "draw": "97000104",
+        "numbers": [
+          8,
+          15,
+          18,
+          33,
+          37,
+          40
+        ],
+        "lotteryType": "BIG_LOTTO",
+        "special": 32
+      },
+      {
+        "date": "2008-12-30",
+        "draw": "97000105",
+        "numbers": [
+          3,
+          9,
+          25,
+          26,
+          36,
+          39
+        ],
+        "lotteryType": "BIG_LOTTO",
+        "special": 35
+      }
+    ]
+  },
+  "lottery_rules": {
+    "id": "BIG_LOTTO",
+    "name": "大樂透",
+    "displayName": "大樂透",
+    "csvName": "大樂透",
+    "numberRange": {
+      "min": 1,
+      "max": 49
+    },
+    "pickCount": 6,
+    "hasSpecialNumber": true,
+    "specialNumberRange": {
+      "min": 1,
+      "max": 49
+    },
+    "description": "從 01~49 中任選 6 個號碼，另開 1 個特別號",
+    "icon": "🎱",
+    "color": "hsl(40, 95%, 60%)",
+    "gradient": "linear-gradient(135deg, #F59E0B, #D97706)",
+    "recommendedSampleSize": 50
+  }
+}

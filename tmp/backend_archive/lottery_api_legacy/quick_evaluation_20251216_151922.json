@@ -1,0 +1,297 @@
+{
+  "evaluation_time": "2025-12-16T15:19:22.762569",
+  "lottery_type": "BIG_LOTTO",
+  "data_distribution": {
+    "BIG_LOTTO": 2077,
+    "BIG_LOTTO_BONUS": 5180
+  },
+  "train_size": 7227,
+  "test_size": 30,
+  "results": [
+    {
+      "strategy_name": "frequency",
+      "total_tests": 30,
+      "match_distribution": {
+        "0": 13,
+        "1": 15,
+        "2": 2,
+        "3": 0,
+        "4": 0,
+        "5": 0,
+        "6": 0
+      },
+      "total_matches": 19,
+      "predictions": [
+        {
+          "draw": "114000113",
+          "date": "2025/12/12",
+          "predicted": [
+            7,
+            8,
+            11,
+            21,
+            28,
+            46
+          ],
+          "actual": [
+            15,
+            17,
+            24,
+            26,
+            40,
+            47
+          ],
+          "matches": 0
+        },
+        {
+          "draw": "114000112",
+          "date": "2025/12/09",
+          "predicted": [
+            7,
+            8,
+            11,
+            21,
+            28,
+            46
+          ],
+          "actual": [
+            5,
+            10,
+            18,
+            26,
+            28,
+            44
+          ],
+          "matches": 1
+        },
+        {
+          "draw": "114000111",
+          "date": "2025/12/05",
+          "predicted": [
+            2,
+            7,
+            11,
+            21,
+            28,
+            46
+          ],
+          "actual": [
+            8,
+            15,
+            23,
+            24,
+            41,
+            47
+          ],
+          "matches": 0
+        },
+        {
+          "draw": "114000110",
+          "date": "2025/12/02",
+          "predicted": [
+            2,
+            7,
+            11,
+            21,
+            28,
+            46
+          ],
+          "actual": [
+            14,
+            20,
+            32,
+            35,
+            42,
+            48
+          ],
+          "matches": 0
+        },
+        {
+          "draw": "114000109",
+          "date": "2025-11-28",
+          "predicted": [
+            2,
+            7,
+            11,
+            21,
+            28,
+            46
+          ],
+          "actual": [
+            8,
+            12,
+            18,
+            28,
+            37,
+            46
+          ],
+          "matches": 2
+        }
+      ],
+      "errors": 0,
+      "avg_matches": 0.6333333333333333,
+      "accuracy_2+": 6.666666666666667,
+      "accuracy_3+": 0.0,
+      "accuracy_4+": 0.0
+    },
+    {
+      "strategy_name": "bayesian",
+      "total_tests": 30,
+      "match_distribution": {
+        "0": 15,
+        "1": 11,
+        "2": 4,
+        "3": 0,
+        "4": 0,
+        "5": 0,
+        "6": 0
+      },
+      "total_matches": 19,
+      "predictions": [
+        {
+          "draw": "114000113",
+          "date": "2025/12/12",
+          "predicted": [
+            9,
+            11,
+            15,
+            20,
+            35,
+            47
+          ],
+          "actual": [
+            15,
+            17,
+            24,
+            26,
+            40,
+            47
+          ],
+          "matches": 2
+        },
+        {
+          "draw": "114000112",
+          "date": "2025/12/09",
+          "predicted": [
+            9,
+            11,
+            15,
+            20,
+            35,
+            47
+          ],
+          "actual": [
+            5,
+            10,
+            18,
+            26,
+            28,
+            44
+          ],
+          "matches": 0
+        },
+        {
+          "draw": "114000111",
+          "date": "2025/12/05",
+          "predicted": [
+            9,
+            11,
+            15,
+            20,
+            35,
+            47
+          ],
+          "actual": [
+            8,
+            15,
+            23,
+            24,
+            41,
+            47
+          ],
+          "matches": 2
+        },
+        {
+          "draw": "114000110",
+          "date": "2025/12/02",
+          "predicted": [
+            9,
+            11,
+            15,
+            20,
+            35,
+            47
+          ],
+          "actual": [
+            14,
+            20,
+            32,
+            35,
+            42,
+            48
+          ],
+          "matches": 2
+        },
+        {
+          "draw": "114000109",
+          "date": "2025-11-28",
+          "predicted": [
+            9,
+            11,
+            15,
+            20,
+            35,
+            47
+          ],
+          "actual": [
+            8,
+            12,
+            18,
+            28,
+            37,
+            46
+          ],
+          "matches": 0
+        }
+      ],
+      "errors": 0,
+      "avg_matches": 0.6333333333333333,
+      "accuracy_2+": 13.333333333333334,
+      "accuracy_3+": 0.0,
+      "accuracy_4+": 0.0
+    },
+    {
+      "strategy_name": "markov",
+      "total_tests": 0,
+      "match_distribution": {
+        "0": 0,
+        "1": 0,
+        "2": 0,
+        "3": 0,
+        "4": 0,
+        "5": 0,
+        "6": 0
+      },
+      "total_matches": 0,
+      "predictions": [],
+      "errors": 30
+    },
+    {
+      "strategy_name": "monte_carlo",
+      "total_tests": 30,
+      "match_distribution": {
+        "0": 16,
+        "1": 13,
+        "2": 0,
+        "3": 1,
+        "4": 0,
+        "5": 0,
+        "6": 0
+      },
+      "total_matches": 16,
+      "predictions": [
+        {
+          "draw": "114000113",
+          "date": "2025/12/12",
+          "predicted": [
+            

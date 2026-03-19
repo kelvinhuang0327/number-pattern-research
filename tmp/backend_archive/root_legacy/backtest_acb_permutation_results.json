@@ -1,0 +1,126 @@
+{
+  "timestamp": "2026-02-27T21:18:36.186805",
+  "strategy": "P1_anomaly_capture (ACB)",
+  "description": "freq_deficit*0.4+gap_score*0.6 × boundary_bonus × mod3_bonus + cross-zone",
+  "baseline_M2+_1bet": 0.11397342976290345,
+  "data_size": 5795,
+  "three_window_acb": {
+    "150": {
+      "total": 150,
+      "ge2_hits": 20,
+      "ge3_hits": 0,
+      "ge2_rate": 0.13333333333333333,
+      "ge3_rate": 0.0,
+      "ge2_edge": 0.01935990357042988,
+      "ge3_edge": -0.010040694251220568,
+      "avg_match": 0.6133333333333333
+    },
+    "500": {
+      "total": 500,
+      "ge2_hits": 67,
+      "ge3_hits": 4,
+      "ge2_rate": 0.134,
+      "ge3_rate": 0.008,
+      "ge2_edge": 0.020026570237096558,
+      "ge3_edge": -0.002040694251220568,
+      "avg_match": 0.674
+    },
+    "1500": {
+      "total": 1500,
+      "ge2_hits": 214,
+      "ge3_hits": 14,
+      "ge2_rate": 0.14266666666666666,
+      "ge3_rate": 0.009333333333333334,
+      "ge2_edge": 0.028693236903763214,
+      "ge3_edge": -0.0007073609178872339,
+      "avg_match": 0.6933333333333334
+    }
+  },
+  "three_window_cold": {
+    "150": {
+      "total": 150,
+      "ge2_hits": 22,
+      "ge3_hits": 1,
+      "ge2_rate": 0.14666666666666667,
+      "ge3_rate": 0.006666666666666667,
+      "ge2_edge": 0.03269323690376322,
+      "ge3_edge": -0.003374027584553901,
+      "avg_match": 0.6066666666666667
+    },
+    "500": {
+      "total": 500,
+      "ge2_hits": 70,
+      "ge3_hits": 4,
+      "ge2_rate": 0.14,
+      "ge3_rate": 0.008,
+      "ge2_edge": 0.026026570237096563,
+      "ge3_edge": -0.002040694251220568,
+      "avg_match": 0.672
+    },
+    "1500": {
+      "total": 1500,
+      "ge2_hits": 206,
+      "ge3_hits": 13,
+      "ge2_rate": 0.13733333333333334,
+      "ge3_rate": 0.008666666666666666,
+      "ge2_edge": 0.023359903570429885,
+      "ge3_edge": -0.0013740275845539017,
+      "avg_match": 0.6813333333333333
+    }
+  },
+  "stability": "STABLE_ALL_POSITIVE",
+  "permutation": {
+    "actual_rate": 0.134,
+    "actual_hits": 67,
+    "actual_total": 500,
+    "perm_mean": 0.11436000000000002,
+    "perm_std": 0.013579956938846376,
+    "perm_min": 0.072,
+    "perm_max": 0.156,
+    "z_score": 1.4462490631187832,
+    "p_value_empirical": 0.0658682634730539,
+    "p_value_normal": 0.0740536784628687,
+    "cohen_d": 1.4462490631187832,
+    "n_perms": 500,
+    "shuffle_bias": 0.00038657023709656735,
+    "signal_edge": 0.01963999999999999,
+    "total_edge": 0.020026570237096558
+  },
+  "mcnemar_vs_cold": {
+    "label_a": "ACB",
+    "label_b": "Cold",
+    "total": 500,
+    "both": 59,
+    "a_only": 8,
+    "b_only": 11,
+    "both_miss": 422,
+    "rate_a": 0.134,
+    "rate_b": 0.14,
+    "net": -3,
+    "chi2": 0.21052631578947367,
+    "p": 0.6463551955394902,
+    "sig": false
+  },
+  "window_sensitivity": {
+    "50": {
+      "ge2_rate": 0.12933333333333333,
+      "ge2_edge": 0.015359903570429878
+    },
+    "100": {
+      "ge2_rate": 0.14266666666666666,
+      "ge2_edge": 0.028693236903763214
+    },
+    "200": {
+      "ge2_rate": 0.13333333333333333,
+      "ge2_edge": 0.01935990357042988
+    }
+  },
+  "pass_criteria": {
+    "三窗口全正_M2+": true,
+    "Signal_Edge_positive": true,
+    "perm_p_≤_0.05": false
+  },
+  "decision": "MARGINAL → MONITOR",
+  "decision_note": "三窗口全正且 Signal Edge 正，但 p=0.066>0.05。信號存在但統計力不足，持續觀察。",
+  "elapsed": 7.8
+}

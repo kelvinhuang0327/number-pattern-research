@@ -1,0 +1,49 @@
+{
+  "name": "P1鄰號+偏差互補 2注/3注 (今彩539)",
+  "lottery": "DAILY_539",
+  "rejected_date": "2026-02-26",
+  "failure_reason": "信號不存在。P1鄰號和偏差互補Cold是大樂透特有的統計特性，無法移植到539。5293期全資料回測 Edge=-0.05%（幾乎精確等於0），perm_p=1.000。單注 P1鄰號 Edge=+0.05% z=0.39，DevCold Edge=-0.12%，兩者均無信號。",
+  "pattern": "INEFFECTIVE",
+  "stats": {
+    "full_5293p": {
+      "2bet_edge": -0.05,
+      "2bet_z": -0.27,
+      "2bet_perm_p": 1.000,
+      "p1_single_edge": +0.05,
+      "p1_single_z": +0.39,
+      "cold_single_edge": -0.12,
+      "cold_single_z": -0.85
+    },
+    "window_1500p": {
+      "2bet_edge": +0.34,
+      "2bet_pattern": "LATE_BLOOMER",
+      "3bet_edge": -0.32,
+      "3bet_pattern": "MIXED"
+    },
+    "mcnemar_1500p": {
+      "b1_wins": 22,
+      "b2_wins": 13,
+      "both": 0,
+      "complement_ratio": "100%",
+      "chi2": 1.83,
+      "p": 0.176
+    },
+    "baseline_single": 1.004,
+    "baseline_2bet": 1.998,
+    "baseline_3bet": 2.982
+  },
+  "strategy_structure": {
+    "bet1": "P1 鄰號：上期 ±1 鄰域 → Fourier(500p)+Markov(30p) 排名 Top-5",
+    "bet2": "偏差互補 Cold：近50期最冷號 Top-5（排除注1）",
+    "bet3": "偏差互補 Hot：近50期最熱號 Top-5（排除注1+2）[3注版本]"
+  },
+  "motivation": "大樂透 P1+偏差互補 4注在1500期取得 Edge +2.17%（perm p=0.010）。研究問題：同架構移植到539是否有效？",
+  "applicable_conditions": "無。5293期全資料確認信號不存在，非樣本量問題。",
+  "retest_conditions": [
+    "暫停研究。原因：539全資料Edge≈0%，P1鄰號是大樂透特有信號。重啟條件：539資料量超過10000期且有新signal分析顯示鄰號效應存在",
+    "若539資料量超過10000期且有新的signal分析顯示鄰號效應存在，才考慮重試"
+  ],
+  "key_insight": "P1鄰號效應和冷號偏差互補是大樂透(6/49)特有的統計特性，不能假設跨彩種通用。539每日開獎、序列相關性不同、號碼空間結構(5/39 vs 6/49)不同，導致這些信號不存在。",
+  "error_lesson": "初版分析錯誤地將1500期窗口的LATE_BLOOMER結果歸咎於'樣本量不足'。正確做法是先用全資料驗證，再得出信號不存在的結論。全5293期回測修正了這個錯誤。",
+  "script": "tools/backtest_539_p1_deviation.py"
+}

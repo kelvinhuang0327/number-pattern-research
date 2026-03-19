@@ -1,0 +1,18 @@
+{
+  "name": "TS3 bet2 Fourier擴展 + Zone 2:2:2 過濾 (rank7-14)",
+  "lottery": "BIG_LOTTO",
+  "rejected_date": "2026-02-25",
+  "failure_reason": "Fourier擴展替換冷號bet2導致信號同質化，整體Edge退步",
+  "pattern": "SIGNAL_HOMOGENIZATION",
+  "stats": {
+    "edge_150p": "+3.18% (與現行相同)",
+    "edge_500p": "+1.71% (現行 +0.71%，中期改善)",
+    "edge_1500p": "+0.91% (現行 +1.38%，長期退步 -0.47%)",
+    "baseline": "5.49% (3注)",
+    "mcnemar_net": "-7 hits",
+    "mcnemar_p": "0.5655 (不顯著)"
+  },
+  "applicable_conditions": "三窗口全正 (STABLE)，但長期 Edge 劣於現行冷號bet2",
+  "retest_conditions": "若冷號信號本身失效（1500期 Edge < 0），可考慮改用Fourier擴展作為bet2替代方案",
+  "notes": "動機: 115000024期 #47 (Fourier rank 13) 差一位未入選。擴展候選範圍到rank7-14並加Zone 2:2:2過濾，成功在本期捕捉到 #47。但1500期回測顯示整體 -0.47%，因為 bet2 的功能是『覆蓋Fourier盲區的冷號』，改為Fourier候選等於兩注都選同一類信號，失去正交互補。#47 差一名次是正常覆蓋雜訊，不應為單一事件修改策略結構。教訓 L26。"
+}

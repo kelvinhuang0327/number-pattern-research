@@ -1,0 +1,87 @@
+{
+  "test_size": 150,
+  "bet1": {
+    "mean_hits": 0.92,
+    "std": 0.8938267027207479,
+    "3plus_rate": 0.04666666666666667,
+    "3plus_count": 7,
+    "special_rate": 0.13333333333333333,
+    "special_pvalue": 0.414916906376095
+  },
+  "bet2": {
+    "mean_hits": 1.0266666666666666,
+    "std": 0.8105567451674591,
+    "3plus_rate": 0.04,
+    "3plus_count": 6,
+    "special_rate": 0.13333333333333333,
+    "special_pvalue": 0.414916906376095
+  },
+  "dual": {
+    "mean_best_hits": 1.4666666666666666,
+    "3plus_rate": 0.08666666666666667,
+    "3plus_count": 13,
+    "description": "至少一注達到該命中數"
+  },
+  "results_detail": [
+    {
+      "draw": "115000004",
+      "bet1_match": 1,
+      "bet2_match": 2,
+      "best_match": 2
+    },
+    {
+      "draw": "115000003",
+      "bet1_match": 1,
+      "bet2_match": 0,
+      "best_match": 1
+    },
+    {
+      "draw": "115000002",
+      "bet1_match": 0,
+      "bet2_match": 2,
+      "best_match": 2
+    },
+    {
+      "draw": "115000001",
+      "bet1_match": 2,
+      "bet2_match": 1,
+      "best_match": 2
+    },
+    {
+      "draw": "114000104",
+      "bet1_match": 1,
+      "bet2_match": 1,
+      "best_match": 1
+    },
+    {
+      "draw": "114000103",
+      "bet1_match": 0,
+      "bet2_match": 1,
+      "best_match": 1
+    },
+    {
+      "draw": "114000102",
+      "bet1_match": 0,
+      "bet2_match": 1,
+      "best_match": 1
+    },
+    {
+      "draw": "114000101",
+      "bet1_match": 0,
+      "bet2_match": 2,
+      "best_match": 2
+    },
+    {
+      "draw": "114000100",
+      "bet1_match": 1,
+      "bet2_match": 0,
+      "best_match": 1
+    },
+    {
+      "draw": "114000099",
+      "bet1_match": 0,
+      "bet2_match": 1,
+      "best_match": 1
+    }
+  ]
+}

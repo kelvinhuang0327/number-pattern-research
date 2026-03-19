@@ -9,11 +9,13 @@
 
 ## 系統截圖
 
-| 下期開獎預測 | 歷史開獎記錄 |
+| 下期開獎預測（RSM 策略狀態） | 預測模擬測試 |
 |---|---|
-| ![下期預測](docs/screenshots/next-draw.png) | ![歷史記錄](docs/screenshots/history.png) |
+| ![下期預測](docs/screenshots/next-draw.png) | ![模擬測試](docs/screenshots/simulation.png) |
 
-![數據上傳中心](docs/screenshots/upload.png)
+| 歷史開獎記錄 | 數據上傳中心 |
+|---|---|
+| ![歷史記錄](docs/screenshots/history.png) | ![數據上傳](docs/screenshots/upload.png) |
 
 ---
 

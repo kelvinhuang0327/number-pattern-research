@@ -1,0 +1,1 @@
+strategy: 3bet_triple_strike_v2\nlottery: big_lotto\nadopted: 2026-02-24\nstatus: ACTIVE

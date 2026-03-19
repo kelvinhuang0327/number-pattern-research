@@ -1,0 +1,34 @@
+{
+  "A: 現行 (無連號約束)": {
+    "edges": [
+      5.04,
+      3.04,
+      3.04
+    ],
+    "stability": "STABLE ✅"
+  },
+  "B: 連號加分 (注1 Fourier+Markov)": {
+    "edges": [
+      7.71,
+      2.64,
+      2.97
+    ],
+    "stability": "STABLE ✅"
+  },
+  "C: 連號保證 (注5注入)": {
+    "edges": [
+      5.04,
+      3.04,
+      3.04
+    ],
+    "stability": "STABLE ✅"
+  },
+  "D: 連號注入 (注5最佳對)": {
+    "edges": [
+      2.37,
+      2.24,
+      2.64
+    ],
+    "stability": "STABLE ✅"
+  }
+}

@@ -1,0 +1,250 @@
+{
+  "timestamp": "20251204_155250",
+  "lottery_type": "BIG_LOTTO",
+  "lottery_rules": {
+    "id": "BIG_LOTTO",
+    "name": "大樂透",
+    "displayName": "大樂透",
+    "csvName": "大樂透",
+    "numberRange": {
+      "min": 1,
+      "max": 49
+    },
+    "pickCount": 6,
+    "hasSpecialNumber": true,
+    "specialNumberRange": {
+      "min": 1,
+      "max": 49
+    },
+    "description": "從 01~49 中任選 6 個號碼，另開 1 個特別號",
+    "icon": "🎱",
+    "color": "hsl(40, 95%, 60%)",
+    "gradient": "linear-gradient(135deg, #F59E0B, #D97706)",
+    "recommendedSampleSize": 50,
+    "lotteryType": "BIG_LOTTO"
+  },
+  "results": {
+    "frequency": {
+      "name": "加權頻率分析",
+      "score": 24.653086919375873,
+      "metrics": {
+        "total_tests": 21,
+        "success_count": 1,
+        "success_rate": 0.047619047619047616,
+        "avg_hits": 0.8571428571428571,
+        "avg_confidence": 0.8669784379347845,
+        "hit_distribution": {
+          "1": 13,
+          "0": 6,
+          "2": 1,
+          "3": 1
+        },
+        "hit_dist_pct": {
+          "1": 61.904761904761905,
+          "0": 28.57142857142857,
+          "2": 4.761904761904762,
+          "3": 4.761904761904762
+        },
+        "vs_theory": 2.697963037906381
+      },
+      "error": null
+    },
+    "bayesian": {
+      "name": "貝葉斯統計",
+      "score": 23.93880120509016,
+      "metrics": {
+        "total_tests": 21,
+        "success_count": 1,
+        "success_rate": 0.047619047619047616,
+        "avg_hits": 0.7142857142857143,
+        "avg_confidence": 0.7931326566990785,
+        "hit_distribution": {
+          "1": 8,
+          "0": 10,
+          "2": 2,
+          "3": 1
+        },
+        "hit_dist_pct": {
+          "1": 38.095238095238095,
+          "0": 47.61904761904761,
+          "2": 9.523809523809524,
+          "3": 4.761904761904762
+        },
+        "vs_theory": 2.697963037906381
+      },
+      "error": null
+    },
+    "random_forest": {
+      "name": "隨機森林/KNN相似度",
+      "score": 23.93880120509016,
+      "metrics": {
+        "total_tests": 21,
+        "success_count": 1,
+        "success_rate": 0.047619047619047616,
+        "avg_hits": 0.7142857142857143,
+        "avg_confidence": 0.796395281323875,
+        "hit_distribution": {
+          "1": 8,
+          "0": 10,
+          "2": 2,
+          "3": 1
+        },
+        "hit_dist_pct": {
+          "1": 38.095238095238095,
+          "0": 47.61904761904761,
+          "2": 9.523809523809524,
+          "3": 4.761904761904762
+        },
+        "vs_theory": 2.697963037906381
+      },
+      "error": null
+    },
+    "monte_carlo": {
+      "name": "蒙地卡羅模擬",
+      "score": 4.523809523809524,
+      "metrics": {
+        "total_tests": 21,
+        "success_count": 0,
+        "success_rate": 0.0,
+        "avg_hits": 0.9047619047619048,
+        "avg_confidence": 0.7200000000000001,
+        "hit_distribution": {
+          "2": 4,
+          "0": 6,
+          "1": 11
+        },
+        "hit_dist_pct": {
+          "2": 19.047619047619047,
+          "0": 28.57142857142857,
+          "1": 52.38095238095239
+        },
+        "vs_theory": 0.0
+      },
+      "error": null
+    },
+    "odd_even": {
+      "name": "奇偶平衡",
+      "score": 4.285714285714285,
+      "metrics": {
+        "total_tests": 21,
+        "success_count": 0,
+        "success_rate": 0.0,
+        "avg_hits": 0.8571428571428571,
+        "avg_confidence": 0.6920820994027117,
+        "hit_distribution": {
+          "1": 12,
+          "0": 6,
+          "2": 3
+        },
+        "hit_dist_pct": {
+          "1": 57.14285714285714,
+          "0": 28.57142857142857,
+          "2": 14.285714285714285
+        },
+        "vs_theory": 0.0
+      },
+      "error": null
+    },
+    "zone_balance": {
+      "name": "區域平衡",
+      "score": 4.0476190476190474,
+      "metrics": {
+        "total_tests": 21,
+        "success_count": 0,
+        "success_rate": 0.0,
+        "avg_hits": 0.8095238095238095,
+        "avg_confidence": 0.6877902658033384,
+        "hit_distribution": {
+          "1": 13,
+          "0": 6,
+          "2": 2
+        },
+        "hit_dist_pct": {
+          "1": 61.904761904761905,
+          "0": 28.57142857142857,
+          "2": 9.523809523809524
+        },
+        "vs_theory": 0.0
+      },
+      "error": null
+    },
+    "hot_cold": {
+      "name": "冷熱混合",
+      "score": 2.1428571428571423,
+      "metrics": {
+        "total_tests": 21,
+        "success_count": 0,
+        "success_rate": 0.0,
+        "avg_hits": 0.42857142857142855,
+        "avg_confidence": 0.7349661328098099,
+        "hit_distribution": {
+          "1": 7,
+          "0": 13,
+          "2": 1
+        },
+        "hit_dist_pct": {
+          "1": 33.33333333333333,
+          "0": 61.904761904761905,
+          "2": 4.761904761904762
+        },
+        "vs_theory": 0.0
+      },
+      "error": null
+    },
+    "ensemble": {
+      "name": "集成預測",
+      "score": 1.9047619047619047,
+      "metrics": {
+        "total_tests": 21,
+        "success_count": 0,
+        "success_rate": 0.0,
+        "avg_hits": 0.38095238095238093,
+        "avg_confidence": 0.9248827043830142,
+        "hit_distribution": {
+          "0": 15,
+          "1": 4,
+          "2": 2
+        },
+        "hit_dist_pct": {
+          "0": 71.42857142857143,
+          "1": 19.047619047619047,
+          "2": 9.523809523809524
+        },
+        "vs_theory": 0.0
+      },
+      "error": null
+    },
+    "markov": {
+      "name": "馬可夫鏈",
+      "score": 0.0,
+      "metrics": null,
+      "error": "沒有成功的預測結果"
+    }
+  },
+  "best_strategy": {
+    "strategy_id": "frequency",
+    "strategy_name": "加權頻率分析",
+    "metrics": {
+      "total_tests": 21,
+      "success_count": 1,
+      "success_rate": 0.047619047619047616,
+      "avg_hits": 0.8571428571428571,
+      "avg_confidence": 0.8669784379347845,
+      "hit_distribution": {
+        "1": 13,
+        "0": 6,
+        "2": 1,
+        "3": 1
+      },
+      "hit_dist_pct": {
+        "1": 61.904761904761905,
+        "0": 28.57142857142857,
+        "2": 4.761904761904762,
+        "3": 4.761904761904762
+      },
+      "vs_theory": 2.697963037906381
+    },
+    "score": 24.653086919375873,
+    "timestamp": "2025-12-04T15:52:50.283435"
+  }
+}

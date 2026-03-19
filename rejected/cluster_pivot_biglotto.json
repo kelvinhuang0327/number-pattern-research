@@ -1,0 +1,18 @@
+{
+  "name": "Cluster Pivot 4注+",
+  "lottery": "BIG_LOTTO",
+  "rejected_date": "2026-02-10",
+  "failure_reason": "SHORT_MOMENTUM — 150/500期表現良好但1500期Edge為負，確認為幸運窗口效應",
+  "pattern": "SHORT_MOMENTUM",
+  "stats": {
+    "edge_150p": "+2.75%",
+    "edge_500p": "+1.75%",
+    "edge_1500p": "-0.45%",
+    "baseline": "7.25% (4注)",
+    "p_value": null,
+    "z_score": null
+  },
+  "applicable_conditions": "短期窗口（500期內）曾有效，但無法維持長期優勢",
+  "retest_conditions": "若發現新的cluster信號源（非頻率域），且能通過1500期驗證才可重測",
+  "notes": "500期 Edge +1.75% 是幸運窗口的典型特徵。已被5注正交策略取代（Edge +1.97%）。腳本: tools/backtest_cluster_pivot_biglotto.py"
+}

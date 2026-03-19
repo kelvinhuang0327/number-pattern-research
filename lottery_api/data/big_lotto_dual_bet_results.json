@@ -1,0 +1,105 @@
+{
+  "lottery_type": "BIG_LOTTO",
+  "test_periods": 118,
+  "best_single": {
+    "method": "zone_balance_500",
+    "rate": 4.23728813559322
+  },
+  "best_dual": {
+    "bet1": "zone_balance_500",
+    "bet2": "zone_balance_200",
+    "rate": 6.779661016949152
+  },
+  "all_combos": [
+    {
+      "bet1": "zone_balance_500",
+      "bet2": "zone_balance_200",
+      "hits": 8,
+      "rate": 6.779661016949152
+    },
+    {
+      "bet1": "zone_balance_500",
+      "bet2": "bayesian_300",
+      "hits": 8,
+      "rate": 6.779661016949152
+    },
+    {
+      "bet1": "zone_balance_500",
+      "bet2": "trend_300",
+      "hits": 8,
+      "rate": 6.779661016949152
+    },
+    {
+      "bet1": "zone_balance_500",
+      "bet2": "odd_even_200",
+      "hits": 7,
+      "rate": 5.932203389830509
+    },
+    {
+      "bet1": "zone_balance_500",
+      "bet2": "hot_cold_100",
+      "hits": 7,
+      "rate": 5.932203389830509
+    },
+    {
+      "bet1": "odd_even_200",
+      "bet2": "zone_balance_200",
+      "hits": 7,
+      "rate": 5.932203389830509
+    },
+    {
+      "bet1": "odd_even_200",
+      "bet2": "bayesian_300",
+      "hits": 7,
+      "rate": 5.932203389830509
+    },
+    {
+      "bet1": "odd_even_200",
+      "bet2": "trend_300",
+      "hits": 7,
+      "rate": 5.932203389830509
+    },
+    {
+      "bet1": "odd_even_200",
+      "bet2": "hot_cold_100",
+      "hits": 6,
+      "rate": 5.084745762711865
+    },
+    {
+      "bet1": "zone_balance_200",
+      "bet2": "bayesian_300",
+      "hits": 6,
+      "rate": 5.084745762711865
+    },
+    {
+      "bet1": "zone_balance_200",
+      "bet2": "trend_300",
+      "hits": 6,
+      "rate": 5.084745762711865
+    },
+    {
+      "bet1": "zone_balance_200",
+      "bet2": "hot_cold_100",
+      "hits": 5,
+      "rate": 4.23728813559322
+    },
+    {
+      "bet1": "bayesian_300",
+      "bet2": "hot_cold_100",
+      "hits": 5,
+      "rate": 4.23728813559322
+    },
+    {
+      "bet1": "trend_300",
+      "bet2": "hot_cold_100",
+      "hits": 5,
+      "rate": 4.23728813559322
+    },
+    {
+      "bet1": "bayesian_300",
+      "bet2": "trend_300",
+      "hits": 4,
+      "rate": 3.389830508474576
+    }
+  ]
+}

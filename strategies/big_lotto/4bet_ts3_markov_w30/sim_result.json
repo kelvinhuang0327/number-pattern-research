@@ -1,0 +1,30 @@
+{
+  "strategy_id": "big_lotto/4bet_ts3_markov_w30",
+  "version": "v1.0.0",
+  "generated_date": "2026-02-24",
+  "lottery_type": "BIG_LOTTO",
+  "n_bets": 4,
+  "random_baseline_pct": 7.25,
+  "backtest": {
+    "150p": { "m3_rate_pct": 8.68, "edge_pct": 1.43, "status": "PASS" },
+    "500p": { "m3_rate_pct": 9.62, "edge_pct": 2.37, "status": "PASS" },
+    "1500p":{ "m3_rate_pct": 8.93, "edge_pct": 1.70, "status": "PASS" }
+  },
+  "pattern": "ROBUST",
+  "statistics": {
+    "z_score": 2.54,
+    "p_value": 0.011,
+    "significant": true
+  },
+  "permutation_test": null,
+  "notes": "Sum-Constraint v2：注2 Cold pool=12 + C(12,6) Sum均值回歸 Lift=1.495x；Markov window=30為最佳",
+  "coverage": {
+    "unique_numbers": 24,
+    "pool_size": 49,
+    "overlap": 0,
+    "coverage_rate": 0.490
+  },
+  "seed": 42,
+  "script": "tools/backtest_biglotto_markov_4bet.py",
+  "verdict": "ADOPTED"
+}

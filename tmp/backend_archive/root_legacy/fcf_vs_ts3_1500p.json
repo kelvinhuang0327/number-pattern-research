@@ -1,0 +1,39 @@
+{
+  "strategy_a": "TS3 (Fourier+Cold+TailBalance)",
+  "strategy_b": "FCF (Fourier+Cold+FreqOrt)",
+  "window": 1500,
+  "main_stats": {
+    "n": 1500,
+    "ts3_hits": 98,
+    "fcf_hits": 95,
+    "ts3_rate": 0.06533333333333333,
+    "fcf_rate": 0.06333333333333334,
+    "ts3_edge": 0.19289861682695306,
+    "fcf_edge": 0.15638131223020982,
+    "delta_rate": -0.001999999999999988,
+    "delta_edge": -0.03651730459674324,
+    "b_fcf_only": 11,
+    "c_ts3_only": 14,
+    "d_both_hit": 84,
+    "d_both_miss": 1391,
+    "chi2": 0.36,
+    "p_two_sided": 0.5485062355001471,
+    "p_one_sided": 0.7257468822499265
+  },
+  "bet3_contribution": {
+    "b1b2_miss_n": 1429,
+    "ts3_b3_solo": 27,
+    "fcf_b3_solo": 24,
+    "b3_delta": -3
+  },
+  "perm_result": {
+    "real_delta": -0.001999999999999988,
+    "perm_mean": -3.600000000000016e-05,
+    "perm_std": 0.0033347386371015307,
+    "perm_95": 0.005999999999999998,
+    "p_value": 0.767,
+    "cohen_d": -0.5889517030090534,
+    "significant": false
+  },
+  "verdict": "MAINTAIN_TS3"
+}

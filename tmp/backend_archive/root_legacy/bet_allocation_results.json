@@ -1,0 +1,102 @@
+{
+  "best_1bet": {
+    "policy": "single best strategy",
+    "strategy": "MicroFish_evolved_1",
+    "n_bets": 1,
+    "edge_pct": 4.7333333333333325,
+    "cost": 50
+  },
+  "best_2bet": {
+    "policy": "single best 2-bet strategy",
+    "strategy": "MidFreq_ACB_2bet",
+    "n_bets": 2,
+    "edge_pct": 5.460000000000001,
+    "cost": 100
+  },
+  "best_3bet": {
+    "policy": "single best 3-bet strategy",
+    "strategy": "ACB_Markov_Fourier_3bet",
+    "n_bets": 3,
+    "edge_pct": 6.7,
+    "cost": 150
+  },
+  "MicroFish_evolved_1+MidFreq_1bet_cross2bet": {
+    "rate": 0.284,
+    "edge": 0.06859999999999997,
+    "edge_pct": 6.859999999999997
+  },
+  "MicroFish_evolved_2+MidFreq_1bet_cross2bet": {
+    "rate": 0.284,
+    "edge": 0.06859999999999997,
+    "edge_pct": 6.859999999999997
+  },
+  "MicroFish_evolved_3+MidFreq_1bet_cross2bet": {
+    "rate": 0.2833333333333333,
+    "edge": 0.06793333333333332,
+    "edge_pct": 6.793333333333332
+  },
+  "Markov_1bet+MicroFish_evolved_2_cross2bet": {
+    "rate": 0.274,
+    "edge": 0.05860000000000001,
+    "edge_pct": 5.860000000000001
+  },
+  "Fourier_1bet+MicroFish_evolved_1_cross2bet": {
+    "rate": 0.2733333333333333,
+    "edge": 0.05793333333333331,
+    "edge_pct": 5.793333333333331
+  },
+  "Dynamic_agreement_p50": {
+    "rate": 0.15266666666666667,
+    "edge": 0.03866666666666667,
+    "edge_pct": 3.8666666666666667,
+    "avg_bets_per_draw": 1.1273333333333333,
+    "total_cost": 84550,
+    "hits": 229,
+    "total_draws": 1500
+  },
+  "Dynamic_agreement_p75": {
+    "rate": 0.16133333333333333,
+    "edge": 0.047333333333333324,
+    "edge_pct": 4.7333333333333325,
+    "avg_bets_per_draw": 1.0013333333333334,
+    "total_cost": 75100,
+    "hits": 242,
+    "total_draws": 1500
+  },
+  "Dynamic_acb_spread_p50": {
+    "rate": 0.21733333333333332,
+    "edge": 0.0019333333333333147,
+    "edge_pct": 0.19333333333333147,
+    "avg_bets_per_draw": 1.5,
+    "total_cost": 112500,
+    "hits": 326,
+    "total_draws": 1500
+  },
+  "Dynamic_acb_spread_p75": {
+    "rate": 0.27,
+    "edge": 0.05460000000000001,
+    "edge_pct": 5.460000000000001,
+    "avg_bets_per_draw": 2.0,
+    "total_cost": 150000,
+    "hits": 405,
+    "total_draws": 1500
+  },
+  "marginal_1bet": {
+    "n_bets": 1,
+    "edge_pct": 4.7333333333333325,
+    "cost_NTD": 50,
+    "edge_per_NTD": 0.09466666666666665
+  },
+  "marginal_2bet": {
+    "n_bets": 2,
+    "edge_pct": 5.460000000000001,
+    "cost_NTD": 100,
+    "edge_per_NTD": 0.05460000000000001
+  },
+  "marginal_3bet": {
+    "n_bets": 3,
+    "edge_pct": 6.7,
+    "cost_NTD": 150,
+    "edge_per_NTD": 0.04466666666666667
+  }
+}

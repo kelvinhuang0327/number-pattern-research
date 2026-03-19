@@ -1,0 +1,1 @@
+strategy: 4bet_ts3_markov_w30\nlottery: big_lotto\nadopted: 2026-02-24\nstatus: ACTIVE

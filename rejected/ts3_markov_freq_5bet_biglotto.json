@@ -1,0 +1,42 @@
+{
+  "name": "TS3+Markov+頻率正交 5注 (大樂透)",
+  "lottery": "BIG_LOTTO",
+  "rejected_date": "2026-02-26",
+  "failure_reason": "架構孤島：與升級後的4注（P1+偏差互補）不一致。策略本身未失效，但4注基礎已從TS3+Markov替換為P1+偏差互補，導致5注無法作為4注的自然延伸。另替換策略（P1+偏差互補+Sum均值約束）在同等perm顯著性下架構更一致。",
+  "pattern": "SUPERSEDED",
+  "stats": {
+    "edge_150p": 0.37,
+    "edge_500p": 2.64,
+    "edge_1500p_original": 1.97,
+    "edge_1500p_shifted": 1.51,
+    "baseline": 8.96,
+    "perm_p": 0.075,
+    "z_score": null,
+    "rsm_300p": 2.37,
+    "mcnemar_vs_4bet_chi2": 28.03,
+    "mcnemar_vs_4bet_p": 0.000,
+    "marginal_improvement_periods": 30
+  },
+  "strategy_structure": {
+    "bet1": "Fourier Rhythm (500期Fourier頻譜 Top-6)",
+    "bet2": "Sum-Constrained Cold (排除注1，冷號pool=12+Sum約束)",
+    "bet3": "Tail Balance (排除注1+2，尾數平衡×頻率)",
+    "bet4": "Markov Orthogonal (排除注1+2+3，Markov30期 Top-6)",
+    "bet5": "Freq Orthogonal (排除注1-4的剩餘30號，近100期頻率最高前6)"
+  },
+  "superseded_by": "P1+偏差互補+Sum均值約束 5注 (2026-02-26)",
+  "applicable_conditions": "當4注基礎仍使用TS3+Markov框架時有效。三窗口ROBUST（150p+0.37%雖偏低但正值）。RSM長期穩定(300p=+2.37%)。",
+  "retest_conditions": [
+    "若P1+偏差互補4注在60期滾動窗口持續負Edge，觸發重新評估時",
+    "若發現TS3+Markov框架作為第三組正交注有助於新4注框架的改善",
+    "建立「多框架投票組合」時可作為第三個獨立信號源",
+    "資料量達3000期+，足夠驗證更複雜組合時"
+  ],
+  "future_combination_potential": {
+    "idea": "TS3+Markov 5注架構可作為P1+偏差互補的「第三套正交信號」，組成6-8注投票組合",
+    "rationale": "P1+偏差互補(P1鄰號+冷號+熱冷偏差)和TS3+Markov(頻譜節律+Sum約束冷號+尾數平衡+Markov轉移)使用完全不同的信號域，互補性可能很高",
+    "validation_needed": "需回測 (P1+偏差互補4注) + (TS3+Markov全5注)的McNemar互補率，若獨贏期數各≥60/1500則值得做6-8注組合"
+  },
+  "script": "tools/backtest_biglotto_5bet_ts3markov.py",
+  "notes": "策略信號真實（perm MARGINAL，非NOISE），只是框架已被更一致的P1+偏差互補體系取代。本策略的核心組件（Fourier/Markov/Sum-Constraint/Tail-Balance）各自仍是有效信號，可在未來組合中重組使用。"
+}

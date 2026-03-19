@@ -1,0 +1,29 @@
+{
+  "strategy_name": "ACB_LagEcho_2bet",
+  "description": "ACB + Lag-k 回聲 正交2注（lag_weights={1:0.5, 2:2.0, 3:1.0}）",
+  "rejection_date": "2026-03-08",
+  "trigger": "115000060期檢討（17號Lag-2回聲盲點分析）",
+  "failure_reason": "統計顯著（STABLE, perm_p=0.010），但 1500p Edge +3.53% 劣於現行 ADOPTED MidFreq+ACB +5.06%。McNemar p=0.18（不顯著），MidFreq+ACB 多命中23次。表示 LagEcho 作為 ACB 的配對注次於 MidFreq。",
+  "statistical_results": {
+    "edge_150p": 3.79,
+    "edge_500p": 2.06,
+    "edge_1500p": 3.53,
+    "z_1500p": 3.32,
+    "perm_p": 0.010,
+    "signal_edge": 2.98,
+    "stability": "STABLE",
+    "mcnemar_vs_midfreq_acb": {
+      "a_only": 138,
+      "b_only": 161,
+      "chi2": 1.7692,
+      "p_value": 0.1835,
+      "winner": "B"
+    }
+  },
+  "applicable_conditions": "若 MidFreq+ACB 未來 RSM 退出，可考慮作為替補（有獨立正信號）",
+  "retest_conditions": [
+    "若 MidFreq+ACB edge 在 500 期窗口跌至零以下，觸發替換評估",
+    "lag_weights 參數重新優化（可能 lag-2 需要更高權重如 3.0）"
+  ],
+  "insight": "LagEcho 有真實正信號（perm_p=0.01），但 MidFreq 的均值回歸理論在 539 日開獎中更有效。保留為備用信號。"
+}

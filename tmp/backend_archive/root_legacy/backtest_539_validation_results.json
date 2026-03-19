@@ -1,0 +1,144 @@
+{
+  "test_date": "2026-03-01",
+  "trigger": "115000054期修正驗證",
+  "total_draws": 5797,
+  "baselines": {
+    "1": 11.4,
+    "2": 21.54,
+    "3": 30.5
+  },
+  "three_window": {
+    "P2c: MidFreq+ACB 2bet": {
+      "n_bets": 2,
+      "stability": "MODERATE_DECAY",
+      "windows": {
+        "150": {
+          "wins": 47,
+          "total": 150,
+          "rate": 31.333333333333336,
+          "edge": 9.793333333333337
+        },
+        "500": {
+          "wins": 134,
+          "total": 500,
+          "rate": 26.8,
+          "edge": 5.260000000000002
+        },
+        "1500": {
+          "wins": 395,
+          "total": 1500,
+          "rate": 26.333333333333332,
+          "edge": 4.793333333333333
+        }
+      }
+    },
+    "P3a: Markov+MidFreq+ACB 3bet": {
+      "n_bets": 3,
+      "stability": "STABLE",
+      "windows": {
+        "150": {
+          "wins": 56,
+          "total": 150,
+          "rate": 37.333333333333336,
+          "edge": 6.833333333333336
+        },
+        "500": {
+          "wins": 180,
+          "total": 500,
+          "rate": 36.0,
+          "edge": 5.5
+        },
+        "1500": {
+          "wins": 548,
+          "total": 1500,
+          "rate": 36.53333333333333,
+          "edge": 6.033333333333331
+        }
+      }
+    },
+    "F4Cold 3bet (baseline)": {
+      "n_bets": 3,
+      "stability": "UNSTABLE",
+      "windows": {
+        "150": {
+          "wins": 45,
+          "total": 150,
+          "rate": 30.0,
+          "edge": -0.5
+        },
+        "500": {
+          "wins": 163,
+          "total": 500,
+          "rate": 32.6,
+          "edge": 2.1000000000000014
+        },
+        "1500": {
+          "wins": 525,
+          "total": 1500,
+          "rate": 35.0,
+          "edge": 4.5
+        }
+      }
+    },
+    "F4Cold 5bet (PROVISIONAL)": {
+      "n_bets": 5,
+      "stability": "STABLE",
+      "windows": {
+        "150": {
+          "wins": 76,
+          "total": 150,
+          "rate": 50.66666666666667,
+          "edge": 20.16666666666667
+        },
+        "500": {
+          "wins": 261,
+          "total": 500,
+          "rate": 52.2,
+          "edge": 21.700000000000003
+        },
+        "1500": {
+          "wins": 805,
+          "total": 1500,
+          "rate": 53.666666666666664,
+          "edge": 23.166666666666664
+        }
+      }
+    }
+  },
+  "mcnemar_p3a_vs_f4cold": {
+    "p3a_rate": 36.53333333333333,
+    "f4cold_rate": 35.0,
+    "chi2": 0.6944045911047346,
+    "p_value": 0.40467024441074007,
+    "p3a_wins_f4cold_loses": 360,
+    "p3a_loses_f4cold_wins": 337,
+    "net": 23,
+    "significant": 0.0
+  },
+  "permutation": {
+    "P2c": {
+      "real_rate": 26.333333333333332,
+      "perm_mean": 22.3364,
+      "perm_std": 1.9250026077904414,
+      "edge": 3.996933333333331,
+      "z_score": 2.076326191537525,
+      "p_empirical": 0.027944111776447105,
+      "p_from_z": 0.01893189624687308,
+      "n_perms": 500,
+      "real_wins": 395,
+      "real_total": 1500
+    },
+    "P3a": {
+      "real_rate": 36.53333333333333,
+      "perm_mean": 32.6464,
+      "perm_std": 2.073356467180692,
+      "edge": 3.8869333333333316,
+      "z_score": 1.8747057705029877,
+      "p_empirical": 0.03992015968063872,
+      "p_from_z": 0.030416606300049276,
+      "n_perms": 500,
+      "real_wins": 548,
+      "real_total": 1500
+    }
+  }
+}

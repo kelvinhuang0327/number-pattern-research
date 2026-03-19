@@ -1,0 +1,23 @@
+{
+  "strategy": "bandit_ucb1_2bet_539",
+  "lottery": "DAILY_539",
+  "n_bets": 2,
+  "description": "UCB1-Tuned Bandit 策略選擇器 — 動態選擇最佳2注組合",
+  "test_date": "2026-03-01",
+  "trigger": "115000054期檢討",
+  "reason": "Edge +1.84% 遠低於人工設計的 MidFreq+ACB (+4.44%)，Bandit 無法有效學習最佳固定策略",
+  "results": {
+    "150p": {"rate": 22.00, "edge": "+0.11%"},
+    "500p": {"rate": 23.60, "edge": "+1.71%"},
+    "1500p": {"rate": 23.73, "edge": "+1.84%"}
+  },
+  "arm_selection": {
+    "markov": "selected 939x, avg_reward=0.211",
+    "midfreq": "selected 939x, avg_reward=0.211",
+    "acb": "selected 863x, avg_reward=0.209",
+    "lift": "selected 863x, avg_reward=0.209"
+  },
+  "stability": "STABLE but LOW EDGE",
+  "conclusion": "Bandit 2注的 Edge 僅 +1.84%，顯著低於 MidFreq+ACB 的 +4.44%。Bandit arm 均勻分配次數（所有 arm avg_reward 接近0.21），說明各 arm 在2注場景中差異太小，UCB1 無法有效辨別。保留 MidFreq+ACB 固定2注方案。",
+  "retest_condition": "當新增更多差異化 arm（如 regime-aware arm）或市場明顯變化時重新研究"
+}

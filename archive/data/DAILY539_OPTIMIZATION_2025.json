@@ -1,0 +1,809 @@
+{
+  "test_date": "2025-12-26",
+  "lottery_type": "DAILY_539",
+  "year": "2025",
+  "total_periods": 311,
+  "methods_tested": [
+    "頻率預測",
+    "趨勢預測",
+    "偏差預測",
+    "Bayesian預測",
+    "蒙特卡洛預測",
+    "Markov鏈預測",
+    "奇偶平衡預測",
+    "區域平衡預測",
+    "冷熱混合預測",
+    "總和範圍預測",
+    "集成預測",
+    "進階集成預測"
+  ],
+  "window_sizes_tested": [
+    50,
+    100,
+    150,
+    200,
+    300,
+    400,
+    500
+  ],
+  "all_results": {
+    "頻率預測": [
+      {
+        "method": "frequency_predict",
+        "window_size": 50,
+        "test_count": 311,
+        "avg_matches": 0.6077170418006431,
+        "win_rate": 0.003215434083601286,
+        "win_count": 1
+      },
+      {
+        "method": "frequency_predict",
+        "window_size": 100,
+        "test_count": 311,
+        "avg_matches": 0.6012861736334405,
+        "win_rate": 0.0,
+        "win_count": 0
+      },
+      {
+        "method": "frequency_predict",
+        "window_size": 150,
+        "test_count": 311,
+        "avg_matches": 0.6012861736334405,
+        "win_rate": 0.0,
+        "win_count": 0
+      },
+      {
+        "method": "frequency_predict",
+        "window_size": 200,
+        "test_count": 311,
+        "avg_matches": 0.5916398713826366,
+        "win_rate": 0.003215434083601286,
+        "win_count": 1
+      },
+      {
+        "method": "frequency_predict",
+        "window_size": 300,
+        "test_count": 311,
+        "avg_matches": 0.5980707395498392,
+        "win_rate": 0.006430868167202572,
+        "win_count": 2
+      },
+      {
+        "method": "frequency_predict",
+        "window_size": 400,
+        "test_count": 311,
+        "avg_matches": 0.617363344051447,
+        "win_rate": 0.003215434083601286,
+        "win_count": 1
+      },
+      {
+        "method": "frequency_predict",
+        "window_size": 500,
+        "test_count": 311,
+        "avg_matches": 0.6109324758842444,
+        "win_rate": 0.003215434083601286,
+        "win_count": 1
+      }
+    ],
+    "趨勢預測": [
+      {
+        "method": "trend_predict",
+        "window_size": 50,
+        "test_count": 311,
+        "avg_matches": 0.6881028938906752,
+        "win_rate": 0.0,
+        "win_count": 0
+      },
+      {
+        "method": "trend_predict",
+        "window_size": 100,
+        "test_count": 311,
+        "avg_matches": 0.7459807073954984,
+        "win_rate": 0.012861736334405145,
+        "win_count": 4
+      },
+      {
+        "method": "trend_predict",
+        "window_size": 150,
+        "test_count": 311,
+        "avg_matches": 0.6591639871382636,
+        "win_rate": 0.006430868167202572,
+        "win_count": 2
+      },
+      {
+        "method": "trend_predict",
+        "window_size": 200,
+        "test_count": 311,
+        "avg_matches": 0.6237942122186495,
+        "win_rate": 0.00964630225080386,
+        "win_count": 3
+      },
+      {
+        "method": "trend_predict",
+        "window_size": 300,
+        "test_count": 311,
+        "avg_matches": 0.6205787781350482,
+        "win_rate": 0.003215434083601286,
+        "win_count": 1
+      },
+      {
+        "method": "trend_predict",
+        "window_size": 400,
+        "test_count": 311,
+        "avg_matches": 0.6334405144694534,
+        "win_rate": 0.00964630225080386,
+        "win_count": 3
+      },
+      {
+        "method": "trend_predict",
+        "window_size": 500,
+        "test_count": 311,
+        "avg_matches": 0.5594855305466238,
+        "win_rate": 0.006430868167202572,
+        "win_count": 2
+      }
+    ],
+    "偏差預測": [
+      {
+        "method": "deviation_predict",
+        "window_size": 50,
+        "test_count": 311,
+        "avg_matches": 0.6430868167202572,
+        "win_rate": 0.012861736334405145,
+        "win_count": 4
+      },
+      {
+        "method": "deviation_predict",
+        "window_size": 100,
+        "test_count": 311,
+        "avg_matches": 0.594855305466238,
+        "win_rate": 0.003215434083601286,
+        "win_count": 1
+      },
+      {
+        "method": "deviation_predict",
+        "window_size": 150,
+        "test_count": 311,
+        "avg_matches": 0.639871382636656,
+        "win_rate": 0.006430868167202572,
+        "win_count": 2
+      },
+      {
+        "method": "deviation_predict",
+        "window_size": 200,
+        "test_count": 311,
+        "avg_matches": 0.5884244372990354,
+        "win_rate": 0.003215434083601286,
+        "win_count": 1
+      },
+      {
+        "method": "deviation_predict",
+        "window_size": 300,
+        "test_count": 311,
+        "avg_matches": 0.5852090032154341,
+        "win_rate": 0.006430868167202572,
+        "win_count": 2
+      },
+      {
+        "method": "deviation_predict",
+        "window_size": 400,
+        "test_count": 311,
+        "avg_matches": 0.5980707395498392,
+        "win_rate": 0.003215434083601286,
+        "win_count": 1
+      },
+      {
+        "method": "deviation_predict",
+        "window_size": 500,
+        "test_count": 311,
+        "avg_matches": 0.5852090032154341,
+        "win_rate": 0.006430868167202572,
+        "win_count": 2
+      }
+    ],
+    "Bayesian預測": [
+      {
+        "method": "bayesian_predict",
+        "window_size": 50,
+        "test_count": 311,
+        "avg_matches": 0.5980707395498392,
+        "win_rate": 0.003215434083601286,
+        "win_count": 1
+      },
+      {
+        "method": "bayesian_predict",
+        "window_size": 100,
+        "test_count": 311,
+        "avg_matches": 0.6913183279742765,
+        "win_rate": 0.01607717041800643,
+        "win_count": 5
+      },
+      {
+        "method": "bayesian_predict",
+        "window_size": 150,
+        "test_count": 311,
+        "avg_matches": 0.6463022508038585,
+        "win_rate": 0.003215434083601286,
+        "win_count": 1
+      },
+      {
+        "method": "bayesian_predict",
+        "window_size": 200,
+        "test_count": 311,
+        "avg_matches": 0.6334405144694534,
+        "win_rate": 0.003215434083601286,
+        "win_count": 1
+      },
+      {
+        "method": "bayesian_predict",
+        "window_size": 300,
+        "test_count": 311,
+        "avg_matches": 0.684887459807074,
+        "win_rate": 0.003215434083601286,
+        "win_count": 1
+      },
+      {
+        "method": "bayesian_predict",
+        "window_size": 400,
+        "test_count": 311,
+        "avg_matches": 0.6302250803858521,
+        "win_rate": 0.00964630225080386,
+        "win_count": 3
+      },
+      {
+        "method": "bayesian_predict",
+        "window_size": 500,
+        "test_count": 311,
+        "avg_matches": 0.6270096463022508,
+        "win_rate": 0.003215434083601286,
+        "win_count": 1
+      }
+    ],
+    "蒙特卡洛預測": [
+      {
+        "method": "monte_carlo_predict",
+        "window_size": 50,
+        "test_count": 311,
+        "avg_matches": 0.6559485530546624,
+        "win_rate": 0.003215434083601286,
+        "win_count": 1
+      },
+      {
+        "method": "monte_carlo_predict",
+        "window_size": 100,
+        "test_count": 311,
+        "avg_matches": 0.7234726688102894,
+        "win_rate": 0.00964630225080386,
+        "win_count": 3
+      },
+      {
+        "method": "monte_carlo_predict",
+        "window_size": 150,
+        "test_count": 311,
+        "avg_matches": 0.6688102893890675,
+        "win_rate": 0.012861736334405145,
+        "win_count": 4
+      },
+      {
+        "method": "monte_carlo_predict",
+        "window_size": 200,
+        "test_count": 311,
+        "avg_matches": 0.6816720257234726,
+        "win_rate": 0.00964630225080386,
+        "win_count": 3
+      },
+      {
+        "method": "monte_carlo_predict",
+        "window_size": 300,
+        "test_count": 311,
+        "avg_matches": 0.6913183279742765,
+        "win_rate": 0.006430868167202572,
+        "win_count": 2
+      },
+      {
+        "method": "monte_carlo_predict",
+        "window_size": 400,
+        "test_count": 311,
+        "avg_matches": 0.6913183279742765,
+        "win_rate": 0.006430868167202572,
+        "win_count": 2
+      },
+      {
+        "method": "monte_carlo_predict",
+        "window_size": 500,
+        "test_count": 311,
+        "avg_matches": 0.6302250803858521,
+        "win_rate": 0.006430868167202572,
+        "win_count": 2
+      }
+    ],
+    "Markov鏈預測": [
+      {
+        "method": "markov_predict",
+        "window_size": 50,
+        "test_count": 311,
+        "avg_matches": 0.6366559485530546,
+        "win_rate": 0.00964630225080386,
+        "win_count": 3
+      },
+      {
+        "method": "markov_predict",
+        "window_size": 100,
+        "test_count": 311,
+        "avg_matches": 0.7363344051446945,
+        "win_rate": 0.012861736334405145,
+        "win_count": 4
+      },
+      {
+        "method": "markov_predict",
+        "window_size": 150,
+        "test_count": 311,
+        "avg_matches": 0.6655948553054662,
+        "win_rate": 0.006430868167202572,
+        "win_count": 2
+      },
+      {
+        "method": "markov_predict",
+        "window_size": 200,
+        "test_count": 311,
+        "avg_matches": 0.6205787781350482,
+        "win_rate": 0.01607717041800643,
+        "win_count": 5
+      },
+      {
+        "method": "markov_predict",
+        "window_size": 300,
+        "test_count": 311,
+        "avg_matches": 0.6591639871382636,
+        "win_rate": 0.00964630225080386,
+        "win_count": 3
+      },
+      {
+        "method": "markov_predict",
+        "window_size": 400,
+        "test_count": 311,
+        "avg_matches": 0.6205787781350482,
+        "win_rate": 0.006430868167202572,
+        "win_count": 2
+      },
+      {
+        "method": "markov_predict",
+        "window_size": 500,
+        "test_count": 311,
+        "avg_matches": 0.5787781350482315,
+        "win_rate": 0.00964630225080386,
+        "win_count": 3
+      }
+    ],
+    "奇偶平衡預測": [
+      {
+        "method": "odd_even_balance_predict",
+        "window_size": 50,
+        "test_count": 311,
+        "avg_matches": 0.6655948553054662,
+        "win_rate": 0.012861736334405145,
+        "win_count": 4
+      },
+      {
+        "method": "odd_even_balance_predict",
+        "window_size": 100,
+        "test_count": 311,
+        "avg_matches": 0.7395498392282959,
+        "win_rate": 0.003215434083601286,
+        "win_count": 1
+      },
+      {
+        "method": "odd_even_balance_predict",
+        "window_size": 150,
+        "test_count": 311,
+        "avg_matches": 0.6945337620578779,
+        "win_rate": 0.00964630225080386,
+        "win_count": 3
+      },
+      {
+        "method": "odd_even_balance_predict",
+        "window_size": 200,
+        "test_count": 311,
+        "avg_matches": 0.6655948553054662,
+        "win_rate": 0.00964630225080386,
+        "win_count": 3
+      },
+      {
+        "method": "odd_even_balance_predict",
+        "window_size": 300,
+        "test_count": 311,
+        "avg_matches": 0.707395498392283,
+        "win_rate": 0.006430868167202572,
+        "win_count": 2
+      },
+      {
+        "method": "odd_even_balance_predict",
+        "window_size": 400,
+        "test_count": 311,
+        "avg_matches": 0.662379421221865,
+        "win_rate": 0.006430868167202572,
+        "win_count": 2
+      },
+      {
+        "method": "odd_even_balance_predict",
+        "window_size": 500,
+        "test_count": 311,
+        "avg_matches": 0.6527331189710611,
+        "win_rate": 0.003215434083601286,
+        "win_count": 1
+      }
+    ],
+    "區域平衡預測": [
+      {
+        "method": "zone_balance_predict",
+        "window_size": 50,
+        "test_count": 311,
+        "avg_matches": 0.6077170418006431,
+        "win_rate": 0.0,
+        "win_count": 0
+      },
+      {
+        "method": "zone_balance_predict",
+        "window_size": 100,
+        "test_count": 311,
+        "avg_matches": 0.7363344051446945,
+        "win_rate": 0.00964630225080386,
+        "win_count": 3
+      },
+      {
+        "method": "zone_balance_predict",
+        "window_size": 150,
+        "test_count": 311,
+        "avg_matches": 0.707395498392283,
+        "win_rate": 0.01929260450160772,
+        "win_count": 6
+      },
+      {
+        "method": "zone_balance_predict",
+        "window_size": 200,
+        "test_count": 311,
+        "avg_matches": 0.707395498392283,
+        "win_rate": 0.006430868167202572,
+        "win_count": 2
+      },
+      {
+        "method": "zone_balance_predict",
+        "window_size": 300,
+        "test_count": 311,
+        "avg_matches": 0.6495176848874598,
+        "win_rate": 0.003215434083601286,
+        "win_count": 1
+      },
+      {
+        "method": "zone_balance_predict",
+        "window_size": 400,
+        "test_count": 311,
+        "avg_matches": 0.6463022508038585,
+        "win_rate": 0.003215434083601286,
+        "win_count": 1
+      },
+      {
+        "method": "zone_balance_predict",
+        "window_size": 500,
+        "test_count": 311,
+        "avg_matches": 0.6527331189710611,
+        "win_rate": 0.00964630225080386,
+        "win_count": 3
+      }
+    ],
+    "冷熱混合預測": [
+      {
+        "method": "hot_cold_mix_predict",
+        "window_size": 50,
+        "test_count": 311,
+        "avg_matches": 0.6784565916398714,
+        "win_rate": 0.006430868167202572,
+        "win_count": 2
+      },
+      {
+        "method": "hot_cold_mix_predict",
+        "window_size": 100,
+        "test_count": 311,
+        "avg_matches": 0.6977491961414791,
+        "win_rate": 0.01929260450160772,
+        "win_count": 6
+      },
+      {
+        "method": "hot_cold_mix_predict",
+        "window_size": 150,
+        "test_count": 311,
+        "avg_matches": 0.6141479099678456,
+        "win_rate": 0.01607717041800643,
+        "win_count": 5
+      },
+      {
+        "method": "hot_cold_mix_predict",
+        "window_size": 200,
+        "test_count": 311,
+        "avg_matches": 0.6495176848874598,
+        "win_rate": 0.003215434083601286,
+        "win_count": 1
+      },
+      {
+        "method": "hot_cold_mix_predict",
+        "window_size": 300,
+        "test_count": 311,
+        "avg_matches": 0.5594855305466238,
+        "win_rate": 0.003215434083601286,
+        "win_count": 1
+      },
+      {
+        "method": "hot_cold_mix_predict",
+        "window_size": 400,
+        "test_count": 311,
+        "avg_matches": 0.6688102893890675,
+        "win_rate": 0.006430868167202572,
+        "win_count": 2
+      },
+      {
+        "method": "hot_cold_mix_predict",
+        "window_size": 500,
+        "test_count": 311,
+        "avg_matches": 0.6012861736334405,
+        "win_rate": 0.012861736334405145,
+        "win_count": 4
+      }
+    ],
+    "總和範圍預測": [
+      {
+        "method": "sum_range_predict",
+        "window_size": 50,
+        "test_count": 311,
+        "avg_matches": 0.617363344051447,
+        "win_rate": 0.0,
+        "win_count": 0
+      },
+      {
+        "method": "sum_range_predict",
+        "window_size": 100,
+        "test_count": 311,
+        "avg_matches": 0.5819935691318328,
+        "win_rate": 0.00964630225080386,
+        "win_count": 3
+      },
+      {
+        "method": "sum_range_predict",
+        "window_size": 150,
+        "test_count": 311,
+        "avg_matches": 0.662379421221865,
+        "win_rate": 0.003215434083601286,
+        "win_count": 1
+      },
+      {
+        "method": "sum_range_predict",
+        "window_size": 200,
+        "test_count": 311,
+        "avg_matches": 0.6141479099678456,
+        "win_rate": 0.00964630225080386,
+        "win_count": 3
+      },
+      {
+        "method": "sum_range_predict",
+        "window_size": 300,
+        "test_count": 311,
+        "avg_matches": 0.7170418006430869,
+        "win_rate": 0.022508038585209004,
+        "win_count": 7
+      },
+      {
+        "method": "sum_range_predict",
+        "window_size": 400,
+        "test_count": 311,
+        "avg_matches": 0.6655948553054662,
+        "win_rate": 0.006430868167202572,
+        "win_count": 2
+      },
+      {
+        "method": "sum_range_predict",
+        "window_size": 500,
+        "test_count": 311,
+        "avg_matches": 0.5530546623794212,
+        "win_rate": 0.003215434083601286,
+        "win_count": 1
+      }
+    ],
+    "集成預測": [
+      {
+        "method": "ensemble_predict",
+        "window_size": 50,
+        "test_count": 311,
+        "avg_matches": 0.6012861736334405,
+        "win_rate": 0.003215434083601286,
+        "win_count": 1
+      },
+      {
+        "method": "ensemble_predict",
+        "window_size": 100,
+        "test_count": 311,
+        "avg_matches": 0.7041800643086816,
+        "win_rate": 0.006430868167202572,
+        "win_count": 2
+      },
+      {
+        "method": "ensemble_predict",
+        "window_size": 150,
+        "test_count": 311,
+        "avg_matches": 0.6784565916398714,
+        "win_rate": 0.012861736334405145,
+        "win_count": 4
+      },
+      {
+        "method": "ensemble_predict",
+        "window_size": 200,
+        "test_count": 311,
+        "avg_matches": 0.6302250803858521,
+        "win_rate": 0.006430868167202572,
+        "win_count": 2
+      },
+      {
+        "method": "ensemble_predict",
+        "window_size": 300,
+        "test_count": 311,
+        "avg_matches": 0.6559485530546624,
+        "win_rate": 0.00964630225080386,
+        "win_count": 3
+      },
+      {
+        "method": "ensemble_predict",
+        "window_size": 400,
+        "test_count": 311,
+        "avg_matches": 0.6430868167202572,
+        "win_rate": 0.003215434083601286,
+        "win_count": 1
+      },
+      {
+        "method": "ensemble_predict",
+        "window_size": 500,
+        "test_count": 311,
+        "avg_matches": 0.6045016077170418,
+        "win_rate": 0.00964630225080386,
+        "win_count": 3
+      }
+    ],
+    "進階集成預測": [
+      {
+        "method": "ensemble_advanced_predict",
+        "window_size": 50,
+        "test_count": 311,
+        "avg_matches": 0.6366559485530546,
+        "win_rate": 0.006430868167202572,
+        "win_count": 2
+      },
+      {
+        "method": "ensemble_advanced_predict",
+        "window_size": 100,
+        "test_count": 311,
+        "avg_matches": 0.7266881028938906,
+        "win_rate": 0.00964630225080386,
+        "win_count": 3
+      },
+      {
+        "method": "ensemble_advanced_predict",
+        "window_size": 150,
+        "test_count": 311,
+        "avg_matches": 0.6366559485530546,
+        "win_rate": 0.00964630225080386,
+        "win_count": 3
+      },
+      {
+        "method": "ensemble_advanced_predict",
+        "window_size": 200,
+        "test_count": 311,
+        "avg_matches": 0.6270096463022508,
+        "win_rate": 0.003215434083601286,
+        "win_count": 1
+      },
+      {
+        "method": "ensemble_advanced_predict",
+        "window_size": 300,
+        "test_count": 311,
+        "avg_matches": 0.6784565916398714,
+        "win_rate": 0.006430868167202572,
+        "win_count": 2
+      },
+      {
+        "method": "ensemble_advanced_predict",
+        "window_size": 400,
+        "test_count": 311,
+        "avg_matches": 0.6366559485530546,
+        "win_rate": 0.006430868167202572,
+        "win_count": 2
+      },
+      {
+        "method": "ensemble_advanced_predict",
+        "window_size": 500,
+        "test_count": 311,
+        "avg_matches": 0.5755627009646302,
+        "win_rate": 0.006430868167202572,
+        "win_count": 2
+      }
+    ]
+  },
+  "top_10": [
+    {
+      "method": "總和範圍預測",
+      "window": 300,
+      "avg_matches": 0.7170418006430869,
+      "win_rate": 0.022508038585209004,
+      "win_count": 7,
+      "test_count": 311
+    },
+    {
+      "method": "區域平衡預測",
+      "window": 150,
+      "avg_matches": 0.707395498392283,
+      "win_rate": 0.01929260450160772,
+      "win_count": 6,
+      "test_count": 311
+    },
+    {
+      "method": "冷熱混合預測",
+      "window": 100,
+      "avg_matches": 0.6977491961414791,
+      "win_rate": 0.01929260450160772,
+      "win_count": 6,
+      "test_count": 311
+    },
+    {
+      "method": "Bayesian預測",
+      "window": 100,
+      "avg_matches": 0.6913183279742765,
+      "win_rate": 0.01607717041800643,
+      "win_count": 5,
+      "test_count": 311
+    },
+    {
+      "method": "Markov鏈預測",
+      "window": 200,
+      "avg_matches": 0.6205787781350482,
+      "win_rate": 0.01607717041800643,
+      "win_count": 5,
+      "test_count": 311
+    },
+    {
+      "method": "冷熱混合預測",
+      "window": 150,
+      "avg_matches": 0.6141479099678456,
+      "win_rate": 0.01607717041800643,
+      "win_count": 5,
+      "test_count": 311
+    },
+    {
+      "method": "趨勢預測",
+      "window": 100,
+      "avg_matches": 0.7459807073954984,
+      "win_rate": 0.012861736334405145,
+      "win_count": 4,
+      "test_count": 311
+    },
+    {
+      "method": "Markov鏈預測",
+      "window": 100,
+      "avg_matches": 0.7363344051446945,
+      "win_rate": 0.012861736334405145,
+      "win_count": 4,
+      "test_count": 311
+    },
+    {
+      "method": "集成預測",
+      "window": 150,
+      "avg_matches": 0.6784565916398714,
+      "win_rate": 0.012861736334405145,
+      "win_count": 4,
+      "test_count": 311
+    },
+    {
+      "method": "蒙特卡洛預測",
+      "window": 150,
+      "avg_matches": 0.6688102893890675,
+      "win_rate": 0.012861736334405145,
+      "win_count": 4,
+      "test_count": 311
+    }
+  ]
+}

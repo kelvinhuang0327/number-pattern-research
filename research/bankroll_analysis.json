@@ -1,0 +1,152 @@
+{
+  "BIG_LOTTO": {
+    "prediction_only": {
+      "strategy": "prediction_only",
+      "initial_bankroll": 100000.0,
+      "fixed_bet_size": 150.0,
+      "fractional_kelly_size": 0.0,
+      "capped_exposure_size": 150.0,
+      "loss_streak_control_size": 150.0,
+      "optimal_bet_size": 150.0,
+      "risk_of_ruin": 0.0946,
+      "survival_probability": 0.9054,
+      "adjusted_recommendation": "defensive_fixed"
+    },
+    "prediction_plus_anti_crowd": {
+      "strategy": "prediction_plus_anti_crowd",
+      "initial_bankroll": 100000.0,
+      "fixed_bet_size": 150.0,
+      "fractional_kelly_size": 23593.68,
+      "capped_exposure_size": 150.0,
+      "loss_streak_control_size": 150.0,
+      "optimal_bet_size": 150.0,
+      "risk_of_ruin": 1.0,
+      "survival_probability": 0.0,
+      "adjusted_recommendation": "fractional_kelly_capped"
+    },
+    "prediction_plus_payout_optimization": {
+      "strategy": "prediction_plus_payout_optimization",
+      "initial_bankroll": 100000.0,
+      "fixed_bet_size": 150.0,
+      "fractional_kelly_size": 23599.84,
+      "capped_exposure_size": 150.0,
+      "loss_streak_control_size": 150.0,
+      "optimal_bet_size": 150.0,
+      "risk_of_ruin": 1.0,
+      "survival_probability": 0.0,
+      "adjusted_recommendation": "fractional_kelly_capped"
+    },
+    "optimized_portfolio": {
+      "strategy": "optimized_portfolio",
+      "initial_bankroll": 100000.0,
+      "fixed_bet_size": 0.0,
+      "fractional_kelly_size": 0.0,
+      "capped_exposure_size": 0.0,
+      "loss_streak_control_size": 0.0,
+      "optimal_bet_size": 0.0,
+      "risk_of_ruin": 0.0,
+      "survival_probability": 1.0,
+      "adjusted_recommendation": "defensive_fixed"
+    }
+  },
+  "POWER_LOTTO": {
+    "prediction_only": {
+      "strategy": "prediction_only",
+      "initial_bankroll": 100000.0,
+      "fixed_bet_size": 300.0,
+      "fractional_kelly_size": 0.0,
+      "capped_exposure_size": 300.0,
+      "loss_streak_control_size": 300.0,
+      "optimal_bet_size": 300.0,
+      "risk_of_ruin": 1.0,
+      "survival_probability": 0.0,
+      "adjusted_recommendation": "defensive_fixed"
+    },
+    "prediction_plus_anti_crowd": {
+      "strategy": "prediction_plus_anti_crowd",
+      "initial_bankroll": 100000.0,
+      "fixed_bet_size": 300.0,
+      "fractional_kelly_size": 0.0,
+      "capped_exposure_size": 300.0,
+      "loss_streak_control_size": 300.0,
+      "optimal_bet_size": 300.0,
+      "risk_of_ruin": 1.0,
+      "survival_probability": 0.0,
+      "adjusted_recommendation": "defensive_fixed"
+    },
+    "prediction_plus_payout_optimization": {
+      "strategy": "prediction_plus_payout_optimization",
+      "initial_bankroll": 100000.0,
+      "fixed_bet_size": 300.0,
+      "fractional_kelly_size": 13280.56,
+      "capped_exposure_size": 300.0,
+      "loss_streak_control_size": 300.0,
+      "optimal_bet_size": 300.0,
+      "risk_of_ruin": 1.0,
+      "survival_probability": 0.0,
+      "adjusted_recommendation": "fractional_kelly_capped"
+    },
+    "optimized_portfolio": {
+      "strategy": "optimized_portfolio",
+      "initial_bankroll": 100000.0,
+      "fixed_bet_size": 0.0,
+      "fractional_kelly_size": 0.0,
+      "capped_exposure_size": 0.0,
+      "loss_streak_control_size": 0.0,
+      "optimal_bet_size": 0.0,
+      "risk_of_ruin": 0.0,
+      "survival_probability": 1.0,
+      "adjusted_recommendation": "defensive_fixed"
+    }
+  },
+  "DAILY_539": {
+    "prediction_only": {
+      "strategy": "prediction_only",
+      "initial_bankroll": 100000.0,
+      "fixed_bet_size": 150.0,
+      "fractional_kelly_size": 14849.47,
+      "capped_exposure_size": 150.0,
+      "loss_streak_control_size": 150.0,
+      "optimal_bet_size": 150.0,
+      "risk_of_ruin": 1.0,
+      "survival_probability": 0.0,
+      "adjusted_recommendation": "fractional_kelly_capped"
+    },
+    "prediction_plus_anti_crowd": {
+      "strategy": "prediction_plus_anti_crowd",
+      "initial_bankroll": 100000.0,
+      "fixed_bet_size": 150.0,
+      "fractional_kelly_size": 15684.37,
+      "capped_exposure_size": 150.0,
+      "loss_streak_control_size": 150.0,
+      "optimal_bet_size": 150.0,
+      "risk_of_ruin": 1.0,
+      "survival_probability": 0.0,
+      "adjusted_recommendation": "fractional_kelly_capped"
+    },
+    "prediction_plus_payout_optimization": {
+      "strategy": "prediction_plus_payout_optimization",
+      "initial_bankroll": 100000.0,
+      "fixed_bet_size": 150.0,
+      "fractional_kelly_size": 17838.96,
+      "capped_exposure_size": 150.0,
+      "loss_streak_control_size": 150.0,
+      "optimal_bet_size": 150.0,
+      "risk_of_ruin": 1.0,
+      "survival_probability": 0.0,
+      "adjusted_recommendation": "fractional_kelly_capped"
+    },
+    "optimized_portfolio": {
+      "strategy": "optimized_portfolio",
+      "initial_bankroll": 100000.0,
+      "fixed_bet_size": 0.0,
+      "fractional_kelly_size": 0.0,
+      "capped_exposure_size": 0.0,
+      "loss_streak_control_size": 0.0,
+      "optimal_bet_size": 0.0,
+      "risk_of_ruin": 0.0,
+      "survival_probability": 1.0,
+      "adjusted_recommendation": "defensive_fixed"
+    }
+  }
+}

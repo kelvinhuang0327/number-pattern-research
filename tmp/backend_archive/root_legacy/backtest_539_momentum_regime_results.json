@@ -1,0 +1,50 @@
+{
+  "strategy": "Momentum Regime Switching (ACB+Markov+EnhancedSerial vs Fourier)",
+  "date": "2026-03-11",
+  "baseline_m3_3bet": 2.982064838854559,
+  "windows": {
+    "150": {
+      "old_m3_rate": 0.03333333333333333,
+      "new_m3_rate": 0.02666666666666667,
+      "old_edge": 0.3512684944787743,
+      "new_edge": -0.3153981721878921,
+      "z": -0.2271016277406419,
+      "p_perm": 0.655,
+      "mcnemar_a": 2,
+      "mcnemar_b": 1,
+      "p_mcnemar_m3": 0.875,
+      "momentum_pct": 64.0,
+      "signal": false,
+      "mcnemar_new_wins": false
+    },
+    "500": {
+      "old_m3_rate": 0.032,
+      "new_m3_rate": 0.034,
+      "old_edge": 0.2179351611454411,
+      "new_edge": 0.41793516114544127,
+      "z": 0.5494261902017497,
+      "p_perm": 0.295,
+      "mcnemar_a": 3,
+      "mcnemar_b": 4,
+      "p_mcnemar_m3": 0.5,
+      "momentum_pct": 65.8,
+      "signal": false,
+      "mcnemar_new_wins": false
+    },
+    "1500": {
+      "old_m3_rate": 0.032,
+      "new_m3_rate": 0.034666666666666665,
+      "old_edge": 0.2179351611454411,
+      "new_edge": 0.48460182781210753,
+      "z": 1.1034333928412074,
+      "p_perm": 0.145,
+      "mcnemar_a": 9,
+      "mcnemar_b": 13,
+      "p_mcnemar_m3": 0.2617335319519043,
+      "momentum_pct": 70.19999999999999,
+      "signal": false,
+      "mcnemar_new_wins": false
+    }
+  },
+  "verdict": "REJECT — Edge負窗口存在，維持現行策略"
+}

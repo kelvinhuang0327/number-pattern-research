@@ -1,0 +1,21 @@
+{
+    "strategy_id": "sgp_v3_deep_synergy",
+    "status": "REJECTED",
+    "reject_date": "2026-02-24",
+    "critique": {
+        "primary_failure": "Main Number M3+ consistent negative edge across all time windows.",
+        "m3_plus_performance": {
+            "150_draws": "2.7% (Theo: 4.2%, Edge: -35.7%)",
+            "500_draws": "2.8% (Theo: 4.2%, Edge: -33.3%)",
+            "1500_draws": "3.9% (Theo: 4.2%, Edge: -7.1%)"
+        },
+        "special_number_decay": "Observed SHORT_MOMENTUM pattern. 150-draw edge (+49.3%) evaporated to 1500-draw edge (+1.6%). Unreproducible Alpha.",
+        "methodology_errors": [
+            "Selective reporting of short-term anomalies.",
+            "Lack of deterministic verification (random.choice bias).",
+            "Lack of statistical rigor (no z-score or permutation tests).",
+            "Empty '3-Bet Coverage' claims without proper 11.17% random baseline comparison."
+        ]
+    },
+    "lessons_learned": "Cold-rebound clusters (Gap Pressure) lack simultaneous occurrence probability. Forcing co-occurrence on long-overdue numbers creates a negative-sum selection bias."
+}

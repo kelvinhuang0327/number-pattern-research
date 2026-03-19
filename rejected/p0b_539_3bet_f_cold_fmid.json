@@ -1,0 +1,51 @@
+{
+  "strategy_name": "539 P0-B 3注 F500Top5 + Cold100Top5 + Fmid21-25",
+  "date_tested": "2026-02-27",
+  "research_context": "115000051期 [3,6,9,31,39] — #31 F_rank22 結構性盲區修補研究",
+  "decision": "REJECT",
+  "rejection_reason": "Permutation Signal Edge = -0.976%（負），三窗口全正來自非重疊分布偏好(+2.13%)而非時序信號。Fmid rank21-25 作為第3注稀釋覆蓋效益而非提升。",
+
+  "three_window_m2_edge": {
+    "150p": "+3.56%",
+    "500p": "+1.16%",
+    "1500p": "+3.82% (z=3.22)"
+  },
+  "permutation_test": {
+    "actual_m2": "31.60%",
+    "shuffle_mean": "32.58%",
+    "shuffle_bias": "+2.133%",
+    "signal_edge": "-0.976%",
+    "p_empirical": 0.7114,
+    "cohen_d": -0.47,
+    "result": "NO_SIGNAL"
+  },
+
+  "key_insight": {
+    "non_overlap_baseline": "非重疊3注(15 unique)的真實基準 ≈ 32.58%（比理論30.44%高+2.13%）。這是幾何覆蓋效益，不是時序信號。三窗口全正數字誤導性地看起來正面，但 Signal Edge 為負。",
+    "fmid_effect": "加入 Fmid rank21-25 後 M2+ = 31.60%，比 3bet_F_only (32.60%) 和 3bet_F_Cold_only (35.60%) 都低。Fmid 注3 稀釋了有效信號。",
+    "rank22_is_noise": "本研究結論: #31(rank 22) 是單期的統計噪音，不代表 Fmid 區有可操作信號。"
+  },
+
+  "comparison": {
+    "3bet_F_only_1500p_edge": "+4.49% (z=3.78) — 純Fourier 3注比主策略更強",
+    "3bet_F_Cold_only_1500p_edge": "+5.16% (z=4.34) — 最強，值得後續permutation研究",
+    "3bet_F_Cold_Fmid_1500p_edge": "+3.82% (z=3.22) — 最弱"
+  },
+
+  "unexpected_finding": {
+    "description": "3bet_F_Cold_only (F500Top5 + Cold1~5 + Cold6~10 正交) 1500p Edge最高+5.16% (z=4.34)",
+    "true_signal_edge": "需permutation驗證: 35.60% vs shuffle均值~32.58% = 真實 +3.02%?",
+    "recommendation": "可作為新研究方向P0-C: 3bet_F_Cold_only permutation test"
+  },
+
+  "lessons_learned": {
+    "L_P0B_A": "非重疊N注策略的正確基準是隨機非重疊 baseline，不是理論獨立基準。必須用 permutation 確認 Signal Edge > 0。",
+    "L_P0B_B": "單期檢討識別的盲區（#31 rank22）是噪音事件，不代表 Fmid 域有可操作信號。不應因單期誤差修改策略架構。",
+    "L_P0B_C": "3注中加入 Fmid(rank21-25) 稀釋有效信號（Fourier Top5 + Cold）。互補性假設需要 1500期驗證，不可憑直覺設計。"
+  },
+
+  "retest_conditions": "暫停研究。原因：Fmid 注3 的 Signal Edge 精確為負。重啟條件：未來 #31 類號碼在 rank 21-25 出現頻率明顯升高（>5期/100期），或發現新的中頻信號提取方法。",
+
+  "backtest_script": "tools/backtest_539_3bet_f_cold_fmid.py",
+  "results_file": "backtest_539_3bet_f_cold_fmid_results.json"
+}

@@ -1,0 +1,26 @@
+name: TS3+Markov(w=30) 4注
+lottery: BIG_LOTTO
+bets: 4
+status: ACTIVE
+adopted_date: "2026-02-24"
+
+description: |
+  Triple Strike v2 (注1-3) 加上 Markov 正交注 (注4)。
+  四注不重疊，含 Sum-Range Constraint v2。
+
+bets_design:
+  bet1:
+    method: Fourier Rhythm
+    params: {window: 500}
+  bet2:
+    method: Sum-Constrained Cold
+    params: {window: 100, pool_size: 12, use_sum_constraint: true}
+  bet3:
+    method: Tail Balance
+    params: {window: 100}
+  bet4:
+    method: Markov Orthogonal
+    params: {markov_window: 30}
+    note: 必須用 w=30，Markov(w=100) 邊際降至+1.17%
+
+script: tools/backtest_biglotto_markov_4bet.py

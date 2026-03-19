@@ -1,0 +1,63 @@
+{
+  "timestamp": "2026-03-14T17:32:56.303860",
+  "description": "Zone Cascade Guard + Hot-Streak Override Full Validation",
+  "lottery_type": "BIG_LOTTO",
+  "total_draws": 2116,
+  "start_idx": 200,
+  "results": {
+    "2bet": {
+      "rate_no_guards": 0.044363256784968684,
+      "rate_guards": 0.04175365344467641,
+      "edge_no_guards": 0.7463256784968682,
+      "edge_guards": 0.4853653444676406,
+      "three_window_no": {
+        "150p": 0.30999999999999983,
+        "500p": -0.8900000000000001,
+        "1500p": 0.2433333333333329
+      },
+      "three_window_yes": {
+        "150p": 1.6433333333333335,
+        "500p": -0.49000000000000016,
+        "1500p": 0.30999999999999983
+      },
+      "three_window_pass": false,
+      "z_score": 1.1269837187249978,
+      "p_value": 0.1298746823861014,
+      "perm_p": 0.13432835820895522,
+      "sharpe": 0.02426514757239772,
+      "oos_avg_edge": 0.48754569190600505,
+      "oos_all_pos": false,
+      "mcnemar_chi2": 0.45714285714285713,
+      "mcnemar_p": 0.2494811493018805,
+      "strategy_score": 0.0,
+      "verdict": "REJECTED"
+    },
+    "3bet": {
+      "rate_no_guards": 0.06210855949895616,
+      "rate_guards": 0.060542797494780795,
+      "edge_no_guards": 0.7208559498956164,
+      "edge_guards": 0.5642797494780798,
+      "three_window_no": {
+        "150p": 1.1766666666666667,
+        "500p": -0.6899999999999996,
+        "1500p": 0.2433333333333336
+      },
+      "three_window_yes": {
+        "150p": 5.176666666666668,
+        "500p": 0.51,
+        "1500p": 0.4433333333333338
+      },
+      "three_window_pass": true,
+      "z_score": 1.0843442064696167,
+      "p_value": 0.13910610585692543,
+      "perm_p": 0.16417910447761194,
+      "sharpe": 0.023660543825102957,
+      "oos_avg_edge": 0.5674412532637084,
+      "oos_all_pos": false,
+      "mcnemar_chi2": 0.06779661016949153,
+      "mcnemar_p": 0.3972861743116396,
+      "strategy_score": 0.0,
+      "verdict": "REJECTED"
+    }
+  }
+}

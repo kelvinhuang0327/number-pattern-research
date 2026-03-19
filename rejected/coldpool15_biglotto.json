@@ -1,0 +1,34 @@
+{
+  "strategy_name": "coldpool15_biglotto",
+  "lottery_type": "BIG_LOTTO",
+  "date_rejected": "2026-03-03",
+  "triggered_by": "115000031期 #28 被pool=12+Sum約束排除; 026期遺留待辦事項",
+  "verdict": "REJECT — pool=15 劣於 pool=12",
+  "reason": "三窗口全部劣化: 150p=-2.67%, 500p=-1.20%, 1500p=-0.73%。pool=15的C(15,6)=5005組合搜索空間雖更大，但Sum約束反而選到冷號排名更高但期望更低的號碼。McNemar b=30>c=19 (pool=12獨有命中更多)，維持pool=12。",
+  "comparison": {
+    "pool_12": {
+      "window_150": "+4.37%",
+      "window_500": "+2.84%",
+      "window_1500": "+2.64%",
+      "z_1500": "+3.58",
+      "p_1500": "0.0002"
+    },
+    "pool_15": {
+      "window_150": "+1.71%",
+      "window_500": "+1.64%",
+      "window_1500": "+1.91%",
+      "z_1500": "+2.59",
+      "p_1500": "0.0049"
+    },
+    "delta_1500": "-0.73%",
+    "mcnemar_b": 30,
+    "mcnemar_c": 19,
+    "mcnemar_net": -11,
+    "mcnemar_p": "0.1531"
+  },
+  "analysis": "pool=15的更大搜索空間使Sum約束選到次優號碼。冷號排名12-15的號碼雖然更冷，但因Sum約束需要找到6個號碼的組合，更多組合選項反而允許選入冷號強度較低的號碼組合。原始pool=12的約束性更強，迫使Sum優化選取前12最冷號碼，邊際信號更純。",
+  "lesson": "L53: 擴大冷號池(12→15)在Sum約束框架下反效果。更大搜索空間≠更好選擇；Sum約束在小池中更精準。單期事件(#28被排除)是正常統計噪音，不應觸發pool_size調整。pool=12維持不變。",
+  "future_test_condition": "若連續20期確認pool=12的bet2命中率低於pool=12歷史平均-2σ，可重新測試。",
+  "current_strategy": "維持 quick_predict.py _bl_cold_sum_fixed(pool_size=12)",
+  "script": "tools/backtest_biglotto_coldpool_15.py"
+}

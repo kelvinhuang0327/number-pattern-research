@@ -1,0 +1,215 @@
+{
+  "BIG_LOTTO": {
+    "assumptions": {
+      "n_simulations": 1000000,
+      "initial_bankroll": 100000.0,
+      "seed": 42,
+      "note": "Edge-adjusted Monte Carlo built on top of current strategy-state hit-rate estimates"
+    },
+    "strategies": {
+      "prediction_only": {
+        "expected_profit_per_draw": -78.2038,
+        "variance": 12308.4027,
+        "max_drawdown": 0.7825,
+        "time_to_ruin": null,
+        "risk_of_ruin": 0.0,
+        "survival_probability": 1.0,
+        "payout_per_hit": 71.29,
+        "hit_rate": 0.324441,
+        "total_ticket_cost": 150.0,
+        "simulations": 1000000,
+        "paths": 1000,
+        "horizon_per_path": 1000
+      },
+      "prediction_plus_anti_crowd": {
+        "expected_profit_per_draw": 287.5811,
+        "variance": 133836170131.3442,
+        "max_drawdown": 0.7826,
+        "time_to_ruin": null,
+        "risk_of_ruin": 0.0,
+        "survival_probability": 1.0,
+        "payout_per_hit": 1199.46,
+        "hit_rate": 0.324265,
+        "total_ticket_cost": 150.0,
+        "simulations": 1000000,
+        "paths": 1000,
+        "horizon_per_path": 1000
+      },
+      "prediction_plus_payout_optimization": {
+        "expected_profit_per_draw": 303.3319,
+        "variance": 145678968117.5461,
+        "max_drawdown": 0.7832,
+        "time_to_ruin": null,
+        "risk_of_ruin": 0.0,
+        "survival_probability": 1.0,
+        "payout_per_hit": 1248.68,
+        "hit_rate": 0.324113,
+        "total_ticket_cost": 150.0,
+        "simulations": 1000000,
+        "paths": 1000,
+        "horizon_per_path": 1000
+      },
+      "optimized_portfolio": {
+        "expected_profit_per_draw": 0.0,
+        "variance": 0.0,
+        "max_drawdown": 0.0,
+        "time_to_ruin": null,
+        "risk_of_ruin": 0.0,
+        "survival_probability": 1.0,
+        "payout_per_hit": 0.0,
+        "hit_rate": 0.0,
+        "total_ticket_cost": 0.0,
+        "simulations": 1000000,
+        "paths": 1000,
+        "horizon_per_path": 1000
+      }
+    },
+    "winners": {
+      "highest_expected_profit_per_draw": "prediction_plus_payout_optimization",
+      "best_long_term_survival": "prediction_only",
+      "highest_payout_per_hit": "prediction_plus_payout_optimization"
+    }
+  },
+  "POWER_LOTTO": {
+    "assumptions": {
+      "n_simulations": 1000000,
+      "initial_bankroll": 100000.0,
+      "seed": 42,
+      "note": "Edge-adjusted Monte Carlo built on top of current strategy-state hit-rate estimates"
+    },
+    "strategies": {
+      "prediction_only": {
+        "expected_profit_per_draw": -8.9771,
+        "variance": 3962740760.9904,
+        "max_drawdown": 0.7236,
+        "time_to_ruin": null,
+        "risk_of_ruin": 0.0,
+        "survival_probability": 1.0,
+        "payout_per_hit": 308.96,
+        "hit_rate": 0.477903,
+        "total_ticket_cost": 300.0,
+        "simulations": 1000000,
+        "paths": 1000,
+        "horizon_per_path": 1000
+      },
+      "prediction_plus_anti_crowd": {
+        "expected_profit_per_draw": -24.3676,
+        "variance": 2264654882.089,
+        "max_drawdown": 0.7244,
+        "time_to_ruin": null,
+        "risk_of_ruin": 0.0,
+        "survival_probability": 1.0,
+        "payout_per_hit": 276.83,
+        "hit_rate": 0.477839,
+        "total_ticket_cost": 300.0,
+        "simulations": 1000000,
+        "paths": 1000,
+        "horizon_per_path": 1000
+      },
+      "prediction_plus_payout_optimization": {
+        "expected_profit_per_draw": 115.6294,
+        "variance": 11792981743.1366,
+        "max_drawdown": 0.728,
+        "time_to_ruin": null,
+        "risk_of_ruin": 0.0,
+        "survival_probability": 1.0,
+        "payout_per_hit": 570.83,
+        "hit_rate": 0.47728,
+        "total_ticket_cost": 300.0,
+        "simulations": 1000000,
+        "paths": 1000,
+        "horizon_per_path": 1000
+      },
+      "optimized_portfolio": {
+        "expected_profit_per_draw": 0.0,
+        "variance": 0.0,
+        "max_drawdown": 0.0,
+        "time_to_ruin": null,
+        "risk_of_ruin": 0.0,
+        "survival_probability": 1.0,
+        "payout_per_hit": 0.0,
+        "hit_rate": 0.0,
+        "total_ticket_cost": 0.0,
+        "simulations": 1000000,
+        "paths": 1000,
+        "horizon_per_path": 1000
+      }
+    },
+    "winners": {
+      "highest_expected_profit_per_draw": "prediction_plus_payout_optimization",
+      "best_long_term_survival": "prediction_only",
+      "highest_payout_per_hit": "prediction_plus_payout_optimization"
+    }
+  },
+  "DAILY_539": {
+    "assumptions": {
+      "n_simulations": 1000000,
+      "initial_bankroll": 100000.0,
+      "seed": 42,
+      "note": "Edge-adjusted Monte Carlo built on top of current strategy-state hit-rate estimates"
+    },
+    "strategies": {
+      "prediction_only": {
+        "expected_profit_per_draw": 88.3212,
+        "variance": 6174903.0565,
+        "max_drawdown": 0.0063,
+        "time_to_ruin": null,
+        "risk_of_ruin": 0.0,
+        "survival_probability": 1.0,
+        "payout_per_hit": 153.87,
+        "hit_rate": 0.784278,
+        "total_ticket_cost": 150.0,
+        "simulations": 1000000,
+        "paths": 1000,
+        "horizon_per_path": 1000
+      },
+      "prediction_plus_anti_crowd": {
+        "expected_profit_per_draw": 92.4572,
+        "variance": 12257512.1494,
+        "max_drawdown": 0.0064,
+        "time_to_ruin": null,
+        "risk_of_ruin": 0.0,
+        "survival_probability": 1.0,
+        "payout_per_hit": 159.12,
+        "hit_rate": 0.784343,
+        "total_ticket_cost": 150.0,
+        "simulations": 1000000,
+        "paths": 1000,
+        "horizon_per_path": 1000
+      },
+      "prediction_plus_payout_optimization": {
+        "expected_profit_per_draw": 103.8486,
+        "variance": 33130904.7307,
+        "max_drawdown": 0.0064,
+        "time_to_ruin": null,
+        "risk_of_ruin": 0.0,
+        "survival_probability": 1.0,
+        "payout_per_hit": 174.02,
+        "hit_rate": 0.783436,
+        "total_ticket_cost": 150.0,
+        "simulations": 1000000,
+        "paths": 1000,
+        "horizon_per_path": 1000
+      },
+      "optimized_portfolio": {
+        "expected_profit_per_draw": 0.0,
+        "variance": 0.0,
+        "max_drawdown": 0.0,
+        "time_to_ruin": null,
+        "risk_of_ruin": 0.0,
+        "survival_probability": 1.0,
+        "payout_per_hit": 0.0,
+        "hit_rate": 0.0,
+        "total_ticket_cost": 0.0,
+        "simulations": 1000000,
+        "paths": 1000,
+        "horizon_per_path": 1000
+      }
+    },
+    "winners": {
+      "highest_expected_profit_per_draw": "prediction_plus_payout_optimization",
+      "best_long_term_survival": "prediction_only",
+      "highest_payout_per_hit": "prediction_plus_payout_optimization"
+    }
+  }
+}

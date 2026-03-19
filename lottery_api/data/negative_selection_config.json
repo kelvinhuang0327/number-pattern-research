@@ -1,0 +1,56 @@
+{
+  "BIG_LOTTO": {
+    "cold_window": 120,
+    "cold_percentile": 25,
+    "overdue_window": 40,
+    "overdue_threshold": 10,
+    "recent_window": 15,
+    "recent_min_count": 1,
+    "strategy": "intersection",
+    "smart_rule_gap": 20,
+    "max_number": 49,
+    "backtest_accuracy": 88.6,
+    "backtest_avg_exclude": 4.6,
+    "recommended_kill_count": 5,
+    "kill_10_risk": 72.9,
+    "notes": "Kill-5 推薦，Kill-10 錯殺風險過高"
+  },
+  "POWER_LOTTO": {
+    "cold_window": 100,
+    "cold_percentile": 20,
+    "overdue_window": 40,
+    "overdue_threshold": 12,
+    "recent_window": 15,
+    "recent_min_count": 1,
+    "strategy": "intersection",
+    "smart_rule_gap": 15,
+    "max_number": 38,
+    "backtest_accuracy": 88.0,
+    "backtest_avg_exclude": 4.0,
+    "recommended_kill_count": 4,
+    "notes": "估計值，待驗證"
+  },
+  "DAILY_539": {
+    "cold_window": 100,
+    "cold_percentile": 20,
+    "overdue_window": 50,
+    "overdue_threshold": 15,
+    "recent_window": 20,
+    "recent_min_count": 2,
+    "strategy": "union_partial",
+    "smart_rule_gap": 20,
+    "max_number": 39,
+    "backtest_accuracy": 86.0,
+    "backtest_avg_exclude": 5.0,
+    "recommended_kill_count": 5,
+    "notes": "估計值，待驗證"
+  },
+  "validation_date": "2026-01-02",
+  "gemini_phase3_validation": {
+    "claimed_win_rate": 10.17,
+    "our_verification": 6.78,
+    "conclusion": "無法復現",
+    "kill_10_risk": 72.9,
+    "smart_rule_effect": "有限"
+  }
+}

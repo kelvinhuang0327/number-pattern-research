@@ -1,0 +1,48 @@
+{
+  "strategy_name": "shlc_midfreq_indicator_power",
+  "lottery": "POWER_LOTTO",
+  "proposed_date": "2026-03-03",
+  "rejected_date": "2026-03-03",
+  "source": "115000018期P18檢討 — #11 rank_100=5 rank_500=34 矛盾信號",
+  "hypothesis": "SHLC = rank_500/rank_100 > 3.0 的號碼 (近期升溫) 有momentum信號",
+  "implementation": "SHLC Top-6 作為 PP3 注2替換 (取代Fourier 7-12)",
+
+  "backtest_results": {
+    "SHLC_1bet_standalone": {
+      "150p_edge": "+0.13%", "500p_edge": "+0.53%", "1500p_edge": "-0.07%",
+      "three_window_pass": false,
+      "perm_p": 0.595, "verdict": "NO_SIGNAL"
+    },
+    "PP3_orig_baseline": {
+      "150p_edge": "+3.50%", "500p_edge": "+2.23%", "1500p_edge": "+2.23%"
+    },
+    "PP3_plus_SHLC_bet2": {
+      "150p_edge": "+4.17%", "500p_edge": "+2.83%", "1500p_edge": "+1.90%",
+      "three_window_pass": true,
+      "perm_p": 0.060, "verdict": "MARGINAL",
+      "vs_PP3_orig_1500p": "-0.33% (惡化)",
+      "mcnemar_net": "+5", "mcnemar_p": 0.758, "mcnemar_significant": false
+    },
+    "shlc_signal_analysis": {
+      "shlc_top10_avg_hits": 1.576,
+      "random_top10_avg_hits": 1.569,
+      "signal_lift": "+0.4% (可忽略)"
+    }
+  },
+
+  "failure_reasons": [
+    "SHLC_1bet 1500p Edge=-0.07% 為負, 三窗口不全正 → 無信號",
+    "PP3+SHLC_bet2 1500p Edge=+1.90% 低於 PP3_orig +2.23% (-0.33% 惡化)",
+    "SHLC Top-10 信號增益僅+0.4%, 幾乎等於隨機",
+    "PP3 Fourier 7-12 提供比 SHLC 更好的互補覆蓋",
+    "P18 #11 是單一案例 (n=1), 依L12: 單期觀測不可作為策略依據"
+  ],
+
+  "lessons_confirmed": [
+    "L12: 單一案例不觸發策略設計 (#11 矛盾信號是倖存者偏差)",
+    "L21: 信號需在本彩種完整驗證才可採納",
+    "PP3 的 Fourier 7-12 是有效的正交補充, 不應被替換"
+  ],
+
+  "future_retesting_conditions": "若 SHLC 信號 (1000期) Signal Edge > +1.5% 且 perm p < 0.05, 可重新考慮. 目前完全無信號 (p=0.595)"
+}

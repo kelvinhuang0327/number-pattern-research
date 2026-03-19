@@ -1,0 +1,86 @@
+{
+  "DAILY_539": {
+    "game": "DAILY_539",
+    "n_oos_draws": 218,
+    "flat_roi_pct": -159.17,
+    "flat_sharpe": -1.7885,
+    "best_boundaries": [
+      40,
+      45,
+      50
+    ],
+    "tier_strategy_map": {
+      "tier0_skip": "(skip)",
+      "tier1": "acb_1bet",
+      "tier2": "midfreq_acb_2bet",
+      "tier3": "acb_markov_midfreq_3bet"
+    },
+    "best_metrics": {
+      "roi": -1.4961,
+      "roi_pct": -149.61,
+      "sharpe": -0.6615,
+      "max_drawdown_draws": 61,
+      "skip_rate": 0.541,
+      "sharpe_vs_flat": 1.127,
+      "roi_vs_flat_pct": 9.57,
+      "edge_per_bet": 0.132,
+      "edge_vs_flat": 0.0309
+    }
+  },
+  "BIG_LOTTO": {
+    "game": "BIG_LOTTO",
+    "n_oos_draws": 203,
+    "flat_roi_pct": -213.3,
+    "flat_sharpe": -0.6036,
+    "best_boundaries": [
+      40,
+      45,
+      60
+    ],
+    "tier_strategy_map": {
+      "tier0_skip": "(skip)",
+      "tier1": "regime_2bet",
+      "tier2": "ts3_regime_3bet",
+      "tier3": "p1_dev_sum5bet"
+    },
+    "best_metrics": {
+      "roi": -0.9787,
+      "roi_pct": -97.87,
+      "sharpe": -0.2018,
+      "max_drawdown_draws": 42,
+      "skip_rate": 0.655,
+      "sharpe_vs_flat": 0.4018,
+      "roi_vs_flat_pct": 115.43,
+      "edge_per_bet": 0.0537,
+      "edge_vs_flat": 0.0199
+    }
+  },
+  "POWER_LOTTO": {
+    "game": "POWER_LOTTO",
+    "n_oos_draws": 201,
+    "flat_roi_pct": -364.18,
+    "flat_sharpe": -2.8587,
+    "best_boundaries": [
+      50,
+      75,
+      80
+    ],
+    "tier_strategy_map": {
+      "tier0_skip": "(skip)",
+      "tier1": "fourier_rhythm_3bet",
+      "tier2": "pp3_freqort_4bet",
+      "tier3": "orthogonal_5bet"
+    },
+    "best_metrics": {
+      "roi": -1.1643,
+      "roi_pct": -116.43,
+      "sharpe": -0.5605,
+      "max_drawdown_draws": 195,
+      "skip_rate": 0.687,
+      "sharpe_vs_flat": 2.2982,
+      "roi_vs_flat_pct": 247.75,
+      "edge_per_bet": 0.1248,
+      "edge_vs_flat": 0.0867
+    }
+  }
+}

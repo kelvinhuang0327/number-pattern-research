@@ -1,0 +1,22 @@
+name: Power Precision (F2+Echo/Cold) 3注
+lottery: POWER_LOTTO
+bets: 3
+status: ACTIVE
+adopted_date: "2026-02-12"
+
+description: |
+  Fourier + Echo-aware + 冷號 三注組合。三窗口全正，STABLE 模式。
+
+bets_design:
+  bet1:
+    method: Fourier Rhythm (F2)
+    logic: FFT 週期分析（威力彩版本）
+  bet2:
+    method: Echo-aware
+    logic: 回聲加分，N-2期出現號碼加權
+    params: {echo_window: 2}
+  bet3:
+    method: Cold Complement
+    logic: 冷號均值回歸
+
+script: tools/predict_power_precision_3bet.py

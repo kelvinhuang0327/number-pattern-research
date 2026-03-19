@@ -1,0 +1,76 @@
+{
+    "BIG_LOTTO": {
+        "name": "大樂透",
+        "minNumber": 1,
+        "maxNumber": 49,
+        "pickCount": 6,
+        "hasSpecialNumber": true,
+        "specialMinNumber": 1,
+        "specialMaxNumber": 49
+    },
+    "POWER_LOTTO": {
+        "name": "威力彩",
+        "minNumber": 1,
+        "maxNumber": 38,
+        "pickCount": 6,
+        "hasSpecialNumber": true,
+        "specialMinNumber": 1,
+        "specialMaxNumber": 8
+    },
+    "DAILY_539": {
+        "name": "今彩539",
+        "minNumber": 1,
+        "maxNumber": 39,
+        "pickCount": 5,
+        "hasSpecialNumber": false
+    },
+    "DOUBLE_WIN": {
+        "name": "雙贏彩",
+        "minNumber": 1,
+        "maxNumber": 24,
+        "pickCount": 12,
+        "hasSpecialNumber": false
+    },
+    "3_STAR": {
+        "name": "3星彩",
+        "minNumber": 0,
+        "maxNumber": 9,
+        "pickCount": 3,
+        "hasSpecialNumber": false,
+        "repeatsAllowed": true,
+        "isPermutation": true
+    },
+    "4_STAR": {
+        "name": "4星彩",
+        "minNumber": 0,
+        "maxNumber": 9,
+        "pickCount": 4,
+        "hasSpecialNumber": false,
+        "repeatsAllowed": true,
+        "isPermutation": true
+    },
+    "38_LOTTO": {
+        "name": "38樂合彩",
+        "minNumber": 1,
+        "maxNumber": 38,
+        "pickCount": 6,
+        "hasSpecialNumber": false,
+        "note": "Uses POWER_LOTTO numbers"
+    },
+    "39_LOTTO": {
+        "name": "39樂合彩",
+        "minNumber": 1,
+        "maxNumber": 39,
+        "pickCount": 5,
+        "hasSpecialNumber": false,
+        "note": "Uses DAILY_539 numbers"
+    },
+    "49_LOTTO": {
+        "name": "49樂合彩",
+        "minNumber": 1,
+        "maxNumber": 49,
+        "pickCount": 6,
+        "hasSpecialNumber": false,
+        "note": "Uses BIG_LOTTO numbers"
+    }
+}

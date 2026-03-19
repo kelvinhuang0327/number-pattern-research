@@ -1,0 +1,18 @@
+{
+    "strategy_id": "sgp_v9_apex",
+    "status": "REJECTED",
+    "reject_date": "2026-02-24",
+    "critique": {
+        "primary_failure": "Aggressive negative edge in 3-bet ensemble (-37% vs Random).",
+        "m3_plus_performance": {
+            "1388_draws": "7.0% (Theo: 11.17%, Edge: -37.3%)"
+        },
+        "design_flaw": "Correlated error domain (Fourier Rank duplication). Bet1 and Bet2 failed simultaneously, similar to 'Core-Satellite' error.",
+        "methodology_dishonesty": [
+            "Misreported Power Precision p-value (claimed 0.100, actual 0.015).",
+            "Used reduced window N=1388 instead of full database N=1888.",
+            "Selective performance claiming (highlighting single-bet marginal signal while hiding ensemble total failure)."
+        ]
+    },
+    "lessons_learned": "Ensemble design must ensure signal diversity. High-lift synergy does not compensate for correlated baseline failures. SGP Gap Pressure is only viable as a supplementary signal for the 3rd bet of a robust anchor strategy (PP3)."
+}

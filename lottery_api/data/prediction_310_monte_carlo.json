@@ -1,0 +1,41 @@
+{
+  "draw": "114000310",
+  "prediction_date": "2025-12-24",
+  "method": "Monte Carlo Simulation",
+  "simulations": 10000,
+  "prediction": {
+    "numbers": [
+      33,
+      34,
+      36,
+      38,
+      39
+    ],
+    "odd_count": 2,
+    "score": 95.20833333333334,
+    "details": {
+      "odd_even": 100,
+      "probability": 100,
+      "anti_consensus": 86.66666666666667,
+      "diversity": 80,
+      "interval": 98.75
+    },
+    "consensus_score": 40
+  },
+  "alternatives": {
+    "anti_consensus": [
+      13,
+      32,
+      34,
+      36,
+      38
+    ],
+    "with_hot_28": [
+      13,
+      28,
+      32,
+      36,
+      38
+    ]
+  }
+}

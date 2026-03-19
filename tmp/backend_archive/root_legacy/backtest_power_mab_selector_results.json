@@ -1,0 +1,59 @@
+{
+  "strategy": "mab_thompson_bet_selector",
+  "draw_count": 1888,
+  "seed": 42,
+  "burn_in": 200,
+  "n_bets": 3,
+  "windows": {
+    "mab": {
+      "150": 0.03500177606366678,
+      "500": 0.006335109397000105,
+      "1500": 0.011001776063666771
+    },
+    "pp3": {
+      "150": 0.03500177606366678,
+      "500": 0.02233510939700012,
+      "1500": 0.02233510939700012
+    }
+  },
+  "arm_selection": {
+    "E_freq_ort": 1162,
+    "C_echo_cold": 1003,
+    "D_cold_sum": 543,
+    "B_fourier2": 1028,
+    "A_fourier1": 1328
+  },
+  "arm_success": {
+    "D_cold_sum": 15,
+    "A_fourier1": 55,
+    "C_echo_cold": 44,
+    "E_freq_ort": 51,
+    "B_fourier2": 40
+  },
+  "final_beta": {
+    "A_fourier1": {
+      "alpha": 56.0,
+      "beta": 1274.0
+    },
+    "B_fourier2": {
+      "alpha": 41.0,
+      "beta": 989.0
+    },
+    "C_echo_cold": {
+      "alpha": 45.0,
+      "beta": 960.0
+    },
+    "D_cold_sum": {
+      "alpha": 16.0,
+      "beta": 529.0
+    },
+    "E_freq_ort": {
+      "alpha": 52.0,
+      "beta": 1112.0
+    }
+  },
+  "mcnemar_p": 0.30469485166559657,
+  "mcnemar_net": -17,
+  "three_window": "PASS",
+  "improvement_vs_pp3": -0.011333333333333348
+}

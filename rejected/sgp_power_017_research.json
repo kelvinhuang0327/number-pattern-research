@@ -1,0 +1,82 @@
+{
+  "session": "115000017期威力彩檢討研究",
+  "date": "2026-02-27",
+  "draw": "115000017",
+  "actual": [3, 19, 27, 30, 37, 38],
+  "special": 2,
+  "experiments": {
+    "P0A_echo_lag3": {
+      "idea": "Echo從lag-2擴展至lag-2∪lag-3，捕獲#38(出現在lag-3=014期)",
+      "result": {
+        "150p": "+2.17% (vs PP3 +3.50%，劣化-1.33pp)",
+        "500p": "+2.43% (vs PP3 +2.23%，改善+0.20pp)",
+        "1500p": "+2.37% (vs PP3 +2.23%，改善+0.14pp)",
+        "perm_p": 0.015,
+        "mcnemar_net": -2,
+        "mcnemar_p": 0.9142
+      },
+      "verdict": "REJECT — 150p劣化 -1.33pp，短期信號損害PP3穩健性；McNemar不顯著",
+      "reason": "lag-3增加候選池使注3選號更分散，而非更精確；150p劣化違反三窗口全正要求（vs基準）",
+      "future_condition": "若可設計lag-3選擇條件（如前期特定Zone or Sum偏高時才啟用lag-3），可考慮重測"
+    },
+    "P0B_sum_regime": {
+      "idea": "近30期Sum均值偏高時動態調整Sum-Constraint目標至偏高區間",
+      "result": {
+        "150p": "+3.50% (不變)",
+        "500p": "+1.43% (vs PP3 +2.23%，劣化-0.80pp)",
+        "1500p": "+2.03% (vs PP3 +2.23%，劣化-0.20pp)",
+        "perm_p": 0.025,
+        "regime_dist": {"NEUTRAL": "89.4%", "LOW": "7.3%", "HIGH": "3.3%"},
+        "mcnemar_net": 3,
+        "mcnemar_p": 0.8099
+      },
+      "verdict": "REJECT — 1500p劣化，HIGH Regime僅3.3%(50期)，信號太稀疏無法形成穩定優勢",
+      "reason": "Regime樣本數不足：50期HIGH, 109期LOW；條件切換引入過多不一致性",
+      "future_condition": "若數據增加至3000期以上，且HIGH Regime期數>150時，可重新評估"
+    },
+    "P1A_ort5_refined": {
+      "idea": "5注正交注4改用Fourier殘差×Freq殘差×gap<7三域交集評分",
+      "result": {
+        "150p": "+6.76% (vs Ort5原 +5.42%，改善+1.34pp)",
+        "500p": "+2.49% (vs Ort5原 +2.29%，改善+0.20pp)",
+        "1500p": "+3.02% (vs Ort5原 +2.62%，改善+0.40pp)",
+        "perm_p": 0.050,
+        "mcnemar_net": -6,
+        "mcnemar_p": 0.6173
+      },
+      "verdict": "MARGINAL — 三窗口全正且全部改善，perm p=0.050剛好達標，但McNemar不顯著(net=-6)",
+      "reason": "改善幅度+0.40%有統計意義但McNemar不顯著說明個別期比較不穩定；150p改善最顯著",
+      "future_condition": "PROVISIONAL採納：監控200期後重驗。若RSM 100期 Edge>+3.5%，可正式採納替換原版注4"
+    },
+    "P1B_wavelet": {
+      "idea": "用PyWavelets CWT替換scipy FFT，捕獲短期局部週期",
+      "result": "未完成 — 計算量過大(38號×500期×1500回測≈2800萬FFT，單次>25分鐘)",
+      "verdict": "INFEASIBLE — 計算成本是FFT的~60倍，無法用於實時預測或完整回測",
+      "reason": "CWT時間複雜度O(N×W×S)，S=scales數量，遠大於FFT O(N×W×logW)",
+      "future_condition": "若改用GPU加速(CuPy)或限制scale範圍到[4,16]，可在5分鐘內完成；目前不可行"
+    },
+    "P2_mab_bet_selector": {
+      "idea": "Thompson Sampling在注配置層面選arm(5種注策略)，動態調整組合",
+      "result": {
+        "150p": "+3.50% (不變)",
+        "500p": "+0.63% (vs PP3 +2.23%，劣化-1.60pp)",
+        "1500p": "+1.10% (vs PP3 +2.23%，劣化-1.13pp)",
+        "arm_success_rates": {"A_fourier1": "4.1%", "B_fourier2": "3.9%", "C_echo_cold": "4.4%", "D_cold_sum": "2.8%", "E_freq_ort": "4.4%"},
+        "mcnemar_net": -17,
+        "mcnemar_p": 0.3047
+      },
+      "verdict": "REJECT — 劣化-1.13%，各arm成功率差距太小(2.8%~4.4%)無法有效分辨",
+      "reason": "信號稀疏問題：M3+發生率~4%，1888期中每個arm被選~1000次才有~40次成功，Beta分佈無法收斂至有意義差異",
+      "future_condition": "若M3+發生率提升至>8%，或總樣本數>5000期，MAB才有足夠訊噪比；目前不可行"
+    }
+  },
+  "key_findings": {
+    "117_draw_analysis": {
+      "sum_anomaly": "Sum=154 Z=+1.52，超出所有Sum-Constraint框架目標[104,129]",
+      "z3_concentration": "Z3=4 (5.5%機率)，本期4個號碼集中在27-38區間",
+      "blind_spots": "#3(Fourier排名33/38) + #38(中間地帶，無任何方法Top-12覆蓋)",
+      "best_method_pool": "Fourier Top-15命中3/6{27,30,37}，冷號Top-15命中3/6{19,27,30}",
+      "special_number": "#2 V3模型排名第1 ✅ 命中"
+    }
+  }
+}

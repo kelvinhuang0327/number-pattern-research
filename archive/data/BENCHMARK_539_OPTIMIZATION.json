@@ -1,0 +1,200 @@
+{
+  "test_date": "2025-12-26",
+  "lottery_type": "DAILY_539",
+  "detailed_results": {
+    "區域平衡預測": [
+      {
+        "window_size": 50,
+        "test_count": 100,
+        "avg_matches": 0.55,
+        "win_rate_3plus": 0.0,
+        "win_rate_2plus": 0.08,
+        "win_count_3plus": 0
+      },
+      {
+        "window_size": 100,
+        "test_count": 100,
+        "avg_matches": 0.8,
+        "win_rate_3plus": 0.02,
+        "win_rate_2plus": 0.2,
+        "win_count_3plus": 2
+      },
+      {
+        "window_size": 200,
+        "test_count": 100,
+        "avg_matches": 0.65,
+        "win_rate_3plus": 0.01,
+        "win_rate_2plus": 0.07,
+        "win_count_3plus": 1
+      },
+      {
+        "window_size": 300,
+        "test_count": 100,
+        "avg_matches": 0.66,
+        "win_rate_3plus": 0.01,
+        "win_rate_2plus": 0.09,
+        "win_count_3plus": 1
+      },
+      {
+        "window_size": 500,
+        "test_count": 100,
+        "avg_matches": 0.66,
+        "win_rate_3plus": 0.0,
+        "win_rate_2plus": 0.13,
+        "win_count_3plus": 0
+      }
+    ],
+    "奇偶平衡預測": [
+      {
+        "window_size": 50,
+        "test_count": 100,
+        "avg_matches": 0.65,
+        "win_rate_3plus": 0.02,
+        "win_rate_2plus": 0.13,
+        "win_count_3plus": 2
+      },
+      {
+        "window_size": 100,
+        "test_count": 100,
+        "avg_matches": 0.73,
+        "win_rate_3plus": 0.01,
+        "win_rate_2plus": 0.17,
+        "win_count_3plus": 1
+      },
+      {
+        "window_size": 200,
+        "test_count": 100,
+        "avg_matches": 0.64,
+        "win_rate_3plus": 0.01,
+        "win_rate_2plus": 0.07,
+        "win_count_3plus": 1
+      },
+      {
+        "window_size": 300,
+        "test_count": 100,
+        "avg_matches": 0.66,
+        "win_rate_3plus": 0.01,
+        "win_rate_2plus": 0.1,
+        "win_count_3plus": 1
+      },
+      {
+        "window_size": 500,
+        "test_count": 100,
+        "avg_matches": 0.71,
+        "win_rate_3plus": 0.0,
+        "win_rate_2plus": 0.15,
+        "win_count_3plus": 0
+      }
+    ],
+    "Markov鏈預測": [
+      {
+        "window_size": 50,
+        "test_count": 100,
+        "avg_matches": 0.57,
+        "win_rate_3plus": 0.0,
+        "win_rate_2plus": 0.09,
+        "win_count_3plus": 0
+      },
+      {
+        "window_size": 100,
+        "test_count": 100,
+        "avg_matches": 0.81,
+        "win_rate_3plus": 0.02,
+        "win_rate_2plus": 0.17,
+        "win_count_3plus": 2
+      },
+      {
+        "window_size": 200,
+        "test_count": 100,
+        "avg_matches": 0.65,
+        "win_rate_3plus": 0.02,
+        "win_rate_2plus": 0.12,
+        "win_count_3plus": 2
+      },
+      {
+        "window_size": 300,
+        "test_count": 100,
+        "avg_matches": 0.58,
+        "win_rate_3plus": 0.0,
+        "win_rate_2plus": 0.09,
+        "win_count_3plus": 0
+      },
+      {
+        "window_size": 500,
+        "test_count": 100,
+        "avg_matches": 0.55,
+        "win_rate_3plus": 0.0,
+        "win_rate_2plus": 0.09,
+        "win_count_3plus": 0
+      }
+    ],
+    "統計概率預測": [
+      {
+        "window_size": 50,
+        "test_count": 100,
+        "avg_matches": 0.53,
+        "win_rate_3plus": 0.0,
+        "win_rate_2plus": 0.06,
+        "win_count_3plus": 0
+      },
+      {
+        "window_size": 100,
+        "test_count": 100,
+        "avg_matches": 0.61,
+        "win_rate_3plus": 0.0,
+        "win_rate_2plus": 0.12,
+        "win_count_3plus": 0
+      },
+      {
+        "window_size": 200,
+        "test_count": 100,
+        "avg_matches": 0.64,
+        "win_rate_3plus": 0.0,
+        "win_rate_2plus": 0.13,
+        "win_count_3plus": 0
+      },
+      {
+        "window_size": 300,
+        "test_count": 100,
+        "avg_matches": 0.71,
+        "win_rate_3plus": 0.02,
+        "win_rate_2plus": 0.12,
+        "win_count_3plus": 2
+      },
+      {
+        "window_size": 500,
+        "test_count": 100,
+        "avg_matches": 0.77,
+        "win_rate_3plus": 0.03,
+        "win_rate_2plus": 0.17,
+        "win_count_3plus": 3
+      }
+    ]
+  },
+  "summary": [
+    {
+      "method": "區域平衡預測",
+      "best_window": 100,
+      "avg_matches": 0.8,
+      "win_rate_3plus": 0.02
+    },
+    {
+      "method": "奇偶平衡預測",
+      "best_window": 50,
+      "avg_matches": 0.65,
+      "win_rate_3plus": 0.02
+    },
+    {
+      "method": "Markov鏈預測",
+      "best_window": 100,
+      "avg_matches": 0.81,
+      "win_rate_3plus": 0.02
+    },
+    {
+      "method": "統計概率預測",
+      "best_window": 500,
+      "avg_matches": 0.77,
+      "win_rate_3plus": 0.03
+    }
+  ]
+}

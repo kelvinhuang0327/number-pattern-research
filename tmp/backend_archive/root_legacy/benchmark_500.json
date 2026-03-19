@@ -1,0 +1,28 @@
+{
+    "periods": 500,
+    "duration": 1235.7939813137054,
+    "methods": {
+        "Orthogonal_3Bet": {
+            "hits": 27,
+            "m3": 24,
+            "m4": 3,
+            "m5": 0,
+            "m6": 0
+        },
+        "VAE_Single": {
+            "hits": 8,
+            "m3": 8,
+            "m4": 0,
+            "m5": 0,
+            "m6": 0
+        },
+        "Frequency_Baseline": {
+            "hits": 6,
+            "m3": 6,
+            "m4": 0,
+            "m5": 0,
+            "m6": 0
+        }
+    },
+    "timestamp": "2026-02-08 23:32:39"
+}

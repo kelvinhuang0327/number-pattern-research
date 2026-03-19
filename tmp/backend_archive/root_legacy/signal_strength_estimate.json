@@ -1,0 +1,70 @@
+{
+  "mutual_information": {
+    "window_10": {
+      "mean_mi_bits": 0.000536,
+      "max_mi_bits": 0.002093,
+      "median_mi_bits": 0.000333
+    },
+    "window_20": {
+      "mean_mi_bits": 0.001534,
+      "max_mi_bits": 0.006348,
+      "median_mi_bits": 0.001429
+    },
+    "window_50": {
+      "mean_mi_bits": 0.001706,
+      "max_mi_bits": 0.004133,
+      "median_mi_bits": 0.001377
+    },
+    "window_100": {
+      "mean_mi_bits": 0.00154,
+      "max_mi_bits": 0.003915,
+      "median_mi_bits": 0.001362
+    },
+    "window_200": {
+      "mean_mi_bits": 0.001555,
+      "max_mi_bits": 0.004656,
+      "median_mi_bits": 0.001413
+    }
+  },
+  "entropy_reduction": {
+    "h_baseline_bits": 0.53636,
+    "best_mi_reduction_bits": 0.006348,
+    "reduction_pct": 1.1835
+  },
+  "monte_carlo_baseline": {
+    "n_simulations": 10000,
+    "n_oos": 1817,
+    "mean_rate": 0.018622,
+    "std_rate": 0.003178,
+    "mean_edge": -1.6e-05,
+    "std_edge": 0.003178,
+    "p05_edge": -0.4879,
+    "p50_edge": 0.0075,
+    "p95_edge": 0.5578,
+    "p99_edge": 0.778,
+    "p999_edge": 1.0531,
+    "theoretical_baseline": 0.018638
+  },
+  "optimal_hindsight": {
+    "window_150": {
+      "n": 150,
+      "oracle_rate_pct": 4.6667,
+      "oracle_edge_pct": 2.8029
+    },
+    "window_500": {
+      "n": 500,
+      "oracle_rate_pct": 4.2,
+      "oracle_edge_pct": 2.3362
+    },
+    "window_1500": {
+      "n": 1500,
+      "oracle_rate_pct": 2.6,
+      "oracle_edge_pct": 0.7362
+    },
+    "window_1817": {
+      "n": 1817,
+      "oracle_rate_pct": 2.9169,
+      "oracle_edge_pct": 1.0531
+    }
+  }
+}

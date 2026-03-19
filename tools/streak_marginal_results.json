@@ -1,0 +1,31 @@
+{
+  "streak_analysis": {
+    "baseline": 0.1282,
+    "streak1": {
+      "n": 29035,
+      "match": 3748,
+      "p_conditional": 0.1291,
+      "lift": 1.0069,
+      "p_value": 0.654416,
+      "actionable": false
+    },
+    "streak2": {
+      "n": 3750,
+      "match": 508,
+      "p_conditional": 0.1355,
+      "lift": 1.0566,
+      "p_value": 0.187163,
+      "actionable": false
+    }
+  },
+  "marginal_efficiency": {
+    "total_periods": 5509,
+    "edge_3bet_approx": -0.9302,
+    "edge_4bet_approx": -0.931,
+    "marginal_gain_periods": 47,
+    "marginal_efficiency": -0.0009,
+    "threshold": 0.8,
+    "pass": false,
+    "decision": "❌ 邊際效率 -0.1% < 80% → REJECT (不需完整回測)"
+  }
+}

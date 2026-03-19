@@ -1,0 +1,18 @@
+name: Fourier Rhythm 2注
+lottery: BIG_LOTTO
+bets: 2
+status: ACTIVE
+adopted_date: "2026-02-10"
+
+description: |
+  FFT 週期分析選號。MODERATE_DECAY 模式，短期穩定。
+
+bets_design:
+  bet1:
+    method: Fourier Rhythm
+    params: {window: 500}
+  bet2:
+    method: Fourier Rhythm (variant)
+    note: 第二注為多樣化版本
+
+script: tools/backtest_biglotto_comprehensive.py

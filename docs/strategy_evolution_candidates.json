@@ -1,0 +1,87 @@
+{
+  "generated_at": "2026-03-15",
+  "current_best": {
+    "1bet": {"strategy": "Baseline_ACB_1bet", "edge_1500p": 2.60},
+    "2bet": {"strategy": "Baseline_MidFreq+ACB_2bet", "edge_1500p": 4.93},
+    "3bet": {"strategy": "Baseline_AMF_3bet", "edge_1500p": 5.83}
+  },
+  "candidates": [
+    {
+      "id": "S001",
+      "name": "H001 × 現有 combined_score 替換",
+      "type": "feature_replacement",
+      "description": "將 StrategyCoordinator 中的 combined_score（目前是加權平均）替換為 ACB × MidFreq 乘積分數",
+      "affects_strategies": ["Baseline_MidFreq+ACB_2bet", "Baseline_AMF_3bet"],
+      "hypothesis_source": "H001",
+      "implementation_complexity": "low",
+      "backtest_required": "McNemar vs baseline 2bet 和 3bet",
+      "estimated_effort_days": 1,
+      "priority": 1
+    },
+    {
+      "id": "S002",
+      "name": "條件 ACB 取代現有 ACB agent",
+      "type": "agent_upgrade",
+      "description": "在 ACB 評分中加入 Markov 條件化乘數：若前期出現號碼 j，增加 P(n|j) 的 boost",
+      "affects_strategies": ["Baseline_ACB_1bet", "Baseline_MidFreq+ACB_2bet"],
+      "hypothesis_source": "H002",
+      "implementation_complexity": "medium",
+      "backtest_required": "McNemar vs Baseline_ACB_1bet；需確認不降低 2bet 整體 Edge",
+      "estimated_effort_days": 2,
+      "priority": 1
+    },
+    {
+      "id": "S003",
+      "name": "ΔACB 作為 ACB 的第二過濾層",
+      "type": "filter_addition",
+      "description": "在 ACB top-20 候選中，優先選取 ΔACB（近期頻率加速下降）也高的號碼，而非純 ACB 排名",
+      "affects_strategies": ["Baseline_ACB_1bet"],
+      "hypothesis_source": "H003",
+      "implementation_complexity": "low",
+      "backtest_required": "McNemar vs Baseline_ACB_1bet",
+      "estimated_effort_days": 1,
+      "priority": 2
+    },
+    {
+      "id": "S004",
+      "name": "動態注數分配（Signal Strength Gate）",
+      "type": "bet_allocation",
+      "description": "當 ACB+MidFreq 信號一致性高（top-5 重疊 ≥ 2個）時保持 2注；一致性低時升為 3注（覆蓋型）。不改選號邏輯，只改注數。",
+      "affects_strategies": ["Baseline_MidFreq+ACB_2bet"],
+      "hypothesis_source": "failure_analysis_TypeB",
+      "implementation_complexity": "medium",
+      "backtest_required": "需設計信號一致性指標；Walk-forward 驗證動態注數的 ROI",
+      "estimated_effort_days": 3,
+      "priority": 2,
+      "warning": "動態注數會改變每期成本，ROI 計算需標準化"
+    },
+    {
+      "id": "S005",
+      "name": "配對共現補充號碼（H005 通過後）",
+      "type": "supplementary_bet",
+      "description": "若某高 Lift 配對 (i,j) 的號碼 j 已在注中，自動補充 i 進入候選池。僅在通過 H005 Bonferroni 驗證後啟用。",
+      "affects_strategies": ["Baseline_AMF_3bet"],
+      "hypothesis_source": "H005",
+      "implementation_complexity": "medium",
+      "backtest_required": "先完成 H005 Pairwise Lift 分析；僅在 Lift>1.3x + p<0.05/Bonferroni 後回測",
+      "estimated_effort_days": 2,
+      "priority": 3,
+      "prerequisite": "H005 must pass fast_reject_test first"
+    },
+    {
+      "id": "S006",
+      "name": "weibull_gap agent 條件性啟用",
+      "type": "agent_regime_guard",
+      "description": "weibull_gap 在 per-agent 追蹤中低於隨機基準（10.00%）。不完全移除，而是設計啟用條件：僅在 gap 分布顯著偏離正常時啟用（特殊 regime）",
+      "affects_strategies": ["StrategyCoordinator"],
+      "hypothesis_source": "per-agent tracking L77",
+      "implementation_complexity": "medium",
+      "backtest_required": "等 per-agent tracking 達到 200 期後重新評估；目前先設為低權重",
+      "estimated_effort_days": 2,
+      "priority": 4,
+      "prerequisite": "200 periods of per-agent tracking data"
+    }
+  ],
+  "execution_order": ["S001", "S002", "S003", "S005", "S004", "S006"],
+  "conservative_note": "S001-S003 是低風險、低成本改進，可立即排入回測隊列。S004 改變注數結構，需謹慎評估 ROI 標準化問題。S005-S006 需前置條件。"
+}

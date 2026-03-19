@@ -1,0 +1,18 @@
+{
+  "name": "Multi-window Fourier (100/200/500p hybrid)",
+  "lottery": "BIG_LOTTO",
+  "rejected_date": "2026-02-25",
+  "failure_reason": "多窗口稀釋真實信號 — 100p/200p FFT 雜訊大於信號，導致顯著劣化",
+  "pattern": "SIGNAL_DILUTION",
+  "stats": {
+    "edge_150p": "未測",
+    "edge_500p": "未測",
+    "edge_1500p": "-0.16% (現行單窗口 +1.38%)",
+    "baseline": "5.49% (3注)",
+    "mcnemar_net": "-23 hits",
+    "mcnemar_p": "0.0081 (顯著劣化)"
+  },
+  "applicable_conditions": "多尺度 Fourier 理論上可捕捉不同節奏信號，但在 49選6 小樣本下雜訊壓過信號",
+  "retest_conditions": "若資料量達 5000期以上，短窗口 FFT 信噪比提升，可重新評估。目前 2106 期不足。",
+  "notes": "動機: 115000024期 #23 (Fourier rank 46) 未命中，試圖用100p短窗口改善不規則節奏號碼排名。結果 #23 rank反而 46→47，#47 rank 13→29 嚴重退步。根本原因: 49選6每個號碼平均每100期出現12次，FFT主峰在短窗口中不穩定。#23 類問題只能靠注數覆蓋，無法靠多時間尺度Fourier解決。教訓 L25。"
+}

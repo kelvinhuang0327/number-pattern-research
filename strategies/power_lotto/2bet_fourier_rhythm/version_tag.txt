@@ -1,0 +1,1 @@
+strategy: 2bet_fourier_rhythm\nlottery: power_lotto\nadopted: 2026-02-24\nstatus: ACTIVE

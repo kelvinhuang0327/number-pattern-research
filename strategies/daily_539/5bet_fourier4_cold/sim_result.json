@@ -1,0 +1,44 @@
+{
+  "strategy_id": "daily_539/5bet_fourier4_cold",
+  "version": "v1.0.0",
+  "generated_date": "2026-02-25",
+  "last_updated": "2026-02-25",
+  "lottery_type": "DAILY_539",
+  "n_bets": 5,
+  "random_baseline_pct": 4.92,
+  "backtest": {
+    "150p":  { "m3_rate_pct": 7.33, "edge_pct": 2.41, "status": "PASS" },
+    "500p":  { "m3_rate_pct": 5.60, "edge_pct": 0.68, "status": "PASS" },
+    "1500p": { "m3_rate_pct": 6.27, "edge_pct": 1.35, "status": "PASS" }
+  },
+  "pattern": "STABLE",
+  "db_periods_at_update": 5792,
+  "statistics": {
+    "z_score": 2.4,
+    "p_value": 0.008,
+    "significant": true
+  },
+  "permutation_test": {
+    "shuffles": 200,
+    "p_value": 0.030,
+    "cohen_d": 2.19,
+    "shuffle_mean_edge": 0.138,
+    "verdict": "SIGNAL_DETECTED"
+  },
+  "mcnemar_vs_3bet": {
+    "net_improvement": 43,
+    "chi2": 18.186,
+    "p_value": 0.000,
+    "verdict": "SIGNIFICANT"
+  },
+  "coverage": {
+    "unique_numbers": 25,
+    "pool_size": 39,
+    "overlap": 0,
+    "coverage_rate": 0.641
+  },
+  "seed": 42,
+  "status": "PROVISIONAL",
+  "notes": "第一個DAILY_539通過驗證策略。Permutation p=0.030(SIGNAL_DETECTED)，但差Bonferroni/2=0.025門檻。Cohen's d=2.19相當於威力彩PP3(d=2.18)。需200期後重新確認。",
+  "verdict": "PROVISIONAL_ADOPTED"
+}

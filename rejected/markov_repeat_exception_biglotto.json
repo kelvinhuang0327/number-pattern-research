@@ -1,0 +1,18 @@
+{
+  "name": "Markov 重複號碼例外處理",
+  "lottery": "BIG_LOTTO",
+  "rejected_date": "2026-02-23",
+  "failure_reason": "信號真實但幅度太小，實作改善幅度<統計噪音",
+  "pattern": "INEFFECTIVE",
+  "stats": {
+    "edge_150p": null,
+    "edge_500p": null,
+    "edge_1500p": "+1.43% (boost=0.1, Δ=+0.13% vs 基準)",
+    "baseline": "TS3+Markov(w=30) 1500p +1.30%",
+    "p_value": "McNemar p=0.779 (不顯著)",
+    "z_score": null
+  },
+  "applicable_conditions": "信號本身真實（Lift=1.134x, z=1.96, p<0.05），但改善幅度僅+2 hits/1500期",
+  "retest_conditions": "若未來有更大樣本（>3000期）或發現更強的重複號碼信號，可重測。目前改善<噪音",
+  "notes": "連續兩期重複號碼平均0.74個/期，實際率13.88% vs 基準12.24%。Grid: boost=[0.1~1.0]，最佳boost=0.1。理論上不會損害策略，但遵循『微調<噪音應找新信號』原則。腳本: tools/backtest_markov_repeat_exception.py"
+}

@@ -1,0 +1,2119 @@
+{
+  "timestamp": "2026-01-21T21:39:01.487523",
+  "results": {
+    "lottery_type": "BIG_LOTTO",
+    "config": {
+      "periods": 150,
+      "mab": true,
+      "anomaly": true
+    },
+    "metrics": {
+      "match3_rate": 0.017142857142857144,
+      "win_rate_period": 0.12,
+      "avg_hits": 0.7476190476190476,
+      "total_match3": 18
+    },
+    "details": [
+      {
+        "draw": "113000092",
+        "max_hit": 2,
+        "bet_count": 7,
+        "strategies": [
+          "statistical",
+          "statistical",
+          "probabilistic",
+          "statistical",
+          "pattern_based",
+          "contrarian",
+          "contrarian"
+        ]
+      },
+      {
+        "draw": "113000093",
+        "max_hit": 2,
+        "bet_count": 7,
+        "strategies": [
+          "pattern_based",
+          "ensemble",
+          "frequency_based",
+          "statistical",
+          "contrarian",
+          "contrarian",
+          "contrarian"
+        ]
+      },
+      {
+        "draw": "113000094",
+        "max_hit": 3,
+        "bet_count": 7,
+        "strategies": [
+          "probabilistic",
+          "pattern_based",
+          "statistical",
+          "statistical",
+          "contrarian",
+          "contrarian",
+          "contrarian"
+        ]
+      },
+      {
+        "draw": "113000095",
+        "max_hit": 2,
+        "bet_count": 7,
+        "strategies": [
+          "probabilistic",
+          "pattern_based",
+          "statistical",
+          "statistical",
+          "contrarian",
+          "contrarian",
+          "contrarian"
+        ]
+      },
+      {
+        "draw": "113000096",
+        "max_hit": 2,
+        "bet_count": 7,
+        "strategies": [
+          "probabilistic",
+          "p2_advanced",
+          "pattern_based",
+          "ensemble",
+          "theory_based",
+          "contrarian",
+          "contrarian"
+        ]
+      },
+      {
+        "draw": "113000097",
+        "max_hit": 1,
+        "bet_count": 7,
+        "strategies": [
+          "probabilistic",
+          "pattern_based",
+          "p1_advanced",
+          "p1_advanced",
+          "ensemble",
+          "contrarian",
+          "contrarian"
+        ]
+      },
+      {
+        "draw": "113000098",
+        "max_hit": 2,
+        "bet_count": 7,
+        "strategies": [
+          "probabilistic",
+          "probabilistic",
+          "contrarian",
+          "pattern_based",
+          "statistical",
+          "contrarian",
+          "contrarian"
+        ]
+      },
+      {
+        "draw": "113000099",
+        "max_hit": 2,
+        "bet_count": 7,
+        "strategies": [
+          "probabilistic",
+          "probabilistic",
+          "ensemble",
+          "p1_advanced",
+          "bimodal",
+          "contrarian",
+          "contrarian"
+        ]
+      },
+      {
+        "draw": "113000100",
+        "max_hit": 3,
+        "bet_count": 7,
+        "strategies": [
+          "probabilistic",
+          "ensemble",
+          "pattern_based",
+          "bimodal",
+          "statistical",
+          "contrarian",
+          "contrarian"
+        ]
+      },
+      {
+        "draw": "113000101",
+        "max_hit": 3,
+        "bet_count": 7,
+        "strategies": [
+          "probabilistic",
+          "probabilistic",
+          "statistical",
+          "p1_advanced",
+          "pattern_based",
+          "contrarian",
+          "contrarian"
+        ]
+      },
+      {
+        "draw": "113000102",
+        "max_hit": 3,
+        "bet_count": 7,
+        "strategies": [
+          "probabilistic",
+          "probabilistic",
+          "contrarian",
+          "p1_advanced",
+          "pattern_based",
+          "contrarian",
+          "contrarian"
+        ]
+      },
+      {
+        "draw": "113000103",
+        "max_hit": 1,
+        "bet_count": 7,
+        "strategies": [
+          "probabilistic",
+          "pattern_based",
+          "contrarian",
+          "p1_advanced",
+          "probabilistic",
+          "contrarian",
+          "contrarian"
+        ]
+      },
+      {
+        "draw": "113000104",
+        "max_hit": 1,
+        "bet_count": 7,
+        "strategies": [
+          "probabilistic",
+          "probabilistic",
+          "pattern_based",
+          "pattern_based",
+          "p1_advanced",
+          "contrarian",
+          "contrarian"
+        ]
+      },
+      {
+        "draw": "113000105",
+        "max_hit": 2,
+        "bet_count": 7,
+        "strategies": [
+          "probabilistic",
+          "pattern_based",
+          "ensemble",
+          "statistical",
+          "contrarian",
+          "contrarian",
+          "contrarian"
+        ]
+      },
+      {
+        "draw": "113000106",
+        "max_hit": 2,
+        "bet_count": 7,
+        "strategies": [
+          "probabilistic",
+          "pattern_based",
+          "probabilistic",
+          "statistical",
+          "pattern_based",
+          "contrarian",
+          "contrarian"
+        ]
+      },
+      {
+        "draw": "113000107",
+        "max_hit": 2,
+        "bet_count": 7,
+        "strategies": [
+          "probabilistic",
+          "pattern_based",
+          "probabilistic",
+          "ensemble",
+          "p1_advanced",
+          "contrarian",
+          "contrarian"
+        ]
+      },
+      {
+        "draw": "113000108",
+        "max_hit": 2,
+        "bet_count": 7,
+        "strategies": [
+          "probabilistic",
+          "pattern_based",
+          "ensemble",
+          "contrarian",
+          "statistical",
+          "contrarian",
+          "contrarian"
+        ]
+      },
+      {
+        "draw": "113000109",
+        "max_hit": 2,
+        "bet_count": 7,
+        "strategies": [
+          "probabilistic",
+          "pattern_based",
+          "pattern_based",
+          "probabilistic",
+          "p1_advanced",
+          "contrarian",
+          "contrarian"
+        ]
+      },
+      {
+        "draw": "113000112",
+        "max_hit": 3,
+        "bet_count": 7,
+        "strategies": [
+          "probabilistic",
+          "pattern_based",
+          "contrarian",
+          "contrarian",
+          "contrarian",
+          "contrarian",
+          "contrarian"
+        ]
+      },
+      {
+        "draw": "113000113",
+        "max_hit": 1,
+        "bet_count": 7,
+        "strategies": [
+          "probabilistic",
+          "pattern_based",
+          "probabilistic",
+          "statistical",
+          "experimental",
+          "contrarian",
+          "contrarian"
+        ]
+      },
+      {
+        "draw": "113000114",
+        "max_hit": 2,
+        "bet_count": 7,
+        "strategies": [
+          "probabilistic",
+          "statistical",
+          "pattern_based",
+          "pattern_based",
+          "probabilistic",
+          "contrarian",
+          "contrarian"
+        ]
+      },
+      {
+        "draw": "113000115",
+        "max_hit": 2,
+        "bet_count": 7,
+        "strategies": [
+          "probabilistic",
+          "pattern_based",
+          "pattern_based",
+          "probabilistic",
+          "bimodal",
+          "contrarian",
+          "contrarian"
+        ]
+      },
+      {
+        "draw": "113000116",
+        "max_hit": 2,
+        "bet_count": 7,
+        "strategies": [
+          "probabilistic",
+          "probabilistic",
+          "ensemble",
+          "pattern_based",
+          "pattern_based",
+          "contrarian",
+          "contrarian"
+        ]
+      },
+      {
+        "draw": "113000117",
+        "max_hit": 2,
+        "bet_count": 7,
+        "strategies": [
+          "probabilistic",
+          "statistical",
+          "ensemble",
+          "statistical",
+          "theory_based",
+          "contrarian",
+          "contrarian"
+        ]
+      },
+      {
+        "draw": "113000110",
+        "max_hit": 1,
+        "bet_count": 7,
+        "strategies": [
+          "probabilistic",
+          "pattern_based",
+          "statistical",
+          "contrarian",
+          "theory_based",
+          "contrarian",
+          "contrarian"
+        ]
+      },
+      {
+        "draw": "113000118",
+        "max_hit": 2,
+        "bet_count": 7,
+        "strategies": [
+          "probabilistic",
+          "pattern_based",
+          "ensemble",
+          "pattern_based",
+          "p1_advanced",
+          "contrarian",
+          "contrarian"
+        ]
+      },
+      {
+        "draw": "113000111",
+        "max_hit": 2,
+        "bet_count": 7,
+        "strategies": [
+          "probabilistic",
+          "probabilistic",
+          "pattern_based",
+          "pattern_based",
+          "p1_advanced",
+          "contrarian",
+          "contrarian"
+        ]
+      },
+      {
+        "draw": "114000001",
+        "max_hit": 2,
+        "bet_count": 7,
+        "strategies": [
+          "probabilistic",
+          "pattern_based",
+          "statistical",
+          "probabilistic",
+          "ensemble",
+          "contrarian",
+          "contrarian"
+        ]
+      },
+      {
+        "draw": "114000002",
+        "max_hit": 1,
+        "bet_count": 7,
+        "strategies": [
+          "probabilistic",
+          "pattern_based",
+          "probabilistic",
+          "experimental",
+          "p1_advanced",
+          "contrarian",
+          "contrarian"
+        ]
+      },
+      {
+        "draw": "114000003",
+        "max_hit": 2,
+        "bet_count": 7,
+        "strategies": [
+          "probabilistic",
+          "pattern_based",
+          "ensemble",
+          "pattern_based",
+          "frequency_based",
+          "contrarian",
+          "contrarian"
+        ]
+      },
+      {
+        "draw": "114000004",
+        "max_hit": 1,
+        "bet_count": 7,
+        "strategies": [
+          "probabilistic",
+          "probabilistic",
+          "statistical",
+          "p1_advanced",
+          "ensemble",
+          "contrarian",
+          "contrarian"
+        ]
+      },
+      {
+        "draw": "114000005",
+        "max_hit": 2,
+        "bet_count": 7,
+        "strategies": [
+          "probabilistic",
+          "pattern_based",
+          "statistical",
+          "contrarian",
+          "theory_based",
+          "contrarian",
+          "contrarian"
+        ]
+      },
+      {
+        "draw": "114000006",
+        "max_hit": 2,
+        "bet_count": 7,
+        "strategies": [
+          "probabilistic",
+          "probabilistic",
+          "pattern_based",
+          "pattern_based",
+          "pattern_based",
+          "contrarian",
+          "contrarian"
+        ]
+      },
+      {
+        "draw": "114000007",
+        "max_hit": 2,
+        "bet_count": 7,
+        "strategies": [
+          "probabilistic",
+          "pattern_based",
+          "probabilistic",
+          "statistical",
+          "p1_advanced",
+          "contrarian",
+          "contrarian"
+        ]
+      },
+      {
+        "draw": "114000008",
+        "max_hit": 2,
+        "bet_count": 7,
+        "strategies": [
+          "probabilistic",
+          "statistical",
+          "pattern_based",
+          "bimodal",
+          "ensemble",
+          "contrarian",
+          "contrarian"
+        ]
+      },
+      {
+        "draw": "114000009",
+        "max_hit": 2,
+        "bet_count": 7,
+        "strategies": [
+          "probabilistic",
+          "probabilistic",
+          "statistical",
+          "contrarian",
+          "pattern_based",
+          "contrarian",
+          "contrarian"
+        ]
+      },
+      {
+        "draw": "114000010",
+        "max_hit": 2,
+        "bet_count": 7,
+        "strategies": [
+          "probabilistic",
+          "probabilistic",
+          "pattern_based",
+          "statistical",
+          "p1_advanced",
+          "contrarian",
+          "contrarian"
+        ]
+      },
+      {
+        "draw": "114000011",
+        "max_hit": 2,
+        "bet_count": 7,
+        "strategies": [
+          "probabilistic",
+          "probabilistic",
+          "statistical",
+          "pattern_based",
+          "p1_advanced",
+          "contrarian",
+          "contrarian"
+        ]
+      },
+      {
+        "draw": "114000012",
+        "max_hit": 1,
+        "bet_count": 7,
+        "strategies": [
+          "probabilistic",
+          "probabilistic",
+          "pattern_based",
+          "statistical",
+          "p1_advanced",
+          "contrarian",
+          "contrarian"
+        ]
+      },
+      {
+        "draw": "114000013",
+        "max_hit": 3,
+        "bet_count": 7,
+        "strategies": [
+          "probabilistic",
+          "probabilistic",
+          "pattern_based",
+          "statistical",
+          "statistical",
+          "contrarian",
+          "contrarian"
+        ]
+      },
+      {
+        "draw": "114000014",
+        "max_hit": 1,
+        "bet_count": 7,
+        "strategies": [
+          "probabilistic",
+          "probabilistic",
+          "pattern_based",
+          "statistical",
+          "experimental",
+          "contrarian",
+          "contrarian"
+        ]
+      },
+      {
+        "draw": "114000015",
+        "max_hit": 3,
+        "bet_count": 7,
+        "strategies": [
+          "probabilistic",
+          "probabilistic",
+          "statistical",
+          "pattern_based",
+          "probabilistic",
+          "contrarian",
+          "contrarian"
+        ]
+      },
+      {
+        "draw": "114000016",
+        "max_hit": 1,
+        "bet_count": 7,
+        "strategies": [
+          "probabilistic",
+          "probabilistic",
+          "pattern_based",
+          "statistical",
+          "probabilistic",
+          "contrarian",
+          "contrarian"
+        ]
+      },
+      {
+        "draw": "114000017",
+        "max_hit": 1,
+        "bet_count": 7,
+        "strategies": [
+          "probabilistic",
+          "statistical",
+          "pattern_based",
+          "p1_advanced",
+          "contrarian",
+          "contrarian",
+          "contrarian"
+        ]
+      },
+      {
+        "draw": "114000018",
+        "max_hit": 2,
+        "bet_count": 7,
+        "strategies": [
+          "probabilistic",
+          "probabilistic",
+          "statistical",
+          "theory_based",
+          "bimodal",
+          "contrarian",
+          "contrarian"
+        ]
+      },
+      {
+        "draw": "114000019",
+        "max_hit": 1,
+        "bet_count": 7,
+        "strategies": [
+          "probabilistic",
+          "statistical",
+          "probabilistic",
+          "pattern_based",
+          "bimodal",
+          "contrarian",
+          "contrarian"
+        ]
+      },
+      {
+        "draw": "114000020",
+        "max_hit": 1,
+        "bet_count": 7,
+        "strategies": [
+          "probabilistic",
+          "probabilistic",
+          "statistical",
+          "pattern_based",
+          "probabilistic",
+          "contrarian",
+          "contrarian"
+        ]
+      },
+      {
+        "draw": "114000021",
+        "max_hit": 1,
+        "bet_count": 7,
+        "strategies": [
+          "probabilistic",
+          "statistical",
+          "pattern_based",
+          "probabilistic",
+          "statistical",
+          "contrarian",
+          "contrarian"
+        ]
+      },
+      {
+        "draw": "114000022",
+        "max_hit": 1,
+        "bet_count": 7,
+        "strategies": [
+          "probabilistic",
+          "statistical",
+          "pattern_based",
+          "statistical",
+          "ensemble",
+          "contrarian",
+          "contrarian"
+        ]
+      },
+      {
+        "draw": "114000023",
+        "max_hit": 3,
+        "bet_count": 7,
+        "strategies": [
+          "probabilistic",
+          "probabilistic",
+          "pattern_based",
+          "statistical",
+          "statistical",
+          "contrarian",
+          "contrarian"
+        ]
+      },
+      {
+        "draw": "114000024",
+        "max_hit": 2,
+        "bet_count": 7,
+        "strategies": [
+          "probabilistic",
+          "probabilistic",
+          "pattern_based",
+          "bimodal",
+          "statistical",
+          "contrarian",
+          "contrarian"
+        ]
+      },
+      {
+        "draw": "114000025",
+        "max_hit": 1,
+        "bet_count": 7,
+        "strategies": [
+          "probabilistic",
+          "statistical",
+          "probabilistic",
+          "pattern_based",
+          "pattern_based",
+          "contrarian",
+          "contrarian"
+        ]
+      },
+      {
+        "draw": "114000026",
+        "max_hit": 2,
+        "bet_count": 7,
+        "strategies": [
+          "probabilistic",
+          "statistical",
+          "probabilistic",
+          "pattern_based",
+          "statistical",
+          "contrarian",
+          "contrarian"
+        ]
+      },
+      {
+        "draw": "114000027",
+        "max_hit": 1,
+        "bet_count": 7,
+        "strategies": [
+          "probabilistic",
+          "pattern_based",
+          "pattern_based",
+          "probabilistic",
+          "bimodal",
+          "contrarian",
+          "contrarian"
+        ]
+      },
+      {
+        "draw": "114000028",
+        "max_hit": 2,
+        "bet_count": 7,
+        "strategies": [
+          "probabilistic",
+          "probabilistic",
+          "pattern_based",
+          "pattern_based",
+          "bimodal",
+          "contrarian",
+          "contrarian"
+        ]
+      },
+      {
+        "draw": "114000029",
+        "max_hit": 2,
+        "bet_count": 7,
+        "strategies": [
+          "probabilistic",
+          "probabilistic",
+          "pattern_based",
+          "bimodal",
+          "statistical",
+          "contrarian",
+          "contrarian"
+        ]
+      },
+      {
+        "draw": "114000030",
+        "max_hit": 1,
+        "bet_count": 7,
+        "strategies": [
+          "probabilistic",
+          "pattern_based",
+          "probabilistic",
+          "contrarian",
+          "p1_advanced",
+          "contrarian",
+          "contrarian"
+        ]
+      },
+      {
+        "draw": "114000031",
+        "max_hit": 3,
+        "bet_count": 7,
+        "strategies": [
+          "probabilistic",
+          "pattern_based",
+          "statistical",
+          "probabilistic",
+          "statistical",
+          "contrarian",
+          "contrarian"
+        ]
+      },
+      {
+        "draw": "114000032",
+        "max_hit": 2,
+        "bet_count": 7,
+        "strategies": [
+          "probabilistic",
+          "probabilistic",
+          "pattern_based",
+          "pattern_based",
+          "statistical",
+          "contrarian",
+          "contrarian"
+        ]
+      },
+      {
+        "draw": "114000033",
+        "max_hit": 2,
+        "bet_count": 7,
+        "strategies": [
+          "probabilistic",
+          "pattern_based",
+          "statistical",
+          "probabilistic",
+          "statistical",
+          "contrarian",
+          "contrarian"
+        ]
+      },
+      {
+        "draw": "114000034",
+        "max_hit": 2,
+        "bet_count": 7,
+        "strategies": [
+          "probabilistic",
+          "statistical",
+          "statistical",
+          "pattern_based",
+          "pattern_based",
+          "contrarian",
+          "contrarian"
+        ]
+      },
+      {
+        "draw": "114000035",
+        "max_hit": 1,
+        "bet_count": 7,
+        "strategies": [
+          "probabilistic",
+          "pattern_based",
+          "pattern_based",
+          "statistical",
+          "p1_advanced",
+          "contrarian",
+          "contrarian"
+        ]
+      },
+      {
+        "draw": "114000036",
+        "max_hit": 1,
+        "bet_count": 7,
+        "strategies": [
+          "probabilistic",
+          "pattern_based",
+          "pattern_based",
+          "ensemble",
+          "statistical",
+          "contrarian",
+          "contrarian"
+        ]
+      },
+      {
+        "draw": "114000037",
+        "max_hit": 2,
+        "bet_count": 7,
+        "strategies": [
+          "probabilistic",
+          "pattern_based",
+          "probabilistic",
+          "ensemble",
+          "p1_advanced",
+          "contrarian",
+          "contrarian"
+        ]
+      },
+      {
+        "draw": "114000038",
+        "max_hit": 2,
+        "bet_count": 7,
+        "strategies": [
+          "probabilistic",
+          "pattern_based",
+          "statistical",
+          "probabilistic",
+          "bimodal",
+          "contrarian",
+          "contrarian"
+        ]
+      },
+      {
+        "draw": "114000039",
+        "max_hit": 2,
+        "bet_count": 7,
+        "strategies": [
+          "probabilistic",
+          "pattern_based",
+          "pattern_based",
+          "statistical",
+          "ensemble",
+          "contrarian",
+          "contrarian"
+        ]
+      },
+      {
+        "draw": "114000040",
+        "max_hit": 2,
+        "bet_count": 7,
+        "strategies": [
+          "probabilistic",
+          "pattern_based",
+          "probabilistic",
+          "contrarian",
+          "statistical",
+          "contrarian",
+          "contrarian"
+        ]
+      },
+      {
+        "draw": "114000041",
+        "max_hit": 1,
+        "bet_count": 7,
+        "strategies": [
+          "probabilistic",
+          "pattern_based",
+          "ensemble",
+          "probabilistic",
+          "p1_advanced",
+          "contrarian",
+          "contrarian"
+        ]
+      },
+      {
+        "draw": "114000042",
+        "max_hit": 2,
+        "bet_count": 7,
+        "strategies": [
+          "probabilistic",
+          "probabilistic",
+          "pattern_based",
+          "statistical",
+          "p1_advanced",
+          "contrarian",
+          "contrarian"
+        ]
+      },
+      {
+        "draw": "114000043",
+        "max_hit": 2,
+        "bet_count": 7,
+        "strategies": [
+          "probabilistic",
+          "pattern_based",
+          "contrarian",
+          "statistical",
+          "p1_advanced",
+          "contrarian",
+          "contrarian"
+        ]
+      },
+      {
+        "draw": "114000044",
+        "max_hit": 1,
+        "bet_count": 7,
+        "strategies": [
+          "statistical",
+          "probabilistic",
+          "pattern_based",
+          "contrarian",
+          "pattern_based",
+          "contrarian",
+          "contrarian"
+        ]
+      },
+      {
+        "draw": "114000045",
+        "max_hit": 2,
+        "bet_count": 7,
+        "strategies": [
+          "statistical",
+          "probabilistic",
+          "pattern_based",
+          "contrarian",
+          "probabilistic",
+          "contrarian",
+          "contrarian"
+        ]
+      },
+      {
+        "draw": "114000046",
+        "max_hit": 2,
+        "bet_count": 7,
+        "strategies": [
+          "statistical",
+          "probabilistic",
+          "pattern_based",
+          "probabilistic",
+          "contrarian",
+          "contrarian",
+          "contrarian"
+        ]
+      },
+      {
+        "draw": "114000047",
+        "max_hit": 2,
+        "bet_count": 7,
+        "strategies": [
+          "statistical",
+          "probabilistic",
+          "pattern_based",
+          "p1_advanced",
+          "statistical",
+          "contrarian",
+          "contrarian"
+        ]
+      },
+      {
+        "draw": "114000048",
+        "max_hit": 2,
+        "bet_count": 7,
+        "strategies": [
+          "statistical",
+          "probabilistic",
+          "pattern_based",
+          "probabilistic",
+          "statistical",
+          "contrarian",
+          "contrarian"
+        ]
+      },
+      {
+        "draw": "114000049",
+        "max_hit": 1,
+        "bet_count": 7,
+        "strategies": [
+          "statistical",
+          "probabilistic",
+          "pattern_based",
+          "statistical",
+          "contrarian",
+          "contrarian",
+          "contrarian"
+        ]
+      },
+      {
+        "draw": "114000050",
+        "max_hit": 3,
+        "bet_count": 7,
+        "strategies": [
+          "statistical",
+          "probabilistic",
+          "pattern_based",
+          "p1_advanced",
+          "ensemble",
+          "contrarian",
+          "contrarian"
+        ]
+      },
+      {
+        "draw": "114000051",
+        "max_hit": 1,
+        "bet_count": 7,
+        "strategies": [
+          "probabilistic",
+          "statistical",
+          "pattern_based",
+          "statistical",
+          "contrarian",
+          "contrarian",
+          "contrarian"
+        ]
+      },
+      {
+        "draw": "114000052",
+        "max_hit": 1,
+        "bet_count": 7,
+        "strategies": [
+          "probabilistic",
+          "pattern_based",
+          "statistical",
+          "probabilistic",
+          "probabilistic",
+          "contrarian",
+          "contrarian"
+        ]
+      },
+      {
+        "draw": "114000053",
+        "max_hit": 2,
+        "bet_count": 7,
+        "strategies": [
+          "statistical",
+          "probabilistic",
+          "statistical",
+          "pattern_based",
+          "statistical",
+          "contrarian",
+          "contrarian"
+        ]
+      },
+      {
+        "draw": "114000054",
+        "max_hit": 2,
+        "bet_count": 7,
+        "strategies": [
+          "statistical",
+          "statistical",
+          "pattern_based",
+          "probabilistic",
+          "probabilistic",
+          "contrarian",
+          "contrarian"
+        ]
+      },
+      {
+        "draw": "114000055",
+        "max_hit": 2,
+        "bet_count": 7,
+        "strategies": [
+          "probabilistic",
+          "statistical",
+          "probabilistic",
+          "pattern_based",
+          "statistical",
+          "contrarian",
+          "contrarian"
+        ]
+      },
+      {
+        "draw": "114000056",
+        "max_hit": 2,
+        "bet_count": 7,
+        "strategies": [
+          "probabilistic",
+          "statistical",
+          "probabilistic",
+          "pattern_based",
+          "statistical",
+          "contrarian",
+          "contrarian"
+        ]
+      },
+      {
+        "draw": "114000057",
+        "max_hit": 2,
+        "bet_count": 7,
+        "strategies": [
+          "probabilistic",
+          "statistical",
+          "statistical",
+          "pattern_based",
+          "p1_advanced",
+          "contrarian",
+          "contrarian"
+        ]
+      },
+      {
+        "draw": "114000058",
+        "max_hit": 2,
+        "bet_count": 7,
+        "strategies": [
+          "probabilistic",
+          "statistical",
+          "statistical",
+          "contrarian",
+          "bimodal",
+          "contrarian",
+          "contrarian"
+        ]
+      },
+      {
+        "draw": "114000059",
+        "max_hit": 2,
+        "bet_count": 7,
+        "strategies": [
+          "probabilistic",
+          "statistical",
+          "statistical",
+          "bimodal",
+          "frequency_based",
+          "contrarian",
+          "contrarian"
+        ]
+      },
+      {
+        "draw": "114000060",
+        "max_hit": 2,
+        "bet_count": 7,
+        "strategies": [
+          "probabilistic",
+          "statistical",
+          "pattern_based",
+          "statistical",
+          "bimodal",
+          "contrarian",
+          "contrarian"
+        ]
+      },
+      {
+        "draw": "114000061",
+        "max_hit": 3,
+        "bet_count": 7,
+        "strategies": [
+          "probabilistic",
+          "statistical",
+          "statistical",
+          "p1_advanced",
+          "contrarian",
+          "contrarian",
+          "contrarian"
+        ]
+      },
+      {
+        "draw": "114000062",
+        "max_hit": 2,
+        "bet_count": 7,
+        "strategies": [
+          "probabilistic",
+          "statistical",
+          "pattern_based",
+          "statistical",
+          "probabilistic",
+          "contrarian",
+          "contrarian"
+        ]
+      },
+      {
+        "draw": "114000063",
+        "max_hit": 1,
+        "bet_count": 7,
+        "strategies": [
+          "probabilistic",
+          "statistical",
+          "pattern_based",
+          "bimodal",
+          "statistical",
+          "contrarian",
+          "contrarian"
+        ]
+      },
+      {
+        "draw": "114000064",
+        "max_hit": 1,
+        "bet_count": 7,
+        "strategies": [
+          "probabilistic",
+          "statistical",
+          "pattern_based",
+          "statistical",
+          "p1_advanced",
+          "contrarian",
+          "contrarian"
+        ]
+      },
+      {
+        "draw": "114000065",
+        "max_hit": 2,
+        "bet_count": 7,
+        "strategies": [
+          "probabilistic",
+          "statistical",
+          "statistical",
+          "pattern_based",
+          "bimodal",
+          "contrarian",
+          "contrarian"
+        ]
+      },
+      {
+        "draw": "114000066",
+        "max_hit": 2,
+        "bet_count": 7,
+        "strategies": [
+          "probabilistic",
+          "statistical",
+          "statistical",
+          "pattern_based",
+          "contrarian",
+          "contrarian",
+          "contrarian"
+        ]
+      },
+      {
+        "draw": "114000067",
+        "max_hit": 1,
+        "bet_count": 7,
+        "strategies": [
+          "probabilistic",
+          "statistical",
+          "statistical",
+          "contrarian",
+          "pattern_based",
+          "contrarian",
+          "contrarian"
+        ]
+      },
+      {
+        "draw": "114000068",
+        "max_hit": 2,
+        "bet_count": 7,
+        "strategies": [
+          "statistical",
+          "statistical",
+          "pattern_based",
+          "statistical",
+          "p2_advanced",
+          "contrarian",
+          "contrarian"
+        ]
+      },
+      {
+        "draw": "114000069",
+        "max_hit": 2,
+        "bet_count": 7,
+        "strategies": [
+          "statistical",
+          "statistical",
+          "probabilistic",
+          "probabilistic",
+          "pattern_based",
+          "contrarian",
+          "contrarian"
+        ]
+      },
+      {
+        "draw": "114000070",
+        "max_hit": 2,
+        "bet_count": 7,
+        "strategies": [
+          "statistical",
+          "probabilistic",
+          "statistical",
+          "p1_advanced",
+          "contrarian",
+          "contrarian",
+          "contrarian"
+        ]
+      },
+      {
+        "draw": "114000071",
+        "max_hit": 1,
+        "bet_count": 7,
+        "strategies": [
+          "statistical",
+          "probabilistic",
+          "pattern_based",
+          "statistical",
+          "contrarian",
+          "contrarian",
+          "contrarian"
+        ]
+      },
+      {
+        "draw": "114000072",
+        "max_hit": 1,
+        "bet_count": 7,
+        "strategies": [
+          "statistical",
+          "probabilistic",
+          "probabilistic",
+          "contrarian",
+          "pattern_based",
+          "contrarian",
+          "contrarian"
+        ]
+      },
+      {
+        "draw": "114000073",
+        "max_hit": 2,
+        "bet_count": 7,
+        "strategies": [
+          "statistical",
+          "statistical",
+          "probabilistic",
+          "probabilistic",
+          "p1_advanced",
+          "contrarian",
+          "contrarian"
+        ]
+      },
+      {
+        "draw": "114000074",
+        "max_hit": 2,
+        "bet_count": 7,
+        "strategies": [
+          "statistical",
+          "probabilistic",
+          "pattern_based",
+          "p1_advanced",
+          "contrarian",
+          "contrarian",
+          "contrarian"
+        ]
+      },
+      {
+        "draw": "114000075",
+        "max_hit": 1,
+        "bet_count": 7,
+        "strategies": [
+          "statistical",
+          "probabilistic",
+          "pattern_based",
+          "statistical",
+          "ensemble",
+          "contrarian",
+          "contrarian"
+        ]
+      },
+      {
+        "draw": "114000076",
+        "max_hit": 3,
+        "bet_count": 7,
+        "strategies": [
+          "statistical",
+          "statistical",
+          "pattern_based",
+          "probabilistic",
+          "pattern_based",
+          "contrarian",
+          "contrarian"
+        ]
+      },
+      {
+        "draw": "114000077",
+        "max_hit": 1,
+        "bet_count": 7,
+        "strategies": [
+          "statistical",
+          "statistical",
+          "probabilistic",
+          "pattern_based",
+          "p1_advanced",
+          "contrarian",
+          "contrarian"
+        ]
+      },
+      {
+        "draw": "114000078",
+        "max_hit": 2,
+        "bet_count": 7,
+        "strategies": [
+          "statistical",
+          "statistical",
+          "contrarian",
+          "p1_advanced",
+          "probabilistic",
+          "contrarian",
+          "contrarian"
+        ]
+      },
+      {
+        "draw": "114000079",
+        "max_hit": 3,
+        "bet_count": 7,
+        "strategies": [
+          "statistical",
+          "statistical",
+          "probabilistic",
+          "probabilistic",
+          "contrarian",
+          "contrarian",
+          "contrarian"
+        ]
+      },
+      {
+        "draw": "114000080",
+        "max_hit": 1,
+        "bet_count": 7,
+        "strategies": [
+          "statistical",
+          "statistical",
+          "probabilistic",
+          "contrarian",
+          "theory_based",
+          "contrarian",
+          "contrarian"
+        ]
+      },
+      {
+        "draw": "114000081",
+        "max_hit": 2,
+        "bet_count": 7,
+        "strategies": [
+          "statistical",
+          "statistical",
+          "contrarian",
+          "pattern_based",
+          "p1_advanced",
+          "contrarian",
+          "contrarian"
+        ]
+      },
+      {
+        "draw": "114000082",
+        "max_hit": 2,
+        "bet_count": 7,
+        "strategies": [
+          "statistical",
+          "statistical",
+          "probabilistic",
+          "p2_advanced",
+          "pattern_based",
+          "contrarian",
+          "contrarian"
+        ]
+      },
+      {
+        "draw": "114000083",
+        "max_hit": 1,
+        "bet_count": 7,
+        "strategies": [
+          "statistical",
+          "statistical",
+          "statistical",
+          "pattern_based",
+          "pattern_based",
+          "contrarian",
+          "contrarian"
+        ]
+      },
+      {
+        "draw": "114000084",
+        "max_hit": 2,
+        "bet_count": 7,
+        "strategies": [
+          "statistical",
+          "statistical",
+          "probabilistic",
+          "pattern_based",
+          "probabilistic",
+          "contrarian",
+          "contrarian"
+        ]
+      },
+      {
+        "draw": "114000085",
+        "max_hit": 1,
+        "bet_count": 7,
+        "strategies": [
+          "statistical",
+          "statistical",
+          "pattern_based",
+          "probabilistic",
+          "p2_advanced",
+          "contrarian",
+          "contrarian"
+        ]
+      },
+      {
+        "draw": "114000086",
+        "max_hit": 2,
+        "bet_count": 7,
+        "strategies": [
+          "statistical",
+          "statistical",
+          "probabilistic",
+          "contrarian",
+          "pattern_based",
+          "contrarian",
+          "contrarian"
+        ]
+      },
+      {
+        "draw": "114000087",
+        "max_hit": 3,
+        "bet_count": 7,
+        "strategies": [
+          "statistical",
+          "statistical",
+          "probabilistic",
+          "probabilistic",
+          "contrarian",
+          "contrarian",
+          "contrarian"
+        ]
+      },
+      {
+        "draw": "114000088",
+        "max_hit": 2,
+        "bet_count": 7,
+        "strategies": [
+          "statistical",
+          "statistical",
+          "probabilistic",
+          "probabilistic",
+          "contrarian",
+          "contrarian",
+          "contrarian"
+        ]
+      },
+      {
+        "draw": "114000089",
+        "max_hit": 2,
+        "bet_count": 7,
+        "strategies": [
+          "statistical",
+          "statistical",
+          "probabilistic",
+          "probabilistic",
+          "contrarian",
+          "contrarian",
+          "contrarian"
+        ]
+      },
+      {
+        "draw": "114000090",
+        "max_hit": 1,
+        "bet_count": 7,
+        "strategies": [
+          "statistical",
+          "statistical",
+          "probabilistic",
+          "contrarian",
+          "probabilistic",
+          "contrarian",
+          "contrarian"
+        ]
+      },
+      {
+        "draw": "114000091",
+        "max_hit": 3,
+        "bet_count": 7,
+        "strategies": [
+          "statistical",
+          "statistical",
+          "probabilistic",
+          "pattern_based",
+          "probabilistic",
+          "contrarian",
+          "contrarian"
+        ]
+      },
+      {
+        "draw": "114000092",
+        "max_hit": 1,
+        "bet_count": 7,
+        "strategies": [
+          "statistical",
+          "statistical",
+          "probabilistic",
+          "pattern_based",
+          "probabilistic",
+          "contrarian",
+          "contrarian"
+        ]
+      },
+      {
+        "draw": "114000093",
+        "max_hit": 2,
+        "bet_count": 7,
+        "strategies": [
+          "statistical",
+          "statistical",
+          "probabilistic",
+          "contrarian",
+          "ensemble",
+          "contrarian",
+          "contrarian"
+        ]
+      },
+      {
+        "draw": "114000094",
+        "max_hit": 2,
+        "bet_count": 7,
+        "strategies": [
+          "statistical",
+          "probabilistic",
+          "probabilistic",
+          "statistical",
+          "pattern_based",
+          "contrarian",
+          "contrarian"
+        ]
+      },
+      {
+        "draw": "114000095",
+        "max_hit": 3,
+        "bet_count": 7,
+        "strategies": [
+          "statistical",
+          "probabilistic",
+          "statistical",
+          "pattern_based",
+          "p2_advanced",
+          "contrarian",
+          "contrarian"
+        ]
+      },
+      {
+        "draw": "114000096",
+        "max_hit": 2,
+        "bet_count": 7,
+        "strategies": [
+          "statistical",
+          "statistical",
+          "probabilistic",
+          "contrarian",
+          "pattern_based",
+          "contrarian",
+          "contrarian"
+        ]
+      },
+      {
+        "draw": "114000097",
+        "max_hit": 1,
+        "bet_count": 7,
+        "strategies": [
+          "statistical",
+          "probabilistic",
+          "statistical",
+          "ensemble",
+          "contrarian",
+          "contrarian",
+          "contrarian"
+        ]
+      },
+      {
+        "draw": "114000098",
+        "max_hit": 2,
+        "bet_count": 7,
+        "strategies": [
+          "statistical",
+          "probabilistic",
+          "statistical",
+          "ensemble",
+          "contrarian",
+          "contrarian",
+          "contrarian"
+        ]
+      },
+      {
+        "draw": "114000099",
+        "max_hit": 1,
+        "bet_count": 7,
+        "strategies": [
+          "statistical",
+          "probabilistic",
+          "statistical",
+          "p2_advanced",
+          "pattern_based",
+          "contrarian",
+          "contrarian"
+        ]
+      },
+      {
+        "draw": "114000100",
+        "max_hit": 2,
+        "bet_count": 7,
+        "strategies": [
+          "statistical",
+          "probabilistic",
+          "statistical",
+          "pattern_based",
+          "p2_advanced",
+          "contrarian",
+          "contrarian"
+        ]
+      },
+      {
+        "draw": "114000101",
+        "max_hit": 1,
+        "bet_count": 7,
+        "strategies": [
+          "statistical",
+          "probabilistic",
+          "statistical",
+          "pattern_based",
+          "bimodal",
+          "contrarian",
+          "contrarian"
+        ]
+      },
+      {
+        "draw": "114000102",
+        "max_hit": 1,
+        "bet_count": 7,
+        "strategies": [
+          "statistical",
+          "probabilistic",
+          "statistical",
+          "ensemble",
+          "bimodal",
+          "contrarian",
+          "contrarian"
+        ]
+      },
+      {
+        "draw": "114000103",
+        "max_hit": 2,
+        "bet_count": 7,
+        "strategies": [
+          "statistical",
+          "probabilistic",
+          "statistical",
+          "probabilistic",
+          "p2_advanced",
+          "contrarian",
+          "contrarian"
+        ]
+      },
+      {
+        "draw": "114000104",
+        "max_hit": 2,
+        "bet_count": 7,
+        "strategies": [
+          "statistical",
+          "probabilistic",
+          "statistical",
+          "pattern_based",
+          "p2_advanced",
+          "contrarian",
+          "contrarian"
+        ]
+      },
+      {
+        "draw": "114000105",
+        "max_hit": 3,
+        "bet_count": 7,
+        "strategies": [
+          "statistical",
+          "probabilistic",
+          "statistical",
+          "pattern_based",
+          "p2_advanced",
+          "contrarian",
+          "contrarian"
+        ]
+      },
+      {
+        "draw": "114000106",
+        "max_hit": 2,
+        "bet_count": 7,
+        "strategies": [
+          "probabilistic",
+          "statistical",
+          "statistical",
+          "pattern_based",
+          "pattern_based",
+          "contrarian",
+          "contrarian"
+        ]
+      },
+      {
+        "draw": "114000107",
+        "max_hit": 1,
+        "bet_count": 7,
+        "strategies": [
+          "probabilistic",
+          "statistical",
+          "statistical",
+          "pattern_based",
+          "statistical",
+          "contrarian",
+          "contrarian"
+        ]
+      },
+      {
+        "draw": "114000108",
+        "max_hit": 1,
+        "bet_count": 7,
+        "strategies": [
+          "probabilistic",
+          "statistical",
+          "statistical",
+          "p2_advanced",
+          "pattern_based",
+          "contrarian",
+          "contrarian"
+        ]
+      },
+      {
+        "draw": "114000109",
+        "max_hit": 1,
+        "bet_count": 7,
+        "strategies": [
+          "probabilistic",
+          "statistical",
+          "statistical",
+          "pattern_based",
+          "pattern_based",
+          "contrarian",
+          "contrarian"
+        ]
+      },
+      {
+        "draw": "114000110",
+        "max_hit": 2,
+        "bet_count": 7,
+        "strategies": [
+          "probabilistic",
+          "statistical",
+          "statistical",
+          "p2_advanced",
+          "p1_advanced",
+          "contrarian",
+          "contrarian"
+        ]
+      },
+      {
+        "draw": "114000111",
+        "max_hit": 1,
+        "bet_count": 7,
+        "strategies": [
+          "probabilistic",
+          "statistical",
+          "statistical",
+          "p2_advanced",
+          "pattern_based",
+          "contrarian",
+          "contrarian"
+        ]
+      },
+      {
+        "draw": "114000112",
+        "max_hit": 2,
+        "bet_count": 7,
+        "strategies": [
+          "probabilistic",
+          "statistical",
+          "pattern_based",
+          "p2_advanced",
+          "statistical",
+          "contrarian",
+          "contrarian"
+        ]
+      },
+      {
+        "draw": "114000113",
+        "max_hit": 0,
+        "bet_count": 7,
+        "strategies": [
+          "probabilistic",
+          "statistical",
+          "statistical",
+          "probabilistic",
+          "p2_advanced",
+          "contrarian",
+          "contrarian"
+        ]
+      },
+      {
+        "draw": "114000114",
+        "max_hit": 2,
+        "bet_count": 7,
+        "strategies": [
+          "probabilistic",
+          "probabilistic",
+          "statistical",
+          "p2_advanced",
+          "statistical",
+          "contrarian",
+          "contrarian"
+        ]
+      },
+      {
+        "draw": "114000115",
+        "max_hit": 2,
+        "bet_count": 7,
+        "strategies": [
+          "probabilistic",
+          "probabilistic",
+          "statistical",
+          "statistical",
+          "pattern_based",
+          "contrarian",
+          "contrarian"
+        ]
+      },
+      {
+        "draw": "114000116",
+        "max_hit": 2,
+        "bet_count": 7,
+        "strategies": [
+          "probabilistic",
+          "probabilistic",
+          "statistical",
+          "pattern_based",
+          "statistical",
+          "contrarian",
+          "contrarian"
+        ]
+      },
+      {
+        "draw": "114000117",
+        "max_hit": 2,
+        "bet_count": 7,
+        "strategies": [
+          "probabilistic",
+          "probabilistic",
+          "statistical",
+          "statistical",
+          "probabilistic",
+          "contrarian",
+          "contrarian"
+        ]
+      },
+      {
+        "draw": "114000118",
+        "max_hit": 1,
+        "bet_count": 7,
+        "strategies": [
+          "statistical",
+          "probabilistic",
+          "probabilistic",
+          "pattern_based",
+          "bimodal",
+          "contrarian",
+          "contrarian"
+        ]
+      },
+      {
+        "draw": "115000001",
+        "max_hit": 2,
+        "bet_count": 7,
+        "strategies": [
+          "statistical",
+          "statistical",
+          "pattern_based",
+          "probabilistic",
+          "pattern_based",
+          "contrarian",
+          "contrarian"
+        ]
+      },
+      {
+        "draw": "115000002",
+        "max_hit": 3,
+        "bet_count": 7,
+        "strategies": [
+          "statistical",
+          "statistical",
+          "probabilistic",
+          "contrarian",
+          "frequency_based",
+          "contrarian",
+          "contrarian"
+        ]
+      },
+      {
+        "draw": "115000003",
+        "max_hit": 2,
+        "bet_count": 7,
+        "strategies": [
+          "statistical",
+          "probabilistic",
+          "probabilistic",
+          "pattern_based",
+          "statistical",
+          "contrarian",
+          "contrarian"
+        ]
+      },
+      {
+        "draw": "115000004",
+        "max_hit": 1,
+        "bet_count": 7,
+        "strategies": [
+          "statistical",
+          "probabilistic",
+          "probabilistic",
+          "statistical",
+          "statistical",
+          "contrarian",
+          "contrarian"
+        ]
+      },
+      {
+        "draw": "115000005",
+        "max_hit": 1,
+        "bet_count": 7,
+        "strategies": [
+          "statistical",
+          "probabilistic",
+          "statistical",
+          "p2_advanced",
+          "frequency_based",
+          "contrarian",
+          "contrarian"
+        ]
+      }
+    ]
+  }
+}

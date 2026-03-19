@@ -1,0 +1,30 @@
+{
+  "strategy_id": "big_lotto/2bet_fourier_rhythm",
+  "version": "v1.0.0",
+  "generated_date": "2026-02-24",
+  "lottery_type": "BIG_LOTTO",
+  "n_bets": 2,
+  "random_baseline_pct": 3.69,
+  "backtest": {
+    "150p": { "m3_rate_pct": null, "edge_pct": null, "status": "N/A" },
+    "500p": { "m3_rate_pct": null, "edge_pct": null, "status": "N/A" },
+    "1500p":{ "m3_rate_pct": 4.20, "edge_pct": 0.51, "status": "PASS" }
+  },
+  "pattern": "MODERATE_DECAY",
+  "statistics": {
+    "z_score": null,
+    "p_value": null,
+    "significant": null
+  },
+  "permutation_test": null,
+  "notes": "大樂透8策略全面回測結果(tools/backtest_biglotto_comprehensive.py)；MODERATE_DECAY模式，RSM短中期均穩定",
+  "coverage": {
+    "unique_numbers": 12,
+    "pool_size": 49,
+    "overlap": 0,
+    "coverage_rate": 0.245
+  },
+  "seed": 42,
+  "script": "tools/backtest_biglotto_comprehensive.py",
+  "verdict": "ADOPTED"
+}

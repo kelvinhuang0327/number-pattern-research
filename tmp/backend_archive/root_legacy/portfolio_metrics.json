@@ -1,0 +1,207 @@
+{
+  "draw_id": "115000068",
+  "date": "2026/03/17",
+  "pool_size": 8,
+  "tickets": [
+    {
+      "ticket": [
+        9,
+        14,
+        20,
+        37,
+        39
+      ],
+      "strategy": "acb_markov_midfreq_3bet",
+      "strategy_edge": 0.085,
+      "strategy_score": 1.0,
+      "popularity": 0.095,
+      "payout_quality": 0.905
+    },
+    {
+      "ticket": [
+        6,
+        18,
+        19,
+        24,
+        25
+      ],
+      "strategy": "acb_markov_midfreq_3bet",
+      "strategy_edge": 0.085,
+      "strategy_score": 1.0,
+      "popularity": 0.27,
+      "payout_quality": 0.73
+    },
+    {
+      "ticket": [
+        8,
+        12,
+        15,
+        17,
+        36
+      ],
+      "strategy": "acb_markov_midfreq_3bet",
+      "strategy_edge": 0.085,
+      "strategy_score": 1.0,
+      "popularity": 0.14,
+      "payout_quality": 0.86
+    },
+    {
+      "ticket": [
+        5,
+        7,
+        23,
+        26,
+        32
+      ],
+      "strategy": "f4cold_5bet",
+      "strategy_edge": 0.0661,
+      "strategy_score": 0.7776,
+      "popularity": 0.14,
+      "payout_quality": 0.86
+    },
+    {
+      "ticket": [
+        4,
+        11,
+        12,
+        18,
+        37
+      ],
+      "strategy": "f4cold_5bet",
+      "strategy_edge": 0.0661,
+      "strategy_score": 0.7776,
+      "popularity": 0.31,
+      "payout_quality": 0.69
+    },
+    {
+      "ticket": [
+        14,
+        29,
+        34,
+        35,
+        36
+      ],
+      "strategy": "f4cold_5bet",
+      "strategy_edge": 0.0661,
+      "strategy_score": 0.7776,
+      "popularity": 0.225,
+      "payout_quality": 0.775
+    },
+    {
+      "ticket": [
+        3,
+        10,
+        17,
+        24,
+        27
+      ],
+      "strategy": "f4cold_5bet",
+      "strategy_edge": 0.0661,
+      "strategy_score": 0.7776,
+      "popularity": 0.165,
+      "payout_quality": 0.835
+    },
+    {
+      "ticket": [
+        9,
+        13,
+        20,
+        21,
+        39
+      ],
+      "strategy": "f4cold_5bet",
+      "strategy_edge": 0.0661,
+      "strategy_score": 0.7776,
+      "popularity": 0.265,
+      "payout_quality": 0.735
+    }
+  ],
+  "overlap_matrix": [
+    [
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.2,
+      0.2,
+      0.0,
+      0.6
+    ],
+    [
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.2,
+      0.0,
+      0.2,
+      0.0
+    ],
+    [
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.2,
+      0.2,
+      0.2,
+      0.0
+    ],
+    [
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0
+    ],
+    [
+      0.2,
+      0.2,
+      0.2,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0
+    ],
+    [
+      0.2,
+      0.0,
+      0.2,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0
+    ],
+    [
+      0.0,
+      0.2,
+      0.2,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0
+    ],
+    [
+      0.6,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0
+    ]
+  ],
+  "weights_used": {
+    "w1": 0.4,
+    "w2": 0.3,
+    "w3": 0.2,
+    "w4": 0.1
+  }
+}

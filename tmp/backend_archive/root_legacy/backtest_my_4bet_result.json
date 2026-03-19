@@ -1,0 +1,14 @@
+{
+  "config": "我推薦的4注配置",
+  "backtest_draws": "97000096 - 97000002",
+  "total_draws": 95,
+  "hit_count": 0,
+  "hit_rate_percent": "0.00%",
+  "every_n_period": "N/A",
+  "comparison": {
+    "cluster_pivot": "14.74%",
+    "my_config": "0.00%",
+    "improvement_percent": "N/A"
+  },
+  "hit_periods": []
+}

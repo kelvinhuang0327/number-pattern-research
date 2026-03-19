@@ -1,0 +1,266 @@
+{
+  "test_year": "2025",
+  "lottery_type": "BIG_LOTTO",
+  "timestamp": "2026-01-02T00:17:07.542505",
+  "results": [
+    {
+      "config": "pool26_weighted_random",
+      "pool_size": 26,
+      "strategy": "weighted_random",
+      "test_count": 118,
+      "win_count": 5,
+      "win_rate": 0.0423728813559322,
+      "win_rate_pct": "4.24%",
+      "avg_matches": 0.8813559322033898,
+      "match_distribution": {
+        "1": 51,
+        "0": 43,
+        "2": 19,
+        "3": 5
+      },
+      "periods_per_win": 23.6
+    },
+    {
+      "config": "pool32_weighted_random",
+      "pool_size": 32,
+      "strategy": "weighted_random",
+      "test_count": 118,
+      "win_count": 5,
+      "win_rate": 0.0423728813559322,
+      "win_rate_pct": "4.24%",
+      "avg_matches": 0.7966101694915254,
+      "match_distribution": {
+        "0": 54,
+        "2": 20,
+        "1": 39,
+        "3": 5
+      },
+      "periods_per_win": 23.6
+    },
+    {
+      "config": "pool28_weighted_random",
+      "pool_size": 28,
+      "strategy": "weighted_random",
+      "test_count": 118,
+      "win_count": 2,
+      "win_rate": 0.01694915254237288,
+      "win_rate_pct": "1.69%",
+      "avg_matches": 0.711864406779661,
+      "match_distribution": {
+        "0": 49,
+        "2": 11,
+        "1": 56,
+        "3": 2
+      },
+      "periods_per_win": 59.0
+    },
+    {
+      "config": "pool30_weighted_random",
+      "pool_size": 30,
+      "strategy": "weighted_random",
+      "test_count": 118,
+      "win_count": 2,
+      "win_rate": 0.01694915254237288,
+      "win_rate_pct": "1.69%",
+      "avg_matches": 0.7457627118644068,
+      "match_distribution": {
+        "0": 52,
+        "1": 46,
+        "2": 18,
+        "3": 2
+      },
+      "periods_per_win": 59.0
+    },
+    {
+      "config": "pool24_balanced",
+      "pool_size": 24,
+      "strategy": "balanced",
+      "test_count": 118,
+      "win_count": 1,
+      "win_rate": 0.00847457627118644,
+      "win_rate_pct": "0.85%",
+      "avg_matches": 0.652542372881356,
+      "match_distribution": {
+        "0": 58,
+        "2": 14,
+        "1": 45,
+        "4": 1
+      },
+      "periods_per_win": 118.0
+    },
+    {
+      "config": "pool24_top",
+      "pool_size": 24,
+      "strategy": "top",
+      "test_count": 118,
+      "win_count": 1,
+      "win_rate": 0.00847457627118644,
+      "win_rate_pct": "0.85%",
+      "avg_matches": 0.635593220338983,
+      "match_distribution": {
+        "0": 60,
+        "2": 15,
+        "1": 42,
+        "3": 1
+      },
+      "periods_per_win": 118.0
+    },
+    {
+      "config": "pool24_weighted_random",
+      "pool_size": 24,
+      "strategy": "weighted_random",
+      "test_count": 118,
+      "win_count": 1,
+      "win_rate": 0.00847457627118644,
+      "win_rate_pct": "0.85%",
+      "avg_matches": 0.6779661016949152,
+      "match_distribution": {
+        "0": 53,
+        "1": 51,
+        "2": 13,
+        "3": 1
+      },
+      "periods_per_win": 118.0
+    },
+    {
+      "config": "pool26_balanced",
+      "pool_size": 26,
+      "strategy": "balanced",
+      "test_count": 118,
+      "win_count": 1,
+      "win_rate": 0.00847457627118644,
+      "win_rate_pct": "0.85%",
+      "avg_matches": 0.652542372881356,
+      "match_distribution": {
+        "0": 58,
+        "2": 14,
+        "1": 45,
+        "4": 1
+      },
+      "periods_per_win": 118.0
+    },
+    {
+      "config": "pool26_top",
+      "pool_size": 26,
+      "strategy": "top",
+      "test_count": 118,
+      "win_count": 1,
+      "win_rate": 0.00847457627118644,
+      "win_rate_pct": "0.85%",
+      "avg_matches": 0.635593220338983,
+      "match_distribution": {
+        "0": 60,
+        "2": 15,
+        "1": 42,
+        "3": 1
+      },
+      "periods_per_win": 118.0
+    },
+    {
+      "config": "pool28_balanced",
+      "pool_size": 28,
+      "strategy": "balanced",
+      "test_count": 118,
+      "win_count": 1,
+      "win_rate": 0.00847457627118644,
+      "win_rate_pct": "0.85%",
+      "avg_matches": 0.652542372881356,
+      "match_distribution": {
+        "0": 58,
+        "2": 14,
+        "1": 45,
+        "4": 1
+      },
+      "periods_per_win": 118.0
+    },
+    {
+      "config": "pool28_top",
+      "pool_size": 28,
+      "strategy": "top",
+      "test_count": 118,
+      "win_count": 1,
+      "win_rate": 0.00847457627118644,
+      "win_rate_pct": "0.85%",
+      "avg_matches": 0.635593220338983,
+      "match_distribution": {
+        "0": 60,
+        "2": 15,
+        "1": 42,
+        "3": 1
+      },
+      "periods_per_win": 118.0
+    },
+    {
+      "config": "pool30_balanced",
+      "pool_size": 30,
+      "strategy": "balanced",
+      "test_count": 118,
+      "win_count": 1,
+      "win_rate": 0.00847457627118644,
+      "win_rate_pct": "0.85%",
+      "avg_matches": 0.652542372881356,
+      "match_distribution": {
+        "0": 58,
+        "2": 14,
+        "1": 45,
+        "4": 1
+      },
+      "periods_per_win": 118.0
+    },
+    {
+      "config": "pool30_top",
+      "pool_size": 30,
+      "strategy": "top",
+      "test_count": 118,
+      "win_count": 1,
+      "win_rate": 0.00847457627118644,
+      "win_rate_pct": "0.85%",
+      "avg_matches": 0.635593220338983,
+      "match_distribution": {
+        "0": 60,
+        "2": 15,
+        "1": 42,
+        "3": 1
+      },
+      "periods_per_win": 118.0
+    },
+    {
+      "config": "pool32_balanced",
+      "pool_size": 32,
+      "strategy": "balanced",
+      "test_count": 118,
+      "win_count": 1,
+      "win_rate": 0.00847457627118644,
+      "win_rate_pct": "0.85%",
+      "avg_matches": 0.652542372881356,
+      "match_distribution": {
+        "0": 58,
+        "2": 14,
+        "1": 45,
+        "4": 1
+      },
+      "periods_per_win": 118.0
+    },
+    {
+      "config": "pool32_top",
+      "pool_size": 32,
+      "strategy": "top",
+      "test_count": 118,
+      "win_count": 1,
+      "win_rate": 0.00847457627118644,
+      "win_rate_pct": "0.85%",
+      "avg_matches": 0.635593220338983,
+      "match_distribution": {
+        "0": 60,
+        "2": 15,
+        "1": 42,
+        "3": 1
+      },
+      "periods_per_win": 118.0
+    }
+  ],
+  "baseline": {
+    "method": "zone_balance",
+    "win_rate": 0.0431
+  }
+}

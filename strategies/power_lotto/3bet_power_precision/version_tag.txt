@@ -1,0 +1,1 @@
+strategy: 3bet_power_precision\nlottery: power_lotto\nadopted: 2026-02-24\nstatus: ACTIVE

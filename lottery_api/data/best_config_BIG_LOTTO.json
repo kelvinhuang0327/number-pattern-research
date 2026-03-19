@@ -1,0 +1,22 @@
+{
+  "timestamp": "2025-12-05T14:10:57.614861",
+  "config": {
+    "frequency_weight": 0.11015107078035727,
+    "missing_weight": 0.04085369570205302,
+    "hot_cold_weight": 0.0713911892378061,
+    "trend_weight": 0.09161652667164093,
+    "zone_weight": 0.10934259962232076,
+    "last_digit_weight": 0.08485454250860691,
+    "odd_even_weight": 0.022281964708482312,
+    "pair_weight": 0.04615983866646966,
+    "sum_band_weight": 0.05677449984702648,
+    "ac_band_weight": 0.03952840077723449,
+    "dynamic_zone_weight": 0.028251439960046202,
+    "entropy_weight": 0.08565989515893528,
+    "clustering_weight": 0.046315779468911904,
+    "temporal_weight": 0.1633150223263398,
+    "feature_eng_weight": 0.07722458798972796,
+    "recent_window": 27,
+    "long_window": 177
+  }
+}

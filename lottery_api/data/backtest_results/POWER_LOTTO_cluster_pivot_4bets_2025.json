@@ -1,0 +1,1603 @@
+{
+  "summary": {
+    "lottery_type": "POWER_LOTTO",
+    "strategy": "cluster_pivot",
+    "num_bets": 4,
+    "config": {
+      "method": "cluster_pivot",
+      "anchor_count": 2,
+      "resilience": true,
+      "window_size": 50,
+      "volatility_map": {
+        "1": 0.4407974710891916,
+        "2": 0.3928064090617667,
+        "3": 0.3928064090617667,
+        "4": 0.10848977688495283,
+        "5": 0.09620791535080728,
+        "6": 0.0907218423253029,
+        "7": 0.4640560387912304,
+        "8": 0.17795130420052185,
+        "9": 0.052699399813717476,
+        "10": 0.7071067811865475,
+        "11": 0.1617739129095653,
+        "12": 0.07483314773547885,
+        "13": 0.26726124191242434,
+        "14": 0.33620447449965185,
+        "15": 0.092709445701687,
+        "16": 0.09392377823779506,
+        "17": 0.1084897768849528,
+        "18": 0.0613386456848187,
+        "19": 0.14966629547095767,
+        "20": 0.10760320583273544,
+        "21": 0.13441133229754104,
+        "22": 0.05443310539518171,
+        "23": 0.8496431551682508,
+        "24": 0.0544331053951817,
+        "25": 0.1360827634879544,
+        "26": 0.28020063649858984,
+        "27": 0.3734140936383944,
+        "28": 0.28179611235454405,
+        "29": 0.1920489725368734,
+        "30": 0.28020063649858984,
+        "31": 0.1350154312168304,
+        "32": 0.38852484745949717,
+        "33": 1.3877787807814454e-16,
+        "34": 0.33676456695367435,
+        "35": 0.223296878269436,
+        "36": 0.2317736142542174,
+        "37": 0.09620791535080728,
+        "38": 0.7083668477301426
+      },
+      "reversal_candidates": [
+        23,
+        38,
+        10
+      ]
+    },
+    "test_periods": 102,
+    "win_count": 4,
+    "win_rate": 0.0392156862745098,
+    "periods_per_win": 25.5,
+    "avg_best_match": 0.9411764705882353,
+    "special_hit_rate": 0.5,
+    "match_distribution": {
+      "0": 33,
+      "1": 46,
+      "2": 19,
+      "3": 4
+    },
+    "backtest_timestamp": "2026-01-06T15:05:05.715394"
+  },
+  "hit_details": [
+    {
+      "draw": "114000024",
+      "date": "2025-03-24",
+      "target_numbers": [
+        3,
+        17,
+        22,
+        24,
+        25,
+        33
+      ],
+      "target_special": 3,
+      "best_bet_idx": 1,
+      "best_match": 3,
+      "special_hit": false,
+      "predicted_numbers": [
+        3,
+        11,
+        15,
+        17,
+        25,
+        30
+      ],
+      "predicted_special": 1
+    },
+    {
+      "draw": "114000031",
+      "date": "2025-04-17",
+      "target_numbers": [
+        1,
+        2,
+        3,
+        5,
+        17,
+        27
+      ],
+      "target_special": 8,
+      "best_bet_idx": 1,
+      "best_match": 3,
+      "special_hit": true,
+      "predicted_numbers": [
+        2,
+        3,
+        11,
+        17,
+        25,
+        30
+      ],
+      "predicted_special": 1
+    },
+    {
+      "draw": "114000033",
+      "date": "2025-04-24",
+      "target_numbers": [
+        7,
+        17,
+        25,
+        29,
+        36,
+        37
+      ],
+      "target_special": 5,
+      "best_bet_idx": 1,
+      "best_match": 3,
+      "special_hit": true,
+      "predicted_numbers": [
+        3,
+        11,
+        17,
+        20,
+        25,
+        29
+      ],
+      "predicted_special": 1
+    },
+    {
+      "draw": "114000093",
+      "date": "2025-11-20",
+      "target_numbers": [
+        3,
+        8,
+        17,
+        20,
+        31,
+        35
+      ],
+      "target_special": 7,
+      "best_bet_idx": 1,
+      "best_match": 3,
+      "special_hit": false,
+      "predicted_numbers": [
+        3,
+        9,
+        11,
+        14,
+        17,
+        31
+      ],
+      "predicted_special": 1
+    }
+  ],
+  "all_results": [
+    {
+      "draw": "114000001",
+      "date": "2025-01-02",
+      "bet_matches": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "best_match": 0,
+      "best_bet_idx": -1,
+      "is_win": false,
+      "special_hit": true
+    },
+    {
+      "draw": "114000002",
+      "date": "2025-01-06",
+      "bet_matches": [
+        1,
+        1,
+        1,
+        1
+      ],
+      "best_match": 1,
+      "best_bet_idx": 0,
+      "is_win": false,
+      "special_hit": false
+    },
+    {
+      "draw": "114000003",
+      "date": "2025-01-09",
+      "bet_matches": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "best_match": 0,
+      "best_bet_idx": -1,
+      "is_win": false,
+      "special_hit": false
+    },
+    {
+      "draw": "114000004",
+      "date": "2025-01-13",
+      "bet_matches": [
+        1,
+        1,
+        1,
+        1
+      ],
+      "best_match": 1,
+      "best_bet_idx": 0,
+      "is_win": false,
+      "special_hit": true
+    },
+    {
+      "draw": "114000005",
+      "date": "2025-01-16",
+      "bet_matches": [
+        1,
+        1,
+        1,
+        1
+      ],
+      "best_match": 1,
+      "best_bet_idx": 0,
+      "is_win": false,
+      "special_hit": false
+    },
+    {
+      "draw": "114000006",
+      "date": "2025-01-20",
+      "bet_matches": [
+        1,
+        1,
+        1,
+        1
+      ],
+      "best_match": 1,
+      "best_bet_idx": 0,
+      "is_win": false,
+      "special_hit": true
+    },
+    {
+      "draw": "114000007",
+      "date": "2025-01-23",
+      "bet_matches": [
+        1,
+        1,
+        1,
+        1
+      ],
+      "best_match": 1,
+      "best_bet_idx": 0,
+      "is_win": false,
+      "special_hit": true
+    },
+    {
+      "draw": "114000008",
+      "date": "2025-01-27",
+      "bet_matches": [
+        1,
+        1,
+        1,
+        1
+      ],
+      "best_match": 1,
+      "best_bet_idx": 0,
+      "is_win": false,
+      "special_hit": true
+    },
+    {
+      "draw": "114000009",
+      "date": "2025-01-30",
+      "bet_matches": [
+        1,
+        1,
+        1,
+        2
+      ],
+      "best_match": 2,
+      "best_bet_idx": 3,
+      "is_win": false,
+      "special_hit": false
+    },
+    {
+      "draw": "114000010",
+      "date": "2025-02-03",
+      "bet_matches": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "best_match": 0,
+      "best_bet_idx": -1,
+      "is_win": false,
+      "special_hit": false
+    },
+    {
+      "draw": "114000011",
+      "date": "2025-02-06",
+      "bet_matches": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "best_match": 0,
+      "best_bet_idx": -1,
+      "is_win": false,
+      "special_hit": true
+    },
+    {
+      "draw": "114000012",
+      "date": "2025-02-10",
+      "bet_matches": [
+        1,
+        1,
+        1,
+        1
+      ],
+      "best_match": 1,
+      "best_bet_idx": 0,
+      "is_win": false,
+      "special_hit": false
+    },
+    {
+      "draw": "114000013",
+      "date": "2025-02-13",
+      "bet_matches": [
+        1,
+        1,
+        1,
+        1
+      ],
+      "best_match": 1,
+      "best_bet_idx": 0,
+      "is_win": false,
+      "special_hit": false
+    },
+    {
+      "draw": "114000014",
+      "date": "2025-02-17",
+      "bet_matches": [
+        1,
+        1,
+        1,
+        1
+      ],
+      "best_match": 1,
+      "best_bet_idx": 0,
+      "is_win": false,
+      "special_hit": true
+    },
+    {
+      "draw": "114000015",
+      "date": "2025-02-20",
+      "bet_matches": [
+        0,
+        0,
+        0,
+        1
+      ],
+      "best_match": 1,
+      "best_bet_idx": 3,
+      "is_win": false,
+      "special_hit": true
+    },
+    {
+      "draw": "114000016",
+      "date": "2025-02-24",
+      "bet_matches": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "best_match": 0,
+      "best_bet_idx": -1,
+      "is_win": false,
+      "special_hit": true
+    },
+    {
+      "draw": "114000017",
+      "date": "2025-02-27",
+      "bet_matches": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "best_match": 0,
+      "best_bet_idx": -1,
+      "is_win": false,
+      "special_hit": true
+    },
+    {
+      "draw": "114000018",
+      "date": "2025-03-03",
+      "bet_matches": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "best_match": 0,
+      "best_bet_idx": -1,
+      "is_win": false,
+      "special_hit": true
+    },
+    {
+      "draw": "114000019",
+      "date": "2025-03-06",
+      "bet_matches": [
+        1,
+        1,
+        1,
+        2
+      ],
+      "best_match": 2,
+      "best_bet_idx": 3,
+      "is_win": false,
+      "special_hit": false
+    },
+    {
+      "draw": "114000020",
+      "date": "2025-03-10",
+      "bet_matches": [
+        1,
+        1,
+        1,
+        1
+      ],
+      "best_match": 1,
+      "best_bet_idx": 0,
+      "is_win": false,
+      "special_hit": true
+    },
+    {
+      "draw": "114000021",
+      "date": "2025-03-13",
+      "bet_matches": [
+        2,
+        2,
+        2,
+        2
+      ],
+      "best_match": 2,
+      "best_bet_idx": 0,
+      "is_win": false,
+      "special_hit": false
+    },
+    {
+      "draw": "114000022",
+      "date": "2025-03-17",
+      "bet_matches": [
+        1,
+        1,
+        1,
+        1
+      ],
+      "best_match": 1,
+      "best_bet_idx": 0,
+      "is_win": false,
+      "special_hit": false
+    },
+    {
+      "draw": "114000023",
+      "date": "2025-03-20",
+      "bet_matches": [
+        1,
+        1,
+        1,
+        2
+      ],
+      "best_match": 2,
+      "best_bet_idx": 3,
+      "is_win": false,
+      "special_hit": true
+    },
+    {
+      "draw": "114000024",
+      "date": "2025-03-24",
+      "bet_matches": [
+        3,
+        3,
+        3,
+        3
+      ],
+      "best_match": 3,
+      "best_bet_idx": 0,
+      "is_win": true,
+      "special_hit": false
+    },
+    {
+      "draw": "114000025",
+      "date": "2025-03-27",
+      "bet_matches": [
+        1,
+        1,
+        1,
+        1
+      ],
+      "best_match": 1,
+      "best_bet_idx": 0,
+      "is_win": false,
+      "special_hit": true
+    },
+    {
+      "draw": "114000026",
+      "date": "2025-03-31",
+      "bet_matches": [
+        2,
+        2,
+        2,
+        2
+      ],
+      "best_match": 2,
+      "best_bet_idx": 0,
+      "is_win": false,
+      "special_hit": false
+    },
+    {
+      "draw": "114000027",
+      "date": "2025-04-03",
+      "bet_matches": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "best_match": 0,
+      "best_bet_idx": -1,
+      "is_win": false,
+      "special_hit": false
+    },
+    {
+      "draw": "114000028",
+      "date": "2025-04-07",
+      "bet_matches": [
+        1,
+        1,
+        1,
+        1
+      ],
+      "best_match": 1,
+      "best_bet_idx": 0,
+      "is_win": false,
+      "special_hit": false
+    },
+    {
+      "draw": "114000029",
+      "date": "2025-04-10",
+      "bet_matches": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "best_match": 0,
+      "best_bet_idx": -1,
+      "is_win": false,
+      "special_hit": false
+    },
+    {
+      "draw": "114000030",
+      "date": "2025-04-14",
+      "bet_matches": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "best_match": 0,
+      "best_bet_idx": -1,
+      "is_win": false,
+      "special_hit": true
+    },
+    {
+      "draw": "114000031",
+      "date": "2025-04-17",
+      "bet_matches": [
+        3,
+        3,
+        3,
+        3
+      ],
+      "best_match": 3,
+      "best_bet_idx": 0,
+      "is_win": true,
+      "special_hit": true
+    },
+    {
+      "draw": "114000032",
+      "date": "2025-04-21",
+      "bet_matches": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "best_match": 0,
+      "best_bet_idx": -1,
+      "is_win": false,
+      "special_hit": true
+    },
+    {
+      "draw": "114000033",
+      "date": "2025-04-24",
+      "bet_matches": [
+        3,
+        3,
+        3,
+        2
+      ],
+      "best_match": 3,
+      "best_bet_idx": 0,
+      "is_win": true,
+      "special_hit": true
+    },
+    {
+      "draw": "114000034",
+      "date": "2025-04-28",
+      "bet_matches": [
+        2,
+        2,
+        2,
+        1
+      ],
+      "best_match": 2,
+      "best_bet_idx": 0,
+      "is_win": false,
+      "special_hit": true
+    },
+    {
+      "draw": "114000035",
+      "date": "2025-05-01",
+      "bet_matches": [
+        1,
+        1,
+        1,
+        1
+      ],
+      "best_match": 1,
+      "best_bet_idx": 0,
+      "is_win": false,
+      "special_hit": false
+    },
+    {
+      "draw": "114000036",
+      "date": "2025-05-05",
+      "bet_matches": [
+        1,
+        1,
+        1,
+        1
+      ],
+      "best_match": 1,
+      "best_bet_idx": 0,
+      "is_win": false,
+      "special_hit": false
+    },
+    {
+      "draw": "114000037",
+      "date": "2025-05-08",
+      "bet_matches": [
+        1,
+        1,
+        1,
+        1
+      ],
+      "best_match": 1,
+      "best_bet_idx": 0,
+      "is_win": false,
+      "special_hit": true
+    },
+    {
+      "draw": "114000038",
+      "date": "2025-05-12",
+      "bet_matches": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "best_match": 0,
+      "best_bet_idx": -1,
+      "is_win": false,
+      "special_hit": false
+    },
+    {
+      "draw": "114000039",
+      "date": "2025-05-15",
+      "bet_matches": [
+        1,
+        1,
+        1,
+        1
+      ],
+      "best_match": 1,
+      "best_bet_idx": 0,
+      "is_win": false,
+      "special_hit": true
+    },
+    {
+      "draw": "114000040",
+      "date": "2025-05-19",
+      "bet_matches": [
+        1,
+        1,
+        1,
+        2
+      ],
+      "best_match": 2,
+      "best_bet_idx": 3,
+      "is_win": false,
+      "special_hit": false
+    },
+    {
+      "draw": "114000041",
+      "date": "2025-05-22",
+      "bet_matches": [
+        1,
+        1,
+        1,
+        1
+      ],
+      "best_match": 1,
+      "best_bet_idx": 0,
+      "is_win": false,
+      "special_hit": false
+    },
+    {
+      "draw": "114000042",
+      "date": "2025-05-26",
+      "bet_matches": [
+        1,
+        1,
+        1,
+        1
+      ],
+      "best_match": 1,
+      "best_bet_idx": 0,
+      "is_win": false,
+      "special_hit": false
+    },
+    {
+      "draw": "114000043",
+      "date": "2025-05-29",
+      "bet_matches": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "best_match": 0,
+      "best_bet_idx": -1,
+      "is_win": false,
+      "special_hit": false
+    },
+    {
+      "draw": "114000044",
+      "date": "2025-06-02",
+      "bet_matches": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "best_match": 0,
+      "best_bet_idx": -1,
+      "is_win": false,
+      "special_hit": true
+    },
+    {
+      "draw": "114000045",
+      "date": "2025-06-05",
+      "bet_matches": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "best_match": 0,
+      "best_bet_idx": -1,
+      "is_win": false,
+      "special_hit": true
+    },
+    {
+      "draw": "114000046",
+      "date": "2025-06-09",
+      "bet_matches": [
+        1,
+        1,
+        1,
+        1
+      ],
+      "best_match": 1,
+      "best_bet_idx": 0,
+      "is_win": false,
+      "special_hit": true
+    },
+    {
+      "draw": "114000047",
+      "date": "2025-06-12",
+      "bet_matches": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "best_match": 0,
+      "best_bet_idx": -1,
+      "is_win": false,
+      "special_hit": true
+    },
+    {
+      "draw": "114000048",
+      "date": "2025-06-16",
+      "bet_matches": [
+        1,
+        1,
+        1,
+        2
+      ],
+      "best_match": 2,
+      "best_bet_idx": 3,
+      "is_win": false,
+      "special_hit": false
+    },
+    {
+      "draw": "114000049",
+      "date": "2025-06-19",
+      "bet_matches": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "best_match": 0,
+      "best_bet_idx": -1,
+      "is_win": false,
+      "special_hit": false
+    },
+    {
+      "draw": "114000050",
+      "date": "2025-06-23",
+      "bet_matches": [
+        2,
+        2,
+        2,
+        2
+      ],
+      "best_match": 2,
+      "best_bet_idx": 0,
+      "is_win": false,
+      "special_hit": false
+    },
+    {
+      "draw": "114000051",
+      "date": "2025-06-26",
+      "bet_matches": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "best_match": 0,
+      "best_bet_idx": -1,
+      "is_win": false,
+      "special_hit": false
+    },
+    {
+      "draw": "114000052",
+      "date": "2025-06-30",
+      "bet_matches": [
+        1,
+        1,
+        1,
+        1
+      ],
+      "best_match": 1,
+      "best_bet_idx": 0,
+      "is_win": false,
+      "special_hit": true
+    },
+    {
+      "draw": "114000053",
+      "date": "2025-07-03",
+      "bet_matches": [
+        1,
+        1,
+        1,
+        1
+      ],
+      "best_match": 1,
+      "best_bet_idx": 0,
+      "is_win": false,
+      "special_hit": false
+    },
+    {
+      "draw": "114000054",
+      "date": "2025-07-07",
+      "bet_matches": [
+        1,
+        1,
+        1,
+        1
+      ],
+      "best_match": 1,
+      "best_bet_idx": 0,
+      "is_win": false,
+      "special_hit": false
+    },
+    {
+      "draw": "114000055",
+      "date": "2025-07-10",
+      "bet_matches": [
+        0,
+        0,
+        0,
+        1
+      ],
+      "best_match": 1,
+      "best_bet_idx": 3,
+      "is_win": false,
+      "special_hit": true
+    },
+    {
+      "draw": "114000056",
+      "date": "2025-07-14",
+      "bet_matches": [
+        2,
+        2,
+        2,
+        2
+      ],
+      "best_match": 2,
+      "best_bet_idx": 0,
+      "is_win": false,
+      "special_hit": false
+    },
+    {
+      "draw": "114000057",
+      "date": "2025-07-17",
+      "bet_matches": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "best_match": 0,
+      "best_bet_idx": -1,
+      "is_win": false,
+      "special_hit": true
+    },
+    {
+      "draw": "114000058",
+      "date": "2025-07-21",
+      "bet_matches": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "best_match": 0,
+      "best_bet_idx": -1,
+      "is_win": false,
+      "special_hit": false
+    },
+    {
+      "draw": "114000059",
+      "date": "2025-07-24",
+      "bet_matches": [
+        1,
+        1,
+        1,
+        1
+      ],
+      "best_match": 1,
+      "best_bet_idx": 0,
+      "is_win": false,
+      "special_hit": true
+    },
+    {
+      "draw": "114000060",
+      "date": "2025-07-28",
+      "bet_matches": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "best_match": 0,
+      "best_bet_idx": -1,
+      "is_win": false,
+      "special_hit": true
+    },
+    {
+      "draw": "114000061",
+      "date": "2025-07-31",
+      "bet_matches": [
+        2,
+        2,
+        2,
+        2
+      ],
+      "best_match": 2,
+      "best_bet_idx": 0,
+      "is_win": false,
+      "special_hit": false
+    },
+    {
+      "draw": "114000062",
+      "date": "2025-08-04",
+      "bet_matches": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "best_match": 0,
+      "best_bet_idx": -1,
+      "is_win": false,
+      "special_hit": true
+    },
+    {
+      "draw": "114000063",
+      "date": "2025-08-07",
+      "bet_matches": [
+        1,
+        1,
+        1,
+        2
+      ],
+      "best_match": 2,
+      "best_bet_idx": 3,
+      "is_win": false,
+      "special_hit": false
+    },
+    {
+      "draw": "114000064",
+      "date": "2025-08-11",
+      "bet_matches": [
+        1,
+        1,
+        1,
+        1
+      ],
+      "best_match": 1,
+      "best_bet_idx": 0,
+      "is_win": false,
+      "special_hit": true
+    },
+    {
+      "draw": "114000065",
+      "date": "2025-08-14",
+      "bet_matches": [
+        2,
+        2,
+        2,
+        2
+      ],
+      "best_match": 2,
+      "best_bet_idx": 0,
+      "is_win": false,
+      "special_hit": false
+    },
+    {
+      "draw": "114000066",
+      "date": "2025-08-18",
+      "bet_matches": [
+        1,
+        1,
+        1,
+        1
+      ],
+      "best_match": 1,
+      "best_bet_idx": 0,
+      "is_win": false,
+      "special_hit": false
+    },
+    {
+      "draw": "114000067",
+      "date": "2025-08-21",
+      "bet_matches": [
+        1,
+        1,
+        1,
+        1
+      ],
+      "best_match": 1,
+      "best_bet_idx": 0,
+      "is_win": false,
+      "special_hit": true
+    },
+    {
+      "draw": "114000068",
+      "date": "2025-08-25",
+      "bet_matches": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "best_match": 0,
+      "best_bet_idx": -1,
+      "is_win": false,
+      "special_hit": false
+    },
+    {
+      "draw": "114000069",
+      "date": "2025-08-28",
+      "bet_matches": [
+        2,
+        2,
+        2,
+        2
+      ],
+      "best_match": 2,
+      "best_bet_idx": 0,
+      "is_win": false,
+      "special_hit": true
+    },
+    {
+      "draw": "114000070",
+      "date": "2025-09-01",
+      "bet_matches": [
+        1,
+        1,
+        1,
+        1
+      ],
+      "best_match": 1,
+      "best_bet_idx": 0,
+      "is_win": false,
+      "special_hit": false
+    },
+    {
+      "draw": "114000071",
+      "date": "2025-09-04",
+      "bet_matches": [
+        1,
+        1,
+        1,
+        1
+      ],
+      "best_match": 1,
+      "best_bet_idx": 0,
+      "is_win": false,
+      "special_hit": true
+    },
+    {
+      "draw": "114000072",
+      "date": "2025-09-08",
+      "bet_matches": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "best_match": 0,
+      "best_bet_idx": -1,
+      "is_win": false,
+      "special_hit": false
+    },
+    {
+      "draw": "114000073",
+      "date": "2025-09-11",
+      "bet_matches": [
+        1,
+        1,
+        1,
+        0
+      ],
+      "best_match": 1,
+      "best_bet_idx": 0,
+      "is_win": false,
+      "special_hit": false
+    },
+    {
+      "draw": "114000074",
+      "date": "2025-09-15",
+      "bet_matches": [
+        0,
+        0,
+        0,
+        1
+      ],
+      "best_match": 1,
+      "best_bet_idx": 3,
+      "is_win": false,
+      "special_hit": true
+    },
+    {
+      "draw": "114000075",
+      "date": "2025-09-18",
+      "bet_matches": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "best_match": 0,
+      "best_bet_idx": -1,
+      "is_win": false,
+      "special_hit": true
+    },
+    {
+      "draw": "114000076",
+      "date": "2025-09-22",
+      "bet_matches": [
+        2,
+        2,
+        2,
+        2
+      ],
+      "best_match": 2,
+      "best_bet_idx": 0,
+      "is_win": false,
+      "special_hit": true
+    },
+    {
+      "draw": "114000077",
+      "date": "2025-09-25",
+      "bet_matches": [
+        2,
+        2,
+        2,
+        2
+      ],
+      "best_match": 2,
+      "best_bet_idx": 0,
+      "is_win": false,
+      "special_hit": false
+    },
+    {
+      "draw": "114000078",
+      "date": "2025-09-29",
+      "bet_matches": [
+        1,
+        1,
+        1,
+        1
+      ],
+      "best_match": 1,
+      "best_bet_idx": 0,
+      "is_win": false,
+      "special_hit": false
+    },
+    {
+      "draw": "114000079",
+      "date": "2025-10-02",
+      "bet_matches": [
+        1,
+        1,
+        1,
+        1
+      ],
+      "best_match": 1,
+      "best_bet_idx": 0,
+      "is_win": false,
+      "special_hit": false
+    },
+    {
+      "draw": "114000080",
+      "date": "2025-10-06",
+      "bet_matches": [
+        1,
+        1,
+        1,
+        1
+      ],
+      "best_match": 1,
+      "best_bet_idx": 0,
+      "is_win": false,
+      "special_hit": true
+    },
+    {
+      "draw": "114000081",
+      "date": "2025-10-09",
+      "bet_matches": [
+        1,
+        1,
+        1,
+        1
+      ],
+      "best_match": 1,
+      "best_bet_idx": 0,
+      "is_win": false,
+      "special_hit": true
+    },
+    {
+      "draw": "114000082",
+      "date": "2025-10-13",
+      "bet_matches": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "best_match": 0,
+      "best_bet_idx": -1,
+      "is_win": false,
+      "special_hit": true
+    },
+    {
+      "draw": "114000083",
+      "date": "2025-10-16",
+      "bet_matches": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "best_match": 0,
+      "best_bet_idx": -1,
+      "is_win": false,
+      "special_hit": true
+    },
+    {
+      "draw": "114000084",
+      "date": "2025-10-20",
+      "bet_matches": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "best_match": 0,
+      "best_bet_idx": -1,
+      "is_win": false,
+      "special_hit": true
+    },
+    {
+      "draw": "114000085",
+      "date": "2025-10-23",
+      "bet_matches": [
+        1,
+        1,
+        1,
+        1
+      ],
+      "best_match": 1,
+      "best_bet_idx": 0,
+      "is_win": false,
+      "special_hit": true
+    },
+    {
+      "draw": "114000086",
+      "date": "2025-10-27",
+      "bet_matches": [
+        1,
+        1,
+        1,
+        1
+      ],
+      "best_match": 1,
+      "best_bet_idx": 0,
+      "is_win": false,
+      "special_hit": false
+    },
+    {
+      "draw": "114000087",
+      "date": "2025-10-30",
+      "bet_matches": [
+        2,
+        2,
+        2,
+        2
+      ],
+      "best_match": 2,
+      "best_bet_idx": 0,
+      "is_win": false,
+      "special_hit": true
+    },
+    {
+      "draw": "114000088",
+      "date": "2025-11-03",
+      "bet_matches": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "best_match": 0,
+      "best_bet_idx": -1,
+      "is_win": false,
+      "special_hit": false
+    },
+    {
+      "draw": "114000089",
+      "date": "2025-11-06",
+      "bet_matches": [
+        2,
+        2,
+        2,
+        2
+      ],
+      "best_match": 2,
+      "best_bet_idx": 0,
+      "is_win": false,
+      "special_hit": true
+    },
+    {
+      "draw": "114000090",
+      "date": "2025-11-10",
+      "bet_matches": [
+        1,
+        1,
+        1,
+        0
+      ],
+      "best_match": 1,
+      "best_bet_idx": 0,
+      "is_win": false,
+      "special_hit": false
+    },
+    {
+      "draw": "114000091",
+      "date": "2025-11-13",
+      "bet_matches": [
+        1,
+        1,
+        1,
+        1
+      ],
+      "best_match": 1,
+      "best_bet_idx": 0,
+      "is_win": false,
+      "special_hit": false
+    },
+    {
+      "draw": "114000092",
+      "date": "2025-11-17",
+      "bet_matches": [
+        1,
+        1,
+        1,
+        1
+      ],
+      "best_match": 1,
+      "best_bet_idx": 0,
+      "is_win": false,
+      "special_hit": false
+    },
+    {
+      "draw": "114000093",
+      "date": "2025-11-20",
+      "bet_matches": [
+        3,
+        3,
+        3,
+        2
+      ],
+      "best_match": 3,
+      "best_bet_idx": 0,
+      "is_win": true,
+      "special_hit": false
+    },
+    {
+      "draw": "114000094",
+      "date": "2025-11-24",
+      "bet_matches": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "best_match": 0,
+      "best_bet_idx": -1,
+      "is_win": false,
+      "special_hit": false
+    },
+    {
+      "draw": "114000095",
+      "date": "2025-11-27",
+      "bet_matches": [
+        1,
+        1,
+        1,
+        1
+      ],
+      "best_match": 1,
+      "best_bet_idx": 0,
+      "is_win": false,
+      "special_hit": true
+    },
+    {
+      "draw": "114000098",
+      "date": "2025/12/08",
+      "bet_matches": [
+        1,
+        1,
+        1,
+        1
+      ],
+      "best_match": 1,
+      "best_bet_idx": 0,
+      "is_win": false,
+      "special_hit": true
+    },
+    {
+      "draw": "114000099",
+      "date": "2025/12/11",
+      "bet_matches": [
+        1,
+        1,
+        1,
+        1
+      ],
+      "best_match": 1,
+      "best_bet_idx": 0,
+      "is_win": false,
+      "special_hit": false
+    },
+    {
+      "draw": "114000100",
+      "date": "2025/12/15",
+      "bet_matches": [
+        1,
+        1,
+        1,
+        0
+      ],
+      "best_match": 1,
+      "best_bet_idx": 0,
+      "is_win": false,
+      "special_hit": false
+    },
+    {
+      "draw": "114000101",
+      "date": "2025/12/18",
+      "bet_matches": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "best_match": 0,
+      "best_bet_idx": -1,
+      "is_win": false,
+      "special_hit": true
+    },
+    {
+      "draw": "114000102",
+      "date": "2025/12/22",
+      "bet_matches": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "best_match": 0,
+      "best_bet_idx": -1,
+      "is_win": false,
+      "special_hit": true
+    },
+    {
+      "draw": "114000103",
+      "date": "2025/12/25",
+      "bet_matches": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "best_match": 0,
+      "best_bet_idx": -1,
+      "is_win": false,
+      "special_hit": true
+    },
+    {
+      "draw": "114000104",
+      "date": "2025/12/29",
+      "bet_matches": [
+        2,
+        2,
+        2,
+        2
+      ],
+      "best_match": 2,
+      "best_bet_idx": 0,
+      "is_win": false,
+      "special_hit": false
+    }
+  ]
+}

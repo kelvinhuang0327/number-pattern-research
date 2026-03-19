@@ -1,0 +1,32 @@
+{
+  "BIG_LOTTO": {
+    "selected_tickets": [],
+    "portfolio_score": 0.0,
+    "expected_value_sum": 0.0,
+    "total_cost": 0.0,
+    "decision": "NO_BET",
+    "reason": "No portfolio satisfies overlap, budget, and EV constraints",
+    "avg_overlap": 0.0,
+    "diversity_bonus": 0.0
+  },
+  "POWER_LOTTO": {
+    "selected_tickets": [],
+    "portfolio_score": 0.0,
+    "expected_value_sum": 0.0,
+    "total_cost": 0.0,
+    "decision": "NO_BET",
+    "reason": "No portfolio satisfies overlap, budget, and EV constraints",
+    "avg_overlap": 0.0,
+    "diversity_bonus": 0.0
+  },
+  "DAILY_539": {
+    "selected_tickets": [],
+    "portfolio_score": 0.0,
+    "expected_value_sum": 0.0,
+    "total_cost": 0.0,
+    "decision": "NO_BET",
+    "reason": "No portfolio satisfies overlap, budget, and EV constraints",
+    "avg_overlap": 0.0,
+    "diversity_bonus": 0.0
+  }
+}

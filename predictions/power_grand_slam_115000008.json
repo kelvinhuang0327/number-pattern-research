@@ -1,0 +1,44 @@
+{
+  "draw": "115000008",
+  "bets": [
+    {
+      "type": "Foundation (Hot)",
+      "numbers": [
+        9,
+        11,
+        14,
+        16,
+        18,
+        20
+      ],
+      "special": 2
+    },
+    {
+      "type": "Secondary (Hot)",
+      "numbers": [
+        8,
+        12,
+        17,
+        32,
+        34,
+        35
+      ],
+      "special": 2
+    },
+    {
+      "type": "Rebound (Cold)",
+      "numbers": [
+        31,
+        32,
+        33,
+        34,
+        35,
+        36
+      ],
+      "special": 2
+    }
+  ],
+  "special_candidates": [
+    2
+  ]
+}

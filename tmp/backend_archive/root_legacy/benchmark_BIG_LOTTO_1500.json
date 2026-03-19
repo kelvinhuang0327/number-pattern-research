@@ -1,0 +1,43 @@
+{
+    "lottery_type": "BIG_LOTTO",
+    "periods": 1500,
+    "duration": 56020.55170607567,
+    "methods": {
+        "Orthogonal_3Bet": {
+            "hits": 70,
+            "m3": 66,
+            "m4": 4,
+            "m5": 0,
+            "m6": 0
+        },
+        "VAE_Single": {
+            "hits": 40,
+            "m3": 38,
+            "m4": 2,
+            "m5": 0,
+            "m6": 0
+        },
+        "Frequency_Baseline": {
+            "hits": 19,
+            "m3": 17,
+            "m4": 2,
+            "m5": 0,
+            "m6": 0
+        },
+        "Random_3Bet": {
+            "hits": 79,
+            "m3": 77,
+            "m4": 2,
+            "m5": 0,
+            "m6": 0
+        },
+        "Frequency_3Bet": {
+            "hits": 61,
+            "m3": 59,
+            "m4": 2,
+            "m5": 0,
+            "m6": 0
+        }
+    },
+    "timestamp": "2026-02-17 00:43:01"
+}

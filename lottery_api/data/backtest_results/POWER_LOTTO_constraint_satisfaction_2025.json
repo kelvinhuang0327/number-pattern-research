@@ -1,0 +1,3138 @@
+{
+  "summary": {
+    "lottery_type": "POWER_LOTTO",
+    "method_name": "constraint_satisfaction",
+    "window_size": 100,
+    "test_periods": 102,
+    "win_count": 5,
+    "win_rate": 0.049019607843137254,
+    "avg_matches": 0.9215686274509803,
+    "max_matches": 3,
+    "total_matches": 94,
+    "periods_per_win": 20.4,
+    "expected_cost_per_win": 2039.9999999999998,
+    "test_start_date": "2025-01-02",
+    "test_end_date": "2025/12/29",
+    "backtest_timestamp": "2026-01-05T00:15:13.049779"
+  },
+  "details": [
+    {
+      "draw_id": "114000104",
+      "draw_date": "2025/12/29",
+      "predicted_numbers": [
+        7,
+        15,
+        18,
+        21,
+        26,
+        31
+      ],
+      "predicted_special": 2,
+      "actual_numbers": [
+        1,
+        3,
+        9,
+        11,
+        18,
+        32
+      ],
+      "actual_special": 6,
+      "matches": 1,
+      "matched_numbers": [
+        18
+      ],
+      "is_win": false,
+      "confidence": 0.7,
+      "method_name": "constraint_satisfaction",
+      "window_size": 100,
+      "training_periods": 100
+    },
+    {
+      "draw_id": "114000103",
+      "draw_date": "2025/12/25",
+      "predicted_numbers": [
+        1,
+        3,
+        17,
+        18,
+        28,
+        38
+      ],
+      "predicted_special": 2,
+      "actual_numbers": [
+        6,
+        12,
+        21,
+        22,
+        28,
+        34
+      ],
+      "actual_special": 8,
+      "matches": 1,
+      "matched_numbers": [
+        28
+      ],
+      "is_win": false,
+      "confidence": 0.7,
+      "method_name": "constraint_satisfaction",
+      "window_size": 100,
+      "training_periods": 100
+    },
+    {
+      "draw_id": "114000102",
+      "draw_date": "2025/12/22",
+      "predicted_numbers": [
+        5,
+        13,
+        15,
+        22,
+        32,
+        34
+      ],
+      "predicted_special": 2,
+      "actual_numbers": [
+        5,
+        16,
+        21,
+        25,
+        32,
+        34
+      ],
+      "actual_special": 8,
+      "matches": 3,
+      "matched_numbers": [
+        5,
+        32,
+        34
+      ],
+      "is_win": true,
+      "confidence": 0.7,
+      "method_name": "constraint_satisfaction",
+      "window_size": 100,
+      "training_periods": 100
+    },
+    {
+      "draw_id": "114000101",
+      "draw_date": "2025/12/18",
+      "predicted_numbers": [
+        8,
+        12,
+        21,
+        24,
+        26,
+        35
+      ],
+      "predicted_special": 2,
+      "actual_numbers": [
+        8,
+        15,
+        16,
+        21,
+        29,
+        37
+      ],
+      "actual_special": 5,
+      "matches": 2,
+      "matched_numbers": [
+        8,
+        21
+      ],
+      "is_win": false,
+      "confidence": 0.7,
+      "method_name": "constraint_satisfaction",
+      "window_size": 100,
+      "training_periods": 100
+    },
+    {
+      "draw_id": "114000100",
+      "draw_date": "2025/12/15",
+      "predicted_numbers": [
+        6,
+        8,
+        15,
+        23,
+        37,
+        38
+      ],
+      "predicted_special": 2,
+      "actual_numbers": [
+        19,
+        26,
+        28,
+        31,
+        32,
+        34
+      ],
+      "actual_special": 6,
+      "matches": 0,
+      "matched_numbers": [],
+      "is_win": false,
+      "confidence": 0.7,
+      "method_name": "constraint_satisfaction",
+      "window_size": 100,
+      "training_periods": 100
+    },
+    {
+      "draw_id": "114000099",
+      "draw_date": "2025/12/11",
+      "predicted_numbers": [
+        11,
+        13,
+        21,
+        23,
+        26,
+        34
+      ],
+      "predicted_special": 2,
+      "actual_numbers": [
+        5,
+        6,
+        11,
+        15,
+        22,
+        37
+      ],
+      "actual_special": 7,
+      "matches": 1,
+      "matched_numbers": [
+        11
+      ],
+      "is_win": false,
+      "confidence": 0.7,
+      "method_name": "constraint_satisfaction",
+      "window_size": 100,
+      "training_periods": 100
+    },
+    {
+      "draw_id": "114000098",
+      "draw_date": "2025/12/08",
+      "predicted_numbers": [
+        3,
+        10,
+        15,
+        17,
+        27,
+        38
+      ],
+      "predicted_special": 2,
+      "actual_numbers": [
+        5,
+        14,
+        15,
+        20,
+        32,
+        37
+      ],
+      "actual_special": 2,
+      "matches": 1,
+      "matched_numbers": [
+        15
+      ],
+      "is_win": false,
+      "confidence": 0.7,
+      "method_name": "constraint_satisfaction",
+      "window_size": 100,
+      "training_periods": 100
+    },
+    {
+      "draw_id": "114000095",
+      "draw_date": "2025-11-27",
+      "predicted_numbers": [
+        3,
+        4,
+        18,
+        22,
+        27,
+        29
+      ],
+      "predicted_special": 2,
+      "actual_numbers": [
+        4,
+        9,
+        16,
+        26,
+        33,
+        35
+      ],
+      "actual_special": 2,
+      "matches": 1,
+      "matched_numbers": [
+        4
+      ],
+      "is_win": false,
+      "confidence": 0.7,
+      "method_name": "constraint_satisfaction",
+      "window_size": 100,
+      "training_periods": 100
+    },
+    {
+      "draw_id": "114000094",
+      "draw_date": "2025-11-24",
+      "predicted_numbers": [
+        3,
+        9,
+        14,
+        24,
+        28,
+        30
+      ],
+      "predicted_special": 2,
+      "actual_numbers": [
+        7,
+        9,
+        19,
+        20,
+        33,
+        34
+      ],
+      "actual_special": 7,
+      "matches": 1,
+      "matched_numbers": [
+        9
+      ],
+      "is_win": false,
+      "confidence": 0.7,
+      "method_name": "constraint_satisfaction",
+      "window_size": 100,
+      "training_periods": 100
+    },
+    {
+      "draw_id": "114000093",
+      "draw_date": "2025-11-20",
+      "predicted_numbers": [
+        2,
+        6,
+        15,
+        19,
+        31,
+        37
+      ],
+      "predicted_special": 2,
+      "actual_numbers": [
+        3,
+        8,
+        17,
+        20,
+        31,
+        35
+      ],
+      "actual_special": 7,
+      "matches": 1,
+      "matched_numbers": [
+        31
+      ],
+      "is_win": false,
+      "confidence": 0.7,
+      "method_name": "constraint_satisfaction",
+      "window_size": 100,
+      "training_periods": 100
+    },
+    {
+      "draw_id": "114000092",
+      "draw_date": "2025-11-17",
+      "predicted_numbers": [
+        4,
+        13,
+        16,
+        24,
+        36,
+        37
+      ],
+      "predicted_special": 2,
+      "actual_numbers": [
+        17,
+        18,
+        19,
+        28,
+        34,
+        36
+      ],
+      "actual_special": 6,
+      "matches": 1,
+      "matched_numbers": [
+        36
+      ],
+      "is_win": false,
+      "confidence": 0.7,
+      "method_name": "constraint_satisfaction",
+      "window_size": 100,
+      "training_periods": 100
+    },
+    {
+      "draw_id": "114000091",
+      "draw_date": "2025-11-13",
+      "predicted_numbers": [
+        11,
+        14,
+        16,
+        33,
+        34,
+        38
+      ],
+      "predicted_special": 2,
+      "actual_numbers": [
+        2,
+        9,
+        11,
+        15,
+        26,
+        34
+      ],
+      "actual_special": 4,
+      "matches": 2,
+      "matched_numbers": [
+        11,
+        34
+      ],
+      "is_win": false,
+      "confidence": 0.7,
+      "method_name": "constraint_satisfaction",
+      "window_size": 100,
+      "training_periods": 100
+    },
+    {
+      "draw_id": "114000090",
+      "draw_date": "2025-11-10",
+      "predicted_numbers": [
+        2,
+        11,
+        14,
+        18,
+        32,
+        37
+      ],
+      "predicted_special": 2,
+      "actual_numbers": [
+        6,
+        12,
+        28,
+        29,
+        31,
+        32
+      ],
+      "actual_special": 4,
+      "matches": 1,
+      "matched_numbers": [
+        32
+      ],
+      "is_win": false,
+      "confidence": 0.7,
+      "method_name": "constraint_satisfaction",
+      "window_size": 100,
+      "training_periods": 100
+    },
+    {
+      "draw_id": "114000089",
+      "draw_date": "2025-11-06",
+      "predicted_numbers": [
+        3,
+        8,
+        14,
+        17,
+        29,
+        30
+      ],
+      "predicted_special": 2,
+      "actual_numbers": [
+        11,
+        18,
+        20,
+        25,
+        29,
+        37
+      ],
+      "actual_special": 8,
+      "matches": 1,
+      "matched_numbers": [
+        29
+      ],
+      "is_win": false,
+      "confidence": 0.7,
+      "method_name": "constraint_satisfaction",
+      "window_size": 100,
+      "training_periods": 100
+    },
+    {
+      "draw_id": "114000088",
+      "draw_date": "2025-11-03",
+      "predicted_numbers": [
+        2,
+        5,
+        16,
+        19,
+        31,
+        38
+      ],
+      "predicted_special": 2,
+      "actual_numbers": [
+        4,
+        18,
+        20,
+        30,
+        32,
+        35
+      ],
+      "actual_special": 4,
+      "matches": 0,
+      "matched_numbers": [],
+      "is_win": false,
+      "confidence": 0.7,
+      "method_name": "constraint_satisfaction",
+      "window_size": 100,
+      "training_periods": 100
+    },
+    {
+      "draw_id": "114000087",
+      "draw_date": "2025-10-30",
+      "predicted_numbers": [
+        2,
+        9,
+        14,
+        21,
+        26,
+        37
+      ],
+      "predicted_special": 2,
+      "actual_numbers": [
+        13,
+        14,
+        17,
+        20,
+        21,
+        24
+      ],
+      "actual_special": 2,
+      "matches": 2,
+      "matched_numbers": [
+        14,
+        21
+      ],
+      "is_win": false,
+      "confidence": 0.7,
+      "method_name": "constraint_satisfaction",
+      "window_size": 100,
+      "training_periods": 100
+    },
+    {
+      "draw_id": "114000086",
+      "draw_date": "2025-10-27",
+      "predicted_numbers": [
+        1,
+        5,
+        14,
+        16,
+        33,
+        37
+      ],
+      "predicted_special": 2,
+      "actual_numbers": [
+        1,
+        11,
+        16,
+        20,
+        27,
+        36
+      ],
+      "actual_special": 6,
+      "matches": 2,
+      "matched_numbers": [
+        1,
+        16
+      ],
+      "is_win": false,
+      "confidence": 0.7,
+      "method_name": "constraint_satisfaction",
+      "window_size": 100,
+      "training_periods": 100
+    },
+    {
+      "draw_id": "114000085",
+      "draw_date": "2025-10-23",
+      "predicted_numbers": [
+        1,
+        5,
+        20,
+        21,
+        26,
+        37
+      ],
+      "predicted_special": 2,
+      "actual_numbers": [
+        5,
+        9,
+        11,
+        21,
+        32,
+        35
+      ],
+      "actual_special": 8,
+      "matches": 2,
+      "matched_numbers": [
+        5,
+        21
+      ],
+      "is_win": false,
+      "confidence": 0.7,
+      "method_name": "constraint_satisfaction",
+      "window_size": 100,
+      "training_periods": 100
+    },
+    {
+      "draw_id": "114000084",
+      "draw_date": "2025-10-20",
+      "predicted_numbers": [
+        2,
+        8,
+        19,
+        22,
+        27,
+        31
+      ],
+      "predicted_special": 2,
+      "actual_numbers": [
+        8,
+        12,
+        19,
+        22,
+        24,
+        32
+      ],
+      "actual_special": 5,
+      "matches": 3,
+      "matched_numbers": [
+        8,
+        19,
+        22
+      ],
+      "is_win": true,
+      "confidence": 0.7,
+      "method_name": "constraint_satisfaction",
+      "window_size": 100,
+      "training_periods": 100
+    },
+    {
+      "draw_id": "114000083",
+      "draw_date": "2025-10-16",
+      "predicted_numbers": [
+        8,
+        9,
+        15,
+        20,
+        28,
+        33
+      ],
+      "predicted_special": 5,
+      "actual_numbers": [
+        8,
+        9,
+        13,
+        16,
+        26,
+        35
+      ],
+      "actual_special": 2,
+      "matches": 2,
+      "matched_numbers": [
+        8,
+        9
+      ],
+      "is_win": false,
+      "confidence": 0.7,
+      "method_name": "constraint_satisfaction",
+      "window_size": 100,
+      "training_periods": 100
+    },
+    {
+      "draw_id": "114000082",
+      "draw_date": "2025-10-13",
+      "predicted_numbers": [
+        7,
+        11,
+        14,
+        25,
+        31,
+        36
+      ],
+      "predicted_special": 5,
+      "actual_numbers": [
+        4,
+        6,
+        8,
+        18,
+        24,
+        28
+      ],
+      "actual_special": 1,
+      "matches": 0,
+      "matched_numbers": [],
+      "is_win": false,
+      "confidence": 0.7,
+      "method_name": "constraint_satisfaction",
+      "window_size": 100,
+      "training_periods": 100
+    },
+    {
+      "draw_id": "114000081",
+      "draw_date": "2025-10-09",
+      "predicted_numbers": [
+        1,
+        8,
+        20,
+        23,
+        28,
+        30
+      ],
+      "predicted_special": 5,
+      "actual_numbers": [
+        1,
+        6,
+        11,
+        20,
+        34,
+        35
+      ],
+      "actual_special": 8,
+      "matches": 2,
+      "matched_numbers": [
+        1,
+        20
+      ],
+      "is_win": false,
+      "confidence": 0.7,
+      "method_name": "constraint_satisfaction",
+      "window_size": 100,
+      "training_periods": 100
+    },
+    {
+      "draw_id": "114000080",
+      "draw_date": "2025-10-06",
+      "predicted_numbers": [
+        3,
+        8,
+        18,
+        24,
+        29,
+        34
+      ],
+      "predicted_special": 2,
+      "actual_numbers": [
+        5,
+        6,
+        9,
+        14,
+        15,
+        37
+      ],
+      "actual_special": 5,
+      "matches": 0,
+      "matched_numbers": [],
+      "is_win": false,
+      "confidence": 0.7,
+      "method_name": "constraint_satisfaction",
+      "window_size": 100,
+      "training_periods": 100
+    },
+    {
+      "draw_id": "114000079",
+      "draw_date": "2025-10-02",
+      "predicted_numbers": [
+        6,
+        13,
+        16,
+        17,
+        28,
+        33
+      ],
+      "predicted_special": 2,
+      "actual_numbers": [
+        3,
+        5,
+        12,
+        24,
+        27,
+        30
+      ],
+      "actual_special": 7,
+      "matches": 0,
+      "matched_numbers": [],
+      "is_win": false,
+      "confidence": 0.7,
+      "method_name": "constraint_satisfaction",
+      "window_size": 100,
+      "training_periods": 100
+    },
+    {
+      "draw_id": "114000078",
+      "draw_date": "2025-09-29",
+      "predicted_numbers": [
+        9,
+        10,
+        15,
+        24,
+        27,
+        32
+      ],
+      "predicted_special": 2,
+      "actual_numbers": [
+        12,
+        16,
+        17,
+        20,
+        27,
+        36
+      ],
+      "actual_special": 3,
+      "matches": 1,
+      "matched_numbers": [
+        27
+      ],
+      "is_win": false,
+      "confidence": 0.7,
+      "method_name": "constraint_satisfaction",
+      "window_size": 100,
+      "training_periods": 100
+    },
+    {
+      "draw_id": "114000077",
+      "draw_date": "2025-09-25",
+      "predicted_numbers": [
+        1,
+        13,
+        19,
+        21,
+        30,
+        34
+      ],
+      "predicted_special": 2,
+      "actual_numbers": [
+        8,
+        12,
+        14,
+        24,
+        28,
+        35
+      ],
+      "actual_special": 3,
+      "matches": 0,
+      "matched_numbers": [],
+      "is_win": false,
+      "confidence": 0.7,
+      "method_name": "constraint_satisfaction",
+      "window_size": 100,
+      "training_periods": 100
+    },
+    {
+      "draw_id": "114000076",
+      "draw_date": "2025-09-22",
+      "predicted_numbers": [
+        10,
+        13,
+        16,
+        17,
+        33,
+        38
+      ],
+      "predicted_special": 4,
+      "actual_numbers": [
+        10,
+        11,
+        14,
+        22,
+        31,
+        33
+      ],
+      "actual_special": 2,
+      "matches": 2,
+      "matched_numbers": [
+        10,
+        33
+      ],
+      "is_win": false,
+      "confidence": 0.7,
+      "method_name": "constraint_satisfaction",
+      "window_size": 100,
+      "training_periods": 100
+    },
+    {
+      "draw_id": "114000075",
+      "draw_date": "2025-09-18",
+      "predicted_numbers": [
+        1,
+        3,
+        22,
+        23,
+        32,
+        37
+      ],
+      "predicted_special": 4,
+      "actual_numbers": [
+        10,
+        20,
+        25,
+        28,
+        32,
+        36
+      ],
+      "actual_special": 2,
+      "matches": 1,
+      "matched_numbers": [
+        32
+      ],
+      "is_win": false,
+      "confidence": 0.7,
+      "method_name": "constraint_satisfaction",
+      "window_size": 100,
+      "training_periods": 100
+    },
+    {
+      "draw_id": "114000074",
+      "draw_date": "2025-09-15",
+      "predicted_numbers": [
+        8,
+        11,
+        15,
+        16,
+        26,
+        35
+      ],
+      "predicted_special": 4,
+      "actual_numbers": [
+        4,
+        16,
+        20,
+        33,
+        34,
+        38
+      ],
+      "actual_special": 2,
+      "matches": 1,
+      "matched_numbers": [
+        16
+      ],
+      "is_win": false,
+      "confidence": 0.7,
+      "method_name": "constraint_satisfaction",
+      "window_size": 100,
+      "training_periods": 100
+    },
+    {
+      "draw_id": "114000073",
+      "draw_date": "2025-09-11",
+      "predicted_numbers": [
+        2,
+        9,
+        20,
+        21,
+        30,
+        37
+      ],
+      "predicted_special": 4,
+      "actual_numbers": [
+        11,
+        18,
+        21,
+        27,
+        31,
+        35
+      ],
+      "actual_special": 6,
+      "matches": 1,
+      "matched_numbers": [
+        21
+      ],
+      "is_win": false,
+      "confidence": 0.7,
+      "method_name": "constraint_satisfaction",
+      "window_size": 100,
+      "training_periods": 100
+    },
+    {
+      "draw_id": "114000072",
+      "draw_date": "2025-09-08",
+      "predicted_numbers": [
+        5,
+        13,
+        14,
+        23,
+        26,
+        28
+      ],
+      "predicted_special": 4,
+      "actual_numbers": [
+        7,
+        8,
+        14,
+        15,
+        25,
+        36
+      ],
+      "actual_special": 6,
+      "matches": 1,
+      "matched_numbers": [
+        14
+      ],
+      "is_win": false,
+      "confidence": 0.7,
+      "method_name": "constraint_satisfaction",
+      "window_size": 100,
+      "training_periods": 100
+    },
+    {
+      "draw_id": "114000071",
+      "draw_date": "2025-09-04",
+      "predicted_numbers": [
+        2,
+        8,
+        18,
+        23,
+        29,
+        31
+      ],
+      "predicted_special": 4,
+      "actual_numbers": [
+        6,
+        7,
+        9,
+        11,
+        21,
+        38
+      ],
+      "actual_special": 8,
+      "matches": 0,
+      "matched_numbers": [],
+      "is_win": false,
+      "confidence": 0.7,
+      "method_name": "constraint_satisfaction",
+      "window_size": 100,
+      "training_periods": 100
+    },
+    {
+      "draw_id": "114000070",
+      "draw_date": "2025-09-01",
+      "predicted_numbers": [
+        5,
+        7,
+        20,
+        22,
+        34,
+        35
+      ],
+      "predicted_special": 4,
+      "actual_numbers": [
+        2,
+        7,
+        16,
+        18,
+        28,
+        29
+      ],
+      "actual_special": 4,
+      "matches": 1,
+      "matched_numbers": [
+        7
+      ],
+      "is_win": false,
+      "confidence": 0.7,
+      "method_name": "constraint_satisfaction",
+      "window_size": 100,
+      "training_periods": 100
+    },
+    {
+      "draw_id": "114000069",
+      "draw_date": "2025-08-28",
+      "predicted_numbers": [
+        6,
+        9,
+        21,
+        24,
+        28,
+        34
+      ],
+      "predicted_special": 4,
+      "actual_numbers": [
+        9,
+        13,
+        14,
+        17,
+        23,
+        30
+      ],
+      "actual_special": 5,
+      "matches": 1,
+      "matched_numbers": [
+        9
+      ],
+      "is_win": false,
+      "confidence": 0.7,
+      "method_name": "constraint_satisfaction",
+      "window_size": 100,
+      "training_periods": 100
+    },
+    {
+      "draw_id": "114000068",
+      "draw_date": "2025-08-25",
+      "predicted_numbers": [
+        5,
+        9,
+        17,
+        24,
+        28,
+        34
+      ],
+      "predicted_special": 4,
+      "actual_numbers": [
+        1,
+        12,
+        14,
+        21,
+        36,
+        37
+      ],
+      "actual_special": 3,
+      "matches": 0,
+      "matched_numbers": [],
+      "is_win": false,
+      "confidence": 0.7,
+      "method_name": "constraint_satisfaction",
+      "window_size": 100,
+      "training_periods": 100
+    },
+    {
+      "draw_id": "114000067",
+      "draw_date": "2025-08-21",
+      "predicted_numbers": [
+        6,
+        7,
+        15,
+        17,
+        26,
+        32
+      ],
+      "predicted_special": 4,
+      "actual_numbers": [
+        2,
+        4,
+        11,
+        12,
+        16,
+        19
+      ],
+      "actual_special": 2,
+      "matches": 0,
+      "matched_numbers": [],
+      "is_win": false,
+      "confidence": 0.7,
+      "method_name": "constraint_satisfaction",
+      "window_size": 100,
+      "training_periods": 100
+    },
+    {
+      "draw_id": "114000066",
+      "draw_date": "2025-08-18",
+      "predicted_numbers": [
+        7,
+        12,
+        16,
+        21,
+        26,
+        29
+      ],
+      "predicted_special": 4,
+      "actual_numbers": [
+        2,
+        5,
+        8,
+        17,
+        20,
+        26
+      ],
+      "actual_special": 6,
+      "matches": 1,
+      "matched_numbers": [
+        26
+      ],
+      "is_win": false,
+      "confidence": 0.7,
+      "method_name": "constraint_satisfaction",
+      "window_size": 100,
+      "training_periods": 100
+    },
+    {
+      "draw_id": "114000065",
+      "draw_date": "2025-08-14",
+      "predicted_numbers": [
+        9,
+        13,
+        18,
+        24,
+        26,
+        29
+      ],
+      "predicted_special": 4,
+      "actual_numbers": [
+        1,
+        11,
+        14,
+        17,
+        19,
+        36
+      ],
+      "actual_special": 3,
+      "matches": 0,
+      "matched_numbers": [],
+      "is_win": false,
+      "confidence": 0.7,
+      "method_name": "constraint_satisfaction",
+      "window_size": 100,
+      "training_periods": 100
+    },
+    {
+      "draw_id": "114000064",
+      "draw_date": "2025-08-11",
+      "predicted_numbers": [
+        9,
+        11,
+        24,
+        25,
+        30,
+        37
+      ],
+      "predicted_special": 4,
+      "actual_numbers": [
+        3,
+        5,
+        9,
+        16,
+        18,
+        19
+      ],
+      "actual_special": 2,
+      "matches": 1,
+      "matched_numbers": [
+        9
+      ],
+      "is_win": false,
+      "confidence": 0.7,
+      "method_name": "constraint_satisfaction",
+      "window_size": 100,
+      "training_periods": 100
+    },
+    {
+      "draw_id": "114000063",
+      "draw_date": "2025-08-07",
+      "predicted_numbers": [
+        6,
+        10,
+        21,
+        23,
+        30,
+        37
+      ],
+      "predicted_special": 4,
+      "actual_numbers": [
+        2,
+        4,
+        7,
+        8,
+        18,
+        25
+      ],
+      "actual_special": 7,
+      "matches": 0,
+      "matched_numbers": [],
+      "is_win": false,
+      "confidence": 0.7,
+      "method_name": "constraint_satisfaction",
+      "window_size": 100,
+      "training_periods": 100
+    },
+    {
+      "draw_id": "114000062",
+      "draw_date": "2025-08-04",
+      "predicted_numbers": [
+        6,
+        12,
+        21,
+        23,
+        27,
+        36
+      ],
+      "predicted_special": 4,
+      "actual_numbers": [
+        15,
+        16,
+        22,
+        27,
+        30,
+        32
+      ],
+      "actual_special": 1,
+      "matches": 1,
+      "matched_numbers": [
+        27
+      ],
+      "is_win": false,
+      "confidence": 0.7,
+      "method_name": "constraint_satisfaction",
+      "window_size": 100,
+      "training_periods": 100
+    },
+    {
+      "draw_id": "114000061",
+      "draw_date": "2025-07-31",
+      "predicted_numbers": [
+        2,
+        9,
+        24,
+        25,
+        28,
+        33
+      ],
+      "predicted_special": 4,
+      "actual_numbers": [
+        4,
+        9,
+        18,
+        20,
+        29,
+        31
+      ],
+      "actual_special": 3,
+      "matches": 1,
+      "matched_numbers": [
+        9
+      ],
+      "is_win": false,
+      "confidence": 0.7,
+      "method_name": "constraint_satisfaction",
+      "window_size": 100,
+      "training_periods": 100
+    },
+    {
+      "draw_id": "114000060",
+      "draw_date": "2025-07-28",
+      "predicted_numbers": [
+        4,
+        7,
+        15,
+        21,
+        29,
+        36
+      ],
+      "predicted_special": 4,
+      "actual_numbers": [
+        12,
+        16,
+        18,
+        22,
+        24,
+        36
+      ],
+      "actual_special": 5,
+      "matches": 1,
+      "matched_numbers": [
+        36
+      ],
+      "is_win": false,
+      "confidence": 0.7,
+      "method_name": "constraint_satisfaction",
+      "window_size": 100,
+      "training_periods": 100
+    },
+    {
+      "draw_id": "114000059",
+      "draw_date": "2025-07-24",
+      "predicted_numbers": [
+        8,
+        13,
+        14,
+        21,
+        27,
+        37
+      ],
+      "predicted_special": 4,
+      "actual_numbers": [
+        3,
+        4,
+        7,
+        10,
+        33,
+        38
+      ],
+      "actual_special": 5,
+      "matches": 0,
+      "matched_numbers": [],
+      "is_win": false,
+      "confidence": 0.7,
+      "method_name": "constraint_satisfaction",
+      "window_size": 100,
+      "training_periods": 100
+    },
+    {
+      "draw_id": "114000058",
+      "draw_date": "2025-07-21",
+      "predicted_numbers": [
+        7,
+        10,
+        14,
+        23,
+        31,
+        32
+      ],
+      "predicted_special": 4,
+      "actual_numbers": [
+        10,
+        18,
+        20,
+        24,
+        36,
+        38
+      ],
+      "actual_special": 4,
+      "matches": 1,
+      "matched_numbers": [
+        10
+      ],
+      "is_win": false,
+      "confidence": 0.7,
+      "method_name": "constraint_satisfaction",
+      "window_size": 100,
+      "training_periods": 100
+    },
+    {
+      "draw_id": "114000057",
+      "draw_date": "2025-07-17",
+      "predicted_numbers": [
+        6,
+        9,
+        16,
+        24,
+        31,
+        36
+      ],
+      "predicted_special": 4,
+      "actual_numbers": [
+        1,
+        4,
+        6,
+        21,
+        25,
+        28
+      ],
+      "actual_special": 2,
+      "matches": 1,
+      "matched_numbers": [
+        6
+      ],
+      "is_win": false,
+      "confidence": 0.7,
+      "method_name": "constraint_satisfaction",
+      "window_size": 100,
+      "training_periods": 100
+    },
+    {
+      "draw_id": "114000056",
+      "draw_date": "2025-07-14",
+      "predicted_numbers": [
+        1,
+        2,
+        21,
+        29,
+        31,
+        36
+      ],
+      "predicted_special": 2,
+      "actual_numbers": [
+        3,
+        6,
+        19,
+        22,
+        37,
+        38
+      ],
+      "actual_special": 4,
+      "matches": 0,
+      "matched_numbers": [],
+      "is_win": false,
+      "confidence": 0.7,
+      "method_name": "constraint_satisfaction",
+      "window_size": 100,
+      "training_periods": 100
+    },
+    {
+      "draw_id": "114000055",
+      "draw_date": "2025-07-10",
+      "predicted_numbers": [
+        2,
+        8,
+        13,
+        23,
+        29,
+        37
+      ],
+      "predicted_special": 4,
+      "actual_numbers": [
+        1,
+        2,
+        7,
+        14,
+        28,
+        31
+      ],
+      "actual_special": 2,
+      "matches": 1,
+      "matched_numbers": [
+        2
+      ],
+      "is_win": false,
+      "confidence": 0.7,
+      "method_name": "constraint_satisfaction",
+      "window_size": 100,
+      "training_periods": 100
+    },
+    {
+      "draw_id": "114000054",
+      "draw_date": "2025-07-07",
+      "predicted_numbers": [
+        10,
+        11,
+        19,
+        22,
+        31,
+        35
+      ],
+      "predicted_special": 4,
+      "actual_numbers": [
+        7,
+        9,
+        14,
+        23,
+        37,
+        38
+      ],
+      "actual_special": 3,
+      "matches": 0,
+      "matched_numbers": [],
+      "is_win": false,
+      "confidence": 0.7,
+      "method_name": "constraint_satisfaction",
+      "window_size": 100,
+      "training_periods": 100
+    },
+    {
+      "draw_id": "114000053",
+      "draw_date": "2025-07-03",
+      "predicted_numbers": [
+        12,
+        13,
+        20,
+        23,
+        26,
+        38
+      ],
+      "predicted_special": 4,
+      "actual_numbers": [
+        11,
+        14,
+        20,
+        27,
+        30,
+        38
+      ],
+      "actual_special": 6,
+      "matches": 2,
+      "matched_numbers": [
+        20,
+        38
+      ],
+      "is_win": false,
+      "confidence": 0.7,
+      "method_name": "constraint_satisfaction",
+      "window_size": 100,
+      "training_periods": 100
+    },
+    {
+      "draw_id": "114000052",
+      "draw_date": "2025-06-30",
+      "predicted_numbers": [
+        10,
+        13,
+        15,
+        22,
+        35,
+        38
+      ],
+      "predicted_special": 4,
+      "actual_numbers": [
+        1,
+        3,
+        9,
+        15,
+        22,
+        27
+      ],
+      "actual_special": 5,
+      "matches": 2,
+      "matched_numbers": [
+        15,
+        22
+      ],
+      "is_win": false,
+      "confidence": 0.7,
+      "method_name": "constraint_satisfaction",
+      "window_size": 100,
+      "training_periods": 100
+    },
+    {
+      "draw_id": "114000051",
+      "draw_date": "2025-06-26",
+      "predicted_numbers": [
+        8,
+        10,
+        15,
+        17,
+        26,
+        38
+      ],
+      "predicted_special": 2,
+      "actual_numbers": [
+        1,
+        7,
+        15,
+        23,
+        26,
+        38
+      ],
+      "actual_special": 4,
+      "matches": 3,
+      "matched_numbers": [
+        15,
+        26,
+        38
+      ],
+      "is_win": true,
+      "confidence": 0.7,
+      "method_name": "constraint_satisfaction",
+      "window_size": 100,
+      "training_periods": 100
+    },
+    {
+      "draw_id": "114000050",
+      "draw_date": "2025-06-23",
+      "predicted_numbers": [
+        7,
+        10,
+        18,
+        23,
+        27,
+        30
+      ],
+      "predicted_special": 2,
+      "actual_numbers": [
+        6,
+        11,
+        20,
+        31,
+        32,
+        33
+      ],
+      "actual_special": 6,
+      "matches": 0,
+      "matched_numbers": [],
+      "is_win": false,
+      "confidence": 0.7,
+      "method_name": "constraint_satisfaction",
+      "window_size": 100,
+      "training_periods": 100
+    },
+    {
+      "draw_id": "114000049",
+      "draw_date": "2025-06-19",
+      "predicted_numbers": [
+        3,
+        14,
+        15,
+        22,
+        30,
+        33
+      ],
+      "predicted_special": 2,
+      "actual_numbers": [
+        1,
+        7,
+        20,
+        21,
+        36,
+        38
+      ],
+      "actual_special": 6,
+      "matches": 0,
+      "matched_numbers": [],
+      "is_win": false,
+      "confidence": 0.7,
+      "method_name": "constraint_satisfaction",
+      "window_size": 100,
+      "training_periods": 100
+    },
+    {
+      "draw_id": "114000048",
+      "draw_date": "2025-06-16",
+      "predicted_numbers": [
+        2,
+        3,
+        14,
+        25,
+        29,
+        32
+      ],
+      "predicted_special": 2,
+      "actual_numbers": [
+        4,
+        11,
+        12,
+        18,
+        21,
+        26
+      ],
+      "actual_special": 3,
+      "matches": 0,
+      "matched_numbers": [],
+      "is_win": false,
+      "confidence": 0.7,
+      "method_name": "constraint_satisfaction",
+      "window_size": 100,
+      "training_periods": 100
+    },
+    {
+      "draw_id": "114000047",
+      "draw_date": "2025-06-12",
+      "predicted_numbers": [
+        4,
+        12,
+        15,
+        25,
+        29,
+        37
+      ],
+      "predicted_special": 4,
+      "actual_numbers": [
+        5,
+        12,
+        13,
+        15,
+        26,
+        38
+      ],
+      "actual_special": 5,
+      "matches": 2,
+      "matched_numbers": [
+        12,
+        15
+      ],
+      "is_win": false,
+      "confidence": 0.7,
+      "method_name": "constraint_satisfaction",
+      "window_size": 100,
+      "training_periods": 100
+    },
+    {
+      "draw_id": "114000046",
+      "draw_date": "2025-06-09",
+      "predicted_numbers": [
+        7,
+        12,
+        14,
+        23,
+        26,
+        37
+      ],
+      "predicted_special": 4,
+      "actual_numbers": [
+        3,
+        7,
+        9,
+        19,
+        24,
+        31
+      ],
+      "actual_special": 2,
+      "matches": 1,
+      "matched_numbers": [
+        7
+      ],
+      "is_win": false,
+      "confidence": 0.7,
+      "method_name": "constraint_satisfaction",
+      "window_size": 100,
+      "training_periods": 100
+    },
+    {
+      "draw_id": "114000045",
+      "draw_date": "2025-06-05",
+      "predicted_numbers": [
+        1,
+        11,
+        20,
+        24,
+        35,
+        37
+      ],
+      "predicted_special": 4,
+      "actual_numbers": [
+        12,
+        16,
+        20,
+        22,
+        34,
+        35
+      ],
+      "actual_special": 5,
+      "matches": 2,
+      "matched_numbers": [
+        20,
+        35
+      ],
+      "is_win": false,
+      "confidence": 0.7,
+      "method_name": "constraint_satisfaction",
+      "window_size": 100,
+      "training_periods": 100
+    },
+    {
+      "draw_id": "114000044",
+      "draw_date": "2025-06-02",
+      "predicted_numbers": [
+        1,
+        13,
+        22,
+        24,
+        34,
+        38
+      ],
+      "predicted_special": 4,
+      "actual_numbers": [
+        1,
+        5,
+        16,
+        18,
+        21,
+        31
+      ],
+      "actual_special": 2,
+      "matches": 1,
+      "matched_numbers": [
+        1
+      ],
+      "is_win": false,
+      "confidence": 0.7,
+      "method_name": "constraint_satisfaction",
+      "window_size": 100,
+      "training_periods": 100
+    },
+    {
+      "draw_id": "114000043",
+      "draw_date": "2025-05-29",
+      "predicted_numbers": [
+        2,
+        9,
+        20,
+        24,
+        29,
+        30
+      ],
+      "predicted_special": 4,
+      "actual_numbers": [
+        5,
+        6,
+        9,
+        20,
+        22,
+        35
+      ],
+      "actual_special": 7,
+      "matches": 2,
+      "matched_numbers": [
+        9,
+        20
+      ],
+      "is_win": false,
+      "confidence": 0.7,
+      "method_name": "constraint_satisfaction",
+      "window_size": 100,
+      "training_periods": 100
+    },
+    {
+      "draw_id": "114000042",
+      "draw_date": "2025-05-26",
+      "predicted_numbers": [
+        6,
+        9,
+        21,
+        25,
+        34,
+        37
+      ],
+      "predicted_special": 4,
+      "actual_numbers": [
+        13,
+        14,
+        17,
+        23,
+        24,
+        37
+      ],
+      "actual_special": 6,
+      "matches": 1,
+      "matched_numbers": [
+        37
+      ],
+      "is_win": false,
+      "confidence": 0.7,
+      "method_name": "constraint_satisfaction",
+      "window_size": 100,
+      "training_periods": 100
+    },
+    {
+      "draw_id": "114000041",
+      "draw_date": "2025-05-22",
+      "predicted_numbers": [
+        7,
+        13,
+        14,
+        23,
+        26,
+        37
+      ],
+      "predicted_special": 4,
+      "actual_numbers": [
+        6,
+        12,
+        21,
+        25,
+        34,
+        38
+      ],
+      "actual_special": 3,
+      "matches": 0,
+      "matched_numbers": [],
+      "is_win": false,
+      "confidence": 0.7,
+      "method_name": "constraint_satisfaction",
+      "window_size": 100,
+      "training_periods": 100
+    },
+    {
+      "draw_id": "114000040",
+      "draw_date": "2025-05-19",
+      "predicted_numbers": [
+        2,
+        3,
+        15,
+        20,
+        36,
+        38
+      ],
+      "predicted_special": 4,
+      "actual_numbers": [
+        10,
+        15,
+        22,
+        27,
+        29,
+        37
+      ],
+      "actual_special": 3,
+      "matches": 1,
+      "matched_numbers": [
+        15
+      ],
+      "is_win": false,
+      "confidence": 0.7,
+      "method_name": "constraint_satisfaction",
+      "window_size": 100,
+      "training_periods": 100
+    },
+    {
+      "draw_id": "114000039",
+      "draw_date": "2025-05-15",
+      "predicted_numbers": [
+        1,
+        10,
+        16,
+        17,
+        31,
+        35
+      ],
+      "predicted_special": 4,
+      "actual_numbers": [
+        1,
+        2,
+        8,
+        21,
+        23,
+        26
+      ],
+      "actual_special": 1,
+      "matches": 1,
+      "matched_numbers": [
+        1
+      ],
+      "is_win": false,
+      "confidence": 0.7,
+      "method_name": "constraint_satisfaction",
+      "window_size": 100,
+      "training_periods": 100
+    },
+    {
+      "draw_id": "114000038",
+      "draw_date": "2025-05-12",
+      "predicted_numbers": [
+        3,
+        6,
+        17,
+        23,
+        26,
+        34
+      ],
+      "predicted_special": 4,
+      "actual_numbers": [
+        2,
+        8,
+        26,
+        34,
+        35,
+        38
+      ],
+      "actual_special": 4,
+      "matches": 2,
+      "matched_numbers": [
+        26,
+        34
+      ],
+      "is_win": false,
+      "confidence": 0.7,
+      "method_name": "constraint_satisfaction",
+      "window_size": 100,
+      "training_periods": 100
+    },
+    {
+      "draw_id": "114000037",
+      "draw_date": "2025-05-08",
+      "predicted_numbers": [
+        10,
+        13,
+        18,
+        20,
+        27,
+        33
+      ],
+      "predicted_special": 4,
+      "actual_numbers": [
+        5,
+        8,
+        9,
+        17,
+        31,
+        37
+      ],
+      "actual_special": 1,
+      "matches": 0,
+      "matched_numbers": [],
+      "is_win": false,
+      "confidence": 0.7,
+      "method_name": "constraint_satisfaction",
+      "window_size": 100,
+      "training_periods": 100
+    },
+    {
+      "draw_id": "114000036",
+      "draw_date": "2025-05-05",
+      "predicted_numbers": [
+        2,
+        11,
+        14,
+        17,
+        31,
+        32
+      ],
+      "predicted_special": 4,
+      "actual_numbers": [
+        7,
+        8,
+        9,
+        11,
+        19,
+        35
+      ],
+      "actual_special": 4,
+      "matches": 1,
+      "matched_numbers": [
+        11
+      ],
+      "is_win": false,
+      "confidence": 0.7,
+      "method_name": "constraint_satisfaction",
+      "window_size": 100,
+      "training_periods": 100
+    },
+    {
+      "draw_id": "114000035",
+      "draw_date": "2025-05-01",
+      "predicted_numbers": [
+        7,
+        9,
+        16,
+        25,
+        26,
+        29
+      ],
+      "predicted_special": 2,
+      "actual_numbers": [
+        14,
+        19,
+        20,
+        25,
+        27,
+        30
+      ],
+      "actual_special": 4,
+      "matches": 1,
+      "matched_numbers": [
+        25
+      ],
+      "is_win": false,
+      "confidence": 0.7,
+      "method_name": "constraint_satisfaction",
+      "window_size": 100,
+      "training_periods": 100
+    },
+    {
+      "draw_id": "114000034",
+      "draw_date": "2025-04-28",
+      "predicted_numbers": [
+        8,
+        9,
+        25,
+        28,
+        31,
+        36
+      ],
+      "predicted_special": 2,
+      "actual_numbers": [
+        2,
+        14,
+        17,
+        19,
+        29,
+        32
+      ],
+      "actual_special": 5,
+      "matches": 0,
+      "matched_numbers": [],
+      "is_win": false,
+      "confidence": 0.7,
+      "method_name": "constraint_satisfaction",
+      "window_size": 100,
+      "training_periods": 100
+    },
+    {
+      "draw_id": "114000033",
+      "draw_date": "2025-04-24",
+      "predicted_numbers": [
+        1,
+        11,
+        16,
+        18,
+        30,
+        38
+      ],
+      "predicted_special": 4,
+      "actual_numbers": [
+        7,
+        17,
+        25,
+        29,
+        36,
+        37
+      ],
+      "actual_special": 5,
+      "matches": 0,
+      "matched_numbers": [],
+      "is_win": false,
+      "confidence": 0.7,
+      "method_name": "constraint_satisfaction",
+      "window_size": 100,
+      "training_periods": 100
+    },
+    {
+      "draw_id": "114000032",
+      "draw_date": "2025-04-21",
+      "predicted_numbers": [
+        8,
+        11,
+        23,
+        24,
+        32,
+        36
+      ],
+      "predicted_special": 2,
+      "actual_numbers": [
+        5,
+        9,
+        20,
+        29,
+        35,
+        36
+      ],
+      "actual_special": 8,
+      "matches": 1,
+      "matched_numbers": [
+        36
+      ],
+      "is_win": false,
+      "confidence": 0.7,
+      "method_name": "constraint_satisfaction",
+      "window_size": 100,
+      "training_periods": 100
+    },
+    {
+      "draw_id": "114000031",
+      "draw_date": "2025-04-17",
+      "predicted_numbers": [
+        2,
+        3,
+        22,
+        25,
+        31,
+        34
+      ],
+      "predicted_special": 2,
+      "actual_numbers": [
+        1,
+        2,
+        3,
+        5,
+        17,
+        27
+      ],
+      "actual_special": 8,
+      "matches": 2,
+      "matched_numbers": [
+        2,
+        3
+      ],
+      "is_win": false,
+      "confidence": 0.7,
+      "method_name": "constraint_satisfaction",
+      "window_size": 100,
+      "training_periods": 100
+    },
+    {
+      "draw_id": "114000030",
+      "draw_date": "2025-04-14",
+      "predicted_numbers": [
+        5,
+        6,
+        18,
+        24,
+        27,
+        34
+      ],
+      "predicted_special": 4,
+      "actual_numbers": [
+        1,
+        5,
+        9,
+        20,
+        29,
+        38
+      ],
+      "actual_special": 2,
+      "matches": 1,
+      "matched_numbers": [
+        5
+      ],
+      "is_win": false,
+      "confidence": 0.7,
+      "method_name": "constraint_satisfaction",
+      "window_size": 100,
+      "training_periods": 100
+    },
+    {
+      "draw_id": "114000029",
+      "draw_date": "2025-04-10",
+      "predicted_numbers": [
+        1,
+        6,
+        21,
+        24,
+        27,
+        34
+      ],
+      "predicted_special": 2,
+      "actual_numbers": [
+        9,
+        16,
+        20,
+        23,
+        29,
+        34
+      ],
+      "actual_special": 4,
+      "matches": 1,
+      "matched_numbers": [
+        34
+      ],
+      "is_win": false,
+      "confidence": 0.7,
+      "method_name": "constraint_satisfaction",
+      "window_size": 100,
+      "training_periods": 100
+    },
+    {
+      "draw_id": "114000028",
+      "draw_date": "2025-04-07",
+      "predicted_numbers": [
+        5,
+        10,
+        18,
+        20,
+        22,
+        33
+      ],
+      "predicted_special": 2,
+      "actual_numbers": [
+        13,
+        21,
+        24,
+        25,
+        31,
+        36
+      ],
+      "actual_special": 4,
+      "matches": 0,
+      "matched_numbers": [],
+      "is_win": false,
+      "confidence": 0.7,
+      "method_name": "constraint_satisfaction",
+      "window_size": 100,
+      "training_periods": 100
+    },
+    {
+      "draw_id": "114000027",
+      "draw_date": "2025-04-03",
+      "predicted_numbers": [
+        5,
+        8,
+        14,
+        17,
+        27,
+        33
+      ],
+      "predicted_special": 2,
+      "actual_numbers": [
+        2,
+        9,
+        15,
+        21,
+        29,
+        36
+      ],
+      "actual_special": 7,
+      "matches": 0,
+      "matched_numbers": [],
+      "is_win": false,
+      "confidence": 0.7,
+      "method_name": "constraint_satisfaction",
+      "window_size": 100,
+      "training_periods": 100
+    },
+    {
+      "draw_id": "114000026",
+      "draw_date": "2025-03-31",
+      "predicted_numbers": [
+        6,
+        13,
+        21,
+        22,
+        30,
+        32
+      ],
+      "predicted_special": 2,
+      "actual_numbers": [
+        2,
+        6,
+        7,
+        9,
+        12,
+        20
+      ],
+      "actual_special": 4,
+      "matches": 1,
+      "matched_numbers": [
+        6
+      ],
+      "is_win": false,
+      "confidence": 0.7,
+      "method_name": "constraint_satisfaction",
+      "window_size": 100,
+      "training_periods": 100
+    },
+    {
+      "draw_id": "114000025",
+      "draw_date": "2025-03-27",
+      "predicted_numbers": [
+        3,
+        9,
+        17,
+        18,
+        34,
+        36
+      ],
+      "predicted_special": 2,
+      "actual_numbers": [
+        7,
+        8,
+        21,
+        26,
+        32,
+        35
+      ],
+      "actual_special": 2,
+      "matches": 0,
+      "matched_numbers": [],
+      "is_win": false,
+      "confidence": 0.7,
+      "method_name": "constraint_satisfaction",
+      "window_size": 100,
+      "training_periods": 100
+    },
+    {
+      "draw_id": "114000024",
+      "draw_date": "2025-03-24",
+      "predicted_numbers": [
+        5,
+        10,
+        20,
+        24,
+        29,
+        34
+      ],
+      "predicted_special": 2,
+      "actual_numbers": [
+        3,
+        17,
+        22,
+        24,
+        25,
+        33
+      ],
+      "actual_special": 3,
+      "matches": 1,
+      "matched_numbers": [
+        24
+      ],
+      "is_win": false,
+      "confidence": 0.7,
+      "method_name": "constraint_satisfaction",
+      "window_size": 100,
+      "training_periods": 100
+    },
+    {
+      "draw_id": "114000023",
+      "draw_date": "2025-03-20",
+      "predicted_numbers": [
+        3,
+        8,
+        18,
+        22,
+        29,
+        31
+      ],
+      "predicted_special": 2,
+      "actual_numbers": [
+        1,
+        3,
+        12,
+        18,
+        31,
+        38
+      ],
+      "actual_special": 8,
+      "matches": 3,
+      "matched_numbers": [
+        3,
+        18,
+        31
+      ],
+      "is_win": true,
+      "confidence": 0.7,
+      "method_name": "constraint_satisfaction",
+      "window_size": 100,
+      "training_periods": 100
+    },
+    {
+      "draw_id": "114000022",
+      "draw_date": "2025-03-17",
+      "predicted_numbers": [
+        1,
+        11,
+        14,
+        25,
+        29,
+        30
+      ],
+      "predicted_special": 2,
+      "actual_numbers": [
+        1,
+        2,
+        3,
+        12,
+        18,
+        28
+      ],
+      "actual_special": 4,
+      "matches": 1,
+      "matched_numbers": [
+        1
+      ],
+      "is_win": false,
+      "confidence": 0.7,
+      "method_name": "constraint_satisfaction",
+      "window_size": 100,
+      "training_periods": 100
+    },
+    {
+      "draw_id": "114000021",
+      "draw_date": "2025-03-13",
+      "predicted_numbers": [
+        1,
+        2,
+        17,
+        26,
+        32,
+        37
+      ],
+      "predicted_special": 2,
+      "actual_numbers": [
+        3,
+        4,
+        13,
+        16,
+        24,
+        25
+      ],
+      "actual_special": 7,
+      "matches": 0,
+      "matched_numbers": [],
+      "is_win": false,
+      "confidence": 0.7,
+      "method_name": "constraint_satisfaction",
+      "window_size": 100,
+      "training_periods": 100
+    },
+    {
+      "draw_id": "114000020",
+      "draw_date": "2025-03-10",
+      "predicted_numbers": [
+        8,
+        12,
+        19,
+        23,
+        26,
+        32
+      ],
+      "predicted_special": 4,
+      "actual_numbers": [
+        13,
+        16,
+        17,
+        20,
+        27,
+        31
+      ],
+      "actual_special": 2,
+      "matches": 0,
+      "matched_numbers": [],
+      "is_win": false,
+      "confidence": 0.7,
+      "method_name": "constraint_satisfaction",
+      "window_size": 100,
+      "training_periods": 100
+    },
+    {
+      "draw_id": "114000019",
+      "draw_date": "2025-03-06",
+      "predicted_numbers": [
+        3,
+        8,
+        14,
+        23,
+        26,
+        30
+      ],
+      "predicted_special": 8,
+      "actual_numbers": [
+        5,
+        9,
+        15,
+        17,
+        18,
+        29
+      ],
+      "actual_special": 4,
+      "matches": 0,
+      "matched_numbers": [],
+      "is_win": false,
+      "confidence": 0.7,
+      "method_name": "constraint_satisfaction",
+      "window_size": 100,
+      "training_periods": 100
+    },
+    {
+      "draw_id": "114000018",
+      "draw_date": "2025-03-03",
+      "predicted_numbers": [
+        3,
+        4,
+        17,
+        19,
+        26,
+        37
+      ],
+      "predicted_special": 8,
+      "actual_numbers": [
+        12,
+        15,
+        20,
+        23,
+        26,
+        32
+      ],
+      "actual_special": 5,
+      "matches": 1,
+      "matched_numbers": [
+        26
+      ],
+      "is_win": false,
+      "confidence": 0.7,
+      "method_name": "constraint_satisfaction",
+      "window_size": 100,
+      "training_periods": 100
+    },
+    {
+      "draw_id": "114000017",
+      "draw_date": "2025-02-27",
+      "predicted_numbers": [
+        7,
+        12,
+        22,
+        23,
+        34,
+        36
+      ],
+      "predicted_special": 8,
+      "actual_numbers": [
+        1,
+        7,
+        8,
+        24,
+        26,
+        34
+      ],
+      "actual_special": 2,
+      "matches": 2,
+      "matched_numbers": [
+        7,
+        34
+      ],
+      "is_win": false,
+      "confidence": 0.7,
+      "method_name": "constraint_satisfaction",
+      "window_size": 100,
+      "training_periods": 100
+    },
+    {
+      "draw_id": "114000016",
+      "draw_date": "2025-02-24",
+      "predicted_numbers": [
+        2,
+        9,
+        21,
+        24,
+        31,
+        36
+      ],
+      "predicted_special": 8,
+      "actual_numbers": [
+        7,
+        15,
+        16,
+        23,
+        24,
+        35
+      ],
+      "actual_special": 2,
+      "matches": 1,
+      "matched_numbers": [
+        24
+      ],
+      "is_win": false,
+      "confidence": 0.7,
+      "method_name": "constraint_satisfaction",
+      "window_size": 100,
+      "training_periods": 100
+    },
+    {
+      "draw_id": "114000015",
+      "draw_date": "2025-02-20",
+      "predicted_numbers": [
+        4,
+        9,
+        10,
+        17,
+        25,
+        30
+      ],
+      "predicted_special": 4,
+      "actual_numbers": [
+        5,
+        6,
+        15,
+        19,
+        32,
+        37
+      ],
+      "actual_special": 8,
+      "matches": 0,
+      "matched_numbers": [],
+      "is_win": false,
+      "confidence": 0.7,
+      "method_name": "constraint_satisfaction",
+      "window_size": 100,
+      "training_periods": 100
+    },
+    {
+      "draw_id": "114000014",
+      "draw_date": "2025-02-17",
+      "predicted_numbers": [
+        7,
+        10,
+        21,
+        29,
+        36,
+        37
+      ],
+      "predicted_special": 4,
+      "actual_numbers": [
+        1,
+        17,
+        21,
+        23,
+        31,
+        34
+      ],
+      "actual_special": 1,
+      "matches": 1,
+      "matched_numbers": [
+        21
+      ],
+      "is_win": false,
+      "confidence": 0.7,
+      "method_name": "constraint_satisfaction",
+      "window_size": 100,
+      "training_periods": 100
+    },
+    {
+      "draw_id": "114000013",
+      "draw_date": "2025-02-13",
+      "predicted_numbers": [
+        5,
+        13,
+        17,
+        22,
+        26,
+        29
+      ],
+      "predicted_special": 4,
+      "actual_numbers": [
+        2,
+        3,
+        11,
+        18,
+        30,
+        36
+      ],
+      "actual_special": 7,
+      "matches": 0,
+      "matched_numbers": [],
+      "is_win": false,
+      "confidence": 0.7,
+      "method_name": "constraint_satisfaction",
+      "window_size": 100,
+      "training_periods": 100
+    },
+    {
+      "draw_id": "114000012",
+      "draw_date": "2025-02-10",
+      "predicted_numbers": [
+        2,
+        6,
+        17,
+        23,
+        27,
+        30
+      ],
+      "predicted_special": 8,
+      "actual_numbers": [
+        6,
+        7,
+        8,
+        13,
+        14,
+        24
+      ],
+      "actual_special": 4,
+      "matches": 1,
+      "matched_numbers": [
+        6
+      ],
+      "is_win": false,
+      "confidence": 0.7,
+      "method_name": "constraint_satisfaction",
+      "window_size": 100,
+      "training_periods": 100
+    },
+    {
+      "draw_id": "114000011",
+      "draw_date": "2025-02-06",
+      "predicted_numbers": [
+        2,
+        8,
+        15,
+        23,
+        35,
+        38
+      ],
+      "predicted_special": 8,
+      "actual_numbers": [
+        6,
+        18,
+        21,
+        32,
+        33,
+        37
+      ],
+      "actual_special": 1,
+      "matches": 0,
+      "matched_numbers": [],
+      "is_win": false,
+      "confidence": 0.7,
+      "method_name": "constraint_satisfaction",
+      "window_size": 100,
+      "training_periods": 100
+    },
+    {
+      "draw_id": "114000010",
+      "draw_date": "2025-02-03",
+      "predicted_numbers": [
+        3,
+        10,
+        14,
+        25,
+        26,
+        34
+      ],
+      "predicted_special": 4,
+      "actual_numbers": [
+        4,
+        7,
+        15,
+        31,
+        33,
+        36
+      ],
+      "actual_special": 6,
+      "matches": 0,
+      "matched_numbers": [],
+      "is_win": false,
+      "confidence": 0.7,
+      "method_name": "constraint_satisfaction",
+      "window_size": 100,
+      "training_periods": 100
+    },
+    {
+      "draw_id": "114000009",
+      "draw_date": "2025-01-30",
+      "predicted_numbers": [
+        1,
+        12,
+        18,
+        19,
+        26,
+        29
+      ],
+      "predicted_special": 8,
+      "actual_numbers": [
+        3,
+        17,
+        20,
+        21,
+        24,
+        37
+      ],
+      "actual_special": 6,
+      "matches": 0,
+      "matched_numbers": [],
+      "is_win": false,
+      "confidence": 0.7,
+      "method_name": "constraint_satisfaction",
+      "window_size": 100,
+      "training_periods": 100
+    },
+    {
+      "draw_id": "114000008",
+      "draw_date": "2025-01-27",
+      "predicted_numbers": [
+        5,
+        12,
+        15,
+        20,
+        33,
+        35
+      ],
+      "predicted_special": 4,
+      "actual_numbers": [
+        2,
+        10,
+        15,
+        18,
+        25,
+        35
+      ],
+      "actual_special": 8,
+      "matches": 2,
+      "matched_numbers": [
+        15,
+        35
+      ],
+      "is_win": false,
+      "confidence": 0.7,
+      "method_name": "constraint_satisfaction",
+      "window_size": 100,
+      "training_periods": 100
+    },
+    {
+      "draw_id": "114000007",
+      "draw_date": "2025-01-23",
+      "predicted_numbers": [
+        8,
+        9,
+        17,
+        23,
+        30,
+        36
+      ],
+      "predicted_special": 4,
+      "actual_numbers": [
+        7,
+        10,
+        13,
+        22,
+        25,
+        29
+      ],
+      "actual_special": 2,
+      "matches": 0,
+      "matched_numbers": [],
+      "is_win": false,
+      "confidence": 0.7,
+      "method_name": "constraint_satisfaction",
+      "window_size": 100,
+      "training_periods": 100
+    },
+    {
+      "draw_id": "114000006",
+      "draw_date": "2025-01-20",
+      "predicted_numbers": [
+        3,
+        5,
+        16,
+        17,
+        34,
+        38
+      ],
+      "predicted_special": 4,
+      "actual_numbers": [
+        8,
+        11,
+        13,
+        27,
+        29,
+        37
+      ],
+      "actual_special": 2,
+      "matches": 0,
+      "matched_numbers": [],
+      "is_win": false,
+      "confidence": 0.7,
+      "method_name": "constraint_satisfaction",
+      "window_size": 100,
+      "training_periods": 100
+    },
+    {
+      "draw_id": "114000005",
+      "draw_date": "2025-01-16",
+      "predicted_numbers": [
+        10,
+        11,
+        21,
+        24,
+        33,
+        37
+      ],
+      "predicted_special": 4,
+      "actual_numbers": [
+        10,
+        16,
+        19,
+        21,
+        31,
+        37
+      ],
+      "actual_special": 3,
+      "matches": 3,
+      "matched_numbers": [
+        10,
+        21,
+        37
+      ],
+      "is_win": true,
+      "confidence": 0.7,
+      "method_name": "constraint_satisfaction",
+      "window_size": 100,
+      "training_periods": 100
+    },
+    {
+      "draw_id": "114000004",
+      "draw_date": "2025-01-13",
+      "predicted_numbers": [
+        10,
+        14,
+        20,
+        23,
+        27,
+        31
+      ],
+      "predicted_special": 4,
+      "actual_numbers": [
+        3,
+        13,
+        22,
+        26,
+        28,
+        33
+      ],
+      "actual_special": 2,
+      "matches": 0,
+      "matched_numbers": [],
+      "is_win": false,
+      "confidence": 0.7,
+      "method_name": "constraint_satisfaction",
+      "window_size": 100,
+      "training_periods": 100
+    },
+    {
+      "draw_id": "114000003",
+      "draw_date": "2025-01-09",
+      "predicted_numbers": [
+        3,
+        10,
+        18,
+        21,
+        31,
+        37
+      ],
+      "predicted_special": 5,
+      "actual_numbers": [
+        1,
+        4,
+        15,
+        16,
+        31,
+        34
+      ],
+      "actual_special": 4,
+      "matches": 1,
+      "matched_numbers": [
+        31
+      ],
+      "is_win": false,
+      "confidence": 0.7,
+      "method_name": "constraint_satisfaction",
+      "window_size": 100,
+      "training_periods": 100
+    },
+    {
+      "draw_id": "114000002",
+      "draw_date": "2025-01-06",
+      "predicted_numbers": [
+        4,
+        8,
+        16,
+        17,
+        26,
+        33
+      ],
+      "predicted_special": 5,
+      "actual_numbers": [
+        4,
+        14,
+        17,
+        29,
+        31,
+        38
+      ],
+      "actual_special": 7,
+      "matches": 2,
+      "matched_numbers": [
+        4,
+        17
+      ],
+      "is_win": false,
+      "confidence": 0.7,
+      "method_name": "constraint_satisfaction",
+      "window_size": 100,
+      "training_periods": 100
+    },
+    {
+      "draw_id": "114000001",
+      "draw_date": "2025-01-02",
+      "predicted_numbers": [
+        2,
+        5,
+        19,
+        25,
+        30,
+        36
+      ],
+      "predicted_special": 4,
+      "actual_numbers": [
+        4,
+        12,
+        13,
+        22,
+        27,
+        32
+      ],
+      "actual_special": 5,
+      "matches": 0,
+      "matched_numbers": [],
+      "is_win": false,
+      "confidence": 0.7,
+      "method_name": "constraint_satisfaction",
+      "window_size": 100,
+      "training_periods": 100
+    }
+  ]
+}

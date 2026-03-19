@@ -1,0 +1,30 @@
+# 個人設定範本
+
+此檔案用於存放個人專屬的 Claude 配置，不會提交到 Git。
+
+複製此範本為 `settings.local.json` 並自訂：
+
+```json
+{
+  "hooks": {
+    "PostToolUse": [
+      {
+        "matcher": "Write.*\\.md$",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "echo '{\"feedback\": \"✅ Markdown 文件已儲存\"}'",
+            "timeout": 3
+          }
+        ]
+      }
+    ]
+  }
+}
+```
+
+## 可用自訂項
+
+- 額外的 Hooks
+- 個人偏好的工具權限
+- 本地開發環境變數

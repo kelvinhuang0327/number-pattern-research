@@ -1,0 +1,52 @@
+{
+  "strategy_name": "SGP V9 Apex (Spectral Gap Pressure Phase 66)",
+  "lottery_type": "POWER_LOTTO",
+  "rejection_date": "2026-02-24",
+  "rejection_reason": "3注聯集 M3+ 實測 7.0% vs 基準 11.17%，Edge -37.3%。聯集平均覆蓋 2.68 vs 隨機 2.84，Edge -5.7%",
+
+  "statistical_results": {
+    "single_bet_M3plus_1500p": "5.00%",
+    "single_bet_baseline": "4.19%",
+    "single_bet_edge": "+0.81%",
+    "three_bet_M3plus_100p": "7.0%",
+    "three_bet_baseline": "11.17%",
+    "three_bet_edge": "-37.3%",
+    "union_avg_coverage": 2.68,
+    "union_theoretical_random": 2.84,
+    "union_edge": "-5.7%"
+  },
+
+  "claimed_vs_actual": {
+    "claimed_3bet_edge": "+1.95%",
+    "actual_3bet_edge": "-37.3%",
+    "claimed_pp3_permutation_p": 0.100,
+    "actual_pp3_permutation_p": 0.015,
+    "claimed_N": 1388,
+    "actual_database_size": 1888,
+    "note": "聲稱的 PP3 p=0.100 與驗證紀錄 p=0.015 嚴重不符，N=1388 疑似選擇性窗口"
+  },
+
+  "root_cause": [
+    "注1(Fourier Rank 1-6) + 注2(Fourier Rank 7-12) 同押單一 Fourier 信號，高度相關",
+    "當 Fourier 預測失準，前12號同時落空，等同 Core-Satellite 缺陷",
+    "3注正交性不足，覆蓋效率低於隨機獨立選號",
+    "1注 M3+ 有輕微正向信號 (+0.81%)，但注間相關性抵消了多注優勢"
+  ],
+
+  "previous_version_rejected": {
+    "version": "SGP V3-Deep Synergy (Phase 64)",
+    "rejection_date": "2026-02-24",
+    "reason": "M3+ 三窗口全負: 150p -35.7%, 500p -33.3%, 1500p -7.1%"
+  },
+
+  "applicable_conditions": "SGP 核心 Fourier 信號若要採用，應整合至現有 PP3 作為正交擴展，而非獨立策略",
+
+  "future_retest_conditions": [
+    "需確保 3注之間真正正交（不同信號域：Fourier / Cold / Tail）",
+    "注1-2不得都使用 Fourier Rank，必須分域",
+    "3注聯集 M3+ 必須達到 11.17%+ 基準",
+    "需 N≥500 的聯集回測，不接受 1注回測推算"
+  ],
+
+  "implementation_file": "lottery_api/models/sgp_strategy.py"
+}

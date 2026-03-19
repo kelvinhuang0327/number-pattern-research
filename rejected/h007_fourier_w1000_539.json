@@ -1,0 +1,19 @@
+{
+  "id": "H007",
+  "name": "長週期 Fourier（window=1000 vs 500）",
+  "lottery": "DAILY_539",
+  "archived_at": "2026-03-15",
+  "hypothesis": "Fourier w=1000 比 w=500 能捕捉更穩定的週期信號",
+  "rejection_reason": "McNemar w1000 vs w500: net=-7 p=0.835（w500 略優），1500p: w500=-1.13pp → w1000=-0.07pp（+1.06pp 但基準以下）。",
+  "statistical_results": {
+    "metric": "M2+",
+    "n_periods": 4710,
+    "start": 1100,
+    "fourier_w500_1500p": -1.13,
+    "fourier_w1000_1500p": -0.07,
+    "mcnemar_w1000_vs_w500": {"net": -7, "n01": 420, "n10": 413, "p": 0.8353},
+    "verdict": "REJECT"
+  },
+  "note": "測試使用簡化 Fourier（FFT 振幅和），非生產版本。生產版使用更複雜的峰值頻率加權，但 w=1000 相對 w=500 的優劣比較結論應一致：兩者差異不顯著。",
+  "future_reconsideration": "Power Lotto 研究 (L65) 已確認 w500 優於 w100，趨勢上 w=500 是最優窗口。w=1000 不再測試。"
+}

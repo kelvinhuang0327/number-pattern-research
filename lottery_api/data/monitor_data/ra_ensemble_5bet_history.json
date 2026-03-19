@@ -1,0 +1,53 @@
+[
+  {
+    "timestamp": "2026-02-04T22:00:32.114269",
+    "periods": 1000,
+    "hits": 1035,
+    "total_bets": 5000,
+    "observed_rate": 0.207,
+    "baseline_rate": 0.182,
+    "edge": 0.024999999999999994,
+    "edge_pct": 2.4999999999999996,
+    "p_value": 3.546335805358984e-06,
+    "ci_low": 0.19773505182084933,
+    "ci_high": 1.0,
+    "significant": "True",
+    "meaningful_edge": false,
+    "status": "DEBUNKED",
+    "notes": "[INVALID] Initial baseline from Phase 67 validation - Proven inaccurate by recent backtests"
+  },
+  {
+    "timestamp": "2026-02-04T22:01:43.114274",
+    "periods": 1000,
+    "hits": 173,
+    "total_bets": 5000,
+    "observed_rate": 0.0346,
+    "baseline_rate": 0.182,
+    "edge": -0.1474,
+    "edge_pct": -14.74,
+    "p_value": 1.0,
+    "ci_low": 0.030593980114033727,
+    "ci_high": 1.0,
+    "significant": "False",
+    "meaningful_edge": false,
+    "status": "NO_EDGE",
+    "notes": "Live backtest at 2026-02-04T22:01:43.114124"
+  },
+  {
+    "timestamp": "2026-02-04T22:14:35.455287",
+    "periods": 1000,
+    "hits": 1035,
+    "total_bets": 5000,
+    "observed_rate": 0.207,
+    "baseline_rate": 0.182,
+    "edge": 0.024999999999999994,
+    "edge_pct": 2.4999999999999996,
+    "p_value": 3.546335805358984e-06,
+    "ci_low": 0.19773505182084933,
+    "ci_high": 1.0,
+    "significant": "True",
+    "meaningful_edge": true,
+    "status": "VALID",
+    "notes": "[LEGACY/INVALID] Initial baseline from Phase 67 validation (DEBUNKED)"
+  }
+]

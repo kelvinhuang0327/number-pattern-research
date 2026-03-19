@@ -1,0 +1,57 @@
+{
+  "analysis_date": "2026-01-08 13:49:26",
+  "lookback_periods": 50,
+  "heat_scores": {
+    "bayesian": 38.333333333333336,
+    "deviation": 49.83333333333333,
+    "frequency": 42.66666666666667,
+    "hot_cold": 22.5,
+    "markov": 34.5,
+    "statistical": 24.833333333333336,
+    "trend": 44.66666666666667
+  },
+  "recommended_whitelist": [
+    "deviation",
+    "trend",
+    "frequency",
+    "bayesian",
+    "markov"
+  ],
+  "detailed_stats": {
+    "frequency": {
+      "match_3_plus_rate": 6.0,
+      "special_hit_rate": 26.0,
+      "total_periods": 50
+    },
+    "bayesian": {
+      "match_3_plus_rate": 4.0,
+      "special_hit_rate": 14.000000000000002,
+      "total_periods": 50
+    },
+    "markov": {
+      "match_3_plus_rate": 6.0,
+      "special_hit_rate": 14.000000000000002,
+      "total_periods": 50
+    },
+    "trend": {
+      "match_3_plus_rate": 0.0,
+      "special_hit_rate": 24.0,
+      "total_periods": 50
+    },
+    "hot_cold": {
+      "match_3_plus_rate": 0.0,
+      "special_hit_rate": 0.0,
+      "total_periods": 50
+    },
+    "statistical": {
+      "match_3_plus_rate": 2.0,
+      "special_hit_rate": 0.0,
+      "total_periods": 50
+    },
+    "deviation": {
+      "match_3_plus_rate": 4.0,
+      "special_hit_rate": 20.0,
+      "total_periods": 50
+    }
+  }
+}

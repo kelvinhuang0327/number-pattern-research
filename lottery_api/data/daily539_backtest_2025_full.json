@@ -1,0 +1,350 @@
+{
+  "lottery_type": "DAILY_539",
+  "test_year": 2025,
+  "test_periods": 313,
+  "win_threshold": 2,
+  "random_baseline": 0.093,
+  "backtest_time": "2025-12-31T11:14:09.127487",
+  "results": [
+    {
+      "rank": 1,
+      "method": "sum_range_300",
+      "window": 300,
+      "win_rate": 0.15335463258785942,
+      "win_count": 48,
+      "avg_matches": 0.7348242811501597,
+      "periods_per_win": 6.520833333333333,
+      "improvement_ratio": 1.6489745439554777
+    },
+    {
+      "rank": 2,
+      "method": "539_tail",
+      "window": 100,
+      "win_rate": 0.14696485623003194,
+      "win_count": 46,
+      "avg_matches": 0.7188498402555911,
+      "periods_per_win": 6.804347826086956,
+      "improvement_ratio": 1.580267271290666
+    },
+    {
+      "rank": 3,
+      "method": "bayesian",
+      "window": 300,
+      "win_rate": 0.14376996805111822,
+      "win_count": 45,
+      "avg_matches": 0.6837060702875399,
+      "periods_per_win": 6.955555555555556,
+      "improvement_ratio": 1.5459136349582605
+    },
+    {
+      "rank": 4,
+      "method": "anti_consensus",
+      "window": 200,
+      "win_rate": 0.14376996805111822,
+      "win_count": 45,
+      "avg_matches": 0.6741214057507987,
+      "periods_per_win": 6.955555555555556,
+      "improvement_ratio": 1.5459136349582605
+    },
+    {
+      "rank": 5,
+      "method": "539_zone_opt_200",
+      "window": 200,
+      "win_rate": 0.14057507987220447,
+      "win_count": 44,
+      "avg_matches": 0.7380191693290735,
+      "periods_per_win": 7.113636363636363,
+      "improvement_ratio": 1.5115599986258546
+    },
+    {
+      "rank": 6,
+      "method": "hot_cold_mix",
+      "window": 100,
+      "win_rate": 0.13738019169329074,
+      "win_count": 43,
+      "avg_matches": 0.6964856230031949,
+      "periods_per_win": 7.27906976744186,
+      "improvement_ratio": 1.4772063622934488
+    },
+    {
+      "rank": 7,
+      "method": "539_consecutive",
+      "window": 100,
+      "win_rate": 0.13738019169329074,
+      "win_count": 43,
+      "avg_matches": 0.7028753993610224,
+      "periods_per_win": 7.27906976744186,
+      "improvement_ratio": 1.4772063622934488
+    },
+    {
+      "rank": 8,
+      "method": "539_zone_opt",
+      "window": 100,
+      "win_rate": 0.13738019169329074,
+      "win_count": 43,
+      "avg_matches": 0.7284345047923323,
+      "periods_per_win": 7.27906976744186,
+      "improvement_ratio": 1.4772063622934488
+    },
+    {
+      "rank": 9,
+      "method": "consecutive_friendly",
+      "window": 100,
+      "win_rate": 0.13099041533546327,
+      "win_count": 41,
+      "avg_matches": 0.6549520766773163,
+      "periods_per_win": 7.634146341463414,
+      "improvement_ratio": 1.4084990896286373
+    },
+    {
+      "rank": 10,
+      "method": "539_constraint",
+      "window": 100,
+      "win_rate": 0.13099041533546327,
+      "win_count": 41,
+      "avg_matches": 0.6932907348242812,
+      "periods_per_win": 7.634146341463414,
+      "improvement_ratio": 1.4084990896286373
+    },
+    {
+      "rank": 11,
+      "method": "539_cycle",
+      "window": 100,
+      "win_rate": 0.13099041533546327,
+      "win_count": 41,
+      "avg_matches": 0.645367412140575,
+      "periods_per_win": 7.634146341463414,
+      "improvement_ratio": 1.4084990896286373
+    },
+    {
+      "rank": 12,
+      "method": "539_comprehensive",
+      "window": 100,
+      "win_rate": 0.12140575079872204,
+      "win_count": 38,
+      "avg_matches": 0.645367412140575,
+      "periods_per_win": 8.236842105263158,
+      "improvement_ratio": 1.3054381806314197
+    },
+    {
+      "rank": 13,
+      "method": "539_comprehensive_200",
+      "window": 200,
+      "win_rate": 0.12140575079872204,
+      "win_count": 38,
+      "avg_matches": 0.645367412140575,
+      "periods_per_win": 8.236842105263158,
+      "improvement_ratio": 1.3054381806314197
+    },
+    {
+      "rank": 14,
+      "method": "monte_carlo",
+      "window": 200,
+      "win_rate": 0.1182108626198083,
+      "win_count": 37,
+      "avg_matches": 0.6869009584664537,
+      "periods_per_win": 8.45945945945946,
+      "improvement_ratio": 1.271084544299014
+    },
+    {
+      "rank": 15,
+      "method": "539_constraint_200",
+      "window": 200,
+      "win_rate": 0.1182108626198083,
+      "win_count": 37,
+      "avg_matches": 0.7188498402555911,
+      "periods_per_win": 8.45945945945946,
+      "improvement_ratio": 1.271084544299014
+    },
+    {
+      "rank": 16,
+      "method": "consensus",
+      "window": 200,
+      "win_rate": 0.11501597444089456,
+      "win_count": 36,
+      "avg_matches": 0.670926517571885,
+      "periods_per_win": 8.694444444444445,
+      "improvement_ratio": 1.2367309079666082
+    },
+    {
+      "rank": 17,
+      "method": "zone_balance",
+      "window": 500,
+      "win_rate": 0.10862619808306709,
+      "win_count": 34,
+      "avg_matches": 0.6517571884984026,
+      "periods_per_win": 9.205882352941176,
+      "improvement_ratio": 1.1680236353017968
+    },
+    {
+      "rank": 18,
+      "method": "zone_balance_200",
+      "window": 200,
+      "win_rate": 0.10862619808306709,
+      "win_count": 34,
+      "avg_matches": 0.7060702875399361,
+      "periods_per_win": 9.205882352941176,
+      "improvement_ratio": 1.1680236353017968
+    },
+    {
+      "rank": 19,
+      "method": "multi_window",
+      "window": 100,
+      "win_rate": 0.10862619808306709,
+      "win_count": 34,
+      "avg_matches": 0.6964856230031949,
+      "periods_per_win": 9.205882352941176,
+      "improvement_ratio": 1.1680236353017968
+    },
+    {
+      "rank": 20,
+      "method": "contrarian",
+      "window": 200,
+      "win_rate": 0.10862619808306709,
+      "win_count": 34,
+      "avg_matches": 0.5399361022364217,
+      "periods_per_win": 9.205882352941176,
+      "improvement_ratio": 1.1680236353017968
+    },
+    {
+      "rank": 21,
+      "method": "trend_predict",
+      "window": 300,
+      "win_rate": 0.10223642172523961,
+      "win_count": 32,
+      "avg_matches": 0.6198083067092651,
+      "periods_per_win": 9.78125,
+      "improvement_ratio": 1.099316362636985
+    },
+    {
+      "rank": 22,
+      "method": "odd_even_balance",
+      "window": 200,
+      "win_rate": 0.10223642172523961,
+      "win_count": 32,
+      "avg_matches": 0.670926517571885,
+      "periods_per_win": 9.78125,
+      "improvement_ratio": 1.099316362636985
+    },
+    {
+      "rank": 23,
+      "method": "sum_range",
+      "window": 100,
+      "win_rate": 0.09904153354632587,
+      "win_count": 31,
+      "avg_matches": 0.6134185303514377,
+      "periods_per_win": 10.096774193548388,
+      "improvement_ratio": 1.0649627263045793
+    },
+    {
+      "rank": 24,
+      "method": "gap_analysis",
+      "window": 300,
+      "win_rate": 0.09904153354632587,
+      "win_count": 31,
+      "avg_matches": 0.5942492012779552,
+      "periods_per_win": 10.096774193548388,
+      "improvement_ratio": 1.0649627263045793
+    },
+    {
+      "rank": 25,
+      "method": "539_cycle_200",
+      "window": 200,
+      "win_rate": 0.09904153354632587,
+      "win_count": 31,
+      "avg_matches": 0.6517571884984026,
+      "periods_per_win": 10.096774193548388,
+      "improvement_ratio": 1.0649627263045793
+    },
+    {
+      "rank": 26,
+      "method": "enhanced_ensemble",
+      "window": 100,
+      "win_rate": 0.09584664536741214,
+      "win_count": 30,
+      "avg_matches": 0.5846645367412141,
+      "periods_per_win": 10.433333333333334,
+      "improvement_ratio": 1.0306090899721736
+    },
+    {
+      "rank": 27,
+      "method": "539_hot_cold_alt",
+      "window": 100,
+      "win_rate": 0.09584664536741214,
+      "win_count": 30,
+      "avg_matches": 0.6932907348242812,
+      "periods_per_win": 10.433333333333334,
+      "improvement_ratio": 1.0306090899721736
+    },
+    {
+      "rank": 28,
+      "method": "coverage_opt",
+      "window": 100,
+      "win_rate": 0.0926517571884984,
+      "win_count": 29,
+      "avg_matches": 0.6038338658146964,
+      "periods_per_win": 10.793103448275861,
+      "improvement_ratio": 0.9962554536397678
+    },
+    {
+      "rank": 29,
+      "method": "ensemble",
+      "window": 200,
+      "win_rate": 0.08945686900958466,
+      "win_count": 28,
+      "avg_matches": 0.6357827476038339,
+      "periods_per_win": 11.178571428571429,
+      "improvement_ratio": 0.9619018173073619
+    },
+    {
+      "rank": 30,
+      "method": "cold_comeback",
+      "window": 100,
+      "win_rate": 0.08945686900958466,
+      "win_count": 28,
+      "avg_matches": 0.5942492012779552,
+      "periods_per_win": 11.178571428571429,
+      "improvement_ratio": 0.9619018173073619
+    },
+    {
+      "rank": 31,
+      "method": "consensus_300",
+      "window": 300,
+      "win_rate": 0.08626198083067092,
+      "win_count": 27,
+      "avg_matches": 0.6006389776357828,
+      "periods_per_win": 11.592592592592593,
+      "improvement_ratio": 0.9275481809749562
+    },
+    {
+      "rank": 32,
+      "method": "gap_analysis_500",
+      "window": 500,
+      "win_rate": 0.08306709265175719,
+      "win_count": 26,
+      "avg_matches": 0.5814696485623003,
+      "periods_per_win": 12.038461538461538,
+      "improvement_ratio": 0.8931945446425504
+    },
+    {
+      "rank": 33,
+      "method": "constrained",
+      "window": 100,
+      "win_rate": 0.07348242811501597,
+      "win_count": 23,
+      "avg_matches": 0.5239616613418531,
+      "periods_per_win": 13.608695652173912,
+      "improvement_ratio": 0.790133635645333
+    },
+    {
+      "rank": 34,
+      "method": "high_value",
+      "window": 200,
+      "win_rate": 0.07028753993610223,
+      "win_count": 22,
+      "avg_matches": 0.5463258785942492,
+      "periods_per_win": 14.227272727272727,
+      "improvement_ratio": 0.7557799993129273
+    }
+  ]
+}

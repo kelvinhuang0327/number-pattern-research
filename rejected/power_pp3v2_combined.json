@@ -1,0 +1,30 @@
+{
+  "strategy": "PP3v2-Combined (EchoBoost + Z3Gap, 威力彩)",
+  "rejected_date": "2026-03-06",
+  "trigger": "115000019期檢討: 嘗試聯合 Echo Boost 與 Z3 Gap 注入",
+  "hypothesis": "Echo Boost Fourier + Z3 Gap Bet3 兩個改進獨立正交，聯合可疊加 Edge",
+
+  "failure_reasons": [
+    "聯合效果反向干擾：Echo Boost 修改 Bet1/Bet2，占據更多 Z3 號碼，導致 Z3 Gap Bet3 選號空間壓縮",
+    "1500p Edge 僅 +0.34%，接近隨機",
+    "Permutation test p=0.420，統計無效",
+    "EchoBoost 是 SHORT_MOMENTUM，Z3Gap 是 LONG_SIGNAL，兩者時間尺度不同，聯合後互相破壞",
+    "三窗口一致性弱：150p=+1.50%, 500p=+0.43%, 1500p=+0.34%，明顯衰退趨勢"
+  ],
+
+  "statistical_results": {
+    "150p":  {"hit_rate": 12.67, "edge": 1.50,  "hits": 19,  "total": 150},
+    "500p":  {"hit_rate": 11.60, "edge": 0.43,  "hits": 58,  "total": 500},
+    "1500p": {"hit_rate": 11.51, "edge": 0.34,  "hits": 160, "total": 1390},
+    "perm_p_1500": 0.420,
+    "baseline": 11.17,
+    "pattern": "DECAYING_NOISE"
+  },
+
+  "lesson": "時間尺度不同的信號不應強行疊加。SHORT_MOMENTUM 改進 + LONG_SIGNAL 改進 = 互相干擾，不如單獨使用原始 PP3",
+
+  "restart_conditions": [
+    "若未來發現 Z3Gap 單獨部署 Edge > +2.43%（超越 PP3），可重新評估聯合方案",
+    "不建議在現有 PP3 架構下做多特徵疊加"
+  ]
+}

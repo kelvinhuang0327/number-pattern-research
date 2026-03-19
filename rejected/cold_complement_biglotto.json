@@ -1,0 +1,18 @@
+{
+  "name": "Cold Complement 2注",
+  "lottery": "BIG_LOTTO",
+  "rejected_date": "2026-02-10",
+  "failure_reason": "INEFFECTIVE — 1500期Edge接近零，無統計意義",
+  "pattern": "INEFFECTIVE",
+  "stats": {
+    "edge_150p": null,
+    "edge_500p": null,
+    "edge_1500p": "-0.02%",
+    "baseline": "3.68% (2注)",
+    "p_value": null,
+    "z_score": null
+  },
+  "applicable_conditions": "無明確有效條件",
+  "retest_conditions": "冷號互補概念本身無效。若要探索冷號，應整合進Markov轉移矩陣而非單獨使用",
+  "notes": "與偏差互補（+0.51%）對比：純冷號無法帶來Edge，需搭配頻率偏差信號"
+}

@@ -1,0 +1,36 @@
+name: PP3+頻率正交 5注
+lottery: POWER_LOTTO
+bets: 5
+status: ACTIVE  # 現役最佳
+adopted_date: "2026-02-12"
+
+description: |
+  Power Precision 3注 加上頻率正交注4-5。
+  五注不重疊，覆蓋 30/38 號。
+
+bets_design:
+  bet1:
+    method: Fourier Rhythm (F2)
+    logic: FFT 週期分析
+  bet2:
+    method: Echo-aware
+    logic: 回聲加分（N-2期出現號碼加權）
+  bet3:
+    method: Cold Complement
+    logic: 冷號均值回歸
+  bet4:
+    method: Frequency Orthogonal
+    logic: 剩餘號碼按近100期頻率排序，取前6（第1組）
+  bet5:
+    method: Frequency Orthogonal
+    logic: 剩餘號碼按近100期頻率排序，取次6（第2組）
+
+constraints:
+  - 五注完全不重疊
+  - 覆蓋 30/38 號
+
+note: |
+  Gemini「分層正交」聲稱 +8.05% 無法復現（實測 +3.13%），
+  但零重疊概念有效，邊際2注 Edge +1.23% (vs PP3)。
+
+script: tools/predict_power_orthogonal_5bet.py

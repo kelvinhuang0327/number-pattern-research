@@ -1,0 +1,23 @@
+{
+  "summary": {
+    "lottery_type": "BIG_LOTTO",
+    "method_name": "sum_range_300",
+    "window_size": 300,
+    "test_periods": 116,
+    "win_count": 3,
+    "win_rate": 0.02586206896551724,
+    "avg_matches": 0.6551724137931034,
+    "max_matches": 3,
+    "total_matches": 76,
+    "periods_per_win": 38.666666666666664,
+    "expected_cost_per_win": 1933.3333333333333,
+    "test_start_date": "2025-01-03",
+    "test_end_date": "2025/12/23",
+    "backtest_timestamp": "2025-12-29T13:46:38.990864"
+  },
+  "details": [
+    {
+      "draw_id": "114000116",
+      "draw_date": "2025/12/23",
+      "predicted_numbers": [
+        

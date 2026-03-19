@@ -1,0 +1,22 @@
+{
+  "id": "H004",
+  "name": "號碼間距均勻度（Gap Entropy）",
+  "lottery": "DAILY_539",
+  "archived_at": "2026-03-15",
+  "rejection_stage": "FAST_GATE",
+  "hypothesis": "開獎號碼間距的熵值具有自相關性，可預測後續期次的號碼結構",
+  "rejection_reason": "Ljung-Box p=0.8497（白噪音），Gap Entropy 序列無時間結構，不具可預測性",
+  "statistical_results": {
+    "series_length": 5810,
+    "mean_entropy": 1.6499,
+    "std_entropy": 0.2209,
+    "ljung_box_p": 0.8497,
+    "acf_lag1": -0.0054,
+    "acf_lag2": -0.0113,
+    "acf_lag3": 0.0008,
+    "low_entropy_repeat_lift": 1.039,
+    "verdict": "FAST_REJECT"
+  },
+  "root_cause": "Gap Entropy 序列是純白噪音。每期號碼的間距分布相互獨立，無法從歷史間距熵值預測下一期。低熵（集中分布）後的重複率 Lift=1.039 微弱無意義。",
+  "future_reconsideration": "此類型研究已確認無效（同屬 Zone/Sum 白噪音族群），不建議重新開啟。"
+}

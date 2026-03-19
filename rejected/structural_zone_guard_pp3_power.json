@@ -1,0 +1,39 @@
+{
+  "strategy_name": "pp3_structural_zone_guard",
+  "lottery": "POWER_LOTTO",
+  "proposed_date": "2026-03-03",
+  "rejected_date": "2026-03-03",
+  "source": "115000018期P18 — Z4(30-38) 完全缺席, 考慮 Zone 平衡保護",
+  "hypothesis": "若 PP3 三注均無 Z1(1-9) 號碼, 自動注入1個Z1號碼可改善結構覆蓋",
+
+  "backtest_results": {
+    "trigger_analysis": {
+      "z1_trigger_count": 2,
+      "z1_trigger_rate": "0.11% (2/1789期)",
+      "z4_trigger_count": 4,
+      "z4_trigger_rate": "0.22% (4/1789期)"
+    },
+    "PP3_orig": {"1500p_edge": "+2.23%"},
+    "PP3_Z1guard": {
+      "1500p_edge": "+2.23%",
+      "change": "0.00% (完全相同)",
+      "mcnemar_net": 0, "mcnemar_p": 1.000,
+      "perm_p": 0.015, "verdict": "SIGNAL_DETECTED (來自PP3本身)"
+    }
+  },
+
+  "failure_reasons": [
+    "Z1 觸發次數僅 2/1789 = 0.11%, 幾乎永不觸發",
+    "PP3 的 Fourier 信號已自然包含足夠 Z1 覆蓋 (83.1% 機率)",
+    "實測效果完全等同 PP3_orig (Edge 差異 0.00%)",
+    "觸發率太低, 引入架構複雜度完全不值得"
+  ],
+
+  "lessons_confirmed": [
+    "L27_C: 統計信號真實 ≠ 在現有框架下可操作",
+    "PP3 Fourier 排名已隱含 Zone 覆蓋, 不需要後處理守護",
+    "P18 的 Z4 缺席 (0.22%) 是罕見但正常事件, 不可操作"
+  ],
+
+  "future_retesting_conditions": "暫停研究。原因：PP3 3注架構下Z1觸發率僅0.11%。重啟條件：改用5注+策略且每注制6個號碼後Z1觸發率上升，或Zone分布統計模型更新。"
+}

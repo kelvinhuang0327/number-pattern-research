@@ -1,0 +1,38 @@
+{
+  "strategy": "PP3-EchoBoost (威力彩 Lag-1 Echo Boost on Fourier)",
+  "rejected_date": "2026-03-06",
+  "trigger": "115000019期檢討: lag-1 echo 07,11 未被 Fourier Bet1 捕捉",
+  "hypothesis": "Fourier 打分時對 lag-1 echo 號碼乘以 boost=1.5，提升召回率",
+
+  "failure_reasons": [
+    "SHORT_MOMENTUM 陷阱：150p Edge=+4.16% 表現優異，但 1500p 降至+1.56%（低於 PP3 +2.43%）",
+    "Permutation test p=0.130，未達 0.05 顯著性門檻",
+    "Echo Boost 扭曲 Fourier 週期信號，短期碰巧有利但長期損害週期捕捉準確率",
+    "與 ClusterPivot 同類 SHORT_MOMENTUM 模式（同樣在 500p/1500p 衰减）",
+    "三窗口邊緣有正但統計無效，符合 WEAK 標準，不達部署門檻"
+  ],
+
+  "statistical_results": {
+    "150p":  {"hit_rate": 15.33, "edge": 4.16,  "hits": 23,  "total": 150},
+    "500p":  {"hit_rate": 13.60, "edge": 2.43,  "hits": 68,  "total": 500},
+    "1500p": {"hit_rate": 12.73, "edge": 1.56,  "hits": 177, "total": 1390},
+    "perm_p_1500": 0.130,
+    "baseline": 11.17,
+    "pattern": "SHORT_MOMENTUM"
+  },
+
+  "vs_baseline": {
+    "PP3_baseline_1500p": 2.43,
+    "EchoBoost_1500p": 1.56,
+    "delta": -0.87,
+    "verdict": "WORSE THAN PP3 at 1500p"
+  },
+
+  "applicable_conditions": "None identified — echo boost is noise at scale",
+
+  "restart_conditions": [
+    "若發現 lag-1 echo 頻率在某明確市場條件下顯著偏高（需 chi-sq p<0.05）",
+    "僅在 lag-1 echo 出現 3+ 號碼的期次啟用條件性 boost",
+    "需要另立 conditional echo test，而非全局 boost"
+  ]
+}

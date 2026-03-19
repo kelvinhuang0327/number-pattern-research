@@ -1,0 +1,69 @@
+{
+  "name": "neighbor_acb_2bet_539",
+  "date": "2026-03-04",
+  "hypothesis": "上期號碼的 ±1 鄰號池具備短期相關性，以 ACB 評分在鄰號池中排名可作為 Bet1 選號，並與現有 MidFreq+ACB 形成正交 4注組合",
+  "trigger": "115000056期檢討 — 鄰號命中 3/5（歷史 8% 概率），三專家建議 P1 行動項目",
+  "design": {
+    "bet1": "上期號碼 ±1 鄰號池（平均 8.3 碼）→ ACB 評分 Top-5",
+    "bet2": "排除 Bet1 後全池 ACB Top-5",
+    "neighbor_pool_avg_size": 8.3,
+    "neighbor_pool_range": [3, 10]
+  },
+  "validation": {
+    "data_periods": 5799,
+    "latest_draw": "115000055",
+    "v1_150p_edge": "+1.13%",
+    "v1_500p_edge": "+2.06%",
+    "v1_1500p_edge": "+2.79%",
+    "v1_stability": "STABLE (三窗口全正)",
+    "v1_1500p_z": 2.63,
+    "permutation_p": 0.005,
+    "permutation_judge": "SIGNAL_DETECTED ✅✅",
+    "signal_edge_vs_perm": "+2.63%"
+  },
+  "comparison": {
+    "midfreq_acb_1500p_edge": "+5.13%",
+    "mcnemar_vs_midfreq": {
+      "net": -35,
+      "neighbor_only": 164,
+      "midfreq_only": 199,
+      "both_hit": 201,
+      "p_value": 0.0743,
+      "note": "無顯著差異，但 MidFreq+ACB 命中更多"
+    },
+    "mcnemar_vs_acb1bet": {
+      "net": 148,
+      "p_value": "< 0.0001",
+      "note": "Neighbor注相比單注 ACB 有大量附加命中"
+    }
+  },
+  "4bet_combination_analysis": {
+    "combined_rate": "37.60%",
+    "baseline_4bet": "38.43%",
+    "edge_4bet": "-0.83%",
+    "marginal_hits": 164,
+    "needed_marginal_hits": 253,
+    "marginal_efficiency": "64.7%",
+    "threshold_L14": "80%",
+    "verdict": "FAIL — 邊際效率 64.7% < L14 門檻 80%"
+  },
+  "key_findings": [
+    "Neighbor 信號是真實的 (perm p=0.005)，但已被 MidFreq+ACB 部分吸收 (55.1% 重疊)",
+    "Neighbor-ACB 獨立 2注: STABLE +2.79%，但弱於 MidFreq+ACB (+5.13%)",
+    "McNemar p=0.0743 不顯著 — 無法確認 Neighbor 優於 MidFreq，也無法替換",
+    "4注合體 Edge = -0.83% — 基準提升幅度 (+16.89pp) 超過 Neighbor 新增命中 (164/1500=10.93pp)",
+    "邊際效率 64.7% < L14 門檻 80% → 不可作為第3-4注疊加"
+  ],
+  "root_cause": "鄰號池平均 8.3 碼，ACB 信號與 MidFreq 均值回歸信號存在 55% 命中重疊。鄰號信號本質上是『短期相關 + 冷號』的混合，而 MidFreq+ACB 已覆蓋此空間的主要部分。",
+  "lesson": "L56 (新確立): 單注 perm p<0.01 不代表可組合 — 必須通過 L14 邊際效率門檻 (>80%) 才可作為疊加注。鄰號信號與 MidFreq 高度重疊 (55%) 導致組合效率不足。",
+  "final_verdict": "REJECTED",
+  "rejection_reason": "1) 單獨作為2注: 弱於現有MidFreq+ACB (2.79% vs 5.13%，McNemar p=0.0743不顯著替換); 2) 作為4注擴展: Edge=-0.83%負值，邊際效率64.7%<L14門檻80%",
+  "future_conditions": [
+    "發現與 MidFreq+ACB 重疊率 < 40% 的鄰號變體（現在 55%）",
+    "鄰號池加入 Gap/Sum 過濾後邊際效率 > 80%",
+    "資料庫 > 8000 期後重新計算鄰號的條件 Lift（目前 1.06/期）"
+  ],
+  "script": "tools/backtest_539_neighbor_acb.py",
+  "result_file": "backtest_539_neighbor_acb_results.json",
+  "filed": "rejected/neighbor_acb_2bet_539.json"
+}

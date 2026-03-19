@@ -1,0 +1,31 @@
+{
+  "strategy_id": "power_lotto/2bet_fourier_rhythm",
+  "version": "v1.0.0",
+  "generated_date": "2026-02-24",
+  "lottery_type": "POWER_LOTTO",
+  "n_bets": 2,
+  "random_baseline_pct": 7.59,
+  "backtest": {
+    "150p": { "m3_rate_pct": null, "edge_pct": null, "status": "N/A" },
+    "500p": { "m3_rate_pct": null, "edge_pct": null, "status": "N/A" },
+    "1000p":{ "m3_rate_pct": 9.50,  "edge_pct": 1.91, "status": "PASS" }
+  },
+  "pattern": "STABLE",
+  "statistics": {
+    "z_score": null,
+    "p_value": null,
+    "significant": null,
+    "note": "1000期驗證，Edge+1.91%；Baseline修正後從+0.95%升至+1.91%"
+  },
+  "permutation_test": null,
+  "notes": "加權頻率法(FFT)，近期號碼權重遞增；由Gemini提出，Claude獨立驗證通過",
+  "coverage": {
+    "unique_numbers": 12,
+    "pool_size": 38,
+    "overlap": 0,
+    "coverage_rate": 0.316
+  },
+  "seed": 42,
+  "script": "tools/power_fourier_rhythm.py",
+  "verdict": "ADOPTED"
+}

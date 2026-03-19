@@ -1,0 +1,20 @@
+P3 Shuffle Permutation Test
+============================
+Protocol  : 200 shuffles × 1500 periods × seed=42
+Method    : 隨機打亂開獎順序，保留號碼分布，破壞時序結構
+
+Real Edge : +1.97%  (舊版 +1.77% 驗證)
+Shuffle Mean: +0.22%
+p-value   : 0.030
+Cohen's d : 2.13
+Result    : SIGNAL DETECTED ✅
+
+McNemar Test (vs 4注)
+======================
+χ²        : 28.03
+p-value   : ≈0.000
+c (5注中，4注未中): 30
+b (4注中，5注未中): 0
+Result    : 第5注顯著改善 ✅
+
+Date: 2026-02-18

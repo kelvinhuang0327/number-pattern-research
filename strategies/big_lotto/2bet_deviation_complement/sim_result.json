@@ -1,0 +1,34 @@
+{
+  "strategy_id": "big_lotto/2bet_deviation_complement",
+  "version": "v2.0.0",
+  "generated_date": "2026-02-24",
+  "lottery_type": "BIG_LOTTO",
+  "n_bets": 2,
+  "random_baseline_pct": 3.69,
+  "backtest": {
+    "150p": { "m3_rate_pct": 1.33, "edge_pct": -2.36, "status": "WARN (LATE_BLOOMER)" },
+    "500p": { "m3_rate_pct": 5.20, "edge_pct": 1.51, "status": "PASS" },
+    "1000p":{ "m3_rate_pct": 4.90, "edge_pct": 1.21, "status": "PASS" },
+    "1500p":{ "m3_rate_pct": 4.60, "edge_pct": 0.91, "status": "PASS" }
+  },
+  "pattern": "LATE_BLOOMER",
+  "statistics": {
+    "z_score": null,
+    "p_value": null,
+    "significant": true,
+    "seeds_tested": 10,
+    "seed_std_pct": 0.00,
+    "note": "10種子完全確定性策略，方差=0"
+  },
+  "permutation_test": null,
+  "notes": "P0 升級版：注1=Hot+Lag-2回聲加分(echo_boost=1.5)，注2=Cold；大樂透Lag-2回聲基率56.9%",
+  "coverage": {
+    "unique_numbers": 12,
+    "pool_size": 49,
+    "overlap": 0,
+    "coverage_rate": 0.245
+  },
+  "seed": 42,
+  "script": "tools/backtest_p0p1_upgrade.py",
+  "verdict": "ADOPTED"
+}

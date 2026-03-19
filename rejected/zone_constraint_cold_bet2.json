@@ -1,0 +1,16 @@
+{
+  "name": "zone_constraint_cold_bet2",
+  "date": "2026-02-26",
+  "draw": "115000027",
+  "reason": "加入Zone Constraint (Z3>=3後限制Z3名額)後命中率反降: D+Zone=71 < D=74，損失10期命中、新增7期，淨-3期",
+  "results": {
+    "D_edge": "+1.41%",
+    "D_zone_edge": "+1.20%",
+    "zone_new": 7,
+    "zone_lost": 10
+  },
+  "verdict": "REJECTED",
+  "theory": "Z3>=3後下期Z3<=2機率70.2%，理論上應有效，但冷號池本身已有Zone分散效果，再加Zone硬約束反而限制Sum尋優空間",
+  "condition_for_retest": "若未來Z3>=4極端情況，或作用於注1鄰域選號（非冷號），可重新評估",
+  "stat_note": "Zone transition信號(70.2%)統計真實，但在冷號Sum約束框架下不可操作"
+}

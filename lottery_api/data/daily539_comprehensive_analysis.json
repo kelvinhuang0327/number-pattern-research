@@ -1,0 +1,62 @@
+{
+  "lottery_type": "DAILY_539",
+  "analysis_date": "2025-12-24",
+  "data_summary": {
+    "total_draws": 5735,
+    "draws_2025": 307,
+    "latest_draw": "99000261"
+  },
+  "bayesian_analysis": {
+    "hot_numbers": [
+      28
+    ],
+    "cold_numbers": [
+      20
+    ],
+    "hot_count": 1,
+    "cold_count": 1
+  },
+  "anti_consensus": {
+    "best_combination": [
+      13,
+      32,
+      35,
+      37,
+      39
+    ],
+    "consensus_score": 5.0,
+    "expected_prize_multiplier": 2.3636363636363638
+  },
+  "randomness_tests": {
+    "chi_square_pass": true,
+    "entropy_pass": true,
+    "odd_even_pass": false,
+    "autocorr_pass": true,
+    "tests_passed": 3,
+    "randomness_level": "基本随机"
+  },
+  "recommendations": {
+    "primary": [
+      13,
+      32,
+      35,
+      37,
+      39
+    ],
+    "alternative_sets": [
+      [
+        4,
+        33,
+        35,
+        37,
+        39
+      ],
+      [
+        14,
+        32,
+        35,
+        37,
+        39
+      ],
+      [
+        

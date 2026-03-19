@@ -1,0 +1,21 @@
+{
+    "last_updated": "2026-01-02",
+    "lottery_type": "BIG_LOTTO",
+    "strategy": "Smart Cold (Avoid Gap > 20)",
+    "validation_year": 2025,
+    "Kill-10": {
+        "win_rate": "10.17%",
+        "risk_prob": "72.9%",
+        "status": "NOT_RECOMMENDED",
+        "reason": "High false positive rate kills jackpot potential"
+    },
+    "Kill-5": {
+        "win_rate": "6.78%",
+        "risk_prob": "46.6%",
+        "kill_precision": "89.3%",
+        "status": "RECOMMENDED",
+        "reason": "Balanced risk/reward"
+    },
+    "recommended_kill_count": 5,
+    "conclusion": "Kill-5 is the stable choice."
+}

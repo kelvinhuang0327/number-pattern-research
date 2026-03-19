@@ -1,0 +1,21 @@
+{
+  "strategy_id": "power_lotto/5bet_orthogonal",
+  "updated": "2026-02-24",
+  "rsm_source": "data/rolling_monitor_POWER_LOTTO.json",
+  "rsm_run_date": "2026-02-24",
+  "rsm_name": "orthogonal_5bet",
+  "total_records": 300,
+  "windows": {
+    "30p":  { "m3_count": 5,  "m3_rate_pct": 16.67, "edge_pct": -1.24, "trend": "NEGATIVE" },
+    "100p": { "m3_count": 21, "m3_rate_pct": 21.00, "edge_pct": 3.09,  "trend": "POSITIVE" },
+    "300p": { "m3_count": 64, "m3_rate_pct": 21.33, "edge_pct": 3.42,  "trend": "POSITIVE" }
+  },
+  "overall_trend": "STABLE",
+  "z_short_long": -0.60,
+  "confidence": 0.91,
+  "recommendation": "★推薦 (RSM STABLE；300p Edge+3.42% 強勁，30p短暫負Edge屬正常波動)",
+  "alerts": [
+    "30p Edge=-1.24%：近30期略低於基準，但z=-0.60遠未達DECELERATING門檻(z<-1.5)，屬正常統計波動"
+  ],
+  "next_review": "每100期新資料後重跑RSM"
+}

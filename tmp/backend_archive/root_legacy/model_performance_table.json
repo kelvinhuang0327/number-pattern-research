@@ -1,0 +1,868 @@
+{
+  "meta": {
+    "seed": 20260305,
+    "primary_window": 1500,
+    "windows": [
+      150,
+      500,
+      1500
+    ],
+    "threshold": "M2+",
+    "permutations": 300,
+    "bonferroni_models": 0.00625,
+    "train_window": 1200,
+    "retrain_interval": 250,
+    "assumptions": [
+      "統一評估指標採用 M2+（命中至少 2 號）以提高檢定功效，三彩種一致化比較。",
+      "Permutation 檢定以『固定預測、打亂真實開獎期序』估計虛無分配。",
+      "Bonferroni 以同一 phase 的同類假設數量校正（特徵 N=19、模型 N=8）。",
+      "Walk-forward 採用嚴格時序：每期 t 僅用 t 之前資料；模型採週期性重訓。",
+      "為控制運算成本，模型重訓間隔設為 250 期，訓練視窗上限 1200 期。",
+      "未納入獎金結構 EV；本研究聚焦『可檢測預測訊號』而非投資報酬率。",
+      "Power/Big 的第二區（特別號）不納入本次主訊號檢定，避免混合不同樣本空間。"
+    ],
+    "generated_at": "2026-03-05T11:44:52.633110"
+  },
+  "results": [
+    {
+      "game": "BIG_LOTTO",
+      "model": "ensemble_stacking",
+      "baseline_rate_pct": 15.101557400354812,
+      "real_rate_pct": 16.733333333333334,
+      "edge_pct": 1.6317759329785222,
+      "window_rate_pct": {
+        "150": 15.333333333333332,
+        "500": 15.2,
+        "1500": 16.733333333333334
+      },
+      "window_edge_pct": {
+        "150": 0.23177593297852006,
+        "500": 0.0984425996451872,
+        "1500": 1.6317759329785222
+      },
+      "permutation": {
+        "real_rate": 0.16733333333333333,
+        "perm_mean": 0.15114444444444444,
+        "perm_std": 0.008947163147895634,
+        "z_score": 1.8093879165361053,
+        "p_value": 0.036544850498338874,
+        "effect_size": 1.8093879165361053,
+        "n_perm": 300,
+        "count_exceed": 10
+      },
+      "binomial_test": {
+        "z_score": 1.765002896194435,
+        "p_value": 0.038781639482569796
+      },
+      "bonferroni_alpha": 0.00625,
+      "stability_index": 0.0,
+      "passes_rigor": false,
+      "rejected_reason": "Bonferroni fail"
+    },
+    {
+      "game": "BIG_LOTTO",
+      "model": "tree",
+      "baseline_rate_pct": 15.101557400354812,
+      "real_rate_pct": 16.53333333333333,
+      "edge_pct": 1.4317759329785194,
+      "window_rate_pct": {
+        "150": 17.333333333333336,
+        "500": 15.4,
+        "1500": 16.53333333333333
+      },
+      "window_edge_pct": {
+        "150": 2.2317759329785236,
+        "500": 0.29844259964518827,
+        "1500": 1.4317759329785194
+      },
+      "permutation": {
+        "real_rate": 0.16533333333333333,
+        "perm_mean": 0.15132222222222222,
+        "perm_std": 0.009403144995291157,
+        "z_score": 1.4900452047306998,
+        "p_value": 0.07641196013289037,
+        "effect_size": 1.4900452047306998,
+        "n_perm": 300,
+        "count_exceed": 22
+      },
+      "binomial_test": {
+        "z_score": 1.5486738205507307,
+        "p_value": 0.060730075114123594
+      },
+      "bonferroni_alpha": 0.00625,
+      "stability_index": 0.39940793493431515,
+      "passes_rigor": false,
+      "rejected_reason": "Bonferroni fail, Binomial fail"
+    },
+    {
+      "game": "BIG_LOTTO",
+      "model": "evolutionary_mutation",
+      "baseline_rate_pct": 15.101557400354812,
+      "real_rate_pct": 16.0,
+      "edge_pct": 0.8984425996451879,
+      "window_rate_pct": {
+        "150": 14.666666666666666,
+        "500": 15.2,
+        "1500": 16.0
+      },
+      "window_edge_pct": {
+        "150": -0.434890733688146,
+        "500": 0.0984425996451872,
+        "1500": 0.8984425996451879
+      },
+      "permutation": {
+        "real_rate": 0.16,
+        "perm_mean": 0.15415777777777775,
+        "perm_std": 0.009722992731372424,
+        "z_score": 0.6008666655453457,
+        "p_value": 0.2857142857142857,
+        "effect_size": 0.6008666655453457,
+        "n_perm": 300,
+        "count_exceed": 85
+      },
+      "binomial_test": {
+        "z_score": 0.9717962855008517,
+        "p_value": 0.16557595208060671
+      },
+      "bonferroni_alpha": 0.00625,
+      "stability_index": 0.0,
+      "passes_rigor": false,
+      "rejected_reason": "Bonferroni fail, Binomial fail, Three-window instability"
+    },
+    {
+      "game": "BIG_LOTTO",
+      "model": "bayesian",
+      "baseline_rate_pct": 15.101557400354812,
+      "real_rate_pct": 15.933333333333334,
+      "edge_pct": 0.8317759329785215,
+      "window_rate_pct": {
+        "150": 15.333333333333332,
+        "500": 15.0,
+        "1500": 15.933333333333334
+      },
+      "window_edge_pct": {
+        "150": 0.23177593297852006,
+        "500": -0.10155740035481209,
+        "1500": 0.8317759329785215
+      },
+      "permutation": {
+        "real_rate": 0.15933333333333333,
+        "perm_mean": 0.15273777777777775,
+        "perm_std": 0.009172146779419191,
+        "z_score": 0.7190852603488473,
+        "p_value": 0.2425249169435216,
+        "effect_size": 0.7190852603488473,
+        "n_perm": 300,
+        "count_exceed": 72
+      },
+      "binomial_test": {
+        "z_score": 0.8996865936196169,
+        "p_value": 0.18414352992267213
+      },
+      "bonferroni_alpha": 0.00625,
+      "stability_index": 0.003757085576596264,
+      "passes_rigor": false,
+      "rejected_reason": "Bonferroni fail, Binomial fail, Three-window instability"
+    },
+    {
+      "game": "BIG_LOTTO",
+      "model": "linear",
+      "baseline_rate_pct": 15.101557400354812,
+      "real_rate_pct": 15.866666666666667,
+      "edge_pct": 0.765109266311855,
+      "window_rate_pct": {
+        "150": 19.333333333333332,
+        "500": 18.6,
+        "1500": 15.866666666666667
+      },
+      "window_edge_pct": {
+        "150": 4.23177593297852,
+        "500": 3.4984425996451893,
+        "1500": 0.765109266311855
+      },
+      "permutation": {
+        "real_rate": 0.15866666666666668,
+        "perm_mean": 0.1540888888888889,
+        "perm_std": 0.008887666582627334,
+        "z_score": 0.515070827050474,
+        "p_value": 0.3222591362126246,
+        "effect_size": 0.515070827050474,
+        "n_perm": 300,
+        "count_exceed": 96
+      },
+      "binomial_test": {
+        "z_score": 0.827576901738382,
+        "p_value": 0.20395507694953657
+      },
+      "bonferroni_alpha": 0.00625,
+      "stability_index": 0.47322616735236867,
+      "passes_rigor": false,
+      "rejected_reason": "Bonferroni fail, Binomial fail"
+    },
+    {
+      "game": "BIG_LOTTO",
+      "model": "reinforcement_exploration",
+      "baseline_rate_pct": 15.101557400354812,
+      "real_rate_pct": 15.466666666666667,
+      "edge_pct": 0.3651092663118547,
+      "window_rate_pct": {
+        "150": 14.000000000000002,
+        "500": 15.2,
+        "1500": 15.466666666666667
+      },
+      "window_edge_pct": {
+        "150": -1.1015574003548103,
+        "500": 0.0984425996451872,
+        "1500": 0.3651092663118547
+      },
+      "permutation": {
+        "real_rate": 0.15466666666666667,
+        "perm_mean": 0.15262888888888887,
+        "perm_std": 0.00928352077741475,
+        "z_score": 0.2195048437351346,
+        "p_value": 0.43521594684385384,
+        "effect_size": 0.2195048437351346,
+        "n_perm": 300,
+        "count_exceed": 130
+      },
+      "binomial_test": {
+        "z_score": 0.3949187504509729,
+        "p_value": 0.3464514257788678
+      },
+      "bonferroni_alpha": 0.00625,
+      "stability_index": 0.0,
+      "passes_rigor": false,
+      "rejected_reason": "Bonferroni fail, Binomial fail, Three-window instability"
+    },
+    {
+      "game": "BIG_LOTTO",
+      "model": "logistic",
+      "baseline_rate_pct": 15.101557400354812,
+      "real_rate_pct": 14.399999999999999,
+      "edge_pct": -0.7015574003548135,
+      "window_rate_pct": {
+        "150": 16.666666666666664,
+        "500": 16.400000000000002,
+        "1500": 14.399999999999999
+      },
+      "window_edge_pct": {
+        "150": 1.5651092663118522,
+        "500": 1.29844259964519,
+        "1500": -0.7015574003548135
+      },
+      "permutation": {
+        "real_rate": 0.144,
+        "perm_mean": 0.15386666666666668,
+        "perm_std": 0.009002880197572989,
+        "z_score": -1.0959455695334719,
+        "p_value": 0.8803986710963455,
+        "effect_size": -1.0959455695334719,
+        "n_perm": 300,
+        "count_exceed": 264
+      },
+      "binomial_test": {
+        "z_score": -0.7588363196487847,
+        "p_value": 0.776024761856388
+      },
+      "bonferroni_alpha": 0.00625,
+      "stability_index": 0.09920110258250059,
+      "passes_rigor": false,
+      "rejected_reason": "Edge<=0, Bonferroni fail, Binomial fail, Three-window instability"
+    },
+    {
+      "game": "BIG_LOTTO",
+      "model": "markov",
+      "baseline_rate_pct": 15.101557400354812,
+      "real_rate_pct": 14.000000000000002,
+      "edge_pct": -1.1015574003548103,
+      "window_rate_pct": {
+        "150": 14.000000000000002,
+        "500": 15.2,
+        "1500": 14.000000000000002
+      },
+      "window_edge_pct": {
+        "150": -1.1015574003548103,
+        "500": 0.0984425996451872,
+        "1500": -1.1015574003548103
+      },
+      "permutation": {
+        "real_rate": 0.14,
+        "perm_mean": 0.1559111111111111,
+        "perm_std": 0.009744032678491292,
+        "z_score": -1.6329082254208707,
+        "p_value": 0.9601328903654485,
+        "effect_size": -1.6329082254208707,
+        "n_perm": 300,
+        "count_exceed": 288
+      },
+      "binomial_test": {
+        "z_score": -1.1914944709361939,
+        "p_value": 0.8832702370405169
+      },
+      "bonferroni_alpha": 0.00625,
+      "stability_index": 0.0875495765933626,
+      "passes_rigor": false,
+      "rejected_reason": "Edge<=0, Bonferroni fail, Binomial fail, Three-window instability"
+    },
+    {
+      "game": "DAILY_539",
+      "model": "ensemble_stacking",
+      "baseline_rate_pct": 11.397342976290346,
+      "real_rate_pct": 12.266666666666666,
+      "edge_pct": 0.8693236903763193,
+      "window_rate_pct": {
+        "150": 10.0,
+        "500": 13.8,
+        "1500": 12.266666666666666
+      },
+      "window_edge_pct": {
+        "150": -1.3973429762903464,
+        "500": 2.4026570237096543,
+        "1500": 0.8693236903763193
+      },
+      "permutation": {
+        "real_rate": 0.12266666666666666,
+        "perm_mean": 0.11427555555555557,
+        "perm_std": 0.007900562255347228,
+        "z_score": 1.0620903726655346,
+        "p_value": 0.17275747508305647,
+        "effect_size": 1.0620903726655346,
+        "n_perm": 300,
+        "count_exceed": 51
+      },
+      "binomial_test": {
+        "z_score": 1.059502443987711,
+        "p_value": 0.14468550839352995
+      },
+      "bonferroni_alpha": 0.00625,
+      "stability_index": 0.0,
+      "passes_rigor": false,
+      "rejected_reason": "Bonferroni fail, Binomial fail, Three-window instability"
+    },
+    {
+      "game": "DAILY_539",
+      "model": "markov",
+      "baseline_rate_pct": 11.397342976290346,
+      "real_rate_pct": 12.133333333333333,
+      "edge_pct": 0.7359903570429864,
+      "window_rate_pct": {
+        "150": 14.000000000000002,
+        "500": 13.8,
+        "1500": 12.133333333333333
+      },
+      "window_edge_pct": {
+        "150": 2.6026570237096553,
+        "500": 2.4026570237096543,
+        "1500": 0.7359903570429864
+      },
+      "permutation": {
+        "real_rate": 0.12133333333333333,
+        "perm_mean": 0.11969555555555557,
+        "perm_std": 0.00826401719788346,
+        "z_score": 0.19818179686255294,
+        "p_value": 0.4485049833887043,
+        "effect_size": 0.19818179686255294,
+        "n_perm": 300,
+        "count_exceed": 134
+      },
+      "binomial_test": {
+        "z_score": 0.8970002666105573,
+        "p_value": 0.18485938737983626
+      },
+      "bonferroni_alpha": 0.00625,
+      "stability_index": 0.5627434917800047,
+      "passes_rigor": false,
+      "rejected_reason": "Bonferroni fail, Binomial fail"
+    },
+    {
+      "game": "DAILY_539",
+      "model": "evolutionary_mutation",
+      "baseline_rate_pct": 11.397342976290346,
+      "real_rate_pct": 11.933333333333334,
+      "edge_pct": 0.5359903570429871,
+      "window_rate_pct": {
+        "150": 10.666666666666668,
+        "500": 12.6,
+        "1500": 11.933333333333334
+      },
+      "window_edge_pct": {
+        "150": -0.7306763096236786,
+        "500": 1.2026570237096532,
+        "1500": 0.5359903570429871
+      },
+      "permutation": {
+        "real_rate": 0.11933333333333333,
+        "perm_mean": 0.11883111111111112,
+        "perm_std": 0.008488401382162095,
+        "z_score": 0.059165701473358215,
+        "p_value": 0.4950166112956811,
+        "effect_size": 0.059165701473358215,
+        "n_perm": 300,
+        "count_exceed": 148
+      },
+      "binomial_test": {
+        "z_score": 0.6532470005448268,
+        "p_value": 0.25679852709775985
+      },
+      "bonferroni_alpha": 0.00625,
+      "stability_index": 0.017217819111513467,
+      "passes_rigor": false,
+      "rejected_reason": "Bonferroni fail, Binomial fail, Three-window instability"
+    },
+    {
+      "game": "DAILY_539",
+      "model": "logistic",
+      "baseline_rate_pct": 11.397342976290346,
+      "real_rate_pct": 11.200000000000001,
+      "edge_pct": -0.19734297629034536,
+      "window_rate_pct": {
+        "150": 12.666666666666668,
+        "500": 10.0,
+        "1500": 11.200000000000001
+      },
+      "window_edge_pct": {
+        "150": 1.2693236903763214,
+        "500": -1.3973429762903464,
+        "1500": -0.19734297629034536
+      },
+      "permutation": {
+        "real_rate": 0.112,
+        "perm_mean": 0.11392444444444445,
+        "perm_std": 0.008229859516074437,
+        "z_score": -0.23383685231221968,
+        "p_value": 0.574750830564784,
+        "effect_size": -0.23383685231221968,
+        "n_perm": 300,
+        "count_exceed": 172
+      },
+      "binomial_test": {
+        "z_score": -0.2405149750295187,
+        "p_value": 0.5950344722318202
+      },
+      "bonferroni_alpha": 0.00625,
+      "stability_index": 0.0,
+      "passes_rigor": false,
+      "rejected_reason": "Edge<=0, Bonferroni fail, Binomial fail, Three-window instability"
+    },
+    {
+      "game": "DAILY_539",
+      "model": "linear",
+      "baseline_rate_pct": 11.397342976290346,
+      "real_rate_pct": 11.066666666666666,
+      "edge_pct": -0.33067630962368,
+      "window_rate_pct": {
+        "150": 12.666666666666668,
+        "500": 9.6,
+        "1500": 11.066666666666666
+      },
+      "window_edge_pct": {
+        "150": 1.2693236903763214,
+        "500": -1.7973429762903468,
+        "1500": -0.33067630962368
+      },
+      "permutation": {
+        "real_rate": 0.11066666666666666,
+        "perm_mean": 0.11363333333333332,
+        "perm_std": 0.008411125788920115,
+        "z_score": -0.3527074425901357,
+        "p_value": 0.6345514950166113,
+        "effect_size": -0.3527074425901357,
+        "n_perm": 300,
+        "count_exceed": 190
+      },
+      "binomial_test": {
+        "z_score": -0.4030171524066724,
+        "p_value": 0.6565321968478319
+      },
+      "bonferroni_alpha": 0.00625,
+      "stability_index": 0.0,
+      "passes_rigor": false,
+      "rejected_reason": "Edge<=0, Bonferroni fail, Binomial fail, Three-window instability"
+    },
+    {
+      "game": "DAILY_539",
+      "model": "tree",
+      "baseline_rate_pct": 11.397342976290346,
+      "real_rate_pct": 11.0,
+      "edge_pct": -0.39734297629034643,
+      "window_rate_pct": {
+        "150": 15.333333333333332,
+        "500": 11.4,
+        "1500": 11.0
+      },
+      "window_edge_pct": {
+        "150": 3.9359903570429857,
+        "500": 0.0026570237096539273,
+        "1500": -0.39734297629034643
+      },
+      "permutation": {
+        "real_rate": 0.11,
+        "perm_mean": 0.11364666666666667,
+        "perm_std": 0.007826141379306208,
+        "z_score": -0.465959722609048,
+        "p_value": 0.6877076411960132,
+        "effect_size": -0.465959722609048,
+        "n_perm": 300,
+        "count_exceed": 206
+      },
+      "binomial_test": {
+        "z_score": -0.4842682410952493,
+        "p_value": 0.6859022440012572
+      },
+      "bonferroni_alpha": 0.00625,
+      "stability_index": 0.0,
+      "passes_rigor": false,
+      "rejected_reason": "Edge<=0, Bonferroni fail, Binomial fail, Three-window instability"
+    },
+    {
+      "game": "DAILY_539",
+      "model": "reinforcement_exploration",
+      "baseline_rate_pct": 11.397342976290346,
+      "real_rate_pct": 10.866666666666665,
+      "edge_pct": -0.5306763096236811,
+      "window_rate_pct": {
+        "150": 10.666666666666668,
+        "500": 11.799999999999999,
+        "1500": 10.866666666666665
+      },
+      "window_edge_pct": {
+        "150": -0.7306763096236786,
+        "500": 0.4026570237096525,
+        "1500": -0.5306763096236811
+      },
+      "permutation": {
+        "real_rate": 0.10866666666666666,
+        "perm_mean": 0.11573333333333333,
+        "perm_std": 0.008044137501817589,
+        "z_score": -0.8784865579673956,
+        "p_value": 0.813953488372093,
+        "effect_size": -0.8784865579673956,
+        "n_perm": 300,
+        "count_exceed": 244
+      },
+      "binomial_test": {
+        "z_score": -0.646770418472403,
+        "p_value": 0.7411097298608016
+      },
+      "bonferroni_alpha": 0.00625,
+      "stability_index": 0.03651199345315137,
+      "passes_rigor": false,
+      "rejected_reason": "Edge<=0, Bonferroni fail, Binomial fail, Three-window instability"
+    },
+    {
+      "game": "DAILY_539",
+      "model": "bayesian",
+      "baseline_rate_pct": 11.397342976290346,
+      "real_rate_pct": 10.733333333333334,
+      "edge_pct": -0.6640096429570121,
+      "window_rate_pct": {
+        "150": 13.333333333333334,
+        "500": 11.0,
+        "1500": 10.733333333333334
+      },
+      "window_edge_pct": {
+        "150": 1.9359903570429875,
+        "500": -0.39734297629034643,
+        "1500": -0.6640096429570121
+      },
+      "permutation": {
+        "real_rate": 0.10733333333333334,
+        "perm_mean": 0.11428444444444445,
+        "perm_std": 0.007783685375494783,
+        "z_score": -0.8930359816574961,
+        "p_value": 0.8039867109634552,
+        "effect_size": -0.8930359816574961,
+        "n_perm": 300,
+        "count_exceed": 241
+      },
+      "binomial_test": {
+        "z_score": -0.8092725958495567,
+        "p_value": 0.7908208172254195
+      },
+      "bonferroni_alpha": 0.00625,
+      "stability_index": 0.0,
+      "passes_rigor": false,
+      "rejected_reason": "Edge<=0, Bonferroni fail, Binomial fail, Three-window instability"
+    },
+    {
+      "game": "POWER_LOTTO",
+      "model": "linear",
+      "baseline_rate_pct": 23.408463346543837,
+      "real_rate_pct": 24.4,
+      "edge_pct": 0.991536653456162,
+      "window_rate_pct": {
+        "150": 26.666666666666668,
+        "500": 25.2,
+        "1500": 24.4
+      },
+      "window_edge_pct": {
+        "150": 3.2582033201228313,
+        "500": 1.7915366534561628,
+        "1500": 0.991536653456162
+      },
+      "permutation": {
+        "real_rate": 0.244,
+        "perm_mean": 0.23314000000000001,
+        "perm_std": 0.010491744197048281,
+        "z_score": 1.035099578773585,
+        "p_value": 0.15946843853820597,
+        "effect_size": 1.035099578773585,
+        "n_perm": 300,
+        "count_exceed": 47
+      },
+      "binomial_test": {
+        "z_score": 0.9069379158151817,
+        "p_value": 0.1822198146138878
+      },
+      "bonferroni_alpha": 0.00625,
+      "stability_index": 0.533901781025379,
+      "passes_rigor": false,
+      "rejected_reason": "Bonferroni fail, Binomial fail"
+    },
+    {
+      "game": "POWER_LOTTO",
+      "model": "reinforcement_exploration",
+      "baseline_rate_pct": 23.408463346543837,
+      "real_rate_pct": 24.266666666666666,
+      "edge_pct": 0.8582033201228292,
+      "window_rate_pct": {
+        "150": 26.0,
+        "500": 25.2,
+        "1500": 24.266666666666666
+      },
+      "window_edge_pct": {
+        "150": 2.5915366534561635,
+        "500": 1.7915366534561628,
+        "1500": 0.8582033201228292
+      },
+      "permutation": {
+        "real_rate": 0.24266666666666667,
+        "perm_mean": 0.23306000000000002,
+        "perm_std": 0.01049702391685906,
+        "z_score": 0.9151800302486114,
+        "p_value": 0.1893687707641196,
+        "effect_size": 0.9151800302486114,
+        "n_perm": 300,
+        "count_exceed": 56
+      },
+      "binomial_test": {
+        "z_score": 0.7849806941426192,
+        "p_value": 0.21623244396473867
+      },
+      "bonferroni_alpha": 0.00625,
+      "stability_index": 0.5945675433556261,
+      "passes_rigor": false,
+      "rejected_reason": "Bonferroni fail, Binomial fail"
+    },
+    {
+      "game": "POWER_LOTTO",
+      "model": "logistic",
+      "baseline_rate_pct": 23.408463346543837,
+      "real_rate_pct": 23.400000000000002,
+      "edge_pct": -0.008463346543834405,
+      "window_rate_pct": {
+        "150": 27.333333333333332,
+        "500": 25.6,
+        "1500": 23.400000000000002
+      },
+      "window_edge_pct": {
+        "150": 3.9248699867894956,
+        "500": 2.191536653456165,
+        "1500": -0.008463346543834405
+      },
+      "permutation": {
+        "real_rate": 0.234,
+        "perm_mean": 0.23204,
+        "perm_std": 0.011054539540136642,
+        "z_score": 0.1773027264235094,
+        "p_value": 0.4485049833887043,
+        "effect_size": 0.1773027264235094,
+        "n_perm": 300,
+        "count_exceed": 134
+      },
+      "binomial_test": {
+        "z_score": -0.0077412467290377,
+        "p_value": 0.503088279778029
+      },
+      "bonferroni_alpha": 0.00625,
+      "stability_index": 0.14109160434120116,
+      "passes_rigor": false,
+      "rejected_reason": "Edge<=0, Bonferroni fail, Binomial fail, Three-window instability"
+    },
+    {
+      "game": "POWER_LOTTO",
+      "model": "tree",
+      "baseline_rate_pct": 23.408463346543837,
+      "real_rate_pct": 21.933333333333334,
+      "edge_pct": -1.475130013210503,
+      "window_rate_pct": {
+        "150": 20.666666666666668,
+        "500": 20.4,
+        "1500": 21.933333333333334
+      },
+      "window_edge_pct": {
+        "150": -2.7417966798771687,
+        "500": -3.008463346543838,
+        "1500": -1.475130013210503
+      },
+      "permutation": {
+        "real_rate": 0.21933333333333332,
+        "perm_mean": 0.23268,
+        "perm_std": 0.011086720785596514,
+        "z_score": -1.2038425900291778,
+        "p_value": 0.9136212624584718,
+        "effect_size": -1.2038425900291778,
+        "n_perm": 300,
+        "count_exceed": 274
+      },
+      "binomial_test": {
+        "z_score": -1.3492706851272263,
+        "p_value": 0.9113749810252498
+      },
+      "bonferroni_alpha": 0.00625,
+      "stability_index": 0.0,
+      "passes_rigor": false,
+      "rejected_reason": "Edge<=0, Bonferroni fail, Binomial fail, Three-window instability"
+    },
+    {
+      "game": "POWER_LOTTO",
+      "model": "evolutionary_mutation",
+      "baseline_rate_pct": 23.408463346543837,
+      "real_rate_pct": 21.866666666666667,
+      "edge_pct": -1.5417966798771694,
+      "window_rate_pct": {
+        "150": 24.666666666666668,
+        "500": 23.0,
+        "1500": 21.866666666666667
+      },
+      "window_edge_pct": {
+        "150": 1.2582033201228313,
+        "500": -0.40846334654383654,
+        "1500": -1.5417966798771694
+      },
+      "permutation": {
+        "real_rate": 0.21866666666666668,
+        "perm_mean": 0.2355422222222222,
+        "perm_std": 0.011135032915294473,
+        "z_score": -1.5155371054952744,
+        "p_value": 0.946843853820598,
+        "effect_size": -1.5155371054952744,
+        "n_perm": 300,
+        "count_exceed": 284
+      },
+      "binomial_test": {
+        "z_score": -1.4102492959635076,
+        "p_value": 0.9207669577613721
+      },
+      "bonferroni_alpha": 0.00625,
+      "stability_index": 0.0,
+      "passes_rigor": false,
+      "rejected_reason": "Edge<=0, Bonferroni fail, Binomial fail, Three-window instability"
+    },
+    {
+      "game": "POWER_LOTTO",
+      "model": "bayesian",
+      "baseline_rate_pct": 23.408463346543837,
+      "real_rate_pct": 21.53333333333333,
+      "edge_pct": -1.875130013210505,
+      "window_rate_pct": {
+        "150": 23.333333333333332,
+        "500": 22.2,
+        "1500": 21.53333333333333
+      },
+      "window_edge_pct": {
+        "150": -0.07513001321050439,
+        "500": -1.2084633465438372,
+        "1500": -1.875130013210505
+      },
+      "permutation": {
+        "real_rate": 0.21533333333333332,
+        "perm_mean": 0.23193777777777777,
+        "perm_std": 0.011323615877590067,
+        "z_score": -1.4663553252313175,
+        "p_value": 0.9269102990033222,
+        "effect_size": -1.4663553252313175,
+        "n_perm": 300,
+        "count_exceed": 278
+      },
+      "binomial_test": {
+        "z_score": -1.715142350144914,
+        "p_value": 0.9568404342989393
+      },
+      "bonferroni_alpha": 0.00625,
+      "stability_index": 0.0,
+      "passes_rigor": false,
+      "rejected_reason": "Edge<=0, Bonferroni fail, Binomial fail, Three-window instability"
+    },
+    {
+      "game": "POWER_LOTTO",
+      "model": "ensemble_stacking",
+      "baseline_rate_pct": 23.408463346543837,
+      "real_rate_pct": 21.53333333333333,
+      "edge_pct": -1.875130013210505,
+      "window_rate_pct": {
+        "150": 21.333333333333336,
+        "500": 22.6,
+        "1500": 21.53333333333333
+      },
+      "window_edge_pct": {
+        "150": -2.075130013210501,
+        "500": -0.8084633465438351,
+        "1500": -1.875130013210505
+      },
+      "permutation": {
+        "real_rate": 0.21533333333333332,
+        "perm_mean": 0.23316444444444448,
+        "perm_std": 0.010285318314933484,
+        "z_score": -1.733646987229177,
+        "p_value": 0.9667774086378738,
+        "effect_size": -1.733646987229177,
+        "n_perm": 300,
+        "count_exceed": 290
+      },
+      "binomial_test": {
+        "z_score": -1.715142350144914,
+        "p_value": 0.9568404342989393
+      },
+      "bonferroni_alpha": 0.00625,
+      "stability_index": 0.0,
+      "passes_rigor": false,
+      "rejected_reason": "Edge<=0, Bonferroni fail, Binomial fail, Three-window instability"
+    },
+    {
+      "game": "POWER_LOTTO",
+      "model": "markov",
+      "baseline_rate_pct": 23.408463346543837,
+      "real_rate_pct": 21.4,
+      "edge_pct": -2.008463346543838,
+      "window_rate_pct": {
+        "150": 24.0,
+        "500": 24.6,
+        "1500": 21.4
+      },
+      "window_edge_pct": {
+        "150": 0.5915366534561635,
+        "500": 1.1915366534561649,
+        "1500": -2.008463346543838
+      },
+      "permutation": {
+        "real_rate": 0.214,
+        "perm_mean": 0.24066888888888893,
+        "perm_std": 0.010892130809912583,
+        "z_score": -2.4484547010920923,
+        "p_value": 0.9933554817275747,
+        "effect_size": -2.4484547010920923,
+        "n_perm": 300,
+        "count_exceed": 298
+      },
+      "binomial_test": {
+        "z_score": -1.8370995718174765,
+        "p_value": 0.9669024013096148
+      },
+      "bonferroni_alpha": 0.00625,
+      "stability_index": 0.0,
+      "passes_rigor": false,
+      "rejected_reason": "Edge<=0, Bonferroni fail, Binomial fail, Three-window instability"
+    }
+  ]
+}

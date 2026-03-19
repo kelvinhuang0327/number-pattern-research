@@ -1,0 +1,46 @@
+{
+  "H003_delta_acb": {
+    "signal_in_series": true,
+    "ljung_box_p": 0.0,
+    "acf_lag1_5": [
+      0.9288,
+      0.8614,
+      0.7952,
+      0.7322,
+      0.6732
+    ],
+    "top5_lift": 0.985,
+    "top5_p": 0.3441,
+    "verdict": "PROCEED"
+  },
+  "H004_gap_entropy": {
+    "signal_in_series": false,
+    "ljung_box_p": 0.8497276327768275,
+    "acf_lag1_5": [
+      -0.0054,
+      -0.0113,
+      0.0008,
+      0.0062,
+      0.0164
+    ],
+    "entropy_low_vs_high_lift": 1.0391,
+    "verdict": "FAST_REJECT"
+  },
+  "H006_freq_cluster": {
+    "signal_in_series": true,
+    "ljung_box_p": 0.0,
+    "acf_lag1_5": [
+      0.0802,
+      0.056,
+      0.0631,
+      0.045,
+      0.0604
+    ],
+    "cluster_distribution": [
+      0.518,
+      0.2973,
+      0.1848
+    ],
+    "verdict": "PROCEED"
+  }
+}

@@ -1,0 +1,52 @@
+{
+  "name": "acb_hot_fourier_3bet_biglotto",
+  "date": "2026-02-27",
+  "hypothesis": "ACB+hot_50+fourier_500 3注組合可取代 Triple Strike 成為大樂透最佳3注策略",
+  "results": {
+    "S1_ACB_single": {
+      "three_window": {
+        "150p": "-1.86%",
+        "500p": "+0.54%",
+        "1500p": "+0.54%"
+      },
+      "stability": "LATE_BLOOMER",
+      "perm_p": 0.015,
+      "verdict": "FAIL — 150期負值，違反三窗口全正標準"
+    },
+    "S4_3bet_combo": {
+      "three_window": {
+        "150p": "+0.52%",
+        "500p": "+2.72%",
+        "1500p": "+1.66%"
+      },
+      "perm_p": 0.01,
+      "perm_z": 2.94,
+      "verdict": "PASS (三窗口全正 + perm p=0.010)"
+    },
+    "mcnemar_vs_triple_strike": {
+      "acb_hits": 105,
+      "ts_hits": 97,
+      "total": 1451,
+      "acb_edge": "+1.75%",
+      "ts_edge": "+1.20%",
+      "b_acb_only": 71,
+      "c_ts_only": 63,
+      "diff_periods": 8,
+      "chi2": 0.366,
+      "z": 0.69,
+      "p_value": 0.5454,
+      "verdict": "NOT SIGNIFICANT — 差距8期，p=0.545，統計等效"
+    }
+  },
+  "final_verdict": "REJECTED",
+  "reason": "McNemar p=0.545 遠超0.05，無法確認優於現有 Triple Strike (L04: McNemar不顯著不採納)",
+  "current_champion": "Triple Strike (Edge +1.46%, perm p=0.007)",
+  "notable_finding": "ACB獨有命中71期 vs TS獨有63期，兩策略信號來源不同，低重疊(b+c=134/1451=9.2%)",
+  "future_condition": "可作為4注組合第4注候選 — ACB與TS低重疊代表互補性高，需回測 TS3+ACB 4注系統",
+  "components": {
+    "ACB_window30": "AdaptiveACB(BIG_LOTTO, window=30): freq_deficit×0.4 + gap_score×0.6 + boundary/mod bonus",
+    "hot_50": "近50期頻率最高6個號碼",
+    "fourier_500": "FFT 500期週期預測 Top-6"
+  },
+  "filed": "rejected/acb_hot_fourier_3bet_biglotto.json"
+}

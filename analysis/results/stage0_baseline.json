@@ -1,0 +1,473 @@
+{
+  "DAILY_539": {
+    "game": "DAILY_539",
+    "strategies": {
+      "f4cold_5bet": {
+        "n_records": 318,
+        "num_bets": 5,
+        "baseline": 0.4539,
+        "hit_rate": 0.522,
+        "edge": 0.0681,
+        "edge_pct": 6.81,
+        "monetary_roi": -0.8327,
+        "monetary_roi_pct": -83.27,
+        "sharpe_bernoulli": 0.1364,
+        "sharpe_monetary": -3.0737,
+        "max_drawdown_draws": 6,
+        "avg_profit_per_draw": -208.18,
+        "mc_ruin": {
+          "ruin_prob": 1.0,
+          "mean_final_equity": -57466.31,
+          "median_final_equity": -57500.0
+        }
+      },
+      "f4cold_3bet": {
+        "n_records": 318,
+        "num_bets": 3,
+        "baseline": 0.305,
+        "hit_rate": 0.3082,
+        "edge": 0.0032,
+        "edge_pct": 0.32,
+        "monetary_roi": -0.8396,
+        "monetary_roi_pct": -83.96,
+        "sharpe_bernoulli": 0.0069,
+        "sharpe_monetary": -2.2763,
+        "max_drawdown_draws": 16,
+        "avg_profit_per_draw": -125.94,
+        "mc_ruin": {
+          "ruin_prob": 1.0,
+          "mean_final_equity": -32792.63,
+          "median_final_equity": -32850.0
+        }
+      },
+      "acb_1bet": {
+        "n_records": 318,
+        "num_bets": 1,
+        "baseline": 0.114,
+        "hit_rate": 0.1478,
+        "edge": 0.0338,
+        "edge_pct": 3.38,
+        "monetary_roi": -0.8365,
+        "monetary_roi_pct": -83.65,
+        "sharpe_bernoulli": 0.0952,
+        "sharpe_monetary": -1.7399,
+        "max_drawdown_draws": 28,
+        "avg_profit_per_draw": -41.82,
+        "mc_ruin": {
+          "ruin_prob": 1.0,
+          "mean_final_equity": -7549.75,
+          "median_final_equity": -7600.0
+        }
+      },
+      "midfreq_acb_2bet": {
+        "n_records": 318,
+        "num_bets": 2,
+        "baseline": 0.2154,
+        "hit_rate": 0.3019,
+        "edge": 0.0865,
+        "edge_pct": 8.65,
+        "monetary_roi": -0.8097,
+        "monetary_roi_pct": -80.97,
+        "sharpe_bernoulli": 0.1884,
+        "sharpe_monetary": -1.9255,
+        "max_drawdown_draws": 14,
+        "avg_profit_per_draw": -80.97,
+        "mc_ruin": {
+          "ruin_prob": 1.0,
+          "mean_final_equity": -19299.83,
+          "median_final_equity": -19350.0
+        }
+      },
+      "acb_markov_fourier_3bet": {
+        "n_records": 318,
+        "num_bets": 3,
+        "baseline": 0.305,
+        "hit_rate": 0.3648,
+        "edge": 0.0598,
+        "edge_pct": 5.98,
+        "monetary_roi": -0.8197,
+        "monetary_roi_pct": -81.97,
+        "sharpe_bernoulli": 0.1242,
+        "sharpe_monetary": -2.2768,
+        "max_drawdown_draws": 10,
+        "avg_profit_per_draw": -122.96,
+        "mc_ruin": {
+          "ruin_prob": 1.0,
+          "mean_final_equity": -31896.69,
+          "median_final_equity": -31925.0
+        }
+      },
+      "acb_markov_midfreq_3bet": {
+        "n_records": 318,
+        "num_bets": 3,
+        "baseline": 0.305,
+        "hit_rate": 0.3931,
+        "edge": 0.0881,
+        "edge_pct": 8.81,
+        "monetary_roi": -0.805,
+        "monetary_roi_pct": -80.5,
+        "sharpe_bernoulli": 0.1803,
+        "sharpe_monetary": -2.1035,
+        "max_drawdown_draws": 9,
+        "avg_profit_per_draw": -120.75,
+        "mc_ruin": {
+          "ruin_prob": 1.0,
+          "mean_final_equity": -31230.15,
+          "median_final_equity": -31250.0
+        }
+      }
+    }
+  },
+  "BIG_LOTTO": {
+    "game": "BIG_LOTTO",
+    "strategies": {
+      "fourier_rhythm_2bet": {
+        "n_records": 326,
+        "num_bets": 2,
+        "baseline": 0.0369,
+        "hit_rate": 0.046,
+        "edge": 0.0091,
+        "edge_pct": 0.91,
+        "monetary_roi": -0.7669,
+        "monetary_roi_pct": -76.69,
+        "sharpe_bernoulli": 0.0435,
+        "sharpe_monetary": -0.5623,
+        "max_drawdown_draws": 42,
+        "avg_profit_per_draw": -76.69,
+        "mc_ruin": {
+          "ruin_prob": 1.0,
+          "mean_final_equity": -18001.92,
+          "median_final_equity": -18200.0
+        }
+      },
+      "deviation_complement_2bet": {
+        "n_records": 326,
+        "num_bets": 2,
+        "baseline": 0.0369,
+        "hit_rate": 0.046,
+        "edge": 0.0091,
+        "edge_pct": 0.91,
+        "monetary_roi": -0.816,
+        "monetary_roi_pct": -81.6,
+        "sharpe_bernoulli": 0.0435,
+        "sharpe_monetary": -0.9736,
+        "max_drawdown_draws": 72,
+        "avg_profit_per_draw": -81.6,
+        "mc_ruin": {
+          "ruin_prob": 1.0,
+          "mean_final_equity": -19488.28,
+          "median_final_equity": -19400.0
+        }
+      },
+      "triple_strike_3bet": {
+        "n_records": 326,
+        "num_bets": 3,
+        "baseline": 0.0549,
+        "hit_rate": 0.0706,
+        "edge": 0.0157,
+        "edge_pct": 1.57,
+        "monetary_roi": -0.7464,
+        "monetary_roi_pct": -74.64,
+        "sharpe_bernoulli": 0.0611,
+        "sharpe_monetary": -0.6126,
+        "max_drawdown_draws": 42,
+        "avg_profit_per_draw": -111.96,
+        "mc_ruin": {
+          "ruin_prob": 1.0,
+          "mean_final_equity": -28598.44,
+          "median_final_equity": -28800.0
+        }
+      },
+      "echo_aware_3bet": {
+        "n_records": 326,
+        "num_bets": 3,
+        "baseline": 0.0549,
+        "hit_rate": 0.0736,
+        "edge": 0.0187,
+        "edge_pct": 1.87,
+        "monetary_roi": -0.7628,
+        "monetary_roi_pct": -76.28,
+        "sharpe_bernoulli": 0.0717,
+        "sharpe_monetary": -0.7422,
+        "max_drawdown_draws": 43,
+        "avg_profit_per_draw": -114.42,
+        "mc_ruin": {
+          "ruin_prob": 1.0,
+          "mean_final_equity": -29313.64,
+          "median_final_equity": -29600.0
+        }
+      },
+      "ts3_markov_4bet_w30": {
+        "n_records": 313,
+        "num_bets": 4,
+        "baseline": 0.0725,
+        "hit_rate": 0.0927,
+        "edge": 0.0202,
+        "edge_pct": 2.02,
+        "monetary_roi": -0.738,
+        "monetary_roi_pct": -73.8,
+        "sharpe_bernoulli": 0.0695,
+        "sharpe_monetary": -0.6676,
+        "max_drawdown_draws": 30,
+        "avg_profit_per_draw": -147.6,
+        "mc_ruin": {
+          "ruin_prob": 1.0,
+          "mean_final_equity": -39302.88,
+          "median_final_equity": -39400.0
+        }
+      },
+      "ts3_markov_freq_5bet_w30": {
+        "n_records": 313,
+        "num_bets": 5,
+        "baseline": 0.0896,
+        "hit_rate": 0.1118,
+        "edge": 0.0222,
+        "edge_pct": 2.22,
+        "monetary_roi": -0.7546,
+        "monetary_roi_pct": -75.46,
+        "sharpe_bernoulli": 0.0705,
+        "sharpe_monetary": -0.8236,
+        "max_drawdown_draws": 30,
+        "avg_profit_per_draw": -188.66,
+        "mc_ruin": {
+          "ruin_prob": 1.0,
+          "mean_final_equity": -51640.88,
+          "median_final_equity": -52000.0
+        }
+      },
+      "p1_neighbor_cold_2bet": {
+        "n_records": 312,
+        "num_bets": 2,
+        "baseline": 0.0369,
+        "hit_rate": 0.0417,
+        "edge": 0.0048,
+        "edge_pct": 0.48,
+        "monetary_roi": -0.7821,
+        "monetary_roi_pct": -78.21,
+        "sharpe_bernoulli": 0.0239,
+        "sharpe_monetary": -0.575,
+        "max_drawdown_draws": 48,
+        "avg_profit_per_draw": -78.21,
+        "mc_ruin": {
+          "ruin_prob": 1.0,
+          "mean_final_equity": -18453.52,
+          "median_final_equity": -18600.0
+        }
+      },
+      "p1_deviation_4bet": {
+        "n_records": 307,
+        "num_bets": 4,
+        "baseline": 0.0725,
+        "hit_rate": 0.0847,
+        "edge": 0.0122,
+        "edge_pct": 1.22,
+        "monetary_roi": -0.8046,
+        "monetary_roi_pct": -80.46,
+        "sharpe_bernoulli": 0.0438,
+        "sharpe_monetary": -1.0274,
+        "max_drawdown_draws": 27,
+        "avg_profit_per_draw": -160.91,
+        "mc_ruin": {
+          "ruin_prob": 1.0,
+          "mean_final_equity": -43286.92,
+          "median_final_equity": -43400.0
+        }
+      },
+      "p1_dev_sum5bet": {
+        "n_records": 307,
+        "num_bets": 5,
+        "baseline": 0.0896,
+        "hit_rate": 0.127,
+        "edge": 0.0374,
+        "edge_pct": 3.74,
+        "monetary_roi": -0.7967,
+        "monetary_roi_pct": -79.67,
+        "sharpe_bernoulli": 0.1124,
+        "sharpe_monetary": -1.4953,
+        "max_drawdown_draws": 21,
+        "avg_profit_per_draw": -199.19,
+        "mc_ruin": {
+          "ruin_prob": 1.0,
+          "mean_final_equity": -54750.88,
+          "median_final_equity": -54800.0
+        }
+      },
+      "regime_2bet": {
+        "n_records": 303,
+        "num_bets": 2,
+        "baseline": 0.0369,
+        "hit_rate": 0.0726,
+        "edge": 0.0357,
+        "edge_pct": 3.57,
+        "monetary_roi": -0.6568,
+        "monetary_roi_pct": -65.68,
+        "sharpe_bernoulli": 0.1376,
+        "sharpe_monetary": -0.432,
+        "max_drawdown_draws": 42,
+        "avg_profit_per_draw": -65.68,
+        "mc_ruin": {
+          "ruin_prob": 1.0,
+          "mean_final_equity": -14687.92,
+          "median_final_equity": -15000.0
+        }
+      },
+      "ts3_regime_3bet": {
+        "n_records": 303,
+        "num_bets": 3,
+        "baseline": 0.0549,
+        "hit_rate": 0.0891,
+        "edge": 0.0342,
+        "edge_pct": 3.42,
+        "monetary_roi": -0.692,
+        "monetary_roi_pct": -69.2,
+        "sharpe_bernoulli": 0.1201,
+        "sharpe_monetary": -0.5362,
+        "max_drawdown_draws": 30,
+        "avg_profit_per_draw": -103.8,
+        "mc_ruin": {
+          "ruin_prob": 1.0,
+          "mean_final_equity": -26130.68,
+          "median_final_equity": -26400.0
+        }
+      }
+    }
+  },
+  "POWER_LOTTO": {
+    "game": "POWER_LOTTO",
+    "strategies": {
+      "fourier_rhythm_2bet": {
+        "n_records": 310,
+        "num_bets": 2,
+        "baseline": 0.0759,
+        "hit_rate": 0.0839,
+        "edge": 0.008,
+        "edge_pct": 0.8,
+        "monetary_roi": -0.9355,
+        "monetary_roi_pct": -93.55,
+        "sharpe_bernoulli": 0.0288,
+        "sharpe_monetary": -2.7185,
+        "max_drawdown_draws": 42,
+        "avg_profit_per_draw": -187.1,
+        "mc_ruin": {
+          "ruin_prob": 1.0,
+          "mean_final_equity": -46135.07,
+          "median_final_equity": -46300.0
+        }
+      },
+      "fourier_rhythm_3bet": {
+        "n_records": 310,
+        "num_bets": 3,
+        "baseline": 0.1117,
+        "hit_rate": 0.1419,
+        "edge": 0.0302,
+        "edge_pct": 3.02,
+        "monetary_roi": -0.9,
+        "monetary_roi_pct": -90.0,
+        "sharpe_bernoulli": 0.0866,
+        "sharpe_monetary": -2.2235,
+        "max_drawdown_draws": 31,
+        "avg_profit_per_draw": -270.0,
+        "mc_ruin": {
+          "ruin_prob": 1.0,
+          "mean_final_equity": -70988.81,
+          "median_final_equity": -71100.0
+        }
+      },
+      "fourier30_markov30_2bet": {
+        "n_records": 310,
+        "num_bets": 2,
+        "baseline": 0.0759,
+        "hit_rate": 0.0839,
+        "edge": 0.008,
+        "edge_pct": 0.8,
+        "monetary_roi": -0.9468,
+        "monetary_roi_pct": -94.68,
+        "sharpe_bernoulli": 0.0288,
+        "sharpe_monetary": -3.6058,
+        "max_drawdown_draws": 35,
+        "avg_profit_per_draw": -189.35,
+        "mc_ruin": {
+          "ruin_prob": 1.0,
+          "mean_final_equity": -46796.36,
+          "median_final_equity": -46900.0
+        }
+      },
+      "orthogonal_5bet": {
+        "n_records": 307,
+        "num_bets": 5,
+        "baseline": 0.1791,
+        "hit_rate": 0.2085,
+        "edge": 0.0294,
+        "edge_pct": 2.94,
+        "monetary_roi": -0.9309,
+        "monetary_roi_pct": -93.09,
+        "sharpe_bernoulli": 0.0723,
+        "sharpe_monetary": -4.0506,
+        "max_drawdown_draws": 16,
+        "avg_profit_per_draw": -465.47,
+        "mc_ruin": {
+          "ruin_prob": 1.0,
+          "mean_final_equity": -129660.14,
+          "median_final_equity": -129800.0
+        }
+      },
+      "pp3_freqort_4bet": {
+        "n_records": 302,
+        "num_bets": 4,
+        "baseline": 0.146,
+        "hit_rate": 0.1788,
+        "edge": 0.0328,
+        "edge_pct": 3.28,
+        "monetary_roi": -0.9263,
+        "monetary_roi_pct": -92.63,
+        "sharpe_bernoulli": 0.0856,
+        "sharpe_monetary": -3.478,
+        "max_drawdown_draws": 17,
+        "avg_profit_per_draw": -370.53,
+        "mc_ruin": {
+          "ruin_prob": 1.0,
+          "mean_final_equity": -101162.39,
+          "median_final_equity": -101300.0
+        }
+      },
+      "midfreq_fourier_2bet": {
+        "n_records": 301,
+        "num_bets": 2,
+        "baseline": 0.0759,
+        "hit_rate": 0.0764,
+        "edge": 0.0005,
+        "edge_pct": 0.05,
+        "monetary_roi": -0.9037,
+        "monetary_roi_pct": -90.37,
+        "sharpe_bernoulli": 0.0019,
+        "sharpe_monetary": -1.7344,
+        "max_drawdown_draws": 44,
+        "avg_profit_per_draw": -180.73,
+        "mc_ruin": {
+          "ruin_prob": 1.0,
+          "mean_final_equity": -44227.1,
+          "median_final_equity": -44300.0
+        }
+      },
+      "midfreq_fourier_mk_3bet": {
+        "n_records": 301,
+        "num_bets": 3,
+        "baseline": 0.1117,
+        "hit_rate": 0.1296,
+        "edge": 0.0179,
+        "edge_pct": 1.79,
+        "monetary_roi": -0.9181,
+        "monetary_roi_pct": -91.81,
+        "sharpe_bernoulli": 0.0532,
+        "sharpe_monetary": -2.6075,
+        "max_drawdown_draws": 31,
+        "avg_profit_per_draw": -275.42,
+        "mc_ruin": {
+          "ruin_prob": 1.0,
+          "mean_final_equity": -72633.86,
+          "median_final_equity": -72800.0
+        }
+      }
+    }
+  }
+}

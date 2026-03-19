@@ -1,0 +1,18 @@
+{
+  "name": "Fourier30+Markov30 2注",
+  "lottery": "BIG_LOTTO",
+  "rejected_date": "2026-02-10",
+  "failure_reason": "SHORT_MOMENTUM — 1500期Edge為負，長期無法維持",
+  "pattern": "SHORT_MOMENTUM",
+  "stats": {
+    "edge_150p": null,
+    "edge_500p": null,
+    "edge_1500p": "-0.29%",
+    "baseline": "3.68% (2注)",
+    "p_value": null,
+    "z_score": null
+  },
+  "applicable_conditions": "短期窗口曾有效",
+  "retest_conditions": "暫停研究。原因：單純Fourier已足夠，Markov組合在大樂透無額外效益。重啟條件：Markov窗口或轉移矩陣計算方式重大更新，或dataset>3000期",
+  "notes": "注意：Fourier30+Markov30 在威力彩有效（Edge +0.91% / 1000期），但大樂透無效。兩個彩種不可混用結論"
+}

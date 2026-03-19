@@ -1,0 +1,28 @@
+[
+  {
+    "date": "2026-01-15T17:59:21.770061",
+    "fitness": 5.0,
+    "params": {
+      "trend_window": 200,
+      "gap_window": 30,
+      "weight_trend": 0.46346498855273655,
+      "weight_gap": 0.500799716076713,
+      "weight_freq": 0.4483982444010639,
+      "elite_pool_size": 30
+    },
+    "lottery": "BIG_LOTTO"
+  },
+  {
+    "date": "2026-01-22T23:52:17.212514",
+    "fitness": 5.0,
+    "params": {
+      "trend_window": 500,
+      "gap_window": 100,
+      "weight_trend": 0.40435113236354836,
+      "weight_gap": 0.35480643183107796,
+      "weight_freq": 0.18034090054569019,
+      "elite_pool_size": 36
+    },
+    "lottery": "BIG_LOTTO"
+  }
+]

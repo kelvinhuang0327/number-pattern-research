@@ -1,0 +1,78 @@
+{
+  "timestamp": "2026-03-14 22:40:24",
+  "lottery_type": "DAILY_539",
+  "n_periods": 100,
+  "total_draws": 5810,
+  "summary": {
+    "acb": {
+      "top5_hits": 70,
+      "top5_rate": 14.0,
+      "top5_edge": 1.179,
+      "top10_hits": 141,
+      "top10_rate": 28.2,
+      "avg_rank": 19.36,
+      "current_weight": 0.1603,
+      "periods": 100
+    },
+    "midfreq": {
+      "top5_hits": 76,
+      "top5_rate": 15.2,
+      "top5_edge": 2.379,
+      "top10_hits": 133,
+      "top10_rate": 26.6,
+      "avg_rank": 20.03,
+      "current_weight": 0.2288,
+      "periods": 100
+    },
+    "fourier": {
+      "top5_hits": 59,
+      "top5_rate": 11.8,
+      "top5_edge": -1.021,
+      "top10_hits": 126,
+      "top10_rate": 25.2,
+      "avg_rank": 19.6,
+      "current_weight": 0.2048,
+      "periods": 100
+    },
+    "markov": {
+      "top5_hits": 64,
+      "top5_rate": 12.8,
+      "top5_edge": -0.021,
+      "top10_hits": 136,
+      "top10_rate": 27.2,
+      "avg_rank": 19.57,
+      "current_weight": 0.2048,
+      "periods": 100
+    },
+    "markov2": {
+      "top5_hits": 55,
+      "top5_rate": 11.0,
+      "top5_edge": -1.821,
+      "top10_hits": 121,
+      "top10_rate": 24.2,
+      "avg_rank": 20.26,
+      "current_weight": 0.2048,
+      "periods": 100
+    },
+    "weibull_gap": {
+      "top5_hits": 50,
+      "top5_rate": 10.0,
+      "top5_edge": -2.821,
+      "top10_hits": 123,
+      "top10_rate": 24.6,
+      "avg_rank": 20.15,
+      "current_weight": 0.2288,
+      "periods": 100
+    },
+    "consensus_signal": {
+      "top5_hits": 67,
+      "top5_rate": 13.4,
+      "top5_edge": 0.579,
+      "top10_hits": 134,
+      "top10_rate": 26.8,
+      "avg_rank": 19.66,
+      "current_weight": 0.2748,
+      "periods": 100
+    }
+  }
+}

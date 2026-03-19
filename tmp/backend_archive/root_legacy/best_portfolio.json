@@ -1,0 +1,56 @@
+{
+  "draw_id": "115000068",
+  "date": "2026/03/17",
+  "K": 3,
+  "algo": "sa",
+  "weights": {
+    "w1": 0.4,
+    "w2": 0.3,
+    "w3": 0.2,
+    "w4": 0.1
+  },
+  "tickets": [
+    {
+      "ticket": [
+        9,
+        14,
+        20,
+        37,
+        39
+      ],
+      "strategy": "acb_markov_midfreq_3bet",
+      "strategy_score": 1.0,
+      "popularity": 0.095,
+      "payout_quality": 0.905
+    },
+    {
+      "ticket": [
+        8,
+        12,
+        15,
+        17,
+        36
+      ],
+      "strategy": "acb_markov_midfreq_3bet",
+      "strategy_score": 1.0,
+      "popularity": 0.14,
+      "payout_quality": 0.86
+    },
+    {
+      "ticket": [
+        6,
+        18,
+        19,
+        24,
+        25
+      ],
+      "strategy": "acb_markov_midfreq_3bet",
+      "strategy_score": 1.0,
+      "popularity": 0.27,
+      "payout_quality": 0.73
+    }
+  ],
+  "coverage": 1.0,
+  "avg_overlap": 0.0,
+  "portfolio_score": 0.7832
+}

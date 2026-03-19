@@ -1,0 +1,30 @@
+{
+  "strategy_name": "ACB_Markov_LagEcho_3bet",
+  "description": "ACB + Markov + Lag-k 回聲 正交3注（lag_weights={1:0.5, 2:2.0, 3:1.0}）",
+  "rejection_date": "2026-03-08",
+  "trigger": "115000060期檢討（17號Lag-2回聲盲點分析）",
+  "failure_reason": "統計顯著（STABLE, perm_p=0.025），但 1500p Edge +5.03% 劣於現行 ACB+Markov+Fourier +6.10%。McNemar p=0.33（不顯著），現行冠軍在1500期窗口多命中16次。表示以 LagEcho 替換 Fourier 是降效的。",
+  "statistical_results": {
+    "edge_150p": 0.83,
+    "edge_500p": 3.50,
+    "edge_1500p": 5.03,
+    "z_1500p": 4.23,
+    "perm_p": 0.0249,
+    "signal_edge": 2.84,
+    "stability": "STABLE",
+    "mcnemar_vs_champion": {
+      "a_only": 128,
+      "b_only": 144,
+      "chi2": 0.9412,
+      "p_value": 0.332,
+      "winner": "B"
+    }
+  },
+  "applicable_conditions": "作為參考策略備用，edge 正且 STABLE，但遜於現行 Fourier 注",
+  "retest_conditions": [
+    "資料量超過 8000 期後重新評估 Lag-Echo 權重",
+    "若 ACB+Markov+Fourier 出現連續 100 期回退，可考慮 Lag-Echo 替換 Fourier",
+    "若發現 Lag-2/3 的條件機率在特定市場狀態下顯著提高（>15%），重新驗證"
+  ],
+  "insight": "Lag-Echo 是真實但較弱的信號（有正信號但 perm signal_edge +2.84% vs Fourier 的 signal_edge 更高），Fourier 週期分析包含並超越 Lag-Echo 的資訊量"
+}

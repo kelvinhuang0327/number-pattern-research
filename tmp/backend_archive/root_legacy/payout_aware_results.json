@@ -1,0 +1,155 @@
+{
+  "ACB_1bet": {
+    "n_bets": 1,
+    "match_dist": {
+      "0": 681,
+      "1": 600,
+      "2": 204,
+      "3": 15,
+      "4": 0,
+      "5": 0
+    },
+    "total_payout": 91200,
+    "total_cost": 75000,
+    "ev": 16200,
+    "roi_pct": 21.599999999999998,
+    "payout_per_draw": 60.8,
+    "cost_per_draw": 50
+  },
+  "Markov_1bet": {
+    "n_bets": 1,
+    "match_dist": {
+      "0": 733,
+      "1": 573,
+      "2": 175,
+      "3": 18,
+      "4": 1,
+      "5": 0
+    },
+    "total_payout": 108500,
+    "total_cost": 75000,
+    "ev": 33500,
+    "roi_pct": 44.66666666666668,
+    "payout_per_draw": 72.33333333333333,
+    "cost_per_draw": 50
+  },
+  "MidFreq_1bet": {
+    "n_bets": 1,
+    "match_dist": {
+      "0": 720,
+      "1": 587,
+      "2": 174,
+      "3": 19,
+      "4": 0,
+      "5": 0
+    },
+    "total_payout": 90200,
+    "total_cost": 75000,
+    "ev": 15200,
+    "roi_pct": 20.266666666666676,
+    "payout_per_draw": 60.13333333333333,
+    "cost_per_draw": 50
+  },
+  "Fourier_1bet": {
+    "n_bets": 1,
+    "match_dist": {
+      "0": 703,
+      "1": 600,
+      "2": 183,
+      "3": 14,
+      "4": 0,
+      "5": 0
+    },
+    "total_payout": 82900,
+    "total_cost": 75000,
+    "ev": 7900,
+    "roi_pct": 10.533333333333328,
+    "payout_per_draw": 55.266666666666666,
+    "cost_per_draw": 50
+  },
+  "MidFreq_ACB_2bet": {
+    "n_bets": 2,
+    "match_dist": {
+      "0": 259,
+      "1": 836,
+      "2": 371,
+      "3": 34,
+      "4": 0,
+      "5": 0
+    },
+    "total_payout": 179300,
+    "total_cost": 150000,
+    "ev": 29300,
+    "roi_pct": 19.533333333333335,
+    "payout_per_draw": 119.53333333333333,
+    "cost_per_draw": 100
+  },
+  "ACB_Markov_2bet": {
+    "n_bets": 2,
+    "match_dist": {
+      "0": 297,
+      "1": 806,
+      "2": 365,
+      "3": 30,
+      "4": 2,
+      "5": 0
+    },
+    "total_payout": 209500,
+    "total_cost": 150000,
+    "ev": 59500,
+    "roi_pct": 39.66666666666667,
+    "payout_per_draw": 139.66666666666666,
+    "cost_per_draw": 100
+  },
+  "ACB_Fourier_2bet": {
+    "n_bets": 2,
+    "match_dist": {
+      "0": 286,
+      "1": 813,
+      "2": 373,
+      "3": 28,
+      "4": 0,
+      "5": 0
+    },
+    "total_payout": 167900,
+    "total_cost": 150000,
+    "ev": 17900,
+    "roi_pct": 11.93333333333333,
+    "payout_per_draw": 111.93333333333334,
+    "cost_per_draw": 100
+  },
+  "ACB_Markov_Fourier_3bet": {
+    "n_bets": 3,
+    "match_dist": {
+      "0": 98,
+      "1": 844,
+      "2": 507,
+      "3": 49,
+      "4": 2,
+      "5": 0
+    },
+    "total_payout": 290100,
+    "total_cost": 225000,
+    "ev": 65100,
+    "roi_pct": 28.933333333333344,
+    "payout_per_draw": 193.4,
+    "cost_per_draw": 150
+  },
+  "RRF_3bet": {
+    "n_bets": 3,
+    "match_dist": {
+      "0": 96,
+      "1": 884,
+      "2": 471,
+      "3": 49,
+      "4": 0,
+      "5": 0
+    },
+    "total_payout": 239300,
+    "total_cost": 225000,
+    "ev": 14300,
+    "roi_pct": 6.355555555555559,
+    "payout_per_draw": 159.53333333333333,
+    "cost_per_draw": 150
+  }
+}

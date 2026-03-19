@@ -1,0 +1,1 @@
+strategy: 5bet_ts3_markov_freq\nlottery: big_lotto\nadopted: 2026-02-24\nstatus: ACTIVE

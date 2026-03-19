@@ -1,0 +1,679 @@
+{
+  "generated_at": "2026-03-13T14:19:42.928611",
+  "params": {
+    "min_train": 300,
+    "max_oos": 120,
+    "train_window": 500,
+    "n_perm": 10,
+    "grid_size": 36,
+    "topk": 1
+  },
+  "runs": [
+    {
+      "lottery_type": "BIG_LOTTO",
+      "num_bets": 2,
+      "stage1_pass": true,
+      "best": {
+        "config": {
+          "w_markov2": 0.55,
+          "pair_min_count": 2,
+          "diversity_penalty": 0.12,
+          "pressure_boost": 0.2
+        },
+        "stage1": {
+          "passed": true
+        },
+        "stage2": {
+          "passed": true,
+          "windows": {
+            "150p": {
+              "n": 120,
+              "rate": 0.05833,
+              "edge": 0.02143
+            },
+            "500p": {
+              "n": 120,
+              "rate": 0.05833,
+              "edge": 0.02143
+            },
+            "1500p": {
+              "n": 120,
+              "rate": 0.05833,
+              "edge": 0.02143
+            }
+          }
+        },
+        "stage3": {
+          "passed": false,
+          "p_emp": 0.9091,
+          "cohens_d": -1.028,
+          "verdict": "NO_SIGNAL"
+        },
+        "stage4": {
+          "passed": false,
+          "mcnemar": {
+            "new_only": 6,
+            "base_only": 3,
+            "chi2": 0.4444,
+            "p": 0.505
+          }
+        },
+        "stage5": {
+          "passed": true,
+          "sharpe_100p": 0.0598
+        },
+        "final_pass": false,
+        "score": 0.03339
+      },
+      "top_candidates": [
+        {
+          "config": {
+            "w_markov2": 0.55,
+            "pair_min_count": 2,
+            "diversity_penalty": 0.12,
+            "pressure_boost": 0.2
+          },
+          "stage1": {
+            "passed": true
+          },
+          "stage2": {
+            "passed": true,
+            "windows": {
+              "150p": {
+                "n": 120,
+                "rate": 0.05833,
+                "edge": 0.02143
+              },
+              "500p": {
+                "n": 120,
+                "rate": 0.05833,
+                "edge": 0.02143
+              },
+              "1500p": {
+                "n": 120,
+                "rate": 0.05833,
+                "edge": 0.02143
+              }
+            }
+          },
+          "stage3": {
+            "passed": false,
+            "p_emp": 0.9091,
+            "cohens_d": -1.028,
+            "verdict": "NO_SIGNAL"
+          },
+          "stage4": {
+            "passed": false,
+            "mcnemar": {
+              "new_only": 6,
+              "base_only": 3,
+              "chi2": 0.4444,
+              "p": 0.505
+            }
+          },
+          "stage5": {
+            "passed": true,
+            "sharpe_100p": 0.0598
+          },
+          "final_pass": false,
+          "score": 0.03339
+        }
+      ]
+    },
+    {
+      "lottery_type": "BIG_LOTTO",
+      "num_bets": 3,
+      "stage1_pass": true,
+      "best": {
+        "config": {
+          "w_markov2": 0.55,
+          "pair_min_count": 4,
+          "diversity_penalty": 0.17,
+          "pressure_boost": 0.2
+        },
+        "stage1": {
+          "passed": true
+        },
+        "stage2": {
+          "passed": true,
+          "windows": {
+            "150p": {
+              "n": 120,
+              "rate": 0.06667,
+              "edge": 0.01177
+            },
+            "500p": {
+              "n": 120,
+              "rate": 0.06667,
+              "edge": 0.01177
+            },
+            "1500p": {
+              "n": 120,
+              "rate": 0.06667,
+              "edge": 0.01177
+            }
+          }
+        },
+        "stage3": {
+          "passed": false,
+          "p_emp": 0.9091,
+          "cohens_d": -0.803,
+          "verdict": "NO_SIGNAL"
+        },
+        "stage4": {
+          "passed": false,
+          "mcnemar": {
+            "new_only": 7,
+            "base_only": 5,
+            "chi2": 0.0833,
+            "p": 0.7728
+          }
+        },
+        "stage5": {
+          "passed": true,
+          "sharpe_100p": 0.0214
+        },
+        "final_pass": false,
+        "score": 0.01604
+      },
+      "top_candidates": [
+        {
+          "config": {
+            "w_markov2": 0.55,
+            "pair_min_count": 4,
+            "diversity_penalty": 0.17,
+            "pressure_boost": 0.2
+          },
+          "stage1": {
+            "passed": true
+          },
+          "stage2": {
+            "passed": true,
+            "windows": {
+              "150p": {
+                "n": 120,
+                "rate": 0.06667,
+                "edge": 0.01177
+              },
+              "500p": {
+                "n": 120,
+                "rate": 0.06667,
+                "edge": 0.01177
+              },
+              "1500p": {
+                "n": 120,
+                "rate": 0.06667,
+                "edge": 0.01177
+              }
+            }
+          },
+          "stage3": {
+            "passed": false,
+            "p_emp": 0.9091,
+            "cohens_d": -0.803,
+            "verdict": "NO_SIGNAL"
+          },
+          "stage4": {
+            "passed": false,
+            "mcnemar": {
+              "new_only": 7,
+              "base_only": 5,
+              "chi2": 0.0833,
+              "p": 0.7728
+            }
+          },
+          "stage5": {
+            "passed": true,
+            "sharpe_100p": 0.0214
+          },
+          "final_pass": false,
+          "score": 0.01604
+        }
+      ]
+    },
+    {
+      "lottery_type": "POWER_LOTTO",
+      "num_bets": 2,
+      "stage1_pass": true,
+      "best": {
+        "config": {
+          "w_markov2": 0.65,
+          "pair_min_count": 2,
+          "diversity_penalty": 0.17,
+          "pressure_boost": 0.3
+        },
+        "stage1": {
+          "passed": true
+        },
+        "stage2": {
+          "passed": true,
+          "windows": {
+            "150p": {
+              "n": 120,
+              "rate": 0.1,
+              "edge": 0.0241
+            },
+            "500p": {
+              "n": 120,
+              "rate": 0.1,
+              "edge": 0.0241
+            },
+            "1500p": {
+              "n": 120,
+              "rate": 0.1,
+              "edge": 0.0241
+            }
+          }
+        },
+        "stage3": {
+          "passed": false,
+          "p_emp": 0.1818,
+          "cohens_d": 1.463,
+          "verdict": "NO_SIGNAL"
+        },
+        "stage4": {
+          "passed": false,
+          "mcnemar": {
+            "new_only": 10,
+            "base_only": 7,
+            "chi2": 0.2353,
+            "p": 0.6276
+          }
+        },
+        "stage5": {
+          "passed": true,
+          "sharpe_100p": 0.1084
+        },
+        "final_pass": false,
+        "score": 0.04579
+      },
+      "top_candidates": [
+        {
+          "config": {
+            "w_markov2": 0.65,
+            "pair_min_count": 2,
+            "diversity_penalty": 0.17,
+            "pressure_boost": 0.3
+          },
+          "stage1": {
+            "passed": true
+          },
+          "stage2": {
+            "passed": true,
+            "windows": {
+              "150p": {
+                "n": 120,
+                "rate": 0.1,
+                "edge": 0.0241
+              },
+              "500p": {
+                "n": 120,
+                "rate": 0.1,
+                "edge": 0.0241
+              },
+              "1500p": {
+                "n": 120,
+                "rate": 0.1,
+                "edge": 0.0241
+              }
+            }
+          },
+          "stage3": {
+            "passed": false,
+            "p_emp": 0.1818,
+            "cohens_d": 1.463,
+            "verdict": "NO_SIGNAL"
+          },
+          "stage4": {
+            "passed": false,
+            "mcnemar": {
+              "new_only": 10,
+              "base_only": 7,
+              "chi2": 0.2353,
+              "p": 0.6276
+            }
+          },
+          "stage5": {
+            "passed": true,
+            "sharpe_100p": 0.1084
+          },
+          "final_pass": false,
+          "score": 0.04579
+        }
+      ]
+    },
+    {
+      "lottery_type": "POWER_LOTTO",
+      "num_bets": 3,
+      "stage1_pass": true,
+      "best": {
+        "config": {
+          "w_markov2": 0.65,
+          "pair_min_count": 2,
+          "diversity_penalty": 0.17,
+          "pressure_boost": 0.2
+        },
+        "stage1": {
+          "passed": true
+        },
+        "stage2": {
+          "passed": true,
+          "windows": {
+            "150p": {
+              "n": 120,
+              "rate": 0.11667,
+              "edge": 0.00497
+            },
+            "500p": {
+              "n": 120,
+              "rate": 0.11667,
+              "edge": 0.00497
+            },
+            "1500p": {
+              "n": 120,
+              "rate": 0.11667,
+              "edge": 0.00497
+            }
+          }
+        },
+        "stage3": {
+          "passed": false,
+          "p_emp": 0.0909,
+          "cohens_d": 1.974,
+          "verdict": "MARGINAL"
+        },
+        "stage4": {
+          "passed": false,
+          "mcnemar": {
+            "new_only": 10,
+            "base_only": 13,
+            "chi2": 0.1739,
+            "p": 0.6767
+          }
+        },
+        "stage5": {
+          "passed": true,
+          "sharpe_100p": 0.0541
+        },
+        "final_pass": false,
+        "score": 0.0158
+      },
+      "top_candidates": [
+        {
+          "config": {
+            "w_markov2": 0.65,
+            "pair_min_count": 2,
+            "diversity_penalty": 0.17,
+            "pressure_boost": 0.2
+          },
+          "stage1": {
+            "passed": true
+          },
+          "stage2": {
+            "passed": true,
+            "windows": {
+              "150p": {
+                "n": 120,
+                "rate": 0.11667,
+                "edge": 0.00497
+              },
+              "500p": {
+                "n": 120,
+                "rate": 0.11667,
+                "edge": 0.00497
+              },
+              "1500p": {
+                "n": 120,
+                "rate": 0.11667,
+                "edge": 0.00497
+              }
+            }
+          },
+          "stage3": {
+            "passed": false,
+            "p_emp": 0.0909,
+            "cohens_d": 1.974,
+            "verdict": "MARGINAL"
+          },
+          "stage4": {
+            "passed": false,
+            "mcnemar": {
+              "new_only": 10,
+              "base_only": 13,
+              "chi2": 0.1739,
+              "p": 0.6767
+            }
+          },
+          "stage5": {
+            "passed": true,
+            "sharpe_100p": 0.0541
+          },
+          "final_pass": false,
+          "score": 0.0158
+        }
+      ]
+    },
+    {
+      "lottery_type": "DAILY_539",
+      "num_bets": 2,
+      "stage1_pass": true,
+      "best": {
+        "config": {
+          "w_markov2": 0.75,
+          "pair_min_count": 2,
+          "diversity_penalty": 0.17,
+          "pressure_boost": 0.2
+        },
+        "stage1": {
+          "passed": true
+        },
+        "stage2": {
+          "passed": true,
+          "windows": {
+            "150p": {
+              "n": 120,
+              "rate": 0.21667,
+              "edge": 0.00127
+            },
+            "500p": {
+              "n": 120,
+              "rate": 0.21667,
+              "edge": 0.00127
+            },
+            "1500p": {
+              "n": 120,
+              "rate": 0.21667,
+              "edge": 0.00127
+            }
+          }
+        },
+        "stage3": {
+          "passed": false,
+          "p_emp": 0.9091,
+          "cohens_d": -1.198,
+          "verdict": "NO_SIGNAL"
+        },
+        "stage4": {
+          "passed": false,
+          "mcnemar": {
+            "new_only": 18,
+            "base_only": 18,
+            "chi2": 0.0278,
+            "p": 0.8676
+          }
+        },
+        "stage5": {
+          "passed": true,
+          "sharpe_100p": 0.011
+        },
+        "final_pass": false,
+        "score": 0.00348
+      },
+      "top_candidates": [
+        {
+          "config": {
+            "w_markov2": 0.75,
+            "pair_min_count": 2,
+            "diversity_penalty": 0.17,
+            "pressure_boost": 0.2
+          },
+          "stage1": {
+            "passed": true
+          },
+          "stage2": {
+            "passed": true,
+            "windows": {
+              "150p": {
+                "n": 120,
+                "rate": 0.21667,
+                "edge": 0.00127
+              },
+              "500p": {
+                "n": 120,
+                "rate": 0.21667,
+                "edge": 0.00127
+              },
+              "1500p": {
+                "n": 120,
+                "rate": 0.21667,
+                "edge": 0.00127
+              }
+            }
+          },
+          "stage3": {
+            "passed": false,
+            "p_emp": 0.9091,
+            "cohens_d": -1.198,
+            "verdict": "NO_SIGNAL"
+          },
+          "stage4": {
+            "passed": false,
+            "mcnemar": {
+              "new_only": 18,
+              "base_only": 18,
+              "chi2": 0.0278,
+              "p": 0.8676
+            }
+          },
+          "stage5": {
+            "passed": true,
+            "sharpe_100p": 0.011
+          },
+          "final_pass": false,
+          "score": 0.00348
+        }
+      ]
+    },
+    {
+      "lottery_type": "DAILY_539",
+      "num_bets": 3,
+      "stage1_pass": true,
+      "best": {
+        "config": {
+          "w_markov2": 0.75,
+          "pair_min_count": 2,
+          "diversity_penalty": 0.17,
+          "pressure_boost": 0.2
+        },
+        "stage1": {
+          "passed": true
+        },
+        "stage2": {
+          "passed": true,
+          "windows": {
+            "150p": {
+              "n": 120,
+              "rate": 0.31667,
+              "edge": 0.01167
+            },
+            "500p": {
+              "n": 120,
+              "rate": 0.31667,
+              "edge": 0.01167
+            },
+            "1500p": {
+              "n": 120,
+              "rate": 0.31667,
+              "edge": 0.01167
+            }
+          }
+        },
+        "stage3": {
+          "passed": false,
+          "p_emp": 0.6364,
+          "cohens_d": -0.455,
+          "verdict": "NO_SIGNAL"
+        },
+        "stage4": {
+          "passed": false,
+          "mcnemar": {
+            "new_only": 22,
+            "base_only": 26,
+            "chi2": 0.1875,
+            "p": 0.665
+          }
+        },
+        "stage5": {
+          "passed": true,
+          "sharpe_100p": 0.0108
+        },
+        "final_pass": false,
+        "score": 0.01382
+      },
+      "top_candidates": [
+        {
+          "config": {
+            "w_markov2": 0.75,
+            "pair_min_count": 2,
+            "diversity_penalty": 0.17,
+            "pressure_boost": 0.2
+          },
+          "stage1": {
+            "passed": true
+          },
+          "stage2": {
+            "passed": true,
+            "windows": {
+              "150p": {
+                "n": 120,
+                "rate": 0.31667,
+                "edge": 0.01167
+              },
+              "500p": {
+                "n": 120,
+                "rate": 0.31667,
+                "edge": 0.01167
+              },
+              "1500p": {
+                "n": 120,
+                "rate": 0.31667,
+                "edge": 0.01167
+              }
+            }
+          },
+          "stage3": {
+            "passed": false,
+            "p_emp": 0.6364,
+            "cohens_d": -0.455,
+            "verdict": "NO_SIGNAL"
+          },
+          "stage4": {
+            "passed": false,
+            "mcnemar": {
+              "new_only": 22,
+              "base_only": 26,
+              "chi2": 0.1875,
+              "p": 0.665
+            }
+          },
+          "stage5": {
+            "passed": true,
+            "sharpe_100p": 0.0108
+          },
+          "final_pass": false,
+          "score": 0.01382
+        }
+      ]
+    }
+  ]
+}

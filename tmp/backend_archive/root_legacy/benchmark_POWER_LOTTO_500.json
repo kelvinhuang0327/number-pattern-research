@@ -1,0 +1,43 @@
+{
+    "lottery_type": "POWER_LOTTO",
+    "periods": 500,
+    "duration": 766.5700862407684,
+    "methods": {
+        "Orthogonal_3Bet": {
+            "hits": 52,
+            "m3": 49,
+            "m4": 3,
+            "m5": 0,
+            "m6": 0
+        },
+        "VAE_Single": {
+            "hits": 18,
+            "m3": 16,
+            "m4": 2,
+            "m5": 0,
+            "m6": 0
+        },
+        "Frequency_Baseline": {
+            "hits": 23,
+            "m3": 22,
+            "m4": 1,
+            "m5": 0,
+            "m6": 0
+        },
+        "Random_3Bet": {
+            "hits": 58,
+            "m3": 52,
+            "m4": 6,
+            "m5": 0,
+            "m6": 0
+        },
+        "Frequency_3Bet": {
+            "hits": 68,
+            "m3": 64,
+            "m4": 4,
+            "m5": 0,
+            "m6": 0
+        }
+    },
+    "timestamp": "2026-02-09 15:31:52"
+}

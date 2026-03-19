@@ -1,0 +1,18 @@
+{
+  "name": "Gap Rebound 整合",
+  "lottery": "POWER_LOTTO",
+  "rejected_date": "2026-02-09",
+  "failure_reason": "1000期差異z=0.23不顯著；3注版本反而更差（損害注2-3品質）",
+  "pattern": "INEFFECTIVE",
+  "stats": {
+    "edge_150p": null,
+    "edge_500p": "+2.81% (w=0.10 t=1.0，最佳500期)",
+    "edge_1500p": null,
+    "baseline": "Fourier Rhythm 2注 +2.01% (500期)",
+    "p_value": null,
+    "z_score": "0.23 (不顯著)"
+  },
+  "applicable_conditions": "500期窗口曾顯示 +2.81%，但1000期驗證失敗",
+  "retest_conditions": "暫停研究。原因：Gap Rebound概念與注2-3結構衝突，改善幅度遠小於統計噪音。重啟條件：與頻率正交的新Gap理論，或注結構重大變更後重驗",
+  "notes": "動機：115000011期 #28(gap=12)被所有方法漏掉。Grid search: w=0.05~0.50, threshold=1.0~1.5, min_freq=2~4。3注: GR 139 vs 原始 146，確認損害品質。教訓：極端組合(5:1大小比)是不可預測的低概率事件(7.3%)"
+}

@@ -1,0 +1,90 @@
+{
+  "audit_date": "2026-03-15",
+  "game": "DAILY_539",
+  "total_combinations": 575757,
+  "cost_per_bet": 50,
+  "probabilities": {
+    "0": {
+      "exact_probability": 0.4832872201293254,
+      "one_in": 2.0691629291012594,
+      "count": 278256
+    },
+    "1": {
+      "exact_probability": 0.4027393501077712,
+      "one_in": 2.482995514921511,
+      "count": 231880
+    },
+    "2": {
+      "exact_probability": 0.10393273551168287,
+      "one_in": 9.621607620320857,
+      "count": 59840
+    },
+    "3": {
+      "exact_probability": 0.00974369395422027,
+      "one_in": 102.63048128342245,
+      "count": 5610
+    },
+    "4": {
+      "exact_probability": 0.00029526345315819,
+      "one_in": 3386.8058823529414,
+      "count": 170
+    },
+    "5": {
+      "exact_probability": 1.736843842107e-06,
+      "one_in": 575757.0,
+      "count": 1
+    }
+  },
+  "prize_structures": {
+    "code_version_WRONG": {
+      "2": 300,
+      "3": 2000,
+      "4": 20000,
+      "5": 8000000
+    },
+    "official_version_CORRECT": {
+      "2": 50,
+      "3": 300,
+      "4": 20000,
+      "5": 8000000
+    }
+  },
+  "ev_analysis": {
+    "code_wrong": {
+      "ev": 70.4672,
+      "roi_pct": 40.93
+    },
+    "official_correct": {
+      "ev": 27.9198,
+      "roi_pct": -44.16
+    },
+    "post_tax": {
+      "ev": 25.1408,
+      "roi_pct": -49.72
+    }
+  },
+  "monte_carlo": {
+    "n_simulations": 10000000,
+    "seed": 42,
+    "mc_ev_code": 69.4523,
+    "mc_ev_official": 26.8038,
+    "mc_roi_code": 38.9,
+    "mc_roi_official": -46.39
+  },
+  "verdict": {
+    "previous_claim": "+40.93% ROI (INCORRECT)",
+    "correct_roi": "-44.16%",
+    "root_cause": "Prize table error: M2=300 (should be 50), M3=2000 (should be 300)",
+    "impact_on_edge_research": "NONE — hit rate analysis unaffected",
+    "impact_on_kelly": "FUNDAMENTAL — 539 is negative EV, Kelly requires prediction edge",
+    "jackpot_breakeven_ntd": 25891062
+  },
+  "affected_files": [
+    "tools/structural_optimization.py (line 34)",
+    "tools/meta_strategy_research.py (lines 1270-1273)",
+    "structural_optimization_report.md",
+    "structural_optimization_results.json",
+    "meta_strategy_report.md",
+    "meta_strategy_results.json"
+  ]
+}

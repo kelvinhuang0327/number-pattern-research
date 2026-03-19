@@ -1,0 +1,101 @@
+{
+  "timestamp": "2026-03-08 19:22:40",
+  "total_draws": 5802,
+  "elapsed_seconds": 209.1,
+  "script": "backtest_539_lag_burst.py",
+  "lag_weights_used": {
+    "1": 0.5,
+    "2": 2.0,
+    "3": 1.0
+  },
+  "burst_threshold": 15,
+  "burst_min_count": 3,
+  "champion_reference": {
+    "ACB_Markov_Fourier_3bet": {
+      "edge_1500p": 6.43,
+      "perm_p": 0.005
+    },
+    "MidFreq_ACB_2bet": {
+      "edge_1500p": 5.06,
+      "perm_p": 0.005
+    }
+  },
+  "strategies": {
+    "LagEcho_1bet": {
+      "n_bets": 1,
+      "edge_150p": -0.73,
+      "edge_500p": 0.2,
+      "edge_1500p": -0.13,
+      "rate_1500p": 11.27,
+      "z_1500p": -0.16,
+      "perm_p": null,
+      "signal_edge": null,
+      "stability": "SHORT_MOMENTUM"
+    },
+    "ACB_LagEcho_2bet": {
+      "n_bets": 2,
+      "edge_150p": 3.79,
+      "edge_500p": 2.06,
+      "edge_1500p": 3.53,
+      "rate_1500p": 25.07,
+      "z_1500p": 3.32,
+      "perm_p": 0.01,
+      "signal_edge": 2.98,
+      "stability": "STABLE"
+    },
+    "ACB_Markov_LagEcho_3bet": {
+      "n_bets": 3,
+      "edge_150p": 0.83,
+      "edge_500p": 3.5,
+      "edge_1500p": 5.03,
+      "rate_1500p": 35.53,
+      "z_1500p": 4.23,
+      "perm_p": 0.0249,
+      "signal_edge": 2.84,
+      "stability": "STABLE"
+    },
+    "ACB_LagEcho_ColdBurst_3bet": {
+      "n_bets": 3,
+      "edge_150p": 3.5,
+      "edge_500p": 1.3,
+      "edge_1500p": 3.63,
+      "rate_1500p": 34.13,
+      "z_1500p": 3.06,
+      "perm_p": 0.0547,
+      "signal_edge": 1.76,
+      "stability": "STABLE"
+    }
+  },
+  "mcnemar": {
+    "S2_vs_MidFreq_ACB": {
+      "both_hit": 238,
+      "a_only": 138,
+      "b_only": 161,
+      "both_miss": 963,
+      "chi2": 1.7692,
+      "p_value": 0.1835,
+      "winner": "B",
+      "net": -23
+    },
+    "S3_vs_ACB_Markov_Fourier": {
+      "both_hit": 405,
+      "a_only": 128,
+      "b_only": 144,
+      "both_miss": 823,
+      "chi2": 0.9412,
+      "p_value": 0.332,
+      "winner": "B",
+      "net": -16
+    },
+    "S4_vs_ACB_Markov_Fourier": {
+      "both_hit": 275,
+      "a_only": 237,
+      "b_only": 274,
+      "both_miss": 714,
+      "chi2": 2.6791,
+      "p_value": 0.1017,
+      "winner": "B",
+      "net": -37
+    }
+  }
+}

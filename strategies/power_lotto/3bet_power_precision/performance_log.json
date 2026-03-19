@@ -1,0 +1,19 @@
+{
+  "strategy_id": "power_lotto/3bet_power_precision",
+  "updated": "2026-02-24",
+  "rsm_source": "data/rolling_monitor_POWER_LOTTO.json",
+  "rsm_run_date": "2026-02-10",
+  "windows": {
+    "30p":  { "edge_pct": 22.16, "trend": "POSITIVE" },
+    "100p": { "edge_pct": 1.83,  "trend": "POSITIVE" },
+    "300p": { "edge_pct": 3.50,  "trend": "POSITIVE" }
+  },
+  "overall_trend": "ACCELERATING",
+  "z_score": 2.63,
+  "recommendation": "★★推薦 (ACCELERATING：近30期爆發+22.16%，三窗口全正，RSM z=+2.63)",
+  "alerts": [
+    "ACCELERATING：近30期(+22.16%)遠高於中長期均值，需監控是否回歸均值",
+    "若下次RSM 30p Edge降至<5%，重新評估為DECELERATING"
+  ],
+  "next_review": "每50期新資料後重跑RSM（因ACCELERATING狀態需更頻繁監控）"
+}

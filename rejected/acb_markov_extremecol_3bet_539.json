@@ -1,0 +1,27 @@
+{
+  "strategy": "ACB_Markov_ExtremeCol_3bet",
+  "lottery": "539",
+  "rejected_date": "2026-03-10",
+  "trigger": "115000061 review — replace Fourier with ExtremeCol in 3-bet",
+  "design": "ACB bet1 + Markov bet2 + ExtremeCol(gap>=25) bet3, orthogonal exclusion",
+  "threshold_gap": 25,
+  "results": {
+    "edge_150p": 2.17,
+    "edge_500p": 3.70,
+    "edge_1500p": 4.97,
+    "perm_p": 0.0149,
+    "stability": "STABLE",
+    "z_1500p": 4.18
+  },
+  "mcnemar_vs_champion": {
+    "a_only": 126,
+    "b_only": 143,
+    "chi2": 1.074,
+    "p_value": 0.300,
+    "winner": "B (ACB+Markov+Fourier)",
+    "net": -17
+  },
+  "failure_reason": "STABLE and perm_p=0.015, but edge +4.97% vs PROVISIONAL champion +6.10%. McNemar not significant (p=0.30) but directionally inferior. Fourier provides better 3rd-bet differentiation than ExtremeCol.",
+  "champion_comparison": "ACB+Markov+Fourier 3bet: edge +6.10% (PROVISIONAL)",
+  "retest_conditions": "None — Fourier demonstrably superior to ExtremeCol as 3rd bet"
+}

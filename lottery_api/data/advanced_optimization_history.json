@@ -1,0 +1,656 @@
+{
+  "updated_at": "2025-12-23T12:05:15.596226",
+  "history": [
+    {
+      "timestamp": "2025-12-03T17:34:04.951000",
+      "method": "multi_stage",
+      "best_fitness": 0.0458,
+      "best_config": {
+        "population_size": 50,
+        "generations": 200,
+        "mutation_rate": 0.1,
+        "crossover_rate": 0.7,
+        "elite_size": 5,
+        "tournament_size": 3,
+        "early_stopping": true,
+        "target_fitness": 0.01,
+        "patience": 10,
+        "adaptive_mutation": true,
+        "adaptive_crossover": true,
+        "weights": {
+          "frequency": 0.25,
+          "gap": 0.2,
+          "hot_cold": 0.15,
+          "sum_range": 0.15,
+          "odd_even": 0.1,
+          "sequential": 0.05,
+          "high_low": 0.1
+        },
+        "analysis_windows": {
+          "short_term": 50,
+          "medium_term": 100,
+          "long_term": 200
+        }
+      },
+      "details": {
+        "coarse_fitness": 0.0458,
+        "fine_fitness": 0.041,
+        "micro_fitness": 0.0313
+      }
+    },
+    {
+      "timestamp": "2025-12-04T09:25:56.954334",
+      "method": "multi_stage",
+      "best_fitness": 0.04578313253012048,
+      "config": {
+        "frequency_weight": 0.14438412516575092,
+        "missing_weight": 0.16255810182303257,
+        "hot_cold_weight": 0.09131823437422625,
+        "trend_weight": 0.08559459121016418,
+        "zone_weight": 0.08334904883012743,
+        "last_digit_weight": 0.19083927312053975,
+        "odd_even_weight": 0.15255086179966412,
+        "pair_weight": 0.06820553217889379,
+        "sum_band_weight": 0.053654530313201824,
+        "ac_band_weight": 0.06165062561563151,
+        "dynamic_zone_weight": 0.09417896575935947,
+        "recent_window": 93,
+        "long_window": 236
+      },
+      "stage_results": [
+        {
+          "stage": "coarse",
+          "fitness": 0.04578313253012048
+        },
+        {
+          "stage": "fine",
+          "fitness": 0.04096385542168675
+        },
+        {
+          "stage": "micro",
+          "fitness": 0.043373493975903614
+        }
+      ]
+    },
+    {
+      "timestamp": "2025-12-04T11:10:16.478668",
+      "method": "adaptive_window",
+      "best_fitness": 0.15,
+      "best_window_size": 100,
+      "config": {
+        "frequency_weight": 0.16324756517388103,
+        "missing_weight": 0.09250930483728026,
+        "hot_cold_weight": 0.05957796661141958,
+        "trend_weight": 0.145962386940732,
+        "zone_weight": 0.12034818344512276,
+        "last_digit_weight": 0.0444022982006419,
+        "odd_even_weight": 0.0889962255233158,
+        "pair_weight": 0.14776221998387004,
+        "sum_band_weight": 0.024709263004834302,
+        "ac_band_weight": 0.08829767558968078,
+        "dynamic_zone_weight": 0.024186910689221592,
+        "recent_window": 34,
+        "long_window": 289
+      }
+    },
+    {
+      "timestamp": "2025-12-04T11:13:28.809645",
+      "method": "multi_stage",
+      "best_fitness": 0.04096385542168675,
+      "config": {
+        "frequency_weight": 0.12908990358427977,
+        "missing_weight": 0.012438247789433048,
+        "hot_cold_weight": 0.03152287204327634,
+        "trend_weight": 0.010414580642390502,
+        "zone_weight": 0.07202553962060763,
+        "last_digit_weight": 0.008223846270510765,
+        "odd_even_weight": 0.18032024518594003,
+        "pair_weight": 0.26546595848249604,
+        "sum_band_weight": 0.09929892244965421,
+        "ac_band_weight": 0.17260175271985914,
+        "dynamic_zone_weight": 0.015113270598656525,
+        "recent_window": 50,
+        "long_window": 141
+      },
+      "stage_results": [
+        {
+          "stage": "coarse",
+          "fitness": 0.03614457831325301
+        },
+        {
+          "stage": "fine",
+          "fitness": 0.04096385542168675
+        },
+        {
+          "stage": "micro",
+          "fitness": 0.04096385542168675
+        }
+      ]
+    },
+    {
+      "timestamp": "2025-12-04T13:36:00.024947",
+      "method": "multi_stage",
+      "best_fitness": 0.04096385542168675,
+      "config": {
+        "frequency_weight": 0.10325783301918486,
+        "missing_weight": 0.15807585212230799,
+        "hot_cold_weight": 0.016875529739705217,
+        "trend_weight": 0.11772283909111828,
+        "zone_weight": 0.192122329192887,
+        "last_digit_weight": 0.14614307571344043,
+        "odd_even_weight": 0.35525776351477284,
+        "pair_weight": 0.06650455138606058,
+        "sum_band_weight": 0.008578286239645195,
+        "ac_band_weight": 0.04404916684600364,
+        "dynamic_zone_weight": 0.01169438473445711,
+        "recent_window": 63,
+        "long_window": 87
+      },
+      "stage_results": [
+        {
+          "stage": "coarse",
+          "fitness": 0.03855421686746988
+        },
+        {
+          "stage": "fine",
+          "fitness": 0.04096385542168675
+        },
+        {
+          "stage": "micro",
+          "fitness": 0.04096385542168675
+        }
+      ]
+    },
+    {
+      "timestamp": "2025-12-04T15:11:05.208882",
+      "method": "multi_stage",
+      "best_fitness": 0.04578313253012048,
+      "config": {
+        "frequency_weight": 0.20031994826362995,
+        "missing_weight": 0.015904258216719074,
+        "hot_cold_weight": 0.015407113043471952,
+        "trend_weight": 0.14660917601766557,
+        "zone_weight": 0.0770840258471082,
+        "last_digit_weight": 0.009494070027323654,
+        "odd_even_weight": 0.015796350595432634,
+        "pair_weight": 0.12426081684877627,
+        "sum_band_weight": 0.04665743645180587,
+        "ac_band_weight": 0.12587111506703164,
+        "dynamic_zone_weight": 0.009111493295311903,
+        "recent_window": 79,
+        "long_window": 139
+      },
+      "stage_results": [
+        {
+          "stage": "coarse",
+          "fitness": 0.03855421686746988
+        },
+        {
+          "stage": "fine",
+          "fitness": 0.04578313253012048
+        },
+        {
+          "stage": "micro",
+          "fitness": 0.03855421686746988
+        }
+      ]
+    },
+    {
+      "timestamp": "2025-12-04T15:16:49.400718",
+      "method": "multi_stage",
+      "best_fitness": 0.04096385542168675,
+      "config": {
+        "frequency_weight": 0.3253023874102122,
+        "missing_weight": 0.12229012137796832,
+        "hot_cold_weight": 0.028529294464566098,
+        "trend_weight": 0.22015300373165278,
+        "zone_weight": 0.016580796153990888,
+        "last_digit_weight": 0.009015200705602218,
+        "odd_even_weight": 0.012679708067574357,
+        "pair_weight": 0.1794965947910115,
+        "sum_band_weight": 0.071800389943045,
+        "ac_band_weight": 0.029334482358047635,
+        "dynamic_zone_weight": 0.012523461837948136,
+        "recent_window": 90,
+        "long_window": 138
+      },
+      "stage_results": [
+        {
+          "stage": "coarse",
+          "fitness": 0.03614457831325301
+        },
+        {
+          "stage": "fine",
+          "fitness": 0.04096385542168675
+        },
+        {
+          "stage": "micro",
+          "fitness": 0.04096385542168675
+        }
+      ]
+    },
+    {
+      "timestamp": "2025-12-04T15:18:52.286910",
+      "method": "adaptive_window",
+      "best_fitness": 0.2,
+      "best_window_size": 100,
+      "config": {
+        "frequency_weight": 0.11489396668936458,
+        "missing_weight": 0.09264210827856907,
+        "hot_cold_weight": 0.10318362735642324,
+        "trend_weight": 0.09870551972606638,
+        "zone_weight": 0.03767807124468493,
+        "last_digit_weight": 0.08243395769671828,
+        "odd_even_weight": 0.15952893936523171,
+        "pair_weight": 0.06675045568974426,
+        "sum_band_weight": 0.06039912013452283,
+        "ac_band_weight": 0.05831419466820363,
+        "dynamic_zone_weight": 0.05408570573539579,
+        "recent_window": 67,
+        "long_window": 218
+      }
+    },
+    {
+      "timestamp": "2025-12-04T15:53:49.324784",
+      "method": "adaptive_window",
+      "best_fitness": 0.15,
+      "best_window_size": 100,
+      "config": {
+        "frequency_weight": 0.23326211150924697,
+        "missing_weight": 0.10674564493021592,
+        "hot_cold_weight": 0.08481003026045955,
+        "trend_weight": 0.04527190583002706,
+        "zone_weight": 0.09568330200218425,
+        "last_digit_weight": 0.09416964388240126,
+        "odd_even_weight": 0.16667953425419632,
+        "pair_weight": 0.07658376917685315,
+        "sum_band_weight": 0.04454585147112167,
+        "ac_band_weight": 0.03727298587443107,
+        "dynamic_zone_weight": 0.02902681304111503,
+        "recent_window": 51,
+        "long_window": 283
+      }
+    },
+    {
+      "timestamp": "2025-12-04T15:55:28.766212",
+      "method": "multi_stage",
+      "best_fitness": 0.04578313253012048,
+      "config": {
+        "frequency_weight": 0.18220954090645544,
+        "missing_weight": 0.14355733780801297,
+        "hot_cold_weight": 0.07032702164887407,
+        "trend_weight": 0.13658180281715718,
+        "zone_weight": 0.09988808654960529,
+        "last_digit_weight": 0.09143745676942036,
+        "odd_even_weight": 0.058775843971565565,
+        "pair_weight": 0.019420469186767115,
+        "sum_band_weight": 0.028807061322980623,
+        "ac_band_weight": 0.1171108266617633,
+        "dynamic_zone_weight": 0.034888348847294914,
+        "recent_window": 72,
+        "long_window": 265
+      },
+      "stage_results": [
+        {
+          "stage": "coarse",
+          "fitness": 0.04578313253012048
+        },
+        {
+          "stage": "fine",
+          "fitness": 0.043373493975903614
+        },
+        {
+          "stage": "micro",
+          "fitness": 0.04578313253012048
+        }
+      ]
+    },
+    {
+      "timestamp": "2025-12-04T16:00:51.755586",
+      "method": "adaptive_window",
+      "best_fitness": 0.15,
+      "best_window_size": 100,
+      "config": {
+        "frequency_weight": 0.17058624120756655,
+        "missing_weight": 0.10301740665888663,
+        "hot_cold_weight": 0.10842533516180991,
+        "trend_weight": 0.04447566888701589,
+        "zone_weight": 0.11077821652938036,
+        "last_digit_weight": 0.0625046666768497,
+        "odd_even_weight": 0.15671395846382435,
+        "pair_weight": 0.05299271477917176,
+        "sum_band_weight": 0.1045069452857794,
+        "ac_band_weight": 0.06698559284049296,
+        "dynamic_zone_weight": 0.022973094273334868,
+        "recent_window": 57,
+        "long_window": 142
+      }
+    },
+    {
+      "timestamp": "2025-12-04T16:02:45.572364",
+      "method": "multi_stage",
+      "best_fitness": 0.04578313253012048,
+      "config": {
+        "frequency_weight": 0.09400316137856668,
+        "missing_weight": 0.00794948752179602,
+        "hot_cold_weight": 0.1822295686470525,
+        "trend_weight": 0.21651135352493642,
+        "zone_weight": 0.08465600400774058,
+        "last_digit_weight": 0.00892770983558792,
+        "odd_even_weight": 0.009232831678197825,
+        "pair_weight": 0.009232831678197825,
+        "sum_band_weight": 0.05645432834866169,
+        "ac_band_weight": 0.0654507535584281,
+        "dynamic_zone_weight": 0.04991105529162064,
+        "recent_window": 68,
+        "long_window": 94
+      },
+      "stage_results": [
+        {
+          "stage": "coarse",
+          "fitness": 0.03614457831325301
+        },
+        {
+          "stage": "fine",
+          "fitness": 0.04578313253012048
+        },
+        {
+          "stage": "micro",
+          "fitness": 0.03614457831325301
+        }
+      ]
+    },
+    {
+      "timestamp": "2025-12-04T16:18:28.805074",
+      "method": "adaptive_window",
+      "best_fitness": 0.2,
+      "best_window_size": 100,
+      "config": {
+        "frequency_weight": 0.1977498145169221,
+        "missing_weight": 0.19765155431346693,
+        "hot_cold_weight": 0.1219770406894973,
+        "trend_weight": 0.0606820544685646,
+        "zone_weight": 0.0744836677355167,
+        "last_digit_weight": 0.09030440899241958,
+        "odd_even_weight": 0.08790415184191168,
+        "pair_weight": 0.04282300999856918,
+        "sum_band_weight": 0.04381547671719574,
+        "ac_band_weight": 0.02113954243156889,
+        "dynamic_zone_weight": 0.04755440395752091,
+        "recent_window": 61,
+        "long_window": 295
+      }
+    },
+    {
+      "timestamp": "2025-12-04T16:20:00.113705",
+      "method": "multi_stage",
+      "best_fitness": 0.03855421686746988,
+      "config": {
+        "frequency_weight": 0.19340868661499624,
+        "missing_weight": 0.10653594703540019,
+        "hot_cold_weight": 0.05042910262511256,
+        "trend_weight": 0.09223440635682051,
+        "zone_weight": 0.0723245057473545,
+        "last_digit_weight": 0.12110658269853454,
+        "odd_even_weight": 0.10990496836054654,
+        "pair_weight": 0.024397823926818194,
+        "sum_band_weight": 0.03551422065082827,
+        "ac_band_weight": 0.030826085899348314,
+        "dynamic_zone_weight": 0.08155136154562492,
+        "recent_window": 63,
+        "long_window": 119
+      },
+      "stage_results": [
+        {
+          "stage": "coarse",
+          "fitness": 0.03855421686746988
+        },
+        {
+          "stage": "fine",
+          "fitness": 0.03855421686746988
+        },
+        {
+          "stage": "micro",
+          "fitness": 0.03855421686746988
+        }
+      ]
+    },
+    {
+      "timestamp": "2025-12-04T16:20:31.655158",
+      "method": "adaptive_window",
+      "best_fitness": 0.15,
+      "best_window_size": 100,
+      "config": {
+        "frequency_weight": 0.1842354553440845,
+        "missing_weight": 0.09949692364219542,
+        "hot_cold_weight": 0.14579591606120784,
+        "trend_weight": 0.04123417878590124,
+        "zone_weight": 0.12910992291112716,
+        "last_digit_weight": 0.059104231799073884,
+        "odd_even_weight": 0.029677556370710758,
+        "pair_weight": 0.06271637655942311,
+        "sum_band_weight": 0.0741940769148908,
+        "ac_band_weight": 0.08157652205544758,
+        "dynamic_zone_weight": 0.09285883955593778,
+        "recent_window": 78,
+        "long_window": 212
+      }
+    },
+    {
+      "timestamp": "2025-12-04T16:22:20.235074",
+      "method": "multi_stage",
+      "best_fitness": 0.04096385542168675,
+      "config": {
+        "frequency_weight": 0.15654092286324056,
+        "missing_weight": 0.08419809440457969,
+        "hot_cold_weight": 0.042125935371312574,
+        "trend_weight": 0.04364788748550894,
+        "zone_weight": 0.10262858201477768,
+        "last_digit_weight": 0.15266916550626752,
+        "odd_even_weight": 0.12399362591578683,
+        "pair_weight": 0.04039728498396125,
+        "sum_band_weight": 0.039353364137676684,
+        "ac_band_weight": 0.020908699543460293,
+        "dynamic_zone_weight": 0.035192031038087074,
+        "recent_window": 50,
+        "long_window": 245
+      },
+      "stage_results": [
+        {
+          "stage": "coarse",
+          "fitness": 0.04096385542168675
+        },
+        {
+          "stage": "fine",
+          "fitness": 0.04096385542168675
+        },
+        {
+          "stage": "micro",
+          "fitness": 0.04096385542168675
+        }
+      ]
+    },
+    {
+      "timestamp": "2025-12-04T16:31:59.071424",
+      "method": "adaptive_window",
+      "best_fitness": 0.15,
+      "best_window_size": 100,
+      "config": {
+        "frequency_weight": 0.20929202069400543,
+        "missing_weight": 0.20761735126437406,
+        "hot_cold_weight": 0.038779905146760794,
+        "trend_weight": 0.038762104961037484,
+        "zone_weight": 0.05098728389880631,
+        "last_digit_weight": 0.06549712796412044,
+        "odd_even_weight": 0.1502740089725594,
+        "pair_weight": 0.042174415689705175,
+        "sum_band_weight": 0.03415965609210356,
+        "ac_band_weight": 0.06970507693974791,
+        "dynamic_zone_weight": 0.09275104837677955,
+        "recent_window": 55,
+        "long_window": 146
+      }
+    },
+    {
+      "timestamp": "2025-12-04T16:33:31.442601",
+      "method": "multi_stage",
+      "best_fitness": 0.05060240963855422,
+      "config": {
+        "frequency_weight": 0.17334187582452376,
+        "missing_weight": 0.07572836129760217,
+        "hot_cold_weight": 0.0412027277970487,
+        "trend_weight": 0.015143488835241303,
+        "zone_weight": 0.21879781889029415,
+        "last_digit_weight": 0.16727228770402874,
+        "odd_even_weight": 0.05539553881577243,
+        "pair_weight": 0.015143488835241303,
+        "sum_band_weight": 0.045191237528943495,
+        "ac_band_weight": 0.11149263881704491,
+        "dynamic_zone_weight": 0.08129053565425907,
+        "recent_window": 55,
+        "long_window": 140
+      },
+      "stage_results": [
+        {
+          "stage": "coarse",
+          "fitness": 0.04096385542168675
+        },
+        {
+          "stage": "fine",
+          "fitness": 0.04096385542168675
+        },
+        {
+          "stage": "micro",
+          "fitness": 0.05060240963855422
+        }
+      ]
+    },
+    {
+      "timestamp": "2025-12-04T21:21:44.994411",
+      "method": "adaptive_window",
+      "best_fitness": 0.15,
+      "best_window_size": 100,
+      "config": {
+        "frequency_weight": 0.10262181816818992,
+        "missing_weight": 0.07727314196626613,
+        "hot_cold_weight": 0.10467130576010329,
+        "trend_weight": 0.06759168403007358,
+        "zone_weight": 0.09876479985557494,
+        "last_digit_weight": 0.0895354140631847,
+        "odd_even_weight": 0.06268027574633127,
+        "pair_weight": 0.03954119038511818,
+        "sum_band_weight": 0.03755831939085646,
+        "ac_band_weight": 0.03255003600032503,
+        "dynamic_zone_weight": 0.040550217803787016,
+        "entropy_weight": 0.0327000271944384,
+        "clustering_weight": 0.10084495535971841,
+        "temporal_weight": 0.07164911345152715,
+        "feature_eng_weight": 0.04146770082450576,
+        "recent_window": 27,
+        "long_window": 106
+      }
+    },
+    {
+      "timestamp": "2025-12-05T14:10:57.590175",
+      "method": "adaptive_window",
+      "best_fitness": 0.15,
+      "best_window_size": 100,
+      "config": {
+        "frequency_weight": 0.11015107078035727,
+        "missing_weight": 0.04085369570205302,
+        "hot_cold_weight": 0.0713911892378061,
+        "trend_weight": 0.09161652667164093,
+        "zone_weight": 0.10934259962232076,
+        "last_digit_weight": 0.08485454250860691,
+        "odd_even_weight": 0.022281964708482312,
+        "pair_weight": 0.04615983866646966,
+        "sum_band_weight": 0.05677449984702648,
+        "ac_band_weight": 0.03952840077723449,
+        "dynamic_zone_weight": 0.028251439960046202,
+        "entropy_weight": 0.08565989515893528,
+        "clustering_weight": 0.046315779468911904,
+        "temporal_weight": 0.1633150223263398,
+        "feature_eng_weight": 0.07722458798972796,
+        "recent_window": 27,
+        "long_window": 177
+      }
+    },
+    {
+      "timestamp": "2025-12-23T10:54:19.267664",
+      "method": "multi_stage",
+      "best_fitness": 0.11666666666666667,
+      "config": {
+        "frequency_weight": 0.10749426703078077,
+        "missing_weight": 0.008403532010686434,
+        "hot_cold_weight": 0.10070287621667488,
+        "trend_weight": 0.07609673153847113,
+        "zone_weight": 0.008403532010686434,
+        "last_digit_weight": 0.18724748080744685,
+        "odd_even_weight": 0.04036989536375276,
+        "pair_weight": 0.008403532010686434,
+        "sum_band_weight": 0.08187512299738678,
+        "ac_band_weight": 0.08684912419683911,
+        "dynamic_zone_weight": 0.017290927120103983,
+        "entropy_weight": 0.17523995518673885,
+        "clustering_weight": 0.008403532010686434,
+        "temporal_weight": 0.024111800168288396,
+        "feature_eng_weight": 0.06910769133077053,
+        "recent_window": 11,
+        "long_window": 97
+      },
+      "stage_results": [
+        {
+          "stage": "coarse",
+          "fitness": 0.1
+        },
+        {
+          "stage": "fine",
+          "fitness": 0.1
+        },
+        {
+          "stage": "micro",
+          "fitness": 0.11666666666666667
+        }
+      ]
+    },
+    {
+      "timestamp": "2025-12-23T12:05:15.594455",
+      "method": "multi_stage",
+      "best_fitness": 0.5333333333333333,
+      "config": {
+        "frequency_weight": 0.028007981158241595,
+        "missing_weight": 0.34616581003547925,
+        "hot_cold_weight": 0.06957006842151828,
+        "trend_weight": 0.007903344463551676,
+        "zone_weight": 0.21851227934592293,
+        "last_digit_weight": 0.017848419621571694,
+        "odd_even_weight": 0.008221942660969806,
+        "pair_weight": 0.0649791971484423,
+        "sum_band_weight": 0.05223271331817244,
+        "ac_band_weight": 0.0471066756609212,
+        "dynamic_zone_weight": 0.008248661608392674,
+        "entropy_weight": 0.008494254735685457,
+        "clustering_weight": 0.11181662302812988,
+        "temporal_weight": 0.02303586973380241,
+        "feature_eng_weight": 0.07359901264377028,
+        "correlation_weight": 0.00771980767444444,
+        "recent_window": 56,
+        "long_window": 265
+      },
+      "stage_results": [
+        {
+          "stage": "coarse",
+          "fitness": 0.5166666666666667
+        },
+        {
+          "stage": "fine",
+          "fitness": 0.5166666666666667
+        },
+        {
+          "stage": "micro",
+          "fitness": 0.5333333333333333
+        }
+      ]
+    }
+  ]
+}

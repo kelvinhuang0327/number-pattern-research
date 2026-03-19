@@ -1,0 +1,1025 @@
+{
+  "dataSource": "Real Taiwan Lotto 2023-2025",
+  "totalData": 335,
+  "targetRate": 20,
+  "achievedRate": 0,
+  "finalWeights": {
+    "freqWeight": 0.44077024684052024,
+    "pairWeight": 0.4,
+    "timeDecay": 0.15,
+    "candidateCount": 16,
+    "iterations": 143.34145602067352,
+    "selectionPower": 2.225371988178231,
+    "zoneBonus": 6,
+    "oddBonus": 4,
+    "oddEvenPerfect": 110,
+    "oddEvenGood": 65,
+    "zoneDistribution": 45,
+    "sumRangeGood": 85,
+    "sumRangePerfect": 45,
+    "consecutivePenalty": 32
+  },
+  "iterations": 50,
+  "history": [
+    {
+      "iteration": 1,
+      "rate": 0,
+      "weights": {
+        "freqWeight": 0.45,
+        "pairWeight": 0.35,
+        "timeDecay": 0.15,
+        "candidateCount": 14,
+        "iterations": 150,
+        "selectionPower": 2.2,
+        "zoneBonus": 6,
+        "oddBonus": 4,
+        "oddEvenPerfect": 110,
+        "oddEvenGood": 65,
+        "zoneDistribution": 45,
+        "sumRangeGood": 85,
+        "sumRangePerfect": 45,
+        "consecutivePenalty": 32
+      }
+    },
+    {
+      "iteration": 2,
+      "rate": 0,
+      "weights": {
+        "freqWeight": 0.45,
+        "pairWeight": 0.385,
+        "timeDecay": 0.15,
+        "candidateCount": 15,
+        "iterations": 150,
+        "selectionPower": 2.2,
+        "zoneBonus": 6,
+        "oddBonus": 4,
+        "oddEvenPerfect": 110,
+        "oddEvenGood": 65,
+        "zoneDistribution": 45,
+        "sumRangeGood": 85,
+        "sumRangePerfect": 45,
+        "consecutivePenalty": 32
+      }
+    },
+    {
+      "iteration": 3,
+      "rate": 0,
+      "weights": {
+        "freqWeight": 0.45,
+        "pairWeight": 0.4,
+        "timeDecay": 0.15,
+        "candidateCount": 16,
+        "iterations": 150,
+        "selectionPower": 2.2,
+        "zoneBonus": 6,
+        "oddBonus": 4,
+        "oddEvenPerfect": 110,
+        "oddEvenGood": 65,
+        "zoneDistribution": 45,
+        "sumRangeGood": 85,
+        "sumRangePerfect": 45,
+        "consecutivePenalty": 32
+      }
+    },
+    {
+      "iteration": 4,
+      "rate": 0,
+      "weights": {
+        "freqWeight": 0.45,
+        "pairWeight": 0.4,
+        "timeDecay": 0.15,
+        "candidateCount": 16,
+        "iterations": 150,
+        "selectionPower": 2.2,
+        "zoneBonus": 6,
+        "oddBonus": 4,
+        "oddEvenPerfect": 110,
+        "oddEvenGood": 65,
+        "zoneDistribution": 45,
+        "sumRangeGood": 85,
+        "sumRangePerfect": 45,
+        "consecutivePenalty": 32
+      }
+    },
+    {
+      "iteration": 5,
+      "rate": 0,
+      "weights": {
+        "freqWeight": 0.44077024684052024,
+        "pairWeight": 0.4,
+        "timeDecay": 0.15,
+        "candidateCount": 16,
+        "iterations": 150,
+        "selectionPower": 2.2,
+        "zoneBonus": 6,
+        "oddBonus": 4,
+        "oddEvenPerfect": 110,
+        "oddEvenGood": 65,
+        "zoneDistribution": 45,
+        "sumRangeGood": 85,
+        "sumRangePerfect": 45,
+        "consecutivePenalty": 32
+      }
+    },
+    {
+      "iteration": 6,
+      "rate": 0,
+      "weights": {
+        "freqWeight": 0.44077024684052024,
+        "pairWeight": 0.4,
+        "timeDecay": 0.15,
+        "candidateCount": 16,
+        "iterations": 150,
+        "selectionPower": 2.2,
+        "zoneBonus": 6,
+        "oddBonus": 4,
+        "oddEvenPerfect": 110,
+        "oddEvenGood": 65,
+        "zoneDistribution": 45,
+        "sumRangeGood": 85,
+        "sumRangePerfect": 45,
+        "consecutivePenalty": 32
+      }
+    },
+    {
+      "iteration": 7,
+      "rate": 0,
+      "weights": {
+        "freqWeight": 0.44077024684052024,
+        "pairWeight": 0.4,
+        "timeDecay": 0.15,
+        "candidateCount": 16,
+        "iterations": 150,
+        "selectionPower": 2.2,
+        "zoneBonus": 6,
+        "oddBonus": 4,
+        "oddEvenPerfect": 110,
+        "oddEvenGood": 65,
+        "zoneDistribution": 45,
+        "sumRangeGood": 85,
+        "sumRangePerfect": 45,
+        "consecutivePenalty": 32
+      }
+    },
+    {
+      "iteration": 8,
+      "rate": 0,
+      "weights": {
+        "freqWeight": 0.44077024684052024,
+        "pairWeight": 0.4,
+        "timeDecay": 0.15,
+        "candidateCount": 16,
+        "iterations": 150,
+        "selectionPower": 2.2,
+        "zoneBonus": 6,
+        "oddBonus": 4,
+        "oddEvenPerfect": 110,
+        "oddEvenGood": 65,
+        "zoneDistribution": 45,
+        "sumRangeGood": 85,
+        "sumRangePerfect": 45,
+        "consecutivePenalty": 32
+      }
+    },
+    {
+      "iteration": 9,
+      "rate": 0,
+      "weights": {
+        "freqWeight": 0.44077024684052024,
+        "pairWeight": 0.4,
+        "timeDecay": 0.15,
+        "candidateCount": 16,
+        "iterations": 150,
+        "selectionPower": 2.2,
+        "zoneBonus": 6,
+        "oddBonus": 4,
+        "oddEvenPerfect": 110,
+        "oddEvenGood": 65,
+        "zoneDistribution": 45,
+        "sumRangeGood": 85,
+        "sumRangePerfect": 45,
+        "consecutivePenalty": 32
+      }
+    },
+    {
+      "iteration": 10,
+      "rate": 0,
+      "weights": {
+        "freqWeight": 0.44077024684052024,
+        "pairWeight": 0.4,
+        "timeDecay": 0.15,
+        "candidateCount": 16,
+        "iterations": 150,
+        "selectionPower": 2.2,
+        "zoneBonus": 6,
+        "oddBonus": 4,
+        "oddEvenPerfect": 110,
+        "oddEvenGood": 65,
+        "zoneDistribution": 45,
+        "sumRangeGood": 85,
+        "sumRangePerfect": 45,
+        "consecutivePenalty": 32
+      }
+    },
+    {
+      "iteration": 11,
+      "rate": 0,
+      "weights": {
+        "freqWeight": 0.44077024684052024,
+        "pairWeight": 0.4,
+        "timeDecay": 0.15,
+        "candidateCount": 16,
+        "iterations": 150,
+        "selectionPower": 2.2,
+        "zoneBonus": 6,
+        "oddBonus": 4,
+        "oddEvenPerfect": 110,
+        "oddEvenGood": 65,
+        "zoneDistribution": 45,
+        "sumRangeGood": 85,
+        "sumRangePerfect": 45,
+        "consecutivePenalty": 32
+      }
+    },
+    {
+      "iteration": 12,
+      "rate": 0,
+      "weights": {
+        "freqWeight": 0.44077024684052024,
+        "pairWeight": 0.4,
+        "timeDecay": 0.15,
+        "candidateCount": 16,
+        "iterations": 150,
+        "selectionPower": 2.2,
+        "zoneBonus": 6,
+        "oddBonus": 4,
+        "oddEvenPerfect": 110,
+        "oddEvenGood": 65,
+        "zoneDistribution": 45,
+        "sumRangeGood": 85,
+        "sumRangePerfect": 45,
+        "consecutivePenalty": 32
+      }
+    },
+    {
+      "iteration": 13,
+      "rate": 0,
+      "weights": {
+        "freqWeight": 0.44077024684052024,
+        "pairWeight": 0.4,
+        "timeDecay": 0.15,
+        "candidateCount": 16,
+        "iterations": 150,
+        "selectionPower": 2.2,
+        "zoneBonus": 6,
+        "oddBonus": 4,
+        "oddEvenPerfect": 110,
+        "oddEvenGood": 65,
+        "zoneDistribution": 45,
+        "sumRangeGood": 85,
+        "sumRangePerfect": 45,
+        "consecutivePenalty": 32
+      }
+    },
+    {
+      "iteration": 14,
+      "rate": 0,
+      "weights": {
+        "freqWeight": 0.44077024684052024,
+        "pairWeight": 0.4,
+        "timeDecay": 0.15,
+        "candidateCount": 16,
+        "iterations": 150,
+        "selectionPower": 2.2,
+        "zoneBonus": 6,
+        "oddBonus": 4,
+        "oddEvenPerfect": 110,
+        "oddEvenGood": 65,
+        "zoneDistribution": 45,
+        "sumRangeGood": 85,
+        "sumRangePerfect": 45,
+        "consecutivePenalty": 32
+      }
+    },
+    {
+      "iteration": 15,
+      "rate": 0,
+      "weights": {
+        "freqWeight": 0.44077024684052024,
+        "pairWeight": 0.4,
+        "timeDecay": 0.15,
+        "candidateCount": 16,
+        "iterations": 150,
+        "selectionPower": 2.2,
+        "zoneBonus": 6,
+        "oddBonus": 4,
+        "oddEvenPerfect": 110,
+        "oddEvenGood": 65,
+        "zoneDistribution": 45,
+        "sumRangeGood": 85,
+        "sumRangePerfect": 45,
+        "consecutivePenalty": 32
+      }
+    },
+    {
+      "iteration": 16,
+      "rate": 0,
+      "weights": {
+        "freqWeight": 0.44077024684052024,
+        "pairWeight": 0.4,
+        "timeDecay": 0.15,
+        "candidateCount": 16,
+        "iterations": 150,
+        "selectionPower": 2.2,
+        "zoneBonus": 6,
+        "oddBonus": 4,
+        "oddEvenPerfect": 110,
+        "oddEvenGood": 65,
+        "zoneDistribution": 45,
+        "sumRangeGood": 85,
+        "sumRangePerfect": 45,
+        "consecutivePenalty": 32
+      }
+    },
+    {
+      "iteration": 17,
+      "rate": 0,
+      "weights": {
+        "freqWeight": 0.44077024684052024,
+        "pairWeight": 0.4,
+        "timeDecay": 0.15,
+        "candidateCount": 16,
+        "iterations": 150,
+        "selectionPower": 2.2,
+        "zoneBonus": 6,
+        "oddBonus": 4,
+        "oddEvenPerfect": 110,
+        "oddEvenGood": 65,
+        "zoneDistribution": 45,
+        "sumRangeGood": 85,
+        "sumRangePerfect": 45,
+        "consecutivePenalty": 32
+      }
+    },
+    {
+      "iteration": 18,
+      "rate": 0,
+      "weights": {
+        "freqWeight": 0.44077024684052024,
+        "pairWeight": 0.4,
+        "timeDecay": 0.15,
+        "candidateCount": 16,
+        "iterations": 150,
+        "selectionPower": 2.2,
+        "zoneBonus": 6,
+        "oddBonus": 4,
+        "oddEvenPerfect": 110,
+        "oddEvenGood": 65,
+        "zoneDistribution": 45,
+        "sumRangeGood": 85,
+        "sumRangePerfect": 45,
+        "consecutivePenalty": 32
+      }
+    },
+    {
+      "iteration": 19,
+      "rate": 0,
+      "weights": {
+        "freqWeight": 0.44077024684052024,
+        "pairWeight": 0.4,
+        "timeDecay": 0.15,
+        "candidateCount": 16,
+        "iterations": 150,
+        "selectionPower": 2.2,
+        "zoneBonus": 6,
+        "oddBonus": 4,
+        "oddEvenPerfect": 110,
+        "oddEvenGood": 65,
+        "zoneDistribution": 45,
+        "sumRangeGood": 85,
+        "sumRangePerfect": 45,
+        "consecutivePenalty": 32
+      }
+    },
+    {
+      "iteration": 20,
+      "rate": 0,
+      "weights": {
+        "freqWeight": 0.44077024684052024,
+        "pairWeight": 0.4,
+        "timeDecay": 0.15,
+        "candidateCount": 16,
+        "iterations": 150,
+        "selectionPower": 2.2,
+        "zoneBonus": 6,
+        "oddBonus": 4,
+        "oddEvenPerfect": 110,
+        "oddEvenGood": 65,
+        "zoneDistribution": 45,
+        "sumRangeGood": 85,
+        "sumRangePerfect": 45,
+        "consecutivePenalty": 32
+      }
+    },
+    {
+      "iteration": 21,
+      "rate": 0,
+      "weights": {
+        "freqWeight": 0.44077024684052024,
+        "pairWeight": 0.4,
+        "timeDecay": 0.15,
+        "candidateCount": 16,
+        "iterations": 150,
+        "selectionPower": 2.2,
+        "zoneBonus": 6,
+        "oddBonus": 4,
+        "oddEvenPerfect": 110,
+        "oddEvenGood": 65,
+        "zoneDistribution": 45,
+        "sumRangeGood": 85,
+        "sumRangePerfect": 45,
+        "consecutivePenalty": 32
+      }
+    },
+    {
+      "iteration": 22,
+      "rate": 0,
+      "weights": {
+        "freqWeight": 0.44077024684052024,
+        "pairWeight": 0.4,
+        "timeDecay": 0.15,
+        "candidateCount": 16,
+        "iterations": 150,
+        "selectionPower": 2.2,
+        "zoneBonus": 6,
+        "oddBonus": 4,
+        "oddEvenPerfect": 110,
+        "oddEvenGood": 65,
+        "zoneDistribution": 45,
+        "sumRangeGood": 85,
+        "sumRangePerfect": 45,
+        "consecutivePenalty": 32
+      }
+    },
+    {
+      "iteration": 23,
+      "rate": 0,
+      "weights": {
+        "freqWeight": 0.44077024684052024,
+        "pairWeight": 0.4,
+        "timeDecay": 0.15,
+        "candidateCount": 16,
+        "iterations": 150,
+        "selectionPower": 2.225371988178231,
+        "zoneBonus": 6,
+        "oddBonus": 4,
+        "oddEvenPerfect": 110,
+        "oddEvenGood": 65,
+        "zoneDistribution": 45,
+        "sumRangeGood": 85,
+        "sumRangePerfect": 45,
+        "consecutivePenalty": 32
+      }
+    },
+    {
+      "iteration": 24,
+      "rate": 0,
+      "weights": {
+        "freqWeight": 0.44077024684052024,
+        "pairWeight": 0.4,
+        "timeDecay": 0.15,
+        "candidateCount": 16,
+        "iterations": 150,
+        "selectionPower": 2.225371988178231,
+        "zoneBonus": 6,
+        "oddBonus": 4,
+        "oddEvenPerfect": 110,
+        "oddEvenGood": 65,
+        "zoneDistribution": 45,
+        "sumRangeGood": 85,
+        "sumRangePerfect": 45,
+        "consecutivePenalty": 32
+      }
+    },
+    {
+      "iteration": 25,
+      "rate": 0,
+      "weights": {
+        "freqWeight": 0.44077024684052024,
+        "pairWeight": 0.4,
+        "timeDecay": 0.15,
+        "candidateCount": 16,
+        "iterations": 150,
+        "selectionPower": 2.225371988178231,
+        "zoneBonus": 6,
+        "oddBonus": 4,
+        "oddEvenPerfect": 110,
+        "oddEvenGood": 65,
+        "zoneDistribution": 45,
+        "sumRangeGood": 85,
+        "sumRangePerfect": 45,
+        "consecutivePenalty": 32
+      }
+    },
+    {
+      "iteration": 26,
+      "rate": 0,
+      "weights": {
+        "freqWeight": 0.44077024684052024,
+        "pairWeight": 0.4,
+        "timeDecay": 0.15,
+        "candidateCount": 16,
+        "iterations": 150,
+        "selectionPower": 2.225371988178231,
+        "zoneBonus": 6,
+        "oddBonus": 4,
+        "oddEvenPerfect": 110,
+        "oddEvenGood": 65,
+        "zoneDistribution": 45,
+        "sumRangeGood": 85,
+        "sumRangePerfect": 45,
+        "consecutivePenalty": 32
+      }
+    },
+    {
+      "iteration": 27,
+      "rate": 0,
+      "weights": {
+        "freqWeight": 0.44077024684052024,
+        "pairWeight": 0.4,
+        "timeDecay": 0.15,
+        "candidateCount": 16,
+        "iterations": 150,
+        "selectionPower": 2.225371988178231,
+        "zoneBonus": 6,
+        "oddBonus": 4,
+        "oddEvenPerfect": 110,
+        "oddEvenGood": 65,
+        "zoneDistribution": 45,
+        "sumRangeGood": 85,
+        "sumRangePerfect": 45,
+        "consecutivePenalty": 32
+      }
+    },
+    {
+      "iteration": 28,
+      "rate": 0,
+      "weights": {
+        "freqWeight": 0.44077024684052024,
+        "pairWeight": 0.4,
+        "timeDecay": 0.15,
+        "candidateCount": 16,
+        "iterations": 143.34145602067352,
+        "selectionPower": 2.225371988178231,
+        "zoneBonus": 6,
+        "oddBonus": 4,
+        "oddEvenPerfect": 110,
+        "oddEvenGood": 65,
+        "zoneDistribution": 45,
+        "sumRangeGood": 85,
+        "sumRangePerfect": 45,
+        "consecutivePenalty": 32
+      }
+    },
+    {
+      "iteration": 29,
+      "rate": 0,
+      "weights": {
+        "freqWeight": 0.44077024684052024,
+        "pairWeight": 0.4,
+        "timeDecay": 0.15,
+        "candidateCount": 16,
+        "iterations": 143.34145602067352,
+        "selectionPower": 2.225371988178231,
+        "zoneBonus": 6,
+        "oddBonus": 4,
+        "oddEvenPerfect": 110,
+        "oddEvenGood": 65,
+        "zoneDistribution": 45,
+        "sumRangeGood": 85,
+        "sumRangePerfect": 45,
+        "consecutivePenalty": 32
+      }
+    },
+    {
+      "iteration": 30,
+      "rate": 0,
+      "weights": {
+        "freqWeight": 0.44077024684052024,
+        "pairWeight": 0.4,
+        "timeDecay": 0.15,
+        "candidateCount": 16,
+        "iterations": 143.34145602067352,
+        "selectionPower": 2.225371988178231,
+        "zoneBonus": 6,
+        "oddBonus": 4,
+        "oddEvenPerfect": 110,
+        "oddEvenGood": 65,
+        "zoneDistribution": 45,
+        "sumRangeGood": 85,
+        "sumRangePerfect": 45,
+        "consecutivePenalty": 32
+      }
+    },
+    {
+      "iteration": 31,
+      "rate": 0,
+      "weights": {
+        "freqWeight": 0.44077024684052024,
+        "pairWeight": 0.4,
+        "timeDecay": 0.15,
+        "candidateCount": 16,
+        "iterations": 143.34145602067352,
+        "selectionPower": 2.225371988178231,
+        "zoneBonus": 6,
+        "oddBonus": 4,
+        "oddEvenPerfect": 110,
+        "oddEvenGood": 65,
+        "zoneDistribution": 45,
+        "sumRangeGood": 85,
+        "sumRangePerfect": 45,
+        "consecutivePenalty": 32
+      }
+    },
+    {
+      "iteration": 32,
+      "rate": 0,
+      "weights": {
+        "freqWeight": 0.44077024684052024,
+        "pairWeight": 0.4,
+        "timeDecay": 0.15,
+        "candidateCount": 16,
+        "iterations": 143.34145602067352,
+        "selectionPower": 2.225371988178231,
+        "zoneBonus": 6,
+        "oddBonus": 4,
+        "oddEvenPerfect": 110,
+        "oddEvenGood": 65,
+        "zoneDistribution": 45,
+        "sumRangeGood": 85,
+        "sumRangePerfect": 45,
+        "consecutivePenalty": 32
+      }
+    },
+    {
+      "iteration": 33,
+      "rate": 0,
+      "weights": {
+        "freqWeight": 0.44077024684052024,
+        "pairWeight": 0.4,
+        "timeDecay": 0.15,
+        "candidateCount": 16,
+        "iterations": 143.34145602067352,
+        "selectionPower": 2.225371988178231,
+        "zoneBonus": 6,
+        "oddBonus": 4,
+        "oddEvenPerfect": 110,
+        "oddEvenGood": 65,
+        "zoneDistribution": 45,
+        "sumRangeGood": 85,
+        "sumRangePerfect": 45,
+        "consecutivePenalty": 32
+      }
+    },
+    {
+      "iteration": 34,
+      "rate": 0,
+      "weights": {
+        "freqWeight": 0.44077024684052024,
+        "pairWeight": 0.4,
+        "timeDecay": 0.15,
+        "candidateCount": 16,
+        "iterations": 143.34145602067352,
+        "selectionPower": 2.225371988178231,
+        "zoneBonus": 6,
+        "oddBonus": 4,
+        "oddEvenPerfect": 110,
+        "oddEvenGood": 65,
+        "zoneDistribution": 45,
+        "sumRangeGood": 85,
+        "sumRangePerfect": 45,
+        "consecutivePenalty": 32
+      }
+    },
+    {
+      "iteration": 35,
+      "rate": 0,
+      "weights": {
+        "freqWeight": 0.44077024684052024,
+        "pairWeight": 0.4,
+        "timeDecay": 0.15,
+        "candidateCount": 16,
+        "iterations": 143.34145602067352,
+        "selectionPower": 2.225371988178231,
+        "zoneBonus": 6,
+        "oddBonus": 4,
+        "oddEvenPerfect": 110,
+        "oddEvenGood": 65,
+        "zoneDistribution": 45,
+        "sumRangeGood": 85,
+        "sumRangePerfect": 45,
+        "consecutivePenalty": 32
+      }
+    },
+    {
+      "iteration": 36,
+      "rate": 0,
+      "weights": {
+        "freqWeight": 0.44077024684052024,
+        "pairWeight": 0.4,
+        "timeDecay": 0.15,
+        "candidateCount": 16,
+        "iterations": 143.34145602067352,
+        "selectionPower": 2.225371988178231,
+        "zoneBonus": 6,
+        "oddBonus": 4,
+        "oddEvenPerfect": 110,
+        "oddEvenGood": 65,
+        "zoneDistribution": 45,
+        "sumRangeGood": 85,
+        "sumRangePerfect": 45,
+        "consecutivePenalty": 32
+      }
+    },
+    {
+      "iteration": 37,
+      "rate": 0,
+      "weights": {
+        "freqWeight": 0.44077024684052024,
+        "pairWeight": 0.4,
+        "timeDecay": 0.15,
+        "candidateCount": 16,
+        "iterations": 143.34145602067352,
+        "selectionPower": 2.225371988178231,
+        "zoneBonus": 6,
+        "oddBonus": 4,
+        "oddEvenPerfect": 110,
+        "oddEvenGood": 65,
+        "zoneDistribution": 45,
+        "sumRangeGood": 85,
+        "sumRangePerfect": 45,
+        "consecutivePenalty": 32
+      }
+    },
+    {
+      "iteration": 38,
+      "rate": 0,
+      "weights": {
+        "freqWeight": 0.44077024684052024,
+        "pairWeight": 0.4,
+        "timeDecay": 0.15,
+        "candidateCount": 16,
+        "iterations": 143.34145602067352,
+        "selectionPower": 2.225371988178231,
+        "zoneBonus": 6,
+        "oddBonus": 4,
+        "oddEvenPerfect": 110,
+        "oddEvenGood": 65,
+        "zoneDistribution": 45,
+        "sumRangeGood": 85,
+        "sumRangePerfect": 45,
+        "consecutivePenalty": 32
+      }
+    },
+    {
+      "iteration": 39,
+      "rate": 0,
+      "weights": {
+        "freqWeight": 0.44077024684052024,
+        "pairWeight": 0.4,
+        "timeDecay": 0.15,
+        "candidateCount": 16,
+        "iterations": 143.34145602067352,
+        "selectionPower": 2.225371988178231,
+        "zoneBonus": 6,
+        "oddBonus": 4,
+        "oddEvenPerfect": 110,
+        "oddEvenGood": 65,
+        "zoneDistribution": 45,
+        "sumRangeGood": 85,
+        "sumRangePerfect": 45,
+        "consecutivePenalty": 32
+      }
+    },
+    {
+      "iteration": 40,
+      "rate": 0,
+      "weights": {
+        "freqWeight": 0.44077024684052024,
+        "pairWeight": 0.4,
+        "timeDecay": 0.15,
+        "candidateCount": 16,
+        "iterations": 143.34145602067352,
+        "selectionPower": 2.225371988178231,
+        "zoneBonus": 6,
+        "oddBonus": 4,
+        "oddEvenPerfect": 110,
+        "oddEvenGood": 65,
+        "zoneDistribution": 45,
+        "sumRangeGood": 85,
+        "sumRangePerfect": 45,
+        "consecutivePenalty": 32
+      }
+    },
+    {
+      "iteration": 41,
+      "rate": 0,
+      "weights": {
+        "freqWeight": 0.44077024684052024,
+        "pairWeight": 0.4,
+        "timeDecay": 0.15,
+        "candidateCount": 16,
+        "iterations": 143.34145602067352,
+        "selectionPower": 2.225371988178231,
+        "zoneBonus": 6,
+        "oddBonus": 4,
+        "oddEvenPerfect": 110,
+        "oddEvenGood": 65,
+        "zoneDistribution": 45,
+        "sumRangeGood": 85,
+        "sumRangePerfect": 45,
+        "consecutivePenalty": 32
+      }
+    },
+    {
+      "iteration": 42,
+      "rate": 0,
+      "weights": {
+        "freqWeight": 0.44077024684052024,
+        "pairWeight": 0.4,
+        "timeDecay": 0.15,
+        "candidateCount": 16,
+        "iterations": 143.34145602067352,
+        "selectionPower": 2.225371988178231,
+        "zoneBonus": 6,
+        "oddBonus": 4,
+        "oddEvenPerfect": 110,
+        "oddEvenGood": 65,
+        "zoneDistribution": 45,
+        "sumRangeGood": 85,
+        "sumRangePerfect": 45,
+        "consecutivePenalty": 32
+      }
+    },
+    {
+      "iteration": 43,
+      "rate": 0,
+      "weights": {
+        "freqWeight": 0.44077024684052024,
+        "pairWeight": 0.4,
+        "timeDecay": 0.15,
+        "candidateCount": 16,
+        "iterations": 143.34145602067352,
+        "selectionPower": 2.225371988178231,
+        "zoneBonus": 6,
+        "oddBonus": 4,
+        "oddEvenPerfect": 110,
+        "oddEvenGood": 65,
+        "zoneDistribution": 45,
+        "sumRangeGood": 85,
+        "sumRangePerfect": 45,
+        "consecutivePenalty": 32
+      }
+    },
+    {
+      "iteration": 44,
+      "rate": 0,
+      "weights": {
+        "freqWeight": 0.44077024684052024,
+        "pairWeight": 0.4,
+        "timeDecay": 0.15,
+        "candidateCount": 16,
+        "iterations": 143.34145602067352,
+        "selectionPower": 2.225371988178231,
+        "zoneBonus": 6,
+        "oddBonus": 4,
+        "oddEvenPerfect": 110,
+        "oddEvenGood": 65,
+        "zoneDistribution": 45,
+        "sumRangeGood": 85,
+        "sumRangePerfect": 45,
+        "consecutivePenalty": 32
+      }
+    },
+    {
+      "iteration": 45,
+      "rate": 0,
+      "weights": {
+        "freqWeight": 0.44077024684052024,
+        "pairWeight": 0.4,
+        "timeDecay": 0.15,
+        "candidateCount": 16,
+        "iterations": 143.34145602067352,
+        "selectionPower": 2.225371988178231,
+        "zoneBonus": 6,
+        "oddBonus": 4,
+        "oddEvenPerfect": 110,
+        "oddEvenGood": 65,
+        "zoneDistribution": 45,
+        "sumRangeGood": 85,
+        "sumRangePerfect": 45,
+        "consecutivePenalty": 32
+      }
+    },
+    {
+      "iteration": 46,
+      "rate": 0,
+      "weights": {
+        "freqWeight": 0.44077024684052024,
+        "pairWeight": 0.4,
+        "timeDecay": 0.15,
+        "candidateCount": 16,
+        "iterations": 143.34145602067352,
+        "selectionPower": 2.225371988178231,
+        "zoneBonus": 6,
+        "oddBonus": 4,
+        "oddEvenPerfect": 110,
+        "oddEvenGood": 65,
+        "zoneDistribution": 45,
+        "sumRangeGood": 85,
+        "sumRangePerfect": 45,
+        "consecutivePenalty": 32
+      }
+    },
+    {
+      "iteration": 47,
+      "rate": 0,
+      "weights": {
+        "freqWeight": 0.44077024684052024,
+        "pairWeight": 0.4,
+        "timeDecay": 0.15,
+        "candidateCount": 16,
+        "iterations": 143.34145602067352,
+        "selectionPower": 2.225371988178231,
+        "zoneBonus": 6,
+        "oddBonus": 4,
+        "oddEvenPerfect": 110,
+        "oddEvenGood": 65,
+        "zoneDistribution": 45,
+        "sumRangeGood": 85,
+        "sumRangePerfect": 45,
+        "consecutivePenalty": 32
+      }
+    },
+    {
+      "iteration": 48,
+      "rate": 0,
+      "weights": {
+        "freqWeight": 0.44077024684052024,
+        "pairWeight": 0.4,
+        "timeDecay": 0.15,
+        "candidateCount": 16,
+        "iterations": 143.34145602067352,
+        "selectionPower": 2.225371988178231,
+        "zoneBonus": 6,
+        "oddBonus": 4,
+        "oddEvenPerfect": 110,
+        "oddEvenGood": 65,
+        "zoneDistribution": 45,
+        "sumRangeGood": 85,
+        "sumRangePerfect": 45,
+        "consecutivePenalty": 32
+      }
+    },
+    {
+      "iteration": 49,
+      "rate": 0,
+      "weights": {
+        "freqWeight": 0.44077024684052024,
+        "pairWeight": 0.4,
+        "timeDecay": 0.15,
+        "candidateCount": 16,
+        "iterations": 143.34145602067352,
+        "selectionPower": 2.225371988178231,
+        "zoneBonus": 6,
+        "oddBonus": 4,
+        "oddEvenPerfect": 110,
+        "oddEvenGood": 65,
+        "zoneDistribution": 45,
+        "sumRangeGood": 85,
+        "sumRangePerfect": 45,
+        "consecutivePenalty": 32
+      }
+    },
+    {
+      "iteration": 50,
+      "rate": 0,
+      "weights": {
+        "freqWeight": 0.44077024684052024,
+        "pairWeight": 0.4,
+        "timeDecay": 0.15,
+        "candidateCount": 16,
+        "iterations": 143.34145602067352,
+        "selectionPower": 2.225371988178231,
+        "zoneBonus": 6,
+        "oddBonus": 4,
+        "oddEvenPerfect": 110,
+        "oddEvenGood": 65,
+        "zoneDistribution": 45,
+        "sumRangeGood": 85,
+        "sumRangePerfect": 45,
+        "consecutivePenalty": 32
+      }
+    }
+  ]
+}

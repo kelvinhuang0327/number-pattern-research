@@ -1,0 +1,8858 @@
+{
+  "summary": {
+    "lottery_type": "DAILY_539",
+    "method_name": "hot_cold_mix",
+    "window_size": 100,
+    "test_periods": 313,
+    "win_count": 43,
+    "win_rate": 0.13738019169329074,
+    "avg_matches": 0.6964856230031949,
+    "max_matches": 3,
+    "total_matches": 218,
+    "periods_per_win": 7.27906976744186,
+    "expected_cost_per_win": 363.953488372093,
+    "test_start_date": "2025-01-01",
+    "test_end_date": "2025/12/27",
+    "backtest_timestamp": "2025-12-31T11:01:24.283101"
+  },
+  "details": [
+    {
+      "draw_id": "114000313",
+      "draw_date": "2025/12/27",
+      "predicted_numbers": [
+        7,
+        12,
+        14,
+        25,
+        28
+      ],
+      "predicted_special": null,
+      "actual_numbers": [
+        1,
+        15,
+        19,
+        28,
+        38
+      ],
+      "actual_special": null,
+      "matches": 1,
+      "matched_numbers": [
+        28
+      ],
+      "is_win": false,
+      "confidence": 0.74,
+      "method_name": "hot_cold_mix",
+      "window_size": 100,
+      "training_periods": 100
+    },
+    {
+      "draw_id": "114000312",
+      "draw_date": "2025/12/26",
+      "predicted_numbers": [
+        7,
+        14,
+        21,
+        25,
+        28
+      ],
+      "predicted_special": null,
+      "actual_numbers": [
+        1,
+        10,
+        20,
+        27,
+        36
+      ],
+      "actual_special": null,
+      "matches": 0,
+      "matched_numbers": [],
+      "is_win": false,
+      "confidence": 0.7305034229677592,
+      "method_name": "hot_cold_mix",
+      "window_size": 100,
+      "training_periods": 100
+    },
+    {
+      "draw_id": "114000311",
+      "draw_date": "2025/12/25",
+      "predicted_numbers": [
+        7,
+        14,
+        20,
+        25,
+        28
+      ],
+      "predicted_special": null,
+      "actual_numbers": [
+        14,
+        18,
+        28,
+        36,
+        39
+      ],
+      "actual_special": null,
+      "matches": 2,
+      "matched_numbers": [
+        14,
+        28
+      ],
+      "is_win": true,
+      "confidence": 0.74,
+      "method_name": "hot_cold_mix",
+      "window_size": 100,
+      "training_periods": 100
+    },
+    {
+      "draw_id": "114000310",
+      "draw_date": "2025/12/24",
+      "predicted_numbers": [
+        7,
+        14,
+        20,
+        25,
+        28
+      ],
+      "predicted_special": null,
+      "actual_numbers": [
+        2,
+        3,
+        14,
+        25,
+        30
+      ],
+      "actual_special": null,
+      "matches": 2,
+      "matched_numbers": [
+        14,
+        25
+      ],
+      "is_win": true,
+      "confidence": 0.74,
+      "method_name": "hot_cold_mix",
+      "window_size": 100,
+      "training_periods": 100
+    },
+    {
+      "draw_id": "114000309",
+      "draw_date": "2025/12/23",
+      "predicted_numbers": [
+        7,
+        14,
+        20,
+        21,
+        28
+      ],
+      "predicted_special": null,
+      "actual_numbers": [
+        9,
+        22,
+        24,
+        30,
+        35
+      ],
+      "actual_special": null,
+      "matches": 0,
+      "matched_numbers": [],
+      "is_win": false,
+      "confidence": 0.74,
+      "method_name": "hot_cold_mix",
+      "window_size": 100,
+      "training_periods": 100
+    },
+    {
+      "draw_id": "114000308",
+      "draw_date": "2025/12/22",
+      "predicted_numbers": [
+        5,
+        7,
+        14,
+        21,
+        28
+      ],
+      "predicted_special": null,
+      "actual_numbers": [
+        2,
+        22,
+        24,
+        27,
+        38
+      ],
+      "actual_special": null,
+      "matches": 0,
+      "matched_numbers": [],
+      "is_win": false,
+      "confidence": 0.74,
+      "method_name": "hot_cold_mix",
+      "window_size": 100,
+      "training_periods": 100
+    },
+    {
+      "draw_id": "114000307",
+      "draw_date": "2025/12/20",
+      "predicted_numbers": [
+        5,
+        7,
+        14,
+        21,
+        28
+      ],
+      "predicted_special": null,
+      "actual_numbers": [
+        1,
+        5,
+        16,
+        35,
+        38
+      ],
+      "actual_special": null,
+      "matches": 1,
+      "matched_numbers": [
+        5
+      ],
+      "is_win": false,
+      "confidence": 0.7324585456855022,
+      "method_name": "hot_cold_mix",
+      "window_size": 100,
+      "training_periods": 100
+    },
+    {
+      "draw_id": "114000306",
+      "draw_date": "2025/12/19",
+      "predicted_numbers": [
+        5,
+        7,
+        14,
+        21,
+        23
+      ],
+      "predicted_special": null,
+      "actual_numbers": [
+        12,
+        16,
+        23,
+        27,
+        30
+      ],
+      "actual_special": null,
+      "matches": 1,
+      "matched_numbers": [
+        23
+      ],
+      "is_win": false,
+      "confidence": 0.74,
+      "method_name": "hot_cold_mix",
+      "window_size": 100,
+      "training_periods": 100
+    },
+    {
+      "draw_id": "114000305",
+      "draw_date": "2025/12/18",
+      "predicted_numbers": [
+        5,
+        7,
+        14,
+        21,
+        23
+      ],
+      "predicted_special": null,
+      "actual_numbers": [
+        4,
+        9,
+        32,
+        33,
+        36
+      ],
+      "actual_special": null,
+      "matches": 0,
+      "matched_numbers": [],
+      "is_win": false,
+      "confidence": 0.7373345954852601,
+      "method_name": "hot_cold_mix",
+      "window_size": 100,
+      "training_periods": 100
+    },
+    {
+      "draw_id": "114000304",
+      "draw_date": "2025/12/17",
+      "predicted_numbers": [
+        5,
+        7,
+        21,
+        23,
+        38
+      ],
+      "predicted_special": null,
+      "actual_numbers": [
+        5,
+        6,
+        7,
+        19,
+        32
+      ],
+      "actual_special": null,
+      "matches": 2,
+      "matched_numbers": [
+        5,
+        7
+      ],
+      "is_win": true,
+      "confidence": 0.7292843158029095,
+      "method_name": "hot_cold_mix",
+      "window_size": 100,
+      "training_periods": 100
+    },
+    {
+      "draw_id": "114000303",
+      "draw_date": "2025/12/16",
+      "predicted_numbers": [
+        5,
+        7,
+        21,
+        28,
+        38
+      ],
+      "predicted_special": null,
+      "actual_numbers": [
+        2,
+        10,
+        14,
+        33,
+        35
+      ],
+      "actual_special": null,
+      "matches": 0,
+      "matched_numbers": [],
+      "is_win": false,
+      "confidence": 0.7378287115747855,
+      "method_name": "hot_cold_mix",
+      "window_size": 100,
+      "training_periods": 100
+    },
+    {
+      "draw_id": "114000302",
+      "draw_date": "2025/12/15",
+      "predicted_numbers": [
+        5,
+        7,
+        21,
+        29,
+        38
+      ],
+      "predicted_special": null,
+      "actual_numbers": [
+        3,
+        17,
+        27,
+        29,
+        38
+      ],
+      "actual_special": null,
+      "matches": 2,
+      "matched_numbers": [
+        29,
+        38
+      ],
+      "is_win": true,
+      "confidence": 0.7397835123800308,
+      "method_name": "hot_cold_mix",
+      "window_size": 100,
+      "training_periods": 100
+    },
+    {
+      "draw_id": "114000301",
+      "draw_date": "2025/12/13",
+      "predicted_numbers": [
+        5,
+        6,
+        7,
+        21,
+        29
+      ],
+      "predicted_special": null,
+      "actual_numbers": [
+        2,
+        9,
+        21,
+        31,
+        38
+      ],
+      "actual_special": null,
+      "matches": 1,
+      "matched_numbers": [
+        21
+      ],
+      "is_win": false,
+      "confidence": 0.7350667859492551,
+      "method_name": "hot_cold_mix",
+      "window_size": 100,
+      "training_periods": 100
+    },
+    {
+      "draw_id": "114000300",
+      "draw_date": "2025/12/12",
+      "predicted_numbers": [
+        5,
+        7,
+        12,
+        28,
+        29
+      ],
+      "predicted_special": null,
+      "actual_numbers": [
+        10,
+        24,
+        26,
+        28,
+        35
+      ],
+      "actual_special": null,
+      "matches": 1,
+      "matched_numbers": [
+        28
+      ],
+      "is_win": false,
+      "confidence": 0.725137181827731,
+      "method_name": "hot_cold_mix",
+      "window_size": 100,
+      "training_periods": 100
+    },
+    {
+      "draw_id": "114000299",
+      "draw_date": "2025/12/11",
+      "predicted_numbers": [
+        5,
+        7,
+        12,
+        18,
+        28
+      ],
+      "predicted_special": null,
+      "actual_numbers": [
+        2,
+        6,
+        17,
+        25,
+        26
+      ],
+      "actual_special": null,
+      "matches": 0,
+      "matched_numbers": [],
+      "is_win": false,
+      "confidence": 0.7190292659438494,
+      "method_name": "hot_cold_mix",
+      "window_size": 100,
+      "training_periods": 100
+    },
+    {
+      "draw_id": "114000298",
+      "draw_date": "2025/12/10",
+      "predicted_numbers": [
+        5,
+        7,
+        12,
+        18,
+        28
+      ],
+      "predicted_special": null,
+      "actual_numbers": [
+        4,
+        7,
+        11,
+        16,
+        26
+      ],
+      "actual_special": null,
+      "matches": 1,
+      "matched_numbers": [
+        7
+      ],
+      "is_win": false,
+      "confidence": 0.7203459236725192,
+      "method_name": "hot_cold_mix",
+      "window_size": 100,
+      "training_periods": 100
+    },
+    {
+      "draw_id": "114000297",
+      "draw_date": "2025/12/09",
+      "predicted_numbers": [
+        5,
+        7,
+        12,
+        18,
+        31
+      ],
+      "predicted_special": null,
+      "actual_numbers": [
+        7,
+        8,
+        15,
+        30,
+        39
+      ],
+      "actual_special": null,
+      "matches": 1,
+      "matched_numbers": [
+        7
+      ],
+      "is_win": false,
+      "confidence": 0.7290079609377857,
+      "method_name": "hot_cold_mix",
+      "window_size": 100,
+      "training_periods": 100
+    },
+    {
+      "draw_id": "114000296",
+      "draw_date": "2025/12/08",
+      "predicted_numbers": [
+        7,
+        12,
+        18,
+        29,
+        31
+      ],
+      "predicted_special": null,
+      "actual_numbers": [
+        5,
+        23,
+        27,
+        28,
+        31
+      ],
+      "actual_special": null,
+      "matches": 1,
+      "matched_numbers": [
+        31
+      ],
+      "is_win": false,
+      "confidence": 0.74,
+      "method_name": "hot_cold_mix",
+      "window_size": 100,
+      "training_periods": 100
+    },
+    {
+      "draw_id": "114000295",
+      "draw_date": "2025/12/06",
+      "predicted_numbers": [
+        5,
+        7,
+        18,
+        29,
+        31
+      ],
+      "predicted_special": null,
+      "actual_numbers": [
+        6,
+        22,
+        23,
+        24,
+        32
+      ],
+      "actual_special": null,
+      "matches": 0,
+      "matched_numbers": [],
+      "is_win": false,
+      "confidence": 0.74,
+      "method_name": "hot_cold_mix",
+      "window_size": 100,
+      "training_periods": 100
+    },
+    {
+      "draw_id": "114000294",
+      "draw_date": "2025/12/05",
+      "predicted_numbers": [
+        18,
+        26,
+        28,
+        29,
+        31
+      ],
+      "predicted_special": null,
+      "actual_numbers": [
+        2,
+        3,
+        16,
+        17,
+        29
+      ],
+      "actual_special": null,
+      "matches": 1,
+      "matched_numbers": [
+        29
+      ],
+      "is_win": false,
+      "confidence": 0.74,
+      "method_name": "hot_cold_mix",
+      "window_size": 100,
+      "training_periods": 100
+    },
+    {
+      "draw_id": "114000293",
+      "draw_date": "2025/12/04",
+      "predicted_numbers": [
+        1,
+        18,
+        26,
+        29,
+        31
+      ],
+      "predicted_special": null,
+      "actual_numbers": [
+        1,
+        7,
+        20,
+        25,
+        37
+      ],
+      "actual_special": null,
+      "matches": 1,
+      "matched_numbers": [
+        1
+      ],
+      "is_win": false,
+      "confidence": 0.74,
+      "method_name": "hot_cold_mix",
+      "window_size": 100,
+      "training_periods": 100
+    },
+    {
+      "draw_id": "114000292",
+      "draw_date": "2025/12/03",
+      "predicted_numbers": [
+        1,
+        18,
+        26,
+        27,
+        29
+      ],
+      "predicted_special": null,
+      "actual_numbers": [
+        5,
+        9,
+        14,
+        33,
+        35
+      ],
+      "actual_special": null,
+      "matches": 0,
+      "matched_numbers": [],
+      "is_win": false,
+      "confidence": 0.74,
+      "method_name": "hot_cold_mix",
+      "window_size": 100,
+      "training_periods": 100
+    },
+    {
+      "draw_id": "114000291",
+      "draw_date": "2025/12/02",
+      "predicted_numbers": [
+        1,
+        18,
+        27,
+        28,
+        30
+      ],
+      "predicted_special": null,
+      "actual_numbers": [
+        2,
+        5,
+        8,
+        13,
+        29
+      ],
+      "actual_special": null,
+      "matches": 0,
+      "matched_numbers": [],
+      "is_win": false,
+      "confidence": 0.7316042882960226,
+      "method_name": "hot_cold_mix",
+      "window_size": 100,
+      "training_periods": 100
+    },
+    {
+      "draw_id": "114000290",
+      "draw_date": "2025/12/01",
+      "predicted_numbers": [
+        1,
+        10,
+        14,
+        28,
+        30
+      ],
+      "predicted_special": null,
+      "actual_numbers": [
+        2,
+        3,
+        4,
+        20,
+        24
+      ],
+      "actual_special": null,
+      "matches": 0,
+      "matched_numbers": [],
+      "is_win": false,
+      "confidence": 0.74,
+      "method_name": "hot_cold_mix",
+      "window_size": 100,
+      "training_periods": 100
+    },
+    {
+      "draw_id": "114000289",
+      "draw_date": "2025-11-29",
+      "predicted_numbers": [
+        1,
+        10,
+        28,
+        29,
+        30
+      ],
+      "predicted_special": null,
+      "actual_numbers": [
+        8,
+        27,
+        30,
+        33,
+        36
+      ],
+      "actual_special": 0,
+      "matches": 1,
+      "matched_numbers": [
+        30
+      ],
+      "is_win": false,
+      "confidence": 0.74,
+      "method_name": "hot_cold_mix",
+      "window_size": 100,
+      "training_periods": 100
+    },
+    {
+      "draw_id": "114000288",
+      "draw_date": "2025-11-28",
+      "predicted_numbers": [
+        21,
+        25,
+        26,
+        28,
+        30
+      ],
+      "predicted_special": null,
+      "actual_numbers": [
+        8,
+        13,
+        14,
+        22,
+        28
+      ],
+      "actual_special": 0,
+      "matches": 1,
+      "matched_numbers": [
+        28
+      ],
+      "is_win": false,
+      "confidence": 0.74,
+      "method_name": "hot_cold_mix",
+      "window_size": 100,
+      "training_periods": 100
+    },
+    {
+      "draw_id": "114000287",
+      "draw_date": "2025-11-27",
+      "predicted_numbers": [
+        1,
+        25,
+        26,
+        28,
+        30
+      ],
+      "predicted_special": null,
+      "actual_numbers": [
+        7,
+        19,
+        22,
+        25,
+        28
+      ],
+      "actual_special": 0,
+      "matches": 2,
+      "matched_numbers": [
+        25,
+        28
+      ],
+      "is_win": true,
+      "confidence": 0.74,
+      "method_name": "hot_cold_mix",
+      "window_size": 100,
+      "training_periods": 100
+    },
+    {
+      "draw_id": "114000286",
+      "draw_date": "2025-11-26",
+      "predicted_numbers": [
+        1,
+        25,
+        26,
+        28,
+        30
+      ],
+      "predicted_special": null,
+      "actual_numbers": [
+        7,
+        13,
+        26,
+        28,
+        34
+      ],
+      "actual_special": 0,
+      "matches": 2,
+      "matched_numbers": [
+        26,
+        28
+      ],
+      "is_win": true,
+      "confidence": 0.74,
+      "method_name": "hot_cold_mix",
+      "window_size": 100,
+      "training_periods": 100
+    },
+    {
+      "draw_id": "114000285",
+      "draw_date": "2025-11-25",
+      "predicted_numbers": [
+        25,
+        26,
+        28,
+        30,
+        34
+      ],
+      "predicted_special": null,
+      "actual_numbers": [
+        9,
+        30,
+        36,
+        38,
+        39
+      ],
+      "actual_special": 0,
+      "matches": 1,
+      "matched_numbers": [
+        30
+      ],
+      "is_win": false,
+      "confidence": 0.74,
+      "method_name": "hot_cold_mix",
+      "window_size": 100,
+      "training_periods": 100
+    },
+    {
+      "draw_id": "114000284",
+      "draw_date": "2025-11-24",
+      "predicted_numbers": [
+        25,
+        26,
+        28,
+        30,
+        34
+      ],
+      "predicted_special": null,
+      "actual_numbers": [
+        2,
+        4,
+        5,
+        17,
+        31
+      ],
+      "actual_special": 0,
+      "matches": 0,
+      "matched_numbers": [],
+      "is_win": false,
+      "confidence": 0.74,
+      "method_name": "hot_cold_mix",
+      "window_size": 100,
+      "training_periods": 100
+    },
+    {
+      "draw_id": "114000283",
+      "draw_date": "2025-11-22",
+      "predicted_numbers": [
+        10,
+        25,
+        28,
+        30,
+        34
+      ],
+      "predicted_special": null,
+      "actual_numbers": [
+        10,
+        13,
+        32,
+        33,
+        37
+      ],
+      "actual_special": 0,
+      "matches": 1,
+      "matched_numbers": [
+        10
+      ],
+      "is_win": false,
+      "confidence": 0.74,
+      "method_name": "hot_cold_mix",
+      "window_size": 100,
+      "training_periods": 100
+    },
+    {
+      "draw_id": "114000282",
+      "draw_date": "2025-11-21",
+      "predicted_numbers": [
+        21,
+        22,
+        23,
+        28,
+        30
+      ],
+      "predicted_special": null,
+      "actual_numbers": [
+        5,
+        10,
+        17,
+        28,
+        35
+      ],
+      "actual_special": 0,
+      "matches": 1,
+      "matched_numbers": [
+        28
+      ],
+      "is_win": false,
+      "confidence": 0.7267365637410217,
+      "method_name": "hot_cold_mix",
+      "window_size": 100,
+      "training_periods": 100
+    },
+    {
+      "draw_id": "114000281",
+      "draw_date": "2025-11-20",
+      "predicted_numbers": [
+        6,
+        21,
+        22,
+        23,
+        30
+      ],
+      "predicted_special": null,
+      "actual_numbers": [
+        1,
+        5,
+        33,
+        36,
+        38
+      ],
+      "actual_special": 0,
+      "matches": 0,
+      "matched_numbers": [],
+      "is_win": false,
+      "confidence": 0.7214514523829426,
+      "method_name": "hot_cold_mix",
+      "window_size": 100,
+      "training_periods": 100
+    },
+    {
+      "draw_id": "114000280",
+      "draw_date": "2025-11-19",
+      "predicted_numbers": [
+        18,
+        22,
+        23,
+        29,
+        30
+      ],
+      "predicted_special": null,
+      "actual_numbers": [
+        3,
+        11,
+        20,
+        28,
+        31
+      ],
+      "actual_special": 0,
+      "matches": 0,
+      "matched_numbers": [],
+      "is_win": false,
+      "confidence": 0.7249529469134017,
+      "method_name": "hot_cold_mix",
+      "window_size": 100,
+      "training_periods": 100
+    },
+    {
+      "draw_id": "114000279",
+      "draw_date": "2025-11-18",
+      "predicted_numbers": [
+        6,
+        18,
+        23,
+        29,
+        30
+      ],
+      "predicted_special": null,
+      "actual_numbers": [
+        14,
+        24,
+        31,
+        36,
+        37
+      ],
+      "actual_special": 0,
+      "matches": 0,
+      "matched_numbers": [],
+      "is_win": false,
+      "confidence": 0.737408429654435,
+      "method_name": "hot_cold_mix",
+      "window_size": 100,
+      "training_periods": 100
+    },
+    {
+      "draw_id": "114000278",
+      "draw_date": "2025-11-17",
+      "predicted_numbers": [
+        6,
+        18,
+        23,
+        29,
+        30
+      ],
+      "predicted_special": null,
+      "actual_numbers": [
+        4,
+        7,
+        16,
+        26,
+        29
+      ],
+      "actual_special": 0,
+      "matches": 1,
+      "matched_numbers": [
+        29
+      ],
+      "is_win": false,
+      "confidence": 0.7220693286458343,
+      "method_name": "hot_cold_mix",
+      "window_size": 100,
+      "training_periods": 100
+    },
+    {
+      "draw_id": "114000277",
+      "draw_date": "2025-11-15",
+      "predicted_numbers": [
+        10,
+        18,
+        23,
+        30,
+        32
+      ],
+      "predicted_special": null,
+      "actual_numbers": [
+        12,
+        20,
+        25,
+        28,
+        29
+      ],
+      "actual_special": 0,
+      "matches": 0,
+      "matched_numbers": [],
+      "is_win": false,
+      "confidence": 0.74,
+      "method_name": "hot_cold_mix",
+      "window_size": 100,
+      "training_periods": 100
+    },
+    {
+      "draw_id": "114000276",
+      "draw_date": "2025-11-14",
+      "predicted_numbers": [
+        6,
+        18,
+        22,
+        23,
+        32
+      ],
+      "predicted_special": null,
+      "actual_numbers": [
+        2,
+        11,
+        15,
+        37,
+        38
+      ],
+      "actual_special": 0,
+      "matches": 0,
+      "matched_numbers": [],
+      "is_win": false,
+      "confidence": 0.74,
+      "method_name": "hot_cold_mix",
+      "window_size": 100,
+      "training_periods": 100
+    },
+    {
+      "draw_id": "114000275",
+      "draw_date": "2025-11-13",
+      "predicted_numbers": [
+        6,
+        18,
+        22,
+        23,
+        32
+      ],
+      "predicted_special": null,
+      "actual_numbers": [
+        13,
+        18,
+        20,
+        23,
+        36
+      ],
+      "actual_special": 0,
+      "matches": 2,
+      "matched_numbers": [
+        18,
+        23
+      ],
+      "is_win": true,
+      "confidence": 0.74,
+      "method_name": "hot_cold_mix",
+      "window_size": 100,
+      "training_periods": 100
+    },
+    {
+      "draw_id": "114000274",
+      "draw_date": "2025-11-12",
+      "predicted_numbers": [
+        14,
+        18,
+        22,
+        23,
+        26
+      ],
+      "predicted_special": null,
+      "actual_numbers": [
+        1,
+        4,
+        9,
+        14,
+        22
+      ],
+      "actual_special": 0,
+      "matches": 2,
+      "matched_numbers": [
+        14,
+        22
+      ],
+      "is_win": true,
+      "confidence": 0.74,
+      "method_name": "hot_cold_mix",
+      "window_size": 100,
+      "training_periods": 100
+    },
+    {
+      "draw_id": "114000273",
+      "draw_date": "2025-11-11",
+      "predicted_numbers": [
+        6,
+        11,
+        18,
+        22,
+        29
+      ],
+      "predicted_special": null,
+      "actual_numbers": [
+        5,
+        19,
+        31,
+        34,
+        39
+      ],
+      "actual_special": 0,
+      "matches": 0,
+      "matched_numbers": [],
+      "is_win": false,
+      "confidence": 0.7399422427212925,
+      "method_name": "hot_cold_mix",
+      "window_size": 100,
+      "training_periods": 100
+    },
+    {
+      "draw_id": "114000272",
+      "draw_date": "2025-11-10",
+      "predicted_numbers": [
+        6,
+        11,
+        18,
+        29,
+        32
+      ],
+      "predicted_special": null,
+      "actual_numbers": [
+        7,
+        14,
+        15,
+        17,
+        30
+      ],
+      "actual_special": 0,
+      "matches": 0,
+      "matched_numbers": [],
+      "is_win": false,
+      "confidence": 0.74,
+      "method_name": "hot_cold_mix",
+      "window_size": 100,
+      "training_periods": 100
+    },
+    {
+      "draw_id": "114000271",
+      "draw_date": "2025-11-08",
+      "predicted_numbers": [
+        6,
+        11,
+        22,
+        27,
+        30
+      ],
+      "predicted_special": null,
+      "actual_numbers": [
+        7,
+        8,
+        9,
+        26,
+        34
+      ],
+      "actual_special": 0,
+      "matches": 0,
+      "matched_numbers": [],
+      "is_win": false,
+      "confidence": 0.74,
+      "method_name": "hot_cold_mix",
+      "window_size": 100,
+      "training_periods": 100
+    },
+    {
+      "draw_id": "114000270",
+      "draw_date": "2025-11-07",
+      "predicted_numbers": [
+        6,
+        11,
+        22,
+        27,
+        29
+      ],
+      "predicted_special": null,
+      "actual_numbers": [
+        22,
+        27,
+        30,
+        32,
+        37
+      ],
+      "actual_special": 0,
+      "matches": 2,
+      "matched_numbers": [
+        22,
+        27
+      ],
+      "is_win": true,
+      "confidence": 0.74,
+      "method_name": "hot_cold_mix",
+      "window_size": 100,
+      "training_periods": 100
+    },
+    {
+      "draw_id": "114000269",
+      "draw_date": "2025-11-06",
+      "predicted_numbers": [
+        6,
+        11,
+        21,
+        27,
+        29
+      ],
+      "predicted_special": null,
+      "actual_numbers": [
+        7,
+        24,
+        28,
+        31,
+        32
+      ],
+      "actual_special": 0,
+      "matches": 0,
+      "matched_numbers": [],
+      "is_win": false,
+      "confidence": 0.74,
+      "method_name": "hot_cold_mix",
+      "window_size": 100,
+      "training_periods": 100
+    },
+    {
+      "draw_id": "114000268",
+      "draw_date": "2025-11-05",
+      "predicted_numbers": [
+        11,
+        21,
+        22,
+        26,
+        39
+      ],
+      "predicted_special": null,
+      "actual_numbers": [
+        11,
+        14,
+        15,
+        27,
+        39
+      ],
+      "actual_special": 0,
+      "matches": 2,
+      "matched_numbers": [
+        11,
+        39
+      ],
+      "is_win": true,
+      "confidence": 0.74,
+      "method_name": "hot_cold_mix",
+      "window_size": 100,
+      "training_periods": 100
+    },
+    {
+      "draw_id": "114000267",
+      "draw_date": "2025-11-04",
+      "predicted_numbers": [
+        11,
+        21,
+        22,
+        26,
+        38
+      ],
+      "predicted_special": null,
+      "actual_numbers": [
+        1,
+        7,
+        12,
+        29,
+        39
+      ],
+      "actual_special": 0,
+      "matches": 0,
+      "matched_numbers": [],
+      "is_win": false,
+      "confidence": 0.74,
+      "method_name": "hot_cold_mix",
+      "window_size": 100,
+      "training_periods": 100
+    },
+    {
+      "draw_id": "114000266",
+      "draw_date": "2025-11-03",
+      "predicted_numbers": [
+        11,
+        21,
+        26,
+        37,
+        38
+      ],
+      "predicted_special": null,
+      "actual_numbers": [
+        24,
+        25,
+        34,
+        36,
+        37
+      ],
+      "actual_special": 0,
+      "matches": 1,
+      "matched_numbers": [
+        37
+      ],
+      "is_win": false,
+      "confidence": 0.74,
+      "method_name": "hot_cold_mix",
+      "window_size": 100,
+      "training_periods": 100
+    },
+    {
+      "draw_id": "114000265",
+      "draw_date": "2025-11-01",
+      "predicted_numbers": [
+        3,
+        11,
+        21,
+        27,
+        37
+      ],
+      "predicted_special": null,
+      "actual_numbers": [
+        8,
+        12,
+        19,
+        27,
+        28
+      ],
+      "actual_special": 0,
+      "matches": 1,
+      "matched_numbers": [
+        27
+      ],
+      "is_win": false,
+      "confidence": 0.74,
+      "method_name": "hot_cold_mix",
+      "window_size": 100,
+      "training_periods": 100
+    },
+    {
+      "draw_id": "114000264",
+      "draw_date": "2025-10-31",
+      "predicted_numbers": [
+        3,
+        11,
+        21,
+        27,
+        38
+      ],
+      "predicted_special": null,
+      "actual_numbers": [
+        11,
+        18,
+        25,
+        26,
+        33
+      ],
+      "actual_special": 0,
+      "matches": 1,
+      "matched_numbers": [
+        11
+      ],
+      "is_win": false,
+      "confidence": 0.7369744639919703,
+      "method_name": "hot_cold_mix",
+      "window_size": 100,
+      "training_periods": 100
+    },
+    {
+      "draw_id": "114000263",
+      "draw_date": "2025-10-30",
+      "predicted_numbers": [
+        3,
+        22,
+        24,
+        27,
+        38
+      ],
+      "predicted_special": null,
+      "actual_numbers": [
+        5,
+        27,
+        28,
+        31,
+        37
+      ],
+      "actual_special": 0,
+      "matches": 1,
+      "matched_numbers": [
+        27
+      ],
+      "is_win": false,
+      "confidence": 0.7360053980198069,
+      "method_name": "hot_cold_mix",
+      "window_size": 100,
+      "training_periods": 100
+    },
+    {
+      "draw_id": "114000262",
+      "draw_date": "2025-10-29",
+      "predicted_numbers": [
+        3,
+        22,
+        24,
+        27,
+        38
+      ],
+      "predicted_special": null,
+      "actual_numbers": [
+        26,
+        32,
+        33,
+        36,
+        39
+      ],
+      "actual_special": 0,
+      "matches": 0,
+      "matched_numbers": [],
+      "is_win": false,
+      "confidence": 0.74,
+      "method_name": "hot_cold_mix",
+      "window_size": 100,
+      "training_periods": 100
+    },
+    {
+      "draw_id": "114000261",
+      "draw_date": "2025-10-28",
+      "predicted_numbers": [
+        3,
+        22,
+        24,
+        26,
+        27
+      ],
+      "predicted_special": null,
+      "actual_numbers": [
+        18,
+        20,
+        25,
+        29,
+        31
+      ],
+      "actual_special": 0,
+      "matches": 0,
+      "matched_numbers": [],
+      "is_win": false,
+      "confidence": 0.7311107599420132,
+      "method_name": "hot_cold_mix",
+      "window_size": 100,
+      "training_periods": 100
+    },
+    {
+      "draw_id": "114000260",
+      "draw_date": "2025-10-27",
+      "predicted_numbers": [
+        21,
+        22,
+        24,
+        27,
+        38
+      ],
+      "predicted_special": null,
+      "actual_numbers": [
+        3,
+        20,
+        26,
+        31,
+        37
+      ],
+      "actual_special": 0,
+      "matches": 0,
+      "matched_numbers": [],
+      "is_win": false,
+      "confidence": 0.74,
+      "method_name": "hot_cold_mix",
+      "window_size": 100,
+      "training_periods": 100
+    },
+    {
+      "draw_id": "114000259",
+      "draw_date": "2025-10-25",
+      "predicted_numbers": [
+        6,
+        22,
+        24,
+        27,
+        38
+      ],
+      "predicted_special": null,
+      "actual_numbers": [
+        3,
+        4,
+        11,
+        21,
+        34
+      ],
+      "actual_special": 0,
+      "matches": 0,
+      "matched_numbers": [],
+      "is_win": false,
+      "confidence": 0.74,
+      "method_name": "hot_cold_mix",
+      "window_size": 100,
+      "training_periods": 100
+    },
+    {
+      "draw_id": "114000258",
+      "draw_date": "2025-10-24",
+      "predicted_numbers": [
+        8,
+        22,
+        24,
+        27,
+        38
+      ],
+      "predicted_special": null,
+      "actual_numbers": [
+        8,
+        11,
+        13,
+        37,
+        38
+      ],
+      "actual_special": 0,
+      "matches": 2,
+      "matched_numbers": [
+        8,
+        38
+      ],
+      "is_win": true,
+      "confidence": 0.74,
+      "method_name": "hot_cold_mix",
+      "window_size": 100,
+      "training_periods": 100
+    },
+    {
+      "draw_id": "114000257",
+      "draw_date": "2025-10-23",
+      "predicted_numbers": [
+        8,
+        22,
+        24,
+        27,
+        38
+      ],
+      "predicted_special": null,
+      "actual_numbers": [
+        8,
+        15,
+        27,
+        37,
+        38
+      ],
+      "actual_special": 0,
+      "matches": 3,
+      "matched_numbers": [
+        8,
+        27,
+        38
+      ],
+      "is_win": true,
+      "confidence": 0.74,
+      "method_name": "hot_cold_mix",
+      "window_size": 100,
+      "training_periods": 100
+    },
+    {
+      "draw_id": "114000256",
+      "draw_date": "2025-10-22",
+      "predicted_numbers": [
+        8,
+        22,
+        24,
+        27,
+        38
+      ],
+      "predicted_special": null,
+      "actual_numbers": [
+        3,
+        4,
+        20,
+        25,
+        28
+      ],
+      "actual_special": 0,
+      "matches": 0,
+      "matched_numbers": [],
+      "is_win": false,
+      "confidence": 0.74,
+      "method_name": "hot_cold_mix",
+      "window_size": 100,
+      "training_periods": 100
+    },
+    {
+      "draw_id": "114000255",
+      "draw_date": "2025-10-21",
+      "predicted_numbers": [
+        6,
+        22,
+        24,
+        27,
+        38
+      ],
+      "predicted_special": null,
+      "actual_numbers": [
+        13,
+        22,
+        30,
+        37,
+        38
+      ],
+      "actual_special": 0,
+      "matches": 2,
+      "matched_numbers": [
+        22,
+        38
+      ],
+      "is_win": true,
+      "confidence": 0.74,
+      "method_name": "hot_cold_mix",
+      "window_size": 100,
+      "training_periods": 100
+    },
+    {
+      "draw_id": "114000254",
+      "draw_date": "2025-10-20",
+      "predicted_numbers": [
+        6,
+        11,
+        22,
+        24,
+        27
+      ],
+      "predicted_special": null,
+      "actual_numbers": [
+        6,
+        13,
+        22,
+        23,
+        27
+      ],
+      "actual_special": 0,
+      "matches": 3,
+      "matched_numbers": [
+        6,
+        22,
+        27
+      ],
+      "is_win": true,
+      "confidence": 0.74,
+      "method_name": "hot_cold_mix",
+      "window_size": 100,
+      "training_periods": 100
+    },
+    {
+      "draw_id": "114000253",
+      "draw_date": "2025-10-18",
+      "predicted_numbers": [
+        6,
+        10,
+        11,
+        22,
+        24
+      ],
+      "predicted_special": null,
+      "actual_numbers": [
+        2,
+        17,
+        32,
+        35,
+        38
+      ],
+      "actual_special": 0,
+      "matches": 0,
+      "matched_numbers": [],
+      "is_win": false,
+      "confidence": 0.7374033930971261,
+      "method_name": "hot_cold_mix",
+      "window_size": 100,
+      "training_periods": 100
+    },
+    {
+      "draw_id": "114000252",
+      "draw_date": "2025-10-17",
+      "predicted_numbers": [
+        6,
+        11,
+        22,
+        24,
+        31
+      ],
+      "predicted_special": null,
+      "actual_numbers": [
+        1,
+        21,
+        31,
+        32,
+        34
+      ],
+      "actual_special": 0,
+      "matches": 1,
+      "matched_numbers": [
+        31
+      ],
+      "is_win": false,
+      "confidence": 0.74,
+      "method_name": "hot_cold_mix",
+      "window_size": 100,
+      "training_periods": 100
+    },
+    {
+      "draw_id": "114000251",
+      "draw_date": "2025-10-16",
+      "predicted_numbers": [
+        6,
+        11,
+        22,
+        24,
+        38
+      ],
+      "predicted_special": null,
+      "actual_numbers": [
+        4,
+        18,
+        21,
+        30,
+        37
+      ],
+      "actual_special": 0,
+      "matches": 0,
+      "matched_numbers": [],
+      "is_win": false,
+      "confidence": 0.7354908557561447,
+      "method_name": "hot_cold_mix",
+      "window_size": 100,
+      "training_periods": 100
+    },
+    {
+      "draw_id": "114000250",
+      "draw_date": "2025-10-15",
+      "predicted_numbers": [
+        8,
+        11,
+        22,
+        24,
+        31
+      ],
+      "predicted_special": null,
+      "actual_numbers": [
+        4,
+        7,
+        19,
+        33,
+        39
+      ],
+      "actual_special": 0,
+      "matches": 0,
+      "matched_numbers": [],
+      "is_win": false,
+      "confidence": 0.7290057706010564,
+      "method_name": "hot_cold_mix",
+      "window_size": 100,
+      "training_periods": 100
+    },
+    {
+      "draw_id": "114000249",
+      "draw_date": "2025-10-14",
+      "predicted_numbers": [
+        8,
+        11,
+        12,
+        22,
+        24
+      ],
+      "predicted_special": null,
+      "actual_numbers": [
+        4,
+        5,
+        9,
+        18,
+        24
+      ],
+      "actual_special": 0,
+      "matches": 1,
+      "matched_numbers": [
+        24
+      ],
+      "is_win": false,
+      "confidence": 0.721362246289589,
+      "method_name": "hot_cold_mix",
+      "window_size": 100,
+      "training_periods": 100
+    },
+    {
+      "draw_id": "114000248",
+      "draw_date": "2025-10-13",
+      "predicted_numbers": [
+        3,
+        11,
+        12,
+        22,
+        24
+      ],
+      "predicted_special": null,
+      "actual_numbers": [
+        8,
+        13,
+        14,
+        22,
+        36
+      ],
+      "actual_special": 0,
+      "matches": 1,
+      "matched_numbers": [
+        22
+      ],
+      "is_win": false,
+      "confidence": 0.7175095644702032,
+      "method_name": "hot_cold_mix",
+      "window_size": 100,
+      "training_periods": 100
+    },
+    {
+      "draw_id": "114000247",
+      "draw_date": "2025-10-11",
+      "predicted_numbers": [
+        3,
+        12,
+        24,
+        26,
+        37
+      ],
+      "predicted_special": null,
+      "actual_numbers": [
+        4,
+        9,
+        19,
+        22,
+        34
+      ],
+      "actual_special": 0,
+      "matches": 0,
+      "matched_numbers": [],
+      "is_win": false,
+      "confidence": 0.74,
+      "method_name": "hot_cold_mix",
+      "window_size": 100,
+      "training_periods": 100
+    },
+    {
+      "draw_id": "114000246",
+      "draw_date": "2025-10-10",
+      "predicted_numbers": [
+        2,
+        8,
+        12,
+        24,
+        37
+      ],
+      "predicted_special": null,
+      "actual_numbers": [
+        3,
+        6,
+        24,
+        31,
+        36
+      ],
+      "actual_special": 0,
+      "matches": 1,
+      "matched_numbers": [
+        24
+      ],
+      "is_win": false,
+      "confidence": 0.7336817877977909,
+      "method_name": "hot_cold_mix",
+      "window_size": 100,
+      "training_periods": 100
+    },
+    {
+      "draw_id": "114000245",
+      "draw_date": "2025-10-09",
+      "predicted_numbers": [
+        2,
+        3,
+        8,
+        12,
+        37
+      ],
+      "predicted_special": null,
+      "actual_numbers": [
+        2,
+        4,
+        12,
+        15,
+        29
+      ],
+      "actual_special": 0,
+      "matches": 2,
+      "matched_numbers": [
+        2,
+        12
+      ],
+      "is_win": true,
+      "confidence": 0.74,
+      "method_name": "hot_cold_mix",
+      "window_size": 100,
+      "training_periods": 100
+    },
+    {
+      "draw_id": "114000244",
+      "draw_date": "2025-10-08",
+      "predicted_numbers": [
+        2,
+        3,
+        12,
+        14,
+        37
+      ],
+      "predicted_special": null,
+      "actual_numbers": [
+        3,
+        9,
+        26,
+        38,
+        39
+      ],
+      "actual_special": 0,
+      "matches": 1,
+      "matched_numbers": [
+        3
+      ],
+      "is_win": false,
+      "confidence": 0.74,
+      "method_name": "hot_cold_mix",
+      "window_size": 100,
+      "training_periods": 100
+    },
+    {
+      "draw_id": "114000243",
+      "draw_date": "2025-10-07",
+      "predicted_numbers": [
+        2,
+        12,
+        14,
+        15,
+        24
+      ],
+      "predicted_special": null,
+      "actual_numbers": [
+        1,
+        16,
+        20,
+        28,
+        34
+      ],
+      "actual_special": 0,
+      "matches": 0,
+      "matched_numbers": [],
+      "is_win": false,
+      "confidence": 0.74,
+      "method_name": "hot_cold_mix",
+      "window_size": 100,
+      "training_periods": 100
+    },
+    {
+      "draw_id": "114000242",
+      "draw_date": "2025-10-06",
+      "predicted_numbers": [
+        12,
+        14,
+        15,
+        17,
+        24
+      ],
+      "predicted_special": null,
+      "actual_numbers": [
+        3,
+        5,
+        6,
+        12,
+        13
+      ],
+      "actual_special": 0,
+      "matches": 1,
+      "matched_numbers": [
+        12
+      ],
+      "is_win": false,
+      "confidence": 0.74,
+      "method_name": "hot_cold_mix",
+      "window_size": 100,
+      "training_periods": 100
+    },
+    {
+      "draw_id": "114000241",
+      "draw_date": "2025-10-04",
+      "predicted_numbers": [
+        2,
+        12,
+        14,
+        17,
+        24
+      ],
+      "predicted_special": null,
+      "actual_numbers": [
+        3,
+        4,
+        10,
+        18,
+        39
+      ],
+      "actual_special": 0,
+      "matches": 0,
+      "matched_numbers": [],
+      "is_win": false,
+      "confidence": 0.7365634680789357,
+      "method_name": "hot_cold_mix",
+      "window_size": 100,
+      "training_periods": 100
+    },
+    {
+      "draw_id": "114000240",
+      "draw_date": "2025-10-03",
+      "predicted_numbers": [
+        12,
+        14,
+        15,
+        24,
+        38
+      ],
+      "predicted_special": null,
+      "actual_numbers": [
+        10,
+        16,
+        19,
+        21,
+        28
+      ],
+      "actual_special": 0,
+      "matches": 0,
+      "matched_numbers": [],
+      "is_win": false,
+      "confidence": 0.7318329115073203,
+      "method_name": "hot_cold_mix",
+      "window_size": 100,
+      "training_periods": 100
+    },
+    {
+      "draw_id": "114000239",
+      "draw_date": "2025-10-02",
+      "predicted_numbers": [
+        4,
+        8,
+        12,
+        14,
+        38
+      ],
+      "predicted_special": null,
+      "actual_numbers": [
+        10,
+        19,
+        25,
+        36,
+        39
+      ],
+      "actual_special": 0,
+      "matches": 0,
+      "matched_numbers": [],
+      "is_win": false,
+      "confidence": 0.7230018051059648,
+      "method_name": "hot_cold_mix",
+      "window_size": 100,
+      "training_periods": 100
+    },
+    {
+      "draw_id": "114000238",
+      "draw_date": "2025-10-01",
+      "predicted_numbers": [
+        4,
+        8,
+        12,
+        14,
+        38
+      ],
+      "predicted_special": null,
+      "actual_numbers": [
+        3,
+        5,
+        12,
+        22,
+        27
+      ],
+      "actual_special": 0,
+      "matches": 1,
+      "matched_numbers": [
+        12
+      ],
+      "is_win": false,
+      "confidence": 0.7209469807110807,
+      "method_name": "hot_cold_mix",
+      "window_size": 100,
+      "training_periods": 100
+    },
+    {
+      "draw_id": "114000237",
+      "draw_date": "2025-09-30",
+      "predicted_numbers": [
+        8,
+        12,
+        14,
+        19,
+        38
+      ],
+      "predicted_special": null,
+      "actual_numbers": [
+        14,
+        20,
+        21,
+        28,
+        33
+      ],
+      "actual_special": 0,
+      "matches": 1,
+      "matched_numbers": [
+        14
+      ],
+      "is_win": false,
+      "confidence": 0.7178858197461621,
+      "method_name": "hot_cold_mix",
+      "window_size": 100,
+      "training_periods": 100
+    },
+    {
+      "draw_id": "114000236",
+      "draw_date": "2025-09-29",
+      "predicted_numbers": [
+        4,
+        12,
+        14,
+        19,
+        38
+      ],
+      "predicted_special": null,
+      "actual_numbers": [
+        3,
+        15,
+        21,
+        29,
+        37
+      ],
+      "actual_special": 0,
+      "matches": 0,
+      "matched_numbers": [],
+      "is_win": false,
+      "confidence": 0.7269021110240044,
+      "method_name": "hot_cold_mix",
+      "window_size": 100,
+      "training_periods": 100
+    },
+    {
+      "draw_id": "114000235",
+      "draw_date": "2025-09-27",
+      "predicted_numbers": [
+        7,
+        12,
+        14,
+        19,
+        38
+      ],
+      "predicted_special": null,
+      "actual_numbers": [
+        3,
+        11,
+        13,
+        28,
+        37
+      ],
+      "actual_special": 0,
+      "matches": 0,
+      "matched_numbers": [],
+      "is_win": false,
+      "confidence": 0.7326658003099505,
+      "method_name": "hot_cold_mix",
+      "window_size": 100,
+      "training_periods": 100
+    },
+    {
+      "draw_id": "114000234",
+      "draw_date": "2025-09-26",
+      "predicted_numbers": [
+        7,
+        12,
+        14,
+        19,
+        21
+      ],
+      "predicted_special": null,
+      "actual_numbers": [
+        3,
+        7,
+        14,
+        25,
+        34
+      ],
+      "actual_special": 0,
+      "matches": 2,
+      "matched_numbers": [
+        7,
+        14
+      ],
+      "is_win": true,
+      "confidence": 0.7331091719161144,
+      "method_name": "hot_cold_mix",
+      "window_size": 100,
+      "training_periods": 100
+    },
+    {
+      "draw_id": "114000233",
+      "draw_date": "2025-09-25",
+      "predicted_numbers": [
+        7,
+        12,
+        14,
+        20,
+        29
+      ],
+      "predicted_special": null,
+      "actual_numbers": [
+        2,
+        10,
+        13,
+        28,
+        32
+      ],
+      "actual_special": 0,
+      "matches": 0,
+      "matched_numbers": [],
+      "is_win": false,
+      "confidence": 0.74,
+      "method_name": "hot_cold_mix",
+      "window_size": 100,
+      "training_periods": 100
+    },
+    {
+      "draw_id": "114000232",
+      "draw_date": "2025-09-24",
+      "predicted_numbers": [
+        7,
+        14,
+        20,
+        21,
+        29
+      ],
+      "predicted_special": null,
+      "actual_numbers": [
+        4,
+        22,
+        23,
+        35,
+        39
+      ],
+      "actual_special": 0,
+      "matches": 0,
+      "matched_numbers": [],
+      "is_win": false,
+      "confidence": 0.74,
+      "method_name": "hot_cold_mix",
+      "window_size": 100,
+      "training_periods": 100
+    },
+    {
+      "draw_id": "114000231",
+      "draw_date": "2025-09-23",
+      "predicted_numbers": [
+        7,
+        14,
+        20,
+        21,
+        30
+      ],
+      "predicted_special": null,
+      "actual_numbers": [
+        6,
+        19,
+        20,
+        33,
+        37
+      ],
+      "actual_special": 0,
+      "matches": 1,
+      "matched_numbers": [
+        20
+      ],
+      "is_win": false,
+      "confidence": 0.74,
+      "method_name": "hot_cold_mix",
+      "window_size": 100,
+      "training_periods": 100
+    },
+    {
+      "draw_id": "114000230",
+      "draw_date": "2025-09-22",
+      "predicted_numbers": [
+        7,
+        14,
+        20,
+        21,
+        30
+      ],
+      "predicted_special": null,
+      "actual_numbers": [
+        7,
+        9,
+        12,
+        14,
+        33
+      ],
+      "actual_special": 0,
+      "matches": 2,
+      "matched_numbers": [
+        7,
+        14
+      ],
+      "is_win": true,
+      "confidence": 0.74,
+      "method_name": "hot_cold_mix",
+      "window_size": 100,
+      "training_periods": 100
+    },
+    {
+      "draw_id": "114000229",
+      "draw_date": "2025-09-20",
+      "predicted_numbers": [
+        7,
+        14,
+        20,
+        21,
+        30
+      ],
+      "predicted_special": null,
+      "actual_numbers": [
+        5,
+        8,
+        11,
+        13,
+        22
+      ],
+      "actual_special": 0,
+      "matches": 0,
+      "matched_numbers": [],
+      "is_win": false,
+      "confidence": 0.7355848809083017,
+      "method_name": "hot_cold_mix",
+      "window_size": 100,
+      "training_periods": 100
+    },
+    {
+      "draw_id": "114000228",
+      "draw_date": "2025-09-19",
+      "predicted_numbers": [
+        7,
+        14,
+        20,
+        21,
+        24
+      ],
+      "predicted_special": null,
+      "actual_numbers": [
+        2,
+        11,
+        22,
+        24,
+        31
+      ],
+      "actual_special": 0,
+      "matches": 1,
+      "matched_numbers": [
+        24
+      ],
+      "is_win": false,
+      "confidence": 0.7369074989814862,
+      "method_name": "hot_cold_mix",
+      "window_size": 100,
+      "training_periods": 100
+    },
+    {
+      "draw_id": "114000227",
+      "draw_date": "2025-09-18",
+      "predicted_numbers": [
+        8,
+        14,
+        20,
+        21,
+        24
+      ],
+      "predicted_special": null,
+      "actual_numbers": [
+        5,
+        12,
+        14,
+        23,
+        33
+      ],
+      "actual_special": 0,
+      "matches": 1,
+      "matched_numbers": [
+        14
+      ],
+      "is_win": false,
+      "confidence": 0.7350968941104599,
+      "method_name": "hot_cold_mix",
+      "window_size": 100,
+      "training_periods": 100
+    },
+    {
+      "draw_id": "114000226",
+      "draw_date": "2025-09-17",
+      "predicted_numbers": [
+        8,
+        14,
+        20,
+        21,
+        24
+      ],
+      "predicted_special": null,
+      "actual_numbers": [
+        4,
+        6,
+        7,
+        12,
+        38
+      ],
+      "actual_special": 0,
+      "matches": 0,
+      "matched_numbers": [],
+      "is_win": false,
+      "confidence": 0.7377312459900228,
+      "method_name": "hot_cold_mix",
+      "window_size": 100,
+      "training_periods": 100
+    },
+    {
+      "draw_id": "114000225",
+      "draw_date": "2025-09-16",
+      "predicted_numbers": [
+        8,
+        14,
+        21,
+        24,
+        35
+      ],
+      "predicted_special": null,
+      "actual_numbers": [
+        2,
+        9,
+        19,
+        21,
+        33
+      ],
+      "actual_special": 0,
+      "matches": 1,
+      "matched_numbers": [
+        21
+      ],
+      "is_win": false,
+      "confidence": 0.74,
+      "method_name": "hot_cold_mix",
+      "window_size": 100,
+      "training_periods": 100
+    },
+    {
+      "draw_id": "114000224",
+      "draw_date": "2025-09-15",
+      "predicted_numbers": [
+        8,
+        14,
+        21,
+        24,
+        35
+      ],
+      "predicted_special": null,
+      "actual_numbers": [
+        7,
+        9,
+        10,
+        12,
+        28
+      ],
+      "actual_special": 0,
+      "matches": 0,
+      "matched_numbers": [],
+      "is_win": false,
+      "confidence": 0.74,
+      "method_name": "hot_cold_mix",
+      "window_size": 100,
+      "training_periods": 100
+    },
+    {
+      "draw_id": "114000223",
+      "draw_date": "2025-09-13",
+      "predicted_numbers": [
+        8,
+        14,
+        24,
+        35,
+        38
+      ],
+      "predicted_special": null,
+      "actual_numbers": [
+        2,
+        25,
+        32,
+        35,
+        36
+      ],
+      "actual_special": 0,
+      "matches": 1,
+      "matched_numbers": [
+        35
+      ],
+      "is_win": false,
+      "confidence": 0.74,
+      "method_name": "hot_cold_mix",
+      "window_size": 100,
+      "training_periods": 100
+    },
+    {
+      "draw_id": "114000222",
+      "draw_date": "2025-09-12",
+      "predicted_numbers": [
+        8,
+        14,
+        21,
+        35,
+        38
+      ],
+      "predicted_special": null,
+      "actual_numbers": [
+        9,
+        12,
+        16,
+        26,
+        34
+      ],
+      "actual_special": 0,
+      "matches": 0,
+      "matched_numbers": [],
+      "is_win": false,
+      "confidence": 0.74,
+      "method_name": "hot_cold_mix",
+      "window_size": 100,
+      "training_periods": 100
+    },
+    {
+      "draw_id": "114000221",
+      "draw_date": "2025-09-11",
+      "predicted_numbers": [
+        14,
+        21,
+        24,
+        35,
+        38
+      ],
+      "predicted_special": null,
+      "actual_numbers": [
+        6,
+        18,
+        26,
+        28,
+        36
+      ],
+      "actual_special": 0,
+      "matches": 0,
+      "matched_numbers": [],
+      "is_win": false,
+      "confidence": 0.74,
+      "method_name": "hot_cold_mix",
+      "window_size": 100,
+      "training_periods": 100
+    },
+    {
+      "draw_id": "114000220",
+      "draw_date": "2025-09-10",
+      "predicted_numbers": [
+        8,
+        14,
+        24,
+        35,
+        38
+      ],
+      "predicted_special": null,
+      "actual_numbers": [
+        12,
+        14,
+        16,
+        28,
+        39
+      ],
+      "actual_special": 0,
+      "matches": 1,
+      "matched_numbers": [
+        14
+      ],
+      "is_win": false,
+      "confidence": 0.74,
+      "method_name": "hot_cold_mix",
+      "window_size": 100,
+      "training_periods": 100
+    },
+    {
+      "draw_id": "114000219",
+      "draw_date": "2025-09-09",
+      "predicted_numbers": [
+        4,
+        8,
+        14,
+        24,
+        35
+      ],
+      "predicted_special": null,
+      "actual_numbers": [
+        8,
+        20,
+        23,
+        25,
+        26
+      ],
+      "actual_special": 0,
+      "matches": 1,
+      "matched_numbers": [
+        8
+      ],
+      "is_win": false,
+      "confidence": 0.74,
+      "method_name": "hot_cold_mix",
+      "window_size": 100,
+      "training_periods": 100
+    },
+    {
+      "draw_id": "114000218",
+      "draw_date": "2025-09-08",
+      "predicted_numbers": [
+        2,
+        4,
+        14,
+        24,
+        38
+      ],
+      "predicted_special": null,
+      "actual_numbers": [
+        7,
+        11,
+        20,
+        28,
+        38
+      ],
+      "actual_special": 0,
+      "matches": 1,
+      "matched_numbers": [
+        38
+      ],
+      "is_win": false,
+      "confidence": 0.7368577110417557,
+      "method_name": "hot_cold_mix",
+      "window_size": 100,
+      "training_periods": 100
+    },
+    {
+      "draw_id": "114000217",
+      "draw_date": "2025-09-06",
+      "predicted_numbers": [
+        4,
+        10,
+        14,
+        24,
+        38
+      ],
+      "predicted_special": null,
+      "actual_numbers": [
+        8,
+        14,
+        25,
+        28,
+        31
+      ],
+      "actual_special": 0,
+      "matches": 1,
+      "matched_numbers": [
+        14
+      ],
+      "is_win": false,
+      "confidence": 0.7392487215647182,
+      "method_name": "hot_cold_mix",
+      "window_size": 100,
+      "training_periods": 100
+    },
+    {
+      "draw_id": "114000216",
+      "draw_date": "2025-09-05",
+      "predicted_numbers": [
+        4,
+        10,
+        14,
+        24,
+        38
+      ],
+      "predicted_special": null,
+      "actual_numbers": [
+        7,
+        9,
+        29,
+        32,
+        38
+      ],
+      "actual_special": 0,
+      "matches": 1,
+      "matched_numbers": [
+        38
+      ],
+      "is_win": false,
+      "confidence": 0.74,
+      "method_name": "hot_cold_mix",
+      "window_size": 100,
+      "training_periods": 100
+    },
+    {
+      "draw_id": "114000215",
+      "draw_date": "2025-09-04",
+      "predicted_numbers": [
+        4,
+        10,
+        14,
+        24,
+        38
+      ],
+      "predicted_special": null,
+      "actual_numbers": [
+        6,
+        7,
+        24,
+        27,
+        34
+      ],
+      "actual_special": 0,
+      "matches": 1,
+      "matched_numbers": [
+        24
+      ],
+      "is_win": false,
+      "confidence": 0.74,
+      "method_name": "hot_cold_mix",
+      "window_size": 100,
+      "training_periods": 100
+    },
+    {
+      "draw_id": "114000214",
+      "draw_date": "2025-09-03",
+      "predicted_numbers": [
+        4,
+        14,
+        24,
+        27,
+        38
+      ],
+      "predicted_special": null,
+      "actual_numbers": [
+        14,
+        15,
+        20,
+        21,
+        23
+      ],
+      "actual_special": 0,
+      "matches": 1,
+      "matched_numbers": [
+        14
+      ],
+      "is_win": false,
+      "confidence": 0.7374273563525635,
+      "method_name": "hot_cold_mix",
+      "window_size": 100,
+      "training_periods": 100
+    },
+    {
+      "draw_id": "114000213",
+      "draw_date": "2025-09-02",
+      "predicted_numbers": [
+        4,
+        7,
+        10,
+        14,
+        20
+      ],
+      "predicted_special": null,
+      "actual_numbers": [
+        5,
+        8,
+        10,
+        23,
+        25
+      ],
+      "actual_special": 0,
+      "matches": 1,
+      "matched_numbers": [
+        10
+      ],
+      "is_win": false,
+      "confidence": 0.7344487239335699,
+      "method_name": "hot_cold_mix",
+      "window_size": 100,
+      "training_periods": 100
+    },
+    {
+      "draw_id": "114000212",
+      "draw_date": "2025-09-01",
+      "predicted_numbers": [
+        7,
+        10,
+        20,
+        21,
+        38
+      ],
+      "predicted_special": null,
+      "actual_numbers": [
+        21,
+        24,
+        28,
+        29,
+        35
+      ],
+      "actual_special": 0,
+      "matches": 1,
+      "matched_numbers": [
+        21
+      ],
+      "is_win": false,
+      "confidence": 0.7269337096212993,
+      "method_name": "hot_cold_mix",
+      "window_size": 100,
+      "training_periods": 100
+    },
+    {
+      "draw_id": "114000211",
+      "draw_date": "2025-08-30",
+      "predicted_numbers": [
+        4,
+        10,
+        20,
+        21,
+        38
+      ],
+      "predicted_special": null,
+      "actual_numbers": [
+        4,
+        5,
+        7,
+        13,
+        14
+      ],
+      "actual_special": 0,
+      "matches": 1,
+      "matched_numbers": [
+        4
+      ],
+      "is_win": false,
+      "confidence": 0.7297552671432742,
+      "method_name": "hot_cold_mix",
+      "window_size": 100,
+      "training_periods": 100
+    },
+    {
+      "draw_id": "114000210",
+      "draw_date": "2025-08-29",
+      "predicted_numbers": [
+        4,
+        7,
+        10,
+        20,
+        38
+      ],
+      "predicted_special": null,
+      "actual_numbers": [
+        7,
+        20,
+        21,
+        30,
+        38
+      ],
+      "actual_special": 0,
+      "matches": 3,
+      "matched_numbers": [
+        7,
+        20,
+        38
+      ],
+      "is_win": true,
+      "confidence": 0.7282179530429603,
+      "method_name": "hot_cold_mix",
+      "window_size": 100,
+      "training_periods": 100
+    },
+    {
+      "draw_id": "114000209",
+      "draw_date": "2025-08-28",
+      "predicted_numbers": [
+        4,
+        7,
+        10,
+        20,
+        38
+      ],
+      "predicted_special": null,
+      "actual_numbers": [
+        5,
+        7,
+        21,
+        23,
+        29
+      ],
+      "actual_special": 0,
+      "matches": 1,
+      "matched_numbers": [
+        7
+      ],
+      "is_win": false,
+      "confidence": 0.7294536415857008,
+      "method_name": "hot_cold_mix",
+      "window_size": 100,
+      "training_periods": 100
+    },
+    {
+      "draw_id": "114000208",
+      "draw_date": "2025-08-27",
+      "predicted_numbers": [
+        4,
+        10,
+        20,
+        21,
+        24
+      ],
+      "predicted_special": null,
+      "actual_numbers": [
+        3,
+        5,
+        28,
+        30,
+        32
+      ],
+      "actual_special": 0,
+      "matches": 0,
+      "matched_numbers": [],
+      "is_win": false,
+      "confidence": 0.7262715330499452,
+      "method_name": "hot_cold_mix",
+      "window_size": 100,
+      "training_periods": 100
+    },
+    {
+      "draw_id": "114000207",
+      "draw_date": "2025-08-26",
+      "predicted_numbers": [
+        4,
+        8,
+        10,
+        20,
+        27
+      ],
+      "predicted_special": null,
+      "actual_numbers": [
+        2,
+        5,
+        24,
+        38,
+        39
+      ],
+      "actual_special": 0,
+      "matches": 0,
+      "matched_numbers": [],
+      "is_win": false,
+      "confidence": 0.7384588530635651,
+      "method_name": "hot_cold_mix",
+      "window_size": 100,
+      "training_periods": 100
+    },
+    {
+      "draw_id": "114000206",
+      "draw_date": "2025-08-25",
+      "predicted_numbers": [
+        4,
+        8,
+        10,
+        20,
+        27
+      ],
+      "predicted_special": null,
+      "actual_numbers": [
+        6,
+        12,
+        15,
+        23,
+        26
+      ],
+      "actual_special": 0,
+      "matches": 0,
+      "matched_numbers": [],
+      "is_win": false,
+      "confidence": 0.7249701192850231,
+      "method_name": "hot_cold_mix",
+      "window_size": 100,
+      "training_periods": 100
+    },
+    {
+      "draw_id": "114000205",
+      "draw_date": "2025-08-23",
+      "predicted_numbers": [
+        4,
+        7,
+        8,
+        10,
+        21
+      ],
+      "predicted_special": null,
+      "actual_numbers": [
+        4,
+        5,
+        8,
+        27,
+        39
+      ],
+      "actual_special": 0,
+      "matches": 2,
+      "matched_numbers": [
+        4,
+        8
+      ],
+      "is_win": true,
+      "confidence": 0.7214294402337939,
+      "method_name": "hot_cold_mix",
+      "window_size": 100,
+      "training_periods": 100
+    },
+    {
+      "draw_id": "114000204",
+      "draw_date": "2025-08-22",
+      "predicted_numbers": [
+        8,
+        10,
+        18,
+        28,
+        38
+      ],
+      "predicted_special": null,
+      "actual_numbers": [
+        6,
+        7,
+        21,
+        37,
+        38
+      ],
+      "actual_special": 0,
+      "matches": 1,
+      "matched_numbers": [
+        38
+      ],
+      "is_win": false,
+      "confidence": 0.7306976755401523,
+      "method_name": "hot_cold_mix",
+      "window_size": 100,
+      "training_periods": 100
+    },
+    {
+      "draw_id": "114000203",
+      "draw_date": "2025-08-21",
+      "predicted_numbers": [
+        8,
+        10,
+        20,
+        35,
+        38
+      ],
+      "predicted_special": null,
+      "actual_numbers": [
+        16,
+        27,
+        28,
+        29,
+        33
+      ],
+      "actual_special": 0,
+      "matches": 0,
+      "matched_numbers": [],
+      "is_win": false,
+      "confidence": 0.7308868141425036,
+      "method_name": "hot_cold_mix",
+      "window_size": 100,
+      "training_periods": 100
+    },
+    {
+      "draw_id": "114000202",
+      "draw_date": "2025-08-20",
+      "predicted_numbers": [
+        1,
+        8,
+        10,
+        35,
+        38
+      ],
+      "predicted_special": null,
+      "actual_numbers": [
+        15,
+        18,
+        29,
+        31,
+        39
+      ],
+      "actual_special": 0,
+      "matches": 0,
+      "matched_numbers": [],
+      "is_win": false,
+      "confidence": 0.7227298194280183,
+      "method_name": "hot_cold_mix",
+      "window_size": 100,
+      "training_periods": 100
+    },
+    {
+      "draw_id": "114000201",
+      "draw_date": "2025-08-19",
+      "predicted_numbers": [
+        1,
+        4,
+        10,
+        35,
+        38
+      ],
+      "predicted_special": null,
+      "actual_numbers": [
+        6,
+        7,
+        18,
+        31,
+        35
+      ],
+      "actual_special": 0,
+      "matches": 1,
+      "matched_numbers": [
+        35
+      ],
+      "is_win": false,
+      "confidence": 0.724731876545921,
+      "method_name": "hot_cold_mix",
+      "window_size": 100,
+      "training_periods": 100
+    },
+    {
+      "draw_id": "114000200",
+      "draw_date": "2025-08-18",
+      "predicted_numbers": [
+        1,
+        19,
+        27,
+        35,
+        38
+      ],
+      "predicted_special": null,
+      "actual_numbers": [
+        9,
+        12,
+        18,
+        27,
+        29
+      ],
+      "actual_special": 0,
+      "matches": 1,
+      "matched_numbers": [
+        27
+      ],
+      "is_win": false,
+      "confidence": 0.74,
+      "method_name": "hot_cold_mix",
+      "window_size": 100,
+      "training_periods": 100
+    },
+    {
+      "draw_id": "114000199",
+      "draw_date": "2025-08-16",
+      "predicted_numbers": [
+        1,
+        19,
+        27,
+        35,
+        38
+      ],
+      "predicted_special": null,
+      "actual_numbers": [
+        15,
+        18,
+        22,
+        24,
+        31
+      ],
+      "actual_special": 0,
+      "matches": 0,
+      "matched_numbers": [],
+      "is_win": false,
+      "confidence": 0.74,
+      "method_name": "hot_cold_mix",
+      "window_size": 100,
+      "training_periods": 100
+    },
+    {
+      "draw_id": "114000198",
+      "draw_date": "2025-08-15",
+      "predicted_numbers": [
+        1,
+        24,
+        27,
+        35,
+        38
+      ],
+      "predicted_special": null,
+      "actual_numbers": [
+        1,
+        5,
+        16,
+        18,
+        26
+      ],
+      "actual_special": 0,
+      "matches": 1,
+      "matched_numbers": [
+        1
+      ],
+      "is_win": false,
+      "confidence": 0.74,
+      "method_name": "hot_cold_mix",
+      "window_size": 100,
+      "training_periods": 100
+    },
+    {
+      "draw_id": "114000197",
+      "draw_date": "2025-08-14",
+      "predicted_numbers": [
+        1,
+        19,
+        24,
+        35,
+        38
+      ],
+      "predicted_special": null,
+      "actual_numbers": [
+        10,
+        12,
+        14,
+        31,
+        35
+      ],
+      "actual_special": 0,
+      "matches": 1,
+      "matched_numbers": [
+        35
+      ],
+      "is_win": false,
+      "confidence": 0.74,
+      "method_name": "hot_cold_mix",
+      "window_size": 100,
+      "training_periods": 100
+    },
+    {
+      "draw_id": "114000196",
+      "draw_date": "2025-08-13",
+      "predicted_numbers": [
+        1,
+        24,
+        27,
+        35,
+        38
+      ],
+      "predicted_special": null,
+      "actual_numbers": [
+        11,
+        23,
+        26,
+        32,
+        34
+      ],
+      "actual_special": 0,
+      "matches": 0,
+      "matched_numbers": [],
+      "is_win": false,
+      "confidence": 0.74,
+      "method_name": "hot_cold_mix",
+      "window_size": 100,
+      "training_periods": 100
+    },
+    {
+      "draw_id": "114000195",
+      "draw_date": "2025-08-12",
+      "predicted_numbers": [
+        6,
+        24,
+        27,
+        36,
+        38
+      ],
+      "predicted_special": null,
+      "actual_numbers": [
+        1,
+        9,
+        17,
+        25,
+        30
+      ],
+      "actual_special": 0,
+      "matches": 0,
+      "matched_numbers": [],
+      "is_win": false,
+      "confidence": 0.74,
+      "method_name": "hot_cold_mix",
+      "window_size": 100,
+      "training_periods": 100
+    },
+    {
+      "draw_id": "114000194",
+      "draw_date": "2025-08-11",
+      "predicted_numbers": [
+        19,
+        23,
+        24,
+        36,
+        38
+      ],
+      "predicted_special": null,
+      "actual_numbers": [
+        1,
+        14,
+        22,
+        26,
+        28
+      ],
+      "actual_special": 0,
+      "matches": 0,
+      "matched_numbers": [],
+      "is_win": false,
+      "confidence": 0.74,
+      "method_name": "hot_cold_mix",
+      "window_size": 100,
+      "training_periods": 100
+    },
+    {
+      "draw_id": "114000193",
+      "draw_date": "2025-08-09",
+      "predicted_numbers": [
+        6,
+        19,
+        24,
+        27,
+        36
+      ],
+      "predicted_special": null,
+      "actual_numbers": [
+        1,
+        9,
+        27,
+        29,
+        30
+      ],
+      "actual_special": 0,
+      "matches": 1,
+      "matched_numbers": [
+        27
+      ],
+      "is_win": false,
+      "confidence": 0.74,
+      "method_name": "hot_cold_mix",
+      "window_size": 100,
+      "training_periods": 100
+    },
+    {
+      "draw_id": "114000192",
+      "draw_date": "2025-08-08",
+      "predicted_numbers": [
+        6,
+        7,
+        24,
+        27,
+        38
+      ],
+      "predicted_special": null,
+      "actual_numbers": [
+        11,
+        25,
+        27,
+        30,
+        34
+      ],
+      "actual_special": 0,
+      "matches": 1,
+      "matched_numbers": [
+        27
+      ],
+      "is_win": false,
+      "confidence": 0.74,
+      "method_name": "hot_cold_mix",
+      "window_size": 100,
+      "training_periods": 100
+    },
+    {
+      "draw_id": "114000191",
+      "draw_date": "2025-08-07",
+      "predicted_numbers": [
+        6,
+        7,
+        19,
+        24,
+        27
+      ],
+      "predicted_special": null,
+      "actual_numbers": [
+        10,
+        20,
+        28,
+        30,
+        37
+      ],
+      "actual_special": 0,
+      "matches": 0,
+      "matched_numbers": [],
+      "is_win": false,
+      "confidence": 0.74,
+      "method_name": "hot_cold_mix",
+      "window_size": 100,
+      "training_periods": 100
+    },
+    {
+      "draw_id": "114000190",
+      "draw_date": "2025-08-06",
+      "predicted_numbers": [
+        6,
+        24,
+        27,
+        31,
+        38
+      ],
+      "predicted_special": null,
+      "actual_numbers": [
+        6,
+        10,
+        24,
+        28,
+        38
+      ],
+      "actual_special": 0,
+      "matches": 3,
+      "matched_numbers": [
+        6,
+        24,
+        38
+      ],
+      "is_win": true,
+      "confidence": 0.74,
+      "method_name": "hot_cold_mix",
+      "window_size": 100,
+      "training_periods": 100
+    },
+    {
+      "draw_id": "114000189",
+      "draw_date": "2025-08-05",
+      "predicted_numbers": [
+        14,
+        19,
+        24,
+        26,
+        27
+      ],
+      "predicted_special": null,
+      "actual_numbers": [
+        13,
+        20,
+        21,
+        32,
+        37
+      ],
+      "actual_special": 0,
+      "matches": 0,
+      "matched_numbers": [],
+      "is_win": false,
+      "confidence": 0.7355763013922164,
+      "method_name": "hot_cold_mix",
+      "window_size": 100,
+      "training_periods": 100
+    },
+    {
+      "draw_id": "114000188",
+      "draw_date": "2025-08-04",
+      "predicted_numbers": [
+        6,
+        14,
+        19,
+        24,
+        27
+      ],
+      "predicted_special": null,
+      "actual_numbers": [
+        3,
+        21,
+        23,
+        25,
+        26
+      ],
+      "actual_special": 0,
+      "matches": 0,
+      "matched_numbers": [],
+      "is_win": false,
+      "confidence": 0.7264308279639082,
+      "method_name": "hot_cold_mix",
+      "window_size": 100,
+      "training_periods": 100
+    },
+    {
+      "draw_id": "114000187",
+      "draw_date": "2025-08-02",
+      "predicted_numbers": [
+        6,
+        19,
+        24,
+        27,
+        28
+      ],
+      "predicted_special": null,
+      "actual_numbers": [
+        3,
+        14,
+        22,
+        25,
+        31
+      ],
+      "actual_special": 0,
+      "matches": 0,
+      "matched_numbers": [],
+      "is_win": false,
+      "confidence": 0.7286965123151976,
+      "method_name": "hot_cold_mix",
+      "window_size": 100,
+      "training_periods": 100
+    },
+    {
+      "draw_id": "114000186",
+      "draw_date": "2025-08-01",
+      "predicted_numbers": [
+        6,
+        19,
+        22,
+        26,
+        27
+      ],
+      "predicted_special": null,
+      "actual_numbers": [
+        2,
+        13,
+        18,
+        33,
+        34
+      ],
+      "actual_special": 0,
+      "matches": 0,
+      "matched_numbers": [],
+      "is_win": false,
+      "confidence": 0.7356987166484631,
+      "method_name": "hot_cold_mix",
+      "window_size": 100,
+      "training_periods": 100
+    },
+    {
+      "draw_id": "114000185",
+      "draw_date": "2025-07-31",
+      "predicted_numbers": [
+        6,
+        14,
+        19,
+        24,
+        26
+      ],
+      "predicted_special": null,
+      "actual_numbers": [
+        11,
+        12,
+        17,
+        34,
+        36
+      ],
+      "actual_special": 0,
+      "matches": 0,
+      "matched_numbers": [],
+      "is_win": false,
+      "confidence": 0.7350366306340033,
+      "method_name": "hot_cold_mix",
+      "window_size": 100,
+      "training_periods": 100
+    },
+    {
+      "draw_id": "114000184",
+      "draw_date": "2025-07-30",
+      "predicted_numbers": [
+        6,
+        14,
+        19,
+        24,
+        26
+      ],
+      "predicted_special": null,
+      "actual_numbers": [
+        17,
+        22,
+        24,
+        30,
+        32
+      ],
+      "actual_special": 0,
+      "matches": 1,
+      "matched_numbers": [
+        24
+      ],
+      "is_win": false,
+      "confidence": 0.7301224105477305,
+      "method_name": "hot_cold_mix",
+      "window_size": 100,
+      "training_periods": 100
+    },
+    {
+      "draw_id": "114000183",
+      "draw_date": "2025-07-29",
+      "predicted_numbers": [
+        6,
+        14,
+        19,
+        26,
+        38
+      ],
+      "predicted_special": null,
+      "actual_numbers": [
+        1,
+        6,
+        10,
+        13,
+        27
+      ],
+      "actual_special": 0,
+      "matches": 1,
+      "matched_numbers": [
+        6
+      ],
+      "is_win": false,
+      "confidence": 0.7393709079883868,
+      "method_name": "hot_cold_mix",
+      "window_size": 100,
+      "training_periods": 100
+    },
+    {
+      "draw_id": "114000182",
+      "draw_date": "2025-07-28",
+      "predicted_numbers": [
+        6,
+        15,
+        24,
+        26,
+        38
+      ],
+      "predicted_special": null,
+      "actual_numbers": [
+        4,
+        16,
+        22,
+        23,
+        30
+      ],
+      "actual_special": 0,
+      "matches": 0,
+      "matched_numbers": [],
+      "is_win": false,
+      "confidence": 0.7218452890591434,
+      "method_name": "hot_cold_mix",
+      "window_size": 100,
+      "training_periods": 100
+    },
+    {
+      "draw_id": "114000181",
+      "draw_date": "2025-07-26",
+      "predicted_numbers": [
+        6,
+        17,
+        19,
+        26,
+        35
+      ],
+      "predicted_special": null,
+      "actual_numbers": [
+        14,
+        15,
+        18,
+        23,
+        29
+      ],
+      "actual_special": 0,
+      "matches": 0,
+      "matched_numbers": [],
+      "is_win": false,
+      "confidence": 0.7308910175434006,
+      "method_name": "hot_cold_mix",
+      "window_size": 100,
+      "training_periods": 100
+    },
+    {
+      "draw_id": "114000180",
+      "draw_date": "2025-07-25",
+      "predicted_numbers": [
+        6,
+        13,
+        19,
+        26,
+        38
+      ],
+      "predicted_special": null,
+      "actual_numbers": [
+        5,
+        7,
+        10,
+        26,
+        30
+      ],
+      "actual_special": 0,
+      "matches": 1,
+      "matched_numbers": [
+        26
+      ],
+      "is_win": false,
+      "confidence": 0.7377943343818942,
+      "method_name": "hot_cold_mix",
+      "window_size": 100,
+      "training_periods": 100
+    },
+    {
+      "draw_id": "114000179",
+      "draw_date": "2025-07-24",
+      "predicted_numbers": [
+        4,
+        6,
+        13,
+        17,
+        19
+      ],
+      "predicted_special": null,
+      "actual_numbers": [
+        2,
+        6,
+        9,
+        29,
+        32
+      ],
+      "actual_special": 0,
+      "matches": 1,
+      "matched_numbers": [
+        6
+      ],
+      "is_win": false,
+      "confidence": 0.74,
+      "method_name": "hot_cold_mix",
+      "window_size": 100,
+      "training_periods": 100
+    },
+    {
+      "draw_id": "114000178",
+      "draw_date": "2025-07-23",
+      "predicted_numbers": [
+        6,
+        13,
+        17,
+        19,
+        24
+      ],
+      "predicted_special": null,
+      "actual_numbers": [
+        16,
+        18,
+        23,
+        36,
+        39
+      ],
+      "actual_special": 0,
+      "matches": 0,
+      "matched_numbers": [],
+      "is_win": false,
+      "confidence": 0.74,
+      "method_name": "hot_cold_mix",
+      "window_size": 100,
+      "training_periods": 100
+    },
+    {
+      "draw_id": "114000177",
+      "draw_date": "2025-07-22",
+      "predicted_numbers": [
+        6,
+        13,
+        19,
+        26,
+        36
+      ],
+      "predicted_special": null,
+      "actual_numbers": [
+        19,
+        21,
+        27,
+        32,
+        39
+      ],
+      "actual_special": 0,
+      "matches": 1,
+      "matched_numbers": [
+        19
+      ],
+      "is_win": false,
+      "confidence": 0.74,
+      "method_name": "hot_cold_mix",
+      "window_size": 100,
+      "training_periods": 100
+    },
+    {
+      "draw_id": "114000176",
+      "draw_date": "2025-07-21",
+      "predicted_numbers": [
+        12,
+        13,
+        19,
+        24,
+        36
+      ],
+      "predicted_special": null,
+      "actual_numbers": [
+        1,
+        6,
+        11,
+        22,
+        34
+      ],
+      "actual_special": 0,
+      "matches": 0,
+      "matched_numbers": [],
+      "is_win": false,
+      "confidence": 0.74,
+      "method_name": "hot_cold_mix",
+      "window_size": 100,
+      "training_periods": 100
+    },
+    {
+      "draw_id": "114000175",
+      "draw_date": "2025-07-19",
+      "predicted_numbers": [
+        4,
+        6,
+        19,
+        24,
+        36
+      ],
+      "predicted_special": null,
+      "actual_numbers": [
+        7,
+        11,
+        14,
+        26,
+        27
+      ],
+      "actual_special": 0,
+      "matches": 0,
+      "matched_numbers": [],
+      "is_win": false,
+      "confidence": 0.74,
+      "method_name": "hot_cold_mix",
+      "window_size": 100,
+      "training_periods": 100
+    },
+    {
+      "draw_id": "114000174",
+      "draw_date": "2025-07-18",
+      "predicted_numbers": [
+        4,
+        24,
+        25,
+        32,
+        36
+      ],
+      "predicted_special": null,
+      "actual_numbers": [
+        12,
+        21,
+        22,
+        38,
+        39
+      ],
+      "actual_special": 0,
+      "matches": 0,
+      "matched_numbers": [],
+      "is_win": false,
+      "confidence": 0.74,
+      "method_name": "hot_cold_mix",
+      "window_size": 100,
+      "training_periods": 100
+    },
+    {
+      "draw_id": "114000173",
+      "draw_date": "2025-07-17",
+      "predicted_numbers": [
+        5,
+        13,
+        24,
+        25,
+        36
+      ],
+      "predicted_special": null,
+      "actual_numbers": [
+        4,
+        6,
+        11,
+        29,
+        37
+      ],
+      "actual_special": 0,
+      "matches": 0,
+      "matched_numbers": [],
+      "is_win": false,
+      "confidence": 0.74,
+      "method_name": "hot_cold_mix",
+      "window_size": 100,
+      "training_periods": 100
+    },
+    {
+      "draw_id": "114000172",
+      "draw_date": "2025-07-16",
+      "predicted_numbers": [
+        5,
+        7,
+        13,
+        24,
+        25
+      ],
+      "predicted_special": null,
+      "actual_numbers": [
+        15,
+        18,
+        24,
+        31,
+        32
+      ],
+      "actual_special": 0,
+      "matches": 1,
+      "matched_numbers": [
+        24
+      ],
+      "is_win": false,
+      "confidence": 0.74,
+      "method_name": "hot_cold_mix",
+      "window_size": 100,
+      "training_periods": 100
+    },
+    {
+      "draw_id": "114000171",
+      "draw_date": "2025-07-15",
+      "predicted_numbers": [
+        5,
+        13,
+        24,
+        25,
+        27
+      ],
+      "predicted_special": null,
+      "actual_numbers": [
+        9,
+        16,
+        21,
+        22,
+        38
+      ],
+      "actual_special": 0,
+      "matches": 0,
+      "matched_numbers": [],
+      "is_win": false,
+      "confidence": 0.74,
+      "method_name": "hot_cold_mix",
+      "window_size": 100,
+      "training_periods": 100
+    },
+    {
+      "draw_id": "114000170",
+      "draw_date": "2025-07-14",
+      "predicted_numbers": [
+        5,
+        24,
+        25,
+        27,
+        32
+      ],
+      "predicted_special": null,
+      "actual_numbers": [
+        8,
+        11,
+        12,
+        29,
+        36
+      ],
+      "actual_special": 0,
+      "matches": 0,
+      "matched_numbers": [],
+      "is_win": false,
+      "confidence": 0.74,
+      "method_name": "hot_cold_mix",
+      "window_size": 100,
+      "training_periods": 100
+    },
+    {
+      "draw_id": "114000169",
+      "draw_date": "2025-07-12",
+      "predicted_numbers": [
+        5,
+        13,
+        15,
+        24,
+        25
+      ],
+      "predicted_special": null,
+      "actual_numbers": [
+        3,
+        19,
+        20,
+        21,
+        26
+      ],
+      "actual_special": 0,
+      "matches": 0,
+      "matched_numbers": [],
+      "is_win": false,
+      "confidence": 0.74,
+      "method_name": "hot_cold_mix",
+      "window_size": 100,
+      "training_periods": 100
+    },
+    {
+      "draw_id": "114000168",
+      "draw_date": "2025-07-11",
+      "predicted_numbers": [
+        13,
+        15,
+        24,
+        25,
+        26
+      ],
+      "predicted_special": null,
+      "actual_numbers": [
+        9,
+        26,
+        37,
+        38,
+        39
+      ],
+      "actual_special": 0,
+      "matches": 1,
+      "matched_numbers": [
+        26
+      ],
+      "is_win": false,
+      "confidence": 0.7340353406840774,
+      "method_name": "hot_cold_mix",
+      "window_size": 100,
+      "training_periods": 100
+    },
+    {
+      "draw_id": "114000167",
+      "draw_date": "2025-07-10",
+      "predicted_numbers": [
+        13,
+        15,
+        24,
+        25,
+        26
+      ],
+      "predicted_special": null,
+      "actual_numbers": [
+        2,
+        3,
+        4,
+        34,
+        36
+      ],
+      "actual_special": 0,
+      "matches": 0,
+      "matched_numbers": [],
+      "is_win": false,
+      "confidence": 0.74,
+      "method_name": "hot_cold_mix",
+      "window_size": 100,
+      "training_periods": 100
+    },
+    {
+      "draw_id": "114000166",
+      "draw_date": "2025-07-09",
+      "predicted_numbers": [
+        15,
+        19,
+        25,
+        26,
+        27
+      ],
+      "predicted_special": null,
+      "actual_numbers": [
+        13,
+        18,
+        27,
+        28,
+        37
+      ],
+      "actual_special": 0,
+      "matches": 1,
+      "matched_numbers": [
+        27
+      ],
+      "is_win": false,
+      "confidence": 0.74,
+      "method_name": "hot_cold_mix",
+      "window_size": 100,
+      "training_periods": 100
+    },
+    {
+      "draw_id": "114000165",
+      "draw_date": "2025-07-08",
+      "predicted_numbers": [
+        13,
+        15,
+        19,
+        25,
+        26
+      ],
+      "predicted_special": null,
+      "actual_numbers": [
+        3,
+        4,
+        24,
+        27,
+        33
+      ],
+      "actual_special": 0,
+      "matches": 0,
+      "matched_numbers": [],
+      "is_win": false,
+      "confidence": 0.7366211833608776,
+      "method_name": "hot_cold_mix",
+      "window_size": 100,
+      "training_periods": 100
+    },
+    {
+      "draw_id": "114000164",
+      "draw_date": "2025-07-07",
+      "predicted_numbers": [
+        6,
+        13,
+        15,
+        25,
+        26
+      ],
+      "predicted_special": null,
+      "actual_numbers": [
+        14,
+        25,
+        27,
+        35,
+        38
+      ],
+      "actual_special": 0,
+      "matches": 1,
+      "matched_numbers": [
+        25
+      ],
+      "is_win": false,
+      "confidence": 0.7298443131275386,
+      "method_name": "hot_cold_mix",
+      "window_size": 100,
+      "training_periods": 100
+    },
+    {
+      "draw_id": "114000163",
+      "draw_date": "2025-07-05",
+      "predicted_numbers": [
+        6,
+        15,
+        25,
+        26,
+        27
+      ],
+      "predicted_special": null,
+      "actual_numbers": [
+        8,
+        14,
+        22,
+        24,
+        35
+      ],
+      "actual_special": 0,
+      "matches": 0,
+      "matched_numbers": [],
+      "is_win": false,
+      "confidence": 0.7384293266278822,
+      "method_name": "hot_cold_mix",
+      "window_size": 100,
+      "training_periods": 100
+    },
+    {
+      "draw_id": "114000162",
+      "draw_date": "2025-07-04",
+      "predicted_numbers": [
+        6,
+        7,
+        15,
+        25,
+        27
+      ],
+      "predicted_special": null,
+      "actual_numbers": [
+        5,
+        24,
+        31,
+        36,
+        39
+      ],
+      "actual_special": 0,
+      "matches": 0,
+      "matched_numbers": [],
+      "is_win": false,
+      "confidence": 0.7394851435124693,
+      "method_name": "hot_cold_mix",
+      "window_size": 100,
+      "training_periods": 100
+    },
+    {
+      "draw_id": "114000161",
+      "draw_date": "2025-07-03",
+      "predicted_numbers": [
+        7,
+        15,
+        24,
+        25,
+        27
+      ],
+      "predicted_special": null,
+      "actual_numbers": [
+        10,
+        21,
+        22,
+        26,
+        27
+      ],
+      "actual_special": 0,
+      "matches": 1,
+      "matched_numbers": [
+        27
+      ],
+      "is_win": false,
+      "confidence": 0.7254816765982343,
+      "method_name": "hot_cold_mix",
+      "window_size": 100,
+      "training_periods": 100
+    },
+    {
+      "draw_id": "114000160",
+      "draw_date": "2025-07-02",
+      "predicted_numbers": [
+        6,
+        7,
+        19,
+        25,
+        27
+      ],
+      "predicted_special": null,
+      "actual_numbers": [
+        6,
+        13,
+        21,
+        24,
+        38
+      ],
+      "actual_special": 0,
+      "matches": 1,
+      "matched_numbers": [
+        6
+      ],
+      "is_win": false,
+      "confidence": 0.723558754250379,
+      "method_name": "hot_cold_mix",
+      "window_size": 100,
+      "training_periods": 100
+    },
+    {
+      "draw_id": "114000159",
+      "draw_date": "2025-07-01",
+      "predicted_numbers": [
+        7,
+        8,
+        15,
+        19,
+        27
+      ],
+      "predicted_special": null,
+      "actual_numbers": [
+        6,
+        8,
+        11,
+        19,
+        38
+      ],
+      "actual_special": 0,
+      "matches": 2,
+      "matched_numbers": [
+        8,
+        19
+      ],
+      "is_win": true,
+      "confidence": 0.733663215196602,
+      "method_name": "hot_cold_mix",
+      "window_size": 100,
+      "training_periods": 100
+    },
+    {
+      "draw_id": "114000158",
+      "draw_date": "2025-06-30",
+      "predicted_numbers": [
+        6,
+        8,
+        15,
+        19,
+        27
+      ],
+      "predicted_special": null,
+      "actual_numbers": [
+        7,
+        8,
+        11,
+        23,
+        31
+      ],
+      "actual_special": 0,
+      "matches": 1,
+      "matched_numbers": [
+        8
+      ],
+      "is_win": false,
+      "confidence": 0.7223808747818536,
+      "method_name": "hot_cold_mix",
+      "window_size": 100,
+      "training_periods": 100
+    },
+    {
+      "draw_id": "114000157",
+      "draw_date": "2025-06-28",
+      "predicted_numbers": [
+        15,
+        19,
+        23,
+        27,
+        36
+      ],
+      "predicted_special": null,
+      "actual_numbers": [
+        12,
+        22,
+        29,
+        33,
+        34
+      ],
+      "actual_special": 0,
+      "matches": 0,
+      "matched_numbers": [],
+      "is_win": false,
+      "confidence": 0.7272499756604329,
+      "method_name": "hot_cold_mix",
+      "window_size": 100,
+      "training_periods": 100
+    },
+    {
+      "draw_id": "114000156",
+      "draw_date": "2025-06-27",
+      "predicted_numbers": [
+        12,
+        15,
+        23,
+        27,
+        36
+      ],
+      "predicted_special": null,
+      "actual_numbers": [
+        3,
+        4,
+        10,
+        19,
+        37
+      ],
+      "actual_special": 0,
+      "matches": 0,
+      "matched_numbers": [],
+      "is_win": false,
+      "confidence": 0.7263051146704933,
+      "method_name": "hot_cold_mix",
+      "window_size": 100,
+      "training_periods": 100
+    },
+    {
+      "draw_id": "114000155",
+      "draw_date": "2025-06-26",
+      "predicted_numbers": [
+        4,
+        8,
+        23,
+        27,
+        36
+      ],
+      "predicted_special": null,
+      "actual_numbers": [
+        1,
+        6,
+        13,
+        24,
+        29
+      ],
+      "actual_special": 0,
+      "matches": 0,
+      "matched_numbers": [],
+      "is_win": false,
+      "confidence": 0.74,
+      "method_name": "hot_cold_mix",
+      "window_size": 100,
+      "training_periods": 100
+    },
+    {
+      "draw_id": "114000154",
+      "draw_date": "2025-06-25",
+      "predicted_numbers": [
+        4,
+        23,
+        24,
+        27,
+        31
+      ],
+      "predicted_special": null,
+      "actual_numbers": [
+        2,
+        11,
+        28,
+        30,
+        37
+      ],
+      "actual_special": 0,
+      "matches": 0,
+      "matched_numbers": [],
+      "is_win": false,
+      "confidence": 0.7384602814443322,
+      "method_name": "hot_cold_mix",
+      "window_size": 100,
+      "training_periods": 100
+    },
+    {
+      "draw_id": "114000153",
+      "draw_date": "2025-06-24",
+      "predicted_numbers": [
+        4,
+        12,
+        23,
+        27,
+        29
+      ],
+      "predicted_special": null,
+      "actual_numbers": [
+        1,
+        10,
+        12,
+        20,
+        31
+      ],
+      "actual_special": 0,
+      "matches": 1,
+      "matched_numbers": [
+        12
+      ],
+      "is_win": false,
+      "confidence": 0.732704558901147,
+      "method_name": "hot_cold_mix",
+      "window_size": 100,
+      "training_periods": 100
+    },
+    {
+      "draw_id": "114000152",
+      "draw_date": "2025-06-23",
+      "predicted_numbers": [
+        12,
+        23,
+        24,
+        27,
+        36
+      ],
+      "predicted_special": null,
+      "actual_numbers": [
+        3,
+        14,
+        22,
+        31,
+        38
+      ],
+      "actual_special": 0,
+      "matches": 0,
+      "matched_numbers": [],
+      "is_win": false,
+      "confidence": 0.7303770398158765,
+      "method_name": "hot_cold_mix",
+      "window_size": 100,
+      "training_periods": 100
+    },
+    {
+      "draw_id": "114000151",
+      "draw_date": "2025-06-21",
+      "predicted_numbers": [
+        5,
+        11,
+        12,
+        27,
+        36
+      ],
+      "predicted_special": null,
+      "actual_numbers": [
+        3,
+        8,
+        15,
+        24,
+        39
+      ],
+      "actual_special": 0,
+      "matches": 0,
+      "matched_numbers": [],
+      "is_win": false,
+      "confidence": 0.7240285813323659,
+      "method_name": "hot_cold_mix",
+      "window_size": 100,
+      "training_periods": 100
+    },
+    {
+      "draw_id": "114000150",
+      "draw_date": "2025-06-20",
+      "predicted_numbers": [
+        11,
+        24,
+        27,
+        29,
+        36
+      ],
+      "predicted_special": null,
+      "actual_numbers": [
+        2,
+        5,
+        8,
+        17,
+        24
+      ],
+      "actual_special": 0,
+      "matches": 1,
+      "matched_numbers": [
+        24
+      ],
+      "is_win": false,
+      "confidence": 0.7332392975216555,
+      "method_name": "hot_cold_mix",
+      "window_size": 100,
+      "training_periods": 100
+    },
+    {
+      "draw_id": "114000149",
+      "draw_date": "2025-06-19",
+      "predicted_numbers": [
+        11,
+        24,
+        27,
+        29,
+        36
+      ],
+      "predicted_special": null,
+      "actual_numbers": [
+        12,
+        14,
+        15,
+        17,
+        24
+      ],
+      "actual_special": 0,
+      "matches": 1,
+      "matched_numbers": [
+        24
+      ],
+      "is_win": false,
+      "confidence": 0.7374424642542952,
+      "method_name": "hot_cold_mix",
+      "window_size": 100,
+      "training_periods": 100
+    },
+    {
+      "draw_id": "114000148",
+      "draw_date": "2025-06-18",
+      "predicted_numbers": [
+        5,
+        11,
+        27,
+        35,
+        36
+      ],
+      "predicted_special": null,
+      "actual_numbers": [
+        7,
+        12,
+        23,
+        26,
+        36
+      ],
+      "actual_special": 0,
+      "matches": 1,
+      "matched_numbers": [
+        36
+      ],
+      "is_win": false,
+      "confidence": 0.7196948224144497,
+      "method_name": "hot_cold_mix",
+      "window_size": 100,
+      "training_periods": 100
+    },
+    {
+      "draw_id": "114000147",
+      "draw_date": "2025-06-17",
+      "predicted_numbers": [
+        11,
+        17,
+        24,
+        27,
+        35
+      ],
+      "predicted_special": null,
+      "actual_numbers": [
+        2,
+        12,
+        14,
+        26,
+        37
+      ],
+      "actual_special": 0,
+      "matches": 0,
+      "matched_numbers": [],
+      "is_win": false,
+      "confidence": 0.7328259626478422,
+      "method_name": "hot_cold_mix",
+      "window_size": 100,
+      "training_periods": 100
+    },
+    {
+      "draw_id": "114000146",
+      "draw_date": "2025-06-16",
+      "predicted_numbers": [
+        3,
+        11,
+        18,
+        24,
+        27
+      ],
+      "predicted_special": null,
+      "actual_numbers": [
+        6,
+        8,
+        9,
+        33,
+        36
+      ],
+      "actual_special": 0,
+      "matches": 0,
+      "matched_numbers": [],
+      "is_win": false,
+      "confidence": 0.7259674603354577,
+      "method_name": "hot_cold_mix",
+      "window_size": 100,
+      "training_periods": 100
+    },
+    {
+      "draw_id": "114000145",
+      "draw_date": "2025-06-14",
+      "predicted_numbers": [
+        3,
+        11,
+        13,
+        24,
+        27
+      ],
+      "predicted_special": null,
+      "actual_numbers": [
+        2,
+        15,
+        17,
+        23,
+        37
+      ],
+      "actual_special": 0,
+      "matches": 0,
+      "matched_numbers": [],
+      "is_win": false,
+      "confidence": 0.7281345396039475,
+      "method_name": "hot_cold_mix",
+      "window_size": 100,
+      "training_periods": 100
+    },
+    {
+      "draw_id": "114000144",
+      "draw_date": "2025-06-13",
+      "predicted_numbers": [
+        3,
+        11,
+        27,
+        30,
+        33
+      ],
+      "predicted_special": null,
+      "actual_numbers": [
+        4,
+        5,
+        10,
+        12,
+        38
+      ],
+      "actual_special": 0,
+      "matches": 0,
+      "matched_numbers": [],
+      "is_win": false,
+      "confidence": 0.7263451985561687,
+      "method_name": "hot_cold_mix",
+      "window_size": 100,
+      "training_periods": 100
+    },
+    {
+      "draw_id": "114000143",
+      "draw_date": "2025-06-12",
+      "predicted_numbers": [
+        3,
+        11,
+        24,
+        27,
+        33
+      ],
+      "predicted_special": null,
+      "actual_numbers": [
+        11,
+        14,
+        15,
+        19,
+        32
+      ],
+      "actual_special": 0,
+      "matches": 1,
+      "matched_numbers": [
+        11
+      ],
+      "is_win": false,
+      "confidence": 0.733417803066115,
+      "method_name": "hot_cold_mix",
+      "window_size": 100,
+      "training_periods": 100
+    },
+    {
+      "draw_id": "114000142",
+      "draw_date": "2025-06-11",
+      "predicted_numbers": [
+        7,
+        11,
+        17,
+        27,
+        33
+      ],
+      "predicted_special": null,
+      "actual_numbers": [
+        4,
+        17,
+        19,
+        21,
+        31
+      ],
+      "actual_special": 0,
+      "matches": 1,
+      "matched_numbers": [
+        17
+      ],
+      "is_win": false,
+      "confidence": 0.7213944805262975,
+      "method_name": "hot_cold_mix",
+      "window_size": 100,
+      "training_periods": 100
+    },
+    {
+      "draw_id": "114000141",
+      "draw_date": "2025-06-10",
+      "predicted_numbers": [
+        7,
+        11,
+        17,
+        27,
+        30
+      ],
+      "predicted_special": null,
+      "actual_numbers": [
+        7,
+        12,
+        16,
+        29,
+        38
+      ],
+      "actual_special": 0,
+      "matches": 1,
+      "matched_numbers": [
+        7
+      ],
+      "is_win": false,
+      "confidence": 0.7219496697728325,
+      "method_name": "hot_cold_mix",
+      "window_size": 100,
+      "training_periods": 100
+    },
+    {
+      "draw_id": "114000140",
+      "draw_date": "2025-06-09",
+      "predicted_numbers": [
+        7,
+        11,
+        19,
+        27,
+        30
+      ],
+      "predicted_special": null,
+      "actual_numbers": [
+        8,
+        20,
+        27,
+        29,
+        30
+      ],
+      "actual_special": 0,
+      "matches": 2,
+      "matched_numbers": [
+        27,
+        30
+      ],
+      "is_win": true,
+      "confidence": 0.7278393671840693,
+      "method_name": "hot_cold_mix",
+      "window_size": 100,
+      "training_periods": 100
+    },
+    {
+      "draw_id": "114000139",
+      "draw_date": "2025-06-07",
+      "predicted_numbers": [
+        11,
+        19,
+        27,
+        28,
+        30
+      ],
+      "predicted_special": null,
+      "actual_numbers": [
+        4,
+        16,
+        22,
+        23,
+        32
+      ],
+      "actual_special": 0,
+      "matches": 0,
+      "matched_numbers": [],
+      "is_win": false,
+      "confidence": 0.7196991144535203,
+      "method_name": "hot_cold_mix",
+      "window_size": 100,
+      "training_periods": 100
+    },
+    {
+      "draw_id": "114000138",
+      "draw_date": "2025-06-06",
+      "predicted_numbers": [
+        10,
+        11,
+        19,
+        27,
+        28
+      ],
+      "predicted_special": null,
+      "actual_numbers": [
+        2,
+        12,
+        14,
+        25,
+        30
+      ],
+      "actual_special": 0,
+      "matches": 0,
+      "matched_numbers": [],
+      "is_win": false,
+      "confidence": 0.7316329490030985,
+      "method_name": "hot_cold_mix",
+      "window_size": 100,
+      "training_periods": 100
+    },
+    {
+      "draw_id": "114000137",
+      "draw_date": "2025-06-05",
+      "predicted_numbers": [
+        10,
+        19,
+        27,
+        28,
+        35
+      ],
+      "predicted_special": null,
+      "actual_numbers": [
+        7,
+        14,
+        19,
+        35,
+        39
+      ],
+      "actual_special": 0,
+      "matches": 2,
+      "matched_numbers": [
+        19,
+        35
+      ],
+      "is_win": true,
+      "confidence": 0.74,
+      "method_name": "hot_cold_mix",
+      "window_size": 100,
+      "training_periods": 100
+    },
+    {
+      "draw_id": "114000136",
+      "draw_date": "2025-06-04",
+      "predicted_numbers": [
+        8,
+        10,
+        19,
+        27,
+        28
+      ],
+      "predicted_special": null,
+      "actual_numbers": [
+        20,
+        30,
+        33,
+        36,
+        38
+      ],
+      "actual_special": 0,
+      "matches": 0,
+      "matched_numbers": [],
+      "is_win": false,
+      "confidence": 0.7355167777359422,
+      "method_name": "hot_cold_mix",
+      "window_size": 100,
+      "training_periods": 100
+    },
+    {
+      "draw_id": "114000135",
+      "draw_date": "2025-06-03",
+      "predicted_numbers": [
+        19,
+        27,
+        28,
+        29,
+        37
+      ],
+      "predicted_special": null,
+      "actual_numbers": [
+        7,
+        20,
+        21,
+        25,
+        34
+      ],
+      "actual_special": 0,
+      "matches": 0,
+      "matched_numbers": [],
+      "is_win": false,
+      "confidence": 0.7370698066323124,
+      "method_name": "hot_cold_mix",
+      "window_size": 100,
+      "training_periods": 100
+    },
+    {
+      "draw_id": "114000134",
+      "draw_date": "2025-06-02",
+      "predicted_numbers": [
+        26,
+        27,
+        28,
+        29,
+        37
+      ],
+      "predicted_special": null,
+      "actual_numbers": [
+        2,
+        7,
+        11,
+        16,
+        21
+      ],
+      "actual_special": 0,
+      "matches": 0,
+      "matched_numbers": [],
+      "is_win": false,
+      "confidence": 0.7377271231225967,
+      "method_name": "hot_cold_mix",
+      "window_size": 100,
+      "training_periods": 100
+    },
+    {
+      "draw_id": "114000133",
+      "draw_date": "2025-05-31",
+      "predicted_numbers": [
+        7,
+        27,
+        28,
+        29,
+        37
+      ],
+      "predicted_special": null,
+      "actual_numbers": [
+        14,
+        18,
+        20,
+        29,
+        35
+      ],
+      "actual_special": 0,
+      "matches": 1,
+      "matched_numbers": [
+        29
+      ],
+      "is_win": false,
+      "confidence": 0.739911127547675,
+      "method_name": "hot_cold_mix",
+      "window_size": 100,
+      "training_periods": 100
+    },
+    {
+      "draw_id": "114000132",
+      "draw_date": "2025-05-30",
+      "predicted_numbers": [
+        8,
+        19,
+        27,
+        28,
+        29
+      ],
+      "predicted_special": null,
+      "actual_numbers": [
+        14,
+        20,
+        21,
+        34,
+        35
+      ],
+      "actual_special": 0,
+      "matches": 0,
+      "matched_numbers": [],
+      "is_win": false,
+      "confidence": 0.74,
+      "method_name": "hot_cold_mix",
+      "window_size": 100,
+      "training_periods": 100
+    },
+    {
+      "draw_id": "114000131",
+      "draw_date": "2025-05-29",
+      "predicted_numbers": [
+        8,
+        19,
+        28,
+        29,
+        37
+      ],
+      "predicted_special": null,
+      "actual_numbers": [
+        4,
+        18,
+        28,
+        30,
+        31
+      ],
+      "actual_special": 0,
+      "matches": 1,
+      "matched_numbers": [
+        28
+      ],
+      "is_win": false,
+      "confidence": 0.74,
+      "method_name": "hot_cold_mix",
+      "window_size": 100,
+      "training_periods": 100
+    },
+    {
+      "draw_id": "114000130",
+      "draw_date": "2025-05-28",
+      "predicted_numbers": [
+        8,
+        16,
+        28,
+        29,
+        37
+      ],
+      "predicted_special": null,
+      "actual_numbers": [
+        9,
+        13,
+        15,
+        24,
+        33
+      ],
+      "actual_special": 0,
+      "matches": 0,
+      "matched_numbers": [],
+      "is_win": false,
+      "confidence": 0.74,
+      "method_name": "hot_cold_mix",
+      "window_size": 100,
+      "training_periods": 100
+    },
+    {
+      "draw_id": "114000129",
+      "draw_date": "2025-05-27",
+      "predicted_numbers": [
+        8,
+        16,
+        28,
+        29,
+        37
+      ],
+      "predicted_special": null,
+      "actual_numbers": [
+        4,
+        8,
+        23,
+        33,
+        38
+      ],
+      "actual_special": 0,
+      "matches": 1,
+      "matched_numbers": [
+        8
+      ],
+      "is_win": false,
+      "confidence": 0.74,
+      "method_name": "hot_cold_mix",
+      "window_size": 100,
+      "training_periods": 100
+    },
+    {
+      "draw_id": "114000128",
+      "draw_date": "2025-05-26",
+      "predicted_numbers": [
+        8,
+        11,
+        16,
+        29,
+        37
+      ],
+      "predicted_special": null,
+      "actual_numbers": [
+        8,
+        15,
+        21,
+        24,
+        34
+      ],
+      "actual_special": 0,
+      "matches": 1,
+      "matched_numbers": [
+        8
+      ],
+      "is_win": false,
+      "confidence": 0.74,
+      "method_name": "hot_cold_mix",
+      "window_size": 100,
+      "training_periods": 100
+    },
+    {
+      "draw_id": "114000127",
+      "draw_date": "2025-05-24",
+      "predicted_numbers": [
+        8,
+        11,
+        16,
+        29,
+        37
+      ],
+      "predicted_special": null,
+      "actual_numbers": [
+        14,
+        18,
+        29,
+        35,
+        36
+      ],
+      "actual_special": 0,
+      "matches": 1,
+      "matched_numbers": [
+        29
+      ],
+      "is_win": false,
+      "confidence": 0.74,
+      "method_name": "hot_cold_mix",
+      "window_size": 100,
+      "training_periods": 100
+    },
+    {
+      "draw_id": "114000126",
+      "draw_date": "2025-05-23",
+      "predicted_numbers": [
+        11,
+        16,
+        27,
+        29,
+        37
+      ],
+      "predicted_special": null,
+      "actual_numbers": [
+        13,
+        16,
+        24,
+        27,
+        32
+      ],
+      "actual_special": 0,
+      "matches": 2,
+      "matched_numbers": [
+        16,
+        27
+      ],
+      "is_win": true,
+      "confidence": 0.74,
+      "method_name": "hot_cold_mix",
+      "window_size": 100,
+      "training_periods": 100
+    },
+    {
+      "draw_id": "114000125",
+      "draw_date": "2025-05-22",
+      "predicted_numbers": [
+        11,
+        16,
+        23,
+        27,
+        37
+      ],
+      "predicted_special": null,
+      "actual_numbers": [
+        1,
+        8,
+        17,
+        21,
+        35
+      ],
+      "actual_special": 0,
+      "matches": 0,
+      "matched_numbers": [],
+      "is_win": false,
+      "confidence": 0.7351069806145376,
+      "method_name": "hot_cold_mix",
+      "window_size": 100,
+      "training_periods": 100
+    },
+    {
+      "draw_id": "114000124",
+      "draw_date": "2025-05-21",
+      "predicted_numbers": [
+        1,
+        9,
+        11,
+        16,
+        23
+      ],
+      "predicted_special": null,
+      "actual_numbers": [
+        10,
+        16,
+        31,
+        34,
+        38
+      ],
+      "actual_special": 0,
+      "matches": 1,
+      "matched_numbers": [
+        16
+      ],
+      "is_win": false,
+      "confidence": 0.74,
+      "method_name": "hot_cold_mix",
+      "window_size": 100,
+      "training_periods": 100
+    },
+    {
+      "draw_id": "114000123",
+      "draw_date": "2025-05-20",
+      "predicted_numbers": [
+        1,
+        8,
+        9,
+        16,
+        37
+      ],
+      "predicted_special": null,
+      "actual_numbers": [
+        10,
+        22,
+        23,
+        26,
+        38
+      ],
+      "actual_special": 0,
+      "matches": 0,
+      "matched_numbers": [],
+      "is_win": false,
+      "confidence": 0.74,
+      "method_name": "hot_cold_mix",
+      "window_size": 100,
+      "training_periods": 100
+    },
+    {
+      "draw_id": "114000122",
+      "draw_date": "2025-05-19",
+      "predicted_numbers": [
+        1,
+        9,
+        16,
+        32,
+        37
+      ],
+      "predicted_special": null,
+      "actual_numbers": [
+        4,
+        7,
+        14,
+        25,
+        35
+      ],
+      "actual_special": 0,
+      "matches": 0,
+      "matched_numbers": [],
+      "is_win": false,
+      "confidence": 0.74,
+      "method_name": "hot_cold_mix",
+      "window_size": 100,
+      "training_periods": 100
+    },
+    {
+      "draw_id": "114000121",
+      "draw_date": "2025-05-17",
+      "predicted_numbers": [
+        1,
+        7,
+        9,
+        11,
+        32
+      ],
+      "predicted_special": null,
+      "actual_numbers": [
+        3,
+        9,
+        24,
+        30,
+        39
+      ],
+      "actual_special": 0,
+      "matches": 1,
+      "matched_numbers": [
+        9
+      ],
+      "is_win": false,
+      "confidence": 0.74,
+      "method_name": "hot_cold_mix",
+      "window_size": 100,
+      "training_periods": 100
+    },
+    {
+      "draw_id": "114000120",
+      "draw_date": "2025-05-16",
+      "predicted_numbers": [
+        1,
+        7,
+        9,
+        11,
+        31
+      ],
+      "predicted_special": null,
+      "actual_numbers": [
+        2,
+        13,
+        24,
+        27,
+        39
+      ],
+      "actual_special": 0,
+      "matches": 0,
+      "matched_numbers": [],
+      "is_win": false,
+      "confidence": 0.74,
+      "method_name": "hot_cold_mix",
+      "window_size": 100,
+      "training_periods": 100
+    },
+    {
+      "draw_id": "114000119",
+      "draw_date": "2025-05-15",
+      "predicted_numbers": [
+        1,
+        7,
+        9,
+        11,
+        31
+      ],
+      "predicted_special": null,
+      "actual_numbers": [
+        2,
+        4,
+        15,
+        25,
+        36
+      ],
+      "actual_special": 0,
+      "matches": 0,
+      "matched_numbers": [],
+      "is_win": false,
+      "confidence": 0.74,
+      "method_name": "hot_cold_mix",
+      "window_size": 100,
+      "training_periods": 100
+    },
+    {
+      "draw_id": "114000118",
+      "draw_date": "2025-05-14",
+      "predicted_numbers": [
+        1,
+        7,
+        9,
+        19,
+        22
+      ],
+      "predicted_special": null,
+      "actual_numbers": [
+        1,
+        14,
+        18,
+        24,
+        38
+      ],
+      "actual_special": 0,
+      "matches": 1,
+      "matched_numbers": [
+        1
+      ],
+      "is_win": false,
+      "confidence": 0.74,
+      "method_name": "hot_cold_mix",
+      "window_size": 100,
+      "training_periods": 100
+    },
+    {
+      "draw_id": "114000117",
+      "draw_date": "2025-05-13",
+      "predicted_numbers": [
+        1,
+        9,
+        19,
+        22,
+        32
+      ],
+      "predicted_special": null,
+      "actual_numbers": [
+        4,
+        10,
+        20,
+        23,
+        29
+      ],
+      "actual_special": 0,
+      "matches": 0,
+      "matched_numbers": [],
+      "is_win": false,
+      "confidence": 0.74,
+      "method_name": "hot_cold_mix",
+      "window_size": 100,
+      "training_periods": 100
+    },
+    {
+      "draw_id": "114000116",
+      "draw_date": "2025-05-12",
+      "predicted_numbers": [
+        1,
+        7,
+        12,
+        19,
+        35
+      ],
+      "predicted_special": null,
+      "actual_numbers": [
+        8,
+        10,
+        26,
+        27,
+        38
+      ],
+      "actual_special": 0,
+      "matches": 0,
+      "matched_numbers": [],
+      "is_win": false,
+      "confidence": 0.74,
+      "method_name": "hot_cold_mix",
+      "window_size": 100,
+      "training_periods": 100
+    },
+    {
+      "draw_id": "114000115",
+      "draw_date": "2025-05-10",
+      "predicted_numbers": [
+        7,
+        12,
+        19,
+        26,
+        35
+      ],
+      "predicted_special": null,
+      "actual_numbers": [
+        6,
+        9,
+        20,
+        27,
+        36
+      ],
+      "actual_special": 0,
+      "matches": 0,
+      "matched_numbers": [],
+      "is_win": false,
+      "confidence": 0.74,
+      "method_name": "hot_cold_mix",
+      "window_size": 100,
+      "training_periods": 100
+    },
+    {
+      "draw_id": "114000114",
+      "draw_date": "2025-05-09",
+      "predicted_numbers": [
+        7,
+        9,
+        12,
+        19,
+        26
+      ],
+      "predicted_special": null,
+      "actual_numbers": [
+        4,
+        11,
+        19,
+        21,
+        34
+      ],
+      "actual_special": 0,
+      "matches": 1,
+      "matched_numbers": [
+        19
+      ],
+      "is_win": false,
+      "confidence": 0.74,
+      "method_name": "hot_cold_mix",
+      "window_size": 100,
+      "training_periods": 100
+    },
+    {
+      "draw_id": "114000113",
+      "draw_date": "2025-05-08",
+      "predicted_numbers": [
+        7,
+        12,
+        19,
+        22,
+        26
+      ],
+      "predicted_special": null,
+      "actual_numbers": [
+        7,
+        10,
+        26,
+        28,
+        33
+      ],
+      "actual_special": 0,
+      "matches": 2,
+      "matched_numbers": [
+        7,
+        26
+      ],
+      "is_win": true,
+      "confidence": 0.74,
+      "method_name": "hot_cold_mix",
+      "window_size": 100,
+      "training_periods": 100
+    },
+    {
+      "draw_id": "114000112",
+      "draw_date": "2025-05-07",
+      "predicted_numbers": [
+        7,
+        19,
+        22,
+        26,
+        35
+      ],
+      "predicted_special": null,
+      "actual_numbers": [
+        7,
+        9,
+        21,
+        28,
+        38
+      ],
+      "actual_special": 0,
+      "matches": 1,
+      "matched_numbers": [
+        7
+      ],
+      "is_win": false,
+      "confidence": 0.74,
+      "method_name": "hot_cold_mix",
+      "window_size": 100,
+      "training_periods": 100
+    },
+    {
+      "draw_id": "114000111",
+      "draw_date": "2025-05-06",
+      "predicted_numbers": [
+        7,
+        19,
+        22,
+        26,
+        35
+      ],
+      "predicted_special": null,
+      "actual_numbers": [
+        6,
+        11,
+        18,
+        37,
+        39
+      ],
+      "actual_special": 0,
+      "matches": 0,
+      "matched_numbers": [],
+      "is_win": false,
+      "confidence": 0.74,
+      "method_name": "hot_cold_mix",
+      "window_size": 100,
+      "training_periods": 100
+    },
+    {
+      "draw_id": "114000110",
+      "draw_date": "2025-05-05",
+      "predicted_numbers": [
+        7,
+        12,
+        19,
+        22,
+        26
+      ],
+      "predicted_special": null,
+      "actual_numbers": [
+        4,
+        5,
+        8,
+        10,
+        11
+      ],
+      "actual_special": 0,
+      "matches": 0,
+      "matched_numbers": [],
+      "is_win": false,
+      "confidence": 0.74,
+      "method_name": "hot_cold_mix",
+      "window_size": 100,
+      "training_periods": 100
+    },
+    {
+      "draw_id": "114000109",
+      "draw_date": "2025-05-03",
+      "predicted_numbers": [
+        7,
+        12,
+        19,
+        22,
+        35
+      ],
+      "predicted_special": null,
+      "actual_numbers": [
+        1,
+        10,
+        19,
+        27,
+        31
+      ],
+      "actual_special": 0,
+      "matches": 1,
+      "matched_numbers": [
+        19
+      ],
+      "is_win": false,
+      "confidence": 0.74,
+      "method_name": "hot_cold_mix",
+      "window_size": 100,
+      "training_periods": 100
+    },
+    {
+      "draw_id": "114000108",
+      "draw_date": "2025-05-02",
+      "predicted_numbers": [
+        12,
+        19,
+        29,
+        34,
+        35
+      ],
+      "predicted_special": null,
+      "actual_numbers": [
+        5,
+        12,
+        20,
+        24,
+        28
+      ],
+      "actual_special": 0,
+      "matches": 1,
+      "matched_numbers": [
+        12
+      ],
+      "is_win": false,
+      "confidence": 0.7291352755361733,
+      "method_name": "hot_cold_mix",
+      "window_size": 100,
+      "training_periods": 100
+    },
+    {
+      "draw_id": "114000107",
+      "draw_date": "2025-05-01",
+      "predicted_numbers": [
+        9,
+        12,
+        18,
+        19,
+        29
+      ],
+      "predicted_special": null,
+      "actual_numbers": [
+        8,
+        19,
+        25,
+        27,
+        39
+      ],
+      "actual_special": 0,
+      "matches": 1,
+      "matched_numbers": [
+        19
+      ],
+      "is_win": false,
+      "confidence": 0.7212788784524365,
+      "method_name": "hot_cold_mix",
+      "window_size": 100,
+      "training_periods": 100
+    },
+    {
+      "draw_id": "114000106",
+      "draw_date": "2025-04-30",
+      "predicted_numbers": [
+        12,
+        18,
+        19,
+        29,
+        31
+      ],
+      "predicted_special": null,
+      "actual_numbers": [
+        22,
+        26,
+        30,
+        31,
+        38
+      ],
+      "actual_special": 0,
+      "matches": 1,
+      "matched_numbers": [
+        31
+      ],
+      "is_win": false,
+      "confidence": 0.7183344318334443,
+      "method_name": "hot_cold_mix",
+      "window_size": 100,
+      "training_periods": 100
+    },
+    {
+      "draw_id": "114000105",
+      "draw_date": "2025-04-29",
+      "predicted_numbers": [
+        12,
+        19,
+        22,
+        23,
+        35
+      ],
+      "predicted_special": null,
+      "actual_numbers": [
+        1,
+        7,
+        13,
+        18,
+        35
+      ],
+      "actual_special": 0,
+      "matches": 1,
+      "matched_numbers": [
+        35
+      ],
+      "is_win": false,
+      "confidence": 0.74,
+      "method_name": "hot_cold_mix",
+      "window_size": 100,
+      "training_periods": 100
+    },
+    {
+      "draw_id": "114000104",
+      "draw_date": "2025-04-28",
+      "predicted_numbers": [
+        12,
+        21,
+        22,
+        31,
+        35
+      ],
+      "predicted_special": null,
+      "actual_numbers": [
+        6,
+        12,
+        17,
+        38,
+        39
+      ],
+      "actual_special": 0,
+      "matches": 1,
+      "matched_numbers": [
+        12
+      ],
+      "is_win": false,
+      "confidence": 0.74,
+      "method_name": "hot_cold_mix",
+      "window_size": 100,
+      "training_periods": 100
+    },
+    {
+      "draw_id": "114000103",
+      "draw_date": "2025-04-26",
+      "predicted_numbers": [
+        8,
+        9,
+        12,
+        31,
+        35
+      ],
+      "predicted_special": null,
+      "actual_numbers": [
+        20,
+        23,
+        32,
+        35,
+        38
+      ],
+      "actual_special": 0,
+      "matches": 1,
+      "matched_numbers": [
+        35
+      ],
+      "is_win": false,
+      "confidence": 0.74,
+      "method_name": "hot_cold_mix",
+      "window_size": 100,
+      "training_periods": 100
+    },
+    {
+      "draw_id": "114000102",
+      "draw_date": "2025-04-25",
+      "predicted_numbers": [
+        8,
+        9,
+        12,
+        21,
+        23
+      ],
+      "predicted_special": null,
+      "actual_numbers": [
+        1,
+        5,
+        24,
+        33,
+        36
+      ],
+      "actual_special": 0,
+      "matches": 0,
+      "matched_numbers": [],
+      "is_win": false,
+      "confidence": 0.7326459606769752,
+      "method_name": "hot_cold_mix",
+      "window_size": 100,
+      "training_periods": 100
+    },
+    {
+      "draw_id": "114000101",
+      "draw_date": "2025-04-24",
+      "predicted_numbers": [
+        8,
+        9,
+        12,
+        21,
+        31
+      ],
+      "predicted_special": null,
+      "actual_numbers": [
+        4,
+        6,
+        25,
+        29,
+        35
+      ],
+      "actual_special": 0,
+      "matches": 0,
+      "matched_numbers": [],
+      "is_win": false,
+      "confidence": 0.74,
+      "method_name": "hot_cold_mix",
+      "window_size": 100,
+      "training_periods": 100
+    },
+    {
+      "draw_id": "114000100",
+      "draw_date": "2025-04-23",
+      "predicted_numbers": [
+        8,
+        9,
+        12,
+        21,
+        31
+      ],
+      "predicted_special": null,
+      "actual_numbers": [
+        1,
+        16,
+        19,
+        27,
+        33
+      ],
+      "actual_special": 0,
+      "matches": 0,
+      "matched_numbers": [],
+      "is_win": false,
+      "confidence": 0.74,
+      "method_name": "hot_cold_mix",
+      "window_size": 100,
+      "training_periods": 100
+    },
+    {
+      "draw_id": "114000099",
+      "draw_date": "2025-04-22",
+      "predicted_numbers": [
+        8,
+        9,
+        12,
+        31,
+        32
+      ],
+      "predicted_special": null,
+      "actual_numbers": [
+        8,
+        19,
+        23,
+        27,
+        31
+      ],
+      "actual_special": 0,
+      "matches": 2,
+      "matched_numbers": [
+        8,
+        31
+      ],
+      "is_win": true,
+      "confidence": 0.74,
+      "method_name": "hot_cold_mix",
+      "window_size": 100,
+      "training_periods": 100
+    },
+    {
+      "draw_id": "114000098",
+      "draw_date": "2025-04-21",
+      "predicted_numbers": [
+        8,
+        12,
+        20,
+        31,
+        32
+      ],
+      "predicted_special": null,
+      "actual_numbers": [
+        2,
+        6,
+        12,
+        14,
+        24
+      ],
+      "actual_special": 0,
+      "matches": 1,
+      "matched_numbers": [
+        12
+      ],
+      "is_win": false,
+      "confidence": 0.7382908860876163,
+      "method_name": "hot_cold_mix",
+      "window_size": 100,
+      "training_periods": 100
+    },
+    {
+      "draw_id": "114000097",
+      "draw_date": "2025-04-19",
+      "predicted_numbers": [
+        8,
+        12,
+        19,
+        23,
+        32
+      ],
+      "predicted_special": null,
+      "actual_numbers": [
+        14,
+        19,
+        21,
+        26,
+        36
+      ],
+      "actual_special": 0,
+      "matches": 1,
+      "matched_numbers": [
+        19
+      ],
+      "is_win": false,
+      "confidence": 0.7274145988319001,
+      "method_name": "hot_cold_mix",
+      "window_size": 100,
+      "training_periods": 100
+    },
+    {
+      "draw_id": "114000096",
+      "draw_date": "2025-04-18",
+      "predicted_numbers": [
+        7,
+        8,
+        12,
+        32,
+        33
+      ],
+      "predicted_special": null,
+      "actual_numbers": [
+        7,
+        24,
+        28,
+        31,
+        36
+      ],
+      "actual_special": 0,
+      "matches": 1,
+      "matched_numbers": [
+        7
+      ],
+      "is_win": false,
+      "confidence": 0.7391407844951265,
+      "method_name": "hot_cold_mix",
+      "window_size": 100,
+      "training_periods": 100
+    },
+    {
+      "draw_id": "114000095",
+      "draw_date": "2025-04-17",
+      "predicted_numbers": [
+        7,
+        8,
+        12,
+        32,
+        33
+      ],
+      "predicted_special": null,
+      "actual_numbers": [
+        3,
+        6,
+        23,
+        24,
+        37
+      ],
+      "actual_special": 0,
+      "matches": 0,
+      "matched_numbers": [],
+      "is_win": false,
+      "confidence": 0.74,
+      "method_name": "hot_cold_mix",
+      "window_size": 100,
+      "training_periods": 100
+    },
+    {
+      "draw_id": "114000094",
+      "draw_date": "2025-04-16",
+      "predicted_numbers": [
+        8,
+        12,
+        23,
+        32,
+        33
+      ],
+      "predicted_special": null,
+      "actual_numbers": [
+        7,
+        22,
+        25,
+        29,
+        38
+      ],
+      "actual_special": 0,
+      "matches": 0,
+      "matched_numbers": [],
+      "is_win": false,
+      "confidence": 0.74,
+      "method_name": "hot_cold_mix",
+      "window_size": 100,
+      "training_periods": 100
+    },
+    {
+      "draw_id": "114000093",
+      "draw_date": "2025-04-15",
+      "predicted_numbers": [
+        7,
+        12,
+        23,
+        32,
+        33
+      ],
+      "predicted_special": null,
+      "actual_numbers": [
+        2,
+        3,
+        16,
+        27,
+        39
+      ],
+      "actual_special": 0,
+      "matches": 0,
+      "matched_numbers": [],
+      "is_win": false,
+      "confidence": 0.74,
+      "method_name": "hot_cold_mix",
+      "window_size": 100,
+      "training_periods": 100
+    },
+    {
+      "draw_id": "114000092",
+      "draw_date": "2025-04-14",
+      "predicted_numbers": [
+        7,
+        23,
+        31,
+        32,
+        33
+      ],
+      "predicted_special": null,
+      "actual_numbers": [
+        9,
+        10,
+        22,
+        30,
+        33
+      ],
+      "actual_special": 0,
+      "matches": 1,
+      "matched_numbers": [
+        33
+      ],
+      "is_win": false,
+      "confidence": 0.74,
+      "method_name": "hot_cold_mix",
+      "window_size": 100,
+      "training_periods": 100
+    },
+    {
+      "draw_id": "114000091",
+      "draw_date": "2025-04-12",
+      "predicted_numbers": [
+        7,
+        15,
+        20,
+        32,
+        33
+      ],
+      "predicted_special": null,
+      "actual_numbers": [
+        9,
+        11,
+        15,
+        25,
+        31
+      ],
+      "actual_special": 0,
+      "matches": 1,
+      "matched_numbers": [
+        15
+      ],
+      "is_win": false,
+      "confidence": 0.74,
+      "method_name": "hot_cold_mix",
+      "window_size": 100,
+      "training_periods": 100
+    },
+    {
+      "draw_id": "114000090",
+      "draw_date": "2025-04-11",
+      "predicted_numbers": [
+        7,
+        12,
+        20,
+        33,
+        38
+      ],
+      "predicted_special": null,
+      "actual_numbers": [
+        15,
+        17,
+        26,
+        27,
+        35
+      ],
+      "actual_special": 0,
+      "matches": 0,
+      "matched_numbers": [],
+      "is_win": false,
+      "confidence": 0.74,
+      "method_name": "hot_cold_mix",
+      "window_size": 100,
+      "training_periods": 100
+    },
+    {
+      "draw_id": "114000089",
+      "draw_date": "2025-04-10",
+      "predicted_numbers": [
+        7,
+        12,
+        15,
+        20,
+        38
+      ],
+      "predicted_special": null,
+      "actual_numbers": [
+        14,
+        19,
+        22,
+        26,
+        28
+      ],
+      "actual_special": 0,
+      "matches": 0,
+      "matched_numbers": [],
+      "is_win": false,
+      "confidence": 0.74,
+      "method_name": "hot_cold_mix",
+      "window_size": 100,
+      "training_periods": 100
+    },
+    {
+      "draw_id": "114000088",
+      "draw_date": "2025-04-09",
+      "predicted_numbers": [
+        7,
+        12,
+        15,
+        20,
+        38
+      ],
+      "predicted_special": null,
+      "actual_numbers": [
+        4,
+        6,
+        14,
+        24,
+        35
+      ],
+      "actual_special": 0,
+      "matches": 0,
+      "matched_numbers": [],
+      "is_win": false,
+      "confidence": 0.74,
+      "method_name": "hot_cold_mix",
+      "window_size": 100,
+      "training_periods": 100
+    },
+    {
+      "draw_id": "114000087",
+      "draw_date": "2025-04-08",
+      "predicted_numbers": [
+        12,
+        15,
+        18,
+        20,
+        38
+      ],
+      "predicted_special": null,
+      "actual_numbers": [
+        6,
+        17,
+        18,
+        19,
+        32
+      ],
+      "actual_special": 0,
+      "matches": 1,
+      "matched_numbers": [
+        18
+      ],
+      "is_win": false,
+      "confidence": 0.74,
+      "method_name": "hot_cold_mix",
+      "window_size": 100,
+      "training_periods": 100
+    },
+    {
+      "draw_id": "114000086",
+      "draw_date": "2025-04-07",
+      "predicted_numbers": [
+        12,
+        15,
+        18,
+        20,
+        38
+      ],
+      "predicted_special": null,
+      "actual_numbers": [
+        1,
+        6,
+        19,
+        26,
+        33
+      ],
+      "actual_special": 0,
+      "matches": 0,
+      "matched_numbers": [],
+      "is_win": false,
+      "confidence": 0.74,
+      "method_name": "hot_cold_mix",
+      "window_size": 100,
+      "training_periods": 100
+    },
+    {
+      "draw_id": "114000085",
+      "draw_date": "2025-04-05",
+      "predicted_numbers": [
+        12,
+        15,
+        18,
+        20,
+        38
+      ],
+      "predicted_special": null,
+      "actual_numbers": [
+        12,
+        13,
+        14,
+        15,
+        24
+      ],
+      "actual_special": 0,
+      "matches": 2,
+      "matched_numbers": [
+        12,
+        15
+      ],
+      "is_win": true,
+      "confidence": 0.74,
+      "method_name": "hot_cold_mix",
+      "window_size": 100,
+      "training_periods": 100
+    },
+    {
+      "draw_id": "114000084",
+      "draw_date": "2025-04-04",
+      "predicted_numbers": [
+        7,
+        12,
+        15,
+        18,
+        38
+      ],
+      "predicted_special": null,
+      "actual_numbers": [
+        3,
+        6,
+        7,
+        36,
+        38
+      ],
+      "actual_special": 0,
+      "matches": 2,
+      "matched_numbers": [
+        7,
+        38
+      ],
+      "is_win": true,
+      "confidence": 0.74,
+      "method_name": "hot_cold_mix",
+      "window_size": 100,
+      "training_periods": 100
+    },
+    {
+      "draw_id": "114000083",
+      "draw_date": "2025-04-03",
+      "predicted_numbers": [
+        7,
+        12,
+        13,
+        18,
+        38
+      ],
+      "predicted_special": null,
+      "actual_numbers": [
+        5,
+        16,
+        23,
+        31,
+        39
+      ],
+      "actual_special": 0,
+      "matches": 0,
+      "matched_numbers": [],
+      "is_win": false,
+      "confidence": 0.74,
+      "method_name": "hot_cold_mix",
+      "window_size": 100,
+      "training_periods": 100
+    },
+    {
+      "draw_id": "114000082",
+      "draw_date": "2025-04-02",
+      "predicted_numbers": [
+        7,
+        12,
+        13,
+        18,
+        38
+      ],
+      "predicted_special": null,
+      "actual_numbers": [
+        4,
+        8,
+        29,
+        32,
+        34
+      ],
+      "actual_special": 0,
+      "matches": 0,
+      "matched_numbers": [],
+      "is_win": false,
+      "confidence": 0.74,
+      "method_name": "hot_cold_mix",
+      "window_size": 100,
+      "training_periods": 100
+    },
+    {
+      "draw_id": "114000081",
+      "draw_date": "2025-04-01",
+      "predicted_numbers": [
+        5,
+        7,
+        12,
+        13,
+        18
+      ],
+      "predicted_special": null,
+      "actual_numbers": [
+        5,
+        13,
+        17,
+        19,
+        31
+      ],
+      "actual_special": 0,
+      "matches": 2,
+      "matched_numbers": [
+        5,
+        13
+      ],
+      "is_win": true,
+      "confidence": 0.74,
+      "method_name": "hot_cold_mix",
+      "window_size": 100,
+      "training_periods": 100
+    },
+    {
+      "draw_id": "114000080",
+      "draw_date": "2025-03-31",
+      "predicted_numbers": [
+        3,
+        5,
+        7,
+        12,
+        18
+      ],
+      "predicted_special": null,
+      "actual_numbers": [
+        7,
+        10,
+        13,
+        23,
+        26
+      ],
+      "actual_special": 0,
+      "matches": 1,
+      "matched_numbers": [
+        7
+      ],
+      "is_win": false,
+      "confidence": 0.7284519422118743,
+      "method_name": "hot_cold_mix",
+      "window_size": 100,
+      "training_periods": 100
+    },
+    {
+      "draw_id": "114000079",
+      "draw_date": "2025-03-29",
+      "predicted_numbers": [
+        3,
+        5,
+        7,
+        8,
+        12
+      ],
+      "predicted_special": null,
+      "actual_numbers": [
+        4,
+        9,
+        12,
+        17,
+        27
+      ],
+      "actual_special": 0,
+      "matches": 1,
+      "matched_numbers": [
+        12
+      ],
+      "is_win": false,
+      "confidence": 0.7296636242945124,
+      "method_name": "hot_cold_mix",
+      "window_size": 100,
+      "training_periods": 100
+    },
+    {
+      "draw_id": "114000078",
+      "draw_date": "2025-03-28",
+      "predicted_numbers": [
+        3,
+        5,
+        7,
+        12,
+        38
+      ],
+      "predicted_special": null,
+      "actual_numbers": [
+        13,
+        24,
+        25,
+        36,
+        39
+      ],
+      "actual_special": 0,
+      "matches": 0,
+      "matched_numbers": [],
+      "is_win": false,
+      "confidence": 0.7286367795627683,
+      "method_name": "hot_cold_mix",
+      "window_size": 100,
+      "training_periods": 100
+    },
+    {
+      "draw_id": "114000077",
+      "draw_date": "2025-03-27",
+      "predicted_numbers": [
+        3,
+        5,
+        7,
+        23,
+        38
+      ],
+      "predicted_special": null,
+      "actual_numbers": [
+        5,
+        25,
+        33,
+        36,
+        37
+      ],
+      "actual_special": 0,
+      "matches": 1,
+      "matched_numbers": [
+        5
+      ],
+      "is_win": false,
+      "confidence": 0.7345707798633982,
+      "method_name": "hot_cold_mix",
+      "window_size": 100,
+      "training_periods": 100
+    },
+    {
+      "draw_id": "114000076",
+      "draw_date": "2025-03-26",
+      "predicted_numbers": [
+        3,
+        5,
+        7,
+        23,
+        38
+      ],
+      "predicted_special": null,
+      "actual_numbers": [
+        1,
+        10,
+        12,
+        32,
+        35
+      ],
+      "actual_special": 0,
+      "matches": 0,
+      "matched_numbers": [],
+      "is_win": false,
+      "confidence": 0.74,
+      "method_name": "hot_cold_mix",
+      "window_size": 100,
+      "training_periods": 100
+    },
+    {
+      "draw_id": "114000075",
+      "draw_date": "2025-03-25",
+      "predicted_numbers": [
+        3,
+        7,
+        12,
+        23,
+        33
+      ],
+      "predicted_special": null,
+      "actual_numbers": [
+        4,
+        20,
+        24,
+        27,
+        38
+      ],
+      "actual_special": 0,
+      "matches": 0,
+      "matched_numbers": [],
+      "is_win": false,
+      "confidence": 0.74,
+      "method_name": "hot_cold_mix",
+      "window_size": 100,
+      "training_periods": 100
+    },
+    {
+      "draw_id": "114000074",
+      "draw_date": "2025-03-24",
+      "predicted_numbers": [
+        3,
+        7,
+        11,
+        12,
+        16
+      ],
+      "predicted_special": null,
+      "actual_numbers": [
+        7,
+        25,
+        32,
+        34,
+        35
+      ],
+      "actual_special": 0,
+      "matches": 1,
+      "matched_numbers": [
+        7
+      ],
+      "is_win": false,
+      "confidence": 0.74,
+      "method_name": "hot_cold_mix",
+      "window_size": 100,
+      "training_periods": 100
+    },
+    {
+      "draw_id": "114000073",
+      "draw_date": "2025-03-22",
+      "predicted_numbers": [
+        3,
+        7,
+        11,
+        12,
+        16
+      ],
+      "predicted_special": null,
+      "actual_numbers": [
+        5,
+        13,
+        16,
+        24,
+        28
+      ],
+      "actual_special": 0,
+      "matches": 1,
+      "matched_numbers": [
+        16
+      ],
+      "is_win": false,
+      "confidence": 0.74,
+      "method_name": "hot_cold_mix",
+      "window_size": 100,
+      "training_periods": 100
+    },
+    {
+      "draw_id": "114000072",
+      "draw_date": "2025-03-21",
+      "predicted_numbers": [
+        3,
+        7,
+        11,
+        16,
+        34
+      ],
+      "predicted_special": null,
+      "actual_numbers": [
+        5,
+        9,
+        15,
+        20,
+        26
+      ],
+      "actual_special": 0,
+      "matches": 0,
+      "matched_numbers": [],
+      "is_win": false,
+      "confidence": 0.74,
+      "method_name": "hot_cold_mix",
+      "window_size": 100,
+      "training_periods": 100
+    },
+    {
+      "draw_id": "114000071",
+      "draw_date": "2025-03-20",
+      "predicted_numbers": [
+        7,
+        11,
+        20,
+        34,
+        35
+      ],
+      "predicted_special": null,
+      "actual_numbers": [
+        2,
+        16,
+        17,
+        27,
+        32
+      ],
+      "actual_special": 0,
+      "matches": 0,
+      "matched_numbers": [],
+      "is_win": false,
+      "confidence": 0.7390876206007517,
+      "method_name": "hot_cold_mix",
+      "window_size": 100,
+      "training_periods": 100
+    },
+    {
+      "draw_id": "114000070",
+      "draw_date": "2025-03-19",
+      "predicted_numbers": [
+        5,
+        7,
+        11,
+        12,
+        20
+      ],
+      "predicted_special": null,
+      "actual_numbers": [
+        11,
+        15,
+        25,
+        29,
+        34
+      ],
+      "actual_special": 0,
+      "matches": 1,
+      "matched_numbers": [
+        11
+      ],
+      "is_win": false,
+      "confidence": 0.7248484953218858,
+      "method_name": "hot_cold_mix",
+      "window_size": 100,
+      "training_periods": 100
+    },
+    {
+      "draw_id": "114000069",
+      "draw_date": "2025-03-18",
+      "predicted_numbers": [
+        5,
+        7,
+        11,
+        20,
+        38
+      ],
+      "predicted_special": null,
+      "actual_numbers": [
+        3,
+        13,
+        15,
+        19,
+        25
+      ],
+      "actual_special": 0,
+      "matches": 0,
+      "matched_numbers": [],
+      "is_win": false,
+      "confidence": 0.726473009431804,
+      "method_name": "hot_cold_mix",
+      "window_size": 100,
+      "training_periods": 100
+    },
+    {
+      "draw_id": "114000068",
+      "draw_date": "2025-03-17",
+      "predicted_numbers": [
+        7,
+        11,
+        20,
+        29,
+        38
+      ],
+      "predicted_special": null,
+      "actual_numbers": [
+        7,
+        11,
+        13,
+        26,
+        30
+      ],
+      "actual_special": 0,
+      "matches": 2,
+      "matched_numbers": [
+        7,
+        11
+      ],
+      "is_win": true,
+      "confidence": 0.74,
+      "method_name": "hot_cold_mix",
+      "window_size": 100,
+      "training_periods": 100
+    },
+    {
+      "draw_id": "114000067",
+      "draw_date": "2025-03-15",
+      "predicted_numbers": [
+        3,
+        7,
+        11,
+        20,
+        38
+      ],
+      "predicted_special": null,
+      "actual_numbers": [
+        8,
+        15,
+        25,
+        26,
+        34
+      ],
+      "actual_special": 0,
+      "matches": 0,
+      "matched_numbers": [],
+      "is_win": false,
+      "confidence": 0.7314500368583823,
+      "method_name": "hot_cold_mix",
+      "window_size": 100,
+      "training_periods": 100
+    },
+    {
+      "draw_id": "114000066",
+      "draw_date": "2025-03-14",
+      "predicted_numbers": [
+        3,
+        7,
+        11,
+        12,
+        13
+      ],
+      "predicted_special": null,
+      "actual_numbers": [
+        6,
+        8,
+        18,
+        19,
+        28
+      ],
+      "actual_special": 0,
+      "matches": 0,
+      "matched_numbers": [],
+      "is_win": false,
+      "confidence": 0.7306638167766253,
+      "method_name": "hot_cold_mix",
+      "window_size": 100,
+      "training_periods": 100
+    },
+    {
+      "draw_id": "114000065",
+      "draw_date": "2025-03-13",
+      "predicted_numbers": [
+        3,
+        7,
+        13,
+        20,
+        29
+      ],
+      "predicted_special": null,
+      "actual_numbers": [
+        3,
+        4,
+        7,
+        11,
+        30
+      ],
+      "actual_special": 0,
+      "matches": 2,
+      "matched_numbers": [
+        3,
+        7
+      ],
+      "is_win": true,
+      "confidence": 0.732299461454155,
+      "method_name": "hot_cold_mix",
+      "window_size": 100,
+      "training_periods": 100
+    },
+    {
+      "draw_id": "114000064",
+      "draw_date": "2025-03-12",
+      "predicted_numbers": [
+        3,
+        13,
+        20,
+        29,
+        38
+      ],
+      "predicted_special": null,
+      "actual_numbers": [
+        6,
+        14,
+        27,
+        30,
+        33
+      ],
+      "actual_special": 0,
+      "matches": 0,
+      "matched_numbers": [],
+      "is_win": false,
+      "confidence": 0.74,
+      "method_name": "hot_cold_mix",
+      "window_size": 100,
+      "training_periods": 100
+    },
+    {
+      "draw_id": "114000063",
+      "draw_date": "2025-03-11",
+      "predicted_numbers": [
+        3,
+        5,
+        13,
+        20,
+        29
+      ],
+      "predicted_special": null,
+      "actual_numbers": [
+        2,
+        21,
+        24,
+        27,
+        31
+      ],
+      "actual_special": 0,
+      "matches": 0,
+      "matched_numbers": [],
+      "is_win": false,
+      "confidence": 0.7389158803090452,
+      "method_name": "hot_cold_mix",
+      "window_size": 100,
+      "training_periods": 100
+    },
+    {
+      "draw_id": "114000062",
+      "draw_date": "2025-03-10",
+      "predicted_numbers": [
+        3,
+        7,
+        13,
+        29,
+        33
+      ],
+      "predicted_special": null,
+      "actual_numbers": [
+        2,
+        4,
+        7,
+        25,
+        37
+      ],
+      "actual_special": 0,
+      "matches": 1,
+      "matched_numbers": [
+        7
+      ],
+      "is_win": false,
+      "confidence": 0.74,
+      "method_name": "hot_cold_mix",
+      "window_size": 100,
+      "training_periods": 100
+    },
+    {
+      "draw_id": "114000061",
+      "draw_date": "2025-03-08",
+      "predicted_numbers": [
+        3,
+        13,
+        27,
+        29,
+        33
+      ],
+      "predicted_special": null,
+      "actual_numbers": [
+        17,
+        23,
+        24,
+        27,
+        35
+      ],
+      "actual_special": 0,
+      "matches": 1,
+      "matched_numbers": [
+        27
+      ],
+      "is_win": false,
+      "confidence": 0.74,
+      "method_name": "hot_cold_mix",
+      "window_size": 100,
+      "training_periods": 100
+    },
+    {
+      "draw_id": "114000060",
+      "draw_date": "2025-03-07",
+      "predicted_numbers": [
+        3,
+        5,
+        13,
+        29,
+        33
+      ],
+      "predicted_special": null,
+      "actual_numbers": [
+        9,
+        10,
+        19,
+        33,
+        35
+      ],
+      "actual_special": 0,
+      "matches": 1,
+      "matched_numbers": [
+        33
+      ],
+      "is_win": false,
+      "confidence": 0.74,
+      "method_name": "hot_cold_mix",
+      "window_size": 100,
+      "training_periods": 100
+    },
+    {
+      "draw_id": "114000059",
+      "draw_date": "2025-03-06",
+      "predicted_numbers": [
+        3,
+        5,
+        13,
+        29,
+        33
+      ],
+      "predicted_special": null,
+      "actual_numbers": [
+        8,
+        12,
+        15,
+        18,
+        34
+      ],
+      "actual_special": 0,
+      "matches": 0,
+      "matched_numbers": [],
+      "is_win": false,
+      "confidence": 0.7386359363767435,
+      "method_name": "hot_cold_mix",
+      "window_size": 100,
+      "training_periods": 100
+    },
+    {
+      "draw_id": "114000058",
+      "draw_date": "2025-03-05",
+      "predicted_numbers": [
+        3,
+        5,
+        13,
+        27,
+        33
+      ],
+      "predicted_special": null,
+      "actual_numbers": [
+        15,
+        23,
+        29,
+        36,
+        39
+      ],
+      "actual_special": 0,
+      "matches": 0,
+      "matched_numbers": [],
+      "is_win": false,
+      "confidence": 0.7334487536591068,
+      "method_name": "hot_cold_mix",
+      "window_size": 100,
+      "training_periods": 100
+    },
+    {
+      "draw_id": "114000057",
+      "draw_date": "2025-03-04",
+      "predicted_numbers": [
+        3,
+        5,
+        11,
+        23,
+        33
+      ],
+      "predicted_special": null,
+      "actual_numbers": [
+        11,
+        18,
+        21,
+        23,
+        36
+      ],
+      "actual_special": 0,
+      "matches": 2,
+      "matched_numbers": [
+        11,
+        23
+      ],
+      "is_win": true,
+      "confidence": 0.7218551329224842,
+      "method_name": "hot_cold_mix",
+      "window_size": 100,
+      "training_periods": 100
+    },
+    {
+      "draw_id": "114000056",
+      "draw_date": "2025-03-03",
+      "predicted_numbers": [
+        3,
+        5,
+        11,
+        29,
+        33
+      ],
+      "predicted_special": null,
+      "actual_numbers": [
+        8,
+        9,
+        12,
+        22,
+        27
+      ],
+      "actual_special": 0,
+      "matches": 0,
+      "matched_numbers": [],
+      "is_win": false,
+      "confidence": 0.7239855329251449,
+      "method_name": "hot_cold_mix",
+      "window_size": 100,
+      "training_periods": 100
+    },
+    {
+      "draw_id": "114000055",
+      "draw_date": "2025-03-01",
+      "predicted_numbers": [
+        3,
+        5,
+        21,
+        24,
+        33
+      ],
+      "predicted_special": null,
+      "actual_numbers": [
+        4,
+        16,
+        29,
+        31,
+        34
+      ],
+      "actual_special": 0,
+      "matches": 0,
+      "matched_numbers": [],
+      "is_win": false,
+      "confidence": 0.7256705611729115,
+      "method_name": "hot_cold_mix",
+      "window_size": 100,
+      "training_periods": 100
+    },
+    {
+      "draw_id": "114000054",
+      "draw_date": "2025-02-28",
+      "predicted_numbers": [
+        3,
+        5,
+        11,
+        21,
+        24
+      ],
+      "predicted_special": null,
+      "actual_numbers": [
+        5,
+        27,
+        31,
+        38,
+        39
+      ],
+      "actual_special": 0,
+      "matches": 1,
+      "matched_numbers": [
+        5
+      ],
+      "is_win": false,
+      "confidence": 0.7256350063425997,
+      "method_name": "hot_cold_mix",
+      "window_size": 100,
+      "training_periods": 100
+    },
+    {
+      "draw_id": "114000053",
+      "draw_date": "2025-02-27",
+      "predicted_numbers": [
+        3,
+        11,
+        18,
+        21,
+        24
+      ],
+      "predicted_special": null,
+      "actual_numbers": [
+        11,
+        12,
+        20,
+        28,
+        29
+      ],
+      "actual_special": 0,
+      "matches": 1,
+      "matched_numbers": [
+        11
+      ],
+      "is_win": false,
+      "confidence": 0.74,
+      "method_name": "hot_cold_mix",
+      "window_size": 100,
+      "training_periods": 100
+    },
+    {
+      "draw_id": "114000052",
+      "draw_date": "2025-02-26",
+      "predicted_numbers": [
+        3,
+        5,
+        11,
+        18,
+        24
+      ],
+      "predicted_special": null,
+      "actual_numbers": [
+        3,
+        11,
+        24,
+        27,
+        36
+      ],
+      "actual_special": 0,
+      "matches": 3,
+      "matched_numbers": [
+        3,
+        11,
+        24
+      ],
+      "is_win": true,
+      "confidence": 0.74,
+      "method_name": "hot_cold_mix",
+      "window_size": 100,
+      "training_periods": 100
+    },
+    {
+      "draw_id": "114000051",
+      "draw_date": "2025-02-25",
+      "predicted_numbers": [
+        3,
+        10,
+        11,
+        18,
+        21
+      ],
+      "predicted_special": null,
+      "actual_numbers": [
+        5,
+        11,
+        26,
+        33,
+        35
+      ],
+      "actual_special": 0,
+      "matches": 1,
+      "matched_numbers": [
+        11
+      ],
+      "is_win": false,
+      "confidence": 0.74,
+      "method_name": "hot_cold_mix",
+      "window_size": 100,
+      "training_periods": 100
+    },
+    {
+      "draw_id": "114000050",
+      "draw_date": "2025-02-24",
+      "predicted_numbers": [
+        3,
+        7,
+        10,
+        11,
+        18
+      ],
+      "predicted_special": null,
+      "actual_numbers": [
+        8,
+        17,
+        18,
+        24,
+        36
+      ],
+      "actual_special": 0,
+      "matches": 1,
+      "matched_numbers": [
+        18
+      ],
+      "is_win": false,
+      "confidence": 0.74,
+      "method_name": "hot_cold_mix",
+      "window_size": 100,
+      "training_periods": 100
+    },
+    {
+      "draw_id": "114000049",
+      "draw_date": "2025-02-22",
+      "predicted_numbers": [
+        3,
+        6,
+        7,
+        11,
+        18
+      ],
+      "predicted_special": null,
+      "actual_numbers": [
+        4,
+        7,
+        11,
+        19,
+        22
+      ],
+      "actual_special": 0,
+      "matches": 2,
+      "matched_numbers": [
+        7,
+        11
+      ],
+      "is_win": true,
+      "confidence": 0.74,
+      "method_name": "hot_cold_mix",
+      "window_size": 100,
+      "training_periods": 100
+    },
+    {
+      "draw_id": "114000048",
+      "draw_date": "2025-02-21",
+      "predicted_numbers": [
+        3,
+        6,
+        7,
+        8,
+        11
+      ],
+      "predicted_special": null,
+      "actual_numbers": [
+        11,
+        13,
+        18,
+        30,
+        35
+      ],
+      "actual_special": 0,
+      "matches": 1,
+      "matched_numbers": [
+        11
+      ],
+      "is_win": false,
+      "confidence": 0.74,
+      "method_name": "hot_cold_mix",
+      "window_size": 100,
+      "training_periods": 100
+    },
+    {
+      "draw_id": "114000047",
+      "draw_date": "2025-02-20",
+      "predicted_numbers": [
+        3,
+        7,
+        8,
+        10,
+        11
+      ],
+      "predicted_special": null,
+      "actual_numbers": [
+        3,
+        7,
+        17,
+        24,
+        27
+      ],
+      "actual_special": 0,
+      "matches": 2,
+      "matched_numbers": [
+        3,
+        7
+      ],
+      "is_win": true,
+      "confidence": 0.74,
+      "method_name": "hot_cold_mix",
+      "window_size": 100,
+      "training_periods": 100
+    },
+    {
+      "draw_id": "114000046",
+      "draw_date": "2025-02-19",
+      "predicted_numbers": [
+        7,
+        8,
+        11,
+        13,
+        25
+      ],
+      "predicted_special": null,
+      "actual_numbers": [
+        3,
+        27,
+        28,
+        33,
+        38
+      ],
+      "actual_special": 0,
+      "matches": 0,
+      "matched_numbers": [],
+      "is_win": false,
+      "confidence": 0.74,
+      "method_name": "hot_cold_mix",
+      "window_size": 100,
+      "training_periods": 100
+    },
+    {
+      "draw_id": "114000045",
+      "draw_date": "2025-02-18",
+      "predicted_numbers": [
+        3,
+        6,
+        8,
+        11,
+        13
+      ],
+      "predicted_special": null,
+      "actual_numbers": [
+        10,
+        12,
+        13,
+        19,
+        33
+      ],
+      "actual_special": 0,
+      "matches": 1,
+      "matched_numbers": [
+        13
+      ],
+      "is_win": false,
+      "confidence": 0.74,
+      "method_name": "hot_cold_mix",
+      "window_size": 100,
+      "training_periods": 100
+    },
+    {
+      "draw_id": "114000044",
+      "draw_date": "2025-02-17",
+      "predicted_numbers": [
+        6,
+        7,
+        8,
+        11,
+        13
+      ],
+      "predicted_special": null,
+      "actual_numbers": [
+        9,
+        15,
+        29,
+        30,
+        39
+      ],
+      "actual_special": 0,
+      "matches": 0,
+      "matched_numbers": [],
+      "is_win": false,
+      "confidence": 0.74,
+      "method_name": "hot_cold_mix",
+      "window_size": 100,
+      "training_periods": 100
+    },
+    {
+      "draw_id": "114000043",
+      "draw_date": "2025-02-15",
+      "predicted_numbers": [
+        3,
+        6,
+        7,
+        8,
+        13
+      ],
+      "predicted_special": null,
+      "actual_numbers": [
+        6,
+        8,
+        10,
+        21,
+        26
+      ],
+      "actual_special": 0,
+      "matches": 2,
+      "matched_numbers": [
+        6,
+        8
+      ],
+      "is_win": true,
+      "confidence": 0.74,
+      "method_name": "hot_cold_mix",
+      "window_size": 100,
+      "training_periods": 100
+    },
+    {
+      "draw_id": "114000042",
+      "draw_date": "2025-02-14",
+      "predicted_numbers": [
+        1,
+        6,
+        8,
+        10,
+        13
+      ],
+      "predicted_special": null,
+      "actual_numbers": [
+        11,
+        17,
+        29,
+        34,
+        39
+      ],
+      "actual_special": 0,
+      "matches": 0,
+      "matched_numbers": [],
+      "is_win": false,
+      "confidence": 0.74,
+      "method_name": "hot_cold_mix",
+      "window_size": 100,
+      "training_periods": 100
+    },
+    {
+      "draw_id": "114000041",
+      "draw_date": "2025-02-13",
+      "predicted_numbers": [
+        4,
+        6,
+        8,
+        13,
+        18
+      ],
+      "predicted_special": null,
+      "actual_numbers": [
+        2,
+        7,
+        11,
+        20,
+        30
+      ],
+      "actual_special": 0,
+      "matches": 0,
+      "matched_numbers": [],
+      "is_win": false,
+      "confidence": 0.7226177175299408,
+      "method_name": "hot_cold_mix",
+      "window_size": 100,
+      "training_periods": 100
+    },
+    {
+      "draw_id": "114000040",
+      "draw_date": "2025-02-12",
+      "predicted_numbers": [
+        6,
+        8,
+        11,
+        13,
+        25
+      ],
+      "predicted_special": null,
+      "actual_numbers": [
+        2,
+        6,
+        19,
+        28,
+        29
+      ],
+      "actual_special": 0,
+      "matches": 1,
+      "matched_numbers": [
+        6
+      ],
+      "is_win": false,
+      "confidence": 0.7389358907842951,
+      "method_name": "hot_cold_mix",
+      "window_size": 100,
+      "training_periods": 100
+    },
+    {
+      "draw_id": "114000039",
+      "draw_date": "2025-02-11",
+      "predicted_numbers": [
+        1,
+        8,
+        13,
+        18,
+        25
+      ],
+      "predicted_special": null,
+      "actual_numbers": [
+        10,
+        18,
+        19,
+        27,
+        28
+      ],
+      "actual_special": 0,
+      "matches": 1,
+      "matched_numbers": [
+        18
+      ],
+      "is_win": false,
+      "confidence": 0.7348208117343695,
+      "method_name": "hot_cold_mix",
+      "window_size": 100,
+      "training_periods": 100
+    },
+    {
+      "draw_id": "114000038",
+      "draw_date": "2025-02-10",
+      "predicted_numbers": [
+        1,
+        8,
+        11,
+        17,
+        18
+      ],
+      "predicted_special": null,
+      "actual_numbers": [
+        12,
+        22,
+        26,
+        28,
+        35
+      ],
+      "actual_special": 0,
+      "matches": 0,
+      "matched_numbers": [],
+      "is_win": false,
+      "confidence": 0.7198351584010867,
+      "method_name": "hot_cold_mix",
+      "window_size": 100,
+      "training_periods": 100
+    },
+    {
+      "draw_id": "114000037",
+      "draw_date": "2025-02-09",
+      "predicted_numbers": [
+        4,
+        8,
+        11,
+        26,
+        35
+      ],
+      "predicted_special": null,
+      "actual_numbers": [
+        4,
+        5,
+        27,
+        35,
+        37
+      ],
+      "actual_special": 0,
+      "matches": 2,
+      "matched_numbers": [
+        4,
+        35
+      ],
+      "is_win": true,
+      "confidence": 0.74,
+      "method_name": "hot_cold_mix",
+      "window_size": 100,
+      "training_periods": 100
+    },
+    {
+      "draw_id": "114000036",
+      "draw_date": "2025-02-08",
+      "predicted_numbers": [
+        1,
+        11,
+        18,
+        26,
+        37
+      ],
+      "predicted_special": null,
+      "actual_numbers": [
+        8,
+        24,
+        28,
+        37,
+        38
+      ],
+      "actual_special": 0,
+      "matches": 1,
+      "matched_numbers": [
+        37
+      ],
+      "is_win": false,
+      "confidence": 0.7399816379952797,
+      "method_name": "hot_cold_mix",
+      "window_size": 100,
+      "training_periods": 100
+    },
+    {
+      "draw_id": "114000035",
+      "draw_date": "2025-02-07",
+      "predicted_numbers": [
+        1,
+        11,
+        15,
+        18,
+        26
+      ],
+      "predicted_special": null,
+      "actual_numbers": [
+        16,
+        21,
+        26,
+        29,
+        37
+      ],
+      "actual_special": 0,
+      "matches": 1,
+      "matched_numbers": [
+        26
+      ],
+      "is_win": false,
+      "confidence": 0.74,
+      "method_name": "hot_cold_mix",
+      "window_size": 100,
+      "training_periods": 100
+    },
+    {
+      "draw_id": "114000034",
+      "draw_date": "2025-02-06",
+      "predicted_numbers": [
+        1,
+        15,
+        20,
+        26,
+        37
+      ],
+      "predicted_special": null,
+      "actual_numbers": [
+        3,
+        7,
+        22,
+        29,
+        34
+      ],
+      "actual_special": 0,
+      "matches": 0,
+      "matched_numbers": [],
+      "is_win": false,
+      "confidence": 0.74,
+      "method_name": "hot_cold_mix",
+      "window_size": 100,
+      "training_periods": 100
+    },
+    {
+      "draw_id": "114000033",
+      "draw_date": "2025-02-05",
+      "predicted_numbers": [
+        1,
+        4,
+        11,
+        18,
+        25
+      ],
+      "predicted_special": null,
+      "actual_numbers": [
+        6,
+        7,
+        8,
+        14,
+        39
+      ],
+      "actual_special": 0,
+      "matches": 0,
+      "matched_numbers": [],
+      "is_win": false,
+      "confidence": 0.74,
+      "method_name": "hot_cold_mix",
+      "window_size": 100,
+      "training_periods": 100
+    },
+    {
+      "draw_id": "114000032",
+      "draw_date": "2025-02-04",
+      "predicted_numbers": [
+        1,
+        11,
+        18,
+        25,
+        35
+      ],
+      "predicted_special": null,
+      "actual_numbers": [
+        1,
+        8,
+        16,
+        19,
+        31
+      ],
+      "actual_special": 0,
+      "matches": 1,
+      "matched_numbers": [
+        1
+      ],
+      "is_win": false,
+      "confidence": 0.74,
+      "method_name": "hot_cold_mix",
+      "window_size": 100,
+      "training_periods": 100
+    },
+    {
+      "draw_id": "114000031",
+      "draw_date": "2025-02-03",
+      "predicted_numbers": [
+        1,
+        14,
+        15,
+        18,
+        35
+      ],
+      "predicted_special": null,
+      "actual_numbers": [
+        4,
+        16,
+        21,
+        23,
+        37
+      ],
+      "actual_special": 0,
+      "matches": 0,
+      "matched_numbers": [],
+      "is_win": false,
+      "confidence": 0.74,
+      "method_name": "hot_cold_mix",
+      "window_size": 100,
+      "training_periods": 100
+    },
+    {
+      "draw_id": "114000030",
+      "draw_date": "2025-02-02",
+      "predicted_numbers": [
+        1,
+        14,
+        15,
+        18,
+        35
+      ],
+      "predicted_special": null,
+      "actual_numbers": [
+        9,
+        16,
+        29,
+        32,
+        39
+      ],
+      "actual_special": 0,
+      "matches": 0,
+      "matched_numbers": [],
+      "is_win": false,
+      "confidence": 0.74,
+      "method_name": "hot_cold_mix",
+      "window_size": 100,
+      "training_periods": 100
+    },
+    {
+      "draw_id": "114000029",
+      "draw_date": "2025-02-01",
+      "predicted_numbers": [
+        14,
+        15,
+        25,
+        31,
+        35
+      ],
+      "predicted_special": null,
+      "actual_numbers": [
+        1,
+        10,
+        23,
+        32,
+        37
+      ],
+      "actual_special": 0,
+      "matches": 0,
+      "matched_numbers": [],
+      "is_win": false,
+      "confidence": 0.7384226763365719,
+      "method_name": "hot_cold_mix",
+      "window_size": 100,
+      "training_periods": 100
+    },
+    {
+      "draw_id": "114000028",
+      "draw_date": "2025-01-31",
+      "predicted_numbers": [
+        1,
+        11,
+        14,
+        25,
+        35
+      ],
+      "predicted_special": null,
+      "actual_numbers": [
+        1,
+        5,
+        9,
+        14,
+        26
+      ],
+      "actual_special": 0,
+      "matches": 2,
+      "matched_numbers": [
+        1,
+        14
+      ],
+      "is_win": true,
+      "confidence": 0.7280202190294373,
+      "method_name": "hot_cold_mix",
+      "window_size": 100,
+      "training_periods": 100
+    },
+    {
+      "draw_id": "114000027",
+      "draw_date": "2025-01-30",
+      "predicted_numbers": [
+        11,
+        14,
+        21,
+        25,
+        35
+      ],
+      "predicted_special": null,
+      "actual_numbers": [
+        9,
+        11,
+        14,
+        18,
+        27
+      ],
+      "actual_special": 0,
+      "matches": 2,
+      "matched_numbers": [
+        11,
+        14
+      ],
+      "is_win": true,
+      "confidence": 0.7388298280777463,
+      "method_name": "hot_cold_mix",
+      "window_size": 100,
+      "training_periods": 100
+    },
+    {
+      "draw_id": "114000026",
+      "draw_date": "2025-01-29",
+      "predicted_numbers": [
+        11,
+        14,
+        25,
+        31,
+        35
+      ],
+      "predicted_special": null,
+      "actual_numbers": [
+        4,
+        11,
+        25,
+        31,
+        32
+      ],
+      "actual_special": 0,
+      "matches": 3,
+      "matched_numbers": [
+        11,
+        25,
+        31
+      ],
+      "is_win": true,
+      "confidence": 0.74,
+      "method_name": "hot_cold_mix",
+      "window_size": 100,
+      "training_periods": 100
+    },
+    {
+      "draw_id": "114000025",
+      "draw_date": "2025-01-28",
+      "predicted_numbers": [
+        11,
+        14,
+        25,
+        35,
+        38
+      ],
+      "predicted_special": null,
+      "actual_numbers": [
+        13,
+        22,
+        23,
+        24,
+        35
+      ],
+      "actual_special": 0,
+      "matches": 1,
+      "matched_numbers": [
+        35
+      ],
+      "is_win": false,
+      "confidence": 0.74,
+      "method_name": "hot_cold_mix",
+      "window_size": 100,
+      "training_periods": 100
+    },
+    {
+      "draw_id": "114000024",
+      "draw_date": "2025-01-27",
+      "predicted_numbers": [
+        11,
+        14,
+        25,
+        38,
+        39
+      ],
+      "predicted_special": null,
+      "actual_numbers": [
+        1,
+        6,
+        16,
+        26,
+        31
+      ],
+      "actual_special": 0,
+      "matches": 0,
+      "matched_numbers": [],
+      "is_win": false,
+      "confidence": 0.74,
+      "method_name": "hot_cold_mix",
+      "window_size": 100,
+      "training_periods": 100
+    },
+    {
+      "draw_id": "114000023",
+      "draw_date": "2025-01-26",
+      "predicted_numbers": [
+        11,
+        13,
+        14,
+        25,
+        39
+      ],
+      "predicted_special": null,
+      "actual_numbers": [
+        7,
+        8,
+        9,
+        17,
+        20
+      ],
+      "actual_special": 0,
+      "matches": 0,
+      "matched_numbers": [],
+      "is_win": false,
+      "confidence": 0.74,
+      "method_name": "hot_cold_mix",
+      "window_size": 100,
+      "training_periods": 100
+    },
+    {
+      "draw_id": "114000022",
+      "draw_date": "2025-01-25",
+      "predicted_numbers": [
+        1,
+        8,
+        25,
+        35,
+        39
+      ],
+      "predicted_special": null,
+      "actual_numbers": [
+        1,
+        7,
+        32,
+        36,
+        37
+      ],
+      "actual_special": 0,
+      "matches": 1,
+      "matched_numbers": [
+        1
+      ],
+      "is_win": false,
+      "confidence": 0.7367557028955445,
+      "method_name": "hot_cold_mix",
+      "window_size": 100,
+      "training_periods": 100
+    },
+    {
+      "draw_id": "114000021",
+      "draw_date": "2025-01-24",
+      "predicted_numbers": [
+        8,
+        25,
+        31,
+        35,
+        39
+      ],
+      "predicted_special": null,
+      "actual_numbers": [
+        5,
+        9,
+        12,
+        14,
+        31
+      ],
+      "actual_special": 0,
+      "matches": 1,
+      "matched_numbers": [
+        31
+      ],
+      "is_win": false,
+      "confidence": 0.74,
+      "method_name": "hot_cold_mix",
+      "window_size": 100,
+      "training_periods": 100
+    },
+    {
+      "draw_id": "114000020",
+      "draw_date": "2025-01-23",
+      "predicted_numbers": [
+        8,
+        10,
+        25,
+        35,
+        39
+      ],
+      "predicted_special": null,
+      "actual_numbers": [
+        4,
+        7,
+        17,
+        22,
+        35
+      ],
+      "actual_special": 0,
+      "matches": 1,
+      "matched_numbers": [
+        35
+      ],
+      "is_win": false,
+      "confidence": 0.7397249863641184,
+      "method_name": "hot_cold_mix",
+      "window_size": 100,
+      "training_periods": 100
+    },
+    {
+      "draw_id": "114000019",
+      "draw_date": "2025-01-22",
+      "predicted_numbers": [
+        8,
+        10,
+        25,
+        35,
+        39
+      ],
+      "predicted_special": null,
+      "actual_numbers": [
+        6,
+        19,
+        23,
+        26,
+        30
+      ],
+      "actual_special": 0,
+      "matches": 0,
+      "matched_numbers": [],
+      "is_win": false,
+      "confidence": 0.7356112159332872,
+      "method_name": "hot_cold_mix",
+      "window_size": 100,
+      "training_periods": 100
+    },
+    {
+      "draw_id": "114000018",
+      "draw_date": "2025-01-21",
+      "predicted_numbers": [
+        10,
+        20,
+        24,
+        35,
+        39
+      ],
+      "predicted_special": null,
+      "actual_numbers": [
+        1,
+        14,
+        18,
+        19,
+        22
+      ],
+      "actual_special": 0,
+      "matches": 0,
+      "matched_numbers": [],
+      "is_win": false,
+      "confidence": 0.74,
+      "method_name": "hot_cold_mix",
+      "window_size": 100,
+      "training_periods": 100
+    },
+    {
+      "draw_id": "114000017",
+      "draw_date": "2025-01-20",
+      "predicted_numbers": [
+        10,
+        20,
+        34,
+        37,
+        39
+      ],
+      "predicted_special": null,
+      "actual_numbers": [
+        3,
+        12,
+        19,
+        32,
+        34
+      ],
+      "actual_special": 0,
+      "matches": 1,
+      "matched_numbers": [
+        34
+      ],
+      "is_win": false,
+      "confidence": 0.74,
+      "method_name": "hot_cold_mix",
+      "window_size": 100,
+      "training_periods": 100
+    },
+    {
+      "draw_id": "114000016",
+      "draw_date": "2025-01-18",
+      "predicted_numbers": [
+        10,
+        31,
+        34,
+        37,
+        39
+      ],
+      "predicted_special": null,
+      "actual_numbers": [
+        7,
+        12,
+        18,
+        35,
+        39
+      ],
+      "actual_special": 0,
+      "matches": 1,
+      "matched_numbers": [
+        39
+      ],
+      "is_win": false,
+      "confidence": 0.74,
+      "method_name": "hot_cold_mix",
+      "window_size": 100,
+      "training_periods": 100
+    },
+    {
+      "draw_id": "114000015",
+      "draw_date": "2025-01-17",
+      "predicted_numbers": [
+        4,
+        10,
+        20,
+        31,
+        39
+      ],
+      "predicted_special": null,
+      "actual_numbers": [
+        4,
+        7,
+        8,
+        24,
+        26
+      ],
+      "actual_special": 0,
+      "matches": 1,
+      "matched_numbers": [
+        4
+      ],
+      "is_win": false,
+      "confidence": 0.74,
+      "method_name": "hot_cold_mix",
+      "window_size": 100,
+      "training_periods": 100
+    },
+    {
+      "draw_id": "114000014",
+      "draw_date": "2025-01-16",
+      "predicted_numbers": [
+        10,
+        20,
+        31,
+        35,
+        39
+      ],
+      "predicted_special": null,
+      "actual_numbers": [
+        9,
+        13,
+        23,
+        29,
+        34
+      ],
+      "actual_special": 0,
+      "matches": 0,
+      "matched_numbers": [],
+      "is_win": false,
+      "confidence": 0.74,
+      "method_name": "hot_cold_mix",
+      "window_size": 100,
+      "training_periods": 100
+    },
+    {
+      "draw_id": "114000013",
+      "draw_date": "2025-01-15",
+      "predicted_numbers": [
+        4,
+        10,
+        20,
+        35,
+        39
+      ],
+      "predicted_special": null,
+      "actual_numbers": [
+        3,
+        21,
+        22,
+        26,
+        39
+      ],
+      "actual_special": 0,
+      "matches": 1,
+      "matched_numbers": [
+        39
+      ],
+      "is_win": false,
+      "confidence": 0.7352476883056782,
+      "method_name": "hot_cold_mix",
+      "window_size": 100,
+      "training_periods": 100
+    },
+    {
+      "draw_id": "114000012",
+      "draw_date": "2025-01-14",
+      "predicted_numbers": [
+        4,
+        10,
+        35,
+        37,
+        39
+      ],
+      "predicted_special": null,
+      "actual_numbers": [
+        10,
+        22,
+        31,
+        35,
+        36
+      ],
+      "actual_special": 0,
+      "matches": 2,
+      "matched_numbers": [
+        10,
+        35
+      ],
+      "is_win": true,
+      "confidence": 0.74,
+      "method_name": "hot_cold_mix",
+      "window_size": 100,
+      "training_periods": 100
+    },
+    {
+      "draw_id": "114000011",
+      "draw_date": "2025-01-13",
+      "predicted_numbers": [
+        4,
+        16,
+        35,
+        37,
+        39
+      ],
+      "predicted_special": null,
+      "actual_numbers": [
+        4,
+        12,
+        28,
+        35,
+        38
+      ],
+      "actual_special": 0,
+      "matches": 2,
+      "matched_numbers": [
+        4,
+        35
+      ],
+      "is_win": true,
+      "confidence": 0.7357137973227166,
+      "method_name": "hot_cold_mix",
+      "window_size": 100,
+      "training_periods": 100
+    },
+    {
+      "draw_id": "114000010",
+      "draw_date": "2025-01-11",
+      "predicted_numbers": [
+        4,
+        16,
+        35,
+        37,
+        39
+      ],
+      "predicted_special": null,
+      "actual_numbers": [
+        5,
+        12,
+        13,
+        19,
+        34
+      ],
+      "actual_special": 0,
+      "matches": 0,
+      "matched_numbers": [],
+      "is_win": false,
+      "confidence": 0.7334879368031865,
+      "method_name": "hot_cold_mix",
+      "window_size": 100,
+      "training_periods": 100
+    },
+    {
+      "draw_id": "114000009",
+      "draw_date": "2025-01-10",
+      "predicted_numbers": [
+        4,
+        16,
+        19,
+        31,
+        35
+      ],
+      "predicted_special": null,
+      "actual_numbers": [
+        9,
+        11,
+        15,
+        18,
+        20
+      ],
+      "actual_special": 0,
+      "matches": 0,
+      "matched_numbers": [],
+      "is_win": false,
+      "confidence": 0.74,
+      "method_name": "hot_cold_mix",
+      "window_size": 100,
+      "training_periods": 100
+    },
+    {
+      "draw_id": "114000008",
+      "draw_date": "2025-01-09",
+      "predicted_numbers": [
+        4,
+        19,
+        31,
+        35,
+        37
+      ],
+      "predicted_special": null,
+      "actual_numbers": [
+        2,
+        8,
+        19,
+        21,
+        29
+      ],
+      "actual_special": 0,
+      "matches": 1,
+      "matched_numbers": [
+        19
+      ],
+      "is_win": false,
+      "confidence": 0.74,
+      "method_name": "hot_cold_mix",
+      "window_size": 100,
+      "training_periods": 100
+    },
+    {
+      "draw_id": "114000007",
+      "draw_date": "2025-01-08",
+      "predicted_numbers": [
+        4,
+        25,
+        35,
+        37,
+        39
+      ],
+      "predicted_special": null,
+      "actual_numbers": [
+        12,
+        18,
+        20,
+        24,
+        31
+      ],
+      "actual_special": 0,
+      "matches": 0,
+      "matched_numbers": [],
+      "is_win": false,
+      "confidence": 0.733199074218427,
+      "method_name": "hot_cold_mix",
+      "window_size": 100,
+      "training_periods": 100
+    },
+    {
+      "draw_id": "114000006",
+      "draw_date": "2025-01-07",
+      "predicted_numbers": [
+        4,
+        25,
+        35,
+        37,
+        39
+      ],
+      "predicted_special": null,
+      "actual_numbers": [
+        13,
+        23,
+        27,
+        31,
+        37
+      ],
+      "actual_special": 0,
+      "matches": 1,
+      "matched_numbers": [
+        37
+      ],
+      "is_win": false,
+      "confidence": 0.7319403491453935,
+      "method_name": "hot_cold_mix",
+      "window_size": 100,
+      "training_periods": 100
+    },
+    {
+      "draw_id": "114000005",
+      "draw_date": "2025-01-06",
+      "predicted_numbers": [
+        8,
+        25,
+        35,
+        37,
+        39
+      ],
+      "predicted_special": null,
+      "actual_numbers": [
+        7,
+        21,
+        22,
+        27,
+        35
+      ],
+      "actual_special": 0,
+      "matches": 1,
+      "matched_numbers": [
+        35
+      ],
+      "is_win": false,
+      "confidence": 0.729775855874929,
+      "method_name": "hot_cold_mix",
+      "window_size": 100,
+      "training_periods": 100
+    },
+    {
+      "draw_id": "114000004",
+      "draw_date": "2025-01-04",
+      "predicted_numbers": [
+        8,
+        19,
+        35,
+        37,
+        39
+      ],
+      "predicted_special": null,
+      "actual_numbers": [
+        8,
+        9,
+        12,
+        21,
+        23
+      ],
+      "actual_special": 0,
+      "matches": 1,
+      "matched_numbers": [
+        8
+      ],
+      "is_win": false,
+      "confidence": 0.7390477773006102,
+      "method_name": "hot_cold_mix",
+      "window_size": 100,
+      "training_periods": 100
+    },
+    {
+      "draw_id": "114000003",
+      "draw_date": "2025-01-03",
+      "predicted_numbers": [
+        5,
+        8,
+        35,
+        37,
+        39
+      ],
+      "predicted_special": null,
+      "actual_numbers": [
+        5,
+        6,
+        8,
+        11,
+        14
+      ],
+      "actual_special": 0,
+      "matches": 2,
+      "matched_numbers": [
+        5,
+        8
+      ],
+      "is_win": true,
+      "confidence": 0.7344189518399216,
+      "method_name": "hot_cold_mix",
+      "window_size": 100,
+      "training_periods": 100
+    },
+    {
+      "draw_id": "114000002",
+      "draw_date": "2025-01-02",
+      "predicted_numbers": [
+        5,
+        8,
+        35,
+        37,
+        39
+      ],
+      "predicted_special": null,
+      "actual_numbers": [
+        12,
+        26,
+        30,
+        32,
+        33
+      ],
+      "actual_special": 0,
+      "matches": 0,
+      "matched_numbers": [],
+      "is_win": false,
+      "confidence": 0.74,
+      "method_name": "hot_cold_mix",
+      "window_size": 100,
+      "training_periods": 100
+    },
+    {
+      "draw_id": "114000001",
+      "draw_date": "2025-01-01",
+      "predicted_numbers": [
+        8,
+        35,
+        36,
+        37,
+        39
+      ],
+      "predicted_special": null,
+      "actual_numbers": [
+        2,
+        7,
+        8,
+        10,
+        14
+      ],
+      "actual_special": 0,
+      "matches": 1,
+      "matched_numbers": [
+        8
+      ],
+      "is_win": false,
+      "confidence": 0.7356880204257051,
+      "method_name": "hot_cold_mix",
+      "window_size": 100,
+      "training_periods": 100
+    }
+  ]
+}

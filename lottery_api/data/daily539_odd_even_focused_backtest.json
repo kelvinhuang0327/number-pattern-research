@@ -1,0 +1,22 @@
+{
+  "test_period": "114000001 ~ 114000307",
+  "total_draws_tested": 257,
+  "strategies": {
+    "adaptive": {
+      "avg_hits": 0.556420233463035,
+      "hit_rate": 11.128404669260702,
+      "win_rate_3plus": 0.38910505836575876,
+      "odd_even_accuracy": 59.92217898832685
+    },
+    "fixed_1": {
+      "avg_hits": 0.6809338521400778,
+      "win_rate_3plus": 0.7782101167315175,
+      "odd_even_match_rate": 13.229571984435799
+    },
+    "fixed_2": {
+      "avg_hits": 0.6653696498054474,
+      "win_rate_3plus": 0.7782101167315175,
+      "odd_even_match_rate": 36.964980544747085
+    }
+  }
+}

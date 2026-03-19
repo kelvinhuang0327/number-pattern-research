@@ -2839,6 +2839,19 @@ select#prediction-method option.backend-disabled::after {
     align-self: center;
 }
 
+.nd-special-row {
+    margin-top: 0.4rem;
+    padding-top: 0.4rem;
+    border-top: 1px dashed hsla(var(--accent-hue), 85%, 65%, 0.25);
+}
+
+.nd-special-hint {
+    font-size: 0.65rem;
+    color: hsl(var(--accent-hue), 80%, 70%);
+    min-width: 80px;
+    white-space: nowrap;
+}
+
 /* Responsive */
 @media (max-width: 768px) {
     .nd-games-grid {

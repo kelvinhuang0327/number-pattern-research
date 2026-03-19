@@ -137,6 +137,16 @@ open http://localhost:8081
 
 ---
 
+## 交流與貢獻
+
+本專案在統計信號探索上已遇到瓶頸（今彩539 L82 / 大樂透 L91），若你對機率分析、時間序列、彩券統計有興趣，歡迎一起交流新思路。
+
+- 有新的分析角度或假設？歡迎開 **Issue** 討論
+- 發現 bug 或資料問題？**PR 歡迎**
+- 純粹想聊聊研究方向？也可以直接開 Issue
+
+---
+
 ## 授權條款 / License
 
 MIT License — Copyright (c) 2026 Kelvin. See [LICENSE](LICENSE) for details.

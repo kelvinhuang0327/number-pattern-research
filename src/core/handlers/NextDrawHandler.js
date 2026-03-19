@@ -158,14 +158,19 @@ export class NextDrawHandler {
             const ballsHtml = nums.map(n =>
                 `<span class="nd-ball">${String(n).padStart(2, '0')}</span>`
             ).join('');
-            const specialHtml = (idx === 0 && bet.special != null)
-                ? `<span class="nd-special-label">第二區</span><span class="nd-ball nd-ball-special">${String(bet.special).padStart(2, '0')}</span>`
-                : '';
             return `<div class="nd-bet-line">
                         <span class="nd-bet-idx">第 ${idx + 1} 注</span>
-                        <div class="nd-balls">${ballsHtml}${specialHtml}</div>
+                        <div class="nd-balls">${ballsHtml}</div>
                     </div>`;
         }).join('');
+
+        // Special number row — last line (威力彩 第二區)
+        const specialRowHtml = bet.special != null
+            ? `<div class="nd-bet-line nd-special-row">
+                   <span class="nd-bet-idx nd-special-hint">建議第二區號碼</span>
+                   <div class="nd-balls"><span class="nd-ball nd-ball-special">${String(bet.special).padStart(2, '0')}</span></div>
+               </div>`
+            : '';
 
         return `
             <div class="nd-bet-row">
@@ -180,7 +185,7 @@ export class NextDrawHandler {
                     </div>
                 </div>
                 <div class="nd-bet-lines">
-                    ${betLinesHtml}
+                    ${betLinesHtml}${specialRowHtml}
                 </div>
             </div>`;
     }

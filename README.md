@@ -96,7 +96,6 @@ open http://localhost:8081
 | [docs/EXECUTIVE_SUMMARY_2026.md](docs/EXECUTIVE_SUMMARY_2026.md) | 2026 研究成果執行摘要 |
 | [docs/BACKTEST_PROTOCOL.md](docs/BACKTEST_PROTOCOL.md) | 回測規範與驗證標準 |
 | [docs/BACKTEST_REPORTS_INDEX.md](docs/BACKTEST_REPORTS_INDEX.md) | 回測報告索引 |
-| [docs/next_draw_page_release_summary.md](docs/next_draw_page_release_summary.md) | 下期預測頁面說明 |
 | [docs/sb3_final_recommendation.md](docs/sb3_final_recommendation.md) | RL 研究最終結案 |
 | [docs/decision_payout_report.md](docs/decision_payout_report.md) | 決策層分析報告 |
 | [lottery_api/CLAUDE.md](lottery_api/CLAUDE.md) | 策略規範（主要參考） |

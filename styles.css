@@ -2553,3 +2553,655 @@ select#prediction-method option.backend-disabled::after {
         font-size: 0.8rem;
     }
 }
+
+/* ===== Next Draw Prediction Page ===== */
+
+.nd-content {
+    padding: var(--spacing-sm) 0;
+}
+
+.next-draw-loading,
+.next-draw-error {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: var(--spacing-xl);
+    color: var(--text-secondary);
+    gap: var(--spacing-sm);
+}
+
+.next-draw-error .error-icon {
+    font-size: 2rem;
+}
+
+.nd-header-bar,
+.next-draw-header-bar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: var(--spacing-md);
+    padding: var(--spacing-xs) var(--spacing-sm);
+    background: var(--bg-secondary);
+    border-radius: var(--radius-sm);
+    border: 1px solid var(--border-color);
+}
+
+.nd-generated-at {
+    font-size: 0.8rem;
+    color: var(--text-tertiary);
+}
+
+.nd-refresh-btn {
+    display: flex;
+    align-items: center;
+    gap: 0.35rem;
+    font-size: 0.8rem;
+}
+
+/* Games grid — responsive 3-column layout */
+.nd-games-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+    gap: var(--spacing-md);
+}
+
+/* Game card */
+.nd-game-card {
+    background: var(--gradient-card);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-lg);
+    padding: var(--spacing-md);
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-sm);
+    backdrop-filter: blur(10px);
+}
+
+.nd-game-card-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: var(--spacing-xs);
+}
+
+.nd-game-title {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+}
+
+.nd-game-icon {
+    font-size: 1.3rem;
+}
+
+.nd-game-name {
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: var(--text-primary);
+}
+
+.nd-period {
+    font-size: 0.8rem;
+    color: var(--text-secondary);
+    background: hsla(0,0%,100%,0.06);
+    padding: 2px 8px;
+    border-radius: 10px;
+}
+
+.nd-game-note {
+    font-size: 0.75rem;
+    color: var(--text-tertiary);
+    padding: 4px 8px;
+    background: hsla(0,0%,100%,0.04);
+    border-radius: var(--radius-sm);
+    border-left: 3px solid var(--border-color);
+}
+
+.nd-game-error {
+    font-size: 0.8rem;
+    color: var(--danger-color);
+    padding: var(--spacing-xs);
+}
+
+.nd-no-data {
+    color: var(--text-tertiary);
+    font-size: 0.85rem;
+    text-align: center;
+    padding: var(--spacing-sm) 0;
+}
+
+/* Status badges */
+.nd-status-badge {
+    font-size: 0.7rem;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    padding: 3px 10px;
+    border-radius: 20px;
+    text-transform: uppercase;
+    cursor: default;
+    white-space: nowrap;
+}
+
+.nd-status-sm {
+    font-size: 0.65rem;
+    padding: 2px 7px;
+}
+
+.status-production {
+    background: hsla(145, 70%, 30%, 0.35);
+    color: hsl(145, 70%, 65%);
+    border: 1px solid hsla(145, 70%, 55%, 0.4);
+}
+
+.status-watch {
+    background: hsla(40, 95%, 30%, 0.35);
+    color: hsl(40, 95%, 65%);
+    border: 1px solid hsla(40, 95%, 60%, 0.4);
+}
+
+.status-advisory {
+    background: hsla(200, 80%, 30%, 0.35);
+    color: hsl(200, 80%, 65%);
+    border: 1px solid hsla(200, 80%, 55%, 0.4);
+}
+
+.status-maintenance {
+    background: hsla(0, 0%, 30%, 0.25);
+    color: hsl(0, 0%, 60%);
+    border: 1px solid hsla(0, 0%, 50%, 0.3);
+}
+
+.status-error {
+    background: hsla(0, 85%, 30%, 0.35);
+    color: hsl(0, 85%, 65%);
+    border: 1px solid hsla(0, 85%, 55%, 0.4);
+}
+
+/* Bet rows */
+.nd-bets-list {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-sm);
+}
+
+.nd-bet-row {
+    background: hsla(0,0%,100%,0.03);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-sm);
+    padding: var(--spacing-xs) var(--spacing-sm);
+}
+
+.nd-bet-meta {
+    display: flex;
+    flex-direction: column;
+    gap: 0.3rem;
+    margin-bottom: 0.5rem;
+}
+
+.nd-bet-meta-top {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.nd-bet-meta-bottom {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding-left: 0.1rem;
+}
+
+.nd-bet-count {
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: var(--primary-color);
+    min-width: 40px;
+}
+
+.nd-strategy-label {
+    font-size: 0.8rem;
+    color: var(--text-secondary);
+    flex: 1;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 180px;
+}
+
+.nd-edge {
+    font-size: 0.75rem;
+    color: hsl(145, 65%, 55%);
+    margin-left: auto;
+    white-space: nowrap;
+}
+
+.nd-bet-lines {
+    display: flex;
+    flex-direction: column;
+    gap: 0.35rem;
+}
+
+.nd-bet-line {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 0.35rem;
+}
+
+.nd-bet-idx {
+    font-size: 0.7rem;
+    color: var(--text-tertiary);
+    min-width: 38px;
+}
+
+.nd-balls {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.3rem;
+    align-items: center;
+}
+
+/* Number balls */
+.nd-ball {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 2rem;
+    height: 2rem;
+    border-radius: 50%;
+    font-size: 0.8rem;
+    font-weight: 600;
+    font-family: 'Fira Code', monospace;
+    background: hsla(var(--primary-hue), 85%, 30%, 0.4);
+    color: hsl(var(--primary-hue), 85%, 80%);
+    border: 1px solid hsla(var(--primary-hue), 85%, 60%, 0.4);
+    transition: transform 0.15s;
+}
+
+.nd-ball:hover {
+    transform: scale(1.1);
+}
+
+.nd-ball-special {
+    background: hsla(var(--accent-hue), 85%, 30%, 0.45);
+    color: hsl(var(--accent-hue), 85%, 80%);
+    border-color: hsla(var(--accent-hue), 85%, 65%, 0.5);
+}
+
+.nd-special-label {
+    font-size: 0.65rem;
+    color: hsl(var(--accent-hue), 80%, 70%);
+    margin-left: 0.3rem;
+    margin-right: 0.1rem;
+    align-self: center;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .nd-games-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .nd-strategy-label {
+        max-width: 120px;
+    }
+
+    .nd-ball {
+        width: 1.7rem;
+        height: 1.7rem;
+        font-size: 0.72rem;
+    }
+}
+
+/* =====================================================
+   Simulation Results — Stats Panel & Distribution Table
+   ===================================================== */
+
+.sim-stats-panel {
+    background: var(--gradient-card);
+    border: 1px solid var(--border-color);
+    border-radius: 18px;
+    padding: 1.4rem 1.6rem;
+    margin-bottom: 1.4rem;
+    box-shadow: var(--shadow-md);
+}
+
+/* KPI Row */
+.sim-kpi-row {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 0.8rem;
+    margin-bottom: 1.2rem;
+}
+
+.sim-kpi {
+    background: var(--bg-card);
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    padding: 0.9rem 1rem;
+    text-align: center;
+    box-shadow: var(--shadow-sm);
+    transition: box-shadow 0.2s;
+}
+
+.sim-kpi:hover {
+    box-shadow: var(--shadow-md);
+}
+
+.sim-kpi-val {
+    font-size: 1.7rem;
+    font-weight: 700;
+    color: var(--text-primary);
+    line-height: 1.1;
+    font-family: var(--font-primary);
+}
+
+.sim-kpi-label {
+    font-size: 0.74rem;
+    color: var(--text-tertiary);
+    margin-top: 0.3rem;
+    font-weight: 500;
+}
+
+.sim-kpi--success {
+    background: linear-gradient(135deg, rgba(5, 150, 105, 0.08), rgba(5, 150, 105, 0.03));
+    border-color: rgba(5, 150, 105, 0.22);
+}
+.sim-kpi--success .sim-kpi-val { color: #059669; }
+.sim-kpi--good    .sim-kpi-val { color: var(--primary-color); }
+.sim-kpi--warn    .sim-kpi-val { color: #d97706; }
+
+/* Distribution Table */
+.sim-dist-wrap {
+    margin-top: 0.2rem;
+}
+
+.sim-dist-title {
+    font-size: 0.78rem;
+    font-weight: 600;
+    color: var(--text-tertiary);
+    margin-bottom: 0.65rem;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+}
+
+.sim-dist-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.84rem;
+}
+
+.sim-dist-table thead th {
+    background: var(--bg-tertiary);
+    color: var(--text-tertiary);
+    font-weight: 600;
+    font-size: 0.75rem;
+    padding: 0.5rem 0.7rem;
+    text-align: left;
+    border-bottom: 1px solid var(--border-color);
+    letter-spacing: 0.03em;
+}
+
+.sim-dist-table tbody tr {
+    border-bottom: 1px solid var(--border-color);
+    transition: background 0.15s;
+}
+
+.sim-dist-table tbody tr:hover {
+    background: var(--bg-tertiary);
+}
+
+.sim-dist-table td {
+    padding: 0.45rem 0.7rem;
+    color: var(--text-primary);
+    vertical-align: middle;
+}
+
+.sim-dist-win td {
+    background: rgba(5, 150, 105, 0.05);
+}
+
+.sim-dist-hits {
+    font-weight: 600;
+    white-space: nowrap;
+}
+
+.sim-win-badge {
+    font-size: 0.63rem;
+    background: rgba(80, 200, 120, 0.15);
+    color: var(--success-color);
+    border: 1px solid rgba(80, 200, 120, 0.3);
+    border-radius: 4px;
+    padding: 1px 5px;
+    margin-left: 4px;
+    vertical-align: middle;
+    font-weight: 600;
+}
+
+.sim-diff-good { color: #059669; font-weight: 600; }
+.sim-diff-bad  { color: #dc2626; font-weight: 600; }
+
+/* Mini progress bar in distribution table */
+.sim-bar-cell { width: 120px; min-width: 80px; }
+
+.sim-bar-wrap {
+    position: relative;
+    height: 6px;
+    background: var(--border-color);
+    border-radius: 3px;
+    overflow: visible;
+}
+
+.sim-bar-actual {
+    position: absolute;
+    height: 100%;
+    background: var(--gradient-primary);
+    border-radius: 3px;
+    opacity: 0.7;
+    min-width: 2px;
+}
+
+.sim-bar-theory {
+    position: absolute;
+    top: -3px;
+    width: 2px;
+    height: 12px;
+    background: #f97316;
+    border-radius: 1px;
+}
+
+/* Results Table enhancements */
+.sim-numbers {
+    font-family: 'Courier New', monospace;
+    font-size: 0.82rem;
+    letter-spacing: 0.01em;
+}
+
+.sim-special {
+    color: var(--secondary-color, #dc2626);
+    font-weight: 700;
+    margin-left: 4px;
+}
+
+.sim-train-count {
+    font-size: 0.76rem;
+    color: var(--text-tertiary);
+}
+
+.sim-ok {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 1.5rem;
+    height: 1.5rem;
+    background: rgba(5, 150, 105, 0.12);
+    color: #059669;
+    border-radius: 50%;
+    font-size: 0.85rem;
+    font-weight: 700;
+}
+
+.sim-fail {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 1.5rem;
+    height: 1.5rem;
+    background: rgba(220, 38, 38, 0.08);
+    color: #dc2626;
+    border-radius: 50%;
+    font-size: 0.85rem;
+    font-weight: 700;
+}
+
+.hit-badge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 1.6rem;
+    height: 1.6rem;
+    border-radius: 6px;
+    font-size: 0.82rem;
+    font-weight: 700;
+    background: var(--bg-tertiary);
+    color: var(--text-secondary);
+    border: 1px solid var(--border-color);
+}
+
+.hit-badge.high-hit {
+    background: rgba(5, 150, 105, 0.12);
+    color: #059669;
+    border-color: rgba(5, 150, 105, 0.25);
+}
+
+/* Hide the legacy simulation summary bar — stats panel replaces it */
+.simulation-summary {
+    display: none;
+}
+
+/* Results detail table card */
+.sim-results-panel {
+    background: var(--gradient-card);
+    border: 1px solid var(--border-color);
+    border-radius: 18px;
+    overflow: hidden;
+    box-shadow: var(--shadow-md);
+    margin-top: 0.4rem;
+}
+
+.simulation-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.85rem;
+}
+
+.simulation-table thead th {
+    background: var(--bg-tertiary);
+    color: var(--text-tertiary);
+    font-weight: 600;
+    font-size: 0.76rem;
+    padding: 0.65rem 0.85rem;
+    text-align: left;
+    border-bottom: 1px solid var(--border-color);
+    letter-spacing: 0.03em;
+    white-space: nowrap;
+}
+
+.simulation-table tbody tr {
+    border-bottom: 1px solid var(--border-color);
+    transition: background 0.15s;
+}
+
+.simulation-table tbody tr:hover {
+    background: rgba(255, 255, 255, 0.04);
+}
+
+.simulation-table tbody tr.success-row {
+    background: rgba(80, 200, 120, 0.07);
+}
+
+.simulation-table tbody tr.success-row:hover {
+    background: rgba(80, 200, 120, 0.11);
+}
+
+.simulation-table td {
+    padding: 0.5rem 0.85rem;
+    color: var(--text-primary);
+    vertical-align: middle;
+}
+
+#simulation-results > h3 {
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: var(--text-tertiary);
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    margin-bottom: 0.8rem;
+}
+
+/* Simulation controls — single row layout */
+.sim-controls-row {
+    display: flex;
+    align-items: flex-end;
+    gap: 0.75rem;
+    flex-wrap: nowrap;
+    padding: 1rem 1.2rem;
+    background: var(--gradient-card);
+    border: 1px solid var(--border-color);
+    border-radius: 16px;
+    margin-bottom: 1.2rem;
+    box-shadow: var(--shadow-sm);
+}
+
+.sim-ctrl-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.3rem;
+}
+
+.sim-ctrl-group--wide {
+    flex: 1;
+    min-width: 0;
+}
+
+.sim-ctrl-group label {
+    font-size: 0.78rem;
+    font-weight: 600;
+    color: var(--text-secondary);
+    white-space: nowrap;
+}
+
+.sim-ctrl-group .select-input,
+.sim-ctrl-group input[type="month"] {
+    width: 100%;
+}
+
+.sim-ctrl-btn {
+    flex-shrink: 0;
+    align-self: flex-end;
+    white-space: nowrap;
+}
+
+@media (max-width: 600px) {
+    .sim-controls-row {
+        flex-wrap: wrap;
+    }
+    .sim-ctrl-group,
+    .sim-ctrl-group--wide {
+        width: 100%;
+    }
+}
+
+@media (max-width: 768px) {
+    .sim-kpi-row {
+        grid-template-columns: repeat(2, 1fr);
+    }
+    .sim-bar-cell,
+    .sim-dist-table thead th:last-child,
+    .sim-dist-table td:last-child {
+        display: none;
+    }
+}

@@ -15,6 +15,7 @@ import { DataHandler } from './handlers/DataHandler.js';
 import { UIDisplayHandler } from './handlers/UIDisplayHandler.js';
 import { SimulationHandler } from './handlers/SimulationHandler.js';
 import { PredictionHandler } from './handlers/PredictionHandler.js';
+import { NextDrawHandler } from './handlers/NextDrawHandler.js';
 import { getApiUrl } from '../config/apiConfig.js';
 
 /**
@@ -47,6 +48,7 @@ export class App {
         this.uiDisplayHandler = new UIDisplayHandler(this);
         this.simulationHandler = new SimulationHandler(this);
         this.predictionHandler = new PredictionHandler(this);
+        this.nextDrawHandler = new NextDrawHandler(this);
 
         // 不在 constructor 中自動初始化，由外部呼叫
         // this.init();
@@ -334,26 +336,6 @@ export class App {
             });
         }
 
-        // 🆕 預測方法說明卡片
-        const simulationMethodSelect = document.getElementById('simulation-method');
-        console.log('🔍 Looking for simulation-method element:', simulationMethodSelect);
-
-        if (simulationMethodSelect) {
-            console.log('✅ Found simulation-method, setting up event listener');
-
-            // 初始化時顯示第一個方法的說明
-            console.log('🎯 Initial method:', simulationMethodSelect.value);
-            this.updateMethodDescription(simulationMethodSelect.value);
-
-            // 監聽下拉選單變更
-            simulationMethodSelect.addEventListener('change', (e) => {
-                console.log('📢 Change event fired! New value:', e.target.value);
-                this.updateMethodDescription(e.target.value);
-            });
-        } else {
-            console.error('❌ simulation-method element not found!');
-        }
-
         // 彩券類型篩選
         const lotteryTypeFilter = document.getElementById('lottery-type-filter');
         if (lotteryTypeFilter) {
@@ -377,6 +359,10 @@ export class App {
                     }
                 } else if (section === 'history') {
                     this.displayHistory();
+                } else if (section === 'next-draw') {
+                    if (this.nextDrawHandler) {
+                        this.nextDrawHandler.onShow();
+                    }
                 }
             });
         });
@@ -1478,11 +1464,6 @@ export class App {
         };
     }
 
-    async runCollaborativeSimulation() {
-        return this.simulationHandler.runCollaborativeSimulation();
-    }
-
-
 
 
     async runRollingTest(allData, strategy, params, testTargets) {
@@ -1522,140 +1503,115 @@ export class App {
         const rateSpan = document.getElementById('simulation-rate');
         const tbody = document.querySelector('#simulation-table tbody');
 
-        if (resultsDiv && rateSpan && tbody) {
-            const rate = results.length > 0 ? Math.round((successCount / results.length) * 100) : 0;
-            rateSpan.textContent = rate;
+        if (!(resultsDiv && rateSpan && tbody)) return;
 
-            // === 計算命中率分佈 ===
-            const hitDistribution = { 0: 0, 1: 0, 2: 0, 3: 0, 4: 0, 5: 0, 6: 0 };
-            results.forEach(r => {
-                if (hitDistribution.hasOwnProperty(r.hits)) {
-                    hitDistribution[r.hits]++;
-                }
-            });
+        const rate = results.length > 0 ? Math.round((successCount / results.length) * 100) : 0;
+        rateSpan.textContent = rate;
 
-            // === 理論機率（大樂透 C(6,k) * C(43, 6-k) / C(49, 6)）===
-            const theoreticalProb = {
-                0: 43.596,  // 一個都沒中
-                1: 41.302,  // 中1個
-                2: 13.238,  // 中2個
-                3: 1.765,   // 中3個（普獎）
-                4: 0.097,   // 中4個
-                5: 0.002,   // 中5個
-                6: 0.0000072 // 全中（頭獎）
-            };
+        // 命中分佈計算
+        const hitDist = { 0: 0, 1: 0, 2: 0, 3: 0, 4: 0, 5: 0, 6: 0 };
+        results.forEach(r => { if (r.hits in hitDist) hitDist[r.hits]++; });
 
-            // === 計算實際機率 ===
-            const actualProb = {};
-            Object.keys(hitDistribution).forEach(key => {
-                actualProb[key] = results.length > 0
-                    ? ((hitDistribution[key] / results.length) * 100).toFixed(2)
-                    : '0.00';
-            });
+        // 理論基準（39C5 今彩539 M3+ baseline ~5.5%，大樂透使用此欄位顯示分佈）
+        const theorProb = { 0: 43.60, 1: 41.30, 2: 13.24, 3: 1.77, 4: 0.10, 5: 0.002, 6: 0.000 };
+        const n = results.length || 1;
 
-            // === 在表格前插入統計面板 ===
-            const existingStats = document.getElementById('simulation-stats-panel');
-            if (existingStats) {
-                existingStats.remove();
-            }
+        // 統計面板
+        const existingStats = document.getElementById('simulation-stats-panel');
+        if (existingStats) existingStats.remove();
 
-            const statsPanel = document.createElement('div');
-            statsPanel.id = 'simulation-stats-panel';
-            statsPanel.className = 'simulation-stats-panel';
-            statsPanel.innerHTML = `
-                <h3>📊 詳細統計分析</h3>
-                <div class="stats-summary">
-                    <div class="stat-card">
-                        <div class="stat-label">總測試期數</div>
-                        <div class="stat-value">${results.length}</div>
-                    </div>
-                    <div class="stat-card success">
-                        <div class="stat-label">成功期數（≥3個）</div>
-                        <div class="stat-value">${successCount}</div>
-                    </div>
-                    <div class="stat-card">
-                        <div class="stat-label">成功率</div>
-                        <div class="stat-value">${rate}%</div>
-                    </div>
-                    <div class="stat-card highlight">
-                        <div class="stat-label">vs 純隨機</div>
-                        <div class="stat-value">${(rate / 1.765).toFixed(1)}x</div>
-                        <div class="stat-note">（理論值 1.765%）</div>
-                    </div>
+        const vsRandom = (rate / 1.765).toFixed(1);
+        const vsClass = parseFloat(vsRandom) >= 1 ? 'sim-kpi--good' : 'sim-kpi--warn';
+
+        const distRows = Object.keys(hitDist).map(h => {
+            const cnt = hitDist[h];
+            const actual = (cnt / n * 100).toFixed(1);
+            const theory = theorProb[h] ?? 0;
+            const diff = (parseFloat(actual) - theory).toFixed(1);
+            const diffNum = parseFloat(diff);
+            const isWinZone = parseInt(h) >= 3;
+            // 中獎區希望更高，非中獎區希望更低
+            const isBetter = isWinZone ? diffNum > 0 : diffNum < 0;
+            const diffCls = isBetter ? 'sim-diff-good' : 'sim-diff-bad';
+            const barW = Math.min(parseFloat(actual) * 2, 100).toFixed(0);
+            const refW = Math.min(theory * 2, 100).toFixed(0);
+            return `
+                <tr class="${isWinZone ? 'sim-dist-win' : ''}">
+                    <td class="sim-dist-hits">${h} 個${isWinZone ? ' <span class="sim-win-badge">中獎</span>' : ''}</td>
+                    <td>${cnt} 期</td>
+                    <td>${actual}%</td>
+                    <td>${theory.toFixed(2)}%</td>
+                    <td class="${diffCls}">${diffNum > 0 ? '+' : ''}${diff}%</td>
+                    <td class="sim-bar-cell">
+                        <div class="sim-bar-wrap">
+                            <div class="sim-bar-actual" style="width:${barW}%"></div>
+                            <div class="sim-bar-theory" style="left:${refW}%"></div>
+                        </div>
+                    </td>
+                </tr>`;
+        }).join('');
+
+        const statsPanel = document.createElement('div');
+        statsPanel.id = 'simulation-stats-panel';
+        statsPanel.className = 'sim-stats-panel';
+        statsPanel.innerHTML = `
+            <div class="sim-kpi-row">
+                <div class="sim-kpi">
+                    <div class="sim-kpi-val">${results.length}</div>
+                    <div class="sim-kpi-label">測試期數</div>
                 </div>
-
-                <h4>🎯 命中率分佈對比</h4>
-                <div class="hit-distribution">
-                    ${Object.keys(hitDistribution).map(hits => {
-                const count = hitDistribution[hits];
-                const actualPct = actualProb[hits];
-                const theorPct = theoreticalProb[hits];
-                const diff = (parseFloat(actualPct) - theorPct).toFixed(2);
-                const isHigher = parseFloat(diff) > 0;
-                const isBetter = parseInt(hits) >= 3 ? isHigher : !isHigher; // ≥3 希望更高，<3 希望更低
-
-                return `
-                            <div class="hit-row ${parseInt(hits) >= 3 ? 'success-zone' : ''}">
-                                <div class="hit-label">
-                                    <span class="hit-num">${hits} 個</span>
-                                    ${parseInt(hits) >= 3 ? '<span class="badge">中獎</span>' : ''}
-                                </div>
-                                <div class="hit-stats">
-                                    <div class="stat-item">
-                                        <span class="label">實際:</span>
-                                        <span class="value">${count} 期 (${actualPct}%)</span>
-                                    </div>
-                                    <div class="stat-item">
-                                        <span class="label">理論:</span>
-                                        <span class="value">${theorPct}%</span>
-                                    </div>
-                                    <div class="stat-item ${isBetter ? 'better' : 'worse'}">
-                                        <span class="label">差異:</span>
-                                        <span class="value">${isHigher ? '+' : ''}${diff}%</span>
-                                        ${isBetter ? '📈' : '📉'}
-                                    </div>
-                                </div>
-                                <div class="progress-bar">
-                                    <div class="progress-actual" style="width: ${Math.min(parseFloat(actualPct) * 2, 100)}%"></div>
-                                    <div class="progress-theory" style="left: ${Math.min(theorPct * 2, 100)}%"></div>
-                                </div>
-                            </div>
-                        `;
-            }).join('')}
+                <div class="sim-kpi sim-kpi--success">
+                    <div class="sim-kpi-val">${successCount}</div>
+                    <div class="sim-kpi-label">命中 ≥3</div>
                 </div>
-
-                <div class="stats-note">
-                    <p><strong>💡 解讀說明：</strong></p>
-                    <ul>
-                        <li>✅ <strong>「3個」以上</strong>的實際機率 <strong>高於理論</strong> = 表現優於隨機</li>
-                        <li>📊 您的系統在「3個」的實際機率是 <strong>${actualProb[3]}%</strong>，理論值是 <strong>1.765%</strong></li>
-                        <li>🎯 這表示您的預測系統比純隨機猜測好 <strong>${(rate / 1.765).toFixed(1)} 倍</strong></li>
-                        <li>⚠️ 但彩票本質是隨機，即使是最好的系統也無法保證高成功率</li>
-                    </ul>
+                <div class="sim-kpi">
+                    <div class="sim-kpi-val">${rate}%</div>
+                    <div class="sim-kpi-label">成功率</div>
                 </div>
-            `;
+                <div class="sim-kpi ${vsClass}">
+                    <div class="sim-kpi-val">${vsRandom}x</div>
+                    <div class="sim-kpi-label">vs 隨機</div>
+                </div>
+            </div>
+            <div class="sim-dist-wrap">
+                <div class="sim-dist-title">命中分佈對比</div>
+                <table class="sim-dist-table">
+                    <thead>
+                        <tr>
+                            <th>命中</th>
+                            <th>期數</th>
+                            <th>實際%</th>
+                            <th>理論%</th>
+                            <th>差異</th>
+                            <th>進度</th>
+                        </tr>
+                    </thead>
+                    <tbody>${distRows}</tbody>
+                </table>
+            </div>`;
 
-            // 插入到表格前
-            const table = document.getElementById('simulation-table');
-            if (table && table.parentNode) {
-                table.parentNode.insertBefore(statsPanel, table);
-            }
+        const table = document.getElementById('simulation-table');
+        if (table && table.parentNode) {
+            table.parentNode.insertBefore(statsPanel, table);
+        }
 
-            // === 原有的表格顯示（倒序顯示，最新的在上面） ===
-            tbody.innerHTML = results.slice().reverse().map(r => `
+        // 結果明細表（最新在上）
+        tbody.innerHTML = results.slice().reverse().map(r => {
+            const trainCount = r.refRange ? (r.refRange.match(/共(\d+)期/) || [])[1] : '';
+            return `
                 <tr class="${r.isSuccess ? 'success-row' : ''}">
                     <td>${r.draw}</td>
                     <td>${r.date}</td>
-                    <td>${r.predicted.join(', ')}${r.predictedSpecial ? ' <strong style="color: #e74c3c;">+ ' + r.predictedSpecial + '</strong>' : ''}</td>
-                    <td>${r.actual.join(', ')}${r.actualSpecial ? ' <strong style="color: #e74c3c;">+ ' + r.actualSpecial + '</strong>' : ''}</td>
+                    <td class="sim-numbers">${r.predicted.join(', ')}${r.predictedSpecial != null ? ' <span class="sim-special">+' + r.predictedSpecial + '</span>' : ''}</td>
+                    <td class="sim-numbers">${r.actual.join(', ')}${r.actualSpecial != null ? ' <span class="sim-special">+' + r.actualSpecial + '</span>' : ''}</td>
                     <td><span class="hit-badge ${r.hits >= 3 ? 'high-hit' : ''}">${r.hits}</span></td>
-                    <td>${r.refRange || '-'}</td>
-                    <td>${r.isSuccess ? '✅' : '❌'}</td>
-                </tr>
-            `).join('');
+                    <td class="sim-train-count">${trainCount ? '共' + trainCount + '期' : '-'}</td>
+                    <td>${r.isSuccess ? '<span class="sim-ok">✓</span>' : '<span class="sim-fail">✗</span>'}</td>
+                </tr>`;
+        }).join('');
 
-            resultsDiv.style.display = 'block';
-        }
+        resultsDiv.classList.remove('ui-hidden');
+        resultsDiv.style.display = 'block';
     }
 
     async runPrediction() {

@@ -2076,3 +2076,176 @@ async def record_performance_hit(hit_count: int = Query(..., ge=0, description="
     except Exception as e:
         logger.error(f"記錄命中失敗: {str(e)}")
         raise HTTPException(status_code=500, detail=str(e))
+
+
+# ---------------------------------------------------------------------------
+# Next-Draw Summary Endpoint
+# ---------------------------------------------------------------------------
+
+_NEXT_DRAW_CONFIG = {
+    "DAILY_539": [
+        {"bet_count": 1,  "strategy_key": "acb_1bet",                "strategy_label": "ACB 1注"},
+        {"bet_count": 2,  "strategy_key": "midfreq_acb_2bet",        "strategy_label": "MidFreq+ACB 2注"},
+        {"bet_count": 3,  "strategy_key": "acb_markov_midfreq_3bet", "strategy_label": "ACB+Markov+MidFreq 3注"},
+        {"bet_count": 5,  "strategy_key": "f4cold_5bet",             "strategy_label": "F4Cold 5注"},
+    ],
+    "BIG_LOTTO": [
+        {"bet_count": 2, "strategy_key": "regime_2bet",     "strategy_label": "Regime 2注"},
+        {"bet_count": 3, "strategy_key": "ts3_regime_3bet", "strategy_label": "TS3+Regime 3注"},
+        {"bet_count": 5, "strategy_key": "p1_dev_sum5bet",  "strategy_label": "P1+Dev+Sum 5注"},
+    ],
+    "POWER_LOTTO": [
+        {"bet_count": 3, "strategy_key": "fourier_rhythm_3bet", "strategy_label": "Fourier Rhythm 3注"},
+        {"bet_count": 4, "strategy_key": "pp3_freqort_4bet",    "strategy_label": "PP3+FreqOrt 4注"},
+        {"bet_count": 5, "strategy_key": "orthogonal_5bet",     "strategy_label": "正交 5注"},
+    ],
+}
+
+_GAME_STATUS_INFO = {
+    "DAILY_539":   ("MAINTENANCE", "信號空間窮盡（L82），現有策略持續 RSM 監控"),
+    "BIG_LOTTO":   ("MAINTENANCE", "信號邊界研究確認（L91）：49C6 與公平隨機無差異，策略維護中"),
+    "POWER_LOTTO": ("PRODUCTION",  "RSM 持續監控中，策略穩定"),
+}
+
+
+def _derive_strategy_status(state: dict) -> str:
+    edge = state.get("edge_300p", 0) or 0
+    trend = state.get("trend", "STABLE")
+    alert = state.get("alert", False)
+    if alert:
+        return "WATCH"
+    if edge >= 0.03 and trend in ("STABLE", "IMPROVING"):
+        return "PRODUCTION"
+    if edge > 0:
+        return "WATCH"
+    return "ADVISORY_ONLY"
+
+
+def _load_strategy_states(lottery_type: str) -> dict:
+    import os
+    state_file = os.path.join(
+        os.path.dirname(os.path.dirname(os.path.abspath(__file__))),
+        "data", f"strategy_states_{lottery_type}.json"
+    )
+    try:
+        with open(state_file, "r", encoding="utf-8") as f:
+            import json as _json
+            return _json.load(f)
+    except Exception:
+        return {}
+
+
+def _get_latest_period(history: list) -> str:
+    """Return the latest draw_id/period string from history.
+    history is newest-first (index 0 = most recent draw).
+    """
+    try:
+        return str(history[0].get("draw") or history[0].get("draw_id") or "")
+    except Exception:
+        return ""
+
+
+def _increment_period(period_str: str) -> str:
+    """Increment period number string by 1."""
+    try:
+        return str(int(period_str) + 1)
+    except Exception:
+        return ""
+
+
+@router.get("/api/next-draw-summary")
+async def next_draw_summary(
+    mode: str = Query("direct", description="Coordinator 模式: direct 或 hybrid"),
+    recent_count: int = Query(500, ge=50, le=3000, description="使用最近 N 期資料")
+):
+    """
+    下一期開獎預測摘要（三彩種 × 推薦注數）
+
+    整合 RSM 加權 Coordinator 預測 + 策略績效標籤，
+    供前端 NEXT DRAW PREDICTION 頁面使用。
+    無新的預測邏輯：僅調用現有 coordinator_predict。
+    """
+    from datetime import datetime, timezone
+
+    if mode not in ("direct", "hybrid"):
+        raise HTTPException(status_code=400, detail="mode 僅支援 direct 或 hybrid")
+
+    result = {
+        "generated_at": datetime.now(timezone.utc).isoformat(),
+        "mode": mode,
+        "games": {}
+    }
+
+    for lt, configs in _NEXT_DRAW_CONFIG.items():
+        game_status, game_note = _GAME_STATUS_INFO.get(lt, ("UNKNOWN", ""))
+        game_entry = {
+            "game_status": game_status,
+            "game_status_note": game_note,
+            "latest_period": "",
+            "next_period": "",
+            "bets": []
+        }
+
+        try:
+            history, lottery_rules = _load_history_with_db_fallback(lt, min_required=10)
+            # Capture latest period BEFORE slicing (history is newest-first, index 0 = most recent)
+            latest_period = _get_latest_period(history)
+            game_entry["latest_period"] = latest_period
+            game_entry["next_period"] = _increment_period(latest_period)
+            if len(history) > recent_count:
+                history = history[-recent_count:]
+
+            states = _load_strategy_states(lt)
+
+            for cfg in configs:
+                bet_count = cfg["bet_count"]
+                strategy_key = cfg["strategy_key"]
+                strategy_label = cfg["strategy_label"]
+
+                # Load strategy metadata
+                state = states.get(strategy_key, {})
+                strategy_status = _derive_strategy_status(state)
+                edge_300p = state.get("edge_300p") or 0
+                trend = state.get("trend", "STABLE")
+                alert = state.get("alert", False)
+                sharpe = state.get("sharpe_300p") or 0
+
+                # Get coordinator prediction for this bet count
+                try:
+                    bets_raw, _ = coordinator_predict(lt, history, n_bets=bet_count, mode=mode)
+                    numbers = [sorted(b) for b in bets_raw] if bets_raw else []
+                except Exception as e:
+                    logger.warning(f"coordinator_predict failed for {lt} {bet_count}bet: {e}")
+                    numbers = []
+
+                # Special number for POWER_LOTTO
+                special = None
+                if lt == "POWER_LOTTO" and numbers:
+                    try:
+                        sp = get_enhanced_special_prediction(history, lottery_rules, numbers[0])
+                        if sp is not None:
+                            special = int(sp)
+                    except Exception:
+                        pass
+
+                game_entry["bets"].append({
+                    "bet_count": bet_count,
+                    "strategy_key": strategy_key,
+                    "strategy_label": strategy_label,
+                    "strategy_status": strategy_status,
+                    "edge_300p": round(edge_300p, 4),
+                    "trend": trend,
+                    "alert": alert,
+                    "sharpe_300p": round(sharpe, 4),
+                    "numbers": numbers,
+                    "special": special,
+                })
+
+        except Exception as e:
+            logger.error(f"next_draw_summary failed for {lt}: {e}", exc_info=True)
+            game_entry["game_status"] = "ERROR"
+            game_entry["error"] = str(e)
+
+        result["games"][lt] = game_entry
+
+    return result

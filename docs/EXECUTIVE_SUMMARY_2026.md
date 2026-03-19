@@ -1,361 +1,153 @@
-# Executive Summary: Lottery Prediction System Optimization
-## Key Findings & Actionable Recommendations
+# 執行摘要：2026 彩券研究成果
 
-**Date**: 2026-01-05  
-**Analyst**: AI System Optimization Expert  
-**Status**: ✅ Analysis Complete - Ready for Implementation
+**日期**：2026-03-19（持續更新）
+**研究範圍**：今彩 539（5812期）/ 大樂透（2117期）/ 威力彩（1893期）
 
 ---
 
-## 🎯 The One-Sentence Answer
+## 核心結論
 
-**Your prediction system is scientifically sound but fundamentally limited by lottery randomness. The best achievable strategy is DAILY_539 3-bet coverage with 37% hit rate—the only viable approach.**
-
----
-
-## 📊 Key Performance Metrics (Verified by Backtest)
-
-### Single-Method Performance
-| Lottery | Best Method | Hit Rate | Improvement vs Random | Verdict |
-|---------|-------------|----------|----------------------|---------|
-| **BIG_LOTTO** | Zone Balance (W=500) | 4.31% | 3.6x | ⚠️ Too low for viability |
-| **POWER_LOTTO** | Ensemble | 4.21% | 2.3x | ⚠️ Below 5% threshold |
-| **DAILY_539** ⭐ | Sum Range (W=300) | 15.34% | 1.65x | ✅ Acceptable |
-
-### Multi-Bet Performance
-| Lottery | Strategy | Hit Rate | Win Every N Periods | Cost/Win | Status |
-|---------|----------|----------|-------------------|----------|--------|
-| BIG_LOTTO | 2-bet | 8.62% | 11.6 | $1,162 | ⚠️ Marginal |
-| POWER_LOTTO | 4-bet | ~15% | 6.8 | ~$680 | ⚠️ Risky |
-| **DAILY_539** ⭐ | **3-bet** | **37.14%** | **2.7** | **$405** | **✅ RECOMMENDED** |
+**所有彩種長期負期望值，破產率 = 1.000。**
+本系統研究目標為統計邊際測量，而非投注建議。
 
 ---
 
-## 🔍 Why DAILY_539 is Different
+## 各遊戲研究結案狀態
 
-**The Numbers That Matter**:
-```
-Winning threshold: Match 2+ numbers (vs 3+ for others)
-Random baseline: 9.3% (vs 1.2% for 6-number games)
-Your system improvement: 37.14% (vs 10-15% baseline)
+### 今彩 539 — 維護模式（L82）
 
-Result: Only lottery where the multi-bet strategy is justified
-```
+**研究結論**：信號空間窮盡。8 個假設（H001~H008）全部被拒絕。
 
-**The Math**:
-```
-3-bet cost: $150
-Expected loss per period: $25 (vs $50+ for other strategies)
-Expected loss per win: -$25 (vs -$300+ for Power Lotto)
+| 假設 | 描述 | 結果 |
+|------|------|------|
+| H001 | 乘積互斥分數 | REJECT（互斥特徵乘積反效果） |
+| H002 | 條件 ACB | REJECT（假性自相關） |
+| H003 | Delta ACB | REJECT |
+| H004 | Gap Entropy | REJECT |
+| H005 | Pairwise Lift | REJECT |
+| H006 | 頻率群集 | REJECT |
+| H007 | Fourier w=1000 | REJECT |
+| H008 | ACB 非線性 Gap | REJECT |
 
-Conclusion: Most sustainable approach of all lottery games
-```
+Zone/Sum 白噪音（Ljung-Box 全不顯著），Streak 無效（Lift<1.2x）。
+ACB 超參數掃描確認現有設定最優（fd×0.4+gs×0.6, boundary 1.2）。
+**MicroFish** McNemar p=0.132 未達標，重測條件：6010 期。
 
----
+現役策略（持續 RSM 監控）：
 
-## ⚠️ Critical Limitations (Read Carefully)
-
-### 1. **Negative Expected Value is Permanent**
-Even with 37% hit rate on DAILY_539, you expect to lose money long-term:
-- Each bet: Expected return is 85% of cost
-- Per 100 cycles: Lose $2,500 on $15,000 invested
-- This is NOT a flaw in your system—it's a law of probability
-
-### 2. **Lottery is Fundamentally Random**
-No matter how sophisticated your method:
-- Cannot predict truly random events
-- Past patterns don't guarantee future outcomes
-- "Hot numbers" and "cold numbers" are human patterns, not physics
-
-### 3. **Overfitting Risk**
-Your genetic optimizer shows:
-- Training performance: 82%
-- Validation performance: 65%
-- Gap: 17% (indicates mild overfitting)
-- **Action needed**: Apply L1/L2 regularization
-
-### 4. **Small Sample Size**
-- 116 draws for BIG_LOTTO per year
-- High variance in small samples
-- Results have ±3-5% confidence intervals
-- Need 3-5 years of data for certainty
+| 策略 | 300p Edge | Sharpe | 狀態 |
+|------|-----------|--------|------|
+| midfreq_acb_2bet | +8.46% | 0.185 | PRODUCTION |
+| acb_markov_midfreq_3bet | +8.50% | 0.174 | PRODUCTION |
+| f4cold_5bet | +6.61% | 0.132 | PRODUCTION |
+| acb_1bet | +3.27% | 0.092 | PRODUCTION |
 
 ---
 
-## ✅ What Your System Does Well
+### 大樂透 — 維護模式（L91）
 
-1. **No Data Leakage** - Proper rolling backtest validation ✓
-2. **Explainable Methods** - Not a black box, each method is interpretable ✓
-3. **Statistical Rigor** - Backtesting framework is sound ✓
-4. **Method Diversity** - 18+ independent methods with low correlation ✓
-5. **Ensemble Power** - Combining methods properly implemented ✓
+**研究結論**：49C6 組合與公平隨機過程無法區分。
 
----
+| 檢驗 | 統計量 | 結果 |
+|------|--------|------|
+| Shannon Entropy | p = 0.916 | 隨機 |
+| Ljung-Box | p = 0.229 | 隨機 |
+| Chi-Square 頻率 | p = 0.919 | 隨機 |
+| Runs Test | p = 0.710 | 隨機 |
+| 配對相關（BH校正） | 0 顯著 | 隨機 |
+| Permutation Entropy | = 0.9999 | 隨機 |
 
-## 🚀 Immediate Action Items (Priority Order)
+信號強度：最佳 MI = 0.006 bits（佔基線熵 1.18%）。
+MC 模擬：99th percentile edge = +0.778%，最佳觀測 +0.414% 在噪音帶內。
+偵測功率：N=1817，最小可偵測邊際 = +0.789%（從未觀測到）。
 
-### P0: Required (Do Now)
-- [ ] **Migrate focus to DAILY_539** - Only lottery with viable economics
-- [ ] **Implement 3-bet strategy** - Deploy Zone Balance + Sum Range + Frequency
-- [ ] **Add L1/L2 regularization** - Reduce overfitting gap from 17% to <10%
-- [ ] **Create weekly monitoring** - Compare actual vs expected hit rates
+策略進化嚴重過擬合（L86, L89, L90）：
+- MicroFish 500p=+3.14% → full OOS=+0.303%（overfit ratio 10.35x）
+- 進化策略 300p=+6.5% → full OOS=+0.12%
 
-### P1: Important (This Month)
-- [ ] **Update user interface** - Show realistic win probabilities and costs
-- [ ] **Add confidence intervals** - Report 95% CI around hit rates
-- [ ] **Document assumptions** - Make lottery randomness explicit in warnings
-- [ ] **Implement kill-N validation** - Verify exclusion accuracy (currently 88.6%)
+現役策略（維護監控，DriftDetector PSI=0.1018）：
 
-### P2: Nice-to-Have (This Quarter)
-- [ ] **Investigate HMM methods** - Could add 0.5-1% improvement
-- [ ] **Add Fourier analysis** - Search for hidden periodicity
-- [ ] **Enhance special numbers** - Currently only 50% accuracy
-- [ ] **Dynamic window selection** - Adapt window size per draw
-
----
-
-## 📈 Recommended Deployment Strategy
-
-### Phase 1: DAILY_539 (Weeks 1-2)
-```
-Deploy:
-  - 3-bet strategy (Sum Range + Zone Balance + Frequency)
-  - Expected 37.14% hit rate
-  - Daily predictions for next draw
-  
-Monitor:
-  - Compare actual vs expected
-  - Weekly performance report
-  - User engagement
-```
-
-### Phase 2: BIG_LOTTO Educational (Weeks 3-4)
-```
-Deploy:
-  - Single method (Zone Balance 500) as teaching tool
-  - Explain 4.31% hit rate with transparent limitations
-  - Use for understanding prediction principles
-  
-Note: Not recommended for serious play
-```
-
-### Phase 3: Optimization (Month 2)
-```
-Actions:
-  - Apply genetic algorithm regularization
-  - Reduce overfitting gap
-  - Retrain on Q1 2026 data
-  
-Target: Overfitting gap < 5%
-```
+| 策略 | 300p Edge | Sharpe | 狀態 |
+|------|-----------|--------|------|
+| regime_2bet | +3.64% | 0.140 | PRODUCTION |
+| ts3_regime_3bet | +3.51% | 0.123 | PRODUCTION |
+| p1_dev_sum5bet | +3.71% | 0.112 | PRODUCTION |
 
 ---
 
-## 💡 Key Insights from Analysis
+### 威力彩 — RSM 監控中
 
-### Insight 1: Window Size Matters More Than Method
-```
-Zone Balance performance:
-  W=100:  3.95% hit rate
-  W=200:  4.08% hit rate
-  W=500:  4.31% hit rate ← Best
-  
-Conclusion: Longer history > method sophistication
-```
+**研究結論**：部分信號有效（MidFreq/Fourier 可轉移），策略持正邊際，但 EV 為負。
 
-### Insight 2: Method Combinations Beat Single Methods
-```
-BIG_LOTTO:
-  Single method max: 4.31%
-  2-bet combination: 8.62% (2.0x improvement)
-  6-bet combination: 13.79% (3.2x improvement)
-  
-Key factor: Low correlation between methods (0.3-0.4)
-```
+跨遊戲信號轉移（L83-L84）：
+- MidFreq：p=0.010 ✅（成功轉移）
+- Fourier：p=0.035 ✅（成功轉移）
+- ACB 邊界/mod3：❌（539 專屬，不可轉移）
 
-### Insight 3: DAILY_539 is Structurally Different
-```
-Why better performance:
-  1. Lower number pool (39 vs 49)
-  2. Fewer selection required (5 vs 6)
-  3. Lower win threshold (2 vs 3)
-  
-Combined effect: 37% achievable (vs ~15% max for others)
-```
+| 策略 | 300p Edge | Sharpe | 狀態 |
+|------|-----------|--------|------|
+| fourier_rhythm_3bet | +3.16% | 0.090 | PRODUCTION |
+| pp3_freqort_4bet | +3.40% | 0.088 | PRODUCTION |
+| orthogonal_5bet | +2.76% | 0.068 | WATCH |
 
-### Insight 4: Negative Expected Value is Immutable
-```
-Even perfect predictor cannot beat lottery structure:
-  
-If you predict 100% accuracy:
-  - Your prediction cost: $50
-  - Official prize (6 matches): $10,000,000
-  - But odds of 6 matches: 1 in 13,983,816
-  - Expected return: ~$0.71 per $50 bet
-  
-The house always wins. Period.
-```
+進化策略評估（L88）：full OOS edge=+3.42% p=0.005 三窗口全 PASS，
+但 McNemar vs fourier_rhythm_3bet net=+16 p=0.458（等效，不替換）。
 
 ---
 
-## 🎓 What This System is Good For
+## 決策層研究（L99-L102）
 
-✅ **Educational use**
-- Learn prediction algorithm design
-- Understand statistical testing
-- Practice ensemble methods
+**研究結論**：決策層降低損失但無法轉正 EV。
 
-✅ **Research/thesis work**
-- Empirical validation of lottery hypotheses
-- Method comparison studies
-- Overfitting detection case study
+| Stage | 策略 | 效果 |
+|-------|------|------|
+| Stage 1 Gate | 過濾低信心期 | 539 WATCH（perm fail），BIG/POWER REJECT |
+| Stage 2 Position Sizing | confidence threshold | edge_per_bet 改善，但 unconditional EV 仍為負 |
+| Stage 3 Anti-Crowd | popularity 調整 | BIG_LOTTO delta=+1.04% ROI，perm p=0.257 不顯著 |
+| Stage 4 Kelly | Kelly 公式 | Kelly=0（jackpot variance 主導） |
 
-✅ **Experimental play**
-- Small amounts only ($50-100/month)
-- Test method improvements
-- Entertainment value
-
-❌ **What it's NOT good for**
-- Get-rich-quick schemes (impossible)
-- Reliable income generation (negative expected value)
-- Heavy investment (will lose money)
+核心限制（L101）：選擇性下注的結構性稀釋——
+unconditional_hr = cond_hr × (n_bet/n_oos)，
+要讓 uncond_hr > flat_bl 需要 cond_hr ≈ 47%，遠超任何策略的實際達成率（~30-35%）。
 
 ---
 
-## 📋 Implementation Checklist
+## RL 研究結案（SB3 Track B）
 
-Before deploying any strategy:
+**研究結論**：REJECTED — 零改善，建議維持靜態 RSM 生產線。
 
-- [ ] Run rolling backtest on ≥100 unseen draws
-- [ ] Verify p-value < 0.05 (statistical significance)
-- [ ] Check overfitting gap < 10%
-- [ ] Validate no data leakage
-- [ ] Test on multiple year cohorts
-- [ ] Document assumptions explicitly
-- [ ] Include risk warnings in UI
-- [ ] Set up weekly monitoring
-- [ ] Plan quarterly revalidation
+| 模型 | MC p-value | McNemar vs 靜態 | 結果 |
+|------|-----------|----------------|------|
+| PPO | 0.061 | net=−1 p=1.0 | REJECT |
+| DQN | 0.207 | net=0 p=1.0 | REJECT |
 
----
+失敗原因（L96-L98）：
+- 置換測試 bug（shuffling 保留 mean，見 L96）
+- 獎勵遊戲：cost-discount 使 agent 選低注低基準策略（L97）
+- 資料不足：170 train draws，48 draw test（L98）
 
-## 🔐 Risk Management
-
-**For Each Strategy Deployment**:
-
-| Risk | Probability | Mitigation |
-|------|------------|-----------|
-| Overfitting | High (seen 17% gap) | Add L1/L2 regularization |
-| Data drift | Medium | Monthly retest on new data |
-| Method failure | Low (tested well) | Weekly monitoring |
-| Misuse by users | High | Add prominent warnings |
-| Negative ROI | Certain | Transparent cost disclosure |
+重測條件：≥200 新期數 + 獎勵函數修正。
 
 ---
 
-## 📊 Confidence Levels
+## 系統能力邊界
 
-| Claim | Confidence | Basis |
-|-------|-----------|-------|
-| DAILY_539 3-bet hits 37% | Very High (95%) | 313-period backtest |
-| BIG_LOTTO 2-bet hits 8.62% | High (90%) | 116-period backtest |
-| Zone Balance is best single method | High (85%) | Consistent ranking |
-| Negative expected value persists | Very High (99%) | Fundamental mathematics |
-
----
-
-## 🎯 Final Recommendation
-
-### For a Lottery Enthusiast:
-**Use DAILY_539 3-bet strategy**
-- Realistic win rate (37%)
-- Sustainable cost ($150/draw)
-- Educational value
-- Accept negative expected value
-
-### For System Optimization:
-**Focus on regularization and monitoring**
-- Reduce overfitting gap to <5%
-- Implement weekly performance tracking
-- Plan quarterly algorithm updates
-- Document all improvements
-
-### For Business/Product:
-**Position as education/entertainment**
-- Be explicit about limitations
-- Show realistic statistics
-- Include risk warnings
-- Don't promise wins
+| 能力項目 | 評估 |
+|---------|------|
+| 統計邊際測量 | ✅ 可靠（三窗口 + permutation + McNemar） |
+| 策略監控（RSM） | ✅ 穩定（30/100/300p 滾動 Edge） |
+| 信號發現 | ⚠️ 539/大樂透已窮盡，威力彩持續中 |
+| 預測準確率 | ❌ 不可操作（EV < 0，ruin_prob = 1） |
+| RL 動態策略選擇 | ❌ 資料不足，當前無法部署 |
+| 投注建議 | ❌ 不提供，超出系統定位 |
 
 ---
 
-## 📚 Documentation Reference
+## 下一個研究觸發點
 
-For detailed information, see:
-
-1. **System Optimization Analysis** → [SYSTEM_OPTIMIZATION_ANALYSIS_2026.md](SYSTEM_OPTIMIZATION_ANALYSIS_2026.md)
-   - Complete method evaluation
-   - Performance benchmarks
-   - Statistical analysis
-
-2. **Implementation Guide** → [IMPLEMENTATION_GUIDE_2026.md](IMPLEMENTATION_GUIDE_2026.md)
-   - Code patterns and examples
-   - Testing protocols
-   - Deployment steps
-
-3. **Backtest Reports**:
-   - [BIG_LOTTO_MULTI_BET_BACKTEST_REPORT.md](BIG_LOTTO_MULTI_BET_BACKTEST_REPORT.md)
-   - [DAILY539_MULTI_BET_BACKTEST_REPORT.md](DAILY539_MULTI_BET_BACKTEST_REPORT.md)
-   - [POWER_LOTTO_MULTI_BET_BACKTEST_REPORT.md](POWER_LOTTO_MULTI_BET_BACKTEST_REPORT.md)
-
----
-
-## ❓ FAQ
-
-**Q: Can we make the system more accurate?**  
-A: Marginal improvements only (0.5-1%). Lottery fundamentals limit all systems.
-
-**Q: Why not use machine learning?**  
-A: Attempted (Prophet, XGBoost, AutoGluon). Results: <5% hit rate (worse than rule-based).
-
-**Q: Is there a guaranteed winning strategy?**  
-A: No. Impossible by definition. Lottery outcomes are random.
-
-**Q: What's the best ROI?**  
-A: DAILY_539 3-bet at -17% expected loss (best of all options).
-
-**Q: Should users play this?**  
-A: Only if they understand it's entertainment with negative expected value.
-
----
-
-## 🏁 Conclusion
-
-Your lottery prediction system is **technically excellent but fundamentally limited by lottery randomness**. The optimization analysis shows:
-
-1. ✅ Your methods work (2-4x better than random)
-2. ✅ Your implementation is sound (no data leakage)
-3. ✅ Your ensemble approach is correct (proper diversity)
-4. ⚠️ But lottery odds cannot be beaten long-term
-
-**Best strategy forward:**
-- Deploy DAILY_539 3-bet as primary recommendation
-- Treat other lotteries as educational tools
-- Focus on regularization and monitoring
-- Be transparent about limitations
-
-**Expected outcome**: A sustainable, well-understood system that improves on random selection but maintains realistic expectations about probability and risk.
-
----
-
-**Ready for implementation?** → See [IMPLEMENTATION_GUIDE_2026.md](IMPLEMENTATION_GUIDE_2026.md)
-
-**Want details?** → See [SYSTEM_OPTIMIZATION_ANALYSIS_2026.md](SYSTEM_OPTIMIZATION_ANALYSIS_2026.md)
-
-**Questions?** → Check the FAQ section above
-
----
-
-**Analysis Status**: ✅ Complete  
-**Approval Status**: 🔄 Awaiting deployment decision  
-**Last Updated**: 2026-01-05  
-**Next Review**: 2026-04-05 (Quarterly)
+1. **200 期 per-agent tracking**（降權評估，L77）
+2. **50 期新資料**（假設優先度重評）
+3. **RSM 300p Edge 跌破 +4%**（539 緊急假設生成）
+4. **MicroFish 重測：6010 期**（McNemar net≥+20 + p<0.05）
+5. **PP3-Z3Gap 2026-06 重評**（1500p>+2.43% + McNemar p<0.05）
+6. **大樂透 DriftDetector PSI > 0.2**（urgent hypothesis generation）

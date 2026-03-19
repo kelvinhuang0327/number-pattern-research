@@ -1,404 +1,72 @@
-# Quick Reference: Prediction Methods Performance Matrix
-## Visual Guide to System Optimization
+# 策略快速參考矩陣（2026-03-19）
+
+本文件提供三遊戲現役策略的標準化參考。
+所有 Edge 數值來自 RSM 滾動回測，非保證報酬。
 
 ---
 
-## Performance Ranking Matrix
+## 今彩 539（5812期資料，維護模式）
 
-```
-LOTTERY SYSTEM PERFORMANCE OVERVIEW (2025 Backtest Data)
-═══════════════════════════════════════════════════════════════════════════
+信號空間窮盡（L82）。現有策略持續 RSM 監控，無新假設測試。
 
-BIG_LOTTO (6-number + special, 49-pool)
-───────────────────────────────────────────────────────────────────────────
+| 注數 | 策略鍵 | 策略描述 | 300p Edge | Sharpe | 狀態 |
+|------|-------|---------|----------|--------|------|
+| 1 | `acb_1bet` | ACB 邊界加成 | +3.27% | 0.092 | PRODUCTION |
+| 2 | `midfreq_acb_2bet` | 中頻段 × ACB | +8.46% | 0.185 | PRODUCTION |
+| 3 | `acb_markov_midfreq_3bet` | ACB × Markov × MidFreq | +8.50% | 0.174 | PRODUCTION |
+| 5 | `f4cold_5bet` | 四冷號融合 | +6.61% | 0.132 | PRODUCTION |
 
-Single Methods:
-  Zone Balance (500)       ████░░░░░░ 4.31% ← BEST SINGLE
-  Frequency (100)          ███░░░░░░░ 4.21%
-  Bayesian (300)           ███░░░░░░░ 4.18%
-  Trend (300)              ███░░░░░░░ 4.15%
-  Hot-Cold (100)           ███░░░░░░░ 4.05%
-
-Multi-Bet Strategies:
-  2-Bet (Zone 500+200)     ████████░░ 8.62% ✅ Recommended 2-bet
-  4-Bet Ensemble           ████████░░ 8.50%
-  6-Bet (Genetic Opt)      ██████████ 13.79% ⚠️ Research only
-
-Random Baseline:                ░░░░░░░░░░ 1.20%
-Improvement Factor:             3.6x (single) | 7.2x (6-bet)
-
-═══════════════════════════════════════════════════════════════════════════
-
-POWER_LOTTO (6-number + special, 38-pool)
-───────────────────────────────────────────────────────────────────────────
-
-Single Methods:
-  Ensemble                 ████░░░░░░ 4.21% ← BEST SINGLE
-  Zone Balance (400)       ████░░░░░░ 4.15%
-  Bayesian (300)           ███░░░░░░░ 4.08%
-  Frequency (100)          ███░░░░░░░ 3.95%
-
-Multi-Bet Strategies:
-  2-Bet                    ███████░░░ 7.5%
-  4-Bet (ClusterPivot)     ██████████ 15.0% ⭐ Best Power Lotto
-  6-Bet                    ██████████ 22.11%
-
-Random Baseline:                ░░░░░░░░░░ 1.80%
-Improvement Factor:             2.3x (single) | 12.3x (6-bet)
-
-═══════════════════════════════════════════════════════════════════════════
-
-DAILY_539 (5-number, 39-pool) ⭐⭐⭐ RECOMMENDED LOTTERY
-───────────────────────────────────────────────────────────────────────────
-
-Single Methods:
-  Sum Range (300)          ███████████ 15.34% ✅ BEST SINGLE METHOD
-  Zone Balance (150)       ██████░░░░ 14.20%
-  Frequency (200)          ██████░░░░ 13.50%
-  Bayesian (200)           ██████░░░░ 13.20%
-
-Multi-Bet Strategies:
-  2-Bet Coverage           ██████████░ 27.62%
-  3-Bet (Recommended) ✅   ████████████ 37.14% 🏆 WINNER
-  4-Bet Coverage           ████████████ ~42%
-
-Random Baseline (2-match):        ░░░░░░░░░░ 9.30%
-Improvement Factor:             1.65x (single) | 4.0x (3-bet)
-
-Expected Win Frequency:          Every 2.7 draws ← SUSTAINABLE
-
-═══════════════════════════════════════════════════════════════════════════
-```
+**設計原則**：ACB = fd×0.4 + gs×0.6, boundary=1.2（n≤8, n≥35）。
+**負面紀錄**：f4cold_3bet 30p=-0.50% ⚠️，但 300p=+0.17% STABLE，不降權。
 
 ---
 
-## Method Effectiveness by Category
+## 大樂透（2117期資料，維護模式）
 
-```
-STATISTICAL METHODS (Theory-based)
-┌─────────────────────────────────────────────────┐
-│ Method              │ Hit Rate │ Stability │ Best │
-├─────────────────────────────────────────────────┤
-│ Frequency Analysis  │ 4.0-4.2% │ ★★★★☆   │ W=100-200 │
-│ Trend Analysis      │ 4.0-4.2% │ ★★★☆☆   │ W=300     │
-│ Bayesian Prob       │ 4.0-4.2% │ ★★★★☆   │ W=300     │
-│ Monte Carlo         │ 3.9-4.1% │ ★★☆☆☆   │ W=200     │
-│ Markov Chain        │ 3.8-4.0% │ ★★★☆☆   │ W=100     │
-│ Deviation Tracking  │ 3.9-4.1% │ ★★★☆☆   │ W=200     │
-└─────────────────────────────────────────────────┘
-Average: 4.0% | Best: Bayesian/Frequency | Worst: Markov
+L91：49C6 與公平隨機過程無法區分。零信號達 p<0.05。
+策略為歷史觀測所產生，無法保證未來效果。
 
-HEURISTIC METHODS (Pattern-based)
-┌─────────────────────────────────────────────────┐
-│ Method              │ Hit Rate │ Stability │ Best │
-├─────────────────────────────────────────────────┤
-│ Zone Balance        │ 4.1-4.3% │ ★★★★★   │ W=500     │ ← TOP
-│ Hot-Cold Mix        │ 4.0-4.1% │ ★★★☆☆   │ W=100     │
-│ Odd-Even Balance    │ 3.9-4.0% │ ★★★★☆   │ W=150     │
-│ Sum Range Filter    │ 4.0-4.2% │ ★★★★☆   │ W=300     │
-│ Number Pairs        │ 3.8-4.0% │ ★★☆☆☆   │ W=100     │
-│ Wheeling            │ 3.7-3.9% │ ★★★☆☆   │ Varies    │
-└─────────────────────────────────────────────────┘
-Average: 4.0% | Best: Zone Balance | Worst: Wheeling
+| 注數 | 策略鍵 | 策略描述 | 300p Edge | Sharpe | 狀態 |
+|------|-------|---------|----------|--------|------|
+| 2 | `regime_2bet` | 機制切換 2注 | +3.64% | 0.140 | PRODUCTION |
+| 3 | `ts3_regime_3bet` | TS3 × 機制切換 | +3.51% | 0.123 | PRODUCTION |
+| 5 | `p1_dev_sum5bet` | P1偏差 × Sum約束 | +3.71% | 0.112 | PRODUCTION |
 
-ENSEMBLE METHODS (Combination-based)
-┌─────────────────────────────────────────────────┐
-│ Method              │ Hit Rate │ Stability │ Best │
-├─────────────────────────────────────────────────┤
-│ Uniform Voting      │ 4.3-4.5% │ ★★★★☆   │ 2+ methods │
-│ Weighted Ensemble   │ 4.4-4.6% │ ★★★★☆   │ 2-3 meth   │
-│ Genetic Optimized   │ 4.5-4.7% │ ★★★☆☆   │ 5+ meth    │
-│ Adaptive Ensemble   │ 4.3-4.8% │ ★★☆☆☆   │ Complex    │
-└─────────────────────────────────────────────────┘
-Average: 4.5% | Best: Genetic | Worst: Uniform
-
-⭐ WINNER: Zone Balance (Heuristic) - Best single method
-⭐ RUNNER-UP: Genetic Ensemble - Best multi-method (but overfitting risk)
-```
+**監控警告**：DriftDetector PSI=0.1018（輕微偏移，持續監控）。
+**邊際效率急降**：1注 eff=0.83, 2注=0.64, 3注=0.49。
 
 ---
 
-## Window Size Impact Analysis
+## 威力彩（1893期資料，RSM 監控中）
 
-```
-HOW HISTORICAL WINDOW SIZE AFFECTS PERFORMANCE
-════════════════════════════════════════════════════════════════
+部分策略持正邊際。MidFreq 和 Fourier 信號可從 539 轉移（L83）。
 
-Zone Balance (Primary Test Case):
+| 注數 | 策略鍵 | 策略描述 | 300p Edge | Sharpe | 狀態 |
+|------|-------|---------|----------|--------|------|
+| 3 | `fourier_rhythm_3bet` | 傅立葉韻律 3注 | +3.16% | 0.090 | PRODUCTION |
+| 4 | `pp3_freqort_4bet` | PP3 × 頻率正交 | +3.40% | 0.088 | PRODUCTION |
+| 5 | `orthogonal_5bet` | 正交 5注 | +2.76% | 0.068 | WATCH |
 
-Window     │ Draws Analyzed │ Hit Rate │ Stability │ Comment
-═══════════╪════════════════╪══════════╪═══════════╪════════════════════
-W=50       │ 50 draws       │ 3.8%     │ ★☆☆☆☆     │ Too recent, noisy
-W=100      │ 100 draws      │ 3.95%    │ ★★☆☆☆     │ Recent trend focus
-W=200      │ 200 draws      │ 4.08%    │ ★★★☆☆     │ Balanced approach
-W=300      │ 300 draws      │ 4.15%    │ ★★★★☆     │ Medium-term pattern
-W=500      │ 500 draws      │ 4.31%    │ ★★★★★     │ ← OPTIMAL
-W=1000     │ 1000 draws     │ 4.28%    │ ★★★★☆     │ Slightly declining
-W=ALL      │ All history    │ 4.20%    │ ★★★★☆     │ Decreasing returns
-
-⚡ KEY INSIGHT: Performance peaks at W=500, diminishes after
-   - Indicates ~1.5 year (500 draws ≈ 1-2 years)
-   - Older patterns become stale/irrelevant
-   - Sweet spot: 500 ≤ W ≤ 1000
-```
+**RSM 監控中（待升格評估）**：
+- `midfreq_fourier_2bet`：300p=+0.08%
+- `midfreq_fourier_mk_3bet`：300p=+1.83%
 
 ---
 
-## Multi-Bet Coverage Efficiency
+## 狀態定義
 
-```
-DIMINISHING RETURNS: Adding More Bets
-════════════════════════════════════════════════════════════════
-
-BIG_LOTTO Analysis:
-┌────────────────┬───────────┬──────────┬────────────┬──────────────┐
-│ Num Bets       │ Hit Rate  │ Win Per  │ Cost/Bet   │ Cost/Win     │
-├────────────────┼───────────┼──────────┼────────────┼──────────────┤
-│ 1 bet          │ 4.31%     │ 23.2 per │ $50        │ $1,160       │
-│ 2 bets         │ 8.62%     │ 11.6 per │ $100       │ $1,160       │ ✓ Efficient
-│ 3 bets         │ 12.27%    │ 8.1 per  │ $150       │ $1,215       │
-│ 4 bets         │ 15.49%    │ 6.4 per  │ $200       │ $1,280       │
-│ 6 bets         │ 13.79%    │ 7.3 per  │ $300       │ $2,174       │ ⚠️ Inefficient
-│ 8 bets         │ 15.52%    │ 6.4 per  │ $400       │ $2,560       │ ❌ Not viable
-└────────────────┴───────────┴──────────┴────────────┴──────────────┘
-
-✅ SWEET SPOT: 2-bet strategy (best cost-per-win ratio)
-
-DAILY_539 Analysis (Lower threshold = different dynamics):
-┌────────────────┬───────────┬──────────┬────────────┬──────────────┐
-│ Num Bets       │ Hit Rate  │ Win Per  │ Cost/Bet   │ Cost/Win     │
-├────────────────┼───────────┼──────────┼────────────┼──────────────┤
-│ 1 bet          │ 15.34%    │ 6.5 per  │ $50        │ $325         │
-│ 2 bets         │ 27.62%    │ 3.6 per  │ $100       │ $360         │
-│ 3 bets         │ 37.14%    │ 2.7 per  │ $150       │ $405         │ ✓ VIABLE
-│ 4 bets         │ ~42%      │ 2.4 per  │ $200       │ ~$475        │
-└────────────────┴───────────┴──────────┴────────────┴──────────────┘
-
-✅ SWEET SPOT: 3-bet strategy (only strategy with reasonable cost/win)
-
-⭐ NOTE: DAILY_539 only lottery where multi-bet is financially justified!
-```
+| 狀態 | 條件 | 說明 |
+|------|------|------|
+| PRODUCTION | edge_300p ≥ 3% + STABLE/IMPROVING | 已驗證，RSM 監控中 |
+| WATCH | 0 < edge_300p < 3% 或有警告 | 信號正向但較弱，持續觀察 |
+| ADVISORY_ONLY | edge_300p ≤ 0% | 近期偏弱，僅供參考 |
+| MAINTENANCE | 信號空間窮盡 | 維護模式，無新假設 |
 
 ---
 
-## Statistical Significance Testing
+## 注意事項
 
-```
-BACKTEST VALIDATION: P-VALUES & CONFIDENCE INTERVALS
-════════════════════════════════════════════════════════════════
-
-BIG_LOTTO Zone Balance (W=500):
-├─ Observed: 5 wins / 116 periods
-├─ Expected (baseline): 1.4 wins
-├─ P-value: 0.0002 (HIGHLY SIGNIFICANT)
-├─ 95% CI: 4.1% - 4.5%
-└─ Conclusion: ✅ NOT DUE TO CHANCE
-
-DAILY_539 Sum Range (W=300):
-├─ Observed: 48 wins / 313 periods
-├─ Expected (baseline): 29 wins
-├─ P-value: 0.0001 (HIGHLY SIGNIFICANT)
-├─ 95% CI: 14.8% - 16.0%
-└─ Conclusion: ✅ NOT DUE TO CHANCE
-
-POWER_LOTTO Ensemble:
-├─ Observed: 4 wins / 95 periods
-├─ Expected (baseline): 1.7 wins
-├─ P-value: 0.015 (MARGINALLY SIGNIFICANT)
-├─ 95% CI: 3.8% - 4.6%
-└─ Conclusion: ⚠️ BORDERLINE (needs more periods)
-
-⚠️ SMALL SAMPLE ALERT:
-   - BIG_LOTTO: 116 periods = ±3% margin of error
-   - DAILY_539: 313 periods = ±2% margin of error
-   - 2-3 years of data recommended for stability
-```
-
----
-
-## Method Correlation Matrix
-
-```
-DIVERSITY ANALYSIS: How Independent Are Methods?
-════════════════════════════════════════════════════════════════
-
-Lower correlation = better ensemble potential
-
-                     Zone  Freq  Bayes Trend  HC
-                    ═════════════════════════════
-Zone Balance    █     1.00  0.42  0.38  0.41  0.35
-Frequency       ░     0.42  1.00  0.45  0.52  0.48
-Bayesian        ░     0.38  0.45  1.00  0.38  0.42
-Trend           ░     0.41  0.52  0.38  1.00  0.45
-Hot-Cold        ░     0.35  0.48  0.42  0.45  1.00
-
-✅ Good news: All methods moderately diverse (0.35-0.52)
-⚠️ Bad news: Correlation > 0.3 means less diversity benefit
-
-OPTIMAL PAIRS:
-  1. Zone Balance + Hot-Cold (0.35)  ← BEST
-  2. Zone Balance + Bayesian (0.38)
-  3. Zone Balance + Trend (0.41)
-  4. Bayesian + Trend (0.38)
-
-AVOID THESE PAIRS:
-  ❌ Frequency + Trend (0.52)  ← Most correlated
-  ❌ Frequency + Hot-Cold (0.48)
-```
-
----
-
-## Risk vs Reward Summary Table
-
-```
-STRATEGY SELECTION GUIDE
-════════════════════════════════════════════════════════════════
-
-                    │ Hit Rate │ ROI    │ Risk  │ Rec'd │ User Type
-════════════════════╪══════════╪════════╪═══════╪═══════╪════════════
-BIG_LOTTO Single    │  4.3%    │ -83%   │ High  │  ❌   │ Education
-BIG_LOTTO 2-bet     │  8.6%    │ -83%   │ Med   │  ⚠️   │ Research
-BIG_LOTTO 6-bet     │ 13.8%    │ -86%   │ V.Hi  │  ❌   │ Never
-────────────────────┼──────────┼────────┼───────┼───────┼────────────
-POWER Single        │  4.2%    │ -82%   │ High  │  ❌   │ Education
-POWER 4-bet         │ 15.0%    │ -46%   │ Med   │  ⚠️   │ Research
-POWER 6-bet         │ 22.1%    │ -62%   │ V.Hi  │  ❌   │ Never
-────────────────────┼──────────┼────────┼───────┼───────┼────────────
-DAILY539 Single     │ 15.3%    │ -31%   │ Low   │  ✅   │ Anyone
-DAILY539 2-bet      │ 27.6%    │ -27%   │ Low   │  ✅   │ Enthusiast
-DAILY539 3-bet ⭐   │ 37.1%    │ -17%   │ LOW   │  ✅✅ │ RECOMMENDED
-DAILY539 4-bet      │ ~42%     │ -24%   │ Med   │  ⚠️   │ Aggressive
-
-Legend:
-  ROI = Expected return on investment (negative = expected loss)
-  Risk = Volatility of results
-  Rec'd = Recommendation level (✅ = Good, ⚠️ = Caution, ❌ = Avoid)
-
-⭐ CLEAR WINNER: DAILY_539 3-bet (37% hit rate, lowest expected loss)
-```
-
----
-
-## Implementation Roadmap
-
-```
-DEPLOYMENT PHASES
-════════════════════════════════════════════════════════════════
-
-PHASE 1: DAILY_539 3-Bet Launch (Weeks 1-2)
-├─ Deploy Sum Range + Zone Balance + Frequency
-├─ Generate daily predictions
-├─ Monitor 37% hit rate target
-├─ Expected outcome: ✅ Win every 2.7 draws
-└─ Status: READY NOW
-
-PHASE 2: BIG_LOTTO Education Tool (Weeks 3-4)
-├─ Add Zone Balance (500) as teaching example
-├─ Explain 4.31% hit rate limitations
-├─ Use for understanding principles
-└─ Status: READY (secondary priority)
-
-PHASE 3: Optimization & Regularization (Month 2)
-├─ Apply L1/L2 to genetic algorithm
-├─ Reduce overfitting gap from 17% → <5%
-├─ Retrain on Q1 2026 data
-└─ Target: Improved generalization
-
-PHASE 4: Advanced Methods Research (Month 3+)
-├─ Investigate HMM and Fourier analysis
-├─ Enhance special number prediction
-├─ Dynamic window selection
-└─ Expected improvement: +0.5-1% hit rate
-
-PHASE 5: Quarterly Revalidation (Ongoing)
-├─ Monthly backtest on new data
-├─ Weekly performance monitoring
-├─ Quarterly full retraining
-└─ Continuous improvement cycle
-```
-
----
-
-## Final Decision Matrix
-
-```
-Should I deploy this strategy?
-
-                          YES if:                      NO if:
-═════════════════════════════════════════════════════════════════════
-
-DAILY_539 3-bet       ✅ You understand             ❌ You expect guaranteed
-                         negative ROI              wins
-                      ✅ You play for              ❌ You want positive
-                         entertainment            expected value
-                      ✅ You monitor weekly        ❌ You want to "get
-                      ✅ You have $150/            rich"
-                         month budget
-
-BIG_LOTTO 2-bet       ✅ You want to learn         ❌ You want real
-                         prediction methods        probability of winning
-                      ✅ You're doing              ❌ You need ROI > -80%
-                         research                  
-                      ⚠️ You have excess           ❌ You're risk-averse
-                         capital
-
-Power Lotto           ❌ Basically never            ✅ Everything else
-
-═════════════════════════════════════════════════════════════════════
-
-BOTTOM LINE:
-→ Only recommend DAILY_539 3-bet for real use
-→ Everything else: educational/research only
-→ Never promise guaranteed wins (impossible)
-```
-
----
-
-## One-Page Cheat Sheet
-
-```
-┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
-┃  LOTTERY PREDICTION SYSTEM - QUICK REFERENCE                    ┃
-┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
-
-🎯 BEST STRATEGY:        DAILY_539 3-Bet (37.14% hit rate)
-💰 COST PER DRAW:        $150 (3 bets × $50)
-⏰ WIN EVERY:            2-3 draws
-📊 EXPECTED LOSS:        -$25 per win (best of all options)
-
-🔬 BEST SINGLE METHOD:   Zone Balance (BIG_LOTTO, 4.31%)
-🧬 BEST ENSEMBLE:        6-bet genetic (BIG_LOTTO, 13.79%)
-🎮 MOST RELIABLE:        DAILY_539 Sum Range (15.34%)
-
-⚠️  CRITICAL FACTS:
-    ✓ Methods are 2-4x better than random
-    ✓ But lottery ROI is ALWAYS negative
-    ✓ Expected loss: -17% to -83% depending on strategy
-    ✓ No system can beat the lottery long-term
-
-✅ SAFE TO DEPLOY:      DAILY_539 3-bet (only viable strategy)
-⚠️  CAUTION:            BIG_LOTTO 2-bet (educational only)
-❌ DO NOT DEPLOY:       Power Lotto / 6-bet strategies
-
-📋 IMPLEMENTATION:
-   1. Deploy DAILY_539 3-bet now
-   2. Add L1/L2 regularization to genetic optimizer
-   3. Monitor weekly hit rates
-   4. Quarterly revalidation cycle
-   5. Be transparent about ROI with users
-
-💡 REMEMBER:
-   Lottery is fundamentally random.
-   Your system improves odds, but cannot overcome math.
-   Think entertainment, not investment.
-
-┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
-```
-
----
-
-**For Complete Details**: See [SYSTEM_OPTIMIZATION_ANALYSIS_2026.md](SYSTEM_OPTIMIZATION_ANALYSIS_2026.md)
-
-**For Implementation**: See [IMPLEMENTATION_GUIDE_2026.md](IMPLEMENTATION_GUIDE_2026.md)
-
-**For Executive Overview**: See [EXECUTIVE_SUMMARY_2026.md](EXECUTIVE_SUMMARY_2026.md)
+- 300p Edge 為歷史滾動估計，非保證報酬
+- 三窗口（150/500/1500p）一致性比單窗口更可靠
+- McNemar 測試確認替換優於現有策略（p<0.05）
+- 所有遊戲 ruin_prob = 1.000，請勿據此進行實際投注

@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Lottery AI Quant Research Platform</title>
+    <title>Lotto Insight Platform</title>
     <meta name="description" content="專業的彩券大數據量化研究平台 - Automated Strategy Discovery & Statistical Validation">
     
     <!-- Professional Typography -->
@@ -16,8 +16,8 @@
     <script src="https://unpkg.com/lucide@latest"></script>
     
     <!-- Style Systems -->
-    <link rel="stylesheet" href="styles.css?v=15">
-    <link rel="stylesheet" href="professional-design.css?v=15">
+    <link rel="stylesheet" href="styles.css?v=17">
+    <link rel="stylesheet" href="professional-design.css?v=17">
     <link rel="stylesheet" href="src/ui/progress.css">
     
     <!-- Visibility Guard -->
@@ -45,7 +45,7 @@
                         <i data-lucide="layout-dashboard"></i>
                     </div>
                     <div class="logo-text">
-                        <h1>Lottery AI Quant</h1>
+                        <h1>Lotto Insight Platform</h1>
                         <p>Research Platform v2.0</p>
                     </div>
                 </div>
@@ -103,6 +103,10 @@
                 <button class="nav-btn ui-hidden" data-section="autolearning">
                     <i data-lucide="cpu" class="icon"></i>
                     <span>自動學習</span>
+                </button>
+                <button class="nav-btn" data-section="next-draw">
+                    <i data-lucide="zap" class="icon"></i>
+                    <span>下期預測</span>
                 </button>
             </nav>
         </div>
@@ -284,160 +288,69 @@
             <section id="simulation-section" class="section">
                 <div class="section-header">
                     <h2>預測模擬測試</h2>
-                    <p>選擇年度月份，模擬預測並比對結果</p>
+                    <p>選擇年度月份與預測方法，模擬當月每期預測並計算成功率</p>
                 </div>
-                <div class="simulation-controls ui-row-controls">
-                    <label for="simulation-year-month">年度月份：</label>
-                    <input type="month" id="simulation-year-month" value="2025-01"
-                        class="select-input" />
-                    <label for="simulation-method">預測方法：</label>
-                    <select id="simulation-method" class="select-input">
-                        <optgroup label="核心統計策略">
-                            <option value="frequency" selected>頻率分析</option>
-                            <option value="trend">趨勢分析</option>
-                            <option value="bayesian">貝葉斯機率</option>
-                            <option value="montecarlo">蒙地卡羅模擬</option>
-                            <option value="markov">馬可夫鏈</option>
-                            <option value="deviation">偏差追蹤</option>
-                        </optgroup>
-                        <optgroup label="集成預測">
-                            <option value="ensemble_weighted">集成預測 (Ensemble)</option>
-                            <option value="ensemble_combined">綜合集成 (最強)</option>
-                        </optgroup>
-                        <optgroup label="AI 自動優化">
-                            <option value="auto_optimize">智能自動優化</option>
-                            <option value="backend_optimized">後端優化預測</option>
-                        </optgroup>
-                        <optgroup label="🔮 AI 深度學習模型">
-                            <option value="ai_prophet">⭐ Prophet 時間序列</option>
-                            <option value="ai_xgboost">XGBoost 梯度提升</option>
-                            <option value="ai_autogluon">🤖 AutoGluon AutoML</option>
-
-                            <option value="ai_lstm">LSTM 神經網絡</option>
-                            <option value="ai_transformer">⭐ Transformer (PatchTST)</option>
-                            <option value="ai_bayesian_ensemble">🎯 貝叶斯優化集成</option>
-                            <option value="ai_maml">🧬 元學習 (MAML)</option>
-                        </optgroup>
-                        <optgroup label="🎲 民間實戰策略">
-                            <option value="odd_even">奇偶比例</option>
-                            <option value="zone_balance">區間平衡</option>
-                            <option value="hot_cold">冷熱號混合</option>
-                            <option value="sum_range">和值+AC值</option>
-                        </optgroup>
-                        <optgroup label="📈 組合分析">
-                            <option value="number_pairs">連號配對</option>
-                            <option value="statistical">多維統計</option>
-                        </optgroup>
-                        <optgroup label="🔬 高級分析 (新)">
-                            <option value="entropy">📊 信息熵分析</option>
-                            <option value="clustering">🎯 號碼聚類</option>
-                            <option value="dynamic_ensemble">⚡ 動態集成</option>
-                            <option value="temporal">📈 時間序列增強</option>
-                            <option value="feature_engineering">🧬 多維特徵</option>
-                        </optgroup>
-                    </select>
-                    <button class="btn btn-primary" id="simulation-btn">
+                <div class="sim-controls-row">
+                    <div class="sim-ctrl-group">
+                        <label for="simulation-year-month">年度月份</label>
+                        <input type="month" id="simulation-year-month" value="2025-01" class="select-input" />
+                    </div>
+                    <div class="sim-ctrl-group sim-ctrl-group--wide">
+                        <label for="simulation-method">預測方法</label>
+                        <select id="simulation-method" class="select-input">
+                            <optgroup label="核心統計策略">
+                                <option value="frequency" selected>頻率分析</option>
+                                <option value="trend">趨勢分析</option>
+                                <option value="bayesian">貝葉斯機率</option>
+                                <option value="montecarlo">蒙地卡羅模擬</option>
+                                <option value="markov">馬可夫鏈</option>
+                                <option value="deviation">偏差追蹤</option>
+                            </optgroup>
+                            <optgroup label="集成預測">
+                                <option value="ensemble_weighted">集成預測 (Ensemble)</option>
+                                <option value="ensemble_combined">綜合集成</option>
+                            </optgroup>
+                            <optgroup label="後端策略">
+                                <option value="backend_optimized">後端優化預測</option>
+                                <option value="coordinator">RSM Coordinator</option>
+                            </optgroup>
+                            <optgroup label="民間策略">
+                                <option value="odd_even">奇偶比例</option>
+                                <option value="zone_balance">區間平衡</option>
+                                <option value="hot_cold">冷熱號混合</option>
+                                <option value="sum_range">和值+AC值</option>
+                                <option value="number_pairs">連號配對</option>
+                                <option value="statistical">多維統計</option>
+                            </optgroup>
+                        </select>
+                    </div>
+                    <button class="btn btn-primary sim-ctrl-btn" id="simulation-btn">
                         <i data-lucide="play" class="icon-sm"></i>
                         開始模擬
                     </button>
                 </div>
 
-                <!-- 預測方法說明 + 參數自動優化 -->
-                <div class="grid-2">
-                    <!-- 預測方法說明卡片 -->
-                    <div id="method-description-card" class="autolearning-card theme-indigo">
-                        <div class="card-header">
-                            <span id="method-icon" class="ui-fs-24">📊</span>
-                            <h3 id="method-title">策略說明</h3>
-                        </div>
-                        <div id="method-description" class="method-body">
-                            <p>請選擇預測方法以查看詳細說明。</p>
-                        </div>
-                    </div>
-
-                    <!-- 參數自動優化卡片 -->
-                    <div class="autolearning-card theme-emerald">
-                        <div class="card-header">
-                            <i data-lucide="zap" class="icon"></i>
-                            <h3>參數自動優化</h3>
-                        </div>
-                        <p class="card-desc">使用遺傳算法自動優化策略權重</p>
-                        <div class="input-grid">
-                            <div class="control-group">
-                                <label>遺傳代數:</label>
-                                <input type="number" id="generations" class="select-input" value="20">
-                            </div>
-                            <div class="control-group">
-                                <label>種群大小:</label>
-                                <input type="number" id="population-size" class="select-input" value="30">
-                            </div>
-                        </div>
-                        <button class="btn btn-primary btn-emerald" id="run-optimization-btn">
-                            <i data-lucide="rocket" class="icon-sm"></i>
-                            開始優化
-                        </button>
-                    </div>
-                </div>
-
                 <div id="simulation-results" class="ui-hidden">
                     <h3>模擬結果</h3>
-                        <div class="simulation-summary ui-mb-10">成功率：<span
-                            id="simulation-rate"></span>%</div>
-
-                    <!-- 最新一期雙注預測（移到最上方） -->
-                    <div id="simulation-next-prediction" class="next-prediction-panel ui-hidden ui-mb-30">
-                        <h3 class="ui-title-light ui-mb-15">🔮 最新一期雙注優化預測（純預測，無實際開獎資料）</h3>
-                        <div class="dual-bet-container ui-dualbet-container">
-                            <div class="bet-group ui-mb-15">
-                                <h4 class="ui-dualbet-title-a">第一注（最高信心）</h4>
-                                <div class="predicted-numbers" id="next-bet-numbers-1"></div>
-                                <div class="mini-confidence ui-mini-confidence">
-                                    <span>信心度：</span>
-                                    <span id="next-bet-confidence-1" class="confidence-badge">0%</span>
-                                </div>
-                            </div>
-                            <div class="bet-divider ui-bet-divider">+</div>
-                            <div class="bet-group">
-                                <h4 class="ui-dualbet-title-b">第二注（次高信心）</h4>
-                                <div class="predicted-numbers" id="next-bet-numbers-2"></div>
-                                <div class="mini-confidence ui-mini-confidence">
-                                    <span>信心度：</span>
-                                    <span id="next-bet-confidence-2" class="confidence-badge">0%</span>
-                                </div>
-                            </div>
-                            <div class="dual-bet-stats ui-mt-20">
-                                <div class="stat-item">
-                                    <span class="stat-label">整合策略數：</span>
-                                    <span class="stat-value" id="next-bet-strategy-count">0</span>
-                                </div>
-                                <div class="stat-item">
-                                    <span class="stat-label">綜合信心度：</span>
-                                    <span class="stat-value" id="next-bet-overall-confidence">0%</span>
-                                </div>
-                                <div class="stat-item">
-                                    <span class="stat-label">預測基準：</span>
-                                    <span class="stat-value" id="next-bet-base-period">-</span>
-                                </div>
-                            </div>
-                            <div class="dual-bet-report ui-mt-15" id="next-bet-report"></div>
-                        </div>
-                    </div>
+                    <div class="simulation-summary ui-mb-10">成功率：<span id="simulation-rate"></span>%</div>
 
                     <!-- 每期預測結果表格 -->
-                    <table class="simulation-table ui-table-full" id="simulation-table">
+                    <div class="sim-results-panel">
+                    <table class="simulation-table" id="simulation-table">
                         <thead>
                             <tr>
                                 <th>期數</th>
                                 <th>日期</th>
-                                <th>預測號碼 (前10強)</th>
+                                <th>預測號碼</th>
                                 <th>實際號碼</th>
-                                <th>命中數</th>
-                                <th>參考起訖期數</th>
-                                <th>成功</th>
+                                <th>命中</th>
+                                <th>訓練資料</th>
+                                <th>結果</th>
                             </tr>
                         </thead>
                         <tbody></tbody>
                     </table>
+                    </div>
                 </div>
             </section>
 
@@ -1115,6 +1028,20 @@
                             </tbody>
                         </table>
                     </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Next Draw Prediction Section -->
+        <section id="next-draw-section" class="section">
+            <div class="section-header">
+                <h2>下期開獎預測</h2>
+                <p>RSM Coordinator 加權多代理預測 — 僅展示已驗證策略輸出，不含未驗證結果</p>
+            </div>
+            <div id="next-draw-content" class="nd-content">
+                <div class="next-draw-loading">
+                    <div class="loading-spinner"></div>
+                    <p>正在從 RSM Coordinator 生成預測…</p>
                 </div>
             </div>
         </section>

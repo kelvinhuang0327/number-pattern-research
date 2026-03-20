@@ -1,8 +1,8 @@
 > ⚠️ **This project is for academic statistical research only. It does not provide betting advice and is not affiliated with any lottery operator.**
 
-# Number Pattern Research Platform
+# lottery Insight and Research Platform
 
-A statistical research platform for public draw games: Pick5 (5/39), Pick6 (6/49), and PowerPick (6/38+8).
+A statistical research platform for public draw games: 539 (5/39), big lotto (6/49), and Power lotto (6/38+8).
 Research-driven, tracking strategy performance and documenting findings.
 
 **This is not a prediction tool and does not provide betting advice.**
@@ -21,9 +21,9 @@ Research-driven, tracking strategy performance and documenting findings.
 
 | Game | Status | Conclusion |
 |------|--------|------------|
-| Pick5 (5/39) | Maintenance | Signal space exhausted (L82): H001~H008 all REJECTED, active strategies under RSM monitoring |
-| Pick6 (6/49) | Maintenance | Indistinguishable from fair random process (L91): 6 randomness tests passed, no actionable signal in 49C6 |
-| PowerPick (6/38+8) | RSM Monitoring | Some strategies hold positive 300p Edge, but ruin_prob = 1.000 for all games |
+| 539 (5/39) | Maintenance | Signal space exhausted (L82): H001~H008 all REJECTED, active strategies under RSM monitoring |
+| big lotto (6/49) | Maintenance | Indistinguishable from fair random process (L91): 6 randomness tests passed, no actionable signal in 49C6 |
+| Power lotto (6/38+8) | RSM Monitoring | Some strategies hold positive 300p Edge, but ruin_prob = 1.000 for all games |
 
 **Important**: Negative expected value confirmed for all games. The "Next Draw" page visualizes research outputs only — not betting recommendations.
 
@@ -102,7 +102,7 @@ open http://localhost:8081
 
 ## Active Strategies
 
-### Pick5 — 5/39 (Maintenance Mode)
+### 539 — 5/39 (Maintenance Mode)
 
 | Bets | Strategy | 300p Edge | Status |
 |------|----------|-----------|--------|
@@ -111,7 +111,7 @@ open http://localhost:8081
 | 3 | acb_markov_midfreq_3bet | +8.50% | PRODUCTION |
 | 5 | f4cold_5bet | +6.61% | PRODUCTION |
 
-### Pick6 — 6/49 (Maintenance Mode)
+### big lotto — 6/49 (Maintenance Mode)
 
 | Bets | Strategy | 300p Edge | Status |
 |------|----------|-----------|--------|
@@ -119,7 +119,7 @@ open http://localhost:8081
 | 3 | ts3_regime_3bet | +3.51% | PRODUCTION |
 | 5 | p1_dev_sum5bet | +3.71% | PRODUCTION |
 
-### PowerPick — 6/38+8 (RSM Monitoring)
+### Power lotto — 6/38+8 (RSM Monitoring)
 
 | Bets | Strategy | 300p Edge | Status |
 |------|----------|-----------|--------|

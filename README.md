@@ -145,7 +145,7 @@ open http://localhost:8081
 
 ## Discussion & Contribution
 
-This project has hit a wall in statistical signal exploration (Pick5 L82 / Pick6 L91).
+This project has hit a wall in statistical signal exploration .
 If you are interested in probability analysis, time series, or draw game statistics, feel free to exchange ideas.
 
 - New analysis angle or hypothesis? Open an **Issue**

@@ -1,6 +1,6 @@
 {
   "lottery_type": "POWER_LOTTO",
-  "last_updated": "2026-03-18T10:43:36.247436",
+  "last_updated": "2026-03-22T23:20:06.117861",
   "records": {
     "fourier_rhythm_2bet": [
       {
@@ -11476,6 +11476,44 @@
         "best_match": 2,
         "is_m3plus": false,
         "is_m2plus": true,
+        "num_bets": 2
+      },
+      {
+        "draw_id": "115000023",
+        "date": "2026/03/19",
+        "predicted_bets": [
+          [
+            19,
+            23,
+            26,
+            30,
+            36,
+            38
+          ],
+          [
+            10,
+            15,
+            24,
+            31,
+            35,
+            37
+          ]
+        ],
+        "actual": [
+          9,
+          13,
+          14,
+          18,
+          31,
+          34
+        ],
+        "match_counts": [
+          0,
+          1
+        ],
+        "best_match": 1,
+        "is_m3plus": false,
+        "is_m2plus": false,
         "num_bets": 2
       }
     ],
@@ -25744,6 +25782,53 @@
         "is_m3plus": false,
         "is_m2plus": true,
         "num_bets": 3
+      },
+      {
+        "draw_id": "115000023",
+        "date": "2026/03/19",
+        "predicted_bets": [
+          [
+            19,
+            23,
+            26,
+            30,
+            36,
+            38
+          ],
+          [
+            10,
+            15,
+            24,
+            31,
+            35,
+            37
+          ],
+          [
+            6,
+            7,
+            13,
+            17,
+            27,
+            29
+          ]
+        ],
+        "actual": [
+          9,
+          13,
+          14,
+          18,
+          31,
+          34
+        ],
+        "match_counts": [
+          0,
+          1,
+          1
+        ],
+        "best_match": 1,
+        "is_m3plus": false,
+        "is_m2plus": false,
+        "num_bets": 3
       }
     ],
     "fourier30_markov30_2bet": [
@@ -37216,6 +37301,44 @@
         "match_counts": [
           2,
           1
+        ],
+        "best_match": 2,
+        "is_m3plus": false,
+        "is_m2plus": true,
+        "num_bets": 2
+      },
+      {
+        "draw_id": "115000023",
+        "date": "2026/03/19",
+        "predicted_bets": [
+          [
+            11,
+            14,
+            25,
+            32,
+            34,
+            37
+          ],
+          [
+            7,
+            14,
+            19,
+            34,
+            37,
+            38
+          ]
+        ],
+        "actual": [
+          9,
+          13,
+          14,
+          18,
+          31,
+          34
+        ],
+        "match_counts": [
+          2,
+          2
         ],
         "best_match": 2,
         "is_m3plus": false,
@@ -56876,6 +56999,71 @@
         "is_m3plus": false,
         "is_m2plus": true,
         "num_bets": 5
+      },
+      {
+        "draw_id": "115000023",
+        "date": "2026/03/19",
+        "predicted_bets": [
+          [
+            19,
+            23,
+            26,
+            30,
+            36,
+            38
+          ],
+          [
+            10,
+            15,
+            24,
+            31,
+            35,
+            37
+          ],
+          [
+            1,
+            11,
+            14,
+            17,
+            29,
+            32
+          ],
+          [
+            5,
+            7,
+            9,
+            16,
+            20,
+            34
+          ],
+          [
+            6,
+            8,
+            12,
+            21,
+            25,
+            27
+          ]
+        ],
+        "actual": [
+          9,
+          13,
+          14,
+          18,
+          31,
+          34
+        ],
+        "match_counts": [
+          0,
+          1,
+          1,
+          2,
+          0
+        ],
+        "best_match": 2,
+        "is_m3plus": false,
+        "is_m2plus": true,
+        "num_bets": 5
       }
     ],
     "pp3_freqort_4bet": [
@@ -73790,6 +73978,62 @@
         "is_m3plus": false,
         "is_m2plus": true,
         "num_bets": 4
+      },
+      {
+        "draw_id": "115000023",
+        "date": "2026/03/19",
+        "predicted_bets": [
+          [
+            19,
+            23,
+            26,
+            30,
+            36,
+            38
+          ],
+          [
+            10,
+            15,
+            24,
+            31,
+            35,
+            37
+          ],
+          [
+            1,
+            11,
+            14,
+            17,
+            29,
+            32
+          ],
+          [
+            5,
+            7,
+            9,
+            16,
+            20,
+            34
+          ]
+        ],
+        "actual": [
+          9,
+          13,
+          14,
+          18,
+          31,
+          34
+        ],
+        "match_counts": [
+          0,
+          1,
+          1,
+          2
+        ],
+        "best_match": 2,
+        "is_m3plus": false,
+        "is_m2plus": true,
+        "num_bets": 4
       }
     ],
     "midfreq_fourier_2bet": [
@@ -85227,6 +85471,44 @@
           0
         ],
         "best_match": 1,
+        "is_m3plus": false,
+        "is_m2plus": false,
+        "num_bets": 2
+      },
+      {
+        "draw_id": "115000023",
+        "date": "2026/03/19",
+        "predicted_bets": [
+          [
+            6,
+            8,
+            12,
+            15,
+            21,
+            25
+          ],
+          [
+            19,
+            23,
+            26,
+            30,
+            36,
+            38
+          ]
+        ],
+        "actual": [
+          9,
+          13,
+          14,
+          18,
+          31,
+          34
+        ],
+        "match_counts": [
+          0,
+          0
+        ],
+        "best_match": 0,
         "is_m3plus": false,
         "is_m2plus": false,
         "num_bets": 2
@@ -99378,6 +99660,53 @@
         "best_match": 1,
         "is_m3plus": false,
         "is_m2plus": false,
+        "num_bets": 3
+      },
+      {
+        "draw_id": "115000023",
+        "date": "2026/03/19",
+        "predicted_bets": [
+          [
+            6,
+            8,
+            12,
+            15,
+            21,
+            25
+          ],
+          [
+            19,
+            23,
+            26,
+            30,
+            36,
+            38
+          ],
+          [
+            7,
+            14,
+            27,
+            31,
+            34,
+            37
+          ]
+        ],
+        "actual": [
+          9,
+          13,
+          14,
+          18,
+          31,
+          34
+        ],
+        "match_counts": [
+          0,
+          0,
+          3
+        ],
+        "best_match": 3,
+        "is_m3plus": true,
+        "is_m2plus": true,
         "num_bets": 3
       }
     ]

@@ -122,7 +122,7 @@ class DatabaseManager:
                     except (json.JSONDecodeError, TypeError):
                         pass
                         
-                numbers_json = json.dumps(numbers)
+                numbers_json = json.dumps(sorted(numbers))
                 
                 batch_data.append((
                     draw.get('draw'),
@@ -223,7 +223,7 @@ class DatabaseManager:
                 SELECT id, draw, date, lottery_type, numbers, special, created_at
                 FROM draws
                 WHERE {where_clause}
-                ORDER BY date DESC, draw DESC
+                ORDER BY CAST(draw AS INTEGER) DESC
                 LIMIT ? OFFSET ?
             """
             cursor.execute(data_query, params + [page_size, offset])
@@ -289,7 +289,7 @@ class DatabaseManager:
                     SELECT id, draw, date, lottery_type, numbers, special
                     FROM draws
                     WHERE lottery_type IN ({placeholders})
-                    ORDER BY date DESC, draw DESC
+                    ORDER BY CAST(draw AS INTEGER) DESC
                 """
                 logger.info(f"🔍 [get_all_draws] Query: {query}")
                 logger.info(f"🔍 [get_all_draws] Params: {related_types}")
@@ -298,7 +298,7 @@ class DatabaseManager:
                 query = """
                     SELECT id, draw, date, lottery_type, numbers, special
                     FROM draws
-                    ORDER BY date DESC, draw DESC
+                    ORDER BY CAST(draw AS INTEGER) DESC
                 """
                 cursor.execute(query)
 

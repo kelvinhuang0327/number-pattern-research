@@ -45,7 +45,9 @@ export class DataHandler {
             'STAR_4': '四星彩',
             'LOTTO_39': '39樂合彩',
             'DAILY_CASH_539': '今彩539',
-            'POWER_BALL': '威力彩'
+            'DAILY_539': '今彩539',
+            'POWER_BALL': '威力彩',
+            'POWER_LOTTO': '威力彩'
         };
         const typeName = this.app.currentLotteryType ? typeNames[this.app.currentLotteryType] || this.app.currentLotteryType : '全部';
         this.uiManager.showNotification(`已切換至：${typeName}`, 'info');

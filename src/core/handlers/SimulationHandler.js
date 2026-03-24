@@ -17,6 +17,41 @@ export class SimulationHandler {
         return [...years].sort((a, b) => Number(a) - Number(b));
     }
 
+    _clearResults() {
+        // 隱藏舊結果
+        const resultsDiv = document.getElementById('simulation-results');
+        if (resultsDiv) {
+            resultsDiv.classList.add('ui-hidden');
+            resultsDiv.style.display = 'none';
+        }
+        // 移除統計面板
+        document.getElementById('simulation-stats-panel')?.remove();
+        // 清空表格
+        const tbody = document.querySelector('#simulation-table tbody');
+        if (tbody) tbody.innerHTML = '';
+        // 重置成功率
+        const rateSpan = document.getElementById('simulation-rate');
+        if (rateSpan) rateSpan.textContent = '';
+    }
+
+    _showLoading(total) {
+        const el = document.getElementById('sim-loading');
+        if (el) el.classList.add('is-active');
+        this._updateLoadingProgress(0, total);
+    }
+
+    _updateLoadingProgress(current, total) {
+        const progressEl = document.getElementById('sim-loading-progress');
+        const barEl      = document.getElementById('sim-progress-bar');
+        if (progressEl) progressEl.textContent = `${current} / ${total} 期`;
+        if (barEl) barEl.style.width = total > 0 ? `${Math.round(current / total * 100)}%` : '0%';
+    }
+
+    _hideLoading() {
+        const el = document.getElementById('sim-loading');
+        if (el) el.classList.remove('is-active');
+    }
+
     async runSimulation() {
         const method = document.getElementById('simulation-method').value;
         const yearMonth = document.getElementById('simulation-year-month').value;
@@ -31,14 +66,18 @@ export class SimulationHandler {
 
         try {
             this.app.setButtonLoading(simulationBtn, true);
-            this.app.uiManager.showNotification('正在進行模擬測試...', 'info');
+            this._clearResults();
 
             this.app._autoOptimizeCache = null;
 
             const allData = await this.getSimulationAllData();
             const testTargets = this.getSimulationTargetsByYear(allData, year);
+
+            this._showLoading(testTargets.length);
+
             const { results, successCount } = await this.runSimulationByTargets(method, allData, testTargets);
 
+            this._hideLoading();
             this.app.displaySimulationResults(results, successCount);
 
             this.app.uiManager.showNotification(
@@ -46,6 +85,7 @@ export class SimulationHandler {
                 'success'
             );
         } catch (error) {
+            this._hideLoading();
             this.app.uiManager.showNotification('模擬失敗: ' + error.message, 'error');
             console.error('[SimulationHandler]', error);
         } finally {
@@ -91,6 +131,7 @@ export class SimulationHandler {
 
             results.push(simulationResult.result);
             if (simulationResult.result.isSuccess) successCount++;
+            this._updateLoadingProgress(idx + 1, testTargets.length);
         }
 
         return { results, successCount };

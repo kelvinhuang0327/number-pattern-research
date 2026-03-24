@@ -17,6 +17,8 @@ import { SimulationHandler } from './handlers/SimulationHandler.js';
 import { PredictionHandler } from './handlers/PredictionHandler.js';
 import { NextDrawHandler } from './handlers/NextDrawHandler.js';
 import { getApiUrl } from '../config/apiConfig.js';
+import { DrawEntryManager } from '../ui/DrawEntryManager.js';
+import { AutoFetchManager } from '../ui/AutoFetchManager.js';
 
 /**
  * 主應用程式
@@ -49,6 +51,8 @@ export class App {
         this.simulationHandler = new SimulationHandler(this);
         this.predictionHandler = new PredictionHandler(this);
         this.nextDrawHandler = new NextDrawHandler(this);
+        this.drawEntryManager = new DrawEntryManager();
+        this.autoFetchManager = new AutoFetchManager();
 
         // 不在 constructor 中自動初始化，由外部呼叫
         // this.init();
@@ -677,7 +681,9 @@ export class App {
             'STAR_4': '四星彩',
             'LOTTO_39': '39樂合彩',
             'DAILY_CASH_539': '今彩539',
-            'POWER_BALL': '威力彩'
+            'DAILY_539': '今彩539',
+            'POWER_BALL': '威力彩',
+            'POWER_LOTTO': '威力彩'
         };
         const typeName = this.currentLotteryType ? typeNames[this.currentLotteryType] || this.currentLotteryType : '全部';
         this.uiManager.showNotification(`已切換至：${typeName}`, 'info');

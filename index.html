@@ -27,6 +27,133 @@
         .container { display: block !important; opacity: 1 !important; }
         .section.active { display: block !important; opacity: 1 !important; visibility: visible !important; }
         header, main, section { min-height: 10px; }
+
+        /* ── 快速開獎入庫 ── */
+        .draw-entry-card { min-width: 280px; }
+        .draw-entry-form { width: 100%; text-align: left; margin-top: 12px; }
+        .draw-entry-row  { margin-bottom: 10px; }
+        .draw-entry-row label { display: block; font-size: 0.75rem; font-weight: 600;
+            color: var(--text-secondary, #888); margin-bottom: 4px; }
+        .draw-entry-row--2col { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+        .draw-entry-text-input {
+            width: 100%; padding: 7px 10px; border-radius: 6px; font-size: 0.85rem;
+            border: 1px solid var(--border-color, #e0e0e0);
+            background: var(--bg-secondary, #f8f8f8); color: inherit; box-sizing: border-box; }
+        .draw-entry-numbers { display: flex; flex-wrap: wrap; gap: 6px; }
+        .draw-entry-num-input {
+            width: 52px; padding: 7px 4px; text-align: center; border-radius: 6px;
+            font-size: 0.85rem; border: 1px solid var(--border-color, #e0e0e0);
+            background: var(--bg-secondary, #f8f8f8); color: inherit; }
+        .draw-entry-special-input { width: 70px; }
+        .draw-entry-submit { width: 100%; margin-top: 8px; justify-content: center; }
+        .draw-entry-status { margin-top: 10px; padding: 8px 12px; border-radius: 6px;
+            font-size: 0.82rem; word-break: break-all; }
+        .draw-entry-status--success { background: #d4edda; color: #155724; }
+        .draw-entry-status--error   { background: #f8d7da; color: #721c24; }
+        .draw-entry-status--loading { background: #fff3cd; color: #856404; }
+
+        /* ── 自動抓取 / 掃描 / 補入 ── */
+        .af-section { margin-top: 24px; }
+        .af-section-title { font-size: 1rem; font-weight: 700; margin-bottom: 14px;
+            color: var(--text-primary, #e6edf3); display: flex; align-items: center; gap: 8px; }
+        .af-cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 16px; margin-bottom: 20px; }
+        .af-card { background: var(--bg-card, #161b22); border: 1px solid var(--border-color, #30363d);
+            border-radius: 10px; padding: 16px; }
+        .af-card-title { font-size: 0.88rem; font-weight: 700; margin-bottom: 12px;
+            color: var(--accent, #58a6ff); display: flex; align-items: center; gap: 6px; }
+        .af-row { margin-bottom: 10px; }
+        .af-row label { display: block; font-size: 0.75rem; font-weight: 600;
+            color: var(--text-secondary, #8b949e); margin-bottom: 4px; }
+        .af-row select, .af-row input[type=text] {
+            width: 100%; padding: 6px 10px; border-radius: 6px; font-size: 0.83rem;
+            border: 1px solid var(--border-color, #30363d);
+            background: var(--bg-secondary, #0d1117); color: inherit; box-sizing: border-box; }
+        .af-check-row { display: flex; align-items: center; gap: 8px;
+            font-size: 0.82rem; color: var(--text-secondary, #8b949e); margin-bottom: 6px; }
+        .af-btn { width: 100%; margin-top: 8px; justify-content: center;
+            padding: 8px 0; border-radius: 6px; border: none; cursor: pointer;
+            font-size: 0.85rem; font-weight: 600; transition: opacity .2s; }
+        .af-btn:disabled { opacity: .5; cursor: not-allowed; }
+        .af-btn-primary   { background: #238636; color: #fff; }
+        .af-btn-secondary { background: #1f6feb; color: #fff; }
+        .af-btn-accent    { background: #6f42c1; color: #fff; }
+        .af-btn:hover:not(:disabled) { opacity: .85; }
+        .af-status { margin-top: 10px; padding: 8px 12px; border-radius: 6px;
+            font-size: 0.82rem; display: none; }
+        .af-status--success { background: #d4edda; color: #155724; }
+        .af-status--error   { background: #f8d7da; color: #721c24; }
+        .af-status--loading { background: #fff3cd; color: #856404; }
+        .af-status--warn    { background: #fff3cd; color: #664d03; }
+        .af-status--dry_run { background: #d1ecf1; color: #0c5460; }
+
+        /* ── Simulation Loading ── */
+        .sim-loading {
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 16px;
+            padding: 48px 24px;
+            border: 1px solid var(--border-color, #30363d);
+            border-radius: 10px;
+            background: var(--bg-card, #161b22);
+            margin-top: 16px;
+        }
+        .sim-loading.is-active { display: flex; }
+        .sim-loading-spinner {
+            width: 44px; height: 44px;
+            border: 4px solid rgba(99,179,237,.2);
+            border-top-color: #63b3ed;
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+        }
+        .sim-loading-text {
+            font-size: .9rem;
+            color: var(--text-secondary, #8b949e);
+            text-align: center;
+        }
+        .sim-loading-progress {
+            font-size: .78rem;
+            color: var(--text-secondary, #8b949e);
+        }
+        .sim-progress-bar-wrap {
+            width: 220px; height: 6px;
+            background: var(--bg-tertiary, #0d1117);
+            border-radius: 3px; overflow: hidden;
+        }
+        .sim-progress-bar {
+            height: 100%;
+            background: #63b3ed;
+            border-radius: 3px;
+            transition: width .2s ease;
+            width: 0%;
+        }
+        .af-status--already_exists { background: #e2e3e5; color: #383d41; }
+        .af-scan-table, .af-bf-table { width: 100%; border-collapse: collapse;
+            font-size: 0.78rem; margin-top: 10px; }
+        .af-scan-table th, .af-scan-table td,
+        .af-bf-table th,   .af-bf-table td {
+            border: 1px solid var(--border-color, #30363d);
+            padding: 5px 8px; text-align: left; }
+        .af-scan-table th, .af-bf-table th {
+            background: var(--bg-secondary, #0d1117); font-weight: 600; }
+        .af-warn  { color: #f0a500; font-weight: 700; }
+        .af-err   { color: #cf3a4a; }
+        .af-muted { color: var(--text-secondary, #8b949e); font-size: 0.76rem; }
+        .af-missing-list { max-width: 260px; word-break: break-all; }
+        .af-bf-inserted { background: rgba(35, 134, 54, .08); }
+        .af-bf-conflict  { background: rgba(209, 36, 47, .08); }
+        .af-bf-dry_run   { background: rgba(31, 111, 235, .08); }
+        .af-log-panel { background: var(--bg-card, #161b22);
+            border: 1px solid var(--border-color, #30363d);
+            border-radius: 10px; padding: 16px; margin-top: 16px; }
+        .af-log-header { display: flex; align-items: center; justify-content: space-between;
+            margin-bottom: 10px; }
+        .af-log-table { width: 100%; border-collapse: collapse; font-size: 0.78rem; }
+        .af-log-table th, .af-log-table td {
+            border: 1px solid var(--border-color, #30363d); padding: 5px 8px; text-align: left; }
+        .af-log-table th { background: var(--bg-secondary, #0d1117); font-weight: 600; }
     </style>
 </head>
 
@@ -166,7 +293,215 @@
                             載入範例
                         </button>
                     </div>
+
+                    <!-- 快速開獎入庫卡片 -->
+                    <div class="upload-card draw-entry-card">
+                        <div class="upload-icon">
+                            <i data-lucide="plus-circle"></i>
+                        </div>
+                        <h3>快速開獎入庫</h3>
+                        <p>直接輸入最新一期開獎號碼寫入資料庫</p>
+
+                        <form id="draw-entry-form" class="draw-entry-form" onsubmit="return false;">
+                            <div class="draw-entry-row">
+                                <label>彩種</label>
+                                <select id="draw-entry-type" class="select-input">
+                                    <option value="DAILY_539">今彩539</option>
+                                    <option value="BIG_LOTTO">大樂透</option>
+                                    <option value="POWER_LOTTO">威力彩</option>
+                                </select>
+                            </div>
+
+                            <div class="draw-entry-row draw-entry-row--2col">
+                                <div>
+                                    <label>期號</label>
+                                    <input type="text" id="draw-entry-draw"
+                                           class="draw-entry-text-input"
+                                           placeholder="例：115000073"
+                                           maxlength="10">
+                                </div>
+                                <div>
+                                    <label>開獎日期</label>
+                                    <input type="text" id="draw-entry-date"
+                                           class="draw-entry-text-input"
+                                           placeholder="YYYY/MM/DD">
+                                </div>
+                            </div>
+
+                            <div class="draw-entry-row">
+                                <label>開獎號碼</label>
+                                <div id="draw-entry-numbers-wrap" class="draw-entry-numbers">
+                                    <!-- 動態產生，由 DrawEntryManager 控制 -->
+                                </div>
+                            </div>
+
+                            <div id="draw-entry-special-row" class="draw-entry-row" style="display:none;">
+                                <label>特別號</label>
+                                <input type="number" id="draw-entry-special"
+                                       class="draw-entry-num-input draw-entry-special-input"
+                                       placeholder="特別號">
+                            </div>
+
+                            <button type="button" id="draw-entry-submit" class="btn btn-primary draw-entry-submit">
+                                <i data-lucide="database-zap" class="icon-sm"></i>
+                                寫入資料庫
+                            </button>
+                        </form>
+
+                        <div id="draw-entry-status" class="draw-entry-status" style="display:none;"></div>
+                    </div>
                 </div>
+
+                <!-- ════════════════════════════════════════════════════════ -->
+                <!-- 自動化入庫面板：抓取 / 掃描 / 補入                      -->
+                <!-- ════════════════════════════════════════════════════════ -->
+                <div class="af-section">
+                    <div class="af-section-title">
+                        <i data-lucide="zap" style="width:18px;height:18px;"></i>
+                        自動化開獎資料管理
+                    </div>
+
+                    <div class="af-cards">
+
+                        <!-- ── 1. 自動抓取最新開獎 ── -->
+                        <div class="af-card">
+                            <div class="af-card-title">
+                                <i data-lucide="download-cloud" style="width:15px;height:15px;"></i>
+                                抓取最新開獎
+                            </div>
+                            <p style="font-size:.78rem;color:#8b949e;margin:0 0 12px;">
+                                從台灣彩券官網自動獲取最新一期開獎號碼
+                            </p>
+                            <div class="af-row">
+                                <label>彩種</label>
+                                <select id="af-fetch-type">
+                                    <option value="BIG_LOTTO">大樂透</option>
+                                    <option value="POWER_LOTTO">威力彩</option>
+                                    <option value="DAILY_539">今彩539</option>
+                                </select>
+                            </div>
+                            <div class="af-check-row">
+                                <input type="checkbox" id="af-fetch-insert">
+                                <label for="af-fetch-insert" style="font-size:.82rem;cursor:pointer;">
+                                    若為新期數則自動寫入
+                                </label>
+                            </div>
+                            <div class="af-check-row">
+                                <input type="checkbox" id="af-fetch-dryrun">
+                                <label for="af-fetch-dryrun" style="font-size:.82rem;cursor:pointer;">
+                                    Dry-Run（預覽，不寫入）
+                                </label>
+                            </div>
+                            <button class="btn af-btn af-btn-secondary" id="af-fetch-btn">
+                                <i data-lucide="download" style="width:13px;height:13px;vertical-align:middle;margin-right:4px;"></i>
+                                抓取最新開獎
+                            </button>
+                            <div id="af-fetch-status" class="af-status"></div>
+                        </div>
+
+                        <!-- ── 2. 掃描缺漏期數 ── -->
+                        <div class="af-card">
+                            <div class="af-card-title">
+                                <i data-lucide="search" style="width:15px;height:15px;"></i>
+                                掃描缺漏期數
+                            </div>
+                            <p style="font-size:.78rem;color:#8b949e;margin:0 0 12px;">
+                                比對資料庫與官網，找出未入庫的期數
+                            </p>
+                            <div class="af-row">
+                                <label>彩種（空=掃描全部）</label>
+                                <select id="af-scan-type">
+                                    <option value="">全部彩種</option>
+                                    <option value="BIG_LOTTO">大樂透</option>
+                                    <option value="POWER_LOTTO">威力彩</option>
+                                    <option value="DAILY_539">今彩539</option>
+                                </select>
+                            </div>
+                            <button class="btn af-btn af-btn-primary" id="af-scan-btn">
+                                <i data-lucide="list-checks" style="width:13px;height:13px;vertical-align:middle;margin-right:4px;"></i>
+                                開始掃描
+                            </button>
+                            <div id="af-scan-status" class="af-status"></div>
+                            <div id="af-scan-results" style="overflow-x:auto;"></div>
+                        </div>
+
+                        <!-- ── 3. 自動補入缺漏 ── -->
+                        <div class="af-card">
+                            <div class="af-card-title">
+                                <i data-lucide="database-zap" style="width:15px;height:15px;"></i>
+                                自動補入缺漏
+                            </div>
+                            <p style="font-size:.78rem;color:#8b949e;margin:0 0 12px;">
+                                自動偵測並補入缺漏期數（不覆蓋現有資料）
+                            </p>
+                            <div class="af-row">
+                                <label>彩種</label>
+                                <select id="af-bf-type">
+                                    <option value="BIG_LOTTO">大樂透</option>
+                                    <option value="POWER_LOTTO">威力彩</option>
+                                    <option value="DAILY_539">今彩539</option>
+                                </select>
+                            </div>
+                            <div class="af-check-row">
+                                <input type="checkbox" id="af-bf-dryrun">
+                                <label for="af-bf-dryrun" style="font-size:.82rem;cursor:pointer;">
+                                    Dry-Run（預覽，不寫入）
+                                </label>
+                            </div>
+                            <div class="af-check-row" style="margin-top:4px;">
+                                <input type="checkbox" id="af-bf-confirm">
+                                <label for="af-bf-confirm" style="font-size:.82rem;cursor:pointer;color:#f0a500;">
+                                    ✅ 確認執行補入（非 Dry-Run 時必填）
+                                </label>
+                            </div>
+                            <button class="btn af-btn af-btn-accent" id="af-bf-btn">
+                                <i data-lucide="refresh-cw" style="width:13px;height:13px;vertical-align:middle;margin-right:4px;"></i>
+                                執行補入
+                            </button>
+                            <div id="af-bf-status" class="af-status"></div>
+                            <div id="af-bf-results" style="overflow-x:auto;margin-top:6px;"></div>
+                        </div>
+
+                    </div><!-- /.af-cards -->
+
+                    <!-- ── Ingest Log 面板 ── -->
+                    <div class="af-log-panel">
+                        <div class="af-log-header">
+                            <span style="font-size:.85rem;font-weight:700;">
+                                <i data-lucide="scroll" style="width:14px;height:14px;vertical-align:middle;margin-right:4px;"></i>
+                                入庫操作記錄
+                            </span>
+                            <span id="af-log-stats" class="af-muted" style="font-size:.78rem;"></span>
+                            <button class="btn btn-secondary" id="af-log-refresh"
+                                style="padding:4px 12px;font-size:.78rem;">
+                                ↻ 重新載入
+                            </button>
+                        </div>
+                        <div id="af-log-pagination" style="display:flex;align-items:center;gap:8px;margin-bottom:8px;font-size:.8rem;">
+                            <button class="btn btn-secondary" id="af-log-prev" style="padding:3px 10px;">‹ 上一頁</button>
+                            <span id="af-log-page-info" class="af-muted"></span>
+                            <button class="btn btn-secondary" id="af-log-next" style="padding:3px 10px;">下一頁 ›</button>
+                        </div>
+                        <div style="overflow-x:auto;">
+                            <table class="af-log-table" id="af-log-table">
+                                <thead>
+                                    <tr>
+                                        <th>時間</th>
+                                        <th>動作</th>
+                                        <th>彩種</th>
+                                        <th>期號</th>
+                                        <th>開獎日期</th>
+                                        <th>結果 / 訊息</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="af-log-body">
+                                    <tr><td colspan="6" class="af-muted" style="text-align:center">載入中...</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div><!-- /.af-log-panel -->
+
+                </div><!-- /.af-section -->
 
                 <!-- Upload Guidance (Hidden by default) -->
                 <div id="upload-guidance" class="upload-guidance ui-hidden">
@@ -302,16 +637,10 @@
                                 <option value="frequency" selected>頻率分析</option>
                                 <option value="trend">趨勢分析</option>
                                 <option value="bayesian">貝葉斯機率</option>
-                                <option value="montecarlo">蒙地卡羅模擬</option>
                                 <option value="markov">馬可夫鏈</option>
                                 <option value="deviation">偏差追蹤</option>
                             </optgroup>
-                            <optgroup label="集成預測">
-                                <option value="ensemble_weighted">集成預測 (Ensemble)</option>
-                                <option value="ensemble_combined">綜合集成</option>
-                            </optgroup>
                             <optgroup label="後端策略">
-                                <option value="backend_optimized">後端優化預測</option>
                                 <option value="coordinator">RSM Coordinator</option>
                             </optgroup>
                             <optgroup label="民間策略">
@@ -328,6 +657,16 @@
                         <i data-lucide="play" class="icon-sm"></i>
                         開始模擬
                     </button>
+                </div>
+
+                <!-- Loading 狀態 -->
+                <div id="sim-loading" class="sim-loading">
+                    <div class="sim-loading-spinner"></div>
+                    <div class="sim-loading-text">模擬運算中，請稍候...</div>
+                    <div class="sim-progress-bar-wrap">
+                        <div id="sim-progress-bar" class="sim-progress-bar"></div>
+                    </div>
+                    <div id="sim-loading-progress" class="sim-loading-progress">0 / 0 期</div>
                 </div>
 
                 <div id="simulation-results" class="ui-hidden">

@@ -48,11 +48,16 @@ async def startup_event():
     """Application Startup Logic"""
     logger.info(">>> Application starting up...")
     try:
-        # Load Data
         scheduler.load_data()
         logger.info(">>> Scheduler data loaded.")
     except Exception as e:
         logger.error(f"Error during startup: {e}")
+    try:
+        from engine.snapshot_scheduler import startup_check
+        summary = startup_check()
+        logger.info(f">>> Snapshot startup_check: {summary}")
+    except Exception as e:
+        logger.warning(f">>> snapshot_scheduler startup_check failed (non-fatal): {e}")
 
 # Register Routers
 # admin: / and /health and /api/ping (no common prefix)

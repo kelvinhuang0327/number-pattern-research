@@ -37,12 +37,13 @@ def create_snapshot(
     latest_known_draw: str,
     latest_known_date: Optional[str] = None,
     special: Optional[int] = None,
+    snapshot_source: str = "VALID",
     notes: Optional[str] = None,
 ) -> int:
     """
     儲存一次預測快照。
     回傳 run_id。
-    每次呼叫均建立新的 run（不去重），讓每次預測都有完整記錄。
+    snapshot_source: 'VALID' | 'RECONSTRUCTED' | 'MANUAL'
     """
     db = _get_db()
     conn = db._get_connection()
@@ -50,9 +51,9 @@ def create_snapshot(
         cur = conn.cursor()
         cur.execute("""
             INSERT INTO prediction_runs
-              (lottery_type, latest_known_draw, latest_known_date, strategy_name, notes)
-            VALUES (?, ?, ?, ?, ?)
-        """, (lottery_type, latest_known_draw, latest_known_date, strategy_name, notes or ""))
+              (lottery_type, latest_known_draw, latest_known_date, strategy_name, snapshot_source, notes)
+            VALUES (?, ?, ?, ?, ?, ?)
+        """, (lottery_type, latest_known_draw, latest_known_date, strategy_name, snapshot_source, notes or ""))
         run_id = cur.lastrowid
 
         for idx, numbers in enumerate(bets):
@@ -176,8 +177,8 @@ def resolve_pending(dry_run: bool = False) -> Dict:
                 cur.execute("""
                     INSERT OR IGNORE INTO prediction_results
                       (item_id, actual_draw, actual_date, actual_numbers, actual_special,
-                       hit_count, matched_numbers, special_hit)
-                    VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+                       hit_count, matched_numbers, special_hit, researched)
+                    VALUES (?, ?, ?, ?, ?, ?, ?, ?, '無')
                 """, (
                     item_id,
                     actual_draw,
@@ -219,7 +220,7 @@ def get_history(
     limit: int = 50,
     offset: int = 0,
 ) -> Dict:
-    """回傳歷史預測清單（依 run）"""
+    """回傳歷史預測清單（依 run），包含 snapshot_source"""
     db = _get_db()
     conn = db._get_connection()
     try:
@@ -232,7 +233,6 @@ def get_history(
 
         where = ("WHERE " + " AND ".join(conditions)) if conditions else ""
 
-        # 總數
         cur.execute(f"""
             SELECT COUNT(DISTINCT pr.id)
             FROM prediction_runs pr
@@ -241,20 +241,19 @@ def get_history(
         """, params)
         total = cur.fetchone()[0]
 
-        # 清單（每個 run 彙總）
         cur.execute(f"""
             SELECT pr.id as run_id,
                    pr.lottery_type,
                    pr.latest_known_draw,
                    pr.latest_known_date,
                    pr.strategy_name,
+                   pr.snapshot_source,
                    pr.created_at,
                    COUNT(pi.id) as total_bets,
                    SUM(CASE WHEN pi.status='RESOLVED' THEN 1 ELSE 0 END) as resolved_bets,
                    MIN(CASE WHEN pi.status='RESOLVED' THEN res.actual_draw ELSE NULL END) as actual_draw,
                    MIN(CASE WHEN pi.status='RESOLVED' THEN res.actual_date ELSE NULL END) as actual_date,
-                   MAX(CASE WHEN pi.status='RESOLVED' THEN res.hit_count ELSE NULL END) as best_hit,
-                   SUM(CASE WHEN pi.status='RESOLVED' THEN res.hit_count ELSE 0 END) as total_hits
+                   MAX(CASE WHEN pi.status='RESOLVED' THEN res.hit_count ELSE NULL END) as best_hit
             FROM prediction_runs pr
             JOIN prediction_items pi ON pi.run_id = pr.id
             LEFT JOIN prediction_results res ON res.item_id = pi.id
@@ -278,6 +277,7 @@ def get_history(
                 "latest_known_draw": row["latest_known_draw"],
                 "latest_known_date": row["latest_known_date"],
                 "strategy_name": row["strategy_name"],
+                "snapshot_source": row["snapshot_source"] or "VALID",
                 "created_at": row["created_at"],
                 "total_bets": total_bets,
                 "resolved_bets": resolved_bets,
@@ -302,7 +302,8 @@ def get_run_detail(run_id: int) -> Optional[Dict]:
             SELECT pr.*, pi.id as item_id, pi.bet_index, pi.numbers, pi.special as pred_special,
                    pi.status,
                    res.actual_draw, res.actual_date, res.actual_numbers, res.actual_special,
-                   res.hit_count, res.matched_numbers, res.special_hit, res.resolved_at
+                   res.hit_count, res.matched_numbers, res.special_hit, res.resolved_at,
+                   COALESCE(res.researched, '無') as researched
             FROM prediction_runs pr
             JOIN prediction_items pi ON pi.run_id = pr.id
             LEFT JOIN prediction_results res ON res.item_id = pi.id
@@ -341,6 +342,7 @@ def get_run_detail(run_id: int) -> Optional[Dict]:
                 bet["matched_numbers"] = json.loads(row["matched_numbers"]) if row["matched_numbers"] else []
                 bet["special_hit"] = bool(row["special_hit"])
                 bet["resolved_at"] = row["resolved_at"]
+                bet["researched"] = row["researched"] or "無"
             result["bets"].append(bet)
         return result
     finally:
@@ -351,10 +353,12 @@ def get_run_detail(run_id: int) -> Optional[Dict]:
 # 策略表現聚合
 # ──────────────────────────────────────────────
 
-def get_performance(lottery_type: Optional[str] = None) -> List[Dict]:
+def get_performance(lottery_type: Optional[str] = None,
+                    valid_only: bool = True) -> List[Dict]:
     """
     回傳各策略的命中率統計。
-    支援 recent 30/100/300 視窗。
+    valid_only=True（預設）：只計入 snapshot_source='VALID' 的快照（正式績效）
+    valid_only=False：包含 RECONSTRUCTED 和 MANUAL（研究用）
     """
     db = _get_db()
     conn = db._get_connection()
@@ -365,13 +369,16 @@ def get_performance(lottery_type: Optional[str] = None) -> List[Dict]:
         if lottery_type:
             conditions.append("pr.lottery_type = ?")
             params.append(lottery_type)
+        if valid_only:
+            conditions.append("(pr.snapshot_source = 'VALID' OR pr.snapshot_source IS NULL)")
         where = ("WHERE " + " AND ".join(conditions)) if conditions else ""
 
         cur.execute(f"""
             SELECT pr.lottery_type, pr.strategy_name,
                    pi.id as item_id,
                    res.hit_count,
-                   pr.created_at
+                   pr.created_at,
+                   pr.snapshot_source
             FROM prediction_runs pr
             JOIN prediction_items pi ON pi.run_id = pr.id
             LEFT JOIN prediction_results res ON res.item_id = pi.id

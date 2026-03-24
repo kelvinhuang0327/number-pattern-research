@@ -82,10 +82,17 @@ class DatabaseManager:
                     latest_known_draw TEXT NOT NULL,
                     latest_known_date TEXT,
                     strategy_name TEXT NOT NULL,
+                    snapshot_source TEXT DEFAULT 'VALID',
                     notes TEXT,
                     created_at TEXT DEFAULT CURRENT_TIMESTAMP
                 )
             """)
+            # Migration: add snapshot_source to existing tables (safe no-op if column exists)
+            try:
+                cursor.execute("ALTER TABLE prediction_runs ADD COLUMN snapshot_source TEXT DEFAULT 'VALID'")
+                conn.commit()
+            except Exception:
+                pass
 
             # 預測追蹤：每注預測
             cursor.execute("""
@@ -113,10 +120,17 @@ class DatabaseManager:
                     hit_count INTEGER NOT NULL,
                     matched_numbers TEXT NOT NULL,
                     special_hit INTEGER DEFAULT 0,
+                    researched TEXT DEFAULT '無',
                     resolved_at TEXT DEFAULT CURRENT_TIMESTAMP,
                     FOREIGN KEY (item_id) REFERENCES prediction_items(id)
                 )
             """)
+            # Migration: add researched column to existing tables (safe no-op if column exists)
+            try:
+                cursor.execute("ALTER TABLE prediction_results ADD COLUMN researched TEXT DEFAULT '無'")
+                conn.commit()
+            except Exception:
+                pass
 
             cursor.execute("""
                 CREATE INDEX IF NOT EXISTS idx_pred_runs_lottery
@@ -129,6 +143,26 @@ class DatabaseManager:
             cursor.execute("""
                 CREATE INDEX IF NOT EXISTS idx_pred_items_status
                 ON prediction_items(status)
+            """)
+
+            # ── Snapshot Schedule Table ─────────────────────────────────────
+            cursor.execute("""
+                CREATE TABLE IF NOT EXISTS snapshot_schedule (
+                    id INTEGER PRIMARY KEY AUTOINCREMENT,
+                    lottery_type TEXT NOT NULL,
+                    target_draw TEXT NOT NULL,
+                    target_date TEXT,
+                    scheduled_at TEXT DEFAULT CURRENT_TIMESTAMP,
+                    status TEXT DEFAULT 'SCHEDULED',
+                    run_id INTEGER,
+                    notes TEXT,
+                    UNIQUE(lottery_type, target_draw),
+                    FOREIGN KEY (run_id) REFERENCES prediction_runs(id)
+                )
+            """)
+            cursor.execute("""
+                CREATE INDEX IF NOT EXISTS idx_schedule_lottery
+                ON snapshot_schedule(lottery_type, status)
             """)
 
             conn.commit()

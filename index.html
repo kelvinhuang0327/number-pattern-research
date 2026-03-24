@@ -176,6 +176,24 @@
         .pt-actual-special { background:#9b59b6; color:#fff; }
         .pt-hit-summary { font-size:12px; color:#666; margin-top:4px; }
         .mb-16 { margin-bottom:16px; }
+        /* schedule status cards */
+        .pt-sched-cards { display:flex; gap:12px; flex-wrap:wrap; margin-bottom:16px; }
+        .pt-sched-card { background:#fff; border:1px solid #e0e0e0; border-radius:8px; padding:10px 14px; min-width:160px; box-shadow:0 1px 3px rgba(0,0,0,.06); }
+        .pt-sched-game { font-weight:700; font-size:14px; margin-bottom:4px; color:#333; }
+        .pt-sched-info { font-size:12px; color:#666; margin-bottom:2px; }
+        /* schedule status badges */
+        .pt-sched-none     { background:#f0f0f0; color:#888; }
+        .pt-sched-scheduled{ background:#cce5ff; color:#004085; }
+        .pt-sched-ok       { background:#d4edda; color:#155724; }
+        .pt-sched-missed   { background:#fff3cd; color:#856404; }
+        .pt-sched-recon    { background:#e2d9f3; color:#4a235a; }
+        /* reconstructed warning banner */
+        .pt-recon-warning { background:#fff3cd; border-left:4px solid #f39c12; padding:8px 12px; border-radius:4px; font-size:13px; color:#856404; margin-bottom:10px; }
+        /* bets list */
+        .pt-bets-list { display:flex; flex-direction:column; gap:0; }
+        /* researched badge */
+        .pt-researched-yes { background:#d4edda; color:#155724; }
+        .pt-researched-no  { background:#f0f0f0; color:#888; }
     </style>
 </head>
 
@@ -1428,11 +1446,24 @@
               </select>
               <button id="pt-snapshot-btn" class="btn btn-primary">🎯 產生預測快照</button>
               <button id="pt-resolve-btn" class="btn btn-secondary">🔄 比對待解析預測</button>
+              <button id="pt-startup-btn" class="btn btn-secondary">🚀 啟動補全</button>
+            </div>
+
+            <!-- 排程狀態卡片 -->
+            <div class="pt-sched-cards" id="pt-schedule-status">
+              <!-- 由 JS 填充 -->
             </div>
 
             <!-- 策略表現 -->
             <div class="card mb-16">
-              <div class="card-header">📈 策略命中率統計</div>
+              <div class="card-header" style="display:flex;align-items:center;gap:8px">
+                <span>📈 策略命中率統計</span>
+                <label style="display:flex;align-items:center;gap:4px;font-size:12px;font-weight:normal;margin-left:auto;cursor:pointer">
+                  <input type="checkbox" id="pt-valid-toggle" checked>
+                  僅計正式快照
+                </label>
+                <span id="pt-perf-filter-label" style="font-size:12px;color:#27ae60">（僅計正式快照）</span>
+              </div>
               <div class="card-body" style="overflow-x:auto">
                 <table class="data-table" style="width:100%">
                   <thead>
@@ -1455,7 +1486,7 @@
             </div>
 
             <!-- 歷史清單 -->
-            <div class="card">
+            <div class="card mb-16">
               <div class="card-header">🗂️ 歷史預測記錄</div>
               <div class="card-body" style="overflow-x:auto">
                 <table class="data-table" style="width:100%">
@@ -1468,10 +1499,11 @@
                       <th>注數</th>
                       <th>最佳命中</th>
                       <th>狀態</th>
+                      <th>驗證</th>
                     </tr>
                   </thead>
                   <tbody id="pt-hist-body">
-                    <tr><td colspan="7" style="text-align:center;color:#888">尚無記錄</td></tr>
+                    <tr><td colspan="8" style="text-align:center;color:#888">尚無記錄</td></tr>
                   </tbody>
                 </table>
                 <!-- 分頁 -->
@@ -1480,6 +1512,27 @@
                   <span id="pt-page-info" style="font-size:13px;color:#888">第 1 / 1 頁</span>
                   <button id="pt-next-btn" class="btn btn-sm btn-secondary" disabled>下一頁 ▶</button>
                 </div>
+              </div>
+            </div>
+
+            <!-- 排程歷史 -->
+            <div class="card">
+              <div class="card-header">📅 排程歷史</div>
+              <div class="card-body" style="overflow-x:auto">
+                <table class="data-table" style="width:100%">
+                  <thead>
+                    <tr>
+                      <th>目標期號</th>
+                      <th>目標日期</th>
+                      <th>排程時間</th>
+                      <th>狀態</th>
+                      <th>快照</th>
+                    </tr>
+                  </thead>
+                  <tbody id="pt-sched-hist-body">
+                    <tr><td colspan="5" style="text-align:center;color:#888">尚無排程記錄</td></tr>
+                  </tbody>
+                </table>
               </div>
             </div>
 

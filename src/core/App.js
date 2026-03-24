@@ -19,6 +19,7 @@ import { NextDrawHandler } from './handlers/NextDrawHandler.js';
 import { getApiUrl } from '../config/apiConfig.js';
 import { DrawEntryManager } from '../ui/DrawEntryManager.js';
 import { AutoFetchManager } from '../ui/AutoFetchManager.js';
+import { PredictionTracker } from '../ui/PredictionTracker.js';
 
 /**
  * 主應用程式
@@ -53,6 +54,7 @@ export class App {
         this.nextDrawHandler = new NextDrawHandler(this);
         this.drawEntryManager = new DrawEntryManager();
         this.autoFetchManager = new AutoFetchManager();
+        this.predictionTracker = new PredictionTracker(this);
 
         // 不在 constructor 中自動初始化，由外部呼叫
         // this.init();
@@ -366,6 +368,10 @@ export class App {
                 } else if (section === 'next-draw') {
                     if (this.nextDrawHandler) {
                         this.nextDrawHandler.onShow();
+                    }
+                } else if (section === 'tracking') {
+                    if (this.predictionTracker) {
+                        this.predictionTracker.loadAll();
                     }
                 }
             });

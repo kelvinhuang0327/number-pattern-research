@@ -70,10 +70,67 @@ class DatabaseManager:
             """)
             
             cursor.execute("""
-                CREATE INDEX IF NOT EXISTS idx_draw 
+                CREATE INDEX IF NOT EXISTS idx_draw
                 ON draws(draw)
             """)
-            
+
+            # 預測追蹤：預測批次（每次預測為一個 run）
+            cursor.execute("""
+                CREATE TABLE IF NOT EXISTS prediction_runs (
+                    id INTEGER PRIMARY KEY AUTOINCREMENT,
+                    lottery_type TEXT NOT NULL,
+                    latest_known_draw TEXT NOT NULL,
+                    latest_known_date TEXT,
+                    strategy_name TEXT NOT NULL,
+                    notes TEXT,
+                    created_at TEXT DEFAULT CURRENT_TIMESTAMP
+                )
+            """)
+
+            # 預測追蹤：每注預測
+            cursor.execute("""
+                CREATE TABLE IF NOT EXISTS prediction_items (
+                    id INTEGER PRIMARY KEY AUTOINCREMENT,
+                    run_id INTEGER NOT NULL,
+                    bet_index INTEGER NOT NULL,
+                    numbers TEXT NOT NULL,
+                    special INTEGER,
+                    status TEXT DEFAULT 'PENDING',
+                    created_at TEXT DEFAULT CURRENT_TIMESTAMP,
+                    FOREIGN KEY (run_id) REFERENCES prediction_runs(id)
+                )
+            """)
+
+            # 預測追蹤：比對結果
+            cursor.execute("""
+                CREATE TABLE IF NOT EXISTS prediction_results (
+                    id INTEGER PRIMARY KEY AUTOINCREMENT,
+                    item_id INTEGER NOT NULL UNIQUE,
+                    actual_draw TEXT NOT NULL,
+                    actual_date TEXT,
+                    actual_numbers TEXT NOT NULL,
+                    actual_special INTEGER,
+                    hit_count INTEGER NOT NULL,
+                    matched_numbers TEXT NOT NULL,
+                    special_hit INTEGER DEFAULT 0,
+                    resolved_at TEXT DEFAULT CURRENT_TIMESTAMP,
+                    FOREIGN KEY (item_id) REFERENCES prediction_items(id)
+                )
+            """)
+
+            cursor.execute("""
+                CREATE INDEX IF NOT EXISTS idx_pred_runs_lottery
+                ON prediction_runs(lottery_type)
+            """)
+            cursor.execute("""
+                CREATE INDEX IF NOT EXISTS idx_pred_items_run
+                ON prediction_items(run_id)
+            """)
+            cursor.execute("""
+                CREATE INDEX IF NOT EXISTS idx_pred_items_status
+                ON prediction_items(status)
+            """)
+
             conn.commit()
             logger.info("✅ Database tables and indexes created")
             

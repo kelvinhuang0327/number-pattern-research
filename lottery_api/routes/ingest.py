@@ -85,6 +85,11 @@ def _refresh_after_insert():
         refresh_hedge_fund_outputs(project_root)
     except Exception as e:
         logger.warning(f"refresh_hedge_fund_outputs() failed: {e}")
+    try:
+        from engine.prediction_tracker import resolve_pending
+        resolve_pending(dry_run=False)
+    except Exception as e:
+        logger.warning(f"auto resolve_pending after insert failed: {e}")
 
 
 # ---------------------------------------------------------------------------

@@ -154,6 +154,28 @@
         .af-log-table th, .af-log-table td {
             border: 1px solid var(--border-color, #30363d); padding: 5px 8px; text-align: left; }
         .af-log-table th { background: var(--bg-secondary, #0d1117); font-weight: 600; }
+
+        /* ── Prediction Tracker ── */
+        .pt-badge { display:inline-block; padding:2px 8px; border-radius:10px; font-size:11px; font-weight:600; }
+        .pt-resolved { background:#d4edda; color:#155724; }
+        .pt-pending { background:#fff3cd; color:#856404; }
+        .pt-hit-good { color:#27ae60; font-weight:700; }
+        .pt-hit-ok { color:#f39c12; font-weight:600; }
+        .pt-hit-bad { color:#bbb; }
+        .pt-good { color:#27ae60; font-weight:700; }
+        .pt-hist-row:hover td { background:#f8f9fa; }
+        .pt-detail-panel { padding:12px 16px; background:#fafafa; border-top:1px solid #eee; }
+        .pt-detail-meta { font-size:13px; color:#555; margin-bottom:10px; }
+        .pt-bet-row { display:flex; gap:10px; align-items:flex-start; padding:6px 0; border-bottom:1px solid #f0f0f0; }
+        .pt-bet-label { min-width:36px; font-weight:700; color:#666; font-size:12px; padding-top:4px; }
+        .pt-nums-line { margin-bottom:4px; }
+        .pt-num { display:inline-block; width:26px; height:26px; line-height:26px; text-align:center; border-radius:50%; font-size:12px; font-weight:600; margin:1px; background:#eee; color:#333; }
+        .pt-num-match { background:#27ae60 !important; color:#fff !important; }
+        .pt-num-actual { background:#3498db; color:#fff; }
+        .pt-special { background:#e74c3c; color:#fff; }
+        .pt-actual-special { background:#9b59b6; color:#fff; }
+        .pt-hit-summary { font-size:12px; color:#666; margin-top:4px; }
+        .mb-16 { margin-bottom:16px; }
     </style>
 </head>
 
@@ -234,6 +256,10 @@
                 <button class="nav-btn" data-section="next-draw">
                     <i data-lucide="zap" class="icon"></i>
                     <span>策略回測展示</span>
+                </button>
+                <button class="nav-btn" data-section="tracking">
+                    <i data-lucide="bar-chart-2" class="icon"></i>
+                    <span>預測追蹤</span>
                 </button>
             </nav>
         </div>
@@ -1384,6 +1410,82 @@
                 </div>
             </div>
         </section>
+
+        <!-- ═══════════════════════════════════════ TRACKING SECTION ════════════════════════════════════ -->
+        <section id="tracking-section" class="section">
+          <div class="section-header">
+            <h2>📊 預測追蹤</h2>
+            <p>儲存每次預測快照，開獎後自動比對，追蹤策略真實命中率。</p>
+          </div>
+          <div class="section-content">
+
+            <!-- 控制列 -->
+            <div class="tracking-controls" style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-bottom:16px">
+              <select id="pt-game-select" class="form-select" style="width:160px">
+                <option value="BIG_LOTTO">大樂透</option>
+                <option value="POWER_LOTTO">威力彩</option>
+                <option value="DAILY_539">今彩539</option>
+              </select>
+              <button id="pt-snapshot-btn" class="btn btn-primary">🎯 產生預測快照</button>
+              <button id="pt-resolve-btn" class="btn btn-secondary">🔄 比對待解析預測</button>
+            </div>
+
+            <!-- 策略表現 -->
+            <div class="card mb-16">
+              <div class="card-header">📈 策略命中率統計</div>
+              <div class="card-body" style="overflow-x:auto">
+                <table class="data-table" style="width:100%">
+                  <thead>
+                    <tr>
+                      <th>策略名稱</th>
+                      <th>總注數</th>
+                      <th>已解析</th>
+                      <th>≥1中 率</th>
+                      <th>≥2中 率</th>
+                      <th>≥3中 率</th>
+                      <th>平均中</th>
+                      <th>近30筆 ≥3中</th>
+                    </tr>
+                  </thead>
+                  <tbody id="pt-perf-body">
+                    <tr><td colspan="8" style="text-align:center;color:#888">尚無資料</td></tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+
+            <!-- 歷史清單 -->
+            <div class="card">
+              <div class="card-header">🗂️ 歷史預測記錄</div>
+              <div class="card-body" style="overflow-x:auto">
+                <table class="data-table" style="width:100%">
+                  <thead>
+                    <tr>
+                      <th>預測時間</th>
+                      <th>基於期號</th>
+                      <th>比對期號</th>
+                      <th>策略</th>
+                      <th>注數</th>
+                      <th>最佳命中</th>
+                      <th>狀態</th>
+                    </tr>
+                  </thead>
+                  <tbody id="pt-hist-body">
+                    <tr><td colspan="7" style="text-align:center;color:#888">尚無記錄</td></tr>
+                  </tbody>
+                </table>
+                <!-- 分頁 -->
+                <div style="display:flex;justify-content:center;align-items:center;gap:12px;margin-top:10px">
+                  <button id="pt-prev-btn" class="btn btn-sm btn-secondary" disabled>◀ 上一頁</button>
+                  <span id="pt-page-info" style="font-size:13px;color:#888">第 1 / 1 頁</span>
+                  <button id="pt-next-btn" class="btn btn-sm btn-secondary" disabled>下一頁 ▶</button>
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </section>
+
         </div>
         </main>
 

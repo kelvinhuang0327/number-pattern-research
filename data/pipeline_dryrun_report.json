@@ -1,0 +1,109 @@
+{
+  "run_date": "2026-04-19T16:42:45.939309",
+  "by_lottery": {
+    "BIG_LOTTO": {
+      "step_1_ingest": {
+        "status": "OK",
+        "would": "would_skip_dup"
+      },
+      "step_2_rsm": {
+        "status": "OK",
+        "note": "file_missing_but_readable"
+      },
+      "step_3_psi": {
+        "status": "OK",
+        "psi_value": 0.107085,
+        "overall": "WARNING"
+      },
+      "step_4_wq": {
+        "status": "OK",
+        "split_risk": "MED",
+        "pop_score": 57.0
+      },
+      "step_5_alert": {
+        "status": "OK",
+        "alerts_triggered": [],
+        "exit_trigger_status": "GREEN"
+      },
+      "step_6_pending": {
+        "status": "OK",
+        "prediction_runs_count": 40
+      },
+      "step_7_snapshot": {
+        "status": "OK",
+        "combo_b_updated": false,
+        "note": "only_for_POWER_LOTTO"
+      }
+    },
+    "DAILY_539": {
+      "step_1_ingest": {
+        "status": "OK",
+        "would": "would_skip_dup"
+      },
+      "step_2_rsm": {
+        "status": "OK",
+        "note": "file_missing_but_readable"
+      },
+      "step_3_psi": {
+        "status": "OK",
+        "psi_value": 0.121054,
+        "overall": "WARNING"
+      },
+      "step_4_wq": {
+        "status": "OK",
+        "split_risk": "HIGH",
+        "pop_score": 89.0
+      },
+      "step_5_alert": {
+        "status": "OK",
+        "alerts_triggered": [],
+        "exit_trigger_status": "GREEN"
+      },
+      "step_6_pending": {
+        "status": "OK",
+        "prediction_runs_count": 85
+      },
+      "step_7_snapshot": {
+        "status": "OK",
+        "combo_b_updated": false,
+        "note": "only_for_POWER_LOTTO"
+      }
+    },
+    "POWER_LOTTO": {
+      "step_1_ingest": {
+        "status": "OK",
+        "would": "would_skip_dup"
+      },
+      "step_2_rsm": {
+        "status": "OK",
+        "note": "file_missing_but_readable"
+      },
+      "step_3_psi": {
+        "status": "OK",
+        "psi_value": 0.064373,
+        "overall": "STABLE"
+      },
+      "step_4_wq": {
+        "status": "OK",
+        "split_risk": "MED",
+        "pop_score": 67.0
+      },
+      "step_5_alert": {
+        "status": "OK",
+        "alerts_triggered": [],
+        "exit_trigger_status": "GREEN"
+      },
+      "step_6_pending": {
+        "status": "OK",
+        "prediction_runs_count": 32
+      },
+      "step_7_snapshot": {
+        "status": "OK",
+        "combo_b_updated": true,
+        "note": "status=SHADOW_TRACKING evaluate_at=115000331"
+      }
+    }
+  },
+  "overall_status": "ALL_OK",
+  "failed_steps": []
+}

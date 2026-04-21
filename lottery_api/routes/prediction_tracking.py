@@ -27,9 +27,13 @@ router = APIRouter()
 logger = logging.getLogger(__name__)
 
 
+# Dead code removed: _rsm_best_strategy_label (edge_300p ranking) and _TRACKING_STRATEGIES
+# (stale hardcoded keys). Strategy ranking is now driven by _get_current_best_strategy_refs()
+# in prediction_tracker.py which uses Phase V composite_score + validated_status.
+
+
 class SnapshotRequest(BaseModel):
     lottery_type: str = "BIG_LOTTO"
-    num_bets: int = Field(default=3, ge=1, le=7)
     notes: Optional[str] = None
 
 
@@ -40,7 +44,7 @@ class SnapshotRequest(BaseModel):
 @router.post("/api/tracking/snapshot")
 async def create_snapshot(req: SnapshotRequest):
     """
-    觸發預測並立即儲存快照到 DB。
+    觸發預測並立即儲存快照到 DB（一次儲存所有策略注數）。
     自動判斷 snapshot_source：
       - 若目標期（latest+1）尚未入庫 → VALID
       - 若目標期已入庫                → RECONSTRUCTED（並附加警告）
@@ -49,11 +53,13 @@ async def create_snapshot(req: SnapshotRequest):
         from engine.prediction_tracker import create_snapshot as _create_snapshot
         from database import db_manager
 
-        all_draws = db_manager.get_all_draws(req.lottery_type)
-        if not all_draws:
+        all_draws_desc = db_manager.get_all_draws(req.lottery_type)
+        if not all_draws_desc:
             raise HTTPException(status_code=400, detail="DB 中無此彩種開獎資料")
+        # db_manager 回傳 DESC 順序；策略函數預期 ASC（history[-1] = 最新）
+        all_draws = sorted(all_draws_desc, key=lambda x: (x.get('date', ''), x.get('draw', '')))
 
-        latest = all_draws[0]
+        latest = all_draws_desc[0]
         latest_draw = latest["draw"]
         latest_date = latest.get("date")
 
@@ -62,39 +68,101 @@ async def create_snapshot(req: SnapshotRequest):
         target_exists = db_manager.get_draw(req.lottery_type, target_draw) is not None
         snapshot_source = "RECONSTRUCTED" if target_exists else "VALID"
 
-        # 執行預測
-        try:
-            from engine.strategy_coordinator import coordinator_predict
-            bets, strategy_label = coordinator_predict(
-                req.lottery_type, all_draws, n_bets=req.num_bets, mode="direct"
-            )
-        except Exception as e:
-            logger.warning(f"coordinator_predict failed, fallback: {e}")
-            from models.unified_predictor import UnifiedPredictionEngine
-            engine = UnifiedPredictionEngine()
-            result = engine.frequency_predict(all_draws, {})
-            bets = [result.get("numbers", [])]
-            strategy_label = "frequency_fallback"
+        # 取得此彩種所有追蹤策略設定
+        strategy_configs = _TRACKING_STRATEGIES.get(req.lottery_type, [])
+        if not strategy_configs:
+            raise HTTPException(status_code=400, detail=f"無此彩種追蹤策略設定：{req.lottery_type}")
 
-        special = None
-        if req.lottery_type == "POWER_LOTTO":
+        # 載入各彩種的實際策略函數 (rsm_bootstrap inline strategies)
+        _predict_fns: dict = {}
+        try:
+            import sys as _sys
+            _project_root = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+            if _project_root not in _sys.path:
+                _sys.path.insert(0, _project_root)
+            if req.lottery_type == "DAILY_539":
+                from tools.rsm_bootstrap import get_daily_539_strategies_inline
+                _cfgs = get_daily_539_strategies_inline()
+            elif req.lottery_type == "BIG_LOTTO":
+                from tools.rsm_bootstrap import get_big_lotto_strategies_inline
+                _cfgs = get_big_lotto_strategies_inline()
+            elif req.lottery_type == "POWER_LOTTO":
+                from tools.rsm_bootstrap import get_power_lotto_strategies_inline
+                _cfgs = get_power_lotto_strategies_inline()
+            else:
+                _cfgs = []
+            _predict_fns = {c["name"]: c["predict_func"] for c in _cfgs}
+        except Exception as e:
+            logger.warning(f"Failed to load inline strategies: {e}")
+
+        # 對每個注數使用實際策略函數預測
+        strategy_bets = []
+        summary_bets = {}
+        special_val = None
+
+        for cfg in strategy_configs:
+            bet_count = cfg["bet_count"]
+            strategy_key = cfg["strategy_key"]
             try:
-                from routes.prediction import get_enhanced_special_prediction
-                sp_result = get_enhanced_special_prediction(all_draws, {}, bets[0] if bets else [])
-                special = sp_result.get("special")
-            except Exception:
-                pass
+                predict_fn = _predict_fns.get(strategy_key)
+                if predict_fn:
+                    raw_bets = predict_fn(all_draws)
+                    bets_for_strategy = [sorted(b) for b in raw_bets] if raw_bets else []
+                else:
+                    # 禁止 silent fallback 到 coordinator — 顯示空結果並記錄 error
+                    bets_for_strategy = []
+                    logger.error(f"[tracking/snapshot] No inline predict_fn for {strategy_key} ({req.lottery_type}) — NO coordinator fallback, skipping")
+            except Exception as e:
+                logger.error(f"[tracking/snapshot] predict_fn raised for {req.lottery_type} {strategy_key}: {e}")
+                bets_for_strategy = []
+
+            # 威力彩特別號（僅第一策略組的第一注）
+            sp = None
+            if req.lottery_type == "POWER_LOTTO" and not special_val and bets_for_strategy:
+                try:
+                    from routes.prediction import get_enhanced_special_prediction
+                    sp_result = get_enhanced_special_prediction(all_draws, {}, bets_for_strategy[0])
+                    sp = sp_result.get("special") if isinstance(sp_result, dict) else sp_result
+                    if sp is not None:
+                        special_val = int(sp)
+                except Exception:
+                    pass
+
+            strategy_bets.append({
+                "strategy_name": strategy_key,
+                "num_bets": bet_count,
+                "bets": bets_for_strategy,
+                "special": special_val if req.lottery_type == "POWER_LOTTO" else None,
+            })
+            summary_bets[strategy_key] = bets_for_strategy
 
         run_id = _create_snapshot(
             lottery_type=req.lottery_type,
-            bets=bets,
-            strategy_name=strategy_label,
+            bets=[],  # 多策略模式，bets 留空
+            strategy_name="MULTI_STRATEGY",
             latest_known_draw=latest_draw,
             latest_known_date=latest_date,
-            special=special,
             snapshot_source=snapshot_source,
             notes=req.notes or "",
+            strategy_bets=strategy_bets,
         )
+
+        # Phase P: persist explainability snapshot for this run
+        try:
+            from engine.strategy_coordinator import coordinator_predict, get_last_explanation
+            from engine.explainability import save_explanation
+            # Run coordinator once to generate explanation (does NOT affect stored bets)
+            coordinator_predict(req.lottery_type, all_draws, n_bets=3, mode='direct')
+            explanation = get_last_explanation()
+            if explanation:
+                save_explanation(
+                    lottery_type=req.lottery_type,
+                    explanation=explanation,
+                    prediction_run_id=run_id,
+                    profile=explanation.get('profile', 'balanced'),
+                )
+        except Exception as ex_err:
+            logger.warning(f"Phase P explanation persistence failed (non-fatal): {ex_err}")
 
         warning = None
         if snapshot_source == "RECONSTRUCTED":
@@ -104,14 +172,14 @@ async def create_snapshot(req: SnapshotRequest):
             "success": True,
             "run_id": run_id,
             "lottery_type": req.lottery_type,
-            "strategy_name": strategy_label,
+            "strategy_count": len(strategy_bets),
+            "strategies": [cfg["strategy_key"] for cfg in strategy_configs],
             "latest_known_draw": latest_draw,
             "target_draw": target_draw,
             "snapshot_source": snapshot_source,
-            "bets": bets,
-            "special": special,
+            "bets": summary_bets,
             "warning": warning,
-            "message": f"快照已儲存 (run_id={run_id}, source={snapshot_source})",
+            "message": f"快照已儲存（{len(strategy_bets)} 個策略，run_id={run_id}, source={snapshot_source}）",
         }
     except HTTPException:
         raise
@@ -136,13 +204,22 @@ async def resolve_pending(dry_run: bool = Query(False)):
 async def get_history(
     lottery_type: Optional[str] = Query(None),
     status: Optional[str] = Query(None),
+    analyzed: Optional[str] = Query(None),
     limit: int = Query(50, ge=1, le=200),
     offset: int = Query(0, ge=0),
+    dedup: bool = Query(True, description="True=同一期只保留最佳 run（MULTI_STRATEGY 優先）"),
 ):
     """歷史預測清單，newest first，含 snapshot_source。"""
     try:
         from engine.prediction_tracker import get_history as _get_history
-        return _get_history(lottery_type=lottery_type, status=status, limit=limit, offset=offset)
+        return _get_history(
+            lottery_type=lottery_type,
+            status=status,
+            analyzed=analyzed,
+            limit=limit,
+            offset=offset,
+            dedup=dedup,
+        )
     except Exception as e:
         logger.error(f"get_history error: {e}", exc_info=True)
         raise HTTPException(status_code=500, detail=str(e))
@@ -170,12 +247,22 @@ async def get_performance(
 
 @router.get("/api/tracking/run/{run_id}")
 async def get_run_detail(run_id: int):
-    """單一 run 的完整比對資料。"""
+    """單一 run 的完整比對資料，含 Phase P explainability。"""
     try:
         from engine.prediction_tracker import get_run_detail as _get_detail
         detail = _get_detail(run_id)
         if not detail:
             raise HTTPException(status_code=404, detail=f"Run {run_id} not found")
+
+        # Phase P: attach explanation if available
+        try:
+            from engine.explainability import get_explanation_by_run
+            exp = get_explanation_by_run(run_id)
+            if exp:
+                detail['explanation'] = exp.get('explanation')
+        except Exception:
+            pass
+
         return detail
     except HTTPException:
         raise
@@ -222,6 +309,58 @@ async def get_schedule_history(
         return {"schedules": get_schedule_history(lottery_type=lottery_type, limit=limit)}
     except Exception as e:
         logger.error(f"get_schedule_history error: {e}", exc_info=True)
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+class AnalysisRequest(BaseModel):
+    note: str = ""
+
+
+class ReviewRequest(BaseModel):
+    """結構化檢討報告"""
+    note: str = ""
+    review_json: Optional[str] = None  # JSON string of structured review data
+
+
+@router.post("/api/tracking/run/{run_id}/analyze")
+async def submit_analysis(run_id: int, req: AnalysisRequest):
+    """提交分析筆記，將 run 標記為已研究（note 不可為空）。"""
+    try:
+        from engine.prediction_tracker import submit_run_analysis
+        new_val = submit_run_analysis(run_id, req.note)
+        return {"success": True, "run_id": run_id, "analyzed": new_val}
+    except ValueError as e:
+        raise HTTPException(status_code=400, detail=str(e))
+    except Exception as e:
+        logger.error(f"submit_analysis error: {e}", exc_info=True)
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+@router.post("/api/tracking/run/{run_id}/review")
+async def submit_review(run_id: int, req: ReviewRequest):
+    """提交結構化檢討報告，包含 analysis_note + review_json。"""
+    try:
+        from engine.prediction_tracker import submit_run_review
+        result = submit_run_review(run_id, req.note, req.review_json)
+        return {"success": True, "run_id": run_id, **result}
+    except ValueError as e:
+        raise HTTPException(status_code=400, detail=str(e))
+    except Exception as e:
+        logger.error(f"submit_review error: {e}", exc_info=True)
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+@router.delete("/api/tracking/run/{run_id}/analyze")
+async def clear_analysis(run_id: int):
+    """清除分析筆記，將 run 還原為未研究。"""
+    try:
+        from engine.prediction_tracker import clear_run_analysis
+        new_val = clear_run_analysis(run_id)
+        return {"success": True, "run_id": run_id, "analyzed": new_val}
+    except ValueError as e:
+        raise HTTPException(status_code=404, detail=str(e))
+    except Exception as e:
+        logger.error(f"clear_analysis error: {e}", exc_info=True)
         raise HTTPException(status_code=500, detail=str(e))
 
 

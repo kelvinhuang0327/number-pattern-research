@@ -766,6 +766,25 @@ class StrategyState:
     consecutive_neg_30p: int = 0
     alert: bool = False
 
+    # Phase V — 三大窗口驗證（150/500/1500 期）
+    edge_150p: Optional[float] = None
+    edge_500p: Optional[float] = None
+    edge_1500p: Optional[float] = None
+    rate_150p: Optional[float] = None
+    rate_500p: Optional[float] = None
+    rate_1500p: Optional[float] = None
+
+    # Phase V — 統計檢驗
+    perm_p: Optional[float] = None      # binomial exact test (equivalent to permutation)
+    mcnemar_p: Optional[float] = None   # McNemar test vs random baseline
+    sharpe: Optional[float] = None      # Sharpe ratio (1500p-based)
+    max_drawdown_rate: Optional[float] = None
+
+    # Phase V — 驗證結論
+    validated_status: Optional[str] = None   # VALIDATED / WATCH / REJECTED
+    validation_notes: Optional[str] = None
+    composite_score: Optional[float] = None
+
     # 元資料
     last_updated: str = field(default_factory=lambda: datetime.now().isoformat())
     note: str = ''

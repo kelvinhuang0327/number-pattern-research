@@ -123,6 +123,14 @@ def get_big_lotto_strategies_inline():
         bets = _p1_dev_5bet(history)
         return [b['numbers'] for b in bets]
 
+    def shadow_C_regime(history):
+        """Shadow tracker: p1_dev_sum5bet (no gate).
+        # gate=0% validated OOS, equivalent to p1_dev_sum5bet
+        NOT in DEPLOYED_STRATEGY_KEYS — shadow tracking only.
+        """
+        bets = _p1_dev_5bet(history)
+        return [b['numbers'] for b in bets]
+
     return [
         # ─── 2注 ───
         {'name': 'fourier_rhythm_2bet',      'predict_func': fourier_2bet,       'num_bets': 2},
@@ -139,6 +147,8 @@ def get_big_lotto_strategies_inline():
         # ─── 5注 ───
         {'name': 'p1_dev_sum5bet',           'predict_func': p1_dev_sum5bet,     'num_bets': 5},  # ★現行最佳
         {'name': 'ts3_markov_freq_5bet_w30', 'predict_func': ts3_markov_freq_5bet, 'num_bets': 5},  # SUPERSEDED
+        # ─── Shadow tracker (不部署，並行追蹤) ───
+        {'name': 'shadow_C_regime',          'predict_func': shadow_C_regime,    'num_bets': 5},  # SHADOW
     ]
 
 
@@ -192,6 +202,28 @@ def get_daily_539_strategies_inline():
         {'name': 'f4cold_3bet',             'predict_func': f4cold_3bet,            'num_bets': 3},  # PROVISIONAL
         {'name': 'f4cold_5bet',             'predict_func': f4cold_5bet,            'num_bets': 5},  # PROVISIONAL
     ]
+
+
+# ============================================================
+# Canonical Deployed Strategy Keys
+# Single source of truth for CLI (quick_predict.py) and API
+# (_NEXT_DRAW_CONFIG in lottery_api/routes/prediction.py).
+# Update BOTH files when changing deployed strategies.
+# ============================================================
+DEPLOYED_STRATEGY_KEYS = {
+    "DAILY_539": {
+        1: "acb_1bet",
+    },
+    "BIG_LOTTO": {
+        # 2: "regime_2bet",      # RETIRED 2026-04-18 (edge_1500p=-0.35%, 退場)
+        # 3: "ts3_regime_3bet",  # RETIRED 2026-04-18 (edge_1500p=-0.88%, 退場)
+        4: "p1_deviation_4bet",
+        5: "p1_dev_sum5bet",
+    },
+    "POWER_LOTTO": {
+        2: "midfreq_fourier_2bet",
+    },
+}
 
 
 # ============================================================

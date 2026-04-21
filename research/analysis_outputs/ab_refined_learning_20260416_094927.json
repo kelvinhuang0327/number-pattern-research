@@ -1,0 +1,1215 @@
+{
+  "run_date": "2026-04-16T09:49:27.645486",
+  "elapsed_seconds": 168.6,
+  "configs": [
+    {
+      "lottery_type": "DAILY_539",
+      "n_bets": 3
+    },
+    {
+      "lottery_type": "BIG_LOTTO",
+      "n_bets": 3
+    },
+    {
+      "lottery_type": "POWER_LOTTO",
+      "n_bets": 3
+    }
+  ],
+  "results": [
+    {
+      "lottery_type": "DAILY_539",
+      "n_bets": 3,
+      "total_test_draws": 300,
+      "metrics": {
+        "window_30": {
+          "A_baseline": {
+            "edge": 0.062173,
+            "sharpe": -1.547147,
+            "max_drawdown": 23.0,
+            "hit_rate": 0.366667,
+            "baseline": 0.304494,
+            "n": 30,
+            "hits": 11
+          },
+          "B_learning": {
+            "edge": 0.062173,
+            "sharpe": -1.547147,
+            "max_drawdown": 23.0,
+            "hit_rate": 0.366667,
+            "baseline": 0.304494,
+            "n": 30,
+            "hits": 11
+          },
+          "delta": {
+            "edge": 0.0,
+            "sharpe": 0.0,
+            "max_drawdown": 0.0,
+            "hit_rate": 0.0
+          }
+        },
+        "window_100": {
+          "A_baseline": {
+            "edge": 0.015506,
+            "sharpe": -2.360161,
+            "max_drawdown": 84.3333,
+            "hit_rate": 0.32,
+            "baseline": 0.304494,
+            "n": 100,
+            "hits": 32
+          },
+          "B_learning": {
+            "edge": 0.015506,
+            "sharpe": -2.360161,
+            "max_drawdown": 84.3333,
+            "hit_rate": 0.32,
+            "baseline": 0.304494,
+            "n": 100,
+            "hits": 32
+          },
+          "delta": {
+            "edge": 0.0,
+            "sharpe": 0.0,
+            "max_drawdown": 0.0,
+            "hit_rate": 0.0
+          }
+        },
+        "window_300": {
+          "A_baseline": {
+            "edge": 0.052173,
+            "sharpe": -2.118487,
+            "max_drawdown": 246.0,
+            "hit_rate": 0.356667,
+            "baseline": 0.304494,
+            "n": 300,
+            "hits": 107
+          },
+          "B_learning": {
+            "edge": 0.04884,
+            "sharpe": -2.121156,
+            "max_drawdown": 246.3333,
+            "hit_rate": 0.353333,
+            "baseline": 0.304494,
+            "n": 300,
+            "hits": 106
+          },
+          "delta": {
+            "edge": -0.003333,
+            "sharpe": -0.002669,
+            "max_drawdown": 0.3333,
+            "hit_rate": -0.003334
+          }
+        }
+      },
+      "statistical_tests": {
+        "permutation_p": 1.0,
+        "mcnemar": {
+          "chi2": 0.0,
+          "p": 1.0,
+          "b01": 2,
+          "b10": 3
+        }
+      },
+      "learning_audit": {
+        "total_draws_tested": 300,
+        "prediction_changes": 70,
+        "prediction_change_rate": 0.2333,
+        "weight_change_draws": 0,
+        "avg_bonus_magnitude": 0.0,
+        "max_bonus_magnitude": 0.0,
+        "sample_diffs": [
+          {
+            "draw": "114000115",
+            "idx": 6,
+            "bets_a": [
+              [
+                6,
+                9,
+                10,
+                14,
+                39
+              ],
+              [
+                5,
+                12,
+                18,
+                28,
+                37
+              ],
+              [
+                1,
+                17,
+                23,
+                29,
+                33
+              ]
+            ],
+            "bets_b": [
+              [
+                6,
+                9,
+                10,
+                14,
+                39
+              ],
+              [
+                5,
+                12,
+                18,
+                28,
+                37
+              ],
+              [
+                17,
+                23,
+                24,
+                29,
+                33
+              ]
+            ],
+            "hit_a": 2,
+            "hit_b": 2
+          },
+          {
+            "draw": "114000128",
+            "idx": 19,
+            "bets_a": [
+              [
+                23,
+                31,
+                33,
+                36,
+                38
+              ],
+              [
+                5,
+                8,
+                9,
+                10,
+                26
+              ],
+              [
+                1,
+                2,
+                12,
+                22,
+                25
+              ]
+            ],
+            "bets_b": [
+              [
+                23,
+                31,
+                33,
+                36,
+                38
+              ],
+              [
+                5,
+                8,
+                10,
+                22,
+                26
+              ],
+              [
+                1,
+                2,
+                9,
+                12,
+                25
+              ]
+            ],
+            "hit_a": 1,
+            "hit_b": 1
+          },
+          {
+            "draw": "114000129",
+            "idx": 20,
+            "bets_a": [
+              [
+                2,
+                9,
+                23,
+                31,
+                33
+              ],
+              [
+                6,
+                10,
+                17,
+                20,
+                35
+              ],
+              [
+                5,
+                12,
+                13,
+                16,
+                36
+              ]
+            ],
+            "bets_b": [
+              [
+                2,
+                9,
+                23,
+                31,
+                33
+              ],
+              [
+                10,
+                16,
+                17,
+                20,
+                35
+              ],
+              [
+                5,
+                6,
+                12,
+                13,
+                36
+              ]
+            ],
+            "hit_a": 2,
+            "hit_b": 2
+          },
+          {
+            "draw": "114000130",
+            "idx": 21,
+            "bets_a": [
+              [
+                6,
+                10,
+                16,
+                17,
+                35
+              ],
+              [
+                2,
+                5,
+                11,
+                12,
+                20
+              ],
+              [
+                1,
+                18,
+                25,
+                31,
+                34
+              ]
+            ],
+            "bets_b": [
+              [
+                6,
+                10,
+                16,
+                17,
+                35
+              ],
+              [
+                2,
+                11,
+                12,
+                18,
+                20
+              ],
+              [
+                1,
+                5,
+                25,
+                31,
+                34
+              ]
+            ],
+            "hit_a": 0,
+            "hit_b": 0
+          },
+          {
+            "draw": "114000134",
+            "idx": 25,
+            "bets_a": [
+              [
+                8,
+                14,
+                15,
+                23,
+                34
+              ],
+              [
+                6,
+                9,
+                10,
+                31,
+                38
+              ],
+              [
+                1,
+                5,
+                12,
+                20,
+                25
+              ]
+            ],
+            "bets_b": [
+              [
+                8,
+                14,
+                15,
+                23,
+                34
+              ],
+              [
+                9,
+                10,
+                20,
+                31,
+                38
+              ],
+              [
+                1,
+                2,
+                6,
+                12,
+                25
+              ]
+            ],
+            "hit_a": 0,
+            "hit_b": 1
+          }
+        ],
+        "sample_bonuses": []
+      },
+      "strategy_changes": {
+        "draws_with_different_bets": 70,
+        "total_draws": 300,
+        "change_pct": 23.33,
+        "when_different": {
+          "a_wins": 4,
+          "b_wins": 4,
+          "ties": 62
+        }
+      }
+    },
+    {
+      "lottery_type": "BIG_LOTTO",
+      "n_bets": 3,
+      "total_test_draws": 300,
+      "metrics": {
+        "window_30": {
+          "A_baseline": {
+            "edge": 0.011898,
+            "sharpe": -1.236083,
+            "max_drawdown": 23.6667,
+            "hit_rate": 0.066667,
+            "baseline": 0.054769,
+            "n": 30,
+            "hits": 2
+          },
+          "B_learning": {
+            "edge": 0.011898,
+            "sharpe": -1.236083,
+            "max_drawdown": 23.6667,
+            "hit_rate": 0.066667,
+            "baseline": 0.054769,
+            "n": 30,
+            "hits": 2
+          },
+          "delta": {
+            "edge": 0.0,
+            "sharpe": 0.0,
+            "max_drawdown": 0.0,
+            "hit_rate": 0.0
+          }
+        },
+        "window_100": {
+          "A_baseline": {
+            "edge": -0.004769,
+            "sharpe": -1.491202,
+            "max_drawdown": 88.3333,
+            "hit_rate": 0.05,
+            "baseline": 0.054769,
+            "n": 100,
+            "hits": 5
+          },
+          "B_learning": {
+            "edge": -0.004769,
+            "sharpe": -1.491202,
+            "max_drawdown": 88.3333,
+            "hit_rate": 0.05,
+            "baseline": 0.054769,
+            "n": 100,
+            "hits": 5
+          },
+          "delta": {
+            "edge": 0.0,
+            "sharpe": 0.0,
+            "max_drawdown": 0.0,
+            "hit_rate": 0.0
+          }
+        },
+        "window_300": {
+          "A_baseline": {
+            "edge": 0.015231,
+            "sharpe": -1.195389,
+            "max_drawdown": 243.0,
+            "hit_rate": 0.07,
+            "baseline": 0.054769,
+            "n": 300,
+            "hits": 21
+          },
+          "B_learning": {
+            "edge": 0.015231,
+            "sharpe": -1.195389,
+            "max_drawdown": 243.0,
+            "hit_rate": 0.07,
+            "baseline": 0.054769,
+            "n": 300,
+            "hits": 21
+          },
+          "delta": {
+            "edge": 0.0,
+            "sharpe": 0.0,
+            "max_drawdown": 0.0,
+            "hit_rate": 0.0
+          }
+        }
+      },
+      "statistical_tests": {
+        "permutation_p": 1.0,
+        "mcnemar": {
+          "chi2": 0,
+          "p": 1.0,
+          "b01": 0,
+          "b10": 0
+        }
+      },
+      "learning_audit": {
+        "total_draws_tested": 300,
+        "prediction_changes": 21,
+        "prediction_change_rate": 0.07,
+        "weight_change_draws": 0,
+        "avg_bonus_magnitude": 0.0,
+        "max_bonus_magnitude": 0.0,
+        "sample_diffs": [
+          {
+            "draw": "112000099",
+            "idx": 2,
+            "bets_a": [
+              [
+                8,
+                10,
+                16,
+                27,
+                33,
+                45
+              ],
+              [
+                17,
+                23,
+                24,
+                28,
+                30,
+                36
+              ],
+              [
+                1,
+                3,
+                11,
+                20,
+                26,
+                40
+              ]
+            ],
+            "bets_b": [
+              [
+                10,
+                16,
+                23,
+                27,
+                33,
+                45
+              ],
+              [
+                8,
+                17,
+                24,
+                28,
+                30,
+                36
+              ],
+              [
+                1,
+                3,
+                11,
+                20,
+                26,
+                40
+              ]
+            ],
+            "hit_a": 1,
+            "hit_b": 1
+          },
+          {
+            "draw": "112000112",
+            "idx": 15,
+            "bets_a": [
+              [
+                12,
+                16,
+                20,
+                32,
+                39,
+                44
+              ],
+              [
+                18,
+                29,
+                31,
+                35,
+                37,
+                40
+              ],
+              [
+                3,
+                15,
+                19,
+                30,
+                43,
+                45
+              ]
+            ],
+            "bets_b": [
+              [
+                12,
+                16,
+                20,
+                32,
+                39,
+                44
+              ],
+              [
+                19,
+                29,
+                31,
+                35,
+                37,
+                40
+              ],
+              [
+                3,
+                15,
+                18,
+                30,
+                43,
+                45
+              ]
+            ],
+            "hit_a": 1,
+            "hit_b": 1
+          },
+          {
+            "draw": "112000114",
+            "idx": 17,
+            "bets_a": [
+              [
+                8,
+                9,
+                18,
+                20,
+                27,
+                44
+              ],
+              [
+                12,
+                15,
+                19,
+                23,
+                35,
+                48
+              ],
+              [
+                1,
+                6,
+                13,
+                16,
+                32,
+                40
+              ]
+            ],
+            "bets_b": [
+              [
+                8,
+                9,
+                18,
+                20,
+                27,
+                44
+              ],
+              [
+                12,
+                15,
+                19,
+                23,
+                35,
+                48
+              ],
+              [
+                1,
+                13,
+                16,
+                32,
+                39,
+                40
+              ]
+            ],
+            "hit_a": 3,
+            "hit_b": 3
+          },
+          {
+            "draw": "113000003",
+            "idx": 22,
+            "bets_a": [
+              [
+                1,
+                8,
+                19,
+                20,
+                42,
+                48
+              ],
+              [
+                3,
+                21,
+                23,
+                24,
+                29,
+                30
+              ],
+              [
+                22,
+                28,
+                31,
+                40,
+                44,
+                46
+              ]
+            ],
+            "bets_b": [
+              [
+                1,
+                3,
+                8,
+                20,
+                42,
+                48
+              ],
+              [
+                19,
+                21,
+                23,
+                24,
+                29,
+                30
+              ],
+              [
+                22,
+                28,
+                31,
+                40,
+                44,
+                46
+              ]
+            ],
+            "hit_a": 2,
+            "hit_b": 2
+          },
+          {
+            "draw": "113000005",
+            "idx": 24,
+            "bets_a": [
+              [
+                18,
+                23,
+                28,
+                29,
+                30,
+                35
+              ],
+              [
+                1,
+                3,
+                24,
+                27,
+                41,
+                43
+              ],
+              [
+                5,
+                8,
+                20,
+                22,
+                39,
+                46
+              ]
+            ],
+            "bets_b": [
+              [
+                3,
+                18,
+                28,
+                29,
+                30,
+                35
+              ],
+              [
+                1,
+                23,
+                24,
+                27,
+                41,
+                43
+              ],
+              [
+                5,
+                8,
+                20,
+                22,
+                39,
+                46
+              ]
+            ],
+            "hit_a": 2,
+            "hit_b": 1
+          }
+        ],
+        "sample_bonuses": []
+      },
+      "strategy_changes": {
+        "draws_with_different_bets": 21,
+        "total_draws": 300,
+        "change_pct": 7.0,
+        "when_different": {
+          "a_wins": 1,
+          "b_wins": 1,
+          "ties": 19
+        }
+      }
+    },
+    {
+      "lottery_type": "POWER_LOTTO",
+      "n_bets": 3,
+      "total_test_draws": 300,
+      "metrics": {
+        "window_30": {
+          "A_baseline": {
+            "edge": 0.088335,
+            "sharpe": -0.4375,
+            "max_drawdown": 15.6667,
+            "hit_rate": 0.2,
+            "baseline": 0.111665,
+            "n": 30,
+            "hits": 6
+          },
+          "B_learning": {
+            "edge": 0.088335,
+            "sharpe": 0.072875,
+            "max_drawdown": 9.0,
+            "hit_rate": 0.2,
+            "baseline": 0.111665,
+            "n": 30,
+            "hits": 6
+          },
+          "delta": {
+            "edge": 0.0,
+            "sharpe": 0.510375,
+            "max_drawdown": -6.6667,
+            "hit_rate": 0.0
+          }
+        },
+        "window_100": {
+          "A_baseline": {
+            "edge": 0.018335,
+            "sharpe": -0.728509,
+            "max_drawdown": 64.3333,
+            "hit_rate": 0.13,
+            "baseline": 0.111665,
+            "n": 100,
+            "hits": 13
+          },
+          "B_learning": {
+            "edge": 0.008335,
+            "sharpe": -0.233854,
+            "max_drawdown": 53.6667,
+            "hit_rate": 0.12,
+            "baseline": 0.111665,
+            "n": 100,
+            "hits": 12
+          },
+          "delta": {
+            "edge": -0.01,
+            "sharpe": 0.494655,
+            "max_drawdown": -10.6666,
+            "hit_rate": -0.01
+          }
+        },
+        "window_300": {
+          "A_baseline": {
+            "edge": 0.008335,
+            "sharpe": -0.56613,
+            "max_drawdown": 192.3333,
+            "hit_rate": 0.12,
+            "baseline": 0.111665,
+            "n": 300,
+            "hits": 36
+          },
+          "B_learning": {
+            "edge": 0.008335,
+            "sharpe": -0.314967,
+            "max_drawdown": 168.3333,
+            "hit_rate": 0.12,
+            "baseline": 0.111665,
+            "n": 300,
+            "hits": 36
+          },
+          "delta": {
+            "edge": 0.0,
+            "sharpe": 0.251163,
+            "max_drawdown": -24.0,
+            "hit_rate": 0.0
+          }
+        }
+      },
+      "statistical_tests": {
+        "permutation_p": 1.0,
+        "mcnemar": {
+          "chi2": 0.25,
+          "p": 0.617075,
+          "b01": 2,
+          "b10": 2
+        }
+      },
+      "learning_audit": {
+        "total_draws_tested": 300,
+        "prediction_changes": 49,
+        "prediction_change_rate": 0.1633,
+        "weight_change_draws": 0,
+        "avg_bonus_magnitude": 0.0,
+        "max_bonus_magnitude": 0.0,
+        "sample_diffs": [
+          {
+            "draw": "112000049",
+            "idx": 5,
+            "bets_a": [
+              [
+                3,
+                4,
+                5,
+                14,
+                19,
+                29
+              ],
+              [
+                15,
+                22,
+                27,
+                28,
+                30,
+                38
+              ],
+              [
+                6,
+                9,
+                11,
+                13,
+                25,
+                34
+              ]
+            ],
+            "bets_b": [
+              [
+                3,
+                4,
+                5,
+                14,
+                19,
+                29
+              ],
+              [
+                15,
+                22,
+                27,
+                28,
+                30,
+                38
+              ],
+              [
+                6,
+                9,
+                11,
+                13,
+                34,
+                37
+              ]
+            ],
+            "hit_a": 1,
+            "hit_b": 1
+          },
+          {
+            "draw": "112000053",
+            "idx": 9,
+            "bets_a": [
+              [
+                4,
+                17,
+                19,
+                22,
+                24,
+                28
+              ],
+              [
+                2,
+                3,
+                7,
+                14,
+                18,
+                34
+              ],
+              [
+                6,
+                11,
+                13,
+                15,
+                20,
+                32
+              ]
+            ],
+            "bets_b": [
+              [
+                4,
+                17,
+                19,
+                22,
+                24,
+                28
+              ],
+              [
+                2,
+                3,
+                7,
+                13,
+                14,
+                34
+              ],
+              [
+                6,
+                11,
+                15,
+                18,
+                20,
+                32
+              ]
+            ],
+            "hit_a": 1,
+            "hit_b": 1
+          },
+          {
+            "draw": "112000061",
+            "idx": 17,
+            "bets_a": [
+              [
+                2,
+                3,
+                5,
+                14,
+                18,
+                35
+              ],
+              [
+                13,
+                17,
+                19,
+                22,
+                26,
+                29
+              ],
+              [
+                1,
+                11,
+                24,
+                25,
+                32,
+                36
+              ]
+            ],
+            "bets_b": [
+              [
+                2,
+                3,
+                5,
+                14,
+                18,
+                35
+              ],
+              [
+                13,
+                17,
+                22,
+                24,
+                26,
+                29
+              ],
+              [
+                1,
+                11,
+                19,
+                25,
+                32,
+                36
+              ]
+            ],
+            "hit_a": 1,
+            "hit_b": 2
+          },
+          {
+            "draw": "112000065",
+            "idx": 21,
+            "bets_a": [
+              [
+                6,
+                7,
+                14,
+                18,
+                24,
+                35
+              ],
+              [
+                2,
+                12,
+                13,
+                19,
+                22,
+                38
+              ],
+              [
+                8,
+                23,
+                25,
+                31,
+                33,
+                37
+              ]
+            ],
+            "bets_b": [
+              [
+                6,
+                7,
+                14,
+                18,
+                24,
+                35
+              ],
+              [
+                2,
+                12,
+                13,
+                19,
+                22,
+                38
+              ],
+              [
+                4,
+                8,
+                23,
+                25,
+                33,
+                37
+              ]
+            ],
+            "hit_a": 1,
+            "hit_b": 1
+          },
+          {
+            "draw": "112000067",
+            "idx": 23,
+            "bets_a": [
+              [
+                8,
+                17,
+                24,
+                34,
+                35,
+                38
+              ],
+              [
+                3,
+                7,
+                12,
+                19,
+                31,
+                33
+              ],
+              [
+                1,
+                13,
+                16,
+                25,
+                30,
+                37
+              ]
+            ],
+            "bets_b": [
+              [
+                8,
+                17,
+                24,
+                34,
+                35,
+                38
+              ],
+              [
+                3,
+                7,
+                12,
+                13,
+                31,
+                33
+              ],
+              [
+                1,
+                16,
+                19,
+                22,
+                30,
+                37
+              ]
+            ],
+            "hit_a": 3,
+            "hit_b": 2
+          }
+        ],
+        "sample_bonuses": []
+      },
+      "strategy_changes": {
+        "draws_with_different_bets": 49,
+        "total_draws": 300,
+        "change_pct": 16.33,
+        "when_different": {
+          "a_wins": 2,
+          "b_wins": 8,
+          "ties": 39
+        }
+      }
+    }
+  ],
+  "verdict": {
+    "verdict": "REJECT",
+    "reason": "Learning causes measurable harm in multiple windows",
+    "positive_windows": 0,
+    "negative_windows": 2,
+    "total_windows": 9,
+    "any_significant": false,
+    "total_prediction_changes": 140,
+    "total_draws": 900
+  }
+}

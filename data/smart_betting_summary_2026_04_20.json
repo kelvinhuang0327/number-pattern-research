@@ -1,0 +1,356 @@
+{
+  "generated_at": "2026-04-20T11:03:32.775834",
+  "headline": {
+    "db_jackpot_history_available": false,
+    "gate_open_lotteries": [
+      "BIG_LOTTO"
+    ],
+    "gate_closed_lotteries": [
+      "DAILY_539",
+      "POWER_LOTTO"
+    ],
+    "recommended_monthly_budget_after_gate": 450.0,
+    "monthly_savings_vs_always": 550.0
+  },
+  "lotteries": {
+    "DAILY_539": {
+      "jackpot_probability": 5.03e-06,
+      "jackpot_match_count": 5,
+      "current_jackpot": 8000000.0,
+      "current_expected_payout": 135.2627,
+      "current_expected_net": -14.7373,
+      "current_expected_roi": -0.098248,
+      "non_jackpot_expected_payout": 95.0227,
+      "breakeven_jackpot": 10929880.715706,
+      "breakeven_ratio": 0.731938,
+      "current_to_breakeven_multiple": 1.366235,
+      "ev_gate_open": false,
+      "ev_gate_recommendation": "CLOSE",
+      "ev_gap": -2929880.715706,
+      "jackpot_component_at_current": 40.24,
+      "jackpot_component_at_breakeven": 54.9773,
+      "ticket_cost_total": 150.0,
+      "prize_table": {
+        "2": 80.0,
+        "3": 1000.0,
+        "4": 50000.0,
+        "5": 8000000.0
+      },
+      "distribution": {
+        "2": 0.30092806,
+        "3": 0.02821201,
+        "4": 0.00085491,
+        "5": 5.03e-06,
+        "0": 0.36545455,
+        "1": 0.30454545
+      },
+      "current_expected_net_sign": "negative",
+      "strategy_name": "acb_markov_midfreq_3bet",
+      "ticket_cost": 50,
+      "bet_count": 3,
+      "monthly_budget_reference": 1000,
+      "current_jackpot_source": "manual_default",
+      "current_jackpot_updated_at": "2026-03-17",
+      "historical_jackpot_samples": 0,
+      "historical_positive_share": null,
+      "historical_note": "lottery_v2.db has no jackpot_amount column; use snapshot-based breakeven only",
+      "stage2_skip_threshold": 0.0,
+      "stage2_skip_rate": 0.1418,
+      "stage2_best_strategy": "f4cold_5bet"
+    },
+    "BIG_LOTTO": {
+      "jackpot_probability": 4e-07,
+      "jackpot_match_count": 6,
+      "current_jackpot": 650000000.0,
+      "current_expected_payout": 342.7208,
+      "current_expected_net": 92.7208,
+      "current_expected_roi": 0.370883,
+      "non_jackpot_expected_payout": 82.7208,
+      "breakeven_jackpot": 418198000.0,
+      "breakeven_ratio": 1.554288,
+      "current_to_breakeven_multiple": 0.643382,
+      "ev_gate_open": true,
+      "ev_gate_recommendation": "OPEN",
+      "ev_gap": 231802000.0,
+      "jackpot_component_at_current": 260.0,
+      "jackpot_component_at_breakeven": 167.2792,
+      "ticket_cost_total": 250.0,
+      "prize_table": {
+        "3": 400.0,
+        "4": 2000.0,
+        "5": 300000.0,
+        "6": 650000000.0
+      },
+      "distribution": {
+        "3": 0.09914271,
+        "4": 0.00544076,
+        "5": 0.00010363,
+        "6": 4e-07,
+        "0": 0.39773775,
+        "1": 0.37680418,
+        "2": 0.12077057
+      },
+      "current_expected_net_sign": "positive",
+      "strategy_name": "p1_dev_sum5bet",
+      "ticket_cost": 50,
+      "bet_count": 5,
+      "monthly_budget_reference": 1000,
+      "current_jackpot_source": "test_sync",
+      "current_jackpot_updated_at": "2026-03-17",
+      "historical_jackpot_samples": 0,
+      "historical_positive_share": null,
+      "historical_note": "lottery_v2.db has no jackpot_amount column; use snapshot-based breakeven only",
+      "stage2_skip_threshold": 0.0,
+      "stage2_skip_rate": 0.2895,
+      "stage2_best_strategy": "p1_dev_sum5bet"
+    },
+    "POWER_LOTTO": {
+      "jackpot_probability": 1.33e-06,
+      "jackpot_match_count": 6,
+      "current_jackpot": 200000000.0,
+      "current_expected_payout": 296.8787,
+      "current_expected_net": -203.1213,
+      "current_expected_roi": -0.406243,
+      "non_jackpot_expected_payout": 30.8787,
+      "breakeven_jackpot": 352722781.954887,
+      "breakeven_ratio": 0.567018,
+      "current_to_breakeven_multiple": 1.763614,
+      "ev_gate_open": false,
+      "ev_gate_recommendation": "CLOSE",
+      "ev_gap": -152722781.954887,
+      "jackpot_component_at_current": 266.0,
+      "jackpot_component_at_breakeven": 469.1213,
+      "ticket_cost_total": 500.0,
+      "prize_table": {
+        "3": 100.0,
+        "4": 800.0,
+        "5": 40000.0,
+        "6": 200000000.0
+      },
+      "distribution": {
+        "3": 0.13173832,
+        "4": 0.00988037,
+        "5": 0.00025498,
+        "6": 1.33e-06,
+        "0": 0.29301829,
+        "1": 0.39069106,
+        "2": 0.17441565
+      },
+      "current_expected_net_sign": "negative",
+      "strategy_name": "orthogonal_5bet",
+      "ticket_cost": 100,
+      "bet_count": 5,
+      "monthly_budget_reference": 1000,
+      "current_jackpot_source": "manual_default",
+      "current_jackpot_updated_at": "2026-03-17",
+      "historical_jackpot_samples": 0,
+      "historical_positive_share": null,
+      "historical_note": "lottery_v2.db has no jackpot_amount column; use snapshot-based breakeven only",
+      "stage2_skip_threshold": 0.0,
+      "stage2_skip_rate": 0.2257,
+      "stage2_best_strategy": "orthogonal_5bet"
+    }
+  },
+  "participation": {
+    "always": {
+      "strategy": "always",
+      "simulations": 5000,
+      "horizon_months": 200,
+      "start_bankroll": 12000.0,
+      "expected_monthly_spend": 1000.0,
+      "expected_monthly_savings_vs_always": 0.0,
+      "allocations": {
+        "BIG_LOTTO": 450.0,
+        "DAILY_539": 350.0,
+        "POWER_LOTTO": 200.0
+      },
+      "mean_draws_per_month": {
+        "BIG_LOTTO": 1.802489,
+        "DAILY_539": 2.335246,
+        "POWER_LOTTO": 0.399734
+      },
+      "mean_actual_monthly_spend": 1000.77615,
+      "median_ending_bankroll": -137530.0,
+      "mean_ending_bankroll": 76264.85,
+      "p05_ending_bankroll": -155320.0,
+      "p95_ending_bankroll": -1593.5,
+      "median_months_to_ruin": 16.0,
+      "mean_months_to_ruin": 19.0908,
+      "ruin_probability_12m": 0.0862,
+      "ruin_probability_24m": 0.9572,
+      "ruin_probability_200m": 0.9506
+    },
+    "ev_gate": {
+      "strategy": "ev_gate",
+      "simulations": 5000,
+      "horizon_months": 200,
+      "start_bankroll": 12000.0,
+      "expected_monthly_spend": 450.0,
+      "expected_monthly_savings_vs_always": 550.0,
+      "allocations": {
+        "BIG_LOTTO": 450.0,
+        "DAILY_539": 0.0,
+        "POWER_LOTTO": 0.0
+      },
+      "mean_draws_per_month": {
+        "BIG_LOTTO": 1.800723,
+        "DAILY_539": 0.0,
+        "POWER_LOTTO": 0.0
+      },
+      "mean_actual_monthly_spend": 450.18075,
+      "median_ending_bankroll": -59700.0,
+      "mean_ending_bankroll": 81352.25,
+      "p05_ending_bankroll": -68300.0,
+      "p95_ending_bankroll": -48797.5,
+      "median_months_to_ruin": 34.0,
+      "mean_months_to_ruin": 35.4136,
+      "ruin_probability_12m": 0.0,
+      "ruin_probability_24m": 0.0286,
+      "ruin_probability_200m": 0.963
+    },
+    "kelly_ev": {
+      "strategy": "kelly_ev",
+      "simulations": 5000,
+      "horizon_months": 200,
+      "start_bankroll": 12000.0,
+      "expected_monthly_spend": 250.0,
+      "expected_monthly_savings_vs_always": 750.0,
+      "allocations": {
+        "BIG_LOTTO": 250.0,
+        "DAILY_539": 0.0,
+        "POWER_LOTTO": 0.0
+      },
+      "mean_draws_per_month": {
+        "BIG_LOTTO": 0.999147,
+        "DAILY_539": 0.0,
+        "POWER_LOTTO": 0.0
+      },
+      "mean_actual_monthly_spend": 249.78675,
+      "median_ending_bankroll": -27700.0,
+      "mean_ending_bankroll": 108020.01,
+      "p05_ending_bankroll": -34050.0,
+      "p95_ending_bankroll": -20647.5,
+      "median_months_to_ruin": 61.0,
+      "mean_months_to_ruin": 62.3034,
+      "ruin_probability_12m": 0.0,
+      "ruin_probability_24m": 0.0,
+      "ruin_probability_200m": 0.9808
+    }
+  },
+  "bet_sizing": {
+    "DAILY_539": {
+      "candidates": [
+        {
+          "bet_count": 1,
+          "strategy_name": "acb_1bet",
+          "validated_status": "WATCH",
+          "composite_score": 0.034892,
+          "edge_150p": 0.0127,
+          "edge_500p": 0.03,
+          "edge_1500p": 0.028,
+          "sharpe": 0.0749,
+          "ticket_cost": 50,
+          "total_cost": 50,
+          "edge_per_ntd": 0.00056
+        },
+        {
+          "bet_count": 2,
+          "strategy_name": "midfreq_acb_2bet",
+          "validated_status": "VALIDATED",
+          "composite_score": 0.057485,
+          "edge_150p": 0.0846,
+          "edge_500p": 0.0826,
+          "edge_1500p": 0.0553,
+          "sharpe": 0.1121,
+          "ticket_cost": 50,
+          "total_cost": 100,
+          "edge_per_ntd": 0.000553
+        },
+        {
+          "bet_count": 3,
+          "strategy_name": "acb_markov_midfreq_3bet",
+          "validated_status": "VALIDATED",
+          "composite_score": 0.070484,
+          "edge_150p": 0.075,
+          "edge_500p": 0.071,
+          "edge_1500p": 0.0677,
+          "sharpe": 0.1316,
+          "ticket_cost": 50,
+          "total_cost": 150,
+          "edge_per_ntd": 0.00045133
+        }
+      ],
+      "recommended_bet_count": 1,
+      "decline_point": 2,
+      "current_bet_count": 3,
+      "current_strategy": "acb_markov_midfreq_3bet",
+      "takeaway": "edge per dollar peaks at the recommended bet count and then weakens"
+    },
+    "POWER_LOTTO": {
+      "candidates": [
+        {
+          "bet_count": 2,
+          "strategy_name": "midfreq_fourier_2bet",
+          "validated_status": "WATCH",
+          "composite_score": 0.027887,
+          "edge_150p": -0.0092,
+          "edge_500p": 0.0241,
+          "edge_1500p": 0.0194,
+          "sharpe": 0.0637,
+          "ticket_cost": 100,
+          "total_cost": 200,
+          "edge_per_ntd": 9.7e-05
+        },
+        {
+          "bet_count": 4,
+          "strategy_name": "pp3_freqort_4bet",
+          "validated_status": "WATCH",
+          "composite_score": 0.033783,
+          "edge_150p": 0.0473,
+          "edge_500p": 0.032,
+          "edge_1500p": 0.0327,
+          "sharpe": 0.0707,
+          "ticket_cost": 100,
+          "total_cost": 400,
+          "edge_per_ntd": 8.175e-05
+        },
+        {
+          "bet_count": 3,
+          "strategy_name": "midfreq_fourier_mk_3bet",
+          "validated_status": "WATCH",
+          "composite_score": 0.034738,
+          "edge_150p": 0.00834,
+          "edge_500p": 0.03434,
+          "edge_1500p": 0.02434,
+          "sharpe": 0.0751,
+          "ticket_cost": 100,
+          "total_cost": 300,
+          "edge_per_ntd": 8.113e-05
+        },
+        {
+          "bet_count": 5,
+          "strategy_name": "orthogonal_5bet",
+          "validated_status": "WATCH",
+          "composite_score": 0.041924,
+          "edge_150p": 0.0476,
+          "edge_500p": 0.0329,
+          "edge_1500p": 0.0389,
+          "sharpe": 0.085,
+          "ticket_cost": 100,
+          "total_cost": 500,
+          "edge_per_ntd": 7.78e-05
+        }
+      ],
+      "recommended_bet_count": 2,
+      "decline_point": 3,
+      "current_bet_count": 5,
+      "current_strategy": "orthogonal_5bet",
+      "takeaway": "edge per dollar peaks at the recommended bet count and then weakens"
+    }
+  },
+  "recommendation": {
+    "DAILY_539": "skip under current jackpot; current statistical edge is not enough to clear monetary EV",
+    "BIG_LOTTO": "keep; it is the only lottery that is positive under the current jackpot snapshot",
+    "POWER_LOTTO": "skip under current jackpot; breakeven remains far above the snapshot"
+  }
+}

@@ -1,0 +1,77 @@
+{
+  "generated_at": "2026-04-20T06:09:58.471480+00:00",
+  "gating_enabled": true,
+  "hard_disable_enabled": false,
+  "sample_threshold": 5,
+  "thresholds": {
+    "downgrade_cutoff": -0.3,
+    "boost_cutoff": 0.3,
+    "hard_disable_cutoff": -0.7
+  },
+  "weights": {
+    "R05_WEAK_RESEARCH": {
+      "weight": 1.0,
+      "status": "LOW_CONFIDENCE",
+      "reason": "樣本數 1 < 5，尚無足夠數據調整權重（維持中性）",
+      "rule_score": 1.0,
+      "samples": 1,
+      "source": "phase_r_feedback"
+    },
+    "R03_LEARNING_INEFFECTIVE": {
+      "weight": 1.0,
+      "status": "LOW_CONFIDENCE",
+      "reason": "樣本數 2 < 5，尚無足夠數據調整權重（維持中性）",
+      "rule_score": 0.5,
+      "samples": 2,
+      "source": "phase_r_feedback"
+    },
+    "R08_LOW_SHARPE": {
+      "weight": 1.0,
+      "status": "LOW_CONFIDENCE",
+      "reason": "樣本數 1 < 5，尚無足夠數據調整權重（維持中性）",
+      "rule_score": 0.0,
+      "samples": 1,
+      "source": "phase_r_feedback"
+    },
+    "R06_NO_VALIDATED": {
+      "weight": 1.0,
+      "status": "LOW_CONFIDENCE",
+      "reason": "樣本數 2 < 5，尚無足夠數據調整權重（維持中性）",
+      "rule_score": 0.0,
+      "samples": 2,
+      "source": "phase_r_feedback"
+    },
+    "R07_ALL_WATCH": {
+      "weight": 1.0,
+      "status": "LOW_CONFIDENCE",
+      "reason": "樣本數 1 < 5，尚無足夠數據調整權重（維持中性）",
+      "rule_score": 0.0,
+      "samples": 1,
+      "source": "phase_r_feedback"
+    },
+    "R02_NEAR_THRESHOLD": {
+      "weight": 1.0,
+      "status": "LOW_CONFIDENCE",
+      "reason": "樣本數 1 < 5，尚無足夠數據調整權重（維持中性）",
+      "rule_score": 0.0,
+      "samples": 1,
+      "source": "phase_r_feedback"
+    },
+    "R09_HIGH_DRAWDOWN": {
+      "weight": 1.0,
+      "status": "LOW_CONFIDENCE",
+      "reason": "樣本數 1 < 5，尚無足夠數據調整權重（維持中性）",
+      "rule_score": -1.0,
+      "samples": 1,
+      "source": "phase_r_feedback"
+    },
+    "R01_DEGRADING": {
+      "weight": 1.0,
+      "status": "LOW_CONFIDENCE",
+      "reason": "樣本數 1 < 5，尚無足夠數據調整權重（維持中性）",
+      "rule_score": -1.0,
+      "samples": 1,
+      "source": "phase_r_feedback"
+    }
+  }
+}

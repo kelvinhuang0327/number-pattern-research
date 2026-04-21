@@ -505,21 +505,22 @@ python3 tools/power_fourier_rhythm.py            # 2注主力 (Fourier Rhythm, E
 | **4注** | **PP3+FreqOrt** | V3 | **+3.33%** + +2.20% (特) ★新增 |
 | **5注** | **正交5注** | V3 | **+3.89%** + +2.20% (特) ★推薦 |
 
-### 大樂透 (2026-02-18 更新版)
+### 大樂透 (2026-04-18 RSM更新版)
 
-> **2026-02-26 策略升級**：5注改為 **P1+偏差互補+Sum均值約束**，Edge +2.71% > 舊版 +1.97%。
-> 舊版 TS3+Markov+頻率正交 已 SUPERSEDED，歸檔 `rejected/ts3_markov_freq_5bet_biglotto.json`。
-> **2026-02-24 Sum-Constraint v2**：注2 Cold 改用 pool=12 + C(12,6) Sum均值回歸約束 (Lift=1.495x)。
-> 3注: +1.46% z=2.48 | 4注: +2.17% z=3.24 p=0.010 | 5注: **+2.71%** ROBUST 三窗口全正。
-> 5注腳本: `tools/backtest_p1dev_5bet.py`；Production: `tools/quick_predict.py :: biglotto_p1_deviation_5bet()`
+> **2026-03-13 RSM升格**：regime_2bet(2注) 和 ts3_regime_3bet(3注) 在 RSM 300期監控後取代舊版 P0/Triple Strike 成為主力。
+> **2026-04-18 驗證**：290期實測 p1_deviation_4bet(M3+=10.00%, p=0.035✅) 和 p1_dev_sum5bet(M3+=12.07%, p=0.033✅) 統計顯著。
+> **2026-04-18 ⛔ RETIRED**：regime_2bet (edge_1500p=-0.35%) 和 ts3_regime_3bet (edge_1500p=-0.88%) 長期負edge，已從 DEPLOYED_STRATEGY_KEYS 移除。
+> **現役部署入口**：`lottery_api/routes/prediction.py :: _NEXT_DRAW_CONFIG`；`tools/rsm_bootstrap.py :: get_big_lotto_strategies_inline()`
+> **Shadow Tracking**：shadow_C_regime (p1_dev_sum5bet + selective gate) — SHADOW TRACKING only，非生產部署，詳見 `data/shadow_tracking_BIG_LOTTO.jsonl`
 
 #### ⭐ 一鍵預測工具 (2026-02-14 統一入口)
 
 ```bash
 # 統一預測入口 (自動選擇最佳策略)
-python3 tools/quick_predict.py 大樂透          # 5注 P1+偏差互補+Sum均值約束 (Edge +2.71%) ★推薦
-python3 tools/quick_predict.py 大樂透 3        # 3注 Triple Strike v2 (Edge +1.46%)
-python3 tools/quick_predict.py 大樂透 2        # 2注 P1鄰號+冷號 v2 (Edge +1.41%)
+python3 tools/quick_predict.py 大樂透          # 5注 p1_dev_sum5bet (RSM ★現役最佳)
+python3 tools/quick_predict.py 大樂透 4        # 4注 p1_deviation_4bet (RSM ★現役)
+# python3 tools/quick_predict.py 大樂透 3     # 3注 ts3_regime_3bet ⛔ RETIRED 2026-04-18
+# python3 tools/quick_predict.py 大樂透 2     # 2注 regime_2bet ⛔ RETIRED 2026-04-18
 python3 tools/quick_predict.py all             # 全部彩種
 
 # 獨立腳本 (仍可用)
@@ -553,30 +554,37 @@ python3 tools/backtest_p0p1_upgrade.py --all            # 150+500+1000+1500
 
 **Production**: `tools/quick_predict.py :: biglotto_p1_deviation_5bet()`
 
-#### 📊 各注數最佳策略排名 (2026-02-14 更新版)
+#### 📊 各注數最佳策略排名 (2026-04-18 RSM更新版)
 
-| 注數 | 最佳策略 | 實測 M3+ | 正確基準 | Edge | 驗證條件 | 執行方式 |
-|------|---------|----------|----------|------|----------|----------|
-| **1注** | ⚠️ Cluster Pivot | 3.33% | 1.86% | +1.47% | 150期 (未經長期驗證) | `predict_smart_entry.py -l BIG_LOTTO -n 1` |
-| **2注** | **偏差互補+回聲 P0** | **4.90%** | 3.69% | **+1.21%** | **1000期+10種子** | `tools/backtest_p0p1_upgrade.py` |
-| **3注** | **Triple Strike v2** | **6.93%** | 5.48% | **+1.46%** | **1500期 z=2.48** | `tools/predict_biglotto_triple_strike.py` |
-| **3注** | 混合+灰色地帶 P0+P1 | 6.59% | 5.49% | +1.10% | 1000期+10種子 (150/500p退化) | `tools/backtest_p0p1_upgrade.py` |
-| **4注** | **P1+偏差互補** | **9.73%** | 7.25% | **+2.17%** | **1500期 z=3.24 p=0.010, perm p=0.010 ROBUST** | `tools/backtest_p1_deviation_4bet.py` |
-| **5注** | **P1+偏差互補+Sum均值約束** | **11.60%** | **8.96%** | **+2.71%** | **1500期 ROBUST 三窗口全正 ★最佳** | `tools/quick_predict.py :: biglotto_p1_deviation_5bet()` |
+| 注數 | RSM現役策略 | 實測M3+(290p) | 理論基準 | Edge | p值 | 狀態 | 執行方式 |
+|------|------------|-------------|---------|------|-----|------|----------|
+| **2注** | ~~regime_2bet~~ ⛔ | 4.83% | 3.69% | +1.14% | 0.152 | **RETIRED** | 已從 DEPLOYED_STRATEGY_KEYS 移除 |
+| **2注備選** | p1_neighbor_cold_2bet | 4.48% | 3.69% | +0.79% | 0.239 | WATCH | `rsm_bootstrap` |
+| **3注** | ~~ts3_regime_3bet~~ ⛔ | 6.55% | 5.49% | +1.06% | 0.214 | **RETIRED** | 已從 DEPLOYED_STRATEGY_KEYS 移除 |
+| **3注備選** | triple_strike_3bet | 5.86% | 5.49% | +0.37% | 0.391 | WATCH | `rsm_bootstrap` |
+| **4注** | **p1_deviation_4bet** ★ | **10.00%** | 7.25% | **+2.75%** | **0.035✅** | PRODUCTION | `rsm_bootstrap` |
+| **5注** | **p1_dev_sum5bet** ★ | **12.07%** | 8.98% | **+3.09%** | **0.033✅** | WATCH | `rsm_bootstrap` |
 
-> 📊 **驗證標準**: 2-3注經 1000期+10種子嚴格驗證，5注經 1500期三階驗證 (2026-02-14)
-> ⚠️ **所有 Edge 已使用正確的 N 注基準 `1-(1-p)^N` 計算**
+> 📊 **RSM策略對應**：`_NEXT_DRAW_CONFIG` (prediction.py:2104) 部署上表★策略
+> ⚠️ 290期實測：p1_deviation_4bet 和 p1_dev_sum5bet 統計顯著；2注/3注策略 p>0.15（樣本量需166+期才有80%power）
+> ⚠️ **歷史驗證記錄（1500期）保留如下供參照**
 
-#### 🎯 策略切換邏輯 (2026-02-14 更新)
+| 注數 | 歷史最佳策略（1500期驗證） | Edge(1500p) | 驗證條件 |
+|------|--------------------------|------------|----------|
+| **2注** | 偏差互補+回聲 P0 | +1.21% | 1000期+10種子 |
+| **3注** | Triple Strike v2 | +1.46% | 1500期 z=2.48 |
+| **4注** | P1+偏差互補（=p1_deviation_4bet） | +2.17% | 1500期 perm p=0.010 ROBUST |
+| **5注** | P1+偏差互補+Sum均值約束（=p1_dev_sum5bet） | +2.71% | 1500期 ROBUST 三窗口全正 |
 
-| 注數範圍 | 自動選用策略 | Edge | 原因 |
-|----------|-------------|------|------|
-| **1注** | ⚠️ Cluster Pivot | +1.47% (150期) | 未經長期驗證 |
-| **2注** | **偏差互補+回聲 P0** | **+1.21%** | 確定性，10種子 ±0.00%，含Lag-2回聲 (2026-02-11) |
-| **3注** | **Triple Strike** | **+0.98%** | 1500期三窗口皆穩 (STABLE)，RSM 推薦 (2026-02-10) |
-| **3注備選** | 混合+灰色地帶 P0+P1 | +1.10% | 1000期優但 150/500期退化，短中期不穩 |
-| **4注** | **P1+偏差互補** | **+2.17%** | **1500期 z=3.24 p=0.010, perm p=0.010 ROBUST (2026-02-25)** |
-| **5注** | **P1+偏差互補+Sum均值約束** | **+2.71%** | **1500期 ROBUST 三窗口全正 ★推薦 (2026-02-26)** |
+#### 🎯 策略切換邏輯 (2026-04-18 RSM更新)
+
+| 注數範圍 | 自動選用策略（RSM現役） | Edge(300p) | 290期實測p值 | 原因 |
+|----------|----------------------|-----------|------------|------|
+| ~~**2注**~~ | ~~**regime_2bet**~~ ⛔ | ~~+3.64%~~ | p=0.152 | **RETIRED** 2026-04-18 (edge_1500p=-0.35%) |
+| ~~**3注**~~ | ~~**ts3_regime_3bet**~~ ⛔ | ~~+3.51%~~ | p=0.214 | **RETIRED** 2026-04-18 (edge_1500p=-0.88%) |
+| **5注(影子)** | **shadow_C_regime** | — | — | SHADOW TRACKING，selective gate <4.48% skip |
+| **4注** | **p1_deviation_4bet** | **+1.42%** | **p=0.035✅** | 290期實測顯著，PRODUCTION |
+| **5注** | **p1_dev_sum5bet** | **+4.04%** | **p=0.033✅** | 290期實測顯著，RSM最高edge |
 
 #### ✅ 經驗證有效的方法 (2026-02-18 更新)
 
@@ -1289,4 +1297,4 @@ curl -X POST "http://localhost:8000/api/predict-with-range" \
 
 23. **P0+P1 跨彩種有效** - 大樂透開發的 P0 回聲加分 + P1 灰色地帶取樣，移植至威力彩 (1-38選6) 後同樣有效：2注 P0 Edge +1.11% (1000期)，3注 P0+P1 Edge +1.01% (1000期)。威力彩的 Lag-2 回聲更強 (67.3% vs 56.9%)，驗證了這是普遍統計現象而非特定彩種的巧合。(2026-02-11 跨彩種驗證)
 
-> 📅 最後更新：2026-03-03 (大樂透5注升級為P1+偏差互補+Sum均值約束 Edge +2.71%; 舊版TS3+Markov+頻率正交 SUPERSEDED歸檔; 4注改為P1+偏差互補 +2.17%; 2注改為P1鄰號+冷號v2 +1.41%)
+> 📅 最後更新：2026-04-18 (大樂透策略同步RSM 2026-03-13更新：p1_deviation_4bet/p1_dev_sum5bet 290期實測統計顯著 p<0.05；regime_2bet/ts3_regime_3bet ⛔ RETIRED 長期負edge；shadow_C_regime 加入SHADOW TRACKING；歷史1500期驗證記錄保留供參照)

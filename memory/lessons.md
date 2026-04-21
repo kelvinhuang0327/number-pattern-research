@@ -890,11 +890,16 @@ Zone Cascade Only (zb=0.12) 完整驗證:
 
 **L93 — H9 Pure MidFreq 2注 PROVISIONAL：perm 通過但 McNemar 未達標**
 - 假設：近100期最接近期望頻率的12個號碼分2注（Pure MidFreq），優於現役 Fourier proxy
-- 實測：四窗口 edge = 30p+2.41%, 100p+0.41%, 300p+0.41%, 1500p+1.28%，全正✅
-- Perm test (100 shuffles×1500p)：p=0.030, d=1.83 → SIGNAL ✅
-- McNemar vs Fourier proxy (1500p)：net=+25, p=0.119 ❌（差 ~6 cases）
-- 狀態：PROVISIONAL — 等待更多資料
-- 重測條件：115000122（再+100期資料），McNemar 目標 net≥+32 p<0.05 升格 ADOPTED
+- 原始指標（~1500p）：四窗口 edge 全正，perm p=0.030，McNemar net=+25, p=0.119 ❌
+- **2026-04-19 更新（全史 1853p vs midfreq_fourier_2bet）**：
+  - H9 windows: 30p=-4.26%, 150p=-2.92%, 300p=-0.26%, 1500p=+1.14%, all=+1.04%
+  - MF windows: 30p=-4.26%, 150p=-0.92%, 300p=+0.08%, 1500p=+1.94%, all=+1.48%
+  - McNemar (full): b=65, c=73, net=**-8**, p=0.5514 ❌（由 +25 退步至 -8）
+  - Perm test: obs_edge=+1.04%, perm_p=1.000 ❌
+  - 升格條件：全部未達（net<0, p>0.05, windows 有負, H9 edge < MF edge）
+- 狀態：**CONTINUE_SHADOW** — H9 全面劣於 midfreq_fourier_2bet，無升格依據
+- 結論：H9 純 MidFreq 優勢原為小樣本雜訊，擴大至全史後優勢消失且反轉
+- 重測條件修訂：若 net 重回 +25 以上且 p<0.05 才重新評估，否則維持 SHADOW
 - window 靈敏度：w=150 在 300p edge=+2.41% > w=100 的 +0.41%，標記 H13 待驗證
 
 **L94 — fourier_rhythm_3bet 30p 過熱警告（比 6.6x）**
@@ -907,3 +912,49 @@ Zone Cascade Only (zb=0.12) 完整驗證:
 - midfreq_fourier_2bet: 100p=-3.59%, midfreq_fourier_mk_3bet: 100p=-3.17%
 - 已累積 ~100p 低於隨機基準，距 L77 降權門檻（200p）還需 ~100p
 - 下次評估：115000122（2026-10），若仍負則執行降權標記
+
+
+**L108 — PP3-Z3Gap CLOSED: 邊際衰退，無升格依據** (2026-04-19)
+- 全史 1500p edge = 0.0156，升格門檻 +2.43%
+- McNemar vs pp3_4bet: net=-94, p=0.0000
+- perm_p = 0.100（MC null，500 shuffles）
+- 邊際斜率為負（slope=-0.002954/50p）
+- 結論：Z3 high-gap 策略不優於 pp3_freqort_4bet，結案。不再監控。
+
+
+
+**L109 — H-PL-04 Consecutive Bonus: 威力彩連號信號無效** (2026-04-19)
+- 600p edge=-0.0059, perm_p=0.74
+- three_window_pass=False
+- 連號出現率=0.759 vs 理論=0.789
+- 結論：過去連號頻率無法預測下期連號組合，策略無效。結案。
+
+**L110 — H-PL-02 Mod7: 週期性無效** (2026-04-19)
+- 600p edge=0.0041, perm_p=0.36
+- 無自相關（Ljung-Box p=0.2187）
+- 結論：mod7 週期性不存在或不足以產生穩定邊際。結案。
+
+
+
+
+
+**L111 — H-PL-01 Gap Pattern: 威力彩 Lag-1 間距信號無效** (2026-04-19)
+- 600p edge=-0.0026, perm_p=0.616, three_window_pass=False
+- Ljung-Box p=0.9517 → 間距序列無自相關
+- structural_bias=True (chi2_p=0.0000, structural_bias=True)
+- 結論：號碼間距穩定性無法預測下期選號。結案。
+
+**L112 — H-PL-03 Zone Concentration: 威力彩三區分布信號無效** (2026-04-19)
+- 600p edge=0.0024, perm_p=0.446, three_window_pass=False
+- Zone autocorr Ljung-Box p=0.1918 → 無時序結構
+- signal_coverage=0.012, conditional_edge=0.067
+- 結論：三區分布模式無時序可利用信號。結案。
+
+**L113 — 威力彩信號空間宣告窮盡** (2026-04-19)
+- 測試假設：H9(REJECT), H-PL-01(FAIL), H-PL-02(FAIL), H-PL-03(FAIL), H-PL-04(FAIL), H-PL-05(FAIL), PP3-Z3Gap(CLOSED)
+- combo_B verdict=CONTINUE_WATCH（未升格）
+- Ensemble weak signal: FAIL
+- 類比 BIG_LOTTO L91：已部署 3 策略（fourier_3bet / pp3_4bet / orthogonal_5bet）持續穩定運行
+- 維護模式啟動：停止新假設掃描，僅執行 30p/100p 監控與週期性 drift check
+- 重新激活條件：若任一現役策略 1500p edge 下降 > 1.5% 或新資料顯示分布轉移
+

@@ -1,0 +1,9 @@
+{
+  "lottery": "BIG_LOTTO",
+  "is_cold": false,
+  "rolling_50p_edge": 3.04,
+  "cold_since_draw": null,
+  "consecutive_positive_windows": 2,
+  "last_updated": "2026/04/20",
+  "data_source": "rolling_monitor"
+}

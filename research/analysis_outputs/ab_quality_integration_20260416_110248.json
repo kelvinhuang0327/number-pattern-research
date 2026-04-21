@@ -1,0 +1,1092 @@
+{
+  "timestamp": "20260416_110248",
+  "test_draws": 300,
+  "n_perm": 10000,
+  "configs": [
+    [
+      "DAILY_539",
+      3
+    ],
+    [
+      "BIG_LOTTO",
+      3
+    ],
+    [
+      "POWER_LOTTO",
+      3
+    ]
+  ],
+  "results": [
+    {
+      "lottery_type": "DAILY_539",
+      "n_bets": 3,
+      "total_draws": 300,
+      "metrics": {
+        "window_30": {
+          "A": {
+            "edge": 0.062173,
+            "sharpe": -1.547147,
+            "max_drawdown": 23.0,
+            "hit_rate": 0.366667,
+            "baseline": 0.304494,
+            "n": 30,
+            "hits": 11
+          },
+          "B": {
+            "edge": 0.062173,
+            "sharpe": -1.547147,
+            "max_drawdown": 23.0,
+            "hit_rate": 0.366667,
+            "baseline": 0.304494,
+            "n": 30,
+            "hits": 11
+          },
+          "delta": {
+            "edge": 0.0,
+            "sharpe": 0.0,
+            "max_drawdown": 0.0
+          }
+        },
+        "window_100": {
+          "A": {
+            "edge": 0.015506,
+            "sharpe": -2.360161,
+            "max_drawdown": 84.3333,
+            "hit_rate": 0.32,
+            "baseline": 0.304494,
+            "n": 100,
+            "hits": 32
+          },
+          "B": {
+            "edge": 0.005506,
+            "sharpe": -2.370212,
+            "max_drawdown": 84.6667,
+            "hit_rate": 0.31,
+            "baseline": 0.304494,
+            "n": 100,
+            "hits": 31
+          },
+          "delta": {
+            "edge": -0.01,
+            "sharpe": -0.010051,
+            "max_drawdown": 0.3334
+          }
+        },
+        "window_300": {
+          "A": {
+            "edge": 0.04884,
+            "sharpe": -2.121156,
+            "max_drawdown": 246.3333,
+            "hit_rate": 0.353333,
+            "baseline": 0.304494,
+            "n": 300,
+            "hits": 106
+          },
+          "B": {
+            "edge": 0.042173,
+            "sharpe": -2.126546,
+            "max_drawdown": 247.0,
+            "hit_rate": 0.346667,
+            "baseline": 0.304494,
+            "n": 300,
+            "hits": 104
+          },
+          "delta": {
+            "edge": -0.006667,
+            "sharpe": -0.00539,
+            "max_drawdown": 0.6667
+          }
+        }
+      },
+      "stats": {
+        "perm_p": 0.9328,
+        "mcnemar": {
+          "chi2": 0.0714,
+          "p": 0.789268,
+          "b01": 6,
+          "b10": 8
+        }
+      },
+      "pred_changes": 88,
+      "pred_change_rate": 0.2933,
+      "when_diff": {
+        "a_wins": 8,
+        "b_wins": 7,
+        "ties": 73
+      },
+      "quality_metrics": {
+        "avg_pop_a": 56.15,
+        "avg_pop_b": 55.4,
+        "pop_delta": -0.75,
+        "avg_ev_ratio_b": 1.1313,
+        "avg_birthday_a": 4.02,
+        "avg_birthday_b": 4.0
+      },
+      "quality_info": {
+        "pipeline": "B_quality",
+        "avg_pop_score": 38.67,
+        "avg_ev_ratio": 1.2067,
+        "avg_birthday_count": 3.33,
+        "bet_qualities": [
+          {
+            "numbers": [
+              17,
+              23,
+              29,
+              32,
+              38
+            ],
+            "pop_score": 29.0,
+            "split_risk": "LOW",
+            "payout_quality": "高",
+            "ev_ratio": 1.255,
+            "birthday_count": 3
+          },
+          {
+            "numbers": [
+              6,
+              13,
+              18,
+              22,
+              39
+            ],
+            "pop_score": 50.0,
+            "split_risk": "MED",
+            "payout_quality": "中",
+            "ev_ratio": 1.15,
+            "birthday_count": 4
+          },
+          {
+            "numbers": [
+              9,
+              14,
+              25,
+              34,
+              36
+            ],
+            "pop_score": 37.0,
+            "split_risk": "LOW",
+            "payout_quality": "高",
+            "ev_ratio": 1.215,
+            "birthday_count": 3
+          }
+        ]
+      },
+      "hit_distribution": {
+        "A": {
+          "0": 23,
+          "2": 95,
+          "1": 171,
+          "3": 11
+        },
+        "B": {
+          "0": 22,
+          "1": 174,
+          "2": 93,
+          "3": 11
+        }
+      },
+      "sample_diffs": [
+        {
+          "draw": "114000109",
+          "idx": 0,
+          "bets_a": [
+            [
+              6,
+              17,
+              23,
+              29,
+              38
+            ],
+            [
+              13,
+              18,
+              22,
+              32,
+              39
+            ],
+            [
+              8,
+              9,
+              14,
+              34,
+              36
+            ]
+          ],
+          "bets_b": [
+            [
+              17,
+              23,
+              29,
+              32,
+              38
+            ],
+            [
+              6,
+              13,
+              18,
+              22,
+              39
+            ],
+            [
+              9,
+              14,
+              25,
+              34,
+              36
+            ]
+          ],
+          "hit_a": 0,
+          "hit_b": 0
+        },
+        {
+          "draw": "114000110",
+          "idx": 1,
+          "bets_a": [
+            [
+              17,
+              25,
+              29,
+              32,
+              38
+            ],
+            [
+              3,
+              6,
+              9,
+              16,
+              22
+            ],
+            [
+              2,
+              4,
+              11,
+              23,
+              34
+            ]
+          ],
+          "bets_b": [
+            [
+              17,
+              25,
+              29,
+              32,
+              38
+            ],
+            [
+              3,
+              6,
+              9,
+              16,
+              22
+            ],
+            [
+              2,
+              11,
+              18,
+              23,
+              34
+            ]
+          ],
+          "hit_a": 2,
+          "hit_b": 1
+        },
+        {
+          "draw": "114000111",
+          "idx": 2,
+          "bets_a": [
+            [
+              5,
+              9,
+              10,
+              22,
+              30
+            ],
+            [
+              3,
+              16,
+              23,
+              25,
+              28
+            ],
+            [
+              17,
+              32,
+              33,
+              38,
+              39
+            ]
+          ],
+          "bets_b": [
+            [
+              5,
+              9,
+              10,
+              22,
+              30
+            ],
+            [
+              16,
+              23,
+              25,
+              28,
+              33
+            ],
+            [
+              3,
+              17,
+              32,
+              38,
+              39
+            ]
+          ],
+          "hit_a": 1,
+          "hit_b": 1
+        }
+      ]
+    },
+    {
+      "lottery_type": "BIG_LOTTO",
+      "n_bets": 3,
+      "total_draws": 300,
+      "metrics": {
+        "window_30": {
+          "A": {
+            "edge": 0.011898,
+            "sharpe": -1.236083,
+            "max_drawdown": 23.6667,
+            "hit_rate": 0.066667,
+            "baseline": 0.054769,
+            "n": 30,
+            "hits": 2
+          },
+          "B": {
+            "edge": -0.021435,
+            "sharpe": -1.903377,
+            "max_drawdown": 26.3333,
+            "hit_rate": 0.033333,
+            "baseline": 0.054769,
+            "n": 30,
+            "hits": 1
+          },
+          "delta": {
+            "edge": -0.033333,
+            "sharpe": -0.667294,
+            "max_drawdown": 2.6666
+          }
+        },
+        "window_100": {
+          "A": {
+            "edge": -0.004769,
+            "sharpe": -1.491202,
+            "max_drawdown": 88.3333,
+            "hit_rate": 0.05,
+            "baseline": 0.054769,
+            "n": 100,
+            "hits": 5
+          },
+          "B": {
+            "edge": -0.014769,
+            "sharpe": -1.70954,
+            "max_drawdown": 91.0,
+            "hit_rate": 0.04,
+            "baseline": 0.054769,
+            "n": 100,
+            "hits": 4
+          },
+          "delta": {
+            "edge": -0.01,
+            "sharpe": -0.218338,
+            "max_drawdown": 2.6667
+          }
+        },
+        "window_300": {
+          "A": {
+            "edge": 0.015231,
+            "sharpe": -1.195389,
+            "max_drawdown": 243.0,
+            "hit_rate": 0.07,
+            "baseline": 0.054769,
+            "n": 300,
+            "hits": 21
+          },
+          "B": {
+            "edge": 0.015231,
+            "sharpe": -0.771142,
+            "max_drawdown": 243.0,
+            "hit_rate": 0.07,
+            "baseline": 0.054769,
+            "n": 300,
+            "hits": 21
+          },
+          "delta": {
+            "edge": 0.0,
+            "sharpe": 0.424247,
+            "max_drawdown": 0.0
+          }
+        }
+      },
+      "stats": {
+        "perm_p": 1.0,
+        "mcnemar": {
+          "chi2": 0.1,
+          "p": 0.75183,
+          "b01": 5,
+          "b10": 5
+        }
+      },
+      "pred_changes": 173,
+      "pred_change_rate": 0.5767,
+      "when_diff": {
+        "a_wins": 16,
+        "b_wins": 18,
+        "ties": 139
+      },
+      "quality_metrics": {
+        "avg_pop_a": 52.48,
+        "avg_pop_b": 50.54,
+        "pop_delta": -1.95,
+        "avg_ev_ratio_b": 1.1864,
+        "avg_birthday_a": 3.93,
+        "avg_birthday_b": 3.84
+      },
+      "quality_info": {
+        "pipeline": "B_quality",
+        "avg_pop_score": 56.33,
+        "avg_ev_ratio": 1.1653,
+        "avg_birthday_count": 3.67,
+        "bet_qualities": [
+          {
+            "numbers": [
+              1,
+              16,
+              23,
+              35,
+              38,
+              40
+            ],
+            "pop_score": 48.0,
+            "split_risk": "MED",
+            "payout_quality": "中",
+            "ev_ratio": 1.2,
+            "birthday_count": 3
+          },
+          {
+            "numbers": [
+              10,
+              11,
+              27,
+              41,
+              48,
+              49
+            ],
+            "pop_score": 40.0,
+            "split_risk": "LOW",
+            "payout_quality": "高",
+            "ev_ratio": 1.2333,
+            "birthday_count": 3
+          },
+          {
+            "numbers": [
+              3,
+              6,
+              9,
+              15,
+              26,
+              33
+            ],
+            "pop_score": 81.0,
+            "split_risk": "HIGH",
+            "payout_quality": "低",
+            "ev_ratio": 1.0625,
+            "birthday_count": 5
+          }
+        ]
+      },
+      "hit_distribution": {
+        "A": {
+          "2": 108,
+          "1": 151,
+          "3": 21,
+          "0": 20
+        },
+        "B": {
+          "2": 106,
+          "1": 156,
+          "3": 20,
+          "4": 1,
+          "0": 17
+        }
+      },
+      "sample_diffs": [
+        {
+          "draw": "112000098",
+          "idx": 1,
+          "bets_a": [
+            [
+              1,
+              16,
+              27,
+              33,
+              45,
+              49
+            ],
+            [
+              8,
+              10,
+              19,
+              40,
+              42,
+              48
+            ],
+            [
+              9,
+              15,
+              23,
+              26,
+              30,
+              46
+            ]
+          ],
+          "bets_b": [
+            [
+              16,
+              27,
+              33,
+              45,
+              48,
+              49
+            ],
+            [
+              1,
+              8,
+              10,
+              19,
+              40,
+              42
+            ],
+            [
+              9,
+              15,
+              23,
+              26,
+              30,
+              46
+            ]
+          ],
+          "hit_a": 1,
+          "hit_b": 1
+        },
+        {
+          "draw": "112000100",
+          "idx": 3,
+          "bets_a": [
+            [
+              1,
+              9,
+              11,
+              14,
+              19,
+              26
+            ],
+            [
+              2,
+              3,
+              38,
+              40,
+              45,
+              46
+            ],
+            [
+              7,
+              10,
+              13,
+              35,
+              37,
+              43
+            ]
+          ],
+          "bets_b": [
+            [
+              1,
+              9,
+              11,
+              14,
+              19,
+              26
+            ],
+            [
+              2,
+              38,
+              40,
+              43,
+              45,
+              46
+            ],
+            [
+              3,
+              7,
+              10,
+              13,
+              35,
+              37
+            ]
+          ],
+          "hit_a": 1,
+          "hit_b": 1
+        },
+        {
+          "draw": "112000101",
+          "idx": 4,
+          "bets_a": [
+            [
+              7,
+              13,
+              14,
+              20,
+              40,
+              49
+            ],
+            [
+              2,
+              9,
+              23,
+              25,
+              27,
+              38
+            ],
+            [
+              1,
+              6,
+              19,
+              21,
+              30,
+              43
+            ]
+          ],
+          "bets_b": [
+            [
+              7,
+              13,
+              14,
+              20,
+              40,
+              49
+            ],
+            [
+              2,
+              23,
+              25,
+              27,
+              38,
+              43
+            ],
+            [
+              1,
+              6,
+              9,
+              19,
+              21,
+              30
+            ]
+          ],
+          "hit_a": 1,
+          "hit_b": 1
+        }
+      ]
+    },
+    {
+      "lottery_type": "POWER_LOTTO",
+      "n_bets": 3,
+      "total_draws": 300,
+      "metrics": {
+        "window_30": {
+          "A": {
+            "edge": 0.088335,
+            "sharpe": 0.072875,
+            "max_drawdown": 9.0,
+            "hit_rate": 0.2,
+            "baseline": 0.111665,
+            "n": 30,
+            "hits": 6
+          },
+          "B": {
+            "edge": 0.055002,
+            "sharpe": -0.080102,
+            "max_drawdown": 18.3333,
+            "hit_rate": 0.166667,
+            "baseline": 0.111665,
+            "n": 30,
+            "hits": 5
+          },
+          "delta": {
+            "edge": -0.033333,
+            "sharpe": -0.152977,
+            "max_drawdown": 9.3333
+          }
+        },
+        "window_100": {
+          "A": {
+            "edge": 0.008335,
+            "sharpe": -0.233854,
+            "max_drawdown": 53.6667,
+            "hit_rate": 0.12,
+            "baseline": 0.111665,
+            "n": 100,
+            "hits": 12
+          },
+          "B": {
+            "edge": -0.011665,
+            "sharpe": -0.415166,
+            "max_drawdown": 61.6667,
+            "hit_rate": 0.1,
+            "baseline": 0.111665,
+            "n": 100,
+            "hits": 10
+          },
+          "delta": {
+            "edge": -0.02,
+            "sharpe": -0.181312,
+            "max_drawdown": 8.0
+          }
+        },
+        "window_300": {
+          "A": {
+            "edge": 0.008335,
+            "sharpe": -0.314967,
+            "max_drawdown": 168.3333,
+            "hit_rate": 0.12,
+            "baseline": 0.111665,
+            "n": 300,
+            "hits": 36
+          },
+          "B": {
+            "edge": 0.005002,
+            "sharpe": -0.378853,
+            "max_drawdown": 173.6667,
+            "hit_rate": 0.116667,
+            "baseline": 0.111665,
+            "n": 300,
+            "hits": 35
+          },
+          "delta": {
+            "edge": -0.003333,
+            "sharpe": -0.063886,
+            "max_drawdown": 5.3334
+          }
+        }
+      },
+      "stats": {
+        "perm_p": 1.0,
+        "mcnemar": {
+          "chi2": 0.0,
+          "p": 1.0,
+          "b01": 4,
+          "b10": 5
+        }
+      },
+      "pred_changes": 137,
+      "pred_change_rate": 0.4567,
+      "when_diff": {
+        "a_wins": 14,
+        "b_wins": 9,
+        "ties": 114
+      },
+      "quality_metrics": {
+        "avg_pop_a": 66.89,
+        "avg_pop_b": 65.93,
+        "pop_delta": -0.96,
+        "avg_ev_ratio_b": 1.1349,
+        "avg_birthday_a": 4.89,
+        "avg_birthday_b": 4.87
+      },
+      "quality_info": {
+        "pipeline": "B_quality",
+        "avg_pop_score": 56.67,
+        "avg_ev_ratio": 1.1847,
+        "avg_birthday_count": 4.0,
+        "bet_qualities": [
+          {
+            "numbers": [
+              3,
+              15,
+              19,
+              22,
+              26,
+              38
+            ],
+            "pop_score": 63.0,
+            "split_risk": "MED",
+            "payout_quality": "中",
+            "ev_ratio": 1.1375,
+            "birthday_count": 5
+          },
+          {
+            "numbers": [
+              27,
+              29,
+              30,
+              31,
+              35,
+              36
+            ],
+            "pop_score": 48.0,
+            "split_risk": "LOW",
+            "payout_quality": "高",
+            "ev_ratio": 1.2375,
+            "birthday_count": 4
+          },
+          {
+            "numbers": [
+              4,
+              10,
+              11,
+              33,
+              34,
+              37
+            ],
+            "pop_score": 59.0,
+            "split_risk": "MED",
+            "payout_quality": "中",
+            "ev_ratio": 1.1792,
+            "birthday_count": 3
+          }
+        ]
+      },
+      "hit_distribution": {
+        "A": {
+          "2": 143,
+          "1": 117,
+          "3": 32,
+          "4": 4,
+          "0": 4
+        },
+        "B": {
+          "2": 143,
+          "1": 116,
+          "3": 32,
+          "4": 3,
+          "0": 6
+        }
+      },
+      "sample_diffs": [
+        {
+          "draw": "112000044",
+          "idx": 0,
+          "bets_a": [
+            [
+              3,
+              15,
+              19,
+              22,
+              26,
+              38
+            ],
+            [
+              11,
+              27,
+              29,
+              30,
+              31,
+              36
+            ],
+            [
+              4,
+              10,
+              33,
+              34,
+              35,
+              37
+            ]
+          ],
+          "bets_b": [
+            [
+              3,
+              15,
+              19,
+              22,
+              26,
+              38
+            ],
+            [
+              27,
+              29,
+              30,
+              31,
+              35,
+              36
+            ],
+            [
+              4,
+              10,
+              11,
+              33,
+              34,
+              37
+            ]
+          ],
+          "hit_a": 2,
+          "hit_b": 2
+        },
+        {
+          "draw": "112000047",
+          "idx": 3,
+          "bets_a": [
+            [
+              2,
+              6,
+              13,
+              14,
+              24,
+              26
+            ],
+            [
+              4,
+              19,
+              27,
+              30,
+              34,
+              35
+            ],
+            [
+              16,
+              23,
+              25,
+              28,
+              29,
+              38
+            ]
+          ],
+          "bets_b": [
+            [
+              2,
+              6,
+              13,
+              14,
+              24,
+              26
+            ],
+            [
+              4,
+              19,
+              25,
+              27,
+              34,
+              35
+            ],
+            [
+              16,
+              23,
+              28,
+              29,
+              30,
+              38
+            ]
+          ],
+          "hit_a": 2,
+          "hit_b": 2
+        },
+        {
+          "draw": "112000048",
+          "idx": 4,
+          "bets_a": [
+            [
+              5,
+              14,
+              22,
+              26,
+              35,
+              36
+            ],
+            [
+              4,
+              6,
+              18,
+              25,
+              29,
+              38
+            ],
+            [
+              13,
+              19,
+              21,
+              24,
+              27,
+              28
+            ]
+          ],
+          "bets_b": [
+            [
+              14,
+              22,
+              25,
+              26,
+              35,
+              36
+            ],
+            [
+              4,
+              5,
+              18,
+              19,
+              29,
+              38
+            ],
+            [
+              6,
+              13,
+              21,
+              24,
+              27,
+              28
+            ]
+          ],
+          "hit_a": 2,
+          "hit_b": 3
+        }
+      ]
+    }
+  ],
+  "verdict": {
+    "global_verdict": "CONDITIONAL_REJECT",
+    "per_lottery": {
+      "DAILY_539": {
+        "verdict": "NEUTRAL",
+        "b_wins": 7,
+        "a_wins": 8,
+        "b_ratio": 0.4667,
+        "perm_p": 0.9328,
+        "pred_change_rate": 0.2933,
+        "pop_improved": true,
+        "ev_improved": true
+      },
+      "BIG_LOTTO": {
+        "verdict": "MARGINAL",
+        "b_wins": 18,
+        "a_wins": 16,
+        "b_ratio": 0.5294,
+        "perm_p": 1.0,
+        "pred_change_rate": 0.5767,
+        "pop_improved": true,
+        "ev_improved": true
+      },
+      "POWER_LOTTO": {
+        "verdict": "REJECT",
+        "b_wins": 9,
+        "a_wins": 14,
+        "b_ratio": 0.3913,
+        "perm_p": 1.0,
+        "pred_change_rate": 0.4567,
+        "pop_improved": true,
+        "ev_improved": true
+      }
+    },
+    "total_b_wins": 34,
+    "total_a_wins": 38,
+    "total_b_ratio": 0.4722,
+    "total_pred_changes": 398,
+    "total_draws": 900,
+    "pred_change_rate": 0.4422
+  },
+  "elapsed": 170.85734009742737
+}

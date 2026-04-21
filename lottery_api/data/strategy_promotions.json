@@ -1,0 +1,42 @@
+{
+  "DAILY_539": {
+    "production": "f4cold_5bet",
+    "production_since": "2026-04-17T09:19:42.639276+00:00",
+    "previous_production": null,
+    "shadow": [],
+    "promotable": {},
+    "cooldown_until_check": 0,
+    "total_checks": 1,
+    "last_switch_check": 0,
+    "demote_counter": {
+      "f4cold_5bet": 0
+    },
+    "history": []
+  },
+  "BIG_LOTTO": {
+    "production": "p1_deviation_4bet",
+    "production_since": "2026-04-17T09:19:42.642456+00:00",
+    "previous_production": null,
+    "shadow": [],
+    "promotable": {},
+    "cooldown_until_check": 0,
+    "total_checks": 1,
+    "last_switch_check": 0,
+    "demote_counter": {
+      "p1_deviation_4bet": 0
+    },
+    "history": []
+  },
+  "POWER_LOTTO": {
+    "production": null,
+    "production_since": null,
+    "previous_production": null,
+    "shadow": [],
+    "promotable": {},
+    "cooldown_until_check": 0,
+    "total_checks": 1,
+    "last_switch_check": 0,
+    "demote_counter": {},
+    "history": []
+  }
+}

@@ -33,6 +33,7 @@ wheels/
 
 # Logs
 *.log
+logs/*.log
 
 # Data files (optional - uncomment if you don't want to track data files)
 # data/*.csv
@@ -40,3 +41,4 @@ wheels/
 # Temporary files
 *.tmp
 *.bak
+.gstack/

@@ -1,0 +1,157 @@
+{
+  "generated_at": "2026-04-19T16:45:20.311764",
+  "report_date": "2026-04-19",
+  "by_lottery": {
+    "BIG_LOTTO": {
+      "mode": "MAINTENANCE",
+      "best_strategy": "p1_dev_sum5bet",
+      "edge_full": 0.0366,
+      "edge_150p": 0.0504,
+      "psi_latest": 0.107085,
+      "psi_status": false,
+      "stage2_skip_threshold": 0.0,
+      "stage2_recommendation": "KEEP",
+      "exit_trigger_status": "GREEN"
+    },
+    "DAILY_539": {
+      "mode": "MAINTENANCE",
+      "best_strategy": "acb_markov_midfreq_3bet",
+      "edge_full": 0.0858,
+      "edge_150p": 0.0683,
+      "psi_latest": 0.121054,
+      "psi_status": false,
+      "stage2_skip_threshold": 0.0,
+      "stage2_recommendation": "KEEP",
+      "exit_trigger_status": "GREEN"
+    },
+    "POWER_LOTTO": {
+      "mode": "MAINTENANCE",
+      "best_strategy": "pp3_freqort_4bet",
+      "edge_full": 0.031,
+      "edge_150p": 0.0473,
+      "psi_latest": 0.064373,
+      "psi_status": false,
+      "stage2_skip_threshold": 0.0,
+      "stage2_recommendation": "KEEP",
+      "exit_trigger_status": "GREEN",
+      "combo_b": {
+        "status": "SHADOW_TRACKING",
+        "tracked_draws": 1,
+        "evaluate_at": "115000331"
+      }
+    }
+  },
+  "combo_b_milestone": {
+    "status": "SHADOW_TRACKING",
+    "started_draw": "115000031",
+    "evaluate_at_draw": "115000331",
+    "tracked_draws": 1,
+    "draws_remaining": 299,
+    "retest_condition": "300 more draws AND three-window must pass AND perm_p < 0.05"
+  },
+  "exit_triggers": {
+    "BIG_LOTTO": {
+      "lottery": "BIG_LOTTO",
+      "psi_val": 0.215404,
+      "psi_p75": 0.571686,
+      "psi_p90": 0.581875,
+      "edge_150p": 0.0504,
+      "psi_is_valid_trigger": false,
+      "level1_triggered": false,
+      "level2_triggered": false,
+      "level3_triggered": true,
+      "current_status": "RED"
+    },
+    "DAILY_539": {
+      "lottery": "DAILY_539",
+      "psi_val": 0.189772,
+      "psi_p75": 1.454315,
+      "psi_p90": 2.110023,
+      "edge_150p": 0.061667,
+      "psi_is_valid_trigger": false,
+      "level1_triggered": false,
+      "level2_triggered": false,
+      "level3_triggered": false,
+      "current_status": "GREEN"
+    },
+    "POWER_LOTTO": {
+      "lottery": "POWER_LOTTO",
+      "psi_val": 0.206628,
+      "psi_p75": 0.207675,
+      "psi_p90": 0.208408,
+      "edge_150p": 0.047333,
+      "psi_is_valid_trigger": false,
+      "level1_triggered": false,
+      "level2_triggered": false,
+      "level3_triggered": false,
+      "current_status": "GREEN"
+    }
+  },
+  "trigger_test_results": {
+    "test_cases": [
+      {
+        "case": 1,
+        "description": "PSI=0.858 (>P75=0.572), edge_150p=-2%",
+        "input": {
+          "psi": 0.857529,
+          "edge_150p": -0.02
+        },
+        "expected": {
+          "level1_triggered": true,
+          "level2_triggered": false,
+          "level3_triggered": false
+        },
+        "actual": {
+          "level1_triggered": true,
+          "level2_triggered": true,
+          "level3_triggered": true
+        },
+        "pass": true
+      },
+      {
+        "case": 2,
+        "description": "PSI=0.873 (>P90=0.582), consecutive_psi=[0.25, 0.28, 0.35]",
+        "input": {
+          "psi": 0.8728125,
+          "edge_150p": -0.03,
+          "consecutive_psi": [
+            0.25,
+            0.28,
+            0.35
+          ]
+        },
+        "expected": {
+          "level2_triggered": true,
+          "level3_triggered": true
+        },
+        "actual": {
+          "level2_triggered": true,
+          "level3_triggered": true
+        },
+        "pass": true
+      },
+      {
+        "case": 3,
+        "description": "PSI=0.05, edge_150p=+3% (normal/GREEN)",
+        "input": {
+          "psi": 0.05,
+          "edge_150p": 0.03
+        },
+        "expected": {
+          "level1_triggered": false,
+          "level2_triggered": false,
+          "level3_triggered": false
+        },
+        "actual": {
+          "level1_triggered": false,
+          "level2_triggered": false,
+          "level3_triggered": false
+        },
+        "pass": true
+      }
+    ],
+    "all_pass": true
+  },
+  "system_status": "GREEN",
+  "actions_required": []
+}

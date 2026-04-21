@@ -21,6 +21,13 @@ from analysis.payout.sync import refresh_hedge_fund_outputs
 router = APIRouter()
 logger = logging.getLogger(__name__)
 
+# 各彩種號碼上限（主號 / 特別號）
+_LOTTERY_NUM_MAX = {
+    'BIG_LOTTO':   {'main': 49, 'special': 49},
+    'POWER_LOTTO': {'main': 38, 'special': 8},   # 威力彩特別號池為 1-8
+    'DAILY_539':   {'main': 39, 'special': None},
+}
+
 @router.get("/api/history")
 async def get_history(
     lottery_type: Optional[str] = Query(None, description="彩券類型篩選")
@@ -159,10 +166,20 @@ async def clear_backend_data():
     """清除後端存儲的所有數據"""
     try:
         count = db_manager.clear_all_data()
-        
+
+        # lottery_api/data/ 目錄
+        api_data_dir = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "data")
+
         data_files = [
             "data/lottery_data.json",
-            "data/lottery_rules.json"
+            "data/lottery_rules.json",
+            os.path.join(api_data_dir, "lottery_history.json"),     # scheduler 重啟後從此回載
+            os.path.join(api_data_dir, "predictions_BIG_LOTTO.jsonl"),
+            os.path.join(api_data_dir, "predictions_DAILY_539.jsonl"),
+            os.path.join(api_data_dir, "predictions_POWER_LOTTO.jsonl"),
+            os.path.join(api_data_dir, "performance_history.json"),
+            os.path.join(api_data_dir, "llm_analysis_log.jsonl"),
+            os.path.join(api_data_dir, "ingest_log.jsonl"),
         ]
         deleted_files = []
         for file_path in data_files:
@@ -174,6 +191,9 @@ async def clear_backend_data():
         scheduler.lottery_rules = None
         scheduler.data_by_type = {}
         model_cache.clear()
+
+        # 確保 scheduler 不會在重啟後從磁碟回載殘留資料
+        # lottery_history.json 已在上方 data_files 中刪除
 
         return {
             "success": True,
@@ -211,37 +231,66 @@ async def update_draw(draw_id: str, request: UpdateDrawRequest):
     try:
         logger.info(f"✏️ 更新記錄: ID={draw_id}")
 
-        # 驗證號碼
-        if request.numbers:
-            if len(request.numbers) != 6:
-                raise HTTPException(status_code=400, detail="必須提供 6 個開獎號碼")
-            for num in request.numbers:
-                if num < 1 or num > 49:
-                    raise HTTPException(status_code=400, detail=f"號碼 {num} 超出範圍 (1-49)")
-
-        # 驗證特別號
-        if request.special is not None and (request.special < 1 or request.special > 49):
-            raise HTTPException(status_code=400, detail=f"特別號 {request.special} 超出範圍 (1-49)")
-
         conn = db_manager._get_connection()
         cursor = conn.cursor()
 
         try:
-            cursor.execute("SELECT * FROM draws WHERE id = ? OR draw = ?", (draw_id, draw_id))
+            # 先用 id 精確查找；找不到再用 draw + lottery_type 縮小範圍
+            cursor.execute("SELECT * FROM draws WHERE id = ?", (draw_id,))
             existing = cursor.fetchone()
+
+            if not existing:
+                lt = normalize_lottery_type(request.lotteryType) if request.lotteryType else None
+                if lt:
+                    cursor.execute(
+                        "SELECT * FROM draws WHERE draw = ? AND lottery_type = ?",
+                        (draw_id, lt),
+                    )
+                    existing = cursor.fetchone()
+                else:
+                    cursor.execute("SELECT * FROM draws WHERE draw = ?", (draw_id,))
+                    rows = cursor.fetchall()
+                    if len(rows) > 1:
+                        raise HTTPException(
+                            status_code=400,
+                            detail=f"期號 {draw_id} 存在於多個彩種，請在請求中加入 lotteryType 以指定",
+                        )
+                    existing = rows[0] if rows else None
 
             if not existing:
                 raise HTTPException(status_code=404, detail=f"找不到記錄: {draw_id}")
 
+            # 決定最終彩種，用於驗證上限
+            final_type = normalize_lottery_type(request.lotteryType) if request.lotteryType else existing['lottery_type']
+            limits = _LOTTERY_NUM_MAX.get(final_type, {'main': 49, 'special': 49})
+
+            # 驗證號碼
+            if request.numbers:
+                expected_count = 5 if final_type == 'DAILY_539' else 6
+                if len(request.numbers) != expected_count:
+                    raise HTTPException(status_code=400, detail=f"必須提供 {expected_count} 個開獎號碼")
+                for num in request.numbers:
+                    if num < 1 or num > limits['main']:
+                        raise HTTPException(status_code=400, detail=f"號碼 {num} 超出範圍 (1-{limits['main']})")
+
+            # 驗證特別號
+            if request.special is not None:
+                sp_max = limits['special']
+                if sp_max is None:
+                    raise HTTPException(status_code=400, detail=f"{final_type} 沒有特別號")
+                if request.special < 1 or request.special > sp_max:
+                    raise HTTPException(status_code=400, detail=f"特別號 {request.special} 超出範圍 (1-{sp_max})")
+
             update_data = {
                 'draw': request.draw if request.draw else existing['draw'],
                 'date': request.date if request.date else existing['date'],
-                'lotteryType': request.lotteryType if request.lotteryType else existing['lottery_type'],
-                'numbers': request.numbers if request.numbers else eval(existing['numbers']),
+                'lotteryType': final_type,
+                'numbers': request.numbers if request.numbers else json.loads(existing['numbers']),
                 'special': request.special if request.special is not None else existing['special']
             }
 
-            cursor.execute("DELETE FROM draws WHERE id = ? OR draw = ?", (draw_id, draw_id))
+            # 用 DB 主鍵刪除，避免同期號跨彩種誤刪
+            cursor.execute("DELETE FROM draws WHERE id = ?", (existing['id'],))
 
             numbers_json = json.dumps(update_data['numbers'])
             cursor.execute("""
@@ -278,24 +327,47 @@ async def update_draw(draw_id: str, request: UpdateDrawRequest):
 
 
 @router.delete("/api/draws/{draw_id}")
-async def delete_draw(draw_id: str):
-    """刪除開獎記錄"""
+async def delete_draw(draw_id: str, lottery_type: Optional[str] = Query(None)):
+    """刪除開獎記錄（lottery_type 可選，用於期號存在於多個彩種時消除歧義）"""
     try:
-        logger.info(f"🗑️ 刪除記錄: ID={draw_id}")
+        logger.info(f"🗑️ 刪除記錄: ID={draw_id}, lottery_type={lottery_type}")
 
         conn = db_manager._get_connection()
         cursor = conn.cursor()
 
         try:
-            cursor.execute("DELETE FROM draws WHERE id = ? OR draw = ?", (draw_id, draw_id))
-            if cursor.rowcount == 0:
+            # 先用 id 精確查找
+            cursor.execute("SELECT id FROM draws WHERE id = ?", (draw_id,))
+            row = cursor.fetchone()
+
+            if not row:
+                lt = normalize_lottery_type(lottery_type) if lottery_type else None
+                if lt:
+                    cursor.execute(
+                        "SELECT id FROM draws WHERE draw = ? AND lottery_type = ?",
+                        (draw_id, lt),
+                    )
+                    row = cursor.fetchone()
+                else:
+                    cursor.execute("SELECT id FROM draws WHERE draw = ?", (draw_id,))
+                    rows = cursor.fetchall()
+                    if len(rows) > 1:
+                        raise HTTPException(
+                            status_code=400,
+                            detail=f"期號 {draw_id} 存在於多個彩種，請加上 ?lottery_type= 參數指定",
+                        )
+                    row = rows[0] if rows else None
+
+            if not row:
                 raise HTTPException(status_code=404, detail=f"找不到記錄: {draw_id}")
-            
+
+            # 用 DB 主鍵刪除，避免跨彩種誤刪
+            cursor.execute("DELETE FROM draws WHERE id = ?", (row['id'],))
             conn.commit()
             logger.info(f"✅ 刪除成功: {draw_id}")
-            
+
             return {"success": True, "message": "刪除成功"}
-            
+
         except Exception as e:
             conn.rollback()
             raise e

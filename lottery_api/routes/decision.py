@@ -14,6 +14,8 @@ for _p in (_ROOT, os.path.dirname(_HERE)):
     if _p not in sys.path:
         sys.path.insert(0, _p)
 
+from tools.ev_gate import evaluate_jackpot_gate, evaluate_stage2_gate
+
 router = APIRouter(prefix="/api/decision", tags=["Decision"])
 
 _engine = None
@@ -27,6 +29,12 @@ def _get_engine():
         except Exception as e:
             raise HTTPException(status_code=500, detail=f"Decision engine init failed: {e}")
     return _engine
+
+
+def _build_v31_gate(lottery_type: str) -> Dict[str, Any]:
+    gate = evaluate_jackpot_gate(lottery_type)
+    gate["stage2_gate"] = evaluate_stage2_gate(lottery_type)
+    return gate
 
 
 LOTTERY_LABELS = {
@@ -55,9 +63,10 @@ STRATEGY_SIM_MAP = {
 @router.get("/best-strategy-summary")
 async def get_best_strategy_summary():
     """
-    聚合三彩種的「最佳 CP 值策略總覽」。
-    CP 值定義：300P 成功率 / 投注注數。
-    返回最佳策略及所有可用策略列表（依 CP 排序）。
+    聚合三彩種的「最佳策略總覽」(Phase V — composite_score 排名)。
+    選擇優先級: VALIDATED > WATCH > REJECTED
+    排名公式: composite_score = 0.5*edge_1500p + 0.3*sharpe - 0.2*max_drawdown_rate
+    返回最佳策略及所有可用策略列表（依 composite_score 或 cp_score 排序）。
     """
     results = []
     GAMES = ["DAILY_539", "BIG_LOTTO", "POWER_LOTTO"]
@@ -80,55 +89,96 @@ async def get_best_strategy_summary():
         try:
             with open(state_file, "r", encoding="utf-8") as f:
                 states = json.load(f)
-            
+
+            from routes.prediction import _derive_strategy_status
+
             strategies = []
             for sid, s in states.items():
                 rate_300 = s.get("rate_300p")
                 bets = s.get("num_bets") or 1
                 if bets <= 0: continue
-                
-                # 計算 CPScore
+
+                # 舊版 CP score（向下相容）
                 cp_score = 0
                 if rate_300 is not None:
                     cp_score = (float(rate_300) * 100.0) / float(bets)
-                
-                from routes.prediction import _derive_strategy_status
-                
+
+                # Phase V: validated fields
+                vs = s.get("validated_status")
+                cs = s.get("composite_score")
+
+                # derive_strategy_status uses validated_status when available
+                status = _derive_strategy_status(s)
+
                 strat = {
                     "strategy_name": sid,
                     "bet_count": bets,
+                    # legacy fields
                     "success_rate_300": round(float(rate_300)*100, 2) if rate_300 is not None else None,
-                    "success_rate_500": None,
-                    "success_rate_1500": None,
                     "cp_score": round(float(cp_score), 3),
-                    "status": _derive_strategy_status(s),
-                    "edge": round(float(s.get("edge_300p") or 0)*100, 2)
+                    "edge": round(float(s.get("edge_300p") or 0)*100, 2),
+                    # Phase V fields
+                    "validated_status": vs,
+                    "composite_score": round(float(cs), 6) if cs is not None else None,
+                    "edge_150p": round(float(s["edge_150p"])*100, 3) if s.get("edge_150p") is not None else None,
+                    "edge_500p": round(float(s["edge_500p"])*100, 3) if s.get("edge_500p") is not None else None,
+                    "edge_1500p": round(float(s["edge_1500p"])*100, 3) if s.get("edge_1500p") is not None else None,
+                    "perm_p": s.get("perm_p"),
+                    "mcnemar_p": s.get("mcnemar_p"),
+                    "sharpe": s.get("sharpe"),
+                    "max_drawdown_rate": s.get("max_drawdown_rate"),
+                    "validation_notes": s.get("validation_notes"),
+                    "status": status,
                 }
-
-                # 嘗試補充 500p, 1500p
-                sim_folder = STRATEGY_SIM_MAP.get(sid)
-                if sim_folder:
-                    sim_file = os.path.join(_ROOT, "strategies", sim_folder, "sim_result.json")
-                    if os.path.exists(sim_file):
-                        try:
-                            with open(sim_file, "r", encoding="utf-8") as sf:
-                                sim_data = json.load(sf)
-                                bt = sim_data.get("backtest", {})
-                                r500 = bt.get("500p", {}).get("m3_rate_pct") or bt.get("500p", {}).get("win_rate_pct")
-                                if r500: strat["success_rate_500"] = round(float(r500), 2)
-                                r1500 = bt.get("1500p", {}).get("m3_rate_pct") or bt.get("1500p", {}).get("win_rate_pct")
-                                if r1500: strat["success_rate_1500"] = round(float(r1500), 2)
-                        except Exception: pass
-                
                 strategies.append(strat)
 
-            # 2. 排序 (CP 降序)
-            strategies.sort(key=lambda x: x["cp_score"], reverse=True)
-            
+            # 2. Best strategy ranking:
+            #    - Prefer formal validation status when available.
+            #    - If no formal status exists, fall back to derived status and CP-aware ranking.
+            #    - This avoids a false N/A when strategy_states has been regenerated without
+            #      validated_status metadata.
+            def _rank_key(x):
+                vs = (x.get("validated_status") or "").upper()
+                derived = (x.get("status") or "").upper()
+                cp = x.get("cp_score") or 0
+                sr300 = x.get("success_rate_300") or 0
+                cs = x.get("composite_score") or 0
+                e1500 = x.get("edge_1500p") or 0
+                sharpe = x.get("sharpe") or 0
+                dd = x.get("max_drawdown_rate") or 0
+
+                if vs == "VALIDATED":
+                    status_priority = 4
+                elif vs == "WATCH":
+                    status_priority = 3
+                elif derived == "PRODUCTION":
+                    status_priority = 2
+                elif derived == "WATCH":
+                    status_priority = 1
+                elif derived == "MAINTENANCE":
+                    status_priority = 0
+                else:
+                    status_priority = -1
+
+                # cp_score is primary when we no longer have formal validation markers.
+                return (status_priority, cp, sr300, cs, e1500 / 100.0, sharpe, -dd)
+
+            strategies.sort(key=_rank_key, reverse=True)
+
             game_entry["all_strategies"] = strategies
-            if strategies:
-                game_entry["best_strategy"] = strategies[0]
-                
+
+            # 3. Best strategy selection:
+            #    - If we have formal validation markers, the ranking above will surface them first.
+            #    - Otherwise, pick the highest CP-aware formal strategy rather than showing N/A.
+            best = strategies[0] if strategies else None
+            if best:
+                if (best.get("validated_status") or "").upper() not in ("VALIDATED", "WATCH"):
+                    if best.get("status") in ("PRODUCTION", "WATCH"):
+                        best["validation_warning"] = "NO_FORMAL_VALIDATION — ranked by CP-aware fallback"
+                    else:
+                        best["validation_warning"] = "NO_FORMAL_VALIDATION — ranked by derived status fallback"
+            game_entry["best_strategy"] = best
+
         except Exception as e:
             print(f"Error processing {lt}: {e}")
             pass
@@ -155,6 +205,7 @@ async def get_decision(lottery_type: str, mode: Optional[str] = "decision_v3"):
         result = eng.decide(lt)
         d = result.to_dict()
         risk_class = d.get("risk_profile", {}).get("risk_class", "UNKNOWN")
+        gate = _build_v31_gate(lt)
 
         return {
             "lottery_type":      lt,
@@ -170,6 +221,18 @@ async def get_decision(lottery_type: str, mode: Optional[str] = "decision_v3"):
             "notes":             d["notes"],
             "confidence_vector": d["confidence_vector"],
             "bankroll_snapshot": d.get("bankroll_snapshot"),
+            "ev_gate_open":      gate["ev_gate_open"],
+            "current_jackpot":   gate["current_jackpot"],
+            "breakeven_jackpot": gate["breakeven_jackpot"],
+            "ev_gap":            gate["ev_gap"],
+            "recommended_bet_count": gate["recommended_bet_count"],
+            "n_bets_after_gate": gate["n_bets_after_gate"],
+            "monthly_budget_after_gate": gate["monthly_budget_after_gate"],
+            "kelly_fraction":    gate["kelly_fraction"],
+            "exposure_weight_after_gate": gate["exposure_weight_after_gate"],
+            "jackpot_source":    gate["current_jackpot_source"],
+            "gate_confidence":   gate["confidence"],
+            "stage2_gate":       gate["stage2_gate"],
         }
     except HTTPException:
         raise
@@ -192,6 +255,7 @@ async def get_all_decisions(mode: Optional[str] = "decision_v3"):
             result = eng.decide(lt)
             d = result.to_dict()
             risk_class = d.get("risk_profile", {}).get("risk_class", "UNKNOWN")
+            gate = _build_v31_gate(lt)
             results[lt] = {
                 "lottery_label":     LOTTERY_LABELS[lt],
                 "n_bets":            d["n_bets"],
@@ -200,6 +264,11 @@ async def get_all_decisions(mode: Optional[str] = "decision_v3"):
                 "risk_class":        risk_class,
                 "risk_label":        RISK_LABELS.get(risk_class, risk_class),
                 "exposure_weight":   round(float(d["exposure_weight"]), 3),
+                "ev_gate_open":      gate["ev_gate_open"],
+                "breakeven_jackpot": gate["breakeven_jackpot"],
+                "recommended_bet_count": gate["recommended_bet_count"],
+                "n_bets_after_gate": gate["n_bets_after_gate"],
+                "stage2_gate":       gate["stage2_gate"],
             }
         except Exception as e:
             results[lt] = {"error": str(e)}

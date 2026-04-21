@@ -1,0 +1,30 @@
+{
+  "fourier_rhythm_2bet": {
+    "multiplier": 0.7437,
+    "rate": 0.0,
+    "edge": -0.143,
+    "samples": 10,
+    "updated_at": "2026-04-18T21:47:46.230243"
+  },
+  "fourier_rhythm_3bet": {
+    "multiplier": 0.7849,
+    "rate": 0.1,
+    "edge": -0.106,
+    "samples": 10,
+    "updated_at": "2026-04-18T21:47:46.230277"
+  },
+  "pp3_freqort_4bet": {
+    "multiplier": 0.7618,
+    "rate": 0.0625,
+    "edge": -0.1995,
+    "samples": 16,
+    "updated_at": "2026-04-18T21:47:46.230310"
+  },
+  "orthogonal_5bet": {
+    "multiplier": 0.7437,
+    "rate": 0.0,
+    "edge": -0.315,
+    "samples": 14,
+    "updated_at": "2026-04-18T21:47:46.230329"
+  }
+}

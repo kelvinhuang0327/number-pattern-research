@@ -1,0 +1,123 @@
+{
+  "generated_at": "2026-04-19T00:26:08.413767",
+  "validation_method": "Walk-Forward OOS 600p + Permutation 200 shuffles + McNemar",
+  "baseline_strategy": "p1_dev_sum5bet (deployed key=5)",
+  "oos_range": "110000026 ~ 115000045",
+  "oos_size": 600,
+  "optimal_threshold": 0.0,
+  "optimal_threshold_pct": "0.0%",
+  "optimal_vs_current": {
+    "current": "4.48%",
+    "optimal": "0.0%",
+    "finding": "Gate 最佳閾值為 0%（不跳過），代表 selective gate 無增量優勢"
+  },
+  "threshold_scan_summary": [
+    {
+      "rank": 1,
+      "threshold_pct": "0.0%",
+      "conditional_edge_pct": "+2.34%",
+      "skip_rate_pct": "0.0%",
+      "active_count": 2027
+    },
+    {
+      "rank": 2,
+      "threshold_pct": "0.5%",
+      "conditional_edge_pct": "+2.30%",
+      "skip_rate_pct": "0.1%",
+      "active_count": 2025
+    },
+    {
+      "rank": 3,
+      "threshold_pct": "1.0%",
+      "conditional_edge_pct": "+2.30%",
+      "skip_rate_pct": "0.1%",
+      "active_count": 2025
+    },
+    {
+      "rank": 4,
+      "threshold_pct": "1.5%",
+      "conditional_edge_pct": "+2.30%",
+      "skip_rate_pct": "0.1%",
+      "active_count": 2025
+    },
+    {
+      "rank": 5,
+      "threshold_pct": "2.0%",
+      "conditional_edge_pct": "+2.30%",
+      "skip_rate_pct": "0.1%",
+      "active_count": 2025
+    }
+  ],
+  "oos_results": {
+    "shadow_C_v1": {
+      "threshold": 0.0448,
+      "threshold_pct": "4.48%",
+      "skip_rate": 0.0633,
+      "window_150p": 0.0504,
+      "window_300p": 0.0471,
+      "window_500p": 0.0341,
+      "window_600p": 0.0367,
+      "perm_p": 0.0,
+      "perm_verdict": "SIGNIFICANT"
+    },
+    "shadow_C_v2": {
+      "threshold": 0.0,
+      "threshold_pct": "0.0% (optimal)",
+      "skip_rate": 0.0,
+      "window_150p": 0.0504,
+      "window_300p": 0.0471,
+      "window_500p": 0.0324,
+      "window_600p": 0.0354,
+      "perm_p": 0.0,
+      "perm_verdict": "SIGNIFICANT",
+      "note": "threshold=0% 等同 p1_dev_sum5bet，McNemar b=0 c=0（完全相同）"
+    },
+    "p1_dev_sum5bet": {
+      "threshold": 0.0,
+      "note": "已部署策略（shadow_C_v3 = p1 baseline）",
+      "window_150p": 0.0504,
+      "window_300p": 0.0471,
+      "window_500p": 0.0324,
+      "window_600p": 0.0354
+    }
+  },
+  "mcnemar": {
+    "comparison": "shadow_C_v1 (gate 4.48%) vs p1_dev_sum5bet",
+    "b": 0,
+    "c": 4,
+    "net": -4,
+    "chi2": 2.25,
+    "p_value": 0.1336,
+    "verdict": "NOT_SIGNIFICANT",
+    "interpretation": "shadow worse than baseline by 4 net draws",
+    "v2_vs_p1_note": "v2 threshold=0% 等同 p1，McNemar trivially b=0 c=0 net=0（完全相同策略）"
+  },
+  "promotion_conditions": {
+    "candidate": "shadow_C_v1 (threshold=4.48%, the only distinct version)",
+    "shadow_600p_beats_baseline": true,
+    "perm_p_lt_005": true,
+    "mcnemar_p_lt_005": false,
+    "mcnemar_net_positive": false,
+    "skip_rate_lt_30pct": true,
+    "all_met": false,
+    "detail": {
+      "v1_edge_600p": "+3.67%",
+      "perm_p": 0.0,
+      "mcnemar_p": 0.1336,
+      "mcnemar_net": -4,
+      "skip_rate": 0.0633
+    }
+  },
+  "key_findings": {
+    "finding_1": "p1_dev_sum5bet 600p OOS edge = +3.54% — 已部署策略 OOS 驗證極強",
+    "finding_2": "shadow_C gate (4.48%) conditional edge = +3.67% — 略高但 McNemar 未顯著",
+    "finding_3": "Gate 最佳閾值 = 0.0%（不跳過）— selective gate 無增量優勢，會浪費命中機會",
+    "finding_4": "shadow_C with threshold=0% ≡ p1_dev_sum5bet（完全相同策略）",
+    "finding_5": "McNemar v1 vs p1: b=0, c=4, net=-4 — gate 導致 4 次本可命中被跳過",
+    "finding_6": "Permutation test v1: p=0.0000 — 超強統計顯著性（200次 shuffle 無一超過觀察值）"
+  },
+  "recommendation": "CONTINUE_WATCH",
+  "promotion_deploy_command": "不需要修改 DEPLOYED_STRATEGY_KEYS — shadow_C 最佳版本（threshold=0%）等同於已部署 p1_dev_sum5bet。",
+  "next_milestone": "115000145",
+  "notes": "OOS 驗證通過（+3.67%，p=0.000），但 McNemar 顯示 gate 無增量優勢（net=-4）。最佳閾值=0% 等同已部署 p1_dev_sum5bet。建議維持現狀，繼續追蹤 100 期里程碑。"
+}

@@ -1493,6 +1493,9 @@ export class AutoLearningManager {
                 reportEl.innerHTML = `
                     <div style="background: rgba(0,0,0,0.2); padding: 15px; border-radius: 8px; margin-top: 10px;">
                         <h4 style="margin: 0 0 10px 0; color: #e5e7eb;">📋 預測報告</h4>
+                        <div style="background:rgba(255,180,0,0.1);border:1px solid #ffb400;border-radius:6px;padding:6px 10px;font-size:11px;color:#ffb400;margin-bottom:10px">
+                            ⚠️ 此預測使用<strong>自動學習評估策略</strong>（獨立實驗室功能），與首頁「最佳策略」（Phase V 三窗口驗證策略）無關。僅供研究參考。
+                        </div>
                         <p style="margin: 5px 0; color: #d1d5db;">
                             ✅ 使用評估中表現最佳的 <strong>${bestStrategy.strategy_name}</strong> 策略生成預測
                         </p>

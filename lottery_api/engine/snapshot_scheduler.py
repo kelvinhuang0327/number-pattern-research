@@ -17,7 +17,7 @@ import json
 import logging
 import os
 import sys
-from datetime import datetime, timezone
+from datetime import datetime, timedelta, timezone
 from typing import Optional, Dict, List
 
 logger = logging.getLogger(__name__)
@@ -132,12 +132,34 @@ def _update_schedule_status(schedule_id: int, status: str,
 # 快照產生（僅限 VALID 視窗）
 # ──────────────────────────────────────────────
 
+def _rsm_best_label(lottery_type: str, num_bets: int) -> Optional[str]:
+    """從 strategy_states_*.json 查詢最佳 RSM 策略名稱（用於覆蓋 Coordinator 通用標籤）。"""
+    try:
+        import json as _json
+        p = os.path.join(_api_root, "data", f"strategy_states_{lottery_type}.json")
+        if not os.path.exists(p):
+            return None
+        states = _json.load(open(p, "r", encoding="utf-8"))
+        candidates = [v for v in states.values() if int(v.get("num_bets", 0)) == int(num_bets)]
+        if not candidates:
+            return None
+        best = max(candidates, key=lambda s: float(s.get("edge_300p", -9)))
+        return best.get("name") or best.get("strategy_name")
+    except Exception:
+        return None
+
+
 def _run_prediction(lottery_type: str, history: List[Dict],
                     num_bets: int = 3) -> tuple:
     """執行 RSM 協調器預測，回傳 (bets, strategy_label, special)"""
     try:
         from engine.strategy_coordinator import coordinator_predict
         bets, label = coordinator_predict(lottery_type, history, n_bets=num_bets, mode="direct")
+        # 以 RSM 最佳策略名取代通用 Coordinator 標籤
+        if label and label.startswith("Coordinator-"):
+            rsm_name = _rsm_best_label(lottery_type, num_bets)
+            if rsm_name:
+                label = rsm_name
     except Exception as e:
         logger.warning(f"[Scheduler] coordinator_predict failed ({e}), fallback to frequency")
         from models.unified_predictor import UnifiedPredictionEngine
@@ -191,17 +213,18 @@ def generate_snapshot_for_schedule(schedule_id: int,
     latest_known_draw = str(int(target_draw) - 1)
     db2 = _db()
     all_draws = db2.get_all_draws(lottery_type)
-    # 只用 draw <= latest_known_draw 的資料
-    history = [d for d in all_draws
-               if int(d["draw"]) <= int(latest_known_draw)]
+    # 只用 draw <= latest_known_draw 的資料；策略函數預期 ASC（history[-1] = 最新）
+    history = sorted(
+        [d for d in all_draws if int(d["draw"]) <= int(latest_known_draw)],
+        key=lambda d: (d.get("date", ""), d.get("draw", ""))
+    )
 
     if not history:
         logger.warning(f"[Scheduler] No history for {lottery_type} up to {latest_known_draw}")
         return None
 
-    # 最新已知期的資料
-    history_sorted = sorted(history, key=lambda d: int(d["draw"]), reverse=True)
-    latest_data = history_sorted[0]
+    # 最新已知期的資料（ASC 排序後最後一筆）
+    latest_data = history[-1]
 
     bets, strategy_label, special = _run_prediction(lottery_type, history, num_bets)
 
@@ -238,15 +261,79 @@ def startup_check() -> Dict:
     1. 標記所有過期的 SCHEDULED 條目（目標期已入庫）為 MISSED_WINDOW
     2. 確保每個彩種有一個指向下一期的 SCHEDULED 條目
     3. 若 SCHEDULED 條目的目標期尚未入庫 → 自動產生 VALID 快照
+    4. 補全近 30 天已開獎但缺少預測快照的期號（RECONSTRUCTED）
 
     回傳每個彩種的處理摘要。
     """
     summary = {}
     for game in ALL_GAMES:
         result = _startup_check_game(game)
+        backfill = _backfill_30days(game)
+        result["backfill"] = backfill
         summary[game] = result
         logger.info(f"[Scheduler] startup_check {game}: {result}")
     return summary
+
+
+def _backfill_30days(lottery_type: str) -> Dict:
+    """補全近 30 天已開獎但缺少預測快照的期號（RECONSTRUCTED）。"""
+    from datetime import date
+    cutoff = (datetime.now() - timedelta(days=30)).strftime("%Y/%m/%d")
+
+    db = _db()
+    all_draws = db.get_all_draws(lottery_type)
+    # 只取近 30 天的已開獎期
+    recent = [d for d in all_draws if (d.get("date") or "") >= cutoff]
+    recent_sorted = sorted(recent, key=lambda d: int(d["draw"]))
+
+    if not recent_sorted:
+        return {"checked": 0, "created": 0}
+
+    # 取得所有已有預測快照的 latest_known_draw 集合
+    conn = db._get_connection()
+    try:
+        cur = conn.cursor()
+        cur.execute(
+            "SELECT DISTINCT latest_known_draw FROM prediction_runs WHERE lottery_type = ?",
+            (lottery_type,)
+        )
+        existing_known = {row["latest_known_draw"] for row in cur.fetchall()}
+    finally:
+        conn.close()
+
+    created = 0
+    for draw_info in recent_sorted:
+        draw = draw_info["draw"]
+        # 要預測 draw，需要 latest_known = draw-1 的快照
+        prev_draw = str(int(draw) - 1)
+        if prev_draw in existing_known:
+            continue  # 已有快照，跳過
+
+        # 確認 prev_draw 確實在 DB 中（有歷史資料可用）
+        history = sorted(
+            [d for d in all_draws if int(d["draw"]) <= int(prev_draw)],
+            key=lambda d: (d.get("date", ""), d.get("draw", ""))
+        )
+        if not history:
+            continue
+
+        # 建立排程條目並產生 RECONSTRUCTED 快照
+        try:
+            sched = _get_schedule(lottery_type, draw)
+            if not sched:
+                sched = _create_schedule(lottery_type, draw,
+                                         target_date=draw_info.get("date"),
+                                         notes="backfill_30days")
+            if sched["status"] not in ("SNAPSHOT_CREATED", "RECONSTRUCTED"):
+                run_id = generate_snapshot_for_schedule(sched["id"], source="RECONSTRUCTED")
+                if run_id:
+                    existing_known.add(prev_draw)
+                    created += 1
+                    logger.info(f"[Backfill] {lottery_type} draw {draw} → run_id={run_id}")
+        except Exception as e:
+            logger.warning(f"[Backfill] {lottery_type} draw {draw} failed: {e}")
+
+    return {"checked": len(recent_sorted), "created": created}
 
 
 def _startup_check_game(lottery_type: str) -> Dict:
@@ -316,6 +403,32 @@ def _startup_check_game(lottery_type: str) -> Dict:
 # 排程狀態查詢
 # ──────────────────────────────────────────────
 
+def _compute_next_draw_date(lottery_type: str, latest_date_str: Optional[str]) -> Optional[str]:
+    """根據彩種開獎週期計算下一期預計日期。
+    大樂透/威力彩：週一、週四；今彩539：週一~週五。
+    """
+    if not latest_date_str:
+        return None
+    try:
+        # 支援 YYYY/MM/DD 或 YYYY-MM-DD
+        date_str = latest_date_str.replace("/", "-")
+        dt = datetime.strptime(date_str, "%Y-%m-%d")
+    except ValueError:
+        return None
+
+    if lottery_type == "DAILY_539":
+        draw_weekdays = {0, 1, 2, 3, 4}   # 週一~週五
+    else:
+        draw_weekdays = {0, 3}             # 週一(0)、週四(3)
+
+    next_dt = dt + timedelta(days=1)
+    for _ in range(7):
+        if next_dt.weekday() in draw_weekdays:
+            return next_dt.strftime("%Y/%m/%d")
+        next_dt += timedelta(days=1)
+    return None
+
+
 def get_schedule_status() -> List[Dict]:
     """回傳各彩種最新排程狀態（供 UI 顯示）"""
     result = []
@@ -327,12 +440,15 @@ def get_schedule_status() -> List[Dict]:
 
         next_draw = _next_draw(latest["draw"])
         sched = _get_schedule(game, next_draw)
+        latest_date = latest.get("date")
+        next_date = (sched or {}).get("target_date") or _compute_next_draw_date(game, latest_date)
 
         result.append({
             "lottery_type": game,
             "latest_known_draw": latest["draw"],
-            "latest_known_date": latest.get("date"),
+            "latest_known_date": latest_date,
             "next_expected_draw": next_draw,
+            "next_expected_date": next_date,
             "schedule": sched,
         })
     return result

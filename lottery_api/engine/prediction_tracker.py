@@ -59,7 +59,18 @@ def _load_strategy_states(lottery_type: str) -> Dict[str, Dict[str, Any]]:
 
 
 def _derive_strategy_status(state: Dict[str, Any]) -> str:
-    """與決策層相同的策略狀態推導規則。"""
+    """Phase V: 優先使用 validated_status，fallback 至舊邏輯。
+    RULE: VALIDATED→PRODUCTION, WATCH→WATCH (never upgrade), REJECTED→ADVISORY_ONLY
+    """
+    vs = state.get("validated_status")
+    if vs == "VALIDATED":
+        return "PRODUCTION"
+    if vs == "WATCH":
+        # WATCH must stay as WATCH — never promote to PRODUCTION
+        return "WATCH"
+    if vs in ("REJECTED", "REJECT"):
+        return "ADVISORY_ONLY"
+    # Legacy fallback (strategies without Phase V data)
     edge = state.get("edge_300p", 0) or 0
     trend = state.get("trend", "STABLE")
     alert = state.get("alert", False)
@@ -72,14 +83,28 @@ def _derive_strategy_status(state: Dict[str, Any]) -> str:
     return "ADVISORY_ONLY"
 
 
+def _rank_key_phase_v(state: Dict[str, Any]) -> tuple:
+    """Phase V composite ranking: VALIDATED > WATCH > REJECTED, then composite_score,
+    then edge_1500p, sharpe, and max_drawdown_rate (lower is better) as tiebreakers."""
+    vs = state.get("validated_status")
+    priority = 2 if vs == "VALIDATED" else (1 if vs == "WATCH" else 0)
+    cs = float(state.get("composite_score") or 0)
+    e1500 = float(state.get("edge_1500p") or 0)
+    sharpe = float(state.get("sharpe") or 0)
+    dd = float(state.get("max_drawdown_rate") or 0)
+    return (priority, cs, e1500, sharpe, -dd)
+
+
 def _get_current_best_strategy_refs(lottery_type: str) -> Dict[int, Dict[str, Any]]:
     """
-    取得目前各注數最佳策略參考。
+    Phase V: 取得目前各注數最佳策略參考。
 
-    規則：同一 num_bets 中，取 edge_300p 最高者。
+    規則：同一 num_bets 中，優先取 VALIDATED 策略，再按 composite_score / edge_1500p / sharpe 排序。
+    不使用 edge_300p (已廢棄欄位)。
     """
     states = _load_strategy_states(lottery_type)
-    best: Dict[int, Dict[str, Any]] = {}
+    # Group by num_bets
+    by_nbets: Dict[int, list] = {}
     for state in states.values():
         try:
             num_bets = int(state.get("num_bets", 0))
@@ -87,24 +112,45 @@ def _get_current_best_strategy_refs(lottery_type: str) -> Dict[int, Dict[str, An
             continue
         if num_bets <= 0:
             continue
-        edge_300p = float(state.get("edge_300p", -9))
-        if num_bets not in best or edge_300p > float(best[num_bets].get("edge_300p", -9)):
-            best[num_bets] = state
+        by_nbets.setdefault(num_bets, []).append(state)
 
     refs: Dict[int, Dict[str, Any]] = {}
-    for num_bets, state in best.items():
+    for num_bets, candidates in by_nbets.items():
+        # Phase V: rank by (validated_priority, composite_score, edge_1500p, sharpe, -drawdown)
+        # Exclude REJECT strategies from being selected as best
+        active = [s for s in candidates if s.get("validated_status") not in ("REJECTED", "REJECT")]
+        pool = active if active else candidates  # fallback to all if every candidate is REJECT
+        best = max(pool, key=_rank_key_phase_v)
+
+        # Data completeness guard: check required Phase V fields
+        missing_fields = [f for f in ("edge_150p", "edge_500p", "edge_1500p", "perm_p", "mcnemar_p")
+                          if best.get(f) is None]
+
         refs[num_bets] = {
             "num_bets": num_bets,
-            "strategy_name": state.get("name") or state.get("strategy_name", ""),
-            "strategy_status": _derive_strategy_status(state),
-            "edge_300p": round(float(state.get("edge_300p", 0) or 0) * 100, 2),
-            "rate_300p": round(float(state.get("rate_300p", 0) or 0) * 100, 2),
-            "trend": state.get("trend", ""),
-            "alert": bool(state.get("alert", False)),
-            "sharpe_300p": round(float(state.get("sharpe_300p", 0) or 0), 4),
-            "total_records": int(state.get("total_records", 0) or 0),
-            "last_updated": (state.get("last_updated") or "")[:10],
-            "note": state.get("note", ""),
+            "strategy_name": best.get("name") or best.get("strategy_name", ""),
+            "strategy_status": _derive_strategy_status(best),
+            # Phase V fields
+            "validated_status": best.get("validated_status"),
+            "composite_score": round(float(best.get("composite_score") or 0), 6),
+            "edge_150p": round(float(best.get("edge_150p") or 0) * 100, 3) if best.get("edge_150p") is not None else None,
+            "edge_500p": round(float(best.get("edge_500p") or 0) * 100, 3) if best.get("edge_500p") is not None else None,
+            "edge_1500p": round(float(best.get("edge_1500p") or 0) * 100, 3) if best.get("edge_1500p") is not None else None,
+            "perm_p": best.get("perm_p"),
+            "mcnemar_p": best.get("mcnemar_p"),
+            "sharpe": best.get("sharpe"),
+            "validation_notes": best.get("validation_notes"),
+            "missing_phase_v_fields": missing_fields if missing_fields else None,
+            "data_complete": len(missing_fields) == 0,
+            # Legacy fields (kept for backward compat)
+            "edge_300p": round(float(best.get("edge_300p", 0) or 0) * 100, 2),
+            "rate_300p": round(float(best.get("rate_300p", 0) or 0) * 100, 2),
+            "trend": best.get("trend", ""),
+            "alert": bool(best.get("alert", False)),
+            "sharpe_300p": round(float(best.get("sharpe_300p", 0) or 0), 4),
+            "total_records": int(best.get("total_records", 0) or 0),
+            "last_updated": (best.get("last_updated") or "")[:10],
+            "note": best.get("note", ""),
         }
     return refs
 
@@ -778,33 +824,57 @@ def get_history(
 
 
 def _get_rsm_strategies(lottery_type: str) -> List[Dict]:
-    """從 strategy_states_*.json 取得各注數最佳策略完整分析（供明細面板顯示）。"""
+    """Phase V: 從 strategy_states_*.json 取得各注數最佳策略完整分析（供明細面板顯示）。
+    排名規則：VALIDATED > WATCH > REJECTED，再依 composite_score 排序（不再使用 edge_300p 排名）。
+    """
     try:
         states_path = os.path.join(_api_root, "data", f"strategy_states_{lottery_type}.json")
         if not os.path.exists(states_path):
             return []
         states = json.load(open(states_path, "r", encoding="utf-8"))
-        # 按注數分組取最佳（edge_300p 最高者）
-        best: Dict[int, Dict] = {}
+        # Phase V: group by num_bets, rank by (validated_priority, composite_score)
+        by_nbets: Dict[int, list] = {}
         for v in states.values():
             nb = int(v.get("num_bets", 0))
             if nb <= 0:
                 continue
-            edge = float(v.get("edge_300p", -9))
-            if nb not in best or edge > float(best[nb].get("edge_300p", -9)):
-                best[nb] = v
+            by_nbets.setdefault(nb, []).append(v)
+
         result = []
-        for nb in sorted(best.keys()):
-            s = best[nb]
-            def pct(key): return round(float(s.get(key, 0)) * 100, 2)
+        for nb in sorted(by_nbets.keys()):
+            candidates = by_nbets[nb]
+            has_phase_v = any(c.get("validated_status") for c in candidates)
+            if has_phase_v:
+                s = max(candidates, key=_rank_key_phase_v)
+            else:
+                s = max(candidates, key=lambda x: float(x.get("edge_300p", -9) or -9))
+
+            def pct(key): return round(float(s.get(key) or 0) * 100, 3) if s.get(key) is not None else None
+            def pct_legacy(key): return round(float(s.get(key, 0)) * 100, 2)
             def rate(key): return round(float(s.get(key, 0)) * 100, 1)
+
+            missing = [f for f in ("edge_150p", "edge_500p", "edge_1500p", "perm_p", "mcnemar_p")
+                       if s.get(f) is None]
             result.append({
-                "num_bets":      nb,
-                "strategy_name": s.get("name") or s.get("strategy_name", ""),
-                "total_records": s.get("total_records", 0),
-                "edge_30p":      pct("edge_30p"),
-                "edge_100p":     pct("edge_100p"),
-                "edge_300p":     pct("edge_300p"),
+                "num_bets":        nb,
+                "strategy_name":   s.get("name") or s.get("strategy_name", ""),
+                "total_records":   s.get("total_records", 0),
+                # Phase V fields
+                "validated_status":  s.get("validated_status"),
+                "composite_score":   round(float(s.get("composite_score") or 0), 6),
+                "edge_150p":         pct("edge_150p"),
+                "edge_500p":         pct("edge_500p"),
+                "edge_1500p":        pct("edge_1500p"),
+                "perm_p":            s.get("perm_p"),
+                "mcnemar_p":         s.get("mcnemar_p"),
+                "sharpe":            s.get("sharpe"),
+                "max_drawdown_rate": s.get("max_drawdown_rate"),
+                "validation_notes":  s.get("validation_notes"),
+                "data_complete":     len(missing) == 0,
+                # Legacy fields
+                "edge_30p":      pct_legacy("edge_30p"),
+                "edge_100p":     pct_legacy("edge_100p"),
+                "edge_300p":     pct_legacy("edge_300p"),
                 "rate_30p":      rate("rate_30p"),
                 "rate_100p":     rate("rate_100p"),
                 "rate_300p":     rate("rate_300p"),
@@ -1146,6 +1216,8 @@ def get_performance(lottery_type: Optional[str] = None,
                     "num_bets": num_bets,
                     "strategy_name": ref["strategy_name"],
                     "strategy_status": ref["strategy_status"],
+                    "validated_status": ref.get("validated_status"),
+                    "data_complete": ref.get("data_complete", True),
                     "total_runs": total_runs,
                     "resolved_runs": len(resolved_runs),
                     "pending_runs": pending_runs,

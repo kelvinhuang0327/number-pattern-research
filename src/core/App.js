@@ -15,11 +15,12 @@ import { DataHandler } from './handlers/DataHandler.js';
 import { UIDisplayHandler } from './handlers/UIDisplayHandler.js';
 import { SimulationHandler } from './handlers/SimulationHandler.js';
 import { PredictionHandler } from './handlers/PredictionHandler.js';
-import { NextDrawHandler } from './handlers/NextDrawHandler.js';
+import { NextDrawHandler } from './handlers/NextDrawHandler.js?v=18';
 import { getApiUrl } from '../config/apiConfig.js';
 import { DrawEntryManager } from '../ui/DrawEntryManager.js';
 import { AutoFetchManager } from '../ui/AutoFetchManager.js';
 import { PredictionTracker } from '../ui/PredictionTracker.js';
+import { ReviewManager } from '../ui/ReviewManager.js';
 
 /**
  * 主應用程式
@@ -55,6 +56,7 @@ export class App {
         this.drawEntryManager = new DrawEntryManager();
         this.autoFetchManager = new AutoFetchManager();
         this.predictionTracker = new PredictionTracker(this);
+        this.reviewManager = new ReviewManager(this);
 
         // 不在 constructor 中自動初始化，由外部呼叫
         // this.init();
@@ -152,12 +154,27 @@ export class App {
             console.error('❌ Failed to load data from backend:', err);
         }
 
+        this._handleInitialRoute();
+
         // 啟動後端健康檢查
         this._backendRetryDelay = 15000;
         this._backendRetryMax = 120000;
         this._backendHealthTimer = null;
         this._backendWasDown = false;
         this.scheduleBackendHealthCheck(false);
+    }
+
+    _handleInitialRoute() {
+        const params = new URLSearchParams(window.location.search);
+        const runId = params.get('prediction_run_id');
+        const section = params.get('section');
+        if (!runId && section !== 'reviews') return;
+
+        this.uiManager.showSection('reviews');
+        if (this.reviewManager) {
+            this.reviewManager._currentGame = this.currentLotteryType || 'BIG_LOTTO';
+            this.reviewManager.init();
+        }
     }
 
     /**
@@ -371,7 +388,15 @@ export class App {
                     }
                 } else if (section === 'tracking') {
                     if (this.predictionTracker) {
+                        // 確保彩種與全局切換同步，再載入
+                        this.predictionTracker._currentGame = this.currentLotteryType || 'BIG_LOTTO';
+                        this.predictionTracker._updateGameLabel();
                         this.predictionTracker.loadAll();
+                    }
+                } else if (section === 'reviews') {
+                    if (this.reviewManager) {
+                        this.reviewManager._currentGame = this.currentLotteryType || 'BIG_LOTTO';
+                        this.reviewManager.init();
                     }
                 }
             });
@@ -678,6 +703,9 @@ export class App {
             this.currentPage = 1; // 重置到第一頁
             this.displayHistory();
         }
+
+        // 同步預測追蹤彩種
+        this.predictionTracker?._setGame(this.currentLotteryType);
 
         // 顯示通知
         const typeNames = {
@@ -1615,7 +1643,7 @@ export class App {
                     <td>${r.draw}</td>
                     <td>${r.date}</td>
                     <td class="sim-numbers">${r.predicted.join(', ')}${r.predictedSpecial != null ? ' <span class="sim-special">+' + r.predictedSpecial + '</span>' : ''}</td>
-                    <td class="sim-numbers">${r.actual.join(', ')}${r.actualSpecial != null ? ' <span class="sim-special">+' + r.actualSpecial + '</span>' : ''}</td>
+                    <td class="sim-numbers">${r.actual.join(', ')}${Number(r.actualSpecial) > 0 ? ' <span class="sim-special">+' + r.actualSpecial + '</span>' : ''}</td>
                     <td><span class="hit-badge ${r.hits >= 3 ? 'high-hit' : ''}">${r.hits}</span></td>
                     <td class="sim-train-count">${trainCount ? '共' + trainCount + '期' : '-'}</td>
                     <td>${r.isSuccess ? '<span class="sim-ok">✓</span>' : '<span class="sim-fail">✗</span>'}</td>

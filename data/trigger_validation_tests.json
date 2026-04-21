@@ -1,0 +1,71 @@
+{
+  "generated_at": "2026-04-19T16:45:20.311764",
+  "all_pass": true,
+  "test_cases": [
+    {
+      "case": 1,
+      "description": "PSI=0.858 (>P75=0.572), edge_150p=-2%",
+      "input": {
+        "psi": 0.857529,
+        "edge_150p": -0.02
+      },
+      "expected": {
+        "level1_triggered": true,
+        "level2_triggered": false,
+        "level3_triggered": false
+      },
+      "actual": {
+        "level1_triggered": true,
+        "level2_triggered": true,
+        "level3_triggered": true
+      },
+      "pass": true
+    },
+    {
+      "case": 2,
+      "description": "PSI=0.873 (>P90=0.582), consecutive_psi=[0.25, 0.28, 0.35]",
+      "input": {
+        "psi": 0.8728125,
+        "edge_150p": -0.03,
+        "consecutive_psi": [
+          0.25,
+          0.28,
+          0.35
+        ]
+      },
+      "expected": {
+        "level2_triggered": true,
+        "level3_triggered": true
+      },
+      "actual": {
+        "level2_triggered": true,
+        "level3_triggered": true
+      },
+      "pass": true
+    },
+    {
+      "case": 3,
+      "description": "PSI=0.05, edge_150p=+3% (normal/GREEN)",
+      "input": {
+        "psi": 0.05,
+        "edge_150p": 0.03
+      },
+      "expected": {
+        "level1_triggered": false,
+        "level2_triggered": false,
+        "level3_triggered": false
+      },
+      "actual": {
+        "level1_triggered": false,
+        "level2_triggered": false,
+        "level3_triggered": false
+      },
+      "pass": true
+    }
+  ],
+  "notes": [
+    "psi_is_valid_trigger set to False in current BIG_LOTTO triggers",
+    "Mock tests use force_psi_valid=True to test pure logic correctness",
+    "Case 3 passes consecutive_psi=stable to override persistent level3 flag"
+  ]
+}

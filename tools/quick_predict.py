@@ -12,6 +12,7 @@ import random
 import argparse
 import json
 import numpy as np
+from datetime import datetime
 from numpy.fft import fft, fftfreq
 from collections import Counter
 from itertools import combinations
@@ -137,13 +138,16 @@ STRATEGY_INFO = {
         5: {'strategy': 'P1+偏差互補+Sum均值約束 +尾數約束', 'edge': '+3.04%', 'verified': '1500期 ROBUST perm p=0.000'},
     },
     'POWER_LOTTO': {
-        2: {'strategy': 'Fourier Rhythm', 'edge': '+1.91%', 'verified': '1000期'},
-        3: {'strategy': 'Power Precision', 'edge': '+2.23%', 'verified': '1500期 STABLE z=2.74'},
+        2: {'strategy': 'Fourier Rhythm',       'edge': '+1.08%', 'verified': '1500期 STABLE'},
+        3: {'strategy': 'Power Precision (fourier_rhythm_3bet)', 'edge': '+3.16%', 'verified': '1500期 STABLE z=2.74 perm p=0.045'},
+        4: {'strategy': 'PP3+FreqOrt',          'edge': '+3.07%', 'verified': '1500期 STABLE perm p=0.000'},
+        5: {'strategy': '正交 5注 (orthogonal)', 'edge': '+2.42%', 'verified': '1500期 STABLE'},
     },
     'DAILY_539': {
-        1: {'strategy': 'ACB 異常捕捉', 'edge': '+3.00%', 'verified': '1500期 STABLE z=3.66 p=0.005 ADOPTED'},
-        2: {'strategy': 'MidFreq+ACB 正交2注', 'edge': '+5.06%', 'verified': '1500期 STABLE z=4.77 p=0.005 ADOPTED'},
-        3: {'strategy': 'ACB+Markov+Fourier', 'edge': '+6.43%', 'verified': '1500期 STABLE z=5.41 p=0.005 PROVISIONAL'},
+        1: {'strategy': 'ACB 異常捕捉',          'edge': '+3.60%', 'verified': '1500期 STABLE z=3.66 p=0.005 ADOPTED'},
+        2: {'strategy': 'MidFreq+ACB 正交2注',   'edge': '+8.79%', 'verified': '1500期 STABLE z=4.77 p=0.005 ADOPTED'},
+        3: {'strategy': 'ACB+Markov+MidFreq 3注','edge': '+8.83%', 'verified': '1500期 STABLE z=5.41 p=0.005 ADOPTED'},
+        5: {'strategy': 'F4Cold 5注',            'edge': '+6.28%', 'verified': '1500期 STABLE PROVISIONAL'},
     },
 }
 
@@ -351,74 +355,226 @@ def _539_midfreq_bet(history, exclude=None, window=100):
     return sorted(candidates[:5])
 
 
+def _detect_cold_phase(history, window=50, baseline=0.0896):
+    """
+    偵測大樂透 p1_dev_sum5bet 是否處於冷期。
+    資料優先順序：
+      1. predictions_BIG_LOTTO.jsonl resolved 記錄（≥50 期）
+      2. rolling_monitor_BIG_LOTTO.json + DB 新增期補算（最準確）
+      3. strategy_states edge_150p 估算
+      4. insufficient_data fallback
+    回傳 (is_cold: bool, cold_severity: float)
+      is_cold = True 當 rolling_50p_edge < 0
+    冷期退出: 最近兩個連續 50p 窗口 edge > 0 → consecutive_positive_windows=2
+    """
+    monitor_path = os.path.join(project_root, 'data', 'rolling_monitor_BIG_LOTTO.json')
+    status_path = os.path.join(project_root, 'data', 'cold_phase_status.json')
+    pred_log_path = os.path.join(project_root, 'lottery_api', 'data', 'predictions_BIG_LOTTO.jsonl')
+    states_path = os.path.join(project_root, 'lottery_api', 'data', 'strategy_states_BIG_LOTTO.json')
+
+    def _write_status(status_dict):
+        try:
+            with open(status_path, 'w', encoding='utf-8') as _f:
+                json.dump(status_dict, _f, ensure_ascii=False, indent=2)
+        except Exception:
+            pass
+
+    def _edge_to_status(rolling_edge, records_all, source_label):
+        """Compute consecutive windows and write status."""
+        is_cold = rolling_edge < 0
+        consecutive_pos = 0
+        if rolling_edge > 0:
+            consecutive_pos = 1
+            if len(records_all) >= 2 * window:
+                prev_w = records_all[-2 * window:-window]
+                prev_hr = sum(1 for r in prev_w if r.get('is_m3plus')) / window
+                if (prev_hr - baseline) > 0:
+                    consecutive_pos = 2
+
+        cold_since_draw = None
+        if is_cold:
+            try:
+                if os.path.exists(status_path):
+                    prev_status = json.load(open(status_path))
+                    if prev_status.get('is_cold') and prev_status.get('cold_since_draw'):
+                        cold_since_draw = prev_status['cold_since_draw']
+            except Exception:
+                pass
+            if cold_since_draw is None:
+                last_w = records_all[-window:]
+                cold_since_draw = last_w[0].get('draw_id') or last_w[0].get('period')
+
+        _write_status({
+            'lottery': 'BIG_LOTTO',
+            'is_cold': is_cold,
+            'rolling_50p_edge': round(rolling_edge * 100, 2),
+            'cold_since_draw': cold_since_draw if is_cold else None,
+            'consecutive_positive_windows': consecutive_pos,
+            'last_updated': datetime.now().strftime('%Y/%m/%d'),
+            'data_source': source_label,
+        })
+        return is_cold, rolling_edge
+
+    # ── Priority 1: predictions_BIG_LOTTO.jsonl resolved records ───────────
+    try:
+        if os.path.exists(pred_log_path):
+            p1_resolved = []
+            with open(pred_log_path, encoding='utf-8') as f:
+                for line in f:
+                    line = line.strip()
+                    if not line:
+                        continue
+                    try:
+                        rec = json.loads(line)
+                    except Exception:
+                        continue
+                    if 'p1_dev_sum5bet' in rec.get('strategy', '') and rec.get('is_m3plus') is not None:
+                        p1_resolved.append(rec)
+            if len(p1_resolved) >= window:
+                last_w = p1_resolved[-window:]
+                hit_rate = sum(1 for r in last_w if r.get('is_m3plus')) / window
+                rolling_edge = hit_rate - baseline
+                return _edge_to_status(rolling_edge, p1_resolved, 'predictions_jsonl')
+    except Exception:
+        pass
+
+    # ── Priority 2: rolling_monitor + fresh DB computation ─────────────────
+    try:
+        with open(monitor_path) as f:
+            monitor = json.load(f)
+        mon_records = monitor.get('records', {}).get('p1_dev_sum5bet', [])
+        if len(mon_records) >= window:
+            mon_draw_ids = {str(r['draw_id']) for r in mon_records}
+            # Find draws in history newer than monitor's last entry (integer compare)
+            last_mon_draw_int = int(mon_records[-1]['draw_id'])
+            new_draws = [d for d in history if int(d['draw']) > last_mon_draw_int]
+            extended = list(mon_records)
+            if new_draws:
+                # Run strategy for each missing draw (anti-leakage: history up to draw)
+                all_draws_sorted = sorted(history, key=lambda x: (x['date'], x['draw']))
+                for target_draw in new_draws:
+                    if str(target_draw['draw']) in mon_draw_ids:
+                        continue
+                    draw_idx = next(
+                        (i for i, d in enumerate(all_draws_sorted) if str(d['draw']) == str(target_draw['draw'])),
+                        None
+                    )
+                    if draw_idx is None or draw_idx < 50:
+                        continue
+                    hist_up_to = all_draws_sorted[:draw_idx]
+                    try:
+                        bets_wrapped = biglotto_p1_deviation_5bet(hist_up_to)
+                        bet_lists = [b['numbers'] for b in bets_wrapped]
+                        actual = target_draw['numbers']
+                        match_counts = [sum(1 for n in bet if n in actual) for bet in bet_lists]
+                        best_match = max(match_counts) if match_counts else 0
+                        extended.append({
+                            'draw_id': str(target_draw['draw']),
+                            'date': target_draw['date'],
+                            'actual': actual,
+                            'match_counts': match_counts,
+                            'best_match': best_match,
+                            'is_m3plus': best_match >= 3,
+                            'is_m2plus': best_match >= 2,
+                            'num_bets': len(bet_lists),
+                        })
+                    except Exception:
+                        pass
+
+            last_w = extended[-window:]
+            hit_rate = sum(1 for r in last_w if r.get('is_m3plus')) / window
+            rolling_edge = hit_rate - baseline
+            src = 'rolling_monitor+fresh' if new_draws else 'rolling_monitor'
+            return _edge_to_status(rolling_edge, extended, src)
+    except Exception:
+        pass
+
+    # ── Priority 3: strategy_states edge_150p ──────────────────────────────
+    try:
+        if os.path.exists(states_path):
+            states = json.load(open(states_path))
+            p1_state = states.get('p1_dev_sum5bet', {})
+            edge_150 = p1_state.get('edge_150p')
+            if edge_150 is not None:
+                rolling_edge = float(edge_150)
+                is_cold = rolling_edge < 0
+                _write_status({
+                    'lottery': 'BIG_LOTTO',
+                    'is_cold': is_cold,
+                    'rolling_50p_edge': round(rolling_edge * 100, 2),
+                    'cold_since_draw': None,
+                    'consecutive_positive_windows': 0 if is_cold else 1,
+                    'last_updated': datetime.now().strftime('%Y/%m/%d'),
+                    'data_source': 'strategy_states_150p_estimate',
+                    'note': 'estimated from 150p window, 50p data unavailable',
+                })
+                return is_cold, rolling_edge
+    except Exception:
+        pass
+
+    # ── Priority 4: insufficient_data ──────────────────────────────────────
+    _write_status({
+        'lottery': 'BIG_LOTTO',
+        'is_cold': False,
+        'rolling_50p_edge': None,
+        'cold_since_draw': None,
+        'consecutive_positive_windows': 0,
+        'last_updated': datetime.now().strftime('%Y/%m/%d'),
+        'insufficient_data': True,
+    })
+    return False, 0.0
+
+
+
 def predict_biglotto(history, rules, num_bets=5, use_coordinator=True, coord_mode='direct'):
-    if use_coordinator and num_bets in (2, 3):
-        bets, desc = _coordinator_bets('BIG_LOTTO', history, num_bets, mode=coord_mode)
-        if bets is not None:
-            strategy = desc
-        elif num_bets <= 2:
-            bets = biglotto_regime_2bet(history)[:num_bets]
-            strategy = 'Regime Fourier+Cold'
-        else:
-            bets = biglotto_triple_strike(history)
-            strategy = 'TS3+Regime'
+    from tools.rsm_bootstrap import get_big_lotto_strategies_inline, DEPLOYED_STRATEGY_KEYS
+
+    # 冷期偵測（警示層，不阻止預測）
+    is_cold, cold_severity = _detect_cold_phase(history)
+    if is_cold:
+        print(f'\n  \033[91m\033[1m[COLD PHASE]\033[0m 近50期 edge={cold_severity * 100:+.2f}%，建議暫緩投注')
     else:
-        bets = biglotto_p1_deviation_5bet(history)[:num_bets]
-        strategy = 'P1+Deviation Complement'
-    return enforce_tail_diversity(bets, 2, 49, history), strategy
+        # 冷期退出偵測
+        try:
+            status_path = os.path.join(project_root, 'data', 'cold_phase_status.json')
+            _status = json.load(open(status_path))
+            if _status.get('consecutive_positive_windows', 0) >= 2:
+                print(f'\n  \033[92m\033[1m[COLD PHASE EXIT]\033[0m 連續2個50期窗口 edge>0，冷期已退出')
+        except Exception:
+            pass
+
+    _fns = {c['name']: c['predict_func'] for c in get_big_lotto_strategies_inline()}
+    strategy_key = DEPLOYED_STRATEGY_KEYS['BIG_LOTTO'].get(num_bets, 'p1_dev_sum5bet')
+    raw = _fns[strategy_key](history)
+    bets = [{'numbers': sorted(b)} for b in raw]
+    return enforce_tail_diversity(bets, 2, 49, history), strategy_key
 
 def predict_power(history, rules, num_bets=2, use_coordinator=True, coord_mode='direct'):
     sp = power_special_v3(history)[0]
-    if use_coordinator and num_bets in (2, 3):
-        bets, desc = _coordinator_bets('POWER_LOTTO', history, num_bets, mode=coord_mode)
+    from tools.rsm_bootstrap import get_power_lotto_strategies_inline, DEPLOYED_STRATEGY_KEYS
+    _fns = {c['name']: c['predict_func'] for c in get_power_lotto_strategies_inline()}
+    if num_bets == 2 and use_coordinator:
+        bets, desc = _coordinator_bets('POWER_LOTTO', history, 2, mode=coord_mode)
         if bets is not None:
-            strategy = desc
-        elif num_bets <= 2:
-            bets = power_fourier_rhythm_2bet(history)[:num_bets]
-            strategy = 'Fourier Rhythm'
-        else:
-            bets = power_precision_3bet(history)
-            strategy = 'Power Precision'
-    elif num_bets == 4:
-        bets = power_4bet_freqort(history)
-        strategy = 'PP3+FreqOrt'
-    else:
-        bets = power_5bet_orthogonal(history)[:num_bets]
-        strategy = 'Orthogonal 5-bet'
+            for b in bets: b['special'] = sp
+            return enforce_tail_diversity(bets, 2, 38, history), desc
+    strategy_key = DEPLOYED_STRATEGY_KEYS['POWER_LOTTO'].get(num_bets, 'orthogonal_5bet')
+    raw = _fns[strategy_key](history)
+    bets = [{'numbers': sorted(b)} for b in raw]
     for b in bets: b['special'] = sp
-    return enforce_tail_diversity(bets, 2, 38, history), strategy
+    return bets, strategy_key
 
 def predict_539(history, rules, num_bets=3, use_coordinator=True, coord_mode='direct'):
-    if num_bets == 1:
-        bets = [{'numbers': _539_acb_bet(history)}]; strategy = 'ACB Adoption'
-    elif use_coordinator and num_bets in (2, 3):
+    from tools.rsm_bootstrap import get_daily_539_strategies_inline, DEPLOYED_STRATEGY_KEYS
+    _fns = {c['name']: c['predict_func'] for c in get_daily_539_strategies_inline()}
+    if use_coordinator and num_bets in (2, 3):
         bets, desc = _coordinator_bets('DAILY_539', history, num_bets, mode=coord_mode)
         if bets is not None:
-            strategy = desc
-        elif num_bets == 2:
-            b1 = _539_midfreq_bet(history)
-            b2 = _539_acb_bet(history, exclude=set(b1))
-            bets = [{'numbers': b1}, {'numbers': b2}]
-            strategy = 'MidFreq+ACB'
-        else:
-            b1 = _539_acb_bet(history)
-            b2 = _539_markov_bet(history, exclude=set(b1))
-            excl = set(b1) | set(b2)
-            sc = _539_fourier_scores(history)
-            f_top = [n for n in sorted(sc, key=lambda x: -sc[x]) if n not in excl][:5]
-            b3 = sorted(f_top)
-            bets = [{'numbers': b1}, {'numbers': b2}, {'numbers': b3}]
-            strategy = 'ACB+Markov+Fourier'
-    else:
-        b1 = _539_acb_bet(history)
-        b2 = _539_markov_bet(history, exclude=set(b1))
-        excl = set(b1) | set(b2)
-        sc = _539_fourier_scores(history)
-        f_top = [n for n in sorted(sc, key=lambda x: -sc[x]) if n not in excl][:5]
-        b3 = sorted(f_top)
-        bets = [{'numbers': b1}, {'numbers': b2}, {'numbers': b3}]
-        strategy = 'ACB+Markov+Fourier'
-    return enforce_tail_diversity(bets, 2, 39, history), strategy
+            return enforce_tail_diversity(bets, 2, 39, history), desc
+    strategy_key = DEPLOYED_STRATEGY_KEYS['DAILY_539'].get(num_bets, 'acb_markov_midfreq_3bet')
+    raw = _fns[strategy_key](history)
+    bets = [{'numbers': sorted(b)} for b in raw]
+    return bets, strategy_key
 
 # ========== Main ==========
 
@@ -441,6 +597,22 @@ def print_prediction(lottery_type, bets, strategy, history, num_bets):
     for i, b in enumerate(bets, 1):
         print(f"  注{i}: {format_numbers(b['numbers'])}" + (f" | 特別號: {int(b['special']):02d}" if 'special' in b else ""))
     print(f"------------------------------------------------------------\n  策略: {strategy}\n  驗證: {verified_text}\n============================================================\n")
+
+
+def _print_gate_summary(lottery_type):
+    try:
+        from tools.ev_gate import evaluate_jackpot_gate, format_gate_line, format_stage2_line
+
+        gate = evaluate_jackpot_gate(lottery_type)
+        print(f"  EV Gate: {format_gate_line(gate)}")
+        print(f"  Stage2:  {format_stage2_line(gate)}")
+        print(
+            f"  Kelly:   fraction={gate.get('kelly_fraction', 0):.3f} "
+            f"recommended_bets={gate.get('recommended_bet_count')} "
+            f"after_gate={gate.get('n_bets_after_gate')}"
+        )
+    except Exception:
+        pass
 
 def _log_prediction_safe(lt, period, strat, nb, bets):
     """靜默呼叫 PredictionLogger，失敗不影響主流程"""
@@ -490,6 +662,7 @@ def main():
                     print(format_advisory_cli(pb_result))
             except Exception:
                 pass  # Advisory module failure never blocks prediction
+            _print_gate_summary(lt)
             _log_prediction_safe(lt, next_period, strat, nb, bets)
         except Exception as e: print(f"Error {lt}: {e}"); import traceback; traceback.print_exc()
 

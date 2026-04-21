@@ -1,0 +1,213 @@
+{
+  "timestamp": "20260416_114737",
+  "config": {
+    "test_draws": 300,
+    "min_history": 200,
+    "n_bets": 3,
+    "profiles": [
+      "conservative",
+      "balanced",
+      "aggressive"
+    ],
+    "lottery_types": [
+      "DAILY_539",
+      "BIG_LOTTO",
+      "POWER_LOTTO"
+    ]
+  },
+  "results": {
+    "DAILY_539": {
+      "conservative": {
+        "profile": "conservative",
+        "lottery_type": "DAILY_539",
+        "n_test": 300,
+        "n_bets": 3,
+        "hits": 108,
+        "hit_rate": 0.36,
+        "baseline": 0.517,
+        "edge": -0.157,
+        "sharpe": -0.2912,
+        "max_drawdown": 17,
+        "avg_pop_score": 48.64,
+        "avg_ev_ratio": 1.1659,
+        "variance": 0.9247
+      },
+      "balanced": {
+        "profile": "balanced",
+        "lottery_type": "DAILY_539",
+        "n_test": 300,
+        "n_bets": 3,
+        "hits": 105,
+        "hit_rate": 0.35,
+        "baseline": 0.517,
+        "edge": -0.167,
+        "sharpe": -0.314,
+        "max_drawdown": 11,
+        "avg_pop_score": 43.64,
+        "avg_ev_ratio": 1.1904,
+        "variance": 0.913
+      },
+      "aggressive": {
+        "profile": "aggressive",
+        "lottery_type": "DAILY_539",
+        "n_test": 300,
+        "n_bets": 3,
+        "hits": 102,
+        "hit_rate": 0.34,
+        "baseline": 0.517,
+        "edge": -0.177,
+        "sharpe": -0.3372,
+        "max_drawdown": 16,
+        "avg_pop_score": 36.34,
+        "avg_ev_ratio": 1.2264,
+        "variance": 0.9006
+      }
+    },
+    "BIG_LOTTO": {
+      "conservative": {
+        "profile": "conservative",
+        "lottery_type": "BIG_LOTTO",
+        "n_test": 300,
+        "n_bets": 3,
+        "hits": 17,
+        "hit_rate": 0.0567,
+        "baseline": 0.1558,
+        "edge": -0.0992,
+        "sharpe": -1.9143,
+        "max_drawdown": 49,
+        "avg_pop_score": 46.74,
+        "avg_ev_ratio": 1.2003,
+        "variance": 0.2145
+      },
+      "balanced": {
+        "profile": "balanced",
+        "lottery_type": "BIG_LOTTO",
+        "n_test": 300,
+        "n_bets": 3,
+        "hits": 14,
+        "hit_rate": 0.0467,
+        "baseline": 0.1558,
+        "edge": -0.1092,
+        "sharpe": -2.1457,
+        "max_drawdown": 65,
+        "avg_pop_score": 42.67,
+        "avg_ev_ratio": 1.2176,
+        "variance": 0.1786
+      },
+      "aggressive": {
+        "profile": "aggressive",
+        "lottery_type": "BIG_LOTTO",
+        "n_test": 300,
+        "n_bets": 3,
+        "hits": 17,
+        "hit_rate": 0.0567,
+        "baseline": 0.1558,
+        "edge": -0.0992,
+        "sharpe": -1.9143,
+        "max_drawdown": 56,
+        "avg_pop_score": 35.02,
+        "avg_ev_ratio": 1.2492,
+        "variance": 0.2145
+      }
+    },
+    "POWER_LOTTO": {
+      "conservative": {
+        "profile": "conservative",
+        "lottery_type": "POWER_LOTTO",
+        "n_test": 300,
+        "n_bets": 3,
+        "hits": 38,
+        "hit_rate": 0.1267,
+        "baseline": 0.2991,
+        "edge": -0.1724,
+        "sharpe": -1.1206,
+        "max_drawdown": 26,
+        "avg_pop_score": 62.23,
+        "avg_ev_ratio": 1.1497,
+        "variance": 0.444
+      },
+      "balanced": {
+        "profile": "balanced",
+        "lottery_type": "POWER_LOTTO",
+        "n_test": 300,
+        "n_bets": 3,
+        "hits": 41,
+        "hit_rate": 0.1367,
+        "baseline": 0.2991,
+        "edge": -0.1624,
+        "sharpe": -1.056,
+        "max_drawdown": 26,
+        "avg_pop_score": 58.56,
+        "avg_ev_ratio": 1.1661,
+        "variance": 0.4735
+      },
+      "aggressive": {
+        "profile": "aggressive",
+        "lottery_type": "POWER_LOTTO",
+        "n_test": 300,
+        "n_bets": 3,
+        "hits": 37,
+        "hit_rate": 0.1233,
+        "baseline": 0.2991,
+        "edge": -0.1757,
+        "sharpe": -1.1436,
+        "max_drawdown": 37,
+        "avg_pop_score": 52.73,
+        "avg_ev_ratio": 1.1906,
+        "variance": 0.4339
+      }
+    }
+  },
+  "behaviors": {
+    "DAILY_539": {
+      "checks": {
+        "conservative_lower_variance": true,
+        "conservative_lower_drawdown": false,
+        "balanced_is_identity": true,
+        "aggressive_lower_pop": true,
+        "aggressive_higher_ev": true,
+        "aggressive_higher_variance": true,
+        "conservative_differs": true,
+        "aggressive_differs": true
+      },
+      "change_rate_conservative": 0.9633,
+      "change_rate_aggressive": 0.9933,
+      "pass_count": 7,
+      "total_checks": 8
+    },
+    "BIG_LOTTO": {
+      "checks": {
+        "conservative_lower_variance": true,
+        "conservative_lower_drawdown": true,
+        "balanced_is_identity": true,
+        "aggressive_lower_pop": true,
+        "aggressive_higher_ev": true,
+        "aggressive_higher_variance": true,
+        "conservative_differs": true,
+        "aggressive_differs": true
+      },
+      "change_rate_conservative": 0.9333,
+      "change_rate_aggressive": 0.9967,
+      "pass_count": 8,
+      "total_checks": 8
+    },
+    "POWER_LOTTO": {
+      "checks": {
+        "conservative_lower_variance": true,
+        "conservative_lower_drawdown": true,
+        "balanced_is_identity": true,
+        "aggressive_lower_pop": true,
+        "aggressive_higher_ev": true,
+        "aggressive_higher_variance": true,
+        "conservative_differs": true,
+        "aggressive_differs": true
+      },
+      "change_rate_conservative": 0.8833,
+      "change_rate_aggressive": 0.9867,
+      "pass_count": 8,
+      "total_checks": 8
+    }
+  },
+  "verdict": "REJECT",
+  "pass_rate": 0.9583
+}

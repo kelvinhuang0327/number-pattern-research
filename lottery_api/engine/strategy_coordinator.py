@@ -286,16 +286,26 @@ class StrategyCoordinator:
     """
 
     def __init__(self, lottery_type: str, rsm_data_dir: str = None,
-                 weight_window: int = 100):
+                 weight_window: int = 100, disable_learning: bool = False,
+                 disable_quality: bool = False, profile: str = None):
         """
         Args:
             weight_window: RSM 權重來源窗口 (30=短期, 100=中期推薦, 300=長期)
+            disable_learning: If True, skip additive learning bonus entirely
+            disable_quality: If True, skip winning quality (anti-crowd + payout) bonus
+            profile: Decision profile name ('conservative'|'balanced'|'aggressive')
         """
         self.lottery_type = lottery_type
         self.agents = AGENT_REGISTRY.get(lottery_type, {})
         self.max_num = NUM_POOL.get(lottery_type, 39)
         self.bet_size = BET_SIZE.get(lottery_type, 5)
         self.weight_window = weight_window
+        self.disable_learning = disable_learning
+        self.disable_quality = disable_quality
+
+        # Phase N: Decision profile
+        from lottery_api.engine.decision_profiles import get_profile
+        self._profile = get_profile(profile, lottery_type)
 
         # 載入 RSM 狀態
         self._weights: Dict[str, float] = {}
@@ -305,6 +315,45 @@ class StrategyCoordinator:
         self._regime_status: str = 'UNKNOWN'
         self._regime_multiplier: float = 1.0
         self._load_weights(rsm_data_dir)
+
+        # v2: Load additive learning bonuses
+        # Phase K.5: Apply dynamic gating to learning signal
+        self._learning_bonuses: Dict[str, float] = {}
+        self._learning_gate: Dict = {'gate': 'DISABLED', 'factor': 0.0, 'reason': 'not loaded'}
+        if not disable_learning:
+            try:
+                from lottery_api.engine.learning_integrator import (
+                    compute_learning_bonuses, compute_learning_gate,
+                )
+                self._learning_gate = compute_learning_gate(lottery_type)
+                gate_factor = self._learning_gate['factor']
+                if gate_factor > 1e-8:
+                    raw_bonuses = compute_learning_bonuses(lottery_type, self.agents)
+                    # Apply gate factor to bonuses at load time
+                    self._learning_bonuses = {
+                        agent: bonus * gate_factor
+                        for agent, bonus in raw_bonuses.items()
+                    }
+                    logger.info(f"Learning gate={self._learning_gate['gate']} "
+                                f"factor={gate_factor} for {lottery_type}")
+                else:
+                    logger.info(f"Learning DISABLED by gate: {self._learning_gate['reason']}")
+            except Exception as e:
+                logger.warning(f"Learning bonus load failed: {e}")
+                self._learning_bonuses = {}
+
+        # Phase M: Winning quality scorer (anti-crowd + payout quality)
+        self._quality_scorer = None
+        if not disable_quality:
+            try:
+                from lottery_api.engine.winning_quality import WinningQualityScorer
+                self._quality_scorer = WinningQualityScorer(lottery_type, enabled=True)
+            except Exception as e:
+                logger.warning(f"Quality scorer load failed: {e}")
+                self._quality_scorer = None
+
+        # Phase P: Explainability trace (populated by aggregate_scores)
+        self._last_trace: Dict = {}
 
     def _candidate_data_dirs(self, data_dir: Optional[str]) -> List[str]:
         candidates = []
@@ -452,6 +501,10 @@ class StrategyCoordinator:
         elif neg >= 5:
             w *= 0.8
 
+        # v1 multiplicative research_multiplier REMOVED (v2: additive bonus)
+        # The multiplicative path was proven ineffective by A/B validation:
+        # uniform k cancels in weight normalization: (k·w_i)/Σ(k·w_j) = w_i/Σw_j
+
         return max(w, 0.02)
 
     def _load_weights(self, data_dir: str = None):
@@ -512,17 +565,96 @@ class StrategyCoordinator:
 
 
     def aggregate_scores(self, history: list) -> Dict[int, float]:
-        """執行所有 Agent，加權聚合回全號碼評分"""
+        """
+        執行所有 Agent，加權聚合回全號碼評分。
+
+        v2: After normalized weight aggregation, applies per-agent additive
+        learning bonus. Because the bonus is additive (not multiplicative on
+        weights), it bypasses the normalization that killed v1's signal.
+        """
         total_weights = sum(self._weights.values()) or 1.0
         final: Dict[int, float] = {n: 0.0 for n in range(1, self.max_num + 1)}
+
+        # Cache normalized scores per agent for bonus application
+        agent_norm_scores: Dict[str, Dict[int, float]] = {}
+
+        # Phase P: track per-agent weighted contribution for explainability
+        agent_weighted_contrib: Dict[str, float] = {}
 
         for agent_name, cfg in self.agents.items():
             raw_scores = cfg['fn'](history)
             norm_scores = _normalize(raw_scores)
+            agent_norm_scores[agent_name] = norm_scores
             w = self._weights.get(agent_name, 1.0) / total_weights
 
+            contrib_sum = 0.0
             for n, s in norm_scores.items():
                 final[n] = final.get(n, 0.0) + w * s
+                contrib_sum += w * s
+            agent_weighted_contrib[agent_name] = contrib_sum
+
+        # Phase P: snapshot scores BEFORE learning bonus
+        scores_before_learning = dict(final)
+
+        # v2: Additive learning bonus — applied AFTER normalization
+        # Phase N: scaled by profile.learning_amp
+
+        learning_amp = self._profile.learning_amp
+        learning_applied_agents: Dict[str, float] = {}
+        if self._learning_bonuses and abs(learning_amp) > 1e-8:
+            for agent_name, norm_scores in agent_norm_scores.items():
+                bonus = self._learning_bonuses.get(agent_name, 0.0)
+                if abs(bonus) < 1e-8:
+                    continue
+                learning_applied_agents[agent_name] = learning_amp * bonus
+                for n, s in norm_scores.items():
+                    final[n] += learning_amp * bonus * s
+
+        # Phase P: snapshot scores BEFORE quality bonus
+        scores_before_quality = dict(final)
+
+        # Phase M: Winning quality bonus (anti-crowd + payout quality)
+        # Phase N: scaled by profile.quality_amp
+        quality_delta_summary: Dict[str, float] = {}
+        if self._quality_scorer is not None:
+            quality_amp = self._profile.quality_amp
+            if abs(quality_amp - 1.0) < 1e-6:
+                final = self._quality_scorer.apply(final)
+            else:
+                # Apply with custom amplitude
+                base_final = dict(final)
+                adjusted = self._quality_scorer.apply(final)
+                for n in final:
+                    delta = adjusted[n] - base_final[n]
+                    final[n] = base_final[n] + quality_amp * delta
+            # Phase P: summarize quality delta
+            total_quality_delta = sum(abs(final[n] - scores_before_quality[n]) for n in final)
+            quality_delta_summary = {
+                'total_abs_delta': total_quality_delta,
+                'quality_amp': self._profile.quality_amp,
+            }
+
+        # Phase P: build ranking comparison (top-N before/after bonuses)
+        top_before = sorted(scores_before_learning, key=lambda n: -scores_before_learning[n])[:self.bet_size * 3]
+        top_after_learning_only = sorted(scores_before_quality, key=lambda n: -scores_before_quality[n])[:self.bet_size * 3]
+        top_after = sorted(final, key=lambda n: -final[n])[:self.bet_size * 3]
+        ranking_changed_by_learning = top_before[:self.bet_size] != top_after_learning_only[:self.bet_size]
+        ranking_changed_by_quality = top_after_learning_only[:self.bet_size] != top_after[:self.bet_size]
+        ranking_changed = top_before[:self.bet_size] != top_after[:self.bet_size]
+
+        # Phase P: store trace on instance for later retrieval
+        self._last_trace = {
+            'agent_weights': {a: round(self._weights.get(a, 0) / total_weights, 6)
+                              for a in self.agents},
+            'agent_weighted_contrib': {a: round(v, 6) for a, v in agent_weighted_contrib.items()},
+            'learning_applied_agents': {a: round(v, 6) for a, v in learning_applied_agents.items()},
+            'quality_delta_summary': quality_delta_summary,
+            'top_agents_before_bonus': top_before[:self.bet_size],
+            'top_agents_after_bonus': top_after[:self.bet_size],
+            'ranking_changed': ranking_changed,
+            'ranking_changed_by_learning': ranking_changed_by_learning,
+            'ranking_changed_by_quality': ranking_changed_by_quality,
+        }
 
         return final
 
@@ -536,6 +668,8 @@ class StrategyCoordinator:
         生成 N 注正交預測
 
         從聚合分數排名中依序切片，每注互不重疊。
+        注意：不同 n_bets 的前 n-1 注保持一致（設計行為）。
+        若需要依 n_bets 獨立預測，請在呼叫端直接使用對應驗證策略。
         """
         ranked = self.rank_numbers(history)
         bets = []
@@ -629,6 +763,218 @@ class StrategyCoordinator:
             lines.append(f"    {name:12s}: {w:.4f} ({'+' if w>0.1 else '~'}, {src})")
         return '\n'.join(lines)
 
+    def get_explanation(self) -> Dict:
+        """
+        Phase P: Build structured explanation object from last aggregate_scores() run.
+
+        Must be called AFTER predict() or aggregate_scores() to get meaningful data.
+        Returns the complete explainability snapshot.
+        """
+        gate = self._learning_gate
+        profile = self._profile
+        trace = self._last_trace
+
+        # ── Best strategy from strategy_states ─────────────────────────────
+        selected_strategy = 'coordinator_direct'
+        validated_status = 'WATCH'
+        base_composite_score = None
+        base_edge_150p = None
+        base_edge_500p = None
+        base_edge_1500p = None
+        try:
+            states_path = os.path.join(
+                project_root, 'lottery_api', 'data',
+                f'strategy_states_{self.lottery_type}.json'
+            )
+            if not os.path.exists(states_path):
+                states_path = os.path.join(project_root, 'data',
+                                           f'strategy_states_{self.lottery_type}.json')
+            if os.path.exists(states_path):
+                with open(states_path, 'r', encoding='utf-8') as _f:
+                    states = json.load(_f)
+                # Rank: VALIDATED=2, WATCH=1, else=0; then by composite_score desc
+                def _rank_state(item):
+                    vs = item.get('validated_status', '')
+                    pri = 2 if vs == 'VALIDATED' else (1 if vs == 'WATCH' else 0)
+                    cs = item.get('composite_score') or 0.0
+                    return (pri, cs)
+                best_state = max(states.values(), key=_rank_state) if states else {}
+                if best_state:
+                    selected_strategy = best_state.get('name', 'coordinator_direct')
+                    validated_status = best_state.get('validated_status', 'WATCH') or 'WATCH'
+                    base_composite_score = best_state.get('composite_score')
+                    base_edge_150p = best_state.get('edge_150p')
+                    base_edge_500p = best_state.get('edge_500p')
+                    base_edge_1500p = best_state.get('edge_1500p')
+        except Exception as _e:
+            logger.debug(f"Strategy states read failed (non-fatal): {_e}")
+
+        # ── Learning explanation ────────────────────────────────────────────
+        learning_bonuses_by_agent = {}
+        for agent in self.agents:
+            raw = self._learning_bonuses.get(agent, 0.0)
+            if abs(raw) > 1e-8:
+                learning_bonuses_by_agent[agent] = round(raw, 6)
+
+        learning_enabled = gate.get('gate', 'DISABLED') != 'DISABLED'
+        ranking_changed_by_learning = bool(trace.get('ranking_changed_by_learning', False))
+        ranking_changed_by_quality = bool(trace.get('ranking_changed_by_quality', False))
+        boosted = [a for a, v in trace.get('learning_applied_agents', {}).items() if v > 0]
+        penalized = [a for a, v in trace.get('learning_applied_agents', {}).items() if v < 0]
+
+        # Build learning summary text
+        gate_label = gate.get('gate', 'DISABLED')
+        if gate_label == 'DISABLED':
+            learning_summary = f"{self.lottery_type} learning disabled: {gate.get('reason', 'unknown')}"
+        elif gate_label == 'WEAK':
+            learning_summary = (f"{self.lottery_type} learning weak: low research_score, "
+                                f"bonus scaled to {gate.get('factor', 0.5)}")
+        else:
+            if ranking_changed_by_learning:
+                parts = []
+                if boosted:
+                    parts.append(f"boosted {', '.join(boosted)}")
+                if penalized:
+                    parts.append(f"penalized {', '.join(penalized)}")
+                learning_summary = (f"{self.lottery_type} learning active: "
+                                    f"{' and '.join(parts)}")
+            else:
+                learning_summary = f"{self.lottery_type} learning active but ranking unchanged"
+
+        # ── Quality explanation ─────────────────────────────────────────────
+        qd = trace.get('quality_delta_summary', {})
+        quality_enabled = self._quality_scorer is not None
+        total_quality_delta = round(qd.get('total_abs_delta', 0.0), 6)
+        quality_label = '已調整熱門度' if (quality_enabled and total_quality_delta > 1e-6) else '未調整'
+        if quality_enabled and total_quality_delta > 1e-6:
+            quality_summary = (f"quality bonus applied (amp={qd.get('quality_amp', 1.0)}, "
+                                f"total abs delta={total_quality_delta:.4f})")
+        elif not quality_enabled:
+            quality_summary = "quality scoring disabled"
+        else:
+            quality_summary = "quality scoring enabled but no delta"
+
+        # ── Profile explanation ─────────────────────────────────────────────
+        profile_effects = []
+        if profile.learning_amp != 1.0:
+            profile_effects.append(f"learning×{profile.learning_amp}")
+        if profile.quality_amp != 1.0:
+            profile_effects.append(f"quality×{profile.quality_amp}")
+        if profile.var_n_scale != 1.0:
+            profile_effects.append(f"var_n×{profile.var_n_scale}")
+        if profile.concentration_bias != 1.0:
+            if profile.concentration_bias > 1.0:
+                profile_effects.append("concentration increased")
+            else:
+                profile_effects.append("diversification favored")
+        profile_summary = (f"profile={profile.name}: {', '.join(profile_effects)}"
+                           if profile_effects
+                           else f"profile={profile.name}: no amplification changes")
+
+        # ── Hypothesis info ─────────────────────────────────────────────────
+        n_total = gate.get('n_total', 0)
+        n_validated = gate.get('n_validated', 0)
+        n_rejected = gate.get('n_rejected', 0)
+        n_provisional = gate.get('n_provisional', 0)
+
+        # ── Decision fields ─────────────────────────────────────────────────
+        last_n_bets = getattr(self, '_last_n_bets', 3)
+        # final_n_bets = actual bets in last predict call (profile may scale via apply_var_n_scale)
+        final_n_bets = getattr(self, '_last_final_n_bets', last_n_bets)
+
+        # ── Final reason (one-sentence human-readable) ──────────────────────
+        profile_label_map = {'conservative': '保守', 'balanced': '平衡', 'aggressive': '積極'}
+        vs_label_map = {'VALIDATED': '✅ 已完整驗證', 'WATCH': '⚠️ 觀察中', 'REJECTED': '❌ 未通過驗證'}
+        profile_zh = profile_label_map.get(profile.name, profile.name)
+        vs_zh = vs_label_map.get(validated_status, validated_status)
+
+        reasons = []
+        if ranking_changed_by_learning and gate_label in ('ENABLED', 'WEAK'):
+            reasons.append(f"learning({gate_label})" + ("壓低弱策略" if penalized else "提升強策略"))
+        if ranking_changed_by_quality and quality_enabled:
+            reasons.append("quality降低熱門度")
+        if not reasons:
+            reasons.append("基礎 agent 加權排序")
+
+        final_reason = (f"採用 {selected_strategy}（{vs_zh}，{profile_zh}模式）。"
+                        f"因{'、'.join(reasons)}，最終排名{'有' if trace.get('ranking_changed', False) else '無'}變動。")
+
+        return {
+            'lottery_type': self.lottery_type,
+            'profile': profile.name,
+            'selected_strategy': selected_strategy,
+            'validated_status': validated_status,
+            'base': {
+                'composite_score': round(float(base_composite_score), 6) if base_composite_score is not None else None,
+                'edge_150p': round(float(base_edge_150p), 6) if base_edge_150p is not None else None,
+                'edge_500p': round(float(base_edge_500p), 6) if base_edge_500p is not None else None,
+                'edge_1500p': round(float(base_edge_1500p), 6) if base_edge_1500p is not None else None,
+            },
+            'learning': {
+                'enabled': learning_enabled,
+                'gate': gate_label,
+                'factor': gate.get('factor', 0.0),
+                'research_score': round(gate.get('research_score', 0.0), 6),
+                'bonus_by_agent': learning_bonuses_by_agent,
+                'boosted_agents': boosted,
+                'penalized_agents': penalized,
+                'ranking_changed': ranking_changed_by_learning,
+                'bonus_summary': learning_summary,
+                'hypotheses': {
+                    'total': n_total,
+                    'validated': n_validated,
+                    'rejected': n_rejected,
+                    'provisional': n_provisional,
+                },
+            },
+            'quality': {
+                'enabled': quality_enabled,
+                'quality_amp': profile.quality_amp,
+                'total_abs_delta': total_quality_delta,
+                'ranking_changed': ranking_changed_by_quality,
+                'quality_label': quality_label,
+                'quality_summary': quality_summary,
+            },
+            'decision': {
+                'base_n_bets': last_n_bets,
+                'final_n_bets': final_n_bets,
+                'concentration_bias': profile.concentration_bias,
+            },
+            'final_reason': final_reason,
+            # ── Extended fields (for detailed UI) ──────────────────────────
+            'base_score_summary': {
+                'agent_weights': trace.get('agent_weights', {}),
+                'drift_status': self._drift_status,
+                'drift_multiplier': round(self._drift_multiplier, 4),
+                'regime_status': self._regime_status,
+                'regime_multiplier': round(self._regime_multiplier, 4),
+            },
+            'learning_detail': {
+                'gate': gate_label,
+                'factor': gate.get('factor', 0.0),
+                'research_score': round(gate.get('research_score', 0.0), 6),
+                'bonus_by_agent': learning_bonuses_by_agent,
+                'boosted_agents': boosted,
+                'penalized_agents': penalized,
+                'ranking_changed': ranking_changed_by_learning,
+                'summary': learning_summary,
+            },
+            'profile_detail': {
+                'name': profile.name,
+                'learning_amp': profile.learning_amp,
+                'quality_amp': profile.quality_amp,
+                'var_n_scale': profile.var_n_scale,
+                'concentration_bias': profile.concentration_bias,
+                'risk_mode': profile.risk_mode,
+                'summary': profile_summary,
+            },
+            'selection': {
+                'top_numbers_before_bonus': trace.get('top_agents_before_bonus', []),
+                'top_numbers_after_bonus': trace.get('top_agents_after_bonus', []),
+                'ranking_changed': trace.get('ranking_changed', False),
+            },
+        }
+
 
 # ============================================================
 # 快速預測包裝
@@ -636,12 +982,14 @@ class StrategyCoordinator:
 
 def coordinator_predict(lottery_type: str, history: list, n_bets: int,
                         mode: str = 'direct',
-                        rsm_data_dir: str = None) -> Tuple[List[List[int]], str]:
+                        rsm_data_dir: str = None,
+                        profile: str = None) -> Tuple[List[List[int]], str]:
     """
     對外統一介面
 
     Args:
         mode: 'direct' = 排名切片; 'hybrid' = 候選池縮小後再選
+        profile: Decision profile ('conservative'|'balanced'|'aggressive')
 
     Returns:
         (bets, description)
@@ -649,7 +997,8 @@ def coordinator_predict(lottery_type: str, history: list, n_bets: int,
     if rsm_data_dir is None:
         rsm_data_dir = os.path.join(project_root, 'data')
 
-    coord = StrategyCoordinator(lottery_type, rsm_data_dir=rsm_data_dir)
+    coord = StrategyCoordinator(lottery_type, rsm_data_dir=rsm_data_dir,
+                                profile=profile)
 
     if mode == 'hybrid':
         bets = coord.predict_hybrid(history, n_bets=n_bets)
@@ -658,7 +1007,28 @@ def coordinator_predict(lottery_type: str, history: list, n_bets: int,
         bets = coord.predict(history, n_bets=n_bets)
         desc = f'Coordinator-Direct ({len(coord.agents)} agents)'
 
+    # Phase P: store n_bets metadata for explanation
+    coord._last_n_bets = n_bets
+    coord._last_final_n_bets = len(bets)
+
+    # Phase P: attach explanation to module-level cache for retrieval
+    global _last_explanation
+    try:
+        _last_explanation = coord.get_explanation()
+    except Exception as e:
+        logger.warning(f"Explanation build failed: {e}")
+        _last_explanation = None
+
     return bets, desc
+
+
+# Phase P: Module-level explanation cache
+_last_explanation: Optional[Dict] = None
+
+
+def get_last_explanation() -> Optional[Dict]:
+    """Retrieve the explanation from the most recent coordinator_predict() call."""
+    return _last_explanation
 
 
 # ============================================================

@@ -117,6 +117,7 @@ class DecisionResult:
     portfolio_type:     str           # "coverage_only" | "coverage+concentration"
     mode:               str           # "v2" | "legacy"
     policy_id:          Optional[str] = None
+    profile:            str = "balanced"  # Phase N: decision profile name
     notes:              str = ""
 
     def to_dict(self) -> Dict:
@@ -382,6 +383,7 @@ class StrategySelector:
         states: Dict,
         confidence_vector: ConfidenceVector,
         mode: str = "auto",
+        coordinator=None,
     ) -> str:
         """
         mode:
@@ -408,7 +410,14 @@ class StrategySelector:
 
         if effective_mode == "ucb1":
             t = sum(self._counts.values())
-            scores = {s: self._ucb1_score(s, t) for s in states}
+            scores = {}
+            for s in states:
+                base_score = self._ucb1_score(s, t)
+                if coordinator is not None and base_score != float("inf"):
+                    base_score = LearningAwareDecision.adjust_ucb1_reward(
+                        base_score, s, coordinator,
+                    )
+                scores[s] = base_score
             return max(scores, key=scores.get)
 
         return max(states.items(), key=lambda x: x[1].get("edge_300p", 0.0))[0]
@@ -470,6 +479,116 @@ class PortfolioBuilder:
             extra_bets.append(sorted(chosen))
 
         return core_bets + extra_bets, "coverage+concentration"
+
+
+# ═══════════════════════════════════════════════════════════════════════════
+# Phase 4b — Learning-Aware Decision Modifiers
+# ═══════════════════════════════════════════════════════════════════════════
+
+# Per-lottery amplification factors (from Phase K validation)
+LEARNING_AMP = {
+    "DAILY_539":   0.5,   # near-zero effect → dampen
+    "BIG_LOTTO":   3.0,   # very small bonuses → amplify
+    "POWER_LOTTO": 2.0,   # strong signal → moderate amp
+}
+
+# Confidence shift scale: learning_score * scale → confidence delta
+LEARNING_CONFIDENCE_SCALE = 0.10
+
+# Portfolio concentration pool size range
+CONCENTRATION_TOP_N_HIGH = 10   # high learning → allow concentration
+CONCENTRATION_TOP_N_LOW  = 20   # low learning → enforce diversification
+CONCENTRATION_TOP_N_DEFAULT = 15
+
+# Threshold for "meaningful" learning signal
+LEARNING_SIGNAL_THRESHOLD = 0.005
+
+
+class LearningAwareDecision:
+    """
+    Phase L: Learning → Decision Integration (2026-04-16)
+
+    Modifies decision-layer behavior based on learning signals WITHOUT
+    changing the prediction engine or hypothesis system.
+
+    Integration points:
+      1. UCB1 reward: adds learning bonus to strategy reward signal
+      2. Var-N bet sizing: shifts confidence by learning_score
+      3. Portfolio construction: adjusts concentration_top_n
+      4. Lottery-specific: per-lottery amplification factors
+    """
+
+    @staticmethod
+    def compute_learning_score(coordinator) -> float:
+        """
+        Aggregate per-agent learning bonuses into a single scalar.
+
+        Returns:
+            learning_score: mean of bonuses (signed), amplified per lottery.
+            Positive = learning supports current strategies.
+            Negative = learning rejects current strategies.
+        """
+        bonuses = coordinator._learning_bonuses
+        if not bonuses:
+            return 0.0
+        amp = LEARNING_AMP.get(coordinator.lottery_type, 1.0)
+        mean_bonus = sum(bonuses.values()) / len(bonuses)
+        return mean_bonus * amp
+
+    @staticmethod
+    def adjust_ucb1_reward(
+        base_reward: float,
+        strategy_name: str,
+        coordinator,
+    ) -> float:
+        """
+        Adjust UCB1 reward signal using per-agent learning bonus.
+
+        Strategies aligned with validated learning get reward boost;
+        strategies aligned with rejected learning get penalized.
+        """
+        bonuses = coordinator._learning_bonuses
+        if not bonuses:
+            return base_reward
+        amp = LEARNING_AMP.get(coordinator.lottery_type, 1.0)
+        agent_bonus = bonuses.get(strategy_name, 0.0) * amp
+        return base_reward + agent_bonus
+
+    @staticmethod
+    def adjust_confidence(
+        base_confidence: float,
+        learning_score: float,
+    ) -> float:
+        """
+        Boost confidence based on learning signal STRENGTH (absolute value).
+
+        Any learning (positive OR negative) means the system has actionable
+        signal — positive boosts good strategies, negative suppresses bad ones.
+        Both increase decision quality → confidence UP → more bets.
+        """
+        signal_strength = abs(learning_score)
+        if signal_strength < LEARNING_SIGNAL_THRESHOLD:
+            return base_confidence
+        delta = signal_strength * LEARNING_CONFIDENCE_SCALE
+        return float(np.clip(base_confidence + delta, 0.0, 1.0))
+
+    @staticmethod
+    def get_concentration_top_n(learning_score: float) -> int:
+        """
+        Adjust portfolio concentration based on learning signal strength.
+
+        Strong signal (either direction) → smaller pool (concentration).
+        Weak/no signal → stay at default.
+
+        The additive bonuses already handle WHICH agents to boost/suppress,
+        so concentration should reflect signal STRENGTH, not direction.
+        """
+        signal_strength = abs(learning_score)
+        if signal_strength < LEARNING_SIGNAL_THRESHOLD:
+            return CONCENTRATION_TOP_N_DEFAULT
+        t = min(signal_strength / 0.05, 1.0)  # saturate at 0.05
+        return round(CONCENTRATION_TOP_N_DEFAULT
+                     - t * (CONCENTRATION_TOP_N_DEFAULT - CONCENTRATION_TOP_N_HIGH))
 
 
 # ═══════════════════════════════════════════════════════════════════════════
@@ -1134,6 +1253,7 @@ class DecisionEngineV2:
         history: Optional[List[Dict]] = None,
         policy_override: Optional[PolicyConfig] = None,
         verbose: bool = False,
+        profile: Optional[str] = None,
     ) -> DecisionResult:
         """
         Main decision entry point.
@@ -1144,9 +1264,16 @@ class DecisionEngineV2:
             history:          override history (auto-loaded from DB if None)
             policy_override:  use specific policy (skips policy memory lookup)
             verbose:          print debug info
+            profile:          Phase N decision profile override
         """
         if self.legacy_mode:
             return self._legacy_decide(lottery_type, n_bets)
+
+        # Phase N: resolve profile
+        from lottery_api.engine.decision_profiles import (
+            get_profile, apply_var_n_scale, apply_concentration_bias,
+        )
+        prof = get_profile(profile, lottery_type)
 
         # Load data
         if history is None:
@@ -1169,27 +1296,41 @@ class DecisionEngineV2:
         cv = self.conf_engine.compute(lottery_type, history, states)
         final_conf = cv.final()
 
-        # ── Phase 2: Variable-N ────────────────────────────────────────────
+        # ── Phase L: Learning-Aware Confidence Adjustment ─────────────────
+        learning_score = LearningAwareDecision.compute_learning_score(coordinator)
+        adjusted_conf = LearningAwareDecision.adjust_confidence(final_conf, learning_score)
+
+        # ── Phase 2: Variable-N (using learning-adjusted confidence) ──────
         if n_bets is None:
             policy = policy_override or self.researcher.get_best_adopted(lottery_type)
             if policy:
-                n_bets = policy.n_bets_for(final_conf, MAX_BETS[lottery_type])
+                n_bets = policy.n_bets_for(adjusted_conf, MAX_BETS[lottery_type])
             else:
-                n_bets = self.varn_policy.decide(lottery_type, final_conf)
+                n_bets = self.varn_policy.decide(lottery_type, adjusted_conf)
+            # Phase N: scale by profile
+            n_bets = apply_var_n_scale(n_bets, prof, MAX_BETS[lottery_type])
 
         if verbose:
-            print(f"[V2] {lottery_type}: confidence={final_conf:.3f} → n_bets={n_bets}")
+            print(f"[V2] {lottery_type}: confidence={final_conf:.3f} "
+                  f"→ adjusted={adjusted_conf:.3f} (learning={learning_score:+.4f}) "
+                  f"→ n_bets={n_bets} [profile={prof.name}]")
             print(f"     vector: {cv.to_dict()}")
 
         # ── Phase 3: Strategy Selection ────────────────────────────────────
-        strategy_name = self.selector.select(lottery_type, states, cv)
+        strategy_name = self.selector.select(
+            lottery_type, states, cv, coordinator=coordinator,
+        )
         if verbose:
             print(f"[V2] selected strategy: {strategy_name}")
 
-        # ── Phase 4: Portfolio Geometry ────────────────────────────────────
+        # ── Phase 4: Portfolio Geometry (learning-aware concentration) ─────
+        concentration_n = LearningAwareDecision.get_concentration_top_n(learning_score)
+        # Phase N: apply concentration bias from profile
+        concentration_n = apply_concentration_bias(concentration_n, prof)
         try:
             bets, portfolio_type = self.portfolio.build(
-                lottery_type, history, n_bets, coordinator
+                lottery_type, history, n_bets, coordinator,
+                concentration_top_n=concentration_n,
             )
         except Exception as e:
             logger.warning(f"Portfolio build failed, falling back to coordinator: {e}")
@@ -1208,6 +1349,7 @@ class DecisionEngineV2:
             portfolio_type   = portfolio_type,
             mode             = "v2",
             policy_id        = policy_id,
+            profile          = prof.name,
         )
 
     def run_policy_search(

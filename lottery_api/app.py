@@ -6,7 +6,7 @@ import logging
 import os
 
 # Import Routers
-from routes import prediction, data, optimization, admin, backtest, ingest, prediction_tracking
+from routes import prediction, data, optimization, admin, backtest, ingest, prediction_tracking, decision, reviews, research, explainability, actionable, confidence, promotion
 
 # Import System Utilities
 from utils.scheduler import scheduler
@@ -43,6 +43,15 @@ app.add_middleware(
 )
 
 # Startup Event
+def _run_research_job():
+    """Sync wrapper for the APScheduler cron job."""
+    try:
+        from engine.research_runner import run_research_cycle
+        result = run_research_cycle(n_perm=50, verbose=False)
+        logger.info(f"[ResearchJob] Cycle done: {result.get('summary', {})}")
+    except Exception as e:
+        logger.error(f"[ResearchJob] Failed: {e}")
+
 @app.on_event("startup")
 async def startup_event():
     """Application Startup Logic"""
@@ -58,6 +67,24 @@ async def startup_event():
         logger.info(f">>> Snapshot startup_check: {summary}")
     except Exception as e:
         logger.warning(f">>> snapshot_scheduler startup_check failed (non-fatal): {e}")
+
+    # ── Research Runner: schedule daily auto-research at 04:00 ──
+    try:
+        from apscheduler.schedulers.asyncio import AsyncIOScheduler
+        from apscheduler.triggers.cron import CronTrigger
+
+        research_scheduler = AsyncIOScheduler()
+        research_scheduler.add_job(
+            _run_research_job,
+            trigger=CronTrigger(hour=4, minute=0),
+            id='daily_research',
+            name='Daily Auto-Research Cycle',
+            replace_existing=True,
+        )
+        research_scheduler.start()
+        logger.info(">>> Research scheduler started (daily at 04:00)")
+    except Exception as e:
+        logger.warning(f">>> Research scheduler setup failed (non-fatal): {e}")
 
 # Register Routers
 # admin: / and /health and /api/ping (no common prefix)
@@ -80,6 +107,27 @@ app.include_router(ingest.router, tags=["Ingest"])
 
 # tracking: /api/tracking/* — prediction snapshot & result tracking
 app.include_router(prediction_tracking.router, tags=["Tracking"])
+
+# decision: /api/decision/* — Decision Layer V3 per-draw recommendations
+app.include_router(decision.router, tags=["Decision"])
+
+# reviews: /api/reviews/* — Research Review System
+app.include_router(reviews.router, tags=["Reviews"])
+
+# research: /api/research/* — Autonomous Research Runner
+app.include_router(research.router, tags=["Research"])
+
+# explainability: /api/explainability/* — Phase P Decision Trace
+app.include_router(explainability.router, tags=["Explainability"])
+
+# actionable: /api/actionable/* — Phase Q Actionable Intelligence
+app.include_router(actionable.router, tags=["Actionable"])
+
+# confidence: /api/confidence/* — Phase T Statistical Confidence Layer
+app.include_router(confidence.router, tags=["Confidence"])
+
+# promotion: /api/strategy/promotion-* — Phase U Strategy Promotion Engine
+app.include_router(promotion.router, tags=["Promotion"])
 
 if __name__ == "__main__":
     import uvicorn

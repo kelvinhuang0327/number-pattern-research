@@ -28,7 +28,7 @@ from common import normalize_lottery_type, load_backend_history, get_data_range_
 from config import optimal_prediction_config
 from models.strategy_adapter import strategy_adapter
 from models.regime_monitor import get_regime_monitor
-from engine.strategy_coordinator import coordinator_predict
+from engine.strategy_coordinator import coordinator_predict, get_last_explanation
 
 # Initialize enhanced predictors
 enhanced_predictor = EnhancedPredictor()
@@ -46,10 +46,12 @@ def _build_coordinator_result(
     lottery_type: str,
     lottery_rules: Dict,
     num_bets: int,
-    mode: str
+    mode: str,
+    profile: str = None,
 ) -> Dict:
     """Coordinator 預測結果封裝（供多個端點重用）"""
-    bets, desc = coordinator_predict(lottery_type, history, n_bets=num_bets, mode=mode)
+    bets, desc = coordinator_predict(lottery_type, history, n_bets=num_bets, mode=mode,
+                                     profile=profile)
     if not bets:
         raise HTTPException(status_code=500, detail="Coordinator 未返回有效投注組合")
 
@@ -87,6 +89,14 @@ def _build_coordinator_result(
         result["modelInfo"]["player_behavior"] = analyze_tickets(payload_bets, lottery_type)
     except Exception:
         pass  # Advisory module failure never blocks prediction
+
+    # Phase P: Attach explainability snapshot
+    try:
+        explanation = get_last_explanation()
+        if explanation:
+            result["modelInfo"]["explanation"] = explanation
+    except Exception:
+        pass  # Explainability failure never blocks prediction
 
     return result
 
@@ -239,7 +249,8 @@ async def predict(request: PredictRequest):
 async def predict_from_backend(
     request: PredictFromBackendRequest,
     coord_mode: Optional[str] = Query(None, description="Coordinator 模式: direct 或 hybrid"),
-    coord_bets: int = Query(3, ge=1, le=5, description="Coordinator 注數")
+    coord_bets: int = Query(3, ge=1, le=5, description="Coordinator 注數"),
+    profile: Optional[str] = Query(None, description="Phase N decision profile: conservative, balanced, aggressive"),
 ):
     """
     使用後端已存儲的數據進行預測（優化版）
@@ -285,7 +296,8 @@ async def predict_from_backend(
             return cached_result
         
         if request.modelType in ("coordinator", "coordinator_direct", "coordinator_hybrid"):
-            result = _build_coordinator_result(history, lottery_type, lottery_rules, coord_bets, resolved_coord_mode)
+            result = _build_coordinator_result(history, lottery_type, lottery_rules, coord_bets, resolved_coord_mode,
+                                               profile=profile)
         elif request.modelType == "prophet":
             result = await get_prophet_predictor().predict(history, lottery_rules)
         elif request.modelType == "xgboost":
@@ -2082,22 +2094,20 @@ async def record_performance_hit(hit_count: int = Query(..., ge=0, description="
 # Next-Draw Summary Endpoint
 # ---------------------------------------------------------------------------
 
+# NOTE: strategy_key values must match DEPLOYED_STRATEGY_KEYS in tools/rsm_bootstrap.py
+# CLI quick_predict.py reads from there; this file drives the frontend API.
 _NEXT_DRAW_CONFIG = {
     "DAILY_539": [
         {"bet_count": 1,  "strategy_key": "acb_1bet",                "strategy_label": "ACB 1注"},
-        {"bet_count": 2,  "strategy_key": "midfreq_acb_2bet",        "strategy_label": "MidFreq+ACB 2注"},
-        {"bet_count": 3,  "strategy_key": "acb_markov_midfreq_3bet", "strategy_label": "ACB+Markov+MidFreq 3注"},
-        {"bet_count": 5,  "strategy_key": "f4cold_5bet",             "strategy_label": "F4Cold 5注"},
     ],
     "BIG_LOTTO": [
-        {"bet_count": 2, "strategy_key": "regime_2bet",     "strategy_label": "Regime 2注"},
-        {"bet_count": 3, "strategy_key": "ts3_regime_3bet", "strategy_label": "TS3+Regime 3注"},
-        {"bet_count": 5, "strategy_key": "p1_dev_sum5bet",  "strategy_label": "P1+Dev+Sum 5注"},
+        {"bet_count": 2, "strategy_key": "regime_2bet",       "strategy_label": "Regime 2注"},
+        {"bet_count": 3, "strategy_key": "ts3_regime_3bet",   "strategy_label": "TS3+Regime 3注"},
+        {"bet_count": 4, "strategy_key": "p1_deviation_4bet", "strategy_label": "P1+Dev 4注"},
+        {"bet_count": 5, "strategy_key": "p1_dev_sum5bet",    "strategy_label": "P1+Dev+Sum 5注"},
     ],
     "POWER_LOTTO": [
-        {"bet_count": 3, "strategy_key": "fourier_rhythm_3bet", "strategy_label": "Fourier Rhythm 3注"},
-        {"bet_count": 4, "strategy_key": "pp3_freqort_4bet",    "strategy_label": "PP3+FreqOrt 4注"},
-        {"bet_count": 5, "strategy_key": "orthogonal_5bet",     "strategy_label": "正交 5注"},
+        {"bet_count": 2, "strategy_key": "midfreq_fourier_2bet",  "strategy_label": "MidFreq+Fourier 2注"},
     ],
 }
 
@@ -2109,6 +2119,17 @@ _GAME_STATUS_INFO = {
 
 
 def _derive_strategy_status(state: dict) -> str:
+    # Phase V: use validated_status when available
+    # RULE: VALIDATED → PRODUCTION, WATCH → WATCH (never upgrade), REJECTED → ADVISORY_ONLY
+    vs = state.get("validated_status")
+    if vs == "VALIDATED":
+        return "PRODUCTION"
+    if vs == "WATCH":
+        # WATCH stays as WATCH — never promote to PRODUCTION via old edge_300p logic
+        return "WATCH"
+    if vs in ("REJECTED", "REJECT"):
+        return "ADVISORY_ONLY"
+    # Legacy fallback
     edge = state.get("edge_300p", 0) or 0
     trend = state.get("trend", "STABLE")
     alert = state.get("alert", False)
@@ -2188,14 +2209,35 @@ async def next_draw_summary(
 
         try:
             history, lottery_rules = _load_history_with_db_fallback(lt, min_required=10)
-            # Capture latest period BEFORE slicing (history is newest-first, index 0 = most recent)
+            # Capture latest period BEFORE sorting (history may be newest-first from db_manager)
             latest_period = _get_latest_period(history)
             game_entry["latest_period"] = latest_period
             game_entry["next_period"] = _increment_period(latest_period)
+            # 策略函數預期 ASC 順序（最舊在前，history[-1] = 最新一期）
+            history = sorted(history, key=lambda x: (x.get('date', ''), x.get('draw', '')))
             if len(history) > recent_count:
                 history = history[-recent_count:]
 
             states = _load_strategy_states(lt)
+
+            # 載入各彩種實際策略函數（獨立算法，非 coordinator 疊加）
+            _predict_fns: dict = {}
+            try:
+                import sys as _sys, os as _os
+                _proj = _os.path.dirname(_os.path.dirname(_os.path.dirname(_os.path.abspath(__file__))))
+                if _proj not in _sys.path:
+                    _sys.path.insert(0, _proj)
+                if lt == "DAILY_539":
+                    from tools.rsm_bootstrap import get_daily_539_strategies_inline
+                    _predict_fns = {c["name"]: c["predict_func"] for c in get_daily_539_strategies_inline()}
+                elif lt == "BIG_LOTTO":
+                    from tools.rsm_bootstrap import get_big_lotto_strategies_inline
+                    _predict_fns = {c["name"]: c["predict_func"] for c in get_big_lotto_strategies_inline()}
+                elif lt == "POWER_LOTTO":
+                    from tools.rsm_bootstrap import get_power_lotto_strategies_inline
+                    _predict_fns = {c["name"]: c["predict_func"] for c in get_power_lotto_strategies_inline()}
+            except Exception as _e:
+                logger.warning(f"Failed to load inline strategies for {lt}: {_e}")
 
             for cfg in configs:
                 bet_count = cfg["bet_count"]
@@ -2210,13 +2252,22 @@ async def next_draw_summary(
                 alert = state.get("alert", False)
                 sharpe = state.get("sharpe_300p") or 0
 
-                # Get coordinator prediction for this bet count
+                # 使用實際策略函數預測（獨立算法，非疊加）
+                # 若策略函數不存在，顯示 N/A —— 禁止 silent fallback 到 coordinator
+                prediction_error: Optional[str] = None
                 try:
-                    bets_raw, _ = coordinator_predict(lt, history, n_bets=bet_count, mode=mode)
-                    numbers = [sorted(b) for b in bets_raw] if bets_raw else []
+                    predict_fn = _predict_fns.get(strategy_key)
+                    if predict_fn:
+                        raw_bets = predict_fn(history)
+                        numbers = [sorted(b) for b in raw_bets] if raw_bets else []
+                    else:
+                        numbers = []
+                        prediction_error = f"無對應策略函數: {strategy_key}"
+                        logger.error(f"[next-draw] No inline predict_fn for {strategy_key} ({lt}) — showing N/A, NO coordinator fallback")
                 except Exception as e:
-                    logger.warning(f"coordinator_predict failed for {lt} {bet_count}bet: {e}")
                     numbers = []
+                    prediction_error = f"策略預測失敗: {e}"
+                    logger.error(f"[next-draw] predict_fn raised for {lt} {strategy_key}: {e}")
 
                 # Special number for POWER_LOTTO
                 special = None
@@ -2239,6 +2290,7 @@ async def next_draw_summary(
                     "sharpe_300p": round(sharpe, 4),
                     "numbers": numbers,
                     "special": special,
+                    "prediction_error": prediction_error,
                 })
 
         except Exception as e:

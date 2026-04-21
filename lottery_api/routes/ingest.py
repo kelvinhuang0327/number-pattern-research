@@ -90,6 +90,24 @@ def _refresh_after_insert():
         resolve_pending(dry_run=False)
     except Exception as e:
         logger.warning(f"auto resolve_pending after insert failed: {e}")
+    # ── 策略權重自動調整（閉環回饋） ──
+    try:
+        from engine.weight_adjuster import adjust_all_types
+        adj_result = adjust_all_types(dry_run=False)
+        for lt, r in adj_result.items():
+            if isinstance(r, dict) and r.get('adjusted', 0) > 0:
+                logger.info(f"[WeightAdjuster] {lt}: adjusted {r['adjusted']} strategies")
+    except Exception as e:
+        logger.warning(f"weight_adjuster after resolve failed: {e}")
+    # ── 研究結果 → 決策層整合（學習閉環） ──
+    try:
+        from engine.learning_integrator import apply_all_types as apply_learning
+        learn_result = apply_learning(dry_run=False)
+        for lt, r in learn_result.items():
+            if isinstance(r, dict) and r.get('status') == 'applied':
+                logger.info(f"[LearningIntegrator] {lt}: research_mult={r.get('global_multiplier')}")
+    except Exception as e:
+        logger.warning(f"learning_integrator after weight_adjuster failed: {e}")
 
 
 def _schedule_after_insert(lottery_type: str, draw_number: str):

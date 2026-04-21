@@ -3,6 +3,7 @@
  * 預測追蹤頁籤的所有 UI 邏輯（含排程狀態 + 正式/重建績效篩選）
  */
 import { getApiUrl } from '../config/apiConfig.js';
+import { renderExplainabilityBlock } from './components/ExplainabilityRenderer.js';
 
 export class PredictionTracker {
     constructor(app) {
@@ -20,6 +21,15 @@ export class PredictionTracker {
     _hasSpecialNumber(value) {
         const num = Number(value);
         return Number.isInteger(num) && num > 0;
+    }
+
+    _resolveBetCount(record) {
+        const candidates = [record?.num_bets, record?.avg_bets, record?.bet_count, record?.n_bets];
+        for (const candidate of candidates) {
+            const num = Number(candidate);
+            if (Number.isFinite(num)) return num;
+        }
+        return null;
     }
 
     _setupListeners() {
@@ -238,7 +248,7 @@ export class PredictionTracker {
             const res = await fetch(url);
             const data = await res.json();
             this._perfData = data.performance || [];
-            this._perfSummary = this._perfData.find(p => Number(p.num_bets) === 1) || null;
+            this._perfSummary = this._perfData.find(p => this._resolveBetCount(p) === 1) || null;
             if (filterLabel) {
                 const gameLabel = { BIG_LOTTO: '大樂透', POWER_LOTTO: '威力彩', DAILY_539: '今彩539' };
                 filterLabel.textContent = `${gameLabel[this._currentGame] || this._currentGame} · ${this._validOnly ? '僅計正式快照' : '含重建快照'}`;
@@ -248,6 +258,231 @@ export class PredictionTracker {
         } catch (e) {
             el.innerHTML = `<tr><td colspan="10">載入失敗: ${e.message}</td></tr>`;
         }
+    }
+
+    _edgeColor(value) {
+        if (value == null) return '#888';
+        if (value > 0) return '#27ae60';
+        if (value < 0) return '#e74c3c';
+        return '#888';
+    }
+
+    _formatSignedPct(value) {
+        if (value == null) return 'N/A';
+        const sign = value >= 0 ? '+' : '';
+        return `${sign}${(value * 100).toFixed(1)}%`;
+    }
+
+    _renderAvailabilityBadge(availability, compact = false) {
+        if (availability === 'NO_HISTORY') {
+            return compact
+                ? '<span class="pt-state-badge pt-state-na">無歷史快照</span>'
+                : '<div class="pt-detail-small" style="color:#e67e22">無歷史快照</div>';
+        }
+        if (availability === 'N/A') {
+            return compact
+                ? '<span class="pt-state-badge pt-state-na">N/A</span>'
+                : '<div class="pt-detail-small" style="color:#888">N/A</div>';
+        }
+        return compact
+            ? '<span class="pt-state-badge pt-state-resolved">已收錄</span>'
+            : `<div class="pt-detail-small">${this._renderStrategyStatusBadge(availability)}</div>`;
+    }
+
+    _renderPerformanceRow(p, pct) {
+        const edge = this._formatSignedPct(p.edge);
+        const strategyName = p.strategy_name ? this._stratLabel(p.strategy_name) : 'N/A';
+        const availability = this._renderAvailabilityBadge(p.availability, false);
+        const successRate = p.success_rate == null ? 'N/A' : pct(p.success_rate);
+        const baseline = p.baseline == null ? 'N/A' : pct(p.baseline);
+        const edgeValue = p.edge == null ? 'N/A' : edge;
+
+        return `<tr>
+                <td>${this._resolveBetCount(p) ?? '—'}</td>
+                <td style="text-align:left">
+                    <div style="font-weight:600">${strategyName}</div>
+                    ${availability}
+                </td>
+                <td>${this._renderStrategyStatusBadge(p.strategy_status)} ${this._renderValidatedBadge(p.validated_status, p.data_complete)}</td>
+                <td>${p.resolved_runs ?? 0}</td>
+                <td><strong>${p.success_count ?? 0}</strong></td>
+                <td class="pt-good">${successRate}</td>
+                <td style="color:#888">${baseline}</td>
+                <td style="color:${this._edgeColor(p.edge)};font-weight:600">${edgeValue}</td>
+                <td>${p.avg_bets ?? '—'}</td>
+                <td style="color:${p.pending_runs > 0 ? '#e67e22' : '#888'}">${p.pending_runs ?? 0}</td>
+            </tr>`;
+    }
+
+    _renderHistoryRow(r, gameLabel, fmtStateBadge) {
+        const summary = r.single_bet_summary || null;
+        const latestKnownDraw = r.latest_known_draw;
+        let period = '—';
+        if (summary?.actual_draw) {
+            period = summary.actual_draw;
+        } else if (Number(latestKnownDraw)) {
+            period = String(Number(latestKnownDraw) + 1);
+        } else if (latestKnownDraw) {
+            period = latestKnownDraw;
+        }
+
+        let drawDate = '—';
+        if (summary?.actual_date) {
+            drawDate = summary.actual_date.slice(0, 10);
+        } else if (r.latest_known_date) {
+            drawDate = `(${r.latest_known_date.slice(0, 10)})`;
+        }
+        const strategyName = summary?.strategy_name ? this._stratLabel(summary.strategy_name) : 'N/A';
+        const strategyStatus = summary?.strategy_status ? this._renderStrategyStatusBadge(summary.strategy_status) : this._renderStrategyStatusBadge('N/A');
+        const snapshotState = summary?.snapshot_state ? fmtStateBadge(summary.snapshot_state) : fmtStateBadge(r.status);
+        const predictedNums = summary?.predicted_numbers || [];
+        const matchedNums = summary?.matched_numbers || [];
+        const actualNums = summary?.actual_numbers || [];
+        const predSpecial = summary?.predicted_special ?? null;
+        const actualSpecial = summary?.actual_special ?? null;
+        const specialHit = this._hasSpecialNumber(predSpecial) && this._hasSpecialNumber(actualSpecial) && Number(predSpecial) === Number(actualSpecial);
+        const predBalls = this._renderNumberBalls(predictedNums, new Set(matchedNums));
+        const predSpecialHtml = this._renderSpecialNumberBadge(predSpecial, specialHit);
+        const actualBalls = this._renderActualNumberBalls(actualNums, actualSpecial);
+        const hitCell = this._renderBestHitCell(summary, specialHit);
+        const isReviewed = r.review_status === 'REVIEWED' || r.review_status === 'RESOLVED' || r.analyzed === '已研究';
+        const reviewBadge = isReviewed ? '<span class="pt-review-badge" title="已完成 LLM Research Board 檢討">📋</span>' : '';
+        const reviewStatusHtml = isReviewed
+            ? `<span class="pt-badge pt-researched-yes">已檢討 ✅</span>
+                   <a href="/reviews?prediction_run_id=${r.run_id}" class="pt-review-link" data-run-id="${r.run_id}">查看檢討 →</a>`
+            : '<span class="pt-badge pt-researched-no">未檢討</span>';
+        const wqBadge = this._renderWqBadge(r);
+
+        return `<tr class="pt-hist-row" data-run-id="${r.run_id}" style="cursor:pointer">
+                <td>${gameLabel[r.lottery_type] || r.lottery_type}</td>
+                <td style="font-size:12px;color:#8b949e;white-space:nowrap">${drawDate}</td>
+                <td>${period}</td>
+                <td style="text-align:left">
+                    <div style="font-weight:600">${strategyName}</div>
+                    <div class="pt-detail-small" style="margin-top:2px">${strategyStatus}</div>
+                </td>
+                <td style="text-align:left">${predBalls}${predSpecialHtml}</td>
+                <td style="text-align:left">${actualBalls}</td>
+                <td>${hitCell} ${reviewBadge}</td>
+                <td>${reviewStatusHtml} ${wqBadge}</td>
+                <td>${snapshotState}</td>
+            </tr>
+            <tr class="pt-detail-row" id="pt-detail-${r.run_id}" style="display:none">
+                <td colspan="9" style="padding:0"></td>
+            </tr>`;
+    }
+
+    _renderSpecialNumberBadge(special, specialHit) {
+        if (!this._hasSpecialNumber(special)) return '';
+        return ` <span class="pt-num ${specialHit ? 'pt-num-match' : 'pt-special'}">★${special}</span>`;
+    }
+
+    _renderBestHitCell(summary, specialHit) {
+        if (summary?.best_hit == null) return '—';
+        let hitClass = 'pt-hit-bad';
+        if (summary.best_hit >= 3) hitClass = 'pt-hit-good';
+        else if (summary.best_hit >= 1) hitClass = 'pt-hit-ok';
+        const specialSuffix = specialHit ? '+★' : '';
+        return `<span class="${hitClass}">${summary.best_hit} 中${specialSuffix}</span>`;
+    }
+
+    _renderWqBadge(r) {
+        if (!r.split_risk) return '';
+        let riskColor = '#e5c07b';
+        if (r.split_risk === 'LOW') riskColor = '#3fb950';
+        else if (r.split_risk === 'HIGH') riskColor = '#e06c75';
+        return `<span style="font-size:10px;padding:1px 5px;border-radius:3px;background:${riskColor}22;color:${riskColor};border:1px solid ${riskColor}44" title="WQ分獎風險 score=${r.wq_score}">${r.split_risk}</span>`;
+    }
+
+    _renderReviewVerdictClass(verdict) {
+        if (verdict === '晉級') return 'pt-hit-good';
+        if (verdict === '淘汰') return 'pt-hit-bad';
+        return 'pt-hit-ok';
+    }
+
+    _renderGatePassColor(verdict) {
+        if (verdict === 'WATCH') return '#e5c07b';
+        if (verdict === 'REJECT') return '#e06c75';
+        return '#98c379';
+    }
+
+    _renderCounterSeverityColor(severity) {
+        if (severity === 'HIGH') return '#e06c75';
+        if (severity === 'MED') return '#e5c07b';
+        return '#8b949e';
+    }
+
+    _renderReviewFooter(detail, userReview) {
+        if (!detail.review_date) return '';
+        const reviewStatus = userReview ? ` | 審核: ${this._escHtml(userReview.status)}` : '';
+        return `<div class="pt-review-footer">檢討日期: ${this._escHtml(detail.review_date)} | 版本: ${this._escHtml(detail.version || '—')}${reviewStatus}</div>`;
+    }
+
+    _renderWqRecommendation(wq) {
+        if (!wq.recommendation) return '';
+        return `<div class="pt-review-wq-rec">${this._escHtml(wq.recommendation)}</div>`;
+    }
+
+    _renderReviewUserNotes(userReview) {
+        if (!userReview) return '';
+        const notes = (userReview.supplementary_notes || []).map(n => `<div class="pt-review-counter">
+                        <span class="pt-review-action-pri pt-review-pri-${(n.priority || 'p2').toLowerCase()}">${this._escHtml(n.priority || '')}</span>
+                        <strong>${this._escHtml(n.topic || '')}</strong>: ${this._escHtml(n.note || '')}
+                        ${n.trigger ? `<span style="font-size:10px;color:#7d8590;margin-left:4px">[trigger: ${this._escHtml(n.trigger)}]</span>` : ''}
+                    </div>`).join('');
+        return `<div class="pt-review-section">
+                    <div class="pt-review-section-title">✅ 用戶審核 (${this._escHtml(userReview.date || '')})</div>
+                    ${notes}
+                </div>`;
+    }
+
+    _renderStrategySlotHitClass(bestHit) {
+        if (bestHit >= 3) return 'pt-hit-good';
+        if (bestHit >= 1) return 'pt-hit-ok';
+        return 'pt-hit-bad';
+    }
+
+    _renderStrategySlotAvailability(snapshotState) {
+        if (snapshotState === '無歷史快照') {
+            return '<div class="pt-detail-small" style="color:#e67e22;margin-top:4px">無歷史快照</div>';
+        }
+        if (snapshotState === 'N/A') {
+            return '<div class="pt-detail-small" style="color:#888;margin-top:4px">N/A</div>';
+        }
+        return '';
+    }
+
+    _renderStrategySlotSpecial(lotteryType, runPredSpecial, slotActualSpecial, betSpecialHit) {
+        if (lotteryType !== 'POWER_LOTTO' || !this._hasSpecialNumber(runPredSpecial)) return '';
+        return ` <span class="pt-num ${betSpecialHit ? 'pt-num-match' : 'pt-special'}">★${runPredSpecial}</span>`;
+    }
+
+    _renderStrategySlotHitText(mainHit, betSpecialHit, blSpHit) {
+        if (mainHit == null) return '';
+        const suffix = (betSpecialHit || blSpHit) ? '+★' : '';
+        return `<span style="font-size:11px;color:#888;margin-left:8px">命中 ${mainHit}${suffix}</span>`;
+    }
+
+    _renderStrategySlotRows(bets, lotteryType, actualSet, slotActualSpecial, runPredSpecial) {
+        return bets.map((bet, idx) => {
+            const predicted = this._renderNumberBalls(
+                bet.predicted_numbers || [], actualSet,
+                lotteryType === 'BIG_LOTTO' && this._hasSpecialNumber(slotActualSpecial) ? slotActualSpecial : null
+            );
+            const betSpecialHit = this._hasSpecialNumber(runPredSpecial) && this._hasSpecialNumber(slotActualSpecial)
+                && Number(runPredSpecial) === Number(slotActualSpecial);
+            const special = this._renderStrategySlotSpecial(lotteryType, runPredSpecial, slotActualSpecial, betSpecialHit);
+            const mainHit = bet.hit_count === null || bet.hit_count === undefined ? null : bet.hit_count;
+            const blSpHit = lotteryType === 'BIG_LOTTO' && this._hasSpecialNumber(slotActualSpecial)
+                && (bet.predicted_numbers || []).includes(slotActualSpecial);
+            const perBetHit = this._renderStrategySlotHitText(mainHit, betSpecialHit, blSpHit);
+            const rowStyle = bets.length > 1 ? 'border-bottom:1px solid #21262d;padding:4px 0' : '';
+            const label = bets.length > 1 ? `<span style="font-size:11px;color:#7d8590;min-width:16px">注${idx + 1}</span>` : '';
+            return `<div class="pt-bet-nums-row" style="${rowStyle}">
+                ${label}
+                ${predicted}${special}${perBetHit}
+            </div>`;
+        }).join('');
     }
 
     _renderPerformance() {
@@ -260,16 +495,15 @@ export class PredictionTracker {
             return;
         }
         const pct = v => v == null ? 'N/A' : (v * 100).toFixed(1) + '%';
-        const edgeColor = v => v == null ? '#888' : (v > 0 ? '#27ae60' : v < 0 ? '#e74c3c' : '#888');
-        const summary = this._perfSummary || this._perfData.find(p => Number(p.num_bets) === 1) || this._perfData[0];
+        const summary = this._perfSummary || null;
         const summaryStrategy = summary?.strategy_name ? this._stratLabel(summary.strategy_name) : 'N/A';
         const summaryStatus = summary?.strategy_status ? this._renderStrategyStatusBadge(summary.strategy_status) : this._renderStrategyStatusBadge('N/A');
-        const summaryAvailability = summary?.availability === 'NO_HISTORY'
-            ? '<span class="pt-state-badge pt-state-na">無歷史快照</span>'
-            : summary?.availability === 'N/A'
-                ? '<span class="pt-state-badge pt-state-na">N/A</span>'
-                : '<span class="pt-state-badge pt-state-resolved">已收錄</span>';
-        const summaryEdge = summary?.edge == null ? 'N/A' : ((summary.edge >= 0 ? '+' : '') + (summary.edge * 100).toFixed(1) + '%');
+        const summaryValidatedBadge = this._renderValidatedBadge(summary?.validated_status, summary?.data_complete);
+        const summaryAvailability = this._renderAvailabilityBadge(summary?.availability, true);
+        const summaryEdge = this._formatSignedPct(summary?.edge);
+        const summaryNotice = summary
+            ? ''
+            : `<div class="pt-detail-small" style="color:#e67e22;margin-top:8px">目前此彩種尚無正式單注策略，主摘要僅保留正式單注位置，不會以其他注數替代。</div>`;
         const summaryBlock = `
             <div class="pt-perf-summary">
                 <div class="pt-perf-summary-head">
@@ -279,48 +513,24 @@ export class PredictionTracker {
                     </div>
                     <div style="margin-left:auto;display:flex;gap:6px;flex-wrap:wrap;justify-content:flex-end">
                         ${summaryStatus}
+                        ${summaryValidatedBadge}
                         ${summaryAvailability}
                     </div>
                 </div>
                 <div class="pt-perf-summary-grid">
-                    <div><span class="pt-perf-summary-label">注數</span><strong>${summary?.num_bets ?? 'N/A'}</strong></div>
+                    <div><span class="pt-perf-summary-label">注數</span><strong>${this._resolveBetCount(summary) ?? 'N/A'}</strong></div>
                     <div><span class="pt-perf-summary-label">成功率</span><strong class="pt-good">${pct(summary?.success_rate)}</strong></div>
                     <div><span class="pt-perf-summary-label">隨機基準</span><strong>${pct(summary?.baseline)}</strong></div>
-                    <div><span class="pt-perf-summary-label">Edge</span><strong style="color:${edgeColor(summary?.edge)}">${summaryEdge}</strong></div>
+                    <div><span class="pt-perf-summary-label">Edge</span><strong style="color:${this._edgeColor(summary?.edge)}">${summaryEdge}</strong></div>
                 </div>
+                ${summaryNotice}
             </div>`;
 
         if (summaryEl) {
             summaryEl.innerHTML = summaryBlock;
         }
 
-        el.innerHTML = this._perfData.map(p => {
-            const edgeStr = p.edge == null ? 'N/A' : ((p.edge >= 0 ? '+' : '') + (p.edge * 100).toFixed(1) + '%');
-            const strategyName = p.strategy_name ? this._stratLabel(p.strategy_name) : 'N/A';
-            const availability = p.availability === 'NO_HISTORY'
-                ? '<div class="pt-detail-small" style="color:#e67e22">無歷史快照</div>'
-                : p.availability === 'N/A'
-                    ? '<div class="pt-detail-small" style="color:#888">N/A</div>'
-                    : `<div class="pt-detail-small">${this._renderStrategyStatusBadge(p.strategy_status)}</div>`;
-            const successRate = p.success_rate == null ? 'N/A' : pct(p.success_rate);
-            const baseline = p.baseline == null ? 'N/A' : pct(p.baseline);
-            const edge = p.edge == null ? 'N/A' : edgeStr;
-            return `<tr>
-                <td>${p.num_bets ?? '—'}</td>
-                <td style="text-align:left">
-                    <div style="font-weight:600">${strategyName}</div>
-                    ${availability}
-                </td>
-                <td>${this._renderStrategyStatusBadge(p.strategy_status)}</td>
-                <td>${p.resolved_runs ?? 0}</td>
-                <td><strong>${p.success_count ?? 0}</strong></td>
-                <td class="pt-good">${successRate}</td>
-                <td style="color:#888">${baseline}</td>
-                <td style="color:${edgeColor(p.edge)};font-weight:600">${edge}</td>
-                <td>${p.avg_bets ?? '—'}</td>
-                <td style="color:${p.pending_runs > 0 ? '#e67e22' : '#888'}">${p.pending_runs ?? 0}</td>
-            </tr>`;
-        }).join('');
+        el.innerHTML = this._perfData.map(p => this._renderPerformanceRow(p, pct)).join('');
     }
 
     // ──────────── 歷史清單 ────────────
@@ -355,64 +565,7 @@ export class PredictionTracker {
             tbody.innerHTML = '<tr><td colspan="9" style="text-align:center;color:#888">尚無已解析記錄</td></tr>';
             return;
         }
-        tbody.innerHTML = resolvedRuns.map(r => {
-            const summary = r.single_bet_summary || null;
-            const period = summary?.actual_draw || (Number(r.latest_known_draw) ? String(Number(r.latest_known_draw) + 1) : r.latest_known_draw || '—');
-            // 日期：已解析用 actual_date，PENDING 用 latest_known_date（佔位）
-            const drawDate = summary?.actual_date
-                ? summary.actual_date.slice(0, 10)
-                : (r.latest_known_date ? `(${r.latest_known_date.slice(0, 10)})` : '—');
-            const strategyName = summary?.strategy_name ? this._stratLabel(summary.strategy_name) : 'N/A';
-            const strategyStatus = summary?.strategy_status ? this._renderStrategyStatusBadge(summary.strategy_status) : this._renderStrategyStatusBadge('N/A');
-            const snapshotState = summary?.snapshot_state ? fmtStateBadge(summary.snapshot_state) : fmtStateBadge(r.status);
-            const predictedNums = summary?.predicted_numbers || [];
-            const matchedNums = summary?.matched_numbers || [];
-            const actualNums = summary?.actual_numbers || [];
-            const predSpecial = summary?.predicted_special ?? null;
-            const actualSpecial = summary?.actual_special ?? null;
-            const specialHit = this._hasSpecialNumber(predSpecial) && this._hasSpecialNumber(actualSpecial) && Number(predSpecial) === Number(actualSpecial);
-            // 預測號碼欄：主號 + 特別號
-            const predBalls = this._renderNumberBalls(predictedNums, new Set(matchedNums));
-            const predSpecialHtml = this._hasSpecialNumber(predSpecial)
-                ? ` <span class="pt-num ${specialHit ? 'pt-num-match' : 'pt-special'}">★${predSpecial}</span>` : '';
-            // 實際開獎欄：主號 + 特別號
-            const actualBalls = this._renderActualNumberBalls(actualNums, actualSpecial);
-            const hitCell = summary?.best_hit != null
-                ? `<span class="${summary.best_hit >= 3 ? 'pt-hit-good' : summary.best_hit >= 1 ? 'pt-hit-ok' : 'pt-hit-bad'}">${summary.best_hit} 中${specialHit ? '+★' : ''}</span>`
-                : '—';
-            // Review status: priority — real linkage (review_status) > legacy analyzed field
-            const isReviewed = r.review_status === 'REVIEWED' || r.review_status === 'RESOLVED'
-                || r.analyzed === '已研究';
-            const reviewBadge = isReviewed
-                ? '<span class="pt-review-badge" title="已完成 LLM Research Board 檢討">📋</span>' : '';
-            const reviewStatusHtml = isReviewed
-                ? `<span class="pt-badge pt-researched-yes">已檢討 ✅</span>
-                   <a href="/reviews?prediction_run_id=${r.run_id}" class="pt-review-link" data-run-id="${r.run_id}">查看檢討 →</a>`
-                : '<span class="pt-badge pt-researched-no">未檢討</span>';
-            // WQ badge
-            const wqBadge = r.split_risk
-                ? (() => {
-                    const riskColor = r.split_risk === 'LOW' ? '#3fb950' : r.split_risk === 'HIGH' ? '#e06c75' : '#e5c07b';
-                    return `<span style="font-size:10px;padding:1px 5px;border-radius:3px;background:${riskColor}22;color:${riskColor};border:1px solid ${riskColor}44" title="WQ分獎風險 score=${r.wq_score}">${r.split_risk}</span>`;
-                })() : '';
-            return `<tr class="pt-hist-row" data-run-id="${r.run_id}" style="cursor:pointer">
-                <td>${gameLabel[r.lottery_type] || r.lottery_type}</td>
-                <td style="font-size:12px;color:#8b949e;white-space:nowrap">${drawDate}</td>
-                <td>${period}</td>
-                <td style="text-align:left">
-                    <div style="font-weight:600">${strategyName}</div>
-                    <div class="pt-detail-small" style="margin-top:2px">${strategyStatus}</div>
-                </td>
-                <td style="text-align:left">${predBalls}${predSpecialHtml}</td>
-                <td style="text-align:left">${actualBalls}</td>
-                <td>${hitCell} ${reviewBadge}</td>
-                <td>${reviewStatusHtml} ${wqBadge}</td>
-                <td>${snapshotState}</td>
-            </tr>
-            <tr class="pt-detail-row" id="pt-detail-${r.run_id}" style="display:none">
-                <td colspan="9" style="padding:0"></td>
-            </tr>`;
-        }).join('');
+        tbody.innerHTML = resolvedRuns.map(r => this._renderHistoryRow(r, gameLabel, fmtStateBadge)).join('');
 
         tbody.querySelectorAll('.pt-hist-row').forEach(row => {
             row.addEventListener('click', e => {
@@ -474,7 +627,6 @@ export class PredictionTracker {
             : '—';
 
         const firstResolved = detail.bets.find(b => b.status === 'RESOLVED');
-        const actualSet     = new Set(firstResolved?.actual_numbers || []);
         const actualArr     = firstResolved?.actual_numbers || [];
         const actualSpecial = firstResolved?.actual_special ?? null;
         const actualDraw    = firstResolved?.actual_draw    || null;
@@ -500,7 +652,7 @@ export class PredictionTracker {
                     <span class="pt-draw-info-label">基於期號</span>
                     <span class="pt-draw-info-val">${detail.latest_known_draw}</span>
                     <span class="pt-draw-info-label" style="margin-left:16px">開獎期號</span>
-                    <span class="pt-draw-info-val">${actualDraw || (parseInt(detail.latest_known_draw) + 1)}</span>
+                    <span class="pt-draw-info-val">${actualDraw || (Number.parseInt(detail.latest_known_draw, 10) + 1)}</span>
                     ${actualDate
                         ? `<span class="pt-draw-info-label" style="margin-left:16px">開獎日期</span>
                            <span class="pt-draw-info-val">${actualDate.slice(0, 10)}</span>`
@@ -523,12 +675,21 @@ export class PredictionTracker {
         // ── Block: 研究報告 ──────────────────────────────────────
         const reviewBlock = detail.review_json ? this._renderReviewBlock(detail) : '';
 
+        // ── Block: Phase P Explainability ────────────────────────
+        const explainBlock = detail.explanation ? this._renderExplainabilityBlock(detail.explanation) : '';
+
         return `<div class="pt-detail-panel">
             ${reconWarning}
             ${block1}
             ${betBlocks}
+            ${explainBlock}
             ${reviewBlock}
         </div>`;
+    }
+
+    _renderExplainabilityBlock(exp) {
+        // Delegate to shared renderer (Phase P)
+        return renderExplainabilityBlock(exp);
     }
 
     _renderReviewBlock(detail) {
@@ -538,10 +699,9 @@ export class PredictionTracker {
         const isDetailReviewed = detail.review_status === 'REVIEWED' || detail.review_status === 'RESOLVED'
             || detail.analyzed === '已研究';
         const analyzed = isDetailReviewed ? '已研究' : (detail.analyzed || '未研究');
-        const noteSnippet = detail.analysis_note || '';
         const verdict = r.final_decision?.verdict || '—';
         const confidence = r.final_decision?.confidence || '—';
-        const verdictClass = verdict === '晉級' ? 'pt-hit-good' : verdict === '淘汰' ? 'pt-hit-bad' : 'pt-hit-ok';
+        const verdictClass = this._renderReviewVerdictClass(verdict);
 
         // Method comparison top3
         const top3 = (r.method_comparison?.top3_closest || []).map((m, i) => {
@@ -558,7 +718,7 @@ export class PredictionTracker {
         // Gate validation summary
         const gates = r.quantitative?.strategy_gates || {};
         const gateRows = Object.entries(gates).map(([name, g]) => {
-            const passColor = g.verdict === 'WATCH' ? '#e5c07b' : g.verdict === 'REJECT' ? '#e06c75' : '#98c379';
+            const passColor = this._renderGatePassColor(g.verdict);
             return `<tr>
                 <td style="font-size:12px">${this._escHtml(name)}</td>
                 <td>${g.num_bets ?? '—'}</td>
@@ -601,7 +761,7 @@ export class PredictionTracker {
 
         // Counter evidence
         const counterHtml = (r.counter_evidence || []).map(c => {
-            const sevColor = c.severity === 'HIGH' ? '#e06c75' : c.severity === 'MED' ? '#e5c07b' : '#8b949e';
+            const sevColor = this._renderCounterSeverityColor(c.severity);
             return `<div class="pt-review-counter">
                 <span class="pt-review-counter-sev" style="color:${sevColor}">[${c.severity || '—'}]</span>
                 ${this._escHtml(c.claim || '')}
@@ -642,7 +802,7 @@ export class PredictionTracker {
                 ${wqItems ? `<div class="pt-review-section">
                     <div class="pt-review-section-title">💎 Winning Quality</div>
                     <div class="pt-review-wq-row">${wqItems}</div>
-                    ${wq.recommendation ? `<div class="pt-review-wq-rec">${this._escHtml(wq.recommendation)}</div>` : ''}
+                    ${this._renderWqRecommendation(wq)}
                 </div>` : ''}
 
                 ${expertHtml ? `<div class="pt-review-section">
@@ -660,41 +820,35 @@ export class PredictionTracker {
                     ${actionHtml}
                 </div>` : ''}
 
-                ${userReview ? `<div class="pt-review-section">
-                    <div class="pt-review-section-title">✅ 用戶審核 (${this._escHtml(userReview.date || '')})</div>
-                    ${(userReview.supplementary_notes || []).map(n => `<div class="pt-review-counter">
-                        <span class="pt-review-action-pri pt-review-pri-${(n.priority || 'p2').toLowerCase()}">${this._escHtml(n.priority || '')}</span>
-                        <strong>${this._escHtml(n.topic || '')}</strong>: ${this._escHtml(n.note || '')}
-                        ${n.trigger ? `<span style="font-size:10px;color:#7d8590;margin-left:4px">[trigger: ${this._escHtml(n.trigger)}]</span>` : ''}
-                    </div>`).join('')}
-                </div>` : ''}
+                ${this._renderReviewUserNotes(userReview)}
 
-                ${r.review_date ? `<div class="pt-review-footer">檢討日期: ${this._escHtml(r.review_date)} | 版本: ${this._escHtml(r.version || '—')}${userReview ? ` | 審核: ${this._escHtml(userReview.status)}` : ''}</div>` : ''}
+                ${this._renderReviewFooter(r, userReview)}
             </div>
         </div>`;
     }
 
     _escHtml(str) {
         if (typeof str !== 'string') return String(str ?? '');
-        return str.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+        return str.replaceAll('&', '&amp;').replaceAll('<', '&lt;').replaceAll('>', '&gt;').replaceAll('"', '&quot;');
     }
 
     _renderStrategySlot(slot) {
-        const numBets = slot?.num_bets ?? 'N/A';
+        const numBets = this._resolveBetCount(slot) ?? 'N/A';
         const strategyName = slot?.strategy_name ? this._stratLabel(slot.strategy_name) : 'N/A';
         const strategyStatus = this._renderStrategyStatusBadge(slot?.strategy_status || 'N/A');
+        const validatedBadge = this._renderValidatedBadge(slot?.validated_status, slot?.data_complete);
+        // Phase V data completeness guard
+        const missingDataWarning = slot?.data_complete === false
+            ? `<div style="font-size:9px;color:#e74c3c;margin-top:3px">⚠️ 資料不足：缺少 ${(slot?.missing_phase_v_fields || []).join(', ')}</div>`
+            : '';
         const snapshotState = this._renderSnapshotStateBadge(slot?.snapshot_state || 'N/A');
         const isPlaceholder = !!slot?.is_placeholder || !slot?.strategy_name;
-        const bestHit = slot?.best_hit != null ? slot.best_hit : null;
+        const bestHit = slot?.best_hit === null || slot?.best_hit === undefined ? null : slot.best_hit;
         const bets = Array.isArray(slot?.bets) ? slot.bets : [];
         const hitLabel = bestHit == null
-            ? (slot?.snapshot_state === '無歷史快照' ? '<span style="color:#888">無歷史快照</span>' : '<span style="color:#888">N/A</span>')
-            : `<strong class="${bestHit >= 3 ? 'pt-hit-good' : bestHit >= 1 ? 'pt-hit-ok' : 'pt-hit-bad'}">${bestHit}</strong> 中`;
-        const availability = slot?.snapshot_state === '無歷史快照'
-            ? '<div class="pt-detail-small" style="color:#e67e22;margin-top:4px">無歷史快照</div>'
-            : slot?.snapshot_state === 'N/A'
-                ? '<div class="pt-detail-small" style="color:#888;margin-top:4px">N/A</div>'
-                : '';
+            ? this._renderStrategySlotNullHitLabel(slot?.snapshot_state)
+            : `<strong class="${this._renderStrategySlotHitClass(bestHit)}">${bestHit}</strong> 中`;
+        const availability = this._renderStrategySlotAvailability(slot?.snapshot_state);
 
         if (isPlaceholder) {
             return `<div class="pt-block">
@@ -714,9 +868,10 @@ export class PredictionTracker {
                 <div class="pt-block-header">
                     <span class="pt-block-title">${numBets} 注</span>
                     <span class="pt-rsm-name" style="margin-left:8px;font-size:12px;color:#c9d1d9">${strategyName}</span>
-                    ${strategyStatus}
+                    ${strategyStatus}${validatedBadge}
                     <span style="margin-left:6px">${snapshotState}</span>
                 </div>
+                ${missingDataWarning}
                 <div class="pt-block-body">
                     <div class="pt-na-box">無歷史快照</div>
                 </div>
@@ -730,42 +885,19 @@ export class PredictionTracker {
         const runPredSpecial = lotteryType === 'POWER_LOTTO'
             ? (bets.find(b => this._hasSpecialNumber(b.predicted_special))?.predicted_special ?? null)
             : null;
-        const perBetRows = bets.map((bet, idx) => {
-            // BIG_LOTTO: 若預測號碼中有命中 actual_special，用金色標示
-            const predicted = this._renderNumberBalls(
-                bet.predicted_numbers || [], actualSet,
-                lotteryType === 'BIG_LOTTO' && this._hasSpecialNumber(slotActualSpecial) ? slotActualSpecial : null
-            );
-            // POWER_LOTTO: 顯示 ★predicted_special，命中則綠色
-            const betSpecialHit = this._hasSpecialNumber(runPredSpecial) && this._hasSpecialNumber(slotActualSpecial)
-                && Number(runPredSpecial) === Number(slotActualSpecial);
-            const special = lotteryType === 'POWER_LOTTO' && this._hasSpecialNumber(runPredSpecial)
-                ? ` <span class="pt-num ${betSpecialHit ? 'pt-num-match' : 'pt-special'}">★${runPredSpecial}</span>`
-                : '';
-            // 命中標示
-            const mainHit = bet.hit_count != null ? bet.hit_count : null;
-            // BIG_LOTTO: 檢查預測號碼是否含特別號
-            const blSpHit = lotteryType === 'BIG_LOTTO' && this._hasSpecialNumber(slotActualSpecial)
-                && (bet.predicted_numbers || []).includes(slotActualSpecial);
-            const perBetHit = mainHit != null
-                ? `<span style="font-size:11px;color:#888;margin-left:8px">命中 ${mainHit}${(betSpecialHit || blSpHit) ? '+★' : ''}</span>`
-                : '';
-            return `<div class="pt-bet-nums-row" style="${bets.length > 1 ? 'border-bottom:1px solid #21262d;padding:4px 0' : ''}">
-                ${bets.length > 1 ? `<span style="font-size:11px;color:#7d8590;min-width:16px">注${idx + 1}</span>` : ''}
-                ${predicted}${special}${perBetHit}
-            </div>`;
-        }).join('');
+        const perBetRows = this._renderStrategySlotRows(bets, lotteryType, actualSet, slotActualSpecial, runPredSpecial);
 
         return `<div class="pt-block">
             <div class="pt-block-header">
                 <span class="pt-block-title">${numBets} 注</span>
                 <span class="pt-rsm-name" style="margin-left:8px;font-size:12px;color:#c9d1d9">${strategyName}</span>
-                ${strategyStatus}
+                ${strategyStatus}${validatedBadge}
                 <span style="margin-left:6px">${snapshotState}</span>
                 <span style="margin-left:auto;font-size:12px">${hitLabel}</span>
             </div>
             <div class="pt-block-body" style="padding:6px 14px">
                 ${availability}
+                ${missingDataWarning}
                 ${perBetRows}
             </div>
         </div>`;
@@ -783,7 +915,20 @@ export class PredictionTracker {
         const [cls, label] = map[status] || map['N/A'];
         return `<span class="pt-state-badge ${cls}">${label}</span>`;
     }
-
+    /** Phase V: render validated_status badge alongside strategy_status */
+    _renderValidatedBadge(validatedStatus, dataComplete) {
+        if (!validatedStatus) return '';
+        if (dataComplete === false) {
+            return `<span class="pt-state-badge" style="background:rgba(231,76,60,0.15);color:#e74c3c;border:1px solid #e74c3c;font-size:9px;padding:2px 5px;border-radius:4px" title="缺少驗證所需欄位">⚠️ 資料不足</span>`;
+        }
+        const map = {
+            'VALIDATED': ['rgba(0,200,100,0.15)', '#00c864', '#00c864', '✅ 已完整驗證'],
+            'WATCH':     ['rgba(255,180,0,0.12)',  '#ffb400', '#ffb400', '⚠️ 觀察中（未完全驗證）'],
+            'REJECTED':  ['rgba(231,76,60,0.10)',  '#e74c3c', '#e74c3c', '❌ 未通過驗證'],
+        };
+        const [bg, color, border, label] = map[validatedStatus] || ['transparent', '#888', '#888', validatedStatus];
+        return `<span class="pt-state-badge" style="background:${bg};color:${color};border:1px solid ${border};font-size:9px;padding:2px 5px;border-radius:4px">${label}</span>`;
+    }
     _renderSnapshotStateBadge(state) {
         const map = {
             RESOLVED: ['pt-state-resolved', 'RESOLVED'],
@@ -801,8 +946,8 @@ export class PredictionTracker {
         if (!runId) return;
         this.app?.uiManager?.showSection('reviews');
 
-        if (window.history?.pushState) {
-            window.history.pushState({}, '', `/reviews?prediction_run_id=${runId}`);
+        if (globalThis.history?.pushState) {
+            globalThis.history.pushState({}, '', `/reviews?prediction_run_id=${runId}`);
         }
 
         if (!this.app?.reviewManager) return;
@@ -853,6 +998,13 @@ export class PredictionTracker {
 
     _stratLabel(name) {
         if (!name) return '—';
-        return name.replace(/_/g, ' ');
+        return name.replaceAll('_', ' ');
+    }
+
+    _renderStrategySlotNullHitLabel(snapshotState) {
+        if (snapshotState === '無歷史快照') {
+            return '<span style="color:#888">無歷史快照</span>';
+        }
+        return '<span style="color:#888">N/A</span>';
     }
 }

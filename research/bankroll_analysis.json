@@ -16,7 +16,7 @@
       "strategy": "prediction_plus_anti_crowd",
       "initial_bankroll": 100000.0,
       "fixed_bet_size": 150.0,
-      "fractional_kelly_size": 23593.68,
+      "fractional_kelly_size": 23589.29,
       "capped_exposure_size": 150.0,
       "loss_streak_control_size": 150.0,
       "optimal_bet_size": 150.0,
@@ -28,7 +28,7 @@
       "strategy": "prediction_plus_payout_optimization",
       "initial_bankroll": 100000.0,
       "fixed_bet_size": 150.0,
-      "fractional_kelly_size": 23599.84,
+      "fractional_kelly_size": 23602.17,
       "capped_exposure_size": 150.0,
       "loss_streak_control_size": 150.0,
       "optimal_bet_size": 150.0,
@@ -54,19 +54,19 @@
       "strategy": "prediction_only",
       "initial_bankroll": 100000.0,
       "fixed_bet_size": 300.0,
-      "fractional_kelly_size": 0.0,
+      "fractional_kelly_size": 9405.28,
       "capped_exposure_size": 300.0,
       "loss_streak_control_size": 300.0,
       "optimal_bet_size": 300.0,
       "risk_of_ruin": 1.0,
       "survival_probability": 0.0,
-      "adjusted_recommendation": "defensive_fixed"
+      "adjusted_recommendation": "fractional_kelly_capped"
     },
     "prediction_plus_anti_crowd": {
       "strategy": "prediction_plus_anti_crowd",
       "initial_bankroll": 100000.0,
       "fixed_bet_size": 300.0,
-      "fractional_kelly_size": 0.0,
+      "fractional_kelly_size": 573.73,
       "capped_exposure_size": 300.0,
       "loss_streak_control_size": 300.0,
       "optimal_bet_size": 300.0,
@@ -78,7 +78,7 @@
       "strategy": "prediction_plus_payout_optimization",
       "initial_bankroll": 100000.0,
       "fixed_bet_size": 300.0,
-      "fractional_kelly_size": 13280.56,
+      "fractional_kelly_size": 15633.32,
       "capped_exposure_size": 300.0,
       "loss_streak_control_size": 300.0,
       "optimal_bet_size": 300.0,
@@ -104,7 +104,7 @@
       "strategy": "prediction_only",
       "initial_bankroll": 100000.0,
       "fixed_bet_size": 150.0,
-      "fractional_kelly_size": 14849.47,
+      "fractional_kelly_size": 14935.65,
       "capped_exposure_size": 150.0,
       "loss_streak_control_size": 150.0,
       "optimal_bet_size": 150.0,
@@ -116,7 +116,7 @@
       "strategy": "prediction_plus_anti_crowd",
       "initial_bankroll": 100000.0,
       "fixed_bet_size": 150.0,
-      "fractional_kelly_size": 15684.37,
+      "fractional_kelly_size": 15942.43,
       "capped_exposure_size": 150.0,
       "loss_streak_control_size": 150.0,
       "optimal_bet_size": 150.0,
@@ -128,7 +128,7 @@
       "strategy": "prediction_plus_payout_optimization",
       "initial_bankroll": 100000.0,
       "fixed_bet_size": 150.0,
-      "fractional_kelly_size": 17838.96,
+      "fractional_kelly_size": 18144.52,
       "capped_exposure_size": 150.0,
       "loss_streak_control_size": 150.0,
       "optimal_bet_size": 150.0,
@@ -148,5 +148,271 @@
       "survival_probability": 1.0,
       "adjusted_recommendation": "defensive_fixed"
     }
+  },
+  "last_updated": "2026-04-20T10:45:11.437605",
+  "ev_analysis": {
+    "DAILY_539": {
+      "strategy_name": "acb_markov_midfreq_3bet",
+      "ticket_cost": 50,
+      "bet_count": 3,
+      "monthly_budget_reference": 1000,
+      "hit_rate": 0.33,
+      "threshold_base_rate": 0.11397342976290345,
+      "lift_vs_random": 2.8954116822358698,
+      "expected_payout": 135.2627,
+      "expected_net": -14.7373,
+      "expected_roi": -0.098248,
+      "baseline_expected_payout": 46.7162,
+      "baseline_expected_net": -103.2838,
+      "baseline_expected_roi": -0.688558,
+      "prize_table": {
+        "2": 80,
+        "3": 1000,
+        "4": 50000,
+        "5": 8000000
+      },
+      "jackpot": 8000000,
+      "distribution": {
+        "2": 0.30092806,
+        "3": 0.02821201,
+        "4": 0.00085491,
+        "5": 5.03e-06,
+        "0": 0.36545455,
+        "1": 0.30454545
+      },
+      "baseline_distribution": {
+        "0": 0.48328722,
+        "1": 0.40273935,
+        "2": 0.10393274,
+        "3": 0.00974369,
+        "4": 0.00029526,
+        "5": 1.74e-06
+      },
+      "stats": {
+        "expected_payout": 135.262736,
+        "expected_net": -14.737264,
+        "expected_roi": -0.098248,
+        "variance": 323997303.908127
+      }
+    },
+    "BIG_LOTTO": {
+      "strategy_name": "p1_dev_sum5bet",
+      "ticket_cost": 50,
+      "bet_count": 5,
+      "monthly_budget_reference": 1000,
+      "hit_rate": 0.1046875,
+      "threshold_base_rate": 0.01863754500202234,
+      "lift_vs_random": 5.617021983777396,
+      "expected_payout": 342.7208,
+      "expected_net": 92.7208,
+      "expected_roi": 0.370883,
+      "baseline_expected_payout": 61.0147,
+      "baseline_expected_net": -188.9853,
+      "baseline_expected_roi": -0.755941,
+      "prize_table": {
+        "3": 400,
+        "4": 2000,
+        "5": 300000,
+        "6": 650000000
+      },
+      "jackpot": 650000000,
+      "distribution": {
+        "3": 0.09914271,
+        "4": 0.00544076,
+        "5": 0.00010363,
+        "6": 4e-07,
+        "0": 0.39773775,
+        "1": 0.37680418,
+        "2": 0.12077057
+      },
+      "baseline_distribution": {
+        "0": 0.43596498,
+        "1": 0.41301945,
+        "2": 0.13237803,
+        "3": 0.0176504,
+        "4": 0.00096862,
+        "5": 1.845e-05,
+        "6": 7e-08
+      },
+      "stats": {
+        "expected_payout": 342.720775,
+        "expected_net": 92.720775,
+        "expected_roi": 0.370883,
+        "variance": 169719130961.47116
+      }
+    },
+    "POWER_LOTTO": {
+      "strategy_name": "orthogonal_5bet",
+      "ticket_cost": 100,
+      "bet_count": 5,
+      "monthly_budget_reference": 1000,
+      "hit_rate": 0.141875,
+      "threshold_base_rate": 0.038698060369886995,
+      "lift_vs_random": 3.66620442068462,
+      "expected_payout": 296.8787,
+      "expected_net": -203.1213,
+      "expected_roi": -0.406243,
+      "baseline_expected_payout": 80.9771,
+      "baseline_expected_net": -419.0229,
+      "baseline_expected_roi": -0.838046,
+      "prize_table": {
+        "3": 100,
+        "4": 800,
+        "5": 40000,
+        "6": 200000000
+      },
+      "jackpot": 200000000,
+      "distribution": {
+        "3": 0.13173832,
+        "4": 0.00988037,
+        "5": 0.00025498,
+        "6": 1.33e-06,
+        "0": 0.29301829,
+        "1": 0.39069106,
+        "2": 0.17441565
+      },
+      "baseline_distribution": {
+        "0": 0.32824944,
+        "1": 0.43766592,
+        "2": 0.19538657,
+        "3": 0.03593316,
+        "4": 0.00269499,
+        "5": 6.955e-05,
+        "6": 3.6e-07
+      },
+      "stats": {
+        "expected_payout": 296.87868,
+        "expected_net": -203.12132,
+        "expected_roi": -0.406243,
+        "variance": 53120618014.63184
+      }
+    }
+  },
+  "monte_carlo": {
+    "conservative": {
+      "scenario": "conservative",
+      "monthly_budget": 500,
+      "start_bankroll": 12000,
+      "simulations": 10000,
+      "horizon_months": 200,
+      "ruin_probability": 0.9665,
+      "ruin_probability_12m": 0.0,
+      "ruin_probability_24m": 0.0,
+      "median_months_to_ruin": 40.0,
+      "mean_months_to_ruin": 47.244,
+      "p10_months_to_ruin": 35.0,
+      "p90_months_to_ruin": 50.0,
+      "median_ending_bankroll": -160.0,
+      "mean_ending_bankroll": 5604.792,
+      "p05_ending_bankroll": -360.0,
+      "p95_ending_bankroll": 0.0
+    },
+    "balanced": {
+      "scenario": "balanced",
+      "monthly_budget": 1000,
+      "start_bankroll": 12000,
+      "simulations": 10000,
+      "horizon_months": 200,
+      "ruin_probability": 0.984,
+      "ruin_probability_12m": 0.0,
+      "ruin_probability_24m": 0.0123,
+      "median_months_to_ruin": 31.0,
+      "mean_months_to_ruin": 38.9733,
+      "p10_months_to_ruin": 26.0,
+      "p90_months_to_ruin": 39.0,
+      "median_ending_bankroll": -230.0,
+      "mean_ending_bankroll": 7515.853,
+      "p05_ending_bankroll": -490.0,
+      "p95_ending_bankroll": -10.0
+    },
+    "all_in": {
+      "scenario": "all_in",
+      "monthly_budget": 2000,
+      "start_bankroll": 12000,
+      "simulations": 10000,
+      "horizon_months": 200,
+      "ruin_probability": 0.9961,
+      "ruin_probability_12m": 0.9628,
+      "ruin_probability_24m": 0.9648,
+      "median_months_to_ruin": 9.0,
+      "mean_months_to_ruin": 10.6782,
+      "p10_months_to_ruin": 8.0,
+      "p90_months_to_ruin": 10.0,
+      "median_ending_bankroll": -780.0,
+      "mean_ending_bankroll": 4298.152,
+      "p05_ending_bankroll": -1630.0,
+      "p95_ending_bankroll": -60.0
+    }
+  },
+  "kelly_analysis": {
+    "DAILY_539": {
+      "strategy_name": "acb_markov_midfreq_3bet",
+      "expected_net": -14.7373,
+      "kelly_fraction_raw": 0.0,
+      "kelly_fraction_truncated": 0.0,
+      "recommended_fraction": 0.0,
+      "current_bet_count": 3,
+      "kelly_alignment": "overbet"
+    },
+    "BIG_LOTTO": {
+      "strategy_name": "p1_dev_sum5bet",
+      "expected_net": 92.7208,
+      "kelly_fraction_raw": 0.370883,
+      "kelly_fraction_truncated": 0.370883,
+      "recommended_fraction": 0.25,
+      "current_bet_count": 5,
+      "kelly_alignment": "compatible"
+    },
+    "POWER_LOTTO": {
+      "strategy_name": "orthogonal_5bet",
+      "expected_net": -203.1213,
+      "kelly_fraction_raw": 0.0,
+      "kelly_fraction_truncated": 0.0,
+      "recommended_fraction": 0.0,
+      "current_bet_count": 5,
+      "kelly_alignment": "overbet"
+    }
+  },
+  "annual_budget_analysis": {
+    "conservative": {
+      "monthly_budget": 500,
+      "annual_budget": 6000,
+      "expected_survival_months_median": 40.0,
+      "expected_survival_months_mean": 47.244,
+      "prob_ruin_within_12m": 0.0,
+      "median_ending_bankroll": -160.0,
+      "mean_ending_bankroll": 5604.792,
+      "recommended_action": "cap_spend"
+    },
+    "balanced": {
+      "monthly_budget": 1000,
+      "annual_budget": 12000,
+      "expected_survival_months_median": 31.0,
+      "expected_survival_months_mean": 38.9733,
+      "prob_ruin_within_12m": 0.0,
+      "median_ending_bankroll": -230.0,
+      "mean_ending_bankroll": 7515.853,
+      "recommended_action": "cap_spend"
+    },
+    "all_in": {
+      "monthly_budget": 2000,
+      "annual_budget": 24000,
+      "expected_survival_months_median": 9.0,
+      "expected_survival_months_mean": 10.6782,
+      "prob_ruin_within_12m": 0.9628,
+      "median_ending_bankroll": -780.0,
+      "mean_ending_bankroll": 4298.152,
+      "recommended_action": "reduce_spend"
+    }
+  },
+  "recommendation": {
+    "priority_order": [
+      "BIG_LOTTO",
+      "DAILY_539",
+      "POWER_LOTTO"
+    ],
+    "recommended_monthly_budget": 1000,
+    "starting_bankroll_assumption": 12000,
+    "kelly_fraction": 0.0
   }
 }

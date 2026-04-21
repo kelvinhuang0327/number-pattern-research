@@ -11,6 +11,27 @@ import os
 
 logger = logging.getLogger(__name__)
 
+# 不含特別號的彩種。DB 內可能用 0 當佔位值，但 API 輸出應正規化成 None。
+_NO_SPECIAL_TYPES = {
+    "DAILY_539",
+    "BIG_LOTTO_BONUS",
+    "3_STAR",
+    "4_STAR",
+    "39_LOTTO",
+    "38_LOTTO",
+    "49_LOTTO",
+    "BINGO_BINGO",
+    "DOUBLE_WIN",
+    "LOTTO_6_38",
+}
+
+
+def _normalize_special_for_output(lottery_type: Optional[str], special):
+    """對外輸出時統一沒有特別號的彩種回傳 None。"""
+    if lottery_type in _NO_SPECIAL_TYPES:
+        return None
+    return special
+
 
 class DatabaseManager:
     """SQLite 數據庫管理器"""
@@ -53,10 +74,16 @@ class DatabaseManager:
                     lottery_type TEXT NOT NULL,
                     numbers TEXT NOT NULL,
                     special INTEGER DEFAULT 0,
+                    jackpot_amount REAL DEFAULT NULL,
                     created_at TEXT DEFAULT CURRENT_TIMESTAMP,
                     UNIQUE(draw, lottery_type)
                 )
             """)
+            try:
+                cursor.execute("ALTER TABLE draws ADD COLUMN jackpot_amount REAL DEFAULT NULL")
+                conn.commit()
+            except Exception:
+                pass
             
             # 創建索引以提升查詢性能
             cursor.execute("""
@@ -90,6 +117,24 @@ class DatabaseManager:
             # Migration: add snapshot_source to existing tables (safe no-op if column exists)
             try:
                 cursor.execute("ALTER TABLE prediction_runs ADD COLUMN snapshot_source TEXT DEFAULT 'VALID'")
+                conn.commit()
+            except Exception:
+                pass
+            # Migration: add analyzed field (run-level analysis status)
+            try:
+                cursor.execute("ALTER TABLE prediction_runs ADD COLUMN analyzed TEXT DEFAULT '未研究'")
+                conn.commit()
+            except Exception:
+                pass
+            # Migration: add analysis_note field (user-submitted analysis text)
+            try:
+                cursor.execute("ALTER TABLE prediction_runs ADD COLUMN analysis_note TEXT")
+                conn.commit()
+            except Exception:
+                pass
+            # Migration: add review_json field (structured review data from LLM Research Board)
+            try:
+                cursor.execute("ALTER TABLE prediction_runs ADD COLUMN review_json TEXT")
                 conn.commit()
             except Exception:
                 pass
@@ -131,6 +176,34 @@ class DatabaseManager:
                 conn.commit()
             except Exception:
                 pass
+            # Migration: Winning Quality fields (P1-1)
+            try:
+                cursor.execute("ALTER TABLE prediction_results ADD COLUMN wq_score INTEGER DEFAULT NULL")
+                conn.commit()
+            except Exception:
+                pass
+            try:
+                cursor.execute("ALTER TABLE prediction_results ADD COLUMN split_risk TEXT DEFAULT NULL")
+                conn.commit()
+            except Exception:
+                pass
+            # Migration: zone_coverage for prediction_items (P1-3)
+            try:
+                cursor.execute("ALTER TABLE prediction_items ADD COLUMN zone_coverage TEXT DEFAULT NULL")
+                conn.commit()
+            except Exception:
+                pass
+            # Migration: add strategy_name and num_bets to prediction_items (multi-strategy per run)
+            try:
+                cursor.execute("ALTER TABLE prediction_items ADD COLUMN strategy_name TEXT")
+                conn.commit()
+            except Exception:
+                pass
+            try:
+                cursor.execute("ALTER TABLE prediction_items ADD COLUMN num_bets INTEGER")
+                conn.commit()
+            except Exception:
+                pass
 
             cursor.execute("""
                 CREATE INDEX IF NOT EXISTS idx_pred_runs_lottery
@@ -164,6 +237,125 @@ class DatabaseManager:
                 CREATE INDEX IF NOT EXISTS idx_schedule_lottery
                 ON snapshot_schedule(lottery_type, status)
             """)
+
+            # ── Research Review System Tables ──────────────────────────────
+
+            # review_sessions: 每次檢討會議
+            cursor.execute("""
+                CREATE TABLE IF NOT EXISTS review_sessions (
+                    id INTEGER PRIMARY KEY AUTOINCREMENT,
+                    game TEXT NOT NULL,
+                    draw TEXT,
+                    draw_date TEXT,
+                    session_type TEXT NOT NULL DEFAULT 'daily_review',
+                    created_at TEXT DEFAULT CURRENT_TIMESTAMP,
+                    updated_at TEXT DEFAULT CURRENT_TIMESTAMP,
+                    summary TEXT,
+                    final_decision TEXT DEFAULT 'NO_ACTION',
+                    confidence_level TEXT DEFAULT 'LOW',
+                    raw_report_text TEXT,
+                    parsed_successfully INTEGER DEFAULT 0,
+                    status TEXT DEFAULT 'OPEN'
+                )
+            """)
+            cursor.execute("CREATE INDEX IF NOT EXISTS idx_review_sessions_game ON review_sessions(game)")
+            cursor.execute("CREATE INDEX IF NOT EXISTS idx_review_sessions_draw ON review_sessions(draw)")
+            cursor.execute("CREATE INDEX IF NOT EXISTS idx_review_sessions_status ON review_sessions(status)")
+
+            # review_findings: 檢討發現
+            cursor.execute("""
+                CREATE TABLE IF NOT EXISTS review_findings (
+                    id INTEGER PRIMARY KEY AUTOINCREMENT,
+                    session_id INTEGER NOT NULL,
+                    section_type TEXT NOT NULL,
+                    title TEXT,
+                    content TEXT,
+                    evidence_type TEXT DEFAULT 'UNSURE',
+                    sort_order INTEGER DEFAULT 0,
+                    FOREIGN KEY (session_id) REFERENCES review_sessions(id)
+                )
+            """)
+            cursor.execute("CREATE INDEX IF NOT EXISTS idx_review_findings_session ON review_findings(session_id)")
+
+            # review_hypotheses: 假說記錄
+            cursor.execute("""
+                CREATE TABLE IF NOT EXISTS review_hypotheses (
+                    id INTEGER PRIMARY KEY AUTOINCREMENT,
+                    session_id INTEGER NOT NULL,
+                    hypothesis_type TEXT DEFAULT 'other',
+                    description TEXT,
+                    expected_impact TEXT,
+                    validation_method TEXT,
+                    kill_condition TEXT,
+                    status TEXT DEFAULT 'PENDING',
+                    created_at TEXT DEFAULT CURRENT_TIMESTAMP,
+                    updated_at TEXT DEFAULT CURRENT_TIMESTAMP,
+                    FOREIGN KEY (session_id) REFERENCES review_sessions(id)
+                )
+            """)
+            cursor.execute("CREATE INDEX IF NOT EXISTS idx_review_hypotheses_session ON review_hypotheses(session_id)")
+            cursor.execute("CREATE INDEX IF NOT EXISTS idx_review_hypotheses_status ON review_hypotheses(status)")
+
+            # review_actions: 行動項目
+            cursor.execute("""
+                CREATE TABLE IF NOT EXISTS review_actions (
+                    id INTEGER PRIMARY KEY AUTOINCREMENT,
+                    session_id INTEGER NOT NULL,
+                    priority TEXT DEFAULT 'P2',
+                    action_title TEXT,
+                    action_description TEXT,
+                    expected_gain TEXT,
+                    cost_level TEXT,
+                    risk_level TEXT,
+                    validation_method TEXT,
+                    stop_condition TEXT,
+                    status TEXT DEFAULT 'OPEN',
+                    created_at TEXT DEFAULT CURRENT_TIMESTAMP,
+                    updated_at TEXT DEFAULT CURRENT_TIMESTAMP,
+                    FOREIGN KEY (session_id) REFERENCES review_sessions(id)
+                )
+            """)
+            cursor.execute("CREATE INDEX IF NOT EXISTS idx_review_actions_session ON review_actions(session_id)")
+            cursor.execute("CREATE INDEX IF NOT EXISTS idx_review_actions_status ON review_actions(status)")
+            cursor.execute("CREATE INDEX IF NOT EXISTS idx_review_actions_priority ON review_actions(priority)")
+
+            # shadow_experiments: 影子實驗
+            cursor.execute("""
+                CREATE TABLE IF NOT EXISTS shadow_experiments (
+                    id INTEGER PRIMARY KEY AUTOINCREMENT,
+                    session_id INTEGER,
+                    game TEXT NOT NULL,
+                    experiment_name TEXT NOT NULL,
+                    base_strategy TEXT,
+                    experiment_strategy TEXT,
+                    experiment_config_json TEXT,
+                    status TEXT DEFAULT 'DRAFT',
+                    notes TEXT,
+                    created_at TEXT DEFAULT CURRENT_TIMESTAMP,
+                    updated_at TEXT DEFAULT CURRENT_TIMESTAMP,
+                    FOREIGN KEY (session_id) REFERENCES review_sessions(id)
+                )
+            """)
+            cursor.execute("CREATE INDEX IF NOT EXISTS idx_shadow_experiments_session ON shadow_experiments(session_id)")
+            cursor.execute("CREATE INDEX IF NOT EXISTS idx_shadow_experiments_game ON shadow_experiments(game)")
+            cursor.execute("CREATE INDEX IF NOT EXISTS idx_shadow_experiments_status ON shadow_experiments(status)")
+
+            # prediction_review_status: 預測與檢討的關聯
+            cursor.execute("""
+                CREATE TABLE IF NOT EXISTS prediction_review_status (
+                    id INTEGER PRIMARY KEY AUTOINCREMENT,
+                    prediction_run_id INTEGER,
+                    review_session_id INTEGER,
+                    review_status TEXT DEFAULT 'UNREVIEWED',
+                    resolved_at TEXT,
+                    notes TEXT,
+                    FOREIGN KEY (prediction_run_id) REFERENCES prediction_runs(id),
+                    FOREIGN KEY (review_session_id) REFERENCES review_sessions(id)
+                )
+            """)
+            cursor.execute("CREATE INDEX IF NOT EXISTS idx_pred_review_run ON prediction_review_status(prediction_run_id)")
+            cursor.execute("CREATE INDEX IF NOT EXISTS idx_pred_review_session ON prediction_review_status(review_session_id)")
+            cursor.execute("CREATE INDEX IF NOT EXISTS idx_pred_review_status ON prediction_review_status(review_status)")
 
             conn.commit()
             logger.info("✅ Database tables and indexes created")
@@ -214,13 +406,22 @@ class DatabaseManager:
                         pass
                         
                 numbers_json = json.dumps(sorted(numbers))
+                jackpot_amount = draw.get('jackpot_amount', draw.get('jackpot'))
+                if jackpot_amount in (None, ""):
+                    jackpot_amount = None
+                else:
+                    try:
+                        jackpot_amount = float(jackpot_amount)
+                    except Exception:
+                        jackpot_amount = None
                 
                 batch_data.append((
                     draw.get('draw'),
                     draw.get('date'),
                     draw.get('lotteryType'),
                     numbers_json,
-                    draw.get('special', 0)
+                    draw.get('special', 0),
+                    jackpot_amount,
                 ))
             
             # 使用 executemany 批次插入（大幅提升性能）
@@ -232,8 +433,8 @@ class DatabaseManager:
             
             # 這裡使用方法1（優先性能）+ 後續統計
             cursor.executemany("""
-                INSERT OR IGNORE INTO draws (draw, date, lottery_type, numbers, special)
-                VALUES (?, ?, ?, ?, ?)
+                INSERT OR IGNORE INTO draws (draw, date, lottery_type, numbers, special, jackpot_amount)
+                VALUES (?, ?, ?, ?, ?, ?)
             """, batch_data)
             
             inserted = cursor.rowcount
@@ -311,7 +512,7 @@ class DatabaseManager:
             
             # 查詢數據
             data_query = f"""
-                SELECT id, draw, date, lottery_type, numbers, special, created_at
+                SELECT id, draw, date, lottery_type, numbers, special, jackpot_amount, created_at
                 FROM draws
                 WHERE {where_clause}
                 ORDER BY CAST(draw AS INTEGER) DESC
@@ -329,7 +530,8 @@ class DatabaseManager:
                     'date': row['date'],
                     'lotteryType': row['lottery_type'],
                     'numbers': json.loads(row['numbers']),
-                    'special': row['special'],
+                    'special': _normalize_special_for_output(row['lottery_type'], row['special']),
+                    'jackpot_amount': row['jackpot_amount'],
                     'created_at': row['created_at']
                 })
             
@@ -377,7 +579,7 @@ class DatabaseManager:
                 # 使用 IN 查詢支持多個相關類型
                 placeholders = ','.join('?' * len(related_types))
                 query = f"""
-                    SELECT id, draw, date, lottery_type, numbers, special
+                    SELECT id, draw, date, lottery_type, numbers, special, jackpot_amount
                     FROM draws
                     WHERE lottery_type IN ({placeholders})
                     ORDER BY CAST(draw AS INTEGER) DESC
@@ -387,7 +589,7 @@ class DatabaseManager:
                 cursor.execute(query, related_types)
             else:
                 query = """
-                    SELECT id, draw, date, lottery_type, numbers, special
+                    SELECT id, draw, date, lottery_type, numbers, special, jackpot_amount
                     FROM draws
                     ORDER BY CAST(draw AS INTEGER) DESC
                 """
@@ -404,7 +606,8 @@ class DatabaseManager:
                     'date': row['date'],
                     'lotteryType': row['lottery_type'],
                     'numbers': json.loads(row['numbers']),
-                    'special': row['special']
+                    'special': _normalize_special_for_output(row['lottery_type'], row['special']),
+                    'jackpot_amount': row['jackpot_amount'],
                 })
 
             logger.info(f"🔍 [get_all_draws] Parsed {len(draws)} draws, returning...")
@@ -430,25 +633,40 @@ class DatabaseManager:
         cursor = conn.cursor()
         
         try:
-            # 按類型統計
-            cursor.execute("""
-                SELECT lottery_type, COUNT(*) as count
-                FROM draws
-                GROUP BY lottery_type
-            """)
-            
+            # 按類型統計（若指定 lottery_type 則只回傳該類型）
+            if lottery_type:
+                cursor.execute("""
+                    SELECT lottery_type, COUNT(*) as count
+                    FROM draws
+                    WHERE lottery_type = ?
+                    GROUP BY lottery_type
+                """, (lottery_type,))
+            else:
+                cursor.execute("""
+                    SELECT lottery_type, COUNT(*) as count
+                    FROM draws
+                    GROUP BY lottery_type
+                """)
+
             by_type = {}
             total = 0
-            
+
             for row in cursor.fetchall():
                 by_type[row['lottery_type']] = row['count']
                 total += row['count']
-            
+
             # 日期範圍
-            cursor.execute("""
-                SELECT MIN(date) as earliest, MAX(date) as latest
-                FROM draws
-            """)
+            if lottery_type:
+                cursor.execute("""
+                    SELECT MIN(date) as earliest, MAX(date) as latest
+                    FROM draws
+                    WHERE lottery_type = ?
+                """, (lottery_type,))
+            else:
+                cursor.execute("""
+                    SELECT MIN(date) as earliest, MAX(date) as latest
+                    FROM draws
+                """)
             
             date_row = cursor.fetchone()
             
@@ -510,11 +728,20 @@ class DatabaseManager:
         try:
             cursor.execute("SELECT COUNT(*) FROM draws")
             count = cursor.fetchone()[0]
-            
-            cursor.execute("DELETE FROM draws")
+
+            # 清除所有業務表（依外鍵順序：子表先刪）
+            for table in (
+                "prediction_results",
+                "prediction_items",
+                "snapshot_schedule",
+                "prediction_runs",
+                "draws",
+            ):
+                cursor.execute(f"DELETE FROM {table}")
+
             conn.commit()
-            
-            logger.info(f"✅ Cleared {count} draws from database")
+
+            logger.info(f"✅ Cleared {count} draws and all prediction data from database")
             return count
             
         except Exception as e:
@@ -552,7 +779,7 @@ class DatabaseManager:
         
         try:
             cursor.execute("""
-                SELECT id, draw, date, lottery_type, numbers, special
+                SELECT id, draw, date, lottery_type, numbers, special, jackpot_amount
                 FROM draws
                 WHERE lottery_type = ? AND draw = ?
             """, (lottery_type, draw_number))
@@ -567,7 +794,8 @@ class DatabaseManager:
                 'date': row['date'],
                 'lotteryType': row['lottery_type'],
                 'numbers': json.loads(row['numbers']),
-                'special': row['special']
+                'special': _normalize_special_for_output(row['lottery_type'], row['special']),
+                'jackpot_amount': row['jackpot_amount'],
             }
             
         except Exception as e:
@@ -640,7 +868,7 @@ class DatabaseManager:
                     'date': row['date'],
                     'lotteryType': row['lottery_type'],
                     'numbers': json.loads(row['numbers']),
-                    'special': row['special']
+                    'special': _normalize_special_for_output(row['lottery_type'], row['special'])
                 })
 
             logger.info(f"✅ 查詢範圍預測數據: {lottery_type} {start_draw or '最早'} - {end_draw or '最新'}, 共 {len(draws)} 期")

@@ -3,6 +3,7 @@
  * 研究檢討 — 管理檢討會議、行動項目、影子實驗、儀表板
  */
 import { getApiUrl } from '../config/apiConfig.js';
+import { renderCompactExplainBlock } from './components/ExplainabilityRenderer.js';
 
 export class ReviewManager {
     constructor(app) {
@@ -185,7 +186,20 @@ export class ReviewManager {
         try {
             const data = await this._get(`/api/reviews/${sessionId}`);
             this._currentSession = data;
-            detail.innerHTML = this._renderDetail(data);
+
+            // Phase P: fetch explainability for linked prediction run (if any)
+            let explanation = null;
+            const predRunId = data.prediction_run_id || data.metadata?.prediction_run_id;
+            if (predRunId) {
+                try {
+                    const expData = await this._get(`/api/explainability/run/${predRunId}`);
+                    explanation = expData?.explanation || null;
+                } catch (_) {
+                    // non-fatal — explanation block simply won't render
+                }
+            }
+
+            detail.innerHTML = this._renderDetail(data, explanation);
             this._showDetail();
         } catch (e) {
             detail.innerHTML = `<div class="rv-empty">載入失敗: ${e.message}</div>`;
@@ -193,13 +207,19 @@ export class ReviewManager {
         }
     }
 
-    _renderDetail(s) {
+    _renderDetail(s, explanation = null) {
         const findings = s.findings || [];
         const hypotheses = s.hypotheses || [];
         const actions = s.actions || [];
         const gameLabel = this._gameLabel(s.game);
         const decision = this._decisionLabel(s.final_decision);
         const confidence = this._confidenceLabel(s.confidence_level);
+
+        // Phase P: compact explainability block
+        const explainHtml = explanation
+            ? renderCompactExplainBlock(explanation, { title: '🔍 本期決策解釋', showStrategy: true, showBaseMetrics: false })
+            : '';
+
         return `
         <div class="rv-detail-header">
             <h3>${this._esc(gameLabel)} 第${this._esc(s.draw || '?')}期</h3>
@@ -216,6 +236,8 @@ export class ReviewManager {
             </div>
         </div>
         ${s.summary ? `<div class="rv-summary-box">${this._esc(s.summary)}</div>` : ''}
+
+        ${explainHtml}
 
         <div class="rv-section">
             <h4>🔍 發現 (${findings.length})</h4>

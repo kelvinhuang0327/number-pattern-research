@@ -1,6 +1,6 @@
 /**
  * 資產翻倍計劃組件
- * 顯示推薦策略和回測證據，幫助用戶制定投資計劃
+ * 示範用的策略與證據面板，幫助用戶理解不同方案的比較方式
  */
 export class AssetDoublingPlanComponent {
     constructor(dataProcessor, predictionEngine, uiManager) {
@@ -8,7 +8,7 @@ export class AssetDoublingPlanComponent {
         this.predictionEngine = predictionEngine;
         this.uiManager = uiManager;
         
-        // 回測證據數據 - 基於實際驗證報告
+        // 示範證據數據 - 目前為內建樣板資料，非即時後端來源
         this.backtestEvidence = {
             'POWER_LOTTO': {
                 name: '威力彩',
@@ -161,7 +161,7 @@ export class AssetDoublingPlanComponent {
     }
 
     setupEventListeners() {
-        // 查看回測證據按鈕
+        // 查看示範證據按鈕
         const showEvidenceBtn = document.getElementById('show-backtest-evidence-btn');
         if (showEvidenceBtn) {
             showEvidenceBtn.addEventListener('click', () => this.showBacktestEvidence());
@@ -193,7 +193,7 @@ export class AssetDoublingPlanComponent {
     }
 
     /**
-     * 顯示回測證據面板
+     * 顯示示範證據面板
      */
     showBacktestEvidence() {
         const panel = document.getElementById('backtest-evidence-panel');
@@ -203,7 +203,7 @@ export class AssetDoublingPlanComponent {
         
         const evidence = this.backtestEvidence[lotteryType];
         if (!evidence) {
-            this.uiManager.showNotification('暫無該彩券的回測數據', 'warning');
+            this.uiManager.showNotification('暫無該彩券的示範數據', 'warning');
             return;
         }
 
@@ -250,7 +250,7 @@ export class AssetDoublingPlanComponent {
 
         panel.innerHTML = `
             <div class="evidence-header">
-                <h4>📈 ${evidence.name} 回測驗證報告</h4>
+                <h4>📈 ${evidence.name} 示範驗證報告</h4>
                 <span class="test-period">驗證期間: ${evidence.testPeriod}</span>
                 <button class="close-panel-btn" onclick="this.closest('.evidence-panel').style.display='none'">✕</button>
             </div>
@@ -311,8 +311,8 @@ export class AssetDoublingPlanComponent {
             </div>
 
             <div class="evidence-footer">
-                <p class="disclaimer">⚠️ 以上數據基於歷史回測，不代表未來收益保證。請理性投注。</p>
-                <p class="methodology">驗證方式: 滾動式回測 (Rolling Backtest) - 無數據洩漏</p>
+                <p class="disclaimer">⚠️ 以上數據為示範樣板，若要正式使用請改為後端動態來源。請理性投注。</p>
+                <p class="methodology">驗證方式: 滾動式回測 (Rolling Backtest) - 示範樣式</p>
             </div>
         `;
 
@@ -464,7 +464,7 @@ export class AssetDoublingPlanComponent {
             </div>
 
             <div class="plan-projection">
-                <h5>📊 收益預測 (基於回測數據)</h5>
+                <h5>📊 收益預測 (基於示範數據)</h5>
                 <div class="projection-chart">
                     <div class="projection-bar">
                         <div class="bar-label">投入</div>
@@ -565,10 +565,10 @@ export class AssetDoublingPlanComponent {
                     </div>
 
                     <div class="detail-section backtest-proof">
-                        <h4>📈 回測證據</h4>
+                        <h4>📈 示範證據</h4>
                         <div class="proof-content">
                             <p>✓ 驗證期間: ${evidence.testPeriod}</p>
-                            <p>✓ 驗證方式: 滾動式回測 (無數據洩漏)</p>
+                            <p>✓ 驗證方式: 滾動式回測 (示範樣式)</p>
                             <p>✓ 數據來源: ${evidence.name}官方開獎紀錄</p>
                         </div>
                     </div>

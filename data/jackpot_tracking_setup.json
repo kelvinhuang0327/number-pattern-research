@@ -1,0 +1,21 @@
+{
+  "schema_table": "draws",
+  "schema_columns": [
+    "id",
+    "draw",
+    "date",
+    "lottery_type",
+    "numbers",
+    "special",
+    "created_at",
+    "jackpot_amount"
+  ],
+  "jackpot_column_present": true,
+  "source_priority": [
+    "provided",
+    "db_latest",
+    "snapshot_file",
+    "theoretical_only"
+  ],
+  "backward_compatibility": "additive_only"
+}

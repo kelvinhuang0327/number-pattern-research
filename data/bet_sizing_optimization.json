@@ -1,0 +1,115 @@
+{
+  "generated_at": "2026-04-20T11:03:32.773488",
+  "metric": "edge_1500p_per_ntd",
+  "lotteries": {
+    "DAILY_539": {
+      "candidates": [
+        {
+          "bet_count": 1,
+          "strategy_name": "acb_1bet",
+          "validated_status": "WATCH",
+          "composite_score": 0.034892,
+          "edge_150p": 0.0127,
+          "edge_500p": 0.03,
+          "edge_1500p": 0.028,
+          "sharpe": 0.0749,
+          "ticket_cost": 50,
+          "total_cost": 50,
+          "edge_per_ntd": 0.00056
+        },
+        {
+          "bet_count": 2,
+          "strategy_name": "midfreq_acb_2bet",
+          "validated_status": "VALIDATED",
+          "composite_score": 0.057485,
+          "edge_150p": 0.0846,
+          "edge_500p": 0.0826,
+          "edge_1500p": 0.0553,
+          "sharpe": 0.1121,
+          "ticket_cost": 50,
+          "total_cost": 100,
+          "edge_per_ntd": 0.000553
+        },
+        {
+          "bet_count": 3,
+          "strategy_name": "acb_markov_midfreq_3bet",
+          "validated_status": "VALIDATED",
+          "composite_score": 0.070484,
+          "edge_150p": 0.075,
+          "edge_500p": 0.071,
+          "edge_1500p": 0.0677,
+          "sharpe": 0.1316,
+          "ticket_cost": 50,
+          "total_cost": 150,
+          "edge_per_ntd": 0.00045133
+        }
+      ],
+      "recommended_bet_count": 1,
+      "decline_point": 2,
+      "current_bet_count": 3,
+      "current_strategy": "acb_markov_midfreq_3bet",
+      "takeaway": "edge per dollar peaks at the recommended bet count and then weakens"
+    },
+    "POWER_LOTTO": {
+      "candidates": [
+        {
+          "bet_count": 2,
+          "strategy_name": "midfreq_fourier_2bet",
+          "validated_status": "WATCH",
+          "composite_score": 0.027887,
+          "edge_150p": -0.0092,
+          "edge_500p": 0.0241,
+          "edge_1500p": 0.0194,
+          "sharpe": 0.0637,
+          "ticket_cost": 100,
+          "total_cost": 200,
+          "edge_per_ntd": 9.7e-05
+        },
+        {
+          "bet_count": 4,
+          "strategy_name": "pp3_freqort_4bet",
+          "validated_status": "WATCH",
+          "composite_score": 0.033783,
+          "edge_150p": 0.0473,
+          "edge_500p": 0.032,
+          "edge_1500p": 0.0327,
+          "sharpe": 0.0707,
+          "ticket_cost": 100,
+          "total_cost": 400,
+          "edge_per_ntd": 8.175e-05
+        },
+        {
+          "bet_count": 3,
+          "strategy_name": "midfreq_fourier_mk_3bet",
+          "validated_status": "WATCH",
+          "composite_score": 0.034738,
+          "edge_150p": 0.00834,
+          "edge_500p": 0.03434,
+          "edge_1500p": 0.02434,
+          "sharpe": 0.0751,
+          "ticket_cost": 100,
+          "total_cost": 300,
+          "edge_per_ntd": 8.113e-05
+        },
+        {
+          "bet_count": 5,
+          "strategy_name": "orthogonal_5bet",
+          "validated_status": "WATCH",
+          "composite_score": 0.041924,
+          "edge_150p": 0.0476,
+          "edge_500p": 0.0329,
+          "edge_1500p": 0.0389,
+          "sharpe": 0.085,
+          "ticket_cost": 100,
+          "total_cost": 500,
+          "edge_per_ntd": 7.78e-05
+        }
+      ],
+      "recommended_bet_count": 2,
+      "decline_point": 3,
+      "current_bet_count": 5,
+      "current_strategy": "orthogonal_5bet",
+      "takeaway": "edge per dollar peaks at the recommended bet count and then weakens"
+    }
+  }
+}

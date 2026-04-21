@@ -25,7 +25,7 @@ def load_history(max_records=1500):
     cursor.execute("""
         SELECT numbers FROM draws 
         WHERE lottery_type = 'BIG_LOTTO' 
-        ORDER BY draw DESC LIMIT ?
+        ORDER BY CAST(draw AS INTEGER) DESC LIMIT ?
     """, (max_records,))
     rows = cursor.fetchall()
     conn.close()

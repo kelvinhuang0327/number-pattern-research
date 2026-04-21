@@ -76,7 +76,7 @@ export class SmartBettingComponent {
         }
 
         try {
-            const response = await fetch(`/api/wheel/available-guarantees?pool_size=${poolSize}`);
+            const response = await fetch(getApiUrl(`/api/wheel/available-guarantees?pool_size=${poolSize}`));
             const data = await response.json();
 
             select.innerHTML = '';
@@ -111,7 +111,7 @@ export class SmartBettingComponent {
             generateBtn.innerHTML = '<span class="btn-icon">⏳</span> 運算中...';
 
             // 調用後端實際的旋轉矩陣生成接口
-            const response = await fetch(`/api/wheel/generate?pool=${JSON.stringify(nums)}&guarantee_t=${guarantee_t || 3}&condition_m=${condition_m || 4}`);
+            const response = await fetch(getApiUrl(`/api/wheel/generate?pool=${JSON.stringify(nums)}&guarantee_t=${guarantee_t || 3}&condition_m=${condition_m || 4}`));
             const data = await response.json();
 
             if (!response.ok) throw new Error(data.detail || '生成失敗');

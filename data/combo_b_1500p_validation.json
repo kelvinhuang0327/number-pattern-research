@@ -1,0 +1,29 @@
+{
+  "windows": {
+    "w150": -0.0124,
+    "w300": 0.0042,
+    "w500": 0.0169,
+    "w1000": 0.0169,
+    "w1500": 0.0089
+  },
+  "three_window_pass": false,
+  "perm_p": 0.18,
+  "mcnemar": {
+    "b": 114,
+    "c": 159,
+    "net": -45,
+    "p": 0.0076
+  },
+  "ortho_5bet_1500p_edge": 0.0389,
+  "beats_orthogonal": false,
+  "promotion_conditions_met": [
+    false,
+    false,
+    false,
+    false
+  ],
+  "verdict": "CONTINUE_WATCH",
+  "notes": "combo_B=fourier[0:2]+mk[0:3]. 1500p edge=0.0089, ortho_5bet_1500p=0.0389. three_win=False, perm_p=0.1800, McNemar net=-45 p=0.0076. Verdict=CONTINUE_WATCH.",
+  "n_tested": 1500,
+  "errors": 0
+}

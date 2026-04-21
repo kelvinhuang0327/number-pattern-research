@@ -1,0 +1,36 @@
+{
+  "strategy_id": "H9",
+  "name": "Pure MidFreq 2bet",
+  "lottery_type": "POWER_LOTTO",
+  "n_bets": 2,
+  "description": "近100期最接近期望頻率的12個號碼分2注 (純MidFreq，不使用Fourier)",
+  "implementation": {
+    "score_function": "_midfreq_scores(window=100)",
+    "bet1": "top 6 mid_scores (sorted)",
+    "bet2": "next 6 mid_scores (sorted)",
+    "no_fourier": true
+  },
+  "baseline_strategy": "midfreq_fourier_2bet",
+  "baseline_m3plus_2bet": 0.0759,
+  "previous_validation": {
+    "perm_p": 0.03,
+    "mcnemar_net": 25,
+    "mcnemar_p": 0.119,
+    "e30p": 0.0241,
+    "e100p": 0.0041,
+    "e300p": 0.0041,
+    "e1500p": 0.0128,
+    "retest_condition": "McNemar net>=32 AND p<0.05 at draw 115000122",
+    "retest_draw": "115000122"
+  },
+  "promotion_conditions": {
+    "mcnemar_p": "< 0.05",
+    "mcnemar_net": "> 0 (H9 strictly better)",
+    "perm_p": "< 0.05",
+    "all_windows_positive": true,
+    "new_edge_vs_baseline": "H9 edge_1500p > midfreq_fourier_2bet edge_1500p",
+    "ALL_MUST_PASS": true
+  },
+  "retest_draw": "115000122",
+  "generated_at": "2026-04-19T00:39:56.041170"
+}

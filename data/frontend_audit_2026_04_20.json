@@ -1,0 +1,182 @@
+{
+  "date": "2026-04-20",
+  "workspace": "/Users/kelvin/Kelvin-WorkSpace/LotteryNew",
+  "services": {
+    "api": {
+      "base_url": "http://localhost:8002",
+      "status": "reachable",
+      "notes": "Direct V3.1 decision endpoints responded successfully. /health returned Not Found, but the server was reachable."
+    },
+    "ui": {
+      "base_url": "http://localhost:8081",
+      "status": "reachable"
+    }
+  },
+  "endpoints_checked": [
+    {
+      "endpoint": "/api/decision/BIG_LOTTO",
+      "status": "ok",
+      "shape": [
+        "lottery_type",
+        "lottery_label",
+        "n_bets",
+        "strategy_name",
+        "final_confidence",
+        "risk_class",
+        "risk_label",
+        "exposure_weight",
+        "policy_id",
+        "mode",
+        "confidence_vector",
+        "bankroll_snapshot",
+        "ev_gate_open",
+        "current_jackpot",
+        "breakeven_jackpot",
+        "ev_gap",
+        "recommended_bet_count",
+        "n_bets_after_gate",
+        "monthly_budget_after_gate",
+        "kelly_fraction",
+        "exposure_weight_after_gate",
+        "jackpot_source",
+        "gate_confidence",
+        "stage2_gate"
+      ]
+    },
+    {
+      "endpoint": "/api/decision/DAILY_539",
+      "status": "ok",
+      "shape": [
+        "lottery_type",
+        "lottery_label",
+        "n_bets",
+        "strategy_name",
+        "final_confidence",
+        "risk_class",
+        "risk_label",
+        "exposure_weight",
+        "policy_id",
+        "mode",
+        "confidence_vector",
+        "bankroll_snapshot",
+        "ev_gate_open",
+        "current_jackpot",
+        "breakeven_jackpot",
+        "ev_gap",
+        "recommended_bet_count",
+        "n_bets_after_gate",
+        "monthly_budget_after_gate",
+        "kelly_fraction",
+        "exposure_weight_after_gate",
+        "jackpot_source",
+        "gate_confidence",
+        "stage2_gate"
+      ]
+    },
+    {
+      "endpoint": "/api/tracking/performance?lottery_type=BIG_LOTTO&valid_only=true",
+      "status": "ok",
+      "shape": [
+        "performance[]: lottery_type",
+        "performance[]: num_bets",
+        "performance[]: strategy_name",
+        "performance[]: strategy_status",
+        "performance[]: validated_status",
+        "performance[]: data_complete",
+        "performance[]: total_runs",
+        "performance[]: resolved_runs",
+        "performance[]: pending_runs",
+        "performance[]: success_count",
+        "performance[]: success_rate",
+        "performance[]: baseline",
+        "performance[]: edge",
+        "performance[]: avg_bets",
+        "performance[]: availability",
+        "performance[]: note",
+        "filter"
+      ]
+    },
+    {
+      "endpoint": "/api/next-draw-summary?mode=direct&recent_count=500",
+      "status": "ok",
+      "shape": [
+        "generated_at",
+        "mode",
+        "games.DAILY_539.game_status",
+        "games.DAILY_539.game_status_note",
+        "games.DAILY_539.latest_period",
+        "games.DAILY_539.next_period",
+        "games.DAILY_539.bets[]",
+        "games.BIG_LOTTO.game_status",
+        "games.BIG_LOTTO.game_status_note",
+        "games.BIG_LOTTO.latest_period",
+        "games.BIG_LOTTO.next_period",
+        "games.BIG_LOTTO.bets[]",
+        "games.POWER_LOTTO.game_status",
+        "games.POWER_LOTTO.game_status_note",
+        "games.POWER_LOTTO.latest_period",
+        "games.POWER_LOTTO.next_period",
+        "games.POWER_LOTTO.bets[]"
+      ]
+    },
+    {
+      "endpoint": "/api/decision/best-strategy-summary",
+      "status": "ok",
+      "shape": [
+        "game",
+        "game_id",
+        "best_strategy",
+        "all_strategies"
+      ],
+      "notes": "Legacy summary payload remains useful for backtest display, but it does not expose V3.1 decision fields."
+    }
+  ],
+  "files_reviewed": [
+    "src/ui/components/SmartBettingComponent.js",
+    "src/ui/PredictionTracker.js",
+    "src/ui/DrawEntryManager.js",
+    "src/core/App.js",
+    "src/core/handlers/NextDrawHandler.js",
+    "src/ui/components/ExplainabilityRenderer.js",
+    "index.html"
+  ],
+  "findings": [
+    {
+      "severity": "high",
+      "file": "src/core/handlers/NextDrawHandler.js",
+      "issue": "Best-strategy summary panel was still driven by the legacy /api/decision/best-strategy-summary payload, so it could not show EV gate, Kelly, monetary EV, or Stage2 status.",
+      "fix": "Switched the panel to /api/decision/{lottery_type} and rendered the V3.1 decision fields directly."
+    },
+    {
+      "severity": "medium",
+      "file": "src/ui/components/ExplainabilityRenderer.js",
+      "issue": "The explainability block did not surface V3.1 decision details even when the backend already provided them.",
+      "fix": "Added V3.1 decision summary rows for EV gate, Kelly, monetary EV, bet count, and Stage2 gate."
+    },
+    {
+      "severity": "medium",
+      "file": "src/ui/DrawEntryManager.js",
+      "issue": "The form had no jackpot-aware EV preview, so users could not compare the live jackpot with the EV gate before submitting draws.",
+      "fix": "Added an optional jackpot input and a live decision preview backed by /api/decision/{lottery_type}."
+    },
+    {
+      "severity": "low",
+      "file": "src/ui/PredictionTracker.js",
+      "issue": "The tracker assumed one narrow bet-count field shape.",
+      "fix": "Added a multi-field bet-count resolver so the tracker stays compatible with future API variations."
+    }
+  ],
+  "validation": {
+    "syntax_checks": "passed",
+    "files_checked": [
+      "src/core/handlers/NextDrawHandler.js",
+      "src/ui/components/ExplainabilityRenderer.js",
+      "src/ui/DrawEntryManager.js",
+      "src/ui/PredictionTracker.js"
+    ],
+    "notes": [
+      "Live API requests succeeded for the direct decision endpoint and next-draw summary endpoint.",
+      "The legacy best-strategy summary endpoint still returns old-style strategy data, so it was left as a backtest/legacy surface rather than the primary V3.1 display path."
+    ]
+  }
+}

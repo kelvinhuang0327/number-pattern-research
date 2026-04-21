@@ -16,8 +16,8 @@
     <script src="https://unpkg.com/lucide@latest"></script>
     
     <!-- Style Systems -->
-    <link rel="stylesheet" href="styles.css?v=17">
-    <link rel="stylesheet" href="professional-design.css?v=17">
+    <link rel="stylesheet" href="styles.css?v=18">
+    <link rel="stylesheet" href="professional-design.css?v=18">
     <link rel="stylesheet" href="src/ui/progress.css">
     
     <!-- Visibility Guard -->
@@ -158,42 +158,244 @@
         /* ── Prediction Tracker ── */
         .pt-badge { display:inline-block; padding:2px 8px; border-radius:10px; font-size:11px; font-weight:600; }
         .pt-resolved { background:#d4edda; color:#155724; }
-        .pt-pending { background:#fff3cd; color:#856404; }
+        .pt-pending { background:rgba(187,128,9,.2); color:#e3b341; }
+        .pt-state-badge { display:inline-block; padding:2px 8px; border-radius:999px; font-size:11px; font-weight:700; line-height:1.4; }
+        .pt-status-production { background:rgba(35,134,54,.16); color:#3fb950; }
+        .pt-status-watch { background:rgba(187,128,9,.18); color:#e3b341; }
+        .pt-status-maintenance { background:rgba(88,166,255,.16); color:#58a6ff; }
+        .pt-status-advisory { background:rgba(139,148,158,.18); color:#c9d1d9; }
+        .pt-status-na { background:rgba(139,148,158,.12); color:#8b949e; }
+        .pt-state-resolved { background:#d4edda; color:#155724; }
+        .pt-state-pending { background:rgba(187,128,9,.2); color:#e3b341; }
+        .pt-state-missed { background:rgba(218,54,51,.18); color:#f85149; }
+        .pt-state-reconstructed { background:rgba(88,86,214,.18); color:#a5a6ff; }
+        .pt-state-na { background:rgba(139,148,158,.12); color:#8b949e; }
         .pt-hit-good { color:#27ae60; font-weight:700; }
         .pt-hit-ok { color:#f39c12; font-weight:600; }
         .pt-hit-bad { color:#bbb; }
         .pt-good { color:#27ae60; font-weight:700; }
-        .pt-hist-row:hover td { background:#f8f9fa; }
-        .pt-detail-panel { padding:12px 16px; background:#fafafa; border-top:1px solid #eee; }
-        .pt-detail-meta { font-size:13px; color:#555; margin-bottom:10px; }
-        .pt-bet-row { display:flex; gap:10px; align-items:flex-start; padding:6px 0; border-bottom:1px solid #f0f0f0; }
-        .pt-bet-label { min-width:36px; font-weight:700; color:#666; font-size:12px; padding-top:4px; }
+        .pt-hist-row:hover td { background:#21262d; }
+        /* 三張表格：標題列與資料列均置中 */
+        .data-table { border-collapse:collapse; font-size:13px; }
+        .data-table th, .data-table td { padding:7px 10px; border-bottom:1px solid #30363d; text-align:center; vertical-align:middle; }
+        .data-table thead th { background:var(--bg-secondary,#0d1117); font-weight:600; color:#7d8590; }
+        /* 策略名稱欄保留靠左（績效表第2欄） */
+        #pt-perf-body td:nth-child(2) { text-align:left; }
+        .pt-detail-panel { background:var(--bg-card,#161b22); border-top:1px solid #30363d; }
+        /* blocks */
+        .pt-block { border-bottom:1px solid #30363d; }
+        .pt-block:last-child { border-bottom:none; }
+        .pt-block-header { display:flex; align-items:center; gap:8px; padding:8px 14px; background:var(--bg-secondary,#0d1117); border-bottom:1px solid #30363d; flex-wrap:wrap; }
+        .pt-block-title { font-weight:700; font-size:12px; color:#7d8590; letter-spacing:.3px; }
+        .pt-block-body { padding:10px 14px; }
+        .pt-detail-small { font-size:11px; color:#7d8590; }
+        /* block 1 - draw info */
+        .pt-draw-info-row { display:flex; align-items:center; gap:6px; flex-wrap:wrap; }
+        .pt-draw-info-label { font-size:11px; color:#7d8590; }
+        .pt-draw-info-val { font-size:13px; font-weight:700; color:#e6edf3; }
+        .pt-draw-pending { font-size:12px; color:#7d8590; margin-left:12px; }
+        /* block 2 - bet cards */
+        .pt-bet-card { border:1px solid #30363d; border-radius:6px; margin-bottom:8px; overflow:hidden; }
+        .pt-bet-card:last-child { margin-bottom:0; }
+        .pt-bet-card-header { display:flex; align-items:center; gap:8px; padding:6px 10px; background:var(--bg-secondary,#0d1117); border-bottom:1px solid #30363d; flex-wrap:wrap; }
+        .pt-bet-card-label { font-weight:700; font-size:12px; color:#58a6ff; min-width:32px; }
+        .pt-bet-card-hit { font-size:12px; color:#7d8590; }
+        .pt-bet-card-row { display:flex; align-items:center; gap:8px; padding:6px 10px; border-bottom:1px solid #21262d; }
+        .pt-bet-card-row:last-child { border-bottom:none; }
+        .pt-bet-card-key { font-size:11px; color:#7d8590; min-width:56px; }
+        /* number balls */
+        .pt-num { display:inline-block; width:26px; height:26px; line-height:26px; text-align:center; border-radius:50%; font-size:12px; font-weight:600; margin:1px; background:#30363d; color:#e6edf3; }
+        .pt-num-match { background:#238636 !important; color:#fff !important; }
+        .pt-num-actual { background:#1f6feb; color:#fff; }
+        .pt-num-hit { display:inline-block; margin:2px; font-size:13px; font-weight:700; color:#3fb950; }
+        .pt-num-plain { display:inline-block; margin:2px; font-size:13px; color:#7d8590; }
+        .pt-bet-nums-row { padding:6px 0; display:flex; flex-wrap:wrap; align-items:center; gap:2px; }
+        .pt-special { background:#da3633; color:#fff; }
+        .pt-actual-special { background:#8957e5; color:#fff; }
+        .pt-num-sp-hit { background:#b08800 !important; color:#fff !important; }
+        .pt-na-box { padding:10px 12px; border:1px dashed #30363d; border-radius:6px; color:#8b949e; background:rgba(13,17,23,.6); }
+        .pt-na-text { color:#8b949e; font-size:12px; }
+        .pt-perf-summary { border:1px solid #30363d; border-radius:10px; background:var(--bg-card,#161b22); padding:12px 14px; margin-bottom:12px; }
+        .pt-perf-summary-head { display:flex; gap:12px; align-items:flex-start; flex-wrap:wrap; }
+        .pt-perf-summary-kicker { font-size:11px; color:#8b949e; letter-spacing:.3px; text-transform:uppercase; }
+        .pt-perf-summary-title { font-size:16px; font-weight:700; color:#e6edf3; margin-top:2px; }
+        .pt-perf-summary-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(120px,1fr)); gap:8px; margin-top:10px; }
+        .pt-perf-summary-grid div { background:rgba(13,17,23,.55); border:1px solid #30363d; border-radius:8px; padding:8px 10px; display:flex; flex-direction:column; gap:4px; }
+        .pt-perf-summary-label { font-size:11px; color:#8b949e; }
+        .nd-best-row td { background: rgba(63, 185, 80, 0.08); }
+        /* legacy (kept for compat) */
+        .pt-detail-meta { font-size:13px; color:#7d8590; margin-bottom:10px; }
+        .pt-bet-row { display:flex; gap:10px; align-items:flex-start; padding:6px 0; border-bottom:1px solid #21262d; }
+        .pt-bet-label { min-width:36px; font-weight:700; color:#7d8590; font-size:12px; padding-top:4px; }
         .pt-nums-line { margin-bottom:4px; }
-        .pt-num { display:inline-block; width:26px; height:26px; line-height:26px; text-align:center; border-radius:50%; font-size:12px; font-weight:600; margin:1px; background:#eee; color:#333; }
-        .pt-num-match { background:#27ae60 !important; color:#fff !important; }
-        .pt-num-actual { background:#3498db; color:#fff; }
-        .pt-special { background:#e74c3c; color:#fff; }
-        .pt-actual-special { background:#9b59b6; color:#fff; }
-        .pt-hit-summary { font-size:12px; color:#666; margin-top:4px; }
         .mb-16 { margin-bottom:16px; }
         /* schedule status cards */
         .pt-sched-cards { display:flex; gap:12px; flex-wrap:wrap; margin-bottom:16px; }
-        .pt-sched-card { background:#fff; border:1px solid #e0e0e0; border-radius:8px; padding:10px 14px; min-width:160px; box-shadow:0 1px 3px rgba(0,0,0,.06); }
-        .pt-sched-game { font-weight:700; font-size:14px; margin-bottom:4px; color:#333; }
-        .pt-sched-info { font-size:12px; color:#666; margin-bottom:2px; }
+        .pt-sched-card { background:var(--bg-card,#161b22); border:1px solid #30363d; border-radius:8px; padding:10px 14px; min-width:160px; box-shadow:0 1px 3px rgba(0,0,0,.3); }
+        .pt-sched-game { font-weight:700; font-size:14px; margin-bottom:4px; color:#e6edf3; }
+        .pt-sched-info { font-size:12px; color:#7d8590; margin-bottom:2px; }
+        .pt-draw-date { font-size:11px; color:#7d8590; margin-left:5px; font-weight:400; }
+        .pt-analyzed-btn { cursor:pointer; border:none; background:none; padding:2px 6px; border-radius:8px; font-size:11px; font-weight:600; }
+        .pt-analyzed-yes { background:rgba(35,134,54,.2); color:#3fb950; }
+        .pt-analyzed-no  { background:rgba(218,54,51,.2); color:#f85149; }
+        /* analysis block */
+        .pt-analysis-textarea { width:100%; box-sizing:border-box; padding:8px 10px; border:1px solid #30363d; border-radius:5px; font-size:13px; font-family:inherit; resize:vertical; background:var(--bg-secondary,#0d1117); color:#e6edf3; }
+        .pt-analysis-textarea:focus { outline:none; border-color:#58a6ff; box-shadow:0 0 0 2px rgba(88,166,255,.12); }
+        .pt-analysis-note-display { font-size:13px; color:#c9d1d9; line-height:1.7; white-space:pre-wrap; background:var(--bg-secondary,#0d1117); border:1px solid #30363d; border-radius:5px; padding:10px 12px; }
+        .pt-rsm-ref { margin-top:14px; }
+        .pt-rsm-ref-title { font-size:12px; font-weight:700; color:#58a6ff; margin-bottom:8px; letter-spacing:.3px; }
+        .pt-rsm-card { background:var(--bg-card,#161b22); border:1px solid #30363d; border-radius:7px; margin-bottom:7px; overflow:hidden; }
+        .pt-rsm-card-active { border-color:#58a6ff; background:#1c2940; box-shadow:0 0 0 2px rgba(88,166,255,.15); }
+        .pt-rsm-card-header { display:flex; align-items:center; gap:8px; padding:7px 11px; background:var(--bg-secondary,#0d1117); border-bottom:1px solid #30363d; flex-wrap:wrap; }
+        .pt-rsm-card-body { padding:8px 11px; display:flex; flex-direction:column; gap:5px; }
+        .pt-rsm-nbets { font-weight:700; color:#58a6ff; font-size:12px; min-width:52px; }
+        .pt-rsm-name { font-family:monospace; font-size:11px; color:#c9d1d9; flex:1; }
+        .pt-rsm-trend { font-size:11px; color:#7d8590; margin-left:auto; }
+        .pt-rsm-cur { background:#1f6feb; color:#fff; border-radius:3px; padding:1px 5px; font-size:10px; font-weight:700; }
+        .pt-rsm-alert { background:rgba(187,128,9,.2); color:#e3b341; border-radius:3px; padding:1px 5px; font-size:10px; font-weight:700; }
+        .pt-rsm-stat-row { display:flex; align-items:center; gap:6px; font-size:12px; }
+        .pt-rsm-stat-label { color:#7d8590; min-width:44px; font-size:11px; }
+        .pt-rsm-stat-val { color:#c9d1d9; font-weight:600; min-width:56px; }
+        .pt-rsm-pos { color:#3fb950; font-weight:700; }
+        .pt-rsm-neg { color:#f85149; font-weight:700; }
+        .pt-rsm-note { font-size:11px; color:#7d8590; font-style:italic; margin-top:2px; }
         /* schedule status badges */
-        .pt-sched-none     { background:#f0f0f0; color:#888; }
-        .pt-sched-scheduled{ background:#cce5ff; color:#004085; }
-        .pt-sched-ok       { background:#d4edda; color:#155724; }
-        .pt-sched-missed   { background:#fff3cd; color:#856404; }
+        .pt-sched-none     { background:#21262d; color:#7d8590; }
+        .pt-sched-scheduled{ background:rgba(31,111,235,.2); color:#79c0ff; }
+        .pt-sched-ok       { background:rgba(35,134,54,.2); color:#3fb950; }
+        .pt-sched-missed   { background:rgba(187,128,9,.2); color:#e3b341; }
         .pt-sched-recon    { background:#e2d9f3; color:#4a235a; }
         /* reconstructed warning banner */
-        .pt-recon-warning { background:#fff3cd; border-left:4px solid #f39c12; padding:8px 12px; border-radius:4px; font-size:13px; color:#856404; margin-bottom:10px; }
+        .pt-recon-warning { background:rgba(187,128,9,.15); border-left:4px solid #e3b341; padding:8px 12px; border-radius:4px; font-size:13px; color:#e3b341; margin-bottom:10px; }
         /* bets list */
         .pt-bets-list { display:flex; flex-direction:column; gap:0; }
         /* researched badge */
         .pt-researched-yes { background:#d4edda; color:#155724; }
-        .pt-researched-no  { background:#f0f0f0; color:#888; }
+        .pt-researched-no  { background:#21262d; color:#7d8590; }
+
+        /* ── Review Block (LLM Research Board) ── */
+        .pt-review-block { border:1px solid #30363d; border-radius:6px; margin-top:8px; overflow:hidden; }
+        .pt-review-block .pt-block-header { background:#0d1117; user-select:none; }
+        .pt-review-block.pt-review-collapsed .pt-review-body { display:none; }
+        .pt-review-block.pt-review-collapsed .pt-review-toggle-icon { transform:rotate(-90deg); }
+        .pt-review-toggle-icon { display:inline-block; font-size:10px; color:#7d8590; transition:transform .2s; }
+        .pt-review-body { padding:0 14px 14px; }
+
+        /* ── Phase P: Explainability Block ── */
+        .pt-explain-block { border:1px solid #30363d; border-radius:6px; margin-top:8px; overflow:hidden; }
+        .pt-explain-block .pt-block-header { background:#0d1117; user-select:none; }
+        .pt-explain-block.pt-explain-collapsed .pt-explain-body { display:none; }
+        .pt-explain-block.pt-explain-collapsed .pt-explain-toggle-icon { transform:rotate(-90deg); }
+        .pt-explain-toggle-icon { display:inline-block; font-size:10px; color:#7d8590; transition:transform .2s; }
+        .pt-explain-body { padding:0 14px 14px; }
+        .pt-explain-section { margin-bottom:12px; padding-top:8px; border-top:1px solid #21262d; }
+        .pt-explain-section:first-child { border-top:none; }
+        .pt-explain-section-title { font-size:12px; font-weight:700; color:#8b949e; margin-bottom:6px; letter-spacing:.3px; }
+        .pt-explain-row { display:flex; align-items:center; gap:6px; font-size:12px; color:#c9d1d9; padding:2px 0; flex-wrap:wrap; }
+        .pt-explain-label { font-weight:600; color:#7d8590; min-width:80px; }
+        .pt-explain-meta { font-size:11px; color:#7d8590; }
+        .pt-explain-summary { font-size:12px; color:#8b949e; margin-top:4px; font-style:italic; padding:4px 8px; background:#161b22; border-radius:4px; }
+        .pt-explain-tags { display:flex; gap:6px; flex-wrap:wrap; }
+        .pt-explain-tag { display:inline-block; padding:2px 8px; background:#21262d; border:1px solid #30363d; border-radius:4px; font-size:11px; color:#c9d1d9; }
+        .pt-explain-nums { font-family:monospace; font-size:12px; color:#58a6ff; }
+        .pt-review-reasoning { font-size:13px; color:#c9d1d9; padding:10px 0 6px; line-height:1.6; border-bottom:1px solid #21262d; margin-bottom:10px; }
+        .pt-review-section { margin-bottom:12px; }
+        .pt-review-section-title { font-size:12px; font-weight:700; color:#8b949e; margin-bottom:6px; letter-spacing:.3px; }
+        .pt-review-table { width:100%; border-collapse:collapse; font-size:12px; }
+        .pt-review-table th { text-align:left; padding:4px 8px; color:#7d8590; font-weight:600; border-bottom:1px solid #30363d; font-size:11px; }
+        .pt-review-table td { padding:4px 8px; border-bottom:1px solid #21262d; color:#c9d1d9; }
+        .pt-review-wq-row { display:flex; gap:10px; flex-wrap:wrap; }
+        .pt-review-wq-tag { display:inline-block; padding:3px 10px; background:#21262d; border:1px solid #30363d; border-radius:4px; font-size:12px; color:#c9d1d9; }
+        .pt-review-wq-tag strong { color:#e5c07b; }
+        .pt-review-wq-rec { font-size:11px; color:#7d8590; margin-top:6px; font-style:italic; }
+        .pt-review-expert { margin-bottom:8px; }
+        .pt-review-expert-role { font-size:12px; font-weight:700; color:#58a6ff; margin-bottom:2px; }
+        .pt-review-expert-points { margin:0; padding-left:18px; font-size:12px; color:#c9d1d9; line-height:1.7; }
+        .pt-review-counter { font-size:12px; color:#c9d1d9; padding:3px 0; line-height:1.5; }
+        .pt-review-counter-sev { font-weight:700; font-size:11px; margin-right:4px; }
+        .pt-review-action-group { margin-bottom:8px; }
+        .pt-review-action-group ul { margin:2px 0 0; padding-left:18px; font-size:12px; color:#c9d1d9; line-height:1.7; }
+        .pt-review-action-pri { display:inline-block; font-size:11px; font-weight:700; padding:1px 6px; border-radius:3px; }
+        .pt-review-pri-p0 { background:rgba(248,81,73,.2); color:#f85149; }
+        .pt-review-pri-p1 { background:rgba(187,128,9,.2); color:#e3b341; }
+        .pt-review-pri-p2 { background:rgba(31,111,235,.2); color:#79c0ff; }
+        .pt-review-action-lift { font-size:10px; color:#7d8590; margin-left:6px; }
+        .pt-review-footer { font-size:11px; color:#484f58; padding-top:8px; border-top:1px solid #21262d; }
+        .pt-review-badge { font-size:14px; vertical-align:middle; cursor:help; }
+
+        /* ── Review Manager (研究檢討) ── */
+        .rv-dashboard { margin-bottom:16px; }
+        .rv-dash-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(130px,1fr)); gap:10px; margin-bottom:12px; }
+        .rv-dash-card { background:#161b22; border:1px solid #30363d; border-radius:8px; padding:14px; text-align:center; }
+        .rv-dash-num { font-size:26px; font-weight:700; color:#c9d1d9; }
+        .rv-num-open { color:#e3b341; }
+        .rv-num-resolved { color:#3fb950; }
+        .rv-dash-label { font-size:12px; color:#7d8590; margin-top:4px; }
+        .rv-dash-actions { background:#161b22; border:1px solid #30363d; border-radius:8px; padding:12px 16px; }
+        .rv-dash-actions h4 { font-size:14px; color:#c9d1d9; margin:0 0 8px; }
+        .rv-dash-actions ul { list-style:none; padding:0; margin:0; }
+        .rv-dash-actions li { font-size:13px; color:#c9d1d9; padding:4px 0; display:flex; align-items:center; gap:8px; }
+        .rv-observer-note { display:flex; flex-direction:column; gap:4px; margin-bottom:12px; padding:12px 14px; background:rgba(88,166,255,.08); border:1px solid rgba(88,166,255,.2); border-radius:10px; }
+        .rv-observer-note strong { color:#58a6ff; font-size:13px; }
+        .rv-observer-note span { color:#8b949e; font-size:12px; }
+        .rv-empty-state { padding:22px 16px; border:1px dashed #30363d; border-radius:10px; background:#0d1117; margin-bottom:14px; }
+        .rv-empty-title { color:#c9d1d9; font-size:14px; font-weight:700; margin-bottom:6px; }
+        .rv-empty-copy { color:#8b949e; font-size:12px; line-height:1.6; }
+        .rv-panel { background:#161b22; border:1px solid #30363d; border-radius:10px; padding:14px; margin-bottom:14px; }
+        .rv-panel-title { font-size:14px; font-weight:700; color:#c9d1d9; margin-bottom:10px; }
+        .rv-recent-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(220px,1fr)); gap:12px; }
+        .rv-recent-card { background:#0d1117; border:1px solid #30363d; border-radius:10px; padding:14px; display:flex; flex-direction:column; gap:6px; }
+        .rv-recent-head { display:flex; align-items:center; justify-content:space-between; gap:8px; }
+        .rv-recent-game { font-size:13px; font-weight:700; color:#e6edf3; }
+        .rv-recent-draw { font-size:15px; font-weight:700; color:#58a6ff; }
+        .rv-recent-meta { font-size:12px; color:#8b949e; line-height:1.5; }
+        .rv-pending-list { display:flex; flex-direction:column; gap:8px; }
+        .rv-pending-row { display:flex; flex-wrap:wrap; gap:4px; align-items:center; padding:10px 12px; background:#0d1117; border:1px solid #30363d; border-radius:8px; }
+        .rv-pending-game { font-size:13px; color:#c9d1d9; font-weight:700; }
+        .rv-pending-draw { font-size:13px; color:#8b949e; }
+        .rv-pending-state { font-size:11px; padding:2px 8px; border-radius:999px; background:rgba(187,128,9,.18); color:#e3b341; }
+        .rv-dashboard-summary { display:flex; flex-wrap:wrap; gap:10px; font-size:12px; color:#7d8590; }
+        .rv-dashboard-summary span { padding:4px 8px; border-radius:999px; background:#0d1117; border:1px solid #30363d; }
+        .rv-decision { display:inline-block; padding:2px 8px; border-radius:999px; font-size:11px; font-weight:700; }
+        .rv-decision-production { background:rgba(35,134,54,.2); color:#3fb950; }
+        .rv-decision-watch { background:rgba(187,128,9,.2); color:#e3b341; }
+        .rv-decision-rejected { background:rgba(218,54,51,.16); color:#f85149; }
+        .rv-review-link { display:inline-block; margin-left:8px; font-size:11px; color:#79c0ff; text-decoration:none; }
+        .rv-review-link:hover { text-decoration:underline; }
+        .rv-tabs { display:flex; gap:0; margin-bottom:14px; border-bottom:1px solid #30363d; }
+        .rv-tab { background:transparent; border:none; color:#7d8590; font-size:13px; padding:8px 16px; cursor:pointer; border-bottom:2px solid transparent; }
+        .rv-tab.active { color:#58a6ff; border-bottom-color:#58a6ff; }
+        .rv-filter-bar { display:flex; gap:10px; align-items:center; flex-wrap:wrap; margin-bottom:12px; }
+        .rv-select { max-width:160px; }
+        .rv-pager { display:flex; align-items:center; gap:8px; margin-left:auto; font-size:12px; color:#7d8590; }
+        .rv-hidden { display:none !important; }
+        .rv-empty { text-align:center; color:#7d8590; padding:20px; font-size:13px; }
+        .rv-row { cursor:default; }
+        .rv-row:hover { background:#161b22; }
+        .rv-status { display:inline-block; padding:2px 8px; border-radius:4px; font-size:11px; font-weight:600; }
+        .rv-st-open { background:rgba(187,128,9,.2); color:#e3b341; }
+        .rv-st-resolved { background:rgba(35,134,54,.2); color:#3fb950; }
+        .rv-st-other { background:#21262d; color:#7d8590; }
+        .rv-detail-header { margin-bottom:14px; }
+        .rv-detail-header h3 { font-size:16px; color:#c9d1d9; margin:0 0 6px; }
+        .rv-detail-meta { display:flex; gap:12px; flex-wrap:wrap; font-size:12px; color:#7d8590; margin-bottom:10px; }
+        .rv-detail-actions-bar { display:flex; gap:8px; flex-wrap:wrap; }
+        .rv-summary-box { background:#161b22; border:1px solid #30363d; border-radius:6px; padding:12px; font-size:13px; color:#c9d1d9; margin-bottom:14px; white-space:pre-wrap; }
+        .rv-section { margin-bottom:16px; }
+        .rv-section h4 { font-size:14px; color:#c9d1d9; margin:0 0 8px; }
+        .rv-table { width:100%; border-collapse:collapse; font-size:12px; }
+        .rv-table th { text-align:left; padding:6px 8px; color:#7d8590; font-weight:600; border-bottom:1px solid #30363d; font-size:11px; }
+        .rv-table td { padding:6px 8px; border-bottom:1px solid #21262d; color:#c9d1d9; }
+        .rv-pri { display:inline-block; font-size:11px; font-weight:700; padding:2px 6px; border-radius:3px; }
+        .rv-pri-p0 { background:rgba(248,81,73,.2); color:#f85149; }
+        .rv-pri-p1 { background:rgba(187,128,9,.2); color:#e3b341; }
+        .rv-pri-p2 { background:rgba(31,111,235,.2); color:#79c0ff; }
+        .rv-meta { font-size:11px; color:#7d8590; margin-left:6px; }
+        .rv-hyp-status { font-size:11px; font-weight:600; }
+        .rv-actions-panel { margin-top:14px; }
+        .btn-sm { padding:4px 10px; font-size:12px; border-radius:4px; border:1px solid #30363d; cursor:pointer; }
+        .btn-success { background:rgba(35,134,54,.2); color:#3fb950; border-color:#238636; }
+        .btn-warning { background:rgba(187,128,9,.2); color:#e3b341; border-color:#bb8009; }
     </style>
 </head>
 
@@ -273,11 +475,15 @@
                 </button>
                 <button class="nav-btn" data-section="next-draw">
                     <i data-lucide="zap" class="icon"></i>
-                    <span>策略回測展示</span>
+                    <span>最佳策略總覽</span>
                 </button>
                 <button class="nav-btn" data-section="tracking">
                     <i data-lucide="bar-chart-2" class="icon"></i>
                     <span>預測追蹤</span>
+                </button>
+                <button class="nav-btn" data-section="reviews">
+                    <i data-lucide="clipboard-check" class="icon"></i>
+                    <span>研究檢討</span>
                 </button>
             </nav>
         </div>
@@ -567,7 +773,6 @@
                         <option value="">全部彩券類型</option>
                         <optgroup label="主要彩券">
                             <option value="BIG_LOTTO">大樂透</option>
-                            <option value="BIG_LOTTO_BONUS">大樂透加開獎項</option>
                             <option value="DAILY_539">今彩539</option>
                             <option value="POWER_LOTTO">威力彩</option>
                         </optgroup>
@@ -904,7 +1109,7 @@
                                 <th>彩券類型</th>
                                 <th>開獎日期</th>
                                 <th>開獎號碼</th>
-                                <th>特別號</th>
+                                <th>特別號或第二區號碼</th>
                                 <th class="ui-th-actions">操作</th>
                             </tr>
                         </thead>
@@ -1418,9 +1623,28 @@
         <!-- Next Draw Prediction Section -->
         <section id="next-draw-section" class="section">
             <div class="section-header">
-                <h2>策略回測展示</h2>
-                <p>RSM Coordinator 加權多代理預測 — 僅展示已驗證策略輸出，不含未驗證結果</p>
+                <h2>目前最佳策略總覽</h2>
+                <p>顯示各彩種正式驗證中的最佳策略與策略排名；下方區塊為即時下一期預測。</p>
             </div>
+
+            <!-- Best Strategy Summary Panel -->
+            <div id="decision-v3-panel" style="margin-bottom:20px">
+                <div class="card">
+                    <div class="card-header" style="display:flex;align-items:center;gap:8px;justify-content:space-between">
+                        <span>🏆 各彩種正式策略總覽</span>
+                        <button id="decision-refresh-btn" class="btn btn-secondary" style="font-size:12px;padding:4px 10px">🔄 重新整理</button>
+                    </div>
+                    <div class="card-body">
+                        <div id="decision-v3-content" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:12px">
+                            <div style="text-align:center;color:#888;padding:20px;grid-column:1/-1">載入各彩種正式策略總覽…</div>
+                        </div>
+                        <div style="font-size:11px;color:#888;margin-top:10px;padding-top:8px;border-top:1px solid #eee">
+                            💡 這裡顯示系統目前已驗證（PRODUCTION / WATCH） 的最佳策略與各注數排名，僅作總覽，不是下一期建議。
+                        </div>
+                    </div>
+                </div>
+            </div>
+
             <div id="next-draw-content" class="nd-content">
                 <div class="next-draw-loading">
                     <div class="loading-spinner"></div>
@@ -1439,11 +1663,7 @@
 
             <!-- 控制列 -->
             <div class="tracking-controls" style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-bottom:16px">
-              <select id="pt-game-select" class="form-select" style="width:160px">
-                <option value="BIG_LOTTO">大樂透</option>
-                <option value="POWER_LOTTO">威力彩</option>
-                <option value="DAILY_539">今彩539</option>
-              </select>
+              <span id="pt-current-game-label" style="font-weight:600;font-size:14px;color:#555;min-width:60px"></span>
               <button id="pt-snapshot-btn" class="btn btn-primary">🎯 產生預測快照</button>
               <button id="pt-resolve-btn" class="btn btn-secondary">🔄 比對待解析預測</button>
               <button id="pt-startup-btn" class="btn btn-secondary">🚀 啟動補全</button>
@@ -1464,24 +1684,29 @@
                 </label>
                 <span id="pt-perf-filter-label" style="font-size:12px;color:#27ae60">（僅計正式快照）</span>
               </div>
-              <div class="card-body" style="overflow-x:auto">
+              <div class="card-body">
+                <div id="pt-perf-summary"></div>
+                <div style="overflow-x:auto">
                 <table class="data-table" style="width:100%">
                   <thead>
                     <tr>
-                      <th>策略名稱</th>
-                      <th>總注數</th>
-                      <th>已解析</th>
-                      <th>≥1中 率</th>
-                      <th>≥2中 率</th>
-                      <th>≥3中 率</th>
-                      <th>平均中</th>
-                      <th>近30筆 ≥3中</th>
+                      <th>注數</th>
+                      <th>目前最佳策略</th>
+                      <th>狀態</th>
+                      <th>已解析期數</th>
+                      <th>成功期數</th>
+                      <th>成功率</th>
+                      <th>隨機基準</th>
+                      <th>Edge</th>
+                      <th>平均注數</th>
+                      <th>待解析</th>
                     </tr>
                   </thead>
                   <tbody id="pt-perf-body">
-                    <tr><td colspan="8" style="text-align:center;color:#888">尚無資料</td></tr>
+                    <tr><td colspan="10" style="text-align:center;color:#888">尚無成功記錄（正式快照尚未累積）</td></tr>
                   </tbody>
                 </table>
+                </div>
               </div>
             </div>
 
@@ -1492,18 +1717,19 @@
                 <table class="data-table" style="width:100%">
                   <thead>
                     <tr>
-                      <th>預測時間</th>
-                      <th>基於期號</th>
-                      <th>比對期號</th>
-                      <th>策略</th>
-                      <th>注數</th>
+                      <th>彩種</th>
+                      <th>日期</th>
+                      <th>期數</th>
+                      <th>最佳策略</th>
+                      <th>預測號碼</th>
+                      <th>實際開獎號碼</th>
                       <th>最佳命中</th>
-                      <th>狀態</th>
-                      <th>驗證</th>
+                      <th>檢討</th>
+                      <th>解析狀態</th>
                     </tr>
                   </thead>
                   <tbody id="pt-hist-body">
-                    <tr><td colspan="8" style="text-align:center;color:#888">尚無記錄</td></tr>
+                    <tr><td colspan="9" style="text-align:center;color:#888">尚無記錄</td></tr>
                   </tbody>
                 </table>
                 <!-- 分頁 -->
@@ -1539,12 +1765,81 @@
           </div>
         </section>
 
+        <!-- ═══════════════════════════════════════ REVIEWS SECTION ════════════════════════════════════ -->
+        <section id="reviews-section" class="section">
+          <div class="section-header">
+            <h2>📋 研究檢討</h2>
+            <p>本頁為檢討觀測台，顯示 AI Agent 自動產生之檢討結果與狀態。</p>
+          </div>
+          <div class="section-content">
+
+            <!-- 儀表板 -->
+            <div id="rv-dashboard" class="rv-dashboard"></div>
+
+            <!-- Tabs -->
+            <div class="rv-tabs">
+              <button class="rv-tab active" id="rv-tab-sessions">會議列表</button>
+              <button class="rv-tab" id="rv-tab-actions">行動總覽</button>
+            </div>
+
+            <!-- 列表視圖 -->
+            <div id="rv-list-view">
+              <div class="rv-filter-bar">
+                <select id="rv-filter-status" class="select-input rv-select">
+                  <option value="">全部狀態</option>
+                  <option value="OPEN">OPEN</option>
+                  <option value="RESOLVED">RESOLVED</option>
+                </select>
+                <select id="rv-filter-type" class="select-input rv-select">
+                  <option value="">全部類型</option>
+                  <option value="daily_review">daily_review</option>
+                  <option value="deep_review">deep_review</option>
+                  <option value="strategy_review">strategy_review</option>
+                </select>
+                <div class="rv-pager">
+                  <button id="rv-prev-btn" class="btn-sm btn-secondary">← 上一頁</button>
+                  <span id="rv-page-info">-</span>
+                  <button id="rv-next-btn" class="btn-sm btn-secondary">下一頁 →</button>
+                </div>
+              </div>
+              <div style="overflow-x:auto">
+                <table class="data-table rv-table" style="width:100%">
+                  <thead>
+                    <tr>
+                      <th>彩種</th>
+                      <th>期號</th>
+                      <th>開獎日</th>
+                      <th>決策</th>
+                      <th>信心</th>
+                      <th>狀態</th>
+                      <th>操作</th>
+                    </tr>
+                  </thead>
+                  <tbody id="rv-session-tbody">
+                    <tr><td colspan="7" class="rv-empty">載入中...</td></tr>
+                  </tbody>
+                </table>
+              </div>
+
+              <!-- 行動總覽面板 -->
+              <div id="rv-actions-panel" class="rv-actions-panel" style="display:none"></div>
+            </div>
+
+            <!-- 詳情視圖 -->
+            <div id="rv-detail-view" class="rv-hidden">
+              <button id="rv-back-btn" class="btn-sm btn-secondary" style="margin-bottom:12px">← 返回列表</button>
+              <div id="rv-detail"></div>
+            </div>
+
+          </div>
+        </section>
+
         </div>
         </main>
 
         <footer class="footer">
             <div class="container">
-                <p>&copy; 2025 大數據智能分析系統. 僅供參考，請理性投注。</p>
+                <p>&copy; 2026 大數據智能分析系統. 僅供參考，請理性投注。</p>
             </div>
         </footer>
 
@@ -1571,7 +1866,6 @@
                             <label for="record-lottery-type">彩券類型 *</label>
                             <select id="record-lottery-type" class="form-control" required>
                                 <option value="BIG_LOTTO">大樂透</option>
-                                <option value="BIG_LOTTO_BONUS">大樂透加開獎項</option>
                                 <option value="DAILY_539">今彩539</option>
                                 <option value="POWER_LOTTO">威力彩</option>
                             </select>
@@ -1616,7 +1910,7 @@
             // Initialize Lucide Icons
             lucide.createIcons();
         </script>
-        <script type="module" src="src/main.js?v=11"></script>
+        <script type="module" src="src/main.js?v=14"></script>
 </body>
 
 </html>

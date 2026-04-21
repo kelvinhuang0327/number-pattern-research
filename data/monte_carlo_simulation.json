@@ -1,0 +1,59 @@
+{
+  "generated_at": "2026-04-20T10:44:52.199668",
+  "scenarios": {
+    "conservative": {
+      "scenario": "conservative",
+      "monthly_budget": 500,
+      "start_bankroll": 12000,
+      "simulations": 10000,
+      "horizon_months": 200,
+      "ruin_probability": 0.9665,
+      "ruin_probability_12m": 0.0,
+      "ruin_probability_24m": 0.0,
+      "median_months_to_ruin": 40.0,
+      "mean_months_to_ruin": 47.244,
+      "p10_months_to_ruin": 35.0,
+      "p90_months_to_ruin": 50.0,
+      "median_ending_bankroll": -160.0,
+      "mean_ending_bankroll": 5604.792,
+      "p05_ending_bankroll": -360.0,
+      "p95_ending_bankroll": 0.0
+    },
+    "balanced": {
+      "scenario": "balanced",
+      "monthly_budget": 1000,
+      "start_bankroll": 12000,
+      "simulations": 10000,
+      "horizon_months": 200,
+      "ruin_probability": 0.984,
+      "ruin_probability_12m": 0.0,
+      "ruin_probability_24m": 0.0123,
+      "median_months_to_ruin": 31.0,
+      "mean_months_to_ruin": 38.9733,
+      "p10_months_to_ruin": 26.0,
+      "p90_months_to_ruin": 39.0,
+      "median_ending_bankroll": -230.0,
+      "mean_ending_bankroll": 7515.853,
+      "p05_ending_bankroll": -490.0,
+      "p95_ending_bankroll": -10.0
+    },
+    "all_in": {
+      "scenario": "all_in",
+      "monthly_budget": 2000,
+      "start_bankroll": 12000,
+      "simulations": 10000,
+      "horizon_months": 200,
+      "ruin_probability": 0.9961,
+      "ruin_probability_12m": 0.9628,
+      "ruin_probability_24m": 0.9648,
+      "median_months_to_ruin": 9.0,
+      "mean_months_to_ruin": 10.6782,
+      "p10_months_to_ruin": 8.0,
+      "p90_months_to_ruin": 10.0,
+      "median_ending_bankroll": -780.0,
+      "mean_ending_bankroll": 4298.152,
+      "p05_ending_bankroll": -1630.0,
+      "p95_ending_bankroll": -60.0
+    }
+  }
+}

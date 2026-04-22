@@ -1,0 +1,89 @@
+{
+  "run_at": "2026-04-21T11:59:39.896397",
+  "seed": 42,
+  "data_snapshot": {
+    "lottery_type": "POWER_LOTTO",
+    "total_draws": 1903,
+    "latest_draw": "115000031",
+    "latest_date": "2026/04/16",
+    "oos_draw_range_500": {
+      "start": "110000053",
+      "end": "115000031"
+    }
+  },
+  "midfreq_gate": {
+    "windows": {
+      "150": {
+        "n": 150,
+        "rate": 0.06666666666666667,
+        "edge": -0.00923333333333333
+      },
+      "500": {
+        "n": 500,
+        "rate": 0.1,
+        "edge": 0.02410000000000001
+      },
+      "1500": {
+        "n": 1500,
+        "rate": 0.09533333333333334,
+        "edge": 0.019433333333333344
+      }
+    },
+    "three_window_pass": false,
+    "perm_test_latest500_oos": {
+      "n_oos": 500,
+      "real_rate": 0.102,
+      "real_edge": 0.026099999999999998,
+      "p_emp": 0.0199,
+      "cohens_d": 2.092,
+      "z_score": 2.092,
+      "verdict": "SIGNAL_DETECTED",
+      "n_perm": 200
+    },
+    "mcnemar_vs_fourier_rhythm_3bet_latest500": {
+      "midfreq_only": 31,
+      "fr3_only": 45,
+      "net": -14,
+      "discordant": 76,
+      "chi2_yates": 2.223684210526316,
+      "p_value": 0.1353851052994308,
+      "pass": false
+    },
+    "marginal_efficiency_latest500": {
+      "bet1_rate": 0.056,
+      "bet2_rate": 0.044,
+      "ratio_bet2_over_bet1": 0.7857142857142857,
+      "pass": false
+    }
+  },
+  "wq_p2_1": {
+    "periods": 300,
+    "has_real_prize_column_data": false,
+    "method": "proxy_ev_ratio_from_winning_quality",
+    "label_group_stats": {
+      "LOW": {
+        "n": 95,
+        "mean_ev_ratio": 1.1991666666666667,
+        "std_ev_ratio": 0.030800717694987486
+      },
+      "HIGH": {
+        "n": 96,
+        "mean_ev_ratio": 1.0538194444444444,
+        "std_ev_ratio": 0.04229845092455851
+      },
+      "MED": {
+        "n": 109,
+        "mean_ev_ratio": 1.1352064220183486,
+        "std_ev_ratio": 0.023661184047320774
+      }
+    },
+    "spearman_label_vs_ev_ratio": {
+      "rho": -0.9171191368394302,
+      "p_value": 4.636289862158315e-121
+    },
+    "ttest_low_vs_high_ev_ratio": {
+      "t_stat": 27.02497294738681,
+      "p_value": 4.0775885567145225e-64
+    }
+  }
+}

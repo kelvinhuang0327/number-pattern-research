@@ -42,3 +42,9 @@ logs/*.log
 *.tmp
 *.bak
 .gstack/
+
+# Orchestrator runtime data (tasks, logs, locks — not source)
+runtime/agent_orchestrator/tasks/
+runtime/agent_orchestrator/logs/
+runtime/agent_orchestrator/locks/
+runtime/agent_orchestrator/orchestrator.db

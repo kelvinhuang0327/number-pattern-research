@@ -121,3 +121,4 @@
 {"ts": 1776665042, "date": "2026-04-20", "trigger": "auto", "lottery_type": "POWER_LOTTO", "provider": "groq", "prompt_tokens": 626, "analysis": "1. 【健康度評估】整體健康度中等。\n2. 【警示項目】orthogonal_5bet、pp3_freqort_4bet。\n3. 【建議行動】關注警示項目，調整投資比例。"}
 {"ts": 1776665049, "date": "2026-04-20", "trigger": "auto", "lottery_type": "POWER_LOTTO", "provider": "groq", "prompt_tokens": 626, "analysis": "1. 【健康度評估】整體策略健康狀況一般。\n2. 【警示項目】orthogonal_5bet、pp3_freqort_4bet 需要特別注意。\n3. 【建議行動】關注警示項目，調整投資比例。"}
 {"ts": 1776674809, "date": "2026-04-20", "trigger": "auto", "lottery_type": "POWER_LOTTO", "provider": "groq", "prompt_tokens": 626, "analysis": "1. 【健康度評估】整體健康度一般。\n2. 【警示項目】orthogonal_5bet、pp3_freqort_4bet。\n3. 【建議行動】關注警示項目，調整投資比例。"}
+{"ts": 1776760609, "date": "2026-04-21", "trigger": "auto", "lottery_type": "BIG_LOTTO", "provider": "groq", "prompt_tokens": 938, "analysis": "1. 【健康度評估】整體健康狀況良好。\n2. 【警示項目】deviation_complement_2bet和ts3_markov_4bet_w30。\n3. 【建議行動】關注警示項目，調整投資比例。"}

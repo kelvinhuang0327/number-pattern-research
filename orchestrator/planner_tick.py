@@ -219,23 +219,155 @@ def _call_planner(meta_prompt: str, planner_provider: str) -> tuple[str, str]:
 
 
 def _extract_planner_payload(raw: str) -> Optional[dict]:
-    json_str = raw
-    if "```" in raw:
-        fenced = re.search(r"```(?:json)?\s*(\{[^`]*\})\s*```", raw, re.DOTALL)
+    json_str = raw.strip()
+    if "```" in json_str:
+        fenced = re.search(r"```(?:json)?\s*(\{[\s\S]*?\})\s*```", json_str)
         if fenced:
-            json_str = fenced.group(1)
+            json_str = fenced.group(1).strip()
     if not json_str.startswith("{"):
-        start = raw.find("{")
-        end = raw.rfind("}") + 1
+        start = json_str.find("{")
+        end = json_str.rfind("}") + 1
         if start != -1 and end > start:
-            json_str = raw[start:end]
+            json_str = json_str[start:end]
     try:
         return json.loads(json_str)
     except Exception:
         return None
 
 
-def run(dry_run: bool = False):
+def _payload_has_template_placeholders(payload: dict) -> bool:
+    title = str(payload.get("title", "")).strip()
+    slug = str(payload.get("slug", "")).strip()
+    prompt_markdown = str(payload.get("prompt_markdown", "")).strip()
+    markers = [
+        "<任務標題",
+        "<kebab-case",
+        "<完整的 8 小時任務 prompt",
+        "任務標題，中英文皆可",
+        "kebab-case 英文識別碼",
+        "完整的 8 小時任務 prompt",
+        "{{",
+        "}}",
+    ]
+    combined = "\n".join([title, slug, prompt_markdown])
+    return any(marker in combined for marker in markers)
+
+
+def _validate_payload(payload: dict) -> tuple[bool, str]:
+    title = str(payload.get("title", "")).strip()
+    slug = str(payload.get("slug", "")).strip()
+    prompt_markdown = str(payload.get("prompt_markdown", "")).strip()
+
+    if not title or not slug or not prompt_markdown:
+        return False, "payload missing required keys: title/slug/prompt_markdown"
+    if len(title) > 40:
+        return False, "title exceeds 40 characters"
+    if _payload_has_template_placeholders(payload):
+        return False, "planner output still contains template placeholders"
+    if not re.fullmatch(r"[a-z0-9-]{3,40}", common.slugify(slug) or ""):
+        return False, "slug is not valid kebab-case after normalization"
+    required_sections = [
+        "## Objective",
+        "## Scope",
+        "## Constraints",
+        "## Acceptance Criteria",
+        "## Handoff Notes",
+    ]
+    for section in required_sections:
+        if section not in prompt_markdown:
+            return False, f"prompt_markdown missing section: {section}"
+    if len(prompt_markdown) < 200:
+        return False, "prompt_markdown too short"
+    return True, ""
+
+
+def _build_retry_prompt(meta_prompt: str, reason: str) -> str:
+    return (
+        meta_prompt
+        + "\n\n"
+        + "上一輪輸出無效，請重新輸出，且只輸出 JSON。\n"
+        + f"無效原因：{reason}\n"
+        + "請輸出實際值，不得包含模板詞或佔位符。"
+    )
+
+
+def _extract_section_lines(markdown: str, header: str) -> list[str]:
+    """
+    Extract bullet/number lines under a markdown header, stopping at next header.
+    """
+    lines = str(markdown or "").splitlines()
+    out = []
+    in_section = False
+    for raw in lines:
+        line = raw.rstrip()
+        if line.strip().startswith("## "):
+            if in_section:
+                break
+            in_section = (line.strip() == header)
+            continue
+        if not in_section:
+            continue
+        stripped = line.strip()
+        if not stripped:
+            continue
+        stripped = re.sub(r"^[-*]\s+", "", stripped)
+        stripped = re.sub(r"^\d+\.\s+", "", stripped)
+        if stripped:
+            out.append(stripped)
+    return out
+
+
+def _build_task_contract(payload: dict) -> dict:
+    title = str(payload.get("title", "")).strip()
+    prompt_markdown = str(payload.get("prompt_markdown", "")).strip()
+    objective_lines = _extract_section_lines(prompt_markdown, "## Objective")
+    scope = _extract_section_lines(prompt_markdown, "## Scope")
+    constraints = _extract_section_lines(prompt_markdown, "## Constraints")
+    acceptance = _extract_section_lines(prompt_markdown, "## Acceptance Criteria")
+    handoff = _extract_section_lines(prompt_markdown, "## Handoff Notes")
+
+    contract = {
+        "version": "1.0",
+        "objective": objective_lines[0] if objective_lines else title,
+        "scope": scope or [f"完成任務：{title}"],
+        "constraints": constraints or [
+            "seed=42",
+            "不得修改 lottery_api/data/lottery_v2.db",
+            "不得直接改寫 strategy_states 配置檔",
+        ],
+        "acceptance_tests": acceptance or [
+            "輸出需包含可驗證結論與證據",
+            "列出異動檔案或明確標註無異動",
+        ],
+        "required_outputs": [
+            "completed_markdown",
+            "task_result_json",
+            "changed_files_list",
+        ],
+        "forbidden_changes": [
+            "lottery_api/data/lottery_v2.db",
+            "lottery_api/data/strategy_states_",
+        ],
+        "handoff_questions": handoff or [
+            "本輪結論是否達到 Acceptance Criteria？",
+            "若未達標，下一輪需要調整哪個假設或範圍？",
+        ],
+    }
+    return contract
+
+
+def _build_worker_prompt_with_contract(prompt_markdown: str, contract: dict) -> str:
+    contract_json = json.dumps(contract, ensure_ascii=False, indent=2)
+    return (
+        "## Task Contract (Orchestrator Enforced)\n\n"
+        "Worker 必須遵守以下契約，否則任務會被標記為 REPLAN_REQUIRED：\n\n"
+        f"```json\n{contract_json}\n```\n\n"
+        "---\n\n"
+        f"{prompt_markdown.strip()}\n"
+    )
+
+
+def run(dry_run: bool = False, force: bool = False):
     common.ensure_dirs()
     t0 = time.time()
     planner_provider = "claude" if dry_run else db.get_planner_provider()
@@ -248,7 +380,7 @@ def run(dry_run: bool = False):
         _print_dry_run_preview(meta_prompt, wiki_labels)
         return
 
-    if not db.is_scheduler_enabled():
+    if not force and not db.is_scheduler_enabled():
         msg = "Scheduler is disabled — planner skip"
         logger.info(msg)
         db.log_tick(RUNNER, "PLANNER_SKIP_DISABLED", message=msg)
@@ -257,7 +389,7 @@ def run(dry_run: bool = False):
 
     latest = db.get_latest_task()
 
-    if latest and latest["status"] not in ("COMPLETED", "FAILED", "CANCELLED"):
+    if latest and latest["status"] not in ("COMPLETED", "FAILED", "CANCELLED", "REPLAN_REQUIRED"):
         msg = f"Previous task {latest['id']} still {latest['status']} — skip"
         logger.info(msg)
         db.log_tick(RUNNER, "PLANNER_SKIP_PREV_RUNNING", task_id=latest["id"], message=msg)
@@ -279,12 +411,40 @@ def run(dry_run: bool = False):
     logger.info("Calling %s to generate next task prompt...", common.planner_provider_label(planner_provider))
     payload = None
     planner_source, raw = _call_planner(meta_prompt, planner_provider)
+    parse_or_validate_error = ""
 
     if planner_source in ("claude", "codex"):
         payload = _extract_planner_payload(raw)
         if payload is None:
+            parse_or_validate_error = "failed to parse planner JSON output"
+        else:
+            ok, reason = _validate_payload(payload)
+            if not ok:
+                parse_or_validate_error = reason
+
+        # One strict retry before fallback (especially useful for Codex planner).
+        if parse_or_validate_error:
+            retry_prompt = _build_retry_prompt(meta_prompt, parse_or_validate_error)
+            retry_source, retry_raw = _call_planner(retry_prompt, planner_provider)
+            if retry_source in ("claude", "codex"):
+                retry_payload = _extract_planner_payload(retry_raw)
+                if retry_payload is not None:
+                    ok, reason = _validate_payload(retry_payload)
+                    if ok:
+                        payload = retry_payload
+                        raw = retry_raw
+                        parse_or_validate_error = ""
+                        planner_source = retry_source
+                    else:
+                        parse_or_validate_error = reason
+                        raw = retry_raw
+                else:
+                    raw = retry_raw
+
+        if parse_or_validate_error:
             planner_source = "fallback"
-            msg = "Failed to parse planner JSON output"
+            payload = None
+            msg = f"Planner output invalid: {parse_or_validate_error}"
             logger.warning(FALLBACK_WARNING, msg)
             db.log_tick(RUNNER, "PLANNER_FALLBACK_LOCAL", message=f"{msg}; raw={raw[:300]}")
             common.log_jsonl(RUNNER, "PLANNER_FALLBACK_LOCAL", error=msg, raw_output=raw[:300])
@@ -297,14 +457,26 @@ def run(dry_run: bool = False):
     title = payload["title"]
     slug = common.slugify(payload["slug"])
     prompt_markdown = payload["prompt_markdown"]
+    contract = _build_task_contract(payload)
+    contract_ok, contract_reason = common.validate_task_contract(contract)
+    if not contract_ok:
+        msg = f"Planner generated invalid task contract: {contract_reason}"
+        logger.warning(msg)
+        db.log_tick(RUNNER, "PLANNER_INVALID_CONTRACT", message=msg)
+        common.log_jsonl(RUNNER, "PLANNER_INVALID_CONTRACT", error=contract_reason)
+        return
 
     slot_key = common.slot_key_now()
     date_folder = common.date_folder_now()
     p_path = common.prompt_path(slot_key, slug, date_folder)
+    contract_file_path = common.contract_path(slot_key, slug, date_folder)
+    worker_prompt = _build_worker_prompt_with_contract(prompt_markdown, contract)
 
     with open(p_path, "w") as f:
         f.write(f"# {title}\n\n")
-        f.write(prompt_markdown)
+        f.write(worker_prompt)
+    with open(contract_file_path, "w", encoding="utf-8") as f:
+        json.dump(contract, f, ensure_ascii=False, indent=2)
 
     previous_task_id = latest["id"] if latest else None
     task_id = db.create_task(
@@ -321,7 +493,9 @@ def run(dry_run: bool = False):
                       task_id=task_id, title=title, slug=slug,
                       status="QUEUED", previous_task_id=previous_task_id,
                       planner_source=planner_source,
-                      planner_provider=planner_provider)
+                      planner_provider=planner_provider,
+                      task_contract_path=contract_file_path,
+                      task_contract_version=contract.get("version"))
 
     elapsed = int((time.time() - t0) * 1000)
     msg = f"Task {task_id} created: {title} [{slug}] via {planner_source}"
@@ -344,4 +518,5 @@ if __name__ == "__main__":
     args = parser.parse_args()
     if not args.dry_run:
         db.init_db()
-    run(dry_run=args.dry_run)
+    force_run = str(os.environ.get("ORCHESTRATOR_FORCE_RUN", "")).strip().lower() in ("1", "true", "yes", "on")
+    run(dry_run=args.dry_run, force=force_run)

@@ -21,6 +21,7 @@ import { DrawEntryManager } from '../ui/DrawEntryManager.js';
 import { AutoFetchManager } from '../ui/AutoFetchManager.js';
 import { PredictionTracker } from '../ui/PredictionTracker.js';
 import { ReviewManager } from '../ui/ReviewManager.js';
+import { OrchestrationManager } from '../ui/OrchestrationManager.js';
 
 /**
  * 主應用程式
@@ -57,6 +58,7 @@ export class App {
         this.autoFetchManager = new AutoFetchManager();
         this.predictionTracker = new PredictionTracker(this);
         this.reviewManager = new ReviewManager(this);
+        this.orchestrationManager = new OrchestrationManager(this);
 
         // 不在 constructor 中自動初始化，由外部呼叫
         // this.init();
@@ -397,6 +399,10 @@ export class App {
                     if (this.reviewManager) {
                         this.reviewManager._currentGame = this.currentLotteryType || 'BIG_LOTTO';
                         this.reviewManager.init();
+                    }
+                } else if (section === 'orchestration') {
+                    if (this.orchestrationManager) {
+                        this.orchestrationManager.init();
                     }
                 }
             });

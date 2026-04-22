@@ -4,9 +4,15 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 import logging
 import os
+import sys
+
+# Make orchestrator importable from lottery_api/
+sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 # Import Routers
 from routes import prediction, data, optimization, admin, backtest, ingest, prediction_tracking, decision, reviews, research, explainability, actionable, confidence, promotion
+from orchestrator import api as orchestrator_api
+from orchestrator import db as orchestrator_db
 
 # Import System Utilities
 from utils.scheduler import scheduler
@@ -56,6 +62,11 @@ def _run_research_job():
 async def startup_event():
     """Application Startup Logic"""
     logger.info(">>> Application starting up...")
+    try:
+        orchestrator_db.init_db()
+        logger.info(">>> Orchestrator DB initialized")
+    except Exception as e:
+        logger.warning(f">>> Orchestrator DB init failed (non-fatal): {e}")
     try:
         scheduler.load_data()
         logger.info(">>> Scheduler data loaded.")
@@ -128,6 +139,9 @@ app.include_router(confidence.router, tags=["Confidence"])
 
 # promotion: /api/strategy/promotion-* — Phase U Strategy Promotion Engine
 app.include_router(promotion.router, tags=["Promotion"])
+
+# orchestrator: /api/orchestrator/* — Cross-Agent Task Orchestration (standalone module)
+app.include_router(orchestrator_api.router, tags=["Orchestrator"])
 
 if __name__ == "__main__":
     import uvicorn

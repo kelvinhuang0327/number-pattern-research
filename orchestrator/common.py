@@ -13,7 +13,7 @@ import json
 import subprocess
 import shutil
 import time
-from datetime import datetime
+from datetime import datetime, timezone, timedelta
 from typing import Optional
 
 logger = logging.getLogger(__name__)
@@ -24,6 +24,8 @@ TASKS_ROOT = os.path.join(ORCH_ROOT, "tasks")
 LOCKS_DIR = os.path.join(ORCH_ROOT, "locks")
 LOGS_DIR = os.path.join(ORCH_ROOT, "logs")
 BACKLOG_PATH = os.path.join(ORCH_ROOT, "backlog.md")
+BACKLOG_AUTO_STATUS_START = "<!-- AUTO_STATUS_START -->"
+BACKLOG_AUTO_STATUS_END = "<!-- AUTO_STATUS_END -->"
 
 _DEFAULT_CLAUDE_BIN = os.environ.get("CLAUDE_BIN", "/Users/kelvin/.local/bin/claude")
 _DEFAULT_CODEX_BIN = os.environ.get("CODEX_BIN", "/opt/homebrew/bin/codex")
@@ -66,6 +68,7 @@ PLANNER_PROVIDER_LABELS = {
 WORKER_PROVIDER_LABELS = {
     "codex": "Codex CLI",
     "copilot": "GitHub Copilot CLI",
+    "copilot-daemon": "GitHub Copilot Daemon",
     "claude": "Claude CLI",
 }
 
@@ -80,10 +83,72 @@ _COPILOT_AUTH_CACHE = {
     "reason": "Not checked yet",
 }
 
+_COPILOT_RUNTIME_CACHE = {
+    "checked_at": 0.0,
+    "ok": False,
+    "reason": "Not checked yet",
+}
+
+COPILOT_DAEMON_STATE_PATH = os.path.join(LOCKS_DIR, "copilot_daemon_state.json")
+COPILOT_DAEMON_HEARTBEAT_TTL = int(os.environ.get("COPILOT_DAEMON_HEARTBEAT_TTL", "45"))
+
 
 def ensure_dirs():
     for d in [TASKS_ROOT, LOCKS_DIR, LOGS_DIR]:
         os.makedirs(d, exist_ok=True)
+
+
+def read_copilot_daemon_state() -> dict:
+    if not os.path.exists(COPILOT_DAEMON_STATE_PATH):
+        return {}
+    try:
+        with open(COPILOT_DAEMON_STATE_PATH) as f:
+            data = json.load(f)
+        return data if isinstance(data, dict) else {}
+    except (OSError, json.JSONDecodeError):
+        return {}
+
+
+def write_copilot_daemon_state(**kwargs):
+    ensure_dirs()
+    current = read_copilot_daemon_state()
+    with open(COPILOT_DAEMON_STATE_PATH, "w") as f:
+        json.dump({**current, **kwargs}, f, indent=2)
+
+
+def clear_copilot_daemon_state(pid: Optional[int] = None):
+    current = read_copilot_daemon_state()
+    if pid is not None and current.get("pid") not in (None, pid):
+        return
+    try:
+        os.remove(COPILOT_DAEMON_STATE_PATH)
+    except FileNotFoundError:
+        return
+
+
+def copilot_daemon_status() -> dict:
+    state = read_copilot_daemon_state()
+    pid = state.get("pid")
+    heartbeat_at = state.get("heartbeat_at")
+    running = False
+    stale = True
+
+    if pid and heartbeat_at and is_process_alive(pid):
+        try:
+            last = datetime.fromisoformat(heartbeat_at)
+            stale = (datetime.utcnow() - last).total_seconds() > COPILOT_DAEMON_HEARTBEAT_TTL
+            running = not stale
+        except ValueError:
+            running = False
+            stale = True
+
+    return {
+        **state,
+        "pid": pid,
+        "heartbeat_at": heartbeat_at,
+        "running": running,
+        "stale": stale if heartbeat_at else True,
+    }
 
 
 def normalize_planner_provider(provider: Optional[str]) -> str:
@@ -164,6 +229,54 @@ def _copilot_auth_status(force_refresh: bool = False) -> tuple[bool, str]:
     return ok, reason
 
 
+def _copilot_runtime_status(force_refresh: bool = False) -> tuple[bool, str]:
+    now = time.time()
+    if not force_refresh and now - _COPILOT_RUNTIME_CACHE["checked_at"] < 60:
+        return _COPILOT_RUNTIME_CACHE["ok"], _COPILOT_RUNTIME_CACHE["reason"]
+
+    auth_ok, auth_reason = _copilot_auth_status(force_refresh=force_refresh)
+    if not auth_ok:
+        _COPILOT_RUNTIME_CACHE.update({
+            "checked_at": now,
+            "ok": False,
+            "reason": auth_reason,
+        })
+        return False, auth_reason
+
+    try:
+        # Runtime smoke check: avoids "auth OK but copilot process unusable" cases.
+        result = subprocess.run(
+            [GH_BIN, "copilot", "--", "--help"],
+            capture_output=True,
+            text=True,
+            timeout=12,
+        )
+        output = ((result.stdout or "") + "\n" + (result.stderr or "")).strip()
+        if result.returncode == 0:
+            ok = True
+            reason = "GitHub Copilot CLI runtime OK"
+        else:
+            lowered = output.lower()
+            if "secitemcopymatching failed -50" in lowered:
+                reason = "Copilot keychain access failed in non-interactive shell (SecItemCopyMatching -50)"
+            else:
+                reason = output.splitlines()[0] if output else f"Copilot runtime failed (exit {result.returncode})"
+            ok = False
+    except subprocess.TimeoutExpired:
+        ok = False
+        reason = "Copilot runtime check timeout"
+    except Exception as exc:
+        ok = False
+        reason = f"Copilot runtime check failed: {exc}"
+
+    _COPILOT_RUNTIME_CACHE.update({
+        "checked_at": now,
+        "ok": ok,
+        "reason": reason,
+    })
+    return ok, reason
+
+
 def planner_provider_options() -> list[dict]:
     claude_ok, claude_reason = _binary_ready(CLAUDE_BIN)
     codex_ok, codex_reason = _binary_ready(CODEX_BIN)
@@ -186,7 +299,18 @@ def planner_provider_options() -> list[dict]:
 def worker_provider_options() -> list[dict]:
     codex_ok, codex_reason = _binary_ready(CODEX_BIN)
     claude_ok, claude_reason = _binary_ready(CLAUDE_BIN)
-    copilot_ok, copilot_reason = _copilot_auth_status()
+    copilot_ok, copilot_reason = _copilot_runtime_status()
+    gh_ok, gh_reason = _binary_ready(GH_BIN)
+    daemon_status = copilot_daemon_status()
+    if not gh_ok:
+        daemon_ok = False
+        daemon_reason = gh_reason
+    elif daemon_status.get("running"):
+        daemon_ok = True
+        daemon_reason = f"Daemon running (PID {daemon_status.get('pid')})"
+    else:
+        daemon_ok = True
+        daemon_reason = "Ready; start resident LaunchAgent to run Copilot in user session"
     return [
         {
             "value": "codex",
@@ -199,6 +323,12 @@ def worker_provider_options() -> list[dict]:
             "label": worker_provider_label("copilot"),
             "available": copilot_ok,
             "reason": copilot_reason,
+        },
+        {
+            "value": "copilot-daemon",
+            "label": worker_provider_label("copilot-daemon"),
+            "available": daemon_ok,
+            "reason": daemon_reason,
         },
         {
             "value": "claude",
@@ -220,6 +350,60 @@ def provider_available(kind: str, provider: Optional[str]) -> tuple[bool, str]:
     if not item:
         return False, f"Unknown {kind} provider: {provider}"
     return bool(item["available"]), item["reason"]
+
+
+def _worker_fallback_candidates(provider: Optional[str]) -> list[str]:
+    requested = normalize_worker_provider(provider)
+    ordered = [requested]
+
+    if requested in ("copilot", "copilot-daemon"):
+        ordered.extend(["codex", "claude"])
+    elif requested == "codex":
+        ordered.append("claude")
+    elif requested == "claude":
+        ordered.append("codex")
+
+    deduped = []
+    for item in ordered:
+        if item not in deduped:
+            deduped.append(item)
+    return deduped
+
+
+def resolve_worker_runtime(provider: Optional[str] = None) -> dict:
+    requested = normalize_worker_provider(provider)
+    attempts = []
+
+    for candidate in _worker_fallback_candidates(requested):
+        ok, reason = provider_available("worker", candidate)
+        attempts.append({
+            "provider": candidate,
+            "available": ok,
+            "reason": reason,
+        })
+        if ok:
+            fallback_reason = None
+            if candidate != requested:
+                requested_reason = attempts[0]["reason"] if attempts else "Unavailable"
+                fallback_reason = (
+                    f"{worker_provider_label(requested)} unavailable: {requested_reason}; "
+                    f"fell back to {worker_provider_label(candidate)}"
+                )
+            runtime = "copilot" if candidate == "copilot-daemon" else candidate
+            return {
+                "requested_provider": requested,
+                "dispatch_provider": candidate,
+                "runtime": runtime,
+                "availability_reason": reason,
+                "fallback_reason": fallback_reason,
+                "attempts": attempts,
+            }
+
+    details = "; ".join(
+        f"{worker_provider_label(item['provider'])}: {item['reason']}"
+        for item in attempts
+    ) or "No worker providers available"
+    raise FileNotFoundError(details)
 
 
 def planner_command(prompt: str, provider: Optional[str] = None) -> tuple[str, list[str]]:
@@ -253,17 +437,14 @@ def planner_command(prompt: str, provider: Optional[str] = None) -> tuple[str, l
     raise FileNotFoundError(f"Unsupported planner provider: {provider}")
 
 
-def worker_command(prompt: str, provider: Optional[str] = None) -> tuple[str, list[str]]:
-    runtime = normalize_worker_provider(provider)
-    ok, reason = provider_available("worker", runtime)
-    if not ok:
-        raise FileNotFoundError(reason)
+def worker_command(prompt: str, provider: Optional[str] = None) -> dict:
+    resolution = resolve_worker_runtime(provider)
+    runtime = resolution["runtime"]
 
     if runtime == "codex":
-        return runtime, [CODEX_BIN, "exec", "--full-auto", prompt]
-
-    if runtime == "claude":
-        return runtime, [
+        command = [CODEX_BIN, "exec", "--full-auto", prompt]
+    elif runtime == "claude":
+        command = [
             CLAUDE_BIN,
             "-p",
             prompt,
@@ -271,11 +452,28 @@ def worker_command(prompt: str, provider: Optional[str] = None) -> tuple[str, li
             "text",
             "--dangerously-skip-permissions",
         ]
+    elif runtime == "copilot":
+        permission_mode = str(os.environ.get("COPILOT_PERMISSION_MODE", "all")).strip().lower()
+        command = [GH_BIN, "copilot", "-p", prompt]
+        if permission_mode in ("all", "wide"):
+            command.extend(["--allow-all", "--no-ask-user"])
+        else:
+            command.extend([
+                "--allow-all-tools",
+                "--add-dir",
+                ROOT,
+                "--no-ask-user",
+            ])
+            # Optional broader path scope for workflows that touch paths outside ROOT.
+            if str(os.environ.get("COPILOT_ALLOW_ALL_PATHS", "")).strip().lower() in ("1", "true", "yes", "on"):
+                command.append("--allow-all-paths")
+    else:
+        raise FileNotFoundError(f"Unsupported worker provider: {provider}")
 
-    if runtime == "copilot":
-        return runtime, [GH_BIN, "copilot", "-p", prompt]
-
-    raise FileNotFoundError(f"Unsupported worker provider: {provider}")
+    return {
+        **resolution,
+        "command": command,
+    }
 
 
 def slugify(text: str) -> str:
@@ -304,6 +502,14 @@ def prompt_path(slot_key: str, slug: str, date_folder: str) -> str:
 
 def completed_path(slot_key: str, slug: str, date_folder: str) -> str:
     return os.path.join(task_dir(date_folder), f"{slot_key}-completed-{slug}.md")
+
+
+def contract_path(slot_key: str, slug: str, date_folder: str) -> str:
+    return os.path.join(task_dir(date_folder), f"{slot_key}-contract-{slug}.json")
+
+
+def result_path(slot_key: str, slug: str, date_folder: str) -> str:
+    return os.path.join(task_dir(date_folder), f"{slot_key}-result-{slug}.json")
 
 
 def worker_stdout_log_path(slot_key: str, date_folder: str) -> str:
@@ -362,9 +568,26 @@ def log_jsonl(runner: str, outcome: str, **kwargs):
 def is_process_alive(pid: int) -> bool:
     try:
         os.kill(pid, 0)
-        return True
     except (ProcessLookupError, PermissionError):
         return False
+
+    # os.kill(pid, 0) treats zombie as "alive". Filter zombies explicitly.
+    try:
+        proc = subprocess.run(
+            ["ps", "-o", "stat=", "-p", str(pid)],
+            capture_output=True,
+            text=True,
+            timeout=2,
+        )
+        if proc.returncode == 0:
+            stat = (proc.stdout or "").strip().upper()
+            # macOS/Linux: zombie state contains "Z" (e.g., "Z", "Z+", "SZ").
+            if "Z" in stat:
+                return False
+    except Exception:
+        # Fall back to the kill(0) probe result on any ps failure.
+        pass
+    return True
 
 
 def kill_process_tree(pid: int):
@@ -406,6 +629,165 @@ def read_backlog() -> str:
         return f.read().strip()
 
 
+REQUIRED_CONTRACT_FIELDS = [
+    "version",
+    "objective",
+    "scope",
+    "constraints",
+    "acceptance_tests",
+    "required_outputs",
+    "forbidden_changes",
+    "handoff_questions",
+]
+
+
+def validate_task_contract(contract: dict) -> tuple[bool, str]:
+    if not isinstance(contract, dict):
+        return False, "contract must be a JSON object"
+    for field in REQUIRED_CONTRACT_FIELDS:
+        if field not in contract:
+            return False, f"missing contract field: {field}"
+    if not str(contract.get("objective", "")).strip():
+        return False, "objective is empty"
+    list_fields = [
+        "scope",
+        "constraints",
+        "acceptance_tests",
+        "required_outputs",
+        "forbidden_changes",
+        "handoff_questions",
+    ]
+    for field in list_fields:
+        value = contract.get(field)
+        if not isinstance(value, list) or not value:
+            return False, f"{field} must be a non-empty array"
+    return True, ""
+
+
+def _fmt_slot_to_taipei(slot_key: str) -> str:
+    s = str(slot_key or "").strip()
+    if len(s) != 12 or not s.isdigit():
+        return s or "—"
+    return f"{s[:4]}/{s[4:6]}/{s[6:8]} {s[8:10]}:{s[10:12]}"
+
+
+def _fmt_seconds(sec) -> str:
+    if sec is None:
+        return "—"
+    try:
+        total = int(sec)
+    except (TypeError, ValueError):
+        return "—"
+    if total < 60:
+        return f"{total}s"
+    if total < 3600:
+        return f"{total // 60}m{total % 60}s"
+    return f"{total // 3600}h{(total % 3600) // 60}m"
+
+
+def _fmt_iso_to_taipei(iso_ts: str) -> str:
+    s = str(iso_ts or "").strip()
+    if not s:
+        return "—"
+    try:
+        dt = datetime.fromisoformat(s)
+        if dt.tzinfo is None:
+            dt = dt.replace(tzinfo=timezone.utc)
+        dt_tw = dt.astimezone(timezone(timedelta(hours=8)))
+        return dt_tw.strftime("%Y/%m/%d %H:%M:%S")
+    except ValueError:
+        return s
+
+
+def _summarize_latest_task(tasks: list, keywords: list[str], label: str) -> str:
+    for task in tasks:
+        title = str(task.get("title") or "")
+        if all(k.lower() in title.lower() for k in keywords):
+            return (
+                f"- {label}：`{task.get('status', '—')}` "
+                f"(Task #{task.get('id')}, {_fmt_slot_to_taipei(task.get('slot_key'))})"
+            )
+    return f"- {label}：`NO_RECORD`"
+
+
+def build_backlog_auto_status(tasks: list) -> str:
+    now_tw = datetime.now(timezone(timedelta(hours=8))).strftime("%Y/%m/%d %H:%M:%S")
+    recent = tasks[:8]
+    lines = [
+        "## 自動狀態快照（Auto-generated）",
+        "",
+        f"- 更新時間（Asia/Taipei）：`{now_tw}`",
+        f"- 最近任務總數（查詢範圍）：`{len(tasks)}`",
+        "",
+        "### 研究任務摘要",
+        _summarize_latest_task(tasks, ["midfreq_fourier_2bet", "mcnemar"], "midfreq_fourier_2bet McNemar 驗證"),
+        _summarize_latest_task(tasks, ["fourier", "500期", "oos"], "fourier_rhythm_3bet 500期 OOS 驗證"),
+        _summarize_latest_task(tasks, ["winning quality", "p2-1"], "Winning Quality P2-1 驗證"),
+        "",
+        "### 最近 8 筆任務",
+    ]
+    if not recent:
+        lines.append("- （無任務資料）")
+    else:
+        for t in recent:
+            lines.append(
+                "- "
+                f"#{t.get('id')} | {_fmt_slot_to_taipei(t.get('slot_key'))} | "
+                f"{t.get('status', '—')} | 耗時 {_fmt_seconds(t.get('duration_seconds'))} | "
+                f"完成 {_fmt_iso_to_taipei(t.get('completed_at'))} | "
+                f"{str(t.get('title') or '—')[:60]}"
+            )
+    return "\n".join(lines).strip()
+
+
+def refresh_backlog_auto_status(max_tasks: int = 50):
+    """
+    Update the AUTO status block in backlog.md using latest task records.
+    Keeps all manually-written backlog content untouched.
+    """
+    if not os.path.exists(BACKLOG_PATH):
+        return
+
+    try:
+        # Local import to avoid module-level circular dependency.
+        from orchestrator import db
+        tasks = db.list_tasks(limit=max_tasks, offset=0)
+    except Exception as exc:
+        logger.warning(f"[backlog] skip auto status refresh: failed to query tasks: {exc}")
+        return
+
+    auto_block = (
+        f"{BACKLOG_AUTO_STATUS_START}\n\n"
+        f"{build_backlog_auto_status(tasks)}\n\n"
+        f"{BACKLOG_AUTO_STATUS_END}\n"
+    )
+
+    try:
+        with open(BACKLOG_PATH, "r", encoding="utf-8") as f:
+            original = f.read()
+    except OSError as exc:
+        logger.warning(f"[backlog] read failed: {exc}")
+        return
+
+    if BACKLOG_AUTO_STATUS_START in original and BACKLOG_AUTO_STATUS_END in original:
+        start_idx = original.find(BACKLOG_AUTO_STATUS_START)
+        end_idx = original.find(BACKLOG_AUTO_STATUS_END, start_idx)
+        if end_idx == -1:
+            updated = original.rstrip() + "\n\n" + auto_block
+        else:
+            end_idx += len(BACKLOG_AUTO_STATUS_END)
+            updated = original[:start_idx].rstrip() + "\n\n" + auto_block + original[end_idx:].lstrip()
+    else:
+        updated = original.rstrip() + "\n\n---\n\n" + auto_block
+
+    if updated != original:
+        try:
+            with open(BACKLOG_PATH, "w", encoding="utf-8") as f:
+                f.write(updated)
+        except OSError as exc:
+            logger.warning(f"[backlog] write failed: {exc}")
+
+
 PLANNER_META_PROMPT_TEMPLATE = """\
 你是 {planner_role_label}，負責規劃軟體開發任務。
 請根據「北極星目標」和「最近任務歷史（含 FAILED）」，產出下一個 8 小時任務的詳細 prompt。
@@ -428,12 +810,19 @@ PLANNER_META_PROMPT_TEMPLATE = """\
 # 最近任務歷史（最新 5 筆，含 FAILED/COMPLETED 狀態）
 {recent_completed}
 
-# 輸出格式（只回傳 JSON，不要有其他文字）
+# 輸出格式（重要：只回傳純 JSON，第一個字元必須是 {{，最後一個字元必須是 }}，不要有任何其他文字、說明、markdown）
 {{
-  "title": "<任務標題，中英文皆可，短於 40 字元>",
-  "slug": "<kebab-case 英文識別碼，短於 40 字元，只用英數與 hyphen>",
-    "prompt_markdown": "<完整的 8 小時任務 prompt，包含：## Objective / ## Scope / ## Constraints / ## Acceptance Criteria / ## Handoff Notes；Handoff Notes 必須交代 wiki 是否更新、更新哪個 game 頁、以及是否新增 lesson>"
+  "title": "實際任務標題（中英文皆可，<= 40 字）",
+  "slug": "actual-kebab-case-id",
+  "prompt_markdown": "完整且可執行的 8 小時任務 prompt，必須含 ## Objective / ## Scope / ## Constraints / ## Acceptance Criteria / ## Handoff Notes"
 }}
+
+禁止輸出模板字串或佔位符，例如：
+- 任務標題
+- kebab-case
+- 完整的 8 小時任務 prompt
+- <...> 或 {{...}} 類型模板符號
+若你輸出任何模板值，該結果會被判定為無效。
 """
 
 

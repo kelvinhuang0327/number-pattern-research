@@ -958,3 +958,15 @@ Zone Cascade Only (zb=0.12) 完整驗證:
 - 維護模式啟動：停止新假設掃描，僅執行 30p/100p 監控與週期性 drift check
 - 重新激活條件：若任一現役策略 1500p edge 下降 > 1.5% 或新資料顯示分布轉移
 
+**L114 — midfreq_fourier_2bet 500期 OOS 升格驗證失敗：McNemar 未過且 150p 轉負** (2026-04-21)
+- 驗證範圍：POWER_LOTTO 共 1903 期，最新期數 115000031（2026/04/16）；500期 OOS gate 使用 seed=42、perm shuffles=200
+- `benchmark_framework.py`（固定 seed=42）對 `midfreq_fourier_2bet` 給出 150/500/1500p empirical-random edge = +2.67% / +2.00% / +2.40%
+- 但升格閘門以 RSM/perm 一致的理論 M3+ baseline(2bet=7.5899%) 判定：150p=-0.92% ❌, 500p=+2.41%, 1500p=+1.94% → 三窗口 FAIL
+- Permutation test（最近 500 OOS）: real_rate=10.00%, edge=+2.41%, perm_p=0.0398, Cohen's d=1.997 → SIGNAL_DETECTED ✅
+- McNemar vs `fourier_rhythm_3bet`（最近 500 OOS）: midfreq_only=31, fr3_only=45, net=-14, p=0.1359 ❌；未達替換門檻且方向為負
+- 對照組近 500 OOS：`fourier_rhythm_3bet` edge=+1.63%，`pp3_freqort_4bet` edge=+3.20%；vs `pp3_freqort_4bet` 的 McNemar 為 net=-39, p=0.00016
+- 2注邊際效率：bet1_rate=5.60%, bet2_rate=4.40%, bet2/bet1=78.6% < 80% ❌
+- `tools/verify_no_data_leakage.py` 全部通過；本次回測可視為零洩漏有效結果 ✅
+- 關聯監控：`midfreq_fourier_mk_3bet` 同期理論 edge 仍為 150p=+1.50%, 500p=+3.63%, 1500p=+2.50%；RSM snapshot 仍是 30p=-1.17%, 100p=-3.17%, 300p=+1.50%, trend=STABLE
+- 決策：`midfreq_fourier_2bet` 不可取代、也不可並列 `fourier_rhythm_3bet` 成為獨立 production 2注策略；依本輪任務約束（McNemar 未過不得改 RSM）不修改 `strategy_states_POWER_LOTTO.json`
+- 下一步：放棄本輪升格，改研究「PP3 + MidFreq 正交新組合」；若後續要正式標記 REJECTED，需在下一次協調更新時一併處理 RSM 狀態

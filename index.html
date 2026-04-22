@@ -396,6 +396,22 @@
         .btn-sm { padding:4px 10px; font-size:12px; border-radius:4px; border:1px solid #30363d; cursor:pointer; }
         .btn-success { background:rgba(35,134,54,.2); color:#3fb950; border-color:#238636; }
         .btn-warning { background:rgba(187,128,9,.2); color:#e3b341; border-color:#bb8009; }
+        /* Orchestration status badges */
+        .orc-status-badge { padding:2px 8px; border-radius:12px; font-size:11px; font-weight:600; }
+        .orc-status-queued  { background:rgba(31,111,235,.2); color:#79c0ff; }
+        .orc-status-running { background:rgba(187,128,9,.2); color:#e3b341; }
+        .orc-status-completed { background:rgba(35,134,54,.2); color:#3fb950; }
+        .orc-status-failed  { background:rgba(248,81,73,.2); color:#f85149; }
+        .orc-status-cancelled { background:rgba(100,100,100,.2); color:#8b949e; }
+        .orc-plan-badge { margin-left:8px; padding:1px 6px; border-radius:10px; font-size:10px; font-weight:700; letter-spacing:.3px; }
+        .orc-plan-badge-fallback { background:rgba(245,158,11,.2); color:#fbbf24; border:1px solid rgba(245,158,11,.4); }
+        .orc-trigger-btn { border-color:#3b82f6; color:#93c5fd; background:rgba(59,130,246,.12); }
+        .orc-trigger-btn:hover { background:rgba(59,130,246,.2); }
+        .orc-trigger-btn:disabled { opacity:.6; cursor:not-allowed; }
+        .orc-outcome-success { color:#3fb950; font-weight:600; }
+        .orc-outcome-error   { color:#f85149; font-weight:600; }
+        .orc-outcome-muted   { color:#8b949e; }
+        .orc-outcome-neutral { color:#c9d1d9; }
     </style>
 </head>
 
@@ -484,6 +500,10 @@
                 <button class="nav-btn" data-section="reviews">
                     <i data-lucide="clipboard-check" class="icon"></i>
                     <span>研究檢討</span>
+                </button>
+                <button class="nav-btn" data-section="orchestration">
+                    <i data-lucide="workflow" class="icon"></i>
+                    <span>任務編排</span>
                 </button>
             </nav>
         </div>
@@ -1831,6 +1851,97 @@
               <div id="rv-detail"></div>
             </div>
 
+          </div>
+        </section>
+
+        <!-- Orchestration Section -->
+        <section id="orchestration-section" class="section">
+          <div class="section-header">
+            <h2>任務編排</h2>
+            <p class="section-subtitle" id="orc-subtitle">可切換 Planner / Worker 組合的雙 Agent 自動化排程</p>
+          </div>
+
+          <!-- Summary Dashboard -->
+          <div id="orc-summary" style="display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:20px">
+            <div class="metric-card"><div class="metric-label">今日任務</div><div class="metric-value" id="orc-total">—</div></div>
+            <div class="metric-card"><div class="metric-label">進行中</div><div class="metric-value" id="orc-running">—</div></div>
+            <div class="metric-card"><div class="metric-label">已完成</div><div class="metric-value" id="orc-completed">—</div></div>
+            <div class="metric-card"><div class="metric-label">Worker 狀態</div><div class="metric-value" id="orc-worker-status">—</div></div>
+          </div>
+
+          <!-- Filter Bar -->
+          <div class="rv-filter-bar" style="margin-bottom:16px;display:flex;gap:10px;align-items:center;flex-wrap:wrap">
+            <label>日期
+              <input type="date" id="orc-date-filter" style="margin-left:6px;padding:4px 8px;border-radius:4px;border:1px solid var(--border-color)">
+            </label>
+            <label>狀態
+              <select id="orc-status-filter" style="margin-left:6px;padding:4px 8px;border-radius:4px;border:1px solid var(--border-color)">
+                <option value="">全部</option>
+                <option value="QUEUED">QUEUED</option>
+                <option value="RUNNING">RUNNING</option>
+                <option value="COMPLETED">COMPLETED</option>
+                <option value="FAILED">FAILED</option>
+                <option value="REPLAN_REQUIRED">REPLAN_REQUIRED</option>
+              </select>
+            </label>
+            <button id="orc-refresh-btn" class="btn-sm btn-secondary">重新整理</button>
+            <span style="margin-left:8px">排程：<b id="orc-scheduler-state">—</b></span>
+            <button id="orc-scheduler-toggle-btn" class="btn-sm btn-secondary" data-enabled="1">—</button>
+          </div>
+
+          <div class="rv-filter-bar" style="margin-bottom:16px;display:flex;gap:16px;align-items:center;flex-wrap:wrap;font-size:13px;color:var(--text-muted,#8b949e)">
+            <span>下次 Planner：<b id="orc-next-planner-at" style="color:var(--text-color,#c9d1d9)">—</b></span>
+            <span>下次 Worker：<b id="orc-next-worker-at" style="color:var(--text-color,#c9d1d9)">—</b></span>
+            <span id="orc-next-tick-note">以最近一次 tick + 10 分鐘推估</span>
+            <button id="orc-run-planner-btn" class="btn-sm orc-trigger-btn">Planner 立即執行</button>
+            <button id="orc-run-worker-btn" class="btn-sm orc-trigger-btn">Worker 立即執行</button>
+          </div>
+
+          <div class="rv-filter-bar" style="margin-bottom:16px;display:flex;gap:10px;align-items:center;flex-wrap:wrap">
+            <label>Planner
+              <select id="orc-planner-provider" style="margin-left:6px;padding:4px 8px;border-radius:4px;border:1px solid var(--border-color)">
+                <option value="claude">Claude CLI</option>
+                <option value="codex">Codex CLI</option>
+              </select>
+            </label>
+            <label>Worker
+              <select id="orc-worker-provider" style="margin-left:6px;padding:4px 8px;border-radius:4px;border:1px solid var(--border-color)">
+                <option value="codex">Codex CLI</option>
+                <option value="copilot">GitHub Copilot CLI</option>
+                <option value="claude">Claude CLI</option>
+              </select>
+            </label>
+            <button id="orc-provider-save-btn" class="btn-sm btn-secondary">套用組合</button>
+            <span id="orc-provider-hint" style="font-size:12px;color:#8b949e">讀取 provider 狀態中…</span>
+          </div>
+
+          <!-- List / Detail views -->
+          <div id="orc-list-view">
+            <h3 style="margin-bottom:8px">任務清單</h3>
+            <table class="data-table rv-table" style="width:100%;margin-bottom:24px">
+              <thead><tr>
+                <th>ID</th><th>Planer 發佈時間</th><th>標題</th><th>狀態</th><th>耗時</th><th>Worker 完成時間</th><th>異動檔案</th>
+              </tr></thead>
+              <tbody id="orc-task-tbody"><tr><td colspan="7" class="rv-empty">載入中…</td></tr></tbody>
+            </table>
+            <div class="rv-filter-bar" style="margin-top:-12px;margin-bottom:20px;display:flex;gap:8px;align-items:center;flex-wrap:wrap">
+              <button id="orc-task-prev-btn" class="btn-sm btn-secondary">上一頁</button>
+              <button id="orc-task-next-btn" class="btn-sm btn-secondary">下一頁</button>
+              <span id="orc-task-page-info" style="font-size:12px;color:#8b949e">載入中…</span>
+            </div>
+
+            <h3 style="margin-bottom:8px">排程紀錄（最近 10 次 tick）</h3>
+            <table class="data-table rv-table" style="width:100%">
+              <thead><tr>
+                <th>時間</th><th>Runner</th><th>結果</th><th>任務 ID</th><th>訊息</th>
+              </tr></thead>
+              <tbody id="orc-run-tbody"><tr><td colspan="5" class="rv-empty">載入中…</td></tr></tbody>
+            </table>
+          </div>
+
+          <div id="orc-detail-view" class="rv-hidden">
+            <button id="orc-back-btn" class="btn-sm btn-secondary" style="margin-bottom:12px">← 返回列表</button>
+            <div id="orc-detail-content"></div>
           </div>
         </section>
 

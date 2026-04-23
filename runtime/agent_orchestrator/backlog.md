@@ -162,7 +162,7 @@
 
 ## 自動狀態快照（Auto-generated）
 
-- 更新時間（Asia/Taipei）：`2026/04/23 14:02:27`
+- 更新時間（Asia/Taipei）：`2026/04/23 17:08:35`
 - 最近任務總數（查詢範圍）：`50`
 
 ### 研究任務摘要
@@ -171,13 +171,104 @@
 - Winning Quality P2-1 驗證：`NO_RECORD`
 
 ### 最近 8 筆任務
+- #73 | 2026/04/23 17:01 | COMPLETED | 耗時 7m26s | 完成 2026/04/23 17:08:35 | Cold Phase Analysis — 冷期特徵分析（Regime-Aware）
+- #72 | 2026/04/23 16:11 | COMPLETED | 耗時 6m33s | 完成 2026/04/23 16:17:45 | 信號窮盡收斂治理
+- #71 | 2026/04/23 15:59 | COMPLETED | 耗時 5m43s | 完成 2026/04/23 16:05:17 | 三彩種信號窮盡審計
+- #70 | 2026/04/23 15:28 | COMPLETED | 耗時 25m54s | 完成 2026/04/23 15:54:45 | 威力彩 WQ P2-1 本地正式驗證
+- #69 | 2026/04/23 14:27 | COMPLETED | 耗時 6m43s | 完成 2026/04/23 14:34:37 | 威力彩主線健康監控本地重建
+- #68 | 2026/04/23 14:06 | COMPLETED | 耗時 16m18s | 完成 2026/04/23 14:23:00 | 539 彩池資料可信回補與 H013 重跑
 - #67 | 2026/04/23 13:55 | FAILED | 耗時 6m33s | 完成 2026/04/23 14:02:27 | 治理 quota 假完成與本地 fallback
 - #66 | 2026/04/23 13:34 | REPLAN_REQUIRED | 耗時 40s | 完成 2026/04/23 13:35:43 | 大樂透500期本地監控定案
-- #65 | 2026/04/23 13:24 | REPLAN_REQUIRED | 耗時 27s | 完成 2026/04/23 13:24:41 | 大樂透500期本地監控重建
-- #64 | 2026/04/23 13:13 | REPLAN_REQUIRED | 耗時 40s | 完成 2026/04/23 13:14:14 | 威力彩外生訊號本地盤點
-- #63 | 2026/04/23 13:02 | REPLAN_REQUIRED | 耗時 40s | 完成 2026/04/23 13:02:56 | 修復 quota 假完成與本地 fallback
-- #62 | 2026/04/23 12:55 | REPLAN_REQUIRED | 耗時 40s | 完成 2026/04/23 12:56:32 | 威力彩新外生訊號可行性盤點
-- #61 | 2026/04/23 12:51 | REPLAN_REQUIRED | 耗時 40s | 完成 2026/04/23 12:51:59 | 治理 quota 假完成與本地 fallback
-- #60 | 2026/04/23 12:40 | REPLAN_REQUIRED | 耗時 40s | 完成 2026/04/23 12:41:22 | BIG_LOTTO 500期本地監控定案
 
 <!-- AUTO_STATUS_END -->
+---
+
+## [SIGNAL_EXHAUSTED_ALL] — 三彩種信號窮盡收斂（2026/04/23）
+
+**Conclusion**: All three lottery games (BIG_LOTTO, DAILY_539, POWER_LOTTO) have **exhausted actionable research directions** within the established validation framework as of 2026-04-23T16:11:18+08:00.
+
+**Audit Evidence**: See `runtime/agent_orchestrator/signal_exhaustion_closure_20260423.md/json` for formal audit trail.
+
+### 停止新研究分配原則 (NO_NEW_RESEARCH Policy)
+
+**Effective Immediately**: Planner MUST NOT generate new strategy research, hypothesis validation, or parameter micro-tuning tasks for BIG_LOTTO, DAILY_539, or POWER_LOTTO.
+
+**Rationale Per Game**:
+
+#### BIG_LOTTO (L90/L91 Confirmed)
+- **Signal Boundary**: 49C6 geometry proves indistinguishable from fair random (L91)
+- **All Frequencies Exhausted**: L90 confirms complete signal space exhaustion
+- **MicroFish Attempt Failed**: L89 documented and closed
+- **Current Strategy**: Maintain `p1_deviation_4bet` + `p1_dev_sum5bet` for monitoring only
+- **Next Allowed**: RSM edge tracking, downgrade trigger detection, no new research
+
+#### DAILY_539 (H001~H013 Exhaustion Confirmed)
+- **H001~H010 (Frequency Family)**: L82 confirms exhaustion; all variants tested and REJECT
+- **H011 (Weekday/Calendar)**: REJECT (chi-sq p=0.9281, no 150/500p signal) — L117
+- **H012 (Cross-Draw Cluster)**: REJECT (lag overlap ≈random, 150/500p unmet) — L118
+- **H013 (Pool-Size)**: **NEW FORMAL CLOSURE** (2026-04-23)
+  - 100% data backfill from official Taiwan Lottery API (sell_amount, total_amount)
+  - Formal test: edge≈0%, p≈1.0 across all windows
+  - Verdict: Pool-size provides zero predictive power — L129
+  - Do NOT retry same family
+- **MicroFish+MidFreq Promotion**: McNemar p=0.1797 (insufficient vs <0.05 threshold) — L128
+- **Current Strategies**: Maintain `acb_1bet`, `midfreq_acb_2bet`, `acb_markov_midfreq_3bet` for monitoring only
+- **Next Allowed**: RSM McNemar monitoring, hit-rate KPI tracking, no new research
+
+#### POWER_LOTTO (Mainline Mature, All Extensions Exhausted)
+- **Fourier Rhythm 3bet**: Downgraded to WATCH (150/500p perm failed, 1500p only) — L126
+- **PP3+MidFreq Orthogonal V2**: WATCH/REJECT (6 candidates, 150/500p unmet, <80% efficiency) — L123
+- **MidFreq Regime Gate V1**: REJECT (150p perm p=0.0995 ≥0.05) — L122
+- **Non-Family Layer-1 3bet**: **EXHAUSTIVE RESEARCH COMPLETE**
+  - 4-family search: dispersion, odd-tail, zone tensor, residue stability
+  - All passed leakage check; none passed permutation on all windows simultaneously
+  - McNemar never entered
+  - Formal closure: L127 "REJECT_ALL_NONFAMILY_LAYER1_3BET"
+  - Do NOT continue nonfamily Layer-1 variants
+- **Special V4 Reweighting**: REJECT (no baseline beat) — L121
+- **Winning Quality P2-1**: REJECT (500/1500p permutation fail; popularity_score insufficient without real commerce data) — L130
+- **Current Strategies**: Maintain `fourier_rhythm_3bet` + `pp3_freqort_4bet` + `orthogonal_5bet` with WATCH monitoring
+- **Next Allowed**: Mainline drift monitoring, WATCH candidate shadow tracking, no new research
+
+### 维护政策 (Maintenance-Only Policy)
+
+**Allowed Activities**:
+✅ RSM health monitoring (edge drift, Sharpe stability)
+✅ Drift/PSI monitoring (concept drift detection on features)
+✅ Dashboard / reporting maintenance (UI fixes, data freshness)
+✅ DB / task governance repairs (narrow scope, not wholesale backfill)
+
+**Forbidden Activities**:
+❌ New strategy research or hypothesis validation
+❌ Reopening H001~H013 hypothesis families or variants
+❌ Parameter micro-tuning on defeated signal families
+❌ Quota workarounds or fake-completion simulation
+❌ Non-family Layer-1 reweighting attempts (L127 closure)
+❌ WQ-based filtering without real commerce data (L130)
+
+### 信號窮盡後的Planner分流 (Next Cycle Instructions)
+
+**Next Task Type**: System maintenance, RSM monitoring, governance repairs (NOT research)
+
+**Planner Must Skip**:
+- "Explore one more pool-size variant"
+- "Try Special V4 with different orthogonal axis"
+- "Retry WQ with alternative proxy"
+- "Quad-check MicroFish with new window size"
+
+**Reopening Triggers** (Only if true external change):
+1. Lottery rule change (odds, pool structure, draw frequency)
+2. New authenticated data source (real prize-payout records, not proxy)
+3. New mathematical signal family (not orthogonal to existing PP3/Fourier/MidFreq)
+
+### Reference Artifacts
+
+- **Formal Audit**: `runtime/agent_orchestrator/signal_exhaustion_closure_20260423.md`
+- **JSON Equivalent**: `runtime/agent_orchestrator/signal_exhaustion_closure_20260423.json`
+- **Validation Results**:
+  - BIG_LOTTO: `analysis/results/biglotto_monitor_500p_20260423.md`
+  - DAILY_539: `analysis/results/daily539_h013_backfill_final_report_20260423.md`, `daily539_microfish_midfreq_promotion_validation_20260423.json`
+  - POWER_LOTTO: `analysis/results/power_watch_downgrade_decision_20260423.json`, `power_pp3_midfreq_orthogonal_v2_20260423.json`, `power_midfreq2bet_regime_gate_v1_20260423.json`, `power_layer1_nonfamily_3bet_validation_20260423.json`, `power_special_v4_validation_20260423.json`, `power_wq_p21_validation_20260423.md`
+- **Lessons**: `memory/lessons.md` (L82, L85~L93, L115~L130)
+
+---

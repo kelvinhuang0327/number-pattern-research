@@ -747,16 +747,41 @@ def run(force: bool = False):
         common.log_jsonl(RUNNER, "WORKER_SKIP_DAEMON_PROVIDER")
         return
 
-    # Try to claim a new QUEUED task
-    queued = db.list_tasks(status="QUEUED", limit=1)
-    if not queued:
+    # Apply aging bonus before selection so long-waiting items bubble up
+    try:
+        aged = db.apply_aging_bonus()
+        if aged:
+            logger.info(f"[worker] Aging applied to {aged} backlog items")
+    except Exception as _age_err:
+        logger.warning(f"[worker] Aging bonus error (non-fatal): {_age_err}")
+
+    # Try to claim the highest-priority QUEUED task using execution policy
+    queued_task = None
+    try:
+        queued_task = db.get_next_task_by_policy()
+    except Exception as _pol_err:
+        logger.warning(f"[worker] Policy selection error, falling back: {_pol_err}")
+
+    if not queued_task:
+        # Fallback: direct priority query
+        try:
+            queued_task = db.get_next_queued_task_by_priority()
+        except Exception:
+            pass
+
+    if not queued_task:
+        # Last resort: FIFO
+        fallback = db.list_tasks(status="QUEUED", limit=1)
+        queued_task = fallback[0] if fallback else None
+
+    if not queued_task:
         msg = "No QUEUED tasks available"
         logger.info(msg)
         db.log_tick(RUNNER, "WORKER_SKIP_IDLE_NO_TASK", message=msg)
         common.log_jsonl(RUNNER, "WORKER_SKIP_IDLE_NO_TASK")
         return
 
-    _claim(queued[0])
+    _claim(queued_task)
 
 
 if __name__ == "__main__":

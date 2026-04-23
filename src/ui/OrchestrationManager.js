@@ -65,6 +65,29 @@ export class OrchestrationManager {
     document.getElementById('orc-cto-back-btn')?.addEventListener('click', () => this._showCtoList());
     document.getElementById('cto-scheduler-toggle-btn')?.addEventListener('click', () => this._toggleCtoScheduler());
     document.getElementById('orc-cto-run-now-btn')?.addEventListener('click', () => this._triggerCtoRunNow());
+    document.getElementById('orc-adaptive-refresh-btn')?.addEventListener('click', async () => {
+      const btn = document.getElementById('orc-adaptive-refresh-btn');
+      if (btn) btn.textContent = '計算中…';
+      try {
+        await this._post('/api/orchestrator/cto/adaptive-policy/refresh', {});
+        await this._loadAdaptivePolicy();
+      } finally {
+        if (btn) btn.textContent = '↻ 重新計算';
+      }
+    });
+    // Toggle force warning + intent selector when force-rerun checkbox changes
+    (() => {
+      const forceCb = document.getElementById('orc-cto-force-rerun-cb');
+      const forceWarn = document.getElementById('orc-cto-force-warning');
+      const intentSel = document.getElementById('orc-cto-run-intent');
+      if (forceCb) {
+        forceCb.addEventListener('change', () => {
+          const checked = forceCb.checked;
+          if (forceWarn) forceWarn.style.display = checked ? 'block' : 'none';
+          if (intentSel) intentSel.style.display = checked ? 'inline-block' : 'none';
+        });
+      }
+    })();
     document.getElementById('orc-cto-provider-save-btn')?.addEventListener('click', () => this._saveCtoProviders());
 
     document.getElementById('orc-task-tbody')?.addEventListener('click', (e) => {
@@ -111,7 +134,7 @@ export class OrchestrationManager {
   }
 
   async _loadCtoAll() {
-    await Promise.all([this._loadCtoSummary(), this._loadCtoPending(), this._loadCtoRuns(), this._loadCtoProviders()]);
+    await Promise.all([this._loadCtoSummary(), this._loadCtoPending(), this._loadCtoRuns(), this._loadCtoProviders(), this._loadPolicyPanel(), this._loadAdaptivePolicy()]);
   }
 
   _startCountdownTimer() {
@@ -663,7 +686,7 @@ export class OrchestrationManager {
           <td>${_esc(run.run_id || '—')}</td>
           <td>${_fmt_utc_ts(run.started_at)}</td>
           <td>${_fmt_utc_ts(run.completed_at)}</td>
-          <td>${_esc(run.frequency_mode || '—')}</td>
+          <td>${_esc(run.frequency_mode || '—')} ${run.is_manual ? '<span style="font-size:0.7rem;color:#58a6ff;border:1px solid #58a6ff;border-radius:3px;padding:0 4px;margin-left:4px">手動</span>' : ''} ${run.is_force_run ? '<span style="font-size:0.7rem;color:#f85149;border:1px solid #f85149;border-radius:3px;padding:0 4px;margin-left:2px">強制</span>' : ''} ${run.run_intent ? `<span style="font-size:0.67rem;color:#a78bfa;border:1px solid #a78bfa;border-radius:3px;padding:0 4px;margin-left:2px">${_esc(run.run_intent)}</span>` : ''}</td>
           <td>${run.candidate_count ?? 0}</td>
           <td>${run.approved_count ?? 0}</td>
           <td>${run.merged_count ?? 0}</td>
@@ -690,10 +713,14 @@ export class OrchestrationManager {
     if (showDetail) this._showCtoDetail();
     try {
       this._selectedCtoRunId = runId;
-      const data = await this._get(`/api/orchestrator/cto/runs/${encodeURIComponent(runId)}`);
+      const [data, report, backlogData, prioritizedData] = await Promise.all([
+        this._get(`/api/orchestrator/cto/runs/${encodeURIComponent(runId)}`),
+        this._get(`/api/orchestrator/cto/reports/${encodeURIComponent(runId)}`),
+        this._get(`/api/orchestrator/cto/backlog?cto_run_id=${encodeURIComponent(runId)}&limit=200`).catch(() => ({ items: [] })),
+        this._get(`/api/orchestrator/cto/backlog/prioritized?limit=200`).catch(() => ({ items: [], level_counts: {} })),
+      ]);
       const run = data.run || {};
       const reviews = data.reviews || [];
-      const report = await this._get(`/api/orchestrator/cto/reports/${encodeURIComponent(runId)}`);
       const reportJson = report.report_json || {};
       const reportMd = report.report_md || '';
       const intel = reportJson.intelligence || {};
@@ -703,11 +730,84 @@ export class OrchestrationManager {
       const healthScore = intel.health_score ?? exec.health_score ?? null;
       const verdict = intel.verdict || exec.verdict || null;
 
+      // Backlog status map: finding_id → {live_status, item_id, task_id}
+      const backlogItems = backlogData.items || [];
+      const backlogMap = {};
+      for (const item of backlogItems) {
+        backlogMap[item.finding_id] = item;
+      }
+
+      // Priority data for the global backlog
+      const prioritizedItems = prioritizedData.items || [];
+      const levelCounts = prioritizedData.level_counts || {};
+
+      // Priority helpers
+      const _PRIORITY_COLOR = { P0: '#f85149', P1: '#d29922', P2: '#58a6ff', P3: '#8b949e' };
+      const _priorityBadge = (level) => {
+        const col = _PRIORITY_COLOR[level] || '#8b949e';
+        return `<span style="font-size:0.72rem;font-weight:700;color:${col};background:rgba(0,0,0,.35);border:1px solid ${col};border-radius:3px;padding:1px 7px;letter-spacing:.5px">${level || 'P3'}</span>`;
+      };
+      const _scoreBar = (score) => {
+        const w = Math.max(0, Math.min(100, score ?? 0));
+        const col = w >= 80 ? '#f85149' : w >= 58 ? '#d29922' : w >= 35 ? '#58a6ff' : '#8b949e';
+        return `<span style="display:inline-block;width:${w}px;height:6px;background:${col};border-radius:3px;vertical-align:middle"></span> ${w.toFixed(0)}`;
+      };
+
       const _verdictStyle = (v) => ({ GO: 'color:#3fb950', CAUTION: 'color:#d29922', STOP: 'color:#f85149' }[v] || '');
       const _verdictIcon = (v) => ({ GO: '✅', CAUTION: '⚠️', STOP: '🛑' }[v] || '—');
       const _sevColor = (s) => ({ CRITICAL: '#f85149', HIGH: '#d29922', MEDIUM: '#58a6ff', LOW: '#3fb950' }[s] || '#8b949e');
       const _priIcon = (p) => ({ IMMEDIATE: '🚨', HIGH: '🟠', SHORT: '⏰', MEDIUM: '—', LOW: '🟢' }[p] || '—');
       const _healthBar = (n) => { const v = Math.max(0, Math.min(100, n ?? 0)); const b = Math.round(v / 10); return `${'█'.repeat(b)}${'░'.repeat(10 - b)}`; };
+
+      // Is this a compare-only run? Backlog writes are disabled for these.
+      const isCompareRun = run.run_intent === 'compare';
+
+      // Derive canonical finding_id for a decision (mirrors API batch logic)
+      const _findingId = (d) => {
+        const sc = d.scoring || {};
+        const sev = (sc.severity || 'LOW').toUpperCase();
+        return `${runId}__t${d.task_id}_${sev}`;
+      };
+
+      // Badge for backlog status
+      const _backlogBadge = (findingId) => {
+        const item = backlogMap[findingId];
+        if (!item) return '';
+        const ls = item.live_status || item.status || 'pending';
+        const colors = { queued: '#58a6ff', running: '#d29922', completed: '#3fb950', failed: '#f85149', cancelled: '#8b949e', pending: '#8b949e' };
+        const labels = { queued: '已排入 backlog', running: '執行中', completed: '已完成', failed: '執行失敗', cancelled: '已取消', pending: '已加入' };
+        const col = colors[ls] || '#8b949e';
+        const lbl = labels[ls] || ls;
+        return `<span style="font-size:0.72rem;background:rgba(0,0,0,.3);color:${col};border:1px solid ${col};border-radius:3px;padding:1px 6px;margin-left:6px">● ${lbl}</span>`;
+      };
+
+      // Add-to-backlog button for a single decision
+      const _addBtn = (d, findingId) => {
+        if (isCompareRun) return ''; // compare: backlog writes disabled
+        const item = backlogMap[findingId];
+        if (item) return ''; // already in backlog — badge handles it
+        const sc = d.scoring || {};
+        const ac = d.action || {};
+        const payload = JSON.stringify({
+          finding_id: findingId,
+          cto_run_id: runId,
+          severity: sc.severity,
+          impact_score: sc.impact_score,
+          urgency: sc.urgency,
+          category: d.category,
+          suggested_action: (ac.action || d.reason || d.decision || '').substring(0, 300),
+        }).replace(/'/g, '&#39;');
+        return `<button class="cto-backlog-add-btn" data-payload='${payload}' style="font-size:0.72rem;padding:2px 8px;border:1px solid #58a6ff;color:#58a6ff;background:transparent;border-radius:4px;cursor:pointer;margin-left:6px">＋ 加入 backlog</button>`;
+      };
+
+      // Count eligible high-priority findings not yet in backlog
+      const highPriorityCount = enrichedDecisions.filter((d) => {
+        const sc = d.scoring || {};
+        const sev = (sc.severity || 'LOW').toUpperCase();
+        const impact = sc.impact_score || 0;
+        const fid = _findingId(d);
+        return (['CRITICAL', 'HIGH'].includes(sev) || impact >= 60) && !backlogMap[fid];
+      }).length;
 
       // ── Intelligence Panel ─────────────────────────────────────────────────
       const intelHtml = (intel.schema_version || enrichedDecisions.length > 0) ? `
@@ -716,13 +816,19 @@ export class OrchestrationManager {
             <span style="font-size:1.1rem;font-weight:700">${_verdictIcon(verdict)} CTO Verdict: <span style="${_verdictStyle(verdict)}">${verdict || '—'}</span></span>
             <span>Health Score: <b style="font-size:1.05rem">${healthScore != null ? healthScore + '/100' : '—'}</b></span>
             ${healthScore != null ? `<span style="font-family:monospace;letter-spacing:1px;color:#58a6ff">[${_healthBar(healthScore)}]</span>` : ''}
+            <span style="flex:1"></span>
+            ${isCompareRun
+              ? `<span style="font-size:0.78rem;padding:4px 12px;border-radius:4px;background:rgba(139,92,246,.12);color:#a78bfa">🔍 compare run — 僅分析模式，backlog 寫入已停用</span>`
+              : highPriorityCount > 0
+                ? `<button id="cto-batch-backlog-btn" data-run-id="${_esc(runId)}" style="font-size:0.78rem;padding:4px 12px;border:1px solid #d29922;color:#d29922;background:transparent;border-radius:4px;cursor:pointer">⚡ 加入全部高優先 backlog (${highPriorityCount})</button>`
+                : `<span style="font-size:0.78rem;color:#3fb950">✓ 高優先項目已全部入 backlog</span>`}
           </div>
 
           <!-- Top Risks -->
           ${exec.top_risks && exec.top_risks.length ? `
           <div style="padding:10px 14px;border-bottom:1px solid var(--border-color)">
             <div style="font-weight:600;margin-bottom:8px">🔺 Top Risks</div>
-            ${exec.top_risks.map((r, i) => `
+            ${exec.top_risks.map((r) => `
               <div style="margin-bottom:8px;padding:8px;background:rgba(248,81,73,.06);border-radius:6px;border-left:3px solid ${_sevColor(r.severity)}">
                 <span style="font-size:0.8rem;font-weight:600;color:${_sevColor(r.severity)}">${r.severity}</span>
                 <span style="margin-left:8px;font-size:0.82rem">Task #${r.task_id} | Impact: ${r.impact_score}/100 | ${r.urgency}</span>
@@ -763,11 +869,12 @@ export class OrchestrationManager {
 
       // ── Enriched Findings ──────────────────────────────────────────────────
       const findingsHtml = enrichedDecisions.length ? `
-        <details style="margin-bottom:16px">
+        <details open style="margin-bottom:16px">
           <summary style="cursor:pointer;font-weight:600;margin-bottom:8px">📋 Detailed Findings (${enrichedDecisions.length})</summary>
           ${enrichedDecisions.map((d) => {
             const sc = d.scoring || {};
             const ac = d.action || {};
+            const fid = _findingId(d);
             return `
               <div style="border:1px solid var(--border-color,#30363d);border-radius:8px;padding:11px 13px;margin-bottom:10px;border-left:3px solid ${_sevColor(sc.severity)}">
                 <div style="display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-bottom:6px">
@@ -776,8 +883,9 @@ export class OrchestrationManager {
                   <span style="font-size:0.78rem;color:var(--text-muted,#8b949e)">${_esc(d.decision || '—')}</span>
                   <span style="font-size:0.78rem;color:#58a6ff">cat: ${_esc(d.category || '—')}</span>
                   <span style="font-size:0.78rem;color:var(--text-muted,#8b949e)">impact: ${sc.impact_score ?? '—'}/100</span>
-                  <span style="font-size:0.78rem;color:var(--text-muted,#8b949e)">conf: ${sc.confidence != null ? Math.round(sc.confidence * 100) + '%' : '—'}</span>
                   <span style="font-size:0.78rem;color:var(--text-muted,#8b949e)">${sc.urgency || '—'}</span>
+                  ${_backlogBadge(fid)}
+                  ${_addBtn(d, fid)}
                 </div>
                 <div style="font-size:0.82rem;color:var(--text-muted,#8b949e);margin-bottom:6px">${_esc(d.reason || '—')}</div>
                 <div style="font-size:0.82rem;background:rgba(56,139,253,.06);border-radius:5px;padding:6px 9px">
@@ -791,18 +899,40 @@ export class OrchestrationManager {
         </details>
       ` : '';
 
+      // Intent behaviour description
+      const _INTENT_META = {
+        retry:    { icon: '🔁', color: '#58a6ff', bg: 'rgba(88,166,255,.1)',  border: 'rgba(88,166,255,.3)',  label: 'retry',    desc: '重試失敗提交：擴大候選池（含 REPLAN/CONFLICT），修復任務標記' },
+        compare:  { icon: '🔍', color: '#a78bfa', bg: 'rgba(139,92,246,.1)', border: 'rgba(139,92,246,.3)', label: 'compare',  desc: '比對分析模式：僅分析，不執行合併、不寫入 backlog、不修改 commit 狀態' },
+        override: { icon: '⚡', color: '#f85149', bg: 'rgba(248,81,73,.08)', border: 'rgba(248,81,73,.25)', label: 'override', desc: '強制覆蓋：正常行為，略過 duplicate guard' },
+      };
+      const intentMeta = run.run_intent ? (_INTENT_META[run.run_intent] || null) : null;
+      const intentBannerHtml = intentMeta ? `
+        <div style="margin-bottom:14px;padding:10px 14px;border-radius:6px;background:${intentMeta.bg};border:1px solid ${intentMeta.border};display:flex;gap:10px;align-items:flex-start">
+          <span style="font-size:1.1rem;line-height:1">${intentMeta.icon}</span>
+          <div>
+            <span style="font-weight:700;color:${intentMeta.color};font-size:0.85rem">intent: ${intentMeta.label}</span>
+            <span style="margin-left:10px;font-size:0.82rem;color:var(--text-muted,#8b949e)">${intentMeta.desc}</span>
+          </div>
+        </div>` : '';
+
       container.innerHTML = `
         <div style="margin-bottom:16px">
           <h3>${_esc(run.run_id || runId)}</h3>
           <div style="display:flex;gap:14px;flex-wrap:wrap;margin-top:8px;font-size:0.85rem;color:var(--text-muted)">
             <span>Frequency: <b>${_esc(run.frequency_mode || '—')}</b></span>
+            <span>觸發: <b>${run.is_manual ? '手動' : '排程'}</b></span>
+            ${run.is_force_run ? '<span style="font-size:0.75rem;background:rgba(248,81,73,.15);color:#f85149;border-radius:3px;padding:1px 6px;font-weight:600">⚡ 強制重跑</span>' : ''}
+            ${run.run_intent ? `<span style="font-size:0.75rem;background:rgba(139,92,246,.12);color:#a78bfa;border-radius:3px;padding:1px 6px">intent: ${_esc(run.run_intent)}</span>` : ''}
+            ${run.parent_run_id ? `<span style="font-size:0.75rem;color:#8b949e">參考 run: <code style="font-size:0.72rem">${_esc(run.parent_run_id)}</code></span>` : ''}
             <span>Started: <b>${_fmt_utc_ts(run.started_at)}</b></span>
             <span>Completed: <b>${_fmt_utc_ts(run.completed_at)}</b></span>
             <span>Duration: <b>${run.duration_seconds != null ? _fmt_dur(run.duration_seconds) : '—'}</b></span>
             <span>Window: <b>${_fmt_utc_ts(run.checked_from)} → ${_fmt_utc_ts(run.checked_until)}</b></span>
             <span>Merge Branch: <b>${_esc(run.merge_branch || '—')}</b></span>
+            ${run.dedupe_key ? `<span style="font-size:0.78rem;color:#8b949e">Dedupe: <code>${_esc(run.dedupe_key)}</code></span>` : ''}
           </div>
         </div>
+        ${intentBannerHtml}
         <div class="pt-perf-summary" style="margin-bottom:16px">
           <div class="pt-perf-summary-grid">
             <div><span class="pt-perf-summary-label">Candidates</span><strong>${run.candidate_count ?? 0}</strong></div>
@@ -818,6 +948,51 @@ export class OrchestrationManager {
 
         ${intelHtml}
         ${findingsHtml}
+
+        ${prioritizedItems.length > 0 ? `
+        <details open style="margin-bottom:16px">
+          <summary style="cursor:pointer;font-weight:600;margin-bottom:8px">🎯 Backlog 優先級排序 (全局)</summary>
+          <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px;flex-wrap:wrap">
+            ${['P0','P1','P2','P3'].map(lvl => {
+              const cnt = levelCounts[lvl] || 0;
+              const col = _PRIORITY_COLOR[lvl];
+              return `<span style="font-size:0.8rem;color:${col};font-weight:600;padding:2px 10px;border:1px solid ${col};border-radius:12px">${lvl}: ${cnt}</span>`;
+            }).join('')}
+            <span style="flex:1"></span>
+            <button id="cto-rescore-btn" style="font-size:0.75rem;padding:3px 10px;border:1px solid #58a6ff;color:#58a6ff;background:transparent;border-radius:4px;cursor:pointer">⟳ 重算全部優先級</button>
+          </div>
+
+          ${/* P0/P1 High-priority block */''}
+          ${prioritizedItems.some(i => ['P0','P1'].includes(i.priority_level)) ? `
+          <div style="border:1px solid #f8514950;border-radius:8px;padding:10px 12px;margin-bottom:12px;background:rgba(248,81,73,.04)">
+            <div style="font-weight:600;font-size:0.82rem;color:#f85149;margin-bottom:8px">🔴 高優先項目（P0 / P1）</div>
+            ${prioritizedItems.filter(i => ['P0','P1'].includes(i.priority_level)).map(item => `
+              <div style="display:flex;gap:8px;align-items:center;padding:6px 8px;border-radius:6px;margin-bottom:5px;background:rgba(0,0,0,.25)">
+                ${_priorityBadge(item.priority_level)}
+                <span style="font-size:0.8rem;flex:1;overflow:hidden;white-space:nowrap;text-overflow:ellipsis" title="${_esc(item.suggested_action||item.finding_id||'—')}">${_esc((item.suggested_action||item.finding_id||'—').substring(0,80))}</span>
+                <span style="font-size:0.75rem;color:#8b949e;white-space:nowrap">${_scoreBar(item.priority_score)}</span>
+                <span style="font-size:0.72rem;color:#8b949e;white-space:nowrap">${_esc(item.severity||'—')} · ${_esc(item.category||'—')}</span>
+                <span style="font-size:0.72rem;padding:1px 5px;border-radius:3px;background:rgba(0,0,0,.4);color:${({ queued:'#58a6ff',running:'#d29922',completed:'#3fb950',failed:'#f85149',cancelled:'#8b949e',pending:'#8b949e' })[item.live_status]||'#8b949e'}">${item.live_status||'—'}</span>
+                ${item.rank != null ? `<span style="font-size:0.72rem;color:#8b949e">#${item.rank}</span>` : ''}
+              </div>
+            `).join('')}
+          </div>` : ''}
+
+          ${/* P2/P3 lower-priority block */''}
+          ${prioritizedItems.some(i => ['P2','P3'].includes(i.priority_level)) ? `
+          <details style="margin-bottom:6px">
+            <summary style="cursor:pointer;font-size:0.82rem;color:#8b949e;margin-bottom:8px">📋 一般項目（P2 / P3）</summary>
+            ${prioritizedItems.filter(i => ['P2','P3'].includes(i.priority_level)).map(item => `
+              <div style="display:flex;gap:8px;align-items:center;padding:5px 8px;border-radius:6px;margin-bottom:4px;background:rgba(0,0,0,.15)">
+                ${_priorityBadge(item.priority_level)}
+                <span style="font-size:0.79rem;flex:1;overflow:hidden;white-space:nowrap;text-overflow:ellipsis" title="${_esc(item.suggested_action||item.finding_id||'—')}">${_esc((item.suggested_action||item.finding_id||'—').substring(0,80))}</span>
+                <span style="font-size:0.75rem;color:#8b949e;white-space:nowrap">${_scoreBar(item.priority_score)}</span>
+                <span style="font-size:0.72rem;color:#8b949e;white-space:nowrap">${_esc(item.severity||'—')} · ${_esc(item.category||'—')}</span>
+                ${item.rank != null ? `<span style="font-size:0.72rem;color:#8b949e">#${item.rank}</span>` : ''}
+              </div>
+            `).join('')}
+          </details>` : ''}
+        </details>` : ''}
 
         <details open style="margin-bottom:16px">
           <summary style="cursor:pointer;font-weight:600;margin-bottom:8px">🧾 Report Markdown</summary>
@@ -848,6 +1023,78 @@ export class OrchestrationManager {
           }).join('') : '<div class="rv-empty">尚無決策記錄</div>'}
         </div>
       `;
+
+      // ── Bind backlog action buttons (post-render) ──────────────────────────
+      container.querySelectorAll('.cto-backlog-add-btn').forEach((btn) => {
+        btn.addEventListener('click', async () => {
+          btn.disabled = true;
+          btn.textContent = '加入中…';
+          try {
+            const payload = JSON.parse(btn.dataset.payload);
+            const resp = await this._post('/api/orchestrator/cto/backlog', payload);
+            if (resp.conflict) {
+              btn.replaceWith(Object.assign(document.createElement('span'), {
+                textContent: '已存在',
+                style: 'font-size:0.72rem;color:#8b949e;margin-left:6px',
+              }));
+            } else {
+              btn.replaceWith(Object.assign(document.createElement('span'), {
+                textContent: `● 已排入 backlog (#${resp.task_id})`,
+                style: 'font-size:0.72rem;color:#58a6ff;margin-left:6px',
+              }));
+            }
+          } catch (e) {
+            btn.disabled = false;
+            btn.textContent = '失敗，重試';
+            btn.title = e.message;
+          }
+        });
+      });
+
+      const batchBtn = container.querySelector('#cto-batch-backlog-btn');
+      if (batchBtn) {
+        batchBtn.addEventListener('click', async () => {
+          batchBtn.disabled = true;
+          batchBtn.textContent = '批次加入中…';
+          try {
+            const resp = await this._post('/api/orchestrator/cto/backlog/batch', {
+              cto_run_id: runId,
+              min_severity: 'HIGH',
+              min_impact: 60,
+            });
+            batchBtn.textContent = `✓ 已加入 ${resp.added_count} 筆，跳過 ${resp.skipped_count} 筆`;
+            batchBtn.style.color = '#3fb950';
+            batchBtn.style.borderColor = '#3fb950';
+            // Reload to refresh badges
+            setTimeout(() => this._loadCtoRunDetail(runId, false), 1200);
+          } catch (e) {
+            batchBtn.disabled = false;
+            batchBtn.textContent = '批次加入失敗';
+            batchBtn.title = e.message;
+          }
+        });
+      }
+
+      const rescoreBtn = container.querySelector('#cto-rescore-btn');
+      if (rescoreBtn) {
+        rescoreBtn.addEventListener('click', async () => {
+          rescoreBtn.disabled = true;
+          rescoreBtn.textContent = '重算中…';
+          try {
+            const resp = await this._post('/api/orchestrator/cto/backlog/rescore', {});
+            const lc = resp.level_counts || {};
+            rescoreBtn.textContent = `✓ 已重算 ${resp.rescored_count} 筆`;
+            rescoreBtn.style.color = '#3fb950';
+            rescoreBtn.style.borderColor = '#3fb950';
+            setTimeout(() => this._loadCtoRunDetail(runId, false), 1200);
+          } catch (e) {
+            rescoreBtn.disabled = false;
+            rescoreBtn.textContent = '重算失敗';
+            rescoreBtn.title = e.message;
+          }
+        });
+      }
+
     } catch (e) {
       container.innerHTML = `<p style="color:red">載入失敗：${e.message}</p>`;
     }
@@ -868,7 +1115,7 @@ export class OrchestrationManager {
   _renderCtoSchedulerState(enabled) {
     const stateEl = document.getElementById('cto-scheduler-state');
     const toggleBtn = document.getElementById('cto-scheduler-toggle-btn');
-    if (stateEl) stateEl.textContent = enabled ? '啟動中' : '已暫停';
+    if (stateEl) stateEl.textContent = enabled ? '已啟用' : '已暫停';
     if (toggleBtn) {
       toggleBtn.textContent = enabled ? '暫停' : '啟動';
       toggleBtn.dataset.enabled = enabled ? '1' : '0';
@@ -951,6 +1198,219 @@ export class OrchestrationManager {
     }
   }
 
+  // ─── Adaptive Policy Panel (Self-Optimizing Decision Architect) ──────────
+
+  async _loadAdaptivePolicy() {
+    const el = document.getElementById('orc-adaptive-panel');
+    if (!el) return;
+    try {
+      const resp = await this._get('/api/orchestrator/cto/adaptive-policy');
+      const policy = resp.policy || {};
+      const intentStats = resp.intent_stats || {};
+      const suggestions = policy.suggestions || [];
+      const confidence = policy.policy_confidence || 'low';
+      const runsAnalyzed = policy.runs_analyzed || 0;
+      const computedAt = policy.computed_at ? new Date(policy.computed_at).toLocaleString('zh-TW') : '—';
+
+      // Confidence badge
+      const _confCol = { high: '#3fb950', medium: '#d29922', low: '#8b949e' };
+      const confHtml = `<span style="font-size:0.72rem;padding:1px 7px;border-radius:10px;border:1px solid ${_confCol[confidence] || '#8b949e'};color:${_confCol[confidence] || '#8b949e'}">${confidence === 'high' ? '高信心' : confidence === 'medium' ? '中信心' : '資料不足'}</span>`;
+
+      // Intent merge-rate bars
+      const _intents = ['retry', 'compare', 'override'];
+      const _intentLabel = { retry: '🔁 retry', compare: '🔍 compare', override: '⚡ override' };
+      const _intentCol = { retry: '#58a6ff', compare: '#a78bfa', override: '#f85149' };
+      const mergeBarHtml = _intents.map(intent => {
+        const s = intentStats[intent];
+        if (!s || !s.total_runs) return '';
+        const rate = s.avg_merge_rate ?? (s.total_merged / Math.max(s.total_candidates, 1));
+        const pct = Math.round(rate * 100);
+        const col = _intentCol[intent];
+        return `
+          <div style="display:flex;align-items:center;gap:10px;margin-bottom:8px">
+            <span style="font-size:0.8rem;width:90px;flex-shrink:0">${_intentLabel[intent]}</span>
+            <div style="flex:1;background:rgba(255,255,255,.07);border-radius:4px;height:8px;overflow:hidden">
+              <div style="width:${Math.min(pct, 100)}%;background:${col};height:100%;border-radius:4px;transition:width .4s"></div>
+            </div>
+            <span style="font-size:0.78rem;color:${col};min-width:38px;text-align:right">${pct}%</span>
+            <span style="font-size:0.72rem;color:#8b949e">${s.total_runs} run${s.total_runs > 1 ? 's' : ''}</span>
+          </div>`;
+      }).join('');
+
+      // Active policy adjustments
+      const retryLimit = policy.retry_coverage_limit || 200;
+      const catBoosts = policy.category_priority_boosts || {};
+      const boostEntries = Object.entries(catBoosts).filter(([, v]) => Math.abs(v) >= 0.1);
+      const policyAdjHtml = [
+        `<div style="font-size:0.8rem;margin-bottom:6px"><span style="color:#8b949e">retry 覆蓋上限：</span><b style="color:#58a6ff">${retryLimit}</b><span style="font-size:0.72rem;color:#8b949e"> 個 REPLAN/CONFLICT 候選</span></div>`,
+        ...boostEntries.map(([cat, boost]) => {
+          const pts = Math.round(boost * 20);
+          const col = boost > 0 ? '#3fb950' : '#f85149';
+          return `<div style="font-size:0.78rem;margin-bottom:4px"><span style="color:#8b949e">backlog.</span><b>${cat}</b><span style="color:${col};margin-left:6px">${pts > 0 ? '+' : ''}${pts} 分</span></div>`;
+        }),
+      ].join('');
+
+      // Suggestion chips
+      const _sugLevel = { recommend: { col: '#3fb950', icon: '✓' }, warn: { col: '#f85149', icon: '⚠' }, info: { col: '#58a6ff', icon: 'ℹ' }, ok: { col: '#3fb950', icon: '●' } };
+      const sugHtml = suggestions.length
+        ? suggestions.map(s => {
+            const lv = _sugLevel[s.level] || { col: '#8b949e', icon: '•' };
+            return `<div style="display:flex;gap:8px;align-items:flex-start;margin-bottom:8px;padding:8px 10px;border-radius:6px;background:rgba(255,255,255,.04);border-left:3px solid ${lv.col}">
+              <span style="color:${lv.col};font-size:0.85rem;line-height:1.2">${lv.icon}</span>
+              <span style="font-size:0.82rem;color:#c9d1d9;line-height:1.4">${_esc(s.text)}</span>
+            </div>`;
+          }).join('')
+        : '<span style="font-size:0.8rem;color:#8b949e">尚無建議（需更多歷史資料）</span>';
+
+      el.innerHTML = `
+        <div style="margin-bottom:12px;display:flex;align-items:center;gap:10px;flex-wrap:wrap">
+          ${confHtml}
+          <span style="font-size:0.75rem;color:#8b949e">分析 ${runsAnalyzed} 次 run</span>
+          <span style="font-size:0.72rem;color:#8b949e">更新：${computedAt}</span>
+        </div>
+        ${mergeBarHtml ? `
+        <div style="margin-bottom:14px">
+          <div style="font-size:0.78rem;font-weight:600;color:#8b949e;margin-bottom:8px;text-transform:uppercase;letter-spacing:.5px">Intent 合併率</div>
+          ${mergeBarHtml}
+        </div>` : ''}
+        ${boostEntries.length || true ? `
+        <div style="margin-bottom:14px">
+          <div style="font-size:0.78rem;font-weight:600;color:#8b949e;margin-bottom:8px;text-transform:uppercase;letter-spacing:.5px">已套用調整</div>
+          ${policyAdjHtml}
+        </div>` : ''}
+        <div>
+          <div style="font-size:0.78rem;font-weight:600;color:#8b949e;margin-bottom:8px;text-transform:uppercase;letter-spacing:.5px">策略建議</div>
+          ${sugHtml}
+        </div>`;
+    } catch (e) {
+      el.innerHTML = `<span style="font-size:0.8rem;color:#f85149">載入失敗：${e.message}</span>`;
+    }
+  }
+
+  // ─── Execution Policy Panel ───────────────────────────────────────────────
+
+  async _loadPolicyPanel() {
+    const el = document.getElementById('orc-policy-panel');
+    if (!el) return;
+    try {
+      const stats = await this._get('/api/orchestrator/cto/backlog/policy');
+      const mode = stats.mode || 'balanced';
+      const qLevels = stats.queue_by_level || {};
+      const qCats = stats.queue_by_category || {};
+      const recent = stats.recent_selections || [];
+      const consts = stats.policy_constants || {};
+
+      const _modeBadge = (m) => {
+        const cols = { strict_priority: '#f85149', balanced: '#58a6ff', fairness: '#3fb950' };
+        const labels = { strict_priority: '⚡ Strict Priority', balanced: '⚖ Balanced', fairness: '♻ Fairness' };
+        const col = cols[m] || '#8b949e';
+        return `<span style="font-weight:700;color:${col};padding:2px 9px;border:1px solid ${col};border-radius:10px;font-size:0.8rem">${labels[m] || m}</span>`;
+      };
+
+      const _lvlColors = { P0: '#f85149', P1: '#d29922', P2: '#58a6ff', P3: '#8b949e' };
+      const _queueBar = (counts) => ['P0','P1','P2','P3'].map(lvl => {
+        const cnt = counts[lvl] || 0;
+        return cnt > 0 ? `<span style="color:${_lvlColors[lvl]};font-size:0.78rem;margin-right:8px">${lvl}: <b>${cnt}</b></span>` : '';
+      }).join('');
+
+      const _recentHtml = recent.slice(-10).reverse().map((sel, i) => {
+        const col = _lvlColors[sel.level] || '#8b949e';
+        return `<span style="font-size:0.72rem;padding:1px 6px;border:1px solid ${col}33;color:${col};border-radius:3px;margin:2px">${sel.level} ${sel.category}</span>`;
+      }).join('');
+
+      const _catHtml = Object.entries(qCats).sort((a,b) => b[1]-a[1]).map(([cat, cnt]) => `
+        <div style="display:flex;gap:6px;align-items:center;margin-bottom:3px">
+          <span style="font-size:0.75rem;flex:1;color:var(--text-muted,#8b949e)">${_esc(cat)}</span>
+          <div style="background:#58a6ff33;border-radius:2px;height:6px;width:${Math.min(120, cnt*12)}px"></div>
+          <span style="font-size:0.73rem;color:#58a6ff">${cnt}</span>
+        </div>
+      `).join('');
+
+      el.innerHTML = `
+        <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:10px">
+          <span style="font-weight:600">Scheduler Mode:</span>
+          ${_modeBadge(mode)}
+          <span style="flex:1"></span>
+          <select id="orc-policy-mode-sel" style="font-size:0.78rem;padding:3px 8px;border:1px solid var(--border-color,#30363d);background:var(--card-bg,#1a1a2e);color:inherit;border-radius:4px">
+            <option value="strict_priority"${mode==='strict_priority'?' selected':''}>strict_priority</option>
+            <option value="balanced"${mode==='balanced'?' selected':''}>balanced (推薦)</option>
+            <option value="fairness"${mode==='fairness'?' selected':''}>fairness</option>
+          </select>
+          <button id="orc-policy-save-btn" style="font-size:0.75rem;padding:3px 10px;border:1px solid #58a6ff;color:#58a6ff;background:transparent;border-radius:4px;cursor:pointer">儲存模式</button>
+          <button id="orc-aging-btn" style="font-size:0.75rem;padding:3px 10px;border:1px solid #d29922;color:#d29922;background:transparent;border-radius:4px;cursor:pointer">⏫ 觸發 Aging</button>
+        </div>
+
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;font-size:0.8rem">
+          <div>
+            <div style="color:var(--text-muted,#8b949e);margin-bottom:4px">Queue by Level</div>
+            ${_queueBar(qLevels) || '<span style="color:#8b949e">— 空</span>'}
+          </div>
+          <div>
+            <div style="color:var(--text-muted,#8b949e);margin-bottom:4px">Consecutive High / Category</div>
+            <span style="font-size:0.78rem">高優先連續: <b style="color:#d29922">${stats.consecutive_high || 0}</b> / ${consts.fairness_every_n || 7}</span>
+            &nbsp;·&nbsp;
+            <span style="font-size:0.78rem">Category: <b style="color:#58a6ff">${_esc(stats.consecutive_category || '—')}</b> × ${stats.consecutive_category_count || 0}</span>
+          </div>
+        </div>
+
+        ${Object.keys(qCats).length > 0 ? `
+        <details style="margin-top:8px">
+          <summary style="cursor:pointer;font-size:0.78rem;color:var(--text-muted,#8b949e)">Category 分布</summary>
+          <div style="padding:6px 0">${_catHtml}</div>
+        </details>` : ''}
+
+        ${recent.length > 0 ? `
+        <div style="margin-top:8px">
+          <div style="font-size:0.73rem;color:var(--text-muted,#8b949e);margin-bottom:4px">最近 10 次選擇（新 → 舊）</div>
+          <div style="display:flex;flex-wrap:wrap;gap:2px">${_recentHtml}</div>
+        </div>` : ''}
+
+        ${stats.aging_items_count > 0 ? `<div style="margin-top:6px;font-size:0.75rem;color:#d29922">⏫ ${stats.aging_items_count} 個 backlog 項目已累計 aging bonus</div>` : ''}
+      `;
+
+      // Bind save mode button
+      el.querySelector('#orc-policy-save-btn')?.addEventListener('click', async () => {
+        const sel = el.querySelector('#orc-policy-mode-sel');
+        const saveBtn = el.querySelector('#orc-policy-save-btn');
+        if (!sel || !saveBtn) return;
+        saveBtn.disabled = true;
+        try {
+          await this._post('/api/orchestrator/cto/backlog/policy', { mode: sel.value });
+          saveBtn.textContent = '✓ 儲存成功';
+          saveBtn.style.color = '#3fb950';
+          saveBtn.style.borderColor = '#3fb950';
+          setTimeout(() => this._loadPolicyPanel(), 1000);
+        } catch (e) {
+          saveBtn.disabled = false;
+          saveBtn.textContent = '儲存失敗';
+          saveBtn.title = e.message;
+        }
+      });
+
+      // Bind aging button
+      el.querySelector('#orc-aging-btn')?.addEventListener('click', async () => {
+        const agingBtn = el.querySelector('#orc-aging-btn');
+        if (!agingBtn) return;
+        agingBtn.disabled = true;
+        agingBtn.textContent = '套用中…';
+        try {
+          const resp = await this._post('/api/orchestrator/cto/backlog/aging', {});
+          agingBtn.textContent = `✓ ${resp.aged_count} 筆已更新`;
+          agingBtn.style.color = '#3fb950';
+          agingBtn.style.borderColor = '#3fb950';
+          setTimeout(() => this._loadPolicyPanel(), 1200);
+        } catch (e) {
+          agingBtn.disabled = false;
+          agingBtn.textContent = '失敗';
+          agingBtn.title = e.message;
+        }
+      });
+
+    } catch (e) {
+      el.innerHTML = `<span style="color:#8b949e;font-size:0.8rem">Policy panel 載入失敗: ${e.message}</span>`;
+    }
+  }
+
   // ─── CTO Providers ────────────────────────────────────────────────────────
 
   async _loadCtoProviders() {
@@ -1019,17 +1479,30 @@ export class OrchestrationManager {
 
   async _triggerCtoRunNow() {
     const btn = document.getElementById('orc-cto-run-now-btn');
+    const forceCb = document.getElementById('orc-cto-force-rerun-cb');
+    const intentSel = document.getElementById('orc-cto-run-intent');
+    const forceWarn = document.getElementById('orc-cto-force-warning');
+    const force = forceCb ? forceCb.checked : false;
+    const run_intent = (force && intentSel) ? (intentSel.value || null) : null;
     if (btn) { btn.disabled = true; btn.textContent = '觸發中…'; }
     try {
-      const data = await this._post('/api/orchestrator/cto/run-now', {});
+      const data = await this._post('/api/orchestrator/cto/run-now', { force, run_intent });
       const requestId = data.request_id;
       const triggeredAt = data.triggered_at;
-      this._renderCtoRunnerTrace({ requestId, outcome: '等待中…', note: '已觸發 CTO Planner，等待結果…' });
+      this._renderCtoRunnerTrace({ requestId, outcome: '等待中…', note: force ? `已觸發 CTO Planner（強制重跑 / ${run_intent || 'override'}），等待結果…` : '已觸發 CTO Planner，等待結果…' });
       await this._waitForCtoRunOutcome(requestId, triggeredAt);
     } catch (e) {
-      this._renderCtoRunnerTrace({ requestId: '—', outcome: 'ERROR', note: `觸發失敗：${e.message}` });
+      const msg = e.status === 429 ? `請求頻率間隔：${e.message}` : `觸發失敗：${e.message}`;
+      this._renderCtoRunnerTrace({ requestId: '—', outcome: e.status === 429 ? 'RATE_LIMITED' : 'ERROR', note: msg });
+      if (e.status === 429 && forceWarn) {
+        forceWarn.style.display = 'block';
+        forceWarn.textContent = `⚠️ Rate limit 觸發：${e.message}`;
+      }
     } finally {
-      if (btn) { btn.disabled = false; btn.textContent = 'Planner 立即執行'; }
+      if (btn) { btn.disabled = false; btn.textContent = 'CTO 立即執行'; }
+      if (forceCb) { forceCb.checked = false; }
+      if (forceWarn) forceWarn.style.display = 'none';
+      if (intentSel) intentSel.style.display = 'none';
     }
   }
 
@@ -1040,7 +1513,10 @@ export class OrchestrationManager {
       'CTO_REVIEW_SKIP_FREQUENCY',
       'CTO_REVIEW_NO_CANDIDATES',
       'CTO_REVIEW_ERROR',
+      'CTO_REVIEW_SKIP_DUPLICATE_RUNNING',
+      'CTO_REVIEW_SKIP_DUPLICATE_RECENT',
     ]);
+    // CTO_REVIEW_FORCE_RUN is a non-terminal log event; terminal outcomes above are unchanged
     const triggerMs = _parse_utc_timestamp(triggeredAt)?.getTime() ?? Date.now();
     const deadline = triggerMs + timeoutMs;
     const poll = async () => {
@@ -1050,13 +1526,15 @@ export class OrchestrationManager {
       const note = run.message || '等待中…';
       this._renderCtoRunnerTrace({ requestId, outcome, note });
       if (data.final) {
-        const level = outcome === 'CTO_REVIEW_COMPLETED' || outcome === 'CTO_REVIEW_NO_CANDIDATES' ? 'ok'
+        const level = outcome === 'CTO_REVIEW_COMPLETED' ? 'ok'
           : outcome.includes('ERROR') ? 'error' : 'warn';
         const label = {
           CTO_REVIEW_COMPLETED: 'CTO 審核完成',
           CTO_REVIEW_NO_CANDIDATES: '無候選，略過',
           CTO_REVIEW_SKIP_DISABLED: 'CTO 排程已暫停',
-          CTO_REVIEW_SKIP_FREQUENCY: '頻率限制，略過本次',
+          CTO_REVIEW_SKIP_FREQUENCY: '排程頻率限制，略過本次',
+          CTO_REVIEW_SKIP_DUPLICATE_RUNNING: '相同內容正在執行中，略過',
+          CTO_REVIEW_SKIP_DUPLICATE_RECENT: '相同內容剛完成，略過',
           CTO_REVIEW_ERROR: 'CTO 執行錯誤',
         }[outcome] || outcome;
         this._showCtoPlannerInlineFeedback(level, label);

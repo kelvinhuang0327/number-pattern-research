@@ -6,6 +6,7 @@ Markdown / JSON reports for the UI.
 """
 
 import argparse
+import hashlib
 import json
 import logging
 import os
@@ -453,6 +454,39 @@ def _should_skip_for_frequency(frequency_mode: str) -> bool:
     return False
 
 
+def _compute_dedupe_key(
+    planner_provider: str,
+    planner_model: str,
+    frequency_mode: str,
+    pending_commit_shas: list,
+) -> str:
+    """Compute a stable dedupe key from the run's configuration and scope.
+
+    The key covers:
+      - review_type (always "cto_review")
+      - planner_provider + planner_model
+      - frequency_mode
+      - sorted fingerprint of all pending commit SHAs (scope / content hash)
+
+    If the same provider/model/mode is requested for an identical set of
+    pending commits, the dedupe_key will be identical → duplicate guards fire.
+    When any commit is added/removed the scope_hash changes → new run allowed.
+    """
+    shas_sorted = sorted(str(s) for s in pending_commit_shas if s)
+    scope_hash = hashlib.sha256("|".join(shas_sorted).encode()).hexdigest()[:20]
+    payload = json.dumps(
+        {
+            "review_type": "cto_review",
+            "provider": str(planner_provider or ""),
+            "model": str(planner_model or ""),
+            "frequency_mode": str(frequency_mode or ""),
+            "scope_hash": scope_hash,
+        },
+        sort_keys=True,
+    )
+    return hashlib.sha256(payload.encode()).hexdigest()[:28]
+
+
 def _build_run_id(started_at: datetime) -> str:
     local = started_at.astimezone(timezone(timedelta(hours=8)))
     return f"cto-{local.strftime('%Y%m%d-%H%M%S')}"
@@ -485,9 +519,13 @@ def _record_review(
     checked_until: str,
     steps: list[dict],
     reviewer_role: str = "cto-reviewer",
+    dry_run: bool = False,
 ):
+    """Persist a review record.  When dry_run=True (compare intent) nothing is written to DB."""
     context = _load_task_context(commit_row)
     summary = _build_review_summary(context, decision, reason)
+    if dry_run:
+        return  # compare intent: analysis only, no DB writes
     db.insert_task_git_review(
         commit_sha=commit_row.get("commit_sha"),
         task_id=commit_row.get("task_id"),
@@ -1059,11 +1097,75 @@ def _write_reports(
         json.dump(report_json, handle, ensure_ascii=False, indent=2)
 
 
+def _quick_skip_run(
+    *,
+    run_id: str,
+    started_at: "datetime",
+    frequency_mode: str,
+    is_manual: bool,
+    is_force_run: bool = False,
+    run_intent: Optional[str] = None,
+    parent_run_id: Optional[str] = None,
+    report_md_path: str,
+    report_json_path: str,
+    summary: str,
+    outcome: str,
+    outcome_message: str,
+    request_id: Optional[str],
+    dedupe_key: Optional[str] = None,
+) -> dict:
+    """Create a completed skip record without doing any review work."""
+    now = _now_iso()
+    duration = int((datetime.now(timezone.utc) - started_at).total_seconds())
+    run_record = {
+        "run_id": run_id,
+        "frequency_mode": frequency_mode,
+        "started_at": started_at.isoformat(),
+        "completed_at": now,
+        "duration_seconds": duration,
+        "checked_from": None,
+        "checked_until": now,
+        "candidate_count": 0,
+        "approved_count": 0,
+        "merged_count": 0,
+        "rejected_count": 0,
+        "deferred_count": 0,
+        "superseded_count": 0,
+        "duplicate_count": 0,
+        "merge_branch": None,
+        "report_md_path": report_md_path,
+        "report_json_path": report_json_path,
+        "summary": summary,
+        "created_at": started_at.isoformat(),
+        "updated_at": now,
+        "dedupe_key": dedupe_key,
+        "is_manual": is_manual,
+        "is_force_run": is_force_run,
+        "run_intent": run_intent,
+        "parent_run_id": parent_run_id,
+    }
+    db.create_cto_review_run(**run_record)
+    _write_reports(run_record, [], report_md_path, report_json_path)
+    db.update_cto_review_run(run_id, report_md_path=report_md_path, report_json_path=report_json_path)
+    db.log_tick("cto-review", outcome, message=outcome_message, request_id=request_id)
+    return run_record
+
+
 def run(force: bool = False):
     common.ensure_dirs()
     db.init_db()
     started_at = datetime.now(timezone.utc)
     frequency_mode = db.get_cto_review_frequency_mode()
+    # is_manual: set by api.py via ORCHESTRATOR_FORCE_RUN=1 env var, or by --dry-run CLI flag
+    is_manual = os.environ.get("ORCHESTRATOR_FORCE_RUN", "0") == "1" or force
+    # is_force_run: bypass duplicate guards (in-flight + recent) — set by ORCHESTRATOR_FORCE_RERUN=1
+    is_force_run = os.environ.get("ORCHESTRATOR_FORCE_RERUN", "0") == "1"
+    # run_intent: user-supplied debug intent (retry/compare/override)
+    _valid_intents = {"retry", "compare", "override"}
+    run_intent_raw = (os.environ.get("ORCHESTRATOR_RUN_INTENT") or "").strip().lower()
+    run_intent = run_intent_raw if run_intent_raw in _valid_intents else None
+    # parent_run_id: reference run for compare intent
+    parent_run_id = (os.environ.get("ORCHESTRATOR_PARENT_RUN_ID") or "").strip() or None
     run_id = _build_run_id(started_at)
     checked_until = _now_iso()
     request_id = os.environ.get("ORCHESTRATOR_REQUEST_ID") or None
@@ -1078,6 +1180,135 @@ def run(force: bool = False):
     report_md_path, report_json_path = _build_report_paths(run_id, started_at)
     run_branch = common.git_branch_name_for_cto_merge(started_at.astimezone(timezone(timedelta(hours=8))).strftime("%Y-%m-%d"), frequency_mode=frequency_mode, started_at=started_at.isoformat())
     base_branch = _detect_base_branch()
+
+    # ── Guard: scheduler disabled (applies to both scheduled and manual runs) ──
+    if not db.is_cto_scheduler_enabled() and not is_manual:
+        # Minimal run record for traceability
+        _quick_skip_run(
+            run_id=run_id,
+            started_at=started_at,
+            frequency_mode=frequency_mode,
+            is_manual=is_manual,
+            report_md_path=report_md_path,
+            report_json_path=report_json_path,
+            summary="CTO Scheduler disabled; CTO review skipped",
+            outcome="CTO_REVIEW_SKIP_DISABLED",
+            outcome_message="CTO Scheduler disabled",
+            request_id=request_id,
+        )
+        logger.info("CTO review skipped because CTO scheduler is disabled")
+        return
+
+    # ── Guard: frequency gate (scheduled only — manual runs bypass this) ──────
+    if not is_manual and _should_skip_for_frequency(frequency_mode):
+        _quick_skip_run(
+            run_id=run_id,
+            started_at=started_at,
+            frequency_mode=frequency_mode,
+            is_manual=is_manual,
+            report_md_path=report_md_path,
+            report_json_path=report_json_path,
+            summary=f"Frequency gate: too recent to run ({frequency_mode})",
+            outcome="CTO_REVIEW_SKIP_FREQUENCY",
+            outcome_message=f"Frequency gate: {frequency_mode}",
+            request_id=request_id,
+        )
+        logger.info("CTO review skipped due to frequency gate (scheduled run)")
+        return
+
+    # ── Compute dedupe_key from current config + pending scope ────────────────
+    planner_provider = db.get_cto_planner_provider()
+    planner_model = db.get_cto_planner_model()
+    # Load pending commits early for dedupe fingerprint; reused below
+    # ── Intent-aware candidate list ──────────────────────────────────────────
+    # retry: also re-evaluate previously rejected/replanned commits
+    is_compare_only = run_intent == "compare"
+    is_retry = run_intent == "retry"
+
+    # ── Adaptive policy (Self-Optimizing Decision Architect) ──────────────
+    # Load from cache (recomputed at most every hour)
+    try:
+        _adaptive_policy = db.get_adaptive_policy(max_age_seconds=7200)
+    except Exception as _pe:
+        logger.warning("Could not load adaptive policy: %s", _pe)
+        _adaptive_policy = {}
+
+    pending = db.list_task_git_commits(status=DECISION_PENDING, limit=1000, offset=0)
+    if is_retry:
+        _retry_limit = int(_adaptive_policy.get("retry_coverage_limit", 200))
+        for _extra_status in (DECISION_REPLAN, DECISION_CONFLICT):
+            _extra = db.list_task_git_commits(status=_extra_status, limit=_retry_limit, offset=0)
+            _existing_ids = {r.get("task_id") for r in pending}
+            for r in _extra:
+                if r.get("task_id") not in _existing_ids:
+                    pending.append(r)
+                    _existing_ids.add(r.get("task_id"))
+        if is_retry and pending:
+            logger.info(
+                "Intent=retry: expanded candidate pool to %d (includes REPLAN/CONFLICT commits)",
+                len(pending),
+            )
+    pending_shas = [row.get("commit_sha") for row in pending if row.get("commit_sha")]
+    dedupe_key = _compute_dedupe_key(planner_provider, planner_model, frequency_mode, pending_shas)
+
+    # ── Guard: in-flight duplicate (skipped for force runs) ──────────────────
+    inflight = db.get_inflight_cto_run_by_dedupe_key(dedupe_key)
+    if inflight and not is_force_run:
+        _quick_skip_run(
+            run_id=run_id,
+            started_at=started_at,
+            frequency_mode=frequency_mode,
+            is_manual=is_manual,
+            is_force_run=False,
+            dedupe_key=dedupe_key,
+            report_md_path=report_md_path,
+            report_json_path=report_json_path,
+            summary=f"Duplicate in-flight: run {inflight['run_id']} already running with identical scope",
+            outcome="CTO_REVIEW_SKIP_DUPLICATE_RUNNING",
+            outcome_message=f"Duplicate guard: run {inflight['run_id']} already in-flight",
+            request_id=request_id,
+        )
+        logger.info("CTO review skipped — identical run already in-flight: %s", inflight["run_id"])
+        return
+    if inflight and is_force_run:
+        logger.info("Force run: bypassing in-flight guard (conflicting run: %s)", inflight["run_id"])
+        db.log_tick("cto-review", "CTO_REVIEW_FORCE_RUN",
+                    message=f"Force run bypassing in-flight guard (was: {inflight['run_id']})",
+                    request_id=request_id)
+
+    # ── Guard: recent completed duplicate (skipped for force runs) ────────────
+    recent = db.get_recent_completed_cto_run_by_dedupe_key(dedupe_key, within_seconds=1800)
+    if recent and not is_force_run:
+        _quick_skip_run(
+            run_id=run_id,
+            started_at=started_at,
+            frequency_mode=frequency_mode,
+            is_manual=is_manual,
+            is_force_run=False,
+            dedupe_key=dedupe_key,
+            report_md_path=report_md_path,
+            report_json_path=report_json_path,
+            summary=f"Duplicate recent: run {recent['run_id']} completed with identical scope within 30 min",
+            outcome="CTO_REVIEW_SKIP_DUPLICATE_RECENT",
+            outcome_message=f"Duplicate guard: same scope completed at {recent.get('completed_at')}",
+            request_id=request_id,
+        )
+        logger.info("CTO review skipped — identical scope completed recently: %s", recent["run_id"])
+        return
+    if recent and is_force_run:
+        # Soft duplicate: same scope as a recent run — auto-set intent to compare if not specified
+        if not run_intent:
+            run_intent = "compare"
+        if not parent_run_id:
+            parent_run_id = recent["run_id"]
+        logger.info("Force run: bypassing recent-duplicate guard (last run: %s at %s) — marking as duplicate_compare_run",
+                    recent["run_id"], recent.get("completed_at"))
+        db.log_tick("cto-review", "CTO_REVIEW_FORCE_RUN",
+                    message=(
+                        f"Force run bypassing recent-duplicate guard (last: {recent['run_id']} at {recent.get('completed_at')})"
+                        f" — duplicate_compare_run, intent={run_intent}, parent={parent_run_id}"
+                    ),
+                    request_id=request_id)
 
     run_record = {
         "run_id": run_id,
@@ -1100,32 +1331,14 @@ def run(force: bool = False):
         "summary": "",
         "created_at": started_at.isoformat(),
         "updated_at": started_at.isoformat(),
+        "dedupe_key": dedupe_key,
+        "is_manual": is_manual,
+        "is_force_run": is_force_run,
+        "run_intent": run_intent,
+        "parent_run_id": parent_run_id,
     }
     db.create_cto_review_run(**run_record)
 
-    if not db.is_cto_scheduler_enabled() and not force:
-        run_record["summary"] = "CTO Scheduler disabled; CTO review skipped"
-        run_record["completed_at"] = _now_iso()
-        run_record["duration_seconds"] = int((datetime.now(timezone.utc) - started_at).total_seconds())
-        db.update_cto_review_run(run_id, completed_at=run_record["completed_at"], duration_seconds=run_record["duration_seconds"], summary=run_record["summary"], merge_branch=None)
-        _write_reports(run_record, [], report_md_path, report_json_path)
-        db.update_cto_review_run(run_id, report_md_path=report_md_path, report_json_path=report_json_path)
-        db.log_tick("cto-review", "CTO_REVIEW_SKIP_DISABLED", message="CTO Scheduler disabled", request_id=request_id)
-        logger.info("CTO review skipped because CTO scheduler is disabled")
-        return run_record
-
-    if _should_skip_for_frequency(frequency_mode) and not force:
-        run_record["summary"] = "Frequency gate: too recent to run"
-        run_record["completed_at"] = _now_iso()
-        run_record["duration_seconds"] = int((datetime.now(timezone.utc) - started_at).total_seconds())
-        db.update_cto_review_run(run_id, completed_at=run_record["completed_at"], duration_seconds=run_record["duration_seconds"], summary=run_record["summary"], merge_branch=None)
-        _write_reports(run_record, [], report_md_path, report_json_path)
-        db.update_cto_review_run(run_id, report_md_path=report_md_path, report_json_path=report_json_path)
-        db.log_tick("cto-review", "CTO_REVIEW_SKIP_FREQUENCY", message=f"Frequency gate: {frequency_mode}", request_id=request_id)
-        logger.info("CTO review skipped due to frequency gate")
-        return run_record
-
-    pending = db.list_task_git_commits(status=DECISION_PENDING, limit=1000, offset=0)
     run_record["candidate_count"] = len(pending)
 
     decisions: list[dict] = []
@@ -1164,7 +1377,8 @@ def run(force: bool = False):
                 _decision_step("check_conflict_risk", "FAIL", "A newer commit in the same integration group exists", {"superseded_by_commit_sha": newest_in_group.get("commit_sha"), "integration_group": group}),
                 _decision_step("final_decision", "PASS", "Marked as superseded", {}),
             ]
-            _record_review(row, run_id, decision, reason, checked_from, checked_until, steps)
+            _record_review(row, run_id, decision, reason, checked_from, checked_until, steps,
+                       dry_run=is_compare_only)
             decisions.append({
                 "task_id": row.get("task_id"),
                 "commit_sha": row.get("commit_sha"),
@@ -1186,8 +1400,10 @@ def run(force: bool = False):
 
         if decision == DECISION_APPROVED:
             run_record["approved_count"] += 1
-            approved_candidates.append(commit_record)
-            _record_review(row, run_id, decision, reason, checked_from, checked_until, steps)
+            if not is_compare_only:
+                approved_candidates.append(commit_record)
+            _record_review(row, run_id, decision, reason, checked_from, checked_until, steps,
+                           dry_run=is_compare_only)
             decisions.append({
                 "task_id": row.get("task_id"),
                 "commit_sha": row.get("commit_sha"),
@@ -1197,6 +1413,9 @@ def run(force: bool = False):
                 "status": decision,
                 "high_conflict_paths": evaluated.get("high_conflict_paths", []),
             })
+            if is_compare_only:
+                # compare: keep commits as PENDING — no DB writes
+                continue
             # Preserve pending state until merge succeeds.
             db.upsert_task_git_commit(
                 task_id=row.get("task_id"),
@@ -1233,7 +1452,8 @@ def run(force: bool = False):
                 run_record["duplicate_count"] += 1
             elif decision == DECISION_CLOSED:
                 run_record["rejected_count"] += 1
-            _record_review(row, run_id, decision, reason, checked_from, checked_until, steps)
+            _record_review(row, run_id, decision, reason, checked_from, checked_until, steps,
+                           dry_run=is_compare_only)
             decisions.append({
                 "task_id": row.get("task_id"),
                 "commit_sha": row.get("commit_sha"),
@@ -1242,6 +1462,8 @@ def run(force: bool = False):
                 "steps": steps,
                 "status": decision,
             })
+            if is_compare_only:
+                continue
             db.upsert_task_git_commit(
                 task_id=row.get("task_id"),
                 slot_key=row.get("slot_key"),
@@ -1272,7 +1494,8 @@ def run(force: bool = False):
 
         if decision in (DECISION_CONFLICT, DECISION_MERGE_FAIL):
             run_record["deferred_count"] += 1
-        _record_review(row, run_id, decision, reason, checked_from, checked_until, steps)
+        _record_review(row, run_id, decision, reason, checked_from, checked_until, steps,
+                       dry_run=is_compare_only)
         decisions.append({
             "task_id": row.get("task_id"),
             "commit_sha": row.get("commit_sha"),
@@ -1281,6 +1504,8 @@ def run(force: bool = False):
             "steps": steps,
             "status": decision,
         })
+        if is_compare_only:
+            continue
         db.upsert_task_git_commit(
             task_id=row.get("task_id"),
             slot_key=row.get("slot_key"),
@@ -1310,7 +1535,8 @@ def run(force: bool = False):
 
     merged_records = []
     merge_branch = None
-    if approved_candidates:
+    if approved_candidates and not is_compare_only:
+        # compare intent: skip actual merge — analysis only
         merge_branch = common.git_branch_name_for_cto_merge(
             started_at.astimezone(timezone(timedelta(hours=8))).strftime("%Y-%m-%d"),
             frequency_mode=frequency_mode,
@@ -1357,12 +1583,34 @@ def run(force: bool = False):
     run_record["completed_at"] = _now_iso()
     run_record["duration_seconds"] = int((datetime.now(timezone.utc) - started_at).total_seconds())
     if not run_record.get("summary"):
+        _intent_suffix = ""
+        if is_compare_only:
+            _intent_suffix = " 「比對分析模式：不執行合併和 backlog 寫入」"
+        elif is_retry:
+            _intent_suffix = " 「重試模式：包含 REPLAN/CONFLICT 候選」"
         run_record["summary"] = (
             f"Processed {run_record['candidate_count']} candidate(s): "
             f"{run_record['approved_count']} approved, {run_record['merged_count']} merged, "
             f"{run_record['rejected_count']} rejected, {run_record['deferred_count']} deferred, "
             f"{run_record['superseded_count']} superseded, {run_record['duplicate_count']} duplicate"
+            + _intent_suffix
         )
+    # ── Learning Signal ──────────────────────────────────────────
+    if run_intent:
+        try:
+            db.record_intent_signal(
+                run_id=run_id,
+                run_intent=run_intent,
+                outcome="CTO_REVIEW_COMPLETED",
+                candidate_count=run_record["candidate_count"],
+                merged_count=run_record["merged_count"],
+                rejected_count=run_record["rejected_count"],
+                deferred_count=run_record["deferred_count"],
+                approved_count=run_record["approved_count"],
+                is_compare_only=is_compare_only,
+            )
+        except Exception as _sig_exc:
+            logger.warning("Failed to record intent signal: %s", _sig_exc)
     db.update_cto_review_run(
         run_id,
         completed_at=run_record["completed_at"],
@@ -1383,6 +1631,16 @@ def run(force: bool = False):
     db.update_cto_review_run(run_id, report_md_path=report_md_path, report_json_path=report_json_path)
     db.log_tick("cto-review", "CTO_REVIEW_COMPLETED", message=run_record["summary"], request_id=request_id)
     logger.info("CTO review %s completed: %s", run_id, run_record["summary"])
+
+    # ── Self-Optimizing: recompute adaptive policy after every completed run ──
+    # This ensures the next run benefits from this run's outcome signal.
+    if run_record.get("candidate_count", 0) > 0:
+        try:
+            db.compute_adaptive_policy()
+            logger.info("Adaptive policy updated after run %s", run_id)
+        except Exception as _pe:
+            logger.warning("Adaptive policy recompute failed (non-fatal): %s", _pe)
+
     return run_record
 
 

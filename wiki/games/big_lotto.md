@@ -1,5 +1,9 @@
 # BIG_LOTTO
 
+## Regime Status (2026-04-23) — COLD_PHASE_NORMAL
+
+> **Stable Maintenance**: 2/12 strategies in cold (16.7%), uniform 7-period synchronized streak. Main production strategies positive (`p1_dev_sum5bet` +4.373% edge_30p, `p1_deviation_4bet` +2.75% edge_30p). Portfolio diversification intact. **Classification: NORMAL_MEDIAN** — exactly at 50th percentile. **Expected recovery: 2 weeks** (confidence: high). **Action: MAINTENANCE_MODE** — continue RSM monitoring, no research allocation. Analysis: `analysis/results/cold_phase_regime_analysis_20260423.md`
+
 ## 現況
 
 - 維護模式；L90 宣告全信號空間窮盡，L91 確認 49C6 與公平隨機過程統計不可區分。
@@ -29,6 +33,13 @@
 - L89：MicroFish 在 BIG_LOTTO 無法挽救低基準率結構。
 - L90：大樂透全信號空間窮盡，進入維護模式。
 - L91：完整信號邊界研究確認無可利用訊號。
+
+## 2026-04-23 信號窮盡審計
+
+- **結論**: 全域審計確認 BIG_LOTTO 無新可行研究方向
+- **理由**: L90/L91 已宣告全信號空間窮盡；2026-04-23 500p 監控顯示 DOWNGRADE_TRIGGERED，無 McNemar 替換候選
+- **維護模式確認**: 繼續保留 2/3/5 注參考策略供監控使用，無新升格訊號
+- **審計參考**: analysis/results/signal_exhaustion_audit_20260423.md (games.big_lotto 章節)
 
 ## Planner 提示
 

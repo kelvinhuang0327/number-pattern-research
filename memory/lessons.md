@@ -1091,3 +1091,40 @@ Zone Cascade Only (zb=0.12) 完整驗證:
 - 因 trusted wiki 對 539 的 MicroFish 路徑明確要求「只有在 McNemar 驗證可穩定優於 MidFreq+ACB 時才可升格」，本輪結論必須是 `REJECT`，且維持 `midfreq_acb_2bet` 為現役 2 注主線
 - 教訓：**539 的 MicroFish+MidFreq 2-bet 不能只看 raw Edge、permutation 與 per-bet efficiency。只要 150p McNemar 還沒有正式證明短窗穩定優於 `midfreq_acb_2bet`，就應視為「尚未取得 replacement proof」，結論必須維持 REJECT，而不是因為三窗口表面更強就提前升格。**
 - 下一步：若要重啟同題，只能做 failure-aware 監控或等待新的外生/正交訊號來源；不應在現有 MicroFish + MidFreq 架構上再做同家族微調就宣稱可替代 incumbent
+
+**L129 — DAILY_539 pool-size 題即使補齊 100% trusted data，也不保證產生預測訊號** (2026-04-23)
+- 任務背景：DAILY_539 H013 pool-size / market-behavior 驗證，於 2026-04-23 完成 100% 數據補齊
+- 數據補齊詳情：原始 DAILY_539 記錄 5839 期中 jackpot_amount 欄位 0% 覆蓋；從官方台灣彩券 API（api.taiwanlottery.com/TLCAPIWeB）回溯補齊 sell_amount 與 total_amount，最終達成 100% 覆蓋（2007-01-01 至 2026-04-23 全期）
+- 驗證架構：H013（pool-size regime + ACB overlay 1 注）、H013b（pool growth shock + MidFreq+ACB overlay 2 注）、H013c（pool-size quartile + Markov-MidFreq 3 注）；三窗口 150 / 500 / 1500 期全部評估
+- 正式驗證結果：
+  - H013：edge ≈ 0%、p=1.0、Cohen's d ≈ 0（全窗口）
+  - H013b：edge ≈ 0%、p=1.0、Cohen's d ≈ 0（全窗口）
+  - H013c：edge ≈ 0%、p=1.0、Cohen's d ≈ 0（全窗口）
+- **核心發現**：Pool-size 與市場行為特徵對 539 數字生成無預測力；不是數據不足造成的可用性 REJECT，而是基礎假說本身不成立
+- 教訓：**外生市場特徵（如彩池規模、銷售金額）在某些彩遊中可能無任何時序預測價值。取得 100% 完整數據後如果仍是 p=1.0 邊界，應直接確認假說失效，不應為了「數據終於完整」就強行解釋。**
+- 下一步：停止投入 pool-size / market-behavior / sales-related 類研究方向；若要探索外生信號，應限制在「規則變更相關」（如頭獎機率改變、號碼規則調整）
+
+**L130 — POWER_LOTTO Winning Quality P2-1 popularity_score 代理模型跨窗口不穩定** (2026-04-23)
+- 任務背景：WQ P2-1（基於 winning_quality.py 中 popularity_score() 估算號碼人氣，預期低人氣組合分獎人數少、單注收益更高的 3 注策略）正式驗證
+- 驗證架構：150 / 500 / 1500 期三窗口，對照 fourier_rhythm_3bet 與 pp3_freqort_4bet，評估 raw Edge、permutation、Cohen's d、per-bet efficiency
+- 結果摘要：
+  - 150p：raw Edge +12.01%、perm p=0.0667（邊界）、d=1.281（通過）、efficiency 163.6% / 168.3%
+  - 500p：raw Edge +7.74%、perm p=0.6333（未過）、d=-0.246（未過）、efficiency 130.3% / 100.9%
+  - 1500p：raw Edge +7.47%、perm p=0.8000（未過）、d=-0.935（未過）、efficiency 112.0% / 97.5%
+- **核心發現**：150p 單窗雖示出統計邊界訊號，但 500p / 1500p 時 permutation 與 effect size 完全失效；表示訊號非跨窗穩定的真實時序特徵，而是 150p 窗口內的幸運波動
+- 後續嘗試改進無果：popularity_score 作為人氣代理主要基於啟發式估算（非真實頭獎分配數據），無真實商業資料支撐時無法形成穩定的分獎優化訊號
+- 教訓：**商業 proxy（如人氣估算）作為分獎過濾時，跨窗口訊號不穩定是常見現象。若只有短窗統計邊界，且無法用真實資料（如真實中獎者數、真實單位獎金）驗證因果鏈，應直接判定為無可操作訊號。**
+- 下一步：若要改進分獎優化，需要從「真實頭獎金額/中獎人數資料」而非啟發式人氣估算入手；當前工具集無此數據來源，此方向達驗證上限
+
+**L131 — 三彩種全域信號窮盡審計結論（2026-04-23）** 
+- 審計範圍：BIG_LOTTO、DAILY_539、POWER_LOTTO 三個彩遊全面信號耗盡檢查
+- BIG_LOTTO：L90/L91 已確認全信號空間窮盡；2026-04-23 500 期監控報告確認無新 McNemar 替換候選；維持維護模式
+- DAILY_539：H001~H008（L82）已全部 REJECT；H011（L117）、H012（L118）、H013（L129）、MicroFish（L128）於 2026-04-22 至 2026-04-23 期間依序完成驗證均 REJECT；頻率族信號空間高度飽和；維持維護模式
+- POWER_LOTTO：主線 Fourier + PP3 + Orthogonal 成熟穩定；recent cycle（2026-04-23）測試 13 個新候選方向（Fourier downgrade、PP3 3bet、Sum Regime / Reversal、MidFreq regime gate、Orthogonal V2、nonfamily Layer-1 4 family、Special V3/V4、WQ P2-1），全部評定為 WATCH / PROVISIONAL 或 REJECT，無任何候選進入 McNemar 替換閘
+- 核心結論：**三彩種在既有驗證框架（150/500/1500p 窗口、permutation test、McNemar gate、per-bet efficiency >=80%）與現有數據源下，已無可行升格訊號。所有主要假說家族（頻率、規則邊界、正交補注、市場外生、新結構）均已驗證；延伸尋優空間接近飽和。**
+- 後續啟動新研究的前置條件：
+  1. 外部條件變化（彩遊規則調整、號碼池大小變更、開獎頻率改變）
+  2. 新認證數據源（真實獎金分配、真實中獎人數、官方池大小即時資料）
+  3. 全新非同家族訊號假說（與現有 PP3/Fourier/MidFreq/Special 正交的完全新特徵來源）
+- 教訓：**信號窮盡審計是策略研究的終點檢查。一旦確認「三窗口驗證 + 多家族搜索 + McNemar 閘 + 漏洩檢查」全部通過卻無候選晉級，表示當前假說集已耗盡。後續重啟應明確針對新信號源或新框架，而非在既有假說空間內無限微調。**
+- 下一步：維持現役策略組合監控；暫停主動研究直至上述三項前置條件之一成立

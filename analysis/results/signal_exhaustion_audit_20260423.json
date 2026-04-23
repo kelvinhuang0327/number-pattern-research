@@ -1,0 +1,367 @@
+{
+  "audit_metadata": {
+    "generated_at": "2026-04-23T15:59:40+08:00",
+    "audit_type": "signal_exhaustion_audit",
+    "version": "1.0",
+    "scope": "BIG_LOTTO / DAILY_539 / POWER_LOTTO",
+    "period": "2026-04-23"
+  },
+  "overall_status": "SIGNAL_EXHAUSTED_ALL",
+  "overall_conclusion": "All three lottery games have exhausted actionable research directions within the current validation framework and data availability. No strategy candidate qualified for promotion in the 2026-04-23 cycle, and all WATCH/PROVISIONAL paths show systemic inability to clear full-window validation gates.",
+  "games": {
+    "big_lotto": {
+      "status": "SIGNAL_EXHAUSTED",
+      "operational_mode": "MAINTENANCE_ONLY",
+      "validation_reference": {
+        "exhaustion_declared_in": ["L90", "L91"],
+        "lesson_L90": "BIG_LOTTO 全信號空間窮盡，進入維護模式",
+        "lesson_L91": "完整信號邊界研究顯示 49C6 與公fair隨機不可區分"
+      },
+      "recent_validation_cycle": {
+        "date": "2026-04-23",
+        "artifact": "analysis/results/biglotto_monitor_500p_20260423.md",
+        "status": "DOWNGRADE_TRIGGERED",
+        "findings": [
+          "Both p1_deviation_4bet and p1_dev_sum5bet show downgrade triggers on recent_150 window",
+          "No candidate enters next McNemar replacement validation",
+          "Recommendation: SHADOW_ONLY"
+        ]
+      },
+      "exhausted_research_lines": [
+        "Frequency-based signals (all family types)",
+        "MicroFish salvage attempt (L89, failed)",
+        "Low-base-rate optimization"
+      ],
+      "remaining_actionable_directions": [],
+      "evidence": [
+        "wiki/games/big_lotto.md",
+        "memory/lessons.md:L85,L86,L89,L90,L91",
+        "analysis/results/biglotto_monitor_500p_20260423.md"
+      ]
+    },
+    "daily_539": {
+      "status": "SIGNAL_EXHAUSTED",
+      "operational_mode": "MAINTENANCE_ONLY",
+      "validation_reference": {
+        "exhaustion_declared_in": ["L82"],
+        "lesson_L82": "H001~H008 全軍覆沒，539 頻率族信號空間已高度飽和"
+      },
+      "recent_validations": [
+        {
+          "hypothesis": "H011 (Weekday/Calendar Regime)",
+          "date": "2026-04-22",
+          "status": "REJECT",
+          "key_finding": "Weekday global chi-square p=0.9281; calendar overlay 150/500p permutation unmet; no McNemar trigger",
+          "lesson": "L117",
+          "artifact": "wiki/games/daily_539.md:line_7"
+        },
+        {
+          "hypothesis": "H012 (Cross-Draw Cluster/Transition)",
+          "date": "2026-04-22",
+          "status": "REJECT",
+          "key_finding": "lag-1/2/3 overlap ≈ random baseline; raw edge only in 1500p; 150/500p permutation unmet",
+          "lesson": "L118",
+          "artifact": "wiki/games/daily_539.md:line_8"
+        },
+        {
+          "hypothesis": "H013 (Pool-Size / Market-Behavior)",
+          "date": "2026-04-23",
+          "status": "REJECT",
+          "data_backfill_status": "COMPLETE (100% from official Taiwan Lottery API)",
+          "key_finding": [
+            "H013 / H013b / H013c all show edge≈0%, p=1.0, d≈0",
+            "Conclusion: pool-size provides no orthogonal predictive signal",
+            "Not a data problem; fundamental hypothesis failure"
+          ],
+          "lesson": "L129",
+          "artifact": "analysis/results/daily539_h013_backfill_final_report_20260423.md"
+        },
+        {
+          "hypothesis": "MicroFish+MidFreq 2-bet Promotion",
+          "date": "2026-04-23",
+          "status": "REJECT",
+          "key_finding": [
+            "150p McNemar vs midfreq_acb_2bet: p=0.1797 (insufficient, need <0.05)",
+            "All three windows passed raw edge, permutation, per-bet efficiency individually",
+            "BUT 150p McNemar failed to demonstrate stable replacement advantage"
+          ],
+          "lesson": "L128",
+          "artifact": "analysis/results/daily539_microfish_midfreq_promotion_validation_20260423.json"
+        }
+      ],
+      "current_active_strategies": [
+        "acb_1bet",
+        "midfreq_acb_2bet",
+        "acb_markov_midfreq_3bet"
+      ],
+      "strategies_unchanged": true,
+      "exhausted_research_lines": [
+        "Frequency family (H001~H008)",
+        "Weekday/calendar overlay (H011)",
+        "Cross-draw temporal (H012)",
+        "Pool-size / market-behavior (H013)",
+        "MicroFish promotion paths"
+      ],
+      "remaining_actionable_directions": [],
+      "evidence": [
+        "wiki/games/daily_539.md",
+        "memory/lessons.md:L73,L74,L79,L80,L81,L82,L117,L118,L125,L128,L129",
+        "analysis/results/daily539_h013_backfill_final_report_20260423.md",
+        "analysis/results/daily539_microfish_midfreq_promotion_validation_20260423.json"
+      ]
+    },
+    "power_lotto": {
+      "status": "SIGNAL_EXHAUSTED",
+      "operational_mode": "MATURE_MONITORING",
+      "mainline_strategies": [
+        {
+          "name": "fourier_rhythm_3bet",
+          "bets": 3,
+          "status": "WATCH_DOWNGRADED",
+          "reason": "150/500p permutation failed; 1500p passed; 5x300 rolling 80% failure ratio"
+        },
+        {
+          "name": "pp3_freqort_4bet",
+          "bets": 4,
+          "status": "ACTIVE",
+          "reason": "Primary baseline strategy"
+        },
+        {
+          "name": "orthogonal_5bet",
+          "bets": 5,
+          "status": "REFERENCE",
+          "reason": "Coverage reference"
+        }
+      ],
+      "recent_validations": [
+        {
+          "candidate": "Fourier Rhythm 3-bet (downgrade decision)",
+          "date": "2026-04-23",
+          "status": "WATCH_DOWNGRADED",
+          "key_finding": [
+            "150/500p perm: FAIL (p=0.4975 / 0.2537)",
+            "1500p perm: PASS (p=0.0100)",
+            "Rolling 5x300 slices: 80% perm failure ratio"
+          ],
+          "lesson": "L126",
+          "artifact": "analysis/results/power_watch_downgrade_decision_20260423.json",
+          "action": "Maintain WATCH, lower priority; no replacement"
+        },
+        {
+          "candidate": "PP3 Frequency+Orthogonal 3-bet (B-scheme history-only)",
+          "date": "2026-04-23",
+          "status": "WATCH",
+          "key_finding": [
+            "150p efficiency: 79.9% < 80% threshold",
+            "150/500p permutation: FAIL",
+            "McNemar: NOT_TRIGGERED"
+          ],
+          "lesson": "L120",
+          "artifact": "analysis/results/power_watch_downgrade_decision_20260423.json",
+          "action": "Continue monitoring; do not promote"
+        },
+        {
+          "candidate": "PP3 Sum Regime / Sum Reversal",
+          "date": "2026-04-23",
+          "status": "WATCH",
+          "key_finding": [
+            "Only 1500p permutation passes",
+            "150/500p permutation: FAIL (p=0.1791~0.3085)",
+            "Per-bet efficiency vs 4-bet: mixed (68.2%~102.2%)"
+          ],
+          "lesson": "L124",
+          "artifact": "analysis/results/power_pp3_sum_regime_validation_20260423.json",
+          "action": "Continue monitoring; do not upgrade or McNemar"
+        },
+        {
+          "candidate": "MidFreq+Fourier 2-bet Regime Gate V1",
+          "date": "2026-04-23",
+          "status": "REJECT",
+          "key_finding": [
+            "History-only fixed gate (cold_residual_60 / hot_residual_60)",
+            "150p permutation: FAIL (p=0.0995 >= 0.05)",
+            "No entry to 500p McNemar"
+          ],
+          "lesson": "L122",
+          "artifact": "analysis/results/power_midfreq2bet_regime_gate_v1_20260423.json",
+          "action": "Do not retry this family"
+        },
+        {
+          "candidate": "PP3+MidFreq Orthogonal V2",
+          "date": "2026-04-23",
+          "status": "WATCH/REJECT_MIXED",
+          "candidates_count": 6,
+          "best_candidate": {
+            "name": "pp3_midfreq_residual_strata_4bet",
+            "findings": [
+              "150/500p permutation: FAIL (p=0.5224 / 0.1741)",
+              "1500p permutation: PASS (p=0.0448)",
+              "Per-bet efficiency: 71.4% / 73.1% / 65.4% (all <80%)"
+            ]
+          },
+          "lesson": "L123",
+          "artifact": "analysis/results/power_pp3_midfreq_orthogonal_v2_20260423.json",
+          "action": "5 WATCH, 1 REJECT; no mainline changes"
+        },
+        {
+          "candidate": "Non-Family Layer-1 3-bet (4 structural families)",
+          "date": "2026-04-23",
+          "status": "REJECT_ALL",
+          "families_tested": [
+            "dispersion_state_transition_3bet",
+            "odd_tail_imbalance_3bet",
+            "zone_transition_tensor_3bet",
+            "residue_structure_stability_3bet"
+          ],
+          "key_finding": [
+            "All completed 150/500/1500p validation + leakage PASS",
+            "Best raw edges maintained (residue: +2.17% / +3.23% / +1.77%)",
+            "Permutation p: 0.2587~0.5871 / 0.1194~0.5871 / 0.2189~0.4726 (no window fully <0.05)",
+            "No candidate passes 80% per-bet efficiency across all windows vs pp3_freqort_4bet",
+            "McNemar: NOT_TRIGGERED"
+          ],
+          "lesson": "L127",
+          "artifact": "analysis/results/power_layer1_nonfamily_3bet_validation_20260423.json",
+          "action": "Conclude nonfamily Layer-1 3-bet research line"
+        },
+        {
+          "candidate": "Special V3 Orthogonal Shortlist",
+          "date": "2026-04-22",
+          "status": "WATCH",
+          "key_finding": [
+            "Three top2 candidates all show raw edge across windows",
+            "Permutation p unmet on all windows"
+          ],
+          "lesson": "L116",
+          "artifact": "analysis/results/power_special_v3_research_20260422.json",
+          "action": "Do not promote"
+        },
+        {
+          "candidate": "Special V4 Orthogonal Reinforcement (V3-based reweight)",
+          "date": "2026-04-23",
+          "status": "REJECT",
+          "key_finding": [
+            "Best candidate: +5.67% / +1.20% / +1.80% raw edge",
+            "Permutation: p=0.0796 / 0.2836 / 0.0547 (not all <0.05)",
+            "Current V3 top2 baseline superior: +11.67% / +4.40% / +2.33%"
+          ],
+          "lesson": "L121",
+          "artifact": "analysis/results/power_special_v4_validation_20260423.json",
+          "action": "Do not continue same-family V4 microtweaks"
+        },
+        {
+          "candidate": "Winning Quality P2-1 (popularity_score proxy)",
+          "date": "2026-04-23",
+          "status": "REJECT",
+          "key_finding": [
+            "150p: raw edge +12.01%, perm p=0.0667 (borderline), d=1.281 (only passing window)",
+            "500p: perm p=0.6333, d=-0.246 (both fail)",
+            "1500p: perm p=0.8000, d=-0.935 (both fail)",
+            "Per-bet efficiency: mixed (163.6% / 130.3% / 112.0%)",
+            "Leakage: PASS"
+          ],
+          "lesson": "L130",
+          "artifact": "analysis/results/power_wq_p21_validation_20260423.md",
+          "action": "Do not retry; would require real commerce data, not proxy"
+        }
+      ],
+      "current_watch_candidates": [
+        "fourier_rhythm_3bet (downgraded priority)",
+        "pp3_freqort_3bet (history-only B-scheme)",
+        "pp3_sum_regime_detector (2 variants)",
+        "pp3_midfreq_orthogonal_v2 (5 candidates)"
+      ],
+      "watch_candidates_mcnemar_status": "NONE_QUALIFIED",
+      "exhausted_research_lines": [
+        "Fourier / PP3 family extensions",
+        "MidFreq integration (regime-gating and orthogonal)",
+        "Special (V3/V4) reweighting approaches",
+        "Non-family Layer-1 3-bet (4-family exhaustive search)",
+        "Commercial filters (WQ / popularity)"
+      ],
+      "remaining_actionable_directions": [],
+      "evidence": [
+        "wiki/games/power_lotto.md",
+        "memory/lessons.md:L87,L88,L93,L115,L116,L117,L118,L119,L120,L121,L122,L123,L124,L126,L127,L130",
+        "analysis/results/power_watch_downgrade_decision_20260423.json",
+        "analysis/results/power_pp3_sum_regime_validation_20260423.json",
+        "analysis/results/power_pp3_midfreq_orthogonal_v2_20260423.json",
+        "analysis/results/power_midfreq2bet_regime_gate_v1_20260423.json",
+        "analysis/results/power_layer1_nonfamily_3bet_validation_20260423.json",
+        "analysis/results/power_special_v4_validation_20260423.json",
+        "analysis/results/power_wq_p21_validation_20260423.md"
+      ]
+    }
+  },
+  "blocked_recent_failures": [
+    {
+      "issue": "Governance quota / rate-limit cycles",
+      "issue_numbers": ["#63", "#67"],
+      "root_cause": "Environment quota management",
+      "classification": "BLOCKED_ENV",
+      "status": "DO_NOT_REOPEN_STRATEGY_WORK_UNTIL_ENV_FIXED"
+    },
+    {
+      "issue": "Big Lotto 500p monitor local fallback",
+      "issue_numbers": ["#65", "#66"],
+      "root_cause": "API quota / rate-limit blocking",
+      "classification": "BLOCKED_ENV",
+      "status": "DO_NOT_REOPEN_STRATEGY_WORK_UNTIL_ENV_FIXED"
+    }
+  ],
+  "recent_validations_rejected_for_research_reasons": [
+    {
+      "direction": "POWER_LOTTO WQ P2-1",
+      "validation_date": "2026-04-23",
+      "root_cause": "Permutation instability across windows; 150p borderline only",
+      "classification": "RESEARCH_EXHAUSTED",
+      "status": "DO_NOT_RETRY_WITHOUT_REAL_COMMERCE_DATA"
+    },
+    {
+      "direction": "DAILY_539 H013 Pool-Size",
+      "validation_date": "2026-04-23",
+      "root_cause": "100% data backfill completed; formal test confirms hypothesis failure (edge≈0%, p=1.0)",
+      "classification": "RESEARCH_EXHAUSTED",
+      "status": "DO_NOT_RETRY_SAME_FAMILY"
+    },
+    {
+      "direction": "POWER_LOTTO Nonfamily Layer-1 3-bet",
+      "validation_date": "2026-04-23",
+      "root_cause": "4-family exhaustive search; no candidate passes full-window perm + efficiency gates",
+      "classification": "RESEARCH_EXHAUSTED",
+      "status": "DO_NOT_RETRY_SAME_STRUCTURAL_FAMILIES"
+    }
+  ],
+  "remaining_actionable_backlog": [],
+  "potential_future_triggers_not_actionable_now": [
+    "External lottery rule changes (odds, pool structure, draw frequency)",
+    "New authenticated data source (real prize-payout records, not popularity proxies)",
+    "New mathematical signal family (beyond PP3/Fourier/MidFreq orthogonal axes)"
+  ],
+  "handoff_actions": {
+    "wiki_games_big_lotto_md": "Add note confirming maintenance mode; no new actionable signals identified in 2026-04-23 audit",
+    "wiki_games_daily_539_md": "H013 now formally REJECT; MicroFish promotion declined; no strategy table changes",
+    "wiki_games_power_lotto_md": "Fourier 3bet marked WATCH_DOWNGRADED; all recent candidates remain WATCH or REJECT; no mainline changes",
+    "wiki_lessons_key_lessons_md": [
+      "Verify L129 exists (new, pool-size exhaustion lesson for DAILY_539)",
+      "Verify L130 exists (new, WQ P2-1 cross-window instability lesson for POWER_LOTTO)",
+      "Add L131+ documenting this audit: Three games exhausted signal space under current framework; next research requires new data source, rule change, or orthogonal hypothesis family"
+    ]
+  },
+  "metadata": {
+    "audit_scope": "Comprehensive three-game signal exhaustion audit",
+    "data_sources_reviewed": [
+      "wiki/README.md",
+      "wiki/games/big_lotto.md",
+      "wiki/games/daily_539.md",
+      "wiki/games/power_lotto.md",
+      "wiki/lessons/key_lessons.md",
+      "memory/lessons.md",
+      "21 analysis/results/*20260423* files (JSON/MD)",
+      "orchestrator.db (verified existence)",
+      "production validation gates (from wiki/system/validation_gates.md reference)"
+    ],
+    "validation_framework": "150/500/1500p windows, permutation tests (n_perm=200), McNemar gates, per-bet efficiency thresholds (≥80%), leakage checks",
+    "methodology": "Cross-reference wiki declarations, validation artifacts, key lessons; no new backtests initiated; evidence-based conclusion only"
+  }
+}

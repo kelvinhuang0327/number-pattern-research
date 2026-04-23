@@ -42,14 +42,13 @@ export class AutoLearningManager {
      * 🔧 P2: API 健康檢查
      */
     async checkApiHealth() {
-        // 使用兩個候選 URL 避免單一失敗：優先 127.0.0.1 其次 localhost
-        // 先嘗試極速 /api/ping，再回退 /health
+        // 先嘗試 /api/ping，失敗再回退 /health
         const origin = getApiOrigin();
         const urls = [
             `${origin}/api/ping`,
             `${origin}/health`
         ];
-        const TIMEOUT_MS = 15000; // 增加至 15 秒，避免優化期間暫時阻塞
+        const TIMEOUT_MS = 4000; // 4 秒足夠本機判斷；避免頁面長達 60 秒空白
         const MAX_ATTEMPTS = 2;   // 至少連續 2 次失敗才判定離線
 
         let success = false;
@@ -64,7 +63,6 @@ export class AutoLearningManager {
                         method: 'GET',
                         signal: controller.signal,
                         mode: 'cors',
-                        cache: 'no-cache'
                     });
                     clearTimeout(timeoutId);
                     if (response.ok) {
@@ -80,7 +78,7 @@ export class AutoLearningManager {
                             .replace('/health', '')
                             .replace('/api/ping', '');
                         success = true;
-                        break;
+                        break; // 此 URL 成功，跳出 URL 迴圈
                     } else {
                         console.warn(`⚠️ 回應狀態碼: ${response.status} (${healthUrl})`);
                     }
@@ -91,10 +89,11 @@ export class AutoLearningManager {
                         console.warn(`⚠️ 健康檢查錯誤 (${healthUrl}): ${error.name} - ${error.message}`);
                     }
                 }
+                if (success) break; // 已成功，跳出 URL 迴圈
             }
             if (!success && attempt < MAX_ATTEMPTS) {
-                // 適度延遲再嘗試（避免計算高峰期瞬間判斷離線）
-                await new Promise(r => setTimeout(r, 1000));
+                // 短暫延遲後重試
+                await new Promise(r => setTimeout(r, 800));
             }
         }
 

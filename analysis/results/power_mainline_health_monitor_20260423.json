@@ -1,0 +1,145 @@
+{
+  "generated_at": "2026-04-23T14:32:48.254037",
+  "lottery_type": "POWER_LOTTO",
+  "seed": 42,
+  "n_perm": 200,
+  "windows": {
+    "150": 150,
+    "500": 500,
+    "1500": 1500
+  },
+  "baselines": {
+    "1": 0.0387,
+    "2": 0.0759,
+    "3": 0.1117,
+    "4": 0.146,
+    "5": 0.1791
+  },
+  "leakage_check": "PASS",
+  "draw_count_total": 1903,
+  "source_decision_file": "analysis/results/power_watch_downgrade_decision_20260423.json",
+  "strategies": {
+    "fourier_rhythm_3bet": {
+      "name": "fourier_rhythm_3bet",
+      "num_bets": 3,
+      "windows": {
+        "150": {
+          "periods": 150,
+          "hits": 19,
+          "hit_rate": 0.126667,
+          "edge": 0.015007,
+          "edge_pct": 1.5,
+          "perm_p": 0.4975,
+          "shuffle_mean": 0.01274,
+          "shuffle_std": 0.02672,
+          "verdict": "NO_SIGNAL",
+          "cohens_d": 0.085
+        },
+        "500": {
+          "periods": 500,
+          "hits": 64,
+          "hit_rate": 0.128,
+          "edge": 0.01634,
+          "edge_pct": 1.63,
+          "perm_p": 0.2537,
+          "shuffle_mean": 0.00691,
+          "shuffle_std": 0.014426,
+          "verdict": "NO_SIGNAL",
+          "cohens_d": 0.654
+        },
+        "1500": {
+          "periods": 1500,
+          "hits": 206,
+          "hit_rate": 0.137333,
+          "edge": 0.025674,
+          "edge_pct": 2.57,
+          "perm_p": 0.01,
+          "shuffle_mean": 0.005704,
+          "shuffle_std": 0.008286,
+          "verdict": "SIGNAL_DETECTED",
+          "cohens_d": 2.41
+        }
+      }
+    },
+    "pp3_freqort_3bet": {
+      "name": "pp3_freqort_3bet",
+      "num_bets": 3,
+      "windows": {
+        "150": {
+          "periods": 150,
+          "hits": 21,
+          "hit_rate": 0.14,
+          "edge": 0.02834,
+          "edge_pct": 2.83,
+          "perm_p": 0.4876,
+          "shuffle_mean": 0.026507,
+          "shuffle_std": 0.029112,
+          "verdict": "NO_SIGNAL",
+          "cohens_d": 0.063
+        },
+        "500": {
+          "periods": 500,
+          "hits": 70,
+          "hit_rate": 0.14,
+          "edge": 0.02834,
+          "edge_pct": 2.83,
+          "perm_p": 0.1542,
+          "shuffle_mean": 0.01294,
+          "shuffle_std": 0.014142,
+          "verdict": "NO_SIGNAL",
+          "cohens_d": 1.089
+        },
+        "1500": {
+          "periods": 1500,
+          "hits": 215,
+          "hit_rate": 0.143333,
+          "edge": 0.031674,
+          "edge_pct": 3.17,
+          "perm_p": 0.005,
+          "shuffle_mean": 0.007037,
+          "shuffle_std": 0.008731,
+          "verdict": "SIGNAL_DETECTED",
+          "cohens_d": 2.822
+        }
+      }
+    },
+    "pp3_freqort_4bet": {
+      "name": "pp3_freqort_4bet",
+      "num_bets": 4,
+      "windows": {
+        "150": {
+          "note": "Reference baseline - metrics from analysis/results/stage0_baseline.json"
+        },
+        "500": {
+          "note": "Reference baseline - metrics from analysis/results/stage0_baseline.json"
+        },
+        "1500": {
+          "note": "Reference baseline - metrics from analysis/results/stage0_baseline.json"
+        }
+      },
+      "note": "Current mainline reference strategy"
+    }
+  },
+  "decisions": {
+    "fourier_rhythm_3bet": {
+      "decision": "WATCH_DOWNGRADED",
+      "reason": "1500p significant (p=0.0100, d=2.410) but 150/500p permutation failed; 5x300 rolling shows 80% perm failure ratio; maintain WATCH but downweight priority",
+      "mcnemar_triggered": false,
+      "mcnemar_reason": "Permutation gates not fully passed on all windows"
+    },
+    "pp3_freqort_3bet": {
+      "decision": "WATCH",
+      "reason": "150/500p permutation failed; per-bet efficiency 79.9% < 80% on 150p; McNemar not triggered; does not replace fourier_rhythm_3bet",
+      "mcnemar_triggered": false,
+      "mcnemar_reason": "Efficiency gate not fully passed; permutation gate not fully passed"
+    },
+    "pp3_freqort_4bet": {
+      "decision": "ACTIVE",
+      "reason": "Current mainline reference strategy; maintains primary position until McNemar-triggered replacement",
+      "mcnemar_triggered": false,
+      "mcnemar_reason": "N/A - this is the reference baseline"
+    }
+  },
+  "timestamp": "2026-04-23 14:32:48",
+  "completion_status": "COMPLETED"
+}

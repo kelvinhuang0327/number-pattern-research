@@ -1,5 +1,9 @@
 # DAILY_539
 
+## Regime Status (2026-04-23) — COLD_PHASE_NORMAL
+
+> **Micro-Volatility Normal**: 3/6 strategies in negative edge (50%), avg 1.3-period streaks (brief transients). Portfolio anchor strategy `midfreq_acb_2bet` maintaining +5.127% edge_30p. **Classification: NORMAL_LOW** — within 25th-50th percentile. **Expected recovery: 1 week** (confidence: high). **Action: NORMAL_MONITORING** — no action required, self-recovery expected. Analysis: `analysis/results/cold_phase_regime_analysis_20260423.md`
+
 ## 現況
 
 - 維護模式；L82 確認 H001~H008 全部 REJECT，既有頻率族信號空間高度飽和。
@@ -8,6 +12,19 @@
 - 2026-04-22：H012 cross-draw cluster / transition 驗證結論為 **REJECT**；lag-1/2/3 overlap 幾乎等於隨機基準，2bet/3bet 只在 1500p 出現正 raw edge，但 150/500p permutation 未過，無一候選進入 McNemar 替換閘。
 - 2026-04-23：**H013 pool-size / market-behavior 驗證結論為 REJECT（弱訊號）**；官方 API 已補齊 100% trusted pool-size data (`sell_amount`, `total_amount`)，正式驗證完成。H013、H013b、H013c 三個候選在 150/500/1500 三窗口全數失敗：edge≈0%、p=1.0、Cohen's d≈0。結論：pool-size 對 539 無預測力，不是資料問題而是假說本身不成立。詳見：`analysis/results/daily539_h013_backfill_final_report_20260423.md`
 - 2026-04-23：`microfish_midfreq_2bet` 升格驗證結論為 **REJECT**；active-code mapping 為 `MicroFish+MidFreq 2-bet`，雖 150/500/1500p raw edge、permutation 與 bet2 邊際效率全過，且 leakage audit PASS，但 150p 對 `midfreq_acb_2bet` 的 McNemar 僅 `p=0.1797`（net `+5`），未證明短窗穩定替換優勢，因此維持現役 2 注主線不變。結果檔：`analysis/results/daily539_microfish_midfreq_promotion_validation_20260423.json`
+
+## 2026-04-23 信號窮盡審計
+
+- **結論**: 全域審計確認 DAILY_539 無新可行研究方向
+- **理由**:
+  - H001~H008 全部 REJECT (L82)
+  - H011 (weekday/calendar) REJECT 2026-04-22 (L117)
+  - H012 (cross-draw cluster) REJECT 2026-04-22 (L118)
+  - H013 (pool-size) REJECT 2026-04-23, 100% data 確認假說失效 (L129)
+  - MicroFish+MidFreq 2-bet McNemar 未過 2026-04-23 (L128)
+  - 頻率族信號空間高度飽和 (L82)
+- **維護模式確認**: 繼續保留現役三策略，無新升格候選
+- **審計參考**: analysis/results/signal_exhaustion_audit_20260423.md (games.daily_539 章節)
 
 ## 策略表
 

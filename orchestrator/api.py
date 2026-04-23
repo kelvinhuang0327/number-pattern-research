@@ -283,6 +283,17 @@ class CtoProviderConfigRequest(BaseModel):
     planner_model: Optional[str] = None
 
 
+class CtoRunNowRequest(BaseModel):
+    force: bool = False
+    run_intent: Optional[str] = None   # retry | compare | override
+    parent_run_id: Optional[str] = None
+
+    def validated_intent(self) -> Optional[str]:
+        _allowed = {"retry", "compare", "override"}
+        v = (self.run_intent or "").strip().lower()
+        return v if v in _allowed else None
+
+
 def _estimate_cto_next_run_at(latest_run: Optional[dict]) -> Optional[str]:
     if not latest_run:
         return None
@@ -725,15 +736,38 @@ def set_cto_provider_config(req: CtoProviderConfigRequest):
 
 
 @router.post("/api/orchestrator/cto/run-now")
-def cto_run_now():
+def cto_run_now(req: CtoRunNowRequest = None):
     request_id = uuid.uuid4().hex
     triggered_at = datetime.now(timezone.utc).isoformat()
     script_path = os.path.join(common.ROOT, "orchestrator", "cto_review_tick.py")
     if not os.path.exists(script_path):
         raise HTTPException(status_code=500, detail="cto_review_tick.py not found")
+    is_force = req is not None and req.force
+    # ── Force Run Rate Limit: max 3 force runs per 10 minutes ────────────────
+    _FORCE_RATE_LIMIT = 3
+    _FORCE_RATE_WINDOW_S = 600
+    if is_force:
+        recent_force_count = db.count_recent_force_runs(within_seconds=_FORCE_RATE_WINDOW_S)
+        if recent_force_count >= _FORCE_RATE_LIMIT:
+            raise HTTPException(
+                status_code=429,
+                detail=(
+                    f"Force run rate limit reached: {recent_force_count}/{_FORCE_RATE_LIMIT} "
+                    f"force runs in the last {_FORCE_RATE_WINDOW_S // 60} minutes. "
+                    "Please wait before retrying."
+                ),
+            )
+    intent = req.validated_intent() if req else None
+    parent_run_id = (req.parent_run_id or "").strip() or None if req else None
     env = os.environ.copy()
     env["ORCHESTRATOR_FORCE_RUN"] = "1"
     env["ORCHESTRATOR_REQUEST_ID"] = request_id
+    if is_force:
+        env["ORCHESTRATOR_FORCE_RERUN"] = "1"
+    if intent:
+        env["ORCHESTRATOR_RUN_INTENT"] = intent
+    if parent_run_id:
+        env["ORCHESTRATOR_PARENT_RUN_ID"] = parent_run_id
     proc = subprocess.Popen(
         [sys.executable, script_path],
         cwd=common.ROOT,
@@ -745,7 +779,13 @@ def cto_run_now():
     db.log_tick(
         "cto-review",
         "CTO_REVIEW_MANUAL_TRIGGERED",
-        message=f"CTO review run-now triggered, pid={proc.pid}",
+        message=(
+            f"CTO review run-now triggered, pid={proc.pid}"
+            + (" [FORCE]"
+               + (f" intent={intent}" if intent else "")
+               + (f" parent={parent_run_id}" if parent_run_id else "")
+               if is_force else "")
+        ),
         request_id=request_id,
     )
     return {
@@ -753,6 +793,9 @@ def cto_run_now():
         "pid": proc.pid,
         "triggered_at": triggered_at,
         "request_id": request_id,
+        "force": is_force,
+        "run_intent": intent,
+        "parent_run_id": parent_run_id,
     }
 
 
@@ -765,6 +808,8 @@ def get_cto_run_status(request_id: str = Query(..., min_length=4)):
         "CTO_REVIEW_SKIP_FREQUENCY",
         "CTO_REVIEW_NO_CANDIDATES",
         "CTO_REVIEW_ERROR",
+        "CTO_REVIEW_SKIP_DUPLICATE_RUNNING",
+        "CTO_REVIEW_SKIP_DUPLICATE_RECENT",
     }
     if not runs:
         return {"request_id": request_id, "status": "PENDING", "final": False, "run": None}
@@ -815,4 +860,576 @@ def get_cto_review_report(run_id: str):
         "report_json_path": json_path,
         "report_md": report_md,
         "report_json": report_json,
+    }
+
+
+# ─── CTO Action → Backlog ─────────────────────────────────────────────────────
+
+class CtoBacklogAddRequest(BaseModel):
+    finding_id: str
+    cto_run_id: str
+    severity: Optional[str] = None
+    impact_score: Optional[int] = None
+    urgency: Optional[str] = None
+    category: Optional[str] = None
+    suggested_action: Optional[str] = None
+
+
+class CtoBacklogBatchRequest(BaseModel):
+    cto_run_id: str
+    min_severity: Optional[str] = "HIGH"   # CRITICAL | HIGH | MEDIUM | LOW
+    min_impact: Optional[int] = 60
+
+
+def _cto_action_prompt(item: CtoBacklogAddRequest) -> tuple[str, str, str]:
+    """Build a structured agent prompt from a CTO backlog item."""
+    action_text = (item.suggested_action or "").strip() or f"處理 CTO 審核發現 {item.finding_id}"
+    slug_raw = f"cto-{(item.category or 'task')}-{item.finding_id.replace('/', '-')}"
+    slug = slug_raw[:40].rstrip("-")
+
+    title = action_text[:60] or f"CTO Action: {item.finding_id}"
+
+    sev = item.severity or "—"
+    urg = item.urgency or "—"
+    cat = item.category or "—"
+    score = item.impact_score if item.impact_score is not None else "—"
+
+    prompt = f"""## CTO Review Action — {item.finding_id}
+
+**來源**: CTO Review Run `{item.cto_run_id}`
+**Severity**: {sev} | **Impact**: {score}/100 | **Urgency**: {urg}
+**Category**: {cat}
+
+## Objective
+
+{action_text}
+
+## Constraints
+
+- 本任務由 CTO Review 系統自動排入 backlog（finding_id: `{item.finding_id}`）
+- 依照現有 wiki/governance.md 標準處理
+- 優先採用最小必要修改
+- 若為衝突修復，需確保 git cherry-pick 可以乾淨執行
+
+## Acceptance Criteria
+
+- 提出明確的完成摘要
+- 列出異動檔案（或確認無異動）
+- 說明該 finding 是否已解決
+
+## Handoff Notes
+
+- CTO Run ID: `{item.cto_run_id}`
+- Finding ID: `{item.finding_id}`
+- 若更新策略或 wiki，遵循 wiki/governance.md 流程
+"""
+    return title, slug, prompt
+
+
+def _append_cto_item_to_backlog(item: CtoBacklogAddRequest) -> None:
+    """Append a human-readable CTO action entry to backlog.md for planner visibility."""
+    entry = (
+        f"\n- [ ] [CTO/{item.severity or '?'}] {(item.suggested_action or item.finding_id)[:100]}"
+        f" `(run={item.cto_run_id[:20]}, id={item.finding_id})`\n"
+    )
+    try:
+        with open(common.BACKLOG_PATH, "a", encoding="utf-8") as f:
+            f.write(entry)
+    except OSError:
+        pass  # non-fatal: task still created in DB
+
+
+@router.get("/api/orchestrator/cto/intent-stats")
+def get_cto_intent_stats():
+    """Return per-intent aggregated outcome stats for learning dashboard."""
+    stats = db.get_intent_stats()
+    # Annotate with human-readable descriptions
+    _DESCRIPTIONS = {
+        "retry":   "重試失敗提交，包含 REPLAN/CONFLICT 候選",
+        "compare": "比對分析模式，不執行合併和 backlog 寫入",
+        "override": "強制覆蓋，正常行為",
+    }
+    return {
+        "ok": True,
+        "stats": {
+            intent: {**data, "description": _DESCRIPTIONS.get(intent, intent)}
+            for intent, data in stats.items()
+        },
+    }
+
+
+@router.get("/api/orchestrator/cto/backlog")
+def get_cto_backlog(
+    cto_run_id: str = Query(None),
+    status: str = Query(None),
+    limit: int = Query(200, ge=1, le=500),
+):
+    items = db.list_cto_backlog_items(cto_run_id=cto_run_id, status=status, limit=limit)
+    # Enrich with live task status
+    enriched = []
+    for item in items:
+        live_status = db.get_cto_backlog_item_task_status(item)
+        enriched.append({**item, "live_status": live_status})
+    return {"items": enriched, "count": len(enriched)}
+
+
+@router.get("/api/orchestrator/cto/adaptive-policy")
+def get_adaptive_policy_endpoint():
+    """
+    Return the current Self-Optimizing adaptive policy.
+    Combines the cached computed policy with live intent stats.
+    """
+    policy = db.get_adaptive_policy(max_age_seconds=3600)
+    intent_stats = db.get_intent_stats()
+    return {
+        "ok":             True,
+        "policy":         policy,
+        "intent_stats":   intent_stats,
+        "confidence_levels": {
+            "high":   "≥10 runs analyzed + ≥5 intent runs",
+            "medium": "≥5 runs analyzed OR ≥3 intent runs",
+            "low":    "insufficient data — defaults applied",
+        },
+    }
+
+
+@router.post("/api/orchestrator/cto/adaptive-policy/refresh")
+def refresh_adaptive_policy():
+    """Force-recompute the adaptive policy from the latest signal data."""
+    try:
+        policy = db.compute_adaptive_policy()
+        return {"ok": True, "policy": policy, "message": "Adaptive policy recomputed"}
+    except Exception as exc:
+        raise HTTPException(status_code=500, detail=f"Policy recompute failed: {exc}") from exc
+
+
+# ─── Signal Classifier Calibration endpoints ──────────────────────────────────
+
+class ClassifierOutcomeRequest(BaseModel):
+    calibration_id: int
+    outcome_state: str          # actual regime observed (COLD_REGIME / SIGNAL_SATURATED / etc.)
+    draws_checked: int          # 50 / 100 / 150
+    original_state: str         # state that was classified (for TP/FP logic)
+    notes: Optional[str] = ""
+
+
+def _compute_fp_fn(original_state: str, outcome_state: str) -> tuple[bool, str]:
+    """Map original vs outcome state to TP/FP/FN/TN."""
+    predicted_cold  = original_state == "COLD_REGIME"
+    actual_cold     = outcome_state == "COLD_REGIME"
+    if predicted_cold and actual_cold:
+        return True,  "TP"
+    if predicted_cold and not actual_cold:
+        return False, "FP"
+    if not predicted_cold and actual_cold:
+        return False, "FN"
+    return True, "TN"
+
+
+@router.get("/api/orchestrator/classifier/calibration")
+def get_classifier_calibration():
+    """Return recent classifier calibration events and accuracy summary."""
+    try:
+        report = db.get_classifier_accuracy_report()
+        return {"ok": True, **report}
+    except Exception as exc:
+        raise HTTPException(status_code=500, detail=str(exc)) from exc
+
+
+@router.get("/api/orchestrator/classifier/accuracy")
+def get_classifier_accuracy():
+    """Return full accuracy report + current dynamic thresholds."""
+    try:
+        report = db.get_classifier_accuracy_report()
+        thresholds = db.get_classifier_thresholds()
+        # Compute confidence level labels for current regime state
+        confidence_levels = {
+            "COLD_REGIME": {
+                "strong_cold":   "≥2 games trigger + edge divergence confirmed",
+                "cold":          "1–2 games trigger, evidence moderate",
+                "weak_cold":     "single weak indicator, low policy support",
+                "uncertain":     "insufficient evidence",
+            },
+            "SIGNAL_SATURATED": {
+                "strong_saturated": "validated strategies + proven merge rate + ≥10 runs",
+                "saturated":        "strategies exist + some activity signal",
+                "uncertain":        "insufficient data to confirm saturation",
+            },
+        }
+        return {
+            "ok": True,
+            "accuracy_report":   report,
+            "current_thresholds": thresholds,
+            "confidence_levels":  confidence_levels,
+            "threshold_guidance": {
+                "cold_streak_ratio":      f"Current: {thresholds['cold_streak_ratio']:.2f}. Raises if cold_fp_rate > 20%, lowers if cold_fn_rate > 20%.",
+                "cold_edge_absolute_max": f"Current: {thresholds['cold_edge_absolute_max']:+.3f}. Short-term edge must be below this to trigger cold detection.",
+            },
+        }
+    except Exception as exc:
+        raise HTTPException(status_code=500, detail=str(exc)) from exc
+
+
+@router.post("/api/orchestrator/classifier/outcome")
+def record_classifier_outcome(req: ClassifierOutcomeRequest):
+    """
+    Record the observed outcome for a past classifier event.
+    Automatically determines TP/FP/FN/TN and adjusts accuracy counters.
+    Triggers threshold recomputation if enough data is available.
+    """
+    try:
+        is_correct, fp_fn_type = _compute_fp_fn(req.original_state, req.outcome_state)
+        db.record_classifier_outcome(
+            calibration_id=req.calibration_id,
+            outcome_state=req.outcome_state,
+            draws_checked=req.draws_checked,
+            is_correct=is_correct,
+            fp_fn_type=fp_fn_type,
+            notes=req.notes or "",
+        )
+        # Recompute thresholds after any new outcome
+        updated_thresholds = db.compute_classifier_thresholds()
+        return {
+            "ok":               True,
+            "calibration_id":   req.calibration_id,
+            "fp_fn_type":       fp_fn_type,
+            "is_correct":       is_correct,
+            "updated_thresholds": updated_thresholds,
+            "message": (
+                f"Outcome recorded: {fp_fn_type} "
+                f"({'✓ correct' if is_correct else '✗ misclassified'}). "
+                "Thresholds recomputed."
+            ),
+        }
+    except Exception as exc:
+        raise HTTPException(status_code=500, detail=str(exc)) from exc
+
+
+@router.post("/api/orchestrator/classifier/thresholds/refresh")
+def refresh_classifier_thresholds():
+    """Force-recompute dynamic classifier thresholds from calibration history."""
+    try:
+        thresholds = db.compute_classifier_thresholds()
+        return {"ok": True, "thresholds": thresholds, "message": "Thresholds recomputed"}
+    except Exception as exc:
+        raise HTTPException(status_code=500, detail=str(exc)) from exc
+
+
+@router.post("/api/orchestrator/cto/backlog")
+def add_cto_backlog_item(req: CtoBacklogAddRequest):
+    """Add a single CTO finding to the agent backlog. 409 if already exists."""
+    # Guard: compare runs must not pollute backlog
+    if req.cto_run_id:
+        _run_row = db.get_cto_review_run(req.cto_run_id)
+        if _run_row and _run_row.get("run_intent") == "compare":
+            return {
+                "ok": False,
+                "blocked": True,
+                "message": "compare run 不允許寫入 backlog（比對分析模式）",
+            }
+    # Dedup check
+    existing = db.get_cto_backlog_item_by_finding(req.finding_id)
+    if existing:
+        live_status = db.get_cto_backlog_item_task_status(existing)
+        return {
+            "ok": False,
+            "conflict": True,
+            "message": f"Finding {req.finding_id} already in backlog (status: {live_status})",
+            "existing": {**existing, "live_status": live_status},
+        }
+
+    # Build and create QUEUED agent task
+    title, slug, prompt_text = _cto_action_prompt(req)
+    date_folder = common.date_folder_now()
+    slot_key = common.slot_key_now()
+    prompt_file = common.prompt_path(slot_key, slug, date_folder)
+
+    os.makedirs(os.path.dirname(prompt_file), exist_ok=True)
+    try:
+        with open(prompt_file, "w", encoding="utf-8") as f:
+            f.write(prompt_text)
+    except OSError:
+        prompt_file = None
+
+    task_id = db.create_task(
+        slot_key=slot_key,
+        date_folder=date_folder,
+        title=title,
+        slug=slug,
+        prompt_text=prompt_text,
+        prompt_file_path=prompt_file,
+    )
+
+    # Record in cto_backlog_items
+    item_id = db.insert_cto_backlog_item(
+        finding_id=req.finding_id,
+        cto_run_id=req.cto_run_id,
+        severity=req.severity,
+        impact_score=req.impact_score,
+        urgency=req.urgency,
+        category=req.category,
+        suggested_action=req.suggested_action,
+        task_id=task_id,
+        task_slot_key=slot_key,
+        status="queued",
+    )
+
+    _append_cto_item_to_backlog(req)
+
+    return {
+        "ok": True,
+        "conflict": False,
+        "item_id": item_id,
+        "task_id": task_id,
+        "slot_key": slot_key,
+        "title": title,
+        "live_status": "queued",
+        "message": f"Finding {req.finding_id} added to backlog as task #{task_id}",
+    }
+
+
+@router.post("/api/orchestrator/cto/backlog/batch")
+def batch_add_cto_backlog(req: CtoBacklogBatchRequest):
+    """
+    Batch-add all high-priority findings from a CTO run report.
+    Filters by min_severity and min_impact. Skips duplicates.
+    """
+    run = db.get_cto_review_run(req.cto_run_id)
+    if not run:
+        raise HTTPException(status_code=404, detail=f"CTO run not found: {req.cto_run_id}")
+    # Guard: compare runs must not pollute backlog
+    if run.get("run_intent") == "compare":
+        return {
+            "ok": False,
+            "blocked": True,
+            "added_count": 0,
+            "skipped_count": 0,
+            "message": "compare run 不允許寫入 backlog（比對分析模式）",
+        }
+
+    json_path = run.get("report_json_path")
+    report_json = _read_json(json_path)
+    if not report_json:
+        raise HTTPException(status_code=404, detail="Report JSON not found or unreadable")
+
+    decisions = report_json.get("decisions") or []
+    if not decisions:
+        return {"ok": True, "added": [], "skipped": [], "message": "No decisions found in report"}
+
+    _SEVERITY_RANK = {"CRITICAL": 4, "HIGH": 3, "MEDIUM": 2, "LOW": 1}
+    min_sev_rank = _SEVERITY_RANK.get(str(req.min_severity or "HIGH").upper(), 3)
+    min_impact = int(req.min_impact) if req.min_impact is not None else 60
+
+    added = []
+    skipped = []
+
+    for d in decisions:
+        scoring = d.get("scoring") or {}
+        sev = str(scoring.get("severity") or "LOW").upper()
+        impact = int(scoring.get("impact_score") or 0)
+
+        # Filter: must meet severity AND impact thresholds
+        if _SEVERITY_RANK.get(sev, 1) < min_sev_rank and impact < min_impact:
+            continue
+
+        finding_id = f"{req.cto_run_id}__t{d.get('task_id')}_{sev}"
+        action = (d.get("action") or {}).get("action") or d.get("reason") or d.get("decision") or finding_id
+        item_req = CtoBacklogAddRequest(
+            finding_id=finding_id,
+            cto_run_id=req.cto_run_id,
+            severity=sev,
+            impact_score=impact,
+            urgency=scoring.get("urgency"),
+            category=d.get("category"),
+            suggested_action=str(action)[:300],
+        )
+        existing = db.get_cto_backlog_item_by_finding(finding_id)
+        if existing:
+            live_status = db.get_cto_backlog_item_task_status(existing)
+            skipped.append({"finding_id": finding_id, "reason": "duplicate", "live_status": live_status})
+            continue
+
+        title, slug, prompt_text = _cto_action_prompt(item_req)
+        date_folder = common.date_folder_now()
+        slot_key = common.slot_key_now()
+        prompt_file = common.prompt_path(slot_key, slug, date_folder)
+        os.makedirs(os.path.dirname(prompt_file), exist_ok=True)
+        try:
+            with open(prompt_file, "w", encoding="utf-8") as f:
+                f.write(prompt_text)
+        except OSError:
+            prompt_file = None
+
+        task_id = db.create_task(
+            slot_key=slot_key,
+            date_folder=date_folder,
+            title=title,
+            slug=slug,
+            prompt_text=prompt_text,
+            prompt_file_path=prompt_file,
+        )
+
+        item_id = db.insert_cto_backlog_item(
+            finding_id=finding_id,
+            cto_run_id=req.cto_run_id,
+            severity=sev,
+            impact_score=impact,
+            urgency=scoring.get("urgency"),
+            category=d.get("category"),
+            suggested_action=str(action)[:300],
+            task_id=task_id,
+            task_slot_key=slot_key,
+            status="queued",
+        )
+        _append_cto_item_to_backlog(item_req)
+        added.append({
+            "finding_id": finding_id,
+            "item_id": item_id,
+            "task_id": task_id,
+            "slot_key": slot_key,
+            "title": title,
+        })
+
+    # After batch insert, recompute ranks across all items
+    if added:
+        db.rescore_all_backlog_items()
+
+    return {
+        "ok": True,
+        "added_count": len(added),
+        "skipped_count": len(skipped),
+        "added": added,
+        "skipped": skipped,
+    }
+
+
+# ─── Backlog Priority Engine ──────────────────────────────────────────────────
+
+@router.get("/api/orchestrator/cto/backlog/prioritized")
+def get_cto_backlog_prioritized(
+    limit: int = Query(200, ge=1, le=500),
+    active_only: bool = Query(False, description="Only items with QUEUED/RUNNING tasks"),
+):
+    """
+    Return backlog items sorted by priority: P0 → P1 → P2 → P3, then score desc.
+    Enriches each item with live_status and priority metadata.
+    """
+    status_filter = None
+    if active_only:
+        status_filter = ["QUEUED", "RUNNING"]
+
+    items = db.list_cto_backlog_items_prioritized(status_filter=status_filter, limit=limit)
+
+    enriched = []
+    for item in items:
+        task_live = item.get("task_live_status") or db.get_cto_backlog_item_task_status(item)
+        enriched.append({
+            **{k: v for k, v in item.items() if k != "task_live_status"},
+            "live_status": task_live,
+        })
+
+    # Group counts by level
+    level_counts = {"P0": 0, "P1": 0, "P2": 0, "P3": 0}
+    for item in enriched:
+        lvl = item.get("priority_level", "P3")
+        level_counts[lvl] = level_counts.get(lvl, 0) + 1
+
+    return {
+        "items": enriched,
+        "count": len(enriched),
+        "level_counts": level_counts,
+    }
+
+
+@router.post("/api/orchestrator/cto/backlog/rescore")
+def rescore_backlog():
+    """
+    Recompute priority_score, priority_level, and rank for all backlog items.
+    Call this after bulk updates or whenever scoring constants change.
+    """
+    sorted_items = db.rescore_all_backlog_items()
+    level_counts = {"P0": 0, "P1": 0, "P2": 0, "P3": 0}
+    for item in sorted_items:
+        lvl = item.get("priority_level", "P3")
+        level_counts[lvl] = level_counts.get(lvl, 0) + 1
+    return {
+        "ok": True,
+        "rescored_count": len(sorted_items),
+        "level_counts": level_counts,
+        "top_10": [
+            {
+                "rank": item.get("rank"),
+                "finding_id": item.get("finding_id"),
+                "priority_level": item.get("priority_level"),
+                "priority_score": item.get("priority_score"),
+                "severity": item.get("severity"),
+                "impact_score": item.get("impact_score"),
+                "category": item.get("category"),
+            }
+            for item in sorted_items[:10]
+        ],
+    }
+
+
+@router.get("/api/orchestrator/cto/backlog/preview-score")
+def preview_priority_score(
+    severity: str = Query("HIGH"),
+    impact_score: int = Query(70),
+    urgency: str = Query("SHORT"),
+    category: str = Query("architecture"),
+):
+    """
+    Preview computed priority score for a given set of inputs.
+    Useful for understanding the formula before inserting items.
+    """
+    score, level = db.compute_priority_score(severity, impact_score, urgency, category)
+    return {
+        "severity": severity,
+        "impact_score": impact_score,
+        "urgency": urgency,
+        "category": category,
+        "priority_score": score,
+        "priority_level": level,
+        "formula_breakdown": {
+            "severity_pts": db._SEVERITY_PTS.get(severity.upper(), 15),
+            "urgency_pts": db._URGENCY_PTS.get(urgency.upper(), 30),
+            "category_weight": db._CATEGORY_WEIGHT.get(category.lower(), 0.4),
+            "severity_contribution": round(db._SEVERITY_PTS.get(severity.upper(), 15) * 0.35, 2),
+            "impact_contribution": round(min(100, max(0, impact_score)) * 0.30, 2),
+            "urgency_contribution": round(db._URGENCY_PTS.get(urgency.upper(), 30) * 0.20, 2),
+            "category_contribution": round(db._CATEGORY_WEIGHT.get(category.lower(), 0.4) * 10.0, 2),
+        },
+    }
+
+
+# ─── Execution Policy API ─────────────────────────────────────────────────────
+
+@router.get("/api/orchestrator/cto/backlog/policy")
+def get_execution_policy():
+    """Return current execution policy state + queue stats."""
+    return db.get_policy_stats()
+
+
+class PolicyModeRequest(BaseModel):
+    mode: str  # strict_priority | balanced | fairness
+
+
+@router.post("/api/orchestrator/cto/backlog/policy")
+def set_execution_policy(req: PolicyModeRequest):
+    """Change the scheduler execution policy mode."""
+    valid = {"strict_priority", "balanced", "fairness"}
+    if req.mode not in valid:
+        raise HTTPException(status_code=422, detail=f"Invalid mode {req.mode!r}. Choose from: {sorted(valid)}")
+    db.set_policy_mode(req.mode)
+    return {"ok": True, "mode": req.mode}
+
+
+@router.post("/api/orchestrator/cto/backlog/aging")
+def trigger_aging():
+    """Manually trigger aging bonus application across all waiting backlog items."""
+    count = db.apply_aging_bonus()
+    return {
+        "ok": True,
+        "aged_count": count,
+        "message": f"Applied aging bonus to {count} items",
     }

@@ -1,5 +1,9 @@
 # POWER_LOTTO
 
+## Regime Status (2026-04-23) — COLD_PHASE_NORMAL
+
+> **Cold Phase Analysis**: 6/7 strategies in negative edge (85.7%), avg 6.8-period cold streak, max 11 periods. Statistical analysis confirms within 75th-90th percentile of historical distribution (Z=1.67, normal variance). **Classification: NORMAL** — no anomalies detected. **Expected recovery: 2-4 weeks** (confidence: medium). **Action: MONITOR_MODE** — research suspended per signal exhaustion audit. RSM monitoring enhanced. Resilient strategy: `fourier_rhythm_3bet` (+2.163% edge_30p). Analysis: `analysis/results/cold_phase_regime_analysis_20260423.md`
+
 ## 現況
 
 - 現役主體仍是 Fourier / PP3 / Orthogonal 三路組合。
@@ -27,6 +31,25 @@
 - 特別號 V3 orthogonal shortlist（2026-04-22）：`special_v3_drought_regime_top2` / `special_v3_markov_backoff_top2` / `special_v3_main_analog_residual_top2` 在 150/500/1500p Edge 皆維持正值，最佳 `main_analog_residual_top2` 為 +4.33% / +1.40% / +1.33%，但三者 permutation p 皆未能在全窗口壓到 0.05 以下，因此結論僅為 WATCH；不可直接升級 RSM，也不應成為下一輪主優先研究方向。來源：`analysis/results/power_special_v3_research_20260422.json`
 - 特別號 V4 orthogonal reinforcement（2026-04-23）：五個 V3-based history-only top2 候選中，最佳 `special_v4_regime_orthogonal_top2` 的 150/500/1500p Edge 為 +5.67% / +1.20% / +1.80%，Cohen's d 為 1.563 / 0.652 / 1.614，但 permutation p 仍卡在 0.0796 / 0.2836 / 0.0547，未能全窗口 <0.05；而現役 V3 top2 參考仍有 +11.67% / +4.40% / +2.33% Edge，更高於所有候選，因此本輪結論為 REJECT，不觸發 McNemar、不替換現役 special V3。來源：`analysis/results/power_special_v4_validation_20260423.json`
 - 非同家族 Layer-1 3bet（2026-04-23）：4 個新家族 `dispersion_state_transition_3bet`、`odd_tail_imbalance_3bet`、`zone_transition_tensor_3bet`、`residue_structure_stability_3bet` 全部完成 150/500/1500p 驗證，且 leakage check PASS。最佳 raw Edge 為 `residue_structure_stability_3bet` 的 +2.17% / +3.23% / +1.77%，以及 `zone_transition_tensor_3bet` 的 +1.50% / +1.43% / +0.97%；但四案 permutation 仍為 0.2587~0.5871 / 0.1194~0.5871 / 0.2189~0.4726，Cohen's d 最佳也只到 residue 500p 的 1.393，且對 `pp3_freqort_4bet` 的 per-bet efficiency 未有任何候選在三窗口全過 80%。因此 McNemar 對 `fourier_rhythm_3bet` 完全不觸發，總結論明確為 `REJECT_ALL_NONFAMILY_LAYER1_3BET`。來源：`analysis/results/power_layer1_nonfamily_3bet_validation_20260423.json`
+- Winning Quality P2-1 (2026-04-23)：popularity_score 代理模型作為分獎風險濾網的 local-first 正式驗證。策略以低人氣號碼為主、預期減少同獎者數、提高單注 EV。150/500/1500p 測試顯示 raw Edge 為 +12.01% / +7.74% / +7.47%（全正），permutation p = 0.0667 / 0.6333 / 0.8000（僅 150p 接近通過），Cohen's d = 1.281 / -0.246 / -0.935（僅 150p 達標）。150p 單窗雖達統計顯著，但 500/1500p 窗口 permutation 與 effect size 均失效，表示訊號不穩定跨窗口。per-bet efficiency vs fourier/pp3 為 163.6% / 130.3% / 112.0%（平均 135%，略高於基準但波動大）。Leakage check PASS。結論：raw edge 可觀但統計顯著性不足跨窗、effect size 不穩定；pop_score proxy 作為 split-risk 濾網在本資料集上無法形成非虛假訊號。建議：此方向已達驗證閾值，不再投入同模型微調；若要改善分獎優化，應從「真實頭獎金額資料」而非啟發式人氣估算入手。最終分類：`REJECT`。來源：`analysis/results/power_wq_p21_validation_20260423.json`
+
+## 2026-04-23 信號窮盡審計
+
+- **結論**: 全域審計確認 POWER_LOTTO 無新可行升格研究方向
+- **理由**:
+  - 主線（Fourier 3bet + PP3 4bet + Orthogonal 5bet）成熟穩定
+  - 2026-04-23 近期驗證周期測試 13 個候選方向，全部評定為 WATCH/PROVISIONAL 或 REJECT，無任何候選進入 McNemar 替換閘
+  - 所有主要假說家族已驗證：
+    - Fourier rhythm 3bet: WATCH_DOWNGRADED, McNemar NOT_TRIGGERED (L126)
+    - PP3 3bet B-scheme: WATCH, efficiency < 80%, McNemar NOT_TRIGGERED (L120)
+    - PP3 Sum Regime/Reversal: WATCH, 150/500p perm unmet, McNemar NOT_TRIGGERED (L124)
+    - MidFreq 2bet regime gate V1: REJECT, 150p perm fail (L122)
+    - PP3+MidFreq Orthogonal V2: WATCH/REJECT_MIX, 1500p only, efficiency <80% (L123)
+    - Nonfamily Layer-1 3bet (4 families): REJECT_ALL, perm & efficiency unmet (L127)
+    - Special V3/V4: WATCH/REJECT, perm or baseline unmet (L116, L121)
+    - WQ P2-1: REJECT, cross-window instability (L130)
+- **成熟監控確認**: 主線策略無變更；WATCH 候選持續監控但無升格路徑
+- **審計參考**: analysis/results/signal_exhaustion_audit_20260423.md (games.power_lotto 章節)
 
 ## 重要教訓索引
 

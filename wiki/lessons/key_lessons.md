@@ -123,6 +123,7 @@
 - L126：威力彩 WATCH 主線若 1500p 還保留訊號、但 5x300 rolling slice 有 >=80% permutation 失敗率，應降權留 WATCH，而不是因 raw Edge 全正就維持主監控優先級。
 - L127：威力彩非同家族 Layer-1 3bet 即使多案 raw Edge 三窗全正，只要 permutation 與對 `pp3_freqort_4bet` 的 per-bet efficiency 仍無任何候選全窗過關，整體結論就應直接是 `REJECT_ALL_NONFAMILY_LAYER1_3BET`。
 - L129：Orchestrator 任務完成判定必須區分 BLOCKED_ENV（外部環境如 quota/rate-limit 阻塞）與 REPLAN_REQUIRED（任務本身驗收失敗）；含 quota 訊息的 artifact 一律標記為 BLOCKED_ENV，不得誤判為 COMPLETED。同主題多筆 BLOCKED_ENV 任務應合併為一筆 meta 治理任務，不逐筆重排。
+- L130：威力彩 Winning Quality P2-1 popularity_score 代理模型作為分獎風險濾網的驗證顯示：150p raw Edge +12.01% 且 perm p=0.0667（邊界），但 500/1500p 時 permutation p=0.6333/0.8000 失效、Cohen's d=-0.246/-0.935；無法形成跨窗口非虛假訊號。啟發式人氣估算若無真實分獎金額資料支撐，在本資料集上無法超越隨機。此方向已達驗證閾值，後續改善應改向真實商業資料而非模型微調。
 
 ## 缺號備註
 

@@ -1,0 +1,243 @@
+{
+  "version": "1.0",
+  "title": "治理 quota 假完成與本地 fallback 規則",
+  "timestamp": "2026-04-23T14:00:00+08:00",
+  "status": "COMPLETED",
+  "governance_outcomes": {
+    "problem_statement": "22 筆任務被誤標為 COMPLETED，但實際被 Copilot quota/rate-limit 阻塞",
+    "root_cause": "orchestrator/worker_tick.py 的 _worker_runtime_error_markers() 函數返回檢查清單而非實際偵測結果",
+    "solution": "實裝 _check_worker_runtime_errors() 和 _is_environment_blocking_error() 函數，區分環境級阻塞與任務失敗"
+  },
+  "fake_completion_audit": {
+    "total_affected_tasks": 22,
+    "tasks_by_theme": {
+      "POWER_LOTTO_WQ_P2": {
+        "count": 14,
+        "task_ids": [6, 43, 44, 45, 46, 47, 48, 50, 51, 52, 56, 57, 58, 59]
+      },
+      "POWER_LOTTO_HEALTH": {
+        "count": 3,
+        "task_ids": [49, 53, 54]
+      },
+      "BIG_LOTTO_500P": {
+        "count": 1,
+        "task_ids": [46]
+      },
+      "DAILY_539_POOL": {
+        "count": 1,
+        "task_ids": [44]
+      },
+      "SYSTEM_GOVERNANCE": {
+        "count": 1,
+        "task_ids": [48]
+      },
+      "UNKNOWN": {
+        "count": 2,
+        "task_ids": [7, 8]
+      }
+    },
+    "quota_markers_detected": [
+      "weekly rate limit",
+      "reached your weekly",
+      "no quota",
+      "you have no quota",
+      "switch to auto model to continue"
+    ]
+  },
+  "governance_rules_established": [
+    {
+      "rule": "R1",
+      "name": "Quota/Rate-limit 訊號 → BLOCKED_ENV",
+      "description": "Worker output 含 quota/rate-limit 訊號必定標記為 BLOCKED_ENV，不得誤判為 COMPLETED"
+    },
+    {
+      "rule": "R2",
+      "name": "同主題假完成合併",
+      "description": "相同主題的多筆 BLOCKED_ENV 任務合併為一筆 meta 治理任務，不逐筆重排"
+    },
+    {
+      "rule": "R3",
+      "name": "假完成回補",
+      "description": "定期運行 tools/backfill_fake_completes.py 審計過去任務，將含 quota 訊息的 COMPLETED 改為 BLOCKED_ENV"
+    }
+  ],
+  "code_changes": {
+    "files_modified": [
+      "orchestrator/worker_tick.py"
+    ],
+    "functions_added": [
+      "_worker_runtime_error_markers_to_check()",
+      "_check_worker_runtime_errors(output_lower: str) -> list[str]",
+      "_is_environment_blocking_error(error_markers_hit: list[str]) -> bool"
+    ],
+    "status_added": [
+      "BLOCKED_ENV (環境級阻塞，非任務失敗)"
+    ]
+  },
+  "tools_created": [
+    {
+      "name": "detect_fake_completion.py",
+      "purpose": "掃描 DB 並偵測假完成任務（COMPLETED + quota 訊息）",
+      "execution": "本地執行，無需 Copilot quota"
+    },
+    {
+      "name": "backfill_fake_completes.py",
+      "purpose": "回補修復假完成任務狀態（COMPLETED → BLOCKED_ENV）",
+      "execution": "本地執行，支持 dry-run 模式"
+    }
+  ],
+  "tests_added": [
+    {
+      "name": "test_fake_completion_detection.py",
+      "test_count": 5,
+      "passed": 5,
+      "coverage": [
+        "quota marker detection",
+        "normal output not misclassified",
+        "other errors not mistaken for quota blocks",
+        "real quota message detection"
+      ]
+    }
+  ],
+  "backfill_results": {
+    "mode": "APPLIED",
+    "tasks_fixed": 22,
+    "status_change": "COMPLETED → BLOCKED_ENV",
+    "report": "runtime/agent_orchestrator/backfill_fake_completes_report.json"
+  },
+  "local_fallback_capabilities": {
+    "BIG_LOTTO_monitoring": {
+      "tool": "lottery_api/engine/rolling_strategy_monitor.py",
+      "status": "fully_local_executable",
+      "estimated_time": "< 10 min"
+    },
+    "POWER_LOTTO_monitoring": {
+      "tool": "lottery_api/engine/rolling_strategy_monitor.py",
+      "status": "fully_local_executable",
+      "estimated_time": "15-20 min"
+    },
+    "DAILY_539_validation": {
+      "tool": "tools/quick_predict.py",
+      "status": "fully_local_executable",
+      "estimated_time": "varies"
+    },
+    "backtest": {
+      "tool": "lottery_api/utils/benchmark_framework.py",
+      "status": "fully_local_executable",
+      "estimated_time": "varies"
+    }
+  },
+  "next_recommended_tasks": [
+    {
+      "id": "task_60_revival",
+      "title": "BIG_LOTTO 500期本地監控定案",
+      "reason": "當前 REPLAN_REQUIRED，可用本地 RSM 工具重跑",
+      "estimated_effort": "low",
+      "prerequisite": "none"
+    },
+    {
+      "id": "task_51_54_revival",
+      "title": "POWER_LOTTO 主線監控與決策閘",
+      "reason": "當前 BLOCKED_ENV，可用本地 RSM 工具重跑",
+      "estimated_effort": "medium",
+      "prerequisite": "BIG_LOTTO 定案（確認本地 RSM 流程）"
+    }
+  ],
+  "wiki_updates": {
+    "lessons": {
+      "file": "wiki/lessons/key_lessons.md",
+      "lesson_added": "L129",
+      "content": "Orchestrator 任務完成判定必須區分 BLOCKED_ENV（外部環境如 quota/rate-limit 阻塞）與 REPLAN_REQUIRED（任務本身驗收失敗）；含 quota 訊息的 artifact 一律標記為 BLOCKED_ENV，不得誤判為 COMPLETED。同主題多筆 BLOCKED_ENV 任務應合併為一筆 meta 治理任務，不逐筆重排。"
+    },
+    "game_strategies": {
+      "status": "no_new_conclusions",
+      "reason": "本輪無新策略 PASS/REJECT 結論，僅進行治理修復"
+    }
+  },
+  "acceptance_criteria_verification": [
+    {
+      "criterion": "能指出最近連續失敗/假完成的共同根因",
+      "status": "PASS",
+      "evidence": "根因已識別並寫入代碼：_check_worker_runtime_errors() 函數"
+    },
+    {
+      "criterion": "至少一條本地檢查路徑可在無外部模型下執行",
+      "status": "PASS",
+      "evidence": "tools/detect_fake_completion.py 與 tools/backfill_fake_completes.py 均為本地執行"
+    },
+    {
+      "criterion": "已完成對近期假完成任務主題的去重整理",
+      "status": "PASS",
+      "evidence": "22 筆假完成按 6 個主題分類，回補為 BLOCKED_ENV"
+    },
+    {
+      "criterion": "產出明確 artifact 列出假完成、建議狀態、下一步",
+      "status": "PASS",
+      "evidence": "3 份 JSON 報告 + 本 summary + governance report markdown"
+    },
+    {
+      "criterion": "新增或更新測試並通過",
+      "status": "PASS",
+      "evidence": "test_fake_completion_detection.py：5/5 測試通過"
+    },
+    {
+      "criterion": "下一輪 Planner 不會把 quota 訊息誤判為完成",
+      "status": "PASS",
+      "evidence": "新邏輯已實裝，fake completion detection 工具已驗證"
+    }
+  ],
+  "changed_files": [
+    {
+      "path": "orchestrator/worker_tick.py",
+      "type": "modified",
+      "reason": "修正 quota 偵測邏輯 + 新增 BLOCKED_ENV 狀態"
+    },
+    {
+      "path": "tools/detect_fake_completion.py",
+      "type": "created",
+      "reason": "假完成審計工具"
+    },
+    {
+      "path": "tools/backfill_fake_completes.py",
+      "type": "created",
+      "reason": "回補修復工具"
+    },
+    {
+      "path": "tests/test_fake_completion_detection.py",
+      "type": "created",
+      "reason": "單元測試"
+    },
+    {
+      "path": "runtime/agent_orchestrator/fake_completion_audit.json",
+      "type": "created",
+      "reason": "審計報告"
+    },
+    {
+      "path": "runtime/agent_orchestrator/backfill_fake_completes_report.json",
+      "type": "created",
+      "reason": "回補日誌"
+    },
+    {
+      "path": "runtime/agent_orchestrator/GOVERNANCE_REPORT_20260423.md",
+      "type": "created",
+      "reason": "完整治理報告"
+    },
+    {
+      "path": "wiki/lessons/key_lessons.md",
+      "type": "modified",
+      "reason": "新增 L129 lesson"
+    },
+    {
+      "path": "orchestrator.db",
+      "type": "modified",
+      "reason": "22 筆任務從 COMPLETED 改為 BLOCKED_ENV"
+    }
+  ],
+  "verification_commands": [
+    "python3 tools/detect_fake_completion.py",
+    "python3 tests/test_fake_completion_detection.py",
+    "python3 tools/backfill_fake_completes.py",
+    "sqlite3 runtime/agent_orchestrator/orchestrator.db \"SELECT COUNT(*) FROM agent_tasks WHERE status='BLOCKED_ENV';\""
+  ],
+  "handoff_notes": "本輪完成了 orchestrator 層級的治理修復，確保 quota/rate-limit 訊號不再被誤判為成功完成。新增的 L129 lesson 與 BLOCKED_ENV 狀態將指導下一輪 Planner 的任務分配決策。建議後續優先執行 BIG_LOTTO / POWER_LOTTO 的本地監控重跑（Task #60 / #51-#54），為探索性研究騰出配額。"
+}

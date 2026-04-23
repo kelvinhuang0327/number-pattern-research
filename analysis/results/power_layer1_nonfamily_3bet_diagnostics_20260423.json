@@ -1,0 +1,416 @@
+{
+  "generated_at": "2026-04-23T05:56:39.718+08:00",
+  "strategy_family": "power_layer1_nonfamily_3bet",
+  "seed": 42,
+  "n_perm": 200,
+  "latest_snapshots": {
+    "dispersion_state_transition_3bet": {
+      "latest_bets": [
+        [
+          3,
+          17,
+          25,
+          29,
+          35,
+          38
+        ],
+        [
+          11,
+          14,
+          20,
+          21,
+          31,
+          37
+        ],
+        [
+          2,
+          7,
+          16,
+          27,
+          32,
+          36
+        ]
+      ],
+      "latest_top_numbers": [
+        {
+          "number": 29,
+          "final_score": 1.0,
+          "transition_component": 0.905054,
+          "reversion_component": 0.625
+        },
+        {
+          "number": 38,
+          "final_score": 0.998424,
+          "transition_component": 0.701458,
+          "reversion_component": 1.0
+        },
+        {
+          "number": 35,
+          "final_score": 0.983823,
+          "transition_component": 0.753257,
+          "reversion_component": 0.875
+        },
+        {
+          "number": 3,
+          "final_score": 0.914229,
+          "transition_component": 0.911179,
+          "reversion_component": 0.444444
+        },
+        {
+          "number": 25,
+          "final_score": 0.904664,
+          "transition_component": 0.893541,
+          "reversion_component": 0.458333
+        },
+        {
+          "number": 17,
+          "final_score": 0.835906,
+          "transition_component": 1.0,
+          "reversion_component": 0.125
+        },
+        {
+          "number": 21,
+          "final_score": 0.711498,
+          "transition_component": 0.778122,
+          "reversion_component": 0.291667
+        },
+        {
+          "number": 31,
+          "final_score": 0.701587,
+          "transition_component": 0.543237,
+          "reversion_component": 0.708333
+        },
+        {
+          "number": 14,
+          "final_score": 0.630972,
+          "transition_component": 0.849646,
+          "reversion_component": 0.0
+        },
+        {
+          "number": 11,
+          "final_score": 0.62633,
+          "transition_component": 0.784887,
+          "reversion_component": 0.111111
+        },
+        {
+          "number": 37,
+          "final_score": 0.595511,
+          "transition_component": 0.295957,
+          "reversion_component": 0.958333
+        },
+        {
+          "number": 20,
+          "final_score": 0.587396,
+          "transition_component": 0.668748,
+          "reversion_component": 0.25
+        }
+      ]
+    },
+    "odd_tail_imbalance_3bet": {
+      "latest_bets": [
+        [
+          2,
+          12,
+          14,
+          16,
+          20,
+          38
+        ],
+        [
+          8,
+          10,
+          17,
+          22,
+          26,
+          36
+        ],
+        [
+          6,
+          11,
+          18,
+          21,
+          28,
+          30
+        ]
+      ],
+      "latest_top_numbers": [
+        {
+          "number": 38,
+          "final_score": 1.0,
+          "transition_component": 0.743006,
+          "bucket_reversion_component": 0.745308
+        },
+        {
+          "number": 20,
+          "final_score": 0.98863,
+          "transition_component": 0.651607,
+          "bucket_reversion_component": 0.839142
+        },
+        {
+          "number": 16,
+          "final_score": 0.892923,
+          "transition_component": 0.396883,
+          "bucket_reversion_component": 1.0
+        },
+        {
+          "number": 12,
+          "final_score": 0.885747,
+          "transition_component": 0.387652,
+          "bucket_reversion_component": 1.0
+        },
+        {
+          "number": 2,
+          "final_score": 0.882018,
+          "transition_component": 0.382855,
+          "bucket_reversion_component": 1.0
+        },
+        {
+          "number": 14,
+          "final_score": 0.830654,
+          "transition_component": 0.634843,
+          "bucket_reversion_component": 0.61126
+        },
+        {
+          "number": 22,
+          "final_score": 0.828084,
+          "transition_component": 0.313477,
+          "bucket_reversion_component": 1.0
+        },
+        {
+          "number": 10,
+          "final_score": 0.789041,
+          "transition_component": 0.394866,
+          "bucket_reversion_component": 0.839142
+        },
+        {
+          "number": 36,
+          "final_score": 0.770824,
+          "transition_component": 0.239821,
+          "bucket_reversion_component": 1.0
+        },
+        {
+          "number": 8,
+          "final_score": 0.740416,
+          "transition_component": 0.40909,
+          "bucket_reversion_component": 0.745308
+        },
+        {
+          "number": 26,
+          "final_score": 0.740127,
+          "transition_component": 0.200334,
+          "bucket_reversion_component": 1.0
+        },
+        {
+          "number": 17,
+          "final_score": 0.725733,
+          "transition_component": 1.0,
+          "bucket_reversion_component": 0.0
+        }
+      ]
+    },
+    "zone_transition_tensor_3bet": {
+      "latest_bets": [
+        [
+          2,
+          3,
+          4,
+          6,
+          7,
+          8
+        ],
+        [
+          1,
+          21,
+          24,
+          25,
+          26,
+          27
+        ],
+        [
+          13,
+          14,
+          17,
+          19,
+          20,
+          29
+        ]
+      ],
+      "latest_top_numbers": [
+        {
+          "number": 3,
+          "final_score": 1.0,
+          "transition_component": 1.0,
+          "zone_deficit_component": 1.0
+        },
+        {
+          "number": 6,
+          "final_score": 0.731097,
+          "transition_component": 0.586303,
+          "zone_deficit_component": 1.0
+        },
+        {
+          "number": 4,
+          "final_score": 0.727777,
+          "transition_component": 0.581196,
+          "zone_deficit_component": 1.0
+        },
+        {
+          "number": 2,
+          "final_score": 0.717292,
+          "transition_component": 0.565064,
+          "zone_deficit_component": 1.0
+        },
+        {
+          "number": 7,
+          "final_score": 0.701085,
+          "transition_component": 0.54013,
+          "zone_deficit_component": 1.0
+        },
+        {
+          "number": 8,
+          "final_score": 0.687637,
+          "transition_component": 0.519442,
+          "zone_deficit_component": 1.0
+        },
+        {
+          "number": 25,
+          "final_score": 0.676078,
+          "transition_component": 0.873011,
+          "zone_deficit_component": 0.310345
+        },
+        {
+          "number": 26,
+          "final_score": 0.642454,
+          "transition_component": 0.821282,
+          "zone_deficit_component": 0.310345
+        },
+        {
+          "number": 1,
+          "final_score": 0.619797,
+          "transition_component": 0.415073,
+          "zone_deficit_component": 1.0
+        },
+        {
+          "number": 24,
+          "final_score": 0.610411,
+          "transition_component": 0.771986,
+          "zone_deficit_component": 0.310345
+        },
+        {
+          "number": 27,
+          "final_score": 0.573552,
+          "transition_component": 0.715278,
+          "zone_deficit_component": 0.310345
+        },
+        {
+          "number": 21,
+          "final_score": 0.564493,
+          "transition_component": 0.701342,
+          "zone_deficit_component": 0.310345
+        }
+      ]
+    },
+    "residue_structure_stability_3bet": {
+      "latest_bets": [
+        [
+          3,
+          15,
+          17,
+          21,
+          25,
+          27
+        ],
+        [
+          6,
+          9,
+          11,
+          12,
+          30,
+          36
+        ],
+        [
+          14,
+          16,
+          18,
+          31,
+          33,
+          35
+        ]
+      ],
+      "latest_top_numbers": [
+        {
+          "number": 21,
+          "final_score": 1.0,
+          "transition_component": 0.569687,
+          "stability_component": 0.922437
+        },
+        {
+          "number": 3,
+          "final_score": 0.945285,
+          "transition_component": 0.749458,
+          "stability_component": 0.662841
+        },
+        {
+          "number": 15,
+          "final_score": 0.927355,
+          "transition_component": 0.386142,
+          "stability_component": 1.0
+        },
+        {
+          "number": 25,
+          "final_score": 0.807906,
+          "transition_component": 0.846156,
+          "stability_component": 0.365721
+        },
+        {
+          "number": 27,
+          "final_score": 0.806844,
+          "transition_component": 0.363331,
+          "stability_component": 0.846997
+        },
+        {
+          "number": 17,
+          "final_score": 0.788904,
+          "transition_component": 1.0,
+          "stability_component": 0.184156
+        },
+        {
+          "number": 12,
+          "final_score": 0.770638,
+          "transition_component": 0.310511,
+          "stability_component": 0.846997
+        },
+        {
+          "number": 30,
+          "final_score": 0.688044,
+          "transition_component": 0.03701,
+          "stability_component": 1.0
+        },
+        {
+          "number": 6,
+          "final_score": 0.682752,
+          "transition_component": 0.106853,
+          "stability_component": 0.922437
+        },
+        {
+          "number": 11,
+          "final_score": 0.642095,
+          "transition_component": 0.71038,
+          "stability_component": 0.259596
+        },
+        {
+          "number": 36,
+          "final_score": 0.630703,
+          "transition_component": 0.03092,
+          "stability_component": 0.922437
+        },
+        {
+          "number": 9,
+          "final_score": 0.629745,
+          "transition_component": 0.284457,
+          "stability_component": 0.667501
+        }
+      ]
+    }
+  }
+}

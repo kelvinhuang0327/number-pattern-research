@@ -68,8 +68,11 @@ export class UIManager {
     }
 
     showNotification(message, type = 'info') {
+        const container = this.ensureNotificationContainer();
         const notification = document.createElement('div');
         notification.className = `notification notification-${type}`;
+        notification.setAttribute('role', 'status');
+        notification.setAttribute('aria-live', type === 'error' ? 'assertive' : 'polite');
 
         const icons = {
             info: 'info',
@@ -78,7 +81,27 @@ export class UIManager {
             warning: 'alert-triangle'
         };
 
+        const theme = {
+            info: {
+                background: 'linear-gradient(135deg, rgba(31,111,235,0.96), rgba(88,166,255,0.92))',
+                borderColor: 'rgba(147,197,253,0.45)',
+            },
+            success: {
+                background: 'linear-gradient(135deg, rgba(35,134,54,0.96), rgba(63,185,80,0.92))',
+                borderColor: 'rgba(134,239,172,0.38)',
+            },
+            warning: {
+                background: 'linear-gradient(135deg, rgba(187,128,9,0.96), rgba(245,158,11,0.92))',
+                borderColor: 'rgba(253,224,71,0.4)',
+            },
+            error: {
+                background: 'linear-gradient(135deg, rgba(218,54,51,0.97), rgba(248,81,73,0.93))',
+                borderColor: 'rgba(252,165,165,0.4)',
+            }
+        };
+
         const iconName = icons[type] || 'info';
+        const palette = theme[type] || theme.info;
         
         // 🛡️ Ensure message is safe
         const safeMessage = message.replace(/\n/g, '<br>');
@@ -88,7 +111,20 @@ export class UIManager {
             <div class="notification-content">${safeMessage}</div>
         `;
 
-        document.body.appendChild(notification);
+        Object.assign(notification.style, {
+            display: 'flex',
+            alignItems: 'flex-start',
+            gap: '12px',
+            minWidth: '320px',
+            maxWidth: 'min(520px, calc(100vw - 32px))',
+            background: palette.background,
+            borderColor: palette.borderColor,
+            color: '#fff',
+            opacity: '1',
+            pointerEvents: 'auto',
+        });
+
+        container.appendChild(notification);
         
         // Initialize the new icon
         if (window.lucide) {
@@ -106,6 +142,27 @@ export class UIManager {
                 notification.remove();
             });
         }, 5000);
+    }
+
+    ensureNotificationContainer() {
+        let container = document.getElementById('global-notification-container');
+        if (container) return container;
+
+        container = document.createElement('div');
+        container.id = 'global-notification-container';
+        Object.assign(container.style, {
+            position: 'fixed',
+            top: '16px',
+            right: '16px',
+            zIndex: '10001',
+            display: 'flex',
+            flexDirection: 'column',
+            gap: '12px',
+            pointerEvents: 'none',
+            maxWidth: 'calc(100vw - 32px)',
+        });
+        document.body.appendChild(container);
+        return container;
     }
 
     updateLotteryTypeSelector(stats, currentType) {

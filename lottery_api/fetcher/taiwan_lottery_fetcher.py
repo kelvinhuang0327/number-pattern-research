@@ -130,13 +130,30 @@ def _parse_row(lottery_type: str, config: Dict, row: Dict) -> Optional[Dict]:
             logger.debug(f"Skip row {period}: insufficient numbers ({len(numbers)})")
             return None
 
-        return {
+        # Extract pool-size fields if available
+        sell_amount = None
+        total_amount = None
+        if lottery_type == "DAILY_539":
+            try:
+                sell_amount = float(row.get("sellAmount", 0)) if row.get("sellAmount") else None
+                total_amount = float(row.get("totalAmount", 0)) if row.get("totalAmount") else None
+            except (ValueError, TypeError):
+                pass
+
+        result = {
             "lotteryType": lottery_type,
             "draw":        period,
             "date":        date_raw,
             "numbers":     numbers,
             "special":     special,
         }
+        
+        # Add pool-size fields for DAILY_539
+        if lottery_type == "DAILY_539":
+            result["sell_amount"] = sell_amount
+            result["total_amount"] = total_amount
+
+        return result
     except Exception as e:
         logger.warning(f"⚠️  Failed to parse row: {e} — {row}")
         return None

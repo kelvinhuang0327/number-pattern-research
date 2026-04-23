@@ -21,7 +21,7 @@ import { DrawEntryManager } from '../ui/DrawEntryManager.js';
 import { AutoFetchManager } from '../ui/AutoFetchManager.js';
 import { PredictionTracker } from '../ui/PredictionTracker.js';
 import { ReviewManager } from '../ui/ReviewManager.js';
-import { OrchestrationManager } from '../ui/OrchestrationManager.js';
+import { OrchestrationManager } from '../ui/OrchestrationManager.js?v=14';
 
 /**
  * 主應用程式

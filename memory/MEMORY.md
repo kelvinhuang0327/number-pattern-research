@@ -1,5 +1,22 @@
 # Lottery Project Memory Index
 
+⚠️ MEMORY IS SECONDARY
+
+Memory is NOT a source of truth.
+
+All memory-based conclusions MUST be validated against wiki.
+
+If conflict exists:
+→ wiki wins
+
+Memory is used for:
+- historical context
+- lessons learned
+
+NOT for:
+- final decision making
+
+
 ## Wiki（詳細知識）
 
 - [[wiki/games/big_lotto]] — 大樂透維護模式、策略表、PSI / Drift 摘要

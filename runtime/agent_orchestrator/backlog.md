@@ -122,26 +122,62 @@
 
 ---
 
+## 配額阻塞待重跑清單（2026/04/23 盤點）
+
+以下任務在 DB 內目前為 `COMPLETED`，但 completed 檔案實際包含 `weekly rate limit` / `no quota` / `switch to auto model to continue`，屬**假完成**，不得視為有效研究結論。已重新加入 backlog 等待可用 runner / model 後重跑。
+
+重跑原則：
+- 優先改走本地可重現流程或非 quota 阻塞 runner
+- 若仍使用 Copilot，必須先確認 model / quota 可用
+- 相同主題的假完成任務合併為一筆 backlog，不逐筆重複排入
+- 單純「修復配額假完成」類系統任務不逐筆重排，由一條總括治理任務承接
+
+待重跑項目：
+- **[RETRY_REQUIRED][POWER_LOTTO]** `威力彩 WQ P2-1` 正式驗證重跑
+  來源假完成：Task `#6`、`#43`、`#50`、`#56`
+  要求：改用本地可重現驗證流程，留下正式 result artifact；若外部模型不可用，直接標記 `BLOCKED_ENV`，不得再次標 `COMPLETED`
+- **[RETRY_REQUIRED][POWER_LOTTO]** `威力彩主線健康監控 / 降權決策` 重跑
+  來源假完成：Task `#42`、`#49`、`#51`
+  要求：完成 RSM 本地監控、降權判定與可驗證輸出，禁止只留下 rate-limit 訊息
+- **[RETRY_REQUIRED][DAILY_539]** `MicroFish 升格驗證` 重跑
+  來源假完成：Task `#41`
+  要求：保留完整驗證結果與是否可升格的明確結論
+- **[RETRY_REQUIRED][DAILY_539]** `彩池 / trusted pool-data / H013` 整合重跑
+  來源假完成：Task `#44`、`#45`、`#52`、`#55`、`#57`、`#58`
+  要求：先確認資料來源與欄位可信度，再重跑 H013 / poolsize 正式驗證；不可把資料修復與正式驗證拆成多筆空跑
+- **[RETRY_REQUIRED][BIG_LOTTO]** `500 期監控與降權判定` 重跑
+  來源假完成：Task `#53`、`#59`
+  要求：用本地監控腳本重建 150/500/1500 期判定與降權結論
+- **[TODO][SYSTEM]** `quota / model / fallback 治理任務`
+  來源假完成：Task `#46`、`#47`、`#48`、`#54`
+  要求：統一整理 CLI model 設定、quota 偵測、fallback runner、假完成回補規則；不要再逐筆重跑同型修復任務
+
+盤點備註：
+- Task `#7`、`#8` 為早期樣板 placeholder 任務且同樣命中 `you have no quota`，不直接加入研究 backlog；僅作歷史異常證據
+- 後續若掃描到新的 `COMPLETED + quota/rate-limit` 任務，應併入上述主題，不另起重複 backlog
+
+---
+
 <!-- AUTO_STATUS_START -->
 
 ## 自動狀態快照（Auto-generated）
 
-- 更新時間（Asia/Taipei）：`2026/04/22 15:18:29`
-- 最近任務總數（查詢範圍）：`18`
+- 更新時間（Asia/Taipei）：`2026/04/23 14:02:27`
+- 最近任務總數（查詢範圍）：`50`
 
 ### 研究任務摘要
-- midfreq_fourier_2bet McNemar 驗證：`COMPLETED` (Task #5, 2026/04/21 11:41)
-- fourier_rhythm_3bet 500期 OOS 驗證：`FAILED` (Task #11, 2026/04/21 23:06)
-- Winning Quality P2-1 驗證：`FAILED` (Task #13, 2026/04/22 00:28)
+- midfreq_fourier_2bet McNemar 驗證：`NO_RECORD`
+- fourier_rhythm_3bet 500期 OOS 驗證：`COMPLETED` (Task #31, 2026/04/23 00:10)
+- Winning Quality P2-1 驗證：`NO_RECORD`
 
 ### 最近 8 筆任務
-- #18 | 2026/04/22 14:49 | REPLAN_REQUIRED | 耗時 29m10s | 完成 2026/04/22 15:18:29 | 威力彩 PP3+MidFreq 正交新組合驗證
-- #17 | 2026/04/22 14:17 | FAILED | 耗時 21m34s | 完成 2026/04/22 14:38:50 | 檢查 backlog 並產出下一個可驗證任務
-- #16 | 2026/04/22 10:14 | FAILED | 耗時 4m2s | 完成 2026/04/22 14:08:00 | 檢查 backlog 並產出下一個可驗證任務
-- #15 | 2026/04/22 09:51 | FAILED | 耗時 4h5m | 完成 2026/04/22 14:03:47 | 威力彩 WQ P2-1 無洩漏驗證
-- #14 | 2026/04/22 01:01 | FAILED | 耗時 10m0s | 完成 2026/04/22 09:38:30 | 檢查 backlog 並產出下一個可驗證任務
-- #13 | 2026/04/22 00:28 | FAILED | 耗時 20m0s | 完成 2026/04/22 00:57:26 | 威力彩 P2-1 Winning Quality 驗證
-- #12 | 2026/04/21 23:26 | FAILED | 耗時 56m40s | 完成 2026/04/22 00:24:02 | 威力彩 Fourier 3注本地OOS驗證
-- #11 | 2026/04/21 23:06 | FAILED | 耗時 10m1s | 完成 2026/04/21 23:17:20 | 威力彩 Fourier 3注 500期OOS驗證
+- #67 | 2026/04/23 13:55 | FAILED | 耗時 6m33s | 完成 2026/04/23 14:02:27 | 治理 quota 假完成與本地 fallback
+- #66 | 2026/04/23 13:34 | REPLAN_REQUIRED | 耗時 40s | 完成 2026/04/23 13:35:43 | 大樂透500期本地監控定案
+- #65 | 2026/04/23 13:24 | REPLAN_REQUIRED | 耗時 27s | 完成 2026/04/23 13:24:41 | 大樂透500期本地監控重建
+- #64 | 2026/04/23 13:13 | REPLAN_REQUIRED | 耗時 40s | 完成 2026/04/23 13:14:14 | 威力彩外生訊號本地盤點
+- #63 | 2026/04/23 13:02 | REPLAN_REQUIRED | 耗時 40s | 完成 2026/04/23 13:02:56 | 修復 quota 假完成與本地 fallback
+- #62 | 2026/04/23 12:55 | REPLAN_REQUIRED | 耗時 40s | 完成 2026/04/23 12:56:32 | 威力彩新外生訊號可行性盤點
+- #61 | 2026/04/23 12:51 | REPLAN_REQUIRED | 耗時 40s | 完成 2026/04/23 12:51:59 | 治理 quota 假完成與本地 fallback
+- #60 | 2026/04/23 12:40 | REPLAN_REQUIRED | 耗時 40s | 完成 2026/04/23 12:41:22 | BIG_LOTTO 500期本地監控定案
 
 <!-- AUTO_STATUS_END -->

@@ -43,6 +43,9 @@ logs/*.log
 *.bak
 .gstack/
 
+# Process IDs
+*.pid
+
 # Orchestrator runtime data (tasks, logs, locks — not source)
 runtime/agent_orchestrator/tasks/
 runtime/agent_orchestrator/logs/

@@ -415,6 +415,25 @@ class DatabaseManager:
                     except Exception:
                         jackpot_amount = None
                 
+                # Extract pool-size fields
+                sell_amount = draw.get('sell_amount')
+                if sell_amount in (None, ""):
+                    sell_amount = None
+                else:
+                    try:
+                        sell_amount = float(sell_amount)
+                    except Exception:
+                        sell_amount = None
+                
+                total_amount = draw.get('total_amount')
+                if total_amount in (None, ""):
+                    total_amount = None
+                else:
+                    try:
+                        total_amount = float(total_amount)
+                    except Exception:
+                        total_amount = None
+                
                 batch_data.append((
                     draw.get('draw'),
                     draw.get('date'),
@@ -422,6 +441,8 @@ class DatabaseManager:
                     numbers_json,
                     draw.get('special', 0),
                     jackpot_amount,
+                    sell_amount,
+                    total_amount,
                 ))
             
             # 使用 executemany 批次插入（大幅提升性能）
@@ -433,8 +454,8 @@ class DatabaseManager:
             
             # 這裡使用方法1（優先性能）+ 後續統計
             cursor.executemany("""
-                INSERT OR IGNORE INTO draws (draw, date, lottery_type, numbers, special, jackpot_amount)
-                VALUES (?, ?, ?, ?, ?, ?)
+                INSERT OR IGNORE INTO draws (draw, date, lottery_type, numbers, special, jackpot_amount, sell_amount, total_amount)
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?)
             """, batch_data)
             
             inserted = cursor.rowcount

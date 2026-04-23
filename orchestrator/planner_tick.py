@@ -12,6 +12,7 @@ import time
 import logging
 import subprocess
 import re
+import tempfile
 from typing import Optional
 
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
@@ -204,9 +205,20 @@ def _print_dry_run_preview(meta_prompt: str, wiki_labels: list[str]):
 
 
 def _call_planner(meta_prompt: str, planner_provider: str) -> tuple[str, str]:
+    output_last_message_path = None
     try:
         runtime, command = common.planner_command(meta_prompt, planner_provider)
+        if runtime == "codex":
+            with tempfile.NamedTemporaryFile(prefix="planner-last-message-", suffix=".txt", delete=False) as handle:
+                output_last_message_path = handle.name
+            prompt_arg = command[-1]
+            command = [*command[:-1], "--output-last-message", output_last_message_path, prompt_arg]
         result = subprocess.run(command, capture_output=True, text=True, timeout=180)
+        if output_last_message_path and os.path.exists(output_last_message_path):
+            with open(output_last_message_path, "r", encoding="utf-8") as handle:
+                last_message = handle.read().strip()
+            if last_message:
+                return runtime, last_message
         return runtime, result.stdout.strip() or result.stderr.strip()
     except subprocess.TimeoutExpired:
         raw = f"{planner_provider} planner timed out (180s)"
@@ -216,6 +228,12 @@ def _call_planner(meta_prompt: str, planner_provider: str) -> tuple[str, str]:
         raw = f"{planner_provider} planner error: {exc}"
         logger.warning(FALLBACK_WARNING, raw)
         return "fallback", raw
+    finally:
+        if output_last_message_path and os.path.exists(output_last_message_path):
+            try:
+                os.remove(output_last_message_path)
+            except OSError:
+                pass
 
 
 def _extract_planner_payload(raw: str) -> Optional[dict]:
@@ -289,6 +307,96 @@ def _build_retry_prompt(meta_prompt: str, reason: str) -> str:
         + f"無效原因：{reason}\n"
         + "請輸出實際值，不得包含模板詞或佔位符。"
     )
+
+
+def _planner_candidates(provider: str) -> list[str]:
+    requested = common.normalize_planner_provider(provider)
+    ordered = [requested]
+    ordered.append("claude" if requested == "codex" else "codex")
+    deduped = []
+    for item in ordered:
+        if item not in deduped:
+            deduped.append(item)
+    return deduped
+
+
+def _attempt_planner_payload(meta_prompt: str, planner_provider: str) -> tuple[Optional[dict], str, str, str]:
+    planner_source, raw = _call_planner(meta_prompt, planner_provider)
+    parse_or_validate_error = ""
+    payload = None
+
+    if planner_source in ("claude", "codex"):
+        payload = _extract_planner_payload(raw)
+        if payload is None:
+            parse_or_validate_error = "failed to parse planner JSON output"
+        else:
+            ok, reason = _validate_payload(payload)
+            if not ok:
+                parse_or_validate_error = reason
+
+        if parse_or_validate_error:
+            retry_prompt = _build_retry_prompt(meta_prompt, parse_or_validate_error)
+            retry_source, retry_raw = _call_planner(retry_prompt, planner_provider)
+            if retry_source in ("claude", "codex"):
+                retry_payload = _extract_planner_payload(retry_raw)
+                if retry_payload is not None:
+                    ok, reason = _validate_payload(retry_payload)
+                    if ok:
+                        payload = retry_payload
+                        raw = retry_raw
+                        planner_source = retry_source
+                        parse_or_validate_error = ""
+                    else:
+                        raw = retry_raw
+                        parse_or_validate_error = reason
+                else:
+                    raw = retry_raw
+
+    return payload, planner_source, raw, parse_or_validate_error
+
+
+def _generate_planner_payload(meta_prompt: str, planner_provider: str) -> tuple[Optional[dict], str, str, str, str]:
+    requested_provider = common.normalize_planner_provider(planner_provider)
+    last_raw = ""
+    attempt_errors = []
+
+    for candidate in _planner_candidates(requested_provider):
+        available, reason = common.provider_available("planner", candidate)
+        if not available:
+            attempt_errors.append(f"{candidate} unavailable: {reason}")
+            continue
+
+        logger.info("Calling %s to generate next task prompt...", common.planner_provider_label(candidate))
+        payload, planner_source, raw, parse_error = _attempt_planner_payload(meta_prompt, candidate)
+        last_raw = raw
+        if payload is not None:
+            return payload, planner_source, candidate, requested_provider, ""
+
+        if _planner_error_is_runtime_blocker(raw):
+            detail = raw
+        elif parse_error and raw:
+            detail = f"{parse_error}; raw={raw[:300]}"
+        else:
+            detail = parse_error or raw or f"{candidate} returned no usable output"
+        attempt_errors.append(f"{candidate}: {detail}")
+
+    reason = " | ".join(attempt_errors) if attempt_errors else "no planner providers available"
+    return None, "fallback", requested_provider, requested_provider, reason
+
+
+def _planner_error_is_runtime_blocker(reason: str) -> bool:
+    lowered = str(reason or "").lower()
+    markers = [
+        "usage limit",
+        "hit your limit",
+        "hit your usage limit",
+        "quota",
+        "not logged in",
+        "auth failed",
+        "permission denied",
+        "timed out",
+    ]
+    return any(marker in lowered for marker in markers)
 
 
 def _extract_section_lines(markdown: str, header: str) -> list[str]:
@@ -371,6 +479,7 @@ def run(dry_run: bool = False, force: bool = False):
     common.ensure_dirs()
     t0 = time.time()
     planner_provider = "claude" if dry_run else db.get_planner_provider()
+    request_id = str(os.environ.get("ORCHESTRATOR_REQUEST_ID", "")).strip() or None
 
     if dry_run:
         _, wiki_labels, meta_prompt = _build_meta_prompt(
@@ -383,7 +492,7 @@ def run(dry_run: bool = False, force: bool = False):
     if not force and not db.is_scheduler_enabled():
         msg = "Scheduler is disabled — planner skip"
         logger.info(msg)
-        db.log_tick(RUNNER, "PLANNER_SKIP_DISABLED", message=msg)
+        db.log_tick(RUNNER, "PLANNER_SKIP_DISABLED", message=msg, request_id=request_id)
         common.log_jsonl(RUNNER, "PLANNER_SKIP_DISABLED")
         return
 
@@ -392,7 +501,7 @@ def run(dry_run: bool = False, force: bool = False):
     if latest and latest["status"] not in ("COMPLETED", "FAILED", "CANCELLED", "REPLAN_REQUIRED"):
         msg = f"Previous task {latest['id']} still {latest['status']} — skip"
         logger.info(msg)
-        db.log_tick(RUNNER, "PLANNER_SKIP_PREV_RUNNING", task_id=latest["id"], message=msg)
+        db.log_tick(RUNNER, "PLANNER_SKIP_PREV_RUNNING", task_id=latest["id"], message=msg, request_id=request_id)
         common.log_jsonl(RUNNER, "PLANNER_SKIP_PREV_RUNNING", task_id=latest["id"])
         return
 
@@ -404,55 +513,43 @@ def run(dry_run: bool = False, force: bool = False):
     except ValueError as exc:
         msg = str(exc)
         logger.warning(msg)
-        db.log_tick(RUNNER, "PLANNER_SKIP_NO_BACKLOG", message=msg)
+        db.log_tick(RUNNER, "PLANNER_SKIP_NO_BACKLOG", message=msg, request_id=request_id)
         common.log_jsonl(RUNNER, "PLANNER_SKIP_NO_BACKLOG")
         return
 
-    logger.info("Calling %s to generate next task prompt...", common.planner_provider_label(planner_provider))
-    payload = None
-    planner_source, raw = _call_planner(meta_prompt, planner_provider)
-    parse_or_validate_error = ""
+    payload, planner_source, effective_planner_provider, requested_planner_provider, planner_error = _generate_planner_payload(
+        meta_prompt,
+        planner_provider,
+    )
 
-    if planner_source in ("claude", "codex"):
-        payload = _extract_planner_payload(raw)
-        if payload is None:
-            parse_or_validate_error = "failed to parse planner JSON output"
-        else:
-            ok, reason = _validate_payload(payload)
-            if not ok:
-                parse_or_validate_error = reason
-
-        # One strict retry before fallback (especially useful for Codex planner).
-        if parse_or_validate_error:
-            retry_prompt = _build_retry_prompt(meta_prompt, parse_or_validate_error)
-            retry_source, retry_raw = _call_planner(retry_prompt, planner_provider)
-            if retry_source in ("claude", "codex"):
-                retry_payload = _extract_planner_payload(retry_raw)
-                if retry_payload is not None:
-                    ok, reason = _validate_payload(retry_payload)
-                    if ok:
-                        payload = retry_payload
-                        raw = retry_raw
-                        parse_or_validate_error = ""
-                        planner_source = retry_source
-                    else:
-                        parse_or_validate_error = reason
-                        raw = retry_raw
-                else:
-                    raw = retry_raw
-
-        if parse_or_validate_error:
-            planner_source = "fallback"
-            payload = None
-            msg = f"Planner output invalid: {parse_or_validate_error}"
-            logger.warning(FALLBACK_WARNING, msg)
-            db.log_tick(RUNNER, "PLANNER_FALLBACK_LOCAL", message=f"{msg}; raw={raw[:300]}")
-            common.log_jsonl(RUNNER, "PLANNER_FALLBACK_LOCAL", error=msg, raw_output=raw[:300])
+    if payload is None:
+        msg = f"Planner output invalid: {planner_error}"
+        logger.warning(FALLBACK_WARNING, msg)
+        db.log_tick(RUNNER, "PLANNER_FALLBACK_LOCAL", message=msg[:600], request_id=request_id)
+        common.log_jsonl(RUNNER, "PLANNER_FALLBACK_LOCAL", error=msg[:600])
+        if _planner_error_is_runtime_blocker(planner_error):
+            skip_msg = f"Planner runtime blocked; no task created: {planner_error}"
+            logger.warning(skip_msg)
+            db.log_tick(RUNNER, "PLANNER_SKIP_PROVIDER_FAILURE", message=skip_msg[:600], request_id=request_id)
+            common.log_jsonl(RUNNER, "PLANNER_SKIP_PROVIDER_FAILURE", error=skip_msg[:600])
+            return
+    elif effective_planner_provider != requested_planner_provider:
+        msg = (
+            f"Planner provider fallback: requested {requested_planner_provider}, "
+            f"used {effective_planner_provider}"
+        )
+        db.log_tick(RUNNER, "PLANNER_PROVIDER_FALLBACK", message=msg, request_id=request_id)
+        common.log_jsonl(
+            RUNNER,
+            "PLANNER_PROVIDER_FALLBACK",
+            requested_provider=requested_planner_provider,
+            effective_provider=effective_planner_provider,
+        )
 
     if payload is None:
         payload = _fallback_payload(backlog)
         if planner_source == "fallback":
-            common.log_jsonl(RUNNER, "PLANNER_FALLBACK_LOCAL", raw_output=raw[:300])
+            common.log_jsonl(RUNNER, "PLANNER_FALLBACK_LOCAL", fallback_title=payload.get("title"))
 
     title = payload["title"]
     slug = common.slugify(payload["slug"])
@@ -462,7 +559,7 @@ def run(dry_run: bool = False, force: bool = False):
     if not contract_ok:
         msg = f"Planner generated invalid task contract: {contract_reason}"
         logger.warning(msg)
-        db.log_tick(RUNNER, "PLANNER_INVALID_CONTRACT", message=msg)
+        db.log_tick(RUNNER, "PLANNER_INVALID_CONTRACT", message=msg, request_id=request_id)
         common.log_jsonl(RUNNER, "PLANNER_INVALID_CONTRACT", error=contract_reason)
         return
 
@@ -493,14 +590,15 @@ def run(dry_run: bool = False, force: bool = False):
                       task_id=task_id, title=title, slug=slug,
                       status="QUEUED", previous_task_id=previous_task_id,
                       planner_source=planner_source,
-                      planner_provider=planner_provider,
+                      planner_provider=effective_planner_provider,
+                      planner_requested_provider=requested_planner_provider,
                       task_contract_path=contract_file_path,
                       task_contract_version=contract.get("version"))
 
     elapsed = int((time.time() - t0) * 1000)
     msg = f"Task {task_id} created: {title} [{slug}] via {planner_source}"
     logger.info(msg)
-    db.log_tick(RUNNER, "PLANNER_PRODUCED", task_id=task_id, message=msg, duration_ms=elapsed)
+    db.log_tick(RUNNER, "PLANNER_PRODUCED", task_id=task_id, message=msg, duration_ms=elapsed, request_id=request_id)
     common.log_jsonl(
         RUNNER,
         "PLANNER_PRODUCED",
@@ -508,7 +606,8 @@ def run(dry_run: bool = False, force: bool = False):
         title=title,
         slug=slug,
         planner_source=planner_source,
-        planner_provider=planner_provider,
+        planner_provider=effective_planner_provider,
+        planner_requested_provider=requested_planner_provider,
     )
 
 

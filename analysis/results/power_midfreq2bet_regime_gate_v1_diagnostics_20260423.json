@@ -1,0 +1,364 @@
+{
+  "generated_at": "2026-04-23T03:38:41.342+08:00",
+  "strategy": "midfreq_fourier_2bet_regime_gate_v1",
+  "diagnostic_method": [
+    "Baseline/candidate evaluated on identical contiguous windows",
+    "Regime buckets: previous draw sum bucket, parity bucket, hot-density bucket",
+    "Gate precedence: mean10_sum_low first, then prev_hot_overlap>=4, else baseline residual"
+  ],
+  "windows": {
+    "recent_150": {
+      "window": "recent_150",
+      "gate_counts": {
+        "default -> baseline_fourier_residual": 79,
+        "mean10_sum_low -> cold_residual_60": 50,
+        "prev_hot_overlap>=4 -> hot_residual_60": 21
+      },
+      "top_negative_baseline_buckets": [
+        {
+          "bucket": {
+            "prev_sum_bucket": "mid",
+            "prev_parity_bucket": "balanced",
+            "density_bucket": "mixed"
+          },
+          "count": 19,
+          "baseline_hit_rate_pct": 0.0,
+          "baseline_edge_pct": -7.59,
+          "candidate_hit_rate_pct": 0.0,
+          "candidate_edge_pct": -7.59,
+          "candidate_minus_baseline_edge_pct": 0.0
+        },
+        {
+          "bucket": {
+            "prev_sum_bucket": "mid",
+            "prev_parity_bucket": "tilted",
+            "density_bucket": "mixed"
+          },
+          "count": 20,
+          "baseline_hit_rate_pct": 5.0,
+          "baseline_edge_pct": -2.59,
+          "candidate_hit_rate_pct": 0.0,
+          "candidate_edge_pct": -7.59,
+          "candidate_minus_baseline_edge_pct": -5.0
+        },
+        {
+          "bucket": {
+            "prev_sum_bucket": "low",
+            "prev_parity_bucket": "tilted",
+            "density_bucket": "mixed"
+          },
+          "count": 20,
+          "baseline_hit_rate_pct": 5.0,
+          "baseline_edge_pct": -2.59,
+          "candidate_hit_rate_pct": 10.0,
+          "candidate_edge_pct": 2.41,
+          "candidate_minus_baseline_edge_pct": 5.0
+        }
+      ],
+      "top_candidate_improvement_buckets": [
+        {
+          "bucket": {
+            "prev_sum_bucket": "low",
+            "prev_parity_bucket": "balanced",
+            "density_bucket": "mixed"
+          },
+          "count": 10,
+          "baseline_hit_rate_pct": 20.0,
+          "baseline_edge_pct": 12.41,
+          "candidate_hit_rate_pct": 30.0,
+          "candidate_edge_pct": 22.41,
+          "candidate_minus_baseline_edge_pct": 10.0
+        },
+        {
+          "bucket": {
+            "prev_sum_bucket": "low",
+            "prev_parity_bucket": "tilted",
+            "density_bucket": "mixed"
+          },
+          "count": 20,
+          "baseline_hit_rate_pct": 5.0,
+          "baseline_edge_pct": -2.59,
+          "candidate_hit_rate_pct": 10.0,
+          "candidate_edge_pct": 2.41,
+          "candidate_minus_baseline_edge_pct": 5.0
+        },
+        {
+          "bucket": {
+            "prev_sum_bucket": "mid",
+            "prev_parity_bucket": "balanced",
+            "density_bucket": "mixed"
+          },
+          "count": 19,
+          "baseline_hit_rate_pct": 0.0,
+          "baseline_edge_pct": -7.59,
+          "candidate_hit_rate_pct": 0.0,
+          "candidate_edge_pct": -7.59,
+          "candidate_minus_baseline_edge_pct": 0.0
+        },
+        {
+          "bucket": {
+            "prev_sum_bucket": "mid",
+            "prev_parity_bucket": "extreme",
+            "density_bucket": "mixed"
+          },
+          "count": 9,
+          "baseline_hit_rate_pct": 11.11,
+          "baseline_edge_pct": 3.52,
+          "candidate_hit_rate_pct": 11.11,
+          "candidate_edge_pct": 3.52,
+          "candidate_minus_baseline_edge_pct": 0.0
+        },
+        {
+          "bucket": {
+            "prev_sum_bucket": "high",
+            "prev_parity_bucket": "tilted",
+            "density_bucket": "mixed"
+          },
+          "count": 9,
+          "baseline_hit_rate_pct": 44.44,
+          "baseline_edge_pct": 36.85,
+          "candidate_hit_rate_pct": 44.44,
+          "candidate_edge_pct": 36.85,
+          "candidate_minus_baseline_edge_pct": 0.0
+        }
+      ]
+    },
+    "recent_500": {
+      "window": "recent_500",
+      "gate_counts": {
+        "default -> baseline_fourier_residual": 256,
+        "prev_hot_overlap>=4 -> hot_residual_60": 81,
+        "mean10_sum_low -> cold_residual_60": 163
+      },
+      "top_negative_baseline_buckets": [
+        {
+          "bucket": {
+            "prev_sum_bucket": "high",
+            "prev_parity_bucket": "tilted",
+            "density_bucket": "hot"
+          },
+          "count": 14,
+          "baseline_hit_rate_pct": 0.0,
+          "baseline_edge_pct": -7.59,
+          "candidate_hit_rate_pct": 7.14,
+          "candidate_edge_pct": -0.45,
+          "candidate_minus_baseline_edge_pct": 7.14
+        },
+        {
+          "bucket": {
+            "prev_sum_bucket": "high",
+            "prev_parity_bucket": "extreme",
+            "density_bucket": "mixed"
+          },
+          "count": 10,
+          "baseline_hit_rate_pct": 0.0,
+          "baseline_edge_pct": -7.59,
+          "candidate_hit_rate_pct": 0.0,
+          "candidate_edge_pct": -7.59,
+          "candidate_minus_baseline_edge_pct": 0.0
+        },
+        {
+          "bucket": {
+            "prev_sum_bucket": "low",
+            "prev_parity_bucket": "tilted",
+            "density_bucket": "cold"
+          },
+          "count": 10,
+          "baseline_hit_rate_pct": 0.0,
+          "baseline_edge_pct": -7.59,
+          "candidate_hit_rate_pct": 0.0,
+          "candidate_edge_pct": -7.59,
+          "candidate_minus_baseline_edge_pct": 0.0
+        }
+      ],
+      "top_candidate_improvement_buckets": [
+        {
+          "bucket": {
+            "prev_sum_bucket": "high",
+            "prev_parity_bucket": "extreme",
+            "density_bucket": "hot"
+          },
+          "count": 9,
+          "baseline_hit_rate_pct": 0.0,
+          "baseline_edge_pct": -7.59,
+          "candidate_hit_rate_pct": 22.22,
+          "candidate_edge_pct": 14.63,
+          "candidate_minus_baseline_edge_pct": 22.22
+        },
+        {
+          "bucket": {
+            "prev_sum_bucket": "low",
+            "prev_parity_bucket": "balanced",
+            "density_bucket": "cold"
+          },
+          "count": 8,
+          "baseline_hit_rate_pct": 0.0,
+          "baseline_edge_pct": -7.59,
+          "candidate_hit_rate_pct": 12.5,
+          "candidate_edge_pct": 4.91,
+          "candidate_minus_baseline_edge_pct": 12.5
+        },
+        {
+          "bucket": {
+            "prev_sum_bucket": "high",
+            "prev_parity_bucket": "tilted",
+            "density_bucket": "hot"
+          },
+          "count": 14,
+          "baseline_hit_rate_pct": 0.0,
+          "baseline_edge_pct": -7.59,
+          "candidate_hit_rate_pct": 7.14,
+          "candidate_edge_pct": -0.45,
+          "candidate_minus_baseline_edge_pct": 7.14
+        },
+        {
+          "bucket": {
+            "prev_sum_bucket": "mid",
+            "prev_parity_bucket": "tilted",
+            "density_bucket": "hot"
+          },
+          "count": 26,
+          "baseline_hit_rate_pct": 7.69,
+          "baseline_edge_pct": 0.1,
+          "candidate_hit_rate_pct": 11.54,
+          "candidate_edge_pct": 3.95,
+          "candidate_minus_baseline_edge_pct": 3.85
+        },
+        {
+          "bucket": {
+            "prev_sum_bucket": "low",
+            "prev_parity_bucket": "balanced",
+            "density_bucket": "mixed"
+          },
+          "count": 36,
+          "baseline_hit_rate_pct": 5.56,
+          "baseline_edge_pct": -2.03,
+          "candidate_hit_rate_pct": 8.33,
+          "candidate_edge_pct": 0.74,
+          "candidate_minus_baseline_edge_pct": 2.78
+        }
+      ]
+    },
+    "recent_1500": {
+      "window": "recent_1500",
+      "gate_counts": {
+        "default -> baseline_fourier_residual": 713,
+        "mean10_sum_low -> cold_residual_60": 560,
+        "prev_hot_overlap>=4 -> hot_residual_60": 227
+      },
+      "top_negative_baseline_buckets": [
+        {
+          "bucket": {
+            "prev_sum_bucket": "high",
+            "prev_parity_bucket": "tilted",
+            "density_bucket": "hot"
+          },
+          "count": 31,
+          "baseline_hit_rate_pct": 0.0,
+          "baseline_edge_pct": -7.59,
+          "candidate_hit_rate_pct": 12.9,
+          "candidate_edge_pct": 5.31,
+          "candidate_minus_baseline_edge_pct": 12.9
+        },
+        {
+          "bucket": {
+            "prev_sum_bucket": "low",
+            "prev_parity_bucket": "extreme",
+            "density_bucket": "hot"
+          },
+          "count": 23,
+          "baseline_hit_rate_pct": 0.0,
+          "baseline_edge_pct": -7.59,
+          "candidate_hit_rate_pct": 4.35,
+          "candidate_edge_pct": -3.24,
+          "candidate_minus_baseline_edge_pct": 4.35
+        },
+        {
+          "bucket": {
+            "prev_sum_bucket": "high",
+            "prev_parity_bucket": "extreme",
+            "density_bucket": "hot"
+          },
+          "count": 14,
+          "baseline_hit_rate_pct": 0.0,
+          "baseline_edge_pct": -7.59,
+          "candidate_hit_rate_pct": 21.43,
+          "candidate_edge_pct": 13.84,
+          "candidate_minus_baseline_edge_pct": 21.43
+        }
+      ],
+      "top_candidate_improvement_buckets": [
+        {
+          "bucket": {
+            "prev_sum_bucket": "high",
+            "prev_parity_bucket": "extreme",
+            "density_bucket": "hot"
+          },
+          "count": 14,
+          "baseline_hit_rate_pct": 0.0,
+          "baseline_edge_pct": -7.59,
+          "candidate_hit_rate_pct": 21.43,
+          "candidate_edge_pct": 13.84,
+          "candidate_minus_baseline_edge_pct": 21.43
+        },
+        {
+          "bucket": {
+            "prev_sum_bucket": "high",
+            "prev_parity_bucket": "tilted",
+            "density_bucket": "hot"
+          },
+          "count": 31,
+          "baseline_hit_rate_pct": 0.0,
+          "baseline_edge_pct": -7.59,
+          "candidate_hit_rate_pct": 12.9,
+          "candidate_edge_pct": 5.31,
+          "candidate_minus_baseline_edge_pct": 12.9
+        },
+        {
+          "bucket": {
+            "prev_sum_bucket": "mid",
+            "prev_parity_bucket": "tilted",
+            "density_bucket": "hot"
+          },
+          "count": 64,
+          "baseline_hit_rate_pct": 7.81,
+          "baseline_edge_pct": 0.22,
+          "candidate_hit_rate_pct": 12.5,
+          "candidate_edge_pct": 4.91,
+          "candidate_minus_baseline_edge_pct": 4.69
+        },
+        {
+          "bucket": {
+            "prev_sum_bucket": "low",
+            "prev_parity_bucket": "extreme",
+            "density_bucket": "hot"
+          },
+          "count": 23,
+          "baseline_hit_rate_pct": 0.0,
+          "baseline_edge_pct": -7.59,
+          "candidate_hit_rate_pct": 4.35,
+          "candidate_edge_pct": -3.24,
+          "candidate_minus_baseline_edge_pct": 4.35
+        },
+        {
+          "bucket": {
+            "prev_sum_bucket": "low",
+            "prev_parity_bucket": "balanced",
+            "density_bucket": "cold"
+          },
+          "count": 25,
+          "baseline_hit_rate_pct": 4.0,
+          "baseline_edge_pct": -3.59,
+          "candidate_hit_rate_pct": 8.0,
+          "candidate_edge_pct": 0.41,
+          "candidate_minus_baseline_edge_pct": 4.0
+        }
+      ]
+    }
+  },
+  "gate_definition": {
+    "rule_1": "If rolling mean of previous 10 draw sums < 114, replace bet2 with 60-draw cold residual bet.",
+    "rule_2": "Else if previous draw overlaps with 30-draw hot-12 set on >=4 numbers, replace bet2 with 60-draw hot residual bet.",
+    "rule_3": "Else keep baseline Fourier residual bet2."
+  }
+}

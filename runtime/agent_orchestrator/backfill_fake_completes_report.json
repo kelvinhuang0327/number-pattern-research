@@ -1,0 +1,183 @@
+{
+  "timestamp": "2026-04-23T05:58:44.758616+00:00",
+  "mode": "APPLY",
+  "fixed_count": 22,
+  "tasks": [
+    {
+      "task_id": 59,
+      "title": "大樂透500期監控與降權判定",
+      "markers": [
+        "you've reached your weekly rate limit",
+        "reached your weekly rate limit"
+      ]
+    },
+    {
+      "task_id": 58,
+      "title": "539 彩池外生信號正式驗證",
+      "markers": [
+        "you've reached your weekly rate limit",
+        "reached your weekly rate limit"
+      ]
+    },
+    {
+      "task_id": 57,
+      "title": "539 trusted pool-data unlock",
+      "markers": [
+        "you've reached your weekly rate limit",
+        "reached your weekly rate limit"
+      ]
+    },
+    {
+      "task_id": 56,
+      "title": "威力彩 WQ P2-1 本地正式驗證",
+      "markers": [
+        "you've reached your weekly rate limit",
+        "reached your weekly rate limit"
+      ]
+    },
+    {
+      "task_id": 55,
+      "title": "今彩539 彩池資料解鎖與可信閘",
+      "markers": [
+        "you've reached your weekly rate limit",
+        "reached your weekly rate limit"
+      ]
+    },
+    {
+      "task_id": 54,
+      "title": "離線監控與配額假完成修復",
+      "markers": [
+        "you've reached your weekly rate limit",
+        "reached your weekly rate limit"
+      ]
+    },
+    {
+      "task_id": 53,
+      "title": "大樂透500期監控與假完成防呆",
+      "markers": [
+        "you've reached your weekly rate limit",
+        "reached your weekly rate limit"
+      ]
+    },
+    {
+      "task_id": 52,
+      "title": "539彩池資料可信回補與可用性閘",
+      "markers": [
+        "you've reached your weekly rate limit",
+        "reached your weekly rate limit"
+      ]
+    },
+    {
+      "task_id": 51,
+      "title": "三彩種主線離線監控與降權判定",
+      "markers": [
+        "you've reached your weekly rate limit",
+        "reached your weekly rate limit"
+      ]
+    },
+    {
+      "task_id": 50,
+      "title": "威力彩WQ本地驗證與任務真實化",
+      "markers": [
+        "you've reached your weekly rate limit",
+        "reached your weekly rate limit"
+      ]
+    },
+    {
+      "task_id": 49,
+      "title": "威力彩主線監控與配額失效防呆",
+      "markers": [
+        "you've reached your weekly rate limit",
+        "reached your weekly rate limit"
+      ]
+    },
+    {
+      "task_id": 48,
+      "title": "修復配額阻塞與任務真實狀態閘",
+      "markers": [
+        "you've reached your weekly rate limit",
+        "reached your weekly rate limit"
+      ]
+    },
+    {
+      "task_id": 47,
+      "title": "修復配額假完成並重啟有效研究",
+      "markers": [
+        "you've reached your weekly rate limit",
+        "reached your weekly rate limit"
+      ]
+    },
+    {
+      "task_id": 46,
+      "title": "修復配額假完成並恢復研究執行",
+      "markers": [
+        "you've reached your weekly rate limit",
+        "reached your weekly rate limit"
+      ]
+    },
+    {
+      "task_id": 45,
+      "title": "539 彩池資料補齊與 H013 驗證",
+      "markers": [
+        "you've reached your weekly rate limit",
+        "reached your weekly rate limit"
+      ]
+    },
+    {
+      "task_id": 44,
+      "title": "補齊彩池資料管線以解鎖H013",
+      "markers": [
+        "you've reached your weekly rate limit",
+        "reached your weekly rate limit"
+      ]
+    },
+    {
+      "task_id": 43,
+      "title": "威力彩 WQ 解封與正式驗證",
+      "markers": [
+        "you've reached your weekly rate limit",
+        "reached your weekly rate limit"
+      ]
+    },
+    {
+      "task_id": 42,
+      "title": "威力彩主線健康監控與決策閘",
+      "markers": [
+        "you've reached your weekly rate limit",
+        "reached your weekly rate limit"
+      ]
+    },
+    {
+      "task_id": 41,
+      "title": "今彩539 MicroFish升格驗證",
+      "markers": [
+        "you've reached your weekly rate limit",
+        "reached your weekly rate limit"
+      ]
+    },
+    {
+      "task_id": 8,
+      "title": "<任務標題，中英文皆可，短於 40 字元>",
+      "markers": [
+        "you have no quota",
+        "no quota"
+      ]
+    },
+    {
+      "task_id": 7,
+      "title": "<任務標題，中英文皆可，短於 40 字元>",
+      "markers": [
+        "you have no quota",
+        "no quota"
+      ]
+    },
+    {
+      "task_id": 6,
+      "title": "威力彩 Winning Quality P2-1 驗證",
+      "markers": [
+        "you have no quota",
+        "no quota"
+      ]
+    }
+  ]
+}

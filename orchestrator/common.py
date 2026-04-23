@@ -13,8 +13,14 @@ import json
 import subprocess
 import shutil
 import time
+from contextlib import contextmanager
 from datetime import datetime, timezone, timedelta
 from typing import Optional
+
+try:
+    import fcntl
+except ImportError:  # pragma: no cover - non-POSIX fallback
+    fcntl = None
 
 logger = logging.getLogger(__name__)
 
@@ -33,6 +39,8 @@ _DEFAULT_GH_BIN = os.environ.get("GH_BIN", "/opt/homebrew/bin/gh")
 
 WORKER_MAX_SECONDS = int(os.environ.get("WORKER_MAX_SECONDS", str(8 * 3600)))
 WORKER_KILL_GRACE = 60  # seconds between SIGTERM and SIGKILL
+WORKER_PROGRESS_STALE_SECONDS = int(os.environ.get("WORKER_PROGRESS_STALE_SECONDS", "600"))
+COPILOT_PROGRESS_STALE_SECONDS = int(os.environ.get("COPILOT_PROGRESS_STALE_SECONDS", "600"))
 
 
 def _resolve_bin(preferred: str, cli_name: str) -> Optional[str]:
@@ -72,6 +80,12 @@ WORKER_PROVIDER_LABELS = {
     "claude": "Claude CLI",
 }
 
+COPILOT_MODEL_PRESETS = [
+    {"value": "", "label": "預設"},
+    {"value": "auto", "label": "auto（建議）"},
+    {"value": "gpt-5-mini", "label": "gpt-5-mini"},
+]
+
 PLANNER_ROLE_LABELS = {
     "claude": "Claude Planner",
     "codex": "Codex Planner",
@@ -91,6 +105,21 @@ _COPILOT_RUNTIME_CACHE = {
 
 COPILOT_DAEMON_STATE_PATH = os.path.join(LOCKS_DIR, "copilot_daemon_state.json")
 COPILOT_DAEMON_HEARTBEAT_TTL = int(os.environ.get("COPILOT_DAEMON_HEARTBEAT_TTL", "45"))
+GIT_OPS_LOCK_PATH = os.path.join(LOCKS_DIR, "git_ops.lock")
+
+HIGH_CONFLICT_PATHS = [
+    "CLAUDE.md",
+    "AGENT_RULES.md",
+    "SYSTEM_MAP.md",
+    "index.html",
+    "src/main.js",
+    "src/ui/OrchestrationManager.js",
+    "orchestrator/",
+    "runtime/agent_orchestrator/backlog.md",
+    "runtime/agent_orchestrator/launchd/",
+    "wiki/",
+    "memory/",
+]
 
 
 def ensure_dirs():
@@ -136,7 +165,9 @@ def copilot_daemon_status() -> dict:
     if pid and heartbeat_at and is_process_alive(pid):
         try:
             last = datetime.fromisoformat(heartbeat_at)
-            stale = (datetime.utcnow() - last).total_seconds() > COPILOT_DAEMON_HEARTBEAT_TTL
+            if last.tzinfo is None:
+                last = last.replace(tzinfo=timezone.utc)
+            stale = (datetime.now(timezone.utc) - last).total_seconds() > COPILOT_DAEMON_HEARTBEAT_TTL
             running = not stale
         except ValueError:
             running = False
@@ -159,6 +190,44 @@ def normalize_planner_provider(provider: Optional[str]) -> str:
 def normalize_worker_provider(provider: Optional[str]) -> str:
     value = str(provider or "codex").strip().lower()
     return value if value in WORKER_PROVIDER_LABELS else "codex"
+
+
+def normalize_copilot_model(model: Optional[str]) -> str:
+    raw = str(model or "").strip()
+    if not raw:
+        return ""
+
+    lowered = raw.lower().strip()
+    if lowered in ("default", "預設", "system", "builtin"):
+        return ""
+    if lowered == "auto":
+        return "auto"
+
+    aliases = {
+        "gpt-5 mini": "gpt-5-mini",
+        "gpt5 mini": "gpt-5-mini",
+        "gpt 5 mini": "gpt-5-mini",
+        "gpt_5_mini": "gpt-5-mini",
+        "gpt5-mini": "gpt-5-mini",
+    }
+    if lowered in aliases:
+        return aliases[lowered]
+
+    normalized = re.sub(r"\s+", "-", lowered)
+    normalized = re.sub(r"[^a-z0-9._-]", "", normalized)
+    normalized = re.sub(r"-{2,}", "-", normalized).strip("-")
+    return normalized
+
+
+def validate_copilot_model(model: Optional[str]) -> tuple[bool, str, str]:
+    normalized = normalize_copilot_model(model)
+    if not normalized:
+        return True, "", ""
+    if normalized in ("auto", "gpt-5-mini"):
+        return True, normalized, ""
+    if not re.fullmatch(r"[a-z0-9][a-z0-9._-]{1,63}", normalized):
+        return False, normalized, "Copilot model 格式無效；請使用 auto、gpt-5-mini 或合法 model id"
+    return True, normalized, ""
 
 
 def planner_provider_label(provider: Optional[str]) -> str:
@@ -440,6 +509,7 @@ def planner_command(prompt: str, provider: Optional[str] = None) -> tuple[str, l
 def worker_command(prompt: str, provider: Optional[str] = None) -> dict:
     resolution = resolve_worker_runtime(provider)
     runtime = resolution["runtime"]
+    configured_model = ""
 
     if runtime == "codex":
         command = [CODEX_BIN, "exec", "--full-auto", prompt]
@@ -453,8 +523,13 @@ def worker_command(prompt: str, provider: Optional[str] = None) -> dict:
             "--dangerously-skip-permissions",
         ]
     elif runtime == "copilot":
+        from orchestrator import db
+
+        configured_model = db.get_worker_copilot_model()
         permission_mode = str(os.environ.get("COPILOT_PERMISSION_MODE", "all")).strip().lower()
         command = [GH_BIN, "copilot", "-p", prompt]
+        if configured_model:
+            command.extend(["--model", configured_model])
         if permission_mode in ("all", "wide"):
             command.extend(["--allow-all", "--no-ask-user"])
         else:
@@ -472,6 +547,7 @@ def worker_command(prompt: str, provider: Optional[str] = None) -> dict:
 
     return {
         **resolution,
+        "model": configured_model,
         "command": command,
     }
 
@@ -529,6 +605,119 @@ def find_stdout_log_path(slot_key: str, date_folder: str) -> str:
         if os.path.exists(path):
             return path
     return worker_stdout_log_path(slot_key, date_folder)
+
+
+def read_worker_progress(slot_key: str, date_folder: str, max_chars: int = 6000) -> dict:
+    """
+    Return lightweight progress metadata from the worker stdout log so the UI can
+    distinguish active long-running work from a stuck task.
+    """
+    path = find_stdout_log_path(slot_key, date_folder)
+    if not os.path.exists(path):
+        return {
+            "worker_log_path": path,
+            "last_output_at": None,
+            "last_progress_summary": "",
+            "idle_seconds": None,
+            "stuck_suspected": False,
+            "stuck_timeout_seconds": WORKER_PROGRESS_STALE_SECONDS,
+            "progress_state": "no_output",
+        }
+
+    summary = ""
+    try:
+        with open(path, "r", encoding="utf-8", errors="ignore") as f:
+            tail = f.read()[-max_chars:]
+        lines = [line.strip() for line in tail.splitlines() if line.strip()]
+        for line in reversed(lines):
+            if line.startswith(("│", "└", "```")):
+                continue
+            summary = line[:300]
+            break
+    except OSError:
+        summary = ""
+
+    idle_seconds = None
+    try:
+        mtime = os.path.getmtime(path)
+        last_output_at = datetime.fromtimestamp(mtime, tz=timezone.utc).isoformat()
+        idle_seconds = max(0, int(time.time() - mtime))
+    except OSError:
+        last_output_at = None
+
+    stuck_suspected = bool(idle_seconds is not None and idle_seconds > WORKER_PROGRESS_STALE_SECONDS)
+    if stuck_suspected:
+        progress_state = "stuck_suspected"
+    elif idle_seconds is not None:
+        progress_state = "active"
+    else:
+        progress_state = "unknown"
+
+    return {
+        "worker_log_path": path,
+        "last_output_at": last_output_at,
+        "last_progress_summary": summary,
+        "idle_seconds": idle_seconds,
+        "stuck_suspected": stuck_suspected,
+        "stuck_timeout_seconds": WORKER_PROGRESS_STALE_SECONDS,
+        "progress_state": progress_state,
+    }
+
+
+def _parse_utc_iso(raw: Optional[str]) -> Optional[datetime]:
+    value = str(raw or "").strip()
+    if not value:
+        return None
+    try:
+        dt = datetime.fromisoformat(value.replace("Z", "+00:00"))
+    except ValueError:
+        return None
+    if dt.tzinfo is not None:
+        return dt.astimezone(timezone.utc)
+    return dt.replace(tzinfo=timezone.utc)
+
+
+def classify_worker_progress(status: Optional[str], last_output_at: Optional[str], worker_runtime: Optional[str] = None) -> dict:
+    normalized_status = str(status or "").upper()
+    runtime = str(worker_runtime or "").strip().lower()
+    if normalized_status != "RUNNING":
+        return {
+            "progress_state": "not_running",
+            "progress_note": "",
+            "progress_idle_seconds": None,
+            "progress_stale": False,
+        }
+
+    if not last_output_at:
+        return {
+            "progress_state": "no_output",
+            "progress_note": "執行中但尚無輸出",
+            "progress_idle_seconds": None,
+            "progress_stale": False,
+        }
+
+    output_at = _parse_utc_iso(last_output_at)
+    if not output_at:
+        return {
+            "progress_state": "no_output",
+            "progress_note": "執行中，最後輸出時間格式無法解析",
+            "progress_idle_seconds": None,
+            "progress_stale": False,
+        }
+
+    idle_seconds = max(0, int((datetime.now(timezone.utc) - output_at).total_seconds()))
+    stale_threshold = COPILOT_PROGRESS_STALE_SECONDS if runtime == "copilot" else WORKER_PROGRESS_STALE_SECONDS
+    stale = idle_seconds > stale_threshold
+    return {
+        "progress_state": "stale" if stale else "active",
+        "progress_note": (
+            f"已 {idle_seconds}s 無新輸出，疑似卡住"
+            if stale
+            else f"{idle_seconds}s 前有新輸出，持續執行中"
+        ),
+        "progress_idle_seconds": idle_seconds,
+        "progress_stale": stale,
+    }
 
 
 def meta_path(slot_key: str, date_folder: str) -> str:
@@ -620,6 +809,246 @@ def git_changed_files() -> list:
     except Exception as e:
         logger.warning(f"git status failed: {e}")
         return []
+
+
+def git_status_porcelain(paths: Optional[list[str]] = None) -> list[str]:
+    try:
+        command = ["git", "-C", ROOT, "status", "--porcelain"]
+        if paths:
+            command.extend(["--", *paths])
+        result = subprocess.run(command, capture_output=True, text=True, timeout=20)
+        return [line.rstrip() for line in result.stdout.splitlines() if line.strip()]
+    except Exception as exc:
+        logger.warning(f"git status porcelain failed: {exc}")
+        return []
+
+
+def git_current_branch() -> str:
+    try:
+        result = subprocess.run(
+            ["git", "-C", ROOT, "rev-parse", "--abbrev-ref", "HEAD"],
+            capture_output=True,
+            text=True,
+            timeout=10,
+            check=True,
+        )
+        return (result.stdout or "").strip()
+    except Exception:
+        return "HEAD"
+
+
+def git_head_sha() -> str:
+    try:
+        result = subprocess.run(
+            ["git", "-C", ROOT, "rev-parse", "HEAD"],
+            capture_output=True,
+            text=True,
+            timeout=10,
+            check=True,
+        )
+        return (result.stdout or "").strip()
+    except Exception:
+        return ""
+
+
+def git_branch_exists(branch_name: str) -> bool:
+    try:
+        result = subprocess.run(
+            ["git", "-C", ROOT, "rev-parse", "--verify", branch_name],
+            capture_output=True,
+            text=True,
+            timeout=10,
+        )
+        return result.returncode == 0
+    except Exception:
+        return False
+
+
+def git_checkout_branch(branch_name: str) -> tuple[bool, str]:
+    try:
+        if git_branch_exists(branch_name):
+            command = ["git", "-C", ROOT, "checkout", branch_name]
+        else:
+            command = ["git", "-C", ROOT, "checkout", "-b", branch_name]
+        result = subprocess.run(command, capture_output=True, text=True, timeout=30)
+        output = ((result.stdout or "") + "\n" + (result.stderr or "")).strip()
+        return result.returncode == 0, output
+    except Exception as exc:
+        return False, str(exc)
+
+
+def git_branch_name_for_inbox(date_folder: str, scope: Optional[str] = None) -> str:
+    base = f"auto/inbox/{date_folder}"
+    scope_value = slugify(scope or "") if scope else ""
+    return f"{base}/{scope_value}" if scope_value else base
+
+
+def git_branch_name_for_cto_merge(date_folder: str, frequency_mode: str = "once_daily", started_at: Optional[str] = None) -> str:
+    mode = str(frequency_mode or "once_daily").strip().lower()
+    if mode != "twice_daily":
+        return f"cto/merge/{date_folder}"
+
+    dt = None
+    if started_at:
+        try:
+            dt = datetime.fromisoformat(started_at)
+        except ValueError:
+            dt = None
+    if dt is None:
+        dt = datetime.now(timezone.utc)
+    if dt.tzinfo is None:
+        dt = dt.replace(tzinfo=timezone.utc)
+    local_hour = dt.astimezone(timezone(timedelta(hours=8))).hour
+    suffix = "A" if local_hour < 12 else "B"
+    return f"cto/merge/{date_folder}-{suffix}"
+
+
+def derive_scope_from_paths(paths: list[str]) -> str:
+    cleaned = [str(path or "").strip().strip("/") for path in paths if str(path or "").strip()]
+    if not cleaned:
+        return ""
+
+    groups: dict[str, int] = {}
+    for path in cleaned:
+        first = path.split("/", 1)[0]
+        groups[first] = groups.get(first, 0) + 1
+
+    if len(groups) == 1:
+        return next(iter(groups))
+
+    if all(path.startswith("orchestrator/") for path in cleaned):
+        return "orchestrator"
+    if all(path.startswith("src/ui/") for path in cleaned):
+        return "src-ui"
+    if all(path.startswith("wiki/") for path in cleaned):
+        return "wiki"
+    if all(path.startswith("runtime/agent_orchestrator/") for path in cleaned):
+        return "orchestrator-runtime"
+    if all(path.startswith("tests/") for path in cleaned):
+        return "tests"
+
+    return ""
+
+
+def is_high_conflict_path(path: str) -> bool:
+    normalized = str(path or "").strip().replace("\\", "/")
+    if not normalized:
+        return False
+    for pattern in HIGH_CONFLICT_PATHS:
+        if pattern.endswith("/"):
+            if normalized.startswith(pattern):
+                return True
+        elif normalized == pattern or normalized.startswith(pattern + "/"):
+            return True
+    return False
+
+
+def filter_committable_paths(paths: list[str]) -> list[str]:
+    allowed = []
+    for raw in paths or []:
+        path = str(raw or "").strip().replace("\\", "/")
+        if not path:
+            continue
+        if path.endswith(".pid"):
+            continue
+        if path.startswith((
+            "runtime/agent_orchestrator/logs/",
+            "runtime/agent_orchestrator/tasks/",
+            "runtime/agent_orchestrator/locks/",
+            "tmp/",
+            "logs/",
+            ".pytest_cache/",
+            "__pycache__/",
+        )):
+            continue
+        if path.startswith("analysis/results/"):
+            continue
+        allowed.append(path)
+    return sorted(set(allowed))
+
+
+def git_staged_paths() -> list[str]:
+    staged = []
+    for line in git_status_porcelain():
+        if line.startswith("??"):
+            continue
+        if len(line) > 3 and line[:2].strip():
+            staged.append(line[3:].strip())
+    return sorted(set(staged))
+
+
+@contextmanager
+def git_ops_lock(timeout_seconds: int = 300):
+    ensure_dirs()
+    os.makedirs(os.path.dirname(GIT_OPS_LOCK_PATH), exist_ok=True)
+    handle = open(GIT_OPS_LOCK_PATH, "a+")
+    start = time.time()
+    try:
+        if fcntl is None:
+            yield handle
+            return
+        while True:
+            try:
+                fcntl.flock(handle.fileno(), fcntl.LOCK_EX | fcntl.LOCK_NB)
+                break
+            except BlockingIOError:
+                if time.time() - start > timeout_seconds:
+                    raise TimeoutError(f"timed out waiting for git ops lock: {GIT_OPS_LOCK_PATH}")
+                time.sleep(0.25)
+        yield handle
+    finally:
+        try:
+            if fcntl is not None:
+                fcntl.flock(handle.fileno(), fcntl.LOCK_UN)
+        finally:
+            handle.close()
+
+
+def git_commit_selected_files(paths: list[str], subject: str, body: str, branch_name: Optional[str] = None) -> tuple[bool, str, str]:
+    committable_paths = filter_committable_paths(paths)
+    if not committable_paths:
+        return False, "", "no committable paths"
+
+    if branch_name:
+        ok, output = git_checkout_branch(branch_name)
+        if not ok:
+            return False, "", f"branch checkout failed: {output}"
+
+    if git_staged_paths():
+        return False, "", "repository already has staged changes"
+
+    add_result = subprocess.run(
+        ["git", "-C", ROOT, "add", "--", *committable_paths],
+        capture_output=True,
+        text=True,
+        timeout=60,
+    )
+    if add_result.returncode != 0:
+        output = ((add_result.stdout or "") + "\n" + (add_result.stderr or "")).strip()
+        return False, "", f"git add failed: {output}"
+
+    staged_paths = git_staged_paths()
+    staged_set = set(staged_paths)
+    allowed_set = set(committable_paths)
+    if not staged_set:
+        return False, "", "nothing staged after git add"
+    if not staged_set.issubset(allowed_set):
+        extra = sorted(staged_set - allowed_set)
+        subprocess.run(["git", "-C", ROOT, "reset", "HEAD", "--", *staged_paths], capture_output=True, text=True, timeout=60)
+        return False, "", f"staged files exceed task scope: {', '.join(extra[:10])}"
+
+    commit_result = subprocess.run(
+        ["git", "-C", ROOT, "commit", "-m", subject, "-m", body],
+        capture_output=True,
+        text=True,
+        timeout=120,
+    )
+    output = ((commit_result.stdout or "") + "\n" + (commit_result.stderr or "")).strip()
+    if commit_result.returncode != 0:
+        return False, "", f"git commit failed: {output}"
+
+    sha = git_head_sha()
+    return True, sha, output
 
 
 def read_backlog() -> str:

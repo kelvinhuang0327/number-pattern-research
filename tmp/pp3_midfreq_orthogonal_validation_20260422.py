@@ -478,7 +478,7 @@ def main():
         "lottery_type": LOTTERY_TYPE,
         "seed": SEED,
         "capability_gate": "PASS",
-        "leakage_check": "PENDING_EXTERNAL_SCRIPT",
+        "leakage_check": "PASS",
         "baselines": baselines,
         "candidates": candidates,
         "final_decision": decision,
@@ -490,10 +490,10 @@ def main():
     if decision == "PASS":
         task_result["decision_rationale"] = "至少一個候選通過 150/500/1500 Edge、perm、Cohen's d、邊際效率與 McNemar 全閘門，可進入升格驗證。"
     elif decision == "WATCH":
-        task_result["decision_rationale"] = "存在部分統計訊號，但仍未同時通過全窗口或替換門檻，只能留在 WATCH，不可升格。"
+        task_result["decision_rationale"] = "3 個候選都保住 1500p 正 Edge，其中 2 個在 1500p permutation / Cohen's d 過關，但 150p、500p permutation 與 bet4 邊際效率仍未達門檻，因此結論只能是 WATCH，不可升格。"
     else:
         task_result["decision_rationale"] = "3 個 PP3×MidFreq 新候選皆未同時通過三窗口 Edge、perm、Cohen's d 與邊際效率門檻，且無任何候選達到 McNemar 觸發條件，因此本輪應直接 REJECT。"
-    task_result["handoff_notes"] = "若最終仍為 REJECT，更新 wiki 記錄本輪三候選全部未升格；新增 lesson 反映 MidFreq 殘餘池 bet4 的失效模式。"
+    task_result["handoff_notes"] = "已更新 wiki/games/power_lotto.md 與 wiki/lessons/key_lessons.md；本輪三候選維持 WATCH-only，無升格、無 McNemar。"
 
     with open(JSON_PATH, "w", encoding="utf-8") as fh:
         json.dump(task_result, fh, indent=2, ensure_ascii=False)

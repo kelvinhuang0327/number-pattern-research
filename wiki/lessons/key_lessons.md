@@ -68,6 +68,8 @@
 - L80：數學構造出的自相關未必是可預測信號。
 - L81：弱信號乘法疊加只會退化，不會放大 Edge。
 - L82：H001~H008 全滅，539 頻率族信號空間已高度飽和。
+- L125：539 的 pool-size / market-behavior 題若 trusted active data 沒有 pool/sales 欄位，應直接做資料可用性 REJECT，不得以 proxy 偽裝成外生信號驗證。
+- L128：MicroFish+MidFreq 2-bet 即使三窗口 raw edge / permutation / 邊際效率全過，只要 150p McNemar 未證明穩定優於 `midfreq_acb_2bet`，仍不可升格。
 
 ## 大樂透
 
@@ -108,6 +110,19 @@
 - L93：H9 Pure MidFreq 2 注 perm 過關但 McNemar 未達標，只能 shadow/watch。
 - L94：fourier_rhythm_3bet 的 30p 過熱需監控，但不代表可直接升權。
 - L95：midfreq_fourier 系列若連續 200 期低於基準，才考慮降權。
+- L115：PP3 的 MidFreq 殘餘池 bet4 若只有 1500p perm 顯著、但 150/500p permutation 與 bet4 邊際效率(<80%) 未過，仍只能列 WATCH，不能升格或觸發替換 McNemar。
+- L116：特別號 top-2 shortlist 即使在 150 / 500 / 1500 期 raw Edge 全正，只要 permutation p 未能全窗口 < 0.05，仍只能列 WATCH，不能升級或擠掉現役 V3。
+- L117：539 的 weekday / calendar overlay 即使在 1500p 出現正 raw edge，只要 150/500p permutation 未過、且對現役 McNemar 淨勝為負，就應直接 REJECT，下一題改做跨期叢集或彩池規模。
+- L118：539 的 cross-draw cluster / transition 殘差即使在 1500p 出現正 raw edge，只要 lag overlap 與隨機近乎一致、且 150/500p permutation 未過，就應直接 REJECT，不進入替換閘。
+- L119：威力彩 `fourier_rhythm_3bet` 在 500p OOS 雖維持正 raw Edge（+4.16% / +1.63% / +1.50%），但 permutation p=0.209、Cohen's d=0.862 未過，因此只能維持 WATCH 並進入降權評估。
+- L120：威力彩 `pp3_freqort_3bet` 直接取 4 注前 3 注時，500p 對主線 4 注的邊際效率只剩 68.1%，必須改用 history-only dual-score 重排才回到 +2.83% raw Edge 與 117.8% per-bet 效率；但 permutation p=0.154 未過，結論仍只能是 WATCH，不得替代 `fourier_rhythm_3bet`。
+- L121：威力彩特別號 V3-based V4 五候選即使最佳案在 150/500/1500p 仍有 +5.67% / +1.20% / +1.80% raw Edge，只要 permutation 仍停在 0.0796 / 0.2836 / 0.0547，且未超越現役 V3 top2 的 +2.33% 長窗 Edge，整體結論就應直接 REJECT，不進 McNemar。
+- L122：威力彩 2 注 regime gate 即使把 150/500/1500p raw Edge 修成全正、並補回 >80% per-bet 效率，只要 150p permutation 仍未過，就應直接 REJECT，不把條件分流誤當成穩定時序訊號。
+- L123：威力彩 PP3 + MidFreq 正交 V2 若只在 1500p 保留 permutation 訊號、但 150/500p permutation 與 per-bet efficiency 仍未過，代表此家族僅剩弱長窗可遷移性，結論應停在 WATCH/REJECT，而不是再做同家族微調升格。
+- L124：威力彩 PP3 Sum Regime / Sum Reversal 即使 200p 監控與 1500p 長窗仍有正 raw Edge，只要 150/500p permutation 或對 `pp3_freqort_4bet` 的 per-bet efficiency 未全過，結論仍只能列 WATCH，不進 McNemar，也不該再保留「快可升格」敘事。
+- L126：威力彩 WATCH 主線若 1500p 還保留訊號、但 5x300 rolling slice 有 >=80% permutation 失敗率，應降權留 WATCH，而不是因 raw Edge 全正就維持主監控優先級。
+- L127：威力彩非同家族 Layer-1 3bet 即使多案 raw Edge 三窗全正，只要 permutation 與對 `pp3_freqort_4bet` 的 per-bet efficiency 仍無任何候選全窗過關，整體結論就應直接是 `REJECT_ALL_NONFAMILY_LAYER1_3BET`。
+- L129：Orchestrator 任務完成判定必須區分 BLOCKED_ENV（外部環境如 quota/rate-limit 阻塞）與 REPLAN_REQUIRED（任務本身驗收失敗）；含 quota 訊息的 artifact 一律標記為 BLOCKED_ENV，不得誤判為 COMPLETED。同主題多筆 BLOCKED_ENV 任務應合併為一筆 meta 治理任務，不逐筆重排。
 
 ## 缺號備註
 

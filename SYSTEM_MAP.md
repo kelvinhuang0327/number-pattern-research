@@ -1,5 +1,7 @@
 # SYSTEM_MAP.md
 
+> **知識入口**：Agent 讀取知識時先讀 `wiki/README.md`，再讀 `memory/`。本文件描述系統架構；策略驗證規則見 `wiki/system/validation_gates.md`，文件治理見 `wiki/system/governance.md`。
+
 ## 1. 文件目的
 本文件用於描述本專案的系統架構、模組用途、依賴關係、API、資料庫、外部服務、環境配置、測試方式與高風險區域。
 

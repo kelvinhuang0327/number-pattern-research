@@ -402,6 +402,7 @@
         .orc-status-running { background:rgba(187,128,9,.2); color:#e3b341; }
         .orc-status-completed { background:rgba(35,134,54,.2); color:#3fb950; }
         .orc-status-failed  { background:rgba(248,81,73,.2); color:#f85149; }
+        .orc-status-replan_required { background:rgba(245,158,11,.18); color:#f59e0b; }
         .orc-status-cancelled { background:rgba(100,100,100,.2); color:#8b949e; }
         .orc-plan-badge { margin-left:8px; padding:1px 6px; border-radius:10px; font-size:10px; font-weight:700; letter-spacing:.3px; }
         .orc-plan-badge-fallback { background:rgba(245,158,11,.2); color:#fbbf24; border:1px solid rgba(245,158,11,.4); }
@@ -504,6 +505,10 @@
                 <button class="nav-btn" data-section="orchestration">
                     <i data-lucide="workflow" class="icon"></i>
                     <span>任務編排</span>
+                </button>
+                <button class="nav-btn" data-section="cto-review">
+                    <i data-lucide="shield-check" class="icon"></i>
+                    <span>CTO 審核報告</span>
                 </button>
             </nav>
         </div>
@@ -1882,6 +1887,7 @@
                 <option value="COMPLETED">COMPLETED</option>
                 <option value="FAILED">FAILED</option>
                 <option value="REPLAN_REQUIRED">REPLAN_REQUIRED</option>
+                <option value="CANCELLED">CANCELLED</option>
               </select>
             </label>
             <button id="orc-refresh-btn" class="btn-sm btn-secondary">重新整理</button>
@@ -1897,20 +1903,46 @@
             <button id="orc-run-worker-btn" class="btn-sm orc-trigger-btn">Worker 立即執行</button>
           </div>
 
+                    <div class="card mb-16" style="padding:12px 14px">
+                        <div style="font-weight:600;margin-bottom:8px">Planner 單次觸發追蹤</div>
+                        <div style="display:flex;gap:16px;flex-wrap:wrap;font-size:13px;color:var(--text-muted,#8b949e)">
+                            <span>request_id：<b id="orc-planner-last-request-id" style="color:var(--text-color,#c9d1d9)">—</b></span>
+                            <span>final outcome：<b id="orc-planner-last-outcome" style="color:var(--text-color,#c9d1d9)">—</b></span>
+                            <span>task_id：<b id="orc-planner-last-task-id" style="color:var(--text-color,#c9d1d9)">—</b></span>
+                        </div>
+                        <div id="orc-planner-last-note" style="margin-top:6px;font-size:12px;color:var(--text-muted,#8b949e)">尚未觸發 Planner</div>
+                    </div>
+
           <div class="rv-filter-bar" style="margin-bottom:16px;display:flex;gap:10px;align-items:center;flex-wrap:wrap">
             <label>Planner
               <select id="orc-planner-provider" style="margin-left:6px;padding:4px 8px;border-radius:4px;border:1px solid var(--border-color)">
                 <option value="claude">Claude CLI</option>
                 <option value="codex">Codex CLI</option>
+                <option value="copilot">GitHub Copilot CLI</option>
+                <option value="copilot-daemon">GitHub Copilot Daemon</option>
               </select>
             </label>
             <label>Worker
               <select id="orc-worker-provider" style="margin-left:6px;padding:4px 8px;border-radius:4px;border:1px solid var(--border-color)">
                 <option value="codex">Codex CLI</option>
                 <option value="copilot">GitHub Copilot CLI</option>
+                <option value="copilot-daemon">GitHub Copilot Daemon</option>
                 <option value="claude">Claude CLI</option>
               </select>
             </label>
+            <label>Copilot Model
+              <input
+                id="orc-worker-copilot-model"
+                list="orc-worker-copilot-model-options"
+                type="text"
+                placeholder="例如 auto"
+                style="margin-left:6px;padding:4px 8px;border-radius:4px;border:1px solid var(--border-color);min-width:140px"
+              >
+            </label>
+            <datalist id="orc-worker-copilot-model-options">
+              <option value="auto"></option>
+              <option value="gpt-5-mini"></option>
+            </datalist>
             <button id="orc-provider-save-btn" class="btn-sm btn-secondary">套用組合</button>
             <span id="orc-provider-hint" style="font-size:12px;color:#8b949e">讀取 provider 狀態中…</span>
           </div>
@@ -1920,7 +1952,7 @@
             <h3 style="margin-bottom:8px">任務清單</h3>
             <table class="data-table rv-table" style="width:100%;margin-bottom:24px">
               <thead><tr>
-                <th>ID</th><th>Planer 發佈時間</th><th>標題</th><th>狀態</th><th>耗時</th><th>Worker 完成時間</th><th>異動檔案</th>
+                                <th style="text-align:center">ID</th><th style="text-align:center">Planer 發佈時間</th><th style="text-align:center">標題</th><th style="text-align:center">狀態</th><th style="text-align:center">耗時</th><th style="text-align:center">Worker 完成時間</th><th style="text-align:center">異動檔案</th>
               </tr></thead>
               <tbody id="orc-task-tbody"><tr><td colspan="7" class="rv-empty">載入中…</td></tr></tbody>
             </table>
@@ -1944,6 +1976,146 @@
             <div id="orc-detail-content"></div>
           </div>
         </section>
+
+                <!-- CTO Review Section -->
+                <section id="cto-review-section" class="section">
+                    <div class="section-header">
+                        <h2>CTO 審核報告</h2>
+                        <p>檢視 worker 自動提交、CTO 批次審核、合併與拒絕決策的完整歷程。</p>
+                    </div>
+                    <div class="section-content">
+
+                        <!-- CTO Control Bar 1: date / status / refresh / scheduler -->
+                        <div class="rv-filter-bar" style="margin-bottom:10px;display:flex;gap:10px;align-items:center;flex-wrap:wrap">
+                            <label>日期
+                                <input type="date" id="orc-cto-date-filter" style="margin-left:6px;padding:4px 8px;border-radius:4px;border:1px solid var(--border-color)">
+                            </label>
+                            <label>狀態
+                                <select id="orc-cto-status-filter" style="margin-left:6px;padding:4px 8px;border-radius:4px;border:1px solid var(--border-color)">
+                                    <option value="">全部</option>
+                                    <option value="COMPLETED">有候選</option>
+                                    <option value="SKIPPED">無候選</option>
+                                    <option value="RUNNING">執行中</option>
+                                </select>
+                            </label>
+                            <button id="orc-cto-refresh-btn" class="btn-sm btn-secondary">重新整理</button>
+                            <span style="margin-left:8px">排程：<b id="cto-scheduler-state">—</b></span>
+                            <button id="cto-scheduler-toggle-btn" class="btn-sm btn-secondary" data-enabled="1">—</button>
+                        </div>
+
+                        <!-- CTO Control Bar 2: next planner / countdown / run-now -->
+                        <div class="rv-filter-bar" style="margin-bottom:10px;display:flex;gap:16px;align-items:center;flex-wrap:wrap;font-size:13px;color:var(--text-muted,#8b949e)">
+                            <span>下次 Planner：<b id="cto-next-planner-at" style="color:var(--text-color,#c9d1d9)">—</b></span>
+                            <span id="cto-next-tick-note">每秒倒數，歸零後自動刷新</span>
+                            <button id="orc-cto-run-now-btn" class="btn-sm orc-trigger-btn">Planner 立即執行</button>
+                        </div>
+
+                        <!-- CTO Planner Trigger Trace -->
+                        <div class="card mb-16" style="padding:12px 14px">
+                            <div style="font-weight:600;margin-bottom:8px">CTO Planner 觸發追蹤</div>
+                            <div style="display:flex;gap:16px;flex-wrap:wrap;font-size:13px;color:var(--text-muted,#8b949e)">
+                                <span>request_id：<b id="orc-cto-planner-last-request-id" style="color:var(--text-color,#c9d1d9)">—</b></span>
+                                <span>final outcome：<b id="orc-cto-planner-last-outcome" style="color:var(--text-color,#c9d1d9)">—</b></span>
+                            </div>
+                            <div id="orc-cto-planner-last-note" style="margin-top:6px;font-size:12px;color:var(--text-muted,#8b949e)">尚未觸發 CTO Planner</div>
+                        </div>
+
+                        <!-- CTO Provider Bar: Planner / Model / Apply -->
+                        <div class="rv-filter-bar" style="margin-bottom:16px;display:flex;gap:10px;align-items:center;flex-wrap:wrap">
+                            <label>Planner
+                                <select id="orc-cto-planner-provider" style="margin-left:6px;padding:4px 8px;border-radius:4px;border:1px solid var(--border-color)">
+                                    <option value="claude">Claude CLI</option>
+                                    <option value="codex">Codex CLI</option>
+                                </select>
+                            </label>
+                            <label>Model
+                                <input
+                                    id="orc-cto-planner-model"
+                                    list="orc-cto-planner-model-options"
+                                    type="text"
+                                    placeholder="例如 auto"
+                                    style="margin-left:6px;padding:4px 8px;border-radius:4px;border:1px solid var(--border-color);min-width:140px"
+                                >
+                            </label>
+                            <datalist id="orc-cto-planner-model-options">
+                                <option value="auto"></option>
+                                <option value="gpt-5-mini"></option>
+                            </datalist>
+                            <button id="orc-cto-provider-save-btn" class="btn-sm btn-secondary">套用組合</button>
+                            <span id="orc-cto-provider-hint" style="font-size:12px;color:#8b949e">讀取 CTO provider 狀態中…</span>
+                        </div>
+
+                        <div id="cto-summary" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:12px;margin-bottom:20px">
+                            <div class="metric-card"><div class="metric-label">頻率模式</div><div class="metric-value" id="cto-frequency-mode">—</div></div>
+                            <div class="metric-card"><div class="metric-label">待審核</div><div class="metric-value" id="cto-pending-count">—</div></div>
+                            <div class="metric-card"><div class="metric-label">已批准</div><div class="metric-value" id="cto-approved-count">—</div></div>
+                            <div class="metric-card"><div class="metric-label">已合併</div><div class="metric-value" id="cto-merged-count">—</div></div>
+                            <div class="metric-card"><div class="metric-label">已拒絕</div><div class="metric-value" id="cto-rejected-count">—</div></div>
+                            <div class="metric-card"><div class="metric-label">延後衝突</div><div class="metric-value" id="cto-deferred-count">—</div></div>
+                            <div class="metric-card"><div class="metric-label">去重 / 取代</div><div class="metric-value" id="cto-superseded-count">—</div></div>
+                            <div class="metric-card"><div class="metric-label">重複提交</div><div class="metric-value" id="cto-duplicate-count">—</div></div>
+                        </div>
+
+                        <div style="margin-bottom:16px;font-size:13px;color:var(--text-muted,#8b949e)">
+                            <span>最近執行：<b id="cto-latest-run-at" style="color:var(--text-color,#c9d1d9)">—</b></span>
+                            <span style="margin-left:16px">下次執行：<b id="cto-next-run-at" style="color:var(--text-color,#c9d1d9)">—</b></span>
+                            <span style="margin-left:16px">摘要：<span id="cto-latest-run-summary" style="color:var(--text-muted,#8b949e)">—</span></span>
+                        </div>
+
+                        <div class="card mb-16">
+                            <div class="card-header">待審核提交</div>
+                            <div class="card-body" style="overflow-x:auto">
+                                <table class="data-table rv-table" style="width:100%">
+                                    <thead>
+                                        <tr>
+                                            <th>Task ID</th>
+                                            <th>標題</th>
+                                            <th>Integration Group</th>
+                                            <th>Priority</th>
+                                            <th>Source Branch</th>
+                                            <th>Commit SHA</th>
+                                            <th>建立時間</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="orc-cto-pending-tbody">
+                                        <tr><td colspan="7" class="rv-empty">載入中…</td></tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+
+                        <div id="cto-list-view">
+                            <div class="card mb-16">
+                                <div class="card-header">CTO 批次列表</div>
+                                <div class="card-body" style="overflow-x:auto">
+                                    <table class="data-table rv-table" style="width:100%">
+                                        <thead>
+                                            <tr>
+                                                <th>Run ID</th>
+                                                <th>開始</th>
+                                                <th>完成</th>
+                                                <th>頻率</th>
+                                                <th>候選</th>
+                                                <th>批准</th>
+                                                <th>合併</th>
+                                                <th>拒絕</th>
+                                                <th>摘要</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="orc-cto-run-tbody">
+                                            <tr><td colspan="9" class="rv-empty">載入中…</td></tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div id="cto-detail-view" class="rv-hidden">
+                            <button id="orc-cto-back-btn" class="btn-sm btn-secondary" style="margin-bottom:12px">← 返回列表</button>
+                            <div id="orc-cto-detail-content"></div>
+                        </div>
+                    </div>
+                </section>
 
         </div>
         </main>
@@ -2021,7 +2193,7 @@
             // Initialize Lucide Icons
             lucide.createIcons();
         </script>
-        <script type="module" src="src/main.js?v=14"></script>
+        <script type="module" src="src/main.js?v=24"></script>
 </body>
 
 </html>

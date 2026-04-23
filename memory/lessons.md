@@ -970,3 +970,124 @@ Zone Cascade Only (zb=0.12) 完整驗證:
 - 關聯監控：`midfreq_fourier_mk_3bet` 同期理論 edge 仍為 150p=+1.50%, 500p=+3.63%, 1500p=+2.50%；RSM snapshot 仍是 30p=-1.17%, 100p=-3.17%, 300p=+1.50%, trend=STABLE
 - 決策：`midfreq_fourier_2bet` 不可取代、也不可並列 `fourier_rhythm_3bet` 成為獨立 production 2注策略；依本輪任務約束（McNemar 未過不得改 RSM）不修改 `strategy_states_POWER_LOTTO.json`
 - 下一步：放棄本輪升格，改研究「PP3 + MidFreq 正交新組合」；若後續要正式標記 REJECTED，需在下一次協調更新時一併處理 RSM 狀態
+
+**L117 — DAILY_539 weekday / calendar overlay 無法形成穩定正交訊號** (2026-04-22)
+- H011 研究以 seed=42、N_PERM=200、MIN_HISTORY=300 驗證三個 calendar-only 候選：`weekday_residual_1bet`、`acb_calendar_overlay_2bet`、`acb_markov_calendar_3bet`
+- Exploratory screen：weekday 全局 chi-square p=0.9281，39 個號碼中 nominal p<0.05 僅 3 個、Bonferroni survivors = 0；weekday 本體沒有可重現結構
+- `weekday_residual_1bet`：150/500/1500p edge = -3.40% / -1.60% / -0.27%，perm p = 0.9602 / 0.7861 / 0.7313，全面 REJECT
+- `acb_calendar_overlay_2bet`：raw edge = +1.13% / +3.46% / +2.99%，但 permutation 僅 1500p 過關 (p=0.0149, d=2.162)，150/500p 失敗；對 `midfreq_acb_2bet` 的 McNemar net = -10 / -21 / -39，1500p p=0.0263 且方向為負
+- `acb_markov_calendar_3bet`：raw edge = +0.83% / +4.30% / +4.70%，但 permutation 僅 1500p 過關 (p=0.0149, d=2.569)，150/500p 失敗；對 `acb_markov_midfreq_3bet` 的 McNemar net = -10 / -11 / -26，三窗口皆未證明優於現役
+- 多注邊際效率雖維持 >80%，但這只證明 bet 結構沒有崩壞，不代表 calendar 訊號成立；真正被否決的是三窗口穩定性與 incumbent superiority
+
+**L118 — DAILY_539 cross-draw cluster / transition 殘差仍不足以突破現役策略** (2026-04-22)
+- H012 研究以 seed=42、N_PERM=200、MIN_HISTORY=300 驗證三個跨期叢集候選：`cluster_residual_1bet`、`acb_cluster_overlay_2bet`、`acb_markov_cluster_3bet`
+- Exploratory screen：lag-1/2/3 mean overlap = 0.646 / 0.658 / 0.642，幾乎等於隨機基準 0.641；P(overlap>=2) = 0.1143 / 0.1129 / 0.1146，也與隨機基準 0.1140 幾乎一致
+- `cluster_residual_1bet`：150/500p raw edge = -2.73% / -1.80%，1500p 僅 +0.53%；perm p = 0.8706 / 0.9204 / 0.2687，Cohen's d = -1.026 / -1.336 / 0.600，單注本體直接 REJECT
+- `acb_cluster_overlay_2bet`：raw edge = -1.54% / +1.46% / +3.99%，但 150p 還低於基準且 bet2 邊際效率只有 72.32%；permutation 僅 1500p 過關 (p=0.0050, d=3.105)
+- `acb_markov_cluster_3bet`：raw edge = +0.83% / +3.90% / +6.17%，多注邊際效率全過，但 150/500p permutation 分別為 0.6766 / 0.1891、Cohen's d = -0.380 / 0.944，仍未達三窗口穩定正交訊號
+- 因三個候選都未同時通過「三窗口全正 + permutation 全窗口 < 0.05 + Cohen's d 全窗口 > 1.0」，本輪無候選進入 McNemar 替換閘
+- 教訓：**長窗 raw edge 不是跨期叢集訊號成立的證據。若跨期 overlap 診斷與隨機基準幾乎一致，且 150/500p permutation 不顯著，就應直接判定為「接近信號窮盡」而非繼續微調同家族權重**
+- `tools/verify_no_data_leakage.py` 通過，且 H011 自身切片審計確認 train draw/date 永遠早於 target；本次 REJECT 屬有效負結果
+- 結論：539 的 weekday / calendar family 在現有資料下不具可部署、也不具 watch 價值的穩定正交訊號；下一輪應改做跨期叢集或彩池規模，不要再重試 weekday 題
+
+**L119 — POWER_LOTTO fourier_rhythm_3bet 的 500p OOS raw Edge 仍正，但 permutation 未過，只能列 WATCH** (2026-04-23)
+- 驗證範圍：POWER_LOTTO 共 1903 期，最新期數 115000031；500 期 OOS 區間為 110000053 → 115000031，seed=42、perm shuffles=200
+- 固定使用 `ORDER BY CAST(draw AS INTEGER) DESC` 從 `lottery_api/data/lottery_v2.db` 取數，轉 ASC 後以 `history[:target_idx]` 做 walk-forward；`tools/verify_no_data_leakage.py` 全部通過，屬零洩漏有效結果
+- 500p OOS 三窗 raw Edge：前150=+4.16%（23/150）、全500=+1.63%（64/500）、近150=+1.50%（19/150）→ 三窗 raw Edge 皆為正
+- 但 permutation test（`lottery_api/engine/perm_test.py`）結果為 real_edge=+1.63%、shuffle_mean=+0.39%、shuffle_std=1.44%、perm p=0.209、Cohen's d=0.862、verdict=NO_SIGNAL，未達 p<0.05 與 d>1.0
+- 相對 `analysis/results/stage0_baseline.json` 的現役 baseline edge=+3.02%，本次 500p OOS edge 下滑至 +1.63%（-1.39pp）
+- 影響模組：`tools/power_fourier_rhythm.py`、`lottery_api/engine/perm_test.py`、`analysis/results/power_fourier_500p_oos_20260423.json`
+- 教訓：**威力彩 Fourier 主線即使三窗 raw Edge 全正，也不能跳過 permutation gate。當時序顯著性不足時，結論只能是 WATCH，不得標記為 CONFIRMED。**
+- 下一步：Planner 應評估是否進入降權流程，並優先探索 `pp3_freqort_4bet` 降注或 Fourier 正交替代 3 注策略；在新的顯著性證據出現前，不修改 `strategy_states_POWER_LOTTO.json`
+
+**L120 — POWER_LOTTO pp3_freqort_3bet 需靠 dual-score 重排才能守住邊際效率，但 permutation 未過仍只能 WATCH** (2026-04-23)
+- 任務背景：目標是為 `fourier_rhythm_3bet` 找到 `pp3_freqort_4bet` 的降注 3 注替代候選，且不得破壞現役 4 注主線
+- 固定使用 `ORDER BY CAST(draw AS INTEGER) DESC` 從 `lottery_api/data/lottery_v2.db` 取數，轉 ASC 後以 `history[:target_idx]` 做 walk-forward；`tools/verify_no_data_leakage.py` 全部通過，屬零洩漏有效結果
+- A 方案（直接取 `pp3_freqort_4bet` 前 3 注）在 500p OOS 只有 64/500 命中，raw Edge +1.63%，相對同窗 4 注的 +3.20% Edge 僅保留 68.1%，連邊際效率 gate 都未過
+- B 方案改為 history-only dual-score 重排：每期先生成 canonical 4 注，再依 `0.35*Fourier + 0.45*residual FreqOrt + 0.20*cold complement` 的 ticket score 取 3 注；500p OOS 三窗為前150=+5.50%（25/150）、全500=+2.83%（70/500）、近150=+2.83%（21/150），1500p OOS 仍有 +3.17%（215/1500）
+- 邊際效率：B 方案對 `pp3_freqort_4bet` 的 500p edge retention = 88.5%，per-bet efficiency = 117.8%，成功守住 >80% 效率門檻
+- 但 permutation（500p, 200 shuffles, seed=42）結果僅為 real_edge=+2.83%、shuffle_mean=+1.29%、shuffle_std=1.41%、perm p=0.154、Cohen's d=1.089；雖 d>1.0，但 p 未達 0.05，因此仍不得進入 McNemar
+- 與 `fourier_rhythm_3bet` 相比，這代表新候選雖在 raw Edge 與 effect size 上都更好（+2.83% vs +1.63%，d=1.089 vs 0.862），但兩者都還停在 WATCH，不足以觸發替換
+- 教訓：**威力彩 3 注替代案即使能把 4→3 注的邊際效率守在 80% 以上，若 permutation gate 仍未過，就只能列 WATCH，不能把 raw Edge 改善誤當成可部署替換。**
+- 下一步：維持 `fourier_rhythm_3bet` 與 `pp3_freqort_3bet` 同為 WATCH、`pp3_freqort_4bet` 繼續主力；下一輪優先轉向威力彩特別號 V3 改善，而不是提前調整 `strategy_states_POWER_LOTTO.json`
+
+**L121 — POWER_LOTTO 特別號 V3-based V4 正交強化若未超越現役 V3 top2，且 permutation 仍卡在門檻外，就應直接 REJECT** (2026-04-23)
+- 任務背景：針對威力彩特別號 V3 做 V4 正交強化驗證，固定 `seed=42`、200 次 permutation，要求 top2 候選在 150 / 500 / 1500 期都維持正 Edge，且全窗口通過 permutation、Cohen's d、邊際效率與 Sharpe 閘門
+- 固定使用 `ORDER BY CAST(draw AS INTEGER) DESC` 從 `lottery_api/data/lottery_v2.db` 取數，轉 ASC 後以 `history[:target_idx]` 做 walk-forward；`tools/verify_no_data_leakage.py` 與腳本內部 1500 次切片檢查皆 PASS，屬零洩漏有效負結果
+- 共驗證 5 個 V3-based history-only top2 候選：`special_v4_regime_orthogonal_top2`、`special_v4_main_lift_residual_top2`、`special_v4_gap_markov2_balance_top2`、`special_v4_entropy_switch_top2`、`special_v4_bias_modulo_residual_top2`
+- 最佳候選 `special_v4_regime_orthogonal_top2` 的 raw Edge 為 150=+5.67%（46/150）、500=+1.20%（131/500）、1500=+1.80%（402/1500），邊際效率與 Sharpe 全過
+- 但同一候選的 permutation 仍停在 p=0.0796 / 0.2836 / 0.0547；Cohen's d 雖為 1.563 / 0.652 / 1.614，但 500p effect size 與 150/1500p permutation 仍未全過，因此不具升格資格
+- 第二名 `special_v4_gap_markov2_balance_top2` 也只是 150=+6.33%、500=+2.60%、1500=+1.00%，但 permutation 仍為 0.0697 / 0.1393 / 0.2289；同樣只能停在 WATCH
+- 現役 V3 top2 參考仍有更高的 raw Edge：150=+11.67%、500=+4.40%、1500=+2.33%，代表這輪 V4 重排連「超越現役基線」都做不到
+- 因無任何候選同時通過全部閘門，McNemar 替換檢驗不觸發；結論必須明確標記為 `REJECT`
+- 教訓：**特別號 V3 同家族的正交重排若只把 permutation 壓到接近門檻（例如 1500p p=0.0547）但仍未全過，且長窗 Edge 還低於現役 V3 top2，這不是「下一輪再微調」的 WATCH，而是應停止優先投入的 REJECT。**
+- 下一步：保留現役 special V3，不修改 `strategy_states_POWER_LOTTO.json`；若要重啟特別號主線，必須帶入新的非同家族特徵來源，而不是再做 drought / Markov / analog / modulo 的權重微調
+
+**L122 — POWER_LOTTO 2 注 regime gate 若只修復 raw Edge 與效率、卻無法讓 150p permutation 過關，仍應直接 REJECT** (2026-04-23)
+- 任務背景：針對 `midfreq_fourier_2bet` 做非重跑版升格驗證，要求建立 history-only `midfreq_fourier_2bet_regime_gate_v1`，修正既有失敗點（150p 負 edge、McNemar 未過、邊際效率 <80%），並完成 150 / 500 / 1500 三窗口與 500p OOS McNemar 全套檢定
+- 固定使用 `ORDER BY CAST(draw AS INTEGER) DESC` 從 `lottery_api/data/lottery_v2.db` 取數，轉 ASC 後以 `history[:target_idx]` 做 walk-forward；`tools/verify_no_data_leakage.py` 全部通過，屬零洩漏有效負結果
+- 候選 gate 為固定優先序：若最近 10 期和值均值 `<114`，bet2 切到 `cold_residual_60`；否則若上一期與最近 30 期 hot-12 重疊 `>=4`，bet2 切到 `hot_residual_60`；其餘維持 baseline Fourier residual。這兩個條件都只用歷史可得特徵，不依賴當期標籤
+- 此 gate 確實把 baseline 的 150p 失敗點修回正值：raw Edge 從 `-0.92% / +2.41% / +1.94%` 改善到 `+3.08% / +2.81% / +1.74%`，500p per-bet efficiency 也從 `78.6%` 拉到 `85.7%`
+- 但正式 permutation（`lottery_api/engine/perm_test.py`, 200 shuffles, seed=42）仍顯示 150p 只有 `p=0.0995`, `Cohen's d=1.521`；500p / 1500p 雖通過（`p=0.0249 / 0.0249`, `d=2.280 / 2.345`），仍因短窗未全過而不得進入 500p McNemar
+- 補充觀察：candidate 在 150p 的主要增益來自低和值 / hot-cluster 分流，但 1500p 反而略低於 baseline（`+1.74%` vs `+1.94%`），代表條件分流主要是在重排命中分布，未能把短窗改善轉成更強的時序顯著性
+- 教訓：**威力彩 2 注 regime gate 即使把 150 / 500 / 1500p raw Edge 修成全正、並補回 >80% per-bet 效率，只要 150p permutation 仍未過，就應直接 REJECT，不把條件分流誤當成穩定時序訊號。**
+- 下一步：停止把同一個 `midfreq_fourier` 家族的 regime 微調視為主優先升格路線；若要再挑戰 2 注升格，必須帶入新的 bet1 訊號或新的殘餘特徵家族，而不是只在 bet2 上做條件切換
+
+**L123 — POWER_LOTTO PP3 + MidFreq 正交 V2 只留下弱長窗可遷移性，不能視為升格路線** (2026-04-23)
+- 任務背景：依本輪 trusted scope，建立 `tools/research_power_pp3_midfreq_orthogonal_v2.py`，以 history-only 的 PP3 殘差分層、FreqOrt 殘差穩定度、跨窗一致性懲罰與 Fourier phase divergence 輔助訊號，驗證 6 個新候選（3bet/4bet 各 3 組），且明確避開 Winning Quality P2-1、special V3/V4 同家族重排與 `midfreq_fourier_2bet` regime gate 微調
+- 固定使用 `ORDER BY CAST(draw AS INTEGER) DESC` 從 `lottery_api/data/lottery_v2.db` 取數，轉 ASC 後以 `history[:target_idx]` 做 walk-forward；`tools/verify_no_data_leakage.py` 全部通過，屬零洩漏有效結果
+- 全部 6 個候選都完成 150 / 500 / 1500 三窗驗證與 200 次 permutation：`pp3_midfreq_residual_strata_4bet`、`pp3_midfreq_residual_strata_3bet`、`pp3_midfreq_stability_phase_4bet`、`pp3_midfreq_stability_phase_3bet`、`pp3_midfreq_consistency_guard_4bet`、`pp3_midfreq_consistency_guard_3bet`
+- 最佳 4 注 `pp3_midfreq_residual_strata_4bet` 的 raw Edge 為 `+2.06% / +2.80% / +2.60%`，但 permutation 僅 1500p 通過（`p=0.5224 / 0.1741 / 0.0448`, `d=-0.002 / 1.002 / 1.770`），且 per-bet efficiency 只有 `71.4% / 73.1% / 65.4%`
+- 最佳 3 注 `pp3_midfreq_residual_strata_3bet` 的 raw Edge 為 `+1.50% / +2.03% / +1.57%`，雖 500/1500p 的 Cohen's d 有 `1.095 / 1.313`，但 permutation 仍停在 `0.5075 / 0.1692 / 0.1294`，且 150/1500p per-bet efficiency 只有 `62.5% / 68.8%`
+- 全案沒有任何候選同時通過「三窗口全正 + permutation 全窗 <0.05 + Cohen's d >1.0 + per-bet efficiency >80%」，因此 `PASS_TO_MCNEMAR = 0`；正式結論為 `WATCH`（5 候選） / `REJECT`（1 候選），不觸發對 `fourier_rhythm_3bet` 或 `pp3_freqort_4bet` 的 500p McNemar 替換檢驗
+- 教訓：**PP3 + MidFreq 正交新家族在威力彩主號上仍有弱 1500p 長窗可遷移性，但無法跨窗、跨 bet-count 穩定轉成可升格訊號；若 150/500p permutation 與 per-bet efficiency 仍未過，就應停在 WATCH/REJECT，而不是再做同家族權重微調。**
+- 下一步：若未來重啟主號研究，應引入新的 Layer-1 訊號來源或新的 bet 結構，而不是在同一組 PP3+MidFreq 殘差特徵上繼續做小幅重排
+
+**L124 — POWER_LOTTO PP3 Sum Regime / Sum Reversal 長窗保留弱訊號，但短窗顯著性與 4bet 邊際效率未過時只能列 WATCH** (2026-04-23)
+- 任務背景：依 trusted scope，針對 `pp3_sum_regime_detector` 與 `pp3_sum_reversal_filter` 完成 200p 監控 + 150 / 500 / 1500p 正式驗證，固定 `seed=42`、`n_perm=200`，且明確不重跑 WQ P2-1 與 special V3/V4 同家族
+- 固定使用 `ORDER BY CAST(draw AS INTEGER) DESC` 從 `lottery_api/data/lottery_v2.db` 取數，轉 ASC 後以 `history[:target_idx]` 做 walk-forward；`tools/verify_no_data_leakage.py` 全部通過，屬零洩漏有效結果
+- `pp3_sum_regime_detector` 的 200p / 150p / 500p / 1500p raw Edge 為 `+2.33% / +3.50% / +1.63% / +2.17%`，僅 1500p permutation 過關（`p=0.1791 / 0.2139 / 0.0398`, `d=1.124 / 0.806 / 2.155`）；對 `pp3_freqort_4bet` 的 per-bet efficiency 也只有 `98.7% / 68.2% / 88.6%`
+- `pp3_sum_reversal_filter` 的 200p / 150p / 500p / 1500p raw Edge 為 `+0.83% / +2.17% / +1.83% / +2.50%`，同樣只有 1500p permutation 過關（`p=0.3085 / 0.2090 / 0.0100`, `d=0.626 / 0.939 / 2.491`）；對 `pp3_freqort_4bet` 的 per-bet efficiency 為 `61.1% / 76.5% / 102.2%`
+- 兩個候選都未同時通過「150/500/1500 三窗全正 + permutation 全窗 <0.05 + Cohen's d >1.0 + per-bet efficiency >80%」，因此 `PASS_TO_MCNEMAR = 0`；對 `fourier_rhythm_3bet` 的替換 McNemar 直接跳過
+- 教訓：**威力彩 PP3 的和值家族即使 200p 監控與 1500p 長窗仍保有正 raw Edge，也不能把「只有長窗 permutation 過關」誤當成升格訊號。只要 150/500p permutation 或對 `pp3_freqort_4bet` 的 per-bet efficiency 未全過，結論就只能是 WATCH，不進 McNemar，也不該再保留 provisional 幻覺。**
+- 下一步：停止把 PP3 Sum family 視為優先升格路線；若要再挑戰 3 注升格，必須引入新的 Layer-1 訊號來源或新 bet 結構，而不是再微調 sum threshold / reversal constraint
+
+**L125 — DAILY_539 pool-size / market-behavior 題在 trusted active data 缺欄位時，應直接產出資料可用性 REJECT** (2026-04-23)
+- 任務背景：依 trusted scope 驗證 `H013 pool_size_regime`、`H013b pool_growth_shock`、`H013c pool_size_x_existing`，要求固定 `seed=42`、`n_perm=200`、完成 150 / 500 / 1500 三窗口與 leakage audit，且不得重跑 H011/H012 或 H001~H008 家族
+- 研究腳本 `tools/research_daily539_poolsize_h013.py` 先用 `lottery_api.database.DatabaseManager` 從 `lottery_api/data/lottery_v2.db` 讀取 `draws`，確認 schema 有 `jackpot_amount` 欄位，但 `DAILY_539` 全量 5839 期中 `jackpot_amount = NULL` 的比例是 `5839/5839`，coverage = `0.00%`
+- 依同一資料庫抽查三個正式窗口所需尾段 history span：150 期需要最近 450 期、500 期需要最近 800 期、1500 期需要最近 1800 期；三者的 non-null pool observations 全部都是 `0`
+- `tools/verify_no_data_leakage.py` 與腳本內部 H013 slice audit 皆 PASS，表示問題不是切片或時序洩漏，而是 trusted active data 根本沒有可用的外生 pool-size 序列
+- 進一步檢查 ingestion contract：`lottery_api/fetcher/taiwan_lottery_fetcher.py` 的 row normalization 只回傳 `{lotteryType, draw, date, numbers, special}`，沒有 pool / sales / jackpot 欄位，因此無法在不造假 proxy 的前提下建立 history-only 的 `pool_size_regime` 或 `pool_growth_shock`
+- 教訓：**539 的 pool-size / market-behavior 題若 trusted active data 沒有 pool/sales 欄位，結論應明確標記為 data-availability REJECT，而不是硬套代理變數或把空欄位題目包裝成 signal failure。**
+- 下一步：若要重啟 H013，只能先做 trusted ingestion/backfill，把可驗證的 pool-size 或 sales 欄位寫入 active data；在此之前不得重派同家族驗證
+
+**L126 — POWER_LOTTO WATCH 主線若長窗仍有訊號、但 5x300 rolling permutation 大面積失敗，應降權而非誤升或硬拔除** (2026-04-23)
+- 任務背景：針對 `fourier_rhythm_3bet` 做 failure-aware 的 8 小時決策驗證，固定 `seed=42`、`n_perm=200`，要求補齊 150 / 500 / 1500 正式驗證、5 個不重疊 300 期 rolling OOS 切片，並同時檢查唯一替代候選 `pp3_freqort_3bet` 是否具備升格前置條件
+- 固定使用 `ORDER BY CAST(draw AS INTEGER) DESC` 從 `lottery_api/data/lottery_v2.db` 取數，轉 ASC 後以 `history[:target_idx]` 做 walk-forward；`tools/verify_no_data_leakage.py` 全部通過，屬零洩漏有效結果
+- `fourier_rhythm_3bet` 的 150 / 500 / 1500p raw Edge 為 `+1.50% / +1.63% / +2.57%`，Permutation 為 `p=0.4975 / 0.2537 / 0.0100`，Cohen's d 為 `0.085 / 0.654 / 2.410`；表示長窗 1500p 仍保留時序訊號，但短中窗顯著性不足
+- failure-aware 5x300 rolling OOS 切片全都維持正 raw Edge（`+1.17% / +2.17% / +5.83% / +2.83% / +0.83%`），但只有 slice_3 通過 permutation（`p=0.0199, d=2.411`），其餘 4 個切片皆失敗；最新 slice_5 更只剩 `p=0.5274, d=0.036`
+- 這代表降權觸發來自「rolling temporal significance collapse」，而不是 raw Edge 直接翻負：在本輪量化規則下，`permutation_fail_ratio >= 0.8` 即應把 target 從主監控 WATCH 降為低優先 WATCH，但因 150 / 500 / 1500 raw Edge 仍全正，也不應直接判成 REJECT
+- 替代候選 `pp3_freqort_3bet` 雖在 150 / 500 / 1500p raw Edge 為 `+2.83% / +2.83% / +3.17%`，且 1500p permutation 已過（`p=0.0050, d=2.822`），但 150p per-bet efficiency 只有 `79.89%`、150 / 500p permutation 仍失敗，因此 McNemar 不觸發，不能替換主線
+- 教訓：**當 WATCH 主線長窗仍保留訊號，但 rolling 300p 切片有大面積 permutation 失敗時，正確動作是「降權留 WATCH + 轉向新 Layer-1 家族」，而不是因 raw Edge 全正就維持優先級，也不是在沒有替代者通過全部閘門時直接拔除主線。**
+- 下一步：停止延伸現有 Fourier / PP3 / midfreq / special 同家族微調；若要重建 POWER_LOTTO 3bet 主線，必須引入新的非同家族 Layer-1 訊號來源
+
+**L127 — POWER_LOTTO 非同家族 Layer-1 3bet 若只有 raw Edge 全正、但 permutation 與 4bet 邊際效率仍不過，整體結論應直接 REJECT_ALL** (2026-04-23)
+- 任務背景：依 trusted orchestrator contract，驗證威力彩主號 3 注四個非同家族 Layer-1 history-only 候選：`dispersion_state_transition_3bet`、`odd_tail_imbalance_3bet`、`zone_transition_tensor_3bet`、`residue_structure_stability_3bet`；固定 `seed=42`、`n_perm=200`，並要求 150 / 500 / 1500 三窗口全部評估、對 `pp3_freqort_4bet` 的 per-bet efficiency >80%、通過 permutation / Cohen's d，才可觸發對 `fourier_rhythm_3bet` 的 McNemar
+- 固定使用 `ORDER BY CAST(draw AS INTEGER) DESC` 從 `lottery_api/data/lottery_v2.db` 取數，轉 ASC 後以 `history[:target_idx]` 做 walk-forward；`tools/verify_no_data_leakage.py` 全部通過，且 leakage transcript 已保存到 `analysis/results/power_layer1_nonfamily_3bet_leakage_check_20260423.txt`
+- 四個家族都完成正式驗證，其中三個候選的三窗口 raw Edge 皆為正：`dispersion_state_transition_3bet` = `+2.83% / +1.23% / +1.57%`、`zone_transition_tensor_3bet` = `+1.50% / +1.43% / +0.97%`、`residue_structure_stability_3bet` = `+2.17% / +3.23% / +1.77%`；`odd_tail_imbalance_3bet` 也有 `+0.83% / +0.83% / +0.77%`
+- 但 permutation 沒有任何候選能全窗口壓到 `p < 0.05`：dispersion = `0.2886 / 0.5473 / 0.3184`，odd-tail = `0.3881 / 0.5871 / 0.4726`，zone = `0.2587 / 0.2090 / 0.4030`，residue = `0.4030 / 0.1194 / 0.2189`
+- Cohen's d 也只有 `residue_structure_stability_3bet` 在 500p 達到 `1.393`；其餘窗口與候選都停在 `<=1.0`
+- 對 `pp3_freqort_4bet` 的 per-bet efficiency 更沒有任何候選三窗口全過 80%：最佳 residue 仍只有 `61.1% / 134.9% / 72.2%`，zone 僅 `42.3% / 59.8% / 39.5%`
+- 因此四個候選全部卡在 McNemar 前置閘，對 `fourier_rhythm_3bet` 的替換檢定完全不觸發；正式總結必須是 `REJECT_ALL_NONFAMILY_LAYER1_3BET`
+- 教訓：**威力彩 3 注新家族即使能把多個候選的三窗口 raw Edge 同時拉正，也不能把這種「edge-only 好看」誤當成可升格訊號。只要 permutation 與對 `pp3_freqort_4bet` 的 per-bet efficiency 仍無任何候選全窗過關，正確結論就是整體 REJECT，而不是把其中最佳者包裝成 provisional。**
+- 下一步：若要繼續挑戰 `fourier_rhythm_3bet`，必須引入新的特徵來源、外生資料或不同 validation 設計；不應立刻重跑 dispersion / odd-tail / zone-transition / residue-stability 這四個家族的微調版
+
+**L128 — DAILY_539 MicroFish+MidFreq 2-bet 若短窗 McNemar 未過，就算三窗口 raw Edge / permutation / 邊際效率全過也不得升格** (2026-04-23)
+- 任務背景：依 trusted orchestrator contract，對 `microfish_midfreq_2bet` 做正式升格驗證；active-code mapping 依 `tools/production_validation.py` 定義為 `MicroFish+MidFreq 2-bet`，即 bet1 使用 active MicroFish genome（本輪 `validated_strategy_set.json` top-1：`freq_zscore_80`、`freq_raw_150`、`freq_zscore_150`、`tail_entropy_10`、`markov_lag3_100`、`ix_gap_ratio_100_x_zone_deficit_100`、`ix_freq_deficit_100_x_ac_mean_100`、`nl_sq_entropy_binary_100`），bet2 使用排除 bet1 後的 MidFreq；對照現役為 `midfreq_acb_2bet`
+- 固定使用 `ORDER BY CAST(draw AS INTEGER) DESC` 從 `lottery_api/data/lottery_v2.db` 取數，轉 ASC 後以 `history[:target_idx]` 做 walk-forward；`tools/verify_no_data_leakage.py` 與腳本內 slice audit 全部 PASS，且 leakage transcript 已保存到 `analysis/results/daily539_microfish_midfreq_promotion_no_leakage_20260423.txt`
+- 候選在 150 / 500 / 1500p 的 raw Edge 分別為 `+11.79% / +11.06% / +7.33%`，對照現役 `midfreq_acb_2bet` 為 `+8.46% / +8.26% / +5.53%`；三窗口都保有正向 edge 優勢
+- permutation 也全窗口通過：候選 `p=0.0050 / 0.0050 / 0.0050`，Cohen's d=`2.885 / 5.300 / 6.376`；bet2 邊際效率則為 `164.37% / 149.90% / 124.92%`，形式上已滿足升格前四道閘
+- 但與現役的 McNemar 結果為 150p=`p=0.1797`, net=`+5`；500p=`p=0.0201`, net=`+14`；1500p=`p=0.0132`, net=`+27`。也就是說中長窗已呈現統計優勢，但短窗 150p 仍未證明穩定替換能力
+- 因 trusted wiki 對 539 的 MicroFish 路徑明確要求「只有在 McNemar 驗證可穩定優於 MidFreq+ACB 時才可升格」，本輪結論必須是 `REJECT`，且維持 `midfreq_acb_2bet` 為現役 2 注主線
+- 教訓：**539 的 MicroFish+MidFreq 2-bet 不能只看 raw Edge、permutation 與 per-bet efficiency。只要 150p McNemar 還沒有正式證明短窗穩定優於 `midfreq_acb_2bet`，就應視為「尚未取得 replacement proof」，結論必須維持 REJECT，而不是因為三窗口表面更強就提前升格。**
+- 下一步：若要重啟同題，只能做 failure-aware 監控或等待新的外生/正交訊號來源；不應在現有 MicroFish + MidFreq 架構上再做同家族微調就宣稱可替代 incumbent

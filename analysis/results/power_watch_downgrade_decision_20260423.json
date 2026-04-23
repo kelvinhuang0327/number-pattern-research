@@ -1,0 +1,1683 @@
+{
+  "generated_at": "2026-04-23T05:23:29.214+08:00",
+  "lottery_type": "POWER_LOTTO",
+  "status": "WATCH",
+  "decision_action": "DOWNWEIGHT_WATCH_PRIORITY",
+  "replacement_decision": "DO_NOT_REPLACE",
+  "target_strategy": "fourier_rhythm_3bet",
+  "alternative_candidate": "pp3_freqort_3bet",
+  "reference_strategy": "pp3_freqort_4bet",
+  "seed": 42,
+  "n_perm": 200,
+  "db_query": "SELECT draw, date, numbers, special, lottery_type FROM draws WHERE lottery_type = ? ORDER BY CAST(draw AS INTEGER) DESC",
+  "draw_count_total": 1903,
+  "source_files": {
+    "db": "lottery_api/data/lottery_v2.db",
+    "baseline": "analysis/results/stage0_baseline.json",
+    "target_predictor": "tools/power_fourier_rhythm.py",
+    "alternative_predictor": "tools/validate_power_pp3_freqort_3bet.py:candidate_b_score_blend",
+    "reference_predictor": "tools/predict_power_orthogonal_5bet.py",
+    "leakage_check": "tools/verify_no_data_leakage.py"
+  },
+  "baseline_reference": {
+    "m3_plus_baseline_pct": 11.17,
+    "m4_plus_baseline_pct": 14.6,
+    "stage0_fourier_rhythm_3bet_edge_pct": 3.02,
+    "stage0_fourier_rhythm_3bet_sharpe": 0.0866,
+    "stage0_pp3_freqort_4bet_edge_pct": 3.28,
+    "stage0_pp3_freqort_4bet_sharpe": 0.0856
+  },
+  "windows": {
+    "recent_150": {
+      "periods": 150,
+      "hits": 19,
+      "hit_rate": 0.126667,
+      "hit_rate_pct": 12.67,
+      "win_rate": 0.126667,
+      "win_rate_pct": 12.67,
+      "edge": 0.015007,
+      "edge_pct": 1.5,
+      "sharpe_bernoulli": 0.0451,
+      "max_drawdown": 4.826037,
+      "max_drawdown_pct_points": 482.6,
+      "max_drawdown_draws": 88,
+      "per_bet_hit_rates": [
+        0.04,
+        0.04,
+        0.046667
+      ],
+      "per_bet_hit_rate_pct": [
+        4.0,
+        4.0,
+        4.67
+      ],
+      "per_bet_edges": [
+        0.001302,
+        0.001302,
+        0.007969
+      ],
+      "per_bet_edge_pct": [
+        0.13,
+        0.13,
+        0.8
+      ],
+      "start_draw": "113000091",
+      "end_draw": "115000031"
+    },
+    "recent_500": {
+      "periods": 500,
+      "hits": 64,
+      "hit_rate": 0.128,
+      "hit_rate_pct": 12.8,
+      "win_rate": 0.128,
+      "win_rate_pct": 12.8,
+      "edge": 0.01634,
+      "edge_pct": 1.63,
+      "sharpe_bernoulli": 0.0489,
+      "max_drawdown": 4.826037,
+      "max_drawdown_pct_points": 482.6,
+      "max_drawdown_draws": 88,
+      "per_bet_hit_rates": [
+        0.038,
+        0.048,
+        0.042
+      ],
+      "per_bet_hit_rate_pct": [
+        3.8,
+        4.8,
+        4.2
+      ],
+      "per_bet_edges": [
+        -0.000698,
+        0.009302,
+        0.003302
+      ],
+      "per_bet_edge_pct": [
+        -0.07,
+        0.93,
+        0.33
+      ],
+      "start_draw": "110000053",
+      "end_draw": "115000031"
+    },
+    "recent_1500": {
+      "periods": 1500,
+      "hits": 206,
+      "hit_rate": 0.137333,
+      "hit_rate_pct": 13.73,
+      "win_rate": 0.137333,
+      "win_rate_pct": 13.73,
+      "edge": 0.025674,
+      "edge_pct": 2.57,
+      "sharpe_bernoulli": 0.0746,
+      "max_drawdown": 5.307225,
+      "max_drawdown_pct_points": 530.72,
+      "max_drawdown_draws": 155,
+      "per_bet_hit_rates": [
+        0.05,
+        0.041333,
+        0.046
+      ],
+      "per_bet_hit_rate_pct": [
+        5.0,
+        4.13,
+        4.6
+      ],
+      "per_bet_edges": [
+        0.011302,
+        0.002635,
+        0.007302
+      ],
+      "per_bet_edge_pct": [
+        1.13,
+        0.26,
+        0.73
+      ],
+      "start_draw": "100000097",
+      "end_draw": "115000031"
+    }
+  },
+  "candidate_windows": {
+    "recent_150": {
+      "periods": 150,
+      "hits": 21,
+      "hit_rate": 0.14,
+      "hit_rate_pct": 14.0,
+      "win_rate": 0.14,
+      "win_rate_pct": 14.0,
+      "edge": 0.02834,
+      "edge_pct": 2.83,
+      "sharpe_bernoulli": 0.0817,
+      "max_drawdown": 3.359657,
+      "max_drawdown_pct_points": 335.97,
+      "max_drawdown_draws": 48,
+      "per_bet_hit_rates": [
+        0.06,
+        0.04,
+        0.04
+      ],
+      "per_bet_hit_rate_pct": [
+        6.0,
+        4.0,
+        4.0
+      ],
+      "per_bet_edges": [
+        0.021302,
+        0.001302,
+        0.001302
+      ],
+      "per_bet_edge_pct": [
+        2.13,
+        0.13,
+        0.13
+      ],
+      "start_draw": "113000091",
+      "end_draw": "115000031"
+    },
+    "recent_500": {
+      "periods": 500,
+      "hits": 70,
+      "hit_rate": 0.14,
+      "hit_rate_pct": 14.0,
+      "win_rate": 0.14,
+      "win_rate_pct": 14.0,
+      "edge": 0.02834,
+      "edge_pct": 2.83,
+      "sharpe_bernoulli": 0.0817,
+      "max_drawdown": 4.520672,
+      "max_drawdown_pct_points": 452.07,
+      "max_drawdown_draws": 139,
+      "per_bet_hit_rates": [
+        0.05,
+        0.038,
+        0.052
+      ],
+      "per_bet_hit_rate_pct": [
+        5.0,
+        3.8,
+        5.2
+      ],
+      "per_bet_edges": [
+        0.011302,
+        -0.000698,
+        0.013302
+      ],
+      "per_bet_edge_pct": [
+        1.13,
+        -0.07,
+        1.33
+      ],
+      "start_draw": "110000053",
+      "end_draw": "115000031"
+    },
+    "recent_1500": {
+      "periods": 1500,
+      "hits": 215,
+      "hit_rate": 0.143333,
+      "hit_rate_pct": 14.33,
+      "win_rate": 0.143333,
+      "win_rate_pct": 14.33,
+      "edge": 0.031674,
+      "edge_pct": 3.17,
+      "sharpe_bernoulli": 0.0904,
+      "max_drawdown": 5.136338,
+      "max_drawdown_pct_points": 513.63,
+      "max_drawdown_draws": 46,
+      "per_bet_hit_rates": [
+        0.045333,
+        0.05,
+        0.048
+      ],
+      "per_bet_hit_rate_pct": [
+        4.53,
+        5.0,
+        4.8
+      ],
+      "per_bet_edges": [
+        0.006635,
+        0.011302,
+        0.009302
+      ],
+      "per_bet_edge_pct": [
+        0.66,
+        1.13,
+        0.93
+      ],
+      "start_draw": "100000097",
+      "end_draw": "115000031"
+    }
+  },
+  "reference_windows": {
+    "recent_150": {
+      "periods": 150,
+      "hits": 29,
+      "hit_rate": 0.193333,
+      "hit_rate_pct": 19.33,
+      "win_rate": 0.193333,
+      "win_rate_pct": 19.33,
+      "edge": 0.047297,
+      "edge_pct": 4.73,
+      "sharpe_bernoulli": 0.1198,
+      "max_drawdown": 2.650914,
+      "max_drawdown_pct_points": 265.09,
+      "max_drawdown_draws": 25,
+      "per_bet_hit_rates": [
+        0.04,
+        0.04,
+        0.053333,
+        0.06
+      ],
+      "per_bet_hit_rate_pct": [
+        4.0,
+        4.0,
+        5.33,
+        6.0
+      ],
+      "per_bet_edges": [
+        0.001302,
+        0.001302,
+        0.014635,
+        0.021302
+      ],
+      "per_bet_edge_pct": [
+        0.13,
+        0.13,
+        1.46,
+        2.13
+      ],
+      "start_draw": "113000091",
+      "end_draw": "115000031"
+    },
+    "recent_500": {
+      "periods": 500,
+      "hits": 89,
+      "hit_rate": 0.178,
+      "hit_rate_pct": 17.8,
+      "win_rate": 0.178,
+      "win_rate_pct": 17.8,
+      "edge": 0.031963,
+      "edge_pct": 3.2,
+      "sharpe_bernoulli": 0.0836,
+      "max_drawdown": 3.11128,
+      "max_drawdown_pct_points": 311.13,
+      "max_drawdown_draws": 35,
+      "per_bet_hit_rates": [
+        0.038,
+        0.048,
+        0.042,
+        0.05
+      ],
+      "per_bet_hit_rate_pct": [
+        3.8,
+        4.8,
+        4.2,
+        5.0
+      ],
+      "per_bet_edges": [
+        -0.000698,
+        0.009302,
+        0.003302,
+        0.011302
+      ],
+      "per_bet_edge_pct": [
+        -0.07,
+        0.93,
+        0.33,
+        1.13
+      ],
+      "start_draw": "110000053",
+      "end_draw": "115000031"
+    },
+    "recent_1500": {
+      "periods": 1500,
+      "hits": 268,
+      "hit_rate": 0.178667,
+      "hit_rate_pct": 17.87,
+      "win_rate": 0.178667,
+      "win_rate_pct": 17.87,
+      "edge": 0.03263,
+      "edge_pct": 3.26,
+      "sharpe_bernoulli": 0.0852,
+      "max_drawdown": 6.536889,
+      "max_drawdown_pct_points": 653.69,
+      "max_drawdown_draws": 79,
+      "per_bet_hit_rates": [
+        0.05,
+        0.040667,
+        0.043333,
+        0.045333
+      ],
+      "per_bet_hit_rate_pct": [
+        5.0,
+        4.07,
+        4.33,
+        4.53
+      ],
+      "per_bet_edges": [
+        0.011302,
+        0.001969,
+        0.004635,
+        0.006635
+      ],
+      "per_bet_edge_pct": [
+        1.13,
+        0.2,
+        0.46,
+        0.66
+      ],
+      "start_draw": "100000097",
+      "end_draw": "115000031"
+    }
+  },
+  "rolling_oos_summary": {
+    "slice_design": {
+      "choice": "5x300_non_overlapping",
+      "reason": "5x300 covers the full latest 1500 OOS horizon while giving finer failure detection than 3x500 and still leaves >400 prior draws before the oldest slice."
+    },
+    "target": {
+      "strategy": "fourier_rhythm_3bet",
+      "slices": [
+        {
+          "slice_id": "slice_1",
+          "slice_order": 1,
+          "periods": 300,
+          "start_draw": "100000097",
+          "end_draw": "103000083",
+          "summary": {
+            "periods": 300,
+            "hits": 37,
+            "hit_rate": 0.123333,
+            "hit_rate_pct": 12.33,
+            "win_rate": 0.123333,
+            "win_rate_pct": 12.33,
+            "edge": 0.011674,
+            "edge_pct": 1.17,
+            "sharpe_bernoulli": 0.0355,
+            "max_drawdown": 4.049356,
+            "max_drawdown_pct_points": 404.94,
+            "max_drawdown_draws": 90,
+            "per_bet_hit_rates": [
+              0.043333,
+              0.036667,
+              0.043333
+            ],
+            "per_bet_hit_rate_pct": [
+              4.33,
+              3.67,
+              4.33
+            ],
+            "per_bet_edges": [
+              0.004635,
+              -0.002031,
+              0.004635
+            ],
+            "per_bet_edge_pct": [
+              0.46,
+              -0.2,
+              0.46
+            ],
+            "start_draw": "100000097",
+            "end_draw": "103000083"
+          },
+          "permutation": {
+            "n_oos": 300,
+            "n_perm": 200,
+            "real_hits": 37,
+            "real_rate": 0.123333,
+            "real_rate_pct": 12.33,
+            "real_edge": 0.011674,
+            "real_edge_pct": 1.17,
+            "shuffle_mean": 0.00824,
+            "shuffle_mean_pct": 0.82,
+            "shuffle_std": 0.018086,
+            "shuffle_std_pct": 1.81,
+            "p_emp": 0.4826,
+            "cohens_d": 0.19,
+            "z_score": 0.19,
+            "verdict": "NO_SIGNAL"
+          }
+        },
+        {
+          "slice_id": "slice_2",
+          "slice_order": 2,
+          "periods": 300,
+          "start_draw": "103000084",
+          "end_draw": "106000070",
+          "summary": {
+            "periods": 300,
+            "hits": 40,
+            "hit_rate": 0.133333,
+            "hit_rate_pct": 13.33,
+            "win_rate": 0.133333,
+            "win_rate_pct": 13.33,
+            "edge": 0.021674,
+            "edge_pct": 2.17,
+            "sharpe_bernoulli": 0.0638,
+            "max_drawdown": 5.307225,
+            "max_drawdown_pct_points": 530.72,
+            "max_drawdown_draws": 155,
+            "per_bet_hit_rates": [
+              0.043333,
+              0.043333,
+              0.046667
+            ],
+            "per_bet_hit_rate_pct": [
+              4.33,
+              4.33,
+              4.67
+            ],
+            "per_bet_edges": [
+              0.004635,
+              0.004635,
+              0.007969
+            ],
+            "per_bet_edge_pct": [
+              0.46,
+              0.46,
+              0.8
+            ],
+            "start_draw": "103000084",
+            "end_draw": "106000070"
+          },
+          "permutation": {
+            "n_oos": 300,
+            "n_perm": 200,
+            "real_hits": 40,
+            "real_rate": 0.133333,
+            "real_rate_pct": 13.33,
+            "real_edge": 0.021674,
+            "real_edge_pct": 2.17,
+            "shuffle_mean": 0.010724,
+            "shuffle_mean_pct": 1.07,
+            "shuffle_std": 0.019475,
+            "shuffle_std_pct": 1.95,
+            "p_emp": 0.3284,
+            "cohens_d": 0.562,
+            "z_score": 0.562,
+            "verdict": "NO_SIGNAL"
+          }
+        },
+        {
+          "slice_id": "slice_3",
+          "slice_order": 3,
+          "periods": 300,
+          "start_draw": "106000071",
+          "end_draw": "109000057",
+          "summary": {
+            "periods": 300,
+            "hits": 51,
+            "hit_rate": 0.17,
+            "hit_rate_pct": 17.0,
+            "win_rate": 0.17,
+            "win_rate_pct": 17.0,
+            "edge": 0.05834,
+            "edge_pct": 5.83,
+            "sharpe_bernoulli": 0.1553,
+            "max_drawdown": 2.597783,
+            "max_drawdown_pct_points": 259.78,
+            "max_drawdown_draws": 77,
+            "per_bet_hit_rates": [
+              0.066667,
+              0.04,
+              0.063333
+            ],
+            "per_bet_hit_rate_pct": [
+              6.67,
+              4.0,
+              6.33
+            ],
+            "per_bet_edges": [
+              0.027969,
+              0.001302,
+              0.024635
+            ],
+            "per_bet_edge_pct": [
+              2.8,
+              0.13,
+              2.46
+            ],
+            "start_draw": "106000071",
+            "end_draw": "109000057"
+          },
+          "permutation": {
+            "n_oos": 300,
+            "n_perm": 200,
+            "real_hits": 51,
+            "real_rate": 0.17,
+            "real_rate_pct": 17.0,
+            "real_edge": 0.05834,
+            "real_edge_pct": 5.83,
+            "shuffle_mean": 0.010407,
+            "shuffle_mean_pct": 1.04,
+            "shuffle_std": 0.019885,
+            "shuffle_std_pct": 1.99,
+            "p_emp": 0.0199,
+            "cohens_d": 2.411,
+            "z_score": 2.411,
+            "verdict": "SIGNAL_DETECTED"
+          }
+        },
+        {
+          "slice_id": "slice_4",
+          "slice_order": 4,
+          "periods": 300,
+          "start_draw": "109000058",
+          "end_draw": "112000044",
+          "summary": {
+            "periods": 300,
+            "hits": 42,
+            "hit_rate": 0.14,
+            "hit_rate_pct": 14.0,
+            "win_rate": 0.14,
+            "win_rate_pct": 14.0,
+            "edge": 0.02834,
+            "edge_pct": 2.83,
+            "sharpe_bernoulli": 0.0817,
+            "max_drawdown": 2.913019,
+            "max_drawdown_pct_points": 291.3,
+            "max_drawdown_draws": 44,
+            "per_bet_hit_rates": [
+              0.066667,
+              0.04,
+              0.033333
+            ],
+            "per_bet_hit_rate_pct": [
+              6.67,
+              4.0,
+              3.33
+            ],
+            "per_bet_edges": [
+              0.027969,
+              0.001302,
+              -0.005365
+            ],
+            "per_bet_edge_pct": [
+              2.8,
+              0.13,
+              -0.54
+            ],
+            "start_draw": "109000058",
+            "end_draw": "112000044"
+          },
+          "permutation": {
+            "n_oos": 300,
+            "n_perm": 200,
+            "real_hits": 42,
+            "real_rate": 0.14,
+            "real_rate_pct": 14.0,
+            "real_edge": 0.02834,
+            "real_edge_pct": 2.83,
+            "shuffle_mean": 0.00754,
+            "shuffle_mean_pct": 0.75,
+            "shuffle_std": 0.01944,
+            "shuffle_std_pct": 1.94,
+            "p_emp": 0.1791,
+            "cohens_d": 1.07,
+            "z_score": 1.07,
+            "verdict": "NO_SIGNAL"
+          }
+        },
+        {
+          "slice_id": "slice_5",
+          "slice_order": 5,
+          "periods": 300,
+          "start_draw": "112000045",
+          "end_draw": "115000031",
+          "summary": {
+            "periods": 300,
+            "hits": 36,
+            "hit_rate": 0.12,
+            "hit_rate_pct": 12.0,
+            "win_rate": 0.12,
+            "win_rate_pct": 12.0,
+            "edge": 0.00834,
+            "edge_pct": 0.83,
+            "sharpe_bernoulli": 0.0257,
+            "max_drawdown": 4.826037,
+            "max_drawdown_pct_points": 482.6,
+            "max_drawdown_draws": 88,
+            "per_bet_hit_rates": [
+              0.03,
+              0.046667,
+              0.043333
+            ],
+            "per_bet_hit_rate_pct": [
+              3.0,
+              4.67,
+              4.33
+            ],
+            "per_bet_edges": [
+              -0.008698,
+              0.007969,
+              0.004635
+            ],
+            "per_bet_edge_pct": [
+              -0.87,
+              0.8,
+              0.46
+            ],
+            "start_draw": "112000045",
+            "end_draw": "115000031"
+          },
+          "permutation": {
+            "n_oos": 300,
+            "n_perm": 200,
+            "real_hits": 36,
+            "real_rate": 0.12,
+            "real_rate_pct": 12.0,
+            "real_edge": 0.00834,
+            "real_edge_pct": 0.83,
+            "shuffle_mean": 0.007674,
+            "shuffle_mean_pct": 0.77,
+            "shuffle_std": 0.018619,
+            "shuffle_std_pct": 1.86,
+            "p_emp": 0.5274,
+            "cohens_d": 0.036,
+            "z_score": 0.036,
+            "verdict": "NO_SIGNAL"
+          }
+        }
+      ],
+      "summary": {
+        "slice_count": 5,
+        "slice_length": 300,
+        "positive_edge_slices": 5,
+        "nonpositive_edge_slices": 0,
+        "permutation_pass_slices": 1,
+        "permutation_fail_slices": 4,
+        "permutation_fail_ratio": 0.8,
+        "cohens_d_fail_slices": 3,
+        "cohens_d_fail_ratio": 0.6,
+        "consecutive_nonpositive_edge_slices": 0,
+        "consecutive_permutation_fail_slices": 2,
+        "latest_slice": {
+          "slice_id": "slice_5",
+          "edge_pct": 0.83,
+          "permutation_p": 0.5274,
+          "cohens_d": 0.036
+        }
+      }
+    },
+    "candidate": {
+      "strategy": "pp3_freqort_3bet",
+      "slices": [
+        {
+          "slice_id": "slice_1",
+          "slice_order": 1,
+          "periods": 300,
+          "start_draw": "100000097",
+          "end_draw": "103000083",
+          "summary": {
+            "periods": 300,
+            "hits": 39,
+            "hit_rate": 0.13,
+            "hit_rate_pct": 13.0,
+            "win_rate": 0.13,
+            "win_rate_pct": 13.0,
+            "edge": 0.01834,
+            "edge_pct": 1.83,
+            "sharpe_bernoulli": 0.0545,
+            "max_drawdown": 5.039485,
+            "max_drawdown_pct_points": 503.95,
+            "max_drawdown_draws": 72,
+            "per_bet_hit_rates": [
+              0.036667,
+              0.043333,
+              0.05
+            ],
+            "per_bet_hit_rate_pct": [
+              3.67,
+              4.33,
+              5.0
+            ],
+            "per_bet_edges": [
+              -0.002031,
+              0.004635,
+              0.011302
+            ],
+            "per_bet_edge_pct": [
+              -0.2,
+              0.46,
+              1.13
+            ],
+            "start_draw": "100000097",
+            "end_draw": "103000083"
+          },
+          "permutation": {
+            "n_oos": 300,
+            "n_perm": 200,
+            "real_hits": 39,
+            "real_rate": 0.13,
+            "real_rate_pct": 13.0,
+            "real_edge": 0.01834,
+            "real_edge_pct": 1.83,
+            "shuffle_mean": 0.013157,
+            "shuffle_mean_pct": 1.32,
+            "shuffle_std": 0.018696,
+            "shuffle_std_pct": 1.87,
+            "p_emp": 0.4129,
+            "cohens_d": 0.277,
+            "z_score": 0.277,
+            "verdict": "NO_SIGNAL"
+          }
+        },
+        {
+          "slice_id": "slice_2",
+          "slice_order": 2,
+          "periods": 300,
+          "start_draw": "103000084",
+          "end_draw": "106000070",
+          "summary": {
+            "periods": 300,
+            "hits": 41,
+            "hit_rate": 0.136667,
+            "hit_rate_pct": 13.67,
+            "win_rate": 0.136667,
+            "win_rate_pct": 13.67,
+            "edge": 0.025007,
+            "edge_pct": 2.5,
+            "sharpe_bernoulli": 0.0728,
+            "max_drawdown": 3.243062,
+            "max_drawdown_pct_points": 324.31,
+            "max_drawdown_draws": 38,
+            "per_bet_hit_rates": [
+              0.05,
+              0.043333,
+              0.043333
+            ],
+            "per_bet_hit_rate_pct": [
+              5.0,
+              4.33,
+              4.33
+            ],
+            "per_bet_edges": [
+              0.011302,
+              0.004635,
+              0.004635
+            ],
+            "per_bet_edge_pct": [
+              1.13,
+              0.46,
+              0.46
+            ],
+            "start_draw": "103000084",
+            "end_draw": "106000070"
+          },
+          "permutation": {
+            "n_oos": 300,
+            "n_perm": 200,
+            "real_hits": 41,
+            "real_rate": 0.136667,
+            "real_rate_pct": 13.67,
+            "real_edge": 0.025007,
+            "real_edge_pct": 2.5,
+            "shuffle_mean": 0.017824,
+            "shuffle_mean_pct": 1.78,
+            "shuffle_std": 0.019348,
+            "shuffle_std_pct": 1.93,
+            "p_emp": 0.3433,
+            "cohens_d": 0.371,
+            "z_score": 0.371,
+            "verdict": "NO_SIGNAL"
+          }
+        },
+        {
+          "slice_id": "slice_3",
+          "slice_order": 3,
+          "periods": 300,
+          "start_draw": "106000071",
+          "end_draw": "109000057",
+          "summary": {
+            "periods": 300,
+            "hits": 49,
+            "hit_rate": 0.163333,
+            "hit_rate_pct": 16.33,
+            "win_rate": 0.163333,
+            "win_rate_pct": 16.33,
+            "edge": 0.051674,
+            "edge_pct": 5.17,
+            "sharpe_bernoulli": 0.1398,
+            "max_drawdown": 2.573104,
+            "max_drawdown_pct_points": 257.31,
+            "max_drawdown_draws": 32,
+            "per_bet_hit_rates": [
+              0.053333,
+              0.066667,
+              0.043333
+            ],
+            "per_bet_hit_rate_pct": [
+              5.33,
+              6.67,
+              4.33
+            ],
+            "per_bet_edges": [
+              0.014635,
+              0.027969,
+              0.004635
+            ],
+            "per_bet_edge_pct": [
+              1.46,
+              2.8,
+              0.46
+            ],
+            "start_draw": "106000071",
+            "end_draw": "109000057"
+          },
+          "permutation": {
+            "n_oos": 300,
+            "n_perm": 200,
+            "real_hits": 49,
+            "real_rate": 0.163333,
+            "real_rate_pct": 16.33,
+            "real_edge": 0.051674,
+            "real_edge_pct": 5.17,
+            "shuffle_mean": 0.016224,
+            "shuffle_mean_pct": 1.62,
+            "shuffle_std": 0.018968,
+            "shuffle_std_pct": 1.9,
+            "p_emp": 0.0547,
+            "cohens_d": 1.869,
+            "z_score": 1.869,
+            "verdict": "MARGINAL"
+          }
+        },
+        {
+          "slice_id": "slice_4",
+          "slice_order": 4,
+          "periods": 300,
+          "start_draw": "109000058",
+          "end_draw": "112000044",
+          "summary": {
+            "periods": 300,
+            "hits": 47,
+            "hit_rate": 0.156667,
+            "hit_rate_pct": 15.67,
+            "win_rate": 0.156667,
+            "win_rate_pct": 15.67,
+            "edge": 0.045007,
+            "edge_pct": 4.5,
+            "sharpe_bernoulli": 0.1238,
+            "max_drawdown": 3.243062,
+            "max_drawdown_pct_points": 324.31,
+            "max_drawdown_draws": 38,
+            "per_bet_hit_rates": [
+              0.03,
+              0.066667,
+              0.06
+            ],
+            "per_bet_hit_rate_pct": [
+              3.0,
+              6.67,
+              6.0
+            ],
+            "per_bet_edges": [
+              -0.008698,
+              0.027969,
+              0.021302
+            ],
+            "per_bet_edge_pct": [
+              -0.87,
+              2.8,
+              2.13
+            ],
+            "start_draw": "109000058",
+            "end_draw": "112000044"
+          },
+          "permutation": {
+            "n_oos": 300,
+            "n_perm": 200,
+            "real_hits": 47,
+            "real_rate": 0.156667,
+            "real_rate_pct": 15.67,
+            "real_edge": 0.045007,
+            "real_edge_pct": 4.5,
+            "shuffle_mean": 0.01449,
+            "shuffle_mean_pct": 1.45,
+            "shuffle_std": 0.01944,
+            "shuffle_std_pct": 1.94,
+            "p_emp": 0.0945,
+            "cohens_d": 1.57,
+            "z_score": 1.57,
+            "verdict": "MARGINAL"
+          }
+        },
+        {
+          "slice_id": "slice_5",
+          "slice_order": 5,
+          "periods": 300,
+          "start_draw": "112000045",
+          "end_draw": "115000031",
+          "summary": {
+            "periods": 300,
+            "hits": 39,
+            "hit_rate": 0.13,
+            "hit_rate_pct": 13.0,
+            "win_rate": 0.13,
+            "win_rate_pct": 13.0,
+            "edge": 0.01834,
+            "edge_pct": 1.83,
+            "sharpe_bernoulli": 0.0545,
+            "max_drawdown": 4.520672,
+            "max_drawdown_pct_points": 452.07,
+            "max_drawdown_draws": 139,
+            "per_bet_hit_rates": [
+              0.056667,
+              0.03,
+              0.043333
+            ],
+            "per_bet_hit_rate_pct": [
+              5.67,
+              3.0,
+              4.33
+            ],
+            "per_bet_edges": [
+              0.017969,
+              -0.008698,
+              0.004635
+            ],
+            "per_bet_edge_pct": [
+              1.8,
+              -0.87,
+              0.46
+            ],
+            "start_draw": "112000045",
+            "end_draw": "115000031"
+          },
+          "permutation": {
+            "n_oos": 300,
+            "n_perm": 200,
+            "real_hits": 39,
+            "real_rate": 0.13,
+            "real_rate_pct": 13.0,
+            "real_edge": 0.01834,
+            "real_edge_pct": 1.83,
+            "shuffle_mean": 0.016774,
+            "shuffle_mean_pct": 1.68,
+            "shuffle_std": 0.020854,
+            "shuffle_std_pct": 2.09,
+            "p_emp": 0.4975,
+            "cohens_d": 0.075,
+            "z_score": 0.075,
+            "verdict": "NO_SIGNAL"
+          }
+        }
+      ],
+      "summary": {
+        "slice_count": 5,
+        "slice_length": 300,
+        "positive_edge_slices": 5,
+        "nonpositive_edge_slices": 0,
+        "permutation_pass_slices": 0,
+        "permutation_fail_slices": 5,
+        "permutation_fail_ratio": 1.0,
+        "cohens_d_fail_slices": 3,
+        "cohens_d_fail_ratio": 0.6,
+        "consecutive_nonpositive_edge_slices": 0,
+        "consecutive_permutation_fail_slices": 5,
+        "latest_slice": {
+          "slice_id": "slice_5",
+          "edge_pct": 1.83,
+          "permutation_p": 0.4975,
+          "cohens_d": 0.075
+        }
+      }
+    },
+    "reference": {
+      "strategy": "pp3_freqort_4bet",
+      "slices": [
+        {
+          "slice_id": "slice_1",
+          "slice_order": 1,
+          "periods": 300,
+          "start_draw": "100000097",
+          "end_draw": "103000083",
+          "summary": {
+            "periods": 300,
+            "hits": 48,
+            "hit_rate": 0.16,
+            "hit_rate_pct": 16.0,
+            "win_rate": 0.16,
+            "win_rate_pct": 16.0,
+            "edge": 0.013963,
+            "edge_pct": 1.4,
+            "sharpe_bernoulli": 0.0381,
+            "max_drawdown": 6.536889,
+            "max_drawdown_pct_points": 653.69,
+            "max_drawdown_draws": 79,
+            "per_bet_hit_rates": [
+              0.043333,
+              0.033333,
+              0.05,
+              0.036667
+            ],
+            "per_bet_hit_rate_pct": [
+              4.33,
+              3.33,
+              5.0,
+              3.67
+            ],
+            "per_bet_edges": [
+              0.004635,
+              -0.005365,
+              0.011302,
+              -0.002031
+            ],
+            "per_bet_edge_pct": [
+              0.46,
+              -0.54,
+              1.13,
+              -0.2
+            ],
+            "start_draw": "100000097",
+            "end_draw": "103000083"
+          },
+          "permutation": {
+            "n_oos": 300,
+            "n_perm": 200,
+            "real_hits": 48,
+            "real_rate": 0.16,
+            "real_rate_pct": 16.0,
+            "real_edge": 0.013963,
+            "real_edge_pct": 1.4,
+            "shuffle_mean": 0.01983,
+            "shuffle_mean_pct": 1.98,
+            "shuffle_std": 0.020538,
+            "shuffle_std_pct": 2.05,
+            "p_emp": 0.6468,
+            "cohens_d": -0.286,
+            "z_score": -0.286,
+            "verdict": "NO_SIGNAL"
+          }
+        },
+        {
+          "slice_id": "slice_2",
+          "slice_order": 2,
+          "periods": 300,
+          "start_draw": "103000084",
+          "end_draw": "106000070",
+          "summary": {
+            "periods": 300,
+            "hits": 55,
+            "hit_rate": 0.183333,
+            "hit_rate_pct": 18.33,
+            "win_rate": 0.183333,
+            "win_rate_pct": 18.33,
+            "edge": 0.037297,
+            "edge_pct": 3.73,
+            "sharpe_bernoulli": 0.0964,
+            "max_drawdown": 3.650914,
+            "max_drawdown_pct_points": 365.09,
+            "max_drawdown_draws": 25,
+            "per_bet_hit_rates": [
+              0.043333,
+              0.043333,
+              0.046667,
+              0.05
+            ],
+            "per_bet_hit_rate_pct": [
+              4.33,
+              4.33,
+              4.67,
+              5.0
+            ],
+            "per_bet_edges": [
+              0.004635,
+              0.004635,
+              0.007969,
+              0.011302
+            ],
+            "per_bet_edge_pct": [
+              0.46,
+              0.46,
+              0.8,
+              1.13
+            ],
+            "start_draw": "103000084",
+            "end_draw": "106000070"
+          },
+          "permutation": {
+            "n_oos": 300,
+            "n_perm": 200,
+            "real_hits": 55,
+            "real_rate": 0.183333,
+            "real_rate_pct": 18.33,
+            "real_edge": 0.037297,
+            "real_edge_pct": 3.73,
+            "shuffle_mean": 0.024363,
+            "shuffle_mean_pct": 2.44,
+            "shuffle_std": 0.020749,
+            "shuffle_std_pct": 2.07,
+            "p_emp": 0.2886,
+            "cohens_d": 0.623,
+            "z_score": 0.623,
+            "verdict": "NO_SIGNAL"
+          }
+        },
+        {
+          "slice_id": "slice_3",
+          "slice_order": 3,
+          "periods": 300,
+          "start_draw": "106000071",
+          "end_draw": "109000057",
+          "summary": {
+            "periods": 300,
+            "hits": 55,
+            "hit_rate": 0.183333,
+            "hit_rate_pct": 18.33,
+            "win_rate": 0.183333,
+            "win_rate_pct": 18.33,
+            "edge": 0.037297,
+            "edge_pct": 3.73,
+            "sharpe_bernoulli": 0.0964,
+            "max_drawdown": 3.089024,
+            "max_drawdown_pct_points": 308.9,
+            "max_drawdown_draws": 28,
+            "per_bet_hit_rates": [
+              0.066667,
+              0.04,
+              0.023333,
+              0.053333
+            ],
+            "per_bet_hit_rate_pct": [
+              6.67,
+              4.0,
+              2.33,
+              5.33
+            ],
+            "per_bet_edges": [
+              0.027969,
+              0.001302,
+              -0.015365,
+              0.014635
+            ],
+            "per_bet_edge_pct": [
+              2.8,
+              0.13,
+              -1.54,
+              1.46
+            ],
+            "start_draw": "106000071",
+            "end_draw": "109000057"
+          },
+          "permutation": {
+            "n_oos": 300,
+            "n_perm": 200,
+            "real_hits": 55,
+            "real_rate": 0.183333,
+            "real_rate_pct": 18.33,
+            "real_edge": 0.037297,
+            "real_edge_pct": 3.73,
+            "shuffle_mean": 0.021897,
+            "shuffle_mean_pct": 2.19,
+            "shuffle_std": 0.02225,
+            "shuffle_std_pct": 2.22,
+            "p_emp": 0.2637,
+            "cohens_d": 0.692,
+            "z_score": 0.692,
+            "verdict": "NO_SIGNAL"
+          }
+        },
+        {
+          "slice_id": "slice_4",
+          "slice_order": 4,
+          "periods": 300,
+          "start_draw": "109000058",
+          "end_draw": "112000044",
+          "summary": {
+            "periods": 300,
+            "hits": 58,
+            "hit_rate": 0.193333,
+            "hit_rate_pct": 19.33,
+            "win_rate": 0.193333,
+            "win_rate_pct": 19.33,
+            "edge": 0.047297,
+            "edge_pct": 4.73,
+            "sharpe_bernoulli": 0.1198,
+            "max_drawdown": 3.11128,
+            "max_drawdown_pct_points": 311.13,
+            "max_drawdown_draws": 35,
+            "per_bet_hit_rates": [
+              0.066667,
+              0.04,
+              0.056667,
+              0.03
+            ],
+            "per_bet_hit_rate_pct": [
+              6.67,
+              4.0,
+              5.67,
+              3.0
+            ],
+            "per_bet_edges": [
+              0.027969,
+              0.001302,
+              0.017969,
+              -0.008698
+            ],
+            "per_bet_edge_pct": [
+              2.8,
+              0.13,
+              1.8,
+              -0.87
+            ],
+            "start_draw": "109000058",
+            "end_draw": "112000044"
+          },
+          "permutation": {
+            "n_oos": 300,
+            "n_perm": 200,
+            "real_hits": 58,
+            "real_rate": 0.193333,
+            "real_rate_pct": 19.33,
+            "real_edge": 0.047297,
+            "real_edge_pct": 4.73,
+            "shuffle_mean": 0.01953,
+            "shuffle_mean_pct": 1.95,
+            "shuffle_std": 0.022718,
+            "shuffle_std_pct": 2.27,
+            "p_emp": 0.1343,
+            "cohens_d": 1.222,
+            "z_score": 1.222,
+            "verdict": "NO_SIGNAL"
+          }
+        },
+        {
+          "slice_id": "slice_5",
+          "slice_order": 5,
+          "periods": 300,
+          "start_draw": "112000045",
+          "end_draw": "115000031",
+          "summary": {
+            "periods": 300,
+            "hits": 52,
+            "hit_rate": 0.173333,
+            "hit_rate_pct": 17.33,
+            "win_rate": 0.173333,
+            "win_rate_pct": 17.33,
+            "edge": 0.027297,
+            "edge_pct": 2.73,
+            "sharpe_bernoulli": 0.0721,
+            "max_drawdown": 2.717682,
+            "max_drawdown_pct_points": 271.77,
+            "max_drawdown_draws": 46,
+            "per_bet_hit_rates": [
+              0.03,
+              0.046667,
+              0.04,
+              0.056667
+            ],
+            "per_bet_hit_rate_pct": [
+              3.0,
+              4.67,
+              4.0,
+              5.67
+            ],
+            "per_bet_edges": [
+              -0.008698,
+              0.007969,
+              0.001302,
+              0.017969
+            ],
+            "per_bet_edge_pct": [
+              -0.87,
+              0.8,
+              0.13,
+              1.8
+            ],
+            "start_draw": "112000045",
+            "end_draw": "115000031"
+          },
+          "permutation": {
+            "n_oos": 300,
+            "n_perm": 200,
+            "real_hits": 52,
+            "real_rate": 0.173333,
+            "real_rate_pct": 17.33,
+            "real_edge": 0.027297,
+            "real_edge_pct": 2.73,
+            "shuffle_mean": 0.02173,
+            "shuffle_mean_pct": 2.17,
+            "shuffle_std": 0.024432,
+            "shuffle_std_pct": 2.44,
+            "p_emp": 0.4776,
+            "cohens_d": 0.228,
+            "z_score": 0.228,
+            "verdict": "NO_SIGNAL"
+          }
+        }
+      ],
+      "summary": {
+        "slice_count": 5,
+        "slice_length": 300,
+        "positive_edge_slices": 5,
+        "nonpositive_edge_slices": 0,
+        "permutation_pass_slices": 0,
+        "permutation_fail_slices": 5,
+        "permutation_fail_ratio": 1.0,
+        "cohens_d_fail_slices": 4,
+        "cohens_d_fail_ratio": 0.8,
+        "consecutive_nonpositive_edge_slices": 0,
+        "consecutive_permutation_fail_slices": 5,
+        "latest_slice": {
+          "slice_id": "slice_5",
+          "edge_pct": 2.73,
+          "permutation_p": 0.4776,
+          "cohens_d": 0.228
+        }
+      }
+    }
+  },
+  "permutation": {
+    "target": {
+      "recent_150": {
+        "n_oos": 150,
+        "n_perm": 200,
+        "real_hits": 19,
+        "real_rate": 0.126667,
+        "real_rate_pct": 12.67,
+        "real_edge": 0.015007,
+        "real_edge_pct": 1.5,
+        "shuffle_mean": 0.01274,
+        "shuffle_mean_pct": 1.27,
+        "shuffle_std": 0.02672,
+        "shuffle_std_pct": 2.67,
+        "p_emp": 0.4975,
+        "cohens_d": 0.085,
+        "z_score": 0.085,
+        "verdict": "NO_SIGNAL"
+      },
+      "recent_500": {
+        "n_oos": 500,
+        "n_perm": 200,
+        "real_hits": 64,
+        "real_rate": 0.128,
+        "real_rate_pct": 12.8,
+        "real_edge": 0.01634,
+        "real_edge_pct": 1.63,
+        "shuffle_mean": 0.00691,
+        "shuffle_mean_pct": 0.69,
+        "shuffle_std": 0.014426,
+        "shuffle_std_pct": 1.44,
+        "p_emp": 0.2537,
+        "cohens_d": 0.654,
+        "z_score": 0.654,
+        "verdict": "NO_SIGNAL"
+      },
+      "recent_1500": {
+        "n_oos": 1500,
+        "n_perm": 200,
+        "real_hits": 206,
+        "real_rate": 0.137333,
+        "real_rate_pct": 13.73,
+        "real_edge": 0.025674,
+        "real_edge_pct": 2.57,
+        "shuffle_mean": 0.005704,
+        "shuffle_mean_pct": 0.57,
+        "shuffle_std": 0.008286,
+        "shuffle_std_pct": 0.83,
+        "p_emp": 0.01,
+        "cohens_d": 2.41,
+        "z_score": 2.41,
+        "verdict": "SIGNAL_DETECTED"
+      }
+    },
+    "candidate": {
+      "recent_150": {
+        "n_oos": 150,
+        "n_perm": 200,
+        "real_hits": 21,
+        "real_rate": 0.14,
+        "real_rate_pct": 14.0,
+        "real_edge": 0.02834,
+        "real_edge_pct": 2.83,
+        "shuffle_mean": 0.026507,
+        "shuffle_mean_pct": 2.65,
+        "shuffle_std": 0.029112,
+        "shuffle_std_pct": 2.91,
+        "p_emp": 0.4876,
+        "cohens_d": 0.063,
+        "z_score": 0.063,
+        "verdict": "NO_SIGNAL"
+      },
+      "recent_500": {
+        "n_oos": 500,
+        "n_perm": 200,
+        "real_hits": 70,
+        "real_rate": 0.14,
+        "real_rate_pct": 14.0,
+        "real_edge": 0.02834,
+        "real_edge_pct": 2.83,
+        "shuffle_mean": 0.01294,
+        "shuffle_mean_pct": 1.29,
+        "shuffle_std": 0.014142,
+        "shuffle_std_pct": 1.41,
+        "p_emp": 0.1542,
+        "cohens_d": 1.089,
+        "z_score": 1.089,
+        "verdict": "NO_SIGNAL"
+      },
+      "recent_1500": {
+        "n_oos": 1500,
+        "n_perm": 200,
+        "real_hits": 215,
+        "real_rate": 0.143333,
+        "real_rate_pct": 14.33,
+        "real_edge": 0.031674,
+        "real_edge_pct": 3.17,
+        "shuffle_mean": 0.007037,
+        "shuffle_mean_pct": 0.7,
+        "shuffle_std": 0.008731,
+        "shuffle_std_pct": 0.87,
+        "p_emp": 0.005,
+        "cohens_d": 2.822,
+        "z_score": 2.822,
+        "verdict": "SIGNAL_DETECTED"
+      }
+    },
+    "reference": {
+      "recent_150": {
+        "n_oos": 150,
+        "n_perm": 200,
+        "real_hits": 29,
+        "real_rate": 0.193333,
+        "real_rate_pct": 19.33,
+        "real_edge": 0.047297,
+        "real_edge_pct": 4.73,
+        "shuffle_mean": 0.036363,
+        "shuffle_mean_pct": 3.64,
+        "shuffle_std": 0.032809,
+        "shuffle_std_pct": 3.28,
+        "p_emp": 0.4179,
+        "cohens_d": 0.333,
+        "z_score": 0.333,
+        "verdict": "NO_SIGNAL"
+      },
+      "recent_500": {
+        "n_oos": 500,
+        "n_perm": 200,
+        "real_hits": 89,
+        "real_rate": 0.178,
+        "real_rate_pct": 17.8,
+        "real_edge": 0.031963,
+        "real_edge_pct": 3.2,
+        "shuffle_mean": 0.019483,
+        "shuffle_mean_pct": 1.95,
+        "shuffle_std": 0.016369,
+        "shuffle_std_pct": 1.64,
+        "p_emp": 0.2239,
+        "cohens_d": 0.762,
+        "z_score": 0.762,
+        "verdict": "NO_SIGNAL"
+      },
+      "recent_1500": {
+        "n_oos": 1500,
+        "n_perm": 200,
+        "real_hits": 268,
+        "real_rate": 0.178667,
+        "real_rate_pct": 17.87,
+        "real_edge": 0.03263,
+        "real_edge_pct": 3.26,
+        "shuffle_mean": 0.01124,
+        "shuffle_mean_pct": 1.12,
+        "shuffle_std": 0.010212,
+        "shuffle_std_pct": 1.02,
+        "p_emp": 0.0199,
+        "cohens_d": 2.095,
+        "z_score": 2.095,
+        "verdict": "SIGNAL_DETECTED"
+      }
+    }
+  },
+  "cohens_d": {
+    "target": {
+      "recent_150": 0.085,
+      "recent_500": 0.654,
+      "recent_1500": 2.41
+    },
+    "candidate": {
+      "recent_150": 0.063,
+      "recent_500": 1.089,
+      "recent_1500": 2.822
+    },
+    "reference": {
+      "recent_150": 0.333,
+      "recent_500": 0.762,
+      "recent_1500": 2.095
+    }
+  },
+  "efficiency": {
+    "candidate_vs_pp3_freqort_4bet": {
+      "recent_150": {
+        "edge_retention_pct": 59.92,
+        "per_bet_efficiency_pct": 79.89,
+        "pass": false
+      },
+      "recent_500": {
+        "edge_retention_pct": 88.67,
+        "per_bet_efficiency_pct": 118.22,
+        "pass": true
+      },
+      "recent_1500": {
+        "edge_retention_pct": 97.07,
+        "per_bet_efficiency_pct": 129.43,
+        "pass": true
+      }
+    },
+    "target_vs_pp3_freqort_4bet": {
+      "recent_150": {
+        "edge_retention_pct": 31.73,
+        "per_bet_efficiency_pct": 42.31,
+        "pass": false
+      },
+      "recent_500": {
+        "edge_retention_pct": 51.12,
+        "per_bet_efficiency_pct": 68.16,
+        "pass": false
+      },
+      "recent_1500": {
+        "edge_retention_pct": 78.68,
+        "per_bet_efficiency_pct": 104.91,
+        "pass": true
+      }
+    }
+  },
+  "leakage_check": {
+    "status": "PASS",
+    "returncode": 0,
+    "stdout_tail": [
+      "🎉 驗證結果總結",
+      "================================================================================",
+      "✅ 所有測試案例通過",
+      "✅ 確認回測過程無數據洩漏",
+      "✅ 訓練數據嚴格限制在目標期之前",
+      "",
+      "回測方法：",
+      "  for i in range(test_periods):",
+      "      target_idx = len(history) - test_periods + i",
+      "      target_draw = history[target_idx]",
+      "      hist = history[:target_idx]  # ← 關鍵：只用之前的數據",
+      "      result = predict_func(hist, rules)"
+    ],
+    "stderr_tail": []
+  },
+  "mcnemar": {
+    "status": "NOT_TRIGGERED",
+    "reason": "permutation p gate not fully passed, Cohen's d gate not fully passed, per-bet efficiency gate not fully passed",
+    "p_value": null,
+    "net": null,
+    "pass": false
+  },
+  "candidate_status": "WATCH",
+  "candidate_blockers": [
+    "recent_150 permutation p >= 0.05",
+    "recent_150 Cohen's d <= 1.0",
+    "recent_150 per-bet efficiency <= 80%",
+    "recent_500 permutation p >= 0.05"
+  ],
+  "downgrade_policy": {
+    "status": "WATCH",
+    "action": "DOWNWEIGHT_WATCH_PRIORITY",
+    "triggered": true,
+    "trigger_reasons": [
+      ">=80% rolling slices fail permutation p < 0.05",
+      ">=2 standard windows fail permutation gate"
+    ],
+    "thresholds": {
+      "slice_scheme": {
+        "choice": "5x300_non_overlapping",
+        "reason": "5x300 covers the full latest 1500 OOS horizon while giving finer failure detection than 3x500 and still leaves >400 prior draws before the oldest slice."
+      },
+      "remove_from_main_watch": {
+        "consecutive_nonpositive_edge_slices_min": 2,
+        "nonpositive_edge_slices_min": 3,
+        "standard_nonpositive_windows_min": 1
+      },
+      "downweight_watch_priority": {
+        "permutation_fail_ratio_min": 0.8,
+        "cohens_d_fail_ratio_min": 0.8,
+        "standard_permutation_fail_windows_min": 2
+      }
+    },
+    "observed": {
+      "standard_perm_fail_windows": 2,
+      "standard_nonpositive_windows": 0,
+      "slice_count": 5,
+      "slice_length": 300,
+      "positive_edge_slices": 5,
+      "nonpositive_edge_slices": 0,
+      "permutation_pass_slices": 1,
+      "permutation_fail_slices": 4,
+      "permutation_fail_ratio": 0.8,
+      "cohens_d_fail_slices": 3,
+      "cohens_d_fail_ratio": 0.6,
+      "consecutive_nonpositive_edge_slices": 0,
+      "consecutive_permutation_fail_slices": 2,
+      "latest_slice": {
+        "slice_id": "slice_5",
+        "edge_pct": 0.83,
+        "permutation_p": 0.5274,
+        "cohens_d": 0.036
+      }
+    }
+  },
+  "planner_recommendation": "POWER_LOTTO 新 Layer-1 3bet 訊號家族探索：避開 WQ / midfreq regime-gate / special V3-V4 / 現有 PP3-FreqOrt 重排，直接尋找非同家族替代主線。",
+  "task_result_json": {
+    "target_status": "WATCH",
+    "target_action": "DOWNWEIGHT_WATCH_PRIORITY",
+    "candidate_status": "WATCH",
+    "replacement_decision": "DO_NOT_REPLACE",
+    "planner_recommendation": "POWER_LOTTO 新 Layer-1 3bet 訊號家族探索：避開 WQ / midfreq regime-gate / special V3-V4 / 現有 PP3-FreqOrt 重排，直接尋找非同家族替代主線。"
+  },
+  "changed_files_list": [
+    "analysis/results/power_watch_downgrade_decision_20260423.json",
+    "analysis/results/power_watch_downgrade_decision_20260423.md",
+    "analysis/results/power_watch_downgrade_diagnostics_20260423.json",
+    "tools/validate_power_watch_downgrade_decision_20260423.py",
+    "tests/test_power_watch_downgrade_decision_20260423.py",
+    "wiki/games/power_lotto.md",
+    "wiki/lessons/key_lessons.md",
+    "memory/lessons.md"
+  ],
+  "handoff_notes": "updated wiki/games/power_lotto.md and wiki/lessons/key_lessons.md",
+  "completed_markdown": "# POWER_LOTTO WATCH downgrade decision (2026-04-23)\n\n- Final status: **WATCH**\n- Target strategy: `fourier_rhythm_3bet`\n- Downgrade action: **DOWNWEIGHT_WATCH_PRIORITY**\n- Replacement decision: **DO_NOT_REPLACE**\n- Target 150/500/1500 Edge: +1.50% / +1.63% / +2.57%\n- Target 150/500/1500 permutation p: 0.4975 / 0.2537 / 0.0100\n- Rolling 5x300 target summary: 5/5 slices edge>0, perm fail ratio=0.80, max consecutive non-positive slices=0\n- Candidate `pp3_freqort_3bet` status: **WATCH** (150/500/1500 Edge +2.83% / +2.83% / +3.17%)\n- Candidate efficiency vs `pp3_freqort_4bet`: 79.9% / 118.2% / 129.4%\n- McNemar: NOT_TRIGGERED (permutation p gate not fully passed, Cohen's d gate not fully passed, per-bet efficiency gate not fully passed)\n- Leakage check: PASS\n- Planner recommendation: POWER_LOTTO 新 Layer-1 3bet 訊號家族探索：避開 WQ / midfreq regime-gate / special V3-V4 / 現有 PP3-FreqOrt 重排，直接尋找非同家族替代主線。\n- Handoff notes: updated wiki/games/power_lotto.md and wiki/lessons/key_lessons.md"
+}

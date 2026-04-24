@@ -1,0 +1,9 @@
+/Users/kelvin/Kelvin-WorkSpace/LotteryNew/outputs/coverage_regime_rules.json
+/Users/kelvin/Kelvin-WorkSpace/LotteryNew/outputs/cold_phase_strategy_set.json
+/Users/kelvin/Kelvin-WorkSpace/LotteryNew/outputs/hybrid_strategy_candidates.json
+/Users/kelvin/Kelvin-WorkSpace/LotteryNew/outputs/task_result.json
+/Users/kelvin/Kelvin-WorkSpace/LotteryNew/outputs/completed_markdown.md
+/Users/kelvin/Kelvin-WorkSpace/LotteryNew/tools/deep_research_run.py (edited)
+/Users/kelvin/Kelvin-WorkSpace/LotteryNew/tools/deep_research_results_powerlotto.json (created)
+/Users/kelvin/Kelvin-WorkSpace/LotteryNew/outputs/deep_research_completed_markdown.md (created)
+/Users/kelvin/Kelvin-WorkSpace/LotteryNew/outputs/task_result_deep_research_powerlotto.json (edited)

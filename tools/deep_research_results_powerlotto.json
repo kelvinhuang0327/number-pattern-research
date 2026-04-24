@@ -1,0 +1,310 @@
+{
+  "benchmarks": {
+    "cov_opt_concentrated": {
+      "strategy_name": "cov_opt_concentrated",
+      "lottery_type": "POWER_LOTTO",
+      "num_bets": 3,
+      "test_periods": 150,
+      "win_rate": 9.8,
+      "win_rate_std": 2.530700386146974,
+      "random_baseline": 13.6,
+      "edge_vs_random": -3.799999999999999,
+      "match_distribution": {
+        "3": 13.7,
+        "4": 1.0
+      },
+      "roi": -83.37777777777777,
+      "z_score": -1.3576971323781946,
+      "p_value": 0.912720096446512,
+      "is_significant": "False",
+      "seeds_used": [
+        42,
+        43,
+        44,
+        45,
+        46,
+        47,
+        48,
+        49,
+        50,
+        51
+      ],
+      "timestamp": "2026-04-25T05:36:09.546069"
+    },
+    "cov_opt_concentrated_500": {
+      "strategy_name": "cov_opt_concentrated_500",
+      "lottery_type": "POWER_LOTTO",
+      "num_bets": 3,
+      "test_periods": 500,
+      "win_rate": 10.599999999999998,
+      "win_rate_std": 1.365283853270081,
+      "random_baseline": 11.14,
+      "edge_vs_random": -0.5400000000000027,
+      "match_distribution": {
+        "3": 49.3,
+        "4": 3.7
+      },
+      "roi": -81.92,
+      "z_score": -0.38378059525259606,
+      "p_value": 0.6494294642375275,
+      "is_significant": "False",
+      "seeds_used": [
+        42,
+        43,
+        44,
+        45,
+        46,
+        47,
+        48,
+        49,
+        50,
+        51
+      ],
+      "timestamp": "2026-04-25T05:36:11.113132"
+    },
+    "cov_opt_concentrated_1500": {
+      "strategy_name": "cov_opt_concentrated_1500",
+      "lottery_type": "POWER_LOTTO",
+      "num_bets": 3,
+      "test_periods": 1500,
+      "win_rate": 11.0,
+      "win_rate_std": 0.7004760286167302,
+      "random_baseline": 10.940000000000001,
+      "edge_vs_random": 0.05999999999999872,
+      "match_distribution": {
+        "3": 152.9,
+        "4": 11.9,
+        "5": 0.2
+      },
+      "roi": -78.89777777777778,
+      "z_score": 0.0744469437557399,
+      "p_value": 0.47032737834710947,
+      "is_significant": "False",
+      "seeds_used": [
+        42,
+        43,
+        44,
+        45,
+        46,
+        47,
+        48,
+        49,
+        50,
+        51
+      ],
+      "timestamp": "2026-04-25T05:36:15.879600"
+    },
+    "struct_filter_strategy": {
+      "strategy_name": "struct_filter_strategy",
+      "lottery_type": "POWER_LOTTO",
+      "num_bets": 3,
+      "test_periods": 150,
+      "win_rate": 10.599999999999998,
+      "win_rate_std": 1.645195023900409,
+      "random_baseline": 13.6,
+      "edge_vs_random": -3.0000000000000018,
+      "match_distribution": {
+        "3": 15.3,
+        "4": 0.6
+      },
+      "roi": -83.73333333333333,
+      "z_score": -1.071866157140681,
+      "p_value": 0.8581099235622041,
+      "is_significant": "False",
+      "seeds_used": [
+        42,
+        43,
+        44,
+        45,
+        46,
+        47,
+        48,
+        49,
+        50,
+        51
+      ],
+      "timestamp": "2026-04-25T05:36:17.514795"
+    },
+    "struct_filter_strategy_500": {
+      "strategy_name": "struct_filter_strategy_500",
+      "lottery_type": "POWER_LOTTO",
+      "num_bets": 3,
+      "test_periods": 500,
+      "win_rate": 11.3,
+      "win_rate_std": 0.5458937625582468,
+      "random_baseline": 11.14,
+      "edge_vs_random": 0.16000000000000014,
+      "match_distribution": {
+        "3": 52.6,
+        "4": 3.8,
+        "5": 0.1
+      },
+      "roi": -77.57333333333334,
+      "z_score": 0.11371276896373168,
+      "p_value": 0.4547327450064772,
+      "is_significant": "False",
+      "seeds_used": [
+        42,
+        43,
+        44,
+        45,
+        46,
+        47,
+        48,
+        49,
+        50,
+        51
+      ],
+      "timestamp": "2026-04-25T05:36:20.700600"
+    },
+    "struct_filter_strategy_1500": {
+      "strategy_name": "struct_filter_strategy_1500",
+      "lottery_type": "POWER_LOTTO",
+      "num_bets": 3,
+      "test_periods": 1500,
+      "win_rate": 11.246666666666668,
+      "win_rate_std": 0.7112117984273192,
+      "random_baseline": 10.940000000000001,
+      "edge_vs_random": 0.30666666666666664,
+      "match_distribution": {
+        "3": 156.1,
+        "4": 12.3,
+        "5": 0.3
+      },
+      "roi": -77.32444444444444,
+      "z_score": 0.3805066014182342,
+      "p_value": 0.35178469859946015,
+      "is_significant": "False",
+      "seeds_used": [
+        42,
+        43,
+        44,
+        45,
+        46,
+        47,
+        48,
+        49,
+        50,
+        51
+      ],
+      "timestamp": "2026-04-25T05:36:29.094543"
+    },
+    "freq_reversion_strategy": {
+      "strategy_name": "freq_reversion_strategy",
+      "lottery_type": "POWER_LOTTO",
+      "num_bets": 3,
+      "test_periods": 150,
+      "win_rate": 11.8,
+      "win_rate_std": 1.661324772583615,
+      "random_baseline": 13.6,
+      "edge_vs_random": -1.799999999999999,
+      "match_distribution": {
+        "3": 16.4,
+        "4": 1.3
+      },
+      "roi": -79.64444444444445,
+      "z_score": -0.6431196942844077,
+      "p_value": 0.7399267818523024,
+      "is_significant": "False",
+      "seeds_used": [
+        42,
+        43,
+        44,
+        45,
+        46,
+        47,
+        48,
+        49,
+        50,
+        51
+      ],
+      "timestamp": "2026-04-25T05:36:29.710807"
+    },
+    "freq_reversion_strategy_500": {
+      "strategy_name": "freq_reversion_strategy_500",
+      "lottery_type": "POWER_LOTTO",
+      "num_bets": 3,
+      "test_periods": 500,
+      "win_rate": 11.26,
+      "win_rate_std": 1.58,
+      "random_baseline": 11.14,
+      "edge_vs_random": 0.11999999999999922,
+      "match_distribution": {
+        "3": 52.4,
+        "4": 3.9
+      },
+      "roi": -80.82666666666667,
+      "z_score": 0.08528457672279814,
+      "p_value": 0.46601757642437347,
+      "is_significant": "False",
+      "seeds_used": [
+        42,
+        43,
+        44,
+        45,
+        46,
+        47,
+        48,
+        49,
+        50,
+        51
+      ],
+      "timestamp": "2026-04-25T05:36:31.745929"
+    },
+    "freq_reversion_strategy_1500": {
+      "strategy_name": "freq_reversion_strategy_1500",
+      "lottery_type": "POWER_LOTTO",
+      "num_bets": 3,
+      "test_periods": 1500,
+      "win_rate": 10.866666666666665,
+      "win_rate_std": 0.6915361322607966,
+      "random_baseline": 10.940000000000001,
+      "edge_vs_random": -0.07333333333333591,
+      "match_distribution": {
+        "3": 152.8,
+        "4": 10.0,
+        "5": 0.2
+      },
+      "roi": -79.7511111111111,
+      "z_score": -0.09099070903479835,
+      "p_value": 0.5362500132261011,
+      "is_significant": "False",
+      "seeds_used": [
+        42,
+        43,
+        44,
+        45,
+        46,
+        47,
+        48,
+        49,
+        50,
+        51
+      ],
+      "timestamp": "2026-04-25T05:36:37.983384"
+    }
+  },
+  "monte_carlo": {
+    "cov_opt_concentrated": {
+      "mean": -1.204666666666667,
+      "std": 3.4858285162131035,
+      "p5": -6.666666666666668,
+      "p95": 4.666666666666668,
+      "trials": 1000
+    },
+    "struct_filter_strategy": {
+      "mean": 0.23666666666666664,
+      "std": 3.61078477157898,
+      "p5": -5.999999999999998,
+      "p95": 6.000000000000001,
+      "trials": 1000
+    },
+    "freq_reversion_strategy": {
+      "mean": 0.15533333333333338,
+      "std": 3.5780013663744983,
+      "p5": -5.333333333333333,
+      "p95": 6.000000000000001,
+      "trials": 1000
+    }
+  }
+}

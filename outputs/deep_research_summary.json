@@ -1,0 +1,61 @@
+{
+  "candidates": [
+    {
+      "name": "struct_filter_big_lotto",
+      "game": "BIG_LOTTO",
+      "rule": {
+        "odd_allowed": [
+          3
+        ]
+      },
+      "proxy_edge": -0.008000000000000007
+    },
+    {
+      "name": "struct_filter_power_lotto",
+      "game": "POWER_LOTTO",
+      "rule": {
+        "odd_allowed": [
+          4
+        ]
+      },
+      "proxy_edge": 0.041333333333333305
+    },
+    {
+      "name": "struct_filter_daily_539",
+      "game": "DAILY_539",
+      "rule": {
+        "odd_allowed": [
+          2
+        ]
+      },
+      "proxy_edge": 0.04566666666666663
+    }
+  ],
+  "selected": [
+    {
+      "name": "struct_filter_power_lotto",
+      "game": "POWER_LOTTO",
+      "rule": {
+        "odd_allowed": [
+          4
+        ]
+      },
+      "proxy_edge": 0.041333333333333305
+    },
+    {
+      "name": "struct_filter_daily_539",
+      "game": "DAILY_539",
+      "rule": {
+        "odd_allowed": [
+          2
+        ]
+      },
+      "proxy_edge": 0.04566666666666663
+    }
+  ],
+  "structure_rules_keys": [
+    "BIG_LOTTO",
+    "DAILY_539",
+    "POWER_LOTTO"
+  ]
+}

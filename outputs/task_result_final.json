@@ -1,0 +1,7 @@
+{
+  "completed_markdown": "outputs/completed_markdown.md",
+  "structure_filter_rules": "outputs/structure_filter_rules.json",
+  "signal_quality_matrix": "outputs/signal_quality_matrix.json",
+  "signal_reconstruction_report": "outputs/signal_reconstruction_report.json",
+  "changed_files_list": "outputs/changed_files_list_task.txt"
+}

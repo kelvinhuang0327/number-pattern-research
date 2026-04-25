@@ -1,0 +1,35 @@
+{
+  "summary": "Deep research cold-phase run",
+  "candidates": [
+    {
+      "strategy_name": "cold_lowfreq_2bet",
+      "game": "POWER_LOTTO",
+      "edge_150": -0.006666666666667,
+      "mc_status": "FAIL",
+      "validation_tier": "T0_IDEA",
+      "promotion_blocker": "negative_edge"
+    },
+    {
+      "strategy_name": "shadow_gap_daily_3bet",
+      "game": "DAILY_539",
+      "edge_150": 0.046666666666667,
+      "mc_status": "PASS",
+      "validation_tier": "T1_MC_PASS",
+      "promotion_blocker": "vs_incumbent_non_positive"
+    },
+    {
+      "strategy_name": "anti_reverse_freq_4bet",
+      "game": "BIG_LOTTO",
+      "edge_150": 0.066666666666667,
+      "mc_status": "PASS",
+      "validation_tier": "T1_MC_PASS",
+      "promotion_blocker": "multi-window unverified"
+    }
+  ],
+  "incumbents": {
+    "POWER_LOTTO": {"name": "fourier_rhythm_3bet", "edge": 0.009, "window": "30p"},
+    "DAILY_539": {"name": "midfreq_acb_2bet", "edge": 0.095, "window": "300p"},
+    "BIG_LOTTO": {"name": "p1_deviation_4bet", "edge": 0.063, "window": "300p"}
+  },
+  "mc_params": {"seed": 42, "n": 1000}
+}

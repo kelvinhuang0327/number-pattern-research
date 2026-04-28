@@ -1,0 +1,7 @@
+{
+  "summary": "3 POWER_LOTTO candidates evaluated on rolling 150-window (selection from history) with Monte Carlo n=1000",
+  "artifacts": [
+    "outputs/temporal_pattern_analysis.json",
+    "outputs/signal_reconstruction_report.json"
+  ]
+}

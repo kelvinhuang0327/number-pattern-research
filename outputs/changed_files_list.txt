@@ -1,15 +1,2 @@
-outputs/frequency_reversion_report.json
-outputs/structure_filter_rules.json
-outputs/strategy_summary.json
-outputs/completed_markdown.md
-outputs/task_result.json
-
--- Created by monitoring run (2026-04-29) --
-outputs/monitoring_status.md
-outputs/monitoring_task_result.json
-outputs/sql_active_strategy_state.csv
-outputs/sql_strategy_reviews.csv
-outputs/sql_strategy_live_state.csv
-outputs/sql_agent_tasks_failures.csv
-outputs/sql_schema_info.txt
-outputs/sql_run_info.txt
+/Users/kelvin/Kelvin-WorkSpace/LotteryNew/outputs/cto_daily_precheck.md
+/Users/kelvin/Kelvin-WorkSpace/LotteryNew/outputs/cto_daily_precheck.json

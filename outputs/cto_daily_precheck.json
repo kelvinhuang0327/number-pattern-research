@@ -1,0 +1,44 @@
+{
+  "timestamp": "2026-04-29T09:48:30+08:00",
+  "task_status_counts": {
+    "completed": 5,
+    "queued": 1,
+    "failed": 0,
+    "replan_required": 0,
+    "skipped_duplicate_daily_cap": 0
+  },
+  "completed_tasks": [
+    "[AUTO-MONITOR] Strategy monitoring check — 2026-04-28 16:01 UTC",
+    "[AUTO-MONITOR] Strategy monitoring check — 2026-04-28 16:07 UTC",
+    "[AUTO-MONITOR] Strategy monitoring check — 2026-04-28 16:21 UTC",
+    "[AUTO-MONITOR] Strategy monitoring check — 2026-04-28 16:26 UTC",
+    "[FALLBACK-P1] 系統看門狗狀態巡查"
+  ],
+  "queued_tasks": ["[FALLBACK-P2] CTO 每日預檢報告"],
+  "failed_or_replan": [],
+  "system_issues": [
+    {
+      "issue": "missing_db_tables",
+      "details": "active_strategy_state / strategy_reviews / strategy_live_state missing in lottery_v2.db (NO_TABLE)",
+      "evidence_file": "outputs/monitoring_status.md"
+    },
+    {
+      "issue": "missing_failure_taxonomy",
+      "details": "agent_tasks.failure_category = NULL for many tasks; monitoring SQL errors: 'no such column: failure_category'",
+      "evidence_file": "runtime/agent_orchestrator/reports/value_score_calibration_2026-04-28.md"
+    }
+  ],
+  "strategy_snapshot": {
+    "DAILY_539": {"active":"acb_markov_midfreq_3bet","active_edge":0.0881,"note":"planner WATCH; degradation slope noted"},
+    "POWER_LOTTO": {"active":"pp3_freqort_4bet","active_edge":0.0328,"shadow":"orthogonal_5bet","shadow_edge":0.0294},
+    "BIG_LOTTO": {"active":"p1_dev_sum5bet","active_edge":0.0374}
+  },
+  "strategy_reviews_count_snapshot": 81,
+  "health": "ANOMALOUS",
+  "recommended_actions": [
+    "ESCALATE_TO_CTO: verify DB path/schema and recent deploys",
+    "Fix worker_tick to write failure_category/failure_weight to agent_tasks",
+    "Provide alternate DB snapshot or restore missing tables",
+    "Run tools/repair_pipeline.py to backfill strategy_reviews (dry_run first)"
+  ]
+}

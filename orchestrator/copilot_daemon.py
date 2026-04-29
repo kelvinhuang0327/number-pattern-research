@@ -12,11 +12,11 @@ import os
 import signal
 import sys
 import time
-from datetime import datetime
+from datetime import datetime, timezone
 
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
-from orchestrator import common, db, worker_tick
+from orchestrator import common, db, worker_tick, execution_policy, health
 
 logging.basicConfig(
     level=logging.INFO,
@@ -34,8 +34,8 @@ def _set_state(status: str, **kwargs):
     common.write_copilot_daemon_state(
         pid=os.getpid(),
         status=status,
-        started_at=current.get("started_at") or datetime.utcnow().isoformat(),
-        heartbeat_at=datetime.utcnow().isoformat(),
+        started_at=current.get("started_at") or datetime.now(timezone.utc).isoformat(),
+        heartbeat_at=datetime.now(timezone.utc).isoformat(),
         **kwargs,
     )
 
@@ -60,7 +60,7 @@ def _acquire_singleton() -> bool:
     return True
 
 
-def run_once(force: bool = False) -> str:
+def run_once() -> str:
     common.ensure_dirs()
     lock = db.get_worker_lock()
     worker_provider = db.get_worker_provider()
@@ -82,9 +82,26 @@ def run_once(force: bool = False) -> str:
         _set_state("idle", current_task_id=None, worker_pid=None, worker_provider=worker_provider, note="provider-not-selected")
         return "provider-not-selected"
 
-    if not db.is_scheduler_enabled() and not force:
-        _set_state("idle", current_task_id=None, worker_pid=None, worker_provider=worker_provider, note="scheduler-disabled")
-        return "scheduler-disabled"
+    decision = execution_policy.evaluate("copilot-daemon", scope="main", provider=worker_provider)
+    if not decision.allowed:
+        execution_policy.record_skip(decision)
+        reason = (decision.skip_reason or "blocked").lower()
+        _set_state("idle", current_task_id=None, worker_pid=None, worker_provider=worker_provider, note=reason)
+        return reason
+
+    provider_block = common.get_provider_rate_limit_block(worker_provider)
+    if provider_block:
+        reset_hint = provider_block.get("reset_hint") or provider_block.get("blocked_until") or "unknown"
+        _set_state(
+            "rate_limited",
+            current_task_id=provider_block.get("task_id"),
+            worker_pid=None,
+            worker_provider=worker_provider,
+            note=f"rate-limited until {reset_hint}",
+        )
+        db.log_tick(RUNNER, "COPILOT_DAEMON_RATE_LIMIT_WAIT", task_id=provider_block.get("task_id"), message=f"Provider {worker_provider} waiting for reset: {reset_hint}")
+        common.log_jsonl(RUNNER, "COPILOT_DAEMON_RATE_LIMIT_WAIT", provider=worker_provider, task_id=provider_block.get("task_id"), reset_hint=reset_hint)
+        return "rate-limited"
 
     queued = db.list_tasks(status="QUEUED", limit=1)
     if not queued:
@@ -93,7 +110,10 @@ def run_once(force: bool = False) -> str:
 
     task = queued[0]
     _set_state("claiming", current_task_id=task["id"], worker_pid=None, worker_provider=worker_provider)
-    worker_tick._claim(task)
+    claimed = worker_tick._claim(task)
+    if not claimed:
+        _set_state("idle", current_task_id=task["id"], worker_pid=None, worker_provider=worker_provider, note="claim-blocked")
+        return "claim-blocked"
     lock = db.get_worker_lock()
     _set_state(
         "busy",
@@ -106,7 +126,7 @@ def run_once(force: bool = False) -> str:
     return "claimed"
 
 
-def serve_forever(force: bool = False, poll_seconds: int = POLL_SECONDS):
+def serve_forever(poll_seconds: int = POLL_SECONDS):
     _install_signal_handlers()
     if not _acquire_singleton():
         return 1
@@ -119,7 +139,7 @@ def serve_forever(force: bool = False, poll_seconds: int = POLL_SECONDS):
     try:
         while not SHUTDOWN:
             try:
-                outcome = run_once(force=force)
+                outcome = run_once()
                 common.log_jsonl(RUNNER, "COPILOT_DAEMON_TICK", tick_outcome=outcome)
             except Exception as exc:
                 exit_code = 1
@@ -142,20 +162,23 @@ def main():
     parser.add_argument("--poll-seconds", type=int, default=POLL_SECONDS, help="Polling interval for resident mode")
     args = parser.parse_args()
 
-    db.init_db()
-    force = str(os.environ.get("ORCHESTRATOR_FORCE_RUN", "")).strip().lower() in ("1", "true", "yes", "on")
+    # Import guard: validate critical modules before daemon starts
+    if not health.run_startup_import_guard("copilot-daemon"):
+        logger.error("[health] Import guard failed — copilot-daemon cannot start")
+        return 1
 
+    db.init_db()
     if args.once:
         _install_signal_handlers()
         if not _acquire_singleton():
             return 1
         try:
-            run_once(force=force)
+            run_once()
             return 0
         finally:
             common.clear_copilot_daemon_state(pid=os.getpid())
 
-    return serve_forever(force=force, poll_seconds=args.poll_seconds)
+    return serve_forever(poll_seconds=args.poll_seconds)
 
 
 if __name__ == "__main__":

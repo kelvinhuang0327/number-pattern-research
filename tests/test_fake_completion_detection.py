@@ -3,7 +3,7 @@
 測試：驗證含 quota/rate-limit 訊號的 artifact 不會被判為 COMPLETED。
 
 此測試確保：
-1. 含有 quota/rate-limit 訊息的 worker 輸出被判為 FAILED/BLOCKED_ENV
+1. 含有 quota/rate-limit 訊息的 worker 輸出被判為 FAILED_RATE_LIMIT
 2. 正常成功的 artifact 仍維持 COMPLETED
 3. 假完成偵測器能正確辨識過去的假完成任務
 """
@@ -13,7 +13,7 @@ import os
 
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
-from orchestrator.worker_tick import _check_worker_runtime_errors, _is_environment_blocking_error
+from orchestrator.worker_tick import _check_worker_runtime_errors, _detect_rate_limit_failure, _is_environment_blocking_error
 
 
 def test_quota_marker_detection():
@@ -46,7 +46,7 @@ def test_quota_marker_detection():
         {
             "name": "other error",
             "output": "error: connection refused",
-            "should_have_markers": True,
+            "should_have_markers": False,
             "should_be_blocked": False,
         },
     ]
@@ -64,6 +64,7 @@ def test_quota_marker_detection():
         has_markers = bool(markers)
         expected_markers = test["should_have_markers"]
         expected_blocked = test["should_be_blocked"]
+        rate_limit_info = _detect_rate_limit_failure(test["output"], markers, provider="copilot-daemon")
         
         passed = (has_markers == expected_markers) and (is_blocked == expected_blocked)
         
@@ -72,6 +73,7 @@ def test_quota_marker_detection():
         print(f"  Output: {test['output'][:50]}...")
         print(f"  Markers found: {markers}")
         print(f"  Is blocked: {is_blocked} (expected: {expected_blocked})")
+        print(f"  Rate limit info: {rate_limit_info}")
         
         if not passed:
             all_passed = False
@@ -101,7 +103,7 @@ def test_real_quota_output():
     
     passed = (len(markers) > 0) and is_blocked
     status = "✓ PASS" if passed else "✗ FAIL"
-    print(f"\n{status}: Real quota message should be detected as BLOCKED_ENV")
+    print(f"\n{status}: Real quota message should be detected as FAILED_RATE_LIMIT")
     
     return passed
 
@@ -121,7 +123,7 @@ def main():
     if all_passed:
         print("✓ 所有測試通過！假完成偵測系統正常運作。")
         print("\n驗證項目:")
-        print("  ✓ quota/rate-limit 訊息被正確判為 BLOCKED_ENV")
+        print("  ✓ quota/rate-limit 訊息被正確判為 FAILED_RATE_LIMIT")
         print("  ✓ 其他錯誤訊息被正確判為 WORKER_RUNTIME_FAILED")
         print("  ✓ 正常輸出不會誤判為錯誤")
         return 0

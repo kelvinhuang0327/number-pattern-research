@@ -539,12 +539,219 @@ class TestClassifierThresholdsDB(unittest.TestCase):
         self.assertGreater(thresholds["cold_streak_ratio"], 0.5)
 
 
+# ─── Dedupe key + cooldown tests ─────────────────────────────────────────────
+
+from planner_tick import (
+    _build_task_dedupe_key,
+    _check_task_dedupe,
+    _TASK_COOLDOWN_SECONDS,
+    _CONFIDENCE_CHANGE_GATE,
+)
+
+
+class TestDedupeKey(unittest.TestCase):
+    """Tests for _build_task_dedupe_key()."""
+
+    def test_format_matches_type_and_state(self):
+        key = _build_task_dedupe_key("cold_phase_analysis", "COLD_REGIME")
+        self.assertEqual(key, "cold_phase_analysis:COLD_REGIME")
+
+    def test_different_types_produce_different_keys(self):
+        k1 = _build_task_dedupe_key("cold_phase_analysis", "COLD_REGIME")
+        k2 = _build_task_dedupe_key("regime_detection_model", "COLD_REGIME")
+        self.assertNotEqual(k1, k2)
+
+    def test_different_regimes_produce_different_keys(self):
+        k1 = _build_task_dedupe_key("signal_quality_filter", "SIGNAL_SATURATED")
+        k2 = _build_task_dedupe_key("signal_quality_filter", "COLD_REGIME")
+        self.assertNotEqual(k1, k2)
+
+
+class TestDedupeGuard(unittest.TestCase):
+    """Tests for _check_task_dedupe() guard logic."""
+
+    def setUp(self):
+        import tempfile
+        self._tmp = tempfile.NamedTemporaryFile(suffix=".db", delete=False)
+        self._tmp.close()
+        self._orig_db_path = orch_db.DB_PATH
+        orch_db.DB_PATH = self._tmp.name
+        orch_db.init_db()
+
+    def tearDown(self):
+        orch_db.DB_PATH = self._orig_db_path
+        try:
+            os.unlink(self._tmp.name)
+        except OSError:
+            pass
+
+    def _create_task_row(self, dedupe_key, status="QUEUED", completed_at=None,
+                          confidence_snapshot=None):
+        """Helper: insert a synthetic task row directly into the test DB."""
+        import sqlite3
+        from datetime import datetime, timezone, timedelta
+        now = datetime.now(timezone.utc).isoformat()
+        conn = orch_db.get_conn()
+        try:
+            conn.execute(
+                """INSERT INTO agent_tasks
+                   (slot_key, date_folder, title, slug, status, prompt_text, prompt_file_path,
+                    dedupe_key, regime_state, confidence_snapshot, created_at, updated_at,
+                    completed_at)
+                   VALUES (?, ?, ?, ?, ?, '', '', ?, ?, ?, ?, ?, ?)""",
+                (
+                    f"slot_{dedupe_key}_{status}", "2026-04-23",
+                    f"Test task {dedupe_key}", "test-task", status,
+                    dedupe_key, "COLD_REGIME", confidence_snapshot,
+                    now, now, completed_at,
+                ),
+            )
+            conn.commit()
+        finally:
+            conn.close()
+
+    def _signal_state(self, confidence=0.5, state="COLD_REGIME"):
+        return {"state": state, "confidence_score": confidence, "reason": "test"}
+
+    # --- In-flight guard ---
+
+    def test_inflight_queued_blocks_new_task(self):
+        """A recently QUEUED task (within stale window) should block creation."""
+        key = "cold_phase_analysis:COLD_REGIME"
+        self._create_task_row(key, status="QUEUED")   # created_at = now → within 2h stale window
+        should_skip, reason = _check_task_dedupe(key, self._signal_state())
+        self.assertTrue(should_skip)
+        self.assertIn("已存在相同分析任務", reason)
+
+    def test_stale_queued_task_does_not_block(self):
+        """A QUEUED task created more than 2 h ago (stale) should NOT block — prevents daemon-skip deadlock."""
+        from datetime import datetime, timezone, timedelta
+        stale_created = (datetime.now(timezone.utc) - timedelta(hours=3)).isoformat()
+        key = "cold_phase_analysis:COLD_REGIME"
+        conn = orch_db.get_conn()
+        try:
+            conn.execute(
+                """INSERT INTO agent_tasks
+                   (slot_key, date_folder, title, slug, status, prompt_text, prompt_file_path,
+                    dedupe_key, regime_state, confidence_snapshot, created_at, updated_at)
+                   VALUES (?, ?, ?, ?, ?, '', '', ?, ?, ?, ?, ?)""",
+                (
+                    f"slot_{key}_stale", "2026-04-23", f"Stale task", "stale-task", "QUEUED",
+                    key, "COLD_REGIME", 0.5, stale_created, stale_created,
+                ),
+            )
+            conn.commit()
+        finally:
+            conn.close()
+        should_skip, reason = _check_task_dedupe(key, self._signal_state())
+        self.assertFalse(should_skip)   # stale QUEUED → should allow
+
+    def test_inflight_running_blocks_new_task(self):
+        key = "cold_phase_analysis:COLD_REGIME"
+        self._create_task_row(key, status="RUNNING")
+        should_skip, reason = _check_task_dedupe(key, self._signal_state())
+        self.assertTrue(should_skip)
+
+    def test_completed_old_task_does_not_block(self):
+        """A COMPLETED task outside the cooldown window should not block."""
+        from datetime import datetime, timezone, timedelta
+        old_completed = (datetime.now(timezone.utc) - timedelta(hours=2)).isoformat()
+        key = "cold_phase_analysis:COLD_REGIME"
+        self._create_task_row(key, status="COMPLETED", completed_at=old_completed)
+        should_skip, _ = _check_task_dedupe(key, self._signal_state(), cooldown_seconds=1800)
+        self.assertFalse(should_skip)
+
+    def test_no_existing_task_allows_creation(self):
+        key = "cold_phase_analysis:COLD_REGIME"
+        should_skip, _ = _check_task_dedupe(key, self._signal_state())
+        self.assertFalse(should_skip)
+
+    # --- Cooldown guard ---
+
+    def test_recent_completed_task_blocks(self):
+        """A COMPLETED task within cooldown should block and include expiry time."""
+        from datetime import datetime, timezone, timedelta
+        recent_completed = (datetime.now(timezone.utc) - timedelta(minutes=10)).isoformat()
+        key = "cold_phase_analysis:COLD_REGIME"
+        self._create_task_row(key, status="COMPLETED", completed_at=recent_completed,
+                              confidence_snapshot=0.5)
+        # seed dedupe state
+        conn = orch_db.get_conn()
+        try:
+            conn.execute(
+                "INSERT INTO planner_dedupe_state (dedupe_key, last_regime_state, last_confidence, updated_at) "
+                "VALUES (?, ?, ?, ?)",
+                (key, "COLD_REGIME", 0.5, datetime.now(timezone.utc).isoformat()),
+            )
+            conn.commit()
+        finally:
+            conn.close()
+        should_skip, reason = _check_task_dedupe(key, self._signal_state(confidence=0.50), cooldown_seconds=1800)
+        self.assertTrue(should_skip)
+        self.assertIn("冷卻至", reason)   # expiry time present
+        self.assertIn("UTC", reason)
+
+    # --- State-change trigger ---
+
+    def test_confidence_spike_bypasses_cooldown(self):
+        """Large confidence change (> 0.20) should bypass the cooldown."""
+        from datetime import datetime, timezone, timedelta
+        recent_completed = (datetime.now(timezone.utc) - timedelta(minutes=5)).isoformat()
+        key = "cold_phase_analysis:COLD_REGIME"
+        self._create_task_row(key, status="COMPLETED", completed_at=recent_completed,
+                              confidence_snapshot=0.30)
+        conn = orch_db.get_conn()
+        try:
+            conn.execute(
+                "INSERT INTO planner_dedupe_state (dedupe_key, last_regime_state, last_confidence, updated_at) "
+                "VALUES (?, ?, ?, ?)",
+                (key, "COLD_REGIME", 0.30, datetime.now(timezone.utc).isoformat()),
+            )
+            conn.commit()
+        finally:
+            conn.close()
+        # Current confidence is 0.30 + 0.25 = 0.55 → delta 0.25 > 0.20 gate
+        should_skip, _ = _check_task_dedupe(key, self._signal_state(confidence=0.55), cooldown_seconds=1800)
+        self.assertFalse(should_skip)
+
+    def test_small_confidence_change_stays_blocked(self):
+        """Small confidence change (< 0.20) should NOT bypass the cooldown."""
+        from datetime import datetime, timezone, timedelta
+        recent_completed = (datetime.now(timezone.utc) - timedelta(minutes=5)).isoformat()
+        key = "cold_phase_analysis:COLD_REGIME"
+        self._create_task_row(key, status="COMPLETED", completed_at=recent_completed,
+                              confidence_snapshot=0.50)
+        conn = orch_db.get_conn()
+        try:
+            conn.execute(
+                "INSERT INTO planner_dedupe_state (dedupe_key, last_regime_state, last_confidence, updated_at) "
+                "VALUES (?, ?, ?, ?)",
+                (key, "COLD_REGIME", 0.50, datetime.now(timezone.utc).isoformat()),
+            )
+            conn.commit()
+        finally:
+            conn.close()
+        # 0.50 → 0.60, delta = 0.10 < 0.20 gate → still blocked
+        should_skip, _ = _check_task_dedupe(key, self._signal_state(confidence=0.60), cooldown_seconds=1800)
+        self.assertTrue(should_skip)
+
+    def test_skip_counter_increments(self):
+        """increment_dedupe_skip_count() should persist and accumulate."""
+        key = "cold_phase_analysis:COLD_REGIME"
+        orch_db.increment_dedupe_skip_count(key)
+        orch_db.increment_dedupe_skip_count(key)
+        row = orch_db.get_planner_dedupe_state(key)
+        self.assertEqual(row["skip_count"], 2)
+
+    def test_db_failure_in_guard_is_non_blocking(self):
+        """A DB error in the dedupe guard should never block task creation."""
+        with patch.object(orch_db, "get_inflight_task_by_dedupe_key", side_effect=Exception("DB down")):
+            should_skip, _ = _check_task_dedupe("any:key", self._signal_state())
+        self.assertFalse(should_skip)
+
+
 if __name__ == "__main__":
     unittest.main()
-
-
-
-class TestSignalExhaustionDetection(unittest.TestCase):
     """Test signal exhaustion detection logic."""
 
     def test_exhaustion_marker_detected(self):

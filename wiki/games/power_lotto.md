@@ -6,7 +6,9 @@
 
 ## 現況
 
-- 現役主體仍是 Fourier / PP3 / Orthogonal 三路組合。
+- 現役主體仍是 PP3 / Orthogonal 組合。Fourier 已降至 WATCH_ONLY（不再作為 shadow）。
+- **2026-04-28**：shadow 從 `fourier_rhythm_3bet`（WATCH_DOWNGRADED，L126）更新為 `orthogonal_5bet`（edge=+2.94%, Sharpe=0.072，穩定未降權）。
+- `fourier_rhythm_3bet` 改列 WATCH_ONLY，30p 監控，若 edge 回升 > +2.5% 且 permutation 過關再重評。
 - WATCH / PROVISIONAL 路徑保留給低頻長週期訊號與待升格候選，不直接覆蓋主線策略。
 
 ## 策略表
@@ -68,6 +70,28 @@
 - L126：威力彩 WATCH 主線若 1500p 仍保留顯著性、但 5x300 rolling slice 有 >=80% permutation 失敗率，應保留 WATCH 並降權，而不是因 raw Edge 全正就繼續維持主監控優先級。
 - L127：威力彩非同家族 Layer-1 3bet 即使多案 raw Edge 三窗全正，只要 permutation 與對 `pp3_freqort_4bet` 的 per-bet efficiency 沒有任何候選全窗過關，整體結論仍應是 `REJECT_ALL_NONFAMILY_LAYER1_3BET`。
 - L106：目前 checkout 無正式正文；現有 lesson 編號自 L95 直接跳到 L108。
+
+## 2026-04-29 Cross-Game Watchdog Recalibration
+
+- **Final Status**: APPROVE_WATCHDOG（監控規則設計核准）
+- **Rule B（新）**: active_edge ≤ **0.0pp** 連續 2 窗口 → Alert
+  - 舊值 +2.0pp 為 DAILY_539 繼承值；POWER_LOTTO 早期窗口自然低值被誤觸 4 次 → 改為 0.0pp
+- **Rule C（新）**: per-bet 歸一化 delta ≤ **−0.50 pp/bet** 連續 2 窗口 → Alert
+  - 公式：`(active_edge / active_nbets) − (shadow_edge / shadow_nbets)`
+  - active=`pp3_freqort_4bet`（4 注），shadow=`orthogonal_5bet`（5 注）
+  - 修正原因：舊版直接比較原始 delta 時，shadow 多 1 注的結構性覆蓋優勢導致 3 次誤觸；per-bet 歸一化後消除偏誤
+  - 門檻 −0.30 pp/bet 過鬆（仍觸發 3 次），−0.50 pp/bet 為適當生產門檻
+- **Historical fires（重校後）**: 0 / 0 / 0 / 0（Rule A / B / C / D），全 17 窗口
+- **Breach rate**: 23.5%（4/17，pre-registered +1.00pp 門檻）
+- **Mean active edge**: +2.54pp（滾動 300p）
+- **Shadow note**: `orthogonal_5bet` 在 12/17 窗口原始 edge 高於 `pp3_freqort_4bet`，但此為注數結構差異（5 vs 4 注）所致；shadow 升格需要同注數比較的獨立驗證任務，不在本任務範圍內
+- **實施限制**:
+  - 僅限監控模式；不得用作生產閘門
+  - 不得修改 active_strategy_state
+  - 不得修改 lottery_v2.db
+  - CTO / research sign-off 仍必須在任何生產閘門提案前完成
+- **參考**: `research/cross_game_watchdog_recalibration_report_2026-04-29.md`
+- **Lesson**: L132
 
 ## Planner 提示
 

@@ -41,6 +41,12 @@ WORKER_MAX_SECONDS = int(os.environ.get("WORKER_MAX_SECONDS", str(8 * 3600)))
 WORKER_KILL_GRACE = 60  # seconds between SIGTERM and SIGKILL
 WORKER_PROGRESS_STALE_SECONDS = int(os.environ.get("WORKER_PROGRESS_STALE_SECONDS", "600"))
 COPILOT_PROGRESS_STALE_SECONDS = int(os.environ.get("COPILOT_PROGRESS_STALE_SECONDS", "600"))
+LONG_RUNNER_THRESHOLD_SECONDS = int(os.environ.get("LONG_RUNNER_THRESHOLD_SECONDS", str(30 * 60)))  # 30 min → LONG_RUNNING badge
+STUCK_LOG_IDLE_THRESHOLD_SECONDS = int(os.environ.get("STUCK_LOG_IDLE_THRESHOLD_SECONDS", str(20 * 60)))  # 20 min no log → STUCK
+MAX_LIGHT_WORKERS = int(os.environ.get("MAX_LIGHT_WORKERS", "3"))
+LLM_HARD_OFF_ENV = "ORCHESTRATOR_LLM_HARD_OFF"
+
+from orchestrator import execution_policy
 
 
 def _resolve_bin(preferred: str, cli_name: str) -> Optional[str]:
@@ -104,6 +110,7 @@ _COPILOT_RUNTIME_CACHE = {
 }
 
 COPILOT_DAEMON_STATE_PATH = os.path.join(LOCKS_DIR, "copilot_daemon_state.json")
+PROVIDER_BLOCK_STATE_PATH = os.path.join(LOCKS_DIR, "provider_block_state.json")
 COPILOT_DAEMON_HEARTBEAT_TTL = int(os.environ.get("COPILOT_DAEMON_HEARTBEAT_TTL", "45"))
 GIT_OPS_LOCK_PATH = os.path.join(LOCKS_DIR, "git_ops.lock")
 
@@ -120,6 +127,11 @@ HIGH_CONFLICT_PATHS = [
     "wiki/",
     "memory/",
 ]
+
+
+def llm_execution_guard(scope: str = "main") -> tuple[bool, str]:
+    decision = execution_policy.evaluate("common.guard", scope=scope)
+    return decision.allowed, decision.skip_reason or "LLM_EXECUTION_ENABLED"
 
 
 def ensure_dirs():
@@ -151,6 +163,113 @@ def clear_copilot_daemon_state(pid: Optional[int] = None):
         return
     try:
         os.remove(COPILOT_DAEMON_STATE_PATH)
+    except FileNotFoundError:
+        return
+
+
+def read_provider_block_state() -> dict:
+    if not os.path.exists(PROVIDER_BLOCK_STATE_PATH):
+        return {"providers": {}}
+    try:
+        with open(PROVIDER_BLOCK_STATE_PATH) as f:
+            data = json.load(f)
+        if not isinstance(data, dict):
+            return {"providers": {}}
+        providers = data.get("providers")
+        if not isinstance(providers, dict):
+            data["providers"] = {}
+        return data
+    except (OSError, json.JSONDecodeError):
+        return {"providers": {}}
+
+
+def write_provider_block_state(state: dict):
+    ensure_dirs()
+    payload = state if isinstance(state, dict) else {"providers": {}}
+    providers = payload.get("providers")
+    if not isinstance(providers, dict):
+        payload["providers"] = {}
+    with open(PROVIDER_BLOCK_STATE_PATH, "w") as f:
+        json.dump(payload, f, indent=2, ensure_ascii=False)
+
+
+def _parse_utc_iso(ts: Optional[str]) -> Optional[datetime]:
+    if not ts:
+        return None
+    try:
+        dt = datetime.fromisoformat(str(ts))
+    except ValueError:
+        return None
+    if dt.tzinfo is None:
+        return dt.replace(tzinfo=timezone.utc)
+    return dt.astimezone(timezone.utc)
+
+
+def get_provider_rate_limit_block(provider: Optional[str]) -> Optional[dict]:
+    normalized = normalize_worker_provider(provider)
+    state = read_provider_block_state()
+    block = dict((state.get("providers") or {}).get(normalized) or {})
+    if not block:
+        return None
+
+    blocked_until = _parse_utc_iso(block.get("blocked_until"))
+    now = datetime.now(timezone.utc)
+    if blocked_until and blocked_until <= now:
+        clear_provider_rate_limit_block(normalized)
+        return None
+
+    if blocked_until:
+        block["blocked_until"] = blocked_until.isoformat()
+        block["seconds_remaining"] = max(0, int((blocked_until - now).total_seconds()))
+    else:
+        block["seconds_remaining"] = None
+    block["provider"] = normalized
+    return block
+
+
+def set_provider_rate_limit_block(
+    provider: Optional[str],
+    *,
+    reason: str,
+    task_id: Optional[int] = None,
+    requested_provider: Optional[str] = None,
+    runtime: Optional[str] = None,
+    reset_hint: Optional[str] = None,
+    blocked_until: Optional[str] = None,
+    cooldown_seconds: int = 1800,
+):
+    normalized = normalize_worker_provider(provider)
+    until_dt = _parse_utc_iso(blocked_until)
+    if until_dt is None:
+        until_dt = datetime.now(timezone.utc) + timedelta(seconds=max(60, int(cooldown_seconds)))
+
+    state = read_provider_block_state()
+    providers = state.setdefault("providers", {})
+    providers[normalized] = {
+        "provider": normalized,
+        "reason": reason,
+        "task_id": task_id,
+        "requested_provider": requested_provider,
+        "runtime": runtime,
+        "reset_hint": reset_hint,
+        "blocked_until": until_dt.isoformat(),
+        "updated_at": datetime.now(timezone.utc).isoformat(),
+    }
+    write_provider_block_state(state)
+
+
+def clear_provider_rate_limit_block(provider: Optional[str] = None):
+    state = read_provider_block_state()
+    providers = state.setdefault("providers", {})
+    if provider is None:
+        providers.clear()
+    else:
+        providers.pop(normalize_worker_provider(provider), None)
+    if providers:
+        write_provider_block_state(state)
+        return
+    try:
+        os.remove(PROVIDER_BLOCK_STATE_PATH)
     except FileNotFoundError:
         return
 
@@ -559,11 +678,29 @@ def slugify(text: str) -> str:
 
 
 def slot_key_now() -> str:
-    return datetime.now().strftime("%Y%m%d%H%M")
+    # Second-precision during validation run — allows rapid multi-invocation
+    # without UNIQUE slot_key collisions. Original: "%Y%m%d%H%M"
+    return datetime.now().strftime("%Y%m%d%H%M%S")
 
 
 def date_folder_now() -> str:
     return datetime.now().strftime("%Y%m%d")
+
+
+def dedupe_day_utc() -> str:
+    """Return today's date in UTC as YYYY-MM-DD.
+    Use this for all dedupe_key building to avoid UTC/local date mix-ups.
+    See wiki/system/orchestrator.md § Date Label Convention.
+    """
+    return datetime.now(timezone.utc).strftime("%Y-%m-%d")
+
+
+def display_day_local() -> str:
+    """Return today's date in Asia/Taipei (UTC+8) as YYYY-MM-DD.
+    Use for UI display, report titles, and wiki entries.
+    Do NOT use for dedupe_key — use dedupe_day_utc() instead.
+    """
+    return datetime.now(timezone(timedelta(hours=8))).strftime("%Y-%m-%d")
 
 
 def task_dir(date_folder: str) -> str:
@@ -605,6 +742,95 @@ def find_stdout_log_path(slot_key: str, date_folder: str) -> str:
         if os.path.exists(path):
             return path
     return worker_stdout_log_path(slot_key, date_folder)
+
+
+# ── Long-runner subtask detection ─────────────────────────────────────────────
+
+# Ordered from most-specific to least-specific; last match in log tail wins.
+_SUBTASK_PATTERNS = [
+    (re.compile(r"monte[\s_-]?carlo|mc[\s_]sim", re.I), "Monte Carlo"),
+    (re.compile(r"mcmc|markov[\s_]chain", re.I), "MCMC"),
+    (re.compile(r"backtest", re.I), "Backtest"),
+    (re.compile(r"signal[\s_]extract|extract.*signal", re.I), "Signal Extraction"),
+    (re.compile(r"feature[\s_]engin|engineer.*feature", re.I), "Feature Engineering"),
+    (re.compile(r"model[\s_]train|train.*model|fitting model", re.I), "Model Training"),
+    (re.compile(r"cross[\s_]valid|k[\s_]?fold", re.I), "Cross-Validation"),
+    (re.compile(r"permut|bootstrap", re.I), "Permutation Test"),
+    (re.compile(r"optim", re.I), "Optimizing"),
+    (re.compile(r"analys[ie]s|analy[sz]ing", re.I), "Analysis"),
+]
+
+# Expected duration in seconds per task_type prefix (conservative mid-estimate)
+_EXPECTED_DURATION_BY_TYPE: list[tuple[str, int]] = [
+    ("deep_research",        int(4.5 * 3600)),   # ~4.5h
+    ("cold_phase_analysis",  int(2.0 * 3600)),   # ~2h
+    ("strategy_discovery",   int(1.5 * 3600)),   # ~1.5h
+    ("new_strategy",         int(1.0 * 3600)),   # ~1h
+    ("signal_search",        int(1.0 * 3600)),   # ~1h
+    ("feature_search",        int(45 * 60)),      # ~45m
+    ("expansion_search",      int(60 * 60)),      # ~1h
+    ("monitoring",                    5 * 60),    # ~5m
+    ("validation_repair",            10 * 60),    # ~10m
+    ("template_repair",               5 * 60),    # ~5m
+    ("governance",                    10 * 60),   # ~10m
+    ("audit",                         15 * 60),   # ~15m
+    ("data_quality",                  10 * 60),   # ~10m
+    ("report",                         5 * 60),   # ~5m
+    ("system_recovery",               15 * 60),   # ~15m
+    ("health_check",                   5 * 60),   # ~5m
+]
+
+
+def estimate_task_eta_seconds(task: dict) -> Optional[int]:
+    """Return estimated remaining seconds for a RUNNING task, or None if unknown.
+
+    Uses task's started_at plus a per-type expected duration lookup.
+    Returns 0 (not negative) if the task has already exceeded its estimate.
+    """
+    if not task:
+        return None
+    started_str = task.get("started_at") or task.get("created_at")
+    started = _parse_utc_iso(started_str)
+    if not started:
+        return None
+    elapsed = (datetime.now(timezone.utc) - started).total_seconds()
+    task_type = (task.get("task_type") or task.get("dedupe_key") or "").lower()
+    expected = None
+    for prefix, secs in _EXPECTED_DURATION_BY_TYPE:
+        if task_type.startswith(prefix):
+            expected = secs
+            break
+    if expected is None:
+        return None
+    return max(0, int(expected - elapsed))
+
+
+def read_worker_log_subtask(slot_key: str, date_folder: str, tail_bytes: int = 4000) -> Optional[str]:
+    """Read the tail of a worker stdout log and return a human-readable subtask hint.
+
+    Scans the last `tail_bytes` of the log for known activity patterns
+    (Monte Carlo, backtest, training, etc.) and returns the last matching label.
+    Returns None if the log is absent or no pattern matches.
+    """
+    path = find_stdout_log_path(slot_key, date_folder)
+    if not path or not os.path.exists(path):
+        return None
+    try:
+        with open(path, "r", encoding="utf-8", errors="ignore") as fh:
+            fh.seek(0, 2)
+            size = fh.tell()
+            fh.seek(max(0, size - tail_bytes))
+            tail = fh.read()
+        last_pos: int = -1
+        last_label: Optional[str] = None
+        for pat, label in _SUBTASK_PATTERNS:
+            for m in pat.finditer(tail):
+                if m.start() > last_pos:
+                    last_pos = m.start()
+                    last_label = label
+        return last_label
+    except OSError:
+        return None
 
 
 def read_worker_progress(slot_key: str, date_folder: str, max_chars: int = 6000) -> dict:
@@ -675,6 +901,198 @@ def _parse_utc_iso(raw: Optional[str]) -> Optional[datetime]:
     if dt.tzinfo is not None:
         return dt.astimezone(timezone.utc)
     return dt.replace(tzinfo=timezone.utc)
+
+
+_LIGHT_TASK_PREFIXES = (
+    "monitoring", "validation_repair", "template_repair",
+    "governance", "data_quality", "audit", "report",
+    "system_recovery", "health_check", "fallback",
+)
+
+
+def classify_worker_type(dedupe_key: str) -> str:
+    """Return 'light' if dedupe_key maps to a lightweight task, else 'research'."""
+    k = (dedupe_key or "").lower()
+    if any(k.startswith(p) for p in _LIGHT_TASK_PREFIXES):
+        return "light"
+    return "research"
+
+
+# ---------------------------------------------------------------------------
+# Light-task priority tier (within worker_type='light')
+# repair > governance/audit > monitoring
+# ---------------------------------------------------------------------------
+
+_LIGHT_PRIORITY_MAP = {
+    "validation_repair": 0,
+    "template_repair": 0,
+    "system_recovery": 1,
+    "governance": 2,
+    "data_quality": 2,
+    "audit": 2,
+    "report": 3,
+    "health_check": 3,
+    "monitoring": 4,
+}
+
+# Backpressure threshold: if light queue >= this, suppress new monitoring tasks
+LIGHT_QUEUE_BACKPRESSURE_THRESHOLD = int(
+    os.environ.get("LIGHT_QUEUE_BACKPRESSURE_THRESHOLD", "8")
+)
+
+# ---------------------------------------------------------------------------
+# Adaptive scheduler constants
+# ---------------------------------------------------------------------------
+
+# CPU headroom thresholds: (cpu_pct_max, base_light_slots)
+# The 90-100% band is handled dynamically inside get_adaptive_max_light_workers
+# via the queue-depth feedback boost, so base is 1 for both 80-90 and 90-100.
+_CPU_SLOTS_TABLE = [
+    # (cpu_pct_max, base_light_slots)
+    (40.0, MAX_LIGHT_WORKERS),              # below 40%  → full slots
+    (65.0, max(1, MAX_LIGHT_WORKERS - 1)),  # 40–65%     → reduce by 1
+    (80.0, 1),                              # 65–80%     → 1 slot
+    (90.0, 1),                              # 80–90%     → 1 slot (floor)
+    (100.0, 1),                             # 90–100%    → 1 slot (floor; queue boost may add 1)
+]
+
+# Queue-depth feedback: at CPU 90-100%, allow +1 slot when light backlog exceeds this
+_HIGH_CPU_QUEUE_BOOST_THRESHOLD = int(
+    os.environ.get("HIGH_CPU_QUEUE_BOOST_THRESHOLD", "4")
+)
+
+# Starvation detection: if light queue >= this and active == 0, record incident
+STARVATION_QUEUE_ALERT_THRESHOLD = int(
+    os.environ.get("STARVATION_QUEUE_ALERT_THRESHOLD", "5")
+)
+
+# Research latency guard: max ratio of recent light avg latency vs research latency
+# before light tasks are throttled back to 1 slot.  Set 0 to disable.
+RESEARCH_LATENCY_GUARD_RATIO = float(
+    os.environ.get("RESEARCH_LATENCY_GUARD_RATIO", "0")
+)
+
+
+def get_system_cpu_pct(interval: float = 0.5) -> float:
+    """Return current system CPU usage percent (0-100). Uses psutil if available."""
+    try:
+        import psutil
+        return psutil.cpu_percent(interval=interval)
+    except ImportError:
+        return 0.0
+
+
+def get_adaptive_max_light_workers(
+    active_light: int = 0,
+    light_queued: int = 0,
+    research_active: int = 0,
+    recent_light_tph: float = 0.0,
+    recent_research_latency_s: float = None,
+    recent_light_latency_s: float = None,
+    # Tunable params — provided by caller from scheduler_tuner.get_live_param()
+    # Falls back to module-level constants when None (backward-compatible).
+    queue_boost_threshold: int = None,
+    high_cpu_floor: float = None,
+    tuned_fairness_ratio: float = None,
+) -> tuple:
+    """Compute the dynamic MAX_LIGHT_WORKERS cap with feedback loop.
+
+    Returns (slot_limit: int, decision_reason: str).
+
+    Policy layers (applied in order, later layers can only reduce):
+    1. CPU base ceiling     — from _CPU_SLOTS_TABLE
+    2. Queue-depth boost    — at CPU > high_cpu_floor, +1 slot if light_queued >= queue_boost_threshold
+    3. Research isolation   — cap at 1 when research running + CPU > 60%
+    4. Throughput feedback  — labels congestion when tph=0 and active > 0
+    5. Fairness guard       — throttle if light latency >> research latency
+    6. Hard floor           — minimum 1 (anti-starvation guarantee)
+    """
+    # Resolve tunable params (live DB values override module constants)
+    _q_boost  = int(queue_boost_threshold) if queue_boost_threshold is not None else _HIGH_CPU_QUEUE_BOOST_THRESHOLD
+    _cpu_floor = float(high_cpu_floor) if high_cpu_floor is not None else 90.0
+    _fair_ratio = float(tuned_fairness_ratio) if tuned_fairness_ratio is not None else RESEARCH_LATENCY_GUARD_RATIO
+
+    cpu = get_system_cpu_pct()
+    reason_parts = [f"cpu={cpu:.1f}%"]
+
+    # ── Layer 1: CPU base ceiling ──────────────────────────────────────────
+    cpu_cap = MAX_LIGHT_WORKERS
+    for cpu_threshold, slots in _CPU_SLOTS_TABLE:
+        if cpu <= cpu_threshold:
+            cpu_cap = slots
+            break
+    reason_parts.append(f"cpu_cap={cpu_cap}")
+
+    # ── Layer 2: Queue-depth boost at CPU > high_cpu_floor ────────────────
+    if cpu > _cpu_floor and light_queued >= _q_boost:
+        cpu_cap = min(cpu_cap + 1, MAX_LIGHT_WORKERS)
+        reason_parts.append(f"queue_boost(lq={light_queued})")
+
+    # ── Layer 3: Research isolation ────────────────────────────────────────
+    if research_active > 0 and cpu > 60.0:
+        cpu_cap = min(cpu_cap, 1)
+        reason_parts.append("research_iso")
+
+    # ── Layer 4: Throughput feedback ──────────────────────────────────────
+    # If tph is 0 despite active workers, we are in congestion — don't add slots.
+    # No slot reduction here; just block the queue-depth boost if it hasn't fired.
+    if recent_light_tph == 0.0 and active_light > 0:
+        reason_parts.append("tph=0_congestion")
+
+    # ── Layer 5: Fairness guard ────────────────────────────────────────────
+    # Only fires if fairness ratio > 0 and we have latency data.
+    if (
+        _fair_ratio > 0
+        and recent_light_latency_s is not None
+        and recent_research_latency_s is not None
+        and recent_research_latency_s > 0
+    ):
+        ratio = recent_light_latency_s / recent_research_latency_s
+        if ratio > _fair_ratio:
+            cpu_cap = min(cpu_cap, 1)
+            reason_parts.append(f"fairness_guard(ratio={ratio:.2f})")
+
+    # ── Layer 6: Hard floor ────────────────────────────────────────────────
+    final = max(1, cpu_cap)
+    reason_parts.append(f"→limit={final}")
+
+    return final, " | ".join(reason_parts)
+
+
+def light_task_priority(dedupe_key: str) -> int:
+    """Return an integer priority for a light task (lower = higher priority)."""
+    k = (dedupe_key or "").lower()
+    for prefix, prio in _LIGHT_PRIORITY_MAP.items():
+        if k.startswith(prefix):
+            return prio
+    return 4  # unknown light tasks → lowest priority
+
+
+def classify_task_run_state(task: dict) -> str:
+    """Classify a RUNNING/QUEUED task as 'RUNNING', 'LONG_RUNNING', or 'STUCK'.
+
+    Uses elapsed time since started_at and log-file idle time to determine state.
+    - RUNNING       — elapsed < LONG_RUNNER_THRESHOLD_SECONDS
+    - LONG_RUNNING  — elapsed >= threshold AND log updated recently
+    - STUCK         — elapsed >= threshold AND log idle > STUCK_LOG_IDLE_THRESHOLD_SECONDS
+    """
+    if not task:
+        return "RUNNING"
+    started_str = task.get("started_at") or task.get("created_at")
+    started = _parse_utc_iso(started_str)
+    if not started:
+        return "RUNNING"
+    elapsed = (datetime.now(timezone.utc) - started).total_seconds()
+    if elapsed < LONG_RUNNER_THRESHOLD_SECONDS:
+        return "RUNNING"
+    log_path = find_stdout_log_path(task.get("slot_key", ""), task.get("date_folder", ""))
+    if log_path and os.path.exists(log_path):
+        try:
+            idle = max(0, int(time.time() - os.path.getmtime(log_path)))
+            return "STUCK" if idle > STUCK_LOG_IDLE_THRESHOLD_SECONDS else "LONG_RUNNING"
+        except OSError:
+            pass
+    return "LONG_RUNNING"
 
 
 def classify_worker_progress(status: Optional[str], last_output_at: Optional[str], worker_runtime: Optional[str] = None) -> dict:

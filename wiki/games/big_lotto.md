@@ -41,6 +41,25 @@
 - **維護模式確認**: 繼續保留 2/3/5 注參考策略供監控使用，無新升格訊號
 - **審計參考**: analysis/results/signal_exhaustion_audit_20260423.md (games.big_lotto 章節)
 
+## 2026-04-29 Cross-Game Watchdog Recalibration
+
+- **Final Status**: APPROVE_WATCHDOG（監控規則設計核准）
+- **Rule B（新）**: active_edge ≤ **0.0pp** 連續 2 窗口 → Alert
+  - 舊值 +2.0pp 為 DAILY_539 繼承值，對 49C6 遊戲系統性誤觸；改為 0.0pp（無負邊際原則）
+- **Rule C（新）**: per-bet 歸一化 delta ≤ **−0.50 pp/bet** 連續 2 窗口 → Alert
+  - 公式：`(active_edge / active_nbets) − (shadow_edge / shadow_nbets)`
+  - active=`p1_dev_sum5bet`（5 注），shadow=`regime_2bet`（2 注）
+- **Historical fires（重校後）**: 0 / 0 / 0 / 0（Rule A / B / C / D），全 19 窗口
+- **Breach rate**: 10.5%（2/19，pre-registered +0.50pp 門檻）
+- **Mean active edge**: +2.13pp（滾動 300p）
+- **實施限制**:
+  - 僅限監控模式；不得用作生產閘門
+  - 不得修改 active_strategy_state
+  - 不得修改 lottery_v2.db
+  - CTO / research sign-off 仍必須在任何生產閘門提案前完成
+- **參考**: `research/cross_game_watchdog_recalibration_report_2026-04-29.md`
+- **Lesson**: L132
+
 ## Planner 提示
 
 - 若 backlog 提到大樂透新研究，先假設是維護/監控任務，不預設有新可部署訊號。

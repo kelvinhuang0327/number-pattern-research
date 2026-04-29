@@ -7,9 +7,18 @@ BACKEND_PORT=8002
 FRONTEND_PORT=8081
 BACKEND_PID_FILE="$ROOT_DIR/backend.pid"
 FRONTEND_PID_FILE="$ROOT_DIR/frontend.pid"
+ORCH_LAUNCHD_DOMAIN="gui/$(id -u)"
 
 join_lines() {
     tr '\n' ' ' | sed 's/[[:space:]]\+$//'
+}
+
+stop_launchd_job() {
+    local label="$1"
+    if ! command -v launchctl >/dev/null 2>&1; then
+        return
+    fi
+    launchctl bootout "$ORCH_LAUNCHD_DOMAIN/$label" >/dev/null 2>&1 || true
 }
 
 cd "$ROOT_DIR"
@@ -49,6 +58,12 @@ if [ -n "$FRONTEND_PID" ]; then
     # shellcheck disable=SC2086
     kill -9 $FRONTEND_PID 2>/dev/null || true
 fi
+
+echo "停止 Orchestrator 服務..."
+stop_launchd_job "com.kelvin.lottery.copilot-daemon"
+stop_launchd_job "com.kelvin.lottery.agent-planner"
+stop_launchd_job "com.kelvin.lottery.agent-worker"
+stop_launchd_job "com.kelvin.lottery.agent-light-worker"
 
 echo "✅ 服務已停止。"
 echo "======================================"

@@ -1,0 +1,1 @@
+window,feature,bucket,training_draw_rate,training_null_rate,training_bh_q,n_filtered,n_unfiltered,n_total,filtered_wins,unfiltered_wins,filtered_rate,unfiltered_rate,baseline_rate,rate_diff_vs_baseline,cohens_h,bs_mean,bs_ci_lo,bs_ci_hi,perm_diff,perm_pval,mcnemar_chi2,mcnemar_pval,mcnemar_n_discordant,coverage_ratio

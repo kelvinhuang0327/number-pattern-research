@@ -13,12 +13,13 @@ import os
 import subprocess
 import sys
 import time
+import uuid
 from datetime import datetime, timedelta, timezone
 from typing import Any, Optional
 
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
-from orchestrator import common, db
+from orchestrator import common, db, execution_policy
 
 logging.basicConfig(
     level=logging.INFO,
@@ -30,6 +31,7 @@ RUNNER = "cto-review"
 DECISION_PENDING = "PENDING_REVIEW"
 DECISION_SKIPPED = "SKIPPED_GIT_COMMIT"
 DECISION_APPROVED = "APPROVED_FOR_MERGE"
+DECISION_WAITING_MANUAL = "WAITING_MANUAL_APPROVAL"
 DECISION_MERGED = "MERGED"
 DECISION_REPLAN = "REJECTED_NEEDS_REPLAN"
 DECISION_CLOSED = "REJECTED_CLOSED"
@@ -39,6 +41,16 @@ DECISION_INVALID = "REJECTED_INVALID_COMMIT"
 DECISION_SUPERSEDED = "SUPERSEDED"
 DECISION_DUPLICATE = "DUPLICATE"
 DECISION_MERGE_FAIL = "MERGE_VALIDATION_FAILED"
+RUN_STATUS_RUNNING = "RUNNING"
+RUN_STATUS_COMPLETED = "COMPLETED"
+RUN_STATUS_SKIPPED = "SKIPPED"
+RUN_STATUS_FAILED = "FAILED"
+
+# ── Strategy Review decisions (independent of code / git review) ──────────────
+STRAT_APPROVE = "APPROVE_STRATEGY"   # Strong edge, MC validated → promote to active
+STRAT_SHADOW  = "SHADOW_STRATEGY"    # Promising edge, needs more validation → shadow track
+STRAT_REJECT  = "REJECT_STRATEGY"    # Negative or zero edge → discard
+STRAT_NEEDS   = "NEEDS_RESEARCH"     # Insufficient data in output → more work required
 
 # ─── Decision Intelligence Schema ─────────────────────────────────────────────
 
@@ -51,6 +63,7 @@ _DECISION_SEVERITY: dict[str, str] = {
     DECISION_CLOSED:       "LOW",
     DECISION_MERGED:       "LOW",
     DECISION_APPROVED:     "LOW",
+    DECISION_WAITING_MANUAL: "LOW",
     DECISION_DEPENDENCY:   "MEDIUM",
     DECISION_REPLAN:       "HIGH",
     DECISION_INVALID:      "HIGH",
@@ -65,6 +78,7 @@ _DECISION_URGENCY: dict[str, str] = {
     DECISION_CLOSED:       "LONG",
     DECISION_MERGED:       "LONG",
     DECISION_APPROVED:     "LONG",
+    DECISION_WAITING_MANUAL: "LONG",
     DECISION_DEPENDENCY:   "SHORT",
     DECISION_REPLAN:       "SHORT",
     DECISION_INVALID:      "SHORT",
@@ -79,6 +93,7 @@ _DECISION_BASE_IMPACT: dict[str, int] = {
     DECISION_CLOSED:       10,
     DECISION_MERGED:       10,
     DECISION_APPROVED:     15,
+    DECISION_WAITING_MANUAL: 15,
     DECISION_DEPENDENCY:   40,
     DECISION_REPLAN:       55,
     DECISION_INVALID:      65,
@@ -99,6 +114,13 @@ _DECISION_ACTION_MAP: dict[str, dict] = {
         "priority": "MEDIUM",
         "expected_benefit": "通過審查，等待部署整合",
         "risk_note": "已審核通過；等待 merge 完成",
+        "create_task": False,
+    },
+    DECISION_WAITING_MANUAL: {
+        "action": "等待人工確認合併",
+        "priority": "MEDIUM",
+        "expected_benefit": "CTO 審查通過，等待前端人工 Approve 後執行 merge",
+        "risk_note": "已審核通過；需要人工確認後才執行 merge",
         "create_task": False,
     },
     DECISION_REPLAN: {
@@ -526,8 +548,9 @@ def _record_review(
     summary = _build_review_summary(context, decision, reason)
     if dry_run:
         return  # compare intent: analysis only, no DB writes
+    _effective_sha_for_review = commit_row.get("commit_sha") or f"task:{commit_row.get('task_id')}"
     db.insert_task_git_review(
-        commit_sha=commit_row.get("commit_sha"),
+        commit_sha=_effective_sha_for_review,
         task_id=commit_row.get("task_id"),
         review_run_id=review_run_id,
         decision=decision,
@@ -599,7 +622,8 @@ def _evaluate_commit(commit_row: dict, pending_group_latest: dict) -> dict:
     if not task:
         return {"decision": DECISION_INVALID, "reason": "task context missing", "steps": decision_steps, "context": context}
 
-    if commit_row.get("status") == DECISION_DUPLICATE or db.get_task_git_review_for_commit(commit_row.get("commit_sha") or ""):
+    _effective_sha = commit_row.get("commit_sha") or f"task:{commit_row.get('task_id')}"
+    if commit_row.get("status") == DECISION_DUPLICATE or db.get_task_git_review_for_commit(_effective_sha):
         decision_steps.append(_decision_step(
             "final_decision",
             "PASS",
@@ -608,7 +632,8 @@ def _evaluate_commit(commit_row: dict, pending_group_latest: dict) -> dict:
         ))
         return {"decision": DECISION_DUPLICATE, "reason": "commit already reviewed", "steps": decision_steps, "context": context}
 
-    task_status = str(commit_row.get("task_status") or task.get("status") or "").upper()
+    # Prefer live task status from agent_tasks; commit_row.task_status may be stale (e.g. RUNNING)
+    task_status = str(task.get("status") or commit_row.get("task_status") or "").upper()
     gate_verdict = str(commit_row.get("gate_verdict") or task_result.get("gate_verdict") or "").upper()
     if task_status == "CANCELLED":
         decision_steps.append(_decision_step("validate_gate_verdict", "FAIL", "Task was cancelled", {"task_status": task_status}))
@@ -631,7 +656,17 @@ def _evaluate_commit(commit_row: dict, pending_group_latest: dict) -> dict:
     actual_changed_files = _commit_changed_files(commit_row.get("commit_sha") or "")
     expected_set = {str(path) for path in declared_changed_files if str(path).strip()}
     actual_set = set(actual_changed_files)
-    if not actual_set:
+    if not actual_set and declared_changed_files:
+        # No commit SHA or empty git diff — fall back to worker-declared changed files for scope check
+        actual_set = {str(p) for p in declared_changed_files if str(p).strip()}
+        actual_changed_files = [str(p) for p in declared_changed_files if str(p).strip()]
+        decision_steps.append(_decision_step(
+            "check_changed_files_scope",
+            "WARN",
+            "No commit SHA available; using worker-declared changed files for scope check",
+            {"commit_sha": commit_row.get("commit_sha"), "declared_files": declared_changed_files[:20]},
+        ))
+    elif not actual_set:
         decision_steps.append(_decision_step(
             "check_changed_files_scope",
             "FAIL",
@@ -671,12 +706,12 @@ def _evaluate_commit(commit_row: dict, pending_group_latest: dict) -> dict:
     for dep_task_id in depends_on_tasks if isinstance(depends_on_tasks, list) else []:
         dep_row = _load_dependency_record(task_id=dep_task_id)
         dependency_evidence.append({"task_id": dep_task_id, "record": dep_row.get("status") if dep_row else None})
-        if not dep_row or dep_row.get("status") not in (DECISION_APPROVED, DECISION_MERGED):
+        if not dep_row or dep_row.get("status") not in (DECISION_APPROVED, DECISION_MERGED, DECISION_WAITING_MANUAL):
             dependency_blockers.append({"task_id": dep_task_id, "status": dep_row.get("status") if dep_row else None})
     for dep_commit_sha in depends_on_commits if isinstance(depends_on_commits, list) else []:
         dep_row = _load_dependency_record(commit_sha=dep_commit_sha)
         dependency_evidence.append({"commit_sha": dep_commit_sha, "record": dep_row.get("status") if dep_row else None})
-        if not dep_row or dep_row.get("status") not in (DECISION_APPROVED, DECISION_MERGED):
+        if not dep_row or dep_row.get("status") not in (DECISION_APPROVED, DECISION_MERGED, DECISION_WAITING_MANUAL):
             dependency_blockers.append({"commit_sha": dep_commit_sha, "status": dep_row.get("status") if dep_row else None})
     if dependency_blockers:
         decision_steps.append(_decision_step(
@@ -903,6 +938,7 @@ def _write_reports(
     decisions: list[dict],
     report_md_path: str,
     report_json_path: str,
+    strat_summary: Optional[dict] = None,
 ):
     # ── Enrich each decision with scoring / category / action ─────────────────
     enriched: list[dict] = []
@@ -951,6 +987,7 @@ def _write_reports(
     report_json = {
         **run_record,
         "decisions": enriched,
+        "strategy_review": strat_summary or {},
         "intelligence": {
             "schema_version": "2.0",
             "executive_summary": exec_summary,
@@ -1091,6 +1128,35 @@ def _write_reports(
         f"| Summary | {run_record.get('summary') or '—'} |",
     ]
 
+    # ── Section 8: Strategy Review ─────────────────────────────────────────
+    lines += ["", "---", "", "## 8. Strategy Review", ""]
+    if strat_summary and strat_summary.get("reviewed_count", 0) > 0:
+        lines += [
+            f"| Metric | Value |",
+            f"|---|---|",
+            f"| Candidates Scanned | {strat_summary.get('candidate_count', 0)} |",
+            f"| Reviewed | {strat_summary.get('reviewed_count', 0)} |",
+            f"| APPROVE_STRATEGY | {strat_summary.get('approved', 0)} |",
+            f"| SHADOW_STRATEGY | {strat_summary.get('shadow', 0)} |",
+            f"| REJECT_STRATEGY | {strat_summary.get('rejected', 0)} |",
+            f"| NEEDS_RESEARCH | {strat_summary.get('needs', 0)} |",
+            "",
+        ]
+        for sd in strat_summary.get("decisions", []):
+            _icon = {"APPROVE_STRATEGY": "✅", "SHADOW_STRATEGY": "🔵", "REJECT_STRATEGY": "❌", "NEEDS_RESEARCH": "🔬"}.get(sd.get("decision", ""), "—")
+            lines += [
+                f"### {_icon} Task #{sd.get('task_id')} — {sd.get('decision')}",
+                f"- **Title**: {sd.get('title') or '—'}",
+                f"- **Game**: {sd.get('game_type') or '—'}",
+                f"- **Strategy**: {sd.get('strategy_name') or '—'}",
+                f"- **Edge**: {sd.get('edge_score') or '—'}",
+                f"- **MC**: {'passed' if sd.get('mc_passed') == 1 else ('failed' if sd.get('mc_passed') == 0 else '—')}",
+                f"- **Reason**: {sd.get('reason') or '—'}",
+                "",
+            ]
+    else:
+        lines += ["_本輪無 Deep Research 策略任務需要審查。_", ""]
+
     with open(report_md_path, "w", encoding="utf-8") as handle:
         handle.write("\n".join(lines).strip() + "\n")
     with open(report_json_path, "w", encoding="utf-8") as handle:
@@ -1143,12 +1209,508 @@ def _quick_skip_run(
         "is_force_run": is_force_run,
         "run_intent": run_intent,
         "parent_run_id": parent_run_id,
+        "status": RUN_STATUS_SKIPPED,
+        "outcome": outcome,
+        "outcome_message": outcome_message,
+        "pid": os.getpid(),
+        "request_id": request_id,
     }
     db.create_cto_review_run(**run_record)
     _write_reports(run_record, [], report_md_path, report_json_path)
     db.update_cto_review_run(run_id, report_md_path=report_md_path, report_json_path=report_json_path)
     db.log_tick("cto-review", outcome, message=outcome_message, request_id=request_id)
     return run_record
+
+
+# ── Strategy Review Layer ─────────────────────────────────────────────────────
+
+def _is_strategy_task(task: dict, task_result: dict, completed_text: str) -> bool:
+    """Return True if this task is a Deep Research task with strategy output."""
+    title = str(task.get("title") or "").lower()
+    if "deep research" in title or "deep-research" in title:
+        return True
+    # Check acceptance criteria for strategy keywords
+    keywords = {"策略", "edge", "sharpe", "monte carlo", "mc", "回測", "backtest", "signal"}
+    acceptance = task_result.get("acceptance_results") if isinstance(task_result, dict) else []
+    for item in (acceptance if isinstance(acceptance, list) else []):
+        name = str(item.get("name") or "").lower()
+        if any(kw in name for kw in keywords):
+            return True
+    # Check completed text for strategy markers
+    strategy_markers = ["edge_score", "edge = ", "edges:", "sharpe", "monte carlo", "backtest", "回測"]
+    ct = (completed_text or "").lower()
+    return any(m in ct for m in strategy_markers)
+
+
+def _extract_strategy_metrics(completed_text: str, task_result: dict) -> dict:
+    """Parse completed markdown for strategy name, edge, sharpe, MC, comparison."""
+    import re as _re
+
+    metrics: dict = {
+        "game_type": None,
+        "strategy_name": None,
+        "edge_score": None,
+        "sharpe_ratio": None,
+        "drawdown": None,
+        "mc_passed": None,
+        "comparison_summary": None,
+        # Tier-guard fields
+        "validation_tier": None,   # T0–T4 from Strategy Output Table
+        "vs_incumbent": None,       # float: edge delta vs current best (positive = better)
+        "mcnemar_evidence": False,  # True if McNemar p-value present in output
+    }
+    if not completed_text:
+        return metrics
+    ct = completed_text.lower()
+
+    # Game type detection
+    if "power_lotto" in ct or "威力彩" in completed_text or "38c6" in ct:
+        metrics["game_type"] = "POWER_LOTTO"
+    elif "big_lotto" in ct or "大樂透" in completed_text or "49c6" in ct:
+        metrics["game_type"] = "BIG_LOTTO"
+    elif "daily_539" in ct or "今彩539" in completed_text or "daily539" in ct:
+        metrics["game_type"] = "DAILY_539"
+
+    # Edge score — collect all floats next to "edge" and take the max positive
+    edge_patterns = [
+        r'edge[s]?\s*(?:top\d+)?[=:]+\s*([+-]?\d+\.\d+)',
+        r'edges?[^:=]*[=:]\s*\[?([+-]?\d+\.\d+)',
+    ]
+    edge_vals: list = []
+    for pat in edge_patterns:
+        for m in _re.finditer(pat, completed_text, _re.IGNORECASE):
+            try:
+                edge_vals.append(float(m.group(1)))
+            except ValueError:
+                pass
+    if edge_vals:
+        # Prefer max positive; fall back to max overall
+        positive = [v for v in edge_vals if v > 0]
+        metrics["edge_score"] = max(positive) if positive else max(edge_vals)
+
+    # Strategy name — known naming conventions
+    strat_m = _re.search(
+        r'\b(midfreq_\w+|fourier_\w+|coldphase_\w+|pp3_\w+|acb_\w+|'
+        r'temporal_\w+|cold_strat_\w+|hot_phase_\w+|regime_\w+|'
+        r'shadow_[a-z]_\w+)',
+        completed_text,
+    )
+    if strat_m:
+        metrics["strategy_name"] = strat_m.group(1)
+
+    # Sharpe ratio
+    sharpe_m = _re.search(r'sharpe\s*(?:ratio)?\s*[=:]\s*([+-]?\d+\.\d+)', completed_text, _re.IGNORECASE)
+    if sharpe_m:
+        try:
+            metrics["sharpe_ratio"] = float(sharpe_m.group(1))
+        except ValueError:
+            pass
+
+    # Drawdown
+    dd_m = _re.search(r'(?:max_?)?drawdown\s*[=:]\s*([+-]?\d+\.\d+)', completed_text, _re.IGNORECASE)
+    if dd_m:
+        try:
+            metrics["drawdown"] = float(dd_m.group(1))
+        except ValueError:
+            pass
+
+    # Monte Carlo result
+    mc_fail_markers = ["mc fails", "mc failed", "mc_failed", "mc rejected", "monte carlo failed"]
+    mc_pass_markers = ["mc passes", "mc passed", "mc_passed", "monte carlo passed", "seed=42", "monte carlo runs used"]
+    if any(m in ct for m in mc_fail_markers):
+        metrics["mc_passed"] = 0
+    elif any(m in ct for m in mc_pass_markers):
+        metrics["mc_passed"] = 1
+
+    # Comparison summary
+    comp_m = _re.search(r'(vs\.?\s+(?:baseline|random)[^\n]{0,200})', completed_text, _re.IGNORECASE)
+    if comp_m:
+        metrics["comparison_summary"] = comp_m.group(1)[:200]
+
+    # Validation tier (look for T0–T4 tokens)
+    tier_m = _re.search(
+        r'\b(T[0-4]_[A-Z_]+|t[0-4]_[a-z_]+)\b',
+        completed_text,
+    )
+    if tier_m:
+        metrics["validation_tier"] = tier_m.group(1).upper()
+    # Also scan task_result JSON for validation_tier
+    if not metrics["validation_tier"] and isinstance(task_result, dict):
+        metrics["validation_tier"] = task_result.get("validation_tier")
+
+    # vs_incumbent (float delta, positive = better than incumbent)
+    vs_m = _re.search(
+        r'vs[_\s]?incumbent\s*[=:]\s*([+-]?\d+\.\d+)',
+        completed_text,
+        _re.IGNORECASE,
+    )
+    if vs_m:
+        try:
+            metrics["vs_incumbent"] = float(vs_m.group(1))
+        except ValueError:
+            pass
+    if metrics["vs_incumbent"] is None and isinstance(task_result, dict):
+        try:
+            v = task_result.get("vs_incumbent")
+            if v is not None:
+                metrics["vs_incumbent"] = float(v)
+        except (TypeError, ValueError):
+            pass
+
+    # McNemar evidence
+    metrics["mcnemar_evidence"] = bool(
+        _re.search(r'mcnemar', completed_text, _re.IGNORECASE)
+        or _re.search(r'mcnemar_p', completed_text, _re.IGNORECASE)
+    )
+
+    return metrics
+
+
+# ── Tier Guard constants ───────────────────────────────────────────────────────
+_APPROVABLE_TIERS = {"T3_INCUMBENT_PASS", "T4_DEPLOYABLE"}
+_SHADOW_ONLY_TIERS = {"T1_MC_PASS", "T2_THREE_WINDOW_PASS"}
+
+
+def _evaluate_strategy(task: dict, metrics: dict) -> dict:
+    """
+    Apply decision rules to strategy metrics → decision dict.
+
+    Tier Guard (enforced before edge-based heuristic):
+    - Only T3_INCUMBENT_PASS or T4_DEPLOYABLE + McNemar evidence → APPROVE_STRATEGY
+    - T1_MC_PASS / T2_THREE_WINDOW_PASS → at most SHADOW_STRATEGY
+    - vs_incumbent <= 0 → never APPROVE
+    - Missing validation_tier → NEEDS_RESEARCH (not APPROVE)
+    """
+    steps: list = []
+    edge = metrics.get("edge_score")
+    mc = metrics.get("mc_passed")
+    sharpe = metrics.get("sharpe_ratio")
+    has_data = edge is not None or metrics.get("strategy_name") is not None
+    validation_tier = (metrics.get("validation_tier") or "").upper().strip()
+    vs_incumbent = metrics.get("vs_incumbent")  # float or None
+    mcnemar_evidence = bool(metrics.get("mcnemar_evidence"))
+
+    steps.append(_decision_step(
+        "extract_strategy_metrics",
+        "PASS" if has_data else "FAIL",
+        f"edge={edge}, sharpe={sharpe}, mc={mc}, tier={validation_tier}, "
+        f"vs_incumbent={vs_incumbent}, mcnemar={mcnemar_evidence}, "
+        f"name={metrics.get('strategy_name')}",
+        metrics,
+    ))
+
+    if not has_data:
+        return {
+            "decision": STRAT_NEEDS,
+            "reason": "insufficient strategy metrics in task output",
+            "steps": steps,
+            "metrics": metrics,
+        }
+
+    # ── Tier Guard (takes priority over edge heuristic) ───────────────────────
+    # Rule 1: vs_incumbent <= 0 → never APPROVE
+    if vs_incumbent is not None and vs_incumbent <= 0:
+        decision = STRAT_SHADOW if (edge is not None and edge > 0) else STRAT_REJECT
+        reason = (
+            f"vs_incumbent={vs_incumbent:.4f} ≤ 0 — strategy does not beat incumbent. "
+            "Cannot APPROVE. Requires positive vs_incumbent before promotion."
+        )
+        steps.append(_decision_step("tier_guard_vs_incumbent", "BLOCK", reason, {"decision": decision}))
+        return {"decision": decision, "reason": reason, "steps": steps, "metrics": metrics}
+
+    # Rule 2: Missing validation_tier → NEEDS_RESEARCH
+    if not validation_tier:
+        reason = (
+            "validation_tier not found in task output. "
+            "Worker must set validation_tier (T0–T4) per wiki/system/validation_gates.md. "
+            "Cannot APPROVE without explicit tier classification."
+        )
+        steps.append(_decision_step("tier_guard_missing_tier", "BLOCK", reason, {"decision": STRAT_NEEDS}))
+        return {"decision": STRAT_NEEDS, "reason": reason, "steps": steps, "metrics": metrics}
+
+    # Rule 3: T1/T2 tiers → at most SHADOW
+    if validation_tier in _SHADOW_ONLY_TIERS:
+        decision = STRAT_SHADOW if (edge is not None and edge > 0) else STRAT_NEEDS
+        reason = (
+            f"validation_tier={validation_tier} — maximum allowed decision is SHADOW_STRATEGY. "
+            "T3_INCUMBENT_PASS (McNemar vs incumbent) required before APPROVE."
+        )
+        steps.append(_decision_step("tier_guard_shadow_only", "BLOCK", reason, {"decision": decision}))
+        return {"decision": decision, "reason": reason, "steps": steps, "metrics": metrics}
+
+    # Rule 4: T3/T4 → APPROVE only with McNemar evidence (or explicit T4)
+    if validation_tier in _APPROVABLE_TIERS:
+        if validation_tier == "T4_DEPLOYABLE" or mcnemar_evidence:
+            if edge is not None and edge > 0 and mc == 1:
+                decision = STRAT_APPROVE
+                reason = (
+                    f"validation_tier={validation_tier}, mcnemar_evidence={mcnemar_evidence}, "
+                    f"edge={edge:.3f} > 0, MC passed — Tier Guard APPROVE."
+                )
+            elif edge is not None and edge > 0:
+                decision = STRAT_SHADOW
+                reason = (
+                    f"validation_tier={validation_tier}, mcnemar_evidence={mcnemar_evidence}, "
+                    f"edge={edge:.3f} > 0 but MC not confirmed — shadow tracking."
+                )
+            else:
+                decision = STRAT_NEEDS
+                reason = f"validation_tier={validation_tier} but edge={edge} — needs more data."
+        else:
+            # T3 but no McNemar evidence → shadow pending McNemar
+            decision = STRAT_SHADOW
+            reason = (
+                f"validation_tier=T3_INCUMBENT_PASS but no McNemar p-value found in output. "
+                "SHADOW pending McNemar validation."
+            )
+        steps.append(_decision_step("tier_guard_approvable", "PASS", reason, {"decision": decision}))
+        return {"decision": decision, "reason": reason, "steps": steps, "metrics": metrics}
+
+    # Fallback: unknown tier → use edge heuristic (conservative)
+    if edge is not None:
+        if edge > 0.05:
+            decision = STRAT_SHADOW
+            reason = (
+                f"Unknown tier={validation_tier!r}, edge={edge:.3f} > 0.05 — "
+                "conservative SHADOW pending proper tier classification."
+            )
+        elif edge <= 0:
+            decision = STRAT_REJECT
+            reason = f"edge={edge:.3f} <= 0 — no positive edge detected"
+        else:
+            decision = STRAT_NEEDS
+            reason = f"edge={edge:.3f} marginal — needs more research"
+    else:
+        decision = STRAT_NEEDS
+        reason = "no quantitative edge score found in task output"
+
+    steps.append(_decision_step(
+        "evaluate_strategy_decision", "PASS", reason, {"decision": decision}
+    ))
+    return {"decision": decision, "reason": reason, "steps": steps, "metrics": metrics}
+
+
+def _update_strategy_state(decision: str, task: dict, metrics: dict) -> None:
+    """Update active/shadow strategy state in DB after a strategy decision."""
+    game_type = metrics.get("game_type")
+    if not game_type:
+        return
+    strategy_name = metrics.get("strategy_name")
+    edge = metrics.get("edge_score")
+    task_id = task.get("id")
+
+    if decision == STRAT_APPROVE:
+        db.set_active_strategy_state(
+            game_type,
+            active_strategy=strategy_name,
+            active_edge=edge,
+            active_task_id=task_id,
+            planner_focus=json.dumps({
+                "focus": "exploit",
+                "strategy": strategy_name,
+                "game": game_type,
+                "edge": edge,
+            }, ensure_ascii=False),
+        )
+    elif decision == STRAT_SHADOW:
+        db.set_active_strategy_state(
+            game_type,
+            shadow_strategy=strategy_name,
+            shadow_edge=edge,
+            shadow_task_id=task_id,
+            planner_focus=json.dumps({
+                "focus": "validate_shadow",
+                "strategy": strategy_name,
+                "game": game_type,
+                "edge": edge,
+            }, ensure_ascii=False),
+        )
+        # Issue directive: focus on validating shadow via McNemar
+        try:
+            db.write_planner_directive(
+                game_type=game_type,
+                focus_direction="shadow_validation",
+                required_validation=["three_window", "perm_test", "mcnemar_vs_incumbent"],
+                promotion_targets=[strategy_name] if strategy_name else [],
+                budget_hint="full_backtest_with_mcnemar",
+                note=f"CTO SHADOW decision for {strategy_name} (edge={edge}); McNemar vs incumbent required before T3",
+                expires_after_cycles=5,
+            )
+        except Exception:
+            pass
+    elif decision == STRAT_NEEDS:
+        db.set_active_strategy_state(
+            game_type,
+            planner_focus=json.dumps({
+                "focus": "research",
+                "game": game_type,
+                "reason": "strategy needs more data",
+            }, ensure_ascii=False),
+        )
+    elif decision == STRAT_REJECT:
+        # Write directive to prevent re-researching the same family
+        try:
+            family = metrics.get("family") or (strategy_name or "unknown")
+            db.write_planner_directive(
+                game_type=game_type,
+                focus_direction="avoid_rejected_family",
+                forbidden_families=[family],
+                note=f"CTO REJECT: {strategy_name} (edge={edge}). Family {family!r} is dead signal territory.",
+                expires_after_cycles=20,
+            )
+        except Exception:
+            pass
+    # (end of strategy state update block)
+
+
+def _run_strategy_review(run_id: str, checked_from: Optional[str]) -> dict:
+    """
+    Evaluate all completed Deep Research tasks not yet strategy-reviewed.
+    Returns summary dict: approved/shadow/rejected/needs counts + decisions list.
+    """
+    candidates = db.list_strategy_review_candidates(since=checked_from, limit=200)
+    approved = shadow = rejected = needs = 0
+    decisions: list = []
+
+    for cand in candidates:
+        task_id = cand["id"]
+        slot_key = cand["slot_key"]
+        date_folder = cand["date_folder"]
+        slug = cand.get("slug") or "task"
+
+        # Skip if already reviewed in a previous run
+        if db.get_strategy_review_for_task(task_id):
+            continue
+
+        # Load task artifacts
+        try:
+            meta = common.read_meta(slot_key, date_folder)
+        except Exception:
+            meta = {}
+
+        result_p = meta.get("task_result_path") or common.result_path(slot_key, slug, date_folder)
+        completed_p = meta.get("completed_file_path") or common.completed_path(slot_key, slug, date_folder)
+        task_result = _json_loads(_read_text(result_p), {})
+        completed_text = _read_text(completed_p)
+
+        if not _is_strategy_task(cand, task_result, completed_text):
+            continue
+
+        metrics = _extract_strategy_metrics(completed_text, task_result)
+        evaluated = _evaluate_strategy(cand, metrics)
+        decision = evaluated["decision"]
+        reason = evaluated["reason"]
+
+        try:
+            db.insert_strategy_review(
+                task_id=task_id,
+                slot_key=slot_key,
+                task_title=cand.get("title"),
+                review_run_id=run_id,
+                decision=decision,
+                reason=reason,
+                game_type=metrics.get("game_type"),
+                strategy_name=metrics.get("strategy_name"),
+                edge_score=metrics.get("edge_score"),
+                sharpe_ratio=metrics.get("sharpe_ratio"),
+                drawdown=metrics.get("drawdown"),
+                mc_passed=metrics.get("mc_passed"),
+                comparison_summary=metrics.get("comparison_summary"),
+            )
+        except Exception as exc:
+            logger.warning("[STRAT] Failed to insert review for task %s: %s", task_id, exc)
+            continue
+
+        _update_strategy_state(decision, cand, metrics)
+
+        if decision == STRAT_APPROVE:
+            approved += 1
+        elif decision == STRAT_SHADOW:
+            shadow += 1
+        elif decision == STRAT_REJECT:
+            rejected += 1
+        else:
+            needs += 1
+
+        decisions.append({
+            "task_id": task_id,
+            "title": cand.get("title"),
+            "decision": decision,
+            "reason": reason,
+            "game_type": metrics.get("game_type"),
+            "edge_score": metrics.get("edge_score"),
+            "strategy_name": metrics.get("strategy_name"),
+            "mc_passed": metrics.get("mc_passed"),
+        })
+        logger.info(
+            "[STRAT] task=%s title=%r decision=%s edge=%s game=%s",
+            task_id, cand.get("title"), decision, metrics.get("edge_score"), metrics.get("game_type"),
+        )
+
+    summary = {
+        "candidate_count": len(candidates),
+        "reviewed_count": approved + shadow + rejected + needs,
+        "approved": approved,
+        "shadow": shadow,
+        "rejected": rejected,
+        "needs": needs,
+        "decisions": decisions,
+    }
+    logger.info(
+        "[STRAT] Strategy review done: %d candidates, %d reviewed "
+        "(approved=%d shadow=%d rejected=%d needs=%d)",
+        summary["candidate_count"], summary["reviewed_count"],
+        approved, shadow, rejected, needs,
+    )
+    return summary
+
+
+def execute_manual_merge_for_task(task_id: int) -> dict:
+    """
+    Execute merge for a task that is in WAITING_MANUAL_APPROVAL status.
+    Called from the API when the user clicks 'Approve' in the frontend.
+    Returns a dict with keys: success (bool), message (str), merge_commit_sha (str|None).
+    """
+    commit_row = db.get_task_git_commit_for_task(task_id)
+    if not commit_row:
+        return {"success": False, "message": f"No git commit record found for task_id={task_id}"}
+    if commit_row.get("status") != DECISION_WAITING_MANUAL:
+        return {
+            "success": False,
+            "message": f"Task {task_id} is not in WAITING_MANUAL_APPROVAL (current: {commit_row.get('status')})",
+        }
+
+    merge_branch = commit_row.get("merge_branch")
+    if not merge_branch:
+        return {"success": False, "message": f"Task {task_id} has no merge_branch set"}
+
+    base_branch = _detect_base_branch()
+    run_id = str(uuid.uuid4())
+    now_iso = _now_iso()
+
+    try:
+        _merged, merged_count, _deferred, _failures, final_branch = _merge_approved_commits(
+            run_id,
+            merge_branch,
+            base_branch,
+            [dict(commit_row)],
+            now_iso,
+            now_iso,
+        )
+    except Exception as exc:
+        logger.exception("execute_manual_merge_for_task failed for task_id=%s: %s", task_id, exc)
+        return {"success": False, "message": str(exc)}
+
+    if merged_count == 0:
+        return {"success": False, "message": "Cherry-pick failed — see logs for details"}
+
+    merge_commit_sha = db.get_task_git_commit_for_task(task_id)
+    return {
+        "success": True,
+        "message": "Merged successfully",
+        "merge_commit_sha": (merge_commit_sha or {}).get("merge_commit_sha"),
+        "merge_branch": final_branch,
+    }
 
 
 def run(force: bool = False):
@@ -1181,8 +1743,15 @@ def run(force: bool = False):
     run_branch = common.git_branch_name_for_cto_merge(started_at.astimezone(timezone(timedelta(hours=8))).strftime("%Y-%m-%d"), frequency_mode=frequency_mode, started_at=started_at.isoformat())
     base_branch = _detect_base_branch()
 
-    # ── Guard: scheduler disabled (applies to both scheduled and manual runs) ──
-    if not db.is_cto_scheduler_enabled() and not is_manual:
+    # ── Global LLM guard: hard-off + main scheduler + CTO scheduler ─────────
+    decision = execution_policy.evaluate(
+        "cto-review",
+        scope="cto",
+        provider=db.get_cto_planner_provider(),
+        model=db.get_cto_planner_model(),
+    )
+    if not decision.allowed:
+        execution_policy.record_skip(decision, request_id=request_id)
         # Minimal run record for traceability
         _quick_skip_run(
             run_id=run_id,
@@ -1191,12 +1760,12 @@ def run(force: bool = False):
             is_manual=is_manual,
             report_md_path=report_md_path,
             report_json_path=report_json_path,
-            summary="CTO Scheduler disabled; CTO review skipped",
-            outcome="CTO_REVIEW_SKIP_DISABLED",
-            outcome_message="CTO Scheduler disabled",
+            summary=f"{decision.skip_reason}; CTO review skipped",
+            outcome="CTO_REVIEW_SKIP_GLOBAL_GUARD",
+            outcome_message=decision.skip_reason,
             request_id=request_id,
         )
-        logger.info("CTO review skipped because CTO scheduler is disabled")
+        logger.info("CTO review skipped because %s", decision.skip_reason)
         return
 
     # ── Guard: frequency gate (scheduled only — manual runs bypass this) ──────
@@ -1249,7 +1818,15 @@ def run(force: bool = False):
                 len(pending),
             )
     pending_shas = [row.get("commit_sha") for row in pending if row.get("commit_sha")]
+    if not pending_shas:
+        # No real SHAs available — use task IDs to prevent constant dedupe_key collision
+        # when all commits have empty commit_sha (e.g. worker skipped git commit)
+        pending_shas = [f"task:{row.get('task_id')}" for row in pending if row.get("task_id")]
     dedupe_key = _compute_dedupe_key(planner_provider, planner_model, frequency_mode, pending_shas)
+    db.cleanup_stale_cto_review_runs(
+        dedupe_key=dedupe_key,
+        stale_reason="stale in-flight run blocked duplicate guard",
+    )
 
     # ── Guard: in-flight duplicate (skipped for force runs) ──────────────────
     inflight = db.get_inflight_cto_run_by_dedupe_key(dedupe_key)
@@ -1336,122 +1913,172 @@ def run(force: bool = False):
         "is_force_run": is_force_run,
         "run_intent": run_intent,
         "parent_run_id": parent_run_id,
+        "status": RUN_STATUS_RUNNING,
+        "outcome": None,
+        "outcome_message": None,
+        "pid": os.getpid(),
+        "request_id": request_id,
     }
     db.create_cto_review_run(**run_record)
+    try:
+        run_record["candidate_count"] = len(pending)
 
-    run_record["candidate_count"] = len(pending)
+        decisions: list[dict] = []
+        if not pending:
+            run_record["summary"] = "No pending review candidates"
+            run_record["completed_at"] = _now_iso()
+            run_record["duration_seconds"] = int((datetime.now(timezone.utc) - started_at).total_seconds())
+            db.update_cto_review_run(run_id, candidate_count=0, completed_at=run_record["completed_at"], duration_seconds=run_record["duration_seconds"], summary=run_record["summary"], merge_branch=None, status=RUN_STATUS_SKIPPED, outcome="CTO_REVIEW_NO_CANDIDATES", outcome_message="No pending review candidates")
+            _write_reports(run_record, [], report_md_path, report_json_path)
+            db.update_cto_review_run(run_id, report_md_path=report_md_path, report_json_path=report_json_path)
+            db.log_tick("cto-review", "CTO_REVIEW_NO_CANDIDATES", message="No pending review candidates", request_id=request_id)
+            logger.info("No pending CTO review candidates")
+            return run_record
 
-    decisions: list[dict] = []
-    if not pending:
-        run_record["summary"] = "No pending review candidates"
-        run_record["completed_at"] = _now_iso()
-        run_record["duration_seconds"] = int((datetime.now(timezone.utc) - started_at).total_seconds())
-        db.update_cto_review_run(run_id, candidate_count=0, completed_at=run_record["completed_at"], duration_seconds=run_record["duration_seconds"], summary=run_record["summary"], merge_branch=None)
-        _write_reports(run_record, [], report_md_path, report_json_path)
-        db.update_cto_review_run(run_id, report_md_path=report_md_path, report_json_path=report_json_path)
-        db.log_tick("cto-review", "CTO_REVIEW_NO_CANDIDATES", message="No pending review candidates", request_id=request_id)
-        logger.info("No pending CTO review candidates")
-        return run_record
-
-    latest_by_group: dict[str, dict] = {}
-    for row in sorted(pending, key=lambda item: (_parse_iso(item.get("created_at")) or started_at, item.get("id") or 0)):
-        group = str(row.get("integration_group") or "").strip() or f"task-{row.get('task_id')}"
-        latest = latest_by_group.get(group)
-        if latest is None:
-            latest_by_group[group] = row
-            continue
-        latest_ts = _parse_iso(latest.get("created_at")) or started_at
-        row_ts = _parse_iso(row.get("created_at")) or started_at
-        if row_ts >= latest_ts:
-            latest_by_group[group] = row
-
-    approved_candidates: list[dict] = []
-    for row in pending:
-        group = str(row.get("integration_group") or "").strip() or f"task-{row.get('task_id')}"
-        newest_in_group = latest_by_group.get(group)
-        if newest_in_group and newest_in_group.get("commit_sha") != row.get("commit_sha"):
-            decision = DECISION_SUPERSEDED
-            reason = f"superseded by {newest_in_group.get('commit_sha')}"
-            steps = [
-                _decision_step("load_task_context", "PASS", "Loaded task context", {"task_id": row.get("task_id"), "commit_sha": row.get("commit_sha")}),
-                _decision_step("check_conflict_risk", "FAIL", "A newer commit in the same integration group exists", {"superseded_by_commit_sha": newest_in_group.get("commit_sha"), "integration_group": group}),
-                _decision_step("final_decision", "PASS", "Marked as superseded", {}),
-            ]
-            _record_review(row, run_id, decision, reason, checked_from, checked_until, steps,
-                       dry_run=is_compare_only)
-            decisions.append({
-                "task_id": row.get("task_id"),
-                "commit_sha": row.get("commit_sha"),
-                "decision": decision,
-                "reason": reason,
-                "steps": steps,
-                "status": decision,
-            })
-            run_record["superseded_count"] += 1
-            continue
-
-        evaluated = _evaluate_commit(row, newest_in_group)
-        decision = evaluated["decision"]
-        reason = evaluated["reason"]
-        steps = evaluated["steps"]
-        commit_record = dict(row)
-        commit_record["steps"] = steps
-        commit_record["reason"] = reason
-
-        if decision == DECISION_APPROVED:
-            run_record["approved_count"] += 1
-            if not is_compare_only:
-                approved_candidates.append(commit_record)
-            _record_review(row, run_id, decision, reason, checked_from, checked_until, steps,
-                           dry_run=is_compare_only)
-            decisions.append({
-                "task_id": row.get("task_id"),
-                "commit_sha": row.get("commit_sha"),
-                "decision": decision,
-                "reason": reason,
-                "steps": steps,
-                "status": decision,
-                "high_conflict_paths": evaluated.get("high_conflict_paths", []),
-            })
-            if is_compare_only:
-                # compare: keep commits as PENDING — no DB writes
+        latest_by_group: dict[str, dict] = {}
+        for row in sorted(pending, key=lambda item: (_parse_iso(item.get("created_at")) or started_at, item.get("id") or 0)):
+            group = str(row.get("integration_group") or "").strip() or f"task-{row.get('task_id')}"
+            latest = latest_by_group.get(group)
+            if latest is None:
+                latest_by_group[group] = row
                 continue
-            # Preserve pending state until merge succeeds.
-            db.upsert_task_git_commit(
-                task_id=row.get("task_id"),
-                slot_key=row.get("slot_key"),
-                task_title=row.get("task_title"),
-                source_branch=row.get("source_branch"),
-                commit_sha=row.get("commit_sha"),
-                commit_message=row.get("commit_message"),
-                integration_group=row.get("integration_group"),
-                review_priority=row.get("review_priority"),
-                safe_to_autocommit=row.get("safe_to_autocommit"),
-                status=DECISION_APPROVED,
-                reviewer_role="cto-reviewer",
-                reviewed_at=_now_iso(),
-                merge_branch=run_branch,
-                merge_commit_sha=None,
-                reject_reason=reason,
-                superseded_by_task_id=row.get("superseded_by_task_id"),
-                superseded_by_commit_sha=row.get("superseded_by_commit_sha"),
-                changed_files=_json_loads(row.get("changed_files_json"), []),
-                depends_on_tasks=_json_loads(row.get("depends_on_tasks_json"), []),
-                depends_on_commits=_json_loads(row.get("depends_on_commits_json"), []),
-                high_conflict_paths=_json_loads(row.get("high_conflict_paths_json"), []),
-                task_status=row.get("task_status"),
-                gate_verdict=row.get("gate_verdict"),
-                gate_reason=row.get("gate_reason"),
-            )
-            continue
+            latest_ts = _parse_iso(latest.get("created_at")) or started_at
+            row_ts = _parse_iso(row.get("created_at")) or started_at
+            if row_ts >= latest_ts:
+                latest_by_group[group] = row
 
-        if decision in (DECISION_REPLAN, DECISION_CLOSED, DECISION_DEPENDENCY, DECISION_INVALID, DECISION_DUPLICATE):
-            if decision.startswith("REJECTED"):
-                run_record["rejected_count"] += 1
-            elif decision == DECISION_DUPLICATE:
-                run_record["duplicate_count"] += 1
-            elif decision == DECISION_CLOSED:
-                run_record["rejected_count"] += 1
+        approved_candidates: list[dict] = []
+        for row in pending:
+            group = str(row.get("integration_group") or "").strip() or f"task-{row.get('task_id')}"
+            newest_in_group = latest_by_group.get(group)
+            if newest_in_group and newest_in_group.get("commit_sha") != row.get("commit_sha"):
+                decision = DECISION_SUPERSEDED
+                reason = f"superseded by {newest_in_group.get('commit_sha')}"
+                steps = [
+                    _decision_step("load_task_context", "PASS", "Loaded task context", {"task_id": row.get("task_id"), "commit_sha": row.get("commit_sha")}),
+                    _decision_step("check_conflict_risk", "FAIL", "A newer commit in the same integration group exists", {"superseded_by_commit_sha": newest_in_group.get("commit_sha"), "integration_group": group}),
+                    _decision_step("final_decision", "PASS", "Marked as superseded", {}),
+                ]
+                _record_review(row, run_id, decision, reason, checked_from, checked_until, steps,
+                           dry_run=is_compare_only)
+                decisions.append({
+                    "task_id": row.get("task_id"),
+                    "commit_sha": row.get("commit_sha"),
+                    "decision": decision,
+                    "reason": reason,
+                    "steps": steps,
+                    "status": decision,
+                })
+                run_record["superseded_count"] += 1
+                continue
+
+            evaluated = _evaluate_commit(row, newest_in_group)
+            decision = evaluated["decision"]
+            reason = evaluated["reason"]
+            steps = evaluated["steps"]
+            commit_record = dict(row)
+            commit_record["steps"] = steps
+            commit_record["reason"] = reason
+
+            if decision == DECISION_APPROVED:
+                run_record["approved_count"] += 1
+                needs_manual = bool(row.get("manual_merge_required"))
+                if not is_compare_only and not needs_manual:
+                    approved_candidates.append(commit_record)
+                effective_decision = DECISION_WAITING_MANUAL if (not is_compare_only and needs_manual) else decision
+                _record_review(row, run_id, effective_decision, reason, checked_from, checked_until, steps,
+                               dry_run=is_compare_only)
+                decisions.append({
+                    "task_id": row.get("task_id"),
+                    "commit_sha": row.get("commit_sha"),
+                    "decision": effective_decision,
+                    "reason": reason,
+                    "steps": steps,
+                    "status": effective_decision,
+                    "high_conflict_paths": evaluated.get("high_conflict_paths", []),
+                })
+                if is_compare_only:
+                    # compare: keep commits as PENDING — no DB writes
+                    continue
+                # Preserve pending state until merge succeeds (or park at WAITING_MANUAL_APPROVAL).
+                db.upsert_task_git_commit(
+                    task_id=row.get("task_id"),
+                    slot_key=row.get("slot_key"),
+                    task_title=row.get("task_title"),
+                    source_branch=row.get("source_branch"),
+                    commit_sha=row.get("commit_sha"),
+                    commit_message=row.get("commit_message"),
+                    integration_group=row.get("integration_group"),
+                    review_priority=row.get("review_priority"),
+                    safe_to_autocommit=row.get("safe_to_autocommit"),
+                    status=effective_decision,
+                    reviewer_role="cto-reviewer",
+                    reviewed_at=_now_iso(),
+                    merge_branch=run_branch,
+                    merge_commit_sha=None,
+                    reject_reason=reason,
+                    superseded_by_task_id=row.get("superseded_by_task_id"),
+                    superseded_by_commit_sha=row.get("superseded_by_commit_sha"),
+                    changed_files=_json_loads(row.get("changed_files_json"), []),
+                    depends_on_tasks=_json_loads(row.get("depends_on_tasks_json"), []),
+                    depends_on_commits=_json_loads(row.get("depends_on_commits_json"), []),
+                    high_conflict_paths=_json_loads(row.get("high_conflict_paths_json"), []),
+                    task_status=row.get("task_status"),
+                    gate_verdict=row.get("gate_verdict"),
+                    gate_reason=row.get("gate_reason"),
+                    manual_merge_required=needs_manual,
+                )
+                continue
+
+            if decision in (DECISION_REPLAN, DECISION_CLOSED, DECISION_DEPENDENCY, DECISION_INVALID, DECISION_DUPLICATE):
+                if decision.startswith("REJECTED"):
+                    run_record["rejected_count"] += 1
+                elif decision == DECISION_DUPLICATE:
+                    run_record["duplicate_count"] += 1
+                elif decision == DECISION_CLOSED:
+                    run_record["rejected_count"] += 1
+                _record_review(row, run_id, decision, reason, checked_from, checked_until, steps,
+                               dry_run=is_compare_only)
+                decisions.append({
+                    "task_id": row.get("task_id"),
+                    "commit_sha": row.get("commit_sha"),
+                    "decision": decision,
+                    "reason": reason,
+                    "steps": steps,
+                    "status": decision,
+                })
+                if is_compare_only:
+                    continue
+                db.upsert_task_git_commit(
+                    task_id=row.get("task_id"),
+                    slot_key=row.get("slot_key"),
+                    task_title=row.get("task_title"),
+                    source_branch=row.get("source_branch"),
+                    commit_sha=row.get("commit_sha"),
+                    commit_message=row.get("commit_message"),
+                    integration_group=row.get("integration_group"),
+                    review_priority=row.get("review_priority"),
+                    safe_to_autocommit=row.get("safe_to_autocommit"),
+                    status=decision,
+                    reviewer_role="cto-reviewer",
+                    reviewed_at=_now_iso(),
+                    merge_branch=row.get("merge_branch"),
+                    merge_commit_sha=row.get("merge_commit_sha"),
+                    reject_reason=reason,
+                    superseded_by_task_id=row.get("superseded_by_task_id"),
+                    superseded_by_commit_sha=row.get("superseded_by_commit_sha"),
+                    changed_files=_json_loads(row.get("changed_files_json"), []),
+                    depends_on_tasks=_json_loads(row.get("depends_on_tasks_json"), []),
+                    depends_on_commits=_json_loads(row.get("depends_on_commits_json"), []),
+                    high_conflict_paths=_json_loads(row.get("high_conflict_paths_json"), []),
+                    task_status=row.get("task_status"),
+                    gate_verdict=row.get("gate_verdict"),
+                    gate_reason=row.get("gate_reason"),
+                )
+                continue
+
+            if decision in (DECISION_CONFLICT, DECISION_MERGE_FAIL):
+                run_record["deferred_count"] += 1
             _record_review(row, run_id, decision, reason, checked_from, checked_until, steps,
                            dry_run=is_compare_only)
             decisions.append({
@@ -1490,158 +2117,167 @@ def run(force: bool = False):
                 gate_verdict=row.get("gate_verdict"),
                 gate_reason=row.get("gate_reason"),
             )
-            continue
 
-        if decision in (DECISION_CONFLICT, DECISION_MERGE_FAIL):
-            run_record["deferred_count"] += 1
-        _record_review(row, run_id, decision, reason, checked_from, checked_until, steps,
-                       dry_run=is_compare_only)
-        decisions.append({
-            "task_id": row.get("task_id"),
-            "commit_sha": row.get("commit_sha"),
-            "decision": decision,
-            "reason": reason,
-            "steps": steps,
-            "status": decision,
-        })
-        if is_compare_only:
-            continue
-        db.upsert_task_git_commit(
-            task_id=row.get("task_id"),
-            slot_key=row.get("slot_key"),
-            task_title=row.get("task_title"),
-            source_branch=row.get("source_branch"),
-            commit_sha=row.get("commit_sha"),
-            commit_message=row.get("commit_message"),
-            integration_group=row.get("integration_group"),
-            review_priority=row.get("review_priority"),
-            safe_to_autocommit=row.get("safe_to_autocommit"),
-            status=decision,
-            reviewer_role="cto-reviewer",
-            reviewed_at=_now_iso(),
-            merge_branch=row.get("merge_branch"),
-            merge_commit_sha=row.get("merge_commit_sha"),
-            reject_reason=reason,
-            superseded_by_task_id=row.get("superseded_by_task_id"),
-            superseded_by_commit_sha=row.get("superseded_by_commit_sha"),
-            changed_files=_json_loads(row.get("changed_files_json"), []),
-            depends_on_tasks=_json_loads(row.get("depends_on_tasks_json"), []),
-            depends_on_commits=_json_loads(row.get("depends_on_commits_json"), []),
-            high_conflict_paths=_json_loads(row.get("high_conflict_paths_json"), []),
-            task_status=row.get("task_status"),
-            gate_verdict=row.get("gate_verdict"),
-            gate_reason=row.get("gate_reason"),
+        merged_records = []
+        merge_branch = None
+        if approved_candidates and not is_compare_only:
+            # compare intent: skip actual merge — analysis only
+            merge_branch = common.git_branch_name_for_cto_merge(
+                started_at.astimezone(timezone(timedelta(hours=8))).strftime("%Y-%m-%d"),
+                frequency_mode=frequency_mode,
+                started_at=started_at.isoformat(),
+            )
+            try:
+                merged_records, merged_count, deferred_count, validation_failures, merge_branch = _merge_approved_commits(
+                    run_id,
+                    merge_branch,
+                    base_branch,
+                    approved_candidates,
+                    checked_from,
+                    checked_until,
+                )
+                run_record["merged_count"] = merged_count
+                run_record["deferred_count"] += deferred_count + validation_failures
+                run_record["merge_branch"] = merge_branch if merged_count > 0 else None
+                for item in merged_records:
+                    decisions.append(item)
+            except Exception as exc:
+                logger.exception("CTO merge step failed: %s", exc)
+                run_record["summary"] = f"Merge validation failed: {exc}"
+                run_record["completed_at"] = _now_iso()
+                run_record["duration_seconds"] = int((datetime.now(timezone.utc) - started_at).total_seconds())
+                db.update_cto_review_run(
+                    run_id,
+                    completed_at=run_record["completed_at"],
+                    duration_seconds=run_record["duration_seconds"],
+                    summary=run_record["summary"],
+                    merge_branch=run_record.get("merge_branch"),
+                    candidate_count=run_record["candidate_count"],
+                    approved_count=run_record["approved_count"],
+                    merged_count=run_record["merged_count"],
+                    rejected_count=run_record["rejected_count"],
+                    deferred_count=run_record["deferred_count"],
+                    superseded_count=run_record["superseded_count"],
+                    duplicate_count=run_record["duplicate_count"],
+                    status=RUN_STATUS_FAILED,
+                    outcome="CTO_REVIEW_ERROR",
+                    outcome_message=f"Merge failed: {exc}",
+                )
+                _write_reports(run_record, decisions, report_md_path, report_json_path)
+                db.update_cto_review_run(run_id, report_md_path=report_md_path, report_json_path=report_json_path)
+                db.log_tick("cto-review", "CTO_REVIEW_ERROR", message=f"Merge failed: {exc}", request_id=request_id)
+                raise
+
+        run_record["completed_at"] = _now_iso()
+        run_record["duration_seconds"] = int((datetime.now(timezone.utc) - started_at).total_seconds())
+        if not run_record.get("summary"):
+            _intent_suffix = ""
+            if is_compare_only:
+                _intent_suffix = " 「比對分析模式：不執行合併和 backlog 寫入」"
+            elif is_retry:
+                _intent_suffix = " 「重試模式：包含 REPLAN/CONFLICT 候選」"
+            run_record["summary"] = (
+                f"Processed {run_record['candidate_count']} candidate(s): "
+                f"{run_record['approved_count']} approved, {run_record['merged_count']} merged, "
+                f"{run_record['rejected_count']} rejected, {run_record['deferred_count']} deferred, "
+                f"{run_record['superseded_count']} superseded, {run_record['duplicate_count']} duplicate"
+                + _intent_suffix
+            )
+        if run_intent:
+            try:
+                db.record_intent_signal(
+                    run_id=run_id,
+                    run_intent=run_intent,
+                    outcome="CTO_REVIEW_COMPLETED",
+                    candidate_count=run_record["candidate_count"],
+                    merged_count=run_record["merged_count"],
+                    rejected_count=run_record["rejected_count"],
+                    deferred_count=run_record["deferred_count"],
+                    approved_count=run_record["approved_count"],
+                    is_compare_only=is_compare_only,
+                )
+            except Exception as _sig_exc:
+                logger.warning("Failed to record intent signal: %s", _sig_exc)
+        db.update_cto_review_run(
+            run_id,
+            completed_at=run_record["completed_at"],
+            duration_seconds=run_record["duration_seconds"],
+            checked_from=run_record["checked_from"],
+            checked_until=run_record["checked_until"],
+            candidate_count=run_record["candidate_count"],
+            approved_count=run_record["approved_count"],
+            merged_count=run_record["merged_count"],
+            rejected_count=run_record["rejected_count"],
+            deferred_count=run_record["deferred_count"],
+            superseded_count=run_record["superseded_count"],
+            duplicate_count=run_record["duplicate_count"],
+            merge_branch=run_record.get("merge_branch"),
+            summary=run_record["summary"],
+            status=RUN_STATUS_COMPLETED,
+            outcome="CTO_REVIEW_COMPLETED",
+            outcome_message=run_record["summary"],
         )
 
-    merged_records = []
-    merge_branch = None
-    if approved_candidates and not is_compare_only:
-        # compare intent: skip actual merge — analysis only
-        merge_branch = common.git_branch_name_for_cto_merge(
-            started_at.astimezone(timezone(timedelta(hours=8))).strftime("%Y-%m-%d"),
-            frequency_mode=frequency_mode,
-            started_at=started_at.isoformat(),
+        # ── Strategy Review (runs independently of code review) ───────────────
+        strat_summary: dict = {}
+        try:
+            strat_summary = _run_strategy_review(run_id, checked_from)
+            if strat_summary.get("reviewed_count", 0) > 0:
+                strat_line = (
+                    f" | Strategy: {strat_summary['reviewed_count']} reviewed "
+                    f"(approve={strat_summary['approved']}, shadow={strat_summary['shadow']}, "
+                    f"reject={strat_summary['rejected']}, needs={strat_summary['needs']})"
+                )
+                run_record["summary"] = run_record["summary"].rstrip() + strat_line
+                db.update_cto_review_run(run_id, summary=run_record["summary"])
+        except Exception as _strat_exc:
+            logger.warning("[STRAT] Strategy review failed (non-fatal): %s", _strat_exc)
+
+        _write_reports(run_record, decisions, report_md_path, report_json_path, strat_summary=strat_summary)
+        db.update_cto_review_run(run_id, report_md_path=report_md_path, report_json_path=report_json_path)
+        db.log_tick("cto-review", "CTO_REVIEW_COMPLETED", message=run_record["summary"], request_id=request_id)
+        logger.info("CTO review %s completed: %s", run_id, run_record["summary"])
+
+        if run_record.get("candidate_count", 0) > 0:
+            try:
+                db.compute_adaptive_policy()
+                logger.info("Adaptive policy updated after run %s", run_id)
+            except Exception as _pe:
+                logger.warning("Adaptive policy recompute failed (non-fatal): %s", _pe)
+
+        return run_record
+    except Exception as exc:
+        logger.exception("CTO review %s failed before terminalization: %s", run_id, exc)
+        run_record["completed_at"] = _now_iso()
+        run_record["duration_seconds"] = int((datetime.now(timezone.utc) - started_at).total_seconds())
+        if not run_record.get("summary"):
+            run_record["summary"] = f"CTO review failed: {exc}"
+        db.update_cto_review_run(
+            run_id,
+            completed_at=run_record["completed_at"],
+            duration_seconds=run_record["duration_seconds"],
+            checked_from=run_record.get("checked_from"),
+            checked_until=run_record.get("checked_until"),
+            candidate_count=run_record.get("candidate_count", 0),
+            approved_count=run_record.get("approved_count", 0),
+            merged_count=run_record.get("merged_count", 0),
+            rejected_count=run_record.get("rejected_count", 0),
+            deferred_count=run_record.get("deferred_count", 0),
+            superseded_count=run_record.get("superseded_count", 0),
+            duplicate_count=run_record.get("duplicate_count", 0),
+            merge_branch=run_record.get("merge_branch"),
+            summary=run_record["summary"],
+            status=RUN_STATUS_FAILED,
+            outcome="CTO_REVIEW_ERROR",
+            outcome_message=str(exc),
         )
         try:
-            merged_records, merged_count, deferred_count, validation_failures, merge_branch = _merge_approved_commits(
-                run_id,
-                merge_branch,
-                base_branch,
-                approved_candidates,
-                checked_from,
-                checked_until,
-            )
-            run_record["merged_count"] = merged_count
-            run_record["deferred_count"] += deferred_count + validation_failures
-            run_record["merge_branch"] = merge_branch if merged_count > 0 else None
-            for item in merged_records:
-                decisions.append(item)
-        except Exception as exc:
-            logger.exception("CTO merge step failed: %s", exc)
-            run_record["summary"] = f"Merge validation failed: {exc}"
-            run_record["completed_at"] = _now_iso()
-            run_record["duration_seconds"] = int((datetime.now(timezone.utc) - started_at).total_seconds())
-            db.update_cto_review_run(
-                run_id,
-                completed_at=run_record["completed_at"],
-                duration_seconds=run_record["duration_seconds"],
-                summary=run_record["summary"],
-                merge_branch=run_record.get("merge_branch"),
-                candidate_count=run_record["candidate_count"],
-                approved_count=run_record["approved_count"],
-                merged_count=run_record["merged_count"],
-                rejected_count=run_record["rejected_count"],
-                deferred_count=run_record["deferred_count"],
-                superseded_count=run_record["superseded_count"],
-                duplicate_count=run_record["duplicate_count"],
-            )
-            _write_reports(run_record, decisions, report_md_path, report_json_path)
+            _write_reports(run_record, locals().get("decisions", []), report_md_path, report_json_path)
             db.update_cto_review_run(run_id, report_md_path=report_md_path, report_json_path=report_json_path)
-            db.log_tick("cto-review", "CTO_REVIEW_ERROR", message=f"Merge failed: {exc}", request_id=request_id)
-            raise
-
-    run_record["completed_at"] = _now_iso()
-    run_record["duration_seconds"] = int((datetime.now(timezone.utc) - started_at).total_seconds())
-    if not run_record.get("summary"):
-        _intent_suffix = ""
-        if is_compare_only:
-            _intent_suffix = " 「比對分析模式：不執行合併和 backlog 寫入」"
-        elif is_retry:
-            _intent_suffix = " 「重試模式：包含 REPLAN/CONFLICT 候選」"
-        run_record["summary"] = (
-            f"Processed {run_record['candidate_count']} candidate(s): "
-            f"{run_record['approved_count']} approved, {run_record['merged_count']} merged, "
-            f"{run_record['rejected_count']} rejected, {run_record['deferred_count']} deferred, "
-            f"{run_record['superseded_count']} superseded, {run_record['duplicate_count']} duplicate"
-            + _intent_suffix
-        )
-    # ── Learning Signal ──────────────────────────────────────────
-    if run_intent:
-        try:
-            db.record_intent_signal(
-                run_id=run_id,
-                run_intent=run_intent,
-                outcome="CTO_REVIEW_COMPLETED",
-                candidate_count=run_record["candidate_count"],
-                merged_count=run_record["merged_count"],
-                rejected_count=run_record["rejected_count"],
-                deferred_count=run_record["deferred_count"],
-                approved_count=run_record["approved_count"],
-                is_compare_only=is_compare_only,
-            )
-        except Exception as _sig_exc:
-            logger.warning("Failed to record intent signal: %s", _sig_exc)
-    db.update_cto_review_run(
-        run_id,
-        completed_at=run_record["completed_at"],
-        duration_seconds=run_record["duration_seconds"],
-        checked_from=run_record["checked_from"],
-        checked_until=run_record["checked_until"],
-        candidate_count=run_record["candidate_count"],
-        approved_count=run_record["approved_count"],
-        merged_count=run_record["merged_count"],
-        rejected_count=run_record["rejected_count"],
-        deferred_count=run_record["deferred_count"],
-        superseded_count=run_record["superseded_count"],
-        duplicate_count=run_record["duplicate_count"],
-        merge_branch=run_record.get("merge_branch"),
-        summary=run_record["summary"],
-    )
-    _write_reports(run_record, decisions, report_md_path, report_json_path)
-    db.update_cto_review_run(run_id, report_md_path=report_md_path, report_json_path=report_json_path)
-    db.log_tick("cto-review", "CTO_REVIEW_COMPLETED", message=run_record["summary"], request_id=request_id)
-    logger.info("CTO review %s completed: %s", run_id, run_record["summary"])
-
-    # ── Self-Optimizing: recompute adaptive policy after every completed run ──
-    # This ensures the next run benefits from this run's outcome signal.
-    if run_record.get("candidate_count", 0) > 0:
-        try:
-            db.compute_adaptive_policy()
-            logger.info("Adaptive policy updated after run %s", run_id)
-        except Exception as _pe:
-            logger.warning("Adaptive policy recompute failed (non-fatal): %s", _pe)
-
-    return run_record
+        except Exception:
+            logger.exception("Failed to write terminal error reports for %s", run_id)
+        db.log_tick("cto-review", "CTO_REVIEW_ERROR", message=str(exc), request_id=request_id)
+        raise
 
 
 if __name__ == "__main__":

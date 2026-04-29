@@ -58,6 +58,50 @@
 - L118：cross-draw cluster / transition 在 539 長窗可出現 raw edge，但若跨期 overlap 與隨機近乎一致且 150/500p permutation 未過，仍應直接 REJECT。
 - L125：539 的 pool-size / market-behavior 題若 trusted active data 沒有 pool/sales 欄位，就應做資料可用性 REJECT，不得用 proxy 補做偽驗證。
 - L128：MicroFish+MidFreq 2-bet 即使三窗口 raw edge / permutation / 邊際效率全過，只要 150p McNemar 未證明穩定優於 `midfreq_acb_2bet`，仍應維持現役不升格。
+- L130：EXPLORE-B constraint_postprocess 結構性 bucket 在 2026-04-29 驗證，23 bucket 全數 BH FDR q=1.0，目前證據不足，WATCH_ARCHIVED，REOPEN_ALLOWED_IF_NEW_EVIDENCE。
+
+## 2026-04-29 Constraint Postprocess Validation
+
+- **Validation result**: REJECT_FILTER_VALIDATION
+- **Operational status**: WATCH_ARCHIVED
+- **Current action**: DO_NOT_IMPLEMENT_NOW
+- **No active strategy change**: 現役三策略不受影響。
+
+### Tested features
+
+| Feature | Description |
+|---|---|
+| sum band | Sum of 5 numbers, quartile buckets |
+| odd/even ratio | Odd count 0-5 |
+| span | max - min, tertile buckets |
+| consecutive count | Longest consecutive run length |
+| AC value | Unique pairwise differences minus (k-1) |
+| zone coverage | Distinct zones covered (3 equal-width zones, 1-39) |
+
+### Statistical result
+
+- Buckets tested: 23 (pre-registered on 350 training draws; no holdout leakage)
+- Null: 100,000 simulated random 5-from-39 combinations
+- All raw p-values > 0.15
+- All BH q-values = 1.0
+- No bucket advanced to holdout validation
+- Reproducible script: `scripts/diagnostics/compute_constraint_buckets.py` (seed=42)
+- Full report: `research/constraint_validation_report_2026-04-29.md`
+
+### Decision
+
+- Do not implement constraint postprocess filter
+- No active strategy change
+- No A/B test at this time
+
+### Reopen conditions (REOPEN_ALLOWED_IF_NEW_EVIDENCE)
+
+- New candidate generator changes candidate distribution
+- New external data source added
+- ≥ 300–500 new draws accumulated
+- Active strategy becomes DEGRADED
+- Multi-feature interaction model proposed (instead of single-bucket filtering)
+- Another lottery type shows a comparable structural signal
 - **L129：539 的 pool-size 研究即使補齊了 100% trusted data (sell_amount, total_amount from official API)，也未必產生預測訊號。此案例中 H013/H013b/H013c 全部 p=1.0、edge≈0，說明外生市場特徵對 539 的數字生成無預測力。不重試此家族除非有新假說方向。**
 - L103：目前 checkout 無正文；backlog 仍保留 L79~L106 範圍引用，需待原始來源補回。
 - L104：目前 checkout 無正文；僅有其他研究類比引用，未見正式 lesson 條目。
@@ -68,3 +112,57 @@
 - 新 539 任務預設為監控、McNemar 驗證、外部新信號或 pool-size / market-behavior 類研究；不重複 H001~H008 類頻率變體，也不重試 H011/H012 已否決家族。
 - 若要重啟 pool-size / market-behavior 題，前置條件是先補齊 trusted ingestion/backfill 的 pool 或 sales 欄位；在資料未補齊前，不派同家族重測。
 - 若要動到現役策略，必須附帶三窗口、perm、McNemar 三重驗證。
+
+## 2026-04-28 長窗驗證與系統狀態
+
+| 研究 | 結論 |
+|------|------|
+| H_NEW_01 changepoint | NO_SIGNIFICANT_CHANGEPOINT |
+| H_NEW_02 sum constraint | WATCH_SUM_CONSTRAINT（不實施 sum 後處理） |
+| H_NEW_03 long-window | WATCH_LONG_WINDOW（3000p edge=+4.50pp，斜率=-1.53pp/1000draws） |
+
+**系統狀態**: WATCH_MAINTENANCE（active=`acb_markov_midfreq_3bet`，shadow=`midfreq_acb_2bet`）
+
+**Watchdog 條件**: 若 3000p edge ≤ +2.0pp → 標記 DEGRADED，觸發策略重評（禁止自動替換，需 CTO review）
+
+**監控頻率**: weekly 或每 50 筆新 draw
+
+詳細數據：`research/daily539_long_window_validation_report_20260428.md`
+
+## 2026-04-29 長窗延伸驗證（H-LW-01 + H-LW-02）
+
+| 研究 | 結論 |
+|------|------|
+| H-LW-01 (4000p + full-history) | STABLE_LONG_WINDOW |
+| H-LW-02 (rolling 500p trend)   | SMOOTH_DECAY（CUSUM p=0.9855，無 regime shift） |
+
+### 長窗回測結果（EXPLORE-C lane）
+
+| 窗口 | Active Edge (pp) | Watchdog |
+|------|---|---|
+| 3000p | +4.50 | OK |
+| 4000p | +3.77 | OK |
+| 5000p（全歷史 max）| +3.68 | OK |
+
+- Edge 斜率: -0.41 pp / 1000 draws（r=-0.914，monotonic=True）
+- **結論**: 邊際遞減但仍高於 DEGRADED 閾值（+2.0pp），不需 CTO review
+
+### Rolling 500p 結果
+
+- 27 個 500p 滾動窗口，步長 200p
+- Breach（≤+2.0pp）窗口: 11/27（40.7%）；多數集中在 2010–2019 早期低峰
+- Mean edge: +3.47 pp，近期（2020+）均大幅正值（+4.5 ~ +10.3 pp）
+- CUSUM break index: 22（2021/09/20），但 bootstrap p=0.9855（方向為正增）→ 非衰退跡象
+
+### 系統狀態更新
+
+**系統狀態**: STABLE_LONG_WINDOW（active=`acb_markov_midfreq_3bet`，shadow=`midfreq_acb_2bet`）
+
+**策略不變**: 現役三策略維持不動，無需 CTO review
+
+**Watchdog 條件（更新）**: 若 4000p 或 5000p edge ≤ +2.0pp → 標記 DEGRADED，觸發策略重評
+
+**監控頻率**: weekly 或每 50 筆新 draw（不變）
+
+詳細數據：`research/daily539_4000p_full_history_validation_report_2026-04-29.md`
+CSV 輸出：`outputs/daily539_long_window_4000p_results_2026-04-29.csv`、`outputs/daily539_rolling_500p_edge_2026-04-29.csv`

@@ -2,6 +2,7 @@ import json
 import os
 import subprocess
 import unittest
+from datetime import datetime, timedelta, timezone
 from unittest.mock import patch
 
 from orchestrator import planner_tick
@@ -85,6 +86,57 @@ class TestPlannerTick(unittest.TestCase):
             planner_tick.run(force=True)
 
         create_task_mock.assert_not_called()
+
+    def test_stale_blocked_env_rate_limit_is_auto_resolved(self):
+        stale_task = {
+            "id": 86,
+            "status": "BLOCKED_ENV",
+            "updated_at": (datetime.now(timezone.utc) - timedelta(minutes=20)).isoformat(),
+            "completed_at": (datetime.now(timezone.utc) - timedelta(minutes=20)).isoformat(),
+            "error_message": "You've hit your rate limit. Please wait for your limit to reset.",
+            "completed_text": "docs.github.com/en/copilot/concepts/rate-limits\nRequests 0 Premium",
+        }
+
+        with patch("orchestrator.planner_tick.db.update_task") as update_task_mock, \
+             patch("orchestrator.planner_tick.db.log_tick"), \
+             patch("orchestrator.planner_tick.common.log_jsonl"):
+            should_block, message = planner_tick._resolve_previous_task_blocker(stale_task)
+
+        self.assertFalse(should_block)
+        self.assertIsNone(message)
+        update_task_mock.assert_called_once()
+        self.assertEqual(update_task_mock.call_args.kwargs["status"], "FAILED_RATE_LIMIT")
+
+    def test_monitoring_duplicate_source_is_suppressed(self):
+        signal_state = {"state": "SIGNAL_SATURATED", "confidence_score": 0.8}
+        inflight = {
+            "id": 287,
+            "status": "QUEUED",
+            "dedupe_key": "monitoring:deep_research_cold:2026-04-28",
+        }
+        with patch(
+            "orchestrator.planner_tick.db.get_inflight_auto_monitor_by_source_task_type",
+            return_value=inflight,
+        ), patch(
+            "orchestrator.planner_tick.db.get_inflight_task_by_dedupe_key",
+            return_value=None,
+        ), patch(
+            "orchestrator.planner_tick.db.get_recent_completed_task_by_dedupe_key",
+            return_value=None,
+        ):
+            should_skip, reason = planner_tick._check_task_dedupe(
+                "monitoring:deep_research_cold:2026-04-28",
+                signal_state,
+                monitor_source_task_type="deep_research_cold",
+            )
+
+        self.assertTrue(should_skip)
+        self.assertIn("DUPLICATE_MONITORING_SOURCE:", reason)
+        self.assertIn("source=deep_research_cold", reason)
+
+    def test_duplicate_cleanup_statuses_are_terminal(self):
+        self.assertIn("CANCELLED_DUPLICATE", planner_tick.TERMINAL_TASK_STATUSES)
+        self.assertIn("SKIPPED_DUPLICATE", planner_tick.TERMINAL_TASK_STATUSES)
 
 
 if __name__ == "__main__":

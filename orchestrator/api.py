@@ -14,10 +14,27 @@ from fastapi import APIRouter, HTTPException, Query
 from pydantic import BaseModel
 from typing import Optional
 
-from orchestrator import db, common
+from orchestrator import db, common, execution_policy
+from orchestrator.process_watchdog import watchdog as _proc_watchdog
+
+# Max runtimes for subprocess types (seconds)
+_WORKER_TIMEOUT_S  = 1800   # 30 min: planner / worker tick
+_CTO_TIMEOUT_S     = 1800   # 30 min: CTO review tick
 
 router = APIRouter()
-TASK_STATUSES = ("QUEUED", "RUNNING", "COMPLETED", "FAILED", "REPLAN_REQUIRED", "CANCELLED")
+TASK_STATUSES = (
+    "QUEUED",
+    "RUNNING",
+    "COMPLETED",
+    "FAILED",
+    "FAILED_ACCEPTANCE",
+    "FAILED_RATE_LIMIT",
+    "FAILED_NO_EDGE",
+    "FAILED_WEAK_EDGE",
+    "BLOCKED_ENV",
+    "REPLAN_REQUIRED",
+    "CANCELLED",
+)
 
 
 def _parse_iso(ts: Optional[str]) -> Optional[datetime]:
@@ -136,6 +153,10 @@ def _attach_task_meta_fields(task: dict) -> dict:
     if result_json:
         task["gate_verdict"] = task.get("gate_verdict") or result_json.get("gate_verdict")
         task["gate_reason"] = task.get("gate_reason") or result_json.get("gate_reason")
+        task["failure_reason"] = task.get("failure_reason") or result_json.get("failure_reason")
+        task["failure_provider"] = task.get("failure_provider") or result_json.get("provider")
+        task["reset_hint"] = task.get("reset_hint") or result_json.get("reset_hint")
+        task["final_message"] = task.get("final_message") or result_json.get("final_message")
         worker_runtime = result_json.get("worker_runtime")
         if isinstance(worker_runtime, dict):
             runtime_error = str(worker_runtime.get("runtime_error") or "").strip()
@@ -218,6 +239,7 @@ def get_summary():
 
     daemon_status = common.copilot_daemon_status()
     worker_provider = db.get_worker_provider()
+    llm_control = _llm_control_payload()
 
     if worker_provider == "copilot-daemon":
         daemon_mode = str(daemon_status.get("status") or "").lower()
@@ -233,9 +255,43 @@ def get_summary():
     next_planner = _estimate_next_tick_at(db.list_runs(runner="planner", limit=1), "planner", 10)
     next_worker = _estimate_next_tick_at(db.list_runs(runner="worker", limit=1), "worker", 10)
 
+    # Compute run-state badge for the active worker task
+    worker_run_state_badge = None
+    worker_eta_seconds = None
+    worker_subtask = None
+    if worker_busy and worker_task_id:
+        running_task = db.get_task(worker_task_id)
+        if running_task:
+            worker_run_state_badge = common.classify_task_run_state(running_task)
+            worker_eta_seconds = common.estimate_task_eta_seconds(running_task)
+            worker_subtask = common.read_worker_log_subtask(
+                running_task.get("slot_key", ""),
+                running_task.get("date_folder", ""),
+            )
+
+    # Light worker slots
+    light_locks = db.get_light_worker_locks()
+    light_worker_slots = []
+    for lk in light_locks:
+        lt_id = lk.get("task_id")
+        lt_task = db.get_task(lt_id) if lt_id else None
+        light_worker_slots.append({
+            "runner": lk.get("runner"),
+            "pid": lk.get("pid"),
+            "task_id": lt_id,
+            "task_title": lt_task.get("title") if lt_task else None,
+            "started_at": lk.get("started_at"),
+            "heartbeat_at": lk.get("heartbeat_at"),
+        })
+
     return {
         "today": today,
-        "scheduler_enabled": db.is_scheduler_enabled(),
+        "scheduler_enabled": llm_control["scheduler_enabled"],
+        "llm_mode": llm_control["mode"],
+        "llm_hard_off": llm_control["hard_off_active"],
+        "last_llm_call_at": llm_control["last_llm_call_at"],
+        "blocked_execution_count": llm_control["blocked_execution_count"],
+        "active_background_runners": llm_control["active_background_runners"],
         "planner_provider": db.get_planner_provider(),
         "planner_provider_label": common.planner_provider_label(db.get_planner_provider()),
         "worker_provider": worker_provider,
@@ -250,6 +306,9 @@ def get_summary():
         "worker_pid": worker_pid,
         "worker_task_id": worker_task_id,
         "worker_state": worker_state,
+        "worker_run_state_badge": worker_run_state_badge,
+        "worker_eta_seconds": worker_eta_seconds,
+        "worker_subtask": worker_subtask,
         "copilot_daemon_running": daemon_status.get("running", False),
         "copilot_daemon_pid": daemon_status.get("pid"),
         "copilot_daemon_status": daemon_status.get("status"),
@@ -257,10 +316,55 @@ def get_summary():
         "recent_run_outcomes": outcome_dist,
         "next_planner_tick_estimate": next_planner,
         "next_worker_tick_estimate": next_worker,
+        "light_worker_count": len(light_worker_slots),
+        "light_worker_slots": light_worker_slots,
     }
 
 
-class SchedulerToggleRequest(BaseModel):
+@router.get("/api/orchestrator/metrics")
+def get_worker_metrics():
+    """Adaptive scheduling metrics: queue depths, latency, throughput, backpressure state."""
+    try:
+        queue_depth = db.get_queue_depth_by_type()
+    except Exception:
+        queue_depth = {}
+    try:
+        research_latency = db.get_avg_task_latency("research", window_hours=6)
+        light_latency = db.get_avg_task_latency("light", window_hours=6)
+        research_throughput = db.get_throughput_per_hour("research", window_hours=1)
+        light_throughput = db.get_throughput_per_hour("light", window_hours=1)
+    except Exception:
+        research_latency = light_latency = research_throughput = light_throughput = None
+    try:
+        light_active = db.count_active_light_workers()
+    except Exception:
+        light_active = 0
+    try:
+        backpressure = db.get_set_scheduling_state("backpressure_active") == "1"
+    except Exception:
+        backpressure = False
+    try:
+        history = db.get_worker_metrics_snapshot(limit=60)
+    except Exception:
+        history = []
+    return {
+        "queue_depth": queue_depth,
+        "light_active": light_active,
+        "light_max": common.MAX_LIGHT_WORKERS,
+        "backpressure_active": backpressure,
+        "research": {
+            "avg_latency_s": research_latency,
+            "throughput_ph": research_throughput,
+        },
+        "light": {
+            "avg_latency_s": light_latency,
+            "throughput_ph": light_throughput,
+        },
+        "history": history,
+    }
+
+
+
     enabled: bool
 
 
@@ -272,6 +376,14 @@ class ProviderConfigRequest(BaseModel):
 
 class RunNowRequest(BaseModel):
     runner: str
+
+
+class LlmControlRequest(BaseModel):
+    mode: str
+
+
+class SchedulerToggleRequest(BaseModel):
+    enabled: bool
 
 
 class CtoSchedulerToggleRequest(BaseModel):
@@ -322,17 +434,87 @@ def _matches_local_date(ts: Optional[str], date_folder: Optional[str]) -> bool:
     return local_date == normalized_date
 
 
+def _latest_policy_skip_reason() -> Optional[str]:
+    for event in reversed(execution_policy.read_recent_events(limit=500)):
+        if event.get("event") == "skip":
+            return event.get("skip_reason")
+    return None
+
+
+def _active_background_runners() -> list[dict]:
+    runners = []
+
+    worker_lock = db.get_worker_lock()
+    if worker_lock and worker_lock.get("pid") and common.is_process_alive(worker_lock.get("pid")):
+        runners.append({
+            "name": "worker",
+            "pid": worker_lock.get("pid"),
+            "task_id": worker_lock.get("task_id"),
+            "status": "running",
+        })
+
+    daemon_status = common.copilot_daemon_status()
+    if daemon_status.get("running"):
+        runners.append({
+            "name": "copilot-daemon",
+            "pid": daemon_status.get("pid"),
+            "task_id": daemon_status.get("current_task_id"),
+            "status": daemon_status.get("status") or "running",
+        })
+
+    cto_run = db.get_latest_cto_review_run()
+    if cto_run and (cto_run.get("status") or "").upper() == "RUNNING" and cto_run.get("pid") and common.is_process_alive(cto_run.get("pid")):
+        runners.append({
+            "name": "cto-review",
+            "pid": cto_run.get("pid"),
+            "task_id": None,
+            "status": "running",
+        })
+
+    return runners
+
+
+def _llm_control_payload() -> dict:
+    state = execution_policy.current_state()
+    return {
+        "mode": state.get("mode"),
+        "scheduler_enabled": state.get("scheduler_enabled"),
+        "cto_scheduler_enabled": state.get("cto_scheduler_enabled"),
+        "hard_off_active": state.get("hard_off_active"),
+        "last_llm_call_at": execution_policy.last_llm_call_at(),
+        "blocked_execution_count": execution_policy.blocked_execution_count(),
+        "last_skip_reason": _latest_policy_skip_reason(),
+        "active_background_runners": _active_background_runners(),
+    }
+
+
 @router.get("/api/orchestrator/scheduler")
 def get_scheduler_status():
-    return {"enabled": db.is_scheduler_enabled()}
+    state = execution_policy.current_state()
+    return {"enabled": state.get("scheduler_enabled"), "mode": state.get("mode")}
 
 
 @router.post("/api/orchestrator/scheduler")
 def set_scheduler_status(req: SchedulerToggleRequest):
-    db.set_scheduler_enabled(req.enabled)
+    execution_policy.set_scheduler_enabled(req.enabled)
     state = "ENABLED" if req.enabled else "DISABLED"
-    db.log_tick("orchestrator", f"SCHEDULER_{state}", message=f"Scheduler set to {state}")
-    return {"enabled": req.enabled}
+    mode = execution_policy.get_mode()
+    db.log_tick("orchestrator", f"SCHEDULER_{state}", message=f"Scheduler set to {state} | mode={mode}")
+    return {"enabled": req.enabled, "mode": mode}
+
+
+@router.get("/api/orchestrator/llm-control")
+def get_llm_control():
+    return _llm_control_payload()
+
+
+@router.post("/api/orchestrator/llm-control")
+def set_llm_control(req: LlmControlRequest):
+    mode = execution_policy.set_mode(req.mode)
+    db.log_tick("orchestrator", "LLM_CONTROL_UPDATED", message=f"LLM execution mode set to {mode}")
+    payload = _llm_control_payload()
+    payload["ok"] = True
+    return payload
 
 
 @router.get("/api/orchestrator/providers")
@@ -399,6 +581,10 @@ def run_now(req: RunNowRequest):
     runner = (req.runner or "").strip().lower()
     if runner not in ("planner", "worker"):
         raise HTTPException(status_code=400, detail="runner must be planner or worker")
+    decision = execution_policy.evaluate("api.run-now", scope="main")
+    if not decision.allowed:
+        execution_policy.record_skip(decision, endpoint="/api/orchestrator/run-now", runner=runner)
+        raise HTTPException(status_code=409, detail=f"{decision.skip_reason} — manual LLM execution blocked")
     triggered_at = datetime.now(timezone.utc).isoformat()
     request_id = uuid.uuid4().hex
 
@@ -440,6 +626,12 @@ def run_now(req: RunNowRequest):
 
     outcome = "PLANNER_MANUAL_TRIGGERED" if runner == "planner" else "WORKER_MANUAL_TRIGGERED"
     db.log_tick(runner, outcome, message=f"{runner} run-now triggered, pid={proc.pid}", request_id=request_id)
+    _proc_watchdog.register(
+        proc.pid,
+        timeout_s=_WORKER_TIMEOUT_S,
+        label=f"{runner}-tick",
+        run_id=request_id,
+    )
     return {
         "ok": True,
         "runner": runner,
@@ -635,9 +827,11 @@ def get_cto_summary():
     pending_count = db.count_task_git_commits(status="PENDING_REVIEW")
     latest_run_payload = latest_run or {}
     cto_planner_provider = db.get_cto_planner_provider()
+    llm_control = _llm_control_payload()
     return {
         "frequency_mode": db.get_cto_review_frequency_mode(),
-        "scheduler_enabled": db.is_cto_scheduler_enabled(),
+        "scheduler_enabled": llm_control["cto_scheduler_enabled"],
+        "llm_mode": llm_control["mode"],
         "planner_provider": cto_planner_provider,
         "planner_provider_label": common.planner_provider_label(cto_planner_provider),
         "planner_model": db.get_cto_planner_model(),
@@ -675,11 +869,43 @@ def list_cto_git_reviews(limit: int = Query(100, ge=1, le=500), offset: int = Qu
     return {"reviews": reviews, "count": len(reviews)}
 
 
+@router.get("/api/orchestrator/cto/waiting-manual")
+def list_waiting_manual_approval(limit: int = Query(100, ge=1, le=500), offset: int = Query(0, ge=0)):
+    """List all commits waiting for manual approval before merge."""
+    rows = db.list_waiting_manual_approval(limit=limit, offset=offset)
+    rows = [
+        {
+            **row,
+            "changed_files": json.loads(row["changed_files_json"]) if row.get("changed_files_json") else [],
+            "depends_on_tasks": json.loads(row["depends_on_tasks_json"]) if row.get("depends_on_tasks_json") else [],
+            "depends_on_commits": json.loads(row["depends_on_commits_json"]) if row.get("depends_on_commits_json") else [],
+            "high_conflict_paths": json.loads(row["high_conflict_paths_json"]) if row.get("high_conflict_paths_json") else [],
+        }
+        for row in rows
+    ]
+    return {"commits": rows, "count": len(rows)}
+
+
+@router.post("/api/orchestrator/cto/tasks/{task_id}/approve-merge")
+def approve_manual_merge(task_id: int):
+    """
+    Approve and execute merge for a task in WAITING_MANUAL_APPROVAL status.
+    Triggered by the user clicking 'Approve' in the frontend.
+    """
+    from orchestrator import cto_review_tick  # local import to avoid circular dependency
+    result = cto_review_tick.execute_manual_merge_for_task(task_id)
+    if not result["success"]:
+        raise HTTPException(status_code=409, detail=result["message"])
+    return result
+
+
 @router.get("/api/orchestrator/cto/scheduler")
 def get_cto_scheduler_status():
     cto_planner_provider = db.get_cto_planner_provider()
+    state = execution_policy.current_state()
     return {
-        "enabled": db.is_cto_scheduler_enabled(),
+        "enabled": state.get("cto_scheduler_enabled"),
+        "mode": state.get("mode"),
         "planner_provider": cto_planner_provider,
         "planner_provider_label": common.planner_provider_label(cto_planner_provider),
         "planner_model": db.get_cto_planner_model(),
@@ -689,10 +915,11 @@ def get_cto_scheduler_status():
 
 @router.post("/api/orchestrator/cto/scheduler")
 def set_cto_scheduler_status(req: CtoSchedulerToggleRequest):
-    db.set_cto_scheduler_enabled(req.enabled)
+    execution_policy.set_cto_scheduler_enabled(req.enabled)
     state = "ENABLED" if req.enabled else "DISABLED"
-    db.log_tick("cto-review", f"CTO_SCHEDULER_{state}", message=f"CTO Scheduler set to {state}")
-    return {"enabled": req.enabled}
+    mode = execution_policy.get_mode()
+    db.log_tick("cto-review", f"CTO_SCHEDULER_{state}", message=f"CTO Scheduler set to {state} | mode={mode}")
+    return {"enabled": req.enabled, "mode": mode}
 
 
 @router.get("/api/orchestrator/cto/providers")
@@ -737,6 +964,10 @@ def set_cto_provider_config(req: CtoProviderConfigRequest):
 
 @router.post("/api/orchestrator/cto/run-now")
 def cto_run_now(req: CtoRunNowRequest = None):
+    decision = execution_policy.evaluate("api.cto-run-now", scope="cto")
+    if not decision.allowed:
+        execution_policy.record_skip(decision, endpoint="/api/orchestrator/cto/run-now")
+        raise HTTPException(status_code=409, detail=f"{decision.skip_reason} — CTO manual execution blocked")
     request_id = uuid.uuid4().hex
     triggered_at = datetime.now(timezone.utc).isoformat()
     script_path = os.path.join(common.ROOT, "orchestrator", "cto_review_tick.py")
@@ -788,6 +1019,12 @@ def cto_run_now(req: CtoRunNowRequest = None):
         ),
         request_id=request_id,
     )
+    _proc_watchdog.register(
+        proc.pid,
+        timeout_s=_CTO_TIMEOUT_S,
+        label="cto-review-tick",
+        run_id=request_id,
+    )
     return {
         "ok": True,
         "pid": proc.pid,
@@ -808,6 +1045,7 @@ def get_cto_run_status(request_id: str = Query(..., min_length=4)):
         "CTO_REVIEW_SKIP_FREQUENCY",
         "CTO_REVIEW_NO_CANDIDATES",
         "CTO_REVIEW_ERROR",
+        "CTO_REVIEW_STALE",
         "CTO_REVIEW_SKIP_DUPLICATE_RUNNING",
         "CTO_REVIEW_SKIP_DUPLICATE_RECENT",
     }
@@ -827,11 +1065,11 @@ def list_cto_review_runs(limit: int = Query(50, ge=1, le=200), offset: int = Que
     if status:
         status_upper = status.strip().upper()
         if status_upper == "RUNNING":
-            runs = [r for r in runs if not r.get("completed_at")]
+            runs = [r for r in runs if (r.get("status") or "").upper() == "RUNNING"]
         elif status_upper == "COMPLETED":
-            runs = [r for r in runs if r.get("completed_at") and (r.get("candidate_count") or 0) > 0]
+            runs = [r for r in runs if (r.get("status") or "").upper() == "COMPLETED"]
         elif status_upper == "SKIPPED":
-            runs = [r for r in runs if r.get("completed_at") and (r.get("candidate_count") or 0) == 0]
+            runs = [r for r in runs if (r.get("status") or "").upper() in {"SKIPPED", "FAILED", "FAILED_STALE", "SKIPPED_STALE"}]
     runs = runs[offset: offset + limit]
     return {"runs": runs, "count": len(runs)}
 

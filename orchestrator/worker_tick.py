@@ -10,11 +10,13 @@ import time
 import logging
 import subprocess
 import json
+import re
 from datetime import datetime, timezone
+from typing import Optional
 
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
-from orchestrator import db, common
+from orchestrator import db, common, execution_policy, health, planner_guard, failure_taxonomy, repair_task_generator, outcome_extractor
 
 logging.basicConfig(
     level=logging.INFO,
@@ -25,14 +27,138 @@ logger = logging.getLogger(__name__)
 RUNNER = "worker"
 FINALIZED = False  # track if we finalized this tick (to decide whether to try claiming)
 COPILOT_STALE_LOG_TIMEOUT_SECONDS = 600
+DEFAULT_RATE_LIMIT_COOLDOWN_SECONDS = 1800
+
+
+def _build_strategy_table_from_rows(rows: list) -> str:
+    header = [
+        "strategy_name",
+        "family",
+        "edge_150",
+        "edge_500",
+        "edge_1000",
+        "mc_status",
+        "vs_incumbent",
+        "incumbent_name",
+        "validation_tier",
+        "promotion_blocker",
+        "next_action",
+    ]
+    table_lines = [
+        "## Strategy Output Table",
+        "",
+        "| " + " | ".join(header) + " |",
+        "|" + "|".join(["---"] * len(header)) + "|",
+    ]
+    for row in rows:
+        if not isinstance(row, dict):
+            continue
+        values = []
+        for key in header:
+            value = row.get(key, "")
+            if key == "family" and value in (None, ""):
+                value = row.get("game", "")
+            if value is None:
+                value = ""
+            elif isinstance(value, (int, float)):
+                value = f"{value:+.6f}" if "edge" in key or key == "vs_incumbent" else str(value)
+            else:
+                value = str(value)
+            values.append(value.replace("\n", " ").strip())
+        table_lines.append("| " + " | ".join(values) + " |")
+    return "\n".join(table_lines) if len(table_lines) > 4 else ""
+
+
+def _load_strategy_table_fallback_text(task: Optional[dict] = None) -> str:
+    """Return a synthetic Strategy Output Table section from sidecar artifacts.
+
+    Some worker runs write `outputs/strategy_output_table.md` or
+    `outputs/strategy_output_table.json` but fail to echo the final table back to
+    stdout. To avoid discarding otherwise-usable work, the deep-research gate can
+    fall back to these artifacts.
+    """
+    outputs_dir = os.path.join(common.ROOT, "outputs")
+    candidate_paths: list[str] = []
+    if isinstance(task, dict):
+        changed_files_raw = task.get("changed_files_json")
+        try:
+            changed_files = json.loads(changed_files_raw) if isinstance(changed_files_raw, str) else changed_files_raw
+        except json.JSONDecodeError:
+            changed_files = None
+        if isinstance(changed_files, list):
+            for rel_path in changed_files:
+                if not isinstance(rel_path, str) or not rel_path:
+                    continue
+                candidate_paths.append(
+                    rel_path if os.path.isabs(rel_path) else os.path.join(common.ROOT, rel_path)
+                )
+
+    candidate_paths.extend([
+        os.path.join(outputs_dir, "strategy_output_table.md"),
+        os.path.join(outputs_dir, "strategy_table.md"),
+        os.path.join(outputs_dir, "strategy_output_table.json"),
+        os.path.join(outputs_dir, "strategy_table.json"),
+    ])
+
+    seen_paths: set[str] = set()
+    for path in candidate_paths:
+        if not path or path in seen_paths or not os.path.exists(path):
+            continue
+        seen_paths.add(path)
+        if path.lower().endswith(".md"):
+            try:
+                with open(path, "r", encoding="utf-8", errors="ignore") as handle:
+                    body = handle.read().strip()
+            except OSError:
+                continue
+            if not body or "|" not in body:
+                continue
+            if re.search(r"strategy\s+output\s+table", body, re.IGNORECASE):
+                return body
+            if re.search(r"^\|\s*strategy_name\s*\|", body, re.IGNORECASE | re.MULTILINE):
+                return f"## Strategy Output Table\n\n{body}"
+
+    for path in candidate_paths:
+        if not path or path in seen_paths or not os.path.exists(path):
+            continue
+        seen_paths.add(path)
+        if not path.lower().endswith(".json"):
+            continue
+        try:
+            with open(path, "r", encoding="utf-8", errors="ignore") as handle:
+                payload = json.load(handle)
+        except (OSError, json.JSONDecodeError):
+            continue
+
+        if isinstance(payload, list) and payload:
+            table_text = _build_strategy_table_from_rows(payload)
+            if table_text:
+                return table_text
+        if isinstance(payload, dict):
+            rows = payload.get("strategies")
+            if isinstance(rows, list) and rows:
+                table_text = _build_strategy_table_from_rows(rows)
+                if table_text:
+                    return table_text
+
+    return ""
 
 
 def _worker_runtime_error_markers_to_check() -> list[str]:
     """Return list of markers to check for in worker output."""
     return [
-        # Runtime/execution errors
-        "error:",
+        # Runtime/execution errors — use specific Python exception names to avoid
+        # false positives from tool CLI messages that contain "error:" as inline text
+        # (e.g., SQLite "Error: 4 values for 3 columns" from a Codex tool call).
+        # "traceback" already catches Python exception stack headers.
         "traceback",
+        "syntaxerror:",
+        "nameerror:",
+        "typeerror:",
+        "importerror:",
+        "runtimeerror:",
+        "attributeerror:",
+        "modulenotfounderror:",
         "command not found",
         "panicked",
         "failed to connect",
@@ -42,12 +168,19 @@ def _worker_runtime_error_markers_to_check() -> list[str]:
         # Quota/rate-limit errors (critical for governance)
         "you have no quota",
         "no quota",
+        "you've hit your rate limit",
         "you've reached your weekly rate limit",
         "reached your weekly rate limit",
         "weekly rate limit",
+        "rate limit",
+        "limit to reset",
         "please wait for your limit to reset",
         "switch to auto model to continue",
+        "github.com/en/copilot/concepts/rate-limits",
         "docs.github.com/en/copilot/concepts/rate-limits",
+        "premium request limit",
+        "premium requests exhausted",
+        "out of premium",
         
         # Environment/permission errors
         "third-party mcp servers are disabled",
@@ -56,9 +189,19 @@ def _worker_runtime_error_markers_to_check() -> list[str]:
         "permission denied",
         "unable to complete this task due to environment execution restrictions",
         
-        # Additional environment blocking messages
-        "403",
-        "429",  # HTTP 429 Too Many Requests
+        # Additional environment blocking messages — must use HTTP context prefixes to
+        # avoid matching bare numbers in normal log output (e.g., "403 lines..." from
+        # Codex tool truncation notices).
+        "http 403",
+        "http/1.1 403",
+        "status: 403",
+        "status code 403",
+        "403 forbidden",
+        "http 429",
+        "http/1.1 429",
+        "status: 429",
+        "status code 429",
+        "429 too many",
     ]
 
 
@@ -257,19 +400,550 @@ def _violates_forbidden_changes(changed_files: list[str], forbidden_rules: list[
 
 def _is_environment_blocking_error(error_markers_hit: list[str]) -> bool:
     """Check if error markers indicate environment/quota blocking (not worker code failure)."""
-    blocking_markers = {
+    blocking_markers = (
         "no quota",
         "you have no quota",
+        "rate limit",
         "weekly rate limit",
         "reached your weekly rate limit",
         "you've reached your weekly rate limit",
+        "you've hit your rate limit",
+        "limit to reset",
         "please wait for your limit to reset",
         "switch to auto model to continue",
         "third-party mcp servers are disabled",
         "429",
         "403",
+    )
+    return any(any(blocker in marker for blocker in blocking_markers) for marker in error_markers_hit)
+
+
+def _parse_rate_limit_reset_hint(output_text: str) -> tuple[str, Optional[str]]:
+    text = str(output_text or "")
+    match = re.search(
+        r"(?:limit to reset|reset)\s+on\s+(.+?)(?:\s+or\s+switch|\s+learn more|\.|\n|$)",
+        text,
+        flags=re.IGNORECASE,
+    )
+    if not match:
+        return "", None
+
+    reset_hint = match.group(1).strip(" .")
+    parsed_iso = None
+    for fmt in (
+        "%B %d, %Y at %I:%M %p",
+        "%b %d, %Y at %I:%M %p",
+    ):
+        try:
+            parsed = datetime.strptime(reset_hint, fmt).replace(tzinfo=timezone.utc)
+            parsed_iso = parsed.isoformat()
+            break
+        except ValueError:
+            continue
+    return reset_hint, parsed_iso
+
+
+def _detect_rate_limit_failure(output_text: str, error_markers_hit: list[str], provider: str = "") -> Optional[dict]:
+    lowered = str(output_text or "").lower()
+    patterns = [
+        "you've hit your rate limit",
+        "rate limit",
+        "limit to reset",
+        "github.com/en/copilot/concepts/rate-limits",
+        "docs.github.com/en/copilot/concepts/rate-limits",
+        "premium request limit",
+        "premium requests exhausted",
+        "out of premium",
+        "429",
+    ]
+    matched_patterns = [pattern for pattern in patterns if pattern in lowered]
+    if not matched_patterns and not any("rate limit" in marker or "429" in marker for marker in error_markers_hit):
+        return None
+
+    reset_hint, blocked_until = _parse_rate_limit_reset_hint(output_text)
+    provider_name = "copilot" if str(provider or "").startswith("copilot") else str(provider or "unknown")
+    final_message = f"provider = {provider_name}; reason = rate_limit"
+    if reset_hint:
+        final_message += f"; reset_hint = {reset_hint}"
+    return {
+        "provider": provider_name,
+        "reason": "rate_limit",
+        "failure_reason": f"{provider_name}_rate_limit",
+        "reset_hint": reset_hint,
+        "blocked_until": blocked_until,
+        "matched_patterns": matched_patterns or error_markers_hit,
+        "final_message": final_message,
     }
-    return any(marker in blocking_markers for marker in error_markers_hit)
+
+
+# ── Deep Research Strategy Gate ───────────────────────────────────────────────
+
+_STRATEGY_TABLE_HEADER = "## Strategy Output Table"
+# Also accept without the markdown ## heading prefix, or with extra trailing text
+_STRATEGY_TABLE_HEADER_BARE = "strategy output table"
+
+
+def _is_deep_research_task(task: dict, contract: dict) -> bool:
+    """Return True if this is a Deep Research task that requires strategy output gate."""
+    title = str(task.get("title") or "").lower()
+    if "deep research" in title or "deep-research" in title:
+        return True
+    return str(contract.get("task_type") or "").lower() == "deep_research"
+
+
+def _check_strategy_gate(
+    task: dict,
+    codex_output: str,
+    contract: dict,
+) -> tuple[Optional[str], Optional[str]]:
+    """
+    Validate Deep Research strategy output.
+    Returns (gate_verdict, gate_reason) if the gate fails, else (None, None).
+    Only runs when _is_deep_research_task() is True.
+    """
+    if not _is_deep_research_task(task, contract):
+        return None, None
+
+    text = codex_output or ""
+    text_lower = text.lower()
+
+    # 1. Require the Strategy Output Table section.
+    # Accept with or without the markdown "##" heading prefix so that
+    # workers that write "Strategy Output Table (...)" instead of
+    # "## Strategy Output Table" are not falsely rejected.
+    section_marker = _STRATEGY_TABLE_HEADER.lower()
+    bare_marker = _STRATEGY_TABLE_HEADER_BARE
+    if section_marker not in text_lower and bare_marker not in text_lower:
+        fallback_table = _load_strategy_table_fallback_text()
+        if fallback_table:
+            text = f"{text.rstrip()}\n\n{fallback_table}\n"
+            text_lower = text.lower()
+    if section_marker not in text_lower and bare_marker not in text_lower:
+        return (
+            "FAILED_ACCEPTANCE",
+            (
+                "Deep Research task missing required '## Strategy Output Table' section. "
+                "Worker must produce a strategy table with ≥3 strategies including "
+                "edge/sharpe/MC columns. Pure analysis/description output is not accepted."
+            ),
+        )
+
+    # Extract section content starting at the marker (prefer ## heading if present)
+    if section_marker in text_lower:
+        idx = text_lower.find(section_marker)
+    else:
+        idx = text_lower.find(bare_marker)
+    section = text[idx:]
+
+    # 2. Collect edge values via format-agnostic scan.
+    #    Strategy name counting is NOT done here — it is delegated to step 6's robust
+    #    table parser so that format changes (new columns, no window column, etc.) never
+    #    break the count.  We only need edge values here for step 4 (FAILED_NO_EDGE).
+    edge_values: list = []
+    for e in re.findall(r'[|\s,]([+-]?\d+\.\d+)[|\s,]', section):
+        try:
+            edge_values.append(float(e))
+        except ValueError:
+            pass
+    # Also catch "edge = X.XXX" style inline
+    for e in re.findall(r'edge\s*[=:]\s*([+-]?\d+\.\d+)', section, re.IGNORECASE):
+        try:
+            edge_values.append(float(e))
+        except ValueError:
+            pass
+
+    min_strategies = int(contract.get("strategy_min_count") or 3)
+
+    # 3. (Removed — strategy count is now enforced inside step 6 using the robust parser.
+    #     This eliminates format-specific regex fragility.)
+
+    # 4. FAILED_NO_EDGE — all edges are ≤ 0
+    if edge_values and all(v <= 0 for v in edge_values):
+        max_edge = max(edge_values)
+        return (
+            "FAILED_NO_EDGE",
+            (
+                f"All {len(edge_values)} strategy edge value(s) in Strategy Output Table are "
+                f"≤ 0 (max={max_edge:+.4f}). Task requires at least one strategy with "
+                "positive edge. Mark as FAILED_NO_EDGE in the table and propose alternative "
+                "research direction in the next planning cycle."
+            ),
+        )
+
+    # 5. Require at least one MC reference (seed=42 / n≥1000)
+    has_mc = bool(
+        re.search(r'seed\s*=\s*42', text, re.IGNORECASE)
+        or re.search(r'monte\s*carlo[^,;\n]{0,60}n\s*[=≥>]\s*\d{3,}', text, re.IGNORECASE)
+        or re.search(r'\bn\s*[=≥>]\s*1\d{3,}', text)
+    )
+    if not has_mc:
+        return (
+            "FAILED_ACCEPTANCE",
+            (
+                "Deep Research task missing Monte Carlo validation in output. "
+                "Require at least one MC run with seed=42, n≥1000."
+            ),
+        )
+
+    # 6. ── Required-field enforcement ────────────────────────────────────────
+    # Only run when the contract explicitly lists required_strategy_fields.
+    # Also performs the minimum strategy count check (moved from step 3).
+    required_fields = contract.get("required_strategy_fields") if isinstance(contract, dict) else None
+    if required_fields:
+        verdict, reason = _check_strategy_output_fields(
+            section, required_fields, edge_values, min_strategies
+        )
+        if verdict:
+            return verdict, reason
+    else:
+        # No required_strategy_fields in contract — fall back to a simple row-count check
+        # by scanning for pipe-table data rows with a strategy-name-like first cell.
+        simple_names = set(
+            m.group(1).strip().lower()
+            for m in re.finditer(
+                r'^\s*\|\s*([A-Za-z][\w_.:\-]{2,})\s*\|', section, re.MULTILINE
+            )
+            if not re.match(r'^[-=]+$', m.group(1).strip())
+            and m.group(1).strip().lower() not in ("strategy_name", "strategy name")
+        )
+        if len(simple_names) < min_strategies:
+            return (
+                "FAILED_ACCEPTANCE",
+                (
+                    f"Deep Research task produced {len(simple_names)} distinct strategy name(s) "
+                    f"in '## Strategy Output Table', required \u2265 {min_strategies}. "
+                    "Each row must have a unique strategy name, not just analysis text."
+                ),
+            )
+
+    return None, None
+
+
+# ── Required-field checker (called from _check_strategy_gate) ─────────────────
+
+_PROMOTION_KEYWORDS = re.compile(
+    r'\b(?:promotion_candidate|promoted|promote|升格|晉升|production_ready)\b',
+    re.IGNORECASE,
+)
+_VALID_TIERS = {
+    "t0_idea", "t1_mc_pass", "t2_three_window_pass",
+    "t3_incumbent_pass", "t4_deployable",
+}
+
+# Chinese→English column header aliases.
+# Workers trained on Chinese-header prompt templates produce these; map them to
+# the canonical English field names used by required_strategy_fields.
+_CHINESE_COL_ALIASES: dict[str, str] = {
+    "策略名称":        "strategy_name",
+    "策略名稱":        "strategy_name",
+    "彩种":            "family",
+    "彩種":            "family",
+    "彩种/game":       "family",
+    "彩種/game":       "family",
+    "game":            "family",
+    "回测视窗":        "window",
+    "回測視窗":        "window",
+    "视窗":            "window",
+    "視窗":            "window",
+    "edge":            "edge_150",   # generic "Edge" column → treat as edge_150
+    "sharpe":          "sharpe",
+    "mc(n≥1000)":      "mc_status",
+    "mc（n≥1000）":    "mc_status",
+    "mc status":       "mc_status",
+    "vs.现有最佳":     "vs_incumbent",
+    "vs.現有最佳":     "vs_incumbent",
+    "vs incumbent":    "vs_incumbent",
+    "vs_incumbent":    "vs_incumbent",
+}
+
+
+def _check_strategy_output_fields(
+    section_text: str,
+    required_fields: list,
+    edge_values: list,
+    min_strategies: int = 3,
+) -> tuple[Optional[str], Optional[str]]:
+    """
+    Validate each data row in the ## Strategy Output Table section against
+    required_strategy_fields.  Returns (verdict, reason) or (None, None).
+
+    Checks (in order):
+    6a. Parse header row for required columns (case-insensitive, with Chinese aliases).
+         Missing columns are SKIPPED (not rejected) — prompt format and contract fields
+         have historically been inconsistent.  Only columns present in the header are
+         validated further.
+    6b'. Minimum strategy count — enforced here using the robust parser (moved from step 3).
+    6b. Check every data row has non-empty cells for each column that IS in the header.
+    6c. vs_incumbent: if all positive-edge rows have vs_incumbent <= 0 → FAILED_WEAK_EDGE.
+    6d. validation_tier T1 + promotion signal → FAILED_ACCEPTANCE.
+    6e. non-T4 row with blank/NONE promotion_blocker → REPLAN_REQUIRED.
+    6f. mc_status=PASS + vs_incumbent <= 0 + promotion_blocker=NONE → FAILED_ACCEPTANCE.
+    """
+    lines = section_text.splitlines()
+
+    # Find header row (first pipe-separated row with ≥3 columns after the header marker)
+    header_cols: list[str] = []
+    header_line_idx = -1
+    for i, line in enumerate(lines):
+        stripped = line.strip()
+        if stripped.startswith("|") and stripped.count("|") >= 3:
+            cols = [c.strip().lower() for c in stripped.strip("|").split("|")]
+            # Skip separator rows (all dashes)
+            if all(re.match(r'^[-:]+$', c) for c in cols if c):
+                continue
+            if len(cols) >= 3:
+                header_cols = cols
+                header_line_idx = i
+                break
+
+    if not header_cols:
+        # No parseable header found — cannot verify fields
+        return None, None
+
+    # Build column index map with Chinese→English alias support
+    col_idx: dict[str, int] = {}
+    for j, h in enumerate(header_cols):
+        # Direct mapping
+        col_idx[h] = j
+        # Also map via alias (h is already lower-cased)
+        alias = _CHINESE_COL_ALIASES.get(h)
+        if alias:
+            col_idx[alias.lower()] = j
+
+    # Now resolve required_fields against col_idx
+    resolved_col_idx: dict[str, int] = {}
+    for req in required_fields:
+        key = req.lower()
+        if key in col_idx:
+            resolved_col_idx[key] = col_idx[key]
+            continue
+        # underscore ↔ space normalisation
+        key_space = key.replace("_", " ")
+        for h, j in col_idx.items():
+            if key_space == h.replace("_", " "):
+                resolved_col_idx[key] = j
+                break
+        # edge_1000 / edge_1500 interchangeable
+        if key == "edge_1000" and key not in resolved_col_idx:
+            for h, j in col_idx.items():
+                if "edge_1500" in h or "edge 1500" in h:
+                    resolved_col_idx["edge_1000"] = j
+                    break
+
+    _STRICTLY_REQUIRED = frozenset({"vs_incumbent", "validation_tier", "promotion_blocker", "mc_status"})
+
+    # 6a. Missing-column check.
+    # Formatting tolerance is allowed for informational columns, but governance
+    # and promotion-control fields must still exist in the table header.
+    missing_strict_fields = [
+        field for field in required_fields
+        if field.lower() in _STRICTLY_REQUIRED and field.lower() not in resolved_col_idx
+    ]
+    if missing_strict_fields:
+        return (
+            "REPLAN_REQUIRED",
+            (
+                "## Strategy Output Table is missing required column(s): "
+                f"{', '.join(missing_strict_fields)}. "
+                "Do not omit vs_incumbent, validation_tier, promotion_blocker, or mc_status."
+            ),
+        )
+
+    # Columns not found in the header (even with aliases) are skipped.
+    # We only validate the subset of required_fields that actually appear in the header.
+    validated_fields = [f for f in required_fields if f.lower() in resolved_col_idx]
+    if not validated_fields:
+        # No required fields found in header at all — cannot validate further
+        return None, None
+
+    # Parse data rows (after header + separator)
+    data_rows: list[dict] = []
+    past_header = False
+    past_separator = False
+    for line in lines[header_line_idx + 1:]:
+        stripped = line.strip()
+        if not stripped.startswith("|"):
+            continue
+        cols_raw = [c.strip() for c in stripped.strip("|").split("|")]
+        # Skip separator
+        if all(re.match(r'^[-:]+$', c) for c in cols_raw if c):
+            past_separator = True
+            continue
+        if not past_separator:
+            continue
+        if len(cols_raw) < len(header_cols):
+            # Pad with empty
+            cols_raw += [""] * (len(header_cols) - len(cols_raw))
+        row = {h: cols_raw[j] if j < len(cols_raw) else "" for j, h in enumerate(header_cols)}
+        # Also inject aliased English keys so downstream checks can use English field names
+        for alias_zh, alias_en in _CHINESE_COL_ALIASES.items():
+            if alias_zh in row:
+                row.setdefault(alias_en.lower(), row[alias_zh])
+        # Skip rows that look like the strategy_name header (e.g. example row)
+        sname = (row.get("strategy_name") or row.get("策略名稱") or row.get("策略名称") or "").lower()
+        if re.match(r'^[-=]+$', sname) or sname in ("strategy_name", "strategy name", ""):
+            continue
+        data_rows.append(row)
+
+    if not data_rows:
+        return (
+            "FAILED_ACCEPTANCE",
+            (
+                f"## Strategy Output Table header found but 0 data rows parsed "
+                f"(required \u2265 {min_strategies}). "
+                "Table must contain actual strategy result rows, not just headers or analysis text."
+            ),
+        )
+
+    # 6b'. Minimum strategy count check (format-agnostic, uses robust parser)
+    unique_strat_names = {
+        (r.get("strategy_name") or r.get("\u7b56\u7565\u540d\u7a31") or r.get("\u7b56\u7565\u540d\u79f0") or "").strip().lower()
+        for r in data_rows
+    } - {"", "strategy_name", "strategy name"}
+    if len(unique_strat_names) < min_strategies:
+        return (
+            "FAILED_ACCEPTANCE",
+            (
+                f"Deep Research task produced {len(unique_strat_names)} distinct strategy name(s) "
+                f"in '## Strategy Output Table', required \u2265 {min_strategies}. "
+                "Each row must have a unique strategy name, not just analysis text."
+            ),
+        )
+
+    # 6b. Check each row for empty required cells — only for fields found in the header
+    # Per-window format detection: if the header has a "window" / "回測視窗" column, the
+    # table uses one row per (strategy × window) instead of one row per strategy.
+    # In that case, edge_150/mc_status/vs_incumbent may be "—" on non-base-window rows.
+    # We allow a blank in field F for a row if ANY sibling row with the same strategy_name
+    # provides a non-blank value for F.
+    is_per_window = "window" in col_idx
+    _BLANK_VALUES: frozenset = frozenset({"", "-", "—", "n/a", "na"})
+    # Only these fields have downstream business-logic gates (6c–6f) that require
+    # non-blank values.  Everything else (next_action, family, incumbent_name, etc.)
+    # is informational and we tolerate blank / missing cells to avoid spurious
+    # REPLAN_REQUIRED when the worker has a minor formatting inconsistency.
+    # Per-window: these fields may be blank on non-base-window rows if a sibling row
+    # for the same strategy provides a non-blank value.
+    _PER_WINDOW_EXEMPT = frozenset({"edge_150", "edge_500", "mc_status", "vs_incumbent", "incumbent_name"})
+    blank_row_fields: list[str] = []
+    for row in data_rows:
+        for req in validated_fields:
+            key = req.lower()
+            # Skip fields that are not strictly required (informational only)
+            if key not in _STRICTLY_REQUIRED:
+                continue
+            val = row.get(key, "").strip()
+            if not val or val in _BLANK_VALUES:
+                # Per-window format: blank is OK if any sibling row for the same
+                # strategy provides a non-blank value for this field.
+                if is_per_window and key in _PER_WINDOW_EXEMPT:
+                    sname = (row.get("strategy_name") or "?").strip()
+                    has_any = any(
+                        (r.get(key) or "").strip() and (r.get(key) or "").strip().lower() not in _BLANK_VALUES
+                        for r in data_rows
+                        if (r.get("strategy_name") or "?").strip() == sname
+                    )
+                    if has_any:
+                        continue
+                blank_row_fields.append(f"row[{row.get('strategy_name') or row.get('策略名稱','?')}].{key}")
+    if blank_row_fields:
+        return (
+            "REPLAN_REQUIRED",
+            (
+                f"## Strategy Output Table has blank required fields: "
+                f"{', '.join(blank_row_fields[:10])}. "
+                "Do not leave vs_incumbent, validation_tier, promotion_blocker, or mc_status blank."
+            ),
+        )
+
+    # 6c. vs_incumbent check → FAILED_WEAK_EDGE
+    # For rows with positive edge, check if ALL vs_incumbent <= 0
+    def _parse_float(s: str) -> Optional[float]:
+        try:
+            return float(re.sub(r'[^0-9+\-.]', '', s))
+        except (ValueError, TypeError):
+            return None
+
+    positive_edge_rows = []
+    for row in data_rows:
+        e150 = _parse_float(row.get("edge_150", ""))
+        e500 = _parse_float(row.get("edge_500", ""))
+        e1000 = _parse_float(row.get("edge_1000", "") or row.get("edge_1500", ""))
+        any_positive = any(v is not None and v > 0 for v in [e150, e500, e1000])
+        if any_positive:
+            positive_edge_rows.append(row)
+
+    if positive_edge_rows:
+        all_vs_incumbent_nonpositive = all(
+            (_parse_float(r.get("vs_incumbent", "")) or 0.0) <= 0
+            for r in positive_edge_rows
+        )
+        if all_vs_incumbent_nonpositive:
+            return (
+                "FAILED_WEAK_EDGE",
+                (
+                    f"{len(positive_edge_rows)} strategy row(s) have positive edge but "
+                    "all vs_incumbent values are ≤ 0. "
+                    "No promotion is warranted. "
+                    "Mark FAILED_WEAK_EDGE and propose signal fusion or new family in next cycle."
+                ),
+            )
+
+    # 6d. T1_MC_PASS + promotion signal → FAILED_ACCEPTANCE
+    for row in data_rows:
+        tier = row.get("validation_tier", "").strip().lower()
+        if tier == "t1_mc_pass":
+            blocker = row.get("promotion_blocker", "").strip().lower()
+            next_act = row.get("next_action", "").strip().lower()
+            # Any promotion keyword in blocker=NONE / next_action is suspicious
+            if blocker in ("none", "") or _PROMOTION_KEYWORDS.search(
+                row.get("promotion_blocker", "") + " " + row.get("next_action", "")
+            ):
+                return (
+                    "FAILED_ACCEPTANCE",
+                    (
+                        f"Strategy '{row.get('strategy_name','?')}' has validation_tier=T1_MC_PASS "
+                        "but promotion_blocker is NONE or next_action implies promotion. "
+                        "T1_MC_PASS strategies cannot be promotion candidates. "
+                        "Set promotion_blocker='MC_ONLY_NO_THREE_WINDOW' and next_action='shadow_watch'."
+                    ),
+                )
+
+    # 6e. Non-T4 row with blank/NONE promotion_blocker → REPLAN_REQUIRED
+    for row in data_rows:
+        tier = row.get("validation_tier", "").strip().lower()
+        if tier in ("t4_deployable", ""):
+            continue
+        blocker = row.get("promotion_blocker", "").strip()
+        if not blocker or blocker.lower() == "none":
+            return (
+                "REPLAN_REQUIRED",
+                (
+                    f"Strategy '{row.get('strategy_name','?')}' has validation_tier={tier!r} "
+                    "but promotion_blocker is blank or 'NONE'. "
+                    "Every non-T4 strategy must have a non-NONE promotion_blocker explaining "
+                    "why it has not been promoted (e.g. 'MC_ONLY_NO_THREE_WINDOW', "
+                    "'VS_INCUMBENT_NEGATIVE', 'MCNEMAR_NOT_RUN')."
+                ),
+            )
+
+    # 6f. mc_status=PASS + vs_incumbent<=0 + promotion_blocker=NONE → FAILED_ACCEPTANCE
+    for row in data_rows:
+        mc_status = row.get("mc_status", "").strip().upper()
+        blocker = row.get("promotion_blocker", "").strip().lower()
+        vs_inc = _parse_float(row.get("vs_incumbent", ""))
+        if mc_status == "PASS" and (vs_inc is not None and vs_inc <= 0) and blocker == "none":
+            return (
+                "FAILED_ACCEPTANCE",
+                (
+                    f"Strategy '{row.get('strategy_name','?')}' has mc_status=PASS but "
+                    "vs_incumbent ≤ 0 and promotion_blocker=NONE. "
+                    "MC PASS alone is not sufficient for promotion when vs_incumbent ≤ 0. "
+                    "Set promotion_blocker='VS_INCUMBENT_NEGATIVE'."
+                ),
+            )
+
+    return None, None
 
 
 def _build_and_gate_task_result(
@@ -283,6 +957,7 @@ def _build_and_gate_task_result(
     contract_valid: bool,
     contract_reason: str,
     completed_file_path: str,
+    provider: str = "",
 ) -> tuple[dict, str, str]:
     """
     Returns: (task_result_json, final_status, gate_verdict)
@@ -301,6 +976,7 @@ def _build_and_gate_task_result(
     violations = _violates_forbidden_changes(changed_files, forbidden_changes if isinstance(forbidden_changes, list) else [])
     no_effective_delivery = (not changed_files) and (bool(error_markers_hit) or not output_present)
     is_env_blocked = _is_environment_blocking_error(error_markers_hit)
+    rate_limit_info = _detect_rate_limit_failure(codex_output, error_markers_hit, provider=provider)
 
     acceptance_results = []
     for item in acceptance_tests:
@@ -323,18 +999,22 @@ def _build_and_gate_task_result(
         gate_reason = contract_reason
     elif missing_required:
         gate_verdict = "FAILED_ACCEPTANCE"
-        final_status = "REPLAN_REQUIRED"
+        final_status = "FAILED_ACCEPTANCE"
         gate_reason = f"missing required outputs: {', '.join(missing_required)}"
     elif no_effective_delivery:
         gate_verdict = "FAILED_ACCEPTANCE"
-        final_status = "REPLAN_REQUIRED"
+        final_status = "FAILED_ACCEPTANCE"
         gate_reason = "no effective delivery: no changed files and no valid runtime output"
     elif violations:
         gate_verdict = "POLICY_VIOLATION"
         final_status = "REPLAN_REQUIRED"
         gate_reason = f"forbidden changes detected: {', '.join(violations[:5])}"
     elif status == "FAILED":
-        if is_env_blocked:
+        if rate_limit_info:
+            gate_verdict = "FAILED_RATE_LIMIT"
+            final_status = "FAILED_RATE_LIMIT"
+            gate_reason = rate_limit_info["final_message"]
+        elif is_env_blocked:
             gate_verdict = "BLOCKED_ENV"
             final_status = "BLOCKED_ENV"
             gate_reason = f"environment execution blocked: {error_markers_hit[0] if error_markers_hit else 'unknown'}"
@@ -342,6 +1022,19 @@ def _build_and_gate_task_result(
             gate_verdict = "WORKER_RUNTIME_FAILED"
             final_status = "FAILED"
             gate_reason = "worker runtime failure markers detected"
+
+    # ── Deep Research strategy output gate (runs only when existing gates pass) ─
+    if gate_verdict == "PASS":
+        strat_gate_verdict, strat_gate_reason = _check_strategy_gate(task, codex_output, contract)
+        if strat_gate_verdict:
+            gate_verdict = strat_gate_verdict
+            if strat_gate_verdict in ("FAILED_NO_EDGE", "FAILED_WEAK_EDGE"):
+                final_status = strat_gate_verdict
+            elif strat_gate_verdict == "FAILED_ACCEPTANCE":
+                final_status = "FAILED_ACCEPTANCE"
+            else:
+                final_status = "REPLAN_REQUIRED"
+            gate_reason = strat_gate_reason or gate_verdict
 
     task_result = {
         "version": "1.0",
@@ -361,8 +1054,21 @@ def _build_and_gate_task_result(
         "next_action": (
             "Planner must replan from task_result gate_reason and handoff_questions."
             if final_status == "REPLAN_REQUIRED"
+            else "Fix the delivery contract failure from gate_reason and rerun the same research focus."
+            if final_status == "FAILED_ACCEPTANCE"
+            else "Wait for provider reset or switch provider before retrying."
+            if final_status == "FAILED_RATE_LIMIT"
+            else "Record the negative research result and use gate_reason to steer the next candidate family."
+            if final_status in ("FAILED_NO_EDGE", "FAILED_WEAK_EDGE")
             else "Continue to next planned task."
         ),
+        "provider": rate_limit_info.get("provider") if rate_limit_info else provider,
+        "failure_reason": rate_limit_info.get("failure_reason") if rate_limit_info else "",
+        "reason": rate_limit_info.get("reason") if rate_limit_info else "",
+        "reset_hint": rate_limit_info.get("reset_hint") if rate_limit_info else "",
+        "blocked_until": rate_limit_info.get("blocked_until") if rate_limit_info else "",
+        "final_message": rate_limit_info.get("final_message") if rate_limit_info else gate_reason,
+        "matched_rate_limit_patterns": rate_limit_info.get("matched_patterns") if rate_limit_info else [],
     }
     return task_result, final_status, gate_verdict
 
@@ -469,14 +1175,28 @@ def _finalize(lock: dict):
         contract_valid=contract_valid,
         contract_reason=contract_reason,
         completed_file_path=c_path,
+        provider=meta.get("worker_provider") or meta.get("worker_requested_provider") or meta.get("worker_runtime") or "",
     )
     result_path = common.result_path(slot_key, slug, date_folder)
     with open(result_path, "w", encoding="utf-8") as f:
         json.dump(task_result, f, ensure_ascii=False, indent=2)
 
     error_message = ""
-    if final_status in ("FAILED", "REPLAN_REQUIRED"):
+    if final_status in ("FAILED", "FAILED_RATE_LIMIT", "REPLAN_REQUIRED", "BLOCKED_ENV", "FAILED_NO_EDGE", "FAILED_WEAK_EDGE"):
         error_message = task_result.get("gate_reason", "") or (", ".join(error_markers_hit[:3]) if error_markers_hit else "")
+
+    if final_status == "FAILED_RATE_LIMIT":
+        blocked_provider = meta.get("worker_provider") or meta.get("worker_requested_provider") or meta.get("worker_runtime") or "copilot"
+        common.set_provider_rate_limit_block(
+            blocked_provider,
+            reason=task_result.get("failure_reason") or "copilot_rate_limit",
+            task_id=task_id,
+            requested_provider=meta.get("worker_requested_provider"),
+            runtime=meta.get("worker_runtime"),
+            reset_hint=task_result.get("reset_hint"),
+            blocked_until=task_result.get("blocked_until"),
+            cooldown_seconds=DEFAULT_RATE_LIMIT_COOLDOWN_SECONDS,
+        )
 
     db.update_task(
         task_id,
@@ -488,12 +1208,71 @@ def _finalize(lock: dict):
         duration_seconds=duration,
         error_message=error_message,
     )
+
+    # Classify failure into taxonomy category and persist to DB.
+    fc = failure_taxonomy.classify(
+        final_status=final_status,
+        gate_verdict=task_result.get("gate_verdict", ""),
+        gate_reason=task_result.get("gate_reason", ""),
+        error_markers=error_markers_hit,
+    )
+    if final_status not in ("COMPLETED", "REPLAN_REQUIRED"):
+        db.update_task(
+            task_id,
+            failure_category=fc.category,
+            failure_weight=fc.weight,
+        )
+
+    # Record quality failures to Negative Space Memory so the planner
+    # can apply progressive suppression on repeat failures.
+    # Pass the taxonomy weight so the guard can apply category-differentiated suppression.
+    if final_status in planner_guard.QUALITY_FAILURE_STATUSES:
+        dedupe_key = task.get("dedupe_key")
+        if dedupe_key:
+            planner_guard.record_outcome(
+                dedupe_key,
+                final_status,
+                gate_reason=task_result.get("gate_reason", ""),
+                failure_category=fc.category,
+                failure_weight=fc.weight,
+            )
+            common.log_jsonl(
+                RUNNER, "WORKER_PLANNER_GUARD_RECORDED",
+                task_id=task_id,
+                dedupe_key=dedupe_key,
+                final_status=final_status,
+                failure_category=fc.category,
+                failure_weight=fc.weight,
+            )
+
+    # Auto-repair loop: generate a targeted repair task when FORMAT_CONTRACT or
+    # VALIDATION_CONTRACT failures accumulate beyond the threshold.
+    repair_task_generator.maybe_generate_repair_task(
+        task_id=task_id,
+        task=task,
+        fc=fc,
+        gate_reason=task_result.get("gate_reason", ""),
+    )
+
+    # Repair outcome tracking: if this task IS a repair task, evaluate and
+    # persist its success/effectiveness, and escalate suppression when all
+    # attempts are exhausted without success.
+    repair_task_generator.record_repair_outcome(
+        task_id=task_id,
+        task=task,
+        fc=fc,
+        final_status=final_status,
+    )
+
     # read_meta includes slot_key/date_folder keys; avoid passing them twice.
     safe_meta = {
         k: v for k, v in (meta or {}).items()
         if k not in ("slot_key", "date_folder")
     }
 
+    # Sync the in-memory task snapshot with the final status that was just written to
+    # the DB so _attempt_auto_commit sees "COMPLETED" instead of the stale "RUNNING".
+    task["status"] = final_status
     git_commit_info = _attempt_auto_commit(task, safe_meta, task_result, changed_files)
     _record_git_commit_state(task, task_result, changed_files, git_commit_info)
     common.write_meta(
@@ -511,6 +1290,10 @@ def _finalize(lock: dict):
             "task_result_path": result_path,
             "gate_verdict": gate_verdict,
             "gate_reason": task_result.get("gate_reason", ""),
+            "failure_reason": task_result.get("failure_reason", ""),
+            "failure_provider": task_result.get("provider", ""),
+            "reset_hint": task_result.get("reset_hint", ""),
+            "final_message": task_result.get("final_message", ""),
             "git_commit_status": git_commit_info.get("status"),
             "git_commit_sha": git_commit_info.get("commit_sha"),
             "git_source_branch": git_commit_info.get("source_branch"),
@@ -518,6 +1301,46 @@ def _finalize(lock: dict):
             "git_commit_reason": git_commit_info.get("reject_reason"),
         },
     )
+
+    # \u2500\u2500 Outcome pipeline write (real extraction) \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500
+    try:
+        from orchestrator.light_worker_tick import _extract_task_type as _ett
+        _task_type = _ett(task.get("dedupe_key") or "")
+        _success   = final_status == "COMPLETED"
+        _res = outcome_extractor.extract(
+            task_id            = task_id,
+            task_type          = _task_type,
+            completed_file_path= c_path,
+            completed_text     = completed_text,
+        )
+        db.record_task_outcome(
+            task_id           = task_id,
+            task_type         = _task_type,
+            success           = _success,
+            quality_score     = _res.quality_score,
+            roi_score         = _res.roi_score,
+            edge_score        = _res.edge_score,
+            extraction_method = _res.extraction_method,
+            best_edge         = _res.best_edge,
+            strategies_found  = _res.strategies_found,
+            mc_pass_count     = _res.mc_pass_count,
+            confidence_score  = _res.confidence_score,
+        )
+        db.update_task_type_roi(
+            task_type     = _task_type,
+            quality_score = _res.quality_score,
+            roi_score     = _res.roi_score,
+            success       = _success,
+        )
+        logger.debug(
+            "Outcome recorded: task=%d type=%s method=%s q=%.2f roi=%.2f edge=%.3f conf=%.2f",
+            task_id, _task_type, _res.extraction_method,
+            _res.quality_score, _res.roi_score, _res.edge_score, _res.confidence_score,
+        )
+    except Exception as _oe:
+        logger.debug("Outcome write error (non-fatal): %s", _oe)
+    # \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500
+
     db.clear_worker_lock()
 
     msg = (
@@ -566,13 +1389,22 @@ def _copilot_permission_blocked(log_tail: str) -> bool:
 
 def _claim(task: dict):
     """Claim a QUEUED task and launch the resolved worker runtime."""
+    task_id = task.get("id")
+    worker_provider = db.get_worker_provider()
+    decision = execution_policy.evaluate("worker.claim", scope="main", provider=worker_provider, task_id=task_id)
+    if not decision.allowed:
+        msg = f"{decision.skip_reason} — skip execution"
+        logger.info(msg)
+        db.log_tick(RUNNER, "WORKER_SKIP_GLOBAL_GUARD", task_id=task_id, message=msg)
+        common.log_jsonl(RUNNER, "WORKER_SKIP_GLOBAL_GUARD", task_id=task_id, reason=decision.skip_reason)
+        execution_policy.record_skip(decision)
+        return False
+
     task_id = task["id"]
     slot_key = task["slot_key"]
     slug = task["slug"] or "task"
     date_folder = task["date_folder"]
     prompt_path = task.get("prompt_file_path", "")
-    worker_provider = db.get_worker_provider()
-
     if not prompt_path or not os.path.exists(prompt_path):
         msg = f"Task {task_id} prompt file missing: {prompt_path}"
         logger.error(msg)
@@ -617,6 +1449,26 @@ def _claim(task: dict):
     execution_mode = "daemon" if requested_provider == "copilot-daemon" else "direct"
     baseline_changed_files = common.git_changed_files()
 
+    launch_decision = execution_policy.evaluate(
+        "worker.launch",
+        scope="main",
+        provider=dispatch_provider,
+        model=worker_model,
+        task_id=task_id,
+    )
+    if not launch_decision.allowed:
+        msg = f"{launch_decision.skip_reason} — worker launch blocked"
+        db.log_tick(RUNNER, "WORKER_SKIP_GLOBAL_GUARD", task_id=task_id, message=msg)
+        common.log_jsonl(RUNNER, "WORKER_SKIP_GLOBAL_GUARD", task_id=task_id, reason=launch_decision.skip_reason)
+        execution_policy.record_skip(launch_decision, requested_provider=requested_provider)
+        return False
+    execution_policy.record_pre_call(
+        launch_decision,
+        requested_provider=requested_provider,
+        worker_runtime=worker_runtime,
+        execution_mode=execution_mode,
+    )
+
     proc = subprocess.Popen(
         command,
         stdout=log_file,
@@ -646,7 +1498,37 @@ def _claim(task: dict):
     db.log_tick(RUNNER, "WORKER_CLAIMED", task_id=task_id, message=msg)
     common.log_jsonl(RUNNER, "WORKER_CLAIMED", task_id=task_id, pid=proc.pid, worker_runtime=worker_runtime)
 
-    if fallback_reason:
+    # ── Resource isolation guard ───────────────────────────────────────────────
+    # Log a warning (non-blocking) when CPU is high and light workers are active,
+    # so operators can tune MAX_LIGHT_WORKERS or LONG_RUNNER thresholds.
+    try:
+        _cpu = common.get_system_cpu_pct(interval=0.5)
+        _light_active = db.count_active_light_workers()
+        if _cpu > 80.0 and _light_active > 0:
+            _iso_msg = (
+                f"Resource isolation: CPU={_cpu:.0f}% with {_light_active} light worker(s) active "
+                f"while research task {task_id} starting — consider lowering MAX_LIGHT_WORKERS"
+            )
+            logger.warning(_iso_msg)
+            db.log_tick(RUNNER, "WORKER_HIGH_CPU_LOAD", task_id=task_id, message=_iso_msg)
+        # Emit research worker metrics
+        _depth = db.get_queue_depth_by_type()
+        db.log_worker_metrics(
+            worker_type="research",
+            active_count=1,
+            queued_count=_depth.get("research", 0),
+            completed_count=0,
+            failed_count=0,
+            avg_latency_s=db.get_avg_task_latency("research", window_hours=6),
+            throughput_ph=db.get_throughput_per_hour("research", window_hours=1),
+            cpu_pct=_cpu if _cpu > 0 else common.get_system_cpu_pct(interval=0.1),
+            slot_limit=1,
+            backpressure=0,
+        )
+    except Exception as _iso_err:
+        logger.debug("Isolation guard error (non-fatal): %s", _iso_err)
+
+
         fallback_msg = (
             f"Task {task_id} requested {requested_provider} but launched {worker_runtime}: "
             f"{fallback_reason}"
@@ -662,11 +1544,21 @@ def _claim(task: dict):
             reason=fallback_reason,
         )
 
+    return True
+
 
 def run(force: bool = False):
     common.ensure_dirs()
+
+    # Health gate — block if system is marked BROKEN
+    _gate_ok, _gate_reason = health.check_and_gate("worker")
+    if not _gate_ok:
+        logger.error("[health] Worker blocked: %s", _gate_reason)
+        db.log_tick(RUNNER, "WORKER_BLOCKED_HEALTH", message=_gate_reason)
+        return
+
     lock = db.get_worker_lock()
-    scheduler_enabled = db.is_scheduler_enabled()
+    policy_state = execution_policy.current_state()
     worker_provider = db.get_worker_provider()
 
     if lock and lock["pid"]:
@@ -717,7 +1609,7 @@ def run(force: bool = False):
                     _finalize(lock)
                     return
 
-            if not scheduler_enabled:
+            if not policy_state.get("scheduler_enabled"):
                 msg = f"Scheduler disabled; task {task_id} still running (PID={pid}), no new claim"
                 logger.info(msg)
                 db.log_tick(RUNNER, "WORKER_SKIP_DISABLED_RUNNING", task_id=task_id, message=msg)
@@ -733,11 +1625,33 @@ def run(force: bool = False):
             logger.info(f"Task {task_id} PID={pid} is dead — finalizing")
             _finalize(lock)
 
-    if not scheduler_enabled and not force:
-        msg = "Scheduler is disabled — worker skip claiming new task"
+    decision = execution_policy.evaluate("worker.run", scope="main", provider=worker_provider)
+    if not decision.allowed:
+        msg = f"{decision.skip_reason} — skip execution"
         logger.info(msg)
-        db.log_tick(RUNNER, "WORKER_SKIP_DISABLED", message=msg)
-        common.log_jsonl(RUNNER, "WORKER_SKIP_DISABLED")
+        db.log_tick(RUNNER, "WORKER_SKIP_GLOBAL_GUARD", message=msg)
+        common.log_jsonl(RUNNER, "WORKER_SKIP_GLOBAL_GUARD", reason=decision.skip_reason)
+        execution_policy.record_skip(decision)
+        return
+
+    provider_block = common.get_provider_rate_limit_block(worker_provider)
+    if provider_block:
+        blocked_until = provider_block.get("blocked_until") or "unknown"
+        reset_hint = provider_block.get("reset_hint") or blocked_until
+        msg = (
+            f"Worker provider {worker_provider} is rate-limited; waiting until {blocked_until}. "
+            f"reset_hint={reset_hint}"
+        )
+        logger.warning(msg)
+        db.log_tick(RUNNER, "WORKER_SKIP_PROVIDER_RATE_LIMIT", task_id=provider_block.get("task_id"), message=msg)
+        common.log_jsonl(
+            RUNNER,
+            "WORKER_SKIP_PROVIDER_RATE_LIMIT",
+            provider=worker_provider,
+            blocked_until=blocked_until,
+            reset_hint=reset_hint,
+            task_id=provider_block.get("task_id"),
+        )
         return
 
     if worker_provider == "copilot-daemon":
@@ -759,19 +1673,25 @@ def run(force: bool = False):
     queued_task = None
     try:
         queued_task = db.get_next_task_by_policy()
+        # Filter: research worker should only claim research (or untyped) tasks
+        if queued_task and queued_task.get("worker_type") == "light":
+            queued_task = None
     except Exception as _pol_err:
         logger.warning(f"[worker] Policy selection error, falling back: {_pol_err}")
 
     if not queued_task:
-        # Fallback: direct priority query
+        # Fallback: direct priority query (research-typed only)
         try:
-            queued_task = db.get_next_queued_task_by_priority()
+            queued_task = db.get_next_research_task_by_priority()
         except Exception:
             pass
 
     if not queued_task:
-        # Last resort: FIFO
-        fallback = db.list_tasks(status="QUEUED", limit=1)
+        # Last resort: FIFO for research tasks
+        fallback = [
+            t for t in (db.list_tasks(status="QUEUED", limit=10) or [])
+            if t.get("worker_type") in ("research", None)
+        ]
         queued_task = fallback[0] if fallback else None
 
     if not queued_task:

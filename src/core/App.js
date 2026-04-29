@@ -170,7 +170,15 @@ export class App {
         const params = new URLSearchParams(window.location.search);
         const runId = params.get('prediction_run_id');
         const section = params.get('section');
-        if (!runId && section !== 'reviews') return;
+        if (!runId && !['reviews', 'orchestration', 'cto-review'].includes(section)) return;
+
+        if (section === 'orchestration' || section === 'cto-review') {
+            this.uiManager.showSection(section);
+            if (this.orchestrationManager) {
+                this.orchestrationManager.init();
+            }
+            return;
+        }
 
         this.uiManager.showSection('reviews');
         if (this.reviewManager) {
@@ -400,7 +408,7 @@ export class App {
                         this.reviewManager._currentGame = this.currentLotteryType || 'BIG_LOTTO';
                         this.reviewManager.init();
                     }
-                } else if (section === 'orchestration') {
+                } else if (section === 'orchestration' || section === 'cto-review') {
                     if (this.orchestrationManager) {
                         this.orchestrationManager.init();
                     }

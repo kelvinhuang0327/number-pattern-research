@@ -4,6 +4,27 @@
 
 ---
 
+## Validation Tier 晉級層級（強制）
+
+每個策略在任何時間點必須有且只能有一個 Tier 標籤。**不得跳 Tier 升格。**
+
+| Tier | 名稱 | 進入條件 | 允許操作 |
+|------|------|----------|----------|
+| T0_IDEA | 假說 | 尚未執行任何回測 | 加入 backlog，命名，定義信號 |
+| T1_MC_PASS | MC通過 | MC PASS（n≥1000, p<0.05），但三窗口或 McNemar 尚未驗證 | shadow/watch 模式；不得標記為 promotion candidate |
+| T2_THREE_WINDOW_PASS | 三窗口通過 | 150/500/1000 或 150/500/1500 三窗口 edge > baseline；permutation p<0.05 | 可進入 McNemar 對現役的比較 |
+| T3_INCUMBENT_PASS | 對抗現役通過 | McNemar vs 現役 p<0.05 且 net > 0；三窗口全正 | 可標記為 promotion_candidate；進入 CTO 審查 |
+| T4_DEPLOYABLE | 可部署 | T3 通過 + CTO APPROVE + rolling slice 穩定 | 進入 RSM / production |
+
+### 強制封鎖規則
+
+- **T1_MC_PASS 策略**：禁止在任何 task 輸出、backlog、或 completed_text 中標記為 `promotion_candidate`。
+- **未達 T3_INCUMBENT_PASS**：禁止標記 `promotion_candidate`；必須標記 `validation_tier` 對應值。
+- **vs_incumbent ≤ 0**：即使 MC PASS、三窗口全正，也不得啟動 promotion。必須在 `promotion_blocker` 欄填入 `"vs_incumbent <= 0"`。
+- **McNemar 未驗證**：缺乏 McNemar 結果的策略上限為 T2；不得晉升至 T3 或 T4。
+
+---
+
 ## 必要通過條件（缺一不可）
 
 | 閘 | 規則 |

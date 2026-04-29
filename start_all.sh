@@ -11,6 +11,8 @@ BACKEND_LOG="$ROOT_DIR/backend.log"
 FRONTEND_LOG="$ROOT_DIR/frontend.log"
 BACKEND_PID_FILE="$ROOT_DIR/backend.pid"
 FRONTEND_PID_FILE="$ROOT_DIR/frontend.pid"
+ORCH_LAUNCHD_DIR="$ROOT_DIR/runtime/agent_orchestrator/launchd"
+ORCH_LAUNCHD_DOMAIN="gui/$(id -u)"
 
 SKIP_VERIFY=false
 for arg in "$@"; do
@@ -25,6 +27,26 @@ mkdir -p "$MPLCONFIGDIR"
 
 join_lines() {
     tr '\n' ' ' | sed 's/[[:space:]]\+$//'
+}
+
+restart_launchd_job() {
+    local label="$1"
+    local plist_path="$2"
+
+    if ! command -v launchctl >/dev/null 2>&1; then
+        echo "   ⚠️  launchctl 不可用，略過 $label"
+        return
+    fi
+    if [ ! -f "$plist_path" ]; then
+        echo "   ⚠️  找不到 orchestrator plist: $plist_path"
+        return
+    fi
+
+    launchctl bootout "$ORCH_LAUNCHD_DOMAIN/$label" >/dev/null 2>&1 || true
+    launchctl bootstrap "$ORCH_LAUNCHD_DOMAIN" "$plist_path" >/dev/null 2>&1 || true
+    launchctl enable "$ORCH_LAUNCHD_DOMAIN/$label" >/dev/null 2>&1 || true
+    launchctl kickstart -k "$ORCH_LAUNCHD_DOMAIN/$label" >/dev/null 2>&1 || true
+    echo "   ✅ Orchestrator job 已重載: $label"
 }
 
 echo "======================================"
@@ -89,8 +111,16 @@ else
 fi
 echo ""
 
+# 重啟 orchestrator 服務，確保 planner / worker / daemon 讀到最新程式碼
+echo "3. 重載 Orchestrator 服務..."
+restart_launchd_job "com.kelvin.lottery.copilot-daemon" "$ORCH_LAUNCHD_DIR/com.kelvin.lottery.copilot-daemon.plist"
+restart_launchd_job "com.kelvin.lottery.agent-planner" "$ORCH_LAUNCHD_DIR/com.kelvin.lottery.agent-planner.plist"
+restart_launchd_job "com.kelvin.lottery.agent-worker" "$ORCH_LAUNCHD_DIR/com.kelvin.lottery.agent-worker.plist"
+restart_launchd_job "com.kelvin.lottery.agent-light-worker" "$ORCH_LAUNCHD_DIR/com.kelvin.lottery.agent-light-worker.plist"
+echo ""
+
 # 等待服務啟動
-echo "3. 檢查服務狀態..."
+echo "4. 檢查服務狀態..."
 sleep 3
 
 # 檢查後台
@@ -110,7 +140,7 @@ echo ""
 
 # 預測 API 回歸驗證（部署卡關）
 if [ "$SKIP_VERIFY" = false ]; then
-    echo "4. 執行後端預測回歸驗證..."
+    echo "5. 執行後端預測回歸驗證..."
     if python3 tools/verify_prediction_api.py; then
         echo "   ✅ 回歸驗證通過（smoke + contract）"
     else
@@ -119,7 +149,7 @@ if [ "$SKIP_VERIFY" = false ]; then
         exit 1
     fi
 else
-    echo "4. 已跳過回歸驗證 (--skip-verify)"
+    echo "5. 已跳過回歸驗證 (--skip-verify)"
 fi
 echo ""
 

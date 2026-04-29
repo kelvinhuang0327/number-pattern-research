@@ -7,7 +7,8 @@ import sqlite3
 import os
 import json
 import logging
-from datetime import datetime, timezone
+from datetime import datetime, timezone, timedelta
+from typing import Optional
 
 logger = logging.getLogger(__name__)
 
@@ -17,6 +18,8 @@ DB_PATH = os.path.join(ORCH_ROOT, "orchestrator.db")
 
 DEFAULT_SETTINGS = {
     "scheduler_enabled": "1",
+    "llm_hard_off": "0",
+    "llm_execution_mode": "safe-run",
     "planner_provider": "claude",
     "worker_provider": "codex",
     "worker_copilot_model": "",
@@ -26,6 +29,112 @@ DEFAULT_SETTINGS = {
     "cto_planner_model": "",
 }
 RUN_HISTORY_RETENTION = int(os.environ.get("ORCH_RUN_HISTORY_RETENTION", "5000"))
+CTO_REVIEW_STALE_SECONDS = int(os.environ.get("CTO_REVIEW_STALE_SECONDS", "3600"))
+CTO_RUN_TERMINAL_STATUSES = {
+    "COMPLETED",
+    "SKIPPED",
+    "FAILED",
+    "FAILED_STALE",
+    "SKIPPED_STALE",
+}
+
+
+def _parse_iso(value):
+    if not value:
+        return None
+    try:
+        return datetime.fromisoformat(str(value).replace("Z", "+00:00"))
+    except Exception:
+        return None
+
+
+def _is_pid_alive(pid) -> bool:
+    if pid in (None, "", 0):
+        return False
+    try:
+        os.kill(int(pid), 0)
+        return True
+    except Exception:
+        return False
+
+
+def _derive_cto_run_status(row: dict) -> str:
+    status = str(row.get("status") or "").strip().upper()
+    if status:
+        return status
+    if row.get("completed_at"):
+        return "SKIPPED" if int(row.get("candidate_count") or 0) == 0 else "COMPLETED"
+    return "RUNNING"
+
+
+def _enrich_cto_review_run(row):
+    if not row:
+        return None
+    data = dict(row)
+    data["status"] = _derive_cto_run_status(data)
+    data["outcome"] = data.get("outcome") or None
+    data["outcome_message"] = data.get("outcome_message") or data.get("summary") or ""
+    data["pid_alive"] = _is_pid_alive(data.get("pid")) if data.get("status") == "RUNNING" else False
+    return data
+
+
+def _is_cto_run_stale(row, stale_seconds: Optional[int] = None):
+    stale_after = int(stale_seconds or CTO_REVIEW_STALE_SECONDS)
+    data = dict(row)
+    if _derive_cto_run_status(data) in CTO_RUN_TERMINAL_STATUSES:
+        return False
+    if data.get("completed_at"):
+        return False
+    pid = data.get("pid")
+    if pid:
+        return not _is_pid_alive(pid)
+    started_at = _parse_iso(data.get("started_at")) or _parse_iso(data.get("created_at"))
+    if not started_at:
+        return False
+    return (datetime.now(timezone.utc) - started_at) >= timedelta(seconds=stale_after)
+
+
+def cleanup_stale_cto_review_runs(dedupe_key: str = None, stale_seconds: int = None, stale_reason: str = "stale in-flight run blocked duplicate guard"):
+    stale_after = int(stale_seconds or CTO_REVIEW_STALE_SECONDS)
+    conn = get_conn()
+    stale_runs = []
+    try:
+        params = []
+        sql = "SELECT * FROM cto_review_runs WHERE completed_at IS NULL"
+        if dedupe_key:
+            sql += " AND dedupe_key = ?"
+            params.append(dedupe_key)
+        sql += " ORDER BY id DESC"
+        rows = conn.execute(sql, params).fetchall()
+        for row in rows:
+            data = dict(row)
+            if not _is_cto_run_stale(data, stale_after):
+                continue
+            now = datetime.now(timezone.utc).isoformat()
+            started_at = _parse_iso(data.get("started_at")) or datetime.now(timezone.utc)
+            duration = max(0, int((datetime.now(timezone.utc) - started_at).total_seconds()))
+            summary = data.get("summary") or f"Stale in-flight run auto-terminalized: {stale_reason}"
+            conn.execute(
+                """
+                UPDATE cto_review_runs
+                   SET completed_at = ?,
+                       duration_seconds = ?,
+                       summary = ?,
+                       status = ?,
+                       outcome = ?,
+                       outcome_message = ?,
+                       updated_at = ?
+                 WHERE run_id = ?
+                """,
+                (now, duration, summary, "FAILED_STALE", "CTO_REVIEW_STALE", stale_reason, now, data["run_id"]),
+            )
+            stale_runs.append(data["run_id"])
+        conn.commit()
+    finally:
+        conn.close()
+    for run_id in stale_runs:
+        log_tick("cto-review", "CTO_REVIEW_STALE", message=f"{run_id}: {stale_reason}")
+    return stale_runs
 
 
 def get_conn():
@@ -66,6 +175,47 @@ def init_db():
         c.execute("CREATE INDEX IF NOT EXISTS idx_at_status ON agent_tasks(status)")
         c.execute("CREATE INDEX IF NOT EXISTS idx_at_date ON agent_tasks(date_folder)")
 
+        # Migration: add dedupe_key + regime columns to agent_tasks if upgrading existing DB
+        existing_at_cols = {row["name"] for row in c.execute("PRAGMA table_info(agent_tasks)").fetchall()}
+        for col_def in [
+            ("dedupe_key", "TEXT"),
+            ("regime_state", "TEXT"),
+            ("confidence_snapshot", "REAL"),
+            ("epoch_id", "INTEGER NOT NULL DEFAULT 0"),
+            ("failure_category", "TEXT"),
+            ("failure_weight", "REAL"),
+            ("repair_target_task_id", "INTEGER"),
+            ("repair_success", "INTEGER"),
+            ("repair_attempt", "INTEGER"),
+            ("repair_effectiveness_score", "REAL"),
+            ("value_score", "REAL"),
+            ("gate_verdict", "TEXT"),
+        ]:
+            if col_def[0] not in existing_at_cols:
+                c.execute(f"ALTER TABLE agent_tasks ADD COLUMN {col_def[0]} {col_def[1]}")
+        c.execute("CREATE INDEX IF NOT EXISTS idx_at_dedupe ON agent_tasks(dedupe_key)")
+        c.execute("CREATE INDEX IF NOT EXISTS idx_at_regime ON agent_tasks(regime_state)")
+        c.execute("CREATE INDEX IF NOT EXISTS idx_at_epoch  ON agent_tasks(epoch_id)")
+
+        # Migration: multi-worker concurrency — worker_type column on agent_tasks
+        existing_at_cols2 = {row["name"] for row in c.execute("PRAGMA table_info(agent_tasks)").fetchall()}
+        if "worker_type" not in existing_at_cols2:
+            c.execute("ALTER TABLE agent_tasks ADD COLUMN worker_type TEXT DEFAULT 'research'")
+        c.execute("CREATE INDEX IF NOT EXISTS idx_at_worker_type ON agent_tasks(worker_type)")
+
+        # Planner dedupe state table (one row per dedupe_key, tracks last confidence)
+        c.execute("""
+            CREATE TABLE IF NOT EXISTS planner_dedupe_state (
+                dedupe_key         TEXT PRIMARY KEY,
+                last_regime_state  TEXT,
+                last_confidence    REAL,
+                last_task_id       INTEGER,
+                last_emitted_at    TEXT,
+                skip_count         INTEGER NOT NULL DEFAULT 0,
+                updated_at         TEXT
+            )
+        """)
+
         c.execute("""
             CREATE TABLE IF NOT EXISTS agent_task_runs (
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -93,6 +243,55 @@ def init_db():
                 task_id INTEGER,
                 started_at TEXT,
                 heartbeat_at TEXT
+            )
+        """)
+
+        # Migration: multi-worker concurrency — lock_type column on agent_locks
+        existing_lock_cols = {row["name"] for row in c.execute("PRAGMA table_info(agent_locks)").fetchall()}
+        if "lock_type" not in existing_lock_cols:
+            c.execute("ALTER TABLE agent_locks ADD COLUMN lock_type TEXT DEFAULT 'research'")
+
+        # Adaptive scheduling — worker_metrics table
+        c.execute("""
+            CREATE TABLE IF NOT EXISTS worker_metrics (
+                id          INTEGER PRIMARY KEY AUTOINCREMENT,
+                sampled_at  TEXT NOT NULL,
+                worker_type TEXT NOT NULL,          -- 'research' | 'light'
+                active_count    INTEGER NOT NULL DEFAULT 0,
+                queued_count    INTEGER NOT NULL DEFAULT 0,
+                completed_count INTEGER NOT NULL DEFAULT 0,
+                failed_count    INTEGER NOT NULL DEFAULT 0,
+                avg_latency_s   REAL,               -- avg task duration over last window
+                throughput_ph   REAL,               -- tasks completed per hour
+                cpu_pct         REAL,               -- system CPU % at sample time
+                slot_limit      INTEGER NOT NULL DEFAULT 3,  -- MAX_LIGHT_WORKERS in effect
+                backpressure    INTEGER NOT NULL DEFAULT 0,  -- 1 if backpressure active
+                -- v2: extended metrics
+                cpu_share_pct   REAL,               -- estimated CPU% attributed to this worker_type
+                research_latency_s REAL,            -- avg research task latency at sample time
+                starvation_incidents INTEGER NOT NULL DEFAULT 0,  -- light queue>threshold while active=0
+                slot_decision_reason TEXT            -- human-readable reason string from adaptive scheduler
+            )
+        """)
+        c.execute("CREATE INDEX IF NOT EXISTS idx_wm_sampled ON worker_metrics(sampled_at DESC)")
+        c.execute("CREATE INDEX IF NOT EXISTS idx_wm_type ON worker_metrics(worker_type)")
+        # Migrate existing tables: add v2 columns if they don't exist yet
+        _existing_wm_cols = {r[1] for r in c.execute('PRAGMA table_info(worker_metrics)').fetchall()}
+        for _col, _typedef in [
+            ("cpu_share_pct",           "REAL"),
+            ("research_latency_s",      "REAL"),
+            ("starvation_incidents",    "INTEGER NOT NULL DEFAULT 0"),
+            ("slot_decision_reason",    "TEXT"),
+        ]:
+            if _col not in _existing_wm_cols:
+                c.execute(f"ALTER TABLE worker_metrics ADD COLUMN {_col} {_typedef}")
+
+        # Adaptive scheduling — scheduling_state table (one row per key)
+        c.execute("""
+            CREATE TABLE IF NOT EXISTS scheduling_state (
+                key        TEXT PRIMARY KEY,
+                value      TEXT NOT NULL,
+                updated_at TEXT NOT NULL
             )
         """)
 
@@ -137,6 +336,7 @@ def init_db():
                 task_status TEXT,
                 gate_verdict TEXT,
                 gate_reason TEXT,
+                manual_merge_required INTEGER NOT NULL DEFAULT 0,
                 created_at TEXT NOT NULL,
                 updated_at TEXT NOT NULL
             )
@@ -145,6 +345,11 @@ def init_db():
         c.execute("CREATE INDEX IF NOT EXISTS idx_tgc_task_id ON task_git_commits(task_id)")
         c.execute("CREATE INDEX IF NOT EXISTS idx_tgc_commit_sha ON task_git_commits(commit_sha)")
         c.execute("CREATE INDEX IF NOT EXISTS idx_tgc_group ON task_git_commits(integration_group)")
+
+        # Migration: add manual_merge_required column if upgrading existing DB
+        existing_tgc_cols = {row["name"] for row in c.execute("PRAGMA table_info(task_git_commits)").fetchall()}
+        if "manual_merge_required" not in existing_tgc_cols:
+            c.execute("ALTER TABLE task_git_commits ADD COLUMN manual_merge_required INTEGER NOT NULL DEFAULT 0")
 
         c.execute("""
             CREATE TABLE IF NOT EXISTS task_git_reviews (
@@ -203,11 +408,17 @@ def init_db():
             ("is_force_run", "INTEGER NOT NULL DEFAULT 0"),
             ("run_intent", "TEXT"),
             ("parent_run_id", "TEXT"),
+            ("status", "TEXT"),
+            ("outcome", "TEXT"),
+            ("outcome_message", "TEXT"),
+            ("pid", "INTEGER"),
+            ("request_id", "TEXT"),
         ]:
             if col_def[0] not in existing_cto_run_cols:
                 c.execute(f"ALTER TABLE cto_review_runs ADD COLUMN {col_def[0]} {col_def[1]}")
         c.execute("CREATE INDEX IF NOT EXISTS idx_cto_runs_dedupe ON cto_review_runs(dedupe_key)")
         c.execute("CREATE INDEX IF NOT EXISTS idx_cto_runs_intent ON cto_review_runs(run_intent)")
+        c.execute("CREATE INDEX IF NOT EXISTS idx_cto_runs_status ON cto_review_runs(status)")
 
         # Intent outcome learning signal table
         c.execute("""
@@ -377,8 +588,340 @@ def init_db():
         # Create priority index AFTER migration so priority_level is guaranteed to exist
         c.execute("CREATE INDEX IF NOT EXISTS idx_cbi_priority ON cto_backlog_items(priority_level, priority_score DESC)")
 
+        # ── System Epochs ─────────────────────────────────────────────────────
+        # Tracks learning baseline resets.  epoch_id=0 = pre-baseline (legacy).
+        c.execute("""
+            CREATE TABLE IF NOT EXISTS system_epochs (
+                id          INTEGER PRIMARY KEY AUTOINCREMENT,
+                epoch_label TEXT    NOT NULL,
+                epoch_note  TEXT,
+                started_at  TEXT    NOT NULL,
+                is_current  INTEGER NOT NULL DEFAULT 0
+            )
+        """)
+        c.execute("CREATE INDEX IF NOT EXISTS idx_epochs_current ON system_epochs(is_current)")
+        # Seed epoch 0 (pre-baseline) if no epochs exist yet
+        if not c.execute("SELECT 1 FROM system_epochs LIMIT 1").fetchone():
+            c.execute(
+                "INSERT INTO system_epochs (id, epoch_label, epoch_note, started_at, is_current) VALUES (0, 'pre_baseline', 'Legacy data before epoch system', ?, 0)",
+                (datetime.now(timezone.utc).isoformat(),),
+            )
+
+        # Migration: add epoch_id to key learning tables
+        for _tbl, _default in [
+            ("agent_task_runs",          "INTEGER NOT NULL DEFAULT 0"),
+            ("cto_review_runs",          "INTEGER NOT NULL DEFAULT 0"),
+            ("cto_intent_signals",       "INTEGER NOT NULL DEFAULT 0"),
+            ("classifier_calibration_log", "INTEGER NOT NULL DEFAULT 0"),
+            ("cto_backlog_items",        "INTEGER NOT NULL DEFAULT 0"),
+        ]:
+            _existing = {r["name"] for r in c.execute(f"PRAGMA table_info({_tbl})").fetchall()}
+            if "epoch_id" not in _existing:
+                c.execute(f"ALTER TABLE {_tbl} ADD COLUMN epoch_id {_default}")
+            _idx_name = f"idx_{_tbl[:12]}_epoch"
+            c.execute(f"CREATE INDEX IF NOT EXISTS {_idx_name} ON {_tbl}(epoch_id)")
+
+        # ── Strategy Review ────────────────────────────────────────────────────
+        # Independent of code review; evaluates Deep Research tasks for strategy quality.
+        c.execute("""
+            CREATE TABLE IF NOT EXISTS strategy_reviews (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                task_id INTEGER NOT NULL,
+                slot_key TEXT NOT NULL,
+                task_title TEXT,
+                review_run_id TEXT NOT NULL,
+                decision TEXT NOT NULL,
+                reason TEXT,
+                game_type TEXT,
+                strategy_name TEXT,
+                edge_score REAL,
+                sharpe_ratio REAL,
+                drawdown REAL,
+                mc_passed INTEGER,
+                comparison_summary TEXT,
+                reviewer_role TEXT NOT NULL DEFAULT 'cto-strategy',
+                created_at TEXT NOT NULL
+            )
+        """)
+        c.execute("CREATE INDEX IF NOT EXISTS idx_sr_task_id   ON strategy_reviews(task_id)")
+        c.execute("CREATE INDEX IF NOT EXISTS idx_sr_decision  ON strategy_reviews(decision)")
+        c.execute("CREATE INDEX IF NOT EXISTS idx_sr_run_id    ON strategy_reviews(review_run_id)")
+        c.execute("CREATE INDEX IF NOT EXISTS idx_sr_game_type ON strategy_reviews(game_type)")
+
+        # ── Active Strategy State ─────────────────────────────────────────────
+        # One row per game_type; tracks active / shadow strategy per game.
+        c.execute("""
+            CREATE TABLE IF NOT EXISTS active_strategy_state (
+                game_type TEXT PRIMARY KEY,
+                active_strategy TEXT,
+                active_edge REAL,
+                active_task_id INTEGER,
+                shadow_strategy TEXT,
+                shadow_edge REAL,
+                shadow_task_id INTEGER,
+                planner_focus TEXT,
+                updated_at TEXT NOT NULL
+            )
+        """)
+
+        # ── Planner Directives (CTO → Planner) ───────────────────────────────
+        # CTO writes directives after strategy reviews; Planner reads them on
+        # each planning cycle to avoid dead signal families and focus research.
+        c.execute("""
+            CREATE TABLE IF NOT EXISTS planner_directives (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                directive_id TEXT UNIQUE NOT NULL,
+                game_type TEXT,
+                focus_direction TEXT NOT NULL,
+                forbidden_families TEXT NOT NULL DEFAULT '[]',
+                required_validation TEXT NOT NULL DEFAULT '[]',
+                promotion_targets TEXT NOT NULL DEFAULT '[]',
+                kill_targets TEXT NOT NULL DEFAULT '[]',
+                budget_hint TEXT,
+                note TEXT,
+                expires_after_cycles INTEGER NOT NULL DEFAULT 10,
+                cycle_count INTEGER NOT NULL DEFAULT 0,
+                is_active INTEGER NOT NULL DEFAULT 1,
+                created_at TEXT NOT NULL,
+                updated_at TEXT NOT NULL
+            )
+        """)
+        c.execute("CREATE INDEX IF NOT EXISTS idx_pd_game_type  ON planner_directives(game_type)")
+        c.execute("CREATE INDEX IF NOT EXISTS idx_pd_is_active  ON planner_directives(is_active)")
+        c.execute("CREATE INDEX IF NOT EXISTS idx_pd_created    ON planner_directives(created_at)")
+
+        # ── Planner Negative Space Memory ─────────────────────────────────────
+        # Tracks per-key quality-failure history for progressive suppression.
+        c.execute("""
+            CREATE TABLE IF NOT EXISTS planner_negative_space (
+                dedupe_key          TEXT    NOT NULL,
+                scope               TEXT    NOT NULL DEFAULT 'key',
+                fail_count          INTEGER NOT NULL DEFAULT 0,
+                last_outcome        TEXT,
+                last_fail_at        TEXT,
+                suppressed_until    TEXT,
+                suppression_reason  TEXT,
+                updated_at          TEXT    NOT NULL,
+                PRIMARY KEY (dedupe_key, scope)
+            )
+        """)
+        c.execute(
+            "CREATE INDEX IF NOT EXISTS idx_pns_scope ON planner_negative_space(scope)"
+        )
+        c.execute(
+            "CREATE INDEX IF NOT EXISTS idx_pns_until ON planner_negative_space(suppressed_until)"
+        )
+
+        # ── Self-tuning scheduler tables ──────────────────────────────────
+        c.execute("""
+            CREATE TABLE IF NOT EXISTS scheduler_tunable_params (
+                param           TEXT PRIMARY KEY,
+                value           REAL NOT NULL,
+                default_value   REAL NOT NULL,
+                min_value       REAL NOT NULL,
+                max_value       REAL NOT NULL,
+                step_size       REAL NOT NULL DEFAULT 1.0,
+                last_direction  INTEGER NOT NULL DEFAULT 0,   -- +1, -1, or 0
+                cooldown_until  TEXT,                         -- ISO ts; block changes until this
+                update_count    INTEGER NOT NULL DEFAULT 0,
+                ewma_reward     REAL,                         -- smoothed reward signal
+                last_reward     REAL,                         -- instantaneous reward at last update
+                updated_at      TEXT NOT NULL
+            )
+        """)
+        c.execute("""
+            CREATE TABLE IF NOT EXISTS scheduler_tuning_log (
+                id              INTEGER PRIMARY KEY AUTOINCREMENT,
+                logged_at       TEXT NOT NULL,
+                action          TEXT NOT NULL,     -- 'adjust' | 'skip' | 'explore'
+                param           TEXT,
+                old_value       REAL,
+                new_value       REAL,
+                direction       INTEGER,
+                reward          REAL,
+                ewma_reward     REAL,
+                reason          TEXT,
+                is_exploration  INTEGER NOT NULL DEFAULT 0
+            )
+        """)
+        c.execute("CREATE INDEX IF NOT EXISTS idx_stl_logged ON scheduler_tuning_log(logged_at DESC)")
+
+        # Migrate: add governance columns to scheduler_tunable_params if not present
+        _existing_stp_cols = {r[1] for r in c.execute('PRAGMA table_info(scheduler_tunable_params)').fetchall()}
+        for _col, _typedef in [
+            ("previous_value",  "REAL"),
+            ("rollback_count",  "INTEGER NOT NULL DEFAULT 0"),
+        ]:
+            if _col not in _existing_stp_cols:
+                c.execute(f"ALTER TABLE scheduler_tunable_params ADD COLUMN {_col} {_typedef}")
+
+        # ── Outcome-aware scheduler: task outcomes + per-type ROI state ──────────
+        c.execute("""
+            CREATE TABLE IF NOT EXISTS task_outcomes (
+                id                  INTEGER PRIMARY KEY AUTOINCREMENT,
+                task_id             INTEGER NOT NULL,
+                task_type           TEXT NOT NULL,          -- 'deep_research' | 'monitoring' | 'governance' | …
+                success             INTEGER NOT NULL DEFAULT 0,   -- 1=success  0=failure
+                quality_score       REAL,                   -- 0..1 task output quality
+                roi_score           REAL,                   -- 0..1 return on investment
+                edge_score          REAL,                   -- best raw strategy edge (research tasks)
+                extraction_method   TEXT DEFAULT 'heuristic',  -- 'real' | 'heuristic' | 'fallback'
+                best_edge           REAL,                   -- normalised best edge vs incumbent [0..1]
+                strategies_found    INTEGER DEFAULT 0,      -- # strategies with positive edge
+                mc_pass_count       INTEGER DEFAULT 0,      -- # strategies that passed MC robustness
+                confidence_score    REAL DEFAULT 1.0,       -- 0..1 validation layer trust score
+                recorded_at         TEXT NOT NULL,
+                FOREIGN KEY (task_id) REFERENCES agent_tasks(id)
+            )
+        """)
+        c.execute("CREATE INDEX IF NOT EXISTS idx_to_task_id   ON task_outcomes(task_id)")
+        c.execute("CREATE INDEX IF NOT EXISTS idx_to_task_type ON task_outcomes(task_type)")
+        c.execute("CREATE INDEX IF NOT EXISTS idx_to_recorded  ON task_outcomes(recorded_at DESC)")
+        # Migrate: add new columns to existing table if they don't exist yet
+        _to_cols = {r[1] for r in c.execute("PRAGMA table_info(task_outcomes)").fetchall()}
+        for _col, _typ in [
+            ("extraction_method", "TEXT DEFAULT 'heuristic'"),
+            ("best_edge",         "REAL"),
+            ("strategies_found",  "INTEGER DEFAULT 0"),
+            ("mc_pass_count",     "INTEGER DEFAULT 0"),
+            ("confidence_score",  "REAL DEFAULT 1.0"),
+        ]:
+            if _col not in _to_cols:
+                c.execute(f"ALTER TABLE task_outcomes ADD COLUMN {_col} {_typ}")
+
+        c.execute("""
+            CREATE TABLE IF NOT EXISTS task_type_roi_state (
+                task_type       TEXT PRIMARY KEY,
+                ewma_quality    REAL NOT NULL DEFAULT 0.5,   -- smoothed quality score
+                ewma_roi        REAL NOT NULL DEFAULT 0.5,   -- smoothed ROI
+                ewma_success    REAL NOT NULL DEFAULT 0.5,   -- smoothed success rate
+                sample_count    INTEGER NOT NULL DEFAULT 0,
+                priority_boost  REAL NOT NULL DEFAULT 0.0,   -- scheduler priority bonus
+                slot_hint       INTEGER NOT NULL DEFAULT 0,  -- +1 allocate more  -1 throttle
+                updated_at      TEXT NOT NULL
+            )
+        """)
+
+        # ── Live Outcome Tracking: per-draw results + EWMA state ──────────────
+        c.execute("""
+            CREATE TABLE IF NOT EXISTS live_strategy_outcomes (
+                id              INTEGER PRIMARY KEY AUTOINCREMENT,
+                strategy_id     TEXT NOT NULL,
+                game_type       TEXT NOT NULL,
+                draw_id         TEXT NOT NULL,          -- e.g. "20260428"
+                recorded_at     TEXT NOT NULL,
+                predicted_json  TEXT NOT NULL DEFAULT '[]',   -- JSON list of predicted numbers
+                actual_json     TEXT NOT NULL DEFAULT '[]',   -- JSON list of actual draw numbers
+                match_count     INTEGER NOT NULL DEFAULT 0,
+                bet_units       REAL NOT NULL DEFAULT 1.0,
+                payout_units    REAL NOT NULL DEFAULT 0.0,
+                pnl             REAL NOT NULL DEFAULT 0.0,    -- payout - bet
+                roi             REAL NOT NULL DEFAULT -1.0,   -- pnl / bet
+                accuracy_score  REAL NOT NULL DEFAULT 0.0,    -- match_count / len(actual)  [0..1]
+                UNIQUE(strategy_id, draw_id)
+            )
+        """)
+        c.execute("CREATE INDEX IF NOT EXISTS idx_lso_strategy  ON live_strategy_outcomes(strategy_id)")
+        c.execute("CREATE INDEX IF NOT EXISTS idx_lso_game_type ON live_strategy_outcomes(game_type)")
+        c.execute("CREATE INDEX IF NOT EXISTS idx_lso_draw_id   ON live_strategy_outcomes(draw_id)")
+
+        c.execute("""
+            CREATE TABLE IF NOT EXISTS strategy_live_state (
+                strategy_id         TEXT PRIMARY KEY,
+                game_type           TEXT NOT NULL,
+                backtest_edge       REAL,                          -- reference edge from backtest
+                ewma_live_roi       REAL NOT NULL DEFAULT -1.0,   -- EWMA of per-draw ROI
+                ewma_accuracy       REAL NOT NULL DEFAULT 0.0,    -- EWMA of accuracy_score
+                ewma_pnl            REAL NOT NULL DEFAULT 0.0,    -- EWMA of pnl
+                sample_count        INTEGER NOT NULL DEFAULT 0,
+                drift_score         REAL NOT NULL DEFAULT 0.0,    -- normalised backtest vs live divergence [0..1]
+                decay_weight        REAL NOT NULL DEFAULT 1.0,    -- scheduler multiplier [0.20..1.0]
+                consecutive_losses  INTEGER NOT NULL DEFAULT 0,   -- draws in a row with roi < 0
+                last_draw_id        TEXT,
+                updated_at          TEXT NOT NULL
+            )
+        """)
+        c.execute("CREATE INDEX IF NOT EXISTS idx_sls_game_type   ON strategy_live_state(game_type)")
+        c.execute("CREATE INDEX IF NOT EXISTS idx_sls_drift_score ON strategy_live_state(drift_score DESC)")
+
+        # Exploration result router state (prevents duplicate follow-up routing)
+        c.execute("""
+            CREATE TABLE IF NOT EXISTS exploration_routing_state (
+                source_task_id    INTEGER PRIMARY KEY,         -- agent_tasks.id
+                source_dedupe_key TEXT NOT NULL,
+                source_lane       TEXT NOT NULL,
+                decision          TEXT NOT NULL,               -- WORTH_VALIDATION / WATCH_ONLY / REJECT_FOR_NOW / INCONCLUSIVE_NEED_DATA
+                route_action      TEXT NOT NULL,               -- VALIDATION_CREATED / WATCH_ONLY_RECORDED / ARCHIVED_RECORDED / DATA_TASK_CREATED / VALIDATION_DEDUPE_SKIPPED
+                source_report     TEXT,
+                followup_task_id  INTEGER,
+                note              TEXT,
+                created_at        TEXT NOT NULL,
+                updated_at        TEXT NOT NULL
+            )
+        """)
+        c.execute("CREATE INDEX IF NOT EXISTS idx_ers_lane ON exploration_routing_state(source_lane)")
+        c.execute("CREATE INDEX IF NOT EXISTS idx_ers_decision ON exploration_routing_state(decision)")
+
         conn.commit()
         logger.info(f"[OrchestratorDB] init OK — {DB_PATH}")
+    finally:
+        conn.close()
+
+
+# ── Epoch management ──────────────────────────────────────────────────────────
+
+def get_current_epoch_id() -> int:
+    """Return the id of the currently active epoch (0 = pre-baseline/fallback)."""
+    conn = get_conn()
+    try:
+        row = conn.execute(
+            "SELECT id FROM system_epochs WHERE is_current = 1 ORDER BY id DESC LIMIT 1"
+        ).fetchone()
+        return row["id"] if row else 0
+    finally:
+        conn.close()
+
+
+def get_current_epoch() -> dict:
+    """Return the full current epoch row, or a synthetic epoch-0 dict if none is active."""
+    conn = get_conn()
+    try:
+        row = conn.execute(
+            "SELECT * FROM system_epochs WHERE is_current = 1 ORDER BY id DESC LIMIT 1"
+        ).fetchone()
+        if row:
+            return dict(row)
+        return {"id": 0, "epoch_label": "pre_baseline", "epoch_note": None, "started_at": None, "is_current": 0}
+    finally:
+        conn.close()
+
+
+def create_epoch(epoch_label: str, epoch_note: str = "") -> int:
+    """
+    Deactivate all current epochs and create a new active epoch.
+    Returns the new epoch id.
+    """
+    now = datetime.now(timezone.utc).isoformat()
+    conn = get_conn()
+    try:
+        conn.execute("UPDATE system_epochs SET is_current = 0")
+        cursor = conn.execute(
+            "INSERT INTO system_epochs (epoch_label, epoch_note, started_at, is_current) VALUES (?, ?, ?, 1)",
+            (epoch_label, epoch_note, now),
+        )
+        new_id = cursor.lastrowid
+        conn.commit()
+        logger.info("[Epoch] New epoch created: id=%d label=%r started_at=%s", new_id, epoch_label, now)
+        return new_id
+    finally:
+        conn.close()
+
+
+def list_epochs() -> list:
+    """Return all epochs ordered by id."""
+    conn = get_conn()
+    try:
+        return [dict(r) for r in conn.execute("SELECT * FROM system_epochs ORDER BY id ASC").fetchall()]
     finally:
         conn.close()
 
@@ -386,10 +929,11 @@ def init_db():
 def log_tick(runner: str, outcome: str, task_id=None, message: str = "", duration_ms: int = 0, request_id: str = None):
     conn = get_conn()
     try:
+        epoch_id = get_current_epoch_id()
         conn.execute(
-            "INSERT INTO agent_task_runs (runner, tick_at, outcome, request_id, task_id, message, duration_ms) "
-            "VALUES (?, ?, ?, ?, ?, ?, ?)",
-            (runner, datetime.now(timezone.utc).isoformat(), outcome, request_id, task_id, message, duration_ms)
+            "INSERT INTO agent_task_runs (runner, tick_at, outcome, request_id, task_id, message, duration_ms, epoch_id) "
+            "VALUES (?, ?, ?, ?, ?, ?, ?, ?)",
+            (runner, datetime.now(timezone.utc).isoformat(), outcome, request_id, task_id, message, duration_ms, epoch_id)
         )
         if RUN_HISTORY_RETENTION > 0:
             conn.execute(
@@ -426,20 +970,280 @@ def get_task(task_id: int):
         conn.close()
 
 
-def create_task(slot_key, date_folder, title, slug, prompt_text, prompt_file_path, previous_task_id=None):
+def create_task(
+    slot_key,
+    date_folder,
+    title,
+    slug,
+    prompt_text,
+    prompt_file_path,
+    previous_task_id=None,
+    dedupe_key: str = None,
+    regime_state: str = None,
+    confidence_snapshot: float = None,
+    value_score: float = None,
+    worker_type: str = "research",
+):
+    now = datetime.now(timezone.utc).isoformat()
+    epoch_id = get_current_epoch_id()
     conn = get_conn()
     try:
         c = conn.execute(
             """INSERT INTO agent_tasks
                (slot_key, date_folder, title, slug, status, prompt_text, prompt_file_path,
-                previous_task_id, created_at, updated_at)
-               VALUES (?, ?, ?, ?, 'QUEUED', ?, ?, ?, ?, ?)""",
-            (slot_key, date_folder, title, slug, prompt_text, prompt_file_path,
-             previous_task_id,
-             datetime.now(timezone.utc).isoformat(), datetime.now(timezone.utc).isoformat())
+                previous_task_id, dedupe_key, regime_state, confidence_snapshot,
+                epoch_id, value_score, worker_type, created_at, updated_at)
+               VALUES (?, ?, ?, ?, 'QUEUED', ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)""",
+            (
+                slot_key, date_folder, title, slug, prompt_text, prompt_file_path,
+                previous_task_id, dedupe_key, regime_state, confidence_snapshot,
+                epoch_id, value_score, worker_type, now, now,
+            )
+        )
+        task_id = c.lastrowid
+        conn.commit()
+        # Update dedupe state table if a dedupe_key was provided
+        if dedupe_key:
+            conn2 = get_conn()
+            try:
+                conn2.execute(
+                    """
+                    INSERT INTO planner_dedupe_state
+                        (dedupe_key, last_regime_state, last_confidence, last_task_id,
+                         last_emitted_at, skip_count, updated_at)
+                    VALUES (?, ?, ?, ?, ?, 0, ?)
+                    ON CONFLICT(dedupe_key) DO UPDATE SET
+                        last_regime_state = excluded.last_regime_state,
+                        last_confidence   = excluded.last_confidence,
+                        last_task_id      = excluded.last_task_id,
+                        last_emitted_at   = excluded.last_emitted_at,
+                        skip_count        = 0,
+                        updated_at        = excluded.updated_at
+                    """,
+                    (dedupe_key, regime_state, confidence_snapshot, task_id, now, now),
+                )
+                conn2.commit()
+            finally:
+                conn2.close()
+        return task_id
+    finally:
+        conn.close()
+
+
+def get_inflight_task_by_dedupe_key(dedupe_key: str, stale_queued_minutes: int = 120):
+    """Return the most recent QUEUED or RUNNING task with the given dedupe_key, or None.
+
+    QUEUED tasks older than *stale_queued_minutes* (default 2 h) are ignored —
+    this prevents a permanent in-flight lock when the worker/daemon never executes
+    the task (e.g. WORKER_SKIP_DAEMON_PROVIDER).  RUNNING tasks always block.
+    """
+    if not dedupe_key:
+        return None
+    from datetime import timedelta
+    stale_cutoff = (datetime.now(timezone.utc) - timedelta(minutes=stale_queued_minutes)).isoformat()
+    conn = get_conn()
+    try:
+        row = conn.execute(
+            """SELECT * FROM agent_tasks
+               WHERE dedupe_key = ?
+               AND (
+                   status = 'RUNNING'
+                   OR (status = 'QUEUED' AND created_at >= ?)
+               )
+               ORDER BY id DESC LIMIT 1""",
+            (dedupe_key, stale_cutoff),
+        ).fetchone()
+        return dict(row) if row else None
+    finally:
+        conn.close()
+
+
+def get_inflight_auto_monitor_by_source_task_type(
+    source_task_type: str,
+    stale_queued_minutes: int = 120,
+):
+    """Return earliest live AUTO-MONITOR task for a source task_type, or None.
+
+    Matches dedupe_key prefix: ``monitoring:{source_task_type}:`` and applies
+    the same stale QUEUED cutoff policy as get_inflight_task_by_dedupe_key().
+    """
+    source = (source_task_type or "").strip()
+    if not source:
+        return None
+
+    from datetime import timedelta
+    stale_cutoff = (datetime.now(timezone.utc) - timedelta(minutes=stale_queued_minutes)).isoformat()
+    key_prefix = f"monitoring:{source}:%"
+
+    conn = get_conn()
+    try:
+        row = conn.execute(
+            """SELECT * FROM agent_tasks
+               WHERE title LIKE '[AUTO-MONITOR]%'
+                 AND dedupe_key LIKE ?
+                 AND (
+                     status = 'RUNNING'
+                     OR (status = 'QUEUED' AND created_at >= ?)
+                 )
+               ORDER BY id ASC LIMIT 1""",
+            (key_prefix, stale_cutoff),
+        ).fetchone()
+        return dict(row) if row else None
+    finally:
+        conn.close()
+
+
+def get_recent_completed_task_by_dedupe_key(dedupe_key: str, within_seconds: int = 1800):
+    """Return the most recent COMPLETED task with the given dedupe_key within the cooldown, or None."""
+    if not dedupe_key:
+        return None
+    from datetime import timedelta
+    cutoff = (datetime.now(timezone.utc) - timedelta(seconds=within_seconds)).isoformat()
+    conn = get_conn()
+    try:
+        row = conn.execute(
+            """SELECT * FROM agent_tasks
+               WHERE dedupe_key = ? AND status = 'COMPLETED'
+               AND completed_at IS NOT NULL AND completed_at >= ?
+               ORDER BY id DESC LIMIT 1""",
+            (dedupe_key, cutoff),
+        ).fetchone()
+        return dict(row) if row else None
+    finally:
+        conn.close()
+
+
+def get_today_auto_monitor_by_dedupe_key(dedupe_key: str):
+    """Return earliest non-FAILED AUTO-MONITOR task with given dedupe_key created today (UTC), or None.
+
+    Used for daily cap enforcement: one monitoring task per (source_type, calendar_day).
+    Statuses checked: QUEUED, RUNNING, COMPLETED.
+    FAILED tasks are excluded so a failed run does not permanently block the day.
+    """
+    if not dedupe_key:
+        return None
+    conn = get_conn()
+    try:
+        row = conn.execute(
+            """SELECT * FROM agent_tasks
+               WHERE dedupe_key = ?
+                 AND status IN ('QUEUED', 'RUNNING', 'COMPLETED')
+                 AND DATE(created_at) = DATE('now')
+               ORDER BY id ASC LIMIT 1""",
+            (dedupe_key,),
+        ).fetchone()
+        return dict(row) if row else None
+    finally:
+        conn.close()
+
+
+def get_today_task_by_dedupe_key(dedupe_key: str):
+    """Return earliest non-FAILED task with given dedupe_key created today (UTC), or None.
+
+    Generic daily cap check for any date-keyed task (monitoring, fallback, etc.).
+    Statuses: QUEUED, RUNNING, COMPLETED.  FAILED excluded so a bad run allows retry.
+    """
+    if not dedupe_key:
+        return None
+    conn = get_conn()
+    try:
+        row = conn.execute(
+            """SELECT * FROM agent_tasks
+               WHERE dedupe_key = ?
+                 AND status IN ('QUEUED', 'RUNNING', 'COMPLETED')
+                 AND DATE(created_at) = DATE('now')
+               ORDER BY id ASC LIMIT 1""",
+            (dedupe_key,),
+        ).fetchone()
+        return dict(row) if row else None
+    finally:
+        conn.close()
+
+
+def get_nonfailed_task_by_dedupe_key(dedupe_key: str):
+    """Return the earliest active/completed task with the given dedupe_key (any date), or None.
+
+    This is the STRONG daily cap guard for tasks whose dedupe_key already embeds a
+    date string (e.g. forced_exploration:{lane}:{YYYY-MM-DD}).  Unlike
+    get_today_task_by_dedupe_key(), this does NOT filter by DATE(created_at) — it
+    matches purely by key, making it immune to manual row deletions or UTC midnight
+    boundary edge cases.
+
+    Blocked statuses (prevent re-creation):
+        QUEUED, RUNNING, COMPLETED, SKIPPED_DUPLICATE, SKIPPED_DUPLICATE_DAILY_CAP
+
+    Allowed to retry (task failed cleanly):
+        FAILED, FAILED_*, REPLAN_REQUIRED, BLOCKED_ENV
+    """
+    if not dedupe_key:
+        return None
+    conn = get_conn()
+    try:
+        row = conn.execute(
+            """SELECT * FROM agent_tasks
+               WHERE dedupe_key = ?
+                 AND status IN (
+                     'QUEUED', 'RUNNING', 'COMPLETED',
+                     'SKIPPED_DUPLICATE', 'SKIPPED_DUPLICATE_DAILY_CAP'
+                 )
+               ORDER BY id ASC LIMIT 1""",
+            (dedupe_key,),
+        ).fetchone()
+        return dict(row) if row else None
+    finally:
+        conn.close()
+
+
+def get_last_forced_exploration_task():
+    """Return the most recently created forced_exploration task (any date/status), or None.
+
+    Used for lane rotation: inspect dedupe_key to determine which lane ran last,
+    then pick the next one in A→B→C→D→E→F→A order.
+    """
+    conn = get_conn()
+    try:
+        row = conn.execute(
+            """SELECT * FROM agent_tasks
+               WHERE dedupe_key LIKE 'forced_exploration:%'
+               ORDER BY id DESC LIMIT 1""",
+        ).fetchone()
+        return dict(row) if row else None
+    finally:
+        conn.close()
+
+
+def get_planner_dedupe_state(dedupe_key: str):
+    """Return the last-emitted state for a dedupe_key (confidence, regime, task_id), or None."""
+    if not dedupe_key:
+        return None
+    conn = get_conn()
+    try:
+        row = conn.execute(
+            "SELECT * FROM planner_dedupe_state WHERE dedupe_key = ?",
+            (dedupe_key,),
+        ).fetchone()
+        return dict(row) if row else None
+    finally:
+        conn.close()
+
+
+def increment_dedupe_skip_count(dedupe_key: str):
+    """Increment the skip counter for a dedupe_key (for observability)."""
+    if not dedupe_key:
+        return
+    conn = get_conn()
+    try:
+        conn.execute(
+            """
+            INSERT INTO planner_dedupe_state (dedupe_key, skip_count, updated_at)
+            VALUES (?, 1, ?)
+            ON CONFLICT(dedupe_key) DO UPDATE SET
+                skip_count = skip_count + 1,
+                updated_at = excluded.updated_at
+            """,
+            (dedupe_key, datetime.now(timezone.utc).isoformat()),
         )
         conn.commit()
-        return c.lastrowid
     finally:
         conn.close()
 
@@ -498,6 +1302,667 @@ def clear_worker_lock():
     try:
         conn.execute("DELETE FROM agent_locks WHERE runner = 'worker'")
         conn.commit()
+    finally:
+        conn.close()
+
+
+# ---------------------------------------------------------------------------
+# Light worker concurrency lock helpers
+# ---------------------------------------------------------------------------
+
+def get_light_worker_locks():
+    """Return all active light-worker lock rows."""
+    conn = get_conn()
+    try:
+        rows = conn.execute(
+            "SELECT * FROM agent_locks WHERE lock_type = 'light'"
+        ).fetchall()
+        return [dict(r) for r in rows]
+    finally:
+        conn.close()
+
+
+def count_active_light_workers():
+    """Return how many light workers are currently holding locks."""
+    conn = get_conn()
+    try:
+        row = conn.execute(
+            "SELECT COUNT(*) AS cnt FROM agent_locks WHERE lock_type = 'light'"
+        ).fetchone()
+        return row["cnt"] if row else 0
+    finally:
+        conn.close()
+
+
+def acquire_light_lock(pid: int, task_id: int):
+    """Insert a light-worker lock row; returns the runner key string."""
+    runner_key = f"light:{task_id}"
+    now = datetime.now(timezone.utc).isoformat()
+    conn = get_conn()
+    try:
+        conn.execute(
+            """INSERT OR REPLACE INTO agent_locks
+               (runner, pid, task_id, started_at, heartbeat_at, lock_type)
+               VALUES (?, ?, ?, ?, ?, 'light')""",
+            (runner_key, pid, task_id, now, now),
+        )
+        conn.commit()
+    finally:
+        conn.close()
+    return runner_key
+
+
+def release_light_lock(runner_key: str):
+    """Delete a light-worker lock row by its runner key."""
+    conn = get_conn()
+    try:
+        conn.execute("DELETE FROM agent_locks WHERE runner = ?", (runner_key,))
+        conn.commit()
+    finally:
+        conn.close()
+
+
+def update_light_heartbeat(runner_key: str):
+    """Update heartbeat timestamp for a light-worker lock row."""
+    now = datetime.now(timezone.utc).isoformat()
+    conn = get_conn()
+    try:
+        conn.execute(
+            "UPDATE agent_locks SET heartbeat_at = ? WHERE runner = ?",
+            (now, runner_key),
+        )
+        conn.commit()
+    finally:
+        conn.close()
+
+
+def get_next_light_task():
+    """Return the highest-priority QUEUED light task.
+
+    Priority order (within worker_type='light'):
+    repair (0) > system_recovery (1) > governance/data_quality/audit (2) >
+    report/health_check (3) > monitoring (4).
+    Resolved via CASE expression so no Python-side sorting is needed.
+    """
+    conn = get_conn()
+    try:
+        row = conn.execute(
+            """SELECT *,
+                   CASE
+                       WHEN dedupe_key LIKE 'validation_repair%' THEN 0
+                       WHEN dedupe_key LIKE 'template_repair%'   THEN 0
+                       WHEN dedupe_key LIKE 'system_recovery%'   THEN 1
+                       WHEN dedupe_key LIKE 'governance%'        THEN 2
+                       WHEN dedupe_key LIKE 'data_quality%'      THEN 2
+                       WHEN dedupe_key LIKE 'audit%'             THEN 2
+                       WHEN dedupe_key LIKE 'report%'            THEN 3
+                       WHEN dedupe_key LIKE 'health_check%'      THEN 3
+                       ELSE 4
+                   END AS _light_prio
+               FROM agent_tasks
+               WHERE status = 'QUEUED'
+                 AND (worker_type = 'light')
+               ORDER BY _light_prio ASC, id ASC
+               LIMIT 1"""
+        ).fetchone()
+        return dict(row) if row else None
+    finally:
+        conn.close()
+
+
+def get_next_research_task_by_priority():
+    """Return highest-priority QUEUED research task (worker_type='research' or NULL)."""
+    conn = get_conn()
+    try:
+        row = conn.execute(
+            """
+            SELECT at.*,
+                   COALESCE(cbi.priority_score, 0)   AS _p_score,
+                   COALESCE(cbi.priority_level, 'P3') AS _p_level
+            FROM agent_tasks at
+            LEFT JOIN cto_backlog_items cbi ON cbi.task_id = at.id
+            WHERE at.status = 'QUEUED'
+              AND (at.worker_type = 'research' OR at.worker_type IS NULL)
+            ORDER BY
+                CASE COALESCE(cbi.priority_level,'P3')
+                     WHEN 'P0' THEN 0 WHEN 'P1' THEN 1 WHEN 'P2' THEN 2 ELSE 3 END ASC,
+                COALESCE(cbi.priority_score, 0) DESC,
+                at.id ASC
+            LIMIT 1
+            """
+        ).fetchone()
+        return dict(row) if row else None
+    finally:
+        conn.close()
+
+
+# ---------------------------------------------------------------------------
+# Adaptive scheduling — metrics + state helpers
+# ---------------------------------------------------------------------------
+
+def log_worker_metrics(
+    worker_type: str,
+    active_count: int,
+    queued_count: int,
+    completed_count: int,
+    failed_count: int,
+    avg_latency_s: float = None,
+    throughput_ph: float = None,
+    cpu_pct: float = None,
+    slot_limit: int = 3,
+    backpressure: int = 0,
+    # v2 extended fields
+    cpu_share_pct: float = None,
+    research_latency_s: float = None,
+    starvation_incidents: int = 0,
+    slot_decision_reason: str = None,
+):
+    """Insert one row into worker_metrics for trend tracking."""
+    conn = get_conn()
+    try:
+        conn.execute(
+            """INSERT INTO worker_metrics
+               (sampled_at, worker_type, active_count, queued_count,
+                completed_count, failed_count, avg_latency_s, throughput_ph,
+                cpu_pct, slot_limit, backpressure,
+                cpu_share_pct, research_latency_s, starvation_incidents, slot_decision_reason)
+               VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)""",
+            (
+                datetime.now(timezone.utc).isoformat(),
+                worker_type, active_count, queued_count,
+                completed_count, failed_count, avg_latency_s, throughput_ph,
+                cpu_pct, slot_limit, backpressure,
+                cpu_share_pct, research_latency_s, starvation_incidents, slot_decision_reason,
+            ),
+        )
+        # Keep only last 1440 rows per worker_type (~24 h at 1-min sampling)
+        conn.execute(
+            """DELETE FROM worker_metrics WHERE id NOT IN (
+                   SELECT id FROM worker_metrics
+                   WHERE worker_type = ?
+                   ORDER BY id DESC LIMIT 1440
+               ) AND worker_type = ?""",
+            (worker_type, worker_type),
+        )
+        conn.commit()
+    finally:
+        conn.close()
+
+
+def get_worker_metrics_snapshot(worker_type: str = None, limit: int = 60):
+    """Return the most recent metric rows, optionally filtered by worker_type."""
+    conn = get_conn()
+    try:
+        if worker_type:
+            rows = conn.execute(
+                "SELECT * FROM worker_metrics WHERE worker_type=? ORDER BY id DESC LIMIT ?",
+                (worker_type, limit),
+            ).fetchall()
+        else:
+            rows = conn.execute(
+                "SELECT * FROM worker_metrics ORDER BY id DESC LIMIT ?",
+                (limit,),
+            ).fetchall()
+        return [dict(r) for r in rows]
+    finally:
+        conn.close()
+
+
+def get_queue_depth_by_type():
+    """Return {worker_type: count} for QUEUED tasks."""
+    conn = get_conn()
+    try:
+        rows = conn.execute(
+            """SELECT COALESCE(worker_type,'research') AS wtype, COUNT(1) AS cnt
+               FROM agent_tasks WHERE status='QUEUED' GROUP BY wtype"""
+        ).fetchall()
+        return {r["wtype"]: r["cnt"] for r in rows}
+    finally:
+        conn.close()
+
+
+def get_avg_task_latency(worker_type: str, window_hours: int = 6):
+    """Return average duration_seconds for COMPLETED tasks in the last window_hours."""
+    conn = get_conn()
+    try:
+        cutoff = datetime.now(timezone.utc)
+        from datetime import timedelta
+        cutoff -= timedelta(hours=window_hours)
+        row = conn.execute(
+            """SELECT AVG(duration_seconds) AS avg_s
+               FROM agent_tasks
+               WHERE (worker_type=? OR (? = 'research' AND worker_type IS NULL))
+                 AND status='COMPLETED'
+                 AND completed_at >= ?""",
+            (worker_type, worker_type, cutoff.isoformat()),
+        ).fetchone()
+        v = row["avg_s"] if row else None
+        return float(v) if v is not None else None
+    finally:
+        conn.close()
+
+
+def get_throughput_per_hour(worker_type: str, window_hours: int = 1):
+    """Return tasks completed per hour for the given worker_type over window_hours."""
+    conn = get_conn()
+    try:
+        from datetime import timedelta
+        cutoff = (datetime.now(timezone.utc) - timedelta(hours=window_hours)).isoformat()
+        row = conn.execute(
+            """SELECT COUNT(1) AS cnt
+               FROM agent_tasks
+               WHERE (worker_type=? OR (? = 'research' AND worker_type IS NULL))
+                 AND status='COMPLETED'
+                 AND completed_at >= ?""",
+            (worker_type, worker_type, cutoff),
+        ).fetchone()
+        cnt = row["cnt"] if row else 0
+        return round(cnt / max(window_hours, 1), 2)
+    finally:
+        conn.close()
+
+
+def get_research_latency_s(window_hours: int = 6):
+    """Return average duration_seconds for COMPLETED research tasks over window_hours."""
+    return get_avg_task_latency("research", window_hours=window_hours)
+
+
+def count_starvation_incidents(window_hours: int = 1) -> int:
+    """Return the count of worker_metrics rows where light was queued but active=0.
+
+    This counts ticks where light tasks existed but no worker was running them —
+    a proxy for starvation events.
+    """
+    conn = get_conn()
+    try:
+        from datetime import timedelta
+        cutoff = (datetime.now(timezone.utc) - timedelta(hours=window_hours)).isoformat()
+        row = conn.execute(
+            """SELECT COUNT(1) AS cnt
+               FROM worker_metrics
+               WHERE worker_type = 'light'
+                 AND queued_count > 0
+                 AND active_count = 0
+                 AND sampled_at >= ?""",
+            (cutoff,),
+        ).fetchone()
+        return row["cnt"] if row else 0
+    finally:
+        conn.close()
+
+
+# ---------------------------------------------------------------------------
+# Self-tuning scheduler — tunable params + tuning log
+# ---------------------------------------------------------------------------
+
+_SCHEDULER_PARAM_DEFAULTS = {
+    # param: (default, min, max, step)
+    "queue_boost_threshold": (4.0,  2.0, 12.0, 1.0),
+    "high_cpu_floor":        (90.0, 82.0, 96.0, 2.0),
+    "fairness_ratio":        (0.0,  0.0,  3.0,  0.5),
+}
+
+
+def get_tunable_param(param: str):
+    """Return the current row for a tunable param, or None if not seeded."""
+    conn = get_conn()
+    try:
+        row = conn.execute(
+            "SELECT * FROM scheduler_tunable_params WHERE param=?", (param,)
+        ).fetchone()
+        return dict(row) if row else None
+    finally:
+        conn.close()
+
+
+def get_all_tunable_params() -> dict:
+    """Return {param: row_dict} for all seeded tunable params."""
+    conn = get_conn()
+    try:
+        rows = conn.execute("SELECT * FROM scheduler_tunable_params").fetchall()
+        return {r["param"]: dict(r) for r in rows}
+    finally:
+        conn.close()
+
+
+def seed_tunable_param(param: str, default: float, min_v: float, max_v: float, step: float):
+    """Insert a tunable param with its default if it doesn't already exist."""
+    now = datetime.now(timezone.utc).isoformat()
+    conn = get_conn()
+    try:
+        conn.execute(
+            """INSERT OR IGNORE INTO scheduler_tunable_params
+               (param, value, default_value, min_value, max_value, step_size,
+                last_direction, update_count, updated_at)
+               VALUES (?, ?, ?, ?, ?, ?, 0, 0, ?)""",
+            (param, default, default, min_v, max_v, step, now),
+        )
+        conn.commit()
+    finally:
+        conn.close()
+
+
+def seed_default_tunable_params():
+    """Ensure all default tunable params exist in the DB."""
+    for param, (default, min_v, max_v, step) in _SCHEDULER_PARAM_DEFAULTS.items():
+        seed_tunable_param(param, default, min_v, max_v, step)
+
+
+def update_tunable_param_ewma(param: str, last_reward: float, new_ewma: float):
+    """Update the EWMA reward for a param without changing its value or cooldown."""
+    conn = get_conn()
+    try:
+        conn.execute(
+            """UPDATE scheduler_tunable_params
+               SET last_reward=?, ewma_reward=?, updated_at=?
+               WHERE param=?""",
+            (last_reward, new_ewma, datetime.now(timezone.utc).isoformat(), param),
+        )
+        conn.commit()
+    finally:
+        conn.close()
+
+
+def update_tunable_param_value(
+    param: str,
+    new_value: float,
+    reward: float,
+    direction: int,
+    cooldown_seconds: int = 300,
+    is_exploration: bool = False,
+):
+    """Update a tunable param's value, set cooldown, increment update_count.
+
+    Saves the current value into previous_value so rollback_tunable_param() can
+    restore it if performance deteriorates.
+    """
+    from datetime import timedelta
+    now = datetime.now(timezone.utc)
+    cooldown_until = (now + timedelta(seconds=cooldown_seconds)).isoformat()
+    conn = get_conn()
+    try:
+        conn.execute(
+            """UPDATE scheduler_tunable_params
+               SET previous_value=value, value=?, last_reward=?, last_direction=?,
+                   cooldown_until=?, update_count=update_count+1, updated_at=?
+               WHERE param=?""",
+            (new_value, reward, direction, cooldown_until,
+             now.isoformat(), param),
+        )
+        conn.commit()
+    finally:
+        conn.close()
+
+
+def rollback_tunable_param(param: str) -> bool:
+    """Restore a param to its previous_value.
+
+    Returns True if rollback was committed, False if no previous_value exists.
+    Swaps value ↔ previous_value so a second rollback can undo the rollback.
+    """
+    conn = get_conn()
+    try:
+        row = conn.execute(
+            "SELECT value, previous_value FROM scheduler_tunable_params WHERE param=?",
+            (param,),
+        ).fetchone()
+        if not row or row["previous_value"] is None:
+            return False
+        conn.execute(
+            """UPDATE scheduler_tunable_params
+               SET value=previous_value, previous_value=value,
+                   rollback_count=rollback_count+1,
+                   cooldown_until=NULL, updated_at=?
+               WHERE param=?""",
+            (datetime.now(timezone.utc).isoformat(), param),
+        )
+        conn.commit()
+        return True
+    finally:
+        conn.close()
+
+
+def get_worker_metrics_window(worker_type: str = "light", window_hours: float = 1.0) -> dict:
+    """Return aggregate statistics for worker_metrics over the past window_hours.
+
+    Used by the tuner for 1h baseline and 24h trend checks.
+    Returns keys: row_count, avg_tph, avg_latency_s, avg_starvation, avg_research_latency_s.
+    """
+    cutoff = (datetime.now(timezone.utc) - timedelta(hours=window_hours)).isoformat()
+    conn = get_conn()
+    try:
+        row = conn.execute(
+            """SELECT
+                   COUNT(*) AS row_count,
+                   AVG(throughput_ph) AS avg_tph,
+                   AVG(avg_latency_s) AS avg_latency_s,
+                   AVG(COALESCE(starvation_incidents, 0)) AS avg_starvation,
+                   AVG(COALESCE(research_latency_s, 0)) AS avg_research_latency_s
+               FROM worker_metrics
+               WHERE worker_type=? AND sampled_at >= ?""",
+            (worker_type, cutoff),
+        ).fetchone()
+        return dict(row) if row else {"row_count": 0}
+    finally:
+        conn.close()
+
+
+# ── Outcome-aware scheduler — outcome recording + ROI state ───────────────────
+
+def record_task_outcome(
+    task_id: int,
+    task_type: str,
+    success: bool,
+    quality_score: float = None,
+    roi_score: float = None,
+    edge_score: float = None,
+    extraction_method: str = "heuristic",
+    best_edge: float = None,
+    strategies_found: int = 0,
+    mc_pass_count: int = 0,
+    confidence_score: float = 1.0,
+):
+    """Record the outcome of a completed task for outcome-aware scheduling.
+
+    Called by worker_tick / light_worker_tick after a task finishes.
+    All score fields are optional [0..1]; omit any that the task type doesn't produce.
+    extraction_method: 'real' (extracted from output files) | 'heuristic' | 'fallback'.
+    best_edge: normalised edge vs incumbent, [0..1].
+    confidence_score: 0..1 trustworthiness from validation layer.
+    """
+    now = datetime.now(timezone.utc).isoformat()
+    conn = get_conn()
+    try:
+        conn.execute(
+            """INSERT INTO task_outcomes
+               (task_id, task_type, success, quality_score, roi_score, edge_score,
+                extraction_method, best_edge, strategies_found, mc_pass_count,
+                confidence_score, recorded_at)
+               VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)""",
+            (task_id, task_type, 1 if success else 0,
+             quality_score, roi_score, edge_score,
+             extraction_method, best_edge, strategies_found, mc_pass_count,
+             confidence_score, now),
+        )
+        # Retain last 2000 rows globally
+        conn.execute(
+            "DELETE FROM task_outcomes WHERE id NOT IN "
+            "(SELECT id FROM task_outcomes ORDER BY id DESC LIMIT 2000)"
+        )
+        conn.commit()
+    finally:
+        conn.close()
+
+
+def get_recent_task_outcomes(task_type: str = None, limit: int = 50) -> list:
+    """Return the most recent task_outcomes rows, optionally filtered by task_type."""
+    conn = get_conn()
+    try:
+        if task_type:
+            rows = conn.execute(
+                "SELECT * FROM task_outcomes WHERE task_type=? ORDER BY id DESC LIMIT ?",
+                (task_type, limit),
+            ).fetchall()
+        else:
+            rows = conn.execute(
+                "SELECT * FROM task_outcomes ORDER BY id DESC LIMIT ?",
+                (limit,),
+            ).fetchall()
+        return [dict(r) for r in rows]
+    finally:
+        conn.close()
+
+
+def get_task_type_roi_state(task_type: str = None):
+    """Return ROI state for one task_type (dict), or all types ({task_type: dict})."""
+    conn = get_conn()
+    try:
+        if task_type:
+            row = conn.execute(
+                "SELECT * FROM task_type_roi_state WHERE task_type=?", (task_type,)
+            ).fetchone()
+            return dict(row) if row else None
+        rows = conn.execute("SELECT * FROM task_type_roi_state").fetchall()
+        return {r["task_type"]: dict(r) for r in rows}
+    finally:
+        conn.close()
+
+
+def update_task_type_roi(
+    task_type: str,
+    quality_score: float,
+    roi_score: float,
+    success: bool,
+    ewma_alpha: float = 0.20,
+):
+    """EWMA-update the ROI state for a task_type; upsert if not present."""
+    now = datetime.now(timezone.utc).isoformat()
+    success_val = 1.0 if success else 0.0
+    conn = get_conn()
+    try:
+        row = conn.execute(
+            "SELECT * FROM task_type_roi_state WHERE task_type=?", (task_type,)
+        ).fetchone()
+        if row:
+            q_prev = float(row["ewma_quality"] or 0.5)
+            r_prev = float(row["ewma_roi"]     or 0.5)
+            s_prev = float(row["ewma_success"] or 0.5)
+            new_q  = round(ewma_alpha * quality_score + (1 - ewma_alpha) * q_prev, 4)
+            new_r  = round(ewma_alpha * roi_score     + (1 - ewma_alpha) * r_prev, 4)
+            new_s  = round(ewma_alpha * success_val   + (1 - ewma_alpha) * s_prev, 4)
+            n      = int(row["sample_count"]) + 1
+            conn.execute(
+                """UPDATE task_type_roi_state
+                   SET ewma_quality=?, ewma_roi=?, ewma_success=?,
+                       sample_count=?, updated_at=?
+                   WHERE task_type=?""",
+                (new_q, new_r, new_s, n, now, task_type),
+            )
+        else:
+            conn.execute(
+                """INSERT INTO task_type_roi_state
+                   (task_type, ewma_quality, ewma_roi, ewma_success,
+                    sample_count, priority_boost, slot_hint, updated_at)
+                   VALUES (?, ?, ?, ?, 1, 0.0, 0, ?)""",
+                (task_type,
+                 round(quality_score, 4), round(roi_score, 4), round(success_val, 4),
+                 now),
+            )
+        conn.commit()
+    finally:
+        conn.close()
+
+
+def set_task_type_slot_hint(task_type: str, slot_hint: int, priority_boost: float):
+    """Upsert scheduler slot hint + priority boost for a task_type (written by feedback loop)."""
+    now = datetime.now(timezone.utc).isoformat()
+    conn = get_conn()
+    try:
+        conn.execute(
+            """INSERT INTO task_type_roi_state
+               (task_type, ewma_quality, ewma_roi, ewma_success,
+                sample_count, priority_boost, slot_hint, updated_at)
+               VALUES (?, 0.5, 0.5, 0.5, 0, ?, ?, ?)
+               ON CONFLICT(task_type) DO UPDATE SET
+                   priority_boost=excluded.priority_boost,
+                   slot_hint=excluded.slot_hint,
+                   updated_at=excluded.updated_at""",
+            (task_type, priority_boost, slot_hint, now),
+        )
+        conn.commit()
+    finally:
+        conn.close()
+
+
+def log_tuning_decision(
+    action: str,
+    param: str = None,
+    old_value: float = None,
+    new_value: float = None,
+    direction: int = None,
+    reward: float = None,
+    ewma_reward: float = None,
+    reason: str = None,
+    is_exploration: bool = False,
+):
+    """Append one row to scheduler_tuning_log for audit trail."""
+    conn = get_conn()
+    try:
+        conn.execute(
+            """INSERT INTO scheduler_tuning_log
+               (logged_at, action, param, old_value, new_value, direction,
+                reward, ewma_reward, reason, is_exploration)
+               VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)""",
+            (
+                datetime.now(timezone.utc).isoformat(),
+                action, param, old_value, new_value, direction,
+                reward, ewma_reward, reason, 1 if is_exploration else 0,
+            ),
+        )
+        # Keep last 2000 rows
+        conn.execute(
+            """DELETE FROM scheduler_tuning_log WHERE id NOT IN (
+                   SELECT id FROM scheduler_tuning_log ORDER BY id DESC LIMIT 2000
+               )"""
+        )
+        conn.commit()
+    finally:
+        conn.close()
+
+
+def get_recent_worker_metrics(worker_type: str = "light", limit: int = 20) -> list:
+    """Return the N most recent worker_metrics rows for a given worker_type."""
+    conn = get_conn()
+    try:
+        rows = conn.execute(
+            """SELECT * FROM worker_metrics
+               WHERE worker_type=?
+               ORDER BY id DESC LIMIT ?""",
+            (worker_type, limit),
+        ).fetchall()
+        return [dict(r) for r in rows]
+    finally:
+        conn.close()
+
+
+def get_set_scheduling_state(key: str, value: str = None):
+    """Read or write a scheduling_state key. Pass value=None to read."""
+    conn = get_conn()
+    try:
+        if value is None:
+            row = conn.execute(
+                "SELECT value FROM scheduling_state WHERE key=?", (key,)
+            ).fetchone()
+            return row["value"] if row else None
+        else:
+            conn.execute(
+                """INSERT INTO scheduling_state (key, value, updated_at)
+                   VALUES (?, ?, ?)
+                   ON CONFLICT(key) DO UPDATE SET value=excluded.value, updated_at=excluded.updated_at""",
+                (key, value, datetime.now(timezone.utc).isoformat()),
+            )
+            conn.commit()
+            return value
     finally:
         conn.close()
 
@@ -620,6 +2085,16 @@ def set_scheduler_enabled(enabled: bool):
     set_setting("scheduler_enabled", "1" if enabled else "0")
 
 
+def is_llm_hard_off() -> bool:
+    value = get_setting("llm_hard_off", DEFAULT_SETTINGS["llm_hard_off"])
+    return str(value).strip() in ("1", "true", "TRUE", "yes", "on")
+
+
+def set_llm_hard_off(enabled: bool):
+    set_setting("llm_hard_off", "1" if enabled else "0")
+    set_setting("llm_execution_mode", "hard-off" if enabled else "safe-run")
+
+
 def get_planner_provider() -> str:
     value = get_setting("planner_provider", DEFAULT_SETTINGS["planner_provider"]) or DEFAULT_SETTINGS["planner_provider"]
     return str(value).strip().lower()
@@ -725,6 +2200,7 @@ def upsert_task_git_commit(**kwargs):
         "task_status": kwargs.get("task_status"),
         "gate_verdict": kwargs.get("gate_verdict"),
         "gate_reason": kwargs.get("gate_reason"),
+        "manual_merge_required": 1 if kwargs.get("manual_merge_required") else 0,
         "created_at": kwargs.get("created_at") or now,
         "updated_at": now,
     }
@@ -739,14 +2215,14 @@ def upsert_task_git_commit(**kwargs):
                 reviewed_at, merge_branch, merge_commit_sha, reject_reason, superseded_by_task_id,
                 superseded_by_commit_sha, changed_files_json, depends_on_tasks_json,
                 depends_on_commits_json, high_conflict_paths_json, task_status, gate_verdict,
-                gate_reason, created_at, updated_at
+                gate_reason, manual_merge_required, created_at, updated_at
             ) VALUES (
                 :task_id, :slot_key, :task_title, :source_branch, :commit_sha, :commit_message,
                 :integration_group, :review_priority, :safe_to_autocommit, :status, :reviewer_role,
                 :reviewed_at, :merge_branch, :merge_commit_sha, :reject_reason, :superseded_by_task_id,
                 :superseded_by_commit_sha, :changed_files_json, :depends_on_tasks_json,
                 :depends_on_commits_json, :high_conflict_paths_json, :task_status, :gate_verdict,
-                :gate_reason, :created_at, :updated_at
+                :gate_reason, :manual_merge_required, :created_at, :updated_at
             )
             ON CONFLICT(task_id) DO UPDATE SET
                 slot_key = excluded.slot_key,
@@ -772,6 +2248,7 @@ def upsert_task_git_commit(**kwargs):
                 task_status = excluded.task_status,
                 gate_verdict = excluded.gate_verdict,
                 gate_reason = excluded.gate_reason,
+                manual_merge_required = excluded.manual_merge_required,
                 updated_at = excluded.updated_at
             """,
             payload,
@@ -833,6 +2310,33 @@ def count_task_git_commits(status: str = None):
         where = ("WHERE " + " AND ".join(conds)) if conds else ""
         row = conn.execute(f"SELECT COUNT(1) AS cnt FROM task_git_commits {where}", vals).fetchone()
         return int(row["cnt"]) if row else 0
+    finally:
+        conn.close()
+
+
+def list_waiting_manual_approval(limit: int = 100, offset: int = 0):
+    """Return all task_git_commits in WAITING_MANUAL_APPROVAL status."""
+    conn = get_conn()
+    try:
+        rows = conn.execute(
+            "SELECT * FROM task_git_commits WHERE status = 'WAITING_MANUAL_APPROVAL' ORDER BY reviewed_at ASC LIMIT ? OFFSET ?",
+            (limit, offset),
+        ).fetchall()
+        return [dict(r) for r in rows]
+    finally:
+        conn.close()
+
+
+def set_task_manual_merge_required(task_id: int, required: bool) -> None:
+    """Set the manual_merge_required flag for a task's git commit record."""
+    now = datetime.now(timezone.utc).isoformat()
+    conn = get_conn()
+    try:
+        conn.execute(
+            "UPDATE task_git_commits SET manual_merge_required = ?, updated_at = ? WHERE task_id = ?",
+            (1 if required else 0, now, task_id),
+        )
+        conn.commit()
     finally:
         conn.close()
 
@@ -914,8 +2418,8 @@ def create_cto_review_run(**kwargs):
                 checked_until, candidate_count, approved_count, merged_count, rejected_count,
                 deferred_count, superseded_count, duplicate_count, merge_branch, report_md_path,
                 report_json_path, summary, created_at, updated_at, dedupe_key, is_manual, is_force_run,
-                run_intent, parent_run_id
-            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                run_intent, parent_run_id, status, outcome, outcome_message, pid, request_id
+            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
             """,
             (
                 kwargs.get("run_id"),
@@ -943,6 +2447,11 @@ def create_cto_review_run(**kwargs):
                 1 if kwargs.get("is_force_run") else 0,
                 kwargs.get("run_intent"),
                 kwargs.get("parent_run_id"),
+                kwargs.get("status"),
+                kwargs.get("outcome"),
+                kwargs.get("outcome_message"),
+                kwargs.get("pid"),
+                kwargs.get("request_id"),
             ),
         )
         conn.commit()
@@ -951,16 +2460,25 @@ def create_cto_review_run(**kwargs):
 
 
 def get_inflight_cto_run_by_dedupe_key(dedupe_key: str):
-    """Return the most recent non-completed run with the given dedupe_key, or None."""
+    """Return the most recent live RUNNING run with the given dedupe_key, or None."""
     if not dedupe_key:
         return None
+    cleanup_stale_cto_review_runs(dedupe_key=dedupe_key)
     conn = get_conn()
     try:
         row = conn.execute(
-            "SELECT * FROM cto_review_runs WHERE dedupe_key = ? AND completed_at IS NULL ORDER BY id DESC LIMIT 1",
+            """
+            SELECT *
+              FROM cto_review_runs
+             WHERE dedupe_key = ?
+               AND completed_at IS NULL
+               AND COALESCE(status, 'RUNNING') NOT IN ('COMPLETED', 'SKIPPED', 'FAILED', 'FAILED_STALE', 'SKIPPED_STALE')
+             ORDER BY id DESC
+             LIMIT 1
+            """,
             (dedupe_key,),
         ).fetchone()
-        return dict(row) if row else None
+        return _enrich_cto_review_run(row) if row else None
     finally:
         conn.close()
 
@@ -1097,17 +2615,18 @@ def record_classifier_event(
     Returns the new calibration_log id for later outcome recording.
     """
     now = datetime.now(timezone.utc).isoformat()
+    epoch_id = get_current_epoch_id()
     conn = get_conn()
     try:
         cursor = conn.execute(
             """
             INSERT INTO classifier_calibration_log
                 (classified_at, state, confidence_score, confidence_label,
-                 reason, features_json, thresholds_json)
-            VALUES (?, ?, ?, ?, ?, ?, ?)
+                 reason, features_json, thresholds_json, epoch_id)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?)
             """,
             (now, state, confidence_score, confidence_label,
-             reason, features_json, thresholds_json),
+             reason, features_json, thresholds_json, epoch_id),
         )
         row_id = cursor.lastrowid
         conn.commit()
@@ -1719,34 +3238,37 @@ def update_cto_review_run(run_id: str, **kwargs):
 
 
 def get_cto_review_run(run_id: str):
+    cleanup_stale_cto_review_runs()
     conn = get_conn()
     try:
         row = conn.execute(
             "SELECT * FROM cto_review_runs WHERE run_id = ? ORDER BY id DESC LIMIT 1",
             (run_id,),
         ).fetchone()
-        return dict(row) if row else None
+        return _enrich_cto_review_run(row) if row else None
     finally:
         conn.close()
 
 
 def get_latest_cto_review_run():
+    cleanup_stale_cto_review_runs()
     conn = get_conn()
     try:
         row = conn.execute("SELECT * FROM cto_review_runs ORDER BY id DESC LIMIT 1").fetchone()
-        return dict(row) if row else None
+        return _enrich_cto_review_run(row) if row else None
     finally:
         conn.close()
 
 
 def list_cto_review_runs(limit: int = 20, offset: int = 0):
+    cleanup_stale_cto_review_runs()
     conn = get_conn()
     try:
         rows = conn.execute(
             "SELECT * FROM cto_review_runs ORDER BY id DESC LIMIT ? OFFSET ?",
             (limit, offset),
         ).fetchall()
-        return [dict(r) for r in rows]
+        return [_enrich_cto_review_run(r) for r in rows]
     finally:
         conn.close()
 
@@ -2077,6 +3599,8 @@ def get_cto_backlog_item_task_status(item):
             "RUNNING": "running",
             "COMPLETED": "completed",
             "FAILED": "failed",
+            "FAILED_NO_EDGE": "failed",
+            "FAILED_WEAK_EDGE": "failed",
             "CANCELLED": "cancelled",
             "REPLAN_REQUIRED": "failed",
         }
@@ -2498,5 +4022,283 @@ def get_policy_stats():
             "SELECT COUNT(1) AS cnt FROM task_git_commits WHERE status = 'PENDING_REVIEW'",
         ).fetchone()
         return int(row["cnt"]) if row else 0
+    finally:
+        conn.close()
+
+
+# ── Strategy Review DB functions ──────────────────────────────────────────────
+
+def list_strategy_review_candidates(since: Optional[str] = None, limit: int = 100) -> list:
+    """Return completed tasks not yet strategy-reviewed (gate_verdict PASS or NULL)."""
+    conn = get_conn()
+    try:
+        params: list = []
+        sql = """
+            SELECT t.id, t.slot_key, t.date_folder, t.title, t.slug,
+                   t.status, t.completed_at, t.gate_verdict
+              FROM agent_tasks t
+         LEFT JOIN strategy_reviews sr ON sr.task_id = t.id
+             WHERE t.status = 'COMPLETED'
+               AND (t.gate_verdict = 'PASS' OR t.gate_verdict IS NULL)
+               AND sr.id IS NULL
+        """
+        if since:
+            sql += " AND t.completed_at >= ?"
+            params.append(since)
+        sql += " ORDER BY t.completed_at DESC LIMIT ?"
+        params.append(limit)
+        rows = conn.execute(sql, params).fetchall()
+        return [dict(r) for r in rows]
+    finally:
+        conn.close()
+
+
+def insert_strategy_review(
+    task_id: int,
+    slot_key: str,
+    review_run_id: str,
+    decision: str,
+    reason: str = None,
+    game_type: str = None,
+    strategy_name: str = None,
+    edge_score: float = None,
+    sharpe_ratio: float = None,
+    drawdown: float = None,
+    mc_passed: int = None,
+    comparison_summary: str = None,
+    task_title: str = None,
+) -> int:
+    """Insert a strategy review record and return its id."""
+    conn = get_conn()
+    try:
+        now = datetime.now(timezone.utc).isoformat()
+        cur = conn.execute(
+            """
+            INSERT INTO strategy_reviews
+                (task_id, slot_key, task_title, review_run_id, decision, reason,
+                 game_type, strategy_name, edge_score, sharpe_ratio, drawdown,
+                 mc_passed, comparison_summary, created_at)
+            VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?)
+            """,
+            (
+                task_id, slot_key, task_title, review_run_id, decision, reason,
+                game_type, strategy_name, edge_score, sharpe_ratio, drawdown,
+                mc_passed, comparison_summary, now,
+            ),
+        )
+        conn.commit()
+        return cur.lastrowid
+    finally:
+        conn.close()
+
+
+def get_strategy_review_for_task(task_id: int) -> Optional[dict]:
+    """Return the latest strategy review for a task, or None."""
+    conn = get_conn()
+    try:
+        row = conn.execute(
+            "SELECT * FROM strategy_reviews WHERE task_id = ? ORDER BY id DESC LIMIT 1",
+            (task_id,),
+        ).fetchone()
+        return dict(row) if row else None
+    finally:
+        conn.close()
+
+
+def get_active_strategy_state(game_type: str) -> Optional[dict]:
+    """Return the active/shadow strategy state for a game_type, or None."""
+    conn = get_conn()
+    try:
+        row = conn.execute(
+            "SELECT * FROM active_strategy_state WHERE game_type = ?",
+            (game_type,),
+        ).fetchone()
+        return dict(row) if row else None
+    finally:
+        conn.close()
+
+
+def get_all_active_strategy_states() -> list:
+    """Return all game strategy states ordered by game_type."""
+    conn = get_conn()
+    try:
+        rows = conn.execute(
+            "SELECT * FROM active_strategy_state ORDER BY game_type"
+        ).fetchall()
+        return [dict(r) for r in rows]
+    finally:
+        conn.close()
+
+
+def set_active_strategy_state(
+    game_type: str,
+    active_strategy: Optional[str] = None,
+    active_edge: Optional[float] = None,
+    active_task_id: Optional[int] = None,
+    shadow_strategy: Optional[str] = None,
+    shadow_edge: Optional[float] = None,
+    shadow_task_id: Optional[int] = None,
+    planner_focus: Optional[str] = None,
+) -> None:
+    """Upsert the active/shadow strategy state for a game_type (partial update)."""
+    conn = get_conn()
+    try:
+        now = datetime.now(timezone.utc).isoformat()
+        existing = conn.execute(
+            "SELECT game_type FROM active_strategy_state WHERE game_type = ?",
+            (game_type,),
+        ).fetchone()
+        if existing:
+            updates: dict = {"updated_at": now}
+            if active_strategy is not None:
+                updates["active_strategy"] = active_strategy
+            if active_edge is not None:
+                updates["active_edge"] = active_edge
+            if active_task_id is not None:
+                updates["active_task_id"] = active_task_id
+            if shadow_strategy is not None:
+                updates["shadow_strategy"] = shadow_strategy
+            if shadow_edge is not None:
+                updates["shadow_edge"] = shadow_edge
+            if shadow_task_id is not None:
+                updates["shadow_task_id"] = shadow_task_id
+            if planner_focus is not None:
+                updates["planner_focus"] = planner_focus
+            set_clause = ", ".join(f"{k} = ?" for k in updates)
+            vals = list(updates.values()) + [game_type]
+            conn.execute(
+                f"UPDATE active_strategy_state SET {set_clause} WHERE game_type = ?",
+                vals,
+            )
+        else:
+            conn.execute(
+                """
+                INSERT INTO active_strategy_state
+                    (game_type, active_strategy, active_edge, active_task_id,
+                     shadow_strategy, shadow_edge, shadow_task_id, planner_focus, updated_at)
+                VALUES (?,?,?,?,?,?,?,?,?)
+                """,
+                (
+                    game_type, active_strategy, active_edge, active_task_id,
+                    shadow_strategy, shadow_edge, shadow_task_id, planner_focus, now,
+                ),
+            )
+        conn.commit()
+    finally:
+        conn.close()
+
+
+# ── Planner Directives ────────────────────────────────────────────────────────
+
+def write_planner_directive(
+    game_type: str,
+    focus_direction: str,
+    forbidden_families: list = None,
+    required_validation: list = None,
+    promotion_targets: list = None,
+    kill_targets: list = None,
+    budget_hint: str = None,
+    note: str = None,
+    expires_after_cycles: int = 10,
+) -> str:
+    """
+    Write a CTO → Planner directive.
+
+    Deactivation rules (per-focus_direction, not per-game_type):
+    - Only deactivates a previous directive with the SAME (game_type, focus_direction).
+    - Different focus_directions for the same game_type co-exist.
+      e.g. avoid_rejected_family + shadow_validation can both be active simultaneously.
+    Returns the new directive_id.
+    """
+    import uuid as _uuid
+    now = datetime.now(timezone.utc).isoformat()
+    directive_id = f"pd_{game_type}_{datetime.now(timezone.utc).strftime('%Y%m%d_%H%M%S')}_{_uuid.uuid4().hex[:6]}"
+    conn = get_conn()
+    try:
+        # Only deactivate directives with the SAME game_type AND focus_direction
+        conn.execute(
+            "UPDATE planner_directives SET is_active = 0, updated_at = ? "
+            "WHERE game_type = ? AND focus_direction = ? AND is_active = 1",
+            (now, game_type, focus_direction),
+        )
+        conn.execute(
+            """
+            INSERT INTO planner_directives
+                (directive_id, game_type, focus_direction, forbidden_families,
+                 required_validation, promotion_targets, kill_targets,
+                 budget_hint, note, expires_after_cycles, cycle_count,
+                 is_active, created_at, updated_at)
+            VALUES (?,?,?,?,?,?,?,?,?,?,0,1,?,?)
+            """,
+            (
+                directive_id, game_type, focus_direction,
+                json.dumps(forbidden_families or [], ensure_ascii=False),
+                json.dumps(required_validation or [], ensure_ascii=False),
+                json.dumps(promotion_targets or [], ensure_ascii=False),
+                json.dumps(kill_targets or [], ensure_ascii=False),
+                budget_hint, note, expires_after_cycles, now, now,
+            ),
+        )
+        conn.commit()
+        logger.info("[PlannerDirective] written: %s game=%s focus=%s", directive_id, game_type, focus_direction)
+        return directive_id
+    finally:
+        conn.close()
+
+
+def get_active_planner_directives(game_type: str = None) -> list:
+    """
+    Return all active planner directives, optionally filtered by game_type.
+    Also auto-expires directives that have exceeded expires_after_cycles.
+    """
+    conn = get_conn()
+    try:
+        now = datetime.now(timezone.utc).isoformat()
+        params = []
+        sql = "SELECT * FROM planner_directives WHERE is_active = 1"
+        if game_type:
+            sql += " AND game_type = ?"
+            params.append(game_type)
+        sql += " ORDER BY created_at DESC"
+        rows = conn.execute(sql, params).fetchall()
+        result = []
+        expired_ids = []
+        for row in rows:
+            d = dict(row)
+            if d.get("cycle_count", 0) >= d.get("expires_after_cycles", 10):
+                expired_ids.append(d["directive_id"])
+            else:
+                try:
+                    d["forbidden_families"] = json.loads(d.get("forbidden_families") or "[]")
+                    d["required_validation"] = json.loads(d.get("required_validation") or "[]")
+                    d["promotion_targets"] = json.loads(d.get("promotion_targets") or "[]")
+                    d["kill_targets"] = json.loads(d.get("kill_targets") or "[]")
+                except Exception:
+                    pass
+                result.append(d)
+        if expired_ids:
+            conn.execute(
+                f"UPDATE planner_directives SET is_active = 0, updated_at = ? WHERE directive_id IN ({','.join('?' * len(expired_ids))})",
+                [now] + expired_ids,
+            )
+            conn.commit()
+        return result
+    finally:
+        conn.close()
+
+
+def tick_planner_directive_cycles(directive_ids: list) -> None:
+    """Increment cycle_count for given directive IDs (called by planner on each cycle)."""
+    if not directive_ids:
+        return
+    now = datetime.now(timezone.utc).isoformat()
+    conn = get_conn()
+    try:
+        conn.execute(
+            f"UPDATE planner_directives SET cycle_count = cycle_count + 1, updated_at = ? "
+            f"WHERE directive_id IN ({','.join('?' * len(directive_ids))})",
+            [now] + directive_ids,
+        )
+        conn.commit()
     finally:
         conn.close()

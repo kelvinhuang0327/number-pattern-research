@@ -402,10 +402,43 @@
         .orc-status-running { background:rgba(187,128,9,.2); color:#e3b341; }
         .orc-status-completed { background:rgba(35,134,54,.2); color:#3fb950; }
         .orc-status-failed  { background:rgba(248,81,73,.2); color:#f85149; }
+        .orc-status-failed_rate_limit { background:rgba(245,158,11,.18); color:#fbbf24; }
+        .orc-status-failed_no_edge { background:rgba(239,68,68,.18); color:#fca5a5; }
+        .orc-status-failed_weak_edge { background:rgba(251,146,60,.18); color:#fdba74; }
+        .orc-status-blocked_env { background:rgba(148,163,184,.18); color:#cbd5e1; }
         .orc-status-replan_required { background:rgba(245,158,11,.18); color:#f59e0b; }
         .orc-status-cancelled { background:rgba(100,100,100,.2); color:#8b949e; }
         .orc-plan-badge { margin-left:8px; padding:1px 6px; border-radius:10px; font-size:10px; font-weight:700; letter-spacing:.3px; }
         .orc-plan-badge-fallback { background:rgba(245,158,11,.2); color:#fbbf24; border:1px solid rgba(245,158,11,.4); }
+
+        /* long-runner worker panel */
+        .orc-longrunner-panel {
+          display:none;
+          background:rgba(245,158,11,.06);
+          border:1px solid rgba(245,158,11,.3);
+          border-radius:8px;
+          padding:10px 14px;
+          margin-bottom:16px;
+          font-size:12px;
+          gap:14px;
+          align-items:center;
+          flex-wrap:wrap;
+        }
+        .orc-longrunner-panel.visible { display:flex; }
+        .orc-lr-badge {
+          display:inline-block;
+          padding:2px 9px;
+          border-radius:999px;
+          font-size:11px;
+          font-weight:700;
+          letter-spacing:.4px;
+        }
+        .orc-lr-badge-longrunning { background:rgba(245,158,11,.2); color:#f59e0b; border:1px solid rgba(245,158,11,.5); }
+        .orc-lr-badge-stuck       { background:rgba(239, 68,68,.2); color:#ef4444; border:1px solid rgba(239,68,68,.5); }
+        .orc-lr-badge-running     { background:rgba(16,185,129,.15); color:#10b981; border:1px solid rgba(16,185,129,.4); }
+        .orc-lr-item { display:flex; flex-direction:column; gap:2px; }
+        .orc-lr-label { font-size:10px; color:var(--text-muted,#6b7280); text-transform:uppercase; letter-spacing:.5px; }
+        .orc-lr-value { font-size:12px; font-weight:600; color:var(--text-primary,#e5e7eb); }
         .orc-trigger-btn { border-color:#3b82f6; color:#93c5fd; background:rgba(59,130,246,.12); }
         .orc-trigger-btn:hover { background:rgba(59,130,246,.2); }
         .orc-trigger-btn:disabled { opacity:.6; cursor:not-allowed; }
@@ -1874,6 +1907,26 @@
             <div class="metric-card"><div class="metric-label">Worker 狀態</div><div class="metric-value" id="orc-worker-status">—</div></div>
           </div>
 
+          <!-- Long-runner detail panel (visible when worker_run_state_badge != RUNNING/null) -->
+          <div id="orc-longrunner-panel" class="orc-longrunner-panel">
+            <div class="orc-lr-item">
+              <span class="orc-lr-label">狀態</span>
+              <span id="orc-lr-badge" class="orc-lr-badge"></span>
+            </div>
+            <div class="orc-lr-item">
+              <span class="orc-lr-label">任務 ID</span>
+              <span id="orc-lr-task-id" class="orc-lr-value">—</span>
+            </div>
+            <div class="orc-lr-item">
+              <span class="orc-lr-label">當前子任務</span>
+              <span id="orc-lr-subtask" class="orc-lr-value">—</span>
+            </div>
+            <div class="orc-lr-item">
+              <span class="orc-lr-label">預估剩餘時間</span>
+              <span id="orc-lr-eta" class="orc-lr-value">—</span>
+            </div>
+          </div>
+
           <!-- Filter Bar -->
           <div class="rv-filter-bar" style="margin-bottom:16px;display:flex;gap:10px;align-items:center;flex-wrap:wrap">
             <label>日期
@@ -1886,6 +1939,10 @@
                 <option value="RUNNING">RUNNING</option>
                 <option value="COMPLETED">COMPLETED</option>
                 <option value="FAILED">FAILED</option>
+                <option value="FAILED_RATE_LIMIT">FAILED_RATE_LIMIT</option>
+                                <option value="FAILED_NO_EDGE">FAILED_NO_EDGE</option>
+                                <option value="FAILED_WEAK_EDGE">FAILED_WEAK_EDGE</option>
+                <option value="BLOCKED_ENV">BLOCKED_ENV</option>
                 <option value="REPLAN_REQUIRED">REPLAN_REQUIRED</option>
                 <option value="CANCELLED">CANCELLED</option>
               </select>
@@ -1902,6 +1959,13 @@
             <button id="orc-run-planner-btn" class="btn-sm orc-trigger-btn">Planner 立即執行</button>
             <button id="orc-run-worker-btn" class="btn-sm orc-trigger-btn">Worker 立即執行</button>
           </div>
+
+                    <div class="card mb-16" style="padding:12px 14px">
+                        <div style="font-weight:600;margin-bottom:10px;font-size:0.88rem">LLM Execution Control</div>
+                        <div id="orc-llm-control-panel" style="min-height:40px">
+                            <span style="font-size:0.8rem;color:#8b949e">載入中…</span>
+                        </div>
+                    </div>
 
                     <div class="card mb-16" style="padding:12px 14px">
                         <div style="font-weight:600;margin-bottom:8px">Planner 單次觸發追蹤</div>
@@ -2058,10 +2122,32 @@
                             <span id="orc-cto-provider-hint" style="font-size:12px;color:#8b949e">讀取 CTO provider 狀態中…</span>
                         </div>
 
-                        <!-- Execution Policy Panel -->
+                        <!-- Manual Merge Approval Explainer -->
+                        <div class="card mb-16" style="padding:12px 16px;border:1px solid rgba(210,153,34,0.35);background:rgba(210,153,34,0.06)">
+                            <div style="display:flex;align-items:center;gap:8px;margin-bottom:10px">
+                                <span style="font-weight:600;font-size:0.88rem">🔀 Manual Merge Approval</span>
+                                <span style="font-size:0.72rem;color:#8b949e;border:1px solid #30363d;border-radius:3px;padding:0 5px">per-commit 設定</span>
+                            </div>
+                            <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;font-size:0.82rem;margin-bottom:10px">
+                                <div style="padding:10px 12px;border-radius:6px;background:rgba(46,160,67,0.1);border:1px solid rgba(46,160,67,0.3)">
+                                    <div style="font-weight:600;color:#3fb950;margin-bottom:4px">OFF（預設）</div>
+                                    <div style="color:var(--text-muted,#8b949e);line-height:1.5">CTO 審核通過後，系統會<b style="color:var(--text-color,#c9d1d9)">自動執行 merge</b>。<br>適合信任自動化流程時使用。</div>
+                                </div>
+                                <div style="padding:10px 12px;border-radius:6px;background:rgba(88,166,255,0.1);border:1px solid rgba(88,166,255,0.3)">
+                                    <div style="font-weight:600;color:#58a6ff;margin-bottom:4px">ON</div>
+                                    <div style="color:var(--text-muted,#8b949e);line-height:1.5">CTO 審核通過後，仍需<b style="color:var(--text-color,#c9d1d9)">人工按下 Approve Merge</b> 才會合併。<br>適合核心程式或高風險變更。</div>
+                                </div>
+                            </div>
+                            <div style="padding:8px 12px;border-radius:5px;background:rgba(248,81,73,0.1);border:1px solid rgba(248,81,73,0.35);font-size:0.8rem;color:#f85149">
+                                ⚠️ 關閉 Manual Merge Approval 時，CTO_APPROVED 的變更會自動進入 merge 流程。<br>
+                                <span style="color:#8b949e">如需人工確認，請在提交 git commit 前將任務的 <code style="color:#e3b341">manual_merge_required</code> 設為 <code style="color:#e3b341">true</code>。</span>
+                            </div>
+                        </div>
+
+                        <!-- CTO Backlog Selection Policy Panel -->
                         <div class="card mb-16" style="padding:12px 14px">
-                            <div style="font-weight:600;margin-bottom:10px;font-size:0.88rem">🎯 Scheduler Execution Policy</div>
-                            <div id="orc-policy-panel" style="min-height:40px">
+                            <div style="font-weight:600;margin-bottom:10px;font-size:0.88rem">🎯 CTO Backlog Selection Policy</div>
+                            <div id="orc-backlog-policy-panel" style="min-height:40px">
                                 <span style="font-size:0.8rem;color:#8b949e">載入中…</span>
                             </div>
                         </div>

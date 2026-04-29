@@ -30,6 +30,7 @@ export class OrchestrationManager {
     this._lastCtoProviderData = null;
     this._ctoProviderHintOverride = null;
     this._ctoProviderHintResetTimer = null;
+    this._lastLlmControl = null;
   }
 
   async init() {
@@ -108,7 +109,7 @@ export class OrchestrationManager {
   }
 
   async _loadAll() {
-    await Promise.all([this._loadSummary(), this._loadProviders(), this._loadTasks(), this._loadRuns(), this._loadCtoAll()]);
+    await Promise.all([this._loadSummary(), this._loadProviders(), this._loadTasks(), this._loadRuns(), this._loadLlmControlPanel(), this._loadCtoAll()]);
   }
 
   _renderPlannerTriggerTrace({ requestId = '—', outcome = '—', taskId = '—', note = '' } = {}) {
@@ -134,7 +135,62 @@ export class OrchestrationManager {
   }
 
   async _loadCtoAll() {
-    await Promise.all([this._loadCtoSummary(), this._loadCtoPending(), this._loadCtoRuns(), this._loadCtoProviders(), this._loadPolicyPanel(), this._loadAdaptivePolicy()]);
+    await Promise.all([this._loadCtoSummary(), this._loadCtoPending(), this._loadCtoRuns(), this._loadCtoProviders(), this._loadBacklogPolicyPanel(), this._loadAdaptivePolicy()]);
+  }
+
+  async _loadLlmControlPanel() {
+    const el = document.getElementById('orc-llm-control-panel');
+    if (!el) return;
+    try {
+      const data = await this._get('/api/orchestrator/llm-control');
+      this._lastLlmControl = data;
+      const mode = String(data.mode || 'safe-run').toLowerCase();
+      const runners = Array.isArray(data.active_background_runners) ? data.active_background_runners : [];
+      const runnerHtml = runners.length
+        ? runners.map((runner) => {
+          const runnerName = _esc(runner.name || 'runner');
+          const runnerStatus = _esc(String(runner.status || 'running'));
+          const runnerPid = runner.pid ? ` · PID ${_esc(String(runner.pid))}` : '';
+          const runnerTask = runner.task_id ? ` · task ${_esc(String(runner.task_id))}` : '';
+          return `${runnerName} (${runnerStatus}${runnerPid}${runnerTask})`;
+        }).join('<br>')
+        : '<span style="color:var(--text-muted,#8b949e)">無常駐背景 runner</span>';
+
+      el.innerHTML = `
+        <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:10px">
+          <span style="font-weight:600">LLM Mode</span>
+          <span style="font-size:0.8rem;padding:2px 9px;border-radius:999px;border:1px solid ${mode === 'hard-off' ? '#f85149' : '#3fb950'};color:${mode === 'hard-off' ? '#f85149' : '#3fb950'}">${mode === 'hard-off' ? 'HARD-OFF' : 'SAFE-RUN'}</span>
+          <span style="flex:1"></span>
+          <button id="orc-llm-safe-run-btn" class="btn-sm btn-secondary" ${mode === 'safe-run' ? 'disabled' : ''}>SAFE-RUN</button>
+          <button id="orc-llm-hard-off-btn" class="btn-sm btn-secondary" ${mode === 'hard-off' ? 'disabled' : ''}>HARD-OFF</button>
+        </div>
+        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:10px;font-size:0.82rem">
+          <div><div style="color:var(--text-muted,#8b949e)">scheduler.enabled</div><div>${data.scheduler_enabled ? 'true' : 'false'}</div></div>
+          <div><div style="color:var(--text-muted,#8b949e)">current mode</div><div>${_esc(mode)}</div></div>
+          <div><div style="color:var(--text-muted,#8b949e)">last LLM call</div><div>${data.last_llm_call_at ? _fmt_utc_ts(data.last_llm_call_at) : '—'}</div></div>
+          <div><div style="color:var(--text-muted,#8b949e)">blocked executions</div><div>${Number(data.blocked_execution_count || 0)}</div></div>
+        </div>
+        <div style="margin-top:10px;font-size:0.8rem">
+          <div style="color:var(--text-muted,#8b949e);margin-bottom:4px">Active Background Runners</div>
+          <div>${runnerHtml}</div>
+        </div>
+        <div style="margin-top:10px;font-size:0.75rem;color:var(--text-muted,#8b949e)">
+          ${mode === 'hard-off' ? 'Hard-Off: no background or manual LLM execution.' : 'Safe-Run: execution allowed only when scheduler.enabled is true.'}
+          ${data.last_skip_reason ? ` Last skip: ${_esc(data.last_skip_reason)}` : ''}
+        </div>
+      `;
+
+      el.querySelector('#orc-llm-safe-run-btn')?.addEventListener('click', () => this._setLlmControlMode('safe-run'));
+      el.querySelector('#orc-llm-hard-off-btn')?.addEventListener('click', () => this._setLlmControlMode('hard-off'));
+    } catch (e) {
+      el.innerHTML = `<span style="color:#8b949e;font-size:0.8rem">LLM control 載入失敗: ${_esc(e.message)}</span>`;
+    }
+  }
+
+  async _setLlmControlMode(mode) {
+    await this._post('/api/orchestrator/llm-control', { mode });
+    this.app?.uiManager?.showNotification(`LLM mode 已切換為 ${mode}`, 'success');
+    await this._loadAll();
   }
 
   _startCountdownTimer() {
@@ -229,6 +285,9 @@ export class OrchestrationManager {
         workerEl.textContent = '閒置';
         workerEl.style.color = 'var(--success-color, #10b981)';
       }
+
+      // ── Long-runner detail panel ──────────────────────────────────────────
+      this._renderLongRunnerPanel(data);
     } catch (e) {
       console.error('[OrchestratorManager] summary error', e);
     }
@@ -312,6 +371,56 @@ export class OrchestrationManager {
     const subtitle = document.getElementById('orc-subtitle');
     if (!subtitle) return;
     subtitle.textContent = comboLabel || '可切換 Planner / Worker 組合的雙 Agent 自動化排程';
+  }
+
+  _renderLongRunnerPanel(data) {
+    const panel = document.getElementById('orc-longrunner-panel');
+    if (!panel) return;
+
+    const badge = data.worker_run_state_badge;
+    const isNotable = badge && badge !== 'RUNNING';
+
+    if (!isNotable || !data.worker_busy) {
+      panel.classList.remove('visible');
+      return;
+    }
+
+    panel.classList.add('visible');
+
+    // Badge pill
+    const badgeEl = document.getElementById('orc-lr-badge');
+    if (badgeEl) {
+      badgeEl.textContent = badge === 'LONG_RUNNING' ? '⏳ LONG RUNNING' : badge === 'STUCK' ? '🔴 STUCK' : badge;
+      badgeEl.className = 'orc-lr-badge ' + (
+        badge === 'LONG_RUNNING' ? 'orc-lr-badge-longrunning' :
+        badge === 'STUCK'        ? 'orc-lr-badge-stuck'        : 'orc-lr-badge-running'
+      );
+    }
+
+    // Task ID
+    const taskIdEl = document.getElementById('orc-lr-task-id');
+    if (taskIdEl) taskIdEl.textContent = data.worker_task_id != null ? `#${data.worker_task_id}` : '—';
+
+    // Current subtask
+    const subtaskEl = document.getElementById('orc-lr-subtask');
+    if (subtaskEl) subtaskEl.textContent = data.worker_subtask || '—';
+
+    // ETA
+    const etaEl = document.getElementById('orc-lr-eta');
+    if (etaEl) {
+      const eta = data.worker_eta_seconds;
+      if (eta == null) {
+        etaEl.textContent = '—';
+      } else if (eta <= 0) {
+        etaEl.textContent = '超出預估';
+        etaEl.style.color = 'var(--warning-color, #f59e0b)';
+      } else {
+        const h = Math.floor(eta / 3600);
+        const m = Math.floor((eta % 3600) / 60);
+        etaEl.textContent = h > 0 ? `${h}h ${m}m` : `${m}m`;
+        etaEl.style.color = '';
+      }
+    }
   }
 
   _renderSchedulerState(enabled) {
@@ -569,6 +678,10 @@ export class OrchestrationManager {
                 ${(t.progress_state === 'stale' || t.progress_state_code === 'STUCK_SUSPECTED' || t.progress_stale) ? ` · <span style="color:#f59e0b">疑似卡住</span>` : ''}
                 ${(t.progress_state === 'no_output' || t.progress_state_code === 'RUNNING_NO_OUTPUT') ? ` · <span style="color:#f59e0b">尚無輸出</span>` : ''}
               </div>` : ''}
+            ${t.status === 'FAILED_RATE_LIMIT' ? `
+              <div style="margin-top:4px;font-size:0.75rem;color:#f59e0b">
+                額度限制 · ${_esc(t.reset_hint || '請等待 reset 或切換 provider')}
+              </div>` : ''}
           </td>
           <td><span class="orc-status-badge orc-status-${(t.status||'').toLowerCase()}">${t.status}</span></td>
           <td>${t.duration_seconds != null ? _fmt_dur(t.duration_seconds) : '—'}</td>
@@ -616,6 +729,8 @@ export class OrchestrationManager {
       const data = await this._get('/api/orchestrator/cto/summary');
       const latestRun = data.latest_run || {};
       const latestAt = latestRun.completed_at || latestRun.started_at || '—';
+      const latestReason = latestRun.outcome_message || latestRun.summary || '—';
+      const latestStatus = latestRun.status || '—';
       const _setT = (id, val) => { const el = document.getElementById(id); if (el) el.textContent = val; };
       _setT('cto-frequency-mode', data.frequency_mode || '—');
       _setT('cto-pending-count', data.pending_count ?? 0);
@@ -627,7 +742,7 @@ export class OrchestrationManager {
       _setT('cto-duplicate-count', data.duplicate_count ?? 0);
       _setT('cto-latest-run-at', latestAt ? _fmt_utc_ts(latestAt) : '—');
       _setT('cto-next-run-at', data.next_run_estimate ? _fmt_utc_ts(data.next_run_estimate) : '—');
-      _setT('cto-latest-run-summary', latestRun.summary || '—');
+      _setT('cto-latest-run-summary', `${latestStatus}: ${latestReason}`);
       this._selectedCtoRunId = this._selectedCtoRunId || latestRun.run_id || null;
       // Scheduler state
       this._ctoSchedulerEnabled = !!data.scheduler_enabled;
@@ -681,6 +796,14 @@ export class OrchestrationManager {
         tbody.innerHTML = '<tr><td colspan="9" class="rv-empty">尚無 CTO 批次紀錄</td></tr>';
         return;
       }
+      const _statusStyle = (status) => ({
+        RUNNING: 'color:#d29922;border:1px solid #d29922',
+        COMPLETED: 'color:#3fb950;border:1px solid #3fb950',
+        SKIPPED: 'color:#8b949e;border:1px solid #8b949e',
+        FAILED: 'color:#f85149;border:1px solid #f85149',
+        FAILED_STALE: 'color:#f85149;border:1px solid #f85149',
+        SKIPPED_STALE: 'color:#d29922;border:1px solid #d29922',
+      }[status] || 'color:#8b949e;border:1px solid #8b949e');
       tbody.innerHTML = this._ctoRuns.map((run) => `
         <tr data-cto-run-id="${_esc(run.run_id)}" style="cursor:pointer">
           <td>${_esc(run.run_id || '—')}</td>
@@ -691,7 +814,7 @@ export class OrchestrationManager {
           <td>${run.approved_count ?? 0}</td>
           <td>${run.merged_count ?? 0}</td>
           <td>${run.rejected_count ?? 0}</td>
-          <td style="max-width:280px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${_esc(run.summary || '—')}</td>
+          <td style="max-width:280px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap" title="${_esc(run.outcome_message || run.summary || '—')}"><span style="font-size:0.72rem;border-radius:3px;padding:0 6px;margin-right:6px;${_statusStyle(run.status)}">${_esc(run.status || '—')}</span>${_esc(run.outcome_message || run.summary || '—')}</td>
         </tr>
       `).join('');
       if (!this._selectedCtoRunId || !this._ctoRuns.some((run) => run.run_id === this._selectedCtoRunId)) {
@@ -726,6 +849,9 @@ export class OrchestrationManager {
       const intel = reportJson.intelligence || {};
       const exec = intel.executive_summary || {};
       const enrichedDecisions = reportJson.decisions || [];
+        const runStatus = run.status || '—';
+        const runReason = run.outcome_message || run.summary || '—';
+
       const roadmap = intel.roadmap || [];
       const healthScore = intel.health_score ?? exec.health_score ?? null;
       const verdict = intel.verdict || exec.verdict || null;
@@ -926,6 +1052,7 @@ export class OrchestrationManager {
             ${run.parent_run_id ? `<span style="font-size:0.75rem;color:#8b949e">參考 run: <code style="font-size:0.72rem">${_esc(run.parent_run_id)}</code></span>` : ''}
             <span>Started: <b>${_fmt_utc_ts(run.started_at)}</b></span>
             <span>Completed: <b>${_fmt_utc_ts(run.completed_at)}</b></span>
+            <span>Status: <b>${_esc(runStatus)}</b></span>
             <span>Duration: <b>${run.duration_seconds != null ? _fmt_dur(run.duration_seconds) : '—'}</b></span>
             <span>Window: <b>${_fmt_utc_ts(run.checked_from)} → ${_fmt_utc_ts(run.checked_until)}</b></span>
             <span>Merge Branch: <b>${_esc(run.merge_branch || '—')}</b></span>
@@ -943,7 +1070,7 @@ export class OrchestrationManager {
             <div><span class="pt-perf-summary-label">Superseded</span><strong>${run.superseded_count ?? 0}</strong></div>
             <div><span class="pt-perf-summary-label">Duplicate</span><strong>${run.duplicate_count ?? 0}</strong></div>
           </div>
-          <div style="margin-top:10px;color:var(--text-muted,#8b949e)">${_esc(run.summary || '—')}</div>
+          <div style="margin-top:10px;color:var(--text-muted,#8b949e)">${_esc(runReason)}</div>
         </div>
 
         ${intelHtml}
@@ -1289,8 +1416,8 @@ export class OrchestrationManager {
 
   // ─── Execution Policy Panel ───────────────────────────────────────────────
 
-  async _loadPolicyPanel() {
-    const el = document.getElementById('orc-policy-panel');
+  async _loadBacklogPolicyPanel() {
+    const el = document.getElementById('orc-backlog-policy-panel');
     if (!el) return;
     try {
       const stats = await this._get('/api/orchestrator/cto/backlog/policy');
@@ -1379,7 +1506,7 @@ export class OrchestrationManager {
           saveBtn.textContent = '✓ 儲存成功';
           saveBtn.style.color = '#3fb950';
           saveBtn.style.borderColor = '#3fb950';
-          setTimeout(() => this._loadPolicyPanel(), 1000);
+          setTimeout(() => this._loadBacklogPolicyPanel(), 1000);
         } catch (e) {
           saveBtn.disabled = false;
           saveBtn.textContent = '儲存失敗';
@@ -1398,7 +1525,7 @@ export class OrchestrationManager {
           agingBtn.textContent = `✓ ${resp.aged_count} 筆已更新`;
           agingBtn.style.color = '#3fb950';
           agingBtn.style.borderColor = '#3fb950';
-          setTimeout(() => this._loadPolicyPanel(), 1200);
+          setTimeout(() => this._loadBacklogPolicyPanel(), 1200);
         } catch (e) {
           agingBtn.disabled = false;
           agingBtn.textContent = '失敗';
@@ -1629,6 +1756,10 @@ export class OrchestrationManager {
       const workerMode = t.worker_execution_mode || '—';
       const gateVerdict = t.gate_verdict || '—';
       const gateReason = t.gate_reason || '—';
+      const failureProvider = t.failure_provider || '—';
+      const failureReason = t.failure_reason || '—';
+      const resetHint = t.reset_hint || '—';
+      const finalMessage = t.final_message || '—';
       const commitSha = t.commit_sha || '—';
       const sourceBranch = t.source_branch || '—';
       const reviewStatus = t.review_status || '—';
@@ -1651,6 +1782,8 @@ export class OrchestrationManager {
             <span>Planner 來源: <b>${_esc(plannerSource)}</b>${plannerProvider}</span>
             <span>Worker: <b>${_esc(workerRequested)}</b> → ${_esc(workerRuntime)}${workerModel} (${_esc(workerMode)})</span>
             <span>Gate: <b>${_esc(gateVerdict)}</b> (${_esc(gateReason)})</span>
+            <span>Failure: <b>${_esc(failureReason)}</b> / ${_esc(failureProvider)}</span>
+            <span>Reset Hint: <b>${_esc(resetHint)}</b></span>
             <span>Commit SHA: <b>${_esc(commitSha)}</b></span>
             <span>Source Branch: <b>${_esc(sourceBranch)}</b></span>
             <span>Review Status: <b>${_esc(reviewStatus)}</b></span>
@@ -1671,6 +1804,12 @@ export class OrchestrationManager {
         <div style="background:rgba(59,130,246,0.08);border:1px solid rgba(59,130,246,0.22);border-radius:6px;padding:10px;margin-bottom:16px">
           <b>最新進度：</b> ${_esc(progressSummary)}
         </div>
+
+        ${t.status === 'FAILED_RATE_LIMIT' ? `
+        <div style="background:rgba(245,158,11,0.12);border:1px solid rgba(245,158,11,0.35);border-radius:6px;padding:10px;margin-bottom:16px;color:#fbbf24">
+          <b>額度限制：</b> ${_esc(finalMessage)}<br>
+          <span>建議：等待 provider reset，或切換其他 provider 後再執行。</span>
+        </div>` : ''}
 
         <details open style="margin-bottom:16px">
           <summary style="cursor:pointer;font-weight:600;margin-bottom:8px">📋 Prompt（任務指令）</summary>
@@ -1850,6 +1989,9 @@ export function _runner_outcome_feedback(run) {
     return { level: 'warning', message: 'Planner 未建立任務：Planner provider 目前不可用。' };
   }
   if (outcome === 'PLANNER_SKIP_PREV_RUNNING') {
+    if (lowered.includes('blocked_env')) {
+      return { level: 'warning', message: 'Planner 已略過：上一筆 BLOCKED_ENV 尚未達 timeout。' };
+    }
     return { level: 'warning', message: 'Planner 已略過：上一筆任務仍在執行中。' };
   }
   if (outcome === 'PLANNER_SKIP_DISABLED') {

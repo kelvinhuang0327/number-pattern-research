@@ -70,6 +70,8 @@
 - L82：H001~H008 全滅，539 頻率族信號空間已高度飽和。
 - L125：539 的 pool-size / market-behavior 題若 trusted active data 沒有 pool/sales 欄位，應直接做資料可用性 REJECT，不得以 proxy 偽裝成外生信號驗證。
 - L128：MicroFish+MidFreq 2-bet 即使三窗口 raw edge / permutation / 邊際效率全過，只要 150p McNemar 未證明穩定優於 `midfreq_acb_2bet`，仍不可升格。
+- L130：EXPLORE-B constraint_postprocess 結構性 bucket（sum band、odd/even ratio、span、consecutive count、AC value、zone coverage）在 2026-04-29 的驗證中，23 個 pre-registered bucket 全數未通過 BH FDR q<0.10；結論為「目前證據不足、暫不實作」（WATCH_ARCHIVED），而非永久拒絕。REOPEN_ALLOWED_IF_NEW_EVIDENCE：新候選生成器改變候選分佈、新外部資料源加入、累積 300-500 新期資料、現役策略轉為 DEGRADED、提出多特徵交互模型，或其他彩種出現可比較的結構性訊號。
+- L131：EXPLORE-C H-LW-01 + H-LW-02 長窗延伸驗證（2026-04-29）：DAILY_539 active 策略在 4000p（+3.77pp）、5000p（+3.68pp）均高於 DEGRADED 閾值（+2.0pp），決策 STABLE_LONG_WINDOW。Rolling 500p（27 窗口，40.7% breach）早期低峰集中 2010–2019，近期（2020+）大幅正值；CUSUM p=0.9855 無 regime shift，分類 SMOOTH_DECAY。邊際遞減斜率 -0.41pp/1000draws 屬慢速自然衰退，無需 CTO review。
 
 ## 大樂透
 
@@ -124,7 +126,8 @@
 - L127：威力彩非同家族 Layer-1 3bet 即使多案 raw Edge 三窗全正，只要 permutation 與對 `pp3_freqort_4bet` 的 per-bet efficiency 仍無任何候選全窗過關，整體結論就應直接是 `REJECT_ALL_NONFAMILY_LAYER1_3BET`。
 - L129：Orchestrator 任務完成判定必須區分 BLOCKED_ENV（外部環境如 quota/rate-limit 阻塞）與 REPLAN_REQUIRED（任務本身驗收失敗）；含 quota 訊息的 artifact 一律標記為 BLOCKED_ENV，不得誤判為 COMPLETED。同主題多筆 BLOCKED_ENV 任務應合併為一筆 meta 治理任務，不逐筆重排。
 - L130：威力彩 Winning Quality P2-1 popularity_score 代理模型作為分獎風險濾網的驗證顯示：150p raw Edge +12.01% 且 perm p=0.0667（邊界），但 500/1500p 時 permutation p=0.6333/0.8000 失效、Cohen's d=-0.246/-0.935；無法形成跨窗口非虛假訊號。啟發式人氣估算若無真實分獎金額資料支撐，在本資料集上無法超越隨機。此方向已達驗證閾值，後續改善應改向真實商業資料而非模型微調。
-
+- L131：AUTO-MONITOR 任務不得使用泛化 prompt（「check active strategies」等 4 行描述）。必須包含：active_strategy_state / strategy_reviews / strategy_live_state / agent_tasks 的 SQL 查詢、BIG_LOTTO / DAILY_539 / POWER_LOTTO 三彩種各自的 watchdog 規則與預期狀態、OK / WATCH / ESCALATE / DEGRADED 四態 final status、以及 7 節結構化輸出格式。若 prompt 退化，任務只會產出空泛報告，無法驗證。（2026-04-29 修復記錄：task 289 以舊版 prompt 完成，自 task 290 起啟用新版 contract。）
+- L132：H-XL-01b Cross-Game Watchdog Recalibration（2026-04-29）：BIG_LOTTO / POWER_LOTTO 滾動看門狗規則重新校正後核准為監控模式部署（APPROVE_RECALIBRATED_WATCHDOG）。(1) Rule B 門檻必須依遊戲個別設定：6 球遊戲不得沿用 DAILY_539 的 +2.0pp 繼承值，應改為 +0.0pp（無負邊際原則）。(2) Rule C 當 active 與 shadow 注數不同時，必須改用 per-bet 歸一化比較（active_edge/active_nbets − shadow_edge/shadow_nbets），門檻 −0.50 pp/bet；直接比較原始 delta 會因注數不同而系統性偏誤。(3) APPROVE_RECALIBRATED_WATCHDOG 僅核准監控規則設計，不代表核准生產閘門；不得修改 active_strategy_state；不得修改 lottery_v2.db；CTO / research sign-off 仍必須在任何生產閘門提案前完成。歷史驗證結果：BIG_LOTTO 19 窗口全數 0 fires；POWER_LOTTO 17 窗口全數 0 fires。
 ## 缺號備註
 
 - 目前 lesson 編號在原始資料中本來就有缺號與跳號；本頁保留這些缺口，避免憑空補寫。

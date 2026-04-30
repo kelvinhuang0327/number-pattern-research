@@ -31,8 +31,8 @@
     "last_updated": "2026-04-20T13:01:06.960404",
     "note": "",
     "research_multiplier_original": 1.0,
-    "research_multiplier": 1.05204,
-    "research_updated_at": "2026-04-29T07:34:09.616346+00:00",
+    "research_multiplier": 1.05329,
+    "research_updated_at": "2026-04-29T20:00:00.300324+00:00",
     "feedback_multiplier": 0.5,
     "feedback_rate": 0.0,
     "feedback_edge": -0.114,
@@ -72,8 +72,8 @@
     "last_updated": "2026-04-20T13:01:06.960434",
     "note": "",
     "research_multiplier_original": 1.0,
-    "research_multiplier": 1.05204,
-    "research_updated_at": "2026-04-29T07:34:09.616357+00:00",
+    "research_multiplier": 1.05329,
+    "research_updated_at": "2026-04-29T20:00:00.300331+00:00",
     "feedback_multiplier": 0.6674,
     "feedback_rate": 0.09091,
     "feedback_edge": -0.12509,
@@ -113,8 +113,8 @@
     "last_updated": "2026-04-20T13:01:06.960461",
     "note": "",
     "research_multiplier_original": 1.0,
-    "research_multiplier": 1.05204,
-    "research_updated_at": "2026-04-29T07:34:09.616360+00:00"
+    "research_multiplier": 1.05329,
+    "research_updated_at": "2026-04-29T20:00:00.300333+00:00"
   },
   "acb_markov_midfreq_3bet": {
     "name": "acb_markov_midfreq_3bet",
@@ -148,8 +148,8 @@
     "last_updated": "2026-04-20T13:01:06.960488",
     "note": "",
     "research_multiplier_original": 1.0,
-    "research_multiplier": 1.05204,
-    "research_updated_at": "2026-04-29T07:34:09.616374+00:00",
+    "research_multiplier": 1.05329,
+    "research_updated_at": "2026-04-29T20:00:00.300335+00:00",
     "feedback_multiplier": 0.5585,
     "feedback_rate": 0.05556,
     "feedback_edge": -0.24944,
@@ -189,8 +189,8 @@
     "last_updated": "2026-04-20T13:01:06.960514",
     "note": "",
     "research_multiplier_original": 1.0,
-    "research_multiplier": 1.05204,
-    "research_updated_at": "2026-04-29T07:34:09.616378+00:00"
+    "research_multiplier": 1.05329,
+    "research_updated_at": "2026-04-29T20:00:00.300337+00:00"
   },
   "f4cold_5bet": {
     "name": "f4cold_5bet",
@@ -224,8 +224,8 @@
     "last_updated": "2026-04-20T13:01:06.960542",
     "note": "",
     "research_multiplier_original": 1.0,
-    "research_multiplier": 1.05204,
-    "research_updated_at": "2026-04-29T07:34:09.616389+00:00",
+    "research_multiplier": 1.05329,
+    "research_updated_at": "2026-04-29T20:00:00.300339+00:00",
     "feedback_multiplier": 0.6769,
     "feedback_rate": 0.2,
     "feedback_edge": -0.255,
@@ -254,6 +254,13 @@
     "validated_status": "validated",
     "classification": "WINNER",
     "validation_notes": "Production validation 2026-04-29. See runtime/winner_followup/H6_gate_mk20_ew85_prod_validation_2026-04-29.json",
-    "last_updated": "2026-04-29T16:02:14.251+08:00"
+    "last_updated": "2026-04-30T11:13:56.897+08:00",
+    "edge_30p": 0.0713,
+    "sharpe_300p": 1.5,
+    "consecutive_neg_30p": 0,
+    "alert": false,
+    "research_multiplier_original": 1.0,
+    "research_multiplier": 1.01166,
+    "research_updated_at": "2026-04-29T20:00:00.300341+00:00"
   }
 }

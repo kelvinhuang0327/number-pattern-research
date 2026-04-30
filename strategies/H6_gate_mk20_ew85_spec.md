@@ -23,6 +23,13 @@ Reference: runtime/winner_followup/H6_gate_mk20_ew85_prod_validation_2026-04-29.
 - vs incumbent (acb_markov_midfreq_3bet): net edge delta (1500p) = +2.372% (observed)
 - McNemar indicates strategy beats incumbent (p ≪ 0.05)
 
+## Bear Regime Risk ⚠️
+- Bear regime edge: **-1.93%** (validated in prod_validation task 326)
+- Neutral regime edge: +4.28% | Bull regime edge: -0.15%
+- **Risk**: strategy underperforms significantly during bear regime periods
+- Mitigation: rollback trigger (-2% on 30-period live edge) will auto-revert before sustained bear losses
+- Note: bear regime flag (`has_bear_regime=False`) is NOT automatically detected by coordinator — manual monitoring via RSM required
+
 ## Deployment
 - Classification: WINNER
 - Validated status: validated

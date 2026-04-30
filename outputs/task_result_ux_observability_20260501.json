@@ -1,0 +1,13 @@
+{
+  "generated_at": "2026-05-01T02:30:30+08:00",
+  "source": "runtime/agent_orchestrator/logs/*.jsonl",
+  "events": [
+    {"event_type":"COPILOT_DAEMON_TICK","count":4604,"last_seen":"2026-04-30T13:08:33.988372+00:00","priority":"P2","lottery_api_support":false},
+    {"event_type":"PLANNER_SKIP_FALLBACK_DAILY_CAP","count":577,"last_seen":"2026-04-30T18:29:24.972511+00:00","priority":"P1","lottery_api_support":false},
+    {"event_type":"WORKER_SKIP_DAEMON_PROVIDER","count":123,"last_seen":"2026-04-30T18:28:57.606982+00:00","priority":"P2","lottery_api_support":false},
+    {"event_type":"PLANNER_REPLACE_WITH_MONITORING","count":105,"last_seen":"2026-04-30T18:29:24.950273+00:00","priority":"P1","lottery_api_support":false},
+    {"event_type":"PLANNER_VALUE_SCORE","count":105,"last_seen":"2026-04-30T18:29:24.951507+00:00","priority":"P2","lottery_api_support":false},
+    {"event_type":"PLANNER_SKIP_MONITORING_DAILY_CAP","count":103,"last_seen":"2026-04-30T18:29:24.955221+00:00","priority":"P1","lottery_api_support":false},
+    {"event_type":"PLANNER_CREATE_FALLBACK_TASK","count":11,"last_seen":"2026-04-30T18:29:24.980183+00:00","priority":"P0","lottery_api_support":false}
+  ]
+}

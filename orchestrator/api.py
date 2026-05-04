@@ -8,6 +8,7 @@ import glob
 import sys
 import json
 import uuid
+import logging
 import subprocess
 from datetime import datetime, timedelta, timezone
 from fastapi import APIRouter, HTTPException, Query
@@ -22,6 +23,7 @@ _WORKER_TIMEOUT_S  = 1800   # 30 min: planner / worker tick
 _CTO_TIMEOUT_S     = 1800   # 30 min: CTO review tick
 
 router = APIRouter()
+logger = logging.getLogger(__name__)
 TASK_STATUSES = (
     "QUEUED",
     "RUNNING",
@@ -127,10 +129,19 @@ def _attach_task_meta_fields(task: dict) -> dict:
         meta = {}
     task["planner_source"] = meta.get("planner_source")
     task["planner_provider"] = meta.get("planner_provider")
+    # planner_agent_label: prefer DB column (already in SELECT *), fall back to computed from meta
+    if not task.get("planner_agent_label"):
+        _pp = meta.get("planner_provider") or ""
+        task["planner_agent_label"] = common.normalize_llm_agent_label(_pp)["display_label"] if _pp else "Local"
     task["worker_provider"] = meta.get("worker_provider")
     task["worker_requested_provider"] = meta.get("worker_requested_provider")
     task["worker_runtime"] = meta.get("worker_runtime")
     task["worker_model"] = meta.get("worker_model")
+    # worker_agent_label: prefer DB column, fall back to computed from meta
+    if not task.get("worker_agent_label"):
+        _wp = meta.get("worker_provider") or ""
+        _wm = meta.get("worker_model") or ""
+        task["worker_agent_label"] = common.normalize_llm_agent_label(_wp, _wm)["display_label"] if _wp else None
     task["worker_execution_mode"] = meta.get("worker_execution_mode")
     task["worker_fallback_reason"] = meta.get("worker_fallback_reason")
     task["task_contract_path"] = meta.get("task_contract_path")
@@ -318,6 +329,58 @@ def get_summary():
         "next_worker_tick_estimate": next_worker,
         "light_worker_count": len(light_worker_slots),
         "light_worker_slots": light_worker_slots,
+        "h6_live_state": _get_h6_live_state(),
+        **_get_h6_report_flat_fields(),
+    }
+
+
+def _get_h6_live_state() -> Optional[dict]:
+    """Fetch H6 monitoring state for inclusion in orchestrator summary."""
+    try:
+        sys.path.insert(0, os.path.join(os.path.dirname(os.path.dirname(__file__)), "lottery_api"))
+        from engine.h6_live_monitor import get_monitoring_state as _h6_state, H6_STRATEGY_ID
+        state = _h6_state("DAILY_539")
+        ass_rows = db.get_all_active_strategy_states()
+        ass = next((r for r in ass_rows if r.get("game_type") == "DAILY_539"), None)
+        return {
+            "active_strategy": ass.get("active_strategy") if ass else H6_STRATEGY_ID,
+            "shadow_strategy": ass.get("shadow_strategy") if ass else None,
+            "live_30p_edge":            state.get("live_30p_edge"),
+            "live_50p_edge":            state.get("live_50p_edge"),
+            "consecutive_negative_30p": state.get("consecutive_negative_30p", 0),
+            "current_regime":           state.get("current_regime"),
+            "rollback_status":          state.get("rollback_status", "ACTIVE"),
+            "rollback_triggered":       state.get("rollback_triggered", False),
+            "rollback_reason":          state.get("rollback_reason"),
+        }
+    except Exception:
+        return None
+
+
+def _get_latest_h6_report_summary() -> Optional[dict]:
+    """Return a brief summary of the latest H6 daily operations report."""
+    try:
+        sys.path.insert(0, os.path.join(os.path.dirname(os.path.dirname(__file__)), "lottery_api"))
+        from engine.h6_report_generator import get_latest_report_summary as _summary
+        return _summary(game_type="DAILY_539")
+    except Exception:
+        return None
+
+
+def _get_h6_report_flat_fields() -> dict:
+    """Return flat H6 report fields for inclusion in summary endpoints.
+
+    Computes the summary once and exposes both the nested dict and flat fields
+    (latest_h6_risk_level, latest_h6_action_recommendation, latest_h6_daily_report_path,
+    latest_h6_daily_report) so callers can query any level of granularity.
+    """
+    summary = _get_latest_h6_report_summary()
+    return {
+        "latest_h6_daily_report_summary": summary,
+        "latest_h6_daily_report": summary,
+        "latest_h6_daily_report_path": (summary or {}).get("json_path"),
+        "latest_h6_risk_level": (summary or {}).get("risk_level"),
+        "latest_h6_action_recommendation": (summary or {}).get("action"),
     }
 
 
@@ -404,6 +467,16 @@ class CtoRunNowRequest(BaseModel):
         _allowed = {"retry", "compare", "override"}
         v = (self.run_intent or "").strip().lower()
         return v if v in _allowed else None
+
+
+class CtoReviewSettingsRequest(BaseModel):
+    cto_review_provider: Optional[str] = None
+    cto_review_model: Optional[str] = None
+    cto_review_mode: Optional[str] = None
+    cto_review_daily_call_cap: Optional[int] = None
+    cto_review_timeout_seconds: Optional[int] = None
+    cto_review_max_context_chars: Optional[int] = None
+    cto_review_max_output_chars: Optional[int] = None
 
 
 def _estimate_cto_next_run_at(latest_run: Optional[dict]) -> Optional[str]:
@@ -815,12 +888,435 @@ def list_runs(
     return {"runs": runs, "count": len(runs)}
 
 
-@router.get("/api/orchestrator/backlog")
+@router.get("/api/orchestrator/llm-usage/today")
+def get_llm_usage_today():
+    """Return today's LLM call counts aggregated by agent_label and by role (Asia/Taipei date).
+
+    The summary now includes token / premium totals and rate-limit warnings.
+    """
+    day_label = common.local_day_label()
+    items = db.get_today_llm_usage_by_agent(day_label)
+    role_data = db.get_today_llm_usage_by_role(day_label)
+    return {
+        "date": day_label,
+        "timezone": "Asia/Taipei",
+        "summary": role_data["summary"],
+        "roles": role_data["roles"],
+        "items": items,  # legacy: kept for backward compatibility
+    }
+
+
+@router.get("/api/orchestrator/llm-usage/recent")
+def get_llm_usage_recent(limit: int = 20):
+    """Return the most recent LLM usage events with token/premium metrics.
+
+    Query params:
+        limit  (int, default=20, max=200)
+    """
+    events = db.get_recent_llm_usage_events(limit=limit)
+    return {"events": events, "count": len(events)}
+
+
+@router.get("/api/orchestrator/llm-usage/detail")
+def get_llm_usage_detail(date: Optional[str] = None):
+    """Return comprehensive LLM usage detail for the dashboard.
+
+    Query params:
+        date  (str, optional) — YYYY-MM-DD or 'today' (default: today Asia/Taipei)
+
+    Response structure:
+        date, timezone, roles, by_provider, by_runner, by_agent,
+        copilot_focus, top_tasks, recent, warnings
+    """
+    if date and date.lower() != "today":
+        day_label = date
+    else:
+        day_label = common.local_day_label()
+    return db.get_llm_usage_detail(day_label)
+
+
+# ── LLM Audit Endpoints ───────────────────────────────────────────────────────
+
+@router.get("/api/orchestrator/llm-audit/recent")
+def get_llm_audit_recent(
+    hours: Optional[float] = 24,
+    runner: Optional[str] = None,
+    provider: Optional[str] = None,
+    blocked: bool = False,
+    limit: int = 50,
+):
+    """Return recent LLM audit events with optional filters.
+
+    Query params:
+        hours    (float, default=24)     — only events from last N hours
+        runner   (str, optional)         — filter by runner_type
+        provider (str, optional)         — filter by provider (partial match)
+        blocked  (bool, default=false)   — show only blocked events
+        limit    (int, default=50, max=200)
+    """
+    from orchestrator import llm_audit
+    events = llm_audit.query_events(
+        hours=hours,
+        runner=runner,
+        provider=provider,
+        only_blocked=blocked,
+        limit=min(int(limit), 200),
+    )
+    return {"events": events, "count": len(events)}
+
+
+@router.get("/api/orchestrator/llm-audit/today")
+def get_llm_audit_today():
+    """Return today's LLM audit summary: totals by role, provider, and event_type."""
+    from orchestrator import llm_audit
+    return llm_audit.today_summary()
+
+
+@router.get("/api/orchestrator/llm-caps/status")
+def get_llm_caps_status():
+    """Return LLM cap enforcement status: caps enabled, roles, providers, recent blocks."""
+    from orchestrator.llm_caps import get_cap_status
+    return get_cap_status()
+
+
+@router.get("/api/orchestrator/rollback-guard/status")
+async def get_rollback_guard_status(game_type: str = "DAILY_539"):
+    """Return rollback guard config and current read-only decision for a game type."""
+    from orchestrator.rollback_guard import load_rollback_guard_config, evaluate_rollback_guard
+    config = load_rollback_guard_config(game_type)
+
+    # Read current state from DB
+    try:
+        conn = db.get_conn()
+        row = conn.execute(
+            "SELECT active_strategy, shadow_strategy, rollback_status, live_30p_edge, "
+            "       consecutive_negative_30p "
+            "FROM active_strategy_state WHERE game_type=?",
+            (game_type,)
+        ).fetchone()
+        conn.close()
+        if row:
+            current_state = {
+                "active_strategy": row[0],
+                "shadow_strategy": row[1],
+                "rollback_status": row[2],
+                "live_30p_edge": row[3],
+                "outcome_count": 0,  # not stored in active_strategy_state; use live_strategy_outcomes
+                "consecutive_negative_30p": row[4] or 0,
+            }
+            # Fetch outcome_count from live_strategy_outcomes
+            try:
+                conn2 = db.get_conn()
+                cnt_row = conn2.execute(
+                    "SELECT COUNT(*) FROM live_strategy_outcomes WHERE game_type=?",
+                    (game_type,)
+                ).fetchone()
+                conn2.close()
+                current_state["outcome_count"] = cnt_row[0] if cnt_row else 0
+            except Exception:
+                pass
+        else:
+            current_state = {"error": f"no state for {game_type}"}
+    except Exception as e:
+        current_state = {"error": str(e)}
+
+    # Evaluate current decision (read-only)
+    decision = None
+    if "error" not in current_state:
+        try:
+            decision = evaluate_rollback_guard(
+                game_type=game_type,
+                live_30p_edge=current_state.get("live_30p_edge"),
+                outcome_count=current_state.get("outcome_count", 0),
+                consecutive_negative_30p=current_state.get("consecutive_negative_30p", 0),
+                config=config,
+            )
+        except Exception as e:
+            decision = {"error": str(e)}
+
+    return {
+        "game_type": game_type,
+        "guard_enabled": config.guard_enabled,
+        "config": config.to_dict(),
+        "current_state": current_state,
+        "current_decision": decision.to_dict() if hasattr(decision, "to_dict") else decision,
+    }
+
+
+@router.get("/api/orchestrator/outcome-gate/status")
+async def get_outcome_gate_status():
+    """Return read-only status of the unified outcome gate."""
+    from orchestrator.outcome_gate import get_outcome_gate_status
+    return get_outcome_gate_status()
+
+
+@router.get("/api/orchestrator/stale-locks/status")
+def stale_locks_status():
+    """Return stale RUNNING lock scan results (dry-run, read-only)."""
+    import dataclasses
+    from orchestrator.stale_lock_recovery import load_stale_lock_policy, inspect_running_tasks
+    policy = load_stale_lock_policy()
+    decisions = inspect_running_tasks()
+    would_release = sum(1 for d in decisions if d.should_release)
+    warnings = sum(1 for d in decisions if d.reason == "WARNING_LONG_RUNNING_ALIVE")
+    return {
+        "enabled": policy.enabled,
+        "dry_run_default": policy.dry_run_default,
+        "policy": dataclasses.asdict(policy),
+        "summary": {
+            "running_count": len(decisions),
+            "would_release": would_release,
+            "warnings": warnings,
+        },
+        "decisions": [dataclasses.asdict(d) for d in decisions],
+    }
+
+
+# ── Planner Multi-Provider Settings ───────────────────────────────────────────
+
+class PlannerLlmSettingsRequest(BaseModel):
+    planner_llm_provider: Optional[str] = None
+    planner_llm_model: Optional[str] = None
+    planner_llm_enabled: Optional[bool] = None
+    planner_llm_mode: Optional[str] = None
+    planner_budget_guard_enabled: Optional[bool] = None
+    planner_daily_call_cap: Optional[int] = None
+    planner_timeout_seconds: Optional[int] = None
+    planner_max_output_chars: Optional[int] = None
+
+
+class PlannerRunOnceRequest(BaseModel):
+    force: bool = False
+
+
+@router.get("/api/orchestrator/planner-settings")
+def get_planner_settings():
+    """Return current LLM Planner multi-provider settings plus today's call stats."""
+    day_label = common.local_day_label()
+    cap = db.get_planner_daily_call_cap()
+    today_calls = db.get_planner_today_calls(day_label)
+    remaining = max(0, cap - today_calls) if cap > 0 else 0
+    return {
+        "planner_llm_provider": db.get_planner_llm_provider(),
+        "planner_llm_model": db.get_planner_llm_model(),
+        "planner_llm_enabled": db.get_planner_llm_enabled(),
+        "planner_llm_mode": db.get_planner_llm_mode(),
+        "planner_budget_guard_enabled": db.get_planner_budget_guard_enabled(),
+        "planner_daily_call_cap": cap,
+        "planner_timeout_seconds": db.get_planner_timeout_seconds(),
+        "planner_max_output_chars": db.get_planner_max_output_chars(),
+        "planner_today_calls": today_calls,
+        "planner_remaining_cap": remaining,
+        "day_label": day_label,
+        "valid_providers": sorted(["local", "claude-cli", "codex-cli", "auto"]),
+        "valid_modes": ["off", "suggest_only", "create_task", "create_and_route"],
+    }
+
+
+@router.post("/api/orchestrator/planner-settings")
+def update_planner_settings(req: PlannerLlmSettingsRequest):
+    """Update LLM Planner provider settings. Only provided fields are changed."""
+    from orchestrator import planner_provider as pp_module
+
+    errors = []
+
+    if req.planner_llm_provider is not None:
+        v = str(req.planner_llm_provider).strip().lower()
+        if v not in pp_module.VALID_PROVIDERS:
+            errors.append(f"Invalid planner_llm_provider: {v!r}. Must be one of {sorted(pp_module.VALID_PROVIDERS)}")
+        else:
+            db.set_planner_llm_provider(v)
+
+    if req.planner_llm_model is not None:
+        db.set_planner_llm_model(str(req.planner_llm_model).strip() or "auto")
+
+    if req.planner_llm_enabled is not None:
+        db.set_planner_llm_enabled(bool(req.planner_llm_enabled))
+
+    if req.planner_llm_mode is not None:
+        v = str(req.planner_llm_mode).strip().lower()
+        if v not in pp_module.VALID_MODES:
+            errors.append(f"Invalid planner_llm_mode: {v!r}. Must be one of {sorted(pp_module.VALID_MODES)}")
+        else:
+            db.set_planner_llm_mode(v)
+
+    if req.planner_budget_guard_enabled is not None:
+        db.set_planner_budget_guard_enabled(bool(req.planner_budget_guard_enabled))
+
+    if req.planner_daily_call_cap is not None:
+        cap = int(req.planner_daily_call_cap)
+        if cap < 0:
+            errors.append("planner_daily_call_cap must be >= 0")
+        else:
+            db.set_planner_daily_call_cap(cap)
+
+    if req.planner_timeout_seconds is not None:
+        t = int(req.planner_timeout_seconds)
+        if t < 30:
+            errors.append("planner_timeout_seconds must be >= 30")
+        else:
+            db.set_planner_timeout_seconds(t)
+
+    if req.planner_max_output_chars is not None:
+        n = int(req.planner_max_output_chars)
+        if n < 1000:
+            errors.append("planner_max_output_chars must be >= 1000")
+        else:
+            db.set_planner_max_output_chars(n)
+
+    if errors:
+        raise HTTPException(status_code=400, detail="; ".join(errors))
+
+    db.log_tick("planner-llm", "PLANNER_SETTINGS_UPDATED",
+                message=f"LLM Planner settings updated via API")
+    return {"ok": True, **get_planner_settings()}
+
+
+@router.post("/api/orchestrator/planner/preview")
+def planner_preview(_req: dict = None):
+    """
+    Run LLM Planner in suggest_only mode (no task creation). force=True bypasses cap.
+    Always marks as manual_preview=True.
+    """
+    from orchestrator import planner_provider as pp_module
+
+    provider = db.get_planner_llm_provider()
+    model = db.get_planner_llm_model()
+    mode = "suggest_only"
+    context = pp_module.build_planner_context()
+
+    result = pp_module.run_planner_provider(
+        provider=provider,
+        model=model,
+        context=context,
+        mode=mode,
+        force=True,
+        manual_preview=True,
+    )
+
+    return {
+        "ok": not bool(result.error),
+        "provider": result.provider,
+        "model": result.model,
+        "agent_label": result.agent_label,
+        "mode": result.mode,
+        "decision": result.decision,
+        "reason": result.reason,
+        "task_payload": result.task_payload,
+        "safety": result.safety,
+        "raw_output_excerpt": result.raw_output_excerpt,
+        "usage_logged": result.usage_logged,
+        "task_created": False,  # preview never creates tasks
+        "skipped": result.skipped,
+        "skip_reason": result.skip_reason,
+        "error": result.error,
+        "fallback_to_local": result.fallback_to_local,
+    }
+
+
+@router.post("/api/orchestrator/planner/run-once")
+def planner_run_once(req: PlannerRunOnceRequest):
+    """
+    Run LLM Planner once, respecting mode settings.
+    set force=true to bypass daily cap and scheduler guard.
+    """
+    from orchestrator import planner_provider as pp_module
+
+    provider = db.get_planner_llm_provider()
+    model = db.get_planner_llm_model()
+    mode = db.get_planner_llm_mode()
+    context = pp_module.build_planner_context()
+
+    result = pp_module.run_planner_provider(
+        provider=provider,
+        model=model,
+        context=context,
+        mode=mode,
+        force=req.force,
+        manual_preview=False,
+    )
+
+    # Attempt task creation if mode allows and decision=CREATE_TASK
+    task_created = False
+    created_task_id = None
+    safety = result.safety or {}
+    risk_level = str(safety.get("risk_level") or "LOW").upper()
+
+    if (
+        not result.error
+        and not result.skipped
+        and result.decision == "CREATE_TASK"
+        and mode in ("create_task", "create_and_route")
+        and result.task_payload
+        and risk_level != "HIGH"
+    ):
+        try:
+            task = result.task_payload
+            title = str(task.get("title") or "LLM Planner Task")[:200]
+            prompt = str(task.get("prompt") or "")
+            worker_type = str(task.get("worker_type") or "light").strip().lower()
+            if worker_type not in ("research", "light"):
+                worker_type = "light"
+            dedupe_key = str(task.get("dedupe_key") or f"llm_planner:{common.local_day_label()}:{title[:40]}")
+
+            slot_key = common.slot_key_now()
+            date_folder = common.date_folder_now()
+            slug = common.slugify(title)[:60]
+
+            # Write prompt file
+            import os
+            ppath = common.prompt_path(slot_key, slug, date_folder)
+            os.makedirs(os.path.dirname(ppath), exist_ok=True)
+            with open(ppath, "w", encoding="utf-8") as f:
+                f.write(prompt)
+
+            created_task_id = db.create_task(
+                slot_key=slot_key,
+                date_folder=date_folder,
+                title=title,
+                slug=slug,
+                prompt_text=prompt,
+                prompt_file_path=ppath,
+                dedupe_key=dedupe_key,
+                worker_type=worker_type,
+            )
+            task_created = True
+            if result.usage_event_id and created_task_id:
+                try:
+                    db.update_task(created_task_id, planner_agent_label=result.agent_label)
+                except Exception:
+                    pass
+
+            db.log_tick("planner-llm", "PLANNER_LLM_TASK_CREATED",
+                        task_id=created_task_id,
+                        message=f"LLM Planner created task: {title[:80]}")
+        except Exception as exc:
+            logger.warning("planner_run_once: task creation failed: %s", exc)
+
+    return {
+        "ok": not bool(result.error),
+        "provider": result.provider,
+        "model": result.model,
+        "agent_label": result.agent_label,
+        "mode": result.mode,
+        "decision": result.decision,
+        "reason": result.reason,
+        "task_payload": result.task_payload,
+        "safety": result.safety,
+        "raw_output_excerpt": result.raw_output_excerpt,
+        "usage_logged": result.usage_logged,
+        "task_created": task_created,
+        "created_task_id": created_task_id,
+        "skipped": result.skipped,
+        "skip_reason": result.skip_reason,
+        "error": result.error,
+        "fallback_to_local": result.fallback_to_local,
+    }
+
+
 def get_backlog():
     content = common.read_backlog()
     return {"content": content, "path": common.BACKLOG_PATH}
-
-
 @router.get("/api/orchestrator/cto/summary")
 def get_cto_summary():
     latest_run = db.get_latest_cto_review_run()
@@ -844,6 +1340,8 @@ def get_cto_summary():
         "deferred_count": latest_run_payload.get("deferred_count", 0) if latest_run_payload else 0,
         "superseded_count": latest_run_payload.get("superseded_count", 0) if latest_run_payload else 0,
         "duplicate_count": latest_run_payload.get("duplicate_count", 0) if latest_run_payload else 0,
+        "h6_live_state": _get_h6_live_state(),
+        **_get_h6_report_flat_fields(),
     }
 
 
@@ -1671,3 +2169,184 @@ def trigger_aging():
         "aged_count": count,
         "message": f"Applied aging bonus to {count} items",
     }
+
+
+# ── CTO Review Provider settings ─────────────────────────────────────────────
+
+@router.get("/api/orchestrator/cto-review-settings")
+def get_cto_review_settings():
+    """Return all CTO review provider settings and today's call count."""
+    day_label = common.local_day_label()
+    today_calls = db.get_cto_today_calls(day_label)
+    cap = db.get_cto_review_daily_call_cap()
+    provider = db.get_cto_review_provider()
+    return {
+        "cto_review_provider": provider,
+        "cto_review_provider_label": {
+            "local": "Local (no LLM)",
+            "claude-cli": "Claude CLI",
+            "codex-cli": "Codex CLI",
+            "auto": "Auto (best available)",
+        }.get(provider, provider),
+        "cto_review_model": db.get_cto_review_model(),
+        "cto_review_mode": db.get_cto_review_mode(),
+        "cto_review_daily_call_cap": cap,
+        "cto_review_timeout_seconds": db.get_cto_review_timeout_seconds(),
+        "cto_review_max_context_chars": db.get_cto_review_max_context_chars(),
+        "cto_review_max_output_chars": db.get_cto_review_max_output_chars(),
+        "today_calls": today_calls,
+        "remaining_calls": max(0, cap - today_calls) if cap > 0 else 0,
+        "provider_options": [
+            {"value": "local", "label": "Local (no LLM)"},
+            {"value": "claude-cli", "label": "Claude CLI"},
+            {"value": "codex-cli", "label": "Codex CLI"},
+            {"value": "auto", "label": "Auto (best available)"},
+        ],
+        "mode_options": [
+            {"value": "local_review", "label": "Local Review (no LLM)"},
+            {"value": "review_only", "label": "Review Only (LLM advisory)"},
+        ],
+        "safety_note": "Claude / Codex CTO 僅提供審核建議。是否真的合併，仍由既有 CTO 合併開關與 Local Safety Gate 決定。",
+    }
+
+
+@router.post("/api/orchestrator/cto-review-settings")
+def update_cto_review_settings(req: CtoReviewSettingsRequest):
+    """Update CTO review provider settings."""
+    updated = {}
+    if req.cto_review_provider is not None:
+        try:
+            db.set_cto_review_provider(req.cto_review_provider)
+            updated["cto_review_provider"] = db.get_cto_review_provider()
+        except ValueError as exc:
+            raise HTTPException(status_code=422, detail=str(exc))
+    if req.cto_review_model is not None:
+        db.set_cto_review_model(req.cto_review_model)
+        updated["cto_review_model"] = db.get_cto_review_model()
+    if req.cto_review_mode is not None:
+        try:
+            db.set_cto_review_mode(req.cto_review_mode)
+            updated["cto_review_mode"] = db.get_cto_review_mode()
+        except ValueError as exc:
+            raise HTTPException(status_code=422, detail=str(exc))
+    if req.cto_review_daily_call_cap is not None:
+        db.set_cto_review_daily_call_cap(req.cto_review_daily_call_cap)
+        updated["cto_review_daily_call_cap"] = db.get_cto_review_daily_call_cap()
+    if req.cto_review_timeout_seconds is not None:
+        db.set_cto_review_timeout_seconds(req.cto_review_timeout_seconds)
+        updated["cto_review_timeout_seconds"] = db.get_cto_review_timeout_seconds()
+    if req.cto_review_max_context_chars is not None:
+        db.set_cto_review_max_context_chars(req.cto_review_max_context_chars)
+        updated["cto_review_max_context_chars"] = db.get_cto_review_max_context_chars()
+    if req.cto_review_max_output_chars is not None:
+        db.set_cto_review_max_output_chars(req.cto_review_max_output_chars)
+        updated["cto_review_max_output_chars"] = db.get_cto_review_max_output_chars()
+
+    db.log_tick("cto-review", "CTO_REVIEW_SETTINGS_UPDATED", message=f"CTO review settings updated: {updated}")
+    return {"ok": True, "updated": updated}
+
+
+@router.post("/api/orchestrator/cto/preview-review")
+def preview_cto_review(task_id: int = Query(None, ge=1)):
+    """
+    Dry-run the CTO review provider on the latest pending commit for a task.
+    Does NOT modify the commit status or trigger any merge.
+    Bypasses budget guard (force=True).
+    """
+    from orchestrator import cto_review_provider as crp
+
+    # Find a commit to preview
+    commit_row = None
+    if task_id:
+        rows = db.list_task_git_commits(task_id=task_id, limit=1)
+        if rows:
+            commit_row = dict(rows[0])
+    if commit_row is None:
+        # Find the latest pending commit
+        conn = db.get_conn()
+        try:
+            row = conn.execute(
+                "SELECT * FROM task_git_commits WHERE status='PENDING_REVIEW' ORDER BY created_at DESC LIMIT 1"
+            ).fetchone()
+            if row:
+                commit_row = dict(row)
+        finally:
+            conn.close()
+
+    if not commit_row:
+        return {"ok": False, "message": "No pending commit found for preview"}
+
+    task_ctx: dict = {}
+    result = crp.run_cto_review_provider(commit_row, task_ctx, force=True)
+    return {
+        "ok": True,
+        "task_id": commit_row.get("task_id"),
+        "commit_sha": commit_row.get("commit_sha"),
+        "provider": result.provider,
+        "mode": result.mode,
+        "skipped": result.skipped,
+        "skip_reason": result.skip_reason,
+        "decision": result.decision,
+        "risk_level": result.risk_level,
+        "merge_recommendation": result.merge_recommendation,
+        "final_merge_recommendation": result.final_merge_recommendation,
+        "local_gate_blocked": result.local_gate_blocked,
+        "local_gate_reason": result.local_gate_reason,
+        "reason": result.reason,
+        "issues": result.issues,
+        "required_checks": result.required_checks,
+        "safety_flags": result.safety_flags,
+        "usage_logged": result.usage_logged,
+        "context_truncated": result.context_truncated,
+        "error": result.error,
+    }
+
+
+@router.post("/api/orchestrator/cto/run-review-once")
+def run_cto_review_once():
+    """
+    Manually trigger a single CTO review provider run on all pending commits.
+    Returns a summary of recommendations. Does NOT merge — advisory only.
+    Bypasses budget guard (force=True).
+    """
+    from orchestrator import cto_review_provider as crp
+
+    conn = db.get_conn()
+    try:
+        rows = conn.execute(
+            "SELECT * FROM task_git_commits WHERE status='PENDING_REVIEW' ORDER BY review_priority DESC, created_at ASC LIMIT 20"
+        ).fetchall()
+        commits = [dict(r) for r in rows]
+    finally:
+        conn.close()
+
+    if not commits:
+        return {"ok": True, "message": "No pending commits", "results": []}
+
+    results_out = []
+    for commit_row in commits:
+        try:
+            rec = crp.run_cto_review_provider(commit_row, {}, force=True)
+            results_out.append({
+                "task_id": commit_row.get("task_id"),
+                "commit_sha": commit_row.get("commit_sha"),
+                "provider": rec.provider,
+                "decision": rec.decision,
+                "risk_level": rec.risk_level,
+                "final_merge_recommendation": rec.final_merge_recommendation,
+                "local_gate_blocked": rec.local_gate_blocked,
+                "local_gate_reason": rec.local_gate_reason,
+                "reason": rec.reason,
+                "skipped": rec.skipped,
+                "skip_reason": rec.skip_reason,
+                "error": rec.error,
+            })
+        except Exception as exc:
+            results_out.append({
+                "task_id": commit_row.get("task_id"),
+                "commit_sha": commit_row.get("commit_sha"),
+                "error": str(exc),
+            })
+
+    db.log_tick("cto-review", "CTO_REVIEW_ONCE_MANUAL", message=f"Manual CTO review-once: {len(results_out)} commits reviewed")
+    return {"ok": True, "reviewed": len(results_out), "results": results_out}

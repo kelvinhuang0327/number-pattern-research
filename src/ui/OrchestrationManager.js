@@ -90,6 +90,9 @@ export class OrchestrationManager {
       }
     })();
     document.getElementById('orc-cto-provider-save-btn')?.addEventListener('click', () => this._saveCtoProviders());
+    document.getElementById('orc-cto-review-save-btn')?.addEventListener('click', () => this._saveCtoReviewSettings());
+    document.getElementById('orc-cto-review-preview-btn')?.addEventListener('click', () => this._previewCtoReview());
+    document.getElementById('orc-cto-review-run-once-btn')?.addEventListener('click', () => this._runCtoReviewOnce());
 
     document.getElementById('orc-task-tbody')?.addEventListener('click', (e) => {
       const row = e.target.closest('tr[data-task-id]');
@@ -135,53 +138,545 @@ export class OrchestrationManager {
   }
 
   async _loadCtoAll() {
-    await Promise.all([this._loadCtoSummary(), this._loadCtoPending(), this._loadCtoRuns(), this._loadCtoProviders(), this._loadBacklogPolicyPanel(), this._loadAdaptivePolicy()]);
+    await Promise.all([this._loadCtoSummary(), this._loadCtoPending(), this._loadCtoRuns(), this._loadCtoProviders(), this._loadCtoReviewSettings(), this._loadBacklogPolicyPanel(), this._loadAdaptivePolicy()]);
   }
 
   async _loadLlmControlPanel() {
     const el = document.getElementById('orc-llm-control-panel');
     if (!el) return;
+
+    // ── helpers ──────────────────────────────────────────────────────────────
+    const _fmtTime = (ts) => {
+      if (!ts) return '—';
+      try {
+        const d = new Date(ts.includes('T') || ts.includes('Z') ? ts : ts.replace(' ', 'T') + 'Z');
+        return d.toLocaleTimeString('zh-TW', { hour: '2-digit', minute: '2-digit', hour12: false });
+      } catch (_) { return '—'; }
+    };
+
+    const _toggleCollapsible = (btnId, bodyId) => {
+      const btn = el.querySelector('#' + btnId);
+      const body = el.querySelector('#' + bodyId);
+      if (!btn || !body) return;
+      btn.addEventListener('click', () => {
+        const open = body.style.display !== 'none';
+        body.style.display = open ? 'none' : 'block';
+        btn.querySelector('.llm-ctrl-arrow').textContent = open ? '▶' : '▼';
+      });
+    };
+
     try {
       const data = await this._get('/api/orchestrator/llm-control');
       this._lastLlmControl = data;
       const mode = String(data.mode || 'safe-run').toLowerCase();
+      const isHardOff = mode === 'hard-off';
+      const badgeColor = isHardOff ? '#f85149' : '#3fb950';
+      const badgeText = isHardOff ? 'HARD-OFF' : 'SAFE-RUN';
+      const schedulerOn = Boolean(data.scheduler_enabled);
+      const lastTime = _fmtTime(data.last_llm_call_at);
+      const blocked = Number(data.blocked_execution_count || 0);
+      const lastSkip = data.last_skip_reason ? _esc(data.last_skip_reason) : '';
+
       const runners = Array.isArray(data.active_background_runners) ? data.active_background_runners : [];
-      const runnerHtml = runners.length
-        ? runners.map((runner) => {
-          const runnerName = _esc(runner.name || 'runner');
-          const runnerStatus = _esc(String(runner.status || 'running'));
-          const runnerPid = runner.pid ? ` · PID ${_esc(String(runner.pid))}` : '';
-          const runnerTask = runner.task_id ? ` · task ${_esc(String(runner.task_id))}` : '';
-          return `${runnerName} (${runnerStatus}${runnerPid}${runnerTask})`;
-        }).join('<br>')
+      // Runner summary: "name status" without PID (PID goes in detail)
+      const runnerSummary = runners.length
+        ? runners.map(r => `${_esc(r.name || 'runner')} ${_esc(String(r.status || 'running'))}`).join(', ')
+        : '無 runner';
+
+      // Full runner detail HTML (for collapsible)
+      const runnerDetailHtml = runners.length
+        ? runners.map(r => {
+            const pid = r.pid ? ` · PID ${_esc(String(r.pid))}` : '';
+            const task = r.task_id ? ` · task ${_esc(String(r.task_id))}` : '';
+            return `<div style="padding:2px 0">${_esc(r.name || 'runner')} <span style="color:var(--text-muted,#8b949e)">(${_esc(String(r.status || 'running'))}${pid}${task})</span></div>`;
+          }).join('')
         : '<span style="color:var(--text-muted,#8b949e)">無常駐背景 runner</span>';
 
+      const guardNote = lastSkip
+        ? `Safe-Run guard: last skip <span style="color:#e3b341">${lastSkip}</span>`
+        : `Safe-Run guard: <span style="color:#3fb950">OK</span>`;
+
       el.innerHTML = `
-        <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:10px">
-          <span style="font-weight:600">LLM Mode</span>
-          <span style="font-size:0.8rem;padding:2px 9px;border-radius:999px;border:1px solid ${mode === 'hard-off' ? '#f85149' : '#3fb950'};color:${mode === 'hard-off' ? '#f85149' : '#3fb950'}">${mode === 'hard-off' ? 'HARD-OFF' : 'SAFE-RUN'}</span>
+        <style>
+          .llm-ctrl-summary { display:flex; align-items:center; gap:8px; flex-wrap:wrap; font-size:0.82rem; }
+          .llm-ctrl-badge { font-size:0.75rem; padding:2px 8px; border-radius:999px; border:1px solid; font-weight:600; }
+          .llm-ctrl-chip { color:var(--text-muted,#8b949e); }
+          .llm-ctrl-chip b { color:var(--text-color,#c9d1d9); }
+          .llm-ctrl-section { margin-top:10px; border-top:1px solid var(--border,#30363d); padding-top:8px; }
+          .llm-ctrl-colbtn { display:flex; align-items:center; gap:6px; cursor:pointer; font-size:0.8rem; font-weight:600; background:none; border:none; color:var(--text-color,#c9d1d9); padding:0; }
+          .llm-ctrl-colbtn:hover { color:#58a6ff; }
+          .llm-ctrl-arrow { font-size:0.65rem; color:var(--text-muted,#8b949e); }
+          .llm-ctrl-body { margin-top:8px; font-size:0.82rem; }
+          .llm-ctrl-grid2 { display:grid; grid-template-columns:repeat(auto-fit,minmax(200px,1fr)); gap:8px; }
+          .llm-ctrl-muted { font-size:0.72rem; color:var(--text-muted,#8b949e); margin-top:6px; }
+          .llm-ctrl-formfield label { display:block; color:var(--text-muted,#8b949e); margin-bottom:3px; font-size:0.78rem; }
+          .llm-ctrl-formfield select,
+          .llm-ctrl-formfield input { width:100%; box-sizing:border-box; background:var(--bg-secondary,#161b22); border:1px solid var(--border,#30363d); color:var(--text-color,#c9d1d9); padding:4px 8px; border-radius:4px; font-size:0.82rem; }
+          .llm-ctrl-planner-summary { font-size:0.8rem; color:var(--text-muted,#8b949e); margin-top:3px; }
+          .llm-ctrl-usage-row { display:flex; gap:12px; flex-wrap:wrap; font-size:0.82rem; }
+          .llm-ctrl-usage-item { }
+          .llm-ctrl-usage-item .role-label { color:var(--text-muted,#8b949e); }
+          .llm-ctrl-usage-item .role-val { color:var(--text-color,#c9d1d9); font-weight:600; }
+        </style>
+
+        <!-- ① Summary row -->
+        <div class="llm-ctrl-summary">
+          <span class="llm-ctrl-badge" style="border-color:${badgeColor};color:${badgeColor}">${badgeText}</span>
+          <span class="llm-ctrl-chip">Scheduler: <b>${schedulerOn ? 'ON' : 'OFF'}</b></span>
+          <span class="llm-ctrl-chip">Last Call: <b>${lastTime}</b></span>
+          <span class="llm-ctrl-chip">Blocked: <b>${blocked}</b></span>
           <span style="flex:1"></span>
-          <button id="orc-llm-safe-run-btn" class="btn-sm btn-secondary" ${mode === 'safe-run' ? 'disabled' : ''}>SAFE-RUN</button>
-          <button id="orc-llm-hard-off-btn" class="btn-sm btn-secondary" ${mode === 'hard-off' ? 'disabled' : ''}>HARD-OFF</button>
+          <button id="orc-llm-safe-run-btn" class="btn-sm btn-secondary" ${!isHardOff ? 'disabled' : ''}>SAFE-RUN</button>
+          <button id="orc-llm-hard-off-btn" class="btn-sm btn-secondary" ${isHardOff ? 'disabled' : ''}>HARD-OFF</button>
         </div>
-        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:10px;font-size:0.82rem">
-          <div><div style="color:var(--text-muted,#8b949e)">scheduler.enabled</div><div>${data.scheduler_enabled ? 'true' : 'false'}</div></div>
-          <div><div style="color:var(--text-muted,#8b949e)">current mode</div><div>${_esc(mode)}</div></div>
-          <div><div style="color:var(--text-muted,#8b949e)">last LLM call</div><div>${data.last_llm_call_at ? _fmt_utc_ts(data.last_llm_call_at) : '—'}</div></div>
-          <div><div style="color:var(--text-muted,#8b949e)">blocked executions</div><div>${Number(data.blocked_execution_count || 0)}</div></div>
+
+        <!-- ② Runner one-liner -->
+        <div style="margin-top:6px;font-size:0.8rem">
+          <span class="llm-ctrl-chip">Runner: <b>${runnerSummary}</b></span>
+          <span style="margin-left:10px;font-size:0.75rem;color:var(--text-muted,#8b949e)">${guardNote}</span>
         </div>
-        <div style="margin-top:10px;font-size:0.8rem">
-          <div style="color:var(--text-muted,#8b949e);margin-bottom:4px">Active Background Runners</div>
-          <div>${runnerHtml}</div>
+
+        <!-- ③ Today usage summary -->
+        <div class="llm-ctrl-section">
+          <div style="font-size:0.78rem;font-weight:600;margin-bottom:6px;color:var(--text-muted,#8b949e)">今日 LLM 呼叫</div>
+          <div id="orc-llm-usage-summary" class="llm-ctrl-usage-row">
+            <span style="color:var(--text-muted,#8b949e);font-size:0.8rem">載入中…</span>
+          </div>
+          <div class="llm-ctrl-muted">僅統計實際 LLM 呼叫；Local Planner 不列入</div>
         </div>
-        <div style="margin-top:10px;font-size:0.75rem;color:var(--text-muted,#8b949e)">
-          ${mode === 'hard-off' ? 'Hard-Off: no background or manual LLM execution.' : 'Safe-Run: execution allowed only when scheduler.enabled is true.'}
-          ${data.last_skip_reason ? ` Last skip: ${_esc(data.last_skip_reason)}` : ''}
+
+        <!-- ④ Planner 設定 (collapsible, default collapsed) -->
+        <div class="llm-ctrl-section">
+          <div style="display:flex;align-items:center;justify-content:space-between">
+            <button class="llm-ctrl-colbtn" id="orc-planner-toggle-btn">
+              <span class="llm-ctrl-arrow">▶</span> Planner 設定
+            </button>
+            <div id="orc-planner-inline-summary" class="llm-ctrl-planner-summary">—</div>
+          </div>
+          <div id="orc-planner-body" style="display:none">
+            <div class="llm-ctrl-body">
+              <div class="llm-ctrl-grid2" style="margin-bottom:8px">
+                <div class="llm-ctrl-formfield">
+                  <label>Provider</label>
+                  <select id="orc-llm-planner-provider">
+                    <option value="local">Local (規則式，不消耗額度)</option>
+                    <option value="claude-cli">Claude CLI</option>
+                    <option value="codex-cli">Codex CLI</option>
+                    <option value="auto">Auto (自動選擇)</option>
+                  </select>
+                </div>
+                <div class="llm-ctrl-formfield">
+                  <label>Model（留空為 auto）</label>
+                  <input id="orc-planner-model" type="text" placeholder="e.g. claude-sonnet-4-6" />
+                </div>
+                <div class="llm-ctrl-formfield">
+                  <label>Mode</label>
+                  <select id="orc-planner-mode">
+                    <option value="off">Off（停用 LLM Planner）</option>
+                    <option value="suggest_only">Suggest Only（僅建議，不建立 Task）</option>
+                    <option value="create_task">Create Task（自動建立 Task）</option>
+                    <option value="create_and_route">Create and Route（建立並路由）</option>
+                  </select>
+                </div>
+                <div class="llm-ctrl-formfield">
+                  <label>每日呼叫上限（0=停用）</label>
+                  <input id="orc-planner-cap" type="number" min="0" />
+                </div>
+                <div class="llm-ctrl-formfield">
+                  <label>Timeout（秒，最小 30）</label>
+                  <input id="orc-planner-timeout" type="number" min="30" />
+                </div>
+              </div>
+              <div id="orc-planner-hint" style="font-size:0.78rem;padding:6px 8px;border-radius:4px;margin-bottom:6px;display:none"></div>
+              <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-bottom:8px">
+                <button id="orc-planner-save-btn" class="btn-sm btn-secondary">儲存設定</button>
+                <button id="orc-planner-preview-btn" class="btn-sm btn-secondary">Preview（Suggest Only）</button>
+                <button id="orc-planner-run-once-btn" class="btn-sm btn-secondary">Run Once</button>
+                <span id="orc-planner-save-status" style="font-size:0.78rem;color:var(--text-muted,#8b949e)"></span>
+              </div>
+              <div id="orc-planner-status" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:6px;font-size:0.8rem"></div>
+              <div class="llm-ctrl-muted">⚠ Local Planner 不消耗 LLM 額度。Claude CLI / Codex CLI 會消耗對應 provider 額度。</div>
+              <div id="orc-planner-preview-result" style="margin-top:10px;display:none">
+                <div style="color:var(--text-muted,#8b949e);margin-bottom:4px;font-size:0.8rem">Preview 結果</div>
+                <pre id="orc-planner-preview-output" style="background:var(--bg-secondary,#161b22);border:1px solid var(--border,#30363d);border-radius:4px;padding:8px;overflow:auto;max-height:200px;font-size:0.75rem;white-space:pre-wrap;word-break:break-all"></pre>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ⑤ Runner 詳細 (collapsible, default collapsed) -->
+        <div class="llm-ctrl-section">
+          <button class="llm-ctrl-colbtn" id="orc-runner-toggle-btn">
+            <span class="llm-ctrl-arrow">▶</span> Runner 詳細
+          </button>
+          <div id="orc-runner-body" style="display:none">
+            <div class="llm-ctrl-body">
+              <div style="margin-bottom:6px">${runnerDetailHtml}</div>
+              <div style="font-size:0.78rem;color:var(--text-muted,#8b949e)">
+                scheduler.enabled: <b style="color:var(--text-color,#c9d1d9)">${schedulerOn ? 'true' : 'false'}</b>
+                &nbsp;·&nbsp; mode: <b style="color:var(--text-color,#c9d1d9)">${_esc(mode)}</b>
+              </div>
+              <div style="margin-top:6px;font-size:0.78rem;color:var(--text-muted,#8b949e)">
+                ${isHardOff ? 'Hard-Off: no background or manual LLM execution.' : 'Safe-Run: execution allowed only when scheduler.enabled is true.'}
+                ${lastSkip ? `<br>Last skip: <span style="color:#e3b341">${lastSkip}</span>` : ''}
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ⑥ Usage 詳細 (collapsible, default collapsed) -->
+        <div class="llm-ctrl-section">
+          <button class="llm-ctrl-colbtn" id="orc-usage-toggle-btn">
+            <span class="llm-ctrl-arrow">▶</span> Usage 詳細
+          </button>
+          <div id="orc-usage-body" style="display:none">
+            <div class="llm-ctrl-body">
+              <div id="orc-llm-usage-today">
+                <span style="color:var(--text-muted,#8b949e)">載入中…</span>
+              </div>
+              <div id="orc-llm-usage-recent-section" style="margin-top:12px">
+                <div style="font-size:0.78rem;font-weight:600;margin-bottom:6px;color:var(--text-muted,#8b949e);border-top:1px solid var(--border-color,#30363d);padding-top:8px">最近 10 筆 Usage 明細</div>
+                <div id="orc-llm-usage-recent"><span style="color:var(--text-muted,#8b949e)">載入中…</span></div>
+              </div>
+
+              <!-- LLM Audit section -->
+              <div id="orc-llm-audit-section" style="margin-top:12px">
+                <div style="font-size:0.78rem;font-weight:600;margin-bottom:6px;color:var(--text-muted,#8b949e);border-top:1px solid var(--border-color,#30363d);padding-top:8px">LLM Audit (今日)</div>
+                <div id="orc-llm-audit-today"><span style="color:var(--text-muted,#8b949e)">載入中…</span></div>
+                <div style="font-size:0.78rem;font-weight:600;margin:8px 0 4px;color:var(--text-muted,#8b949e)">最近 20 筆 Audit 明細</div>
+                <div id="orc-llm-audit-recent"><span style="color:var(--text-muted,#8b949e)">載入中…</span></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ⑦ LLM Usage Detail (Planner/Worker/CTO + Copilot overuse, collapsible) -->
+        <div class="llm-ctrl-section" id="orc-llm-usage-detail">
+          <button class="llm-ctrl-colbtn" id="orc-detail-toggle-btn">
+            <span class="llm-ctrl-arrow">▶</span> LLM 使用詳情（Planner / Worker / CTO / Copilot）
+          </button>
+          <div id="orc-detail-body" style="display:none">
+            <div class="llm-ctrl-body">
+              <!-- Role Summary Table -->
+              <div style="font-size:0.78rem;font-weight:600;margin-bottom:6px;color:var(--text-muted,#8b949e)">角色摘要</div>
+              <div id="orc-llm-role-summary"><span style="color:var(--text-muted,#8b949e)">載入中…</span></div>
+
+              <!-- Copilot Focus -->
+              <div style="font-size:0.78rem;font-weight:600;margin:10px 0 4px;color:var(--text-muted,#8b949e);border-top:1px solid var(--border-color,#30363d);padding-top:8px">Copilot-Daemon 詳情</div>
+              <div id="orc-llm-copilot-focus"><span style="color:var(--text-muted,#8b949e)">載入中…</span></div>
+
+              <!-- Top Tasks -->
+              <div style="font-size:0.78rem;font-weight:600;margin:10px 0 4px;color:var(--text-muted,#8b949e);border-top:1px solid var(--border-color,#30363d);padding-top:8px">依 LLM 呼叫次數排名 Tasks</div>
+              <div id="orc-llm-top-tasks"><span style="color:var(--text-muted,#8b949e)">載入中…</span></div>
+
+              <!-- Recent LLM Calls -->
+              <div style="font-size:0.78rem;font-weight:600;margin:10px 0 4px;color:var(--text-muted,#8b949e);border-top:1px solid var(--border-color,#30363d);padding-top:8px">最近 LLM 呼叫明細</div>
+              <div id="orc-llm-recent-calls"><span style="color:var(--text-muted,#8b949e)">載入中…</span></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ⑧ LLM Caps Status (collapsible) -->
+        <div class="llm-ctrl-section">
+          <button class="llm-ctrl-colbtn" id="orc-caps-toggle-btn">
+            <span class="llm-ctrl-arrow">▶</span> LLM Caps 配額狀態
+          </button>
+          <div id="orc-caps-body" style="display:none">
+            <div class="llm-ctrl-body">
+              <div id="orc-llm-caps-status"><span style="color:var(--text-muted,#8b949e)">載入中…</span></div>
+              <div id="orc-llm-caps-role-summary" style="margin-top:8px"><span style="color:var(--text-muted,#8b949e)">載入中…</span></div>
+              <div id="orc-llm-caps-recent-blocks" style="margin-top:8px"><span style="color:var(--text-muted,#8b949e)">載入中…</span></div>
+            </div>
+          </div>
+        </div>
+        <div class="llm-ctrl-section">
+          <button class="llm-ctrl-colbtn" id="orc-stale-lock-toggle-btn">
+            <span class="llm-ctrl-arrow">▶</span> Stale RUNNING Lock 偵測
+          </button>
+          <div id="orc-stale-lock-body" style="display:none">
+            <div class="llm-ctrl-body">
+              <div style="margin-bottom:4px">狀態: <span id="orc-stale-lock-status" style="font-weight:600">載入中…</span></div>
+              <div id="orc-stale-lock-summary" style="font-size:0.8rem;color:var(--text-muted,#8b949e)">載入中…</div>
+              <pre id="orc-stale-lock-decisions" style="font-size:0.72rem;margin-top:6px;max-height:200px;overflow:auto;background:var(--bg-secondary,#161b22);padding:6px;border-radius:4px"></pre>
+            </div>
+          </div>
         </div>
       `;
 
+      // Wire mode toggle buttons
       el.querySelector('#orc-llm-safe-run-btn')?.addEventListener('click', () => this._setLlmControlMode('safe-run'));
       el.querySelector('#orc-llm-hard-off-btn')?.addEventListener('click', () => this._setLlmControlMode('hard-off'));
+
+      // Wire collapsibles
+      _toggleCollapsible('orc-planner-toggle-btn', 'orc-planner-body');
+      _toggleCollapsible('orc-runner-toggle-btn', 'orc-runner-body');
+      _toggleCollapsible('orc-usage-toggle-btn', 'orc-usage-body');
+      _toggleCollapsible('orc-detail-toggle-btn', 'orc-detail-body');
+      _toggleCollapsible('orc-caps-toggle-btn', 'orc-caps-body');
+      _toggleCollapsible('orc-stale-lock-toggle-btn', 'orc-stale-lock-body');
+
+      // Load and wire planner settings
+      try {
+        const ps = await this._get('/api/orchestrator/planner-settings');
+        const provSel = el.querySelector('#orc-llm-planner-provider');
+        const modelIn = el.querySelector('#orc-planner-model');
+        const modeSel = el.querySelector('#orc-planner-mode');
+        const capIn = el.querySelector('#orc-planner-cap');
+        const timeoutIn = el.querySelector('#orc-planner-timeout');
+        if (provSel) provSel.value = ps.planner_llm_provider || 'local';
+        if (modelIn) modelIn.value = (ps.planner_llm_model === 'auto' ? '' : (ps.planner_llm_model || ''));
+        if (modeSel) modeSel.value = ps.planner_llm_mode || 'off';
+        if (capIn) capIn.value = ps.planner_daily_call_cap ?? 0;
+        if (timeoutIn) timeoutIn.value = ps.planner_timeout_seconds ?? 300;
+        this._renderPlannerStatus(el, ps);
+        this._renderPlannerInlineSummary(el, ps);
+      } catch (_) { /* non-critical */ }
+
+      el.querySelector('#orc-planner-save-btn')?.addEventListener('click', () => this._savePlannerSettings(el));
+      el.querySelector('#orc-planner-preview-btn')?.addEventListener('click', () => this._runPlannerPreview(el));
+      el.querySelector('#orc-planner-run-once-btn')?.addEventListener('click', () => this._runPlannerOnce(el, false));
+
+      // Load today's LLM usage (compact summary + full detail)
+      try {
+        const usageData = await this._get('/api/orchestrator/llm-usage/today');
+        const roles = Array.isArray(usageData.roles) ? usageData.roles : null;
+        const summary = usageData.summary || {};
+
+        // ── Compact summary (③) ─────────────────────────────────────────────
+        const summaryEl = el.querySelector('#orc-llm-usage-summary');
+        if (summaryEl) {
+          if (roles) {
+            const CORE_ROLES = ['planner', 'worker', 'cto'];
+            const items = [];
+            for (const role of roles) {
+              const roleKey = String(role.role || '').toLowerCase();
+              const total = Number(role.total_calls || 0);
+              if (roleKey === 'unknown' && total === 0) continue; // hide Unknown when 0
+              if (total === 0 && CORE_ROLES.includes(roleKey)) {
+                // core roles: show 0 compactly
+                items.push(`<span class="llm-ctrl-usage-item"><span class="role-label">${_esc(role.label || role.role)}: </span><span class="role-val">0</span></span>`);
+              } else if (total > 0 && role.items && role.items.length) {
+                const agents = role.items.map(it => `${_esc(it.agent_label || '—')} ${it.total_calls} 次`).join(', ');
+                items.push(`<span class="llm-ctrl-usage-item"><span class="role-label">${_esc(role.label || role.role)}: </span><span class="role-val">${agents}</span></span>`);
+              } else if (total > 0) {
+                items.push(`<span class="llm-ctrl-usage-item"><span class="role-label">${_esc(role.label || role.role)}: </span><span class="role-val">${total} 次</span></span>`);
+              } else {
+                items.push(`<span class="llm-ctrl-usage-item"><span class="role-label">${_esc(role.label || role.role)}: </span><span class="role-val">0</span></span>`);
+              }
+            }
+            // Compact token/premium line
+            const tokenLine = _formatTokenSummaryLine(summary);
+            if (tokenLine) {
+              items.push(`<span class="llm-ctrl-usage-item" style="color:var(--text-muted,#8b949e);font-size:0.75rem">${tokenLine}</span>`);
+            }
+            summaryEl.innerHTML = items.length ? items.join('') : '<span style="color:var(--text-muted,#8b949e)">今日尚無 LLM 呼叫</span>';
+          } else {
+            // Fallback: flat items
+            const items = Array.isArray(usageData.items) ? usageData.items : [];
+            summaryEl.innerHTML = items.length
+              ? items.map(it => `<span class="llm-ctrl-usage-item"><span class="role-label">${_esc(it.agent_label || '—')}: </span><span class="role-val">${it.total_calls} 次</span></span>`).join('')
+              : '<span style="color:var(--text-muted,#8b949e)">今日尚無 LLM 呼叫</span>';
+          }
+        }
+
+        // ── Full detail (⑥ Usage 詳細) ──────────────────────────────────────
+        const usageEl = el.querySelector('#orc-llm-usage-today');
+        if (usageEl) {
+          if (roles) {
+            const hasAny = roles.some(r => r.total_calls > 0);
+            if (!hasAny) {
+              usageEl.innerHTML = '<span style="color:var(--text-muted,#8b949e)">今日尚無 LLM 呼叫紀錄</span>';
+            } else {
+              // Global token/premium banner
+              const globalTokenBanner = _formatTokenBanner(summary);
+              const roleHtml = roles
+                .filter(role => !(String(role.role || '').toLowerCase() === 'unknown' && !role.total_calls))
+                .map(role => {
+                  const roleTokLine = _formatTokenSummaryLine(role);
+                  const agentHtml = role.items && role.items.length
+                    ? role.items.map(it => {
+                        const agTok = _formatTokenSummaryLine(it);
+                        return `<div style="display:flex;gap:8px;align-items:center;padding:2px 0;flex-wrap:wrap">
+                          <span style="color:var(--text-color,#c9d1d9)">${_esc(it.agent_label || '—')}</span>
+                          <span style="color:var(--text-muted,#8b949e)">${it.total_calls} 次</span>
+                          ${agTok ? `<span style="color:var(--text-muted,#8b949e);font-size:0.72rem">${agTok}</span>` : ''}
+                        </div>`;
+                      }).join('')
+                    : `<div style="color:var(--text-muted,#8b949e);font-size:0.72rem">今日尚無 LLM 呼叫紀錄</div>`;
+                  return `<div style="margin-bottom:8px">
+                    <div style="font-weight:600;color:var(--text-color,#c9d1d9);margin-bottom:3px">
+                      ${_esc(role.label || role.role)}
+                      ${roleTokLine ? `<span style="font-weight:400;font-size:0.72rem;color:var(--text-muted,#8b949e);margin-left:6px">${roleTokLine}</span>` : ''}
+                    </div>
+                    <div style="padding-left:8px;font-size:0.8rem">${agentHtml}</div>
+                  </div>`;
+                }).join('');
+              usageEl.innerHTML = `${globalTokenBanner}${roleHtml}`;
+
+              // Rate-limit warnings
+              const warnings = Array.isArray(summary.rate_limit_warnings) ? summary.rate_limit_warnings : [];
+              if (warnings.length) {
+                const warnHtml = warnings.map(w =>
+                  `<div style="background:rgba(210,153,34,0.12);border:1px solid rgba(210,153,34,0.4);border-radius:4px;padding:4px 8px;font-size:0.76rem;color:#d29922;margin-top:4px">
+                    ⚠ ${_esc(w.type || '')} rate limit: ${w.used_pct}%${w.reset_at ? ` · 重置: ${_esc(w.reset_at)}` : ''}
+                  </div>`
+                ).join('');
+                usageEl.innerHTML += warnHtml;
+              }
+            }
+          } else {
+            // Fallback: legacy flat items display
+            const items = Array.isArray(usageData.items) ? usageData.items : [];
+            if (!items.length) {
+              usageEl.innerHTML = '<span style="color:var(--text-muted,#8b949e)">今日尚無 LLM 呼叫紀錄</span>';
+            } else {
+              usageEl.innerHTML = `<div style="display:flex;flex-wrap:wrap;gap:6px">${items.map(it =>
+                `<span style="display:inline-flex;gap:6px;align-items:center;padding:2px 8px;border-radius:4px;border:1px solid var(--border-color,#30363d)">
+                  <b style="color:var(--text-color,#c9d1d9)">${_esc(it.agent_label || '—')}</b>
+                  <span style="color:var(--text-muted,#8b949e)">${it.total_calls} 次</span>
+                </span>`
+              ).join('')}</div>`;
+            }
+          }
+        }
+      } catch (_) { /* non-critical */ }
+
+      // ── Load Recent Usage table ─────────────────────────────────────────
+      try {
+        const recentEl = el.querySelector('#orc-llm-usage-recent');
+        if (recentEl) {
+          const recentData = await this._get('/api/orchestrator/llm-usage/recent?limit=10');
+          const events = Array.isArray(recentData.events) ? recentData.events : [];
+          if (!events.length) {
+            recentEl.innerHTML = '<span style="color:var(--text-muted,#8b949e);font-size:0.8rem">今日尚無 usage 明細</span>';
+          } else {
+            const TH = (t) => `<th style="padding:3px 6px;text-align:left;color:var(--text-muted,#8b949e);font-weight:500;font-size:0.72rem;border-bottom:1px solid var(--border-color,#30363d);white-space:nowrap">${t}</th>`;
+            const TD = (t, extra) => `<td style="padding:3px 6px;font-size:0.78rem;white-space:nowrap;${extra || ''}">${t}</td>`;
+            const rows = events.map(ev => {
+              const ts = String(ev.created_at || '');
+              const timePart = ts.slice(11, 19) || ts.slice(0, 16) || '—';
+              const role = String(ev.usage_role || ev.runner_type || '—');
+              const agent = _esc(String(ev.agent_label || '—').slice(0, 20));
+              const task = ev.task_id != null ? String(ev.task_id) : '—';
+              const parsedBadge = ev.parsed === 1
+                ? '<span title="parsed=1" style="color:#3fb950">✅</span>'
+                : '<span title="parsed=0" style="color:var(--text-muted,#8b949e)">—</span>';
+              const prem = ev.premium_requests != null ? Number(ev.premium_requests).toFixed(2) : '—';
+              const inp = ev.input_tokens; const out = ev.output_tokens; const cac = ev.cached_tokens;
+              let tokStr = '—';
+              if (inp || out) {
+                tokStr = `↑${_fmtTokens(inp)||'0'} / ↓${_fmtTokens(out)||'0'}`;
+                if (cac) tokStr += ` / ${_fmtTokens(cac)}c`;
+              }
+              let rlStr = '—';
+              if (ev.rate_limit_type && ev.rate_limit_used_pct != null) {
+                rlStr = `${_esc(ev.rate_limit_type)} ${Number(ev.rate_limit_used_pct).toFixed(0)}%`;
+              }
+              const excerptAttr = ev.raw_usage_excerpt ? ` title="${_esc(ev.raw_usage_excerpt)}"` : '';
+              return `<tr${excerptAttr}>
+                ${TD(timePart, 'color:var(--text-muted,#8b949e)')}
+                ${TD(_esc(role))}
+                ${TD(agent)}
+                ${TD(task, 'color:var(--text-muted,#8b949e)')}
+                ${TD(parsedBadge)}
+                ${TD(prem, 'color:var(--text-muted,#8b949e)')}
+                ${TD(tokStr, 'color:var(--text-muted,#8b949e);font-size:0.72rem')}
+                ${TD(rlStr, 'color:var(--text-muted,#8b949e);font-size:0.72rem')}
+              </tr>`;
+            }).join('');
+            recentEl.innerHTML = `<div style="overflow-x:auto">
+              <table style="width:100%;border-collapse:collapse;font-size:0.78rem">
+                <thead><tr>
+                  ${TH('Time')}${TH('Role')}${TH('Agent')}${TH('Task')}
+                  ${TH('Parsed')}${TH('Premium')}${TH('Tokens')}${TH('Rate Limit')}
+                </tr></thead>
+                <tbody>${rows}</tbody>
+              </table>
+            </div>`;
+          }
+        }
+      } catch (_) { /* non-critical */ }
+
+      // ── Load LLM Audit data ─────────────────────────────────────────────
+      try {
+        const auditTodayEl = el.querySelector('#orc-llm-audit-today');
+        const auditRecentEl = el.querySelector('#orc-llm-audit-recent');
+
+        // Today summary
+        if (auditTodayEl) {
+          const todaySummary = await this._get('/api/orchestrator/llm-audit/today').catch(() => null);
+          if (!todaySummary || !todaySummary.total) {
+            auditTodayEl.innerHTML = '<span style="color:var(--text-muted,#8b949e);font-size:0.8rem">今日尚無 audit 事件</span>';
+          } else {
+            const { total = 0, blocked = 0, successful = 0, failed = 0, by_role = {}, by_provider = {} } = todaySummary;
+            const roleHtml = Object.entries(by_role).map(([role, d]) =>
+              `<span style="display:inline-flex;gap:4px;align-items:center;padding:1px 7px;border-radius:3px;border:1px solid var(--border-color,#30363d);font-size:0.75rem;margin:2px">
+                <b style="color:var(--text-color,#c9d1d9)">${_esc(role)}</b>
+                <span style="color:#3fb950">${d.successful || 0}✓</span>
+                ${(d.blocked || 0) > 0 ? `<span style="color:#e3b341">${d.blocked}⊘</span>` : ''}
+                ${(d.failed || 0) > 0 ? `<span style="color:#f85149">${d.failed}✗</span>` : ''}
+              </span>`
+            ).join('');
+            auditTodayEl.innerHTML = `
+              <div style="display:flex;gap:10px;flex-wrap:wrap;font-size:0.8rem;margin-bottom:6px">
+                <span>Total: <b style="color:var(--text-color,#c9d1d9)">${total}</b></span>
+                <span>OK: <b style="color:#3fb950">${successful}</b></span>
+                ${blocked > 0 ? `<span>Blocked: <b style="color:#e3b341">${blocked}</b></span>` : ''}
+                ${failed > 0 ? `<span>Failed: <b style="color:#f85149">${failed}</b></span>` : ''}
+              </div>
+              <div style="display:flex;flex-wrap:wrap;gap:2px">${roleHtml}</div>`;
+          }
+        }
+
+        // Recent events table
+        if (auditRecentEl) {
+          const recentAudit = await this._get('/api/orchestrator/llm-audit/recent?limit=20').catch(() => null);
+          const events = recentAudit?.events || [];
+          if (!events.length) {
+            auditRecentEl.innerHTML = '<span style="color:var(--text-muted,#8b949e);font-size:0.8rem">尚無 audit 明細</span>';
+          } else {
+            const TH = (t) => `<th style="padding:3px 6px;text-align:left;color:var(--text-muted,#8b949e);font-weight:500;font-size:0.72rem;border-bottom:1px solid var(--border-color,#30363d);white-space:nowrap">${t}</th>`;
+            const TD = (t, extra) => `<td style="padding:3px 6px;font-size:0.76rem;white-space:nowrap;${extra || ''}">${t}</td>`;
+            const rows = events.map(ev => {
+              const ts = String(ev.created_at || '').slice(11, 19) || '—';
+              const et = String(ev.event_type || '—').replace('LLM_CALL_', '');
+              const etColor = ev.blocked ? '#e3b341' : ev.success === 0 ? '#f85149' : ev.success === 1 ? '#3fb950' : 'var(--text-muted,#8b949e)';
+              const role = _esc(ev.usage_role || '—');
+              const runner = _esc(ev.runner_type || '—');
+              const prov = _esc((ev.provider || '—').slice(0, 16));
+              const trigger = _esc(ev.trigger_source || '—');
+              const task = ev.task_id != null ? String(ev.task_id) : '—';
+              const dur = ev.duration_ms != null ? `${ev.duration_ms}ms` : '—';
+              const reason = ev.block_reason ? `<span title="${_esc(ev.block_reason)}" style="color:#e3b341">⊘ ${_esc(ev.block_reason.slice(0, 24))}</span>` : (ev.error ? `<span title="${_esc(ev.error)}" style="color:#f85149">✗</span>` : '');
+              return `<tr>
+                ${TD(ts, 'color:var(--text-muted,#8b949e)')}
+                ${TD(`<b style="color:${etColor}">${_esc(et)}</b>`)}
+                ${TD(role)}${TD(runner, 'color:var(--text-muted,#8b949e)')}${TD(prov)}
+                ${TD(trigger, 'color:var(--text-muted,#8b949e);font-size:0.72rem')}
+                ${TD(task, 'color:var(--text-muted,#8b949e)')}
+                ${TD(dur, 'color:var(--text-muted,#8b949e)')}
+                ${TD(reason)}
+              </tr>`;
+            }).join('');
+            auditRecentEl.innerHTML = `<div style="overflow-x:auto">
+              <table style="width:100%;border-collapse:collapse">
+                <thead><tr>
+                  ${TH('Time')}${TH('Type')}${TH('Role')}${TH('Runner')}${TH('Provider')}
+                  ${TH('Trigger')}${TH('Task')}${TH('Dur')}${TH('Status')}
+                </tr></thead>
+                <tbody>${rows}</tbody>
+              </table>
+            </div>`;
+          }
+        }
+      } catch (_) { /* non-critical */ }
+
+      // ── Load LLM Usage Detail (new comprehensive view) ─────────────────
+      this._loadLlmUsageDetail(el).catch(() => {/* non-critical */});
+
+      // ── Load LLM Caps Status ─────────────────────────────────────────────
+      this._loadLlmCapsStatus(el).catch(() => {/* non-critical */});
+
     } catch (e) {
       el.innerHTML = `<span style="color:#8b949e;font-size:0.8rem">LLM control 載入失敗: ${_esc(e.message)}</span>`;
     }
@@ -191,6 +686,432 @@ export class OrchestrationManager {
     await this._post('/api/orchestrator/llm-control', { mode });
     this.app?.uiManager?.showNotification(`LLM mode 已切換為 ${mode}`, 'success');
     await this._loadAll();
+  }
+
+  // ── LLM Usage Detail methods ──────────────────────────────────────────────
+
+  async _loadLlmUsageDetail(el) {
+    const data = await this._get('/api/orchestrator/llm-usage/detail?date=today');
+    if (!data) return;
+    this._renderLlmRoleSummary(el, data);
+    this._renderCopilotFocus(el, data);
+    this._renderTopLlmTasks(el, data);
+    this._renderRecentLlmCalls(el, data);
+  }
+
+  async _loadLlmCapsStatus(el) {
+    const capsEl = el.querySelector('#orc-llm-caps-status');
+    const roleEl = el.querySelector('#orc-llm-caps-role-summary');
+    const blocksEl = el.querySelector('#orc-llm-caps-recent-blocks');
+    if (!capsEl) return;
+    try {
+      const d = await this._get('/api/orchestrator/llm-caps/status');
+      const muted = 'color:var(--text-muted,#8b949e)';
+      const warn = (msg) => `<span style="color:#e3b341;font-size:0.75rem">⚠ ${_esc(msg)}</span>`;
+
+      const warnings = [];
+      if (!d.scheduler_enabled) warnings.push('Scheduler disabled — no automated execution');
+      const plannerRole = (d.roles || {}).planner || {};
+      if (plannerRole.daily_cap === 0) warnings.push('Planner external LLM cap=0 (blocked by default)');
+
+      capsEl.innerHTML = `<div style="font-size:0.78rem;display:flex;gap:12px;flex-wrap:wrap">
+        <span style="${muted}">Caps: <b style="color:${d.caps_enabled ? '#3fb950' : '#f85149'}">${d.caps_enabled ? 'ON' : 'OFF'}</b></span>
+        <span style="${muted}">Hard-Off: <b style="color:${d.hard_off ? '#f85149' : '#3fb950'}">${d.hard_off ? 'YES' : 'no'}</b></span>
+        <span style="${muted}">Scheduler: <b style="color:${d.scheduler_enabled ? '#3fb950' : '#e3b341'}">${d.scheduler_enabled ? 'ON' : 'OFF'}</b></span>
+        <span style="${muted}">Date: <b>${_esc(d.date || '')}</b> (${_esc(d.timezone || '')})</span>
+      </div>${warnings.map(w => `<div style="margin-top:4px">${warn(w)}</div>`).join('')}`;
+
+      if (roleEl && d.roles) {
+        const TH = (t) => `<th style="padding:2px 6px;text-align:left;${muted};font-weight:500;font-size:0.72rem;border-bottom:1px solid var(--border-color,#30363d)">${t}</th>`;
+        const TD = (t, c) => `<td style="padding:2px 6px;font-size:0.75rem;${c ? 'color:'+c : ''}">${t}</td>`;
+        const statusColor = (s) => s === 'ok' ? '#3fb950' : s === 'blocked_by_default' ? '#8b949e' : '#f85149';
+        const rows = Object.entries(d.roles).map(([role, r]) =>
+          `<tr>${TD(role)}${TD(r.daily_cap === 0 ? 'disabled' : `${r.daily_used}/${r.daily_cap}`)}${TD(r.hourly_cap > 0 ? `${r.hourly_used}/${r.hourly_cap}` : '—')}${TD(r.status, statusColor(r.status))}</tr>`
+        ).join('');
+        roleEl.innerHTML = `<table style="border-collapse:collapse;width:100%"><thead><tr>${TH('Role')}${TH('Daily')}${TH('Hourly')}${TH('Status')}</tr></thead><tbody>${rows}</tbody></table>`;
+      }
+
+      if (blocksEl) {
+        const blocks = Array.isArray(d.recent_blocks) ? d.recent_blocks : [];
+        if (!blocks.length) {
+          blocksEl.innerHTML = `<span style="${muted};font-size:0.75rem">No recent blocks (24h)</span>`;
+        } else {
+          blocksEl.innerHTML = `<div style="font-size:0.72rem;${muted};margin-bottom:3px">Recent blocks (24h)</div>` +
+            blocks.map(b => `<div style="font-size:0.74rem;padding:2px 0">[${_esc(b.usage_role||'?')}] ${_esc(b.provider||'?')} — <span style="color:#e3b341">${_esc(b.block_reason||'')}</span></div>`).join('');
+        }
+      }
+    } catch (e) {
+      if (capsEl) capsEl.innerHTML = `<span style="color:var(--text-muted,#8b949e);font-size:0.75rem">Caps status unavailable: ${_esc(e.message)}</span>`;
+    }
+  }
+
+  _renderLlmRoleSummary(el, data) {
+    const container = el.querySelector('#orc-llm-role-summary');
+    if (!container) return;
+    const roles = Array.isArray(data.roles) ? data.roles : [];
+    const byRunner = Array.isArray(data.by_runner) ? data.by_runner : [];
+    const warnings = Array.isArray(data.warnings) ? data.warnings : [];
+
+    const TH = (t) => `<th style="padding:3px 6px;text-align:left;color:var(--text-muted,#8b949e);font-weight:500;font-size:0.72rem;border-bottom:1px solid var(--border-color,#30363d);white-space:nowrap">${t}</th>`;
+    const TD = (t, extra) => `<td style="padding:3px 6px;font-size:0.76rem;white-space:nowrap;${extra||''}">${t}</td>`;
+
+    const _statusBadge = (ok, blocked, failed) => {
+      const parts = [];
+      if (ok > 0) parts.push(`<span style="color:#3fb950">${ok}✓</span>`);
+      if (blocked > 0) parts.push(`<span style="color:#e3b341">${blocked}⊘</span>`);
+      if (failed > 0) parts.push(`<span style="color:#f85149">${failed}✗</span>`);
+      return parts.join(' ') || '<span style="color:var(--text-muted,#8b949e)">—</span>';
+    };
+
+    const _tok = (r) => {
+      const inp = r.input_tokens || 0, out = r.output_tokens || 0;
+      if (!inp && !out) return '<span style="color:var(--text-muted,#8b949e)">—</span>';
+      return `<span style="font-size:0.72rem">↑${_fmtTokens(inp)}/↓${_fmtTokens(out)}</span>`;
+    };
+
+    const roleRows = roles.map(r =>
+      `<tr>
+        ${TD(`<b>${_esc(r.label || r.role)}</b>`)}
+        ${TD(String(r.calls || 0), 'text-align:right')}
+        ${TD(_statusBadge(r.successful || 0, r.blocked || 0, r.failed || 0))}
+        ${TD(_esc((r.providers || []).join(', ') || '—'), 'color:var(--text-muted,#8b949e);font-size:0.72rem')}
+        ${TD(_tok(r))}
+        ${TD(r.premium_requests > 0 ? Number(r.premium_requests).toFixed(2) : '—', 'color:var(--text-muted,#8b949e)')}
+        ${TD(r.rate_limit_type ? `${_esc(r.rate_limit_type)} ${Math.round(r.rate_limit_used_pct||0)}%` : '—', 'color:var(--text-muted,#8b949e);font-size:0.72rem')}
+      </tr>`
+    ).join('');
+
+    const runnerRows = byRunner.map(r =>
+      `<tr>
+        ${TD(_esc(r.runner_type || '—'), 'color:var(--text-muted,#8b949e)')}
+        ${TD(_esc(r.provider || '—'))}
+        ${TD(_esc((r.agent_label || '—').slice(0, 20)))}
+        ${TD(String(r.calls || 0), 'text-align:right')}
+        ${TD(_statusBadge(r.successful || 0, r.blocked || 0, r.failed || 0))}
+        ${TD(r.task_count != null ? String(r.task_count) : '—', 'color:var(--text-muted,#8b949e)')}
+        ${TD(r.avg_duration_ms != null ? `${r.avg_duration_ms}ms` : '—', 'color:var(--text-muted,#8b949e)')}
+        ${TD(`<span style="color:${r.token_status==='available'?'#3fb950':'var(--text-muted,#8b949e)'}">${_esc(r.token_status||'—')}</span>`)}
+      </tr>`
+    ).join('');
+
+    const warnHtml = warnings.length
+      ? warnings.map(w =>
+          `<div style="background:rgba(210,153,34,0.12);border:1px solid rgba(210,153,34,0.4);border-radius:4px;padding:4px 8px;font-size:0.75rem;color:#d29922;margin-bottom:4px">
+            ⚠ ${_esc(w.message)}
+          </div>`
+        ).join('')
+      : '';
+
+    container.innerHTML = `
+      ${warnHtml}
+      <div style="overflow-x:auto;margin-bottom:8px">
+        <table style="width:100%;border-collapse:collapse">
+          <thead><tr>
+            ${TH('Role')}${TH('Calls')}${TH('OK/Blocked/Failed')}${TH('Providers')}${TH('Tokens')}${TH('Premium')}${TH('Rate Limit')}
+          </tr></thead>
+          <tbody>${roleRows || '<tr><td colspan="7" style="color:var(--text-muted,#8b949e);padding:6px">今日尚無資料</td></tr>'}</tbody>
+        </table>
+      </div>
+      <div style="font-size:0.76rem;font-weight:600;color:var(--text-muted,#8b949e);margin-bottom:4px">Worker / Runner 明細</div>
+      <div style="overflow-x:auto">
+        <table style="width:100%;border-collapse:collapse">
+          <thead><tr>
+            ${TH('Runner')}${TH('Provider')}${TH('Agent')}${TH('Calls')}${TH('OK/Blocked/Failed')}${TH('Tasks')}${TH('Avg Dur')}${TH('Token Status')}
+          </tr></thead>
+          <tbody>${runnerRows || '<tr><td colspan="8" style="color:var(--text-muted,#8b949e);padding:6px">今日尚無資料</td></tr>'}</tbody>
+        </table>
+      </div>`;
+  }
+
+  _renderCopilotFocus(el, data) {
+    const container = el.querySelector('#orc-llm-copilot-focus');
+    if (!container) return;
+    const cf = data.copilot_focus || {};
+    const total = cf.total_calls || 0;
+
+    if (!total) {
+      container.innerHTML = '<span style="color:var(--text-muted,#8b949e);font-size:0.8rem">今日無 Copilot 呼叫</span>';
+      return;
+    }
+
+    const TH = (t) => `<th style="padding:3px 6px;text-align:left;color:var(--text-muted,#8b949e);font-weight:500;font-size:0.72rem;border-bottom:1px solid var(--border-color,#30363d);white-space:nowrap">${t}</th>`;
+    const TD = (t, extra) => `<td style="padding:3px 6px;font-size:0.76rem;white-space:nowrap;${extra||''}">${t}</td>`;
+
+    const topTaskRows = (cf.top_tasks || []).map(t =>
+      `<tr>
+        ${TD(t.task_id != null ? `#${t.task_id}` : '—', 'color:var(--text-muted,#8b949e)')}
+        ${TD(_esc((t.task_title || '').slice(0, 40) || '—'))}
+        ${TD(_esc(t.task_status || '—'), 'color:var(--text-muted,#8b949e);font-size:0.72rem')}
+        ${TD(String(t.calls || 0), 'text-align:right')}
+        ${TD(t.blocked > 0 ? `<span style="color:#e3b341">${t.blocked}⊘</span>` : '—')}
+        ${TD(t.failed > 0 ? `<span style="color:#f85149">${t.failed}✗</span>` : '—')}
+        ${TD(_esc((t.last_call_at || '').slice(11, 19) || '—'), 'color:var(--text-muted,#8b949e)')}
+      </tr>`
+    ).join('');
+
+    const tokenNote = !cf.token_detail_available && total > 0
+      ? `<div style="background:rgba(139,148,158,0.12);border:1px solid var(--border-color,#30363d);border-radius:4px;padding:4px 8px;font-size:0.75rem;color:var(--text-muted,#8b949e);margin-top:6px">ℹ ${_esc(cf.token_detail_note || 'Copilot token detail unavailable')}</div>`
+      : '';
+
+    container.innerHTML = `
+      <div style="display:flex;gap:14px;flex-wrap:wrap;font-size:0.8rem;margin-bottom:8px">
+        <span>Total: <b style="color:var(--text-color,#c9d1d9)">${total}</b></span>
+        <span style="color:#3fb950">OK: ${cf.successful || 0}</span>
+        ${(cf.blocked || 0) > 0 ? `<span style="color:#e3b341">Blocked: ${cf.blocked}</span>` : ''}
+        ${(cf.failed || 0) > 0 ? `<span style="color:#f85149">Failed: ${cf.failed}</span>` : ''}
+      </div>
+      <div style="overflow-x:auto;margin-bottom:6px">
+        <table style="width:100%;border-collapse:collapse">
+          <thead><tr>${TH('Task')+''+TH('Title')}${TH('Status')}${TH('Calls')}${TH('Blocked')}${TH('Failed')}${TH('Last Call')}</tr></thead>
+          <tbody>${topTaskRows || '<tr><td colspan="7" style="color:var(--text-muted,#8b949e);padding:6px">無 Task 資料</td></tr>'}</tbody>
+        </table>
+      </div>
+      ${tokenNote}`;
+  }
+
+  _renderTopLlmTasks(el, data) {
+    const container = el.querySelector('#orc-llm-top-tasks');
+    if (!container) return;
+    const tasks = Array.isArray(data.top_tasks) ? data.top_tasks : [];
+
+    if (!tasks.length) {
+      container.innerHTML = '<span style="color:var(--text-muted,#8b949e);font-size:0.8rem">今日尚無 Task LLM 資料</span>';
+      return;
+    }
+
+    const TH = (t) => `<th style="padding:3px 6px;text-align:left;color:var(--text-muted,#8b949e);font-weight:500;font-size:0.72rem;border-bottom:1px solid var(--border-color,#30363d);white-space:nowrap">${t}</th>`;
+    const TD = (t, extra) => `<td style="padding:3px 6px;font-size:0.76rem;white-space:nowrap;${extra||''}">${t}</td>`;
+
+    const rows = tasks.map(t => {
+      const result = t.blocked > 0
+        ? `<span style="color:#e3b341">⊘${t.blocked}</span>`
+        : t.failed > 0
+        ? `<span style="color:#f85149">✗${t.failed}</span>`
+        : '<span style="color:#3fb950">✓</span>';
+      return `<tr>
+        ${TD(t.task_id != null ? `#${t.task_id}` : '—', 'color:var(--text-muted,#8b949e)')}
+        ${TD(_esc((t.title || '').slice(0, 40) || '—'))}
+        ${TD(_esc(t.status || '—'), 'font-size:0.72rem;color:var(--text-muted,#8b949e)')}
+        ${TD(_esc(t.role || '—'))}
+        ${TD(_esc(t.runner_type || '—'), 'color:var(--text-muted,#8b949e)')}
+        ${TD(_esc((t.provider || '—').slice(0, 16)))}
+        ${TD(String(t.calls || 0), 'text-align:right;font-weight:600')}
+        ${TD(_esc((t.last_call_at || '').slice(11, 19) || '—'), 'color:var(--text-muted,#8b949e)')}
+        ${TD(result)}
+      </tr>`;
+    }).join('');
+
+    container.innerHTML = `<div style="overflow-x:auto">
+      <table style="width:100%;border-collapse:collapse">
+        <thead><tr>
+          ${TH('Task')}${TH('Title')}${TH('Status')}${TH('Role')}${TH('Runner')}${TH('Provider')}${TH('Calls')}${TH('Last Call')}${TH('Result')}
+        </tr></thead>
+        <tbody>${rows}</tbody>
+      </table>
+    </div>`;
+  }
+
+  _renderRecentLlmCalls(el, data) {
+    const container = el.querySelector('#orc-llm-recent-calls');
+    if (!container) return;
+    const recent = Array.isArray(data.recent) ? data.recent : [];
+
+    if (!recent.length) {
+      container.innerHTML = '<span style="color:var(--text-muted,#8b949e);font-size:0.8rem">今日尚無 LLM 呼叫記錄</span>';
+      return;
+    }
+
+    const TH = (t) => `<th style="padding:3px 6px;text-align:left;color:var(--text-muted,#8b949e);font-weight:500;font-size:0.72rem;border-bottom:1px solid var(--border-color,#30363d);white-space:nowrap">${t}</th>`;
+    const TD = (t, extra) => `<td style="padding:3px 6px;font-size:0.76rem;white-space:nowrap;${extra||''}">${t}</td>`;
+
+    const rows = recent.map(ev => {
+      const ts = String(ev.created_at || '').slice(11, 19) || '—';
+      const statusColor = ev.blocked ? '#e3b341' : ev.success === 0 ? '#f85149' : ev.success === 1 ? '#3fb950' : 'var(--text-muted,#8b949e)';
+      const statusText = ev.blocked ? 'Blocked' : ev.success === 1 ? 'OK' : ev.success === 0 ? 'Failed' : 'In-flight';
+      const task = ev.task_id != null ? `#${ev.task_id}` : '—';
+      const taskTitle = _esc((ev.task_title || '').slice(0, 28) || '');
+      const taskCell = ev.task_id != null
+        ? `<span style="color:var(--text-muted,#8b949e)">${task}</span>${taskTitle ? ` <span style="font-size:0.68rem">${taskTitle}</span>` : ''}`
+        : '—';
+      const dur = ev.duration_ms != null ? `${ev.duration_ms}ms` : '—';
+      const inp = ev.input_tokens, out = ev.output_tokens;
+      let tokStr = '—';
+      if (inp || out) tokStr = `↑${_fmtTokens(inp)||'0'}/↓${_fmtTokens(out)||'0'}`;
+      const prem = ev.premium_requests != null ? Number(ev.premium_requests).toFixed(2) : '—';
+      const rl = ev.rate_limit_type && ev.rate_limit_used_pct != null
+        ? `${_esc(ev.rate_limit_type)} ${Math.round(ev.rate_limit_used_pct)}%` : '—';
+      const caller = _esc((ev.caller_file || '—').slice(0, 20));
+      return `<tr>
+        ${TD(ts, 'color:var(--text-muted,#8b949e)')}
+        ${TD(_esc(ev.usage_role || '—'))}
+        ${TD(_esc(ev.runner_type || '—'), 'color:var(--text-muted,#8b949e)')}
+        ${TD(_esc((ev.provider || '—').slice(0, 16)))}
+        ${TD(_esc((ev.model || '—').slice(0, 20)), 'color:var(--text-muted,#8b949e);font-size:0.7rem')}
+        ${TD(_esc(ev.trigger_source || '—'), 'font-size:0.7rem;color:var(--text-muted,#8b949e)')}
+        ${TD(taskCell)}
+        ${TD(`<b style="color:${statusColor}">${_esc(statusText)}</b>`)}
+        ${TD(dur, 'color:var(--text-muted,#8b949e)')}
+        ${TD(tokStr, 'font-size:0.72rem;color:var(--text-muted,#8b949e)')}
+        ${TD(prem, 'color:var(--text-muted,#8b949e)')}
+        ${TD(rl, 'font-size:0.72rem;color:var(--text-muted,#8b949e)')}
+        ${TD(caller, 'font-size:0.68rem;color:var(--text-muted,#8b949e)')}
+      </tr>`;
+    }).join('');
+
+    container.innerHTML = `<div style="overflow-x:auto">
+      <table style="width:100%;border-collapse:collapse">
+        <thead><tr>
+          ${TH('Time')}${TH('Role')}${TH('Runner')}${TH('Provider')}${TH('Model')}
+          ${TH('Trigger')}${TH('Task')}${TH('Status')}${TH('Dur')}${TH('Tokens')}${TH('Premium')}${TH('Rate Limit')}${TH('Caller')}
+        </tr></thead>
+        <tbody>${rows}</tbody>
+      </table>
+    </div>`;
+  }
+
+  _renderPlannerStatus(el, ps) {
+    const statusEl = el.querySelector('#orc-planner-status');
+    if (!statusEl) return;
+    const provLabel = _esc(ps.planner_llm_provider || 'local');
+    const modelLabel = ps.planner_llm_model && ps.planner_llm_model !== 'auto' ? _esc(ps.planner_llm_model) : 'auto';
+    const modeLabel = _esc(ps.planner_llm_mode || 'off');
+    const today = Number(ps.planner_today_calls || 0);
+    const cap = Number(ps.planner_daily_call_cap || 0);
+    const remaining = Number(ps.planner_remaining_cap || 0);
+    statusEl.innerHTML = `
+      <div><div style="color:var(--text-muted,#8b949e)">Provider</div><div>${provLabel}</div></div>
+      <div><div style="color:var(--text-muted,#8b949e)">Model</div><div>${modelLabel}</div></div>
+      <div><div style="color:var(--text-muted,#8b949e)">Mode</div><div>${modeLabel}</div></div>
+      <div><div style="color:var(--text-muted,#8b949e)">今日呼叫</div><div>${today} / ${cap > 0 ? cap : '(停用)'}</div></div>
+      <div><div style="color:var(--text-muted,#8b949e)">剩餘額度</div><div>${cap > 0 ? remaining : '—'}</div></div>
+    `;
+    this._renderPlannerInlineSummary(el, ps);
+    this._renderPlannerHint(el, ps);
+  }
+
+  _renderPlannerInlineSummary(el, ps) {
+    const summaryEl = el.querySelector('#orc-planner-inline-summary');
+    if (!summaryEl) return;
+    const prov = ps.planner_llm_provider || 'local';
+    const model = (ps.planner_llm_model && ps.planner_llm_model !== 'auto') ? ps.planner_llm_model : 'auto';
+    const mode = ps.planner_llm_mode || 'off';
+    const today = Number(ps.planner_today_calls || 0);
+    const cap = Number(ps.planner_daily_call_cap || 0);
+    const callsSummary = cap > 0 ? `calls ${today}/${cap}` : 'calls 0 / disabled';
+    summaryEl.textContent = `${prov} · ${model} · ${mode} · ${callsSummary}`;
+  }
+
+  _renderPlannerHint(el, ps) {
+    const hintEl = el.querySelector('#orc-planner-hint');
+    if (!hintEl) return;
+    const prov = (ps.planner_llm_provider || 'local').toLowerCase();
+    const mode = (ps.planner_llm_mode || 'off').toLowerCase();
+    const cap = Number(ps.planner_daily_call_cap || 0);
+    const isLocal = (prov === 'local' || prov === 'auto');
+    const isOff = (mode === 'off');
+    const isCapZero = (cap === 0);
+
+    let msg = '';
+    let bg = '';
+    if (isLocal) {
+      msg = '⚠ 目前 Planner LLM 已關閉（Provider = Local，規則型無 LLM 呼叫）。' +
+            'Preview 按鈕不會呼叫 Claude / Codex。' +
+            '\n若要測試 suggest_only：請將 Provider 改為 Claude CLI 或 Codex CLI、Mode 改為 suggest_only、Daily Cap 設為 1 以上，再儲存設定。';
+      bg = 'rgba(227,179,65,0.12)';
+    } else if (isOff) {
+      msg = '⚠ 目前 Planner LLM 已關閉（Mode = off）。' +
+            'Preview 使用 suggest_only，仍會呼叫 LLM；但 Run Once 不會執行。' +
+            '\n若要啟用排程自動執行，請將 Mode 改為 suggest_only 或 create_task。';
+      bg = 'rgba(227,179,65,0.12)';
+    } else if (isCapZero) {
+      msg = '⚠ Daily Cap = 0（停用），LLM 呼叫會被 cap 攔截。若要測試，請將每日上限設為 1 以上。';
+      bg = 'rgba(227,179,65,0.12)';
+    } else {
+      // Properly configured
+      msg = `✓ Planner 設定正常：${prov} / ${mode} / cap=${cap}。Preview 與 Run Once 均可呼叫 LLM。`;
+      bg = 'rgba(63,185,80,0.12)';
+    }
+
+    hintEl.style.display = 'block';
+    hintEl.style.background = bg;
+    hintEl.style.color = isLocal || isOff || isCapZero ? '#e3b341' : '#3fb950';
+    hintEl.style.border = `1px solid ${isLocal || isOff || isCapZero ? 'rgba(227,179,65,0.3)' : 'rgba(63,185,80,0.3)'}`;
+    hintEl.style.whiteSpace = 'pre-line';
+    hintEl.textContent = msg;
+  }
+
+  async _savePlannerSettings(el) {
+    const statusEl = el.querySelector('#orc-planner-save-status');
+    if (statusEl) statusEl.textContent = '儲存中…';
+    try {
+      const _PROV_NORMALIZE = { 'claude': 'claude-cli', 'codex': 'codex-cli', 'copilot': 'local', 'copilot-daemon': 'local' };
+      const _rawProvider = el.querySelector('#orc-llm-planner-provider')?.value || 'local';
+      const provider = _PROV_NORMALIZE[_rawProvider] || _rawProvider;
+      const modelRaw = (el.querySelector('#orc-planner-model')?.value || '').trim();
+      const mode = el.querySelector('#orc-planner-mode')?.value || 'off';
+      const cap = parseInt(el.querySelector('#orc-planner-cap')?.value || '0', 10);
+      const timeout = parseInt(el.querySelector('#orc-planner-timeout')?.value || '300', 10);
+      const body = {
+        planner_llm_provider: provider,
+        planner_llm_model: modelRaw || 'auto',
+        planner_llm_mode: mode,
+        planner_daily_call_cap: cap,
+        planner_timeout_seconds: timeout,
+      };
+      const result = await this._post('/api/orchestrator/planner-settings', body);
+      if (statusEl) statusEl.textContent = '已儲存 ✓';
+      this._renderPlannerStatus(el, result);
+      this._renderPlannerInlineSummary(el, result);
+      this.app?.uiManager?.showNotification('Planner 設定已儲存', 'success');
+    } catch (e) {
+      if (statusEl) statusEl.textContent = `儲存失敗: ${_esc(e.message)}`;
+    }
+  }
+
+  async _runPlannerPreview(el) {
+    const statusEl = el.querySelector('#orc-planner-save-status');
+    const resultEl = el.querySelector('#orc-planner-preview-result');
+    const outputEl = el.querySelector('#orc-planner-preview-output');
+    if (statusEl) statusEl.textContent = 'Preview 執行中…';
+    if (resultEl) resultEl.style.display = 'none';
+    try {
+      const result = await this._post('/api/orchestrator/planner/preview', {});
+      let previewMsg;
+      if (result.fallback_to_local) {
+        previewMsg = '⚠ Preview 完成（Local 規則型，未呼叫 LLM）。若要測試 LLM，請將 Provider 改為 Claude CLI / Codex CLI 並儲存設定。';
+      } else if (result.skipped) {
+        previewMsg = `已跳過: ${_esc(result.skip_reason || '')}`;
+      } else if (result.ok) {
+        previewMsg = `Preview 完成 ✓ (${_esc(result.decision || 'NO_TASK')})｜LLM 已呼叫，usage_logged=${result.usage_logged}`;
+      } else {
+        previewMsg = `Preview 錯誤: ${_esc(result.error || '')}`;
+      }
+      if (statusEl) statusEl.textContent = previewMsg;
+      if (outputEl) outputEl.textContent = JSON.stringify(result, null, 2);
+      if (resultEl) resultEl.style.display = 'block';
+    } catch (e) {
+      if (statusEl) statusEl.textContent = `Preview 失敗: ${_esc(e.message)}`;
+    }
+  }
+
+  async _runPlannerOnce(el, force = false) {
+    const statusEl = el.querySelector('#orc-planner-save-status');
+    const resultEl = el.querySelector('#orc-planner-preview-result');
+    const outputEl = el.querySelector('#orc-planner-preview-output');
+    if (statusEl) statusEl.textContent = 'Run Once 執行中…';
+    if (resultEl) resultEl.style.display = 'none';
+    try {
+      const result = await this._post('/api/orchestrator/planner/run-once', { force });
+      const msg = result.task_created ? `Task 已建立 (ID: ${result.created_task_id || '?'})` :
+                  result.skipped ? `已跳過: ${_esc(result.skip_reason || '')}` :
+                  result.ok ? `完成 (${result.decision})` : `錯誤: ${_esc(result.error || '')}`;
+      if (statusEl) statusEl.textContent = msg;
+      if (outputEl) outputEl.textContent = JSON.stringify(result, null, 2);
+      if (resultEl) resultEl.style.display = 'block';
+      if (result.task_created) await this._loadAll();
+    } catch (e) {
+      if (statusEl) statusEl.textContent = `Run Once 失敗: ${_esc(e.message)}`;
+    }
   }
 
   _startCountdownTimer() {
@@ -288,8 +1209,82 @@ export class OrchestrationManager {
 
       // ── Long-runner detail panel ──────────────────────────────────────────
       this._renderLongRunnerPanel(data);
+
+      // ── H6 Live State panel (in Orchestration section) ───────────────────
+      if (data.h6_live_state) {
+        this._renderH6Panel('orc-h6-', data.h6_live_state);
+      }
+
+      // ── Rollback Guard status panel ───────────────────────────────────────
+      this._loadRollbackGuardStatus();
+
+      // ── Stale RUNNING Lock Check ──────────────────────────────────────────
+      this._loadStaleLockStatus();
     } catch (e) {
       console.error('[OrchestratorManager] summary error', e);
+    }
+  }
+
+  async _loadRollbackGuardStatus() {
+    const statusEl = document.getElementById('orc-rollback-guard-status');
+    const configEl = document.getElementById('orc-rollback-guard-config');
+    const decisionEl = document.getElementById('orc-rollback-guard-decision');
+    if (!statusEl && !configEl && !decisionEl) return;
+    try {
+      const data = await this._get('/api/orchestrator/rollback-guard/status?game_type=DAILY_539');
+      if (statusEl) {
+        const enabled = data.guard_enabled;
+        statusEl.textContent = enabled ? '✓ Guard Enabled' : '✗ Guard Disabled';
+        statusEl.style.color = enabled ? '#10b981' : '#f85149';
+      }
+      if (configEl && data.config) {
+        const c = data.config;
+        configEl.textContent =
+          `min_outcomes=${c.min_outcomes_for_rollback} · ` +
+          `early_sample=${c.early_rollback_sample_size} · ` +
+          `min_consec_neg=${c.min_consecutive_negative_for_early_rollback} · ` +
+          `threshold=${(c.rollback_edge_threshold * 100).toFixed(0)}%`;
+      }
+      if (decisionEl && data.current_decision) {
+        const d = data.current_decision;
+        if (d.error) {
+          decisionEl.textContent = `Error: ${d.error}`;
+        } else {
+          decisionEl.textContent =
+            `${d.status} · outcomes=${d.outcome_count} · ` +
+            `edge=${d.live_30p_edge != null ? (d.live_30p_edge * 100).toFixed(2) + '%' : '—'} · ` +
+            (d.reason || '');
+          decisionEl.style.color = d.should_rollback ? '#f85149' : '#10b981';
+        }
+      }
+    } catch (e) {
+      if (statusEl) statusEl.textContent = 'guard status unavailable';
+    }
+  }
+
+  async _loadStaleLockStatus() {
+    const statusEl = document.getElementById('orc-stale-lock-status');
+    const summaryEl = document.getElementById('orc-stale-lock-summary');
+    const decisionsEl = document.getElementById('orc-stale-lock-decisions');
+    if (!statusEl && !summaryEl && !decisionsEl) return;
+    try {
+      const data = await this._get('/api/orchestrator/stale-locks/status');
+      const summary = data.summary || {};
+      const statusText = summary.would_release > 0 ? 'WOULD_RELEASE' : summary.warnings > 0 ? 'WARNING' : 'OK';
+      if (statusEl) {
+        statusEl.textContent = statusText;
+        statusEl.style.color = summary.would_release > 0 ? '#f85149' : summary.warnings > 0 ? '#f59e0b' : '#10b981';
+      }
+      if (summaryEl) {
+        summaryEl.textContent =
+          `RUNNING: ${summary.running_count ?? 0} | Would release: ${summary.would_release ?? 0} | Alive warnings: ${summary.warnings ?? 0}`;
+      }
+      if (decisionsEl && data.decisions) {
+        decisionsEl.textContent = JSON.stringify(data.decisions, null, 2);
+      }
+    } catch (e) {
+      console.error('staleLockStatus error', e);
+      if (statusEl) statusEl.textContent = 'unavailable';
     }
   }
 
@@ -419,6 +1414,79 @@ export class OrchestrationManager {
         const m = Math.floor((eta % 3600) / 60);
         etaEl.textContent = h > 0 ? `${h}h ${m}m` : `${m}m`;
         etaEl.style.color = '';
+      }
+    }
+  }
+
+  /**
+   * Render H6 live state into a panel whose element IDs are prefixed with `prefix`.
+   * Supports prefix "orc-h6-" (orchestration section) and "cto-h6-" (CTO section).
+   */
+  _renderH6Panel(prefix, state) {
+    const panelId = prefix === 'orc-h6-' ? 'orc-h6-panel' : 'cto-h6-panel';
+    const panel = document.getElementById(panelId);
+    if (!panel) return;
+    panel.style.display = '';
+
+    const status = String(state.rollback_status || 'ACTIVE').toUpperCase();
+    const isRollback = status !== 'ACTIVE';
+    const bearWarning = !!state.bear_regime_warning;
+
+    // Badge
+    const badge = document.getElementById(`${prefix}rollback-badge`);
+    if (badge) {
+      badge.textContent = status;
+      if (isRollback) {
+        badge.style.background = 'rgba(248,81,73,.1)';
+        badge.style.color = '#f85149';
+        badge.style.borderColor = 'rgba(248,81,73,.35)';
+      } else {
+        badge.style.background = 'rgba(16,185,129,.15)';
+        badge.style.color = '#10b981';
+        badge.style.borderColor = 'rgba(16,185,129,.35)';
+      }
+    }
+    // Bear badge
+    const bearBadge = document.getElementById(`${prefix}bear-badge`);
+    if (bearBadge) bearBadge.style.display = bearWarning ? '' : 'none';
+
+    // Border color
+    if (isRollback) {
+      panel.style.borderLeftColor = '#f85149';
+    } else if (bearWarning) {
+      panel.style.borderLeftColor = 'var(--warning-color,#f59e0b)';
+    } else {
+      panel.style.borderLeftColor = 'var(--success-color,#10b981)';
+    }
+
+    // Fields
+    const _setT = (id, val) => { const el = document.getElementById(id); if (el) el.textContent = val; };
+    const _setC = (id, color) => { const el = document.getElementById(id); if (el) el.style.color = color; };
+    _setT(`${prefix}active`, state.active_strategy || '—');
+    _setT(`${prefix}shadow`, state.shadow_strategy || '—');
+
+    const edge30 = state.live_30p_edge;
+    const edge50 = state.live_50p_edge;
+    const e30Text = edge30 != null ? (edge30 >= 0 ? `+${(edge30 * 100).toFixed(2)}%` : `${(edge30 * 100).toFixed(2)}%`) : '—';
+    const e50Text = edge50 != null ? (edge50 >= 0 ? `+${(edge50 * 100).toFixed(2)}%` : `${(edge50 * 100).toFixed(2)}%`) : '—';
+    _setT(`${prefix}edge30`, e30Text);
+    _setT(`${prefix}edge50`, e50Text);
+    if (edge30 != null) _setC(`${prefix}edge30`, edge30 >= 0 ? '#10b981' : '#f85149');
+    if (edge50 != null) _setC(`${prefix}edge50`, edge50 >= 0 ? '#10b981' : '#f85149');
+
+    _setT(`${prefix}consec-neg`, state.consecutive_negative_30p ?? '—');
+    _setT(`${prefix}regime`, state.current_regime || '—');
+
+    // Rollback reason row
+    const reasonRow = document.getElementById(`${prefix}rollback-reason`);
+    const reasonText = document.getElementById(`${prefix}rollback-reason-text`);
+    if (reasonRow && reasonText) {
+      const reason = state.rollback_reason || (isRollback ? 'Edge threshold breached' : null);
+      if (reason) {
+        reasonRow.style.display = '';
+        reasonText.textContent = reason;
+      } else {
+        reasonRow.style.display = 'none';
       }
     }
   }
@@ -660,7 +1728,7 @@ export class OrchestrationManager {
       this._taskPage = Number(data.page || this._taskPage);
       this._renderTaskPagination();
       if (!data.tasks.length) {
-        tbody.innerHTML = '<tr><td colspan="7" class="rv-empty">無任務資料</td></tr>';
+        tbody.innerHTML = '<tr><td colspan="9" class="rv-empty">無任務資料</td></tr>';
         return;
       }
       tbody.innerHTML = data.tasks.map(t => `
@@ -687,11 +1755,13 @@ export class OrchestrationManager {
           <td>${t.duration_seconds != null ? _fmt_dur(t.duration_seconds) : '—'}</td>
           <td title="${_esc(t.worker_completed_at || t.completed_at || '')}">${(t.worker_completed_at || t.completed_at) ? _fmt_utc_ts(t.worker_completed_at || t.completed_at) : '—'}</td>
           <td>${_changed_count(t.changed_files_json)}</td>
+          <td style="white-space:nowrap;font-size:0.78rem;color:var(--text-muted,#8b949e)">${_esc(t.planner_agent_label || 'Auto')}</td>
+          <td style="white-space:nowrap;font-size:0.78rem;color:var(--text-muted,#8b949e)">${_esc(t.worker_agent_label || 'Auto')}</td>
         </tr>
       `).join('');
     } catch (e) {
       this._renderTaskPagination();
-      tbody.innerHTML = `<tr><td colspan="7" class="rv-empty">載入失敗：${e.message}</td></tr>`;
+      tbody.innerHTML = `<tr><td colspan="9" class="rv-empty">載入失敗：${e.message}</td></tr>`;
     }
   }
 
@@ -749,6 +1819,10 @@ export class OrchestrationManager {
       this._renderCtoSchedulerState(this._ctoSchedulerEnabled);
       // Next planner countdown
       this._renderCtoNextTickEstimate(data.next_run_estimate || null);
+      // H6 Live State panel (in CTO section)
+      if (data.h6_live_state) {
+        this._renderH6Panel('cto-h6-', data.h6_live_state);
+      }
     } catch (e) {
       console.error('[OrchestrationManager] CTO summary error', e);
     }
@@ -1556,7 +2630,7 @@ export class OrchestrationManager {
             `<option value="${_esc(o.value)}"${o.value === data.planner_provider ? ' selected' : ''}>${_esc(o.label)}</option>`
           ).join('');
         } else {
-          plannerSel.value = data.planner_provider || 'claude';
+          plannerSel.value = data.planner_provider || 'local';
         }
       }
       if (modelInput) modelInput.value = data.planner_model || '';
@@ -1600,6 +2674,114 @@ export class OrchestrationManager {
         hintEl.textContent = `目前：${d.planner_provider_label || d.planner_provider || '—'}${d.planner_model ? ' / ' + d.planner_model : ''}`;
       }
     }, ttlMs);
+  }
+
+  // ─── CTO Review Provider ──────────────────────────────────────────────────
+
+  async _loadCtoReviewSettings() {
+    try {
+      const data = await this._get('/api/orchestrator/cto-review-settings');
+      const provSel = document.getElementById('orc-cto-review-provider');
+      const modelIn = document.getElementById('orc-cto-review-model');
+      const modeSel = document.getElementById('orc-cto-review-mode');
+      const capIn = document.getElementById('orc-cto-review-cap');
+      const todayEl = document.getElementById('orc-cto-review-today-calls');
+      const capDisplayEl = document.getElementById('orc-cto-review-cap-display');
+      const hintEl = document.getElementById('orc-cto-review-hint');
+      if (provSel) provSel.value = data.cto_review_provider || 'local';
+      if (modelIn) modelIn.value = data.cto_review_model || '';
+      if (modeSel) modeSel.value = data.cto_review_mode || 'local_review';
+      if (capIn) capIn.value = data.cto_review_daily_call_cap ?? 0;
+      if (todayEl) todayEl.textContent = String(data.today_calls ?? '—');
+      const cap = data.cto_review_daily_call_cap ?? 0;
+      if (capDisplayEl) capDisplayEl.textContent = cap === 0 ? '0（停用）' : String(cap);
+      if (hintEl) hintEl.textContent = `目前：${data.cto_review_provider_label || data.cto_review_provider || '—'} / ${data.cto_review_mode || '—'}`;
+    } catch (e) {
+      console.error('[OrchestrationManager] CTO review settings error', e);
+    }
+  }
+
+  async _saveCtoReviewSettings() {
+    const provider = document.getElementById('orc-cto-review-provider')?.value || '';
+    const model = document.getElementById('orc-cto-review-model')?.value || '';
+    const mode = document.getElementById('orc-cto-review-mode')?.value || '';
+    const cap = parseInt(document.getElementById('orc-cto-review-cap')?.value || '0', 10);
+    const hintEl = document.getElementById('orc-cto-review-hint');
+    try {
+      const data = await this._post('/api/orchestrator/cto-review-settings', {
+        cto_review_provider: provider,
+        cto_review_model: model,
+        cto_review_mode: mode,
+        cto_review_daily_call_cap: isNaN(cap) ? 0 : cap,
+      });
+      if (hintEl) { hintEl.textContent = `已儲存：${provider} / ${mode}`; hintEl.style.color = '#3fb950'; }
+      setTimeout(() => { if (hintEl) { hintEl.style.color = ''; } this._loadCtoReviewSettings(); }, 8000);
+    } catch (e) {
+      if (hintEl) { hintEl.textContent = `儲存失敗：${e.message}`; hintEl.style.color = '#f85149'; }
+    }
+  }
+
+  async _previewCtoReview() {
+    const btn = document.getElementById('orc-cto-review-preview-btn');
+    const resultEl = document.getElementById('orc-cto-review-result');
+    if (btn) { btn.disabled = true; btn.textContent = '預覽中…'; }
+    if (resultEl) resultEl.style.display = 'none';
+    try {
+      const data = await this._post('/api/orchestrator/cto/preview-review', {});
+      if (resultEl) {
+        const rec = data.final_merge_recommendation || 'UNKNOWN';
+        const riskColor = data.risk_level === 'HIGH' ? '#f85149' : data.risk_level === 'MEDIUM' ? '#d29922' : '#3fb950';
+        resultEl.style.display = 'block';
+        resultEl.innerHTML = `<div style="font-size:0.82rem;padding:10px 12px;border-radius:5px;border:1px solid #30363d;background:rgba(0,0,0,0.2)">
+          <b style="color:${riskColor}">預覽結果</b>　task=${_esc(String(data.task_id || '—'))}　
+          decision=<b>${_esc(data.decision || '—')}</b>　risk=<b style="color:${riskColor}">${_esc(data.risk_level || '—')}</b>　
+          final=<b>${_esc(rec)}</b>　gate_blocked=${data.local_gate_blocked ? '<b style="color:#f85149">true</b>' : 'false'}<br>
+          <span style="color:#8b949e">${_esc(data.local_gate_reason || data.reason || '')}</span>
+          ${data.skip_reason ? `<br><span style="color:#d29922">⚠ skipped: ${_esc(data.skip_reason)}</span>` : ''}
+          ${data.error ? `<br><span style="color:#f85149">error: ${_esc(data.error)}</span>` : ''}
+        </div>`;
+      }
+    } catch (e) {
+      if (resultEl) { resultEl.style.display = 'block'; resultEl.innerHTML = `<span style="color:#f85149;font-size:0.82rem">預覽失敗：${_esc(e.message)}</span>`; }
+    } finally {
+      if (btn) { btn.disabled = false; btn.textContent = '預覽審核'; }
+    }
+  }
+
+  async _runCtoReviewOnce() {
+    const btn = document.getElementById('orc-cto-review-run-once-btn');
+    const resultEl = document.getElementById('orc-cto-review-result');
+    if (btn) { btn.disabled = true; btn.textContent = '執行中…'; }
+    if (resultEl) resultEl.style.display = 'none';
+    try {
+      const data = await this._post('/api/orchestrator/cto/run-review-once', {});
+      if (resultEl) {
+        resultEl.style.display = 'block';
+        if (!data.results || data.results.length === 0) {
+          resultEl.innerHTML = '<span style="font-size:0.82rem;color:#8b949e">無待審核 commit</span>';
+        } else {
+          const rows = data.results.map((r) => {
+            const rec = r.final_merge_recommendation || '—';
+            const color = rec === 'ALLOW' ? '#3fb950' : rec === 'BLOCK' ? '#f85149' : '#d29922';
+            return `<tr>
+              <td>${_esc(String(r.task_id || '—'))}</td>
+              <td style="font-family:monospace;font-size:0.77rem">${_esc((r.commit_sha || '').slice(0, 8))}</td>
+              <td>${_esc(r.decision || '—')}</td>
+              <td style="color:${color}"><b>${_esc(rec)}</b></td>
+              <td style="font-size:0.78rem;color:#8b949e">${_esc(r.local_gate_reason || r.reason || r.skip_reason || r.error || '')}</td>
+            </tr>`;
+          }).join('');
+          resultEl.innerHTML = `<table style="width:100%;font-size:0.8rem;border-collapse:collapse">
+            <thead><tr style="color:#8b949e;text-align:left"><th>Task</th><th>SHA</th><th>Decision</th><th>Final</th><th>Reason</th></tr></thead>
+            <tbody>${rows}</tbody>
+          </table>`;
+        }
+      }
+    } catch (e) {
+      if (resultEl) { resultEl.style.display = 'block'; resultEl.innerHTML = `<span style="color:#f85149;font-size:0.82rem">執行失敗：${_esc(e.message)}</span>`; }
+    } finally {
+      if (btn) { btn.disabled = false; btn.textContent = '手動執行一次'; }
+    }
   }
 
   // ─── CTO Run-Now / Trace ──────────────────────────────────────────────────
@@ -1876,6 +3058,50 @@ function _esc(str) {
     .replace(/</g, '&lt;')
     .replace(/>/g, '&gt;')
     .replace(/"/g, '&quot;');
+}
+
+/**
+ * Format token numbers with k/M suffix for compact display.
+ * e.g. 796900 → "796.9k", 1200000 → "1.2M", 500 → "500"
+ */
+function _fmtTokens(n) {
+  if (n === null || n === undefined || isNaN(n)) return null;
+  n = Number(n);
+  if (n >= 1_000_000) return (n / 1_000_000).toFixed(1).replace(/\.0$/, '') + 'M';
+  if (n >= 1_000)     return (n / 1_000).toFixed(1).replace(/\.0$/, '') + 'k';
+  return String(n);
+}
+
+/**
+ * Build a compact one-line token/premium string from a summary/role/agent dict.
+ * Returns empty string if no meaningful data.
+ * Example: "Premium 0.33 · ↑796.9k / ↓14.7k / cached 745.3k"
+ */
+function _formatTokenSummaryLine(d) {
+  if (!d) return '';
+  const parts = [];
+  const prem = Number(d.premium_requests || d.premium_requests_total || 0);
+  if (prem > 0) parts.push(`Premium ${prem.toFixed(2)}`);
+  const inp = Number(d.input_tokens || d.input_tokens_total || 0);
+  const out = Number(d.output_tokens || d.output_tokens_total || 0);
+  const cac = Number(d.cached_tokens || d.cached_tokens_total || 0);
+  if (inp > 0 || out > 0) {
+    let tok = `Tokens ↑${_fmtTokens(inp)} / ↓${_fmtTokens(out)}`;
+    if (cac > 0) tok += ` / cached ${_fmtTokens(cac)}`;
+    parts.push(tok);
+  }
+  return parts.join(' · ');
+}
+
+/**
+ * Build a banner div for global token/premium totals.
+ * Returns empty string if nothing to show.
+ */
+function _formatTokenBanner(summary) {
+  if (!summary) return '';
+  const line = _formatTokenSummaryLine(summary);
+  if (!line) return '';
+  return `<div style="font-size:0.76rem;color:var(--text-muted,#8b949e);padding:2px 0 6px 0;border-bottom:1px solid var(--border-color,#30363d);margin-bottom:6px">${_esc(line)}</div>`;
 }
 
 function _fmt_slot(slotKey) {

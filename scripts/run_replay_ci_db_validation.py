@@ -23,6 +23,7 @@ TEST_ARGS = [
     "tests/test_replay_freshness_cadence.py",
     "tests/test_replay_api_contract.py",
 ]
+VALIDATOR_SCRIPT = REPO_ROOT / "scripts" / "validate_replay_test_fixture.py"
 
 
 def _resolve_db_path(arg_db_path: str | None) -> Path:
@@ -49,6 +50,11 @@ def main() -> int:
             "then default project DB path."
         ),
     )
+    parser.add_argument(
+        "--validate-fixture",
+        action="store_true",
+        help="Validate fixture integrity before running pytest.",
+    )
     args = parser.parse_args()
 
     db_path = _resolve_db_path(args.db_path)
@@ -63,6 +69,34 @@ def main() -> int:
             file=sys.stderr,
         )
         return 2
+
+    if args.validate_fixture:
+        if not VALIDATOR_SCRIPT.exists():
+            print(
+                "[replay-ci-db] ERROR: fixture validator script not found:",
+                VALIDATOR_SCRIPT,
+                file=sys.stderr,
+            )
+            return 4
+        validator_cmd = [sys.executable, str(VALIDATOR_SCRIPT), "--db", str(db_path)]
+        print("[replay-ci-db] Validating fixture:")
+        print(" ", " ".join(validator_cmd))
+        validator_result = subprocess.run(
+            validator_cmd,
+            cwd=REPO_ROOT,
+            text=True,
+            capture_output=True,
+        )
+        if validator_result.stdout:
+            print(validator_result.stdout, end="")
+        if validator_result.stderr:
+            print(validator_result.stderr, end="", file=sys.stderr)
+        if validator_result.returncode != 0:
+            print(
+                "[replay-ci-db] ERROR: fixture integrity validation failed.",
+                file=sys.stderr,
+            )
+            return validator_result.returncode
 
     default_db_path = DEFAULT_DB_PATH
     created_symlink = False

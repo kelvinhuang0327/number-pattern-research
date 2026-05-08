@@ -1,0 +1,59 @@
+{
+  "fixture_version": "v1",
+  "schema_version": "replay-schema-v1",
+  "fixture_name": "replay_test_fixture",
+  "synthetic_only": true,
+  "tables": [
+    {
+      "name": "fixture_metadata",
+      "required_columns": [
+        "fixture_name",
+        "fixture_version",
+        "schema_version",
+        "created_by",
+        "synthetic_only",
+        "created_at"
+      ]
+    },
+    {
+      "name": "strategy_replay_runs",
+      "required_columns": [
+        "id",
+        "lottery_type",
+        "started_at",
+        "status",
+        "notes"
+      ],
+      "row_count": 4
+    },
+    {
+      "name": "strategy_prediction_replays",
+      "required_columns": [
+        "id",
+        "lottery_type",
+        "target_draw",
+        "history_cutoff_draw",
+        "replay_status",
+        "predicted_numbers",
+        "actual_numbers",
+        "hit_numbers",
+        "replay_run_id"
+      ],
+      "row_count": 3
+    }
+  ],
+  "integrity_checks": [
+    "db file exists",
+    "required tables exist",
+    "required columns exist",
+    "metadata synthetic_only == 1",
+    "minimum row counts satisfied",
+    "DONE run coverage for BIG_LOTTO/POWER_LOTTO/DAILY_539",
+    "history_cutoff_draw < target_draw",
+    "non-error rows contain predicted/actual/hit fields"
+  ],
+  "validation_result": "PASS",
+  "no_skip_enforcement_result": "PASS",
+  "dedicated_db_validation_result": "32 passed, 4 deselected, 1 warning, zero skipped",
+  "missing_db_fail_fast_result": "exit code 2"
+}

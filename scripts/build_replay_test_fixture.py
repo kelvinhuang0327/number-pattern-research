@@ -19,6 +19,18 @@ def _build_schema(conn: sqlite3.Connection) -> None:
     cur = conn.cursor()
     cur.execute(
         """
+        CREATE TABLE fixture_metadata (
+            fixture_name TEXT NOT NULL,
+            fixture_version TEXT NOT NULL,
+            schema_version TEXT NOT NULL,
+            created_by TEXT NOT NULL,
+            synthetic_only INTEGER NOT NULL,
+            created_at TEXT NOT NULL
+        )
+        """
+    )
+    cur.execute(
+        """
         CREATE TABLE strategy_replay_runs (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
             lottery_type TEXT NOT NULL,
@@ -70,6 +82,22 @@ def _build_schema(conn: sqlite3.Connection) -> None:
 
 def _seed_data(conn: sqlite3.Connection) -> None:
     cur = conn.cursor()
+    cur.execute(
+        """
+        INSERT INTO fixture_metadata
+        (fixture_name, fixture_version, schema_version, created_by, synthetic_only, created_at)
+        VALUES (?, ?, ?, ?, ?, ?)
+        """,
+        (
+            "replay_test_fixture",
+            "v1",
+            "replay-schema-v1",
+            "scripts/build_replay_test_fixture.py",
+            1,
+            "2026-05-08T00:00:00+00:00",
+        ),
+    )
+
     # Fixed timestamps keep cadence checks deterministic and within 14 days.
     runs = [
         (
@@ -226,12 +254,19 @@ def main() -> int:
         _seed_data(conn)
         conn.commit()
         cur = conn.cursor()
+        meta = cur.execute(
+            "SELECT fixture_name, fixture_version, schema_version, synthetic_only FROM fixture_metadata LIMIT 1"
+        ).fetchone()
         run_count = cur.execute("SELECT COUNT(*) FROM strategy_replay_runs").fetchone()[0]
         replay_count = cur.execute("SELECT COUNT(*) FROM strategy_prediction_replays").fetchone()[0]
     finally:
         conn.close()
 
     print(f"[replay-fixture] built: {output}")
+    print(
+        "[replay-fixture] metadata="
+        f"name={meta[0]} version={meta[1]} schema={meta[2]} synthetic_only={meta[3]}"
+    )
     print(f"[replay-fixture] strategy_replay_runs={run_count}")
     print(f"[replay-fixture] strategy_prediction_replays={replay_count}")
     return 0

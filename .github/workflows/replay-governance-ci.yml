@@ -76,4 +76,4 @@ jobs:
 
       - name: Run dedicated replay DB validation lane
         run: |
-          python scripts/run_replay_ci_db_validation.py
+          python scripts/run_replay_ci_db_validation.py --validate-fixture

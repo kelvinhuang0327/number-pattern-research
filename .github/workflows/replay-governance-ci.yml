@@ -1,0 +1,67 @@
+name: Replay Governance CI
+
+on:
+  pull_request:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+    inputs:
+      db_path:
+        description: "Optional absolute/relative path to replay DB fixture for dedicated lane"
+        required: false
+        default: ""
+
+jobs:
+  replay-default-validation:
+    name: replay-default-validation
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install validation dependencies
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install pytest fastapi "pydantic>=2,<3" python-multipart
+
+      - name: Run default replay validation lane
+        run: |
+          python scripts/run_replay_ci_default_validation.py
+
+  replay-dedicated-db-validation:
+    name: replay-dedicated-db-validation
+    if: github.event_name == 'workflow_dispatch'
+    runs-on: ubuntu-latest
+    env:
+      LOTTERY_TEST_DB_PATH: ${{ github.event.inputs.db_path }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install validation dependencies
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install pytest fastapi "pydantic>=2,<3" python-multipart
+
+      - name: Log dedicated DB fixture path input
+        run: |
+          if [ -z "${LOTTERY_TEST_DB_PATH}" ]; then
+            echo "LOTTERY_TEST_DB_PATH is empty; dedicated lane is expected to fail until fixture path is provided."
+          else
+            echo "LOTTERY_TEST_DB_PATH=${LOTTERY_TEST_DB_PATH}"
+          fi
+
+      - name: Run dedicated replay DB validation lane
+        run: |
+          python scripts/run_replay_ci_db_validation.py

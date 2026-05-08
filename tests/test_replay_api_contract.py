@@ -181,6 +181,7 @@ def _check_history_contract(data: Dict[str, Any]) -> None:
 
 # ── Freshness tests ───────────────────────────────────────────────────────────
 
+@pytest.mark.requires_db
 @pytest.mark.skipif(not DB_PATH.exists(), reason="Replay DB not found")
 class TestFreshnessContract:
     def test_freshness_returns_dict(self):
@@ -233,6 +234,7 @@ class TestFreshnessContract:
 
 # ── Summary tests ─────────────────────────────────────────────────────────────
 
+@pytest.mark.requires_db
 @pytest.mark.skipif(not DB_PATH.exists(), reason="Replay DB not found")
 class TestSummaryContract:
     def test_summary_returns_dict_big_lotto(self):
@@ -271,6 +273,7 @@ class TestSummaryContract:
 
 # ── History tests ─────────────────────────────────────────────────────────────
 
+@pytest.mark.requires_db
 @pytest.mark.skipif(not DB_PATH.exists(), reason="Replay DB not found")
 class TestHistoryContract:
     def test_history_returns_dict_big_lotto(self):

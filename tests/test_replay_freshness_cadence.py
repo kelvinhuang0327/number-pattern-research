@@ -72,6 +72,7 @@ def live_conn():
 
 # ── Live cadence tests ────────────────────────────────────────────────────────
 
+@pytest.mark.requires_db
 @pytest.mark.skipif(not DB_PATH.exists(), reason="Replay DB not found")
 class TestFreshnessCadence:
     def test_all_lottery_types_have_done_run(self, live_conn):

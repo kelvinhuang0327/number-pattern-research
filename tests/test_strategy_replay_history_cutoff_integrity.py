@@ -48,6 +48,7 @@ def _fmt_rows(rows: list[sqlite3.Row], limit: int = 20) -> str:
     return "\n".join(lines)
 
 
+@pytest.mark.requires_db
 @pytest.mark.skipif(not DB_PATH.exists(), reason="Replay DB not found")
 class TestReplayHistoryCutoffIntegrity:
     def test_history_cutoff_not_null_except_failed_legacy_with_notes(self):

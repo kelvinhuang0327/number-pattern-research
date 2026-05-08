@@ -1,0 +1,1091 @@
+{
+  "run_timestamp": "2026-05-01T23:39:17.808663",
+  "simulations": 2000,
+  "seed": 42,
+  "alpha": 0.05,
+  "games": {
+    "power_lotto": {
+      "validation": {
+        "game": "power_lotto",
+        "row_count": 1906,
+        "date_min": "2008-01-24",
+        "date_max": "2026-04-27",
+        "duplicate_ids": 0,
+        "missing_values": 0,
+        "duplicated_draws": 0,
+        "out_of_range_balls": 0,
+        "special_out_of_range": 0,
+        "wrong_ball_count": 0,
+        "issues": [
+          "316 draws where special ball appears in main balls"
+        ],
+        "status": "WARN"
+      },
+      "pattern_tests": [
+        {
+          "game": "power_lotto",
+          "pattern": "consecutive_count",
+          "obs_mean": 0.7591815320041972,
+          "exp_mean": 0.789659758656873,
+          "exp_sd": 0.018254478876187332,
+          "z_score": -1.6696300595266014,
+          "p_raw": 0.09499257928919312
+        },
+        {
+          "game": "power_lotto",
+          "pattern": "same_tail_count",
+          "obs_mean": 1.1469045120671564,
+          "exp_mean": 1.1528646379853094,
+          "exp_sd": 0.020988257684117058,
+          "z_score": -0.28397430638863025,
+          "p_raw": 0.776430070953358
+        },
+        {
+          "game": "power_lotto",
+          "pattern": "odd_count",
+          "obs_mean": 2.987408184679958,
+          "exp_mean": 2.9994942287513116,
+          "exp_sd": 0.02617731986461508,
+          "z_score": -0.4616990636879868,
+          "p_raw": 0.6442971426233961
+        },
+        {
+          "game": "power_lotto",
+          "pattern": "low_count",
+          "obs_mean": 3.016264428121721,
+          "exp_mean": 2.9999658971668413,
+          "exp_sd": 0.02646470012227252,
+          "z_score": 0.6158592721465529,
+          "p_raw": 0.537987403840386
+        },
+        {
+          "game": "power_lotto",
+          "pattern": "sum",
+          "obs_mean": 116.66526757607555,
+          "exp_mean": 117.00788090241342,
+          "exp_sd": 0.5790913079909402,
+          "z_score": -0.5916395594444476,
+          "p_raw": 0.5540919775454176
+        },
+        {
+          "game": "power_lotto",
+          "pattern": "span",
+          "obs_mean": 27.921301154249736,
+          "exp_mean": 27.85964113326338,
+          "exp_sd": 0.12917626410085856,
+          "z_score": 0.47733243731381275,
+          "p_raw": 0.6331254162794017
+        },
+        {
+          "game": "power_lotto",
+          "pattern": "repeat_from_prev",
+          "obs_mean": 0.9328436516264428,
+          "exp_mean": 0.9462208814270725,
+          "exp_sd": 0.01898638376286133,
+          "z_score": -0.7045696520048489,
+          "p_raw": 0.48107809014557945
+        },
+        {
+          "game": "power_lotto",
+          "pattern": "pair_cooccurrence_gini",
+          "obs_mean": 0.08581828639264992,
+          "exp_mean": 0.08772581804757208,
+          "exp_sd": 0.002918385557588353,
+          "z_score": -0.6536256492779784,
+          "p_raw": 0.5133530151882362
+        },
+        {
+          "game": "power_lotto",
+          "pattern": "gap_distribution",
+          "obs_mean": 5.584260230849947,
+          "exp_mean": 5.571928226652675,
+          "exp_sd": 0.025835252820171704,
+          "z_score": 0.4773324373138335,
+          "p_raw": 0.6331254162793869
+        }
+      ],
+      "serial_tests": [
+        {
+          "game": "power_lotto",
+          "test": "sum_autocorrelation_ljungbox",
+          "lag_window": 20,
+          "statistic": 14.944701430040174,
+          "p_raw": 0.7795630138151534
+        },
+        {
+          "game": "power_lotto",
+          "test": "odd_count_runs_test",
+          "lag_window": "N/A",
+          "statistic": 0.4260511248308942,
+          "p_raw": 0.6700705930994986,
+          "runs": 850
+        },
+        {
+          "game": "power_lotto",
+          "test": "repeat_overlap_runs_test",
+          "lag_window": "N/A",
+          "statistic": 1.206598627539301,
+          "p_raw": 0.2275867555751936,
+          "runs": 869
+        },
+        {
+          "game": "power_lotto",
+          "test": "rolling_window_drift",
+          "lag_window": "first_half_953_vs_second_half_953",
+          "statistic": 27.367936221243284,
+          "p_raw": 0.876065727065513
+        }
+      ]
+    },
+    "big_lotto": {
+      "validation": {
+        "game": "big_lotto",
+        "row_count": 2130,
+        "date_min": "2007-01-02",
+        "date_max": "2026-04-28",
+        "duplicate_ids": 0,
+        "missing_values": 0,
+        "duplicated_draws": 0,
+        "out_of_range_balls": 0,
+        "special_out_of_range": 243,
+        "wrong_ball_count": 0,
+        "issues": [
+          "243 draws with special out of range [1..43]"
+        ],
+        "status": "WARN"
+      },
+      "pattern_tests": [
+        {
+          "game": "big_lotto",
+          "pattern": "consecutive_count",
+          "obs_mean": 0.6262910798122066,
+          "exp_mean": 0.6132342723004695,
+          "exp_sd": 0.01526041556032914,
+          "z_score": 0.8555997351526572,
+          "p_raw": 0.3922192165030849
+        },
+        {
+          "game": "big_lotto",
+          "pattern": "same_tail_count",
+          "obs_mean": 1.2225352112676056,
+          "exp_mean": 1.2249032863849765,
+          "exp_sd": 0.0211334533248888,
+          "z_score": -0.11205339141530841,
+          "p_raw": 0.910781072864322
+        },
+        {
+          "game": "big_lotto",
+          "pattern": "odd_count",
+          "obs_mean": 3.091549295774648,
+          "exp_mean": 3.0614265258215965,
+          "exp_sd": 0.024821205932324734,
+          "z_score": 1.2135901065879535,
+          "p_raw": 0.2249042868590475
+        },
+        {
+          "game": "big_lotto",
+          "pattern": "low_count",
+          "obs_mean": 2.932394366197183,
+          "exp_mean": 2.938111502347418,
+          "exp_sd": 0.024905601444078124,
+          "z_score": -0.2295522219397844,
+          "p_raw": 0.8184397367749765
+        },
+        {
+          "game": "big_lotto",
+          "pattern": "sum",
+          "obs_mean": 150.07276995305165,
+          "exp_mean": 150.0094218309859,
+          "exp_sd": 0.7065767889691735,
+          "z_score": 0.08965497176629021,
+          "p_raw": 0.9285613991012326
+        },
+        {
+          "game": "big_lotto",
+          "pattern": "span",
+          "obs_mean": 35.7169014084507,
+          "exp_mean": 35.71393544600939,
+          "exp_sd": 0.15989524179852477,
+          "z_score": 0.01854941027609118,
+          "p_raw": 0.9852005606336248
+        },
+        {
+          "game": "big_lotto",
+          "pattern": "repeat_from_prev",
+          "obs_mean": 0.7356807511737089,
+          "exp_mean": 0.7342467136150235,
+          "exp_sd": 0.01673827821923202,
+          "z_score": 0.08567413803874664,
+          "p_raw": 0.9317254613749942
+        },
+        {
+          "game": "big_lotto",
+          "pattern": "pair_cooccurrence_gini",
+          "obs_mean": 0.10337676854779466,
+          "exp_mean": 0.10719635112260865,
+          "exp_sd": 0.0028066806414246085,
+          "z_score": -1.3608896282817753,
+          "p_raw": 0.17354857167207982
+        },
+        {
+          "game": "big_lotto",
+          "pattern": "gap_distribution",
+          "obs_mean": 7.14338028169014,
+          "exp_mean": 7.142787089201878,
+          "exp_sd": 0.03197904835970495,
+          "z_score": 0.018549410276057856,
+          "p_raw": 0.9852005606336514
+        }
+      ],
+      "serial_tests": [
+        {
+          "game": "big_lotto",
+          "test": "sum_autocorrelation_ljungbox",
+          "lag_window": 20,
+          "statistic": 12.902006311381854,
+          "p_raw": 0.881548794855112
+        },
+        {
+          "game": "big_lotto",
+          "test": "odd_count_runs_test",
+          "lag_window": "N/A",
+          "statistic": 2.77165862452323,
+          "p_raw": 0.005577149159447764,
+          "runs": 951
+        },
+        {
+          "game": "big_lotto",
+          "test": "repeat_overlap_runs_test",
+          "lag_window": "N/A",
+          "statistic": 0.3523791673151678,
+          "p_raw": 0.7245539233969751,
+          "runs": 1061
+        },
+        {
+          "game": "big_lotto",
+          "test": "rolling_window_drift",
+          "lag_window": "first_half_1065_vs_second_half_1065",
+          "statistic": 41.265756873799894,
+          "p_raw": 0.7432619167734006
+        }
+      ]
+    },
+    "daily_539": {
+      "validation": {
+        "game": "daily_539",
+        "row_count": 5849,
+        "date_min": "2007-01-01",
+        "date_max": "2026-04-29",
+        "duplicate_ids": 0,
+        "missing_values": 0,
+        "duplicated_draws": 33,
+        "out_of_range_balls": 0,
+        "special_out_of_range": 0,
+        "wrong_ball_count": 0,
+        "issues": [
+          "33 duplicated ball combinations"
+        ],
+        "status": "WARN"
+      },
+      "pattern_tests": [
+        {
+          "game": "daily_539",
+          "pattern": "consecutive_count",
+          "obs_mean": 0.5076081381432723,
+          "exp_mean": 0.5134024619593093,
+          "exp_sd": 0.008360233347611106,
+          "z_score": -0.6930815893664797,
+          "p_raw": 0.488258350723359
+        },
+        {
+          "game": "daily_539",
+          "pattern": "same_tail_count",
+          "obs_mean": 0.7816720806975551,
+          "exp_mean": 0.7694125491537014,
+          "exp_sd": 0.010234231750597924,
+          "z_score": 1.1978946581053804,
+          "p_raw": 0.23095802964976453
+        },
+        {
+          "game": "daily_539",
+          "pattern": "odd_count",
+          "obs_mean": 2.571550692426056,
+          "exp_mean": 2.5643132159343476,
+          "exp_sd": 0.014352008801878495,
+          "z_score": 0.5042831698069302,
+          "p_raw": 0.6140624026140222
+        },
+        {
+          "game": "daily_539",
+          "pattern": "low_count",
+          "obs_mean": 2.4400752265344505,
+          "exp_mean": 2.435843904941015,
+          "exp_sd": 0.01386179421121289,
+          "z_score": 0.3052506428073048,
+          "p_raw": 0.7601752643401698
+        },
+        {
+          "game": "daily_539",
+          "pattern": "sum",
+          "obs_mean": 99.91947341425885,
+          "exp_mean": 100.00087108907505,
+          "exp_sd": 0.310900427051671,
+          "z_score": -0.2618126825624265,
+          "p_raw": 0.7934658607684757
+        },
+        {
+          "game": "daily_539",
+          "pattern": "span",
+          "obs_mean": 26.73260386390836,
+          "exp_mean": 26.66593588647632,
+          "exp_sd": 0.0844431739076134,
+          "z_score": 0.7895010851318702,
+          "p_raw": 0.42981919579773864
+        },
+        {
+          "game": "daily_539",
+          "pattern": "repeat_from_prev",
+          "obs_mean": 0.6459223798939989,
+          "exp_mean": 0.640533253547615,
+          "exp_sd": 0.009274121064909472,
+          "z_score": 0.5810929476405852,
+          "p_raw": 0.5611778114547272
+        },
+        {
+          "game": "daily_539",
+          "pattern": "pair_cooccurrence_gini",
+          "obs_mean": 0.06071107117979727,
+          "exp_mean": 0.06344281558216464,
+          "exp_sd": 0.0019177383796423685,
+          "z_score": -1.424461454891879,
+          "p_raw": 0.1543129353646258
+        },
+        {
+          "game": "daily_539",
+          "pattern": "gap_distribution",
+          "obs_mean": 6.68315096597709,
+          "exp_mean": 6.66648397161908,
+          "exp_sd": 0.02111079347690335,
+          "z_score": 0.7895010851318702,
+          "p_raw": 0.42981919579773864
+        }
+      ],
+      "serial_tests": [
+        {
+          "game": "daily_539",
+          "test": "sum_autocorrelation_ljungbox",
+          "lag_window": 20,
+          "statistic": 10.274962046296757,
+          "p_raw": 0.962907648870301
+        },
+        {
+          "game": "daily_539",
+          "test": "odd_count_runs_test",
+          "lag_window": "N/A",
+          "statistic": -0.005816381194110865,
+          "p_raw": 0.9953592254119481,
+          "runs": 2919
+        },
+        {
+          "game": "daily_539",
+          "test": "repeat_overlap_runs_test",
+          "lag_window": "N/A",
+          "statistic": 0.42158397015215493,
+          "p_raw": 0.673328708653108,
+          "runs": 2936
+        },
+        {
+          "game": "daily_539",
+          "test": "rolling_window_drift",
+          "lag_window": "first_half_2924_vs_second_half_2925",
+          "statistic": 34.75395900092429,
+          "p_raw": 0.6203454533544285
+        }
+      ]
+    }
+  },
+  "tests": [
+    {
+      "test_id": "power_lotto_overall_frequency",
+      "game": "power_lotto",
+      "hypothesis": "Main balls uniform over [1..38]",
+      "statistic": 32.264428121720876,
+      "p_raw": 0.6905671881449631,
+      "confirmatory": true,
+      "p_bonferroni": 1.0,
+      "q_bh_fdr": 0.9953592254119481,
+      "verdict": "CONSISTENT_WITH_UNIFORM"
+    },
+    {
+      "test_id": "power_lotto_position_1",
+      "game": "power_lotto",
+      "hypothesis": "Position 1 uniform [SORTED-ORDER-ARTIFACT]",
+      "statistic": 4904.692549842605,
+      "p_raw": 0.0,
+      "confirmatory": false,
+      "p_bonferroni": 0.0,
+      "q_bh_fdr": 0.0,
+      "verdict": "SIGNIFICANT_DEVIATION_REQUIRES_REVIEW"
+    },
+    {
+      "test_id": "power_lotto_position_2",
+      "game": "power_lotto",
+      "hypothesis": "Position 2 uniform [SORTED-ORDER-ARTIFACT]",
+      "statistic": 1945.4375655823715,
+      "p_raw": 0.0,
+      "confirmatory": false,
+      "p_bonferroni": 0.0,
+      "q_bh_fdr": 0.0,
+      "verdict": "SIGNIFICANT_DEVIATION_REQUIRES_REVIEW"
+    },
+    {
+      "test_id": "power_lotto_position_3",
+      "game": "power_lotto",
+      "hypothesis": "Position 3 uniform [SORTED-ORDER-ARTIFACT]",
+      "statistic": 1400.5582371458554,
+      "p_raw": 3.1635453906320595e-270,
+      "confirmatory": false,
+      "p_bonferroni": 1.391959971878106e-268,
+      "q_bh_fdr": 3.1635453906320595e-270,
+      "verdict": "SIGNIFICANT_DEVIATION_REQUIRES_REVIEW"
+    },
+    {
+      "test_id": "power_lotto_position_4",
+      "game": "power_lotto",
+      "hypothesis": "Position 4 uniform [SORTED-ORDER-ARTIFACT]",
+      "statistic": 1389.1143756558236,
+      "p_raw": 8.37361604540473e-268,
+      "confirmatory": false,
+      "p_bonferroni": 3.684391059978081e-266,
+      "q_bh_fdr": 8.37361604540473e-268,
+      "verdict": "SIGNIFICANT_DEVIATION_REQUIRES_REVIEW"
+    },
+    {
+      "test_id": "power_lotto_position_5",
+      "game": "power_lotto",
+      "hypothesis": "Position 5 uniform [SORTED-ORDER-ARTIFACT]",
+      "statistic": 1875.6579223504718,
+      "p_raw": 0.0,
+      "confirmatory": false,
+      "p_bonferroni": 0.0,
+      "q_bh_fdr": 0.0,
+      "verdict": "SIGNIFICANT_DEVIATION_REQUIRES_REVIEW"
+    },
+    {
+      "test_id": "power_lotto_position_6",
+      "game": "power_lotto",
+      "hypothesis": "Position 6 uniform [SORTED-ORDER-ARTIFACT]",
+      "statistic": 4875.464847848898,
+      "p_raw": 0.0,
+      "confirmatory": false,
+      "p_bonferroni": 0.0,
+      "q_bh_fdr": 0.0,
+      "verdict": "SIGNIFICANT_DEVIATION_REQUIRES_REVIEW"
+    },
+    {
+      "test_id": "power_lotto_special_uniformity",
+      "game": "power_lotto",
+      "hypothesis": "Special ball uniform over [1..8]",
+      "statistic": 9.332633788037775,
+      "p_raw": 0.2296482136214672,
+      "confirmatory": true,
+      "p_bonferroni": 1.0,
+      "q_bh_fdr": 0.9953592254119481,
+      "verdict": "CONSISTENT_WITH_UNIFORM"
+    },
+    {
+      "test_id": "power_lotto_pattern_consecutive_count",
+      "game": "power_lotto",
+      "hypothesis": "Pattern 'consecutive_count' consistent with random",
+      "statistic": -1.6696300595266014,
+      "p_raw": 0.09499257928919312,
+      "confirmatory": true,
+      "p_bonferroni": 1.0,
+      "q_bh_fdr": 0.9953592254119481,
+      "verdict": "CONSISTENT_WITH_UNIFORM"
+    },
+    {
+      "test_id": "power_lotto_pattern_same_tail_count",
+      "game": "power_lotto",
+      "hypothesis": "Pattern 'same_tail_count' consistent with random",
+      "statistic": -0.28397430638863025,
+      "p_raw": 0.776430070953358,
+      "confirmatory": true,
+      "p_bonferroni": 1.0,
+      "q_bh_fdr": 0.9953592254119481,
+      "verdict": "CONSISTENT_WITH_UNIFORM"
+    },
+    {
+      "test_id": "power_lotto_pattern_odd_count",
+      "game": "power_lotto",
+      "hypothesis": "Pattern 'odd_count' consistent with random",
+      "statistic": -0.4616990636879868,
+      "p_raw": 0.6442971426233961,
+      "confirmatory": true,
+      "p_bonferroni": 1.0,
+      "q_bh_fdr": 0.9953592254119481,
+      "verdict": "CONSISTENT_WITH_UNIFORM"
+    },
+    {
+      "test_id": "power_lotto_pattern_low_count",
+      "game": "power_lotto",
+      "hypothesis": "Pattern 'low_count' consistent with random",
+      "statistic": 0.6158592721465529,
+      "p_raw": 0.537987403840386,
+      "confirmatory": true,
+      "p_bonferroni": 1.0,
+      "q_bh_fdr": 0.9953592254119481,
+      "verdict": "CONSISTENT_WITH_UNIFORM"
+    },
+    {
+      "test_id": "power_lotto_pattern_sum",
+      "game": "power_lotto",
+      "hypothesis": "Pattern 'sum' consistent with random",
+      "statistic": -0.5916395594444476,
+      "p_raw": 0.5540919775454176,
+      "confirmatory": true,
+      "p_bonferroni": 1.0,
+      "q_bh_fdr": 0.9953592254119481,
+      "verdict": "CONSISTENT_WITH_UNIFORM"
+    },
+    {
+      "test_id": "power_lotto_pattern_span",
+      "game": "power_lotto",
+      "hypothesis": "Pattern 'span' consistent with random",
+      "statistic": 0.47733243731381275,
+      "p_raw": 0.6331254162794017,
+      "confirmatory": true,
+      "p_bonferroni": 1.0,
+      "q_bh_fdr": 0.9953592254119481,
+      "verdict": "CONSISTENT_WITH_UNIFORM"
+    },
+    {
+      "test_id": "power_lotto_pattern_repeat_from_prev",
+      "game": "power_lotto",
+      "hypothesis": "Pattern 'repeat_from_prev' consistent with random",
+      "statistic": -0.7045696520048489,
+      "p_raw": 0.48107809014557945,
+      "confirmatory": true,
+      "p_bonferroni": 1.0,
+      "q_bh_fdr": 0.9953592254119481,
+      "verdict": "CONSISTENT_WITH_UNIFORM"
+    },
+    {
+      "test_id": "power_lotto_pattern_pair_cooccurrence_gini",
+      "game": "power_lotto",
+      "hypothesis": "Pattern 'pair_cooccurrence_gini' consistent with random",
+      "statistic": -0.6536256492779784,
+      "p_raw": 0.5133530151882362,
+      "confirmatory": true,
+      "p_bonferroni": 1.0,
+      "q_bh_fdr": 0.9953592254119481,
+      "verdict": "CONSISTENT_WITH_UNIFORM"
+    },
+    {
+      "test_id": "power_lotto_pattern_gap_distribution",
+      "game": "power_lotto",
+      "hypothesis": "Pattern 'gap_distribution' consistent with random",
+      "statistic": 0.4773324373138335,
+      "p_raw": 0.6331254162793869,
+      "confirmatory": true,
+      "p_bonferroni": 1.0,
+      "q_bh_fdr": 0.9953592254119481,
+      "verdict": "CONSISTENT_WITH_UNIFORM"
+    },
+    {
+      "test_id": "power_lotto_ljungbox_sum",
+      "game": "power_lotto",
+      "hypothesis": "Draw sums are serially independent (Ljung-Box)",
+      "statistic": 14.944701430040174,
+      "p_raw": 0.7795630138151534,
+      "confirmatory": true,
+      "p_bonferroni": 1.0,
+      "q_bh_fdr": 0.9953592254119481,
+      "verdict": "CONSISTENT_WITH_UNIFORM"
+    },
+    {
+      "test_id": "power_lotto_runs_odd",
+      "game": "power_lotto",
+      "hypothesis": "Odd-heavy draws are random sequence (runs test)",
+      "statistic": 0.4260511248308942,
+      "p_raw": 0.6700705930994986,
+      "confirmatory": true,
+      "p_bonferroni": 1.0,
+      "q_bh_fdr": 0.9953592254119481,
+      "verdict": "CONSISTENT_WITH_UNIFORM"
+    },
+    {
+      "test_id": "power_lotto_runs_repeat",
+      "game": "power_lotto",
+      "hypothesis": "Repeat-overlap draws are random sequence (runs test)",
+      "statistic": 1.206598627539301,
+      "p_raw": 0.2275867555751936,
+      "confirmatory": true,
+      "p_bonferroni": 1.0,
+      "q_bh_fdr": 0.9953592254119481,
+      "verdict": "CONSISTENT_WITH_UNIFORM"
+    },
+    {
+      "test_id": "power_lotto_drift_halves",
+      "game": "power_lotto",
+      "hypothesis": "Frequency distribution stable across first/second half",
+      "statistic": 27.367936221243284,
+      "p_raw": 0.876065727065513,
+      "confirmatory": true,
+      "p_bonferroni": 1.0,
+      "q_bh_fdr": 0.9953592254119481,
+      "verdict": "CONSISTENT_WITH_UNIFORM"
+    },
+    {
+      "test_id": "big_lotto_overall_frequency",
+      "game": "big_lotto",
+      "hypothesis": "Main balls uniform over [1..49]",
+      "statistic": 35.1716744913928,
+      "p_raw": 0.9159914770493536,
+      "confirmatory": true,
+      "p_bonferroni": 1.0,
+      "q_bh_fdr": 0.9953592254119481,
+      "verdict": "CONSISTENT_WITH_UNIFORM"
+    },
+    {
+      "test_id": "big_lotto_position_1",
+      "game": "big_lotto",
+      "hypothesis": "Position 1 uniform [SORTED-ORDER-ARTIFACT]",
+      "statistic": 5412.779342723003,
+      "p_raw": 0.0,
+      "confirmatory": false,
+      "p_bonferroni": 0.0,
+      "q_bh_fdr": 0.0,
+      "verdict": "SIGNIFICANT_DEVIATION_REQUIRES_REVIEW"
+    },
+    {
+      "test_id": "big_lotto_position_2",
+      "game": "big_lotto",
+      "hypothesis": "Position 2 uniform [SORTED-ORDER-ARTIFACT]",
+      "statistic": 1919.5624413145538,
+      "p_raw": 0.0,
+      "confirmatory": false,
+      "p_bonferroni": 0.0,
+      "q_bh_fdr": 0.0,
+      "verdict": "SIGNIFICANT_DEVIATION_REQUIRES_REVIEW"
+    },
+    {
+      "test_id": "big_lotto_position_3",
+      "game": "big_lotto",
+      "hypothesis": "Position 3 uniform [SORTED-ORDER-ARTIFACT]",
+      "statistic": 1454.0394366197181,
+      "p_raw": 4.746323306710296e-273,
+      "confirmatory": false,
+      "p_bonferroni": 2.0883822549525304e-271,
+      "q_bh_fdr": 4.746323306710296e-273,
+      "verdict": "SIGNIFICANT_DEVIATION_REQUIRES_REVIEW"
+    },
+    {
+      "test_id": "big_lotto_position_4",
+      "game": "big_lotto",
+      "hypothesis": "Position 4 uniform [SORTED-ORDER-ARTIFACT]",
+      "statistic": 1407.293896713615,
+      "p_raw": 3.17022947563408e-263,
+      "confirmatory": false,
+      "p_bonferroni": 1.394900969278995e-261,
+      "q_bh_fdr": 3.17022947563408e-263,
+      "verdict": "SIGNIFICANT_DEVIATION_REQUIRES_REVIEW"
+    },
+    {
+      "test_id": "big_lotto_position_5",
+      "game": "big_lotto",
+      "hypothesis": "Position 5 uniform [SORTED-ORDER-ARTIFACT]",
+      "statistic": 2006.1521126760563,
+      "p_raw": 0.0,
+      "confirmatory": false,
+      "p_bonferroni": 0.0,
+      "q_bh_fdr": 0.0,
+      "verdict": "SIGNIFICANT_DEVIATION_REQUIRES_REVIEW"
+    },
+    {
+      "test_id": "big_lotto_position_6",
+      "game": "big_lotto",
+      "hypothesis": "Position 6 uniform [SORTED-ORDER-ARTIFACT]",
+      "statistic": 5072.907981220656,
+      "p_raw": 0.0,
+      "confirmatory": false,
+      "p_bonferroni": 0.0,
+      "q_bh_fdr": 0.0,
+      "verdict": "SIGNIFICANT_DEVIATION_REQUIRES_REVIEW"
+    },
+    {
+      "test_id": "big_lotto_special_uniformity",
+      "game": "big_lotto",
+      "hypothesis": "Special ball uniform over [1..43]",
+      "statistic": 56.93269740328564,
+      "p_raw": 0.06186414691894039,
+      "confirmatory": true,
+      "p_bonferroni": 1.0,
+      "q_bh_fdr": 0.9953592254119481,
+      "verdict": "CONSISTENT_WITH_UNIFORM"
+    },
+    {
+      "test_id": "big_lotto_pattern_consecutive_count",
+      "game": "big_lotto",
+      "hypothesis": "Pattern 'consecutive_count' consistent with random",
+      "statistic": 0.8555997351526572,
+      "p_raw": 0.3922192165030849,
+      "confirmatory": true,
+      "p_bonferroni": 1.0,
+      "q_bh_fdr": 0.9953592254119481,
+      "verdict": "CONSISTENT_WITH_UNIFORM"
+    },
+    {
+      "test_id": "big_lotto_pattern_same_tail_count",
+      "game": "big_lotto",
+      "hypothesis": "Pattern 'same_tail_count' consistent with random",
+      "statistic": -0.11205339141530841,
+      "p_raw": 0.910781072864322,
+      "confirmatory": true,
+      "p_bonferroni": 1.0,
+      "q_bh_fdr": 0.9953592254119481,
+      "verdict": "CONSISTENT_WITH_UNIFORM"
+    },
+    {
+      "test_id": "big_lotto_pattern_odd_count",
+      "game": "big_lotto",
+      "hypothesis": "Pattern 'odd_count' consistent with random",
+      "statistic": 1.2135901065879535,
+      "p_raw": 0.2249042868590475,
+      "confirmatory": true,
+      "p_bonferroni": 1.0,
+      "q_bh_fdr": 0.9953592254119481,
+      "verdict": "CONSISTENT_WITH_UNIFORM"
+    },
+    {
+      "test_id": "big_lotto_pattern_low_count",
+      "game": "big_lotto",
+      "hypothesis": "Pattern 'low_count' consistent with random",
+      "statistic": -0.2295522219397844,
+      "p_raw": 0.8184397367749765,
+      "confirmatory": true,
+      "p_bonferroni": 1.0,
+      "q_bh_fdr": 0.9953592254119481,
+      "verdict": "CONSISTENT_WITH_UNIFORM"
+    },
+    {
+      "test_id": "big_lotto_pattern_sum",
+      "game": "big_lotto",
+      "hypothesis": "Pattern 'sum' consistent with random",
+      "statistic": 0.08965497176629021,
+      "p_raw": 0.9285613991012326,
+      "confirmatory": true,
+      "p_bonferroni": 1.0,
+      "q_bh_fdr": 0.9953592254119481,
+      "verdict": "CONSISTENT_WITH_UNIFORM"
+    },
+    {
+      "test_id": "big_lotto_pattern_span",
+      "game": "big_lotto",
+      "hypothesis": "Pattern 'span' consistent with random",
+      "statistic": 0.01854941027609118,
+      "p_raw": 0.9852005606336248,
+      "confirmatory": true,
+      "p_bonferroni": 1.0,
+      "q_bh_fdr": 0.9953592254119481,
+      "verdict": "CONSISTENT_WITH_UNIFORM"
+    },
+    {
+      "test_id": "big_lotto_pattern_repeat_from_prev",
+      "game": "big_lotto",
+      "hypothesis": "Pattern 'repeat_from_prev' consistent with random",
+      "statistic": 0.08567413803874664,
+      "p_raw": 0.9317254613749942,
+      "confirmatory": true,
+      "p_bonferroni": 1.0,
+      "q_bh_fdr": 0.9953592254119481,
+      "verdict": "CONSISTENT_WITH_UNIFORM"
+    },
+    {
+      "test_id": "big_lotto_pattern_pair_cooccurrence_gini",
+      "game": "big_lotto",
+      "hypothesis": "Pattern 'pair_cooccurrence_gini' consistent with random",
+      "statistic": -1.3608896282817753,
+      "p_raw": 0.17354857167207982,
+      "confirmatory": true,
+      "p_bonferroni": 1.0,
+      "q_bh_fdr": 0.9953592254119481,
+      "verdict": "CONSISTENT_WITH_UNIFORM"
+    },
+    {
+      "test_id": "big_lotto_pattern_gap_distribution",
+      "game": "big_lotto",
+      "hypothesis": "Pattern 'gap_distribution' consistent with random",
+      "statistic": 0.018549410276057856,
+      "p_raw": 0.9852005606336514,
+      "confirmatory": true,
+      "p_bonferroni": 1.0,
+      "q_bh_fdr": 0.9953592254119481,
+      "verdict": "CONSISTENT_WITH_UNIFORM"
+    },
+    {
+      "test_id": "big_lotto_ljungbox_sum",
+      "game": "big_lotto",
+      "hypothesis": "Draw sums are serially independent (Ljung-Box)",
+      "statistic": 12.902006311381854,
+      "p_raw": 0.881548794855112,
+      "confirmatory": true,
+      "p_bonferroni": 1.0,
+      "q_bh_fdr": 0.9953592254119481,
+      "verdict": "CONSISTENT_WITH_UNIFORM"
+    },
+    {
+      "test_id": "big_lotto_runs_odd",
+      "game": "big_lotto",
+      "hypothesis": "Odd-heavy draws are random sequence (runs test)",
+      "statistic": 2.77165862452323,
+      "p_raw": 0.005577149159447764,
+      "confirmatory": true,
+      "p_bonferroni": 0.24539456301570162,
+      "q_bh_fdr": 0.24539456301570162,
+      "verdict": "WEAK_DEVIATION_NOT_SIGNIFICANT_AFTER_CORRECTION"
+    },
+    {
+      "test_id": "big_lotto_runs_repeat",
+      "game": "big_lotto",
+      "hypothesis": "Repeat-overlap draws are random sequence (runs test)",
+      "statistic": 0.3523791673151678,
+      "p_raw": 0.7245539233969751,
+      "confirmatory": true,
+      "p_bonferroni": 1.0,
+      "q_bh_fdr": 0.9953592254119481,
+      "verdict": "CONSISTENT_WITH_UNIFORM"
+    },
+    {
+      "test_id": "big_lotto_drift_halves",
+      "game": "big_lotto",
+      "hypothesis": "Frequency distribution stable across first/second half",
+      "statistic": 41.265756873799894,
+      "p_raw": 0.7432619167734006,
+      "confirmatory": true,
+      "p_bonferroni": 1.0,
+      "q_bh_fdr": 0.9953592254119481,
+      "verdict": "CONSISTENT_WITH_UNIFORM"
+    },
+    {
+      "test_id": "daily_539_overall_frequency",
+      "game": "daily_539",
+      "hypothesis": "Main balls uniform over [1..39]",
+      "statistic": 32.65672764575141,
+      "p_raw": 0.7145611535531262,
+      "confirmatory": true,
+      "p_bonferroni": 1.0,
+      "q_bh_fdr": 0.9953592254119481,
+      "verdict": "CONSISTENT_WITH_UNIFORM"
+    },
+    {
+      "test_id": "daily_539_position_1",
+      "game": "daily_539",
+      "hypothesis": "Position 1 uniform [SORTED-ORDER-ARTIFACT]",
+      "statistic": 11554.248247563688,
+      "p_raw": 0.0,
+      "confirmatory": false,
+      "p_bonferroni": 0.0,
+      "q_bh_fdr": 0.0,
+      "verdict": "SIGNIFICANT_DEVIATION_REQUIRES_REVIEW"
+    },
+    {
+      "test_id": "daily_539_position_2",
+      "game": "daily_539",
+      "hypothesis": "Position 2 uniform [SORTED-ORDER-ARTIFACT]",
+      "statistic": 4021.2538895537696,
+      "p_raw": 0.0,
+      "confirmatory": false,
+      "p_bonferroni": 0.0,
+      "q_bh_fdr": 0.0,
+      "verdict": "SIGNIFICANT_DEVIATION_REQUIRES_REVIEW"
+    },
+    {
+      "test_id": "daily_539_position_3",
+      "game": "daily_539",
+      "hypothesis": "Position 3 uniform [SORTED-ORDER-ARTIFACT]",
+      "statistic": 2995.385194050265,
+      "p_raw": 0.0,
+      "confirmatory": false,
+      "p_bonferroni": 0.0,
+      "q_bh_fdr": 0.0,
+      "verdict": "SIGNIFICANT_DEVIATION_REQUIRES_REVIEW"
+    },
+    {
+      "test_id": "daily_539_position_4",
+      "game": "daily_539",
+      "hypothesis": "Position 4 uniform [SORTED-ORDER-ARTIFACT]",
+      "statistic": 3881.790049581124,
+      "p_raw": 0.0,
+      "confirmatory": false,
+      "p_bonferroni": 0.0,
+      "q_bh_fdr": 0.0,
+      "verdict": "SIGNIFICANT_DEVIATION_REQUIRES_REVIEW"
+    },
+    {
+      "test_id": "daily_539_position_5",
+      "game": "daily_539",
+      "hypothesis": "Position 5 uniform [SORTED-ORDER-ARTIFACT]",
+      "statistic": 11459.25867669687,
+      "p_raw": 0.0,
+      "confirmatory": false,
+      "p_bonferroni": 0.0,
+      "q_bh_fdr": 0.0,
+      "verdict": "SIGNIFICANT_DEVIATION_REQUIRES_REVIEW"
+    },
+    {
+      "test_id": "daily_539_pattern_consecutive_count",
+      "game": "daily_539",
+      "hypothesis": "Pattern 'consecutive_count' consistent with random",
+      "statistic": -0.6930815893664797,
+      "p_raw": 0.488258350723359,
+      "confirmatory": true,
+      "p_bonferroni": 1.0,
+      "q_bh_fdr": 0.9953592254119481,
+      "verdict": "CONSISTENT_WITH_UNIFORM"
+    },
+    {
+      "test_id": "daily_539_pattern_same_tail_count",
+      "game": "daily_539",
+      "hypothesis": "Pattern 'same_tail_count' consistent with random",
+      "statistic": 1.1978946581053804,
+      "p_raw": 0.23095802964976453,
+      "confirmatory": true,
+      "p_bonferroni": 1.0,
+      "q_bh_fdr": 0.9953592254119481,
+      "verdict": "CONSISTENT_WITH_UNIFORM"
+    },
+    {
+      "test_id": "daily_539_pattern_odd_count",
+      "game": "daily_539",
+      "hypothesis": "Pattern 'odd_count' consistent with random",
+      "statistic": 0.5042831698069302,
+      "p_raw": 0.6140624026140222,
+      "confirmatory": true,
+      "p_bonferroni": 1.0,
+      "q_bh_fdr": 0.9953592254119481,
+      "verdict": "CONSISTENT_WITH_UNIFORM"
+    },
+    {
+      "test_id": "daily_539_pattern_low_count",
+      "game": "daily_539",
+      "hypothesis": "Pattern 'low_count' consistent with random",
+      "statistic": 0.3052506428073048,
+      "p_raw": 0.7601752643401698,
+      "confirmatory": true,
+      "p_bonferroni": 1.0,
+      "q_bh_fdr": 0.9953592254119481,
+      "verdict": "CONSISTENT_WITH_UNIFORM"
+    },
+    {
+      "test_id": "daily_539_pattern_sum",
+      "game": "daily_539",
+      "hypothesis": "Pattern 'sum' consistent with random",
+      "statistic": -0.2618126825624265,
+      "p_raw": 0.7934658607684757,
+      "confirmatory": true,
+      "p_bonferroni": 1.0,
+      "q_bh_fdr": 0.9953592254119481,
+      "verdict": "CONSISTENT_WITH_UNIFORM"
+    },
+    {
+      "test_id": "daily_539_pattern_span",
+      "game": "daily_539",
+      "hypothesis": "Pattern 'span' consistent with random",
+      "statistic": 0.7895010851318702,
+      "p_raw": 0.42981919579773864,
+      "confirmatory": true,
+      "p_bonferroni": 1.0,
+      "q_bh_fdr": 0.9953592254119481,
+      "verdict": "CONSISTENT_WITH_UNIFORM"
+    },
+    {
+      "test_id": "daily_539_pattern_repeat_from_prev",
+      "game": "daily_539",
+      "hypothesis": "Pattern 'repeat_from_prev' consistent with random",
+      "statistic": 0.5810929476405852,
+      "p_raw": 0.5611778114547272,
+      "confirmatory": true,
+      "p_bonferroni": 1.0,
+      "q_bh_fdr": 0.9953592254119481,
+      "verdict": "CONSISTENT_WITH_UNIFORM"
+    },
+    {
+      "test_id": "daily_539_pattern_pair_cooccurrence_gini",
+      "game": "daily_539",
+      "hypothesis": "Pattern 'pair_cooccurrence_gini' consistent with random",
+      "statistic": -1.424461454891879,
+      "p_raw": 0.1543129353646258,
+      "confirmatory": true,
+      "p_bonferroni": 1.0,
+      "q_bh_fdr": 0.9953592254119481,
+      "verdict": "CONSISTENT_WITH_UNIFORM"
+    },
+    {
+      "test_id": "daily_539_pattern_gap_distribution",
+      "game": "daily_539",
+      "hypothesis": "Pattern 'gap_distribution' consistent with random",
+      "statistic": 0.7895010851318702,
+      "p_raw": 0.42981919579773864,
+      "confirmatory": true,
+      "p_bonferroni": 1.0,
+      "q_bh_fdr": 0.9953592254119481,
+      "verdict": "CONSISTENT_WITH_UNIFORM"
+    },
+    {
+      "test_id": "daily_539_ljungbox_sum",
+      "game": "daily_539",
+      "hypothesis": "Draw sums are serially independent (Ljung-Box)",
+      "statistic": 10.274962046296757,
+      "p_raw": 0.962907648870301,
+      "confirmatory": true,
+      "p_bonferroni": 1.0,
+      "q_bh_fdr": 0.9953592254119481,
+      "verdict": "CONSISTENT_WITH_UNIFORM"
+    },
+    {
+      "test_id": "daily_539_runs_odd",
+      "game": "daily_539",
+      "hypothesis": "Odd-heavy draws are random sequence (runs test)",
+      "statistic": -0.005816381194110865,
+      "p_raw": 0.9953592254119481,
+      "confirmatory": true,
+      "p_bonferroni": 1.0,
+      "q_bh_fdr": 0.9953592254119481,
+      "verdict": "CONSISTENT_WITH_UNIFORM"
+    },
+    {
+      "test_id": "daily_539_runs_repeat",
+      "game": "daily_539",
+      "hypothesis": "Repeat-overlap draws are random sequence (runs test)",
+      "statistic": 0.42158397015215493,
+      "p_raw": 0.673328708653108,
+      "confirmatory": true,
+      "p_bonferroni": 1.0,
+      "q_bh_fdr": 0.9953592254119481,
+      "verdict": "CONSISTENT_WITH_UNIFORM"
+    },
+    {
+      "test_id": "daily_539_drift_halves",
+      "game": "daily_539",
+      "hypothesis": "Frequency distribution stable across first/second half",
+      "statistic": 34.75395900092429,
+      "p_raw": 0.6203454533544285,
+      "confirmatory": true,
+      "p_bonferroni": 1.0,
+      "q_bh_fdr": 0.9953592254119481,
+      "verdict": "CONSISTENT_WITH_UNIFORM"
+    }
+  ],
+  "multiple_testing": {
+    "total_tests": 44,
+    "alpha": 0.05,
+    "bonferroni_threshold": 0.0011363636363636365,
+    "methods": [
+      "bonferroni",
+      "bh_fdr"
+    ]
+  },
+  "final_verdict": "WEAK_DEVIATIONS_NOT_SIGNIFICANT_AFTER_CORRECTION",
+  "strategy_implication": "NO_EXPLOITABLE_EDGE_FROM_DRAW_PROCESS"
+}

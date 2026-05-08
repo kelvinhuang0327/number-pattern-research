@@ -40,3 +40,7 @@ wheels/
 # Temporary files
 *.tmp
 *.bak
+
+# SQLite write-ahead log journal files (runtime artifacts, never commit)
+*.db-shm
+*.db-wal

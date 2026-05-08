@@ -1,0 +1,57 @@
+{
+  "fixture_path_example": "/private/tmp/lottery_replay_test_fixture.db",
+  "fixture_sha256_example": "2cd24bfac4a14d35b1d7aaa500aabe1a71903d46cbe45b5f243fe2bfc1766ed5",
+  "tables": [
+    {
+      "name": "strategy_replay_runs",
+      "row_count": 4,
+      "columns": [
+        "id",
+        "lottery_type",
+        "strategy_scope",
+        "started_at",
+        "finished_at",
+        "status",
+        "generator_version",
+        "data_hash",
+        "notes",
+        "created_at"
+      ]
+    },
+    {
+      "name": "strategy_prediction_replays",
+      "row_count": 3,
+      "columns": [
+        "id",
+        "lottery_type",
+        "target_draw",
+        "target_date",
+        "strategy_id",
+        "strategy_name",
+        "strategy_version",
+        "history_cutoff_draw",
+        "replay_status",
+        "reject_reason",
+        "predicted_numbers",
+        "predicted_special",
+        "actual_numbers",
+        "actual_special",
+        "hit_numbers",
+        "hit_count",
+        "special_hit",
+        "replay_run_id",
+        "generated_at"
+      ]
+    }
+  ],
+  "tests_supported": [
+    "tests/test_strategy_replay_history_cutoff_integrity.py::TestReplayHistoryCutoffIntegrity",
+    "tests/test_replay_freshness_cadence.py::TestFreshnessCadence",
+    "tests/test_replay_api_contract.py::{TestFreshnessContract,TestSummaryContract,TestHistoryContract}"
+  ],
+  "notes": [
+    "Synthetic fixture only; no production DB data.",
+    "No strategy performance claim semantics.",
+    "No active strategy state."
+  ]
+}

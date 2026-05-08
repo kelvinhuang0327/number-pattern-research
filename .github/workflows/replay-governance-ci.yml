@@ -39,7 +39,8 @@ jobs:
     if: github.event_name == 'workflow_dispatch'
     runs-on: ubuntu-latest
     env:
-      LOTTERY_TEST_DB_PATH: ${{ github.event.inputs.db_path }}
+      LOTTERY_REPLAY_DB_PATH: /tmp/lottery_replay_test_fixture.db
+      LOTTERY_TEST_DB_PATH: /tmp/lottery_replay_test_fixture.db
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -54,12 +55,23 @@ jobs:
           python -m pip install --upgrade pip
           python -m pip install pytest fastapi "pydantic>=2,<3" python-multipart
 
-      - name: Log dedicated DB fixture path input
+      - name: Build synthetic replay DB fixture
         run: |
-          if [ -z "${LOTTERY_TEST_DB_PATH}" ]; then
-            echo "LOTTERY_TEST_DB_PATH is empty; dedicated lane is expected to fail until fixture path is provided."
+          FIXTURE_PATH="/tmp/lottery_replay_test_fixture.db"
+          if [ -n "${{ github.event.inputs.db_path }}" ]; then
+            FIXTURE_PATH="${{ github.event.inputs.db_path }}"
+          fi
+          python scripts/build_replay_test_fixture.py --output "${FIXTURE_PATH}"
+          echo "LOTTERY_REPLAY_DB_PATH=${FIXTURE_PATH}" >> "${GITHUB_ENV}"
+          echo "LOTTERY_TEST_DB_PATH=${FIXTURE_PATH}" >> "${GITHUB_ENV}"
+          echo "fixture_path=${FIXTURE_PATH}" >> "${GITHUB_OUTPUT}"
+
+      - name: Log dedicated DB fixture path
+        run: |
+          if [ -z "${LOTTERY_REPLAY_DB_PATH}" ]; then
+            echo "LOTTERY_REPLAY_DB_PATH is empty; dedicated lane should fail fast."
           else
-            echo "LOTTERY_TEST_DB_PATH=${LOTTERY_TEST_DB_PATH}"
+            echo "LOTTERY_REPLAY_DB_PATH=${LOTTERY_REPLAY_DB_PATH}"
           fi
 
       - name: Run dedicated replay DB validation lane

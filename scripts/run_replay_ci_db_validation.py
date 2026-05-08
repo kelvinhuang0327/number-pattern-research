@@ -28,6 +28,9 @@ TEST_ARGS = [
 def _resolve_db_path(arg_db_path: str | None) -> Path:
     if arg_db_path:
         return Path(arg_db_path).expanduser().resolve()
+    replay_env_path = os.environ.get("LOTTERY_REPLAY_DB_PATH")
+    if replay_env_path:
+        return Path(replay_env_path).expanduser().resolve()
     env_path = os.environ.get("LOTTERY_TEST_DB_PATH")
     if env_path:
         return Path(env_path).expanduser().resolve()
@@ -42,7 +45,8 @@ def main() -> int:
         "--db-path",
         help=(
             "Path to replay SQLite DB fixture. "
-            "If omitted, uses LOTTERY_TEST_DB_PATH then default project DB path."
+            "If omitted, uses LOTTERY_REPLAY_DB_PATH, then LOTTERY_TEST_DB_PATH, "
+            "then default project DB path."
         ),
     )
     args = parser.parse_args()
@@ -60,20 +64,33 @@ def main() -> int:
         )
         return 2
 
+    default_db_path = DEFAULT_DB_PATH
+    created_symlink = False
+    if db_path != default_db_path and not default_db_path.exists():
+        default_db_path.parent.mkdir(parents=True, exist_ok=True)
+        default_db_path.symlink_to(db_path)
+        created_symlink = True
+
     env = os.environ.copy()
     env["LOTTERY_TEST_DB_PATH"] = str(db_path)
+    env["LOTTERY_REPLAY_DB_PATH"] = str(db_path)
     cmd = [sys.executable, "-m", "pytest", *TEST_ARGS, "-m", "requires_db", "-q", "-rA"]
     print("[replay-ci-db] Running:")
     print(" ", " ".join(cmd))
     print("[replay-ci-db] LOTTERY_TEST_DB_PATH=", env["LOTTERY_TEST_DB_PATH"])
 
-    completed = subprocess.run(
-        cmd,
-        cwd=REPO_ROOT,
-        env=env,
-        text=True,
-        capture_output=True,
-    )
+    try:
+        completed = subprocess.run(
+            cmd,
+            cwd=REPO_ROOT,
+            env=env,
+            text=True,
+            capture_output=True,
+        )
+    finally:
+        if created_symlink and default_db_path.is_symlink():
+            default_db_path.unlink()
+
     if completed.stdout:
         print(completed.stdout, end="")
     if completed.stderr:

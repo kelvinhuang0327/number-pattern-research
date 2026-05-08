@@ -1,0 +1,143 @@
+{
+  "report_date": "2026-05-08",
+  "workspace": "/Users/kelvin/Kelvin-WorkSpace/LotteryNew-main-postmerge",
+  "db_path_resolution": {
+    "test_local_constant_paths": [
+      "tests/test_strategy_replay_history_cutoff_integrity.py -> lottery_api/data/lottery_v2.db",
+      "tests/test_replay_freshness_cadence.py -> lottery_api/data/lottery_v2.db",
+      "tests/test_replay_api_contract.py -> lottery_api/data/lottery_v2.db (via routes/replay.py)"
+    ],
+    "guard_override": "LOTTERY_TEST_DB_PATH",
+    "workflow_dispatch_input": "db_path"
+  },
+  "requires_db_classes": [
+    {
+      "test_file": "tests/test_strategy_replay_history_cutoff_integrity.py",
+      "class_name": "TestReplayHistoryCutoffIntegrity",
+      "test_count": 3,
+      "direct_db_access": true,
+      "sqlite_mode": "read_only_uri",
+      "queries_tables": [
+        "strategy_prediction_replays",
+        "strategy_replay_runs"
+      ],
+      "required_columns": [
+        "strategy_prediction_replays.id",
+        "strategy_prediction_replays.lottery_type",
+        "strategy_prediction_replays.target_draw",
+        "strategy_prediction_replays.replay_status",
+        "strategy_prediction_replays.replay_run_id",
+        "strategy_prediction_replays.history_cutoff_draw",
+        "strategy_prediction_replays.predicted_numbers",
+        "strategy_prediction_replays.actual_numbers",
+        "strategy_prediction_replays.hit_numbers",
+        "strategy_replay_runs.id",
+        "strategy_replay_runs.status",
+        "strategy_replay_runs.notes"
+      ],
+      "needs_real_historical_data": false,
+      "minimal_fixture_feasible": true,
+      "replay_generation_risk": "none (read-only assertions)"
+    },
+    {
+      "test_file": "tests/test_replay_freshness_cadence.py",
+      "class_name": "TestFreshnessCadence",
+      "test_count": 4,
+      "direct_db_access": true,
+      "sqlite_mode": "default read-write open, read-only query usage",
+      "queries_tables": [
+        "strategy_replay_runs"
+      ],
+      "required_columns": [
+        "strategy_replay_runs.id",
+        "strategy_replay_runs.lottery_type",
+        "strategy_replay_runs.status",
+        "strategy_replay_runs.started_at",
+        "strategy_replay_runs.finished_at"
+      ],
+      "required_status_domain": [
+        "DONE",
+        "FAILED_LEGACY"
+      ],
+      "lottery_types_required": [
+        "BIG_LOTTO",
+        "POWER_LOTTO",
+        "DAILY_539"
+      ],
+      "needs_real_historical_data": false,
+      "minimal_fixture_feasible": true,
+      "replay_generation_risk": "none (read-only cadence checks)"
+    },
+    {
+      "test_file": "tests/test_replay_api_contract.py",
+      "class_name": "TestFreshnessContract",
+      "test_count": 10,
+      "direct_db_access": "indirect via lottery_api/routes/replay.py",
+      "queries_tables": [
+        "strategy_replay_runs",
+        "strategy_prediction_replays"
+      ],
+      "required_output_shape_focus": [
+        "freshness object fields",
+        "legacy error fields",
+        "coverage mode fields"
+      ],
+      "needs_real_historical_data": false,
+      "minimal_fixture_feasible": true,
+      "replay_generation_risk": "none (read-only route calls)"
+    },
+    {
+      "test_file": "tests/test_replay_api_contract.py",
+      "class_name": "TestSummaryContract",
+      "test_count": 7,
+      "direct_db_access": "indirect via lottery_api/routes/replay.py",
+      "queries_tables": [
+        "strategy_prediction_replays",
+        "strategy_replay_runs"
+      ],
+      "required_output_shape_focus": [
+        "summary.data_scope=ALL_REPLAY_ROWS",
+        "per-strategy error_count visibility",
+        "disclaimer present"
+      ],
+      "needs_real_historical_data": false,
+      "minimal_fixture_feasible": true,
+      "replay_generation_risk": "none (read-only route calls)"
+    },
+    {
+      "test_file": "tests/test_replay_api_contract.py",
+      "class_name": "TestHistoryContract",
+      "test_count": 8,
+      "direct_db_access": "indirect via lottery_api/routes/replay.py",
+      "queries_tables": [
+        "strategy_prediction_replays",
+        "strategy_replay_runs"
+      ],
+      "required_output_shape_focus": [
+        "records key present (not rows)",
+        "history_cutoff present in each record",
+        "pagination fields"
+      ],
+      "needs_real_historical_data": false,
+      "minimal_fixture_feasible": true,
+      "replay_generation_risk": "none (read-only route calls)"
+    }
+  ],
+  "non_requires_db_control_tests": [
+    {
+      "test_file": "tests/test_replay_freshness_cadence.py",
+      "class_name": "TestCadencePolicyLogic",
+      "test_count": 4,
+      "db_required": false
+    },
+    {
+      "test_file": "tests/test_replay_browser_smoke.py",
+      "db_required": false
+    },
+    {
+      "test_file": "tests/test_randomness_audit_cadence.py",
+      "db_required": false
+    }
+  ],
+  "schema_reference_source": "lottery_api/database.py (strategy_replay_runs + strategy_prediction_replays CREATE TABLE definitions)"
+}

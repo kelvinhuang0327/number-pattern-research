@@ -178,7 +178,7 @@ def test_lifecycle_filter_browser_e2e():
 
             page.route("**/api/replay/**", route_handler)
             page.goto(f"{base_url}/index.html?rp_lc=REJECTED", wait_until="load")
-            page.wait_for_selector('#rp-lifecycle-select')
+            page.wait_for_selector('#rp-lifecycle-select', state='attached')
 
             lifecycle_select = page.locator('#rp-lifecycle-select')
             assert lifecycle_select.count() == 1

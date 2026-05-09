@@ -2841,7 +2841,21 @@
 
       const records = data.records || [];
       if (!records.length) {
-        tbody.innerHTML = '<tr><td colspan="11" style="text-align:center;color:#888">查無資料</td></tr>';
+        // P0-A: Honest empty-state by lifecycle bucket (from PR #10 spec)
+        const lcFilter = (data.filter_lifecycle_status || lc || '').toUpperCase();
+        let emptyMsg;
+        if (lcFilter === 'OFFLINE') {
+          emptyMsg = '查無可信 OFFLINE 條目｜此欄位依目前可信來源為空';
+        } else if (lcFilter === 'RETIRED') {
+          emptyMsg = '查無可信 RETIRED 條目｜此欄位依目前可信來源為空';
+        } else if (lcFilter === 'OBSERVATION') {
+          emptyMsg = '目前僅有 WATCH / PROVISIONAL 候選，尚未形成 canonical OBSERVATION rows';
+        } else if (lcFilter === 'REJECTED') {
+          emptyMsg = '僅有候選證據，尚未升格為 canonical lifecycle row';
+        } else {
+          emptyMsg = '查無資料';
+        }
+        tbody.innerHTML = `<tr><td colspan="11" style="text-align:center;color:#888;padding:16px 8px">${emptyMsg}</td></tr>`;
         return;
       }
       tbody.innerHTML = records.map(r => {

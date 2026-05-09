@@ -96,6 +96,8 @@ async def list_replay_strategies(
             "filter_lifecycle_status": lifecycle_status,
             # backward-compat alias
             "filter":                  lottery_type,
+            # P0-B: always present so callers can assert scope
+            "data_scope":              "ALL_REPLAY_ROWS",
         }
     except Exception as e:
         logger.exception("list_replay_strategies failed")
@@ -171,6 +173,7 @@ async def get_replay_history(
             if lifecycle_strategy_ids is not None:
                 if not lifecycle_strategy_ids:
                     # No strategies match; return empty result set
+                    # P0-B: include disclaimer and data_scope even on empty payload
                     return {
                         "total":                   0,
                         "page":                    page,
@@ -178,6 +181,8 @@ async def get_replay_history(
                         "pages":                   1,
                         "filter_lifecycle_status": _lc_filter,
                         "records":                 [],
+                        "disclaimer":              _DISCLAIMER,
+                        "data_scope":              "ALL_REPLAY_ROWS",
                     }
                 placeholders = ",".join("?" * len(lifecycle_strategy_ids))
                 where_parts.append(f"strategy_id IN ({placeholders})")

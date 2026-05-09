@@ -61,19 +61,41 @@ def _open_conn():
 # ─── Strategy listing ─────────────────────────────────────────────────────────
 
 @router.get("/api/replay/strategies")
-async def list_replay_strategies(lottery_type: Optional[str] = Query(None)):
+async def list_replay_strategies(
+    lottery_type:     Optional[str] = Query(None),
+    lifecycle_status: Optional[str] = Query(
+        None,
+        description=(
+            "Filter by lifecycle status: "
+            "ONLINE | OFFLINE | REJECTED | OBSERVATION | RETIRED. "
+            "If omitted, ALL lifecycle states are returned."
+        ),
+    ),
+):
     """
-    Lists all registered replay strategies.
-    Optionally filter by lottery_type (POWER_LOTTO | BIG_LOTTO | DAILY_539).
+    Lists ALL registered replay strategies across all lifecycle states (P0-A).
+
+    Optional filters:
+      lottery_type     — POWER_LOTTO | BIG_LOTTO | DAILY_539
+      lifecycle_status — ONLINE | OFFLINE | REJECTED | OBSERVATION | RETIRED
+
+    Each entry includes 'strategy_lifecycle_status'.
+    READ-ONLY. Does NOT trigger replay generation.
     """
     try:
         sys.path.insert(0, os.path.join(_api_root, "models"))
         from models.replay_strategy_registry import list_strategies
-        strategies = list_strategies(lottery_type)
+        strategies = list_strategies(
+            lottery_type=lottery_type,
+            lifecycle_status=lifecycle_status,
+        )
         return {
-            "strategies": strategies,
-            "count":      len(strategies),
-            "filter":     lottery_type,
+            "strategies":              strategies,
+            "count":                   len(strategies),
+            "filter_lottery_type":     lottery_type,
+            "filter_lifecycle_status": lifecycle_status,
+            # backward-compat alias
+            "filter":                  lottery_type,
         }
     except Exception as e:
         logger.exception("list_replay_strategies failed")
@@ -84,24 +106,56 @@ async def list_replay_strategies(lottery_type: Optional[str] = Query(None)):
 
 @router.get("/api/replay/history")
 async def get_replay_history(
-    lottery_type: str       = Query(..., description="POWER_LOTTO | BIG_LOTTO | DAILY_539"),
-    strategy_id:  Optional[str] = Query(None),
-    replay_status: Optional[str] = Query(None),
-    date_from:    Optional[str] = Query(None),
-    date_to:      Optional[str] = Query(None),
-    page:         int       = Query(1, ge=1),
-    page_size:    int       = Query(50, ge=1, le=200),
+    lottery_type:     str            = Query(..., description="POWER_LOTTO | BIG_LOTTO | DAILY_539"),
+    strategy_id:      Optional[str]  = Query(None),
+    replay_status:    Optional[str]  = Query(None),
+    lifecycle_status: Optional[str]  = Query(
+        None,
+        description=(
+            "Filter by strategy lifecycle status: "
+            "ONLINE | OFFLINE | REJECTED | OBSERVATION | RETIRED. "
+            "If omitted, all lifecycle states are included."
+        ),
+    ),
+    date_from:        Optional[str]  = Query(None),
+    date_to:          Optional[str]  = Query(None),
+    page:             int            = Query(1, ge=1),
+    page_size:        int            = Query(50, ge=1, le=200),
 ):
     """
     Paginated query of historical replay records for a given lottery type.
 
     Optional filters:
-      - strategy_id    — e.g. "power_precision_3bet"
-      - replay_status  — PREDICTED | REJECTED | INSUFFICIENT_HISTORY | …
-      - date_from      — target_date >= date_from (YYYY-MM-DD)
-      - date_to        — target_date <= date_to   (YYYY-MM-DD)
+      - strategy_id      — e.g. "power_precision_3bet"
+      - replay_status    — PREDICTED | REJECTED | INSUFFICIENT_HISTORY | …
+      - lifecycle_status — ONLINE | OFFLINE | REJECTED | OBSERVATION | RETIRED (P0-C)
+      - date_from        — target_date >= date_from (YYYY-MM-DD)
+      - date_to          — target_date <= date_to   (YYYY-MM-DD)
+
+    Each record includes 'strategy_lifecycle_status' (P0-C).
+    READ-ONLY. Does NOT trigger replay generation.
     """
     try:
+        # Resolve lifecycle_status filter → strategy_id set (P0-C)
+        # Guard: when called directly (not via FastAPI routing), default Query()
+        # objects may arrive here instead of None — normalise to None.
+        _lc_filter: Optional[str] = lifecycle_status if isinstance(lifecycle_status, str) else None
+
+        lifecycle_strategy_ids: Optional[frozenset] = None
+        if _lc_filter:
+            sys.path.insert(0, os.path.join(_api_root, "models"))
+            from models.replay_strategy_registry import (
+                list_strategies as _ls,
+                normalise_lifecycle_status,
+            )
+            canonical_lc = normalise_lifecycle_status(_lc_filter.upper())
+            matched = _ls(lottery_type=lottery_type, lifecycle_status=canonical_lc)
+            lifecycle_strategy_ids = frozenset(s["strategy_id"] for s in matched)
+
+        # Build lifecycle lookup for response enrichment (strategy_id → lifecycle_status)
+        sys.path.insert(0, os.path.join(_api_root, "models"))
+        from models.replay_strategy_registry import get_strategy_lifecycle_status
+
         conn = _open_conn()
         try:
             where_parts = ["lottery_type = ?"]
@@ -113,6 +167,21 @@ async def get_replay_history(
             if replay_status:
                 where_parts.append("replay_status = ?")
                 params.append(replay_status)
+            # lifecycle_status filter applied via strategy_id IN (...) clause
+            if lifecycle_strategy_ids is not None:
+                if not lifecycle_strategy_ids:
+                    # No strategies match; return empty result set
+                    return {
+                        "total":                   0,
+                        "page":                    page,
+                        "page_size":               page_size,
+                        "pages":                   1,
+                        "filter_lifecycle_status": _lc_filter,
+                        "records":                 [],
+                    }
+                placeholders = ",".join("?" * len(lifecycle_strategy_ids))
+                where_parts.append(f"strategy_id IN ({placeholders})")
+                params.extend(sorted(lifecycle_strategy_ids))
             if date_from:
                 where_parts.append("target_date >= ?")
                 params.append(date_from)
@@ -152,33 +221,36 @@ async def get_replay_history(
             records = []
             for r in rows:
                 records.append({
-                    "id":                 r["id"],
-                    "lottery_type":       r["lottery_type"],
-                    "target_draw":        r["target_draw"],
-                    "target_date":        r["target_date"],
-                    "strategy_id":        r["strategy_id"],
-                    "strategy_name":      r["strategy_name"],
-                    "strategy_version":   r["strategy_version"],
-                    "history_cutoff":     r["history_cutoff_draw"],
-                    "replay_status":      r["replay_status"],
-                    "reject_reason":      r["reject_reason"],
-                    "predicted_numbers":  _parse_json(r["predicted_numbers"]),
-                    "predicted_special":  r["predicted_special"],
-                    "actual_numbers":     _parse_json(r["actual_numbers"]),
-                    "actual_special":     r["actual_special"],
-                    "hit_numbers":        _parse_json(r["hit_numbers"]),
-                    "hit_count":          r["hit_count"],
-                    "special_hit":        r["special_hit"],
-                    "replay_run_id":      r["replay_run_id"],
-                    "generated_at":       r["generated_at"],
+                    "id":                       r["id"],
+                    "lottery_type":             r["lottery_type"],
+                    "target_draw":              r["target_draw"],
+                    "target_date":              r["target_date"],
+                    "strategy_id":              r["strategy_id"],
+                    "strategy_name":            r["strategy_name"],
+                    "strategy_version":         r["strategy_version"],
+                    "history_cutoff":           r["history_cutoff_draw"],
+                    "replay_status":            r["replay_status"],
+                    "reject_reason":            r["reject_reason"],
+                    "predicted_numbers":        _parse_json(r["predicted_numbers"]),
+                    "predicted_special":        r["predicted_special"],
+                    "actual_numbers":           _parse_json(r["actual_numbers"]),
+                    "actual_special":           r["actual_special"],
+                    "hit_numbers":              _parse_json(r["hit_numbers"]),
+                    "hit_count":                r["hit_count"],
+                    "special_hit":              r["special_hit"],
+                    "replay_run_id":            r["replay_run_id"],
+                    "generated_at":             r["generated_at"],
+                    # P0-C: strategy lifecycle status from registry (read-only)
+                    "strategy_lifecycle_status": get_strategy_lifecycle_status(r["strategy_id"]),
                 })
 
             return {
-                "total":     total,
-                "page":      page,
-                "page_size": page_size,
-                "pages":     max(1, (total + page_size - 1) // page_size),
-                "records":   records,
+                "total":                   total,
+                "page":                    page,
+                "page_size":               page_size,
+                "pages":                   max(1, (total + page_size - 1) // page_size),
+                "filter_lifecycle_status": _lc_filter,
+                "records":                 records,
             }
         finally:
             conn.close()

@@ -18,9 +18,16 @@ HARD RULES:
   - BIG_LOTTO bets must have exactly 6 main numbers.
   - DAILY_539 bets must have exactly 5 main numbers.
 
-STATUS values:
-  ACTIVE   — registered and used in replay generation
-  RETIRED  — no longer generated; old rows preserved in DB
+LIFECYCLE_STATUS values (P0-A expanded enum):
+  ONLINE      — deployed and active in replay generation (replaces ACTIVE)
+  OFFLINE     — previously deployed, now suspended; old rows preserved in DB
+  REJECTED    — evaluated and rejected during governance review
+  OBSERVATION — under shadow evaluation / observation period
+  RETIRED     — formally retired after lifecycle; old rows preserved in DB
+
+Backward compatibility:
+  ACTIVE is still accepted as an alias for ONLINE in code that uses the old enum.
+  Canonical output always normalises ACTIVE → ONLINE.
 """
 from __future__ import annotations
 
@@ -34,6 +41,25 @@ PROJECT_ROOT = Path(__file__).parent.parent.parent
 sys.path.insert(0, str(PROJECT_ROOT))
 
 logger = logging.getLogger(__name__)
+
+# ─── Lifecycle Status SSOT ────────────────────────────────────────────────────
+
+# Canonical lifecycle status values (P0-A)
+LIFECYCLE_STATUSES = ("ONLINE", "OFFLINE", "REJECTED", "OBSERVATION", "RETIRED")
+
+# Legacy alias mapping — ACTIVE is normalised to ONLINE in all outputs
+_LEGACY_STATUS_MAP: dict[str, str] = {
+    "ACTIVE": "ONLINE",
+}
+
+
+def normalise_lifecycle_status(status: str) -> str:
+    """Normalise legacy status aliases to canonical lifecycle values."""
+    return _LEGACY_STATUS_MAP.get(status, status)
+
+
+# Statuses that are included in replay generation (active-equivalent)
+_GENERATION_STATUSES = frozenset({"ONLINE", "ACTIVE"})
 
 # ─── Custom Exceptions ────────────────────────────────────────────────────────
 
@@ -62,17 +88,20 @@ class InsufficientHistory(Exception):
 
 class _StrategyMeta:
     __slots__ = ("strategy_id", "strategy_name", "strategy_version",
-                 "supported_lottery_types", "min_history", "status")
+                 "supported_lottery_types", "min_history", "status",
+                 "lifecycle_status")
 
     def __init__(self, strategy_id: str, strategy_name: str,
                  strategy_version: str, supported_lottery_types: List[str],
-                 min_history: int = 100, status: str = "ACTIVE"):
+                 min_history: int = 100, status: str = "ONLINE"):
         self.strategy_id            = strategy_id
         self.strategy_name          = strategy_name
         self.strategy_version       = strategy_version
         self.supported_lottery_types = supported_lottery_types
         self.min_history            = min_history
-        self.status                 = status
+        # Normalise legacy ACTIVE → ONLINE
+        self.status                 = normalise_lifecycle_status(status)
+        self.lifecycle_status       = self.status  # canonical alias
 
 
 # ─── Number validation helpers ────────────────────────────────────────────────
@@ -185,7 +214,7 @@ class _PowerPrecision3BetAdapter(ReplayStrategyAdapter):
         strategy_version="v0.1",
         supported_lottery_types=["POWER_LOTTO"],
         min_history=100,
-        status="ACTIVE",
+        status="ONLINE",
     )
 
     def _call_strategy(self, history, lottery_type):
@@ -204,7 +233,7 @@ class _PowerOrthogonal5BetAdapter(ReplayStrategyAdapter):
         strategy_version="v0.1",
         supported_lottery_types=["POWER_LOTTO"],
         min_history=100,
-        status="ACTIVE",
+        status="ONLINE",
     )
 
     def _call_strategy(self, history, lottery_type):
@@ -225,7 +254,7 @@ class _BigLottoTripleStrikeAdapter(ReplayStrategyAdapter):
         strategy_version="v0.1",
         supported_lottery_types=["BIG_LOTTO"],
         min_history=100,
-        status="ACTIVE",
+        status="ONLINE",
     )
 
     def _call_strategy(self, history, lottery_type):
@@ -244,7 +273,7 @@ class _BigLottoDeviation2BetAdapter(ReplayStrategyAdapter):
         strategy_version="v0.1",
         supported_lottery_types=["BIG_LOTTO"],
         min_history=100,
-        status="ACTIVE",
+        status="ONLINE",
     )
 
     def _call_strategy(self, history, lottery_type):
@@ -265,7 +294,7 @@ class _Daily539F4ColdAdapter(ReplayStrategyAdapter):
         strategy_version="v0.1",
         supported_lottery_types=["DAILY_539"],
         min_history=100,
-        status="ACTIVE",
+        status="ONLINE",
     )
 
     def _call_strategy(self, history, lottery_type):
@@ -284,7 +313,7 @@ class _Daily539MarkovColdAdapter(ReplayStrategyAdapter):
         strategy_version="v0.1",
         supported_lottery_types=["DAILY_539"],
         min_history=100,
-        status="ACTIVE",
+        status="ONLINE",
     )
 
     def _call_strategy(self, history, lottery_type):
@@ -307,34 +336,63 @@ _ALL_ADAPTERS: List[ReplayStrategyAdapter] = [
     _Daily539MarkovColdAdapter(),
 ]
 
-# strategy_id -> adapter (ACTIVE only)
+# strategy_id -> adapter (generation-eligible: ONLINE / ACTIVE)
 _REGISTRY: dict[str, ReplayStrategyAdapter] = {
     a.meta.strategy_id: a
     for a in _ALL_ADAPTERS
-    if a.meta.status == "ACTIVE"
+    if a.meta.status in _GENERATION_STATUSES
 }
 
 
-def list_strategies(lottery_type: Optional[str] = None) -> List[dict]:
+def list_strategies(
+    lottery_type: Optional[str] = None,
+    lifecycle_status: Optional[str] = None,
+) -> List[dict]:
     """
-    Returns a list of registered strategy metadata dicts.
-    Optionally filtered by lottery_type.
+    Returns a list of ALL registered strategy metadata dicts (P0-A: all lifecycle states).
+
+    Optional filters:
+      lottery_type     — restrict to strategies that support this lottery type
+      lifecycle_status — restrict to strategies with this lifecycle status
+                         (ONLINE | OFFLINE | REJECTED | OBSERVATION | RETIRED)
+                         If None, ALL lifecycle states are returned.
+
+    Each entry includes 'strategy_lifecycle_status' (canonical normalised value).
     """
+    # Normalise requested filter value (accept legacy ACTIVE as ONLINE)
+    canonical_filter: Optional[str] = None
+    if lifecycle_status:
+        canonical_filter = normalise_lifecycle_status(lifecycle_status.upper())
+
     out = []
     for a in _ALL_ADAPTERS:
-        if a.meta.status != "ACTIVE":
+        # Lifecycle filter (if specified)
+        if canonical_filter and a.meta.lifecycle_status != canonical_filter:
             continue
+        # Lottery type filter
         if lottery_type and lottery_type not in a.meta.supported_lottery_types:
             continue
         out.append({
-            "strategy_id":             a.meta.strategy_id,
-            "strategy_name":           a.meta.strategy_name,
-            "strategy_version":        a.meta.strategy_version,
-            "supported_lottery_types": a.meta.supported_lottery_types,
-            "min_history":             a.meta.min_history,
-            "status":                  a.meta.status,
+            "strategy_id":              a.meta.strategy_id,
+            "strategy_name":            a.meta.strategy_name,
+            "strategy_version":         a.meta.strategy_version,
+            "supported_lottery_types":  a.meta.supported_lottery_types,
+            "min_history":              a.meta.min_history,
+            "status":                   a.meta.status,           # canonical
+            "strategy_lifecycle_status": a.meta.lifecycle_status, # explicit alias
         })
     return out
+
+
+def get_strategy_lifecycle_status(strategy_id: str) -> Optional[str]:
+    """
+    Returns the canonical lifecycle_status for a strategy_id, or None if unknown.
+    Searches ALL adapters (not just the generation-eligible registry).
+    """
+    for a in _ALL_ADAPTERS:
+        if a.meta.strategy_id == strategy_id:
+            return a.meta.lifecycle_status
+    return None
 
 
 def get_adapter(strategy_id: str) -> ReplayStrategyAdapter:
@@ -346,9 +404,9 @@ def get_adapter(strategy_id: str) -> ReplayStrategyAdapter:
 
 
 def get_adapters_for_lottery(lottery_type: str) -> List[ReplayStrategyAdapter]:
-    """Returns all ACTIVE adapters that support `lottery_type`."""
+    """Returns all generation-eligible (ONLINE) adapters that support `lottery_type`."""
     return [
         a for a in _ALL_ADAPTERS
-        if a.meta.status == "ACTIVE"
+        if a.meta.status in _GENERATION_STATUSES
         and lottery_type in a.meta.supported_lottery_types
     ]

@@ -1,16 +1,32 @@
 {
-  "db_path": "/Users/kelvin/Kelvin-WorkSpace/LotteryNew-main-postmerge/lottery_api/data/lottery_v2.db",
-  "generated_at": "2026-05-09T09:25:19.720729+00:00",
+  "db_path": "/tmp/lottery_replay_test_fixture.db",
+  "generated_at": "2026-05-09T09:30:27.052441+00:00",
   "missing_lifecycle_status_strategy_ids": [],
-  "reason": "Replay DB not found",
-  "registry_by_lifecycle": {},
-  "registry_strategy_ids": [],
+  "registry_by_lifecycle": {
+    "ONLINE": 6
+  },
+  "registry_strategy_ids": [
+    "biglotto_deviation_2bet",
+    "biglotto_triple_strike",
+    "daily539_f4cold",
+    "daily539_markov_cold",
+    "power_orthogonal_5bet",
+    "power_precision_3bet"
+  ],
   "registry_total_strategies": 6,
-  "replay_row_count": 0,
+  "replay_row_count": 3,
   "replay_rows_by_lifecycle": {},
-  "replay_rows_by_strategy": {},
-  "status": "SKIPPED_ENV_UNAVAILABLE",
+  "replay_rows_by_strategy": {
+    "synthetic_539_A": 1,
+    "synthetic_big_A": 1,
+    "synthetic_power_A": 1
+  },
+  "status": "BLOCKED",
   "traceable_row_count": 0,
   "traceable_strategy_ids": [],
-  "unknown_strategy_ids": []
+  "unknown_strategy_ids": [
+    "synthetic_539_A",
+    "synthetic_big_A",
+    "synthetic_power_A"
+  ]
 }

@@ -1,0 +1,20 @@
+{
+  "source_branch": "codex/p1-6g-branch-protection-execution",
+  "target_branch": "main",
+  "pr_number": 2,
+  "pr_url": "https://github.com/kelvinhuang0327/number-pattern-research/pull/2",
+  "required_check": {
+    "name": "replay-default-validation",
+    "result": "SUCCESS"
+  },
+  "observation_checks": [
+    {
+      "name": "replay-dedicated-db-validation",
+      "required": false,
+      "result": "SKIPPED"
+    }
+  ],
+  "merge_status": "BLOCKED_REVIEW_REQUIRED",
+  "main_verification_status": "P1_6G_ARTIFACTS_PRESENT_ON_MAIN",
+  "final_marker": "P1_6G_PR_MANUAL_ACTION_REQUIRED"
+}

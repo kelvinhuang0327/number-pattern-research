@@ -1,0 +1,16 @@
+{
+  "db_path": "/Users/kelvin/Kelvin-WorkSpace/LotteryNew-main-postmerge/lottery_api/data/lottery_v2.db",
+  "generated_at": "2026-05-09T09:25:19.720729+00:00",
+  "missing_lifecycle_status_strategy_ids": [],
+  "reason": "Replay DB not found",
+  "registry_by_lifecycle": {},
+  "registry_strategy_ids": [],
+  "registry_total_strategies": 6,
+  "replay_row_count": 0,
+  "replay_rows_by_lifecycle": {},
+  "replay_rows_by_strategy": {},
+  "status": "SKIPPED_ENV_UNAVAILABLE",
+  "traceable_row_count": 0,
+  "traceable_strategy_ids": [],
+  "unknown_strategy_ids": []
+}

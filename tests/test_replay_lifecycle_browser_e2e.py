@@ -16,7 +16,10 @@ from pathlib import Path
 
 import pytest
 
-PLAYWRIGHT = pytest.importorskip("playwright.sync_api")
+PLAYWRIGHT = pytest.importorskip(
+    "playwright.sync_api",
+    reason="Playwright browser tooling unavailable",
+)
 from playwright.sync_api import sync_playwright  # type: ignore  # noqa: E402
 
 REPO_ROOT = Path(__file__).resolve().parent.parent

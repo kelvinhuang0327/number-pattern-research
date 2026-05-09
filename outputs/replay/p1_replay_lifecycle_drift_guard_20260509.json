@@ -1,6 +1,6 @@
 {
   "db_path": "/tmp/lottery_replay_test_fixture.db",
-  "generated_at": "2026-05-09T09:30:27.052441+00:00",
+  "generated_at": "2026-05-09T09:37:03.464986+00:00",
   "missing_lifecycle_status_strategy_ids": [],
   "registry_by_lifecycle": {
     "ONLINE": 6

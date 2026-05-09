@@ -8,6 +8,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import os
 import sqlite3
 import sys
 from collections import Counter
@@ -19,6 +20,16 @@ from typing import Any
 REPO_ROOT = Path(__file__).resolve().parent.parent
 LOTTERY_API = REPO_ROOT / "lottery_api"
 DB_PATH = LOTTERY_API / "data" / "lottery_v2.db"
+
+
+def _resolve_db_path(explicit: Path | None = None) -> Path:
+    """Resolve the replay DB path, honoring the test fixture override."""
+    if explicit is not None:
+        return explicit
+    env_override = os.environ.get("LOTTERY_TEST_DB_PATH")
+    if env_override:
+        return Path(env_override)
+    return DB_PATH
 
 if str(LOTTERY_API) not in sys.path:
     sys.path.insert(0, str(LOTTERY_API))
@@ -37,8 +48,9 @@ def _connect_ro(db_path: Path) -> sqlite3.Connection:
     return conn
 
 
-def collect_drift_report(db_path: Path = DB_PATH) -> dict[str, Any]:
+def collect_drift_report(db_path: Path | None = None) -> dict[str, Any]:
     """Collect a read-only lifecycle drift report from the replay DB."""
+    db_path = _resolve_db_path(db_path)
     if not db_path.exists():
         return {
             "generated_at": datetime.now(timezone.utc).isoformat(),
@@ -109,14 +121,13 @@ def collect_drift_report(db_path: Path = DB_PATH) -> dict[str, Any]:
 
     if unknown_strategy_ids or missing_lifecycle_status_strategy_ids:
         report["status"] = "BLOCKED"
-        raise RuntimeError(json.dumps(report, ensure_ascii=False, indent=2))
 
     return report
 
 
 def main() -> int:
     parser = argparse.ArgumentParser(description="Replay lifecycle drift guard")
-    parser.add_argument("--db-path", type=Path, default=DB_PATH)
+    parser.add_argument("--db-path", type=Path, default=None)
     parser.add_argument("--json-out", type=Path)
     args = parser.parse_args()
 

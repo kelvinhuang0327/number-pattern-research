@@ -15,6 +15,10 @@ import sqlite3
 from pathlib import Path
 
 
+FIXTURE_MODE_MISMATCH = "mismatch"
+FIXTURE_MODE_ALIGNED = "aligned"
+
+
 def _build_schema(conn: sqlite3.Connection) -> None:
     cur = conn.cursor()
     cur.execute(
@@ -80,8 +84,9 @@ def _build_schema(conn: sqlite3.Connection) -> None:
     cur.execute("CREATE INDEX idx_spr_run ON strategy_prediction_replays(replay_run_id)")
 
 
-def _seed_data(conn: sqlite3.Connection) -> None:
+def _seed_data(conn: sqlite3.Connection, fixture_mode: str) -> None:
     cur = conn.cursor()
+    aligned = fixture_mode == FIXTURE_MODE_ALIGNED
     cur.execute(
         """
         INSERT INTO fixture_metadata
@@ -89,8 +94,8 @@ def _seed_data(conn: sqlite3.Connection) -> None:
         VALUES (?, ?, ?, ?, ?, ?)
         """,
         (
-            "replay_test_fixture",
-            "v1",
+            "replay_test_fixture_aligned" if aligned else "replay_test_fixture",
+            "v1-aligned" if aligned else "v1",
             "replay-schema-v1",
             "scripts/build_replay_test_fixture.py",
             1,
@@ -154,71 +159,138 @@ def _seed_data(conn: sqlite3.Connection) -> None:
         runs,
     )
 
-    replay_rows = [
-        (
-            2001,
-            "BIG_LOTTO",
-            "114000101",
-            "2026-05-01",
-            "synthetic_big_A",
-            "Synthetic Big Strategy A",
-            "fixture-v1",
-            "114000100",
-            "PREDICTED",
-            None,
-            "[1,2,3,4,5,6]",
-            None,
-            "[2,3,4,5,6,7]",
-            None,
-            "[2,3,4,5,6]",
-            5,
-            0,
-            1001,
-            "2026-05-07T08:01:00+00:00",
-        ),
-        (
-            2002,
-            "POWER_LOTTO",
-            "114000201",
-            "2026-05-02",
-            "synthetic_power_A",
-            "Synthetic Power Strategy A",
-            "fixture-v1",
-            "114000200",
-            "REPLAY_ERROR",
-            "synthetic error note",
-            "[8,9,10,11,12,13]",
-            5,
-            "[8,9,10,20,21,22]",
-            6,
-            "[8,9,10]",
-            3,
-            1,
-            1002,
-            "2026-05-07T09:01:00+00:00",
-        ),
-        (
-            2003,
-            "DAILY_539",
-            "114000301",
-            "2026-05-03",
-            "synthetic_539_A",
-            "Synthetic 539 Strategy A",
-            "fixture-v1",
-            "114000300",
-            "PREDICTED",
-            None,
-            "[1,11,21,31,39]",
-            None,
-            "[1,5,9,21,39]",
-            None,
-            "[1,21,39]",
-            3,
-            0,
-            1003,
-            "2026-05-07T10:01:00+00:00",
-        ),
-    ]
+    if aligned:
+        replay_rows = [
+            (
+                3001,
+                "BIG_LOTTO",
+                "114000401",
+                "2026-05-01",
+                "biglotto_triple_strike",
+                "大樂透 Triple Strike",
+                "fixture-v1-aligned",
+                "114000400",
+                "PREDICTED",
+                None,
+                "[1,2,3,4,5,6]",
+                None,
+                "[2,3,4,5,6,7]",
+                None,
+                "[2,3,4,5,6]",
+                5,
+                0,
+                1001,
+                "2026-05-07T08:01:00+00:00",
+            ),
+            (
+                3002,
+                "POWER_LOTTO",
+                "114000402",
+                "2026-05-02",
+                "power_precision_3bet",
+                "威力彩 Precision 3注",
+                "fixture-v1-aligned",
+                "114000401",
+                "PREDICTED",
+                None,
+                "[8,9,10,11,12,13]",
+                5,
+                "[8,9,10,20,21,22]",
+                6,
+                "[8,9,10]",
+                3,
+                1,
+                1002,
+                "2026-05-07T09:01:00+00:00",
+            ),
+            (
+                3003,
+                "DAILY_539",
+                "114000403",
+                "2026-05-03",
+                "daily539_f4cold",
+                "今彩539 F4 Cold",
+                "fixture-v1-aligned",
+                "114000402",
+                "PREDICTED",
+                None,
+                "[1,11,21,31,39]",
+                None,
+                "[1,5,9,21,39]",
+                None,
+                "[1,21,39]",
+                3,
+                0,
+                1003,
+                "2026-05-07T10:01:00+00:00",
+            ),
+        ]
+    else:
+        replay_rows = [
+            (
+                2001,
+                "BIG_LOTTO",
+                "114000101",
+                "2026-05-01",
+                "synthetic_big_A",
+                "Synthetic Big Strategy A",
+                "fixture-v1",
+                "114000100",
+                "PREDICTED",
+                None,
+                "[1,2,3,4,5,6]",
+                None,
+                "[2,3,4,5,6,7]",
+                None,
+                "[2,3,4,5,6]",
+                5,
+                0,
+                1001,
+                "2026-05-07T08:01:00+00:00",
+            ),
+            (
+                2002,
+                "POWER_LOTTO",
+                "114000201",
+                "2026-05-02",
+                "synthetic_power_A",
+                "Synthetic Power Strategy A",
+                "fixture-v1",
+                "114000200",
+                "REPLAY_ERROR",
+                "synthetic error note",
+                "[8,9,10,11,12,13]",
+                5,
+                "[8,9,10,20,21,22]",
+                6,
+                "[8,9,10]",
+                3,
+                1,
+                1002,
+                "2026-05-07T09:01:00+00:00",
+            ),
+            (
+                2003,
+                "DAILY_539",
+                "114000301",
+                "2026-05-03",
+                "synthetic_539_A",
+                "Synthetic 539 Strategy A",
+                "fixture-v1",
+                "114000300",
+                "PREDICTED",
+                None,
+                "[1,11,21,31,39]",
+                None,
+                "[1,5,9,21,39]",
+                None,
+                "[1,21,39]",
+                3,
+                0,
+                1003,
+                "2026-05-07T10:01:00+00:00",
+            ),
+        ]
     cur.executemany(
         """
         INSERT INTO strategy_prediction_replays
@@ -236,6 +308,12 @@ def main() -> int:
         description="Build deterministic synthetic replay DB fixture."
     )
     parser.add_argument(
+        "--fixture-mode",
+        choices=(FIXTURE_MODE_MISMATCH, FIXTURE_MODE_ALIGNED),
+        default=FIXTURE_MODE_MISMATCH,
+        help="Seed mismatch or registry-aligned synthetic replay rows.",
+    )
+    parser.add_argument(
         "--output",
         required=False,
         default="/tmp/lottery_replay_test_fixture.db",
@@ -251,7 +329,7 @@ def main() -> int:
     conn = sqlite3.connect(str(output))
     try:
         _build_schema(conn)
-        _seed_data(conn)
+        _seed_data(conn, args.fixture_mode)
         conn.commit()
         cur = conn.cursor()
         meta = cur.execute(
@@ -263,6 +341,7 @@ def main() -> int:
         conn.close()
 
     print(f"[replay-fixture] built: {output}")
+    print(f"[replay-fixture] mode={args.fixture_mode}")
     print(
         "[replay-fixture] metadata="
         f"name={meta[0]} version={meta[1]} schema={meta[2]} synthetic_only={meta[3]}"

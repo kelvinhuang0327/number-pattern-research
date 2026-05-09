@@ -155,7 +155,10 @@ def _history_payload(lifecycle_status: str = "REJECTED"):
 def test_lifecycle_filter_browser_e2e():
     with _serve_repo(REPO_ROOT) as base_url:
         with sync_playwright() as pw:
-            browser = pw.chromium.launch(headless=True)
+            try:
+                browser = pw.chromium.launch(headless=True)
+            except Exception as exc:  # pragma: no cover - depends on local browser tooling
+                pytest.skip(f"Playwright browser unavailable: {exc}")
             page = browser.new_page()
 
             def route_handler(route):

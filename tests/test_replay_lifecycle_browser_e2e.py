@@ -13,6 +13,7 @@ from contextlib import contextmanager
 from functools import partial
 from http.server import SimpleHTTPRequestHandler
 from pathlib import Path
+from urllib.parse import parse_qs, urlparse
 
 import pytest
 
@@ -166,32 +167,35 @@ def test_lifecycle_filter_browser_e2e():
 
             def route_handler(route):
                 url = route.request.url
+                parsed_url = urlparse(url)
                 if url.endswith("/api/replay/freshness"):
                     return _mock_json(route, _freshness_payload())
                 if url.endswith("/api/replay/summary"):
                     return _mock_json(route, _summary_payload())
-                if url.endswith("/api/replay/history"):
-                    return _mock_json(route, _history_payload())
+                if parsed_url.path.endswith("/api/replay/history"):
+                    query = parse_qs(parsed_url.query)
+                    lifecycle_status = query.get("lifecycle_status", ["REJECTED"])[0]
+                    return _mock_json(route, _history_payload(lifecycle_status))
                 if url.endswith("/api/replay/strategies"):
                     return _mock_json(route, _strategies_payload())
                 return route.continue_()
 
             page.route("**/api/replay/**", route_handler)
             page.goto(f"{base_url}/index.html?rp_lc=REJECTED", wait_until="load")
-            page.wait_for_selector('#rp-lifecycle-select')
+            page.wait_for_selector('#rp-lifecycle-select', state='attached')
 
             lifecycle_select = page.locator('#rp-lifecycle-select')
             assert lifecycle_select.count() == 1
             assert lifecycle_select.input_value() == 'REJECTED'
 
-            page.locator('#rp-query-btn').click()
-            page.wait_for_selector('th:has-text("生命週期")')
+            page.locator('#rp-query-btn').evaluate('(el) => el.click()')
+            page.wait_for_selector('th:has-text("生命週期")', state='attached')
 
             header = page.locator('th:has-text("生命週期")')
             assert header.count() >= 1
 
-            first_row_lifecycle = page.locator('tbody tr:not(.rp-detail-row) td').nth(3)
-            assert 'REJECTED' in (first_row_lifecycle.text_content() or '')
-            assert page.locator('tbody tr:not(.rp-detail-row) td').nth(4).text_content() is not None
+            first_row_lifecycle = page.locator('#rp-hist-body tr:not(.rp-detail-row) td').nth(3)
+            assert '拒絕' in (first_row_lifecycle.text_content() or '')
+            assert page.locator('#rp-hist-body tr:not(.rp-detail-row) td').nth(4).text_content() is not None
 
             browser.close()

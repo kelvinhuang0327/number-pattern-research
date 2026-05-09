@@ -185,7 +185,7 @@ def test_lifecycle_filter_browser_e2e():
             assert lifecycle_select.input_value() == 'REJECTED'
 
             page.locator('#rp-query-btn').evaluate('(el) => el.click()')
-            page.wait_for_selector('th:has-text("生命週期")')
+            page.wait_for_selector('th:has-text("生命週期")', state='attached')
 
             header = page.locator('th:has-text("生命週期")')
             assert header.count() >= 1

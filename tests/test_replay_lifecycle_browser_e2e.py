@@ -13,6 +13,7 @@ from contextlib import contextmanager
 from functools import partial
 from http.server import SimpleHTTPRequestHandler
 from pathlib import Path
+from urllib.parse import parse_qs, urlparse
 
 import pytest
 
@@ -166,12 +167,15 @@ def test_lifecycle_filter_browser_e2e():
 
             def route_handler(route):
                 url = route.request.url
+                parsed_url = urlparse(url)
                 if url.endswith("/api/replay/freshness"):
                     return _mock_json(route, _freshness_payload())
                 if url.endswith("/api/replay/summary"):
                     return _mock_json(route, _summary_payload())
-                if url.endswith("/api/replay/history"):
-                    return _mock_json(route, _history_payload())
+                if parsed_url.path.endswith("/api/replay/history"):
+                    query = parse_qs(parsed_url.query)
+                    lifecycle_status = query.get("lifecycle_status", ["REJECTED"])[0]
+                    return _mock_json(route, _history_payload(lifecycle_status))
                 if url.endswith("/api/replay/strategies"):
                     return _mock_json(route, _strategies_payload())
                 return route.continue_()

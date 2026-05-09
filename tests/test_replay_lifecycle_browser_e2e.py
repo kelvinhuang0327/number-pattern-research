@@ -194,8 +194,8 @@ def test_lifecycle_filter_browser_e2e():
             header = page.locator('th:has-text("生命週期")')
             assert header.count() >= 1
 
-            first_row_lifecycle = page.locator('tbody tr:not(.rp-detail-row) td').nth(3)
+            first_row_lifecycle = page.locator('#rp-hist-body tr:not(.rp-detail-row) td').nth(3)
             assert 'REJECTED' in (first_row_lifecycle.text_content() or '')
-            assert page.locator('tbody tr:not(.rp-detail-row) td').nth(4).text_content() is not None
+            assert page.locator('#rp-hist-body tr:not(.rp-detail-row) td').nth(4).text_content() is not None
 
             browser.close()

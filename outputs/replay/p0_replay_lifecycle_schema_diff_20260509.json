@@ -1,0 +1,107 @@
+{
+  "schema_diff_date": "2026-05-09",
+  "migration_status": "PLAN_ONLY — NOT EXECUTED",
+  "description": "P0-A Lifecycle SSOT expansion: status enum ACTIVE/RETIRED → ONLINE/OFFLINE/REJECTED/OBSERVATION/RETIRED",
+
+  "code_changes": {
+    "file": "lottery_api/models/replay_strategy_registry.py",
+    "changes": [
+      {
+        "type": "added_constant",
+        "name": "LIFECYCLE_STATUSES",
+        "value": ["ONLINE", "OFFLINE", "REJECTED", "OBSERVATION", "RETIRED"],
+        "note": "Canonical lifecycle status tuple; source of truth for all status values"
+      },
+      {
+        "type": "added_constant",
+        "name": "_LEGACY_STATUS_MAP",
+        "value": {"ACTIVE": "ONLINE"},
+        "note": "Backward-compatibility alias map; ACTIVE normalises to ONLINE"
+      },
+      {
+        "type": "added_constant",
+        "name": "_GENERATION_STATUSES",
+        "value": ["ONLINE", "ACTIVE"],
+        "note": "Statuses eligible for replay generation"
+      },
+      {
+        "type": "added_function",
+        "name": "normalise_lifecycle_status",
+        "signature": "(status: str) -> str",
+        "note": "Normalises legacy aliases to canonical lifecycle values"
+      },
+      {
+        "type": "modified_class",
+        "name": "_StrategyMeta",
+        "field_added": "lifecycle_status",
+        "default_changed": "status default changed from 'ACTIVE' to 'ONLINE'",
+        "note": "lifecycle_status mirrors status (canonical); status normalised via _LEGACY_STATUS_MAP"
+      },
+      {
+        "type": "modified_function",
+        "name": "list_strategies",
+        "signature_before": "(lottery_type: Optional[str] = None) -> List[dict]",
+        "signature_after": "(lottery_type: Optional[str] = None, lifecycle_status: Optional[str] = None) -> List[dict]",
+        "behaviour_before": "returned ACTIVE strategies only",
+        "behaviour_after": "returns ALL strategies by default; lifecycle_status filter is optional",
+        "new_field_in_output": "strategy_lifecycle_status"
+      },
+      {
+        "type": "added_function",
+        "name": "get_strategy_lifecycle_status",
+        "signature": "(strategy_id: str) -> Optional[str]",
+        "note": "Lookup helper for /api/replay/history row enrichment"
+      }
+    ],
+    "all_adapter_status_values": {
+      "before": "ACTIVE (6 adapters)",
+      "after": "ONLINE (6 adapters)",
+      "note": "No strategy was promoted, retired, or changed in governance terms; ONLINE is the canonical form of ACTIVE"
+    }
+  },
+
+  "db_schema_diff": {
+    "tables_changed": [],
+    "tables_added": [],
+    "columns_added": [],
+    "migration_plan": {
+      "note": "Current lifecycle state is maintained entirely in-memory (replay_strategy_registry.py). No DB schema change is required for Phase P0. A future migration for persisted lifecycle state would look like:",
+      "future_migration_sql": [
+        "-- Phase P1 optional: persist lifecycle state to DB",
+        "ALTER TABLE strategy_replay_runs ADD COLUMN strategy_lifecycle_status TEXT DEFAULT 'ONLINE';",
+        "-- OR create a dedicated table:",
+        "CREATE TABLE IF NOT EXISTS strategy_lifecycle (",
+        "  strategy_id       TEXT PRIMARY KEY,",
+        "  lifecycle_status  TEXT NOT NULL DEFAULT 'ONLINE',",
+        "  transitioned_at   TEXT,",
+        "  transitioned_by   TEXT,",
+        "  notes             TEXT",
+        ");",
+        "-- Seed from current registry:",
+        "INSERT OR IGNORE INTO strategy_lifecycle (strategy_id, lifecycle_status) VALUES",
+        "  ('biglotto_deviation_2bet', 'ONLINE'),",
+        "  ('biglotto_triple_strike',  'ONLINE'),",
+        "  ('daily539_f4cold',         'ONLINE'),",
+        "  ('daily539_markov_cold',    'ONLINE'),",
+        "  ('power_orthogonal_5bet',   'ONLINE'),",
+        "  ('power_precision_3bet',    'ONLINE');"
+      ],
+      "execution_status": "NOT EXECUTED — this is a plan artifact only"
+    }
+  },
+
+  "api_contract_diff": {
+    "GET /api/replay/strategies": {
+      "new_query_params": ["lifecycle_status"],
+      "new_response_fields": ["filter_lifecycle_status", "filter_lifecycle_status"],
+      "each_strategy_entry_new_field": "strategy_lifecycle_status",
+      "behaviour_change": "Now returns ALL lifecycle states by default (was: ACTIVE only)"
+    },
+    "GET /api/replay/history": {
+      "new_query_params": ["lifecycle_status"],
+      "new_response_fields": ["filter_lifecycle_status"],
+      "each_record_new_field": "strategy_lifecycle_status",
+      "behaviour_change": "lifecycle_status filter restricts to matching strategy_ids"
+    }
+  }
+}

@@ -4,20 +4,452 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>大數據智能分析系統 - Lottery Analysis</title>
-    <meta name="description" content="專業的大樂透號碼分析系統，使用數學回歸分析預測下一期開獎機率">
+    <title>Lotto Insight Platform</title>
+    <meta name="description" content="專業的彩券大數據量化研究平台 - Automated Strategy Discovery & Statistical Validation">
+    
+    <!-- Professional Typography -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link
-        href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@300;400;500;700;900&family=Orbitron:wght@400;500;700;900&display=swap"
-        rel="stylesheet">
-    <link rel="stylesheet" href="styles.css">
-    <link rel="stylesheet" href="styles_stats.css">
-    <link rel="stylesheet" href="styles_autolearning.css">
+    <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;600;700&family=Fira+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    
+    <!-- Style Systems -->
+    <link rel="stylesheet" href="styles.css?v=18">
+    <link rel="stylesheet" href="professional-design.css?v=18">
     <link rel="stylesheet" href="src/ui/progress.css">
+    
+    <!-- Visibility Guard -->
+    <style>
+        body { background-color: #010409 !important; color: #e6edf3 !important; opacity: 1 !important; }
+        .header { display: block !important; opacity: 1 !important; z-index: 1000 !important; }
+        .container { display: block !important; opacity: 1 !important; }
+        .section.active { display: block !important; opacity: 1 !important; visibility: visible !important; }
+        header, main, section { min-height: 10px; }
+
+        /* ── 快速開獎入庫 ── */
+        .draw-entry-card { min-width: 280px; }
+        .draw-entry-form { width: 100%; text-align: left; margin-top: 12px; }
+        .draw-entry-row  { margin-bottom: 10px; }
+        .draw-entry-row label { display: block; font-size: 0.75rem; font-weight: 600;
+            color: var(--text-secondary, #888); margin-bottom: 4px; }
+        .draw-entry-row--2col { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+        .draw-entry-text-input {
+            width: 100%; padding: 7px 10px; border-radius: 6px; font-size: 0.85rem;
+            border: 1px solid var(--border-color, #e0e0e0);
+            background: var(--bg-secondary, #f8f8f8); color: inherit; box-sizing: border-box; }
+        .draw-entry-numbers { display: flex; flex-wrap: wrap; gap: 6px; }
+        .draw-entry-num-input {
+            width: 52px; padding: 7px 4px; text-align: center; border-radius: 6px;
+            font-size: 0.85rem; border: 1px solid var(--border-color, #e0e0e0);
+            background: var(--bg-secondary, #f8f8f8); color: inherit; }
+        .draw-entry-special-input { width: 70px; }
+        .draw-entry-submit { width: 100%; margin-top: 8px; justify-content: center; }
+        .draw-entry-status { margin-top: 10px; padding: 8px 12px; border-radius: 6px;
+            font-size: 0.82rem; word-break: break-all; }
+        .draw-entry-status--success { background: #d4edda; color: #155724; }
+        .draw-entry-status--error   { background: #f8d7da; color: #721c24; }
+        .draw-entry-status--loading { background: #fff3cd; color: #856404; }
+
+        /* ── 自動抓取 / 掃描 / 補入 ── */
+        .af-section { margin-top: 24px; }
+        .af-section-title { font-size: 1rem; font-weight: 700; margin-bottom: 14px;
+            color: var(--text-primary, #e6edf3); display: flex; align-items: center; gap: 8px; }
+        .af-cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 16px; margin-bottom: 20px; }
+        .af-card { background: var(--bg-card, #161b22); border: 1px solid var(--border-color, #30363d);
+            border-radius: 10px; padding: 16px; }
+        .af-card-title { font-size: 0.88rem; font-weight: 700; margin-bottom: 12px;
+            color: var(--accent, #58a6ff); display: flex; align-items: center; gap: 6px; }
+        .af-row { margin-bottom: 10px; }
+        .af-row label { display: block; font-size: 0.75rem; font-weight: 600;
+            color: var(--text-secondary, #8b949e); margin-bottom: 4px; }
+        .af-row select, .af-row input[type=text] {
+            width: 100%; padding: 6px 10px; border-radius: 6px; font-size: 0.83rem;
+            border: 1px solid var(--border-color, #30363d);
+            background: var(--bg-secondary, #0d1117); color: inherit; box-sizing: border-box; }
+        .af-check-row { display: flex; align-items: center; gap: 8px;
+            font-size: 0.82rem; color: var(--text-secondary, #8b949e); margin-bottom: 6px; }
+        .af-btn { width: 100%; margin-top: 8px; justify-content: center;
+            padding: 8px 0; border-radius: 6px; border: none; cursor: pointer;
+            font-size: 0.85rem; font-weight: 600; transition: opacity .2s; }
+        .af-btn:disabled { opacity: .5; cursor: not-allowed; }
+        .af-btn-primary   { background: #238636; color: #fff; }
+        .af-btn-secondary { background: #1f6feb; color: #fff; }
+        .af-btn-accent    { background: #6f42c1; color: #fff; }
+        .af-btn:hover:not(:disabled) { opacity: .85; }
+        .af-status { margin-top: 10px; padding: 8px 12px; border-radius: 6px;
+            font-size: 0.82rem; display: none; }
+        .af-status--success { background: #d4edda; color: #155724; }
+        .af-status--error   { background: #f8d7da; color: #721c24; }
+        .af-status--loading { background: #fff3cd; color: #856404; }
+        .af-status--warn    { background: #fff3cd; color: #664d03; }
+        .af-status--dry_run { background: #d1ecf1; color: #0c5460; }
+
+        /* ── Simulation Loading ── */
+        .sim-loading {
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 16px;
+            padding: 48px 24px;
+            border: 1px solid var(--border-color, #30363d);
+            border-radius: 10px;
+            background: var(--bg-card, #161b22);
+            margin-top: 16px;
+        }
+        .sim-loading.is-active { display: flex; }
+        .sim-loading-spinner {
+            width: 44px; height: 44px;
+            border: 4px solid rgba(99,179,237,.2);
+            border-top-color: #63b3ed;
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+        }
+        .sim-loading-text {
+            font-size: .9rem;
+            color: var(--text-secondary, #8b949e);
+            text-align: center;
+        }
+        .sim-loading-progress {
+            font-size: .78rem;
+            color: var(--text-secondary, #8b949e);
+        }
+        .sim-progress-bar-wrap {
+            width: 220px; height: 6px;
+            background: var(--bg-tertiary, #0d1117);
+            border-radius: 3px; overflow: hidden;
+        }
+        .sim-progress-bar {
+            height: 100%;
+            background: #63b3ed;
+            border-radius: 3px;
+            transition: width .2s ease;
+            width: 0%;
+        }
+        .af-status--already_exists { background: #e2e3e5; color: #383d41; }
+        .af-scan-table, .af-bf-table { width: 100%; border-collapse: collapse;
+            font-size: 0.78rem; margin-top: 10px; }
+        .af-scan-table th, .af-scan-table td,
+        .af-bf-table th,   .af-bf-table td {
+            border: 1px solid var(--border-color, #30363d);
+            padding: 5px 8px; text-align: left; }
+        .af-scan-table th, .af-bf-table th {
+            background: var(--bg-secondary, #0d1117); font-weight: 600; }
+        .af-warn  { color: #f0a500; font-weight: 700; }
+        .af-err   { color: #cf3a4a; }
+        .af-muted { color: var(--text-secondary, #8b949e); font-size: 0.76rem; }
+        .af-missing-list { max-width: 260px; word-break: break-all; }
+        .af-bf-inserted { background: rgba(35, 134, 54, .08); }
+        .af-bf-conflict  { background: rgba(209, 36, 47, .08); }
+        .af-bf-dry_run   { background: rgba(31, 111, 235, .08); }
+        .af-log-panel { background: var(--bg-card, #161b22);
+            border: 1px solid var(--border-color, #30363d);
+            border-radius: 10px; padding: 16px; margin-top: 16px; }
+        .af-log-header { display: flex; align-items: center; justify-content: space-between;
+            margin-bottom: 10px; }
+        .af-log-table { width: 100%; border-collapse: collapse; font-size: 0.78rem; }
+        .af-log-table th, .af-log-table td {
+            border: 1px solid var(--border-color, #30363d); padding: 5px 8px; text-align: left; }
+        .af-log-table th { background: var(--bg-secondary, #0d1117); font-weight: 600; }
+
+        /* ── Prediction Tracker ── */
+        .pt-badge { display:inline-block; padding:2px 8px; border-radius:10px; font-size:11px; font-weight:600; }
+        .pt-resolved { background:#d4edda; color:#155724; }
+        .pt-pending { background:rgba(187,128,9,.2); color:#e3b341; }
+        .pt-state-badge { display:inline-block; padding:2px 8px; border-radius:999px; font-size:11px; font-weight:700; line-height:1.4; }
+        .pt-status-production { background:rgba(35,134,54,.16); color:#3fb950; }
+        .pt-status-watch { background:rgba(187,128,9,.18); color:#e3b341; }
+        .pt-status-maintenance { background:rgba(88,166,255,.16); color:#58a6ff; }
+        .pt-status-advisory { background:rgba(139,148,158,.18); color:#c9d1d9; }
+        .pt-status-na { background:rgba(139,148,158,.12); color:#8b949e; }
+        .pt-state-resolved { background:#d4edda; color:#155724; }
+        .pt-state-pending { background:rgba(187,128,9,.2); color:#e3b341; }
+        .pt-state-missed { background:rgba(218,54,51,.18); color:#f85149; }
+        .pt-state-reconstructed { background:rgba(88,86,214,.18); color:#a5a6ff; }
+        .pt-state-na { background:rgba(139,148,158,.12); color:#8b949e; }
+        .pt-hit-good { color:#27ae60; font-weight:700; }
+        .pt-hit-ok { color:#f39c12; font-weight:600; }
+        .pt-hit-bad { color:#bbb; }
+        .pt-good { color:#27ae60; font-weight:700; }
+        .pt-hist-row:hover td { background:#21262d; }
+        /* 三張表格：標題列與資料列均置中 */
+        .data-table { border-collapse:collapse; font-size:13px; }
+        .data-table th, .data-table td { padding:7px 10px; border-bottom:1px solid #30363d; text-align:center; vertical-align:middle; }
+        .data-table thead th { background:var(--bg-secondary,#0d1117); font-weight:600; color:#7d8590; }
+        /* 策略名稱欄保留靠左（績效表第2欄） */
+        #pt-perf-body td:nth-child(2) { text-align:left; }
+        .pt-detail-panel { background:var(--bg-card,#161b22); border-top:1px solid #30363d; }
+        /* blocks */
+        .pt-block { border-bottom:1px solid #30363d; }
+        .pt-block:last-child { border-bottom:none; }
+        .pt-block-header { display:flex; align-items:center; gap:8px; padding:8px 14px; background:var(--bg-secondary,#0d1117); border-bottom:1px solid #30363d; flex-wrap:wrap; }
+        .pt-block-title { font-weight:700; font-size:12px; color:#7d8590; letter-spacing:.3px; }
+        .pt-block-body { padding:10px 14px; }
+        .pt-detail-small { font-size:11px; color:#7d8590; }
+        /* block 1 - draw info */
+        .pt-draw-info-row { display:flex; align-items:center; gap:6px; flex-wrap:wrap; }
+        .pt-draw-info-label { font-size:11px; color:#7d8590; }
+        .pt-draw-info-val { font-size:13px; font-weight:700; color:#e6edf3; }
+        .pt-draw-pending { font-size:12px; color:#7d8590; margin-left:12px; }
+        /* block 2 - bet cards */
+        .pt-bet-card { border:1px solid #30363d; border-radius:6px; margin-bottom:8px; overflow:hidden; }
+        .pt-bet-card:last-child { margin-bottom:0; }
+        .pt-bet-card-header { display:flex; align-items:center; gap:8px; padding:6px 10px; background:var(--bg-secondary,#0d1117); border-bottom:1px solid #30363d; flex-wrap:wrap; }
+        .pt-bet-card-label { font-weight:700; font-size:12px; color:#58a6ff; min-width:32px; }
+        .pt-bet-card-hit { font-size:12px; color:#7d8590; }
+        .pt-bet-card-row { display:flex; align-items:center; gap:8px; padding:6px 10px; border-bottom:1px solid #21262d; }
+        .pt-bet-card-row:last-child { border-bottom:none; }
+        .pt-bet-card-key { font-size:11px; color:#7d8590; min-width:56px; }
+        /* number balls */
+        .pt-num { display:inline-block; width:26px; height:26px; line-height:26px; text-align:center; border-radius:50%; font-size:12px; font-weight:600; margin:1px; background:#30363d; color:#e6edf3; }
+        .pt-num-match { background:#238636 !important; color:#fff !important; }
+        .pt-num-actual { background:#1f6feb; color:#fff; }
+        .pt-num-hit { display:inline-block; margin:2px; font-size:13px; font-weight:700; color:#3fb950; }
+        .pt-num-plain { display:inline-block; margin:2px; font-size:13px; color:#7d8590; }
+        .pt-bet-nums-row { padding:6px 0; display:flex; flex-wrap:wrap; align-items:center; gap:2px; }
+        .pt-special { background:#da3633; color:#fff; }
+        .pt-actual-special { background:#8957e5; color:#fff; }
+        .pt-num-sp-hit { background:#b08800 !important; color:#fff !important; }
+        .pt-na-box { padding:10px 12px; border:1px dashed #30363d; border-radius:6px; color:#8b949e; background:rgba(13,17,23,.6); }
+        .pt-na-text { color:#8b949e; font-size:12px; }
+        .pt-perf-summary { border:1px solid #30363d; border-radius:10px; background:var(--bg-card,#161b22); padding:12px 14px; margin-bottom:12px; }
+        .pt-perf-summary-head { display:flex; gap:12px; align-items:flex-start; flex-wrap:wrap; }
+        .pt-perf-summary-kicker { font-size:11px; color:#8b949e; letter-spacing:.3px; text-transform:uppercase; }
+        .pt-perf-summary-title { font-size:16px; font-weight:700; color:#e6edf3; margin-top:2px; }
+        .pt-perf-summary-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(120px,1fr)); gap:8px; margin-top:10px; }
+        .pt-perf-summary-grid div { background:rgba(13,17,23,.55); border:1px solid #30363d; border-radius:8px; padding:8px 10px; display:flex; flex-direction:column; gap:4px; }
+        .pt-perf-summary-label { font-size:11px; color:#8b949e; }
+        .nd-best-row td { background: rgba(63, 185, 80, 0.08); }
+        /* legacy (kept for compat) */
+        .pt-detail-meta { font-size:13px; color:#7d8590; margin-bottom:10px; }
+        .pt-bet-row { display:flex; gap:10px; align-items:flex-start; padding:6px 0; border-bottom:1px solid #21262d; }
+        .pt-bet-label { min-width:36px; font-weight:700; color:#7d8590; font-size:12px; padding-top:4px; }
+        .pt-nums-line { margin-bottom:4px; }
+        .mb-16 { margin-bottom:16px; }
+        /* schedule status cards */
+        .pt-sched-cards { display:flex; gap:12px; flex-wrap:wrap; margin-bottom:16px; }
+        .pt-sched-card { background:var(--bg-card,#161b22); border:1px solid #30363d; border-radius:8px; padding:10px 14px; min-width:160px; box-shadow:0 1px 3px rgba(0,0,0,.3); }
+        .pt-sched-game { font-weight:700; font-size:14px; margin-bottom:4px; color:#e6edf3; }
+        .pt-sched-info { font-size:12px; color:#7d8590; margin-bottom:2px; }
+        .pt-draw-date { font-size:11px; color:#7d8590; margin-left:5px; font-weight:400; }
+        .pt-analyzed-btn { cursor:pointer; border:none; background:none; padding:2px 6px; border-radius:8px; font-size:11px; font-weight:600; }
+        .pt-analyzed-yes { background:rgba(35,134,54,.2); color:#3fb950; }
+        .pt-analyzed-no  { background:rgba(218,54,51,.2); color:#f85149; }
+        /* analysis block */
+        .pt-analysis-textarea { width:100%; box-sizing:border-box; padding:8px 10px; border:1px solid #30363d; border-radius:5px; font-size:13px; font-family:inherit; resize:vertical; background:var(--bg-secondary,#0d1117); color:#e6edf3; }
+        .pt-analysis-textarea:focus { outline:none; border-color:#58a6ff; box-shadow:0 0 0 2px rgba(88,166,255,.12); }
+        .pt-analysis-note-display { font-size:13px; color:#c9d1d9; line-height:1.7; white-space:pre-wrap; background:var(--bg-secondary,#0d1117); border:1px solid #30363d; border-radius:5px; padding:10px 12px; }
+        .pt-rsm-ref { margin-top:14px; }
+        .pt-rsm-ref-title { font-size:12px; font-weight:700; color:#58a6ff; margin-bottom:8px; letter-spacing:.3px; }
+        .pt-rsm-card { background:var(--bg-card,#161b22); border:1px solid #30363d; border-radius:7px; margin-bottom:7px; overflow:hidden; }
+        .pt-rsm-card-active { border-color:#58a6ff; background:#1c2940; box-shadow:0 0 0 2px rgba(88,166,255,.15); }
+        .pt-rsm-card-header { display:flex; align-items:center; gap:8px; padding:7px 11px; background:var(--bg-secondary,#0d1117); border-bottom:1px solid #30363d; flex-wrap:wrap; }
+        .pt-rsm-card-body { padding:8px 11px; display:flex; flex-direction:column; gap:5px; }
+        .pt-rsm-nbets { font-weight:700; color:#58a6ff; font-size:12px; min-width:52px; }
+        .pt-rsm-name { font-family:monospace; font-size:11px; color:#c9d1d9; flex:1; }
+        .pt-rsm-trend { font-size:11px; color:#7d8590; margin-left:auto; }
+        .pt-rsm-cur { background:#1f6feb; color:#fff; border-radius:3px; padding:1px 5px; font-size:10px; font-weight:700; }
+        .pt-rsm-alert { background:rgba(187,128,9,.2); color:#e3b341; border-radius:3px; padding:1px 5px; font-size:10px; font-weight:700; }
+        .pt-rsm-stat-row { display:flex; align-items:center; gap:6px; font-size:12px; }
+        .pt-rsm-stat-label { color:#7d8590; min-width:44px; font-size:11px; }
+        .pt-rsm-stat-val { color:#c9d1d9; font-weight:600; min-width:56px; }
+        .pt-rsm-pos { color:#3fb950; font-weight:700; }
+        .pt-rsm-neg { color:#f85149; font-weight:700; }
+        .pt-rsm-note { font-size:11px; color:#7d8590; font-style:italic; margin-top:2px; }
+        /* schedule status badges */
+        .pt-sched-none     { background:#21262d; color:#7d8590; }
+        .pt-sched-scheduled{ background:rgba(31,111,235,.2); color:#79c0ff; }
+        .pt-sched-ok       { background:rgba(35,134,54,.2); color:#3fb950; }
+        .pt-sched-missed   { background:rgba(187,128,9,.2); color:#e3b341; }
+        .pt-sched-recon    { background:#e2d9f3; color:#4a235a; }
+        /* reconstructed warning banner */
+        .pt-recon-warning { background:rgba(187,128,9,.15); border-left:4px solid #e3b341; padding:8px 12px; border-radius:4px; font-size:13px; color:#e3b341; margin-bottom:10px; }
+        /* bets list */
+        .pt-bets-list { display:flex; flex-direction:column; gap:0; }
+        /* researched badge */
+        .pt-researched-yes { background:#d4edda; color:#155724; }
+        .pt-researched-no  { background:#21262d; color:#7d8590; }
+
+        /* ── Review Block (LLM Research Board) ── */
+        .pt-review-block { border:1px solid #30363d; border-radius:6px; margin-top:8px; overflow:hidden; }
+        .pt-review-block .pt-block-header { background:#0d1117; user-select:none; }
+        .pt-review-block.pt-review-collapsed .pt-review-body { display:none; }
+        .pt-review-block.pt-review-collapsed .pt-review-toggle-icon { transform:rotate(-90deg); }
+        .pt-review-toggle-icon { display:inline-block; font-size:10px; color:#7d8590; transition:transform .2s; }
+        .pt-review-body { padding:0 14px 14px; }
+
+        /* ── Phase P: Explainability Block ── */
+        .pt-explain-block { border:1px solid #30363d; border-radius:6px; margin-top:8px; overflow:hidden; }
+        .pt-explain-block .pt-block-header { background:#0d1117; user-select:none; }
+        .pt-explain-block.pt-explain-collapsed .pt-explain-body { display:none; }
+        .pt-explain-block.pt-explain-collapsed .pt-explain-toggle-icon { transform:rotate(-90deg); }
+        .pt-explain-toggle-icon { display:inline-block; font-size:10px; color:#7d8590; transition:transform .2s; }
+        .pt-explain-body { padding:0 14px 14px; }
+        .pt-explain-section { margin-bottom:12px; padding-top:8px; border-top:1px solid #21262d; }
+        .pt-explain-section:first-child { border-top:none; }
+        .pt-explain-section-title { font-size:12px; font-weight:700; color:#8b949e; margin-bottom:6px; letter-spacing:.3px; }
+        .pt-explain-row { display:flex; align-items:center; gap:6px; font-size:12px; color:#c9d1d9; padding:2px 0; flex-wrap:wrap; }
+        .pt-explain-label { font-weight:600; color:#7d8590; min-width:80px; }
+        .pt-explain-meta { font-size:11px; color:#7d8590; }
+        .pt-explain-summary { font-size:12px; color:#8b949e; margin-top:4px; font-style:italic; padding:4px 8px; background:#161b22; border-radius:4px; }
+        .pt-explain-tags { display:flex; gap:6px; flex-wrap:wrap; }
+        .pt-explain-tag { display:inline-block; padding:2px 8px; background:#21262d; border:1px solid #30363d; border-radius:4px; font-size:11px; color:#c9d1d9; }
+        .pt-explain-nums { font-family:monospace; font-size:12px; color:#58a6ff; }
+        .pt-review-reasoning { font-size:13px; color:#c9d1d9; padding:10px 0 6px; line-height:1.6; border-bottom:1px solid #21262d; margin-bottom:10px; }
+        .pt-review-section { margin-bottom:12px; }
+        .pt-review-section-title { font-size:12px; font-weight:700; color:#8b949e; margin-bottom:6px; letter-spacing:.3px; }
+        .pt-review-table { width:100%; border-collapse:collapse; font-size:12px; }
+        .pt-review-table th { text-align:left; padding:4px 8px; color:#7d8590; font-weight:600; border-bottom:1px solid #30363d; font-size:11px; }
+        .pt-review-table td { padding:4px 8px; border-bottom:1px solid #21262d; color:#c9d1d9; }
+        .pt-review-wq-row { display:flex; gap:10px; flex-wrap:wrap; }
+        .pt-review-wq-tag { display:inline-block; padding:3px 10px; background:#21262d; border:1px solid #30363d; border-radius:4px; font-size:12px; color:#c9d1d9; }
+        .pt-review-wq-tag strong { color:#e5c07b; }
+        .pt-review-wq-rec { font-size:11px; color:#7d8590; margin-top:6px; font-style:italic; }
+        .pt-review-expert { margin-bottom:8px; }
+        .pt-review-expert-role { font-size:12px; font-weight:700; color:#58a6ff; margin-bottom:2px; }
+        .pt-review-expert-points { margin:0; padding-left:18px; font-size:12px; color:#c9d1d9; line-height:1.7; }
+        .pt-review-counter { font-size:12px; color:#c9d1d9; padding:3px 0; line-height:1.5; }
+        .pt-review-counter-sev { font-weight:700; font-size:11px; margin-right:4px; }
+        .pt-review-action-group { margin-bottom:8px; }
+        .pt-review-action-group ul { margin:2px 0 0; padding-left:18px; font-size:12px; color:#c9d1d9; line-height:1.7; }
+        .pt-review-action-pri { display:inline-block; font-size:11px; font-weight:700; padding:1px 6px; border-radius:3px; }
+        .pt-review-pri-p0 { background:rgba(248,81,73,.2); color:#f85149; }
+        .pt-review-pri-p1 { background:rgba(187,128,9,.2); color:#e3b341; }
+        .pt-review-pri-p2 { background:rgba(31,111,235,.2); color:#79c0ff; }
+        .pt-review-action-lift { font-size:10px; color:#7d8590; margin-left:6px; }
+        .pt-review-footer { font-size:11px; color:#484f58; padding-top:8px; border-top:1px solid #21262d; }
+        .pt-review-badge { font-size:14px; vertical-align:middle; cursor:help; }
+
+        /* ── Review Manager (研究檢討) ── */
+        .rv-dashboard { margin-bottom:16px; }
+        .rv-dash-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(130px,1fr)); gap:10px; margin-bottom:12px; }
+        .rv-dash-card { background:#161b22; border:1px solid #30363d; border-radius:8px; padding:14px; text-align:center; }
+        .rv-dash-num { font-size:26px; font-weight:700; color:#c9d1d9; }
+        .rv-num-open { color:#e3b341; }
+        .rv-num-resolved { color:#3fb950; }
+        .rv-dash-label { font-size:12px; color:#7d8590; margin-top:4px; }
+        .rv-dash-actions { background:#161b22; border:1px solid #30363d; border-radius:8px; padding:12px 16px; }
+        .rv-dash-actions h4 { font-size:14px; color:#c9d1d9; margin:0 0 8px; }
+        .rv-dash-actions ul { list-style:none; padding:0; margin:0; }
+        .rv-dash-actions li { font-size:13px; color:#c9d1d9; padding:4px 0; display:flex; align-items:center; gap:8px; }
+        .rv-observer-note { display:flex; flex-direction:column; gap:4px; margin-bottom:12px; padding:12px 14px; background:rgba(88,166,255,.08); border:1px solid rgba(88,166,255,.2); border-radius:10px; }
+        .rv-observer-note strong { color:#58a6ff; font-size:13px; }
+        .rv-observer-note span { color:#8b949e; font-size:12px; }
+        .rv-empty-state { padding:22px 16px; border:1px dashed #30363d; border-radius:10px; background:#0d1117; margin-bottom:14px; }
+        .rv-empty-title { color:#c9d1d9; font-size:14px; font-weight:700; margin-bottom:6px; }
+        .rv-empty-copy { color:#8b949e; font-size:12px; line-height:1.6; }
+        .rv-panel { background:#161b22; border:1px solid #30363d; border-radius:10px; padding:14px; margin-bottom:14px; }
+        .rv-panel-title { font-size:14px; font-weight:700; color:#c9d1d9; margin-bottom:10px; }
+        .rv-recent-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(220px,1fr)); gap:12px; }
+        .rv-recent-card { background:#0d1117; border:1px solid #30363d; border-radius:10px; padding:14px; display:flex; flex-direction:column; gap:6px; }
+        .rv-recent-head { display:flex; align-items:center; justify-content:space-between; gap:8px; }
+        .rv-recent-game { font-size:13px; font-weight:700; color:#e6edf3; }
+        .rv-recent-draw { font-size:15px; font-weight:700; color:#58a6ff; }
+        .rv-recent-meta { font-size:12px; color:#8b949e; line-height:1.5; }
+        .rv-pending-list { display:flex; flex-direction:column; gap:8px; }
+        .rv-pending-row { display:flex; flex-wrap:wrap; gap:4px; align-items:center; padding:10px 12px; background:#0d1117; border:1px solid #30363d; border-radius:8px; }
+        .rv-pending-game { font-size:13px; color:#c9d1d9; font-weight:700; }
+        .rv-pending-draw { font-size:13px; color:#8b949e; }
+        .rv-pending-state { font-size:11px; padding:2px 8px; border-radius:999px; background:rgba(187,128,9,.18); color:#e3b341; }
+        .rv-dashboard-summary { display:flex; flex-wrap:wrap; gap:10px; font-size:12px; color:#7d8590; }
+        .rv-dashboard-summary span { padding:4px 8px; border-radius:999px; background:#0d1117; border:1px solid #30363d; }
+        .rv-decision { display:inline-block; padding:2px 8px; border-radius:999px; font-size:11px; font-weight:700; }
+        .rv-decision-production { background:rgba(35,134,54,.2); color:#3fb950; }
+        .rv-decision-watch { background:rgba(187,128,9,.2); color:#e3b341; }
+        .rv-decision-rejected { background:rgba(218,54,51,.16); color:#f85149; }
+        .rv-review-link { display:inline-block; margin-left:8px; font-size:11px; color:#79c0ff; text-decoration:none; }
+        .rv-review-link:hover { text-decoration:underline; }
+        .rv-tabs { display:flex; gap:0; margin-bottom:14px; border-bottom:1px solid #30363d; }
+        .rv-tab { background:transparent; border:none; color:#7d8590; font-size:13px; padding:8px 16px; cursor:pointer; border-bottom:2px solid transparent; }
+        .rv-tab.active { color:#58a6ff; border-bottom-color:#58a6ff; }
+        .rv-filter-bar { display:flex; gap:10px; align-items:center; flex-wrap:wrap; margin-bottom:12px; }
+        .rv-select { max-width:160px; }
+        .rv-pager { display:flex; align-items:center; gap:8px; margin-left:auto; font-size:12px; color:#7d8590; }
+        .rv-hidden { display:none !important; }
+        .rv-empty { text-align:center; color:#7d8590; padding:20px; font-size:13px; }
+        .rv-row { cursor:default; }
+        .rv-row:hover { background:#161b22; }
+        .rv-status { display:inline-block; padding:2px 8px; border-radius:4px; font-size:11px; font-weight:600; }
+        .rv-st-open { background:rgba(187,128,9,.2); color:#e3b341; }
+        .rv-st-resolved { background:rgba(35,134,54,.2); color:#3fb950; }
+        .rv-st-other { background:#21262d; color:#7d8590; }
+        .rv-detail-header { margin-bottom:14px; }
+        .rv-detail-header h3 { font-size:16px; color:#c9d1d9; margin:0 0 6px; }
+        .rv-detail-meta { display:flex; gap:12px; flex-wrap:wrap; font-size:12px; color:#7d8590; margin-bottom:10px; }
+        .rv-detail-actions-bar { display:flex; gap:8px; flex-wrap:wrap; }
+        .rv-summary-box { background:#161b22; border:1px solid #30363d; border-radius:6px; padding:12px; font-size:13px; color:#c9d1d9; margin-bottom:14px; white-space:pre-wrap; }
+        .rv-section { margin-bottom:16px; }
+        .rv-section h4 { font-size:14px; color:#c9d1d9; margin:0 0 8px; }
+        .rv-table { width:100%; border-collapse:collapse; font-size:12px; }
+        .rv-table th { text-align:left; padding:6px 8px; color:#7d8590; font-weight:600; border-bottom:1px solid #30363d; font-size:11px; }
+        .rv-table td { padding:6px 8px; border-bottom:1px solid #21262d; color:#c9d1d9; }
+        .rv-pri { display:inline-block; font-size:11px; font-weight:700; padding:2px 6px; border-radius:3px; }
+        .rv-pri-p0 { background:rgba(248,81,73,.2); color:#f85149; }
+        .rv-pri-p1 { background:rgba(187,128,9,.2); color:#e3b341; }
+        .rv-pri-p2 { background:rgba(31,111,235,.2); color:#79c0ff; }
+        .rv-meta { font-size:11px; color:#7d8590; margin-left:6px; }
+        .rv-hyp-status { font-size:11px; font-weight:600; }
+        .rv-actions-panel { margin-top:14px; }
+        .btn-sm { padding:4px 10px; font-size:12px; border-radius:4px; border:1px solid #30363d; cursor:pointer; }
+        .btn-success { background:rgba(35,134,54,.2); color:#3fb950; border-color:#238636; }
+        .btn-warning { background:rgba(187,128,9,.2); color:#e3b341; border-color:#bb8009; }
+        /* Orchestration status badges */
+        .orc-status-badge { padding:2px 8px; border-radius:12px; font-size:11px; font-weight:600; }
+        .orc-status-queued  { background:rgba(31,111,235,.2); color:#79c0ff; }
+        .orc-status-running { background:rgba(187,128,9,.2); color:#e3b341; }
+        .orc-status-completed { background:rgba(35,134,54,.2); color:#3fb950; }
+        .orc-status-failed  { background:rgba(248,81,73,.2); color:#f85149; }
+        .orc-status-failed_rate_limit { background:rgba(245,158,11,.18); color:#fbbf24; }
+        .orc-status-failed_no_edge { background:rgba(239,68,68,.18); color:#fca5a5; }
+        .orc-status-failed_weak_edge { background:rgba(251,146,60,.18); color:#fdba74; }
+        .orc-status-blocked_env { background:rgba(148,163,184,.18); color:#cbd5e1; }
+        .orc-status-replan_required { background:rgba(245,158,11,.18); color:#f59e0b; }
+        .orc-status-cancelled { background:rgba(100,100,100,.2); color:#8b949e; }
+        .orc-plan-badge { margin-left:8px; padding:1px 6px; border-radius:10px; font-size:10px; font-weight:700; letter-spacing:.3px; }
+        .orc-plan-badge-fallback { background:rgba(245,158,11,.2); color:#fbbf24; border:1px solid rgba(245,158,11,.4); }
+
+        /* long-runner worker panel */
+        .orc-longrunner-panel {
+          display:none;
+          background:rgba(245,158,11,.06);
+          border:1px solid rgba(245,158,11,.3);
+          border-radius:8px;
+          padding:10px 14px;
+          margin-bottom:16px;
+          font-size:12px;
+          gap:14px;
+          align-items:center;
+          flex-wrap:wrap;
+        }
+        .orc-longrunner-panel.visible { display:flex; }
+        .orc-lr-badge {
+          display:inline-block;
+          padding:2px 9px;
+          border-radius:999px;
+          font-size:11px;
+          font-weight:700;
+          letter-spacing:.4px;
+        }
+        .orc-lr-badge-longrunning { background:rgba(245,158,11,.2); color:#f59e0b; border:1px solid rgba(245,158,11,.5); }
+        .orc-lr-badge-stuck       { background:rgba(239, 68,68,.2); color:#ef4444; border:1px solid rgba(239,68,68,.5); }
+        .orc-lr-badge-running     { background:rgba(16,185,129,.15); color:#10b981; border:1px solid rgba(16,185,129,.4); }
+        .orc-lr-item { display:flex; flex-direction:column; gap:2px; }
+        .orc-lr-label { font-size:10px; color:var(--text-muted,#6b7280); text-transform:uppercase; letter-spacing:.5px; }
+        .orc-lr-value { font-size:12px; font-weight:600; color:var(--text-primary,#e5e7eb); }
+        .orc-trigger-btn { border-color:#3b82f6; color:#93c5fd; background:rgba(59,130,246,.12); }
+        .orc-trigger-btn:hover { background:rgba(59,130,246,.2); }
+        .orc-trigger-btn:disabled { opacity:.6; cursor:not-allowed; }
+        .orc-outcome-success { color:#3fb950; font-weight:600; }
+        .orc-outcome-error   { color:#f85149; font-weight:600; }
+        .orc-outcome-muted   { color:#8b949e; }
+        .orc-outcome-neutral { color:#c9d1d9; }
+    </style>
 </head>
 
-<body>
+<body class="theme-professional">
     <div class="background-animation">
         <div class="orb orb-1"></div>
         <div class="orb orb-2"></div>
@@ -28,159 +460,363 @@
         <div class="container">
             <div class="header-content">
                 <div class="logo">
-                    <div class="logo-icon">🎰</div>
+                    <div class="logo-icon">
+                        <i data-lucide="layout-dashboard"></i>
+                    </div>
                     <div class="logo-text">
-                        <h1>大數據智能分析</h1>
-                        <p>Lottery Intelligence System</p>
-                        <div class="db-status"
-                            style="font-size: 11px; color: #4ade80; margin-top: 4px; display: flex; align-items: center; gap: 4px; opacity: 0.8;">
-                            <span>🗄️</span>
-                            <span>DB: lottery_v2.db</span>
-                        </div>
+                        <h1>Lotto Insight Platform</h1>
+                        <p>Research Platform v2.0</p>
                     </div>
                 </div>
 
-                <!-- Level 3: Dynamic Variance Monitor (Performance Tracking) -->
-                <div id="waterline-monitor" class="waterline-monitor" title="方差監控：紀錄系統近期命中偏離情況，用於資金停損管理。"
-                    style="display: flex; align-items: center; gap: 10px; padding: 8px 15px; background: rgba(0,0,0,0.3); border-radius: 50px; border: 1px solid rgba(255,255,255,0.1); margin-left: auto; margin-right: 20px; cursor: help;">
-                    <div class="waterline-pulse" id="waterline-status-dot"
-                        style="width: 10px; height: 10px; border-radius: 50%; background: #6c757d; box-shadow: 0 0 10px rgba(108, 117, 125, 0.5);">
-                    </div>
-                    <div class="waterline-text" style="font-size: 13px;">
-                        <span id="waterline-regime" style="color: #cbd5e1; font-weight: bold;">STANDBY</span>
-                        <div id="waterline-advice" style="font-size: 10px; color: #94a3b8; line-height: 1;">追蹤系統方差...
-                        </div>
+                <div class="db-status-badge">
+                    <i data-lucide="database" class="icon-sm"></i>
+                    <span>lottery_v2.db</span>
+                </div>
+
+                <!-- Game Switcher Badge -->
+                <div id="current-game-badge" class="current-game-badge" style="display:none;">
+                    <span class="badge-icon"></span>
+                    <span class="badge-text">選擇彩券</span>
+                    <i data-lucide="chevron-down" class="badge-arrow icon-xs"></i>
+                    <div class="game-selector-dropdown">
+                        <div id="header-game-list" class="game-list"></div>
                     </div>
                 </div>
-            </div>
 
-            <!-- Current Game Type Indicator (Interactive) -->
-            <div id="current-game-badge" class="current-game-badge" style="display: none;">
-                <span class="badge-icon">🎲</span>
-                <span class="badge-text">大樂透</span>
-                <span class="badge-arrow">▼</span>
-
-                <!-- Dropdown Menu -->
-                <div class="game-selector-dropdown" id="game-selector-dropdown">
-                    <div class="dropdown-header">切換彩券類型</div>
-                    <div class="dropdown-list" id="header-game-list">
-                        <!-- Populated by JS -->
+                <!-- Level 3: Dynamic Variance Monitor -->
+                <div id="waterline-monitor" class="waterline-monitor" title="方差監控：紀錄系統近期命中偏離情況">
+                    <div class="waterline-status">
+                        <div class="pulse-dot" id="waterline-status-dot"></div>
+                        <span id="waterline-regime">STANDBY</span>
                     </div>
+                    <div id="waterline-advice" class="waterline-advice">追蹤系統方差...</div>
                 </div>
             </div>
+
             <nav class="nav">
                 <button class="nav-btn active" data-section="upload">
-                    <span class="icon">📤</span>
+                    <i data-lucide="upload-cloud" class="icon"></i>
                     <span>數據上傳</span>
                 </button>
-                <button class="nav-btn" data-section="analysis">
-                    <span class="icon">📊</span>
+                <button class="nav-btn ui-hidden" data-section="analysis">
+                    <i data-lucide="bar-chart-3" class="icon"></i>
                     <span>統計分析</span>
                 </button>
-                <button class="nav-btn" data-section="prediction">
-                    <span class="icon">🔮</span>
+                <button class="nav-btn ui-hidden" data-section="prediction">
+                    <i data-lucide="sparkles" class="icon"></i>
                     <span>智能預測</span>
                 </button>
                 <button class="nav-btn" data-section="history">
-                    <span class="icon">📜</span>
+                    <i data-lucide="history" class="icon"></i>
                     <span>歷史記錄</span>
                 </button>
                 <button class="nav-btn" data-section="simulation">
-                    <span class="icon">🧪</span>
+                    <i data-lucide="test-tube-2" class="icon"></i>
                     <span>模擬測試</span>
                 </button>
-                <button class="nav-btn" data-section="smartbetting">
-                    <span class="icon">🎯</span>
+                <button class="nav-btn ui-hidden" data-section="smartbetting">
+                    <i data-lucide="target" class="icon"></i>
                     <span>聰明包牌</span>
                 </button>
-                <button class="nav-btn" data-section="autolearning">
-                    <span class="icon">🤖</span>
+                <button class="nav-btn ui-hidden" data-section="autolearning">
+                    <i data-lucide="cpu" class="icon"></i>
                     <span>自動學習</span>
                 </button>
+                <button class="nav-btn" data-section="next-draw">
+                    <i data-lucide="zap" class="icon"></i>
+                    <span>最佳策略總覽</span>
+                </button>
+                <button class="nav-btn" data-section="tracking">
+                    <i data-lucide="bar-chart-2" class="icon"></i>
+                    <span>預測追蹤</span>
+                </button>
                 <button class="nav-btn" data-section="replay">
-                    <span class="icon">🎬</span>
+                    <i data-lucide="history" class="icon"></i>
                     <span>歷史回放</span>
+                </button>
+                <button class="nav-btn" data-section="reviews">
+                    <i data-lucide="clipboard-check" class="icon"></i>
+                    <span>研究檢討</span>
+                </button>
+                <button class="nav-btn" data-section="orchestration">
+                    <i data-lucide="workflow" class="icon"></i>
+                    <span>任務編排</span>
+                </button>
+                <button class="nav-btn" data-section="cto-review">
+                    <i data-lucide="shield-check" class="icon"></i>
+                    <span>CTO 審核報告</span>
                 </button>
             </nav>
         </div>
-        </div>
-        <header>
-            <h1>Lottery Prediction System</h1>
-            <nav style="margin-top:8px;font-size:0.95em;">
-                <a href="docs/MASTER_GUIDE.md" target="_blank" rel="noopener" style="color:#22c55e;">📚 Master Guide</a>
-            </nav>
-        </header>
-        <div class="container">
+    </header>
+
+    <main class="container">
             <!-- Upload Section -->
             <section id="upload-section" class="section active">
                 <div class="section-header">
                     <h2>數據上傳中心</h2>
-                    <p>上傳歷史開獎數據以進行深度分析</p>
+                    <p>專業的大數據分析，從歷史數據開始</p>
                 </div>
 
                 <div class="upload-area">
                     <div class="upload-card">
-                        <div class="upload-icon">📁</div>
+                        <div class="upload-icon">
+                            <i data-lucide="file-up"></i>
+                        </div>
                         <h3>上傳彩券數據</h3>
-                        <p>⚠️ 支援多種彩券類型與格式</p>
-                        <p style="font-size: 0.85em; color: #94a3b8; margin-top: 5px;">
-                            CSV: 大樂透、威力彩（官方格式）<br>
-                            TXT: 今彩539（官方格式）
-                        </p>
-
-                        <!-- Upload Filter Dropdown -->
-                        <div style="margin-bottom: 15px;">
-                            <label for="upload-filter-select"
-                                style="display: block; color: #cbd5e1; margin-bottom: 5px; font-size: 0.9em;">選擇上傳類型:</label>
-                            <select id="upload-filter-select" class="select-input"
-                                style="width: 100%; padding: 8px; background: rgba(0,0,0,0.2); border: 1px solid rgba(255,255,255,0.1);">
+                        <p>支援 CSV / TXT 格式開獎資料</p>
+                        
+                        <div class="upload-filter-group">
+                            <label for="upload-filter-select">選擇上傳類型:</label>
+                            <select id="upload-filter-select" class="select-input">
                                 <option value="ALL">全部 (忽略賓果賓果)</option>
                                 <optgroup label="主要彩券">
-                                    <option value="BIG_LOTTO">僅上傳 大樂透</option>
-                                    <option value="BIG_LOTTO_BONUS">僅上傳 大樂透加開獎項</option>
-                                    <option value="DAILY_539">僅上傳 今彩539</option>
-                                    <option value="POWER_LOTTO">僅上傳 威力彩</option>
-                                </optgroup>
-                                <optgroup label="數字型彩券">
-                                    <option value="STAR_3">僅上傳 3星彩</option>
-                                    <option value="STAR_4">僅上傳 4星彩</option>
-                                </optgroup>
-                                <optgroup label="樂合彩">
-                                    <option value="LOTTO_39">僅上傳 39樂合彩</option>
-                                    <option value="LOTTO_49">僅上傳 49樂合彩</option>
+                                    <option value="BIG_LOTTO">大樂透</option>
+                                    <option value="DAILY_539">今彩539</option>
+                                    <option value="POWER_LOTTO">威力彩</option>
                                 </optgroup>
                             </select>
                         </div>
 
                         <input type="file" id="file-input" accept=".csv,.txt" hidden>
-                        <input type="file" id="multiple-input" accept=".csv,.txt" multiple webkitdirectory directory
-                            hidden>
-                        <div style="display: flex; gap: 10px; justify-content: center; flex-wrap: wrap;">
+                        <input type="file" id="multiple-input" accept=".csv,.txt" multiple webkitdirectory directory hidden>
+                        
+                        <div class="btn-group">
                             <button class="btn btn-primary" id="upload-btn">
-                                <span class="btn-icon">📤</span>
+                                <i data-lucide="upload" class="icon-sm"></i>
                                 選擇檔案
                             </button>
-                            <button class="btn btn-primary" id="folder-btn">
-                                <span class="btn-icon">📂</span>
-                                選擇多個檔案
+                            <button class="btn btn-secondary" id="folder-btn">
+                                <i data-lucide="folder" class="icon-sm"></i>
+                                選擇目錄
                             </button>
                         </div>
-                        <div class="file-info" id="file-info"></div>
                     </div>
 
                     <div class="upload-card">
-                        <div class="upload-icon">🎲</div>
+                        <div class="upload-icon">
+                            <i data-lucide="database-backup"></i>
+                        </div>
                         <h3>使用範例數據</h3>
-                        <p>載入預設的大樂透歷史數據進行測試</p>
+                        <p>載入系統預置的大樂透歷史數據</p>
                         <button class="btn btn-secondary" id="sample-data-btn">
-                            <span class="btn-icon">⚡</span>
-                            載入範例數據
+                            <i data-lucide="zap" class="icon-sm"></i>
+                            載入範例
                         </button>
+                    </div>
+
+                    <!-- 快速開獎入庫卡片 -->
+                    <div class="upload-card draw-entry-card">
+                        <div class="upload-icon">
+                            <i data-lucide="plus-circle"></i>
+                        </div>
+                        <h3>快速開獎入庫</h3>
+                        <p>直接輸入最新一期開獎號碼寫入資料庫</p>
+
+                        <form id="draw-entry-form" class="draw-entry-form" onsubmit="return false;">
+                            <div class="draw-entry-row">
+                                <label>彩種</label>
+                                <select id="draw-entry-type" class="select-input">
+                                    <option value="DAILY_539">今彩539</option>
+                                    <option value="BIG_LOTTO">大樂透</option>
+                                    <option value="POWER_LOTTO">威力彩</option>
+                                </select>
+                            </div>
+
+                            <div class="draw-entry-row draw-entry-row--2col">
+                                <div>
+                                    <label>期號</label>
+                                    <input type="text" id="draw-entry-draw"
+                                           class="draw-entry-text-input"
+                                           placeholder="例：115000073"
+                                           maxlength="10">
+                                </div>
+                                <div>
+                                    <label>開獎日期</label>
+                                    <input type="text" id="draw-entry-date"
+                                           class="draw-entry-text-input"
+                                           placeholder="YYYY/MM/DD">
+                                </div>
+                            </div>
+
+                            <div class="draw-entry-row">
+                                <label>開獎號碼</label>
+                                <div id="draw-entry-numbers-wrap" class="draw-entry-numbers">
+                                    <!-- 動態產生，由 DrawEntryManager 控制 -->
+                                </div>
+                            </div>
+
+                            <div id="draw-entry-special-row" class="draw-entry-row" style="display:none;">
+                                <label>特別號</label>
+                                <input type="number" id="draw-entry-special"
+                                       class="draw-entry-num-input draw-entry-special-input"
+                                       placeholder="特別號">
+                            </div>
+
+                            <button type="button" id="draw-entry-submit" class="btn btn-primary draw-entry-submit">
+                                <i data-lucide="database-zap" class="icon-sm"></i>
+                                寫入資料庫
+                            </button>
+                        </form>
+
+                        <div id="draw-entry-status" class="draw-entry-status" style="display:none;"></div>
                     </div>
                 </div>
 
+                <!-- ════════════════════════════════════════════════════════ -->
+                <!-- 自動化入庫面板：抓取 / 掃描 / 補入                      -->
+                <!-- ════════════════════════════════════════════════════════ -->
+                <div class="af-section">
+                    <div class="af-section-title">
+                        <i data-lucide="zap" style="width:18px;height:18px;"></i>
+                        自動化開獎資料管理
+                    </div>
+
+                    <div class="af-cards">
+
+                        <!-- ── 1. 自動抓取最新開獎 ── -->
+                        <div class="af-card">
+                            <div class="af-card-title">
+                                <i data-lucide="download-cloud" style="width:15px;height:15px;"></i>
+                                抓取最新開獎
+                            </div>
+                            <p style="font-size:.78rem;color:#8b949e;margin:0 0 12px;">
+                                從台灣彩券官網自動獲取最新一期開獎號碼
+                            </p>
+                            <div class="af-row">
+                                <label>彩種</label>
+                                <select id="af-fetch-type">
+                                    <option value="BIG_LOTTO">大樂透</option>
+                                    <option value="POWER_LOTTO">威力彩</option>
+                                    <option value="DAILY_539">今彩539</option>
+                                </select>
+                            </div>
+                            <div class="af-check-row">
+                                <input type="checkbox" id="af-fetch-insert">
+                                <label for="af-fetch-insert" style="font-size:.82rem;cursor:pointer;">
+                                    若為新期數則自動寫入
+                                </label>
+                            </div>
+                            <div class="af-check-row">
+                                <input type="checkbox" id="af-fetch-dryrun">
+                                <label for="af-fetch-dryrun" style="font-size:.82rem;cursor:pointer;">
+                                    Dry-Run（預覽，不寫入）
+                                </label>
+                            </div>
+                            <button class="btn af-btn af-btn-secondary" id="af-fetch-btn">
+                                <i data-lucide="download" style="width:13px;height:13px;vertical-align:middle;margin-right:4px;"></i>
+                                抓取最新開獎
+                            </button>
+                            <div id="af-fetch-status" class="af-status"></div>
+                        </div>
+
+                        <!-- ── 2. 掃描缺漏期數 ── -->
+                        <div class="af-card">
+                            <div class="af-card-title">
+                                <i data-lucide="search" style="width:15px;height:15px;"></i>
+                                掃描缺漏期數
+                            </div>
+                            <p style="font-size:.78rem;color:#8b949e;margin:0 0 12px;">
+                                比對資料庫與官網，找出未入庫的期數
+                            </p>
+                            <div class="af-row">
+                                <label>彩種（空=掃描全部）</label>
+                                <select id="af-scan-type">
+                                    <option value="">全部彩種</option>
+                                    <option value="BIG_LOTTO">大樂透</option>
+                                    <option value="POWER_LOTTO">威力彩</option>
+                                    <option value="DAILY_539">今彩539</option>
+                                </select>
+                            </div>
+                            <button class="btn af-btn af-btn-primary" id="af-scan-btn">
+                                <i data-lucide="list-checks" style="width:13px;height:13px;vertical-align:middle;margin-right:4px;"></i>
+                                開始掃描
+                            </button>
+                            <div id="af-scan-status" class="af-status"></div>
+                            <div id="af-scan-results" style="overflow-x:auto;"></div>
+                        </div>
+
+                        <!-- ── 3. 自動補入缺漏 ── -->
+                        <div class="af-card">
+                            <div class="af-card-title">
+                                <i data-lucide="database-zap" style="width:15px;height:15px;"></i>
+                                自動補入缺漏
+                            </div>
+                            <p style="font-size:.78rem;color:#8b949e;margin:0 0 12px;">
+                                自動偵測並補入缺漏期數（不覆蓋現有資料）
+                            </p>
+                            <div class="af-row">
+                                <label>彩種</label>
+                                <select id="af-bf-type">
+                                    <option value="BIG_LOTTO">大樂透</option>
+                                    <option value="POWER_LOTTO">威力彩</option>
+                                    <option value="DAILY_539">今彩539</option>
+                                </select>
+                            </div>
+                            <div class="af-check-row">
+                                <input type="checkbox" id="af-bf-dryrun">
+                                <label for="af-bf-dryrun" style="font-size:.82rem;cursor:pointer;">
+                                    Dry-Run（預覽，不寫入）
+                                </label>
+                            </div>
+                            <div class="af-check-row" style="margin-top:4px;">
+                                <input type="checkbox" id="af-bf-confirm">
+                                <label for="af-bf-confirm" style="font-size:.82rem;cursor:pointer;color:#f0a500;">
+                                    ✅ 確認執行補入（非 Dry-Run 時必填）
+                                </label>
+                            </div>
+                            <button class="btn af-btn af-btn-accent" id="af-bf-btn">
+                                <i data-lucide="refresh-cw" style="width:13px;height:13px;vertical-align:middle;margin-right:4px;"></i>
+                                執行補入
+                            </button>
+                            <div id="af-bf-status" class="af-status"></div>
+                            <div id="af-bf-results" style="overflow-x:auto;margin-top:6px;"></div>
+                        </div>
+
+                    </div><!-- /.af-cards -->
+
+                    <!-- ── Ingest Log 面板 ── -->
+                    <div class="af-log-panel">
+                        <div class="af-log-header">
+                            <span style="font-size:.85rem;font-weight:700;">
+                                <i data-lucide="scroll" style="width:14px;height:14px;vertical-align:middle;margin-right:4px;"></i>
+                                入庫操作記錄
+                            </span>
+                            <span id="af-log-stats" class="af-muted" style="font-size:.78rem;"></span>
+                            <button class="btn btn-secondary" id="af-log-refresh"
+                                style="padding:4px 12px;font-size:.78rem;">
+                                ↻ 重新載入
+                            </button>
+                        </div>
+                        <div id="af-log-pagination" style="display:flex;align-items:center;gap:8px;margin-bottom:8px;font-size:.8rem;">
+                            <button class="btn btn-secondary" id="af-log-prev" style="padding:3px 10px;">‹ 上一頁</button>
+                            <span id="af-log-page-info" class="af-muted"></span>
+                            <button class="btn btn-secondary" id="af-log-next" style="padding:3px 10px;">下一頁 ›</button>
+                        </div>
+                        <div style="overflow-x:auto;">
+                            <table class="af-log-table" id="af-log-table">
+                                <thead>
+                                    <tr>
+                                        <th>時間</th>
+                                        <th>動作</th>
+                                        <th>彩種</th>
+                                        <th>期號</th>
+                                        <th>開獎日期</th>
+                                        <th>結果 / 訊息</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="af-log-body">
+                                    <tr><td colspan="6" class="af-muted" style="text-align:center">載入中...</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div><!-- /.af-log-panel -->
+
+                </div><!-- /.af-section -->
+
                 <!-- Upload Guidance (Hidden by default) -->
-                <div id="upload-guidance" class="upload-guidance" style="display: none;">
+                <div id="upload-guidance" class="upload-guidance ui-hidden">
                     <div class="guidance-icon">💡</div>
                     <div class="guidance-content">
                         <h4>上傳成功！下一步：</h4>
@@ -189,17 +825,16 @@
                 </div>
 
                 <!-- Lottery Type Filter (Prominent) -->
-                <div class="lottery-type-selector-container" id="lottery-type-container" style="display: none;">
+                <div class="lottery-type-selector-container ui-hidden" id="lottery-type-container">
                     <h3>選擇彩券類型</h3>
                     <div class="lottery-type-grid" id="lottery-type-grid">
                         <!-- Will be populated by JS -->
                     </div>
                     <!-- Hidden select for programmatic access -->
-                    <select id="lottery-type-filter" class="form-control" style="display: none;">
+                    <select id="lottery-type-filter" class="form-control ui-hidden">
                         <option value="">全部彩券類型</option>
                         <optgroup label="主要彩券">
                             <option value="BIG_LOTTO">大樂透</option>
-                            <option value="BIG_LOTTO_BONUS">大樂透加開獎項</option>
                             <option value="DAILY_539">今彩539</option>
                             <option value="POWER_LOTTO">威力彩</option>
                         </optgroup>
@@ -218,41 +853,36 @@
                 </div>
 
                 <!-- Play Mode Selector (for 樂合彩 series) -->
-                <div class="play-mode-selector-container" id="play-mode-container"
-                    style="display: none; margin-top: 20px;">
+                <div class="play-mode-selector-container ui-hidden ui-mt-20" id="play-mode-container">
                     <h3>選擇玩法模式</h3>
-                    <p style="font-size: 0.9em; color: #94a3b8; margin-bottom: 15px;">
+                    <p class="ui-fs-09 ui-text-muted ui-mb-15">
                         樂合彩系列支援多種玩法，請選擇您要上傳的玩法類型
                     </p>
-                    <div style="display: flex; gap: 10px; justify-content: center; flex-wrap: wrap;">
-                        <button class="btn btn-play-mode" data-mode="二合"
-                            style="background: linear-gradient(135deg, #3B82F6, #2563EB);">
-                            <span style="font-size: 1.2em;">二合</span>
-                            <small style="display: block; font-size: 0.8em; opacity: 0.9;">選2個號碼</small>
+                    <div class="ui-flex-wrap-center-gap10">
+                        <button class="btn btn-play-mode ui-playmode-btn ui-playmode-btn-blue" data-mode="二合">
+                            <span class="ui-fs-12">二合</span>
+                            <small class="ui-playmode-help">選2個號碼</small>
                         </button>
-                        <button class="btn btn-play-mode" data-mode="三合"
-                            style="background: linear-gradient(135deg, #8B5CF6, #7C3AED);">
-                            <span style="font-size: 1.2em;">三合</span>
-                            <small style="display: block; font-size: 0.8em; opacity: 0.9;">選3個號碼</small>
+                        <button class="btn btn-play-mode ui-playmode-btn ui-playmode-btn-violet" data-mode="三合">
+                            <span class="ui-fs-12">三合</span>
+                            <small class="ui-playmode-help">選3個號碼</small>
                         </button>
-                        <button class="btn btn-play-mode" data-mode="四合"
-                            style="background: linear-gradient(135deg, #EC4899, #DB2777);">
-                            <span style="font-size: 1.2em;">四合</span>
-                            <small style="display: block; font-size: 0.8em; opacity: 0.9;">選4個號碼</small>
+                        <button class="btn btn-play-mode ui-playmode-btn ui-playmode-btn-rose" data-mode="四合">
+                            <span class="ui-fs-12">四合</span>
+                            <small class="ui-playmode-help">選4個號碼</small>
                         </button>
                     </div>
-                    <div id="selected-play-mode"
-                        style="margin-top: 15px; text-align: center; color: #4ade80; font-weight: 500; display: none;">
+                    <div id="selected-play-mode" class="ui-hidden ui-mt-15 ui-text-center ui-text-success ui-fw-500">
                         已選擇：<span id="selected-play-mode-text"></span>
                     </div>
                 </div>
 
-                <div class="data-summary" id="data-summary" style="display: none;">
+                <div class="data-summary ui-hidden" id="data-summary">
                     <h3>數據概覽</h3>
                     <div class="summary-grid" id="summary-content">
                         <!-- Content populated by JS -->
                     </div>
-                    <div style="margin-top: 20px; text-align: center;">
+                    <div class="ui-mt-20 ui-text-center">
                         <button class="btn btn-danger" id="clear-data-btn">
                             <span class="btn-icon">🗑️</span>
                             清除數據
@@ -261,11 +891,11 @@
                 </div>
             </section>
 
-            <!-- Analysis Section -->
-            <section id="analysis-section" class="section">
+            <!-- Analysis Section (Hidden by User Request) -->
+            <section id="analysis-section" class="section ui-hidden">
                 <div class="section-header">
                     <h2>統計分析儀表板</h2>
-                    <p>深度分析歷史開獎數據</p>
+                    <p>深度探勘開獎模式與頻率特徵</p>
                 </div>
 
                 <div class="analysis-grid">
@@ -278,11 +908,11 @@
                         <h3>冷熱號分析</h3>
                         <div class="hot-cold-container">
                             <div class="hot-numbers">
-                                <h4>🔥 熱門號碼 (Top 10)</h4>
+                                <h4>熱門號碼 (Top 10)</h4>
                                 <div id="hot-numbers" class="number-list"></div>
                             </div>
                             <div class="cold-numbers">
-                                <h4>❄️ 冷門號碼 (Top 10)</h4>
+                                <h4>冷門號碼 (Top 10)</h4>
                                 <div id="cold-numbers" class="number-list"></div>
                             </div>
                         </div>
@@ -304,196 +934,78 @@
             <section id="simulation-section" class="section">
                 <div class="section-header">
                     <h2>預測模擬測試</h2>
-                    <p>選擇年度月份，模擬預測並比對結果</p>
+                    <p>選擇年度月份與預測方法，模擬當月每期預測並計算成功率</p>
                 </div>
-                <div class="simulation-controls" style="margin: 20px 0; display: flex; gap: 10px; align-items: center;">
-                    <label for="simulation-year-month" style="color: #fff;">年度月份：</label>
-                    <input type="month" id="simulation-year-month" value="2025-01"
-                        style="padding: 6px 10px; border-radius: 4px; border: none;" />
-                    <label for="simulation-method" style="color: #fff; margin-left: 10px;">預測方法：</label>
-                    <select id="simulation-method" class="select-input">
-                        <optgroup label="📊 核心統計策略">
-                            <option value="frequency" selected>頻率分析</option>
-                            <option value="trend">趨勢分析</option>
-                            <option value="bayesian">貝葉斯機率</option>
-                            <option value="montecarlo">蒙地卡羅模擬</option>
-                            <option value="markov">馬可夫鏈</option>
-                            <option value="deviation">偏差追蹤</option>
-                        </optgroup>
-                        <optgroup label="🎯 集成預測">
-                            <option value="ensemble_weighted">集成預測 (Ensemble)</option>
-                            <option value="ensemble_combined">綜合集成 (最強)</option>
-                            <option value="ensemble_advanced">⭐ 進階集成 (Boosting+關聯+特徵)</option>
-                        </optgroup>
-                        <optgroup label="🧠 機器學習">
-                            <option value="ml_forest">隨機森林 (Random Forest)</option>
-                            <option value="ml_genetic">遺傳優化 (Genetic)</option>
-                        </optgroup>
-                        <optgroup label="🤝 協作預測與正交分散">
-                            <option value="collaborative_hybrid">⭐ 混合協作模式</option>
-                            <option value="zone_split">🚀 正交區間分散 (🟢 穩定分散型)</option>
-                            <option value="core_satellite">🎯 核心-衛星集約 (🔴 聯動集中型)</option>
-                        </optgroup>
-                        <optgroup label="🧠 AI 自動優化">
-                            <option value="auto_optimize">🤖 智能自動優化</option>
-                            <option value="backend_optimized">🚀 後端優化預測 (10%成功率)</option>
-                        </optgroup>
-                        <optgroup label="🔮 AI 深度學習模型">
-                            <option value="ai_prophet">⭐ Prophet 時間序列</option>
-                            <option value="ai_xgboost">XGBoost 梯度提升</option>
-                            <option value="ai_autogluon">🤖 AutoGluon AutoML</option>
-
-                            <option value="ai_lstm">LSTM 神經網絡</option>
-                            <option value="ai_transformer">⭐ Transformer (PatchTST)</option>
-                            <option value="ai_bayesian_ensemble">🎯 貝叶斯優化集成</option>
-                            <option value="ai_maml">🧬 元學習 (MAML)</option>
-                        </optgroup>
-                        <optgroup label="🎲 民間實戰策略">
-                            <option value="odd_even">奇偶比例</option>
-                            <option value="zone_balance">區間平衡</option>
-                            <option value="hot_cold">冷熱號混合</option>
-                            <option value="sum_range">和值+AC值</option>
-                        </optgroup>
-                        <optgroup label="📈 組合分析">
-                            <option value="number_pairs">連號配對</option>
-                            <option value="statistical">多維統計</option>
-                        </optgroup>
-                        <optgroup label="🔬 高級分析 (新)">
-                            <option value="entropy">📊 信息熵分析</option>
-                            <option value="clustering">🎯 號碼聚類</option>
-                            <option value="dynamic_ensemble">⚡ 動態集成</option>
-                            <option value="temporal">📈 時間序列增強</option>
-                            <option value="feature_engineering">🧬 多維特徵</option>
-                        </optgroup>
-                    </select>
-                    <button class="btn btn-primary" id="simulation-btn">
-                        <span class="btn-icon">🧪</span>開始模擬
+                <div class="sim-controls-row">
+                    <div class="sim-ctrl-group">
+                        <label for="simulation-year-month">年度月份</label>
+                        <input type="month" id="simulation-year-month" value="2025-01" class="select-input" />
+                    </div>
+                    <div class="sim-ctrl-group sim-ctrl-group--wide">
+                        <label for="simulation-method">預測方法</label>
+                        <select id="simulation-method" class="select-input">
+                            <optgroup label="核心統計策略">
+                                <option value="frequency" selected>頻率分析</option>
+                                <option value="trend">趨勢分析</option>
+                                <option value="bayesian">貝葉斯機率</option>
+                                <option value="markov">馬可夫鏈</option>
+                                <option value="deviation">偏差追蹤</option>
+                            </optgroup>
+                            <optgroup label="後端策略">
+                                <option value="coordinator">RSM Coordinator</option>
+                            </optgroup>
+                            <optgroup label="民間策略">
+                                <option value="odd_even">奇偶比例</option>
+                                <option value="zone_balance">區間平衡</option>
+                                <option value="hot_cold">冷熱號混合</option>
+                                <option value="sum_range">和值+AC值</option>
+                                <option value="number_pairs">連號配對</option>
+                                <option value="statistical">多維統計</option>
+                            </optgroup>
+                        </select>
+                    </div>
+                    <button class="btn btn-primary sim-ctrl-btn" id="simulation-btn">
+                        <i data-lucide="play" class="icon-sm"></i>
+                        開始模擬
                     </button>
                 </div>
 
-                <!-- 🆕 預測方法說明 + 參數自動優化 (同一行) -->
-                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin: 20px 0;">
-                    <!-- 預測方法說明卡片 -->
-                    <div id="method-description-card" class="autolearning-card"
-                        style="margin: 0; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); padding: 20px; border-radius: 12px;">
-                        <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 12px;">
-                            <span id="method-icon" style="font-size: 28px;">📊</span>
-                            <h3 id="method-title" style="color: white; margin: 0;">頻率分析</h3>
-                        </div>
-                        <div id="method-description"
-                            style="color: rgba(255,255,255,0.95); font-size: 0.95em; line-height: 1.6;">
-                            <p style="margin: 0 0 10px 0;">分析歷史開獎號碼的出現頻率，選擇高頻號碼作為預測依據。</p>
-                            <div
-                                style="background: rgba(255,255,255,0.15); padding: 12px; border-radius: 8px; margin-top: 10px;">
-                                <strong style="display: block; margin-bottom: 6px;">📌 預測邏輯：</strong>
-                                <ul style="margin: 5px 0; padding-left: 20px;">
-                                    <li>統計每個號碼在歷史記錄中的出現次數</li>
-                                    <li>計算出現頻率並排序</li>
-                                    <li>選擇頻率最高的號碼組合</li>
-                                </ul>
-                            </div>
-                        </div>
+                <!-- Loading 狀態 -->
+                <div id="sim-loading" class="sim-loading">
+                    <div class="sim-loading-spinner"></div>
+                    <div class="sim-loading-text">模擬運算中，請稍候...</div>
+                    <div class="sim-progress-bar-wrap">
+                        <div id="sim-progress-bar" class="sim-progress-bar"></div>
                     </div>
-
-                    <!-- 參數自動優化卡片 -->
-                    <div class="autolearning-card"
-                        style="margin: 0; background: linear-gradient(135deg, #10B981, #059669); padding: 20px; border-radius: 12px;">
-                        <h3 style="color: white; margin-bottom: 15px;">⚡ 參數自動優化</h3>
-                        <p style="color: rgba(255,255,255,0.9); font-size: 0.9em; margin-bottom: 15px;">
-                            使用遺傳算法自動優化策略權重參數，提升預測準確率
-                        </p>
-                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 15px;">
-                            <div class="control-group">
-                                <label style="color: white;">遺傳代數:</label>
-                                <input type="number" id="generations" class="select-input" value="20" min="5" max="100">
-                            </div>
-                            <div class="control-group">
-                                <label style="color: white;">種群大小:</label>
-                                <input type="number" id="population-size" class="select-input" value="30" min="10"
-                                    max="100">
-                            </div>
-                        </div>
-                        <button class="btn btn-primary" id="run-optimization-btn"
-                            style="background: white; color: #059669; font-weight: bold;">
-                            <span class="btn-icon">🚀</span>
-                            開始優化
-                        </button>
-                        <div id="optimization-progress" style="display: none; margin-top: 15px;">
-                            <div class="progress-bar">
-                                <div class="progress-fill" id="optimization-progress-bar"></div>
-                            </div>
-                            <div class="progress-text" id="optimization-status" style="color: white;">準備就緒</div>
-                        </div>
-                    </div>
+                    <div id="sim-loading-progress" class="sim-loading-progress">0 / 0 期</div>
                 </div>
 
-                <div id="simulation-results" style="display:none;">
+                <div id="simulation-results" class="ui-hidden">
                     <h3>模擬結果</h3>
-                    <div class="simulation-summary" style="margin-bottom:10px; color:#fff;">成功率：<span
-                            id="simulation-rate"></span>%</div>
-
-                    <!-- 最新一期雙注預測（移到最上方） -->
-                    <div id="simulation-next-prediction" class="next-prediction-panel"
-                        style="display:none; margin-bottom: 30px;">
-                        <h3 style="color: #fff; margin-bottom: 15px;">🔮 最新一期雙注優化預測（純預測，無實際開獎資料）</h3>
-                        <div class="dual-bet-container"
-                            style="background: rgba(102, 126, 234, 0.1); padding: 20px; border-radius: 12px; border: 2px solid #667eea;">
-                            <div class="bet-group" style="margin-bottom: 15px;">
-                                <h4 style="color: #667eea;">第一注（最高信心）</h4>
-                                <div class="predicted-numbers" id="next-bet-numbers-1"></div>
-                                <div class="mini-confidence">
-                                    <span>信心度：</span>
-                                    <span id="next-bet-confidence-1" class="confidence-badge">0%</span>
-                                </div>
-                            </div>
-                            <div class="bet-divider"
-                                style="text-align: center; margin: 10px 0; font-size: 1.5rem; color: #667eea;">+</div>
-                            <div class="bet-group">
-                                <h4 style="color: #764ba2;">第二注（次高信心）</h4>
-                                <div class="predicted-numbers" id="next-bet-numbers-2"></div>
-                                <div class="mini-confidence">
-                                    <span>信心度：</span>
-                                    <span id="next-bet-confidence-2" class="confidence-badge">0%</span>
-                                </div>
-                            </div>
-                            <div class="dual-bet-stats" style="margin-top: 20px;">
-                                <div class="stat-item">
-                                    <span class="stat-label">整合策略數：</span>
-                                    <span class="stat-value" id="next-bet-strategy-count">0</span>
-                                </div>
-                                <div class="stat-item">
-                                    <span class="stat-label">綜合信心度：</span>
-                                    <span class="stat-value" id="next-bet-overall-confidence">0%</span>
-                                </div>
-                                <div class="stat-item">
-                                    <span class="stat-label">預測基準：</span>
-                                    <span class="stat-value" id="next-bet-base-period">-</span>
-                                </div>
-                            </div>
-                            <div class="dual-bet-report" id="next-bet-report" style="margin-top: 15px;"></div>
-                        </div>
-                    </div>
+                    <div class="simulation-summary ui-mb-10">成功率：<span id="simulation-rate"></span>%</div>
 
                     <!-- 每期預測結果表格 -->
-                    <table class="simulation-table" id="simulation-table" style="width:100%; border-collapse:collapse;">
+                    <div class="sim-results-panel">
+                    <table class="simulation-table" id="simulation-table">
                         <thead>
-                            <tr style="color:#fff;">
+                            <tr>
                                 <th>期數</th>
                                 <th>日期</th>
-                                <th>預測號碼 (前10強)</th>
+                                <th>預測號碼</th>
                                 <th>實際號碼</th>
-                                <th>命中數</th>
-                                <th>參考起訖期數</th>
-                                <th>成功</th>
+                                <th>命中</th>
+                                <th>訓練資料</th>
+                                <th>結果</th>
                             </tr>
                         </thead>
                         <tbody></tbody>
                     </table>
+                    </div>
                 </div>
             </section>
 
-            <!-- Prediction Section -->
-            <section id="prediction-section" class="section">
+            <!-- Prediction Section (Hidden by User Request) -->
+            <section id="prediction-section" class="section ui-hidden">
                 <div class="section-header">
                     <h2>智能預測系統</h2>
                     <p>基於數學回歸分析的機率預測</p>
@@ -538,6 +1050,9 @@
                                 <option value="ai_transformer">⭐ Transformer (PatchTST)</option>
                                 <option value="ai_bayesian_ensemble">🎯 貝叶斯優化集成</option>
                                 <option value="ai_maml">🧬 元學習 (MAML)</option>
+                                <option value="coordinator">🧭 Coordinator (RSM 加權)</option>
+                                <option value="coordinator_direct">🧭 Coordinator Direct</option>
+                                <option value="coordinator_hybrid">🧭 Coordinator Hybrid</option>
                             </optgroup>
                             <optgroup label="🎲 民間實戰策略">
                                 <option value="odd_even">奇偶比例策略</option>
@@ -567,14 +1082,29 @@
                             <option value="all">全部數據</option>
                         </select>
                     </div>
-                    <div style="display: flex; gap: 10px; width: 100%;">
-                        <button class="btn btn-primary" id="predict-btn" style="flex: 2;">
-                            <span class="btn-icon">🔮</span>
+                    <div class="control-group ui-hidden" id="coord-mode-group">
+                        <label for="coord-mode">Coordinator 模式</label>
+                        <select id="coord-mode" class="select-input">
+                            <option value="direct" selected>Direct</option>
+                            <option value="hybrid">Hybrid</option>
+                        </select>
+                    </div>
+                    <div class="control-group ui-hidden" id="coord-bets-group">
+                        <label for="coord-bets">Coordinator 注數</label>
+                        <select id="coord-bets" class="select-input">
+                            <option value="2">2 注</option>
+                            <option value="3" selected>3 注</option>
+                            <option value="4">4 注</option>
+                            <option value="5">5 注</option>
+                        </select>
+                    </div>
+                    <div class="ui-flex-gap-10 ui-w-full">
+                        <button class="btn btn-primary ui-flex-2" id="predict-btn">
+                            <i data-lucide="sparkles" class="icon-sm"></i>
                             開始預測
                         </button>
-                        <button class="btn btn-secondary" id="quick-predict-btn"
-                            style="flex: 1; background: linear-gradient(135deg, #FF512F, #DD2476);">
-                            <span class="btn-icon">⚡</span>
+                        <button class="btn btn-secondary ui-flex-1" id="quick-predict-btn">
+                            <i data-lucide="zap" class="icon-sm"></i>
                             一鍵預測
                         </button>
                     </div>
@@ -590,7 +1120,7 @@
                                 <div class="meter-fill" id="confidence-fill"></div>
                             </div>
                             <span class="confidence-value" id="confidence-value">0%</span>
-                            <div class="confidence-note" style="font-size: 0.85em; color: #9aa3af; margin-top: 6px;">
+                            <div class="confidence-note ui-note-sm ui-mt-6">
                                 此指標反映模型對本次預測的把握度（策略一致性/數據穩定性等），非中獎機率。
                             </div>
                         </div>
@@ -606,6 +1136,31 @@
                         <div id="prediction-report" class="report-content"></div>
                     </div>
                 </div>
+
+                <!-- H6 Live Monitoring Panel (DAILY_539 only) -->
+                <div id="h6-monitoring-panel" class="prediction-card full-width" style="display:none;margin-top:14px">
+                    <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px">
+                        <h3 style="margin:0">H6 Live Monitoring</h3>
+                        <span id="h6-rollback-badge" style="padding:2px 10px;border-radius:12px;font-size:11px;font-weight:700;background:rgba(16,185,129,.15);color:#10b981;border:1px solid rgba(16,185,129,.35)">ACTIVE</span>
+                        <span id="h6-bear-badge" style="display:none;padding:2px 10px;border-radius:12px;font-size:11px;font-weight:700;background:rgba(248,81,73,.1);color:#f85149;border:1px solid rgba(248,81,73,.35)">BEAR WARNING</span>
+                    </div>
+                    <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:8px 16px;font-size:12px">
+                        <div><span style="color:var(--text-muted,#8b949e)">Active Strategy</span><br><b id="h6-active-strategy" style="font-size:11px">—</b></div>
+                        <div><span style="color:var(--text-muted,#8b949e)">Shadow Strategy</span><br><b id="h6-shadow-strategy" style="font-size:11px">—</b></div>
+                        <div><span style="color:var(--text-muted,#8b949e)">Live 30P Edge</span><br><b id="h6-live-30p-edge">—</b></div>
+                        <div><span style="color:var(--text-muted,#8b949e)">Live 50P Edge</span><br><b id="h6-live-50p-edge">—</b></div>
+                        <div><span style="color:var(--text-muted,#8b949e)">Consecutive Neg</span><br><b id="h6-consecutive-neg">—</b></div>
+                        <div><span style="color:var(--text-muted,#8b949e)">Current Regime</span><br><b id="h6-current-regime">—</b></div>
+                    </div>
+                    <div id="h6-rollback-reason-row" style="display:none;margin-top:8px;padding:6px 10px;border-radius:5px;background:rgba(248,81,73,.08);border:1px solid rgba(248,81,73,.25);font-size:12px;color:#f85149">
+                        ⚠️ Rollback Reason: <span id="h6-rollback-reason">—</span>
+                    </div>
+                    <div id="h6-outcomes-summary" style="margin-top:10px;font-size:12px;color:var(--text-muted,#8b949e)">近期開獎記錄載入中…</div>
+                    <div style="display:flex;gap:8px;margin-top:8px;align-items:center">
+                        <button id="h6-monitor-refresh-btn" class="btn-sm btn-secondary" style="font-size:11px;padding:3px 10px">🔄 刷新</button>
+                        <a href="#" id="h6-record-outcome-link" style="font-size:11px;color:var(--text-muted,#8b949e)">記錄開獎結果 →</a>
+                    </div>
+                </div>
             </section>
 
             <!-- History Section -->
@@ -613,16 +1168,22 @@
                 <div class="section-header">
                     <h2>歷史開獎記錄</h2>
                     <p>查看完整的開獎歷史數據</p>
+                    <div id="history-stats-container" class="ui-mt-15 ui-hidden">
+                        <!-- Stats initialized by JS -->
+                    </div>
                 </div>
 
                 <div class="history-controls">
-                    <input type="text" id="search-input" class="search-input" placeholder="搜尋期數或日期...">
+                    <div class="search-wrapper">
+                        <i data-lucide="search" class="icon-search"></i>
+                        <input type="text" id="search-input" class="search-input" placeholder="搜尋期數或日期...">
+                    </div>
                     <select id="sort-select" class="select-input">
                         <option value="desc">最新優先</option>
                         <option value="asc">最舊優先</option>
                     </select>
                     <button class="btn btn-primary" id="add-record-btn">
-                        <span class="btn-icon">➕</span>
+                        <i data-lucide="plus" class="icon-sm"></i>
                         新增記錄
                     </button>
                 </div>
@@ -635,8 +1196,8 @@
                                 <th>彩券類型</th>
                                 <th>開獎日期</th>
                                 <th>開獎號碼</th>
-                                <th>特別號</th>
-                                <th style="width: 120px;">操作</th>
+                                <th>特別號或第二區號碼</th>
+                                <th class="ui-th-actions">操作</th>
                             </tr>
                         </thead>
                         <tbody id="history-tbody"></tbody>
@@ -646,147 +1207,97 @@
                 <div class="pagination" id="pagination"></div>
             </section>
 
-            <!-- Smart Betting Section -->
-            <section id="smartbetting-section" class="section">
+            <!-- Smart Betting Section (Hidden by User Request) -->
+            <section id="smartbetting-section" class="section ui-hidden">
                 <div class="section-header">
                     <h2>聰明包牌系統</h2>
                     <p>使用旋轉矩陣策略，用最少注數覆蓋最多可能</p>
                 </div>
 
                 <div class="smart-betting-container">
-                    <!-- 🆕 智能雙注預測區 -->
-                    <div class="betting-card full-width"
-                        style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; margin-bottom: 20px;">
-                        <h3 style="color: white;">🎯 智能雙注預測</h3>
-                        <p style="color: rgba(255,255,255,0.9); font-size: 0.9em; margin-bottom: 15px;">
-                            基於全部歷史數據,使用選定的預測方法生成最有機會的兩注號碼
+                    <!-- Smart Betting Section -->
+                    <div class="betting-card full-width theme-indigo">
+                        <div class="card-header">
+                            <i data-lucide="crosshair" class="icon"></i>
+                            <h3>智能雙注預測</h3>
+                        </div>
+                        <p class="card-desc">
+                            基於全部歷史數據，使用選定的預測方法生成最高信心度的兩注號碼
                         </p>
 
-                        <div style="display: flex; align-items: end; gap: 15px; flex-wrap: wrap;">
-                            <div style="flex: 1; min-width: 200px;">
-                                <label
-                                    style="color: white; display: block; margin-bottom: 5px; font-size: 0.9em;">選擇預測方法:</label>
-                                <select id="dual-bet-strategy-select" class="select-input" style="width: 100%;">
-                                    <optgroup label="⭐ 雙注專用推薦">
-                                        <option value="optimized_ensemble" selected>🏆 優化集成預測 (最佳推薦)</option>
-                                        <option value="dual_bet_hybrid">🎯 雙注混合策略</option>
-                                        <option value="hot_cold_split">🔥❄️ 熱冷分離策略</option>
-                                        <option value="collaborative_hybrid">🤝 協作混合模式</option>
-                                    </optgroup>
-                                    <optgroup label="📊 高穩定性策略">
-                                        <option value="ensemble_combined">綜合集成</option>
-                                        <option value="statistical">多維統計分析</option>
-                                        <option value="bayesian">貝葉斯推論</option>
-                                        <option value="ml_forest">隨機森林</option>
-                                    </optgroup>
-                                    <optgroup label="🎲 其他策略">
-                                        <option value="frequency">頻率分析</option>
-                                        <option value="trend">趨勢回歸</option>
-                                        <option value="markov">馬可夫鏈</option>
-                                        <option value="montecarlo">蒙地卡羅模擬</option>
-                                        <option value="backend_optimized">後端優化策略</option>
+                        <div class="ui-row-controls">
+                            <div class="input-group">
+                                <label for="dual-bet-strategy-select">選擇預測方法:</label>
+                                <select id="dual-bet-strategy-select" class="select-input">
+                                    <optgroup label="雙注專用推薦">
+                                        <option value="optimized_ensemble" selected>優化集成預測 (最佳推薦)</option>
+                                        <option value="dual_bet_hybrid">雙注混合策略</option>
                                     </optgroup>
                                 </select>
                             </div>
 
-                            <button class="btn btn-primary" id="smart-dual-bet-btn"
-                                style="background: white; color: #667eea; font-weight: bold; min-width: 180px;">
-                                <span class="btn-icon">🚀</span>
+                            <button class="btn btn-primary" id="smart-dual-bet-btn">
+                                <i data-lucide="rocket" class="icon-sm"></i>
                                 生成智能雙注
                             </button>
-                        </div>
-
-                        <!-- 雙注結果顯示區 -->
-                        <div id="smart-dual-bet-results"
-                            style="display: none; margin-top: 20px; padding-top: 20px; border-top: 1px solid rgba(255,255,255,0.2);">
-                            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
-                                <div style="background: rgba(255,255,255,0.15); padding: 15px; border-radius: 10px;">
-                                    <h4 style="color: white; margin-bottom: 10px;">第一注（最高信心）</h4>
-                                    <div class="predicted-numbers" id="smart-dual-bet-numbers-1"></div>
-                                    <div style="margin-top: 10px; font-size: 0.9em;">
-                                        <span>信心度：</span>
-                                        <span id="smart-dual-bet-confidence-1"
-                                            style="font-weight: bold; font-size: 1.1em;">0%</span>
-                                    </div>
-                                </div>
-                                <div style="background: rgba(255,255,255,0.1); padding: 15px; border-radius: 10px;">
-                                    <h4 style="color: white; margin-bottom: 10px;">第二注（次高信心）</h4>
-                                    <div class="predicted-numbers" id="smart-dual-bet-numbers-2"></div>
-                                    <div style="margin-top: 10px; font-size: 0.9em;">
-                                        <span>信心度：</span>
-                                        <span id="smart-dual-bet-confidence-2"
-                                            style="font-weight: bold; font-size: 1.1em;">0%</span>
-                                    </div>
-                                </div>
-                            </div>
-                            <div style="margin-top: 15px; text-align: center; font-size: 0.9em;">
-                                <p id="smart-dual-bet-method" style="color: rgba(255,255,255,0.8);"></p>
-                            </div>
                         </div>
                     </div>
 
                     <!-- 🆕 熵驅動 8 注預測區 -->
-                    <div class="betting-card full-width"
-                        style="background: linear-gradient(135deg, #10B981 0%, #059669 100%); color: white; margin-bottom: 20px;">
-                        <h3 style="color: white;">🧠 熵驅動 Transformer 8 注預測</h3>
-                        <p style="color: rgba(255,255,255,0.9); font-size: 0.9em; margin-bottom: 15px;">
+                    <div class="betting-card full-width ui-card-theme-emerald ui-card-tight ui-card-mb-20">
+                        <h3 class="ui-title-light">🧠 熵驅動 Transformer 8 注預測</h3>
+                        <p class="ui-text-light ui-fs-09 ui-mb-15">
                             革命性的熵最大化方法，生成 8 注差異化號碼組合，避開傳統方法的「共識陷阱」
                         </p>
 
-                        <div style="display: flex; align-items: end; gap: 15px; flex-wrap: wrap;">
-                            <div style="flex: 1; min-width: 200px;">
-                                <label
-                                    style="color: white; display: block; margin-bottom: 5px; font-size: 0.9em;">選擇策略:</label>
-                                <select id="entropy-8-bets-strategy" class="select-input" style="width: 100%;">
+                        <div class="ui-row-controls ui-align-end ui-gap-15">
+                            <div class="ui-grow-min-200">
+                                <label for="entropy-8-bets-strategy" class="ui-label-sm">選擇策略:</label>
+                                <select id="entropy-8-bets-strategy" class="select-input ui-input-full">
                                     <option value="balanced" selected>⚖️ 平衡策略（4熱門+4冷門）</option>
                                     <option value="aggressive">🔥 激進策略（偏向冷門，高覆蓋率）</option>
                                     <option value="conservative">🛡️ 保守策略（偏向熱門，穩健投注）</option>
                                 </select>
                             </div>
 
-                            <button class="btn btn-primary" id="entropy-8-bets-btn"
-                                style="background: white; color: #059669; font-weight: bold; min-width: 180px;">
+                            <button class="btn btn-primary ui-btn-light-emerald ui-minw-180" id="entropy-8-bets-btn">
                                 <span class="btn-icon">🎲</span>
                                 生成熵優化 8 注
                             </button>
                         </div>
 
                         <!-- 結果顯示區 -->
-                        <div id="entropy-8-bets-results"
-                            style="display: none; margin-top: 20px; padding-top: 20px; border-top: 1px solid rgba(255,255,255,0.2);">
+                        <div id="entropy-8-bets-results" class="ui-hidden ui-divider-top">
 
                             <!-- 8 注號碼網格 -->
-                            <div id="entropy-8-bets-grid"
-                                style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px;">
+                            <div id="entropy-8-bets-grid" class="ui-grid-2-tight ui-grid-2-tight-cards">
                                 <!-- 動態生成 8 注 -->
                             </div>
 
                             <!-- 分析摘要 -->
-                            <div
-                                style="margin-top: 20px; padding: 15px; background: rgba(255,255,255,0.1); border-radius: 10px;">
-                                <h4 style="color: white; margin-bottom: 12px;">📊 多樣性分析</h4>
-                                <div
-                                    style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; text-align: center;">
+                            <div class="ui-subtle-panel-strong ui-mt-20">
+                                <h4 class="ui-title-light ui-mb-12">📊 多樣性分析</h4>
+                                <div class="ui-grid-3 ui-grid-center">
                                     <div>
-                                        <div style="font-size: 1.8em; font-weight: bold;" id="entropy-coverage-rate">-
+                                        <div class="ui-metric-value" id="entropy-coverage-rate">-
                                         </div>
-                                        <div style="font-size: 0.85em; opacity: 0.8;">覆蓋率</div>
+                                        <div class="ui-metric-label">覆蓋率</div>
                                     </div>
                                     <div>
-                                        <div style="font-size: 1.8em; font-weight: bold;" id="entropy-unique-numbers">-
+                                        <div class="ui-metric-value" id="entropy-unique-numbers">-
                                         </div>
-                                        <div style="font-size: 0.85em; opacity: 0.8;">覆蓋號碼數</div>
+                                        <div class="ui-metric-label">覆蓋號碼數</div>
                                     </div>
                                     <div>
-                                        <div style="font-size: 1.8em; font-weight: bold;" id="entropy-diversity-score">-
+                                        <div class="ui-metric-value" id="entropy-diversity-score">-
                                         </div>
-                                        <div style="font-size: 0.85em; opacity: 0.8;">多樣性分數</div>
+                                        <div class="ui-metric-label">多樣性分數</div>
                                     </div>
                                 </div>
                             </div>
 
                             <!-- 投注金額 -->
-                            <div style="margin-top: 15px; text-align: center; font-size: 1.1em;">
+                            <div class="ui-text-light ui-mt-15 ui-text-center ui-fs-11">
                                 💰 投注金額: <strong>NT$ 800</strong> (8 注 × 100)
                             </div>
                         </div>
@@ -811,7 +1322,7 @@
                             </select>
                         </div>
 
-                        <h4 style="margin-top: 20px;">智慧過濾條件</h4>
+                        <h4 class="ui-mt-20">智慧過濾條件</h4>
                         <div class="filter-options">
                             <label class="checkbox-label">
                                 <input type="checkbox" id="filter-consecutive" checked>
@@ -827,32 +1338,29 @@
                             </label>
                         </div>
 
-                        <button class="btn btn-primary" id="generate-smart-bet-btn"
-                            style="margin-top: 20px; width: 100%;">
+                        <button class="btn btn-primary ui-btn-full ui-mt-20" id="generate-smart-bet-btn">
                             <span class="btn-icon">🎯</span>
                             產生聰明組合
                         </button>
 
-                        <button class="btn btn-secondary" id="generate-hedging-btn"
-                            style="margin-top: 10px; width: 100%; background: linear-gradient(45deg, #FF512F, #DD2476);">
+                        <button class="btn btn-secondary ui-btn-full ui-mt-10 ui-btn-gradient-rose" id="generate-hedging-btn">
                             <span class="btn-icon">⚡️</span>
                             快速生成 2 注對沖 (熱門 vs 冷門)
                         </button>
                     </div>
 
                     <!-- 結果顯示區 -->
-                    <div class="betting-card full-width" id="smart-bet-results" style="display: none;">
+                    <div class="betting-card full-width ui-hidden" id="smart-bet-results">
                         <h3>3. 產生的投注組合</h3>
                         <div id="betting-combinations" class="combinations-list"></div>
 
                         <!-- 科學分析儀表板模板 (隱藏，由 JS 動態生成) -->
                         <template id="analysis-dashboard-template">
-                            <div class="analysis-dashboard"
-                                style="margin-top: 5px; padding-top: 5px; border-top: 1px solid rgba(255,255,255,0.1); font-size: 0.85em; display: flex; gap: 15px; color: #aaa;">
-                                <span class="metric-sum">和值: <b style="color: #fff;">-</b></span>
-                                <span class="metric-oe">奇偶: <b style="color: #fff;">-</b></span>
-                                <span class="metric-hl">大小: <b style="color: #fff;">-</b></span>
-                                <span class="metric-ac">AC值: <b style="color: #fff;">-</b></span>
+                            <div class="analysis-dashboard ui-analysis-dashboard">
+                                <span class="metric-sum">和值: <b class="ui-dashboard-value">-</b></span>
+                                <span class="metric-oe">奇偶: <b class="ui-dashboard-value">-</b></span>
+                                <span class="metric-hl">大小: <b class="ui-dashboard-value">-</b></span>
+                                <span class="metric-ac">AC值: <b class="ui-dashboard-value">-</b></span>
                             </div>
                         </template>
                     </div>
@@ -860,8 +1368,8 @@
         </div>
         </section>
 
-        <!-- ===== 自動學習 Section ===== -->
-        <section id="autolearning-section" class="section">
+        <!-- ===== 自動學習 Section (Hidden by User Request) ===== -->
+        <section id="autolearning-section" class="section ui-hidden">
             <div class="section-header">
                 <h2>🤖 AI 自動學習系統</h2>
                 <p>智能評估策略效能、自動排程優化，找出最佳預測配置</p>
@@ -869,141 +1377,124 @@
 
             <div class="autolearning-grid">
                 <!-- 🆕 智能策略評估卡片 -->
-                <div class="autolearning-card full-width"
-                    style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);">
-                    <h3 style="color: white;">🎯 智能策略評估</h3>
-                    <p style="color: rgba(255,255,255,0.9); font-size: 0.9em; margin-top: 5px; margin-bottom: 15px;">
+                <div class="autolearning-card full-width ui-card-theme-indigo ui-card-tight">
+                    <h3 class="ui-title-light">🎯 智能策略評估</h3>
+                    <p class="ui-text-light ui-fs-09 ui-mt-5 ui-mb-15">
                         自動測試所有預測策略（頻率、貝葉斯、馬可夫、蒙地卡羅、集成等），找出最佳方法
                     </p>
-                    <div style="display: flex; align-items: center; gap: 15px; flex-wrap: wrap;">
+                    <div class="ui-row-controls ui-items-center ui-gap-15 ui-m-0">
                         <div>
-                            <label
-                                style="color: white; display: block; margin-bottom: 5px; font-size: 0.9em;">測試集比例:</label>
-                            <select id="test-ratio-select" class="select-input" style="min-width: 150px;">
+                            <label for="test-ratio-select" class="ui-label-sm">測試集比例:</label>
+                            <select id="test-ratio-select" class="select-input ui-minw-150">
                                 <option value="0.1">10% (快速)</option>
                                 <option value="0.2" selected>20% (推薦)</option>
                                 <option value="0.3">30% (詳細)</option>
                             </select>
                         </div>
-                        <button class="btn btn-primary" id="evaluate-strategies-btn"
-                            style="margin-top: 20px; padding: 10px 20px;">
+                        <button class="btn btn-primary ui-btn-pad-10x20" id="evaluate-strategies-btn">
                             <span class="btn-icon">🔍</span>
                             開始評估策略
                         </button>
                     </div>
 
                     <!-- 評估進度 -->
-                    <div id="evaluation-progress" style="display: none; margin-top: 15px;">
+                    <div id="evaluation-progress" class="ui-hidden ui-mt-15">
                         <div class="progress-bar">
                             <div class="progress-fill" id="evaluation-progress-bar"></div>
                         </div>
-                        <div class="progress-text" id="evaluation-status" style="color: white;">準備中...</div>
+                        <div class="progress-text ui-text-light" id="evaluation-status">準備中...</div>
                     </div>
 
                     <!-- 最佳策略信息 -->
-                    <div id="best-strategy-info"
-                        style="display: none; margin-top: 15px; background: rgba(255,255,255,0.15); padding: 15px; border-radius: 8px;">
-                        <h4 style="color: white; margin: 0 0 10px 0;">🏆 最佳策略</h4>
-                        <div id="best-strategy-content" style="color: white;"></div>
+                    <div id="best-strategy-info" class="ui-subtle-panel-strong ui-hidden ui-mt-15">
+                        <h4 class="ui-title-light ui-m-0 ui-mb-10">🏆 最佳策略</h4>
+                        <div id="best-strategy-content" class="ui-text-light"></div>
                     </div>
                 </div>
 
                 <!-- 🆕 雙注優化預測結果 -->
-                <div class="autolearning-card full-width" id="eval-dual-bet-card" style="display: none;">
+                <div class="autolearning-card full-width ui-hidden" id="eval-dual-bet-card">
                     <h3>🎯 雙注優化預測（基於最佳策略）</h3>
-                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
-                        <div
-                            style="background: rgba(102, 126, 234, 0.1); padding: 20px; border-radius: 12px; border: 2px solid #667eea;">
-                            <h4 style="color: #667eea; margin-bottom: 15px;">第一注（最高信心）</h4>
-                            <div class="predicted-numbers" id="eval-dual-bet-numbers-1" style="margin-bottom: 10px;">
+                    <div class="ui-grid-2 ui-grid-no-margin">
+                        <div class="ui-dualbet-panel ui-dualbet-panel-a">
+                            <h4 class="ui-dualbet-title-a">第一注（最高信心）</h4>
+                            <div class="predicted-numbers ui-mb-10" id="eval-dual-bet-numbers-1">
                             </div>
                             <div class="mini-confidence">
-                                <span style="color: #999;">信心度：</span>
-                                <span id="eval-dual-bet-confidence-1" class="confidence-badge"
-                                    style="font-size: 1.2em; font-weight: bold; color: #667eea;">0%</span>
+                                <span class="ui-text-muted">信心度：</span>
+                                <span id="eval-dual-bet-confidence-1" class="confidence-badge ui-fs-12 ui-fw-bold ui-dualbet-title-a">0%</span>
                             </div>
                         </div>
-                        <div
-                            style="background: rgba(118, 75, 162, 0.1); padding: 20px; border-radius: 12px; border: 2px solid #764ba2;">
-                            <h4 style="color: #764ba2; margin-bottom: 15px;">第二注（次高信心）</h4>
-                            <div class="predicted-numbers" id="eval-dual-bet-numbers-2" style="margin-bottom: 10px;">
+                        <div class="ui-dualbet-panel ui-dualbet-panel-b">
+                            <h4 class="ui-dualbet-title-b">第二注（次高信心）</h4>
+                            <div class="predicted-numbers ui-mb-10" id="eval-dual-bet-numbers-2">
                             </div>
                             <div class="mini-confidence">
-                                <span style="color: #999;">信心度：</span>
-                                <span id="eval-dual-bet-confidence-2" class="confidence-badge"
-                                    style="font-size: 1.2em; font-weight: bold; color: #764ba2;">0%</span>
+                                <span class="ui-text-muted">信心度：</span>
+                                <span id="eval-dual-bet-confidence-2" class="confidence-badge ui-fs-12 ui-fw-bold ui-dualbet-title-b">0%</span>
                             </div>
                         </div>
                     </div>
-                    <div
-                        style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; margin-top: 20px; background: rgba(0,0,0,0.2); padding: 15px; border-radius: 8px;">
-                        <div style="text-align: center;">
-                            <div style="font-size: 0.85em; color: #999; margin-bottom: 5px;">使用策略</div>
-                            <div id="eval-dual-bet-strategy" style="font-size: 1.1em; font-weight: bold;">-</div>
+                    <div class="ui-subtle-panel ui-grid-3 ui-mt-20">
+                        <div class="ui-text-center">
+                            <div class="ui-label-sm ui-m-0">使用策略</div>
+                            <div id="eval-dual-bet-strategy" class="ui-fs-11 ui-fw-bold">-</div>
                         </div>
-                        <div style="text-align: center;">
-                            <div style="font-size: 0.85em; color: #999; margin-bottom: 5px;">綜合信心度</div>
-                            <div id="eval-dual-bet-overall-confidence"
-                                style="font-size: 1.1em; font-weight: bold; color: #667eea;">0%</div>
+                        <div class="ui-text-center">
+                            <div class="ui-label-sm ui-m-0">綜合信心度</div>
+                            <div id="eval-dual-bet-overall-confidence" class="ui-fs-11 ui-fw-bold ui-dualbet-title-a">0%</div>
                         </div>
-                        <div style="text-align: center;">
-                            <div style="font-size: 0.85em; color: #999; margin-bottom: 5px;">覆蓋範圍</div>
-                            <div style="font-size: 1.1em; font-weight: bold;">12個號碼</div>
+                        <div class="ui-text-center">
+                            <div class="ui-label-sm ui-m-0">覆蓋範圍</div>
+                            <div class="ui-fs-11 ui-fw-bold">12個號碼</div>
                         </div>
                     </div>
-                    <div id="eval-dual-bet-report" style="margin-top: 15px;"></div>
+                    <div id="eval-dual-bet-report" class="ui-mt-15"></div>
                 </div>
 
                 <!-- 評估結果詳情 -->
-                <div class="autolearning-card full-width" id="all-strategies-card" style="display: none;">
+                <div class="autolearning-card full-width ui-hidden" id="all-strategies-card">
                     <h3>📊 所有策略評估結果</h3>
-                    <div id="all-strategies-table" style="overflow-x: auto;"></div>
+                    <div id="all-strategies-table" class="ui-overflow-x"></div>
                 </div>
 
                 <!-- 排程管理區域 (1:1:1 等寬) -->
-                <div class="schedule-row"
-                    style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; margin-bottom: 20px; grid-column: 1 / -1;">
+                <div class="schedule-row ui-schedule-row">
                     <!-- 自動排程 -->
-                    <div class="autolearning-card" style="margin: 0;">
+                    <div class="autolearning-card ui-card-tight">
                         <h3>⏰ 自動排程</h3>
-                        <div class="control-group" style="margin-bottom: 15px;">
-                            <label
-                                style="font-size: 0.9em; color: #999; display: block; margin-bottom: 5px;">每日執行時間</label>
-                            <input type="time" id="schedule-time" class="select-input" value="02:00"
-                                style="width: 100%;">
+                        <div class="control-group ui-mb-15">
+                            <label for="schedule-time" class="ui-label-sm">每日執行時間</label>
+                            <input type="time" id="schedule-time" class="select-input ui-input-full" value="02:00">
                         </div>
 
                         <!-- 🎯 目標適應度設定 -->
-                        <div class="control-group" style="margin-bottom: 15px;">
-                            <label style="font-size: 0.9em; color: #999; display: block; margin-bottom: 5px;">
+                        <div class="control-group ui-mb-15">
+                            <label for="target-fitness-input" class="ui-label-sm">
                                 🎯 目標適應度 (達標後自動停止)
                             </label>
-                            <div style="display: flex; gap: 8px; align-items: center;">
-                                <input type="number" id="target-fitness-input" class="select-input"
-                                    placeholder="例如: 0.05 (5%)" step="0.01" min="0.01" max="1.0" style="flex: 1;">
-                                <button class="btn btn-primary" id="set-target-fitness-btn"
-                                    style="padding: 8px 16px; font-size: 0.85em;">
+                            <div class="ui-flex-gap-8">
+                                <input type="number" id="target-fitness-input" class="select-input ui-flex-1"
+                                    placeholder="例如: 0.05 (5%)" step="0.01" min="0.01" max="1.0">
+                                <button class="btn btn-primary ui-btn-sm" id="set-target-fitness-btn">
                                     設定
                                 </button>
                             </div>
-                            <div style="font-size: 0.8em; color: #666; margin-top: 5px;">
+                            <div class="ui-note-sm ui-mt-5">
                                 <span id="target-fitness-display">未設定（將執行完整 30 代）</span>
                             </div>
                         </div>
 
-                        <div style="display: flex; flex-direction: column; gap: 8px;">
-                            <button class="btn btn-primary" id="start-schedule-btn"
-                                style="width: 100%; font-size: 0.9em; padding: 10px;">
+                        <div class="ui-stack-8">
+                            <button class="btn btn-primary ui-btn-full" id="start-schedule-btn">
                                 <span class="btn-icon">▶️</span>
                                 啟動排程
                             </button>
-                            <button class="btn btn-success" id="run-schedule-now-btn"
-                                style="width: 100%; font-size: 0.9em; padding: 10px;">
+                            <button class="btn btn-success ui-btn-full" id="run-schedule-now-btn">
                                 <span class="btn-icon">⚡</span>
                                 立即執行一次
                             </button>
-                            <button class="btn btn-danger" id="stop-schedule-btn"
-                                style="width: 100%; font-size: 0.9em; padding: 10px;">
+                            <button class="btn btn-danger ui-btn-full" id="stop-schedule-btn">
                                 <span class="btn-icon">⏹️</span>
                                 停止排程
                             </button>
@@ -1013,37 +1504,34 @@
                     <!-- 系統狀態 -->
                     <div class="autolearning-card">
                         <h3>📊 系統狀態</h3>
-                        <div class="status-display" style="margin-bottom: 15px;">
-                            <div class="status-item" style="margin-bottom: 10px;">
-                                <span class="label" style="color: #999; font-size: 0.9em;">排程狀態:</span>
-                                <span class="value" id="schedule-status" style="font-weight: bold;">未啟動</span>
+                        <div class="status-display ui-mb-15">
+                            <div class="status-item ui-mb-10">
+                                <span class="label ui-label-sm">排程狀態:</span>
+                                <span class="value ui-fw-bold" id="schedule-status">未啟動</span>
                             </div>
-                            <div class="status-item" style="margin-bottom: 10px;">
-                                <span class="label" style="color: #999; font-size: 0.9em;">下次執行:</span>
-                                <span class="value" id="next-run-time" style="font-weight: bold;">-</span>
+                            <div class="status-item ui-mb-10">
+                                <span class="label ui-label-sm">下次執行:</span>
+                                <span class="value ui-fw-bold" id="next-run-time">-</span>
                             </div>
                             <div class="status-item">
-                                <span class="label" style="color: #999; font-size: 0.9em;">最佳適應度:</span>
-                                <span class="value" id="best-fitness"
-                                    style="font-weight: bold; color: #667eea;">-</span>
+                                <span class="label ui-label-sm">最佳適應度:</span>
+                                <span class="value ui-fw-bold ui-text-accent" id="best-fitness">-</span>
                             </div>
                         </div>
-                        <button class="btn btn-secondary" id="refresh-status-btn"
-                            style="width: 100%; font-size: 0.9em; padding: 10px;">
+                        <button class="btn btn-secondary ui-btn-full" id="refresh-status-btn">
                             <span class="btn-icon">🔄</span>
                             刷新狀態
                         </button>
                     </div>
 
                     <!-- 使用說明 -->
-                    <div class="autolearning-card"
-                        style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);">
-                        <h3 style="color: white;">💡 使用說明</h3>
-                        <div style="color: rgba(255,255,255,0.95); font-size: 0.85em; line-height: 1.6;">
-                            <p style="margin: 10px 0;"><strong>⏰ 自動排程</strong><br>設定每日自動執行優化時間</p>
-                            <p style="margin: 10px 0;"><strong>⚡ 立即執行</strong><br>不等待排程，立即優化參數</p>
-                            <p style="margin: 10px 0;"><strong>📊 系統狀態</strong><br>查看排程運行狀態和結果</p>
-                            <p style="margin: 10px 0; padding-top: 10px; border-top: 1px solid rgba(255,255,255,0.3);">
+                    <div class="autolearning-card ui-card-theme-indigo ui-card-tight">
+                        <h3 class="ui-title-light">💡 使用說明</h3>
+                        <div class="ui-text-light ui-fs-085 ui-lh-16">
+                            <p class="ui-my-10"><strong>⏰ 自動排程</strong><br>設定每日自動執行優化時間</p>
+                            <p class="ui-my-10"><strong>⚡ 立即執行</strong><br>不等待排程，立即優化參數</p>
+                            <p class="ui-my-10"><strong>📊 系統狀態</strong><br>查看排程運行狀態和結果</p>
+                            <p class="ui-my-10 ui-pt-10 ui-border-top-light">
                                 <small>提示：排程會自動從資料庫讀取最新數據進行優化</small>
                             </p>
                         </div>
@@ -1051,61 +1539,52 @@
                 </div>
 
                 <!-- 🚀 進階優化區域 (全寬) -->
-                <div class="autolearning-card full-width"
-                    style="background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); margin-bottom: 20px;">
-                    <h3 style="color: white;">🚀 進階優化系統 (預期提升 2-4 倍成功率)</h3>
-                    <p style="color: rgba(255,255,255,0.9); font-size: 0.9em; margin-top: 5px; margin-bottom: 15px;">
+                <div class="autolearning-card full-width ui-card-theme-rose ui-card-tight ui-card-mb-20">
+                    <h3 class="ui-title-light">🚀 進階優化系統 (預期提升 2-4 倍成功率)</h3>
+                    <p class="ui-text-light ui-fs-09 ui-mt-5 ui-mb-15">
                         使用多階段優化和自適應窗口技術，大幅提升預測準確度（從 3-5% 提升至 8-15%）
                     </p>
 
-                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-top: 15px;">
+                    <div class="ui-grid-2 ui-mt-15">
                         <!-- 多階段優化 -->
-                        <div style="background: rgba(255,255,255,0.15); padding: 20px; border-radius: 12px;">
-                            <h4 style="color: white; margin-bottom: 10px;">
+                        <div class="ui-subtle-panel-strong">
+                            <h4 class="ui-title-light ui-mb-10">
                                 🎯 多階段優化
-                                <span
-                                    style="background: rgba(255,255,255,0.3); padding: 2px 8px; border-radius: 4px; font-size: 0.7em; margin-left: 8px;">推薦</span>
+                                <span class="ui-chip-light">推薦</span>
                             </h4>
-                            <ul
-                                style="color: rgba(255,255,255,0.95); font-size: 0.85em; line-height: 1.8; padding-left: 20px; margin-bottom: 15px;">
+                            <ul class="ui-list-light">
                                 <li>階段1：粗調 (50代) - 快速探索</li>
                                 <li>階段2：精調 (100代) - 深度優化</li>
                                 <li>階段3：微調 (50代) - 精確調整</li>
                             </ul>
-                            <div
-                                style="background: rgba(0,0,0,0.2); padding: 10px; border-radius: 6px; margin-bottom: 10px; color: rgba(255,255,255,0.9); font-size: 0.85em;">
+                            <div class="ui-panel-dark ui-text-light ui-mb-10 ui-fs-085">
                                 <div>⏱️ 預計耗時: 10-15 分鐘</div>
                                 <div>📈 預期提升: 50-100% 適應度</div>
                                 <div>🎯 目標成功率: 8-12%</div>
                             </div>
-                            <button class="btn btn-primary" id="advanced-multi-stage-btn"
-                                style="width: 100%; padding: 12px; font-size: 0.95em; background: white; color: #f5576c; font-weight: bold;">
+                            <button class="btn btn-primary ui-btn-light-rose ui-btn-lg" id="advanced-multi-stage-btn">
                                 <span class="btn-icon">🚀</span>
                                 執行多階段優化
                             </button>
                         </div>
 
                         <!-- 自適應窗口優化 -->
-                        <div style="background: rgba(255,255,255,0.15); padding: 20px; border-radius: 12px;">
-                            <h4 style="color: white; margin-bottom: 10px;">
+                        <div class="ui-subtle-panel-strong">
+                            <h4 class="ui-title-light ui-mb-10">
                                 🔍 自適應窗口優化
-                                <span
-                                    style="background: rgba(255,255,255,0.3); padding: 2px 8px; border-radius: 4px; font-size: 0.7em; margin-left: 8px;">快速</span>
+                                <span class="ui-chip-light">快速</span>
                             </h4>
-                            <ul
-                                style="color: rgba(255,255,255,0.95); font-size: 0.85em; line-height: 1.8; padding-left: 20px; margin-bottom: 15px;">
+                            <ul class="ui-list-light">
                                 <li>測試多種數據窗口 (100/200/300/500/全部)</li>
                                 <li>自動找出最佳訓練數據量</li>
                                 <li>排除過時模式，提高時效性</li>
                             </ul>
-                            <div
-                                style="background: rgba(0,0,0,0.2); padding: 10px; border-radius: 6px; margin-bottom: 10px; color: rgba(255,255,255,0.9); font-size: 0.85em;">
+                            <div class="ui-panel-dark ui-text-light ui-mb-10 ui-fs-085">
                                 <div>⏱️ 預計耗時: 5-8 分鐘</div>
                                 <div>📈 預期提升: 20-30% 適應度</div>
                                 <div>🎯 目標成功率: 6-10%</div>
                             </div>
-                            <button class="btn btn-primary" id="advanced-adaptive-window-btn"
-                                style="width: 100%; padding: 12px; font-size: 0.95em; background: white; color: #f093fb; font-weight: bold;">
+                            <button class="btn btn-primary ui-btn-light-rose ui-btn-lg" id="advanced-adaptive-window-btn">
                                 <span class="btn-icon">🔍</span>
                                 執行自適應窗口優化
                             </button>
@@ -1113,65 +1592,51 @@
                     </div>
 
                     <!-- 進階優化進度顯示 -->
-                    <div id="advanced-optimization-progress"
-                        style="display: none; margin-top: 20px; background: rgba(0,0,0,0.3); padding: 20px; border-radius: 12px;">
-                        <h4 style="color: white; margin-bottom: 10px; display: flex; align-items: center; gap: 10px;">
-                            <span id="advanced-progress-icon" style="font-size: 1.2em;">⏳</span>
+                    <div id="advanced-optimization-progress" class="ui-panel-dark-20 ui-hidden ui-mt-20">
+                        <h4 class="ui-title-light ui-flex-between ui-flex-start ui-mb-10">
+                            <span id="advanced-progress-icon" class="ui-fs-12">⏳</span>
                             <span id="advanced-progress-title">正在優化中...</span>
                         </h4>
-                        <div
-                            style="background: rgba(0,0,0,0.3); border-radius: 8px; overflow: hidden; height: 30px; margin-bottom: 15px;">
-                            <div id="advanced-progress-bar"
-                                style="height: 100%; background: linear-gradient(90deg, #4ade80, #22c55e); width: 0%; transition: width 0.3s; display: flex; align-items: center; justify-content: center; color: white; font-weight: bold; font-size: 0.9em;">
+                        <div class="ui-progress-shell">
+                            <div id="advanced-progress-bar" class="ui-progress-fill">
                                 <span id="advanced-progress-percentage">0%</span>
                             </div>
                         </div>
-                        <div id="advanced-progress-status"
-                            style="color: rgba(255,255,255,0.9); font-size: 0.9em; line-height: 1.6;">
+                        <div id="advanced-progress-status" class="ui-text-light ui-fs-09 ui-lh-16">
                             正在初始化...
                         </div>
                     </div>
 
                     <!-- 進階優化結果顯示 -->
-                    <div id="advanced-optimization-result"
-                        style="display: none; margin-top: 20px; background: rgba(0,0,0,0.3); padding: 20px; border-radius: 12px;">
-                        <h4 style="color: white; margin-bottom: 15px; display: flex; align-items: center; gap: 10px;">
-                            <span style="font-size: 1.2em;">🎉</span>
+                    <div id="advanced-optimization-result" class="ui-panel-dark-20 ui-hidden ui-mt-20">
+                        <h4 class="ui-title-light ui-flex-between ui-flex-start ui-mb-15">
+                            <span class="ui-fs-12">🎉</span>
                             <span>優化完成！</span>
                         </h4>
-                        <div
-                            style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; margin-bottom: 15px;">
-                            <div
-                                style="background: rgba(255,255,255,0.1); padding: 15px; border-radius: 8px; text-align: center;">
-                                <div style="color: rgba(255,255,255,0.7); font-size: 0.85em; margin-bottom: 5px;">最佳適應度
+                        <div class="ui-grid-3 ui-mb-15">
+                            <div class="ui-subtle-panel ui-text-center">
+                                <div class="ui-metric-caption">最佳適應度
                                 </div>
-                                <div id="advanced-result-fitness"
-                                    style="color: #4ade80; font-size: 1.8em; font-weight: bold;">-</div>
+                                <div id="advanced-result-fitness" class="ui-metric-value ui-text-success">-</div>
                             </div>
-                            <div
-                                style="background: rgba(255,255,255,0.1); padding: 15px; border-radius: 8px; text-align: center;">
-                                <div style="color: rgba(255,255,255,0.7); font-size: 0.85em; margin-bottom: 5px;">提升幅度
+                            <div class="ui-subtle-panel ui-text-center">
+                                <div class="ui-metric-caption">提升幅度
                                 </div>
-                                <div id="advanced-result-improvement"
-                                    style="color: #fbbf24; font-size: 1.8em; font-weight: bold;">-</div>
+                                <div id="advanced-result-improvement" class="ui-metric-value ui-text-warn">-</div>
                             </div>
-                            <div
-                                style="background: rgba(255,255,255,0.1); padding: 15px; border-radius: 8px; text-align: center;">
-                                <div style="color: rgba(255,255,255,0.7); font-size: 0.85em; margin-bottom: 5px;">優化方法
+                            <div class="ui-subtle-panel ui-text-center">
+                                <div class="ui-metric-caption">優化方法
                                 </div>
-                                <div id="advanced-result-method"
-                                    style="color: #60a5fa; font-size: 1.2em; font-weight: bold;">-</div>
+                                <div id="advanced-result-method" class="ui-metric-method ui-text-info">-</div>
                             </div>
                         </div>
-                        <div id="advanced-result-details"
-                            style="background: rgba(0,0,0,0.2); padding: 15px; border-radius: 8px; color: rgba(255,255,255,0.9); font-size: 0.9em; line-height: 1.6;">
+                        <div id="advanced-result-details" class="ui-panel-dark ui-text-light ui-fs-09 ui-lh-16">
                             <!-- 詳細信息將在這裡顯示 -->
                         </div>
                     </div>
 
                     <!-- 進階優化說明 -->
-                    <div
-                        style="margin-top: 15px; background: rgba(0,0,0,0.2); padding: 12px; border-radius: 8px; color: rgba(255,255,255,0.95); font-size: 0.85em;">
+                    <div class="ui-panel-dark ui-text-light ui-mt-15 ui-fs-085">
                         <strong>💡 使用建議：</strong>
                         首次使用建議先執行「自適應窗口優化」（較快），確認效果後再執行「多階段優化」（最佳效果）。
                         兩者都會在後台執行，不會阻塞其他操作。
@@ -1179,44 +1644,40 @@
                 </div>
 
                 <!-- 最佳配置 (全寬，橫向卡片) -->
-                <div class="autolearning-card full-width" style="margin-bottom: 20px;">
-                    <div
-                        style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
-                        <h3 style="margin: 0;">🏆 最佳配置與優化結果</h3>
-                        <div style="display: flex; gap: 10px;">
-                            <button class="btn btn-secondary" id="view-optimization-results-btn"
-                                style="font-size: 0.9em; padding: 8px 16px;">
+                <div class="autolearning-card full-width ui-card-mb-20">
+                    <div class="ui-flex-between ui-mb-15">
+                        <h3 class="ui-m-0">🏆 最佳配置與優化結果</h3>
+                        <div class="ui-flex-gap-10">
+                            <button class="btn btn-secondary ui-btn-sm" id="view-optimization-results-btn">
                                 <span class="btn-icon">📊</span>
                                 查看優化結果
                             </button>
-                            <button class="btn btn-secondary" id="load-config-btn"
-                                style="font-size: 0.9em; padding: 8px 16px;">
+                            <button class="btn btn-secondary ui-btn-sm" id="load-config-btn">
                                 <span class="btn-icon">📥</span>
                                 查詢目前配置
                             </button>
                         </div>
                     </div>
-                    <div id="best-config-display" style="font-size: 0.9em;">
+                    <div id="best-config-display" class="ui-fs-09">
                         <p class="placeholder-text">尚無優化記錄</p>
                     </div>
 
                     <!-- 優化結果詳情面板 -->
-                    <div id="optimization-results-panel"
-                        style="display: none; margin-top: 20px; background: rgba(0,0,0,0.2); padding: 20px; border-radius: 12px;">
-                        <h4 style="color: white; margin-bottom: 15px; display: flex; align-items: center; gap: 10px;">
-                            <span style="font-size: 1.2em;">📊</span>
+                    <div id="optimization-results-panel" class="ui-panel-dark-20 ui-hidden ui-mt-20">
+                        <h4 class="ui-title-light ui-flex-between ui-flex-start ui-mb-15">
+                            <span class="ui-fs-12">📊</span>
                             <span>優化結果詳情</span>
                         </h4>
-                        <div id="optimization-results-content" style="color: rgba(255,255,255,0.9);">
+                        <div id="optimization-results-content" class="ui-text-light">
                             <!-- 動態內容 -->
                         </div>
                     </div>
                 </div>
 
                 <!-- 進化趨勢圖 (全寬) -->
-                <div class="autolearning-card full-width" style="margin-bottom: 20px;">
+                <div class="autolearning-card full-width ui-card-mb-20">
                     <h3>📈 進化趨勢圖</h3>
-                    <div class="chart-container" style="position: relative; height: 320px; width: 100%;">
+                    <div class="chart-container ui-chart-320">
                         <canvas id="evolution-chart"></canvas>
                     </div>
                 </div>
@@ -1245,7 +1706,151 @@
                 </div>
             </div>
         </section>
-        </div>
+
+        <!-- Next Draw Prediction Section -->
+        <section id="next-draw-section" class="section">
+            <div class="section-header">
+                <h2>目前最佳策略總覽</h2>
+                <p>顯示各彩種正式驗證中的最佳策略與策略排名；下方區塊為即時下一期預測。</p>
+            </div>
+
+            <!-- Best Strategy Summary Panel -->
+            <div id="decision-v3-panel" style="margin-bottom:20px">
+                <div class="card">
+                    <div class="card-header" style="display:flex;align-items:center;gap:8px;justify-content:space-between">
+                        <span>🏆 各彩種正式策略總覽</span>
+                        <button id="decision-refresh-btn" class="btn btn-secondary" style="font-size:12px;padding:4px 10px">🔄 重新整理</button>
+                    </div>
+                    <div class="card-body">
+                        <div id="decision-v3-content" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:12px">
+                            <div style="text-align:center;color:#888;padding:20px;grid-column:1/-1">載入各彩種正式策略總覽…</div>
+                        </div>
+                        <div style="font-size:11px;color:#888;margin-top:10px;padding-top:8px;border-top:1px solid #eee">
+                            💡 這裡顯示系統目前已驗證（PRODUCTION / WATCH） 的最佳策略與各注數排名，僅作總覽，不是下一期建議。
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="next-draw-content" class="nd-content">
+                <div class="next-draw-loading">
+                    <div class="loading-spinner"></div>
+                    <p>正在從 RSM Coordinator 生成預測…</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- ═══════════════════════════════════════ TRACKING SECTION ════════════════════════════════════ -->
+        <section id="tracking-section" class="section">
+          <div class="section-header">
+            <h2>📊 預測追蹤</h2>
+            <p>儲存每次預測快照，開獎後自動比對，追蹤策略真實命中率。</p>
+          </div>
+          <div class="section-content">
+
+            <!-- 控制列 -->
+            <div class="tracking-controls" style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-bottom:16px">
+              <span id="pt-current-game-label" style="font-weight:600;font-size:14px;color:#555;min-width:60px"></span>
+              <button id="pt-snapshot-btn" class="btn btn-primary">🎯 產生預測快照</button>
+              <button id="pt-resolve-btn" class="btn btn-secondary">🔄 比對待解析預測</button>
+              <button id="pt-startup-btn" class="btn btn-secondary">🚀 啟動補全</button>
+            </div>
+
+            <!-- 排程狀態卡片 -->
+            <div class="pt-sched-cards" id="pt-schedule-status">
+              <!-- 由 JS 填充 -->
+            </div>
+
+            <!-- 策略表現 -->
+            <div class="card mb-16">
+              <div class="card-header" style="display:flex;align-items:center;gap:8px">
+                <span>📈 策略命中率統計</span>
+                <label style="display:flex;align-items:center;gap:4px;font-size:12px;font-weight:normal;margin-left:auto;cursor:pointer">
+                  <input type="checkbox" id="pt-valid-toggle" checked>
+                  僅計正式快照
+                </label>
+                <span id="pt-perf-filter-label" style="font-size:12px;color:#27ae60">（僅計正式快照）</span>
+              </div>
+              <div class="card-body">
+                <div id="pt-perf-summary"></div>
+                <div style="overflow-x:auto">
+                <table class="data-table" style="width:100%">
+                  <thead>
+                    <tr>
+                      <th>注數</th>
+                      <th>目前最佳策略</th>
+                      <th>狀態</th>
+                      <th>已解析期數</th>
+                      <th>成功期數</th>
+                      <th>成功率</th>
+                      <th>隨機基準</th>
+                      <th>Edge</th>
+                      <th>平均注數</th>
+                      <th>待解析</th>
+                    </tr>
+                  </thead>
+                  <tbody id="pt-perf-body">
+                    <tr><td colspan="10" style="text-align:center;color:#888">尚無成功記錄（正式快照尚未累積）</td></tr>
+                  </tbody>
+                </table>
+                </div>
+              </div>
+            </div>
+
+            <!-- 歷史清單 -->
+            <div class="card mb-16">
+              <div class="card-header">🗂️ 歷史預測記錄</div>
+              <div class="card-body" style="overflow-x:auto">
+                <table class="data-table" style="width:100%">
+                  <thead>
+                    <tr>
+                      <th>彩種</th>
+                      <th>日期</th>
+                      <th>期數</th>
+                      <th>最佳策略</th>
+                      <th>預測號碼</th>
+                      <th>實際開獎號碼</th>
+                      <th>最佳命中</th>
+                      <th>檢討</th>
+                      <th>解析狀態</th>
+                    </tr>
+                  </thead>
+                  <tbody id="pt-hist-body">
+                    <tr><td colspan="9" style="text-align:center;color:#888">尚無記錄</td></tr>
+                  </tbody>
+                </table>
+                <!-- 分頁 -->
+                <div style="display:flex;justify-content:center;align-items:center;gap:12px;margin-top:10px">
+                  <button id="pt-prev-btn" class="btn btn-sm btn-secondary" disabled>◀ 上一頁</button>
+                  <span id="pt-page-info" style="font-size:13px;color:#888">第 1 / 1 頁</span>
+                  <button id="pt-next-btn" class="btn btn-sm btn-secondary" disabled>下一頁 ▶</button>
+                </div>
+              </div>
+            </div>
+
+            <!-- 排程歷史 -->
+            <div class="card">
+              <div class="card-header">📅 排程歷史</div>
+              <div class="card-body" style="overflow-x:auto">
+                <table class="data-table" style="width:100%">
+                  <thead>
+                    <tr>
+                      <th>目標期號</th>
+                      <th>目標日期</th>
+                      <th>排程時間</th>
+                      <th>狀態</th>
+                      <th>快照</th>
+                    </tr>
+                  </thead>
+                  <tbody id="pt-sched-hist-body">
+                    <tr><td colspan="5" style="text-align:center;color:#888">尚無排程記錄</td></tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+
+          </div>
+        </section>
 
         <!-- ══════════════════════════════════════ REPLAY SECTION ════════════════════════════════════ -->
         <section id="replay-section" class="section">
@@ -1327,13 +1932,24 @@
                   </select>
                 </div>
                 <div>
+                  <label style="display:block;font-size:12px;margin-bottom:4px">策略生命週期</label>
+                  <select id="rp-lifecycle-select" class="form-control" style="min-width:140px">
+                    <option value="">全部</option>
+                    <option value="ONLINE">🟢 上線 (ONLINE)</option>
+                    <option value="OFFLINE">⚫ 下線 (OFFLINE)</option>
+                    <option value="REJECTED">🔴 拒絕 (REJECTED)</option>
+                    <option value="OBSERVATION">🟡 觀察 (OBSERVATION)</option>
+                    <option value="RETIRED">⚪ 退役 (RETIRED)</option>
+                  </select>
+                </div>
+                <div>
                   <label style="display:block;font-size:12px;margin-bottom:4px">策略</label>
                   <select id="rp-strategy-select" class="form-control" style="min-width:200px">
                     <option value="">全部</option>
                   </select>
                 </div>
                 <div>
-                  <label style="display:block;font-size:12px;margin-bottom:4px">狀態</label>
+                  <label style="display:block;font-size:12px;margin-bottom:4px">回放狀態</label>
                   <select id="rp-status-select" class="form-control" style="min-width:140px">
                     <option value="">全部</option>
                     <option value="PREDICTED">PREDICTED</option>
@@ -1397,7 +2013,9 @@
                       <th>期號</th>
                       <th>日期</th>
                       <th>策略</th>
-                      <th>狀態</th>
+                      <th>生命週期</th>
+                      <th>回放狀態</th>
+                      <th>拒絕原因</th>
                       <th>預測號碼</th>
                       <th>實際開獎</th>
                       <th>命中號碼</th>
@@ -1406,7 +2024,7 @@
                     </tr>
                   </thead>
                   <tbody id="rp-hist-body">
-                    <tr><td colspan="9" style="text-align:center;color:#888">請選擇條件後按「查詢」</td></tr>
+                    <tr><td colspan="11" style="text-align:center;color:#888">請選擇條件後按「查詢」</td></tr>
                   </tbody>
                 </table>
                 <div style="display:flex;justify-content:center;align-items:center;gap:12px;margin-top:10px">
@@ -1419,16 +2037,494 @@
 
           </div>
         </section>
+
+        <!-- ═══════════════════════════════════════ REVIEWS SECTION ════════════════════════════════════ -->
+        <section id="reviews-section" class="section">
+          <div class="section-header">
+            <h2>📋 研究檢討</h2>
+            <p>本頁為檢討觀測台，顯示 AI Agent 自動產生之檢討結果與狀態。</p>
+          </div>
+          <div class="section-content">
+
+            <!-- 儀表板 -->
+            <div id="rv-dashboard" class="rv-dashboard"></div>
+
+            <!-- Tabs -->
+            <div class="rv-tabs">
+              <button class="rv-tab active" id="rv-tab-sessions">會議列表</button>
+              <button class="rv-tab" id="rv-tab-actions">行動總覽</button>
+            </div>
+
+            <!-- 列表視圖 -->
+            <div id="rv-list-view">
+              <div class="rv-filter-bar">
+                <select id="rv-filter-status" class="select-input rv-select">
+                  <option value="">全部狀態</option>
+                  <option value="OPEN">OPEN</option>
+                  <option value="RESOLVED">RESOLVED</option>
+                </select>
+                <select id="rv-filter-type" class="select-input rv-select">
+                  <option value="">全部類型</option>
+                  <option value="daily_review">daily_review</option>
+                  <option value="deep_review">deep_review</option>
+                  <option value="strategy_review">strategy_review</option>
+                </select>
+                <div class="rv-pager">
+                  <button id="rv-prev-btn" class="btn-sm btn-secondary">← 上一頁</button>
+                  <span id="rv-page-info">-</span>
+                  <button id="rv-next-btn" class="btn-sm btn-secondary">下一頁 →</button>
+                </div>
+              </div>
+              <div style="overflow-x:auto">
+                <table class="data-table rv-table" style="width:100%">
+                  <thead>
+                    <tr>
+                      <th>彩種</th>
+                      <th>期號</th>
+                      <th>開獎日</th>
+                      <th>決策</th>
+                      <th>信心</th>
+                      <th>狀態</th>
+                      <th>操作</th>
+                    </tr>
+                  </thead>
+                  <tbody id="rv-session-tbody">
+                    <tr><td colspan="7" class="rv-empty">載入中...</td></tr>
+                  </tbody>
+                </table>
+              </div>
+
+              <!-- 行動總覽面板 -->
+              <div id="rv-actions-panel" class="rv-actions-panel" style="display:none"></div>
+            </div>
+
+            <!-- 詳情視圖 -->
+            <div id="rv-detail-view" class="rv-hidden">
+              <button id="rv-back-btn" class="btn-sm btn-secondary" style="margin-bottom:12px">← 返回列表</button>
+              <div id="rv-detail"></div>
+            </div>
+
+          </div>
+        </section>
+
+        <!-- Orchestration Section -->
+        <section id="orchestration-section" class="section">
+          <div class="section-header">
+            <h2>任務編排</h2>
+            <p class="section-subtitle" id="orc-subtitle">可切換 Planner / Worker 組合的雙 Agent 自動化排程</p>
+          </div>
+
+          <!-- Summary Dashboard -->
+          <div id="orc-summary" style="display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:12px">
+            <div class="metric-card"><div class="metric-label">今日任務</div><div class="metric-value" id="orc-total">—</div></div>
+            <div class="metric-card"><div class="metric-label">進行中</div><div class="metric-value" id="orc-running">—</div></div>
+            <div class="metric-card"><div class="metric-label">已完成</div><div class="metric-value" id="orc-completed">—</div></div>
+            <div class="metric-card"><div class="metric-label">Worker 狀態</div><div class="metric-value" id="orc-worker-status">—</div></div>
+          </div>
+
+          <!-- H6 Live State Panel (DAILY_539) -->
+          <div id="orc-h6-panel" class="card mb-16" style="padding:12px 14px;display:none">
+            <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px;font-weight:600;font-size:0.9rem">
+              <span>H6 DAILY_539 監控</span>
+              <span id="orc-h6-rollback-badge" style="padding:1px 9px;border-radius:10px;font-size:11px;font-weight:700;background:rgba(16,185,129,.15);color:#10b981;border:1px solid rgba(16,185,129,.35)">ACTIVE</span>
+              <span id="orc-h6-bear-badge" style="display:none;padding:1px 9px;border-radius:10px;font-size:11px;font-weight:700;background:rgba(248,81,73,.1);color:#f85149;border:1px solid rgba(248,81,73,.35)">BEAR</span>
+            </div>
+            <div style="display:flex;flex-wrap:wrap;gap:6px 20px;font-size:12px;color:var(--text-muted,#8b949e)">
+              <span>Active: <b id="orc-h6-active" style="color:var(--text-color,#c9d1d9);font-size:11px">—</b></span>
+              <span>Shadow: <b id="orc-h6-shadow" style="color:var(--text-color,#c9d1d9);font-size:11px">—</b></span>
+              <span>30P Edge: <b id="orc-h6-edge30">—</b></span>
+              <span>50P Edge: <b id="orc-h6-edge50">—</b></span>
+              <span>Consec Neg: <b id="orc-h6-consec-neg">—</b></span>
+              <span>Regime: <b id="orc-h6-regime">—</b></span>
+            </div>
+            <div id="orc-h6-rollback-reason" style="display:none;margin-top:6px;font-size:11px;color:#f85149">
+              ⚠️ <span id="orc-h6-rollback-reason-text">—</span>
+            </div>
+          </div>
+
+          <!-- Long-runner detail panel (visible when worker_run_state_badge != RUNNING/null) -->
+          <div id="orc-longrunner-panel" class="orc-longrunner-panel">
+            <div class="orc-lr-item">
+              <span class="orc-lr-label">狀態</span>
+              <span id="orc-lr-badge" class="orc-lr-badge"></span>
+            </div>
+            <div class="orc-lr-item">
+              <span class="orc-lr-label">任務 ID</span>
+              <span id="orc-lr-task-id" class="orc-lr-value">—</span>
+            </div>
+            <div class="orc-lr-item">
+              <span class="orc-lr-label">當前子任務</span>
+              <span id="orc-lr-subtask" class="orc-lr-value">—</span>
+            </div>
+            <div class="orc-lr-item">
+              <span class="orc-lr-label">預估剩餘時間</span>
+              <span id="orc-lr-eta" class="orc-lr-value">—</span>
+            </div>
+          </div>
+
+          <!-- Filter Bar -->
+          <div class="rv-filter-bar" style="margin-bottom:16px;display:flex;gap:10px;align-items:center;flex-wrap:wrap">
+            <label>日期
+              <input type="date" id="orc-date-filter" style="margin-left:6px;padding:4px 8px;border-radius:4px;border:1px solid var(--border-color)">
+            </label>
+            <label>狀態
+              <select id="orc-status-filter" style="margin-left:6px;padding:4px 8px;border-radius:4px;border:1px solid var(--border-color)">
+                <option value="">全部</option>
+                <option value="QUEUED">QUEUED</option>
+                <option value="RUNNING">RUNNING</option>
+                <option value="COMPLETED">COMPLETED</option>
+                <option value="FAILED">FAILED</option>
+                <option value="FAILED_RATE_LIMIT">FAILED_RATE_LIMIT</option>
+                                <option value="FAILED_NO_EDGE">FAILED_NO_EDGE</option>
+                                <option value="FAILED_WEAK_EDGE">FAILED_WEAK_EDGE</option>
+                <option value="BLOCKED_ENV">BLOCKED_ENV</option>
+                <option value="REPLAN_REQUIRED">REPLAN_REQUIRED</option>
+                <option value="CANCELLED">CANCELLED</option>
+              </select>
+            </label>
+            <button id="orc-refresh-btn" class="btn-sm btn-secondary">重新整理</button>
+            <span style="margin-left:8px">排程：<b id="orc-scheduler-state">—</b></span>
+            <button id="orc-scheduler-toggle-btn" class="btn-sm btn-secondary" data-enabled="1">—</button>
+          </div>
+
+          <div class="rv-filter-bar" style="margin-bottom:16px;display:flex;gap:16px;align-items:center;flex-wrap:wrap;font-size:13px;color:var(--text-muted,#8b949e)">
+            <span>下次 Planner：<b id="orc-next-planner-at" style="color:var(--text-color,#c9d1d9)">—</b></span>
+            <span>下次 Worker：<b id="orc-next-worker-at" style="color:var(--text-color,#c9d1d9)">—</b></span>
+            <span id="orc-next-tick-note">以最近一次 tick + 10 分鐘推估</span>
+            <button id="orc-run-planner-btn" class="btn-sm orc-trigger-btn">Planner 立即執行</button>
+            <button id="orc-run-worker-btn" class="btn-sm orc-trigger-btn">Worker 立即執行</button>
+          </div>
+
+                    <div class="card mb-16" style="padding:12px 14px">
+                        <div style="font-weight:600;margin-bottom:10px;font-size:0.88rem">LLM Execution Control</div>
+                        <div id="orc-llm-control-panel" style="min-height:40px">
+                            <span style="font-size:0.8rem;color:#8b949e">載入中…</span>
+                        </div>
+                    </div>
+
+                    <div class="card mb-16" style="padding:12px 14px">
+                        <div style="font-weight:600;margin-bottom:8px">Planner 單次觸發追蹤</div>
+                        <div style="display:flex;gap:16px;flex-wrap:wrap;font-size:13px;color:var(--text-muted,#8b949e)">
+                            <span>request_id：<b id="orc-planner-last-request-id" style="color:var(--text-color,#c9d1d9)">—</b></span>
+                            <span>final outcome：<b id="orc-planner-last-outcome" style="color:var(--text-color,#c9d1d9)">—</b></span>
+                            <span>task_id：<b id="orc-planner-last-task-id" style="color:var(--text-color,#c9d1d9)">—</b></span>
+                        </div>
+                        <div id="orc-planner-last-note" style="margin-top:6px;font-size:12px;color:var(--text-muted,#8b949e)">尚未觸發 Planner</div>
+                    </div>
+
+          <div class="rv-filter-bar" style="margin-bottom:16px;display:flex;gap:10px;align-items:center;flex-wrap:wrap">
+            <label>Planner
+              <select id="orc-planner-provider" style="margin-left:6px;padding:4px 8px;border-radius:4px;border:1px solid var(--border-color)">
+                <option value="claude">Claude CLI</option>
+                <option value="codex">Codex CLI</option>
+                <option value="copilot">GitHub Copilot CLI</option>
+                <option value="copilot-daemon">GitHub Copilot Daemon</option>
+              </select>
+            </label>
+            <label>Worker
+              <select id="orc-worker-provider" style="margin-left:6px;padding:4px 8px;border-radius:4px;border:1px solid var(--border-color)">
+                <option value="codex">Codex CLI</option>
+                <option value="copilot">GitHub Copilot CLI</option>
+                <option value="copilot-daemon">GitHub Copilot Daemon</option>
+                <option value="claude">Claude CLI</option>
+              </select>
+            </label>
+            <label>Copilot Model
+              <input
+                id="orc-worker-copilot-model"
+                list="orc-worker-copilot-model-options"
+                type="text"
+                placeholder="例如 auto"
+                style="margin-left:6px;padding:4px 8px;border-radius:4px;border:1px solid var(--border-color);min-width:140px"
+              >
+            </label>
+            <datalist id="orc-worker-copilot-model-options">
+              <option value="auto"></option>
+              <option value="gpt-5-mini"></option>
+            </datalist>
+            <button id="orc-provider-save-btn" class="btn-sm btn-secondary">套用組合</button>
+            <span id="orc-provider-hint" style="font-size:12px;color:#8b949e">讀取 provider 狀態中…</span>
+          </div>
+
+          <!-- List / Detail views -->
+          <div id="orc-list-view">
+            <h3 style="margin-bottom:8px">任務清單</h3>
+            <table class="data-table rv-table" style="width:100%;margin-bottom:24px">
+              <thead><tr>
+                                <th style="text-align:center">ID</th><th style="text-align:center">Planer 發佈時間</th><th style="text-align:center">標題</th><th style="text-align:center">狀態</th><th style="text-align:center">耗時</th><th style="text-align:center">Worker 完成時間</th><th style="text-align:center">異動檔案</th><th style="text-align:center">Planner</th><th style="text-align:center">Worker / Model</th>
+              </tr></thead>
+              <tbody id="orc-task-tbody"><tr><td colspan="9" class="rv-empty">載入中…</td></tr></tbody>
+            </table>
+            <div class="rv-filter-bar" style="margin-top:-12px;margin-bottom:20px;display:flex;gap:8px;align-items:center;flex-wrap:wrap">
+              <button id="orc-task-prev-btn" class="btn-sm btn-secondary">上一頁</button>
+              <button id="orc-task-next-btn" class="btn-sm btn-secondary">下一頁</button>
+              <span id="orc-task-page-info" style="font-size:12px;color:#8b949e">載入中…</span>
+            </div>
+
+            <h3 style="margin-bottom:8px">排程紀錄（最近 10 次 tick）</h3>
+            <table class="data-table rv-table" style="width:100%">
+              <thead><tr>
+                <th>時間</th><th>Runner</th><th>結果</th><th>任務 ID</th><th>訊息</th>
+              </tr></thead>
+              <tbody id="orc-run-tbody"><tr><td colspan="5" class="rv-empty">載入中…</td></tr></tbody>
+            </table>
+          </div>
+
+          <div id="orc-detail-view" class="rv-hidden">
+            <button id="orc-back-btn" class="btn-sm btn-secondary" style="margin-bottom:12px">← 返回列表</button>
+            <div id="orc-detail-content"></div>
+          </div>
+        </section>
+
+                <!-- CTO Review Section -->
+                <section id="cto-review-section" class="section">
+                    <div class="section-header">
+                        <h2>CTO 審核報告</h2>
+                        <p>檢視 worker 自動提交、CTO 批次審核、合併與拒絕決策的完整歷程。</p>
+                    </div>
+                    <div class="section-content">
+
+                        <!-- CTO Control Bar 1: date / status / refresh / scheduler -->
+                        <div class="rv-filter-bar" style="margin-bottom:10px;display:flex;gap:10px;align-items:center;flex-wrap:wrap">
+                            <label>日期
+                                <input type="date" id="orc-cto-date-filter" style="margin-left:6px;padding:4px 8px;border-radius:4px;border:1px solid var(--border-color)">
+                            </label>
+                            <label>狀態
+                                <select id="orc-cto-status-filter" style="margin-left:6px;padding:4px 8px;border-radius:4px;border:1px solid var(--border-color)">
+                                    <option value="">全部</option>
+                                    <option value="COMPLETED">有候選</option>
+                                    <option value="SKIPPED">無候選</option>
+                                    <option value="RUNNING">執行中</option>
+                                </select>
+                            </label>
+                            <button id="orc-cto-refresh-btn" class="btn-sm btn-secondary">重新整理</button>
+                            <span style="margin-left:8px">排程：<b id="cto-scheduler-state">—</b></span>
+                            <button id="cto-scheduler-toggle-btn" class="btn-sm btn-secondary" data-enabled="1">—</button>
+                        </div>
+
+                        <!-- CTO Control Bar 2: next planner / countdown / run-now -->
+                        <div class="rv-filter-bar" style="margin-bottom:10px;display:flex;gap:16px;align-items:center;flex-wrap:wrap;font-size:13px;color:var(--text-muted,#8b949e)">
+                            <span>下次 Planner：<b id="cto-next-planner-at" style="color:var(--text-color,#c9d1d9)">—</b></span>
+                            <span id="cto-next-tick-note">每秒倒數，歸零後自動刷新</span>
+                            <button id="orc-cto-run-now-btn" class="btn-sm orc-trigger-btn">CTO 立即執行</button>
+                            <label style="display:flex;align-items:center;gap:5px;font-size:12px;cursor:pointer;color:var(--text-muted,#8b949e)">
+                                <input type="checkbox" id="orc-cto-force-rerun-cb" style="accent-color:#f85149">
+                                <span style="color:#f85149;font-weight:600">強制重跑</span>
+                            </label>
+                            <select id="orc-cto-run-intent" style="font-size:12px;padding:2px 6px;border-radius:4px;border:1px solid var(--border-color);background:var(--bg-card,#161b22);color:var(--text-color,#c9d1d9);display:none">
+                                <option value="retry">retry — 重試失敗</option>
+                                <option value="compare">compare — 對比結果</option>
+                                <option value="override">override — 強制覆蓋</option>
+                            </select>
+                        </div>
+                        <!-- Force Run Warning -->
+                        <div id="orc-cto-force-warning" style="display:none;margin-bottom:8px;padding:7px 12px;border-radius:5px;background:rgba(248,81,73,.1);border:1px solid rgba(248,81,73,.35);font-size:12px;color:#f85149">
+                            ⚠️ 強制重跑將忽略重複保護，請謹慎使用。Rate limit：10 分鐘內最多 3 次。
+                        </div>
+
+                        <!-- CTO Planner Trigger Trace -->
+                        <div class="card mb-16" style="padding:12px 14px">
+                            <div style="font-weight:600;margin-bottom:8px">CTO Planner 觸發追蹤</div>
+                            <div style="display:flex;gap:16px;flex-wrap:wrap;font-size:13px;color:var(--text-muted,#8b949e)">
+                                <span>request_id：<b id="orc-cto-planner-last-request-id" style="color:var(--text-color,#c9d1d9)">—</b></span>
+                                <span>final outcome：<b id="orc-cto-planner-last-outcome" style="color:var(--text-color,#c9d1d9)">—</b></span>
+                            </div>
+                            <div id="orc-cto-planner-last-note" style="margin-top:6px;font-size:12px;color:var(--text-muted,#8b949e)">尚未觸發 CTO Planner</div>
+                        </div>
+
+                        <!-- CTO Provider Bar: Planner / Model / Apply -->
+                        <div class="rv-filter-bar" style="margin-bottom:16px;display:flex;gap:10px;align-items:center;flex-wrap:wrap">
+                            <label>Planner
+                                <select id="orc-cto-planner-provider" style="margin-left:6px;padding:4px 8px;border-radius:4px;border:1px solid var(--border-color)">
+                                    <option value="claude">Claude CLI</option>
+                                    <option value="codex">Codex CLI</option>
+                                </select>
+                            </label>
+                            <label>Model
+                                <input
+                                    id="orc-cto-planner-model"
+                                    list="orc-cto-planner-model-options"
+                                    type="text"
+                                    placeholder="例如 auto"
+                                    style="margin-left:6px;padding:4px 8px;border-radius:4px;border:1px solid var(--border-color);min-width:140px"
+                                >
+                            </label>
+                            <datalist id="orc-cto-planner-model-options">
+                                <option value="auto"></option>
+                                <option value="gpt-5-mini"></option>
+                            </datalist>
+                            <button id="orc-cto-provider-save-btn" class="btn-sm btn-secondary">套用組合</button>
+                            <span id="orc-cto-provider-hint" style="font-size:12px;color:#8b949e">讀取 CTO provider 狀態中…</span>
+                        </div>
+
+                        <!-- Manual Merge Approval Explainer -->
+                        <div class="card mb-16" style="padding:12px 16px;border:1px solid rgba(210,153,34,0.35);background:rgba(210,153,34,0.06)">
+                            <div style="display:flex;align-items:center;gap:8px;margin-bottom:10px">
+                                <span style="font-weight:600;font-size:0.88rem">🔀 Manual Merge Approval</span>
+                                <span style="font-size:0.72rem;color:#8b949e;border:1px solid #30363d;border-radius:3px;padding:0 5px">per-commit 設定</span>
+                            </div>
+                            <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;font-size:0.82rem;margin-bottom:10px">
+                                <div style="padding:10px 12px;border-radius:6px;background:rgba(46,160,67,0.1);border:1px solid rgba(46,160,67,0.3)">
+                                    <div style="font-weight:600;color:#3fb950;margin-bottom:4px">OFF（預設）</div>
+                                    <div style="color:var(--text-muted,#8b949e);line-height:1.5">CTO 審核通過後，系統會<b style="color:var(--text-color,#c9d1d9)">自動執行 merge</b>。<br>適合信任自動化流程時使用。</div>
+                                </div>
+                                <div style="padding:10px 12px;border-radius:6px;background:rgba(88,166,255,0.1);border:1px solid rgba(88,166,255,0.3)">
+                                    <div style="font-weight:600;color:#58a6ff;margin-bottom:4px">ON</div>
+                                    <div style="color:var(--text-muted,#8b949e);line-height:1.5">CTO 審核通過後，仍需<b style="color:var(--text-color,#c9d1d9)">人工按下 Approve Merge</b> 才會合併。<br>適合核心程式或高風險變更。</div>
+                                </div>
+                            </div>
+                            <div style="padding:8px 12px;border-radius:5px;background:rgba(248,81,73,0.1);border:1px solid rgba(248,81,73,0.35);font-size:0.8rem;color:#f85149">
+                                ⚠️ 關閉 Manual Merge Approval 時，CTO_APPROVED 的變更會自動進入 merge 流程。<br>
+                                <span style="color:#8b949e">如需人工確認，請在提交 git commit 前將任務的 <code style="color:#e3b341">manual_merge_required</code> 設為 <code style="color:#e3b341">true</code>。</span>
+                            </div>
+                        </div>
+
+                        <!-- CTO Review Provider Settings -->
+                        <div class="card mb-16" style="padding:12px 16px;border:1px solid rgba(88,166,255,0.25);background:rgba(88,166,255,0.04)">
+                            <div style="display:flex;align-items:center;gap:8px;margin-bottom:12px">
+                                <span style="font-weight:600;font-size:0.88rem">🤖 CTO Review Provider</span>
+                                <span style="font-size:0.72rem;color:#8b949e;border:1px solid #30363d;border-radius:3px;padding:0 5px">LLM 審核建議（非決定性）</span>
+                            </div>
+                            <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-bottom:10px">
+                                <label style="font-size:0.82rem">Provider
+                                    <select id="orc-cto-review-provider" style="margin-left:6px;padding:4px 8px;border-radius:4px;border:1px solid var(--border-color)">
+                                        <option value="local">Local (no LLM)</option>
+                                        <option value="claude-cli">Claude CLI</option>
+                                        <option value="codex-cli">Codex CLI</option>
+                                        <option value="auto">Auto</option>
+                                    </select>
+                                </label>
+                                <label style="font-size:0.82rem">Model
+                                    <input id="orc-cto-review-model" type="text" placeholder="auto"
+                                        style="margin-left:6px;padding:4px 8px;border-radius:4px;border:1px solid var(--border-color);min-width:110px">
+                                </label>
+                                <label style="font-size:0.82rem">Mode
+                                    <select id="orc-cto-review-mode" style="margin-left:6px;padding:4px 8px;border-radius:4px;border:1px solid var(--border-color)">
+                                        <option value="local_review">Local Review</option>
+                                        <option value="review_only">Review Only (LLM)</option>
+                                    </select>
+                                </label>
+                                <label style="font-size:0.82rem">Daily Cap
+                                    <input id="orc-cto-review-cap" type="number" min="0" placeholder="0"
+                                        style="margin-left:6px;padding:4px 8px;border-radius:4px;border:1px solid var(--border-color);width:70px">
+                                </label>
+                            </div>
+                            <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-bottom:10px">
+                                <span style="font-size:0.8rem;color:#8b949e">今日 CTO LLM 呼叫：<b id="orc-cto-review-today-calls" style="color:var(--text-color,#c9d1d9)">—</b> / <span id="orc-cto-review-cap-display">—</span></span>
+                                <button id="orc-cto-review-save-btn" class="btn-sm btn-secondary">套用設定</button>
+                                <button id="orc-cto-review-preview-btn" class="btn-sm btn-secondary" style="margin-left:4px">預覽審核</button>
+                                <button id="orc-cto-review-run-once-btn" class="btn-sm btn-secondary" style="margin-left:4px">手動執行一次</button>
+                                <span id="orc-cto-review-hint" style="font-size:12px;color:#8b949e">載入中…</span>
+                            </div>
+                            <div style="padding:8px 12px;border-radius:5px;background:rgba(88,166,255,0.08);border:1px solid rgba(88,166,255,0.2);font-size:0.79rem;color:#8b949e;line-height:1.5">
+                                ℹ️ Claude / Codex CTO 僅提供審核建議。是否真的合併，仍由既有 CTO 合併開關（<code style="color:#e3b341">manual_merge_required</code>）與 Local Safety Gate 決定。<br>
+                                <span>risk=HIGH、touches_runtime_db、touches_scheduler 等旗標觸發時，即使 LLM 建議 ALLOW，系統仍會要求人工確認。</span>
+                            </div>
+                            <div id="orc-cto-review-result" style="margin-top:10px;display:none"></div>
+                        </div>
+                        <div id="cto-summary" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:12px;margin-bottom:12px">
+                            <div class="metric-card"><div class="metric-label">頻率模式</div><div class="metric-value" id="cto-frequency-mode">—</div></div>
+                            <div class="metric-card"><div class="metric-label">待審核</div><div class="metric-value" id="cto-pending-count">—</div></div>
+                            <div class="metric-card"><div class="metric-label">已批准</div><div class="metric-value" id="cto-approved-count">—</div></div>
+                            <div class="metric-card"><div class="metric-label">已合併</div><div class="metric-value" id="cto-merged-count">—</div></div>
+                            <div class="metric-card"><div class="metric-label">已拒絕</div><div class="metric-value" id="cto-rejected-count">—</div></div>
+                            <div class="metric-card"><div class="metric-label">延後衝突</div><div class="metric-value" id="cto-deferred-count">—</div></div>
+                            <div class="metric-card"><div class="metric-label">去重 / 取代</div><div class="metric-value" id="cto-superseded-count">—</div></div>
+                            <div class="metric-card"><div class="metric-label">重複提交</div><div class="metric-value" id="cto-duplicate-count">—</div></div>
+                        </div>
+
+                        <!-- H6 Live State in CTO view -->
+                        <div id="cto-h6-panel" class="card mb-16" style="padding:10px 14px;display:none;border-left:3px solid var(--success-color,#10b981)">
+                            <div style="display:flex;align-items:center;gap:8px;margin-bottom:6px;font-weight:600;font-size:0.85rem">
+                                <span>H6 DAILY_539 Production State</span>
+                                <span id="cto-h6-rollback-badge" style="padding:1px 9px;border-radius:10px;font-size:11px;font-weight:700;background:rgba(16,185,129,.15);color:#10b981;border:1px solid rgba(16,185,129,.35)">ACTIVE</span>
+                                <span id="cto-h6-bear-badge" style="display:none;padding:1px 9px;border-radius:10px;font-size:11px;font-weight:700;background:rgba(248,81,73,.1);color:#f85149;border:1px solid rgba(248,81,73,.35)">BEAR</span>
+                            </div>
+                            <div style="display:flex;flex-wrap:wrap;gap:6px 20px;font-size:12px;color:var(--text-muted,#8b949e)">
+                                <span>Active: <b id="cto-h6-active" style="color:var(--text-color,#c9d1d9);font-size:11px">—</b></span>
+                                <span>Shadow: <b id="cto-h6-shadow" style="color:var(--text-color,#c9d1d9);font-size:11px">—</b></span>
+                                <span>30P Edge: <b id="cto-h6-edge30">—</b></span>
+                                <span>50P Edge: <b id="cto-h6-edge50">—</b></span>
+                                <span>Consec Neg: <b id="cto-h6-consec-neg">—</b></span>
+                                <span>Regime: <b id="cto-h6-regime">—</b></span>
+                            </div>
+                            <div id="cto-h6-rollback-reason" style="display:none;margin-top:6px;font-size:11px;padding:5px 8px;border-radius:4px;background:rgba(248,81,73,.08);color:#f85149">
+                                ⚠️ Risk: <span id="cto-h6-rollback-reason-text">—</span>
+                            </div>
+                        </div>
+
+                        <div style="margin-bottom:16px;font-size:13px;color:var(--text-muted,#8b949e)">
+                            <span>最近執行：<b id="cto-latest-run-at" style="color:var(--text-color,#c9d1d9)">—</b></span>
+                            <span style="margin-left:16px">下次執行：<b id="cto-next-run-at" style="color:var(--text-color,#c9d1d9)">—</b></span>
+                            <span style="margin-left:16px">摘要：<span id="cto-latest-run-summary" style="color:var(--text-muted,#8b949e)">—</span></span>
+                        </div>
+
+                        <div class="card mb-16">
+                            <div class="card-header">待審核提交</div>
+                            <div class="card-body" style="overflow-x:auto">
+                                <table class="data-table rv-table" style="width:100%">
+                                    <thead>
+                                        <tr>
+                                            <th>Task ID</th>
+                                            <th>標題</th>
+                                            <th>Integration Group</th>
+                                            <th>Priority</th>
+                                            <th>Source Branch</th>
+                                            <th>Commit SHA</th>
+                                            <th>建立時間</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="orc-cto-pending-tbody">
+                                        <tr><td colspan="7" class="rv-empty">載入中…</td></tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+
+                        <div id="cto-list-view">
+                            <div class="card mb-16">
+                                <div class="card-header">CTO 批次列表</div>
+                                <div class="card-body" style="overflow-x:auto">
+                                    <table class="data-table rv-table" style="width:100%">
+                                        <thead>
+                                            <tr>
+                                                <th>Run ID</th>
+                                                <th>開始</th>
+                                                <th>完成</th>
+                                                <th>頻率</th>
+                                                <th>候選</th>
+                                                <th>批准</th>
+                                                <th>合併</th>
+                                                <th>拒絕</th>
+                                                <th>摘要</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="orc-cto-run-tbody">
+                                            <tr><td colspan="9" class="rv-empty">載入中…</td></tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div id="cto-detail-view" class="rv-hidden">
+                            <button id="orc-cto-back-btn" class="btn-sm btn-secondary" style="margin-bottom:12px">← 返回列表</button>
+                            <div id="orc-cto-detail-content"></div>
+                        </div>
+                    </div>
+                </section>
+
+        </div>
         </main>
 
         <footer class="footer">
             <div class="container">
-                <p>&copy; 2025 大數據智能分析系統. 僅供參考，請理性投注。</p>
+                <p>&copy; 2026 大數據智能分析系統. 僅供參考，請理性投注。</p>
             </div>
         </footer>
 
         <!-- 記錄編輯彈窗 -->
-        <div id="record-modal" class="modal" style="display: none;">
+        <div id="record-modal" class="modal ui-hidden">
             <div class="modal-content">
                 <div class="modal-header">
                     <h3 id="modal-title">新增記錄</h3>
@@ -1450,14 +2546,13 @@
                             <label for="record-lottery-type">彩券類型 *</label>
                             <select id="record-lottery-type" class="form-control" required>
                                 <option value="BIG_LOTTO">大樂透</option>
-                                <option value="BIG_LOTTO_BONUS">大樂透加開獎項</option>
                                 <option value="DAILY_539">今彩539</option>
                                 <option value="POWER_LOTTO">威力彩</option>
                             </select>
                         </div>
                         <div class="form-group">
                             <label>開獎號碼 * (請輸入6個號碼，範圍1-49)</label>
-                            <div style="display: grid; grid-template-columns: repeat(6, 1fr); gap: 10px;">
+                            <div class="ui-grid-6-gap10">
                                 <input type="number" id="record-num-1" class="form-control" min="1" max="49" required
                                     placeholder="1">
                                 <input type="number" id="record-num-2" class="form-control" min="1" max="49" required
@@ -1491,7 +2586,11 @@
 
         <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
         <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@4.9.0/dist/tf.min.js"></script>
-        <script type="module" src="src/main.js?v=5"></script>
+        <script>
+            // Initialize Lucide Icons
+            lucide.createIcons();
+        </script>
+        <script type="module" src="src/main.js?v=24"></script>
         <script>
 // ===== REPLAY PAGE JS =====
 (function() {
@@ -1503,22 +2602,39 @@
   let rpTotal = 0;
   let rpPages = 1;
 
-  // Populate strategy dropdown when lottery changes
+  // Populate strategy dropdown when lottery or lifecycle changes
   async function rpLoadStrategies() {
     const lt = document.getElementById('rp-lottery-select').value;
+    const lc = document.getElementById('rp-lifecycle-select') ? document.getElementById('rp-lifecycle-select').value : '';
     const sel = document.getElementById('rp-strategy-select');
     sel.innerHTML = '<option value="">全部</option>';
     try {
-      const res = await fetch(`${BASE}/strategies?lottery_type=${lt}`);
+      let url = `${BASE}/strategies?lottery_type=${lt}`;
+      if (lc) url += `&lifecycle_status=${encodeURIComponent(lc)}`;
+      const res = await fetch(url);
       if (!res.ok) return;
       const data = await res.json();
       (data.strategies || []).forEach(s => {
         const opt = document.createElement('option');
         opt.value = s.strategy_id;
-        opt.textContent = `${s.strategy_name} (${s.strategy_id})`;
+        const lcLabel = s.strategy_lifecycle_status ? ` [${s.strategy_lifecycle_status}]` : '';
+        opt.textContent = `${s.strategy_name} (${s.strategy_id})${lcLabel}`;
         sel.appendChild(opt);
       });
     } catch (e) { console.warn('[replay] load strategies failed', e); }
+  }
+
+  // Lifecycle badge for strategy state (P0-D)
+  function rpLifecycleBadge(status) {
+    const cfg = {
+      ONLINE:      { bg: '#27ae60', fg: '#fff', label: '上線' },
+      OFFLINE:     { bg: '#555',    fg: '#fff', label: '下線' },
+      REJECTED:    { bg: '#e74c3c', fg: '#fff', label: '拒絕' },
+      OBSERVATION: { bg: '#f39c12', fg: '#fff', label: '觀察' },
+      RETIRED:     { bg: '#95a5a6', fg: '#fff', label: '退役' },
+    };
+    const c = cfg[status] || { bg: '#bbb', fg: '#fff', label: status || '—' };
+    return `<span style="background:${c.bg};color:${c.fg};padding:2px 7px;border-radius:10px;font-size:11px;white-space:nowrap">${c.label}</span>`;
   }
 
   // Render number chips (hits highlighted green)
@@ -1639,12 +2755,14 @@
   function rpUpdateURL() {
     try {
       const lt     = document.getElementById('rp-lottery-select').value;
+      const lc     = document.getElementById('rp-lifecycle-select') ? document.getElementById('rp-lifecycle-select').value : '';
       const sid    = document.getElementById('rp-strategy-select').value;
       const status = document.getElementById('rp-status-select').value;
       const df     = document.getElementById('rp-date-from').value;
       const dt     = document.getElementById('rp-date-to').value;
       const params = new URLSearchParams();
       params.set('rp_lt', lt);
+      if (lc)     params.set('rp_lc', lc);
       if (sid)    params.set('rp_sid', sid);
       if (status) params.set('rp_status', status);
       if (df)     params.set('rp_df', df);
@@ -1659,9 +2777,13 @@
     try {
       const params      = new URLSearchParams(window.location.search);
       const validLT     = ['BIG_LOTTO', 'POWER_LOTTO', 'DAILY_539'];
+      const validLC     = ['ONLINE','OFFLINE','REJECTED','OBSERVATION','RETIRED'];
       const validStatus = ['PREDICTED','REJECTED','INSUFFICIENT_HISTORY','REPLAY_ERROR','INVALID_OUTPUT','STRATEGY_UNAVAILABLE'];
       const lt = params.get('rp_lt');
       if (lt && validLT.includes(lt)) document.getElementById('rp-lottery-select').value = lt;
+      const lc = params.get('rp_lc');
+      const lcSel = document.getElementById('rp-lifecycle-select');
+      if (lc && validLC.includes(lc) && lcSel) lcSel.value = lc;
       const status = params.get('rp_status');
       if (status && validStatus.includes(status)) document.getElementById('rp-status-select').value = status;
       const df = params.get('rp_df');
@@ -1688,19 +2810,21 @@
   // Query history records
   async function rpQuery() {
     const lt     = document.getElementById('rp-lottery-select').value;
+    const lc     = document.getElementById('rp-lifecycle-select') ? document.getElementById('rp-lifecycle-select').value : '';
     const sid    = document.getElementById('rp-strategy-select').value;
     const status = document.getElementById('rp-status-select').value;
     const df     = document.getElementById('rp-date-from').value;
     const dt     = document.getElementById('rp-date-to').value;
 
     let url = `${BASE}/history?lottery_type=${lt}&page=${rpPage}&page_size=${rpPageSize}`;
+    if (lc)     url += `&lifecycle_status=${encodeURIComponent(lc)}`;
     if (sid)    url += `&strategy_id=${encodeURIComponent(sid)}`;
     if (status) url += `&replay_status=${encodeURIComponent(status)}`;
     if (df)     url += `&date_from=${df}`;
     if (dt)     url += `&date_to=${dt}`;
 
     const tbody = document.getElementById('rp-hist-body');
-    tbody.innerHTML = '<tr><td colspan="9" style="text-align:center;color:#888">載入中…</td></tr>';
+    tbody.innerHTML = '<tr><td colspan="11" style="text-align:center;color:#888">載入中…</td></tr>';
 
     rpUpdateURL();
 
@@ -1717,7 +2841,7 @@
 
       const records = data.records || [];
       if (!records.length) {
-        tbody.innerHTML = '<tr><td colspan="9" style="text-align:center;color:#888">查無資料</td></tr>';
+        tbody.innerHTML = '<tr><td colspan="11" style="text-align:center;color:#888">查無資料</td></tr>';
         return;
       }
       tbody.innerHTML = records.map(r => {
@@ -1727,11 +2851,17 @@
         const predSpecial  = r.predicted_special != null ? rpSpecialChip(r.predicted_special, !!r.special_hit, '特') : '';
         const actSpecial   = r.actual_special != null ? rpSpecialChip(r.actual_special, !!r.special_hit, '特') : '';
         const specialHit   = r.special_hit ? ' ⭐' : '';
+        const lcBadge      = rpLifecycleBadge(r.strategy_lifecycle_status);
+        const rejectReason = r.reject_reason
+          ? `<span title="${String(r.reject_reason).replace(/"/g,'&quot;')}" style="font-size:10px;color:#888;cursor:help">${String(r.reject_reason).slice(0,30)}${r.reject_reason.length > 30 ? '…' : ''}</span>`
+          : '<span style="color:#ccc">—</span>';
         return `<tr>
           <td>${r.target_draw}</td>
           <td>${r.target_date || ''}</td>
           <td style="font-size:11px">${r.strategy_id}</td>
+          <td style="text-align:center">${lcBadge}</td>
           <td>${rpStatusBadge(r.replay_status)}</td>
+          <td style="max-width:120px;overflow:hidden">${rejectReason}</td>
           <td>${rpBadges(predicted, hits)} ${predSpecial}</td>
           <td>${rpBadges(actual, hits)} ${actSpecial}</td>
           <td>${rpBadges(hits, hits)}${specialHit}</td>
@@ -1739,11 +2869,11 @@
           <td style="text-align:center"><button class="rp-toggle-btn" data-row-id="${r.id}" style="font-size:11px;padding:2px 8px;cursor:pointer;border:1px solid #3498db;border-radius:4px;background:#eaf4fb;color:#2980b9">▶ 詳情</button></td>
         </tr>
         <tr class="rp-detail-row" id="rp-detail-${r.id}" style="display:none">
-          <td colspan="9" style="padding:0">${rpRenderDetail(r)}</td>
+          <td colspan="11" style="padding:0">${rpRenderDetail(r)}</td>
         </tr>`;
       }).join('');
     } catch (e) {
-      tbody.innerHTML = `<tr><td colspan="9" style="text-align:center;color:red">錯誤：${e.message}</td></tr>`;
+      tbody.innerHTML = `<tr><td colspan="11" style="text-align:center;color:red">錯誤：${e.message}</td></tr>`;
     }
   }
 
@@ -1784,6 +2914,11 @@
     const lotterySelect = document.getElementById('rp-lottery-select');
     if (lotterySelect) {
       lotterySelect.addEventListener('change', rpLoadStrategies);
+    }
+    // P0-D: lifecycle filter reloads strategy dropdown
+    const lifecycleSelect = document.getElementById('rp-lifecycle-select');
+    if (lifecycleSelect) {
+      lifecycleSelect.addEventListener('change', rpLoadStrategies);
     }
     const queryBtn = document.getElementById('rp-query-btn');
     if (queryBtn) {

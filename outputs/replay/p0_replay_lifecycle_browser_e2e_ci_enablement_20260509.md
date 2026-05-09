@@ -53,6 +53,10 @@ Tooling and validation commands run in this workspace:
 - Focused pytest bundle:
   - `4 passed, 1 skipped`
   - browser E2E skip reason remains explicit and honest
+- Current focused validation snapshot:
+  - `python3 -m py_compile tests/test_replay_lifecycle_browser_e2e.py` PASS
+  - `/Library/Developer/CommandLineTools/usr/bin/python3 -m pytest tests/test_replay_lifecycle_browser_e2e.py -q` SKIPPED because Playwright/browser tooling is unavailable locally
+  - `/Library/Developer/CommandLineTools/usr/bin/python3 scripts/run_replay_ci_default_validation.py` PASS with `57 passed, 32 skipped`
 - Replay default validation:
   - `57 passed, 32 skipped`
 

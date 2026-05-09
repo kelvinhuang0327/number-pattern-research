@@ -195,7 +195,7 @@ def test_lifecycle_filter_browser_e2e():
             assert header.count() >= 1
 
             first_row_lifecycle = page.locator('#rp-hist-body tr:not(.rp-detail-row) td').nth(3)
-            assert 'REJECTED' in (first_row_lifecycle.text_content() or '')
+            assert '拒絕' in (first_row_lifecycle.text_content() or '')
             assert page.locator('#rp-hist-body tr:not(.rp-detail-row) td').nth(4).text_content() is not None
 
             browser.close()

@@ -24,7 +24,7 @@ def load_history(lottery_type: str, periods: int) -> List[Dict]:
     cursor.execute("""
         SELECT draw, numbers, special, date FROM draws 
         WHERE lottery_type = ? 
-        ORDER BY CAST(draw AS INTEGER) DESC LIMIT ?
+        ORDER BY draw DESC LIMIT ?
     """, (lottery_type, periods + 100))
     rows = cursor.fetchall()
     conn.close()

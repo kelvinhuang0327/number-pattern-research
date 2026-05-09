@@ -1,0 +1,18 @@
+{
+  "generated_at": "2026-05-08T05:45:17.166488+00:00",
+  "mode": "dry-run",
+  "db_path": "/sessions/brave-bold-dirac/mnt/LotteryNew/lottery_api/data/lottery_v2.db",
+  "filters": {
+    "lottery": "ALL",
+    "run_id": null
+  },
+  "safe_backfill_rules_version": "roadmap_20260508_section4",
+  "missing_before": 0,
+  "backfillable_count": 0,
+  "backfilled_count": 0,
+  "missing_after": 0,
+  "causal_violation_count": 0,
+  "violations": [],
+  "evaluation_rows": [],
+  "protected_field_mismatch_row_ids": []
+}

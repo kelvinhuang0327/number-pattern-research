@@ -1,6 +1,3 @@
-import { getApiUrl } from '../config/apiConfig.js';
-import { apiClient } from '../services/ApiClient.js';
-
 /**
  * UI 管理器
  * 負責頁面切換、通知顯示和全域 UI 狀態
@@ -19,19 +16,19 @@ export class UIManager {
 
     async updateWaterline() {
         try {
-            const data = await apiClient.get('/api/performance/regime');
-            
+            const response = await fetch('/api/performance/regime');
+            if (!response.ok) return;
+
+            const data = await response.json();
             const dot = document.getElementById('waterline-status-dot');
             const regimeSpan = document.getElementById('waterline-regime');
             const adviceDiv = document.getElementById('waterline-advice');
 
-            if (data && dot && regimeSpan && adviceDiv) {
-                regimeSpan.textContent = data.regime || 'UNKNOWN';
-                adviceDiv.textContent = data.recommendation || '';
-                if (data.color) {
-                    dot.style.background = data.color;
-                    dot.style.boxShadow = `0 0 10px ${data.color}80`;
-                }
+            if (dot && regimeSpan && adviceDiv) {
+                regimeSpan.textContent = data.regime;
+                adviceDiv.textContent = data.recommendation;
+                dot.style.background = data.color;
+                dot.style.boxShadow = `0 0 10px ${data.color}80`;
             }
         } catch (error) {
             console.error('Failed to update waterline:', error);
@@ -68,101 +65,46 @@ export class UIManager {
     }
 
     showNotification(message, type = 'info') {
-        const container = this.ensureNotificationContainer();
         const notification = document.createElement('div');
         notification.className = `notification notification-${type}`;
-        notification.setAttribute('role', 'status');
-        notification.setAttribute('aria-live', type === 'error' ? 'assertive' : 'polite');
 
-        const icons = {
-            info: 'info',
-            success: 'check-circle',
-            error: 'alert-circle',
-            warning: 'alert-triangle'
-        };
-
-        const theme = {
-            info: {
-                background: 'linear-gradient(135deg, rgba(31,111,235,0.96), rgba(88,166,255,0.92))',
-                borderColor: 'rgba(147,197,253,0.45)',
-            },
-            success: {
-                background: 'linear-gradient(135deg, rgba(35,134,54,0.96), rgba(63,185,80,0.92))',
-                borderColor: 'rgba(134,239,172,0.38)',
-            },
-            warning: {
-                background: 'linear-gradient(135deg, rgba(187,128,9,0.96), rgba(245,158,11,0.92))',
-                borderColor: 'rgba(253,224,71,0.4)',
-            },
-            error: {
-                background: 'linear-gradient(135deg, rgba(218,54,51,0.97), rgba(248,81,73,0.93))',
-                borderColor: 'rgba(252,165,165,0.4)',
-            }
-        };
-
-        const iconName = icons[type] || 'info';
-        const palette = theme[type] || theme.info;
-        
-        // 🛡️ Ensure message is safe
-        const safeMessage = message.replace(/\n/g, '<br>');
-        
-        notification.innerHTML = `
-            <i data-lucide="${iconName}" class="icon"></i>
-            <div class="notification-content">${safeMessage}</div>
-        `;
+        // 處理多行訊息
+        const formattedMessage = message.replace(/\n/g, '<br>');
+        notification.innerHTML = formattedMessage;
 
         Object.assign(notification.style, {
-            display: 'flex',
-            alignItems: 'flex-start',
-            gap: '12px',
-            minWidth: '320px',
-            maxWidth: 'min(520px, calc(100vw - 32px))',
-            background: palette.background,
-            borderColor: palette.borderColor,
-            color: '#fff',
-            opacity: '1',
-            pointerEvents: 'auto',
-        });
-
-        container.appendChild(notification);
-        
-        // Initialize the new icon
-        if (window.lucide) {
-            window.lucide.createIcons({
-                attrs: { class: 'icon' },
-                nameAttr: 'data-lucide',
-                root: notification
-            });
-        }
-
-        // Auto remove
-        setTimeout(() => {
-            notification.classList.add('notification-fade-out');
-            notification.addEventListener('animationend', () => {
-                notification.remove();
-            });
-        }, 5000);
-    }
-
-    ensureNotificationContainer() {
-        let container = document.getElementById('global-notification-container');
-        if (container) return container;
-
-        container = document.createElement('div');
-        container.id = 'global-notification-container';
-        Object.assign(container.style, {
             position: 'fixed',
-            top: '16px',
-            right: '16px',
-            zIndex: '10001',
-            display: 'flex',
-            flexDirection: 'column',
-            gap: '12px',
-            pointerEvents: 'none',
-            maxWidth: 'calc(100vw - 32px)',
+            top: '20px',
+            right: '20px',
+            padding: '16px 24px',
+            borderRadius: '12px',
+            color: 'white',
+            fontWeight: '500',
+            zIndex: '1000',
+            animation: 'slideIn 0.3s ease',
+            boxShadow: '0 8px 32px rgba(0, 0, 0, 0.5)',
+            maxWidth: '450px',
+            lineHeight: '1.5',
+            whiteSpace: 'pre-line'
         });
-        document.body.appendChild(container);
-        return container;
+
+        const colors = {
+            info: 'linear-gradient(135deg, rgba(59, 130, 246, 0.95), rgba(147, 51, 234, 0.95))',
+            success: 'linear-gradient(135deg, rgba(34, 197, 94, 0.95), rgba(59, 130, 246, 0.95))',
+            warning: 'linear-gradient(135deg, rgba(251, 191, 36, 0.95), rgba(245, 158, 11, 0.95))',
+            error: 'linear-gradient(135deg, rgba(239, 68, 68, 0.95), rgba(220, 38, 38, 0.95))'
+        };
+
+        notification.style.background = colors[type] || colors.info;
+
+        document.body.appendChild(notification);
+
+        setTimeout(() => {
+            notification.style.animation = 'slideOut 0.3s ease';
+            setTimeout(() => {
+                document.body.removeChild(notification);
+            }, 300);
+        }, 5000); // 延長顯示時間到 5 秒以便閱讀詳細信息
     }
 
     updateLotteryTypeSelector(stats, currentType) {
@@ -217,13 +159,6 @@ export class UIManager {
                 this.toggleGameSelector();
             });
 
-            const dropdown = badge.querySelector('.game-selector-dropdown');
-            if (dropdown) {
-                dropdown.addEventListener('click', (e) => {
-                    e.stopPropagation();
-                });
-            }
-
             // Close dropdown when clicking outside
             document.addEventListener('click', () => {
                 badge.classList.remove('active');
@@ -236,12 +171,7 @@ export class UIManager {
             if (!lotteryType || lotteryType === '') {
                 // If no type selected but we have data, show "Select Game"
                 const textSpan = badge.querySelector('.badge-text');
-                if (textSpan) {
-                    textSpan.textContent = '選擇彩券';
-                    textSpan.title = '選擇彩券';
-                }
-                badge.title = '選擇彩券';
-                badge.style.background = '';
+                if (textSpan) textSpan.textContent = '選擇彩券';
                 badge.style.display = 'flex';
                 return;
             }
@@ -251,16 +181,14 @@ export class UIManager {
 
             const iconSpan = badge.querySelector('.badge-icon');
             const textSpan = badge.querySelector('.badge-text');
-            const compactName = this.getCompactLotteryName(typeInfo);
-            const fullName = typeInfo.displayName || compactName;
 
             if (iconSpan) iconSpan.textContent = typeInfo.icon;
-            if (textSpan) {
-                textSpan.textContent = compactName;
-                textSpan.title = fullName;
+            if (textSpan) textSpan.textContent = typeInfo.displayName;
+
+            // Apply gradient if available
+            if (typeInfo.gradient) {
+                badge.style.background = typeInfo.gradient;
             }
-            badge.title = fullName;
-            badge.style.background = '';
 
             badge.style.display = 'flex';
 
@@ -270,17 +198,6 @@ export class UIManager {
                 badge.style.animation = 'badgePulse 2s ease-in-out infinite';
             }, 10);
         });
-    }
-
-    getCompactLotteryName(typeInfo) {
-        if (!typeInfo) return '';
-        const fullName = typeInfo.displayName || typeInfo.name || '';
-        const compactMap = {
-            '大樂透加開獎項': '大樂透加開',
-            '6/38樂透彩': '6/38樂透',
-            '賓果賓果': 'BINGO'
-        };
-        return compactMap[fullName] || fullName;
     }
 
     toggleGameSelector() {
@@ -313,15 +230,13 @@ export class UIManager {
                     }
 
                     const isActive = type === this.currentLotteryType ? 'active' : '';
-                    const compactName = this.getCompactLotteryName(lotteryType);
-                    const fullName = lotteryType.displayName || compactName;
 
                     return `
                         <div class="dropdown-item ${isActive}" 
-                             onclick="event.stopPropagation(); document.getElementById('lottery-type-filter').value = '${type}'; document.getElementById('lottery-type-filter').dispatchEvent(new Event('change')); document.getElementById('current-game-badge').classList.remove('active');">
+                             onclick="document.getElementById('lottery-type-filter').value = '${type}'; document.getElementById('lottery-type-filter').dispatchEvent(new Event('change'));">
                             <div class="dropdown-item-icon">${lotteryType.icon}</div>
                             <div class="dropdown-item-info">
-                                <span class="dropdown-item-name" title="${fullName}">${compactName}</span>
+                                <span class="dropdown-item-name">${lotteryType.displayName}</span>
                                 <span class="dropdown-item-count">${count} 期</span>
                             </div>
                         </div>
@@ -374,43 +289,6 @@ export class UIManager {
         if (listContainer) {
             this.populateGameSelector(listContainer);
         }
-
-        // Update the history game statistics
-        this.updateHistoryStats(stats, currentLotteryType);
-    }
-
-    updateHistoryStats(stats, currentLotteryType) {
-        const statsContainer = document.getElementById('history-stats-container');
-        if (!statsContainer) return;
-
-        if (!stats.lotteryTypeCount || Object.keys(stats.lotteryTypeCount).length === 0) {
-            statsContainer.classList.add('ui-hidden');
-            return;
-        }
-
-        statsContainer.classList.remove('ui-hidden');
-
-        import('../utils/LotteryTypes.js').then(({ LOTTERY_TYPES }) => {
-            const html = Object.entries(stats.lotteryTypeCount)
-                .map(([type, count]) => {
-                    const lotteryType = LOTTERY_TYPES[type];
-                    if (!lotteryType) return '';
-
-                    const isActive = type === currentLotteryType ? 'active background-color-primary-light' : '';
-                    const compactName = this.getCompactLotteryName(lotteryType);
-
-                    // inline style or use existing classes for badges
-                    return `
-                        <div class="stat-badge ${isActive}" style="display: inline-flex; align-items: center; background: rgba(99, 102, 241, 0.1); color: #6366F1; border: 1px solid rgba(99, 102, 241, 0.2); border-radius: 20px; padding: 4px 12px; margin: 0 8px 8px 0; font-size: 0.9rem;">
-                            <span class="type-icon ui-mr-5">${lotteryType.icon}</span>
-                            <span class="type-name ui-fw-500">${compactName}</span>
-                            <span class="type-count ui-ml-5 ui-fs-08" style="background: var(--primary-color, #6366F1); color: white; padding: 2px 6px; border-radius: 10px;">${count} 期</span>
-                        </div>
-                    `;
-                }).join('');
-
-            statsContainer.innerHTML = html;
-        });
     }
 
     updateHistoryTable(data, currentPage, itemsPerPage) {
@@ -502,14 +380,12 @@ export class UIManager {
                         </td>
                     ` : ''}
                     <td>
-                        <div class="action-btn-group">
-                            <button class="btn btn-sm btn-outline-primary" onclick="window.editRecord('${drawId}', ${drawData})">
-                                <i data-lucide="edit-3" class="icon-sm"></i>
-                                編輯
+                        <div style="display: flex; gap: 5px;">
+                            <button class="action-btn edit" onclick="window.editRecord('${drawId}', ${drawData})">
+                                ✏️ 編輯
                             </button>
-                            <button class="btn btn-sm btn-outline-error" onclick="window.deleteRecord('${drawId}')">
-                                <i data-lucide="trash-2" class="icon-sm"></i>
-                                刪除
+                            <button class="action-btn delete" onclick="window.deleteRecord('${drawId}')">
+                                🗑️ 刪除
                             </button>
                         </div>
                     </td>
@@ -525,10 +401,7 @@ export class UIManager {
 
         let html = '';
         if (currentPage > 1) {
-            html += `<button class="page-btn" data-page="${currentPage - 1}">
-                <i data-lucide="chevron-left" class="icon-sm"></i>
-                上一頁
-            </button>`;
+            html += `<button class="page-btn" data-page="${currentPage - 1}">‹ 上一頁</button>`;
         }
 
         const startPage = Math.max(1, currentPage - 2);
@@ -550,10 +423,7 @@ export class UIManager {
         }
 
         if (currentPage < totalPages) {
-            html += `<button class="page-btn" data-page="${currentPage + 1}">
-                下一頁
-                <i data-lucide="chevron-right" class="icon-sm"></i>
-            </button>`;
+            html += `<button class="page-btn" data-page="${currentPage + 1}">下一頁 ›</button>`;
         }
 
         pagination.innerHTML = html;

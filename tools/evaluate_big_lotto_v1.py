@@ -34,7 +34,7 @@ def load_big_lotto_history(max_records: int = 1500) -> List[Dict]:
         SELECT draw, numbers, special, date 
         FROM draws 
         WHERE lottery_type = 'BIG_LOTTO' 
-        ORDER BY CAST(draw AS INTEGER) DESC 
+        ORDER BY draw DESC 
         LIMIT ?
     """, (max_records,))
     

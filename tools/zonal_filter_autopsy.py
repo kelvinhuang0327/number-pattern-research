@@ -34,7 +34,7 @@ def run_autopsy(lottery_type, max_num):
     db_path = os.path.join(project_root, 'lottery_api/data/lottery_v2.db')
     conn = sqlite3.connect(db_path)
     cursor = conn.cursor()
-    cursor.execute("SELECT numbers FROM draws WHERE lottery_type = ? ORDER BY CAST(draw AS INTEGER) DESC LIMIT 1000", (lottery_type,))
+    cursor.execute("SELECT numbers FROM draws WHERE lottery_type = ? ORDER BY draw DESC LIMIT 1000", (lottery_type,))
     rows = cursor.fetchall()
     conn.close()
     

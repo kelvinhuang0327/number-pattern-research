@@ -1,8 +1,6 @@
 /**
  * RecordManager - 負責歷史記錄的增刪改查功能
  */
-import { getApiUrl } from '../config/apiConfig.js';
-
 export class RecordManager {
     constructor(app) {
         this.app = app;
@@ -224,7 +222,7 @@ export class RecordManager {
      * 新增記錄到後端
      */
     async createRecord(recordData) {
-        const response = await fetch(getApiUrl('/api/draws'), {
+        const response = await fetch('http://localhost:8002/api/draws', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
@@ -253,7 +251,7 @@ export class RecordManager {
      * 更新記錄到後端
      */
     async updateRecord(drawId, recordData) {
-        const response = await fetch(getApiUrl(`/api/draws/${drawId}`), {
+        const response = await fetch(`http://localhost:8002/api/draws/${drawId}`, {
             method: 'PUT',
             headers: {
                 'Content-Type': 'application/json'
@@ -294,7 +292,7 @@ export class RecordManager {
      */
     async deleteRecord(drawId) {
         try {
-            const response = await fetch(getApiUrl(`/api/draws/${drawId}`), {
+            const response = await fetch(`http://localhost:8002/api/draws/${drawId}`, {
                 method: 'DELETE'
             });
 

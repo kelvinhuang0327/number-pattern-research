@@ -30,7 +30,7 @@ def verify_integration():
     cursor = conn.cursor()
     
     # Test Big Lotto
-    cursor.execute("SELECT numbers FROM draws WHERE lottery_type = 'BIG_LOTTO' ORDER BY CAST(draw AS INTEGER) DESC LIMIT 500")
+    cursor.execute("SELECT numbers FROM draws WHERE lottery_type = 'BIG_LOTTO' ORDER BY draw DESC LIMIT 500")
     big_draws = [{'numbers': json.loads(r[0])} for r in cursor.fetchall()]
     big_rules = get_lottery_rules('BIG_LOTTO')
     
@@ -42,7 +42,7 @@ def verify_integration():
         print(f"Bet {i+1}: {numbers} | Zonal Valid: {'✅' if is_valid else '❌'}")
 
     # Test Power Lotto
-    cursor.execute("SELECT numbers FROM draws WHERE lottery_type = 'POWER_LOTTO' ORDER BY CAST(draw AS INTEGER) DESC LIMIT 500")
+    cursor.execute("SELECT numbers FROM draws WHERE lottery_type = 'POWER_LOTTO' ORDER BY draw DESC LIMIT 500")
     power_draws = [{'numbers': json.loads(r[0])} for r in cursor.fetchall()]
     power_rules = get_lottery_rules('POWER_LOTTO')
     

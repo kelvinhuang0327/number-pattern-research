@@ -2,8 +2,6 @@
  * 聰明包牌組件
  * 負責處理包牌邏輯和UI交互
  */
-import { getApiUrl } from '../../config/apiConfig.js';
-
 export class SmartBettingComponent {
     constructor(dataProcessor, predictionEngine, uiManager) {
         this.dataProcessor = dataProcessor;
@@ -76,7 +74,7 @@ export class SmartBettingComponent {
         }
 
         try {
-            const response = await fetch(getApiUrl(`/api/wheel/available-guarantees?pool_size=${poolSize}`));
+            const response = await fetch(`/api/wheel/available-guarantees?pool_size=${poolSize}`);
             const data = await response.json();
 
             select.innerHTML = '';
@@ -111,7 +109,7 @@ export class SmartBettingComponent {
             generateBtn.innerHTML = '<span class="btn-icon">⏳</span> 運算中...';
 
             // 調用後端實際的旋轉矩陣生成接口
-            const response = await fetch(getApiUrl(`/api/wheel/generate?pool=${JSON.stringify(nums)}&guarantee_t=${guarantee_t || 3}&condition_m=${condition_m || 4}`));
+            const response = await fetch(`/api/wheel/generate?pool=${JSON.stringify(nums)}&guarantee_t=${guarantee_t || 3}&condition_m=${condition_m || 4}`);
             const data = await response.json();
 
             if (!response.ok) throw new Error(data.detail || '生成失敗');
@@ -234,7 +232,7 @@ export class SmartBettingComponent {
             this.uiManager.showNotification('正在生成熵優化 8 注...', 'info');
 
             // 調用後端 API
-            const response = await fetch(getApiUrl('/api/predict-entropy-8-bets'), {
+            const response = await fetch('http://localhost:8002/api/predict-entropy-8-bets', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ lotteryType, strategy })

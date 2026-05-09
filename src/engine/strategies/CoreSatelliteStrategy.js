@@ -2,15 +2,16 @@
  * Core-Satellite Strategy - 核心-衛星錨點策略
  * 基於 Phase 76 研究結論，透過共享核心號碼 (Anchors) 穩定收益分佈。
  */
-import { getApiUrl } from '../../config/apiConfig.js';
-
 export class CoreSatelliteStrategy {
     constructor() {
         this.apiEndpoint = this.getApiEndpoint();
     }
 
     getApiEndpoint() {
-        return getApiUrl('/api/predict/core-satellite');
+        if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
+            return 'http://127.0.0.1:8002/api/predict/core-satellite';
+        }
+        return '/api/predict/core-satellite';
     }
 
     /**

@@ -26,7 +26,7 @@ def get_power_lotto_data():
         SELECT draw, numbers, special
         FROM draws
         WHERE lottery_type = 'POWER_LOTTO'
-        ORDER BY CAST(draw AS INTEGER) DESC
+        ORDER BY draw DESC
     ''')
 
     results = []

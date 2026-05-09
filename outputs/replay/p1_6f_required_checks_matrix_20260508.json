@@ -1,0 +1,56 @@
+{
+  "as_of": "2026-05-08",
+  "checks": [
+    {
+      "check_name": "replay-default-validation",
+      "trigger": [
+        "pull_request",
+        "push:main"
+      ],
+      "required_now": true,
+      "observation_mode": false,
+      "promotion_criteria": "N/A (already recommended required)",
+      "failure_policy": "Block PR merge; fix non-DB replay governance regressions before merge.",
+      "rollback_policy": "If systemic CI outage, temporarily pause requirement via policy exception; do not remove test semantics."
+    },
+    {
+      "check_name": "replay-dedicated-db-validation",
+      "trigger": [
+        "workflow_dispatch"
+      ],
+      "required_now": false,
+      "observation_mode": true,
+      "promotion_criteria": [
+        ">= 5 consecutive main-branch runs PASS",
+        ">= 3 PR dry-runs PASS without manual patching",
+        "Fixture integrity PASS each run",
+        "Zero-skip enforcement remains effective",
+        "Failure triage consistently classifiable within 1 business day"
+      ],
+      "failure_policy": "Classify as fixture/integrity/schema/test regression; do not accept skip-based pass.",
+      "rollback_policy": "Can remain non-required while fixing fixture pipeline; must keep fail-fast and no-fake-pass behavior."
+    },
+    {
+      "check_name": "fixture-integrity-gate (inside dedicated lane)",
+      "trigger": [
+        "workflow_dispatch via dedicated lane"
+      ],
+      "required_now": false,
+      "observation_mode": true,
+      "promotion_criteria": "Promote together with replay-dedicated-db-validation.",
+      "failure_policy": "Treat as fixture build/integrity drift incident; block dedicated pass and open remediation task.",
+      "rollback_policy": "May temporarily keep dedicated lane manual-only; never bypass integrity check while claiming dedicated success."
+    },
+    {
+      "check_name": "future secure artifact parity check",
+      "trigger": [
+        "manual/scheduled (future)"
+      ],
+      "required_now": false,
+      "observation_mode": true,
+      "promotion_criteria": "Only after artifact governance and data custody controls are formalized.",
+      "failure_policy": "Non-blocking for normal PRs; opens data-parity investigation.",
+      "rollback_policy": "Disable parity lane if artifact pipeline unstable; keep core default/dedicated synthetic lanes intact."
+    }
+  ]
+}

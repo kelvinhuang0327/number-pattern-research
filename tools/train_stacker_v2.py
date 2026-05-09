@@ -42,7 +42,7 @@ def load_power_lotto_history(max_records: int = 2000) -> List[Dict]:
         SELECT draw, numbers, special, date 
         FROM draws 
         WHERE lottery_type = 'POWER_LOTTO' 
-        ORDER BY CAST(draw AS INTEGER) DESC 
+        ORDER BY draw DESC 
         LIMIT ?
     """, (max_records,))
     

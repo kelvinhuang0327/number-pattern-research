@@ -13,15 +13,6 @@ import { RecordManager } from '../ui/RecordManager.js';
 import { FileUploadHandler } from './handlers/FileUploadHandler.js';
 import { DataHandler } from './handlers/DataHandler.js';
 import { UIDisplayHandler } from './handlers/UIDisplayHandler.js';
-import { SimulationHandler } from './handlers/SimulationHandler.js';
-import { PredictionHandler } from './handlers/PredictionHandler.js';
-import { NextDrawHandler } from './handlers/NextDrawHandler.js?v=18';
-import { getApiUrl } from '../config/apiConfig.js';
-import { DrawEntryManager } from '../ui/DrawEntryManager.js';
-import { AutoFetchManager } from '../ui/AutoFetchManager.js';
-import { PredictionTracker } from '../ui/PredictionTracker.js';
-import { ReviewManager } from '../ui/ReviewManager.js';
-import { OrchestrationManager } from '../ui/OrchestrationManager.js?v=14';
 
 /**
  * 主應用程式
@@ -51,14 +42,6 @@ export class App {
         this.fileUploadHandler = new FileUploadHandler(this);
         this.dataHandler = new DataHandler(this);
         this.uiDisplayHandler = new UIDisplayHandler(this);
-        this.simulationHandler = new SimulationHandler(this);
-        this.predictionHandler = new PredictionHandler(this);
-        this.nextDrawHandler = new NextDrawHandler(this);
-        this.drawEntryManager = new DrawEntryManager();
-        this.autoFetchManager = new AutoFetchManager();
-        this.predictionTracker = new PredictionTracker(this);
-        this.reviewManager = new ReviewManager(this);
-        this.orchestrationManager = new OrchestrationManager(this);
 
         // 不在 constructor 中自動初始化，由外部呼叫
         // this.init();
@@ -156,35 +139,12 @@ export class App {
             console.error('❌ Failed to load data from backend:', err);
         }
 
-        this._handleInitialRoute();
-
         // 啟動後端健康檢查
         this._backendRetryDelay = 15000;
         this._backendRetryMax = 120000;
         this._backendHealthTimer = null;
         this._backendWasDown = false;
         this.scheduleBackendHealthCheck(false);
-    }
-
-    _handleInitialRoute() {
-        const params = new URLSearchParams(window.location.search);
-        const runId = params.get('prediction_run_id');
-        const section = params.get('section');
-        if (!runId && !['reviews', 'orchestration', 'cto-review'].includes(section)) return;
-
-        if (section === 'orchestration' || section === 'cto-review') {
-            this.uiManager.showSection(section);
-            if (this.orchestrationManager) {
-                this.orchestrationManager.init();
-            }
-            return;
-        }
-
-        this.uiManager.showSection('reviews');
-        if (this.reviewManager) {
-            this.reviewManager._currentGame = this.currentLotteryType || 'BIG_LOTTO';
-            this.reviewManager.init();
-        }
     }
 
     /**
@@ -197,7 +157,7 @@ export class App {
 
         let backendOk = true;
         try {
-            const res = await fetch(getApiUrl('/health'), { cache: 'no-store' });
+            const res = await fetch('http://localhost:8002/health', { cache: 'no-store' });
             backendOk = res.ok;
         } catch (e) {
             backendOk = false;
@@ -206,8 +166,7 @@ export class App {
         // 需要被管理的策略 value 前綴 / 名稱
         const backendDependent = [
             'ai_prophet', 'ai_xgboost', 'ai_autogluon', 'ai_lstm', // API 策略
-            'auto_optimize', 'backend_optimized', // 後端優化相關
-            'coordinator', 'coordinator_direct', 'coordinator_hybrid'
+            'auto_optimize', 'backend_optimized' // 後端優化相關
         ];
 
         Array.from(methodSelect.options).forEach(opt => {
@@ -334,15 +293,6 @@ export class App {
             });
         }
 
-        // Coordinator 控制項顯示邏輯（僅 coordinator* 策略顯示）
-        const predictionMethodSelect = document.getElementById('prediction-method');
-        if (predictionMethodSelect) {
-            this.updateCoordinatorControlsVisibility(predictionMethodSelect.value);
-            predictionMethodSelect.addEventListener('change', (e) => {
-                this.updateCoordinatorControlsVisibility(e.target.value);
-            });
-        }
-
         // 快速預測按鈕
         const quickPredictBtn = document.getElementById('quick-predict-btn');
         if (quickPredictBtn) {
@@ -369,6 +319,26 @@ export class App {
             });
         }
 
+        // 🆕 預測方法說明卡片
+        const simulationMethodSelect = document.getElementById('simulation-method');
+        console.log('🔍 Looking for simulation-method element:', simulationMethodSelect);
+
+        if (simulationMethodSelect) {
+            console.log('✅ Found simulation-method, setting up event listener');
+
+            // 初始化時顯示第一個方法的說明
+            console.log('🎯 Initial method:', simulationMethodSelect.value);
+            this.updateMethodDescription(simulationMethodSelect.value);
+
+            // 監聽下拉選單變更
+            simulationMethodSelect.addEventListener('change', (e) => {
+                console.log('📢 Change event fired! New value:', e.target.value);
+                this.updateMethodDescription(e.target.value);
+            });
+        } else {
+            console.error('❌ simulation-method element not found!');
+        }
+
         // 彩券類型篩選
         const lotteryTypeFilter = document.getElementById('lottery-type-filter');
         if (lotteryTypeFilter) {
@@ -392,39 +362,9 @@ export class App {
                     }
                 } else if (section === 'history') {
                     this.displayHistory();
-                } else if (section === 'next-draw') {
-                    if (this.nextDrawHandler) {
-                        this.nextDrawHandler.onShow();
-                    }
-                } else if (section === 'tracking') {
-                    if (this.predictionTracker) {
-                        // 確保彩種與全局切換同步，再載入
-                        this.predictionTracker._currentGame = this.currentLotteryType || 'BIG_LOTTO';
-                        this.predictionTracker._updateGameLabel();
-                        this.predictionTracker.loadAll();
-                    }
-                } else if (section === 'reviews') {
-                    if (this.reviewManager) {
-                        this.reviewManager._currentGame = this.currentLotteryType || 'BIG_LOTTO';
-                        this.reviewManager.init();
-                    }
-                } else if (section === 'orchestration' || section === 'cto-review') {
-                    if (this.orchestrationManager) {
-                        this.orchestrationManager.init();
-                    }
                 }
             });
         });
-    }
-
-    updateCoordinatorControlsVisibility(method) {
-        const modeGroup = document.getElementById('coord-mode-group');
-        const betsGroup = document.getElementById('coord-bets-group');
-        if (!modeGroup || !betsGroup) return;
-
-        const isCoordinator = String(method || '').startsWith('coordinator');
-        modeGroup.style.display = isCoordinator ? '' : 'none';
-        betsGroup.style.display = isCoordinator ? '' : 'none';
     }
 
     /**
@@ -718,9 +658,6 @@ export class App {
             this.displayHistory();
         }
 
-        // 同步預測追蹤彩種
-        this.predictionTracker?._setGame(this.currentLotteryType);
-
         // 顯示通知
         const typeNames = {
             'BIG_LOTTO': '大樂透',
@@ -729,9 +666,7 @@ export class App {
             'STAR_4': '四星彩',
             'LOTTO_39': '39樂合彩',
             'DAILY_CASH_539': '今彩539',
-            'DAILY_539': '今彩539',
-            'POWER_BALL': '威力彩',
-            'POWER_LOTTO': '威力彩'
+            'POWER_BALL': '威力彩'
         };
         const typeName = this.currentLotteryType ? typeNames[this.currentLotteryType] || this.currentLotteryType : '全部';
         this.uiManager.showNotification(`已切換至：${typeName}`, 'info');
@@ -778,7 +713,6 @@ export class App {
 
             if (methodSelect) methodSelect.value = config.method;
             if (sampleSizeSelect) sampleSizeSelect.value = config.sampleSize;
-            if (methodSelect) this.updateCoordinatorControlsVisibility(methodSelect.value);
 
             // 顯示配置訊息
             this.uiManager.showNotification(
@@ -1052,9 +986,11 @@ export class App {
         const title = document.getElementById('method-title');
         const description = document.getElementById('method-description');
 
-        if (!card || !title || !description) {
-            console.warn('⚠️ Some elements for method description card are missing, but continuing...');
-            // We proceed if we have the core title and description
+        console.log('📋 Elements found:', { card: !!card, icon: !!icon, title: !!title, description: !!description });
+
+        if (!card || !icon || !title || !description) {
+            console.error('❌ Missing elements for method description card');
+            return;
         }
 
         // 定義所有預測方法的說明
@@ -1239,36 +1175,6 @@ export class App {
                     '輸出門生成預測結果'
                 ]
             },
-            'coordinator': {
-                icon: '🧭',
-                title: 'Coordinator (RSM 加權)',
-                desc: '多代理評分聚合，權重來自 RSM 滾動表現。',
-                logic: [
-                    '多策略代理對全號碼打分',
-                    '以 RSM 視窗 edge 作為動態權重',
-                    '聚合排序後切分多注'
-                ]
-            },
-            'coordinator_direct': {
-                icon: '🧭',
-                title: 'Coordinator Direct',
-                desc: '直接按聚合排序切分注單，重視全域覆蓋。',
-                logic: [
-                    '全號碼加權聚合',
-                    '按排名切分各注',
-                    '偏向穩定、低重疊'
-                ]
-            },
-            'coordinator_hybrid': {
-                icon: '🧭',
-                title: 'Coordinator Hybrid',
-                desc: '先縮小候選池，再由代理挑選，重視局部強信號。',
-                logic: [
-                    'Coordinator 先定候選池',
-                    '各代理在池中選號',
-                    '訊號更集中但波動略高'
-                ]
-            },
             'odd_even': {
                 icon: '⚖️',
                 title: '奇偶比例',
@@ -1339,184 +1245,324 @@ export class App {
             logic: ['暫無詳細邏輯說明']
         };
 
-        // Lucide Icon Mapping for methods
-        const iconMapping = {
-            'frequency': 'bar-chart-2',
-            'trend': 'trending-up',
-            'bayesian': 'target',
-            'montecarlo': 'dice-5',
-            'markov': 'git-branch',
-            'deviation': 'activity',
-            'ensemble_weighted': 'layers',
-            'ensemble_combined': 'zap',
-            'auto_optimize': 'cpu',
-            'backend_optimized': 'server',
-            'ai_prophet': 'sparkles',
-            'ai_xgboost': 'fast-forward',
-            'ai_autogluon': 'bot',
-            'ai_lstm': 'brain',
-            'ai_transformer': 'star',
-            'ai_bayesian_ensemble': 'crosshair',
-            'ai_maml': 'dna',
-            'coordinator': 'compass',
-            'coordinator_direct': 'navigation',
-            'coordinator_hybrid': 'map',
-            'odd_even': 'scale',
-            'zone_balance': 'map-pin',
-            'hot_cold': 'flame',
-            'sum_range': 'plus-circle',
-            'number_pairs': 'users',
-            'statistical': 'ruler'
-        };
-
-        const lucideName = iconMapping[method] || 'help-circle';
-
         // 更新卡片內容
-        if (icon) {
-            icon.innerHTML = `<i data-lucide="${lucideName}" style="width: 32px; height: 32px; color: var(--color-primary);"></i>`;
-        }
-        if (title) title.textContent = info.title;
+        icon.textContent = info.icon;
+        title.textContent = info.title;
 
         // 構建描述 HTML
         const logicList = info.logic.map(item => `<li>${item}</li>`).join('');
-        if (description) {
-            description.innerHTML = `
-                <p style="margin-bottom: var(--space-sm); font-size: 0.95rem; color: var(--color-text);">${info.desc}</p>
-                <div class="logic-panel">
-                    <strong style="display: block; margin-bottom: var(--space-xs); color: var(--color-primary); font-size: 0.9rem;">
-                        <i data-lucide="shield-check" class="icon-sm" style="display: inline-block; vertical-align: middle;"></i>
-                        📌 策略邏輯分析：
-                    </strong>
-                    <ul class="logic-list">
-                        ${logicList}
-                    </ul>
-                </div>
-            `;
-            // Re-initialize Lucide icons
-            if (window.lucide) {
-                window.lucide.createIcons();
-            }
-        }
+        description.innerHTML = `
+            <p style="margin: 0 0 10px 0;">${info.desc}</p>
+            <div style="background: rgba(255,255,255,0.15); padding: 12px; border-radius: 8px; margin-top: 10px;">
+                <strong style="display: block; margin-bottom: 6px;">📌 預測邏輯：</strong>
+                <ul style="margin: 5px 0; padding-left: 20px;">
+                    ${logicList}
+                </ul>
+            </div>
+        `;
     }
 
     async runSimulation() {
-        return this.simulationHandler.runSimulation();
-    }
+        const method = document.getElementById('simulation-method').value;
+        const yearMonth = document.getElementById('simulation-year-month').value;
+        const simulationBtn = document.getElementById('simulation-btn');
 
-    async getSimulationAllData() {
-        let allData = await this.dataProcessor.getDataSmart(this.currentLotteryType, 'all');
-
-        if (this.currentLotteryType) {
-            allData = allData.filter(d => d.lotteryType === this.currentLotteryType);
+        if (!yearMonth) {
+            this.uiManager.showNotification('請選擇年度月份', 'warning');
+            return;
         }
 
-        if (allData.length < 50) {
-            throw new Error('數據量不足，無法進行模擬 (至少需要 50 期)');
-        }
-
-        return allData;
-    }
-
-    getSimulationTargetsByYear(allData, targetYear) {
-        const testTargets = allData.filter(draw => this.getYearFromDate(draw.date) === targetYear);
-
-        if (testTargets.length === 0) {
-            const years = allData.map(d => this.getYearFromDate(d.date)).filter(Boolean);
-            const uniqueYears = Array.from(new Set(years)).sort();
-            throw new Error(`該年份 (${targetYear}) 無開獎資料。可用年份: ${uniqueYears.join(', ')}`);
-        }
-
-        testTargets.sort((a, b) => a.date.replace(/\//g, '-').localeCompare(b.date.replace(/\//g, '-')));
-        return testTargets;
-    }
-
-    async runSimulationByTargets(method, allData, testTargets) {
-        const results = [];
-        let successCount = 0;
-
-        for (let idx = 0; idx < testTargets.length; idx++) {
-            const targetDraw = testTargets[idx];
-            console.log(`\n🔄 ========== 模擬測試階段：第 ${idx + 1}/${testTargets.length} 期 ==========`);
-
-            const simulationResult = await this.runSingleSimulationTarget(method, allData, targetDraw);
-            if (!simulationResult) {
-                continue;
-            }
-
-            results.push(simulationResult.result);
-            if (simulationResult.result.isSuccess) {
-                successCount++;
-            }
-        }
-
-        return { results, successCount };
-    }
-
-    async runSingleSimulationTarget(method, allData, targetDraw) {
-        const targetDate = targetDraw.date.replace(/\//g, '-');
-        const trainingData = allData.filter(d => d.date.replace(/\//g, '-') < targetDate);
-
-        if (trainingData.length < 30) {
-            console.warn(`期數 ${targetDraw.draw} 訓練資料不足 (${trainingData.length} 期)，跳過`);
-            return null;
-        }
-
-        const sortedTraining = [...trainingData].sort((a, b) => {
-            const drawA = parseInt((a.draw || '').toString().replace(/\D/g, ''), 10) || 0;
-            const drawB = parseInt((b.draw || '').toString().replace(/\D/g, ''), 10) || 0;
-            return drawA - drawB;
-        });
-
-        console.log(`🔍 目標期數 ${targetDraw.draw} (${targetDate}): 訓練資料 ${trainingData.length} 期`);
-        console.log(`   期數範圍: ${sortedTraining[0]?.draw} ~ ${sortedTraining[sortedTraining.length - 1]?.draw}`);
-        console.log(`   日期範圍: ${sortedTraining[0]?.date} ~ ${sortedTraining[sortedTraining.length - 1]?.date}`);
-
-        const predictionResult = await this.predictionEngine.predictWithData(
-            method,
-            trainingData,
-            targetDraw.lotteryType,
-            true
-        );
-
-        const prediction = {
-            numbers: predictionResult.numbers,
-            special: predictionResult.special
-        };
-
-        console.log(`📊 目標期數 ${targetDraw.draw}: 使用 ${trainingData.length} 期資料預測`);
-
-        const { hits, isSuccess } = this.evaluatePrediction(
-            targetDraw.numbers,
-            prediction.numbers,
-            targetDraw.lotteryType,
-            targetDraw.special
-        );
+        // 只取年份，月份會被忽略（整年度測試）
+        const [year, month] = yearMonth.split('-');
+        const targetYear = year;   // 例如 "2025"
 
         try {
-            await apiClient.recordPerformanceHit(hits >= 3 ? 1 : 0);
-            this.uiManager.updateWaterline();
-        } catch (e) {
-            console.warn('錄入水線績效失敗:', e);
+            this.setButtonLoading(simulationBtn, true);
+            this.uiManager.showNotification('正在進行模擬測試...', 'info');
+
+            // 清除 auto_optimize 緩存（確保每次模擬都是全新的評估）
+            this._autoOptimizeCache = null;
+
+            // 取得全部資料
+            let allData = await this.dataProcessor.getDataSmart(this.currentLotteryType, 'all');
+
+            // 根據選擇的彩券類型篩選數據
+            if (this.currentLotteryType) {
+                allData = allData.filter(d => d.lotteryType === this.currentLotteryType);
+            }
+
+            if (allData.length < 50) {
+                throw new Error('數據量不足，無法進行模擬 (至少需要 50 期)');
+            }
+
+            // -------------------------------------------------
+            // 1️⃣ 只挑出目標年份的抽獎資料作為測試目標
+            // -------------------------------------------------
+            const testTargets = allData.filter(draw => {
+                const drawYear = this.getYearFromDate(draw.date);
+                return drawYear === targetYear;
+            });
+
+            if (testTargets.length === 0) {
+                const years = allData.map(d => this.getYearFromDate(d.date)).filter(Boolean);
+                const uniqueYears = Array.from(new Set(years)).sort();
+                throw new Error(`該年份 (${targetYear}) 無開獎資料。可用年份: ${uniqueYears.join(', ')}`);
+            }
+
+            // 依日期升序排列（確保滾動的先後順序正確）
+            testTargets.sort((a, b) => {
+                const dateA = a.date.replace(/\//g, '-');
+                const dateB = b.date.replace(/\//g, '-');
+                return dateA.localeCompare(dateB);
+            });
+
+            // -------------------------------------------------
+            // 2️⃣ 針對該年份的每一期執行滾動預測
+            // -------------------------------------------------
+            const results = [];
+            let successCount = 0;
+
+            for (const targetDraw of testTargets) {
+                console.log(`\n🔄 ========== 模擬測試階段：第 ${testTargets.indexOf(targetDraw) + 1}/${testTargets.length} 期 ==========`);
+                // 取得該期之前的所有資料作為訓練集
+                const targetDate = targetDraw.date.replace(/\//g, '-');
+                const trainingData = allData.filter(d => {
+                    const drawDate = d.date.replace(/\//g, '-');
+                    return drawDate < targetDate;
+                });
+
+                // 訓練資料不足時跳過（至少 30 期才算可靠）
+                if (trainingData.length < 30) {
+                    console.warn(`期數 ${targetDraw.draw} 訓練資料不足 (${trainingData.length} 期)，跳過`);
+                    continue;
+                }
+
+                // 🔍 Debug: 檢查訓練資料的期數範圍
+                const sortedTraining = [...trainingData].sort((a, b) => {
+                    const drawA = parseInt((a.draw || '').toString().replace(/\D/g, '')) || 0;
+                    const drawB = parseInt((b.draw || '').toString().replace(/\D/g, '')) || 0;
+                    return drawA - drawB;
+                });
+                console.log(`🔍 目標期數 ${targetDraw.draw} (${targetDate}): 訓練資料 ${trainingData.length} 期`);
+                console.log(`   期數範圍: ${sortedTraining[0]?.draw} ~ ${sortedTraining[sortedTraining.length - 1]?.draw}`);
+                console.log(`   日期範圍: ${sortedTraining[0]?.date} ~ ${sortedTraining[sortedTraining.length - 1]?.date}`);
+
+                // 獲取彩券規則
+                const lotteryRules = this.getLotteryRulesFromType(targetDraw.lotteryType);
+
+                // 執行預測
+                // 使用 predictWithData 統一接口，並啟用後端數據 (useBackendData = true)
+                // 這確保了所有策略（包括 auto_optimize）都嘗試使用 API
+                const predictionResult = await this.predictionEngine.predictWithData(
+                    method,
+                    trainingData,
+                    targetDraw.lotteryType,
+                    true // 啟用後端
+                );
+
+                // 提取預測結果 (predictWithData 返回的是完整對象)
+                const prediction = {
+                    numbers: predictionResult.numbers,
+                    special: predictionResult.special  // 🔧 提取特別號碼
+                };
+
+                console.log(`📊 目標期數 ${targetDraw.draw}: 使用 ${trainingData.length} 期資料預測`);
+
+                // 驗證結果 - 根據彩券類型使用不同的評分邏輯（含特別號）
+                const { hits, isSuccess } = this.evaluatePrediction(
+                    targetDraw.numbers,
+                    prediction.numbers,
+                    targetDraw.lotteryType,
+                    targetDraw.special  // 🔧 傳入特別號，讓7號比對生效
+                );
+                if (isSuccess) successCount++;
+
+                // Level 3: 記錄績效到後端以更新動態水線
+                try {
+                    await apiClient.recordPerformanceHit(hits >= 3 ? 1 : 0);
+                    // 隨插即用：更新 UI 儀表板
+                    this.uiManager.updateWaterline();
+                } catch (e) {
+                    console.warn('錄入水線績效失敗:', e);
+                }
+
+                // 使用已排序的 sortedTraining 來顯示起訖期數
+                const refRange = sortedTraining.length > 0
+                    ? `${sortedTraining[0].draw} - ${sortedTraining[sortedTraining.length - 1].draw} (共${trainingData.length}期)`
+                    : '-';
+
+                results.push({
+                    draw: targetDraw.draw,
+                    date: targetDraw.date,
+                    predicted: prediction.numbers,
+                    predictedSpecial: prediction.special || null,  // 🔧 添加預測特別號
+                    actual: targetDraw.numbers,
+                    actualSpecial: targetDraw.special || null,  // 🔧 添加實際特別號
+                    hits: hits,  // hits 現在是數字，不需要 .length
+                    isSuccess: isSuccess,
+                    refRange: refRange
+                });
+            }
+
+            // -------------------------------------------------
+            // 3️⃣ 顯示結果與成功率
+            // -------------------------------------------------
+            this.displaySimulationResults(results, successCount);
+
+            // -------------------------------------------------
+            // 4️⃣ 執行最新一期的雙注預測（使用全部歷史資料）
+            // -------------------------------------------------
+            console.log(`\n\n🌟 ========== 未來預測階段：預測下一期（使用全部 ${allData.length} 期歷史數據）==========\n`);
+            try {
+                await this.generateNextPeriodPrediction(allData);
+            } catch (error) {
+                console.error('最新一期預測失敗:', error);
+            }
+
+            this.uiManager.showNotification(
+                `模擬完成！測試 ${results.length} 期，成功 ${successCount} 期，成功率: ${results.length > 0 ? Math.round((successCount / results.length) * 100) : 0}%`,
+                'success'
+            );
+
+        } catch (error) {
+            this.uiManager.showNotification('模擬失敗: ' + error.message, 'error');
+            console.error(error);
+        } finally {
+            this.setButtonLoading(simulationBtn, false);
+        }
+    }
+
+    async runCollaborativeSimulation() {
+        const method = document.getElementById('collab-method').value;
+        const yearMonth = document.getElementById('collab-year-month').value;
+
+        if (!yearMonth) {
+            this.uiManager.showNotification('請選擇年度月份', 'warning');
+            return;
         }
 
-        const refRange = sortedTraining.length > 0
-            ? `${sortedTraining[0].draw} - ${sortedTraining[sortedTraining.length - 1].draw} (共${trainingData.length}期)`
-            : '-';
+        const [year, month] = yearMonth.split('-');
+        const targetYear = year;
 
-        return {
-            result: {
-                draw: targetDraw.draw,
-                date: targetDraw.date,
-                predicted: prediction.numbers,
-                predictedSpecial: prediction.special || null,
-                actual: targetDraw.numbers,
-                actualSpecial: targetDraw.special || null,
-                hits,
-                isSuccess,
-                refRange
+        try {
+            this.uiManager.showNotification('正在進行協作模擬測試...', 'info');
+
+            let allData = this.dataProcessor.getData();
+
+            // 根據選擇的彩券類型篩選數據
+            if (this.currentLotteryType) {
+                allData = allData.filter(d => d.lotteryType === this.currentLotteryType);
             }
-        };
+            if (allData.length < 50) {
+                throw new Error('數據量不足，無法進行模擬 (至少需要 50 期)');
+            }
+
+            const testTargets = allData.filter(draw => this.getYearFromDate(draw.date) === targetYear);
+            if (testTargets.length === 0) {
+                const years = allData.map(d => this.getYearFromDate(d.date)).filter(Boolean);
+                const uniqueYears = Array.from(new Set(years)).sort();
+                throw new Error(`該年份 (${targetYear}) 無開獎資料。可用年份: ${uniqueYears.join(', ')}`);
+            }
+
+            testTargets.sort((a, b) => {
+                const dateA = a.date.replace(/\//g, '-');
+                const dateB = b.date.replace(/\//g, '-');
+                return dateA.localeCompare(dateB);
+            });
+
+            const results = [];
+            let successCount = 0;
+
+            for (const targetDraw of testTargets) {
+                const targetDate = targetDraw.date.replace(/\//g, '-');
+                const trainingData = allData.filter(d => {
+                    const drawDate = d.date.replace(/\//g, '-');
+                    return drawDate < targetDate;
+                });
+
+                if (trainingData.length < 30) continue;
+
+                console.log(`📊 協作預測 ${targetDraw.draw}: 使用 ${trainingData.length} 期資料`);
+
+                const predictionResult = await this.predictionEngine.predictWithData(
+                    method,
+                    trainingData,
+                    targetDraw.lotteryType,
+                    true
+                );
+
+                const prediction = {
+                    numbers: predictionResult.numbers
+                };
+
+                // 使用正確的評分邏輯（含特別號）
+                const { hits, isSuccess } = this.evaluatePrediction(
+                    targetDraw.numbers,
+                    prediction.numbers,
+                    targetDraw.lotteryType,
+                    targetDraw.special  // 🔧 傳入特別號，讓7號比對生效
+                );
+                if (isSuccess) successCount++;
+
+                // 排序訓練數據以正確顯示起訖期數
+                const sortedTraining = [...trainingData].sort((a, b) => {
+                    const aNum = parseInt(a.draw.split('-')[0]);
+                    const bNum = parseInt(b.draw.split('-')[0]);
+                    return aNum - bNum;
+                });
+
+                const refRange = sortedTraining.length > 0
+                    ? `${sortedTraining[0].draw} - ${sortedTraining[sortedTraining.length - 1].draw} (共${trainingData.length}期)`
+                    : '-';
+
+                results.push({
+                    draw: targetDraw.draw,
+                    date: targetDraw.date,
+                    predicted: prediction.numbers,
+                    predictedSpecial: prediction.special || null,  // 🔧 添加預測特別號
+                    actual: targetDraw.numbers,
+                    actualSpecial: targetDraw.special || null,  // 🔧 添加實際特別號
+                    hits: hits,  // hits 現在是數字，不需要 .length
+                    isSuccess: isSuccess,
+                    refRange: refRange
+                });
+            }
+
+            // Display results in collaborative section
+            const tbody = document.querySelector('#collab-simulation-table tbody');
+            const rateSpan = document.getElementById('collab-simulation-rate');
+            const resultsDiv = document.getElementById('collab-simulation-results');
+
+            if (tbody && rateSpan && resultsDiv) {
+                const rate = results.length > 0 ? Math.round((successCount / results.length) * 100) : 0;
+                rateSpan.textContent = rate;
+
+                tbody.innerHTML = results.map(r => `
+                    <tr class="${r.isSuccess ? 'success-row' : ''}">
+                        <td>${r.draw}</td>
+                        <td>${r.date}</td>
+                        <td>${r.predicted.join(', ')}</td>
+                        <td>${r.actual.join(', ')}</td>
+                        <td><span class="hit-badge ${r.hits >= 3 ? 'high-hit' : ''}">${r.hits}</span></td>
+                        <td>${r.refRange}</td>
+                        <td>${r.isSuccess ? '✅' : '❌'}</td>
+                    </tr>
+                `).join('');
+
+                resultsDiv.style.display = 'block';
+            }
+
+            this.uiManager.showNotification(
+                `協作模擬完成！測試 ${results.length} 期，成功 ${successCount} 期，成功率: ${results.length > 0 ? Math.round((successCount / results.length) * 100) : 0}%`,
+                'success'
+            );
+
+        } catch (error) {
+            this.uiManager.showNotification('協作模擬失敗: ' + error.message, 'error');
+            console.error(error);
+        }
     }
+
 
 
 
@@ -1557,126 +1603,283 @@ export class App {
         const rateSpan = document.getElementById('simulation-rate');
         const tbody = document.querySelector('#simulation-table tbody');
 
-        if (!(resultsDiv && rateSpan && tbody)) return;
+        if (resultsDiv && rateSpan && tbody) {
+            const rate = results.length > 0 ? Math.round((successCount / results.length) * 100) : 0;
+            rateSpan.textContent = rate;
 
-        const rate = results.length > 0 ? Math.round((successCount / results.length) * 100) : 0;
-        rateSpan.textContent = rate;
+            // === 計算命中率分佈 ===
+            const hitDistribution = { 0: 0, 1: 0, 2: 0, 3: 0, 4: 0, 5: 0, 6: 0 };
+            results.forEach(r => {
+                if (hitDistribution.hasOwnProperty(r.hits)) {
+                    hitDistribution[r.hits]++;
+                }
+            });
 
-        // 命中分佈計算
-        const hitDist = { 0: 0, 1: 0, 2: 0, 3: 0, 4: 0, 5: 0, 6: 0 };
-        results.forEach(r => { if (r.hits in hitDist) hitDist[r.hits]++; });
+            // === 理論機率（大樂透 C(6,k) * C(43, 6-k) / C(49, 6)）===
+            const theoreticalProb = {
+                0: 43.596,  // 一個都沒中
+                1: 41.302,  // 中1個
+                2: 13.238,  // 中2個
+                3: 1.765,   // 中3個（普獎）
+                4: 0.097,   // 中4個
+                5: 0.002,   // 中5個
+                6: 0.0000072 // 全中（頭獎）
+            };
 
-        // 理論基準（39C5 今彩539 M3+ baseline ~5.5%，大樂透使用此欄位顯示分佈）
-        const theorProb = { 0: 43.60, 1: 41.30, 2: 13.24, 3: 1.77, 4: 0.10, 5: 0.002, 6: 0.000 };
-        const n = results.length || 1;
+            // === 計算實際機率 ===
+            const actualProb = {};
+            Object.keys(hitDistribution).forEach(key => {
+                actualProb[key] = results.length > 0
+                    ? ((hitDistribution[key] / results.length) * 100).toFixed(2)
+                    : '0.00';
+            });
 
-        // 統計面板
-        const existingStats = document.getElementById('simulation-stats-panel');
-        if (existingStats) existingStats.remove();
+            // === 在表格前插入統計面板 ===
+            const existingStats = document.getElementById('simulation-stats-panel');
+            if (existingStats) {
+                existingStats.remove();
+            }
 
-        const vsRandom = (rate / 1.765).toFixed(1);
-        const vsClass = parseFloat(vsRandom) >= 1 ? 'sim-kpi--good' : 'sim-kpi--warn';
-
-        const distRows = Object.keys(hitDist).map(h => {
-            const cnt = hitDist[h];
-            const actual = (cnt / n * 100).toFixed(1);
-            const theory = theorProb[h] ?? 0;
-            const diff = (parseFloat(actual) - theory).toFixed(1);
-            const diffNum = parseFloat(diff);
-            const isWinZone = parseInt(h) >= 3;
-            // 中獎區希望更高，非中獎區希望更低
-            const isBetter = isWinZone ? diffNum > 0 : diffNum < 0;
-            const diffCls = isBetter ? 'sim-diff-good' : 'sim-diff-bad';
-            const barW = Math.min(parseFloat(actual) * 2, 100).toFixed(0);
-            const refW = Math.min(theory * 2, 100).toFixed(0);
-            return `
-                <tr class="${isWinZone ? 'sim-dist-win' : ''}">
-                    <td class="sim-dist-hits">${h} 個${isWinZone ? ' <span class="sim-win-badge">中獎</span>' : ''}</td>
-                    <td>${cnt} 期</td>
-                    <td>${actual}%</td>
-                    <td>${theory.toFixed(2)}%</td>
-                    <td class="${diffCls}">${diffNum > 0 ? '+' : ''}${diff}%</td>
-                    <td class="sim-bar-cell">
-                        <div class="sim-bar-wrap">
-                            <div class="sim-bar-actual" style="width:${barW}%"></div>
-                            <div class="sim-bar-theory" style="left:${refW}%"></div>
-                        </div>
-                    </td>
-                </tr>`;
-        }).join('');
-
-        const statsPanel = document.createElement('div');
-        statsPanel.id = 'simulation-stats-panel';
-        statsPanel.className = 'sim-stats-panel';
-        statsPanel.innerHTML = `
-            <div class="sim-kpi-row">
-                <div class="sim-kpi">
-                    <div class="sim-kpi-val">${results.length}</div>
-                    <div class="sim-kpi-label">測試期數</div>
+            const statsPanel = document.createElement('div');
+            statsPanel.id = 'simulation-stats-panel';
+            statsPanel.className = 'simulation-stats-panel';
+            statsPanel.innerHTML = `
+                <h3>📊 詳細統計分析</h3>
+                <div class="stats-summary">
+                    <div class="stat-card">
+                        <div class="stat-label">總測試期數</div>
+                        <div class="stat-value">${results.length}</div>
+                    </div>
+                    <div class="stat-card success">
+                        <div class="stat-label">成功期數（≥3個）</div>
+                        <div class="stat-value">${successCount}</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-label">成功率</div>
+                        <div class="stat-value">${rate}%</div>
+                    </div>
+                    <div class="stat-card highlight">
+                        <div class="stat-label">vs 純隨機</div>
+                        <div class="stat-value">${(rate / 1.765).toFixed(1)}x</div>
+                        <div class="stat-note">（理論值 1.765%）</div>
+                    </div>
                 </div>
-                <div class="sim-kpi sim-kpi--success">
-                    <div class="sim-kpi-val">${successCount}</div>
-                    <div class="sim-kpi-label">命中 ≥3</div>
-                </div>
-                <div class="sim-kpi">
-                    <div class="sim-kpi-val">${rate}%</div>
-                    <div class="sim-kpi-label">成功率</div>
-                </div>
-                <div class="sim-kpi ${vsClass}">
-                    <div class="sim-kpi-val">${vsRandom}x</div>
-                    <div class="sim-kpi-label">vs 隨機</div>
-                </div>
-            </div>
-            <div class="sim-dist-wrap">
-                <div class="sim-dist-title">命中分佈對比</div>
-                <table class="sim-dist-table">
-                    <thead>
-                        <tr>
-                            <th>命中</th>
-                            <th>期數</th>
-                            <th>實際%</th>
-                            <th>理論%</th>
-                            <th>差異</th>
-                            <th>進度</th>
-                        </tr>
-                    </thead>
-                    <tbody>${distRows}</tbody>
-                </table>
-            </div>`;
 
-        const table = document.getElementById('simulation-table');
-        if (table && table.parentNode) {
-            table.parentNode.insertBefore(statsPanel, table);
-        }
+                <h4>🎯 命中率分佈對比</h4>
+                <div class="hit-distribution">
+                    ${Object.keys(hitDistribution).map(hits => {
+                const count = hitDistribution[hits];
+                const actualPct = actualProb[hits];
+                const theorPct = theoreticalProb[hits];
+                const diff = (parseFloat(actualPct) - theorPct).toFixed(2);
+                const isHigher = parseFloat(diff) > 0;
+                const isBetter = parseInt(hits) >= 3 ? isHigher : !isHigher; // ≥3 希望更高，<3 希望更低
 
-        // 結果明細表（最新在上）
-        tbody.innerHTML = results.slice().reverse().map(r => {
-            const trainCount = r.refRange ? (r.refRange.match(/共(\d+)期/) || [])[1] : '';
-            return `
+                return `
+                            <div class="hit-row ${parseInt(hits) >= 3 ? 'success-zone' : ''}">
+                                <div class="hit-label">
+                                    <span class="hit-num">${hits} 個</span>
+                                    ${parseInt(hits) >= 3 ? '<span class="badge">中獎</span>' : ''}
+                                </div>
+                                <div class="hit-stats">
+                                    <div class="stat-item">
+                                        <span class="label">實際:</span>
+                                        <span class="value">${count} 期 (${actualPct}%)</span>
+                                    </div>
+                                    <div class="stat-item">
+                                        <span class="label">理論:</span>
+                                        <span class="value">${theorPct}%</span>
+                                    </div>
+                                    <div class="stat-item ${isBetter ? 'better' : 'worse'}">
+                                        <span class="label">差異:</span>
+                                        <span class="value">${isHigher ? '+' : ''}${diff}%</span>
+                                        ${isBetter ? '📈' : '📉'}
+                                    </div>
+                                </div>
+                                <div class="progress-bar">
+                                    <div class="progress-actual" style="width: ${Math.min(parseFloat(actualPct) * 2, 100)}%"></div>
+                                    <div class="progress-theory" style="left: ${Math.min(theorPct * 2, 100)}%"></div>
+                                </div>
+                            </div>
+                        `;
+            }).join('')}
+                </div>
+
+                <div class="stats-note">
+                    <p><strong>💡 解讀說明：</strong></p>
+                    <ul>
+                        <li>✅ <strong>「3個」以上</strong>的實際機率 <strong>高於理論</strong> = 表現優於隨機</li>
+                        <li>📊 您的系統在「3個」的實際機率是 <strong>${actualProb[3]}%</strong>，理論值是 <strong>1.765%</strong></li>
+                        <li>🎯 這表示您的預測系統比純隨機猜測好 <strong>${(rate / 1.765).toFixed(1)} 倍</strong></li>
+                        <li>⚠️ 但彩票本質是隨機，即使是最好的系統也無法保證高成功率</li>
+                    </ul>
+                </div>
+            `;
+
+            // 插入到表格前
+            const table = document.getElementById('simulation-table');
+            if (table && table.parentNode) {
+                table.parentNode.insertBefore(statsPanel, table);
+            }
+
+            // === 原有的表格顯示（倒序顯示，最新的在上面） ===
+            tbody.innerHTML = results.slice().reverse().map(r => `
                 <tr class="${r.isSuccess ? 'success-row' : ''}">
                     <td>${r.draw}</td>
                     <td>${r.date}</td>
-                    <td class="sim-numbers">${r.predicted.join(', ')}${r.predictedSpecial != null ? ' <span class="sim-special">+' + r.predictedSpecial + '</span>' : ''}</td>
-                    <td class="sim-numbers">${r.actual.join(', ')}${Number(r.actualSpecial) > 0 ? ' <span class="sim-special">+' + r.actualSpecial + '</span>' : ''}</td>
+                    <td>${r.predicted.join(', ')}${r.predictedSpecial ? ' <strong style="color: #e74c3c;">+ ' + r.predictedSpecial + '</strong>' : ''}</td>
+                    <td>${r.actual.join(', ')}${r.actualSpecial ? ' <strong style="color: #e74c3c;">+ ' + r.actualSpecial + '</strong>' : ''}</td>
                     <td><span class="hit-badge ${r.hits >= 3 ? 'high-hit' : ''}">${r.hits}</span></td>
-                    <td class="sim-train-count">${trainCount ? '共' + trainCount + '期' : '-'}</td>
-                    <td>${r.isSuccess ? '<span class="sim-ok">✓</span>' : '<span class="sim-fail">✗</span>'}</td>
-                </tr>`;
-        }).join('');
+                    <td>${r.refRange || '-'}</td>
+                    <td>${r.isSuccess ? '✅' : '❌'}</td>
+                </tr>
+            `).join('');
 
-        resultsDiv.classList.remove('ui-hidden');
-        resultsDiv.style.display = 'block';
+            resultsDiv.style.display = 'block';
+        }
     }
 
     async runPrediction() {
-        return this.predictionHandler.runPrediction();
+        const method = document.getElementById('prediction-method').value;
+        const sampleSize = document.getElementById('sample-size').value;
+        const lotteryType = this.currentLotteryType;
+        const predictBtn = document.getElementById('predict-btn');
+
+        try {
+            this.setButtonLoading(predictBtn, true);
+
+            // 🔧 記憶體保護：自動優化使用較少數據
+            let actualSampleSize = sampleSize;
+            if (method === 'auto_optimize') {
+                if (sampleSize === 'all' || parseInt(sampleSize) > 500) {
+                    actualSampleSize = '500';
+                    console.log('⚠️ 記憶體保護：自動優化限制使用 500 期數據');
+                    this.uiManager.showNotification('記憶體保護：自動優化使用最近 500 期數據', 'info');
+                }
+            }
+
+            this.uiManager.showNotification('正在分析預測...', 'info');
+            // 🚀 默認啟用後端優化 (useBackendData = true)
+            // 如果後端不可用，PredictionEngine 會自動回退到本地計算
+            const result = await this.predictionEngine.predict(method, actualSampleSize, lotteryType, true);
+            this.displayPredictionResult(result);
+            this.uiManager.showNotification('預測完成！', 'success');
+        } catch (error) {
+            console.error('預測錯誤:', error);
+            this.uiManager.showNotification('預測失敗: ' + error.message, 'error');
+        } finally {
+            this.setButtonLoading(predictBtn, false);
+        }
     }
 
     /**
      * 生成最新一期的雙注預測（使用全部歷史資料）
      */
     async generateNextPeriodPrediction(allData) {
-        return this.predictionHandler.generateNextPeriodPrediction(allData);
+        const nextPredictionPanel = document.getElementById('simulation-next-prediction');
+
+        if (!nextPredictionPanel) {
+            console.warn('找不到最新一期預測面板');
+            return;
+        }
+
+        console.log(`🎯 開始未來預測：使用全部 ${allData.length} 期歷史數據（這是正確的！）`);
+
+        try {
+            // 整合所有策略的預測結果（包含後端優化策略）
+            const strategies = [
+                'frequency', 'trend', 'bayesian', 'markov', 'montecarlo', 'deviation',
+                'odd_even', 'zone_balance', 'hot_cold', 'sum_range', 'number_pairs',
+                'ensemble_weighted', 'ensemble_combined', 'ensemble_advanced',
+                'backend_optimized'  // 添加後端優化策略
+            ];
+
+            const allPredictions = [];
+            const lotteryRules = this.getLotteryRulesFromType(this.currentLotteryType);
+            const maxNumber = lotteryRules.maxNumber;
+
+            // 對每個策略執行預測
+            console.log(`📋 準備用 ${strategies.length} 種策略預測未來下一期...`);
+            for (let i = 0; i < strategies.length; i++) {
+                const strategy = strategies[i];
+                console.log(`\n🔮 [${i + 1}/${strategies.length}] 使用策略: ${strategy.toUpperCase()}`);
+                try {
+                    const result = await this.predictionEngine.predictWithData(
+                        strategy,
+                        allData,
+                        this.currentLotteryType,
+                        true
+                    );
+
+                    if (result && result.numbers && result.numbers.length > 0) {
+                        console.log(`   ✅ ${strategy} 預測成功: ${result.numbers.join(', ')} (信心度: ${result.confidence || 50}%)`);
+                        allPredictions.push({
+                            strategy: strategy,
+                            numbers: result.numbers,
+                            confidence: result.confidence || 50
+                        });
+                    }
+                } catch (error) {
+                    console.warn(`   ❌ 策略 ${strategy} 預測失敗:`, error.message);
+                }
+            }
+
+            if (allPredictions.length === 0) {
+                throw new Error('所有策略都無法執行預測');
+            }
+
+            // 計算每個號碼的加權分數
+            const numberScores = {};
+            for (let i = 1; i <= maxNumber; i++) {
+                numberScores[i] = 0;
+            }
+
+            allPredictions.forEach(pred => {
+                const { numbers, confidence } = pred;
+                numbers.forEach((num, index) => {
+                    // 加權計分：信心度 × 排名權重
+                    const rankWeight = (6 - index) / 6; // 前面的號碼權重更高
+                    const score = (confidence / 100) * rankWeight * 10;
+                    numberScores[num] = (numberScores[num] || 0) + score;
+                });
+            });
+
+            // 選出分數最高的12個號碼
+            const sortedNumbers = Object.entries(numberScores)
+                .map(([num, score]) => ({ num: parseInt(num), score }))
+                .sort((a, b) => b.score - a.score)
+                .slice(0, 12);
+
+            // 分成兩注（前6和後6）
+            const bet1Numbers = sortedNumbers.slice(0, 6).map(n => n.num).sort((a, b) => a - b);
+            const bet2Numbers = sortedNumbers.slice(6, 12).map(n => n.num).sort((a, b) => a - b);
+
+            // 計算信心度
+            const maxScore = Math.max(...Object.values(numberScores));
+            const bet1Score = sortedNumbers.slice(0, 6).reduce((sum, n) => sum + n.score, 0) / 6;
+            const bet2Score = sortedNumbers.slice(6, 12).reduce((sum, n) => sum + n.score, 0) / 6;
+            const overallScore = sortedNumbers.slice(0, 12).reduce((sum, n) => sum + n.score, 0) / 12;
+
+            const bet1Confidence = Math.min(95, Math.round((bet1Score / maxScore) * 100));
+            const bet2Confidence = Math.min(95, Math.round((bet2Score / maxScore) * 100));
+            const overallConfidence = Math.min(95, Math.round((overallScore / maxScore) * 100));
+
+            // 顯示結果
+            this.displayNextPeriodPrediction({
+                bet1: { numbers: bet1Numbers, confidence: bet1Confidence },
+                bet2: { numbers: bet2Numbers, confidence: bet2Confidence },
+                strategyCount: allPredictions.length,
+                overallConfidence: overallConfidence,
+                basePeriod: allData.length > 0 ? `${allData[0].draw} - ${allData[allData.length - 1].draw}` : '-',
+                topStrategies: allPredictions.slice(0, 5).map(p => p.strategy)
+            });
+
+            nextPredictionPanel.style.display = 'block';
+
+        } catch (error) {
+            console.error('生成最新一期預測失敗:', error);
+            nextPredictionPanel.style.display = 'none';
+        }
     }
 
     /**
@@ -1921,7 +2124,7 @@ export class App {
         const endDraw = sortedData[sortedData.length - 1].draw;
 
         // 調用後端 API
-        const response = await fetch(getApiUrl('/api/predict-with-range'), {
+        const response = await fetch('http://127.0.0.1:8002/api/predict-with-range', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
@@ -2161,9 +2364,6 @@ export class App {
             'xgboost': 'XGBoost機器學習',
             'ai_prophet': 'Prophet時序預測',
             'ai_xgboost': 'XGBoost機器學習',
-            'coordinator': 'Coordinator (RSM加權)',
-            'coordinator_direct': 'Coordinator Direct',
-            'coordinator_hybrid': 'Coordinator Hybrid',
             'ensemble_weighted': '加權集成',
             'ensemble_combined': '綜合集成',
             'ensemble_advanced': '進階集成',

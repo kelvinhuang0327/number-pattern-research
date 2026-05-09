@@ -531,6 +531,10 @@
                     <i data-lucide="bar-chart-2" class="icon"></i>
                     <span>預測追蹤</span>
                 </button>
+                <button class="nav-btn" data-section="replay">
+                    <i data-lucide="history" class="icon"></i>
+                    <span>歷史回放</span>
+                </button>
                 <button class="nav-btn" data-section="reviews">
                     <i data-lucide="clipboard-check" class="icon"></i>
                     <span>研究檢討</span>
@@ -1130,6 +1134,31 @@
                     <div class="prediction-card full-width">
                         <h3>預測分析報告</h3>
                         <div id="prediction-report" class="report-content"></div>
+                    </div>
+                </div>
+
+                <!-- H6 Live Monitoring Panel (DAILY_539 only) -->
+                <div id="h6-monitoring-panel" class="prediction-card full-width" style="display:none;margin-top:14px">
+                    <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px">
+                        <h3 style="margin:0">H6 Live Monitoring</h3>
+                        <span id="h6-rollback-badge" style="padding:2px 10px;border-radius:12px;font-size:11px;font-weight:700;background:rgba(16,185,129,.15);color:#10b981;border:1px solid rgba(16,185,129,.35)">ACTIVE</span>
+                        <span id="h6-bear-badge" style="display:none;padding:2px 10px;border-radius:12px;font-size:11px;font-weight:700;background:rgba(248,81,73,.1);color:#f85149;border:1px solid rgba(248,81,73,.35)">BEAR WARNING</span>
+                    </div>
+                    <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:8px 16px;font-size:12px">
+                        <div><span style="color:var(--text-muted,#8b949e)">Active Strategy</span><br><b id="h6-active-strategy" style="font-size:11px">—</b></div>
+                        <div><span style="color:var(--text-muted,#8b949e)">Shadow Strategy</span><br><b id="h6-shadow-strategy" style="font-size:11px">—</b></div>
+                        <div><span style="color:var(--text-muted,#8b949e)">Live 30P Edge</span><br><b id="h6-live-30p-edge">—</b></div>
+                        <div><span style="color:var(--text-muted,#8b949e)">Live 50P Edge</span><br><b id="h6-live-50p-edge">—</b></div>
+                        <div><span style="color:var(--text-muted,#8b949e)">Consecutive Neg</span><br><b id="h6-consecutive-neg">—</b></div>
+                        <div><span style="color:var(--text-muted,#8b949e)">Current Regime</span><br><b id="h6-current-regime">—</b></div>
+                    </div>
+                    <div id="h6-rollback-reason-row" style="display:none;margin-top:8px;padding:6px 10px;border-radius:5px;background:rgba(248,81,73,.08);border:1px solid rgba(248,81,73,.25);font-size:12px;color:#f85149">
+                        ⚠️ Rollback Reason: <span id="h6-rollback-reason">—</span>
+                    </div>
+                    <div id="h6-outcomes-summary" style="margin-top:10px;font-size:12px;color:var(--text-muted,#8b949e)">近期開獎記錄載入中…</div>
+                    <div style="display:flex;gap:8px;margin-top:8px;align-items:center">
+                        <button id="h6-monitor-refresh-btn" class="btn-sm btn-secondary" style="font-size:11px;padding:3px 10px">🔄 刷新</button>
+                        <a href="#" id="h6-record-outcome-link" style="font-size:11px;color:var(--text-muted,#8b949e)">記錄開獎結果 →</a>
                     </div>
                 </div>
             </section>
@@ -1823,6 +1852,192 @@
           </div>
         </section>
 
+        <!-- ══════════════════════════════════════ REPLAY SECTION ════════════════════════════════════ -->
+        <section id="replay-section" class="section">
+          <div class="section-header">
+            <h2>🎬 策略歷史回放</h2>
+            <p>查詢各策略對每一期開獎的歷史回溯預測記錄（純粹稽核用途）。</p>
+          </div>
+          <div class="section-content">
+
+            <!-- Disclaimer -->
+            <div class="card mb-16" style="border-left:4px solid #f39c12;background:#fffbf0">
+              <div class="card-body" style="padding:12px 16px;color:#7d4e00;font-size:13px">
+                ⚠️ <strong>免責聲明：</strong>
+                本頁為歷史預測回放，只用於查詢與稽核；不代表提高中獎率，也不是正式 edge claim。
+              </div>
+            </div>
+
+            <!-- Freshness / Coverage Status Badge -->
+            <div id="rp-freshness-card" class="card mb-16" style="border-left:4px solid #3498db">
+              <div class="card-body" style="padding:12px 16px;font-size:13px">
+                <div id="rp-freshness-loading" style="color:#666">⏳ 資料狀態讀取中…</div>
+                <div id="rp-freshness-content" style="display:none">
+                  <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:8px">
+                    <strong style="font-size:14px">📡 資料覆蓋狀態</strong>
+                    <span id="rp-coverage-badge" style="padding:2px 10px;border-radius:12px;font-size:12px;font-weight:600"></span>
+                  </div>
+                  <div id="rp-legacy-error-note" style="display:none;color:#7d4e00;background:#fffbf0;border:1px solid #f39c12;border-radius:4px;padding:8px 12px;margin-bottom:8px;font-size:12px">
+                    ⚠️ 系統偵測到舊 replay error records（已標記為 FAILED_LEGACY），已保留供稽核，不代表最新 coverage run 失敗。
+                  </div>
+                  <table style="width:100%;border-collapse:collapse;font-size:12px" id="rp-freshness-table">
+                    <thead>
+                      <tr style="background:#f5f7fa;color:#666">
+                        <th style="padding:6px 8px;text-align:left;border-bottom:1px solid #e0e4ea">彩種</th>
+                        <th style="padding:6px 8px;text-align:center;border-bottom:1px solid #e0e4ea">最新 Run</th>
+                        <th style="padding:6px 8px;text-align:center;border-bottom:1px solid #e0e4ea">狀態</th>
+                        <th style="padding:6px 8px;text-align:center;border-bottom:1px solid #e0e4ea">總筆數</th>
+                        <th style="padding:6px 8px;text-align:center;border-bottom:1px solid #e0e4ea">預測成功</th>
+                        <th style="padding:6px 8px;text-align:center;border-bottom:1px solid #e0e4ea">錯誤</th>
+                        <th style="padding:6px 8px;text-align:center;border-bottom:1px solid #e0e4ea">Coverage</th>
+                      </tr>
+                    </thead>
+                    <tbody id="rp-freshness-tbody"></tbody>
+                  </table>
+                  <div style="margin-top:8px;color:#888;font-size:11px" id="rp-freshness-ts"></div>
+                </div>
+                <div id="rp-freshness-error" style="display:none;color:#c0392b;font-size:12px">⚠️ 資料狀態讀取失敗（不影響查詢功能）</div>
+              </div>
+            </div>
+
+            <!-- Data Explanation Panel -->
+            <details class="card mb-16" id="rp-info-panel" style="border-left:4px solid #3498db">
+              <summary style="cursor:pointer;padding:12px 16px;font-weight:600;font-size:13px;list-style:none;display:flex;align-items:center;gap:8px;user-select:none">
+                ℹ️ 關於本頁資料說明 <span style="font-size:11px;color:#888;font-weight:400">（點擊展開）</span>
+              </summary>
+              <div style="padding:4px 16px 14px;font-size:12px;color:#555;line-height:1.8">
+                <ol style="margin:0;padding-left:20px">
+                  <li>本頁為歷史預測回放，只用於查詢與稽核，不代表實際下注建議。</li>
+                  <li>每筆 replay 只使用 target draw 以前資料（walk-forward / causal 限制）。</li>
+                  <li>第一版每策略每期只保留一注預測（one-bet projection）。</li>
+                  <li>目前 coverage mode 可能是 LIMITED，不代表全量歷史資料。</li>
+                  <li>舊版 FAILED_LEGACY run 的 error records 保留供稽核，不代表最新 run 有錯誤。</li>
+                  <li>replay summary 只是歷史統計，不是 governance verdict。</li>
+                  <li>replay 結果不是 edge claim，不代表提高中獎率。</li>
+                  <li>若 causal metadata 缺失，系統顯示「Causal metadata unavailable」，不假裝 PASS。</li>
+                </ol>
+              </div>
+            </details>
+
+            <!-- Filters -->
+            <div class="card mb-16">
+              <div class="card-header">🔍 查詢條件</div>
+              <div class="card-body" style="display:flex;gap:12px;flex-wrap:wrap;align-items:flex-end">
+                <div>
+                  <label style="display:block;font-size:12px;margin-bottom:4px">彩種</label>
+                  <select id="rp-lottery-select" class="form-control" style="min-width:120px">
+                    <option value="BIG_LOTTO">大樂透</option>
+                    <option value="POWER_LOTTO">威力彩</option>
+                    <option value="DAILY_539">今彩539</option>
+                  </select>
+                </div>
+                <div>
+                  <label style="display:block;font-size:12px;margin-bottom:4px">策略生命週期</label>
+                  <select id="rp-lifecycle-select" class="form-control" style="min-width:140px">
+                    <option value="">全部</option>
+                    <option value="ONLINE">🟢 上線 (ONLINE)</option>
+                    <option value="OFFLINE">⚫ 下線 (OFFLINE)</option>
+                    <option value="REJECTED">🔴 拒絕 (REJECTED)</option>
+                    <option value="OBSERVATION">🟡 觀察 (OBSERVATION)</option>
+                    <option value="RETIRED">⚪ 退役 (RETIRED)</option>
+                  </select>
+                </div>
+                <div>
+                  <label style="display:block;font-size:12px;margin-bottom:4px">策略</label>
+                  <select id="rp-strategy-select" class="form-control" style="min-width:200px">
+                    <option value="">全部</option>
+                  </select>
+                </div>
+                <div>
+                  <label style="display:block;font-size:12px;margin-bottom:4px">回放狀態</label>
+                  <select id="rp-status-select" class="form-control" style="min-width:140px">
+                    <option value="">全部</option>
+                    <option value="PREDICTED">PREDICTED</option>
+                    <option value="REJECTED">REJECTED</option>
+                    <option value="INSUFFICIENT_HISTORY">INSUFFICIENT_HISTORY</option>
+                    <option value="REPLAY_ERROR">REPLAY_ERROR</option>
+                    <option value="INVALID_OUTPUT">INVALID_OUTPUT</option>
+                    <option value="STRATEGY_UNAVAILABLE">STRATEGY_UNAVAILABLE</option>
+                  </select>
+                </div>
+                <div>
+                  <label style="display:block;font-size:12px;margin-bottom:4px">日期從</label>
+                  <input type="date" id="rp-date-from" class="form-control">
+                </div>
+                <div>
+                  <label style="display:block;font-size:12px;margin-bottom:4px">日期到</label>
+                  <input type="date" id="rp-date-to" class="form-control">
+                </div>
+                <button id="rp-query-btn" class="btn btn-primary">🔍 查詢</button>
+                <button id="rp-summary-btn" class="btn btn-secondary">📊 命中率摘要</button>
+              </div>
+            </div>
+
+            <!-- Summary Cards -->
+            <div id="rp-summary-cards" style="display:none">
+              <div class="card mb-16">
+                <div class="card-header">📊 命中率摘要（歷史回放）</div>
+                <div class="card-body" style="overflow-x:auto">
+                  <table class="data-table" style="width:100%">
+                    <thead>
+                      <tr>
+                        <th>策略 ID</th>
+                        <th>策略名稱</th>
+                        <th>已預測期數</th>
+                        <th>平均命中數</th>
+                        <th>3+ 命中期數</th>
+                        <th>特別號命中</th>
+                        <th>拒絕數</th>
+                        <th>歷史不足</th>
+                        <th>錯誤數</th>
+                      </tr>
+                    </thead>
+                    <tbody id="rp-summary-body">
+                      <tr><td colspan="9" style="text-align:center;color:#888">尚無摘要資料</td></tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+
+            <!-- History Table -->
+            <div class="card mb-16">
+              <div class="card-header" style="display:flex;align-items:center;gap:8px">
+                <span>🗂️ 回放記錄</span>
+                <span id="rp-total-label" style="font-size:12px;color:#888;margin-left:auto"></span>
+              </div>
+              <div class="card-body" style="overflow-x:auto">
+                <table class="data-table" style="width:100%">
+                  <thead>
+                    <tr>
+                      <th>期號</th>
+                      <th>日期</th>
+                      <th>策略</th>
+                      <th>生命週期</th>
+                      <th>回放狀態</th>
+                      <th>拒絕原因</th>
+                      <th>預測號碼</th>
+                      <th>實際開獎</th>
+                      <th>命中號碼</th>
+                      <th>命中數</th>
+                      <th></th>
+                    </tr>
+                  </thead>
+                  <tbody id="rp-hist-body">
+                    <tr><td colspan="11" style="text-align:center;color:#888">請選擇條件後按「查詢」</td></tr>
+                  </tbody>
+                </table>
+                <div style="display:flex;justify-content:center;align-items:center;gap:12px;margin-top:10px">
+                  <button id="rp-prev-btn" class="btn btn-sm btn-secondary" disabled>&#9664; 上一頁</button>
+                  <span id="rp-page-info" style="font-size:13px;color:#888">第 1 / 1 頁</span>
+                  <button id="rp-next-btn" class="btn btn-sm btn-secondary" disabled>下一頁 &#9654;</button>
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </section>
+
         <!-- ═══════════════════════════════════════ REVIEWS SECTION ════════════════════════════════════ -->
         <section id="reviews-section" class="section">
           <div class="section-header">
@@ -1900,11 +2115,31 @@
           </div>
 
           <!-- Summary Dashboard -->
-          <div id="orc-summary" style="display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:20px">
+          <div id="orc-summary" style="display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:12px">
             <div class="metric-card"><div class="metric-label">今日任務</div><div class="metric-value" id="orc-total">—</div></div>
             <div class="metric-card"><div class="metric-label">進行中</div><div class="metric-value" id="orc-running">—</div></div>
             <div class="metric-card"><div class="metric-label">已完成</div><div class="metric-value" id="orc-completed">—</div></div>
             <div class="metric-card"><div class="metric-label">Worker 狀態</div><div class="metric-value" id="orc-worker-status">—</div></div>
+          </div>
+
+          <!-- H6 Live State Panel (DAILY_539) -->
+          <div id="orc-h6-panel" class="card mb-16" style="padding:12px 14px;display:none">
+            <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px;font-weight:600;font-size:0.9rem">
+              <span>H6 DAILY_539 監控</span>
+              <span id="orc-h6-rollback-badge" style="padding:1px 9px;border-radius:10px;font-size:11px;font-weight:700;background:rgba(16,185,129,.15);color:#10b981;border:1px solid rgba(16,185,129,.35)">ACTIVE</span>
+              <span id="orc-h6-bear-badge" style="display:none;padding:1px 9px;border-radius:10px;font-size:11px;font-weight:700;background:rgba(248,81,73,.1);color:#f85149;border:1px solid rgba(248,81,73,.35)">BEAR</span>
+            </div>
+            <div style="display:flex;flex-wrap:wrap;gap:6px 20px;font-size:12px;color:var(--text-muted,#8b949e)">
+              <span>Active: <b id="orc-h6-active" style="color:var(--text-color,#c9d1d9);font-size:11px">—</b></span>
+              <span>Shadow: <b id="orc-h6-shadow" style="color:var(--text-color,#c9d1d9);font-size:11px">—</b></span>
+              <span>30P Edge: <b id="orc-h6-edge30">—</b></span>
+              <span>50P Edge: <b id="orc-h6-edge50">—</b></span>
+              <span>Consec Neg: <b id="orc-h6-consec-neg">—</b></span>
+              <span>Regime: <b id="orc-h6-regime">—</b></span>
+            </div>
+            <div id="orc-h6-rollback-reason" style="display:none;margin-top:6px;font-size:11px;color:#f85149">
+              ⚠️ <span id="orc-h6-rollback-reason-text">—</span>
+            </div>
           </div>
 
           <!-- Long-runner detail panel (visible when worker_run_state_badge != RUNNING/null) -->
@@ -2016,9 +2251,9 @@
             <h3 style="margin-bottom:8px">任務清單</h3>
             <table class="data-table rv-table" style="width:100%;margin-bottom:24px">
               <thead><tr>
-                                <th style="text-align:center">ID</th><th style="text-align:center">Planer 發佈時間</th><th style="text-align:center">標題</th><th style="text-align:center">狀態</th><th style="text-align:center">耗時</th><th style="text-align:center">Worker 完成時間</th><th style="text-align:center">異動檔案</th>
+                                <th style="text-align:center">ID</th><th style="text-align:center">Planer 發佈時間</th><th style="text-align:center">標題</th><th style="text-align:center">狀態</th><th style="text-align:center">耗時</th><th style="text-align:center">Worker 完成時間</th><th style="text-align:center">異動檔案</th><th style="text-align:center">Planner</th><th style="text-align:center">Worker / Model</th>
               </tr></thead>
-              <tbody id="orc-task-tbody"><tr><td colspan="7" class="rv-empty">載入中…</td></tr></tbody>
+              <tbody id="orc-task-tbody"><tr><td colspan="9" class="rv-empty">載入中…</td></tr></tbody>
             </table>
             <div class="rv-filter-bar" style="margin-top:-12px;margin-bottom:20px;display:flex;gap:8px;align-items:center;flex-wrap:wrap">
               <button id="orc-task-prev-btn" class="btn-sm btn-secondary">上一頁</button>
@@ -2144,27 +2379,50 @@
                             </div>
                         </div>
 
-                        <!-- CTO Backlog Selection Policy Panel -->
-                        <div class="card mb-16" style="padding:12px 14px">
-                            <div style="font-weight:600;margin-bottom:10px;font-size:0.88rem">🎯 CTO Backlog Selection Policy</div>
-                            <div id="orc-backlog-policy-panel" style="min-height:40px">
-                                <span style="font-size:0.8rem;color:#8b949e">載入中…</span>
+                        <!-- CTO Review Provider Settings -->
+                        <div class="card mb-16" style="padding:12px 16px;border:1px solid rgba(88,166,255,0.25);background:rgba(88,166,255,0.04)">
+                            <div style="display:flex;align-items:center;gap:8px;margin-bottom:12px">
+                                <span style="font-weight:600;font-size:0.88rem">🤖 CTO Review Provider</span>
+                                <span style="font-size:0.72rem;color:#8b949e;border:1px solid #30363d;border-radius:3px;padding:0 5px">LLM 審核建議（非決定性）</span>
                             </div>
+                            <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-bottom:10px">
+                                <label style="font-size:0.82rem">Provider
+                                    <select id="orc-cto-review-provider" style="margin-left:6px;padding:4px 8px;border-radius:4px;border:1px solid var(--border-color)">
+                                        <option value="local">Local (no LLM)</option>
+                                        <option value="claude-cli">Claude CLI</option>
+                                        <option value="codex-cli">Codex CLI</option>
+                                        <option value="auto">Auto</option>
+                                    </select>
+                                </label>
+                                <label style="font-size:0.82rem">Model
+                                    <input id="orc-cto-review-model" type="text" placeholder="auto"
+                                        style="margin-left:6px;padding:4px 8px;border-radius:4px;border:1px solid var(--border-color);min-width:110px">
+                                </label>
+                                <label style="font-size:0.82rem">Mode
+                                    <select id="orc-cto-review-mode" style="margin-left:6px;padding:4px 8px;border-radius:4px;border:1px solid var(--border-color)">
+                                        <option value="local_review">Local Review</option>
+                                        <option value="review_only">Review Only (LLM)</option>
+                                    </select>
+                                </label>
+                                <label style="font-size:0.82rem">Daily Cap
+                                    <input id="orc-cto-review-cap" type="number" min="0" placeholder="0"
+                                        style="margin-left:6px;padding:4px 8px;border-radius:4px;border:1px solid var(--border-color);width:70px">
+                                </label>
+                            </div>
+                            <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-bottom:10px">
+                                <span style="font-size:0.8rem;color:#8b949e">今日 CTO LLM 呼叫：<b id="orc-cto-review-today-calls" style="color:var(--text-color,#c9d1d9)">—</b> / <span id="orc-cto-review-cap-display">—</span></span>
+                                <button id="orc-cto-review-save-btn" class="btn-sm btn-secondary">套用設定</button>
+                                <button id="orc-cto-review-preview-btn" class="btn-sm btn-secondary" style="margin-left:4px">預覽審核</button>
+                                <button id="orc-cto-review-run-once-btn" class="btn-sm btn-secondary" style="margin-left:4px">手動執行一次</button>
+                                <span id="orc-cto-review-hint" style="font-size:12px;color:#8b949e">載入中…</span>
+                            </div>
+                            <div style="padding:8px 12px;border-radius:5px;background:rgba(88,166,255,0.08);border:1px solid rgba(88,166,255,0.2);font-size:0.79rem;color:#8b949e;line-height:1.5">
+                                ℹ️ Claude / Codex CTO 僅提供審核建議。是否真的合併，仍由既有 CTO 合併開關（<code style="color:#e3b341">manual_merge_required</code>）與 Local Safety Gate 決定。<br>
+                                <span>risk=HIGH、touches_runtime_db、touches_scheduler 等旗標觸發時，即使 LLM 建議 ALLOW，系統仍會要求人工確認。</span>
+                            </div>
+                            <div id="orc-cto-review-result" style="margin-top:10px;display:none"></div>
                         </div>
-
-                        <!-- Adaptive Policy Panel (Self-Optimizing Decision Architect) -->
-                        <div class="card mb-16" style="padding:12px 14px">
-                            <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px">
-                                <span style="font-weight:600;font-size:0.88rem">🧠 智能策略建議</span>
-                                <span style="font-size:0.75rem;color:#8b949e">Self-Optimizing Decision Architect</span>
-                                <button id="orc-adaptive-refresh-btn" style="margin-left:auto;font-size:0.72rem;padding:2px 8px;border:1px solid #30363d;color:#8b949e;background:transparent;border-radius:4px;cursor:pointer">↻ 重新計算</button>
-                            </div>
-                            <div id="orc-adaptive-panel" style="min-height:40px">
-                                <span style="font-size:0.8rem;color:#8b949e">載入中…</span>
-                            </div>
-                        </div>
-
-                        <div id="cto-summary" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:12px;margin-bottom:20px">
+                        <div id="cto-summary" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:12px;margin-bottom:12px">
                             <div class="metric-card"><div class="metric-label">頻率模式</div><div class="metric-value" id="cto-frequency-mode">—</div></div>
                             <div class="metric-card"><div class="metric-label">待審核</div><div class="metric-value" id="cto-pending-count">—</div></div>
                             <div class="metric-card"><div class="metric-label">已批准</div><div class="metric-value" id="cto-approved-count">—</div></div>
@@ -2173,6 +2431,26 @@
                             <div class="metric-card"><div class="metric-label">延後衝突</div><div class="metric-value" id="cto-deferred-count">—</div></div>
                             <div class="metric-card"><div class="metric-label">去重 / 取代</div><div class="metric-value" id="cto-superseded-count">—</div></div>
                             <div class="metric-card"><div class="metric-label">重複提交</div><div class="metric-value" id="cto-duplicate-count">—</div></div>
+                        </div>
+
+                        <!-- H6 Live State in CTO view -->
+                        <div id="cto-h6-panel" class="card mb-16" style="padding:10px 14px;display:none;border-left:3px solid var(--success-color,#10b981)">
+                            <div style="display:flex;align-items:center;gap:8px;margin-bottom:6px;font-weight:600;font-size:0.85rem">
+                                <span>H6 DAILY_539 Production State</span>
+                                <span id="cto-h6-rollback-badge" style="padding:1px 9px;border-radius:10px;font-size:11px;font-weight:700;background:rgba(16,185,129,.15);color:#10b981;border:1px solid rgba(16,185,129,.35)">ACTIVE</span>
+                                <span id="cto-h6-bear-badge" style="display:none;padding:1px 9px;border-radius:10px;font-size:11px;font-weight:700;background:rgba(248,81,73,.1);color:#f85149;border:1px solid rgba(248,81,73,.35)">BEAR</span>
+                            </div>
+                            <div style="display:flex;flex-wrap:wrap;gap:6px 20px;font-size:12px;color:var(--text-muted,#8b949e)">
+                                <span>Active: <b id="cto-h6-active" style="color:var(--text-color,#c9d1d9);font-size:11px">—</b></span>
+                                <span>Shadow: <b id="cto-h6-shadow" style="color:var(--text-color,#c9d1d9);font-size:11px">—</b></span>
+                                <span>30P Edge: <b id="cto-h6-edge30">—</b></span>
+                                <span>50P Edge: <b id="cto-h6-edge50">—</b></span>
+                                <span>Consec Neg: <b id="cto-h6-consec-neg">—</b></span>
+                                <span>Regime: <b id="cto-h6-regime">—</b></span>
+                            </div>
+                            <div id="cto-h6-rollback-reason" style="display:none;margin-top:6px;font-size:11px;padding:5px 8px;border-radius:4px;background:rgba(248,81,73,.08);color:#f85149">
+                                ⚠️ Risk: <span id="cto-h6-rollback-reason-text">—</span>
+                            </div>
                         </div>
 
                         <div style="margin-bottom:16px;font-size:13px;color:var(--text-muted,#8b949e)">
@@ -2313,6 +2591,447 @@
             lucide.createIcons();
         </script>
         <script type="module" src="src/main.js?v=24"></script>
+        <script>
+// ===== REPLAY PAGE JS =====
+(function() {
+  'use strict';
+
+  const BASE = '/api/replay';
+  let rpPage = 1;
+  const rpPageSize = 50;
+  let rpTotal = 0;
+  let rpPages = 1;
+
+  // Populate strategy dropdown when lottery or lifecycle changes
+  async function rpLoadStrategies() {
+    const lt = document.getElementById('rp-lottery-select').value;
+    const lc = document.getElementById('rp-lifecycle-select') ? document.getElementById('rp-lifecycle-select').value : '';
+    const sel = document.getElementById('rp-strategy-select');
+    sel.innerHTML = '<option value="">全部</option>';
+    try {
+      let url = `${BASE}/strategies?lottery_type=${lt}`;
+      if (lc) url += `&lifecycle_status=${encodeURIComponent(lc)}`;
+      const res = await fetch(url);
+      if (!res.ok) return;
+      const data = await res.json();
+      (data.strategies || []).forEach(s => {
+        const opt = document.createElement('option');
+        opt.value = s.strategy_id;
+        const lcLabel = s.strategy_lifecycle_status ? ` [${s.strategy_lifecycle_status}]` : '';
+        opt.textContent = `${s.strategy_name} (${s.strategy_id})${lcLabel}`;
+        sel.appendChild(opt);
+      });
+    } catch (e) { console.warn('[replay] load strategies failed', e); }
+  }
+
+  // Lifecycle badge for strategy state (P0-D)
+  function rpLifecycleBadge(status) {
+    const cfg = {
+      ONLINE:      { bg: '#27ae60', fg: '#fff', label: '上線' },
+      OFFLINE:     { bg: '#555',    fg: '#fff', label: '下線' },
+      REJECTED:    { bg: '#e74c3c', fg: '#fff', label: '拒絕' },
+      OBSERVATION: { bg: '#f39c12', fg: '#fff', label: '觀察' },
+      RETIRED:     { bg: '#95a5a6', fg: '#fff', label: '退役' },
+    };
+    const c = cfg[status] || { bg: '#bbb', fg: '#fff', label: status || '—' };
+    return `<span style="background:${c.bg};color:${c.fg};padding:2px 7px;border-radius:10px;font-size:11px;white-space:nowrap">${c.label}</span>`;
+  }
+
+  // Render number chips (hits highlighted green)
+  function rpBadges(nums, highlights) {
+    if (!nums || !nums.length) return '<span style="color:#aaa">—</span>';
+    const hitSet = new Set(highlights || []);
+    return nums.map(n => {
+      const hit = hitSet.has(n);
+      return `<span style="display:inline-block;padding:1px 6px;margin:1px;border-radius:12px;font-size:11px;font-weight:600;${hit ? 'background:#27ae60;color:#fff' : 'background:#eee;color:#333'}">${n}</span>`;
+    }).join('');
+  }
+
+  // Special number chip (distinct style from main numbers)
+  function rpSpecialChip(num, isHit, prefix) {
+    if (num == null) return '';
+    const hitStyle = isHit ? 'background:#8e44ad;color:#fff' : 'background:#e8d5f5;color:#4a235a';
+    return `<span style="display:inline-block;padding:1px 7px;margin:1px;border-radius:12px;font-size:11px;font-weight:600;border:1px solid #8e44ad;${hitStyle}">${prefix != null ? prefix : ''}${num}</span>`;
+  }
+
+  // Status badge
+  function rpStatusBadge(status) {
+    const colors = {
+      PREDICTED:            '#27ae60',
+      REJECTED:             '#e67e22',
+      INSUFFICIENT_HISTORY: '#3498db',
+      REPLAY_ERROR:         '#e74c3c',
+      INVALID_OUTPUT:       '#c0392b',
+      STRATEGY_UNAVAILABLE: '#95a5a6'
+    };
+    const c = colors[status] || '#777';
+    return `<span style="background:${c};color:#fff;padding:2px 7px;border-radius:10px;font-size:11px">${status}</span>`;
+  }
+
+  // Chinese label for non-PREDICTED statuses
+  function rpStatusLabel(status) {
+    const labels = {
+      REJECTED:             '策略拒絕',
+      INSUFFICIENT_HISTORY: '歷史資料不足',
+      STRATEGY_UNAVAILABLE: '策略不支援此彩種',
+      INVALID_OUTPUT:       '策略輸出格式不合法',
+      REPLAY_ERROR:         '回放錯誤'
+    };
+    return labels[status] || null;
+  }
+
+  // Causal safety check: history_cutoff must be < target_draw
+  function rpCausalStatus(history_cutoff, target_draw) {
+    if (history_cutoff == null || history_cutoff === '') {
+      return { icon: '❓', label: 'Causal metadata unavailable', color: '#888' };
+    }
+    const cutoff = parseInt(String(history_cutoff).replace(/\D/g, ''), 10);
+    const target  = parseInt(String(target_draw).replace(/\D/g, ''), 10);
+    if (isNaN(cutoff) || isNaN(target)) {
+      return { icon: '❓', label: 'Causal metadata unavailable', color: '#888' };
+    }
+    if (cutoff < target) {
+      return { icon: '✅', label: 'Causal OK', color: '#27ae60' };
+    }
+    return { icon: '⚠️', label: 'Causal Risk', color: '#e74c3c' };
+  }
+
+  // Render drilldown detail content for one row
+  function rpRenderDetail(r) {
+    const causal = rpCausalStatus(r.history_cutoff, r.target_draw);
+    const predicted = r.predicted_numbers || [];
+    const actual    = r.actual_numbers    || [];
+    const hits      = r.hit_numbers       || [];
+    const isPredicted = r.replay_status === 'PREDICTED';
+    const sLabel = rpStatusLabel(r.replay_status);
+
+    const numbersSection = isPredicted ? `
+      <div style="margin-bottom:6px">
+        <span style="font-size:11px;color:#888;display:inline-block;min-width:80px">預測號碼：</span>
+        ${rpBadges(predicted, hits)}
+        ${r.predicted_special != null ? rpSpecialChip(r.predicted_special, !!r.special_hit, '特') : ''}
+      </div>
+      <div style="margin-bottom:6px">
+        <span style="font-size:11px;color:#888;display:inline-block;min-width:80px">實際開獎：</span>
+        ${rpBadges(actual, hits)}
+        ${r.actual_special != null ? rpSpecialChip(r.actual_special, !!r.special_hit, '特') : ''}
+      </div>
+      <div style="margin-bottom:6px">
+        <span style="font-size:11px;color:#888;display:inline-block;min-width:80px">命中號碼：</span>
+        ${hits.length ? rpBadges(hits, hits) : '<span style="color:#aaa">無命中</span>'}
+        ${r.special_hit ? ' <span style="color:#8e44ad;font-weight:600">特別號⭐</span>' : ''}
+        ${r.hit_count != null ? `<span style="margin-left:8px;font-weight:700;color:#27ae60">命中 ${r.hit_count} 個</span>` : ''}
+      </div>` : `
+      <div style="padding:7px 10px;background:#fff3e0;border:1px solid #e67e22;border-radius:4px;color:#7d4e00;font-size:12px">
+        ⚠️ 此 row 狀態為 ${rpStatusBadge(r.replay_status)}${sLabel ? '（' + sLabel + '）' : ''}，無號碼資料。
+        ${r.reject_reason ? '<br>拒絕原因：<code style="font-size:11px">' + String(r.reject_reason).slice(0, 120) + '</code>' : ''}
+      </div>`;
+
+    return `<div style="padding:12px 16px;background:#f8fafd;border-top:1px solid #dde3ef;font-size:12px">
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:5px 20px;margin-bottom:10px">
+        <div><span style="color:#888">彩種：</span><b>${r.lottery_type}</b></div>
+        <div><span style="color:#888">期號：</span><b>${r.target_draw}</b></div>
+        <div><span style="color:#888">日期：</span>${r.target_date || '—'}</div>
+        <div><span style="color:#888">策略 ID：</span><code style="font-size:11px">${r.strategy_id}</code></div>
+        <div><span style="color:#888">策略名稱：</span>${r.strategy_name || '—'}</div>
+        <div><span style="color:#888">版本：</span>${r.strategy_version || '—'}</div>
+        <div><span style="color:#888">Run ID：</span>#${r.replay_run_id != null ? r.replay_run_id : '—'}</div>
+        <div><span style="color:#888">狀態：</span>${rpStatusBadge(r.replay_status)}</div>
+        <div><span style="color:#888">歷史截止期號：</span><b>${r.history_cutoff != null ? r.history_cutoff : '—'}</b></div>
+        <div><span style="color:#888">Causal 狀態：</span>
+          <span style="color:${causal.color};font-weight:600">${causal.icon} ${causal.label}</span>
+        </div>
+        <div><span style="color:#888">生成時間：</span>${r.generated_at ? r.generated_at.replace('T', ' ').slice(0, 19) : '—'}</div>
+        <div><span style="color:#888">一注預測：</span>每策略每期只保留一注</div>
+      </div>
+      <div style="margin-bottom:8px">${numbersSection}</div>
+      <div style="padding:6px 10px;background:#f0f4ff;border-radius:4px;color:#555;font-size:11px;line-height:1.6">
+        ℹ️ 此 replay row 只表示該策略在此歷史期數、僅使用該期以前資料時的一注回放結果，不代表 edge claim。
+      </div>
+    </div>`;
+  }
+
+  // Update URL query string without page reload
+  function rpUpdateURL() {
+    try {
+      const lt     = document.getElementById('rp-lottery-select').value;
+      const lc     = document.getElementById('rp-lifecycle-select') ? document.getElementById('rp-lifecycle-select').value : '';
+      const sid    = document.getElementById('rp-strategy-select').value;
+      const status = document.getElementById('rp-status-select').value;
+      const df     = document.getElementById('rp-date-from').value;
+      const dt     = document.getElementById('rp-date-to').value;
+      const params = new URLSearchParams();
+      params.set('rp_lt', lt);
+      if (lc)     params.set('rp_lc', lc);
+      if (sid)    params.set('rp_sid', sid);
+      if (status) params.set('rp_status', status);
+      if (df)     params.set('rp_df', df);
+      if (dt)     params.set('rp_dt', dt);
+      if (rpPage > 1) params.set('rp_page', rpPage);
+      history.replaceState(null, '', '?' + params.toString());
+    } catch (e) { /* URL update is non-critical */ }
+  }
+
+  // Restore query filters from URL on page load
+  function rpRestoreFromURL() {
+    try {
+      const params      = new URLSearchParams(window.location.search);
+      const validLT     = ['BIG_LOTTO', 'POWER_LOTTO', 'DAILY_539'];
+      const validLC     = ['ONLINE','OFFLINE','REJECTED','OBSERVATION','RETIRED'];
+      const validStatus = ['PREDICTED','REJECTED','INSUFFICIENT_HISTORY','REPLAY_ERROR','INVALID_OUTPUT','STRATEGY_UNAVAILABLE'];
+      const lt = params.get('rp_lt');
+      if (lt && validLT.includes(lt)) document.getElementById('rp-lottery-select').value = lt;
+      const lc = params.get('rp_lc');
+      const lcSel = document.getElementById('rp-lifecycle-select');
+      if (lc && validLC.includes(lc) && lcSel) lcSel.value = lc;
+      const status = params.get('rp_status');
+      if (status && validStatus.includes(status)) document.getElementById('rp-status-select').value = status;
+      const df = params.get('rp_df');
+      if (df && /^\d{4}-\d{2}-\d{2}$/.test(df)) document.getElementById('rp-date-from').value = df;
+      const dt = params.get('rp_dt');
+      if (dt && /^\d{4}-\d{2}-\d{2}$/.test(dt)) document.getElementById('rp-date-to').value = dt;
+      const page = parseInt(params.get('rp_page'), 10);
+      if (page >= 1) rpPage = page;
+      if (lt) {
+        const sid = params.get('rp_sid');
+        rpLoadStrategies().then(function() {
+          if (sid) {
+            const sel = document.getElementById('rp-strategy-select');
+            for (let i = 0; i < sel.options.length; i++) {
+              if (sel.options[i].value === sid) { sel.value = sid; break; }
+            }
+          }
+          rpQuery();
+        });
+      }
+    } catch (e) { /* URL parse errors are non-critical */ }
+  }
+
+  // Query history records
+  async function rpQuery() {
+    const lt     = document.getElementById('rp-lottery-select').value;
+    const lc     = document.getElementById('rp-lifecycle-select') ? document.getElementById('rp-lifecycle-select').value : '';
+    const sid    = document.getElementById('rp-strategy-select').value;
+    const status = document.getElementById('rp-status-select').value;
+    const df     = document.getElementById('rp-date-from').value;
+    const dt     = document.getElementById('rp-date-to').value;
+
+    let url = `${BASE}/history?lottery_type=${lt}&page=${rpPage}&page_size=${rpPageSize}`;
+    if (lc)     url += `&lifecycle_status=${encodeURIComponent(lc)}`;
+    if (sid)    url += `&strategy_id=${encodeURIComponent(sid)}`;
+    if (status) url += `&replay_status=${encodeURIComponent(status)}`;
+    if (df)     url += `&date_from=${df}`;
+    if (dt)     url += `&date_to=${dt}`;
+
+    const tbody = document.getElementById('rp-hist-body');
+    tbody.innerHTML = '<tr><td colspan="11" style="text-align:center;color:#888">載入中…</td></tr>';
+
+    rpUpdateURL();
+
+    try {
+      const res = await fetch(url);
+      if (!res.ok) throw new Error(`HTTP ${res.status}`);
+      const data = await res.json();
+      rpTotal = data.total || 0;
+      rpPages = data.pages || 1;
+      document.getElementById('rp-total-label').textContent = `共 ${rpTotal} 筆`;
+      document.getElementById('rp-page-info').textContent = `第 ${rpPage} / ${rpPages} 頁`;
+      document.getElementById('rp-prev-btn').disabled = rpPage <= 1;
+      document.getElementById('rp-next-btn').disabled = rpPage >= rpPages;
+
+      const records = data.records || [];
+      if (!records.length) {
+        tbody.innerHTML = '<tr><td colspan="11" style="text-align:center;color:#888">查無資料</td></tr>';
+        return;
+      }
+      tbody.innerHTML = records.map(r => {
+        const predicted = r.predicted_numbers || [];
+        const actual    = r.actual_numbers    || [];
+        const hits      = r.hit_numbers       || [];
+        const predSpecial  = r.predicted_special != null ? rpSpecialChip(r.predicted_special, !!r.special_hit, '特') : '';
+        const actSpecial   = r.actual_special != null ? rpSpecialChip(r.actual_special, !!r.special_hit, '特') : '';
+        const specialHit   = r.special_hit ? ' ⭐' : '';
+        const lcBadge      = rpLifecycleBadge(r.strategy_lifecycle_status);
+        const rejectReason = r.reject_reason
+          ? `<span title="${String(r.reject_reason).replace(/"/g,'&quot;')}" style="font-size:10px;color:#888;cursor:help">${String(r.reject_reason).slice(0,30)}${r.reject_reason.length > 30 ? '…' : ''}</span>`
+          : '<span style="color:#ccc">—</span>';
+        return `<tr>
+          <td>${r.target_draw}</td>
+          <td>${r.target_date || ''}</td>
+          <td style="font-size:11px">${r.strategy_id}</td>
+          <td style="text-align:center">${lcBadge}</td>
+          <td>${rpStatusBadge(r.replay_status)}</td>
+          <td style="max-width:120px;overflow:hidden">${rejectReason}</td>
+          <td>${rpBadges(predicted, hits)} ${predSpecial}</td>
+          <td>${rpBadges(actual, hits)} ${actSpecial}</td>
+          <td>${rpBadges(hits, hits)}${specialHit}</td>
+          <td style="font-weight:600;text-align:center">${r.hit_count != null ? r.hit_count : '—'}</td>
+          <td style="text-align:center"><button class="rp-toggle-btn" data-row-id="${r.id}" style="font-size:11px;padding:2px 8px;cursor:pointer;border:1px solid #3498db;border-radius:4px;background:#eaf4fb;color:#2980b9">▶ 詳情</button></td>
+        </tr>
+        <tr class="rp-detail-row" id="rp-detail-${r.id}" style="display:none">
+          <td colspan="11" style="padding:0">${rpRenderDetail(r)}</td>
+        </tr>`;
+      }).join('');
+    } catch (e) {
+      tbody.innerHTML = `<tr><td colspan="11" style="text-align:center;color:red">錯誤：${e.message}</td></tr>`;
+    }
+  }
+
+  // Load summary
+  async function rpLoadSummary() {
+    const lt = document.getElementById('rp-lottery-select').value;
+    const cards = document.getElementById('rp-summary-cards');
+    const tbody = document.getElementById('rp-summary-body');
+    cards.style.display = '';
+    tbody.innerHTML = '<tr><td colspan="9" style="text-align:center;color:#888">載入中…</td></tr>';
+    try {
+      const res = await fetch(`${BASE}/summary?lottery_type=${lt}`);
+      if (!res.ok) throw new Error(`HTTP ${res.status}`);
+      const data = await res.json();
+      const rows = data.summaries || [];
+      if (!rows.length) {
+        tbody.innerHTML = '<tr><td colspan="9" style="text-align:center;color:#888">尚無資料</td></tr>';
+        return;
+      }
+      tbody.innerHTML = rows.map(r => `<tr>
+        <td style="font-size:11px">${r.strategy_id}</td>
+        <td>${r.strategy_name || ''}</td>
+        <td style="text-align:center">${r.predicted_count}</td>
+        <td style="text-align:center">${r.avg_hit_count != null ? r.avg_hit_count.toFixed(2) : '—'}</td>
+        <td style="text-align:center">${r.hit_3plus_count != null ? r.hit_3plus_count : '—'}</td>
+        <td style="text-align:center">${r.special_hit_count != null ? r.special_hit_count : '—'}</td>
+        <td style="text-align:center">${r.rejected_count}</td>
+        <td style="text-align:center">${r.insufficient_count}</td>
+        <td style="text-align:center">${r.error_count}</td>
+      </tr>`).join('');
+    } catch (e) {
+      tbody.innerHTML = `<tr><td colspan="9" style="text-align:center;color:red">錯誤：${e.message}</td></tr>`;
+    }
+  }
+
+  // Init event listeners
+  document.addEventListener('DOMContentLoaded', function() {
+    const lotterySelect = document.getElementById('rp-lottery-select');
+    if (lotterySelect) {
+      lotterySelect.addEventListener('change', rpLoadStrategies);
+    }
+    // P0-D: lifecycle filter reloads strategy dropdown
+    const lifecycleSelect = document.getElementById('rp-lifecycle-select');
+    if (lifecycleSelect) {
+      lifecycleSelect.addEventListener('change', rpLoadStrategies);
+    }
+    const queryBtn = document.getElementById('rp-query-btn');
+    if (queryBtn) {
+      queryBtn.addEventListener('click', function() { rpPage = 1; rpQuery(); });
+    }
+    const summaryBtn = document.getElementById('rp-summary-btn');
+    if (summaryBtn) {
+      summaryBtn.addEventListener('click', rpLoadSummary);
+    }
+    const prevBtn = document.getElementById('rp-prev-btn');
+    if (prevBtn) {
+      prevBtn.addEventListener('click', function() { if (rpPage > 1) { rpPage--; rpQuery(); } });
+    }
+    const nextBtn = document.getElementById('rp-next-btn');
+    if (nextBtn) {
+      nextBtn.addEventListener('click', function() { if (rpPage < rpPages) { rpPage++; rpQuery(); } });
+    }
+
+    // Toggle drilldown rows via event delegation on the tbody
+    const histBody = document.getElementById('rp-hist-body');
+    if (histBody) {
+      histBody.addEventListener('click', function(e) {
+        const btn = e.target.closest('.rp-toggle-btn');
+        if (!btn) return;
+        const rowId = btn.dataset.rowId;
+        const detailRow = document.getElementById('rp-detail-' + rowId);
+        if (!detailRow) return;
+        const isHidden = detailRow.style.display === 'none';
+        detailRow.style.display = isHidden ? '' : 'none';
+        btn.textContent = isHidden ? '▼ 收起' : '▶ 詳情';
+      });
+    }
+
+    // Auto-load strategies when replay section becomes active
+    const navBtns = document.querySelectorAll('[data-section]');
+    navBtns.forEach(function(btn) {
+      btn.addEventListener('click', function() {
+        if (btn.dataset.section === 'replay') {
+          rpLoadStrategies();
+          rpLoadFreshness();
+        }
+      });
+    });
+
+    // Restore query state from URL on page load
+    rpRestoreFromURL();
+  });
+
+  // ── Freshness badge ──────────────────────────────────────────────────────
+  async function rpLoadFreshness() {
+    const loading = document.getElementById('rp-freshness-loading');
+    const content = document.getElementById('rp-freshness-content');
+    const errEl   = document.getElementById('rp-freshness-error');
+    if (!loading || !content || !errEl) return;
+
+    loading.style.display = '';
+    content.style.display = 'none';
+    errEl.style.display   = 'none';
+
+    try {
+      const resp = await fetch(BASE + '/freshness');
+      if (!resp.ok) throw new Error('HTTP ' + resp.status);
+      const d = await resp.json();
+
+      // Coverage badge
+      const badge = document.getElementById('rp-coverage-badge');
+      if (badge) {
+        const modeMap = { FULL: ['#27ae60','#e8f8f0','全量 (FULL)'], LIMITED: ['#e67e22','#fff3e0','限制性 (LIMITED)'], UNKNOWN: ['#95a5a6','#f5f5f5','未知 (UNKNOWN)'] };
+        const [fg, bg, label] = modeMap[d.coverage_mode] || modeMap['UNKNOWN'];
+        badge.style.color = fg;
+        badge.style.background = bg;
+        badge.style.border = '1px solid ' + fg;
+        badge.textContent = label;
+      }
+
+      // Legacy error note
+      const legacyNote = document.getElementById('rp-legacy-error-note');
+      if (legacyNote) legacyNote.style.display = d.has_legacy_errors ? '' : 'none';
+
+      // Per-lottery table
+      const tbody = document.getElementById('rp-freshness-tbody');
+      if (tbody && d.per_lottery_latest_run) {
+        const ltNames = { BIG_LOTTO: '大樂透', POWER_LOTTO: '威力彩', DAILY_539: '今彩539' };
+        const statusColors = { DONE: '#27ae60', RUNNING: '#f39c12', FAILED: '#e74c3c', FAILED_LEGACY: '#95a5a6', NO_VALID_RUN: '#e74c3c' };
+        tbody.innerHTML = d.per_lottery_latest_run.map(function(lt) {
+          const color = statusColors[lt.status] || '#95a5a6';
+          const covLabel = lt.coverage_mode === 'FULL' ? '✅ 全量' : lt.coverage_mode === 'LIMITED' ? '⚠️ 限制性' : '❓ 未知';
+          return `<tr>
+            <td style="padding:6px 8px">${ltNames[lt.lottery_type] || lt.lottery_type}</td>
+            <td style="padding:6px 8px;text-align:center">${lt.replay_run_id != null ? '#' + lt.replay_run_id : '—'}</td>
+            <td style="padding:6px 8px;text-align:center"><span style="color:${color};font-weight:600">${lt.status}</span></td>
+            <td style="padding:6px 8px;text-align:center">${lt.row_count}</td>
+            <td style="padding:6px 8px;text-align:center">${lt.predicted_count}</td>
+            <td style="padding:6px 8px;text-align:center;color:${lt.error_count > 0 ? '#e74c3c' : '#27ae60'}">${lt.error_count}</td>
+            <td style="padding:6px 8px;text-align:center">${covLabel}</td>
+          </tr>`;
+        }).join('');
+      }
+
+      // Timestamp
+      const tsEl = document.getElementById('rp-freshness-ts');
+      if (tsEl) tsEl.textContent = '資料更新時間：' + (d.generated_at ? d.generated_at.replace('T',' ').slice(0,19) + ' UTC' : '—');
+
+      loading.style.display = 'none';
+      content.style.display = '';
+    } catch (e) {
+      loading.style.display = 'none';
+      errEl.style.display   = '';
+      console.warn('[replay] freshness load failed', e);
+    }
+  }
+})();
+        </script>
 </body>
 
 </html>

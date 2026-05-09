@@ -1128,3 +1128,145 @@ Zone Cascade Only (zb=0.12) 完整驗證:
   3. 全新非同家族訊號假說（與現有 PP3/Fourier/MidFreq/Special 正交的完全新特徵來源）
 - 教訓：**信號窮盡審計是策略研究的終點檢查。一旦確認「三窗口驗證 + 多家族搜索 + McNemar 閘 + 漏洩檢查」全部通過卻無候選晉級，表示當前假說集已耗盡。後續重啟應明確針對新信號源或新框架，而非在既有假說空間內無限微調。**
 - 下一步：維持現役策略組合監控；暫停主動研究直至上述三項前置條件之一成立
+
+
+
+**L132 — 循環匹配偏誤（Circular-Match Bias）導致假陽性 SIGNIFICANT（2026-05-01）**
+- 任務背景：建立「預測號碼 vs 歷史開獎最佳命中期比對」分析管道（v1），用 Monte Carlo 顯著性檢定
+- v1 方法（INVALID）：對每筆預測 P_T 掃描整個歷史 pool H[<T]，找 max_hit；MC baseline 用 uniform random
+- 結果：POWER_LOTTO max_hit=6 觀察 231 次 vs 模擬期望 5 次（46x baseline，p=0.001）→ SIGNIFICANT（假陽性）
+- 問題根源（循環匹配偏誤）：
+  - 策略 P_T 本身是從 H[<T] 萃取的熱號/冷號/共現對
+  - 將 P_T 掃過 1000+ 期 H[<T]，找到一期 6 個號全被開出，只代表「歷史曾有一期與策略偏好完全重合」
+  - MC baseline（uniform 抽樣）不複製「從同一 pool 萃取」的 selection bias，baseline 嚴重偏低
+  - 這是 LOOK-AHEAD BIAS 的同構變形：不是時間洩漏，而是「自己 vs 自己映射域的循環匹配」
+- v2 修正方法（predict-vs-actual）：
+  - 每筆 P_T 只與實際 target draw T 比對（單一目標，不是 pool）
+  - 以 shuffle target_draw_ids 做 permutation null
+  - 加 Bonferroni 跨遊戲校正 + BH-FDR 跨策略校正
+  - 最終結論：兩遊戲、所有策略 → NO SIGNAL（預期中：合法彩票無記憶性）
+- 處理：v1 輸出於 outputs/prediction_hit_analysis/INVALID.md 標記 INVALID；v2 SOP 進 wiki
+- 教訓：
+  1. 「預測 vs 歷史 pool 最大命中」不等於「預測能力」；後者必須是「預測 vs 實際目標期」
+  2. MC baseline 必須複製與觀察分析相同的 selection mechanism，否則 p-value 無意義
+  3. 任何命中率高到「破解彩票」程度的結果，必須先懷疑 baseline 設計，不是先慶祝
+  4. 多重比較校正（Bonferroni/BH-FDR）是必要步驟，不是選項
+  5. v1 INVALID 結果禁止進 wiki（即使加警告標籤也不行）
+- 正確工具：scripts/predict_vs_actual.py；SOP：wiki/system/predict_vs_actual_sop.md
+
+## L133 — Lottery draw-process randomness confirmed (2026-05-01)
+- Formal audit (phases 1-6) found no significant deviation from uniform random after multiple testing correction
+- NO SIGNAL from predict-vs-actual is consistent with draw-process randomness
+- Future strategy claims must pass: (1) draw-process audit, (2) predict-vs-actual, (3) permutation null, (4) multiple testing correction, (5) circular-match bias check
+- Tools: scripts/randomness_audit.py; SOP in wiki/system/randomness_audit_sop.md
+
+##  H6 is valid but non-monetizable (2026-05-05)L134 
+ew85 has confirmed +4.00pp edge at 3000p OOS (p<0.001 permutation test)
+- Edge is statistically real, long-window stable (STABLE_LONG_WINDOW), and reproducible
+81.29% ROI; H6's extra EV covers only 1.2% of the structural deficit
+- Lesson: a confirmed statistical edge does NOT imply positive ROI in lottery context
+- Classification: VALID_SIGNAL_NON_MONETIZABLE
+
+##  M2+ edge is not equivalent to profitable edge (2026-05-05)L135 
+ net profit = 0 NTD per M2 hit
+- 91.19% of all M2+ hits are M2-only (break-even events)
+- Measuring M2+ hit rate inflates apparent "edge" without measuring profitability
+- Correct measure: M3+ hit rate, or better: net EV per draw
+- Lesson: Always decompose hit rate by prize tier before claiming profitable edge
+
+T4 promotion (2026-05-05)
+- A strategy may pass all validation gates (permutation, McNemar, OOS) and still fail to produce positive ROI
+- Payout EV analysis (cost vs expected payout by prize tier) must be completed before any production recommendation
+- This is now an explicit gate in wiki/system/strategy_retirement_policy.md (R04)
+- Reference: outputs/daily539_payout_ev_analysis.md
+
+##  Lottery research should stop after scientific closure (2026-05-05)L137 
+- Three formal signal-exhaustion audits + draw-process randomness audit confirm: no new research directions
+- Continuing to mine without new external data or new feature source is p-hacking with extra steps
+- Formal closure declared in outputs/research_closure_report.md
+- All three games enter governance/maintenance mode from 2026-05-05 onwards
+- Lesson: know when to stop; closure is a scientific output, not a failure
+
+##  Future strategy proposals require Hypothesis Registry (2026-05-05)L138 
+- Post-hoc hypothesis mining is permanently forbidden (retirement condition R09)
+- Any new backtest must be preceded by a Hypothesis Registry entry with pre-registered signal, expected effect direction, and minimum sample size
+- This prevents p-hacking and circular reasoning from accumulated backtest attempts
+- Lesson: if you didn't pre-register it, it's exploratory, not confirmatory
+
+##  historical-pool max-hit remains forbidden (2026-05-05)L139 
+- The historical-pool max-hit evaluation method (comparing predictions to largest-overlap pool from historical draws) creates circular-match bias (L132-related)
+- This inflates apparent hit rates to appear lottery-breaking, which is LOOK-AHEAD BIAS
+- PERMANENTLY FORBIDDEN for all games, all future tasks
+- Reference: wiki/system/forbidden_strategy_patterns.md (Trusted Wiki; outputs/ version SUPERSEDED 2026-05-07)
+
+##  Production betting/outcome-write requires human review (2026-05-05)L140 
+- No agent or script may write production betting outcomes, execute rollbacks, or modify lottery_v2.db without explicit human confirmation
+- Rollback guard (MIN_OUTCOMES=5, MIN_CONSECUTIVE=3) enforces this automatically for H6
+- For all other changes: add --dry-run step, obtain human sign-off, then execute
+- Lesson: automated systems should gate, not execute, irreversible production changes
+
+##  Enforcement layer required before every strategy eval report (2026-05-07)L141
+- `enforce_strategy_evaluation_contract()` MUST be called in `cli.py` before `_build_report()` on every execution path
+- `GovernanceViolationError` is the single error class for governance violations — only `tools/strategy_eval/enforcement.py` may raise it
+- Enforcement result is stored in `report["enforcement"]` and is part of the governance audit trail
+- Lesson: hard-code the enforcement call; never let report writing happen without it
+
+##  Classification must go through classification_guard.py (2026-05-07)L142
+- `classify_evaluation()` is the ONLY authorised path to a formal classification
+- No report writer, script, or agent may assign a classification string directly
+- `validate_classification()` rejects unknown strings — provides hard guard against typos and hallucinations
+- Lesson: centralise classification logic; never scatter string literals across the codebase
+
+##  DRY_RUN_ONLY and INSUFFICIENT_METADATA are NOT NO_VALIDATED_EDGE (2026-05-07)L143
+- `DRY_RUN_ONLY`: evaluation ran in test mode, no statistical evaluation performed — NOT a signal conclusion
+- `INSUFFICIENT_METADATA`: evaluation had missing metadata, cannot formally classify — NOT equivalent to "no edge found"
+- `NO_VALIDATED_EDGE`: statistical evaluation complete, p >= 0.05 — this IS a formal conclusion
+- Confusing these three inflates false negatives and masks data quality problems
+- Lesson: three distinct states for three distinct failure modes; never collapse them
+
+##  CANDIDATE_SIGNAL always escalates to REQUIRES_HUMAN_REVIEW (2026-05-07)L144
+- `CANDIDATE_SIGNAL` is an intermediate classification — it is never the final output
+- Any result with p < 0.05 + OOS data confirmed immediately becomes `REQUIRES_HUMAN_REVIEW`
+- `REQUIRES_HUMAN_REVIEW` is a mandatory human gate; no auto-promotion is allowed
+- Lesson: signal detection triggers human review, not automatic promotion
+
+##  governance hard-lock modules and forbidden patterns locked (2026-05-07)L145
+- Governance hard-lock completed for `module_boundaries` and `forbidden_strategy_patterns`; these are now trusted wiki controls, not optional guidance
+- Leakage detector integration with RollingBacktester completed; this boundary and linkage must not be reworked without explicit governance change
+- Lesson: treat this as closed P0 supervisor work; do not reopen or re-implement the same hard-lock task
+
+##  P0.4 Replay Usability made history_cutoff user-visible (2026-05-07)L146
+- P0.4 replay usability polish completed, including row drilldown, causal status display, and URL persistence
+- `history_cutoff` is now user-visible in replay details and therefore part of product-level integrity, not just backend metadata
+- Lesson: any replay-data hygiene drift now becomes a user-facing governance risk immediately
+
+##  replay cutoff snapshot 460 clean, gate-first framing (2026-05-08)L147
+- Replay DB snapshot: cutoff snapshot 460 rows, 0 missing history_cutoff_draw, 0 cutoff>=target violations
+- Current state is clean; follow-up priority changed to CI gate-first for replay integrity rather than emergency repair
+- Lesson: run integrity gate continuously and keep backfill as contingency-only tooling
+
+##  randomness cadence gate added for stale-audit risk (2026-05-08)L148
+- Last randomness audit run observed at 2026-05-01; cadence gate added to prevent silent staleness
+- Policy v0.1 uses 14 calendar days or 50 draws (whichever first) as stale threshold
+- Lesson: randomness audit cadence gate must stay active in CI to mitigate R04
+
+## REPLAY_GOLIVE_READY_20260508 (2026-05-08)
+- G1 PASSED: tests/test_replay_api_contract.py — 25 tests (freshness/summary/history contract + 3 deliberate-failure probes)
+- G2 PASSED: docs/REPLAY_OPERATION_SOP.md created; wiki/system/replay_data_hygiene.md §9 pointer added
+- G3 PASSED: scripts/snapshot_replay_db.py — snapshot written to outputs/db_snapshots/ with SHA256
+- G4 PASSED: tests/test_replay_freshness_cadence.py — 8 tests; cadence policy v0.1 (≤14 days) added to wiki §3.2
+- All 4 pre-go-live gates green. Replay API declared go-live ready.
+
+## P0 Replay Release Marker Evidence — 2026-05-08
+
+- P0_3_VERIFIED
+  - Evidence: memory/lessons.md lessons sync; confirmed entries at L145 (P0.2 replay schema), L146 (P0.3 usability polish), L147 (cutoff snapshot 460 clean), L148 (randomness cadence gate). Keywords present: module_boundaries / forbidden_strategy_patterns / P0.4 / cutoff snapshot 460 / cadence gate.
+
+- P0_4_REPLAY_BROWSER_SMOKE_VERIFIED
+  - Evidence: tests/test_replay_browser_smoke.py, 30 passed (P0-6 freeze validation run 2026-05-08).
+
+- P0_6_WORKTREE_DELTA_RELEASE_HANDOFF_FREEZE_VERIFIED
+  - Evidence: outputs/replay/p0_replay_release_handoff_20260508.md, freeze validation 89 passed, 0 failed (P0-6 run 2026-05-08).
+
+- REPLAY_GOLIVE_READY_20260508
+  - Evidence: tests/test_replay_api_contract.py 25 passed; tests/test_replay_freshness_cadence.py 8 passed; docs/REPLAY_OPERATION_SOP.md; scripts/snapshot_replay_db.py. Recorded in memory/lessons.md under REPLA  - Evidence: tests/test_replay_api_contract.py 25 passed; tests/test_replay_freshnessEE_DELTA_RELEASE_HANDOFF_FREEZE_VERIFIED

@@ -1,5 +1,0 @@
-tools/deep_research_phase1.py
-outputs/structure_filter_rules.json
-outputs/signal_quality_matrix.json
-outputs/signal_reconstruction_report.json
-outputs/completed_markdown.md

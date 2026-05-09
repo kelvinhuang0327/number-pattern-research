@@ -1,8 +1,0 @@
-[
-  "tools/cross_lottery_clec_diag.py",
-  "research/clec_diag.csv",
-  "research/clec_validation_results_2026-04-30.json",
-  "research/clec_plots_2026-04-30.zip",
-  "research/clec_validation_summary_2026-04-30.md",
-  "research/clec_task_result_361_cross_lottery_transfer.json"
-]

@@ -91,25 +91,19 @@ async def run_schedule_now(background_tasks: BackgroundTasks):
         if not all_draws or len(all_draws) < 50:
             return {"success": False, "message": "數據不足"}
 
-        # 按彩種分組，各自套用正確規則執行優化
-        draws_by_type: dict = {}
-        for draw in all_draws:
-            lt = draw.get('lotteryType', 'BIG_LOTTO')
-            draws_by_type.setdefault(lt, []).append({
-                'date': draw['date'], 'draw': draw['draw'],
-                'numbers': draw['numbers'], 'lotteryType': draw['lotteryType'],
-            })
+        history = [{
+            'date': draw['date'], 'draw': draw['draw'], 
+            'numbers': draw['numbers'], 'lotteryType': draw['lotteryType']
+        } for draw in all_draws]
+        
+        # Default rules for schedule update (should ideally be per-type)
+        lottery_rules = get_lottery_rules('BIG_LOTTO')
+        scheduler.update_data(history, lottery_rules)
 
         async def run_optimization_task():
             try:
-                for lt, type_draws in draws_by_type.items():
-                    if len(type_draws) < 50:
-                        logger.info(f"⏭️ {lt} 資料不足 50 期，略過")
-                        continue
-                    lottery_rules = get_lottery_rules(lt)
-                    scheduler.update_data(type_draws, lottery_rules)
-                    await scheduler._run_optimization()
-                    logger.info(f"✅ {lt} 後台優化任務執行完成（{len(type_draws)} 期）")
+                await scheduler._run_optimization()
+                logger.info("✅ 後台優化任務執行完成")
             except Exception as e:
                 logger.error(f"後台優化任務失敗: {str(e)}", exc_info=True)
 

@@ -357,6 +357,61 @@ class DatabaseManager:
             cursor.execute("CREATE INDEX IF NOT EXISTS idx_pred_review_session ON prediction_review_status(review_session_id)")
             cursor.execute("CREATE INDEX IF NOT EXISTS idx_pred_review_status ON prediction_review_status(review_status)")
 
+            # ─── Strategy Historical Replay Store (v0.1) ───────────────────────────────
+            # IMPORTANT: These tables are SEPARATE from prediction_runs / prediction_items /
+            # prediction_results.  They carry a distinct semantic:
+            #   "what would strategy S have predicted for draw N, using only draws 0..N-1?"
+            # They do NOT represent current strategy state or formal edge claims.
+            cursor.execute("""
+                CREATE TABLE IF NOT EXISTS strategy_replay_runs (
+                    id INTEGER PRIMARY KEY AUTOINCREMENT,
+                    lottery_type TEXT NOT NULL,
+                    strategy_scope TEXT NOT NULL DEFAULT 'ALL',
+                    started_at TEXT NOT NULL,
+                    finished_at TEXT,
+                    status TEXT NOT NULL DEFAULT 'RUNNING',
+                    generator_version TEXT NOT NULL DEFAULT 'v0.1',
+                    data_hash TEXT,
+                    notes TEXT,
+                    created_at TEXT DEFAULT CURRENT_TIMESTAMP
+                )
+            """)
+            cursor.execute("CREATE INDEX IF NOT EXISTS idx_srr_lottery ON strategy_replay_runs(lottery_type)")
+            cursor.execute("CREATE INDEX IF NOT EXISTS idx_srr_status ON strategy_replay_runs(status)")
+
+            cursor.execute("""
+                CREATE TABLE IF NOT EXISTS strategy_prediction_replays (
+                    id INTEGER PRIMARY KEY AUTOINCREMENT,
+                    lottery_type TEXT NOT NULL,
+                    target_draw TEXT NOT NULL,
+                    target_date TEXT,
+                    strategy_id TEXT NOT NULL,
+                    strategy_name TEXT NOT NULL,
+                    strategy_version TEXT NOT NULL DEFAULT 'v0.1',
+                    history_cutoff_draw TEXT,
+                    replay_status TEXT NOT NULL,
+                    reject_reason TEXT,
+                    predicted_numbers TEXT,
+                    predicted_special INTEGER,
+                    actual_numbers TEXT,
+                    actual_special INTEGER,
+                    hit_numbers TEXT,
+                    hit_count INTEGER DEFAULT 0,
+                    special_hit INTEGER DEFAULT 0,
+                    replay_run_id INTEGER,
+                    generated_at TEXT,
+                    FOREIGN KEY (replay_run_id) REFERENCES strategy_replay_runs(id),
+                    UNIQUE(lottery_type, target_draw, strategy_id, replay_run_id)
+                )
+            """)
+            cursor.execute("CREATE INDEX IF NOT EXISTS idx_spr_lottery ON strategy_prediction_replays(lottery_type)")
+            cursor.execute("CREATE INDEX IF NOT EXISTS idx_spr_strategy ON strategy_prediction_replays(strategy_id)")
+            cursor.execute("CREATE INDEX IF NOT EXISTS idx_spr_draw ON strategy_prediction_replays(target_draw)")
+            cursor.execute("CREATE INDEX IF NOT EXISTS idx_spr_status ON strategy_prediction_replays(replay_status)")
+            cursor.execute("CREATE INDEX IF NOT EXISTS idx_spr_run ON strategy_prediction_replays(replay_run_id)")
+            cursor.execute("CREATE INDEX IF NOT EXISTS idx_spr_hit ON strategy_prediction_replays(hit_count)")
+            # ─── End Strategy Historical Replay Store ──────────────────────────────────
+
             conn.commit()
             logger.info("✅ Database tables and indexes created")
             

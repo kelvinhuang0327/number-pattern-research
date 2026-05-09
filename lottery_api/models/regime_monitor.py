@@ -47,9 +47,9 @@ class RegimeMonitor:
 
         if len(data) < self.window:
             return {
-                "regime": "資料累積中",
+                "regime": "INITIALIZING",
                 "ma_hit_rate": 0,
-                "recommendation": "尚無足夠資料，請繼續記錄",
+                "recommendation": "STABLE",
                 "color": "#6c757d"
             }
 
@@ -61,16 +61,16 @@ class RegimeMonitor:
         baseline = 0.06
         
         if ma_hit_rate < baseline * 0.5:
-            regime = "低潮期（命中率異常偏低）"
-            recommendation = "防守模式：建議降低投注"
+            regime = "DRAWDOWN (負向離群)"
+            recommendation = "LOW WATERLINE (防禦停損)"
             color = "#dc3545" # Red
         elif ma_hit_rate > baseline * 1.5:
-            regime = "高峰期（命中率異常偏高）"
-            recommendation = "留意均值回歸：近期表現優於預期"
+            regime = "SURPLUS (正向離群)"
+            recommendation = "NORMAL WATERLINE (均值預警)"
             color = "#28a745" # Green
         else:
-            regime = "穩定期（正常波動範圍）"
-            recommendation = "維持標準投注策略"
+            regime = "STABLE (隨機波動)"
+            recommendation = "STANDARD WATERLINE"
             color = "#ffc107" # Yellow or Amber
 
         return {

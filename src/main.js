@@ -1,4 +1,4 @@
-import { App } from './core/App.js?v=10';
+import { App } from './core/App.js';
 
 document.addEventListener('DOMContentLoaded', async () => {
     window.app = new App();

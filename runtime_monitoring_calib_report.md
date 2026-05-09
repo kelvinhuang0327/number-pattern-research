@@ -1,1 +1,0 @@
-## Runtime Monitoring Calibration Report\n\n### Active: H6_gate_mk20→ew85\n- Edge: 2.5%\n- Lift: 1.25\n- Z: 2.9\n- N: 1500\n- Status: LIVE\n- Perm_p: 0.005\n- Signal: 0.045\n\n### Shadow: acb_markov_midfreq_3bet\n- Edge: 1.1%\n- Lift: 1.03\n- Z: 1.2\n- N: 1500\n- Status: SHADOW\n- Perm_p: 0.12\n- Signal: 0.021\n

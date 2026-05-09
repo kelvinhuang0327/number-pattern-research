@@ -35,7 +35,7 @@ def load_power_lotto_history(max_records=1500):
     cursor.execute("""
         SELECT draw, numbers, special, date FROM draws 
         WHERE lottery_type = 'POWER_LOTTO' 
-        ORDER BY CAST(draw AS INTEGER) DESC LIMIT ?
+        ORDER BY draw DESC LIMIT ?
     """, (max_records,))
     rows = cursor.fetchall()
     conn.close()

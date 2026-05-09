@@ -1,159 +1,34 @@
-> ⚠️ **This project is for academic statistical research only. It does not provide betting advice and is not affiliated with any lottery operator.**
+# 🎰 LotteryNext Master Dashboard (2025)
 
-# Number Pattern Research Platform
-
-A statistical research platform for public draw games: Pick5 (5/39), Pick6 (6/49), and PowerPick (6/38+8).
-Research-driven, tracking strategy performance and documenting findings.
-
-**This is not a prediction tool and does not provide betting advice.**
+Welcome to the consolidated Lottery prediction workspace. This directory has been organized to keep only active tools and essential documentation.
 
 ---
 
-## Screenshots
+## 🚀 Quick Access
 
-| Strategy Backtest | Simulation Test | Draw History |
-|---|---|---|
-| ![Strategy Backtest](docs/screenshots/strategy-backtest.png) | ![Simulation](docs/screenshots/simulation.png) | ![History](docs/screenshots/history.png) |
+### 📊 Prediction Reports (2025)
+- **Big Lotto (大樂透)**: [TOP3_METHODS_2025_ANALYSIS.md](TOP3_METHODS_2025_ANALYSIS.md)
+- **Daily 539 (今彩539)**: [lottery_api/REPORT_539_ODDEVEN.md](lottery_api/REPORT_539_ODDEVEN.md)
+- **Strategy Matrix**: [docs/STRATEGY_AND_OPTIMIZATION.md](docs/STRATEGY_AND_OPTIMIZATION.md)
 
----
-
-## Research Findings (Updated 2026-03-19)
-
-| Game | Status | Conclusion |
-|------|--------|------------|
-| Pick5 (5/39) | Maintenance | Signal space exhausted (L82): H001~H008 all REJECTED, active strategies under RSM monitoring |
-| Pick6 (6/49) | Maintenance | Indistinguishable from fair random process (L91): 6 randomness tests passed, no actionable signal in 49C6 |
-| PowerPick (6/38+8) | RSM Monitoring | Some strategies hold positive 300p Edge, but ruin_prob = 1.000 for all games |
-
-**Important**: Negative expected value confirmed for all games. The "Next Draw" page visualizes research outputs only — not betting recommendations.
+### 🛠 Active Tools
+- **Start All**: `./start_all.sh` (Frontend + Backend)
+- **CVAA Predictor**: `python3 tools/run_cvaa_now.py`
+- **Backtest Engine**: `python3 tools/backtest/benchmark_539_optimization.py`
 
 ---
 
-## Architecture
+## 📁 Directory Structure
 
-```
-Backend API  → http://localhost:8002   (FastAPI)
-Frontend     → http://localhost:8081   (Vanilla JS SPA)
-Prediction   → tools/quick_predict.py
-Strategy Mon → RSM (lottery_api/engine/rolling_strategy_monitor.py)
-```
-
----
-
-## Project Scale
-
-| Type | Files | Lines |
-|------|-------|-------|
-| Python `.py` | 4,551 | 1,811,215 |
-| JavaScript `.js` | 112 | 30,385 |
-| Markdown `.md` | 365 | 73,018 |
-| HTML `.html` | 37 | 17,846 |
-| CSS | — | 6,186 |
-| **Total** | **8,293** | **~1.9M** |
+| Folder | Description |
+| :--- | :--- |
+| **`lottery_api/`** | Core Python Backend (Flask API + Prediction Engine) |
+| **`src/`** | Frontend Application (Vite/React) |
+| **`docs/`** | Technical documentation and optimization plans |
+| **`tools/`** | Active prediction, backtesting, and maintenance scripts |
+| **`archive/`** | Historical reports, logs, and legacy data |
 
 ---
 
-## Quick Start
-
-```bash
-# Start all services (frontend + backend)
-./start_all.sh
-
-# Stop all services
-./stop_all.sh
-
-# Run prediction (CLI)
-python3 tools/quick_predict.py all
-
-# Open frontend
-open http://localhost:8081
-```
-
----
-
-## Directory Structure
-
-| Path | Description |
-|------|-------------|
-| `lottery_api/` | FastAPI backend, prediction engine, RSM monitoring |
-| `src/` | Vanilla JS single-page app |
-| `tools/` | Backtest, research, and maintenance scripts |
-| `docs/` | Technical documents and research reports |
-| `memory/` | Auto-memory (persists across sessions) |
-| `research/` | Research scripts and exploratory analysis |
-| `rejected/` | Rejected strategy archive (with failure reasons) |
-| `data/` | Strategy monitoring cache (RSM state) |
-
----
-
-## Documentation
-
-| File | Description |
-|------|-------------|
-| [docs/MASTER_GUIDE.md](docs/MASTER_GUIDE.md) | System architecture and current strategy status |
-| [docs/EXECUTIVE_SUMMARY_2026.md](docs/EXECUTIVE_SUMMARY_2026.md) | 2026 research executive summary |
-| [docs/BACKTEST_PROTOCOL.md](docs/BACKTEST_PROTOCOL.md) | Backtest protocol and validation standards |
-| [docs/BACKTEST_REPORTS_INDEX.md](docs/BACKTEST_REPORTS_INDEX.md) | Backtest report index |
-| [docs/sb3_final_recommendation.md](docs/sb3_final_recommendation.md) | RL research final report |
-| [docs/decision_payout_report.md](docs/decision_payout_report.md) | Decision layer analysis |
-| [lottery_api/CLAUDE.md](lottery_api/CLAUDE.md) | Strategy specification (primary reference) |
-
----
-
-## Active Strategies
-
-### Pick5 — 5/39 (Maintenance Mode)
-
-| Bets | Strategy | 300p Edge | Status |
-|------|----------|-----------|--------|
-| 1 | acb_1bet | +3.27% | PRODUCTION |
-| 2 | midfreq_acb_2bet | +8.46% | PRODUCTION |
-| 3 | acb_markov_midfreq_3bet | +8.50% | PRODUCTION |
-| 5 | f4cold_5bet | +6.61% | PRODUCTION |
-
-### Pick6 — 6/49 (Maintenance Mode)
-
-| Bets | Strategy | 300p Edge | Status |
-|------|----------|-----------|--------|
-| 2 | regime_2bet | +3.64% | PRODUCTION |
-| 3 | ts3_regime_3bet | +3.51% | PRODUCTION |
-| 5 | p1_dev_sum5bet | +3.71% | PRODUCTION |
-
-### PowerPick — 6/38+8 (RSM Monitoring)
-
-| Bets | Strategy | 300p Edge | Status |
-|------|----------|-----------|--------|
-| 3 | fourier_rhythm_3bet | +3.16% | PRODUCTION |
-| 4 | pp3_freqort_4bet | +3.40% | PRODUCTION |
-| 5 | orthogonal_5bet | +2.76% | WATCH |
-
----
-
-## Risk Disclaimer
-
-> This project is for **research and statistical analysis purposes only**.
->
-> - **Not financial advice**: Nothing in this system constitutes investment or betting advice
-> - **No guarantee of winning**: Past statistical patterns do not predict future draw outcomes
-> - **Negative expected value**: All draw games have negative EV; continued play results in guaranteed long-term losses (ruin probability = 1.000)
-> - **Use at your own risk**: The authors are not liable for any financial losses incurred from using this system
-> - **Research system only**: All outputs visualize research findings, not winning number recommendations
-
-**If you have a gambling problem, please seek help.**
-
----
-
-## Discussion & Contribution
-
-This project has hit a wall in statistical signal exploration (Pick5 L82 / Pick6 L91).
-If you are interested in probability analysis, time series, or draw game statistics, feel free to exchange ideas.
-
-- New analysis angle or hypothesis? Open an **Issue**
-- Found a bug or data issue? **PRs welcome**
-- Just want to discuss research direction? Open an Issue
-
----
-
-## License
-
-MIT License — Copyright (c) 2026 Kelvin. See [LICENSE](LICENSE) for details.
+## ⚖️ Disclaimer
+This project is for statistical research and entertainment purposes only. Lottery is a game of chance; please play responsibly.

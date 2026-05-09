@@ -33,7 +33,6 @@ wheels/
 
 # Logs
 *.log
-logs/*.log
 
 # Data files (optional - uncomment if you don't want to track data files)
 # data/*.csv
@@ -41,13 +40,7 @@ logs/*.log
 # Temporary files
 *.tmp
 *.bak
-.gstack/
 
-# Process IDs
-*.pid
-
-# Orchestrator runtime data (tasks, logs, locks — not source)
-runtime/agent_orchestrator/tasks/
-runtime/agent_orchestrator/logs/
-runtime/agent_orchestrator/locks/
-runtime/agent_orchestrator/orchestrator.db
+# SQLite write-ahead log journal files (runtime artifacts, never commit)
+*.db-shm
+*.db-wal

@@ -1,128 +1,168 @@
-## 知識讀取規則（強制 / Knowledge Gate System）
+# Lottery Prediction System
 
-本系統採用「唯一入口 + 白名單 + 禁止 fallback」的 Knowledge Gate 機制。
+## 開發工作流
 
-Agent 在任何任務中 **必須遵守以下規則**：
-
----
-
-### 【一、唯一入口（強制順序）】
-
-1. **必須從 `wiki/README.md` 開始**
-   - 這是唯一知識入口（Single Source of Truth）
-   - 所有推論必須建立在 wiki routing 上
-
-2. **再讀 `wiki/*`**
-   - validation → `wiki/validation_gates.md`
-   - decision / UI → `wiki/governance.md`
-   - stability → `wiki/stability_audit.md`
-   - learning / feedback → `wiki/feedback_loop.md`
-
-3. **再讀 `memory/`**
-   - lessons → `memory/lessons.md`
-   - history → `memory/MEMORY.md`
-
-4. **`docs/` 僅在「明確指定檔名」時才可讀**
-   - 不得主動掃描 docs
-   - 僅允許使用：
-     - `decision_layer_v3_report.md`
-     - 其他被 wiki 明確引用文件
+### 計劃優先
+- 非平凡任務必須進入 plan mode
+- 所有策略研究必須先產生 research_plan.md
+- 策略決策與設計規範參見 `lottery_api/CLAUDE.md`
+- 未經驗證策略不得進入 production pipeline
 
 ---
 
-### 【二、預設禁止讀取（UNTRUSTED）】
-
-以下全部預設為「不可信來源」，不得用於決策：
-
-- 根目錄散落 `*.md`（除以下例外）
-  - `CLAUDE.md`
-  - `SYSTEM_MAP.md`
-  - `AGENT_RULES.md`
-  - `README.md`
-- `archive/`、`docs/archive/`
-- `legacy/`
-- 所有 `*_report.md`（除非被白名單允許）
-- 所有帶有以下標記文件：
-  - SUPERSEDED
-  - DEPRECATED
-  - ARCHIVED
-  - DO NOT USE
+### 驗證標準
+- 必須通過 1500期三窗口驗證（150 / 500 / 1500）
+- 三窗口 ROI 必須皆 > baseline
+- 統計顯著性 p < 0.05
+- 必須通過 permutation test
+- 必須通過 walk-forward OOS 測試
+- Sharpe Ratio > 0 才可標記為有效策略
 
 ---
 
-### 【三、嚴格禁止行為】
+### 教訓追蹤
+- 每次策略失敗必須記錄至 `memory/MEMORY.md`
+- 每個 rejected 策略需生成：
 
-- 不得將以下文件視為最新結論：
-  - `RESEARCH_PROGRESS_*`
-  - `failure_analysis_*`
-  - `draw_analysis_*`
-  - `PREDICTION_REPORT_*`
-- 不得從 archive / legacy 推論現況
-- 不得建立新的 knowledge 入口（入口只能是 wiki + memory）
-- 不得為了補齊答案去讀未授權文件
+  rejected/{strategy_name}.json
 
----
+  包含：
+  - 失敗原因
+  - 統計結果
+  - 適用條件
+  - 未來重新測試條件
 
-### 【四、衝突處理（強制優先順序）】
-
-若不同來源出現衝突：
-
-優先順序為：
-
-1. `wiki/governance.md`
-2. `wiki/validation_gates.md`
-3. `wiki/stability_audit.md`
-4. `wiki/feedback_loop.md`
-5. docs（白名單）
-6. 其他（全部忽略）
+- 舊策略不得刪除，只能歸檔
 
 ---
 
-### 【五、STOP 條件（必須中止）】
+### 策略生命週期
+所有策略必須經過：
 
-若發生以下情況，必須停止並回覆：
+Idea → Simulation → Backtest → Validation → Deploy → Monitor → Re-evaluate
 
-> "INSUFFICIENT TRUSTED DATA"
+各階段必須產生：
 
-條件：
-
-- 必要資訊只存在於 untrusted 文件
-- wiki 未覆蓋該問題
-- trusted sources 彼此矛盾且無法解決
-- 無法透過 active code / data 驗證
-
-嚴禁使用舊報告或 archive 補推論
-
----
-
-### 【六、Anti-Hallucination 規則】
-
-不得因以下原因認定文件為可信：
-
-- 文件很完整
-- 文件名稱看起來專業
-- 與過去結論一致
-- 包含詳細分析
-
-👉 只有「被 wiki routing 指向」才是可信
+| 階段 | 文件 |
+|------|------|
+| Idea | strategy.yaml |
+| Simulation | sim_result.json |
+| Backtest | backtest_report.md |
+| Validation | stat_test.txt |
+| Deploy | version_tag.txt |
+| Monitor | performance_log.json |
 
 ---
 
-### 【七、多 Agent 一致性（重要）】
+### 自動研究模式
+系統必須支援 discovery mode
 
-所有子 agent 必須遵守相同 Knowledge Gate：
+當系統資源閒置時自動執行：
+- 隨機策略生成
+- 特徵組合測試
+- 參數突變測試
+- 特徵淘汰測試
 
-- 不得各自掃描 repo
-- 不得跨角色使用未授權文件
-- 每個 agent 只能使用其 routing 指定文件
+生成策略需滿足：
+- 與現有策略相似度 < 70%
+- 複雜度不超過目前最佳策略 ×1.5
 
 ---
 
-### 【八、最終原則】
+### 策略評分公式
+所有策略統一評分：
 
-本系統原則：
+Score = (ROI × Stability × Significance) ÷ Complexity
 
-👉 **讀少，但讀對**
+定義：
+- ROI = 平均回報率
+- Stability = 三窗口一致性
+- Significance = −log10(p)
+- Complexity = 特徵數 × 參數數
 
-優先正確性 > 完整性  
-禁止為了完整答案而使用錯誤來源
+只有 Score > baseline 才可晉級
+
+---
+
+### 重新驗證機制
+以下條件觸發全策略重新測試：
+
+- 新資料加入
+- 規則變更
+- 中獎率分布異常
+- 頭獎金額分布偏移
+- 玩家行為分布改變
+
+---
+
+### 可追溯原則
+所有分析必須可重現：
+
+- 固定 random seed
+- 保存資料快照
+- 記錄版本號
+- 記錄模型參數
+
+不可重現結果一律視為無效
+
+---
+
+## Workflow Orchestration
+
+### 1. Plan Node Default
+- Enter plan mode for ANY non-trivial task (3+ steps or architectural decisions)
+- If something goes sideways, STOP and re-plan immediately — don't keep pushing
+- Use plan mode for verification steps, not just building
+- Write detailed specs upfront to reduce ambiguity
+
+### 2. Subagent Strategy
+- Use subagents liberally to keep main context window clean
+- Offload research, exploration, and parallel analysis to subagents
+- For complex problems, throw more compute at it via subagents
+- One task per subagent for focused execution
+
+### 3. Self-Improvement Loop
+- After ANY correction from the user: update `memory/MEMORY.md` with the pattern
+- Write rules for yourself that prevent the same mistake
+- Ruthlessly iterate on these lessons until mistake rate drops
+- Review lessons at session start for relevant project
+
+### 4. Verification Before Done
+- Never mark a task complete without proving it works
+- Diff behavior between main and your changes when relevant
+- Ask yourself: "Would a staff engineer approve this?"
+- Run tests, check logs, demonstrate correctness
+
+### 5. Demand Elegance (Balanced)
+- For non-trivial changes: pause and ask "is there a more elegant way?"
+- If a fix feels hacky: "Knowing everything I know now, implement the elegant solution"
+- Skip this for simple, obvious fixes — don't over-engineer
+- Challenge your own work before presenting it
+
+### 6. Autonomous Bug Fixing
+- When given a bug report: just fix it. Don't ask for hand-holding
+- Point at logs, errors, failing tests — then resolve them
+- Zero context switching required from the user
+- Go fix failing CI tests without being told how
+
+---
+
+## Task Management
+
+1. **Plan First**: Write plan to `memory/todo.md` with checkable items
+2. **Verify Plan**: Check in before starting implementation
+3. **Track Progress**: Mark items complete as you go
+4. **Explain Changes**: High-level summary at each step
+5. **Document Results**: Add review section to `memory/todo.md`
+6. **Capture Lessons**: Update `memory/MEMORY.md` after corrections
+
+---
+
+## Core Principles
+
+- **Simplicity First**: 優先選擇最簡單且有效策略
+- **No Laziness**: 禁止跳過驗證流程
+- **Minimal Impact**: 不允許策略修改影響既有系統穩定性
+- **Full Traceability**: 所有結果必須可回溯
+- **Fail but Record**: 允許失敗，但禁止遺失紀錄
+- **Research Never Stops**: 系統需持續探索未知策略空間

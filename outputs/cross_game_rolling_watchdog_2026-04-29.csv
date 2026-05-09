@@ -1,4 +1,0 @@
-game,n_draws,n_windows,active_strategy,active_nbets,shadow_strategy,shadow_nbets,breach_threshold_pp,mean_active_edge_pp,breach_rate_pct,breach_count,rule_a_fires,rule_b_fires,rule_c_fires,rule_d_fires,cusum_break_idx,cusum_break_date,cusum_pre_mean,cusum_post_mean,decision
-DAILY_539,5844,27,acb_markov_midfreq_3bet,3,midfreq_acb_2bet,2,2.0,3.47,40.7,11,,,,,,,,,STABLE (reference)
-BIG_LOTTO,2129,19,p1_dev_sum5bet,5,regime_2bet,2,0.5,2.128,10.5,2,0,5,0,0,4,2010/11/02,0.873,2.462,REJECT_WATCHDOG
-POWER_LOTTO,1905,17,pp3_freqort_4bet,4,orthogonal_5bet,5,1.0,2.537,23.5,4,0,4,3,0,14,2021/06/24,2.567,2.4,REJECT_WATCHDOG

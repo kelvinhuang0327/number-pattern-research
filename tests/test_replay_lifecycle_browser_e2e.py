@@ -155,6 +155,32 @@ def _history_payload(lifecycle_status: str = "REJECTED"):
     }
 
 
+def _empty_history_payload(lifecycle_status: str) -> dict:
+    """Return an API-style empty history payload (P0-B contract) for a given lifecycle."""
+    return {
+        "total": 0,
+        "page": 1,
+        "page_size": 50,
+        "pages": 1,
+        "filter_lifecycle_status": lifecycle_status,
+        "records": [],
+        "disclaimer": "本資料為歷史預測回放資料，用於查詢與稽核；不代表提高中獎率，也不是 edge claim。",
+        "data_scope": "ALL_REPLAY_ROWS",
+    }
+
+
+def _empty_strategies_payload(lifecycle_status: str) -> dict:
+    """Return an API-style empty strategies payload (P0-B contract)."""
+    return {
+        "strategies": [],
+        "count": 0,
+        "filter_lottery_type": None,
+        "filter_lifecycle_status": lifecycle_status,
+        "filter": None,
+        "data_scope": "ALL_REPLAY_ROWS",
+    }
+
+
 @pytest.mark.skipif(not INDEX_HTML.exists(), reason="index.html not found")
 def test_lifecycle_filter_browser_e2e():
     with _serve_repo(REPO_ROOT) as base_url:
@@ -197,5 +223,75 @@ def test_lifecycle_filter_browser_e2e():
             first_row_lifecycle = page.locator('#rp-hist-body tr:not(.rp-detail-row) td').nth(3)
             assert '拒絕' in (first_row_lifecycle.text_content() or '')
             assert page.locator('#rp-hist-body tr:not(.rp-detail-row) td').nth(4).text_content() is not None
+
+            browser.close()
+
+
+# ─── P0-C: Honest empty-state tests ──────────────────────────────────────────
+
+@pytest.mark.parametrize("lifecycle,expected_substring", [
+    ("OFFLINE",      "查無可信 OFFLINE 條目"),
+    ("RETIRED",      "查無可信 RETIRED 條目"),
+    ("OBSERVATION",  "目前僅有 WATCH / PROVISIONAL 候選，尚未形成 canonical OBSERVATION rows"),
+    ("REJECTED",     "僅有候選證據，尚未升格為 canonical lifecycle row"),
+])
+@pytest.mark.skipif(not INDEX_HTML.exists(), reason="index.html not found")
+def test_empty_state_honest_text_browser_e2e(lifecycle: str, expected_substring: str):
+    """P0-C: When lifecycle filter returns 0 rows, DOM must display honest empty-state copy.
+
+    Each lifecycle bucket has a distinct message sourced from
+    outputs/replay/p0_replay_lifecycle_empty_state_spec_20260509.md.
+    If a Playwright browser is unavailable the test skips — never fake-PASS.
+    """
+    with _serve_repo(REPO_ROOT) as base_url:
+        with sync_playwright() as pw:
+            try:
+                browser = pw.chromium.launch(headless=True)
+            except Exception as exc:  # pragma: no cover
+                pytest.skip(f"Playwright browser unavailable: {exc}")
+
+            page = browser.new_page()
+
+            def route_handler(route):
+                url = route.request.url
+                parsed_url = urlparse(url)
+                if url.endswith("/api/replay/freshness"):
+                    return _mock_json(route, _freshness_payload())
+                if url.endswith("/api/replay/summary"):
+                    return _mock_json(route, _summary_payload())
+                if parsed_url.path.endswith("/api/replay/history"):
+                    # Always return empty payload for this lifecycle
+                    return _mock_json(route, _empty_history_payload(lifecycle))
+                if parsed_url.path.endswith("/api/replay/strategies"):
+                    return _mock_json(route, _empty_strategies_payload(lifecycle))
+                return route.continue_()
+
+            page.route("**/api/replay/**", route_handler)
+            page.goto(
+                f"{base_url}/index.html?rp_lc={lifecycle}",
+                wait_until="load",
+            )
+            page.wait_for_selector('#rp-lifecycle-select', state='attached')
+
+            # Verify lifecycle select initialised to the expected value
+            lc_select = page.locator('#rp-lifecycle-select')
+            assert lc_select.count() == 1
+            assert lc_select.input_value() == lifecycle
+
+            # Trigger history query
+            page.locator('#rp-query-btn').evaluate('(el) => el.click()')
+
+            # Wait for tbody to settle (loading → empty state)
+            page.wait_for_function(
+                "() => !document.querySelector('#rp-hist-body').innerText.includes('載入中')",
+                timeout=5000,
+            )
+
+            tbody_text = page.locator('#rp-hist-body').inner_text()
+            assert expected_substring in tbody_text, (
+                f"Expected honest empty-state text for {lifecycle!r} not found.\n"
+                f"Expected substring: {expected_substring!r}\n"
+                f"Actual tbody text:  {tbody_text!r}"
+            )
 
             browser.close()

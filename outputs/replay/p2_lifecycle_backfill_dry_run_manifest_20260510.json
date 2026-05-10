@@ -1,0 +1,1014 @@
+{
+  "generated_at": "2026-05-10T09:32:43.012093+00:00",
+  "mode": "dry-run",
+  "no_write_proof": {
+    "db_path": "/Users/kelvin/Kelvin-WorkSpace/LotteryNew-clean/lottery_api/data/lottery_v2.db",
+    "db_open_mode": "read_only",
+    "db_sha256_before": "f7eb79455cc9a4b316d57cd83a2a79656baed10c1c286313c7c7de9e96081543",
+    "db_sha256_after": "f7eb79455cc9a4b316d57cd83a2a79656baed10c1c286313c7c7de9e96081543",
+    "db_sha256_unchanged": true,
+    "manifest_rows_runtime_write_allowed": false
+  },
+  "runtime_sources": [
+    {
+      "kind": "runtime_db",
+      "path": "/Users/kelvin/Kelvin-WorkSpace/LotteryNew-clean/lottery_api/data/lottery_v2.db",
+      "notes": "runtime replay store read-only snapshot"
+    },
+    {
+      "kind": "runtime_registry",
+      "path": "lottery_api/models/replay_strategy_registry.py",
+      "notes": "canonical lifecycle SSOT"
+    }
+  ],
+  "evidence_only_sources": [
+    {
+      "kind": "evidence_only_report",
+      "path": "outputs/replay/p2_lifecycle_catalog_backfill_plan_20260510.md"
+    },
+    {
+      "kind": "evidence_only_report",
+      "path": "outputs/replay/p0_replay_data_health_20260510.md"
+    },
+    {
+      "kind": "evidence_only_report",
+      "path": "outputs/replay/p0_replay_product_golive_pr_readiness_20260510.md"
+    },
+    {
+      "kind": "evidence_only_report",
+      "path": "outputs/replay/p0_replay_product_post_merge_closure_20260510.md"
+    },
+    {
+      "kind": "evidence_only_archive",
+      "path": "rejected/README.md"
+    },
+    {
+      "kind": "evidence_only_archive",
+      "path": "provisional/pp3_sum_reversal_power.json"
+    },
+    {
+      "kind": "evidence_only_archive",
+      "path": "rejected/p1_deviation_2bet_539.json"
+    }
+  ],
+  "runtime_schema_snapshot": {
+    "db_path": "/Users/kelvin/Kelvin-WorkSpace/LotteryNew-clean/lottery_api/data/lottery_v2.db",
+    "schema": {
+      "prediction_runs": [
+        {
+          "cid": 0,
+          "name": "id",
+          "type": "INTEGER",
+          "notnull": false,
+          "default_value": null,
+          "pk": true
+        },
+        {
+          "cid": 1,
+          "name": "lottery_type",
+          "type": "TEXT",
+          "notnull": true,
+          "default_value": null,
+          "pk": false
+        },
+        {
+          "cid": 2,
+          "name": "latest_known_draw",
+          "type": "TEXT",
+          "notnull": true,
+          "default_value": null,
+          "pk": false
+        },
+        {
+          "cid": 3,
+          "name": "latest_known_date",
+          "type": "TEXT",
+          "notnull": false,
+          "default_value": null,
+          "pk": false
+        },
+        {
+          "cid": 4,
+          "name": "strategy_name",
+          "type": "TEXT",
+          "notnull": true,
+          "default_value": null,
+          "pk": false
+        },
+        {
+          "cid": 5,
+          "name": "notes",
+          "type": "TEXT",
+          "notnull": false,
+          "default_value": null,
+          "pk": false
+        },
+        {
+          "cid": 6,
+          "name": "created_at",
+          "type": "TEXT",
+          "notnull": false,
+          "default_value": "CURRENT_TIMESTAMP",
+          "pk": false
+        },
+        {
+          "cid": 7,
+          "name": "snapshot_source",
+          "type": "TEXT",
+          "notnull": false,
+          "default_value": "'VALID'",
+          "pk": false
+        },
+        {
+          "cid": 8,
+          "name": "analyzed",
+          "type": "TEXT",
+          "notnull": false,
+          "default_value": "'未研究'",
+          "pk": false
+        },
+        {
+          "cid": 9,
+          "name": "analysis_note",
+          "type": "TEXT",
+          "notnull": false,
+          "default_value": null,
+          "pk": false
+        },
+        {
+          "cid": 10,
+          "name": "review_json",
+          "type": "TEXT",
+          "notnull": false,
+          "default_value": null,
+          "pk": false
+        }
+      ],
+      "prediction_items": [
+        {
+          "cid": 0,
+          "name": "id",
+          "type": "INTEGER",
+          "notnull": false,
+          "default_value": null,
+          "pk": true
+        },
+        {
+          "cid": 1,
+          "name": "run_id",
+          "type": "INTEGER",
+          "notnull": true,
+          "default_value": null,
+          "pk": false
+        },
+        {
+          "cid": 2,
+          "name": "bet_index",
+          "type": "INTEGER",
+          "notnull": true,
+          "default_value": null,
+          "pk": false
+        },
+        {
+          "cid": 3,
+          "name": "numbers",
+          "type": "TEXT",
+          "notnull": true,
+          "default_value": null,
+          "pk": false
+        },
+        {
+          "cid": 4,
+          "name": "special",
+          "type": "INTEGER",
+          "notnull": false,
+          "default_value": null,
+          "pk": false
+        },
+        {
+          "cid": 5,
+          "name": "status",
+          "type": "TEXT",
+          "notnull": false,
+          "default_value": "'PENDING'",
+          "pk": false
+        },
+        {
+          "cid": 6,
+          "name": "created_at",
+          "type": "TEXT",
+          "notnull": false,
+          "default_value": "CURRENT_TIMESTAMP",
+          "pk": false
+        },
+        {
+          "cid": 7,
+          "name": "strategy_name",
+          "type": "TEXT",
+          "notnull": false,
+          "default_value": null,
+          "pk": false
+        },
+        {
+          "cid": 8,
+          "name": "num_bets",
+          "type": "INTEGER",
+          "notnull": false,
+          "default_value": null,
+          "pk": false
+        },
+        {
+          "cid": 9,
+          "name": "zone_coverage",
+          "type": "TEXT",
+          "notnull": false,
+          "default_value": "NULL",
+          "pk": false
+        }
+      ],
+      "prediction_results": [
+        {
+          "cid": 0,
+          "name": "id",
+          "type": "INTEGER",
+          "notnull": false,
+          "default_value": null,
+          "pk": true
+        },
+        {
+          "cid": 1,
+          "name": "item_id",
+          "type": "INTEGER",
+          "notnull": true,
+          "default_value": null,
+          "pk": false
+        },
+        {
+          "cid": 2,
+          "name": "actual_draw",
+          "type": "TEXT",
+          "notnull": true,
+          "default_value": null,
+          "pk": false
+        },
+        {
+          "cid": 3,
+          "name": "actual_date",
+          "type": "TEXT",
+          "notnull": false,
+          "default_value": null,
+          "pk": false
+        },
+        {
+          "cid": 4,
+          "name": "actual_numbers",
+          "type": "TEXT",
+          "notnull": true,
+          "default_value": null,
+          "pk": false
+        },
+        {
+          "cid": 5,
+          "name": "actual_special",
+          "type": "INTEGER",
+          "notnull": false,
+          "default_value": null,
+          "pk": false
+        },
+        {
+          "cid": 6,
+          "name": "hit_count",
+          "type": "INTEGER",
+          "notnull": true,
+          "default_value": null,
+          "pk": false
+        },
+        {
+          "cid": 7,
+          "name": "matched_numbers",
+          "type": "TEXT",
+          "notnull": true,
+          "default_value": null,
+          "pk": false
+        },
+        {
+          "cid": 8,
+          "name": "special_hit",
+          "type": "INTEGER",
+          "notnull": false,
+          "default_value": "0",
+          "pk": false
+        },
+        {
+          "cid": 9,
+          "name": "resolved_at",
+          "type": "TEXT",
+          "notnull": false,
+          "default_value": "CURRENT_TIMESTAMP",
+          "pk": false
+        },
+        {
+          "cid": 10,
+          "name": "researched",
+          "type": "TEXT",
+          "notnull": false,
+          "default_value": "'無'",
+          "pk": false
+        },
+        {
+          "cid": 11,
+          "name": "wq_score",
+          "type": "INTEGER",
+          "notnull": false,
+          "default_value": "NULL",
+          "pk": false
+        },
+        {
+          "cid": 12,
+          "name": "split_risk",
+          "type": "TEXT",
+          "notnull": false,
+          "default_value": "NULL",
+          "pk": false
+        }
+      ]
+    },
+    "prediction_item_status_counts": [
+      {
+        "item_status": "PENDING",
+        "count": 15
+      },
+      {
+        "item_status": "RESOLVED",
+        "count": 1080
+      }
+    ],
+    "prediction_run_snapshot_source_counts": [
+      {
+        "snapshot_source": "RECONSTRUCTED",
+        "count": 110
+      },
+      {
+        "snapshot_source": "VALID",
+        "count": 65
+      }
+    ]
+  },
+  "summary": {
+    "promotable_candidates": 15,
+    "blocked_rows": 26,
+    "parse_error_rows": 1,
+    "total_rows": 42
+  },
+  "promotable_candidates": [
+    {
+      "strategy_id": "ts3_regime_3bet",
+      "strategy_name": "ts3_regime_3bet",
+      "lifecycle_status": "ONLINE",
+      "source_evidence": "/Users/kelvin/Kelvin-WorkSpace/LotteryNew-clean/lottery_api/data/lottery_v2.db:prediction_items.id=1069;prediction_runs.id=167",
+      "target_draw": "115000048",
+      "target_date": "2026/04/28",
+      "validation_status": "PROMOTABLE",
+      "validation_reasons": [
+        "prediction_items.status=PENDING",
+        "prediction_runs.snapshot_source=VALID",
+        "run_id=167"
+      ],
+      "runtime_write_allowed": false,
+      "source_kind": "runtime_db"
+    },
+    {
+      "strategy_id": "ts3_regime_3bet",
+      "strategy_name": "ts3_regime_3bet",
+      "lifecycle_status": "ONLINE",
+      "source_evidence": "/Users/kelvin/Kelvin-WorkSpace/LotteryNew-clean/lottery_api/data/lottery_v2.db:prediction_items.id=1070;prediction_runs.id=167",
+      "target_draw": "115000048",
+      "target_date": "2026/04/28",
+      "validation_status": "PROMOTABLE",
+      "validation_reasons": [
+        "prediction_items.status=PENDING",
+        "prediction_runs.snapshot_source=VALID",
+        "run_id=167"
+      ],
+      "runtime_write_allowed": false,
+      "source_kind": "runtime_db"
+    },
+    {
+      "strategy_id": "ts3_regime_3bet",
+      "strategy_name": "ts3_regime_3bet",
+      "lifecycle_status": "ONLINE",
+      "source_evidence": "/Users/kelvin/Kelvin-WorkSpace/LotteryNew-clean/lottery_api/data/lottery_v2.db:prediction_items.id=1071;prediction_runs.id=167",
+      "target_draw": "115000048",
+      "target_date": "2026/04/28",
+      "validation_status": "PROMOTABLE",
+      "validation_reasons": [
+        "prediction_items.status=PENDING",
+        "prediction_runs.snapshot_source=VALID",
+        "run_id=167"
+      ],
+      "runtime_write_allowed": false,
+      "source_kind": "runtime_db"
+    },
+    {
+      "strategy_id": "fourier_rhythm_3bet",
+      "strategy_name": "fourier_rhythm_3bet",
+      "lifecycle_status": "ONLINE",
+      "source_evidence": "/Users/kelvin/Kelvin-WorkSpace/LotteryNew-clean/lottery_api/data/lottery_v2.db:prediction_items.id=1072;prediction_runs.id=168",
+      "target_draw": "115000034",
+      "target_date": "2026/04/27",
+      "validation_status": "PROMOTABLE",
+      "validation_reasons": [
+        "prediction_items.status=PENDING",
+        "prediction_runs.snapshot_source=VALID",
+        "run_id=168"
+      ],
+      "runtime_write_allowed": false,
+      "source_kind": "runtime_db"
+    },
+    {
+      "strategy_id": "fourier_rhythm_3bet",
+      "strategy_name": "fourier_rhythm_3bet",
+      "lifecycle_status": "ONLINE",
+      "source_evidence": "/Users/kelvin/Kelvin-WorkSpace/LotteryNew-clean/lottery_api/data/lottery_v2.db:prediction_items.id=1073;prediction_runs.id=168",
+      "target_draw": "115000034",
+      "target_date": "2026/04/27",
+      "validation_status": "PROMOTABLE",
+      "validation_reasons": [
+        "prediction_items.status=PENDING",
+        "prediction_runs.snapshot_source=VALID",
+        "run_id=168"
+      ],
+      "runtime_write_allowed": false,
+      "source_kind": "runtime_db"
+    },
+    {
+      "strategy_id": "fourier_rhythm_3bet",
+      "strategy_name": "fourier_rhythm_3bet",
+      "lifecycle_status": "ONLINE",
+      "source_evidence": "/Users/kelvin/Kelvin-WorkSpace/LotteryNew-clean/lottery_api/data/lottery_v2.db:prediction_items.id=1074;prediction_runs.id=168",
+      "target_draw": "115000034",
+      "target_date": "2026/04/27",
+      "validation_status": "PROMOTABLE",
+      "validation_reasons": [
+        "prediction_items.status=PENDING",
+        "prediction_runs.snapshot_source=VALID",
+        "run_id=168"
+      ],
+      "runtime_write_allowed": false,
+      "source_kind": "runtime_db"
+    },
+    {
+      "strategy_id": "acb_markov_midfreq_3bet",
+      "strategy_name": "acb_markov_midfreq_3bet",
+      "lifecycle_status": "ONLINE",
+      "source_evidence": "/Users/kelvin/Kelvin-WorkSpace/LotteryNew-clean/lottery_api/data/lottery_v2.db:prediction_items.id=1087;prediction_runs.id=173",
+      "target_draw": "115000105",
+      "target_date": "2026/04/29",
+      "validation_status": "PROMOTABLE",
+      "validation_reasons": [
+        "prediction_items.status=PENDING",
+        "prediction_runs.snapshot_source=VALID",
+        "run_id=173"
+      ],
+      "runtime_write_allowed": false,
+      "source_kind": "runtime_db"
+    },
+    {
+      "strategy_id": "acb_markov_midfreq_3bet",
+      "strategy_name": "acb_markov_midfreq_3bet",
+      "lifecycle_status": "ONLINE",
+      "source_evidence": "/Users/kelvin/Kelvin-WorkSpace/LotteryNew-clean/lottery_api/data/lottery_v2.db:prediction_items.id=1088;prediction_runs.id=173",
+      "target_draw": "115000105",
+      "target_date": "2026/04/29",
+      "validation_status": "PROMOTABLE",
+      "validation_reasons": [
+        "prediction_items.status=PENDING",
+        "prediction_runs.snapshot_source=VALID",
+        "run_id=173"
+      ],
+      "runtime_write_allowed": false,
+      "source_kind": "runtime_db"
+    },
+    {
+      "strategy_id": "acb_markov_midfreq_3bet",
+      "strategy_name": "acb_markov_midfreq_3bet",
+      "lifecycle_status": "ONLINE",
+      "source_evidence": "/Users/kelvin/Kelvin-WorkSpace/LotteryNew-clean/lottery_api/data/lottery_v2.db:prediction_items.id=1089;prediction_runs.id=173",
+      "target_draw": "115000105",
+      "target_date": "2026/04/29",
+      "validation_status": "PROMOTABLE",
+      "validation_reasons": [
+        "prediction_items.status=PENDING",
+        "prediction_runs.snapshot_source=VALID",
+        "run_id=173"
+      ],
+      "runtime_write_allowed": false,
+      "source_kind": "runtime_db"
+    },
+    {
+      "strategy_id": "ts3_regime_3bet",
+      "strategy_name": "ts3_regime_3bet",
+      "lifecycle_status": "ONLINE",
+      "source_evidence": "/Users/kelvin/Kelvin-WorkSpace/LotteryNew-clean/lottery_api/data/lottery_v2.db:prediction_items.id=1090;prediction_runs.id=174",
+      "target_draw": "115000050",
+      "target_date": "2026/05/05",
+      "validation_status": "PROMOTABLE",
+      "validation_reasons": [
+        "prediction_items.status=PENDING",
+        "prediction_runs.snapshot_source=VALID",
+        "run_id=174"
+      ],
+      "runtime_write_allowed": false,
+      "source_kind": "runtime_db"
+    },
+    {
+      "strategy_id": "ts3_regime_3bet",
+      "strategy_name": "ts3_regime_3bet",
+      "lifecycle_status": "ONLINE",
+      "source_evidence": "/Users/kelvin/Kelvin-WorkSpace/LotteryNew-clean/lottery_api/data/lottery_v2.db:prediction_items.id=1091;prediction_runs.id=174",
+      "target_draw": "115000050",
+      "target_date": "2026/05/05",
+      "validation_status": "PROMOTABLE",
+      "validation_reasons": [
+        "prediction_items.status=PENDING",
+        "prediction_runs.snapshot_source=VALID",
+        "run_id=174"
+      ],
+      "runtime_write_allowed": false,
+      "source_kind": "runtime_db"
+    },
+    {
+      "strategy_id": "ts3_regime_3bet",
+      "strategy_name": "ts3_regime_3bet",
+      "lifecycle_status": "ONLINE",
+      "source_evidence": "/Users/kelvin/Kelvin-WorkSpace/LotteryNew-clean/lottery_api/data/lottery_v2.db:prediction_items.id=1092;prediction_runs.id=174",
+      "target_draw": "115000050",
+      "target_date": "2026/05/05",
+      "validation_status": "PROMOTABLE",
+      "validation_reasons": [
+        "prediction_items.status=PENDING",
+        "prediction_runs.snapshot_source=VALID",
+        "run_id=174"
+      ],
+      "runtime_write_allowed": false,
+      "source_kind": "runtime_db"
+    },
+    {
+      "strategy_id": "ts3_regime_3bet",
+      "strategy_name": "ts3_regime_3bet",
+      "lifecycle_status": "ONLINE",
+      "source_evidence": "/Users/kelvin/Kelvin-WorkSpace/LotteryNew-clean/lottery_api/data/lottery_v2.db:prediction_items.id=1093;prediction_runs.id=175",
+      "target_draw": "115000049",
+      "target_date": "2026/05/01",
+      "validation_status": "PROMOTABLE",
+      "validation_reasons": [
+        "prediction_items.status=PENDING",
+        "prediction_runs.snapshot_source=RECONSTRUCTED",
+        "run_id=175"
+      ],
+      "runtime_write_allowed": false,
+      "source_kind": "runtime_db"
+    },
+    {
+      "strategy_id": "ts3_regime_3bet",
+      "strategy_name": "ts3_regime_3bet",
+      "lifecycle_status": "ONLINE",
+      "source_evidence": "/Users/kelvin/Kelvin-WorkSpace/LotteryNew-clean/lottery_api/data/lottery_v2.db:prediction_items.id=1094;prediction_runs.id=175",
+      "target_draw": "115000049",
+      "target_date": "2026/05/01",
+      "validation_status": "PROMOTABLE",
+      "validation_reasons": [
+        "prediction_items.status=PENDING",
+        "prediction_runs.snapshot_source=RECONSTRUCTED",
+        "run_id=175"
+      ],
+      "runtime_write_allowed": false,
+      "source_kind": "runtime_db"
+    },
+    {
+      "strategy_id": "ts3_regime_3bet",
+      "strategy_name": "ts3_regime_3bet",
+      "lifecycle_status": "ONLINE",
+      "source_evidence": "/Users/kelvin/Kelvin-WorkSpace/LotteryNew-clean/lottery_api/data/lottery_v2.db:prediction_items.id=1095;prediction_runs.id=175",
+      "target_draw": "115000049",
+      "target_date": "2026/05/01",
+      "validation_status": "PROMOTABLE",
+      "validation_reasons": [
+        "prediction_items.status=PENDING",
+        "prediction_runs.snapshot_source=RECONSTRUCTED",
+        "run_id=175"
+      ],
+      "runtime_write_allowed": false,
+      "source_kind": "runtime_db"
+    }
+  ],
+  "blocked_rows": [
+    {
+      "strategy_id": "539_3bet_orthogonal",
+      "strategy_name": "539_3bet_orthogonal",
+      "lifecycle_status": "REJECTED",
+      "source_evidence": "/Users/kelvin/Kelvin-WorkSpace/LotteryNew-clean/rejected/539_3bet_orthogonal.json",
+      "target_draw": null,
+      "target_date": null,
+      "validation_status": "BLOCKED",
+      "validation_reasons": [
+        "archive_rejected_row",
+        "REJECTED"
+      ],
+      "runtime_write_allowed": false,
+      "source_kind": "evidence_only"
+    },
+    {
+      "strategy_id": "acb_hot_fourier_3bet_biglotto",
+      "strategy_name": "acb_hot_fourier_3bet_biglotto",
+      "lifecycle_status": "REJECTED",
+      "source_evidence": "/Users/kelvin/Kelvin-WorkSpace/LotteryNew-clean/rejected/acb_hot_fourier_3bet_biglotto.json",
+      "target_draw": null,
+      "target_date": null,
+      "validation_status": "BLOCKED",
+      "validation_reasons": [
+        "archive_rejected_row",
+        "REJECTED"
+      ],
+      "runtime_write_allowed": false,
+      "source_kind": "evidence_only"
+    },
+    {
+      "strategy_id": "acb_single_539",
+      "strategy_name": "acb_single_539",
+      "lifecycle_status": "REJECTED",
+      "source_evidence": "/Users/kelvin/Kelvin-WorkSpace/LotteryNew-clean/rejected/acb_single_539.json",
+      "target_draw": null,
+      "target_date": "2026-02-27",
+      "validation_status": "BLOCKED",
+      "validation_reasons": [
+        "archive_rejected_row",
+        "REJECTED"
+      ],
+      "runtime_write_allowed": false,
+      "source_kind": "evidence_only"
+    },
+    {
+      "strategy_id": "apriori_3bet_biglotto",
+      "strategy_name": "Apriori 3注",
+      "lifecycle_status": "REJECTED",
+      "source_evidence": "/Users/kelvin/Kelvin-WorkSpace/LotteryNew-clean/rejected/apriori_3bet_biglotto.json",
+      "target_draw": null,
+      "target_date": "2026-01-30",
+      "validation_status": "BLOCKED",
+      "validation_reasons": [
+        "全期Edge嚴重負向，短期亦無優勢",
+        "INEFFECTIVE"
+      ],
+      "runtime_write_allowed": false,
+      "source_kind": "evidence_only"
+    },
+    {
+      "strategy_id": "bandit_ucb1_2bet_539",
+      "strategy_name": "bandit_ucb1_2bet_539",
+      "lifecycle_status": "REJECTED",
+      "source_evidence": "/Users/kelvin/Kelvin-WorkSpace/LotteryNew-clean/rejected/bandit_ucb1_2bet_539.json",
+      "target_draw": null,
+      "target_date": null,
+      "validation_status": "BLOCKED",
+      "validation_reasons": [
+        "archive_rejected_row",
+        "REJECTED"
+      ],
+      "runtime_write_allowed": false,
+      "source_kind": "evidence_only"
+    },
+    {
+      "strategy_id": "bet2_fourier_expansion_biglotto",
+      "strategy_name": "TS3 bet2 Fourier擴展 + Zone 2:2:2 過濾 (rank7-14)",
+      "lifecycle_status": "REJECTED",
+      "source_evidence": "/Users/kelvin/Kelvin-WorkSpace/LotteryNew-clean/rejected/bet2_fourier_expansion_biglotto.json",
+      "target_draw": null,
+      "target_date": "2026-02-25",
+      "validation_status": "BLOCKED",
+      "validation_reasons": [
+        "Fourier擴展替換冷號bet2導致信號同質化，整體Edge退步",
+        "SIGNAL_HOMOGENIZATION"
+      ],
+      "runtime_write_allowed": false,
+      "source_kind": "evidence_only"
+    },
+    {
+      "strategy_id": "cluster_pivot_biglotto",
+      "strategy_name": "Cluster Pivot 4注+",
+      "lifecycle_status": "REJECTED",
+      "source_evidence": "/Users/kelvin/Kelvin-WorkSpace/LotteryNew-clean/rejected/cluster_pivot_biglotto.json",
+      "target_draw": null,
+      "target_date": "2026-02-10",
+      "validation_status": "BLOCKED",
+      "validation_reasons": [
+        "SHORT_MOMENTUM — 150/500期表現良好但1500期Edge為負，確認為幸運窗口效應",
+        "SHORT_MOMENTUM"
+      ],
+      "runtime_write_allowed": false,
+      "source_kind": "evidence_only"
+    },
+    {
+      "strategy_id": "cold_complement_biglotto",
+      "strategy_name": "Cold Complement 2注",
+      "lifecycle_status": "REJECTED",
+      "source_evidence": "/Users/kelvin/Kelvin-WorkSpace/LotteryNew-clean/rejected/cold_complement_biglotto.json",
+      "target_draw": null,
+      "target_date": "2026-02-10",
+      "validation_status": "BLOCKED",
+      "validation_reasons": [
+        "INEFFECTIVE — 1500期Edge接近零，無統計意義",
+        "INEFFECTIVE"
+      ],
+      "runtime_write_allowed": false,
+      "source_kind": "evidence_only"
+    },
+    {
+      "strategy_id": "coldpool15_biglotto",
+      "strategy_name": "coldpool15_biglotto",
+      "lifecycle_status": "REJECTED",
+      "source_evidence": "/Users/kelvin/Kelvin-WorkSpace/LotteryNew-clean/rejected/coldpool15_biglotto.json",
+      "target_draw": null,
+      "target_date": null,
+      "validation_status": "BLOCKED",
+      "validation_reasons": [
+        "archive_rejected_row",
+        "REJECTED"
+      ],
+      "runtime_write_allowed": false,
+      "source_kind": "evidence_only"
+    },
+    {
+      "strategy_id": "consecutive_pair_detector_539",
+      "strategy_name": "consecutive_pair_detector_539",
+      "lifecycle_status": "REJECTED",
+      "source_evidence": "/Users/kelvin/Kelvin-WorkSpace/LotteryNew-clean/rejected/consecutive_pair_detector_539.json",
+      "target_draw": null,
+      "target_date": null,
+      "validation_status": "BLOCKED",
+      "validation_reasons": [
+        "archive_rejected_row",
+        "REJECTED"
+      ],
+      "runtime_write_allowed": false,
+      "source_kind": "evidence_only"
+    },
+    {
+      "strategy_id": "core_satellite_biglotto",
+      "strategy_name": "Core-Satellite 策略",
+      "lifecycle_status": "REJECTED",
+      "source_evidence": "/Users/kelvin/Kelvin-WorkSpace/LotteryNew-clean/rejected/core_satellite_biglotto.json",
+      "target_draw": null,
+      "target_date": "2026-02-06",
+      "validation_status": "BLOCKED",
+      "validation_reasons": [
+        "覆蓋損失 > 相關收益；Edge為負",
+        "INEFFECTIVE"
+      ],
+      "runtime_write_allowed": false,
+      "source_kind": "evidence_only"
+    },
+    {
+      "strategy_id": "fourier30_markov30_biglotto",
+      "strategy_name": "Fourier30+Markov30 2注",
+      "lifecycle_status": "REJECTED",
+      "source_evidence": "/Users/kelvin/Kelvin-WorkSpace/LotteryNew-clean/rejected/fourier30_markov30_biglotto.json",
+      "target_draw": null,
+      "target_date": "2026-02-10",
+      "validation_status": "BLOCKED",
+      "validation_reasons": [
+        "SHORT_MOMENTUM — 1500期Edge為負，長期無法維持",
+        "SHORT_MOMENTUM"
+      ],
+      "runtime_write_allowed": false,
+      "source_kind": "evidence_only"
+    },
+    {
+      "strategy_id": "gap_dynamic_threshold_biglotto",
+      "strategy_name": "Gap Dynamic Threshold",
+      "lifecycle_status": "REJECTED",
+      "source_evidence": "/Users/kelvin/Kelvin-WorkSpace/LotteryNew-clean/rejected/gap_dynamic_threshold_biglotto.json",
+      "target_draw": null,
+      "target_date": "2026-02-23",
+      "validation_status": "BLOCKED",
+      "validation_reasons": [
+        "全部16組grid search均無改善，gap信號已被頻率窗口部分吸收，雙重加權造成扭曲",
+        "INEFFECTIVE"
+      ],
+      "runtime_write_allowed": false,
+      "source_kind": "evidence_only"
+    },
+    {
+      "strategy_id": "gap_rebound_powerlotto",
+      "strategy_name": "Gap Rebound 整合",
+      "lifecycle_status": "REJECTED",
+      "source_evidence": "/Users/kelvin/Kelvin-WorkSpace/LotteryNew-clean/rejected/gap_rebound_powerlotto.json",
+      "target_draw": null,
+      "target_date": "2026-02-09",
+      "validation_status": "BLOCKED",
+      "validation_reasons": [
+        "1000期差異z=0.23不顯著；3注版本反而更差（損害注2-3品質）",
+        "INEFFECTIVE"
+      ],
+      "runtime_write_allowed": false,
+      "source_kind": "evidence_only"
+    },
+    {
+      "strategy_id": "hot_gap_return_biglotto",
+      "strategy_name": "hot_gap_return_biglotto",
+      "lifecycle_status": "REJECTED",
+      "source_evidence": "/Users/kelvin/Kelvin-WorkSpace/LotteryNew-clean/rejected/hot_gap_return_biglotto.json",
+      "target_draw": null,
+      "target_date": null,
+      "validation_status": "BLOCKED",
+      "validation_reasons": [
+        "archive_rejected_row",
+        "REJECTED"
+      ],
+      "runtime_write_allowed": false,
+      "source_kind": "evidence_only"
+    },
+    {
+      "strategy_id": "hot_stop_rebound_biglotto",
+      "strategy_name": "hot_stop_rebound_biglotto",
+      "lifecycle_status": "REJECTED",
+      "source_evidence": "/Users/kelvin/Kelvin-WorkSpace/LotteryNew-clean/rejected/hot_stop_rebound_biglotto.json",
+      "target_draw": null,
+      "target_date": null,
+      "validation_status": "BLOCKED",
+      "validation_reasons": [
+        "archive_rejected_row",
+        "REJECTED"
+      ],
+      "runtime_write_allowed": false,
+      "source_kind": "evidence_only"
+    },
+    {
+      "strategy_id": "lift_pair_single_539",
+      "strategy_name": "lift_pair_single_539",
+      "lifecycle_status": "REJECTED",
+      "source_evidence": "/Users/kelvin/Kelvin-WorkSpace/LotteryNew-clean/rejected/lift_pair_single_539.json",
+      "target_draw": null,
+      "target_date": null,
+      "validation_status": "BLOCKED",
+      "validation_reasons": [
+        "archive_rejected_row",
+        "REJECTED"
+      ],
+      "runtime_write_allowed": false,
+      "source_kind": "evidence_only"
+    },
+    {
+      "strategy_id": "markov_1bet_539",
+      "strategy_name": "markov_1bet_539",
+      "lifecycle_status": "REJECTED",
+      "source_evidence": "/Users/kelvin/Kelvin-WorkSpace/LotteryNew-clean/rejected/markov_1bet_539.json",
+      "target_draw": null,
+      "target_date": null,
+      "validation_status": "BLOCKED",
+      "validation_reasons": [
+        "archive_rejected_row",
+        "REJECTED"
+      ],
+      "runtime_write_allowed": false,
+      "source_kind": "evidence_only"
+    },
+    {
+      "strategy_id": "markov_2bet_biglotto",
+      "strategy_name": "Markov 2注",
+      "lifecycle_status": "REJECTED",
+      "source_evidence": "/Users/kelvin/Kelvin-WorkSpace/LotteryNew-clean/rejected/markov_2bet_biglotto.json",
+      "target_draw": null,
+      "target_date": "2026-01-30",
+      "validation_status": "BLOCKED",
+      "validation_reasons": [
+        "SHORT_MOMENTUM — 150期正向但1000期負向，長期無效",
+        "SHORT_MOMENTUM"
+      ],
+      "runtime_write_allowed": false,
+      "source_kind": "evidence_only"
+    },
+    {
+      "strategy_id": "markov_repeat_exception_biglotto",
+      "strategy_name": "Markov 重複號碼例外處理",
+      "lifecycle_status": "REJECTED",
+      "source_evidence": "/Users/kelvin/Kelvin-WorkSpace/LotteryNew-clean/rejected/markov_repeat_exception_biglotto.json",
+      "target_draw": null,
+      "target_date": "2026-02-23",
+      "validation_status": "BLOCKED",
+      "validation_reasons": [
+        "信號真實但幅度太小，實作改善幅度<統計噪音",
+        "INEFFECTIVE"
+      ],
+      "runtime_write_allowed": false,
+      "source_kind": "evidence_only"
+    },
+    {
+      "strategy_id": "markov_single_biglotto",
+      "strategy_name": "Markov 單注",
+      "lifecycle_status": "REJECTED",
+      "source_evidence": "/Users/kelvin/Kelvin-WorkSpace/LotteryNew-clean/rejected/markov_single_biglotto.json",
+      "target_draw": null,
+      "target_date": "2026-02-10",
+      "validation_status": "BLOCKED",
+      "validation_reasons": [
+        "SHORT_MOMENTUM — 1500期Edge為負",
+        "SHORT_MOMENTUM"
+      ],
+      "runtime_write_allowed": false,
+      "source_kind": "evidence_only"
+    },
+    {
+      "strategy_id": "multiwindow_fourier_biglotto",
+      "strategy_name": "Multi-window Fourier (100/200/500p hybrid)",
+      "lifecycle_status": "REJECTED",
+      "source_evidence": "/Users/kelvin/Kelvin-WorkSpace/LotteryNew-clean/rejected/multiwindow_fourier_biglotto.json",
+      "target_draw": null,
+      "target_date": "2026-02-25",
+      "validation_status": "BLOCKED",
+      "validation_reasons": [
+        "多窗口稀釋真實信號 — 100p/200p FFT 雜訊大於信號，導致顯著劣化",
+        "SIGNAL_DILUTION"
+      ],
+      "runtime_write_allowed": false,
+      "source_kind": "evidence_only"
+    },
+    {
+      "strategy_id": "neighbor_acb_2bet_539",
+      "strategy_name": "neighbor_acb_2bet_539",
+      "lifecycle_status": "REJECTED",
+      "source_evidence": "/Users/kelvin/Kelvin-WorkSpace/LotteryNew-clean/rejected/neighbor_acb_2bet_539.json",
+      "target_draw": null,
+      "target_date": null,
+      "validation_status": "BLOCKED",
+      "validation_reasons": [
+        "archive_rejected_row",
+        "REJECTED"
+      ],
+      "runtime_write_allowed": false,
+      "source_kind": "evidence_only"
+    },
+    {
+      "strategy_id": "neighbor_injection_biglotto",
+      "strategy_name": "鄰號共現注入 (Neighbor Injection)",
+      "lifecycle_status": "REJECTED",
+      "source_evidence": "/Users/kelvin/Kelvin-WorkSpace/LotteryNew-clean/rejected/neighbor_injection_biglotto.json",
+      "target_draw": null,
+      "target_date": "2026-02-10",
+      "validation_status": "BLOCKED",
+      "validation_reasons": [
+        "鄰號是負相關（Lift<1.0）；注入後嚴重損害預測品質",
+        "STATISTICAL_ILLUSION"
+      ],
+      "runtime_write_allowed": false,
+      "source_kind": "evidence_only"
+    },
+    {
+      "strategy_id": "p0_neighbor_injection",
+      "strategy_name": "p0_neighbor_injection",
+      "lifecycle_status": "REJECTED",
+      "source_evidence": "/Users/kelvin/Kelvin-WorkSpace/LotteryNew-clean/rejected/p0_neighbor_injection.json",
+      "target_draw": null,
+      "target_date": null,
+      "validation_status": "BLOCKED",
+      "validation_reasons": [
+        "1500p Edge +1.46% 與 Baseline TS3 完全相同，無改善；500p有微幅提升(+2.32% vs +2.12%)但不足以替換",
+        "STABLE"
+      ],
+      "runtime_write_allowed": false,
+      "source_kind": "evidence_only"
+    },
+    {
+      "strategy_id": "p0b_539_3bet_f_cold_fmid",
+      "strategy_name": "p0b_539_3bet_f_cold_fmid",
+      "lifecycle_status": "REJECTED",
+      "source_evidence": "/Users/kelvin/Kelvin-WorkSpace/LotteryNew-clean/rejected/p0b_539_3bet_f_cold_fmid.json",
+      "target_draw": null,
+      "target_date": null,
+      "validation_status": "BLOCKED",
+      "validation_reasons": [
+        "archive_rejected_row",
+        "REJECTED"
+      ],
+      "runtime_write_allowed": false,
+      "source_kind": "evidence_only"
+    }
+  ],
+  "parse_error_rows": [
+    {
+      "strategy_id": "p1_deviation_2bet_539",
+      "strategy_name": "P1鄰號+偏差互補 2注/3注 (今彩539)",
+      "lifecycle_status": "REJECTED",
+      "source_evidence": "/Users/kelvin/Kelvin-WorkSpace/LotteryNew-clean/rejected/p1_deviation_2bet_539.json",
+      "target_draw": null,
+      "target_date": "2026-02-26",
+      "validation_status": "PARSE_ERROR",
+      "validation_reasons": [
+        "evidence JSON malformed",
+        "JSONDecodeError while parsing rejected archive row"
+      ],
+      "runtime_write_allowed": false,
+      "source_kind": "evidence_only"
+    }
+  ]
+}

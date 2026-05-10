@@ -34,25 +34,34 @@ Covers all 23 P0-4 required smoke checks:
 Hard rules (enforced):
   - No new strategies added
   - No strategy mining
-  - No edge discovery
+    - No result-discovery work
   - No replay generation triggered
   - No external API calls
 """
 
 from __future__ import annotations
 
+import json
 import os
 import re
 import sys
+import socketserver
+import threading
+from contextlib import contextmanager
+from functools import partial
+from http.server import SimpleHTTPRequestHandler
+from pathlib import Path
+from urllib.parse import parse_qs, urlparse
 
 import pytest
 
 REPO_ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-INDEX_HTML = os.path.join(REPO_ROOT, "index.html")
+REPO_ROOT_PATH = Path(REPO_ROOT)
+INDEX_HTML = REPO_ROOT_PATH / "index.html"
 
 
 def _load_html() -> str:
-    if not os.path.exists(INDEX_HTML):
+    if not INDEX_HTML.exists():
         pytest.skip("index.html not found")
     with open(INDEX_HTML, "r", encoding="utf-8") as f:
         return f.read()
@@ -66,6 +75,204 @@ def _replay_section(html: str) -> str:
         re.DOTALL,
     )
     return m.group(0) if m else html
+
+
+@contextmanager
+def _serve_repo(root: Path):
+    handler = partial(SimpleHTTPRequestHandler, directory=str(root))
+    with socketserver.TCPServer(("127.0.0.1", 0), handler) as httpd:
+        httpd.allow_reuse_address = True
+        thread = threading.Thread(target=httpd.serve_forever, daemon=True)
+        thread.start()
+        try:
+            yield f"http://127.0.0.1:{httpd.server_address[1]}"
+        finally:
+            httpd.shutdown()
+            thread.join(timeout=5)
+
+
+def _mock_json(route, payload):
+    route.fulfill(
+        status=200,
+        content_type="application/json",
+        body=json.dumps(payload, ensure_ascii=False),
+    )
+
+
+def _freshness_payload():
+    return {
+        "generated_at": "2026-05-10T00:00:00Z",
+        "coverage_mode": "LIMITED",
+        "total_rows": 460,
+        "total_predicted": 420,
+        "total_replay_error": 40,
+        "legacy_error_count": 40,
+        "has_legacy_errors": True,
+        "lottery_types": ["BIG_LOTTO"],
+        "latest_run_id": 1,
+        "latest_run_status": "DONE",
+        "per_lottery_latest_run": [
+            {
+                "lottery_type": "BIG_LOTTO",
+                "replay_run_id": 1,
+                "status": "DONE",
+                "coverage_mode": "LIMITED",
+                "row_count": 1,
+                "predicted_count": 1,
+                "error_count": 0,
+            }
+        ],
+        "disclaimer": "本頁為歷史預測回放，用於稽核，不代表提高中獎率。",
+    }
+
+
+def _summary_payload(lifecycle_status: str):
+    return {
+        "lottery_type": "BIG_LOTTO",
+        "filter": {"strategy_id": None, "date_from": None, "date_to": None},
+        "filter_lifecycle_status": lifecycle_status,
+        "summaries": [] if lifecycle_status != "ONLINE" else [
+            {
+                "strategy_id": "biglotto_triple_strike",
+                "strategy_name": "大樂透 Triple Strike",
+                "total_rows": 1,
+                "predicted_count": 1,
+                "avg_hit_count": 3,
+                "hit_3plus_count": 1,
+                "special_hit_count": 0,
+                "rejected_count": 0,
+                "insufficient_count": 0,
+                "error_count": 0,
+            }
+        ],
+        "disclaimer": "本摘要為歷史預測回放統計，只用於查詢與稽核；不代表提高中獎率，也不保證任何回放結果。",
+        "data_scope": "ALL_REPLAY_ROWS",
+        "legacy_error_count": 0,
+        "has_legacy_errors": False,
+        "scope_note": None,
+    }
+
+
+def _strategies_payload(lifecycle_status: str):
+    if lifecycle_status == "ONLINE":
+        return {
+            "strategies": [
+                {
+                    "strategy_id": "biglotto_triple_strike",
+                    "strategy_name": "大樂透 Triple Strike",
+                    "strategy_version": "v0.1",
+                    "supported_lottery_types": ["BIG_LOTTO"],
+                    "min_history": 100,
+                    "status": "ONLINE",
+                    "lifecycle_status": "ONLINE",
+                    "strategy_lifecycle_status": "ONLINE",
+                }
+            ],
+            "count": 1,
+            "filter_lottery_type": "BIG_LOTTO",
+            "filter_lifecycle_status": lifecycle_status,
+            "filter": "BIG_LOTTO",
+        }
+    return {"strategies": [], "count": 0, "filter_lottery_type": "BIG_LOTTO", "filter_lifecycle_status": lifecycle_status, "filter": "BIG_LOTTO"}
+
+
+def _history_payload(lifecycle_status: str):
+    if lifecycle_status != "ONLINE":
+        return {"total": 0, "page": 1, "page_size": 50, "pages": 1, "filter_lifecycle_status": lifecycle_status, "records": []}
+    return {
+        "total": 1,
+        "page": 1,
+        "page_size": 50,
+        "pages": 1,
+        "filter_lifecycle_status": lifecycle_status,
+        "records": [
+            {
+                "id": 1,
+                "lottery": "BIG_LOTTO",
+                "lottery_type": "BIG_LOTTO",
+                "target_draw": "99000105",
+                "target_date": "2010/12/31",
+                "strategy_id": "biglotto_triple_strike",
+                "strategy_name": "大樂透 Triple Strike",
+                "strategy_version": "v0.1",
+                "history_cutoff": "99000104",
+                "replay_status": "PREDICTED",
+                "reject_reason": "",
+                "predicted_numbers": [3, 8, 22, 35, 38, 43],
+                "predicted_special": None,
+                "actual_numbers": [4, 9, 27, 36, 38, 39],
+                "actual_special": None,
+                "hit_numbers": [38],
+                "hit_count": 1,
+                "special_hit": False,
+                "replay_run_id": 1,
+                "generated_at": "2026-05-10T00:00:00Z",
+                "lifecycle_status": lifecycle_status,
+                "strategy_lifecycle_status": lifecycle_status,
+            }
+        ],
+    }
+
+
+@pytest.mark.skipif(not INDEX_HTML.exists(), reason="index.html not found")
+def test_lifecycle_filter_browser_dom_changes():
+    playwright = pytest.importorskip("playwright.sync_api", reason="Playwright browser tooling unavailable")
+    from playwright.sync_api import sync_playwright  # type: ignore
+
+    with _serve_repo(REPO_ROOT_PATH) as base_url:
+        with sync_playwright() as pw:
+            try:
+                browser = pw.chromium.launch(headless=True)
+            except Exception as exc:  # pragma: no cover - depends on local browser tooling
+                pytest.skip(f"Playwright browser unavailable: {exc}")
+
+            page = browser.new_page()
+
+            def route_handler(route):
+                parsed_url = urlparse(route.request.url)
+                if parsed_url.path.endswith("/api/replay/freshness"):
+                    return _mock_json(route, _freshness_payload())
+                if parsed_url.path.endswith("/api/replay/summary"):
+                    query = parse_qs(parsed_url.query)
+                    lifecycle_status = query.get("lifecycle_status", ["ONLINE"])[0]
+                    return _mock_json(route, _summary_payload(lifecycle_status))
+                if parsed_url.path.endswith("/api/replay/history"):
+                    query = parse_qs(parsed_url.query)
+                    lifecycle_status = query.get("lifecycle_status", ["ONLINE"])[0]
+                    return _mock_json(route, _history_payload(lifecycle_status))
+                if parsed_url.path.endswith("/api/replay/strategies"):
+                    query = parse_qs(parsed_url.query)
+                    lifecycle_status = query.get("lifecycle_status", ["ONLINE"])[0]
+                    return _mock_json(route, _strategies_payload(lifecycle_status))
+                return route.continue_()
+
+            page.route("**/api/replay/**", route_handler)
+            page.goto(f"{base_url}/index.html?rp_lc=ONLINE", wait_until="load")
+            page.wait_for_selector('#rp-lifecycle-select', state='attached')
+
+            page.locator('[data-section="replay"]').evaluate('(el) => el.click()')
+            page.wait_for_selector('#rp-query-btn', state='visible')
+
+            page.locator('#rp-query-btn').click()
+            page.wait_for_function(
+                "() => document.querySelector('#rp-hist-body').innerText.includes('PREDICTED')",
+                timeout=5000,
+            )
+            before = page.locator('#rp-hist-body').inner_text()
+
+            page.select_option('#rp-lifecycle-select', 'OFFLINE')
+            page.locator('#rp-query-btn').click()
+            page.wait_for_function(
+                "() => document.querySelector('#rp-hist-body').innerText.includes('目前無此狀態策略，等待 catalog backfill')",
+                timeout=5000,
+            )
+            after = page.locator('#rp-hist-body').inner_text()
+
+            assert before != after
+            assert '目前無此狀態策略，等待 catalog backfill' in after
+            assert page.locator('#rp-lifecycle-select').input_value() == 'OFFLINE'
+
+            browser.close()
 
 
 class TestReplayBrowserSmoke:

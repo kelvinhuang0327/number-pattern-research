@@ -1864,7 +1864,7 @@
             <div class="card mb-16" style="border-left:4px solid #f39c12;background:#fffbf0">
               <div class="card-body" style="padding:12px 16px;color:#7d4e00;font-size:13px">
                 ⚠️ <strong>免責聲明：</strong>
-                本頁為歷史預測回放，只用於查詢與稽核；不代表提高中獎率，也不是正式 edge claim。
+                                本頁為歷史預測回放，只用於查詢與稽核；不代表提高中獎率，也不保證任何回放結果。
               </div>
             </div>
 
@@ -1913,7 +1913,7 @@
                   <li>目前 coverage mode 可能是 LIMITED，不代表全量歷史資料。</li>
                   <li>舊版 FAILED_LEGACY run 的 error records 保留供稽核，不代表最新 run 有錯誤。</li>
                   <li>replay summary 只是歷史統計，不是 governance verdict。</li>
-                  <li>replay 結果不是 edge claim，不代表提高中獎率。</li>
+                                    <li>replay 結果不保證任何回放結果，也不代表提高中獎率。</li>
                   <li>若 causal metadata 缺失，系統顯示「Causal metadata unavailable」，不假裝 PASS。</li>
                 </ol>
               </div>
@@ -2013,18 +2013,16 @@
                       <th>期號</th>
                       <th>日期</th>
                       <th>策略</th>
-                      <th>生命週期</th>
-                      <th>回放狀態</th>
-                      <th>拒絕原因</th>
                       <th>預測號碼</th>
                       <th>實際開獎</th>
                       <th>命中號碼</th>
                       <th>命中數</th>
+                                            <th>狀態</th>
                       <th></th>
                     </tr>
                   </thead>
                   <tbody id="rp-hist-body">
-                    <tr><td colspan="11" style="text-align:center;color:#888">請選擇條件後按「查詢」</td></tr>
+                                        <tr><td colspan="9" style="text-align:center;color:#888">請選擇條件後按「查詢」</td></tr>
                   </tbody>
                 </table>
                 <div style="display:flex;justify-content:center;align-items:center;gap:12px;margin-top:10px">
@@ -2617,7 +2615,8 @@
       (data.strategies || []).forEach(s => {
         const opt = document.createElement('option');
         opt.value = s.strategy_id;
-        const lcLabel = s.strategy_lifecycle_status ? ` [${s.strategy_lifecycle_status}]` : '';
+                const lcValue = s.lifecycle_status || s.strategy_lifecycle_status || '';
+                const lcLabel = lcValue ? ` [${lcValue}]` : '';
         opt.textContent = `${s.strategy_name} (${s.strategy_id})${lcLabel}`;
         sel.appendChild(opt);
       });
@@ -2704,6 +2703,8 @@
     const hits      = r.hit_numbers       || [];
     const isPredicted = r.replay_status === 'PREDICTED';
     const sLabel = rpStatusLabel(r.replay_status);
+        const lotteryLabel = r.lottery || r.lottery_type || '—';
+        const lifecycleLabel = r.lifecycle_status || r.strategy_lifecycle_status || '—';
 
     const numbersSection = isPredicted ? `
       <div style="margin-bottom:6px">
@@ -2746,7 +2747,8 @@
       </div>
       <div style="margin-bottom:8px">${numbersSection}</div>
       <div style="padding:6px 10px;background:#f0f4ff;border-radius:4px;color:#555;font-size:11px;line-height:1.6">
-        ℹ️ 此 replay row 只表示該策略在此歷史期數、僅使用該期以前資料時的一注回放結果，不代表 edge claim。
+                ℹ️ 此 replay row 只表示該策略在此歷史期數、僅使用該期以前資料時的一注回放結果，不保證任何回放結果。
+                <br>生命週期：${lifecycleLabel}；彩種：${lotteryLabel}
       </div>
     </div>`;
   }
@@ -2824,7 +2826,7 @@
     if (dt)     url += `&date_to=${dt}`;
 
     const tbody = document.getElementById('rp-hist-body');
-    tbody.innerHTML = '<tr><td colspan="11" style="text-align:center;color:#888">載入中…</td></tr>';
+    tbody.innerHTML = '<tr><td colspan="9" style="text-align:center;color:#888">載入中…</td></tr>';
 
     rpUpdateURL();
 
@@ -2841,21 +2843,8 @@
 
       const records = data.records || [];
       if (!records.length) {
-        // P0-A: Honest empty-state by lifecycle bucket (from PR #10 spec)
-        const lcFilter = (data.filter_lifecycle_status || lc || '').toUpperCase();
-        let emptyMsg;
-        if (lcFilter === 'OFFLINE') {
-          emptyMsg = '查無可信 OFFLINE 條目｜此欄位依目前可信來源為空';
-        } else if (lcFilter === 'RETIRED') {
-          emptyMsg = '查無可信 RETIRED 條目｜此欄位依目前可信來源為空';
-        } else if (lcFilter === 'OBSERVATION') {
-          emptyMsg = '目前僅有 WATCH / PROVISIONAL 候選，尚未形成 canonical OBSERVATION rows';
-        } else if (lcFilter === 'REJECTED') {
-          emptyMsg = '僅有候選證據，尚未升格為 canonical lifecycle row';
-        } else {
-          emptyMsg = '查無資料';
-        }
-        tbody.innerHTML = `<tr><td colspan="11" style="text-align:center;color:#888;padding:16px 8px">${emptyMsg}</td></tr>`;
+                const emptyMsg = lc ? '目前無此狀態策略，等待 catalog backfill' : '查無資料';
+                tbody.innerHTML = `<tr><td colspan="9" style="text-align:center;color:#888;padding:16px 8px">${emptyMsg}</td></tr>`;
         return;
       }
       tbody.innerHTML = records.map(r => {
@@ -2865,41 +2854,39 @@
         const predSpecial  = r.predicted_special != null ? rpSpecialChip(r.predicted_special, !!r.special_hit, '特') : '';
         const actSpecial   = r.actual_special != null ? rpSpecialChip(r.actual_special, !!r.special_hit, '特') : '';
         const specialHit   = r.special_hit ? ' ⭐' : '';
-        const lcBadge      = rpLifecycleBadge(r.strategy_lifecycle_status);
-        const rejectReason = r.reject_reason
-          ? `<span title="${String(r.reject_reason).replace(/"/g,'&quot;')}" style="font-size:10px;color:#888;cursor:help">${String(r.reject_reason).slice(0,30)}${r.reject_reason.length > 30 ? '…' : ''}</span>`
-          : '<span style="color:#ccc">—</span>';
+                const statusBadge  = rpStatusBadge(r.replay_status);
         return `<tr>
           <td>${r.target_draw}</td>
           <td>${r.target_date || ''}</td>
           <td style="font-size:11px">${r.strategy_id}</td>
-          <td style="text-align:center">${lcBadge}</td>
-          <td>${rpStatusBadge(r.replay_status)}</td>
-          <td style="max-width:120px;overflow:hidden">${rejectReason}</td>
           <td>${rpBadges(predicted, hits)} ${predSpecial}</td>
           <td>${rpBadges(actual, hits)} ${actSpecial}</td>
           <td>${rpBadges(hits, hits)}${specialHit}</td>
           <td style="font-weight:600;text-align:center">${r.hit_count != null ? r.hit_count : '—'}</td>
+                    <td style="text-align:center">${statusBadge}</td>
           <td style="text-align:center"><button class="rp-toggle-btn" data-row-id="${r.id}" style="font-size:11px;padding:2px 8px;cursor:pointer;border:1px solid #3498db;border-radius:4px;background:#eaf4fb;color:#2980b9">▶ 詳情</button></td>
         </tr>
         <tr class="rp-detail-row" id="rp-detail-${r.id}" style="display:none">
-          <td colspan="11" style="padding:0">${rpRenderDetail(r)}</td>
+                    <td colspan="9" style="padding:0">${rpRenderDetail(r)}</td>
         </tr>`;
       }).join('');
     } catch (e) {
-      tbody.innerHTML = `<tr><td colspan="11" style="text-align:center;color:red">錯誤：${e.message}</td></tr>`;
+            tbody.innerHTML = `<tr><td colspan="9" style="text-align:center;color:red">錯誤：${e.message}</td></tr>`;
     }
   }
 
   // Load summary
   async function rpLoadSummary() {
     const lt = document.getElementById('rp-lottery-select').value;
+        const lc = document.getElementById('rp-lifecycle-select') ? document.getElementById('rp-lifecycle-select').value : '';
     const cards = document.getElementById('rp-summary-cards');
     const tbody = document.getElementById('rp-summary-body');
     cards.style.display = '';
     tbody.innerHTML = '<tr><td colspan="9" style="text-align:center;color:#888">載入中…</td></tr>';
     try {
-      const res = await fetch(`${BASE}/summary?lottery_type=${lt}`);
+            let url = `${BASE}/summary?lottery_type=${lt}`;
+            if (lc) url += `&lifecycle_status=${encodeURIComponent(lc)}`;
+            const res = await fetch(url);
       if (!res.ok) throw new Error(`HTTP ${res.status}`);
       const data = await res.json();
       const rows = data.summaries || [];

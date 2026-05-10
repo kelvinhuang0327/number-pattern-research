@@ -90,4 +90,4 @@ Result:
 
 ## 8) PR URL
 
-Pending. This file will be updated after the PR is opened.
+https://github.com/kelvinhuang0327/number-pattern-research/pull/12

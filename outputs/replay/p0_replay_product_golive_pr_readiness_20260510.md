@@ -77,7 +77,7 @@ Targeted sweep scope:
 - `outputs/replay/p0_replay_data_health_20260510.md`
 
 Result:
-- Replay block and replay API/report copy are clean for `edge`, `勝率`, `最佳策略`, and `推薦投注`.
+- Replay block and replay API/report copy are clean for the targeted forbidden terms.
 - Broader `index.html` still contains legacy H6 / strategy dashboard wording outside the replay block; that legacy copy was not changed in this replay go-live scope.
 
 ## 7) Safety Confirmation

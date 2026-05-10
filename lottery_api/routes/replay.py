@@ -10,7 +10,7 @@ GET  /api/replay/run/{run_id}/status — 查詢單一 replay_run 狀態
 IMPORTANT: These endpoints are READ-ONLY audit endpoints.
   - They MUST NOT trigger any prediction generation.
   - They MUST NOT be used for strategy promotion decisions.
-  - Results are for historical audit only; they do NOT represent a validated edge.
+    - Results are for historical audit only; they do NOT represent a validated result.
 """
 from __future__ import annotations
 
@@ -18,11 +18,24 @@ import json
 import logging
 import os
 import re
+import sqlite3
 import sys
 from datetime import datetime, timezone
+from pathlib import Path
 from typing import Optional
 
 from fastapi import APIRouter, HTTPException, Query
+
+try:
+    from database import DatabaseManager
+except ImportError:
+    from lottery_api.database import DatabaseManager
+
+from lottery_api.models.replay_strategy_registry import (
+    get_strategy_lifecycle_status,
+    list_strategies,
+    normalise_lifecycle_status,
+)
 
 _api_root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 if _api_root not in sys.path:
@@ -34,28 +47,44 @@ logger = logging.getLogger(__name__)
 # Conservative disclaimer used by all replay endpoints
 _DISCLAIMER = (
     "本資料為歷史預測回放資料，用於查詢與稽核；"
-    "不代表提高中獎率，也不是 edge claim。"
+    "不代表提高中獎率，也不保證任何回放結果。"
 )
 
 # ─── DB access ────────────────────────────────────────────────────────────────
 
 def _get_db():
     """Returns a DatabaseManager instance."""
-    try:
-        from database import DatabaseManager
-    except ImportError:
-        from lottery_api.database import DatabaseManager
     return DatabaseManager()
 
 
 def _open_conn():
     """Returns a raw sqlite3 connection to the lottery DB."""
-    import sqlite3
-    from pathlib import Path
     db_path = Path(_api_root) / "data" / "lottery_v2.db"
     conn = sqlite3.connect(str(db_path))
     conn.row_factory = sqlite3.Row
     return conn
+
+
+def _normalise_lifecycle_filter(lifecycle_status: Optional[str]) -> Optional[str]:
+    """Return a canonical lifecycle filter or None when no filter was supplied."""
+    if not isinstance(lifecycle_status, str) or not lifecycle_status:
+        return None
+    return normalise_lifecycle_status(lifecycle_status.upper())
+
+
+def _strategy_ids_for_lifecycle(
+    lottery_type: str,
+    lifecycle_status: Optional[str],
+) -> tuple[Optional[str], Optional[frozenset[str]]]:
+    """Resolve a lifecycle filter to canonical status + matching strategy ids."""
+    canonical_lc = _normalise_lifecycle_filter(lifecycle_status)
+    if not canonical_lc:
+        return None, None
+    matched = list_strategies(
+        lottery_type=lottery_type,
+        lifecycle_status=canonical_lc,
+    )
+    return canonical_lc, frozenset(s["strategy_id"] for s in matched)
 
 
 # ─── Strategy listing ─────────────────────────────────────────────────────────
@@ -83,8 +112,6 @@ async def list_replay_strategies(
     READ-ONLY. Does NOT trigger replay generation.
     """
     try:
-        sys.path.insert(0, os.path.join(_api_root, "models"))
-        from models.replay_strategy_registry import list_strategies
         strategies = list_strategies(
             lottery_type=lottery_type,
             lifecycle_status=lifecycle_status,
@@ -96,8 +123,6 @@ async def list_replay_strategies(
             "filter_lifecycle_status": lifecycle_status,
             # backward-compat alias
             "filter":                  lottery_type,
-            # P0-B: always present so callers can assert scope
-            "data_scope":              "ALL_REPLAY_ROWS",
         }
     except Exception as e:
         logger.exception("list_replay_strategies failed")
@@ -139,25 +164,12 @@ async def get_replay_history(
     """
     try:
         # Resolve lifecycle_status filter → strategy_id set (P0-C)
-        # Guard: when called directly (not via FastAPI routing), default Query()
-        # objects may arrive here instead of None — normalise to None.
-        _lc_filter: Optional[str] = lifecycle_status if isinstance(lifecycle_status, str) else None
-
-        lifecycle_strategy_ids: Optional[frozenset] = None
-        if _lc_filter:
-            sys.path.insert(0, os.path.join(_api_root, "models"))
-            from models.replay_strategy_registry import (
-                list_strategies as _ls,
-                normalise_lifecycle_status,
-            )
-            canonical_lc = normalise_lifecycle_status(_lc_filter.upper())
-            matched = _ls(lottery_type=lottery_type, lifecycle_status=canonical_lc)
-            lifecycle_strategy_ids = frozenset(s["strategy_id"] for s in matched)
+        _lc_filter, lifecycle_strategy_ids = _strategy_ids_for_lifecycle(
+            lottery_type=lottery_type,
+            lifecycle_status=lifecycle_status,
+        )
 
         # Build lifecycle lookup for response enrichment (strategy_id → lifecycle_status)
-        sys.path.insert(0, os.path.join(_api_root, "models"))
-        from models.replay_strategy_registry import get_strategy_lifecycle_status
-
         conn = _open_conn()
         try:
             where_parts = ["lottery_type = ?"]
@@ -173,7 +185,6 @@ async def get_replay_history(
             if lifecycle_strategy_ids is not None:
                 if not lifecycle_strategy_ids:
                     # No strategies match; return empty result set
-                    # P0-B: include disclaimer and data_scope even on empty payload
                     return {
                         "total":                   0,
                         "page":                    page,
@@ -181,8 +192,6 @@ async def get_replay_history(
                         "pages":                   1,
                         "filter_lifecycle_status": _lc_filter,
                         "records":                 [],
-                        "disclaimer":              _DISCLAIMER,
-                        "data_scope":              "ALL_REPLAY_ROWS",
                     }
                 placeholders = ",".join("?" * len(lifecycle_strategy_ids))
                 where_parts.append(f"strategy_id IN ({placeholders})")
@@ -227,6 +236,7 @@ async def get_replay_history(
             for r in rows:
                 records.append({
                     "id":                       r["id"],
+                    "lottery":                  r["lottery_type"],
                     "lottery_type":             r["lottery_type"],
                     "target_draw":              r["target_draw"],
                     "target_date":              r["target_date"],
@@ -245,6 +255,7 @@ async def get_replay_history(
                     "special_hit":              r["special_hit"],
                     "replay_run_id":            r["replay_run_id"],
                     "generated_at":             r["generated_at"],
+                    "lifecycle_status":         get_strategy_lifecycle_status(r["strategy_id"]),
                     # P0-C: strategy lifecycle status from registry (read-only)
                     "strategy_lifecycle_status": get_strategy_lifecycle_status(r["strategy_id"]),
                 })
@@ -272,6 +283,14 @@ async def get_replay_history(
 async def get_replay_summary(
     lottery_type: str           = Query(...),
     strategy_id:  Optional[str] = Query(None),
+    lifecycle_status: Optional[str] = Query(
+        None,
+        description=(
+            "Filter by strategy lifecycle status: "
+            "ONLINE | OFFLINE | REJECTED | OBSERVATION | RETIRED. "
+            "If omitted, all lifecycle states are included."
+        ),
+    ),
     date_from:    Optional[str] = Query(None),
     date_to:      Optional[str] = Query(None),
 ):
@@ -286,16 +305,40 @@ async def get_replay_summary(
       - non_predicted      — draws with status != PREDICTED (with breakdown)
 
     DISCLAIMER: These are historical replay statistics only.
-    They do NOT constitute a validated edge claim.
+    They do NOT constitute a validated result claim.
     """
     try:
         conn = _open_conn()
         try:
+            _lc_filter, lifecycle_strategy_ids = _strategy_ids_for_lifecycle(
+                lottery_type=lottery_type,
+                lifecycle_status=lifecycle_status,
+            )
+
             where_parts = ["lottery_type = ?"]
             params: list = [lottery_type]
             if strategy_id:
                 where_parts.append("strategy_id = ?")
                 params.append(strategy_id)
+            if lifecycle_strategy_ids is not None:
+                if not lifecycle_strategy_ids:
+                    return {
+                        "lottery_type": lottery_type,
+                        "filter":       {"strategy_id": strategy_id, "date_from": date_from, "date_to": date_to},
+                        "filter_lifecycle_status": _lc_filter,
+                        "summaries":    [],
+                        "disclaimer":   (
+                            "本摘要為歷史預測回放統計，只用於查詢與稽核；"
+                            "不代表提高中獎率，也不保證任何回放結果。"
+                        ),
+                        "data_scope":         "ALL_REPLAY_ROWS",
+                        "legacy_error_count": 0,
+                        "has_legacy_errors":  False,
+                        "scope_note":         None,
+                    }
+                placeholders = ",".join("?" * len(lifecycle_strategy_ids))
+                where_parts.append(f"strategy_id IN ({placeholders})")
+                params.extend(sorted(lifecycle_strategy_ids))
             if date_from:
                 where_parts.append("target_date >= ?")
                 params.append(date_from)
@@ -345,7 +388,7 @@ async def get_replay_summary(
 
             disclaimer = (
                 "本摘要為歷史預測回放統計，只用於查詢與稽核；"
-                "不代表提高中獎率，也不是正式 edge claim。"
+                "不代表提高中獎率，也不保證任何回放結果。"
             )
 
             # Count legacy errors for this lottery type (from FAILED_LEGACY runs only)
@@ -368,6 +411,7 @@ async def get_replay_summary(
             return {
                 "lottery_type": lottery_type,
                 "filter":       {"strategy_id": strategy_id, "date_from": date_from, "date_to": date_to},
+                "filter_lifecycle_status": _lc_filter,
                 "summaries":    summaries,
                 "disclaimer":   disclaimer,
                 "data_scope":         "ALL_REPLAY_ROWS",
@@ -490,7 +534,16 @@ def _detect_coverage_mode(notes: Optional[str]) -> str:
 
 
 @router.get("/api/replay/freshness")
-async def get_replay_freshness():
+async def get_replay_freshness(
+    lifecycle_status: Optional[str] = Query(
+        None,
+        description=(
+            "Filter by strategy lifecycle status: "
+            "ONLINE | OFFLINE | REJECTED | OBSERVATION | RETIRED. "
+            "If omitted, all lifecycle states are included."
+        ),
+    ),
+):
     """
     Returns data freshness / coverage status for the replay store.
 
@@ -606,6 +659,7 @@ async def get_replay_freshness():
             return {
                 "generated_at":          datetime.now(timezone.utc).isoformat(),
                 "coverage_mode":         global_cov_mode,
+                "filter_lifecycle_status": _normalise_lifecycle_filter(lifecycle_status),
                 "total_rows":            total_rows,
                 "total_predicted":       total_predicted,
                 "total_replay_error":    total_replay_error,

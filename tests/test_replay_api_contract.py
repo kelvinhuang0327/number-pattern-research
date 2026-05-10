@@ -52,24 +52,31 @@ def _run(coro):
 # Wrappers that explicitly supply None for all optional FastAPI Query params
 # (direct calls do not go through FastAPI's dependency injection)
 
-def _freshness():
-    return _run(get_replay_freshness())
+def _freshness(lifecycle_status: str | None = None):
+    return _run(get_replay_freshness(lifecycle_status=lifecycle_status))
 
 
-def _summary(lottery_type: str):
+def _summary(lottery_type: str, lifecycle_status: str | None = None):
     return _run(get_replay_summary(
         lottery_type=lottery_type,
         strategy_id=None,
+        lifecycle_status=lifecycle_status,
         date_from=None,
         date_to=None,
     ))
 
 
-def _history(lottery_type: str, page: int = 1, page_size: int = 50):
+def _history(
+    lottery_type: str,
+    page: int = 1,
+    page_size: int = 50,
+    lifecycle_status: str | None = None,
+):
     return _run(get_replay_history(
         lottery_type=lottery_type,
         strategy_id=None,
         replay_status=None,
+        lifecycle_status=lifecycle_status,
         date_from=None,
         date_to=None,
         page=page,
@@ -172,8 +179,23 @@ def _check_history_contract(data: Dict[str, Any]) -> None:
 
     assert isinstance(data["records"], list), "history: records must be a list"
 
+    for field in ("filter_lifecycle_status",):
+        assert field in data, f"history: required field missing: {field!r}"
+
     for rec in data["records"]:
-        for sub in ("target_draw", "history_cutoff"):
+        for sub in (
+            "lottery",
+            "target_draw",
+            "target_date",
+            "strategy_id",
+            "lifecycle_status",
+            "predicted_numbers",
+            "actual_numbers",
+            "hit_numbers",
+            "hit_count",
+            "replay_status",
+            "history_cutoff",
+        ):
             assert sub in rec, (
                 f"history: record id={rec.get('id')} missing required field {sub!r}"
             )
@@ -231,6 +253,12 @@ class TestFreshnessContract:
         with pytest.raises(AssertionError, match="legacy_error_count"):
             _check_freshness_contract(stripped)
 
+    @pytest.mark.parametrize("lifecycle_status", ["OFFLINE", "REJECTED", "OBSERVATION", "RETIRED"])
+    def test_freshness_accepts_lifecycle_filter(self, lifecycle_status):
+        data = _freshness(lifecycle_status=lifecycle_status)
+        assert isinstance(data, dict)
+        assert data.get("filter_lifecycle_status") == lifecycle_status
+
 
 # ── Summary tests ─────────────────────────────────────────────────────────────
 
@@ -269,6 +297,13 @@ class TestSummaryContract:
         stripped = {k: v for k, v in data.items() if k != "data_scope"}
         with pytest.raises(AssertionError, match="data_scope"):
             _check_summary_contract(stripped)
+
+    @pytest.mark.parametrize("lifecycle_status", ["OFFLINE", "REJECTED", "OBSERVATION", "RETIRED"])
+    def test_summary_accepts_lifecycle_filter(self, lifecycle_status):
+        data = _summary("BIG_LOTTO", lifecycle_status=lifecycle_status)
+        assert isinstance(data, dict)
+        assert data.get("filter_lifecycle_status") == lifecycle_status
+        _check_summary_contract(data)
 
 
 # ── History tests ─────────────────────────────────────────────────────────────
@@ -313,3 +348,14 @@ class TestHistoryContract:
     def test_history_all_lottery_types_respond(self):
         for lt in ("BIG_LOTTO", "POWER_LOTTO", "DAILY_539"):
             _check_history_contract(_history(lt))
+
+    @pytest.mark.parametrize("lifecycle_status", ["OFFLINE", "REJECTED", "OBSERVATION", "RETIRED"])
+    def test_history_accepts_lifecycle_filter(self, lifecycle_status):
+        data = _history("BIG_LOTTO", lifecycle_status=lifecycle_status)
+        assert isinstance(data, dict)
+        assert data.get("filter_lifecycle_status") == lifecycle_status
+        _check_history_contract(data)
+        if data["records"]:
+            rec = data["records"][0]
+            assert rec["lifecycle_status"] == lifecycle_status
+            assert rec["lottery"] == rec["lottery_type"]

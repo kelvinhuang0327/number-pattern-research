@@ -47,6 +47,8 @@ if _api_root not in sys.path:
 
 router = APIRouter()
 logger = logging.getLogger(__name__)
+_FIXTURE_HISTORY_PATH = Path(_api_root).parent / "outputs" / "replay" / "non_online_replay_fixture_20260511.json"
+_FIXTURE_SOURCE = "synthetic_fixture"
 
 # Conservative disclaimer used by all replay endpoints
 _DISCLAIMER = (
@@ -89,6 +91,141 @@ def _strategy_ids_for_lifecycle(
         lifecycle_status=canonical_lc,
     )
     return canonical_lc, frozenset(s["strategy_id"] for s in matched)
+
+
+def _load_fixture_history_payload() -> dict:
+    if not _FIXTURE_HISTORY_PATH.exists():
+        raise HTTPException(
+            status_code=500,
+            detail=f"fixture history artifact not found: {_FIXTURE_HISTORY_PATH}",
+        )
+    try:
+        with _FIXTURE_HISTORY_PATH.open("r", encoding="utf-8") as handle:
+            payload = json.load(handle)
+    except json.JSONDecodeError as exc:
+        raise HTTPException(
+            status_code=500,
+            detail=f"fixture history artifact is invalid JSON: {exc}",
+        ) from exc
+    if not isinstance(payload, dict):
+        raise HTTPException(
+            status_code=500,
+            detail="fixture history artifact must be a JSON object",
+        )
+    return payload
+
+
+def _fixture_history_record(
+    raw_record: dict,
+    *,
+    fixture_version: str,
+    generated_at: Optional[str],
+    row_id: int,
+) -> dict:
+    prediction = raw_record.get("prediction_payload") or {}
+    actual = raw_record.get("actual_result_payload") or {}
+    comparison = raw_record.get("comparison_result") or {}
+    lifecycle_status = raw_record.get("lifecycle_status") or "UNKNOWN"
+    fixture_row_id = raw_record.get("fixture_row_id") or f"fixture-row-{row_id}"
+
+    return {
+        "id": row_id,
+        "lottery": raw_record.get("lottery_type") or "UNKNOWN",
+        "lottery_type": raw_record.get("lottery_type") or "UNKNOWN",
+        "target_draw": raw_record.get("draw_id") or fixture_row_id,
+        "target_date": raw_record.get("draw_date"),
+        "strategy_id": raw_record.get("strategy_id") or fixture_row_id,
+        "strategy_name": raw_record.get("strategy_id") or fixture_row_id,
+        "strategy_version": fixture_version,
+        "history_cutoff": None,
+        "replay_status": "PREDICTED",
+        "reject_reason": None,
+        "predicted_numbers": prediction.get("numbers") or [],
+        "predicted_special": None,
+        "actual_numbers": actual.get("numbers") or [],
+        "actual_special": None,
+        "hit_numbers": comparison.get("matched_numbers") or [],
+        "hit_count": int(comparison.get("hit_count") or 0),
+        "special_hit": 0,
+        "replay_run_id": fixture_row_id,
+        "generated_at": generated_at,
+        "lifecycle_status": lifecycle_status,
+        "strategy_lifecycle_status": lifecycle_status,
+        "fixture_mode": True,
+        "source": _FIXTURE_SOURCE,
+        "advisory_only": True,
+        "production_db_write": False,
+        "synthetic_only": True,
+        "fixture_only": True,
+        "fixture_source": raw_record.get("fixture_source") or "non_online_lifecycle_fixture",
+        "governance_marker": raw_record.get("governance_marker") or "P21_NON_ONLINE_FIXTURE_ROW",
+    }
+
+
+def _fixture_history_response(
+    *,
+    lifecycle_status: Optional[str],
+    strategy_id: Optional[str],
+    replay_status: Optional[str],
+    date_from: Optional[str],
+    date_to: Optional[str],
+    page: int,
+    page_size: int,
+) -> dict:
+    payload = _load_fixture_history_payload()
+    canonical_lc = _normalise_lifecycle_filter(lifecycle_status)
+    fixture_version = str(payload.get("fixture_version") or "fixture")
+    generated_at = payload.get("generated_at")
+
+    records = []
+    for raw_record in payload.get("records", []):
+        record_lc = raw_record.get("lifecycle_status") or "UNKNOWN"
+        if canonical_lc and record_lc != canonical_lc:
+            continue
+        if strategy_id and raw_record.get("strategy_id") != strategy_id:
+            continue
+        if replay_status and replay_status != "PREDICTED":
+            continue
+        draw_date = raw_record.get("draw_date") or ""
+        if date_from and draw_date < date_from:
+            continue
+        if date_to and draw_date > date_to:
+            continue
+        records.append(
+            _fixture_history_record(
+                raw_record,
+                fixture_version=fixture_version,
+                generated_at=generated_at,
+                row_id=len(records) + 1,
+            )
+        )
+
+    total = len(records)
+    pages = max(1, (total + page_size - 1) // page_size)
+    offset = (page - 1) * page_size
+    page_records = records[offset: offset + page_size]
+
+    return {
+        "total": total,
+        "page": page,
+        "page_size": page_size,
+        "pages": pages,
+        "filter_lifecycle_status": canonical_lc,
+        "fixture_mode": True,
+        "source": _FIXTURE_SOURCE,
+        "advisory_only": True,
+        "production_db_write": False,
+        "synthetic_only": True,
+        "fixture_only": True,
+        "fixture_name": payload.get("fixture_name"),
+        "fixture_version": fixture_version,
+        "generated_at": generated_at,
+        "records": page_records,
+        "disclaimer": (
+            _DISCLAIMER
+            + " 此模式回傳合成 fixture，僅供驗收與 UI bridge 驗證，不代表真實預測。"
+        ),
+    }
 
 
 # ─── Strategy listing ─────────────────────────────────────────────────────────
@@ -200,6 +337,10 @@ async def get_replay_history(
             "If omitted, all lifecycle states are included."
         ),
     ),
+        fixture_mode:     bool           = Query(
+            False,
+            description="Read synthetic fixture replay rows instead of the production DB.",
+        ),
     date_from:        Optional[str]  = Query(None),
     date_to:          Optional[str]  = Query(None),
     page:             int            = Query(1, ge=1),
@@ -219,6 +360,17 @@ async def get_replay_history(
     READ-ONLY. Does NOT trigger replay generation.
     """
     try:
+        if fixture_mode:
+            return _fixture_history_response(
+                lifecycle_status=lifecycle_status,
+                strategy_id=strategy_id,
+                replay_status=replay_status,
+                date_from=date_from,
+                date_to=date_to,
+                page=page,
+                page_size=page_size,
+            )
+
         # Resolve lifecycle_status filter → strategy_id set (P0-C)
         _lc_filter, lifecycle_strategy_ids = _strategy_ids_for_lifecycle(
             lottery_type=lottery_type,

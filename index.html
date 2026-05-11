@@ -2007,6 +2007,9 @@
                 <span id="rp-total-label" style="font-size:12px;color:#888;margin-left:auto"></span>
               </div>
               <div class="card-body" style="overflow-x:auto">
+                                <div id="rp-fixture-banner" style="display:none;margin-bottom:10px;padding:8px 12px;border-radius:6px;border:1px solid rgba(210,153,34,.35);background:rgba(210,153,34,.08);color:#e3b341;font-size:12px;font-weight:700">
+                                    ⚠ FIXTURE MODE — 合成資料、僅供驗收，不代表真實預測
+                                </div>
                 <table class="data-table" style="width:100%">
                   <thead>
                     <tr>
@@ -2678,6 +2681,13 @@
   let rpTotal = 0;
   let rpPages = 1;
     let rpLifecycleRegistryRows = [];
+    let rpFixtureMode = false;
+
+    function rpSetFixtureModeBanner(active) {
+        const banner = document.getElementById('rp-fixture-banner');
+        if (!banner) return;
+        banner.style.display = active ? '' : 'none';
+    }
 
   // Populate strategy dropdown when lottery or lifecycle changes
   async function rpLoadStrategies() {
@@ -2917,6 +2927,7 @@
       if (status) params.set('rp_status', status);
       if (df)     params.set('rp_df', df);
       if (dt)     params.set('rp_dt', dt);
+            if (rpFixtureMode) params.set('rp_fixture_mode', 'true');
       if (rpPage > 1) params.set('rp_page', rpPage);
       history.replaceState(null, '', '?' + params.toString());
     } catch (e) { /* URL update is non-critical */ }
@@ -2928,12 +2939,16 @@
       const params      = new URLSearchParams(window.location.search);
       const validLT     = ['BIG_LOTTO', 'POWER_LOTTO', 'DAILY_539'];
       const validLC     = ['ONLINE','OFFLINE','REJECTED','OBSERVATION','RETIRED'];
+            const validFixtureMode = ['true', '1', 'yes'];
       const validStatus = ['PREDICTED','REJECTED','INSUFFICIENT_HISTORY','REPLAY_ERROR','INVALID_OUTPUT','STRATEGY_UNAVAILABLE'];
       const lt = params.get('rp_lt');
       if (lt && validLT.includes(lt)) document.getElementById('rp-lottery-select').value = lt;
       const lc = params.get('rp_lc');
       const lcSel = document.getElementById('rp-lifecycle-select');
       if (lc && validLC.includes(lc) && lcSel) lcSel.value = lc;
+            const fixtureMode = params.get('rp_fixture_mode');
+            rpFixtureMode = !!(fixtureMode && validFixtureMode.includes(String(fixtureMode).toLowerCase()));
+            rpSetFixtureModeBanner(rpFixtureMode);
       const status = params.get('rp_status');
       if (status && validStatus.includes(status)) document.getElementById('rp-status-select').value = status;
       const df = params.get('rp_df');
@@ -2972,9 +2987,12 @@
     if (status) url += `&replay_status=${encodeURIComponent(status)}`;
     if (df)     url += `&date_from=${df}`;
     if (dt)     url += `&date_to=${dt}`;
+        if (rpFixtureMode) url += `&fixture_mode=true`;
 
     const tbody = document.getElementById('rp-hist-body');
     tbody.innerHTML = '<tr><td colspan="9" style="text-align:center;color:#888">載入中…</td></tr>';
+
+        rpSetFixtureModeBanner(rpFixtureMode);
 
     rpUpdateURL();
 
@@ -2982,6 +3000,8 @@
       const res = await fetch(url);
       if (!res.ok) throw new Error(`HTTP ${res.status}`);
       const data = await res.json();
+    const fixtureActive = rpFixtureMode || data.fixture_mode === true || data.advisory_only === true || data.source === 'synthetic_fixture';
+    rpSetFixtureModeBanner(fixtureActive);
       rpTotal = data.total || 0;
       rpPages = data.pages || 1;
       document.getElementById('rp-total-label').textContent = `共 ${rpTotal} 筆`;

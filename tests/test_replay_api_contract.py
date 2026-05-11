@@ -71,12 +71,14 @@ def _history(
     page: int = 1,
     page_size: int = 50,
     lifecycle_status: str | None = None,
+    fixture_mode: bool = False,
 ):
     return _run(get_replay_history(
         lottery_type=lottery_type,
         strategy_id=None,
         replay_status=None,
         lifecycle_status=lifecycle_status,
+        fixture_mode=fixture_mode,
         date_from=None,
         date_to=None,
         page=page,
@@ -359,3 +361,62 @@ class TestHistoryContract:
             rec = data["records"][0]
             assert rec["lifecycle_status"] == lifecycle_status
             assert rec["lottery"] == rec["lottery_type"]
+
+
+class TestHistoryFixtureModeContract:
+    def test_fixture_history_returns_dict(self):
+        assert isinstance(_history("BIG_LOTTO", fixture_mode=True), dict)
+
+    @pytest.mark.parametrize(
+        "lifecycle_status, expected_count",
+        [
+            ("REJECTED", 4),
+            ("RETIRED", 5),
+            ("OBSERVATION", 1),
+        ],
+    )
+    def test_fixture_history_counts_and_flags(self, lifecycle_status, expected_count):
+        data = _history("BIG_LOTTO", lifecycle_status=lifecycle_status, fixture_mode=True)
+        _check_history_contract(data)
+        assert data["total"] == expected_count
+        assert len(data["records"]) == expected_count
+        assert data["fixture_mode"] is True
+        assert data["source"] == "synthetic_fixture"
+        assert data["advisory_only"] is True
+        assert data["production_db_write"] is False
+        assert data["filter_lifecycle_status"] == lifecycle_status
+        for record in data["records"]:
+            assert record["source"] == "synthetic_fixture"
+            assert record["advisory_only"] is True
+            assert record["production_db_write"] is False
+            assert record["fixture_mode"] is True
+            assert record["lifecycle_status"] == lifecycle_status
+
+    def test_fixture_history_uses_synthetic_source(self):
+        data = _history("BIG_LOTTO", lifecycle_status="RETIRED", fixture_mode=True)
+        first = data["records"][0]
+        assert first["replay_status"] == "PREDICTED"
+        assert first["target_draw"]
+        assert first["strategy_version"] == "p21_20260511"
+        assert first["fixture_source"] == "non_online_lifecycle_fixture"
+
+    def test_fixture_history_does_not_return_db_marker(self):
+        data = _history("BIG_LOTTO", lifecycle_status="REJECTED", fixture_mode=True)
+        assert data.get("source") == "synthetic_fixture"
+        assert data.get("advisory_only") is True
+        assert data.get("production_db_write") is False
+
+    def test_fixture_history_rejects_non_predicted_replay_status_filter(self):
+        data = _run(get_replay_history(
+            lottery_type="BIG_LOTTO",
+            strategy_id=None,
+            replay_status="REPLAY_ERROR",
+            lifecycle_status="REJECTED",
+            fixture_mode=True,
+            date_from=None,
+            date_to=None,
+            page=1,
+            page_size=50,
+        ))
+        assert data["total"] == 0
+        assert data["records"] == []

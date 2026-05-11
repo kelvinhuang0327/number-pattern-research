@@ -1,0 +1,349 @@
+{
+  "fixture_name": "non_online_lifecycle_replay_fixture",
+  "fixture_version": "p21_20260511",
+  "synthetic_only": true,
+  "fixture_only": true,
+  "source": "non_online_lifecycle_fixture",
+  "production_db_write": false,
+  "backfill": false,
+  "promotion_action": false,
+  "generated_at": "2026-05-11T00:00:00Z",
+  "strategy_count": 10,
+  "records": [
+    {
+      "strategy_id": "h6_gate_mk20_ew85",
+      "lottery_type": "UNKNOWN",
+      "lifecycle_status": "OBSERVATION",
+      "fixture_row_id": "fixture-h6_gate_mk20_ew85-092f630634bf",
+      "draw_id": "fixture-draw-092f6306",
+      "draw_date": "2026-05-11",
+      "prediction_payload": {
+        "numbers": [
+          9,
+          10,
+          22
+        ],
+        "note": "Synthetic fixture prediction only. Not a production replay row."
+      },
+      "actual_result_payload": {
+        "numbers": [
+          7,
+          14,
+          36
+        ],
+        "note": "Synthetic fixture result only. Not sourced from production DB."
+      },
+      "comparison_result": {
+        "hit_count": 0,
+        "matched_numbers": [],
+        "edge_claim": false
+      },
+      "synthetic_only": true,
+      "fixture_only": true,
+      "fixture_source": "non_online_lifecycle_fixture",
+      "governance_marker": "P21_NON_ONLINE_FIXTURE_ROW"
+    },
+    {
+      "strategy_id": "biglotto_ts3_acb_4bet",
+      "lottery_type": "UNKNOWN",
+      "lifecycle_status": "REJECTED",
+      "fixture_row_id": "fixture-biglotto_ts3_acb_4bet-3d55f1f95304",
+      "draw_id": "fixture-draw-3d55f1f9",
+      "draw_date": "2026-05-11",
+      "prediction_payload": {
+        "numbers": [
+          8,
+          23
+        ],
+        "note": "Synthetic fixture prediction only. Not a production replay row."
+      },
+      "actual_result_payload": {
+        "numbers": [
+          5,
+          6,
+          16
+        ],
+        "note": "Synthetic fixture result only. Not sourced from production DB."
+      },
+      "comparison_result": {
+        "hit_count": 0,
+        "matched_numbers": [],
+        "edge_claim": false
+      },
+      "synthetic_only": true,
+      "fixture_only": true,
+      "fixture_source": "non_online_lifecycle_fixture",
+      "governance_marker": "P21_NON_ONLINE_FIXTURE_ROW"
+    },
+    {
+      "strategy_id": "biglotto_ts3_markov_freq_5bet",
+      "lottery_type": "UNKNOWN",
+      "lifecycle_status": "REJECTED",
+      "fixture_row_id": "fixture-biglotto_ts3_markov_freq_5bet-8ac8d7994b56",
+      "draw_id": "fixture-draw-8ac8d799",
+      "draw_date": "2026-05-11",
+      "prediction_payload": {
+        "numbers": [
+          6,
+          21,
+          22
+        ],
+        "note": "Synthetic fixture prediction only. Not a production replay row."
+      },
+      "actual_result_payload": {
+        "numbers": [
+          9,
+          37
+        ],
+        "note": "Synthetic fixture result only. Not sourced from production DB."
+      },
+      "comparison_result": {
+        "hit_count": 0,
+        "matched_numbers": [],
+        "edge_claim": false
+      },
+      "synthetic_only": true,
+      "fixture_only": true,
+      "fixture_source": "non_online_lifecycle_fixture",
+      "governance_marker": "P21_NON_ONLINE_FIXTURE_ROW"
+    },
+    {
+      "strategy_id": "p1_deviation_2bet_539",
+      "lottery_type": "UNKNOWN",
+      "lifecycle_status": "REJECTED",
+      "fixture_row_id": "fixture-p1_deviation_2bet_539-8fdb4d7e226f",
+      "draw_id": "fixture-draw-8fdb4d7e",
+      "draw_date": "2026-05-11",
+      "prediction_payload": {
+        "numbers": [
+          25,
+          27,
+          39
+        ],
+        "note": "Synthetic fixture prediction only. Not a production replay row."
+      },
+      "actual_result_payload": {
+        "numbers": [
+          10,
+          34,
+          35
+        ],
+        "note": "Synthetic fixture result only. Not sourced from production DB."
+      },
+      "comparison_result": {
+        "hit_count": 0,
+        "matched_numbers": [],
+        "edge_claim": false
+      },
+      "synthetic_only": true,
+      "fixture_only": true,
+      "fixture_source": "non_online_lifecycle_fixture",
+      "governance_marker": "P21_NON_ONLINE_FIXTURE_ROW"
+    },
+    {
+      "strategy_id": "power_shlc_midfreq",
+      "lottery_type": "UNKNOWN",
+      "lifecycle_status": "REJECTED",
+      "fixture_row_id": "fixture-power_shlc_midfreq-b4a8d181e662",
+      "draw_id": "fixture-draw-b4a8d181",
+      "draw_date": "2026-05-11",
+      "prediction_payload": {
+        "numbers": [
+          13,
+          15,
+          25
+        ],
+        "note": "Synthetic fixture prediction only. Not a production replay row."
+      },
+      "actual_result_payload": {
+        "numbers": [
+          13,
+          21,
+          36
+        ],
+        "note": "Synthetic fixture result only. Not sourced from production DB."
+      },
+      "comparison_result": {
+        "hit_count": 1,
+        "matched_numbers": [
+          13
+        ],
+        "edge_claim": false
+      },
+      "synthetic_only": true,
+      "fixture_only": true,
+      "fixture_source": "non_online_lifecycle_fixture",
+      "governance_marker": "P21_NON_ONLINE_FIXTURE_ROW"
+    },
+    {
+      "strategy_id": "acb_1bet",
+      "lottery_type": "UNKNOWN",
+      "lifecycle_status": "RETIRED",
+      "fixture_row_id": "fixture-acb_1bet-c923f4f760e1",
+      "draw_id": "fixture-draw-c923f4f7",
+      "draw_date": "2026-05-11",
+      "prediction_payload": {
+        "numbers": [
+          7,
+          11,
+          36
+        ],
+        "note": "Synthetic fixture prediction only. Not a production replay row."
+      },
+      "actual_result_payload": {
+        "numbers": [
+          14,
+          19,
+          31
+        ],
+        "note": "Synthetic fixture result only. Not sourced from production DB."
+      },
+      "comparison_result": {
+        "hit_count": 0,
+        "matched_numbers": [],
+        "edge_claim": false
+      },
+      "synthetic_only": true,
+      "fixture_only": true,
+      "fixture_source": "non_online_lifecycle_fixture",
+      "governance_marker": "P21_NON_ONLINE_FIXTURE_ROW"
+    },
+    {
+      "strategy_id": "acb_markov_midfreq",
+      "lottery_type": "UNKNOWN",
+      "lifecycle_status": "RETIRED",
+      "fixture_row_id": "fixture-acb_markov_midfreq-b94847b2b553",
+      "draw_id": "fixture-draw-b94847b2",
+      "draw_date": "2026-05-11",
+      "prediction_payload": {
+        "numbers": [
+          30,
+          33,
+          34
+        ],
+        "note": "Synthetic fixture prediction only. Not a production replay row."
+      },
+      "actual_result_payload": {
+        "numbers": [
+          6,
+          23,
+          26
+        ],
+        "note": "Synthetic fixture result only. Not sourced from production DB."
+      },
+      "comparison_result": {
+        "hit_count": 0,
+        "matched_numbers": [],
+        "edge_claim": false
+      },
+      "synthetic_only": true,
+      "fixture_only": true,
+      "fixture_source": "non_online_lifecycle_fixture",
+      "governance_marker": "P21_NON_ONLINE_FIXTURE_ROW"
+    },
+    {
+      "strategy_id": "acb_markov_midfreq_3bet",
+      "lottery_type": "UNKNOWN",
+      "lifecycle_status": "RETIRED",
+      "fixture_row_id": "fixture-acb_markov_midfreq_3bet-6dacdd38776c",
+      "draw_id": "fixture-draw-6dacdd38",
+      "draw_date": "2026-05-11",
+      "prediction_payload": {
+        "numbers": [
+          17,
+          27,
+          32
+        ],
+        "note": "Synthetic fixture prediction only. Not a production replay row."
+      },
+      "actual_result_payload": {
+        "numbers": [
+          3,
+          18,
+          31
+        ],
+        "note": "Synthetic fixture result only. Not sourced from production DB."
+      },
+      "comparison_result": {
+        "hit_count": 0,
+        "matched_numbers": [],
+        "edge_claim": false
+      },
+      "synthetic_only": true,
+      "fixture_only": true,
+      "fixture_source": "non_online_lifecycle_fixture",
+      "governance_marker": "P21_NON_ONLINE_FIXTURE_ROW"
+    },
+    {
+      "strategy_id": "midfreq_acb_2bet",
+      "lottery_type": "UNKNOWN",
+      "lifecycle_status": "RETIRED",
+      "fixture_row_id": "fixture-midfreq_acb_2bet-ac4813d7dab8",
+      "draw_id": "fixture-draw-ac4813d7",
+      "draw_date": "2026-05-11",
+      "prediction_payload": {
+        "numbers": [
+          17,
+          20,
+          34
+        ],
+        "note": "Synthetic fixture prediction only. Not a production replay row."
+      },
+      "actual_result_payload": {
+        "numbers": [
+          21,
+          24,
+          29
+        ],
+        "note": "Synthetic fixture result only. Not sourced from production DB."
+      },
+      "comparison_result": {
+        "hit_count": 0,
+        "matched_numbers": [],
+        "edge_claim": false
+      },
+      "synthetic_only": true,
+      "fixture_only": true,
+      "fixture_source": "non_online_lifecycle_fixture",
+      "governance_marker": "P21_NON_ONLINE_FIXTURE_ROW"
+    },
+    {
+      "strategy_id": "midfreq_fourier_2bet",
+      "lottery_type": "UNKNOWN",
+      "lifecycle_status": "RETIRED",
+      "fixture_row_id": "fixture-midfreq_fourier_2bet-e517c78f3024",
+      "draw_id": "fixture-draw-e517c78f",
+      "draw_date": "2026-05-11",
+      "prediction_payload": {
+        "numbers": [
+          5,
+          24,
+          35
+        ],
+        "note": "Synthetic fixture prediction only. Not a production replay row."
+      },
+      "actual_result_payload": {
+        "numbers": [
+          10,
+          27,
+          37
+        ],
+        "note": "Synthetic fixture result only. Not sourced from production DB."
+      },
+      "comparison_result": {
+        "hit_count": 0,
+        "matched_numbers": [],
+        "edge_claim": false
+      },
+      "synthetic_only": true,
+      "fixture_only": true,
+      "fixture_source": "non_online_lifecycle_fixture",
+      "governance_marker": "P21_NON_ONLINE_FIXTURE_ROW"
+    }
+  ],
+  "markers": [
+    "P21_NON_ONLINE_FIXTURE_ARTIFACT_READY",
+    "P21_NO_DB_WRITE_NO_BACKFILL_CONFIRMED",
+    "P21_NO_PROMOTION_ACTION_CONFIRMED"
+  ]
+}

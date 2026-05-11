@@ -613,3 +613,163 @@ class TestReplayBrowserSmoke:
                     f"Forbidden token '{token}' found in replay section in "
                     f"non-negation context:\n  ...{context_line}..."
                 )
+
+
+# ======================================================================= #
+# P23 — Fixture Mode UI Toggle Static Tests                                #
+# ======================================================================= #
+
+class TestP23FixtureModeToggle:
+    """P23 static tests: verify toggle button, label, helper text, URL wiring."""
+
+    @pytest.fixture(autouse=True)
+    def _load(self):
+        self.html = _load_html()
+        self.section = _replay_section(self.html)
+
+    # T-P23-S01 — toggle button element exists
+    def test_fixture_toggle_button_exists(self):
+        """rp-fixture-toggle button must exist in index.html."""
+        assert 'id="rp-fixture-toggle"' in self.html, (
+            "rp-fixture-toggle button not found in index.html"
+        )
+
+    # T-P23-S02 — toggle data-testid attribute exists
+    def test_fixture_toggle_testid_exists(self):
+        """data-testid=rp-fixture-toggle must be present for test targeting."""
+        assert 'data-testid="rp-fixture-toggle"' in self.html, (
+            "data-testid=rp-fixture-toggle not found"
+        )
+
+    # T-P23-S03 — toggle label contains "Fixture Mode"
+    def test_fixture_toggle_label_contains_fixture_mode(self):
+        """A label for the toggle must contain 'Fixture Mode'."""
+        assert 'Fixture Mode' in self.html, (
+            "Label 'Fixture Mode' not found near toggle button"
+        )
+
+    # T-P23-S04 — FIXTURE MODE banner element exists (pre-existing, regression)
+    def test_fixture_mode_banner_element_exists(self):
+        """rp-fixture-banner element must still exist."""
+        assert 'id="rp-fixture-banner"' in self.html, (
+            "rp-fixture-banner element missing"
+        )
+
+    # T-P23-S05 — banner text contains advisory warning
+    def test_fixture_mode_banner_text_contains_advisory(self):
+        """Banner must contain advisory-only warning text."""
+        assert '合成資料' in self.html or 'advisory only' in self.html.lower(), (
+            "Advisory warning text not found in fixture mode banner"
+        )
+
+    # T-P23-S06 — tooltip contains safety description
+    def test_fixture_toggle_tooltip_contains_advisory(self):
+        """Toggle title tooltip must mention advisory / no production DB write."""
+        # Look for title attribute on the toggle button
+        m = re.search(r'id="rp-fixture-toggle"[^>]*title="([^"]*)"', self.html)
+        if not m:
+            # Try reversed attribute order
+            m = re.search(r'title="([^"]*)"[^>]*id="rp-fixture-toggle"', self.html)
+        assert m is not None, "rp-fixture-toggle has no title tooltip attribute"
+        tooltip = m.group(1).lower()
+        assert 'advisory' in tooltip or 'no production' in tooltip or 'synthetic' in tooltip, (
+            f"Tooltip does not mention advisory/synthetic/no production DB write: {tooltip}"
+        )
+
+    # T-P23-S07 — aria-pressed attribute exists on toggle
+    def test_fixture_toggle_has_aria_pressed(self):
+        """Toggle must have aria-pressed for accessibility."""
+        assert 'aria-pressed=' in self.html, (
+            "rp-fixture-toggle missing aria-pressed attribute"
+        )
+
+    # T-P23-S08 — rpToggleFixtureMode function exists in JS
+    def test_rp_toggle_fixture_mode_function_exists(self):
+        """rpToggleFixtureMode JS function must be defined."""
+        assert 'function rpToggleFixtureMode' in self.html, (
+            "rpToggleFixtureMode function not found in index.html JS"
+        )
+
+    # T-P23-S09 — rpSyncFixtureModeToggle function exists in JS
+    def test_rp_sync_fixture_mode_toggle_function_exists(self):
+        """rpSyncFixtureModeToggle JS function must be defined."""
+        assert 'function rpSyncFixtureModeToggle' in self.html, (
+            "rpSyncFixtureModeToggle function not found in index.html JS"
+        )
+
+    # T-P23-S10 — toggle wired in DOMContentLoaded
+    def test_fixture_toggle_wired_in_dom_content_loaded(self):
+        """rp-fixture-toggle must be wired via addEventListener in DOMContentLoaded."""
+        assert "fixtureToggleBtn.addEventListener('click', rpToggleFixtureMode)" in self.html or \
+               'fixtureToggleBtn.addEventListener("click", rpToggleFixtureMode)' in self.html, (
+            "rp-fixture-toggle click event not wired in DOMContentLoaded"
+        )
+
+    # T-P23-S11 — rpSyncFixtureModeToggle called after rpRestoreFromURL
+    def test_sync_toggle_called_after_restore_from_url(self):
+        """rpSyncFixtureModeToggle must be called after rpRestoreFromURL in init."""
+        # Find the DOMContentLoaded block (last occurrence, which is the init block)
+        dom_block_pos = self.html.rfind('DOMContentLoaded')
+        assert dom_block_pos != -1, "DOMContentLoaded block not found"
+        dom_block = self.html[dom_block_pos:]
+        restore_pos = dom_block.find('rpRestoreFromURL()')
+        sync_pos = dom_block.find('rpSyncFixtureModeToggle()')
+        assert restore_pos != -1, "rpRestoreFromURL() not found in DOMContentLoaded"
+        assert sync_pos != -1, "rpSyncFixtureModeToggle() not found in DOMContentLoaded"
+        assert sync_pos > restore_pos, (
+            "rpSyncFixtureModeToggle() must be called AFTER rpRestoreFromURL() in DOMContentLoaded"
+        )
+
+    # T-P23-S12 — URL state updated on toggle (rp_fixture_mode written)
+    def test_rp_fixture_mode_url_state_written_on_toggle(self):
+        """rpToggleFixtureMode must write rp_fixture_mode to URL."""
+        assert "params.set('rp_fixture_mode', 'true')" in self.html or \
+               'params.set("rp_fixture_mode", "true")' in self.html, (
+            "rp_fixture_mode=true not written to URL in rpToggleFixtureMode"
+        )
+
+    # T-P23-S13 — toggle OFF removes rp_fixture_mode from URL
+    def test_rp_fixture_mode_url_state_deleted_on_toggle_off(self):
+        """rpToggleFixtureMode must delete rp_fixture_mode from URL when OFF."""
+        assert "params.delete('rp_fixture_mode')" in self.html or \
+               'params.delete("rp_fixture_mode")' in self.html, (
+            "rp_fixture_mode not deleted from URL when toggle is OFF"
+        )
+
+    # T-P23-S14 — fixture_mode=true still passed to API (regression)
+    def test_fixture_mode_true_passed_to_api(self):
+        """fixture_mode=true must still be passed to API when rpFixtureMode is active."""
+        assert 'fixture_mode=true' in self.html, (
+            "fixture_mode=true not found in API query logic"
+        )
+
+    # T-P23-S15 — no OFFLINE filter added
+    def test_no_offline_filter_added(self):
+        """No OFFLINE-specific fixture filter or OFFLINE fixture records must be added."""
+        # Extract only the rpToggleFixtureMode function body
+        m = re.search(
+            r'function rpToggleFixtureMode\(\)\s*\{([^}]*)\}',
+            self.html, re.DOTALL
+        )
+        if m:
+            toggle_body = m.group(1)
+            assert 'OFFLINE' not in toggle_body, (
+                "OFFLINE found inside rpToggleFixtureMode body — must never be a fixture type"
+            )
+        # Verify fixture_mode param is still only wired to existing endpoint
+        assert 'fixture_mode=true' in self.html, (
+            "fixture_mode=true must still be passed to API"
+        )
+
+    # T-P23-S16 — no new backend API added in toggle
+    def test_no_new_api_endpoint_in_toggle(self):
+        """Toggle must only call existing /api/replay endpoints, not new ones."""
+        toggle_func_match = re.search(
+            r'function rpToggleFixtureMode\(\)[^}]*\}', self.html, re.DOTALL
+        )
+        if toggle_func_match:
+            toggle_code = toggle_func_match.group(0)
+            assert 'fetch(' not in toggle_code, (
+                "rpToggleFixtureMode must not make new fetch() calls — "
+                "it only updates state + URL"
+            )

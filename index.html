@@ -2045,6 +2045,48 @@
                     <span id="rp-lc-badge-obs"      style="padding:2px 10px;border-radius:12px;font-size:12px;font-weight:600;background:#7d5a00;color:#fff">OBS 0</span>
                   </div>
                 </div>
+                                <div style="display:flex;flex-wrap:wrap;gap:10px 12px;align-items:flex-end;margin-bottom:10px">
+                                    <label style="display:flex;flex-direction:column;gap:4px;font-size:11px;color:#8b949e">
+                                        <span>生命週期</span>
+                                        <select id="rp-lc-filter-status" class="form-control" style="min-width:130px">
+                                            <option value="">全部</option>
+                                            <option value="ONLINE">ONLINE</option>
+                                            <option value="OFFLINE">OFFLINE</option>
+                                            <option value="REJECTED">REJECTED</option>
+                                            <option value="OBSERVATION">OBSERVATION</option>
+                                            <option value="RETIRED">RETIRED</option>
+                                        </select>
+                                    </label>
+                                    <label style="display:flex;flex-direction:column;gap:4px;font-size:11px;color:#8b949e">
+                                        <span>彩種</span>
+                                        <select id="rp-lc-filter-lottery" class="form-control" style="min-width:130px">
+                                            <option value="">全部</option>
+                                            <option value="BIG_LOTTO">BIG_LOTTO</option>
+                                            <option value="POWER_LOTTO">POWER_LOTTO</option>
+                                            <option value="DAILY_539">DAILY_539</option>
+                                        </select>
+                                    </label>
+                                    <label style="display:flex;flex-direction:column;gap:4px;font-size:11px;color:#8b949e;min-width:180px">
+                                        <span>策略搜尋</span>
+                                        <input id="rp-lc-filter-strategy" type="search" class="form-control" placeholder="strategy_id" style="min-width:180px">
+                                    </label>
+                                    <label style="display:flex;flex-direction:column;gap:4px;font-size:11px;color:#8b949e">
+                                        <span>排序欄位</span>
+                                        <select id="rp-lc-sort-by" class="form-control" style="min-width:150px">
+                                            <option value="strategy_id">strategy_id</option>
+                                            <option value="lottery_type">lottery_type</option>
+                                            <option value="lifecycle_status">lifecycle_status</option>
+                                        </select>
+                                    </label>
+                                    <label style="display:flex;flex-direction:column;gap:4px;font-size:11px;color:#8b949e">
+                                        <span>排序方向</span>
+                                        <select id="rp-lc-sort-dir" class="form-control" style="min-width:110px">
+                                            <option value="asc">ASC</option>
+                                            <option value="desc">DESC</option>
+                                        </select>
+                                    </label>
+                                    <span id="rp-lc-row-count" style="margin-left:auto;font-size:12px;color:#8b949e">顯示 0 / 0 筆</span>
+                                </div>
                 <div style="font-size:11px;color:#888;margin-bottom:10px">
                   ⚠️ 本表為稽核用途，僅顯示策略生命週期狀態。非 ONLINE 策略不可執行 replay。
                 </div>
@@ -2635,6 +2677,7 @@
   const rpPageSize = 50;
   let rpTotal = 0;
   let rpPages = 1;
+    let rpLifecycleRegistryRows = [];
 
   // Populate strategy dropdown when lottery or lifecycle changes
   async function rpLoadStrategies() {
@@ -2714,6 +2757,75 @@
     };
     return labels[status] || null;
   }
+
+    function rpLifecycleRegistryRowsFiltered() {
+        const status = document.getElementById('rp-lc-filter-status') ? document.getElementById('rp-lc-filter-status').value : '';
+        const lottery = document.getElementById('rp-lc-filter-lottery') ? document.getElementById('rp-lc-filter-lottery').value : '';
+        const search = document.getElementById('rp-lc-filter-strategy') ? document.getElementById('rp-lc-filter-strategy').value.trim().toLowerCase() : '';
+        const sortBy = document.getElementById('rp-lc-sort-by') ? document.getElementById('rp-lc-sort-by').value : 'strategy_id';
+        const sortDir = document.getElementById('rp-lc-sort-dir') ? document.getElementById('rp-lc-sort-dir').value : 'asc';
+
+        const filtered = rpLifecycleRegistryRows.filter(function(s) {
+            const supported = Array.isArray(s.supported_lottery_types)
+                ? s.supported_lottery_types
+                : [s.supported_lottery_types].filter(Boolean);
+            if (status && s.lifecycle_status !== status) return false;
+            if (lottery && supported.indexOf(lottery) === -1) return false;
+            if (search && String(s.strategy_id || '').toLowerCase().indexOf(search) === -1) return false;
+            return true;
+        });
+
+        const dir = sortDir === 'desc' ? -1 : 1;
+        filtered.sort(function(a, b) {
+            function keyOf(item) {
+                if (sortBy === 'lottery_type') {
+                    const supported = Array.isArray(item.supported_lottery_types) ? item.supported_lottery_types : [item.supported_lottery_types].filter(Boolean);
+                    return supported.join(', ');
+                }
+                if (sortBy === 'lifecycle_status') {
+                    return item.lifecycle_status || '';
+                }
+                return item.strategy_id || '';
+            }
+            return dir * String(keyOf(a)).localeCompare(String(keyOf(b)), 'en', { sensitivity: 'base' });
+        });
+
+        return filtered;
+    }
+
+    function rpRenderLifecycleRegistryRows() {
+        const tbody = document.getElementById('rp-lc-tbody');
+        const rowCount = document.getElementById('rp-lc-row-count');
+        if (!tbody) return;
+
+        const rows = rpLifecycleRegistryRowsFiltered();
+        if (rowCount) {
+            rowCount.textContent = `顯示 ${rows.length} / ${rpLifecycleRegistryRows.length} 筆`;
+        }
+
+        if (!rows.length) {
+            tbody.innerHTML = '<tr><td colspan="5" style="text-align:center;color:#888;padding:12px">查無符合條件的策略</td></tr>';
+            return;
+        }
+
+        const lc_color = { ONLINE: '#1a7f37', REJECTED: '#9b2335', RETIRED: '#555', OBSERVATION: '#7d5a00' };
+        tbody.innerHTML = rows.map(function(s) {
+            const statusColor = lc_color[s.lifecycle_status] || '#555';
+            const execBadge   = s.is_executable
+                ? '<span style="color:#1a7f37;font-weight:600">✓</span>'
+                : '<span style="color:#888">—</span>';
+            const lotTypes = Array.isArray(s.supported_lottery_types)
+                ? s.supported_lottery_types.join(', ')
+                : (s.supported_lottery_types || '—');
+            return '<tr style="border-bottom:1px solid #21262d">'
+                + '<td style="padding:5px 8px;font-family:monospace;font-size:11px">' + _esc(s.strategy_id) + '</td>'
+                + '<td style="padding:5px 8px;font-size:12px">'  + _esc(s.strategy_name || '—') + '</td>'
+                + '<td style="padding:5px 8px;font-size:11px;color:#8b949e">' + _esc(lotTypes) + '</td>'
+                + '<td style="padding:5px 8px;text-align:center"><span style="padding:1px 8px;border-radius:10px;font-size:11px;font-weight:600;background:' + statusColor + ';color:#fff">' + _esc(s.lifecycle_status) + '</span></td>'
+                + '<td style="padding:5px 8px;text-align:center">' + execBadge + '</td>'
+                + '</tr>';
+        }).join('');
+    }
 
   // Causal safety check: history_cutoff must be < target_draw
   function rpCausalStatus(history_cutoff, target_draw) {
@@ -2974,6 +3086,17 @@
       nextBtn.addEventListener('click', function() { if (rpPage < rpPages) { rpPage++; rpQuery(); } });
     }
 
+        ['rp-lc-filter-status', 'rp-lc-filter-lottery', 'rp-lc-sort-by', 'rp-lc-sort-dir'].forEach(function(id) {
+            const el = document.getElementById(id);
+            if (el) {
+                el.addEventListener('change', rpRenderLifecycleRegistryRows);
+            }
+        });
+        const lcSearch = document.getElementById('rp-lc-filter-strategy');
+        if (lcSearch) {
+            lcSearch.addEventListener('input', rpRenderLifecycleRegistryRows);
+        }
+
     // Toggle drilldown rows via event delegation on the tbody
     const histBody = document.getElementById('rp-hist-body');
     if (histBody) {
@@ -3021,6 +3144,7 @@
       const resp = await fetch('/api/replay/strategy-lifecycle');
       if (!resp.ok) throw new Error('HTTP ' + resp.status);
       const data = await resp.json();
+            rpLifecycleRegistryRows = Array.isArray(data.strategies) ? data.strategies.slice() : [];
 
       // Update summary badges
       const lc = data.lifecycle_counts || {};
@@ -3035,24 +3159,7 @@
         if (el) el.textContent = text;
       }
 
-      // Render table rows
-      const lc_color = { ONLINE: '#1a7f37', REJECTED: '#9b2335', RETIRED: '#555', OBSERVATION: '#7d5a00' };
-      tbody.innerHTML = (data.strategies || []).map(function(s) {
-        const statusColor = lc_color[s.lifecycle_status] || '#555';
-        const execBadge   = s.is_executable
-          ? '<span style="color:#1a7f37;font-weight:600">✓</span>'
-          : '<span style="color:#888">—</span>';
-        const lotTypes = Array.isArray(s.supported_lottery_types)
-          ? s.supported_lottery_types.join(', ')
-          : (s.supported_lottery_types || '—');
-        return '<tr style="border-bottom:1px solid #21262d">'
-          + '<td style="padding:5px 8px;font-family:monospace;font-size:11px">' + _esc(s.strategy_id) + '</td>'
-          + '<td style="padding:5px 8px;font-size:12px">'  + _esc(s.strategy_name || '—') + '</td>'
-          + '<td style="padding:5px 8px;font-size:11px;color:#8b949e">' + _esc(lotTypes) + '</td>'
-          + '<td style="padding:5px 8px;text-align:center"><span style="padding:1px 8px;border-radius:10px;font-size:11px;font-weight:600;background:' + statusColor + ';color:#fff">' + _esc(s.lifecycle_status) + '</span></td>'
-          + '<td style="padding:5px 8px;text-align:center">' + execBadge + '</td>'
-          + '</tr>';
-      }).join('');
+            rpRenderLifecycleRegistryRows();
 
       loading.style.display   = 'none';
       tableWrap.style.display = '';

@@ -7,11 +7,14 @@ Static HTML/JS string inspection tests for the lifecycle registry card.
 No browser automation, no Playwright, no external API calls.
 No replay generation, no DB write.
 
-Covers 10 smoke checks:
+Covers read-only smoke checks:
   1.  index.html contains rp-lifecycle-registry-card
   2.  index.html contains rpLoadLifecycleRegistry function
+    3.  index.html contains rpRenderLifecycleRegistryRows function
   3.  endpoint path /api/replay/strategy-lifecycle exists in frontend JS
   4.  lifecycle card contains badge display elements
+    5.  lifecycle card contains filter/sort controls
+    6.  lifecycle card shows row count display
   5.  lifecycle card does not contain promote button
   6.  lifecycle card does not contain backfill button
   7.  lifecycle card does not contain run replay button / scheduler trigger
@@ -90,6 +93,14 @@ class TestJsFunction:
             r"(async\s+)?function\s+rpLoadLifecycleRegistry\s*\(", html_text
         ), "rpLoadLifecycleRegistry is not defined as a function"
 
+    def test_rpRenderLifecycleRegistryRows_function_exists(self, html_text):
+        assert "rpRenderLifecycleRegistryRows" in html_text
+
+    def test_rpRenderLifecycleRegistryRows_is_defined_as_function(self, html_text):
+        assert re.search(
+            r"function\s+rpRenderLifecycleRegistryRows\s*\(", html_text
+        ), "rpRenderLifecycleRegistryRows is not defined as a function"
+
 
 # ---------------------------------------------------------------------------
 # 3. Endpoint path in frontend JS
@@ -125,7 +136,31 @@ class TestBadgeElements:
 
 
 # ---------------------------------------------------------------------------
-# 5. No promote button in lifecycle card
+# 5. Filter / sort controls are present and read-only
+# ---------------------------------------------------------------------------
+
+class TestFilterSortControls:
+    def test_status_filter_exists(self, html_text):
+        assert 'id="rp-lc-filter-status"' in html_text
+
+    def test_lottery_filter_exists(self, html_text):
+        assert 'id="rp-lc-filter-lottery"' in html_text
+
+    def test_strategy_search_exists(self, html_text):
+        assert 'id="rp-lc-filter-strategy"' in html_text
+
+    def test_sort_by_exists(self, html_text):
+        assert 'id="rp-lc-sort-by"' in html_text
+
+    def test_sort_direction_exists(self, html_text):
+        assert 'id="rp-lc-sort-dir"' in html_text
+
+    def test_row_count_display_exists(self, html_text):
+        assert 'id="rp-lc-row-count"' in html_text
+
+
+# ---------------------------------------------------------------------------
+# 6. No promote button in lifecycle card
 # ---------------------------------------------------------------------------
 
 class TestNoPromoteButton:
@@ -144,7 +179,7 @@ class TestNoPromoteButton:
 
 
 # ---------------------------------------------------------------------------
-# 6. No backfill button in lifecycle card
+# 7. No backfill button in lifecycle card
 # ---------------------------------------------------------------------------
 
 class TestNoBackfillButton:
@@ -165,7 +200,7 @@ class TestNoBackfillButton:
 
 
 # ---------------------------------------------------------------------------
-# 7. No run-replay button in lifecycle card
+# 8. No run-replay button in lifecycle card
 # ---------------------------------------------------------------------------
 
 class TestNoRunReplayButton:
@@ -182,7 +217,7 @@ class TestNoRunReplayButton:
 
 
 # ---------------------------------------------------------------------------
-# 8. No scheduler trigger in lifecycle card
+# 9. No scheduler trigger in lifecycle card
 # ---------------------------------------------------------------------------
 
 class TestNoSchedulerTrigger:
@@ -198,7 +233,7 @@ class TestNoSchedulerTrigger:
 
 
 # ---------------------------------------------------------------------------
-# 9. _esc() used for strategy data rendering
+# 10. _esc() used for strategy data rendering
 # ---------------------------------------------------------------------------
 
 class TestXssProtection:
@@ -208,21 +243,21 @@ class TestXssProtection:
         )
 
     def test_strategy_id_rendered_via_esc(self, html_text):
-        js_fn = _extract_js_function(html_text, "rpLoadLifecycleRegistry")
+        js_fn = _extract_js_function(html_text, "rpRenderLifecycleRegistryRows")
         assert "_esc(s.strategy_id)" in js_fn or "_esc(" in js_fn, (
-            "rpLoadLifecycleRegistry does not use _esc() for strategy data"
+            "rpRenderLifecycleRegistryRows does not use _esc() for strategy data"
         )
 
     def test_lifecycle_status_rendered_via_esc(self, html_text):
         # The function body may exceed the 2000-char extraction window.
         # Search the full page for the escape call instead.
         assert "_esc(s.lifecycle_status)" in html_text, (
-            "lifecycle_status not XSS-escaped in rpLoadLifecycleRegistry"
+            "lifecycle_status not XSS-escaped in lifecycle registry renderer"
         )
 
 
 # ---------------------------------------------------------------------------
-# 10. Error state is display-only
+# 11. Error state is display-only
 # ---------------------------------------------------------------------------
 
 class TestErrorStateDisplayOnly:

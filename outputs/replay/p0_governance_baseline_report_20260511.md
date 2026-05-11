@@ -28,6 +28,8 @@ Specifically: `lottery_api/routes/replay.py` line 61 — `_get_db()` returns `Da
 
 **Recommended fix (deferred, not in scope):** Harden `DatabaseManager.__init__` to resolve the default path relative to `__file__` rather than CWD, or add a `.gitattributes` entry marking `data/lottery_v2.db` as a read-only fixture.
 
+`P0_DB_DIRT_ROOT_CAUSE`
+
 ---
 
 ### 1b. `outputs/replay/p2_lifecycle_backfill_dry_run_manifest_20260510.json` (timestamp drift)
@@ -71,6 +73,8 @@ Specifically: `lottery_api/routes/replay.py` line 61 — `_get_db()` returns `Da
 - **Merge state:** BEHIND
 - **Diff scope:** 3 docs files — `p1_6g_branch_protection_execution_20260508.md`, `p1_6g_branch_protection_settings_20260508.json`, `p1_6g_dedicated_lane_observation_log_template_20260508.md`
 - **Decision:** **CLOSE** — branch protection execution records from 2026-05-08. Protection has been active throughout all subsequent PRs. The docs are verifiable from git history without needing to merge a BEHIND branch.
+
+`P0_PR_QUEUE_FINAL` — PR queue after triage: #46 MERGED · #35 CLOSED · #34 CLOSED · #2 CLOSED · open PRs = 0
 
 ---
 
@@ -133,6 +137,8 @@ Confirmed: non-ONLINE strategies have 0 replay rows. The filter pipeline correct
 | "顯示 N / 16 筆" row count | ✅ updates on filter change |
 | Non-ONLINE history tab: honest empty | ✅ (0 rows returned, no error) |
 
+`P1_DASHBOARD_UI_VERIFIED`
+
 ---
 
 ## 4. OFFLINE Lifecycle Taxonomy Clarification
@@ -178,6 +184,8 @@ If a currently-ONLINE strategy needs to be suspended:
 - OFFLINE rows would still have replay history from its ONLINE period
 - The UI would correctly show those rows when filtering `?lifecycle_status=OFFLINE` (via history endpoint)
 - No UI changes are required — the lifecycle filter already supports OFFLINE
+
+`P1_OFFLINE_DECISION_DRAFT_READY` — OFFLINE=0 confirmed correct; OFFLINE/RETIRED distinction documented
 
 ---
 

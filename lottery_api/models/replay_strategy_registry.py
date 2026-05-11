@@ -84,6 +84,13 @@ class InsufficientHistory(Exception):
     Raised when history is too short to run the strategy.
     """
 
+class LifecycleNotExecutable(Exception):
+    """
+    Raised when a non-ONLINE strategy stub is invoked for generation.
+    Non-ONLINE strategies (REJECTED / RETIRED / OFFLINE / OBSERVATION) have
+    metadata registered for lifecycle tracking only — they MUST NOT be executed.
+    """
+
 # ─── Registry Entry ───────────────────────────────────────────────────────────
 
 class _StrategyMeta:
@@ -203,6 +210,38 @@ class ReplayStrategyAdapter:
 
     def _call_strategy(self, history: List[dict], lottery_type: str) -> List[int]:
         raise NotImplementedError
+
+
+# ─── Non-Executable Lifecycle Stub ───────────────────────────────────────────
+
+class _LifecycleStub(ReplayStrategyAdapter):
+    """
+    Metadata-only stub for non-ONLINE strategies.
+    Registered in _ALL_ADAPTERS for lifecycle visibility only.
+    get_one_bet() always raises LifecycleNotExecutable.
+    """
+    def __init__(self, strategy_id: str, strategy_name: str,
+                 strategy_version: str, supported_lottery_types: List[str],
+                 min_history: int = 0, status: str = "RETIRED"):
+        self.meta = _StrategyMeta(
+            strategy_id=strategy_id,
+            strategy_name=strategy_name,
+            strategy_version=strategy_version,
+            supported_lottery_types=supported_lottery_types,
+            min_history=min_history,
+            status=status,
+        )
+
+    def get_one_bet(self, history, lottery_type):
+        raise LifecycleNotExecutable(
+            f"{self.meta.strategy_id} lifecycle={self.meta.lifecycle_status} — "
+            "not eligible for replay generation"
+        )
+
+    def _call_strategy(self, history, lottery_type):
+        raise LifecycleNotExecutable(
+            f"{self.meta.strategy_id} is {self.meta.lifecycle_status}"
+        )
 
 
 # ─── Power Lotto Adapters ─────────────────────────────────────────────────────
@@ -325,6 +364,87 @@ class _Daily539MarkovColdAdapter(ReplayStrategyAdapter):
         return bet   # already a flat list of ints
 
 
+# ─── Non-Executable Lifecycle Stubs ─────────────────────────────────────────
+# Registered in _ALL_ADAPTERS for governance visibility.
+# NOT added to _REGISTRY. MUST NOT be executed.
+
+_NON_EXECUTABLE_STUBS: List[_LifecycleStub] = [
+    # ── REJECTED ──
+    _LifecycleStub(
+        strategy_id="biglotto_ts3_acb_4bet",
+        strategy_name="大樂透 TS3+ACB 4注",
+        strategy_version="v0.0",
+        supported_lottery_types=["BIG_LOTTO"],
+        status="REJECTED",
+    ),
+    _LifecycleStub(
+        strategy_id="biglotto_ts3_markov_freq_5bet",
+        strategy_name="大樂透 TS3+Markov 頻率正交 5注",
+        strategy_version="v0.0",
+        supported_lottery_types=["BIG_LOTTO"],
+        status="REJECTED",
+    ),
+    _LifecycleStub(
+        strategy_id="power_shlc_midfreq",
+        strategy_name="威力彩 SHLC 中頻指標",
+        strategy_version="v0.0",
+        supported_lottery_types=["POWER_LOTTO"],
+        status="REJECTED",
+    ),
+    _LifecycleStub(
+        strategy_id="p1_deviation_2bet_539",
+        strategy_name="今彩539 P1鄰號+偏差互補 2注",
+        strategy_version="v0.0",
+        supported_lottery_types=["DAILY_539"],
+        status="REJECTED",
+    ),
+    # ── RETIRED ──
+    _LifecycleStub(
+        strategy_id="acb_1bet",
+        strategy_name="今彩539 ACB 1注",
+        strategy_version="v0.0",
+        supported_lottery_types=["DAILY_539"],
+        status="RETIRED",
+    ),
+    _LifecycleStub(
+        strategy_id="acb_markov_midfreq",
+        strategy_name="今彩539 ACB+Markov 中頻",
+        strategy_version="v0.0",
+        supported_lottery_types=["DAILY_539"],
+        status="RETIRED",
+    ),
+    _LifecycleStub(
+        strategy_id="acb_markov_midfreq_3bet",
+        strategy_name="今彩539 ACB+Markov 中頻 3注",
+        strategy_version="v0.0",
+        supported_lottery_types=["DAILY_539"],
+        status="RETIRED",
+    ),
+    _LifecycleStub(
+        strategy_id="midfreq_acb_2bet",
+        strategy_name="今彩539 中頻 ACB 2注",
+        strategy_version="v0.0",
+        supported_lottery_types=["DAILY_539"],
+        status="RETIRED",
+    ),
+    _LifecycleStub(
+        strategy_id="midfreq_fourier_2bet",
+        strategy_name="今彩539 中頻 Fourier 2注",
+        strategy_version="v0.0",
+        supported_lottery_types=["DAILY_539"],
+        status="RETIRED",
+    ),
+    # ── OBSERVATION ──
+    _LifecycleStub(
+        strategy_id="h6_gate_mk20_ew85",
+        strategy_name="威力彩 H6 Gate mk20 ew85",
+        strategy_version="v0.0",
+        supported_lottery_types=["POWER_LOTTO"],
+        status="OBSERVATION",
+    ),
+]
+
+
 # ─── Registry ─────────────────────────────────────────────────────────────────
 
 _ALL_ADAPTERS: List[ReplayStrategyAdapter] = [
@@ -334,6 +454,7 @@ _ALL_ADAPTERS: List[ReplayStrategyAdapter] = [
     _BigLottoDeviation2BetAdapter(),
     _Daily539F4ColdAdapter(),
     _Daily539MarkovColdAdapter(),
+    *_NON_EXECUTABLE_STUBS,
 ]
 
 # strategy_id -> adapter (generation-eligible: ONLINE / ACTIVE)

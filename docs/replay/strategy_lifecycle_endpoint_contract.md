@@ -1,6 +1,6 @@
 # Strategy Lifecycle Endpoint Contract
 
-**Version:** P10 (2026-05-11)  
+**Version:** P11 (2026-05-11)  
 **Endpoint:** `GET /api/replay/strategy-lifecycle`  
 **Implemented in:** `lottery_api/routes/replay.py`  
 **Router registered in:** `lottery_api/app.py` (tag: `Replay`)
@@ -20,7 +20,46 @@ This endpoint is the single authoritative source for:
 
 ---
 
-## 2. Hard Constraints
+## 2. Formal Lifecycle States
+
+This endpoint recognises exactly **4 formal lifecycle states**:
+
+| State | Meaning | Executable? |
+|---|---|---|
+| `ONLINE` | Active strategy, eligible for replay execution | ✅ Yes |
+| `OBSERVATION` | Under observation — not yet classified | ❌ No |
+| `REJECTED` | Validation failed — permanently non-executable | ❌ No |
+| `RETIRED` | Deprecated / decommissioned — permanently non-executable | ❌ No |
+
+`lifecycle_status` in every response object **must** be one of these 4 values. No other value is permitted.
+
+### OFFLINE — Not a Formal State
+
+`OFFLINE` is **not** a formal lifecycle state in this system.
+
+| Prohibition | Detail |
+|---|---|
+| Endpoint response | Must **never** return `OFFLINE` as `lifecycle_status` |
+| `lifecycle_counts` schema | Must **not** contain an `OFFLINE` key |
+| UI filter | Must **not** add an OFFLINE filter option |
+| Registry | Must **not** introduce an OFFLINE strategy state |
+| Fixture mode | Must **not** add OFFLINE synthetic rows |
+| Docs | Must **not** promote OFFLINE as a valid state |
+| Agent self-introduction | Must **not** self-introduce OFFLINE without CTO YES gate |
+
+Future introduction of OFFLINE requires all of the following prerequisites (none currently met):
+
+1. Dedicated SOP for OFFLINE transition
+2. Formal state transition rules (ONLINE → OFFLINE, OFFLINE → ONLINE)
+3. UI semantics and filter design
+4. Complete test coverage
+5. Registry schema update
+6. `lifecycle_counts` schema update
+7. Explicit CTO YES gate
+
+---
+
+## 3. Hard Constraints
 
 | Constraint | Value |
 |---|---|
@@ -33,7 +72,7 @@ This endpoint is the single authoritative source for:
 
 ---
 
-## 3. Response Schema
+## 4. Response Schema
 
 ```json
 {
@@ -80,7 +119,7 @@ No callable objects, no adapter references, no DB handles appear in strategy ent
 
 ---
 
-## 4. Expected Lifecycle Counts (Stable Registry State)
+## 5. Expected Lifecycle Counts (Stable Registry State)
 
 | Status | Count |
 |---|---|
@@ -95,7 +134,65 @@ No callable objects, no adapter references, no DB handles appear in strategy ent
 
 ---
 
-## 5. Response Marker
+## 6. Fixture Mode Scope
+
+The endpoint supports an optional `fixture_mode` query parameter.
+
+### 6a. Parameter Behaviour
+
+| Parameter | Value | Behaviour |
+|---|---|---|
+| `fixture_mode` | `false` (default) | Read from production in-memory registry — normal path |
+| `fixture_mode` | `true` | Return synthetic fixture records — advisory only |
+
+### 6b. Fixture Mode Supported States
+
+`fixture_mode=true` returns synthetic records for **REJECTED / RETIRED / OBSERVATION only**.
+
+| State | Supported in fixture_mode=true? |
+|---|---|
+| `ONLINE` | ❌ Not included |
+| `REJECTED` | ✅ Included |
+| `RETIRED` | ✅ Included |
+| `OBSERVATION` | ✅ Included |
+| `OFFLINE` | ❌ Never — not a formal state |
+
+### 6c. Required Fixture Record Fields
+
+Every synthetic fixture record **must** carry all of the following fields:
+
+| Field | Required Value | Meaning |
+|---|---|---|
+| `source` | `"synthetic_fixture"` | Origin marker — not real replay data |
+| `advisory_only` | `true` | Data is advisory — no operational use |
+| `production_db_write` | `false` | Confirms no DB write occurred |
+| `fixture_mode` | `true` | Confirms this record came from fixture path |
+
+### 6d. Fixture Mode Constraints
+
+- Fixture records **do not** represent production replay outcomes.
+- Fixture mode **must not** write to `data/lottery_v2.db` or any production DB.
+- Fixture mode **must not** trigger any registry modification.
+- Fixture mode **must not** cause any strategy promotion or retirement action.
+- Fixture mode data **must not** be used as strategy performance evidence.
+
+---
+
+## 7. Agent Guardrails
+
+All agents (human and automated) operating against this endpoint or its contract **must** observe the following rules:
+
+| Rule | Constraint |
+|---|---|
+| Taxonomy docs ≠ backfill auth | No taxonomy document constitutes authorization for production DB backfill |
+| Fixture records ≠ performance evidence | No synthetic fixture record may be cited as evidence of strategy performance |
+| No OFFLINE self-introduction | An agent must not self-introduce OFFLINE state without meeting all 7 prerequisites in Section 2 |
+| No DB write from docs | Documentation updates must not trigger any DB write |
+| No registry change from docs | Documentation updates must not modify the in-memory registry |
+
+---
+
+## 8. Response Marker
 
 ```
 marker: "P7_STRATEGY_LIFECYCLE_ENDPOINT_READY"
@@ -103,7 +200,7 @@ marker: "P7_STRATEGY_LIFECYCLE_ENDPOINT_READY"
 
 ---
 
-## 6. Example Response (abbreviated)
+## 9. Example Response (abbreviated)
 
 ```json
 {
@@ -156,7 +253,7 @@ marker: "P7_STRATEGY_LIFECYCLE_ENDPOINT_READY"
 
 ---
 
-## 7. Frontend Usage
+## 10. Frontend Usage
 
 The lifecycle registry card in `index.html` (`id="rp-lifecycle-registry-card"`) consumes this endpoint:
 
@@ -167,7 +264,7 @@ The lifecycle registry card in `index.html` (`id="rp-lifecycle-registry-card"`) 
 
 ---
 
-## 8. Explicitly Prohibited UI Actions
+## 11. Explicitly Prohibited UI Actions
 
 The lifecycle dashboard card **must not** contain any of the following actions:
 
@@ -181,16 +278,17 @@ The lifecycle dashboard card **must not** contain any of the following actions:
 
 ---
 
-## 9. Governance Markers
+## 12. Governance Markers
 
 ```
 P7_STRATEGY_LIFECYCLE_ENDPOINT_READY
 P10_LIFECYCLE_ENDPOINT_CONTRACT_DOC_READY
+P11_LIFECYCLE_ENDPOINT_CONTRACT_OFFLINE_PROHIBITION_AND_FIXTURE_SCOPE
 ```
 
 ---
 
-## 10. Related Files
+## 13. Related Files
 
 | File | Role |
 |---|---|

@@ -34,6 +34,10 @@ except ImportError:
 from lottery_api.models.replay_strategy_registry import (
     get_strategy_lifecycle_status,
     list_strategies,
+    list_strategy_lifecycle_metadata,
+    list_executable_strategy_ids,
+    list_non_executable_strategy_ids,
+    summarize_strategy_lifecycle_counts,
     normalise_lifecycle_status,
 )
 
@@ -126,6 +130,58 @@ async def list_replay_strategies(
         }
     except Exception as e:
         logger.exception("list_replay_strategies failed")
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+# ─── Lifecycle metadata (P7 read-only) ───────────────────────────────────────
+
+@router.get("/api/replay/strategy-lifecycle")
+async def get_strategy_lifecycle():
+    """
+    Returns the full strategy lifecycle registry as a read-only snapshot.
+
+    All data is sourced from the in-memory registry.
+    No sqlite3 connection is opened. No file is written.
+    No replay execution is performed.
+
+    READ-ONLY. Does NOT trigger any prediction or replay generation.
+    Non-ONLINE strategies are listed but cannot be used for replay execution.
+    """
+    try:
+        metadata = list_strategy_lifecycle_metadata()
+        counts = summarize_strategy_lifecycle_counts()
+        exec_ids = list_executable_strategy_ids()
+        non_exec_ids = list_non_executable_strategy_ids()
+
+        strategies = [
+            {
+                "strategy_id":             m["strategy_id"],
+                "strategy_name":           m.get("strategy_name", ""),
+                "strategy_version":        m.get("strategy_version", ""),
+                "supported_lottery_types": m.get("supported_lottery_types", []),
+                "min_history":             m.get("min_history"),
+                "lifecycle_status":        m["lifecycle_status"],
+                "is_executable":           m["strategy_id"] in set(exec_ids),
+            }
+            for m in metadata
+        ]
+
+        return {
+            "total":                     len(metadata),
+            "lifecycle_counts":          counts,
+            "executable_strategy_ids":   exec_ids,
+            "non_executable_strategy_ids": non_exec_ids,
+            "strategies":                strategies,
+            "no_db_write":               True,
+            "no_db_write_note": (
+                "All data sourced from in-memory registry. "
+                "No sqlite3 connection opened. No replay execution performed."
+            ),
+            "marker": "P7_STRATEGY_LIFECYCLE_ENDPOINT_READY",
+            "disclaimer": _DISCLAIMER,
+        }
+    except Exception as e:
+        logger.exception("get_strategy_lifecycle failed")
         raise HTTPException(status_code=500, detail=str(e))
 
 

@@ -439,6 +439,15 @@ class TestReplayBrowserSmoke:
             "rp_page must be set (written) into URL params in rpUpdateURL"
         )
 
+    def test_rp_fixture_mode_param_written_to_url(self):
+        """rp_fixture_mode must be written to the URL query string when active."""
+        assert 'rp_fixture_mode' in self.html, (
+            '"rp_fixture_mode" URL parameter not found in index.html'
+        )
+        assert "params.set('rp_fixture_mode'" in self.html or 'params.set("rp_fixture_mode"' in self.html, (
+            "rp_fixture_mode must be set (written) into URL params in rpUpdateURL"
+        )
+
     # ------------------------------------------------------------------ #
     # Check 13 — JS calls /api/replay/freshness
     # ------------------------------------------------------------------ #
@@ -460,6 +469,24 @@ class TestReplayBrowserSmoke:
         has_direct = '/api/replay/history' in self.html
         assert has_base or has_direct, (
             "JS does not call /api/replay/history endpoint"
+        )
+
+    def test_js_calls_fixture_mode_history_endpoint(self):
+        """JS must be able to request fixture_mode=true for replay history."""
+        assert 'fixture_mode=true' in self.html, (
+            'fixture_mode=true not found in replay history request logic'
+        )
+
+    # ------------------------------------------------------------------ #
+    # Check 15b — Fixture mode banner
+    # ------------------------------------------------------------------ #
+    def test_fixture_mode_banner_present(self):
+        """Fixture mode banner copy must exist in index.html."""
+        assert 'FIXTURE MODE' in self.html, (
+            'FIXTURE MODE banner text not found in index.html'
+        )
+        assert '合成資料、僅供驗收，不代表真實預測' in self.html, (
+            'Fixture mode warning copy not found in index.html'
         )
 
     # ------------------------------------------------------------------ #

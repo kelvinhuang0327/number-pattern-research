@@ -1,187 +1,187 @@
-# P18 Replay Product Gap Inventory — 2026-05-11
+# P18 Replay Product Gap Inventory - 2026-05-11
 
-## 1. 本輪目標
+## 1. Goal
 
-整理 lifecycle baseline 與 replay history 可用性之間的 gap，產出 no-write / no-backfill / no-promotion closure summary。
+Inventory the gap between lifecycle metadata and replay history availability, using read-only evidence only.
 
-本輪只做 docs / governance，禁止：
-- 寫 DB
-- replay backfill
-- scheduler / cron
-- strategy promotion / retire / replay apply
-- runtime code、dashboard、endpoint、config 變更
+Scope for this round:
 
-## 2. Main Latest Commit
+- docs and governance only
+- no DB writes
+- no replay backfill
+- no promotion or retirement actions
+- no runtime code changes
 
-- branch: `main`
-- latest commit: `f318e4b`
-- commit message: `docs(replay): P0 governance baseline cleanup report (#47) (#47)`
+## 2. Main State and Verified Artifacts
 
-工作樹狀態在本輪讀取時為 clean，沒有額外 staged 或 unstaged diff。
+- `main` HEAD: `f318e4b`
+- PR #47: merged
+- Verified artifact: `outputs/replay/p0_governance_baseline_report_20260511.md`
+- Verified artifact: `outputs/replay/p17_strategy_history_replay_product_roadmap_20260511.md`
 
-## 3. 已落地 Artifacts
+Baseline markers confirmed in the P0 report:
 
-已確認存在：
-- `outputs/replay/p0_governance_baseline_report_20260511.md`
-- `outputs/replay/p17_strategy_history_replay_product_roadmap_20260511.md`
-
-這兩份 artifact 已形成本輪 inventory 的前置基線：
-- P0 提供 lifecycle baseline、DB dirt root cause、PR queue triage、UI verification。
-- P17 提供策略歷史 replay 產品的 gap 定義與 no-write roadmap。
-
-## 4. P0 / P17 Marker Verification
-
-已確認 marker：
 - `P0_DB_DIRT_ROOT_CAUSE`
 - `P0_PR_QUEUE_FINAL`
 - `P1_DASHBOARD_UI_VERIFIED`
 - `P1_OFFLINE_DECISION_DRAFT_READY`
 
-P17 roadmap 也已明確指出：
-- lifecycle metadata 與 replay row availability 並不等價
-- non-ONLINE strategies 目前仍是 honest empty
-- no-write / no-backfill 是本產品線的硬約束
+## 3. Lifecycle Metadata Summary
 
-## 5. Gap Inventory Summary
+The registry snapshot contains 16 strategies:
 
-### 5.1 Lifecycle metadata 現況
+- ONLINE: 6
+- REJECTED: 4
+- OBSERVATION: 1
+- RETIRED: 5
+- OFFLINE: 0
 
-從 registry JSON smoke 讀到：
+Executable strategies are the 6 ONLINE entries:
 
-| lifecycle_status | count | strategy_ids |
-|---|---:|---|
-| ONLINE | 6 | `biglotto_deviation_2bet`, `biglotto_triple_strike`, `daily539_f4cold`, `daily539_markov_cold`, `power_orthogonal_5bet`, `power_precision_3bet` |
-| REJECTED | 4 | `biglotto_ts3_acb_4bet`, `biglotto_ts3_markov_freq_5bet`, `power_shlc_midfreq`, `p1_deviation_2bet_539` |
-| OBSERVATION | 1 | `h6_gate_mk20_ew85` |
-| RETIRED | 5 | `acb_1bet`, `acb_markov_midfreq`, `acb_markov_midfreq_3bet`, `midfreq_acb_2bet`, `midfreq_fourier_2bet` |
+- `biglotto_deviation_2bet`
+- `biglotto_triple_strike`
+- `daily539_f4cold`
+- `daily539_markov_cold`
+- `power_orthogonal_5bet`
+- `power_precision_3bet`
 
-Total lifecycle strategies: `16`
+Non-executable strategies are the remaining 10 entries:
 
-### 5.2 Replay history row availability
+- REJECTED: `biglotto_ts3_acb_4bet`, `biglotto_ts3_markov_freq_5bet`, `power_shlc_midfreq`, `p1_deviation_2bet_539`
+- OBSERVATION: `h6_gate_mk20_ew85`
+- RETIRED: `acb_1bet`, `acb_markov_midfreq`, `acb_markov_midfreq_3bet`, `midfreq_acb_2bet`, `midfreq_fourier_2bet`
 
-From read-only DB queries:
+## 4. Replay History Availability Summary
 
-| replay table | rows |
-|---|---:|
-| `strategy_prediction_replays` | `460` |
-| `strategy_replay_runs` | `7` |
+Read-only DB inspection shows 460 replay rows total:
 
-Replay rows by strategy:
+- PREDICTED: 420
+- REPLAY_ERROR: 40
 
-| strategy_id | replay_status | rows |
-|---|---|---:|
-| `biglotto_deviation_2bet` | `PREDICTED` | `70` |
-| `biglotto_triple_strike` | `PREDICTED` | `70` |
-| `daily539_f4cold` | `PREDICTED` | `70` |
-| `daily539_f4cold` | `REPLAY_ERROR` | `20` |
-| `daily539_markov_cold` | `PREDICTED` | `70` |
-| `daily539_markov_cold` | `REPLAY_ERROR` | `20` |
-| `power_orthogonal_5bet` | `PREDICTED` | `70` |
-| `power_precision_3bet` | `PREDICTED` | `70` |
+Replay rows exist for exactly 6 strategies, and all 6 are ONLINE:
 
-Run status:
+| strategy_id | lifecycle_status | rows | predicted | replay_error |
+|---|---|---:|---:|---:|
+| `biglotto_deviation_2bet` | ONLINE | 70 | 70 | 0 |
+| `biglotto_triple_strike` | ONLINE | 70 | 70 | 0 |
+| `daily539_f4cold` | ONLINE | 90 | 70 | 20 |
+| `daily539_markov_cold` | ONLINE | 90 | 70 | 20 |
+| `power_orthogonal_5bet` | ONLINE | 70 | 70 | 0 |
+| `power_precision_3bet` | ONLINE | 70 | 70 | 0 |
 
-| status | count |
-|---|---:|
-| `DONE` | `6` |
-| `FAILED_LEGACY` | `1` |
+No non-ONLINE strategy currently has any replay rows.
 
-### 5.3 Missing-history strategies
+## 5. Missing-History Inventory
 
-Non-ONLINE strategies currently have honest empty replay coverage:
+These 10 lifecycle strategies have 0 replay rows:
 
-| lifecycle_status | strategy count | replay rows | gap type |
-|---|---:|---:|---|
-| REJECTED | 4 | 0 | data gap, but expected under current no-write policy |
-| OBSERVATION | 1 | 0 | governance gap / not yet canonical replay history |
-| RETIRED | 5 | 0 | archival gap, no replay rows preserved in current product path |
-| OFFLINE | 0 | 0 | taxonomy supported, but no canonical OFFLINE strategy exists today |
+| strategy_id | lifecycle_status | rows | gap classification |
+|---|---|---:|---|
+| `biglotto_ts3_acb_4bet` | REJECTED | 0 | missing replay history |
+| `biglotto_ts3_markov_freq_5bet` | REJECTED | 0 | missing replay history |
+| `power_shlc_midfreq` | REJECTED | 0 | missing replay history |
+| `p1_deviation_2bet_539` | REJECTED | 0 | missing replay history |
+| `h6_gate_mk20_ew85` | OBSERVATION | 0 | missing replay history |
+| `acb_1bet` | RETIRED | 0 | missing replay history |
+| `acb_markov_midfreq` | RETIRED | 0 | missing replay history |
+| `acb_markov_midfreq_3bet` | RETIRED | 0 | missing replay history |
+| `midfreq_acb_2bet` | RETIRED | 0 | missing replay history |
+| `midfreq_fourier_2bet` | RETIRED | 0 | missing replay history |
 
-### 5.4 OFFLINE / REJECTED / OBSERVATION / RETIRED coverage
+OFFLINE is currently a taxonomy state only:
 
-- `OFFLINE`: current canonical count is `0`
-- `REJECTED`: lifecycle metadata exists, replay rows do not
-- `OBSERVATION`: lifecycle metadata exists, replay rows do not
-- `RETIRED`: lifecycle metadata exists, replay rows do not
+- OFFLINE lifecycle strategies: 0
+- OFFLINE replay rows: 0
 
-Interpretation:
-- `OFFLINE = 0` is not a defect; it is the current correct registry state.
-- The product can display the state filter, but there are no canonical OFFLINE entries to surface yet.
-- For non-ONLINE states, the current product is still metadata-first rather than row-first.
+## 6. Product Interpretation
 
-## 6. Classification of Gaps
+The product gap is now well bounded:
 
-### 6.1 Data gaps
+1. lifecycle metadata is complete and visible
+2. replay history is complete only for executable ONLINE strategies
+3. non-ONLINE strategies are correctly shown as honest empty state
+4. OFFLINE is not yet populated, so there is no OFFLINE history to render
+5. any future fill-in for non-ONLINE strategies must start with a no-write fixture spec, not a production backfill
 
-- `REJECTED` / `OBSERVATION` / `RETIRED` strategies have no replay rows in `strategy_prediction_replays`.
-- Only 6 `ONLINE` strategies are represented in replay history.
-- `OFFLINE` has no canonical strategy entry, so there is nothing to backfill or replay.
+That means the current UI and API behavior are correct for now:
 
-### 6.2 UI / dashboard gaps
-
-- UI already supports lifecycle filtering and honest empty state, so the remaining gap is not rendering capability.
-- The product still needs a clearer inventory / closure view explaining why some lifecycle states have no replay history.
-- The page can show metadata filters, but it should keep saying “no history yet” rather than implying replay parity across states.
-
-### 6.3 Governance / no-write gaps
-
-- No-write policy prevents filling missing replay rows directly in this task.
-- No-backfill policy prevents using the gap inventory to trigger row creation.
-- No-promotion policy prevents converting lifecycle visibility into actionability.
+- lifecycle dashboard can show all 16 strategies
+- history endpoint can return zero rows for non-ONLINE filters without error
+- missing history is a product gap, not a data corruption symptom
 
 ## 7. No-Write Evidence
 
-Evidence gathered in this session:
-- DB queries were executed read-only against `lottery_api/data/lottery_v2.db`.
-- No runtime write path was invoked.
-- `git status --short` returned clean at the end of verification.
-- `git status --short data/lottery_v2.db` returned no tracked diff.
-- There was no commit of `data/lottery_v2.db`.
-- There was no change to runtime code, dashboard code, endpoint code, scheduler code, or dependency config.
+Read-only commands used in this round:
+
+- `scripts/report_strategy_lifecycle_registry.py --json`
+- direct `sqlite3` SELECT queries against `lottery_api/data/lottery_v2.db`
+- lifecycle endpoint contract review
+
+The registry CLI explicitly reports:
+
+- `no_db_write: true`
+- `no_db_write_note: All data sourced from in-memory registry. No sqlite3 connection opened.`
+
+The DB inspection was read-only and grouped by strategy and replay status only.
 
 ## 8. No-Backfill Evidence
 
-Evidence gathered in this session:
-- No replay backfill command was run.
-- No apply / promote / populate action was run.
-- The existing backfill manifest file was only checked for presence, not regenerated or committed.
-- P0 and P17 docs both explicitly preserve the no-backfill rule.
+No backfill script was run against production data.
+
+Observed facts support the no-backfill position:
+
+- 10 non-ONLINE strategies still have 0 replay rows
+- the history endpoint returns an honest empty state for non-ONLINE filters
+- replay rows exist only for the 6 ONLINE strategies already considered executable
 
 ## 9. No-Promotion Evidence
 
-Evidence gathered in this session:
-- The roadmap keeps replay history work separate from strategy governance action.
-- The endpoint contract explicitly treats replay backfill and strategy promotion as prohibited in this path.
-- The current task only inventories the gap; it does not promote, retire, or reactivate any strategy.
+No lifecycle promotion or retirement action was performed.
 
-## 10. Remaining Local Runtime Dirt
+The endpoint contract and registry rules still enforce:
 
-- Tracked worktree: clean at verification time.
-- Local presence check: `outputs/replay/p2_lifecycle_backfill_dry_run_manifest_20260510.json` exists locally, but was not modified or committed in this task.
-- No other local runtime dirt was introduced by this P18 pass.
+- GET only
+- no DB write
+- no replay backfill
+- no scheduler trigger
+- no non-ONLINE promotion into executable state
 
-## 11. Risks / Limitations
+## 10. Test and Smoke Results
 
-1. Replay history is still incomplete for non-ONLINE lifecycle states.
-2. `OFFLINE` is supported in taxonomy and UI, but has no canonical strategy instance yet.
-3. The current product can inventory the gap, but cannot close it without a separate no-write catalog or data provenance decision.
-4. A naive “complete all states” reading would overclaim product completeness; metadata visibility is already complete enough to expose the gap honestly.
+Targeted lifecycle suite:
 
-## 12. Next Direction
+- `143 passed` with `uv run --with pytest ...`
 
-Recommended next P19 direction:
+CLI smoke:
 
-```text
-P19 = no-write replay gap policy + inventory-driven UX closure
-```
+- `scripts/report_strategy_lifecycle_registry.py --json` completed successfully
+- marker returned: `P3_LIFECYCLE_REPORT_CLI_READY`
 
-Focus:
-- define how the product should label missing-history states
-- decide whether future work should remain display-only or introduce a formal dry-run catalog bridge
-- keep replay history honest when metadata exists but rows do not
+## 11. Remaining Local Runtime Dirt
 
-## 13. Final Markers
+None in this clean repo session.
 
-P18_REPLAY_PRODUCT_GAP_INVENTORY_REVIEWED
-P18_NO_DB_WRITE_NO_BACKFILL_CONFIRMED
-P18_NO_PROMOTION_ACTION_CONFIRMED
+The working tree was clean before this report was added, and no DB file or runtime artifact was mutated in this round.
+
+## 12. Risks and Limitations
+
+- OFFLINE remains unpopulated, so this inventory is about a missing lifecycle state as much as a missing replay history.
+- Non-ONLINE strategies do not yet have a fixture-only history path.
+- Any future backfill or row generation must be gated by a separate no-write manifest and explicit approval.
+
+## 13. Next Direction
+
+The next useful step is a fixture-only, no-write spec for non-ONLINE replay rows:
+
+- define which non-ONLINE rows can be represented as evidence-only fixtures
+- define how honest empty states should remain visible until fixtures exist
+- keep production DB and runtime code untouched
+
+## 14. Final Markers
+
+- `P18_REPLAY_PRODUCT_GAP_INVENTORY_REVIEWED`
+- `P18_LIFECYCLE_METADATA_16_CONFIRMED`
+- `P18_NON_ONLINE_HISTORY_GAP_CONFIRMED`
+- `P18_NO_DB_WRITE_NO_BACKFILL_CONFIRMED`
+- `P18_NO_PROMOTION_ACTION_CONFIRMED`
+

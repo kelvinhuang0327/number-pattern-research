@@ -2033,6 +2033,42 @@
               </div>
             </div>
 
+            <!-- Strategy Lifecycle Registry (P7 read-only) -->
+            <div class="card mb-16" id="rp-lifecycle-registry-card" style="border-left:4px solid #27ae60">
+              <div class="card-body" style="padding:14px 16px">
+                <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;flex-wrap:wrap;gap:8px">
+                  <strong style="font-size:14px">📋 策略生命週期登錄表</strong>
+                  <div id="rp-lc-badges" style="display:flex;gap:8px;flex-wrap:wrap">
+                    <span id="rp-lc-badge-online"  style="padding:2px 10px;border-radius:12px;font-size:12px;font-weight:600;background:#1a7f37;color:#fff">ONLINE 0</span>
+                    <span id="rp-lc-badge-rejected" style="padding:2px 10px;border-radius:12px;font-size:12px;font-weight:600;background:#6e3737;color:#fff">REJECTED 0</span>
+                    <span id="rp-lc-badge-retired"  style="padding:2px 10px;border-radius:12px;font-size:12px;font-weight:600;background:#4a4a4a;color:#ccc">RETIRED 0</span>
+                    <span id="rp-lc-badge-obs"      style="padding:2px 10px;border-radius:12px;font-size:12px;font-weight:600;background:#7d5a00;color:#fff">OBS 0</span>
+                  </div>
+                </div>
+                <div style="font-size:11px;color:#888;margin-bottom:10px">
+                  ⚠️ 本表為稽核用途，僅顯示策略生命週期狀態。非 ONLINE 策略不可執行 replay。
+                </div>
+                <div id="rp-lc-loading" style="color:#666;font-size:13px">⏳ 載入中…</div>
+                <div id="rp-lc-error"   style="display:none;color:#c0392b;font-size:12px">⚠️ 生命週期資料讀取失敗</div>
+                <div id="rp-lc-table-wrap" style="display:none;overflow-x:auto">
+                  <table style="width:100%;border-collapse:collapse;font-size:12px" id="rp-lc-table">
+                    <thead>
+                      <tr style="background:#161b22;color:#8b949e">
+                        <th style="padding:6px 8px;text-align:left;border-bottom:1px solid #30363d;white-space:nowrap">策略 ID</th>
+                        <th style="padding:6px 8px;text-align:left;border-bottom:1px solid #30363d;white-space:nowrap">名稱</th>
+                        <th style="padding:6px 8px;text-align:left;border-bottom:1px solid #30363d;white-space:nowrap">支援彩種</th>
+                        <th style="padding:6px 8px;text-align:center;border-bottom:1px solid #30363d;white-space:nowrap">生命週期</th>
+                        <th style="padding:6px 8px;text-align:center;border-bottom:1px solid #30363d;white-space:nowrap">可執行</th>
+                      </tr>
+                    </thead>
+                    <tbody id="rp-lc-tbody">
+                      <tr><td colspan="5" style="text-align:center;color:#888;padding:12px">載入中…</td></tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+
           </div>
         </section>
 
@@ -2960,6 +2996,7 @@
         if (btn.dataset.section === 'replay') {
           rpLoadStrategies();
           rpLoadFreshness();
+          rpLoadLifecycleRegistry();
         }
       });
     });
@@ -2967,6 +3004,68 @@
     // Restore query state from URL on page load
     rpRestoreFromURL();
   });
+
+  // ── P7: Strategy Lifecycle Registry (read-only) ──────────────────────────
+  async function rpLoadLifecycleRegistry() {
+    const loading  = document.getElementById('rp-lc-loading');
+    const errEl    = document.getElementById('rp-lc-error');
+    const tableWrap= document.getElementById('rp-lc-table-wrap');
+    const tbody    = document.getElementById('rp-lc-tbody');
+    if (!loading || !errEl || !tableWrap || !tbody) return;
+
+    loading.style.display  = '';
+    errEl.style.display    = 'none';
+    tableWrap.style.display= 'none';
+
+    try {
+      const resp = await fetch('/api/replay/strategy-lifecycle');
+      if (!resp.ok) throw new Error('HTTP ' + resp.status);
+      const data = await resp.json();
+
+      // Update summary badges
+      const lc = data.lifecycle_counts || {};
+      const badges = {
+        'rp-lc-badge-online':   'ONLINE '   + (lc.ONLINE   || 0),
+        'rp-lc-badge-rejected': 'REJECTED ' + (lc.REJECTED || 0),
+        'rp-lc-badge-retired':  'RETIRED '  + (lc.RETIRED  || 0),
+        'rp-lc-badge-obs':      'OBS '      + (lc.OBSERVATION || 0),
+      };
+      for (const [id, text] of Object.entries(badges)) {
+        const el = document.getElementById(id);
+        if (el) el.textContent = text;
+      }
+
+      // Render table rows
+      const lc_color = { ONLINE: '#1a7f37', REJECTED: '#9b2335', RETIRED: '#555', OBSERVATION: '#7d5a00' };
+      tbody.innerHTML = (data.strategies || []).map(function(s) {
+        const statusColor = lc_color[s.lifecycle_status] || '#555';
+        const execBadge   = s.is_executable
+          ? '<span style="color:#1a7f37;font-weight:600">✓</span>'
+          : '<span style="color:#888">—</span>';
+        const lotTypes = Array.isArray(s.supported_lottery_types)
+          ? s.supported_lottery_types.join(', ')
+          : (s.supported_lottery_types || '—');
+        return '<tr style="border-bottom:1px solid #21262d">'
+          + '<td style="padding:5px 8px;font-family:monospace;font-size:11px">' + _esc(s.strategy_id) + '</td>'
+          + '<td style="padding:5px 8px;font-size:12px">'  + _esc(s.strategy_name || '—') + '</td>'
+          + '<td style="padding:5px 8px;font-size:11px;color:#8b949e">' + _esc(lotTypes) + '</td>'
+          + '<td style="padding:5px 8px;text-align:center"><span style="padding:1px 8px;border-radius:10px;font-size:11px;font-weight:600;background:' + statusColor + ';color:#fff">' + _esc(s.lifecycle_status) + '</span></td>'
+          + '<td style="padding:5px 8px;text-align:center">' + execBadge + '</td>'
+          + '</tr>';
+      }).join('');
+
+      loading.style.display   = 'none';
+      tableWrap.style.display = '';
+    } catch (err) {
+      loading.style.display = 'none';
+      errEl.style.display   = '';
+      console.error('[P7] lifecycle registry load error:', err);
+    }
+  }
+
+  function _esc(str) {
+    return String(str || '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+  }
 
   // ── Freshness badge ──────────────────────────────────────────────────────
   async function rpLoadFreshness() {

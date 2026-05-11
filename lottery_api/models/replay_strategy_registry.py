@@ -531,3 +531,94 @@ def get_adapters_for_lottery(lottery_type: str) -> List[ReplayStrategyAdapter]:
         if a.meta.status in _GENERATION_STATUSES
         and lottery_type in a.meta.supported_lottery_types
     ]
+
+
+# ─── P3 Lifecycle Exposure API (metadata-only, no DB, no adapter instances) ──
+
+def list_strategy_lifecycle_metadata(
+    lifecycle_status: Optional[str] = None,
+) -> List[dict]:
+    """
+    Returns metadata dicts for all registered strategies (ONLINE + non-ONLINE).
+
+    Does NOT return adapter instances — safe for external consumers and reports.
+    Does NOT touch DB or replay.
+
+    Optional filter: lifecycle_status (ONLINE|REJECTED|RETIRED|OBSERVATION|OFFLINE)
+    Ordering: deterministic (insertion order of _ALL_ADAPTERS).
+    """
+    canonical_filter: Optional[str] = None
+    if lifecycle_status:
+        canonical_filter = normalise_lifecycle_status(lifecycle_status.upper())
+
+    out = []
+    for a in _ALL_ADAPTERS:
+        if canonical_filter and a.meta.lifecycle_status != canonical_filter:
+            continue
+        out.append({
+            "strategy_id":               a.meta.strategy_id,
+            "strategy_name":             a.meta.strategy_name,
+            "strategy_version":          a.meta.strategy_version,
+            "supported_lottery_types":   a.meta.supported_lottery_types,
+            "min_history":               a.meta.min_history,
+            "lifecycle_status":          a.meta.lifecycle_status,
+        })
+    return out
+
+
+def get_strategy_lifecycle_metadata(strategy_id: str) -> dict:
+    """
+    Returns lifecycle metadata for a single strategy_id.
+    Raises KeyError if strategy_id is not registered.
+    Does NOT fallback — unknown IDs always raise.
+    Does NOT touch DB or replay.
+    """
+    for a in _ALL_ADAPTERS:
+        if a.meta.strategy_id == strategy_id:
+            return {
+                "strategy_id":              a.meta.strategy_id,
+                "strategy_name":            a.meta.strategy_name,
+                "strategy_version":         a.meta.strategy_version,
+                "supported_lottery_types":  a.meta.supported_lottery_types,
+                "min_history":              a.meta.min_history,
+                "lifecycle_status":         a.meta.lifecycle_status,
+            }
+    raise KeyError(
+        f"strategy_id {strategy_id!r} is not registered in the lifecycle registry. "
+        f"Use list_strategy_lifecycle_metadata() to see all registered IDs."
+    )
+
+
+def summarize_strategy_lifecycle_counts() -> dict:
+    """
+    Returns a dict of lifecycle_status → count for all registered strategies.
+    Keys present only if count > 0. Ordered by LIFECYCLE_STATUSES declaration order.
+    Does NOT touch DB or replay.
+    """
+    counts: dict[str, int] = {}
+    for a in _ALL_ADAPTERS:
+        counts[a.meta.lifecycle_status] = counts.get(a.meta.lifecycle_status, 0) + 1
+    # Return in canonical declaration order
+    return {s: counts[s] for s in LIFECYCLE_STATUSES if s in counts}
+
+
+def list_executable_strategy_ids() -> List[str]:
+    """
+    Returns the list of strategy_ids that are ONLINE (replay-generation-eligible).
+    Must equal the keys of _REGISTRY. Does NOT touch DB.
+    """
+    return sorted(_REGISTRY.keys())
+
+
+def list_non_executable_strategy_ids() -> List[str]:
+    """
+    Returns the list of strategy_ids that are registered but NOT ONLINE
+    (REJECTED, RETIRED, OBSERVATION, OFFLINE).
+    These are metadata-only stubs; get_one_bet() raises LifecycleNotExecutable.
+    Does NOT touch DB.
+    """
+    return sorted(
+        a.meta.strategy_id
+        for a in _ALL_ADAPTERS
+        if a.meta.lifecycle_status not in _GENERATION_STATUSES
+    )

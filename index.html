@@ -3017,6 +3017,86 @@
     } catch (e) { /* URL parse errors are non-critical */ }
   }
 
+  // Escape HTML to prevent XSS in catalog display
+  function rpEscapeHtml(str) {
+    return String(str)
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;')
+      .replace(/'/g, '&#39;');
+  }
+
+  // Catalog Display Mode badge for non-ONLINE lifecycles
+  function rpCatalogLifecycleBadge(lifecycle) {
+    const map = {
+      REJECTED:    { icon: '\uD83D\uDD34', label: '\u5DF2\u62D2\u7D55 (REJECTED)',    color: '#c0392b', bg: 'rgba(192,57,43,.1)' },
+      RETIRED:     { icon: '\u26AA',        label: '\u5DF2\u9000\u5F79 (RETIRED)',     color: '#7f8c8d', bg: 'rgba(127,140,141,.1)' },
+      OBSERVATION: { icon: '\uD83D\uDFE1', label: '\u89C0\u5BDF\u4E2D (OBSERVATION)', color: '#d4a20c', bg: 'rgba(212,162,12,.1)' },
+      OFFLINE:     { icon: '\u26AB',        label: '\u4E0B\u7DDA (OFFLINE)',           color: '#2c3e50', bg: 'rgba(44,62,80,.1)' },
+    };
+    const b = map[lifecycle] || { icon: '\u2B1C', label: lifecycle, color: '#666', bg: 'rgba(0,0,0,.06)' };
+    return `<span style="display:inline-block;padding:2px 10px;border-radius:10px;background:${b.bg};color:${b.color};font-size:11px;font-weight:700;white-space:nowrap">${b.icon} ${b.label}</span>`;
+  }
+
+  // Render display-only catalog rows when lifecycle filter returns 0 production rows
+  // SAFETY: read-only, no DB write, no generation, no backfill
+  async function rpRenderCatalogDisplayMode(lifecycle, lotteryType) {
+    const tbody = document.getElementById('rp-hist-body');
+    const totalLabel = document.getElementById('rp-total-label');
+    tbody.innerHTML = '<tr><td colspan="9" style="text-align:center;color:#888">\u76EE\u9304\u6A21\u5F0F\uFF0C\u8F09\u5165\u4E2D\u2026</td></tr>';
+    try {
+      let url = `${BASE}/strategies?lifecycle_status=${encodeURIComponent(lifecycle)}`;
+      if (lotteryType) url += `&lottery_type=${encodeURIComponent(lotteryType)}`;
+      const res = await fetch(url);
+      if (!res.ok) throw new Error(`HTTP ${res.status}`);
+      const data = await res.json();
+      const strategies = data.strategies || [];
+
+      if (!strategies.length) {
+        // OFFLINE placeholder (no registered strategies)
+        const msg = lifecycle === 'OFFLINE'
+          ? '\u26AB OFFLINE \u7B56\u7565\u76EE\u524D\u7121\u5DF2\u767B\u9304\u9805\u76EE\uFF08coming soon\uFF09'
+          : `\u6B64\u7B5B\u9078\u689D\u4EF6\u4E0B\u7121\u5DF2\u767B\u9304\u7B56\u7565`;
+        tbody.innerHTML = `<tr><td colspan="9" style="text-align:center;color:#888;padding:20px">${msg}</td></tr>`;
+        if (totalLabel) totalLabel.textContent = '\u76EE\u9304\u6A21\u5F0F\uFF1A0 \u500B';
+        return;
+      }
+
+      // Info row (catalog mode notice — no prediction claim, no recommendation)
+      const infoRow = `<tr>
+        <td colspan="9" style="text-align:center;color:#7a7a7a;padding:12px 16px;
+          font-style:italic;font-size:12px;background:#f9f9fb;
+          border-bottom:1px solid #e8eaee">
+          此生命週期（${rpEscapeHtml(lifecycle)}）策略目前無歷史回放資料，以下為已登錄策略目錄。
+          <span style="color:#c0392b;font-style:normal;font-weight:600">
+            不代表預測成績、不構成下注建議。
+          </span>
+        </td>
+      </tr>`;
+
+      // One display-only row per catalog strategy
+      const strategyRows = strategies.map(s => `
+        <tr data-catalog-mode="true" style="opacity:0.85">
+          <td style="color:#aaa;text-align:center">\u2014</td>
+          <td style="color:#aaa;text-align:center">\u2014</td>
+          <td style="font-size:12px;color:#333">${rpEscapeHtml(s.strategy_name)}<br>
+            <code style="font-size:10px;color:#999">${rpEscapeHtml(s.strategy_id)}</code>
+          </td>
+          <td style="color:#aaa;text-align:center">\u2014</td>
+          <td style="color:#aaa;text-align:center">\u2014</td>
+          <td style="color:#aaa;text-align:center">\u2014</td>
+          <td style="color:#aaa;text-align:center">\u2014</td>
+          <td style="text-align:center">${rpCatalogLifecycleBadge(s.strategy_lifecycle_status || lifecycle)}</td>
+          <td style="text-align:center;color:#bbb;font-size:11px">\u7121\u6B77\u53F2\u56DE\u653E\u8CC7\u6599</td>
+        </tr>`);
+      tbody.innerHTML = infoRow + strategyRows.join('');
+      if (totalLabel) totalLabel.textContent = `\u76EE\u9304\u6A21\u5F0F\uFF1A${strategies.length} \u500B\u5DF2\u767B\u9304\u7B56\u7565`;
+    } catch (e) {
+      tbody.innerHTML = `<tr><td colspan="9" style="text-align:center;color:red">\u76EE\u9304\u8F09\u5165\u5931\u6557\uFF1A${rpEscapeHtml(e.message)}</td></tr>`;
+    }
+  }
+
   // Query history records
   async function rpQuery() {
     const lt     = document.getElementById('rp-lottery-select').value;
@@ -3056,8 +3136,12 @@
 
       const records = data.records || [];
       if (!records.length) {
-                const emptyMsg = lc ? '目前無此狀態策略，等待 catalog backfill' : '查無資料';
-                tbody.innerHTML = `<tr><td colspan="9" style="text-align:center;color:#888;padding:16px 8px">${emptyMsg}</td></tr>`;
+        // P25: Catalog Display Mode — show registered strategies for non-ONLINE lifecycles
+        if (lc && lc !== 'ONLINE') {
+          await rpRenderCatalogDisplayMode(lc, lt);
+        } else {
+          tbody.innerHTML = '<tr><td colspan="9" style="text-align:center;color:#888;padding:16px 8px">查無資料</td></tr>';
+        }
         return;
       }
       tbody.innerHTML = records.map(r => {

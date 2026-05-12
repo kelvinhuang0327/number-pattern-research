@@ -173,6 +173,27 @@ def _strategies_payload(lifecycle_status: str):
             "filter_lifecycle_status": lifecycle_status,
             "filter": "BIG_LOTTO",
         }
+    # P25: non-ONLINE lifecycles expose catalog entries (display-only, no history)
+    if lifecycle_status in ("REJECTED", "RETIRED", "OBSERVATION"):
+        return {
+            "strategies": [
+                {
+                    "strategy_id": f"example_{lifecycle_status.lower()}_01",
+                    "strategy_name": f"Catalog Example ({lifecycle_status})",
+                    "strategy_version": "v0.1",
+                    "supported_lottery_types": ["BIG_LOTTO"],
+                    "min_history": 100,
+                    "status": lifecycle_status,
+                    "lifecycle_status": lifecycle_status,
+                    "strategy_lifecycle_status": lifecycle_status,
+                }
+            ],
+            "count": 1,
+            "filter_lottery_type": "BIG_LOTTO",
+            "filter_lifecycle_status": lifecycle_status,
+            "filter": "BIG_LOTTO",
+        }
+    # OFFLINE has no registered entries → shows "coming soon" in catalog mode
     return {"strategies": [], "count": 0, "filter_lottery_type": "BIG_LOTTO", "filter_lifecycle_status": lifecycle_status, "filter": "BIG_LOTTO"}
 
 
@@ -260,17 +281,31 @@ def test_lifecycle_filter_browser_dom_changes():
             )
             before = page.locator('#rp-hist-body').inner_text()
 
+            # P25: OFFLINE → catalog display mode with "coming soon" (no registered OFFLINE strategies)
             page.select_option('#rp-lifecycle-select', 'OFFLINE')
             page.locator('#rp-query-btn').click()
             page.wait_for_function(
-                "() => document.querySelector('#rp-hist-body').innerText.includes('目前無此狀態策略，等待 catalog backfill')",
+                "() => document.querySelector('#rp-hist-body').innerText.includes('coming soon')",
                 timeout=5000,
             )
-            after = page.locator('#rp-hist-body').inner_text()
+            after_offline = page.locator('#rp-hist-body').inner_text()
 
-            assert before != after
-            assert '目前無此狀態策略，等待 catalog backfill' in after
+            assert before != after_offline
+            assert 'coming soon' in after_offline, "P25 catalog mode must show 'coming soon' for OFFLINE (no registered entries)"
             assert page.locator('#rp-lifecycle-select').input_value() == 'OFFLINE'
+
+            # P25/P26: REJECTED → catalog display mode with registered strategy rows visible
+            page.select_option('#rp-lifecycle-select', 'REJECTED')
+            page.locator('#rp-query-btn').click()
+            page.wait_for_function(
+                "() => document.querySelector('#rp-hist-body').innerText.includes('無歷史回放資料')",
+                timeout=5000,
+            )
+            after_rejected = page.locator('#rp-hist-body').inner_text()
+
+            assert '無歷史回放資料' in after_rejected, "P25 catalog mode must render display-only rows for REJECTED lifecycle"
+            assert 'REJECTED' in after_rejected, "Lifecycle badge must include REJECTED identifier in catalog display"
+            assert page.locator('#rp-lifecycle-select').input_value() == 'REJECTED'
 
             browser.close()
 

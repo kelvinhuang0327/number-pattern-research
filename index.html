@@ -268,12 +268,18 @@
         .rp-truth-fixture { background:#1f6feb; color:#fff; }
         .rp-truth-retro { background:#6f42c1; color:#fff; }
         .rp-truth-legacy-err { background:#e3b341; color:#fff; }
+        /* P2: new truth-level badges */
+        .rp-truth-artifact-prov { background:#d1680b; color:#fff; }
+        .rp-truth-tombstone { background:#6e7681; color:#fff; }
         /* Row backgrounds */
         .rp-row-fixture { background:#e7f3ff; }
         .rp-row-retro { background:#e7f3ff; }
         .rp-row-legacy-err { background:#fff3cd; }
         .rp-row-display-only-disclaimer { background:#fffbf0; border-bottom:1px solid #30363d; }
         .rp-row-missing-history-tombstone { background:#f5f5f5; border-bottom:1px solid #30363d; }
+        /* P2: new disclaimer row backgrounds */
+        .rp-row-artifact-prov { background:#fff4ec; border-bottom:1px solid #30363d; }
+        .rp-row-tombstone-no-source { background:#f6f8fa; border-bottom:1px solid #30363d; }
 
         /* schedule status badges */
         .pt-sched-none     { background:#21262d; color:#7d8590; }
@@ -2871,7 +2877,16 @@
      * Derives the truth-level for a strategy based on lifecycle status and row counts.
      * @param {Object} strategy - Strategy object with lifecycle_status and is_executable
      * @param {Object} rowCounts - Row counts (total_rows, production_row_count, etc.)
-     * @returns {string} One of: PRODUCTION_REPLAY, DISPLAY_ONLY, MISSING_HISTORY, UNKNOWN
+     * @returns {string} One of: PRODUCTION_REPLAY, ARTIFACT_PROVENANCE_ONLY, TOMBSTONE_NO_SOURCE,
+     *   DISPLAY_ONLY, MISSING_HISTORY, UNKNOWN
+     *
+     * P2 truth-level taxonomy v2:
+     *   PRODUCTION_REPLAY        — ONLINE strategy with production replay rows
+     *   ARTIFACT_PROVENANCE_ONLY — REJECTED/OBSERVATION with no adapter but has backtest/rejected artifact provenance
+     *   TOMBSTONE_NO_SOURCE      — RETIRED strategy with no production rows, no adapter, no artifact code
+     *   DISPLAY_ONLY             — fallback for REJECTED/OBSERVATION if no finer classification applies
+     *   MISSING_HISTORY          — RETIRED with no production rows (legacy; TOMBSTONE_NO_SOURCE preferred)
+     *   UNKNOWN                  — unclassified (safe fallback)
      */
     function deriveTruthLevelForStrategy(strategy, rowCounts) {
         const lc = strategy.lifecycle_status;
@@ -2881,13 +2896,15 @@
         // ONLINE strategies with production rows
         if (lc === 'ONLINE' && totalRows > 0) return 'PRODUCTION_REPLAY';
 
-        // REJECTED / OBSERVATION strategies with 0 production rows but has evidence
-        if ((lc === 'REJECTED' || lc === 'OBSERVATION') && !exec) return 'DISPLAY_ONLY';
+        // P2: REJECTED strategies — all have rejected artifact provenance (rejected/*.json or strategies/ dir)
+        // OBSERVATION strategies — under shadow eval, implies artifact/governance evidence
+        // Neither can generate production replay rows without explicit P3 authorization
+        if ((lc === 'REJECTED' || lc === 'OBSERVATION') && !exec) return 'ARTIFACT_PROVENANCE_ONLY';
 
-        // RETIRED strategies with 0 production rows and no adapter
-        if (lc === 'RETIRED' && !exec && totalRows === 0) return 'MISSING_HISTORY';
+        // P2: RETIRED strategies with 0 production rows — no source code exists in repo → tombstone
+        if (lc === 'RETIRED' && !exec && totalRows === 0) return 'TOMBSTONE_NO_SOURCE';
 
-        // RETIRED strategies with production rows (old ONLINE, now retired)
+        // RETIRED strategies with production rows (old ONLINE, now retired with historical data)
         if (lc === 'RETIRED' && totalRows > 0) return 'PRODUCTION_REPLAY';
 
         return 'UNKNOWN';
@@ -2895,7 +2912,8 @@
 
     /**
      * Renders a truth-level badge HTML.
-     * @param {string} truthLevel - One of: PRODUCTION_REPLAY, DISPLAY_ONLY, MISSING_HISTORY, FIXTURE_ONLY, LEGACY_ERROR, REGENERATED_RETROSPECTIVE
+     * @param {string} truthLevel - One of: PRODUCTION_REPLAY, ARTIFACT_PROVENANCE_ONLY, TOMBSTONE_NO_SOURCE,
+     *   DISPLAY_ONLY, MISSING_HISTORY, FIXTURE_ONLY, LEGACY_ERROR, REGENERATED_RETROSPECTIVE
      * @returns {string} Badge HTML
      */
     function renderTruthLevelBadge(truthLevel) {
@@ -2906,6 +2924,9 @@
             'FIXTURE_ONLY': '<span class="rp-truth-badge rp-truth-fixture" title="FIXTURE：合成測試資料，僅供驗收使用" aria-label="FIXTURE: Fixture/test-only evidence">FIXTURE</span>',
             'LEGACY_ERROR': '<span class="rp-truth-badge rp-truth-legacy-err" title="LEGACY ERROR：舊回放錯誤保留作稽核紀錄，不會隱藏或刪除" aria-label="LEGACY ERROR: Legacy replay error retained for audit transparency">LEGACY ERROR</span>',
             'REGENERATED_RETROSPECTIVE': '<span class="rp-truth-badge rp-truth-retro" title="RETROSPECTIVE：未來回溯補建資料的預留位置" aria-label="RETROSPECTIVE: Future regenerated retrospective placeholder">RETROSPECTIVE</span>',
+            /* P2: new truth levels */
+            'ARTIFACT_PROVENANCE_ONLY': '<span class="rp-truth-badge rp-truth-artifact-prov" title="僅有證據檔：此策略有 rejected artifact 或回測記錄，但無可執行 Python adapter" aria-label="ARTIFACT ONLY: Rejected artifact or backtest record exists, no executable adapter">僅有證據檔</span>',
+            'TOMBSTONE_NO_SOURCE': '<span class="rp-truth-badge rp-truth-tombstone" title="無原始碼封存：此策略已退役且無任何可執行 code 或 artifact，不可重建預測紀錄" aria-label="TOMBSTONE: No source code or artifact exists, prediction records cannot be regenerated">無原始碼封存</span>',
         };
         return badges[truthLevel] || '<span class="rp-truth-badge" style="background:#ccc;color:#666" title="UNKNOWN: Truth level could not be determined" aria-label="UNKNOWN: Truth level could not be determined">UNKNOWN</span>';
     }
@@ -2988,12 +3009,28 @@
                 + '</tr>'
             );
 
-            // P61: Conditional disclaimer / tombstone rows
+            // P61/P2: Conditional disclaimer / tombstone rows
             if (truthLevel === 'DISPLAY_ONLY') {
                 htmlRows.push(
                     '<tr class="rp-row-display-only-disclaimer">'
                     + '<td colspan="6" style="padding:8px;font-size:11px;color:#7d4e00">'
                     + '⚠️ 此策略僅顯示 metadata，不代表已存在 production replay 回放。<br><span style="color:#999">This strategy was evaluated but is not in active production. No per-draw prediction history is available.</span>'
+                    + '</td>'
+                    + '</tr>'
+                );
+            } else if (truthLevel === 'ARTIFACT_PROVENANCE_ONLY') {
+                htmlRows.push(
+                    '<tr class="rp-row-artifact-prov">'
+                    + '<td colspan="6" style="padding:8px;font-size:11px;color:#7d3000">'
+                    + '📋 此策略有 rejected artifact 或回測記錄，但無可執行的 Python adapter。不代表已有 production replay 回放，亦不代表預測紀錄可重建。<br><span style="color:#999">This strategy has backtest/rejected artifacts but no executable adapter. It cannot produce replay rows without explicit P3 authorization.</span>'
+                    + '</td>'
+                    + '</tr>'
+                );
+            } else if (truthLevel === 'TOMBSTONE_NO_SOURCE') {
+                htmlRows.push(
+                    '<tr class="rp-row-tombstone-no-source">'
+                    + '<td colspan="6" style="padding:10px;text-align:center;font-size:12px;color:#6e7681">'
+                    + '🪦 此策略已退役且無任何原始碼或 artifact。預測紀錄無法重建，不會產生假回放列。<br><span style="color:#aaa">This strategy has been retired with no source code or artifact. Prediction records cannot be regenerated.</span>'
                     + '</td>'
                     + '</tr>'
                 );

@@ -2709,6 +2709,7 @@
   let rpTotal = 0;
   let rpPages = 1;
     let rpLifecycleRegistryRows = [];
+    let rpStrategyRowCountMap = {};  // P63: strategy_id → total_rows from /api/replay/summary
     let rpFixtureMode = false;
 
     function rpSetFixtureModeBanner(active) {
@@ -2909,6 +2910,40 @@
         return badges[truthLevel] || '<span class="rp-truth-badge" style="background:#ccc;color:#666">UNKNOWN</span>';
     }
 
+    // ── P63: Row Count Fetch Helpers ─────────────────────────────────────────
+    /**
+     * P63: Fetches /api/replay/summary for one lottery type.
+     * Returns strategy_id → total_rows map; empty map on any error (graceful fallback).
+     * @param {string} lotteryType - e.g. 'BIG_LOTTO', 'POWER_LOTTO', 'DAILY_539'
+     * @returns {Promise<Object>}
+     */
+    async function rpFetchReplaySummaryCounts(lotteryType) {
+        try {
+            const resp = await fetch('/api/replay/summary?lottery_type=' + encodeURIComponent(lotteryType));
+            if (!resp.ok) return {};
+            const data = await resp.json();
+            return rpBuildStrategyRowCountMap(data.summaries || []);
+        } catch (e) {
+            console.warn('[P63] summary fetch failed for', lotteryType, e);
+            return {};
+        }
+    }
+
+    /**
+     * P63: Converts summary array into strategy_id → total_rows map.
+     * @param {Array} summaries - Array of {strategy_id, total_rows, ...}
+     * @returns {Object}
+     */
+    function rpBuildStrategyRowCountMap(summaries) {
+        const map = {};
+        (summaries || []).forEach(function(s) {
+            if (s.strategy_id) {
+                map[s.strategy_id] = (s.total_rows || 0);
+            }
+        });
+        return map;
+    }
+
     function rpRenderLifecycleRegistryRows() {
         const tbody = document.getElementById('rp-lc-tbody');
         const rowCount = document.getElementById('rp-lc-row-count');
@@ -2936,8 +2971,8 @@
                 ? s.supported_lottery_types.join(', ')
                 : (s.supported_lottery_types || '—');
 
-            // P61: Derive truth-level (assuming 0 rows for now; real row counts would come from summary API)
-            const rowCounts = { total_rows: 0 };  // TODO: integrate with /api/replay/summary if needed
+            // P63: Use real production replay row counts from /api/replay/summary
+            const rowCounts = { total_rows: rpStrategyRowCountMap[s.strategy_id] || 0 };
             const truthLevel = deriveTruthLevelForStrategy(s, rowCounts);
             const truthBadge = renderTruthLevelBadge(truthLevel);
 
@@ -3425,6 +3460,22 @@
         const el = document.getElementById(id);
         if (el) el.textContent = text;
       }
+
+            // P63: Collect all lottery types from registry, fetch summary counts, then render
+            const lotteryTypes = new Set();
+            rpLifecycleRegistryRows.forEach(function(s) {
+                (s.supported_lottery_types || []).forEach(function(lt) { lotteryTypes.add(lt); });
+            });
+            rpStrategyRowCountMap = {};
+            try {
+                const countResults = await Promise.all(
+                    Array.from(lotteryTypes).map(function(lt) { return rpFetchReplaySummaryCounts(lt); })
+                );
+                countResults.forEach(function(counts) { Object.assign(rpStrategyRowCountMap, counts); });
+            } catch (e) {
+                console.warn('[P63] summary count merge failed, rendering with fallback counts=0', e);
+                rpStrategyRowCountMap = {};
+            }
 
             rpRenderLifecycleRegistryRows();
 

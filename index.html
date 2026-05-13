@@ -259,6 +259,22 @@
         .pt-rsm-pos { color:#3fb950; font-weight:700; }
         .pt-rsm-neg { color:#f85149; font-weight:700; }
         .pt-rsm-note { font-size:11px; color:#7d8590; font-style:italic; margin-top:2px; }
+
+        /* ── P61: Replay Truth-Level Badges ── */
+        .rp-truth-badge { display:inline-block; padding:2px 10px; border-radius:12px; font-size:12px; font-weight:600; }
+        .rp-truth-production { background:#1a7f37; color:#fff; }
+        .rp-truth-display { background:#bb8009; color:#fff; }
+        .rp-truth-missing { background:#4a4a4a; color:#ccc; }
+        .rp-truth-fixture { background:#1f6feb; color:#fff; }
+        .rp-truth-retro { background:#1f6feb; color:#fff; }
+        .rp-truth-legacy-err { background:#e3b341; color:#fff; }
+        /* Row backgrounds */
+        .rp-row-fixture { background:#e7f3ff; }
+        .rp-row-retro { background:#e7f3ff; }
+        .rp-row-legacy-err { background:#fff3cd; }
+        .rp-row-display-only-disclaimer { background:#fffbf0; border-bottom:1px solid #30363d; }
+        .rp-row-missing-history-tombstone { background:#f5f5f5; border-bottom:1px solid #30363d; }
+
         /* schedule status badges */
         .pt-sched-none     { background:#21262d; color:#7d8590; }
         .pt-sched-scheduled{ background:rgba(31,111,235,.2); color:#79c0ff; }
@@ -2114,11 +2130,12 @@
                         <th style="padding:6px 8px;text-align:left;border-bottom:1px solid #30363d;white-space:nowrap">名稱</th>
                         <th style="padding:6px 8px;text-align:left;border-bottom:1px solid #30363d;white-space:nowrap">支援彩種</th>
                         <th style="padding:6px 8px;text-align:center;border-bottom:1px solid #30363d;white-space:nowrap">生命週期</th>
+                        <th style="padding:6px 8px;text-align:center;border-bottom:1px solid #30363d;white-space:nowrap">Truth Level</th>
                         <th style="padding:6px 8px;text-align:center;border-bottom:1px solid #30363d;white-space:nowrap">可執行</th>
                       </tr>
                     </thead>
                     <tbody id="rp-lc-tbody">
-                      <tr><td colspan="5" style="text-align:center;color:#888;padding:12px">載入中…</td></tr>
+                      <tr><td colspan="6" style="text-align:center;color:#888;padding:12px">載入中…</td></tr>
                     </tbody>
                   </table>
                 </div>
@@ -2692,6 +2709,7 @@
   let rpTotal = 0;
   let rpPages = 1;
     let rpLifecycleRegistryRows = [];
+    let rpStrategyRowCountMap = {};  // P63: strategy_id → total_rows from /api/replay/summary
     let rpFixtureMode = false;
 
     function rpSetFixtureModeBanner(active) {
@@ -2848,6 +2866,84 @@
         return filtered;
     }
 
+    // ── P61: Truth-Level Derivation Helpers ──────────────────────────────────
+    /**
+     * Derives the truth-level for a strategy based on lifecycle status and row counts.
+     * @param {Object} strategy - Strategy object with lifecycle_status and is_executable
+     * @param {Object} rowCounts - Row counts (total_rows, production_row_count, etc.)
+     * @returns {string} One of: PRODUCTION_REPLAY, DISPLAY_ONLY, MISSING_HISTORY, UNKNOWN
+     */
+    function deriveTruthLevelForStrategy(strategy, rowCounts) {
+        const lc = strategy.lifecycle_status;
+        const exec = strategy.is_executable;
+        const totalRows = rowCounts ? (rowCounts.total_rows || 0) : 0;
+
+        // ONLINE strategies with production rows
+        if (lc === 'ONLINE' && totalRows > 0) return 'PRODUCTION_REPLAY';
+
+        // REJECTED / OBSERVATION strategies with 0 production rows but has evidence
+        if ((lc === 'REJECTED' || lc === 'OBSERVATION') && !exec) return 'DISPLAY_ONLY';
+
+        // RETIRED strategies with 0 production rows and no adapter
+        if (lc === 'RETIRED' && !exec && totalRows === 0) return 'MISSING_HISTORY';
+
+        // RETIRED strategies with production rows (old ONLINE, now retired)
+        if (lc === 'RETIRED' && totalRows > 0) return 'PRODUCTION_REPLAY';
+
+        return 'UNKNOWN';
+    }
+
+    /**
+     * Renders a truth-level badge HTML.
+     * @param {string} truthLevel - One of: PRODUCTION_REPLAY, DISPLAY_ONLY, MISSING_HISTORY, FIXTURE_ONLY, LEGACY_ERROR, REGENERATED_RETROSPECTIVE
+     * @returns {string} Badge HTML
+     */
+    function renderTruthLevelBadge(truthLevel) {
+        const badges = {
+            'PRODUCTION_REPLAY': '<span class="rp-truth-badge rp-truth-production">LIVE</span>',
+            'DISPLAY_ONLY': '<span class="rp-truth-badge rp-truth-display">METADATA ONLY</span>',
+            'MISSING_HISTORY': '<span class="rp-truth-badge rp-truth-missing">NO HISTORY</span>',
+            'FIXTURE_ONLY': '<span class="rp-truth-badge rp-truth-fixture">FIXTURE</span>',
+            'LEGACY_ERROR': '<span class="rp-truth-badge rp-truth-legacy-err">LEGACY ERROR</span>',
+            'REGENERATED_RETROSPECTIVE': '<span class="rp-truth-badge rp-truth-retro">RETROSPECTIVE</span>',
+        };
+        return badges[truthLevel] || '<span class="rp-truth-badge" style="background:#ccc;color:#666">UNKNOWN</span>';
+    }
+
+    // ── P63: Row Count Fetch Helpers ─────────────────────────────────────────
+    /**
+     * P63: Fetches /api/replay/summary for one lottery type.
+     * Returns strategy_id → total_rows map; empty map on any error (graceful fallback).
+     * @param {string} lotteryType - e.g. 'BIG_LOTTO', 'POWER_LOTTO', 'DAILY_539'
+     * @returns {Promise<Object>}
+     */
+    async function rpFetchReplaySummaryCounts(lotteryType) {
+        try {
+            const resp = await fetch('/api/replay/summary?lottery_type=' + encodeURIComponent(lotteryType));
+            if (!resp.ok) return {};
+            const data = await resp.json();
+            return rpBuildStrategyRowCountMap(data.summaries || []);
+        } catch (e) {
+            console.warn('[P63] summary fetch failed for', lotteryType, e);
+            return {};
+        }
+    }
+
+    /**
+     * P63: Converts summary array into strategy_id → total_rows map.
+     * @param {Array} summaries - Array of {strategy_id, total_rows, ...}
+     * @returns {Object}
+     */
+    function rpBuildStrategyRowCountMap(summaries) {
+        const map = {};
+        (summaries || []).forEach(function(s) {
+            if (s.strategy_id) {
+                map[s.strategy_id] = (s.total_rows || 0);
+            }
+        });
+        return map;
+    }
+
     function rpRenderLifecycleRegistryRows() {
         const tbody = document.getElementById('rp-lc-tbody');
         const rowCount = document.getElementById('rp-lc-row-count');
@@ -2859,12 +2955,14 @@
         }
 
         if (!rows.length) {
-            tbody.innerHTML = '<tr><td colspan="5" style="text-align:center;color:#888;padding:12px">查無符合條件的策略</td></tr>';
+            tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;color:#888;padding:12px">查無符合條件的策略</td></tr>';
             return;
         }
 
         const lc_color = { ONLINE: '#1a7f37', REJECTED: '#9b2335', RETIRED: '#555', OBSERVATION: '#7d5a00' };
-        tbody.innerHTML = rows.map(function(s) {
+        const htmlRows = [];
+
+        rows.forEach(function(s) {
             const statusColor = lc_color[s.lifecycle_status] || '#555';
             const execBadge   = s.is_executable
                 ? '<span style="color:#1a7f37;font-weight:600">✓</span>'
@@ -2872,14 +2970,45 @@
             const lotTypes = Array.isArray(s.supported_lottery_types)
                 ? s.supported_lottery_types.join(', ')
                 : (s.supported_lottery_types || '—');
-            return '<tr style="border-bottom:1px solid #21262d">'
+
+            // P63: Use real production replay row counts from /api/replay/summary
+            const rowCounts = { total_rows: rpStrategyRowCountMap[s.strategy_id] || 0 };
+            const truthLevel = deriveTruthLevelForStrategy(s, rowCounts);
+            const truthBadge = renderTruthLevelBadge(truthLevel);
+
+            // Main strategy row
+            htmlRows.push(
+                '<tr style="border-bottom:1px solid #21262d">'
                 + '<td style="padding:5px 8px;font-family:monospace;font-size:11px">' + _esc(s.strategy_id) + '</td>'
                 + '<td style="padding:5px 8px;font-size:12px">'  + _esc(s.strategy_name || '—') + '</td>'
                 + '<td style="padding:5px 8px;font-size:11px;color:#8b949e">' + _esc(lotTypes) + '</td>'
                 + '<td style="padding:5px 8px;text-align:center"><span style="padding:1px 8px;border-radius:10px;font-size:11px;font-weight:600;background:' + statusColor + ';color:#fff">' + _esc(s.lifecycle_status) + '</span></td>'
+                + '<td style="padding:5px 8px;text-align:center">' + truthBadge + '</td>'
                 + '<td style="padding:5px 8px;text-align:center">' + execBadge + '</td>'
-                + '</tr>';
-        }).join('');
+                + '</tr>'
+            );
+
+            // P61: Conditional disclaimer / tombstone rows
+            if (truthLevel === 'DISPLAY_ONLY') {
+                htmlRows.push(
+                    '<tr class="rp-row-display-only-disclaimer">'
+                    + '<td colspan="6" style="padding:8px;font-size:11px;color:#7d4e00">'
+                    + '⚠️ This strategy was evaluated but is not in active production. No per-draw prediction history is available.'
+                    + '</td>'
+                    + '</tr>'
+                );
+            } else if (truthLevel === 'MISSING_HISTORY') {
+                htmlRows.push(
+                    '<tr class="rp-row-missing-history-tombstone">'
+                    + '<td colspan="6" style="padding:10px;text-align:center;font-size:12px;color:#888">'
+                    + '🪦 This strategy has been retired. Historical prediction records are not available.'
+                    + '</td>'
+                    + '</tr>'
+                );
+            }
+        });
+
+        tbody.innerHTML = htmlRows.join('');
     }
 
   // Causal safety check: history_cutoff must be < target_draw
@@ -3152,7 +3281,23 @@
         const actSpecial   = r.actual_special != null ? rpSpecialChip(r.actual_special, !!r.special_hit, '特') : '';
         const specialHit   = r.special_hit ? ' ⭐' : '';
                 const statusBadge  = rpStatusBadge(r.replay_status);
-        return `<tr>
+
+        // P61: Derive truth-level for per-row display
+        let truthLevelBadge = '';
+        let rowClass = '';
+        let tooltipTitle = '';
+        if (r.fixture_mode || r.fixture_only || r.synthetic_only) {
+            truthLevelBadge = renderTruthLevelBadge('FIXTURE_ONLY');
+            rowClass = 'rp-row-fixture';
+        } else if (r.replay_status === 'REPLAY_ERROR') {
+            truthLevelBadge = renderTruthLevelBadge('LEGACY_ERROR');
+            rowClass = 'rp-row-legacy-err';
+            tooltipTitle = r.reject_reason
+                ? 'Prediction unavailable: ' + r.reject_reason
+                : 'Prediction unavailable due to adapter bug in run #3 (2026-05-07). Issue was resolved immediately. Subsequent runs are clean.';
+        }
+
+        return `<tr class="${rowClass}" title="${_esc(tooltipTitle)}">
           <td>${r.target_draw}</td>
           <td>${r.target_date || ''}</td>
           <td style="font-size:11px">${r.strategy_id}</td>
@@ -3160,7 +3305,7 @@
           <td>${rpBadges(actual, hits)} ${actSpecial}</td>
           <td>${rpBadges(hits, hits)}${specialHit}</td>
           <td style="font-weight:600;text-align:center">${r.hit_count != null ? r.hit_count : '—'}</td>
-                    <td style="text-align:center">${statusBadge}</td>
+                    <td style="text-align:center">${statusBadge}${truthLevelBadge ? ' ' + truthLevelBadge : ''}</td>
           <td style="text-align:center"><button class="rp-toggle-btn" data-row-id="${r.id}" style="font-size:11px;padding:2px 8px;cursor:pointer;border:1px solid #3498db;border-radius:4px;background:#eaf4fb;color:#2980b9">▶ 詳情</button></td>
         </tr>
         <tr class="rp-detail-row" id="rp-detail-${r.id}" style="display:none">
@@ -3315,6 +3460,22 @@
         const el = document.getElementById(id);
         if (el) el.textContent = text;
       }
+
+            // P63: Collect all lottery types from registry, fetch summary counts, then render
+            const lotteryTypes = new Set();
+            rpLifecycleRegistryRows.forEach(function(s) {
+                (s.supported_lottery_types || []).forEach(function(lt) { lotteryTypes.add(lt); });
+            });
+            rpStrategyRowCountMap = {};
+            try {
+                const countResults = await Promise.all(
+                    Array.from(lotteryTypes).map(function(lt) { return rpFetchReplaySummaryCounts(lt); })
+                );
+                countResults.forEach(function(counts) { Object.assign(rpStrategyRowCountMap, counts); });
+            } catch (e) {
+                console.warn('[P63] summary count merge failed, rendering with fallback counts=0', e);
+                rpStrategyRowCountMap = {};
+            }
 
             rpRenderLifecycleRegistryRows();
 

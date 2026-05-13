@@ -266,7 +266,7 @@
         .rp-truth-display { background:#bb8009; color:#fff; }
         .rp-truth-missing { background:#4a4a4a; color:#ccc; }
         .rp-truth-fixture { background:#1f6feb; color:#fff; }
-        .rp-truth-retro { background:#1f6feb; color:#fff; }
+        .rp-truth-retro { background:#6f42c1; color:#fff; }
         .rp-truth-legacy-err { background:#e3b341; color:#fff; }
         /* Row backgrounds */
         .rp-row-fixture { background:#e7f3ff; }
@@ -2121,7 +2121,7 @@
                   ⚠️ 本表為稽核用途，僅顯示策略生命週期狀態。非 ONLINE 策略不可執行 replay。
                 </div>
                 <div id="rp-lc-loading" style="color:#666;font-size:13px">⏳ 載入中…</div>
-                <div id="rp-lc-error"   style="display:none;color:#c0392b;font-size:12px">⚠️ 生命週期資料讀取失敗</div>
+                <div id="rp-lc-error"   style="display:none;color:#c0392b;font-size:12px">⚠️ 生命週期資料讀取失敗（Lifecycle registry endpoint unavailable）<br><span style="font-size:11px;color:#888">請確認目前啟動的是 main branch backend，且 /api/replay/strategy-lifecycle 可用。<br>Please confirm the main-branch backend is running and /api/replay/strategy-lifecycle is available.</span></div>
                 <div id="rp-lc-table-wrap" style="display:none;overflow-x:auto">
                   <table style="width:100%;border-collapse:collapse;font-size:12px" id="rp-lc-table">
                     <thead>
@@ -2900,14 +2900,14 @@
      */
     function renderTruthLevelBadge(truthLevel) {
         const badges = {
-            'PRODUCTION_REPLAY': '<span class="rp-truth-badge rp-truth-production">LIVE</span>',
-            'DISPLAY_ONLY': '<span class="rp-truth-badge rp-truth-display">METADATA ONLY</span>',
-            'MISSING_HISTORY': '<span class="rp-truth-badge rp-truth-missing">NO HISTORY</span>',
-            'FIXTURE_ONLY': '<span class="rp-truth-badge rp-truth-fixture">FIXTURE</span>',
-            'LEGACY_ERROR': '<span class="rp-truth-badge rp-truth-legacy-err">LEGACY ERROR</span>',
-            'REGENERATED_RETROSPECTIVE': '<span class="rp-truth-badge rp-truth-retro">RETROSPECTIVE</span>',
+            'PRODUCTION_REPLAY': '<span class="rp-truth-badge rp-truth-production" title="LIVE：此策略有 production replay 資料列" aria-label="LIVE: Production replay rows exist">LIVE</span>',
+            'DISPLAY_ONLY': '<span class="rp-truth-badge rp-truth-display" title="METADATA ONLY：此策略僅顯示 metadata，不代表已有 production replay 回放" aria-label="METADATA ONLY: Metadata only, not production replay">METADATA ONLY</span>',
+            'MISSING_HISTORY': '<span class="rp-truth-badge rp-truth-missing" title="NO HISTORY：此策略沒有 production replay 歷史資料" aria-label="NO HISTORY: No production replay history available">NO HISTORY</span>',
+            'FIXTURE_ONLY': '<span class="rp-truth-badge rp-truth-fixture" title="FIXTURE：合成測試資料，僅供驗收使用" aria-label="FIXTURE: Fixture/test-only evidence">FIXTURE</span>',
+            'LEGACY_ERROR': '<span class="rp-truth-badge rp-truth-legacy-err" title="LEGACY ERROR：舊回放錯誤保留作稽核紀錄，不會隱藏或刪除" aria-label="LEGACY ERROR: Legacy replay error retained for audit transparency">LEGACY ERROR</span>',
+            'REGENERATED_RETROSPECTIVE': '<span class="rp-truth-badge rp-truth-retro" title="RETROSPECTIVE：未來回溯補建資料的預留位置" aria-label="RETROSPECTIVE: Future regenerated retrospective placeholder">RETROSPECTIVE</span>',
         };
-        return badges[truthLevel] || '<span class="rp-truth-badge" style="background:#ccc;color:#666">UNKNOWN</span>';
+        return badges[truthLevel] || '<span class="rp-truth-badge" style="background:#ccc;color:#666" title="UNKNOWN: Truth level could not be determined" aria-label="UNKNOWN: Truth level could not be determined">UNKNOWN</span>';
     }
 
     // ── P63: Row Count Fetch Helpers ─────────────────────────────────────────
@@ -2993,7 +2993,7 @@
                 htmlRows.push(
                     '<tr class="rp-row-display-only-disclaimer">'
                     + '<td colspan="6" style="padding:8px;font-size:11px;color:#7d4e00">'
-                    + '⚠️ This strategy was evaluated but is not in active production. No per-draw prediction history is available.'
+                    + '⚠️ 此策略僅顯示 metadata，不代表已存在 production replay 回放。<br><span style="color:#999">This strategy was evaluated but is not in active production. No per-draw prediction history is available.</span>'
                     + '</td>'
                     + '</tr>'
                 );
@@ -3001,7 +3001,7 @@
                 htmlRows.push(
                     '<tr class="rp-row-missing-history-tombstone">'
                     + '<td colspan="6" style="padding:10px;text-align:center;font-size:12px;color:#888">'
-                    + '🪦 This strategy has been retired. Historical prediction records are not available.'
+                    + '🪦 此策略目前沒有 production replay 歷史資料；不會產生假回放列。<br><span style="color:#aaa">This strategy has been retired. Historical prediction records are not available.</span>'
                     + '</td>'
                     + '</tr>'
                 );

@@ -101,7 +101,53 @@ frontend(replay): add truth-level badges with row-count integration
 
 ---
 
-## 10. Final Markers (Draft — to be updated after PR open)
+## 10. Final Markers (see Section 12 for complete status)
+
+---
+
+## 11. PR Verification (Stage H Results)
+
+### PR Metadata
+
+| Field | Value |
+|---|---|
+| **PR Number** | #84 |
+| **PR URL** | https://github.com/kelvinhuang0327/number-pattern-research/pull/84 |
+| **State** | OPEN ✅ |
+| **Base** | `main` ✅ |
+| **Head** | `frontend/p61-replay-truth-level-badge-mvp-20260512` ✅ |
+| **Mergeable** | MERGEABLE ✅ |
+| **Merge State** | BLOCKED (awaiting reviewer approval — expected) ✅ |
+
+### PR Checks
+
+| Check | Status |
+|---|---|
+| Replay Governance CI (job 1) | ✅ success (14s) |
+| Replay Governance CI (job 2) | ⏳ pending |
+| Replay Governance CI (job 3) | — skipped |
+
+> One check still pending at time of report. Not failing. mergeStateStatus=BLOCKED is expected (no reviewer approval yet, not a code failure).
+
+### Diff Scope (name-only)
+
+```
+index.html
+outputs/replay/p61_replay_truth_level_badge_mvp_report_20260512.md
+outputs/replay/p62_p61_pr_readiness_and_ui_verification_20260512.md
+outputs/replay/p63_row_count_integration_report_20260512.md
+outputs/replay/p64_pr_readiness_gate_report_20260512.md
+outputs/replay/p65_pr_opening_and_review_gate_report_20260512.md
+```
+
+**Forbidden files in PR diff: 0** ✅  
+**DB file in diff: NO** ✅  
+**Registry file in diff: NO** ✅  
+**Total files: 6 (1 HTML + 5 report MDs)** ✅
+
+---
+
+## 12. Final Markers (Complete)
 
 - ✅ P65_APPROVAL_CONFIRMED
 - ✅ P65_BASELINE_VERIFIED
@@ -110,13 +156,7 @@ frontend(replay): add truth-level badges with row-count integration
 - ✅ P65_REGISTRY_UNCHANGED
 - ✅ P65_NO_DB_WRITE_VERIFIED
 - ✅ P65_REPORT_CREATED
-- ⏳ P65_BRANCH_PUSHED — pending Stage F
-- ⏳ P65_PR_OPENED_<URL> — pending Stage G
-- ⏳ P65_PR_CHECKS_REPORTED — pending Stage H
-- ⏳ P65_READY_FOR_REVIEW — pending Stage H
-
----
-
-## 11. PR Verification (populated after Stage H)
-
-*This section will be updated with PR URL, number, state, mergeable, mergeStateStatus, checks, and diff-name-only output.*
+- ✅ P65_BRANCH_PUSHED
+- ✅ P65_PR_OPENED_https://github.com/kelvinhuang0327/number-pattern-research/pull/84
+- ✅ P65_PR_CHECKS_REPORTED (1 passing, 1 pending, 0 failing)
+- ✅ P65_READY_FOR_REVIEW

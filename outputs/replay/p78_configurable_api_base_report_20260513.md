@@ -173,24 +173,24 @@ RETIRED `acb_*` and `midfreq_*` strategies: no code found. Likely pre-registry e
 
 ---
 
-## 10. Next Prompt — P1 Dry-Run Regeneration
+## 10. Next Prompt — P1 Executable Evidence Inventory
 
-> **P1 Mission**: Run retrospective regeneration for the 6 EXECUTABLE_NOW ONLINE strategies.
+> **P1 Mission**: Run the full-strategy executable evidence inventory before any regeneration.
 >
-> Entry points:
-> - `power_precision_3bet` → `tools/predict_power_precision_3bet.py`
-> - `power_orthogonal_5bet` → `tools/predict_power_orthogonal_5bet.py`
-> - `biglotto_triple_strike` → `tools/predict_biglotto_triple_strike.py`
-> - `biglotto_deviation_2bet` → `tools/predict_biglotto_deviation_2bet.py`
-> - `daily539_f4cold` → `tools/predict_539_5bet_f4cold.py`
-> - `daily539_markov_cold` → `tools/predict_539_markov_cold.py`
+> Scope:
+> - Audit all 16 canonical registry strategies.
+> - Audit orphan strategy artifacts under `tools/`, `strategies/`, `rejected/`, and sibling Lottery worktrees.
+> - For each candidate, record code path, import path, entry point, dry-call feasibility, failure reason, and provenance artifact.
+> - Classify each strategy as `EXECUTABLE_NOW`, `EXECUTABLE_WITH_FIX`, `CODE_MISSING`, or `TOMBSTONE`.
 >
-> For each strategy:
-> 1. Call `reg.get_adapter(strategy_id).get_one_bet(history, lottery_type)` for a dry-run draw, where `history` contains only draws before the target draw
-> 2. Verify output schema (list of ints, correct length for lottery type)
-> 3. Do NOT write to DB, do NOT create replay rows
-> 4. Report: adapter output sample + any errors
-> 5. Mark as P1_DRY_RUN_PASS or P1_DRY_RUN_FAIL per strategy
+> Rules:
+> - Do not write DB.
+> - Do not create replay rows.
+> - Do not promote/demote lifecycle state.
+> - Use `reg.get_adapter(strategy_id).get_one_bet(history, lottery_type)` only as a guarded dry-call check with causal history when P1 explicitly performs dry-call validation.
+>
+> Output:
+> - A per-strategy executable evidence table that supersedes the preliminary P78 inventory.
 
 ---
 
@@ -204,5 +204,5 @@ RETIRED `acb_*` and `midfreq_*` strategies: no code found. Likely pre-registry e
 - ✅ P78_REGISTRY_UNCHANGED — `3ea71cfc20c882714f3824ad68202f6e`
 - ✅ P78_REPORT_CREATED
 - ✅ P78_P1_CANDIDATE_INVENTORY_ATTACHED — EXECUTABLE_NOW=6, CODE_MISSING=10
-- ⏳ P78_PR_OPENED — (Stage 10)
-- ⏳ P78_READY_FOR_REVIEW
+- ✅ P78_PR_OPENED — PR #92
+- ✅ P78_READY_FOR_REVIEW — PR #92 mergeable, CI green

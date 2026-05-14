@@ -2703,7 +2703,10 @@
 (function() {
   'use strict';
 
-  const BASE = '/api/replay';
+  // P78: configurable API base — set window.API_BASE to the backend origin for local dev
+  // Production default: window.API_BASE is undefined → BASE resolves to '/api/replay' (same-origin)
+  const API_BASE = (typeof window !== 'undefined' && window.API_BASE ? String(window.API_BASE) : '').replace(/\/$/, '');
+  const BASE = `${API_BASE}/api/replay`;
   let rpPage = 1;
   const rpPageSize = 50;
   let rpTotal = 0;
@@ -2919,7 +2922,7 @@
      */
     async function rpFetchReplaySummaryCounts(lotteryType) {
         try {
-            const resp = await fetch('/api/replay/summary?lottery_type=' + encodeURIComponent(lotteryType));
+            const resp = await fetch(`${API_BASE}/api/replay/summary?lottery_type=` + encodeURIComponent(lotteryType));
             if (!resp.ok) return {};
             const data = await resp.json();
             return rpBuildStrategyRowCountMap(data.summaries || []);
@@ -3443,7 +3446,7 @@
     tableWrap.style.display= 'none';
 
     try {
-      const resp = await fetch('/api/replay/strategy-lifecycle');
+      const resp = await fetch(`${API_BASE}/api/replay/strategy-lifecycle`);
       if (!resp.ok) throw new Error('HTTP ' + resp.status);
       const data = await resp.json();
             rpLifecycleRegistryRows = Array.isArray(data.strategies) ? data.strategies.slice() : [];

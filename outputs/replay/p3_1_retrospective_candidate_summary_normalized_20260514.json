@@ -1,0 +1,37 @@
+{
+  "date_order_check": {
+    "checked_rows": 300,
+    "passed": true,
+    "violations": []
+  },
+  "dry_run_only_counts": {
+    "true": 300
+  },
+  "input_rows": 300,
+  "invalid_rows": 0,
+  "output_file": "outputs/replay/p3_1_retrospective_candidate_rows_normalized_20260514.jsonl",
+  "output_rows": 300,
+  "per_strategy_counts": {
+    "biglotto_deviation_2bet": 50,
+    "biglotto_triple_strike": 50,
+    "daily539_f4cold": 50,
+    "daily539_markov_cold": 50,
+    "power_orthogonal_5bet": 50,
+    "power_precision_3bet": 50
+  },
+  "rows_normalized_from_adapter_file_hash": 300,
+  "rows_with_adapter_file_hash": 300,
+  "rows_with_provenance_hash_after_normalization": 300,
+  "source_file": "outputs/replay/p3_retrospective_candidate_rows_20260513.jsonl",
+  "strategies": [
+    "biglotto_deviation_2bet",
+    "biglotto_triple_strike",
+    "daily539_f4cold",
+    "daily539_markov_cold",
+    "power_orthogonal_5bet",
+    "power_precision_3bet"
+  ],
+  "truth_level_counts": {
+    "REGENERATED_RETROSPECTIVE": 300
+  }
+}

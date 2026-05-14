@@ -186,7 +186,7 @@ RETIRED `acb_*` and `midfreq_*` strategies: no code found. Likely pre-registry e
 > - `daily539_markov_cold` → `tools/predict_539_markov_cold.py`
 >
 > For each strategy:
-> 1. Call `reg.get_adapter(strategy_id).get_one_bet(draw_date, historical_data)` for a dry-run date
+> 1. Call `reg.get_adapter(strategy_id).get_one_bet(history, lottery_type)` for a dry-run draw, where `history` contains only draws before the target draw
 > 2. Verify output schema (list of ints, correct length for lottery type)
 > 3. Do NOT write to DB, do NOT create replay rows
 > 4. Report: adapter output sample + any errors

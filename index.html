@@ -2703,7 +2703,7 @@
 (function() {
   'use strict';
 
-  // P78: configurable API base — set window.API_BASE='http://localhost:8002' for local dev
+  // P78: configurable API base — set window.API_BASE to the backend origin for local dev
   // Production default: window.API_BASE is undefined → BASE resolves to '/api/replay' (same-origin)
   const API_BASE = (typeof window !== 'undefined' && window.API_BASE ? String(window.API_BASE) : '').replace(/\/$/, '');
   const BASE = `${API_BASE}/api/replay`;

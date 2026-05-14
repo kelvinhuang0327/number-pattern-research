@@ -271,9 +271,12 @@
         /* P2: new truth-level badges */
         .rp-truth-artifact-prov { background:#d1680b; color:#fff; }
         .rp-truth-tombstone { background:#6e7681; color:#fff; }
+        /* PR97: V1/V2 retrospective truth badges */
+        .rp-truth-artifact-retro { background:#8250df; color:#fff; }
         /* Row backgrounds */
         .rp-row-fixture { background:#e7f3ff; }
-        .rp-row-retro { background:#e7f3ff; }
+        .rp-row-retro { background:#f3eeff; }
+        .rp-row-artifact-retro { background:#ede9fb; }
         .rp-row-legacy-err { background:#fff3cd; }
         .rp-row-display-only-disclaimer { background:#fffbf0; border-bottom:1px solid #30363d; }
         .rp-row-missing-history-tombstone { background:#f5f5f5; border-bottom:1px solid #30363d; }
@@ -2926,7 +2929,8 @@
             'MISSING_HISTORY': '<span class="rp-truth-badge rp-truth-missing" title="NO HISTORY：此策略沒有 production replay 歷史資料" aria-label="NO HISTORY: No production replay history available">NO HISTORY</span>',
             'FIXTURE_ONLY': '<span class="rp-truth-badge rp-truth-fixture" title="FIXTURE：合成測試資料，僅供驗收使用" aria-label="FIXTURE: Fixture/test-only evidence">FIXTURE</span>',
             'LEGACY_ERROR': '<span class="rp-truth-badge rp-truth-legacy-err" title="LEGACY ERROR：舊回放錯誤保留作稽核紀錄，不會隱藏或刪除" aria-label="LEGACY ERROR: Legacy replay error retained for audit transparency">LEGACY ERROR</span>',
-            'REGENERATED_RETROSPECTIVE': '<span class="rp-truth-badge rp-truth-retro" title="RETROSPECTIVE：未來回溯補建資料的預留位置" aria-label="RETROSPECTIVE: Future regenerated retrospective placeholder">RETROSPECTIVE</span>',
+            'REGENERATED_RETROSPECTIVE': '<span class="rp-truth-badge rp-truth-retro" title="RETROSPECTIVE (V1)：回溯補建，原始預測已驗證，結果真實" aria-label="RETROSPECTIVE V1: Regenerated retrospective, original prediction verified">RETROSPECTIVE</span>',
+            'ARTIFACT_RECONSTRUCTED_RETROSPECTIVE': '<span class="rp-truth-badge rp-truth-artifact-retro" title="ARTIFACT RETROSPECTIVE (V2)：從 artifact 重建的回溯資料，無可執行 adapter" aria-label="ARTIFACT RETROSPECTIVE V2: Reconstructed from artifact, no executable adapter">ARTIFACT RETRO</span>',
             /* P2: new truth levels */
             'ARTIFACT_PROVENANCE_ONLY': '<span class="rp-truth-badge rp-truth-artifact-prov" title="僅有證據檔：此策略有 rejected artifact 或回測記錄，但無可執行 Python adapter" aria-label="ARTIFACT ONLY: Rejected artifact or backtest record exists, no executable adapter">僅有證據檔</span>',
             'TOMBSTONE_NO_SOURCE': '<span class="rp-truth-badge rp-truth-tombstone" title="無原始碼封存：此策略已退役且無任何可執行 code 或 artifact，不可重建預測紀錄" aria-label="TOMBSTONE: No source code or artifact exists, prediction records cannot be regenerated">無原始碼封存</span>',
@@ -3323,6 +3327,7 @@
                 const statusBadge  = rpStatusBadge(r.replay_status);
 
         // P61: Derive truth-level for per-row display
+        // PR97: use r.truth_level from API first; fallback to fixture/REPLAY_ERROR heuristics
         let truthLevelBadge = '';
         let rowClass = '';
         let tooltipTitle = '';
@@ -3335,6 +3340,10 @@
             tooltipTitle = r.reject_reason
                 ? 'Prediction unavailable: ' + r.reject_reason
                 : 'Prediction unavailable due to adapter bug in run #3 (2026-05-07). Issue was resolved immediately. Subsequent runs are clean.';
+        } else if (r.truth_level) {
+            truthLevelBadge = renderTruthLevelBadge(r.truth_level);
+            if (r.truth_level === 'REGENERATED_RETROSPECTIVE') rowClass = 'rp-row-retro';
+            else if (r.truth_level === 'ARTIFACT_RECONSTRUCTED_RETROSPECTIVE') rowClass = 'rp-row-artifact-retro';
         }
 
         return `<tr class="${rowClass}" title="${_esc(tooltipTitle)}">

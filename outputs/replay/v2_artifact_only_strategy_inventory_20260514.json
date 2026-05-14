@@ -1,0 +1,121 @@
+{
+  "generated_date": "2026-05-14",
+  "v2_phase": "Phase 1 - Inventory",
+  "v2_target": "ARTIFACT_ONLY parser development",
+  "artifact_only_strategies": [
+    {
+      "strategy_id": "biglotto_ts3_acb_4bet",
+      "lottery_type": "BIG_LOTTO",
+      "role": "4-bet: Triple Strike 3 + Anomaly Capture Bet",
+      "registry_present": true,
+      "adapter_status": "UNKNOWN_AUDIT_NEEDED",
+      "v2_processing": "PARSE_AND_DRY_RUN"
+    },
+    {
+      "strategy_id": "biglotto_ts3_markov_freq_5bet",
+      "lottery_type": "BIG_LOTTO",
+      "role": "5-bet: Triple Strike 3 + Markov + Frequency",
+      "registry_present": true,
+      "adapter_status": "UNKNOWN_AUDIT_NEEDED",
+      "v2_processing": "PARSE_AND_DRY_RUN"
+    },
+    {
+      "strategy_id": "power_shlc_midfreq",
+      "lottery_type": "POWER_LOTTO",
+      "role": "Multi-bet: SHLC + Mid-frequency",
+      "registry_present": true,
+      "adapter_status": "UNKNOWN_AUDIT_NEEDED",
+      "v2_processing": "PARSE_AND_DRY_RUN"
+    },
+    {
+      "strategy_id": "p1_deviation_2bet_539",
+      "lottery_type": "DAILY_539",
+      "role": "2-bet: P1 + Deviation + Mid-frequency",
+      "registry_present": true,
+      "adapter_status": "UNKNOWN_AUDIT_NEEDED",
+      "v2_processing": "PARSE_AND_DRY_RUN"
+    }
+  ],
+  "executable_now_reference": [
+    {
+      "strategy_id": "biglotto_deviation_2bet",
+      "lottery_type": "BIG_LOTTO",
+      "v1_status": "COMPLETED",
+      "rows_in_db": 50,
+      "truth_level": "REGENERATED_RETROSPECTIVE"
+    },
+    {
+      "strategy_id": "biglotto_triple_strike",
+      "lottery_type": "BIG_LOTTO",
+      "v1_status": "COMPLETED",
+      "rows_in_db": 50,
+      "truth_level": "REGENERATED_RETROSPECTIVE"
+    },
+    {
+      "strategy_id": "daily539_f4cold",
+      "lottery_type": "DAILY_539",
+      "v1_status": "COMPLETED",
+      "rows_in_db": 50,
+      "truth_level": "REGENERATED_RETROSPECTIVE"
+    },
+    {
+      "strategy_id": "daily539_markov_cold",
+      "lottery_type": "DAILY_539",
+      "v1_status": "COMPLETED",
+      "rows_in_db": 50,
+      "truth_level": "REGENERATED_RETROSPECTIVE"
+    },
+    {
+      "strategy_id": "power_orthogonal_5bet",
+      "lottery_type": "POWER_LOTTO",
+      "v1_status": "COMPLETED",
+      "rows_in_db": 50,
+      "truth_level": "REGENERATED_RETROSPECTIVE"
+    },
+    {
+      "strategy_id": "power_precision_3bet",
+      "lottery_type": "POWER_LOTTO",
+      "v1_status": "COMPLETED",
+      "rows_in_db": 50,
+      "truth_level": "REGENERATED_RETROSPECTIVE"
+    }
+  ],
+  "code_missing_tombstone": [
+    {
+      "strategy_id": "acb_1bet",
+      "lottery_type": "DAILY_539",
+      "status": "TOMBSTONE",
+      "note": "Not to be processed in V2"
+    },
+    {
+      "strategy_id": "acb_markov_midfreq",
+      "lottery_type": "DAILY_539",
+      "status": "TOMBSTONE",
+      "note": "Not to be processed in V2"
+    },
+    {
+      "strategy_id": "acb_markov_midfreq_3bet",
+      "lottery_type": "DAILY_539",
+      "status": "TOMBSTONE",
+      "note": "Not to be processed in V2"
+    },
+    {
+      "strategy_id": "midfreq_acb_2bet",
+      "lottery_type": "DAILY_539",
+      "status": "TOMBSTONE",
+      "note": "Not to be processed in V2"
+    },
+    {
+      "strategy_id": "midfreq_fourier_2bet",
+      "lottery_type": "DAILY_539",
+      "status": "TOMBSTONE",
+      "note": "Not to be processed in V2"
+    },
+    {
+      "strategy_id": "h6_gate_mk20_ew85",
+      "lottery_type": "POWER_LOTTO",
+      "status": "TOMBSTONE",
+      "note": "Not to be processed in V2"
+    }
+  ]
+}

@@ -1,0 +1,179 @@
+name: replay-lifecycle-drift-guard
+
+# Post-V3 read-only drift guard CI lane.
+# Validates that the strategy_prediction_replays table has not drifted from
+# the Post-V3 baseline (V1=300, V2=200, legacy=460, total=960).
+#
+# Schedule: nightly 02:00 UTC
+# Manual:   workflow_dispatch from Actions tab
+#
+# CONSTRAINTS:
+#   - No DB writes to the production DB
+#   - No replay row apply
+#   - No strategy mining
+#   - No backend / API service startup
+#   - No browser required
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: "0 2 * * *"
+
+permissions:
+  contents: read
+
+jobs:
+  drift-guard:
+    name: replay-lifecycle-drift-guard
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install test dependencies
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install pytest
+
+      # Build a deterministic synthetic CI fixture at the path the drift guard
+      # expects. The fixture is read-only for the guard (SELECT only) and is
+      # never committed back to the repo.
+      # Counts match the Post-V3 baseline exactly:
+      #   V1=300 (controlled_apply_id='20260514033100-13acaf34996e', truth_level='REGENERATED_RETROSPECTIVE')
+      #   V2=200 (controlled_apply_id='20260514134953-cf683424',     truth_level='ARTIFACT_RECONSTRUCTED_RETROSPECTIVE')
+      #   legacy=460 (controlled_apply_id=NULL, truth_level=NULL)
+      # V3 tombstone strategy IDs have 0 rows by design (not inserted).
+      - name: Build CI drift-guard fixture
+        run: |
+          python - <<'EOF'
+          import sqlite3, pathlib, sys
+
+          DB_DIR = pathlib.Path("lottery_api/data")
+          DB_DIR.mkdir(parents=True, exist_ok=True)
+          DB_PATH = DB_DIR / "lottery_v2.db"
+
+          conn = sqlite3.connect(str(DB_PATH))
+          c = conn.cursor()
+
+          c.execute("""
+            CREATE TABLE IF NOT EXISTS strategy_replay_runs (
+              id                INTEGER PRIMARY KEY AUTOINCREMENT,
+              lottery_type      TEXT NOT NULL,
+              strategy_scope    TEXT NOT NULL DEFAULT 'ALL',
+              started_at        TEXT NOT NULL,
+              finished_at       TEXT,
+              status            TEXT NOT NULL DEFAULT 'RUNNING',
+              generator_version TEXT NOT NULL DEFAULT 'v0.1',
+              data_hash         TEXT,
+              notes             TEXT,
+              created_at        TEXT DEFAULT CURRENT_TIMESTAMP
+            )
+          """)
+
+          c.execute("""
+            CREATE TABLE IF NOT EXISTS strategy_prediction_replays (
+              id                   INTEGER PRIMARY KEY AUTOINCREMENT,
+              lottery_type         TEXT NOT NULL,
+              target_draw          TEXT NOT NULL,
+              target_date          TEXT,
+              strategy_id          TEXT NOT NULL,
+              strategy_name        TEXT,
+              strategy_version     TEXT,
+              history_cutoff_draw  TEXT,
+              replay_status        TEXT NOT NULL,
+              reject_reason        TEXT,
+              predicted_numbers    TEXT,
+              predicted_special    INTEGER,
+              actual_numbers       TEXT,
+              actual_special       INTEGER,
+              hit_numbers          TEXT,
+              hit_count            INTEGER DEFAULT 0,
+              special_hit          INTEGER DEFAULT 0,
+              replay_run_id        INTEGER,
+              generated_at         TEXT DEFAULT (datetime('now')),
+              truth_level          TEXT,
+              source               TEXT,
+              provenance_hash      TEXT,
+              provenance_source    TEXT,
+              controlled_apply_id  TEXT,
+              dry_run_only         INTEGER DEFAULT 0,
+              UNIQUE(lottery_type, target_draw, strategy_id, replay_run_id),
+              FOREIGN KEY (replay_run_id) REFERENCES strategy_replay_runs(id)
+            )
+          """)
+          c.execute("CREATE INDEX IF NOT EXISTS idx_spr_lottery   ON strategy_prediction_replays(lottery_type)")
+          c.execute("CREATE INDEX IF NOT EXISTS idx_spr_strategy  ON strategy_prediction_replays(strategy_id)")
+          c.execute("CREATE INDEX IF NOT EXISTS idx_spr_draw      ON strategy_prediction_replays(target_draw)")
+          c.execute("CREATE INDEX IF NOT EXISTS idx_spr_status    ON strategy_prediction_replays(replay_status)")
+          c.execute("CREATE INDEX IF NOT EXISTS idx_spr_run       ON strategy_prediction_replays(replay_run_id)")
+          c.execute("CREATE INDEX IF NOT EXISTS idx_spr_hit       ON strategy_prediction_replays(hit_count)")
+
+          # V1 rows: 300 rows  controlled_apply_id='20260514033100-13acaf34996e'
+          V1_APPLY_ID = "20260514033100-13acaf34996e"
+          for i in range(300):
+            c.execute(
+              "INSERT INTO strategy_prediction_replays "
+              "(lottery_type, target_draw, strategy_id, replay_status, truth_level, controlled_apply_id) "
+              "VALUES (?, ?, ?, ?, ?, ?)",
+              ("DAILY539", f"ci_v1_{i:04d}", "ci_v1_strategy", "EVALUATED",
+               "REGENERATED_RETROSPECTIVE", V1_APPLY_ID),
+            )
+
+          # V2 rows: 200 rows  controlled_apply_id='20260514134953-cf683424'
+          V2_APPLY_ID = "20260514134953-cf683424"
+          for i in range(200):
+            c.execute(
+              "INSERT INTO strategy_prediction_replays "
+              "(lottery_type, target_draw, strategy_id, replay_status, truth_level, controlled_apply_id) "
+              "VALUES (?, ?, ?, ?, ?, ?)",
+              ("DAILY539", f"ci_v2_{i:04d}", "ci_v2_strategy", "EVALUATED",
+               "ARTIFACT_RECONSTRUCTED_RETROSPECTIVE", V2_APPLY_ID),
+            )
+
+          # Legacy rows: 460 rows  controlled_apply_id=NULL
+          for i in range(460):
+            c.execute(
+              "INSERT INTO strategy_prediction_replays "
+              "(lottery_type, target_draw, strategy_id, replay_status, truth_level, controlled_apply_id) "
+              "VALUES (?, ?, ?, ?, ?, ?)",
+              ("DAILY539", f"ci_legacy_{i:04d}", "ci_legacy_strategy",
+               "EVALUATED", None, None),
+            )
+
+          conn.commit()
+          conn.close()
+
+          total = 300 + 200 + 460
+          print(f"CI fixture created: {DB_PATH}  (V1=300  V2=200  legacy=460  total={total})")
+          sys.exit(0)
+          EOF
+
+      - name: Compile check
+        run: python3 -m py_compile scripts/replay_lifecycle_drift_guard.py
+
+      - name: Run drift guard (strict mode)
+        run: |
+          mkdir -p outputs/replay
+          python3 scripts/replay_lifecycle_drift_guard.py \
+            --strict \
+            --json-out outputs/replay/replay_lifecycle_drift_guard_ci.json
+
+      - name: Validate JSON output
+        run: python3 -m json.tool outputs/replay/replay_lifecycle_drift_guard_ci.json
+
+      - name: Run drift guard tests
+        run: pytest tests/test_replay_lifecycle_drift_guard.py -q --tb=short
+
+      - name: Upload drift guard JSON artifact
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: replay-lifecycle-drift-guard-ci-${{ github.run_id }}
+          path: outputs/replay/replay_lifecycle_drift_guard_ci.json
+          retention-days: 30

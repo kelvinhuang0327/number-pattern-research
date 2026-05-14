@@ -149,6 +149,7 @@ def _fixture_history_record(
         "special_hit": 0,
         "replay_run_id": fixture_row_id,
         "generated_at": generated_at,
+        "truth_level": "FIXTURE_SYNTHETIC",
         "lifecycle_status": lifecycle_status,
         "strategy_lifecycle_status": lifecycle_status,
         "fixture_mode": True,
@@ -431,7 +432,7 @@ async def get_replay_history(
                     predicted_numbers, predicted_special,
                     actual_numbers, actual_special,
                     hit_numbers, hit_count, special_hit,
-                    replay_run_id, generated_at
+                    replay_run_id, generated_at, truth_level
                 FROM strategy_prediction_replays
                 WHERE {where_sql}
                 ORDER BY target_draw DESC, strategy_id ASC
@@ -463,6 +464,7 @@ async def get_replay_history(
                     "special_hit":              r["special_hit"],
                     "replay_run_id":            r["replay_run_id"],
                     "generated_at":             r["generated_at"],
+                    "truth_level":              r["truth_level"],
                     "lifecycle_status":         get_strategy_lifecycle_status(r["strategy_id"]),
                     # P0-C: strategy lifecycle status from registry (read-only)
                     "strategy_lifecycle_status": get_strategy_lifecycle_status(r["strategy_id"]),

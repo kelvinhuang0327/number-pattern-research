@@ -1,0 +1,47 @@
+{
+  "parsing_date": "2026-05-14",
+  "strategies_processed": 4,
+  "total_rows_generated": 200,
+  "results": [
+    {
+      "strategy_id": "biglotto_ts3_acb_4bet",
+      "lottery_type": "BIG_LOTTO",
+      "provenance_source": "rejected/ts3_acb_4bet_biglotto.json",
+      "rows_generated": 50,
+      "rows_rejected": 0,
+      "rejection_reasons": {},
+      "leakage_guard_pass_rate": 1.0,
+      "status": "PASS"
+    },
+    {
+      "strategy_id": "biglotto_ts3_markov_freq_5bet",
+      "lottery_type": "BIG_LOTTO",
+      "provenance_source": "rejected/ts3_markov_freq_5bet_biglotto.json",
+      "rows_generated": 50,
+      "rows_rejected": 0,
+      "rejection_reasons": {},
+      "leakage_guard_pass_rate": 1.0,
+      "status": "PASS"
+    },
+    {
+      "strategy_id": "p1_deviation_2bet_539",
+      "lottery_type": "DAILY_539",
+      "provenance_source": "rejected/p1_deviation_2bet_539.json",
+      "rows_generated": 50,
+      "rows_rejected": 0,
+      "rejection_reasons": {},
+      "leakage_guard_pass_rate": 1.0,
+      "status": "PASS"
+    },
+    {
+      "strategy_id": "power_shlc_midfreq",
+      "lottery_type": "POWER_LOTTO",
+      "provenance_source": "rejected/shlc_midfreq_power.json",
+      "rows_generated": 50,
+      "rows_rejected": 0,
+      "rejection_reasons": {},
+      "leakage_guard_pass_rate": 1.0,
+      "status": "PASS"
+    }
+  ]
+}

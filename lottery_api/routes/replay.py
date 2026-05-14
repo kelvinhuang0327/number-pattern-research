@@ -432,10 +432,11 @@ async def get_replay_history(
                     predicted_numbers, predicted_special,
                     actual_numbers, actual_special,
                     hit_numbers, hit_count, special_hit,
-                    replay_run_id, generated_at, truth_level
+                    replay_run_id, generated_at, truth_level,
+                    controlled_apply_id, source, provenance_hash, provenance_source
                 FROM strategy_prediction_replays
                 WHERE {where_sql}
-                ORDER BY target_draw DESC, strategy_id ASC
+                ORDER BY CAST(target_draw AS INTEGER) DESC, strategy_id ASC
                 LIMIT ? OFFSET ?
                 """,
                 params + [page_size, offset],
@@ -465,6 +466,10 @@ async def get_replay_history(
                     "replay_run_id":            r["replay_run_id"],
                     "generated_at":             r["generated_at"],
                     "truth_level":              r["truth_level"],
+                    "controlled_apply_id":      r["controlled_apply_id"],
+                    "source":                   r["source"],
+                    "provenance_hash":          r["provenance_hash"],
+                    "provenance_source":        r["provenance_source"],
                     "lifecycle_status":         get_strategy_lifecycle_status(r["strategy_id"]),
                     # P0-C: strategy lifecycle status from registry (read-only)
                     "strategy_lifecycle_status": get_strategy_lifecycle_status(r["strategy_id"]),

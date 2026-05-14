@@ -1,0 +1,294 @@
+"""
+replay_lifecycle_drift_guard.py
+================================
+Read-only Post-V3 replay lifecycle drift guard.
+
+Validates that the strategy_prediction_replays table has not drifted from
+the Post-V3 baseline established on 2026-05-14:
+  V1  (controlled_apply_id='20260514033100-13acaf34996e') == 300
+  V2  (controlled_apply_id='20260514134953-cf683424')     == 200
+  legacy (controlled_apply_id IS NULL)                    == 460
+  total                                                   == 960
+
+Also checks:
+  - Known V3 CODE_MISSING strategy IDs have 0 rows
+  - truth_level values are only from the allowed enum
+  - controlled_apply_id distribution matches the baseline
+
+STRICT RULES:
+  - NO DB writes
+  - NO API calls
+  - NO external services
+  - NO imports of lottery_api modules (registry read as raw text only)
+
+Usage:
+  python3 scripts/replay_lifecycle_drift_guard.py --strict
+  python3 scripts/replay_lifecycle_drift_guard.py --strict --json-out outputs/replay/drift_guard_YYYYMMDD.json
+"""
+
+import argparse
+import datetime
+import json
+import pathlib
+import sqlite3
+import sys
+
+# ---------------------------------------------------------------------------
+# Constants
+# ---------------------------------------------------------------------------
+
+REPO_ROOT = pathlib.Path(__file__).resolve().parent.parent
+DB_PATH = REPO_ROOT / "lottery_api" / "data" / "lottery_v2.db"
+
+# Baseline counts established on 2026-05-14 after Post-V3 replay apply
+BASELINE = {
+    "v1_apply_id": "20260514033100-13acaf34996e",
+    "v2_apply_id": "20260514134953-cf683424",
+    "v1_count": 300,
+    "v2_count": 200,
+    "legacy_count": 460,
+    "total_count": 960,
+}
+
+# Known V3 tombstone strategy IDs — must have 0 rows in replay table
+V3_CODE_MISSING_STRATEGY_IDS = [
+    "acb_1bet",
+    "acb_markov_midfreq",
+    "acb_markov_midfreq_3bet",
+    "midfreq_acb_2bet",
+    "midfreq_fourier_2bet",
+    "h6_gate_mk20_ew85",
+]
+
+# Allowed truth_level enum values (NULL is also allowed)
+ALLOWED_TRUTH_LEVELS = {
+    "REGENERATED_RETROSPECTIVE",
+    "ARTIFACT_RECONSTRUCTED_RETROSPECTIVE",
+}
+
+
+# ---------------------------------------------------------------------------
+# Validation logic
+# ---------------------------------------------------------------------------
+
+def run_checks(db_path: pathlib.Path) -> dict:
+    """Run all drift checks. Returns a result dict. Never writes to DB."""
+    violations = []
+
+    conn = sqlite3.connect(str(db_path))
+    conn.row_factory = sqlite3.Row
+    c = conn.cursor()
+
+    # ------------------------------------------------------------------
+    # 1. Row count baseline
+    # ------------------------------------------------------------------
+    v1_count = c.execute(
+        "SELECT COUNT(*) FROM strategy_prediction_replays WHERE controlled_apply_id=?",
+        (BASELINE["v1_apply_id"],),
+    ).fetchone()[0]
+
+    v2_count = c.execute(
+        "SELECT COUNT(*) FROM strategy_prediction_replays WHERE controlled_apply_id=?",
+        (BASELINE["v2_apply_id"],),
+    ).fetchone()[0]
+
+    legacy_count = c.execute(
+        "SELECT COUNT(*) FROM strategy_prediction_replays WHERE controlled_apply_id IS NULL"
+    ).fetchone()[0]
+
+    total_count = c.execute(
+        "SELECT COUNT(*) FROM strategy_prediction_replays"
+    ).fetchone()[0]
+
+    if v1_count != BASELINE["v1_count"]:
+        violations.append(
+            f"V1 row count mismatch: expected {BASELINE['v1_count']}, got {v1_count}"
+        )
+    if v2_count != BASELINE["v2_count"]:
+        violations.append(
+            f"V2 row count mismatch: expected {BASELINE['v2_count']}, got {v2_count}"
+        )
+    if legacy_count != BASELINE["legacy_count"]:
+        violations.append(
+            f"legacy row count mismatch: expected {BASELINE['legacy_count']}, got {legacy_count}"
+        )
+    if total_count != BASELINE["total_count"]:
+        violations.append(
+            f"total row count mismatch: expected {BASELINE['total_count']}, got {total_count}"
+        )
+
+    row_counts = {
+        "v1": v1_count,
+        "v2": v2_count,
+        "legacy": legacy_count,
+        "total": total_count,
+    }
+
+    # ------------------------------------------------------------------
+    # 2. V3 fake row check — each tombstone strategy must have 0 rows
+    # ------------------------------------------------------------------
+    v3_fake_row_violations = []
+    for sid in V3_CODE_MISSING_STRATEGY_IDS:
+        count = c.execute(
+            "SELECT COUNT(*) FROM strategy_prediction_replays WHERE strategy_id=?",
+            (sid,),
+        ).fetchone()[0]
+        if count != 0:
+            v3_fake_row_violations.append({"strategy_id": sid, "row_count": count})
+            violations.append(
+                f"V3 tombstone strategy '{sid}' has {count} unexpected rows"
+            )
+
+    lifecycle_counts = {
+        "v3_code_missing_zero_row_strategies": len(V3_CODE_MISSING_STRATEGY_IDS) - len(v3_fake_row_violations),
+        "v3_fake_row_violations": v3_fake_row_violations,
+    }
+
+    # ------------------------------------------------------------------
+    # 3. truth_level enum check
+    # ------------------------------------------------------------------
+    truth_level_rows = c.execute(
+        "SELECT truth_level, COUNT(*) as cnt FROM strategy_prediction_replays GROUP BY truth_level"
+    ).fetchall()
+
+    truth_level_counts = {}
+    for row in truth_level_rows:
+        tl = row["truth_level"]
+        cnt = row["cnt"]
+        key = tl if tl is not None else "null"
+        truth_level_counts[key] = cnt
+        if tl is not None and tl not in ALLOWED_TRUTH_LEVELS:
+            violations.append(
+                f"Unexpected truth_level value '{tl}' found ({cnt} rows)"
+            )
+
+    # Ensure expected keys are present even if count is zero
+    for expected_key in ("REGENERATED_RETROSPECTIVE", "ARTIFACT_RECONSTRUCTED_RETROSPECTIVE", "null"):
+        if expected_key not in truth_level_counts:
+            truth_level_counts[expected_key] = 0
+
+    # ------------------------------------------------------------------
+    # 4. controlled_apply_id distribution
+    # ------------------------------------------------------------------
+    apply_id_rows = c.execute(
+        "SELECT controlled_apply_id, COUNT(*) as cnt FROM strategy_prediction_replays GROUP BY controlled_apply_id"
+    ).fetchall()
+
+    controlled_apply_id_counts = {}
+    for row in apply_id_rows:
+        aid = row["controlled_apply_id"]
+        key = aid if aid is not None else "null"
+        controlled_apply_id_counts[key] = row["cnt"]
+
+    # Check expected apply IDs are present with correct counts
+    for aid, expected in [
+        (BASELINE["v1_apply_id"], BASELINE["v1_count"]),
+        (BASELINE["v2_apply_id"], BASELINE["v2_count"]),
+    ]:
+        actual = controlled_apply_id_counts.get(aid, 0)
+        if actual != expected:
+            # Already caught in row_counts section, no double-record
+            pass
+
+    # Unexpected apply IDs (not V1, V2, or NULL) are violations
+    known_apply_ids = {BASELINE["v1_apply_id"], BASELINE["v2_apply_id"], "null", None}
+    for aid_key, cnt in controlled_apply_id_counts.items():
+        if aid_key not in known_apply_ids and aid_key is not None:
+            violations.append(
+                f"Unexpected controlled_apply_id '{aid_key}' found ({cnt} rows)"
+            )
+
+    conn.close()
+
+    # ------------------------------------------------------------------
+    # Build result
+    # ------------------------------------------------------------------
+    status = "PASS" if not violations else "FAIL"
+    final_classification = (
+        "REPLAY_LIFECYCLE_DRIFT_GUARD_PASS"
+        if status == "PASS"
+        else "REPLAY_LIFECYCLE_DRIFT_GUARD_FAIL"
+    )
+
+    return {
+        "status": status,
+        "checked_at": datetime.datetime.utcnow().isoformat() + "Z",
+        "db_path": str(db_path.resolve()),
+        "row_counts": row_counts,
+        "lifecycle_counts": lifecycle_counts,
+        "truth_level_counts": truth_level_counts,
+        "controlled_apply_id_counts": controlled_apply_id_counts,
+        "violations": violations,
+        "final_classification": final_classification,
+    }
+
+
+# ---------------------------------------------------------------------------
+# CLI
+# ---------------------------------------------------------------------------
+
+def main() -> int:
+    parser = argparse.ArgumentParser(
+        description="Read-only Post-V3 replay lifecycle drift guard."
+    )
+    parser.add_argument(
+        "--strict",
+        action="store_true",
+        help="Exit with code 1 if any violation is found.",
+    )
+    parser.add_argument(
+        "--json-out",
+        metavar="PATH",
+        help="Write JSON result to this path.",
+    )
+    args = parser.parse_args()
+
+    if not DB_PATH.exists():
+        print(f"ERROR: DB not found at {DB_PATH}", file=sys.stderr)
+        return 1
+
+    result = run_checks(DB_PATH)
+
+    # Print summary to stdout
+    print(f"Drift guard checked at: {result['checked_at']}")
+    print(f"DB: {result['db_path']}")
+    print()
+    rc = result["row_counts"]
+    print(f"Row counts — V1={rc['v1']}  V2={rc['v2']}  legacy={rc['legacy']}  total={rc['total']}")
+
+    lc = result["lifecycle_counts"]
+    print(f"V3 tombstone strategies with 0 rows: {lc['v3_code_missing_zero_row_strategies']}/{len(V3_CODE_MISSING_STRATEGY_IDS)}")
+    if lc["v3_fake_row_violations"]:
+        print(f"  VIOLATIONS: {lc['v3_fake_row_violations']}")
+
+    tlc = result["truth_level_counts"]
+    print(f"truth_level — REGENERATED={tlc.get('REGENERATED_RETROSPECTIVE', 0)}  "
+          f"ARTIFACT={tlc.get('ARTIFACT_RECONSTRUCTED_RETROSPECTIVE', 0)}  "
+          f"null={tlc.get('null', 0)}")
+
+    print()
+    if result["violations"]:
+        print(f"VIOLATIONS ({len(result['violations'])}):")
+        for v in result["violations"]:
+            print(f"  - {v}")
+    else:
+        print("No violations found.")
+
+    print()
+    print(f"Final classification: {result['final_classification']}")
+    print(f"Status: {result['status']}")
+
+    # Write JSON output if requested
+    if args.json_out:
+        out_path = pathlib.Path(args.json_out)
+        out_path.parent.mkdir(parents=True, exist_ok=True)
+        out_path.write_text(json.dumps(result, indent=2, ensure_ascii=False))
+        print(f"JSON written to: {out_path}")
+
+    if args.strict and result["status"] == "FAIL":
+        return 1
+    return 0
+
+
+if __name__ == "__main__":
+    sys.exit(main())

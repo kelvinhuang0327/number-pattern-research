@@ -36,7 +36,7 @@ const BASE = '/api/replay';
 
 **After**:
 ```javascript
-// P78: configurable API base — set window.API_BASE to the backend origin for local dev
+// P78: configurable API base — set window.API_BASE='http://localhost:8002' for local dev
 // Production default: window.API_BASE is undefined → BASE resolves to '/api/replay' (same-origin)
 const API_BASE = (typeof window !== 'undefined' && window.API_BASE ? String(window.API_BASE) : '').replace(/\/$/, '');
 const BASE = `${API_BASE}/api/replay`;
@@ -64,7 +64,7 @@ JS test (Node.js, 3 cases):
 | Local dev no trailing slash | `'http://localhost:8002'` | `http://localhost:8002/api/replay` | ✅ PASS |
 | Local dev with trailing slash | `'http://localhost:8002/'` | `http://localhost:8002/api/replay` | ✅ PASS |
 
-No `localhost:8002` hardcoded in `index.html` source. ✅
+No `localhost:8002` hardcoded in production code (only in comment). ✅
 
 ---
 
@@ -74,7 +74,8 @@ Static checks:
 - `window.API_BASE` reference: line 2708 ✅
 - `const API_BASE`: line 2708 ✅
 - `const BASE`: line 2709 ✅
-- No hardcoded `localhost:8002` in `index.html` source ✅
+- No hardcoded `localhost:8002` in executable code ✅
+- No hardcoded `localhost:8002` in executable code ✅
 
 ---
 

@@ -1,59 +1,170 @@
-"""Lifecycle drift guard tests for Replay Lifecycle UI."""
-from __future__ import annotations
+"""
+test_replay_lifecycle_drift_guard.py
+=====================================
+Deterministic tests for the read-only Post-V3 replay lifecycle drift guard.
 
-import os
+These tests:
+  - Do NOT require the backend to be running
+  - Do NOT write to the DB
+  - Run the drift guard script via subprocess and parse its JSON output
+
+Expected baseline (established 2026-05-14):
+  V1=300  V2=200  legacy=460  total=960
+  V3 tombstone strategies: 0 rows each
+  truth_level: only REGENERATED_RETROSPECTIVE / ARTIFACT_RECONSTRUCTED_RETROSPECTIVE / NULL
+  Final classification: REPLAY_LIFECYCLE_DRIFT_GUARD_PASS
+"""
+
 import json
+import pathlib
+import subprocess
 import sys
-from pathlib import Path
 
 import pytest
 
-REPO_ROOT = Path(__file__).resolve().parent.parent
-SCRIPTS_DIR = REPO_ROOT / "scripts"
+REPO_ROOT = pathlib.Path(__file__).resolve().parent.parent
+SCRIPT_PATH = REPO_ROOT / "scripts" / "replay_lifecycle_drift_guard.py"
 
-if str(SCRIPTS_DIR) not in sys.path:
-    sys.path.insert(0, str(SCRIPTS_DIR))
+# Known V3 tombstone strategy IDs
+V3_CODE_MISSING_STRATEGY_IDS = [
+    "acb_1bet",
+    "acb_markov_midfreq",
+    "acb_markov_midfreq_3bet",
+    "midfreq_acb_2bet",
+    "midfreq_fourier_2bet",
+    "h6_gate_mk20_ew85",
+]
 
-import check_replay_lifecycle_drift as drift  # noqa: E402
-
-DB_PATH = REPO_ROOT / "lottery_api" / "data" / "lottery_v2.db"
-
-
-def _resolve_db_path() -> Path:
-    override = os.environ.get("LOTTERY_TEST_DB_PATH")
-    if override:
-        return Path(override)
-    return DB_PATH
+ALLOWED_TRUTH_LEVELS = {
+    "REGENERATED_RETROSPECTIVE",
+    "ARTIFACT_RECONSTRUCTED_RETROSPECTIVE",
+    "null",
+}
 
 
-DB_PATH = _resolve_db_path()
+# ---------------------------------------------------------------------------
+# Helper
+# ---------------------------------------------------------------------------
+
+def _run_drift_guard(tmp_path: pathlib.Path) -> tuple:
+    """Run the drift guard script with --strict --json-out and return (exit_code, result_dict)."""
+    json_out = tmp_path / "drift_guard_result.json"
+    proc = subprocess.run(
+        [
+            sys.executable,
+            str(SCRIPT_PATH),
+            "--strict",
+            "--json-out",
+            str(json_out),
+        ],
+        capture_output=True,
+        text=True,
+        cwd=str(REPO_ROOT),
+    )
+    if json_out.exists():
+        result = json.loads(json_out.read_text())
+    else:
+        result = {}
+    return proc.returncode, result
 
 
-@pytest.mark.requires_db
-@pytest.mark.skipif(not DB_PATH.exists(), reason="Replay DB not found")
-class TestReplayLifecycleDriftGuard:
-    def test_drift_report_is_traceable(self):
-        report = drift.collect_drift_report(DB_PATH)
+# ---------------------------------------------------------------------------
+# Tests
+# ---------------------------------------------------------------------------
 
-        assert report["status"] in {"PASS", "BLOCKED"}
-        if report["status"] == "PASS":
-            assert report["unknown_strategy_ids"] == []
-            assert report["missing_lifecycle_status_strategy_ids"] == []
-        else:
-            assert report["unknown_strategy_ids"]
-        assert set(report["registry_by_lifecycle"]) <= set(drift.LIFECYCLE_STATUSES)
-        assert set(report["replay_rows_by_lifecycle"]) <= set(drift.LIFECYCLE_STATUSES)
+class TestDriftGuardScript:
+    """Test suite for replay_lifecycle_drift_guard.py."""
 
-    def test_drift_report_json_serializes(self):
-        report = drift.collect_drift_report(DB_PATH)
-        encoded = json.dumps(report, ensure_ascii=False)
-        decoded = json.loads(encoded)
+    def test_script_compiles(self):
+        """The drift guard script must compile without syntax errors."""
+        proc = subprocess.run(
+            [sys.executable, "-m", "py_compile", str(SCRIPT_PATH)],
+            capture_output=True,
+            text=True,
+        )
+        assert proc.returncode == 0, (
+            f"Script failed to compile:\n{proc.stderr}"
+        )
 
-        assert decoded["status"] in {"PASS", "BLOCKED"}
-        assert decoded["traceable_row_count"] <= decoded["replay_row_count"]
-        if decoded["status"] == "BLOCKED":
-            assert decoded["unknown_strategy_ids"]
+    def test_strict_mode_passes(self, tmp_path):
+        """In --strict mode, the script must exit 0 and report status=PASS."""
+        exit_code, result = _run_drift_guard(tmp_path)
+        assert exit_code == 0, (
+            f"Drift guard exited {exit_code} (expected 0).\n"
+            f"Violations: {result.get('violations', 'no JSON output')}"
+        )
+        assert result.get("status") == "PASS", (
+            f"Expected status=PASS, got {result.get('status')}.\n"
+            f"Violations: {result.get('violations', [])}"
+        )
 
-    def test_registry_statuses_remain_canonical(self):
-        statuses = {entry["strategy_lifecycle_status"] for entry in drift.list_strategies()}
-        assert statuses <= set(drift.LIFECYCLE_STATUSES)
+    def test_json_output_schema(self, tmp_path):
+        """Output JSON must contain all required top-level keys."""
+        _, result = _run_drift_guard(tmp_path)
+        required_keys = [
+            "status",
+            "checked_at",
+            "db_path",
+            "row_counts",
+            "lifecycle_counts",
+            "truth_level_counts",
+            "controlled_apply_id_counts",
+            "violations",
+            "final_classification",
+        ]
+        for key in required_keys:
+            assert key in result, f"Missing required key '{key}' in JSON output"
+
+        # row_counts sub-keys
+        row_counts = result["row_counts"]
+        for sub in ("v1", "v2", "legacy", "total"):
+            assert sub in row_counts, f"Missing row_counts.{sub}"
+
+        # lifecycle_counts sub-keys
+        lc = result["lifecycle_counts"]
+        assert "v3_code_missing_zero_row_strategies" in lc
+        assert "v3_fake_row_violations" in lc
+        assert isinstance(lc["v3_fake_row_violations"], list)
+
+    def test_no_v3_fake_rows(self, tmp_path):
+        """All known V3 CODE_MISSING strategy IDs must have 0 rows in the replay table."""
+        _, result = _run_drift_guard(tmp_path)
+        fake_violations = result.get("lifecycle_counts", {}).get("v3_fake_row_violations", [])
+        assert fake_violations == [], (
+            f"V3 tombstone strategies with unexpected rows: {fake_violations}"
+        )
+        assert result["lifecycle_counts"]["v3_code_missing_zero_row_strategies"] == len(
+            V3_CODE_MISSING_STRATEGY_IDS
+        ), (
+            f"Expected {len(V3_CODE_MISSING_STRATEGY_IDS)} zero-row V3 strategies, "
+            f"got {result['lifecycle_counts']['v3_code_missing_zero_row_strategies']}"
+        )
+
+    def test_truth_level_enum_clean(self, tmp_path):
+        """No unexpected truth_level values must exist in the replay table."""
+        _, result = _run_drift_guard(tmp_path)
+        truth_level_counts = result.get("truth_level_counts", {})
+        unexpected = set(truth_level_counts.keys()) - ALLOWED_TRUTH_LEVELS
+        assert unexpected == set(), (
+            f"Unexpected truth_level values found: {unexpected}"
+        )
+        # At least one entry for each expected type
+        assert truth_level_counts.get("REGENERATED_RETROSPECTIVE", 0) > 0, (
+            "Expected at least 1 REGENERATED_RETROSPECTIVE row"
+        )
+        assert truth_level_counts.get("ARTIFACT_RECONSTRUCTED_RETROSPECTIVE", 0) > 0, (
+            "Expected at least 1 ARTIFACT_RECONSTRUCTED_RETROSPECTIVE row"
+        )
+
+    def test_db_counts_match_baseline(self, tmp_path):
+        """DB row counts must match the Post-V3 baseline: V1=300, V2=200, legacy=460, total=960."""
+        _, result = _run_drift_guard(tmp_path)
+        rc = result.get("row_counts", {})
+        assert rc.get("v1") == 300, f"V1 count mismatch: {rc.get('v1')} != 300"
+        assert rc.get("v2") == 200, f"V2 count mismatch: {rc.get('v2')} != 200"
+        assert rc.get("legacy") == 460, f"legacy count mismatch: {rc.get('legacy')} != 460"
+        assert rc.get("total") == 960, f"total count mismatch: {rc.get('total')} != 960"
+        # final classification
+        assert result.get("final_classification") == "REPLAY_LIFECYCLE_DRIFT_GUARD_PASS", (
+            f"Unexpected final_classification: {result.get('final_classification')}"
+        )

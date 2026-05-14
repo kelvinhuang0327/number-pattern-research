@@ -8,11 +8,13 @@ Tests V1 (EXECUTABLE_NOW), V2 (ARTIFACT_ONLY), and V3 (CODE_MISSING) categories.
 Output: Detailed regression report with test results, response verification, and data integrity checks.
 """
 
-import requests
 import json
 import sys
+import urllib.error
+import urllib.parse
+import urllib.request
 from datetime import datetime
-from typing import Dict, List, Any, Tuple
+from typing import Any, Dict, List, Tuple
 
 # Configuration
 API_BASE_URL = "http://127.0.0.1:8002/api"
@@ -69,19 +71,24 @@ class APIRegressionTester:
         params = {"lottery_type": lottery_type, "strategy_id": strategy_id}
 
         try:
-            response = requests.get(url, params=params, timeout=10)
+            query = urllib.parse.urlencode(params)
+            full_url = f"{url}?{query}"
+            req = urllib.request.Request(full_url)
+            with urllib.request.urlopen(req, timeout=10) as resp:
+                http_status = resp.status
+                body = resp.read()
 
             test_result = {
                 "strategy_id": strategy_id,
                 "lottery_type": lottery_type,
                 "category": category,
-                "http_status": response.status_code,
-                "http_ok": response.status_code == 200,
-                "response_size_bytes": len(response.content),
+                "http_status": http_status,
+                "http_ok": http_status == 200,
+                "response_size_bytes": len(body),
             }
 
-            if response.status_code == 200:
-                data = response.json()
+            if http_status == 200:
+                data = json.loads(body)
                 test_result.update(
                     {
                         "records_count": len(data.get("records", [])),
@@ -110,11 +117,11 @@ class APIRegressionTester:
                 )
             else:
                 test_result["test_pass"] = False
-                test_result["error"] = f"HTTP {response.status_code}"
+                test_result["error"] = f"HTTP {http_status}"
 
             return test_result
 
-        except requests.exceptions.RequestException as e:
+        except (urllib.error.URLError, OSError) as e:
             self.errors.append(
                 f"Error testing {strategy_id} ({lottery_type}): {str(e)}"
             )
@@ -189,8 +196,10 @@ class APIRegressionTester:
             if hit_count < 0 or hit_count > 6:
                 return False
 
-            # Check for empty predicted_numbers on V1/V2
-            if len(record.get("predicted_numbers", [])) == 0:
+            # Check for empty predicted_numbers on non-REJECTED/REPLAY_ERROR records
+            predicted = record.get("predicted_numbers") or []
+            replay_status = record.get("replay_status", "")
+            if len(predicted) == 0 and replay_status not in ("REJECTED", "REPLAY_ERROR"):
                 return False
 
         return True
@@ -390,15 +399,22 @@ class APIRegressionTester:
 
 def main():
     """Main entry point."""
-    if len(sys.argv) > 1:
-        api_url = sys.argv[1]
-    else:
-        api_url = API_BASE_URL
+    import argparse
 
-    print(f"Testing API at: {api_url}")
+    parser = argparse.ArgumentParser(description="Post-V3 Replay API Regression")
+    parser.add_argument("api_url", nargs="?", default=API_BASE_URL)
+    parser.add_argument(
+        "--strict", action="store_true", help="Exit non-zero on any test failure"
+    )
+    parser.add_argument(
+        "--json-out", default=None, help="Override JSON output path"
+    )
+    args = parser.parse_args()
+
+    print(f"Testing API at: {args.api_url}")
     print()
 
-    tester = APIRegressionTester(api_url)
+    tester = APIRegressionTester(args.api_url)
     tester.test_all_strategies()
 
     # Generate report
@@ -406,7 +422,7 @@ def main():
     tester.generate_report(report_path)
 
     # Export JSON
-    json_path = "outputs/replay/post_v3_api_regression_results_20260514.json"
+    json_path = args.json_out or "outputs/replay/post_v3_api_regression_result_20260514.json"
     with open(json_path, "w") as f:
         f.write(tester.to_json())
     print(f"Results exported to: {json_path}")

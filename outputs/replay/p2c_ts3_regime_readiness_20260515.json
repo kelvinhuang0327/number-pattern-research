@@ -1,0 +1,87 @@
+{
+  "schema_version": "p2c.0",
+  "generated_at": "2026-05-15T06:08:00+08:00",
+  "final_classification": "P2C_TS3_REGIME_READINESS_BLOCKED_DRAW_115000051_MISSING",
+  "strategy_id": "ts3_regime_3bet",
+  "lottery_type": "BIG_LOTTO",
+  "target_draw": "115000051",
+  "controlled_apply_id_planned": "P2C_20260515",
+  "phase": "READINESS_CHECK_ONLY",
+  "draw_readiness": {
+    "target_draw": "115000051",
+    "target_lottery_type": "BIG_LOTTO",
+    "big_lotto_draw_115000051_exists": false,
+    "daily539_draw_115000051_exists": true,
+    "daily539_is_different_lottery": true,
+    "latest_big_lotto_draw": "115000050",
+    "latest_big_lotto_date": "2026/05/05",
+    "blocker": "BIG_LOTTO draw 115000051 not yet in DB"
+  },
+  "pre_p2b_baseline": {
+    "drift_guard_status": "REPLAY_LIFECYCLE_DRIFT_GUARD_PASS",
+    "row_counts": {
+      "v1": 300,
+      "v2": 200,
+      "legacy": 460,
+      "p2b": 6,
+      "total": 966
+    },
+    "truth_level_counts": {
+      "REGENERATED_RETROSPECTIVE": 303,
+      "ARTIFACT_RECONSTRUCTED_RETROSPECTIVE": 203,
+      "null": 460
+    },
+    "governance_tests": "109/109 PASS"
+  },
+  "pending_items": [
+    {
+      "prediction_item_id": 1090,
+      "run_id": 174,
+      "bet_index": 0,
+      "numbers": [3, 5, 22, 34, 38, 49],
+      "status": "PENDING",
+      "strategy_name": "ts3_regime_3bet",
+      "latest_known_draw": "115000050",
+      "blocker": "BIG_LOTTO draw 115000051 not in DB"
+    },
+    {
+      "prediction_item_id": 1091,
+      "run_id": 174,
+      "bet_index": 1,
+      "numbers": [16, 23, 29, 33, 36, 45],
+      "status": "PENDING",
+      "strategy_name": "ts3_regime_3bet",
+      "latest_known_draw": "115000050",
+      "blocker": "BIG_LOTTO draw 115000051 not in DB"
+    },
+    {
+      "prediction_item_id": 1092,
+      "run_id": 174,
+      "bet_index": 2,
+      "numbers": [12, 18, 26, 27, 31, 46],
+      "status": "PENDING",
+      "strategy_name": "ts3_regime_3bet",
+      "latest_known_draw": "115000050",
+      "blocker": "BIG_LOTTO draw 115000051 not in DB"
+    }
+  ],
+  "p2b_sanity": {
+    "p2b_controlled_apply_id": "P2B_20260515",
+    "p2b_rows_in_db": 6,
+    "p2b_replay_ids": [1261, 1262, 1263, 1264, 1265, 1266],
+    "p2c_existing_refs": 0,
+    "idempotency_clean": true
+  },
+  "safety": {
+    "db_written": false,
+    "replay_rows_inserted": false,
+    "prediction_items_promoted": false,
+    "prediction_runs_updated": false,
+    "strategy_logic_changed": false,
+    "api_ui_backend_changed": false
+  },
+  "dry_run_skipped": true,
+  "dry_run_skip_reason": "BIG_LOTTO draw 115000051 not yet in DB — dry-run not executable",
+  "p2c_re_trigger_condition": "BIG_LOTTO draw 115000051 ingested into draws table",
+  "next_step": "WAIT_FOR_BIG_LOTTO_DRAW_115000051"
+}

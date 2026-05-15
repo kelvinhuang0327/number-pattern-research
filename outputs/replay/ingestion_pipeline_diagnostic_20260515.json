@@ -1,0 +1,199 @@
+{
+  "diagnostic_id": "ingestion_pipeline_diagnostic_20260515",
+  "generated_at": "2026-05-15T07:30:00Z",
+  "final_classification": "INGESTION_PIPELINE_DIAGNOSTIC_READY",
+  "summary": "BIG_LOTTO draw 115000051 is NOT in the DB. Root cause: NO automated ingestion pipeline exists. All draw insertion is manual. Since 2026/05/05 no ingestion has been run. System-wide staleness confirmed across all lottery types.",
+
+  "phase3_performance_recovery": {
+    "stuck_command": "NONE — previous diagnostic script cancelled by user before execution (syntax error in heredoc nesting, not DB issue)",
+    "root_cause_of_timeout": "Script syntax error — not a DB performance problem",
+    "minimal_check_used": true,
+    "minimal_check_seconds": 0.05,
+    "db_healthy": true,
+    "search_scope_restricted_to": ["scripts", "tools", "lottery_api", "docs", ".github/workflows"],
+    "excluded_scopes": [".git", ".venv", "node_modules", "outputs", "__pycache__"]
+  },
+
+  "db_health": {
+    "status": "OK",
+    "db_path": "lottery_api/data/lottery_v2.db",
+    "response_seconds": 0.05,
+    "table_count": 18,
+    "draws_count": 14002,
+    "replay_rows_count": 966
+  },
+
+  "p2_replay_rows": {
+    "p2b_rows": 6,
+    "p2c_rows": 0,
+    "note": "P2B backfill applied (apply_id=P2B_20260515). P2C blocked pending draw 115000051."
+  },
+
+  "draw_115000051": {
+    "BIG_LOTTO_exists_in_db": false,
+    "DAILY_539_has_same_draw_number": true,
+    "other_types_with_draw_115000051": [
+      {
+        "lottery_type": "DAILY_539",
+        "draw": "115000051",
+        "date": "2026/02/26",
+        "note": "Different lottery type, independent draw — draw numbers are shared across types but are NOT the same event"
+      }
+    ]
+  },
+
+  "staleness_by_lottery_type": {
+    "3_STAR": {
+      "latest_draw": "99000261",
+      "latest_date": "2026/01/28",
+      "days_stale": 107,
+      "severity": "CRITICAL"
+    },
+    "BIG_LOTTO": {
+      "latest_draw": "115000050",
+      "latest_date": "2026/05/05",
+      "days_stale": 10,
+      "expected_draws_overdue": ["115000051 (expected ~2026-05-08)", "115000052 (expected ~2026-05-12)", "115000053 (expected ~2026-05-15)"],
+      "severity": "HIGH"
+    },
+    "DAILY_539": {
+      "latest_draw": "99000261",
+      "latest_date": "2026/04/29",
+      "days_stale": 16,
+      "severity": "HIGH"
+    },
+    "POWER_LOTTO": {
+      "latest_draw": "99000104",
+      "latest_date": "2026/04/27",
+      "days_stale": 18,
+      "severity": "HIGH"
+    }
+  },
+
+  "ingestion_code_paths": {
+    "manual_scripts": [
+      {
+        "path": "tools/scrape_lottery_data.py",
+        "method": "urllib.request.urlopen",
+        "source_url": "https://api.taiwanlottery.com/TLCAPIWeB/Lotto649/history",
+        "lottery_type": "BIG_LOTTO",
+        "note": "Main scraper — fetches draws from Taiwan Lottery official API, writes to DB via insert_draws()"
+      },
+      {
+        "path": "tools/upload_lottery_data.py",
+        "method": "CSV batch upload",
+        "lottery_type": "multiple",
+        "note": "Generic CSV loader — requires manual CSV download first"
+      },
+      {
+        "path": "tools/upload_big_lotto_csv.py",
+        "method": "CSV batch upload",
+        "lottery_type": "BIG_LOTTO",
+        "note": "BIG_LOTTO-specific CSV loader"
+      },
+      {
+        "path": "tools/upload_daily539_txt.py",
+        "method": "TXT file upload",
+        "lottery_type": "DAILY_539",
+        "note": "DAILY_539 TXT format loader"
+      },
+      {
+        "path": "tools/universal_downloader.py",
+        "method": "urllib.request.urlopen",
+        "lottery_type": "generic",
+        "note": "Generic file downloader, not draw-specific"
+      }
+    ],
+    "api_endpoints": [
+      {
+        "route": "POST /api/history",
+        "handler": "lottery_api/routes/data.py",
+        "function": "db_manager.insert_draws()",
+        "note": "Accepts list of draw objects, inserts via INSERT OR IGNORE"
+      },
+      {
+        "route": "POST /api/draws",
+        "handler": "lottery_api/routes/data.py",
+        "function": "db_manager.insert_draws()",
+        "note": "Single draw creation endpoint"
+      },
+      {
+        "route": "PUT /api/draws/{draw_id}",
+        "handler": "lottery_api/routes/data.py",
+        "note": "Updates existing draw record"
+      }
+    ],
+    "scheduler": {
+      "file": "lottery_api/utils/scheduler.py",
+      "framework": "APScheduler AsyncIOScheduler",
+      "schedule": "daily at 02:00",
+      "task": "AdvancedAutoLearningEngine optimization — strategy parameter tuning ONLY",
+      "fetches_draws": false,
+      "note": "This scheduler does NOT fetch draws from external sources"
+    },
+    "smart_scheduler": {
+      "file": "lottery_api/utils/smart_scheduler.py",
+      "framework": "APScheduler AsyncIOScheduler",
+      "schedule": "strategy evaluation 02:00 + learning 03:00",
+      "fetches_draws": false,
+      "note": "Also does NOT fetch draws — pure ML optimization loop"
+    },
+    "github_actions": {
+      "files": [
+        ".github/workflows/replay-governance-ci.yml",
+        ".github/workflows/replay-lifecycle-drift-guard.yml"
+      ],
+      "any_draw_fetch_workflow": false,
+      "drift_guard_cron": "0 2 * * * (daily 02:00 UTC)",
+      "note": "No CI workflow fetches draws from external source"
+    },
+    "launchd": {
+      "plist": "com.kelvin.lottery.dev.plist",
+      "script": "start_all.sh --foreground",
+      "action": "Starts backend on port 8002 + frontend HTTP server on port 8081",
+      "fetches_draws": false
+    }
+  },
+
+  "root_cause_analysis": {
+    "finding": "NO_AUTOMATED_INGESTION_PIPELINE",
+    "explanation": "There is no cron job, scheduler job, GitHub Action, or background process that automatically fetches new draw results from Taiwan Lottery (https://api.taiwanlottery.com) and inserts them into lottery_v2.db. All ingestion is MANUAL — a developer must explicitly run one of the tools/ scripts or call the HTTP API with draw data.",
+    "last_known_manual_ingestion": "2026-05-05 (BIG_LOTTO draw 115000050)",
+    "days_since_last_ingestion": 10,
+    "systemic_impact": "All 4 lottery types are stale. System-wide ingestion stoppage, not BIG_LOTTO-specific."
+  },
+
+  "backend_status": {
+    "pid": 10477,
+    "port": 8002,
+    "status": "RUNNING",
+    "binary": "/Users/kelvin/Kelvin-WorkSpace/LotteryNew/venv/bin/uvicorn app:app --host 127.0.0.1 --port 8002"
+  },
+
+  "recommended_fix_plan": [
+    {
+      "step": 1,
+      "action": "Run tools/scrape_lottery_data.py to fetch BIG_LOTTO draws 115000051-115000053 from api.taiwanlottery.com",
+      "command": "cd /Users/kelvin/Kelvin-WorkSpace/LotteryNew/lottery_api && python tools/scrape_lottery_data.py",
+      "risk": "LOW — read-only from external source, writes only new draws"
+    },
+    {
+      "step": 2,
+      "action": "Verify draw 115000051 inserted: re-run watcher check and DB query",
+      "command": "python3 -c \"import sqlite3; c=sqlite3.connect('data/lottery_v2.db'); print(c.execute(\\\"SELECT draw, date FROM draws WHERE lottery_type='BIG_LOTTO' ORDER BY CAST(draw AS INTEGER) DESC LIMIT 5\\\").fetchall())\"",
+      "risk": "NONE — read-only"
+    },
+    {
+      "step": 3,
+      "action": "Repeat for DAILY_539, POWER_LOTTO using respective upload tools",
+      "risk": "LOW"
+    },
+    {
+      "step": 4,
+      "action": "Consider adding a GitHub Actions workflow or local cron job that runs scrape_lottery_data.py nightly after draw publication time",
+      "risk": "LOW — architectural improvement"
+    }
+  ],
+
+  "p2c_unblock_condition": "Once BIG_LOTTO draw 115000051 is ingested, run promotion engine to advance P2C items (IDs 1090-1092) from PENDING to TRUTH_CONFIRMED"
+}

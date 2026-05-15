@@ -364,6 +364,82 @@ class _Daily539MarkovColdAdapter(ReplayStrategyAdapter):
         return bet   # already a flat list of ints
 
 
+# ─── Power Lotto: fourier_rhythm_3bet ONLINE Adapter ─────────────────────────
+# P1.3: Added 2026-05-15 — live production strategy, governance gap closed.
+# Evidence: prediction_run=168 VALID, 3 PENDING items (1072-1074).
+# RSM binding: tools/power_fourier_rhythm.py::fourier_rhythm_predict(n_bets=3, window=500)
+# P1.2 classification: PRODUCT_DENOMINATOR_ONLINE_CANDIDATE → ONLINE
+
+class _PowerFourierRhythm3BetAdapter(ReplayStrategyAdapter):
+    meta = _StrategyMeta(
+        strategy_id="fourier_rhythm_3bet",
+        strategy_name="威力彩 Fourier Rhythm 3注",
+        strategy_version="v0.1",
+        supported_lottery_types=["POWER_LOTTO"],
+        min_history=100,
+        status="ONLINE",
+    )
+
+    def _call_strategy(self, history, lottery_type):
+        from tools.power_fourier_rhythm import fourier_rhythm_predict
+        raw = fourier_rhythm_predict(history, n_bets=3, window=500)
+        first = _extract_first_bet(raw)
+        if not first:
+            raise RejectPrediction("No bets returned by fourier_rhythm_3bet")
+        return first
+
+
+# ─── Big Lotto: ts3_regime_3bet ONLINE Pending-Adapter Stub ──────────────────
+# P1.3: Added 2026-05-15 — live production strategy, governance gap closed.
+# Evidence: prediction_runs=167(VALID)/174(VALID)/175(RECONSTRUCTED),
+#           9 PENDING items (1069-1071, 1090-1095).
+# P1.2 classification: PRODUCT_DENOMINATOR_ONLINE_CANDIDATE → ONLINE
+#
+# ADAPTER BINDING STATUS: PENDING (P1.4 risk)
+# The predict_func for ts3_regime_3bet is NOT found in the current codebase.
+# This strategy was created/used outside the current tools/ directory or via
+# an undocumented inline function.  The registry entry is added for governance
+# and lifecycle visibility.  get_one_bet() raises AdapterBindingPending until
+# P1.4 locates or reconstructs the callable.
+# run_id=175 RECONSTRUCTED snapshot — additional risk documented in P1.3 report.
+
+class AdapterBindingPending(Exception):
+    """
+    Raised when an ONLINE strategy's predict_func has not yet been bound.
+    The strategy is governance-registered (ONLINE) but cannot generate replay
+    rows until P1.4 completes adapter binding.
+    This is NOT a lifecycle error — the strategy is ONLINE by operator decision.
+    """
+
+
+class _BigLottoTs3Regime3BetPendingAdapter(ReplayStrategyAdapter):
+    """
+    Metadata-registered ONLINE adapter stub for ts3_regime_3bet.
+    Cannot execute until P1.4 binds the predict_func.
+    """
+    meta = _StrategyMeta(
+        strategy_id="ts3_regime_3bet",
+        strategy_name="大樂透 TS3+Regime 3注",
+        strategy_version="v0.1",
+        supported_lottery_types=["BIG_LOTTO"],
+        min_history=100,
+        status="ONLINE",
+    )
+
+    def get_one_bet(self, history, lottery_type):
+        raise AdapterBindingPending(
+            "ts3_regime_3bet: adapter binding is PENDING (P1.4). "
+            "Strategy is ONLINE in governance registry but predict_func callable "
+            "has not been located in current tools/ codebase. "
+            "Replay generation blocked until P1.4 resolution."
+        )
+
+    def _call_strategy(self, history, lottery_type):
+        raise AdapterBindingPending(
+            "ts3_regime_3bet: adapter binding is PENDING (P1.4)."
+        )
+
+
 # ─── Non-Executable Lifecycle Stubs ─────────────────────────────────────────
 # Registered in _ALL_ADAPTERS for governance visibility.
 # NOT added to _REGISTRY. MUST NOT be executed.
@@ -450,8 +526,13 @@ _NON_EXECUTABLE_STUBS: List[_LifecycleStub] = [
 _ALL_ADAPTERS: List[ReplayStrategyAdapter] = [
     _PowerPrecision3BetAdapter(),
     _PowerOrthogonal5BetAdapter(),
+    # P1.3: fourier_rhythm_3bet — live POWER_LOTTO production strategy (2026-05-15)
+    _PowerFourierRhythm3BetAdapter(),
     _BigLottoTripleStrikeAdapter(),
     _BigLottoDeviation2BetAdapter(),
+    # P1.3: ts3_regime_3bet — live BIG_LOTTO production strategy (2026-05-15)
+    #        adapter binding PENDING (P1.4) — see AdapterBindingPending exception
+    _BigLottoTs3Regime3BetPendingAdapter(),
     _Daily539F4ColdAdapter(),
     _Daily539MarkovColdAdapter(),
     *_NON_EXECUTABLE_STUBS,

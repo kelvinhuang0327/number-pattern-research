@@ -4,12 +4,15 @@ test_replay_strategy_lifecycle_registry.py
 P2 lifecycle registry tests.
 
 Validates:
-1. ONLINE strategies (6) are unchanged and still executable.
+1. ONLINE strategies (8 post-P1.3) are present and fully executable via registry.
 2. Non-ONLINE stubs (10) appear in list_strategies() with correct lifecycle.
 3. Non-ONLINE stubs raise LifecycleNotExecutable on get_one_bet().
 4. Non-ONLINE stubs raise KeyError from get_adapter().
 5. Strategy ID uniqueness and valid lifecycle status values.
 6. No DB writes occur (registry is in-memory only).
+
+P1.3 update (2026-05-15): fourier_rhythm_3bet and ts3_regime_3bet added as ONLINE.
+Total registry: 18 entries (8 ONLINE + 10 non-ONLINE).
 """
 from __future__ import annotations
 
@@ -28,11 +31,17 @@ from lottery_api.models.replay_strategy_registry import (
 
 # ─── Expected strategy sets ───────────────────────────────────────────────────
 
+# P1.3 (2026-05-15): fourier_rhythm_3bet and ts3_regime_3bet added as ONLINE.
+# Registry now has 8 ONLINE + 10 non-ONLINE = 18 total.
 ONLINE_IDS = frozenset({
     "power_precision_3bet",
     "power_orthogonal_5bet",
+    # P1.3 additions:
+    "fourier_rhythm_3bet",
     "biglotto_triple_strike",
     "biglotto_deviation_2bet",
+    # P1.3 additions:
+    "ts3_regime_3bet",
     "daily539_f4cold",
     "daily539_markov_cold",
 })
@@ -62,12 +71,12 @@ NON_ONLINE_IDS = REJECTED_IDS | RETIRED_IDS | OBSERVATION_IDS
 # ─── Test class: ONLINE strategies are unchanged ─────────────────────────────
 
 class TestOnlineStrategiesUnchanged:
-    """ONLINE strategies must remain exactly 6 and fully executable via registry."""
+    """ONLINE strategies must be exactly the expected set (8 post-P1.3)."""
 
     def test_registry_contains_exactly_online_ids(self):
         assert set(_REGISTRY.keys()) == ONLINE_IDS
 
-    def test_list_strategies_online_filter_returns_all_six(self):
+    def test_list_strategies_online_filter_returns_all_eight(self):
         online = list_strategies(lifecycle_status="ONLINE")
         ids = {s["strategy_id"] for s in online}
         assert ids == ONLINE_IDS

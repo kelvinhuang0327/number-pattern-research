@@ -1,12 +1,15 @@
 {
-  "schema_version": "p2c_watcher.0",
+  "schema_version": "p2c_watcher.1",
   "generated_at": "2026-05-15T06:23:42Z",
+  "refreshed_at": "2026-05-15T06:29:10Z",
+  "watcher_run": 2,
   "final_classification": "P2C_DRAW_115000051_WATCHER_BLOCKED_BIG_LOTTO_MISSING",
   "target_draw": "115000051",
   "target_lottery_type": "BIG_LOTTO",
   "big_lotto_draw_exists": false,
   "latest_big_lotto_draw": "115000050",
   "latest_big_lotto_date": "2026/05/05",
+  "latest_big_lotto_numbers": "[4, 17, 23, 28, 33, 37]",
   "same_draw_number_other_lottery_types": [
     {
       "lottery_type": "DAILY_539",
@@ -24,7 +27,21 @@
     "merge_state_status": "CLEAN",
     "checks": "2/2 PASS",
     "head_ref": "chore/p2c-ts3-regime-readiness-20260515",
-    "base_ref": "main"
+    "base_ref": "main",
+    "role": "P2C initial readiness snapshot — precheck drift guard + blocked readiness",
+    "recommendation": "KEEP as historical readiness snapshot"
+  },
+  "pr_111_status": {
+    "number": 111,
+    "state": "OPEN",
+    "is_draft": true,
+    "mergeable": "MERGEABLE",
+    "merge_state_status": "CLEAN",
+    "checks": "2/2 PASS",
+    "head_ref": "chore/p2c-draw-115000051-watcher-20260515",
+    "base_ref": "main",
+    "role": "CANONICAL ongoing watcher — refreshed on each watcher run",
+    "recommendation": "UPDATE on each watcher run until draw ready"
   },
   "pending_prediction_item_ids": [1090, 1091, 1092],
   "pending_items": [

@@ -262,8 +262,9 @@ class TestFourierRhythm3BetAdapter:
 # ─── Test class: ts3_regime_3bet adapter behavior ────────────────────────────
 
 class TestTs3Regime3BetAdapter:
-    """ts3_regime_3bet is ONLINE but adapter binding is PENDING (P1.4).
-    get_one_bet() must raise AdapterBindingPending, NOT LifecycleNotExecutable."""
+    """ts3_regime_3bet is ONLINE. P1.4: adapter binding RESOLVED (SAFE_RECONSTRUCTION).
+    get_one_bet() must NOT raise AdapterBindingPending or LifecycleNotExecutable.
+    With insufficient history it raises InsufficientHistory (base class behaviour)."""
 
     def test_get_adapter_returns_adapter(self):
         """ts3_regime_3bet must be in _REGISTRY (ONLINE)."""
@@ -279,21 +280,30 @@ class TestTs3Regime3BetAdapter:
         adapter = get_adapter("ts3_regime_3bet")
         assert "BIG_LOTTO" in adapter.meta.supported_lottery_types
 
-    def test_get_one_bet_raises_adapter_binding_pending(self):
-        """get_one_bet must raise AdapterBindingPending (not LifecycleNotExecutable)."""
+    def test_get_one_bet_does_not_raise_adapter_binding_pending(self):
+        """P1.4: adapter is BOUND — must NOT raise AdapterBindingPending."""
         adapter = get_adapter("ts3_regime_3bet")
-        with pytest.raises(AdapterBindingPending):
+        try:
             adapter.get_one_bet([], "BIG_LOTTO")
+        except AdapterBindingPending:
+            pytest.fail(
+                "ts3_regime_3bet raised AdapterBindingPending after P1.4 binding. "
+                "Adapter reconstruction must have failed."
+            )
+        except Exception:
+            pass  # InsufficientHistory or similar — acceptable here
 
     def test_get_one_bet_does_not_raise_lifecycle_not_executable(self):
         """ts3_regime_3bet is ONLINE — must NOT raise LifecycleNotExecutable."""
         adapter = get_adapter("ts3_regime_3bet")
-        with pytest.raises(Exception) as exc_info:
+        try:
             adapter.get_one_bet([], "BIG_LOTTO")
-        assert not isinstance(exc_info.value, LifecycleNotExecutable), (
-            "ts3_regime_3bet raised LifecycleNotExecutable but it is ONLINE. "
-            "Expected AdapterBindingPending instead."
-        )
+        except LifecycleNotExecutable:
+            pytest.fail(
+                "ts3_regime_3bet raised LifecycleNotExecutable but it is ONLINE."
+            )
+        except Exception:
+            pass  # InsufficientHistory or similar — acceptable here
 
     def test_get_adapters_for_big_lotto_includes_ts3_regime_3bet(self):
         big_adapters = get_adapters_for_lottery("BIG_LOTTO")

@@ -8,10 +8,10 @@ These tests:
   - Do NOT write to the DB
   - Run the drift guard script via subprocess and parse its JSON output
 
-Expected baseline (established 2026-05-14):
-  V1=300  V2=200  legacy=460  total=960
+Expected baseline (established 2026-05-14, updated P2F 2026-05-15):
+  V1=300  V2=200  legacy=460  P2B=6  P2F=3  total=969
   V3 tombstone strategies: 0 rows each
-  truth_level: only REGENERATED_RETROSPECTIVE / ARTIFACT_RECONSTRUCTED_RETROSPECTIVE / NULL
+  truth_level: only REGENERATED_RETROSPECTIVE / ARTIFACT_RECONSTRUCTED_RETROSPECTIVE / OFFICIAL / NULL
   Final classification: REPLAY_LIFECYCLE_DRIFT_GUARD_PASS
 """
 
@@ -38,6 +38,7 @@ V3_CODE_MISSING_STRATEGY_IDS = [
 ALLOWED_TRUTH_LEVELS = {
     "REGENERATED_RETROSPECTIVE",
     "ARTIFACT_RECONSTRUCTED_RETROSPECTIVE",
+    "OFFICIAL",
     "null",
 }
 
@@ -157,13 +158,15 @@ class TestDriftGuardScript:
         )
 
     def test_db_counts_match_baseline(self, tmp_path):
-        """DB row counts must match the Post-V3+P2B baseline: V1=300, V2=200, legacy=460, P2B=6, total=966."""
+        """DB row counts must match the Post-V3+P2B+P2F baseline: V1=300, V2=200, legacy=460, P2B=6, P2F=3, total=969."""
         _, result = _run_drift_guard(tmp_path)
         rc = result.get("row_counts", {})
         assert rc.get("v1") == 300, f"V1 count mismatch: {rc.get('v1')} != 300"
         assert rc.get("v2") == 200, f"V2 count mismatch: {rc.get('v2')} != 200"
         assert rc.get("legacy") == 460, f"legacy count mismatch: {rc.get('legacy')} != 460"
-        assert rc.get("total") == 966, f"total count mismatch: {rc.get('total')} != 966"
+        assert rc.get("p2b") == 6, f"P2B count mismatch: {rc.get('p2b')} != 6"
+        assert rc.get("p2f") == 3, f"P2F count mismatch: {rc.get('p2f')} != 3"
+        assert rc.get("total") == 969, f"total count mismatch: {rc.get('total')} != 969"
         # final classification
         assert result.get("final_classification") == "REPLAY_LIFECYCLE_DRIFT_GUARD_PASS", (
             f"Unexpected final_classification: {result.get('final_classification')}"

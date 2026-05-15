@@ -4,12 +4,13 @@ replay_lifecycle_drift_guard.py
 Read-only Post-V3 replay lifecycle drift guard.
 
 Validates that the strategy_prediction_replays table has not drifted from
-the Post-V3 baseline established on 2026-05-14 (updated P2B 2026-05-15):
+the Post-V3 baseline established on 2026-05-14 (updated P2F 2026-05-15):
   V1  (controlled_apply_id='20260514033100-13acaf34996e') == 300
   V2  (controlled_apply_id='20260514134953-cf683424')     == 200
   legacy (controlled_apply_id IS NULL)                    == 460
   P2B (controlled_apply_id='P2B_20260515')                ==   6
-  total                                                   == 966
+  P2F (controlled_apply_id='P2F_20260515')                ==   3
+  total                                                   == 969
 
 Also checks:
   - Known V3 CODE_MISSING strategy IDs have 0 rows
@@ -43,15 +44,18 @@ DB_PATH = REPO_ROOT / "lottery_api" / "data" / "lottery_v2.db"
 
 # Baseline counts established on 2026-05-14 after Post-V3 replay apply
 # Updated 2026-05-15: +6 rows from P2B controlled ts3_regime_3bet backfill
+# Updated 2026-05-15: +3 rows from P2F controlled ts3_regime_3bet backfill (draw 115000051)
 BASELINE = {
     "v1_apply_id": "20260514033100-13acaf34996e",
     "v2_apply_id": "20260514134953-cf683424",
     "p2b_apply_id": "P2B_20260515",
+    "p2f_apply_id": "P2F_20260515",
     "v1_count": 300,
     "v2_count": 200,
     "legacy_count": 460,
     "p2b_count": 6,
-    "total_count": 966,
+    "p2f_count": 3,
+    "total_count": 969,
 }
 
 # Known V3 tombstone strategy IDs — must have 0 rows in replay table
@@ -68,6 +72,7 @@ V3_CODE_MISSING_STRATEGY_IDS = [
 ALLOWED_TRUTH_LEVELS = {
     "REGENERATED_RETROSPECTIVE",
     "ARTIFACT_RECONSTRUCTED_RETROSPECTIVE",
+    "OFFICIAL",
 }
 
 
@@ -101,6 +106,11 @@ def run_checks(db_path: pathlib.Path) -> dict:
         (BASELINE["p2b_apply_id"],),
     ).fetchone()[0]
 
+    p2f_count = c.execute(
+        "SELECT COUNT(*) FROM strategy_prediction_replays WHERE controlled_apply_id=?",
+        (BASELINE["p2f_apply_id"],),
+    ).fetchone()[0]
+
     legacy_count = c.execute(
         "SELECT COUNT(*) FROM strategy_prediction_replays WHERE controlled_apply_id IS NULL"
     ).fetchone()[0]
@@ -125,6 +135,10 @@ def run_checks(db_path: pathlib.Path) -> dict:
         violations.append(
             f"P2B row count mismatch: expected {BASELINE['p2b_count']}, got {p2b_count}"
         )
+    if p2f_count != BASELINE["p2f_count"]:
+        violations.append(
+            f"P2F row count mismatch: expected {BASELINE['p2f_count']}, got {p2f_count}"
+        )
     if total_count != BASELINE["total_count"]:
         violations.append(
             f"total row count mismatch: expected {BASELINE['total_count']}, got {total_count}"
@@ -135,6 +149,7 @@ def run_checks(db_path: pathlib.Path) -> dict:
         "v2": v2_count,
         "legacy": legacy_count,
         "p2b": p2b_count,
+        "p2f": p2f_count,
         "total": total_count,
     }
 
@@ -177,7 +192,7 @@ def run_checks(db_path: pathlib.Path) -> dict:
             )
 
     # Ensure expected keys are present even if count is zero
-    for expected_key in ("REGENERATED_RETROSPECTIVE", "ARTIFACT_RECONSTRUCTED_RETROSPECTIVE", "null"):
+    for expected_key in ("REGENERATED_RETROSPECTIVE", "ARTIFACT_RECONSTRUCTED_RETROSPECTIVE", "OFFICIAL", "null"):
         if expected_key not in truth_level_counts:
             truth_level_counts[expected_key] = 0
 
@@ -204,8 +219,8 @@ def run_checks(db_path: pathlib.Path) -> dict:
             # Already caught in row_counts section, no double-record
             pass
 
-    # Unexpected apply IDs (not V1, V2, or NULL) are violations
-    known_apply_ids = {BASELINE["v1_apply_id"], BASELINE["v2_apply_id"], BASELINE["p2b_apply_id"], "null", None}
+    # Unexpected apply IDs (not V1, V2, P2B, P2F, or NULL) are violations
+    known_apply_ids = {BASELINE["v1_apply_id"], BASELINE["v2_apply_id"], BASELINE["p2b_apply_id"], BASELINE["p2f_apply_id"], "null", None}
     for aid_key, cnt in controlled_apply_id_counts.items():
         if aid_key not in known_apply_ids and aid_key is not None:
             violations.append(

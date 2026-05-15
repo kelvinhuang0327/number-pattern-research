@@ -99,10 +99,15 @@ def _open_db_ro(db_path: str):
 
 def _get_next_draw(cur, latest_known_draw: str, lottery_type: str):
     """Return (draw, date, numbers_json, special) of the first draw
-    after latest_known_draw for the given lottery_type, or None."""
+    after latest_known_draw for the given lottery_type, or None.
+
+    draw column is stored as TEXT; use CAST to INTEGER to get numeric ordering
+    and avoid lexicographic errors (e.g. "96000001" > "115000050" as strings).
+    """
     row = cur.execute(
         "SELECT draw, date, numbers, special FROM draws "
-        "WHERE lottery_type=? AND draw>? ORDER BY draw LIMIT 1",
+        "WHERE lottery_type=? AND CAST(draw AS INTEGER) > CAST(? AS INTEGER) "
+        "ORDER BY CAST(draw AS INTEGER) LIMIT 1",
         (lottery_type, latest_known_draw),
     ).fetchone()
     return row

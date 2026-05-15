@@ -4,11 +4,12 @@ replay_lifecycle_drift_guard.py
 Read-only Post-V3 replay lifecycle drift guard.
 
 Validates that the strategy_prediction_replays table has not drifted from
-the Post-V3 baseline established on 2026-05-14:
+the Post-V3 baseline established on 2026-05-14 (updated P2B 2026-05-15):
   V1  (controlled_apply_id='20260514033100-13acaf34996e') == 300
   V2  (controlled_apply_id='20260514134953-cf683424')     == 200
   legacy (controlled_apply_id IS NULL)                    == 460
-  total                                                   == 960
+  P2B (controlled_apply_id='P2B_20260515')                ==   6
+  total                                                   == 966
 
 Also checks:
   - Known V3 CODE_MISSING strategy IDs have 0 rows
@@ -41,13 +42,16 @@ REPO_ROOT = pathlib.Path(__file__).resolve().parent.parent
 DB_PATH = REPO_ROOT / "lottery_api" / "data" / "lottery_v2.db"
 
 # Baseline counts established on 2026-05-14 after Post-V3 replay apply
+# Updated 2026-05-15: +6 rows from P2B controlled ts3_regime_3bet backfill
 BASELINE = {
     "v1_apply_id": "20260514033100-13acaf34996e",
     "v2_apply_id": "20260514134953-cf683424",
+    "p2b_apply_id": "P2B_20260515",
     "v1_count": 300,
     "v2_count": 200,
     "legacy_count": 460,
-    "total_count": 960,
+    "p2b_count": 6,
+    "total_count": 966,
 }
 
 # Known V3 tombstone strategy IDs — must have 0 rows in replay table
@@ -92,6 +96,11 @@ def run_checks(db_path: pathlib.Path) -> dict:
         (BASELINE["v2_apply_id"],),
     ).fetchone()[0]
 
+    p2b_count = c.execute(
+        "SELECT COUNT(*) FROM strategy_prediction_replays WHERE controlled_apply_id=?",
+        (BASELINE["p2b_apply_id"],),
+    ).fetchone()[0]
+
     legacy_count = c.execute(
         "SELECT COUNT(*) FROM strategy_prediction_replays WHERE controlled_apply_id IS NULL"
     ).fetchone()[0]
@@ -112,6 +121,10 @@ def run_checks(db_path: pathlib.Path) -> dict:
         violations.append(
             f"legacy row count mismatch: expected {BASELINE['legacy_count']}, got {legacy_count}"
         )
+    if p2b_count != BASELINE["p2b_count"]:
+        violations.append(
+            f"P2B row count mismatch: expected {BASELINE['p2b_count']}, got {p2b_count}"
+        )
     if total_count != BASELINE["total_count"]:
         violations.append(
             f"total row count mismatch: expected {BASELINE['total_count']}, got {total_count}"
@@ -121,6 +134,7 @@ def run_checks(db_path: pathlib.Path) -> dict:
         "v1": v1_count,
         "v2": v2_count,
         "legacy": legacy_count,
+        "p2b": p2b_count,
         "total": total_count,
     }
 
@@ -191,7 +205,7 @@ def run_checks(db_path: pathlib.Path) -> dict:
             pass
 
     # Unexpected apply IDs (not V1, V2, or NULL) are violations
-    known_apply_ids = {BASELINE["v1_apply_id"], BASELINE["v2_apply_id"], "null", None}
+    known_apply_ids = {BASELINE["v1_apply_id"], BASELINE["v2_apply_id"], BASELINE["p2b_apply_id"], "null", None}
     for aid_key, cnt in controlled_apply_id_counts.items():
         if aid_key not in known_apply_ids and aid_key is not None:
             violations.append(

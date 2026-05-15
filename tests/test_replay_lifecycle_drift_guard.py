@@ -157,13 +157,13 @@ class TestDriftGuardScript:
         )
 
     def test_db_counts_match_baseline(self, tmp_path):
-        """DB row counts must match the Post-V3 baseline: V1=300, V2=200, legacy=460, total=960."""
+        """DB row counts must match the Post-V3+P2B baseline: V1=300, V2=200, legacy=460, P2B=6, total=966."""
         _, result = _run_drift_guard(tmp_path)
         rc = result.get("row_counts", {})
         assert rc.get("v1") == 300, f"V1 count mismatch: {rc.get('v1')} != 300"
         assert rc.get("v2") == 200, f"V2 count mismatch: {rc.get('v2')} != 200"
         assert rc.get("legacy") == 460, f"legacy count mismatch: {rc.get('legacy')} != 460"
-        assert rc.get("total") == 960, f"total count mismatch: {rc.get('total')} != 960"
+        assert rc.get("total") == 966, f"total count mismatch: {rc.get('total')} != 966"
         # final classification
         assert result.get("final_classification") == "REPLAY_LIFECYCLE_DRIFT_GUARD_PASS", (
             f"Unexpected final_classification: {result.get('final_classification')}"

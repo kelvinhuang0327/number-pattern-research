@@ -1,11 +1,11 @@
 # P2C Draw 115000051 Watcher Report — 2026-05-15
 
-> **Watcher Run 6** — Refreshed at `2026-05-15T06:49:56Z`  
-> Previous runs: run 1 `2026-05-15T06:23:42Z` / run 2 `2026-05-15T06:29:10Z` / run 3 `2026-05-15T06:34:58Z` / run 4 `2026-05-15T06:39:45Z` / run 5 `2026-05-15T06:45:20Z`
+> **Watcher Run 7** — Refreshed at `2026-05-15T06:55:06Z`  
+> Previous runs: run 1 `2026-05-15T06:23:42Z` / run 2 `2026-05-15T06:29:10Z` / run 3 `2026-05-15T06:34:58Z` / run 4 `2026-05-15T06:39:45Z` / run 5 `2026-05-15T06:45:20Z` / run 6 `2026-05-15T06:49:56Z`
 
 ## 1. 本輪目標
 
-本輪執行 **read-only** DB watcher check（第 6 輪），確認 BIG_LOTTO draw `115000051` 是否已進入 `draws` table。
+本輪執行 **read-only** DB watcher check（第 7 輪），確認 BIG_LOTTO draw `115000051` 是否已進入 `draws` table。
 
 - **No DB writes**
 - **No replay backfill**
@@ -17,7 +17,7 @@
 | Target lottery_type | `BIG_LOTTO` |
 | Strategy | `ts3_regime_3bet` |
 | Pending items | 1090, 1091, 1092 (run_id=174) |
-| Watcher run | 6 |
+| Watcher run | 7 |
 
 ---
 
@@ -68,7 +68,8 @@
 | Watcher run 3 result | BLOCKED (unchanged) |
 | Watcher run 4 result | BLOCKED (unchanged) |
 | Watcher run 5 result | BLOCKED (unchanged) |
-| Watcher run 6 result | **BLOCKED** (unchanged) |
+| Watcher run 6 result | BLOCKED (unchanged) |
+| Watcher run 7 result | **BLOCKED** (unchanged) |
 | 結論 | **BLOCKED — BIG_LOTTO draw 115000051 未進 DB** |
 
 BIG_LOTTO draw `115000051` 尚未進入 `draws` table。
@@ -173,4 +174,5 @@ Refreshed (run 2): 2026-05-15T06:29:10Z
 Refreshed (run 3): 2026-05-15T06:34:58Z  
 Refreshed (run 4): 2026-05-15T06:39:45Z  
 Refreshed (run 5): 2026-05-15T06:45:20Z  
-Refreshed (run 6): 2026-05-15T06:49:56Z
+Refreshed (run 6): 2026-05-15T06:49:56Z  
+Refreshed (run 7): 2026-05-15T06:55:06Z

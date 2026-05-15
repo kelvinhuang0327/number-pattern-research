@@ -1,0 +1,4 @@
+﻿draw,date,lottery_type,num1,num2,num3,num4,num5,num6,special,exists_in_db,fetch_status,validation_passed,validation_issues
+115000051,2026/05/08,BIG_LOTTO,10,18,25,28,39,43,48,False,FETCHED,True,
+115000052,2026/05/12,BIG_LOTTO,6,12,18,19,32,36,34,False,FETCHED,True,
+115000053,,BIG_LOTTO,,,,,,,,False,BLOCKED_NO_TARGET_DRAWS_FOUND,False,not_fetched

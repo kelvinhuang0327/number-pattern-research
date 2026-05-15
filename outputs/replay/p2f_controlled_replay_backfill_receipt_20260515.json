@@ -1,0 +1,48 @@
+{
+  "generated_at": "2026-05-15T12:25:40Z",
+  "controlled_apply_id": "P2F_20260515",
+  "strategy_id": "ts3_regime_3bet",
+  "replay_total_before": 966,
+  "rows_inserted": [
+    {
+      "item_id": 1090,
+      "prediction_item_numbers": "[3, 5, 22, 34, 38, 49]",
+      "target_draw": "115000051",
+      "hit_count": 0,
+      "matched_numbers": [],
+      "rows_affected": 1
+    },
+    {
+      "item_id": 1091,
+      "prediction_item_numbers": "[16, 23, 29, 33, 36, 45]",
+      "target_draw": "115000051",
+      "hit_count": 0,
+      "matched_numbers": [],
+      "rows_affected": 1
+    },
+    {
+      "item_id": 1092,
+      "prediction_item_numbers": "[12, 18, 26, 27, 31, 46]",
+      "target_draw": "115000051",
+      "hit_count": 1,
+      "matched_numbers": [
+        18
+      ],
+      "rows_affected": 1
+    }
+  ],
+  "rows_skipped": [],
+  "items_resolved": [
+    1090,
+    1091,
+    1092
+  ],
+  "db_written": true,
+  "safety": {
+    "prediction_runs_modified": false,
+    "rows_outside_authorized_items": false,
+    "strategy_logic_changed": false
+  },
+  "replay_total_after": 969,
+  "p2f_rows_in_db": 3
+}

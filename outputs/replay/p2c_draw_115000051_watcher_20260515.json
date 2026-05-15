@@ -1,8 +1,8 @@
 {
   "schema_version": "p2c_watcher.1",
   "generated_at": "2026-05-15T06:23:42Z",
-  "refreshed_at": "2026-05-15T06:55:06Z",
-  "watcher_run": 7,
+  "refreshed_at": "2026-05-15T07:02:26Z",
+  "watcher_run": 8,
   "final_classification": "P2C_DRAW_115000051_WATCHER_BLOCKED_BIG_LOTTO_MISSING",
   "target_draw": "115000051",
   "target_lottery_type": "BIG_LOTTO",
@@ -81,6 +81,30 @@
   "prediction_items_promoted": false,
   "strategy_logic_changed": false,
   "api_ui_backend_changed": false,
-  "next_step": "WATCH_UNTIL_BIG_LOTTO_DRAW_115000051_INGESTED",
-  "re_trigger_condition": "BIG_LOTTO draw 115000051 must appear in draws table with lottery_type='BIG_LOTTO'"
+  "next_step": "DIAGNOSE_INGESTION_PIPELINE",
+  "re_trigger_condition": "BIG_LOTTO draw 115000051 must appear in draws table with lottery_type='BIG_LOTTO'",
+  "ingestion_pipeline_diagnosis": {
+    "diagnosis_at": "2026-05-15T07:02:26Z",
+    "finding": "SYSTEMIC_INGESTION_LAG",
+    "summary": "All lottery types show significant ingestion lag. BIG_LOTTO 115000050 (2026/05/05) is 10 days stale. Expected BIG_LOTTO 115000051 draw date ~2026/05/08 has passed 7 days ago. Draw has likely occurred but was never ingested.",
+    "latest_draw_by_lottery_type": [
+      {"lottery_type": "3_STAR",      "latest_draw": "115000024", "latest_date": "2026/01/28", "days_stale": "~107", "status": "SEVERELY_STALE"},
+      {"lottery_type": "BIG_LOTTO",   "latest_draw": "115000050", "latest_date": "2026/05/05", "days_stale": "10",   "status": "STALE"},
+      {"lottery_type": "DAILY_539",   "latest_draw": "115000105", "latest_date": "2026/04/29", "days_stale": "16",   "status": "STALE"},
+      {"lottery_type": "POWER_LOTTO", "latest_draw": "115000034", "latest_date": "2026/04/27", "days_stale": "18",   "status": "STALE"}
+    ],
+    "big_lotto_cadence_evidence": [
+      {"draw": "115000050", "date": "2026/05/05", "day": "Monday"},
+      {"draw": "115000049", "date": "2026/05/01", "day": "Thursday"},
+      {"draw": "115000048", "date": "2026/04/28", "day": "Monday"},
+      {"draw": "115000047", "date": "2026/04/24", "day": "Thursday"},
+      {"draw": "115000046", "date": "2026/04/21", "day": "Monday"}
+    ],
+    "expected_draw_schedule": [
+      {"draw": "115000051", "expected_date": "2026/05/08", "day": "Thursday", "status": "OVERDUE"},
+      {"draw": "115000052", "expected_date": "2026/05/12", "day": "Monday",   "status": "OVERDUE"},
+      {"draw": "115000053", "expected_date": "2026/05/15", "day": "Thursday", "status": "TODAY"}
+    ],
+    "recommendation": "Stop repeated same-session watcher reruns. Investigate ingestion pipeline: check scraper logs, data source availability, and whether the pipeline has been paused or is failing silently. Runs 1-8 all completed on 2026-05-15 with identical results."
+  }
 }

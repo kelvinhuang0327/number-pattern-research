@@ -1,0 +1,37 @@
+{
+  "schema_version": "p2.0",
+  "generated_at": "2026-05-15T13:10:53.148420+08:00",
+  "script_version": "p2.0",
+  "dry_run": true,
+  "final_classification": "P2_TS3_REGIME_BACKFILL_DRYRUN_BLOCKED",
+  "strategy_id": "ts3_regime_3bet",
+  "lottery_type": "BIG_LOTTO",
+  "input_prediction_item_ids": [
+    1069,
+    1070,
+    1071,
+    1090,
+    1091,
+    1092,
+    1093,
+    1094,
+    1095
+  ],
+  "items_found_in_db": 9,
+  "items_missing_from_db": [],
+  "eligible_count": 0,
+  "blocked_count": 9,
+  "adapter_bound": false,
+  "adapter_check_result": "get_adapter raised: \"Unknown strategy_id: 'ts3_regime_3bet'. Available: ['power_precision_3bet', 'power_orthogonal_5bet', 'biglotto_triple_strike', 'biglotto_deviation_2bet', 'daily539_f4cold', 'daily539_markov_cold']\"",
+  "blocked_reason": "Adapter binding check failed: get_adapter raised: \"Unknown strategy_id: 'ts3_regime_3bet'. Available: ['power_precision_3bet', 'power_orthogonal_5bet', 'biglotto_triple_strike', 'biglotto_deviation_2bet', 'daily539_f4cold', 'daily539_markov_cold']\". Merge PR #106 (p13-registry-online-proposal) and PR #107 (p14-ts3-regime-adapter-binding) to main first.",
+  "preview_rows": [],
+  "safety": {
+    "db_written": false,
+    "replay_rows_inserted": false,
+    "prediction_items_promoted": false,
+    "backfill_committed": false,
+    "strategy_logic_changed": false,
+    "api_ui_backend_changed": false
+  },
+  "next_step": "P2_BLOCKED_FIX_INPUTS"
+}

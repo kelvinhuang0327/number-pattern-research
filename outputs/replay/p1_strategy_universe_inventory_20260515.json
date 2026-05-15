@@ -1,0 +1,2594 @@
+{
+  "generated_at": "2026-05-15T03:13:34.299215Z",
+  "source_branch": "docs/p1-strategy-universe-inventory-20260515",
+  "base_commit": "b98a1feb8465ae82a520a2a7c6c5e07325f2ca4c",
+  "final_classification": "P1_STRATEGY_UNIVERSE_INVENTORY_READY",
+  "summary": {
+    "total_unique_strategy_candidates": 89,
+    "canonical_registry_count": 16,
+    "db_distinct_strategy_count": 10,
+    "artifact_strategy_count": 73,
+    "code_only_strategy_count": 0,
+    "unknown_lifecycle_count": 2,
+    "replay_covered_count": 6,
+    "coverage_gap_count": 73
+  },
+  "strategies": [
+    {
+      "strategy_id": "539_3bet_orthogonal",
+      "normalized_strategy_id": "539_3bet_orthogonal",
+      "display_name": "539 3Bet Orthogonal",
+      "sources": [
+        "artifact"
+      ],
+      "source_files": [
+        "outputs/replay/p1_strategy_lifecycle_inventory_20260511.json",
+        "outputs/replay/p2_lifecycle_backfill_dry_run_manifest_20260510.json"
+      ],
+      "in_registry": false,
+      "in_db": false,
+      "in_artifacts": true,
+      "in_code": false,
+      "lifecycle_status": "REJECTED",
+      "truth_classification": "UNKNOWN",
+      "db_row_count": 0,
+      "truth_level_counts": {},
+      "replay_display_semantics": "NO_DATA",
+      "coverage_status": "NOT_COVERED",
+      "risk_flags": [],
+      "notes": "artifact-only: appeared in historical backtest/research outputs"
+    },
+    {
+      "strategy_id": "H001",
+      "normalized_strategy_id": "H001",
+      "display_name": "H001",
+      "sources": [
+        "artifact"
+      ],
+      "source_files": [
+        "outputs/replay/p1_strategy_lifecycle_inventory_20260511.json"
+      ],
+      "in_registry": false,
+      "in_db": false,
+      "in_artifacts": true,
+      "in_code": false,
+      "lifecycle_status": "REJECTED",
+      "truth_classification": "UNKNOWN",
+      "db_row_count": 0,
+      "truth_level_counts": {},
+      "replay_display_semantics": "NO_DATA",
+      "coverage_status": "NOT_COVERED",
+      "risk_flags": [],
+      "notes": "artifact-only: appeared in historical backtest/research outputs"
+    },
+    {
+      "strategy_id": "H002",
+      "normalized_strategy_id": "H002",
+      "display_name": "H002",
+      "sources": [
+        "artifact"
+      ],
+      "source_files": [
+        "outputs/replay/p1_strategy_lifecycle_inventory_20260511.json"
+      ],
+      "in_registry": false,
+      "in_db": false,
+      "in_artifacts": true,
+      "in_code": false,
+      "lifecycle_status": "REJECTED",
+      "truth_classification": "UNKNOWN",
+      "db_row_count": 0,
+      "truth_level_counts": {},
+      "replay_display_semantics": "NO_DATA",
+      "coverage_status": "NOT_COVERED",
+      "risk_flags": [],
+      "notes": "artifact-only: appeared in historical backtest/research outputs"
+    },
+    {
+      "strategy_id": "H003",
+      "normalized_strategy_id": "H003",
+      "display_name": "H003",
+      "sources": [
+        "artifact"
+      ],
+      "source_files": [
+        "outputs/replay/p1_strategy_lifecycle_inventory_20260511.json"
+      ],
+      "in_registry": false,
+      "in_db": false,
+      "in_artifacts": true,
+      "in_code": false,
+      "lifecycle_status": "REJECTED",
+      "truth_classification": "UNKNOWN",
+      "db_row_count": 0,
+      "truth_level_counts": {},
+      "replay_display_semantics": "NO_DATA",
+      "coverage_status": "NOT_COVERED",
+      "risk_flags": [],
+      "notes": "artifact-only: appeared in historical backtest/research outputs"
+    },
+    {
+      "strategy_id": "H004",
+      "normalized_strategy_id": "H004",
+      "display_name": "H004",
+      "sources": [
+        "artifact"
+      ],
+      "source_files": [
+        "outputs/replay/p1_strategy_lifecycle_inventory_20260511.json"
+      ],
+      "in_registry": false,
+      "in_db": false,
+      "in_artifacts": true,
+      "in_code": false,
+      "lifecycle_status": "REJECTED",
+      "truth_classification": "UNKNOWN",
+      "db_row_count": 0,
+      "truth_level_counts": {},
+      "replay_display_semantics": "NO_DATA",
+      "coverage_status": "NOT_COVERED",
+      "risk_flags": [],
+      "notes": "artifact-only: appeared in historical backtest/research outputs"
+    },
+    {
+      "strategy_id": "H005",
+      "normalized_strategy_id": "H005",
+      "display_name": "H005",
+      "sources": [
+        "artifact"
+      ],
+      "source_files": [
+        "outputs/replay/p1_strategy_lifecycle_inventory_20260511.json"
+      ],
+      "in_registry": false,
+      "in_db": false,
+      "in_artifacts": true,
+      "in_code": false,
+      "lifecycle_status": "REJECTED",
+      "truth_classification": "UNKNOWN",
+      "db_row_count": 0,
+      "truth_level_counts": {},
+      "replay_display_semantics": "NO_DATA",
+      "coverage_status": "NOT_COVERED",
+      "risk_flags": [],
+      "notes": "artifact-only: appeared in historical backtest/research outputs"
+    },
+    {
+      "strategy_id": "H006",
+      "normalized_strategy_id": "H006",
+      "display_name": "H006",
+      "sources": [
+        "artifact"
+      ],
+      "source_files": [
+        "outputs/replay/p1_strategy_lifecycle_inventory_20260511.json"
+      ],
+      "in_registry": false,
+      "in_db": false,
+      "in_artifacts": true,
+      "in_code": false,
+      "lifecycle_status": "REJECTED",
+      "truth_classification": "UNKNOWN",
+      "db_row_count": 0,
+      "truth_level_counts": {},
+      "replay_display_semantics": "NO_DATA",
+      "coverage_status": "NOT_COVERED",
+      "risk_flags": [],
+      "notes": "artifact-only: appeared in historical backtest/research outputs"
+    },
+    {
+      "strategy_id": "H007",
+      "normalized_strategy_id": "H007",
+      "display_name": "H007",
+      "sources": [
+        "artifact"
+      ],
+      "source_files": [
+        "outputs/replay/p1_strategy_lifecycle_inventory_20260511.json"
+      ],
+      "in_registry": false,
+      "in_db": false,
+      "in_artifacts": true,
+      "in_code": false,
+      "lifecycle_status": "REJECTED",
+      "truth_classification": "UNKNOWN",
+      "db_row_count": 0,
+      "truth_level_counts": {},
+      "replay_display_semantics": "NO_DATA",
+      "coverage_status": "NOT_COVERED",
+      "risk_flags": [],
+      "notes": "artifact-only: appeared in historical backtest/research outputs"
+    },
+    {
+      "strategy_id": "H008",
+      "normalized_strategy_id": "H008",
+      "display_name": "H008",
+      "sources": [
+        "artifact"
+      ],
+      "source_files": [
+        "outputs/replay/p1_strategy_lifecycle_inventory_20260511.json"
+      ],
+      "in_registry": false,
+      "in_db": false,
+      "in_artifacts": true,
+      "in_code": false,
+      "lifecycle_status": "REJECTED",
+      "truth_classification": "UNKNOWN",
+      "db_row_count": 0,
+      "truth_level_counts": {},
+      "replay_display_semantics": "NO_DATA",
+      "coverage_status": "NOT_COVERED",
+      "risk_flags": [],
+      "notes": "artifact-only: appeared in historical backtest/research outputs"
+    },
+    {
+      "strategy_id": "acb_1bet",
+      "normalized_strategy_id": "acb_1bet",
+      "display_name": "Acb 1Bet",
+      "sources": [
+        "registry",
+        "artifact",
+        "code"
+      ],
+      "source_files": [
+        "lottery_api/models/replay_strategy_registry.py",
+        "outputs/replay/non_online_replay_fixture_20260511.json",
+        "outputs/replay/p1_executable_inventory_20260513.json",
+        "outputs/replay/p1_strategy_lifecycle_inventory_20260511.json",
+        "outputs/replay/post_v3_api_regression_result_20260514.json"
+      ],
+      "in_registry": true,
+      "in_db": false,
+      "in_artifacts": true,
+      "in_code": true,
+      "lifecycle_status": "RETIRED",
+      "truth_classification": "CODE_MISSING",
+      "db_row_count": 0,
+      "truth_level_counts": {},
+      "replay_display_semantics": "FROZEN",
+      "coverage_status": "UNKNOWN",
+      "risk_flags": [],
+      "notes": "lottery_type=DAILY_539; V3 CODE_MISSING tombstone — 0 rows enforced by drift guard; registry entry exists; code unavailable for re-run"
+    },
+    {
+      "strategy_id": "acb_extremecol_2bet_539",
+      "normalized_strategy_id": "acb_extremecol_2bet_539",
+      "display_name": "Acb Extremecol 2Bet 539",
+      "sources": [
+        "artifact"
+      ],
+      "source_files": [
+        "outputs/replay/p1_strategy_lifecycle_inventory_20260511.json"
+      ],
+      "in_registry": false,
+      "in_db": false,
+      "in_artifacts": true,
+      "in_code": false,
+      "lifecycle_status": "REJECTED",
+      "truth_classification": "UNKNOWN",
+      "db_row_count": 0,
+      "truth_level_counts": {},
+      "replay_display_semantics": "NO_DATA",
+      "coverage_status": "NOT_COVERED",
+      "risk_flags": [],
+      "notes": "artifact-only: appeared in historical backtest/research outputs"
+    },
+    {
+      "strategy_id": "acb_hot_fourier_3bet_biglotto",
+      "normalized_strategy_id": "acb_hot_fourier_3bet_biglotto",
+      "display_name": "Acb Hot Fourier 3Bet Biglotto",
+      "sources": [
+        "artifact"
+      ],
+      "source_files": [
+        "outputs/replay/p1_strategy_lifecycle_inventory_20260511.json",
+        "outputs/replay/p2_lifecycle_backfill_dry_run_manifest_20260510.json"
+      ],
+      "in_registry": false,
+      "in_db": false,
+      "in_artifacts": true,
+      "in_code": false,
+      "lifecycle_status": "REJECTED",
+      "truth_classification": "UNKNOWN",
+      "db_row_count": 0,
+      "truth_level_counts": {},
+      "replay_display_semantics": "NO_DATA",
+      "coverage_status": "NOT_COVERED",
+      "risk_flags": [],
+      "notes": "artifact-only: appeared in historical backtest/research outputs"
+    },
+    {
+      "strategy_id": "acb_lag_echo_2bet_539",
+      "normalized_strategy_id": "acb_lag_echo_2bet_539",
+      "display_name": "Acb Lag Echo 2Bet 539",
+      "sources": [
+        "artifact"
+      ],
+      "source_files": [
+        "outputs/replay/p1_strategy_lifecycle_inventory_20260511.json"
+      ],
+      "in_registry": false,
+      "in_db": false,
+      "in_artifacts": true,
+      "in_code": false,
+      "lifecycle_status": "REJECTED",
+      "truth_classification": "UNKNOWN",
+      "db_row_count": 0,
+      "truth_level_counts": {},
+      "replay_display_semantics": "NO_DATA",
+      "coverage_status": "NOT_COVERED",
+      "risk_flags": [],
+      "notes": "artifact-only: appeared in historical backtest/research outputs"
+    },
+    {
+      "strategy_id": "acb_markov_extremecol_3bet_539",
+      "normalized_strategy_id": "acb_markov_extremecol_3bet_539",
+      "display_name": "Acb Markov Extremecol 3Bet 539",
+      "sources": [
+        "artifact"
+      ],
+      "source_files": [
+        "outputs/replay/p1_strategy_lifecycle_inventory_20260511.json"
+      ],
+      "in_registry": false,
+      "in_db": false,
+      "in_artifacts": true,
+      "in_code": false,
+      "lifecycle_status": "REJECTED",
+      "truth_classification": "UNKNOWN",
+      "db_row_count": 0,
+      "truth_level_counts": {},
+      "replay_display_semantics": "NO_DATA",
+      "coverage_status": "NOT_COVERED",
+      "risk_flags": [],
+      "notes": "artifact-only: appeared in historical backtest/research outputs"
+    },
+    {
+      "strategy_id": "acb_markov_midfreq",
+      "normalized_strategy_id": "acb_markov_midfreq",
+      "display_name": "Acb Markov Midfreq",
+      "sources": [
+        "registry",
+        "artifact",
+        "code"
+      ],
+      "source_files": [
+        "lottery_api/models/replay_strategy_registry.py",
+        "outputs/replay/non_online_replay_fixture_20260511.json",
+        "outputs/replay/p1_executable_inventory_20260513.json",
+        "outputs/replay/p1_strategy_lifecycle_inventory_20260511.json",
+        "outputs/replay/post_v3_api_regression_result_20260514.json"
+      ],
+      "in_registry": true,
+      "in_db": false,
+      "in_artifacts": true,
+      "in_code": true,
+      "lifecycle_status": "RETIRED",
+      "truth_classification": "CODE_MISSING",
+      "db_row_count": 0,
+      "truth_level_counts": {},
+      "replay_display_semantics": "FROZEN",
+      "coverage_status": "UNKNOWN",
+      "risk_flags": [],
+      "notes": "lottery_type=DAILY_539; V3 CODE_MISSING tombstone — 0 rows enforced by drift guard; registry entry exists; code unavailable for re-run"
+    },
+    {
+      "strategy_id": "acb_markov_midfreq_3bet",
+      "normalized_strategy_id": "acb_markov_midfreq_3bet",
+      "display_name": "Acb Markov Midfreq 3Bet",
+      "sources": [
+        "registry",
+        "artifact",
+        "code"
+      ],
+      "source_files": [
+        "lottery_api/models/replay_strategy_registry.py",
+        "outputs/replay/non_online_replay_fixture_20260511.json",
+        "outputs/replay/p1_executable_inventory_20260513.json",
+        "outputs/replay/p1_strategy_lifecycle_inventory_20260511.json",
+        "outputs/replay/p2_lifecycle_backfill_dry_run_manifest_20260510.json"
+      ],
+      "in_registry": true,
+      "in_db": false,
+      "in_artifacts": true,
+      "in_code": true,
+      "lifecycle_status": "RETIRED",
+      "truth_classification": "CODE_MISSING",
+      "db_row_count": 0,
+      "truth_level_counts": {},
+      "replay_display_semantics": "FROZEN",
+      "coverage_status": "UNKNOWN",
+      "risk_flags": [],
+      "notes": "lottery_type=DAILY_539; V3 CODE_MISSING tombstone — 0 rows enforced by drift guard; registry entry exists; code unavailable for re-run"
+    },
+    {
+      "strategy_id": "acb_single_539",
+      "normalized_strategy_id": "acb_single_539",
+      "display_name": "Acb Single 539",
+      "sources": [
+        "artifact"
+      ],
+      "source_files": [
+        "outputs/replay/p1_strategy_lifecycle_inventory_20260511.json",
+        "outputs/replay/p2_lifecycle_backfill_dry_run_manifest_20260510.json"
+      ],
+      "in_registry": false,
+      "in_db": false,
+      "in_artifacts": true,
+      "in_code": false,
+      "lifecycle_status": "REJECTED",
+      "truth_classification": "UNKNOWN",
+      "db_row_count": 0,
+      "truth_level_counts": {},
+      "replay_display_semantics": "NO_DATA",
+      "coverage_status": "NOT_COVERED",
+      "risk_flags": [],
+      "notes": "artifact-only: appeared in historical backtest/research outputs"
+    },
+    {
+      "strategy_id": "apriori_3bet_biglotto",
+      "normalized_strategy_id": "apriori_3bet_biglotto",
+      "display_name": "Apriori 3Bet Biglotto",
+      "sources": [
+        "artifact"
+      ],
+      "source_files": [
+        "outputs/replay/p1_strategy_lifecycle_inventory_20260511.json",
+        "outputs/replay/p2_lifecycle_backfill_dry_run_manifest_20260510.json"
+      ],
+      "in_registry": false,
+      "in_db": false,
+      "in_artifacts": true,
+      "in_code": false,
+      "lifecycle_status": "REJECTED",
+      "truth_classification": "UNKNOWN",
+      "db_row_count": 0,
+      "truth_level_counts": {},
+      "replay_display_semantics": "NO_DATA",
+      "coverage_status": "NOT_COVERED",
+      "risk_flags": [],
+      "notes": "artifact-only: appeared in historical backtest/research outputs"
+    },
+    {
+      "strategy_id": "bandit_ucb1_2bet_539",
+      "normalized_strategy_id": "bandit_ucb1_2bet_539",
+      "display_name": "Bandit Ucb1 2Bet 539",
+      "sources": [
+        "artifact"
+      ],
+      "source_files": [
+        "outputs/replay/p1_strategy_lifecycle_inventory_20260511.json",
+        "outputs/replay/p2_lifecycle_backfill_dry_run_manifest_20260510.json"
+      ],
+      "in_registry": false,
+      "in_db": false,
+      "in_artifacts": true,
+      "in_code": false,
+      "lifecycle_status": "REJECTED",
+      "truth_classification": "UNKNOWN",
+      "db_row_count": 0,
+      "truth_level_counts": {},
+      "replay_display_semantics": "NO_DATA",
+      "coverage_status": "NOT_COVERED",
+      "risk_flags": [],
+      "notes": "artifact-only: appeared in historical backtest/research outputs"
+    },
+    {
+      "strategy_id": "bet2_fourier_expansion_biglotto",
+      "normalized_strategy_id": "bet2_fourier_expansion_biglotto",
+      "display_name": "Bet2 Fourier Expansion Biglotto",
+      "sources": [
+        "artifact"
+      ],
+      "source_files": [
+        "outputs/replay/p1_strategy_lifecycle_inventory_20260511.json",
+        "outputs/replay/p2_lifecycle_backfill_dry_run_manifest_20260510.json"
+      ],
+      "in_registry": false,
+      "in_db": false,
+      "in_artifacts": true,
+      "in_code": false,
+      "lifecycle_status": "REJECTED",
+      "truth_classification": "UNKNOWN",
+      "db_row_count": 0,
+      "truth_level_counts": {},
+      "replay_display_semantics": "NO_DATA",
+      "coverage_status": "NOT_COVERED",
+      "risk_flags": [],
+      "notes": "artifact-only: appeared in historical backtest/research outputs"
+    },
+    {
+      "strategy_id": "biglotto_6bet_zone_residual",
+      "normalized_strategy_id": "biglotto_6bet_zone_residual",
+      "display_name": "Biglotto 6Bet Zone Residual",
+      "sources": [
+        "artifact"
+      ],
+      "source_files": [
+        "outputs/replay/p1_strategy_lifecycle_inventory_20260511.json"
+      ],
+      "in_registry": false,
+      "in_db": false,
+      "in_artifacts": true,
+      "in_code": false,
+      "lifecycle_status": "REJECTED",
+      "truth_classification": "UNKNOWN",
+      "db_row_count": 0,
+      "truth_level_counts": {},
+      "replay_display_semantics": "NO_DATA",
+      "coverage_status": "NOT_COVERED",
+      "risk_flags": [],
+      "notes": "artifact-only: appeared in historical backtest/research outputs"
+    },
+    {
+      "strategy_id": "biglotto_deviation_2bet",
+      "normalized_strategy_id": "biglotto_deviation_2bet",
+      "display_name": "Biglotto Deviation 2Bet",
+      "sources": [
+        "registry",
+        "db",
+        "artifact",
+        "code"
+      ],
+      "source_files": [
+        "lottery_api/models/replay_strategy_registry.py",
+        "outputs/replay/p1_executable_inventory_20260513.json",
+        "outputs/replay/p1_strategy_lifecycle_inventory_20260511.json",
+        "outputs/replay/p3_1_retrospective_candidate_rows_normalized_20260514.jsonl",
+        "outputs/replay/p3_retrospective_candidate_rows_20260513.jsonl"
+      ],
+      "in_registry": true,
+      "in_db": true,
+      "in_artifacts": true,
+      "in_code": true,
+      "lifecycle_status": "ONLINE",
+      "truth_classification": "REGENERATED_RETROSPECTIVE",
+      "db_row_count": 120,
+      "truth_level_counts": {
+        "NULL": 70,
+        "REGENERATED_RETROSPECTIVE": 50
+      },
+      "replay_display_semantics": "LIVE",
+      "coverage_status": "COVERED",
+      "risk_flags": [],
+      "notes": "lottery_type=BIG_LOTTO"
+    },
+    {
+      "strategy_id": "biglotto_triple_strike",
+      "normalized_strategy_id": "biglotto_triple_strike",
+      "display_name": "Biglotto Triple Strike",
+      "sources": [
+        "registry",
+        "db",
+        "artifact",
+        "code"
+      ],
+      "source_files": [
+        "lottery_api/models/replay_strategy_registry.py",
+        "outputs/replay/p1_executable_inventory_20260513.json",
+        "outputs/replay/p1_strategy_lifecycle_inventory_20260511.json",
+        "outputs/replay/p3_1_retrospective_candidate_rows_normalized_20260514.jsonl",
+        "outputs/replay/p3_retrospective_candidate_rows_20260513.jsonl"
+      ],
+      "in_registry": true,
+      "in_db": true,
+      "in_artifacts": true,
+      "in_code": true,
+      "lifecycle_status": "ONLINE",
+      "truth_classification": "REGENERATED_RETROSPECTIVE",
+      "db_row_count": 120,
+      "truth_level_counts": {
+        "NULL": 70,
+        "REGENERATED_RETROSPECTIVE": 50
+      },
+      "replay_display_semantics": "LIVE",
+      "coverage_status": "COVERED",
+      "risk_flags": [],
+      "notes": "lottery_type=BIG_LOTTO"
+    },
+    {
+      "strategy_id": "biglotto_ts3_acb_4bet",
+      "normalized_strategy_id": "biglotto_ts3_acb_4bet",
+      "display_name": "Biglotto Ts3 Acb 4Bet",
+      "sources": [
+        "registry",
+        "db",
+        "artifact",
+        "code"
+      ],
+      "source_files": [
+        "lottery_api/models/replay_strategy_registry.py",
+        "outputs/replay/non_online_replay_fixture_20260511.json",
+        "outputs/replay/p1_executable_inventory_20260513.json",
+        "outputs/replay/p1_strategy_lifecycle_inventory_20260511.json",
+        "outputs/replay/p3_retrospective_candidate_summary_20260513.json"
+      ],
+      "in_registry": true,
+      "in_db": true,
+      "in_artifacts": true,
+      "in_code": true,
+      "lifecycle_status": "REJECTED",
+      "truth_classification": "ARTIFACT_RECONSTRUCTED_RETROSPECTIVE",
+      "db_row_count": 50,
+      "truth_level_counts": {
+        "ARTIFACT_RECONSTRUCTED_RETROSPECTIVE": 50
+      },
+      "replay_display_semantics": "RETROSPECTIVE",
+      "coverage_status": "PARTIAL",
+      "risk_flags": [],
+      "notes": "lottery_type=BIG_LOTTO"
+    },
+    {
+      "strategy_id": "biglotto_ts3_markov_freq_5bet",
+      "normalized_strategy_id": "biglotto_ts3_markov_freq_5bet",
+      "display_name": "Biglotto Ts3 Markov Freq 5Bet",
+      "sources": [
+        "registry",
+        "db",
+        "artifact",
+        "code"
+      ],
+      "source_files": [
+        "lottery_api/models/replay_strategy_registry.py",
+        "outputs/replay/non_online_replay_fixture_20260511.json",
+        "outputs/replay/p1_executable_inventory_20260513.json",
+        "outputs/replay/p1_strategy_lifecycle_inventory_20260511.json",
+        "outputs/replay/p3_retrospective_candidate_summary_20260513.json"
+      ],
+      "in_registry": true,
+      "in_db": true,
+      "in_artifacts": true,
+      "in_code": true,
+      "lifecycle_status": "REJECTED",
+      "truth_classification": "ARTIFACT_RECONSTRUCTED_RETROSPECTIVE",
+      "db_row_count": 50,
+      "truth_level_counts": {
+        "ARTIFACT_RECONSTRUCTED_RETROSPECTIVE": 50
+      },
+      "replay_display_semantics": "RETROSPECTIVE",
+      "coverage_status": "PARTIAL",
+      "risk_flags": [],
+      "notes": "lottery_type=BIG_LOTTO"
+    },
+    {
+      "strategy_id": "cluster_pivot_biglotto",
+      "normalized_strategy_id": "cluster_pivot_biglotto",
+      "display_name": "Cluster Pivot Biglotto",
+      "sources": [
+        "artifact"
+      ],
+      "source_files": [
+        "outputs/replay/p1_strategy_lifecycle_inventory_20260511.json",
+        "outputs/replay/p2_lifecycle_backfill_dry_run_manifest_20260510.json"
+      ],
+      "in_registry": false,
+      "in_db": false,
+      "in_artifacts": true,
+      "in_code": false,
+      "lifecycle_status": "REJECTED",
+      "truth_classification": "UNKNOWN",
+      "db_row_count": 0,
+      "truth_level_counts": {},
+      "replay_display_semantics": "NO_DATA",
+      "coverage_status": "NOT_COVERED",
+      "risk_flags": [],
+      "notes": "artifact-only: appeared in historical backtest/research outputs"
+    },
+    {
+      "strategy_id": "cold_burst_3bet_539",
+      "normalized_strategy_id": "cold_burst_3bet_539",
+      "display_name": "Cold Burst 3Bet 539",
+      "sources": [
+        "artifact"
+      ],
+      "source_files": [
+        "outputs/replay/p1_strategy_lifecycle_inventory_20260511.json"
+      ],
+      "in_registry": false,
+      "in_db": false,
+      "in_artifacts": true,
+      "in_code": false,
+      "lifecycle_status": "REJECTED",
+      "truth_classification": "UNKNOWN",
+      "db_row_count": 0,
+      "truth_level_counts": {},
+      "replay_display_semantics": "NO_DATA",
+      "coverage_status": "NOT_COVERED",
+      "risk_flags": [],
+      "notes": "artifact-only: appeared in historical backtest/research outputs"
+    },
+    {
+      "strategy_id": "cold_complement_biglotto",
+      "normalized_strategy_id": "cold_complement_biglotto",
+      "display_name": "Cold Complement Biglotto",
+      "sources": [
+        "artifact"
+      ],
+      "source_files": [
+        "outputs/replay/p1_strategy_lifecycle_inventory_20260511.json",
+        "outputs/replay/p2_lifecycle_backfill_dry_run_manifest_20260510.json"
+      ],
+      "in_registry": false,
+      "in_db": false,
+      "in_artifacts": true,
+      "in_code": false,
+      "lifecycle_status": "REJECTED",
+      "truth_classification": "UNKNOWN",
+      "db_row_count": 0,
+      "truth_level_counts": {},
+      "replay_display_semantics": "NO_DATA",
+      "coverage_status": "NOT_COVERED",
+      "risk_flags": [],
+      "notes": "artifact-only: appeared in historical backtest/research outputs"
+    },
+    {
+      "strategy_id": "coldpool15_biglotto",
+      "normalized_strategy_id": "coldpool15_biglotto",
+      "display_name": "Coldpool15 Biglotto",
+      "sources": [
+        "artifact"
+      ],
+      "source_files": [
+        "outputs/replay/p1_strategy_lifecycle_inventory_20260511.json",
+        "outputs/replay/p2_lifecycle_backfill_dry_run_manifest_20260510.json"
+      ],
+      "in_registry": false,
+      "in_db": false,
+      "in_artifacts": true,
+      "in_code": false,
+      "lifecycle_status": "REJECTED",
+      "truth_classification": "UNKNOWN",
+      "db_row_count": 0,
+      "truth_level_counts": {},
+      "replay_display_semantics": "NO_DATA",
+      "coverage_status": "NOT_COVERED",
+      "risk_flags": [],
+      "notes": "artifact-only: appeared in historical backtest/research outputs"
+    },
+    {
+      "strategy_id": "condfourier_3bet_539",
+      "normalized_strategy_id": "condfourier_3bet_539",
+      "display_name": "Condfourier 3Bet 539",
+      "sources": [
+        "artifact"
+      ],
+      "source_files": [
+        "outputs/replay/p1_strategy_lifecycle_inventory_20260511.json"
+      ],
+      "in_registry": false,
+      "in_db": false,
+      "in_artifacts": true,
+      "in_code": false,
+      "lifecycle_status": "REJECTED",
+      "truth_classification": "UNKNOWN",
+      "db_row_count": 0,
+      "truth_level_counts": {},
+      "replay_display_semantics": "NO_DATA",
+      "coverage_status": "NOT_COVERED",
+      "risk_flags": [],
+      "notes": "artifact-only: appeared in historical backtest/research outputs"
+    },
+    {
+      "strategy_id": "conditional_fourier_539",
+      "normalized_strategy_id": "conditional_fourier_539",
+      "display_name": "Conditional Fourier 539",
+      "sources": [
+        "artifact"
+      ],
+      "source_files": [
+        "outputs/replay/p1_strategy_lifecycle_inventory_20260511.json"
+      ],
+      "in_registry": false,
+      "in_db": false,
+      "in_artifacts": true,
+      "in_code": false,
+      "lifecycle_status": "REJECTED",
+      "truth_classification": "UNKNOWN",
+      "db_row_count": 0,
+      "truth_level_counts": {},
+      "replay_display_semantics": "NO_DATA",
+      "coverage_status": "NOT_COVERED",
+      "risk_flags": [],
+      "notes": "artifact-only: appeared in historical backtest/research outputs"
+    },
+    {
+      "strategy_id": "consecutive_pair_detector_539",
+      "normalized_strategy_id": "consecutive_pair_detector_539",
+      "display_name": "Consecutive Pair Detector 539",
+      "sources": [
+        "artifact"
+      ],
+      "source_files": [
+        "outputs/replay/p1_strategy_lifecycle_inventory_20260511.json",
+        "outputs/replay/p2_lifecycle_backfill_dry_run_manifest_20260510.json"
+      ],
+      "in_registry": false,
+      "in_db": false,
+      "in_artifacts": true,
+      "in_code": false,
+      "lifecycle_status": "REJECTED",
+      "truth_classification": "UNKNOWN",
+      "db_row_count": 0,
+      "truth_level_counts": {},
+      "replay_display_semantics": "NO_DATA",
+      "coverage_status": "NOT_COVERED",
+      "risk_flags": [],
+      "notes": "artifact-only: appeared in historical backtest/research outputs"
+    },
+    {
+      "strategy_id": "core_satellite_biglotto",
+      "normalized_strategy_id": "core_satellite_biglotto",
+      "display_name": "Core Satellite Biglotto",
+      "sources": [
+        "artifact"
+      ],
+      "source_files": [
+        "outputs/replay/p1_strategy_lifecycle_inventory_20260511.json",
+        "outputs/replay/p2_lifecycle_backfill_dry_run_manifest_20260510.json"
+      ],
+      "in_registry": false,
+      "in_db": false,
+      "in_artifacts": true,
+      "in_code": false,
+      "lifecycle_status": "REJECTED",
+      "truth_classification": "UNKNOWN",
+      "db_row_count": 0,
+      "truth_level_counts": {},
+      "replay_display_semantics": "NO_DATA",
+      "coverage_status": "NOT_COVERED",
+      "risk_flags": [],
+      "notes": "artifact-only: appeared in historical backtest/research outputs"
+    },
+    {
+      "strategy_id": "daily539_f4cold",
+      "normalized_strategy_id": "daily539_f4cold",
+      "display_name": "Daily539 F4Cold",
+      "sources": [
+        "registry",
+        "db",
+        "artifact",
+        "code"
+      ],
+      "source_files": [
+        "lottery_api/models/replay_strategy_registry.py",
+        "outputs/replay/p1_executable_inventory_20260513.json",
+        "outputs/replay/p1_strategy_lifecycle_inventory_20260511.json",
+        "outputs/replay/p3_1_retrospective_candidate_rows_normalized_20260514.jsonl",
+        "outputs/replay/p3_retrospective_candidate_rows_20260513.jsonl"
+      ],
+      "in_registry": true,
+      "in_db": true,
+      "in_artifacts": true,
+      "in_code": true,
+      "lifecycle_status": "ONLINE",
+      "truth_classification": "REGENERATED_RETROSPECTIVE",
+      "db_row_count": 140,
+      "truth_level_counts": {
+        "NULL": 90,
+        "REGENERATED_RETROSPECTIVE": 50
+      },
+      "replay_display_semantics": "LIVE",
+      "coverage_status": "COVERED",
+      "risk_flags": [],
+      "notes": "lottery_type=DAILY_539"
+    },
+    {
+      "strategy_id": "daily539_markov_cold",
+      "normalized_strategy_id": "daily539_markov_cold",
+      "display_name": "Daily539 Markov Cold",
+      "sources": [
+        "registry",
+        "db",
+        "artifact",
+        "code"
+      ],
+      "source_files": [
+        "lottery_api/models/replay_strategy_registry.py",
+        "outputs/replay/p1_executable_inventory_20260513.json",
+        "outputs/replay/p1_strategy_lifecycle_inventory_20260511.json",
+        "outputs/replay/p3_1_retrospective_candidate_rows_normalized_20260514.jsonl",
+        "outputs/replay/p3_retrospective_candidate_rows_20260513.jsonl"
+      ],
+      "in_registry": true,
+      "in_db": true,
+      "in_artifacts": true,
+      "in_code": true,
+      "lifecycle_status": "ONLINE",
+      "truth_classification": "REGENERATED_RETROSPECTIVE",
+      "db_row_count": 140,
+      "truth_level_counts": {
+        "NULL": 90,
+        "REGENERATED_RETROSPECTIVE": 50
+      },
+      "replay_display_semantics": "LIVE",
+      "coverage_status": "COVERED",
+      "risk_flags": [],
+      "notes": "lottery_type=DAILY_539"
+    },
+    {
+      "strategy_id": "ewma_539",
+      "normalized_strategy_id": "ewma_539",
+      "display_name": "Ewma 539",
+      "sources": [
+        "artifact"
+      ],
+      "source_files": [
+        "outputs/replay/p1_strategy_lifecycle_inventory_20260511.json"
+      ],
+      "in_registry": false,
+      "in_db": false,
+      "in_artifacts": true,
+      "in_code": false,
+      "lifecycle_status": "REJECTED",
+      "truth_classification": "UNKNOWN",
+      "db_row_count": 0,
+      "truth_level_counts": {},
+      "replay_display_semantics": "NO_DATA",
+      "coverage_status": "NOT_COVERED",
+      "risk_flags": [],
+      "notes": "artifact-only: appeared in historical backtest/research outputs"
+    },
+    {
+      "strategy_id": "extreme_col_539",
+      "normalized_strategy_id": "extreme_col_539",
+      "display_name": "Extreme Col 539",
+      "sources": [
+        "artifact"
+      ],
+      "source_files": [
+        "outputs/replay/p1_strategy_lifecycle_inventory_20260511.json"
+      ],
+      "in_registry": false,
+      "in_db": false,
+      "in_artifacts": true,
+      "in_code": false,
+      "lifecycle_status": "REJECTED",
+      "truth_classification": "UNKNOWN",
+      "db_row_count": 0,
+      "truth_level_counts": {},
+      "replay_display_semantics": "NO_DATA",
+      "coverage_status": "NOT_COVERED",
+      "risk_flags": [],
+      "notes": "artifact-only: appeared in historical backtest/research outputs"
+    },
+    {
+      "strategy_id": "extremecol_1bet_539",
+      "normalized_strategy_id": "extremecol_1bet_539",
+      "display_name": "Extremecol 1Bet 539",
+      "sources": [
+        "artifact"
+      ],
+      "source_files": [
+        "outputs/replay/p1_strategy_lifecycle_inventory_20260511.json"
+      ],
+      "in_registry": false,
+      "in_db": false,
+      "in_artifacts": true,
+      "in_code": false,
+      "lifecycle_status": "REJECTED",
+      "truth_classification": "UNKNOWN",
+      "db_row_count": 0,
+      "truth_level_counts": {},
+      "replay_display_semantics": "NO_DATA",
+      "coverage_status": "NOT_COVERED",
+      "risk_flags": [],
+      "notes": "artifact-only: appeared in historical backtest/research outputs"
+    },
+    {
+      "strategy_id": "fourier30_markov30_biglotto",
+      "normalized_strategy_id": "fourier30_markov30_biglotto",
+      "display_name": "Fourier30 Markov30 Biglotto",
+      "sources": [
+        "artifact"
+      ],
+      "source_files": [
+        "outputs/replay/p1_strategy_lifecycle_inventory_20260511.json",
+        "outputs/replay/p2_lifecycle_backfill_dry_run_manifest_20260510.json"
+      ],
+      "in_registry": false,
+      "in_db": false,
+      "in_artifacts": true,
+      "in_code": false,
+      "lifecycle_status": "REJECTED",
+      "truth_classification": "UNKNOWN",
+      "db_row_count": 0,
+      "truth_level_counts": {},
+      "replay_display_semantics": "NO_DATA",
+      "coverage_status": "NOT_COVERED",
+      "risk_flags": [],
+      "notes": "artifact-only: appeared in historical backtest/research outputs"
+    },
+    {
+      "strategy_id": "fourier_rhythm_3bet",
+      "normalized_strategy_id": "fourier_rhythm_3bet",
+      "display_name": "Fourier Rhythm 3Bet",
+      "sources": [
+        "artifact"
+      ],
+      "source_files": [
+        "outputs/replay/p2_lifecycle_backfill_dry_run_manifest_20260510.json"
+      ],
+      "in_registry": false,
+      "in_db": false,
+      "in_artifacts": true,
+      "in_code": false,
+      "lifecycle_status": "UNKNOWN",
+      "truth_classification": "UNKNOWN",
+      "db_row_count": 0,
+      "truth_level_counts": {},
+      "replay_display_semantics": "UNKNOWN",
+      "coverage_status": "UNKNOWN",
+      "risk_flags": [
+        "UNKNOWN_LIFECYCLE"
+      ],
+      "notes": "artifact-only: appeared in historical backtest/research outputs; lifecycle not determinable from registry; needs operator review"
+    },
+    {
+      "strategy_id": "fourier_w100_pp3_power",
+      "normalized_strategy_id": "fourier_w100_pp3_power",
+      "display_name": "Fourier W100 Pp3 Power",
+      "sources": [
+        "artifact"
+      ],
+      "source_files": [
+        "outputs/replay/p1_strategy_lifecycle_inventory_20260511.json"
+      ],
+      "in_registry": false,
+      "in_db": false,
+      "in_artifacts": true,
+      "in_code": false,
+      "lifecycle_status": "REJECTED",
+      "truth_classification": "UNKNOWN",
+      "db_row_count": 0,
+      "truth_level_counts": {},
+      "replay_display_semantics": "NO_DATA",
+      "coverage_status": "NOT_COVERED",
+      "risk_flags": [],
+      "notes": "artifact-only: appeared in historical backtest/research outputs"
+    },
+    {
+      "strategy_id": "gap_dynamic_threshold_biglotto",
+      "normalized_strategy_id": "gap_dynamic_threshold_biglotto",
+      "display_name": "Gap Dynamic Threshold Biglotto",
+      "sources": [
+        "artifact"
+      ],
+      "source_files": [
+        "outputs/replay/p1_strategy_lifecycle_inventory_20260511.json",
+        "outputs/replay/p2_lifecycle_backfill_dry_run_manifest_20260510.json"
+      ],
+      "in_registry": false,
+      "in_db": false,
+      "in_artifacts": true,
+      "in_code": false,
+      "lifecycle_status": "REJECTED",
+      "truth_classification": "UNKNOWN",
+      "db_row_count": 0,
+      "truth_level_counts": {},
+      "replay_display_semantics": "NO_DATA",
+      "coverage_status": "NOT_COVERED",
+      "risk_flags": [],
+      "notes": "artifact-only: appeared in historical backtest/research outputs"
+    },
+    {
+      "strategy_id": "gap_rebound_powerlotto",
+      "normalized_strategy_id": "gap_rebound_powerlotto",
+      "display_name": "Gap Rebound Powerlotto",
+      "sources": [
+        "artifact"
+      ],
+      "source_files": [
+        "outputs/replay/p1_strategy_lifecycle_inventory_20260511.json",
+        "outputs/replay/p2_lifecycle_backfill_dry_run_manifest_20260510.json"
+      ],
+      "in_registry": false,
+      "in_db": false,
+      "in_artifacts": true,
+      "in_code": false,
+      "lifecycle_status": "REJECTED",
+      "truth_classification": "UNKNOWN",
+      "db_row_count": 0,
+      "truth_level_counts": {},
+      "replay_display_semantics": "NO_DATA",
+      "coverage_status": "NOT_COVERED",
+      "risk_flags": [],
+      "notes": "artifact-only: appeared in historical backtest/research outputs"
+    },
+    {
+      "strategy_id": "h6_gate_mk20_ew85",
+      "normalized_strategy_id": "h6_gate_mk20_ew85",
+      "display_name": "H6 Gate Mk20 Ew85",
+      "sources": [
+        "registry",
+        "artifact",
+        "code"
+      ],
+      "source_files": [
+        "lottery_api/models/replay_strategy_registry.py",
+        "outputs/replay/non_online_replay_fixture_20260511.json",
+        "outputs/replay/p1_executable_inventory_20260513.json",
+        "outputs/replay/p1_strategy_lifecycle_inventory_20260511.json",
+        "outputs/replay/post_v3_api_regression_result_20260514.json"
+      ],
+      "in_registry": true,
+      "in_db": false,
+      "in_artifacts": true,
+      "in_code": true,
+      "lifecycle_status": "OBSERVATION",
+      "truth_classification": "CODE_MISSING",
+      "db_row_count": 0,
+      "truth_level_counts": {},
+      "replay_display_semantics": "NO_DATA",
+      "coverage_status": "NOT_COVERED",
+      "risk_flags": [],
+      "notes": "lottery_type=POWER_LOTTO; V3 CODE_MISSING tombstone — 0 rows enforced by drift guard; registry entry exists; code unavailable for re-run"
+    },
+    {
+      "strategy_id": "habit_aware_fourier_v8_539",
+      "normalized_strategy_id": "habit_aware_fourier_v8_539",
+      "display_name": "Habit Aware Fourier V8 539",
+      "sources": [
+        "artifact"
+      ],
+      "source_files": [
+        "outputs/replay/p1_strategy_lifecycle_inventory_20260511.json"
+      ],
+      "in_registry": false,
+      "in_db": false,
+      "in_artifacts": true,
+      "in_code": false,
+      "lifecycle_status": "REJECTED",
+      "truth_classification": "UNKNOWN",
+      "db_row_count": 0,
+      "truth_level_counts": {},
+      "replay_display_semantics": "NO_DATA",
+      "coverage_status": "NOT_COVERED",
+      "risk_flags": [],
+      "notes": "artifact-only: appeared in historical backtest/research outputs"
+    },
+    {
+      "strategy_id": "hot_gap_return_biglotto",
+      "normalized_strategy_id": "hot_gap_return_biglotto",
+      "display_name": "Hot Gap Return Biglotto",
+      "sources": [
+        "artifact"
+      ],
+      "source_files": [
+        "outputs/replay/p1_strategy_lifecycle_inventory_20260511.json",
+        "outputs/replay/p2_lifecycle_backfill_dry_run_manifest_20260510.json"
+      ],
+      "in_registry": false,
+      "in_db": false,
+      "in_artifacts": true,
+      "in_code": false,
+      "lifecycle_status": "REJECTED",
+      "truth_classification": "UNKNOWN",
+      "db_row_count": 0,
+      "truth_level_counts": {},
+      "replay_display_semantics": "NO_DATA",
+      "coverage_status": "NOT_COVERED",
+      "risk_flags": [],
+      "notes": "artifact-only: appeared in historical backtest/research outputs"
+    },
+    {
+      "strategy_id": "hot_stop_rebound_biglotto",
+      "normalized_strategy_id": "hot_stop_rebound_biglotto",
+      "display_name": "Hot Stop Rebound Biglotto",
+      "sources": [
+        "artifact"
+      ],
+      "source_files": [
+        "outputs/replay/p1_strategy_lifecycle_inventory_20260511.json",
+        "outputs/replay/p2_lifecycle_backfill_dry_run_manifest_20260510.json"
+      ],
+      "in_registry": false,
+      "in_db": false,
+      "in_artifacts": true,
+      "in_code": false,
+      "lifecycle_status": "REJECTED",
+      "truth_classification": "UNKNOWN",
+      "db_row_count": 0,
+      "truth_level_counts": {},
+      "replay_display_semantics": "NO_DATA",
+      "coverage_status": "NOT_COVERED",
+      "risk_flags": [],
+      "notes": "artifact-only: appeared in historical backtest/research outputs"
+    },
+    {
+      "strategy_id": "hot_streak_override_biglotto",
+      "normalized_strategy_id": "hot_streak_override_biglotto",
+      "display_name": "Hot Streak Override Biglotto",
+      "sources": [
+        "artifact"
+      ],
+      "source_files": [
+        "outputs/replay/p1_strategy_lifecycle_inventory_20260511.json"
+      ],
+      "in_registry": false,
+      "in_db": false,
+      "in_artifacts": true,
+      "in_code": false,
+      "lifecycle_status": "REJECTED",
+      "truth_classification": "UNKNOWN",
+      "db_row_count": 0,
+      "truth_level_counts": {},
+      "replay_display_semantics": "NO_DATA",
+      "coverage_status": "NOT_COVERED",
+      "risk_flags": [],
+      "notes": "artifact-only: appeared in historical backtest/research outputs"
+    },
+    {
+      "strategy_id": "lag_echo_1bet_539",
+      "normalized_strategy_id": "lag_echo_1bet_539",
+      "display_name": "Lag Echo 1Bet 539",
+      "sources": [
+        "artifact"
+      ],
+      "source_files": [
+        "outputs/replay/p1_strategy_lifecycle_inventory_20260511.json"
+      ],
+      "in_registry": false,
+      "in_db": false,
+      "in_artifacts": true,
+      "in_code": false,
+      "lifecycle_status": "REJECTED",
+      "truth_classification": "UNKNOWN",
+      "db_row_count": 0,
+      "truth_level_counts": {},
+      "replay_display_semantics": "NO_DATA",
+      "coverage_status": "NOT_COVERED",
+      "risk_flags": [],
+      "notes": "artifact-only: appeared in historical backtest/research outputs"
+    },
+    {
+      "strategy_id": "lag_echo_acb_markov_3bet_539",
+      "normalized_strategy_id": "lag_echo_acb_markov_3bet_539",
+      "display_name": "Lag Echo Acb Markov 3Bet 539",
+      "sources": [
+        "artifact"
+      ],
+      "source_files": [
+        "outputs/replay/p1_strategy_lifecycle_inventory_20260511.json"
+      ],
+      "in_registry": false,
+      "in_db": false,
+      "in_artifacts": true,
+      "in_code": false,
+      "lifecycle_status": "REJECTED",
+      "truth_classification": "UNKNOWN",
+      "db_row_count": 0,
+      "truth_level_counts": {},
+      "replay_display_semantics": "NO_DATA",
+      "coverage_status": "NOT_COVERED",
+      "risk_flags": [],
+      "notes": "artifact-only: appeared in historical backtest/research outputs"
+    },
+    {
+      "strategy_id": "lift_pair_single_539",
+      "normalized_strategy_id": "lift_pair_single_539",
+      "display_name": "Lift Pair Single 539",
+      "sources": [
+        "artifact"
+      ],
+      "source_files": [
+        "outputs/replay/p1_strategy_lifecycle_inventory_20260511.json",
+        "outputs/replay/p2_lifecycle_backfill_dry_run_manifest_20260510.json"
+      ],
+      "in_registry": false,
+      "in_db": false,
+      "in_artifacts": true,
+      "in_code": false,
+      "lifecycle_status": "REJECTED",
+      "truth_classification": "UNKNOWN",
+      "db_row_count": 0,
+      "truth_level_counts": {},
+      "replay_display_semantics": "NO_DATA",
+      "coverage_status": "NOT_COVERED",
+      "risk_flags": [],
+      "notes": "artifact-only: appeared in historical backtest/research outputs"
+    },
+    {
+      "strategy_id": "mab_ucb1_539",
+      "normalized_strategy_id": "mab_ucb1_539",
+      "display_name": "Mab Ucb1 539",
+      "sources": [
+        "artifact"
+      ],
+      "source_files": [
+        "outputs/replay/p1_strategy_lifecycle_inventory_20260511.json"
+      ],
+      "in_registry": false,
+      "in_db": false,
+      "in_artifacts": true,
+      "in_code": false,
+      "lifecycle_status": "REJECTED",
+      "truth_classification": "UNKNOWN",
+      "db_row_count": 0,
+      "truth_level_counts": {},
+      "replay_display_semantics": "NO_DATA",
+      "coverage_status": "NOT_COVERED",
+      "risk_flags": [],
+      "notes": "artifact-only: appeared in historical backtest/research outputs"
+    },
+    {
+      "strategy_id": "markov_1bet_539",
+      "normalized_strategy_id": "markov_1bet_539",
+      "display_name": "Markov 1Bet 539",
+      "sources": [
+        "artifact"
+      ],
+      "source_files": [
+        "outputs/replay/p1_strategy_lifecycle_inventory_20260511.json",
+        "outputs/replay/p2_lifecycle_backfill_dry_run_manifest_20260510.json"
+      ],
+      "in_registry": false,
+      "in_db": false,
+      "in_artifacts": true,
+      "in_code": false,
+      "lifecycle_status": "REJECTED",
+      "truth_classification": "UNKNOWN",
+      "db_row_count": 0,
+      "truth_level_counts": {},
+      "replay_display_semantics": "NO_DATA",
+      "coverage_status": "NOT_COVERED",
+      "risk_flags": [],
+      "notes": "artifact-only: appeared in historical backtest/research outputs"
+    },
+    {
+      "strategy_id": "markov_2bet_biglotto",
+      "normalized_strategy_id": "markov_2bet_biglotto",
+      "display_name": "Markov 2Bet Biglotto",
+      "sources": [
+        "artifact"
+      ],
+      "source_files": [
+        "outputs/replay/p1_strategy_lifecycle_inventory_20260511.json",
+        "outputs/replay/p2_lifecycle_backfill_dry_run_manifest_20260510.json"
+      ],
+      "in_registry": false,
+      "in_db": false,
+      "in_artifacts": true,
+      "in_code": false,
+      "lifecycle_status": "REJECTED",
+      "truth_classification": "UNKNOWN",
+      "db_row_count": 0,
+      "truth_level_counts": {},
+      "replay_display_semantics": "NO_DATA",
+      "coverage_status": "NOT_COVERED",
+      "risk_flags": [],
+      "notes": "artifact-only: appeared in historical backtest/research outputs"
+    },
+    {
+      "strategy_id": "markov_repeat_exception_biglotto",
+      "normalized_strategy_id": "markov_repeat_exception_biglotto",
+      "display_name": "Markov Repeat Exception Biglotto",
+      "sources": [
+        "artifact"
+      ],
+      "source_files": [
+        "outputs/replay/p1_strategy_lifecycle_inventory_20260511.json",
+        "outputs/replay/p2_lifecycle_backfill_dry_run_manifest_20260510.json"
+      ],
+      "in_registry": false,
+      "in_db": false,
+      "in_artifacts": true,
+      "in_code": false,
+      "lifecycle_status": "REJECTED",
+      "truth_classification": "UNKNOWN",
+      "db_row_count": 0,
+      "truth_level_counts": {},
+      "replay_display_semantics": "NO_DATA",
+      "coverage_status": "NOT_COVERED",
+      "risk_flags": [],
+      "notes": "artifact-only: appeared in historical backtest/research outputs"
+    },
+    {
+      "strategy_id": "markov_single_biglotto",
+      "normalized_strategy_id": "markov_single_biglotto",
+      "display_name": "Markov Single Biglotto",
+      "sources": [
+        "artifact"
+      ],
+      "source_files": [
+        "outputs/replay/p1_strategy_lifecycle_inventory_20260511.json",
+        "outputs/replay/p2_lifecycle_backfill_dry_run_manifest_20260510.json"
+      ],
+      "in_registry": false,
+      "in_db": false,
+      "in_artifacts": true,
+      "in_code": false,
+      "lifecycle_status": "REJECTED",
+      "truth_classification": "UNKNOWN",
+      "db_row_count": 0,
+      "truth_level_counts": {},
+      "replay_display_semantics": "NO_DATA",
+      "coverage_status": "NOT_COVERED",
+      "risk_flags": [],
+      "notes": "artifact-only: appeared in historical backtest/research outputs"
+    },
+    {
+      "strategy_id": "midfreq_acb_2bet",
+      "normalized_strategy_id": "midfreq_acb_2bet",
+      "display_name": "Midfreq Acb 2Bet",
+      "sources": [
+        "registry",
+        "artifact",
+        "code"
+      ],
+      "source_files": [
+        "lottery_api/models/replay_strategy_registry.py",
+        "outputs/replay/non_online_replay_fixture_20260511.json",
+        "outputs/replay/p1_executable_inventory_20260513.json",
+        "outputs/replay/p1_strategy_lifecycle_inventory_20260511.json",
+        "outputs/replay/post_v3_api_regression_result_20260514.json"
+      ],
+      "in_registry": true,
+      "in_db": false,
+      "in_artifacts": true,
+      "in_code": true,
+      "lifecycle_status": "RETIRED",
+      "truth_classification": "CODE_MISSING",
+      "db_row_count": 0,
+      "truth_level_counts": {},
+      "replay_display_semantics": "FROZEN",
+      "coverage_status": "UNKNOWN",
+      "risk_flags": [],
+      "notes": "lottery_type=DAILY_539; V3 CODE_MISSING tombstone — 0 rows enforced by drift guard; registry entry exists; code unavailable for re-run"
+    },
+    {
+      "strategy_id": "midfreq_extremecol_2bet_539",
+      "normalized_strategy_id": "midfreq_extremecol_2bet_539",
+      "display_name": "Midfreq Extremecol 2Bet 539",
+      "sources": [
+        "artifact"
+      ],
+      "source_files": [
+        "outputs/replay/p1_strategy_lifecycle_inventory_20260511.json"
+      ],
+      "in_registry": false,
+      "in_db": false,
+      "in_artifacts": true,
+      "in_code": false,
+      "lifecycle_status": "REJECTED",
+      "truth_classification": "UNKNOWN",
+      "db_row_count": 0,
+      "truth_level_counts": {},
+      "replay_display_semantics": "NO_DATA",
+      "coverage_status": "NOT_COVERED",
+      "risk_flags": [],
+      "notes": "artifact-only: appeared in historical backtest/research outputs"
+    },
+    {
+      "strategy_id": "midfreq_fourier_2bet",
+      "normalized_strategy_id": "midfreq_fourier_2bet",
+      "display_name": "Midfreq Fourier 2Bet",
+      "sources": [
+        "registry",
+        "artifact",
+        "code"
+      ],
+      "source_files": [
+        "lottery_api/models/replay_strategy_registry.py",
+        "outputs/replay/non_online_replay_fixture_20260511.json",
+        "outputs/replay/p1_executable_inventory_20260513.json",
+        "outputs/replay/p1_strategy_lifecycle_inventory_20260511.json",
+        "outputs/replay/post_v3_api_regression_result_20260514.json"
+      ],
+      "in_registry": true,
+      "in_db": false,
+      "in_artifacts": true,
+      "in_code": true,
+      "lifecycle_status": "RETIRED",
+      "truth_classification": "CODE_MISSING",
+      "db_row_count": 0,
+      "truth_level_counts": {},
+      "replay_display_semantics": "FROZEN",
+      "coverage_status": "UNKNOWN",
+      "risk_flags": [],
+      "notes": "lottery_type=DAILY_539; V3 CODE_MISSING tombstone — 0 rows enforced by drift guard; registry entry exists; code unavailable for re-run"
+    },
+    {
+      "strategy_id": "momentum_regime_switching_539",
+      "normalized_strategy_id": "momentum_regime_switching_539",
+      "display_name": "Momentum Regime Switching 539",
+      "sources": [
+        "artifact"
+      ],
+      "source_files": [
+        "outputs/replay/p1_strategy_lifecycle_inventory_20260511.json"
+      ],
+      "in_registry": false,
+      "in_db": false,
+      "in_artifacts": true,
+      "in_code": false,
+      "lifecycle_status": "REJECTED",
+      "truth_classification": "UNKNOWN",
+      "db_row_count": 0,
+      "truth_level_counts": {},
+      "replay_display_semantics": "NO_DATA",
+      "coverage_status": "NOT_COVERED",
+      "risk_flags": [],
+      "notes": "artifact-only: appeared in historical backtest/research outputs"
+    },
+    {
+      "strategy_id": "multiwindow_fourier_biglotto",
+      "normalized_strategy_id": "multiwindow_fourier_biglotto",
+      "display_name": "Multiwindow Fourier Biglotto",
+      "sources": [
+        "artifact"
+      ],
+      "source_files": [
+        "outputs/replay/p1_strategy_lifecycle_inventory_20260511.json",
+        "outputs/replay/p2_lifecycle_backfill_dry_run_manifest_20260510.json"
+      ],
+      "in_registry": false,
+      "in_db": false,
+      "in_artifacts": true,
+      "in_code": false,
+      "lifecycle_status": "REJECTED",
+      "truth_classification": "UNKNOWN",
+      "db_row_count": 0,
+      "truth_level_counts": {},
+      "replay_display_semantics": "NO_DATA",
+      "coverage_status": "NOT_COVERED",
+      "risk_flags": [],
+      "notes": "artifact-only: appeared in historical backtest/research outputs"
+    },
+    {
+      "strategy_id": "neighbor_acb_2bet_539",
+      "normalized_strategy_id": "neighbor_acb_2bet_539",
+      "display_name": "Neighbor Acb 2Bet 539",
+      "sources": [
+        "artifact"
+      ],
+      "source_files": [
+        "outputs/replay/p1_strategy_lifecycle_inventory_20260511.json",
+        "outputs/replay/p2_lifecycle_backfill_dry_run_manifest_20260510.json"
+      ],
+      "in_registry": false,
+      "in_db": false,
+      "in_artifacts": true,
+      "in_code": false,
+      "lifecycle_status": "REJECTED",
+      "truth_classification": "UNKNOWN",
+      "db_row_count": 0,
+      "truth_level_counts": {},
+      "replay_display_semantics": "NO_DATA",
+      "coverage_status": "NOT_COVERED",
+      "risk_flags": [],
+      "notes": "artifact-only: appeared in historical backtest/research outputs"
+    },
+    {
+      "strategy_id": "neighbor_injection_biglotto",
+      "normalized_strategy_id": "neighbor_injection_biglotto",
+      "display_name": "Neighbor Injection Biglotto",
+      "sources": [
+        "artifact"
+      ],
+      "source_files": [
+        "outputs/replay/p1_strategy_lifecycle_inventory_20260511.json",
+        "outputs/replay/p2_lifecycle_backfill_dry_run_manifest_20260510.json"
+      ],
+      "in_registry": false,
+      "in_db": false,
+      "in_artifacts": true,
+      "in_code": false,
+      "lifecycle_status": "REJECTED",
+      "truth_classification": "UNKNOWN",
+      "db_row_count": 0,
+      "truth_level_counts": {},
+      "replay_display_semantics": "NO_DATA",
+      "coverage_status": "NOT_COVERED",
+      "risk_flags": [],
+      "notes": "artifact-only: appeared in historical backtest/research outputs"
+    },
+    {
+      "strategy_id": "p0_neighbor_injection",
+      "normalized_strategy_id": "p0_neighbor_injection",
+      "display_name": "P0 Neighbor Injection",
+      "sources": [
+        "artifact"
+      ],
+      "source_files": [
+        "outputs/replay/p1_strategy_lifecycle_inventory_20260511.json",
+        "outputs/replay/p2_lifecycle_backfill_dry_run_manifest_20260510.json"
+      ],
+      "in_registry": false,
+      "in_db": false,
+      "in_artifacts": true,
+      "in_code": false,
+      "lifecycle_status": "REJECTED",
+      "truth_classification": "UNKNOWN",
+      "db_row_count": 0,
+      "truth_level_counts": {},
+      "replay_display_semantics": "NO_DATA",
+      "coverage_status": "NOT_COVERED",
+      "risk_flags": [],
+      "notes": "artifact-only: appeared in historical backtest/research outputs"
+    },
+    {
+      "strategy_id": "p0b_539_3bet_f_cold_fmid",
+      "normalized_strategy_id": "p0b_539_3bet_f_cold_fmid",
+      "display_name": "P0B 539 3Bet F Cold Fmid",
+      "sources": [
+        "artifact"
+      ],
+      "source_files": [
+        "outputs/replay/p1_strategy_lifecycle_inventory_20260511.json",
+        "outputs/replay/p2_lifecycle_backfill_dry_run_manifest_20260510.json"
+      ],
+      "in_registry": false,
+      "in_db": false,
+      "in_artifacts": true,
+      "in_code": false,
+      "lifecycle_status": "REJECTED",
+      "truth_classification": "UNKNOWN",
+      "db_row_count": 0,
+      "truth_level_counts": {},
+      "replay_display_semantics": "NO_DATA",
+      "coverage_status": "NOT_COVERED",
+      "risk_flags": [],
+      "notes": "artifact-only: appeared in historical backtest/research outputs"
+    },
+    {
+      "strategy_id": "p0c_539_3bet_f_cold_x2",
+      "normalized_strategy_id": "p0c_539_3bet_f_cold_x2",
+      "display_name": "P0C 539 3Bet F Cold X2",
+      "sources": [
+        "artifact"
+      ],
+      "source_files": [
+        "outputs/replay/p1_strategy_lifecycle_inventory_20260511.json"
+      ],
+      "in_registry": false,
+      "in_db": false,
+      "in_artifacts": true,
+      "in_code": false,
+      "lifecycle_status": "REJECTED",
+      "truth_classification": "UNKNOWN",
+      "db_row_count": 0,
+      "truth_level_counts": {},
+      "replay_display_semantics": "NO_DATA",
+      "coverage_status": "NOT_COVERED",
+      "risk_flags": [],
+      "notes": "artifact-only: appeared in historical backtest/research outputs"
+    },
+    {
+      "strategy_id": "p1_conditional_branch_powerlotto",
+      "normalized_strategy_id": "p1_conditional_branch_powerlotto",
+      "display_name": "P1 Conditional Branch Powerlotto",
+      "sources": [
+        "artifact"
+      ],
+      "source_files": [
+        "outputs/replay/p1_strategy_lifecycle_inventory_20260511.json"
+      ],
+      "in_registry": false,
+      "in_db": false,
+      "in_artifacts": true,
+      "in_code": false,
+      "lifecycle_status": "REJECTED",
+      "truth_classification": "UNKNOWN",
+      "db_row_count": 0,
+      "truth_level_counts": {},
+      "replay_display_semantics": "NO_DATA",
+      "coverage_status": "NOT_COVERED",
+      "risk_flags": [],
+      "notes": "artifact-only: appeared in historical backtest/research outputs"
+    },
+    {
+      "strategy_id": "p1_deviation_2bet_539",
+      "normalized_strategy_id": "p1_deviation_2bet_539",
+      "display_name": "P1 Deviation 2Bet 539",
+      "sources": [
+        "registry",
+        "db",
+        "artifact",
+        "code"
+      ],
+      "source_files": [
+        "lottery_api/models/replay_strategy_registry.py",
+        "outputs/replay/non_online_replay_fixture_20260511.json",
+        "outputs/replay/p1_executable_inventory_20260513.json",
+        "outputs/replay/p1_strategy_lifecycle_inventory_20260511.json",
+        "outputs/replay/p2_lifecycle_backfill_dry_run_manifest_20260510.json"
+      ],
+      "in_registry": true,
+      "in_db": true,
+      "in_artifacts": true,
+      "in_code": true,
+      "lifecycle_status": "REJECTED",
+      "truth_classification": "ARTIFACT_RECONSTRUCTED_RETROSPECTIVE",
+      "db_row_count": 50,
+      "truth_level_counts": {
+        "ARTIFACT_RECONSTRUCTED_RETROSPECTIVE": 50
+      },
+      "replay_display_semantics": "RETROSPECTIVE",
+      "coverage_status": "PARTIAL",
+      "risk_flags": [],
+      "notes": "lottery_type=DAILY_539"
+    },
+    {
+      "strategy_id": "p2_mab_fusion",
+      "normalized_strategy_id": "p2_mab_fusion",
+      "display_name": "P2 Mab Fusion",
+      "sources": [
+        "artifact"
+      ],
+      "source_files": [
+        "outputs/replay/p1_strategy_lifecycle_inventory_20260511.json"
+      ],
+      "in_registry": false,
+      "in_db": false,
+      "in_artifacts": true,
+      "in_code": false,
+      "lifecycle_status": "REJECTED",
+      "truth_classification": "UNKNOWN",
+      "db_row_count": 0,
+      "truth_level_counts": {},
+      "replay_display_semantics": "NO_DATA",
+      "coverage_status": "NOT_COVERED",
+      "risk_flags": [],
+      "notes": "artifact-only: appeared in historical backtest/research outputs"
+    },
+    {
+      "strategy_id": "p3_state_aware",
+      "normalized_strategy_id": "p3_state_aware",
+      "display_name": "P3 State Aware",
+      "sources": [
+        "artifact"
+      ],
+      "source_files": [
+        "outputs/replay/p1_strategy_lifecycle_inventory_20260511.json"
+      ],
+      "in_registry": false,
+      "in_db": false,
+      "in_artifacts": true,
+      "in_code": false,
+      "lifecycle_status": "REJECTED",
+      "truth_classification": "UNKNOWN",
+      "db_row_count": 0,
+      "truth_level_counts": {},
+      "replay_display_semantics": "NO_DATA",
+      "coverage_status": "NOT_COVERED",
+      "risk_flags": [],
+      "notes": "artifact-only: appeared in historical backtest/research outputs"
+    },
+    {
+      "strategy_id": "power_echo_boost",
+      "normalized_strategy_id": "power_echo_boost",
+      "display_name": "Power Echo Boost",
+      "sources": [
+        "artifact"
+      ],
+      "source_files": [
+        "outputs/replay/p1_strategy_lifecycle_inventory_20260511.json"
+      ],
+      "in_registry": false,
+      "in_db": false,
+      "in_artifacts": true,
+      "in_code": false,
+      "lifecycle_status": "REJECTED",
+      "truth_classification": "UNKNOWN",
+      "db_row_count": 0,
+      "truth_level_counts": {},
+      "replay_display_semantics": "NO_DATA",
+      "coverage_status": "NOT_COVERED",
+      "risk_flags": [],
+      "notes": "artifact-only: appeared in historical backtest/research outputs"
+    },
+    {
+      "strategy_id": "power_orthogonal_5bet",
+      "normalized_strategy_id": "power_orthogonal_5bet",
+      "display_name": "Power Orthogonal 5Bet",
+      "sources": [
+        "registry",
+        "db",
+        "artifact",
+        "code"
+      ],
+      "source_files": [
+        "lottery_api/models/replay_strategy_registry.py",
+        "outputs/replay/p1_executable_inventory_20260513.json",
+        "outputs/replay/p1_strategy_lifecycle_inventory_20260511.json",
+        "outputs/replay/p3_1_retrospective_candidate_rows_normalized_20260514.jsonl",
+        "outputs/replay/p3_retrospective_candidate_rows_20260513.jsonl"
+      ],
+      "in_registry": true,
+      "in_db": true,
+      "in_artifacts": true,
+      "in_code": true,
+      "lifecycle_status": "ONLINE",
+      "truth_classification": "REGENERATED_RETROSPECTIVE",
+      "db_row_count": 120,
+      "truth_level_counts": {
+        "NULL": 70,
+        "REGENERATED_RETROSPECTIVE": 50
+      },
+      "replay_display_semantics": "LIVE",
+      "coverage_status": "COVERED",
+      "risk_flags": [],
+      "notes": "lottery_type=POWER_LOTTO"
+    },
+    {
+      "strategy_id": "power_pp3v2_combined",
+      "normalized_strategy_id": "power_pp3v2_combined",
+      "display_name": "Power Pp3V2 Combined",
+      "sources": [
+        "artifact"
+      ],
+      "source_files": [
+        "outputs/replay/p1_strategy_lifecycle_inventory_20260511.json"
+      ],
+      "in_registry": false,
+      "in_db": false,
+      "in_artifacts": true,
+      "in_code": false,
+      "lifecycle_status": "REJECTED",
+      "truth_classification": "UNKNOWN",
+      "db_row_count": 0,
+      "truth_level_counts": {},
+      "replay_display_semantics": "NO_DATA",
+      "coverage_status": "NOT_COVERED",
+      "risk_flags": [],
+      "notes": "artifact-only: appeared in historical backtest/research outputs"
+    },
+    {
+      "strategy_id": "power_precision_3bet",
+      "normalized_strategy_id": "power_precision_3bet",
+      "display_name": "Power Precision 3Bet",
+      "sources": [
+        "registry",
+        "db",
+        "artifact",
+        "code"
+      ],
+      "source_files": [
+        "lottery_api/models/replay_strategy_registry.py",
+        "lottery_api/routes/replay.py",
+        "outputs/replay/p1_executable_inventory_20260513.json",
+        "outputs/replay/p1_strategy_lifecycle_inventory_20260511.json",
+        "outputs/replay/p3_1_retrospective_candidate_rows_normalized_20260514.jsonl"
+      ],
+      "in_registry": true,
+      "in_db": true,
+      "in_artifacts": true,
+      "in_code": true,
+      "lifecycle_status": "ONLINE",
+      "truth_classification": "REGENERATED_RETROSPECTIVE",
+      "db_row_count": 120,
+      "truth_level_counts": {
+        "NULL": 70,
+        "REGENERATED_RETROSPECTIVE": 50
+      },
+      "replay_display_semantics": "LIVE",
+      "coverage_status": "COVERED",
+      "risk_flags": [],
+      "notes": "lottery_type=POWER_LOTTO"
+    },
+    {
+      "strategy_id": "power_shlc_midfreq",
+      "normalized_strategy_id": "power_shlc_midfreq",
+      "display_name": "Power Shlc Midfreq",
+      "sources": [
+        "registry",
+        "db",
+        "artifact",
+        "code"
+      ],
+      "source_files": [
+        "lottery_api/models/replay_strategy_registry.py",
+        "outputs/replay/non_online_replay_fixture_20260511.json",
+        "outputs/replay/p1_executable_inventory_20260513.json",
+        "outputs/replay/p1_strategy_lifecycle_inventory_20260511.json",
+        "outputs/replay/p3_retrospective_candidate_summary_20260513.json"
+      ],
+      "in_registry": true,
+      "in_db": true,
+      "in_artifacts": true,
+      "in_code": true,
+      "lifecycle_status": "REJECTED",
+      "truth_classification": "ARTIFACT_RECONSTRUCTED_RETROSPECTIVE",
+      "db_row_count": 50,
+      "truth_level_counts": {
+        "ARTIFACT_RECONSTRUCTED_RETROSPECTIVE": 50
+      },
+      "replay_display_semantics": "RETROSPECTIVE",
+      "coverage_status": "PARTIAL",
+      "risk_flags": [],
+      "notes": "lottery_type=POWER_LOTTO"
+    },
+    {
+      "strategy_id": "power_z3gap_watch",
+      "normalized_strategy_id": "power_z3gap_watch",
+      "display_name": "Power Z3Gap Watch",
+      "sources": [
+        "artifact"
+      ],
+      "source_files": [
+        "outputs/replay/p1_strategy_lifecycle_inventory_20260511.json"
+      ],
+      "in_registry": false,
+      "in_db": false,
+      "in_artifacts": true,
+      "in_code": false,
+      "lifecycle_status": "REJECTED",
+      "truth_classification": "UNKNOWN",
+      "db_row_count": 0,
+      "truth_level_counts": {},
+      "replay_display_semantics": "NO_DATA",
+      "coverage_status": "NOT_COVERED",
+      "risk_flags": [],
+      "notes": "artifact-only: appeared in historical backtest/research outputs"
+    },
+    {
+      "strategy_id": "sgp_power_017_research",
+      "normalized_strategy_id": "sgp_power_017_research",
+      "display_name": "Sgp Power 017 Research",
+      "sources": [
+        "artifact"
+      ],
+      "source_files": [
+        "outputs/replay/p1_strategy_lifecycle_inventory_20260511.json"
+      ],
+      "in_registry": false,
+      "in_db": false,
+      "in_artifacts": true,
+      "in_code": false,
+      "lifecycle_status": "REJECTED",
+      "truth_classification": "UNKNOWN",
+      "db_row_count": 0,
+      "truth_level_counts": {},
+      "replay_display_semantics": "NO_DATA",
+      "coverage_status": "NOT_COVERED",
+      "risk_flags": [],
+      "notes": "artifact-only: appeared in historical backtest/research outputs"
+    },
+    {
+      "strategy_id": "sgp_v9_apex_powerlotto",
+      "normalized_strategy_id": "sgp_v9_apex_powerlotto",
+      "display_name": "Sgp V9 Apex Powerlotto",
+      "sources": [
+        "artifact"
+      ],
+      "source_files": [
+        "outputs/replay/p1_strategy_lifecycle_inventory_20260511.json"
+      ],
+      "in_registry": false,
+      "in_db": false,
+      "in_artifacts": true,
+      "in_code": false,
+      "lifecycle_status": "REJECTED",
+      "truth_classification": "UNKNOWN",
+      "db_row_count": 0,
+      "truth_level_counts": {},
+      "replay_display_semantics": "NO_DATA",
+      "coverage_status": "NOT_COVERED",
+      "risk_flags": [],
+      "notes": "artifact-only: appeared in historical backtest/research outputs"
+    },
+    {
+      "strategy_id": "shlc_midfreq_power",
+      "normalized_strategy_id": "shlc_midfreq_power",
+      "display_name": "Shlc Midfreq Power",
+      "sources": [
+        "artifact"
+      ],
+      "source_files": [
+        "outputs/replay/p1_strategy_lifecycle_inventory_20260511.json"
+      ],
+      "in_registry": false,
+      "in_db": false,
+      "in_artifacts": true,
+      "in_code": false,
+      "lifecycle_status": "REJECTED",
+      "truth_classification": "UNKNOWN",
+      "db_row_count": 0,
+      "truth_level_counts": {},
+      "replay_display_semantics": "NO_DATA",
+      "coverage_status": "NOT_COVERED",
+      "risk_flags": [],
+      "notes": "artifact-only: appeared in historical backtest/research outputs"
+    },
+    {
+      "strategy_id": "short_term_hot_independent_bet",
+      "normalized_strategy_id": "short_term_hot_independent_bet",
+      "display_name": "Short Term Hot Independent Bet",
+      "sources": [
+        "artifact"
+      ],
+      "source_files": [
+        "outputs/replay/p1_strategy_lifecycle_inventory_20260511.json"
+      ],
+      "in_registry": false,
+      "in_db": false,
+      "in_artifacts": true,
+      "in_code": false,
+      "lifecycle_status": "REJECTED",
+      "truth_classification": "UNKNOWN",
+      "db_row_count": 0,
+      "truth_level_counts": {},
+      "replay_display_semantics": "NO_DATA",
+      "coverage_status": "NOT_COVERED",
+      "risk_flags": [],
+      "notes": "artifact-only: appeared in historical backtest/research outputs"
+    },
+    {
+      "strategy_id": "special_mab_decay_adjustment_power",
+      "normalized_strategy_id": "special_mab_decay_adjustment_power",
+      "display_name": "Special Mab Decay Adjustment Power",
+      "sources": [
+        "artifact"
+      ],
+      "source_files": [
+        "outputs/replay/p1_strategy_lifecycle_inventory_20260511.json"
+      ],
+      "in_registry": false,
+      "in_db": false,
+      "in_artifacts": true,
+      "in_code": false,
+      "lifecycle_status": "REJECTED",
+      "truth_classification": "UNKNOWN",
+      "db_row_count": 0,
+      "truth_level_counts": {},
+      "replay_display_semantics": "NO_DATA",
+      "coverage_status": "NOT_COVERED",
+      "risk_flags": [],
+      "notes": "artifact-only: appeared in historical backtest/research outputs"
+    },
+    {
+      "strategy_id": "streak_boost_neighbor_bet1",
+      "normalized_strategy_id": "streak_boost_neighbor_bet1",
+      "display_name": "Streak Boost Neighbor Bet1",
+      "sources": [
+        "artifact"
+      ],
+      "source_files": [
+        "outputs/replay/p1_strategy_lifecycle_inventory_20260511.json"
+      ],
+      "in_registry": false,
+      "in_db": false,
+      "in_artifacts": true,
+      "in_code": false,
+      "lifecycle_status": "REJECTED",
+      "truth_classification": "UNKNOWN",
+      "db_row_count": 0,
+      "truth_level_counts": {},
+      "replay_display_semantics": "NO_DATA",
+      "coverage_status": "NOT_COVERED",
+      "risk_flags": [],
+      "notes": "artifact-only: appeared in historical backtest/research outputs"
+    },
+    {
+      "strategy_id": "structural_zone_guard_pp3_power",
+      "normalized_strategy_id": "structural_zone_guard_pp3_power",
+      "display_name": "Structural Zone Guard Pp3 Power",
+      "sources": [
+        "artifact"
+      ],
+      "source_files": [
+        "outputs/replay/p1_strategy_lifecycle_inventory_20260511.json"
+      ],
+      "in_registry": false,
+      "in_db": false,
+      "in_artifacts": true,
+      "in_code": false,
+      "lifecycle_status": "REJECTED",
+      "truth_classification": "UNKNOWN",
+      "db_row_count": 0,
+      "truth_level_counts": {},
+      "replay_display_semantics": "NO_DATA",
+      "coverage_status": "NOT_COVERED",
+      "risk_flags": [],
+      "notes": "artifact-only: appeared in historical backtest/research outputs"
+    },
+    {
+      "strategy_id": "ts3_acb_4bet_biglotto",
+      "normalized_strategy_id": "ts3_acb_4bet_biglotto",
+      "display_name": "Ts3 Acb 4Bet Biglotto",
+      "sources": [
+        "artifact"
+      ],
+      "source_files": [
+        "outputs/replay/p1_strategy_lifecycle_inventory_20260511.json"
+      ],
+      "in_registry": false,
+      "in_db": false,
+      "in_artifacts": true,
+      "in_code": false,
+      "lifecycle_status": "REJECTED",
+      "truth_classification": "UNKNOWN",
+      "db_row_count": 0,
+      "truth_level_counts": {},
+      "replay_display_semantics": "NO_DATA",
+      "coverage_status": "NOT_COVERED",
+      "risk_flags": [],
+      "notes": "artifact-only: appeared in historical backtest/research outputs"
+    },
+    {
+      "strategy_id": "ts3_markov_freq_5bet_biglotto",
+      "normalized_strategy_id": "ts3_markov_freq_5bet_biglotto",
+      "display_name": "Ts3 Markov Freq 5Bet Biglotto",
+      "sources": [
+        "artifact"
+      ],
+      "source_files": [
+        "outputs/replay/p1_strategy_lifecycle_inventory_20260511.json"
+      ],
+      "in_registry": false,
+      "in_db": false,
+      "in_artifacts": true,
+      "in_code": false,
+      "lifecycle_status": "REJECTED",
+      "truth_classification": "UNKNOWN",
+      "db_row_count": 0,
+      "truth_level_counts": {},
+      "replay_display_semantics": "NO_DATA",
+      "coverage_status": "NOT_COVERED",
+      "risk_flags": [],
+      "notes": "artifact-only: appeared in historical backtest/research outputs"
+    },
+    {
+      "strategy_id": "ts3_regime_3bet",
+      "normalized_strategy_id": "ts3_regime_3bet",
+      "display_name": "Ts3 Regime 3Bet",
+      "sources": [
+        "artifact"
+      ],
+      "source_files": [
+        "outputs/replay/p2_lifecycle_backfill_dry_run_manifest_20260510.json"
+      ],
+      "in_registry": false,
+      "in_db": false,
+      "in_artifacts": true,
+      "in_code": false,
+      "lifecycle_status": "UNKNOWN",
+      "truth_classification": "UNKNOWN",
+      "db_row_count": 0,
+      "truth_level_counts": {},
+      "replay_display_semantics": "UNKNOWN",
+      "coverage_status": "UNKNOWN",
+      "risk_flags": [
+        "UNKNOWN_LIFECYCLE"
+      ],
+      "notes": "artifact-only: appeared in historical backtest/research outputs; lifecycle not determinable from registry; needs operator review"
+    },
+    {
+      "strategy_id": "zone_cascade_guard_biglotto",
+      "normalized_strategy_id": "zone_cascade_guard_biglotto",
+      "display_name": "Zone Cascade Guard Biglotto",
+      "sources": [
+        "artifact"
+      ],
+      "source_files": [
+        "outputs/replay/p1_strategy_lifecycle_inventory_20260511.json"
+      ],
+      "in_registry": false,
+      "in_db": false,
+      "in_artifacts": true,
+      "in_code": false,
+      "lifecycle_status": "REJECTED",
+      "truth_classification": "UNKNOWN",
+      "db_row_count": 0,
+      "truth_level_counts": {},
+      "replay_display_semantics": "NO_DATA",
+      "coverage_status": "NOT_COVERED",
+      "risk_flags": [],
+      "notes": "artifact-only: appeared in historical backtest/research outputs"
+    },
+    {
+      "strategy_id": "zone_constraint_cold_bet2",
+      "normalized_strategy_id": "zone_constraint_cold_bet2",
+      "display_name": "Zone Constraint Cold Bet2",
+      "sources": [
+        "artifact"
+      ],
+      "source_files": [
+        "outputs/replay/p1_strategy_lifecycle_inventory_20260511.json"
+      ],
+      "in_registry": false,
+      "in_db": false,
+      "in_artifacts": true,
+      "in_code": false,
+      "lifecycle_status": "REJECTED",
+      "truth_classification": "UNKNOWN",
+      "db_row_count": 0,
+      "truth_level_counts": {},
+      "replay_display_semantics": "NO_DATA",
+      "coverage_status": "NOT_COVERED",
+      "risk_flags": [],
+      "notes": "artifact-only: appeared in historical backtest/research outputs"
+    },
+    {
+      "strategy_id": "zone_gap_3bet_539",
+      "normalized_strategy_id": "zone_gap_3bet_539",
+      "display_name": "Zone Gap 3Bet 539",
+      "sources": [
+        "artifact"
+      ],
+      "source_files": [
+        "outputs/replay/p1_strategy_lifecycle_inventory_20260511.json"
+      ],
+      "in_registry": false,
+      "in_db": false,
+      "in_artifacts": true,
+      "in_code": false,
+      "lifecycle_status": "REJECTED",
+      "truth_classification": "UNKNOWN",
+      "db_row_count": 0,
+      "truth_level_counts": {},
+      "replay_display_semantics": "NO_DATA",
+      "coverage_status": "NOT_COVERED",
+      "risk_flags": [],
+      "notes": "artifact-only: appeared in historical backtest/research outputs"
+    }
+  ],
+  "coverage_gaps": [
+    {
+      "strategy_id": "539_3bet_orthogonal",
+      "gap_type": "artifact_only",
+      "recommended_next_action": "Artifact-only strategy: no DB rows and not in registry. Candidate for research archive classification (not replay-covered)."
+    },
+    {
+      "strategy_id": "H001",
+      "gap_type": "artifact_only",
+      "recommended_next_action": "Artifact-only strategy: no DB rows and not in registry. Candidate for research archive classification (not replay-covered)."
+    },
+    {
+      "strategy_id": "H002",
+      "gap_type": "artifact_only",
+      "recommended_next_action": "Artifact-only strategy: no DB rows and not in registry. Candidate for research archive classification (not replay-covered)."
+    },
+    {
+      "strategy_id": "H003",
+      "gap_type": "artifact_only",
+      "recommended_next_action": "Artifact-only strategy: no DB rows and not in registry. Candidate for research archive classification (not replay-covered)."
+    },
+    {
+      "strategy_id": "H004",
+      "gap_type": "artifact_only",
+      "recommended_next_action": "Artifact-only strategy: no DB rows and not in registry. Candidate for research archive classification (not replay-covered)."
+    },
+    {
+      "strategy_id": "H005",
+      "gap_type": "artifact_only",
+      "recommended_next_action": "Artifact-only strategy: no DB rows and not in registry. Candidate for research archive classification (not replay-covered)."
+    },
+    {
+      "strategy_id": "H006",
+      "gap_type": "artifact_only",
+      "recommended_next_action": "Artifact-only strategy: no DB rows and not in registry. Candidate for research archive classification (not replay-covered)."
+    },
+    {
+      "strategy_id": "H007",
+      "gap_type": "artifact_only",
+      "recommended_next_action": "Artifact-only strategy: no DB rows and not in registry. Candidate for research archive classification (not replay-covered)."
+    },
+    {
+      "strategy_id": "H008",
+      "gap_type": "artifact_only",
+      "recommended_next_action": "Artifact-only strategy: no DB rows and not in registry. Candidate for research archive classification (not replay-covered)."
+    },
+    {
+      "strategy_id": "acb_extremecol_2bet_539",
+      "gap_type": "artifact_only",
+      "recommended_next_action": "Artifact-only strategy: no DB rows and not in registry. Candidate for research archive classification (not replay-covered)."
+    },
+    {
+      "strategy_id": "acb_hot_fourier_3bet_biglotto",
+      "gap_type": "artifact_only",
+      "recommended_next_action": "Artifact-only strategy: no DB rows and not in registry. Candidate for research archive classification (not replay-covered)."
+    },
+    {
+      "strategy_id": "acb_lag_echo_2bet_539",
+      "gap_type": "artifact_only",
+      "recommended_next_action": "Artifact-only strategy: no DB rows and not in registry. Candidate for research archive classification (not replay-covered)."
+    },
+    {
+      "strategy_id": "acb_markov_extremecol_3bet_539",
+      "gap_type": "artifact_only",
+      "recommended_next_action": "Artifact-only strategy: no DB rows and not in registry. Candidate for research archive classification (not replay-covered)."
+    },
+    {
+      "strategy_id": "acb_single_539",
+      "gap_type": "artifact_only",
+      "recommended_next_action": "Artifact-only strategy: no DB rows and not in registry. Candidate for research archive classification (not replay-covered)."
+    },
+    {
+      "strategy_id": "apriori_3bet_biglotto",
+      "gap_type": "artifact_only",
+      "recommended_next_action": "Artifact-only strategy: no DB rows and not in registry. Candidate for research archive classification (not replay-covered)."
+    },
+    {
+      "strategy_id": "bandit_ucb1_2bet_539",
+      "gap_type": "artifact_only",
+      "recommended_next_action": "Artifact-only strategy: no DB rows and not in registry. Candidate for research archive classification (not replay-covered)."
+    },
+    {
+      "strategy_id": "bet2_fourier_expansion_biglotto",
+      "gap_type": "artifact_only",
+      "recommended_next_action": "Artifact-only strategy: no DB rows and not in registry. Candidate for research archive classification (not replay-covered)."
+    },
+    {
+      "strategy_id": "biglotto_6bet_zone_residual",
+      "gap_type": "artifact_only",
+      "recommended_next_action": "Artifact-only strategy: no DB rows and not in registry. Candidate for research archive classification (not replay-covered)."
+    },
+    {
+      "strategy_id": "cluster_pivot_biglotto",
+      "gap_type": "artifact_only",
+      "recommended_next_action": "Artifact-only strategy: no DB rows and not in registry. Candidate for research archive classification (not replay-covered)."
+    },
+    {
+      "strategy_id": "cold_burst_3bet_539",
+      "gap_type": "artifact_only",
+      "recommended_next_action": "Artifact-only strategy: no DB rows and not in registry. Candidate for research archive classification (not replay-covered)."
+    },
+    {
+      "strategy_id": "cold_complement_biglotto",
+      "gap_type": "artifact_only",
+      "recommended_next_action": "Artifact-only strategy: no DB rows and not in registry. Candidate for research archive classification (not replay-covered)."
+    },
+    {
+      "strategy_id": "coldpool15_biglotto",
+      "gap_type": "artifact_only",
+      "recommended_next_action": "Artifact-only strategy: no DB rows and not in registry. Candidate for research archive classification (not replay-covered)."
+    },
+    {
+      "strategy_id": "condfourier_3bet_539",
+      "gap_type": "artifact_only",
+      "recommended_next_action": "Artifact-only strategy: no DB rows and not in registry. Candidate for research archive classification (not replay-covered)."
+    },
+    {
+      "strategy_id": "conditional_fourier_539",
+      "gap_type": "artifact_only",
+      "recommended_next_action": "Artifact-only strategy: no DB rows and not in registry. Candidate for research archive classification (not replay-covered)."
+    },
+    {
+      "strategy_id": "consecutive_pair_detector_539",
+      "gap_type": "artifact_only",
+      "recommended_next_action": "Artifact-only strategy: no DB rows and not in registry. Candidate for research archive classification (not replay-covered)."
+    },
+    {
+      "strategy_id": "core_satellite_biglotto",
+      "gap_type": "artifact_only",
+      "recommended_next_action": "Artifact-only strategy: no DB rows and not in registry. Candidate for research archive classification (not replay-covered)."
+    },
+    {
+      "strategy_id": "ewma_539",
+      "gap_type": "artifact_only",
+      "recommended_next_action": "Artifact-only strategy: no DB rows and not in registry. Candidate for research archive classification (not replay-covered)."
+    },
+    {
+      "strategy_id": "extreme_col_539",
+      "gap_type": "artifact_only",
+      "recommended_next_action": "Artifact-only strategy: no DB rows and not in registry. Candidate for research archive classification (not replay-covered)."
+    },
+    {
+      "strategy_id": "extremecol_1bet_539",
+      "gap_type": "artifact_only",
+      "recommended_next_action": "Artifact-only strategy: no DB rows and not in registry. Candidate for research archive classification (not replay-covered)."
+    },
+    {
+      "strategy_id": "fourier30_markov30_biglotto",
+      "gap_type": "artifact_only",
+      "recommended_next_action": "Artifact-only strategy: no DB rows and not in registry. Candidate for research archive classification (not replay-covered)."
+    },
+    {
+      "strategy_id": "fourier_rhythm_3bet",
+      "gap_type": "artifact_only",
+      "recommended_next_action": "Artifact-only strategy: no DB rows and not in registry. Candidate for research archive classification (not replay-covered)."
+    },
+    {
+      "strategy_id": "fourier_w100_pp3_power",
+      "gap_type": "artifact_only",
+      "recommended_next_action": "Artifact-only strategy: no DB rows and not in registry. Candidate for research archive classification (not replay-covered)."
+    },
+    {
+      "strategy_id": "gap_dynamic_threshold_biglotto",
+      "gap_type": "artifact_only",
+      "recommended_next_action": "Artifact-only strategy: no DB rows and not in registry. Candidate for research archive classification (not replay-covered)."
+    },
+    {
+      "strategy_id": "gap_rebound_powerlotto",
+      "gap_type": "artifact_only",
+      "recommended_next_action": "Artifact-only strategy: no DB rows and not in registry. Candidate for research archive classification (not replay-covered)."
+    },
+    {
+      "strategy_id": "habit_aware_fourier_v8_539",
+      "gap_type": "artifact_only",
+      "recommended_next_action": "Artifact-only strategy: no DB rows and not in registry. Candidate for research archive classification (not replay-covered)."
+    },
+    {
+      "strategy_id": "hot_gap_return_biglotto",
+      "gap_type": "artifact_only",
+      "recommended_next_action": "Artifact-only strategy: no DB rows and not in registry. Candidate for research archive classification (not replay-covered)."
+    },
+    {
+      "strategy_id": "hot_stop_rebound_biglotto",
+      "gap_type": "artifact_only",
+      "recommended_next_action": "Artifact-only strategy: no DB rows and not in registry. Candidate for research archive classification (not replay-covered)."
+    },
+    {
+      "strategy_id": "hot_streak_override_biglotto",
+      "gap_type": "artifact_only",
+      "recommended_next_action": "Artifact-only strategy: no DB rows and not in registry. Candidate for research archive classification (not replay-covered)."
+    },
+    {
+      "strategy_id": "lag_echo_1bet_539",
+      "gap_type": "artifact_only",
+      "recommended_next_action": "Artifact-only strategy: no DB rows and not in registry. Candidate for research archive classification (not replay-covered)."
+    },
+    {
+      "strategy_id": "lag_echo_acb_markov_3bet_539",
+      "gap_type": "artifact_only",
+      "recommended_next_action": "Artifact-only strategy: no DB rows and not in registry. Candidate for research archive classification (not replay-covered)."
+    },
+    {
+      "strategy_id": "lift_pair_single_539",
+      "gap_type": "artifact_only",
+      "recommended_next_action": "Artifact-only strategy: no DB rows and not in registry. Candidate for research archive classification (not replay-covered)."
+    },
+    {
+      "strategy_id": "mab_ucb1_539",
+      "gap_type": "artifact_only",
+      "recommended_next_action": "Artifact-only strategy: no DB rows and not in registry. Candidate for research archive classification (not replay-covered)."
+    },
+    {
+      "strategy_id": "markov_1bet_539",
+      "gap_type": "artifact_only",
+      "recommended_next_action": "Artifact-only strategy: no DB rows and not in registry. Candidate for research archive classification (not replay-covered)."
+    },
+    {
+      "strategy_id": "markov_2bet_biglotto",
+      "gap_type": "artifact_only",
+      "recommended_next_action": "Artifact-only strategy: no DB rows and not in registry. Candidate for research archive classification (not replay-covered)."
+    },
+    {
+      "strategy_id": "markov_repeat_exception_biglotto",
+      "gap_type": "artifact_only",
+      "recommended_next_action": "Artifact-only strategy: no DB rows and not in registry. Candidate for research archive classification (not replay-covered)."
+    },
+    {
+      "strategy_id": "markov_single_biglotto",
+      "gap_type": "artifact_only",
+      "recommended_next_action": "Artifact-only strategy: no DB rows and not in registry. Candidate for research archive classification (not replay-covered)."
+    },
+    {
+      "strategy_id": "midfreq_extremecol_2bet_539",
+      "gap_type": "artifact_only",
+      "recommended_next_action": "Artifact-only strategy: no DB rows and not in registry. Candidate for research archive classification (not replay-covered)."
+    },
+    {
+      "strategy_id": "momentum_regime_switching_539",
+      "gap_type": "artifact_only",
+      "recommended_next_action": "Artifact-only strategy: no DB rows and not in registry. Candidate for research archive classification (not replay-covered)."
+    },
+    {
+      "strategy_id": "multiwindow_fourier_biglotto",
+      "gap_type": "artifact_only",
+      "recommended_next_action": "Artifact-only strategy: no DB rows and not in registry. Candidate for research archive classification (not replay-covered)."
+    },
+    {
+      "strategy_id": "neighbor_acb_2bet_539",
+      "gap_type": "artifact_only",
+      "recommended_next_action": "Artifact-only strategy: no DB rows and not in registry. Candidate for research archive classification (not replay-covered)."
+    },
+    {
+      "strategy_id": "neighbor_injection_biglotto",
+      "gap_type": "artifact_only",
+      "recommended_next_action": "Artifact-only strategy: no DB rows and not in registry. Candidate for research archive classification (not replay-covered)."
+    },
+    {
+      "strategy_id": "p0_neighbor_injection",
+      "gap_type": "artifact_only",
+      "recommended_next_action": "Artifact-only strategy: no DB rows and not in registry. Candidate for research archive classification (not replay-covered)."
+    },
+    {
+      "strategy_id": "p0b_539_3bet_f_cold_fmid",
+      "gap_type": "artifact_only",
+      "recommended_next_action": "Artifact-only strategy: no DB rows and not in registry. Candidate for research archive classification (not replay-covered)."
+    },
+    {
+      "strategy_id": "p0c_539_3bet_f_cold_x2",
+      "gap_type": "artifact_only",
+      "recommended_next_action": "Artifact-only strategy: no DB rows and not in registry. Candidate for research archive classification (not replay-covered)."
+    },
+    {
+      "strategy_id": "p1_conditional_branch_powerlotto",
+      "gap_type": "artifact_only",
+      "recommended_next_action": "Artifact-only strategy: no DB rows and not in registry. Candidate for research archive classification (not replay-covered)."
+    },
+    {
+      "strategy_id": "p2_mab_fusion",
+      "gap_type": "artifact_only",
+      "recommended_next_action": "Artifact-only strategy: no DB rows and not in registry. Candidate for research archive classification (not replay-covered)."
+    },
+    {
+      "strategy_id": "p3_state_aware",
+      "gap_type": "artifact_only",
+      "recommended_next_action": "Artifact-only strategy: no DB rows and not in registry. Candidate for research archive classification (not replay-covered)."
+    },
+    {
+      "strategy_id": "power_echo_boost",
+      "gap_type": "artifact_only",
+      "recommended_next_action": "Artifact-only strategy: no DB rows and not in registry. Candidate for research archive classification (not replay-covered)."
+    },
+    {
+      "strategy_id": "power_pp3v2_combined",
+      "gap_type": "artifact_only",
+      "recommended_next_action": "Artifact-only strategy: no DB rows and not in registry. Candidate for research archive classification (not replay-covered)."
+    },
+    {
+      "strategy_id": "power_z3gap_watch",
+      "gap_type": "artifact_only",
+      "recommended_next_action": "Artifact-only strategy: no DB rows and not in registry. Candidate for research archive classification (not replay-covered)."
+    },
+    {
+      "strategy_id": "sgp_power_017_research",
+      "gap_type": "artifact_only",
+      "recommended_next_action": "Artifact-only strategy: no DB rows and not in registry. Candidate for research archive classification (not replay-covered)."
+    },
+    {
+      "strategy_id": "sgp_v9_apex_powerlotto",
+      "gap_type": "artifact_only",
+      "recommended_next_action": "Artifact-only strategy: no DB rows and not in registry. Candidate for research archive classification (not replay-covered)."
+    },
+    {
+      "strategy_id": "shlc_midfreq_power",
+      "gap_type": "artifact_only",
+      "recommended_next_action": "Artifact-only strategy: no DB rows and not in registry. Candidate for research archive classification (not replay-covered)."
+    },
+    {
+      "strategy_id": "short_term_hot_independent_bet",
+      "gap_type": "artifact_only",
+      "recommended_next_action": "Artifact-only strategy: no DB rows and not in registry. Candidate for research archive classification (not replay-covered)."
+    },
+    {
+      "strategy_id": "special_mab_decay_adjustment_power",
+      "gap_type": "artifact_only",
+      "recommended_next_action": "Artifact-only strategy: no DB rows and not in registry. Candidate for research archive classification (not replay-covered)."
+    },
+    {
+      "strategy_id": "streak_boost_neighbor_bet1",
+      "gap_type": "artifact_only",
+      "recommended_next_action": "Artifact-only strategy: no DB rows and not in registry. Candidate for research archive classification (not replay-covered)."
+    },
+    {
+      "strategy_id": "structural_zone_guard_pp3_power",
+      "gap_type": "artifact_only",
+      "recommended_next_action": "Artifact-only strategy: no DB rows and not in registry. Candidate for research archive classification (not replay-covered)."
+    },
+    {
+      "strategy_id": "ts3_acb_4bet_biglotto",
+      "gap_type": "artifact_only",
+      "recommended_next_action": "Artifact-only strategy: no DB rows and not in registry. Candidate for research archive classification (not replay-covered)."
+    },
+    {
+      "strategy_id": "ts3_markov_freq_5bet_biglotto",
+      "gap_type": "artifact_only",
+      "recommended_next_action": "Artifact-only strategy: no DB rows and not in registry. Candidate for research archive classification (not replay-covered)."
+    },
+    {
+      "strategy_id": "ts3_regime_3bet",
+      "gap_type": "artifact_only",
+      "recommended_next_action": "Artifact-only strategy: no DB rows and not in registry. Candidate for research archive classification (not replay-covered)."
+    },
+    {
+      "strategy_id": "zone_cascade_guard_biglotto",
+      "gap_type": "artifact_only",
+      "recommended_next_action": "Artifact-only strategy: no DB rows and not in registry. Candidate for research archive classification (not replay-covered)."
+    },
+    {
+      "strategy_id": "zone_constraint_cold_bet2",
+      "gap_type": "artifact_only",
+      "recommended_next_action": "Artifact-only strategy: no DB rows and not in registry. Candidate for research archive classification (not replay-covered)."
+    },
+    {
+      "strategy_id": "zone_gap_3bet_539",
+      "gap_type": "artifact_only",
+      "recommended_next_action": "Artifact-only strategy: no DB rows and not in registry. Candidate for research archive classification (not replay-covered)."
+    }
+  ]
+}

@@ -1,0 +1,103 @@
+{
+  "phase4": {
+    "random_evolution": {
+      "n_strategies": 1000,
+      "train_window": 500,
+      "train_edge_mean_pct": -0.0738,
+      "train_edge_p95_pct": 0.7362,
+      "train_edge_p99_pct": 1.1362,
+      "oos_edge_mean_pct": -0.0808,
+      "oos_edge_p95_pct": 0.566,
+      "pct_train_positive": 41.2,
+      "pct_oos_positive": 40.8,
+      "median_overfit_ratio": -0.7,
+      "pct_random_beat_3pct_train": 0.0,
+      "pct_random_beat_3pct_oos": 0.0
+    },
+    "multiple_testing": {
+      "n_tests": 7,
+      "bonferroni_threshold": 0.0071,
+      "bonferroni_survivors": 0,
+      "bh_survivors": 0,
+      "details": {
+        "ACB": {
+          "p": 0.07,
+          "bonferroni_pass": false,
+          "bh_rank": 1,
+          "bh_threshold": 0.0071,
+          "bh_pass": false
+        },
+        "Fourier": {
+          "p": 0.14,
+          "bonferroni_pass": false,
+          "bh_rank": 2,
+          "bh_threshold": 0.0143,
+          "bh_pass": false
+        },
+        "Regime": {
+          "p": 0.27,
+          "bonferroni_pass": false,
+          "bh_rank": 3,
+          "bh_threshold": 0.0214,
+          "bh_pass": false
+        },
+        "MicroFish": {
+          "p": 0.28,
+          "bonferroni_pass": false,
+          "bh_rank": 4,
+          "bh_threshold": 0.0286,
+          "bh_pass": false
+        },
+        "MidFreq": {
+          "p": 0.4,
+          "bonferroni_pass": false,
+          "bh_rank": 5,
+          "bh_threshold": 0.0357,
+          "bh_pass": false
+        },
+        "Markov": {
+          "p": 0.42,
+          "bonferroni_pass": false,
+          "bh_rank": 6,
+          "bh_threshold": 0.0429,
+          "bh_pass": false
+        },
+        "P1_Neighbor": {
+          "p": 0.48,
+          "bonferroni_pass": false,
+          "bh_rank": 7,
+          "bh_threshold": 0.05,
+          "bh_pass": false
+        }
+      },
+      "verdict": "NO_SIGNAL_SURVIVES"
+    },
+    "fdr_estimation": {
+      "total_hypotheses_tested": 22,
+      "nominal_alpha": 0.05,
+      "expected_false_positives": 1.1,
+      "observed_positives": 0,
+      "pi0_estimate": 1.0
+    }
+  },
+  "phase5": {
+    "power_analysis": {
+      "n_oos": 1817,
+      "baseline": 0.018638,
+      "alpha": 0.05,
+      "power": 0.8,
+      "min_detectable_edge_pct": 0.7889,
+      "min_detectable_rate_pct": 2.6526
+    },
+    "empirical_ceiling": {
+      "noise_ceiling_edge_pct": 0.778
+    },
+    "comparison": {
+      "best_observed_edge_pct": 0.414,
+      "noise_ceiling_pct": 0.778,
+      "min_detectable_pct": 0.7889,
+      "best_vs_noise": "WITHIN_NOISE",
+      "best_vs_detectable": "BELOW_DETECTION"
+    }
+  }
+}

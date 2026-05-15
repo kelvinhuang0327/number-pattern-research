@@ -1,0 +1,10 @@
+{
+  "milestones_found": 1,
+  "combo_b_status": {
+    "current_draw": 115000031,
+    "evaluate_at_draw": 115000331,
+    "draws_remaining": 300,
+    "weeks_remaining": 150.0,
+    "status": "SHADOW_TRACKING"
+  }
+}

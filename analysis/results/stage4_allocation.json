@@ -1,0 +1,43 @@
+{
+  "games_analyzed": [
+    "DAILY_539",
+    "BIG_LOTTO",
+    "POWER_LOTTO"
+  ],
+  "allocations": {
+    "DAILY_539": 0.3333,
+    "BIG_LOTTO": 0.3333,
+    "POWER_LOTTO": 0.3333
+  },
+  "game_detail": {
+    "DAILY_539": {
+      "best_strategy": "acb_markov_midfreq_3bet",
+      "edge_100p": 0.065,
+      "vol_100p": 60.49,
+      "weekly_edge": 0.455,
+      "weekly_vol": 160.04,
+      "draws_per_week": 7,
+      "kelly_f": 0.0
+    },
+    "BIG_LOTTO": {
+      "best_strategy": "p1_dev_sum5bet",
+      "edge_100p": 0.0404,
+      "vol_100p": 134.52,
+      "weekly_edge": 0.0808,
+      "weekly_vol": 190.24,
+      "draws_per_week": 2,
+      "kelly_f": 0.0
+    },
+    "POWER_LOTTO": {
+      "best_strategy": "pp3_freqort_4bet",
+      "edge_100p": 0.034,
+      "vol_100p": 157.75,
+      "weekly_edge": 0.068,
+      "weekly_vol": 223.09,
+      "draws_per_week": 2,
+      "kelly_f": 0.0
+    }
+  },
+  "methodology": "Fractional Kelly (f=0.25) on 100p weekly edge/vol",
+  "rebalance_freq": "monthly"
+}

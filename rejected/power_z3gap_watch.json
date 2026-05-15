@@ -1,0 +1,34 @@
+{
+  "strategy": "PP3-Z3Gap (威力彩 Z3 Gap Injection Bet3)",
+  "status": "WATCH",
+  "date": "2026-03-06",
+  "trigger": "115000019期檢討: 32(gap=10期) 未被 Echo/Cold bet3 捕捉",
+  "hypothesis": "Bet3 改為 Z3(26-38) 高Gap號碼注入，取代原始 lag-2 Echo + Cold",
+
+  "statistical_results": {
+    "150p":  {"hit_rate": 11.33, "edge": 0.16,  "hits": 17,  "total": 150},
+    "500p":  {"hit_rate": 12.00, "edge": 0.83,  "hits": 60,  "total": 500},
+    "1500p": {"hit_rate": 12.81, "edge": 1.64,  "hits": 178, "total": 1390},
+    "perm_p_1500": 0.045,
+    "baseline": 11.17,
+    "pattern": "INVERSE_STABILITY (better at longer windows)"
+  },
+
+  "vs_pp3_baseline": {
+    "PP3_1500p_edge": 2.43,
+    "Z3Gap_1500p_edge": 1.64,
+    "delta_1500p": -0.79,
+    "verdict": "LOWER than PP3 at 1500p, but statistically significant"
+  },
+
+  "analysis": "Z3Gap 統計顯著 (p=0.045) 但絕對 Edge 低於 PP3 Baseline。呈現反向穩定性（長期比短期強），暗示低頻長周期現象。當前不改變 PP3；300期後重評。",
+
+  "watch_conditions": [
+    "監控到 2026-06 (~300期後) 重新評估",
+    "若 Z3Gap 獨立測試在新數據中 1500p Edge > +2.43%，考慮替換 PP3 Bet3",
+    "若 Bet3 改用 Z3Gap 後 McNemar test vs PP3 顯著 (p<0.05)，才升級至 ADOPTED"
+  ],
+
+  "restart_date": "2026-06",
+  "data_snapshot": "1890期威力彩 (截至 2026/03/02)"
+}

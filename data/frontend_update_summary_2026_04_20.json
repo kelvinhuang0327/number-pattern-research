@@ -1,0 +1,35 @@
+{
+  "date": "2026-04-20",
+  "summary": "Frontend updated to surface V3.1 decision data while preserving the existing UI structure and legacy behavior where needed.",
+  "changes": [
+    {
+      "file": "src/core/handlers/NextDrawHandler.js",
+      "change": "Replaced the legacy best-strategy summary render path with direct /api/decision/{lottery_type} payload rendering.",
+      "user_visible_effect": "The next-draw panel now shows EV gate status, Kelly fraction, monetary EV, current jackpot, breakeven jackpot, suggested bet count, monthly budget, and Stage2 gate status."
+    },
+    {
+      "file": "src/ui/components/ExplainabilityRenderer.js",
+      "change": "Added V3.1 decision rows to the explainability block.",
+      "user_visible_effect": "Expanded decision details now include EV gate, Kelly, estimated EV, bet count, and Stage2 sample / hit rate."
+    },
+    {
+      "file": "src/ui/DrawEntryManager.js",
+      "change": "Added an optional jackpot input plus a live decision preview panel.",
+      "user_visible_effect": "Users can compare a manual jackpot value or backend jackpot value before writing a draw, without changing the submit payload."
+    },
+    {
+      "file": "src/ui/PredictionTracker.js",
+      "change": "Added a tolerant bet-count resolver.",
+      "user_visible_effect": "Tracking tables now remain stable even if the backend uses num_bets, avg_bets, bet_count, or n_bets for the visible count."
+    }
+  ],
+  "validation": [
+    "node --check passed for the edited JavaScript modules",
+    "Live API requests succeeded for /api/decision/BIG_LOTTO, /api/decision/DAILY_539, and /api/next-draw-summary",
+    "The edited files were re-checked after refactoring to remove editor warnings"
+  ],
+  "follow_up": [
+    "Visually verify the next-draw summary panel in the browser.",
+    "If the backend later exposes a richer legacy summary endpoint, consider harmonizing /api/decision/best-strategy-summary with the direct decision payload."
+  ]
+}

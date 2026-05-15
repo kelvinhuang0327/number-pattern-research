@@ -1,0 +1,442 @@
+{
+  "DAILY_539": {
+    "game": "DAILY_539",
+    "best_strategy": "acb_markov_midfreq_3bet",
+    "n_oos_draws": 218,
+    "flat_roi_pct": -79.51,
+    "flat_sharpe": -1.9398,
+    "best_gate_threshold": 50,
+    "best_gate_edge": 0.1588,
+    "confidence_histogram": {
+      "40": 31,
+      "50": 48,
+      "70": 3,
+      "60": 18,
+      "30": 116,
+      "20": 2
+    },
+    "confidence_stats": {
+      "mean": 43.06,
+      "std": 11.36,
+      "p25": 32.96,
+      "p50": 39.09,
+      "p75": 52.19
+    },
+    "gate_results": {
+      "40": {
+        "n_bets": 100,
+        "skip_rate": 0.5413,
+        "hit_rate": 0.44,
+        "edge": 0.135,
+        "monetary_roi": -0.7633,
+        "monetary_roi_pct": -76.33,
+        "sharpe": -1.7331,
+        "max_drawdown_draws": 31,
+        "sharpe_vs_flat": 0.2067
+      },
+      "45": {
+        "n_bets": 81,
+        "skip_rate": 0.6284,
+        "hit_rate": 0.4321,
+        "edge": 0.1271,
+        "monetary_roi": -0.7695,
+        "monetary_roi_pct": -76.95,
+        "sharpe": -1.7606,
+        "max_drawdown_draws": 32,
+        "sharpe_vs_flat": 0.1793
+      },
+      "50": {
+        "n_bets": 69,
+        "skip_rate": 0.6835,
+        "hit_rate": 0.4638,
+        "edge": 0.1588,
+        "monetary_roi": -0.7681,
+        "monetary_roi_pct": -76.81,
+        "sharpe": -1.8539,
+        "max_drawdown_draws": 26,
+        "sharpe_vs_flat": 0.086
+      },
+      "55": {
+        "n_bets": 37,
+        "skip_rate": 0.8303,
+        "hit_rate": 0.4595,
+        "edge": 0.1545,
+        "monetary_roi": -0.7928,
+        "monetary_roi_pct": -79.28,
+        "sharpe": -2.2676,
+        "max_drawdown_draws": 25,
+        "sharpe_vs_flat": -0.3278
+      },
+      "60": {
+        "n_bets": 21,
+        "skip_rate": 0.9037,
+        "hit_rate": 0.4762,
+        "edge": 0.1712,
+        "monetary_roi": -0.8413,
+        "monetary_roi_pct": -84.13,
+        "sharpe": -5.0534,
+        "max_drawdown_draws": 21,
+        "sharpe_vs_flat": -3.1135
+      },
+      "65": {
+        "n_bets": 9,
+        "error": "too_few"
+      },
+      "70": {
+        "n_bets": 3,
+        "error": "too_few"
+      },
+      "75": {
+        "n_bets": 1,
+        "error": "too_few"
+      },
+      "80": {
+        "n_bets": 0,
+        "error": "too_few"
+      }
+    },
+    "validation": {
+      "stage": "stage1_betting_gate",
+      "game": "DAILY_539",
+      "verdict": "WATCH",
+      "all_pass": false,
+      "three_window": {
+        "windows": {
+          "last_100": {
+            "lift": 4.0487,
+            "positive": true
+          },
+          "last_200": {
+            "lift": 4.0487,
+            "positive": true
+          },
+          "full": {
+            "lift": 4.0487,
+            "positive": true
+          }
+        },
+        "all_positive": true
+      },
+      "perm_test": {
+        "p_value": 0.32,
+        "observed": -115.22,
+        "null_mean": -118.3,
+        "null_95pct": -107.93,
+        "significant": false
+      },
+      "mcnemar": {
+        "b": 16,
+        "c": 14,
+        "net": 2,
+        "n_discordant": 30,
+        "p_value": 0.8555,
+        "significant": false
+      },
+      "sharpe": {
+        "gated_sharpe": -1.8539,
+        "flat_sharpe": -1.9398,
+        "delta": 0.086,
+        "passes": true
+      },
+      "gates": {
+        "three_window": true,
+        "perm_p05": false,
+        "mcnemar": true,
+        "sharpe": true
+      }
+    }
+  },
+  "BIG_LOTTO": {
+    "game": "BIG_LOTTO",
+    "best_strategy": "p1_dev_sum5bet",
+    "n_oos_draws": 203,
+    "flat_roi_pct": -77.93,
+    "flat_sharpe": -1.4125,
+    "best_gate_threshold": 40,
+    "best_gate_edge": 0.0104,
+    "confidence_histogram": {
+      "30": 113,
+      "40": 34,
+      "50": 12,
+      "60": 24,
+      "20": 20
+    },
+    "confidence_stats": {
+      "mean": 40.79,
+      "std": 9.89,
+      "p25": 34.28,
+      "p50": 37.38,
+      "p75": 44.29
+    },
+    "gate_results": {
+      "40": {
+        "n_bets": 70,
+        "skip_rate": 0.6552,
+        "hit_rate": 0.1,
+        "edge": 0.0104,
+        "monetary_roi": -0.84,
+        "monetary_roi_pct": -84.0,
+        "sharpe": -1.75,
+        "max_drawdown_draws": 20,
+        "sharpe_vs_flat": -0.3375
+      },
+      "45": {
+        "n_bets": 46,
+        "skip_rate": 0.7734,
+        "hit_rate": 0.1087,
+        "edge": 0.0191,
+        "monetary_roi": -0.8261,
+        "monetary_roi_pct": -82.61,
+        "sharpe": -1.6588,
+        "max_drawdown_draws": 15,
+        "sharpe_vs_flat": -0.2463
+      },
+      "50": {
+        "n_bets": 36,
+        "skip_rate": 0.8227,
+        "hit_rate": 0.0833,
+        "edge": -0.0063,
+        "monetary_roi": -0.8667,
+        "monetary_roi_pct": -86.67,
+        "sharpe": -1.9598,
+        "max_drawdown_draws": 14,
+        "sharpe_vs_flat": -0.5473
+      },
+      "55": {
+        "n_bets": 26,
+        "skip_rate": 0.8719,
+        "hit_rate": 0.1154,
+        "edge": 0.0258,
+        "monetary_roi": -0.8154,
+        "monetary_roi_pct": -81.54,
+        "sharpe": -1.5951,
+        "max_drawdown_draws": 10,
+        "sharpe_vs_flat": -0.1826
+      },
+      "60": {
+        "n_bets": 24,
+        "skip_rate": 0.8818,
+        "hit_rate": 0.125,
+        "edge": 0.0354,
+        "monetary_roi": -0.8,
+        "monetary_roi_pct": -80.0,
+        "sharpe": -1.5119,
+        "max_drawdown_draws": 9,
+        "sharpe_vs_flat": -0.0994
+      },
+      "65": {
+        "n_bets": 0,
+        "error": "too_few"
+      },
+      "70": {
+        "n_bets": 0,
+        "error": "too_few"
+      },
+      "75": {
+        "n_bets": 0,
+        "error": "too_few"
+      },
+      "80": {
+        "n_bets": 0,
+        "error": "too_few"
+      }
+    },
+    "validation": {
+      "stage": "stage1_betting_gate",
+      "game": "BIG_LOTTO",
+      "verdict": "REJECT",
+      "all_pass": false,
+      "three_window": {
+        "windows": {
+          "last_100": {
+            "lift": -15.1724,
+            "positive": false
+          },
+          "last_200": {
+            "lift": -15.1724,
+            "positive": false
+          },
+          "full": {
+            "lift": -15.1724,
+            "positive": false
+          }
+        },
+        "all_positive": false
+      },
+      "perm_test": {
+        "p_value": 0.82,
+        "observed": -210.0,
+        "null_mean": -200.83,
+        "null_95pct": -181.14,
+        "significant": false
+      },
+      "mcnemar": {
+        "b": 7,
+        "c": 11,
+        "net": -4,
+        "n_discordant": 18,
+        "p_value": 0.4807,
+        "significant": false
+      },
+      "sharpe": {
+        "gated_sharpe": -1.75,
+        "flat_sharpe": -1.4125,
+        "delta": -0.3375,
+        "passes": false
+      },
+      "gates": {
+        "three_window": false,
+        "perm_p05": false,
+        "mcnemar": false,
+        "sharpe": false
+      }
+    }
+  },
+  "POWER_LOTTO": {
+    "game": "POWER_LOTTO",
+    "best_strategy": "pp3_freqort_4bet",
+    "n_oos_draws": 201,
+    "flat_roi_pct": -91.04,
+    "flat_sharpe": -2.8587,
+    "best_gate_threshold": 50,
+    "best_gate_edge": 0.0762,
+    "confidence_histogram": {
+      "60": 7,
+      "50": 51,
+      "40": 35,
+      "30": 102,
+      "70": 5,
+      "20": 1
+    },
+    "confidence_stats": {
+      "mean": 43.48,
+      "std": 10.67,
+      "p25": 34.81,
+      "p50": 39.75,
+      "p75": 52.53
+    },
+    "gate_results": {
+      "40": {
+        "n_bets": 98,
+        "skip_rate": 0.5124,
+        "hit_rate": 0.1837,
+        "edge": 0.0377,
+        "monetary_roi": -0.9184,
+        "monetary_roi_pct": -91.84,
+        "sharpe": -3.1468,
+        "max_drawdown_draws": 82,
+        "sharpe_vs_flat": -0.2881
+      },
+      "45": {
+        "n_bets": 72,
+        "skip_rate": 0.6418,
+        "hit_rate": 0.2083,
+        "edge": 0.0623,
+        "monetary_roi": -0.8993,
+        "monetary_roi_pct": -89.93,
+        "sharpe": -2.6841,
+        "max_drawdown_draws": 56,
+        "sharpe_vs_flat": 0.1746
+      },
+      "50": {
+        "n_bets": 63,
+        "skip_rate": 0.6866,
+        "hit_rate": 0.2222,
+        "edge": 0.0762,
+        "monetary_roi": -0.8889,
+        "monetary_roi_pct": -88.89,
+        "sharpe": -2.4988,
+        "max_drawdown_draws": 48,
+        "sharpe_vs_flat": 0.3599
+      },
+      "55": {
+        "n_bets": 39,
+        "skip_rate": 0.806,
+        "hit_rate": 0.3077,
+        "edge": 0.1617,
+        "monetary_roi": -0.8782,
+        "monetary_roi_pct": -87.82,
+        "sharpe": -2.7056,
+        "max_drawdown_draws": 35,
+        "sharpe_vs_flat": 0.1531
+      },
+      "60": {
+        "n_bets": 12,
+        "skip_rate": 0.9403,
+        "hit_rate": 0.3333,
+        "edge": 0.1873,
+        "monetary_roi": -0.9167,
+        "monetary_roi_pct": -91.67,
+        "sharpe": -7.7782,
+        "max_drawdown_draws": 12,
+        "sharpe_vs_flat": -4.9195
+      },
+      "65": {
+        "n_bets": 7,
+        "error": "too_few"
+      },
+      "70": {
+        "n_bets": 5,
+        "error": "too_few"
+      },
+      "75": {
+        "n_bets": 3,
+        "error": "too_few"
+      },
+      "80": {
+        "n_bets": 0,
+        "error": "too_few"
+      }
+    },
+    "validation": {
+      "stage": "stage1_betting_gate",
+      "game": "POWER_LOTTO",
+      "verdict": "REJECT",
+      "all_pass": false,
+      "three_window": {
+        "windows": {
+          "last_100": {
+            "lift": 8.6235,
+            "positive": true
+          },
+          "last_200": {
+            "lift": 8.6235,
+            "positive": true
+          },
+          "full": {
+            "lift": 8.6235,
+            "positive": true
+          }
+        },
+        "all_positive": true
+      },
+      "perm_test": {
+        "p_value": 0.365,
+        "observed": -355.56,
+        "null_mean": -360.94,
+        "null_95pct": -331.75,
+        "significant": false
+      },
+      "mcnemar": {
+        "b": 9,
+        "c": 5,
+        "net": 4,
+        "n_discordant": 14,
+        "p_value": 0.424,
+        "significant": false
+      },
+      "sharpe": {
+        "gated_sharpe": -2.4988,
+        "flat_sharpe": -2.8587,
+        "delta": 0.3599,
+        "passes": true
+      },
+      "gates": {
+        "three_window": true,
+        "perm_p05": false,
+        "mcnemar": false,
+        "sharpe": true
+      }
+    }
+  }
+}

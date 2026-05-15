@@ -1,0 +1,342 @@
+================================================================================
+  COMPREHENSIVE EVALUATION: Power Lotto Draw 115000011
+  Actual Numbers: [7, 22, 28, 34, 36, 37]  Special: 7
+  Previous Draw (115000010): [1, 12, 14, 15, 27, 29]  Special: 5
+  Data Cutoff: 115000010 (strict no-leakage)
+================================================================================
+
+Loaded 1575 draws up to 115000010
+Last draw in data: 115000010 (2026/02/02)
+  Numbers: [1, 12, 14, 15, 27, 29]  Special: 5
+No data leakage confirmed.
+
+Special Number V3 Predictions: Top-3 = [2, 7, 8]
+  Actual Special: 7
+  Special Hit (Top-1): NO
+  Special Hit (Top-3): YES
+
+--------------------------------------------------------------------------------
+Method                                        Bets BestM CovM CovN  Sp  Score
+--------------------------------------------------------------------------------
+1. Frequency W30 (1-bet)                         1     1    1    6   N   11.8
+2. Frequency W50 (1-bet)                         1     0    0    6   N    0.7
+3. Frequency W100 (1-bet)                        1     1    1    6   N   10.6
+4. Deviation/Overdue (1-bet)                     1     0    0    6   N    1.2
+5. Cold Numbers W100 (1-bet)                     1     0    0    6   N    1.2
+6. Markov W30 (1-bet)                            1     1    1    6   N   10.6
+7. Fourier Rhythm (2-bet)                        2     2    3   12   Y   26.2
+8. Fourier30+Markov30 Hedging (2-bet)            2     2    3   12   N   20.9
+9. Cold Complement (2-bet)                       2     2    2   12   Y   25.7
+10. Cluster Pivot (2-bet)                        2     1    2   12   Y   15.9
+11. Echo-Aware (2-bet)                           2     0    0   12   Y    5.9
+12. Triple Strike (3-bet)                        3     1    2   18   Y   16.2
+13. Zone Balance (1-bet)                         1     0    0    6   N    1.4
+14. Hot-Cold Mix (1-bet)                         1     0    0    6   N    0.9
+15. Gap Analysis (1-bet)                         1     2    2    6   N   20.7
+16. Sum Range (1-bet)                            1     2    2    6   N   21.4
+17. Odd-Even Balance (1-bet)                     1     1    1    6   N   11.8
+18. Consecutive Pattern (1-bet)                  1     1    1    6   N   11.8
+19. Weighted Recency (1-bet)                     1     1    1    6   N   11.6
+20. Anti-Hot Contrarian (1-bet)                  1     1    1    6   N   11.7
+21. Tail Digit Coverage (1-bet)                  1     0    0    6   N    2.1
+22. Random Baseline (1-bet)                      1     2    2    6   N   21.6
+23. Random Baseline (2-bet)                      2     1    1   12   N   11.4
+--------------------------------------------------------------------------------
+
+Legend: BestM=Best single-bet matches, CovM=Coverage matches (all bets combined),
+        CovN=Total unique numbers covered, Sp=Special hit, Score=Closeness score
+
+================================================================================
+  DETAILED RESULTS (sorted by coverage matches)
+================================================================================
+
+======================================================================
+  #1: 7. Fourier Rhythm (2-bet)
+  FFT period detection + phase alignment (W500, 2 bets)
+  Coverage Matches: 3/6 [7, 34, 37]
+  Best Single Bet: M2 [7, 37] Special HIT!
+  Total Unique Numbers: 12
+  Closeness Score: 26.2
+    Bet 1: [ 08 ,  10 ,  11 ,  19 , *34*,  35 ] -> M1 [34] | Sp: 2 (miss)
+    Bet 2: [ 05 , *07*,  16 ,  23 ,  25 , *37*] -> M2 [7, 37] | Sp: 7 (HIT)
+
+======================================================================
+  #2: 8. Fourier30+Markov30 Hedging (2-bet)
+  Fourier30 (weighted freq) + Markov30 hedging (2 bets)
+  Coverage Matches: 3/6 [34, 36, 37]
+  Best Single Bet: M2 [34, 37] 
+  Total Unique Numbers: 12
+  Closeness Score: 20.9
+    Bet 1: [ 11 ,  14 ,  17 ,  32 , *34*, *37*] -> M2 [34, 37] | Sp: 2 (miss)
+    Bet 2: [ 02 ,  13 ,  15 ,  24 ,  26 , *36*] -> M1 [36] | Sp: 7 (HIT)
+
+======================================================================
+  #3: 9. Cold Complement (2-bet)
+  Coldest 12 numbers split into 2 non-overlapping bets (W100)
+  Coverage Matches: 2/6 [22, 28]
+  Best Single Bet: M2 [22, 28] Special HIT!
+  Total Unique Numbers: 12
+  Closeness Score: 25.7
+    Bet 1: [ 04 ,  10 ,  13 ,  23 ,  30 ,  33 ] -> M0 [] | Sp: 2 (miss)
+    Bet 2: [ 02 ,  19 , *22*,  24 ,  27 , *28*] -> M2 [22, 28] | Sp: 7 (HIT)
+
+======================================================================
+  #4: 22. Random Baseline (1-bet)
+  Random selection (seed=42)
+  Coverage Matches: 2/6 [28, 36]
+  Best Single Bet: M2 [28, 36] 
+  Total Unique Numbers: 6
+  Closeness Score: 21.6
+    Bet 1: [ 02 ,  05 ,  21 , *28*,  30 , *36*] -> M2 [28, 36] | Sp: 5 (miss)
+
+======================================================================
+  #5: 16. Sum Range (1-bet)
+  Sum-range optimized (target sum ~114)
+  Coverage Matches: 2/6 [34, 36]
+  Best Single Bet: M2 [34, 36] 
+  Total Unique Numbers: 6
+  Closeness Score: 21.4
+    Bet 1: [ 01 ,  08 ,  17 ,  18 , *34*, *36*] -> M2 [34, 36] | Sp: 2 (miss)
+
+======================================================================
+  #6: 15. Gap Analysis (1-bet)
+  Gap analysis: numbers due for return (gap near average)
+  Coverage Matches: 2/6 [7, 22]
+  Best Single Bet: M2 [7, 22] 
+  Total Unique Numbers: 6
+  Closeness Score: 20.7
+    Bet 1: [*07*,  09 ,  19 , *22*,  31 ,  33 ] -> M2 [7, 22] | Sp: 2 (miss)
+
+======================================================================
+  #7: 12. Triple Strike (3-bet)
+  Triple Strike: Fourier + Cold + Tail Balance (3 bets)
+  Coverage Matches: 2/6 [28, 34]
+  Best Single Bet: M1 [28] Special HIT!
+  Total Unique Numbers: 18
+  Closeness Score: 16.2
+    Bet 1: [ 08 ,  10 ,  11 ,  19 , *34*,  35 ] -> M1 [34] | Sp: 2 (miss)
+    Bet 2: [ 04 ,  13 ,  23 , *28*,  30 ,  33 ] -> M1 [28] | Sp: 7 (HIT)
+    Bet 3: [ 01 ,  03 ,  05 ,  12 ,  14 ,  20 ] -> M0 [] | Sp: 8 (miss)
+
+======================================================================
+  #8: 10. Cluster Pivot (2-bet)
+  K-means clustering on recent 100 draws (2 bets)
+  Coverage Matches: 2/6 [34, 37]
+  Best Single Bet: M1 [37] Special HIT!
+  Total Unique Numbers: 12
+  Closeness Score: 15.9
+    Bet 1: [ 11 ,  16 ,  20 ,  31 , *34*,  35 ] -> M1 [34] | Sp: 2 (miss)
+    Bet 2: [ 05 ,  09 ,  14 ,  15 ,  17 , *37*] -> M1 [37] | Sp: 7 (HIT)
+
+======================================================================
+  #9: 1. Frequency W30 (1-bet)
+  Top 6 most frequent in last 30 draws
+  Coverage Matches: 1/6 [34]
+  Best Single Bet: M1 [34] 
+  Total Unique Numbers: 6
+  Closeness Score: 11.8
+    Bet 1: [ 11 ,  17 ,  20 ,  32 , *34*,  35 ] -> M1 [34] | Sp: 2 (miss)
+
+======================================================================
+  #10: 17. Odd-Even Balance (1-bet)
+  Odd/Even balanced (3:3)
+  Coverage Matches: 1/6 [34]
+  Best Single Bet: M1 [34] 
+  Total Unique Numbers: 6
+  Closeness Score: 11.8
+    Bet 1: [ 11 ,  17 ,  20 ,  32 , *34*,  35 ] -> M1 [34] | Sp: 2 (miss)
+
+======================================================================
+  #11: 18. Consecutive Pattern (1-bet)
+  Consecutive pattern + high frequency fill
+  Coverage Matches: 1/6 [34]
+  Best Single Bet: M1 [34] 
+  Total Unique Numbers: 6
+  Closeness Score: 11.8
+    Bet 1: [ 11 ,  20 ,  31 ,  32 , *34*,  35 ] -> M1 [34] | Sp: 2 (miss)
+
+======================================================================
+  #12: 20. Anti-Hot Contrarian (1-bet)
+  Anti-hot contrarian (avoid top 12, pick moderate)
+  Coverage Matches: 1/6 [7]
+  Best Single Bet: M1 [7] 
+  Total Unique Numbers: 6
+  Closeness Score: 11.7
+    Bet 1: [*07*,  08 ,  21 ,  25 ,  26 ,  29 ] -> M1 [7] | Sp: 2 (miss)
+
+======================================================================
+  #13: 19. Weighted Recency (1-bet)
+  Exponentially weighted recency (W50)
+  Coverage Matches: 1/6 [34]
+  Best Single Bet: M1 [34] 
+  Total Unique Numbers: 6
+  Closeness Score: 11.6
+    Bet 1: [ 11 ,  14 ,  17 ,  32 , *34*,  35 ] -> M1 [34] | Sp: 2 (miss)
+
+======================================================================
+  #14: 23. Random Baseline (2-bet)
+  2 random bets (seed=42)
+  Coverage Matches: 1/6 [34]
+  Best Single Bet: M1 [34] 
+  Total Unique Numbers: 12
+  Closeness Score: 11.4
+    Bet 1: [ 02 ,  06 ,  09 ,  25 ,  31 ,  33 ] -> M0 [] | Sp: 3 (miss)
+    Bet 2: [ 01 ,  12 ,  16 ,  19 , *34*,  35 ] -> M1 [34] | Sp: 1 (miss)
+
+======================================================================
+  #15: 3. Frequency W100 (1-bet)
+  Top 6 most frequent in last 100 draws
+  Coverage Matches: 1/6 [7]
+  Best Single Bet: M1 [7] 
+  Total Unique Numbers: 6
+  Closeness Score: 10.6
+    Bet 1: [ 01 ,  05 , *07*,  09 ,  16 ,  20 ] -> M1 [7] | Sp: 2 (miss)
+
+======================================================================
+  #16: 6. Markov W30 (1-bet)
+  Markov transition probabilities from last draw (W30)
+  Coverage Matches: 1/6 [34]
+  Best Single Bet: M1 [34] 
+  Total Unique Numbers: 6
+  Closeness Score: 10.6
+    Bet 1: [ 14 ,  15 ,  17 ,  26 ,  32 , *34*] -> M1 [34] | Sp: 2 (miss)
+
+======================================================================
+  #17: 11. Echo-Aware (2-bet)
+  Echo patterns (2-5 draws ago) + frequency (2 bets)
+  Coverage Matches: 0/6 []
+  Best Single Bet: M0 [] Special HIT!
+  Total Unique Numbers: 12
+  Closeness Score: 5.9
+    Bet 1: [ 05 ,  10 ,  15 ,  17 ,  23 ,  35 ] -> M0 [] | Sp: 2 (miss)
+    Bet 2: [ 08 ,  11 ,  12 ,  20 ,  25 ,  32 ] -> M0 [] | Sp: 7 (HIT)
+
+======================================================================
+  #18: 21. Tail Digit Coverage (1-bet)
+  Tail digit coverage (diverse last digits)
+  Coverage Matches: 0/6 []
+  Best Single Bet: M0 [] 
+  Total Unique Numbers: 6
+  Closeness Score: 2.1
+    Bet 1: [ 11 ,  14 ,  20 ,  32 ,  33 ,  35 ] -> M0 [] | Sp: 2 (miss)
+
+======================================================================
+  #19: 13. Zone Balance (1-bet)
+  Zone-balanced selection (proportional to recent zone distribution)
+  Coverage Matches: 0/6 []
+  Best Single Bet: M0 [] 
+  Total Unique Numbers: 6
+  Closeness Score: 1.4
+    Bet 1: [ 08 ,  11 ,  14 ,  21 ,  26 ,  32 ] -> M0 [] | Sp: 2 (miss)
+
+======================================================================
+  #20: 4. Deviation/Overdue (1-bet)
+  Top 6 most overdue (deviation from expected frequency)
+  Coverage Matches: 0/6 []
+  Best Single Bet: M0 [] 
+  Total Unique Numbers: 6
+  Closeness Score: 1.2
+    Bet 1: [ 04 ,  10 ,  13 ,  23 ,  30 ,  33 ] -> M0 [] | Sp: 2 (miss)
+
+======================================================================
+  #21: 5. Cold Numbers W100 (1-bet)
+  6 coldest numbers in last 100 draws
+  Coverage Matches: 0/6 []
+  Best Single Bet: M0 [] 
+  Total Unique Numbers: 6
+  Closeness Score: 1.2
+    Bet 1: [ 04 ,  10 ,  13 ,  23 ,  30 ,  33 ] -> M0 [] | Sp: 2 (miss)
+
+======================================================================
+  #22: 14. Hot-Cold Mix (1-bet)
+  3 hottest + 3 coldest numbers (W50)
+  Coverage Matches: 0/6 []
+  Best Single Bet: M0 [] 
+  Total Unique Numbers: 6
+  Closeness Score: 0.9
+    Bet 1: [ 11 ,  13 ,  14 ,  20 ,  23 ,  30 ] -> M0 [] | Sp: 2 (miss)
+
+======================================================================
+  #23: 2. Frequency W50 (1-bet)
+  Top 6 most frequent in last 50 draws
+  Coverage Matches: 0/6 []
+  Best Single Bet: M0 [] 
+  Total Unique Numbers: 6
+  Closeness Score: 0.7
+    Bet 1: [ 08 ,  11 ,  14 ,  16 ,  17 ,  20 ] -> M0 [] | Sp: 2 (miss)
+
+================================================================================
+  FINAL RANKING - ALL METHODS vs DRAW 115000011
+  Actual: [7, 22, 28, 34, 36, 37] | Special: 7
+================================================================================
+
+Rank  Method                                     Bets  CovM  BestM   Sp   Score
+-------------------------------------------------------------------------
+1     7. Fourier Rhythm (2-bet)                     2     3      2    Y    26.2 <-- BEST
+2     8. Fourier30+Markov30 Hedging (2-bet)         2     3      2    N    20.9 <-- TIE
+3     9. Cold Complement (2-bet)                    2     2      2    Y    25.7
+4     22. Random Baseline (1-bet)                   1     2      2    N    21.6
+5     16. Sum Range (1-bet)                         1     2      2    N    21.4
+6     15. Gap Analysis (1-bet)                      1     2      2    N    20.7
+7     12. Triple Strike (3-bet)                     3     2      1    Y    16.2
+8     10. Cluster Pivot (2-bet)                     2     2      1    Y    15.9
+9     1. Frequency W30 (1-bet)                      1     1      1    N    11.8
+10    17. Odd-Even Balance (1-bet)                  1     1      1    N    11.8
+11    18. Consecutive Pattern (1-bet)               1     1      1    N    11.8
+12    20. Anti-Hot Contrarian (1-bet)               1     1      1    N    11.7
+13    19. Weighted Recency (1-bet)                  1     1      1    N    11.6
+14    23. Random Baseline (2-bet)                   2     1      1    N    11.4
+15    3. Frequency W100 (1-bet)                     1     1      1    N    10.6
+16    6. Markov W30 (1-bet)                         1     1      1    N    10.6
+17    11. Echo-Aware (2-bet)                        2     0      0    Y     5.9
+18    21. Tail Digit Coverage (1-bet)               1     0      0    N     2.1
+19    13. Zone Balance (1-bet)                      1     0      0    N     1.4
+20    4. Deviation/Overdue (1-bet)                  1     0      0    N     1.2
+21    5. Cold Numbers W100 (1-bet)                  1     0      0    N     1.2
+22    14. Hot-Cold Mix (1-bet)                      1     0      0    N     0.9
+23    2. Frequency W50 (1-bet)                      1     0      0    N     0.7
+
+================================================================================
+  ANALYSIS
+================================================================================
+
+  WINNER: 7. Fourier Rhythm (2-bet)
+  Coverage Matches: 3/6 -> [7, 34, 37]
+  Best Single Bet: M2
+
+  DRAW 115000011 CHARACTERISTICS:
+    Numbers: [7, 22, 28, 34, 36, 37]
+    Sum: 164
+    Odd/Even: 2/4
+    Zone Distribution: {'Z1(1-10)': 1, 'Z3(21-30)': 2, 'Z4(31-38)': 3}
+    Consecutive Pairs: [(36, 37)]
+    Tail Digits: [7, 2, 8, 4, 6, 7]
+
+  SPECIAL NUMBER ANALYSIS:
+    Actual: 7
+    V3 Top-3: [2, 7, 8]
+    V3 ranked it #2
+
+  Methods achieving M3+ (coverage): 2/23
+    - 7. Fourier Rhythm (2-bet): M3
+    - 8. Fourier30+Markov30 Hedging (2-bet): M3
+
+  MOST PREDICTED NUMBERS (across all methods):
+      11: predicted by 13/23 methods
+    * 34: predicted by 11/23 methods
+      35: predicted by 10/23 methods
+      20: predicted by 10/23 methods
+      14: predicted by 9/23 methods
+      17: predicted by 9/23 methods
+      32: predicted by 9/23 methods
+       8: predicted by 7/23 methods
+      23: predicted by 7/23 methods
+      33: predicted by 7/23 methods
+
+  ACTUAL NUMBERS PREDICTION FREQUENCY:
+     7: predicted by 4/23 methods (17%)
+    22: predicted by 2/23 methods (9%)
+    28: predicted by 3/23 methods (13%)
+    34: predicted by 11/23 methods (48%)
+    36: predicted by 3/23 methods (13%)
+    37: predicted by 3/23 methods (13%)

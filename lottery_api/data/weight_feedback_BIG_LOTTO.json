@@ -1,0 +1,30 @@
+{
+  "regime_2bet": {
+    "multiplier": 0.5,
+    "rate": 0.0,
+    "edge": -0.143,
+    "samples": 6,
+    "updated_at": "2026-05-11T16:55:14.471286"
+  },
+  "ts3_regime_3bet": {
+    "multiplier": 0.5,
+    "rate": 0.0,
+    "edge": -0.206,
+    "samples": 5,
+    "updated_at": "2026-05-11T16:55:14.471344"
+  },
+  "p1_deviation_4bet": {
+    "multiplier": 0.5,
+    "rate": 0.0,
+    "edge": -0.262,
+    "samples": 12,
+    "updated_at": "2026-05-11T16:55:14.471388"
+  },
+  "p1_dev_sum5bet": {
+    "multiplier": 0.5,
+    "rate": 0.0,
+    "edge": -0.315,
+    "samples": 10,
+    "updated_at": "2026-05-11T16:55:14.471408"
+  }
+}

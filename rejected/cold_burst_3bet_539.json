@@ -1,0 +1,30 @@
+{
+  "strategy_name": "ACB_LagEcho_ColdBurst_3bet",
+  "description": "ACB + LagEcho + ColdBurst(gap≥15) 正交3注",
+  "rejection_date": "2026-03-08",
+  "trigger": "115000060期檢討（18、34號雙冷gap=18同期回補分析）",
+  "failure_reason": "perm_p=0.0547（未達 p<0.05 門檻）。ColdBurst 機制因 threshold_gap=15 時 burst 狀態幾乎為常態（burst_score≈1.2），無法提供有區分度的信號。",
+  "statistical_results": {
+    "edge_150p": 3.50,
+    "edge_500p": 1.30,
+    "edge_1500p": 3.63,
+    "z_1500p": 3.06,
+    "perm_p": 0.0547,
+    "signal_edge": 1.76,
+    "stability": "STABLE",
+    "mcnemar_vs_champion": {
+      "a_only": 237,
+      "b_only": 274,
+      "chi2": 2.6791,
+      "p_value": 0.1017,
+      "winner": "B"
+    }
+  },
+  "applicable_conditions": "可能在 burst_score > 1.5（嚴重爆發狀態）時有短期效益，未驗證",
+  "retest_conditions": [
+    "threshold_gap=20, min_count=5（更嚴格定義），重新回測",
+    "設計 burst_score > N 的動態門檻策略，而非靜態 threshold",
+    "考慮「連續多期無冷號回補」的序列狀態作為觸發條件"
+  ],
+  "insight": "539 每期有 1/39 機率每個號碼出現，gap≥15 在任何時刻都有約 5-7 個號碼，不足以作為特殊信號。需要更嚴格的「極端冷」定義（gap≥25+）才可能有顯著值"
+}

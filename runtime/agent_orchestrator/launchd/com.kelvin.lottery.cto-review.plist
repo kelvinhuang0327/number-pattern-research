@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+    <key>Label</key><string>com.kelvin.lottery.cto-review</string>
+    <key>ProgramArguments</key>
+    <array>
+        <string>/usr/bin/python3</string>
+        <string>/Users/kelvin/Kelvin-WorkSpace/LotteryNew/orchestrator/cto_review_tick.py</string>
+    </array>
+    <key>StartInterval</key><integer>43200</integer>
+    <key>StandardOutPath</key><string>/Users/kelvin/Kelvin-WorkSpace/LotteryNew/runtime/agent_orchestrator/logs/cto-review.launchd.log</string>
+    <key>StandardErrorPath</key><string>/Users/kelvin/Kelvin-WorkSpace/LotteryNew/runtime/agent_orchestrator/logs/cto-review.launchd.err</string>
+    <key>WorkingDirectory</key><string>/Users/kelvin/Kelvin-WorkSpace/LotteryNew</string>
+    <key>RunAtLoad</key><false/>
+</dict>
+</plist>

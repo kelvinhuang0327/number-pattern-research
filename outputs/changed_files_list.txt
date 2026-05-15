@@ -1,0 +1,3 @@
+/Users/kelvin/Kelvin-WorkSpace/LotteryNew/research/long_window_residual_validation_report_2026-04-29.md
+outputs/validation_task_312_result.json
+/Users/kelvin/Kelvin-WorkSpace/LotteryNew/research/run_long_window_residual_20260429.py

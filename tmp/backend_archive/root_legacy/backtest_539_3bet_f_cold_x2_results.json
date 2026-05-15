@@ -1,0 +1,106 @@
+{
+  "timestamp": "2026-02-27T18:11:24.666068",
+  "strategy": "F500Top5+ColdTop5+Cold次批(rank6-10)",
+  "research_context": "P0-B意外發現: 3bet_F_Cold_only 1500p M2+ +5.16%",
+  "baselines": {
+    "M2+_3bet": 0.30443096953397364,
+    "M3+_3bet": 0.02982064838854559,
+    "M3+_5bet": 0.0492053877090568,
+    "shuffle_mean_est": 0.3258
+  },
+  "zero_overlap": true,
+  "three_window": {
+    "150": {
+      "total": 150,
+      "ge2_hits": 47,
+      "ge3_hits": 3,
+      "ge2_rate": 0.31333333333333335,
+      "ge3_rate": 0.02,
+      "ge2_edge": 0.008902363799359714,
+      "ge3_edge": -0.00982064838854559,
+      "avg_unique": 15.0,
+      "avg_overlap": 0.0,
+      "avg_cov": 1.9466666666666668
+    },
+    "500": {
+      "total": 500,
+      "ge2_hits": 162,
+      "ge3_hits": 12,
+      "ge2_rate": 0.324,
+      "ge3_rate": 0.024,
+      "ge2_edge": 0.01956903046602637,
+      "ge3_edge": -0.005820648388545589,
+      "avg_unique": 15.0,
+      "avg_overlap": 0.0,
+      "avg_cov": 1.956
+    },
+    "1500": {
+      "total": 1500,
+      "ge2_hits": 534,
+      "ge3_hits": 41,
+      "ge2_rate": 0.356,
+      "ge3_rate": 0.027333333333333334,
+      "ge2_edge": 0.051569030466026344,
+      "ge3_edge": -0.0024873150552122553,
+      "avg_unique": 15.0,
+      "avg_overlap": 0.0,
+      "avg_cov": 1.97
+    }
+  },
+  "stability": "STABLE_ALL_POSITIVE",
+  "permutation": {
+    "actual_rate": 0.324,
+    "actual_hits": 162,
+    "actual_total": 500,
+    "perm_mean": 0.32576,
+    "perm_std": 0.020800618467805617,
+    "perm_min": 0.256,
+    "perm_max": 0.384,
+    "z_score": -0.0846128687338813,
+    "p_value_empirical": 0.5621890547263682,
+    "p_value_normal": 0.5337154160053308,
+    "cohen_d": -0.0846128687338813,
+    "shuffle_bias": 0.021329030466026355,
+    "signal_edge": -0.0017599999999999838,
+    "total_edge": 0.01956903046602637
+  },
+  "mcnemar_vs_5bet": {
+    "label_a": "3bet_F_Cold_x2(M2+)",
+    "label_b": "5bet_F4Cold(M3+)",
+    "total": 500,
+    "both": 13,
+    "a_only": 149,
+    "b_only": 15,
+    "both_miss": 323,
+    "rate_a": 0.324,
+    "rate_b": 0.056,
+    "net": 134,
+    "chi2": 107.85975609756098,
+    "p": 0.0,
+    "sig": true
+  },
+  "mcnemar_vs_p0b": {
+    "label_a": "3bet_F_Cold_x2",
+    "label_b": "3bet_F_Cold_Fmid",
+    "total": 500,
+    "both": 124,
+    "a_only": 38,
+    "b_only": 34,
+    "both_miss": 304,
+    "rate_a": 0.324,
+    "rate_b": 0.316,
+    "net": 4,
+    "chi2": 0.125,
+    "p": 0.7236736098317629,
+    "sig": false
+  },
+  "pass_criteria": {
+    "三窗口全正_M2+": true,
+    "Signal_Edge_positive": false,
+    "perm_p_le_005": false,
+    "零重疊": true
+  },
+  "decision": "FAIL → 分布偏好假象",
+  "decision_note": "三窗口全正但Signal Edge負，與P0-B相同問題：幾何覆蓋效益偽造Edge。歸檔。",
+  "elapsed": 23.9
+}

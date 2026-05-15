@@ -1,0 +1,119 @@
+{
+  "BIG_LOTTO": {
+    "lottery_type": "BIG_LOTTO",
+    "baseline_n": 500,
+    "current_n": 100,
+    "check_time": "2026-03-18T10:39:41.183057",
+    "metrics": {
+      "number_freq_PSI": {
+        "value": 0.097311,
+        "status": "STABLE",
+        "note": "門檻: Warning>0.1, Critical>0.25"
+      },
+      "sum_KS_stat": {
+        "value": 0.092,
+        "status": "STABLE",
+        "note": "p=0.4633"
+      },
+      "sum_mean_shift_z": {
+        "value": 1.301788,
+        "status": "STABLE",
+        "note": "base=150.7, curr=146.6"
+      },
+      "odd_even_KS": {
+        "value": 0.018,
+        "status": "STABLE",
+        "note": "p=1.0000"
+      },
+      "repeat_rate_z": {
+        "value": 0.202988,
+        "status": "STABLE",
+        "note": "base=0.120, curr=0.123"
+      },
+      "zone_dist_PSI": {
+        "value": 0.003091,
+        "status": "STABLE",
+        "note": "Z=['0.342', '0.328', '0.330']"
+      }
+    },
+    "overall_status": "STABLE"
+  },
+  "POWER_LOTTO": {
+    "lottery_type": "POWER_LOTTO",
+    "baseline_n": 500,
+    "current_n": 100,
+    "check_time": "2026-03-18T10:39:41.650164",
+    "metrics": {
+      "number_freq_PSI": {
+        "value": 0.070573,
+        "status": "STABLE",
+        "note": "門檻: Warning>0.1, Critical>0.25"
+      },
+      "sum_KS_stat": {
+        "value": 0.052,
+        "status": "STABLE",
+        "note": "p=0.9725"
+      },
+      "sum_mean_shift_z": {
+        "value": 0.15845,
+        "status": "STABLE",
+        "note": "base=116.9, curr=116.6"
+      },
+      "odd_even_KS": {
+        "value": 0.072,
+        "status": "STABLE",
+        "note": "p=0.7630"
+      },
+      "repeat_rate_z": {
+        "value": 0.896273,
+        "status": "STABLE",
+        "note": "base=0.155, curr=0.167"
+      },
+      "zone_dist_PSI": {
+        "value": 0.000199,
+        "status": "STABLE",
+        "note": "Z=['0.342', '0.347', '0.312']"
+      }
+    },
+    "overall_status": "STABLE"
+  },
+  "DAILY_539": {
+    "lottery_type": "DAILY_539",
+    "baseline_n": 500,
+    "current_n": 100,
+    "check_time": "2026-03-18T10:39:41.661828",
+    "metrics": {
+      "number_freq_PSI": {
+        "value": 0.086731,
+        "status": "STABLE",
+        "note": "門檻: Warning>0.1, Critical>0.25"
+      },
+      "sum_KS_stat": {
+        "value": 0.096,
+        "status": "STABLE",
+        "note": "p=0.4097"
+      },
+      "sum_mean_shift_z": {
+        "value": 1.40279,
+        "status": "STABLE",
+        "note": "base=100.1, curr=96.9"
+      },
+      "odd_even_KS": {
+        "value": 0.056,
+        "status": "STABLE",
+        "note": "p=0.9481"
+      },
+      "repeat_rate_z": {
+        "value": 1.86735,
+        "status": "STABLE",
+        "note": "base=0.123, curr=0.147"
+      },
+      "zone_dist_PSI": {
+        "value": 0.00107,
+        "status": "STABLE",
+        "note": "Z=['0.358', '0.316', '0.326']"
+      }
+    },
+    "overall_status": "STABLE"
+  }
+}

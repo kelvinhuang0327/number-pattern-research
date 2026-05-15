@@ -1,0 +1,113 @@
+{
+  "assessment_date": "2026-04-19",
+  "latest_draw": "115000031",
+  "tested_hypotheses": [
+    {
+      "id": "H9",
+      "verdict": "REJECTED",
+      "lesson": "L93"
+    },
+    {
+      "id": "H-PL-01",
+      "verdict": "STRUCTURAL_BIAS",
+      "lesson": "L111"
+    },
+    {
+      "id": "H-PL-02",
+      "verdict": "FAIL",
+      "lesson": "L110"
+    },
+    {
+      "id": "H-PL-03",
+      "verdict": "FAIL",
+      "lesson": "L112"
+    },
+    {
+      "id": "H-PL-04",
+      "verdict": "FAIL",
+      "lesson": "L109"
+    },
+    {
+      "id": "H-PL-05",
+      "verdict": "FAIL",
+      "lesson": "L108 (scan)"
+    },
+    {
+      "id": "PP3-Z3Gap",
+      "verdict": "CLOSED",
+      "lesson": "L108"
+    },
+    {
+      "id": "mk_combo_B",
+      "verdict": "CONTINUE_WATCH",
+      "lesson": "pending"
+    }
+  ],
+  "deployed_strategies": [
+    {
+      "name": "fourier_rhythm_3bet",
+      "1500p_edge": "+2.56%",
+      "status": "STABLE"
+    },
+    {
+      "name": "pp3_freqort_4bet",
+      "1500p_edge": "+3.27%",
+      "status": "STABLE"
+    },
+    {
+      "name": "orthogonal_5bet",
+      "1500p_edge": "+3.89%",
+      "status": "STABLE"
+    }
+  ],
+  "combo_b_result": {
+    "verdict": "CONTINUE_WATCH",
+    "windows": {
+      "w150": -0.0124,
+      "w300": 0.0042,
+      "w500": 0.0169,
+      "w1000": 0.0169,
+      "w1500": 0.0089
+    },
+    "perm_p": 0.18,
+    "mcnemar_net": -45,
+    "mcnemar_p": 0.0076,
+    "beats_orthogonal": false
+  },
+  "signal_space_verdict": "EXHAUSTED",
+  "exhaustion_confidence": "HIGH",
+  "remaining_open_lines": [
+    {
+      "line": "combo_B",
+      "note": "1500p_edge=0.0089, perm_p=0.18. Re-test after 300 more draws."
+    }
+  ],
+  "maintenance_mode_recommendation": true,
+  "new_lessons": [
+    "L111",
+    "L112",
+    "L113"
+  ],
+  "action_items": [
+    {
+      "priority": "MED",
+      "action": "combo_B CONTINUE_WATCH: 1500p=0.0089, perm_p=0.18. Re-test in next cycle."
+    },
+    {
+      "priority": "LOW",
+      "action": "H-PL-01 STRUCTURAL_BIAS. Gap structure ≠ temporal signal. Close."
+    },
+    {
+      "priority": "LOW",
+      "action": "H-PL-03 Zone Concentration FAIL. Close hypothesis."
+    },
+    {
+      "priority": "LOW",
+      "action": "Ensemble weak signal: NO-OP or FAIL. Composite gate provides no additive value."
+    },
+    {
+      "priority": "HIGH",
+      "action": "威力彩進入維護模式: 停止新假設掃描，僅監控現役策略 30p/100p 窗口。"
+    }
+  ]
+}

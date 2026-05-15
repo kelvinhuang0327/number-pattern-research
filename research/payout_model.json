@@ -1,0 +1,586 @@
+{
+  "BIG_LOTTO": {
+    "baseline_prediction": {
+      "tickets": [
+        {
+          "ticket": [
+            26,
+            27,
+            38,
+            40,
+            43,
+            49
+          ],
+          "expected_winners": 1.3962,
+          "expected_payout": 372439478.58,
+          "expected_value": -23.3664,
+          "payout_quality_score": 80.6,
+          "jackpot_assumption": 650000000,
+          "jackpot_source": "test_sync",
+          "jackpot_updated_at": "2026-03-17",
+          "breakeven_jackpot": 593896000,
+          "breakeven_ratio": 1.0945,
+          "ticket_cost": 50,
+          "popularity_score": 19.5,
+          "split_risk_level": "LOW",
+          "pattern_commonness": 0.12,
+          "bias_flags": [
+            "lucky_numbers",
+            "decade_cluster",
+            "round_number"
+          ],
+          "is_ev_positive": false,
+          "rank": 1,
+          "prediction_score": 100.0
+        },
+        {
+          "ticket": [
+            15,
+            22,
+            25,
+            42,
+            44,
+            46
+          ],
+          "expected_winners": 1.3398,
+          "expected_payout": 388117629.5,
+          "expected_value": -22.2452,
+          "payout_quality_score": 85.55,
+          "jackpot_assumption": 650000000,
+          "jackpot_source": "test_sync",
+          "jackpot_updated_at": "2026-03-17",
+          "breakeven_jackpot": 593896000,
+          "breakeven_ratio": 1.0945,
+          "ticket_cost": 50,
+          "popularity_score": 12.5,
+          "split_risk_level": "LOW",
+          "pattern_commonness": 0.1,
+          "bias_flags": [
+            "decade_cluster",
+            "round_number"
+          ],
+          "is_ev_positive": false,
+          "rank": 2,
+          "prediction_score": 93.5
+        },
+        {
+          "ticket": [
+            3,
+            5,
+            10,
+            29,
+            31,
+            45
+          ],
+          "expected_winners": 1.6013,
+          "expected_payout": 324736151.88,
+          "expected_value": -26.7777,
+          "payout_quality_score": 65.15,
+          "jackpot_assumption": 650000000,
+          "jackpot_source": "test_sync",
+          "jackpot_updated_at": "2026-03-17",
+          "breakeven_jackpot": 593896000,
+          "breakeven_ratio": 1.0945,
+          "ticket_cost": 50,
+          "popularity_score": 33.8,
+          "split_risk_level": "MEDIUM",
+          "pattern_commonness": 0.35,
+          "bias_flags": [
+            "birthday",
+            "round_number",
+            "grid_pattern"
+          ],
+          "is_ev_positive": false,
+          "rank": 3,
+          "prediction_score": 87.0
+        }
+      ]
+    },
+    "anti_crowd_adjusted": {
+      "tickets": []
+    },
+    "payout_optimized": {
+      "tickets": [
+        {
+          "ticket": [
+            15,
+            22,
+            25,
+            42,
+            44,
+            46
+          ],
+          "expected_winners": 1.3398,
+          "expected_payout": 388117629.5,
+          "expected_value": -22.2452,
+          "payout_quality_score": 85.55,
+          "jackpot_assumption": 650000000,
+          "jackpot_source": "test_sync",
+          "jackpot_updated_at": "2026-03-17",
+          "breakeven_jackpot": 593896000,
+          "breakeven_ratio": 1.0945,
+          "ticket_cost": 50,
+          "popularity_score": 12.5,
+          "split_risk_level": "LOW",
+          "pattern_commonness": 0.1,
+          "bias_flags": [
+            "decade_cluster",
+            "round_number"
+          ],
+          "is_ev_positive": false,
+          "rank": 1,
+          "prediction_score": 100.0
+        },
+        {
+          "ticket": [
+            6,
+            8,
+            12,
+            16,
+            33,
+            41
+          ],
+          "expected_winners": 1.3624,
+          "expected_payout": 381679389.31,
+          "expected_value": -22.7056,
+          "payout_quality_score": 83.54,
+          "jackpot_assumption": 650000000,
+          "jackpot_source": "test_sync",
+          "jackpot_updated_at": "2026-03-17",
+          "breakeven_jackpot": 593896000,
+          "breakeven_ratio": 1.0945,
+          "ticket_cost": 50,
+          "popularity_score": 15.7,
+          "split_risk_level": "LOW",
+          "pattern_commonness": 0.1,
+          "bias_flags": [
+            "lucky_numbers",
+            "low_number"
+          ],
+          "is_ev_positive": false,
+          "rank": 2,
+          "prediction_score": 93.5
+        },
+        {
+          "ticket": [
+            7,
+            9,
+            19,
+            34,
+            39,
+            48
+          ],
+          "expected_winners": 1.3815,
+          "expected_payout": 376402461.09,
+          "expected_value": -23.083,
+          "payout_quality_score": 81.83,
+          "jackpot_assumption": 650000000,
+          "jackpot_source": "test_sync",
+          "jackpot_updated_at": "2026-03-17",
+          "breakeven_jackpot": 593896000,
+          "breakeven_ratio": 1.0945,
+          "ticket_cost": 50,
+          "popularity_score": 13.9,
+          "split_risk_level": "LOW",
+          "pattern_commonness": 0.2,
+          "bias_flags": [
+            "lucky_numbers"
+          ],
+          "is_ev_positive": false,
+          "rank": 3,
+          "prediction_score": 87.0
+        }
+      ]
+    }
+  },
+  "POWER_LOTTO": {
+    "baseline_prediction": {
+      "tickets": [
+        {
+          "ticket": [
+            18,
+            22,
+            25,
+            27,
+            33,
+            35
+          ],
+          "expected_winners": 2.2551,
+          "expected_payout": 70950290.45,
+          "expected_value": -74.2997,
+          "payout_quality_score": 75.37,
+          "jackpot_assumption": 200000000,
+          "jackpot_source": "manual_default",
+          "jackpot_updated_at": "2026-03-17",
+          "breakeven_jackpot": 2147659000,
+          "breakeven_ratio": 0.0931,
+          "ticket_cost": 100,
+          "popularity_score": 20.0,
+          "split_risk_level": "LOW",
+          "pattern_commonness": 0.1,
+          "bias_flags": [
+            "lucky_numbers",
+            "decade_cluster",
+            "round_number",
+            "grid_pattern"
+          ],
+          "is_ev_positive": false,
+          "rank": 1,
+          "prediction_score": 100.0
+        },
+        {
+          "ticket": [
+            4,
+            6,
+            7,
+            12,
+            26,
+            37
+          ],
+          "expected_winners": 2.7192,
+          "expected_payout": 58840835.54,
+          "expected_value": -78.6861,
+          "payout_quality_score": 63.78,
+          "jackpot_assumption": 200000000,
+          "jackpot_source": "manual_default",
+          "jackpot_updated_at": "2026-03-17",
+          "breakeven_jackpot": 2147659000,
+          "breakeven_ratio": 0.0931,
+          "ticket_cost": 100,
+          "popularity_score": 21.5,
+          "split_risk_level": "LOW",
+          "pattern_commonness": 0.47,
+          "bias_flags": [
+            "lucky_numbers",
+            "low_number",
+            "grid_pattern"
+          ],
+          "is_ev_positive": false,
+          "rank": 2,
+          "prediction_score": 93.5
+        },
+        {
+          "ticket": [
+            16,
+            23,
+            28,
+            29,
+            31,
+            34
+          ],
+          "expected_winners": 2.5997,
+          "expected_payout": 61545562.95,
+          "expected_value": -77.7064,
+          "payout_quality_score": 66.67,
+          "jackpot_assumption": 200000000,
+          "jackpot_source": "manual_default",
+          "jackpot_updated_at": "2026-03-17",
+          "breakeven_jackpot": 2147659000,
+          "breakeven_ratio": 0.0931,
+          "ticket_cost": 100,
+          "popularity_score": 21.4,
+          "split_risk_level": "LOW",
+          "pattern_commonness": 0.37,
+          "bias_flags": [
+            "lucky_numbers",
+            "decade_cluster",
+            "grid_pattern"
+          ],
+          "is_ev_positive": false,
+          "rank": 3,
+          "prediction_score": 87.0
+        }
+      ]
+    },
+    "anti_crowd_adjusted": {
+      "tickets": []
+    },
+    "payout_optimized": {
+      "tickets": [
+        {
+          "ticket": [
+            10,
+            19,
+            21,
+            24,
+            30,
+            32
+          ],
+          "expected_winners": 2.2041,
+          "expected_payout": 72591987.66,
+          "expected_value": -73.705,
+          "payout_quality_score": 76.53,
+          "jackpot_assumption": 200000000,
+          "jackpot_source": "manual_default",
+          "jackpot_updated_at": "2026-03-17",
+          "breakeven_jackpot": 2147659000,
+          "breakeven_ratio": 0.0931,
+          "ticket_cost": 100,
+          "popularity_score": 6.9,
+          "split_risk_level": "LOW",
+          "pattern_commonness": 0.35,
+          "bias_flags": [
+            "round_number"
+          ],
+          "is_ev_positive": false,
+          "rank": 1,
+          "prediction_score": 100.0
+        },
+        {
+          "ticket": [
+            18,
+            22,
+            25,
+            27,
+            33,
+            35
+          ],
+          "expected_winners": 2.2551,
+          "expected_payout": 70950290.45,
+          "expected_value": -74.2997,
+          "payout_quality_score": 75.37,
+          "jackpot_assumption": 200000000,
+          "jackpot_source": "manual_default",
+          "jackpot_updated_at": "2026-03-17",
+          "breakeven_jackpot": 2147659000,
+          "breakeven_ratio": 0.0931,
+          "ticket_cost": 100,
+          "popularity_score": 20.0,
+          "split_risk_level": "LOW",
+          "pattern_commonness": 0.1,
+          "bias_flags": [
+            "lucky_numbers",
+            "decade_cluster",
+            "round_number",
+            "grid_pattern"
+          ],
+          "is_ev_positive": false,
+          "rank": 2,
+          "prediction_score": 93.5
+        },
+        {
+          "ticket": [
+            16,
+            23,
+            28,
+            29,
+            31,
+            34
+          ],
+          "expected_winners": 2.5997,
+          "expected_payout": 61545562.95,
+          "expected_value": -77.7064,
+          "payout_quality_score": 66.67,
+          "jackpot_assumption": 200000000,
+          "jackpot_source": "manual_default",
+          "jackpot_updated_at": "2026-03-17",
+          "breakeven_jackpot": 2147659000,
+          "breakeven_ratio": 0.0931,
+          "ticket_cost": 100,
+          "popularity_score": 21.4,
+          "split_risk_level": "LOW",
+          "pattern_commonness": 0.37,
+          "bias_flags": [
+            "lucky_numbers",
+            "decade_cluster",
+            "grid_pattern"
+          ],
+          "is_ev_positive": false,
+          "rank": 3,
+          "prediction_score": 87.0
+        }
+      ]
+    }
+  },
+  "DAILY_539": {
+    "baseline_prediction": {
+      "tickets": [
+        {
+          "ticket": [
+            4,
+            7,
+            20,
+            27,
+            35
+          ],
+          "expected_winners": 3.8868,
+          "expected_payout": 1646598.74,
+          "expected_value": -33.1151,
+          "payout_quality_score": 70.07,
+          "jackpot_assumption": 8000000,
+          "jackpot_source": "manual_default",
+          "jackpot_updated_at": "2026-03-17",
+          "breakeven_jackpot": 25891062,
+          "breakeven_ratio": 0.309,
+          "ticket_cost": 50,
+          "popularity_score": 11.5,
+          "split_risk_level": "LOW",
+          "pattern_commonness": 0.35,
+          "bias_flags": [
+            "lucky_numbers",
+            "round_number"
+          ],
+          "is_ev_positive": false,
+          "rank": 1,
+          "prediction_score": 100.0
+        },
+        {
+          "ticket": [
+            9,
+            18,
+            23,
+            29,
+            30
+          ],
+          "expected_winners": 6.7538,
+          "expected_payout": 947614.68,
+          "expected_value": -34.3291,
+          "payout_quality_score": 45.36,
+          "jackpot_assumption": 8000000,
+          "jackpot_source": "manual_default",
+          "jackpot_updated_at": "2026-03-17",
+          "breakeven_jackpot": 25891062,
+          "breakeven_ratio": 0.309,
+          "ticket_cost": 50,
+          "popularity_score": 47.0,
+          "split_risk_level": "MEDIUM",
+          "pattern_commonness": 0.47,
+          "bias_flags": [
+            "birthday",
+            "lucky_numbers",
+            "decade_cluster",
+            "round_number",
+            "grid_pattern"
+          ],
+          "is_ev_positive": false,
+          "rank": 2,
+          "prediction_score": 93.5
+        },
+        {
+          "ticket": [
+            1,
+            6,
+            17,
+            31,
+            32
+          ],
+          "expected_winners": 4.4743,
+          "expected_payout": 1430391.35,
+          "expected_value": -33.4906,
+          "payout_quality_score": 63.92,
+          "jackpot_assumption": 8000000,
+          "jackpot_source": "manual_default",
+          "jackpot_updated_at": "2026-03-17",
+          "breakeven_jackpot": 25891062,
+          "breakeven_ratio": 0.309,
+          "ticket_cost": 50,
+          "popularity_score": 16.0,
+          "split_risk_level": "LOW",
+          "pattern_commonness": 0.47,
+          "bias_flags": [
+            "lucky_numbers",
+            "decade_cluster"
+          ],
+          "is_ev_positive": false,
+          "rank": 3,
+          "prediction_score": 87.0
+        }
+      ]
+    },
+    "anti_crowd_adjusted": {
+      "tickets": []
+    },
+    "payout_optimized": {
+      "tickets": [
+        {
+          "ticket": [
+            16,
+            22,
+            26,
+            36,
+            37
+          ],
+          "expected_winners": 3.7897,
+          "expected_payout": 1688788.03,
+          "expected_value": -33.0418,
+          "payout_quality_score": 71.23,
+          "jackpot_assumption": 8000000,
+          "jackpot_source": "manual_default",
+          "jackpot_updated_at": "2026-03-17",
+          "breakeven_jackpot": 25891062,
+          "breakeven_ratio": 0.309,
+          "ticket_cost": 50,
+          "popularity_score": 11.0,
+          "split_risk_level": "LOW",
+          "pattern_commonness": 0.32,
+          "bias_flags": [
+            "decade_cluster"
+          ],
+          "is_ev_positive": false,
+          "rank": 1,
+          "prediction_score": 100.0
+        },
+        {
+          "ticket": [
+            4,
+            7,
+            20,
+            27,
+            35
+          ],
+          "expected_winners": 3.8868,
+          "expected_payout": 1646598.74,
+          "expected_value": -33.1151,
+          "payout_quality_score": 70.07,
+          "jackpot_assumption": 8000000,
+          "jackpot_source": "manual_default",
+          "jackpot_updated_at": "2026-03-17",
+          "breakeven_jackpot": 25891062,
+          "breakeven_ratio": 0.309,
+          "ticket_cost": 50,
+          "popularity_score": 11.5,
+          "split_risk_level": "LOW",
+          "pattern_commonness": 0.35,
+          "bias_flags": [
+            "lucky_numbers",
+            "round_number"
+          ],
+          "is_ev_positive": false,
+          "rank": 2,
+          "prediction_score": 93.5
+        },
+        {
+          "ticket": [
+            10,
+            21,
+            24,
+            38,
+            39
+          ],
+          "expected_winners": 3.9833,
+          "expected_payout": 1606708.01,
+          "expected_value": -33.1844,
+          "payout_quality_score": 69.92,
+          "jackpot_assumption": 8000000,
+          "jackpot_source": "manual_default",
+          "jackpot_updated_at": "2026-03-17",
+          "breakeven_jackpot": 25891062,
+          "breakeven_ratio": 0.309,
+          "ticket_cost": 50,
+          "popularity_score": 22.0,
+          "split_risk_level": "LOW",
+          "pattern_commonness": 0.12,
+          "bias_flags": [
+            "lucky_numbers",
+            "decade_cluster",
+            "round_number",
+            "grid_pattern"
+          ],
+          "is_ev_positive": false,
+          "rank": 3,
+          "prediction_score": 87.0
+        }
+      ]
+    }
+  }
+}

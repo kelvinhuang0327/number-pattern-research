@@ -1,0 +1,40 @@
+{
+  "audit_date": "2026-04-19T16:26:08.021381Z",
+  "by_lottery": {
+    "BIG_LOTTO": {
+      "generated_bets": 5,
+      "expected_bets": 5,
+      "bet_count_ok": true,
+      "strategy_correct": true,
+      "strategy_name": "p1_dev_sum5bet",
+      "expected_strategy": "p1_dev_sum5bet",
+      "number_range_ok": true,
+      "no_duplicates": true,
+      "jaccard_high_overlap": []
+    },
+    "DAILY_539": {
+      "generated_bets": 3,
+      "expected_bets": 3,
+      "bet_count_ok": true,
+      "strategy_correct": true,
+      "strategy_name": "Coordinator-Direct (7 agents)",
+      "expected_strategy": "acb_markov_midfreq_3bet",
+      "number_range_ok": true,
+      "no_duplicates": true,
+      "jaccard_high_overlap": []
+    },
+    "POWER_LOTTO": {
+      "generated_bets": 5,
+      "expected_bets": 5,
+      "bet_count_ok": true,
+      "strategy_correct": true,
+      "strategy_name": "orthogonal_5bet",
+      "expected_strategy": "orthogonal_5bet",
+      "number_range_ok": true,
+      "no_duplicates": true,
+      "jaccard_high_overlap": []
+    }
+  },
+  "format_issues": [],
+  "cold_phase_consistent": true
+}

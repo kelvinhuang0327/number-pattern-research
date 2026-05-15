@@ -1,0 +1,11 @@
+[
+  "tools/deep_research_cold_runner.py",
+  "outputs/benchmark_cold_lowfreq_2bet_150p.json",
+  "outputs/mc_cold_lowfreq_2bet_POWER_LOTTO_n1000_seed42.json",
+  "outputs/benchmark_shadow_gap_daily_3bet_DAILY_539_150.json",
+  "outputs/mc_shadow_gap_daily_3bet_DAILY_539_n1000_seed42.json",
+  "outputs/benchmark_anti_reverse_freq_4bet_BIG_LOTTO_150.json",
+  "outputs/mc_anti_reverse_freq_4bet_BIG_LOTTO_n1000_seed42.json",
+  "outputs/task_result_deep_research.json",
+  "outputs/completed_markdown.md"
+]

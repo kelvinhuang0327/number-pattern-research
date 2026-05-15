@@ -1,0 +1,682 @@
+{
+  "seed": 42,
+  "n_perm": 200,
+  "windows": [
+    150,
+    500,
+    1500
+  ],
+  "inventory": {
+    "version_notes": [
+      "Historical +2.20% source is the 1000-period, 1-pick V3 claim documented in lottery_api/CLAUDE.md, tools/sbp_audit_special_v3.py, and rejected/special_mab_decay_adjustment_power.json.",
+      "tools/verify_special_v2_performance.py and tools/verify_special_v3_performance.py both instantiate the same PowerLottoSpecialPredictor, so they are wrapper labels rather than distinct independent baselines.",
+      "tools/analyze_special_number.py contains the older exploratory V1-style family (random / hot / cold / Markov / repeater), not the current production-strength V3 stack."
+    ],
+    "current_v3_reference_rerun": {
+      "150": {
+        "n_oos": 150,
+        "hit_rate": 18.67,
+        "edge": 6.17
+      },
+      "500": {
+        "n_oos": 500,
+        "hit_rate": 15.8,
+        "edge": 3.3
+      },
+      "1000": {
+        "n_oos": 1000,
+        "hit_rate": 14.6,
+        "edge": 2.1
+      },
+      "1500": {
+        "n_oos": 1500,
+        "hit_rate": 14.13,
+        "edge": 1.63
+      }
+    },
+    "historical_claim_source": {
+      "claude_md": "lottery_api/CLAUDE.md",
+      "audit_script": "tools/sbp_audit_special_v3.py",
+      "rejected_note": "rejected/special_mab_decay_adjustment_power.json"
+    }
+  },
+  "candidates": [
+    {
+      "name": "special_v3_drought_regime_top2",
+      "top_k": 2,
+      "thesis": "Recency / drought regime on the special ball may be exploitable as a shortlist.",
+      "definition": "Score = bounded drought gap (180 draws) + recent under-representation (24 draws) + repeat penalty (6 draws); output top-2 shortlist.",
+      "windows": {
+        "150": {
+          "window": 150,
+          "top_k": 2,
+          "n_oos": 150,
+          "hits": 43,
+          "hit_rate": 28.67,
+          "baseline": 25.0,
+          "edge": 3.67,
+          "marginal_efficiency": 114.7,
+          "sample_predictions": [
+            {
+              "draw": "113000091",
+              "actual_special": 2,
+              "picks": [
+                3,
+                5
+              ],
+              "hit": false
+            },
+            {
+              "draw": "113000092",
+              "actual_special": 5,
+              "picks": [
+                3,
+                5
+              ],
+              "hit": true
+            },
+            {
+              "draw": "113000093",
+              "actual_special": 8,
+              "picks": [
+                3,
+                8
+              ],
+              "hit": true
+            },
+            {
+              "draw": "113000094",
+              "actual_special": 6,
+              "picks": [
+                3,
+                7
+              ],
+              "hit": false
+            },
+            {
+              "draw": "113000095",
+              "actual_special": 3,
+              "picks": [
+                3,
+                7
+              ],
+              "hit": true
+            }
+          ],
+          "leakage_checks": 150,
+          "permutation": {
+            "p_emp": 0.1493,
+            "cohens_d": 1.112,
+            "shuffle_mean_edge": -0.17,
+            "shuffle_std_edge": 3.46,
+            "n_perm": 200
+          }
+        },
+        "500": {
+          "window": 500,
+          "top_k": 2,
+          "n_oos": 500,
+          "hits": 136,
+          "hit_rate": 27.2,
+          "baseline": 25.0,
+          "edge": 2.2,
+          "marginal_efficiency": 108.8,
+          "sample_predictions": [
+            {
+              "draw": "110000053",
+              "actual_special": 1,
+              "picks": [
+                8,
+                6
+              ],
+              "hit": false
+            },
+            {
+              "draw": "110000054",
+              "actual_special": 3,
+              "picks": [
+                8,
+                6
+              ],
+              "hit": false
+            },
+            {
+              "draw": "110000055",
+              "actual_special": 5,
+              "picks": [
+                8,
+                6
+              ],
+              "hit": false
+            },
+            {
+              "draw": "110000056",
+              "actual_special": 1,
+              "picks": [
+                8,
+                6
+              ],
+              "hit": false
+            },
+            {
+              "draw": "110000057",
+              "actual_special": 6,
+              "picks": [
+                8,
+                6
+              ],
+              "hit": true
+            }
+          ],
+          "leakage_checks": 500,
+          "permutation": {
+            "p_emp": 0.1493,
+            "cohens_d": 1.131,
+            "shuffle_mean_edge": -0.06,
+            "shuffle_std_edge": 2.0,
+            "n_perm": 200
+          }
+        },
+        "1500": {
+          "window": 1500,
+          "top_k": 2,
+          "n_oos": 1500,
+          "hits": 384,
+          "hit_rate": 25.6,
+          "baseline": 25.0,
+          "edge": 0.6,
+          "marginal_efficiency": 102.4,
+          "sample_predictions": [
+            {
+              "draw": "100000097",
+              "actual_special": 2,
+              "picks": [
+                2,
+                1
+              ],
+              "hit": true
+            },
+            {
+              "draw": "100000098",
+              "actual_special": 8,
+              "picks": [
+                1,
+                5
+              ],
+              "hit": false
+            },
+            {
+              "draw": "100000099",
+              "actual_special": 5,
+              "picks": [
+                1,
+                5
+              ],
+              "hit": true
+            },
+            {
+              "draw": "100000100",
+              "actual_special": 2,
+              "picks": [
+                1,
+                6
+              ],
+              "hit": false
+            },
+            {
+              "draw": "100000101",
+              "actual_special": 3,
+              "picks": [
+                1,
+                6
+              ],
+              "hit": false
+            }
+          ],
+          "leakage_checks": 1500,
+          "permutation": {
+            "p_emp": 0.2736,
+            "cohens_d": 0.551,
+            "shuffle_mean_edge": -0.05,
+            "shuffle_std_edge": 1.18,
+            "n_perm": 200
+          }
+        }
+      },
+      "summary": {
+        "verdict": "WATCH",
+        "gates_missing": [
+          "permutation p-value does not clear 0.05 in all windows",
+          "Cohen's d does not clear 1.0 in all windows"
+        ]
+      }
+    },
+    {
+      "name": "special_v3_markov_backoff_top2",
+      "top_k": 2,
+      "thesis": "Recent transition structure may help if first-order and second-order states are blended with an under-owned backoff.",
+      "definition": "Score = 55% first-order transition + 25% second-order transition + 20% recent under-representation, using a 360-draw state window; output top-2 shortlist.",
+      "windows": {
+        "150": {
+          "window": 150,
+          "top_k": 2,
+          "n_oos": 150,
+          "hits": 45,
+          "hit_rate": 30.0,
+          "baseline": 25.0,
+          "edge": 5.0,
+          "marginal_efficiency": 120.0,
+          "sample_predictions": [
+            {
+              "draw": "113000091",
+              "actual_special": 2,
+              "picks": [
+                2,
+                7
+              ],
+              "hit": true
+            },
+            {
+              "draw": "113000092",
+              "actual_special": 5,
+              "picks": [
+                3,
+                1
+              ],
+              "hit": false
+            },
+            {
+              "draw": "113000093",
+              "actual_special": 8,
+              "picks": [
+                4,
+                1
+              ],
+              "hit": false
+            },
+            {
+              "draw": "113000094",
+              "actual_special": 6,
+              "picks": [
+                6,
+                4
+              ],
+              "hit": true
+            },
+            {
+              "draw": "113000095",
+              "actual_special": 3,
+              "picks": [
+                2,
+                7
+              ],
+              "hit": false
+            }
+          ],
+          "leakage_checks": 150,
+          "permutation": {
+            "p_emp": 0.0995,
+            "cohens_d": 1.479,
+            "shuffle_mean_edge": 0.06,
+            "shuffle_std_edge": 3.34,
+            "n_perm": 200
+          }
+        },
+        "500": {
+          "window": 500,
+          "top_k": 2,
+          "n_oos": 500,
+          "hits": 129,
+          "hit_rate": 25.8,
+          "baseline": 25.0,
+          "edge": 0.8,
+          "marginal_efficiency": 103.2,
+          "sample_predictions": [
+            {
+              "draw": "110000053",
+              "actual_special": 1,
+              "picks": [
+                4,
+                5
+              ],
+              "hit": false
+            },
+            {
+              "draw": "110000054",
+              "actual_special": 3,
+              "picks": [
+                2,
+                6
+              ],
+              "hit": false
+            },
+            {
+              "draw": "110000055",
+              "actual_special": 5,
+              "picks": [
+                4,
+                3
+              ],
+              "hit": false
+            },
+            {
+              "draw": "110000056",
+              "actual_special": 1,
+              "picks": [
+                7,
+                5
+              ],
+              "hit": false
+            },
+            {
+              "draw": "110000057",
+              "actual_special": 6,
+              "picks": [
+                2,
+                6
+              ],
+              "hit": true
+            }
+          ],
+          "leakage_checks": 500,
+          "permutation": {
+            "p_emp": 0.4129,
+            "cohens_d": 0.341,
+            "shuffle_mean_edge": 0.17,
+            "shuffle_std_edge": 1.85,
+            "n_perm": 200
+          }
+        },
+        "1500": {
+          "window": 1500,
+          "top_k": 2,
+          "n_oos": 1500,
+          "hits": 395,
+          "hit_rate": 26.33,
+          "baseline": 25.0,
+          "edge": 1.33,
+          "marginal_efficiency": 105.3,
+          "sample_predictions": [
+            {
+              "draw": "100000097",
+              "actual_special": 2,
+              "picks": [
+                3,
+                1
+              ],
+              "hit": false
+            },
+            {
+              "draw": "100000098",
+              "actual_special": 8,
+              "picks": [
+                7,
+                6
+              ],
+              "hit": false
+            },
+            {
+              "draw": "100000099",
+              "actual_special": 5,
+              "picks": [
+                4,
+                8
+              ],
+              "hit": false
+            },
+            {
+              "draw": "100000100",
+              "actual_special": 2,
+              "picks": [
+                3,
+                6
+              ],
+              "hit": false
+            },
+            {
+              "draw": "100000101",
+              "actual_special": 3,
+              "picks": [
+                7,
+                6
+              ],
+              "hit": false
+            }
+          ],
+          "leakage_checks": 1500,
+          "permutation": {
+            "p_emp": 0.1294,
+            "cohens_d": 1.115,
+            "shuffle_mean_edge": 0.11,
+            "shuffle_std_edge": 1.1,
+            "n_perm": 200
+          }
+        }
+      },
+      "summary": {
+        "verdict": "WATCH",
+        "gates_missing": [
+          "permutation p-value does not clear 0.05 in all windows",
+          "Cohen's d does not clear 1.0 in all windows"
+        ]
+      }
+    },
+    {
+      "name": "special_v3_main_analog_residual_top2",
+      "top_k": 2,
+      "thesis": "A special-only shortlist might be improved by retrieving historical specials under main-zone states analogous to the latest observed main-zone configuration, then blending with drought.",
+      "definition": "Score = 50% main-zone analog retrieval over the latest observed main-zone state (sum / odd count / Z3 count over 360 draws) + 50% drought-regime score; output top-2 shortlist.",
+      "windows": {
+        "150": {
+          "window": 150,
+          "top_k": 2,
+          "n_oos": 150,
+          "hits": 44,
+          "hit_rate": 29.33,
+          "baseline": 25.0,
+          "edge": 4.33,
+          "marginal_efficiency": 117.3,
+          "sample_predictions": [
+            {
+              "draw": "113000091",
+              "actual_special": 2,
+              "picks": [
+                3,
+                7
+              ],
+              "hit": false
+            },
+            {
+              "draw": "113000092",
+              "actual_special": 5,
+              "picks": [
+                1,
+                3
+              ],
+              "hit": false
+            },
+            {
+              "draw": "113000093",
+              "actual_special": 8,
+              "picks": [
+                3,
+                5
+              ],
+              "hit": false
+            },
+            {
+              "draw": "113000094",
+              "actual_special": 6,
+              "picks": [
+                3,
+                2
+              ],
+              "hit": false
+            },
+            {
+              "draw": "113000095",
+              "actual_special": 3,
+              "picks": [
+                5,
+                3
+              ],
+              "hit": true
+            }
+          ],
+          "leakage_checks": 150,
+          "permutation": {
+            "p_emp": 0.1393,
+            "cohens_d": 1.27,
+            "shuffle_mean_edge": 0.05,
+            "shuffle_std_edge": 3.37,
+            "n_perm": 200
+          }
+        },
+        "500": {
+          "window": 500,
+          "top_k": 2,
+          "n_oos": 500,
+          "hits": 132,
+          "hit_rate": 26.4,
+          "baseline": 25.0,
+          "edge": 1.4,
+          "marginal_efficiency": 105.6,
+          "sample_predictions": [
+            {
+              "draw": "110000053",
+              "actual_special": 1,
+              "picks": [
+                2,
+                8
+              ],
+              "hit": false
+            },
+            {
+              "draw": "110000054",
+              "actual_special": 3,
+              "picks": [
+                8,
+                6
+              ],
+              "hit": false
+            },
+            {
+              "draw": "110000055",
+              "actual_special": 5,
+              "picks": [
+                4,
+                6
+              ],
+              "hit": false
+            },
+            {
+              "draw": "110000056",
+              "actual_special": 1,
+              "picks": [
+                2,
+                8
+              ],
+              "hit": false
+            },
+            {
+              "draw": "110000057",
+              "actual_special": 6,
+              "picks": [
+                8,
+                4
+              ],
+              "hit": false
+            }
+          ],
+          "leakage_checks": 500,
+          "permutation": {
+            "p_emp": 0.2139,
+            "cohens_d": 0.837,
+            "shuffle_mean_edge": -0.1,
+            "shuffle_std_edge": 1.79,
+            "n_perm": 200
+          }
+        },
+        "1500": {
+          "window": 1500,
+          "top_k": 2,
+          "n_oos": 1500,
+          "hits": 395,
+          "hit_rate": 26.33,
+          "baseline": 25.0,
+          "edge": 1.33,
+          "marginal_efficiency": 105.3,
+          "sample_predictions": [
+            {
+              "draw": "100000097",
+              "actual_special": 2,
+              "picks": [
+                1,
+                2
+              ],
+              "hit": true
+            },
+            {
+              "draw": "100000098",
+              "actual_special": 8,
+              "picks": [
+                1,
+                7
+              ],
+              "hit": false
+            },
+            {
+              "draw": "100000099",
+              "actual_special": 5,
+              "picks": [
+                1,
+                3
+              ],
+              "hit": false
+            },
+            {
+              "draw": "100000100",
+              "actual_special": 2,
+              "picks": [
+                1,
+                6
+              ],
+              "hit": false
+            },
+            {
+              "draw": "100000101",
+              "actual_special": 3,
+              "picks": [
+                1,
+                6
+              ],
+              "hit": false
+            }
+          ],
+          "leakage_checks": 1500,
+          "permutation": {
+            "p_emp": 0.1144,
+            "cohens_d": 1.207,
+            "shuffle_mean_edge": 0.01,
+            "shuffle_std_edge": 1.09,
+            "n_perm": 200
+          }
+        }
+      },
+      "summary": {
+        "verdict": "WATCH",
+        "gates_missing": [
+          "permutation p-value does not clear 0.05 in all windows",
+          "Cohen's d does not clear 1.0 in all windows"
+        ]
+      }
+    }
+  ],
+  "final_decision": {
+    "verdict": "WATCH",
+    "best_candidate": "special_v3_main_analog_residual_top2",
+    "next_round_priority": "no",
+    "rsm_upgrade_note": "WATCH only; not a direct RSM upgrade and not worth displacing the current V3 stack."
+  },
+  "wiki_update": "updated wiki/games/power_lotto.md and wiki/lessons/key_lessons.md with WATCH-only special_v3 conclusion"
+}

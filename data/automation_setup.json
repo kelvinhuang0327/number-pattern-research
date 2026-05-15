@@ -1,0 +1,7 @@
+{
+  "weekly_plist_created": true,
+  "plist_syntax_valid": true,
+  "check_draw_script_created": true,
+  "logs_dir_created": true,
+  "activation_command": "launchctl load -w ~/Library/LaunchAgents/com.kelvin.lottery.weekly.plist"
+}

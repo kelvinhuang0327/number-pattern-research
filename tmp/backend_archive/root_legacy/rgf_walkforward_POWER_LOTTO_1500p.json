@@ -1,0 +1,230 @@
+{
+  "lottery": "POWER_LOTTO",
+  "eval_window": 1500,
+  "n_draws_eval": 1500,
+  "n_states": 3,
+  "n_perm": 1000,
+  "state_dist": {
+    "0": 538,
+    "1": 400,
+    "2": 562
+  },
+  "findings": [
+    {
+      "state": 0,
+      "formula": "freq_x_gap",
+      "n": 538,
+      "rate": 0.03531598513011153,
+      "edge": -0.08744224469995952,
+      "p_value": 0.6890247098898226,
+      "sig_bonferroni": "False",
+      "sig_raw": "False"
+    },
+    {
+      "state": 0,
+      "formula": "freq_x_markov",
+      "n": 538,
+      "rate": 0.040892193308550186,
+      "edge": 0.05664582192636257,
+      "p_value": 0.426440824342144,
+      "sig_bonferroni": "False",
+      "sig_raw": "False"
+    },
+    {
+      "state": 0,
+      "formula": "gap_x_markov",
+      "n": 538,
+      "rate": 0.04275092936802974,
+      "edge": 0.10467517746846994,
+      "p_value": 0.3428243297438048,
+      "sig_bonferroni": "False",
+      "sig_raw": "False"
+    },
+    {
+      "state": 0,
+      "formula": "freq_add_gap",
+      "n": 538,
+      "rate": 0.03717472118959108,
+      "edge": -0.03941288915785216,
+      "p_value": 0.603828514801803,
+      "sig_bonferroni": "False",
+      "sig_raw": "False"
+    },
+    {
+      "state": 0,
+      "formula": "freq_add_markov",
+      "n": 538,
+      "rate": 0.040892193308550186,
+      "edge": 0.05664582192636257,
+      "p_value": 0.426440824342144,
+      "sig_bonferroni": "False",
+      "sig_raw": "False"
+    },
+    {
+      "state": 0,
+      "formula": "freq_only",
+      "n": 538,
+      "rate": 0.03531598513011153,
+      "edge": -0.08744224469995952,
+      "p_value": 0.6890247098898226,
+      "sig_bonferroni": "False",
+      "sig_raw": "False"
+    },
+    {
+      "state": 1,
+      "formula": "freq_x_gap",
+      "n": 400,
+      "rate": 0.0325,
+      "edge": -0.16020671834625225,
+      "p_value": 0.7753753401926441,
+      "sig_bonferroni": "False",
+      "sig_raw": "False"
+    },
+    {
+      "state": 1,
+      "formula": "freq_x_markov",
+      "n": 400,
+      "rate": 0.04,
+      "edge": 0.03359173126615105,
+      "p_value": 0.4819156176298996,
+      "sig_bonferroni": "False",
+      "sig_raw": "False"
+    },
+    {
+      "state": 1,
+      "formula": "gap_x_markov",
+      "n": 400,
+      "rate": 0.045,
+      "edge": 0.16279069767441987,
+      "p_value": 0.29029948654436094,
+      "sig_bonferroni": "False",
+      "sig_raw": "False"
+    },
+    {
+      "state": 1,
+      "formula": "freq_add_gap",
+      "n": 400,
+      "rate": 0.0325,
+      "edge": -0.16020671834625225,
+      "p_value": 0.7753753401926441,
+      "sig_bonferroni": "False",
+      "sig_raw": "False"
+    },
+    {
+      "state": 1,
+      "formula": "freq_add_markov",
+      "n": 400,
+      "rate": 0.0375,
+      "edge": -0.031007751937983448,
+      "p_value": 0.5855138157884576,
+      "sig_bonferroni": "False",
+      "sig_raw": "False"
+    },
+    {
+      "state": 1,
+      "formula": "freq_only",
+      "n": 400,
+      "rate": 0.0425,
+      "edge": 0.09819121447028555,
+      "p_value": 0.3815592412734402,
+      "sig_bonferroni": "False",
+      "sig_raw": "False"
+    },
+    {
+      "state": 2,
+      "formula": "freq_x_gap",
+      "n": 562,
+      "rate": 0.03202846975088968,
+      "edge": -0.17239096250930966,
+      "p_value": 0.8227485035848296,
+      "sig_bonferroni": "False",
+      "sig_raw": "False"
+    },
+    {
+      "state": 2,
+      "formula": "freq_x_markov",
+      "n": 562,
+      "rate": 0.028469750889679714,
+      "edge": -0.2643475222304975,
+      "p_value": 0.9196488896768036,
+      "sig_bonferroni": "False",
+      "sig_raw": "False"
+    },
+    {
+      "state": 2,
+      "formula": "gap_x_markov",
+      "n": 562,
+      "rate": 0.046263345195729534,
+      "edge": 0.1954352763754415,
+      "p_value": 0.20272395181480163,
+      "sig_bonferroni": "False",
+      "sig_raw": "False"
+    },
+    {
+      "state": 2,
+      "formula": "freq_add_gap",
+      "n": 562,
+      "rate": 0.03914590747330961,
+      "edge": 0.011522156933065924,
+      "p_value": 0.5082793603341031,
+      "sig_bonferroni": "False",
+      "sig_raw": "False"
+    },
+    {
+      "state": 2,
+      "formula": "freq_add_markov",
+      "n": 562,
+      "rate": 0.02491103202846975,
+      "edge": -0.35630408195168534,
+      "p_value": 0.9712302277170016,
+      "sig_bonferroni": "False",
+      "sig_raw": "False"
+    },
+    {
+      "state": 2,
+      "formula": "freq_only",
+      "n": 562,
+      "rate": 0.03558718861209965,
+      "edge": -0.08043440278812178,
+      "p_value": 0.6793752512908093,
+      "sig_bonferroni": "False",
+      "sig_raw": "False"
+    }
+  ],
+  "perm_results": {
+    "state2_gap_x_markov": {
+      "state": 2,
+      "formula": "gap_x_markov",
+      "n_target": 562,
+      "real_edge": 0.1954352763754415,
+      "perm_mean": 0.1514340625488532,
+      "perm_std": 0.18158307141120872,
+      "perm_95": 0.4253266756784112,
+      "p_value": 0.466,
+      "significant": false
+    },
+    "state1_gap_x_markov": {
+      "state": 1,
+      "formula": "gap_x_markov",
+      "n_target": 400,
+      "real_edge": 0.16279069767441987,
+      "perm_mean": 0.16795865633075066,
+      "perm_std": 0.23163756931281648,
+      "perm_95": 0.5503875968992265,
+      "p_value": 0.55,
+      "significant": false
+    },
+    "state0_gap_x_markov": {
+      "state": 0,
+      "formula": "gap_x_markov",
+      "n_target": 538,
+      "real_edge": 0.10467517746846994,
+      "perm_mean": 0.14679692227889812,
+      "perm_std": 0.18635062530849447,
+      "perm_95": 0.4408806662632217,
+      "p_value": 0.643,
+      "significant": false
+    }
+  },
+  "verdict": "REJECTED"
+}

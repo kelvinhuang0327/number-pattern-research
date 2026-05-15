@@ -1,0 +1,79 @@
+{
+  "task_id": "daily539-h013-pool-data-backfill-validation",
+  "timestamp": "2026-04-23T14:20:47.921439",
+  "status": "COMPLETED",
+  "contract_fulfilled": true,
+  "final_verdict": "REJECT (weak signal, not data unavailable)",
+  "acceptance_criteria": {
+    "formal_artifact_produced": {
+      "status": "PASS",
+      "type": "REJECT due to weak signal (p=1.0, edge\u22480%)",
+      "description": "All H013/H013b/H013c candidates failed permutation gates"
+    },
+    "data_availability_fixed": {
+      "status": "PASS",
+      "before": "0% (5839 nulls)",
+      "after": "100% (5843 valid records)",
+      "source": "Official Taiwan Lottery API (api.taiwanlottery.com)"
+    },
+    "evidence_artifacts": {
+      "schema_audit": "PASS (sell_amount, total_amount columns added)",
+      "trusted_source": "PASS (official API confirmed)",
+      "backfill_coverage": "PASS (100.0% for both fields)",
+      "leakage_audit": "PASS (history-only features)",
+      "validation_metrics": "PASS (150/500/1500p windows, Cohen's d, p-values)",
+      "guard_tests": "PASS (4/4 tests pass)"
+    },
+    "validation_completeness": {
+      "h013_1bet": "REJECT (all windows failed)",
+      "h013b_2bet": "REJECT (all windows failed)",
+      "h013c_3bet": "REJECT (all windows failed)",
+      "mcnemar_qualification": "NO (permutation gates not passed)"
+    },
+    "wiki_updated": true,
+    "lessons_added": true,
+    "no_production_changes": true,
+    "backward_compatible": true
+  },
+  "work_summary": {
+    "tasks_completed": 7,
+    "schema_migration": "\u2705 tools/migrate_add_pool_data.py",
+    "fetcher_update": "\u2705 lottery_api/fetcher/taiwan_lottery_fetcher.py",
+    "backfill_script": "\u2705 tools/backfill_daily539_pool_data.py",
+    "validation_framework": "\u2705 tools/validate_h013_with_pool_data.py",
+    "guard_tests": "\u2705 tests/test_h013_pool_data_guard.py",
+    "wiki_updates": "\u2705 wiki/games/daily_539.md",
+    "lesson_added": "\u2705 L129 (pool-size has no signal for 539)"
+  },
+  "key_findings": {
+    "data_source_found": true,
+    "data_source_trusted": true,
+    "data_source_complete": true,
+    "pool_size_predictive": false,
+    "signal_strength": "NONE (p=1.0, edge\u22480%, Cohen's d\u22480)",
+    "reason": "Pool-size features decoupled from DAILY_539 number generation (correct lottery behavior)"
+  },
+  "artifacts": {
+    "validation_json": "analysis/results/daily539_h013_formal_validation_20260423.json",
+    "backfill_report": "analysis/results/daily539_h013_backfill_final_report_20260423.md",
+    "task_summary": "analysis/results/h013_task_completion_summary_20260423.md",
+    "guard_tests": "tests/test_h013_pool_data_guard.py",
+    "fetcher_updated": "lottery_api/fetcher/taiwan_lottery_fetcher.py",
+    "database_updated": "lottery_api/database.py"
+  },
+  "next_actions": {
+    "pool_size_research": "CLOSED (no future retry without new hypothesis)",
+    "guard_test_role": "Prevents null-field validation regression",
+    "wiki_role": "L129 serves as institutional memory for this finding",
+    "recommended_direction": "Monitor POWER_LOTTO/BIG_LOTTO, not pool-size for 539"
+  },
+  "timeline_minutes": {
+    "schema_migration": 1,
+    "fetcher_update": 2,
+    "backfill_19_years": 9,
+    "validation_run": 1,
+    "guard_tests": 1,
+    "wiki_updates": 2,
+    "total": 16
+  }
+}

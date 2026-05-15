@@ -1,0 +1,16 @@
+{
+  "signal_trigger_rates": {
+    "h_pl_01": 1.0,
+    "h_pl_02": 0.345,
+    "h_pl_03": 0.4183
+  },
+  "and_trigger_rate": 0.145,
+  "and_2plus_trigger_rate": 0.6183,
+  "no_op_verdict": false,
+  "conditional_edge": 0.013,
+  "skip_rate": 0.3817,
+  "perm_p": 0.2067,
+  "verdict": "FAIL",
+  "n_tested": 600,
+  "errors": 0
+}

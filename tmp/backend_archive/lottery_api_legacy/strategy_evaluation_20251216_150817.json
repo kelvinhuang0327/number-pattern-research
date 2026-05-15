@@ -1,0 +1,97 @@
+{
+  "evaluation_time": "2025-12-16T15:08:17.647121",
+  "lottery_type": "BIG_LOTTO",
+  "data_distribution": {
+    "BIG_LOTTO": 2077,
+    "BIG_LOTTO_BONUS": 5180
+  },
+  "train_size": 7207,
+  "test_size": 50,
+  "results": [
+    {
+      "model_name": "XGBoost",
+      "total_tests": 0,
+      "match_distribution": {
+        "0": 0,
+        "1": 0,
+        "2": 0,
+        "3": 0,
+        "4": 0,
+        "5": 0,
+        "6": 0
+      },
+      "total_matches": 0,
+      "predictions": [],
+      "errors": 0,
+      "error": "'XGBoostPredictor' object has no attribute 'train'"
+    },
+    {
+      "model_name": "Prophet",
+      "total_tests": 0,
+      "match_distribution": {
+        "0": 0,
+        "1": 0,
+        "2": 0,
+        "3": 0,
+        "4": 0,
+        "5": 0,
+        "6": 0
+      },
+      "total_matches": 0,
+      "predictions": [],
+      "errors": 0,
+      "error": "'ProphetPredictor' object has no attribute 'train'"
+    },
+    {
+      "model_name": "LSTM",
+      "total_tests": 0,
+      "match_distribution": {
+        "0": 0,
+        "1": 0,
+        "2": 0,
+        "3": 0,
+        "4": 0,
+        "5": 0,
+        "6": 0
+      },
+      "total_matches": 0,
+      "predictions": [],
+      "errors": 0,
+      "error": "'LSTMPredictor' object has no attribute 'train'"
+    },
+    {
+      "model_name": "Transformer",
+      "total_tests": 0,
+      "match_distribution": {
+        "0": 0,
+        "1": 0,
+        "2": 0,
+        "3": 0,
+        "4": 0,
+        "5": 0,
+        "6": 0
+      },
+      "total_matches": 0,
+      "predictions": [],
+      "errors": 0,
+      "error": "train() got an unexpected keyword argument 'lottery_type'"
+    },
+    {
+      "model_name": "AutoGluon",
+      "total_tests": 0,
+      "match_distribution": {
+        "0": 0,
+        "1": 0,
+        "2": 0,
+        "3": 0,
+        "4": 0,
+        "5": 0,
+        "6": 0
+      },
+      "total_matches": 0,
+      "predictions": [],
+      "errors": 0,
+      "error": "'AutoGluonPredictor' object has no attribute 'train'"
+    }
+  ]
+}

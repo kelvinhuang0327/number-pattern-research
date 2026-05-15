@@ -1,0 +1,196 @@
+{
+  "lottery": "BIG_LOTTO",
+  "eval_window": 80,
+  "n_draws_eval": 80,
+  "n_states": 3,
+  "n_perm": 50,
+  "state_dist": {
+    "0": 21,
+    "1": 31,
+    "2": 28
+  },
+  "findings": [
+    {
+      "state": 0,
+      "formula": "freq_x_gap",
+      "n": 21,
+      "rate": 0.047619047619047616,
+      "edge": 1.560163850486438,
+      "p_value": 0.3258335646637517,
+      "sig_bonferroni": "False",
+      "sig_raw": "False"
+    },
+    {
+      "state": 0,
+      "formula": "freq_x_markov",
+      "n": 21,
+      "rate": 0.0,
+      "edge": -1.0,
+      "p_value": 1.0,
+      "sig_bonferroni": "False",
+      "sig_raw": "False"
+    },
+    {
+      "state": 0,
+      "formula": "gap_x_markov",
+      "n": 21,
+      "rate": 0.0,
+      "edge": -1.0,
+      "p_value": 1.0,
+      "sig_bonferroni": "False",
+      "sig_raw": "False"
+    },
+    {
+      "state": 0,
+      "formula": "freq_add_gap",
+      "n": 21,
+      "rate": 0.0,
+      "edge": -1.0,
+      "p_value": 1.0,
+      "sig_bonferroni": "False",
+      "sig_raw": "False"
+    },
+    {
+      "state": 0,
+      "formula": "freq_add_markov",
+      "n": 21,
+      "rate": 0.047619047619047616,
+      "edge": 1.560163850486438,
+      "p_value": 0.3258335646637517,
+      "sig_bonferroni": "False",
+      "sig_raw": "False"
+    },
+    {
+      "state": 0,
+      "formula": "freq_only",
+      "n": 21,
+      "rate": 0.0,
+      "edge": -1.0,
+      "p_value": 1.0,
+      "sig_bonferroni": "False",
+      "sig_raw": "False"
+    },
+    {
+      "state": 1,
+      "formula": "freq_x_gap",
+      "n": 31,
+      "rate": 0.03225806451612903,
+      "edge": 0.7343045438779096,
+      "p_value": 0.44123697095023495,
+      "sig_bonferroni": "False",
+      "sig_raw": "False"
+    },
+    {
+      "state": 1,
+      "formula": "freq_x_markov",
+      "n": 31,
+      "rate": 0.06451612903225806,
+      "edge": 2.4686090877558193,
+      "p_value": 0.11294803417614323,
+      "sig_bonferroni": "False",
+      "sig_raw": "False"
+    },
+    {
+      "state": 1,
+      "formula": "gap_x_markov",
+      "n": 31,
+      "rate": 0.0,
+      "edge": -1.0,
+      "p_value": 1.0,
+      "sig_bonferroni": "False",
+      "sig_raw": "False"
+    },
+    {
+      "state": 1,
+      "formula": "freq_add_gap",
+      "n": 31,
+      "rate": 0.03225806451612903,
+      "edge": 0.7343045438779096,
+      "p_value": 0.44123697095023495,
+      "sig_bonferroni": "False",
+      "sig_raw": "False"
+    },
+    {
+      "state": 1,
+      "formula": "freq_add_markov",
+      "n": 31,
+      "rate": 0.0,
+      "edge": -1.0,
+      "p_value": 1.0,
+      "sig_bonferroni": "False",
+      "sig_raw": "False"
+    },
+    {
+      "state": 1,
+      "formula": "freq_only",
+      "n": 31,
+      "rate": 0.06451612903225806,
+      "edge": 2.4686090877558193,
+      "p_value": 0.11294803417614323,
+      "sig_bonferroni": "False",
+      "sig_raw": "False"
+    },
+    {
+      "state": 2,
+      "formula": "freq_x_gap",
+      "n": 28,
+      "rate": 0.0,
+      "edge": -1.0,
+      "p_value": 1.0,
+      "sig_bonferroni": "False",
+      "sig_raw": "False"
+    },
+    {
+      "state": 2,
+      "formula": "freq_x_markov",
+      "n": 28,
+      "rate": 0.0,
+      "edge": -1.0,
+      "p_value": 1.0,
+      "sig_bonferroni": "False",
+      "sig_raw": "False"
+    },
+    {
+      "state": 2,
+      "formula": "gap_x_markov",
+      "n": 28,
+      "rate": 0.03571428571428571,
+      "edge": 0.9201228878648284,
+      "p_value": 0.40886115044063,
+      "sig_bonferroni": "False",
+      "sig_raw": "False"
+    },
+    {
+      "state": 2,
+      "formula": "freq_add_gap",
+      "n": 28,
+      "rate": 0.07142857142857142,
+      "edge": 2.840245775729657,
+      "p_value": 0.09516121886276258,
+      "sig_bonferroni": "False",
+      "sig_raw": "False"
+    },
+    {
+      "state": 2,
+      "formula": "freq_add_markov",
+      "n": 28,
+      "rate": 0.03571428571428571,
+      "edge": 0.9201228878648284,
+      "p_value": 0.40886115044063,
+      "sig_bonferroni": "False",
+      "sig_raw": "False"
+    },
+    {
+      "state": 2,
+      "formula": "freq_only",
+      "n": 28,
+      "rate": 0.0,
+      "edge": -1.0,
+      "p_value": 1.0,
+      "sig_bonferroni": "False",
+      "sig_raw": "False"
+    }
+  ],
+  "perm_results": {},
+  "verdict": "REJECTED"
+}

@@ -1,0 +1,426 @@
+{
+  "timestamp": "2026-04-23T13:57:26.384987",
+  "total_fake_completes": 22,
+  "themes": {
+    "POWER_LOTTO_WQ_P2": {
+      "count": 14,
+      "task_ids": [
+        59,
+        58,
+        57,
+        56,
+        55,
+        52,
+        51,
+        50,
+        47,
+        45,
+        43,
+        42,
+        41,
+        6
+      ]
+    },
+    "POWER_LOTTO_HEALTH": {
+      "count": 3,
+      "task_ids": [
+        54,
+        53,
+        49
+      ]
+    },
+    "SYSTEM_GOVERNANCE": {
+      "count": 1,
+      "task_ids": [
+        48
+      ]
+    },
+    "BIG_LOTTO_500P": {
+      "count": 1,
+      "task_ids": [
+        46
+      ]
+    },
+    "DAILY_539_POOL": {
+      "count": 1,
+      "task_ids": [
+        44
+      ]
+    },
+    "UNKNOWN": {
+      "count": 2,
+      "task_ids": [
+        8,
+        7
+      ]
+    }
+  },
+  "tasks_by_theme": {
+    "POWER_LOTTO_WQ_P2": [
+      {
+        "id": 59,
+        "title": "大樂透500期監控與降權判定",
+        "markers": [
+          "reached your weekly",
+          "weekly rate limit"
+        ]
+      },
+      {
+        "id": 58,
+        "title": "539 彩池外生信號正式驗證",
+        "markers": [
+          "reached your weekly",
+          "weekly rate limit"
+        ]
+      },
+      {
+        "id": 57,
+        "title": "539 trusted pool-data unlock",
+        "markers": [
+          "reached your weekly",
+          "weekly rate limit"
+        ]
+      },
+      {
+        "id": 56,
+        "title": "威力彩 WQ P2-1 本地正式驗證",
+        "markers": [
+          "reached your weekly",
+          "weekly rate limit"
+        ]
+      },
+      {
+        "id": 55,
+        "title": "今彩539 彩池資料解鎖與可信閘",
+        "markers": [
+          "reached your weekly",
+          "weekly rate limit"
+        ]
+      },
+      {
+        "id": 52,
+        "title": "539彩池資料可信回補與可用性閘",
+        "markers": [
+          "reached your weekly",
+          "weekly rate limit"
+        ]
+      },
+      {
+        "id": 51,
+        "title": "三彩種主線離線監控與降權判定",
+        "markers": [
+          "reached your weekly",
+          "weekly rate limit"
+        ]
+      },
+      {
+        "id": 50,
+        "title": "威力彩WQ本地驗證與任務真實化",
+        "markers": [
+          "reached your weekly",
+          "weekly rate limit"
+        ]
+      },
+      {
+        "id": 47,
+        "title": "修復配額假完成並重啟有效研究",
+        "markers": [
+          "reached your weekly",
+          "weekly rate limit"
+        ]
+      },
+      {
+        "id": 45,
+        "title": "539 彩池資料補齊與 H013 驗證",
+        "markers": [
+          "reached your weekly",
+          "weekly rate limit"
+        ]
+      },
+      {
+        "id": 43,
+        "title": "威力彩 WQ 解封與正式驗證",
+        "markers": [
+          "reached your weekly",
+          "weekly rate limit"
+        ]
+      },
+      {
+        "id": 42,
+        "title": "威力彩主線健康監控與決策閘",
+        "markers": [
+          "reached your weekly",
+          "weekly rate limit"
+        ]
+      },
+      {
+        "id": 41,
+        "title": "今彩539 MicroFish升格驗證",
+        "markers": [
+          "reached your weekly",
+          "weekly rate limit"
+        ]
+      },
+      {
+        "id": 6,
+        "title": "威力彩 Winning Quality P2-1 驗證",
+        "markers": [
+          "you have no quota",
+          "no quota"
+        ]
+      }
+    ],
+    "POWER_LOTTO_HEALTH": [
+      {
+        "id": 54,
+        "title": "離線監控與配額假完成修復",
+        "markers": [
+          "reached your weekly",
+          "weekly rate limit"
+        ]
+      },
+      {
+        "id": 53,
+        "title": "大樂透500期監控與假完成防呆",
+        "markers": [
+          "reached your weekly",
+          "weekly rate limit"
+        ]
+      },
+      {
+        "id": 49,
+        "title": "威力彩主線監控與配額失效防呆",
+        "markers": [
+          "reached your weekly",
+          "weekly rate limit"
+        ]
+      }
+    ],
+    "SYSTEM_GOVERNANCE": [
+      {
+        "id": 48,
+        "title": "修復配額阻塞與任務真實狀態閘",
+        "markers": [
+          "reached your weekly",
+          "weekly rate limit"
+        ]
+      }
+    ],
+    "BIG_LOTTO_500P": [
+      {
+        "id": 46,
+        "title": "修復配額假完成並恢復研究執行",
+        "markers": [
+          "reached your weekly",
+          "weekly rate limit"
+        ]
+      }
+    ],
+    "DAILY_539_POOL": [
+      {
+        "id": 44,
+        "title": "補齊彩池資料管線以解鎖H013",
+        "markers": [
+          "reached your weekly",
+          "weekly rate limit"
+        ]
+      }
+    ],
+    "UNKNOWN": [
+      {
+        "id": 8,
+        "title": "<任務標題，中英文皆可，短於 40 字元>",
+        "markers": [
+          "you have no quota",
+          "no quota"
+        ]
+      },
+      {
+        "id": 7,
+        "title": "<任務標題，中英文皆可，短於 40 字元>",
+        "markers": [
+          "you have no quota",
+          "no quota"
+        ]
+      }
+    ]
+  },
+  "all_fake_complete_tasks": [
+    {
+      "id": 59,
+      "title": "大樂透500期監控與降權判定",
+      "theme": "POWER_LOTTO_WQ_P2",
+      "markers": [
+        "reached your weekly"
+      ]
+    },
+    {
+      "id": 58,
+      "title": "539 彩池外生信號正式驗證",
+      "theme": "POWER_LOTTO_WQ_P2",
+      "markers": [
+        "reached your weekly"
+      ]
+    },
+    {
+      "id": 57,
+      "title": "539 trusted pool-data unlock",
+      "theme": "POWER_LOTTO_WQ_P2",
+      "markers": [
+        "reached your weekly"
+      ]
+    },
+    {
+      "id": 56,
+      "title": "威力彩 WQ P2-1 本地正式驗證",
+      "theme": "POWER_LOTTO_WQ_P2",
+      "markers": [
+        "reached your weekly"
+      ]
+    },
+    {
+      "id": 55,
+      "title": "今彩539 彩池資料解鎖與可信閘",
+      "theme": "POWER_LOTTO_WQ_P2",
+      "markers": [
+        "reached your weekly"
+      ]
+    },
+    {
+      "id": 54,
+      "title": "離線監控與配額假完成修復",
+      "theme": "POWER_LOTTO_HEALTH",
+      "markers": [
+        "reached your weekly"
+      ]
+    },
+    {
+      "id": 53,
+      "title": "大樂透500期監控與假完成防呆",
+      "theme": "POWER_LOTTO_HEALTH",
+      "markers": [
+        "reached your weekly"
+      ]
+    },
+    {
+      "id": 52,
+      "title": "539彩池資料可信回補與可用性閘",
+      "theme": "POWER_LOTTO_WQ_P2",
+      "markers": [
+        "reached your weekly"
+      ]
+    },
+    {
+      "id": 51,
+      "title": "三彩種主線離線監控與降權判定",
+      "theme": "POWER_LOTTO_WQ_P2",
+      "markers": [
+        "reached your weekly"
+      ]
+    },
+    {
+      "id": 50,
+      "title": "威力彩WQ本地驗證與任務真實化",
+      "theme": "POWER_LOTTO_WQ_P2",
+      "markers": [
+        "reached your weekly"
+      ]
+    },
+    {
+      "id": 49,
+      "title": "威力彩主線監控與配額失效防呆",
+      "theme": "POWER_LOTTO_HEALTH",
+      "markers": [
+        "reached your weekly"
+      ]
+    },
+    {
+      "id": 48,
+      "title": "修復配額阻塞與任務真實狀態閘",
+      "theme": "SYSTEM_GOVERNANCE",
+      "markers": [
+        "reached your weekly"
+      ]
+    },
+    {
+      "id": 47,
+      "title": "修復配額假完成並重啟有效研究",
+      "theme": "POWER_LOTTO_WQ_P2",
+      "markers": [
+        "reached your weekly"
+      ]
+    },
+    {
+      "id": 46,
+      "title": "修復配額假完成並恢復研究執行",
+      "theme": "BIG_LOTTO_500P",
+      "markers": [
+        "reached your weekly"
+      ]
+    },
+    {
+      "id": 45,
+      "title": "539 彩池資料補齊與 H013 驗證",
+      "theme": "POWER_LOTTO_WQ_P2",
+      "markers": [
+        "reached your weekly"
+      ]
+    },
+    {
+      "id": 44,
+      "title": "補齊彩池資料管線以解鎖H013",
+      "theme": "DAILY_539_POOL",
+      "markers": [
+        "reached your weekly"
+      ]
+    },
+    {
+      "id": 43,
+      "title": "威力彩 WQ 解封與正式驗證",
+      "theme": "POWER_LOTTO_WQ_P2",
+      "markers": [
+        "reached your weekly"
+      ]
+    },
+    {
+      "id": 42,
+      "title": "威力彩主線健康監控與決策閘",
+      "theme": "POWER_LOTTO_WQ_P2",
+      "markers": [
+        "reached your weekly"
+      ]
+    },
+    {
+      "id": 41,
+      "title": "今彩539 MicroFish升格驗證",
+      "theme": "POWER_LOTTO_WQ_P2",
+      "markers": [
+        "reached your weekly"
+      ]
+    },
+    {
+      "id": 8,
+      "title": "<任務標題，中英文皆可，短於 40 字元>",
+      "theme": "UNKNOWN",
+      "markers": [
+        "you have no quota"
+      ]
+    },
+    {
+      "id": 7,
+      "title": "<任務標題，中英文皆可，短於 40 字元>",
+      "theme": "UNKNOWN",
+      "markers": [
+        "you have no quota"
+      ]
+    },
+    {
+      "id": 6,
+      "title": "威力彩 Winning Quality P2-1 驗證",
+      "theme": "POWER_LOTTO_WQ_P2",
+      "markers": [
+        "you have no quota"
+      ]
+    }
+  ]
+}

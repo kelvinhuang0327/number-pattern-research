@@ -1,0 +1,110 @@
+{
+  "DAILY_539": [
+    {
+      "strategy": "acb_1bet",
+      "edge_300": 0.03267,
+      "z_score": -0.697,
+      "perm_p": 0.07,
+      "stability": 1.04302,
+      "category": "BORDERLINE"
+    },
+    {
+      "strategy": "midfreq_acb_2bet",
+      "edge_300": 0.0946,
+      "z_score": -0.491,
+      "perm_p": 0.01,
+      "stability": 1.04302,
+      "category": "SIGNAL"
+    },
+    {
+      "strategy": "acb_markov_fourier_3bet",
+      "edge_300": 0.035,
+      "z_score": -1.934,
+      "perm_p": 0.07,
+      "stability": 1.04302,
+      "category": "BORDERLINE"
+    },
+    {
+      "strategy": "acb_markov_midfreq_3bet",
+      "edge_300": 0.07833,
+      "z_score": -0.899,
+      "perm_p": 0.01,
+      "stability": 1.04302,
+      "category": "SIGNAL"
+    },
+    {
+      "strategy": "f4cold_3bet",
+      "edge_300": 0.015,
+      "z_score": 0.89,
+      "perm_p": 0.12,
+      "stability": 1.04302,
+      "category": "NOISE"
+    },
+    {
+      "strategy": "f4cold_5bet",
+      "edge_300": 0.07943,
+      "z_score": 0.699,
+      "perm_p": 0.01,
+      "stability": 1.04302,
+      "category": "SIGNAL"
+    }
+  ],
+  "POWER_LOTTO": [
+    {
+      "strategy": "fourier_rhythm_2bet",
+      "edge_300": 0.0041,
+      "z_score": -0.921,
+      "perm_p": 0.12,
+      "stability": 0.97373,
+      "category": "NOISE"
+    },
+    {
+      "strategy": "fourier30_markov30_2bet",
+      "edge_300": 0.01077,
+      "z_score": -0.375,
+      "perm_p": 0.12,
+      "stability": 0.97373,
+      "category": "NOISE"
+    },
+    {
+      "strategy": "fourier_rhythm_3bet",
+      "edge_300": 0.0283,
+      "z_score": -0.101,
+      "perm_p": 0.07,
+      "stability": 0.97373,
+      "category": "BORDERLINE"
+    },
+    {
+      "strategy": "orthogonal_5bet",
+      "edge_300": 0.0209,
+      "z_score": -1.783,
+      "perm_p": 0.07,
+      "stability": 0.97373,
+      "category": "BORDERLINE"
+    },
+    {
+      "strategy": "pp3_freqort_4bet",
+      "edge_300": 0.02733,
+      "z_score": -1.506,
+      "perm_p": 0.07,
+      "stability": 0.97373,
+      "category": "BORDERLINE"
+    },
+    {
+      "strategy": "midfreq_fourier_2bet",
+      "edge_300": -0.00257,
+      "z_score": -0.82,
+      "perm_p": 0.2,
+      "stability": 0.97373,
+      "category": "NOISE"
+    },
+    {
+      "strategy": "midfreq_fourier_mk_3bet",
+      "edge_300": 0.01497,
+      "z_score": -0.422,
+      "perm_p": 0.12,
+      "stability": 0.97373,
+      "category": "NOISE"
+    }
+  ]
+}

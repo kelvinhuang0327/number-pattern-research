@@ -1,0 +1,154 @@
+{
+  "timestamp": "2026-03-10 10:30:31",
+  "total_draws": 5804,
+  "elapsed_seconds": 1000.0,
+  "script": "backtest_539_extreme_adaptive.py",
+  "extreme_threshold": 25,
+  "fourier_thresholds_tested": [
+    0.25,
+    0.3,
+    0.35,
+    0.4
+  ],
+  "best_fourier_threshold": 0.4,
+  "champion_reference": {
+    "ACB_Markov_Fourier_3bet": {
+      "edge_1500p": 6.1
+    },
+    "MidFreq_ACB_2bet": {
+      "edge_1500p": 5.06
+    }
+  },
+  "strategies": {
+    "ExtremeCol_1bet": {
+      "n_bets": 1,
+      "edge_150p": -4.73,
+      "edge_500p": -2.4,
+      "edge_1500p": 0.13,
+      "rate_1500p": 11.53,
+      "z_1500p": 0.16,
+      "perm_p": 0.3632,
+      "signal_edge": 0.32,
+      "stability": "LATE_BLOOMER"
+    },
+    "MidFreq_ExtremeCol_2bet": {
+      "n_bets": 2,
+      "edge_150p": 2.46,
+      "edge_500p": 1.46,
+      "edge_1500p": 2.19,
+      "rate_1500p": 23.73,
+      "z_1500p": 2.07,
+      "perm_p": 0.0398,
+      "signal_edge": 1.74,
+      "stability": "STABLE"
+    },
+    "ACB_ExtremeCol_2bet": {
+      "n_bets": 2,
+      "edge_150p": 3.79,
+      "edge_500p": 1.06,
+      "edge_1500p": 3.33,
+      "rate_1500p": 24.87,
+      "z_1500p": 3.13,
+      "perm_p": 0.005,
+      "signal_edge": 2.87,
+      "stability": "STABLE"
+    },
+    "ACB_Markov_ExtremeCol_3bet": {
+      "n_bets": 3,
+      "edge_150p": 2.17,
+      "edge_500p": 3.7,
+      "edge_1500p": 4.97,
+      "rate_1500p": 35.47,
+      "z_1500p": 4.18,
+      "perm_p": 0.0149,
+      "signal_edge": 2.8,
+      "stability": "STABLE"
+    },
+    "CondFourier_0.25_3bet": {
+      "n_bets": 3,
+      "edge_150p": 2.83,
+      "edge_500p": 4.1,
+      "edge_1500p": 6.1,
+      "rate_1500p": 36.6,
+      "z_1500p": 5.13,
+      "perm_p": null,
+      "signal_edge": null,
+      "stability": "STABLE"
+    },
+    "CondFourier_0.3_3bet": {
+      "n_bets": 3,
+      "edge_150p": 2.83,
+      "edge_500p": 4.1,
+      "edge_1500p": 6.1,
+      "rate_1500p": 36.6,
+      "z_1500p": 5.13,
+      "perm_p": null,
+      "signal_edge": null,
+      "stability": "STABLE"
+    },
+    "CondFourier_0.35_3bet": {
+      "n_bets": 3,
+      "edge_150p": 2.83,
+      "edge_500p": 4.1,
+      "edge_1500p": 6.1,
+      "rate_1500p": 36.6,
+      "z_1500p": 5.13,
+      "perm_p": null,
+      "signal_edge": null,
+      "stability": "STABLE"
+    },
+    "CondFourier_0.4_3bet": {
+      "n_bets": 3,
+      "edge_150p": 2.83,
+      "edge_500p": 4.1,
+      "edge_1500p": 6.17,
+      "rate_1500p": 36.67,
+      "z_1500p": 5.19,
+      "perm_p": 0.01,
+      "signal_edge": 4.14,
+      "stability": "STABLE"
+    }
+  },
+  "mcnemar": {
+    "S2_vs_MidFreq_ACB": {
+      "both_hit": 279,
+      "a_only": 77,
+      "b_only": 120,
+      "both_miss": 1024,
+      "chi2": 9.3858,
+      "p_value": 0.0022,
+      "winner": "B",
+      "net": -43
+    },
+    "S3_vs_MidFreq_ACB": {
+      "both_hit": 243,
+      "a_only": 130,
+      "b_only": 156,
+      "both_miss": 971,
+      "chi2": 2.3636,
+      "p_value": 0.1242,
+      "winner": "B",
+      "net": -26
+    },
+    "S4_vs_AMF": {
+      "both_hit": 406,
+      "a_only": 126,
+      "b_only": 143,
+      "both_miss": 825,
+      "chi2": 1.0743,
+      "p_value": 0.3,
+      "winner": "B",
+      "net": -17
+    },
+    "S5_best_vs_AMF": {
+      "both_hit": 549,
+      "a_only": 1,
+      "b_only": 0,
+      "both_miss": 950,
+      "chi2": 1.0,
+      "p_value": 0.3173,
+      "winner": "A",
+      "net": 1
+    }
+  }
+}

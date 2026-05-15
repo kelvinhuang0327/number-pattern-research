@@ -1,0 +1,146 @@
+{
+  "generated_at": "2026-04-20T11:03:32.771816",
+  "monthly_budget_reference": 1000.0,
+  "baseline_weights": {
+    "BIG_LOTTO": 0.45,
+    "DAILY_539": 0.35,
+    "POWER_LOTTO": 0.2
+  },
+  "gate_summary": {
+    "ev_gate_open_lotteries": [
+      "BIG_LOTTO"
+    ],
+    "ev_gate_closed_lotteries": [
+      "DAILY_539",
+      "POWER_LOTTO"
+    ],
+    "monthly_budget_always": 1000.0,
+    "monthly_budget_ev_gate": 450.0,
+    "monthly_budget_kelly_ev": 250.0,
+    "monthly_savings_ev_gate": 550.0,
+    "monthly_savings_kelly_ev": 750.0
+  },
+  "allocations": {
+    "always": {
+      "BIG_LOTTO": 450.0,
+      "DAILY_539": 350.0,
+      "POWER_LOTTO": 200.0
+    },
+    "ev_gate": {
+      "BIG_LOTTO": 450.0,
+      "DAILY_539": 0.0,
+      "POWER_LOTTO": 0.0
+    },
+    "kelly_ev": {
+      "BIG_LOTTO": 250.0,
+      "DAILY_539": 0.0,
+      "POWER_LOTTO": 0.0
+    }
+  },
+  "strategies": {
+    "always": {
+      "strategy": "always",
+      "simulations": 5000,
+      "horizon_months": 200,
+      "start_bankroll": 12000.0,
+      "expected_monthly_spend": 1000.0,
+      "expected_monthly_savings_vs_always": 0.0,
+      "allocations": {
+        "BIG_LOTTO": 450.0,
+        "DAILY_539": 350.0,
+        "POWER_LOTTO": 200.0
+      },
+      "mean_draws_per_month": {
+        "BIG_LOTTO": 1.802489,
+        "DAILY_539": 2.335246,
+        "POWER_LOTTO": 0.399734
+      },
+      "mean_actual_monthly_spend": 1000.77615,
+      "median_ending_bankroll": -137530.0,
+      "mean_ending_bankroll": 76264.85,
+      "p05_ending_bankroll": -155320.0,
+      "p95_ending_bankroll": -1593.5,
+      "median_months_to_ruin": 16.0,
+      "mean_months_to_ruin": 19.0908,
+      "ruin_probability_12m": 0.0862,
+      "ruin_probability_24m": 0.9572,
+      "ruin_probability_200m": 0.9506
+    },
+    "ev_gate": {
+      "strategy": "ev_gate",
+      "simulations": 5000,
+      "horizon_months": 200,
+      "start_bankroll": 12000.0,
+      "expected_monthly_spend": 450.0,
+      "expected_monthly_savings_vs_always": 550.0,
+      "allocations": {
+        "BIG_LOTTO": 450.0,
+        "DAILY_539": 0.0,
+        "POWER_LOTTO": 0.0
+      },
+      "mean_draws_per_month": {
+        "BIG_LOTTO": 1.800723,
+        "DAILY_539": 0.0,
+        "POWER_LOTTO": 0.0
+      },
+      "mean_actual_monthly_spend": 450.18075,
+      "median_ending_bankroll": -59700.0,
+      "mean_ending_bankroll": 81352.25,
+      "p05_ending_bankroll": -68300.0,
+      "p95_ending_bankroll": -48797.5,
+      "median_months_to_ruin": 34.0,
+      "mean_months_to_ruin": 35.4136,
+      "ruin_probability_12m": 0.0,
+      "ruin_probability_24m": 0.0286,
+      "ruin_probability_200m": 0.963
+    },
+    "kelly_ev": {
+      "strategy": "kelly_ev",
+      "simulations": 5000,
+      "horizon_months": 200,
+      "start_bankroll": 12000.0,
+      "expected_monthly_spend": 250.0,
+      "expected_monthly_savings_vs_always": 750.0,
+      "allocations": {
+        "BIG_LOTTO": 250.0,
+        "DAILY_539": 0.0,
+        "POWER_LOTTO": 0.0
+      },
+      "mean_draws_per_month": {
+        "BIG_LOTTO": 0.999147,
+        "DAILY_539": 0.0,
+        "POWER_LOTTO": 0.0
+      },
+      "mean_actual_monthly_spend": 249.78675,
+      "median_ending_bankroll": -27700.0,
+      "mean_ending_bankroll": 108020.01,
+      "p05_ending_bankroll": -34050.0,
+      "p95_ending_bankroll": -20647.5,
+      "median_months_to_ruin": 61.0,
+      "mean_months_to_ruin": 62.3034,
+      "ruin_probability_12m": 0.0,
+      "ruin_probability_24m": 0.0,
+      "ruin_probability_200m": 0.9808
+    }
+  },
+  "lottery_notes": {
+    "DAILY_539": {
+      "current_jackpot": 8000000.0,
+      "breakeven_jackpot": 10929880.715706,
+      "ev_gate_open": false,
+      "reason": "current jackpot below breakeven"
+    },
+    "BIG_LOTTO": {
+      "current_jackpot": 650000000.0,
+      "breakeven_jackpot": 418198000.0,
+      "ev_gate_open": true,
+      "reason": "positive monetary EV at current jackpot"
+    },
+    "POWER_LOTTO": {
+      "current_jackpot": 200000000.0,
+      "breakeven_jackpot": 352722781.954887,
+      "ev_gate_open": false,
+      "reason": "current jackpot below breakeven"
+    }
+  }
+}

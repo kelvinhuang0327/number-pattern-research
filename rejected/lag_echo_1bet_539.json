@@ -1,0 +1,21 @@
+{
+  "strategy_name": "LagEcho_1bet",
+  "description": "Lag-k 回聲單注（lag_weights={1:0.5, 2:2.0, 3:1.0}）",
+  "rejection_date": "2026-03-08",
+  "trigger": "115000060期檢討（17號Lag-2回聲盲點分析）",
+  "failure_reason": "1500p Edge=-0.13%（負值），SHORT_MOMENTUM 穩定性。近期出現的號碼在較長窗口並沒有超期望回補率，假說統計上不成立。",
+  "statistical_results": {
+    "edge_150p": -0.73,
+    "edge_500p": 0.20,
+    "edge_1500p": -0.13,
+    "z_1500p": -0.16,
+    "perm_p": null,
+    "stability": "SHORT_MOMENTUM"
+  },
+  "applicable_conditions": "無，作為獨立策略徹底無效",
+  "retest_conditions": [
+    "資料量超過 10000 期後重新評估",
+    "僅在短期（50期）交易視角下有 +0.20% 微弱信號，不具實用性"
+  ],
+  "insight": "Lag-Echo 作為單一信號的假設過強，彩票 39 選 5 的隨機性在短 lag 視窗內足以掩蓋所有回聲效應"
+}

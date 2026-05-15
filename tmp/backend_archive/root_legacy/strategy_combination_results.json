@@ -1,0 +1,339 @@
+{
+  "combos": [
+    {
+      "type": "pair",
+      "features": [
+        "freq_deficit_300",
+        "freq_deficit_200"
+      ],
+      "rate": 0.13866666666666666,
+      "edge": 0.024666666666666656,
+      "lift": 1.2163742690058479,
+      "perm_p": 0.004975124378109453,
+      "signal": 0.035093333333333324,
+      "windows": {
+        "150": {
+          "rate": 0.14,
+          "edge": 0.02600000000000001,
+          "z": 1.0019584007365094,
+          "n": 150
+        },
+        "500": {
+          "rate": 0.144,
+          "edge": 0.029999999999999985,
+          "z": 2.11075083755841,
+          "n": 500
+        },
+        "1500": {
+          "rate": 0.13866666666666666,
+          "edge": 0.024666666666666656,
+          "z": 3.0059849918328876,
+          "n": 1500
+        }
+      }
+    },
+    {
+      "type": "pair",
+      "features": [
+        "entropy_inverted_100",
+        "freq_deficit_200"
+      ],
+      "rate": 0.13733333333333334,
+      "edge": 0.02333333333333333,
+      "lift": 1.2046783625730995
+    },
+    {
+      "type": "pair",
+      "features": [
+        "nl_tanh_freq_deficit_100",
+        "freq_deficit_200"
+      ],
+      "rate": 0.13733333333333334,
+      "edge": 0.02333333333333333,
+      "lift": 1.2046783625730995
+    },
+    {
+      "type": "pair",
+      "features": [
+        "freq_deficit_300",
+        "entropy_inverted_300"
+      ],
+      "rate": 0.13666666666666666,
+      "edge": 0.022666666666666654,
+      "lift": 1.198830409356725
+    },
+    {
+      "type": "pair",
+      "features": [
+        "freq_deficit_300",
+        "entropy_inverted_100"
+      ],
+      "rate": 0.13666666666666666,
+      "edge": 0.022666666666666654,
+      "lift": 1.198830409356725
+    },
+    {
+      "type": "pair",
+      "features": [
+        "freq_deficit_300",
+        "ix_sum_mean_100_x_freq_deficit_100"
+      ],
+      "rate": 0.13666666666666666,
+      "edge": 0.022666666666666654,
+      "lift": 1.198830409356725
+    },
+    {
+      "type": "pair",
+      "features": [
+        "freq_deficit_300",
+        "nl_tanh_freq_deficit_100"
+      ],
+      "rate": 0.13666666666666666,
+      "edge": 0.022666666666666654,
+      "lift": 1.198830409356725
+    },
+    {
+      "type": "pair",
+      "features": [
+        "entropy_inverted_300",
+        "freq_deficit_100"
+      ],
+      "rate": 0.13666666666666666,
+      "edge": 0.022666666666666654,
+      "lift": 1.198830409356725
+    },
+    {
+      "type": "pair",
+      "features": [
+        "entropy_inverted_300",
+        "ix_freq_deficit_100_x_ac_mean_100"
+      ],
+      "rate": 0.13666666666666666,
+      "edge": 0.022666666666666654,
+      "lift": 1.198830409356725
+    },
+    {
+      "type": "pair",
+      "features": [
+        "entropy_inverted_300",
+        "ix_sum_mean_100_x_freq_deficit_100"
+      ],
+      "rate": 0.13666666666666666,
+      "edge": 0.022666666666666654,
+      "lift": 1.198830409356725
+    },
+    {
+      "type": "pair",
+      "features": [
+        "entropy_inverted_300",
+        "nl_log_freq_deficit_100"
+      ],
+      "rate": 0.13666666666666666,
+      "edge": 0.022666666666666654,
+      "lift": 1.198830409356725
+    },
+    {
+      "type": "pair",
+      "features": [
+        "entropy_inverted_300",
+        "nl_sqrt_freq_deficit_100"
+      ],
+      "rate": 0.13666666666666666,
+      "edge": 0.022666666666666654,
+      "lift": 1.198830409356725
+    },
+    {
+      "type": "pair",
+      "features": [
+        "entropy_inverted_300",
+        "nl_sq_freq_deficit_100"
+      ],
+      "rate": 0.13666666666666666,
+      "edge": 0.022666666666666654,
+      "lift": 1.198830409356725
+    },
+    {
+      "type": "pair",
+      "features": [
+        "entropy_inverted_300",
+        "ix_freq_deficit_100_x_entropy_binary_100"
+      ],
+      "rate": 0.13666666666666666,
+      "edge": 0.022666666666666654,
+      "lift": 1.198830409356725
+    },
+    {
+      "type": "pair",
+      "features": [
+        "entropy_inverted_300",
+        "freq_deficit_200"
+      ],
+      "rate": 0.13666666666666666,
+      "edge": 0.022666666666666654,
+      "lift": 1.198830409356725
+    },
+    {
+      "type": "pair",
+      "features": [
+        "entropy_inverted_100",
+        "ix_freq_deficit_100_x_entropy_binary_100"
+      ],
+      "rate": 0.13666666666666666,
+      "edge": 0.022666666666666654,
+      "lift": 1.198830409356725
+    },
+    {
+      "type": "pair",
+      "features": [
+        "ix_freq_deficit_100_x_entropy_binary_100",
+        "freq_deficit_200"
+      ],
+      "rate": 0.13666666666666666,
+      "edge": 0.022666666666666654,
+      "lift": 1.198830409356725
+    },
+    {
+      "type": "triple",
+      "features": [
+        "freq_deficit_300",
+        "entropy_inverted_300",
+        "entropy_inverted_100"
+      ],
+      "rate": 0.13666666666666666,
+      "edge": 0.022666666666666654,
+      "lift": 1.198830409356725
+    },
+    {
+      "type": "triple",
+      "features": [
+        "freq_deficit_300",
+        "entropy_inverted_300",
+        "ix_sum_mean_100_x_freq_deficit_100"
+      ],
+      "rate": 0.13666666666666666,
+      "edge": 0.022666666666666654,
+      "lift": 1.198830409356725
+    },
+    {
+      "type": "triple",
+      "features": [
+        "freq_deficit_300",
+        "freq_deficit_100",
+        "ix_sum_mean_100_x_freq_deficit_100"
+      ],
+      "rate": 0.13666666666666666,
+      "edge": 0.022666666666666654,
+      "lift": 1.198830409356725
+    },
+    {
+      "type": "triple",
+      "features": [
+        "freq_deficit_300",
+        "entropy_inverted_100",
+        "ix_sum_mean_100_x_freq_deficit_100"
+      ],
+      "rate": 0.13666666666666666,
+      "edge": 0.022666666666666654,
+      "lift": 1.198830409356725
+    },
+    {
+      "type": "triple",
+      "features": [
+        "freq_deficit_300",
+        "ix_freq_deficit_100_x_ac_mean_100",
+        "ix_sum_mean_100_x_freq_deficit_100"
+      ],
+      "rate": 0.13666666666666666,
+      "edge": 0.022666666666666654,
+      "lift": 1.198830409356725
+    },
+    {
+      "type": "triple",
+      "features": [
+        "freq_deficit_300",
+        "ix_sum_mean_100_x_freq_deficit_100",
+        "nl_log_freq_deficit_100"
+      ],
+      "rate": 0.13666666666666666,
+      "edge": 0.022666666666666654,
+      "lift": 1.198830409356725
+    },
+    {
+      "type": "triple",
+      "features": [
+        "freq_deficit_300",
+        "ix_sum_mean_100_x_freq_deficit_100",
+        "nl_sqrt_freq_deficit_100"
+      ],
+      "rate": 0.13666666666666666,
+      "edge": 0.022666666666666654,
+      "lift": 1.198830409356725
+    },
+    {
+      "type": "triple",
+      "features": [
+        "entropy_inverted_300",
+        "freq_deficit_100",
+        "entropy_inverted_100"
+      ],
+      "rate": 0.13666666666666666,
+      "edge": 0.022666666666666654,
+      "lift": 1.198830409356725
+    },
+    {
+      "type": "triple",
+      "features": [
+        "entropy_inverted_300",
+        "freq_deficit_100",
+        "ix_freq_deficit_100_x_ac_mean_100"
+      ],
+      "rate": 0.13666666666666666,
+      "edge": 0.022666666666666654,
+      "lift": 1.198830409356725
+    },
+    {
+      "type": "triple",
+      "features": [
+        "entropy_inverted_300",
+        "freq_deficit_100",
+        "ix_sum_mean_100_x_freq_deficit_100"
+      ],
+      "rate": 0.13666666666666666,
+      "edge": 0.022666666666666654,
+      "lift": 1.198830409356725
+    },
+    {
+      "type": "triple",
+      "features": [
+        "entropy_inverted_300",
+        "freq_deficit_100",
+        "nl_log_freq_deficit_100"
+      ],
+      "rate": 0.13666666666666666,
+      "edge": 0.022666666666666654,
+      "lift": 1.198830409356725
+    },
+    {
+      "type": "triple",
+      "features": [
+        "entropy_inverted_300",
+        "freq_deficit_100",
+        "nl_sqrt_freq_deficit_100"
+      ],
+      "rate": 0.13666666666666666,
+      "edge": 0.022666666666666654,
+      "lift": 1.198830409356725
+    },
+    {
+      "type": "triple",
+      "features": [
+        "entropy_inverted_300",
+        "entropy_inverted_100",
+        "ix_freq_deficit_100_x_ac_mean_100"
+      ],
+      "rate": 0.13666666666666666,
+      "edge": 0.022666666666666654,
+      "lift": 1.198830409356725
+    }
+  ]
+}

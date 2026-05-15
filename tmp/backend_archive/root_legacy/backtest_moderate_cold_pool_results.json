@@ -1,0 +1,145 @@
+{
+  "A: 現行 pool=12 (最低頻率)": {
+    "edges": [
+      5.04,
+      3.04,
+      3.04
+    ],
+    "stability": "STABLE ✅",
+    "details": {
+      "150": {
+        "total": 150,
+        "m3_plus": 21,
+        "rate": 14.0,
+        "edge": 5.04
+      },
+      "500": {
+        "total": 500,
+        "m3_plus": 60,
+        "rate": 12.0,
+        "edge": 3.04
+      },
+      "1500": {
+        "total": 1500,
+        "m3_plus": 180,
+        "rate": 12.0,
+        "edge": 3.04
+      }
+    }
+  },
+  "B: 中度冷號 gap 8-15": {
+    "edges": [
+      3.71,
+      2.04,
+      1.44
+    ],
+    "stability": "STABLE ✅",
+    "details": {
+      "150": {
+        "total": 150,
+        "m3_plus": 19,
+        "rate": 12.67,
+        "edge": 3.71
+      },
+      "500": {
+        "total": 500,
+        "m3_plus": 55,
+        "rate": 11.0,
+        "edge": 2.04
+      },
+      "1500": {
+        "total": 1500,
+        "m3_plus": 156,
+        "rate": 10.4,
+        "edge": 1.44
+      }
+    }
+  },
+  "C: 中度冷號 gap 6-12": {
+    "edges": [
+      1.71,
+      1.84,
+      1.51
+    ],
+    "stability": "STABLE ✅",
+    "details": {
+      "150": {
+        "total": 150,
+        "m3_plus": 16,
+        "rate": 10.67,
+        "edge": 1.71
+      },
+      "500": {
+        "total": 500,
+        "m3_plus": 54,
+        "rate": 10.8,
+        "edge": 1.84
+      },
+      "1500": {
+        "total": 1500,
+        "m3_plus": 157,
+        "rate": 10.47,
+        "edge": 1.51
+      }
+    }
+  },
+  "D: 寬範圍 gap 6-18": {
+    "edges": [
+      3.71,
+      0.44,
+      0.77
+    ],
+    "stability": "STABLE ✅",
+    "details": {
+      "150": {
+        "total": 150,
+        "m3_plus": 19,
+        "rate": 12.67,
+        "edge": 3.71
+      },
+      "500": {
+        "total": 500,
+        "m3_plus": 47,
+        "rate": 9.4,
+        "edge": 0.44
+      },
+      "1500": {
+        "total": 1500,
+        "m3_plus": 146,
+        "rate": 9.73,
+        "edge": 0.77
+      }
+    }
+  },
+  "E: 小池 gap 10-20": {
+    "edges": [
+      1.71,
+      0.84,
+      1.31
+    ],
+    "stability": "STABLE ✅",
+    "details": {
+      "150": {
+        "total": 150,
+        "m3_plus": 16,
+        "rate": 10.67,
+        "edge": 1.71
+      },
+      "500": {
+        "total": 500,
+        "m3_plus": 49,
+        "rate": 9.8,
+        "edge": 0.84
+      },
+      "1500": {
+        "total": 1500,
+        "m3_plus": 154,
+        "rate": 10.27,
+        "edge": 1.31
+      }
+    }
+  },
+  "best_variant": "A: 現行 pool=12 (最低頻率)",
+  "best_perm_p": 0.0,
+  "baseline_perm_p": 0.0
+}

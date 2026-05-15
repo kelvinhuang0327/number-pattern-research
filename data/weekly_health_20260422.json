@@ -1,0 +1,290 @@
+{
+  "generated_at": "2026-04-22T20:37:45.155876",
+  "report_date": "2026-04-22",
+  "by_lottery": {
+    "BIG_LOTTO": {
+      "mode": "MAINTENANCE",
+      "best_strategy": "p1_dev_sum5bet",
+      "edge_full": 0.0366,
+      "edge_150p": 0.1214,
+      "edge_30p": 0.0437,
+      "status_30p": "NORMAL",
+      "psi_latest": 0.107085,
+      "psi_status": false,
+      "stage2_skip_threshold": 0.0,
+      "stage2_recommendation": "KEEP",
+      "exit_trigger_status": "GREEN"
+    },
+    "DAILY_539": {
+      "mode": "MAINTENANCE",
+      "best_strategy": "acb_markov_midfreq_3bet",
+      "edge_full": 0.0858,
+      "edge_150p": 0.0979,
+      "edge_30p": -0.005,
+      "status_30p": "NORMAL",
+      "psi_latest": 0.121054,
+      "psi_status": false,
+      "stage2_skip_threshold": 0.0,
+      "stage2_recommendation": "KEEP",
+      "exit_trigger_status": "GREEN"
+    },
+    "POWER_LOTTO": {
+      "mode": "MAINTENANCE",
+      "best_strategy": "pp3_freqort_4bet",
+      "edge_full": 0.031,
+      "edge_150p": 0.0473,
+      "edge_30p": 0.0191,
+      "status_30p": "NORMAL",
+      "psi_latest": 0.064373,
+      "psi_status": false,
+      "stage2_skip_threshold": 0.0,
+      "stage2_recommendation": "KEEP",
+      "exit_trigger_status": "GREEN",
+      "combo_b": {
+        "status": "SHADOW_TRACKING",
+        "tracked_draws": 1,
+        "evaluate_at": "115000331"
+      }
+    }
+  },
+  "combo_b_milestone": {
+    "status": "SHADOW_TRACKING",
+    "started_draw": "115000031",
+    "evaluate_at_draw": "115000331",
+    "tracked_draws": 1,
+    "draws_remaining": 299,
+    "retest_condition": "300 more draws AND three-window must pass AND perm_p < 0.05"
+  },
+  "exit_triggers": {
+    "BIG_LOTTO": {
+      "psi_p75": 0.571686,
+      "psi_p90": 0.581875,
+      "psi_is_valid_trigger": false,
+      "level1_triggered": false,
+      "level2_triggered": false,
+      "level3_triggered": true,
+      "current_status": "RED",
+      "lottery": "BIG_LOTTO",
+      "psi_val": 0.215404,
+      "edge_150p": 0.0504
+    },
+    "DAILY_539": {
+      "psi_p75": 1.454315,
+      "psi_p90": 2.110023,
+      "psi_is_valid_trigger": false,
+      "level1_triggered": false,
+      "level2_triggered": false,
+      "level3_triggered": false,
+      "current_status": "GREEN",
+      "lottery": "DAILY_539",
+      "psi_val": 0.189772,
+      "edge_150p": 0.061667
+    },
+    "POWER_LOTTO": {
+      "psi_p75": 0.207675,
+      "psi_p90": 0.208408,
+      "psi_is_valid_trigger": false,
+      "level1_triggered": false,
+      "level2_triggered": false,
+      "level3_triggered": false,
+      "current_status": "GREEN",
+      "lottery": "POWER_LOTTO",
+      "psi_val": 0.206628,
+      "edge_150p": 0.047333
+    }
+  },
+  "trigger_test_results": null,
+  "system_status": "GREEN",
+  "actions_required": [],
+  "bankroll_advice": {
+    "source_file": "betting_strategy_guide_2026_04_20.json",
+    "best_priority": "BIG_LOTTO",
+    "recommended_monthly_budget": 1000,
+    "starting_bankroll_assumption": 12000,
+    "kelly_consistency": false,
+    "ev_gate_open_lotteries": [
+      "BIG_LOTTO"
+    ],
+    "ev_gate_closed_lotteries": [
+      "DAILY_539",
+      "POWER_LOTTO"
+    ],
+    "monthly_budget_ev_gate": 450.0,
+    "monthly_budget_kelly_ev": 250.0,
+    "monthly_savings_ev_gate": 550.0,
+    "monthly_savings_kelly_ev": 750.0,
+    "ranking": [
+      {
+        "lottery": "BIG_LOTTO",
+        "expected_roi": 0.370883,
+        "expected_net": 92.7208,
+        "hit_rate": 0.1046875,
+        "ev_gate_open": true,
+        "breakeven_jackpot": 418198000.0
+      },
+      {
+        "lottery": "DAILY_539",
+        "expected_roi": -0.098248,
+        "expected_net": -14.7373,
+        "hit_rate": 0.33,
+        "ev_gate_open": false,
+        "breakeven_jackpot": 10929880.715706
+      },
+      {
+        "lottery": "POWER_LOTTO",
+        "expected_roi": -0.406243,
+        "expected_net": -203.1213,
+        "hit_rate": 0.141875,
+        "ev_gate_open": false,
+        "breakeven_jackpot": 352722781.954887
+      }
+    ]
+  },
+  "ev_gate": {
+    "DAILY_539": {
+      "lottery_type": "DAILY_539",
+      "current_jackpot": 8000000.0,
+      "current_jackpot_source": "snapshot_file",
+      "current_jackpot_updated_at": "2026-03-17",
+      "breakeven_jackpot": 10929880.715706,
+      "ev_gate_open": false,
+      "ev_gate_recommendation": "CLOSE",
+      "ev_gap": -2929880.715706,
+      "current_expected_payout": 135.2627,
+      "current_expected_net": -14.737300000000005,
+      "current_expected_roi": -0.09824866666666669,
+      "recommended_bet_count": 1,
+      "n_bets_after_gate": 0,
+      "monthly_budget_reference": 1000.0,
+      "monthly_budget_after_gate": 0.0,
+      "kelly_fraction_raw": 0.0,
+      "kelly_fraction": 0.0,
+      "exposure_weight_after_gate": 0.0,
+      "strategy_name": "acb_markov_midfreq_3bet",
+      "ticket_cost": 50,
+      "bet_count": 3,
+      "proposal_recommendation": "skip",
+      "confidence": "HIGH",
+      "stage2_gate": {
+        "lottery_type": "DAILY_539",
+        "source_file": "rolling_monitor_DAILY_539.json",
+        "best_strategy": "f4cold_5bet",
+        "optimal_threshold": 0.0,
+        "rolling_50p_hit_rate": 0.56,
+        "sample_size": 50,
+        "status": "PASS"
+      },
+      "summary": {
+        "jackpot_source": "snapshot_file",
+        "gate_status": "CLOSE",
+        "gate_confidence": "HIGH"
+      }
+    },
+    "BIG_LOTTO": {
+      "lottery_type": "BIG_LOTTO",
+      "current_jackpot": 650000000.0,
+      "current_jackpot_source": "snapshot_file",
+      "current_jackpot_updated_at": "2026-03-17",
+      "breakeven_jackpot": 418198000.0,
+      "ev_gate_open": true,
+      "ev_gate_recommendation": "OPEN",
+      "ev_gap": 231802000.0,
+      "current_expected_payout": 342.7208,
+      "current_expected_net": 92.7208,
+      "current_expected_roi": 0.37088319999999997,
+      "recommended_bet_count": 5,
+      "n_bets_after_gate": 5,
+      "monthly_budget_reference": 1000.0,
+      "monthly_budget_after_gate": 250.0,
+      "kelly_fraction_raw": 0.370883,
+      "kelly_fraction": 0.25,
+      "exposure_weight_after_gate": 0.25,
+      "strategy_name": "p1_dev_sum5bet",
+      "ticket_cost": 50,
+      "bet_count": 5,
+      "proposal_recommendation": "play",
+      "confidence": "HIGH",
+      "stage2_gate": {
+        "lottery_type": "BIG_LOTTO",
+        "source_file": "rolling_monitor_BIG_LOTTO.json",
+        "best_strategy": "p1_dev_sum5bet",
+        "optimal_threshold": 0.0,
+        "rolling_50p_hit_rate": 0.12,
+        "sample_size": 50,
+        "status": "PASS"
+      },
+      "summary": {
+        "jackpot_source": "snapshot_file",
+        "gate_status": "OPEN",
+        "gate_confidence": "HIGH"
+      }
+    },
+    "POWER_LOTTO": {
+      "lottery_type": "POWER_LOTTO",
+      "current_jackpot": 200000000.0,
+      "current_jackpot_source": "snapshot_file",
+      "current_jackpot_updated_at": "2026-03-17",
+      "breakeven_jackpot": 352722781.954887,
+      "ev_gate_open": false,
+      "ev_gate_recommendation": "CLOSE",
+      "ev_gap": -152722781.95488697,
+      "current_expected_payout": 296.8787,
+      "current_expected_net": -203.12130000000002,
+      "current_expected_roi": -0.40624260000000006,
+      "recommended_bet_count": 2,
+      "n_bets_after_gate": 0,
+      "monthly_budget_reference": 1000.0,
+      "monthly_budget_after_gate": 0.0,
+      "kelly_fraction_raw": 0.0,
+      "kelly_fraction": 0.0,
+      "exposure_weight_after_gate": 0.0,
+      "strategy_name": "orthogonal_5bet",
+      "ticket_cost": 100,
+      "bet_count": 5,
+      "proposal_recommendation": "skip",
+      "confidence": "HIGH",
+      "stage2_gate": {
+        "lottery_type": "POWER_LOTTO",
+        "source_file": "rolling_monitor_POWER_LOTTO.json",
+        "best_strategy": "orthogonal_5bet",
+        "optimal_threshold": 0.0,
+        "rolling_50p_hit_rate": 0.12,
+        "sample_size": 50,
+        "status": "PASS"
+      },
+      "summary": {
+        "jackpot_source": "snapshot_file",
+        "gate_status": "CLOSE",
+        "gate_confidence": "HIGH"
+      }
+    }
+  },
+  "milestones": [
+    {
+      "name": "combo_b_milestone",
+      "lottery_type": "POWER_LOTTO",
+      "current_draw": 115000031,
+      "evaluate_at_draw": 115000331,
+      "draws_remaining": 300,
+      "weeks_remaining": 150.0,
+      "status": "TRACKING",
+      "started_draw": "115000031",
+      "source_file": "combo_b_milestone.json",
+      "notes": "300 more draws AND three-window must pass AND perm_p < 0.05",
+      "auto_retire_condition": "1500p edge < 0 at milestone"
+    },
+    {
+      "name": "shadow_C_milestone",
+      "lottery_type": "POWER_LOTTO",
+      "current_draw": 115000031,
+      "evaluate_at_draw": 115000145,
+      "draws_remaining": 114,
+      "weeks_remaining": 57.0,
+      "status": "TRACKING",
+      "started_draw": "115000045",
+      "source_file": "shadow_C_milestone.json",
+      "notes": null,
+      "auto_retire_condition": null
+    }
+  ]
+}

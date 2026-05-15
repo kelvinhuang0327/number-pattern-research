@@ -1,0 +1,38 @@
+{
+  "strategy_name": "Fourier w100 in PP3v1 Framework",
+  "test_date": "2026-03-09",
+  "trigger": "115000020期 Fourier全面失敗 — 020期檢討報告 P0行動項",
+  "hypothesis": "Fourier w=100 比 w=500 更能捕捉中短期週期，提升 PP3v1 hit 率",
+  "method": "PP3v1框架 (Fourier×2 + Echo/Cold)，只改窗口，1500期 walk-forward OOS",
+  "results": {
+    "w100": {
+      "150p_edge": "+41.80% (baseline_bug: M3+基準誤用)",
+      "500p_edge": "+42.20% (baseline_bug)",
+      "1500p_edge": "+42.92% (baseline_bug)",
+      "perm_p": "1.000 (perm_bug: shuffle不改分布)",
+      "note": "Edge數字無效，perm_p無效，McNemar有效"
+    },
+    "w500": {
+      "150p_edge": "+40.47% (baseline_bug)",
+      "500p_edge": "+43.80% (baseline_bug)",
+      "1500p_edge": "+43.69% (baseline_bug)"
+    },
+    "mcnemar_1500p": {
+      "hit_ge1": {"w100_only": 8, "w500_only": 12, "p": 0.502, "winner": "w500"},
+      "hit_ge2": {"w100_only": 214, "w500_only": 224, "p": 0.667, "winner": "w500"},
+      "hit_ge3": {"w100_only": 107, "w500_only": 121, "p": 0.389, "winner": "w500"}
+    }
+  },
+  "verdict": "REJECT — w100 在 PP3v1 框架下三個門檻均不優於 w500 (McNemar 全部 p>0.05，方向一致為 w500 略優)",
+  "failure_reason": "020期報告的 w100 優勢來自 Top6 命中率的單期比較，在 1500期 walk-forward 中消失",
+  "bugs_noted": [
+    "backtest baseline=0.182 誤用 5注M3+基準於 3注M2+，Edge數字無效",
+    "permutation test shuffle hits array 不改分布，p恆=1.000，無效"
+  ],
+  "retest_conditions": [
+    "若 PP3 底層信號有根本性重設計（非單純換窗口）",
+    "若資料量倍增至 3000期以上，短期週期有更清晰估計",
+    "若有新的理論支持 w=100 捕捉不同頻率成分"
+  ],
+  "related_strategy": "tools/predict_power_precision_3bet.py (PP3v1 w500, 已還原)"
+}

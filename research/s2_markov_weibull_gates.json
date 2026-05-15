@@ -1,0 +1,319 @@
+{
+  "generated_at": "2026-03-13T13:20:12.237097",
+  "n_perm": 20,
+  "min_train": 300,
+  "results": [
+    {
+      "lottery_type": "BIG_LOTTO",
+      "num_bets": 2,
+      "baseline": 0.0369,
+      "oos_n": 500,
+      "stage2": {
+        "passed": false,
+        "windows": {
+          "150p": {
+            "n": 150,
+            "rate": 0.02667,
+            "edge": -0.01023
+          },
+          "500p": {
+            "n": 500,
+            "rate": 0.022,
+            "edge": -0.0149
+          },
+          "1500p": {
+            "n": 500,
+            "rate": 0.022,
+            "edge": -0.0149
+          }
+        }
+      },
+      "stage3": {
+        "passed": false,
+        "p_emp": 1.0,
+        "cohens_d": -1.832,
+        "verdict": "NO_SIGNAL"
+      },
+      "stage4": {
+        "passed": false,
+        "mcnemar": {
+          "new_only": 11,
+          "base_only": 14,
+          "chi2": 0.16,
+          "p": 0.6892
+        }
+      },
+      "stage5": {
+        "passed": false,
+        "sharpe_100p": -0.0402
+      },
+      "final_pass": false,
+      "stage1": {
+        "passed": true,
+        "numbers_with_any_sig": 38,
+        "max_signal_strength": 0.0834,
+        "confidence_bound": 0.0426
+      }
+    },
+    {
+      "lottery_type": "BIG_LOTTO",
+      "num_bets": 3,
+      "baseline": 0.0549,
+      "oos_n": 500,
+      "stage2": {
+        "passed": false,
+        "windows": {
+          "150p": {
+            "n": 150,
+            "rate": 0.03333,
+            "edge": -0.02157
+          },
+          "500p": {
+            "n": 500,
+            "rate": 0.034,
+            "edge": -0.0209
+          },
+          "1500p": {
+            "n": 500,
+            "rate": 0.034,
+            "edge": -0.0209
+          }
+        }
+      },
+      "stage3": {
+        "passed": false,
+        "p_emp": 1.0,
+        "cohens_d": -2.46,
+        "verdict": "NO_SIGNAL"
+      },
+      "stage4": {
+        "passed": false,
+        "mcnemar": {
+          "new_only": 15,
+          "base_only": 19,
+          "chi2": 0.2647,
+          "p": 0.6069
+        }
+      },
+      "stage5": {
+        "passed": false,
+        "sharpe_100p": -0.1452
+      },
+      "final_pass": false,
+      "stage1": {
+        "passed": true,
+        "numbers_with_any_sig": 38,
+        "max_signal_strength": 0.0834,
+        "confidence_bound": 0.0426
+      }
+    },
+    {
+      "lottery_type": "POWER_LOTTO",
+      "num_bets": 2,
+      "baseline": 0.0759,
+      "oos_n": 500,
+      "stage2": {
+        "passed": false,
+        "windows": {
+          "150p": {
+            "n": 150,
+            "rate": 0.08667,
+            "edge": 0.01077
+          },
+          "500p": {
+            "n": 500,
+            "rate": 0.068,
+            "edge": -0.0079
+          },
+          "1500p": {
+            "n": 500,
+            "rate": 0.068,
+            "edge": -0.0079
+          }
+        }
+      },
+      "stage3": {
+        "passed": false,
+        "p_emp": 0.619,
+        "cohens_d": -0.311,
+        "verdict": "NO_SIGNAL"
+      },
+      "stage4": {
+        "passed": false,
+        "mcnemar": {
+          "new_only": 30,
+          "base_only": 28,
+          "chi2": 0.0172,
+          "p": 0.8955
+        }
+      },
+      "stage5": {
+        "passed": true,
+        "sharpe_100p": 0.1084
+      },
+      "final_pass": false,
+      "stage1": {
+        "passed": true,
+        "numbers_with_any_sig": 30,
+        "max_signal_strength": 0.0977,
+        "confidence_bound": 0.0451
+      }
+    },
+    {
+      "lottery_type": "POWER_LOTTO",
+      "num_bets": 3,
+      "baseline": 0.1117,
+      "oos_n": 500,
+      "stage2": {
+        "passed": false,
+        "windows": {
+          "150p": {
+            "n": 150,
+            "rate": 0.1,
+            "edge": -0.0117
+          },
+          "500p": {
+            "n": 500,
+            "rate": 0.092,
+            "edge": -0.0197
+          },
+          "1500p": {
+            "n": 500,
+            "rate": 0.092,
+            "edge": -0.0197
+          }
+        }
+      },
+      "stage3": {
+        "passed": false,
+        "p_emp": 0.7143,
+        "cohens_d": -0.463,
+        "verdict": "NO_SIGNAL"
+      },
+      "stage4": {
+        "passed": false,
+        "mcnemar": {
+          "new_only": 35,
+          "base_only": 46,
+          "chi2": 1.2346,
+          "p": 0.2665
+        }
+      },
+      "stage5": {
+        "passed": true,
+        "sharpe_100p": 0.0541
+      },
+      "final_pass": false,
+      "stage1": {
+        "passed": true,
+        "numbers_with_any_sig": 30,
+        "max_signal_strength": 0.0977,
+        "confidence_bound": 0.0451
+      }
+    },
+    {
+      "lottery_type": "DAILY_539",
+      "num_bets": 2,
+      "baseline": 0.2154,
+      "oos_n": 500,
+      "stage2": {
+        "passed": false,
+        "windows": {
+          "150p": {
+            "n": 150,
+            "rate": 0.16,
+            "edge": -0.0554
+          },
+          "500p": {
+            "n": 500,
+            "rate": 0.2,
+            "edge": -0.0154
+          },
+          "1500p": {
+            "n": 500,
+            "rate": 0.2,
+            "edge": -0.0154
+          }
+        }
+      },
+      "stage3": {
+        "passed": false,
+        "p_emp": 0.619,
+        "cohens_d": -0.121,
+        "verdict": "NO_SIGNAL"
+      },
+      "stage4": {
+        "passed": false,
+        "mcnemar": {
+          "new_only": 62,
+          "base_only": 69,
+          "chi2": 0.2748,
+          "p": 0.6001
+        }
+      },
+      "stage5": {
+        "passed": false,
+        "sharpe_100p": -0.2162
+      },
+      "final_pass": false,
+      "stage1": {
+        "passed": true,
+        "numbers_with_any_sig": 25,
+        "max_signal_strength": 0.047,
+        "confidence_bound": 0.0257
+      }
+    },
+    {
+      "lottery_type": "DAILY_539",
+      "num_bets": 3,
+      "baseline": 0.305,
+      "oos_n": 500,
+      "stage2": {
+        "passed": false,
+        "windows": {
+          "150p": {
+            "n": 150,
+            "rate": 0.24667,
+            "edge": -0.05833
+          },
+          "500p": {
+            "n": 500,
+            "rate": 0.278,
+            "edge": -0.027
+          },
+          "1500p": {
+            "n": 500,
+            "rate": 0.278,
+            "edge": -0.027
+          }
+        }
+      },
+      "stage3": {
+        "passed": false,
+        "p_emp": 0.6667,
+        "cohens_d": -0.263,
+        "verdict": "NO_SIGNAL"
+      },
+      "stage4": {
+        "passed": false,
+        "mcnemar": {
+          "new_only": 79,
+          "base_only": 96,
+          "chi2": 1.4629,
+          "p": 0.2265
+        }
+      },
+      "stage5": {
+        "passed": false,
+        "sharpe_100p": -0.2321
+      },
+      "final_pass": false,
+      "stage1": {
+        "passed": true,
+        "numbers_with_any_sig": 25,
+        "max_signal_strength": 0.047,
+        "confidence_bound": 0.0257
+      }
+    }
+  ]
+}

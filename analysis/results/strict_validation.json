@@ -1,0 +1,457 @@
+{
+  "stage2": {
+    "DAILY_539": {
+      "game": "DAILY_539",
+      "boundaries": [
+        40,
+        45,
+        50
+      ],
+      "verdict": "ADVISORY_ONLY",
+      "reason": "Conditional edge exists (+13.20%) but disappears unconditionally (-3.65%). Gain is an artifact of bet-selection, not real edge.",
+      "n_gates_pass": 4,
+      "n_gates_total": 8,
+      "ess": {
+        "n_oos": 218,
+        "n_bet": 100,
+        "n_skip": 118,
+        "skip_rate": 0.541,
+        "min_detectable_edge_pct": 11.92,
+        "power_note": "SUFFICIENT"
+      },
+      "conditional": {
+        "hit_rate": 0.39,
+        "avg_baseline": 0.258,
+        "edge": 0.132,
+        "edge_pct": 13.2
+      },
+      "unconditional": {
+        "hit_rate": 0.1789,
+        "flat_baseline": 0.2154,
+        "edge": -0.0365,
+        "edge_pct": -3.65
+      },
+      "flat_baseline": {
+        "hit_rate": 0.3165,
+        "baseline": 0.2154,
+        "edge": 0.1011,
+        "edge_pct": 10.11
+      },
+      "permutation_test": {
+        "observed_edge": 0.132,
+        "observed_hr": 0.39,
+        "avg_baseline": 0.258,
+        "null_mean_edge": 0.0582,
+        "null_95pct_edge": 0.112,
+        "p_value": 0.022,
+        "significant": true,
+        "n_bet": 100,
+        "n_perm": 1000
+      },
+      "mcnemar": {
+        "b": 10,
+        "c": 24,
+        "net": -14,
+        "n_discordant": 34,
+        "p_value": 0.0243,
+        "significant": true
+      },
+      "sharpe": {
+        "cond_gated_sharpe": -0.6615,
+        "flat_sharpe": -1.7885,
+        "uncond_gated_sharpe": -0.6615,
+        "cond_beats_flat": true,
+        "uncond_beats_flat": true
+      },
+      "window_stability": {
+        "windows": {
+          "w150": {
+            "status": "OK",
+            "conditional_edge": -0.2043,
+            "unconditional_edge": -0.0687,
+            "cond_positive": false,
+            "uncond_positive": false
+          },
+          "w500": {
+            "status": "DATA_INSUFFICIENT",
+            "n_available": 218,
+            "conditional_edge": null,
+            "unconditional_edge": null
+          },
+          "w1500": {
+            "status": "DATA_INSUFFICIENT",
+            "n_available": 218,
+            "conditional_edge": null,
+            "unconditional_edge": null
+          }
+        },
+        "cond_stable": false,
+        "uncond_stable": false,
+        "available_windows": [
+          150
+        ],
+        "insufficient_windows": [
+          500,
+          1500
+        ]
+      },
+      "gates": {
+        "cond_edge_positive": true,
+        "uncond_edge_positive": false,
+        "perm_p05": true,
+        "mcnemar_net_pos": false,
+        "sharpe_cond_beats_flat": true,
+        "sharpe_uncond_beats_flat": true,
+        "window_cond_stable": false,
+        "window_uncond_stable": false
+      }
+    },
+    "BIG_LOTTO": {
+      "game": "BIG_LOTTO",
+      "boundaries": [
+        40,
+        45,
+        60
+      ],
+      "verdict": "ADVISORY_ONLY",
+      "reason": "Conditional edge exists (+5.37%) but disappears unconditionally (-1.55%). Gain is an artifact of bet-selection, not real edge.",
+      "n_gates_pass": 4,
+      "n_gates_total": 8,
+      "ess": {
+        "n_oos": 203,
+        "n_bet": 70,
+        "n_skip": 133,
+        "skip_rate": 0.655,
+        "min_detectable_edge_pct": 14.25,
+        "power_note": "MARGINAL"
+      },
+      "conditional": {
+        "hit_rate": 0.1143,
+        "avg_baseline": 0.0606,
+        "edge": 0.0537,
+        "edge_pct": 5.37
+      },
+      "unconditional": {
+        "hit_rate": 0.0394,
+        "flat_baseline": 0.0549,
+        "edge": -0.0155,
+        "edge_pct": -1.55
+      },
+      "flat_baseline": {
+        "hit_rate": 0.0887,
+        "baseline": 0.0549,
+        "edge": 0.0338,
+        "edge_pct": 3.38
+      },
+      "permutation_test": {
+        "observed_edge": 0.0537,
+        "observed_hr": 0.1143,
+        "avg_baseline": 0.0606,
+        "null_mean_edge": 0.0276,
+        "null_95pct_edge": 0.0687,
+        "p_value": 0.24,
+        "significant": false,
+        "n_bet": 70,
+        "n_perm": 1000
+      },
+      "mcnemar": {
+        "b": 4,
+        "c": 7,
+        "net": -3,
+        "n_discordant": 11,
+        "p_value": 0.5488,
+        "significant": false
+      },
+      "sharpe": {
+        "cond_gated_sharpe": -0.2018,
+        "flat_sharpe": -0.6036,
+        "uncond_gated_sharpe": -0.2018,
+        "cond_beats_flat": true,
+        "uncond_beats_flat": true
+      },
+      "window_stability": {
+        "windows": {
+          "w150": {
+            "status": "OK",
+            "conditional_edge": 0.0611,
+            "unconditional_edge": -0.0149,
+            "cond_positive": true,
+            "uncond_positive": false
+          },
+          "w500": {
+            "status": "DATA_INSUFFICIENT",
+            "n_available": 203,
+            "conditional_edge": null,
+            "unconditional_edge": null
+          },
+          "w1500": {
+            "status": "DATA_INSUFFICIENT",
+            "n_available": 203,
+            "conditional_edge": null,
+            "unconditional_edge": null
+          }
+        },
+        "cond_stable": true,
+        "uncond_stable": false,
+        "available_windows": [
+          150
+        ],
+        "insufficient_windows": [
+          500,
+          1500
+        ]
+      },
+      "gates": {
+        "cond_edge_positive": true,
+        "uncond_edge_positive": false,
+        "perm_p05": false,
+        "mcnemar_net_pos": false,
+        "sharpe_cond_beats_flat": true,
+        "sharpe_uncond_beats_flat": true,
+        "window_cond_stable": true,
+        "window_uncond_stable": false
+      }
+    },
+    "POWER_LOTTO": {
+      "game": "POWER_LOTTO",
+      "boundaries": [
+        50,
+        75,
+        80
+      ],
+      "verdict": "ADVISORY_ONLY",
+      "reason": "Conditional edge exists (+12.48%) but disappears unconditionally (-7.14%). Gain is an artifact of bet-selection, not real edge.",
+      "n_gates_pass": 3,
+      "n_gates_total": 8,
+      "ess": {
+        "n_oos": 201,
+        "n_bet": 63,
+        "n_skip": 138,
+        "skip_rate": 0.687,
+        "min_detectable_edge_pct": 15.02,
+        "power_note": "MARGINAL"
+      },
+      "conditional": {
+        "hit_rate": 0.2381,
+        "avg_baseline": 0.1133,
+        "edge": 0.1248,
+        "edge_pct": 12.48
+      },
+      "unconditional": {
+        "hit_rate": 0.0746,
+        "flat_baseline": 0.146,
+        "edge": -0.0714,
+        "edge_pct": -7.14
+      },
+      "flat_baseline": {
+        "hit_rate": 0.1841,
+        "baseline": 0.146,
+        "edge": 0.0381,
+        "edge_pct": 3.81
+      },
+      "permutation_test": {
+        "observed_edge": 0.1248,
+        "observed_hr": 0.2381,
+        "avg_baseline": 0.1133,
+        "null_mean_edge": 0.0729,
+        "null_95pct_edge": 0.1406,
+        "p_value": 0.131,
+        "significant": false,
+        "n_bet": 63,
+        "n_perm": 1000
+      },
+      "mcnemar": {
+        "b": 2,
+        "c": 12,
+        "net": -10,
+        "n_discordant": 14,
+        "p_value": 0.0129,
+        "significant": true
+      },
+      "sharpe": {
+        "cond_gated_sharpe": -0.5605,
+        "flat_sharpe": -2.8587,
+        "uncond_gated_sharpe": -0.5605,
+        "cond_beats_flat": true,
+        "uncond_beats_flat": true
+      },
+      "window_stability": {
+        "windows": {
+          "w150": {
+            "status": "OK",
+            "conditional_edge": -0.1138,
+            "unconditional_edge": -0.066,
+            "cond_positive": false,
+            "uncond_positive": false
+          },
+          "w500": {
+            "status": "DATA_INSUFFICIENT",
+            "n_available": 201,
+            "conditional_edge": null,
+            "unconditional_edge": null
+          },
+          "w1500": {
+            "status": "DATA_INSUFFICIENT",
+            "n_available": 201,
+            "conditional_edge": null,
+            "unconditional_edge": null
+          }
+        },
+        "cond_stable": false,
+        "uncond_stable": false,
+        "available_windows": [
+          150
+        ],
+        "insufficient_windows": [
+          500,
+          1500
+        ]
+      },
+      "gates": {
+        "cond_edge_positive": true,
+        "uncond_edge_positive": false,
+        "perm_p05": false,
+        "mcnemar_net_pos": false,
+        "sharpe_cond_beats_flat": true,
+        "sharpe_uncond_beats_flat": true,
+        "window_cond_stable": false,
+        "window_uncond_stable": false
+      }
+    }
+  },
+  "stage3_biglotto": {
+    "game": "BIG_LOTTO",
+    "strategy": "p1_dev_sum5bet",
+    "verdict": "ADVISORY_ONLY",
+    "reason": "ROI delta=+1.04% positive but NOT statistically significant (perm p=0.2570). Effect size too small for current n=307.",
+    "n_draws": 307,
+    "n_swapped": 49,
+    "swap_rate": 0.16,
+    "original_roi_pct": -79.67,
+    "swapped_roi_pct": -78.63,
+    "roi_delta_pct": 1.04,
+    "permutation_test": {
+      "observed_delta": 2.6059,
+      "null_mean": 0.0026,
+      "null_95pct": 2.6059,
+      "p_value_one_sided": 0.257,
+      "significant": false,
+      "n_perm": 1000
+    },
+    "window_stability": {
+      "w100": {
+        "delta_roi_pct": 0.0,
+        "positive": true
+      },
+      "w200": {
+        "delta_roi_pct": 0.8,
+        "positive": true
+      },
+      "wfull": {
+        "delta_roi_pct": 1.04,
+        "positive": true
+      }
+    },
+    "all_windows_positive": true,
+    "threshold_sensitivity": {
+      "0": {
+        "orig_roi_pct": -79.67,
+        "swap_roi_pct": -78.63,
+        "delta_pct": 1.04,
+        "swap_rate_pct": 0.7
+      },
+      "20": {
+        "orig_roi_pct": -79.67,
+        "swap_roi_pct": -78.63,
+        "delta_pct": 1.04,
+        "swap_rate_pct": 0.7
+      },
+      "30": {
+        "orig_roi_pct": -79.67,
+        "swap_roi_pct": -78.63,
+        "delta_pct": 1.04,
+        "swap_rate_pct": 0.7
+      },
+      "40": {
+        "orig_roi_pct": -79.67,
+        "swap_roi_pct": -78.63,
+        "delta_pct": 1.04,
+        "swap_rate_pct": 0.7
+      },
+      "50": {
+        "orig_roi_pct": -79.67,
+        "swap_roi_pct": -78.63,
+        "delta_pct": 1.04,
+        "swap_rate_pct": 0.7
+      },
+      "60": {
+        "orig_roi_pct": -79.67,
+        "swap_roi_pct": -79.67,
+        "delta_pct": 0.0,
+        "swap_rate_pct": 0.0
+      },
+      "70": {
+        "orig_roi_pct": -79.67,
+        "swap_roi_pct": -79.67,
+        "delta_pct": 0.0,
+        "swap_rate_pct": 0.0
+      }
+    },
+    "popularity_reduction_mean": 5.34,
+    "gates": {
+      "roi_delta_positive": true,
+      "perm_p05": false,
+      "three_windows_pos": true,
+      "swap_rate_meaningful": true,
+      "popularity_reduced": true
+    },
+    "n_gates_pass": 4
+  },
+  "classification_table": [
+    {
+      "stage": "Stage 2 (Position Sizing)",
+      "game": "DAILY_539",
+      "verdict": "ADVISORY_ONLY",
+      "cond_edge_pct": 13.2,
+      "uncond_edge_pct": -3.65,
+      "perm_p": 0.022,
+      "mc_net": -14,
+      "n_bet": 100,
+      "reason": "Conditional edge exists (+13.20%) but disappears unconditionally (-3.65%). Gain is an artifact of bet-selection, not real edge."
+    },
+    {
+      "stage": "Stage 2 (Position Sizing)",
+      "game": "BIG_LOTTO",
+      "verdict": "ADVISORY_ONLY",
+      "cond_edge_pct": 5.37,
+      "uncond_edge_pct": -1.55,
+      "perm_p": 0.24,
+      "mc_net": -3,
+      "n_bet": 70,
+      "reason": "Conditional edge exists (+5.37%) but disappears unconditionally (-1.55%). Gain is an artifact of bet-selection, not real edge."
+    },
+    {
+      "stage": "Stage 2 (Position Sizing)",
+      "game": "POWER_LOTTO",
+      "verdict": "ADVISORY_ONLY",
+      "cond_edge_pct": 12.48,
+      "uncond_edge_pct": -7.14,
+      "perm_p": 0.131,
+      "mc_net": -10,
+      "n_bet": 63,
+      "reason": "Conditional edge exists (+12.48%) but disappears unconditionally (-7.14%). Gain is an artifact of bet-selection, not real edge."
+    },
+    {
+      "stage": "Stage 3 (Anti-Crowd Payout)",
+      "game": "BIG_LOTTO",
+      "verdict": "ADVISORY_ONLY",
+      "cond_edge_pct": null,
+      "uncond_edge_pct": null,
+      "roi_delta_pct": 1.04,
+      "perm_p": 0.257,
+      "mc_net": null,
+      "n_bet": 307,
+      "reason": "ROI delta=+1.04% positive but NOT statistically significant (perm p=0.2570). Effect size too small for current n=307."
+    }
+  ]
+}

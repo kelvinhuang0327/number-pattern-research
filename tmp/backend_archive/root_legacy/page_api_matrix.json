@@ -1,0 +1,81 @@
+{
+  "generatedAt": "2026-03-13",
+  "pages": [
+    {
+      "section": "upload",
+      "visibleByDefault": true,
+      "modules": ["App", "DataProcessor", "ApiClient"],
+      "api": [
+        {"path": "/api/data/validate-csv", "method": "POST", "status": "active"},
+        {"path": "/api/data/upload", "method": "POST", "status": "active"},
+        {"path": "/api/data/draws", "method": "GET", "status": "active"},
+        {"path": "/api/history", "method": "GET", "status": "active"}
+      ]
+    },
+    {
+      "section": "analysis",
+      "visibleByDefault": false,
+      "modules": ["StatisticsService", "ChartManager", "UIManager"],
+      "api": [
+        {"path": "/api/data/stats", "method": "GET", "status": "active"},
+        {"path": "/api/performance/regime", "method": "GET", "status": "active"}
+      ]
+    },
+    {
+      "section": "simulation",
+      "visibleByDefault": true,
+      "modules": ["PredictionEngine", "APIStrategy"],
+      "api": [
+        {"path": "/api/predict", "method": "POST", "status": "active"},
+        {"path": "/api/predict-from-backend", "method": "POST", "status": "active"},
+        {"path": "/api/predict-with-range", "method": "POST", "status": "active"}
+      ]
+    },
+    {
+      "section": "prediction",
+      "visibleByDefault": false,
+      "modules": ["App", "UIDisplayHandler", "APIStrategy"],
+      "api": [
+        {"path": "/api/predict", "method": "POST", "status": "active"},
+        {"path": "/api/predict-coordinator", "method": "POST", "status": "active"},
+        {"path": "/api/predict-double-bet", "method": "POST", "status": "active"}
+      ]
+    },
+    {
+      "section": "history",
+      "visibleByDefault": true,
+      "modules": ["RecordManager", "ApiClient"],
+      "api": [
+        {"path": "/api/draws", "method": "POST", "status": "active"},
+        {"path": "/api/draws/{draw_id}", "method": "PUT", "status": "active"},
+        {"path": "/api/draws/{draw_id}", "method": "DELETE", "status": "active"},
+        {"path": "/api/history", "method": "GET", "status": "active"}
+      ]
+    },
+    {
+      "section": "smartbetting",
+      "visibleByDefault": false,
+      "modules": ["SmartBettingComponent"],
+      "api": [
+        {"path": "/api/wheel/available-guarantees", "method": "GET", "status": "active"},
+        {"path": "/api/wheel/generate", "method": "GET", "status": "active"},
+        {"path": "/api/predict-entropy-8-bets", "method": "POST", "status": "active"}
+      ]
+    },
+    {
+      "section": "autolearning",
+      "visibleByDefault": false,
+      "modules": ["AutoLearningManager", "ApiClient"],
+      "api": [
+        {"path": "/api/auto-learning/optimize", "method": "POST", "status": "active"},
+        {"path": "/api/auto-learning/sync-data", "method": "POST", "status": "active"},
+        {"path": "/api/auto-learning/schedule/status", "method": "GET", "status": "active"},
+        {"path": "/api/auto-learning/schedule/start", "method": "POST", "status": "active"},
+        {"path": "/api/auto-learning/schedule/stop", "method": "POST", "status": "active"},
+        {"path": "/api/auto-learning/schedule/run-now", "method": "POST", "status": "active"},
+        {"path": "/api/auto-learning/best-config", "method": "GET", "status": "active"},
+        {"path": "/api/auto-learning/evaluate-strategies", "method": "POST", "status": "active"}
+      ]
+    }
+  ]
+}

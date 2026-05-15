@@ -1,0 +1,172 @@
+{
+  "timestamp": "20260416_155731",
+  "config": {
+    "test_draws": 300,
+    "min_history": 200,
+    "n_bets": 3
+  },
+  "gate_info": {
+    "DAILY_539": {
+      "n_total": 63,
+      "n_validated": 1,
+      "n_rejected": 0,
+      "n_provisional": 54,
+      "research_score": 0.214545,
+      "bonus_variance": 0.0,
+      "gate": "ENABLED",
+      "factor": 1.0,
+      "reason": "|research_score|=0.2145 >= 0.05"
+    },
+    "BIG_LOTTO": {
+      "n_total": 21,
+      "n_validated": 0,
+      "n_rejected": 11,
+      "n_provisional": 10,
+      "research_score": 0.009524,
+      "bonus_variance": 0.0,
+      "gate": "WEAK",
+      "factor": 0.5,
+      "reason": "|research_score|=0.0095 < 0.05"
+    },
+    "POWER_LOTTO": {
+      "n_total": 52,
+      "n_validated": 4,
+      "n_rejected": 4,
+      "n_provisional": 44,
+      "research_score": -0.119231,
+      "bonus_variance": 0.0,
+      "gate": "ENABLED",
+      "factor": 1.0,
+      "reason": "|research_score|=0.1192 >= 0.05"
+    }
+  },
+  "results": {
+    "DAILY_539": {
+      "A": {
+        "pipeline": "static_1.0",
+        "lottery_type": "DAILY_539",
+        "n_test": 300,
+        "hits": 105,
+        "hit_rate": 0.35,
+        "baseline": 0.517002,
+        "edge": -0.167002,
+        "sharpe": -2.452243,
+        "max_drawdown": 11
+      },
+      "B": {
+        "pipeline": "gated_ENABLED",
+        "lottery_type": "DAILY_539",
+        "n_test": 300,
+        "hits": 105,
+        "hit_rate": 0.35,
+        "baseline": 0.517002,
+        "edge": -0.167002,
+        "sharpe": -2.452243,
+        "max_drawdown": 11
+      },
+      "comparison": {
+        "pred_changes": 0,
+        "pred_change_rate": 0.0,
+        "a_wins": 0,
+        "b_wins": 0,
+        "ties": 0
+      },
+      "gate": {
+        "n_total": 63,
+        "n_validated": 1,
+        "n_rejected": 0,
+        "n_provisional": 54,
+        "research_score": 0.214545,
+        "bonus_variance": 0.0,
+        "gate": "ENABLED",
+        "factor": 1.0,
+        "reason": "|research_score|=0.2145 >= 0.05"
+      }
+    },
+    "BIG_LOTTO": {
+      "A": {
+        "pipeline": "static_1.0",
+        "lottery_type": "BIG_LOTTO",
+        "n_test": 300,
+        "hits": 14,
+        "hit_rate": 0.046667,
+        "baseline": 0.155823,
+        "edge": -0.109157,
+        "sharpe": -0.896428,
+        "max_drawdown": 65
+      },
+      "B": {
+        "pipeline": "gated_WEAK",
+        "lottery_type": "BIG_LOTTO",
+        "n_test": 300,
+        "hits": 14,
+        "hit_rate": 0.046667,
+        "baseline": 0.155823,
+        "edge": -0.109157,
+        "sharpe": -0.896428,
+        "max_drawdown": 65
+      },
+      "comparison": {
+        "pred_changes": 8,
+        "pred_change_rate": 0.0267,
+        "a_wins": 0,
+        "b_wins": 0,
+        "ties": 8
+      },
+      "gate": {
+        "n_total": 21,
+        "n_validated": 0,
+        "n_rejected": 11,
+        "n_provisional": 10,
+        "research_score": 0.009524,
+        "bonus_variance": 0.0,
+        "gate": "WEAK",
+        "factor": 0.5,
+        "reason": "|research_score|=0.0095 < 0.05"
+      }
+    },
+    "POWER_LOTTO": {
+      "A": {
+        "pipeline": "static_1.0",
+        "lottery_type": "POWER_LOTTO",
+        "n_test": 300,
+        "hits": 41,
+        "hit_rate": 0.136667,
+        "baseline": 0.299063,
+        "edge": -0.162396,
+        "sharpe": -0.33688,
+        "max_drawdown": 26
+      },
+      "B": {
+        "pipeline": "gated_ENABLED",
+        "lottery_type": "POWER_LOTTO",
+        "n_test": 300,
+        "hits": 41,
+        "hit_rate": 0.136667,
+        "baseline": 0.299063,
+        "edge": -0.162396,
+        "sharpe": -0.33688,
+        "max_drawdown": 26
+      },
+      "comparison": {
+        "pred_changes": 0,
+        "pred_change_rate": 0.0,
+        "a_wins": 0,
+        "b_wins": 0,
+        "ties": 0
+      },
+      "gate": {
+        "n_total": 52,
+        "n_validated": 4,
+        "n_rejected": 4,
+        "n_provisional": 44,
+        "research_score": -0.119231,
+        "bonus_variance": 0.0,
+        "gate": "ENABLED",
+        "factor": 1.0,
+        "reason": "|research_score|=0.1192 >= 0.05"
+      }
+    }
+  },
+  "verdict": "ACCEPT"
+}

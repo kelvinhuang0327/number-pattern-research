@@ -1,0 +1,42 @@
+{
+  "strategy": "大樂透 6注 — Zone Balance / Residual Hot / Residual Cold",
+  "rejected_date": "2026-03-12",
+  "trigger": "todo.md: 研究第6注是否可用殘餘號碼填補（5注覆蓋30/49 = 61.2%）",
+  "failure_reasons": [
+    "Bet6 獨立命中率 zone_balance=1.80%、residual_cold=1.60% 均低於隨機單注基準 1.86%",
+    "residual_hot 獨立命中率 2.27% 僅略高於 1.86%（+0.41%），未達統計顯著性",
+    "6注整體 Edge 正值（+3.01~+3.68%）是幾何覆蓋效益，非信號效益（同 L37 教訓）",
+    "McNemar 5注獨贏=0 是數學必然（hit6 ⊇ hit5），無鑑別力",
+    "Perm test 設計失效（OR邏輯使 shuffle 後均值不變，p=1.0）"
+  ],
+  "statistical_results": {
+    "n_oos": 1915,
+    "baseline_5bet": 8.96,
+    "baseline_6bet": 10.65,
+    "zone_balance": {
+      "150p_edge": 3.35,
+      "500p_edge": 2.35,
+      "1500p_edge": 3.21,
+      "independent_hit_rate": 1.80,
+      "marginal_edge_vs_random": -0.06
+    },
+    "residual_hot": {
+      "150p_edge": 4.01,
+      "500p_edge": 2.75,
+      "1500p_edge": 3.68,
+      "independent_hit_rate": 2.27,
+      "marginal_edge_vs_random": 0.41
+    },
+    "residual_cold": {
+      "150p_edge": 4.01,
+      "500p_edge": 2.95,
+      "1500p_edge": 3.01,
+      "independent_hit_rate": 1.60,
+      "marginal_edge_vs_random": -0.26
+    }
+  },
+  "root_cause": "幾何覆蓋效益主導。5注已覆蓋49個號碼中的30個（61.2%），剩餘19個號碼的隨機選取率本身接近隨機基準。無任何選號方法能在殘餘池中展示統計顯著的信號。",
+  "lessons": ["L37（幾何效益陷阱）完全適用於大樂透6注研究"],
+  "retest_conditions": "僅當發現殘餘號碼池中存在可預測結構（如特定 zone 在特定市場條件下的 Lift > 1.3x）時才可重測。目前無此理論基礎。",
+  "decision": "大樂透維持 5注架構（Edge +3.04%, perm p=0.000）"
+}

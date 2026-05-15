@@ -1,0 +1,17 @@
+{
+  "BIG_LOTTO": {
+    "jackpot": 650000000,
+    "source": "test_sync",
+    "updated_at": "2026-03-17"
+  },
+  "POWER_LOTTO": {
+    "jackpot": 200000000,
+    "source": "manual_default",
+    "updated_at": "2026-03-17"
+  },
+  "DAILY_539": {
+    "jackpot": 8000000,
+    "source": "manual_default",
+    "updated_at": "2026-03-17"
+  }
+}

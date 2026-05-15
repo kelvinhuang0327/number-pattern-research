@@ -1,0 +1,500 @@
+{
+  "task": "DAILY_539 H011 weekday/calendar regime validation",
+  "game": "DAILY_539",
+  "seed": 42,
+  "n_perm": 200,
+  "min_history": 300,
+  "windows": [
+    150,
+    500,
+    1500
+  ],
+  "verdict": "REJECT",
+  "exploratory_checks": {
+    "weekday_counts": {
+      "Mon": 1007,
+      "Tue": 1007,
+      "Wed": 1007,
+      "Thu": 1007,
+      "Fri": 1007,
+      "Sat": 798,
+      "Sun": 6
+    },
+    "global_chi2_p_value": 0.9281,
+    "nominal_p_lt_0_05": 3,
+    "bonferroni_survivors": 0,
+    "avg_weekday_count_range": 141.23
+  },
+  "leakage": {
+    "path": "/Users/kelvin/Kelvin-WorkSpace/LotteryNew/analysis/results/daily539_h011_weekday_no_leakage_20260422.txt",
+    "formal_checker_exit_code": 0,
+    "formal_checker_passed": true,
+    "h011_slice_checks_passed": true
+  },
+  "candidates": [
+    {
+      "name": "weekday_residual_1bet",
+      "label": "Weekday residual 1-bet",
+      "num_bets": 1,
+      "incumbent": {
+        "name": "acb_1bet",
+        "label": "ACB 1-bet"
+      },
+      "status": "REJECT",
+      "rationale": "at least one window edge <= 0; permutation p-value failed in at least one window; Cohen's d <= 1.0 in at least one window",
+      "windows": {
+        "150": {
+          "metrics": {
+            "window": 150,
+            "baseline": 11.4,
+            "hit_rate": 8.0,
+            "edge": -3.4,
+            "sharpe": -0.125,
+            "monetary_roi_pct": -85.33,
+            "avg_profit_per_draw": -42.67,
+            "match_summary": {
+              "m2_plus_hits": 12,
+              "m3_plus_hits": 2,
+              "m4_plus_hits": 0,
+              "m5_hits": 0
+            }
+          },
+          "permutation": {
+            "window": 150,
+            "real_rate": 7.33,
+            "edge": -4.07,
+            "p_value": 0.9602,
+            "cohens_d": -1.472,
+            "shuffle_mean_edge": -0.15,
+            "shuffle_std_edge": 2.66,
+            "n_oos": 150,
+            "n_perm": 200
+          },
+          "marginal_efficiency": [
+            {
+              "bet": 1,
+              "cumulative_hit_rate": 8.0,
+              "incremental_efficiency_pct": 100.0
+            }
+          ],
+          "mcnemar_vs_incumbent": {
+            "window": 150,
+            "candidate_only": 7,
+            "incumbent_only": 13,
+            "net": -6,
+            "p_value": 0.2632
+          }
+        },
+        "500": {
+          "metrics": {
+            "window": 500,
+            "baseline": 11.4,
+            "hit_rate": 9.8,
+            "edge": -1.6,
+            "sharpe": -0.054,
+            "monetary_roi_pct": -85.2,
+            "avg_profit_per_draw": -42.6,
+            "match_summary": {
+              "m2_plus_hits": 49,
+              "m3_plus_hits": 5,
+              "m4_plus_hits": 0,
+              "m5_hits": 0
+            }
+          },
+          "permutation": {
+            "window": 500,
+            "real_rate": 10.4,
+            "edge": -1.0,
+            "p_value": 0.7861,
+            "cohens_d": -0.711,
+            "shuffle_mean_edge": -0.04,
+            "shuffle_std_edge": 1.36,
+            "n_oos": 500,
+            "n_perm": 200
+          },
+          "marginal_efficiency": [
+            {
+              "bet": 1,
+              "cumulative_hit_rate": 9.8,
+              "incremental_efficiency_pct": 100.0
+            }
+          ],
+          "mcnemar_vs_incumbent": {
+            "window": 500,
+            "candidate_only": 39,
+            "incumbent_only": 59,
+            "net": -20,
+            "p_value": 0.0544
+          }
+        },
+        "1500": {
+          "metrics": {
+            "window": 1500,
+            "baseline": 11.4,
+            "hit_rate": 11.13,
+            "edge": -0.27,
+            "sharpe": -0.008,
+            "monetary_roi_pct": -84.87,
+            "avg_profit_per_draw": -42.43,
+            "match_summary": {
+              "m2_plus_hits": 167,
+              "m3_plus_hits": 12,
+              "m4_plus_hits": 0,
+              "m5_hits": 0
+            }
+          },
+          "permutation": {
+            "window": 1500,
+            "real_rate": 10.87,
+            "edge": -0.53,
+            "p_value": 0.7313,
+            "cohens_d": -0.551,
+            "shuffle_mean_edge": -0.08,
+            "shuffle_std_edge": 0.83,
+            "n_oos": 1500,
+            "n_perm": 200
+          },
+          "marginal_efficiency": [
+            {
+              "bet": 1,
+              "cumulative_hit_rate": 11.13,
+              "incremental_efficiency_pct": 100.0
+            }
+          ],
+          "mcnemar_vs_incumbent": {
+            "window": 1500,
+            "candidate_only": 136,
+            "incumbent_only": 185,
+            "net": -49,
+            "p_value": 0.0073
+          }
+        }
+      }
+    },
+    {
+      "name": "acb_calendar_overlay_2bet",
+      "label": "ACB + calendar regime overlay 2-bet",
+      "num_bets": 2,
+      "incumbent": {
+        "name": "midfreq_acb_2bet",
+        "label": "MidFreq + ACB 2-bet"
+      },
+      "status": "REJECT",
+      "rationale": "permutation p-value failed in at least one window; Cohen's d <= 1.0 in at least one window",
+      "windows": {
+        "150": {
+          "metrics": {
+            "window": 150,
+            "baseline": 21.54,
+            "hit_rate": 22.67,
+            "edge": 1.13,
+            "sharpe": 0.027,
+            "monetary_roi_pct": -86.67,
+            "avg_profit_per_draw": -86.67,
+            "match_summary": {
+              "m2_plus_hits": 34,
+              "m3_plus_hits": 1,
+              "m4_plus_hits": 0,
+              "m5_hits": 0
+            }
+          },
+          "permutation": {
+            "window": 150,
+            "real_rate": 19.33,
+            "edge": -2.21,
+            "p_value": 0.8507,
+            "cohens_d": -0.859,
+            "shuffle_mean_edge": 0.67,
+            "shuffle_std_edge": 3.35,
+            "n_oos": 150,
+            "n_perm": 200
+          },
+          "marginal_efficiency": [
+            {
+              "bet": 1,
+              "cumulative_hit_rate": 12.0,
+              "incremental_efficiency_pct": 100.0
+            },
+            {
+              "bet": 2,
+              "cumulative_hit_rate": 22.67,
+              "incremental_efficiency_pct": 105.19
+            }
+          ],
+          "mcnemar_vs_incumbent": {
+            "window": 150,
+            "candidate_only": 11,
+            "incumbent_only": 21,
+            "net": -10,
+            "p_value": 0.1102
+          }
+        },
+        "500": {
+          "metrics": {
+            "window": 500,
+            "baseline": 21.54,
+            "hit_rate": 25.0,
+            "edge": 3.46,
+            "sharpe": 0.08,
+            "monetary_roi_pct": -82.2,
+            "avg_profit_per_draw": -82.2,
+            "match_summary": {
+              "m2_plus_hits": 125,
+              "m3_plus_hits": 10,
+              "m4_plus_hits": 0,
+              "m5_hits": 0
+            }
+          },
+          "permutation": {
+            "window": 500,
+            "real_rate": 23.6,
+            "edge": 2.06,
+            "p_value": 0.3134,
+            "cohens_d": 0.601,
+            "shuffle_mean_edge": 0.99,
+            "shuffle_std_edge": 1.78,
+            "n_oos": 500,
+            "n_perm": 200
+          },
+          "marginal_efficiency": [
+            {
+              "bet": 1,
+              "cumulative_hit_rate": 13.8,
+              "incremental_efficiency_pct": 100.0
+            },
+            {
+              "bet": 2,
+              "cumulative_hit_rate": 25.0,
+              "incremental_efficiency_pct": 110.45
+            }
+          ],
+          "mcnemar_vs_incumbent": {
+            "window": 500,
+            "candidate_only": 44,
+            "incumbent_only": 65,
+            "net": -21,
+            "p_value": 0.0549
+          }
+        },
+        "1500": {
+          "metrics": {
+            "window": 1500,
+            "baseline": 21.54,
+            "hit_rate": 24.53,
+            "edge": 2.99,
+            "sharpe": 0.07,
+            "monetary_roi_pct": -83.0,
+            "avg_profit_per_draw": -83.0,
+            "match_summary": {
+              "m2_plus_hits": 368,
+              "m3_plus_hits": 27,
+              "m4_plus_hits": 0,
+              "m5_hits": 0
+            }
+          },
+          "permutation": {
+            "window": 1500,
+            "real_rate": 24.53,
+            "edge": 2.99,
+            "p_value": 0.0149,
+            "cohens_d": 2.162,
+            "shuffle_mean_edge": 0.59,
+            "shuffle_std_edge": 1.11,
+            "n_oos": 1500,
+            "n_perm": 200
+          },
+          "marginal_efficiency": [
+            {
+              "bet": 1,
+              "cumulative_hit_rate": 14.4,
+              "incremental_efficiency_pct": 100.0
+            },
+            {
+              "bet": 2,
+              "cumulative_hit_rate": 24.53,
+              "incremental_efficiency_pct": 99.93
+            }
+          ],
+          "mcnemar_vs_incumbent": {
+            "window": 1500,
+            "candidate_only": 127,
+            "incumbent_only": 166,
+            "net": -39,
+            "p_value": 0.0263
+          }
+        }
+      }
+    },
+    {
+      "name": "acb_markov_calendar_3bet",
+      "label": "ACB + Markov + calendar regime 3-bet",
+      "num_bets": 3,
+      "incumbent": {
+        "name": "acb_markov_midfreq_3bet",
+        "label": "ACB + Markov + MidFreq 3-bet"
+      },
+      "status": "REJECT",
+      "rationale": "permutation p-value failed in at least one window; Cohen's d <= 1.0 in at least one window",
+      "windows": {
+        "150": {
+          "metrics": {
+            "window": 150,
+            "baseline": 30.5,
+            "hit_rate": 31.33,
+            "edge": 0.83,
+            "sharpe": 0.018,
+            "monetary_roi_pct": -84.67,
+            "avg_profit_per_draw": -127.0,
+            "match_summary": {
+              "m2_plus_hits": 47,
+              "m3_plus_hits": 4,
+              "m4_plus_hits": 0,
+              "m5_hits": 0
+            }
+          },
+          "permutation": {
+            "window": 150,
+            "real_rate": 29.33,
+            "edge": -1.17,
+            "p_value": 0.8706,
+            "cohens_d": -0.89,
+            "shuffle_mean_edge": 2.19,
+            "shuffle_std_edge": 3.77,
+            "n_oos": 150,
+            "n_perm": 200
+          },
+          "marginal_efficiency": [
+            {
+              "bet": 1,
+              "cumulative_hit_rate": 12.0,
+              "incremental_efficiency_pct": 100.0
+            },
+            {
+              "bet": 2,
+              "cumulative_hit_rate": 22.0,
+              "incremental_efficiency_pct": 98.62
+            },
+            {
+              "bet": 3,
+              "cumulative_hit_rate": 31.33,
+              "incremental_efficiency_pct": 104.17
+            }
+          ],
+          "mcnemar_vs_incumbent": {
+            "window": 150,
+            "candidate_only": 11,
+            "incumbent_only": 21,
+            "net": -10,
+            "p_value": 0.1102
+          }
+        },
+        "500": {
+          "metrics": {
+            "window": 500,
+            "baseline": 30.5,
+            "hit_rate": 34.8,
+            "edge": 4.3,
+            "sharpe": 0.09,
+            "monetary_roi_pct": -82.33,
+            "avg_profit_per_draw": -123.5,
+            "match_summary": {
+              "m2_plus_hits": 174,
+              "m3_plus_hits": 16,
+              "m4_plus_hits": 0,
+              "m5_hits": 0
+            }
+          },
+          "permutation": {
+            "window": 500,
+            "real_rate": 32.0,
+            "edge": 1.5,
+            "p_value": 0.6617,
+            "cohens_d": -0.402,
+            "shuffle_mean_edge": 2.31,
+            "shuffle_std_edge": 2.01,
+            "n_oos": 500,
+            "n_perm": 200
+          },
+          "marginal_efficiency": [
+            {
+              "bet": 1,
+              "cumulative_hit_rate": 13.8,
+              "incremental_efficiency_pct": 100.0
+            },
+            {
+              "bet": 2,
+              "cumulative_hit_rate": 24.0,
+              "incremental_efficiency_pct": 100.59
+            },
+            {
+              "bet": 3,
+              "cumulative_hit_rate": 34.8,
+              "incremental_efficiency_pct": 120.54
+            }
+          ],
+          "mcnemar_vs_incumbent": {
+            "window": 500,
+            "candidate_only": 44,
+            "incumbent_only": 55,
+            "net": -11,
+            "p_value": 0.3149
+          }
+        },
+        "1500": {
+          "metrics": {
+            "window": 1500,
+            "baseline": 30.5,
+            "hit_rate": 35.2,
+            "edge": 4.7,
+            "sharpe": 0.098,
+            "monetary_roi_pct": -64.93,
+            "avg_profit_per_draw": -97.4,
+            "match_summary": {
+              "m2_plus_hits": 528,
+              "m3_plus_hits": 46,
+              "m4_plus_hits": 2,
+              "m5_hits": 0
+            }
+          },
+          "permutation": {
+            "window": 1500,
+            "real_rate": 35.73,
+            "edge": 5.23,
+            "p_value": 0.0149,
+            "cohens_d": 2.569,
+            "shuffle_mean_edge": 1.97,
+            "shuffle_std_edge": 1.27,
+            "n_oos": 1500,
+            "n_perm": 200
+          },
+          "marginal_efficiency": [
+            {
+              "bet": 1,
+              "cumulative_hit_rate": 14.4,
+              "incremental_efficiency_pct": 100.0
+            },
+            {
+              "bet": 2,
+              "cumulative_hit_rate": 25.6,
+              "incremental_efficiency_pct": 110.45
+            },
+            {
+              "bet": 3,
+              "cumulative_hit_rate": 35.2,
+              "incremental_efficiency_pct": 107.14
+            }
+          ],
+          "mcnemar_vs_incumbent": {
+            "window": 1500,
+            "candidate_only": 119,
+            "incumbent_only": 145,
+            "net": -26,
+            "p_value": 0.1237
+          }
+        }
+      }
+    }
+  ],
+  "next_planner_recommendation": "REJECT weekday/calendar overlays for DAILY_539 under current data. Next H011 branch should move to cross-draw cluster structure or pool-size regime effects, not another weekday retry. With H001-H008 already exhausted and calendar family also failing, DAILY_539 is closer to a near-exhausted signal space.",
+  "wiki_update_required": true
+}

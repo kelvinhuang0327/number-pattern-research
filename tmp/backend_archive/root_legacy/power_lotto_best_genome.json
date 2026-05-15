@@ -1,0 +1,14 @@
+{
+  "w_trend": 0.08520014466093118,
+  "w_freq": 0.8008455761361913,
+  "w_markov": 0.21376692871927722,
+  "w_deviation": 0.7762929505174907,
+  "trend_window": 50,
+  "markov_order": 2,
+  "enable_kill": false,
+  "kill_count": 7,
+  "enable_dual_path": true,
+  "top_n": 7,
+  "bottom_m": 1,
+  "zone2_strategy": 2
+}

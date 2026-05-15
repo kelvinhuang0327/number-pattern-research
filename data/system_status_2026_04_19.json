@@ -1,0 +1,193 @@
+{
+  "report_date": "2026-04-19",
+  "generated_at": "2026-04-19T00:41:38.607385",
+  "db_snapshot": {
+    "BIG_LOTTO": {
+      "latest_draw": "115000045",
+      "latest_date": "2026/04/17",
+      "total_draws": 2127
+    },
+    "DAILY_539": {
+      "latest_draw": "115000095",
+      "latest_date": "2026/04/17",
+      "total_draws": 5839
+    },
+    "POWER_LOTTO": {
+      "latest_draw": "115000031",
+      "latest_date": "2026/04/16",
+      "total_draws": 1903
+    }
+  },
+  "pre_cleanup": {
+    "shadow_C_gate_removed": true,
+    "shadow_C_status": "GATE_REMOVED_OOS_VALIDATED",
+    "shadow_C_note": "gate=0% validated OOS; shadow_C equiv to p1_dev_sum5bet. Gate removed from rsm_bootstrap.py."
+  },
+  "line_a_oos_refresh": {
+    "status": "COMPLETE",
+    "strategies_refreshed": 11,
+    "notable_drifts": 0,
+    "by_lottery": {
+      "DAILY_539": [
+        {
+          "strategy": "acb_1bet",
+          "n_bets": 1,
+          "old_1500p": 0.026,
+          "new_1500p": 0.028,
+          "new_500p": 0.03,
+          "new_300p": 0.0227,
+          "new_150p": 0.0127,
+          "delta_1500p": 0.002
+        },
+        {
+          "strategy": "midfreq_acb_2bet",
+          "n_bets": 2,
+          "old_1500p": 0.04945,
+          "new_1500p": 0.0553,
+          "new_500p": 0.0826,
+          "new_300p": 0.0813,
+          "new_150p": 0.0846,
+          "delta_1500p": 0.0059
+        },
+        {
+          "strategy": "acb_markov_midfreq_3bet",
+          "n_bets": 3,
+          "old_1500p": 0.06348,
+          "new_1500p": 0.0677,
+          "new_500p": 0.071,
+          "new_300p": 0.0817,
+          "new_150p": 0.075,
+          "delta_1500p": 0.0042
+        },
+        {
+          "strategy": "f4cold_5bet",
+          "n_bets": 5,
+          "old_1500p": 0.0861,
+          "new_1500p": 0.0974,
+          "new_500p": 0.0981,
+          "new_300p": 0.1028,
+          "new_150p": 0.0994,
+          "delta_1500p": 0.0113
+        }
+      ],
+      "BIG_LOTTO": [
+        {
+          "strategy": "p1_deviation_4bet",
+          "n_bets": 4,
+          "old_1500p": 0.02326,
+          "new_1500p": 0.0248,
+          "new_500p": 0.0255,
+          "new_300p": 0.0342,
+          "new_150p": 0.0342,
+          "delta_1500p": 0.0015
+        },
+        {
+          "strategy": "p1_dev_sum5bet",
+          "n_bets": 5,
+          "old_1500p": 0.02737,
+          "new_1500p": 0.0291,
+          "new_500p": 0.0324,
+          "new_300p": 0.0471,
+          "new_150p": 0.0504,
+          "delta_1500p": 0.0017
+        }
+      ],
+      "POWER_LOTTO": [
+        {
+          "strategy": "fourier_rhythm_2bet",
+          "n_bets": 2,
+          "old_1500p": 0.015435,
+          "new_1500p": 0.0154,
+          "new_500p": 0.0101,
+          "new_300p": 0.0008,
+          "new_150p": 0.0041,
+          "delta_1500p": -0.0
+        },
+        {
+          "strategy": "midfreq_fourier_2bet",
+          "n_bets": 2,
+          "old_1500p": 0.019435,
+          "new_1500p": 0.0194,
+          "new_500p": 0.0241,
+          "new_300p": 0.0008,
+          "new_150p": -0.0092,
+          "delta_1500p": -0.0
+        },
+        {
+          "strategy": "fourier_rhythm_3bet",
+          "n_bets": 3,
+          "old_1500p": 0.025007,
+          "new_1500p": 0.0256,
+          "new_500p": 0.0163,
+          "new_300p": 0.0083,
+          "new_150p": 0.015,
+          "delta_1500p": 0.0006
+        },
+        {
+          "strategy": "pp3_freqort_4bet",
+          "n_bets": 4,
+          "old_1500p": 0.031963,
+          "new_1500p": 0.0327,
+          "new_500p": 0.032,
+          "new_300p": 0.0273,
+          "new_150p": 0.0473,
+          "delta_1500p": 0.0007
+        },
+        {
+          "strategy": "orthogonal_5bet",
+          "n_bets": 5,
+          "old_1500p": 0.03825,
+          "new_1500p": 0.0389,
+          "new_500p": 0.0329,
+          "new_300p": 0.0309,
+          "new_150p": 0.0476,
+          "delta_1500p": 0.0006
+        }
+      ]
+    }
+  },
+  "line_b_h9_analysis": {
+    "status": "COMPLETE",
+    "decision": "CONTINUE_SHADOW",
+    "mcnemar_net": -8,
+    "mcnemar_p": 0.551413279666547,
+    "perm_p": 1.0,
+    "h9_1500p": 0.0114,
+    "mf_1500p": 0.0194,
+    "verdict": "H9 full-history net=-8 (regressed from +25). Advantage was small-sample noise. No promotion basis.",
+    "promotion_conditions": {
+      "mcnemar_p_lt_005": false,
+      "mcnemar_net_gt_0": false,
+      "perm_p_lt_005": false,
+      "all_windows_positive": false,
+      "h9_edge_gt_mf_edge": false,
+      "ALL_MET": false
+    }
+  },
+  "deployed_strategy_keys": {
+    "DAILY_539": {
+      "1": "acb_1bet",
+      "2": "midfreq_acb_2bet",
+      "3": "acb_markov_midfreq_3bet",
+      "5": "f4cold_5bet"
+    },
+    "BIG_LOTTO": {
+      "4": "p1_deviation_4bet",
+      "5": "p1_dev_sum5bet"
+    },
+    "POWER_LOTTO": {
+      "2": "fourier_rhythm_2bet",
+      "3": "fourier_rhythm_3bet",
+      "4": "pp3_freqort_4bet",
+      "5": "orthogonal_5bet"
+    }
+  },
+  "action_items": [
+    "NO deployment changes this cycle.",
+    "H9 stays SHADOW; L93 updated with full-history regression finding.",
+    "All strategy_states_*.json refreshed with 2026-04-19 OOS data.",
+    "Next full refresh: +300 draws or ~2026-07."
+  ],
+  "system_health": "STABLE",
+  "system_health_note": "No drifts > 1.5pp; all deployed strategies edge positive at 1500p window."
+}

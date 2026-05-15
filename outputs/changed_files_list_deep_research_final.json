@@ -1,0 +1,10 @@
+[
+  "outputs/completed_markdown.md",
+  "outputs/task_result.json",
+  "outputs/deep_research_final_result.json",
+  "outputs/deep_research_mc.json",
+  "outputs/cold_phase_strategy_set.json",
+  "outputs/hybrid_strategy_candidates.json",
+  "outputs/bet_sizing_policy.json",
+  "outputs/strategy_output_table.json"
+]

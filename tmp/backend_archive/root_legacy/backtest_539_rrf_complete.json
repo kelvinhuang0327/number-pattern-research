@@ -1,0 +1,137 @@
+{
+  "timestamp": "2026-03-03 11:41:30",
+  "total_draws": 5798,
+  "elapsed": 13.512793064117432,
+  "strategies": {
+    "ACB_Markov_Fourier_3bet": {
+      "n_bets": 3,
+      "edge_150p": 3.5,
+      "edge_500p": 3.9,
+      "edge_1500p": 6.43,
+      "z_1500p": 5.41,
+      "rate_1500p": 36.93,
+      "perm_p": 0.005,
+      "signal_edge": 4.52
+    },
+    "P3a_MK_MF_ACB_3bet": {
+      "n_bets": 3,
+      "edge_150p": 7.5,
+      "edge_500p": 5.7,
+      "edge_1500p": 6.3,
+      "z_1500p": 5.3,
+      "rate_1500p": 36.8,
+      "perm_p": 0.005,
+      "signal_edge": 4.53
+    },
+    "MidFreq_ACB_2bet": {
+      "n_bets": 2,
+      "edge_150p": 10.46,
+      "edge_500p": 5.46,
+      "edge_1500p": 5.06,
+      "z_1500p": 4.77,
+      "rate_1500p": 26.6,
+      "perm_p": 0.005,
+      "signal_edge": 4.86
+    },
+    "ACB_Fourier_2bet": {
+      "n_bets": 2,
+      "edge_150p": 0.46,
+      "edge_500p": 3.06,
+      "edge_1500p": 4.79,
+      "z_1500p": 4.52,
+      "rate_1500p": 26.33,
+      "perm_p": 0.005,
+      "signal_edge": 4.44
+    },
+    "ACB_Markov_2bet": {
+      "n_bets": 2,
+      "edge_150p": 1.79,
+      "edge_500p": 2.86,
+      "edge_1500p": 4.59,
+      "z_1500p": 4.33,
+      "rate_1500p": 26.13,
+      "perm_p": 0.005,
+      "signal_edge": 4.08
+    },
+    "F4Cold_3bet": {
+      "n_bets": 3,
+      "edge_150p": -0.5,
+      "edge_500p": 1.9,
+      "edge_1500p": 4.5,
+      "z_1500p": 3.79,
+      "rate_1500p": 35.0,
+      "perm_p": 0.035,
+      "signal_edge": 2.21
+    },
+    "ACB_1bet": {
+      "n_bets": 1,
+      "edge_150p": 2.6,
+      "edge_500p": 1.8,
+      "edge_1500p": 3.0,
+      "z_1500p": 3.66,
+      "rate_1500p": 14.4,
+      "perm_p": 0.005,
+      "signal_edge": 3.44
+    },
+    "RRF_3bet": {
+      "n_bets": 3,
+      "edge_150p": 6.83,
+      "edge_500p": 5.7,
+      "edge_1500p": 2.83,
+      "z_1500p": 2.38,
+      "rate_1500p": 33.33,
+      "perm_p": 0.199,
+      "signal_edge": 0.96
+    },
+    "RRF_2bet": {
+      "n_bets": 2,
+      "edge_150p": 4.46,
+      "edge_500p": 4.46,
+      "edge_1500p": 2.73,
+      "z_1500p": 2.57,
+      "rate_1500p": 24.27,
+      "perm_p": 0.025,
+      "signal_edge": 2.17
+    },
+    "RRF_ACB_MK_heavy_2bet": {
+      "n_bets": 2,
+      "edge_150p": 3.79,
+      "edge_500p": 0.66,
+      "edge_1500p": 2.13,
+      "z_1500p": 2.0,
+      "rate_1500p": 23.67,
+      "perm_p": 0.06,
+      "signal_edge": 1.85
+    },
+    "Markov_1bet": {
+      "n_bets": 1,
+      "edge_150p": 1.27,
+      "edge_500p": 1.6,
+      "edge_1500p": 1.47,
+      "z_1500p": 1.79,
+      "rate_1500p": 12.87,
+      "perm_p": 0.085,
+      "signal_edge": 1.25
+    },
+    "RRF_ACBheavy_2bet": {
+      "n_bets": 2,
+      "edge_150p": 1.13,
+      "edge_500p": -1.14,
+      "edge_1500p": 0.73,
+      "z_1500p": 0.68,
+      "rate_1500p": 22.27,
+      "perm_p": 0.343,
+      "signal_edge": 0.38
+    },
+    "RRF_1bet": {
+      "n_bets": 1,
+      "edge_150p": 1.27,
+      "edge_500p": 0.6,
+      "edge_1500p": -0.07,
+      "z_1500p": -0.08,
+      "rate_1500p": 11.33,
+      "perm_p": null,
+      "signal_edge": null
+    }
+  }
+}

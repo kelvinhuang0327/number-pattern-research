@@ -1,0 +1,160 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.com/agent-orchestrator/project_profile.schema.json",
+  "title": "Agent Orchestrator Project Profile",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "project_name",
+    "project_slug",
+    "orchestrator_root",
+    "backlog_path",
+    "task_storage_path",
+    "log_storage_path",
+    "database_path",
+    "default_schedule_minutes",
+    "planner_provider",
+    "worker_provider",
+    "planner_rules",
+    "worker_rules",
+    "protected_paths",
+    "required_checks",
+    "allowed_reference_paths",
+    "required_contract_fields",
+    "required_result_fields",
+    "ui"
+  ],
+  "properties": {
+    "project_name": {
+      "type": "string",
+      "minLength": 1
+    },
+    "project_slug": {
+      "type": "string",
+      "pattern": "^[a-z0-9-]{3,50}$"
+    },
+    "orchestrator_root": {
+      "type": "string",
+      "minLength": 1
+    },
+    "backlog_path": {
+      "type": "string",
+      "minLength": 1
+    },
+    "task_storage_path": {
+      "type": "string",
+      "minLength": 1
+    },
+    "log_storage_path": {
+      "type": "string",
+      "minLength": 1
+    },
+    "database_path": {
+      "type": "string",
+      "minLength": 1
+    },
+    "default_schedule_minutes": {
+      "type": "integer",
+      "minimum": 1,
+      "maximum": 1440
+    },
+    "planner_provider": {
+      "type": "string",
+      "enum": ["codex", "claude"]
+    },
+    "worker_provider": {
+      "type": "string",
+      "enum": ["codex", "claude", "copilot", "copilot-daemon"]
+    },
+    "planner_rules": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "must_read_previous_result",
+        "skip_if_latest_running",
+        "retry_replan_required_first"
+      ],
+      "properties": {
+        "must_read_previous_result": { "type": "boolean" },
+        "skip_if_latest_running": { "type": "boolean" },
+        "retry_replan_required_first": { "type": "boolean" }
+      }
+    },
+    "worker_rules": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "single_active_task",
+        "finalize_on_permission_block",
+        "finalize_on_stale_output_minutes"
+      ],
+      "properties": {
+        "single_active_task": { "type": "boolean" },
+        "finalize_on_permission_block": { "type": "boolean" },
+        "finalize_on_stale_output_minutes": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 1440
+        }
+      }
+    },
+    "protected_paths": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "string",
+        "minLength": 1
+      }
+    },
+    "required_checks": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "string",
+        "minLength": 1
+      }
+    },
+    "allowed_reference_paths": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "string",
+        "minLength": 1
+      }
+    },
+    "required_contract_fields": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "string",
+        "minLength": 1
+      }
+    },
+    "required_result_fields": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "string",
+        "minLength": 1
+      }
+    },
+    "ui": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "show_contract",
+        "show_result",
+        "show_gate_verdict",
+        "show_last_output_time",
+        "show_latest_progress_summary"
+      ],
+      "properties": {
+        "show_contract": { "type": "boolean" },
+        "show_result": { "type": "boolean" },
+        "show_gate_verdict": { "type": "boolean" },
+        "show_last_output_time": { "type": "boolean" },
+        "show_latest_progress_summary": { "type": "boolean" }
+      }
+    }
+  }
+}

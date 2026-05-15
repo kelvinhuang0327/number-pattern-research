@@ -1,0 +1,16 @@
+{
+  "strategy_name": "CondFourier (Fourier→LagEcho adaptive)",
+  "description": "ACB+Markov+CondFourier 3注：Fourier max分數<=threshold時切換為LagEcho",
+  "rejection_date": "2026-03-10",
+  "trigger": "115000060+061連續兩期 Fourier 空窗，嘗試 adaptive 切換",
+  "failure_reason": "Fourier max_score 在 5804 期歷史中幾乎永遠 > 0.40，LagEcho 路徑極少被觸發。四個門檻(0.25/0.30/0.35/0.40)產生幾乎完全相同的結果。McNemar vs AMF: a=1 b=0（1500期只差1場，實質無差異）。設計邏輯正確但 Fourier 信號不存在「弱/強」交替，假設前提不成立。",
+  "statistical_results": {
+    "best_threshold": 0.40,
+    "edge_1500p": 6.17,
+    "perm_p": 0.010,
+    "stability": "STABLE",
+    "mcnemar_vs_AMF": {"a_only": 1, "b_only": 0, "p_value": 0.317, "winner": "A(trivial)"}
+  },
+  "insight": "539 日開獎5804期的大量歷史使FFT對每個號碼總有穩定頻域表示，Fourier信號always-on。Conditional機制只在極罕見情況觸發（1/1500），無實質改善",
+  "retest_conditions": ["若 Fourier window 從 500 改為更短（如 100），可能出現 max_score 更低的情況", "若採用不同 FFT 方式（如 STFT, wavelet），signal strength 可能有更明顯的波動"]
+}

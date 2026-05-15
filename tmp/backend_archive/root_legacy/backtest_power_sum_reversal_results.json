@@ -1,0 +1,58 @@
+{
+  "strategy": "pp3_sum_reversal_constraint",
+  "draw_count": 1889,
+  "seed": 42,
+  "trigger_threshold": 145,
+  "sum_target_max": 110,
+  "trigger_stats": {
+    "trigger_count": 253,
+    "total": 1888,
+    "trigger_rate_pct": 13.40042372881356,
+    "overall_low_sum_rate": 0.4099576271186441,
+    "triggered_low_sum_rate": 0.41106719367588934,
+    "lift": 1.0027065396125052
+  },
+  "results": {
+    "PP3_orig": {
+      "150": {
+        "edge": 0.03500177606366678,
+        "m3r": 0.14666666666666667
+      },
+      "500": {
+        "edge": 0.02233510939700012,
+        "m3r": 0.134
+      },
+      "1500": {
+        "edge": 0.02233510939700012,
+        "m3r": 0.134
+      }
+    },
+    "PP3_SumReversal": {
+      "150": {
+        "edge": 0.03500177606366678,
+        "m3r": 0.14666666666666667
+      },
+      "500": {
+        "edge": 0.02433510939700012,
+        "m3r": 0.136
+      },
+      "1500": {
+        "edge": 0.025668442730333446,
+        "m3r": 0.13733333333333334
+      }
+    }
+  },
+  "permutation": {
+    "perm_p": 0.0,
+    "real_edge": 0.025668442730333446,
+    "shuffle_mean": 0.0036417760636667774,
+    "signal_edge": 0.02202666666666667,
+    "verdict": "SIGNAL_DETECTED"
+  },
+  "mcnemar": {
+    "net": -5,
+    "p": 0.1796875,
+    "n_discordant": 9
+  },
+  "conclusion": "PROVISIONAL: 邊際改善, 監控200期"
+}

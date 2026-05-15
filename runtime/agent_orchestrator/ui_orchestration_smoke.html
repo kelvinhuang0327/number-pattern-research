@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <title>Orchestration UI Smoke</title>
+  <style>
+    body { font-family: monospace; margin: 16px; }
+    pre { white-space: pre-wrap; }
+    iframe { width: 1280px; height: 900px; border: 1px solid #ccc; }
+  </style>
+</head>
+<body>
+  <pre id="result">running...</pre>
+  <iframe id="app-frame" src="/"></iframe>
+  <script>
+    const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
+
+    async function run() {
+      const frame = document.getElementById('app-frame');
+      const result = document.getElementById('result');
+
+      await new Promise((resolve, reject) => {
+        const timer = setTimeout(() => reject(new Error('iframe load timeout')), 15000);
+        frame.addEventListener('load', () => {
+          clearTimeout(timer);
+          resolve();
+        }, { once: true });
+      });
+
+      const win = frame.contentWindow;
+      const doc = frame.contentDocument;
+      const capturedErrors = [];
+      const originalConsoleError = win.console.error.bind(win.console);
+      win.console.error = (...args) => {
+        capturedErrors.push(args.map(String).join(' '));
+        originalConsoleError(...args);
+      };
+      win.addEventListener('error', (event) => {
+        capturedErrors.push(event.message || 'window error');
+      });
+
+      await sleep(1500);
+      doc.querySelector('.nav-btn[data-section="orchestration"]')?.click();
+      await sleep(2500);
+
+      const getText = (selector) => doc.querySelector(selector)?.textContent?.trim() || null;
+      const rows = Array.from(doc.querySelectorAll('#orc-task-tbody tr'));
+      const dataRows = rows.filter((row) => row.dataset.taskId);
+      const runRows = Array.from(doc.querySelectorAll('#orc-run-tbody tr'));
+
+      if (dataRows[0]) {
+        dataRows[0].click();
+        await sleep(1000);
+      }
+
+      const payload = {
+        activeSection: doc.querySelector('.section.active')?.id || null,
+        summary: {
+          total: getText('#orc-total'),
+          running: getText('#orc-running'),
+          completed: getText('#orc-completed'),
+          worker: getText('#orc-worker-status'),
+        },
+        taskTable: {
+          totalRows: rows.length,
+          dataRows: dataRows.length,
+          emptyText: rows[0] ? rows[0].textContent.trim() : null,
+        },
+        runsTable: {
+          totalRows: runRows.length,
+          firstRow: runRows[0] ? runRows[0].textContent.trim().replace(/\s+/g, ' ') : null,
+        },
+        detail: {
+          visible: !doc.getElementById('orc-detail-view')?.classList.contains('rv-hidden'),
+          title: getText('#orc-detail-content h3'),
+          hasPrompt: getText('#orc-detail-content details summary')?.includes('Prompt') || false,
+          completedSnippet: getText('#orc-detail-content details:nth-of-type(2) pre')?.slice(0, 120) || null,
+        },
+        errors: capturedErrors,
+      };
+
+      result.textContent = JSON.stringify(payload, null, 2);
+      document.title = 'done';
+    }
+
+    run().catch((error) => {
+      document.getElementById('result').textContent = JSON.stringify({
+        error: String(error),
+      }, null, 2);
+      document.title = 'failed';
+    });
+  </script>
+</body>
+</html>

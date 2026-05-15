@@ -1,0 +1,29 @@
+{
+  "test": "McNemar_MicroFish_vs_ACB_1bet",
+  "n_eval": 1600,
+  "microfish": {
+    "rate": 0.154375,
+    "edge_pct": 4.040157023709656
+  },
+  "acb": {
+    "rate": 0.14375,
+    "edge_pct": 2.977657023709654
+  },
+  "baseline_rate": 0.11397342976290345,
+  "mcnemar": {
+    "both_hit": 182,
+    "mf_only": 65,
+    "acb_only": 48,
+    "neither": 1305,
+    "net": 17,
+    "chi2": 2.265486725663717,
+    "p_value": 0.13228464541086826
+  },
+  "gate": {
+    "net_threshold": 20,
+    "p_threshold": 0.05,
+    "net_pass": false,
+    "p_pass": false,
+    "overall": false
+  }
+}

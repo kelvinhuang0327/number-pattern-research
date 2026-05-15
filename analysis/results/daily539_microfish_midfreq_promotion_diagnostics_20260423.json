@@ -1,0 +1,65 @@
+{
+  "task": "DAILY_539 MicroFish+MidFreq promotion diagnostics",
+  "failure_context": {
+    "power_lotto_wq_p2_1": "Skipped this round because the same direction repeatedly failed under environment permission/quota blockers, so the 8-hour validation budget was redirected.",
+    "daily539_h011_h012_h013": "Did not rerun H011/H012 because both are already REJECT in trusted wiki; did not rerun H013 because trusted active data lacks pool/sales coverage and proxy validation is forbidden.",
+    "selected_topic": "This round executes the only trusted actionable DAILY_539 bypass theme: MicroFish+MidFreq 2-bet promotion gating against the active MidFreq+ACB incumbent."
+  },
+  "data_range": {
+    "first_draw": "96000001",
+    "first_date": "2007/01/01",
+    "last_draw": "115000095",
+    "last_date": "2026/04/17",
+    "count": 5839
+  },
+  "candidate_mapping": {
+    "requested_name": "microfish_midfreq_2bet",
+    "mapped_name": "MicroFish+MidFreq 2-bet",
+    "mapping_note": "Active-code mapping follows tools/production_validation.py: bet1 is the evolved MicroFish genome, bet2 is MidFreq with exclusion from bet1."
+  },
+  "microfish_genome": {
+    "source": "/Users/kelvin/Kelvin-WorkSpace/LotteryNew/validated_strategy_set.json",
+    "generated_now": false,
+    "features": [
+      "freq_zscore_80",
+      "freq_raw_150",
+      "freq_zscore_150",
+      "tail_entropy_10",
+      "markov_lag3_100",
+      "ix_gap_ratio_100_x_zone_deficit_100",
+      "ix_freq_deficit_100_x_ac_mean_100",
+      "nl_sq_entropy_binary_100"
+    ],
+    "weights": [
+      0.10419047784039072,
+      0.14800937134180914,
+      0.1503555479528559,
+      0.06461303008259887,
+      0.08603002547381224,
+      0.1460586397447596,
+      0.1890333867886392,
+      0.11170952077513423
+    ],
+    "max_required_history": 150,
+    "summary": {
+      "valid_count": 30,
+      "rejected_count": 0,
+      "top_rank": 1,
+      "top_status": "VALID",
+      "generation": null
+    }
+  },
+  "gate_failures": {
+    "150": [
+      "mcnemar>=0.05"
+    ],
+    "500": [],
+    "1500": []
+  },
+  "leakage": {
+    "path": "/Users/kelvin/Kelvin-WorkSpace/LotteryNew/analysis/results/daily539_microfish_midfreq_promotion_no_leakage_20260423.txt",
+    "formal_checker_exit_code": 0,
+    "formal_checker_passed": true,
+    "microfish_slice_checks_passed": true
+  }
+}

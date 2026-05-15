@@ -1,0 +1,189 @@
+{
+  "task": "WQ_P2_1_VALIDATION",
+  "lottery_type": "POWER_LOTTO",
+  "timestamp": "2026-04-23T15:49:55.827045",
+  "total_draws": 1903,
+  "seed": 42,
+  "windows": [
+    150,
+    500,
+    1500
+  ],
+  "strategies": {
+    "wq_p21_3bet": {
+      "num_bets": 3,
+      "windows": {
+        "150": {
+          "edge": 12.0057,
+          "win_rate": 14.6667,
+          "random_baseline": 2.661,
+          "match_dist": {
+            "3": 21,
+            "4": 1
+          },
+          "perm_p_value": 0.0667,
+          "cohens_d": 1.2814,
+          "perm_passed_alpha005": false,
+          "sample_size": 150
+        },
+        "500": {
+          "edge": 7.739,
+          "win_rate": 10.4,
+          "random_baseline": 2.661,
+          "match_dist": {
+            "4": 4,
+            "3": 48
+          },
+          "perm_p_value": 0.6333,
+          "cohens_d": -0.2459,
+          "perm_passed_alpha005": false,
+          "sample_size": 500
+        },
+        "1500": {
+          "edge": 7.4723,
+          "win_rate": 10.1333,
+          "random_baseline": 2.661,
+          "match_dist": {
+            "3": 141,
+            "4": 11
+          },
+          "perm_p_value": 0.8,
+          "cohens_d": -0.9352,
+          "perm_passed_alpha005": false,
+          "sample_size": 1500
+        }
+      }
+    },
+    "fourier_rhythm_3bet": {
+      "num_bets": 3,
+      "windows": {
+        "150": {
+          "edge": 7.339,
+          "win_rate": 10.0,
+          "random_baseline": 2.661,
+          "match_dist": {
+            "3": 13,
+            "4": 2
+          },
+          "perm_p_value": 1.0,
+          "cohens_d": 0.0,
+          "perm_passed_alpha005": false,
+          "sample_size": 150
+        },
+        "500": {
+          "edge": 5.939,
+          "win_rate": 8.6,
+          "random_baseline": 2.661,
+          "match_dist": {
+            "4": 5,
+            "3": 38
+          },
+          "perm_p_value": 1.0,
+          "cohens_d": 0.0,
+          "perm_passed_alpha005": false,
+          "sample_size": 500
+        },
+        "1500": {
+          "edge": 6.6723,
+          "win_rate": 9.3333,
+          "random_baseline": 2.661,
+          "match_dist": {
+            "3": 123,
+            "4": 17
+          },
+          "perm_p_value": 1.0,
+          "cohens_d": -0.0,
+          "perm_passed_alpha005": false,
+          "sample_size": 1500
+        }
+      }
+    },
+    "pp3_freqort_4bet": {
+      "num_bets": 4,
+      "windows": {
+        "150": {
+          "edge": 7.1345,
+          "win_rate": 10.6667,
+          "random_baseline": 3.5322,
+          "match_dist": {
+            "3": 14,
+            "4": 2
+          },
+          "perm_p_value": 1.0,
+          "cohens_d": -0.0,
+          "perm_passed_alpha005": false,
+          "sample_size": 150
+        },
+        "500": {
+          "edge": 7.6678,
+          "win_rate": 11.2,
+          "random_baseline": 3.5322,
+          "match_dist": {
+            "3": 54,
+            "4": 2
+          },
+          "perm_p_value": 1.0,
+          "cohens_d": 0.0,
+          "perm_passed_alpha005": false,
+          "sample_size": 500
+        },
+        "1500": {
+          "edge": 7.6678,
+          "win_rate": 11.2,
+          "random_baseline": 3.5322,
+          "match_dist": {
+            "3": 160,
+            "4": 8
+          },
+          "perm_p_value": 1.0,
+          "cohens_d": 0.0,
+          "perm_passed_alpha005": false,
+          "sample_size": 1500
+        }
+      }
+    }
+  },
+  "comparison": {
+    "wq_vs_fourier": {
+      "150": 163.59,
+      "500": 130.31,
+      "1500": 111.99
+    },
+    "wq_vs_pp3": {
+      "150": 168.28,
+      "500": 100.93,
+      "1500": 97.45
+    }
+  },
+  "leakage_check": {
+    "window_150": {
+      "window_size": 150,
+      "test_points": 150,
+      "leakage_failures": [],
+      "passed": true
+    },
+    "window_500": {
+      "window_size": 500,
+      "test_points": 500,
+      "leakage_failures": [],
+      "passed": true
+    },
+    "window_1500": {
+      "window_size": 1500,
+      "test_points": 1500,
+      "leakage_failures": [],
+      "passed": true
+    }
+  },
+  "conclusion": {
+    "classification": "REJECT",
+    "description": "Positive edge but permutation test failed, efficiency below 80%, or Cohen's d insufficient",
+    "criteria_met": {
+      "all_edges_positive": true,
+      "all_perm_pass": false,
+      "all_cohens_d_gt_10": false,
+      "efficiency_ge_80pct": true,
+      "no_data_leakage": true
+    }
+  }
+}

@@ -1,0 +1,50 @@
+{
+  "strategy_name": "zone_cascade_guard",
+  "lottery_type": "BIG_LOTTO",
+  "rejected_date": "2026-03-14",
+  "description": "Zone Cascade Guard: 上期 Zone=0 → 該 Zone 號碼評分 +12% max_score, Zone≥4 → -5% penalty",
+  "parameters": {
+    "zone_boost": 0.12,
+    "zone_penalty_factor": 0.4,
+    "zones": [[1,16],[17,32],[33,49]]
+  },
+  "failure_reason": "Permutation test p=0.51-0.73 (遠超 0.05), 三窗口 500p 2-bet 仍負, OOS 5-fold 中 3 fold 負, McNemar 無顯著差異 (equal)",
+  "validation_results": {
+    "2bet": {
+      "rate": 0.0444,
+      "edge_pct": 0.75,
+      "hits": 85,
+      "hits_noguard": 85,
+      "diff": 0,
+      "three_window": {"150p": 1.64, "500p": -0.29, "1500p": 0.51},
+      "three_window_pass": false,
+      "z_score": 1.733,
+      "p_value": 0.0416,
+      "perm_p": 0.7327,
+      "sharpe": 0.0362,
+      "oos_all_positive": false,
+      "verdict": "REJECTED"
+    },
+    "3bet": {
+      "rate": 0.0626,
+      "edge_pct": 0.77,
+      "hits": 120,
+      "hits_noguard": 119,
+      "diff": 1,
+      "three_window": {"150p": 3.84, "500p": 0.31, "1500p": 0.58},
+      "three_window_pass": true,
+      "z_score": 1.486,
+      "p_value": 0.0687,
+      "perm_p": 0.5149,
+      "sharpe": 0.0319,
+      "oos_all_positive": false,
+      "verdict": "REJECTED"
+    }
+  },
+  "key_insight": "Zone rebound probability (~69.2%) is a real statistical phenomenon but the scoring boost does NOT translate into additional hits. The underlying agents already capture zone rebound signals implicitly. Adding explicit zone boost creates noise without adding signal — permutation test confirms no temporal structure is being exploited.",
+  "retest_conditions": [
+    "New agent architecture that is demonstrably zone-blind",
+    "Zone rebound probability exceeds 80% in updated data",
+    "Combined with a fundamentally different scoring framework"
+  ]
+}

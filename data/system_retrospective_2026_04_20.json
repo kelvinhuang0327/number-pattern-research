@@ -1,0 +1,58 @@
+{
+  "generated_at": "2026-04-20T00:00:00+08:00",
+  "scope": "maintenance_closeout",
+  "summary": "This closeout consolidated the analysis-to-system work into a maintained runtime posture, archived one-off tooling, and finalized the approved bet-count reductions for DAILY_539 and POWER_LOTTO.",
+  "final_runtime_state": {
+    "deployed_strategy_keys": {
+      "DAILY_539": {
+        "1": "acb_1bet"
+      },
+      "BIG_LOTTO": {
+        "4": "p1_deviation_4bet",
+        "5": "p1_dev_sum5bet"
+      },
+      "POWER_LOTTO": {
+        "2": "midfreq_fourier_2bet"
+      }
+    },
+    "next_draw_config": {
+      "DAILY_539": ["acb_1bet"],
+      "BIG_LOTTO": ["regime_2bet", "ts3_regime_3bet", "p1_deviation_4bet", "p1_dev_sum5bet"],
+      "POWER_LOTTO": ["midfreq_fourier_2bet"]
+    }
+  },
+  "decision_outcome": {
+    "daily_539": {
+      "current_bets": 3,
+      "approved_bets": 1,
+      "annual_cost_saving": 10400,
+      "verdict": "RECOMMEND_REDUCE"
+    },
+    "power_lotto": {
+      "current_bets": 5,
+      "approved_bets": 2,
+      "annual_cost_saving": 15600,
+      "verdict": "RECOMMEND_REDUCE"
+    },
+    "live_audit_within_ci_95": true
+  },
+  "strategy_inventory": {
+    "daily_strategies_in_catalog": 5,
+    "big_strategies_in_catalog": 6,
+    "power_strategies_in_catalog": 6,
+    "lessons_file_unique_ids": 99,
+    "lessons_file_total_ids": 100,
+    "archived_session_scripts": [
+      "tools/archive/diag_115000011.py",
+      "tools/archive/evaluate_115000011.py",
+      "tools/archive/evaluate_115000062.py",
+      "tools/archive/maintenance_mode_update_20260419.py",
+      "tools/archive/validate_539_correct.py"
+    ]
+  },
+  "operational_notes": [
+    "The weekly health report now includes EV gate and milestone output.",
+    "The LaunchAgent path is validated and the archive policy now preserves session scripts under tools/archive/.",
+    "The repository is in maintenance mode: keep runtime config and reporting synchronized, and avoid expanding scope without a fresh decision brief."
+  ]
+}

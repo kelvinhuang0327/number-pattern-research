@@ -1,0 +1,1754 @@
+{
+  "meta": {
+    "seed": 20260305,
+    "primary_window": 1500,
+    "windows": [
+      150,
+      500,
+      1500
+    ],
+    "threshold": "M2+",
+    "permutations": 300,
+    "assumptions": [
+      "統一評估指標採用 M2+（命中至少 2 號）以提高檢定功效，三彩種一致化比較。",
+      "Permutation 檢定以『固定預測、打亂真實開獎期序』估計虛無分配。",
+      "Bonferroni 以同一 phase 的同類假設數量校正（特徵 N=19、模型 N=8）。",
+      "Walk-forward 採用嚴格時序：每期 t 僅用 t 之前資料；模型採週期性重訓。",
+      "為控制運算成本，模型重訓間隔設為 250 期，訓練視窗上限 1200 期。",
+      "未納入獎金結構 EV；本研究聚焦『可檢測預測訊號』而非投資報酬率。",
+      "Power/Big 的第二區（特別號）不納入本次主訊號檢定，避免混合不同樣本空間。"
+    ],
+    "generated_at": "2026-03-05T11:44:14.146071"
+  },
+  "feature_classes": [
+    {
+      "feature_class_id": 1,
+      "name": "Frequency-based",
+      "description": "Feature class 1: Frequency-based",
+      "games": {
+        "POWER_LOTTO": {
+          "baseline_rate_pct": 23.408463346543837,
+          "real_rate_pct": 22.466666666666665,
+          "edge_pct": -0.9417966798771715,
+          "window_rate_pct": {
+            "150": 22.666666666666664,
+            "500": 22.400000000000002,
+            "1500": 22.466666666666665
+          },
+          "window_edge_pct": {
+            "150": -0.7417966798771722,
+            "500": -1.0084633465438344,
+            "1500": -0.9417966798771715
+          },
+          "permutation": {
+            "real_rate": 0.22466666666666665,
+            "perm_mean": 0.24399555555555555,
+            "perm_std": 0.010653602184527674,
+            "z_score": -1.8143054858145646,
+            "p_value": 0.9800664451827242,
+            "effect_size": -1.8143054858145646,
+            "n_perm": 300,
+            "count_exceed": 294
+          },
+          "bonferroni_alpha": 0.002631578947368421,
+          "stability_index": 0.0,
+          "passes_rigor": false
+        },
+        "BIG_LOTTO": {
+          "baseline_rate_pct": 15.101557400354812,
+          "real_rate_pct": 14.6,
+          "edge_pct": -0.5015574003548124,
+          "window_rate_pct": {
+            "150": 18.0,
+            "500": 17.2,
+            "1500": 14.6
+          },
+          "window_edge_pct": {
+            "150": 2.898442599645188,
+            "500": 2.098442599645187,
+            "1500": -0.5015574003548124
+          },
+          "permutation": {
+            "real_rate": 0.146,
+            "perm_mean": 0.15606222222222224,
+            "perm_std": 0.009471468787239617,
+            "z_score": -1.0623718925955972,
+            "p_value": 0.8604651162790697,
+            "effect_size": -1.0623718925955972,
+            "n_perm": 300,
+            "count_exceed": 258
+          },
+          "bonferroni_alpha": 0.002631578947368421,
+          "stability_index": 0.13872223753920424,
+          "passes_rigor": false
+        },
+        "DAILY_539": {
+          "baseline_rate_pct": 11.397342976290346,
+          "real_rate_pct": 10.733333333333334,
+          "edge_pct": -0.6640096429570121,
+          "window_rate_pct": {
+            "150": 11.333333333333332,
+            "500": 12.4,
+            "1500": 10.733333333333334
+          },
+          "window_edge_pct": {
+            "150": -0.06400964295701428,
+            "500": 1.002657023709654,
+            "1500": -0.6640096429570121
+          },
+          "permutation": {
+            "real_rate": 0.10733333333333334,
+            "perm_mean": 0.1218022222222222,
+            "perm_std": 0.008037928300129622,
+            "z_score": -1.8000768788713202,
+            "p_value": 0.9767441860465116,
+            "effect_size": -1.8000768788713202,
+            "n_perm": 300,
+            "count_exceed": 293
+          },
+          "bonferroni_alpha": 0.002631578947368421,
+          "stability_index": 0.0,
+          "passes_rigor": false
+        }
+      }
+    },
+    {
+      "feature_class_id": 2,
+      "name": "Gap and interval",
+      "description": "Feature class 2: Gap and interval",
+      "games": {
+        "POWER_LOTTO": {
+          "baseline_rate_pct": 23.408463346543837,
+          "real_rate_pct": 24.933333333333334,
+          "edge_pct": 1.524869986789497,
+          "window_rate_pct": {
+            "150": 24.0,
+            "500": 25.0,
+            "1500": 24.933333333333334
+          },
+          "window_edge_pct": {
+            "150": 0.5915366534561635,
+            "500": 1.5915366534561635,
+            "1500": 1.524869986789497
+          },
+          "permutation": {
+            "real_rate": 0.24933333333333332,
+            "perm_mean": 0.23122000000000004,
+            "perm_std": 0.011356468543423953,
+            "z_score": 1.594979395441285,
+            "p_value": 0.06312292358803986,
+            "effect_size": 1.594979395441285,
+            "n_perm": 300,
+            "count_exceed": 18
+          },
+          "bonferroni_alpha": 0.002631578947368421,
+          "stability_index": 0.6306552907205711,
+          "passes_rigor": false
+        },
+        "BIG_LOTTO": {
+          "baseline_rate_pct": 15.101557400354812,
+          "real_rate_pct": 15.866666666666667,
+          "edge_pct": 0.765109266311855,
+          "window_rate_pct": {
+            "150": 16.0,
+            "500": 16.8,
+            "1500": 15.866666666666667
+          },
+          "window_edge_pct": {
+            "150": 0.8984425996451879,
+            "500": 1.6984425996451886,
+            "1500": 0.765109266311855
+          },
+          "permutation": {
+            "real_rate": 0.15866666666666668,
+            "perm_mean": 0.14973333333333333,
+            "perm_std": 0.008677087751766248,
+            "z_score": 1.0295312883617442,
+            "p_value": 0.15946843853820597,
+            "effect_size": 1.0295312883617442,
+            "n_perm": 300,
+            "count_exceed": 47
+          },
+          "bonferroni_alpha": 0.002631578947368421,
+          "stability_index": 0.6322175786981086,
+          "passes_rigor": false
+        },
+        "DAILY_539": {
+          "baseline_rate_pct": 11.397342976290346,
+          "real_rate_pct": 10.266666666666667,
+          "edge_pct": -1.130676309623679,
+          "window_rate_pct": {
+            "150": 9.333333333333334,
+            "500": 9.4,
+            "1500": 10.266666666666667
+          },
+          "window_edge_pct": {
+            "150": -2.0640096429570125,
+            "500": -1.997342976290346,
+            "1500": -1.130676309623679
+          },
+          "permutation": {
+            "real_rate": 0.10266666666666667,
+            "perm_mean": 0.11211333333333333,
+            "perm_std": 0.00841412656940255,
+            "z_score": -1.1227150658627076,
+            "p_value": 0.8837209302325582,
+            "effect_size": -1.1227150658627076,
+            "n_perm": 300,
+            "count_exceed": 265
+          },
+          "bonferroni_alpha": 0.002631578947368421,
+          "stability_index": 0.0,
+          "passes_rigor": false
+        }
+      }
+    },
+    {
+      "feature_class_id": 3,
+      "name": "Markov chains",
+      "description": "Feature class 3: Markov chains",
+      "games": {
+        "POWER_LOTTO": {
+          "baseline_rate_pct": 23.408463346543837,
+          "real_rate_pct": 21.4,
+          "edge_pct": -2.008463346543838,
+          "window_rate_pct": {
+            "150": 24.0,
+            "500": 24.6,
+            "1500": 21.4
+          },
+          "window_edge_pct": {
+            "150": 0.5915366534561635,
+            "500": 1.1915366534561649,
+            "1500": -2.008463346543838
+          },
+          "permutation": {
+            "real_rate": 0.214,
+            "perm_mean": 0.2399666666666667,
+            "perm_std": 0.011003181358134564,
+            "z_score": -2.359923536578793,
+            "p_value": 0.9933554817275747,
+            "effect_size": -2.359923536578793,
+            "n_perm": 300,
+            "count_exceed": 298
+          },
+          "bonferroni_alpha": 0.002631578947368421,
+          "stability_index": 0.0,
+          "passes_rigor": false
+        },
+        "BIG_LOTTO": {
+          "baseline_rate_pct": 15.101557400354812,
+          "real_rate_pct": 14.000000000000002,
+          "edge_pct": -1.1015574003548103,
+          "window_rate_pct": {
+            "150": 14.000000000000002,
+            "500": 15.2,
+            "1500": 14.000000000000002
+          },
+          "window_edge_pct": {
+            "150": -1.1015574003548103,
+            "500": 0.0984425996451872,
+            "1500": -1.1015574003548103
+          },
+          "permutation": {
+            "real_rate": 0.14,
+            "perm_mean": 0.1561422222222222,
+            "perm_std": 0.009662937722664819,
+            "z_score": -1.6705294687649097,
+            "p_value": 0.9601328903654485,
+            "effect_size": -1.6705294687649097,
+            "n_perm": 300,
+            "count_exceed": 288
+          },
+          "bonferroni_alpha": 0.002631578947368421,
+          "stability_index": 0.0875495765933626,
+          "passes_rigor": false
+        },
+        "DAILY_539": {
+          "baseline_rate_pct": 11.397342976290346,
+          "real_rate_pct": 12.133333333333333,
+          "edge_pct": 0.7359903570429864,
+          "window_rate_pct": {
+            "150": 14.000000000000002,
+            "500": 13.8,
+            "1500": 12.133333333333333
+          },
+          "window_edge_pct": {
+            "150": 2.6026570237096553,
+            "500": 2.4026570237096543,
+            "1500": 0.7359903570429864
+          },
+          "permutation": {
+            "real_rate": 0.12133333333333333,
+            "perm_mean": 0.12017333333333333,
+            "perm_std": 0.008132032682887811,
+            "z_score": 0.14264576214730956,
+            "p_value": 0.48172757475083056,
+            "effect_size": 0.14264576214730956,
+            "n_perm": 300,
+            "count_exceed": 144
+          },
+          "bonferroni_alpha": 0.002631578947368421,
+          "stability_index": 0.5627434917800047,
+          "passes_rigor": false
+        }
+      }
+    },
+    {
+      "feature_class_id": 4,
+      "name": "Higher-order Markov",
+      "description": "Feature class 4: Higher-order Markov",
+      "games": {
+        "POWER_LOTTO": {
+          "baseline_rate_pct": 23.408463346543837,
+          "real_rate_pct": 23.933333333333334,
+          "edge_pct": 0.524869986789497,
+          "window_rate_pct": {
+            "150": 22.666666666666664,
+            "500": 23.599999999999998,
+            "1500": 23.933333333333334
+          },
+          "window_edge_pct": {
+            "150": -0.7417966798771722,
+            "500": 0.19153665345616133,
+            "1500": 0.524869986789497
+          },
+          "permutation": {
+            "real_rate": 0.23933333333333334,
+            "perm_mean": 0.23434000000000002,
+            "perm_std": 0.01011496654211709,
+            "z_score": 0.49365791889159777,
+            "p_value": 0.30564784053156147,
+            "effect_size": 0.49365791889159777,
+            "n_perm": 300,
+            "count_exceed": 91
+          },
+          "bonferroni_alpha": 0.002631578947368421,
+          "stability_index": 0.0,
+          "passes_rigor": false
+        },
+        "BIG_LOTTO": {
+          "baseline_rate_pct": 15.101557400354812,
+          "real_rate_pct": 15.8,
+          "edge_pct": 0.6984425996451886,
+          "window_rate_pct": {
+            "150": 14.666666666666666,
+            "500": 16.2,
+            "1500": 15.8
+          },
+          "window_edge_pct": {
+            "150": -0.434890733688146,
+            "500": 1.0984425996451872,
+            "1500": 0.6984425996451886
+          },
+          "permutation": {
+            "real_rate": 0.158,
+            "perm_mean": 0.1551622222222222,
+            "perm_std": 0.009468954079412608,
+            "z_score": 0.29969284396974755,
+            "p_value": 0.4119601328903654,
+            "effect_size": 0.29969284396974755,
+            "n_perm": 300,
+            "count_exceed": 123
+          },
+          "bonferroni_alpha": 0.002631578947368421,
+          "stability_index": 0.08470305999021499,
+          "passes_rigor": false
+        },
+        "DAILY_539": {
+          "baseline_rate_pct": 11.397342976290346,
+          "real_rate_pct": 11.133333333333335,
+          "edge_pct": -0.2640096429570118,
+          "window_rate_pct": {
+            "150": 7.333333333333333,
+            "500": 9.4,
+            "1500": 11.133333333333335
+          },
+          "window_edge_pct": {
+            "150": -4.064009642957013,
+            "500": -1.997342976290346,
+            "1500": -0.2640096429570118
+          },
+          "permutation": {
+            "real_rate": 0.11133333333333334,
+            "perm_mean": 0.11819555555555553,
+            "perm_std": 0.007927839990412282,
+            "z_score": -0.8655853586418985,
+            "p_value": 0.8106312292358804,
+            "effect_size": -0.8655853586418985,
+            "n_perm": 300,
+            "count_exceed": 243
+          },
+          "bonferroni_alpha": 0.002631578947368421,
+          "stability_index": 0.0,
+          "passes_rigor": false
+        }
+      }
+    },
+    {
+      "feature_class_id": 5,
+      "name": "Fourier / spectral",
+      "description": "Feature class 5: Fourier / spectral",
+      "games": {
+        "POWER_LOTTO": {
+          "baseline_rate_pct": 23.408463346543837,
+          "real_rate_pct": 24.73333333333333,
+          "edge_pct": 1.3248699867894942,
+          "window_rate_pct": {
+            "150": 27.333333333333332,
+            "500": 28.599999999999998,
+            "1500": 24.73333333333333
+          },
+          "window_edge_pct": {
+            "150": 3.9248699867894956,
+            "500": 5.191536653456161,
+            "1500": 1.3248699867894942
+          },
+          "permutation": {
+            "real_rate": 0.24733333333333332,
+            "perm_mean": 0.2347466666666667,
+            "perm_std": 0.010428570442849849,
+            "z_score": 1.2069407532352148,
+            "p_value": 0.11627906976744186,
+            "effect_size": 1.2069407532352148,
+            "n_perm": 300,
+            "count_exceed": 34
+          },
+          "bonferroni_alpha": 0.002631578947368421,
+          "stability_index": 0.5375452101289429,
+          "passes_rigor": false
+        },
+        "BIG_LOTTO": {
+          "baseline_rate_pct": 15.101557400354812,
+          "real_rate_pct": 13.200000000000001,
+          "edge_pct": -1.901557400354811,
+          "window_rate_pct": {
+            "150": 16.666666666666664,
+            "500": 12.2,
+            "1500": 13.200000000000001
+          },
+          "window_edge_pct": {
+            "150": 1.5651092663118522,
+            "500": -2.901557400354813,
+            "1500": -1.901557400354811
+          },
+          "permutation": {
+            "real_rate": 0.132,
+            "perm_mean": 0.15076,
+            "perm_std": 0.009136181226716522,
+            "z_score": -2.0533743292096265,
+            "p_value": 0.9867109634551495,
+            "effect_size": -2.0533743292096265,
+            "n_perm": 300,
+            "count_exceed": 296
+          },
+          "bonferroni_alpha": 0.002631578947368421,
+          "stability_index": 0.03278621741137814,
+          "passes_rigor": false
+        },
+        "DAILY_539": {
+          "baseline_rate_pct": 11.397342976290346,
+          "real_rate_pct": 12.2,
+          "edge_pct": 0.8026570237096529,
+          "window_rate_pct": {
+            "150": 15.333333333333332,
+            "500": 12.0,
+            "1500": 12.2
+          },
+          "window_edge_pct": {
+            "150": 3.9359903570429857,
+            "500": 0.6026570237096536,
+            "1500": 0.8026570237096529
+          },
+          "permutation": {
+            "real_rate": 0.122,
+            "perm_mean": 0.11465555555555557,
+            "perm_std": 0.008208118534508575,
+            "z_score": 0.8947780679180176,
+            "p_value": 0.19601328903654486,
+            "effect_size": 0.8947780679180176,
+            "n_perm": 300,
+            "count_exceed": 58
+          },
+          "bonferroni_alpha": 0.002631578947368421,
+          "stability_index": 0.14268508458552365,
+          "passes_rigor": false
+        }
+      }
+    },
+    {
+      "feature_class_id": 6,
+      "name": "Entropy measures",
+      "description": "Feature class 6: Entropy measures",
+      "games": {
+        "POWER_LOTTO": {
+          "baseline_rate_pct": 23.408463346543837,
+          "real_rate_pct": 24.133333333333333,
+          "edge_pct": 0.7248699867894963,
+          "window_rate_pct": {
+            "150": 22.0,
+            "500": 24.2,
+            "1500": 24.133333333333333
+          },
+          "window_edge_pct": {
+            "150": -1.4084633465438365,
+            "500": 0.7915366534561628,
+            "1500": 0.7248699867894963
+          },
+          "permutation": {
+            "real_rate": 0.24133333333333334,
+            "perm_mean": 0.23046000000000003,
+            "perm_std": 0.010424911048559138,
+            "z_score": 1.043014494957551,
+            "p_value": 0.16943521594684385,
+            "effect_size": 1.043014494957551,
+            "n_perm": 300,
+            "count_exceed": 50
+          },
+          "bonferroni_alpha": 0.002631578947368421,
+          "stability_index": 0.0,
+          "passes_rigor": false
+        },
+        "BIG_LOTTO": {
+          "baseline_rate_pct": 15.101557400354812,
+          "real_rate_pct": 16.133333333333333,
+          "edge_pct": 1.0317759329785208,
+          "window_rate_pct": {
+            "150": 15.333333333333332,
+            "500": 17.599999999999998,
+            "1500": 16.133333333333333
+          },
+          "window_edge_pct": {
+            "150": 0.23177593297852006,
+            "500": 2.498442599645186,
+            "1500": 1.0317759329785208
+          },
+          "permutation": {
+            "real_rate": 0.16133333333333333,
+            "perm_mean": 0.15037111111111112,
+            "perm_std": 0.008889114163812047,
+            "z_score": 1.2332187458697121,
+            "p_value": 0.132890365448505,
+            "effect_size": 1.2332187458697121,
+            "n_perm": 300,
+            "count_exceed": 39
+          },
+          "bonferroni_alpha": 0.002631578947368421,
+          "stability_index": 0.25150653434144843,
+          "passes_rigor": false
+        },
+        "DAILY_539": {
+          "baseline_rate_pct": 11.397342976290346,
+          "real_rate_pct": 10.4,
+          "edge_pct": -0.9973429762903461,
+          "window_rate_pct": {
+            "150": 10.0,
+            "500": 9.6,
+            "1500": 10.4
+          },
+          "window_edge_pct": {
+            "150": -1.3973429762903464,
+            "500": -1.7973429762903468,
+            "1500": -0.9973429762903461
+          },
+          "permutation": {
+            "real_rate": 0.104,
+            "perm_mean": 0.11178444444444442,
+            "perm_std": 0.007591968140535996,
+            "z_score": -1.025352622576929,
+            "p_value": 0.8538205980066446,
+            "effect_size": -1.025352622576929,
+            "n_perm": 300,
+            "count_exceed": 256
+          },
+          "bonferroni_alpha": 0.002631578947368421,
+          "stability_index": 0.0,
+          "passes_rigor": false
+        }
+      }
+    },
+    {
+      "feature_class_id": 7,
+      "name": "Regime detection",
+      "description": "Feature class 7: Regime detection",
+      "games": {
+        "POWER_LOTTO": {
+          "baseline_rate_pct": 23.408463346543837,
+          "real_rate_pct": 23.400000000000002,
+          "edge_pct": -0.008463346543834405,
+          "window_rate_pct": {
+            "150": 19.333333333333332,
+            "500": 20.200000000000003,
+            "1500": 23.400000000000002
+          },
+          "window_edge_pct": {
+            "150": -4.075130013210504,
+            "500": -3.2084633465438337,
+            "1500": -0.008463346543834405
+          },
+          "permutation": {
+            "real_rate": 0.234,
+            "perm_mean": 0.24090666666666669,
+            "perm_std": 0.011075038332848968,
+            "z_score": -0.6236246285087449,
+            "p_value": 0.7574750830564784,
+            "effect_size": -0.6236246285087449,
+            "n_perm": 300,
+            "count_exceed": 227
+          },
+          "bonferroni_alpha": 0.002631578947368421,
+          "stability_index": 0.0,
+          "passes_rigor": false
+        },
+        "BIG_LOTTO": {
+          "baseline_rate_pct": 15.101557400354812,
+          "real_rate_pct": 15.266666666666667,
+          "edge_pct": 0.1651092663118554,
+          "window_rate_pct": {
+            "150": 7.333333333333333,
+            "500": 13.0,
+            "1500": 15.266666666666667
+          },
+          "window_edge_pct": {
+            "150": -7.768224067021479,
+            "500": -2.101557400354812,
+            "1500": 0.1651092663118554
+          },
+          "permutation": {
+            "real_rate": 0.15266666666666667,
+            "perm_mean": 0.15602444444444444,
+            "perm_std": 0.009413669860735161,
+            "z_score": -0.35669168635565973,
+            "p_value": 0.6478405315614618,
+            "effect_size": -0.35669168635565973,
+            "n_perm": 300,
+            "count_exceed": 194
+          },
+          "bonferroni_alpha": 0.002631578947368421,
+          "stability_index": 0.0008490959367222217,
+          "passes_rigor": false
+        },
+        "DAILY_539": {
+          "baseline_rate_pct": 11.397342976290346,
+          "real_rate_pct": 11.333333333333332,
+          "edge_pct": -0.06400964295701428,
+          "window_rate_pct": {
+            "150": 12.666666666666668,
+            "500": 12.0,
+            "1500": 11.333333333333332
+          },
+          "window_edge_pct": {
+            "150": 1.2693236903763214,
+            "500": 0.6026570237096536,
+            "1500": -0.06400964295701428
+          },
+          "permutation": {
+            "real_rate": 0.11333333333333333,
+            "perm_mean": 0.1200466666666667,
+            "perm_std": 0.00851208552588612,
+            "z_score": -0.7886825516647785,
+            "p_value": 0.7807308970099668,
+            "effect_size": -0.7886825516647785,
+            "n_perm": 300,
+            "count_exceed": 234
+          },
+          "bonferroni_alpha": 0.002631578947368421,
+          "stability_index": 0.10433839769767106,
+          "passes_rigor": false
+        }
+      }
+    },
+    {
+      "feature_class_id": 8,
+      "name": "Cluster analysis",
+      "description": "Feature class 8: Cluster analysis",
+      "games": {
+        "POWER_LOTTO": {
+          "baseline_rate_pct": 23.408463346543837,
+          "real_rate_pct": 21.4,
+          "edge_pct": -2.008463346543838,
+          "window_rate_pct": {
+            "150": 24.0,
+            "500": 23.0,
+            "1500": 21.4
+          },
+          "window_edge_pct": {
+            "150": 0.5915366534561635,
+            "500": -0.40846334654383654,
+            "1500": -2.008463346543838
+          },
+          "permutation": {
+            "real_rate": 0.214,
+            "perm_mean": 0.24324888888888893,
+            "perm_std": 0.011412740552276663,
+            "z_score": -2.5628278109320037,
+            "p_value": 1.0,
+            "effect_size": -2.5628278109320037,
+            "n_perm": 300,
+            "count_exceed": 300
+          },
+          "bonferroni_alpha": 0.002631578947368421,
+          "stability_index": 0.0,
+          "passes_rigor": false
+        },
+        "BIG_LOTTO": {
+          "baseline_rate_pct": 15.101557400354812,
+          "real_rate_pct": 15.0,
+          "edge_pct": -0.10155740035481209,
+          "window_rate_pct": {
+            "150": 16.666666666666664,
+            "500": 16.8,
+            "1500": 15.0
+          },
+          "window_edge_pct": {
+            "150": 1.5651092663118522,
+            "500": 1.6984425996451886,
+            "1500": -0.10155740035481209
+          },
+          "permutation": {
+            "real_rate": 0.15,
+            "perm_mean": 0.1577711111111111,
+            "perm_std": 0.009098606866635146,
+            "z_score": -0.8540990092399647,
+            "p_value": 0.7940199335548173,
+            "effect_size": -0.8540990092399647,
+            "n_perm": 300,
+            "count_exceed": 238
+          },
+          "bonferroni_alpha": 0.002631578947368421,
+          "stability_index": 0.17995899031749044,
+          "passes_rigor": false
+        },
+        "DAILY_539": {
+          "baseline_rate_pct": 11.397342976290346,
+          "real_rate_pct": 11.333333333333332,
+          "edge_pct": -0.06400964295701428,
+          "window_rate_pct": {
+            "150": 13.333333333333334,
+            "500": 12.2,
+            "1500": 11.333333333333332
+          },
+          "window_edge_pct": {
+            "150": 1.9359903570429875,
+            "500": 0.8026570237096529,
+            "1500": -0.06400964295701428
+          },
+          "permutation": {
+            "real_rate": 0.11333333333333333,
+            "perm_mean": 0.12344888888888889,
+            "perm_std": 0.007953660854452767,
+            "z_score": -1.2718112752595765,
+            "p_value": 0.9169435215946844,
+            "effect_size": -1.2718112752595765,
+            "n_perm": 300,
+            "count_exceed": 275
+          },
+          "bonferroni_alpha": 0.002631578947368421,
+          "stability_index": 0.08228388364356168,
+          "passes_rigor": false
+        }
+      }
+    },
+    {
+      "feature_class_id": 9,
+      "name": "Tail / extreme behavior",
+      "description": "Feature class 9: Tail / extreme behavior",
+      "games": {
+        "POWER_LOTTO": {
+          "baseline_rate_pct": 23.408463346543837,
+          "real_rate_pct": 21.333333333333336,
+          "edge_pct": -2.075130013210501,
+          "window_rate_pct": {
+            "150": 19.333333333333332,
+            "500": 21.8,
+            "1500": 21.333333333333336
+          },
+          "window_edge_pct": {
+            "150": -4.075130013210504,
+            "500": -1.6084633465438358,
+            "1500": -2.075130013210501
+          },
+          "permutation": {
+            "real_rate": 0.21333333333333335,
+            "perm_mean": 0.23595777777777774,
+            "perm_std": 0.010305395686091515,
+            "z_score": -2.1953979382648696,
+            "p_value": 0.9800664451827242,
+            "effect_size": -2.1953979382648696,
+            "n_perm": 300,
+            "count_exceed": 294
+          },
+          "bonferroni_alpha": 0.002631578947368421,
+          "stability_index": 0.0,
+          "passes_rigor": false
+        },
+        "BIG_LOTTO": {
+          "baseline_rate_pct": 15.101557400354812,
+          "real_rate_pct": 13.733333333333334,
+          "edge_pct": -1.3682240670214778,
+          "window_rate_pct": {
+            "150": 18.0,
+            "500": 13.600000000000001,
+            "1500": 13.733333333333334
+          },
+          "window_edge_pct": {
+            "150": 2.898442599645188,
+            "500": -1.5015574003548107,
+            "1500": -1.3682240670214778
+          },
+          "permutation": {
+            "real_rate": 0.13733333333333334,
+            "perm_mean": 0.1512711111111111,
+            "perm_std": 0.008685056273227928,
+            "z_score": -1.6047999388486163,
+            "p_value": 0.9401993355481728,
+            "effect_size": -1.6047999388486163,
+            "n_perm": 300,
+            "count_exceed": 282
+          },
+          "bonferroni_alpha": 0.002631578947368421,
+          "stability_index": 0.0,
+          "passes_rigor": false
+        },
+        "DAILY_539": {
+          "baseline_rate_pct": 11.397342976290346,
+          "real_rate_pct": 9.933333333333334,
+          "edge_pct": -1.4640096429570129,
+          "window_rate_pct": {
+            "150": 11.333333333333332,
+            "500": 10.4,
+            "1500": 9.933333333333334
+          },
+          "window_edge_pct": {
+            "150": -0.06400964295701428,
+            "500": -0.9973429762903461,
+            "1500": -1.4640096429570129
+          },
+          "permutation": {
+            "real_rate": 0.09933333333333333,
+            "perm_mean": 0.11769777777777776,
+            "perm_std": 0.007844823409165286,
+            "z_score": -2.3409633951285467,
+            "p_value": 0.9933554817275747,
+            "effect_size": -2.3409633951285467,
+            "n_perm": 300,
+            "count_exceed": 298
+          },
+          "bonferroni_alpha": 0.002631578947368421,
+          "stability_index": 0.0,
+          "passes_rigor": false
+        }
+      }
+    },
+    {
+      "feature_class_id": 10,
+      "name": "Combinatorial covering designs",
+      "description": "Feature class 10: Combinatorial covering designs",
+      "games": {
+        "POWER_LOTTO": {
+          "baseline_rate_pct": 23.408463346543837,
+          "real_rate_pct": 24.266666666666666,
+          "edge_pct": 0.8582033201228292,
+          "window_rate_pct": {
+            "150": 25.333333333333336,
+            "500": 25.8,
+            "1500": 24.266666666666666
+          },
+          "window_edge_pct": {
+            "150": 1.9248699867894992,
+            "500": 2.391536653456164,
+            "1500": 0.8582033201228292
+          },
+          "permutation": {
+            "real_rate": 0.24266666666666667,
+            "perm_mean": 0.2263422222222222,
+            "perm_std": 0.010747950479331993,
+            "z_score": 1.5188425434520822,
+            "p_value": 0.08637873754152824,
+            "effect_size": 1.5188425434520822,
+            "n_perm": 300,
+            "count_exceed": 25
+          },
+          "bonferroni_alpha": 0.002631578947368421,
+          "stability_index": 0.627939002671059,
+          "passes_rigor": false
+        },
+        "BIG_LOTTO": {
+          "baseline_rate_pct": 15.101557400354812,
+          "real_rate_pct": 16.666666666666664,
+          "edge_pct": 1.5651092663118522,
+          "window_rate_pct": {
+            "150": 15.333333333333332,
+            "500": 15.6,
+            "1500": 16.666666666666664
+          },
+          "window_edge_pct": {
+            "150": 0.23177593297852006,
+            "500": 0.49844259964518756,
+            "1500": 1.5651092663118522
+          },
+          "permutation": {
+            "real_rate": 0.16666666666666666,
+            "perm_mean": 0.14544222222222222,
+            "perm_std": 0.009546998494129637,
+            "z_score": 2.2231536388396833,
+            "p_value": 0.016611295681063124,
+            "effect_size": 2.2231536388396833,
+            "n_perm": 300,
+            "count_exceed": 4
+          },
+          "bonferroni_alpha": 0.002631578947368421,
+          "stability_index": 0.24708030020021265,
+          "passes_rigor": false
+        },
+        "DAILY_539": {
+          "baseline_rate_pct": 11.397342976290346,
+          "real_rate_pct": 12.733333333333333,
+          "edge_pct": 1.335990357042986,
+          "window_rate_pct": {
+            "150": 15.333333333333332,
+            "500": 15.0,
+            "1500": 12.733333333333333
+          },
+          "window_edge_pct": {
+            "150": 3.9359903570429857,
+            "500": 3.6026570237096536,
+            "1500": 1.335990357042986
+          },
+          "permutation": {
+            "real_rate": 0.12733333333333333,
+            "perm_mean": 0.10862,
+            "perm_std": 0.007403655753647553,
+            "z_score": 2.527580151411857,
+            "p_value": 0.006644518272425249,
+            "effect_size": 2.527580151411857,
+            "n_perm": 300,
+            "count_exceed": 1
+          },
+          "bonferroni_alpha": 0.002631578947368421,
+          "stability_index": 0.6095182159040409,
+          "passes_rigor": false
+        }
+      }
+    },
+    {
+      "feature_class_id": 11,
+      "name": "Information theory metrics",
+      "description": "Feature class 11: Information theory metrics",
+      "games": {
+        "POWER_LOTTO": {
+          "baseline_rate_pct": 23.408463346543837,
+          "real_rate_pct": 22.733333333333334,
+          "edge_pct": -0.6751300132105023,
+          "window_rate_pct": {
+            "150": 18.0,
+            "500": 22.2,
+            "1500": 22.733333333333334
+          },
+          "window_edge_pct": {
+            "150": -5.4084633465438365,
+            "500": -1.2084633465438372,
+            "1500": -0.6751300132105023
+          },
+          "permutation": {
+            "real_rate": 0.22733333333333333,
+            "perm_mean": 0.24135777777777775,
+            "perm_std": 0.011381375082362944,
+            "z_score": -1.232227594796086,
+            "p_value": 0.9003322259136213,
+            "effect_size": -1.232227594796086,
+            "n_perm": 300,
+            "count_exceed": 270
+          },
+          "bonferroni_alpha": 0.002631578947368421,
+          "stability_index": 0.0,
+          "passes_rigor": false
+        },
+        "BIG_LOTTO": {
+          "baseline_rate_pct": 15.101557400354812,
+          "real_rate_pct": 14.6,
+          "edge_pct": -0.5015574003548124,
+          "window_rate_pct": {
+            "150": 10.666666666666668,
+            "500": 14.399999999999999,
+            "1500": 14.6
+          },
+          "window_edge_pct": {
+            "150": -4.434890733688144,
+            "500": -0.7015574003548135,
+            "1500": -0.5015574003548124
+          },
+          "permutation": {
+            "real_rate": 0.146,
+            "perm_mean": 0.15454888888888887,
+            "perm_std": 0.008771303097299246,
+            "z_score": -0.9746429684486119,
+            "p_value": 0.840531561461794,
+            "effect_size": -0.9746429684486119,
+            "n_perm": 300,
+            "count_exceed": 252
+          },
+          "bonferroni_alpha": 0.002631578947368421,
+          "stability_index": 0.0,
+          "passes_rigor": false
+        },
+        "DAILY_539": {
+          "baseline_rate_pct": 11.397342976290346,
+          "real_rate_pct": 11.466666666666667,
+          "edge_pct": 0.06932369037632036,
+          "window_rate_pct": {
+            "150": 9.333333333333334,
+            "500": 10.0,
+            "1500": 11.466666666666667
+          },
+          "window_edge_pct": {
+            "150": -2.0640096429570125,
+            "500": -1.3973429762903464,
+            "1500": 0.06932369037632036
+          },
+          "permutation": {
+            "real_rate": 0.11466666666666667,
+            "perm_mean": 0.12090666666666666,
+            "perm_std": 0.00809911929368455,
+            "z_score": -0.770454141118196,
+            "p_value": 0.8106312292358804,
+            "effect_size": -0.770454141118196,
+            "n_perm": 300,
+            "count_exceed": 243
+          },
+          "bonferroni_alpha": 0.002631578947368421,
+          "stability_index": 0.08094306547726904,
+          "passes_rigor": false
+        }
+      }
+    },
+    {
+      "feature_class_id": 12,
+      "name": "Bayesian inference",
+      "description": "Feature class 12: Bayesian inference",
+      "games": {
+        "POWER_LOTTO": {
+          "baseline_rate_pct": 23.408463346543837,
+          "real_rate_pct": 22.466666666666665,
+          "edge_pct": -0.9417966798771715,
+          "window_rate_pct": {
+            "150": 22.666666666666664,
+            "500": 22.400000000000002,
+            "1500": 22.466666666666665
+          },
+          "window_edge_pct": {
+            "150": -0.7417966798771722,
+            "500": -1.0084633465438344,
+            "1500": -0.9417966798771715
+          },
+          "permutation": {
+            "real_rate": 0.22466666666666665,
+            "perm_mean": 0.2427222222222222,
+            "perm_std": 0.011068066622740944,
+            "z_score": -1.6313197389710752,
+            "p_value": 0.9235880398671097,
+            "effect_size": -1.6313197389710752,
+            "n_perm": 300,
+            "count_exceed": 277
+          },
+          "bonferroni_alpha": 0.002631578947368421,
+          "stability_index": 0.0,
+          "passes_rigor": false
+        },
+        "BIG_LOTTO": {
+          "baseline_rate_pct": 15.101557400354812,
+          "real_rate_pct": 14.6,
+          "edge_pct": -0.5015574003548124,
+          "window_rate_pct": {
+            "150": 18.0,
+            "500": 17.2,
+            "1500": 14.6
+          },
+          "window_edge_pct": {
+            "150": 2.898442599645188,
+            "500": 2.098442599645187,
+            "1500": -0.5015574003548124
+          },
+          "permutation": {
+            "real_rate": 0.146,
+            "perm_mean": 0.15771777777777776,
+            "perm_std": 0.009212329633917287,
+            "z_score": -1.271966835985128,
+            "p_value": 0.8704318936877077,
+            "effect_size": -1.271966835985128,
+            "n_perm": 300,
+            "count_exceed": 261
+          },
+          "bonferroni_alpha": 0.002631578947368421,
+          "stability_index": 0.13872223753920424,
+          "passes_rigor": false
+        },
+        "DAILY_539": {
+          "baseline_rate_pct": 11.397342976290346,
+          "real_rate_pct": 10.733333333333334,
+          "edge_pct": -0.6640096429570121,
+          "window_rate_pct": {
+            "150": 11.333333333333332,
+            "500": 12.4,
+            "1500": 10.733333333333334
+          },
+          "window_edge_pct": {
+            "150": -0.06400964295701428,
+            "500": 1.002657023709654,
+            "1500": -0.6640096429570121
+          },
+          "permutation": {
+            "real_rate": 0.10733333333333334,
+            "perm_mean": 0.12292444444444442,
+            "perm_std": 0.008073105480468185,
+            "z_score": -1.931240852346161,
+            "p_value": 0.9800664451827242,
+            "effect_size": -1.931240852346161,
+            "n_perm": 300,
+            "count_exceed": 294
+          },
+          "bonferroni_alpha": 0.002631578947368421,
+          "stability_index": 0.0,
+          "passes_rigor": false
+        }
+      }
+    },
+    {
+      "feature_class_id": 13,
+      "name": "Monte Carlo anomaly detection",
+      "description": "Feature class 13: Monte Carlo anomaly detection",
+      "games": {
+        "POWER_LOTTO": {
+          "baseline_rate_pct": 23.408463346543837,
+          "real_rate_pct": 22.26666666666667,
+          "edge_pct": -1.1417966798771673,
+          "window_rate_pct": {
+            "150": 16.0,
+            "500": 20.599999999999998,
+            "1500": 22.26666666666667
+          },
+          "window_edge_pct": {
+            "150": -7.4084633465438365,
+            "500": -2.8084633465438387,
+            "1500": -1.1417966798771673
+          },
+          "permutation": {
+            "real_rate": 0.22266666666666668,
+            "perm_mean": 0.24279111111111112,
+            "perm_std": 0.01021092709300999,
+            "z_score": -1.970873384871193,
+            "p_value": 0.9800664451827242,
+            "effect_size": -1.970873384871193,
+            "n_perm": 300,
+            "count_exceed": 294
+          },
+          "bonferroni_alpha": 0.002631578947368421,
+          "stability_index": 0.0,
+          "passes_rigor": false
+        },
+        "BIG_LOTTO": {
+          "baseline_rate_pct": 15.101557400354812,
+          "real_rate_pct": 15.0,
+          "edge_pct": -0.10155740035481209,
+          "window_rate_pct": {
+            "150": 13.333333333333334,
+            "500": 17.2,
+            "1500": 15.0
+          },
+          "window_edge_pct": {
+            "150": -1.7682240670214782,
+            "500": 2.098442599645187,
+            "1500": -0.10155740035481209
+          },
+          "permutation": {
+            "real_rate": 0.15,
+            "perm_mean": 0.15608,
+            "perm_std": 0.009648771174879481,
+            "z_score": -0.6301320540380431,
+            "p_value": 0.7209302325581395,
+            "effect_size": -0.6301320540380431,
+            "n_perm": 300,
+            "count_exceed": 216
+          },
+          "bonferroni_alpha": 0.002631578947368421,
+          "stability_index": 0.0,
+          "passes_rigor": false
+        },
+        "DAILY_539": {
+          "baseline_rate_pct": 11.397342976290346,
+          "real_rate_pct": 10.8,
+          "edge_pct": -0.5973429762903457,
+          "window_rate_pct": {
+            "150": 12.666666666666668,
+            "500": 12.6,
+            "1500": 10.8
+          },
+          "window_edge_pct": {
+            "150": 1.2693236903763214,
+            "500": 1.2026570237096532,
+            "1500": -0.5973429762903457
+          },
+          "permutation": {
+            "real_rate": 0.108,
+            "perm_mean": 0.12226666666666666,
+            "perm_std": 0.00886942313043338,
+            "z_score": -1.6085224997446974,
+            "p_value": 0.9435215946843853,
+            "effect_size": -1.6085224997446974,
+            "n_perm": 300,
+            "count_exceed": 283
+          },
+          "bonferroni_alpha": 0.002631578947368421,
+          "stability_index": 0.10323957249523308,
+          "passes_rigor": false
+        }
+      }
+    },
+    {
+      "feature_class_id": 14,
+      "name": "Player behavior modeling",
+      "description": "Feature class 14: Player behavior modeling",
+      "games": {
+        "POWER_LOTTO": {
+          "baseline_rate_pct": 23.408463346543837,
+          "real_rate_pct": 22.333333333333332,
+          "edge_pct": -1.0751300132105044,
+          "window_rate_pct": {
+            "150": 20.0,
+            "500": 21.4,
+            "1500": 22.333333333333332
+          },
+          "window_edge_pct": {
+            "150": -3.4084633465438365,
+            "500": -2.008463346543838,
+            "1500": -1.0751300132105044
+          },
+          "permutation": {
+            "real_rate": 0.22333333333333333,
+            "perm_mean": 0.2181911111111111,
+            "perm_std": 0.007252416881101357,
+            "z_score": 0.7090356643607996,
+            "p_value": 0.2691029900332226,
+            "effect_size": 0.7090356643607996,
+            "n_perm": 300,
+            "count_exceed": 80
+          },
+          "bonferroni_alpha": 0.002631578947368421,
+          "stability_index": 0.0,
+          "passes_rigor": false
+        },
+        "BIG_LOTTO": {
+          "baseline_rate_pct": 15.101557400354812,
+          "real_rate_pct": 15.266666666666667,
+          "edge_pct": 0.1651092663118554,
+          "window_rate_pct": {
+            "150": 13.333333333333334,
+            "500": 17.0,
+            "1500": 15.266666666666667
+          },
+          "window_edge_pct": {
+            "150": -1.7682240670214782,
+            "500": 1.898442599645188,
+            "1500": 0.1651092663118554
+          },
+          "permutation": {
+            "real_rate": 0.15266666666666667,
+            "perm_mean": 0.15014888888888892,
+            "perm_std": 0.007953013560365532,
+            "z_score": 0.3165816024769176,
+            "p_value": 0.4152823920265781,
+            "effect_size": 0.3165816024769176,
+            "n_perm": 300,
+            "count_exceed": 124
+          },
+          "bonferroni_alpha": 0.002631578947368421,
+          "stability_index": 0.0,
+          "passes_rigor": false
+        },
+        "DAILY_539": {
+          "baseline_rate_pct": 11.397342976290346,
+          "real_rate_pct": 11.4,
+          "edge_pct": 0.0026570237096539273,
+          "window_rate_pct": {
+            "150": 11.333333333333332,
+            "500": 10.2,
+            "1500": 11.4
+          },
+          "window_edge_pct": {
+            "150": -0.06400964295701428,
+            "500": -1.1973429762903471,
+            "1500": 0.0026570237096539273
+          },
+          "permutation": {
+            "real_rate": 0.114,
+            "perm_mean": 0.11336666666666666,
+            "perm_std": 0.006701492371106603,
+            "z_score": 0.09450631264902262,
+            "p_value": 0.4717607973421927,
+            "effect_size": 0.09450631264902262,
+            "n_perm": 300,
+            "count_exceed": 141
+          },
+          "bonferroni_alpha": 0.002631578947368421,
+          "stability_index": 0.0,
+          "passes_rigor": false
+        }
+      }
+    },
+    {
+      "feature_class_id": 15,
+      "name": "Distribution drift detection",
+      "description": "Feature class 15: Distribution drift detection",
+      "games": {
+        "POWER_LOTTO": {
+          "baseline_rate_pct": 23.408463346543837,
+          "real_rate_pct": 23.133333333333333,
+          "edge_pct": -0.2751300132105037,
+          "window_rate_pct": {
+            "150": 25.333333333333336,
+            "500": 26.0,
+            "1500": 23.133333333333333
+          },
+          "window_edge_pct": {
+            "150": 1.9248699867894992,
+            "500": 2.5915366534561635,
+            "1500": -0.2751300132105037
+          },
+          "permutation": {
+            "real_rate": 0.23133333333333334,
+            "perm_mean": 0.2350822222222222,
+            "perm_std": 0.011760475970883508,
+            "z_score": -0.318770166943205,
+            "p_value": 0.6611295681063123,
+            "effect_size": -0.318770166943205,
+            "n_perm": 300,
+            "count_exceed": 198
+          },
+          "bonferroni_alpha": 0.002631578947368421,
+          "stability_index": 0.15541286350923614,
+          "passes_rigor": false
+        },
+        "BIG_LOTTO": {
+          "baseline_rate_pct": 15.101557400354812,
+          "real_rate_pct": 14.666666666666666,
+          "edge_pct": -0.434890733688146,
+          "window_rate_pct": {
+            "150": 14.000000000000002,
+            "500": 13.4,
+            "1500": 14.666666666666666
+          },
+          "window_edge_pct": {
+            "150": -1.1015574003548103,
+            "500": -1.7015574003548117,
+            "1500": -0.434890733688146
+          },
+          "permutation": {
+            "real_rate": 0.14666666666666667,
+            "perm_mean": 0.1533,
+            "perm_std": 0.009343664916619927,
+            "z_score": -0.7099284265668,
+            "p_value": 0.7674418604651163,
+            "effect_size": -0.7099284265668,
+            "n_perm": 300,
+            "count_exceed": 230
+          },
+          "bonferroni_alpha": 0.002631578947368421,
+          "stability_index": 0.0,
+          "passes_rigor": false
+        },
+        "DAILY_539": {
+          "baseline_rate_pct": 11.397342976290346,
+          "real_rate_pct": 11.333333333333332,
+          "edge_pct": -0.06400964295701428,
+          "window_rate_pct": {
+            "150": 14.000000000000002,
+            "500": 11.0,
+            "1500": 11.333333333333332
+          },
+          "window_edge_pct": {
+            "150": 2.6026570237096553,
+            "500": -0.39734297629034643,
+            "1500": -0.06400964295701428
+          },
+          "permutation": {
+            "real_rate": 0.11333333333333333,
+            "perm_mean": 0.11421777777777777,
+            "perm_std": 0.008343903222572413,
+            "z_score": -0.10599888574280057,
+            "p_value": 0.5581395348837209,
+            "effect_size": -0.10599888574280057,
+            "n_perm": 300,
+            "count_exceed": 167
+          },
+          "bonferroni_alpha": 0.002631578947368421,
+          "stability_index": 0.0,
+          "passes_rigor": false
+        }
+      }
+    },
+    {
+      "feature_class_id": 16,
+      "name": "Interaction and multiplicative signals",
+      "description": "Feature class 16: Interaction and multiplicative signals",
+      "games": {
+        "POWER_LOTTO": {
+          "baseline_rate_pct": 23.408463346543837,
+          "real_rate_pct": 23.733333333333334,
+          "edge_pct": 0.32486998678949774,
+          "window_rate_pct": {
+            "150": 27.333333333333332,
+            "500": 25.4,
+            "1500": 23.733333333333334
+          },
+          "window_edge_pct": {
+            "150": 3.9248699867894956,
+            "500": 1.991536653456162,
+            "1500": 0.32486998678949774
+          },
+          "permutation": {
+            "real_rate": 0.23733333333333334,
+            "perm_mean": 0.23872,
+            "perm_std": 0.010875462016579988,
+            "z_score": -0.1275041616094218,
+            "p_value": 0.574750830564784,
+            "effect_size": -0.1275041616094218,
+            "n_perm": 300,
+            "count_exceed": 172
+          },
+          "bonferroni_alpha": 0.002631578947368421,
+          "stability_index": 0.2929152097379095,
+          "passes_rigor": false
+        },
+        "BIG_LOTTO": {
+          "baseline_rate_pct": 15.101557400354812,
+          "real_rate_pct": 14.266666666666666,
+          "edge_pct": -0.8348907336881464,
+          "window_rate_pct": {
+            "150": 12.0,
+            "500": 13.600000000000001,
+            "1500": 14.266666666666666
+          },
+          "window_edge_pct": {
+            "150": -3.101557400354812,
+            "500": -1.5015574003548107,
+            "1500": -0.8348907336881464
+          },
+          "permutation": {
+            "real_rate": 0.14266666666666666,
+            "perm_mean": 0.15403555555555556,
+            "perm_std": 0.010383544436353533,
+            "z_score": -1.0948948075948624,
+            "p_value": 0.8637873754152824,
+            "effect_size": -1.0948948075948624,
+            "n_perm": 300,
+            "count_exceed": 259
+          },
+          "bonferroni_alpha": 0.002631578947368421,
+          "stability_index": 0.0,
+          "passes_rigor": false
+        },
+        "DAILY_539": {
+          "baseline_rate_pct": 11.397342976290346,
+          "real_rate_pct": 10.6,
+          "edge_pct": -0.7973429762903468,
+          "window_rate_pct": {
+            "150": 9.333333333333334,
+            "500": 10.4,
+            "1500": 10.6
+          },
+          "window_edge_pct": {
+            "150": -2.0640096429570125,
+            "500": -0.9973429762903461,
+            "1500": -0.7973429762903468
+          },
+          "permutation": {
+            "real_rate": 0.106,
+            "perm_mean": 0.11797555555555557,
+            "perm_std": 0.008554539333586382,
+            "z_score": -1.3999065393431378,
+            "p_value": 0.9069767441860465,
+            "effect_size": -1.3999065393431378,
+            "n_perm": 300,
+            "count_exceed": 272
+          },
+          "bonferroni_alpha": 0.002631578947368421,
+          "stability_index": 0.0,
+          "passes_rigor": false
+        }
+      }
+    },
+    {
+      "feature_class_id": 17,
+      "name": "Ensemble weighting",
+      "description": "Feature class 17: Ensemble weighting",
+      "games": {
+        "POWER_LOTTO": {
+          "baseline_rate_pct": 23.408463346543837,
+          "real_rate_pct": 22.066666666666666,
+          "edge_pct": -1.34179667987717,
+          "window_rate_pct": {
+            "150": 24.666666666666668,
+            "500": 25.0,
+            "1500": 22.066666666666666
+          },
+          "window_edge_pct": {
+            "150": 1.2582033201228313,
+            "500": 1.5915366534561635,
+            "1500": -1.34179667987717
+          },
+          "permutation": {
+            "real_rate": 0.22066666666666668,
+            "perm_mean": 0.2395577777777778,
+            "perm_std": 0.011119085804858351,
+            "z_score": -1.6989806033476136,
+            "p_value": 0.9568106312292359,
+            "effect_size": -1.6989806033476136,
+            "n_perm": 300,
+            "count_exceed": 287
+          },
+          "bonferroni_alpha": 0.002631578947368421,
+          "stability_index": 0.04097755597487077,
+          "passes_rigor": false
+        },
+        "BIG_LOTTO": {
+          "baseline_rate_pct": 15.101557400354812,
+          "real_rate_pct": 15.466666666666667,
+          "edge_pct": 0.3651092663118547,
+          "window_rate_pct": {
+            "150": 19.333333333333332,
+            "500": 16.8,
+            "1500": 15.466666666666667
+          },
+          "window_edge_pct": {
+            "150": 4.23177593297852,
+            "500": 1.6984425996451886,
+            "1500": 0.3651092663118547
+          },
+          "permutation": {
+            "real_rate": 0.15466666666666667,
+            "perm_mean": 0.1540222222222222,
+            "perm_std": 0.009496796080914296,
+            "z_score": 0.06785914311372396,
+            "p_value": 0.4950166112956811,
+            "effect_size": 0.06785914311372396,
+            "n_perm": 300,
+            "count_exceed": 148
+          },
+          "bonferroni_alpha": 0.002631578947368421,
+          "stability_index": 0.23576683660024278,
+          "passes_rigor": false
+        },
+        "DAILY_539": {
+          "baseline_rate_pct": 11.397342976290346,
+          "real_rate_pct": 11.600000000000001,
+          "edge_pct": 0.202657023709655,
+          "window_rate_pct": {
+            "150": 8.666666666666668,
+            "500": 12.0,
+            "1500": 11.600000000000001
+          },
+          "window_edge_pct": {
+            "150": -2.7306763096236786,
+            "500": 0.6026570237096536,
+            "1500": 0.202657023709655
+          },
+          "permutation": {
+            "real_rate": 0.116,
+            "perm_mean": 0.11831777777777779,
+            "perm_std": 0.007500008559665897,
+            "z_score": -0.30903668429573006,
+            "p_value": 0.6411960132890365,
+            "effect_size": -0.30903668429573006,
+            "n_perm": 300,
+            "count_exceed": 192
+          },
+          "bonferroni_alpha": 0.002631578947368421,
+          "stability_index": 0.0,
+          "passes_rigor": false
+        }
+      }
+    },
+    {
+      "feature_class_id": 18,
+      "name": "Non-linear transformations",
+      "description": "Feature class 18: Non-linear transformations",
+      "games": {
+        "POWER_LOTTO": {
+          "baseline_rate_pct": 23.408463346543837,
+          "real_rate_pct": 24.666666666666668,
+          "edge_pct": 1.2582033201228313,
+          "window_rate_pct": {
+            "150": 21.333333333333336,
+            "500": 23.200000000000003,
+            "1500": 24.666666666666668
+          },
+          "window_edge_pct": {
+            "150": -2.075130013210501,
+            "500": -0.2084633465438337,
+            "1500": 1.2582033201228313
+          },
+          "permutation": {
+            "real_rate": 0.24666666666666667,
+            "perm_mean": 0.23781555555555556,
+            "perm_std": 0.010922625967444428,
+            "z_score": 0.8103464438571878,
+            "p_value": 0.18604651162790697,
+            "effect_size": 0.8103464438571878,
+            "n_perm": 300,
+            "count_exceed": 55
+          },
+          "bonferroni_alpha": 0.002631578947368421,
+          "stability_index": 0.0,
+          "passes_rigor": false
+        },
+        "BIG_LOTTO": {
+          "baseline_rate_pct": 15.101557400354812,
+          "real_rate_pct": 15.0,
+          "edge_pct": -0.10155740035481209,
+          "window_rate_pct": {
+            "150": 16.0,
+            "500": 14.799999999999999,
+            "1500": 15.0
+          },
+          "window_edge_pct": {
+            "150": 0.8984425996451879,
+            "500": -0.30155740035481315,
+            "1500": -0.10155740035481209
+          },
+          "permutation": {
+            "real_rate": 0.15,
+            "perm_mean": 0.15530666666666668,
+            "perm_std": 0.00971684448093447,
+            "z_score": -0.5461306575949447,
+            "p_value": 0.7109634551495017,
+            "effect_size": -0.5461306575949447,
+            "n_perm": 300,
+            "count_exceed": 213
+          },
+          "bonferroni_alpha": 0.002631578947368421,
+          "stability_index": 0.0,
+          "passes_rigor": false
+        },
+        "DAILY_539": {
+          "baseline_rate_pct": 11.397342976290346,
+          "real_rate_pct": 11.933333333333334,
+          "edge_pct": 0.5359903570429871,
+          "window_rate_pct": {
+            "150": 10.0,
+            "500": 10.8,
+            "1500": 11.933333333333334
+          },
+          "window_edge_pct": {
+            "150": -1.3973429762903464,
+            "500": -0.5973429762903457,
+            "1500": 0.5359903570429871
+          },
+          "permutation": {
+            "real_rate": 0.11933333333333333,
+            "perm_mean": 0.11836666666666666,
+            "perm_std": 0.007919432265472532,
+            "z_score": 0.12206262193302946,
+            "p_value": 0.45514950166112955,
+            "effect_size": 0.12206262193302946,
+            "n_perm": 300,
+            "count_exceed": 136
+          },
+          "bonferroni_alpha": 0.002631578947368421,
+          "stability_index": 0.019906914763344864,
+          "passes_rigor": false
+        }
+      }
+    },
+    {
+      "feature_class_id": 19,
+      "name": "Random baseline falsification",
+      "description": "Feature class 19: Random baseline falsification",
+      "games": {
+        "POWER_LOTTO": {
+          "baseline_rate_pct": 23.408463346543837,
+          "real_rate_pct": 23.200000000000003,
+          "edge_pct": -0.2084633465438337,
+          "window_rate_pct": {
+            "150": 26.0,
+            "500": 23.799999999999997,
+            "1500": 23.200000000000003
+          },
+          "window_edge_pct": {
+            "150": 2.5915366534561635,
+            "500": 0.3915366534561606,
+            "1500": -0.2084633465438337
+          },
+          "permutation": {
+            "real_rate": 0.232,
+            "perm_mean": 0.23389999999999997,
+            "perm_std": 0.010168961489639824,
+            "z_score": -0.1868430716104925,
+            "p_value": 0.5913621262458472,
+            "effect_size": -0.1868430716104925,
+            "n_perm": 300,
+            "count_exceed": 177
+          },
+          "bonferroni_alpha": 0.002631578947368421,
+          "stability_index": 0.0,
+          "passes_rigor": false
+        },
+        "BIG_LOTTO": {
+          "baseline_rate_pct": 15.101557400354812,
+          "real_rate_pct": 16.0,
+          "edge_pct": 0.8984425996451879,
+          "window_rate_pct": {
+            "150": 19.333333333333332,
+            "500": 16.2,
+            "1500": 16.0
+          },
+          "window_edge_pct": {
+            "150": 4.23177593297852,
+            "500": 1.0984425996451872,
+            "1500": 0.8984425996451879
+          },
+          "permutation": {
+            "real_rate": 0.16,
+            "perm_mean": 0.15054666666666663,
+            "perm_std": 0.008982640047459446,
+            "z_score": 1.0524003280031964,
+            "p_value": 0.16279069767441862,
+            "effect_size": 1.0524003280031964,
+            "n_perm": 300,
+            "count_exceed": 48
+          },
+          "bonferroni_alpha": 0.002631578947368421,
+          "stability_index": 0.26482114906563814,
+          "passes_rigor": false
+        },
+        "DAILY_539": {
+          "baseline_rate_pct": 11.397342976290346,
+          "real_rate_pct": 11.799999999999999,
+          "edge_pct": 0.4026570237096525,
+          "window_rate_pct": {
+            "150": 14.666666666666666,
+            "500": 11.0,
+            "1500": 11.799999999999999
+          },
+          "window_edge_pct": {
+            "150": 3.2693236903763196,
+            "500": -0.39734297629034643,
+            "1500": 0.4026570237096525
+          },
+          "permutation": {
+            "real_rate": 0.118,
+            "perm_mean": 0.11345999999999999,
+            "perm_std": 0.0078798542945732,
+            "z_score": 0.5761527852806257,
+            "p_value": 0.3089700996677741,
+            "effect_size": 0.5761527852806257,
+            "n_perm": 300,
+            "count_exceed": 92
+          },
+          "bonferroni_alpha": 0.002631578947368421,
+          "stability_index": 0.0,
+          "passes_rigor": false
+        }
+      }
+    }
+  ]
+}

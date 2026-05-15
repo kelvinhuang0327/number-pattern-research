@@ -1,0 +1,19 @@
+{
+  "strategy": "ExtremeCol_1bet",
+  "lottery": "539",
+  "rejected_date": "2026-03-10",
+  "trigger": "115000061 review — 38號 gap=33 極端冷未捕捉",
+  "design": "gap>=25 極端冷號使用 ACB 分數排序，不足時退回 ACB",
+  "threshold_gap": 25,
+  "results": {
+    "edge_150p": -4.73,
+    "edge_500p": -2.40,
+    "edge_1500p": 0.13,
+    "perm_p": 0.3632,
+    "stability": "LATE_BLOOMER",
+    "z_1500p": 0.16
+  },
+  "failure_reason": "LATE_BLOOMER + perm_p=0.363 (not significant). ExtremeCol standalone has no reliable signal — gap>=25 events too rare for consistent prediction.",
+  "champion_comparison": "ACB_1bet: edge +3.00% (ADOPTED)",
+  "retest_conditions": "If 539 rule changes to 49-choose-5 (longer expected gap), or if new data shows gap>=25 clustering pattern"
+}

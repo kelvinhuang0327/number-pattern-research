@@ -1,0 +1,122 @@
+{
+  "refreshed_at": "2026-04-19T00:39:48.954402",
+  "by_lottery": {
+    "DAILY_539": [
+      {
+        "strategy": "acb_1bet",
+        "n_bets": 1,
+        "old_1500p": 0.026,
+        "new_1500p": 0.028,
+        "new_500p": 0.03,
+        "new_300p": 0.0227,
+        "new_150p": 0.0127,
+        "delta_1500p": 0.002
+      },
+      {
+        "strategy": "midfreq_acb_2bet",
+        "n_bets": 2,
+        "old_1500p": 0.04945,
+        "new_1500p": 0.0553,
+        "new_500p": 0.0826,
+        "new_300p": 0.0813,
+        "new_150p": 0.0846,
+        "delta_1500p": 0.0059
+      },
+      {
+        "strategy": "acb_markov_midfreq_3bet",
+        "n_bets": 3,
+        "old_1500p": 0.06348,
+        "new_1500p": 0.0677,
+        "new_500p": 0.071,
+        "new_300p": 0.0817,
+        "new_150p": 0.075,
+        "delta_1500p": 0.0042
+      },
+      {
+        "strategy": "f4cold_5bet",
+        "n_bets": 5,
+        "old_1500p": 0.0861,
+        "new_1500p": 0.0974,
+        "new_500p": 0.0981,
+        "new_300p": 0.1028,
+        "new_150p": 0.0994,
+        "delta_1500p": 0.0113
+      }
+    ],
+    "BIG_LOTTO": [
+      {
+        "strategy": "p1_deviation_4bet",
+        "n_bets": 4,
+        "old_1500p": 0.02326,
+        "new_1500p": 0.0248,
+        "new_500p": 0.0255,
+        "new_300p": 0.0342,
+        "new_150p": 0.0342,
+        "delta_1500p": 0.0015
+      },
+      {
+        "strategy": "p1_dev_sum5bet",
+        "n_bets": 5,
+        "old_1500p": 0.02737,
+        "new_1500p": 0.0291,
+        "new_500p": 0.0324,
+        "new_300p": 0.0471,
+        "new_150p": 0.0504,
+        "delta_1500p": 0.0017
+      }
+    ],
+    "POWER_LOTTO": [
+      {
+        "strategy": "fourier_rhythm_2bet",
+        "n_bets": 2,
+        "old_1500p": 0.015435,
+        "new_1500p": 0.0154,
+        "new_500p": 0.0101,
+        "new_300p": 0.0008,
+        "new_150p": 0.0041,
+        "delta_1500p": -0.0
+      },
+      {
+        "strategy": "midfreq_fourier_2bet",
+        "n_bets": 2,
+        "old_1500p": 0.019435,
+        "new_1500p": 0.0194,
+        "new_500p": 0.0241,
+        "new_300p": 0.0008,
+        "new_150p": -0.0092,
+        "delta_1500p": -0.0
+      },
+      {
+        "strategy": "fourier_rhythm_3bet",
+        "n_bets": 3,
+        "old_1500p": 0.025007,
+        "new_1500p": 0.0256,
+        "new_500p": 0.0163,
+        "new_300p": 0.0083,
+        "new_150p": 0.015,
+        "delta_1500p": 0.0006
+      },
+      {
+        "strategy": "pp3_freqort_4bet",
+        "n_bets": 4,
+        "old_1500p": 0.031963,
+        "new_1500p": 0.0327,
+        "new_500p": 0.032,
+        "new_300p": 0.0273,
+        "new_150p": 0.0473,
+        "delta_1500p": 0.0007
+      },
+      {
+        "strategy": "orthogonal_5bet",
+        "n_bets": 5,
+        "old_1500p": 0.03825,
+        "new_1500p": 0.0389,
+        "new_500p": 0.0329,
+        "new_300p": 0.0309,
+        "new_150p": 0.0476,
+        "delta_1500p": 0.0006
+      }
+    ]
+  },
+  "notable_drifts": []
+}

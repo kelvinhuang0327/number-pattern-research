@@ -1,0 +1,262 @@
+{
+  "generated_at": "2026-04-23T01:27:49.855+08:00",
+  "lottery_type": "POWER_LOTTO",
+  "strategy": "pp3_freqort_3bet",
+  "seed": 42,
+  "n_perm": 200,
+  "source_files": {
+    "db": "lottery_api/data/lottery_v2.db",
+    "baseline": "analysis/results/stage0_baseline.json",
+    "predictor_reference": "tools/predict_power_orthogonal_5bet.py",
+    "fourier_reference": "tools/power_fourier_rhythm.py",
+    "leakage_check": "tools/verify_no_data_leakage.py"
+  },
+  "db_query": "SELECT draw, date, numbers, special, lottery_type FROM draws WHERE lottery_type = ? ORDER BY CAST(draw AS INTEGER) DESC",
+  "draw_count_total": 1903,
+  "design": {
+    "selected_candidate": "candidate_b_score_blend",
+    "candidate_order": [
+      "candidate_a_direct_top3",
+      "candidate_b_score_blend"
+    ],
+    "selected_thesis": "History-only score blend over canonical 4-ticket set: 0.35 Fourier + 0.45 residual FreqOrt + 0.20 cold complement."
+  },
+  "candidate_search": [
+    {
+      "name": "candidate_a_direct_top3",
+      "thesis": "Direct top-3 from canonical pp3_freqort_4bet (drop bet4).",
+      "oos_500_full": {
+        "periods": 500,
+        "hits": 64,
+        "hit_rate": 0.128,
+        "hit_rate_pct": 12.8,
+        "edge": 0.01634,
+        "edge_pct": 1.63,
+        "sharpe_bernoulli": 0.0489,
+        "start_draw": "110000053",
+        "end_draw": "115000031"
+      },
+      "reference_4bet_oos_500_full": {
+        "periods": 500,
+        "hits": 89,
+        "hit_rate": 0.178,
+        "hit_rate_pct": 17.8,
+        "edge": 0.031963,
+        "edge_pct": 3.2,
+        "sharpe_bernoulli": 0.0836,
+        "start_draw": "110000053",
+        "end_draw": "115000031"
+      },
+      "marginal_efficiency": {
+        "edge_retention_pct": 51.12,
+        "per_bet_efficiency_pct": 68.16,
+        "vs_75pct_edge_floor_pct": 68.16,
+        "pass": false
+      },
+      "gate1_pass": false
+    },
+    {
+      "name": "candidate_b_score_blend",
+      "thesis": "History-only score blend over canonical 4-ticket set: 0.35 Fourier + 0.45 residual FreqOrt + 0.20 cold complement.",
+      "oos_500_full": {
+        "periods": 500,
+        "hits": 70,
+        "hit_rate": 0.14,
+        "hit_rate_pct": 14.0,
+        "edge": 0.02834,
+        "edge_pct": 2.83,
+        "sharpe_bernoulli": 0.0817,
+        "start_draw": "110000053",
+        "end_draw": "115000031"
+      },
+      "reference_4bet_oos_500_full": {
+        "periods": 500,
+        "hits": 89,
+        "hit_rate": 0.178,
+        "hit_rate_pct": 17.8,
+        "edge": 0.031963,
+        "edge_pct": 3.2,
+        "sharpe_bernoulli": 0.0836,
+        "start_draw": "110000053",
+        "end_draw": "115000031"
+      },
+      "marginal_efficiency": {
+        "edge_retention_pct": 88.67,
+        "per_bet_efficiency_pct": 118.22,
+        "vs_75pct_edge_floor_pct": 118.22,
+        "pass": true
+      },
+      "gate1_pass": true
+    }
+  ],
+  "baseline_reference": {
+    "m3_plus_baseline_pct": 11.17,
+    "four_bet_baseline_pct": 14.6,
+    "stage0_edge_pct_3bet_reference": 3.02,
+    "stage0_edge_pct_4bet_reference": 3.28
+  },
+  "windows": {
+    "oos_150_head": {
+      "periods": 150,
+      "hits": 25,
+      "hit_rate": 0.166667,
+      "hit_rate_pct": 16.67,
+      "edge": 0.055007,
+      "edge_pct": 5.5,
+      "sharpe_bernoulli": 0.1476,
+      "start_draw": "110000053",
+      "end_draw": "111000098"
+    },
+    "oos_500_full": {
+      "periods": 500,
+      "hits": 70,
+      "hit_rate": 0.14,
+      "hit_rate_pct": 14.0,
+      "edge": 0.02834,
+      "edge_pct": 2.83,
+      "sharpe_bernoulli": 0.0817,
+      "start_draw": "110000053",
+      "end_draw": "115000031"
+    },
+    "oos_150_tail": {
+      "periods": 150,
+      "hits": 21,
+      "hit_rate": 0.14,
+      "hit_rate_pct": 14.0,
+      "edge": 0.02834,
+      "edge_pct": 2.83,
+      "sharpe_bernoulli": 0.0817,
+      "start_draw": "113000091",
+      "end_draw": "115000031"
+    },
+    "oos_1500_full": {
+      "periods": 1500,
+      "hits": 215,
+      "hit_rate": 0.143333,
+      "hit_rate_pct": 14.33,
+      "edge": 0.031674,
+      "edge_pct": 3.17,
+      "sharpe_bernoulli": 0.0904,
+      "start_draw": "100000097",
+      "end_draw": "115000031"
+    }
+  },
+  "reference_4bet_windows": {
+    "oos_150_head": {
+      "periods": 150,
+      "hits": 29,
+      "hit_rate": 0.193333,
+      "hit_rate_pct": 19.33,
+      "edge": 0.047297,
+      "edge_pct": 4.73,
+      "sharpe_bernoulli": 0.1198,
+      "start_draw": "110000053",
+      "end_draw": "111000098"
+    },
+    "oos_500_full": {
+      "periods": 500,
+      "hits": 89,
+      "hit_rate": 0.178,
+      "hit_rate_pct": 17.8,
+      "edge": 0.031963,
+      "edge_pct": 3.2,
+      "sharpe_bernoulli": 0.0836,
+      "start_draw": "110000053",
+      "end_draw": "115000031"
+    },
+    "oos_150_tail": {
+      "periods": 150,
+      "hits": 29,
+      "hit_rate": 0.193333,
+      "hit_rate_pct": 19.33,
+      "edge": 0.047297,
+      "edge_pct": 4.73,
+      "sharpe_bernoulli": 0.1198,
+      "start_draw": "113000091",
+      "end_draw": "115000031"
+    },
+    "oos_1500_full": {
+      "periods": 1500,
+      "hits": 268,
+      "hit_rate": 0.178667,
+      "hit_rate_pct": 17.87,
+      "edge": 0.03263,
+      "edge_pct": 3.26,
+      "sharpe_bernoulli": 0.0852,
+      "start_draw": "100000097",
+      "end_draw": "115000031"
+    }
+  },
+  "marginal_efficiency": {
+    "oos_150_head": {
+      "edge_retention_pct": 116.3,
+      "per_bet_efficiency_pct": 155.07,
+      "vs_75pct_edge_floor_pct": 155.07,
+      "pass": true
+    },
+    "oos_500_full": {
+      "edge_retention_pct": 88.67,
+      "per_bet_efficiency_pct": 118.22,
+      "vs_75pct_edge_floor_pct": 118.22,
+      "pass": true
+    },
+    "oos_150_tail": {
+      "edge_retention_pct": 59.92,
+      "per_bet_efficiency_pct": 79.89,
+      "vs_75pct_edge_floor_pct": 79.89,
+      "pass": false
+    },
+    "oos_1500_full": {
+      "edge_retention_pct": 97.07,
+      "per_bet_efficiency_pct": 129.43,
+      "vs_75pct_edge_floor_pct": 129.43,
+      "pass": true
+    }
+  },
+  "permutation_test": {
+    "n_oos": 500,
+    "real_hits": 70,
+    "real_rate": 0.14,
+    "real_rate_pct": 14.0,
+    "real_edge": 0.02834,
+    "real_edge_pct": 2.83,
+    "shuffle_mean": 0.01294,
+    "shuffle_mean_pct": 1.29,
+    "shuffle_std": 0.014142,
+    "shuffle_std_pct": 1.41,
+    "p_emp": 0.1542,
+    "cohens_d": 1.089,
+    "z_score": 1.089,
+    "verdict": "NO_SIGNAL"
+  },
+  "mcnemar": {
+    "status": "SKIPPED",
+    "reason": "Gate 3 not passed"
+  },
+  "comparison_to_fourier_rhythm_3bet": {
+    "fourier_watch_reference_file": "analysis/results/power_fourier_500p_oos_20260423.json",
+    "fourier_500p_edge_pct": 1.63,
+    "fourier_500p_perm_p": 0.209,
+    "candidate_500p_edge_pct": 2.83,
+    "candidate_500p_perm_p": 0.1542
+  },
+  "leakage_check": "PASS",
+  "summary": {
+    "verdict": "WATCH",
+    "pass_conditions": {
+      "gate1_marginal_efficiency": true,
+      "edge_150_head_gt_0": true,
+      "edge_500_full_gt_0": true,
+      "edge_150_tail_gt_0": true,
+      "perm_p_lt_0_05": false,
+      "cohens_d_gt_1_0": true
+    },
+    "notes": [
+      "Candidate A failed Gate 1 and was not advanced.",
+      "Candidate B preserved >80% marginal efficiency but did not clear permutation p < 0.05.",
+      "McNemar is skipped unless both permutation gates pass."
+    ]
+  },
+  "verdict": "WATCH",
+  "completed_markdown": "# POWER_LOTTO pp3_freqort_3bet validation (2026-04-23)\n\n- Verdict: **WATCH**\n- Selected design: `candidate_b_score_blend`\n- 500p OOS Edge: +2.83% (head/tail +5.50% / +2.83%)\n- 4bet comparison: 3bet retention 88.7% | per-bet efficiency 118.2%\n- Permutation: p=0.1542, d=1.089 → NO_SIGNAL\n- Leakage check: PASS\n- McNemar: skipped (Gate 3 not passed)"
+}

@@ -1,0 +1,42 @@
+{
+  "run_id": "cto-20260423-154615",
+  "frequency_mode": "once_daily",
+  "started_at": "2026-04-23T07:46:15.632451+00:00",
+  "completed_at": "2026-04-23T07:46:15.661695+00:00",
+  "duration_seconds": 0,
+  "checked_from": "2026-04-23T07:40:36.708320+00:00",
+  "checked_until": "2026-04-23T07:46:15.632838+00:00",
+  "candidate_count": 0,
+  "approved_count": 0,
+  "merged_count": 0,
+  "rejected_count": 0,
+  "deferred_count": 0,
+  "superseded_count": 0,
+  "duplicate_count": 0,
+  "merge_branch": null,
+  "report_md_path": "/Users/kelvin/Kelvin-WorkSpace/LotteryNew/runtime/agent_orchestrator/cto_reviews/20260423/cto-20260423-154615-report.md",
+  "report_json_path": "/Users/kelvin/Kelvin-WorkSpace/LotteryNew/runtime/agent_orchestrator/cto_reviews/20260423/cto-20260423-154615-report.json",
+  "summary": "Frequency gate: too recent to run",
+  "created_at": "2026-04-23T07:46:15.632451+00:00",
+  "updated_at": "2026-04-23T07:46:15.632451+00:00",
+  "decisions": [],
+  "intelligence": {
+    "schema_version": "2.0",
+    "executive_summary": {
+      "health_score": 100,
+      "verdict": "GO",
+      "top_risks": [],
+      "top_actions": [],
+      "candidate_count": 0,
+      "merged_count": 0,
+      "approved_count": 0,
+      "rejected_count": 0,
+      "deferred_count": 0,
+      "superseded_count": 0,
+      "duplicate_count": 0
+    },
+    "health_score": 100,
+    "verdict": "GO",
+    "roadmap": []
+  }
+}

@@ -1,0 +1,36 @@
+{
+  "strategy": "streak_boost_fusion_2bet",
+  "description": "注1:鄰域+StreakBoost / 注2:多窗口Fusion+ZoneConstraint",
+  "windows": {
+    "150": {
+      "hits": 5,
+      "total": 101,
+      "rate": 4.9505,
+      "edge": 1.2605
+    },
+    "500": {
+      "hits": 24,
+      "total": 451,
+      "rate": 5.3215,
+      "edge": 1.6315
+    },
+    "1500": {
+      "hits": 63,
+      "total": 1451,
+      "rate": 4.3418,
+      "edge": 0.6518
+    }
+  },
+  "permutation": {
+    "real_rate": 4.341833,
+    "perm_mean": 3.677326,
+    "perm_std": 0.492915,
+    "z": 1.348118,
+    "p_value": 0.103,
+    "real_hits": 63,
+    "valid_n": 1451
+  },
+  "all_windows_positive": true,
+  "verdict": "⚠️  MARGINAL — 需持續監控",
+  "baseline_2bet": 3.69
+}

@@ -1,0 +1,718 @@
+{
+  "timestamp": "2026-01-21T15:59:50.388436",
+  "phase2_results": {
+    "config": {
+      "periods": 50,
+      "mab": true,
+      "anomaly": true
+    },
+    "metrics": {
+      "match3_rate": 0.014285714285714285,
+      "win_rate_period": 0.1,
+      "avg_hits": 0.7228571428571429,
+      "total_match3": 5
+    },
+    "details": [
+      {
+        "draw": "114000074",
+        "max_hit": 2,
+        "bet_count": 7,
+        "strategies": [
+          "statistical",
+          "pattern_based",
+          "statistical",
+          "p2_advanced",
+          "probabilistic",
+          "ensemble",
+          "unknown"
+        ]
+      },
+      {
+        "draw": "114000075",
+        "max_hit": 1,
+        "bet_count": 7,
+        "strategies": [
+          "statistical",
+          "pattern_based",
+          "statistical",
+          "p2_advanced",
+          "probabilistic",
+          "ensemble",
+          "unknown"
+        ]
+      },
+      {
+        "draw": "114000076",
+        "max_hit": 2,
+        "bet_count": 7,
+        "strategies": [
+          "statistical",
+          "pattern_based",
+          "statistical",
+          "p2_advanced",
+          "probabilistic",
+          "ensemble",
+          "unknown"
+        ]
+      },
+      {
+        "draw": "114000077",
+        "max_hit": 1,
+        "bet_count": 7,
+        "strategies": [
+          "statistical",
+          "pattern_based",
+          "statistical",
+          "p2_advanced",
+          "probabilistic",
+          "ensemble",
+          "unknown"
+        ]
+      },
+      {
+        "draw": "114000078",
+        "max_hit": 2,
+        "bet_count": 7,
+        "strategies": [
+          "statistical",
+          "pattern_based",
+          "statistical",
+          "p2_advanced",
+          "probabilistic",
+          "ensemble",
+          "unknown"
+        ]
+      },
+      {
+        "draw": "114000079",
+        "max_hit": 3,
+        "bet_count": 7,
+        "strategies": [
+          "statistical",
+          "pattern_based",
+          "statistical",
+          "p2_advanced",
+          "probabilistic",
+          "ensemble",
+          "unknown"
+        ]
+      },
+      {
+        "draw": "114000080",
+        "max_hit": 2,
+        "bet_count": 7,
+        "strategies": [
+          "statistical",
+          "pattern_based",
+          "statistical",
+          "p2_advanced",
+          "probabilistic",
+          "ensemble",
+          "unknown"
+        ]
+      },
+      {
+        "draw": "114000081",
+        "max_hit": 1,
+        "bet_count": 7,
+        "strategies": [
+          "statistical",
+          "pattern_based",
+          "statistical",
+          "p2_advanced",
+          "probabilistic",
+          "ensemble",
+          "unknown"
+        ]
+      },
+      {
+        "draw": "114000082",
+        "max_hit": 2,
+        "bet_count": 7,
+        "strategies": [
+          "statistical",
+          "statistical",
+          "pattern_based",
+          "p2_advanced",
+          "probabilistic",
+          "ensemble",
+          "unknown"
+        ]
+      },
+      {
+        "draw": "114000083",
+        "max_hit": 1,
+        "bet_count": 7,
+        "strategies": [
+          "statistical",
+          "pattern_based",
+          "statistical",
+          "probabilistic",
+          "p2_advanced",
+          "ensemble",
+          "unknown"
+        ]
+      },
+      {
+        "draw": "114000084",
+        "max_hit": 2,
+        "bet_count": 7,
+        "strategies": [
+          "statistical",
+          "pattern_based",
+          "statistical",
+          "probabilistic",
+          "p2_advanced",
+          "ensemble",
+          "unknown"
+        ]
+      },
+      {
+        "draw": "114000085",
+        "max_hit": 1,
+        "bet_count": 7,
+        "strategies": [
+          "statistical",
+          "pattern_based",
+          "statistical",
+          "probabilistic",
+          "p2_advanced",
+          "ensemble",
+          "unknown"
+        ]
+      },
+      {
+        "draw": "114000086",
+        "max_hit": 1,
+        "bet_count": 7,
+        "strategies": [
+          "statistical",
+          "pattern_based",
+          "statistical",
+          "probabilistic",
+          "p2_advanced",
+          "ensemble",
+          "unknown"
+        ]
+      },
+      {
+        "draw": "114000087",
+        "max_hit": 3,
+        "bet_count": 7,
+        "strategies": [
+          "statistical",
+          "pattern_based",
+          "statistical",
+          "probabilistic",
+          "p2_advanced",
+          "ensemble",
+          "unknown"
+        ]
+      },
+      {
+        "draw": "114000088",
+        "max_hit": 1,
+        "bet_count": 7,
+        "strategies": [
+          "statistical",
+          "pattern_based",
+          "statistical",
+          "probabilistic",
+          "p2_advanced",
+          "ensemble",
+          "unknown"
+        ]
+      },
+      {
+        "draw": "114000089",
+        "max_hit": 2,
+        "bet_count": 7,
+        "strategies": [
+          "statistical",
+          "pattern_based",
+          "statistical",
+          "probabilistic",
+          "p2_advanced",
+          "ensemble",
+          "unknown"
+        ]
+      },
+      {
+        "draw": "114000090",
+        "max_hit": 2,
+        "bet_count": 7,
+        "strategies": [
+          "statistical",
+          "pattern_based",
+          "statistical",
+          "probabilistic",
+          "p2_advanced",
+          "ensemble",
+          "unknown"
+        ]
+      },
+      {
+        "draw": "114000091",
+        "max_hit": 3,
+        "bet_count": 7,
+        "strategies": [
+          "statistical",
+          "pattern_based",
+          "statistical",
+          "probabilistic",
+          "p2_advanced",
+          "ensemble",
+          "unknown"
+        ]
+      },
+      {
+        "draw": "114000092",
+        "max_hit": 1,
+        "bet_count": 7,
+        "strategies": [
+          "statistical",
+          "pattern_based",
+          "statistical",
+          "probabilistic",
+          "p2_advanced",
+          "ensemble",
+          "unknown"
+        ]
+      },
+      {
+        "draw": "114000093",
+        "max_hit": 1,
+        "bet_count": 7,
+        "strategies": [
+          "statistical",
+          "pattern_based",
+          "statistical",
+          "probabilistic",
+          "p2_advanced",
+          "ensemble",
+          "unknown"
+        ]
+      },
+      {
+        "draw": "114000094",
+        "max_hit": 2,
+        "bet_count": 7,
+        "strategies": [
+          "statistical",
+          "statistical",
+          "pattern_based",
+          "probabilistic",
+          "p2_advanced",
+          "ensemble",
+          "unknown"
+        ]
+      },
+      {
+        "draw": "114000095",
+        "max_hit": 3,
+        "bet_count": 7,
+        "strategies": [
+          "statistical",
+          "statistical",
+          "pattern_based",
+          "probabilistic",
+          "p2_advanced",
+          "ensemble",
+          "unknown"
+        ]
+      },
+      {
+        "draw": "114000096",
+        "max_hit": 2,
+        "bet_count": 7,
+        "strategies": [
+          "statistical",
+          "statistical",
+          "pattern_based",
+          "probabilistic",
+          "p2_advanced",
+          "ensemble",
+          "unknown"
+        ]
+      },
+      {
+        "draw": "114000097",
+        "max_hit": 2,
+        "bet_count": 7,
+        "strategies": [
+          "statistical",
+          "statistical",
+          "pattern_based",
+          "probabilistic",
+          "p2_advanced",
+          "ensemble",
+          "unknown"
+        ]
+      },
+      {
+        "draw": "114000098",
+        "max_hit": 2,
+        "bet_count": 7,
+        "strategies": [
+          "statistical",
+          "statistical",
+          "pattern_based",
+          "probabilistic",
+          "p2_advanced",
+          "ensemble",
+          "unknown"
+        ]
+      },
+      {
+        "draw": "114000099",
+        "max_hit": 1,
+        "bet_count": 7,
+        "strategies": [
+          "statistical",
+          "statistical",
+          "pattern_based",
+          "probabilistic",
+          "p2_advanced",
+          "ensemble",
+          "unknown"
+        ]
+      },
+      {
+        "draw": "114000100",
+        "max_hit": 2,
+        "bet_count": 7,
+        "strategies": [
+          "statistical",
+          "statistical",
+          "pattern_based",
+          "p2_advanced",
+          "probabilistic",
+          "ensemble",
+          "unknown"
+        ]
+      },
+      {
+        "draw": "114000101",
+        "max_hit": 2,
+        "bet_count": 7,
+        "strategies": [
+          "statistical",
+          "statistical",
+          "pattern_based",
+          "p2_advanced",
+          "probabilistic",
+          "ensemble",
+          "unknown"
+        ]
+      },
+      {
+        "draw": "114000102",
+        "max_hit": 1,
+        "bet_count": 7,
+        "strategies": [
+          "statistical",
+          "statistical",
+          "pattern_based",
+          "p2_advanced",
+          "probabilistic",
+          "ensemble",
+          "unknown"
+        ]
+      },
+      {
+        "draw": "114000103",
+        "max_hit": 2,
+        "bet_count": 7,
+        "strategies": [
+          "statistical",
+          "statistical",
+          "pattern_based",
+          "p2_advanced",
+          "probabilistic",
+          "pattern_based",
+          "unknown"
+        ]
+      },
+      {
+        "draw": "114000104",
+        "max_hit": 1,
+        "bet_count": 7,
+        "strategies": [
+          "statistical",
+          "statistical",
+          "pattern_based",
+          "pattern_based",
+          "p2_advanced",
+          "probabilistic",
+          "unknown"
+        ]
+      },
+      {
+        "draw": "114000105",
+        "max_hit": 3,
+        "bet_count": 7,
+        "strategies": [
+          "statistical",
+          "statistical",
+          "pattern_based",
+          "pattern_based",
+          "p2_advanced",
+          "probabilistic",
+          "unknown"
+        ]
+      },
+      {
+        "draw": "114000106",
+        "max_hit": 2,
+        "bet_count": 7,
+        "strategies": [
+          "statistical",
+          "statistical",
+          "pattern_based",
+          "p2_advanced",
+          "probabilistic",
+          "pattern_based",
+          "unknown"
+        ]
+      },
+      {
+        "draw": "114000107",
+        "max_hit": 1,
+        "bet_count": 7,
+        "strategies": [
+          "statistical",
+          "statistical",
+          "pattern_based",
+          "pattern_based",
+          "p2_advanced",
+          "probabilistic",
+          "unknown"
+        ]
+      },
+      {
+        "draw": "114000108",
+        "max_hit": 2,
+        "bet_count": 7,
+        "strategies": [
+          "statistical",
+          "statistical",
+          "pattern_based",
+          "pattern_based",
+          "p2_advanced",
+          "probabilistic",
+          "unknown"
+        ]
+      },
+      {
+        "draw": "114000109",
+        "max_hit": 1,
+        "bet_count": 7,
+        "strategies": [
+          "statistical",
+          "statistical",
+          "pattern_based",
+          "pattern_based",
+          "p2_advanced",
+          "probabilistic",
+          "unknown"
+        ]
+      },
+      {
+        "draw": "114000110",
+        "max_hit": 2,
+        "bet_count": 7,
+        "strategies": [
+          "statistical",
+          "statistical",
+          "pattern_based",
+          "probabilistic",
+          "p2_advanced",
+          "pattern_based",
+          "unknown"
+        ]
+      },
+      {
+        "draw": "114000111",
+        "max_hit": 1,
+        "bet_count": 7,
+        "strategies": [
+          "statistical",
+          "statistical",
+          "pattern_based",
+          "pattern_based",
+          "p2_advanced",
+          "probabilistic",
+          "unknown"
+        ]
+      },
+      {
+        "draw": "114000112",
+        "max_hit": 2,
+        "bet_count": 7,
+        "strategies": [
+          "statistical",
+          "statistical",
+          "pattern_based",
+          "pattern_based",
+          "p2_advanced",
+          "probabilistic",
+          "unknown"
+        ]
+      },
+      {
+        "draw": "114000113",
+        "max_hit": 1,
+        "bet_count": 7,
+        "strategies": [
+          "statistical",
+          "statistical",
+          "pattern_based",
+          "probabilistic",
+          "p2_advanced",
+          "ensemble",
+          "unknown"
+        ]
+      },
+      {
+        "draw": "114000114",
+        "max_hit": 2,
+        "bet_count": 7,
+        "strategies": [
+          "statistical",
+          "statistical",
+          "pattern_based",
+          "pattern_based",
+          "probabilistic",
+          "p2_advanced",
+          "unknown"
+        ]
+      },
+      {
+        "draw": "114000115",
+        "max_hit": 2,
+        "bet_count": 7,
+        "strategies": [
+          "statistical",
+          "statistical",
+          "pattern_based",
+          "pattern_based",
+          "probabilistic",
+          "p2_advanced",
+          "unknown"
+        ]
+      },
+      {
+        "draw": "114000116",
+        "max_hit": 1,
+        "bet_count": 7,
+        "strategies": [
+          "statistical",
+          "statistical",
+          "pattern_based",
+          "pattern_based",
+          "probabilistic",
+          "p2_advanced",
+          "unknown"
+        ]
+      },
+      {
+        "draw": "114000117",
+        "max_hit": 2,
+        "bet_count": 7,
+        "strategies": [
+          "statistical",
+          "statistical",
+          "pattern_based",
+          "pattern_based",
+          "probabilistic",
+          "p2_advanced",
+          "unknown"
+        ]
+      },
+      {
+        "draw": "114000118",
+        "max_hit": 2,
+        "bet_count": 7,
+        "strategies": [
+          "statistical",
+          "statistical",
+          "pattern_based",
+          "pattern_based",
+          "probabilistic",
+          "p2_advanced",
+          "unknown"
+        ]
+      },
+      {
+        "draw": "115000001",
+        "max_hit": 2,
+        "bet_count": 7,
+        "strategies": [
+          "statistical",
+          "statistical",
+          "pattern_based",
+          "pattern_based",
+          "p2_advanced",
+          "probabilistic",
+          "unknown"
+        ]
+      },
+      {
+        "draw": "115000002",
+        "max_hit": 1,
+        "bet_count": 7,
+        "strategies": [
+          "statistical",
+          "statistical",
+          "pattern_based",
+          "pattern_based",
+          "probabilistic",
+          "p2_advanced",
+          "unknown"
+        ]
+      },
+      {
+        "draw": "115000003",
+        "max_hit": 2,
+        "bet_count": 7,
+        "strategies": [
+          "statistical",
+          "statistical",
+          "pattern_based",
+          "pattern_based",
+          "probabilistic",
+          "p2_advanced",
+          "unknown"
+        ]
+      },
+      {
+        "draw": "115000004",
+        "max_hit": 1,
+        "bet_count": 7,
+        "strategies": [
+          "statistical",
+          "statistical",
+          "pattern_based",
+          "pattern_based",
+          "probabilistic",
+          "p2_advanced",
+          "unknown"
+        ]
+      },
+      {
+        "draw": "115000005",
+        "max_hit": 1,
+        "bet_count": 7,
+        "strategies": [
+          "statistical",
+          "statistical",
+          "pattern_based",
+          "pattern_based",
+          "p2_advanced",
+          "probabilistic",
+          "unknown"
+        ]
+      }
+    ]
+  }
+}

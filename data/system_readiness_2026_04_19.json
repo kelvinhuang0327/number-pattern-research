@@ -1,0 +1,45 @@
+{
+  "generated_at": "2026-04-19T16:46:01.522975",
+  "assessment_date": "2026-04-19",
+  "phases": {
+    "phase1_lint": {
+      "status": "PASS",
+      "post_draw_pipeline_warnings": 17,
+      "maintenance_update_warnings": 1,
+      "blocking_issues_resolved": true
+    },
+    "phase2_pipeline_dryrun": {
+      "status": "ALL_OK",
+      "lotteries_tested": [
+        "BIG_LOTTO",
+        "DAILY_539",
+        "POWER_LOTTO"
+      ],
+      "failed_steps": []
+    },
+    "phase3_weekly_health": {
+      "status": "PASS",
+      "system_status": "GREEN",
+      "file": "data/weekly_health_20260419.json"
+    },
+    "phase4_trigger_tests": {
+      "status": "PASS",
+      "all_pass": true,
+      "test_count": 3
+    }
+  },
+  "system_state": {
+    "all_lotteries_mode": "MAINTENANCE",
+    "strategy_states_file_missing_is_expected": true,
+    "combo_b_status": "SHADOW_TRACKING",
+    "overall_exit_trigger": "GREEN",
+    "actions_required": []
+  },
+  "overall_result": "READY",
+  "notes": [
+    "strategy_states_{lt}.json not present - normal (RSM not yet initialized)",
+    "All 3 lotteries EXIT TRIGGER = GREEN",
+    "combo_B SHADOW_TRACKING in progress (evaluate_at=115000331)",
+    "tools/weekly_health_report.py created, standalone executable"
+  ]
+}

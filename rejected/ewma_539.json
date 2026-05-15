@@ -1,0 +1,59 @@
+{
+  "strategy": "EWMA 頻率預測器 (今彩539)",
+  "rejected_date": "2026-03-06",
+  "trigger": "058期檢討: ACB 對動量/重複號碼盲區",
+
+  "failure_reasons": [
+    "EWMA hot 1-bet Edge +0.53% (ACB +2.93%), 差距 -2.40%",
+    "EWMA 短窗口 (150p/500p) 表現低於隨機基準",
+    "LATE_BLOOMER pattern — 近期信號不可靠，只有長期勉強正",
+    "Permutation test p=0.2549, 未達 0.05 門檻",
+    "所有含 EWMA 的組合 Edge 均低於無 EWMA 的對應組合",
+    "MAB UCB1 自動降低 EWMA 選取率至 12.9% (最低)"
+  ],
+
+  "statistical_results": {
+    "ewma_hot_1bet": {
+      "150p": {"rate": 10.00, "edge": -1.40, "z": -0.54},
+      "500p": {"rate": 10.20, "edge": -1.20, "z": -0.84},
+      "1500p": {"rate": 11.93, "edge": 0.53, "z": 0.65},
+      "perm_p": 0.2549,
+      "pattern": "LATE_BLOOMER"
+    },
+    "ewma_markov_2bet": {
+      "150p": {"rate": 17.33, "edge": -4.21, "z": -1.25},
+      "500p": {"rate": 22.00, "edge": 0.46, "z": 0.25},
+      "1500p": {"rate": 23.73, "edge": 2.19, "z": 2.07},
+      "perm_p": 0.1176,
+      "pattern": "LATE_BLOOMER"
+    },
+    "ewma_markov_midfreq_3bet": {
+      "150p": {"rate": 32.00, "edge": 1.50, "z": 0.40},
+      "500p": {"rate": 33.00, "edge": 2.50, "z": 1.21},
+      "1500p": {"rate": 34.47, "edge": 3.97, "z": 3.34},
+      "perm_p": 0.0588,
+      "pattern": "STABLE but weaker than current"
+    },
+    "ewma_acb_markov_3bet": {
+      "150p": {"rate": 32.00, "edge": 1.50, "z": 0.40},
+      "500p": {"rate": 34.00, "edge": 3.50, "z": 1.70},
+      "1500p": {"rate": 36.13, "edge": 5.63, "z": 4.74},
+      "perm_p": 0.0196,
+      "pattern": "STABLE but -0.73% vs current, McNemar p=0.60"
+    }
+  },
+
+  "conditions_for_retest": [
+    "539 規則變更 (如號碼範圍調整)",
+    "ACB Edge 持續衰退至 < +1.0% 超過 500 期",
+    "發現 EWMA span 參數更優組合 (目前 30/100)",
+    "搭配其他新方法重新組合測試 (非替代 ACB 而是輔助角色)"
+  ],
+
+  "lessons_learned": [
+    "EWMA 的動量追蹤優勢在 539 (39選5) 不明顯 — 號碼池太小",
+    "ACB 的 freq_deficit + gap_score 組合式方法在 539 更穩定",
+    "動量/重複號碼異常 (如058期3重複) 是 1.1% 稀有事件，不值得犧牲常態表現",
+    "EWMA 可能在大號碼池彩票 (49選6, 38選6) 更有效，539 無必要"
+  ]
+}

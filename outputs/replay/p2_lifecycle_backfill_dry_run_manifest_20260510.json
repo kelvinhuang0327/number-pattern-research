@@ -1,11 +1,11 @@
 {
-  "generated_at": "2026-05-10T09:32:43.012093+00:00",
+  "generated_at": "2026-05-15T12:18:37.766653+00:00",
   "mode": "dry-run",
   "no_write_proof": {
     "db_path": "/Users/kelvin/Kelvin-WorkSpace/LotteryNew-clean/lottery_api/data/lottery_v2.db",
     "db_open_mode": "read_only",
-    "db_sha256_before": "f7eb79455cc9a4b316d57cd83a2a79656baed10c1c286313c7c7de9e96081543",
-    "db_sha256_after": "f7eb79455cc9a4b316d57cd83a2a79656baed10c1c286313c7c7de9e96081543",
+    "db_sha256_before": "10cbf51b31ab3c1344dc05abad320cb7df25cd79dbd26b222bff1085bfb29eb5",
+    "db_sha256_after": "10cbf51b31ab3c1344dc05abad320cb7df25cd79dbd26b222bff1085bfb29eb5",
     "db_sha256_unchanged": true,
     "manifest_rows_runtime_write_allowed": false
   },

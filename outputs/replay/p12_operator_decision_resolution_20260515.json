@@ -1,0 +1,104 @@
+{
+  "generated_at": "2026-05-15T00:00:00+08:00",
+  "source_pr": 104,
+  "final_classification": "P12_OPERATOR_DECISION_RESOLUTION_READY",
+  "p11_nod_input_count": 2,
+  "evidence_scan_result": "COMPLETE",
+  "key_finding": "BOTH strategies are currently ACTIVE production strategies with PENDING prediction_items in DB. P1.1 NOD classification was correct to flag these, but the risk was understated: these are not retired/dead strategies but live unregistered production strategies — a critical governance gap.",
+  "decisions": [
+    {
+      "strategy_id": "fourier_rhythm_3bet",
+      "decision": "PRODUCT_DENOMINATOR_ONLINE_CANDIDATE",
+      "recommended_lifecycle_status": "ONLINE",
+      "recommended_replay_display_semantics": "NO_DATA",
+      "canonical_or_successor_strategy_id": null,
+      "lottery_type": "POWER_LOTTO",
+      "evidence_files": [
+        "lottery_api/engine/rolling_strategy_monitor.py:get_power_lotto_strategies():line749",
+        "tools/rsm_bootstrap.py:get_power_lotto_strategies_inline():line60",
+        "lottery_api/data/lottery_v2.db:prediction_runs.id=168",
+        "lottery_api/data/lottery_v2.db:prediction_items.id=1072,1073,1074",
+        "outputs/replay/p2_lifecycle_backfill_dry_run_manifest_20260510.json:promotable_candidates",
+        "memory/lessons.md:L76,L94"
+      ],
+      "evidence_summary": "fourier_rhythm_3bet is a LIVE POWER_LOTTO production strategy. Evidence: (1) Registered in get_power_lotto_strategies() in the production RSM engine (rolling_strategy_monitor.py line 749) as a named, stable strategy with fourier_3bet predict_func. (2) Has prediction_run id=168 (POWER_LOTTO, target_draw=115000034, 2026-04-27, snapshot_source=VALID) currently in the DB. (3) Has 3 PENDING prediction_items (IDs 1072-1074) representing computed predictions not yet resolved. (4) In p2 dry run, appeared in promotable_candidates (PROMOTABLE, runtime_write_allowed=false) — meaning the p2 backfill process identified it as eligible for replay row promotion. (5) memory/lessons.md references it as the PRODUCTION benchmark strategy: 'McNemar vs fourier_rhythm_3bet: net=+16, p=0.458', 'L76 principle reconfirmed: do not replace fourier_rhythm_3bet', 'L94: 30p overheat warning — maintain ONLINE, recheck in 30 draws'. (6) NOT a duplicate/alias of any canonical strategy (distinct from power_precision_3bet, power_orthogonal_5bet, power_shlc_midfreq, h6_gate_mk20_ew85). CRITICAL: This strategy is running live in production WITHOUT a canonical registry entry. Immediate registry addition required.",
+      "p11_nod_root_cause": "P1.1 DB scan searched for strategy_id column in all tables. prediction_items and prediction_runs use strategy_name column — not strategy_id. The P1.1 conclusion of '0 rows in ALL tables' was based on column-name mismatch, not absence of data. The strategy has active rows via the strategy_name column.",
+      "risk_flags": [
+        "no_registry_entry",
+        "currently_active_pending_predictions",
+        "critical_governance_gap",
+        "live_production_no_formal_lifecycle",
+        "p11_db_scan_column_mismatch"
+      ],
+      "operator_followup_required": true,
+      "operator_action_required": "ADD_TO_CANONICAL_REGISTRY_AS_ONLINE",
+      "operator_action_urgency": "HIGH",
+      "operator_action_detail": "Add fourier_rhythm_3bet to replay_strategy_registry.py as a POWER_LOTTO ONLINE strategy. Then run P2 replay backfill to promote its PENDING prediction_items to strategy_prediction_replays. strategy_name='fourier_rhythm_3bet', lottery_type='POWER_LOTTO', lifecycle_status='ONLINE', supported_prediction_run_id=168."
+    },
+    {
+      "strategy_id": "ts3_regime_3bet",
+      "decision": "PRODUCT_DENOMINATOR_ONLINE_CANDIDATE",
+      "recommended_lifecycle_status": "ONLINE",
+      "recommended_replay_display_semantics": "NO_DATA",
+      "canonical_or_successor_strategy_id": null,
+      "lottery_type": "BIG_LOTTO",
+      "evidence_files": [
+        "lottery_api/data/lottery_v2.db:prediction_runs.id=167,174,175",
+        "lottery_api/data/lottery_v2.db:prediction_items.id=1069,1070,1071,1090,1091,1092,1093,1094,1095",
+        "outputs/replay/p2_lifecycle_backfill_dry_run_manifest_20260510.json:promotable_candidates",
+        "outputs/replay/strategy_catalog_inventory_20260512.md:section6.2",
+        "memory/lessons.md:L_biglotto_maintenance_mode",
+        "wiki/games/big_lotto.md"
+      ],
+      "evidence_summary": "ts3_regime_3bet is a LIVE BIG_LOTTO production strategy. Evidence: (1) Has 3 prediction_runs in DB: run_id=167 (BIG_LOTTO, draw=115000048, 2026-04-28, VALID), run_id=174 (BIG_LOTTO, draw=115000050, 2026-05-05, VALID), run_id=175 (BIG_LOTTO, draw=115000049, 2026-05-01, RECONSTRUCTED). (2) Has 9 PENDING prediction_items (IDs 1069-1071 for run 167, IDs 1090-1092 for run 174, IDs 1093-1095 for run 175). (3) In p2 dry run, appeared in promotable_candidates (PROMOTABLE, runtime_write_allowed=false) — eligible for replay backfill. (4) strategy_catalog_inventory_20260512.md section 6.2 explicitly lists it as a BIG_LOTTO production monitoring strategy: 'ts3_regime_3bet: wiki/games/big_lotto.md, UNKNOWN lifecycle, 監控參考策略'. (5) memory/lessons.md explicitly states: '繼續使用 regime_2bet/ts3_regime_3bet/p1_dev_sum5bet 生產策略' — this is an explicit operator decision to continue using it as a production strategy. (6) Another strategy was evaluated with 'McNemar vs ts3_regime_3bet: net=-6, p=0.606 — 新策略未改善生產' — ts3_regime_3bet is the production baseline. (7) NOT a duplicate of biglotto_ts3_acb_4bet or biglotto_ts3_markov_freq_5bet — those are different ts3 family variants (ACB and MarkovFreq respectively; this is the regime-switching ts3 variant). CRITICAL: This strategy is running live in production across multiple draws WITHOUT a canonical registry entry.",
+      "p11_nod_root_cause": "Same as fourier_rhythm_3bet: P1.1 DB scan column-name mismatch (strategy_id vs strategy_name). Additionally, strategy_catalog_inventory_20260512.md was not in scope for P1.1 evidence scan.",
+      "risk_flags": [
+        "no_registry_entry",
+        "currently_active_pending_predictions",
+        "critical_governance_gap",
+        "live_production_no_formal_lifecycle",
+        "p11_db_scan_column_mismatch",
+        "multiple_active_runs_across_draws"
+      ],
+      "operator_followup_required": true,
+      "operator_action_required": "ADD_TO_CANONICAL_REGISTRY_AS_ONLINE",
+      "operator_action_urgency": "HIGH",
+      "operator_action_detail": "Add ts3_regime_3bet to replay_strategy_registry.py as a BIG_LOTTO ONLINE strategy. Then run P2 replay backfill to promote its PENDING prediction_items across runs 167, 174, 175 to strategy_prediction_replays. strategy_name='ts3_regime_3bet', lottery_type='BIG_LOTTO', lifecycle_status='ONLINE', supported_prediction_run_ids=[167,174,175]."
+    }
+  ],
+  "clean_denominator": {
+    "p11_previous_recommendation": 69,
+    "final_recommendation": 71,
+    "breakdown": {
+      "canonical_registry": 16,
+      "p11_product_denominator": 53,
+      "p12_resolved_online_candidates": 2
+    },
+    "if_both_product_denominator": 71,
+    "covered_count": 6,
+    "partial_count": 4,
+    "nod_strategy_replays": 0,
+    "coverage_rate": "6/71 = 8.5%",
+    "coverage_rate_note": "NOD 2 strategies have 0 strategy_prediction_replays rows. Once added to registry + P2 backfill run, they may qualify as COVERED or PARTIAL.",
+    "covered_plus_partial_rate": "10/71 = 14.1%",
+    "expected_post_backfill_coverage_rate": "8/71 = 11.3% (if both get replay rows via P2 backfill)"
+  },
+  "p11_nod_root_cause_analysis": {
+    "finding": "P1.1 DB scan searched only for strategy_id column across all tables. The prediction_items and prediction_runs tables use strategy_name column (not strategy_id). Both strategies had active rows in prediction_runs.strategy_name and appeared in promotable_candidates of p2 dry run. The risk flag 'was_live_no_tombstone' was correct but the conclusion '0 rows in all tables' was a column-name miss, not actual data absence.",
+    "impact_on_p11": "P1.1 classification of NEEDS_OPERATOR_DECISION was CORRECT. The classification framework correctly flagged governance risk. However, P1.2 evidence reveals the situation is more serious: these are not retired strategies awaiting tombstone, but ACTIVE production strategies requiring immediate registry addition.",
+    "tables_with_strategy_name": ["prediction_runs", "prediction_items via prediction_runs join"],
+    "tables_with_strategy_id": ["strategy_prediction_replays"]
+  },
+  "next_step_recommendation": "P13_REGISTRY_ONLINE_PROPOSAL",
+  "next_step_detail": "Create registry entries for both strategies as ONLINE in replay_strategy_registry.py, then run P2 replay page operator acceptance with clean denominator = 71. The P2 backfill may then promote PENDING prediction_items to strategy_prediction_replays for these 2 strategies, increasing COVERED count from 6 to up to 8.",
+  "safety_confirmation": {
+    "db_writes": false,
+    "replay_rows_generated": false,
+    "backtest_run": false,
+    "strategy_logic_changed": false,
+    "registry_changed": false,
+    "api_ui_backend_changed": false,
+    "pr_merged": false,
+    "read_only_classification": true
+  }
+}

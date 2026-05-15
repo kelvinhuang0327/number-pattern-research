@@ -1,11 +1,11 @@
 # P2C Draw 115000051 Watcher Report — 2026-05-15
 
-> **Watcher Run 2** — Refreshed at `2026-05-15T06:29:10Z`  
-> Previous run: `2026-05-15T06:23:42Z`
+> **Watcher Run 3** — Refreshed at `2026-05-15T06:34:58Z`  
+> Previous runs: run 1 `2026-05-15T06:23:42Z` / run 2 `2026-05-15T06:29:10Z`
 
 ## 1. 本輪目標
 
-本輪執行 **read-only** DB watcher check（第 2 輪），確認 BIG_LOTTO draw `115000051` 是否已進入 `draws` table。
+本輪執行 **read-only** DB watcher check（第 3 輪），確認 BIG_LOTTO draw `115000051` 是否已進入 `draws` table。
 
 - **No DB writes**
 - **No replay backfill**
@@ -17,7 +17,7 @@
 | Target lottery_type | `BIG_LOTTO` |
 | Strategy | `ts3_regime_3bet` |
 | Pending items | 1090, 1091, 1092 (run_id=174) |
-| Watcher run | 2 |
+| Watcher run | 3 |
 
 ---
 
@@ -64,7 +64,8 @@
 | Latest BIG_LOTTO date | `2026/05/05` |
 | Latest BIG_LOTTO numbers | `[4, 17, 23, 28, 33, 37]` (special: 15) |
 | Watcher run 1 result | BLOCKED |
-| Watcher run 2 result | **BLOCKED** (unchanged) |
+| Watcher run 2 result | BLOCKED (unchanged) |
+| Watcher run 3 result | **BLOCKED** (unchanged) |
 | 結論 | **BLOCKED — BIG_LOTTO draw 115000051 未進 DB** |
 
 BIG_LOTTO draw `115000051` 尚未進入 `draws` table。
@@ -165,4 +166,5 @@ P2C_DRAW_115000051_WATCHER_BLOCKED_BIG_LOTTO_MISSING
 ```
 
 Generated: 2026-05-15T06:23:42Z  
-Refreshed (run 2): 2026-05-15T06:29:10Z
+Refreshed (run 2): 2026-05-15T06:29:10Z  
+Refreshed (run 3): 2026-05-15T06:34:58Z

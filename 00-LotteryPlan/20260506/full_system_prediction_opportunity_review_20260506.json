@@ -1,0 +1,178 @@
+{
+  "task_id": "LotteryNew.FullSystemPredictionOpportunityReview",
+  "date": "2026-05-06",
+  "knowledge_gate_compliance": {
+    "wiki_first": true,
+    "system_docs_read": [
+      "wiki/README.md",
+      "wiki/system/validation_gates.md",
+      "wiki/system/governance.md",
+      "wiki/system/stability_audit.md",
+      "wiki/system/feedback_loop.md",
+      "wiki/system/decision_engine.md",
+      "wiki/system/predict_vs_actual_sop.md",
+      "wiki/system/strategy_retirement_policy.md",
+      "wiki/system/orchestrator.md",
+      "wiki/system/llm_governance.md"
+    ],
+    "memory_read": [
+      "memory/MEMORY.md",
+      "memory/lessons.md",
+      "memory/todo.md"
+    ],
+    "docs_read_with_explicit_user_authorization": [
+      "00-Plan/MASTER_ROADMAP_CONVERGED_20260504.md",
+      "00-Plan/task_result.json",
+      "outputs/research_closure_report.md",
+      "outputs/randomness_audit/randomness_audit_summary.md",
+      "outputs/forbidden_strategy_patterns.md"
+    ],
+    "untrusted_used_as_evidence": false
+  },
+  "verdict_layers": {
+    "draw_process_randomness": {
+      "verdict": "WEAK_DEVIATIONS_NOT_SIGNIFICANT_AFTER_CORRECTION",
+      "implication": "NO_EXPLOITABLE_EDGE_FROM_DRAW_PROCESS",
+      "date": "2026-05-01",
+      "evidence_level": "B",
+      "source": "outputs/randomness_audit/randomness_audit_summary.md"
+    },
+    "predict_vs_actual_v2": {
+      "power_lotto": {
+        "p_raw": 0.0448,
+        "p_bonferroni": 0.0896,
+        "verdict": "NO_SIGNAL",
+        "by_strategy_max_q": 0.8905,
+        "rerun_in_this_session": true
+      },
+      "big_lotto": {
+        "p_raw": 0.159,
+        "p_bonferroni": 0.319,
+        "verdict": "NO_SIGNAL",
+        "rerun_in_this_session": false,
+        "source_run": "2026-05-01 outputs/predict_vs_actual/20260501_223105/"
+      },
+      "evidence_level": "A"
+    },
+    "signal_exhaustion_audit": {
+      "daily_539": "EXHAUSTED",
+      "big_lotto": "EXHAUSTED",
+      "power_lotto": "EXHAUSTED",
+      "lessons": ["L82", "L91", "L113", "L126", "L131"],
+      "evidence_level": "C"
+    },
+    "monetization": {
+      "h6_edge_pp_at_3000p": 4.00,
+      "h6_extra_ev_share_of_deficit": 0.012,
+      "daily_539_classification": "VALID_SIGNAL_NON_MONETIZABLE",
+      "big_lotto_classification": "NO_SIGNAL_RANDOM_PROCESS",
+      "power_lotto_classification": "NO_SIGNAL_RANDOM_PROCESS",
+      "evidence_level": "C",
+      "lessons": ["L134", "L135", "L136", "L137"]
+    }
+  },
+  "current_active_strategies": {
+    "DAILY_539": {
+      "active": "H6_gate_mk20_ew85",
+      "shadow": "acb_markov_midfreq_3bet",
+      "reference_2bet": "midfreq_acb_2bet",
+      "tier": "T4_VALID_SIGNAL_NON_MONETIZABLE"
+    },
+    "BIG_LOTTO": {
+      "reference_5bet": "p1_dev_sum5bet",
+      "reference_3bet": "ts3_regime_3bet",
+      "shadow": "regime_2bet",
+      "tier": "MAINTENANCE_ONLY"
+    },
+    "POWER_LOTTO": {
+      "active_4bet": "pp3_freqort_4bet",
+      "watch_3bet": "fourier_rhythm_3bet",
+      "shadow_5bet": "orthogonal_5bet",
+      "tier": "MAINTENANCE_ONLY_DEMOTE_ELIGIBLE"
+    }
+  },
+  "rejected_directory_count": 73,
+  "rejected_revalidation_candidates_today": 0,
+  "rejected_revalidation_blocker": "No retirement currently meets reopen conditions (≥300 new draws OR new external data source OR new feature family OR rule change) per wiki/system/strategy_retirement_policy.md",
+  "old_method_review": {
+    "predictive_edge_candidates": 0,
+    "advisory_only": ["payout_ev_unpopular_advisory", "physical_bias_monitoring", "coverage_wheel_system", "tail_diversity_postprocess", "watchdog_rules"],
+    "governance_validation_improvements": ["data_quality_completeness", "draw_history_cleaning", "rule_change_detection", "ensemble_with_correction", "multi_window_enforcement", "walk_forward_oos_first_class", "strategy_retire_policy_lock_in", "random_baseline_strengthened", "null_model_comparison_cli_enforcement"],
+    "stop_not_worth_pursuing": ["new_feature_engineering_without_external_source"]
+  },
+  "false_positive_risk_assessment": {
+    "post_hoc_strategy_mining": {"mitigated": "PARTIAL", "gap": "no Hypothesis Registry CLI"},
+    "multiple_testing_inflation": {"mitigated": "YES_IN_SCRIPT", "gap": "no CLI gate refusing missing --hypothesis-id"},
+    "circular_match_bias": {"mitigated": "PARTIAL", "gap": "no tests/test_no_circular_match.py"},
+    "historical_pool_contamination": {"mitigated": "PARTIAL", "gap": "no automated detector"},
+    "look_ahead_leakage": {"mitigated": "PARTIAL", "gap": "no DataLeakageError API in RollingBacktester"},
+    "target_draw_leakage": {"mitigated": "PARTIAL", "gap": "same as look-ahead"},
+    "in_sample_overfitting": {"mitigated": "YES_PROCESS", "gap": "code-level enforcement missing"},
+    "cherry_picking": {"mitigated": "PARTIAL", "gap": "Hypothesis Registry needed"},
+    "survivor_bias": {"mitigated": "PARTIAL", "gap": "automated cross-check on rejected/ missing"},
+    "short_window_luck": {"mitigated": "YES", "gap": "L17 detection rule still informal"},
+    "rollback_false_positive": {"mitigated": "YES", "gap": "none"},
+    "strategy_promotion_without_oos": {"mitigated": "YES_PROCESS", "gap": "framework-level enforcement"}
+  },
+  "roadmap_re_ranking": [
+    {"rank": 1, "task": "Circular-Bias CI Gate", "file": "tests/test_no_circular_match.py", "reason": "highest-impact bias not yet code-locked"},
+    {"rank": 2, "task": "Hypothesis Registry CLI", "file": "registry/hypotheses.jsonl + tools/registry/cli.py", "reason": "makes R09 enforceable"},
+    {"rank": 3, "task": "Strategy Evaluation Framework v0.5", "file": "tools/strategy_eval/cli.py", "reason": "single-CLI eval closes 4 risks"},
+    {"rank": 4, "task": "Randomness Audit Final Verdict", "file": "wiki/system/randomness_final_verdict.md", "reason": "move verdict to TRUSTED layer"},
+    {"rank": 5, "task": "Module Boundaries", "file": "wiki/system/module_boundaries.md", "reason": "architecture, no scientific risk"}
+  ],
+  "next_5_tasks": [
+    "tests/test_no_circular_match.py + fixture",
+    "registry/hypotheses.jsonl + tools/registry/cli.py + 2 example hypotheses",
+    "tools/strategy_eval/cli.py + tests/test_strategy_eval.py",
+    "wiki/system/randomness_final_verdict.md + tests/test_randomness_audit_cadence.py",
+    "tools/leakage_detector.py + tests/test_leakage_detector.py + integration into Strategy Eval v0.5"
+  ],
+  "validation_executed_in_this_review": {
+    "pytest_subset": {
+      "files": ["tests/test_no_audit_no_call_ci.py", "tests/test_evidence_collector.py", "tests/test_llm_caps.py", "tests/test_h6_rollback_min_outcome_guard.py"],
+      "passed": 77,
+      "failed": 1,
+      "false_failures_due_to_sandbox": 1,
+      "failed_test_name": "test_api_evidence_status_endpoint",
+      "failed_reason": "fastapi not installed in sandbox; not a real defect"
+    },
+    "predict_vs_actual_rerun": {
+      "game": "power_lotto",
+      "p_raw": 0.0448,
+      "p_bonferroni": 0.0896,
+      "per_strategy_min_q": 0.119,
+      "verdict": "NO_SIGNAL",
+      "matches_2026_05_01_run": true
+    },
+    "randomness_audit_rerun": "NOT_RUN — last run 2026-05-01, below 50-draw cadence",
+    "strategy_eval_dry_run": "NOT_RUN — script does not exist (gap documented in §2.2)"
+  },
+  "stops_today": {
+    "new_prediction_signal_exploration_without_new_data_or_rule_change": true,
+    "any_frequency_variant": true,
+    "historical_pool_max_hit": true,
+    "post_hoc_grid_search_promotion": true,
+    "short_window_only_promotion": true,
+    "cross_game_borrowing": true,
+    "neighbor_or_lift_under_one_injection": true,
+    "weekday_calendar_overlay": true,
+    "pool_size_only_for_daily_539": true
+  },
+  "advisory_only_today": [
+    "payout_ev_unpopular_advisory",
+    "physical_bias_monitoring",
+    "coverage_wheel_system",
+    "tail_diversity_postprocess_constraint",
+    "watchdog_rules"
+  ],
+  "final_classification": "D",
+  "final_classification_label": "GOVERNANCE_FIRST_REQUIRED",
+  "final_classification_rationale": "Three independent closure paths (randomness audit, predict-vs-actual v2, signal-exhaustion audit) plus payout-EV monetization check converge on RESEARCH_CLOSURE_RECOMMENDED in content. However, the institutional CI gates that prevent silent reversal of that closure (Circular-Bias Gate, Hypothesis Registry, Strategy Eval Framework, Leakage Detector API, randomness verdict promoted to TRUSTED wiki layer) are not yet in place. Until those gates exist and pass, declaring final closure is premature. Hence D, not A. Once Tasks 1-5 ship, classification can transition to A in a follow-up review.",
+  "files_produced_or_modified": [
+    "outputs/research_review/full_system_prediction_opportunity_review_20260506.md",
+    "outputs/research_review/full_system_prediction_opportunity_review_20260506.json",
+    "00-Plan/LOTTERY_RESEARCH_REVALIDATION_ROADMAP_20260506.md",
+    "outputs/research_review/high_risk_findings_20260506.md"
+  ]
+}

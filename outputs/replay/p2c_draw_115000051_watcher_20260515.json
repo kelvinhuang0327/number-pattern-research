@@ -1,0 +1,69 @@
+{
+  "schema_version": "p2c_watcher.0",
+  "generated_at": "2026-05-15T06:23:42Z",
+  "final_classification": "P2C_DRAW_115000051_WATCHER_BLOCKED_BIG_LOTTO_MISSING",
+  "target_draw": "115000051",
+  "target_lottery_type": "BIG_LOTTO",
+  "big_lotto_draw_exists": false,
+  "latest_big_lotto_draw": "115000050",
+  "latest_big_lotto_date": "2026/05/05",
+  "same_draw_number_other_lottery_types": [
+    {
+      "lottery_type": "DAILY_539",
+      "date": "2026/02/26",
+      "numbers": "[3, 6, 9, 31, 39]",
+      "special": 0,
+      "note": "different lottery — not applicable to ts3_regime_3bet"
+    }
+  ],
+  "pr_110_status": {
+    "number": 110,
+    "state": "OPEN",
+    "is_draft": true,
+    "mergeable": "MERGEABLE",
+    "merge_state_status": "CLEAN",
+    "checks": "2/2 PASS",
+    "head_ref": "chore/p2c-ts3-regime-readiness-20260515",
+    "base_ref": "main"
+  },
+  "pending_prediction_item_ids": [1090, 1091, 1092],
+  "pending_items": [
+    {
+      "id": 1090,
+      "run_id": 174,
+      "status": "PENDING",
+      "numbers": "[3, 5, 22, 34, 38, 49]",
+      "bet_index": 0
+    },
+    {
+      "id": 1091,
+      "run_id": 174,
+      "status": "PENDING",
+      "numbers": "[16, 23, 29, 33, 36, 45]",
+      "bet_index": 1
+    },
+    {
+      "id": 1092,
+      "run_id": 174,
+      "status": "PENDING",
+      "numbers": "[12, 18, 26, 27, 31, 46]",
+      "bet_index": 2
+    }
+  ],
+  "p2b_sanity": {
+    "p2b_rows": 6,
+    "p2c_rows": 0,
+    "total_rows": 966,
+    "p2b_controlled_apply_id": "P2B_20260515",
+    "idempotency_clean": true
+  },
+  "dry_run_executed": false,
+  "dry_run_skip_reason": "BIG_LOTTO draw 115000051 not yet in draws table",
+  "db_written": false,
+  "replay_rows_inserted": false,
+  "prediction_items_promoted": false,
+  "strategy_logic_changed": false,
+  "api_ui_backend_changed": false,
+  "next_step": "WATCH_UNTIL_BIG_LOTTO_DRAW_115000051_INGESTED",
+  "re_trigger_condition": "BIG_LOTTO draw 115000051 must appear in draws table with lottery_type='BIG_LOTTO'"
+}

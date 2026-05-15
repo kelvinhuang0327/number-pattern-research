@@ -389,33 +389,65 @@ class _PowerFourierRhythm3BetAdapter(ReplayStrategyAdapter):
         return first
 
 
-# ─── Big Lotto: ts3_regime_3bet ONLINE Pending-Adapter Stub ──────────────────
+# ─── Big Lotto: ts3_regime_3bet ONLINE Adapter (P1.4 Bound) ──────────────────
 # P1.3: Added 2026-05-15 — live production strategy, governance gap closed.
+# P1.4: Adapter binding resolved 2026-05-15 — SAFE_RECONSTRUCTION (Case B).
 # Evidence: prediction_runs=167(VALID)/174(VALID)/175(RECONSTRUCTED),
 #           9 PENDING items (1069-1071, 1090-1095).
 # P1.2 classification: PRODUCT_DENOMINATOR_ONLINE_CANDIDATE → ONLINE
 #
-# ADAPTER BINDING STATUS: PENDING (P1.4 risk)
-# The predict_func for ts3_regime_3bet is NOT found in the current codebase.
-# This strategy was created/used outside the current tools/ directory or via
-# an undocumented inline function.  The registry entry is added for governance
-# and lifecycle visibility.  get_one_bet() raises AdapterBindingPending until
-# P1.4 locates or reconstructs the callable.
-# run_id=175 RECONSTRUCTED snapshot — additional risk documented in P1.3 report.
+# RECONSTRUCTION EVIDENCE:
+# - tools/backtest_biglotto_enhancements.py contains generate_p1a_regime_adaptive()
+#   which implements TS3 (fourier + cold + tail_balance) + regime-adaptive 4th bet.
+# - ts3_regime_3bet = first 3 bets of generate_p1a_regime_adaptive (TS3 component).
+# - Regime detection (detect_regime) only modifies bet4 (gray-zone vs Markov).
+# - Bets 1-3 are regime-invariant: fourier_rhythm_bet, cold_numbers_bet,
+#   tail_balance_bet — same as the first 3 bets of generate_base_ts3m4.
+# - memory/lessons.md L90: "繼續使用 regime_2bet/ts3_regime_3bet/p1_dev_sum5bet"
+#   confirms ts3_regime_3bet is a distinct ONLINE production strategy.
+# - No exact callable found in codebase → SAFE_RECONSTRUCTION via thin wrapper.
+# - run_id=175 RECONSTRUCTED snapshot — additional audit risk documented in P1.3.
 
 class AdapterBindingPending(Exception):
     """
     Raised when an ONLINE strategy's predict_func has not yet been bound.
     The strategy is governance-registered (ONLINE) but cannot generate replay
-    rows until P1.4 completes adapter binding.
+    rows until adapter binding completes.
     This is NOT a lifecycle error — the strategy is ONLINE by operator decision.
+    Retained for import compatibility; no longer raised by ts3_regime_3bet.
     """
 
 
-class _BigLottoTs3Regime3BetPendingAdapter(ReplayStrategyAdapter):
+def _ts3_regime_3bet_predict(history):
     """
-    Metadata-registered ONLINE adapter stub for ts3_regime_3bet.
-    Cannot execute until P1.4 binds the predict_func.
+    Safe reconstruction of ts3_regime_3bet predict_func (P1.4, 2026-05-15).
+
+    Reconstruction basis:
+    - tools/backtest_biglotto_enhancements.py::generate_p1a_regime_adaptive()
+      generates 4 bets: fourier_rhythm_bet, cold_numbers_bet, tail_balance_bet,
+      + regime-adaptive 4th bet (gray-zone or markov).
+    - ts3_regime_3bet = the TS3 component = first 3 bets of that function.
+    - Regime detection only modifies bet4; bets 1-3 are regime-invariant.
+    - This wrapper returns exactly 3 bets (list of 3 lists of 6 ints each).
+    """
+    from tools.backtest_biglotto_enhancements import (
+        fourier_rhythm_bet,
+        cold_numbers_bet,
+        tail_balance_bet,
+    )
+    bet1 = fourier_rhythm_bet(history)
+    bet2 = cold_numbers_bet(history, exclude=set(bet1))
+    bet3 = tail_balance_bet(history, exclude=set(bet1) | set(bet2))
+    return [bet1, bet2, bet3]
+
+
+class _BigLottoTs3Regime3BetAdapter(ReplayStrategyAdapter):
+    """
+    ONLINE adapter for ts3_regime_3bet (P1.4 bound via safe reconstruction).
+
+    Reconstruction: first 3 bets of generate_p1a_regime_adaptive() from
+    tools/backtest_biglotto_enhancements.py (fourier + cold + tail_balance).
+    Regime detection only affects bet4 which is excluded from this 3-bet variant.
     """
     meta = _StrategyMeta(
         strategy_id="ts3_regime_3bet",
@@ -426,18 +458,12 @@ class _BigLottoTs3Regime3BetPendingAdapter(ReplayStrategyAdapter):
         status="ONLINE",
     )
 
-    def get_one_bet(self, history, lottery_type):
-        raise AdapterBindingPending(
-            "ts3_regime_3bet: adapter binding is PENDING (P1.4). "
-            "Strategy is ONLINE in governance registry but predict_func callable "
-            "has not been located in current tools/ codebase. "
-            "Replay generation blocked until P1.4 resolution."
-        )
-
     def _call_strategy(self, history, lottery_type):
-        raise AdapterBindingPending(
-            "ts3_regime_3bet: adapter binding is PENDING (P1.4)."
-        )
+        raw = _ts3_regime_3bet_predict(history)
+        first = _extract_first_bet(raw)
+        if not first:
+            raise RejectPrediction("No bets returned by ts3_regime_3bet")
+        return first
 
 
 # ─── Non-Executable Lifecycle Stubs ─────────────────────────────────────────
@@ -531,8 +557,8 @@ _ALL_ADAPTERS: List[ReplayStrategyAdapter] = [
     _BigLottoTripleStrikeAdapter(),
     _BigLottoDeviation2BetAdapter(),
     # P1.3: ts3_regime_3bet — live BIG_LOTTO production strategy (2026-05-15)
-    #        adapter binding PENDING (P1.4) — see AdapterBindingPending exception
-    _BigLottoTs3Regime3BetPendingAdapter(),
+    # P1.4: adapter binding RESOLVED (SAFE_RECONSTRUCTION, 2026-05-15)
+    _BigLottoTs3Regime3BetAdapter(),
     _Daily539F4ColdAdapter(),
     _Daily539MarkovColdAdapter(),
     *_NON_EXECUTABLE_STUBS,

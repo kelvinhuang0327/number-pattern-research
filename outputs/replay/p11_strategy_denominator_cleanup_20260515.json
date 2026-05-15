@@ -1,0 +1,1036 @@
+{
+  "generated_at": "2026-05-15T03:31:33.820776Z",
+  "source_inventory_pr": 103,
+  "source_branch": "docs/p11-strategy-denominator-cleanup-20260515",
+  "base_commit": "b98a1feb8465ae82a520a2a7c6c5e07325f2ca4c",
+  "final_classification": "P11_STRATEGY_DENOMINATOR_CLEANUP_READY",
+  "summary": {
+    "product_denominator_count": 53,
+    "research_archive_count": 15,
+    "duplicate_or_superseded_count": 3,
+    "non_strategy_artifact_count": 0,
+    "needs_operator_decision_count": 2,
+    "artifact_only_input_count": 73,
+    "canonical_registry_count": 16,
+    "recommended_clean_denominator_count": 69,
+    "covered_count_against_clean_denominator": 6,
+    "partial_count_against_clean_denominator": 4,
+    "raw_coverage_rate_before_cleanup": "6/89",
+    "raw_coverage_pct_before_cleanup": "6.7%",
+    "estimated_coverage_rate_after_cleanup": "6/69",
+    "estimated_coverage_pct_after_cleanup": "8.7%"
+  },
+  "classifications": [
+    {
+      "strategy_id": "539_3bet_orthogonal",
+      "classification": "PRODUCT_DENOMINATOR",
+      "recommended_lifecycle_status": "REJECTED",
+      "recommended_replay_display_semantics": "FROZEN",
+      "evidence_files": [
+        "outputs/replay/p1_strategy_lifecycle_inventory_20260511.json",
+        "outputs/replay/p2_lifecycle_backfill_dry_run_manifest_20260510.json"
+      ],
+      "evidence_summary": "DAILY_539. REJECTED. replay_display_eligible=True. Rejection: orthogonal overlap resolved (13.4→15 unique) but individual signal quality insufficient (permutation p=0.2388).",
+      "canonical_or_successor_strategy_id": null,
+      "risk_flags": [],
+      "recommended_next_action": "Add to registry as REJECTED when P1.2 registry proposal is created."
+    },
+    {
+      "strategy_id": "H001",
+      "classification": "RESEARCH_ARCHIVE",
+      "recommended_lifecycle_status": "N/A",
+      "recommended_replay_display_semantics": "N/A",
+      "evidence_files": [
+        "outputs/replay/p1_strategy_lifecycle_inventory_20260511.json"
+      ],
+      "evidence_summary": "Internal hypothesis experiment label. lottery_type=UNKNOWN. Rejection evidence: 1500p Edge劣化 vs baseline -0.60pp. No stable product identity; not suitable for replay page display.",
+      "canonical_or_successor_strategy_id": null,
+      "risk_flags": [],
+      "recommended_next_action": "Archive in research logs; exclude from replay denominator."
+    },
+    {
+      "strategy_id": "H002",
+      "classification": "RESEARCH_ARCHIVE",
+      "recommended_lifecycle_status": "N/A",
+      "recommended_replay_display_semantics": "N/A",
+      "evidence_files": [
+        "outputs/replay/p1_strategy_lifecycle_inventory_20260511.json"
+      ],
+      "evidence_summary": "Internal hypothesis experiment label. lottery_type=UNKNOWN. Rejection evidence: parameter sweep mult=[0.1,0.2,0.3,0.5,0.8,1.0] all insignificant. No stable product identity.",
+      "canonical_or_successor_strategy_id": null,
+      "risk_flags": [],
+      "recommended_next_action": "Archive in research logs; exclude from replay denominator."
+    },
+    {
+      "strategy_id": "H003",
+      "classification": "RESEARCH_ARCHIVE",
+      "recommended_lifecycle_status": "N/A",
+      "recommended_replay_display_semantics": "N/A",
+      "evidence_files": [
+        "outputs/replay/p1_strategy_lifecycle_inventory_20260511.json"
+      ],
+      "evidence_summary": "Internal hypothesis experiment label. lottery_type=UNKNOWN. Rejection evidence: parameter sweep alpha=[0.2,0.5,1.0,2.0] all insignificant. No stable product identity.",
+      "canonical_or_successor_strategy_id": null,
+      "risk_flags": [],
+      "recommended_next_action": "Archive in research logs; exclude from replay denominator."
+    },
+    {
+      "strategy_id": "H004",
+      "classification": "RESEARCH_ARCHIVE",
+      "recommended_lifecycle_status": "N/A",
+      "recommended_replay_display_semantics": "N/A",
+      "evidence_files": [
+        "outputs/replay/p1_strategy_lifecycle_inventory_20260511.json"
+      ],
+      "evidence_summary": "Internal hypothesis experiment label. lottery_type=UNKNOWN. Rejection evidence: Ljung-Box p=0.8497 (white noise), no temporal structure. No stable product identity.",
+      "canonical_or_successor_strategy_id": null,
+      "risk_flags": [],
+      "recommended_next_action": "Archive in research logs; exclude from replay denominator."
+    },
+    {
+      "strategy_id": "H005",
+      "classification": "RESEARCH_ARCHIVE",
+      "recommended_lifecycle_status": "N/A",
+      "recommended_replay_display_semantics": "N/A",
+      "evidence_files": [
+        "outputs/replay/p1_strategy_lifecycle_inventory_20260511.json"
+      ],
+      "evidence_summary": "Internal hypothesis experiment label. lottery_type=UNKNOWN. Rejection evidence: 741 pairs, 0 pairs with Lift≥1.3x (max Lift=1.054). No stable product identity.",
+      "canonical_or_successor_strategy_id": null,
+      "risk_flags": [],
+      "recommended_next_action": "Archive in research logs; exclude from replay denominator."
+    },
+    {
+      "strategy_id": "H006",
+      "classification": "RESEARCH_ARCHIVE",
+      "recommended_lifecycle_status": "N/A",
+      "recommended_replay_display_semantics": "N/A",
+      "evidence_files": [
+        "outputs/replay/p1_strategy_lifecycle_inventory_20260511.json"
+      ],
+      "evidence_summary": "Internal hypothesis experiment label. lottery_type=UNKNOWN. Rejection evidence: McNemar net=+12 p=0.450 not significant. No stable product identity.",
+      "canonical_or_successor_strategy_id": null,
+      "risk_flags": [],
+      "recommended_next_action": "Archive in research logs; exclude from replay denominator."
+    },
+    {
+      "strategy_id": "H007",
+      "classification": "RESEARCH_ARCHIVE",
+      "recommended_lifecycle_status": "N/A",
+      "recommended_replay_display_semantics": "N/A",
+      "evidence_files": [
+        "outputs/replay/p1_strategy_lifecycle_inventory_20260511.json"
+      ],
+      "evidence_summary": "Internal hypothesis experiment label. lottery_type=UNKNOWN. Rejection evidence: McNemar w1000 vs w500 net=-7 p=0.835 (w500 marginally better). No stable product identity.",
+      "canonical_or_successor_strategy_id": null,
+      "risk_flags": [],
+      "recommended_next_action": "Archive in research logs; exclude from replay denominator."
+    },
+    {
+      "strategy_id": "H008",
+      "classification": "RESEARCH_ARCHIVE",
+      "recommended_lifecycle_status": "N/A",
+      "recommended_replay_display_semantics": "N/A",
+      "evidence_files": [
+        "outputs/replay/p1_strategy_lifecycle_inventory_20260511.json"
+      ],
+      "evidence_summary": "Internal hypothesis experiment label. lottery_type=UNKNOWN. Rejection evidence: parameter sweep gap^{1.2,1.5,2.0} all McNemar p>0.19. No stable product identity.",
+      "canonical_or_successor_strategy_id": null,
+      "risk_flags": [],
+      "recommended_next_action": "Archive in research logs; exclude from replay denominator."
+    },
+    {
+      "strategy_id": "acb_extremecol_2bet_539",
+      "classification": "PRODUCT_DENOMINATOR",
+      "recommended_lifecycle_status": "REJECTED",
+      "recommended_replay_display_semantics": "FROZEN",
+      "evidence_files": [
+        "outputs/replay/p1_strategy_lifecycle_inventory_20260511.json"
+      ],
+      "evidence_summary": "DAILY_539. REJECTED. replay_display_eligible=True. ACB+ExtremeCol 2-bet combination.",
+      "canonical_or_successor_strategy_id": null,
+      "risk_flags": [],
+      "recommended_next_action": "Add to registry as REJECTED when P1.2 registry proposal is created."
+    },
+    {
+      "strategy_id": "acb_hot_fourier_3bet_biglotto",
+      "classification": "PRODUCT_DENOMINATOR",
+      "recommended_lifecycle_status": "REJECTED",
+      "recommended_replay_display_semantics": "FROZEN",
+      "evidence_files": [
+        "outputs/replay/p1_strategy_lifecycle_inventory_20260511.json",
+        "outputs/replay/p2_lifecycle_backfill_dry_run_manifest_20260510.json"
+      ],
+      "evidence_summary": "BIG_LOTTO. REJECTED. replay_display_eligible=True. Rejection: McNemar p=0.545, cannot confirm superiority over Triple Strike.",
+      "canonical_or_successor_strategy_id": null,
+      "risk_flags": [],
+      "recommended_next_action": "Add to registry as REJECTED when P1.2 registry proposal is created."
+    },
+    {
+      "strategy_id": "acb_lag_echo_2bet_539",
+      "classification": "PRODUCT_DENOMINATOR",
+      "recommended_lifecycle_status": "REJECTED",
+      "recommended_replay_display_semantics": "FROZEN",
+      "evidence_files": [
+        "outputs/replay/p1_strategy_lifecycle_inventory_20260511.json"
+      ],
+      "evidence_summary": "DAILY_539. REJECTED. replay_display_eligible=True. ACB+LagEcho 2-bet combination.",
+      "canonical_or_successor_strategy_id": null,
+      "risk_flags": [],
+      "recommended_next_action": "Add to registry as REJECTED when P1.2 registry proposal is created."
+    },
+    {
+      "strategy_id": "acb_markov_extremecol_3bet_539",
+      "classification": "PRODUCT_DENOMINATOR",
+      "recommended_lifecycle_status": "REJECTED",
+      "recommended_replay_display_semantics": "FROZEN",
+      "evidence_files": [
+        "outputs/replay/p1_strategy_lifecycle_inventory_20260511.json"
+      ],
+      "evidence_summary": "DAILY_539. REJECTED. replay_display_eligible=True. ACB+Markov+ExtremeCol 3-bet.",
+      "canonical_or_successor_strategy_id": null,
+      "risk_flags": [],
+      "recommended_next_action": "Add to registry as REJECTED when P1.2 registry proposal is created."
+    },
+    {
+      "strategy_id": "acb_single_539",
+      "classification": "PRODUCT_DENOMINATOR",
+      "recommended_lifecycle_status": "REJECTED",
+      "recommended_replay_display_semantics": "FROZEN",
+      "evidence_files": [
+        "outputs/replay/p1_strategy_lifecycle_inventory_20260511.json",
+        "outputs/replay/p2_lifecycle_backfill_dry_run_manifest_20260510.json"
+      ],
+      "evidence_summary": "DAILY_539. REJECTED. replay_display_eligible=True. McNemar vs Cold p=0.0527 (marginal), vs StateSpace p=0.194.",
+      "canonical_or_successor_strategy_id": null,
+      "risk_flags": [],
+      "recommended_next_action": "Add to registry as REJECTED when P1.2 registry proposal is created."
+    },
+    {
+      "strategy_id": "apriori_3bet_biglotto",
+      "classification": "PRODUCT_DENOMINATOR",
+      "recommended_lifecycle_status": "REJECTED",
+      "recommended_replay_display_semantics": "FROZEN",
+      "evidence_files": [
+        "outputs/replay/p1_strategy_lifecycle_inventory_20260511.json",
+        "outputs/replay/p2_lifecycle_backfill_dry_run_manifest_20260510.json"
+      ],
+      "evidence_summary": "BIG_LOTTO. REJECTED. replay_display_eligible=True. Apriori association rules 3-bet.",
+      "canonical_or_successor_strategy_id": null,
+      "risk_flags": [],
+      "recommended_next_action": "Add to registry as REJECTED when P1.2 registry proposal is created."
+    },
+    {
+      "strategy_id": "bandit_ucb1_2bet_539",
+      "classification": "PRODUCT_DENOMINATOR",
+      "recommended_lifecycle_status": "REJECTED",
+      "recommended_replay_display_semantics": "FROZEN",
+      "evidence_files": [
+        "outputs/replay/p1_strategy_lifecycle_inventory_20260511.json",
+        "outputs/replay/p2_lifecycle_backfill_dry_run_manifest_20260510.json"
+      ],
+      "evidence_summary": "DAILY_539. REJECTED. replay_display_eligible=True. Edge +1.84% far below manual MidFreq+ACB (+4.44%); bandit cannot learn optimal fixed policy.",
+      "canonical_or_successor_strategy_id": null,
+      "risk_flags": [],
+      "recommended_next_action": "Add to registry as REJECTED when P1.2 registry proposal is created."
+    },
+    {
+      "strategy_id": "bet2_fourier_expansion_biglotto",
+      "classification": "PRODUCT_DENOMINATOR",
+      "recommended_lifecycle_status": "REJECTED",
+      "recommended_replay_display_semantics": "FROZEN",
+      "evidence_files": [
+        "outputs/replay/p1_strategy_lifecycle_inventory_20260511.json",
+        "outputs/replay/p2_lifecycle_backfill_dry_run_manifest_20260510.json"
+      ],
+      "evidence_summary": "BIG_LOTTO. REJECTED. replay_display_eligible=True. Fourier expansion 2-bet.",
+      "canonical_or_successor_strategy_id": null,
+      "risk_flags": [],
+      "recommended_next_action": "Add to registry as REJECTED when P1.2 registry proposal is created."
+    },
+    {
+      "strategy_id": "biglotto_6bet_zone_residual",
+      "classification": "PRODUCT_DENOMINATOR",
+      "recommended_lifecycle_status": "REJECTED",
+      "recommended_replay_display_semantics": "FROZEN",
+      "evidence_files": [
+        "outputs/replay/p1_strategy_lifecycle_inventory_20260511.json"
+      ],
+      "evidence_summary": "BIG_LOTTO. REJECTED. replay_display_eligible=True. Zone residual 6-bet strategy.",
+      "canonical_or_successor_strategy_id": null,
+      "risk_flags": [],
+      "recommended_next_action": "Add to registry as REJECTED when P1.2 registry proposal is created."
+    },
+    {
+      "strategy_id": "cluster_pivot_biglotto",
+      "classification": "PRODUCT_DENOMINATOR",
+      "recommended_lifecycle_status": "REJECTED",
+      "recommended_replay_display_semantics": "FROZEN",
+      "evidence_files": [
+        "outputs/replay/p1_strategy_lifecycle_inventory_20260511.json",
+        "outputs/replay/p2_lifecycle_backfill_dry_run_manifest_20260510.json"
+      ],
+      "evidence_summary": "BIG_LOTTO. REJECTED. replay_display_eligible=True. Cluster pivot strategy.",
+      "canonical_or_successor_strategy_id": null,
+      "risk_flags": [],
+      "recommended_next_action": "Add to registry as REJECTED when P1.2 registry proposal is created."
+    },
+    {
+      "strategy_id": "cold_burst_3bet_539",
+      "classification": "PRODUCT_DENOMINATOR",
+      "recommended_lifecycle_status": "REJECTED",
+      "recommended_replay_display_semantics": "FROZEN",
+      "evidence_files": [
+        "outputs/replay/p1_strategy_lifecycle_inventory_20260511.json"
+      ],
+      "evidence_summary": "DAILY_539. REJECTED. replay_display_eligible=True. Cold burst 3-bet strategy.",
+      "canonical_or_successor_strategy_id": null,
+      "risk_flags": [],
+      "recommended_next_action": "Add to registry as REJECTED when P1.2 registry proposal is created."
+    },
+    {
+      "strategy_id": "cold_complement_biglotto",
+      "classification": "PRODUCT_DENOMINATOR",
+      "recommended_lifecycle_status": "REJECTED",
+      "recommended_replay_display_semantics": "FROZEN",
+      "evidence_files": [
+        "outputs/replay/p1_strategy_lifecycle_inventory_20260511.json",
+        "outputs/replay/p2_lifecycle_backfill_dry_run_manifest_20260510.json"
+      ],
+      "evidence_summary": "BIG_LOTTO. REJECTED. replay_display_eligible=True. Cold complement strategy.",
+      "canonical_or_successor_strategy_id": null,
+      "risk_flags": [],
+      "recommended_next_action": "Add to registry as REJECTED when P1.2 registry proposal is created."
+    },
+    {
+      "strategy_id": "coldpool15_biglotto",
+      "classification": "PRODUCT_DENOMINATOR",
+      "recommended_lifecycle_status": "REJECTED",
+      "recommended_replay_display_semantics": "FROZEN",
+      "evidence_files": [
+        "outputs/replay/p1_strategy_lifecycle_inventory_20260511.json",
+        "outputs/replay/p2_lifecycle_backfill_dry_run_manifest_20260510.json"
+      ],
+      "evidence_summary": "BIG_LOTTO. REJECTED. replay_display_eligible=True. All three windows deteriorate: 150p=-2.67%, 500p=-1.20%, 1500p=-0.73%.",
+      "canonical_or_successor_strategy_id": null,
+      "risk_flags": [],
+      "recommended_next_action": "Add to registry as REJECTED when P1.2 registry proposal is created."
+    },
+    {
+      "strategy_id": "condfourier_3bet_539",
+      "classification": "PRODUCT_DENOMINATOR",
+      "recommended_lifecycle_status": "REJECTED",
+      "recommended_replay_display_semantics": "FROZEN",
+      "evidence_files": [
+        "outputs/replay/p1_strategy_lifecycle_inventory_20260511.json"
+      ],
+      "evidence_summary": "DAILY_539. REJECTED. replay_display_eligible=True. Conditional Fourier 3-bet — abbreviated form of conditional_fourier_539. Distinct experiment with its own evaluation artifact.",
+      "canonical_or_successor_strategy_id": null,
+      "risk_flags": [],
+      "recommended_next_action": "Add to registry as REJECTED when P1.2 registry proposal is created."
+    },
+    {
+      "strategy_id": "conditional_fourier_539",
+      "classification": "PRODUCT_DENOMINATOR",
+      "recommended_lifecycle_status": "REJECTED",
+      "recommended_replay_display_semantics": "FROZEN",
+      "evidence_files": [
+        "outputs/replay/p1_strategy_lifecycle_inventory_20260511.json"
+      ],
+      "evidence_summary": "DAILY_539. REJECTED. replay_display_eligible=True. Conditional Fourier strategy — distinct evaluation from condfourier_3bet_539.",
+      "canonical_or_successor_strategy_id": null,
+      "risk_flags": [],
+      "recommended_next_action": "Add to registry as REJECTED when P1.2 registry proposal is created."
+    },
+    {
+      "strategy_id": "consecutive_pair_detector_539",
+      "classification": "PRODUCT_DENOMINATOR",
+      "recommended_lifecycle_status": "REJECTED",
+      "recommended_replay_display_semantics": "FROZEN",
+      "evidence_files": [
+        "outputs/replay/p1_strategy_lifecycle_inventory_20260511.json",
+        "outputs/replay/p2_lifecycle_backfill_dry_run_manifest_20260510.json"
+      ],
+      "evidence_summary": "DAILY_539. REJECTED. replay_display_eligible=True. Rejection: Lift 1.08x non-actionable — consecutive pair occurrence only 3.2pp above random.",
+      "canonical_or_successor_strategy_id": null,
+      "risk_flags": [],
+      "recommended_next_action": "Add to registry as REJECTED when P1.2 registry proposal is created."
+    },
+    {
+      "strategy_id": "core_satellite_biglotto",
+      "classification": "PRODUCT_DENOMINATOR",
+      "recommended_lifecycle_status": "REJECTED",
+      "recommended_replay_display_semantics": "FROZEN",
+      "evidence_files": [
+        "outputs/replay/p1_strategy_lifecycle_inventory_20260511.json",
+        "outputs/replay/p2_lifecycle_backfill_dry_run_manifest_20260510.json"
+      ],
+      "evidence_summary": "BIG_LOTTO. REJECTED. replay_display_eligible=True. Core-satellite portfolio strategy.",
+      "canonical_or_successor_strategy_id": null,
+      "risk_flags": [],
+      "recommended_next_action": "Add to registry as REJECTED when P1.2 registry proposal is created."
+    },
+    {
+      "strategy_id": "ewma_539",
+      "classification": "PRODUCT_DENOMINATOR",
+      "recommended_lifecycle_status": "REJECTED",
+      "recommended_replay_display_semantics": "FROZEN",
+      "evidence_files": [
+        "outputs/replay/p1_strategy_lifecycle_inventory_20260511.json"
+      ],
+      "evidence_summary": "DAILY_539. REJECTED. replay_display_eligible=True. EWMA-based strategy.",
+      "canonical_or_successor_strategy_id": null,
+      "risk_flags": [],
+      "recommended_next_action": "Add to registry as REJECTED when P1.2 registry proposal is created."
+    },
+    {
+      "strategy_id": "extreme_col_539",
+      "classification": "PRODUCT_DENOMINATOR",
+      "recommended_lifecycle_status": "REJECTED",
+      "recommended_replay_display_semantics": "FROZEN",
+      "evidence_files": [
+        "outputs/replay/p1_strategy_lifecycle_inventory_20260511.json"
+      ],
+      "evidence_summary": "DAILY_539. REJECTED. replay_display_eligible=True. Base ExtremeCol strategy — precursor to extremecol_1bet_539 variants.",
+      "canonical_or_successor_strategy_id": null,
+      "risk_flags": [],
+      "recommended_next_action": "Add to registry as REJECTED when P1.2 registry proposal is created."
+    },
+    {
+      "strategy_id": "extremecol_1bet_539",
+      "classification": "PRODUCT_DENOMINATOR",
+      "recommended_lifecycle_status": "REJECTED",
+      "recommended_replay_display_semantics": "FROZEN",
+      "evidence_files": [
+        "outputs/replay/p1_strategy_lifecycle_inventory_20260511.json"
+      ],
+      "evidence_summary": "DAILY_539. REJECTED. replay_display_eligible=True. ExtremeCol 1-bet variant.",
+      "canonical_or_successor_strategy_id": null,
+      "risk_flags": [],
+      "recommended_next_action": "Add to registry as REJECTED when P1.2 registry proposal is created."
+    },
+    {
+      "strategy_id": "fourier30_markov30_biglotto",
+      "classification": "PRODUCT_DENOMINATOR",
+      "recommended_lifecycle_status": "REJECTED",
+      "recommended_replay_display_semantics": "FROZEN",
+      "evidence_files": [
+        "outputs/replay/p1_strategy_lifecycle_inventory_20260511.json",
+        "outputs/replay/p2_lifecycle_backfill_dry_run_manifest_20260510.json"
+      ],
+      "evidence_summary": "BIG_LOTTO. REJECTED. replay_display_eligible=True. Fourier(30)+Markov(30) combined.",
+      "canonical_or_successor_strategy_id": null,
+      "risk_flags": [],
+      "recommended_next_action": "Add to registry as REJECTED when P1.2 registry proposal is created."
+    },
+    {
+      "strategy_id": "fourier_rhythm_3bet",
+      "classification": "NEEDS_OPERATOR_DECISION",
+      "recommended_lifecycle_status": "UNKNOWN",
+      "recommended_replay_display_semantics": "UNKNOWN",
+      "evidence_files": [
+        "outputs/replay/p2_lifecycle_backfill_dry_run_manifest_20260510.json"
+      ],
+      "evidence_summary": "Appeared in p2_lifecycle_backfill_dry_run_manifest_20260510 as lifecycle_status=ONLINE with source_evidence=lottery_api/data/lottery_v2.db:prediction_items. Currently: 0 rows in strategy_prediction_replays, 0 rows in prediction_items. Not in canonical registry. Was live at some point — unclear if renamed, retired, or removed. Missing: registry governance decision, rename history.",
+      "canonical_or_successor_strategy_id": null,
+      "risk_flags": [
+        "was_live_no_tombstone",
+        "no_registry_entry"
+      ],
+      "recommended_next_action": "Operator must determine: (A) renamed to a canonical strategy, (B) retired without registry entry (→ add tombstone), or (C) false positive in p2 dry run. Then classify as PRODUCT_DENOMINATOR or RESEARCH_ARCHIVE."
+    },
+    {
+      "strategy_id": "fourier_w100_pp3_power",
+      "classification": "PRODUCT_DENOMINATOR",
+      "recommended_lifecycle_status": "REJECTED",
+      "recommended_replay_display_semantics": "FROZEN",
+      "evidence_files": [
+        "outputs/replay/p1_strategy_lifecycle_inventory_20260511.json"
+      ],
+      "evidence_summary": "POWER_LOTTO. REJECTED. replay_display_eligible=True. Fourier w100 + PP3 Power Lotto.",
+      "canonical_or_successor_strategy_id": null,
+      "risk_flags": [],
+      "recommended_next_action": "Add to registry as REJECTED when P1.2 registry proposal is created."
+    },
+    {
+      "strategy_id": "gap_dynamic_threshold_biglotto",
+      "classification": "PRODUCT_DENOMINATOR",
+      "recommended_lifecycle_status": "REJECTED",
+      "recommended_replay_display_semantics": "FROZEN",
+      "evidence_files": [
+        "outputs/replay/p1_strategy_lifecycle_inventory_20260511.json",
+        "outputs/replay/p2_lifecycle_backfill_dry_run_manifest_20260510.json"
+      ],
+      "evidence_summary": "BIG_LOTTO. REJECTED. replay_display_eligible=True. Dynamic gap threshold strategy.",
+      "canonical_or_successor_strategy_id": null,
+      "risk_flags": [],
+      "recommended_next_action": "Add to registry as REJECTED when P1.2 registry proposal is created."
+    },
+    {
+      "strategy_id": "gap_rebound_powerlotto",
+      "classification": "PRODUCT_DENOMINATOR",
+      "recommended_lifecycle_status": "REJECTED",
+      "recommended_replay_display_semantics": "FROZEN",
+      "evidence_files": [
+        "outputs/replay/p1_strategy_lifecycle_inventory_20260511.json",
+        "outputs/replay/p2_lifecycle_backfill_dry_run_manifest_20260510.json"
+      ],
+      "evidence_summary": "POWER_LOTTO. REJECTED. replay_display_eligible=True. Gap rebound strategy.",
+      "canonical_or_successor_strategy_id": null,
+      "risk_flags": [],
+      "recommended_next_action": "Add to registry as REJECTED when P1.2 registry proposal is created."
+    },
+    {
+      "strategy_id": "habit_aware_fourier_v8_539",
+      "classification": "PRODUCT_DENOMINATOR",
+      "recommended_lifecycle_status": "REJECTED",
+      "recommended_replay_display_semantics": "FROZEN",
+      "evidence_files": [
+        "outputs/replay/p1_strategy_lifecycle_inventory_20260511.json"
+      ],
+      "evidence_summary": "DAILY_539. REJECTED. replay_display_eligible=True. Habit-aware Fourier v8.",
+      "canonical_or_successor_strategy_id": null,
+      "risk_flags": [],
+      "recommended_next_action": "Add to registry as REJECTED when P1.2 registry proposal is created."
+    },
+    {
+      "strategy_id": "hot_gap_return_biglotto",
+      "classification": "PRODUCT_DENOMINATOR",
+      "recommended_lifecycle_status": "REJECTED",
+      "recommended_replay_display_semantics": "FROZEN",
+      "evidence_files": [
+        "outputs/replay/p1_strategy_lifecycle_inventory_20260511.json",
+        "outputs/replay/p2_lifecycle_backfill_dry_run_manifest_20260510.json"
+      ],
+      "evidence_summary": "BIG_LOTTO. REJECTED. replay_display_eligible=True. Hot-gap return strategy.",
+      "canonical_or_successor_strategy_id": null,
+      "risk_flags": [],
+      "recommended_next_action": "Add to registry as REJECTED when P1.2 registry proposal is created."
+    },
+    {
+      "strategy_id": "hot_stop_rebound_biglotto",
+      "classification": "PRODUCT_DENOMINATOR",
+      "recommended_lifecycle_status": "REJECTED",
+      "recommended_replay_display_semantics": "FROZEN",
+      "evidence_files": [
+        "outputs/replay/p1_strategy_lifecycle_inventory_20260511.json",
+        "outputs/replay/p2_lifecycle_backfill_dry_run_manifest_20260510.json"
+      ],
+      "evidence_summary": "BIG_LOTTO. REJECTED. replay_display_eligible=True. 1500p Edge=+0.01% (essentially 0), z=+0.02, p=0.4924. Statistically insignificant.",
+      "canonical_or_successor_strategy_id": null,
+      "risk_flags": [],
+      "recommended_next_action": "Add to registry as REJECTED when P1.2 registry proposal is created."
+    },
+    {
+      "strategy_id": "hot_streak_override_biglotto",
+      "classification": "PRODUCT_DENOMINATOR",
+      "recommended_lifecycle_status": "REJECTED",
+      "recommended_replay_display_semantics": "FROZEN",
+      "evidence_files": [
+        "outputs/replay/p1_strategy_lifecycle_inventory_20260511.json"
+      ],
+      "evidence_summary": "BIG_LOTTO. REJECTED. replay_display_eligible=True. Hot streak override strategy.",
+      "canonical_or_successor_strategy_id": null,
+      "risk_flags": [],
+      "recommended_next_action": "Add to registry as REJECTED when P1.2 registry proposal is created."
+    },
+    {
+      "strategy_id": "lag_echo_1bet_539",
+      "classification": "PRODUCT_DENOMINATOR",
+      "recommended_lifecycle_status": "REJECTED",
+      "recommended_replay_display_semantics": "FROZEN",
+      "evidence_files": [
+        "outputs/replay/p1_strategy_lifecycle_inventory_20260511.json"
+      ],
+      "evidence_summary": "DAILY_539. REJECTED. replay_display_eligible=True. LagEcho 1-bet strategy.",
+      "canonical_or_successor_strategy_id": null,
+      "risk_flags": [],
+      "recommended_next_action": "Add to registry as REJECTED when P1.2 registry proposal is created."
+    },
+    {
+      "strategy_id": "lag_echo_acb_markov_3bet_539",
+      "classification": "PRODUCT_DENOMINATOR",
+      "recommended_lifecycle_status": "REJECTED",
+      "recommended_replay_display_semantics": "FROZEN",
+      "evidence_files": [
+        "outputs/replay/p1_strategy_lifecycle_inventory_20260511.json"
+      ],
+      "evidence_summary": "DAILY_539. REJECTED. replay_display_eligible=True. LagEcho+ACB+Markov 3-bet.",
+      "canonical_or_successor_strategy_id": null,
+      "risk_flags": [],
+      "recommended_next_action": "Add to registry as REJECTED when P1.2 registry proposal is created."
+    },
+    {
+      "strategy_id": "lift_pair_single_539",
+      "classification": "PRODUCT_DENOMINATOR",
+      "recommended_lifecycle_status": "REJECTED",
+      "recommended_replay_display_semantics": "FROZEN",
+      "evidence_files": [
+        "outputs/replay/p1_strategy_lifecycle_inventory_20260511.json",
+        "outputs/replay/p2_lifecycle_backfill_dry_run_manifest_20260510.json"
+      ],
+      "evidence_summary": "DAILY_539. REJECTED. replay_display_eligible=True. 1500p Edge negative (-0.38%), inconsistent across three windows.",
+      "canonical_or_successor_strategy_id": null,
+      "risk_flags": [],
+      "recommended_next_action": "Add to registry as REJECTED when P1.2 registry proposal is created."
+    },
+    {
+      "strategy_id": "mab_ucb1_539",
+      "classification": "PRODUCT_DENOMINATOR",
+      "recommended_lifecycle_status": "REJECTED",
+      "recommended_replay_display_semantics": "FROZEN",
+      "evidence_files": [
+        "outputs/replay/p1_strategy_lifecycle_inventory_20260511.json"
+      ],
+      "evidence_summary": "DAILY_539. REJECTED. replay_display_eligible=True. MAB UCB1 strategy.",
+      "canonical_or_successor_strategy_id": null,
+      "risk_flags": [],
+      "recommended_next_action": "Add to registry as REJECTED when P1.2 registry proposal is created."
+    },
+    {
+      "strategy_id": "markov_1bet_539",
+      "classification": "PRODUCT_DENOMINATOR",
+      "recommended_lifecycle_status": "REJECTED",
+      "recommended_replay_display_semantics": "FROZEN",
+      "evidence_files": [
+        "outputs/replay/p1_strategy_lifecycle_inventory_20260511.json",
+        "outputs/replay/p2_lifecycle_backfill_dry_run_manifest_20260510.json"
+      ],
+      "evidence_summary": "DAILY_539. REJECTED. replay_display_eligible=True. z=1.22 (p≈0.11), below significance threshold p<0.05.",
+      "canonical_or_successor_strategy_id": null,
+      "risk_flags": [],
+      "recommended_next_action": "Add to registry as REJECTED when P1.2 registry proposal is created."
+    },
+    {
+      "strategy_id": "markov_2bet_biglotto",
+      "classification": "PRODUCT_DENOMINATOR",
+      "recommended_lifecycle_status": "REJECTED",
+      "recommended_replay_display_semantics": "FROZEN",
+      "evidence_files": [
+        "outputs/replay/p1_strategy_lifecycle_inventory_20260511.json",
+        "outputs/replay/p2_lifecycle_backfill_dry_run_manifest_20260510.json"
+      ],
+      "evidence_summary": "BIG_LOTTO. REJECTED. replay_display_eligible=True. Markov 2-bet strategy.",
+      "canonical_or_successor_strategy_id": null,
+      "risk_flags": [],
+      "recommended_next_action": "Add to registry as REJECTED when P1.2 registry proposal is created."
+    },
+    {
+      "strategy_id": "markov_repeat_exception_biglotto",
+      "classification": "PRODUCT_DENOMINATOR",
+      "recommended_lifecycle_status": "REJECTED",
+      "recommended_replay_display_semantics": "FROZEN",
+      "evidence_files": [
+        "outputs/replay/p1_strategy_lifecycle_inventory_20260511.json",
+        "outputs/replay/p2_lifecycle_backfill_dry_run_manifest_20260510.json"
+      ],
+      "evidence_summary": "BIG_LOTTO. REJECTED. replay_display_eligible=True. Markov repeat exception strategy.",
+      "canonical_or_successor_strategy_id": null,
+      "risk_flags": [],
+      "recommended_next_action": "Add to registry as REJECTED when P1.2 registry proposal is created."
+    },
+    {
+      "strategy_id": "markov_single_biglotto",
+      "classification": "PRODUCT_DENOMINATOR",
+      "recommended_lifecycle_status": "REJECTED",
+      "recommended_replay_display_semantics": "FROZEN",
+      "evidence_files": [
+        "outputs/replay/p1_strategy_lifecycle_inventory_20260511.json",
+        "outputs/replay/p2_lifecycle_backfill_dry_run_manifest_20260510.json"
+      ],
+      "evidence_summary": "BIG_LOTTO. REJECTED. replay_display_eligible=True. Markov single-number strategy.",
+      "canonical_or_successor_strategy_id": null,
+      "risk_flags": [],
+      "recommended_next_action": "Add to registry as REJECTED when P1.2 registry proposal is created."
+    },
+    {
+      "strategy_id": "midfreq_extremecol_2bet_539",
+      "classification": "PRODUCT_DENOMINATOR",
+      "recommended_lifecycle_status": "REJECTED",
+      "recommended_replay_display_semantics": "FROZEN",
+      "evidence_files": [
+        "outputs/replay/p1_strategy_lifecycle_inventory_20260511.json"
+      ],
+      "evidence_summary": "DAILY_539. REJECTED. replay_display_eligible=True. MidFreq+ExtremeCol 2-bet.",
+      "canonical_or_successor_strategy_id": null,
+      "risk_flags": [],
+      "recommended_next_action": "Add to registry as REJECTED when P1.2 registry proposal is created."
+    },
+    {
+      "strategy_id": "momentum_regime_switching_539",
+      "classification": "PRODUCT_DENOMINATOR",
+      "recommended_lifecycle_status": "REJECTED",
+      "recommended_replay_display_semantics": "FROZEN",
+      "evidence_files": [
+        "outputs/replay/p1_strategy_lifecycle_inventory_20260511.json"
+      ],
+      "evidence_summary": "DAILY_539. REJECTED. replay_display_eligible=True. Momentum regime-switching strategy.",
+      "canonical_or_successor_strategy_id": null,
+      "risk_flags": [],
+      "recommended_next_action": "Add to registry as REJECTED when P1.2 registry proposal is created."
+    },
+    {
+      "strategy_id": "multiwindow_fourier_biglotto",
+      "classification": "PRODUCT_DENOMINATOR",
+      "recommended_lifecycle_status": "REJECTED",
+      "recommended_replay_display_semantics": "FROZEN",
+      "evidence_files": [
+        "outputs/replay/p1_strategy_lifecycle_inventory_20260511.json",
+        "outputs/replay/p2_lifecycle_backfill_dry_run_manifest_20260510.json"
+      ],
+      "evidence_summary": "BIG_LOTTO. REJECTED. replay_display_eligible=True. Multi-window Fourier strategy.",
+      "canonical_or_successor_strategy_id": null,
+      "risk_flags": [],
+      "recommended_next_action": "Add to registry as REJECTED when P1.2 registry proposal is created."
+    },
+    {
+      "strategy_id": "neighbor_acb_2bet_539",
+      "classification": "PRODUCT_DENOMINATOR",
+      "recommended_lifecycle_status": "REJECTED",
+      "recommended_replay_display_semantics": "FROZEN",
+      "evidence_files": [
+        "outputs/replay/p1_strategy_lifecycle_inventory_20260511.json",
+        "outputs/replay/p2_lifecycle_backfill_dry_run_manifest_20260510.json"
+      ],
+      "evidence_summary": "DAILY_539. REJECTED. replay_display_eligible=True. Neighbour+ACB 2-bet weaker than MidFreq+ACB (2.79% vs 5.13%, McNemar p=0.0743).",
+      "canonical_or_successor_strategy_id": null,
+      "risk_flags": [],
+      "recommended_next_action": "Add to registry as REJECTED when P1.2 registry proposal is created."
+    },
+    {
+      "strategy_id": "neighbor_injection_biglotto",
+      "classification": "PRODUCT_DENOMINATOR",
+      "recommended_lifecycle_status": "REJECTED",
+      "recommended_replay_display_semantics": "FROZEN",
+      "evidence_files": [
+        "outputs/replay/p1_strategy_lifecycle_inventory_20260511.json",
+        "outputs/replay/p2_lifecycle_backfill_dry_run_manifest_20260510.json"
+      ],
+      "evidence_summary": "BIG_LOTTO. REJECTED. replay_display_eligible=True. Neighbour injection strategy.",
+      "canonical_or_successor_strategy_id": null,
+      "risk_flags": [],
+      "recommended_next_action": "Add to registry as REJECTED when P1.2 registry proposal is created."
+    },
+    {
+      "strategy_id": "p0_neighbor_injection",
+      "classification": "RESEARCH_ARCHIVE",
+      "recommended_lifecycle_status": "N/A",
+      "recommended_replay_display_semantics": "N/A",
+      "evidence_files": [
+        "outputs/replay/p1_strategy_lifecycle_inventory_20260511.json",
+        "outputs/replay/p2_lifecycle_backfill_dry_run_manifest_20260510.json"
+      ],
+      "evidence_summary": "Phase-0 pipeline prototype identifier. lottery_type=UNKNOWN. Intermediate experiment name — not a stable product strategy. Superseded by canonical biglotto/539 neighbor strategies.",
+      "canonical_or_successor_strategy_id": null,
+      "risk_flags": [],
+      "recommended_next_action": "Archive; exclude from replay denominator."
+    },
+    {
+      "strategy_id": "p0b_539_3bet_f_cold_fmid",
+      "classification": "RESEARCH_ARCHIVE",
+      "recommended_lifecycle_status": "N/A",
+      "recommended_replay_display_semantics": "N/A",
+      "evidence_files": [
+        "outputs/replay/p1_strategy_lifecycle_inventory_20260511.json",
+        "outputs/replay/p2_lifecycle_backfill_dry_run_manifest_20260510.json"
+      ],
+      "evidence_summary": "Phase-0B pipeline prototype. Permutation Signal Edge=-0.976% (negative). Temporary naming convention p0b_*; not a product-facing strategy name.",
+      "canonical_or_successor_strategy_id": null,
+      "risk_flags": [],
+      "recommended_next_action": "Archive; exclude from replay denominator."
+    },
+    {
+      "strategy_id": "p0c_539_3bet_f_cold_x2",
+      "classification": "RESEARCH_ARCHIVE",
+      "recommended_lifecycle_status": "N/A",
+      "recommended_replay_display_semantics": "N/A",
+      "evidence_files": [
+        "outputs/replay/p1_strategy_lifecycle_inventory_20260511.json"
+      ],
+      "evidence_summary": "Phase-0C pipeline prototype. Signal Edge=-0.176% (negative). Same root cause as p0b — geometric coverage bias. Temporary naming convention; not a product-facing strategy name.",
+      "canonical_or_successor_strategy_id": null,
+      "risk_flags": [],
+      "recommended_next_action": "Archive; exclude from replay denominator."
+    },
+    {
+      "strategy_id": "p1_conditional_branch_powerlotto",
+      "classification": "PRODUCT_DENOMINATOR",
+      "recommended_lifecycle_status": "REJECTED",
+      "recommended_replay_display_semantics": "FROZEN",
+      "evidence_files": [
+        "outputs/replay/p1_strategy_lifecycle_inventory_20260511.json"
+      ],
+      "evidence_summary": "POWER_LOTTO. REJECTED. replay_display_eligible=True. P1 conditional branch strategy for Power Lotto — follows p1_* product naming convention matching canonical p1_deviation_2bet_539 (REJECTED in registry). Was formally evaluated as a product candidate.",
+      "canonical_or_successor_strategy_id": null,
+      "risk_flags": [],
+      "recommended_next_action": "Add to registry as REJECTED when P1.2 registry proposal is created."
+    },
+    {
+      "strategy_id": "p2_mab_fusion",
+      "classification": "RESEARCH_ARCHIVE",
+      "recommended_lifecycle_status": "N/A",
+      "recommended_replay_display_semantics": "N/A",
+      "evidence_files": [
+        "outputs/replay/p1_strategy_lifecycle_inventory_20260511.json"
+      ],
+      "evidence_summary": "Phase-2 MAB fusion pipeline prototype. lottery_type=UNKNOWN. Internal experiment identifier — not a stable product strategy name.",
+      "canonical_or_successor_strategy_id": null,
+      "risk_flags": [],
+      "recommended_next_action": "Archive; exclude from replay denominator."
+    },
+    {
+      "strategy_id": "p3_state_aware",
+      "classification": "RESEARCH_ARCHIVE",
+      "recommended_lifecycle_status": "N/A",
+      "recommended_replay_display_semantics": "N/A",
+      "evidence_files": [
+        "outputs/replay/p1_strategy_lifecycle_inventory_20260511.json"
+      ],
+      "evidence_summary": "Phase-3 state-aware pipeline prototype. lottery_type=UNKNOWN. Internal experiment identifier — not a stable product strategy name.",
+      "canonical_or_successor_strategy_id": null,
+      "risk_flags": [],
+      "recommended_next_action": "Archive; exclude from replay denominator."
+    },
+    {
+      "strategy_id": "power_echo_boost",
+      "classification": "PRODUCT_DENOMINATOR",
+      "recommended_lifecycle_status": "REJECTED",
+      "recommended_replay_display_semantics": "FROZEN",
+      "evidence_files": [
+        "outputs/replay/p1_strategy_lifecycle_inventory_20260511.json"
+      ],
+      "evidence_summary": "POWER_LOTTO. REJECTED. replay_display_eligible=True. Power echo boost strategy.",
+      "canonical_or_successor_strategy_id": null,
+      "risk_flags": [],
+      "recommended_next_action": "Add to registry as REJECTED when P1.2 registry proposal is created."
+    },
+    {
+      "strategy_id": "power_pp3v2_combined",
+      "classification": "PRODUCT_DENOMINATOR",
+      "recommended_lifecycle_status": "REJECTED",
+      "recommended_replay_display_semantics": "FROZEN",
+      "evidence_files": [
+        "outputs/replay/p1_strategy_lifecycle_inventory_20260511.json"
+      ],
+      "evidence_summary": "POWER_LOTTO. REJECTED. replay_display_eligible=True. PP3v2 combined variant — distinct experiment from canonical power_precision_3bet.",
+      "canonical_or_successor_strategy_id": null,
+      "risk_flags": [],
+      "recommended_next_action": "Add to registry as REJECTED when P1.2 registry proposal is created."
+    },
+    {
+      "strategy_id": "power_z3gap_watch",
+      "classification": "PRODUCT_DENOMINATOR",
+      "recommended_lifecycle_status": "REJECTED",
+      "recommended_replay_display_semantics": "FROZEN",
+      "evidence_files": [
+        "outputs/replay/p1_strategy_lifecycle_inventory_20260511.json"
+      ],
+      "evidence_summary": "POWER_LOTTO. REJECTED. replay_display_eligible=True. Z3 gap watch strategy.",
+      "canonical_or_successor_strategy_id": null,
+      "risk_flags": [],
+      "recommended_next_action": "Add to registry as REJECTED when P1.2 registry proposal is created."
+    },
+    {
+      "strategy_id": "sgp_power_017_research",
+      "classification": "RESEARCH_ARCHIVE",
+      "recommended_lifecycle_status": "N/A",
+      "recommended_replay_display_semantics": "N/A",
+      "evidence_files": [
+        "outputs/replay/p1_strategy_lifecycle_inventory_20260511.json"
+      ],
+      "evidence_summary": "Explicitly named 'research' variant (sgp_power_017_research). SGP sub-graph research series for Power Lotto — sweep/exploratory artifact. Not a product-facing strategy name.",
+      "canonical_or_successor_strategy_id": null,
+      "risk_flags": [],
+      "recommended_next_action": "Archive; exclude from replay denominator."
+    },
+    {
+      "strategy_id": "sgp_v9_apex_powerlotto",
+      "classification": "RESEARCH_ARCHIVE",
+      "recommended_lifecycle_status": "N/A",
+      "recommended_replay_display_semantics": "N/A",
+      "evidence_files": [
+        "outputs/replay/p1_strategy_lifecycle_inventory_20260511.json"
+      ],
+      "evidence_summary": "SGP v9 Apex research series — versioned sweep candidate. Rejection evidence: 3-bet union M3+ Edge=-37.3% vs baseline. Version-numbered name (v9) indicates sweep candidate, not final product.",
+      "canonical_or_successor_strategy_id": null,
+      "risk_flags": [],
+      "recommended_next_action": "Archive; exclude from replay denominator."
+    },
+    {
+      "strategy_id": "shlc_midfreq_power",
+      "classification": "DUPLICATE_OR_SUPERSEDED",
+      "recommended_lifecycle_status": "REJECTED",
+      "recommended_replay_display_semantics": "FROZEN",
+      "evidence_files": [
+        "outputs/replay/p1_strategy_lifecycle_inventory_20260511.json"
+      ],
+      "evidence_summary": "Alternate naming of canonical strategy power_shlc_midfreq. shlc_midfreq_power reverses the prefix/suffix ordering used in the canonical registry (power_* prefix convention). Both refer to SHLC MidFreq strategy for Power Lotto. Canonical power_shlc_midfreq is REJECTED with 50 DB replay rows.",
+      "canonical_or_successor_strategy_id": "power_shlc_midfreq",
+      "risk_flags": [
+        "naming_convention_inconsistency"
+      ],
+      "recommended_next_action": "Confirm duplicate with registry; exclude from denominator (already counted via canonical power_shlc_midfreq)."
+    },
+    {
+      "strategy_id": "short_term_hot_independent_bet",
+      "classification": "PRODUCT_DENOMINATOR",
+      "recommended_lifecycle_status": "REJECTED",
+      "recommended_replay_display_semantics": "FROZEN",
+      "evidence_files": [
+        "outputs/replay/p1_strategy_lifecycle_inventory_20260511.json"
+      ],
+      "evidence_summary": "UNKNOWN lottery_type. REJECTED. replay_display_eligible=True. Short-term hot independent bet.",
+      "canonical_or_successor_strategy_id": null,
+      "risk_flags": [],
+      "recommended_next_action": "Add to registry as REJECTED when P1.2 registry proposal is created."
+    },
+    {
+      "strategy_id": "special_mab_decay_adjustment_power",
+      "classification": "PRODUCT_DENOMINATOR",
+      "recommended_lifecycle_status": "REJECTED",
+      "recommended_replay_display_semantics": "FROZEN",
+      "evidence_files": [
+        "outputs/replay/p1_strategy_lifecycle_inventory_20260511.json"
+      ],
+      "evidence_summary": "POWER_LOTTO. REJECTED. replay_display_eligible=True. Special MAB decay adjustment.",
+      "canonical_or_successor_strategy_id": null,
+      "risk_flags": [],
+      "recommended_next_action": "Add to registry as REJECTED when P1.2 registry proposal is created."
+    },
+    {
+      "strategy_id": "streak_boost_neighbor_bet1",
+      "classification": "PRODUCT_DENOMINATOR",
+      "recommended_lifecycle_status": "REJECTED",
+      "recommended_replay_display_semantics": "FROZEN",
+      "evidence_files": [
+        "outputs/replay/p1_strategy_lifecycle_inventory_20260511.json"
+      ],
+      "evidence_summary": "UNKNOWN lottery_type. REJECTED. replay_display_eligible=True. Interaction cancellation effect with multi-window fusion: 1500p Edge=+0.65% < original +1.05%, perm p=0.1.",
+      "canonical_or_successor_strategy_id": null,
+      "risk_flags": [],
+      "recommended_next_action": "Add to registry as REJECTED when P1.2 registry proposal is created."
+    },
+    {
+      "strategy_id": "structural_zone_guard_pp3_power",
+      "classification": "PRODUCT_DENOMINATOR",
+      "recommended_lifecycle_status": "REJECTED",
+      "recommended_replay_display_semantics": "FROZEN",
+      "evidence_files": [
+        "outputs/replay/p1_strategy_lifecycle_inventory_20260511.json"
+      ],
+      "evidence_summary": "POWER_LOTTO. REJECTED. replay_display_eligible=True. Structural zone guard PP3.",
+      "canonical_or_successor_strategy_id": null,
+      "risk_flags": [],
+      "recommended_next_action": "Add to registry as REJECTED when P1.2 registry proposal is created."
+    },
+    {
+      "strategy_id": "ts3_acb_4bet_biglotto",
+      "classification": "DUPLICATE_OR_SUPERSEDED",
+      "recommended_lifecycle_status": "REJECTED",
+      "recommended_replay_display_semantics": "FROZEN",
+      "evidence_files": [
+        "outputs/replay/p1_strategy_lifecycle_inventory_20260511.json"
+      ],
+      "evidence_summary": "Alternate naming of canonical strategy biglotto_ts3_acb_4bet. ts3_acb_4bet_biglotto uses suffix lottery_type (biglotto); canonical uses prefix. Both refer to the TS3 ACB 4-bet strategy for Big Lotto. Canonical biglotto_ts3_acb_4bet is REJECTED with 50 DB replay rows.",
+      "canonical_or_successor_strategy_id": "biglotto_ts3_acb_4bet",
+      "risk_flags": [
+        "naming_convention_inconsistency"
+      ],
+      "recommended_next_action": "Confirm duplicate with registry; exclude from denominator (already counted via canonical biglotto_ts3_acb_4bet)."
+    },
+    {
+      "strategy_id": "ts3_markov_freq_5bet_biglotto",
+      "classification": "DUPLICATE_OR_SUPERSEDED",
+      "recommended_lifecycle_status": "REJECTED",
+      "recommended_replay_display_semantics": "FROZEN",
+      "evidence_files": [
+        "outputs/replay/p1_strategy_lifecycle_inventory_20260511.json"
+      ],
+      "evidence_summary": "Alternate naming of canonical strategy biglotto_ts3_markov_freq_5bet. ts3_markov_freq_5bet_biglotto uses suffix lottery_type; canonical uses prefix. Both refer to the TS3 Markov Freq 5-bet strategy for Big Lotto. Canonical biglotto_ts3_markov_freq_5bet is REJECTED with 50 DB replay rows.",
+      "canonical_or_successor_strategy_id": "biglotto_ts3_markov_freq_5bet",
+      "risk_flags": [
+        "naming_convention_inconsistency"
+      ],
+      "recommended_next_action": "Confirm duplicate with registry; exclude from denominator (already counted via canonical biglotto_ts3_markov_freq_5bet)."
+    },
+    {
+      "strategy_id": "ts3_regime_3bet",
+      "classification": "NEEDS_OPERATOR_DECISION",
+      "recommended_lifecycle_status": "UNKNOWN",
+      "recommended_replay_display_semantics": "UNKNOWN",
+      "evidence_files": [
+        "outputs/replay/p2_lifecycle_backfill_dry_run_manifest_20260510.json"
+      ],
+      "evidence_summary": "Appeared in p2_lifecycle_backfill_dry_run_manifest_20260510 as lifecycle_status=ONLINE with source_evidence=lottery_api/data/lottery_v2.db:prediction_items. Currently: 0 rows in strategy_prediction_replays, 0 rows in prediction_items. Not in canonical registry. ts3_regime_3bet could be a regime-switching variant of canonical ts3 strategies (biglotto_ts3_acb_4bet or biglotto_ts3_markov_freq_5bet). Missing: registry governance decision, rename/merge history.",
+      "canonical_or_successor_strategy_id": null,
+      "risk_flags": [
+        "was_live_no_tombstone",
+        "no_registry_entry",
+        "possible_ts3_variant"
+      ],
+      "recommended_next_action": "Operator must determine: (A) merged into canonical ts3 strategy, (B) retired without registry entry (→ add tombstone), or (C) false positive in p2 dry run. Then classify as PRODUCT_DENOMINATOR or DUPLICATE_OR_SUPERSEDED."
+    },
+    {
+      "strategy_id": "zone_cascade_guard_biglotto",
+      "classification": "PRODUCT_DENOMINATOR",
+      "recommended_lifecycle_status": "REJECTED",
+      "recommended_replay_display_semantics": "FROZEN",
+      "evidence_files": [
+        "outputs/replay/p1_strategy_lifecycle_inventory_20260511.json"
+      ],
+      "evidence_summary": "BIG_LOTTO. REJECTED. replay_display_eligible=True. Zone cascade guard strategy.",
+      "canonical_or_successor_strategy_id": null,
+      "risk_flags": [],
+      "recommended_next_action": "Add to registry as REJECTED when P1.2 registry proposal is created."
+    },
+    {
+      "strategy_id": "zone_constraint_cold_bet2",
+      "classification": "PRODUCT_DENOMINATOR",
+      "recommended_lifecycle_status": "REJECTED",
+      "recommended_replay_display_semantics": "FROZEN",
+      "evidence_files": [
+        "outputs/replay/p1_strategy_lifecycle_inventory_20260511.json"
+      ],
+      "evidence_summary": "UNKNOWN lottery_type. REJECTED. replay_display_eligible=True. Zone constraint with cold bet2 — adding zone constraint (Z3>=3) reduced hit rate (71 < 74).",
+      "canonical_or_successor_strategy_id": null,
+      "risk_flags": [],
+      "recommended_next_action": "Add to registry as REJECTED when P1.2 registry proposal is created."
+    },
+    {
+      "strategy_id": "zone_gap_3bet_539",
+      "classification": "PRODUCT_DENOMINATOR",
+      "recommended_lifecycle_status": "REJECTED",
+      "recommended_replay_display_semantics": "FROZEN",
+      "evidence_files": [
+        "outputs/replay/p1_strategy_lifecycle_inventory_20260511.json"
+      ],
+      "evidence_summary": "DAILY_539. REJECTED. replay_display_eligible=True. Failed permutation test — M2+ not superior to random 3-bet baseline.",
+      "canonical_or_successor_strategy_id": null,
+      "risk_flags": [],
+      "recommended_next_action": "Add to registry as REJECTED when P1.2 registry proposal is created."
+    }
+  ],
+  "operator_decision_queue": [
+    {
+      "strategy_id": "fourier_rhythm_3bet",
+      "classification": "NEEDS_OPERATOR_DECISION",
+      "missing_evidence": "Appeared in p2_lifecycle_backfill_dry_run_manifest_20260510 as lifecycle_status=ONLINE with source_evidence=lottery_api/data/lottery_v2.db:prediction_items. Currently: 0 rows in strategy_prediction_replays, 0 rows in prediction_items. Not in canonical registry. Was live at some point — unclear if renamed, retired, or removed. Missing: registry governance decision, rename history.",
+      "risk_flags": [
+        "was_live_no_tombstone",
+        "no_registry_entry"
+      ],
+      "recommended_next_action": "Operator must determine: (A) renamed to a canonical strategy, (B) retired without registry entry (→ add tombstone), or (C) false positive in p2 dry run. Then classify as PRODUCT_DENOMINATOR or RESEARCH_ARCHIVE."
+    },
+    {
+      "strategy_id": "ts3_regime_3bet",
+      "classification": "NEEDS_OPERATOR_DECISION",
+      "missing_evidence": "Appeared in p2_lifecycle_backfill_dry_run_manifest_20260510 as lifecycle_status=ONLINE with source_evidence=lottery_api/data/lottery_v2.db:prediction_items. Currently: 0 rows in strategy_prediction_replays, 0 rows in prediction_items. Not in canonical registry. ts3_regime_3bet could be a regime-switching variant of canonical ts3 strategies (biglotto_ts3_acb_4bet or biglotto_ts3_markov_freq_5bet). Missing: registry governance decision, rename/merge history.",
+      "risk_flags": [
+        "was_live_no_tombstone",
+        "no_registry_entry",
+        "possible_ts3_variant"
+      ],
+      "recommended_next_action": "Operator must determine: (A) merged into canonical ts3 strategy, (B) retired without registry entry (→ add tombstone), or (C) false positive in p2 dry run. Then classify as PRODUCT_DENOMINATOR or DUPLICATE_OR_SUPERSEDED."
+    }
+  ]
+}

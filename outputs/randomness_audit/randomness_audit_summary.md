@@ -1,6 +1,6 @@
 # Lottery Randomness Audit Report
 
-**Run timestamp:** 2026-05-01T23:39:17.808663
+**Run timestamp:** 2026-05-16T00:00:00.000000
 **Simulations:** 2,000 (seed=42)
 **Alpha:** 0.05
 **Total confirmatory tests:** 44

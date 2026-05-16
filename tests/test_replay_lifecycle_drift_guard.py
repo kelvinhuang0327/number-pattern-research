@@ -8,10 +8,10 @@ These tests:
   - Do NOT write to the DB
   - Run the drift guard script via subprocess and parse its JSON output
 
-Expected baseline (established 2026-05-14, updated P2F 2026-05-15):
-  V1=300  V2=200  legacy=460  P2B=6  P2F=3  total=969
-  V3 tombstone strategies: 0 rows each
-  truth_level: only REGENERATED_RETROSPECTIVE / ARTIFACT_RECONSTRUCTED_RETROSPECTIVE / OFFICIAL / NULL
+Expected baseline (established 2026-05-14, updated P3BC 2026-05-16):
+  V1=300  V2=200  legacy=460  P2B=6  P2F=3  P3BC=6  total=975
+  V3 tombstone strategies: 0 rows each (acb_markov_midfreq_3bet promoted out of tombstone list)
+  truth_level: only REGENERATED_RETROSPECTIVE / ARTIFACT_RECONSTRUCTED_RETROSPECTIVE / OFFICIAL / OFFICIAL_DRAW_RESULT / NULL
   Final classification: REPLAY_LIFECYCLE_DRIFT_GUARD_PASS
 """
 
@@ -26,10 +26,10 @@ REPO_ROOT = pathlib.Path(__file__).resolve().parent.parent
 SCRIPT_PATH = REPO_ROOT / "scripts" / "replay_lifecycle_drift_guard.py"
 
 # Known V3 tombstone strategy IDs
+# acb_markov_midfreq_3bet removed: 3 replay rows inserted via P3BC_RESOLVE_20260516
 V3_CODE_MISSING_STRATEGY_IDS = [
     "acb_1bet",
     "acb_markov_midfreq",
-    "acb_markov_midfreq_3bet",
     "midfreq_acb_2bet",
     "midfreq_fourier_2bet",
     "h6_gate_mk20_ew85",
@@ -39,6 +39,7 @@ ALLOWED_TRUTH_LEVELS = {
     "REGENERATED_RETROSPECTIVE",
     "ARTIFACT_RECONSTRUCTED_RETROSPECTIVE",
     "OFFICIAL",
+    "OFFICIAL_DRAW_RESULT",
     "null",
 }
 
@@ -158,7 +159,7 @@ class TestDriftGuardScript:
         )
 
     def test_db_counts_match_baseline(self, tmp_path):
-        """DB row counts must match the Post-V3+P2B+P2F baseline: V1=300, V2=200, legacy=460, P2B=6, P2F=3, total=969."""
+        """DB row counts must match the Post-V3+P2B+P2F+P3BC baseline: V1=300, V2=200, legacy=460, P2B=6, P2F=3, P3BC=6, total=975."""
         _, result = _run_drift_guard(tmp_path)
         rc = result.get("row_counts", {})
         assert rc.get("v1") == 300, f"V1 count mismatch: {rc.get('v1')} != 300"
@@ -166,7 +167,8 @@ class TestDriftGuardScript:
         assert rc.get("legacy") == 460, f"legacy count mismatch: {rc.get('legacy')} != 460"
         assert rc.get("p2b") == 6, f"P2B count mismatch: {rc.get('p2b')} != 6"
         assert rc.get("p2f") == 3, f"P2F count mismatch: {rc.get('p2f')} != 3"
-        assert rc.get("total") == 969, f"total count mismatch: {rc.get('total')} != 969"
+        assert rc.get("p3bc") == 6, f"P3BC count mismatch: {rc.get('p3bc')} != 6"
+        assert rc.get("total") == 975, f"total count mismatch: {rc.get('total')} != 975"
         # final classification
         assert result.get("final_classification") == "REPLAY_LIFECYCLE_DRIFT_GUARD_PASS", (
             f"Unexpected final_classification: {result.get('final_classification')}"

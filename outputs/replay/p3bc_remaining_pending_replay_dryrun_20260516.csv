@@ -1,0 +1,7 @@
+item_id,lottery_type,target_draw,target_date,predicted_numbers,actual_numbers,matched,hit_count,special_predicted,special_actual,special_hit,status,eligible,replay_rows_inserted,prediction_items_modified
+1072,POWER_LOTTO,115000035,2026/04/30,"[12, 22, 24, 26, 29, 37]","[1, 4, 13, 19, 27, 30]",[],0,,8,0,ELIGIBLE,True,False,False
+1073,POWER_LOTTO,115000035,2026/04/30,"[4, 23, 25, 27, 33, 36]","[1, 4, 13, 19, 27, 30]","[4, 27]",2,,8,0,ELIGIBLE,True,False,False
+1074,POWER_LOTTO,115000035,2026/04/30,"[2, 11, 13, 15, 20, 32]","[1, 4, 13, 19, 27, 30]",[13],1,,8,0,ELIGIBLE,True,False,False
+1087,DAILY_539,115000106,2026/04/30,"[9, 16, 23, 37, 39]","[6, 15, 27, 30, 31]",[],0,,0,0,ELIGIBLE,True,False,False
+1088,DAILY_539,115000106,2026/04/30,"[7, 17, 26, 30, 35]","[6, 15, 27, 30, 31]",[30],1,,0,0,ELIGIBLE,True,False,False
+1089,DAILY_539,115000106,2026/04/30,"[5, 18, 20, 24, 31]","[6, 15, 27, 30, 31]",[31],1,,0,0,ELIGIBLE,True,False,False

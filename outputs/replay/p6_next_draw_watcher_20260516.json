@@ -1,0 +1,55 @@
+{
+  "generated_at": "2026-05-17T04:11:06Z",
+  "final_classification": "P6_NEXT_DRAW_WATCHER_WAITING_FOR_OFFICIAL_DRAWS",
+  "db_path": "lottery_api/data/lottery_v2.db",
+  "db_sha256": "cc35d47824f0166e8a2939a1a66cfad25381c0a0bb965dce74a6ba20c963c0b3",
+  "targets": [
+    {
+      "lottery_type": "BIG_LOTTO",
+      "support_run_id": 176,
+      "target_draw": "115000053",
+      "latest_draw_in_db": "115000052",
+      "target_draw_exists": false,
+      "latest_known_draw_in_prediction_run": "115000052",
+      "latest_known_date_in_prediction_run": "2026/05/12",
+      "strategy_name": "Triple Strike",
+      "prediction_item_ids": [
+        1096,
+        1097,
+        1098
+      ],
+      "pending_item_count": 3,
+      "readiness_state": "WAITING_FOR_OFFICIAL_DRAW_PUBLICATION",
+      "prediction_run_status": "未研究"
+    },
+    {
+      "lottery_type": "POWER_LOTTO",
+      "support_run_id": 177,
+      "target_draw": "115000036",
+      "latest_draw_in_db": "115000035",
+      "target_draw_exists": false,
+      "latest_known_draw_in_prediction_run": "115000035",
+      "latest_known_date_in_prediction_run": "2026/04/30",
+      "strategy_name": "Power Precision (Edge +2.23%)",
+      "prediction_item_ids": [
+        1099,
+        1100,
+        1101
+      ],
+      "pending_item_count": 3,
+      "readiness_state": "WAITING_FOR_OFFICIAL_DRAW_PUBLICATION",
+      "prediction_run_status": "未研究"
+    }
+  ],
+  "source_preview": null,
+  "safety": {
+    "db_written": false,
+    "draw_imported": false,
+    "replay_rows_inserted": false,
+    "prediction_items_modified": false,
+    "prediction_runs_modified": false,
+    "strategy_logic_changed": false,
+    "api_ui_backend_changed": false
+  },
+  "warnings": []
+}

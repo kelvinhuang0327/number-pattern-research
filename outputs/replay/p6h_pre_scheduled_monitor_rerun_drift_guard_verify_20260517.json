@@ -1,0 +1,35 @@
+{
+  "status": "PASS",
+  "checked_at": "2026-05-17T06:55:23.941959Z",
+  "db_path": "/Users/kelvin/Kelvin-WorkSpace/LotteryNew-clean/lottery_api/data/lottery_v2.db",
+  "row_counts": {
+    "v1": 300,
+    "v2": 200,
+    "legacy": 460,
+    "p2b": 6,
+    "p2f": 3,
+    "p3bc": 6,
+    "total": 975
+  },
+  "lifecycle_counts": {
+    "v3_code_missing_zero_row_strategies": 5,
+    "v3_fake_row_violations": []
+  },
+  "truth_level_counts": {
+    "null": 460,
+    "ARTIFACT_RECONSTRUCTED_RETROSPECTIVE": 203,
+    "OFFICIAL": 3,
+    "OFFICIAL_DRAW_RESULT": 6,
+    "REGENERATED_RETROSPECTIVE": 303
+  },
+  "controlled_apply_id_counts": {
+    "null": 460,
+    "20260514033100-13acaf34996e": 300,
+    "20260514134953-cf683424": 200,
+    "P2B_20260515": 6,
+    "P2F_20260515": 3,
+    "P3BC_RESOLVE_20260516": 6
+  },
+  "violations": [],
+  "final_classification": "REPLAY_LIFECYCLE_DRIFT_GUARD_PASS"
+}

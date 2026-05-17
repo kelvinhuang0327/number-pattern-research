@@ -1,0 +1,129 @@
+{
+  "generated_at": "2026-05-17T08:36:56.219274+00:00",
+  "source_audit": "outputs/replay/p5_replay_source_of_truth_audit_20260517.json",
+  "pipeline_split": "outputs/replay/p3_replay_pipeline_split_20260517.json",
+  "input_summary": {
+    "canonical_runtime_source": "DB",
+    "deployment_safe": false,
+    "local_only_risk": true,
+    "historical_reconstruction_candidates": 97,
+    "future_waiting_candidates": 2,
+    "display_only_candidates": 407
+  },
+  "promotion_methods": [
+    {
+      "method": "MIGRATION",
+      "deployment_safe": true,
+      "reproducible": true,
+      "auditable": true,
+      "requires_db_write": true,
+      "requires_human_approval": true,
+      "supports_rollback": true,
+      "recommended_for_historical_reconstruction": true,
+      "risk": "MEDIUM",
+      "notes": "Best for stable schema-managed promotion when replay rows are materialized through a versioned migration path.",
+      "can_execute_in_p5a": false
+    },
+    {
+      "method": "SEED",
+      "deployment_safe": true,
+      "reproducible": true,
+      "auditable": true,
+      "requires_db_write": true,
+      "requires_human_approval": true,
+      "supports_rollback": true,
+      "recommended_for_historical_reconstruction": true,
+      "risk": "MEDIUM",
+      "notes": "Useful for bootstrapping a known-good deployment DB when replay rows are treated as seedable reference data.",
+      "can_execute_in_p5a": false
+    },
+    {
+      "method": "ARTIFACT_PROMOTION",
+      "deployment_safe": true,
+      "reproducible": true,
+      "auditable": true,
+      "requires_db_write": false,
+      "requires_human_approval": true,
+      "supports_rollback": true,
+      "recommended_for_historical_reconstruction": true,
+      "risk": "LOW",
+      "notes": "Preferred for promoting dry-run replay artifacts into a deployment-controlled DB or packaged artifact pipeline.",
+      "can_execute_in_p5a": false
+    },
+    {
+      "method": "CONTROLLED_DB_APPLY",
+      "deployment_safe": true,
+      "reproducible": true,
+      "auditable": true,
+      "requires_db_write": true,
+      "requires_human_approval": true,
+      "supports_rollback": true,
+      "recommended_for_historical_reconstruction": true,
+      "risk": "MEDIUM",
+      "notes": "Explicit controlled apply is acceptable when accompanied by diff, approval, rollback, and post-apply verification gates.",
+      "can_execute_in_p5a": false
+    },
+    {
+      "method": "HYBRID",
+      "deployment_safe": true,
+      "reproducible": true,
+      "auditable": true,
+      "requires_db_write": true,
+      "requires_human_approval": true,
+      "supports_rollback": true,
+      "recommended_for_historical_reconstruction": true,
+      "risk": "MEDIUM",
+      "notes": "Hybrid promotion may combine artifact promotion for review and controlled DB apply for final deployment.",
+      "can_execute_in_p5a": false
+    },
+    {
+      "method": "UNSUPPORTED",
+      "deployment_safe": false,
+      "reproducible": false,
+      "auditable": false,
+      "requires_db_write": false,
+      "requires_human_approval": false,
+      "supports_rollback": false,
+      "recommended_for_historical_reconstruction": false,
+      "risk": "HIGH",
+      "notes": "Malformed or insufficient promotion plan.",
+      "can_execute_in_p5a": false
+    }
+  ],
+  "recommended_policy": {
+    "primary_method": "ARTIFACT_PROMOTION",
+    "secondary_method": "CONTROLLED_DB_APPLY",
+    "rationale": "P0/P3 already produce auditable JSON artifacts; artifact promotion keeps reviewable diffs before a controlled DB apply, while the ignored local DB cannot be treated as source of truth.",
+    "preconditions": [
+      "schema validation passes",
+      "dry-run diff artifact is generated",
+      "human approval is recorded",
+      "rollback plan is available",
+      "post-apply verification is defined"
+    ],
+    "explicit_non_goals": [
+      "No DB write in P5A",
+      "No replay row generation in P5A",
+      "No promotion execution in P5A"
+    ]
+  },
+  "required_gates_before_execution": [
+    "explicit CEO/CTO approval",
+    "dry-run diff artifact",
+    "rollback plan",
+    "post-apply verification",
+    "drift guard pass"
+  ],
+  "p4_acceptance_dependency": {
+    "can_run_p4_before_policy": false,
+    "reason": "Replay page acceptance must verify deployable source, not local ignored DB."
+  },
+  "safety": {
+    "db_write": false,
+    "draw_import": false,
+    "replay_row_generation": false,
+    "prediction_update": false,
+    "strategy_execution": false,
+    "promotion_executed": false
+  }
+}

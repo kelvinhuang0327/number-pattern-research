@@ -1,0 +1,77 @@
+{
+  "generated_at": "2026-05-17T02:56:55Z",
+  "final_classification": "P4B_QUICK_PREDICT_DRYRUN_READY",
+  "dry_run": true,
+  "db_written": false,
+  "prediction_items_inserted": false,
+  "prediction_runs_inserted": false,
+  "replay_rows_inserted": false,
+  "predictions": [
+    {
+      "lottery_type": "BIG_LOTTO",
+      "lottery_name": "大樂透",
+      "next_draw": "115000053",
+      "num_bets": 3,
+      "strategy": "Triple Strike",
+      "baseline": 5.49,
+      "last_draw": {
+        "draw": "115000052",
+        "date": "2026/05/12",
+        "numbers": [
+          6,
+          12,
+          18,
+          19,
+          32,
+          36
+        ],
+        "special": 34
+      },
+      "bets": [
+        {
+          "numbers": [
+            7,
+            8,
+            15,
+            23,
+            37,
+            40
+          ]
+        },
+        {
+          "numbers": [
+            3,
+            21,
+            30,
+            31,
+            34,
+            49
+          ]
+        },
+        {
+          "numbers": [
+            14,
+            20,
+            22,
+            25,
+            39,
+            41
+          ]
+        }
+      ],
+      "coverage": {
+        "covered_numbers": 18,
+        "max_numbers": 49,
+        "coverage_rate": 36.7
+      },
+      "strategy_info": {
+        "strategy": "Triple Strike",
+        "edge": "+0.98%",
+        "verified": "1500期 STABLE"
+      },
+      "warnings": [],
+      "input_history_count": 2134
+    }
+  ],
+  "warnings": []
+}

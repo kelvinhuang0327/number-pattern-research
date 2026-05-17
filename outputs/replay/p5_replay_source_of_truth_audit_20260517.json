@@ -1,0 +1,237 @@
+{
+  "generated_at": "2026-05-17T08:31:28.436505+00:00",
+  "repo_root": "/Users/kelvin/Kelvin-WorkSpace/LotteryNew-clean",
+  "db_files": [
+    {
+      "path": "lottery_api/data/lottery_v2.db",
+      "exists": true,
+      "tracked_by_git": false,
+      "ignored_by_git": true,
+      "size_bytes": 14958592,
+      "contains_replay_tables": true,
+      "contains_prediction_tables": true,
+      "risk": "HIGH",
+      "notes": "tables=['agent_locks', 'agent_task_runs', 'agent_tasks', 'draws', 'prediction_explanations', 'prediction_items', 'prediction_results', 'prediction_review_status']; runtime_read_path; ignored_local_db"
+    },
+    {
+      "path": "data/lottery_v2.db",
+      "exists": true,
+      "tracked_by_git": true,
+      "ignored_by_git": false,
+      "size_bytes": 217088,
+      "contains_replay_tables": true,
+      "contains_prediction_tables": true,
+      "risk": "MEDIUM",
+      "notes": "tables=['draws', 'prediction_items', 'prediction_results', 'prediction_review_status', 'prediction_runs', 'review_actions', 'review_findings', 'review_hypotheses']"
+    },
+    {
+      "path": "data/lottery.db",
+      "exists": true,
+      "tracked_by_git": true,
+      "ignored_by_git": false,
+      "size_bytes": 28672,
+      "contains_replay_tables": false,
+      "contains_prediction_tables": false,
+      "risk": "LOW",
+      "notes": "tables=['draws', 'sqlite_sequence']"
+    },
+    {
+      "path": "tools/data/lottery_v2.db",
+      "exists": true,
+      "tracked_by_git": true,
+      "ignored_by_git": false,
+      "size_bytes": 28672,
+      "contains_replay_tables": false,
+      "contains_prediction_tables": false,
+      "risk": "LOW",
+      "notes": "tables=['draws', 'sqlite_sequence']"
+    },
+    {
+      "path": "lottery_api/data/lottery_v2.db.p3bc_pre_rollback_20260516T154610",
+      "exists": true,
+      "tracked_by_git": false,
+      "ignored_by_git": false,
+      "size_bytes": 14958592,
+      "contains_replay_tables": false,
+      "contains_prediction_tables": false,
+      "risk": "HIGH",
+      "notes": "sqlite_open_failed: unable to open database file"
+    }
+  ],
+  "artifact_sources": [
+    {
+      "path": "outputs/replay/p0_strategy_universe_inventory_20260517.json",
+      "type": "inventory",
+      "tracked_by_git": false,
+      "deployable": false,
+      "used_by_runtime": false,
+      "notes": "governance_only_dry_run_artifact"
+    },
+    {
+      "path": "docs/replay/p0_strategy_universe_inventory_report_20260517.md",
+      "type": "report",
+      "tracked_by_git": false,
+      "deployable": false,
+      "used_by_runtime": false,
+      "notes": "governance_only_dry_run_artifact"
+    },
+    {
+      "path": "lottery_api/models/replay_lifecycle_contract.py",
+      "type": "other",
+      "tracked_by_git": false,
+      "deployable": false,
+      "used_by_runtime": false,
+      "notes": "supporting_contract_file"
+    },
+    {
+      "path": "outputs/replay/p1_lifecycle_formalization_fixture_20260517.json",
+      "type": "fixture",
+      "tracked_by_git": false,
+      "deployable": false,
+      "used_by_runtime": false,
+      "notes": "governance_only_dry_run_artifact"
+    },
+    {
+      "path": "docs/replay/p1_lifecycle_formalization_report_20260517.md",
+      "type": "report",
+      "tracked_by_git": false,
+      "deployable": false,
+      "used_by_runtime": false,
+      "notes": "governance_only_dry_run_artifact"
+    },
+    {
+      "path": "lottery_api/models/replay_pipeline_contract.py",
+      "type": "other",
+      "tracked_by_git": false,
+      "deployable": false,
+      "used_by_runtime": false,
+      "notes": "supporting_contract_file"
+    },
+    {
+      "path": "outputs/replay/p3_replay_pipeline_split_20260517.json",
+      "type": "pipeline_split",
+      "tracked_by_git": false,
+      "deployable": false,
+      "used_by_runtime": false,
+      "notes": "governance_only_dry_run_artifact"
+    },
+    {
+      "path": "docs/replay/p3_replay_pipeline_split_report_20260517.md",
+      "type": "report",
+      "tracked_by_git": false,
+      "deployable": false,
+      "used_by_runtime": false,
+      "notes": "governance_only_dry_run_artifact"
+    },
+    {
+      "path": "docs/replay/p3_historical_reconstruction_policy_20260517.md",
+      "type": "report",
+      "tracked_by_git": false,
+      "deployable": false,
+      "used_by_runtime": false,
+      "notes": "governance_only_dry_run_artifact"
+    },
+    {
+      "path": "outputs/replay/non_online_replay_fixture_20260511.json",
+      "type": "fixture",
+      "tracked_by_git": true,
+      "deployable": false,
+      "used_by_runtime": true,
+      "notes": "governance_only_dry_run_artifact"
+    }
+  ],
+  "runtime_read_paths": [
+    {
+      "component": "replay_api",
+      "source": "lottery_api/data/lottery_v2.db",
+      "source_type": "db",
+      "risk": "HIGH",
+      "notes": "GET /api/replay/history|summary|freshness opens this SQLite path in normal mode."
+    },
+    {
+      "component": "replay_api_fixture_mode",
+      "source": "outputs/replay/non_online_replay_fixture_20260511.json",
+      "source_type": "json",
+      "risk": "MEDIUM",
+      "notes": "Used only when fixture_mode=true; not the normal replay source."
+    },
+    {
+      "component": "replay_lifecycle_drift_guard",
+      "source": "lottery_api/data/lottery_v2.db",
+      "source_type": "db",
+      "risk": "HIGH",
+      "notes": "Read-only baseline guard reads the same SQLite path as the replay API."
+    },
+    {
+      "component": "run_replay_ci_db_validation",
+      "source": "lottery_api/data/lottery_v2.db",
+      "source_type": "db",
+      "risk": "HIGH",
+      "notes": "Dedicated DB path validation uses the same replay SQLite fixture by default."
+    },
+    {
+      "component": "p4a_rsm_refresh_readonly",
+      "source": "lottery_api/data/lottery_v2.db",
+      "source_type": "db",
+      "risk": "HIGH",
+      "notes": "Read-only diagnostic inspects prediction_items and strategy_prediction_replays."
+    },
+    {
+      "component": "p3_replay_pipeline_split_classifier",
+      "source": "outputs/replay/p0_strategy_universe_inventory_20260517.json",
+      "source_type": "json",
+      "risk": "LOW",
+      "notes": "Dry-run classifier reads the canonical P0 inventory artifact."
+    },
+    {
+      "component": "p3_replay_pipeline_split_classifier",
+      "source": "outputs/replay/non_online_replay_fixture_20260511.json",
+      "source_type": "json",
+      "risk": "LOW",
+      "notes": "Optional fixture input for display and compatibility context only."
+    },
+    {
+      "component": "tests/test_replay_api_contract.py",
+      "source": "lottery_api/data/lottery_v2.db",
+      "source_type": "db",
+      "risk": "MEDIUM",
+      "notes": "Direct async route tests expect the local replay DB fixture to exist."
+    },
+    {
+      "component": "tests/test_replay_api_contract.py",
+      "source": "outputs/replay/non_online_replay_fixture_20260511.json",
+      "source_type": "json",
+      "risk": "LOW",
+      "notes": "fixture_mode coverage is synthetic and read-only."
+    },
+    {
+      "component": "tests/test_replay_truth_level_contract.py",
+      "source": "lottery_api/data/lottery_v2.db",
+      "source_type": "db",
+      "risk": "MEDIUM",
+      "notes": "Truth-level contract depends on the same local replay DB fixture."
+    },
+    {
+      "component": "tests/test_replay_strategy_lifecycle_endpoint.py",
+      "source": "in_memory_registry",
+      "source_type": "unknown",
+      "risk": "LOW",
+      "notes": "Lifecycle endpoint test is registry-backed and does not open sqlite3."
+    }
+  ],
+  "source_of_truth_assessment": {
+    "canonical_runtime_source": "DB",
+    "deployment_safe": false,
+    "local_only_risk": true,
+    "requires_migration_or_seed_policy": true,
+    "requires_artifact_promotion_policy": true,
+    "summary": "Replay runtime reads SQLite DB directly in normal mode, while P0/P1/P3 artifacts remain governance-only. The current repo has multiple DB copies and an ignored runtime DB path, so deployment source-of-truth is not yet safe."
+  },
+  "safety": {
+    "db_write": false,
+    "draw_import": false,
+    "replay_row_generation": false,
+    "prediction_update": false,
+    "strategy_execution": false
+  }
+}

@@ -18,6 +18,9 @@ import sys
 import os
 import random
 import argparse
+import datetime as dt
+import json
+import sqlite3
 import numpy as np
 from numpy.fft import fft, fftfreq
 from collections import Counter
@@ -27,6 +30,8 @@ sys.path.insert(0, project_root)
 sys.path.insert(0, os.path.join(project_root, 'lottery_api'))
 
 from database import DatabaseManager
+
+DB_PATH = os.path.join(project_root, 'lottery_api', 'data', 'lottery_v2.db')
 
 
 # 彩票類型對照
@@ -76,6 +81,162 @@ BASELINES = {
     'BIG_LOTTO': {1: 1.86, 2: 3.69, 3: 5.49, 4: 7.25, 5: 8.96},
     'POWER_LOTTO': {1: 3.87, 2: 7.59, 3: 11.17, 4: 14.60},
 }
+
+DRY_RUN_FINAL_CLASSIFICATION = 'P4B_QUICK_PREDICT_DRYRUN_READY'
+
+
+def normalize_lottery_selection(raw_value):
+    if raw_value is None:
+        return None
+
+    value = str(raw_value).strip()
+    if not value:
+        return None
+
+    lower = value.lower()
+    if lower == 'all':
+        return 'ALL'
+
+    mapped = LOTTERY_MAP.get(lower)
+    if mapped:
+        return mapped
+
+    upper = value.upper()
+    if upper in {'BIG_LOTTO', 'POWER_LOTTO', 'DAILY_539'}:
+        return upper
+    return upper
+
+
+def resolve_cli_value(flag_value, positional_value, default_value=None):
+    if flag_value is not None:
+        return flag_value
+    if positional_value is not None:
+        return positional_value
+    return default_value
+
+
+def get_related_lottery_types_safe(lottery_type):
+    try:
+        from .common import get_related_lottery_types
+    except ImportError:
+        from common import get_related_lottery_types
+    return get_related_lottery_types(lottery_type)
+
+
+def load_history_readonly(lottery_type):
+    conn = sqlite3.connect(f'file:{DB_PATH}?mode=ro', uri=True)
+    conn.row_factory = sqlite3.Row
+    cursor = conn.cursor()
+    try:
+        if lottery_type:
+            related_types = get_related_lottery_types_safe(lottery_type)
+            placeholders = ','.join('?' * len(related_types))
+            query = f"""
+                SELECT draw, date, lottery_type, numbers, special, jackpot_amount
+                FROM draws
+                WHERE lottery_type IN ({placeholders})
+                ORDER BY CAST(draw AS INTEGER) DESC
+            """
+            cursor.execute(query, related_types)
+        else:
+            cursor.execute("""
+                SELECT draw, date, lottery_type, numbers, special, jackpot_amount
+                FROM draws
+                ORDER BY CAST(draw AS INTEGER) DESC
+            """)
+
+        rows = cursor.fetchall()
+        history = []
+        for row in rows:
+            history.append({
+                'draw': row['draw'],
+                'date': row['date'],
+                'lotteryType': row['lottery_type'],
+                'numbers': json.loads(row['numbers']),
+                'special': row['special'],
+                'jackpot_amount': row['jackpot_amount'],
+            })
+        return sorted(history, key=lambda x: (x['date'], x['draw']))
+    finally:
+        conn.close()
+
+
+def load_history(lottery_type, dry_run=False):
+    if dry_run:
+        return load_history_readonly(lottery_type)
+
+    db = DatabaseManager(db_path=DB_PATH)
+    history = db.get_all_draws(lottery_type=lottery_type)
+    return sorted(history, key=lambda x: (x['date'], x['draw']))
+
+
+def _normalize_bet(bet):
+    normalized = {
+        'numbers': [int(n) for n in bet.get('numbers', [])],
+    }
+    if bet.get('special') is not None:
+        normalized['special'] = int(bet['special'])
+    return normalized
+
+
+def build_prediction_summary(lottery_type, bets, strategy, history, num_bets):
+    name = LOTTERY_NAMES.get(lottery_type, lottery_type)
+    config = DEFAULT_CONFIG.get(lottery_type, {})
+    next_draw = get_next_draw_number(history)
+    last_draw = history[-1] if history else {}
+    info = STRATEGY_INFO.get(lottery_type, {}).get(num_bets, {})
+    baseline = BASELINES.get(lottery_type, {}).get(num_bets, 0)
+
+    all_nums = set()
+    for bet in bets:
+        all_nums.update(int(n) for n in bet.get('numbers', []))
+
+    max_num = 49 if lottery_type == 'BIG_LOTTO' else 38 if lottery_type == 'POWER_LOTTO' else 39
+    warnings = []
+    if lottery_type == 'DAILY_539':
+        warnings.append('DAILY_539 currently has no dedicated RSM refresh support.')
+
+    normalized_bets = [_normalize_bet(bet) for bet in bets]
+    summary = {
+        'lottery_type': lottery_type,
+        'lottery_name': name,
+        'next_draw': next_draw,
+        'num_bets': num_bets,
+        'strategy': strategy,
+        'baseline': baseline,
+        'last_draw': {
+            'draw': last_draw.get('draw'),
+            'date': last_draw.get('date'),
+            'numbers': list(last_draw.get('numbers', [])),
+            'special': last_draw.get('special'),
+        } if last_draw else None,
+        'bets': normalized_bets,
+        'coverage': {
+            'covered_numbers': len(all_nums),
+            'max_numbers': max_num,
+            'coverage_rate': round((len(all_nums) / max_num) * 100, 1) if max_num else 0,
+        },
+        'strategy_info': info,
+        'warnings': warnings,
+        'input_history_count': len(history),
+    }
+    if lottery_type == 'POWER_LOTTO':
+        summary['special_top3'] = [int(n) for n in power_special_v3(history)]
+    return summary
+
+
+def build_dry_run_payload(predictions, warnings):
+    return {
+        'generated_at': dt.datetime.utcnow().replace(microsecond=0).isoformat() + 'Z',
+        'final_classification': DRY_RUN_FINAL_CLASSIFICATION,
+        'dry_run': True,
+        'db_written': False,
+        'prediction_items_inserted': False,
+        'prediction_runs_inserted': False,
+        'replay_rows_inserted': False,
+        'predictions': predictions,
+        'warnings': warnings,
+    }
 
 
 # ========== 大樂透策略 ==========
@@ -292,22 +453,19 @@ def format_numbers(numbers):
 
 
 def print_prediction(lottery_type, bets, strategy, history, num_bets):
-    """打印預測結果"""
-    name = LOTTERY_NAMES.get(lottery_type, lottery_type)
+    """打印預測結果並回傳摘要。"""
+    summary = build_prediction_summary(lottery_type, bets, strategy, history, num_bets)
+    name = summary['lottery_name']
     config = DEFAULT_CONFIG.get(lottery_type, {})
-    next_draw = get_next_draw_number(history)
-    last_draw = history[-1] if history else {}
-
-    # 查詢基準和 Edge
-    info = STRATEGY_INFO.get(lottery_type, {}).get(num_bets, {})
-    baseline = BASELINES.get(lottery_type, {}).get(num_bets, 0)
+    last_draw = summary['last_draw']
+    info = summary.get('strategy_info', {})
+    baseline = summary.get('baseline', 0)
 
     print()
     print('=' * 60)
-    print(f'  {name} {next_draw} 期預測報告')
+    print(f'  {name} {summary["next_draw"]} 期預測報告')
     print('=' * 60)
 
-    # 上期開獎
     if last_draw:
         last_nums = format_numbers(last_draw.get('numbers', []))
         last_special = last_draw.get('special', '')
@@ -336,29 +494,26 @@ def print_prediction(lottery_type, bets, strategy, history, num_bets):
     }
     labels = strategy_labels.get(lottery_type, {}).get(num_bets, [])
 
-    for i, bet in enumerate(bets, 1):
+    for i, bet in enumerate(summary['bets'], 1):
         nums = format_numbers(bet.get('numbers', []))
         special = bet.get('special')
         label = f'  <- {labels[i-1]}' if i <= len(labels) else ''
-        if special:
+        if special is not None:
             print(f'  注{i}: {nums} | 特別號: {int(special):02d}{label}')
         else:
             print(f'  注{i}: {nums}{label}')
 
-    # 覆蓋統計
     all_nums = set()
-    for bet in bets:
+    for bet in summary['bets']:
         all_nums.update(bet.get('numbers', []))
-    max_num = 49 if lottery_type == 'BIG_LOTTO' else 38
+    max_num = 49 if lottery_type == 'BIG_LOTTO' else 38 if lottery_type == 'POWER_LOTTO' else 39
     print()
     print(f'  覆蓋: {len(all_nums)}/{max_num} 號碼 ({len(all_nums)/max_num*100:.1f}%)')
 
-    # 特別號 Top 3 (威力彩)
     if lottery_type == 'POWER_LOTTO':
-        sp_top = power_special_v3(history)
+        sp_top = summary.get('special_top3', [])
         print(f'  特別號 Top3 (V3): {sp_top}')
 
-        # 冷號預警 (P3: 監控用，不影響選號)
         try:
             from tools.cold_alert import get_cold_alert_info
             cold_info = get_cold_alert_info(history)
@@ -378,38 +533,53 @@ def print_prediction(lottery_type, bets, strategy, history, num_bets):
     print(f'  成本: NT${config.get("cost", 0) // config.get("bets", 1) * num_bets}')
     print('=' * 60)
     print()
+    return summary
 
 
 def main():
     parser = argparse.ArgumentParser(description='彩票預測工具 (2026-02-11 策略更新)')
-    parser.add_argument('lottery', nargs='?', default='all',
+    parser.add_argument('--dry-run', action='store_true',
+                        help='輸出預測預覽 JSON，不寫入任何 DB')
+    parser.add_argument('--json-out',
+                        help='dry-run 模式下輸出的 JSON 路徑')
+    parser.add_argument('--lottery', dest='lottery_opt',
+                        choices=['BIG_LOTTO', 'POWER_LOTTO', 'DAILY_539', 'ALL'],
+                        help='要預測的彩票類型')
+    parser.add_argument('--bets', dest='bets_opt', type=int,
+                        help='要預測的注數')
+    parser.add_argument('lottery', nargs='?', default=None,
                         help='彩票類型 (大樂透/威力彩/今彩539/all)')
     parser.add_argument('bets', nargs='?', type=int, default=None,
                         help='預測注數')
     args = parser.parse_args()
 
-    # 初始化數據庫
-    db = DatabaseManager(db_path=os.path.join(project_root, 'lottery_api', 'data', 'lottery_v2.db'))
+    if args.json_out and not args.dry_run:
+        parser.error('--json-out requires --dry-run')
+
+    requested_lottery = normalize_lottery_selection(
+        resolve_cli_value(args.lottery_opt, args.lottery, 'all')
+    )
+    requested_bets = resolve_cli_value(args.bets_opt, args.bets, None)
+
+    predictions = []
+    warnings = []
 
     # 確定要預測的彩票類型
-    if args.lottery.lower() == 'all':
+    if requested_lottery == 'ALL':
         lottery_types = ['BIG_LOTTO', 'POWER_LOTTO', 'DAILY_539']
     else:
-        lottery_type = LOTTERY_MAP.get(args.lottery.lower(), args.lottery.upper())
+        lottery_type = requested_lottery or 'ALL'
         lottery_types = [lottery_type]
 
     # 執行預測
     for lottery_type in lottery_types:
         try:
-            history = db.get_all_draws(lottery_type=lottery_type)
+            history = load_history(lottery_type, dry_run=args.dry_run)
 
             if not history or len(history) < 50:
                 print(f'\n  {LOTTERY_NAMES.get(lottery_type, lottery_type)}: '
                       f'數據不足 ({len(history) if history else 0} 期)，跳過預測')
                 continue
-
-            # get_all_draws 返回 DESC 排序，策略需要 ASC (舊→新)
-            history = sorted(history, key=lambda x: (x['date'], x['draw']))
 
             # 獲取規則 (本地硬編碼以避免 import 阻塞)
             rules_map = {
@@ -418,7 +588,7 @@ def main():
                 'DAILY_539': {'pickCount': 5, 'minNumber': 1, 'maxNumber': 39, 'specialMaxNumber': 0},
             }
             rules = rules_map.get(lottery_type, {'pickCount': 6, 'minNumber': 1, 'maxNumber': 49})
-            num_bets = args.bets or DEFAULT_CONFIG.get(lottery_type, {}).get('bets', 3)
+            num_bets = requested_bets or DEFAULT_CONFIG.get(lottery_type, {}).get('bets', 3)
 
             if lottery_type == 'BIG_LOTTO':
                 bets, strategy = predict_biglotto(history, rules, num_bets)
@@ -430,12 +600,24 @@ def main():
                 print(f'  不支援的彩票類型: {lottery_type}')
                 continue
 
-            print_prediction(lottery_type, bets, strategy, history, num_bets)
+            summary = print_prediction(lottery_type, bets, strategy, history, num_bets)
+            if args.dry_run:
+                predictions.append(summary)
+                warnings.extend(summary.get('warnings', []))
 
         except Exception as e:
             print(f'  {lottery_type} 預測失敗: {e}')
             import traceback
             traceback.print_exc()
+
+    if args.dry_run:
+        payload = build_dry_run_payload(predictions, warnings)
+        if args.json_out:
+            with open(args.json_out, 'w', encoding='utf-8') as handle:
+                json.dump(payload, handle, ensure_ascii=False, indent=2)
+        print(f'\n  Dry-run completed: {DRY_RUN_FINAL_CLASSIFICATION}')
+        if args.json_out:
+            print(f'  JSON written to: {args.json_out}')
 
 
 if __name__ == '__main__':

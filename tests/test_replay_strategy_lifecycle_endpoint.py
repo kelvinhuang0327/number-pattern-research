@@ -45,8 +45,8 @@ def response():
 # ─── Basic response shape ────────────────────────────────────────────────────
 
 class TestResponseShape:
-    def test_total_is_16(self, response):
-        assert response["total"] == 16
+    def test_total_is_18(self, response):
+        assert response["total"] == 18
 
     def test_lifecycle_counts_present(self, response):
         assert "lifecycle_counts" in response
@@ -73,8 +73,8 @@ class TestResponseShape:
 # ─── Lifecycle count assertions ───────────────────────────────────────────────
 
 class TestLifecycleCounts:
-    def test_online_count_is_6(self, response):
-        assert response["lifecycle_counts"]["ONLINE"] == 6
+    def test_online_count_is_8(self, response):
+        assert response["lifecycle_counts"]["ONLINE"] == 8
 
     def test_rejected_count_is_4(self, response):
         assert response["lifecycle_counts"]["REJECTED"] == 4
@@ -89,8 +89,8 @@ class TestLifecycleCounts:
 # ─── Executable / non-executable ────────────────────────────────────────────
 
 class TestExecutability:
-    def test_executable_count_is_6(self, response):
-        assert len(response["executable_strategy_ids"]) == 6
+    def test_executable_count_is_8(self, response):
+        assert len(response["executable_strategy_ids"]) == 8
 
     def test_non_executable_count_is_10(self, response):
         assert len(response["non_executable_strategy_ids"]) == 10
@@ -110,8 +110,8 @@ class TestExecutability:
 # ─── Strategies list ──────────────────────────────────────────────────────────
 
 class TestStrategiesList:
-    def test_strategies_length_is_16(self, response):
-        assert len(response["strategies"]) == 16
+    def test_strategies_length_is_18(self, response):
+        assert len(response["strategies"]) == 18
 
     def test_each_strategy_has_strategy_id(self, response):
         for s in response["strategies"]:

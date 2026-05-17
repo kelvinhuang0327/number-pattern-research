@@ -1,0 +1,332 @@
+{
+  "fixture_name": "p1_lifecycle_formalization_fixture",
+  "fixture_version": "p1_20260517",
+  "generated_at": "2026-05-17T00:00:00+08:00",
+  "synthetic_only": true,
+  "fixture_only": true,
+  "production_db_write": false,
+  "backfill": false,
+  "promotion_action": false,
+  "strategy_count": 7,
+  "lifecycle_counts": {
+    "PRODUCTION": 1,
+    "WATCHING": 1,
+    "PROVISIONAL": 1,
+    "REJECTED": 1,
+    "OFFLINE": 1,
+    "EXPERIMENTAL": 1,
+    "UNKNOWN": 1
+  },
+  "records": [
+    {
+      "strategy_id": "biglotto_triple_strike",
+      "strategy_name": "大樂透 Triple Strike",
+      "lottery_type": "BIG_LOTTO",
+      "lifecycle_status": "PRODUCTION",
+      "fixture_row_id": "fixture-biglotto_triple_strike-33b57b4f2e71",
+      "draw_id": "fixture-draw-33b57b4f",
+      "draw_date": "2026-05-15",
+      "prediction_payload": {
+        "numbers": [
+          1,
+          2,
+          3,
+          4,
+          5,
+          6
+        ],
+        "note": "Synthetic P1 lifecycle formalization fixture row."
+      },
+      "actual_result_payload": {
+        "numbers": [
+          2,
+          3,
+          4,
+          5,
+          6,
+          7
+        ],
+        "note": "Synthetic P1 lifecycle formalization fixture row."
+      },
+      "comparison_result": {
+        "hit_count": 5,
+        "matched_numbers": [
+          2,
+          3,
+          4,
+          5,
+          6
+        ],
+        "edge_claim": false
+      },
+      "synthetic_only": true,
+      "fixture_only": true,
+      "fixture_source": "p1_lifecycle_formalization_fixture",
+      "governance_marker": "P1_LIFECYCLE_FORMALIZATION_FIXTURE_ROW"
+    },
+    {
+      "strategy_id": "daily539_f4cold_watch",
+      "strategy_name": "今彩539 F4 Cold Watch",
+      "lottery_type": "BIG_LOTTO",
+      "lifecycle_status": "WATCHING",
+      "fixture_row_id": "fixture-daily539_f4cold_watch-3e58256c2658",
+      "draw_id": "fixture-draw-3e58256c",
+      "draw_date": "2026-05-15",
+      "prediction_payload": {
+        "numbers": [
+          3,
+          7,
+          11,
+          19,
+          27,
+          33
+        ],
+        "note": "Synthetic P1 lifecycle formalization fixture row."
+      },
+      "actual_result_payload": {
+        "numbers": [
+          1,
+          3,
+          9,
+          19,
+          21,
+          33
+        ],
+        "note": "Synthetic P1 lifecycle formalization fixture row."
+      },
+      "comparison_result": {
+        "hit_count": 3,
+        "matched_numbers": [
+          3,
+          19,
+          33
+        ],
+        "edge_claim": false
+      },
+      "synthetic_only": true,
+      "fixture_only": true,
+      "fixture_source": "p1_lifecycle_formalization_fixture",
+      "governance_marker": "P1_LIFECYCLE_FORMALIZATION_FIXTURE_ROW"
+    },
+    {
+      "strategy_id": "power_orthogonal_5bet_provisional",
+      "strategy_name": "威力彩 Orthogonal 5注 Provisional",
+      "lottery_type": "BIG_LOTTO",
+      "lifecycle_status": "PROVISIONAL",
+      "fixture_row_id": "fixture-power_orthogonal_5bet_provisional-48c8a695f1a0",
+      "draw_id": "fixture-draw-48c8a695",
+      "draw_date": "2026-05-15",
+      "prediction_payload": {
+        "numbers": [
+          2,
+          5,
+          11,
+          17,
+          23,
+          29
+        ],
+        "note": "Synthetic P1 lifecycle formalization fixture row."
+      },
+      "actual_result_payload": {
+        "numbers": [
+          2,
+          4,
+          11,
+          18,
+          23,
+          30
+        ],
+        "note": "Synthetic P1 lifecycle formalization fixture row."
+      },
+      "comparison_result": {
+        "hit_count": 3,
+        "matched_numbers": [
+          2,
+          11,
+          23
+        ],
+        "edge_claim": false
+      },
+      "synthetic_only": true,
+      "fixture_only": true,
+      "fixture_source": "p1_lifecycle_formalization_fixture",
+      "governance_marker": "P1_LIFECYCLE_FORMALIZATION_FIXTURE_ROW"
+    },
+    {
+      "strategy_id": "biglotto_ts3_acb_4bet",
+      "strategy_name": "大樂透 TS3+ACB 4注",
+      "lottery_type": "BIG_LOTTO",
+      "lifecycle_status": "REJECTED",
+      "fixture_row_id": "fixture-biglotto_ts3_acb_4bet-6e5730bca41f",
+      "draw_id": "fixture-draw-6e5730bc",
+      "draw_date": "2026-05-15",
+      "prediction_payload": {
+        "numbers": [
+          4,
+          8,
+          12,
+          16,
+          20,
+          24
+        ],
+        "note": "Synthetic P1 lifecycle formalization fixture row."
+      },
+      "actual_result_payload": {
+        "numbers": [
+          1,
+          4,
+          8,
+          12,
+          20,
+          31
+        ],
+        "note": "Synthetic P1 lifecycle formalization fixture row."
+      },
+      "comparison_result": {
+        "hit_count": 4,
+        "matched_numbers": [
+          4,
+          8,
+          12,
+          20
+        ],
+        "edge_claim": false
+      },
+      "synthetic_only": true,
+      "fixture_only": true,
+      "fixture_source": "p1_lifecycle_formalization_fixture",
+      "governance_marker": "P1_LIFECYCLE_FORMALIZATION_FIXTURE_ROW"
+    },
+    {
+      "strategy_id": "offline_shadow_539",
+      "strategy_name": "今彩539 Offline Shadow",
+      "lottery_type": "BIG_LOTTO",
+      "lifecycle_status": "OFFLINE",
+      "fixture_row_id": "fixture-offline_shadow_539-9759419974b2",
+      "draw_id": "fixture-draw-97594199",
+      "draw_date": "2026-05-15",
+      "prediction_payload": {
+        "numbers": [
+          5,
+          10,
+          15,
+          20,
+          25,
+          30
+        ],
+        "note": "Synthetic P1 lifecycle formalization fixture row."
+      },
+      "actual_result_payload": {
+        "numbers": [
+          1,
+          6,
+          11,
+          16,
+          21,
+          30
+        ],
+        "note": "Synthetic P1 lifecycle formalization fixture row."
+      },
+      "comparison_result": {
+        "hit_count": 1,
+        "matched_numbers": [
+          30
+        ],
+        "edge_claim": false
+      },
+      "synthetic_only": true,
+      "fixture_only": true,
+      "fixture_source": "p1_lifecycle_formalization_fixture",
+      "governance_marker": "P1_LIFECYCLE_FORMALIZATION_FIXTURE_ROW"
+    },
+    {
+      "strategy_id": "experimental_biglotto_freq_grid",
+      "strategy_name": "大樂透 Frequency Grid",
+      "lottery_type": "BIG_LOTTO",
+      "lifecycle_status": "EXPERIMENTAL",
+      "fixture_row_id": "fixture-experimental_biglotto_freq_grid-4ffd1271b68b",
+      "draw_id": "fixture-draw-4ffd1271",
+      "draw_date": "2026-05-15",
+      "prediction_payload": {
+        "numbers": [
+          7,
+          13,
+          19,
+          25,
+          31,
+          37
+        ],
+        "note": "Synthetic P1 lifecycle formalization fixture row."
+      },
+      "actual_result_payload": {
+        "numbers": [
+          7,
+          12,
+          19,
+          26,
+          31,
+          38
+        ],
+        "note": "Synthetic P1 lifecycle formalization fixture row."
+      },
+      "comparison_result": {
+        "hit_count": 3,
+        "matched_numbers": [
+          7,
+          19,
+          31
+        ],
+        "edge_claim": false
+      },
+      "synthetic_only": true,
+      "fixture_only": true,
+      "fixture_source": "p1_lifecycle_formalization_fixture",
+      "governance_marker": "P1_LIFECYCLE_FORMALIZATION_FIXTURE_ROW"
+    },
+    {
+      "strategy_id": "unknown_inventory_probe",
+      "strategy_name": "Unknown Inventory Probe",
+      "lottery_type": "BIG_LOTTO",
+      "lifecycle_status": "UNKNOWN",
+      "fixture_row_id": "fixture-unknown_inventory_probe-898f9d5a5fa5",
+      "draw_id": "fixture-draw-898f9d5a",
+      "draw_date": "2026-05-15",
+      "prediction_payload": {
+        "numbers": [
+          6,
+          9,
+          18,
+          27,
+          33,
+          42
+        ],
+        "note": "Synthetic P1 lifecycle formalization fixture row."
+      },
+      "actual_result_payload": {
+        "numbers": [
+          1,
+          8,
+          17,
+          26,
+          35,
+          44
+        ],
+        "note": "Synthetic P1 lifecycle formalization fixture row."
+      },
+      "comparison_result": {
+        "hit_count": 0,
+        "matched_numbers": [],
+        "edge_claim": false
+      },
+      "synthetic_only": true,
+      "fixture_only": true,
+      "fixture_source": "p1_lifecycle_formalization_fixture",
+      "governance_marker": "P1_LIFECYCLE_FORMALIZATION_FIXTURE_ROW"
+    }
+  ],
+  "markers": [
+    "P1_LIFECYCLE_FORMALIZATION_FIXTURE_READY",
+    "P1_NO_DB_WRITE_CONFIRMED",
+    "P1_NO_REPLAY_ROW_GENERATION_CONFIRMED"
+  ]
+}

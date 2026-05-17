@@ -255,7 +255,18 @@ class TestFreshnessContract:
         with pytest.raises(AssertionError, match="legacy_error_count"):
             _check_freshness_contract(stripped)
 
-    @pytest.mark.parametrize("lifecycle_status", ["OFFLINE", "REJECTED", "OBSERVATION", "RETIRED"])
+    @pytest.mark.parametrize(
+        "lifecycle_status",
+        [
+            "PRODUCTION",
+            "WATCHING",
+            "PROVISIONAL",
+            "REJECTED",
+            "OFFLINE",
+            "EXPERIMENTAL",
+            "UNKNOWN",
+        ],
+    )
     def test_freshness_accepts_lifecycle_filter(self, lifecycle_status):
         data = _freshness(lifecycle_status=lifecycle_status)
         assert isinstance(data, dict)
@@ -300,7 +311,18 @@ class TestSummaryContract:
         with pytest.raises(AssertionError, match="data_scope"):
             _check_summary_contract(stripped)
 
-    @pytest.mark.parametrize("lifecycle_status", ["OFFLINE", "REJECTED", "OBSERVATION", "RETIRED"])
+    @pytest.mark.parametrize(
+        "lifecycle_status",
+        [
+            "PRODUCTION",
+            "WATCHING",
+            "PROVISIONAL",
+            "REJECTED",
+            "OFFLINE",
+            "EXPERIMENTAL",
+            "UNKNOWN",
+        ],
+    )
     def test_summary_accepts_lifecycle_filter(self, lifecycle_status):
         data = _summary("BIG_LOTTO", lifecycle_status=lifecycle_status)
         assert isinstance(data, dict)
@@ -351,7 +373,18 @@ class TestHistoryContract:
         for lt in ("BIG_LOTTO", "POWER_LOTTO", "DAILY_539"):
             _check_history_contract(_history(lt))
 
-    @pytest.mark.parametrize("lifecycle_status", ["OFFLINE", "REJECTED", "OBSERVATION", "RETIRED"])
+    @pytest.mark.parametrize(
+        "lifecycle_status",
+        [
+            "PRODUCTION",
+            "WATCHING",
+            "PROVISIONAL",
+            "REJECTED",
+            "OFFLINE",
+            "EXPERIMENTAL",
+            "UNKNOWN",
+        ],
+    )
     def test_history_accepts_lifecycle_filter(self, lifecycle_status):
         data = _history("BIG_LOTTO", lifecycle_status=lifecycle_status)
         assert isinstance(data, dict)
@@ -370,9 +403,13 @@ class TestHistoryFixtureModeContract:
     @pytest.mark.parametrize(
         "lifecycle_status, expected_count",
         [
-            ("REJECTED", 4),
-            ("RETIRED", 5),
-            ("OBSERVATION", 1),
+            ("PRODUCTION", 1),
+            ("WATCHING", 1),
+            ("PROVISIONAL", 1),
+            ("REJECTED", 1),
+            ("OFFLINE", 1),
+            ("EXPERIMENTAL", 1),
+            ("UNKNOWN", 1),
         ],
     )
     def test_fixture_history_counts_and_flags(self, lifecycle_status, expected_count):
@@ -393,12 +430,12 @@ class TestHistoryFixtureModeContract:
             assert record["lifecycle_status"] == lifecycle_status
 
     def test_fixture_history_uses_synthetic_source(self):
-        data = _history("BIG_LOTTO", lifecycle_status="RETIRED", fixture_mode=True)
+        data = _history("BIG_LOTTO", lifecycle_status="PRODUCTION", fixture_mode=True)
         first = data["records"][0]
         assert first["replay_status"] == "PREDICTED"
         assert first["target_draw"]
-        assert first["strategy_version"] == "p21_20260511"
-        assert first["fixture_source"] == "non_online_lifecycle_fixture"
+        assert first["strategy_version"] == "p1_20260517"
+        assert first["fixture_source"] == "p1_lifecycle_formalization_fixture"
 
     def test_fixture_history_does_not_return_db_marker(self):
         data = _history("BIG_LOTTO", lifecycle_status="REJECTED", fixture_mode=True)

@@ -47,7 +47,8 @@ if _api_root not in sys.path:
 
 router = APIRouter()
 logger = logging.getLogger(__name__)
-_FIXTURE_HISTORY_PATH = Path(_api_root).parent / "outputs" / "replay" / "non_online_replay_fixture_20260511.json"
+_FIXTURE_HISTORY_PATH = Path(_api_root).parent / "outputs" / "replay" / "p1_lifecycle_formalization_fixture_20260517.json"
+_LEGACY_FIXTURE_HISTORY_PATH = Path(_api_root).parent / "outputs" / "replay" / "non_online_replay_fixture_20260511.json"
 _FIXTURE_SOURCE = "synthetic_fixture"
 
 # Conservative disclaimer used by all replay endpoints
@@ -94,13 +95,18 @@ def _strategy_ids_for_lifecycle(
 
 
 def _load_fixture_history_payload() -> dict:
-    if not _FIXTURE_HISTORY_PATH.exists():
+    fixture_paths = (_FIXTURE_HISTORY_PATH, _LEGACY_FIXTURE_HISTORY_PATH)
+    fixture_path = next((path for path in fixture_paths if path.exists()), None)
+    if fixture_path is None:
         raise HTTPException(
             status_code=500,
-            detail=f"fixture history artifact not found: {_FIXTURE_HISTORY_PATH}",
+            detail=(
+                "fixture history artifact not found: "
+                f"{_FIXTURE_HISTORY_PATH} or {_LEGACY_FIXTURE_HISTORY_PATH}"
+            ),
         )
     try:
-        with _FIXTURE_HISTORY_PATH.open("r", encoding="utf-8") as handle:
+        with fixture_path.open("r", encoding="utf-8") as handle:
             payload = json.load(handle)
     except json.JSONDecodeError as exc:
         raise HTTPException(
@@ -165,6 +171,7 @@ def _fixture_history_record(
 
 def _fixture_history_response(
     *,
+    lottery_type: Optional[str],
     lifecycle_status: Optional[str],
     strategy_id: Optional[str],
     replay_status: Optional[str],
@@ -180,6 +187,8 @@ def _fixture_history_response(
 
     records = []
     for raw_record in payload.get("records", []):
+        if lottery_type and raw_record.get("lottery_type") != lottery_type:
+            continue
         record_lc = raw_record.get("lifecycle_status") or "UNKNOWN"
         if canonical_lc and record_lc != canonical_lc:
             continue
@@ -238,8 +247,8 @@ async def list_replay_strategies(
         None,
         description=(
             "Filter by lifecycle status: "
-            "ONLINE | OFFLINE | REJECTED | OBSERVATION | RETIRED. "
-            "If omitted, ALL lifecycle states are returned."
+            "PRODUCTION | WATCHING | PROVISIONAL | REJECTED | OFFLINE | "
+            "EXPERIMENTAL | UNKNOWN. If omitted, ALL lifecycle states are returned."
         ),
     ),
 ):
@@ -248,7 +257,7 @@ async def list_replay_strategies(
 
     Optional filters:
       lottery_type     — POWER_LOTTO | BIG_LOTTO | DAILY_539
-      lifecycle_status — ONLINE | OFFLINE | REJECTED | OBSERVATION | RETIRED
+      lifecycle_status — PRODUCTION | WATCHING | PROVISIONAL | REJECTED | OFFLINE | EXPERIMENTAL | UNKNOWN
 
     Each entry includes 'strategy_lifecycle_status'.
     READ-ONLY. Does NOT trigger replay generation.
@@ -334,7 +343,8 @@ async def get_replay_history(
         None,
         description=(
             "Filter by strategy lifecycle status: "
-            "ONLINE | OFFLINE | REJECTED | OBSERVATION | RETIRED. "
+            "PRODUCTION | WATCHING | PROVISIONAL | REJECTED | OFFLINE | "
+            "EXPERIMENTAL | UNKNOWN. "
             "If omitted, all lifecycle states are included."
         ),
     ),
@@ -353,7 +363,7 @@ async def get_replay_history(
     Optional filters:
       - strategy_id      — e.g. "power_precision_3bet"
       - replay_status    — PREDICTED | REJECTED | INSUFFICIENT_HISTORY | …
-      - lifecycle_status — ONLINE | OFFLINE | REJECTED | OBSERVATION | RETIRED (P0-C)
+      - lifecycle_status — PRODUCTION | WATCHING | PROVISIONAL | REJECTED | OFFLINE | EXPERIMENTAL | UNKNOWN
       - date_from        — target_date >= date_from (YYYY-MM-DD)
       - date_to          — target_date <= date_to   (YYYY-MM-DD)
 
@@ -363,6 +373,7 @@ async def get_replay_history(
     try:
         if fixture_mode:
             return _fixture_history_response(
+                lottery_type=lottery_type,
                 lifecycle_status=lifecycle_status,
                 strategy_id=strategy_id,
                 replay_status=replay_status,

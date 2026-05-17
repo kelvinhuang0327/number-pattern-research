@@ -1,0 +1,141 @@
+{
+  "generated_at": "2026-05-17T13:15:00Z",
+  "phase": "P0_VISUAL_REALITY_CHECK",
+  "server_started": true,
+  "server_start_blocker": null,
+  "server_notes": "Backend requires LotteryNew/venv (has torch). Frontend requires API_BASE injection wrapper on port 8083 because page uses same-origin relative URLs in production mode.",
+  "replay_page_url": "http://localhost:8083/index.html (via injection wrapper) or http://localhost:8002 (if backend serves static files)",
+  "api_base_issue": {
+    "description": "index.html JS IIFE uses const API_BASE = window.API_BASE || '' — must be set BEFORE page loads. In production (same-origin), empty string works. In dev (frontend on different port), requires window.API_BASE preset.",
+    "fix_required": "Document dev startup: serve from port 8083 via injection wrapper, or serve frontend from backend at port 8002.",
+    "severity": "LOW — production design is correct (same-origin). Only a dev-mode documentation gap."
+  },
+  "lifecycle_states_rendered": {
+    "ONLINE": {
+      "renders": true,
+      "db_count": 8,
+      "truth_badge": "LIVE",
+      "notes": "Shows green LIVE badge + checkmark in lifecycle registry"
+    },
+    "REJECTED": {
+      "renders": true,
+      "db_count": 4,
+      "truth_badge": "僅有證據檔 (ARTIFACT_PROVENANCE_ONLY)",
+      "notes": "Shows red REJECTED badge + orange 僅有證據檔 badge. Has contextual note explaining cannot reconstruct without P3 authorization. History query REJECTED filter shows 100 BIG_LOTTO rows."
+    },
+    "OBSERVATION": {
+      "renders": true,
+      "db_count": 1,
+      "truth_badge": "unknown — not confirmed in screenshots",
+      "notes": "OBSERVATION is DB lifecycle state. Corresponds roughly to P1 WATCHING."
+    },
+    "RETIRED": {
+      "renders": true,
+      "db_count": 5,
+      "truth_badge": "varies",
+      "notes": "RETIRED strategies appear in lifecycle registry."
+    },
+    "OFFLINE": {
+      "renders": false,
+      "db_count": 0,
+      "notes": "OFFLINE not in DB. Dropdown option exists but no strategies have this state."
+    },
+    "EXPERIMENTAL": {
+      "renders": false,
+      "db_count": 0,
+      "notes": "P1 governance concept — not a DB lifecycle state. DB uses ONLINE/REJECTED/OBSERVATION/RETIRED."
+    },
+    "UNKNOWN": {
+      "renders": false,
+      "db_count": 0,
+      "notes": "P1 governance concept — not a DB lifecycle state."
+    }
+  },
+  "lifecycle_terminology_mismatch": {
+    "p1_governance_states": ["PRODUCTION", "WATCHING", "PROVISIONAL", "REJECTED", "OFFLINE", "EXPERIMENTAL", "UNKNOWN"],
+    "db_actual_states": ["ONLINE", "REJECTED", "OBSERVATION", "RETIRED"],
+    "ui_dropdown_options": ["全部", "ONLINE", "OFFLINE", "REJECTED", "OBSERVATION"],
+    "conclusion": "P1 governance taxonomy does NOT match DB lifecycle states. The UI correctly uses DB states. P1 work was in a parallel governance namespace that never updated the DB schema."
+  },
+  "history_query": {
+    "BIG_LOTTO": {
+      "total_rows": 349,
+      "pages": 7,
+      "strategies_represented": ["ts3_regime_3bet", "biglotto_triple_strike", "biglotto_deviation_2bet", "biglotto_ts3_acb_4bet", "biglotto_ts3_markov_freq_5bet"],
+      "ui_features": ["number ball rendering", "hit number green highlight", "RESOLVED/COMPLETE/PREDICTED/RETROSPECTIVE/ARTIFACT_RETRO badges", "詳情 detail button"]
+    },
+    "DAILY_539": {
+      "total_rows": 333,
+      "pages": 7,
+      "strategies_represented": ["acb_markov_midfreq_3bet", "daily539_f4cold", "daily539_markov_cold"],
+      "ui_features": ["same as BIG_LOTTO"]
+    },
+    "POWER_LOTTO": {
+      "total_rows": "confirmed exists via freshness table (run #6 DONE, 100 rows)",
+      "notes": "Not separately queried in screenshots but confirmed via freshness widget"
+    }
+  },
+  "single_strategy_detail_view": {
+    "exists": true,
+    "shows_per_draw_comparison": true,
+    "ui_elements": [
+      "期號 (draw number)",
+      "日期 (date)",
+      "策略 (strategy name)",
+      "預測號碼 (predicted — styled number balls)",
+      "實際開獎 (actual — styled number balls with green hit highlight)",
+      "命中號碼 (hit numbers column)",
+      "命中數 (hit count)",
+      "狀態 (status badges — replay_status + truth_level)",
+      "詳情 button (detail popup)"
+    ],
+    "hit_highlighting": "Matched numbers shown as green filled balls in both predicted and actual columns"
+  },
+  "display_only_strategies_rendering": {
+    "listed": false,
+    "rendering_mode": "hidden",
+    "explanation": "407 DISPLAY_ONLY strategies from P0 code inventory are NOT in the DB lifecycle registry. The UI only shows DB-registered strategies (18 total). 407 strategies simply do not appear.",
+    "impact": "Significant gap from user's stated goal of showing ALL strategies including offline/rejected/watching. Only 18/506 show."
+  },
+  "freshness_coverage_widget": {
+    "BIG_LOTTO": {"run": "#5", "status": "DONE", "total": 100, "predicted": 100, "errors": 0, "coverage": "LIMITED"},
+    "DAILY_539": {"run": "#7", "status": "DONE", "total": 100, "predicted": 100, "errors": 0, "coverage": "LIMITED"},
+    "POWER_LOTTO": {"run": "#6", "status": "DONE", "total": 100, "predicted": 100, "errors": 0, "coverage": "LIMITED"}
+  },
+  "lifecycle_registry": {
+    "total_strategies": 18,
+    "shown_rows": 27,
+    "note": "27 rows may include duplicate display entries; 18 unique strategies in DB",
+    "sample": [
+      {"strategy_id": "biglotto_triple_strike", "name": "大樂透 Triple Strike", "lottery": "BIG_LOTTO", "lifecycle": "ONLINE", "badge": "LIVE"},
+      {"strategy_id": "biglotto_ts3_acb_4bet", "name": "大樂透 TS3+ACB 4注", "lottery": "BIG_LOTTO", "lifecycle": "REJECTED", "badge": "僅有證據檔"},
+      {"strategy_id": "daily539_f4cold", "name": "今彩539 F4 Cold", "lottery": "DAILY_539", "lifecycle": "ONLINE", "badge": "LIVE"},
+      {"strategy_id": "daily539_markov_cold", "name": "今彩539 Markov Cold", "lottery": "DAILY_539", "lifecycle": "ONLINE", "badge": "LIVE"}
+    ]
+  },
+  "console_health": {
+    "errors": 0,
+    "warnings": "minor — 1 '資料狀態讀取失敗' on port 8082 (without injection), none on port 8083",
+    "network_errors": 0,
+    "api_response_quality": "GOOD — all endpoints return valid JSON with correct pagination"
+  },
+  "product_gap": [
+    "UI only shows 18 DB-registered strategies; 488 other strategies (from P0 inventory of 506) have no representation in the page",
+    "Dev startup requires API_BASE injection wrapper — needs documentation or build step (production is already correct with same-origin serving)",
+    "Coverage badge shows ⚠️限制性 (LIMITED) for all 3 lottery types — replay rows cover only ~100 periods per run, not the full historical range",
+    "Lifecycle terminology mismatch: DB uses ONLINE/REJECTED/OBSERVATION/RETIRED; P1 governance used PRODUCTION/WATCHING/PROVISIONAL/EXPERIMENTAL/UNKNOWN — these are separate namespaces that were never reconciled",
+    "407 DISPLAY_ONLY strategies (no historical predictions) need a product decision: show as empty rows in registry, or exclude, or add to registry with 'no data' label"
+  ],
+  "estimated_completion_pct": 75.0,
+  "recommendation": "iterate_ux",
+  "recommendation_rationale": "Core feature is working (prediction vs actual table, lifecycle filter, pagination, hit highlighting, all 3 lottery types). Main gaps are: (1) only 18/506 strategies in DB registry, (2) API_BASE dev setup needs documentation, (3) coverage is LIMITED. Do NOT continue P5A/P5B/P5C governance chain. Instead: document dev startup, decide on 407 DISPLAY_ONLY strategy handling, expand registry.",
+  "safety": {
+    "db_write": false,
+    "draw_import": false,
+    "replay_row_generation": false,
+    "prediction_update": false,
+    "strategy_execution": false,
+    "contract_changes": false,
+    "governance_layers_added": false
+  }
+}

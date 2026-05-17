@@ -1,0 +1,85 @@
+{
+  "generated_at": "2026-05-17T02:56:55Z",
+  "final_classification": "P4B_QUICK_PREDICT_DRYRUN_READY",
+  "dry_run": true,
+  "db_written": false,
+  "prediction_items_inserted": false,
+  "prediction_runs_inserted": false,
+  "replay_rows_inserted": false,
+  "predictions": [
+    {
+      "lottery_type": "POWER_LOTTO",
+      "lottery_name": "威力彩",
+      "next_draw": "115000036",
+      "num_bets": 3,
+      "strategy": "Power Precision (Edge +2.23%)",
+      "baseline": 11.17,
+      "last_draw": {
+        "draw": "115000035",
+        "date": "2026/04/30",
+        "numbers": [
+          1,
+          4,
+          13,
+          19,
+          27,
+          30
+        ],
+        "special": 8
+      },
+      "bets": [
+        {
+          "numbers": [
+            14,
+            15,
+            16,
+            22,
+            33,
+            37
+          ],
+          "special": 2
+        },
+        {
+          "numbers": [
+            11,
+            18,
+            24,
+            26,
+            29,
+            35
+          ],
+          "special": 2
+        },
+        {
+          "numbers": [
+            2,
+            6,
+            8,
+            27,
+            30,
+            38
+          ],
+          "special": 2
+        }
+      ],
+      "coverage": {
+        "covered_numbers": 18,
+        "max_numbers": 38,
+        "coverage_rate": 47.4
+      },
+      "strategy_info": {
+        "strategy": "Power Precision",
+        "edge": "+2.23%",
+        "verified": "1500期 STABLE z=2.74"
+      },
+      "warnings": [],
+      "input_history_count": 1907,
+      "special_top3": [
+        2,
+        4,
+        5
+      ]
+    }
+  ],
+  "warnings": []
+}

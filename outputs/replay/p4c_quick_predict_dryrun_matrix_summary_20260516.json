@@ -1,0 +1,54 @@
+{
+  "final_classification": "P4C_QUICK_PREDICT_DRYRUN_MATRIX_PARTIAL_READY_DAILY539_BLOCKED",
+  "db_written": false,
+  "prediction_items_inserted": false,
+  "prediction_runs_inserted": false,
+  "replay_rows_inserted": false,
+  "db_no_write_verified": true,
+  "db_before": {
+    "sha256": "27f8f060dfb2641f29e4ad4fa62deef413ab69131f1548dac83a2e721f536acf",
+    "counts": {
+      "prediction_items": 1095,
+      "prediction_runs": 175,
+      "replay_rows": 975
+    }
+  },
+  "db_after": {
+    "sha256": "27f8f060dfb2641f29e4ad4fa62deef413ab69131f1548dac83a2e721f536acf",
+    "counts": {
+      "prediction_items": 1095,
+      "prediction_runs": 175,
+      "replay_rows": 975
+    }
+  },
+  "lotteries": {
+    "BIG_LOTTO": {
+      "json": "outputs/replay/p4c_quick_predict_dryrun_big_lotto_20260516.json",
+      "classification": "P4B_QUICK_PREDICT_DRYRUN_READY",
+      "dry_run": true,
+      "prediction_count": 1,
+      "empty_preview": false,
+      "contains_torch_error": false
+    },
+    "POWER_LOTTO": {
+      "json": "outputs/replay/p4c_quick_predict_dryrun_power_lotto_20260516.json",
+      "classification": "P4B_QUICK_PREDICT_DRYRUN_READY",
+      "dry_run": true,
+      "prediction_count": 1,
+      "empty_preview": false,
+      "contains_torch_error": false
+    },
+    "DAILY_539": {
+      "json": "outputs/replay/p4c_quick_predict_dryrun_daily_539_20260516.json",
+      "classification": "P4B_QUICK_PREDICT_DRYRUN_READY",
+      "dry_run": true,
+      "prediction_count": 0,
+      "empty_preview": true,
+      "contains_torch_error": true,
+      "blocker": "missing torch dependency in UnifiedPredictionEngine import"
+    }
+  },
+  "warnings": [
+    "DAILY_539 dry-run hit missing torch dependency; no-write safety preserved."
+  ]
+}

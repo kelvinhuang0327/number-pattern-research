@@ -1,0 +1,37 @@
+{
+  "final_classification": "P6J_SCHEDULED_MONITOR_RERUN_WAITING_DRAFT_PR_READY",
+  "watcher_classification": "P6_NEXT_DRAW_WATCHER_WAITING_FOR_OFFICIAL_DRAWS",
+  "target_draws": [
+    {
+      "lottery_type": "BIG_LOTTO",
+      "support_run_id": 176,
+      "target_draw": "115000053",
+      "exists": false,
+      "readiness_state": "WAITING_FOR_OFFICIAL_DRAW_PUBLICATION"
+    },
+    {
+      "lottery_type": "POWER_LOTTO",
+      "support_run_id": 177,
+      "target_draw": "115000036",
+      "exists": false,
+      "readiness_state": "WAITING_FOR_OFFICIAL_DRAW_PUBLICATION"
+    }
+  ],
+  "db_counts": {
+    "prediction_runs": 177,
+    "prediction_items": 1101,
+    "replay_rows": 975
+  },
+  "safety_flags": {
+    "db_written": false,
+    "draw_imported": false,
+    "replay_rows_inserted": false,
+    "prediction_items_modified": false,
+    "prediction_runs_modified": false,
+    "strategy_logic_changed": false,
+    "api_ui_backend_changed": false,
+    "scheduler_workflow_changed": false
+  },
+  "next_action": "next scheduled monitor rerun",
+  "warnings": []
+}

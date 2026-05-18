@@ -1,0 +1,41 @@
+{
+  "migration_id": "0001_p0_schema_stabilization",
+  "executed_at": "2026-05-18T02:05:57.743447Z",
+  "dry_run": false,
+  "db_path": "/Users/kelvin/Kelvin-WorkSpace/LotteryNew-clean/lottery_api/data/lottery_v2.db",
+  "backup_path": "/Users/kelvin/Kelvin-WorkSpace/LotteryNew-clean/lottery_api/data/backups/lottery_v2_pre_p0_20260518T020557.db",
+  "columns_checked": [
+    "truth_level",
+    "source",
+    "provenance_hash",
+    "provenance_source",
+    "controlled_apply_id",
+    "dry_run_only"
+  ],
+  "columns_added": [],
+  "columns_skipped": [
+    "truth_level",
+    "source",
+    "provenance_hash",
+    "provenance_source",
+    "controlled_apply_id",
+    "dry_run_only"
+  ],
+  "indexes_added": [
+    {
+      "index": "idx_spr_truth_level",
+      "dry_run": false
+    },
+    {
+      "index": "idx_spr_controlled_apply",
+      "dry_run": false
+    },
+    {
+      "index": "idx_spr_dry_run",
+      "dry_run": false
+    }
+  ],
+  "indexes_skipped": [],
+  "errors": [],
+  "status": "MIGRATION_APPLIED_OK"
+}

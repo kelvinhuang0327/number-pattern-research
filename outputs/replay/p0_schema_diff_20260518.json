@@ -1,0 +1,111 @@
+{
+  "generated_at": "2026-05-18T02:06:00Z",
+  "mission": "P0 Schema Stabilization",
+  "db_path": "lottery_api/data/lottery_v2.db",
+  "tables_checked": [
+    "prediction_runs",
+    "prediction_items",
+    "strategy_prediction_replays",
+    "strategy_replay_runs"
+  ],
+  "strategy_prediction_replays": {
+    "orm_expected_columns": 25,
+    "db_actual_columns": 25,
+    "missing_columns": [],
+    "extra_columns_in_db": [],
+    "diff_status": "IN_SYNC",
+    "governance_columns": {
+      "truth_level": {
+        "status": "PRESENT",
+        "type": "TEXT",
+        "triggers_api_contract_test": true,
+        "triggers_drift_guard": true,
+        "added_in": "pre-P0 (formalized in 0001_p0_schema_stabilization)"
+      },
+      "controlled_apply_id": {
+        "status": "PRESENT",
+        "type": "TEXT",
+        "triggers_api_contract_test": false,
+        "triggers_drift_guard": true,
+        "added_in": "pre-P0 (formalized in 0001_p0_schema_stabilization)"
+      },
+      "source": {
+        "status": "PRESENT",
+        "type": "TEXT",
+        "triggers_api_contract_test": false,
+        "triggers_drift_guard": false,
+        "added_in": "pre-P0 (formalized in 0001_p0_schema_stabilization)"
+      },
+      "provenance_hash": {
+        "status": "PRESENT",
+        "type": "TEXT",
+        "triggers_api_contract_test": false,
+        "triggers_drift_guard": false,
+        "added_in": "pre-P0 (formalized in 0001_p0_schema_stabilization)"
+      },
+      "provenance_source": {
+        "status": "PRESENT",
+        "type": "TEXT",
+        "triggers_api_contract_test": false,
+        "triggers_drift_guard": false,
+        "added_in": "pre-P0 (formalized in 0001_p0_schema_stabilization)"
+      },
+      "dry_run_only": {
+        "status": "PRESENT",
+        "type": "INTEGER DEFAULT 0",
+        "triggers_api_contract_test": false,
+        "triggers_drift_guard": false,
+        "added_in": "pre-P0 (formalized in 0001_p0_schema_stabilization)"
+      }
+    },
+    "indexes": {
+      "sqlite_autoindex_strategy_prediction_replays_1": "UNIQUE(lottery_type, target_draw, strategy_id, replay_run_id) — auto",
+      "idx_spr_lottery": "ON strategy_prediction_replays(lottery_type)",
+      "idx_spr_strategy": "ON strategy_prediction_replays(strategy_id)",
+      "idx_spr_draw": "ON strategy_prediction_replays(target_draw)",
+      "idx_spr_status": "ON strategy_prediction_replays(replay_status)",
+      "idx_spr_run": "ON strategy_prediction_replays(replay_run_id)",
+      "idx_spr_hit": "ON strategy_prediction_replays(hit_count)",
+      "idx_spr_truth_level": "ON strategy_prediction_replays(truth_level) — ADDED by P0 migration",
+      "idx_spr_controlled_apply": "ON strategy_prediction_replays(controlled_apply_id) — ADDED by P0 migration",
+      "idx_spr_dry_run": "ON strategy_prediction_replays(dry_run_only) — ADDED by P0 migration"
+    }
+  },
+  "prediction_runs": {
+    "orm_expected_columns": 11,
+    "db_actual_columns": 11,
+    "missing_columns": [],
+    "diff_status": "IN_SYNC"
+  },
+  "prediction_items": {
+    "orm_expected_columns": 10,
+    "db_actual_columns": 10,
+    "missing_columns": [],
+    "diff_status": "IN_SYNC"
+  },
+  "strategy_replay_runs": {
+    "orm_expected_columns": 10,
+    "db_actual_columns": 10,
+    "missing_columns": [],
+    "diff_status": "IN_SYNC"
+  },
+  "p1_governance_lifecycle_7state": {
+    "states_in_registry": ["ONLINE", "OFFLINE", "REJECTED", "OBSERVATION", "RETIRED"],
+    "states_in_db_truth_level": [
+      "REGENERATED",
+      "ARTIFACT",
+      "REGENERATED_RETROSPECTIVE",
+      "ARTIFACT_RECONSTRUCTED_RETROSPECTIVE",
+      "OFFICIAL",
+      "OFFICIAL_DRAW_RESULT",
+      "FIXTURE_SYNTHETIC",
+      "FIXTURE_SYNTHETIC_INLINE"
+    ],
+    "column_present": true,
+    "enum_enforced_in_db": false,
+    "enum_enforced_in_code": true,
+    "note": "truth_level is enforced at application layer (drift guard + API route), not as SQL CHECK constraint. This is intentional for SQLite compatibility."
+  },
+  "overall_diff_status": "IN_SYNC",
+  "action_taken": "Added 3 governance indexes (idx_spr_truth_level, idx_spr_controlled_apply, idx_spr_dry_run) via apply_p0_schema_migration.py --apply"
+}

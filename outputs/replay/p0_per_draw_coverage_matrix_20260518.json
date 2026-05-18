@@ -1,0 +1,605 @@
+{
+  "generated_at": "2026-05-18T02:12:38.299058+00:00",
+  "mission": "P0 Schema Stabilization — per-draw coverage matrix",
+  "db_path": "/Users/kelvin/Kelvin-WorkSpace/LotteryNew-clean/lottery_api/data/lottery_v2.db",
+  "draws_per_type": 10,
+  "safety": "READ_ONLY — no rows written",
+  "by_lottery": {
+    "BIG_LOTTO": {
+      "canonical_strategy_count": 5,
+      "canonical_strategies": [
+        "biglotto_triple_strike",
+        "biglotto_deviation_2bet",
+        "ts3_regime_3bet",
+        "biglotto_ts3_acb_4bet",
+        "biglotto_ts3_markov_freq_5bet"
+      ],
+      "draws": [
+        {
+          "draw_id": "115000052",
+          "draw_date": "2026/05/12",
+          "total_strategies_in_registry": 5,
+          "with_prediction_row": 0,
+          "without_prediction_row": 5,
+          "coverage_pct": 0.0,
+          "by_truth_level": {},
+          "strategies_without_row": [
+            "biglotto_triple_strike",
+            "biglotto_deviation_2bet",
+            "ts3_regime_3bet",
+            "biglotto_ts3_acb_4bet",
+            "biglotto_ts3_markov_freq_5bet"
+          ],
+          "total_replay_rows": 0
+        },
+        {
+          "draw_id": "115000051",
+          "draw_date": "2026/05/08",
+          "total_strategies_in_registry": 5,
+          "with_prediction_row": 1,
+          "without_prediction_row": 4,
+          "coverage_pct": 20.0,
+          "by_truth_level": {
+            "OFFICIAL": 1
+          },
+          "strategies_without_row": [
+            "biglotto_triple_strike",
+            "biglotto_deviation_2bet",
+            "biglotto_ts3_acb_4bet",
+            "biglotto_ts3_markov_freq_5bet"
+          ],
+          "total_replay_rows": 3
+        },
+        {
+          "draw_id": "115000050",
+          "draw_date": "2026/05/05",
+          "total_strategies_in_registry": 5,
+          "with_prediction_row": 3,
+          "without_prediction_row": 2,
+          "coverage_pct": 60.0,
+          "by_truth_level": {
+            "REGENERATED_RETROSPECTIVE": 2,
+            "ARTIFACT_RECONSTRUCTED_RETROSPECTIVE": 1
+          },
+          "strategies_without_row": [
+            "biglotto_ts3_acb_4bet",
+            "biglotto_ts3_markov_freq_5bet"
+          ],
+          "total_replay_rows": 5
+        },
+        {
+          "draw_id": "115000049",
+          "draw_date": "2026/05/01",
+          "total_strategies_in_registry": 5,
+          "with_prediction_row": 3,
+          "without_prediction_row": 2,
+          "coverage_pct": 60.0,
+          "by_truth_level": {
+            "REGENERATED_RETROSPECTIVE": 3
+          },
+          "strategies_without_row": [
+            "biglotto_ts3_acb_4bet",
+            "biglotto_ts3_markov_freq_5bet"
+          ],
+          "total_replay_rows": 5
+        },
+        {
+          "draw_id": "115000048",
+          "draw_date": "2026/04/28",
+          "total_strategies_in_registry": 5,
+          "with_prediction_row": 2,
+          "without_prediction_row": 3,
+          "coverage_pct": 40.0,
+          "by_truth_level": {
+            "REGENERATED_RETROSPECTIVE": 2
+          },
+          "strategies_without_row": [
+            "ts3_regime_3bet",
+            "biglotto_ts3_acb_4bet",
+            "biglotto_ts3_markov_freq_5bet"
+          ],
+          "total_replay_rows": 2
+        },
+        {
+          "draw_id": "115000047",
+          "draw_date": "2026/04/24",
+          "total_strategies_in_registry": 5,
+          "with_prediction_row": 2,
+          "without_prediction_row": 3,
+          "coverage_pct": 40.0,
+          "by_truth_level": {
+            "REGENERATED_RETROSPECTIVE": 2
+          },
+          "strategies_without_row": [
+            "ts3_regime_3bet",
+            "biglotto_ts3_acb_4bet",
+            "biglotto_ts3_markov_freq_5bet"
+          ],
+          "total_replay_rows": 2
+        },
+        {
+          "draw_id": "115000046",
+          "draw_date": "2026/04/21",
+          "total_strategies_in_registry": 5,
+          "with_prediction_row": 2,
+          "without_prediction_row": 3,
+          "coverage_pct": 40.0,
+          "by_truth_level": {
+            "REGENERATED_RETROSPECTIVE": 2
+          },
+          "strategies_without_row": [
+            "ts3_regime_3bet",
+            "biglotto_ts3_acb_4bet",
+            "biglotto_ts3_markov_freq_5bet"
+          ],
+          "total_replay_rows": 2
+        },
+        {
+          "draw_id": "115000045",
+          "draw_date": "2026/04/17",
+          "total_strategies_in_registry": 5,
+          "with_prediction_row": 2,
+          "without_prediction_row": 3,
+          "coverage_pct": 40.0,
+          "by_truth_level": {
+            "REGENERATED_RETROSPECTIVE": 2
+          },
+          "strategies_without_row": [
+            "ts3_regime_3bet",
+            "biglotto_ts3_acb_4bet",
+            "biglotto_ts3_markov_freq_5bet"
+          ],
+          "total_replay_rows": 2
+        },
+        {
+          "draw_id": "115000044",
+          "draw_date": "2026/04/14",
+          "total_strategies_in_registry": 5,
+          "with_prediction_row": 2,
+          "without_prediction_row": 3,
+          "coverage_pct": 40.0,
+          "by_truth_level": {
+            "REGENERATED_RETROSPECTIVE": 2
+          },
+          "strategies_without_row": [
+            "ts3_regime_3bet",
+            "biglotto_ts3_acb_4bet",
+            "biglotto_ts3_markov_freq_5bet"
+          ],
+          "total_replay_rows": 2
+        },
+        {
+          "draw_id": "115000043",
+          "draw_date": "2026/04/10",
+          "total_strategies_in_registry": 5,
+          "with_prediction_row": 2,
+          "without_prediction_row": 3,
+          "coverage_pct": 40.0,
+          "by_truth_level": {
+            "REGENERATED_RETROSPECTIVE": 2
+          },
+          "strategies_without_row": [
+            "ts3_regime_3bet",
+            "biglotto_ts3_acb_4bet",
+            "biglotto_ts3_markov_freq_5bet"
+          ],
+          "total_replay_rows": 2
+        }
+      ],
+      "summary": {
+        "avg_coverage_pct": 38.0,
+        "draws_with_any_row": 9,
+        "draws_with_full_coverage": 0
+      }
+    },
+    "DAILY_539": {
+      "canonical_strategy_count": 8,
+      "canonical_strategies": [
+        "daily539_f4cold",
+        "daily539_markov_cold",
+        "p1_deviation_2bet_539",
+        "acb_1bet",
+        "acb_markov_midfreq",
+        "acb_markov_midfreq_3bet",
+        "midfreq_acb_2bet",
+        "midfreq_fourier_2bet"
+      ],
+      "draws": [
+        {
+          "draw_id": "115000106",
+          "draw_date": "2026/04/30",
+          "total_strategies_in_registry": 8,
+          "with_prediction_row": 1,
+          "without_prediction_row": 7,
+          "coverage_pct": 12.5,
+          "by_truth_level": {
+            "OFFICIAL_DRAW_RESULT": 1
+          },
+          "strategies_without_row": [
+            "daily539_f4cold",
+            "daily539_markov_cold",
+            "p1_deviation_2bet_539",
+            "acb_1bet",
+            "acb_markov_midfreq",
+            "midfreq_acb_2bet",
+            "midfreq_fourier_2bet"
+          ],
+          "total_replay_rows": 3
+        },
+        {
+          "draw_id": "115000105",
+          "draw_date": "2026/04/29",
+          "total_strategies_in_registry": 8,
+          "with_prediction_row": 2,
+          "without_prediction_row": 6,
+          "coverage_pct": 25.0,
+          "by_truth_level": {
+            "REGENERATED_RETROSPECTIVE": 2
+          },
+          "strategies_without_row": [
+            "p1_deviation_2bet_539",
+            "acb_1bet",
+            "acb_markov_midfreq",
+            "acb_markov_midfreq_3bet",
+            "midfreq_acb_2bet",
+            "midfreq_fourier_2bet"
+          ],
+          "total_replay_rows": 2
+        },
+        {
+          "draw_id": "115000104",
+          "draw_date": "2026/04/28",
+          "total_strategies_in_registry": 8,
+          "with_prediction_row": 2,
+          "without_prediction_row": 6,
+          "coverage_pct": 25.0,
+          "by_truth_level": {
+            "REGENERATED_RETROSPECTIVE": 2
+          },
+          "strategies_without_row": [
+            "p1_deviation_2bet_539",
+            "acb_1bet",
+            "acb_markov_midfreq",
+            "acb_markov_midfreq_3bet",
+            "midfreq_acb_2bet",
+            "midfreq_fourier_2bet"
+          ],
+          "total_replay_rows": 2
+        },
+        {
+          "draw_id": "115000103",
+          "draw_date": "2026/04/27",
+          "total_strategies_in_registry": 8,
+          "with_prediction_row": 2,
+          "without_prediction_row": 6,
+          "coverage_pct": 25.0,
+          "by_truth_level": {
+            "REGENERATED_RETROSPECTIVE": 2
+          },
+          "strategies_without_row": [
+            "p1_deviation_2bet_539",
+            "acb_1bet",
+            "acb_markov_midfreq",
+            "acb_markov_midfreq_3bet",
+            "midfreq_acb_2bet",
+            "midfreq_fourier_2bet"
+          ],
+          "total_replay_rows": 2
+        },
+        {
+          "draw_id": "115000102",
+          "draw_date": "2026/04/25",
+          "total_strategies_in_registry": 8,
+          "with_prediction_row": 2,
+          "without_prediction_row": 6,
+          "coverage_pct": 25.0,
+          "by_truth_level": {
+            "REGENERATED_RETROSPECTIVE": 2
+          },
+          "strategies_without_row": [
+            "p1_deviation_2bet_539",
+            "acb_1bet",
+            "acb_markov_midfreq",
+            "acb_markov_midfreq_3bet",
+            "midfreq_acb_2bet",
+            "midfreq_fourier_2bet"
+          ],
+          "total_replay_rows": 2
+        },
+        {
+          "draw_id": "115000101",
+          "draw_date": "2026/04/24",
+          "total_strategies_in_registry": 8,
+          "with_prediction_row": 2,
+          "without_prediction_row": 6,
+          "coverage_pct": 25.0,
+          "by_truth_level": {
+            "REGENERATED_RETROSPECTIVE": 2
+          },
+          "strategies_without_row": [
+            "p1_deviation_2bet_539",
+            "acb_1bet",
+            "acb_markov_midfreq",
+            "acb_markov_midfreq_3bet",
+            "midfreq_acb_2bet",
+            "midfreq_fourier_2bet"
+          ],
+          "total_replay_rows": 2
+        },
+        {
+          "draw_id": "115000100",
+          "draw_date": "2026/04/23",
+          "total_strategies_in_registry": 8,
+          "with_prediction_row": 2,
+          "without_prediction_row": 6,
+          "coverage_pct": 25.0,
+          "by_truth_level": {
+            "REGENERATED_RETROSPECTIVE": 2
+          },
+          "strategies_without_row": [
+            "p1_deviation_2bet_539",
+            "acb_1bet",
+            "acb_markov_midfreq",
+            "acb_markov_midfreq_3bet",
+            "midfreq_acb_2bet",
+            "midfreq_fourier_2bet"
+          ],
+          "total_replay_rows": 2
+        },
+        {
+          "draw_id": "115000099",
+          "draw_date": "2026/04/22",
+          "total_strategies_in_registry": 8,
+          "with_prediction_row": 2,
+          "without_prediction_row": 6,
+          "coverage_pct": 25.0,
+          "by_truth_level": {
+            "REGENERATED_RETROSPECTIVE": 2
+          },
+          "strategies_without_row": [
+            "p1_deviation_2bet_539",
+            "acb_1bet",
+            "acb_markov_midfreq",
+            "acb_markov_midfreq_3bet",
+            "midfreq_acb_2bet",
+            "midfreq_fourier_2bet"
+          ],
+          "total_replay_rows": 2
+        },
+        {
+          "draw_id": "115000098",
+          "draw_date": "2026/04/21",
+          "total_strategies_in_registry": 8,
+          "with_prediction_row": 2,
+          "without_prediction_row": 6,
+          "coverage_pct": 25.0,
+          "by_truth_level": {
+            "REGENERATED_RETROSPECTIVE": 2
+          },
+          "strategies_without_row": [
+            "p1_deviation_2bet_539",
+            "acb_1bet",
+            "acb_markov_midfreq",
+            "acb_markov_midfreq_3bet",
+            "midfreq_acb_2bet",
+            "midfreq_fourier_2bet"
+          ],
+          "total_replay_rows": 2
+        },
+        {
+          "draw_id": "115000097",
+          "draw_date": "2026/04/20",
+          "total_strategies_in_registry": 8,
+          "with_prediction_row": 2,
+          "without_prediction_row": 6,
+          "coverage_pct": 25.0,
+          "by_truth_level": {
+            "REGENERATED_RETROSPECTIVE": 2
+          },
+          "strategies_without_row": [
+            "p1_deviation_2bet_539",
+            "acb_1bet",
+            "acb_markov_midfreq",
+            "acb_markov_midfreq_3bet",
+            "midfreq_acb_2bet",
+            "midfreq_fourier_2bet"
+          ],
+          "total_replay_rows": 2
+        }
+      ],
+      "summary": {
+        "avg_coverage_pct": 23.8,
+        "draws_with_any_row": 10,
+        "draws_with_full_coverage": 0
+      }
+    },
+    "POWER_LOTTO": {
+      "canonical_strategy_count": 5,
+      "canonical_strategies": [
+        "power_precision_3bet",
+        "power_orthogonal_5bet",
+        "fourier_rhythm_3bet",
+        "power_shlc_midfreq",
+        "h6_gate_mk20_ew85"
+      ],
+      "draws": [
+        {
+          "draw_id": "115000035",
+          "draw_date": "2026/04/30",
+          "total_strategies_in_registry": 5,
+          "with_prediction_row": 1,
+          "without_prediction_row": 4,
+          "coverage_pct": 20.0,
+          "by_truth_level": {
+            "OFFICIAL_DRAW_RESULT": 1
+          },
+          "strategies_without_row": [
+            "power_precision_3bet",
+            "power_orthogonal_5bet",
+            "power_shlc_midfreq",
+            "h6_gate_mk20_ew85"
+          ],
+          "total_replay_rows": 3
+        },
+        {
+          "draw_id": "115000034",
+          "draw_date": "2026/04/27",
+          "total_strategies_in_registry": 5,
+          "with_prediction_row": 2,
+          "without_prediction_row": 3,
+          "coverage_pct": 40.0,
+          "by_truth_level": {
+            "REGENERATED_RETROSPECTIVE": 2
+          },
+          "strategies_without_row": [
+            "fourier_rhythm_3bet",
+            "power_shlc_midfreq",
+            "h6_gate_mk20_ew85"
+          ],
+          "total_replay_rows": 2
+        },
+        {
+          "draw_id": "115000033",
+          "draw_date": "2026/04/23",
+          "total_strategies_in_registry": 5,
+          "with_prediction_row": 2,
+          "without_prediction_row": 3,
+          "coverage_pct": 40.0,
+          "by_truth_level": {
+            "REGENERATED_RETROSPECTIVE": 2
+          },
+          "strategies_without_row": [
+            "fourier_rhythm_3bet",
+            "power_shlc_midfreq",
+            "h6_gate_mk20_ew85"
+          ],
+          "total_replay_rows": 2
+        },
+        {
+          "draw_id": "115000032",
+          "draw_date": "2026/04/20",
+          "total_strategies_in_registry": 5,
+          "with_prediction_row": 2,
+          "without_prediction_row": 3,
+          "coverage_pct": 40.0,
+          "by_truth_level": {
+            "REGENERATED_RETROSPECTIVE": 2
+          },
+          "strategies_without_row": [
+            "fourier_rhythm_3bet",
+            "power_shlc_midfreq",
+            "h6_gate_mk20_ew85"
+          ],
+          "total_replay_rows": 2
+        },
+        {
+          "draw_id": "115000031",
+          "draw_date": "2026/04/16",
+          "total_strategies_in_registry": 5,
+          "with_prediction_row": 2,
+          "without_prediction_row": 3,
+          "coverage_pct": 40.0,
+          "by_truth_level": {
+            "REGENERATED_RETROSPECTIVE": 2
+          },
+          "strategies_without_row": [
+            "fourier_rhythm_3bet",
+            "power_shlc_midfreq",
+            "h6_gate_mk20_ew85"
+          ],
+          "total_replay_rows": 2
+        },
+        {
+          "draw_id": "115000030",
+          "draw_date": "2026/04/13",
+          "total_strategies_in_registry": 5,
+          "with_prediction_row": 2,
+          "without_prediction_row": 3,
+          "coverage_pct": 40.0,
+          "by_truth_level": {
+            "REGENERATED_RETROSPECTIVE": 2
+          },
+          "strategies_without_row": [
+            "fourier_rhythm_3bet",
+            "power_shlc_midfreq",
+            "h6_gate_mk20_ew85"
+          ],
+          "total_replay_rows": 2
+        },
+        {
+          "draw_id": "115000029",
+          "draw_date": "2026/04/09",
+          "total_strategies_in_registry": 5,
+          "with_prediction_row": 2,
+          "without_prediction_row": 3,
+          "coverage_pct": 40.0,
+          "by_truth_level": {
+            "REGENERATED_RETROSPECTIVE": 2
+          },
+          "strategies_without_row": [
+            "fourier_rhythm_3bet",
+            "power_shlc_midfreq",
+            "h6_gate_mk20_ew85"
+          ],
+          "total_replay_rows": 2
+        },
+        {
+          "draw_id": "115000028",
+          "draw_date": "2026/04/06",
+          "total_strategies_in_registry": 5,
+          "with_prediction_row": 2,
+          "without_prediction_row": 3,
+          "coverage_pct": 40.0,
+          "by_truth_level": {
+            "REGENERATED_RETROSPECTIVE": 2
+          },
+          "strategies_without_row": [
+            "fourier_rhythm_3bet",
+            "power_shlc_midfreq",
+            "h6_gate_mk20_ew85"
+          ],
+          "total_replay_rows": 2
+        },
+        {
+          "draw_id": "115000027",
+          "draw_date": "2026/04/02",
+          "total_strategies_in_registry": 5,
+          "with_prediction_row": 2,
+          "without_prediction_row": 3,
+          "coverage_pct": 40.0,
+          "by_truth_level": {
+            "REGENERATED_RETROSPECTIVE": 2
+          },
+          "strategies_without_row": [
+            "fourier_rhythm_3bet",
+            "power_shlc_midfreq",
+            "h6_gate_mk20_ew85"
+          ],
+          "total_replay_rows": 2
+        },
+        {
+          "draw_id": "115000026",
+          "draw_date": "2026/03/30",
+          "total_strategies_in_registry": 5,
+          "with_prediction_row": 2,
+          "without_prediction_row": 3,
+          "coverage_pct": 40.0,
+          "by_truth_level": {
+            "REGENERATED_RETROSPECTIVE": 2
+          },
+          "strategies_without_row": [
+            "fourier_rhythm_3bet",
+            "power_shlc_midfreq",
+            "h6_gate_mk20_ew85"
+          ],
+          "total_replay_rows": 2
+        }
+      ],
+      "summary": {
+        "avg_coverage_pct": 38.0,
+        "draws_with_any_row": 10,
+        "draws_with_full_coverage": 0
+      }
+    }
+  }
+}

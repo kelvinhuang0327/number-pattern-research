@@ -1,0 +1,1363 @@
+{
+  "status": "APPLY_COMPLETE",
+  "generated_at": "2026-05-18T08:18:10.460369Z",
+  "mode": "APPLY",
+  "plan_generated_at": "2026-05-18T08:15:00.751183Z",
+  "runtime_canonical_before": 18,
+  "entries_in_plan": 89,
+  "would_insert": 71,
+  "would_skip": 18,
+  "would_block": 0,
+  "dry_run_results": [
+    {
+      "strategy_id": "power_precision_3bet",
+      "catalog_visibility_state": "REGISTERED_WITH_REPLAY_ROWS",
+      "lifecycle_state": "ONLINE",
+      "lottery_type": "POWER_LOTTO",
+      "has_replay_rows": true,
+      "dry_run_action": "WOULD_SKIP_EXISTS"
+    },
+    {
+      "strategy_id": "power_orthogonal_5bet",
+      "catalog_visibility_state": "REGISTERED_WITH_REPLAY_ROWS",
+      "lifecycle_state": "ONLINE",
+      "lottery_type": "POWER_LOTTO",
+      "has_replay_rows": true,
+      "dry_run_action": "WOULD_SKIP_EXISTS"
+    },
+    {
+      "strategy_id": "fourier_rhythm_3bet",
+      "catalog_visibility_state": "REGISTERED_NO_DATA",
+      "lifecycle_state": "ONLINE",
+      "lottery_type": "POWER_LOTTO",
+      "has_replay_rows": false,
+      "dry_run_action": "WOULD_SKIP_EXISTS"
+    },
+    {
+      "strategy_id": "biglotto_triple_strike",
+      "catalog_visibility_state": "REGISTERED_WITH_REPLAY_ROWS",
+      "lifecycle_state": "ONLINE",
+      "lottery_type": "BIG_LOTTO",
+      "has_replay_rows": true,
+      "dry_run_action": "WOULD_SKIP_EXISTS"
+    },
+    {
+      "strategy_id": "biglotto_deviation_2bet",
+      "catalog_visibility_state": "REGISTERED_WITH_REPLAY_ROWS",
+      "lifecycle_state": "ONLINE",
+      "lottery_type": "BIG_LOTTO",
+      "has_replay_rows": true,
+      "dry_run_action": "WOULD_SKIP_EXISTS"
+    },
+    {
+      "strategy_id": "ts3_regime_3bet",
+      "catalog_visibility_state": "REGISTERED_NO_DATA",
+      "lifecycle_state": "ONLINE",
+      "lottery_type": "BIG_LOTTO",
+      "has_replay_rows": false,
+      "dry_run_action": "WOULD_SKIP_EXISTS"
+    },
+    {
+      "strategy_id": "daily539_f4cold",
+      "catalog_visibility_state": "REGISTERED_WITH_REPLAY_ROWS",
+      "lifecycle_state": "ONLINE",
+      "lottery_type": "DAILY_539",
+      "has_replay_rows": true,
+      "dry_run_action": "WOULD_SKIP_EXISTS"
+    },
+    {
+      "strategy_id": "daily539_markov_cold",
+      "catalog_visibility_state": "REGISTERED_WITH_REPLAY_ROWS",
+      "lifecycle_state": "ONLINE",
+      "lottery_type": "DAILY_539",
+      "has_replay_rows": true,
+      "dry_run_action": "WOULD_SKIP_EXISTS"
+    },
+    {
+      "strategy_id": "biglotto_ts3_acb_4bet",
+      "catalog_visibility_state": "REGISTERED_NO_DATA",
+      "lifecycle_state": "REJECTED",
+      "lottery_type": "BIG_LOTTO",
+      "has_replay_rows": false,
+      "dry_run_action": "WOULD_SKIP_EXISTS"
+    },
+    {
+      "strategy_id": "biglotto_ts3_markov_freq_5bet",
+      "catalog_visibility_state": "REGISTERED_NO_DATA",
+      "lifecycle_state": "REJECTED",
+      "lottery_type": "BIG_LOTTO",
+      "has_replay_rows": false,
+      "dry_run_action": "WOULD_SKIP_EXISTS"
+    },
+    {
+      "strategy_id": "power_shlc_midfreq",
+      "catalog_visibility_state": "REGISTERED_NO_DATA",
+      "lifecycle_state": "REJECTED",
+      "lottery_type": "POWER_LOTTO",
+      "has_replay_rows": false,
+      "dry_run_action": "WOULD_SKIP_EXISTS"
+    },
+    {
+      "strategy_id": "p1_deviation_2bet_539",
+      "catalog_visibility_state": "REGISTERED_NO_DATA",
+      "lifecycle_state": "REJECTED",
+      "lottery_type": "DAILY_539",
+      "has_replay_rows": false,
+      "dry_run_action": "WOULD_SKIP_EXISTS"
+    },
+    {
+      "strategy_id": "acb_1bet",
+      "catalog_visibility_state": "REGISTERED_NO_DATA",
+      "lifecycle_state": "RETIRED",
+      "lottery_type": "DAILY_539",
+      "has_replay_rows": false,
+      "dry_run_action": "WOULD_SKIP_EXISTS"
+    },
+    {
+      "strategy_id": "acb_markov_midfreq",
+      "catalog_visibility_state": "REGISTERED_NO_DATA",
+      "lifecycle_state": "RETIRED",
+      "lottery_type": "DAILY_539",
+      "has_replay_rows": false,
+      "dry_run_action": "WOULD_SKIP_EXISTS"
+    },
+    {
+      "strategy_id": "acb_markov_midfreq_3bet",
+      "catalog_visibility_state": "REGISTERED_NO_DATA",
+      "lifecycle_state": "RETIRED",
+      "lottery_type": "DAILY_539",
+      "has_replay_rows": false,
+      "dry_run_action": "WOULD_SKIP_EXISTS"
+    },
+    {
+      "strategy_id": "midfreq_acb_2bet",
+      "catalog_visibility_state": "REGISTERED_NO_DATA",
+      "lifecycle_state": "RETIRED",
+      "lottery_type": "DAILY_539",
+      "has_replay_rows": false,
+      "dry_run_action": "WOULD_SKIP_EXISTS"
+    },
+    {
+      "strategy_id": "midfreq_fourier_2bet",
+      "catalog_visibility_state": "REGISTERED_NO_DATA",
+      "lifecycle_state": "RETIRED",
+      "lottery_type": "DAILY_539",
+      "has_replay_rows": false,
+      "dry_run_action": "WOULD_SKIP_EXISTS"
+    },
+    {
+      "strategy_id": "h6_gate_mk20_ew85",
+      "catalog_visibility_state": "REGISTERED_NO_DATA",
+      "lifecycle_state": "OBSERVATION",
+      "lottery_type": "POWER_LOTTO",
+      "has_replay_rows": false,
+      "dry_run_action": "WOULD_SKIP_EXISTS"
+    },
+    {
+      "strategy_id": "539_3bet_orthogonal",
+      "catalog_visibility_state": "ARTIFACT_CANDIDATE",
+      "lifecycle_state": "REJECTED",
+      "lottery_type": "DAILY_539",
+      "has_replay_rows": false,
+      "dry_run_action": "WOULD_INSERT"
+    },
+    {
+      "strategy_id": "H001",
+      "catalog_visibility_state": "ARTIFACT_CANDIDATE",
+      "lifecycle_state": "REJECTED",
+      "lottery_type": "UNKNOWN",
+      "has_replay_rows": false,
+      "dry_run_action": "WOULD_INSERT"
+    },
+    {
+      "strategy_id": "H002",
+      "catalog_visibility_state": "ARTIFACT_CANDIDATE",
+      "lifecycle_state": "REJECTED",
+      "lottery_type": "UNKNOWN",
+      "has_replay_rows": false,
+      "dry_run_action": "WOULD_INSERT"
+    },
+    {
+      "strategy_id": "H003",
+      "catalog_visibility_state": "ARTIFACT_CANDIDATE",
+      "lifecycle_state": "REJECTED",
+      "lottery_type": "UNKNOWN",
+      "has_replay_rows": false,
+      "dry_run_action": "WOULD_INSERT"
+    },
+    {
+      "strategy_id": "H004",
+      "catalog_visibility_state": "ARTIFACT_CANDIDATE",
+      "lifecycle_state": "REJECTED",
+      "lottery_type": "UNKNOWN",
+      "has_replay_rows": false,
+      "dry_run_action": "WOULD_INSERT"
+    },
+    {
+      "strategy_id": "H005",
+      "catalog_visibility_state": "ARTIFACT_CANDIDATE",
+      "lifecycle_state": "REJECTED",
+      "lottery_type": "UNKNOWN",
+      "has_replay_rows": false,
+      "dry_run_action": "WOULD_INSERT"
+    },
+    {
+      "strategy_id": "H006",
+      "catalog_visibility_state": "ARTIFACT_CANDIDATE",
+      "lifecycle_state": "REJECTED",
+      "lottery_type": "UNKNOWN",
+      "has_replay_rows": false,
+      "dry_run_action": "WOULD_INSERT"
+    },
+    {
+      "strategy_id": "H007",
+      "catalog_visibility_state": "ARTIFACT_CANDIDATE",
+      "lifecycle_state": "REJECTED",
+      "lottery_type": "UNKNOWN",
+      "has_replay_rows": false,
+      "dry_run_action": "WOULD_INSERT"
+    },
+    {
+      "strategy_id": "H008",
+      "catalog_visibility_state": "ARTIFACT_CANDIDATE",
+      "lifecycle_state": "REJECTED",
+      "lottery_type": "UNKNOWN",
+      "has_replay_rows": false,
+      "dry_run_action": "WOULD_INSERT"
+    },
+    {
+      "strategy_id": "acb_extremecol_2bet_539",
+      "catalog_visibility_state": "ARTIFACT_CANDIDATE",
+      "lifecycle_state": "REJECTED",
+      "lottery_type": "DAILY_539",
+      "has_replay_rows": false,
+      "dry_run_action": "WOULD_INSERT"
+    },
+    {
+      "strategy_id": "acb_hot_fourier_3bet_biglotto",
+      "catalog_visibility_state": "ARTIFACT_CANDIDATE",
+      "lifecycle_state": "REJECTED",
+      "lottery_type": "BIG_LOTTO",
+      "has_replay_rows": false,
+      "dry_run_action": "WOULD_INSERT"
+    },
+    {
+      "strategy_id": "acb_lag_echo_2bet_539",
+      "catalog_visibility_state": "ARTIFACT_CANDIDATE",
+      "lifecycle_state": "REJECTED",
+      "lottery_type": "DAILY_539",
+      "has_replay_rows": false,
+      "dry_run_action": "WOULD_INSERT"
+    },
+    {
+      "strategy_id": "acb_markov_extremecol_3bet_539",
+      "catalog_visibility_state": "ARTIFACT_CANDIDATE",
+      "lifecycle_state": "REJECTED",
+      "lottery_type": "DAILY_539",
+      "has_replay_rows": false,
+      "dry_run_action": "WOULD_INSERT"
+    },
+    {
+      "strategy_id": "acb_single_539",
+      "catalog_visibility_state": "ARTIFACT_CANDIDATE",
+      "lifecycle_state": "REJECTED",
+      "lottery_type": "DAILY_539",
+      "has_replay_rows": false,
+      "dry_run_action": "WOULD_INSERT"
+    },
+    {
+      "strategy_id": "apriori_3bet_biglotto",
+      "catalog_visibility_state": "ARTIFACT_CANDIDATE",
+      "lifecycle_state": "REJECTED",
+      "lottery_type": "BIG_LOTTO",
+      "has_replay_rows": false,
+      "dry_run_action": "WOULD_INSERT"
+    },
+    {
+      "strategy_id": "bandit_ucb1_2bet_539",
+      "catalog_visibility_state": "ARTIFACT_CANDIDATE",
+      "lifecycle_state": "REJECTED",
+      "lottery_type": "DAILY_539",
+      "has_replay_rows": false,
+      "dry_run_action": "WOULD_INSERT"
+    },
+    {
+      "strategy_id": "bet2_fourier_expansion_biglotto",
+      "catalog_visibility_state": "ARTIFACT_CANDIDATE",
+      "lifecycle_state": "REJECTED",
+      "lottery_type": "BIG_LOTTO",
+      "has_replay_rows": false,
+      "dry_run_action": "WOULD_INSERT"
+    },
+    {
+      "strategy_id": "biglotto_6bet_zone_residual",
+      "catalog_visibility_state": "ARTIFACT_CANDIDATE",
+      "lifecycle_state": "REJECTED",
+      "lottery_type": "BIG_LOTTO",
+      "has_replay_rows": false,
+      "dry_run_action": "WOULD_INSERT"
+    },
+    {
+      "strategy_id": "cluster_pivot_biglotto",
+      "catalog_visibility_state": "ARTIFACT_CANDIDATE",
+      "lifecycle_state": "REJECTED",
+      "lottery_type": "BIG_LOTTO",
+      "has_replay_rows": false,
+      "dry_run_action": "WOULD_INSERT"
+    },
+    {
+      "strategy_id": "cold_burst_3bet_539",
+      "catalog_visibility_state": "ARTIFACT_CANDIDATE",
+      "lifecycle_state": "REJECTED",
+      "lottery_type": "DAILY_539",
+      "has_replay_rows": false,
+      "dry_run_action": "WOULD_INSERT"
+    },
+    {
+      "strategy_id": "cold_complement_biglotto",
+      "catalog_visibility_state": "ARTIFACT_CANDIDATE",
+      "lifecycle_state": "REJECTED",
+      "lottery_type": "BIG_LOTTO",
+      "has_replay_rows": false,
+      "dry_run_action": "WOULD_INSERT"
+    },
+    {
+      "strategy_id": "coldpool15_biglotto",
+      "catalog_visibility_state": "ARTIFACT_CANDIDATE",
+      "lifecycle_state": "REJECTED",
+      "lottery_type": "BIG_LOTTO",
+      "has_replay_rows": false,
+      "dry_run_action": "WOULD_INSERT"
+    },
+    {
+      "strategy_id": "condfourier_3bet_539",
+      "catalog_visibility_state": "ARTIFACT_CANDIDATE",
+      "lifecycle_state": "REJECTED",
+      "lottery_type": "DAILY_539",
+      "has_replay_rows": false,
+      "dry_run_action": "WOULD_INSERT"
+    },
+    {
+      "strategy_id": "conditional_fourier_539",
+      "catalog_visibility_state": "ARTIFACT_CANDIDATE",
+      "lifecycle_state": "REJECTED",
+      "lottery_type": "DAILY_539",
+      "has_replay_rows": false,
+      "dry_run_action": "WOULD_INSERT"
+    },
+    {
+      "strategy_id": "consecutive_pair_detector_539",
+      "catalog_visibility_state": "ARTIFACT_CANDIDATE",
+      "lifecycle_state": "REJECTED",
+      "lottery_type": "DAILY_539",
+      "has_replay_rows": false,
+      "dry_run_action": "WOULD_INSERT"
+    },
+    {
+      "strategy_id": "core_satellite_biglotto",
+      "catalog_visibility_state": "ARTIFACT_CANDIDATE",
+      "lifecycle_state": "REJECTED",
+      "lottery_type": "BIG_LOTTO",
+      "has_replay_rows": false,
+      "dry_run_action": "WOULD_INSERT"
+    },
+    {
+      "strategy_id": "ewma_539",
+      "catalog_visibility_state": "ARTIFACT_CANDIDATE",
+      "lifecycle_state": "REJECTED",
+      "lottery_type": "DAILY_539",
+      "has_replay_rows": false,
+      "dry_run_action": "WOULD_INSERT"
+    },
+    {
+      "strategy_id": "extreme_col_539",
+      "catalog_visibility_state": "ARTIFACT_CANDIDATE",
+      "lifecycle_state": "REJECTED",
+      "lottery_type": "DAILY_539",
+      "has_replay_rows": false,
+      "dry_run_action": "WOULD_INSERT"
+    },
+    {
+      "strategy_id": "extremecol_1bet_539",
+      "catalog_visibility_state": "ARTIFACT_CANDIDATE",
+      "lifecycle_state": "REJECTED",
+      "lottery_type": "DAILY_539",
+      "has_replay_rows": false,
+      "dry_run_action": "WOULD_INSERT"
+    },
+    {
+      "strategy_id": "fourier30_markov30_biglotto",
+      "catalog_visibility_state": "ARTIFACT_CANDIDATE",
+      "lifecycle_state": "REJECTED",
+      "lottery_type": "BIG_LOTTO",
+      "has_replay_rows": false,
+      "dry_run_action": "WOULD_INSERT"
+    },
+    {
+      "strategy_id": "fourier_w100_pp3_power",
+      "catalog_visibility_state": "ARTIFACT_CANDIDATE",
+      "lifecycle_state": "REJECTED",
+      "lottery_type": "POWER_LOTTO",
+      "has_replay_rows": false,
+      "dry_run_action": "WOULD_INSERT"
+    },
+    {
+      "strategy_id": "gap_dynamic_threshold_biglotto",
+      "catalog_visibility_state": "ARTIFACT_CANDIDATE",
+      "lifecycle_state": "REJECTED",
+      "lottery_type": "BIG_LOTTO",
+      "has_replay_rows": false,
+      "dry_run_action": "WOULD_INSERT"
+    },
+    {
+      "strategy_id": "gap_rebound_powerlotto",
+      "catalog_visibility_state": "ARTIFACT_CANDIDATE",
+      "lifecycle_state": "REJECTED",
+      "lottery_type": "POWER_LOTTO",
+      "has_replay_rows": false,
+      "dry_run_action": "WOULD_INSERT"
+    },
+    {
+      "strategy_id": "habit_aware_fourier_v8_539",
+      "catalog_visibility_state": "ARTIFACT_CANDIDATE",
+      "lifecycle_state": "REJECTED",
+      "lottery_type": "DAILY_539",
+      "has_replay_rows": false,
+      "dry_run_action": "WOULD_INSERT"
+    },
+    {
+      "strategy_id": "hot_gap_return_biglotto",
+      "catalog_visibility_state": "ARTIFACT_CANDIDATE",
+      "lifecycle_state": "REJECTED",
+      "lottery_type": "BIG_LOTTO",
+      "has_replay_rows": false,
+      "dry_run_action": "WOULD_INSERT"
+    },
+    {
+      "strategy_id": "hot_stop_rebound_biglotto",
+      "catalog_visibility_state": "ARTIFACT_CANDIDATE",
+      "lifecycle_state": "REJECTED",
+      "lottery_type": "BIG_LOTTO",
+      "has_replay_rows": false,
+      "dry_run_action": "WOULD_INSERT"
+    },
+    {
+      "strategy_id": "hot_streak_override_biglotto",
+      "catalog_visibility_state": "ARTIFACT_CANDIDATE",
+      "lifecycle_state": "REJECTED",
+      "lottery_type": "BIG_LOTTO",
+      "has_replay_rows": false,
+      "dry_run_action": "WOULD_INSERT"
+    },
+    {
+      "strategy_id": "lag_echo_1bet_539",
+      "catalog_visibility_state": "ARTIFACT_CANDIDATE",
+      "lifecycle_state": "REJECTED",
+      "lottery_type": "DAILY_539",
+      "has_replay_rows": false,
+      "dry_run_action": "WOULD_INSERT"
+    },
+    {
+      "strategy_id": "lag_echo_acb_markov_3bet_539",
+      "catalog_visibility_state": "ARTIFACT_CANDIDATE",
+      "lifecycle_state": "REJECTED",
+      "lottery_type": "DAILY_539",
+      "has_replay_rows": false,
+      "dry_run_action": "WOULD_INSERT"
+    },
+    {
+      "strategy_id": "lift_pair_single_539",
+      "catalog_visibility_state": "ARTIFACT_CANDIDATE",
+      "lifecycle_state": "REJECTED",
+      "lottery_type": "DAILY_539",
+      "has_replay_rows": false,
+      "dry_run_action": "WOULD_INSERT"
+    },
+    {
+      "strategy_id": "mab_ucb1_539",
+      "catalog_visibility_state": "ARTIFACT_CANDIDATE",
+      "lifecycle_state": "REJECTED",
+      "lottery_type": "DAILY_539",
+      "has_replay_rows": false,
+      "dry_run_action": "WOULD_INSERT"
+    },
+    {
+      "strategy_id": "markov_1bet_539",
+      "catalog_visibility_state": "ARTIFACT_CANDIDATE",
+      "lifecycle_state": "REJECTED",
+      "lottery_type": "DAILY_539",
+      "has_replay_rows": false,
+      "dry_run_action": "WOULD_INSERT"
+    },
+    {
+      "strategy_id": "markov_2bet_biglotto",
+      "catalog_visibility_state": "ARTIFACT_CANDIDATE",
+      "lifecycle_state": "REJECTED",
+      "lottery_type": "BIG_LOTTO",
+      "has_replay_rows": false,
+      "dry_run_action": "WOULD_INSERT"
+    },
+    {
+      "strategy_id": "markov_repeat_exception_biglotto",
+      "catalog_visibility_state": "ARTIFACT_CANDIDATE",
+      "lifecycle_state": "REJECTED",
+      "lottery_type": "BIG_LOTTO",
+      "has_replay_rows": false,
+      "dry_run_action": "WOULD_INSERT"
+    },
+    {
+      "strategy_id": "markov_single_biglotto",
+      "catalog_visibility_state": "ARTIFACT_CANDIDATE",
+      "lifecycle_state": "REJECTED",
+      "lottery_type": "BIG_LOTTO",
+      "has_replay_rows": false,
+      "dry_run_action": "WOULD_INSERT"
+    },
+    {
+      "strategy_id": "midfreq_extremecol_2bet_539",
+      "catalog_visibility_state": "ARTIFACT_CANDIDATE",
+      "lifecycle_state": "REJECTED",
+      "lottery_type": "DAILY_539",
+      "has_replay_rows": false,
+      "dry_run_action": "WOULD_INSERT"
+    },
+    {
+      "strategy_id": "momentum_regime_switching_539",
+      "catalog_visibility_state": "ARTIFACT_CANDIDATE",
+      "lifecycle_state": "REJECTED",
+      "lottery_type": "DAILY_539",
+      "has_replay_rows": false,
+      "dry_run_action": "WOULD_INSERT"
+    },
+    {
+      "strategy_id": "multiwindow_fourier_biglotto",
+      "catalog_visibility_state": "ARTIFACT_CANDIDATE",
+      "lifecycle_state": "REJECTED",
+      "lottery_type": "BIG_LOTTO",
+      "has_replay_rows": false,
+      "dry_run_action": "WOULD_INSERT"
+    },
+    {
+      "strategy_id": "neighbor_acb_2bet_539",
+      "catalog_visibility_state": "ARTIFACT_CANDIDATE",
+      "lifecycle_state": "REJECTED",
+      "lottery_type": "DAILY_539",
+      "has_replay_rows": false,
+      "dry_run_action": "WOULD_INSERT"
+    },
+    {
+      "strategy_id": "neighbor_injection_biglotto",
+      "catalog_visibility_state": "ARTIFACT_CANDIDATE",
+      "lifecycle_state": "REJECTED",
+      "lottery_type": "BIG_LOTTO",
+      "has_replay_rows": false,
+      "dry_run_action": "WOULD_INSERT"
+    },
+    {
+      "strategy_id": "p0_neighbor_injection",
+      "catalog_visibility_state": "ARTIFACT_CANDIDATE",
+      "lifecycle_state": "REJECTED",
+      "lottery_type": "UNKNOWN",
+      "has_replay_rows": false,
+      "dry_run_action": "WOULD_INSERT"
+    },
+    {
+      "strategy_id": "p0b_539_3bet_f_cold_fmid",
+      "catalog_visibility_state": "ARTIFACT_CANDIDATE",
+      "lifecycle_state": "REJECTED",
+      "lottery_type": "DAILY_539",
+      "has_replay_rows": false,
+      "dry_run_action": "WOULD_INSERT"
+    },
+    {
+      "strategy_id": "p0c_539_3bet_f_cold_x2",
+      "catalog_visibility_state": "ARTIFACT_CANDIDATE",
+      "lifecycle_state": "REJECTED",
+      "lottery_type": "DAILY_539",
+      "has_replay_rows": false,
+      "dry_run_action": "WOULD_INSERT"
+    },
+    {
+      "strategy_id": "p1_conditional_branch_powerlotto",
+      "catalog_visibility_state": "ARTIFACT_CANDIDATE",
+      "lifecycle_state": "REJECTED",
+      "lottery_type": "POWER_LOTTO",
+      "has_replay_rows": false,
+      "dry_run_action": "WOULD_INSERT"
+    },
+    {
+      "strategy_id": "p2_mab_fusion",
+      "catalog_visibility_state": "ARTIFACT_CANDIDATE",
+      "lifecycle_state": "REJECTED",
+      "lottery_type": "UNKNOWN",
+      "has_replay_rows": false,
+      "dry_run_action": "WOULD_INSERT"
+    },
+    {
+      "strategy_id": "p3_state_aware",
+      "catalog_visibility_state": "ARTIFACT_CANDIDATE",
+      "lifecycle_state": "REJECTED",
+      "lottery_type": "UNKNOWN",
+      "has_replay_rows": false,
+      "dry_run_action": "WOULD_INSERT"
+    },
+    {
+      "strategy_id": "power_echo_boost",
+      "catalog_visibility_state": "ARTIFACT_CANDIDATE",
+      "lifecycle_state": "REJECTED",
+      "lottery_type": "POWER_LOTTO",
+      "has_replay_rows": false,
+      "dry_run_action": "WOULD_INSERT"
+    },
+    {
+      "strategy_id": "power_pp3v2_combined",
+      "catalog_visibility_state": "ARTIFACT_CANDIDATE",
+      "lifecycle_state": "REJECTED",
+      "lottery_type": "POWER_LOTTO",
+      "has_replay_rows": false,
+      "dry_run_action": "WOULD_INSERT"
+    },
+    {
+      "strategy_id": "power_z3gap_watch",
+      "catalog_visibility_state": "ARTIFACT_CANDIDATE",
+      "lifecycle_state": "REJECTED",
+      "lottery_type": "POWER_LOTTO",
+      "has_replay_rows": false,
+      "dry_run_action": "WOULD_INSERT"
+    },
+    {
+      "strategy_id": "sgp_power_017_research",
+      "catalog_visibility_state": "ARTIFACT_CANDIDATE",
+      "lifecycle_state": "REJECTED",
+      "lottery_type": "POWER_LOTTO",
+      "has_replay_rows": false,
+      "dry_run_action": "WOULD_INSERT"
+    },
+    {
+      "strategy_id": "sgp_v9_apex_powerlotto",
+      "catalog_visibility_state": "ARTIFACT_CANDIDATE",
+      "lifecycle_state": "REJECTED",
+      "lottery_type": "POWER_LOTTO",
+      "has_replay_rows": false,
+      "dry_run_action": "WOULD_INSERT"
+    },
+    {
+      "strategy_id": "shlc_midfreq_power",
+      "catalog_visibility_state": "ARTIFACT_CANDIDATE",
+      "lifecycle_state": "REJECTED",
+      "lottery_type": "POWER_LOTTO",
+      "has_replay_rows": false,
+      "dry_run_action": "WOULD_INSERT"
+    },
+    {
+      "strategy_id": "short_term_hot_independent_bet",
+      "catalog_visibility_state": "ARTIFACT_CANDIDATE",
+      "lifecycle_state": "REJECTED",
+      "lottery_type": "UNKNOWN",
+      "has_replay_rows": false,
+      "dry_run_action": "WOULD_INSERT"
+    },
+    {
+      "strategy_id": "special_mab_decay_adjustment_power",
+      "catalog_visibility_state": "ARTIFACT_CANDIDATE",
+      "lifecycle_state": "REJECTED",
+      "lottery_type": "POWER_LOTTO",
+      "has_replay_rows": false,
+      "dry_run_action": "WOULD_INSERT"
+    },
+    {
+      "strategy_id": "streak_boost_neighbor_bet1",
+      "catalog_visibility_state": "ARTIFACT_CANDIDATE",
+      "lifecycle_state": "REJECTED",
+      "lottery_type": "UNKNOWN",
+      "has_replay_rows": false,
+      "dry_run_action": "WOULD_INSERT"
+    },
+    {
+      "strategy_id": "structural_zone_guard_pp3_power",
+      "catalog_visibility_state": "ARTIFACT_CANDIDATE",
+      "lifecycle_state": "REJECTED",
+      "lottery_type": "POWER_LOTTO",
+      "has_replay_rows": false,
+      "dry_run_action": "WOULD_INSERT"
+    },
+    {
+      "strategy_id": "ts3_acb_4bet_biglotto",
+      "catalog_visibility_state": "ARTIFACT_CANDIDATE",
+      "lifecycle_state": "REJECTED",
+      "lottery_type": "BIG_LOTTO",
+      "has_replay_rows": false,
+      "dry_run_action": "WOULD_INSERT"
+    },
+    {
+      "strategy_id": "ts3_markov_freq_5bet_biglotto",
+      "catalog_visibility_state": "ARTIFACT_CANDIDATE",
+      "lifecycle_state": "REJECTED",
+      "lottery_type": "BIG_LOTTO",
+      "has_replay_rows": false,
+      "dry_run_action": "WOULD_INSERT"
+    },
+    {
+      "strategy_id": "zone_cascade_guard_biglotto",
+      "catalog_visibility_state": "ARTIFACT_CANDIDATE",
+      "lifecycle_state": "REJECTED",
+      "lottery_type": "BIG_LOTTO",
+      "has_replay_rows": false,
+      "dry_run_action": "WOULD_INSERT"
+    },
+    {
+      "strategy_id": "zone_constraint_cold_bet2",
+      "catalog_visibility_state": "ARTIFACT_CANDIDATE",
+      "lifecycle_state": "REJECTED",
+      "lottery_type": "UNKNOWN",
+      "has_replay_rows": false,
+      "dry_run_action": "WOULD_INSERT"
+    },
+    {
+      "strategy_id": "zone_gap_3bet_539",
+      "catalog_visibility_state": "ARTIFACT_CANDIDATE",
+      "lifecycle_state": "REJECTED",
+      "lottery_type": "DAILY_539",
+      "has_replay_rows": false,
+      "dry_run_action": "WOULD_INSERT"
+    }
+  ],
+  "safety": {
+    "db_write": true,
+    "draw_import": false,
+    "replay_row_generation": false,
+    "prediction_update": false,
+    "strategy_execution": false
+  },
+  "rollback_plan": "All P1 entries written to a separate table (strategy_catalog_p1). To rollback: DROP TABLE strategy_catalog_p1. Existing tables (strategy_replay_runs, prediction_runs, prediction_items) are NOT modified by P1 apply.",
+  "backup_path": "/Users/kelvin/Kelvin-WorkSpace/LotteryNew-clean/lottery_api/data/backups/lottery_v2_pre_p1_20260518T081810.db",
+  "inserted": 0,
+  "skipped": 89,
+  "blocked": 0,
+  "idempotency_pass": true,
+  "applied_results": [
+    {
+      "strategy_id": "power_precision_3bet",
+      "catalog_visibility_state": "REGISTERED_WITH_REPLAY_ROWS",
+      "lifecycle_state": "ONLINE",
+      "lottery_type": "POWER_LOTTO",
+      "result": "SKIPPED"
+    },
+    {
+      "strategy_id": "power_orthogonal_5bet",
+      "catalog_visibility_state": "REGISTERED_WITH_REPLAY_ROWS",
+      "lifecycle_state": "ONLINE",
+      "lottery_type": "POWER_LOTTO",
+      "result": "SKIPPED"
+    },
+    {
+      "strategy_id": "fourier_rhythm_3bet",
+      "catalog_visibility_state": "REGISTERED_NO_DATA",
+      "lifecycle_state": "ONLINE",
+      "lottery_type": "POWER_LOTTO",
+      "result": "SKIPPED"
+    },
+    {
+      "strategy_id": "biglotto_triple_strike",
+      "catalog_visibility_state": "REGISTERED_WITH_REPLAY_ROWS",
+      "lifecycle_state": "ONLINE",
+      "lottery_type": "BIG_LOTTO",
+      "result": "SKIPPED"
+    },
+    {
+      "strategy_id": "biglotto_deviation_2bet",
+      "catalog_visibility_state": "REGISTERED_WITH_REPLAY_ROWS",
+      "lifecycle_state": "ONLINE",
+      "lottery_type": "BIG_LOTTO",
+      "result": "SKIPPED"
+    },
+    {
+      "strategy_id": "ts3_regime_3bet",
+      "catalog_visibility_state": "REGISTERED_NO_DATA",
+      "lifecycle_state": "ONLINE",
+      "lottery_type": "BIG_LOTTO",
+      "result": "SKIPPED"
+    },
+    {
+      "strategy_id": "daily539_f4cold",
+      "catalog_visibility_state": "REGISTERED_WITH_REPLAY_ROWS",
+      "lifecycle_state": "ONLINE",
+      "lottery_type": "DAILY_539",
+      "result": "SKIPPED"
+    },
+    {
+      "strategy_id": "daily539_markov_cold",
+      "catalog_visibility_state": "REGISTERED_WITH_REPLAY_ROWS",
+      "lifecycle_state": "ONLINE",
+      "lottery_type": "DAILY_539",
+      "result": "SKIPPED"
+    },
+    {
+      "strategy_id": "biglotto_ts3_acb_4bet",
+      "catalog_visibility_state": "REGISTERED_NO_DATA",
+      "lifecycle_state": "REJECTED",
+      "lottery_type": "BIG_LOTTO",
+      "result": "SKIPPED"
+    },
+    {
+      "strategy_id": "biglotto_ts3_markov_freq_5bet",
+      "catalog_visibility_state": "REGISTERED_NO_DATA",
+      "lifecycle_state": "REJECTED",
+      "lottery_type": "BIG_LOTTO",
+      "result": "SKIPPED"
+    },
+    {
+      "strategy_id": "power_shlc_midfreq",
+      "catalog_visibility_state": "REGISTERED_NO_DATA",
+      "lifecycle_state": "REJECTED",
+      "lottery_type": "POWER_LOTTO",
+      "result": "SKIPPED"
+    },
+    {
+      "strategy_id": "p1_deviation_2bet_539",
+      "catalog_visibility_state": "REGISTERED_NO_DATA",
+      "lifecycle_state": "REJECTED",
+      "lottery_type": "DAILY_539",
+      "result": "SKIPPED"
+    },
+    {
+      "strategy_id": "acb_1bet",
+      "catalog_visibility_state": "REGISTERED_NO_DATA",
+      "lifecycle_state": "RETIRED",
+      "lottery_type": "DAILY_539",
+      "result": "SKIPPED"
+    },
+    {
+      "strategy_id": "acb_markov_midfreq",
+      "catalog_visibility_state": "REGISTERED_NO_DATA",
+      "lifecycle_state": "RETIRED",
+      "lottery_type": "DAILY_539",
+      "result": "SKIPPED"
+    },
+    {
+      "strategy_id": "acb_markov_midfreq_3bet",
+      "catalog_visibility_state": "REGISTERED_NO_DATA",
+      "lifecycle_state": "RETIRED",
+      "lottery_type": "DAILY_539",
+      "result": "SKIPPED"
+    },
+    {
+      "strategy_id": "midfreq_acb_2bet",
+      "catalog_visibility_state": "REGISTERED_NO_DATA",
+      "lifecycle_state": "RETIRED",
+      "lottery_type": "DAILY_539",
+      "result": "SKIPPED"
+    },
+    {
+      "strategy_id": "midfreq_fourier_2bet",
+      "catalog_visibility_state": "REGISTERED_NO_DATA",
+      "lifecycle_state": "RETIRED",
+      "lottery_type": "DAILY_539",
+      "result": "SKIPPED"
+    },
+    {
+      "strategy_id": "h6_gate_mk20_ew85",
+      "catalog_visibility_state": "REGISTERED_NO_DATA",
+      "lifecycle_state": "OBSERVATION",
+      "lottery_type": "POWER_LOTTO",
+      "result": "SKIPPED"
+    },
+    {
+      "strategy_id": "539_3bet_orthogonal",
+      "catalog_visibility_state": "ARTIFACT_CANDIDATE",
+      "lifecycle_state": "REJECTED",
+      "lottery_type": "DAILY_539",
+      "result": "SKIPPED"
+    },
+    {
+      "strategy_id": "H001",
+      "catalog_visibility_state": "ARTIFACT_CANDIDATE",
+      "lifecycle_state": "REJECTED",
+      "lottery_type": "UNKNOWN",
+      "result": "SKIPPED"
+    },
+    {
+      "strategy_id": "H002",
+      "catalog_visibility_state": "ARTIFACT_CANDIDATE",
+      "lifecycle_state": "REJECTED",
+      "lottery_type": "UNKNOWN",
+      "result": "SKIPPED"
+    },
+    {
+      "strategy_id": "H003",
+      "catalog_visibility_state": "ARTIFACT_CANDIDATE",
+      "lifecycle_state": "REJECTED",
+      "lottery_type": "UNKNOWN",
+      "result": "SKIPPED"
+    },
+    {
+      "strategy_id": "H004",
+      "catalog_visibility_state": "ARTIFACT_CANDIDATE",
+      "lifecycle_state": "REJECTED",
+      "lottery_type": "UNKNOWN",
+      "result": "SKIPPED"
+    },
+    {
+      "strategy_id": "H005",
+      "catalog_visibility_state": "ARTIFACT_CANDIDATE",
+      "lifecycle_state": "REJECTED",
+      "lottery_type": "UNKNOWN",
+      "result": "SKIPPED"
+    },
+    {
+      "strategy_id": "H006",
+      "catalog_visibility_state": "ARTIFACT_CANDIDATE",
+      "lifecycle_state": "REJECTED",
+      "lottery_type": "UNKNOWN",
+      "result": "SKIPPED"
+    },
+    {
+      "strategy_id": "H007",
+      "catalog_visibility_state": "ARTIFACT_CANDIDATE",
+      "lifecycle_state": "REJECTED",
+      "lottery_type": "UNKNOWN",
+      "result": "SKIPPED"
+    },
+    {
+      "strategy_id": "H008",
+      "catalog_visibility_state": "ARTIFACT_CANDIDATE",
+      "lifecycle_state": "REJECTED",
+      "lottery_type": "UNKNOWN",
+      "result": "SKIPPED"
+    },
+    {
+      "strategy_id": "acb_extremecol_2bet_539",
+      "catalog_visibility_state": "ARTIFACT_CANDIDATE",
+      "lifecycle_state": "REJECTED",
+      "lottery_type": "DAILY_539",
+      "result": "SKIPPED"
+    },
+    {
+      "strategy_id": "acb_hot_fourier_3bet_biglotto",
+      "catalog_visibility_state": "ARTIFACT_CANDIDATE",
+      "lifecycle_state": "REJECTED",
+      "lottery_type": "BIG_LOTTO",
+      "result": "SKIPPED"
+    },
+    {
+      "strategy_id": "acb_lag_echo_2bet_539",
+      "catalog_visibility_state": "ARTIFACT_CANDIDATE",
+      "lifecycle_state": "REJECTED",
+      "lottery_type": "DAILY_539",
+      "result": "SKIPPED"
+    },
+    {
+      "strategy_id": "acb_markov_extremecol_3bet_539",
+      "catalog_visibility_state": "ARTIFACT_CANDIDATE",
+      "lifecycle_state": "REJECTED",
+      "lottery_type": "DAILY_539",
+      "result": "SKIPPED"
+    },
+    {
+      "strategy_id": "acb_single_539",
+      "catalog_visibility_state": "ARTIFACT_CANDIDATE",
+      "lifecycle_state": "REJECTED",
+      "lottery_type": "DAILY_539",
+      "result": "SKIPPED"
+    },
+    {
+      "strategy_id": "apriori_3bet_biglotto",
+      "catalog_visibility_state": "ARTIFACT_CANDIDATE",
+      "lifecycle_state": "REJECTED",
+      "lottery_type": "BIG_LOTTO",
+      "result": "SKIPPED"
+    },
+    {
+      "strategy_id": "bandit_ucb1_2bet_539",
+      "catalog_visibility_state": "ARTIFACT_CANDIDATE",
+      "lifecycle_state": "REJECTED",
+      "lottery_type": "DAILY_539",
+      "result": "SKIPPED"
+    },
+    {
+      "strategy_id": "bet2_fourier_expansion_biglotto",
+      "catalog_visibility_state": "ARTIFACT_CANDIDATE",
+      "lifecycle_state": "REJECTED",
+      "lottery_type": "BIG_LOTTO",
+      "result": "SKIPPED"
+    },
+    {
+      "strategy_id": "biglotto_6bet_zone_residual",
+      "catalog_visibility_state": "ARTIFACT_CANDIDATE",
+      "lifecycle_state": "REJECTED",
+      "lottery_type": "BIG_LOTTO",
+      "result": "SKIPPED"
+    },
+    {
+      "strategy_id": "cluster_pivot_biglotto",
+      "catalog_visibility_state": "ARTIFACT_CANDIDATE",
+      "lifecycle_state": "REJECTED",
+      "lottery_type": "BIG_LOTTO",
+      "result": "SKIPPED"
+    },
+    {
+      "strategy_id": "cold_burst_3bet_539",
+      "catalog_visibility_state": "ARTIFACT_CANDIDATE",
+      "lifecycle_state": "REJECTED",
+      "lottery_type": "DAILY_539",
+      "result": "SKIPPED"
+    },
+    {
+      "strategy_id": "cold_complement_biglotto",
+      "catalog_visibility_state": "ARTIFACT_CANDIDATE",
+      "lifecycle_state": "REJECTED",
+      "lottery_type": "BIG_LOTTO",
+      "result": "SKIPPED"
+    },
+    {
+      "strategy_id": "coldpool15_biglotto",
+      "catalog_visibility_state": "ARTIFACT_CANDIDATE",
+      "lifecycle_state": "REJECTED",
+      "lottery_type": "BIG_LOTTO",
+      "result": "SKIPPED"
+    },
+    {
+      "strategy_id": "condfourier_3bet_539",
+      "catalog_visibility_state": "ARTIFACT_CANDIDATE",
+      "lifecycle_state": "REJECTED",
+      "lottery_type": "DAILY_539",
+      "result": "SKIPPED"
+    },
+    {
+      "strategy_id": "conditional_fourier_539",
+      "catalog_visibility_state": "ARTIFACT_CANDIDATE",
+      "lifecycle_state": "REJECTED",
+      "lottery_type": "DAILY_539",
+      "result": "SKIPPED"
+    },
+    {
+      "strategy_id": "consecutive_pair_detector_539",
+      "catalog_visibility_state": "ARTIFACT_CANDIDATE",
+      "lifecycle_state": "REJECTED",
+      "lottery_type": "DAILY_539",
+      "result": "SKIPPED"
+    },
+    {
+      "strategy_id": "core_satellite_biglotto",
+      "catalog_visibility_state": "ARTIFACT_CANDIDATE",
+      "lifecycle_state": "REJECTED",
+      "lottery_type": "BIG_LOTTO",
+      "result": "SKIPPED"
+    },
+    {
+      "strategy_id": "ewma_539",
+      "catalog_visibility_state": "ARTIFACT_CANDIDATE",
+      "lifecycle_state": "REJECTED",
+      "lottery_type": "DAILY_539",
+      "result": "SKIPPED"
+    },
+    {
+      "strategy_id": "extreme_col_539",
+      "catalog_visibility_state": "ARTIFACT_CANDIDATE",
+      "lifecycle_state": "REJECTED",
+      "lottery_type": "DAILY_539",
+      "result": "SKIPPED"
+    },
+    {
+      "strategy_id": "extremecol_1bet_539",
+      "catalog_visibility_state": "ARTIFACT_CANDIDATE",
+      "lifecycle_state": "REJECTED",
+      "lottery_type": "DAILY_539",
+      "result": "SKIPPED"
+    },
+    {
+      "strategy_id": "fourier30_markov30_biglotto",
+      "catalog_visibility_state": "ARTIFACT_CANDIDATE",
+      "lifecycle_state": "REJECTED",
+      "lottery_type": "BIG_LOTTO",
+      "result": "SKIPPED"
+    },
+    {
+      "strategy_id": "fourier_w100_pp3_power",
+      "catalog_visibility_state": "ARTIFACT_CANDIDATE",
+      "lifecycle_state": "REJECTED",
+      "lottery_type": "POWER_LOTTO",
+      "result": "SKIPPED"
+    },
+    {
+      "strategy_id": "gap_dynamic_threshold_biglotto",
+      "catalog_visibility_state": "ARTIFACT_CANDIDATE",
+      "lifecycle_state": "REJECTED",
+      "lottery_type": "BIG_LOTTO",
+      "result": "SKIPPED"
+    },
+    {
+      "strategy_id": "gap_rebound_powerlotto",
+      "catalog_visibility_state": "ARTIFACT_CANDIDATE",
+      "lifecycle_state": "REJECTED",
+      "lottery_type": "POWER_LOTTO",
+      "result": "SKIPPED"
+    },
+    {
+      "strategy_id": "habit_aware_fourier_v8_539",
+      "catalog_visibility_state": "ARTIFACT_CANDIDATE",
+      "lifecycle_state": "REJECTED",
+      "lottery_type": "DAILY_539",
+      "result": "SKIPPED"
+    },
+    {
+      "strategy_id": "hot_gap_return_biglotto",
+      "catalog_visibility_state": "ARTIFACT_CANDIDATE",
+      "lifecycle_state": "REJECTED",
+      "lottery_type": "BIG_LOTTO",
+      "result": "SKIPPED"
+    },
+    {
+      "strategy_id": "hot_stop_rebound_biglotto",
+      "catalog_visibility_state": "ARTIFACT_CANDIDATE",
+      "lifecycle_state": "REJECTED",
+      "lottery_type": "BIG_LOTTO",
+      "result": "SKIPPED"
+    },
+    {
+      "strategy_id": "hot_streak_override_biglotto",
+      "catalog_visibility_state": "ARTIFACT_CANDIDATE",
+      "lifecycle_state": "REJECTED",
+      "lottery_type": "BIG_LOTTO",
+      "result": "SKIPPED"
+    },
+    {
+      "strategy_id": "lag_echo_1bet_539",
+      "catalog_visibility_state": "ARTIFACT_CANDIDATE",
+      "lifecycle_state": "REJECTED",
+      "lottery_type": "DAILY_539",
+      "result": "SKIPPED"
+    },
+    {
+      "strategy_id": "lag_echo_acb_markov_3bet_539",
+      "catalog_visibility_state": "ARTIFACT_CANDIDATE",
+      "lifecycle_state": "REJECTED",
+      "lottery_type": "DAILY_539",
+      "result": "SKIPPED"
+    },
+    {
+      "strategy_id": "lift_pair_single_539",
+      "catalog_visibility_state": "ARTIFACT_CANDIDATE",
+      "lifecycle_state": "REJECTED",
+      "lottery_type": "DAILY_539",
+      "result": "SKIPPED"
+    },
+    {
+      "strategy_id": "mab_ucb1_539",
+      "catalog_visibility_state": "ARTIFACT_CANDIDATE",
+      "lifecycle_state": "REJECTED",
+      "lottery_type": "DAILY_539",
+      "result": "SKIPPED"
+    },
+    {
+      "strategy_id": "markov_1bet_539",
+      "catalog_visibility_state": "ARTIFACT_CANDIDATE",
+      "lifecycle_state": "REJECTED",
+      "lottery_type": "DAILY_539",
+      "result": "SKIPPED"
+    },
+    {
+      "strategy_id": "markov_2bet_biglotto",
+      "catalog_visibility_state": "ARTIFACT_CANDIDATE",
+      "lifecycle_state": "REJECTED",
+      "lottery_type": "BIG_LOTTO",
+      "result": "SKIPPED"
+    },
+    {
+      "strategy_id": "markov_repeat_exception_biglotto",
+      "catalog_visibility_state": "ARTIFACT_CANDIDATE",
+      "lifecycle_state": "REJECTED",
+      "lottery_type": "BIG_LOTTO",
+      "result": "SKIPPED"
+    },
+    {
+      "strategy_id": "markov_single_biglotto",
+      "catalog_visibility_state": "ARTIFACT_CANDIDATE",
+      "lifecycle_state": "REJECTED",
+      "lottery_type": "BIG_LOTTO",
+      "result": "SKIPPED"
+    },
+    {
+      "strategy_id": "midfreq_extremecol_2bet_539",
+      "catalog_visibility_state": "ARTIFACT_CANDIDATE",
+      "lifecycle_state": "REJECTED",
+      "lottery_type": "DAILY_539",
+      "result": "SKIPPED"
+    },
+    {
+      "strategy_id": "momentum_regime_switching_539",
+      "catalog_visibility_state": "ARTIFACT_CANDIDATE",
+      "lifecycle_state": "REJECTED",
+      "lottery_type": "DAILY_539",
+      "result": "SKIPPED"
+    },
+    {
+      "strategy_id": "multiwindow_fourier_biglotto",
+      "catalog_visibility_state": "ARTIFACT_CANDIDATE",
+      "lifecycle_state": "REJECTED",
+      "lottery_type": "BIG_LOTTO",
+      "result": "SKIPPED"
+    },
+    {
+      "strategy_id": "neighbor_acb_2bet_539",
+      "catalog_visibility_state": "ARTIFACT_CANDIDATE",
+      "lifecycle_state": "REJECTED",
+      "lottery_type": "DAILY_539",
+      "result": "SKIPPED"
+    },
+    {
+      "strategy_id": "neighbor_injection_biglotto",
+      "catalog_visibility_state": "ARTIFACT_CANDIDATE",
+      "lifecycle_state": "REJECTED",
+      "lottery_type": "BIG_LOTTO",
+      "result": "SKIPPED"
+    },
+    {
+      "strategy_id": "p0_neighbor_injection",
+      "catalog_visibility_state": "ARTIFACT_CANDIDATE",
+      "lifecycle_state": "REJECTED",
+      "lottery_type": "UNKNOWN",
+      "result": "SKIPPED"
+    },
+    {
+      "strategy_id": "p0b_539_3bet_f_cold_fmid",
+      "catalog_visibility_state": "ARTIFACT_CANDIDATE",
+      "lifecycle_state": "REJECTED",
+      "lottery_type": "DAILY_539",
+      "result": "SKIPPED"
+    },
+    {
+      "strategy_id": "p0c_539_3bet_f_cold_x2",
+      "catalog_visibility_state": "ARTIFACT_CANDIDATE",
+      "lifecycle_state": "REJECTED",
+      "lottery_type": "DAILY_539",
+      "result": "SKIPPED"
+    },
+    {
+      "strategy_id": "p1_conditional_branch_powerlotto",
+      "catalog_visibility_state": "ARTIFACT_CANDIDATE",
+      "lifecycle_state": "REJECTED",
+      "lottery_type": "POWER_LOTTO",
+      "result": "SKIPPED"
+    },
+    {
+      "strategy_id": "p2_mab_fusion",
+      "catalog_visibility_state": "ARTIFACT_CANDIDATE",
+      "lifecycle_state": "REJECTED",
+      "lottery_type": "UNKNOWN",
+      "result": "SKIPPED"
+    },
+    {
+      "strategy_id": "p3_state_aware",
+      "catalog_visibility_state": "ARTIFACT_CANDIDATE",
+      "lifecycle_state": "REJECTED",
+      "lottery_type": "UNKNOWN",
+      "result": "SKIPPED"
+    },
+    {
+      "strategy_id": "power_echo_boost",
+      "catalog_visibility_state": "ARTIFACT_CANDIDATE",
+      "lifecycle_state": "REJECTED",
+      "lottery_type": "POWER_LOTTO",
+      "result": "SKIPPED"
+    },
+    {
+      "strategy_id": "power_pp3v2_combined",
+      "catalog_visibility_state": "ARTIFACT_CANDIDATE",
+      "lifecycle_state": "REJECTED",
+      "lottery_type": "POWER_LOTTO",
+      "result": "SKIPPED"
+    },
+    {
+      "strategy_id": "power_z3gap_watch",
+      "catalog_visibility_state": "ARTIFACT_CANDIDATE",
+      "lifecycle_state": "REJECTED",
+      "lottery_type": "POWER_LOTTO",
+      "result": "SKIPPED"
+    },
+    {
+      "strategy_id": "sgp_power_017_research",
+      "catalog_visibility_state": "ARTIFACT_CANDIDATE",
+      "lifecycle_state": "REJECTED",
+      "lottery_type": "POWER_LOTTO",
+      "result": "SKIPPED"
+    },
+    {
+      "strategy_id": "sgp_v9_apex_powerlotto",
+      "catalog_visibility_state": "ARTIFACT_CANDIDATE",
+      "lifecycle_state": "REJECTED",
+      "lottery_type": "POWER_LOTTO",
+      "result": "SKIPPED"
+    },
+    {
+      "strategy_id": "shlc_midfreq_power",
+      "catalog_visibility_state": "ARTIFACT_CANDIDATE",
+      "lifecycle_state": "REJECTED",
+      "lottery_type": "POWER_LOTTO",
+      "result": "SKIPPED"
+    },
+    {
+      "strategy_id": "short_term_hot_independent_bet",
+      "catalog_visibility_state": "ARTIFACT_CANDIDATE",
+      "lifecycle_state": "REJECTED",
+      "lottery_type": "UNKNOWN",
+      "result": "SKIPPED"
+    },
+    {
+      "strategy_id": "special_mab_decay_adjustment_power",
+      "catalog_visibility_state": "ARTIFACT_CANDIDATE",
+      "lifecycle_state": "REJECTED",
+      "lottery_type": "POWER_LOTTO",
+      "result": "SKIPPED"
+    },
+    {
+      "strategy_id": "streak_boost_neighbor_bet1",
+      "catalog_visibility_state": "ARTIFACT_CANDIDATE",
+      "lifecycle_state": "REJECTED",
+      "lottery_type": "UNKNOWN",
+      "result": "SKIPPED"
+    },
+    {
+      "strategy_id": "structural_zone_guard_pp3_power",
+      "catalog_visibility_state": "ARTIFACT_CANDIDATE",
+      "lifecycle_state": "REJECTED",
+      "lottery_type": "POWER_LOTTO",
+      "result": "SKIPPED"
+    },
+    {
+      "strategy_id": "ts3_acb_4bet_biglotto",
+      "catalog_visibility_state": "ARTIFACT_CANDIDATE",
+      "lifecycle_state": "REJECTED",
+      "lottery_type": "BIG_LOTTO",
+      "result": "SKIPPED"
+    },
+    {
+      "strategy_id": "ts3_markov_freq_5bet_biglotto",
+      "catalog_visibility_state": "ARTIFACT_CANDIDATE",
+      "lifecycle_state": "REJECTED",
+      "lottery_type": "BIG_LOTTO",
+      "result": "SKIPPED"
+    },
+    {
+      "strategy_id": "zone_cascade_guard_biglotto",
+      "catalog_visibility_state": "ARTIFACT_CANDIDATE",
+      "lifecycle_state": "REJECTED",
+      "lottery_type": "BIG_LOTTO",
+      "result": "SKIPPED"
+    },
+    {
+      "strategy_id": "zone_constraint_cold_bet2",
+      "catalog_visibility_state": "ARTIFACT_CANDIDATE",
+      "lifecycle_state": "REJECTED",
+      "lottery_type": "UNKNOWN",
+      "result": "SKIPPED"
+    },
+    {
+      "strategy_id": "zone_gap_3bet_539",
+      "catalog_visibility_state": "ARTIFACT_CANDIDATE",
+      "lifecycle_state": "REJECTED",
+      "lottery_type": "DAILY_539",
+      "result": "SKIPPED"
+    }
+  ]
+}

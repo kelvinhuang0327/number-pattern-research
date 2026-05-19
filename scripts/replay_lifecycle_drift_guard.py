@@ -4,14 +4,19 @@ replay_lifecycle_drift_guard.py
 Read-only Post-V3 replay lifecycle drift guard.
 
 Validates that the strategy_prediction_replays table has not drifted from
-the Post-V3 baseline established on 2026-05-14 (updated P3BC 2026-05-16):
-  V1  (controlled_apply_id='20260514033100-13acaf34996e') == 300
-  V2  (controlled_apply_id='20260514134953-cf683424')     == 200
+the main-repo P0 baseline established on 2026-05-19 (single-repo stabilization):
+  V1  (controlled_apply_id='20260514033100-13acaf34996e') ==   0
+  V2  (controlled_apply_id='20260514134953-cf683424')     ==   0
   legacy (controlled_apply_id IS NULL)                    == 460
-  P2B (controlled_apply_id='P2B_20260515')                ==   6
-  P2F (controlled_apply_id='P2F_20260515')                ==   3
-  P3BC (controlled_apply_id='P3BC_RESOLVE_20260516')      ==   6
-  total                                                   == 975
+  P2B (controlled_apply_id='P2B_20260515')                ==   0
+  P2F (controlled_apply_id='P2F_20260515')                ==   0
+  P3BC (controlled_apply_id='P3BC_RESOLVE_20260516')      ==   0
+  total                                                   == 460
+
+NOTE: The LotteryNew-clean sibling repo had 975 rows (V1+V2+legacy+P2B+P2F+P3BC).
+The main repo only has 460 legacy rows. V1/V2/P2B/P2F/P3BC rows are NOT
+present — this is expected for P0 single-repo stabilization. Historical
+reconstruction (P5-P7) will add rows with controlled_apply_id later.
 
 Also checks:
   - Known V3 CODE_MISSING strategy IDs have 0 rows
@@ -43,22 +48,23 @@ import sys
 REPO_ROOT = pathlib.Path(__file__).resolve().parent.parent
 DB_PATH = REPO_ROOT / "lottery_api" / "data" / "lottery_v2.db"
 
-# Baseline counts established on 2026-05-14 after Post-V3 replay apply
-# Updated 2026-05-15: +6 rows from P2B controlled ts3_regime_3bet backfill
-# Updated 2026-05-15: +3 rows from P2F controlled ts3_regime_3bet backfill (draw 115000051)
+# Baseline for main-repo established on 2026-05-19 (P0 single-repo stabilization).
+# Main repo was never the target of V1/V2/P2B/P2F/P3BC apply runs (those happened
+# in LotteryNew-clean only). All 460 rows are legacy (controlled_apply_id IS NULL).
+# P5-P7 historical reconstruction will add rows with controlled_apply_id values.
 BASELINE = {
     "v1_apply_id": "20260514033100-13acaf34996e",
     "v2_apply_id": "20260514134953-cf683424",
     "p2b_apply_id": "P2B_20260515",
     "p2f_apply_id": "P2F_20260515",
     "p3bc_apply_id": "P3BC_RESOLVE_20260516",
-    "v1_count": 300,
-    "v2_count": 200,
+    "v1_count": 0,
+    "v2_count": 0,
     "legacy_count": 460,
-    "p2b_count": 6,
-    "p2f_count": 3,
-    "p3bc_count": 6,
-    "total_count": 975,
+    "p2b_count": 0,
+    "p2f_count": 0,
+    "p3bc_count": 0,
+    "total_count": 460,
 }
 
 # Known V3 tombstone strategy IDs — must have 0 rows in replay table

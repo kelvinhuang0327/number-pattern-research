@@ -1,0 +1,465 @@
+{
+  "generated_at": "2026-05-19T13:09:55.503406Z",
+  "phase": "P5",
+  "mode": "DRY_RUN",
+  "dry_run": true,
+  "catalog_source": "p2_json",
+  "reconstructible_count": 12,
+  "target_draws_total": 300,
+  "target_draw_range": "115000072-115000121",
+  "by_evidence_class": {
+    "SOURCE_MISSING": [
+      "fourier_rhythm_3bet",
+      "ts3_regime_3bet"
+    ],
+    "NEEDS_P6_POLICY": [
+      "biglotto_ts3_acb_4bet",
+      "biglotto_ts3_markov_freq_5bet",
+      "power_shlc_midfreq",
+      "acb_markov_midfreq",
+      "midfreq_fourier_2bet",
+      "h6_gate_mk20_ew85"
+    ],
+    "PROVENANCE_MISSING": [
+      "p1_deviation_2bet_539"
+    ],
+    "SOURCE_AVAILABLE": [
+      "acb_1bet",
+      "acb_markov_midfreq_3bet",
+      "midfreq_acb_2bet"
+    ]
+  },
+  "total_plannable_cells": 62,
+  "total_skippable_cells": 238,
+  "db_row_count_before": 460,
+  "db_row_count_after": 460,
+  "strategies": [
+    {
+      "strategy_id": "fourier_rhythm_3bet",
+      "lottery_type": "POWER_LOTTO",
+      "lifecycle_state": "ONLINE",
+      "catalog_visibility_state": "RECONSTRUCTIBLE",
+      "artifact_source_type": "PREDICTION_LOG",
+      "source_paths": [
+        "DB:prediction_items[strategy_name='fourier_rhythm_3bet']"
+      ],
+      "artifact_checks": [
+        {
+          "exists": true,
+          "type": "DB_TABLE",
+          "readable": true
+        }
+      ],
+      "evidence_class": "SOURCE_MISSING",
+      "target_draw_count": 0,
+      "covered_draws_count": 0,
+      "missing_draws_count": 0,
+      "covered_draws": [],
+      "missing_draws": [],
+      "draw_coverage_detail": {},
+      "dry_run_only": true
+    },
+    {
+      "strategy_id": "ts3_regime_3bet",
+      "lottery_type": "BIG_LOTTO",
+      "lifecycle_state": "ONLINE",
+      "catalog_visibility_state": "RECONSTRUCTIBLE",
+      "artifact_source_type": "PREDICTION_LOG",
+      "source_paths": [
+        "DB:prediction_items[strategy_name='ts3_regime_3bet']"
+      ],
+      "artifact_checks": [
+        {
+          "exists": true,
+          "type": "DB_TABLE",
+          "readable": true
+        }
+      ],
+      "evidence_class": "SOURCE_MISSING",
+      "target_draw_count": 0,
+      "covered_draws_count": 0,
+      "missing_draws_count": 0,
+      "covered_draws": [],
+      "missing_draws": [],
+      "draw_coverage_detail": {},
+      "dry_run_only": true
+    },
+    {
+      "strategy_id": "biglotto_ts3_acb_4bet",
+      "lottery_type": "BIG_LOTTO",
+      "lifecycle_state": "REJECTED",
+      "catalog_visibility_state": "RECONSTRUCTIBLE",
+      "artifact_source_type": "CODE_SCAN",
+      "source_paths": [
+        "lottery_api/models/replay_strategy_registry.py"
+      ],
+      "artifact_checks": [
+        {
+          "exists": true,
+          "type": "FILE",
+          "readable": true,
+          "size_bytes": 29025
+        }
+      ],
+      "evidence_class": "NEEDS_P6_POLICY",
+      "target_draw_count": 0,
+      "covered_draws_count": 0,
+      "missing_draws_count": 0,
+      "covered_draws": [],
+      "missing_draws": [],
+      "draw_coverage_detail": {},
+      "dry_run_only": true
+    },
+    {
+      "strategy_id": "biglotto_ts3_markov_freq_5bet",
+      "lottery_type": "BIG_LOTTO",
+      "lifecycle_state": "REJECTED",
+      "catalog_visibility_state": "RECONSTRUCTIBLE",
+      "artifact_source_type": "CODE_SCAN",
+      "source_paths": [
+        "lottery_api/models/replay_strategy_registry.py"
+      ],
+      "artifact_checks": [
+        {
+          "exists": true,
+          "type": "FILE",
+          "readable": true,
+          "size_bytes": 29025
+        }
+      ],
+      "evidence_class": "NEEDS_P6_POLICY",
+      "target_draw_count": 0,
+      "covered_draws_count": 0,
+      "missing_draws_count": 0,
+      "covered_draws": [],
+      "missing_draws": [],
+      "draw_coverage_detail": {},
+      "dry_run_only": true
+    },
+    {
+      "strategy_id": "power_shlc_midfreq",
+      "lottery_type": "POWER_LOTTO",
+      "lifecycle_state": "REJECTED",
+      "catalog_visibility_state": "RECONSTRUCTIBLE",
+      "artifact_source_type": "CODE_SCAN",
+      "source_paths": [
+        "lottery_api/models/replay_strategy_registry.py"
+      ],
+      "artifact_checks": [
+        {
+          "exists": true,
+          "type": "FILE",
+          "readable": true,
+          "size_bytes": 29025
+        }
+      ],
+      "evidence_class": "NEEDS_P6_POLICY",
+      "target_draw_count": 0,
+      "covered_draws_count": 0,
+      "missing_draws_count": 0,
+      "covered_draws": [],
+      "missing_draws": [],
+      "draw_coverage_detail": {},
+      "dry_run_only": true
+    },
+    {
+      "strategy_id": "p1_deviation_2bet_539",
+      "lottery_type": "DAILY_539",
+      "lifecycle_state": "REJECTED",
+      "catalog_visibility_state": "RECONSTRUCTIBLE",
+      "artifact_source_type": "REJECTED_JSON",
+      "source_paths": [
+        "rejected/p1_deviation_2bet_539.json"
+      ],
+      "artifact_checks": [
+        {
+          "exists": true,
+          "type": "FILE",
+          "readable": true,
+          "size_bytes": 2420
+        }
+      ],
+      "evidence_class": "PROVENANCE_MISSING",
+      "target_draw_count": 50,
+      "covered_draws_count": 0,
+      "missing_draws_count": 50,
+      "covered_draws": [],
+      "missing_draws": [
+        "115000072",
+        "115000073",
+        "115000074",
+        "115000075",
+        "115000076"
+      ],
+      "draw_coverage_detail": {},
+      "dry_run_only": true
+    },
+    {
+      "strategy_id": "acb_1bet",
+      "lottery_type": "DAILY_539",
+      "lifecycle_state": "RETIRED",
+      "catalog_visibility_state": "RECONSTRUCTIBLE",
+      "artifact_source_type": "PREDICTION_LOG",
+      "source_paths": [
+        "DB:prediction_items[strategy_name='acb_1bet']"
+      ],
+      "artifact_checks": [
+        {
+          "exists": true,
+          "type": "DB_TABLE",
+          "readable": true
+        }
+      ],
+      "evidence_class": "SOURCE_AVAILABLE",
+      "target_draw_count": 50,
+      "covered_draws_count": 9,
+      "missing_draws_count": 41,
+      "covered_draws": [
+        "115000072",
+        "115000073",
+        "115000074",
+        "115000075",
+        "115000076"
+      ],
+      "missing_draws": [
+        "115000079",
+        "115000080",
+        "115000081",
+        "115000082",
+        "115000084"
+      ],
+      "draw_coverage_detail": {
+        "115000072": {
+          "run_id": 105,
+          "item_count": 1,
+          "has_result": true,
+          "source": "MULTI_STRATEGY",
+          "numbers_sample": "[7, 9, 14, 20, 39]"
+        },
+        "115000073": {
+          "run_id": 106,
+          "item_count": 1,
+          "has_result": true,
+          "source": "MULTI_STRATEGY",
+          "numbers_sample": "[9, 14, 20, 26, 39]"
+        },
+        "115000074": {
+          "run_id": 107,
+          "item_count": 1,
+          "has_result": true,
+          "source": "MULTI_STRATEGY",
+          "numbers_sample": "[9, 14, 20, 26, 39]"
+        }
+      },
+      "dry_run_only": true
+    },
+    {
+      "strategy_id": "acb_markov_midfreq",
+      "lottery_type": "DAILY_539",
+      "lifecycle_state": "RETIRED",
+      "catalog_visibility_state": "RECONSTRUCTIBLE",
+      "artifact_source_type": "CODE_SCAN",
+      "source_paths": [
+        "lottery_api/models/replay_strategy_registry.py"
+      ],
+      "artifact_checks": [
+        {
+          "exists": true,
+          "type": "FILE",
+          "readable": true,
+          "size_bytes": 29025
+        }
+      ],
+      "evidence_class": "NEEDS_P6_POLICY",
+      "target_draw_count": 50,
+      "covered_draws_count": 0,
+      "missing_draws_count": 50,
+      "covered_draws": [],
+      "missing_draws": [
+        "115000072",
+        "115000073",
+        "115000074",
+        "115000075",
+        "115000076"
+      ],
+      "draw_coverage_detail": {},
+      "dry_run_only": true
+    },
+    {
+      "strategy_id": "acb_markov_midfreq_3bet",
+      "lottery_type": "DAILY_539",
+      "lifecycle_state": "RETIRED",
+      "catalog_visibility_state": "RECONSTRUCTIBLE",
+      "artifact_source_type": "PREDICTION_LOG",
+      "source_paths": [
+        "DB:prediction_items[strategy_name='acb_markov_midfreq_3bet']"
+      ],
+      "artifact_checks": [
+        {
+          "exists": true,
+          "type": "DB_TABLE",
+          "readable": true
+        }
+      ],
+      "evidence_class": "SOURCE_AVAILABLE",
+      "target_draw_count": 50,
+      "covered_draws_count": 44,
+      "missing_draws_count": 6,
+      "covered_draws": [
+        "115000072",
+        "115000073",
+        "115000074",
+        "115000075",
+        "115000076"
+      ],
+      "missing_draws": [
+        "115000116",
+        "115000117",
+        "115000118",
+        "115000119",
+        "115000120"
+      ],
+      "draw_coverage_detail": {
+        "115000077": {
+          "run_id": 109,
+          "item_count": 3,
+          "has_result": true,
+          "source": "DIRECT_RUN",
+          "numbers_sample": "[8, 10, 17, 30, 32]"
+        },
+        "115000078": {
+          "run_id": 114,
+          "item_count": 3,
+          "has_result": true,
+          "source": "DIRECT_RUN",
+          "numbers_sample": "[17, 19, 21, 29, 31]"
+        },
+        "115000079": {
+          "run_id": 116,
+          "item_count": 3,
+          "has_result": true,
+          "source": "DIRECT_RUN",
+          "numbers_sample": "[1, 18, 31, 37, 38]"
+        }
+      },
+      "dry_run_only": true
+    },
+    {
+      "strategy_id": "midfreq_acb_2bet",
+      "lottery_type": "DAILY_539",
+      "lifecycle_state": "RETIRED",
+      "catalog_visibility_state": "RECONSTRUCTIBLE",
+      "artifact_source_type": "PREDICTION_LOG",
+      "source_paths": [
+        "DB:prediction_items[strategy_name='midfreq_acb_2bet']"
+      ],
+      "artifact_checks": [
+        {
+          "exists": true,
+          "type": "DB_TABLE",
+          "readable": true
+        }
+      ],
+      "evidence_class": "SOURCE_AVAILABLE",
+      "target_draw_count": 50,
+      "covered_draws_count": 9,
+      "missing_draws_count": 41,
+      "covered_draws": [
+        "115000072",
+        "115000073",
+        "115000074",
+        "115000075",
+        "115000076"
+      ],
+      "missing_draws": [
+        "115000079",
+        "115000080",
+        "115000081",
+        "115000082",
+        "115000084"
+      ],
+      "draw_coverage_detail": {
+        "115000072": {
+          "run_id": 105,
+          "item_count": 2,
+          "has_result": true,
+          "source": "MULTI_STRATEGY",
+          "numbers_sample": "[6, 17, 18, 19, 34]"
+        },
+        "115000073": {
+          "run_id": 106,
+          "item_count": 2,
+          "has_result": true,
+          "source": "MULTI_STRATEGY",
+          "numbers_sample": "[6, 17, 18, 19, 34]"
+        },
+        "115000074": {
+          "run_id": 107,
+          "item_count": 2,
+          "has_result": true,
+          "source": "MULTI_STRATEGY",
+          "numbers_sample": "[6, 17, 19, 24, 34]"
+        }
+      },
+      "dry_run_only": true
+    },
+    {
+      "strategy_id": "midfreq_fourier_2bet",
+      "lottery_type": "DAILY_539",
+      "lifecycle_state": "RETIRED",
+      "catalog_visibility_state": "RECONSTRUCTIBLE",
+      "artifact_source_type": "CODE_SCAN",
+      "source_paths": [
+        "lottery_api/models/replay_strategy_registry.py"
+      ],
+      "artifact_checks": [
+        {
+          "exists": true,
+          "type": "FILE",
+          "readable": true,
+          "size_bytes": 29025
+        }
+      ],
+      "evidence_class": "NEEDS_P6_POLICY",
+      "target_draw_count": 50,
+      "covered_draws_count": 0,
+      "missing_draws_count": 50,
+      "covered_draws": [],
+      "missing_draws": [
+        "115000072",
+        "115000073",
+        "115000074",
+        "115000075",
+        "115000076"
+      ],
+      "draw_coverage_detail": {},
+      "dry_run_only": true
+    },
+    {
+      "strategy_id": "h6_gate_mk20_ew85",
+      "lottery_type": "POWER_LOTTO",
+      "lifecycle_state": "OBSERVATION",
+      "catalog_visibility_state": "RECONSTRUCTIBLE",
+      "artifact_source_type": "CODE_SCAN",
+      "source_paths": [
+        "lottery_api/models/replay_strategy_registry.py"
+      ],
+      "artifact_checks": [
+        {
+          "exists": true,
+          "type": "FILE",
+          "readable": true,
+          "size_bytes": 29025
+        }
+      ],
+      "evidence_class": "NEEDS_P6_POLICY",
+      "target_draw_count": 0,
+      "covered_draws_count": 0,
+      "missing_draws_count": 0,
+      "covered_draws": [],
+      "missing_draws": [],
+      "draw_coverage_detail": {},
+      "dry_run_only": true
+    }
+  ]
+}

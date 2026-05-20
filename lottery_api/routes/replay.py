@@ -490,6 +490,8 @@ async def get_replay_history(
 
             records = []
             for r in rows:
+                actual_nums = _parse_json(r["actual_numbers"])
+                hit_cnt     = r["hit_count"]
                 records.append({
                     "id":                       r["id"],
                     "lottery":                  r["lottery_type"],
@@ -504,10 +506,10 @@ async def get_replay_history(
                     "reject_reason":            r["reject_reason"],
                     "predicted_numbers":        _parse_json(r["predicted_numbers"]),
                     "predicted_special":        r["predicted_special"],
-                    "actual_numbers":           _parse_json(r["actual_numbers"]),
+                    "actual_numbers":           actual_nums,
                     "actual_special":           r["actual_special"],
                     "hit_numbers":              _parse_json(r["hit_numbers"]),
-                    "hit_count":                r["hit_count"],
+                    "hit_count":                hit_cnt,
                     "special_hit":              r["special_hit"],
                     "replay_run_id":            r["replay_run_id"],
                     "generated_at":             r["generated_at"],
@@ -519,6 +521,13 @@ async def get_replay_history(
                     "lifecycle_status":         get_strategy_lifecycle_status(r["strategy_id"]),
                     # P0-C: strategy lifecycle status from registry (read-only)
                     "strategy_lifecycle_status": get_strategy_lifecycle_status(r["strategy_id"]),
+                    # P5: P3 coverage matrix fields (minimal patch — non-breaking)
+                    "visibility_state":         "ROW_BACKED",
+                    "display_status":           "SHOW_REPLAY_RESULT",
+                    "should_count_as_success":  actual_nums is not None and hit_cnt is not None,
+                    "source_trace":             "|".join(filter(None, [
+                        r["source"], r["truth_level"], r["provenance_hash"]
+                    ])) or None,
                 })
 
             return {

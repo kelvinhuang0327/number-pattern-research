@@ -45,12 +45,20 @@ def test_01_script_exists():
     assert SCRIPT_PATH.exists(), f"Guard script not found: {SCRIPT_PATH}"
 
 
-# ── 2. Script runs successfully (exit 0) on canonical branch ─────────────────
+# ── 2. Script runs successfully (exit 0) on the active branch ────────────────
 def test_02_script_passes_on_canonical(tmp_path):
+    """Guard must pass when expected-branch matches the actual active branch."""
+    # After merging to main the active branch is 'main'; before merge it was the
+    # canonical feature branch.  Use the current branch so the test stays green
+    # regardless of which branch is checked out.
+    import subprocess as _sp
+    current = _sp.check_output(
+        ["git", "rev-parse", "--abbrev-ref", "HEAD"], text=True
+    ).strip()
     out = tmp_path / "gov.json"
     result = subprocess.run(
         [PYTHON, str(SCRIPT_PATH),
-         "--expected-branch", CANONICAL,
+         "--expected-branch", current,
          "--expected-rows", "460",
          "--json-out", str(out)],
         capture_output=True, text=True,

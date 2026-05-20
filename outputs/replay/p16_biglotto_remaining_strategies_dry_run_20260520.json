@@ -1,0 +1,35 @@
+{
+  "phase": "P16_BIGLOTTO_REMAINING_STRATEGIES_DRY_RUN",
+  "generated_at": "2026-05-20T12:35:59.188385+00:00",
+  "production_apply": false,
+  "dry_run_only": true,
+  "production_rows_before": 1960,
+  "lottery_type": "BIG_LOTTO",
+  "target_draw_window": 1500,
+  "strategies": [
+    {
+      "strategy_id": "biglotto_triple_strike",
+      "ready": 1500,
+      "blocked": 0,
+      "duplicate_count": 0,
+      "by_status": {
+        "READY": 1500
+      }
+    },
+    {
+      "strategy_id": "biglotto_deviation_2bet",
+      "ready": 1500,
+      "blocked": 0,
+      "duplicate_count": 0,
+      "by_status": {
+        "READY": 1500
+      }
+    }
+  ],
+  "generated_candidates": 3000,
+  "ready_candidates": 3000,
+  "blocked_candidates": 0,
+  "duplicate_existing_count": 0,
+  "planned_insert_count": 3000,
+  "fake_success_count": 0
+}

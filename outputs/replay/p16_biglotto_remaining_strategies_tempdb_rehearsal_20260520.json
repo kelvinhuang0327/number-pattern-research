@@ -1,0 +1,17 @@
+{
+  "phase": "P16_BIGLOTTO_REMAINING_STRATEGIES_TEMP_REHEARSAL",
+  "generated_at": "2026-05-20T12:36:50.351798+00:00",
+  "controlled_apply_id": "P16_BIGLOTTO_REMAINING_1500_PROD_20260520",
+  "initial_rows": 1960,
+  "planned_insert_count": 3000,
+  "temp_applied_rows": 4960,
+  "r1_inserted_count": 3000,
+  "r1_duplicate_count": 0,
+  "r2_inserted_count": 0,
+  "r2_duplicate_count": 3000,
+  "rollback_deleted_count": 3000,
+  "rows_after_rollback": 1960,
+  "idempotency_pass": true,
+  "rollback_pass": true,
+  "final_classification": "P16_TEMP_REHEARSAL_PASS"
+}

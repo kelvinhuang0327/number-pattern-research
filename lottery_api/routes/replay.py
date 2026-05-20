@@ -242,27 +242,49 @@ async def list_replay_strategies(
             "If omitted, ALL lifecycle states are returned."
         ),
     ),
+    public_only: bool = Query(
+        False,
+        description=(
+            "When true, restrict to public-visible strategies only "
+            "(lifecycle_status ONLINE or OBSERVATION). "
+            "Internal states (REJECTED, RETIRED, OFFLINE) are excluded."
+        ),
+    ),
 ):
     """
-    Lists ALL registered replay strategies across all lifecycle states (P0-A).
+    Lists registered replay strategies.
 
     Optional filters:
       lottery_type     — POWER_LOTTO | BIG_LOTTO | DAILY_539
       lifecycle_status — ONLINE | OFFLINE | REJECTED | OBSERVATION | RETIRED
+      public_only      — when true, only ONLINE/OBSERVATION strategies returned
 
     Each entry includes 'strategy_lifecycle_status'.
     READ-ONLY. Does NOT trigger replay generation.
     """
+    # public_only enforces ONLINE/OBSERVATION only — overrides lifecycle_status
+    if public_only:
+        lifecycle_status = None  # will be handled via post-filter
+
     try:
         strategies = list_strategies(
             lottery_type=lottery_type,
             lifecycle_status=lifecycle_status,
         )
+
+        if public_only:
+            _PUBLIC_LIFECYCLE = {"ONLINE", "OBSERVATION"}
+            strategies = [
+                s for s in strategies
+                if s.get("strategy_lifecycle_status", "") in _PUBLIC_LIFECYCLE
+            ]
+
         return {
             "strategies":              strategies,
             "count":                   len(strategies),
             "filter_lottery_type":     lottery_type,
             "filter_lifecycle_status": lifecycle_status,
+            "filter_public_only":      public_only,
             # backward-compat alias
             "filter":                  lottery_type,
         }

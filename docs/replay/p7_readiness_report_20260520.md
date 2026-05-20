@@ -140,20 +140,42 @@ WHERE strategy_id=? AND target_draw=? AND lottery_type=?
 
 ---
 
-## 12. Test Coverage
+## 12. P0 Gate Hardening (2026-05-20)
+
+Two bugs were found and fixed during P0 actual-apply gate testing:
+
+| Bug | Root Cause | Fix |
+|-----|-----------|-----|
+| All 28 PLAN_INSERT rows failed FK constraint | `_build_payload()` passed `source_run_id` (a `prediction_runs.id`) as `replay_run_id` (FK on `strategy_replay_runs.id`); these are different tables | Set `replay_run_id=None` (NULL) — P7 apply rows have no `strategy_replay_runs` entry |
+| Idempotency test could not verify second run | After 460→488 insert, second run's preflight `live_count==488 != expected_rows==460` caused SAFETY STOP before writing result JSON | Test now passes `--expected-rows 488` and a fresh backup for the second-run |
+
+**Evidence**: `outputs/replay/p7_controlled_apply_apply_result_20260520.json` documents
+the prior failed apply attempt (28 errors, 0 inserted, rows unchanged at 460). Retained
+as audit artifact. Full origin analysis in `docs/replay/p1b_registry_reconciliation_20260520.md`.
+
+**Rehearsal validation** (temp DB only, production untouched):
+- 460 → 488 (28 ONLINE inserts): ✅
+- Rerun: 0 new inserts / 28 duplicates: ✅
+- Rollback via `controlled_apply_id`: ✅
+
+---
+
+## 13. Test Coverage
 
 | Suite | Tests | Result |
 |-------|-------|--------|
 | P7 apply plan contract | 39 | ✅ PASS |
 | P7 controlled apply dry-run integration | 20 | ✅ PASS |
+| **P7 actual apply gate** | **17** | **✅ PASS** |
+| P2 full catalog visibility plan | 24 | ✅ PASS |
 | P6 + P25 + replay API + P3 UI (regression) | 166 | ✅ PASS |
-| **Total** | **225** | **✅ 225 PASS / 0 FAIL** |
+| **Total** | **266** | **✅ 266 PASS / 0 FAIL** |
 
 Drift guard: **PASS** — `strategy_prediction_replays` = 460 rows (unchanged)
 
 ---
 
-## 13. CEO Authorization Gate
+## 14. CEO Authorization Gate
 
 P7 actual apply is **NOT** triggered by this dry-run.
 

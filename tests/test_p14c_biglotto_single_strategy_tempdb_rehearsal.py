@@ -47,9 +47,37 @@ def p14b_input() -> dict:
 
 @pytest.fixture()
 def temp_db(tmp_path):
-    """Fresh copy of the production DB for each test that needs write access."""
+    """
+    Isolated temp DB containing only the original 460 legacy rows
+    (controlled_apply_id IS NULL). This ensures P14C rehearsal tests
+    always start from a clean 460-row baseline regardless of future
+    production apply runs (e.g. P14D, P15, …).
+    """
     dest = tmp_path / "lottery_v2_test.db"
-    shutil.copy(str(_PROD_DB), str(dest))
+    prod_conn = sqlite3.connect(str(_PROD_DB))
+    dest_conn = sqlite3.connect(str(dest))
+    try:
+        # Replicate full schema (skip internal sqlite_* tables)
+        for (tbl_name, sql) in prod_conn.execute(
+            "SELECT name, sql FROM sqlite_master WHERE type='table' AND sql IS NOT NULL"
+        ).fetchall():
+            if tbl_name.startswith("sqlite_"):
+                continue
+            dest_conn.execute(sql)
+        # Copy only the original legacy rows (no controlled apply_id)
+        rows = prod_conn.execute(
+            "SELECT * FROM strategy_prediction_replays WHERE controlled_apply_id IS NULL"
+        ).fetchall()
+        if rows:
+            placeholders = ",".join(["?"] * len(rows[0]))
+            dest_conn.executemany(
+                f"INSERT INTO strategy_prediction_replays VALUES ({placeholders})",
+                rows,
+            )
+        dest_conn.commit()
+    finally:
+        prod_conn.close()
+        dest_conn.close()
     return dest
 
 
@@ -136,7 +164,8 @@ def test_final_classification_ready(output: dict):
 
 # ── production DB guard ───────────────────────────────────────────────────────
 
-def test_production_db_still_460():
+def test_production_db_at_canonical_count():
+    """Production DB must be at canonical post-P14D count (1960). P14C is temp-only."""
     conn = sqlite3.connect(str(_PROD_DB))
     try:
         count = conn.execute(
@@ -144,7 +173,7 @@ def test_production_db_still_460():
         ).fetchone()[0]
     finally:
         conn.close()
-    assert count == PROD_ROWS_BASELINE
+    assert count == 1960, f"Expected 1960 (post-P14D), got {count}"
 
 
 # ── live apply / rollback tests ───────────────────────────────────────────────

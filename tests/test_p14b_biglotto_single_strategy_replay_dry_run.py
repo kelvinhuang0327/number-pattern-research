@@ -19,7 +19,8 @@ _SCRIPT     = _REPO_ROOT / "scripts" / "p14b_biglotto_single_strategy_replay_dry
 _OUTPUT     = _REPO_ROOT / "outputs" / "replay" / "p14b_biglotto_single_strategy_replay_dry_run_20260520.json"
 _DB_PATH    = _REPO_ROOT / "lottery_api" / "data" / "lottery_v2.db"
 
-PROD_ROWS_BASELINE = 460
+PROD_ROWS_BASELINE = 460   # value frozen in P14B output JSON (pre-P14D)
+PROD_ROWS_CURRENT  = 1960  # canonical post-P14D production row count
 
 # ── fixtures ──────────────────────────────────────────────────────────────────
 
@@ -118,7 +119,10 @@ def test_page_ready_sample_exists(output: dict):
 
 # ── production DB guard ───────────────────────────────────────────────────────
 
-def test_production_db_rows_still_460():
+def test_production_db_rows_at_canonical_count():
+    """Production DB must be at the canonical post-P14D count (1960).
+    P14B is a dry-run and never writes to the DB.
+    """
     conn = sqlite3.connect(str(_DB_PATH))
     try:
         count = conn.execute(
@@ -126,8 +130,8 @@ def test_production_db_rows_still_460():
         ).fetchone()[0]
     finally:
         conn.close()
-    assert count == PROD_ROWS_BASELINE, \
-        f"Production rows changed: expected {PROD_ROWS_BASELINE}, got {count}"
+    assert count == PROD_ROWS_CURRENT, \
+        f"Production rows unexpected: expected {PROD_ROWS_CURRENT}, got {count}"
 
 
 # ── candidates_sample field validation ───────────────────────────────────────
@@ -217,7 +221,7 @@ def test_full_run_all_candidates_biglotto():
 
 
 def test_full_run_no_db_write():
-    """Re-run the script and confirm production rows unchanged."""
+    """Re-run the script and confirm it does not change the production row count."""
     import sys
     import tempfile
     import pathlib
@@ -228,7 +232,11 @@ def test_full_run_no_db_write():
         tmp = pathlib.Path(tf.name)
     try:
         result = run(out_file=tmp)
-        assert result["production_rows_after"] == PROD_ROWS_BASELINE
+        # The P14B script must never change the row count (before == after)
+        assert result["production_rows_before"] == result["production_rows_after"], (
+            f"P14B changed DB: before={result['production_rows_before']} "
+            f"after={result['production_rows_after']}"
+        )
         assert result["no_db_write"] is True
     finally:
         tmp.unlink(missing_ok=True)

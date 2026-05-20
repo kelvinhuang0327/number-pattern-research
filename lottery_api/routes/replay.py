@@ -231,6 +231,50 @@ def _fixture_history_response(
 
 # ─── Strategy listing ─────────────────────────────────────────────────────────
 
+_PUBLIC_LIFECYCLE = frozenset({"ONLINE", "OBSERVATION"})
+
+
+def get_strategies_response(
+    lottery_type:     Optional[str] = None,
+    lifecycle_status: Optional[str] = None,
+    public_only:      bool          = False,
+) -> dict:
+    """
+    Business logic for GET /api/replay/strategies.
+
+    Extracted as a plain sync function so tests can call it directly
+    without FastAPI Query-object coercion issues.
+
+    public_only=True restricts to ONLINE/OBSERVATION lifecycle only and
+    overrides any lifecycle_status filter.
+    READ-ONLY. No DB write.
+    """
+    # Coerce to real bool — guards against Query(False) objects in direct calls
+    _public_only = bool(public_only) if isinstance(public_only, bool) else False
+
+    effective_lifecycle = None if _public_only else lifecycle_status
+
+    strategies = list_strategies(
+        lottery_type=lottery_type,
+        lifecycle_status=effective_lifecycle,
+    )
+
+    if _public_only:
+        strategies = [
+            s for s in strategies
+            if s.get("strategy_lifecycle_status", "") in _PUBLIC_LIFECYCLE
+        ]
+
+    return {
+        "strategies":              strategies,
+        "count":                   len(strategies),
+        "filter_lottery_type":     lottery_type,
+        "filter_lifecycle_status": lifecycle_status,
+        "filter_public_only":      _public_only,
+        "filter":                  lottery_type,  # backward-compat alias
+    }
+
+
 @router.get("/api/replay/strategies")
 async def list_replay_strategies(
     lottery_type:     Optional[str] = Query(None),
@@ -262,32 +306,12 @@ async def list_replay_strategies(
     Each entry includes 'strategy_lifecycle_status'.
     READ-ONLY. Does NOT trigger replay generation.
     """
-    # public_only enforces ONLINE/OBSERVATION only — overrides lifecycle_status
-    if public_only:
-        lifecycle_status = None  # will be handled via post-filter
-
     try:
-        strategies = list_strategies(
+        return get_strategies_response(
             lottery_type=lottery_type,
             lifecycle_status=lifecycle_status,
+            public_only=bool(public_only),
         )
-
-        if public_only:
-            _PUBLIC_LIFECYCLE = {"ONLINE", "OBSERVATION"}
-            strategies = [
-                s for s in strategies
-                if s.get("strategy_lifecycle_status", "") in _PUBLIC_LIFECYCLE
-            ]
-
-        return {
-            "strategies":              strategies,
-            "count":                   len(strategies),
-            "filter_lottery_type":     lottery_type,
-            "filter_lifecycle_status": lifecycle_status,
-            "filter_public_only":      public_only,
-            # backward-compat alias
-            "filter":                  lottery_type,
-        }
     except Exception as e:
         logger.exception("list_replay_strategies failed")
         raise HTTPException(status_code=500, detail=str(e))

@@ -1,0 +1,14 @@
+{
+  "phase": "P17B_P14D_TIMESTAMP_BACKFILL_DECISION",
+  "generated_at": "2026-05-20T13:33:25.269629+00:00",
+  "production_apply_authorized": true,
+  "production_rows": 4960,
+  "target_rows": 1500,
+  "cutoff_join_count": 1500,
+  "temp_rehearsal_pass": true,
+  "idempotency_pass": true,
+  "rollback_pass": true,
+  "production_apply_performed": true,
+  "required_apply_phrase": "YES apply P14D timestamp backfill",
+  "prediction_generated_at_semantics": "P17B_METADATA_BACKFILL_TIME_NOT_ORIGINAL_PREDICTION_TIME"
+}

@@ -17,7 +17,6 @@ Coverage:
 """
 from __future__ import annotations
 
-import asyncio
 import sys
 from pathlib import Path
 from typing import Any, Dict, List
@@ -29,7 +28,7 @@ LOTTERY_API = REPO_ROOT / "lottery_api"
 
 sys.path.insert(0, str(LOTTERY_API))
 
-from routes.replay import list_replay_strategies
+from routes.replay import get_strategies_response
 from models.replay_strategy_registry import (
     list_strategies,
     list_non_executable_strategy_ids,
@@ -39,22 +38,18 @@ from models.replay_strategy_registry import (
 INDEX_HTML = REPO_ROOT / "index.html"
 
 
-def _run(coro):
-    loop = asyncio.new_event_loop()
-    try:
-        return loop.run_until_complete(coro)
-    finally:
-        loop.close()
-
-
 def _strategies(
     lottery_type: str | None = None,
     lifecycle_status: str | None = None,
+    public_only: bool = False,
 ) -> Dict[str, Any]:
-    return _run(list_replay_strategies(
+    # Use get_strategies_response (sync) directly to avoid FastAPI Query-object
+    # coercion issues that occur when calling async route functions directly.
+    return get_strategies_response(
         lottery_type=lottery_type,
         lifecycle_status=lifecycle_status,
-    ))
+        public_only=public_only,
+    )
 
 
 # ─── Section A: API contract ──────────────────────────────────────────────────
@@ -156,7 +151,8 @@ class TestStrategiesApiContract:
 class TestRegistryCompleteness:
     """Ensures all 16 canonical strategies are discoverable via list_strategies."""
 
-    # Known canonical IDs as of P25
+    # Known canonical IDs as of P25 + P1.3 (8b4ffc8 added fourier_rhythm_3bet
+    # and ts3_regime_3bet as ONLINE on 2026-05-19).
     ONLINE_IDS = {
         "power_precision_3bet",
         "power_orthogonal_5bet",
@@ -164,6 +160,8 @@ class TestRegistryCompleteness:
         "biglotto_deviation_2bet",
         "daily539_f4cold",
         "daily539_markov_cold",
+        "fourier_rhythm_3bet",   # added P1.3 (commit 8b4ffc8, 2026-05-19)
+        "ts3_regime_3bet",       # added P1.3 (commit 8b4ffc8, 2026-05-19)
     }
     REJECTED_IDS = {
         "biglotto_ts3_acb_4bet",
@@ -322,18 +320,23 @@ class TestOnlineStrategiesNonRegression:
     """ONLINE strategies must remain unchanged — no data loss."""
 
     def test_online_strategy_count_unchanged(self):
+        # P25 baseline = 6 strategies; P1.3 (commit 8b4ffc8, 2026-05-19) added
+        # fourier_rhythm_3bet and ts3_regime_3bet → updated baseline = 8.
         online = list_strategies(lifecycle_status="ONLINE")
-        assert len(online) == 6, (
-            f"Expected exactly 6 ONLINE strategies (P25 baseline), got {len(online)}"
+        assert len(online) == 8, (
+            f"Expected exactly 8 ONLINE strategies (P1.3 updated baseline), got {len(online)}"
         )
 
     def test_online_strategy_ids_unchanged(self):
         online = list_strategies(lifecycle_status="ONLINE")
         ids = {s["strategy_id"] for s in online}
+        # P1.3 (commit 8b4ffc8, 2026-05-19) added fourier_rhythm_3bet and ts3_regime_3bet.
         expected = {
             "power_precision_3bet", "power_orthogonal_5bet",
             "biglotto_triple_strike", "biglotto_deviation_2bet",
             "daily539_f4cold", "daily539_markov_cold",
+            "fourier_rhythm_3bet",
+            "ts3_regime_3bet",
         }
         assert ids == expected, (
             f"ONLINE strategy IDs changed.\nExpected: {sorted(expected)}\nGot: {sorted(ids)}"

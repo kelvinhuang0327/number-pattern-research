@@ -1,0 +1,314 @@
+{
+  "phase": "P12_1500_DRAW_REPLAY_GAP_ANALYSIS",
+  "generated_at": "2026-05-20T07:47:14.451916Z",
+  "dry_run_only": true,
+  "db_write_performed": false,
+  "strategy_execution_performed": false,
+  "fake_success_count": 0,
+  "production_rows": 460,
+  "current_replay_rows": 460,
+  "rows_by_strategy": {
+    "biglotto_triple_strike": 70,
+    "biglotto_deviation_2bet": 70,
+    "power_precision_3bet": 70,
+    "power_orthogonal_5bet": 70,
+    "daily539_f4cold": 90,
+    "daily539_markov_cold": 90
+  },
+  "rows_by_lottery_type": {
+    "BIG_LOTTO": 140,
+    "POWER_LOTTO": 140,
+    "DAILY_539": 180
+  },
+  "rows_by_replay_status": {
+    "PREDICTED": 420,
+    "REPLAY_ERROR": 40
+  },
+  "rows_by_truth_level": {
+    "NULL": 460
+  },
+  "rows_by_draw_range": {
+    "BIG_LOTTO": {
+      "min": "99000056",
+      "max": "99000105",
+      "count": 50
+    },
+    "POWER_LOTTO": {
+      "min": "99000055",
+      "max": "99000104",
+      "count": 50
+    },
+    "DAILY_539": {
+      "min": "99000212",
+      "max": "99000261",
+      "count": 50
+    }
+  },
+  "unique_draws_by_lottery": {
+    "BIG_LOTTO": 50,
+    "POWER_LOTTO": 50,
+    "DAILY_539": 50
+  },
+  "target_draw_window": 1500,
+  "registry_strategy_count": 18,
+  "catalog_universe_count": 59,
+  "projected_rows_for_18_strategies": 27000,
+  "projected_rows_for_8_online_strategies": 12000,
+  "current_gap_vs_18_strategies": 26540,
+  "current_gap_vs_online_8_strategies": 11540,
+  "p7_28_rows_is_product_complete": false,
+  "p7_28_rows_note": "The 28-row P7 controlled apply candidate is a small subset of registry-only ONLINE rows. Applying them would bring total to 488. This is NOT the 1500-draw product target.",
+  "online_strategy_candidates": [
+    "power_precision_3bet",
+    "power_orthogonal_5bet",
+    "fourier_rhythm_3bet",
+    "biglotto_triple_strike",
+    "biglotto_deviation_2bet",
+    "ts3_regime_3bet",
+    "daily539_f4cold",
+    "daily539_markov_cold"
+  ],
+  "online_strategy_details": [
+    {
+      "strategy_id": "power_precision_3bet",
+      "strategy_name": "威力彩 Precision 3注",
+      "lifecycle_status": "ONLINE",
+      "supported_lottery_types": [
+        "POWER_LOTTO"
+      ],
+      "min_history": 100,
+      "current_rows": 70,
+      "visibility_state": "ROW_BACKED",
+      "executable": true,
+      "block_reason": null
+    },
+    {
+      "strategy_id": "power_orthogonal_5bet",
+      "strategy_name": "威力彩 Orthogonal 5注",
+      "lifecycle_status": "ONLINE",
+      "supported_lottery_types": [
+        "POWER_LOTTO"
+      ],
+      "min_history": 100,
+      "current_rows": 70,
+      "visibility_state": "ROW_BACKED",
+      "executable": true,
+      "block_reason": null
+    },
+    {
+      "strategy_id": "fourier_rhythm_3bet",
+      "strategy_name": "威力彩 Fourier Rhythm 3注",
+      "lifecycle_status": "ONLINE",
+      "supported_lottery_types": [
+        "POWER_LOTTO"
+      ],
+      "min_history": 100,
+      "current_rows": 0,
+      "visibility_state": "RECONSTRUCTIBLE",
+      "executable": true,
+      "block_reason": null
+    },
+    {
+      "strategy_id": "biglotto_triple_strike",
+      "strategy_name": "大樂透 Triple Strike",
+      "lifecycle_status": "ONLINE",
+      "supported_lottery_types": [
+        "BIG_LOTTO"
+      ],
+      "min_history": 100,
+      "current_rows": 70,
+      "visibility_state": "ROW_BACKED",
+      "executable": true,
+      "block_reason": null
+    },
+    {
+      "strategy_id": "biglotto_deviation_2bet",
+      "strategy_name": "大樂透 Deviation 2注",
+      "lifecycle_status": "ONLINE",
+      "supported_lottery_types": [
+        "BIG_LOTTO"
+      ],
+      "min_history": 100,
+      "current_rows": 70,
+      "visibility_state": "ROW_BACKED",
+      "executable": true,
+      "block_reason": null
+    },
+    {
+      "strategy_id": "ts3_regime_3bet",
+      "strategy_name": "大樂透 TS3+Regime 3注",
+      "lifecycle_status": "ONLINE",
+      "supported_lottery_types": [
+        "BIG_LOTTO"
+      ],
+      "min_history": 100,
+      "current_rows": 0,
+      "visibility_state": "RECONSTRUCTIBLE",
+      "executable": true,
+      "block_reason": null
+    },
+    {
+      "strategy_id": "daily539_f4cold",
+      "strategy_name": "今彩539 F4 Cold",
+      "lifecycle_status": "ONLINE",
+      "supported_lottery_types": [
+        "DAILY_539"
+      ],
+      "min_history": 100,
+      "current_rows": 90,
+      "visibility_state": "ROW_BACKED",
+      "executable": true,
+      "block_reason": null
+    },
+    {
+      "strategy_id": "daily539_markov_cold",
+      "strategy_name": "今彩539 Markov Cold",
+      "lifecycle_status": "ONLINE",
+      "supported_lottery_types": [
+        "DAILY_539"
+      ],
+      "min_history": 100,
+      "current_rows": 90,
+      "visibility_state": "ROW_BACKED",
+      "executable": true,
+      "block_reason": null
+    }
+  ],
+  "executable_strategy_candidates": [
+    "power_precision_3bet",
+    "power_orthogonal_5bet",
+    "fourier_rhythm_3bet",
+    "biglotto_triple_strike",
+    "biglotto_deviation_2bet",
+    "ts3_regime_3bet",
+    "daily539_f4cold",
+    "daily539_markov_cold"
+  ],
+  "blocked_strategy_candidates": [
+    "biglotto_ts3_acb_4bet",
+    "biglotto_ts3_markov_freq_5bet",
+    "power_shlc_midfreq",
+    "p1_deviation_2bet_539",
+    "acb_1bet",
+    "acb_markov_midfreq",
+    "acb_markov_midfreq_3bet",
+    "midfreq_acb_2bet",
+    "midfreq_fourier_2bet",
+    "h6_gate_mk20_ew85"
+  ],
+  "rejected_blocked": [
+    "biglotto_ts3_acb_4bet",
+    "biglotto_ts3_markov_freq_5bet",
+    "power_shlc_midfreq",
+    "p1_deviation_2bet_539"
+  ],
+  "retired_blocked": [
+    "acb_1bet",
+    "acb_markov_midfreq",
+    "acb_markov_midfreq_3bet",
+    "midfreq_acb_2bet",
+    "midfreq_fourier_2bet"
+  ],
+  "observation_blocked": [
+    "h6_gate_mk20_ew85"
+  ],
+  "artifact_only_count": 41,
+  "artifact_only_note": "41 ARTIFACT_CANDIDATE entries in catalog are NOT in the strategy registry. They cannot execute predictions. Visibility-only.",
+  "no_data_exclusions": [
+    "biglotto_ts3_acb_4bet",
+    "biglotto_ts3_markov_freq_5bet",
+    "power_shlc_midfreq",
+    "p1_deviation_2bet_539"
+  ],
+  "available_draws_by_lottery": {
+    "BIG_LOTTO": {
+      "total_draws": 2135,
+      "min_draw": "100000001",
+      "max_draw": "99000105",
+      "sufficient_for_1500": true
+    },
+    "DAILY_539": {
+      "total_draws": 5865,
+      "min_draw": "100000001",
+      "max_draw": "99000261",
+      "sufficient_for_1500": true
+    },
+    "POWER_LOTTO": {
+      "total_draws": 1912,
+      "min_draw": "100000001",
+      "max_draw": "99000104",
+      "sufficient_for_1500": true
+    }
+  },
+  "draw_data_sufficient_for_1500": true,
+  "recommended_phase_1": {
+    "strategy_count": 2,
+    "draw_window": 1500,
+    "estimated_rows": 3000,
+    "dry_run_only": true,
+    "strategies": [
+      {
+        "strategy_id": "daily539_f4cold",
+        "strategy_name": "今彩539 F4 Cold",
+        "lottery_type": "DAILY_539",
+        "current_rows": 90,
+        "min_history": 100
+      },
+      {
+        "strategy_id": "power_precision_3bet",
+        "strategy_name": "威力彩 Precision 3注",
+        "lottery_type": "POWER_LOTTO",
+        "current_rows": 70,
+        "min_history": 100
+      }
+    ],
+    "note": "Dry-run only. No DB writes. CEO authorization required before apply."
+  },
+  "phase_roadmap": [
+    {
+      "phase": "P12",
+      "description": "1500-draw gap analysis and backfill architecture"
+    },
+    {
+      "phase": "P13",
+      "description": "Backfill engine skeleton, dry-run only"
+    },
+    {
+      "phase": "P14",
+      "description": "2 ONLINE strategies × 1500 draws dry-run"
+    },
+    {
+      "phase": "P15",
+      "description": "Apply gate for Phase 1 backfill (CEO authorization required)"
+    },
+    {
+      "phase": "P16",
+      "description": "Expand to all 8 ONLINE strategies"
+    },
+    {
+      "phase": "P17",
+      "description": "API pagination / query optimization"
+    },
+    {
+      "phase": "P18",
+      "description": "UI history list integration"
+    },
+    {
+      "phase": "P19",
+      "description": "RETIRED / OBSERVATION / REJECTED governance"
+    },
+    {
+      "phase": "P20",
+      "description": "Production launch checklist"
+    }
+  ],
+  "safety_flags": {
+    "no_db_write": true,
+    "no_strategy_execution": true,
+    "no_fake_rows": true,
+    "no_artifact_as_executable": true,
+    "no_no_data_as_success": true,
+    "no_p7_apply": true,
+    "no_retired_apply": true
+  }
+}

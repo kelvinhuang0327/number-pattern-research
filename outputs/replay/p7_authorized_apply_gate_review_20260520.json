@@ -1,0 +1,53 @@
+{
+  "phase": "P7_AUTHORIZED_APPLY_GATE_REVIEW",
+  "generated_at": "2026-05-20T00:00:00Z",
+  "dry_run_only": true,
+  "path": "B",
+  "path_reason": "CEO authorization phrase 'YES apply P7 controlled replay rows' NOT received in this session.",
+  "apply_executed": false,
+  "production_rows_before": 460,
+  "production_rows_after": 460,
+  "production_rows_delta": 0,
+  "authorization_gate": {
+    "required_phrase": "YES apply P7 controlled replay rows",
+    "phrase_received": false,
+    "apply_blocked": true,
+    "block_reason": "Exact authorization phrase not present. Path B: gate review only."
+  },
+  "readiness_checklist": {
+    "test_p7_controlled_apply_actual_gate_17_17_pass": true,
+    "test_replay_api_contract_44_44_pass": true,
+    "drift_guard_pass": true,
+    "production_rows_460": true,
+    "fk_root_cause_fixed": true,
+    "temp_rehearsal_460_to_488_verified": true,
+    "idempotency_verified": true,
+    "rollback_verified": true,
+    "zero_duplicates_in_online_scope": true,
+    "backup_procedure_documented": true,
+    "p7_json_frozen": true
+  },
+  "online_scope_summary": {
+    "strategies": [
+      {"strategy_id": "fourier_rhythm_3bet", "lottery_type": "POWER_LOTTO", "draws": 12},
+      {"strategy_id": "ts3_regime_3bet", "lottery_type": "BIG_LOTTO", "draws": 16}
+    ],
+    "total_rows": 28,
+    "current_db_rows": 460,
+    "projected_db_rows": 488
+  },
+  "retired_scope_summary": {
+    "deferred": true,
+    "strategies": ["acb_1bet", "acb_markov_midfreq_3bet", "midfreq_acb_2bet"],
+    "total_rows": 93,
+    "requires_separate_auth": true
+  },
+  "gate_classification": "P7_APPLY_BLOCKED_AWAITING_CEO_PHRASE",
+  "safety_flags": {
+    "apply_executed": false,
+    "production_rows_modified": false,
+    "retired_rows_included": false,
+    "strategy_executed": false,
+    "fake_success_count_is_zero": true
+  }
+}

@@ -231,6 +231,50 @@ def _fixture_history_response(
 
 # ─── Strategy listing ─────────────────────────────────────────────────────────
 
+_PUBLIC_LIFECYCLE = frozenset({"ONLINE", "OBSERVATION"})
+
+
+def get_strategies_response(
+    lottery_type:     Optional[str] = None,
+    lifecycle_status: Optional[str] = None,
+    public_only:      bool          = False,
+) -> dict:
+    """
+    Business logic for GET /api/replay/strategies.
+
+    Extracted as a plain sync function so tests can call it directly
+    without FastAPI Query-object coercion issues.
+
+    public_only=True restricts to ONLINE/OBSERVATION lifecycle only and
+    overrides any lifecycle_status filter.
+    READ-ONLY. No DB write.
+    """
+    # Coerce to real bool — guards against Query(False) objects in direct calls
+    _public_only = bool(public_only) if isinstance(public_only, bool) else False
+
+    effective_lifecycle = None if _public_only else lifecycle_status
+
+    strategies = list_strategies(
+        lottery_type=lottery_type,
+        lifecycle_status=effective_lifecycle,
+    )
+
+    if _public_only:
+        strategies = [
+            s for s in strategies
+            if s.get("strategy_lifecycle_status", "") in _PUBLIC_LIFECYCLE
+        ]
+
+    return {
+        "strategies":              strategies,
+        "count":                   len(strategies),
+        "filter_lottery_type":     lottery_type,
+        "filter_lifecycle_status": lifecycle_status,
+        "filter_public_only":      _public_only,
+        "filter":                  lottery_type,  # backward-compat alias
+    }
+
+
 @router.get("/api/replay/strategies")
 async def list_replay_strategies(
     lottery_type:     Optional[str] = Query(None),
@@ -242,30 +286,32 @@ async def list_replay_strategies(
             "If omitted, ALL lifecycle states are returned."
         ),
     ),
+    public_only: bool = Query(
+        False,
+        description=(
+            "When true, restrict to public-visible strategies only "
+            "(lifecycle_status ONLINE or OBSERVATION). "
+            "Internal states (REJECTED, RETIRED, OFFLINE) are excluded."
+        ),
+    ),
 ):
     """
-    Lists ALL registered replay strategies across all lifecycle states (P0-A).
+    Lists registered replay strategies.
 
     Optional filters:
       lottery_type     — POWER_LOTTO | BIG_LOTTO | DAILY_539
       lifecycle_status — ONLINE | OFFLINE | REJECTED | OBSERVATION | RETIRED
+      public_only      — when true, only ONLINE/OBSERVATION strategies returned
 
     Each entry includes 'strategy_lifecycle_status'.
     READ-ONLY. Does NOT trigger replay generation.
     """
     try:
-        strategies = list_strategies(
+        return get_strategies_response(
             lottery_type=lottery_type,
             lifecycle_status=lifecycle_status,
+            public_only=bool(public_only),
         )
-        return {
-            "strategies":              strategies,
-            "count":                   len(strategies),
-            "filter_lottery_type":     lottery_type,
-            "filter_lifecycle_status": lifecycle_status,
-            # backward-compat alias
-            "filter":                  lottery_type,
-        }
     except Exception as e:
         logger.exception("list_replay_strategies failed")
         raise HTTPException(status_code=500, detail=str(e))
@@ -444,6 +490,8 @@ async def get_replay_history(
 
             records = []
             for r in rows:
+                actual_nums = _parse_json(r["actual_numbers"])
+                hit_cnt     = r["hit_count"]
                 records.append({
                     "id":                       r["id"],
                     "lottery":                  r["lottery_type"],
@@ -458,10 +506,10 @@ async def get_replay_history(
                     "reject_reason":            r["reject_reason"],
                     "predicted_numbers":        _parse_json(r["predicted_numbers"]),
                     "predicted_special":        r["predicted_special"],
-                    "actual_numbers":           _parse_json(r["actual_numbers"]),
+                    "actual_numbers":           actual_nums,
                     "actual_special":           r["actual_special"],
                     "hit_numbers":              _parse_json(r["hit_numbers"]),
-                    "hit_count":                r["hit_count"],
+                    "hit_count":                hit_cnt,
                     "special_hit":              r["special_hit"],
                     "replay_run_id":            r["replay_run_id"],
                     "generated_at":             r["generated_at"],
@@ -473,6 +521,13 @@ async def get_replay_history(
                     "lifecycle_status":         get_strategy_lifecycle_status(r["strategy_id"]),
                     # P0-C: strategy lifecycle status from registry (read-only)
                     "strategy_lifecycle_status": get_strategy_lifecycle_status(r["strategy_id"]),
+                    # P5: P3 coverage matrix fields (minimal patch — non-breaking)
+                    "visibility_state":         "ROW_BACKED",
+                    "display_status":           "SHOW_REPLAY_RESULT",
+                    "should_count_as_success":  actual_nums is not None and hit_cnt is not None,
+                    "source_trace":             "|".join(filter(None, [
+                        r["source"], r["truth_level"], r["provenance_hash"]
+                    ])) or None,
                 })
 
             return {

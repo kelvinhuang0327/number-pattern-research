@@ -59,7 +59,7 @@ def test_02_script_passes_on_canonical(tmp_path):
     result = subprocess.run(
         [PYTHON, str(SCRIPT_PATH),
          "--expected-branch", current,
-         "--expected-rows", "4960",
+         "--expected-rows", "6460",
          "--json-out", str(out)],
         capture_output=True, text=True,
     )
@@ -89,9 +89,9 @@ def test_06_json_branch_ok(audit_json):
     assert audit_json["branch_ok"] is True
 
 
-# ── 7. JSON "production_rows" = 4960 (post-P16 apply) ────────────────────────
+# ── 7. JSON "production_rows" = 6460 (post-P19B apply) ───────────────────────
 def test_07_json_production_rows(audit_json):
-    assert audit_json["production_rows"] == 4960
+    assert audit_json["production_rows"] == 6460
 
 
 # ── 8. JSON "new_branch_allowed" = False ─────────────────────────────────────
@@ -142,7 +142,7 @@ def test_14_wrong_branch_exits_nonzero(tmp_path):
     result = subprocess.run(
         [PYTHON, str(SCRIPT_PATH),
          "--expected-branch", fake_branch,
-         "--expected-rows", "4960",
+         "--expected-rows", "6460",
          "--json-out", str(out)],
         capture_output=True, text=True,
     )

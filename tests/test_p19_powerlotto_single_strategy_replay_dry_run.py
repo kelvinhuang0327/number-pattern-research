@@ -28,7 +28,8 @@ _DB_PATH    = _REPO_ROOT / "lottery_api" / "data" / "lottery_v2.db"
 if str(_REPO_ROOT) not in sys.path:
     sys.path.insert(0, str(_REPO_ROOT))
 
-PROD_ROWS_BASELINE = 4960
+PROD_ROWS_BASELINE  = 6460  # live DB count post-P19B apply
+PROD_ROWS_SNAPSHOT  = 4960  # frozen in P19 output JSON (captured pre-P19B)
 
 
 @pytest.fixture(scope="module")
@@ -61,11 +62,11 @@ def test_lottery_type(output: dict):
 
 
 def test_production_rows_before(output: dict):
-    assert output["production_rows_before"] == PROD_ROWS_BASELINE
+    assert output["production_rows_before"] == PROD_ROWS_SNAPSHOT
 
 
 def test_production_rows_after(output: dict):
-    assert output["production_rows_after"] == PROD_ROWS_BASELINE
+    assert output["production_rows_after"] == PROD_ROWS_SNAPSHOT
 
 
 def test_no_db_write(output: dict):

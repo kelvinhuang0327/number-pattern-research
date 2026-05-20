@@ -8,8 +8,8 @@ These tests:
   - Do NOT write to the DB
   - Run the drift guard script via subprocess and parse its JSON output
 
-Baseline (updated 2026-05-20 after P14D production apply, PR #146):
-  legacy=460  v1=0  v2=0  p2b=0  p2f=0  p3bc=0  p14d=1500  p16=3000  total=4960
+Baseline (updated 2026-05-20 after P19B production apply):
+  legacy=460  v1=0  v2=0  p2b=0  p2f=0  p3bc=0  p14d=1500  p16=3000  p19b=1500  total=6460
   P14D applied 1500 ts3_regime_3bet BIG_LOTTO rows (controlled_apply_id=P14D_BIGLOTTO_TS3_1500_PROD_20260520).
   Legacy 460 rows retain truth_level=null; P14D rows have BIGLOTTO_SINGLE_STRATEGY_BACKFILL_VERIFIED.
   V3 tombstone strategies: 0 rows each (acb_markov_midfreq_3bet promoted out of tombstone list)
@@ -47,6 +47,8 @@ ALLOWED_TRUTH_LEVELS = {
     "BIGLOTTO_SINGLE_STRATEGY_BACKFILL_VERIFIED",
     # P16 Big Lotto remaining strategies backfill (2026-05-20)
     "BIGLOTTO_REMAINING_STRATEGIES_BACKFILL_VERIFIED",
+    # P19B Power Lotto fourier_rhythm_3bet production backfill (2026-05-20)
+    "POWERLOTTO_SINGLE_STRATEGY_BACKFILL_VERIFIED",
     "null",
 }
 
@@ -164,11 +166,12 @@ class TestDriftGuardScript:
         # enum integrity (no unexpected values), not backfill completeness.
 
     def test_db_counts_match_baseline(self, tmp_path):
-        """DB row counts must match the P16 post-apply baseline: legacy=460, p14d=1500, p16=3000, total=4960.
+        """DB row counts must match the P19B post-apply baseline: legacy=460, p14d=1500, p16=3000, p19b=1500, total=6460.
 
-        Updated 2026-05-20 (PR #148): P16 applied 3000 remaining BIG_LOTTO rows
-        (biglotto_triple_strike=1500, biglotto_deviation_2bet=1500) with prediction timestamps.
-        P14D ts3_regime_3bet 1500 rows unchanged.
+        Updated 2026-05-20 (P19B): Added 1500 fourier_rhythm_3bet POWER_LOTTO rows.
+        P14D ts3_regime_3bet (BIG_LOTTO): 1500 rows.
+        P16 biglotto_triple_strike + biglotto_deviation_2bet: 3000 rows.
+        P19B fourier_rhythm_3bet (POWER_LOTTO): 1500 rows.
         """
         _, result = _run_drift_guard(tmp_path)
         rc = result.get("row_counts", {})
@@ -178,8 +181,10 @@ class TestDriftGuardScript:
         assert rc.get("p14d") == 1500, f"P14D count mismatch: {rc.get('p14d')} != 1500"
         # P16 applied 3000 rows
         assert rc.get("p16") == 3000, f"P16 count mismatch: {rc.get('p16')} != 3000"
-        # New total = 460 legacy + 1500 P14D + 3000 P16
-        assert rc.get("total") == 4960, f"total count mismatch: {rc.get('total')} != 4960"
+        # P19B applied 1500 POWER_LOTTO rows
+        assert rc.get("p19b") == 1500, f"P19B count mismatch: {rc.get('p19b')} != 1500"
+        # New total = 460 legacy + 1500 P14D + 3000 P16 + 1500 P19B
+        assert rc.get("total") == 6460, f"total count mismatch: {rc.get('total')} != 6460"
         # V1/V2/P2B/P2F/P3BC remain 0
         assert rc.get("v1") == 0, f"V1 count mismatch: {rc.get('v1')} != 0"
         assert rc.get("v2") == 0, f"V2 count mismatch: {rc.get('v2')} != 0"

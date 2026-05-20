@@ -117,6 +117,26 @@ def _provenance_hash(strategy_id: str, draw_number: str, predicted: list[int]) -
     return hashlib.sha256(raw.encode()).hexdigest()[:16]
 
 
+def _ensure_timestamp_columns(db: Path) -> list[str]:
+    """Additive-only: add prediction_cutoff_date / prediction_generated_at if missing."""
+    conn = sqlite3.connect(str(db))
+    try:
+        existing = {r[1] for r in conn.execute(
+            "PRAGMA table_info(strategy_prediction_replays)"
+        ).fetchall()}
+        added: list[str] = []
+        for col in ("prediction_cutoff_date", "prediction_generated_at"):
+            if col not in existing:
+                conn.execute(
+                    f"ALTER TABLE strategy_prediction_replays ADD COLUMN {col} TEXT;"
+                )
+                added.append(col)
+        conn.commit()
+    finally:
+        conn.close()
+    return added
+
+
 # ── draw loading ───────────────────────────────────────────────────────────────
 
 def _load_biglotto_draws(db_path: Path) -> list[dict]:
@@ -153,16 +173,26 @@ def _load_biglotto_draws(db_path: Path) -> list[dict]:
 def generate_candidates(
     db_path: Path,
     strategy_ids: list[str] | None = None,
+    *,
+    run_generated_at: str | None = None,
 ) -> list[dict]:
     """
     Generate prediction candidates for each strategy over the latest 1500 draws.
     Uses real adapter from registry; actual_numbers from DB.
     No DB writes.
+
+    Each READY candidate includes:
+      - prediction_cutoff_date: date of the last history draw available to the strategy
+      - prediction_generated_at: UTC timestamp of this generation run
     """
     from lottery_api.models.replay_strategy_registry import get_adapter  # type: ignore[attr-defined]
 
     if strategy_ids is None:
         strategy_ids = STRATEGY_IDS
+
+    # run_generated_at is fixed for all candidates in this run (consistent timestamp)
+    if run_generated_at is None:
+        run_generated_at = datetime.now(timezone.utc).isoformat()
 
     all_draws = _load_biglotto_draws(db_path)
     total = len(all_draws)
@@ -291,7 +321,8 @@ def generate_candidates(
             )
             p_hash = _provenance_hash(strategy_id, draw_number, list(pred_numbers))
 
-            history_cutoff = all_draws[draw_global_idx - 1]["draw"] if draw_global_idx > 0 else None
+            history_cutoff      = all_draws[draw_global_idx - 1]["draw"] if draw_global_idx > 0 else None
+            history_cutoff_date = history[-1]["date"] if history else None
 
             candidates.append({
                 "strategy_id":      strategy_id,
@@ -311,6 +342,8 @@ def generate_candidates(
                 "special_hit":       special_hit,
                 "source_trace":      f"{strategy_id}:get_one_bet:hist={len(history)}",
                 "provenance_hash":   p_hash,
+                "prediction_cutoff_date":    history_cutoff_date,
+                "prediction_generated_at":   run_generated_at,
                 "would_insert":      True,
                 "counts_as_success": False,
             })
@@ -425,6 +458,9 @@ def apply_rehearsal(
 ) -> dict:
     _assert_not_prod(db)
 
+    # ensure timestamp columns exist in temp DB
+    _ensure_timestamp_columns(db)
+
     rows_before = _row_count(db)
     if rows_before != expected_rows_before:
         raise RuntimeError(
@@ -460,10 +496,12 @@ def apply_rehearsal(
                             hit_numbers, hit_count, special_hit,
                             replay_run_id, generated_at, truth_level,
                             controlled_apply_id, source,
-                            provenance_hash, provenance_source, dry_run
+                            provenance_hash, provenance_source, dry_run,
+                            prediction_cutoff_date, prediction_generated_at
                         ) VALUES (
                             ?,?,?,  ?,?,?,  ?,?,  ?,?,  ?,?,  ?,?,?,
-                            NULL, ?,?,  ?,?,  ?,NULL, ?
+                            NULL, ?,?,  ?,?,  ?,NULL, ?,
+                            ?,?
                         )
                         """,
                         (
@@ -476,6 +514,8 @@ def apply_rehearsal(
                             1 if c["special_hit"] else 0,
                             now_ts, TRUTH_LEVEL, apply_id, SOURCE,
                             c["provenance_hash"], 0,
+                            c.get("prediction_cutoff_date"),
+                            c.get("prediction_generated_at", now_ts),
                         ),
                     )
                     existing.add(dedup_key)
@@ -623,6 +663,9 @@ def apply_production(
     *,
     json_out: Path | None = None,
 ) -> dict:
+    # Apply additive schema patch first (idempotent)
+    _ensure_timestamp_columns(db)
+
     rows_before = _row_count(db)
     if rows_before != expected_rows_before:
         raise RuntimeError(
@@ -658,10 +701,12 @@ def apply_production(
                             hit_numbers, hit_count, special_hit,
                             replay_run_id, generated_at, truth_level,
                             controlled_apply_id, source,
-                            provenance_hash, provenance_source, dry_run
+                            provenance_hash, provenance_source, dry_run,
+                            prediction_cutoff_date, prediction_generated_at
                         ) VALUES (
                             ?,?,?,  ?,?,?,  ?,?,  ?,?,  ?,?,  ?,?,?,
-                            NULL, ?,?,  ?,?,  ?,NULL, ?
+                            NULL, ?,?,  ?,?,  ?,NULL, ?,
+                            ?,?
                         )
                         """,
                         (
@@ -674,6 +719,8 @@ def apply_production(
                             1 if c["special_hit"] else 0,
                             now_ts, TRUTH_LEVEL, APPLY_ID, SOURCE,
                             c["provenance_hash"], 0,
+                            c.get("prediction_cutoff_date"),
+                            c.get("prediction_generated_at", now_ts),
                         ),
                     )
                     existing.add(dedup_key)

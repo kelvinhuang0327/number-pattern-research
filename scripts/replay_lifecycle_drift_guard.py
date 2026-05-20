@@ -12,7 +12,8 @@ the main-repo P0 baseline established on 2026-05-19 (single-repo stabilization):
   P2F (controlled_apply_id='P2F_20260515')                ==    0
   P3BC (controlled_apply_id='P3BC_RESOLVE_20260516')      ==    0
   P14D (controlled_apply_id='P14D_BIGLOTTO_TS3_1500_PROD_20260520') == 1500
-  total                                                   == 1960
+  P16  (controlled_apply_id='P16_BIGLOTTO_REMAINING_1500_PROD_20260520') == 3000
+  total                                                   == 4960
 
 NOTE: The LotteryNew-clean sibling repo had 975 rows (V1+V2+legacy+P2B+P2F+P3BC).
 The main repo only has 460 legacy rows. V1/V2/P2B/P2F/P3BC rows are NOT
@@ -61,6 +62,9 @@ BASELINE = {
     "p3bc_apply_id": "P3BC_RESOLVE_20260516",
     # P14D: Big Lotto ts3_regime_3bet 1500-draw production apply (2026-05-20)
     "p14d_apply_id": "P14D_BIGLOTTO_TS3_1500_PROD_20260520",
+    # P16: Big Lotto remaining strategies (biglotto_triple_strike + biglotto_deviation_2bet)
+    # 1500 draws each = 3000 rows, with prediction_cutoff_date + prediction_generated_at (2026-05-20)
+    "p16_apply_id": "P16_BIGLOTTO_REMAINING_1500_PROD_20260520",
     "v1_count": 0,
     "v2_count": 0,
     "legacy_count": 460,
@@ -68,7 +72,8 @@ BASELINE = {
     "p2f_count": 0,
     "p3bc_count": 0,
     "p14d_count": 1500,
-    "total_count": 1960,
+    "p16_count": 3000,
+    "total_count": 4960,
 }
 
 # Known V3 tombstone strategy IDs — must have 0 rows in replay table
@@ -89,6 +94,8 @@ ALLOWED_TRUTH_LEVELS = {
     "OFFICIAL_DRAW_RESULT",
     # P14D Big Lotto production backfill (2026-05-20)
     "BIGLOTTO_SINGLE_STRATEGY_BACKFILL_VERIFIED",
+    # P16 Big Lotto remaining strategies backfill (2026-05-20)
+    "BIGLOTTO_REMAINING_STRATEGIES_BACKFILL_VERIFIED",
 }
 
 
@@ -137,6 +144,11 @@ def run_checks(db_path: pathlib.Path) -> dict:
         (BASELINE["p14d_apply_id"],),
     ).fetchone()[0]
 
+    p16_count = c.execute(
+        "SELECT COUNT(*) FROM strategy_prediction_replays WHERE controlled_apply_id=?",
+        (BASELINE["p16_apply_id"],),
+    ).fetchone()[0]
+
     legacy_count = c.execute(
         "SELECT COUNT(*) FROM strategy_prediction_replays WHERE controlled_apply_id IS NULL"
     ).fetchone()[0]
@@ -173,6 +185,10 @@ def run_checks(db_path: pathlib.Path) -> dict:
         violations.append(
             f"P14D row count mismatch: expected {BASELINE['p14d_count']}, got {p14d_count}"
         )
+    if p16_count != BASELINE["p16_count"]:
+        violations.append(
+            f"P16 row count mismatch: expected {BASELINE['p16_count']}, got {p16_count}"
+        )
     if total_count != BASELINE["total_count"]:
         violations.append(
             f"total row count mismatch: expected {BASELINE['total_count']}, got {total_count}"
@@ -186,6 +202,7 @@ def run_checks(db_path: pathlib.Path) -> dict:
         "p2f": p2f_count,
         "p3bc": p3bc_count,
         "p14d": p14d_count,
+        "p16": p16_count,
         "total": total_count,
     }
 
@@ -255,11 +272,12 @@ def run_checks(db_path: pathlib.Path) -> dict:
             # Already caught in row_counts section, no double-record
             pass
 
-    # Unexpected apply IDs (not V1, V2, P2B, P2F, P3BC, P14D, or NULL) are violations
+    # Unexpected apply IDs (not V1, V2, P2B, P2F, P3BC, P14D, P16, or NULL) are violations
     known_apply_ids = {
         BASELINE["v1_apply_id"], BASELINE["v2_apply_id"],
         BASELINE["p2b_apply_id"], BASELINE["p2f_apply_id"],
         BASELINE["p3bc_apply_id"], BASELINE["p14d_apply_id"],
+        BASELINE["p16_apply_id"],
         "null", None,
     }
     for aid_key, cnt in controlled_apply_id_counts.items():

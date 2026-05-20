@@ -146,8 +146,9 @@ def test_production_db_rows_1960():
         ).fetchone()[0]
     finally:
         conn.close()
-    assert count == EXPECTED_AFTER, \
-        f"Expected {EXPECTED_AFTER} rows post-P14D, got {count}"
+    # After P16, production has 4960 rows; P14D rows (1500) are still present
+    assert count >= EXPECTED_AFTER, \
+        f"Expected at least {EXPECTED_AFTER} rows (post-P14D baseline), got {count}"
 
 
 def test_production_db_p14d_rows():

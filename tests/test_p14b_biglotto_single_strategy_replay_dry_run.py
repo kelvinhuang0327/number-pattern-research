@@ -20,7 +20,7 @@ _OUTPUT     = _REPO_ROOT / "outputs" / "replay" / "p14b_biglotto_single_strategy
 _DB_PATH    = _REPO_ROOT / "lottery_api" / "data" / "lottery_v2.db"
 
 PROD_ROWS_BASELINE = 460   # value frozen in P14B output JSON (pre-P14D)
-PROD_ROWS_CURRENT  = 1960  # canonical post-P14D production row count
+PROD_ROWS_CURRENT  = 4960  # canonical post-P16 production row count
 
 # ── fixtures ──────────────────────────────────────────────────────────────────
 
@@ -120,7 +120,7 @@ def test_page_ready_sample_exists(output: dict):
 # ── production DB guard ───────────────────────────────────────────────────────
 
 def test_production_db_rows_at_canonical_count():
-    """Production DB must be at the canonical post-P14D count (1960).
+    """Production DB must be at the canonical post-P16 count (4960).
     P14B is a dry-run and never writes to the DB.
     """
     conn = sqlite3.connect(str(_DB_PATH))

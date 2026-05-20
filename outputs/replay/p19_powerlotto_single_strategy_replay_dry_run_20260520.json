@@ -1,0 +1,806 @@
+{
+  "phase": "P19_POWERLOTTO_SINGLE_STRATEGY_REPLAY_DRY_RUN",
+  "generated_at": "2026-05-20T13:58:53.391673+00:00",
+  "dry_run_only": true,
+  "no_db_write": true,
+  "production_rows_before": 4960,
+  "production_rows_after": 4960,
+  "lottery_type": "POWER_LOTTO",
+  "target_draw_window": 1500,
+  "available_draw_count": 1500,
+  "selected_strategy_id": "fourier_rhythm_3bet",
+  "selected_strategy_name": "威力彩 Fourier Rhythm 3注",
+  "strategy_lifecycle_status": "ONLINE",
+  "generated_candidates": 1500,
+  "ready_candidates": 1500,
+  "blocked_candidates": 0,
+  "fake_success_count": 0,
+  "by_status": {
+    "READY": 1500
+  },
+  "block_reasons": {},
+  "final_classification": "P19_POWERLOTTO_SINGLE_STRATEGY_DRY_RUN_READY",
+  "candidates_sample": [
+    {
+      "strategy_id": "fourier_rhythm_3bet",
+      "strategy_name": "威力彩 Fourier Rhythm 3注",
+      "lottery_type": "POWER_LOTTO",
+      "target_draw": "101000002",
+      "target_date": "2012/01/05",
+      "prediction_status": "READY",
+      "predicted_numbers": [
+        6,
+        9,
+        11,
+        22,
+        23,
+        32
+      ],
+      "predicted_special": null,
+      "actual_numbers": [
+        10,
+        15,
+        18,
+        28,
+        31,
+        32
+      ],
+      "actual_special": 4,
+      "hit_numbers": [
+        32
+      ],
+      "hit_count": 1,
+      "special_hit": false,
+      "prediction_cutoff_date": "2012/01/02",
+      "prediction_generated_at": "2026-05-20T13:58:53.391673+00:00",
+      "source_trace": "fourier_rhythm_3bet:get_one_bet:hist=412",
+      "provenance_hash": "2872641ee1891a5e",
+      "truth_level": "DRY_RUN_REPLAY_BACKFILL",
+      "dry_run_only": true,
+      "would_insert": false,
+      "counts_as_success": false
+    },
+    {
+      "strategy_id": "fourier_rhythm_3bet",
+      "strategy_name": "威力彩 Fourier Rhythm 3注",
+      "lottery_type": "POWER_LOTTO",
+      "target_draw": "101000003",
+      "target_date": "2012/01/09",
+      "prediction_status": "READY",
+      "predicted_numbers": [
+        6,
+        9,
+        11,
+        22,
+        23,
+        32
+      ],
+      "predicted_special": null,
+      "actual_numbers": [
+        2,
+        9,
+        25,
+        27,
+        30,
+        34
+      ],
+      "actual_special": 5,
+      "hit_numbers": [
+        9
+      ],
+      "hit_count": 1,
+      "special_hit": false,
+      "prediction_cutoff_date": "2012/01/05",
+      "prediction_generated_at": "2026-05-20T13:58:53.391673+00:00",
+      "source_trace": "fourier_rhythm_3bet:get_one_bet:hist=413",
+      "provenance_hash": "297ff6d2ae8e0728",
+      "truth_level": "DRY_RUN_REPLAY_BACKFILL",
+      "dry_run_only": true,
+      "would_insert": false,
+      "counts_as_success": false
+    },
+    {
+      "strategy_id": "fourier_rhythm_3bet",
+      "strategy_name": "威力彩 Fourier Rhythm 3注",
+      "lottery_type": "POWER_LOTTO",
+      "target_draw": "101000004",
+      "target_date": "2012/01/12",
+      "prediction_status": "READY",
+      "predicted_numbers": [
+        6,
+        9,
+        11,
+        22,
+        23,
+        32
+      ],
+      "predicted_special": null,
+      "actual_numbers": [
+        3,
+        15,
+        21,
+        23,
+        30,
+        32
+      ],
+      "actual_special": 7,
+      "hit_numbers": [
+        23,
+        32
+      ],
+      "hit_count": 2,
+      "special_hit": false,
+      "prediction_cutoff_date": "2012/01/09",
+      "prediction_generated_at": "2026-05-20T13:58:53.391673+00:00",
+      "source_trace": "fourier_rhythm_3bet:get_one_bet:hist=414",
+      "provenance_hash": "8a45cbfa29a4f1a0",
+      "truth_level": "DRY_RUN_REPLAY_BACKFILL",
+      "dry_run_only": true,
+      "would_insert": false,
+      "counts_as_success": false
+    },
+    {
+      "strategy_id": "fourier_rhythm_3bet",
+      "strategy_name": "威力彩 Fourier Rhythm 3注",
+      "lottery_type": "POWER_LOTTO",
+      "target_draw": "101000005",
+      "target_date": "2012/01/16",
+      "prediction_status": "READY",
+      "predicted_numbers": [
+        6,
+        9,
+        11,
+        21,
+        22,
+        23
+      ],
+      "predicted_special": null,
+      "actual_numbers": [
+        7,
+        11,
+        18,
+        33,
+        36,
+        37
+      ],
+      "actual_special": 6,
+      "hit_numbers": [
+        11
+      ],
+      "hit_count": 1,
+      "special_hit": false,
+      "prediction_cutoff_date": "2012/01/12",
+      "prediction_generated_at": "2026-05-20T13:58:53.391673+00:00",
+      "source_trace": "fourier_rhythm_3bet:get_one_bet:hist=415",
+      "provenance_hash": "e89fa4f95bd83b99",
+      "truth_level": "DRY_RUN_REPLAY_BACKFILL",
+      "dry_run_only": true,
+      "would_insert": false,
+      "counts_as_success": false
+    },
+    {
+      "strategy_id": "fourier_rhythm_3bet",
+      "strategy_name": "威力彩 Fourier Rhythm 3注",
+      "lottery_type": "POWER_LOTTO",
+      "target_draw": "101000006",
+      "target_date": "2012/01/19",
+      "prediction_status": "READY",
+      "predicted_numbers": [
+        6,
+        9,
+        11,
+        21,
+        22,
+        23
+      ],
+      "predicted_special": null,
+      "actual_numbers": [
+        3,
+        7,
+        8,
+        11,
+        13,
+        18
+      ],
+      "actual_special": 6,
+      "hit_numbers": [
+        11
+      ],
+      "hit_count": 1,
+      "special_hit": false,
+      "prediction_cutoff_date": "2012/01/16",
+      "prediction_generated_at": "2026-05-20T13:58:53.391673+00:00",
+      "source_trace": "fourier_rhythm_3bet:get_one_bet:hist=416",
+      "provenance_hash": "31a3357f61940765",
+      "truth_level": "DRY_RUN_REPLAY_BACKFILL",
+      "dry_run_only": true,
+      "would_insert": false,
+      "counts_as_success": false
+    }
+  ],
+  "page_ready_sample": [
+    {
+      "target_draw": "115000021",
+      "target_date": "2026/03/12",
+      "strategy_name": "威力彩 Fourier Rhythm 3注",
+      "predicted_numbers": [
+        23,
+        24,
+        25,
+        26,
+        27,
+        37
+      ],
+      "actual_numbers": [
+        4,
+        9,
+        15,
+        25,
+        27,
+        31
+      ],
+      "hit_numbers": [
+        25,
+        27
+      ],
+      "hit_count": 2,
+      "special_hit": false,
+      "prediction_cutoff_date": "2026/03/09",
+      "prediction_generated_at": "2026-05-20T13:58:53.391673+00:00",
+      "display_status": "SHOW_REPLAY_DRY_RUN",
+      "truth_level": "DRY_RUN_REPLAY_BACKFILL"
+    },
+    {
+      "target_draw": "115000022",
+      "target_date": "2026/03/16",
+      "strategy_name": "威力彩 Fourier Rhythm 3注",
+      "predicted_numbers": [
+        11,
+        23,
+        24,
+        26,
+        36,
+        37
+      ],
+      "actual_numbers": [
+        14,
+        26,
+        28,
+        31,
+        32,
+        34
+      ],
+      "hit_numbers": [
+        26
+      ],
+      "hit_count": 1,
+      "special_hit": false,
+      "prediction_cutoff_date": "2026/03/12",
+      "prediction_generated_at": "2026-05-20T13:58:53.391673+00:00",
+      "display_status": "SHOW_REPLAY_DRY_RUN",
+      "truth_level": "DRY_RUN_REPLAY_BACKFILL"
+    },
+    {
+      "target_draw": "115000023",
+      "target_date": "2026/03/19",
+      "strategy_name": "威力彩 Fourier Rhythm 3注",
+      "predicted_numbers": [
+        4,
+        11,
+        15,
+        27,
+        36,
+        38
+      ],
+      "actual_numbers": [
+        9,
+        13,
+        14,
+        18,
+        31,
+        34
+      ],
+      "hit_numbers": [],
+      "hit_count": 0,
+      "special_hit": false,
+      "prediction_cutoff_date": "2026/03/16",
+      "prediction_generated_at": "2026-05-20T13:58:53.391673+00:00",
+      "display_status": "SHOW_REPLAY_DRY_RUN",
+      "truth_level": "DRY_RUN_REPLAY_BACKFILL"
+    },
+    {
+      "target_draw": "115000024",
+      "target_date": "2026/03/23",
+      "strategy_name": "威力彩 Fourier Rhythm 3注",
+      "predicted_numbers": [
+        4,
+        11,
+        15,
+        27,
+        36,
+        38
+      ],
+      "actual_numbers": [
+        1,
+        9,
+        18,
+        28,
+        33,
+        38
+      ],
+      "hit_numbers": [
+        38
+      ],
+      "hit_count": 1,
+      "special_hit": false,
+      "prediction_cutoff_date": "2026/03/19",
+      "prediction_generated_at": "2026-05-20T13:58:53.391673+00:00",
+      "display_status": "SHOW_REPLAY_DRY_RUN",
+      "truth_level": "DRY_RUN_REPLAY_BACKFILL"
+    },
+    {
+      "target_draw": "115000025",
+      "target_date": "2026/03/26",
+      "strategy_name": "威力彩 Fourier Rhythm 3注",
+      "predicted_numbers": [
+        4,
+        7,
+        15,
+        17,
+        27,
+        29
+      ],
+      "actual_numbers": [
+        13,
+        14,
+        22,
+        28,
+        35,
+        38
+      ],
+      "hit_numbers": [],
+      "hit_count": 0,
+      "special_hit": false,
+      "prediction_cutoff_date": "2026/03/23",
+      "prediction_generated_at": "2026-05-20T13:58:53.391673+00:00",
+      "display_status": "SHOW_REPLAY_DRY_RUN",
+      "truth_level": "DRY_RUN_REPLAY_BACKFILL"
+    },
+    {
+      "target_draw": "115000026",
+      "target_date": "2026/03/30",
+      "strategy_name": "威力彩 Fourier Rhythm 3注",
+      "predicted_numbers": [
+        3,
+        7,
+        19,
+        25,
+        30,
+        31
+      ],
+      "actual_numbers": [
+        2,
+        13,
+        21,
+        22,
+        29,
+        34
+      ],
+      "hit_numbers": [],
+      "hit_count": 0,
+      "special_hit": false,
+      "prediction_cutoff_date": "2026/03/26",
+      "prediction_generated_at": "2026-05-20T13:58:53.391673+00:00",
+      "display_status": "SHOW_REPLAY_DRY_RUN",
+      "truth_level": "DRY_RUN_REPLAY_BACKFILL"
+    },
+    {
+      "target_draw": "115000027",
+      "target_date": "2026/04/02",
+      "strategy_name": "威力彩 Fourier Rhythm 3注",
+      "predicted_numbers": [
+        3,
+        12,
+        19,
+        31,
+        33,
+        35
+      ],
+      "actual_numbers": [
+        5,
+        15,
+        17,
+        23,
+        25,
+        34
+      ],
+      "hit_numbers": [],
+      "hit_count": 0,
+      "special_hit": false,
+      "prediction_cutoff_date": "2026/03/30",
+      "prediction_generated_at": "2026-05-20T13:58:53.391673+00:00",
+      "display_status": "SHOW_REPLAY_DRY_RUN",
+      "truth_level": "DRY_RUN_REPLAY_BACKFILL"
+    },
+    {
+      "target_draw": "115000028",
+      "target_date": "2026/04/06",
+      "strategy_name": "威力彩 Fourier Rhythm 3注",
+      "predicted_numbers": [
+        1,
+        12,
+        14,
+        19,
+        33,
+        35
+      ],
+      "actual_numbers": [
+        5,
+        8,
+        22,
+        27,
+        35,
+        38
+      ],
+      "hit_numbers": [
+        35
+      ],
+      "hit_count": 1,
+      "special_hit": false,
+      "prediction_cutoff_date": "2026/04/02",
+      "prediction_generated_at": "2026-05-20T13:58:53.391673+00:00",
+      "display_status": "SHOW_REPLAY_DRY_RUN",
+      "truth_level": "DRY_RUN_REPLAY_BACKFILL"
+    },
+    {
+      "target_draw": "115000029",
+      "target_date": "2026/04/09",
+      "strategy_name": "威力彩 Fourier Rhythm 3注",
+      "predicted_numbers": [
+        1,
+        2,
+        14,
+        15,
+        32,
+        33
+      ],
+      "actual_numbers": [
+        4,
+        9,
+        13,
+        27,
+        29,
+        34
+      ],
+      "hit_numbers": [],
+      "hit_count": 0,
+      "special_hit": false,
+      "prediction_cutoff_date": "2026/04/06",
+      "prediction_generated_at": "2026-05-20T13:58:53.391673+00:00",
+      "display_status": "SHOW_REPLAY_DRY_RUN",
+      "truth_level": "DRY_RUN_REPLAY_BACKFILL"
+    },
+    {
+      "target_draw": "115000030",
+      "target_date": "2026/04/13",
+      "strategy_name": "威力彩 Fourier Rhythm 3注",
+      "predicted_numbers": [
+        1,
+        2,
+        14,
+        15,
+        23,
+        32
+      ],
+      "actual_numbers": [
+        3,
+        10,
+        11,
+        16,
+        19,
+        24
+      ],
+      "hit_numbers": [],
+      "hit_count": 0,
+      "special_hit": false,
+      "prediction_cutoff_date": "2026/04/09",
+      "prediction_generated_at": "2026-05-20T13:58:53.391673+00:00",
+      "display_status": "SHOW_REPLAY_DRY_RUN",
+      "truth_level": "DRY_RUN_REPLAY_BACKFILL"
+    },
+    {
+      "target_draw": "115000031",
+      "target_date": "2026/04/16",
+      "strategy_name": "威力彩 Fourier Rhythm 3注",
+      "predicted_numbers": [
+        2,
+        15,
+        17,
+        22,
+        23,
+        25
+      ],
+      "actual_numbers": [
+        4,
+        11,
+        16,
+        22,
+        30,
+        38
+      ],
+      "hit_numbers": [
+        22
+      ],
+      "hit_count": 1,
+      "special_hit": false,
+      "prediction_cutoff_date": "2026/04/13",
+      "prediction_generated_at": "2026-05-20T13:58:53.391673+00:00",
+      "display_status": "SHOW_REPLAY_DRY_RUN",
+      "truth_level": "DRY_RUN_REPLAY_BACKFILL"
+    },
+    {
+      "target_draw": "115000032",
+      "target_date": "2026/04/20",
+      "strategy_name": "威力彩 Fourier Rhythm 3注",
+      "predicted_numbers": [
+        2,
+        15,
+        17,
+        23,
+        25,
+        27
+      ],
+      "actual_numbers": [
+        7,
+        13,
+        19,
+        34,
+        35,
+        37
+      ],
+      "hit_numbers": [],
+      "hit_count": 0,
+      "special_hit": false,
+      "prediction_cutoff_date": "2026/04/16",
+      "prediction_generated_at": "2026-05-20T13:58:53.391673+00:00",
+      "display_status": "SHOW_REPLAY_DRY_RUN",
+      "truth_level": "DRY_RUN_REPLAY_BACKFILL"
+    },
+    {
+      "target_draw": "115000033",
+      "target_date": "2026/04/23",
+      "strategy_name": "威力彩 Fourier Rhythm 3注",
+      "predicted_numbers": [
+        16,
+        17,
+        24,
+        25,
+        27,
+        29
+      ],
+      "actual_numbers": [
+        10,
+        14,
+        15,
+        16,
+        27,
+        33
+      ],
+      "hit_numbers": [
+        16,
+        27
+      ],
+      "hit_count": 2,
+      "special_hit": false,
+      "prediction_cutoff_date": "2026/04/20",
+      "prediction_generated_at": "2026-05-20T13:58:53.391673+00:00",
+      "display_status": "SHOW_REPLAY_DRY_RUN",
+      "truth_level": "DRY_RUN_REPLAY_BACKFILL"
+    },
+    {
+      "target_draw": "115000034",
+      "target_date": "2026/04/27",
+      "strategy_name": "威力彩 Fourier Rhythm 3注",
+      "predicted_numbers": [
+        4,
+        11,
+        22,
+        24,
+        26,
+        29
+      ],
+      "actual_numbers": [
+        6,
+        8,
+        27,
+        33,
+        35,
+        38
+      ],
+      "hit_numbers": [],
+      "hit_count": 0,
+      "special_hit": false,
+      "prediction_cutoff_date": "2026/04/23",
+      "prediction_generated_at": "2026-05-20T13:58:53.391673+00:00",
+      "display_status": "SHOW_REPLAY_DRY_RUN",
+      "truth_level": "DRY_RUN_REPLAY_BACKFILL"
+    },
+    {
+      "target_draw": "115000035",
+      "target_date": "2026/04/30",
+      "strategy_name": "威力彩 Fourier Rhythm 3注",
+      "predicted_numbers": [
+        4,
+        11,
+        22,
+        24,
+        26,
+        37
+      ],
+      "actual_numbers": [
+        1,
+        4,
+        13,
+        19,
+        27,
+        30
+      ],
+      "hit_numbers": [
+        4
+      ],
+      "hit_count": 1,
+      "special_hit": false,
+      "prediction_cutoff_date": "2026/04/27",
+      "prediction_generated_at": "2026-05-20T13:58:53.391673+00:00",
+      "display_status": "SHOW_REPLAY_DRY_RUN",
+      "truth_level": "DRY_RUN_REPLAY_BACKFILL"
+    },
+    {
+      "target_draw": "115000036",
+      "target_date": "2026/05/04",
+      "strategy_name": "威力彩 Fourier Rhythm 3注",
+      "predicted_numbers": [
+        14,
+        15,
+        16,
+        22,
+        33,
+        37
+      ],
+      "actual_numbers": [
+        9,
+        21,
+        29,
+        32,
+        36,
+        38
+      ],
+      "hit_numbers": [],
+      "hit_count": 0,
+      "special_hit": false,
+      "prediction_cutoff_date": "2026/04/30",
+      "prediction_generated_at": "2026-05-20T13:58:53.391673+00:00",
+      "display_status": "SHOW_REPLAY_DRY_RUN",
+      "truth_level": "DRY_RUN_REPLAY_BACKFILL"
+    },
+    {
+      "target_draw": "115000037",
+      "target_date": "2026/05/07",
+      "strategy_name": "威力彩 Fourier Rhythm 3注",
+      "predicted_numbers": [
+        14,
+        15,
+        16,
+        18,
+        33,
+        35
+      ],
+      "actual_numbers": [
+        3,
+        14,
+        15,
+        24,
+        34,
+        38
+      ],
+      "hit_numbers": [
+        14,
+        15
+      ],
+      "hit_count": 2,
+      "special_hit": false,
+      "prediction_cutoff_date": "2026/05/04",
+      "prediction_generated_at": "2026-05-20T13:58:53.391673+00:00",
+      "display_status": "SHOW_REPLAY_DRY_RUN",
+      "truth_level": "DRY_RUN_REPLAY_BACKFILL"
+    },
+    {
+      "target_draw": "115000038",
+      "target_date": "2026/05/11",
+      "strategy_name": "威力彩 Fourier Rhythm 3注",
+      "predicted_numbers": [
+        4,
+        6,
+        7,
+        18,
+        33,
+        35
+      ],
+      "actual_numbers": [
+        15,
+        19,
+        23,
+        26,
+        31,
+        38
+      ],
+      "hit_numbers": [],
+      "hit_count": 0,
+      "special_hit": false,
+      "prediction_cutoff_date": "2026/05/07",
+      "prediction_generated_at": "2026-05-20T13:58:53.391673+00:00",
+      "display_status": "SHOW_REPLAY_DRY_RUN",
+      "truth_level": "DRY_RUN_REPLAY_BACKFILL"
+    },
+    {
+      "target_draw": "115000039",
+      "target_date": "2026/05/14",
+      "strategy_name": "威力彩 Fourier Rhythm 3注",
+      "predicted_numbers": [
+        4,
+        6,
+        7,
+        18,
+        27,
+        35
+      ],
+      "actual_numbers": [
+        6,
+        8,
+        9,
+        17,
+        21,
+        29
+      ],
+      "hit_numbers": [
+        6
+      ],
+      "hit_count": 1,
+      "special_hit": false,
+      "prediction_cutoff_date": "2026/05/11",
+      "prediction_generated_at": "2026-05-20T13:58:53.391673+00:00",
+      "display_status": "SHOW_REPLAY_DRY_RUN",
+      "truth_level": "DRY_RUN_REPLAY_BACKFILL"
+    },
+    {
+      "target_draw": "115000040",
+      "target_date": "2026/05/18",
+      "strategy_name": "威力彩 Fourier Rhythm 3注",
+      "predicted_numbers": [
+        14,
+        23,
+        24,
+        27,
+        28,
+        36
+      ],
+      "actual_numbers": [
+        6,
+        7,
+        14,
+        25,
+        29,
+        34
+      ],
+      "hit_numbers": [
+        14
+      ],
+      "hit_count": 1,
+      "special_hit": false,
+      "prediction_cutoff_date": "2026/05/14",
+      "prediction_generated_at": "2026-05-20T13:58:53.391673+00:00",
+      "display_status": "SHOW_REPLAY_DRY_RUN",
+      "truth_level": "DRY_RUN_REPLAY_BACKFILL"
+    }
+  ]
+}

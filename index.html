@@ -277,6 +277,13 @@
         .rp-row-retro { background:#f3eeff; }
         .rp-row-artifact-retro { background:#ede9fb; }
         .rp-row-legacy-err { background:#fff3cd; }
+        /* P18: Big Lotto backfill truth-level badges */
+        .rp-truth-backfill-verified { background:#0969da; color:#fff; }
+        .rp-truth-remaining-backfill { background:#1a7f37; color:#fff; }
+        /* P18: Prediction timestamp badges */
+        .rp-ts-cutoff { font-weight:600; color:#0550ae; }
+        .rp-ts-genat  { color:#555; }
+        .rp-metadata-backfill-label { display:inline-block; padding:1px 7px; border-radius:10px; font-size:10px; font-weight:600; background:#e8f3ff; color:#0969da; border:1px solid #cce0ff; margin-left:4px; }
         .rp-row-display-only-disclaimer { background:#fffbf0; border-bottom:1px solid #30363d; }
         .rp-row-missing-history-tombstone { background:#f5f5f5; border-bottom:1px solid #30363d; }
         /* P2: new disclaimer row backgrounds */
@@ -2933,6 +2940,9 @@
             /* P2: new truth levels */
             'ARTIFACT_PROVENANCE_ONLY': '<span class="rp-truth-badge rp-truth-artifact-prov" title="僅有證據檔：此策略有 rejected artifact 或回測記錄，但無可執行 Python adapter" aria-label="ARTIFACT ONLY: Rejected artifact or backtest record exists, no executable adapter">僅有證據檔</span>',
             'TOMBSTONE_NO_SOURCE': '<span class="rp-truth-badge rp-truth-tombstone" title="無原始碼封存：此策略已退役且無任何可執行 code 或 artifact，不可重建預測紀錄" aria-label="TOMBSTONE: No source code or artifact exists, prediction records cannot be regenerated">無原始碼封存</span>',
+            /* P18: Big Lotto 1500-draw production backfill truth levels */
+            'BIGLOTTO_SINGLE_STRATEGY_BACKFILL_VERIFIED': '<span class="rp-truth-badge rp-truth-backfill-verified" title="BIG LOTTO BACKFILL：P14D 大樂透 ts3_regime_3bet 1500期回放資料，已驗證" aria-label="BIG LOTTO BACKFILL: P14D ts3_regime_3bet 1500-draw production backfill, verified">BIG LOTTO BACKFILL</span>',
+            'BIGLOTTO_REMAINING_STRATEGIES_BACKFILL_VERIFIED': '<span class="rp-truth-badge rp-truth-remaining-backfill" title="BIG LOTTO BACKFILL (P16)：大樂透其餘 ONLINE 策略 1500期回放資料，已驗證" aria-label="BIG LOTTO BACKFILL P16: Remaining Big Lotto ONLINE strategies 1500-draw production backfill, verified">BIG LOTTO BACKFILL (P16)</span>',
         };
         return badges[truthLevel] || '<span class="rp-truth-badge" style="background:#ccc;color:#666" title="UNKNOWN: Truth level could not be determined" aria-label="UNKNOWN: Truth level could not be determined">UNKNOWN</span>';
     }
@@ -3119,6 +3129,12 @@
         </div>
         <div><span style="color:#888">生成時間：</span>${r.generated_at ? r.generated_at.replace('T', ' ').slice(0, 19) : '—'}</div>
         <div><span style="color:#888">一注預測：</span>每策略每期只保留一注</div>
+        <div><span style="color:#888">預測基準日：</span>${r.prediction_cutoff_date
+          ? `<span class="rp-ts-cutoff">${r.prediction_cutoff_date}</span>`
+          : '<span style="color:#aaa;font-size:11px">預測基準日未知（legacy）</span>'}</div>
+        <div><span style="color:#888">建立時間：</span>${r.prediction_generated_at
+          ? `<span class="rp-ts-genat">${r.prediction_generated_at.replace('T', ' ').slice(0, 16)}</span>${r.truth_level === 'BIGLOTTO_SINGLE_STRATEGY_BACKFILL_VERIFIED' ? ' <span class="rp-metadata-backfill-label">補登 metadata</span>' : ''}`
+          : '—'}</div>
       </div>
       <div style="margin-bottom:8px">${numbersSection}</div>
       <div style="padding:6px 10px;background:#f0f4ff;border-radius:4px;color:#555;font-size:11px;line-height:1.6">

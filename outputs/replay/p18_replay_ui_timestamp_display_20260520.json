@@ -1,0 +1,38 @@
+{
+  "phase": "P18_REPLAY_UI_TIMESTAMP_DISPLAY",
+  "generated_at": "2026-05-20T00:00:00+00:00",
+  "production_rows": 4960,
+  "api_timestamp_fields_present": true,
+  "ui_timestamp_display_ready": true,
+  "ui_file_changed": "index.html",
+  "changes": [
+    "CSS: added .rp-ts-cutoff, .rp-ts-genat, .rp-metadata-backfill-label, .rp-truth-backfill-verified, .rp-truth-remaining-backfill",
+    "renderTruthLevelBadge: added BIGLOTTO_SINGLE_STRATEGY_BACKFILL_VERIFIED → 'BIG LOTTO BACKFILL' badge",
+    "renderTruthLevelBadge: added BIGLOTTO_REMAINING_STRATEGIES_BACKFILL_VERIFIED → 'BIG LOTTO BACKFILL (P16)' badge",
+    "rpRenderDetail: added '預測基準日' row showing prediction_cutoff_date or '預測基準日未知（legacy）'",
+    "rpRenderDetail: added '建立時間' row showing prediction_generated_at + '補登 metadata' label for P14D rows"
+  ],
+  "cutoff_badge_label": "預測基準日",
+  "generated_at_badge_label": "建立時間",
+  "legacy_fallback_label": "預測基準日未知（legacy）",
+  "metadata_backfill_label": "補登 metadata",
+  "metadata_backfill_condition": "truth_level === 'BIGLOTTO_SINGLE_STRATEGY_BACKFILL_VERIFIED'",
+  "strategies_verified": [
+    "ts3_regime_3bet",
+    "biglotto_triple_strike",
+    "biglotto_deviation_2bet"
+  ],
+  "api_no_patch_needed": true,
+  "api_fields_confirmed": [
+    "prediction_cutoff_date",
+    "prediction_generated_at",
+    "truth_level",
+    "controlled_apply_id",
+    "display_status",
+    "visibility_state",
+    "should_count_as_success"
+  ],
+  "no_db_write": true,
+  "fake_success_count": 0,
+  "final_classification": "P18_REPLAY_UI_TIMESTAMP_DISPLAY_READY"
+}

@@ -1,0 +1,22 @@
+{
+  "phase": "P14C_BIGLOTTO_SINGLE_STRATEGY_TEMPDB_REHEARSAL",
+  "generated_at": "2026-05-20T10:13:06.426496+00:00",
+  "production_apply": false,
+  "temp_db_only": true,
+  "controlled_apply_id": "P14C_BIGLOTTO_TS3_1500_TEMP_REHEARSAL_20260520",
+  "expected_rows_before": 460,
+  "rows_before": 460,
+  "planned_insert_count": 1500,
+  "inserted_count": 1500,
+  "duplicate_count": 0,
+  "error_count": 0,
+  "rows_after_apply": 1960,
+  "rerun_inserted_count": 0,
+  "rerun_duplicate_count": 1500,
+  "rows_after_rerun": 1960,
+  "rollback_deleted_count": 1500,
+  "rows_after_rollback": 460,
+  "production_rows_after": 460,
+  "fake_success_count": 0,
+  "final_classification": "P14C_TEMP_DB_REHEARSAL_READY"
+}

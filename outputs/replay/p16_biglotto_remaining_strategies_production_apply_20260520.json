@@ -1,0 +1,11 @@
+{
+  "phase": "P16_BIGLOTTO_REMAINING_STRATEGIES_PRODUCTION_APPLY",
+  "generated_at": "2026-05-20T13:01:34.979678+00:00",
+  "controlled_apply_id": "P16_BIGLOTTO_REMAINING_1500_PROD_20260520",
+  "rows_before": 1960,
+  "rows_after": 4960,
+  "inserted_count": 3000,
+  "duplicate_count": 0,
+  "error_count": 0,
+  "final_classification": "P16_PRODUCTION_APPLY_COMPLETE"
+}

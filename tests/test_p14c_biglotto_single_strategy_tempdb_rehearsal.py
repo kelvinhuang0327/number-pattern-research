@@ -165,7 +165,7 @@ def test_final_classification_ready(output: dict):
 # ── production DB guard ───────────────────────────────────────────────────────
 
 def test_production_db_at_canonical_count():
-    """Production DB must be at canonical post-P14D count (1960). P14C is temp-only."""
+    """Production DB must be at canonical post-P16 count (4960). P14C is temp-only."""
     conn = sqlite3.connect(str(_PROD_DB))
     try:
         count = conn.execute(
@@ -173,7 +173,7 @@ def test_production_db_at_canonical_count():
         ).fetchone()[0]
     finally:
         conn.close()
-    assert count == 1960, f"Expected 1960 (post-P14D), got {count}"
+    assert count == 4960, f"Expected 4960 (post-P16), got {count}"
 
 
 # ── live apply / rollback tests ───────────────────────────────────────────────

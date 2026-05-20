@@ -33,8 +33,8 @@ from routes.replay import get_replay_history  # noqa: E402
 PROD_ROWS        = 4960
 P16_APPLY_ID     = "P16_BIGLOTTO_REMAINING_1500_PROD_20260520"
 P14D_APPLY_ID    = "P14D_BIGLOTTO_TS3_1500_PROD_20260520"
-P16_TIMESTAMP_ROWS = 3000
-P14D_TIMESTAMP_ROWS = 0
+P16_TIMESTAMP_ROWS  = 3000
+P14D_TIMESTAMP_ROWS = 1500  # updated post-P17B: timestamps now backfilled for all P14D rows
 
 STRATEGIES = ["ts3_regime_3bet", "biglotto_triple_strike", "biglotto_deviation_2bet"]
 # ts3_regime_3bet has only P14D rows (1500); others have 70 legacy + 1500 P16 = 1570
@@ -105,7 +105,10 @@ def test_output_p16_timestamp_rows(output: dict):
 
 
 def test_output_p14d_timestamp_rows(output: dict):
-    assert output["p14d_timestamp_rows"] == P14D_TIMESTAMP_ROWS
+    # P17 output JSON is a frozen snapshot captured before P17B backfill.
+    # The snapshot value is 0 (pre-backfill); post-P17B the live count is 1500.
+    # Accept either value: snapshot is immutable, live state verified in P17B tests.
+    assert output["p14d_timestamp_rows"] in (0, P14D_TIMESTAMP_ROWS)
 
 
 def test_output_p14d_timestamp_gap_documented(output: dict):
@@ -229,9 +232,11 @@ def test_api_ts3_returns_timestamp_fields(ts3_page: dict):
     rec = ts3_page["records"][0]
     assert "prediction_cutoff_date" in rec
     assert "prediction_generated_at" in rec
-    # P14D rows have NULL timestamps — documented legacy gap
-    assert rec["prediction_cutoff_date"] is None
-    assert rec["prediction_generated_at"] is None
+    # Post-P17B: P14D timestamps have been backfilled — no longer NULL
+    assert rec["prediction_cutoff_date"] is not None, \
+        "P14D timestamps should be populated after P17B backfill"
+    assert rec["prediction_generated_at"] is not None, \
+        "P14D timestamps should be populated after P17B backfill"
 
 
 def test_api_triple_strike_has_timestamps(triple_page: dict):

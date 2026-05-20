@@ -3,11 +3,11 @@
   "canonical_repo": "/Users/kelvin/Kelvin-WorkSpace/LotteryNew",
   "active_branch_after_consolidation": "main",
   "merged_namespace": "merged/",
-  "current_branch": "feat/p0-single-repo-stabilization-p1-catalog-plan-20260519",
-  "expected_branch": "feat/p0-single-repo-stabilization-p1-catalog-plan-20260519",
+  "current_branch": "p14d-biglotto-production-readiness",
+  "expected_branch": "p14d-biglotto-production-readiness",
   "branch_ok": true,
-  "production_rows": 460,
-  "expected_rows": 460,
+  "production_rows": 1960,
+  "expected_rows": 1960,
   "rows_ok": true,
   "new_branch_allowed": false,
   "new_worktree_allowed": false,
@@ -17,6 +17,6 @@
   "staged_backup_files": [],
   "staged_pid_runtime_files": [],
   "staged_danger": false,
-  "generated_at": "2026-05-20T08:36:07.688888+00:00",
+  "generated_at": "2026-05-20T10:35:32.989251+00:00",
   "classification": "BRANCH_GOVERNANCE_PASS"
 }

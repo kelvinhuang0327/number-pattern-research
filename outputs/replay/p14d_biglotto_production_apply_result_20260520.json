@@ -1,0 +1,16 @@
+{
+  "phase": "P14D_BIGLOTTO_PRODUCTION_APPLY",
+  "generated_at": "2026-05-20T10:33:41.921251+00:00",
+  "production_apply": true,
+  "temp_db_only": false,
+  "controlled_apply_id": "P14D_BIGLOTTO_TS3_1500_PROD_20260520",
+  "expected_rows_before": 460,
+  "rows_before": 460,
+  "planned_insert_count": 1500,
+  "inserted_count": 1500,
+  "duplicate_count": 0,
+  "error_count": 0,
+  "rows_after_apply": 1960,
+  "fake_success_count": 0,
+  "final_classification": "P14D_PRODUCTION_APPLY_COMPLETE"
+}

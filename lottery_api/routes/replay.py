@@ -479,7 +479,8 @@ async def get_replay_history(
                     actual_numbers, actual_special,
                     hit_numbers, hit_count, special_hit,
                     replay_run_id, generated_at, truth_level,
-                    controlled_apply_id, source, provenance_hash, provenance_source
+                    controlled_apply_id, source, provenance_hash, provenance_source,
+                    prediction_cutoff_date, prediction_generated_at
                 FROM strategy_prediction_replays
                 WHERE {where_sql}
                 ORDER BY CAST(target_draw AS INTEGER) DESC, strategy_id ASC
@@ -528,6 +529,9 @@ async def get_replay_history(
                     "source_trace":             "|".join(filter(None, [
                         r["source"], r["truth_level"], r["provenance_hash"]
                     ])) or None,
+                    # P17: prediction timestamp fields (NULL for rows applied before P16A)
+                    "prediction_cutoff_date":   r["prediction_cutoff_date"],
+                    "prediction_generated_at":  r["prediction_generated_at"],
                 })
 
             return {

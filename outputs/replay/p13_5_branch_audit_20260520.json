@@ -3,11 +3,11 @@
   "canonical_repo": "/Users/kelvin/Kelvin-WorkSpace/LotteryNew",
   "active_branch_after_consolidation": "main",
   "merged_namespace": "merged/",
-  "current_branch": "p16-biglotto-remaining-strategies-backfill",
-  "expected_branch": "p16-biglotto-remaining-strategies-backfill",
+  "current_branch": "p19b-powerlotto-tempdb-rehearsal",
+  "expected_branch": "p19b-powerlotto-tempdb-rehearsal",
   "branch_ok": true,
-  "production_rows": 4960,
-  "expected_rows": 4960,
+  "production_rows": 6460,
+  "expected_rows": 6460,
   "rows_ok": true,
   "new_branch_allowed": false,
   "new_worktree_allowed": false,
@@ -17,6 +17,6 @@
   "staged_backup_files": [],
   "staged_pid_runtime_files": [],
   "staged_danger": false,
-  "generated_at": "2026-05-20T13:14:09.636359+00:00",
+  "generated_at": "2026-05-20T14:12:59.917954+00:00",
   "classification": "BRANCH_GOVERNANCE_PASS"
 }

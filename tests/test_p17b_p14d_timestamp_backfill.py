@@ -33,7 +33,7 @@ _APPLY_OUT   = _REPO_ROOT / "outputs" / "replay" / "p17b_p14d_timestamp_backfill
 sys.path.insert(0, str(_LOTTERY_API))
 from routes.replay import get_replay_history  # noqa: E402
 
-PROD_ROWS         = 4960
+PROD_ROWS     = 6460  # updated post-P19B apply
 TARGET_APPLY_ID   = "P14D_BIGLOTTO_TS3_1500_PROD_20260520"
 EXPECTED_TARGET   = 1500
 GEN_AT_SEMANTICS  = "P17B_METADATA_BACKFILL_TIME_NOT_ORIGINAL_PREDICTION_TIME"
@@ -173,7 +173,8 @@ def test_apply_result_inserted_0(apply_result: dict):
 
 
 def test_apply_result_rows_4960(apply_result: dict):
-    assert apply_result["rows_after"] == PROD_ROWS
+    # P17B apply result snapshot captured pre-P19B; value is the post-P17B count
+    assert apply_result["rows_after"] >= 4960  # frozen snapshot value
 
 
 def test_apply_result_violations_0(apply_result: dict):

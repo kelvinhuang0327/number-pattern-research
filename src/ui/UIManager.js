@@ -2,6 +2,8 @@
  * UI 管理器
  * 負責頁面切換、通知顯示和全域 UI 狀態
  */
+import { apiClient } from '../services/ApiClient.js';
+
 export class UIManager {
     constructor() {
         this.setupNavigation();
@@ -16,7 +18,7 @@ export class UIManager {
 
     async updateWaterline() {
         try {
-            const response = await fetch('/api/performance/regime');
+            const response = await fetch(`${apiClient.baseUrl}/api/performance/regime`);
             if (!response.ok) return;
 
             const data = await response.json();
@@ -31,7 +33,7 @@ export class UIManager {
                 dot.style.boxShadow = `0 0 10px ${data.color}80`;
             }
         } catch (error) {
-            console.error('Failed to update waterline:', error);
+            console.warn('[waterline] update skipped:', error.message);
         }
     }
 

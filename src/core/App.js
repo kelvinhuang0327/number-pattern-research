@@ -989,7 +989,6 @@ export class App {
         console.log('📋 Elements found:', { card: !!card, icon: !!icon, title: !!title, description: !!description });
 
         if (!card || !icon || !title || !description) {
-            console.error('❌ Missing elements for method description card');
             return;
         }
 

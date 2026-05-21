@@ -2044,8 +2044,15 @@
 
             <!-- History Table -->
             <div class="card mb-16">
-              <div class="card-header" style="display:flex;align-items:center;gap:8px">
+              <div class="card-header" style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">
                 <span>🗂️ 回放記錄</span>
+                <div id="rp-preset-btns" style="display:flex;gap:4px;align-items:center" data-testid="rp-preset-btns">
+                  <span style="font-size:11px;color:#888">快速檢視：</span>
+                  <button class="btn btn-sm btn-secondary rp-preset-btn" data-preset="100"  data-testid="rp-preset-100"  style="font-size:11px;padding:2px 8px">100期</button>
+                  <button class="btn btn-sm btn-secondary rp-preset-btn" data-preset="500"  data-testid="rp-preset-500"  style="font-size:11px;padding:2px 8px">500期</button>
+                  <button class="btn btn-sm btn-secondary rp-preset-btn" data-preset="1000" data-testid="rp-preset-1000" style="font-size:11px;padding:2px 8px">1000期</button>
+                  <button class="btn btn-sm btn-secondary rp-preset-btn" data-preset="1500" data-testid="rp-preset-1500" style="font-size:11px;padding:2px 8px">1500期</button>
+                </div>
                 <span id="rp-total-label" style="font-size:12px;color:#888;margin-left:auto"></span>
               </div>
               <div class="card-body" style="overflow-x:auto">
@@ -2723,9 +2730,10 @@
   const API_BASE = (typeof window !== 'undefined' && window.API_BASE ? String(window.API_BASE) : '').replace(/\/$/, '');
   const BASE = `${API_BASE}/api/replay`;
   let rpPage = 1;
-  const rpPageSize = 50;
+  let rpPageSize = 50;
   let rpTotal = 0;
   let rpPages = 1;
+  let rpPresetPeriods = 0; // P23a: 0 = normal paginated, N = latest N periods preset
     let rpLifecycleRegistryRows = [];
     let rpStrategyRowCountMap = {};  // P63: strategy_id → total_rows from /api/replay/summary
     let rpFixtureMode = false;
@@ -3285,6 +3293,117 @@
     }
   }
 
+  // P23a: Render history table rows from a records array (shared by rpQuery and rpPresetFetch)
+  function rpBuildHistoryRows(records) {
+    return records.map(r => {
+      const predicted = r.predicted_numbers || [];
+      const actual    = r.actual_numbers    || [];
+      const hits      = r.hit_numbers       || [];
+      const predSpecial  = r.predicted_special != null ? rpSpecialChip(r.predicted_special, !!r.special_hit, '特') : '';
+      const actSpecial   = r.actual_special != null ? rpSpecialChip(r.actual_special, !!r.special_hit, '特') : '';
+      const specialHit   = r.special_hit ? ' ⭐' : '';
+      const statusBadge  = rpStatusBadge(r.replay_status);
+
+      let truthLevelBadge = '';
+      let rowClass = '';
+      let tooltipTitle = '';
+      if (r.fixture_mode || r.fixture_only || r.synthetic_only) {
+          truthLevelBadge = renderTruthLevelBadge('FIXTURE_ONLY');
+          rowClass = 'rp-row-fixture';
+      } else if (r.replay_status === 'REPLAY_ERROR') {
+          truthLevelBadge = renderTruthLevelBadge('LEGACY_ERROR');
+          rowClass = 'rp-row-legacy-err';
+          tooltipTitle = r.reject_reason
+              ? 'Prediction unavailable: ' + r.reject_reason
+              : 'Prediction unavailable due to adapter bug in run #3 (2026-05-07). Issue was resolved immediately. Subsequent runs are clean.';
+      } else if (r.truth_level) {
+          truthLevelBadge = renderTruthLevelBadge(r.truth_level);
+          if (r.truth_level === 'REGENERATED_RETROSPECTIVE') rowClass = 'rp-row-retro';
+          else if (r.truth_level === 'ARTIFACT_RECONSTRUCTED_RETROSPECTIVE') rowClass = 'rp-row-artifact-retro';
+      }
+
+      return `<tr class="${rowClass}" title="${_esc(tooltipTitle)}">
+        <td>${r.target_draw}</td>
+        <td>${r.target_date || ''}</td>
+        <td style="font-size:11px">${r.strategy_id}</td>
+        <td>${rpBadges(predicted, hits)} ${predSpecial}</td>
+        <td>${rpBadges(actual, hits)} ${actSpecial}</td>
+        <td>${rpBadges(hits, hits)}${specialHit}</td>
+        <td style="font-weight:600;text-align:center">${r.hit_count != null ? r.hit_count : '—'}</td>
+        <td style="text-align:center">${statusBadge}${truthLevelBadge ? ' ' + truthLevelBadge : ''}</td>
+        <td style="text-align:center"><button class="rp-toggle-btn" data-row-id="${r.id}" style="font-size:11px;padding:2px 8px;cursor:pointer;border:1px solid #3498db;border-radius:4px;background:#eaf4fb;color:#2980b9">▶ 詳情</button></td>
+      </tr>
+      <tr class="rp-detail-row" id="rp-detail-${r.id}" style="display:none">
+        <td colspan="9" style="padding:0">${rpRenderDetail(r)}</td>
+      </tr>`;
+    }).join('');
+  }
+
+  // P23a: Multi-fetch up to N records for period preset quick-select
+  async function rpPresetFetch(n) {
+    rpPresetPeriods = n;
+    rpPage = 1;
+    rpPageSize = 50; // restore default for future normal queries
+
+    const lt     = document.getElementById('rp-lottery-select').value;
+    const lc     = document.getElementById('rp-lifecycle-select') ? document.getElementById('rp-lifecycle-select').value : '';
+    const sid    = document.getElementById('rp-strategy-select').value;
+    const status = document.getElementById('rp-status-select').value;
+    const df     = document.getElementById('rp-date-from').value;
+    const dt     = document.getElementById('rp-date-to').value;
+
+    const tbody   = document.getElementById('rp-hist-body');
+    const prevBtn = document.getElementById('rp-prev-btn');
+    const nextBtn = document.getElementById('rp-next-btn');
+    tbody.innerHTML = '<tr><td colspan="9" style="text-align:center;color:#888">載入中…（前 ' + n + ' 期）</td></tr>';
+    if (prevBtn) prevBtn.disabled = true;
+    if (nextBtn) nextBtn.disabled = true;
+    document.getElementById('rp-page-info').textContent = '載入中…';
+
+    const FETCH_PS = 200; // max page_size supported by backend
+    let allRecords = [];
+    let fetchPage  = 1;
+
+    try {
+      while (allRecords.length < n) {
+        const remaining = n - allRecords.length;
+        const ps = Math.min(FETCH_PS, remaining);
+        let url = `${BASE}/history?lottery_type=${lt}&page=${fetchPage}&page_size=${ps}`;
+        if (lc)     url += `&lifecycle_status=${encodeURIComponent(lc)}`;
+        if (sid)    url += `&strategy_id=${encodeURIComponent(sid)}`;
+        if (status) url += `&replay_status=${encodeURIComponent(status)}`;
+        if (df)     url += `&date_from=${df}`;
+        if (dt)     url += `&date_to=${dt}`;
+        if (rpFixtureMode) url += `&fixture_mode=true`;
+
+        const res = await fetch(url);
+        if (!res.ok) throw new Error(`HTTP ${res.status}`);
+        const data = await res.json();
+        const batch = data.records || [];
+        if (!batch.length) break;
+        allRecords = allRecords.concat(batch);
+        const total = data.total || 0;
+        if (allRecords.length >= total) break; // fetched everything available
+        fetchPage++;
+      }
+      if (allRecords.length > n) allRecords = allRecords.slice(0, n);
+
+      const fetched = allRecords.length;
+      document.getElementById('rp-total-label').textContent = `前 ${n} 期 / 共 ${fetched} 筆`;
+      document.getElementById('rp-page-info').textContent  = `前 ${n} 期（${fetched} 筆）`;
+      if (prevBtn) prevBtn.disabled = true;
+      if (nextBtn) nextBtn.disabled = true;
+
+      if (!fetched) {
+        tbody.innerHTML = '<tr><td colspan="9" style="text-align:center;color:#888;padding:16px 8px">查無資料</td></tr>';
+        return;
+      }
+      tbody.innerHTML = rpBuildHistoryRows(allRecords);
+    } catch (e) {
+      tbody.innerHTML = `<tr><td colspan="9" style="text-align:center;color:red">錯誤：${e.message}</td></tr>`;
+    }
+  }
+
   // Query history records
   async function rpQuery() {
     const lt     = document.getElementById('rp-lottery-select').value;
@@ -3332,50 +3451,7 @@
         }
         return;
       }
-      tbody.innerHTML = records.map(r => {
-        const predicted = r.predicted_numbers || [];
-        const actual    = r.actual_numbers    || [];
-        const hits      = r.hit_numbers       || [];
-        const predSpecial  = r.predicted_special != null ? rpSpecialChip(r.predicted_special, !!r.special_hit, '特') : '';
-        const actSpecial   = r.actual_special != null ? rpSpecialChip(r.actual_special, !!r.special_hit, '特') : '';
-        const specialHit   = r.special_hit ? ' ⭐' : '';
-                const statusBadge  = rpStatusBadge(r.replay_status);
-
-        // P61: Derive truth-level for per-row display
-        // PR97: use r.truth_level from API first; fallback to fixture/REPLAY_ERROR heuristics
-        let truthLevelBadge = '';
-        let rowClass = '';
-        let tooltipTitle = '';
-        if (r.fixture_mode || r.fixture_only || r.synthetic_only) {
-            truthLevelBadge = renderTruthLevelBadge('FIXTURE_ONLY');
-            rowClass = 'rp-row-fixture';
-        } else if (r.replay_status === 'REPLAY_ERROR') {
-            truthLevelBadge = renderTruthLevelBadge('LEGACY_ERROR');
-            rowClass = 'rp-row-legacy-err';
-            tooltipTitle = r.reject_reason
-                ? 'Prediction unavailable: ' + r.reject_reason
-                : 'Prediction unavailable due to adapter bug in run #3 (2026-05-07). Issue was resolved immediately. Subsequent runs are clean.';
-        } else if (r.truth_level) {
-            truthLevelBadge = renderTruthLevelBadge(r.truth_level);
-            if (r.truth_level === 'REGENERATED_RETROSPECTIVE') rowClass = 'rp-row-retro';
-            else if (r.truth_level === 'ARTIFACT_RECONSTRUCTED_RETROSPECTIVE') rowClass = 'rp-row-artifact-retro';
-        }
-
-        return `<tr class="${rowClass}" title="${_esc(tooltipTitle)}">
-          <td>${r.target_draw}</td>
-          <td>${r.target_date || ''}</td>
-          <td style="font-size:11px">${r.strategy_id}</td>
-          <td>${rpBadges(predicted, hits)} ${predSpecial}</td>
-          <td>${rpBadges(actual, hits)} ${actSpecial}</td>
-          <td>${rpBadges(hits, hits)}${specialHit}</td>
-          <td style="font-weight:600;text-align:center">${r.hit_count != null ? r.hit_count : '—'}</td>
-                    <td style="text-align:center">${statusBadge}${truthLevelBadge ? ' ' + truthLevelBadge : ''}</td>
-          <td style="text-align:center"><button class="rp-toggle-btn" data-row-id="${r.id}" style="font-size:11px;padding:2px 8px;cursor:pointer;border:1px solid #3498db;border-radius:4px;background:#eaf4fb;color:#2980b9">▶ 詳情</button></td>
-        </tr>
-        <tr class="rp-detail-row" id="rp-detail-${r.id}" style="display:none">
-                    <td colspan="9" style="padding:0">${rpRenderDetail(r)}</td>
-        </tr>`;
-      }).join('');
+      tbody.innerHTML = rpBuildHistoryRows(records);
     } catch (e) {
             tbody.innerHTML = `<tr><td colspan="9" style="text-align:center;color:red">錯誤：${e.message}</td></tr>`;
     }
@@ -3429,8 +3505,15 @@
     }
     const queryBtn = document.getElementById('rp-query-btn');
     if (queryBtn) {
-      queryBtn.addEventListener('click', function() { rpPage = 1; rpQuery(); });
+      queryBtn.addEventListener('click', function() { rpPresetPeriods = 0; rpPageSize = 50; rpPage = 1; rpQuery(); });
     }
+    // P23a: Period preset quick-select buttons
+    document.querySelectorAll('.rp-preset-btn').forEach(function(btn) {
+      btn.addEventListener('click', function() {
+        var n = parseInt(btn.dataset.preset, 10);
+        if (n > 0) rpPresetFetch(n);
+      });
+    });
     const summaryBtn = document.getElementById('rp-summary-btn');
     if (summaryBtn) {
       summaryBtn.addEventListener('click', rpLoadSummary);

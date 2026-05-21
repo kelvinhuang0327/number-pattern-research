@@ -39,7 +39,7 @@ _SCHEMA_JSON   = _OUT_DIR / "p16a_prediction_timestamp_schema_check_20260520.jso
 _DECISION_JSON = _OUT_DIR / "p16_biglotto_remaining_strategies_apply_decision_20260520.json"
 _DRY_RUN_JSON  = _OUT_DIR / "p16_biglotto_remaining_strategies_dry_run_20260520.json"
 
-EXPECTED_PROD_ROWS = 6460  # updated post-P19B apply
+EXPECTED_PROD_ROWS = 9460  # updated post-P20 apply
 
 
 def _prod_row_count() -> int:

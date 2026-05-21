@@ -1,0 +1,15 @@
+{
+  "phase": "P20_POWERLOTTO_REMAINING_STRATEGIES",
+  "mode": "apply",
+  "production_apply": true,
+  "temp_db_only": false,
+  "controlled_apply_id": "P20_POWERLOTTO_REMAINING_1500_PROD_20260520",
+  "expected_rows_before": 6460,
+  "rows_before": 6460,
+  "planned_insert_count": 3000,
+  "inserted_count": 3000,
+  "duplicate_count": 0,
+  "error_count": 0,
+  "rows_after_apply": 9460,
+  "fake_success_count": 0
+}

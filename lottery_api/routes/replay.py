@@ -40,6 +40,11 @@ from lottery_api.models.replay_strategy_registry import (
     summarize_strategy_lifecycle_counts,
     normalise_lifecycle_status,
 )
+from lottery_api.models.replay_strategy_state_labels import (
+    get_full_label_catalog as _p26_get_full_label_catalog,
+    get_label_summary as _p26_get_label_summary,
+    _load_p24_inventory as _p26_load_p24_inventory,
+)
 
 _api_root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 if _api_root not in sys.path:
@@ -953,6 +958,87 @@ async def get_replay_freshness(
         raise
     except Exception as e:
         logger.exception("get_replay_freshness failed")
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+# ─── P28: Strategy Catalog ────────────────────────────────────────────────────
+
+_SAFE_USER_MESSAGES: dict[str, str] = {
+    "row-backed":          "Replay rows available in DB — queryable via /api/replay/history.",
+    "artifact-only":       "尚無 replay rows / artifact-only — 僅目錄展示。",
+    "no-data":             "No replay rows and no recoverable artifact — catalog entry only.",
+    "reconstructible":     "Logic recoverable from archive; not yet authorized for reconstruction.",
+    "manual-review":       "Requires manual review before display.",
+    "unsupported":         "Unsupported: insufficient source to reconstruct or replay.",
+    "retired":             "已退役 — lifecycle preserved for reference only.",
+    "rejected-registered": "已拒絕 / registered stub — MUST NOT be executed.",
+    "observation":         "觀察中 — shadow evaluation, not in active production.",
+}
+
+
+def _build_catalog_entry(label_entry: dict, raw: dict) -> dict:
+    """Merge P26 label entry with raw P24 fields for the catalog response."""
+    primary = label_entry["primary_label"]
+    safe_msg = _SAFE_USER_MESSAGES.get(primary, "Status unknown.")
+    return {
+        "strategy_id":               label_entry["strategy_id"],
+        "display_name":              label_entry["display_name"],
+        "lottery_type":              label_entry["lottery_type"],
+        "lifecycle_state":           label_entry["lifecycle_state"],
+        "replay_visibility_state":   label_entry["replay_visibility_state"],
+        "primary_label":             primary,
+        "label_display_name":        label_entry["label_display"],
+        "label_description":         label_entry["label_description"],
+        "row_count":                 label_entry["row_count"],
+        "verified_row_count":        int(raw.get("verified_row_count") or 0),
+        "is_row_backed":             label_entry["is_row_backed"],
+        "is_queryable":              label_entry["queryable"],
+        "reconstructible_candidate": label_entry["reconstructible_candidate"],
+        "needs_manual_review":       bool(raw.get("needs_manual_review")),
+        "unsupported_reason":        raw.get("unsupported_reason"),
+        "safe_user_message":         safe_msg,
+        "source_artifact":           raw.get("source_artifact"),
+        "source_path":               raw.get("source_path"),
+    }
+
+
+@router.get("/api/replay/strategy-catalog")
+async def get_replay_strategy_catalog():
+    """
+    P28: Read-only strategy catalog exposing all 59 P24 strategies with P26 safety labels.
+
+    Each entry shows which strategies are row-backed (queryable) vs
+    artifact-only / retired / rejected / observation.
+
+    READ-ONLY: no DB write, no migrations, no strategy execution.
+    Label source: lottery_api/models/replay_strategy_state_labels.py (P26 module).
+    """
+    try:
+        label_catalog = _p26_get_full_label_catalog()
+        raw_inventory = _p26_load_p24_inventory()
+        raw_by_id = {s["strategy_id"]: s for s in raw_inventory}
+
+        strategies = [
+            _build_catalog_entry(entry, raw_by_id.get(entry["strategy_id"], {}))
+            for entry in label_catalog
+        ]
+
+        label_summary = _p26_get_label_summary()
+
+        return {
+            "generated_at":     datetime.now(timezone.utc).isoformat(),
+            "phase":            "P28",
+            "total_strategies": len(strategies),
+            "label_summary":    label_summary,
+            "row_backed_count": label_summary.get("row-backed", 0),
+            "non_row_backed_count": len(strategies) - label_summary.get("row-backed", 0),
+            "strategies":       strategies,
+            "no_db_write":      True,
+            "p26_label_module": "lottery_api/models/replay_strategy_state_labels.py",
+            "disclaimer":       _DISCLAIMER,
+        }
+    except Exception as e:
+        logger.exception("get_replay_strategy_catalog failed")
         raise HTTPException(status_code=500, detail=str(e))
 
 

@@ -70,6 +70,9 @@ BASELINE = {
     # P20: Power Lotto remaining strategies (power_precision_3bet + power_orthogonal_5bet)
     # 1500 draws each = 3000 rows (2026-05-20)
     "p20_apply_id": "P20_POWERLOTTO_REMAINING_1500_PROD_20260520",
+    # P21B: Daily 539 both ONLINE strategies (daily539_f4cold + daily539_markov_cold)
+    # 1500 draws each = 3000 rows (2026-05-21)
+    "p21b_apply_id": "P21B_DAILY539_BOTH_1500_PROD_20260520",
     "v1_count": 0,
     "v2_count": 0,
     "legacy_count": 460,
@@ -80,7 +83,8 @@ BASELINE = {
     "p16_count": 3000,
     "p19b_count": 1500,
     "p20_count": 3000,
-    "total_count": 9460,
+    "p21b_count": 3000,
+    "total_count": 12460,
 }
 
 # Known V3 tombstone strategy IDs — must have 0 rows in replay table
@@ -107,6 +111,8 @@ ALLOWED_TRUTH_LEVELS = {
     "POWERLOTTO_SINGLE_STRATEGY_BACKFILL_VERIFIED",
     # P20 Power Lotto remaining strategies production backfill (2026-05-20)
     "POWERLOTTO_REMAINING_STRATEGIES_BACKFILL_VERIFIED",
+    # P21B Daily 539 both ONLINE strategies production backfill (2026-05-21)
+    "DAILY539_BACKFILL_VERIFIED",
 }
 
 
@@ -170,6 +176,11 @@ def run_checks(db_path: pathlib.Path) -> dict:
         (BASELINE["p20_apply_id"],),
     ).fetchone()[0]
 
+    p21b_count = c.execute(
+        "SELECT COUNT(*) FROM strategy_prediction_replays WHERE controlled_apply_id=?",
+        (BASELINE["p21b_apply_id"],),
+    ).fetchone()[0]
+
     legacy_count = c.execute(
         "SELECT COUNT(*) FROM strategy_prediction_replays WHERE controlled_apply_id IS NULL"
     ).fetchone()[0]
@@ -218,6 +229,10 @@ def run_checks(db_path: pathlib.Path) -> dict:
         violations.append(
             f"P20 row count mismatch: expected {BASELINE['p20_count']}, got {p20_count}"
         )
+    if p21b_count != BASELINE["p21b_count"]:
+        violations.append(
+            f"P21B row count mismatch: expected {BASELINE['p21b_count']}, got {p21b_count}"
+        )
     if total_count != BASELINE["total_count"]:
         violations.append(
             f"total row count mismatch: expected {BASELINE['total_count']}, got {total_count}"
@@ -234,6 +249,7 @@ def run_checks(db_path: pathlib.Path) -> dict:
         "p16": p16_count,
         "p19b": p19b_count,
         "p20": p20_count,
+        "p21b": p21b_count,
         "total": total_count,
     }
 
@@ -303,13 +319,13 @@ def run_checks(db_path: pathlib.Path) -> dict:
             # Already caught in row_counts section, no double-record
             pass
 
-    # Unexpected apply IDs (not V1, V2, P2B, P2F, P3BC, P14D, P16, P19B, P20, or NULL) are violations
+    # Unexpected apply IDs (not V1, V2, P2B, P2F, P3BC, P14D, P16, P19B, P20, P21B, or NULL) are violations
     known_apply_ids = {
         BASELINE["v1_apply_id"], BASELINE["v2_apply_id"],
         BASELINE["p2b_apply_id"], BASELINE["p2f_apply_id"],
         BASELINE["p3bc_apply_id"], BASELINE["p14d_apply_id"],
         BASELINE["p16_apply_id"], BASELINE["p19b_apply_id"],
-        BASELINE["p20_apply_id"],
+        BASELINE["p20_apply_id"], BASELINE["p21b_apply_id"],
         "null", None,
     }
     for aid_key, cnt in controlled_apply_id_counts.items():

@@ -30,7 +30,7 @@ _P17_OUTPUT  = _REPO_ROOT / "outputs" / "replay" / "p17_biglotto_replay_timestam
 sys.path.insert(0, str(_LOTTERY_API))
 from routes.replay import get_replay_history  # noqa: E402
 
-PROD_ROWS     = 9460  # updated post-P20 apply
+PROD_ROWS     = 12460  # updated post-P21B apply
 P16_APPLY_ID     = "P16_BIGLOTTO_REMAINING_1500_PROD_20260520"
 P14D_APPLY_ID    = "P14D_BIGLOTTO_TS3_1500_PROD_20260520"
 P16_TIMESTAMP_ROWS  = 3000

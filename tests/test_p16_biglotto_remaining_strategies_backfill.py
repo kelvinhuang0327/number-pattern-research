@@ -51,7 +51,7 @@ _DECISION_JSON = _OUT_DIR / "p16_biglotto_remaining_strategies_apply_decision_20
 _APPLY_JSON    = _OUT_DIR / "p16_biglotto_remaining_strategies_production_apply_20260520.json"
 
 EXPECTED_STRATEGY_IDS  = {"biglotto_triple_strike", "biglotto_deviation_2bet"}
-EXPECTED_PROD_ROWS     = 9460  # updated post-P20 apply
+EXPECTED_PROD_ROWS     = 12460  # updated post-P21B apply
 P16_APPLY_ID           = "P16_BIGLOTTO_REMAINING_1500_PROD_20260520"
 P16_EXPECTED_INSERT    = 3000
 

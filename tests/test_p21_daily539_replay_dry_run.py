@@ -29,7 +29,7 @@ if str(_REPO_ROOT) not in sys.path:
     sys.path.insert(0, str(_REPO_ROOT))
 
 PROD_ROWS_SNAPSHOT = 9460   # frozen in P21 output JSON
-PROD_ROWS_BASELINE = 9460   # current live DB (no change expected)
+PROD_ROWS_BASELINE = 12460  # updated post-P21B apply
 STRATEGIES         = ["daily539_f4cold", "daily539_markov_cold"]
 EXPECTED_READY     = 3000   # 1500 per strategy × 2
 

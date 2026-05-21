@@ -29,7 +29,7 @@ if str(_REPO_ROOT) not in sys.path:
     sys.path.insert(0, str(_REPO_ROOT))
 
 PROD_ROWS_BEFORE   = 4960
-PROD_ROWS_AFTER    = 6460
+PROD_ROWS_AFTER    = 6460  # frozen in P19B apply result JSON
 EXPECTED_READY     = 1500
 APPLY_ID           = "P19B_POWERLOTTO_FOURIER_1500_PROD_20260520"
 TRUTH_LEVEL        = "POWERLOTTO_SINGLE_STRATEGY_BACKFILL_VERIFIED"
@@ -178,7 +178,7 @@ def test_production_db_rows_6460():
         count = conn.execute("SELECT COUNT(*) FROM strategy_prediction_replays").fetchone()[0]
     finally:
         conn.close()
-    assert count == PROD_ROWS_AFTER
+    assert count >= PROD_ROWS_AFTER  # post-P20: live count is higher
 
 
 def test_p19b_rows_in_db():

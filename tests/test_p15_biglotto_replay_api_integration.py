@@ -31,7 +31,7 @@ TRUTH_LEVEL  = "BIGLOTTO_SINGLE_STRATEGY_BACKFILL_VERIFIED"
 STRATEGY_ID  = "ts3_regime_3bet"
 LOTTERY_TYPE = "BIG_LOTTO"
 EXPECTED_ROWS = 1500
-PROD_ROWS     = 6460  # updated post-P19B apply
+PROD_ROWS     = 9460  # updated post-P20 apply
 
 REQUIRED_FIELDS = [
     "strategy_id", "strategy_name", "lottery_type",

@@ -33,7 +33,7 @@ _APPLY_OUT   = _REPO_ROOT / "outputs" / "replay" / "p17b_p14d_timestamp_backfill
 sys.path.insert(0, str(_LOTTERY_API))
 from routes.replay import get_replay_history  # noqa: E402
 
-PROD_ROWS     = 6460  # updated post-P19B apply
+PROD_ROWS     = 9460  # updated post-P20 apply
 TARGET_APPLY_ID   = "P14D_BIGLOTTO_TS3_1500_PROD_20260520"
 EXPECTED_TARGET   = 1500
 GEN_AT_SEMANTICS  = "P17B_METADATA_BACKFILL_TIME_NOT_ORIGINAL_PREDICTION_TIME"

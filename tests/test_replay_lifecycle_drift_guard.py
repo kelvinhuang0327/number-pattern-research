@@ -9,7 +9,7 @@ These tests:
   - Run the drift guard script via subprocess and parse its JSON output
 
 Baseline (updated 2026-05-20 after P19B production apply):
-  legacy=460  v1=0  v2=0  p2b=0  p2f=0  p3bc=0  p14d=1500  p16=3000  p19b=1500  p20=3000  total=9460
+  legacy=460  v1=0  v2=0  p2b=0  p2f=0  p3bc=0  p14d=1500  p16=3000  p19b=1500  p20=3000  p21b=3000  total=12460
   P14D applied 1500 ts3_regime_3bet BIG_LOTTO rows (controlled_apply_id=P14D_BIGLOTTO_TS3_1500_PROD_20260520).
   Legacy 460 rows retain truth_level=null; P14D rows have BIGLOTTO_SINGLE_STRATEGY_BACKFILL_VERIFIED.
   V3 tombstone strategies: 0 rows each (acb_markov_midfreq_3bet promoted out of tombstone list)
@@ -50,6 +50,8 @@ ALLOWED_TRUTH_LEVELS = {
     # P19B Power Lotto fourier_rhythm_3bet production backfill (2026-05-20)
     "POWERLOTTO_SINGLE_STRATEGY_BACKFILL_VERIFIED",
     "POWERLOTTO_REMAINING_STRATEGIES_BACKFILL_VERIFIED",
+    # P21B Daily 539 production backfill (2026-05-21)
+    "DAILY539_BACKFILL_VERIFIED",
     "null",
 }
 
@@ -186,8 +188,10 @@ class TestDriftGuardScript:
         assert rc.get("p19b") == 1500, f"P19B count mismatch: {rc.get('p19b')} != 1500"
         # P20 applied 3000 POWER_LOTTO rows (power_precision_3bet + power_orthogonal_5bet)
         assert rc.get("p20") == 3000, f"P20 count mismatch: {rc.get('p20')} != 3000"
-        # New total = 460 legacy + 1500 P14D + 3000 P16 + 1500 P19B + 3000 P20
-        assert rc.get("total") == 9460, f"total count mismatch: {rc.get('total')} != 9460"
+        # P21B applied 3000 DAILY_539 rows (daily539_f4cold + daily539_markov_cold)
+        assert rc.get("p21b") == 3000, f"P21B count mismatch: {rc.get('p21b')} != 3000"
+        # New total = 460 legacy + 1500 P14D + 3000 P16 + 1500 P19B + 3000 P20 + 3000 P21B
+        assert rc.get("total") == 12460, f"total count mismatch: {rc.get('total')} != 12460"
         # V1/V2/P2B/P2F/P3BC remain 0
         assert rc.get("v1") == 0, f"V1 count mismatch: {rc.get('v1')} != 0"
         assert rc.get("v2") == 0, f"V2 count mismatch: {rc.get('v2')} != 0"

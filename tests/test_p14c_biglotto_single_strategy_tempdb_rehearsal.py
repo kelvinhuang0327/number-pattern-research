@@ -173,7 +173,7 @@ def test_production_db_at_canonical_count():
         ).fetchone()[0]
     finally:
         conn.close()
-    assert count == 9460, f"Expected 9460 (post-P20), got {count}"
+    assert count == 12460, f"Expected 9460 (post-P20), got {count}"
 
 
 # ── live apply / rollback tests ───────────────────────────────────────────────

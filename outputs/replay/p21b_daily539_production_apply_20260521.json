@@ -1,0 +1,15 @@
+{
+  "phase": "P21B_DAILY539_TEMPDB_REHEARSAL",
+  "mode": "apply",
+  "production_apply": true,
+  "temp_db_only": false,
+  "controlled_apply_id": "P21B_DAILY539_BOTH_1500_PROD_20260520",
+  "expected_rows_before": 9460,
+  "rows_before": 9460,
+  "planned_insert_count": 3000,
+  "inserted_count": 3000,
+  "duplicate_count": 0,
+  "error_count": 0,
+  "rows_after_apply": 12460,
+  "fake_success_count": 0
+}

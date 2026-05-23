@@ -1,0 +1,83 @@
+{
+  "p39_version": "20260523",
+  "p38_deferred_ui_smoke_closure": "RESOLVED",
+  "production_rows_before": 28960,
+  "production_rows_after": 28960,
+  "preflight": {
+    "repo_root": "/Users/kelvin/Kelvin-WorkSpace/LotteryNew",
+    "branch_at_start": "main",
+    "head_includes_p38_merge": true,
+    "p38_merge_commit": "9e343f7",
+    "drift_guard_status": "REPLAY_LIFECYCLE_DRIFT_GUARD_PASS",
+    "branch_governance_guard_status": "BRANCH_GOVERNANCE_PASS"
+  },
+  "api_cross_check": {
+    "endpoint": "/api/replay/history",
+    "backend_port": 8002,
+    "markov_1bet_539": {"rows": 1500, "status": "PASS"},
+    "acb_single_539": {"rows": 1500, "status": "PASS"},
+    "zone_gap_3bet_539": {"rows": 1500, "status": "PASS"},
+    "539_3bet_orthogonal": {"rows": 1500, "status": "PASS"},
+    "p0b_539_3bet_f_cold_fmid": {"rows": 1500, "status": "PASS"},
+    "p0c_539_3bet_f_cold_x2": {"rows": 1500, "status": "PASS"},
+    "total_wave2_rows": 9000,
+    "daily_539_total_rows": 19680,
+    "pagination_check": "PASS",
+    "pagination_detail": "page1=100 rows, page15=100 rows, total=1500 for markov_1bet_539"
+  },
+  "db_cross_check": {
+    "markov_1bet_539": {"rows": 1500, "lottery_type": "DAILY_539"},
+    "acb_single_539": {"rows": 1500, "lottery_type": "DAILY_539"},
+    "zone_gap_3bet_539": {"rows": 1500, "lottery_type": "DAILY_539"},
+    "539_3bet_orthogonal": {"rows": 1500, "lottery_type": "DAILY_539"},
+    "p0b_539_3bet_f_cold_fmid": {"rows": 1500, "lottery_type": "DAILY_539"},
+    "p0c_539_3bet_f_cold_x2": {"rows": 1500, "lottery_type": "DAILY_539"},
+    "total_production_rows": 28960
+  },
+  "registry_check": {
+    "p37_wave2_lifecycle_status": "DRY_RUN (not in ONLINE registry)",
+    "no_p37_strategy_is_online": true,
+    "note": "P37 Wave 2 strategies use lifecycle_status=DRY_RUN via p36_wave2_daily539_adapters. They are not in the ONLINE registry."
+  },
+  "ui_smoke": {
+    "frontend_port": 8081,
+    "backend_port": 8002,
+    "frontend_accessible": true,
+    "replay_page_loads": true,
+    "replay_tab_visible": true,
+    "console_errors": [],
+    "network_errors": [],
+    "daily_539_filter_present": true,
+    "daily_539_filter_works": true,
+    "wave2_strategies_queryable": true,
+    "wave2_strategies_visible_in_table": true,
+    "visible_wave2_strategies": [
+      "markov_1bet_539",
+      "acb_single_539",
+      "zone_gap_3bet_539",
+      "539_3bet_orthogonal",
+      "p0b_539_3bet_f_cold_fmid",
+      "p0c_539_3bet_f_cold_x2"
+    ],
+    "presets_100_500_1000_1500_present": true,
+    "preset_1500_works": true,
+    "rows_shown_after_1500_preset": 3000,
+    "strategy_dropdown_note": "Strategy dropdown only shows registry-registered strategies. P37 Wave 2 (DRY_RUN) appear in the table rows but not in the dropdown selector — this is expected behavior since they are DRY_RUN lifecycle.",
+    "all_api_calls_200": true,
+    "api_calls_observed": [
+      "GET /api/replay/strategy-catalog -> 200",
+      "GET /api/replay/strategies?lottery_type=DAILY_539 -> 200",
+      "GET /api/replay/freshness -> 200",
+      "GET /api/replay/strategy-lifecycle -> 200",
+      "GET /api/replay/history?lottery_type=DAILY_539&... -> 200",
+      "GET /api/replay/summary?lottery_type=DAILY_539 -> 200"
+    ],
+    "status": "PASS"
+  },
+  "post_guard": {
+    "drift_guard_status": "REPLAY_LIFECYCLE_DRIFT_GUARD_PASS",
+    "branch_governance_guard_expected_branch": "p39-replay-ui-smoke-closure-after-p38",
+    "branch_governance_guard_expected_rows": 28960
+  },
+  "classification": "P39_REPLAY_UI_SMOKE_CLOSURE_AFTER_P38_MERGED_TO_MAIN"
+}

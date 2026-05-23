@@ -1,0 +1,454 @@
+{
+  "phase": "P35",
+  "task": "Wave 2 Candidate Planning for Remaining needs_promotion Strategies",
+  "classification": "P35_WAVE2_CANDIDATE_PLANNING_MERGED_TO_MAIN",
+  "generated_at": "2026-05-23",
+  "branch": "p35-wave2-candidate-planning",
+  "base_commit": "4e301b3",
+  "production_rows_before": 19960,
+  "production_rows_after": 19960,
+  "note": "READ-ONLY planning phase. No DB write. No adapter implemented. No lifecycle promotion.",
+
+  "p30_summary": {
+    "total_non_row_backed": 51,
+    "needs_promotion_original": 24,
+    "executable_no": 12,
+    "manual_review": 15
+  },
+
+  "p31b_wave1_applied": {
+    "count": 5,
+    "strategies": [
+      "acb_1bet",
+      "acb_markov_midfreq",
+      "acb_markov_midfreq_3bet",
+      "midfreq_acb_2bet",
+      "midfreq_fourier_2bet"
+    ],
+    "lottery_type": "DAILY_539",
+    "rows_added": 7500,
+    "lifecycle": "RETIRED"
+  },
+
+  "remaining_needs_promotion": {
+    "count": 19,
+    "strategies": {
+      "539_3bet_orthogonal": {
+        "lottery_type": "DAILY_539",
+        "sub_class": "artifact_with_code",
+        "source_artifact": "tools/backtest_39lotto_comprehensive.py",
+        "adapter_effort": "LOW",
+        "complexity": "LOW",
+        "risk": "LOW",
+        "blocking_issues": "None",
+        "external_dependency_risk": "None",
+        "min_history_requirement": 1500,
+        "expected_format": "3-bet orthogonal combination",
+        "recommended_action": "wave2_candidate",
+        "wave2_rank": 4,
+        "reason": "Low effort, existing backtest code, DAILY_539 adapter pattern established, orthogonal 3-bet variant"
+      },
+      "acb_single_539": {
+        "lottery_type": "DAILY_539",
+        "sub_class": "artifact_with_code",
+        "source_artifact": "tools/quick_predict.py::predict_539_acb",
+        "adapter_effort": "LOW",
+        "complexity": "LOW",
+        "risk": "LOW",
+        "blocking_issues": "None",
+        "external_dependency_risk": "None",
+        "min_history_requirement": 1500,
+        "expected_format": "1-bet ACB single",
+        "recommended_action": "wave2_candidate",
+        "wave2_rank": 2,
+        "reason": "predict_539_acb already exists in quick_predict.py; lowest wrapper effort; parallel to acb_1bet already in production"
+      },
+      "markov_1bet_539": {
+        "lottery_type": "DAILY_539",
+        "sub_class": "artifact_with_code",
+        "source_artifact": "tools/backtest_39lotto_comprehensive.py::MarkovStrategy",
+        "adapter_effort": "LOW",
+        "complexity": "LOW",
+        "risk": "LOW",
+        "blocking_issues": "None",
+        "external_dependency_risk": "None",
+        "min_history_requirement": 1500,
+        "expected_format": "1-bet Markov",
+        "recommended_action": "wave2_candidate",
+        "wave2_rank": 1,
+        "reason": "MarkovStrategy(n=1) directly usable; simplest wrapper; similar code path to acb_markov_midfreq already live"
+      },
+      "p0b_539_3bet_f_cold_fmid": {
+        "lottery_type": "DAILY_539",
+        "sub_class": "artifact_with_code",
+        "source_artifact": "tools/predict_539_5bet_f4cold.py",
+        "adapter_effort": "LOW",
+        "complexity": "LOW",
+        "risk": "LOW",
+        "blocking_issues": "None",
+        "external_dependency_risk": "None",
+        "min_history_requirement": 1500,
+        "expected_format": "3-bet F4Cold variant (cold+midfreq)",
+        "recommended_action": "wave2_candidate",
+        "wave2_rank": 5,
+        "reason": "predict_539_5bet_f4cold.py exists; F4Cold pattern already live (daily539_f4cold ONLINE); variant of established code"
+      },
+      "p0c_539_3bet_f_cold_x2": {
+        "lottery_type": "DAILY_539",
+        "sub_class": "artifact_with_code",
+        "source_artifact": "tools/predict_539_5bet_f4cold.py",
+        "adapter_effort": "LOW",
+        "complexity": "LOW",
+        "risk": "LOW",
+        "blocking_issues": "None",
+        "external_dependency_risk": "None",
+        "min_history_requirement": 1500,
+        "expected_format": "3-bet F4Cold x2 variant",
+        "recommended_action": "wave2_candidate",
+        "wave2_rank": 6,
+        "reason": "Same source file as p0b; F4Cold x2 multiplier variant; same pattern, trivial extension"
+      },
+      "zone_gap_3bet_539": {
+        "lottery_type": "DAILY_539",
+        "sub_class": "artifact_with_code",
+        "source_artifact": "tools/backtest_39lotto_comprehensive.py::ZoneBalanceStrategy",
+        "adapter_effort": "LOW",
+        "complexity": "LOW",
+        "risk": "LOW",
+        "blocking_issues": "None",
+        "external_dependency_risk": "None",
+        "min_history_requirement": 1500,
+        "expected_format": "3-bet zone+gap composite",
+        "recommended_action": "wave2_candidate",
+        "wave2_rank": 3,
+        "reason": "ZoneBalanceStrategy in backtest file; 3-bet composite; zone logic straightforward to wrap"
+      },
+      "bet2_fourier_expansion_biglotto": {
+        "lottery_type": "BIG_LOTTO",
+        "sub_class": "artifact_with_code",
+        "source_artifact": "tools/backtest_biglotto_comprehensive.py::FourierRhythmStrategy",
+        "adapter_effort": "LOW",
+        "complexity": "LOW",
+        "risk": "MEDIUM",
+        "blocking_issues": "BIG_LOTTO RETIRED adapter pattern not yet established",
+        "external_dependency_risk": "BIG_LOTTO draw schema differs; pick-6 vs pick-5",
+        "min_history_requirement": 1500,
+        "expected_format": "2-bet Fourier expansion",
+        "recommended_action": "defer_wave3",
+        "wave2_rank": null,
+        "reason": "LOW code effort but BIG_LOTTO RETIRED replay adapter framework not yet established; defer until BIG_LOTTO wave is bootstrapped in Wave 3"
+      },
+      "cold_complement_biglotto": {
+        "lottery_type": "BIG_LOTTO",
+        "sub_class": "artifact_with_code",
+        "source_artifact": "tools/backtest_biglotto_enhancements.py::cold_numbers_bet",
+        "adapter_effort": "LOW",
+        "complexity": "LOW",
+        "risk": "MEDIUM",
+        "blocking_issues": "BIG_LOTTO RETIRED adapter pattern not yet established",
+        "external_dependency_risk": "BIG_LOTTO draw schema differs",
+        "min_history_requirement": 1500,
+        "expected_format": "cold complement bet",
+        "recommended_action": "defer_wave3",
+        "wave2_rank": null,
+        "reason": "Code exists but BIG_LOTTO RETIRED adapter scaffold needed first; pair with coldpool15 in Wave 3"
+      },
+      "coldpool15_biglotto": {
+        "lottery_type": "BIG_LOTTO",
+        "sub_class": "artifact_with_code",
+        "source_artifact": "tools/backtest_biglotto_enhancements.py::cold_numbers_bet",
+        "adapter_effort": "LOW",
+        "complexity": "LOW",
+        "risk": "MEDIUM",
+        "blocking_issues": "BIG_LOTTO RETIRED adapter pattern not yet established",
+        "external_dependency_risk": "BIG_LOTTO draw schema differs",
+        "min_history_requirement": 1500,
+        "expected_format": "cold pool-15 bet",
+        "recommended_action": "defer_wave3",
+        "wave2_rank": null,
+        "reason": "Same source as cold_complement; pool=15 variant; defer alongside cold_complement for coherent BIG_LOTTO batch"
+      },
+      "fourier30_markov30_biglotto": {
+        "lottery_type": "BIG_LOTTO",
+        "sub_class": "artifact_with_code",
+        "source_artifact": "tools/backtest_biglotto_comprehensive.py::strat_fourier30_markov30",
+        "adapter_effort": "LOW",
+        "complexity": "LOW",
+        "risk": "MEDIUM",
+        "blocking_issues": "BIG_LOTTO RETIRED adapter pattern not yet established",
+        "external_dependency_risk": "BIG_LOTTO draw schema differs",
+        "min_history_requirement": 1500,
+        "expected_format": "2-bet Fourier30+Markov30 combo",
+        "recommended_action": "defer_wave3",
+        "wave2_rank": null,
+        "reason": "Code named explicitly; LOW wrapper effort; hold for Wave 3 BIG_LOTTO batch for coherence"
+      },
+      "markov_2bet_biglotto": {
+        "lottery_type": "BIG_LOTTO",
+        "sub_class": "artifact_with_code",
+        "source_artifact": "lottery_api/models/unified_predictor.py::markov_predict",
+        "adapter_effort": "LOW",
+        "complexity": "LOW",
+        "risk": "MEDIUM",
+        "blocking_issues": "BIG_LOTTO RETIRED adapter pattern not yet established",
+        "external_dependency_risk": "unified_predictor.py already integrated in lottery_api",
+        "min_history_requirement": 1500,
+        "expected_format": "2-bet Markov big lotto",
+        "recommended_action": "defer_wave3",
+        "wave2_rank": null,
+        "reason": "Source is in lottery_api core (unified_predictor); adapter surface minimal; first candidate in Wave 3 BIG_LOTTO batch"
+      },
+      "markov_single_biglotto": {
+        "lottery_type": "BIG_LOTTO",
+        "sub_class": "artifact_with_code",
+        "source_artifact": "lottery_api/models/unified_predictor.py::markov_predict",
+        "adapter_effort": "LOW",
+        "complexity": "LOW",
+        "risk": "MEDIUM",
+        "blocking_issues": "BIG_LOTTO RETIRED adapter pattern not yet established",
+        "external_dependency_risk": "unified_predictor.py already integrated",
+        "min_history_requirement": 1500,
+        "expected_format": "1-bet Markov big lotto",
+        "recommended_action": "defer_wave3",
+        "wave2_rank": null,
+        "reason": "1-bet variant of markov_2bet; trivial extension; pair together in Wave 3 BIG_LOTTO bootstrap batch"
+      },
+      "acb_hot_fourier_3bet_biglotto": {
+        "lottery_type": "BIG_LOTTO",
+        "sub_class": "artifact_with_code",
+        "source_artifact": "tools/backtest_biglotto_enhancements.py + tools/backtest_biglotto_comprehensive.py",
+        "adapter_effort": "MEDIUM",
+        "complexity": "MEDIUM",
+        "risk": "HIGH",
+        "blocking_issues": "ACB+Hot+Fourier combination; multi-component; requires component integration testing",
+        "external_dependency_risk": "Two source files required",
+        "min_history_requirement": 1500,
+        "expected_format": "3-bet ACB+Hot+Fourier composite",
+        "recommended_action": "defer_wave4",
+        "wave2_rank": null,
+        "reason": "MEDIUM effort multi-component; BIG_LOTTO RETIRED adapter framework must be established first; HIGH risk due to composition complexity"
+      },
+      "gap_dynamic_threshold_biglotto": {
+        "lottery_type": "BIG_LOTTO",
+        "sub_class": "artifact_with_code",
+        "source_artifact": "tools/backtest_biglotto_comprehensive.py::GapAnalysisStrategy",
+        "adapter_effort": "MEDIUM",
+        "complexity": "MEDIUM",
+        "risk": "HIGH",
+        "blocking_issues": "Dynamic threshold logic; requires parameter validation",
+        "external_dependency_risk": "Parameter sensitivity high",
+        "min_history_requirement": 1500,
+        "expected_format": "gap-threshold dynamic bet",
+        "recommended_action": "defer_wave4",
+        "wave2_rank": null,
+        "reason": "MEDIUM effort with dynamic threshold; HIGH risk of overfitting; needs manual review of threshold parameters before promotion"
+      },
+      "hot_gap_return_biglotto": {
+        "lottery_type": "BIG_LOTTO",
+        "sub_class": "artifact_with_code",
+        "source_artifact": "tools/backtest_biglotto_comprehensive.py::HotStrategy",
+        "adapter_effort": "MEDIUM",
+        "complexity": "MEDIUM",
+        "risk": "HIGH",
+        "blocking_issues": "Hot+gap return logic needs parameter calibration for RETIRED replay",
+        "external_dependency_risk": "Sensitivity to window size",
+        "min_history_requirement": 1500,
+        "expected_format": "hot+gap return bet",
+        "recommended_action": "defer_wave4",
+        "wave2_rank": null,
+        "reason": "MEDIUM effort; needs parameter calibration review before replay wrap; defer after simpler BIG_LOTTO batch"
+      },
+      "hot_stop_rebound_biglotto": {
+        "lottery_type": "BIG_LOTTO",
+        "sub_class": "artifact_with_code",
+        "source_artifact": "tools/backtest_biglotto_hot_stop_rebound.py",
+        "adapter_effort": "MEDIUM",
+        "complexity": "MEDIUM",
+        "risk": "HIGH",
+        "blocking_issues": "Dedicated file with complex stop/rebound logic",
+        "external_dependency_risk": "Stop-rebound logic is state-dependent",
+        "min_history_requirement": 1500,
+        "expected_format": "stop-rebound signal bet",
+        "recommended_action": "defer_wave4",
+        "wave2_rank": null,
+        "reason": "MEDIUM effort dedicated file; state-dependent logic adds replay complexity; review stop-rebound semantics before wrapping"
+      },
+      "multiwindow_fourier_biglotto": {
+        "lottery_type": "BIG_LOTTO",
+        "sub_class": "artifact_with_code",
+        "source_artifact": "tools/backtest_biglotto_comprehensive.py::FourierRhythmStrategy",
+        "adapter_effort": "MEDIUM",
+        "complexity": "MEDIUM",
+        "risk": "HIGH",
+        "blocking_issues": "Multi-window configuration; base code shared with fourier30_markov30",
+        "external_dependency_risk": "Window parameter selection needs explicit doc",
+        "min_history_requirement": 1500,
+        "expected_format": "multi-window Fourier bet",
+        "recommended_action": "defer_wave4",
+        "wave2_rank": null,
+        "reason": "MEDIUM effort; multi-window config needs explicit doc; shared code base with wave3 candidates — sequence after fourier30_markov30 is live"
+      },
+      "cluster_pivot_biglotto": {
+        "lottery_type": "BIG_LOTTO",
+        "sub_class": "artifact_with_code",
+        "source_artifact": "tools/backtest_biglotto_portfolio.py::ClusterPivot",
+        "adapter_effort": "LOW",
+        "complexity": "LOW",
+        "risk": "HIGH",
+        "blocking_issues": "SHORT_MOMENTUM flag; 1500p edge = -0.45%; likely REJECTED after backfill evaluation",
+        "external_dependency_risk": "Negative expected value",
+        "min_history_requirement": 1500,
+        "expected_format": "cluster-pivot bet",
+        "recommended_action": "manual_review_first",
+        "wave2_rank": null,
+        "reason": "LOW wrapper effort but negative edge (-0.45%) with SHORT_MOMENTUM flag; risk of producing 1500 rows that are immediately rejected; need EV review before promotion decision"
+      },
+      "ts3_markov_freq_5bet_biglotto": {
+        "lottery_type": "BIG_LOTTO",
+        "sub_class": "artifact_with_code",
+        "source_artifact": "tools/analyze_prediction_115000019.py::ts3_markov_freq5",
+        "adapter_effort": "MEDIUM",
+        "complexity": "MEDIUM",
+        "risk": "HIGH",
+        "blocking_issues": "SUPERSEDED by p1_dev_sum5bet; re-promotion not recommended",
+        "external_dependency_risk": "Functionally obsolete",
+        "min_history_requirement": 1500,
+        "expected_format": "5-bet Markov+freq TS3",
+        "recommended_action": "block",
+        "wave2_rank": null,
+        "reason": "SUPERSEDED by p1_dev_sum5bet which is already ONLINE; adding RETIRED replay for a superseded strategy creates confusion; BLOCKED unless explicit decision to archive for historical reference only"
+      }
+    }
+  },
+
+  "wave2_recommendation": {
+    "batch_name": "Wave 2 — DAILY_539 Completion",
+    "rationale": "Complete DAILY_539 needs_promotion sweep. All 6 remaining DAILY_539 strategies are LOW effort with existing code. DAILY_539 adapter pattern is fully established by P31A/P31B. Coherent single-type batch minimizes risk. BIG_LOTTO RETIRED adapter framework requires separate bootstrap step (Wave 3 first draw).",
+    "candidates": [
+      {
+        "rank": 1,
+        "strategy_id": "markov_1bet_539",
+        "lottery_type": "DAILY_539",
+        "effort": "LOW",
+        "risk": "LOW",
+        "source": "backtest_39lotto_comprehensive.py::MarkovStrategy(n=1)"
+      },
+      {
+        "rank": 2,
+        "strategy_id": "acb_single_539",
+        "lottery_type": "DAILY_539",
+        "effort": "LOW",
+        "risk": "LOW",
+        "source": "quick_predict.py::predict_539_acb"
+      },
+      {
+        "rank": 3,
+        "strategy_id": "zone_gap_3bet_539",
+        "lottery_type": "DAILY_539",
+        "effort": "LOW",
+        "risk": "LOW",
+        "source": "backtest_39lotto_comprehensive.py::ZoneBalanceStrategy"
+      },
+      {
+        "rank": 4,
+        "strategy_id": "539_3bet_orthogonal",
+        "lottery_type": "DAILY_539",
+        "effort": "LOW",
+        "risk": "LOW",
+        "source": "backtest_39lotto_comprehensive.py (orthogonal)"
+      },
+      {
+        "rank": 5,
+        "strategy_id": "p0b_539_3bet_f_cold_fmid",
+        "lottery_type": "DAILY_539",
+        "effort": "LOW",
+        "risk": "LOW",
+        "source": "predict_539_5bet_f4cold.py (F4Cold cold+midfreq variant)"
+      },
+      {
+        "rank": 6,
+        "strategy_id": "p0c_539_3bet_f_cold_x2",
+        "lottery_type": "DAILY_539",
+        "effort": "LOW",
+        "risk": "LOW",
+        "source": "predict_539_5bet_f4cold.py (F4Cold x2 variant)"
+      }
+    ],
+    "count": 6,
+    "expected_row_impact_estimate": {
+      "note": "ESTIMATE ONLY — no DB write in P35. Rows will only be added if P36 dry-run passes and production apply is authorized.",
+      "rows_per_strategy": 1500,
+      "total_estimated_rows": 9000,
+      "production_rows_if_applied": 28960
+    }
+  },
+
+  "wave3_candidates": {
+    "rationale": "BIG_LOTTO LOW-effort strategies. Deferred until BIG_LOTTO RETIRED adapter bootstrap (analogous to P31A) is completed. 6 LOW-effort strategies are ready after framework is established.",
+    "strategies": [
+      "markov_single_biglotto",
+      "markov_2bet_biglotto",
+      "bet2_fourier_expansion_biglotto",
+      "fourier30_markov30_biglotto",
+      "cold_complement_biglotto",
+      "coldpool15_biglotto"
+    ],
+    "count": 6,
+    "prerequisite": "BIG_LOTTO RETIRED adapter scaffold (P3x-A equivalent) must be completed first"
+  },
+
+  "wave4_candidates": {
+    "rationale": "BIG_LOTTO MEDIUM-effort strategies. Higher complexity and risk. Require BIG_LOTTO adapter framework and individual parameter review.",
+    "strategies": [
+      "acb_hot_fourier_3bet_biglotto",
+      "gap_dynamic_threshold_biglotto",
+      "hot_gap_return_biglotto",
+      "hot_stop_rebound_biglotto",
+      "multiwindow_fourier_biglotto"
+    ],
+    "count": 5
+  },
+
+  "manual_review_required": [
+    {
+      "strategy_id": "cluster_pivot_biglotto",
+      "reason": "Negative edge -0.45%; SHORT_MOMENTUM flag; EV review required before promotion decision"
+    }
+  ],
+
+  "blocked": [
+    {
+      "strategy_id": "ts3_markov_freq_5bet_biglotto",
+      "reason": "SUPERSEDED by p1_dev_sum5bet (ONLINE); blocked unless explicit archive decision"
+    }
+  ],
+
+  "p36_recommended_scope": {
+    "phase": "P36",
+    "title": "Wave 2 DAILY_539 Dry-run + Temp Rehearsal",
+    "candidates": [
+      "markov_1bet_539",
+      "acb_single_539",
+      "zone_gap_3bet_539",
+      "539_3bet_orthogonal",
+      "p0b_539_3bet_f_cold_fmid",
+      "p0c_539_3bet_f_cold_x2"
+    ],
+    "candidate_count": 6,
+    "expected_dry_run_rows": 9000,
+    "temp_rehearsal_required": true,
+    "temp_rehearsal_notes": "Follow P31A temp rehearsal pattern; write _P36AdapterMeta + _P36BaseAdapter; no registry registration",
+    "stop_condition": "STOP before production apply. P36 = dry-run + temp rehearsal only. Production apply requires separate authorization (P37).",
+    "adapter_pattern_reference": "lottery_api/models/p31a_wave1_retired_adapters.py"
+  },
+
+  "guard_results": {
+    "pre_drift_guard": "REPLAY_LIFECYCLE_DRIFT_GUARD_PASS",
+    "pre_branch_governance": "BRANCH_GOVERNANCE_PASS",
+    "rows_verified": 19960
+  },
+
+  "forbidden_file_scan": "CLEAN — no DB write, no adapter implementation, no registry mutation, no lifecycle promotion",
+
+  "next_phase": "P36: Wave 2 DAILY_539 Dry-run + Temp Rehearsal"
+}

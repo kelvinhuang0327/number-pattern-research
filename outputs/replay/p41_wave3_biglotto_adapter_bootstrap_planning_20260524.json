@@ -1,0 +1,311 @@
+{
+  "p41_version": "20260524",
+  "classification": "P41_WAVE3_BIGLOTTO_ADAPTER_BOOTSTRAP_PLANNING_MERGED_TO_MAIN",
+  "generated_at": "2026-05-24",
+  "branch": "p41-wave3-biglotto-adapter-bootstrap-planning",
+  "base_commit": "5c49a6a",
+  "production_rows_unchanged": 28960,
+  "note": "READ-ONLY planning phase. No DB write. No adapter implemented. No lifecycle promotion. No dry-run rows generated.",
+
+  "context": {
+    "p35_deferred_wave3_reason": "BIG_LOTTO RETIRED adapter framework not yet established. DAILY_539 adapter pattern established by P31A/P31B; BIG_LOTTO requires analogous bootstrap step before any replay rows can be generated.",
+    "existing_biglotto_replay_rows": {
+      "biglotto_deviation_2bet": {"count": 1570, "status": "PREDICTED", "dry_run": 0},
+      "biglotto_triple_strike": {"count": 1570, "status": "PREDICTED", "dry_run": 0},
+      "ts3_regime_3bet": {"count": 1500, "status": "PREDICTED", "dry_run": 0}
+    },
+    "biglotto_draw_count_in_db": 2136,
+    "biglotto_pool": "1-49 pick-6 plus 1 special from 1-49",
+    "daily539_pool": "1-39 pick-5, no special number",
+    "reference_adapter": "lottery_api/models/p36_wave2_daily539_adapters.py"
+  },
+
+  "wave3_candidates": [
+    {
+      "strategy_id": "markov_single_biglotto",
+      "lottery_type": "BIG_LOTTO",
+      "wave3_rank": 1,
+      "p35_classification": "defer_wave3",
+      "current_lifecycle": "needs_promotion",
+      "source_artifact": "lottery_api/models/unified_predictor.py::markov_predict OR tools/backtest_biglotto_comprehensive.py::strat_markov_single",
+      "bet_count": 1,
+      "main_numbers_range": "6 unique ints in [1,49]",
+      "special_number_required": false,
+      "special_number_strategy": "RANDOM_FROM_REMAINING — no special prediction, record actual special for scoring only",
+      "algorithm_summary": "1st-order Markov transition from last draw (window=100). Select top-6 by next_scores. Deterministic.",
+      "min_history_requirement": 1500,
+      "expected_dry_run_rows": 1500,
+      "adapter_effort": "LOW",
+      "complexity": "LOW",
+      "risk": "MEDIUM",
+      "blocking_issues": "BIG_LOTTO adapter scaffold (p41_wave3_biglotto_adapters.py) must be created in P42",
+      "dry_run_readiness": "NEEDS_BOOTSTRAP",
+      "bootstrap_gap": "Need p42_wave3_biglotto_adapters.py following p36_wave2_daily539_adapters.py pattern",
+      "recommendation_for_p42": "INCLUDE — simplest BIG_LOTTO strategy; first candidate for new scaffold",
+      "risk_level": "MEDIUM",
+      "notes": "strat_markov_single already exists in backtest_biglotto_comprehensive.py line 137. Wrapper is trivial. Medium risk due to BIG_LOTTO scaffold not yet established."
+    },
+    {
+      "strategy_id": "markov_2bet_biglotto",
+      "lottery_type": "BIG_LOTTO",
+      "wave3_rank": 2,
+      "p35_classification": "defer_wave3",
+      "current_lifecycle": "needs_promotion",
+      "source_artifact": "tools/backtest_biglotto_comprehensive.py::strat_markov_single(num_bets=2) OR lottery_api/models/unified_predictor.py::markov_predict",
+      "bet_count": 2,
+      "main_numbers_range": "6 unique ints in [1,49] per bet, 2 bets (bet-1 only recorded per row)",
+      "special_number_required": false,
+      "special_number_strategy": "RANDOM_FROM_REMAINING — record actual special for hit scoring only",
+      "algorithm_summary": "Same Markov transition as markov_single but num_bets=2. Top-6 for bet-1, next-6 for bet-2. Replay records bet-1 only per DAILY_539 pattern.",
+      "min_history_requirement": 1500,
+      "expected_dry_run_rows": 1500,
+      "adapter_effort": "LOW",
+      "complexity": "LOW",
+      "risk": "MEDIUM",
+      "blocking_issues": "BIG_LOTTO adapter scaffold must be created in P42; same prerequisite as markov_single_biglotto",
+      "dry_run_readiness": "NEEDS_BOOTSTRAP",
+      "bootstrap_gap": "Same scaffold as markov_single; pair together for coherence",
+      "recommendation_for_p42": "INCLUDE — 2-bet variant of markov_single; trivial extension after scaffold exists",
+      "risk_level": "MEDIUM",
+      "notes": "Functionally identical code path to markov_single with num_bets=2. Pair with markov_single in same adapter file."
+    },
+    {
+      "strategy_id": "bet2_fourier_expansion_biglotto",
+      "lottery_type": "BIG_LOTTO",
+      "wave3_rank": 3,
+      "p35_classification": "defer_wave3",
+      "current_lifecycle": "needs_promotion",
+      "source_artifact": "tools/backtest_biglotto_comprehensive.py::strat_fourier_rhythm(num_bets=2)",
+      "bet_count": 2,
+      "main_numbers_range": "6 unique ints in [1,49] per bet, 2 bets (bet-1 only per row)",
+      "special_number_required": false,
+      "special_number_strategy": "RANDOM_FROM_REMAINING — record actual special for hit scoring only",
+      "algorithm_summary": "FFT period detection over 500-period window. Score each number by distance-to-peak-period. Select top-12 split into 2 orthogonal bets. Uses scipy.fft. Deterministic.",
+      "min_history_requirement": 1500,
+      "expected_dry_run_rows": 1500,
+      "adapter_effort": "LOW",
+      "complexity": "LOW",
+      "risk": "MEDIUM",
+      "blocking_issues": "BIG_LOTTO adapter scaffold must be created in P42; scipy.fft dependency (already in project venv)",
+      "dry_run_readiness": "NEEDS_BOOTSTRAP",
+      "bootstrap_gap": "Scaffold needed; scipy dependency already satisfied",
+      "recommendation_for_p42": "INCLUDE — strat_fourier_rhythm already implemented; wrap bet-1 only",
+      "risk_level": "MEDIUM",
+      "notes": "strat_fourier_rhythm at line 57 of backtest_biglotto_comprehensive.py. scipy.fft import needed inside adapter function."
+    },
+    {
+      "strategy_id": "fourier30_markov30_biglotto",
+      "lottery_type": "BIG_LOTTO",
+      "wave3_rank": 4,
+      "p35_classification": "defer_wave3",
+      "current_lifecycle": "needs_promotion",
+      "source_artifact": "tools/backtest_biglotto_comprehensive.py::strat_fourier30_markov30",
+      "bet_count": 2,
+      "main_numbers_range": "6 unique ints in [1,49] per bet, 2 bets (bet-1 only per row)",
+      "special_number_required": false,
+      "special_number_strategy": "RANDOM_FROM_REMAINING — record actual special for hit scoring only",
+      "algorithm_summary": "Bet-1: Fourier30 (weighted freq over 30 draws, linear ramp). Bet-2: Markov30 (transition matrix over 30 draws). Diversification enforced: max_overlap=3. Deterministic.",
+      "min_history_requirement": 1500,
+      "expected_dry_run_rows": 1500,
+      "adapter_effort": "LOW",
+      "complexity": "LOW",
+      "risk": "MEDIUM",
+      "blocking_issues": "BIG_LOTTO adapter scaffold must be created in P42; helper functions _bet1_fourier30_biglotto and _bet2_markov30_biglotto and _diversify_biglotto must be inlined or imported",
+      "dry_run_readiness": "NEEDS_BOOTSTRAP",
+      "bootstrap_gap": "Scaffold + helper function inlining or module import",
+      "recommendation_for_p42": "INCLUDE — strat_fourier30_markov30 at line 280; helper functions at lines 187-277 can be inlined in adapter",
+      "risk_level": "MEDIUM",
+      "notes": "Three helper functions needed: _bet1_fourier30_biglotto, _bet2_markov30_biglotto, _diversify_biglotto. All self-contained in backtest_biglotto_comprehensive.py."
+    },
+    {
+      "strategy_id": "cold_complement_biglotto",
+      "lottery_type": "BIG_LOTTO",
+      "wave3_rank": 5,
+      "p35_classification": "defer_wave3",
+      "current_lifecycle": "needs_promotion",
+      "source_artifact": "tools/backtest_biglotto_comprehensive.py::strat_cold_complement OR tools/backtest_biglotto_enhancements.py::cold_numbers_bet",
+      "bet_count": 2,
+      "main_numbers_range": "6 unique ints in [1,49] per bet, 2 bets (bet-1 only per row)",
+      "special_number_required": false,
+      "special_number_strategy": "RANDOM_FROM_REMAINING — record actual special for hit scoring only",
+      "algorithm_summary": "Top-12 coldest numbers from last 100 draws (sorted by ascending freq). Split into 2 orthogonal bets: bet-1 = coldest 6, bet-2 = next coldest 6. Deterministic.",
+      "min_history_requirement": 1500,
+      "expected_dry_run_rows": 1500,
+      "adapter_effort": "LOW",
+      "complexity": "LOW",
+      "risk": "MEDIUM",
+      "blocking_issues": "BIG_LOTTO adapter scaffold must be created in P42",
+      "dry_run_readiness": "NEEDS_BOOTSTRAP",
+      "bootstrap_gap": "Scaffold only; algorithm is trivially simple",
+      "recommendation_for_p42": "INCLUDE — strat_cold_complement at line 111; simplest frequency-based strategy",
+      "risk_level": "MEDIUM",
+      "notes": "P35 listed source as backtest_biglotto_enhancements.py::cold_numbers_bet but strat_cold_complement in backtest_biglotto_comprehensive.py is functionally equivalent and simpler to wrap."
+    },
+    {
+      "strategy_id": "coldpool15_biglotto",
+      "lottery_type": "BIG_LOTTO",
+      "wave3_rank": 6,
+      "p35_classification": "defer_wave3",
+      "current_lifecycle": "needs_promotion",
+      "source_artifact": "tools/backtest_biglotto_enhancements.py::cold_numbers_bet (pool=15 variant)",
+      "bet_count": 1,
+      "main_numbers_range": "6 unique ints in [1,49]",
+      "special_number_required": false,
+      "special_number_strategy": "RANDOM_FROM_REMAINING — record actual special for hit scoring only",
+      "algorithm_summary": "Same cold-frequency logic as cold_complement but pool=15 (top-15 coldest numbers). Pick-6 from 15-number cold pool. Deterministic. Pool size = 15 vs 12 for cold_complement.",
+      "min_history_requirement": 1500,
+      "expected_dry_run_rows": 1500,
+      "adapter_effort": "LOW",
+      "complexity": "LOW",
+      "risk": "MEDIUM",
+      "blocking_issues": "BIG_LOTTO adapter scaffold must be created in P42; cold_numbers_bet in enhancements file or inline cold pool-15 logic",
+      "dry_run_readiness": "NEEDS_BOOTSTRAP",
+      "bootstrap_gap": "Scaffold + confirm pool=15 parameter semantics vs cold_complement",
+      "recommendation_for_p42": "INCLUDE — pair with cold_complement; trivial pool-size variant",
+      "risk_level": "MEDIUM",
+      "notes": "Pair with cold_complement_biglotto in same adapter block. One parameter difference: pool size 15 vs 12. Must confirm that 1-bet is recorded (not 2-bet split)."
+    }
+  ],
+
+  "excluded_strategies": {
+    "acb_hot_fourier_3bet_biglotto": {"p35_recommendation": "defer_wave4", "reason": "MEDIUM effort, HIGH risk multi-component"},
+    "gap_dynamic_threshold_biglotto": {"p35_recommendation": "defer_wave4", "reason": "MEDIUM effort, parameter validation needed"},
+    "hot_gap_return_biglotto": {"p35_recommendation": "defer_wave4", "reason": "MEDIUM effort, parameter calibration needed"},
+    "hot_stop_rebound_biglotto": {"p35_recommendation": "defer_wave4", "reason": "MEDIUM effort, state-dependent stop/rebound logic"},
+    "multiwindow_fourier_biglotto": {"p35_recommendation": "defer_wave4", "reason": "MEDIUM effort, multi-window config"},
+    "cluster_pivot_biglotto": {"p35_recommendation": "manual_review_first", "reason": "Negative edge -0.45%, SHORT_MOMENTUM flag"},
+    "ts3_markov_freq_5bet_biglotto": {"p35_recommendation": "block", "reason": "SUPERSEDED by p1_dev_sum5bet (ONLINE)"}
+  },
+
+  "bootstrap_design": {
+    "description": "BIG_LOTTO replay adapter scaffold — analogous to p36_wave2_daily539_adapters.py but for BIG_LOTTO (1-49 pick-6 + special)",
+    "file_name_pattern": "p42_wave3_biglotto_adapters.py",
+    "location": "lottery_api/models/p42_wave3_biglotto_adapters.py",
+
+    "pool_constants": {
+      "BIG_LOTTO_POOL": 49,
+      "BIG_LOTTO_PICK": 6,
+      "SPECIAL_POOL": 49
+    },
+
+    "adapter_input_contract": {
+      "history": "List[dict] — each dict has 'draw' (str), 'date' (str YYYY/MM/DD), 'numbers' (List[int] of 6 ints in [1,49]), 'special' (int in [1,49])",
+      "cutoff_semantics": "All draws in history MUST have date STRICTLY BEFORE target draw date. No future draw data may be used.",
+      "causal_slice": "history = draws[:target_idx] — exclude target draw itself"
+    },
+
+    "prediction_record_schema": {
+      "strategy_id": "str — e.g. 'markov_single_biglotto'",
+      "lottery_type": "BIG_LOTTO",
+      "target_draw": "str — draw number of the predicted draw (TEXT type in DB)",
+      "target_date": "str — YYYY/MM/DD date of the predicted draw",
+      "history_cutoff_draw": "str — draw number of last draw used (last element of history)",
+      "prediction_cutoff_date": "str — date of last draw used (YYYY/MM/DD)",
+      "predicted_numbers": "JSON str of sorted list of 6 unique ints in [1,49]",
+      "predicted_special": "null (None) — Wave 3 strategies do NOT predict special number",
+      "actual_numbers": "JSON str of actual 6 main numbers from draw",
+      "actual_special": "int — actual special number from draw",
+      "hit_numbers": "JSON str of intersection of predicted_numbers and actual_numbers",
+      "hit_count": "int — len(hit_numbers) — covers main numbers only",
+      "special_hit": "0 — always 0 for strategies that do not predict special",
+      "replay_status": "PREDICTED",
+      "lifecycle": "DRY_RUN",
+      "dry_run": "0 (temp rehearsal in /tmp/p42_temp.db) or 1 (production row in lottery_v2.db)",
+      "prediction_generated_at": "ISO datetime string when prediction was generated",
+      "source": "P42_WAVE3_BIGLOTTO",
+      "controlled_apply_id": "str — e.g. 'p42_wave3_biglotto_dryrun'"
+    },
+
+    "key_differences_from_daily539": {
+      "pool_size": "BIG_LOTTO: 1-49 (49 numbers) vs DAILY_539: 1-39 (39 numbers)",
+      "pick_count": "BIG_LOTTO: 6 numbers per bet vs DAILY_539: 5 numbers per bet",
+      "special_number": "BIG_LOTTO has special number (1-49). DAILY_539 has none.",
+      "special_prediction": "Wave 3 strategies do NOT predict special — predicted_special=None, special_hit=0 always",
+      "duplicate_key": "UNIQUE(lottery_type, target_draw, strategy_id, replay_run_id)",
+      "zone_definitions": "BIG_LOTTO zones: Z1=1-16, Z2=17-32, Z3=33-49 (3 zones of ~16 each)"
+    },
+
+    "cutoff_semantics": {
+      "rule": "No draws after prediction_cutoff_date may be used to generate the prediction",
+      "enforcement": "history = [d for d in all_draws if d['date'] < target_date]",
+      "rolling_window": "For 1500-draw generation: iterate over last 1500 BIG_LOTTO draws, use all prior draws as history for each",
+      "data_leakage_prevention": "history MUST be strictly before target_draw — causal slice only"
+    },
+
+    "generated_at_semantics": {
+      "rule": "prediction_generated_at = datetime when prediction row is physically written",
+      "dry_run_approach": "Use datetime.utcnow().isoformat() at time of adapter call",
+      "replay_approach": "Use a fixed reference datetime matching run start, OR draw-relative datetime for reproducibility"
+    },
+
+    "lifecycle_flow": {
+      "temp_rehearsal": "DRY_RUN rows go ONLY to /tmp/p42_temp.db — never to lottery_v2.db",
+      "production_apply": "Separate P43 authorization required before any rows enter lottery_v2.db",
+      "forbidden": "DO NOT register adapters in _ALL_ADAPTERS or _REGISTRY during P42"
+    },
+
+    "special_number_scoring": {
+      "wave3_special_prediction": null,
+      "actual_special_recording": "Record draws.special for each target draw in actual_special column",
+      "special_hit_calculation": "special_hit = 1 if predicted_special is not None AND predicted_special == actual_special ELSE 0",
+      "wave3_result": "special_hit always 0 because predicted_special is None for all Wave 3 strategies",
+      "future_extension": "Wave 4+ strategies may implement special number prediction using e.g. unified_predictor markov_v2_predict"
+    }
+  },
+
+  "p42_recommended_scope": {
+    "phase": "P42",
+    "title": "Wave 3 BIG_LOTTO Dry-run + Temp Rehearsal",
+    "description": "Analogous to P36 for DAILY_539. Create p42_wave3_biglotto_adapters.py, run 1500-draw dry-run for each of 6 candidates in /tmp/p42_temp.db, validate rows, STOP before production apply.",
+    "candidates_recommended": [
+      "markov_single_biglotto",
+      "markov_2bet_biglotto",
+      "bet2_fourier_expansion_biglotto",
+      "fourier30_markov30_biglotto",
+      "cold_complement_biglotto",
+      "coldpool15_biglotto"
+    ],
+    "candidate_count": 6,
+    "batch_rationale": "All 6 are LOW-effort, LOW-complexity, same BIG_LOTTO pool. Single coherent batch minimizes scaffold overhead. All share same adapter file and scaffold.",
+    "rows_per_strategy": 1500,
+    "total_estimated_rows": 9000,
+    "note": "ESTIMATE ONLY — not applied. Rows will only be added if P43 production apply is authorized after P42 dry-run passes.",
+    "temp_rehearsal_pattern": "Follow P36 pattern: write _P42AdapterMeta + _P42BaseAdapter; scaffold in p42_wave3_biglotto_adapters.py; dry-run to /tmp/p42_temp.db",
+    "stop_condition": "STOP before production apply. P42 = dry-run + temp rehearsal only. Production apply requires separate P43 authorization.",
+    "r1_r2_r3_checks": {
+      "R1": "Row count per strategy = 1500 in /tmp/p42_temp.db",
+      "R2": "All predicted_numbers have exactly 6 unique ints in [1,49]; all hit_count in [0,6]; no special_hit > 0",
+      "R3": "No rows inserted into lottery_v2.db; production row count still 28960"
+    },
+    "production_rows_if_applied": 37960,
+    "production_rows_note": "ESTIMATE ONLY — 28960 current + 9000 new = 37960. Requires P43 authorization."
+  },
+
+  "risk_assessment": {
+    "overall_risk": "MEDIUM",
+    "risk_factors": [
+      "BIG_LOTTO adapter scaffold does not yet exist — primary bootstrap risk",
+      "scipy.fft dependency needed for bet2_fourier_expansion_biglotto — already in venv",
+      "Helper function inlining needed for fourier30_markov30_biglotto (_bet1, _bet2, _diversify)",
+      "coldpool15_biglotto pool=15 semantics must be verified vs cold_complement pool=12",
+      "BIG_LOTTO draw history has 2136 draws — sufficient for 1500-draw rolling window"
+    ],
+    "mitigations": [
+      "Follow p36_wave2_daily539_adapters.py as template — only pool constants change",
+      "All 6 algorithms are deterministic (no random seed needed for reproducibility)",
+      "scipy already installed in project .venv",
+      "Source code for all algorithms exists in backtest_biglotto_comprehensive.py",
+      "Temp DB rehearsal in /tmp/p42_temp.db isolates from production"
+    ]
+  },
+
+  "guard_results": {
+    "pre_drift_guard": "REPLAY_LIFECYCLE_DRIFT_GUARD_PASS",
+    "pre_branch_governance": "BRANCH_GOVERNANCE_PASS",
+    "rows_verified": 28960
+  },
+
+  "forbidden_file_scan": "CLEAN — no adapter implementation, no DB write, no registry mutation, no lifecycle promotion, no dry-run row generation",
+
+  "next_phase": "P42: Wave 3 BIG_LOTTO Dry-run + Temp Rehearsal (6 strategies, estimated 9000 rows)"
+}

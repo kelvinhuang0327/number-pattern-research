@@ -1,0 +1,536 @@
+"""
+p31b_wave1_daily539_retired_production_apply.py
+================================================
+P31B Wave 1 — DAILY_539 Retired Strategy Production Apply
+
+Applies 7500 replay rows for the 5 RETIRED DAILY_539 Wave 1 strategies
+to the production database (lottery_api/data/lottery_v2.db).
+
+This script is the authorized production-apply companion to P31A. It:
+  1. Validates pre-flight: production rows == 12460 (P31A baseline)
+  2. Regenerates the same 7500 rows as P31A (deterministic, same algorithm)
+  3. Runs a duplicate check: expects 0 Wave 1 rows already in production
+  4. Applies 7500 rows to production with dry_run=0
+  5. Verifies post-apply: production rows == 19960
+
+Row semantics:
+  - dry_run = 0  (production rows, not a rehearsal)
+  - controlled_apply_id = "P31B_DAILY539_RETIRED_7500_PROD_20260523"
+  - truth_level = "DAILY539_RETIRED_STRATEGY_BACKFILL_VERIFIED"
+  - source = "P31B_WAVE1_PRODUCTION_APPLY"
+  - replay_run_id = "p31b_wave1_prod_20260523"
+
+LIFECYCLE: All 5 strategies remain RETIRED (Option A).
+           No lifecycle_status change. No _REGISTRY/_ALL_ADAPTERS mutation.
+
+GOVERNANCE:
+  - Must be run on branch p31b-wave1-daily539-retired-production-apply
+  - Production DB write is one-way; rollback requires explicit intervention
+  - Authorized by user phrase: YES apply P31B production wave1 daily539 retired
+
+STRATEGIES (5):
+  acb_1bet, acb_markov_midfreq, acb_markov_midfreq_3bet,
+  midfreq_acb_2bet, midfreq_fourier_2bet
+
+Usage:
+  python3 scripts/p31b_wave1_daily539_retired_production_apply.py
+  python3 scripts/p31b_wave1_daily539_retired_production_apply.py --json-out outputs/replay/p31b_wave1_daily539_retired_production_apply_20260523.json
+"""
+
+from __future__ import annotations
+
+import argparse
+import hashlib
+import json
+import logging
+import sqlite3
+import sys
+from collections import defaultdict
+from datetime import datetime, timezone
+from pathlib import Path
+
+# ─── Path setup ──────────────────────────────────────────────────────────────
+
+REPO_ROOT = Path(__file__).parent.parent.resolve()
+sys.path.insert(0, str(REPO_ROOT))
+
+PROD_DB_PATH = REPO_ROOT / "lottery_api" / "data" / "lottery_v2.db"
+OUTPUT_DIR = REPO_ROOT / "outputs" / "replay"
+
+# ─── Constants ────────────────────────────────────────────────────────────────
+
+PRE_APPLY_PROD_ROWS   = 12460   # Expected row count BEFORE apply
+POST_APPLY_PROD_ROWS  = 19960   # Expected row count AFTER apply  (12460 + 7500)
+EXPECTED_APPLIED_ROWS = 7500    # 5 strategies × 1500 draws each
+
+WINDOW_PERIODS = 1500           # replay spans last 1500 DAILY_539 draws
+MIN_HISTORY    = 100            # minimum history draws required
+STRATEGIES_PER_RUN = 5
+
+CONTROLLED_APPLY_ID = "P31B_DAILY539_RETIRED_7500_PROD_20260523"
+TRUTH_LEVEL         = "DAILY539_RETIRED_STRATEGY_BACKFILL_VERIFIED"
+SOURCE              = "P31B_WAVE1_PRODUCTION_APPLY"
+RUN_ID              = "p31b_wave1_prod_20260523"
+
+WAVE1_STRATEGY_IDS = frozenset({
+    "acb_1bet",
+    "acb_markov_midfreq",
+    "acb_markov_midfreq_3bet",
+    "midfreq_acb_2bet",
+    "midfreq_fourier_2bet",
+})
+
+logging.basicConfig(level=logging.INFO, format="%(levelname)s %(message)s")
+logger = logging.getLogger(__name__)
+
+
+# ─── Pre-flight check ─────────────────────────────────────────────────────────
+
+def _check_prod_rows(expected: int) -> int:
+    """Assert production replay row count is exactly `expected`. Returns count."""
+    conn = sqlite3.connect(str(PROD_DB_PATH))
+    try:
+        count = conn.execute(
+            "SELECT COUNT(*) FROM strategy_prediction_replays"
+        ).fetchone()[0]
+    finally:
+        conn.close()
+    assert count == expected, (
+        f"PRODUCTION ROW COUNT MISMATCH: expected {expected}, got {count}."
+    )
+    return count
+
+
+# ─── Draw loader ──────────────────────────────────────────────────────────────
+
+def _load_daily539_draws() -> list[dict]:
+    """
+    Load all DAILY_539 draws from production DB, sorted chronologically.
+    Returns list of dicts: [{draw, date, numbers}, ...]
+    READ-ONLY — no writes.
+    """
+    conn = sqlite3.connect(str(PROD_DB_PATH))
+    conn.row_factory = sqlite3.Row
+    try:
+        rows = conn.execute(
+            "SELECT draw, date, numbers FROM draws "
+            "WHERE lottery_type = 'DAILY_539' "
+            "ORDER BY date ASC, draw ASC"
+        ).fetchall()
+    finally:
+        conn.close()
+
+    draws = []
+    for row in rows:
+        nums = json.loads(row["numbers"]) if isinstance(row["numbers"], str) else row["numbers"]
+        draws.append({
+            "draw": row["draw"],
+            "date": row["date"],
+            "numbers": [int(n) for n in nums],
+        })
+    return draws
+
+
+# ─── Provenance hash ──────────────────────────────────────────────────────────
+
+def _provenance_hash(strategy_id: str, target_draw: str, numbers: list[int]) -> str:
+    payload = f"{strategy_id}|{target_draw}|{sorted(numbers)}"
+    return hashlib.sha256(payload.encode()).hexdigest()[:16]
+
+
+# ─── Single-draw prediction runner ───────────────────────────────────────────
+
+def _run_one_prediction(adapter, history: list[dict], target: dict) -> dict:
+    """Run one prediction for a single (adapter, target_draw) pair.
+    Returns a row dict ready for production DB insertion (dry_run=0).
+    """
+    strategy_id = adapter.meta.strategy_id
+    strategy_name = adapter.meta.strategy_name
+    strategy_version = adapter.meta.strategy_version
+    lottery_type = "DAILY_539"
+
+    replay_status = "PREDICTED"
+    reject_reason = None
+    predicted_numbers = None
+    predicted_special = None
+    hit_numbers = None
+    hit_count = 0
+
+    now_str = datetime.now(timezone.utc).isoformat()
+
+    try:
+        numbers, special = adapter.get_one_bet(history, lottery_type)
+        predicted_numbers = json.dumps(numbers)
+        predicted_special = None
+
+        actual_nums = target["numbers"]
+        hits = sorted(set(numbers) & set(actual_nums))
+        hit_numbers = json.dumps(hits)
+        hit_count = len(hits)
+
+    except ValueError as exc:
+        replay_status = "INSUFFICIENT_HISTORY"
+        reject_reason = str(exc)
+    except AssertionError as exc:
+        replay_status = "INVALID_OUTPUT"
+        reject_reason = str(exc)
+    except Exception as exc:
+        replay_status = "REPLAY_ERROR"
+        reject_reason = str(exc)
+        logger.warning("Prediction error %s / %s: %s", strategy_id, target["draw"], exc)
+
+    history_cutoff = history[-1]["draw"] if history else None
+
+    prov_hash = (
+        _provenance_hash(
+            strategy_id,
+            str(target["draw"]),
+            json.loads(predicted_numbers) if predicted_numbers else [],
+        )
+        if predicted_numbers
+        else None
+    )
+
+    return {
+        "lottery_type": lottery_type,
+        "target_draw": str(target["draw"]),
+        "target_date": target.get("date"),
+        "strategy_id": strategy_id,
+        "strategy_name": strategy_name,
+        "strategy_version": strategy_version,
+        "history_cutoff_draw": str(history_cutoff) if history_cutoff else None,
+        "replay_status": replay_status,
+        "reject_reason": reject_reason,
+        "predicted_numbers": predicted_numbers,
+        "predicted_special": predicted_special,
+        "actual_numbers": json.dumps(target["numbers"]),
+        "actual_special": None,
+        "hit_numbers": hit_numbers,
+        "hit_count": hit_count,
+        "special_hit": 0,
+        "replay_run_id": RUN_ID,
+        "generated_at": now_str,
+        "truth_level": TRUTH_LEVEL,
+        "controlled_apply_id": CONTROLLED_APPLY_ID,
+        "source": SOURCE,
+        "provenance_hash": prov_hash,
+        "provenance_source": "p31a_wave1_retired_adapters.py",
+        "dry_run": 0,                                    # PRODUCTION ROW
+        "prediction_cutoff_date": history[-1]["date"] if history else None,
+        "prediction_generated_at": now_str,
+    }
+
+
+# ─── Production DB apply ──────────────────────────────────────────────────────
+
+def _apply_to_production(rows: list[dict]) -> tuple[int, int]:
+    """
+    INSERT rows into production DB inside a single transaction.
+    Returns (inserted, duplicate_count).
+    Rolls back automatically on any exception.
+    """
+    inserted = 0
+    duplicates = 0
+
+    conn = sqlite3.connect(str(PROD_DB_PATH))
+    try:
+        conn.execute("BEGIN EXCLUSIVE")
+        for row in rows:
+            try:
+                conn.execute(
+                    """
+                    INSERT INTO strategy_prediction_replays (
+                        lottery_type, target_draw, target_date, strategy_id,
+                        strategy_name, strategy_version, history_cutoff_draw,
+                        replay_status, reject_reason, predicted_numbers,
+                        predicted_special, actual_numbers, actual_special,
+                        hit_numbers, hit_count, special_hit, replay_run_id,
+                        generated_at, truth_level, controlled_apply_id, source,
+                        provenance_hash, provenance_source, dry_run,
+                        prediction_cutoff_date, prediction_generated_at
+                    ) VALUES (
+                        :lottery_type, :target_draw, :target_date, :strategy_id,
+                        :strategy_name, :strategy_version, :history_cutoff_draw,
+                        :replay_status, :reject_reason, :predicted_numbers,
+                        :predicted_special, :actual_numbers, :actual_special,
+                        :hit_numbers, :hit_count, :special_hit, :replay_run_id,
+                        :generated_at, :truth_level, :controlled_apply_id, :source,
+                        :provenance_hash, :provenance_source, :dry_run,
+                        :prediction_cutoff_date, :prediction_generated_at
+                    )
+                    """,
+                    row,
+                )
+                inserted += 1
+            except sqlite3.IntegrityError:
+                duplicates += 1
+        conn.commit()
+        logger.info("Production apply committed: inserted=%d, duplicates=%d", inserted, duplicates)
+    except Exception:
+        conn.rollback()
+        conn.close()
+        raise
+    conn.close()
+    return inserted, duplicates
+
+
+# ─── Hit rate stats ───────────────────────────────────────────────────────────
+
+def _compute_hit_stats(rows: list[dict]) -> dict:
+    """Compute per-strategy hit rate statistics."""
+    by_strategy: dict = defaultdict(lambda: defaultdict(int))
+
+    for row in rows:
+        sid = row["strategy_id"]
+        if row["replay_status"] == "PREDICTED":
+            by_strategy[sid]["predicted"] += 1
+            hc = row.get("hit_count", 0) or 0
+            by_strategy[sid][f"hit_{hc}"] += 1
+        else:
+            by_strategy[sid]["error"] += 1
+
+    stats = {}
+    for sid, counts in by_strategy.items():
+        predicted = counts.get("predicted", 0)
+        errors = counts.get("error", 0)
+        hit_3plus = sum(counts.get(f"hit_{h}", 0) for h in (3, 4, 5))
+        stats[sid] = {
+            "predicted": predicted,
+            "errors": errors,
+            "total": predicted + errors,
+            "hit_3plus": hit_3plus,
+            "hit_3plus_rate": round(hit_3plus / predicted, 4) if predicted > 0 else 0.0,
+            "hit_breakdown": {str(h): counts.get(f"hit_{h}", 0) for h in range(6)},
+        }
+    return stats
+
+
+# ─── Main orchestrator ────────────────────────────────────────────────────────
+
+def main(argv: list[str] | None = None) -> dict:
+    parser = argparse.ArgumentParser(
+        description="P31B Wave 1 DAILY_539 Retired Strategy Production Apply"
+    )
+    parser.add_argument(
+        "--json-out",
+        default=str(OUTPUT_DIR / "p31b_wave1_daily539_retired_production_apply_20260523.json"),
+        help="Output JSON path",
+    )
+    args = parser.parse_args(argv)
+
+    started_at = datetime.now(timezone.utc).isoformat()
+    logger.info("=== P31B Wave 1 DAILY_539 Retired Strategy Production Apply ===")
+    logger.info("Started: %s", started_at)
+    logger.info("Controlled apply ID: %s", CONTROLLED_APPLY_ID)
+
+    # ── Pre-flight: assert production rows = 12460 ────────────────────────────
+    logger.info("Pre-flight: checking production DB row count...")
+    prod_rows_before = _check_prod_rows(PRE_APPLY_PROD_ROWS)
+    logger.info("Pre-flight PASS: production DB has %d rows", prod_rows_before)
+
+    # ── Duplicate check: no P31B rows in production yet ───────────────────────
+    logger.info("Duplicate check: querying production for existing P31B rows...")
+    conn_check = sqlite3.connect(str(PROD_DB_PATH))
+    existing_p31b = conn_check.execute(
+        "SELECT COUNT(*) FROM strategy_prediction_replays WHERE controlled_apply_id = ?",
+        (CONTROLLED_APPLY_ID,),
+    ).fetchone()[0]
+    existing_wave1 = conn_check.execute(
+        "SELECT strategy_id, COUNT(*) as cnt FROM strategy_prediction_replays "
+        "WHERE strategy_id IN (?,?,?,?,?) GROUP BY strategy_id",
+        tuple(sorted(WAVE1_STRATEGY_IDS)),
+    ).fetchall()
+    conn_check.close()
+
+    existing_wave1_map = {row[0]: row[1] for row in existing_wave1}
+    total_existing_wave1 = sum(existing_wave1_map.values())
+
+    logger.info("Existing P31B rows (by controlled_apply_id): %d", existing_p31b)
+    logger.info("Existing Wave 1 strategy rows in production: %d", total_existing_wave1)
+
+    assert existing_p31b == 0, (
+        f"DUPLICATE GUARD FAILED: {existing_p31b} rows with controlled_apply_id="
+        f"'{CONTROLLED_APPLY_ID}' already in production. P31B may have already run."
+    )
+    assert total_existing_wave1 == 0, (
+        f"DUPLICATE GUARD FAILED: Wave 1 strategies already have {total_existing_wave1} "
+        f"rows in production: {existing_wave1_map}"
+    )
+    logger.info("Duplicate check PASS: 0 P31B rows in production")
+
+    # ── Load DAILY_539 draws (read-only) ──────────────────────────────────────
+    logger.info("Loading DAILY_539 draws from production DB (read-only)...")
+    all_draws = _load_daily539_draws()
+    total_draws = len(all_draws)
+    logger.info("Loaded %d DAILY_539 draws", total_draws)
+
+    assert total_draws >= MIN_HISTORY + WINDOW_PERIODS, (
+        f"Need at least {MIN_HISTORY + WINDOW_PERIODS} draws, got {total_draws}"
+    )
+
+    # ── Select target draws (last 1500 periods) ───────────────────────────────
+    target_draws = all_draws[-WINDOW_PERIODS:]
+    logger.info(
+        "Target window: %d draws (%s → %s)",
+        len(target_draws),
+        target_draws[0]["date"],
+        target_draws[-1]["date"],
+    )
+
+    # ── Import Wave 1 adapters ────────────────────────────────────────────────
+    from lottery_api.models.p31a_wave1_retired_adapters import WAVE1_ADAPTERS
+    logger.info("Wave 1 adapters: %d", len(WAVE1_ADAPTERS))
+    for a in WAVE1_ADAPTERS:
+        logger.info("  - %s (%s)", a.meta.strategy_id, a.meta.lifecycle_status)
+
+    # ── Generate production rows ───────────────────────────────────────────────
+    logger.info(
+        "Generating %d production rows (%d strategies × %d draws)...",
+        EXPECTED_APPLIED_ROWS, STRATEGIES_PER_RUN, WINDOW_PERIODS,
+    )
+
+    all_rows: list[dict] = []
+    per_strategy_progress: dict = {}
+
+    for adapter in WAVE1_ADAPTERS:
+        sid = adapter.meta.strategy_id
+        strategy_rows = []
+        errors = 0
+
+        for i, target in enumerate(target_draws):
+            # Causal slice: all draws STRICTLY BEFORE this target draw
+            target_idx = total_draws - WINDOW_PERIODS + i
+            history = all_draws[:target_idx]  # strictly before — no data leakage
+
+            row = _run_one_prediction(adapter, history, target)
+            strategy_rows.append(row)
+            if row["replay_status"] != "PREDICTED":
+                errors += 1
+
+        per_strategy_progress[sid] = {
+            "total": len(strategy_rows),
+            "predicted": len(strategy_rows) - errors,
+            "errors": errors,
+        }
+        all_rows.extend(strategy_rows)
+        logger.info(
+            "  %s: %d predicted, %d errors",
+            sid, len(strategy_rows) - errors, errors,
+        )
+
+    generated_total = len(all_rows)
+    logger.info("Total production rows generated: %d", generated_total)
+    assert generated_total == EXPECTED_APPLIED_ROWS, (
+        f"Row generation mismatch: expected {EXPECTED_APPLIED_ROWS}, got {generated_total}"
+    )
+
+    # ── Apply to production DB ────────────────────────────────────────────────
+    logger.info("Applying %d rows to production DB...", generated_total)
+    inserted, duplicates = _apply_to_production(all_rows)
+
+    logger.info(
+        "Production apply complete: inserted=%d, duplicates=%d",
+        inserted, duplicates,
+    )
+    assert inserted == EXPECTED_APPLIED_ROWS, (
+        f"APPLY MISMATCH: expected {EXPECTED_APPLIED_ROWS} inserted, got {inserted}. "
+        f"duplicates={duplicates}"
+    )
+    assert duplicates == 0, (
+        f"UNEXPECTED DUPLICATES: {duplicates} rows were not inserted due to UNIQUE constraint. "
+        "Duplicate guard should have caught this."
+    )
+
+    # ── Post-apply verification ───────────────────────────────────────────────
+    logger.info("Post-apply verification: checking production DB row count...")
+    prod_rows_after = _check_prod_rows(POST_APPLY_PROD_ROWS)
+    logger.info(
+        "Post-apply PASS: production DB has %d rows (before=%d, inserted=%d, total=%d)",
+        prod_rows_after, prod_rows_before, inserted, prod_rows_after,
+    )
+
+    # Per-strategy verification
+    conn_verify = sqlite3.connect(str(PROD_DB_PATH))
+    strategy_counts_after = {
+        row[0]: row[1]
+        for row in conn_verify.execute(
+            "SELECT strategy_id, COUNT(*) FROM strategy_prediction_replays "
+            "WHERE controlled_apply_id = ? GROUP BY strategy_id",
+            (CONTROLLED_APPLY_ID,),
+        ).fetchall()
+    }
+    conn_verify.close()
+    logger.info("Per-strategy row counts after apply: %s", strategy_counts_after)
+
+    for sid in WAVE1_STRATEGY_IDS:
+        count = strategy_counts_after.get(sid, 0)
+        assert count == WINDOW_PERIODS, (
+            f"Strategy {sid}: expected {WINDOW_PERIODS} rows, got {count}"
+        )
+
+    # ── Hit rate stats ────────────────────────────────────────────────────────
+    hit_stats = _compute_hit_stats(all_rows)
+
+    # ── Build output ──────────────────────────────────────────────────────────
+    finished_at = datetime.now(timezone.utc).isoformat()
+
+    result = {
+        "phase": "P31B_WAVE1_DAILY539_RETIRED_PRODUCTION_APPLY",
+        "classification": "P31B_WAVE1_DAILY539_RETIRED_PRODUCTION_APPLY_COMPLETE",
+        "status": "PASS",
+        "started_at": started_at,
+        "finished_at": finished_at,
+        "controlled_apply_id": CONTROLLED_APPLY_ID,
+        "truth_level": TRUTH_LEVEL,
+        "source": SOURCE,
+        "run_id": RUN_ID,
+        "lifecycle_decision": "OPTION_A",
+        "lifecycle_semantics": {
+            "all_5_strategies_remain_retired": True,
+            "no_lifecycle_status_change": True,
+            "replay_available_flag_added": True,
+            "registry_unchanged": True,
+        },
+        "row_counts": {
+            "prod_rows_before": prod_rows_before,
+            "rows_generated": generated_total,
+            "rows_inserted": inserted,
+            "rows_duplicated": duplicates,
+            "prod_rows_after": prod_rows_after,
+        },
+        "expected_row_counts": {
+            "pre_apply": PRE_APPLY_PROD_ROWS,
+            "post_apply": POST_APPLY_PROD_ROWS,
+            "inserted": EXPECTED_APPLIED_ROWS,
+        },
+        "per_strategy_row_counts": strategy_counts_after,
+        "per_strategy_generation": per_strategy_progress,
+        "hit_statistics": hit_stats,
+        "target_window": {
+            "periods": WINDOW_PERIODS,
+            "first_draw": str(target_draws[0]["draw"]),
+            "last_draw": str(target_draws[-1]["draw"]),
+            "first_date": target_draws[0]["date"],
+            "last_date": target_draws[-1]["date"],
+        },
+        "preflight_pass": True,
+        "duplicate_check_pass": True,
+        "postflight_pass": True,
+        "all_pass": True,
+    }
+
+    # ── Write output JSON ─────────────────────────────────────────────────────
+    out_path = Path(args.json_out)
+    out_path.parent.mkdir(parents=True, exist_ok=True)
+    with open(out_path, "w", encoding="utf-8") as f:
+        json.dump(result, f, indent=2, ensure_ascii=False)
+    logger.info("Output JSON written: %s", out_path)
+
+    logger.info("=== P31B COMPLETE: %s rows applied to production ===", inserted)
+    return result
+
+
+if __name__ == "__main__":
+    result = main()
+    if result["status"] != "PASS":
+        sys.exit(1)

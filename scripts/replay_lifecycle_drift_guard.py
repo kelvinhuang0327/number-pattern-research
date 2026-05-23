@@ -73,6 +73,8 @@ BASELINE = {
     # P21B: Daily 539 both ONLINE strategies (daily539_f4cold + daily539_markov_cold)
     # 1500 draws each = 3000 rows (2026-05-21)
     "p21b_apply_id": "P21B_DAILY539_BOTH_1500_PROD_20260520",
+    # P31B: Daily 539 Wave 1 RETIRED strategies (5 × 1500 = 7500 rows) (2026-05-23)
+    "p31b_apply_id": "P31B_DAILY539_RETIRED_7500_PROD_20260523",
     "v1_count": 0,
     "v2_count": 0,
     "legacy_count": 460,
@@ -84,16 +86,14 @@ BASELINE = {
     "p19b_count": 1500,
     "p20_count": 3000,
     "p21b_count": 3000,
-    "total_count": 12460,
+    "p31b_count": 7500,
+    "total_count": 19960,
 }
 
 # Known V3 tombstone strategy IDs — must have 0 rows in replay table
 # acb_markov_midfreq_3bet removed from tombstone list: 3 rows inserted via P3BC_RESOLVE_20260516
+# acb_1bet, acb_markov_midfreq, midfreq_acb_2bet, midfreq_fourier_2bet removed: P31B applied 1500 rows each (2026-05-23)
 V3_CODE_MISSING_STRATEGY_IDS = [
-    "acb_1bet",
-    "acb_markov_midfreq",
-    "midfreq_acb_2bet",
-    "midfreq_fourier_2bet",
     "h6_gate_mk20_ew85",
 ]
 
@@ -113,6 +113,8 @@ ALLOWED_TRUTH_LEVELS = {
     "POWERLOTTO_REMAINING_STRATEGIES_BACKFILL_VERIFIED",
     # P21B Daily 539 both ONLINE strategies production backfill (2026-05-21)
     "DAILY539_BACKFILL_VERIFIED",
+    # P31B Daily 539 Wave 1 RETIRED strategies production apply (2026-05-23)
+    "DAILY539_RETIRED_STRATEGY_BACKFILL_VERIFIED",
 }
 
 
@@ -181,6 +183,11 @@ def run_checks(db_path: pathlib.Path) -> dict:
         (BASELINE["p21b_apply_id"],),
     ).fetchone()[0]
 
+    p31b_count = c.execute(
+        "SELECT COUNT(*) FROM strategy_prediction_replays WHERE controlled_apply_id=?",
+        (BASELINE["p31b_apply_id"],),
+    ).fetchone()[0]
+
     legacy_count = c.execute(
         "SELECT COUNT(*) FROM strategy_prediction_replays WHERE controlled_apply_id IS NULL"
     ).fetchone()[0]
@@ -233,6 +240,10 @@ def run_checks(db_path: pathlib.Path) -> dict:
         violations.append(
             f"P21B row count mismatch: expected {BASELINE['p21b_count']}, got {p21b_count}"
         )
+    if p31b_count != BASELINE["p31b_count"]:
+        violations.append(
+            f"P31B row count mismatch: expected {BASELINE['p31b_count']}, got {p31b_count}"
+        )
     if total_count != BASELINE["total_count"]:
         violations.append(
             f"total row count mismatch: expected {BASELINE['total_count']}, got {total_count}"
@@ -250,6 +261,7 @@ def run_checks(db_path: pathlib.Path) -> dict:
         "p19b": p19b_count,
         "p20": p20_count,
         "p21b": p21b_count,
+        "p31b": p31b_count,
         "total": total_count,
     }
 
@@ -326,6 +338,7 @@ def run_checks(db_path: pathlib.Path) -> dict:
         BASELINE["p3bc_apply_id"], BASELINE["p14d_apply_id"],
         BASELINE["p16_apply_id"], BASELINE["p19b_apply_id"],
         BASELINE["p20_apply_id"], BASELINE["p21b_apply_id"],
+        BASELINE["p31b_apply_id"],
         "null", None,
     }
     for aid_key, cnt in controlled_apply_id_counts.items():

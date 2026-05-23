@@ -8,8 +8,8 @@ These tests:
   - Do NOT write to the DB
   - Run the drift guard script via subprocess and parse its JSON output
 
-Baseline (updated 2026-05-20 after P19B production apply):
-  legacy=460  v1=0  v2=0  p2b=0  p2f=0  p3bc=0  p14d=1500  p16=3000  p19b=1500  p20=3000  p21b=3000  total=12460
+Baseline (updated 2026-05-23 after P31B production apply):
+  legacy=460  v1=0  v2=0  p2b=0  p2f=0  p3bc=0  p14d=1500  p16=3000  p19b=1500  p20=3000  p21b=3000  p31b=7500  total=19960
   P14D applied 1500 ts3_regime_3bet BIG_LOTTO rows (controlled_apply_id=P14D_BIGLOTTO_TS3_1500_PROD_20260520).
   Legacy 460 rows retain truth_level=null; P14D rows have BIGLOTTO_SINGLE_STRATEGY_BACKFILL_VERIFIED.
   V3 tombstone strategies: 0 rows each (acb_markov_midfreq_3bet promoted out of tombstone list)
@@ -28,13 +28,10 @@ import pytest
 REPO_ROOT = pathlib.Path(__file__).resolve().parent.parent
 SCRIPT_PATH = REPO_ROOT / "scripts" / "replay_lifecycle_drift_guard.py"
 
-# Known V3 tombstone strategy IDs
+# Known V3 tombstone strategy IDs — must have 0 rows in replay table
 # acb_markov_midfreq_3bet removed: 3 replay rows inserted via P3BC_RESOLVE_20260516
+# acb_1bet, acb_markov_midfreq, midfreq_acb_2bet, midfreq_fourier_2bet removed: P31B applied 1500 rows each (2026-05-23)
 V3_CODE_MISSING_STRATEGY_IDS = [
-    "acb_1bet",
-    "acb_markov_midfreq",
-    "midfreq_acb_2bet",
-    "midfreq_fourier_2bet",
     "h6_gate_mk20_ew85",
 ]
 
@@ -52,6 +49,8 @@ ALLOWED_TRUTH_LEVELS = {
     "POWERLOTTO_REMAINING_STRATEGIES_BACKFILL_VERIFIED",
     # P21B Daily 539 production backfill (2026-05-21)
     "DAILY539_BACKFILL_VERIFIED",
+    # P31B Daily 539 Wave 1 RETIRED strategies production apply (2026-05-23)
+    "DAILY539_RETIRED_STRATEGY_BACKFILL_VERIFIED",
     "null",
 }
 
@@ -190,8 +189,10 @@ class TestDriftGuardScript:
         assert rc.get("p20") == 3000, f"P20 count mismatch: {rc.get('p20')} != 3000"
         # P21B applied 3000 DAILY_539 rows (daily539_f4cold + daily539_markov_cold)
         assert rc.get("p21b") == 3000, f"P21B count mismatch: {rc.get('p21b')} != 3000"
-        # New total = 460 legacy + 1500 P14D + 3000 P16 + 1500 P19B + 3000 P20 + 3000 P21B
-        assert rc.get("total") == 12460, f"total count mismatch: {rc.get('total')} != 12460"
+        # P31B applied 7500 DAILY_539 RETIRED rows (5 Wave 1 strategies × 1500)
+        assert rc.get("p31b") == 7500, f"P31B count mismatch: {rc.get('p31b')} != 7500"
+        # New total = 460 legacy + 1500 P14D + 3000 P16 + 1500 P19B + 3000 P20 + 3000 P21B + 7500 P31B
+        assert rc.get("total") == 19960, f"total count mismatch: {rc.get('total')} != 19960"
         # V1/V2/P2B/P2F/P3BC remain 0
         assert rc.get("v1") == 0, f"V1 count mismatch: {rc.get('v1')} != 0"
         assert rc.get("v2") == 0, f"V2 count mismatch: {rc.get('v2')} != 0"

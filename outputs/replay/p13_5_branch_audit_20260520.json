@@ -3,11 +3,11 @@
   "canonical_repo": "/Users/kelvin/Kelvin-WorkSpace/LotteryNew",
   "active_branch_after_consolidation": "main",
   "merged_namespace": "merged/",
-  "current_branch": "p21b-daily539-tempdb-rehearsal",
-  "expected_branch": "p21b-daily539-tempdb-rehearsal",
+  "current_branch": "p31b-wave1-daily539-retired-production-apply",
+  "expected_branch": "p31b-wave1-daily539-retired-production-apply",
   "branch_ok": true,
-  "production_rows": 12460,
-  "expected_rows": 12460,
+  "production_rows": 19960,
+  "expected_rows": 19960,
   "rows_ok": true,
   "new_branch_allowed": false,
   "new_worktree_allowed": false,
@@ -17,6 +17,6 @@
   "staged_backup_files": [],
   "staged_pid_runtime_files": [],
   "staged_danger": false,
-  "generated_at": "2026-05-21T02:16:12.636283+00:00",
+  "generated_at": "2026-05-23T06:18:03.642372+00:00",
   "classification": "BRANCH_GOVERNANCE_PASS"
 }

@@ -38,7 +38,7 @@ _EXPECTED_AO          = 41
 _EXPECTED_RETIRED     = 5
 _EXPECTED_REJECTED    = 4
 _EXPECTED_OBSERVATION = 1
-_EXPECTED_PRODUCTION_ROWS = 12460
+_EXPECTED_PRODUCTION_ROWS = 19960
 
 # ── Shared catalog fixture ────────────────────────────────────────────────────
 

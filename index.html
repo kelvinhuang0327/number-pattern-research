@@ -2844,7 +2844,11 @@
         const opt = document.createElement('option');
         opt.value = s.strategy_id;
                 const lcValue = s.lifecycle_status || s.strategy_lifecycle_status || '';
-                const lcLabel = lcValue ? ` [${lcValue}]` : '';
+                let lcLabel = lcValue ? ` [${lcValue}]` : '';
+                if (lcValue === 'RETIRED') {
+                  const rowCount = rpStrategyRowCountMap[s.strategy_id] || 0;
+                  lcLabel = rowCount > 0 ? ' [已退役 · 有回放資料]' : ' [已退役]';
+                }
         opt.textContent = `${s.strategy_name} (${s.strategy_id})${lcLabel}`;
         sel.appendChild(opt);
       });
@@ -3077,7 +3081,9 @@
                 + '<td style="padding:5px 8px;font-family:monospace;font-size:11px">' + _esc(s.strategy_id) + '</td>'
                 + '<td style="padding:5px 8px;font-size:12px">'  + _esc(s.strategy_name || '—') + '</td>'
                 + '<td style="padding:5px 8px;font-size:11px;color:#8b949e">' + _esc(lotTypes) + '</td>'
-                + '<td style="padding:5px 8px;text-align:center"><span style="padding:1px 8px;border-radius:10px;font-size:11px;font-weight:600;background:' + statusColor + ';color:#fff">' + _esc(s.lifecycle_status) + '</span></td>'
+                + '<td style="padding:5px 8px;text-align:center"><span style="padding:1px 8px;border-radius:10px;font-size:11px;font-weight:600;background:' + statusColor + ';color:#fff">' + _esc(s.lifecycle_status) + '</span>'
+                + ((s.lifecycle_status === 'RETIRED' && (rpStrategyRowCountMap[s.strategy_id] || 0) > 0) ? ' <span style="font-size:9px;padding:1px 6px;border-radius:8px;background:rgba(52,152,219,.15);color:#3498db;font-weight:600">有回放資料</span>' : '')
+                + '</td>'
                 + '<td style="padding:5px 8px;text-align:center">' + truthBadge + '</td>'
                 + '<td style="padding:5px 8px;text-align:center">' + execBadge + '</td>'
                 + '</tr>'
@@ -3375,7 +3381,7 @@
       return `<tr class="${rowClass}" title="${_esc(tooltipTitle)}">
         <td>${r.target_draw}</td>
         <td>${r.target_date || ''}</td>
-        <td style="font-size:11px">${r.strategy_id}</td>
+        <td style="font-size:11px">${r.strategy_id}${(r.lifecycle_status === 'RETIRED' || r.strategy_lifecycle_status === 'RETIRED') ? ' <span style="font-size:9px;padding:1px 4px;border-radius:6px;background:rgba(52,152,219,.15);color:#2980b9;font-weight:600">回放</span>' : ''}</td>
         <td>${rpBadges(predicted, hits)} ${predSpecial}</td>
         <td>${rpBadges(actual, hits)} ${actSpecial}</td>
         <td>${rpBadges(hits, hits)}${specialHit}</td>
@@ -3622,6 +3628,19 @@
       fixtureToggleBtn.addEventListener('click', rpToggleFixtureMode);
     }
 
+    // P34: Default half-year date range if no URL param was supplied
+    (function rpSetDefaultDates() {
+      var toEl   = document.getElementById('rp-date-to');
+      var fromEl = document.getElementById('rp-date-from');
+      if (!toEl || !fromEl) return;
+      var today = new Date();
+      if (!toEl.value) toEl.value = today.toISOString().slice(0, 10);
+      if (!fromEl.value) {
+        var sixMonthsAgo = new Date(today);
+        sixMonthsAgo.setMonth(sixMonthsAgo.getMonth() - 6);
+        fromEl.value = sixMonthsAgo.toISOString().slice(0, 10);
+      }
+    })();
     // Restore query state from URL on page load
     rpRestoreFromURL();
     // P23: sync toggle visual state after URL restore

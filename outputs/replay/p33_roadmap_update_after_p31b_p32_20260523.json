@@ -1,0 +1,67 @@
+{
+  "phase": "P33_ROADMAP_UPDATE_AFTER_P31B_P32",
+  "classification": "P33_ROADMAP_UPDATE_AFTER_P31B_P32_MERGED_TO_MAIN",
+  "status": "PASS",
+  "date": "2026-05-23",
+  "branch": "p33-roadmap-update-after-p31b-p32",
+  "base_commit": "e704154",
+  "production_rows": 19960,
+  "no_db_write": true,
+  "completed_phases": ["P31A", "P31B", "P32"],
+  "pr_references": {
+    "P31A": "#166",
+    "P31B": "#167",
+    "P32": "#168"
+  },
+  "production_row_history": {
+    "before_P31B": 12460,
+    "P31B_rows_inserted": 7500,
+    "after_P31B": 19960
+  },
+  "row_backed_strategies": {
+    "total": 13,
+    "ONLINE": 8,
+    "RETIRED_replay_backed": 5
+  },
+  "retired_strategies_P31B": [
+    "acb_1bet",
+    "acb_markov_midfreq",
+    "acb_markov_midfreq_3bet",
+    "midfreq_acb_2bet",
+    "midfreq_fourier_2bet"
+  ],
+  "P31B_controlled_apply_id": "P31B_DAILY539_RETIRED_7500_PROD_20260523",
+  "files_modified": [
+    "00-Plan/roadmap/roadmap.md",
+    "00-Plan/roadmap/CTO-Analysis.md"
+  ],
+  "files_created": [
+    "outputs/replay/p33_roadmap_update_after_p31b_p32_20260523.json",
+    "docs/replay/p33_roadmap_update_after_p31b_p32_20260523.md"
+  ],
+  "new_prioritization": {
+    "P0": "P34 UI usability gap — date-range default half-year + RETIRED replay-backed labeling clarity",
+    "P1": "P35 Wave 2 candidate planning (19 remaining needs_promotion strategies)",
+    "P2": "P36 Wave 2 dry-run / temp rehearsal",
+    "P3": "Catalog freshness guard",
+    "P4": "Incremental replay refresh design",
+    "P5": "Manual-review strategy resolution (15 strategies)",
+    "P6": "Performance and pagination hardening",
+    "P7": "Apply authorization governance hardening",
+    "P8": "Artifact consolidation (P21B-P33)",
+    "P9": "Post-launch operations",
+    "P10": "Wave 2 production apply (gated — not authorized)"
+  },
+  "verification": {
+    "drift_guard": "PASS",
+    "governance_guard": "PASS",
+    "branch": "main",
+    "rows": 19960
+  },
+  "governance_constraints": {
+    "no_ceo_decision_modified": true,
+    "no_production_db_write": true,
+    "no_strategy_lifecycle_promotion": true,
+    "no_registry_mutation": true
+  }
+}

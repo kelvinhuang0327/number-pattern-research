@@ -29,7 +29,7 @@ _TEMP_DB    = Path("/tmp/p31a_temp.db")
 _REHEARSAL  = REPO_ROOT / "outputs" / "replay" / "p31a_temp_rehearsal_20260523.json"
 _READINESS  = REPO_ROOT / "outputs" / "replay" / "p31a_wave1_daily539_retired_adapter_readiness_20260523.json"
 
-EXPECTED_PROD_ROWS   = 12460
+EXPECTED_PROD_ROWS   = 19960  # Updated post-P31B: P31A was no-write; P31B applied 7500 rows (2026-05-23)
 EXPECTED_TEMP_ROWS   = 7500
 EXPECTED_STRATEGIES  = 5
 WAVE1_STRATEGY_IDS   = frozenset({
@@ -163,7 +163,7 @@ def test_readiness_p31b_requires_authorization(readiness):
 # ── Production DB immutability ────────────────────────────────────────────────
 
 def test_production_db_row_count():
-    """Production DB MUST have exactly 12460 rows after P31A."""
+    """Production DB row count. P31A wrote 0 rows; P31B applied 7500 (authorized). Expected: 19960."""
     conn = sqlite3.connect(str(_PROD_DB))
     count = conn.execute(
         "SELECT COUNT(*) FROM strategy_prediction_replays"

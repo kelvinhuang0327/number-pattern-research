@@ -26,7 +26,7 @@ _OUTPUT     = REPO_ROOT / "outputs" / "replay" / "p30_reconstructible_candidacy_
 sys.path.insert(0, str(LOTTERY_API))
 from routes.replay import get_replay_strategy_catalog  # noqa: E402
 
-EXPECTED_PROD_ROWS   = 12460
+EXPECTED_PROD_ROWS   = 19960  # Updated post-P31B (2026-05-23): 7500 Wave 1 retired rows applied
 EXPECTED_NON_RB      = 51
 VALID_CLASSIFICATIONS = {"needs_promotion", "executable_no", "manual_review"}
 

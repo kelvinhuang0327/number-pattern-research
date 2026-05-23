@@ -57,7 +57,7 @@ _EXPECTED_ARTIFACT     = 41
 _EXPECTED_RETIRED      = 5
 _EXPECTED_REJECTED_REG = 4
 _EXPECTED_OBSERVATION  = 1
-_EXPECTED_DB_ROWS      = 12460
+_EXPECTED_DB_ROWS      = 19960  # Updated post-P31B (2026-05-23): 7500 Wave 1 retired rows applied
 
 # ─── Section 1: Label definition tests ───────────────────────────────────────
 

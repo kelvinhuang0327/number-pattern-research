@@ -1,0 +1,46 @@
+{
+  "phase": "P29_REPLAY_STRATEGY_CATALOG_UI_SECTION",
+  "generated_at": "2026-05-23T04:25:21.288624+00:00",
+  "branch": "p29-replay-strategy-catalog-ui-section",
+  "production_rows": 12460,
+  "api_endpoint": "GET /api/replay/strategy-catalog",
+  "catalog_counts": {
+    "total_strategies": 59,
+    "row_backed_count": 8,
+    "label_summary": {
+      "row-backed": 8,
+      "artifact-only": 41,
+      "no-data": 0,
+      "reconstructible": 0,
+      "manual-review": 0,
+      "unsupported": 0,
+      "retired": 5,
+      "rejected-registered": 4,
+      "observation": 1
+    }
+  },
+  "ui_section": {
+    "element_id": "rp-catalog-card",
+    "data_testid": "rp-catalog-card",
+    "title": "策略狀態總覽",
+    "js_function": "rpLoadCatalog",
+    "click_handler": "rpInitCatalogClickHandler"
+  },
+  "is_queryable_enforcement": "non-queryable rows return early without triggering rpQuery",
+  "ceo_mandatory": {
+    "coverage_footnote": "current row-backed coverage = 8/59 (~13.5%) of strategy universe",
+    "non_row_backed_note": "可重建候選尚未評估，將於後續階段處理"
+  },
+  "ceo_opportunistic_observations": {
+    "lottery_selector": "PRESENT — #rp-lottery-select",
+    "strategy_selector": "PRESENT — #rp-strategy-select",
+    "date_range_default_half_year": "ABSENT — user sets manually; no default",
+    "period_presets_100_500_1000_1500": "PRESENT — rp-preset-btns with data-preset attrs",
+    "pagination": "PRESENT — rp-page-info, smooth prev/next navigation"
+  },
+  "error_handling": "console.warn only (non-blocking); errEl shown; no page break",
+  "hardcoded_labels": "NONE — all fields consumed from API response",
+  "no_db_write": true,
+  "tests_pass": 30,
+  "final_classification": "P29_CATALOG_UI_SECTION_READY"
+}

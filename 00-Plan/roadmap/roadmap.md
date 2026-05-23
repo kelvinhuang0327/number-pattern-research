@@ -1,8 +1,11 @@
 # Lottery Replay Roadmap
 
-**Last Updated:** 2026-05-23 Asia/Taipei (P33 update after P31B + P32)
+**Last Updated:** 2026-05-24 Asia/Taipei (P40 update after P39 — Wave 2 DAILY_539 pipeline complete)
 **Owner:** CTO agent
 **Primary Goal:** Strategy Historical Replay must become production-usable: the operator can select lottery type, strategy, date range, and 100/500/1000/1500-period presets, then inspect per-draw prediction-vs-actual comparisons in the existing historical prediction-list style. All system-developed strategies must be visible with an honest state: row-backed, artifact-only, retired, rejected-registered, observation, no-data, reconstructible, manual-review, or unsupported. The final product direction is not catalog visibility alone: it is 1500-period replay coverage for all executable strategies, with no fake replay rows and no unguarded production writes.
+
+**CEO Goal:** 1500-period replay × all executable strategies.
+
 **Repo Policy:** Use `/Users/kelvin/Kelvin-WorkSpace/LotteryNew` only. Do not create a new repo.
 
 ---
@@ -25,34 +28,55 @@
 | P31A Wave 1 adapter readiness | [Confirmed] Complete and merged | PR #166; `docs/replay/p31a_wave1_daily539_retired_adapter_readiness_20260523.md`; no-db-write; dry-run 7500 rows | Adapters wired, dry-run candidate rows generated, temp DB rehearsal passed, production rows remained 12460. |
 | P31B Wave 1 production apply | [Confirmed] Complete and merged | PR #167; HEAD `f6b05e8`; production rows 12460 → 19960; 7500 rows inserted | Controlled apply under `P31B_DAILY539_RETIRED_7500_PROD_20260523`; drift guard PASS; 257 tests passed. |
 | P32 Replay UI/API verification post-P31B | [Confirmed] Complete and merged | PR #168; HEAD `e704154`; production rows unchanged at 19960 | All 5 retired DAILY_539 strategies confirmed queryable via API and UI; 126 tests passed. |
+| P33 Roadmap update after P31B + P32 | [Confirmed] Complete and merged | PR #169; `outputs/replay/p33_roadmap_update_after_p31b_p32_20260523.json` | Roadmap baseline updated to 19960; P34/P35/P36 prioritized. |
+| P34 Replay UI usability gap closure | [Confirmed] Complete and merged | PR #170; `outputs/replay/p34_replay_ui_usability_gap_closure_20260523.json` | Half-year date default + RETIRED labeling clarity; no production DB write. |
+| P35 Wave 2 candidate planning | [Confirmed] Complete and merged | PR #171; `outputs/replay/p35_wave2_candidate_planning_20260523.json` | 19 remaining needs_promotion evaluated; 6 DAILY_539 selected for Wave 2. |
+| P36 Wave 2 DAILY_539 dry-run + temp rehearsal | [Confirmed] Complete and merged | PR #172; `outputs/replay/p36_wave2_daily539_dryrun_rehearsal_20260523.json` | 9000 dry-run rows; R1/R2/R3 temp rehearsal PASS; production rows remained 19960. |
+| P37 Wave 2 DAILY_539 production apply | [Confirmed] Complete and merged | PR #173; `outputs/replay/p37_wave2_daily539_production_apply_20260523.json`; production rows 19960 → 28960; 9000 rows inserted | Controlled apply under `P37_DAILY539_WAVE2_9000_PROD_20260523`; drift guard PASS; lifecycle DRY_RUN. |
+| P38 Post-P37 verification + freshness registry audit | [Confirmed] Complete and merged | PR #174; `outputs/replay/p38_post_p37_verification_registry_audit_20260523.json` | P37 rows verified; strategy_replay_runs ids 8-10 ACCEPTED; API verified; no production DB change. |
+| P39 Replay UI smoke closure after P38 | [Confirmed] Complete and merged | PR #175; `outputs/replay/p39_replay_ui_smoke_closure_after_p38_20260523.json`; merge commit 2558f00 | P38 deferred UI smoke RESOLVED; 0 console errors; all Wave 2 strategies queryable; 28960 rows confirmed. |
 
 ---
 
 ## 2. Current Production Replay / Catalog Baseline
 
-Verified during P33 CTO review on 2026-05-23 (post P31B + P32).
+Verified during P40 CTO review on 2026-05-24 (post P39 — Wave 2 DAILY_539 complete).
+
+## Replay Coverage Baseline (as of 2026-05-24)
+
+| Milestone | Rows | Cumulative |
+|---|---:|---:|
+| Pre-Wave-1 baseline (ONLINE strategies, P14D-P21B) | 12460 | 12460 |
+| P31B Wave 1 retired DAILY_539 (+7500 rows) | 7500 | 19960 |
+| P37 Wave 2 DAILY_539 DRY_RUN (+9000 rows) | 9000 | 28960 |
+| **Current total** | — | **28960** |
+
+> **Note on Wave 2 DRY_RUN strategies:** Wave 2 strategies (`lifecycle_status=DRY_RUN`) are not shown in the strategy selector dropdown. They are visible and queryable in the replay table via the `lottery_type=DAILY_539` filter. This is accepted current behavior pending live monitoring evidence for DRY_RUN → ONLINE promotion.
 
 | Metric | Value |
 |---|---:|
-| Production replay rows | 19960 |
+| Production replay rows | 28960 |
 | Legacy rows | 460 |
 | Verified backfill rows (ONLINE strategies, P14D-P21B) | 12000 |
 | P31B Wave 1 rows (retired DAILY_539 strategies) | 7500 |
-| Row-backed strategies | 13 (8 ONLINE + 5 RETIRED) |
+| P37 Wave 2 rows (DRY_RUN DAILY_539 strategies) | 9000 |
+| Row-backed strategies | 19 (8 ONLINE + 5 RETIRED + 6 DRY_RUN) |
 | Full strategy catalog universe | 59 |
 | Non-row-backed strategies evaluated in P30 | 51 |
-| DB writes in P29/P30/P32/P33 | 0 |
-| Migrations in P29-P33 | 0 |
+| DB writes in P33-P40 roadmap/docs-only phases | 0 |
 | Baseline before P31B | 12460 |
+| Baseline before P37 | 19960 |
 | P31B Wave 1 rows inserted | 7500 |
+| P37 Wave 2 rows inserted | 9000 |
 
-Strategy catalog label summary after P31B + P32:
+Strategy catalog label summary after P37 + P38 + P39:
 
 | Label | Count | Queryable | Notes |
 |---|---:|---|---|
 | `row-backed` | 8 | yes | ONLINE strategies with P14D-P21B backfill |
 | `artifact-only` | 41 | no | — |
 | `retired` | 5 | no (catalog) | Row-backed via P31B; queryable via `/api/replay/history` with lifecycle filter |
+| `dry-run` | 6 | no (catalog dropdown) | Row-backed via P37; queryable via `/api/replay/history?lottery_type=DAILY_539` |
 | `rejected-registered` | 4 | no | — |
 | `observation` | 1 | no | — |
 | `no-data` | 0 | no | — |
@@ -61,6 +85,8 @@ Strategy catalog label summary after P31B + P32:
 | `unsupported` | 0 | no | — |
 
 > **Note on retired strategies:** The 5 P31B DAILY_539 retired strategies (`acb_1bet`, `acb_markov_midfreq`, `acb_markov_midfreq_3bet`, `midfreq_acb_2bet`, `midfreq_fourier_2bet`) are replay-backed (1500 rows each) but **remain retired**. They are NOT promoted to ONLINE. The catalog `queryable=False` and `row_count=0` fields reflect P26 label model / P24 static inventory behavior. Live row counts via `/api/replay/history?lifecycle_status=RETIRED` are authoritative (total=7500).
+
+> **Note on Wave 2 DRY_RUN strategies:** The 6 P37 DAILY_539 DRY_RUN strategies (`acb_single_539`, `539_3bet_orthogonal`, `markov_1bet_539`, `zone_gap_3bet_539`, `p0b_539_3bet_f_cold_fmid`, `p0c_539_3bet_f_cold_x2`) are replay-backed (1500 rows each, total=9000). They are NOT in the strategy dropdown (controlled by `_REGISTRY`). Queryable via `/api/replay/history?lottery_type=DAILY_539`. DRY_RUN → ONLINE promotion requires live monitoring evidence (200+ draws). This is accepted current behavior.
 
 P30 reconstructible-candidacy summary:
 
@@ -98,6 +124,17 @@ P31B Wave 1 — completed DAILY_539 retired strategies:
 | `midfreq_acb_2bet` | RETIRED (replay-backed) | DAILY_539 | 1500 | ✅ API total=1500, UI confirmed |
 | `midfreq_fourier_2bet` | RETIRED (replay-backed) | DAILY_539 | 1500 | ✅ API total=1500, UI confirmed |
 
+P37 Wave 2 — completed DAILY_539 DRY_RUN strategies:
+
+| Strategy | Lifecycle label | Lottery | Rows (P37) | P38+P39 Verification |
+|---|---|---|---:|---|
+| `acb_single_539` | DRY_RUN | DAILY_539 | 1500 | ✅ API total=1500, UI queryable |
+| `539_3bet_orthogonal` | DRY_RUN | DAILY_539 | 1500 | ✅ API total=1500, UI queryable |
+| `markov_1bet_539` | DRY_RUN | DAILY_539 | 1500 | ✅ API total=1500, UI queryable |
+| `zone_gap_3bet_539` | DRY_RUN | DAILY_539 | 1500 | ✅ API total=1500, UI queryable |
+| `p0b_539_3bet_f_cold_fmid` | DRY_RUN | DAILY_539 | 1500 | ✅ API total=1500, UI queryable |
+| `p0c_539_3bet_f_cold_x2` | DRY_RUN | DAILY_539 | 1500 | ✅ API total=1500, UI queryable |
+
 ---
 
 ## 3. Roadmap Alignment Assessment
@@ -109,104 +146,111 @@ P31B Wave 1 — completed DAILY_539 retired strategies:
 | P31A Wave 1 adapter readiness | [Aligned] | Complete and merged (PR #166). 5 strategies wired, 7500 dry-run rows generated, no production DB write. |
 | P31B Wave 1 production apply | [Aligned] | Complete and merged (PR #167). Production rows advanced from 12460 to 19960. 257 tests passed. |
 | P32 UI/API verification post-P31B | [Aligned] | Complete and merged (PR #168). All 5 retired strategies confirmed queryable. 126 tests passed. |
-| Date-range default half-year | [Missing] | P29/P30 observed this UX gap. Now P0 for P34. |
-| Retired replay-backed strategy labeling clarity | [Missing] | UI should better distinguish RETIRED replay-backed from ONLINE strategies. Now P0 for P34. |
-| Catalog freshness guard | [Drift] | Remains P3; deferred behind P34 UI closure. |
-| Incremental replay refresh design | [Drift] | Remains P4; follow P34 UI closure and Wave 2 candidate planning. |
-| Wave 2 and manual-review cadence | [Missing] | P31B Wave 1 complete; 19 remaining needs_promotion and 15 manual_review need planning as P1 (P35). |
+| P33 Roadmap update after P31B+P32 | [Aligned] | Complete and merged. Baseline updated; P34-P36 prioritized. |
+| P34 Replay UI usability gap | [Aligned] | Complete and merged. Half-year default + RETIRED labeling clarity shipped. |
+| P35 Wave 2 candidate planning | [Aligned] | Complete and merged (PR #171). 19 remaining strategies evaluated; 6 DAILY_539 selected. |
+| P36 Wave 2 DAILY_539 dry-run + rehearsal | [Aligned] | Complete and merged (PR #172). 9000 dry-run rows; R1/R2/R3 rehearsal PASS. |
+| P37 Wave 2 DAILY_539 production apply | [Aligned] | Complete and merged (PR #173). 19960 → 28960 rows; lifecycle DRY_RUN; drift guard PASS. |
+| P38 Post-P37 verification + registry audit | [Aligned] | Complete and merged (PR #174). 9000 rows verified; ids 8-10 ACCEPTED operational updates. |
+| P39 Replay UI smoke closure | [Aligned] | Complete and merged (PR #175; commit 2558f00). P38 deferred UI smoke RESOLVED; 0 console errors. |
+| Wave 3 BIG_LOTTO adapter bootstrap | [Missing] | 6 LOW-effort + 5 MEDIUM-effort BIG_LOTTO strategies deferred; adapter bootstrap needed. Now P0 for P41. |
+| Wave 2 DRY_RUN monitoring design | [Missing] | DRY_RUN → ONLINE promotion criteria not defined. Now P2 for P43. |
+| Catalog freshness guard | [Drift] | Remains P3; deferred behind Wave 3 bootstrap. |
+| Manual-review strategy resolution | [Drift] | Remains P5; 15 strategies in holding state. |
 
 ---
 
-## 4. Reprioritized P0-P10
+## 4. Reprioritized P0-P9+ (Updated 2026-05-24)
 
 | Priority | Phase | Focus | Current Status | Acceptance Criteria |
 |---|---|---|---|---|
-| **P0** | P34 UI usability gap | Date-range default half-year; retired replay-backed strategy labeling clarity in UI/catalog | [Missing] | Replay page defaults to half-year date range; presets still pass smoke; UI clearly distinguishes RETIRED replay-backed rows from ONLINE; no production DB write. |
-| **P1** | P35 Wave 2 candidate planning | Rank remaining 19 `needs_promotion` strategies from P30 after Wave 1 evidence | [Not started] | Wave 2 plan: scope, effort, lottery type, expected rows per strategy; no production write. |
-| **P2** | P36 Wave 2 dry-run / temp rehearsal | Generate Wave 2 dry-run rows and temp DB rehearsal only | [Not started] | Wave 2 strategies generate dry-run rows; temp DB rehearsal passes; production rows remain 19960; no production DB write. |
-| **P3** | Catalog freshness guard | Prevent P24/P28/P29/P30 catalog drift | [Deferred] | Read-only guard compares registry, rejected artifacts, and catalog inventory; no DB writes. |
-| **P4** | Incremental replay refresh design | Define future-draw maintenance after Wave 1 coverage | [Deferred] | Design covers cadence, duplicate detection, rollback, and exact write authorization. |
-| **P5** | Manual-review strategy resolution | Resolve 15 `manual_review` strategies with a rubric | [Deferred] | Decision rubric separates monitoring frameworks, unclear composites, and true executable candidates. |
-| **P6** | Performance and pagination hardening | Keep replay/API/UI practical as rows grow 19960 → 28960+ | [Deferred] | Query and UI remain responsive for period presets and catalog/history flows. |
-| **P7** | Apply authorization governance hardening | Formalize multi-wave apply authorization patterns | [Deferred] | Each apply wave requires phase-specific exact YES and post-apply verification. |
-| **P8** | Artifact consolidation | Index P21B-P33 docs, outputs, scripts, and test evidence | [Deferred] | One durable reference points to all backfill/catalog/evaluation/apply/verification evidence. |
+| **P0** | P41 Wave 3 BIG_LOTTO adapter bootstrap planning | Plan adapter bootstrap for 6 LOW-effort BIG_LOTTO strategies before any dry-run | [Not started] | Wave 3 plan produced; adapter bootstrap design complete; no production DB write. |
+| **P1** | P42 Wave 3 BIG_LOTTO dry-run + temp rehearsal | Generate Wave 3 BIG_LOTTO dry-run rows and temp DB rehearsal | [Not started] | Wave 3 strategies generate dry-run rows; rehearsal passes; production rows remain 28960; no production DB write. |
+| **P2** | P43 Wave 2 live monitoring design | Define DRY_RUN → ONLINE promotion criteria for Wave 2 strategies after 200+ draws | [Not started] | Promotion criteria defined: edge stability over 200 draws + McNemar gate; no production write. |
+| **P3** | P44 Freshness cadence guard improvement | Auto-insert DONE records in cadence guard; reduce manual fix burden | [Deferred] | Read-only guard with auto-insert; no DB writes to strategy rows. |
+| **P4** | P45 POWER_LOTTO expansion planning | Extend replay coverage to POWER_LOTTO remaining strategies | [Deferred] | POWER_LOTTO adapter complexity assessed; Wave plan produced. |
+| **P5** | P46 Manual-review strategy resolution | Resolve 15 `manual_review` strategies with a decision rubric | [Deferred] | Decision rubric separates monitoring frameworks, unclear composites, and true executable candidates. |
+| **P6** | P47 Replay performance / pagination hardening | Keep replay/API/UI practical as rows grow toward 37960+ | [Deferred] | Query and UI remain responsive for period presets and catalog/history flows. |
+| **P7** | P48 Apply authorization governance hardening | Formalize multi-wave apply authorization patterns | [Deferred] | Each apply wave requires phase-specific exact YES and post-apply verification. |
+| **P8** | P49 Artifact consolidation | Index P21B-P40 docs, outputs, scripts, and test evidence | [Deferred] | One durable reference points to all backfill/catalog/evaluation/apply/verification evidence. |
 | **P9** | Post-launch operations | Monitor future draw replay coverage and stale strategy states | [Deferred] | Reports show missing replay rows after new draws and stale strategy catalog states. |
-| **P10** | Wave 2 production apply (gated) | Apply Wave 2 rows after P35/P36 pass and explicit apply authorization exists | [Not authorized] | With separate YES gate; rows move to expected total; drift/governance guards pass. |
 
-Items to downgrade, merge, pause, or retire:
+Items completed and retired as active items (P40 update):
 
 | Item | Decision | Reason |
 |---|---|---|
-| P29 as active blocker | Retired | [Confirmed] P29 merged and verified. |
-| P30 read-only evaluation | Retired as active blocker | [Confirmed] P30 merged; output consumed by P31A/P31B. |
-| P31A Wave 1 adapter readiness | Retired as active item | [Confirmed] P31A merged (PR #166); no-db-write evidence confirmed. |
-| P31B Wave 1 production apply | Retired as active item | [Confirmed] P31B merged (PR #167); 19960 rows; 257 tests passed. |
-| P32 UI/API verification | Retired as active item | [Confirmed] P32 merged (PR #168); 126 tests passed; API/UI verified. |
-| Catalog freshness before P34 | Downgrade to P3 | CEO direction prioritizes usability closure and Wave 2 planning. |
-| Incremental refresh before Wave 2 | Downgrade to P4 | Operating cadence matters after coverage expansion. |
+| P34 UI usability gap | Retired as active item | [Confirmed] Complete and merged; half-year default + RETIRED labeling shipped. |
+| P35 Wave 2 candidate planning | Retired as active item | [Confirmed] Complete and merged (PR #171); 6 DAILY_539 strategies selected. |
+| P36 Wave 2 DAILY_539 dry-run | Retired as active item | [Confirmed] Complete and merged (PR #172); 9000 dry-run rows; rehearsal PASS. |
+| P37 Wave 2 production apply | Retired as active item | [Confirmed] Complete and merged (PR #173); 19960 → 28960 rows. |
+| P38 Post-P37 verification | Retired as active item | [Confirmed] Complete and merged (PR #174); rows verified; ids 8-10 ACCEPTED. |
+| P39 UI smoke closure | Retired as active item | [Confirmed] Complete and merged (PR #175); 0 console errors; all Wave 2 strategies queryable. |
+| Wave 2 production apply (was P10) | Completed | P37 executed Wave 2 apply under governance; retired as active item. |
+| Incremental refresh before monitoring design | Downgrade to P3/P4 | Operating cadence matters after coverage expansion. |
 | Broad UI redesign | Pause | CEO wants existing historical prediction-list style. |
-| `manual_review=15` in Wave 2 | Downgrade to P5 | Need separate decision rubric; should not enter Wave 2 without human judgment. |
+| `manual_review=15` in Wave 2 | Downgrade to P5 | Need separate decision rubric; should not enter Wave 3 without human judgment. |
 | `executable_no=12` backfill | Retired unless new evidence appears | P30 classified as rejected, superseded, or not viable. |
 
 ---
 
-## 5. Critical Blockers
+## 5. Critical Blockers (Updated 2026-05-24)
+
+All previous P0/P1/P2 blockers (P34/P35/P36/P37/P38/P39) are resolved. New blockers:
 
 | Blocker | Impact | Why It Blocks | Risk If Ignored | Priority | Acceptance Standard |
 |---|---|---|---|---|---|
-| Date-range default half-year absent | Replay usability | User explicitly expects a half-year default date range; P29/P32 both observed this gap | Replay page works but misses expected initial UX | P0 (P34) | Replay page defaults to half-year date range while 100/500/1000/1500 presets and pagination still pass browser smoke. |
-| Retired replay-backed UI labeling unclear | Catalog/UI trust | RETIRED strategies now have replay rows but are labeled `queryable=False`; operator may be confused | Operator may not realize 7500 retired rows are queryable via lifecycle filter | P0 (P34) | UI or catalog clearly explains that RETIRED replay-backed strategies are queryable via lifecycle filter; no ONLINE relabeling. |
-| Wave 2 candidate plan missing | Medium-term coverage | P31B Wave 1 complete; 19 remaining needs_promotion and 15 manual_review strategies have no plan | Coverage expansion stalls at 19960 rows | P1 (P35) | Ranked Wave 2 plan: scope, effort, lottery type, expected rows per strategy; no production write. |
-| Wave 2 dry-run / temp rehearsal not done | Data integrity | Cannot apply Wave 2 rows without adapter readiness and rehearsal evidence | Unsafe production write risk | P2 (P36) | Wave 2 strategies generate dry-run rows; temp DB rehearsal passes; production rows remain 19960. |
+| Wave 3 BIG_LOTTO adapter bootstrap missing | Coverage expansion | 6 LOW-effort + 5 MEDIUM-effort BIG_LOTTO strategies have no adapter; cannot generate replay rows | Coverage stalls at 28960 rows with no BIG_LOTTO Wave 3 path | P0 (P41) | Adapter bootstrap design complete; at least one BIG_LOTTO strategy generates dry-run rows; no production write. |
+| DRY_RUN → ONLINE promotion criteria undefined | Strategy lifecycle governance | 6 Wave 2 DRY_RUN strategies are live in production but have no defined promotion path | Strategies remain DRY_RUN indefinitely; operator cannot trust live monitoring signal | P2 (P43) | Promotion criteria defined: edge stability threshold, McNemar gate, minimum 200 draws. |
+| BIG_LOTTO Wave 3 dry-run not done | Data integrity | Cannot apply Wave 3 rows without adapter readiness and rehearsal evidence | Unsafe production write risk | P1 (P42) | Wave 3 BIG_LOTTO strategies generate dry-run rows; temp DB rehearsal passes; production rows remain 28960. |
 
 ---
 
-## 6. Most Valuable System Optimization Directions
+## 6. Most Valuable System Optimization Directions (Updated 2026-05-24)
 
-### Direction A: P34 Replay UI Usability Gap Closure
+### Direction A: P41 Wave 3 BIG_LOTTO Adapter Bootstrap Planning
 
 - **Roadmap phase:** P0
-- **Why important:** Wave 1 is now live (19960 rows). The operator must be able to discover and navigate RETIRED replay-backed strategies without confusion. The half-year default is also an expected UX baseline.
-- **System maturity gain:** Closes both the date-range default and the retired-vs-ONLINE labeling gap without schema changes.
-- **Expected benefit:** Operators land on a sensible 6-month window; can immediately understand that RETIRED strategies are replay-backed and queryable via lifecycle filter.
-- **Risk:** Date default can conflict with period preset if implemented carelessly.
-- **Acceptance:** Half-year default exists; presets/pagination pass browser smoke; UI labeling does not relabel retired rows as ONLINE; no production DB write.
+- **Why important:** Wave 2 DAILY_539 is complete (28960 rows). BIG_LOTTO expansion requires adapter bootstrap before any dry-run.
+- **System maturity gain:** Extends governance from DAILY_539 to BIG_LOTTO; unblocks 11 deferred strategies.
+- **Expected benefit:** Blueprint for Wave 3 apply wave; adapter interface standardization.
+- **Risk:** BIG_LOTTO pool size (49C6) means low edge per strategy; adapter complexity may be higher than DAILY_539.
+- **Acceptance:** Adapter bootstrap design complete; no-db-write; BIG_LOTTO strategies catalogued with effort/risk estimate.
 - **Priority:** P0
 
-### Direction B: P35 Wave 2 Candidate Planning
+### Direction B: P42 Wave 3 BIG_LOTTO Dry-Run + Temp Rehearsal
 
 - **Roadmap phase:** P1
-- **Why important:** P31B Wave 1 proved the apply pipeline. Keeping 19 remaining `needs_promotion` strategies without a plan stalls medium-term coverage expansion.
-- **System maturity gain:** Extends governance from 5-strategy Wave 1 to ranked multi-lottery Wave 2 candidates.
-- **Expected benefit:** Provides a ranked, evidence-backed list for the next apply wave.
-- **Risk:** Planning too broadly before P34 UX closure can blur priorities.
-- **Acceptance:** Wave 2 list includes scope, effort, lottery type, expected rows; no production write.
+- **Why important:** The P31A/P36 governance pattern must be applied to BIG_LOTTO before any production apply.
+- **System maturity gain:** Extends the rehearsal-before-apply governance to a second lottery type.
+- **Expected benefit:** Confirms Wave 3 BIG_LOTTO adapters generate correct rows; catches issues before production.
+- **Risk:** Skipping rehearsal risks applying rows with incorrect prediction metadata.
+- **Acceptance:** Wave 3 dry-run rows generated; temp DB rehearsal passes; production rows remain 28960.
 - **Priority:** P1
 
-### Direction C: P36 Wave 2 Dry-Run / Temp Rehearsal
+### Direction C: P43 Wave 2 Live Monitoring Design
 
 - **Roadmap phase:** P2
-- **Why important:** The P31A dry-run pattern must be applied again for Wave 2 candidates before any production apply.
-- **System maturity gain:** Maintains the same governance pattern: rehearsal before production apply.
-- **Expected benefit:** Confirms Wave 2 adapters generate correct rows before any production write.
-- **Risk:** Skipping rehearsal risks applying rows with incorrect prediction metadata.
-- **Acceptance:** Wave 2 strategies generate dry-run rows; temp DB rehearsal passes; production rows remain 19960; no production DB write.
+- **Why important:** 6 Wave 2 DRY_RUN strategies are in production (9000 rows) but have no defined promotion criteria.
+- **System maturity gain:** Creates a clear DRY_RUN → ONLINE promotion ladder with quantitative gates.
+- **Expected benefit:** Operators have a defined path for promoting DRY_RUN strategies if evidence warrants.
+- **Risk:** Setting criteria too loose could promote underperforming strategies; too strict could stall promotion indefinitely.
+- **Acceptance:** Promotion criteria documented: edge stability over 200+ draws, McNemar gate, no adverse PSI signals.
 - **Priority:** P2
 
-### Direction D: Catalog Freshness Guard
+### Direction D: P44 Freshness Cadence Guard Improvement
 
 - **Roadmap phase:** P3
-- **Why important:** P24/P28/P29/P30/P31B have all expanded the catalog and row store; the guard prevents drift.
-- **System maturity gain:** Automates the manual cross-check that was done in every CTO review.
-- **Expected benefit:** Read-only guard catches catalog/registry divergence early.
-- **Risk:** Over-engineering the guard can slow iteration.
-- **Acceptance:** Read-only guard; no DB writes; alert on divergence.
+- **Why important:** P38 registry ids 8-10 required manual insertion; auto-insert would reduce toil.
+- **System maturity gain:** Automates cadence guard DONE record creation; reduces manual fix burden each wave.
+- **Expected benefit:** Guard auto-inserts DONE records when all strategies in scope have been refreshed.
+- **Risk:** Auto-insert could mask underlying data freshness issues.
+- **Acceptance:** Read-only guard improved; auto-insert documented; no DB writes to strategy rows.
 - **Priority:** P3
 
-### Direction E: Manual-Review Strategy Resolution
+### Direction E: P46 Manual-Review Strategy Resolution
 
 - **Roadmap phase:** P5
-- **Why important:** P30 left 15 `manual_review` strategies in a holding state; these need human judgment before Wave 2 or Wave 3 inclusion.
+- **Why important:** P30 left 15 `manual_review` strategies in a holding state; these need human judgment before Wave 3 or Wave 4 inclusion.
 - **System maturity gain:** Converts an open classification into actionable accept/reject decisions.
 - **Expected benefit:** Shrinks the unknown pool and clarifies maximum replay coverage ceiling.
 - **Risk:** Rushing decisions on complex composites can produce wrong coverage estimates.
@@ -215,22 +259,23 @@ Items to downgrade, merge, pause, or retire:
 
 ---
 
-## 7. Today's Focus
+## 7. Today's Focus (Updated 2026-05-24)
 
-**Recommended focus:** P34 Replay UI Usability Gap Closure.
+**Recommended focus:** P41 Wave 3 BIG_LOTTO Adapter Bootstrap Planning.
 
 Expected deliverable:
 
-- Replay page date range defaults to half-year (approximately 6 months back from today).
-- UI or catalog panel clearly communicates that RETIRED replay-backed strategies (5 strategies, 7500 rows) are queryable via lifecycle filter, not ONLINE.
+- Wave 3 adapter bootstrap design document produced.
+- At least one BIG_LOTTO strategy classified with effort/risk/expected rows estimate.
 - No production DB write.
+- No lifecycle promotion.
 - All existing replay tests still pass.
-- Browser smoke confirms: half-year default displayed, period presets still work, RETIRED lifecycle filter returns 7500 rows.
 
-Do not run production apply in P34.
+Do not apply Wave 3 rows without completing P41 (planning) and P42 (dry-run + rehearsal) first.
+Do not promote Wave 2 DRY_RUN strategies to ONLINE without P43 monitoring evidence (200+ draws).
 
 Final roadmap marker:
 
 ```text
-CTO_ROADMAP_AFTER_P31B_P32_P33_20260523
+CTO_ROADMAP_AFTER_P35_P36_P37_P38_P39_P40_20260524
 ```

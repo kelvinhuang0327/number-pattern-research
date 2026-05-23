@@ -1,0 +1,223 @@
+{
+  "phase": "P31A_WAVE1_DAILY539_RETIRED_ADAPTER_READINESS",
+  "status": "READY_NO_DB_WRITE",
+  "run_id": "p31a_wave1_dryrun_20260523",
+  "started_at": "2026-05-23T05:50:15.192226+00:00",
+  "finished_at": "2026-05-23T05:50:18.630300+00:00",
+  "wave": 1,
+  "lottery_type": "DAILY_539",
+  "strategies": {
+    "acb_1bet": {
+      "strategy_id": "acb_1bet",
+      "lifecycle_status": "RETIRED",
+      "adapter_module": "lottery_api/models/p31a_wave1_retired_adapters.py",
+      "replay_bet_recorded": "bet-1",
+      "dry_run_rows": 1500,
+      "hit_stats": {
+        "predicted": 1500,
+        "errors": 0,
+        "total": 1500,
+        "hit_3plus": 16,
+        "hit_3plus_rate": 0.0107,
+        "hit_breakdown": {
+          "0": 687,
+          "1": 634,
+          "2": 163,
+          "3": 16,
+          "4": 0,
+          "5": 0
+        }
+      }
+    },
+    "acb_markov_midfreq": {
+      "strategy_id": "acb_markov_midfreq",
+      "lifecycle_status": "RETIRED",
+      "adapter_module": "lottery_api/models/p31a_wave1_retired_adapters.py",
+      "replay_bet_recorded": "bet-1",
+      "dry_run_rows": 1500,
+      "hit_stats": {
+        "predicted": 1500,
+        "errors": 0,
+        "total": 1500,
+        "hit_3plus": 20,
+        "hit_3plus_rate": 0.0133,
+        "hit_breakdown": {
+          "0": 736,
+          "1": 594,
+          "2": 150,
+          "3": 19,
+          "4": 1,
+          "5": 0
+        }
+      }
+    },
+    "acb_markov_midfreq_3bet": {
+      "strategy_id": "acb_markov_midfreq_3bet",
+      "lifecycle_status": "RETIRED",
+      "adapter_module": "lottery_api/models/p31a_wave1_retired_adapters.py",
+      "replay_bet_recorded": "bet-1",
+      "dry_run_rows": 1500,
+      "hit_stats": {
+        "predicted": 1500,
+        "errors": 0,
+        "total": 1500,
+        "hit_3plus": 16,
+        "hit_3plus_rate": 0.0107,
+        "hit_breakdown": {
+          "0": 687,
+          "1": 634,
+          "2": 163,
+          "3": 16,
+          "4": 0,
+          "5": 0
+        }
+      }
+    },
+    "midfreq_acb_2bet": {
+      "strategy_id": "midfreq_acb_2bet",
+      "lifecycle_status": "RETIRED",
+      "adapter_module": "lottery_api/models/p31a_wave1_retired_adapters.py",
+      "replay_bet_recorded": "bet-1",
+      "dry_run_rows": 1500,
+      "hit_stats": {
+        "predicted": 1500,
+        "errors": 0,
+        "total": 1500,
+        "hit_3plus": 19,
+        "hit_3plus_rate": 0.0127,
+        "hit_breakdown": {
+          "0": 714,
+          "1": 587,
+          "2": 180,
+          "3": 19,
+          "4": 0,
+          "5": 0
+        }
+      }
+    },
+    "midfreq_fourier_2bet": {
+      "strategy_id": "midfreq_fourier_2bet",
+      "lifecycle_status": "RETIRED",
+      "adapter_module": "lottery_api/models/p31a_wave1_retired_adapters.py",
+      "replay_bet_recorded": "bet-1",
+      "dry_run_rows": 1500,
+      "hit_stats": {
+        "predicted": 1500,
+        "errors": 0,
+        "total": 1500,
+        "hit_3plus": 19,
+        "hit_3plus_rate": 0.0127,
+        "hit_breakdown": {
+          "0": 714,
+          "1": 587,
+          "2": 180,
+          "3": 19,
+          "4": 0,
+          "5": 0
+        }
+      }
+    }
+  },
+  "production_db": {
+    "path": "/Users/kelvin/Kelvin-WorkSpace/LotteryNew/lottery_api/data/lottery_v2.db",
+    "rows_before": 12460,
+    "rows_after": 12460,
+    "unchanged": true,
+    "dry_run_applied": false,
+    "note": "P31A is read-only with respect to lottery_v2.db"
+  },
+  "rehearsal": {
+    "phase": "P31A_WAVE1_DAILY539_RETIRED_ADAPTER_DRY_RUN",
+    "run_id": "p31a_wave1_dryrun_20260523",
+    "started_at": "2026-05-23T05:50:15.192226+00:00",
+    "finished_at": "2026-05-23T05:50:18.630300+00:00",
+    "temp_db_path": "/tmp/p31a_temp.db",
+    "prod_rows_before": 12460,
+    "prod_rows_after": 12460,
+    "prod_rows_unchanged": true,
+    "total_dry_run_rows": 7500,
+    "expected_dry_run_rows": 7500,
+    "row_count_ok": true,
+    "r1": {
+      "r1_inserted": 7500,
+      "r1_total": 7500
+    },
+    "r2": {
+      "r2_inserted": 0,
+      "r2_total": 7500,
+      "r2_idempotent": true
+    },
+    "r3": {
+      "r3_before": 7500,
+      "r3_after": 0,
+      "r3_rollback_ok": true
+    },
+    "per_strategy": {
+      "acb_1bet": {
+        "total": 1500,
+        "predicted": 1500,
+        "errors": 0
+      },
+      "acb_markov_midfreq": {
+        "total": 1500,
+        "predicted": 1500,
+        "errors": 0
+      },
+      "acb_markov_midfreq_3bet": {
+        "total": 1500,
+        "predicted": 1500,
+        "errors": 0
+      },
+      "midfreq_acb_2bet": {
+        "total": 1500,
+        "predicted": 1500,
+        "errors": 0
+      },
+      "midfreq_fourier_2bet": {
+        "total": 1500,
+        "predicted": 1500,
+        "errors": 0
+      }
+    },
+    "all_rehearsals_pass": true
+  },
+  "lifecycle_semantics": {
+    "decision": "OPTION_A",
+    "label": "retired",
+    "replay_available_flag": true,
+    "rationale": "Lifecycle status RETIRED is semantically correct — these strategies were formally decommissioned after evaluation. replay_available=True is added as a queryability flag in the catalog response when replay rows exist. Option B (re-label as 'reconstructible') is DEFERRED — 'reconstructible' maps to ARTIFACT_ONLY state in P26 label precedence, not RETIRED. Promoting to 'reconstructible' would conflate lifecycle semantics.",
+    "reconstructible_population_spec": {
+      "current_count": 0,
+      "after_p31b_option_a": 0,
+      "after_p31b_option_b": 5,
+      "chosen_option": "A",
+      "note": "Under Option A, reconstructible_count stays 0. The 5 Wave 1 strategies remain 'retired' in the catalog. A new 'replay_available' boolean field will be added to catalog entries that have dry-run rows, enabling frontend queryability toggle."
+    }
+  },
+  "wave2_sketch": {
+    "phase": "P31B_WAVE2_SKETCH",
+    "prerequisites": "P31A merged and CI green; explicit P31B authorization required",
+    "scope": "Apply dry-run rows to production DB under P31A governance rules",
+    "production_apply_target": 7500,
+    "governance_guards": [
+      "replay_lifecycle_drift_guard.py --strict",
+      "replay_branch_governance_guard.py --expected-rows 20960"
+    ],
+    "estimated_remaining_needs_promotion": 19,
+    "top_candidates": [
+      "Survey P30 output for next 5–10 needs_promotion strategies",
+      "Prioritise DAILY_539 strategies with complete algorithm specs",
+      "BIG_LOTTO candidates requiring TS3/Fourier adapters",
+      "POWER_LOTTO candidates with existing tool bindings"
+    ],
+    "note": "Wave 2 adapter wiring follows same P31A pattern: new module, no registry mutation"
+  },
+  "governance": {
+    "drift_guard": "PASS",
+    "branch_guard": "PASS",
+    "forbidden_staged": "CLEAN"
+  },
+  "p31b_apply_requires_authorization": true,
+  "p31b_authorization_phrase": "YES apply P31B production wave1 daily539 retired",
+  "no_db_write": true
+}

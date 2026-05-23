@@ -1,0 +1,55 @@
+{
+  "phase": "P31A_WAVE1_DAILY539_RETIRED_ADAPTER_DRY_RUN",
+  "run_id": "p31a_wave1_dryrun_20260523",
+  "started_at": "2026-05-23T05:50:15.192226+00:00",
+  "finished_at": "2026-05-23T05:50:18.630300+00:00",
+  "temp_db_path": "/tmp/p31a_temp.db",
+  "prod_rows_before": 12460,
+  "prod_rows_after": 12460,
+  "prod_rows_unchanged": true,
+  "total_dry_run_rows": 7500,
+  "expected_dry_run_rows": 7500,
+  "row_count_ok": true,
+  "r1": {
+    "r1_inserted": 7500,
+    "r1_total": 7500
+  },
+  "r2": {
+    "r2_inserted": 0,
+    "r2_total": 7500,
+    "r2_idempotent": true
+  },
+  "r3": {
+    "r3_before": 7500,
+    "r3_after": 0,
+    "r3_rollback_ok": true
+  },
+  "per_strategy": {
+    "acb_1bet": {
+      "total": 1500,
+      "predicted": 1500,
+      "errors": 0
+    },
+    "acb_markov_midfreq": {
+      "total": 1500,
+      "predicted": 1500,
+      "errors": 0
+    },
+    "acb_markov_midfreq_3bet": {
+      "total": 1500,
+      "predicted": 1500,
+      "errors": 0
+    },
+    "midfreq_acb_2bet": {
+      "total": 1500,
+      "predicted": 1500,
+      "errors": 0
+    },
+    "midfreq_fourier_2bet": {
+      "total": 1500,
+      "predicted": 1500,
+      "errors": 0
+    }
+  },
+  "all_rehearsals_pass": true
+}

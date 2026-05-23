@@ -284,7 +284,8 @@ class TestProductionRowCount:
         cur.execute("SELECT COUNT(*) FROM strategy_prediction_replays")
         count = cur.fetchone()[0]
         conn.close()
-        assert count == 19960, f"Expected 19960 production rows, got {count}"
+        # Updated from 19960 to 28960 after P37 Wave 2 DAILY_539 production apply
+        assert count == 28960, f"Expected 28960 production rows, got {count}"
 
     def test_p35_records_correct_baseline(self, p35_data):
         assert p35_data["production_rows_before"] == 19960

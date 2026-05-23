@@ -1,0 +1,213 @@
+{
+  "p37_version": "20260523",
+  "wave": 2,
+  "lottery_type": "DAILY_539",
+  "authorization": "YES apply P37 production wave2 daily539",
+  "phase": "P37_WAVE2_DAILY539_PRODUCTION_APPLY",
+  "classification": "P37_WAVE2_DAILY539_PRODUCTION_APPLY_MERGED_TO_MAIN",
+  "status": "PASS",
+  "started_at": "2026-05-23T09:37:14.787164+00:00",
+  "finished_at": "2026-05-23T09:37:27.158710+00:00",
+  "controlled_apply_id": "P37_DAILY539_WAVE2_9000_PROD_20260523",
+  "truth_level": "DAILY539_WAVE2_STRATEGY_BACKFILL_VERIFIED",
+  "source": "P37_WAVE2_PRODUCTION_APPLY",
+  "run_id": "p37_wave2_prod_20260523",
+  "lifecycle_semantics": {
+    "all_rows_lifecycle": "DRY_RUN",
+    "online_rows": 0,
+    "retired_rows": 0,
+    "note": "P37 keeps all Wave 2 strategies as DRY_RUN. No lifecycle change to ONLINE."
+  },
+  "production_rows_before": 19960,
+  "production_rows_inserted": 9000,
+  "production_rows_after": 28960,
+  "strategies": [
+    {
+      "strategy_id": "539_3bet_orthogonal",
+      "inserted": 1500,
+      "lifecycle": "DRY_RUN"
+    },
+    {
+      "strategy_id": "acb_single_539",
+      "inserted": 1500,
+      "lifecycle": "DRY_RUN"
+    },
+    {
+      "strategy_id": "markov_1bet_539",
+      "inserted": 1500,
+      "lifecycle": "DRY_RUN"
+    },
+    {
+      "strategy_id": "p0b_539_3bet_f_cold_fmid",
+      "inserted": 1500,
+      "lifecycle": "DRY_RUN"
+    },
+    {
+      "strategy_id": "p0c_539_3bet_f_cold_x2",
+      "inserted": 1500,
+      "lifecycle": "DRY_RUN"
+    },
+    {
+      "strategy_id": "zone_gap_3bet_539",
+      "inserted": 1500,
+      "lifecycle": "DRY_RUN"
+    }
+  ],
+  "duplicate_check": "PASS",
+  "transaction": "ATOMIC_COMMIT",
+  "row_counts": {
+    "prod_rows_before": 19960,
+    "rows_generated": 9000,
+    "rows_inserted": 9000,
+    "rows_duplicated": 0,
+    "prod_rows_after": 28960
+  },
+  "expected_row_counts": {
+    "pre_apply": 19960,
+    "post_apply": 28960,
+    "inserted": 9000
+  },
+  "per_strategy_row_counts": {
+    "539_3bet_orthogonal": 1500,
+    "acb_single_539": 1500,
+    "markov_1bet_539": 1500,
+    "p0b_539_3bet_f_cold_fmid": 1500,
+    "p0c_539_3bet_f_cold_x2": 1500,
+    "zone_gap_3bet_539": 1500
+  },
+  "per_strategy_generation": {
+    "markov_1bet_539": {
+      "total": 1500,
+      "predicted": 1500,
+      "errors": 0
+    },
+    "acb_single_539": {
+      "total": 1500,
+      "predicted": 1500,
+      "errors": 0
+    },
+    "zone_gap_3bet_539": {
+      "total": 1500,
+      "predicted": 1500,
+      "errors": 0
+    },
+    "539_3bet_orthogonal": {
+      "total": 1500,
+      "predicted": 1500,
+      "errors": 0
+    },
+    "p0b_539_3bet_f_cold_fmid": {
+      "total": 1500,
+      "predicted": 1500,
+      "errors": 0
+    },
+    "p0c_539_3bet_f_cold_x2": {
+      "total": 1500,
+      "predicted": 1500,
+      "errors": 0
+    }
+  },
+  "hit_statistics": {
+    "markov_1bet_539": {
+      "predicted": 1500,
+      "errors": 0,
+      "total": 1500,
+      "hit_3plus": 17,
+      "hit_3plus_rate": 0.0113,
+      "hit_breakdown": {
+        "0": 747,
+        "1": 572,
+        "2": 164,
+        "3": 17,
+        "4": 0,
+        "5": 0
+      }
+    },
+    "acb_single_539": {
+      "predicted": 1500,
+      "errors": 0,
+      "total": 1500,
+      "hit_3plus": 16,
+      "hit_3plus_rate": 0.0107,
+      "hit_breakdown": {
+        "0": 687,
+        "1": 634,
+        "2": 163,
+        "3": 16,
+        "4": 0,
+        "5": 0
+      }
+    },
+    "zone_gap_3bet_539": {
+      "predicted": 1500,
+      "errors": 0,
+      "total": 1500,
+      "hit_3plus": 11,
+      "hit_3plus_rate": 0.0073,
+      "hit_breakdown": {
+        "0": 725,
+        "1": 618,
+        "2": 146,
+        "3": 11,
+        "4": 0,
+        "5": 0
+      }
+    },
+    "539_3bet_orthogonal": {
+      "predicted": 1500,
+      "errors": 0,
+      "total": 1500,
+      "hit_3plus": 16,
+      "hit_3plus_rate": 0.0107,
+      "hit_breakdown": {
+        "0": 687,
+        "1": 634,
+        "2": 163,
+        "3": 16,
+        "4": 0,
+        "5": 0
+      }
+    },
+    "p0b_539_3bet_f_cold_fmid": {
+      "predicted": 1500,
+      "errors": 0,
+      "total": 1500,
+      "hit_3plus": 13,
+      "hit_3plus_rate": 0.0087,
+      "hit_breakdown": {
+        "0": 708,
+        "1": 581,
+        "2": 198,
+        "3": 13,
+        "4": 0,
+        "5": 0
+      }
+    },
+    "p0c_539_3bet_f_cold_x2": {
+      "predicted": 1500,
+      "errors": 0,
+      "total": 1500,
+      "hit_3plus": 13,
+      "hit_3plus_rate": 0.0087,
+      "hit_breakdown": {
+        "0": 708,
+        "1": 581,
+        "2": 198,
+        "3": 13,
+        "4": 0,
+        "5": 0
+      }
+    }
+  },
+  "target_window": {
+    "periods": 1500,
+    "first_draw": "110000190",
+    "last_draw": "115000121",
+    "first_date": "2021/08/10",
+    "last_date": "2026/05/18"
+  },
+  "preflight_pass": true,
+  "duplicate_check_pass": true,
+  "postflight_pass": true,
+  "all_pass": true
+}

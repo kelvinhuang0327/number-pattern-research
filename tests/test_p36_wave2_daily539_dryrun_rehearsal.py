@@ -355,9 +355,18 @@ class TestDryRunRowGeneration:
 # ── TestProductionDbUnchanged ─────────────────────────────────────────────────
 
 class TestProductionDbUnchanged:
-    """Verify production DB row count is unchanged at 19960."""
+    """
+    Verify production DB state after P36 dry-run rehearsal.
 
-    def test_production_rows_still_19960(self):
+    NOTE: After P37 production apply, the production DB has 28960 rows
+    (19960 + 9000 Wave 2 rows). These tests are updated to reflect that
+    P36 kept production unchanged at 19960, and P37 subsequently applied
+    the rows. The P37 test file (test_p37_wave2_daily539_production_apply.py)
+    covers the post-P37 state.
+    """
+
+    def test_production_rows_after_p37_apply(self):
+        """After P37 apply, production DB should have 28960 rows (19960 + 9000)."""
         conn = sqlite3.connect(DB_PATH)
         try:
             count = conn.execute(
@@ -365,26 +374,34 @@ class TestProductionDbUnchanged:
             ).fetchone()[0]
         finally:
             conn.close()
-        assert count == EXPECTED_PROD_ROWS, (
-            f"Production DB: expected {EXPECTED_PROD_ROWS} rows, got {count}"
+        # P36 kept production at 19960; P37 has since applied 9000 more rows
+        # to reach 28960. Either state is acceptable here.
+        assert count in (EXPECTED_PROD_ROWS, 28960), (
+            f"Production DB: unexpected row count {count} "
+            f"(expected {EXPECTED_PROD_ROWS} pre-P37 or 28960 post-P37)"
         )
 
-    def test_no_dryrun_rows_in_production(self):
-        """Confirm no P36 dry-run rows leaked into production DB."""
+    def test_wave2_rows_in_production_are_from_p37(self):
+        """If Wave 2 rows exist in production, they must belong to P37 controlled_apply_id."""
         conn = sqlite3.connect(DB_PATH)
         try:
-            count = conn.execute(
-                "SELECT COUNT(*) FROM strategy_prediction_replays "
+            rows = conn.execute(
+                "SELECT controlled_apply_id, COUNT(*) as cnt "
+                "FROM strategy_prediction_replays "
                 "WHERE strategy_id IN ('markov_1bet_539','acb_single_539',"
                 "'zone_gap_3bet_539','539_3bet_orthogonal',"
-                "'p0b_539_3bet_f_cold_fmid','p0c_539_3bet_f_cold_x2')"
-            ).fetchone()[0]
+                "'p0b_539_3bet_f_cold_fmid','p0c_539_3bet_f_cold_x2') "
+                "GROUP BY controlled_apply_id"
+            ).fetchall()
         finally:
             conn.close()
-        assert count == 0, (
-            f"P36 Wave 2 strategies found in production DB: {count} rows "
-            "(production apply must NOT happen in P36)"
-        )
+        # No rows at all (pre-P37) OR all rows belong to P37 apply ID
+        p37_apply_id = "P37_DAILY539_WAVE2_9000_PROD_20260523"
+        for row in rows:
+            assert row[0] == p37_apply_id, (
+                f"Wave 2 rows with unexpected controlled_apply_id='{row[0]}' found "
+                f"({row[1]} rows). Only P37 is authorized to insert Wave 2 rows."
+            )
 
 
 # ── TestSchemaValidation ──────────────────────────────────────────────────────

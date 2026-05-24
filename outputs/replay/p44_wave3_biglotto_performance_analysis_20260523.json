@@ -1,0 +1,460 @@
+{
+  "p44_version": "20260523",
+  "analysis_date": "2026-05-24T12:24:29.437317Z",
+  "production_rows_verified": 37960,
+  "wave3_strategies_analyzed": 6,
+  "lottery_type": "BIG_LOTTO",
+  "baseline_hit_rate": 0.7347,
+  "baseline_formula": "6 * 6/49 = 0.7347 (BIG_LOTTO 6/49 expected avg hits per draw)",
+  "analysis_note": "Wave 3 BIG_LOTTO strategies use DRY_RUN rows (replay_status=PREDICTED, dry_run=0). Per L91, BIG_LOTTO 49C6 pool is near-random \u2014 all 7 signals exhausted with zero p<0.05 in prior research.",
+  "permutation_test_config": {
+    "method": "Monte Carlo null (Binomial draws)",
+    "n_perm": 2000,
+    "seed": 42,
+    "null_model": "hit_count ~ Binomial(6, 6/49)"
+  },
+  "strategies": {
+    "markov_single_biglotto": {
+      "strategy_id": "markov_single_biglotto",
+      "total_rows": 1500,
+      "windows": {
+        "150": {
+          "window": 150,
+          "n_rows": 150,
+          "avg_hit_count": 0.6867,
+          "baseline_hit_rate": 0.7347,
+          "edge": -0.048,
+          "edge_pct": -6.54,
+          "sharpe": -0.0671,
+          "t_stat": -0.8221,
+          "special_hit_rate": 0.0,
+          "hit_distribution": {
+            "0": 0.4467,
+            "1": 0.4333,
+            "2": 0.1067,
+            "3": 0.0133,
+            "4+": 0.0
+          },
+          "perm_p_value": 0.7825,
+          "perm_gate": "FAIL"
+        },
+        "500": {
+          "window": 500,
+          "n_rows": 500,
+          "avg_hit_count": 0.692,
+          "baseline_hit_rate": 0.7347,
+          "edge": -0.0427,
+          "edge_pct": -5.81,
+          "sharpe": -0.0582,
+          "t_stat": -1.3013,
+          "special_hit_rate": 0.0,
+          "hit_distribution": {
+            "0": 0.456,
+            "1": 0.41,
+            "2": 0.12,
+            "3": 0.014,
+            "4+": 0.0
+          },
+          "perm_p_value": 0.903,
+          "perm_gate": "FAIL"
+        },
+        "1500": {
+          "window": 1500,
+          "n_rows": 1500,
+          "avg_hit_count": 0.728,
+          "baseline_hit_rate": 0.7347,
+          "edge": -0.0067,
+          "edge_pct": -0.91,
+          "sharpe": -0.0089,
+          "t_stat": -0.3465,
+          "special_hit_rate": 0.0,
+          "hit_distribution": {
+            "0": 0.4333,
+            "1": 0.4227,
+            "2": 0.1287,
+            "3": 0.0133,
+            "4+": 0.002
+          },
+          "perm_p_value": 0.638,
+          "perm_gate": "FAIL"
+        }
+      },
+      "three_window_consistent": false,
+      "best_perm_p_value": 0.638,
+      "promotion_candidate": false,
+      "promotion_reason": "keep_dry_run",
+      "mcnemar_gate": "INCONCLUSIVE_NO_BASELINE_STRATEGY",
+      "note_l91": "BIG_LOTTO 49C6 signal boundary exhausted per L91 \u2014 near-random expected"
+    },
+    "markov_2bet_biglotto": {
+      "strategy_id": "markov_2bet_biglotto",
+      "total_rows": 1500,
+      "windows": {
+        "150": {
+          "window": 150,
+          "n_rows": 150,
+          "avg_hit_count": 0.6867,
+          "baseline_hit_rate": 0.7347,
+          "edge": -0.048,
+          "edge_pct": -6.54,
+          "sharpe": -0.0671,
+          "t_stat": -0.8221,
+          "special_hit_rate": 0.0,
+          "hit_distribution": {
+            "0": 0.4467,
+            "1": 0.4333,
+            "2": 0.1067,
+            "3": 0.0133,
+            "4+": 0.0
+          },
+          "perm_p_value": 0.7825,
+          "perm_gate": "FAIL"
+        },
+        "500": {
+          "window": 500,
+          "n_rows": 500,
+          "avg_hit_count": 0.692,
+          "baseline_hit_rate": 0.7347,
+          "edge": -0.0427,
+          "edge_pct": -5.81,
+          "sharpe": -0.0582,
+          "t_stat": -1.3013,
+          "special_hit_rate": 0.0,
+          "hit_distribution": {
+            "0": 0.456,
+            "1": 0.41,
+            "2": 0.12,
+            "3": 0.014,
+            "4+": 0.0
+          },
+          "perm_p_value": 0.903,
+          "perm_gate": "FAIL"
+        },
+        "1500": {
+          "window": 1500,
+          "n_rows": 1500,
+          "avg_hit_count": 0.728,
+          "baseline_hit_rate": 0.7347,
+          "edge": -0.0067,
+          "edge_pct": -0.91,
+          "sharpe": -0.0089,
+          "t_stat": -0.3465,
+          "special_hit_rate": 0.0,
+          "hit_distribution": {
+            "0": 0.4333,
+            "1": 0.4227,
+            "2": 0.1287,
+            "3": 0.0133,
+            "4+": 0.002
+          },
+          "perm_p_value": 0.638,
+          "perm_gate": "FAIL"
+        }
+      },
+      "three_window_consistent": false,
+      "best_perm_p_value": 0.638,
+      "promotion_candidate": false,
+      "promotion_reason": "keep_dry_run",
+      "mcnemar_gate": "INCONCLUSIVE_NO_BASELINE_STRATEGY",
+      "note_l91": "BIG_LOTTO 49C6 signal boundary exhausted per L91 \u2014 near-random expected"
+    },
+    "bet2_fourier_expansion_biglotto": {
+      "strategy_id": "bet2_fourier_expansion_biglotto",
+      "total_rows": 1500,
+      "windows": {
+        "150": {
+          "window": 150,
+          "n_rows": 150,
+          "avg_hit_count": 0.76,
+          "baseline_hit_rate": 0.7347,
+          "edge": 0.0253,
+          "edge_pct": 3.44,
+          "sharpe": 0.0313,
+          "t_stat": 0.3834,
+          "special_hit_rate": 0.0,
+          "hit_distribution": {
+            "0": 0.4333,
+            "1": 0.4133,
+            "2": 0.1133,
+            "3": 0.04,
+            "4+": 0.0
+          },
+          "perm_p_value": 0.364,
+          "perm_gate": "FAIL"
+        },
+        "500": {
+          "window": 500,
+          "n_rows": 500,
+          "avg_hit_count": 0.72,
+          "baseline_hit_rate": 0.7347,
+          "edge": -0.0147,
+          "edge_pct": -2.0,
+          "sharpe": -0.0189,
+          "t_stat": -0.4232,
+          "special_hit_rate": 0.0,
+          "hit_distribution": {
+            "0": 0.448,
+            "1": 0.414,
+            "2": 0.11,
+            "3": 0.026,
+            "4+": 0.002
+          },
+          "perm_p_value": 0.6855,
+          "perm_gate": "FAIL"
+        },
+        "1500": {
+          "window": 1500,
+          "n_rows": 1500,
+          "avg_hit_count": 0.724,
+          "baseline_hit_rate": 0.7347,
+          "edge": -0.0107,
+          "edge_pct": -1.46,
+          "sharpe": -0.0139,
+          "t_stat": -0.5382,
+          "special_hit_rate": 0.0,
+          "hit_distribution": {
+            "0": 0.4427,
+            "1": 0.4173,
+            "2": 0.116,
+            "3": 0.0213,
+            "4+": 0.0027
+          },
+          "perm_p_value": 0.709,
+          "perm_gate": "FAIL"
+        }
+      },
+      "three_window_consistent": false,
+      "best_perm_p_value": 0.364,
+      "promotion_candidate": false,
+      "promotion_reason": "keep_dry_run",
+      "mcnemar_gate": "INCONCLUSIVE_NO_BASELINE_STRATEGY",
+      "note_l91": "BIG_LOTTO 49C6 signal boundary exhausted per L91 \u2014 near-random expected"
+    },
+    "fourier30_markov30_biglotto": {
+      "strategy_id": "fourier30_markov30_biglotto",
+      "total_rows": 1500,
+      "windows": {
+        "150": {
+          "window": 150,
+          "n_rows": 150,
+          "avg_hit_count": 0.7333,
+          "baseline_hit_rate": 0.7347,
+          "edge": -0.0014,
+          "edge_pct": -0.19,
+          "sharpe": -0.0019,
+          "t_stat": -0.0234,
+          "special_hit_rate": 0.0,
+          "hit_distribution": {
+            "0": 0.4067,
+            "1": 0.4667,
+            "2": 0.1133,
+            "3": 0.0133,
+            "4+": 0.0
+          },
+          "perm_p_value": 0.5315,
+          "perm_gate": "FAIL"
+        },
+        "500": {
+          "window": 500,
+          "n_rows": 500,
+          "avg_hit_count": 0.73,
+          "baseline_hit_rate": 0.7347,
+          "edge": -0.0047,
+          "edge_pct": -0.64,
+          "sharpe": -0.0066,
+          "t_stat": -0.1475,
+          "special_hit_rate": 0.0,
+          "hit_distribution": {
+            "0": 0.41,
+            "1": 0.464,
+            "2": 0.112,
+            "3": 0.014,
+            "4+": 0.0
+          },
+          "perm_p_value": 0.5685,
+          "perm_gate": "FAIL"
+        },
+        "1500": {
+          "window": 1500,
+          "n_rows": 1500,
+          "avg_hit_count": 0.7213,
+          "baseline_hit_rate": 0.7347,
+          "edge": -0.0134,
+          "edge_pct": -1.82,
+          "sharpe": -0.018,
+          "t_stat": -0.6981,
+          "special_hit_rate": 0.0,
+          "hit_distribution": {
+            "0": 0.4347,
+            "1": 0.4253,
+            "2": 0.126,
+            "3": 0.012,
+            "4+": 0.002
+          },
+          "perm_p_value": 0.7455,
+          "perm_gate": "FAIL"
+        }
+      },
+      "three_window_consistent": false,
+      "best_perm_p_value": 0.5315,
+      "promotion_candidate": false,
+      "promotion_reason": "keep_dry_run",
+      "mcnemar_gate": "INCONCLUSIVE_NO_BASELINE_STRATEGY",
+      "note_l91": "BIG_LOTTO 49C6 signal boundary exhausted per L91 \u2014 near-random expected"
+    },
+    "cold_complement_biglotto": {
+      "strategy_id": "cold_complement_biglotto",
+      "total_rows": 1500,
+      "windows": {
+        "150": {
+          "window": 150,
+          "n_rows": 150,
+          "avg_hit_count": 0.7467,
+          "baseline_hit_rate": 0.7347,
+          "edge": 0.012,
+          "edge_pct": 1.63,
+          "sharpe": 0.0167,
+          "t_stat": 0.2048,
+          "special_hit_rate": 0.0,
+          "hit_distribution": {
+            "0": 0.4,
+            "1": 0.4667,
+            "2": 0.12,
+            "3": 0.0133,
+            "4+": 0.0
+          },
+          "perm_p_value": 0.444,
+          "perm_gate": "FAIL"
+        },
+        "500": {
+          "window": 500,
+          "n_rows": 500,
+          "avg_hit_count": 0.782,
+          "baseline_hit_rate": 0.7347,
+          "edge": 0.0473,
+          "edge_pct": 6.44,
+          "sharpe": 0.0611,
+          "t_stat": 1.366,
+          "special_hit_rate": 0.0,
+          "hit_distribution": {
+            "0": 0.41,
+            "1": 0.42,
+            "2": 0.148,
+            "3": 0.022,
+            "4+": 0.0
+          },
+          "perm_p_value": 0.104,
+          "perm_gate": "FAIL"
+        },
+        "1500": {
+          "window": 1500,
+          "n_rows": 1500,
+          "avg_hit_count": 0.7353,
+          "baseline_hit_rate": 0.7347,
+          "edge": 0.0006,
+          "edge_pct": 0.09,
+          "sharpe": 0.0009,
+          "t_stat": 0.0332,
+          "special_hit_rate": 0.0,
+          "hit_distribution": {
+            "0": 0.4293,
+            "1": 0.4213,
+            "2": 0.1347,
+            "3": 0.014,
+            "4+": 0.0007
+          },
+          "perm_p_value": 0.5065,
+          "perm_gate": "FAIL"
+        }
+      },
+      "three_window_consistent": true,
+      "best_perm_p_value": 0.104,
+      "promotion_candidate": false,
+      "promotion_reason": "monitor_longer",
+      "mcnemar_gate": "INCONCLUSIVE_NO_BASELINE_STRATEGY",
+      "note_l91": "BIG_LOTTO 49C6 signal boundary exhausted per L91 \u2014 near-random expected"
+    },
+    "coldpool15_biglotto": {
+      "strategy_id": "coldpool15_biglotto",
+      "total_rows": 1500,
+      "windows": {
+        "150": {
+          "window": 150,
+          "n_rows": 150,
+          "avg_hit_count": 0.7467,
+          "baseline_hit_rate": 0.7347,
+          "edge": 0.012,
+          "edge_pct": 1.63,
+          "sharpe": 0.0167,
+          "t_stat": 0.2048,
+          "special_hit_rate": 0.0,
+          "hit_distribution": {
+            "0": 0.4,
+            "1": 0.4667,
+            "2": 0.12,
+            "3": 0.0133,
+            "4+": 0.0
+          },
+          "perm_p_value": 0.444,
+          "perm_gate": "FAIL"
+        },
+        "500": {
+          "window": 500,
+          "n_rows": 500,
+          "avg_hit_count": 0.782,
+          "baseline_hit_rate": 0.7347,
+          "edge": 0.0473,
+          "edge_pct": 6.44,
+          "sharpe": 0.0611,
+          "t_stat": 1.366,
+          "special_hit_rate": 0.0,
+          "hit_distribution": {
+            "0": 0.41,
+            "1": 0.42,
+            "2": 0.148,
+            "3": 0.022,
+            "4+": 0.0
+          },
+          "perm_p_value": 0.104,
+          "perm_gate": "FAIL"
+        },
+        "1500": {
+          "window": 1500,
+          "n_rows": 1500,
+          "avg_hit_count": 0.7353,
+          "baseline_hit_rate": 0.7347,
+          "edge": 0.0006,
+          "edge_pct": 0.09,
+          "sharpe": 0.0009,
+          "t_stat": 0.0332,
+          "special_hit_rate": 0.0,
+          "hit_distribution": {
+            "0": 0.4293,
+            "1": 0.4213,
+            "2": 0.1347,
+            "3": 0.014,
+            "4+": 0.0007
+          },
+          "perm_p_value": 0.5065,
+          "perm_gate": "FAIL"
+        }
+      },
+      "three_window_consistent": true,
+      "best_perm_p_value": 0.104,
+      "promotion_candidate": false,
+      "promotion_reason": "monitor_longer",
+      "mcnemar_gate": "INCONCLUSIVE_NO_BASELINE_STRATEGY",
+      "note_l91": "BIG_LOTTO 49C6 signal boundary exhausted per L91 \u2014 near-random expected"
+    }
+  },
+  "promotion_candidates": [],
+  "keep_dry_run": [
+    "markov_single_biglotto",
+    "markov_2bet_biglotto",
+    "bet2_fourier_expansion_biglotto",
+    "fourier30_markov30_biglotto",
+    "cold_complement_biglotto",
+    "coldpool15_biglotto"
+  ],
+  "classification": "P44_WAVE3_BIGLOTTO_PERFORMANCE_ANALYSIS_MERGED_TO_MAIN"
+}

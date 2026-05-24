@@ -312,8 +312,12 @@ class TestProductionDBUnchanged:
             f"production_rows_after expected {EXPECTED_PRODUCTION_ROWS}, got {rows_after}"
         )
 
-    def test_18b_live_db_still_28960(self):
-        """Live production DB still has exactly 28960 rows."""
+    def test_18b_live_db_post_p43(self):
+        """After P43 production apply, live DB has 37960 rows (28960 + 9000 Wave 3).
+
+        P42 verified production was unchanged at 28960 during dry-run.
+        P43 subsequently applied 9000 rows, bringing total to 37960.
+        """
         conn = sqlite3.connect(str(DB_PATH))
         try:
             count = conn.execute(
@@ -321,12 +325,18 @@ class TestProductionDBUnchanged:
             ).fetchone()[0]
         finally:
             conn.close()
-        assert count == EXPECTED_PRODUCTION_ROWS, (
-            f"Live DB expected {EXPECTED_PRODUCTION_ROWS} rows, got {count}"
+        # Post-P43: 37960 rows
+        assert count == 37960, (
+            f"Live DB expected 37960 rows (post-P43), got {count}"
         )
 
-    def test_no_p42_dryrun_rows_in_prod_db(self):
-        """P42 dry-run rows must NOT appear in production DB."""
+    def test_wave3_rows_applied_by_p43(self):
+        """After P43 production apply, Wave 3 BIG_LOTTO rows exist in production DB.
+
+        P42 was dry-run only (rows NOT in production).
+        P43 authorized production apply inserted 9000 rows (6 × 1500).
+        This test verifies P43 completed successfully.
+        """
         conn = sqlite3.connect(str(DB_PATH))
         try:
             count = conn.execute(
@@ -339,9 +349,8 @@ class TestProductionDBUnchanged:
             ).fetchone()[0]
         finally:
             conn.close()
-        assert count == 0, (
-            f"Found {count} P42 Wave 3 strategy rows in production DB — "
-            "should be 0 (dry-run only)"
+        assert count == 9000, (
+            f"Expected 9000 Wave 3 BIG_LOTTO rows in production DB (post-P43), got {count}"
         )
 
 

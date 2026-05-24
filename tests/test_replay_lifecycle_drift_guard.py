@@ -53,6 +53,8 @@ ALLOWED_TRUTH_LEVELS = {
     "DAILY539_RETIRED_STRATEGY_BACKFILL_VERIFIED",
     # P37 Daily 539 Wave 2 DRY_RUN strategies production apply (2026-05-23)
     "DAILY539_WAVE2_STRATEGY_BACKFILL_VERIFIED",
+    # P43 BIG_LOTTO Wave 3 DRY_RUN strategies production apply (2026-05-24)
+    "BIGLOTTO_WAVE3_STRATEGY_BACKFILL_VERIFIED",
     "null",
 }
 
@@ -195,8 +197,10 @@ class TestDriftGuardScript:
         assert rc.get("p31b") == 7500, f"P31B count mismatch: {rc.get('p31b')} != 7500"
         # P37 applied 9000 DAILY_539 Wave 2 DRY_RUN rows (6 strategies × 1500)
         assert rc.get("p37") == 9000, f"P37 count mismatch: {rc.get('p37')} != 9000"
-        # New total = 460 legacy + 1500 P14D + 3000 P16 + 1500 P19B + 3000 P20 + 3000 P21B + 7500 P31B + 9000 P37
-        assert rc.get("total") == 28960, f"total count mismatch: {rc.get('total')} != 28960"
+        # P43 applied 9000 BIG_LOTTO Wave 3 DRY_RUN rows (6 strategies × 1500)
+        assert rc.get("p43") == 9000, f"P43 count mismatch: {rc.get('p43')} != 9000"
+        # New total = 460 legacy + 1500 P14D + 3000 P16 + 1500 P19B + 3000 P20 + 3000 P21B + 7500 P31B + 9000 P37 + 9000 P43
+        assert rc.get("total") == 37960, f"total count mismatch: {rc.get('total')} != 37960"
         # V1/V2/P2B/P2F/P3BC remain 0
         assert rc.get("v1") == 0, f"V1 count mismatch: {rc.get('v1')} != 0"
         assert rc.get("v2") == 0, f"V2 count mismatch: {rc.get('v2')} != 0"

@@ -1,0 +1,104 @@
+{
+  "phase": "P47_WAVE4_POWERLOTTO_DRY_RUN",
+  "run_id": "p47_wave4_powerlotto_dryrun_20260524",
+  "started_at": "2026-05-24T13:09:46.868041+00:00",
+  "finished_at": "2026-05-24T13:10:01.685374+00:00",
+  "temp_db_path": "/tmp/p47_temp_rehearsal.db",
+  "prod_rows_before": 37960,
+  "prod_rows_after": 37960,
+  "prod_rows_unchanged": true,
+  "total_dry_run_rows": 4500,
+  "expected_dry_run_rows": 4500,
+  "row_count_ok": true,
+  "schema_validation": {
+    "total_rows": 4500,
+    "errors": [],
+    "valid": true
+  },
+  "leakage_check": {
+    "violation_count": 0,
+    "violations": [],
+    "pass": true
+  },
+  "powerlotto_format_ok": true,
+  "special_format_ok": true,
+  "r1": {
+    "r1_inserted": 4500,
+    "r1_total_after": 4500,
+    "r1_expected": 4500,
+    "r1_ok": true
+  },
+  "r2": {
+    "r2_before": 4500,
+    "r2_duplicate_inserted": 0,
+    "r2_after": 4500,
+    "r2_idempotent": true
+  },
+  "r3": {
+    "r3_before": 4500,
+    "r3_after": 0,
+    "r3_rollback_ok": true
+  },
+  "per_strategy_counts": {
+    "pp3_freqort_4bet": 1500,
+    "midfreq_fourier_mk_3bet": 1500,
+    "midfreq_fourier_2bet": 1500
+  },
+  "hit_stats": {
+    "pp3_freqort_4bet": {
+      "predicted": 1500,
+      "errors": 0,
+      "total": 1500,
+      "hit_3plus": 81,
+      "hit_3plus_rate": 0.054,
+      "special_hits": 178,
+      "special_hit_rate": 0.1187,
+      "hit_breakdown": {
+        "0": 466,
+        "1": 648,
+        "2": 305,
+        "3": 79,
+        "4": 2,
+        "5": 0,
+        "6": 0
+      }
+    },
+    "midfreq_fourier_mk_3bet": {
+      "predicted": 1500,
+      "errors": 0,
+      "total": 1500,
+      "hit_3plus": 66,
+      "hit_3plus_rate": 0.044,
+      "special_hits": 178,
+      "special_hit_rate": 0.1187,
+      "hit_breakdown": {
+        "0": 439,
+        "1": 654,
+        "2": 341,
+        "3": 59,
+        "4": 7,
+        "5": 0,
+        "6": 0
+      }
+    },
+    "midfreq_fourier_2bet": {
+      "predicted": 1500,
+      "errors": 0,
+      "total": 1500,
+      "hit_3plus": 70,
+      "hit_3plus_rate": 0.0467,
+      "special_hits": 178,
+      "special_hit_rate": 0.1187,
+      "hit_breakdown": {
+        "0": 466,
+        "1": 681,
+        "2": 283,
+        "3": 68,
+        "4": 2,
+        "5": 0,
+        "6": 0
+      }
+    }
+  },
+  "all_rehearsals_pass": true
+}

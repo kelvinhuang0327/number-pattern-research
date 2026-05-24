@@ -1,25 +1,24 @@
-# CTO Analysis — Post-P39 Wave 2 DAILY_539 Pipeline Complete
+# CTO Analysis — Post-P44 BIG_LOTTO Wave 3 Complete
 
 ## 1. CTO Review Date
 
-2026-05-24 Asia/Taipei (P40 update after P39 — Wave 2 DAILY_539 pipeline complete)
+2026-05-24 Asia/Taipei (P45 update after P44 — Wave 3 BIG_LOTTO pipeline complete, maintenance mode)
 
 ## 2. Input Sources
 
-- [Confirmed] P35 output: `outputs/replay/p35_wave2_candidate_planning_20260523.json`
-- [Confirmed] P36 output: `outputs/replay/p36_wave2_daily539_dryrun_rehearsal_20260523.json`
-- [Confirmed] P37 output: `outputs/replay/p37_wave2_daily539_production_apply_20260523.json`
-- [Confirmed] P38 output: `outputs/replay/p38_post_p37_verification_registry_audit_20260523.json`
-- [Confirmed] P39 output: `outputs/replay/p39_replay_ui_smoke_closure_after_p38_20260523.json`
-- [Confirmed] P40 output: `outputs/replay/p40_roadmap_update_after_p39_20260523.json`
-- [Confirmed] Production DB: `lottery_api/data/lottery_v2.db` (28960 rows verified)
-- [Confirmed] Roadmap: `00-Plan/roadmap/roadmap.md` (updated in P40)
-- [Confirmed] git state during P40:
+- [Confirmed] P41 output: `outputs/replay/p41_wave3_biglotto_adapter_bootstrap_planning_20260524.json`
+- [Confirmed] P42 output: `outputs/replay/p42_wave3_biglotto_dryrun_rehearsal_20260524.json`
+- [Confirmed] P43 output: `outputs/replay/p43_wave3_biglotto_production_apply_20260523.json`
+- [Confirmed] P44 output: `outputs/replay/p44_wave3_biglotto_performance_analysis_20260523.json`
+- [Confirmed] P45 output: `outputs/replay/p45_roadmap_update_after_p44_20260524.json`
+- [Confirmed] Production DB: `lottery_api/data/lottery_v2.db` (37960 rows verified)
+- [Confirmed] Signal boundary research: `memory/lessons.md` L91
+- [Confirmed] git state during P45:
   - repo: `/Users/kelvin/Kelvin-WorkSpace/LotteryNew`
-  - branch: `p40-roadmap-update-after-p39`
-  - most recent relevant merges: `2558f00` P39, `9e343f7` P38, `3a8fb31` P37, `c4a8a4b` P36, `1084412` P35
-- [Confirmed] Pre-flight checks at P40 start:
-  - production rows: 28960
+  - branch: `p45-roadmap-update-after-p44`
+  - most recent relevant merges: `a2a7e19` P44, `72ad4e7` P43, `418c3de` P42, `87ffb2a` P41, `5c49a6a` P40
+- [Confirmed] Pre-flight checks at P45 start:
+  - production rows: 37960
   - drift guard: REPLAY_LIFECYCLE_DRIFT_GUARD_PASS
   - branch governance guard: BRANCH_GOVERNANCE_PASS
 
@@ -27,132 +26,126 @@
 
 | Finding | Classification | CTO Assessment |
 |---|---|---|
-| P35 Wave 2 candidate planning | [Aligned] | Complete and merged (PR #171). 19 remaining needs_promotion evaluated; 6 DAILY_539 selected. |
-| P36 Wave 2 dry-run + rehearsal | [Aligned] | Complete and merged (PR #172). 9000 dry-run rows; R1/R2/R3 rehearsal PASS; production rows remained 19960. |
-| P37 Wave 2 production apply | [Aligned] | Complete and merged (PR #173). `controlled_apply_id = P37_DAILY539_WAVE2_9000_PROD_20260523`; 19960 → 28960; lifecycle DRY_RUN. |
-| P38 Post-P37 verification + registry audit | [Aligned] | Complete and merged (PR #174). All 9000 rows verified; strategy_replay_runs ids 8-10 ACCEPTED operational updates. |
-| P39 UI smoke closure | [Aligned] | Complete and merged (PR #175; commit 2558f00). P38 deferred UI smoke RESOLVED; 0 console errors; 28960 rows confirmed. |
-| Wave 2 DAILY_539 pipeline governance pattern | [Aligned] | Planning → dry-run → apply → verify → UI smoke sequence followed exactly as in P31A/P31B/P32. |
-| Wave 3 BIG_LOTTO bootstrap | [Missing] | 11 deferred BIG_LOTTO strategies (6 LOW + 5 MEDIUM effort) have no adapter or plan. Now P0 for P41. |
-| Wave 2 DRY_RUN monitoring design | [Missing] | DRY_RUN → ONLINE promotion criteria not yet defined. Now P2 for P43. |
-| CEO Goal: 1500-period × all executable strategies | [In Progress] | 19 row-backed strategies (8 ONLINE + 5 RETIRED + 6 DRY_RUN); BIG_LOTTO Wave 3 is next expansion. |
+| P41 Wave 3 BIG_LOTTO bootstrap planning | [Aligned] | Complete and merged (PR #177). 6 candidates identified; adapter interface designed; production rows remained 28960. |
+| P42 Wave 3 BIG_LOTTO dry-run + rehearsal | [Aligned] | Complete and merged (PR #178). 9000 dry-run rows; R1/R2/R3 rehearsal PASS; production rows remained 28960. |
+| P43 Wave 3 BIG_LOTTO production apply | [Aligned] | Complete and merged (PR #179). `controlled_apply_id = P43_BIGLOTTO_WAVE3_9000_PROD_20260523`; 28960 → 37960; lifecycle DRY_RUN. |
+| P44 Wave 3 BIG_LOTTO performance analysis | [Aligned] | Complete and merged (PR #180; commit a2a7e19). Three-window + permutation tests; no promotion candidates; best p=0.104 FAIL. |
+| Wave 3 BIG_LOTTO governance pattern | [Aligned] | Planning → dry-run → apply → analyze sequence followed exactly as in P31A/P31B/P32/P36/P37/P38/P39. |
+| BIG_LOTTO maintenance mode | [Confirmed] | P44 confirms L91: BIG_LOTTO 49C6 near-random; all 7 signals exhausted; maintenance mode entered. |
+| POWER_LOTTO expansion | [Not started] | No adapter or planning done. Now P0 for P46. |
+| Wave 2 DRY_RUN monitoring design | [Deferred] | DRY_RUN → ONLINE promotion criteria not yet defined. Now P1 for P47. |
+| CEO Goal: 1500-period × all executable strategies | [In Progress] | 25 row-backed strategies (8 ONLINE + 5 RETIRED + 12 DRY_RUN); POWER_LOTTO is next expansion frontier. |
 
 ## 4. Completed Work Assessment
 
-### P35 Wave 2 Candidate Planning (complete and merged)
-- 19 remaining `needs_promotion` strategies from P30 evaluated.
-- 6 DAILY_539 strategies selected for Wave 2: `acb_single_539`, `539_3bet_orthogonal`, `markov_1bet_539`, `zone_gap_3bet_539`, `p0b_539_3bet_f_cold_fmid`, `p0c_539_3bet_f_cold_x2`.
-- BIG_LOTTO strategies deferred to Wave 3 (adapter bootstrap required).
-- READ-ONLY planning phase; no DB write; production rows remained 19960.
+### P41 Wave 3 BIG_LOTTO Adapter Bootstrap Planning (complete and merged)
+- 6 Wave 3 BIG_LOTTO candidates identified and ranked: `markov_single_biglotto`, `markov_2bet_biglotto`, `bet2_fourier_expansion_biglotto`, `fourier30_markov30_biglotto`, `cold_complement_biglotto`, `coldpool15_biglotto`.
+- BIG_LOTTO adapter interface designed following `p36_wave2_daily539_adapters.py` pattern.
+- Special number policy established: NOT_PREDICTED_WAVE3 (record actual for scoring only).
+- READ-ONLY planning phase; no DB write; production rows remained 28960.
 
-### P36 Wave 2 DAILY_539 Dry-Run + Temp Rehearsal (complete and merged)
+### P42 Wave 3 BIG_LOTTO Dry-Run + Temp Rehearsal (complete and merged)
 - 9000 dry-run candidate rows generated (6 strategies × 1500 rows each).
 - R1 (schema check), R2 (count verification), R3 (lifecycle/dry_run flag check): all PASS.
-- Temp DB rehearsal confirmed adapter correctness.
-- Production rows remained 19960 throughout P36.
+- Temp DB rehearsal confirmed adapter correctness for BIG_LOTTO 49C6 pool.
+- Production rows remained 28960 throughout P42.
 
-### P37 Wave 2 DAILY_539 Production Apply (complete and merged)
-- `controlled_apply_id = P37_DAILY539_WAVE2_9000_PROD_20260523`
-- `truth_level = DAILY539_WAVE2_STRATEGY_BACKFILL_VERIFIED`
-- 9000 rows inserted; production rows advanced from 19960 to 28960.
+### P43 Wave 3 BIG_LOTTO Production Apply (complete and merged)
+- `controlled_apply_id = P43_BIGLOTTO_WAVE3_9000_PROD_20260523`
+- `truth_level = BIGLOTTO_WAVE3_STRATEGY_BACKFILL_VERIFIED`
+- 9000 rows inserted; production rows advanced from 28960 to 37960.
 - All rows: `lifecycle=DRY_RUN`, `dry_run=0` (production-grade rows, not sandbox).
 - Duplicate detection passed; atomic transaction; drift guard PASS; governance guard PASS.
 
-### P38 Post-P37 Verification + Freshness Registry Audit (complete and merged)
-- All 9000 P37 rows verified: count check, lifecycle check, dry_run flag check, hit_count integrity, schema check — all PASS.
-- API verification: each of 6 strategies returns 1500 rows; pagination works; DAILY_539 filter works.
-- Freshness registry audit: `strategy_replay_runs` ids 8-10 reviewed and ACCEPTED:
-  - id 8: BIG_LOTTO cadence refresh — ACCEPTED operational update.
-  - id 9: POWER_LOTTO cadence refresh — ACCEPTED operational update.
-  - id 10: DAILY_539 Wave 2 run record — ACCEPTED Wave 2 apply record.
-- UI smoke deferred to P39 (backend API fully verified).
+### P44 Wave 3 BIG_LOTTO Performance Analysis (complete and merged)
+- Three-window analysis (150 / 500 / 1500 draws) on all 6 Wave 3 strategies.
+- Permutation tests: Monte Carlo null, n=2000, seed=42.
+- **No promotion candidates found.** Results by strategy:
 
-### P39 Replay UI Smoke Closure (complete and merged)
-- P38 deferred UI smoke: RESOLVED.
-- Frontend accessible at localhost:3000; 0 console errors.
-- All 6 Wave 2 strategies confirmed queryable via DAILY_539 filter.
-- `total_wave2_rows = 9000` confirmed via API cross-check.
-- Production rows confirmed 28960; drift guard PASS; governance guard PASS.
+| Strategy | 1500p Edge | 500p Edge | 150p Edge | Best p-value | Promotion |
+|---|---:|---:|---:|---|---|
+| `markov_single_biglotto` | -0.91% | -5.81% | -6.54% | 0.638 | BLOCKED |
+| `markov_2bet_biglotto` | -0.91% | -5.81% | -6.54% | 0.638 | BLOCKED |
+| `bet2_fourier_expansion_biglotto` | mixed | mixed | mixed | 0.364 | BLOCKED |
+| `fourier30_markov30_biglotto` | mixed | mixed | mixed | 0.531 | BLOCKED |
+| `cold_complement_biglotto` | mixed | mixed | mixed | 0.104 | BLOCKED |
+| `coldpool15_biglotto` | mixed | mixed | mixed | 0.104 | BLOCKED |
+
+- Gate requires p < 0.05 for all three windows. Best observed p = 0.104 — far above gate.
+- McNemar gate: INCONCLUSIVE (insufficient promotion candidates to compare).
+- L91 confirmed: BIG_LOTTO 49C6 pool is near-random. 7 signal classes (ACB, MidFreq, Markov, Fourier, Regime, P1_Neighbor, MicroFish) all failed in prior research. Wave 3 results are consistent with the random baseline.
 
 ## 5. Unfinished Work Assessment
 
-- [Missing] Wave 3 BIG_LOTTO adapter bootstrap: 6 LOW-effort strategies deferred (adapter bootstrap needed before dry-run).
-- [Missing] Wave 4 BIG_LOTTO: 5 MEDIUM-effort strategies deferred (follow Wave 3).
-- [Blocked] `ts3_markov_freq_5bet_biglotto`: listed as blocked in P35; resolve in P41 planning.
-- [Manual review] `cluster_pivot_biglotto`: negative edge flagged; needs human decision before inclusion.
-- [Missing] DRY_RUN → ONLINE promotion criteria: 6 Wave 2 strategies at DRY_RUN with no defined promotion path.
-- [Missing] Wave 2 DRY_RUN strategies not in strategy selector dropdown (controlled by `_REGISTRY`); accepted current behavior per P39.
-- [Deferred] Catalog freshness guard (P3): auto-insert DONE records improvement not started.
-- [Deferred] POWER_LOTTO expansion planning (P4/P45): not started.
-- [Deferred] Manual-review strategy resolution (P5/P46): 15 strategies in holding state.
-- [Deferred] Performance/pagination hardening (P6/P47): not tested at 28960+ row scale.
-- [Deferred] Artifact consolidation (P8/P49): P21B-P40 evidence not indexed.
+- [Maintenance mode] Wave 3 BIG_LOTTO: all 6 strategies remain DRY_RUN. Promotion blocked by p > 0.05 and L91.
+- [Deferred] Wave 2 DAILY_539: still DRY_RUN, awaiting 200+ draws for monitoring design (P47).
+- [Not started] POWER_LOTTO expansion: no adapter or planning done (P46 is next P0).
+- [Deferred] Freshness cadence guard: non-blocking improvement pending (P48).
+- [Manual review] `cluster_pivot_biglotto`: negative edge flagged; needs human decision before any inclusion.
+- [Blocked] `ts3_markov_freq_5bet_biglotto`: listed as blocked in P35; resolve in P49 manual review phase.
+- [Deferred] Replay performance/pagination hardening: not tested at 37960 row scale.
+- [Deferred] Artifact consolidation (P21B-P45 evidence not indexed).
 
 ## 6. P0 / P1 / P2 / P3+ Reprioritization
 
 | Priority | Task | Rationale |
 |---|---|---|
-| P0 | P41: Wave 3 BIG_LOTTO adapter bootstrap planning | Unblocks 11 deferred strategies; extends governance pattern to BIG_LOTTO |
-| P1 | P42: Wave 3 BIG_LOTTO dry-run + temp rehearsal | Follows P31A/P31B/P36 governance pattern; must precede any production apply |
-| P2 | P43: Wave 2 live monitoring design (DRY_RUN → ONLINE after 200+ draws) | Defines promotion criteria before Wave 2 strategies accumulate live evidence |
-| P3 | P44: Freshness cadence guard improvement | Reduces manual toil (ids 8-10 pattern in P38); non-blocking ops hygiene |
-| P4 | P45: POWER_LOTTO expansion planning | Extends coverage to 3rd game after BIG_LOTTO Wave 3 |
-| P5 | P46: Manual review resolution | Clears 15 blocked strategies; clarifies maximum coverage ceiling |
-| P6 | P47: Replay performance / pagination hardening | Lower urgency at 28960 rows; needed before 50K+ scale |
-| P7 | P48: Apply authorization governance hardening | Formalize multi-wave patterns; low urgency after P31-P37 success |
-| P8 | P49: Artifact consolidation | Index P21B-P40 evidence; ops hygiene |
-| P9 | Post-launch operations | Monitor future draw replay coverage and stale strategy states |
+| P0 | P46: POWER_LOTTO expansion planning | Next untapped game; 38C6+8 pool is smaller than BIG_LOTTO 49C6; higher signal detection probability |
+| P1 | P47: Wave 2 DAILY_539 live monitoring design | Define DRY_RUN→ONLINE criteria before Wave 2 data accumulates without a decision gate |
+| P2 | P48: Freshness cadence guard improvement | Prevent CI cadence failures; reduce manual toil each wave |
+| P3 | P49: Manual review resolution | Clear `cluster_pivot_biglotto`, `ts3_markov_freq_5bet_biglotto`, other deferred strategies |
+| P4+ | Replay perf, artifact consolidation, post-launch | Lower urgency at 37960 rows |
 
 ## 7. Critical Blockers
 
-### Blocker 1: Wave 3 BIG_LOTTO Adapter Bootstrap Missing (P0 — P41)
+### Blocker 1: POWER_LOTTO Expansion Not Started (P0 — P46)
 
-- **Impact scope:** BIG_LOTTO replay coverage expansion.
-- **Why blocker:** 6 LOW-effort BIG_LOTTO strategies identified in P35 have no adapter wrapper; cannot generate dry-run rows without bootstrap.
-- **Risk if ignored:** BIG_LOTTO replay coverage stalls at current 3 ONLINE strategies (P14D baseline).
-- **Priority:** P0 (P41)
-- **Acceptance:** Adapter bootstrap design complete; at least one strategy generates dry-run rows; no production DB write.
+- **Impact scope:** POWER_LOTTO replay coverage.
+- **Why blocker:** No POWER_LOTTO adapter wrapper exists; cannot generate dry-run rows without bootstrap.
+- **Risk if ignored:** Coverage stalls at 37960 rows; CEO goal (all executable strategies) not met.
+- **Priority:** P0 (P46)
+- **Acceptance:** Adapter bootstrap design complete; candidates catalogued with effort/risk estimate; no production DB write.
 
-### Blocker 2: Wave 3 BIG_LOTTO Dry-Run Not Done (P1 — P42)
+### Blocker 2: DRY_RUN → ONLINE Promotion Criteria Undefined (P1 — P47)
 
-- **Impact scope:** Data integrity for BIG_LOTTO Wave 3 apply.
-- **Why blocker:** The P31A/P36 rehearsal pattern must be applied to BIG_LOTTO before any production apply.
-- **Risk if ignored:** Unsafe production write without adapter readiness evidence.
-- **Priority:** P1 (P42)
-- **Acceptance:** Wave 3 BIG_LOTTO strategies generate dry-run rows; temp DB rehearsal passes; production rows remain 28960.
+- **Impact scope:** Wave 2 strategy lifecycle governance (12 DRY_RUN strategies: 6 DAILY_539 + 6 BIG_LOTTO).
+- **Why blocker:** 12 DRY_RUN strategies are live in production but have no quantitative promotion path. BIG_LOTTO is maintenance mode (no promotion expected); DAILY_539 needs promotion criteria before 200-draw evidence arrives.
+- **Risk if ignored:** Wave 2 DAILY_539 strategies may improve or degrade without a decision gate to act on evidence. Promotion pressure could lead to premature ONLINE promotion.
+- **Priority:** P1 (P47)
+- **Acceptance:** Promotion criteria defined separately for DAILY_539 (quantitative: edge + McNemar + 200 draws) and BIG_LOTTO (maintenance mode: blocked until trigger conditions).
 
-### Blocker 3: DRY_RUN → ONLINE Promotion Criteria Undefined (P2 — P43)
+### Blocker 3: BIG_LOTTO ONLINE Promotion (Maintenance Mode — Permanently Blocked Until Trigger)
 
-- **Impact scope:** Wave 2 strategy lifecycle governance.
-- **Why blocker:** 6 DRY_RUN strategies are live in production (9000 rows) but have no quantitative promotion path. Without criteria, strategies remain DRY_RUN indefinitely.
-- **Risk if ignored:** Wave 2 strategies may degrade or improve without a decision gate to act on evidence.
-- **Priority:** P2 (P43)
-- **Acceptance:** Promotion criteria defined: edge stability threshold over 200+ draws, McNemar gate, no adverse PSI signals; decision rubric documented.
+- **Impact scope:** BIG_LOTTO Wave 3 lifecycle governance.
+- **Why blocker:** P44 analysis: best p = 0.104 > 0.05 gate. L91 confirmed: 49C6 pool is near-random. No exploitable signal found in 7 signal classes over full research history.
+- **Risk if ignored:** Promoting statistically insignificant strategies would violate the validation standard (p < 0.05 + three-window all positive + McNemar gate).
+- **Priority:** Blocked indefinitely.
+- **Unblock conditions:** Rule change / draw anomaly / new signal class outside H001-H010.
 
 ## 8. Recommended System Optimization Directions
 
-1. Establish DRY_RUN monitoring dashboard before promoting any strategy to ONLINE. The 6 Wave 2 strategies need live draw evidence before any lifecycle change.
-2. Define clear promotion criteria: edge stability over 200 draws minimum + McNemar significance gate. Document this before Wave 2 data accumulates and pressure builds to promote prematurely.
-3. BIG_LOTTO adapter pattern needs standardization before Wave 3. The P31A/P36 DAILY_539 adapter pattern is proven; BIG_LOTTO 49C6 pool requires its own adapter interface.
-4. Freshness cadence guard should auto-insert DONE records rather than requiring manual fix (P38 pattern of ids 8-10 should become automatic).
-5. Strategy dropdown UX should eventually show DRY_RUN strategies with a visual badge distinguishing them from ONLINE strategies.
+1. POWER_LOTTO (38C6+8) has a smaller pool than BIG_LOTTO (49C6): 6-number pick from 38 + 1 special from 8. Smaller pool means each number appears more frequently per draw, potentially increasing signal detection probability. This is the highest-value next expansion.
+2. Wave 2 DAILY_539 monitoring dashboard needed before 200-draw threshold is reached. Define promotion criteria (edge stability, McNemar gate, PSI check) while there is still time to act on early evidence.
+3. Freshness cadence guard should auto-insert DONE records (prevent manual CI fix like ids 8-10 in P38).
+4. BIG_LOTTO maintenance mode: no new research until trigger conditions met. Resources should shift to POWER_LOTTO and DAILY_539 monitoring.
+5. Strategy dropdown UX should eventually show DRY_RUN strategies with status badge distinguishing DRY_RUN from ONLINE.
+6. Manual review of `cluster_pivot_biglotto` (negative edge) should happen before any BIG_LOTTO Wave 4 planning; including a negative-edge strategy would pollute replay data quality.
 
 ## 9. Roadmap Changes Applied
 
-- [Confirmed] Updated `00-Plan/roadmap/roadmap.md` header to reflect P40 review date (2026-05-24).
-- [Confirmed] Added CEO Goal line to roadmap header.
-- [Confirmed] Added P33-P39 to Phase Snapshot table with evidence and status.
-- [Confirmed] Updated production baseline: 19960 → 28960; added Wave 2 row coverage table.
-- [Confirmed] Added Replay Coverage Baseline section (pre-Wave-1, P31B, P37 milestones).
-- [Confirmed] Added DRY_RUN accepted behavior note.
-- [Confirmed] Added P37 Wave 2 DRY_RUN strategy table (6 strategies × 1500 rows = 9000).
-- [Confirmed] Updated catalog label summary: added `dry-run` row with count=6.
-- [Confirmed] Updated Roadmap Alignment Assessment: P33-P39 marked Aligned; new Missing items for Wave 3 and monitoring.
-- [Confirmed] Replaced P0-P10 table with updated P41-P49 priorities.
-- [Confirmed] Updated Critical Blockers to post-P39 state.
-- [Confirmed] Updated Optimization Directions to focus on P41/P42/P43.
-- [Confirmed] Updated Today's Focus to P41 Wave 3 BIG_LOTTO bootstrap.
-- [Confirmed] Updated final roadmap marker to `CTO_ROADMAP_AFTER_P35_P36_P37_P38_P39_P40_20260524`.
+- [Confirmed] Updated `00-Plan/roadmap/roadmap.md` header to reflect P45 review date (2026-05-24 after P44).
+- [Confirmed] Added P40-P44 to Phase Snapshot table with evidence, status, and PR numbers.
+- [Confirmed] Updated production baseline: 28960 → 37960; added Wave 3 row coverage table.
+- [Confirmed] Added P43 Wave 3 BIG_LOTTO strategy table (6 strategies × 1500 rows = 9000).
+- [Confirmed] Added BIG_LOTTO Status: MAINTENANCE MODE section.
+- [Confirmed] Updated catalog label summary: added `dry-run (BIG_LOTTO)` row with count=6.
+- [Confirmed] Updated replay-store distribution table to include all 12 DRY_RUN strategies.
+- [Confirmed] Updated Roadmap Alignment Assessment: P40-P44 marked Aligned; BIG_LOTTO maintenance mode confirmed.
+- [Confirmed] Replaced P0-P9 table with updated P46-P49 priorities.
+- [Confirmed] Updated Critical Blockers to post-P44 state (POWER_LOTTO as new P0).
+- [Confirmed] Updated Optimization Directions to focus on P46/P47/P48/P49.
+- [Confirmed] Updated Today's Focus to P46 POWER_LOTTO Expansion Planning.
+- [Confirmed] Updated final roadmap marker to `CTO_ROADMAP_AFTER_P41_P42_P43_P44_P45_20260524`.
 - [Confirmed] Did not create a new repo.
 - [Confirmed] Did not write production DB.
 - [Confirmed] Did not modify `00-Plan/roadmap/CEO-Decision.md`.
@@ -161,36 +154,38 @@
 
 ## 10. Risks / Unknowns
 
-- [Confirmed] Production DB row count is 28960 at time of P40 CTO review.
-- [Confirmed] Drift guard and branch governance guard both PASS at P40 start.
-- [Confirmed] All P35-P39 artifacts exist and are merged.
-- [Risk] DRY_RUN strategies may have degraded or improved edge by the time 200-draw monitoring evidence arrives. Promotion decision should not be rushed.
-- [Risk] BIG_LOTTO adapter bootstrap may reveal interface incompatibilities not present in DAILY_539 adapters (49C6 pool, 6-ball special semantics).
-- [Risk] `cluster_pivot_biglotto` has flagged negative edge; rushing into Wave 3 apply without manual review could add low-quality rows.
-- [Unknown] POWER_LOTTO adapter complexity relative to DAILY_539; may require more effort than estimated.
-- [Unknown] Whether 200-draw threshold is statistically sufficient for McNemar significance in DRY_RUN monitoring (depends on hit rate variance).
+- [Confirmed] Production DB row count is 37960 at time of P45 CTO review.
+- [Confirmed] Drift guard and branch governance guard both PASS at P45 start.
+- [Confirmed] All P41-P44 artifacts exist and are merged.
+- [Risk] DRY_RUN DAILY_539 strategies may have degraded or improved edge by the time 200-draw monitoring evidence arrives. Promotion decision should not be rushed.
+- [Risk] POWER_LOTTO adapter bootstrap may reveal interface complexity not present in DAILY_539 adapters (special number 1-8 scoring, different pool structure).
+- [Risk] `cluster_pivot_biglotto` has flagged negative edge; must not enter any apply wave without explicit human acceptance decision.
+- [Unknown] POWER_LOTTO signal strength — smaller pool (38C6+8) improves detection odds vs BIG_LOTTO (49C6), but no guarantees.
+- [Unknown] Whether 200-draw threshold is statistically sufficient for McNemar significance in DAILY_539 DRY_RUN monitoring (depends on hit rate variance in the 5/39 pool).
 - [Unknown] Whether 15 `manual_review` strategies will resolve to promotable or rejectable when human-reviewed.
-- [Inferred] `executable_no=12` should remain out of apply waves unless new evidence overturns P30 classification.
+- [Inferred] BIG_LOTTO maintenance mode should remain until at least one of: rule change / distribution anomaly detected by PSI / new signal class not in H001-H010 hypothesis list.
 
 ## 11. CTO Final Recommendation
 
-Wave 2 DAILY_539 pipeline is complete and production-safe. The governance pattern (planning → dry-run → apply → verify → UI smoke) has been validated end-to-end across P31-P39. Production rows stand at 28960 with 19 row-backed strategies (8 ONLINE + 5 RETIRED + 6 DRY_RUN).
+Wave 3 BIG_LOTTO pipeline (P41-P44) is complete and correctly classified as maintenance mode. P44 confirmed L91: no exploitable signal in BIG_LOTTO 49C6. All 6 Wave 3 strategies remain DRY_RUN with best p = 0.104, far above the p < 0.05 gate. Production rows stand at 37960 with 25 row-backed strategies (8 ONLINE + 5 RETIRED + 12 DRY_RUN).
 
-Next priority is Wave 3 BIG_LOTTO bootstrap (P41), followed by Wave 3 dry-run and rehearsal (P42). Concurrently, Wave 2 live monitoring design (P43) should define promotion criteria before DRY_RUN strategies accumulate sufficient live evidence for a decision.
+Next priority is POWER_LOTTO expansion (P46) — smaller 38C6+8 pool offers better signal detection probability than BIG_LOTTO. Concurrently, Wave 2 DAILY_539 live monitoring design (P47) should define promotion criteria before DRY_RUN strategies accumulate sufficient live evidence for a decision.
 
-Do NOT promote any DRY_RUN strategy to ONLINE without live monitoring evidence (200+ draws minimum) and McNemar gate. Do NOT production apply Wave 3 before completing the full P41 → P42 governance sequence.
+Do NOT promote any DRY_RUN BIG_LOTTO strategy to ONLINE. The maintenance mode gate is firm: p < 0.05 + three-window all positive + McNemar gate — none of which Wave 3 strategies meet.
+Do NOT run new BIG_LOTTO signal research without trigger conditions (rule change / draw anomaly / new signal class outside H001-H010).
+Do NOT production apply POWER_LOTTO rows without completing the full planning → dry-run → rehearsal → apply → analyze governance sequence.
 
 ## 12. CTO Summary In 10 Lines
 
-1. P35-P39 Wave 2 DAILY_539 pipeline is complete and production-safe. Production rows: 28960 (unchanged from P39).
-2. 6 strategies × 1500 rows = 9000 new DRY_RUN rows applied to production in P37.
-3. All CI, tests, drift guards, and branch governance passed throughout P35-P39.
-4. P38 registry ids 8-10 were accepted operational updates (cadence refresh records, not data fabrication).
-5. P39 closed the deferred P38 UI smoke: 0 console errors, all 6 Wave 2 strategies queryable.
-6. Wave 2 lifecycle remains DRY_RUN; not in dropdown but queryable via DAILY_539 filter — accepted current behavior.
-7. Next P0: Wave 3 BIG_LOTTO adapter bootstrap planning (P41).
-8. Next P1: Wave 3 BIG_LOTTO dry-run + temp rehearsal (P42).
-9. Next P2: Wave 2 live monitoring design for DRY_RUN → ONLINE promotion criteria (P43).
-10. CEO goal (1500-period × all executable strategies) remains the north star; BIG_LOTTO Wave 3 is the next expansion vector.
+1. P41-P44 Wave 3 BIG_LOTTO pipeline complete and merged. Production rows: 37960 (28960 → 37960).
+2. 6 BIG_LOTTO Wave 3 strategies × 1500 rows = 9000 production DRY_RUN rows (P43).
+3. P44 analysis: no promotion candidates. Best p = 0.104; gate requires p < 0.05 — all 6 FAIL.
+4. McNemar gate: INCONCLUSIVE. Three-window: negative/mixed for most strategies.
+5. L91 confirmed: BIG_LOTTO 49C6 near-random. All 7 signal classes (ACB/MidFreq/Markov/Fourier/Regime/P1/MicroFish) exhausted.
+6. BIG_LOTTO enters maintenance mode. No ONLINE promotion until rule change / anomaly / new signal class.
+7. Next P0: P46 POWER_LOTTO expansion planning (38C6+8 pool; smaller than BIG_LOTTO 49C6; better signal odds).
+8. Next P1: P47 Wave 2 DAILY_539 live monitoring design (define DRY_RUN → ONLINE criteria before 200-draw threshold).
+9. Next P2: P48 Freshness cadence guard improvement (auto-insert DONE records; prevent CI cadence failures).
+10. CEO goal: 1500-period replay × all executable strategies — POWER_LOTTO is next expansion frontier.
 
-Final Classification: P40_ROADMAP_UPDATE_AFTER_P39_MERGED_TO_MAIN
+Final Classification: P45_ROADMAP_UPDATE_AFTER_P44_MERGED_TO_MAIN

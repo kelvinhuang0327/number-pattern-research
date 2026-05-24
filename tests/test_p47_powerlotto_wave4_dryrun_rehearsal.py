@@ -43,6 +43,8 @@ P47_ADAPTER = PROJECT_ROOT / "lottery_api" / "models" / "p47_wave4_powerlotto_ad
 DB_PATH = PROJECT_ROOT / "lottery_api" / "data" / "lottery_v2.db"
 
 EXPECTED_PRODUCTION_ROWS = 37960
+# Updated after P48 POWER_LOTTO Wave 4 production apply (4500 rows, 2026-05-24)
+POST_P48_PRODUCTION_ROWS = 42460
 WAVE4_STRATEGY_IDS = frozenset({
     "pp3_freqort_4bet",
     "midfreq_fourier_mk_3bet",
@@ -274,10 +276,10 @@ def test_r3_rollback_pass(p47_data, p47_rehearsal_data):
 
 # ─── Production invariant tests ───────────────────────────────────────────────
 
-# 18. Production DB row count unchanged at 37960
+# 18. Production DB row count is 42460 after P48 apply (P47 dryrun did not mutate the DB)
 def test_production_rows_unchanged(db_row_count):
-    assert db_row_count == EXPECTED_PRODUCTION_ROWS, (
-        f"Expected {EXPECTED_PRODUCTION_ROWS} rows, got {db_row_count}"
+    assert db_row_count == POST_P48_PRODUCTION_ROWS, (
+        f"Expected {POST_P48_PRODUCTION_ROWS} rows, got {db_row_count}"
     )
 
 

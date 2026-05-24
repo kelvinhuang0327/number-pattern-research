@@ -79,6 +79,8 @@ BASELINE = {
     "p37_apply_id": "P37_DAILY539_WAVE2_9000_PROD_20260523",
     # P43: BIG_LOTTO Wave 3 DRY_RUN strategies (6 × 1500 = 9000 rows) (2026-05-24)
     "p43_apply_id": "P43_BIGLOTTO_WAVE3_9000_PROD_20260523",
+    # P48: POWER_LOTTO Wave 4 DRY_RUN strategies (3 × 1500 = 4500 rows) (2026-05-24)
+    "p48_apply_id": "P48_POWERLOTTO_WAVE4_4500_PROD_20260524",
     "v1_count": 0,
     "v2_count": 0,
     "legacy_count": 460,
@@ -93,7 +95,8 @@ BASELINE = {
     "p31b_count": 7500,
     "p37_count": 9000,
     "p43_count": 9000,
-    "total_count": 37960,
+    "p48_count": 4500,
+    "total_count": 42460,
 }
 
 # Known V3 tombstone strategy IDs — must have 0 rows in replay table
@@ -125,6 +128,8 @@ ALLOWED_TRUTH_LEVELS = {
     "DAILY539_WAVE2_STRATEGY_BACKFILL_VERIFIED",
     # P43 BIG_LOTTO Wave 3 DRY_RUN strategies production apply (2026-05-24)
     "BIGLOTTO_WAVE3_STRATEGY_BACKFILL_VERIFIED",
+    # P48 POWER_LOTTO Wave 4 DRY_RUN strategies production apply (2026-05-24)
+    "POWERLOTTO_WAVE4_STRATEGY_BACKFILL_VERIFIED",
 }
 
 
@@ -208,6 +213,11 @@ def run_checks(db_path: pathlib.Path) -> dict:
         (BASELINE["p43_apply_id"],),
     ).fetchone()[0]
 
+    p48_count = c.execute(
+        "SELECT COUNT(*) FROM strategy_prediction_replays WHERE controlled_apply_id=?",
+        (BASELINE["p48_apply_id"],),
+    ).fetchone()[0]
+
     legacy_count = c.execute(
         "SELECT COUNT(*) FROM strategy_prediction_replays WHERE controlled_apply_id IS NULL"
     ).fetchone()[0]
@@ -272,6 +282,10 @@ def run_checks(db_path: pathlib.Path) -> dict:
         violations.append(
             f"P43 row count mismatch: expected {BASELINE['p43_count']}, got {p43_count}"
         )
+    if p48_count != BASELINE["p48_count"]:
+        violations.append(
+            f"P48 row count mismatch: expected {BASELINE['p48_count']}, got {p48_count}"
+        )
     if total_count != BASELINE["total_count"]:
         violations.append(
             f"total row count mismatch: expected {BASELINE['total_count']}, got {total_count}"
@@ -292,6 +306,7 @@ def run_checks(db_path: pathlib.Path) -> dict:
         "p31b": p31b_count,
         "p37": p37_count,
         "p43": p43_count,
+        "p48": p48_count,
         "total": total_count,
     }
 
@@ -361,7 +376,7 @@ def run_checks(db_path: pathlib.Path) -> dict:
             # Already caught in row_counts section, no double-record
             pass
 
-    # Unexpected apply IDs (not V1, V2, P2B, P2F, P3BC, P14D, P16, P19B, P20, P21B, P31B, P37, P43, or NULL) are violations
+    # Unexpected apply IDs (not V1, V2, P2B, P2F, P3BC, P14D, P16, P19B, P20, P21B, P31B, P37, P43, P48, or NULL) are violations
     known_apply_ids = {
         BASELINE["v1_apply_id"], BASELINE["v2_apply_id"],
         BASELINE["p2b_apply_id"], BASELINE["p2f_apply_id"],
@@ -369,7 +384,7 @@ def run_checks(db_path: pathlib.Path) -> dict:
         BASELINE["p16_apply_id"], BASELINE["p19b_apply_id"],
         BASELINE["p20_apply_id"], BASELINE["p21b_apply_id"],
         BASELINE["p31b_apply_id"], BASELINE["p37_apply_id"],
-        BASELINE["p43_apply_id"],
+        BASELINE["p43_apply_id"], BASELINE["p48_apply_id"],
         "null", None,
     }
     for aid_key, cnt in controlled_apply_id_counts.items():

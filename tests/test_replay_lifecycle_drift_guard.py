@@ -59,6 +59,8 @@ ALLOWED_TRUTH_LEVELS = {
     "POWERLOTTO_WAVE4_STRATEGY_BACKFILL_VERIFIED",
     # P59 POWER_LOTTO Wave 5 controlled production apply (2026-05-25)
     "POWER_LOTTO_WAVE5_CONTROLLED_APPLY_VERIFIED",
+    # P66 POWER_LOTTO Wave 6 controlled production apply (2026-05-25)
+    "POWER_LOTTO_WAVE6_CONTROLLED_APPLY_VERIFIED",
     "null",
 }
 
@@ -176,12 +178,13 @@ class TestDriftGuardScript:
         # enum integrity (no unexpected values), not backfill completeness.
 
     def test_db_counts_match_baseline(self, tmp_path):
-        """DB row counts must match the P19B post-apply baseline: legacy=460, p14d=1500, p16=3000, p19b=1500, total=6460.
+        """DB row counts must match the P66 post-apply baseline: legacy=460, p14d=1500, p16=3000, p19b=1500, total=46960.
 
         Updated 2026-05-20 (P19B): Added 1500 fourier_rhythm_3bet POWER_LOTTO rows.
         P14D ts3_regime_3bet (BIG_LOTTO): 1500 rows.
         P16 biglotto_triple_strike + biglotto_deviation_2bet: 3000 rows.
         P19B fourier_rhythm_3bet (POWER_LOTTO): 1500 rows.
+        P66 (2026-05-25): Added 1500 cold_complement_2bet + 1500 zonal_entropy_2bet = 3000 rows.
         """
         _, result = _run_drift_guard(tmp_path)
         rc = result.get("row_counts", {})
@@ -207,8 +210,11 @@ class TestDriftGuardScript:
         assert rc.get("p48") == 4500, f"P48 count mismatch: {rc.get('p48')} != 4500"
         # P59 applied 1500 POWER_LOTTO Wave 5 rows (fourier30_markov30_2bet, 2026-05-25)
         assert rc.get("p59") == 1500, f"P59 count mismatch: {rc.get('p59')} != 1500"
-        # New total = 460 + 1500 + 3000 + 1500 + 3000 + 3000 + 7500 + 9000 + 9000 + 4500 + 1500
-        assert rc.get("total") == 43960, f"total count mismatch: {rc.get('total')} != 43960"
+        # P66 applied 3000 POWER_LOTTO Wave 6 rows (cold_complement_2bet + zonal_entropy_2bet, 2026-05-25)
+        assert rc.get("p66_cold") == 1500, f"P66-cold count mismatch: {rc.get('p66_cold')} != 1500"
+        assert rc.get("p66_zonal") == 1500, f"P66-zonal count mismatch: {rc.get('p66_zonal')} != 1500"
+        # New total = 460 + 1500 + 3000 + 1500 + 3000 + 3000 + 7500 + 9000 + 9000 + 4500 + 1500 + 3000
+        assert rc.get("total") == 46960, f"total count mismatch: {rc.get('total')} != 46960"
         # V1/V2/P2B/P2F/P3BC remain 0
         assert rc.get("v1") == 0, f"V1 count mismatch: {rc.get('v1')} != 0"
         assert rc.get("v2") == 0, f"V2 count mismatch: {rc.get('v2')} != 0"

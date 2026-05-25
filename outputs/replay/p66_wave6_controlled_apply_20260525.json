@@ -1,0 +1,179 @@
+{
+  "schema_version": "1.0",
+  "task_id": "P66",
+  "run_id": "P66_POWERLOTTO_WAVE6_20260525093850",
+  "classification": "P66_WAVE6_CONTROLLED_APPLY_COMPLETED",
+  "phase": "P66",
+  "lottery_type": "POWER_LOTTO",
+  "overall_ok": true,
+  "started_at": "2026-05-25T09:38:50.076709+00:00",
+  "finished_at": "2026-05-25T09:39:10.838130+00:00",
+  "p65_ref": {
+    "commit": "b2ae277",
+    "classification": "P65_WAVE6_CONTROLLED_APPLY_PROPOSAL_READY_WITH_CAUTION"
+  },
+  "backup": {
+    "ok": true,
+    "backup_path": "/Users/kelvin/Kelvin-WorkSpace/LotteryNew/backups/lottery_v2_pre_p66_wave6_20260525_093850.db",
+    "backup_rows": 43960,
+    "expected_rows": 43960,
+    "rollback_cmd": "cp /Users/kelvin/Kelvin-WorkSpace/LotteryNew/backups/lottery_v2_pre_p66_wave6_20260525_093850.db /Users/kelvin/Kelvin-WorkSpace/LotteryNew/lottery_api/data/lottery_v2.db"
+  },
+  "pre_flight": {
+    "production_rows": 43960,
+    "production_rows_ok": true,
+    "cold_complement_existing": 0,
+    "cold_complement_clean": true,
+    "zonal_entropy_existing": 0,
+    "zonal_entropy_clean": true,
+    "lag_reversion_rows": 0,
+    "lag_reversion_absent": true,
+    "caid_cold_existing": 0,
+    "caid_cold_clean": true,
+    "caid_zonal_existing": 0,
+    "caid_zonal_clean": true,
+    "wave6_rows_existing": 0,
+    "wave6_clean": true,
+    "p59_rows": 1500,
+    "p59_rows_ok": true,
+    "duplicate_check_pass": true
+  },
+  "production_rows_before": 43960,
+  "production_rows_after": 46960,
+  "strategies_applied": {
+    "cold_complement_2bet": {
+      "controlled_apply_id": "P66_POWERLOTTO_WAVE6_COLD_COMPLEMENT_1500_PROD_20260525",
+      "rows_inserted": 1500,
+      "schema_validation": {
+        "valid": true,
+        "error_count": 0,
+        "errors": []
+      },
+      "leakage_check": {
+        "violation_count": 0,
+        "pass": true,
+        "violations": []
+      },
+      "dup_check_pre": {
+        "by_strategy": 0,
+        "by_caid": 0,
+        "pass": true
+      },
+      "insert_result": {
+        "inserted": 1500,
+        "skipped": 0,
+        "errors": [],
+        "insert_ok": true
+      },
+      "hit_stats": {
+        "strategy_id": "cold_complement_2bet",
+        "predicted": 1500,
+        "hit_3plus": 55,
+        "hit_3plus_rate_pct": 3.6667,
+        "hit_count_distribution": {
+          "0": 478,
+          "1": 693,
+          "2": 274,
+          "3": 51,
+          "4": 4
+        },
+        "special_hits": 171,
+        "special_hit_rate": 0.114,
+        "theoretical_m3_baseline_pct": 3.8698,
+        "z_test": {
+          "z": -0.408,
+          "p_value": 0.6583
+        }
+      }
+    },
+    "zonal_entropy_2bet": {
+      "controlled_apply_id": "P66_POWERLOTTO_WAVE6_ZONAL_ENTROPY_1500_PROD_20260525",
+      "rows_inserted": 1500,
+      "schema_validation": {
+        "valid": true,
+        "error_count": 0,
+        "errors": []
+      },
+      "leakage_check": {
+        "violation_count": 0,
+        "pass": true,
+        "violations": []
+      },
+      "dup_check_pre": {
+        "by_strategy": 0,
+        "by_caid": 0,
+        "pass": true
+      },
+      "insert_result": {
+        "inserted": 1500,
+        "skipped": 0,
+        "errors": [],
+        "insert_ok": true
+      },
+      "hit_stats": {
+        "strategy_id": "zonal_entropy_2bet",
+        "predicted": 1500,
+        "hit_3plus": 55,
+        "hit_3plus_rate_pct": 3.6667,
+        "hit_count_distribution": {
+          "0": 482,
+          "1": 671,
+          "2": 292,
+          "3": 54,
+          "4": 1
+        },
+        "special_hits": 171,
+        "special_hit_rate": 0.114,
+        "theoretical_m3_baseline_pct": 3.8698,
+        "z_test": {
+          "z": -0.408,
+          "p_value": 0.6583
+        }
+      }
+    }
+  },
+  "excluded_strategy": {
+    "strategy_id": "lag_reversion_2bet",
+    "reason": "P64b GATE_FAIL \u2014 w150=0.67%, w500=2.00%, w1500=3.73%",
+    "applied": false
+  },
+  "post_apply_verification": {
+    "total_rows": 46960,
+    "total_ok": true,
+    "cold_rows": 1500,
+    "cold_rows_ok": true,
+    "zonal_rows": 1500,
+    "zonal_rows_ok": true,
+    "lag_reversion_rows": 0,
+    "lag_reversion_absent": true,
+    "cold_caid_rows": 1500,
+    "cold_caid_ok": true,
+    "zonal_caid_rows": 1500,
+    "zonal_caid_ok": true,
+    "p59_rows": 1500,
+    "p59_rows_preserved": true,
+    "online_cold": 0,
+    "online_zonal": 0,
+    "online_promotion_ok": true,
+    "dry_run_zero_ok": true,
+    "semantic_errors": [],
+    "semantic_ok": true,
+    "p66_total_rows": 3000,
+    "p66_total_ok": true
+  },
+  "governance": {
+    "production_db_write": true,
+    "lifecycle_promotion": false,
+    "champion_replacement": false,
+    "registry_mutation": false,
+    "online_promotion": false,
+    "wave5_champion_unchanged": "fourier30_markov30_2bet",
+    "coverage_expansion_only": true,
+    "performance_improvement_claim": false
+  },
+  "rollback": {
+    "rollback_sql": "DELETE FROM strategy_prediction_replays WHERE controlled_apply_id IN ('P66_POWERLOTTO_WAVE6_COLD_COMPLEMENT_1500_PROD_20260525', 'P66_POWERLOTTO_WAVE6_ZONAL_ENTROPY_1500_PROD_20260525');",
+    "restore_backup_cmd": "cp /Users/kelvin/Kelvin-WorkSpace/LotteryNew/backups/lottery_v2_pre_p66_wave6_20260525_093850.db /Users/kelvin/Kelvin-WorkSpace/LotteryNew/lottery_api/data/lottery_v2.db",
+    "verify_sql": "SELECT COUNT(*) FROM strategy_prediction_replays;  -- expected 43960 after rollback"
+  }
+}

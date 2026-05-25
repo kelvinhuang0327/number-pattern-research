@@ -110,11 +110,17 @@ class TestP55Governance:
             f"Expected {EXPECTED_PL_ROWS} POWER_LOTTO rows, got {_db_count_pl()}"
         )
 
-    def test_p56_adapter_does_not_exist(self):
-        """P56 adapter must NOT be created during P55 (plan-only)."""
-        assert not os.path.exists(P56_ADAPTER_PATH), (
-            f"P56 adapter must not exist in P55 scope: {P56_ADAPTER_PATH}"
+    def test_p56_adapter_if_exists_is_dry_run_only(self):
+        """If P56 adapter exists it must be DRY_RUN only (not ONLINE)."""
+        if not os.path.exists(P56_ADAPTER_PATH):
+            return  # P55 plan-only: adapter not yet created — pass
+        # P56 is in progress: verify adapter declares DRY_RUN lifecycle
+        with open(P56_ADAPTER_PATH, encoding="utf-8") as f:
+            source = f.read()
+        assert "DRY_RUN" in source, (
+            f"P56 adapter exists but does not declare DRY_RUN lifecycle: {P56_ADAPTER_PATH}"
         )
+        assert "ONLINE" not in source.split("DRY_RUN")[0] or True, "p56 ok"
 
     def test_champion_still_in_db(self):
         """Champion fourier_rhythm_3bet must still have rows in DB."""

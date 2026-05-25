@@ -1,8 +1,8 @@
-# CTO Analysis — After P53 POWER_LOTTO WATCHLIST Staging (P54 Update)
+# CTO Analysis — After P59 POWER_LOTTO Wave 5 Production Apply (P60 Update)
 
 ## 1. CTO Review Date
 
-2026-05-25 Asia/Taipei (P54 update after P53 — POWER_LOTTO midfreq_fourier_mk_3bet WATCHLIST complete)
+2026-05-25 Asia/Taipei (P60 update after P59 — POWER_LOTTO Wave 5 fourier30_markov30_2bet production apply complete)
 
 ## 2. Input Sources
 
@@ -12,16 +12,23 @@
 - [Confirmed] P51 output: `docs/replay/p51_powerlotto_wave4_rolling_window_mcnemar_gate_20260525.md`; commit `0415cc8`; 250/250 PASS
 - [Confirmed] P52 output: `docs/replay/p52_powerlotto_midfreq_fourier_mk_3bet_promotion_readiness_20260525.md`; commit `1b32e6a`; 250/250 PASS
 - [Confirmed] P53 output: `docs/replay/p53_powerlotto_midfreq_fourier_mk_3bet_watchlist_waiver_20260525.md`; commit `5992b27`; 307/307 PASS
-- [Confirmed] P54 output: `docs/replay/p54_replay_roadmap_update_after_p53_watchlist_20260525.md` (this update)
-- [Confirmed] git state during CTO P54 review:
+- [Confirmed] P54 output: `docs/replay/p54_replay_roadmap_update_after_p53_watchlist_20260525.md`; commit `e6ca756` (docs-only)
+- [Confirmed] P55 output: `docs/replay/p55_powerlotto_wave5_candidate_planning_20260525.md`; commit `776c173`; plan-only
+- [Confirmed] P56 output: `docs/replay/p56_powerlotto_wave5_adapter_bootstrap_dryrun_20260525.md`; commit `c3f0325`; dry-run, no production DB write
+- [Confirmed] P57 output: `docs/replay/p57_powerlotto_wave5_controlled_rehearsal_readiness_20260525.md`; commit `aea8ff7`; read-only
+- [Confirmed] P58 output: `outputs/replay/p58_powerlotto_wave5_controlled_apply_proposal_20260525.json`; commit `4b6a0c4`; proposal-only (Mode A)
+- [Confirmed] P59 output: `outputs/replay/p59_powerlotto_wave5_controlled_apply_20260525.json`; commit `b4afa65`; 295/295 PASS; 1500 rows inserted
+- [Confirmed] P60 output: `docs/replay/p60_post_p59_remote_sync_and_roadmap_update_20260525.md` (this update)
+- [Confirmed] git state during CTO P60 review:
   - repo: `/Users/kelvin/Kelvin-WorkSpace/LotteryNew`
-  - branch: `p54-replay-roadmap-update-after-p53`
-  - HEAD: `5992b27 P53: POWER_LOTTO midfreq_fourier_mk_3bet WATCHLIST waiver staging`
-  - main: includes P53 merge (fast-forward)
-- [Confirmed] production DB row count: **42460**
-- [Confirmed] Pre-flight checks during P54:
+  - branch: `main`
+  - HEAD: `b4afa65 P59: POWER_LOTTO Wave 5 controlled production apply COMPLETED`
+  - main: includes P59 merge (fast-forward `4b6a0c4`→`b4afa65`)
+- [Confirmed] production DB row count: **43960** (+1500 from P59)
+- [Confirmed] Pre-flight checks during P60:
   - drift guard: REPLAY_LIFECYCLE_DRIFT_GUARD_PASS
-  - branch governance guard: BRANCH_GOVERNANCE_PASS (main, then p54 branch)
+  - branch governance guard: BRANCH_GOVERNANCE_PASS (main, 43960)
+- [Confirmed] Remote push: blocked by branch protection (GH006: `replay-default-validation` required)
 
 ## 3. Roadmap Alignment Assessment
 
@@ -31,11 +38,15 @@
 | P50 performance analysis | [Confirmed] Complete | Analysis-only; three strategies classified; no DB write. |
 | P51 rolling-window + McNemar gate | [Confirmed] Complete | `midfreq_fourier_mk_3bet` is P51 PROMOTION_CANDIDATE (6/7 gates); perm p=0.0003. |
 | P52 promotion readiness | [Confirmed] Complete | G4 McNemar: b=42, c=50, champion-favored → G4_REQUIRES_WAIVER. Waiver required. |
-| P53 WATCHLIST waiver staging | [Confirmed] Complete | G4 waiver granted. Docs-only WATCHLIST. Champion active. Rows unchanged. |
-| P53 supplementary McNemar G5a | [Confirmed] New finding | hit_count >= 2: b=184, c=157, CANDIDATE-FAVORED, p=0.159 — direction reversal from G4. |
-| ONLINE promotion | [Confirmed] NOT performed | No lifecycle mutation through P53. DRY_RUN remains. |
+| P53 WATCHLIST waiver staging | [Confirmed] Complete | G4 waiver granted; docs-only WATCHLIST; champion active; rows unchanged. |
+| P55 Wave 5 candidate planning | [Confirmed] Complete | Three candidates selected: `fourier30_markov30_2bet` (primary), `cold_complement_2bet`, `zonal_entropy_2bet` (WATCHLIST_REHEARSAL_ONLY). |
+| P56 Wave 5 adapter bootstrap + dry-run | [Confirmed] Complete | Adapters bootstrapped; dry-run rows generated; production rows unchanged at 42460. |
+| P57 Wave 5 controlled rehearsal readiness | [Confirmed] Complete | Rehearsal readiness confirmed; no production DB write; rows unchanged at 42460. |
+| P58 Wave 5 controlled apply proposal | [Confirmed] Complete | Proposal-only (Mode A); `fourier30_markov30_2bet` selected; WATCHLIST exclusions confirmed. |
+| P59 Wave 5 controlled production apply | [Confirmed] Complete | 1500 rows inserted; rows 42460→43960; M3+ hit rate 4.07% vs 3.87% baseline; 295/295 PASS. |
+| ONLINE promotion | [Confirmed] NOT performed | No lifecycle mutation through P59. DRY_RUN remains for all Wave 5 strategies. |
 | Champion replacement | [Confirmed] NOT performed | `fourier_rhythm_3bet` remains active production champion. |
-| Wave 5 planning | [Ready] Not yet started | P0–P3 cleared; Wave 5 candidate planning is next unlocked work. |
+| Wave 6 planning | [Not started] | Next coverage expansion; Wave 5 results now available as reference. |
 
 ## 4. Completed Work Assessment
 
@@ -64,25 +75,55 @@
 - [Confirmed] Decision: ONLINE promotion not justified without waiver
 - [Confirmed] Recommendation: P53 WATCHLIST if waiver granted
 
-### P53 — WATCHLIST Waiver Staging
-- [Confirmed] Commit: `5992b27`; 307/307 PASS
-- [Confirmed] G4 waiver received and documented
-- [Confirmed] Supplementary McNemar (G5a) at hit_count >= 2: b=184, c=157, p=0.159, CANDIDATE-FAVORED
-- [Confirmed] Hit profile: candidate better at 0-miss + 2-hit draws; champion better at 3-hit draws
-- [Confirmed] Special hit: candidate 11.87%, champion 0.0% (not comparable — champion likely null predicted_special)
-- [Confirmed] WATCHLIST staging: docs-only governance declaration; zero DB rows written
-- [Confirmed] 500-draw OOS holdout plan created with interim gates at 150/300/500 draws
-- [Confirmed] Forbidden staging scan: 10/10 PASS
-- [Confirmed] No ONLINE promotion, no champion replacement, no production row write
+### P54 — Roadmap / CTO Update After P53
+- [Confirmed] Commit: `e6ca756`
+- [Confirmed] Docs-only; no DB write; rows unchanged at 42460
+
+### P55 — Wave 5 POWER_LOTTO Candidate Planning
+- [Confirmed] Commit: `776c173`
+- [Confirmed] Three candidates ranked: `fourier30_markov30_2bet` (primary apply candidate), `cold_complement_2bet`, `zonal_entropy_2bet` (WATCHLIST_REHEARSAL_ONLY)
+- [Confirmed] Plan-only; no adapter wiring; no DB write
+
+### P56 — Wave 5 POWER_LOTTO Adapter Bootstrap + Dry-Run Rehearsal
+- [Confirmed] Commit: `c3f0325`
+- [Confirmed] Adapters bootstrapped for all three candidates
+- [Confirmed] Dry-run rows generated and validated
+- [Confirmed] Production rows unchanged: 42460
+
+### P57 — Wave 5 POWER_LOTTO Controlled Rehearsal Readiness
+- [Confirmed] Commit: `aea8ff7`
+- [Confirmed] Rehearsal readiness confirmed; R1/R2/R3 PASS
+- [Confirmed] Production rows unchanged: 42460; no production DB write
+
+### P58 — Wave 5 POWER_LOTTO Controlled Apply Proposal
+- [Confirmed] Commit: `4b6a0c4`
+- [Confirmed] Mode A — PROPOSAL_ONLY; no production DB write
+- [Confirmed] `fourier30_markov30_2bet` selected for controlled apply
+- [Confirmed] `cold_complement_2bet` and `zonal_entropy_2bet` excluded: WATCHLIST_REHEARSAL_ONLY
+- [Confirmed] Controlled Apply ID: `P58_POWERLOTTO_WAVE5_FOURIER30_MARKOV30_1500_PROD_20260525`
+
+### P59 — Wave 5 POWER_LOTTO Controlled Production Apply
+- [Confirmed] Commit: `b4afa65`; 295/295 PASS
+- [Confirmed] Classification: `P59_POWERLOTTO_WAVE5_CONTROLLED_APPLY_COMPLETED`
+- [Confirmed] Strategy: `fourier30_markov30_2bet` (fourier30_markov30, POWER_LOTTO)
+- [Confirmed] Controlled Apply ID: `P58_POWERLOTTO_WAVE5_FOURIER30_MARKOV30_1500_PROD_20260525`
+- [Confirmed] Inserted: 1500 rows; production rows 42460 → 43960
+- [Confirmed] M3+ hit rate: 4.07% (baseline: 3.87%)
+- [Confirmed] No ONLINE promotion; no champion replacement; no registry mutation
+- [Confirmed] POWER_LOTTO semantics: `hit_count` = first-zone only; `predicted_numbers` ⊆ [1,38]; `predicted_special` ⊆ [1,8]
+- [Confirmed] Drift guard PASS; branch governance PASS; staging area CLEAN
 
 ## 5. Unfinished Work Assessment
 
 - [Active] `midfreq_fourier_mk_3bet` WATCHLIST OOS monitoring pending future draws from 115000041
+- [Active] `cold_complement_2bet` WATCHLIST_REHEARSAL_ONLY — Wave 5 dry-run exists; production apply pending future authorization
+- [Active] `zonal_entropy_2bet` WATCHLIST_REHEARSAL_ONLY — Wave 5 dry-run exists; production apply pending future authorization
 - [Deferred] P11 Replay UI browser visual evidence (explicitly deferred from P49)
 - [Deferred] P12 Worktree-wide housekeeping (dirty files: .gitignore, pid, fuse_hidden*, etc.)
-- [Deferred] Wave 5 candidate planning (ready to start as P3/P55-A)
+- [Deferred] Wave 6 candidate planning (ready to start as P61-D)
 - [Deferred] DRY_RUN → ONLINE promotion criteria formalization
 - [Deferred] Freshness cadence guard and catalog freshness guard
+- [Blocked] Remote push of main to origin — branch protection requires `replay-default-validation` CI check; requires PR flow
 
 ## 6. P1–P10 Priority Status
 
@@ -90,14 +131,14 @@
 |---|---|---|
 | ~~P0~~ | P49HYG artifact closure | [Confirmed] Complete |
 | ~~P1~~ | P50–P53 POWER_LOTTO Wave 4 analysis + WATCHLIST | [Confirmed] Complete |
+| ~~P3~~ | Wave 5 candidate planning + apply (P55–P59) | [Confirmed] Complete — 43960 rows |
 | **P2** | `midfreq_fourier_mk_3bet` WATCHLIST OOS monitoring | [Active] 500-draw plan; first gate at +150 draws |
-| **P3** | Wave 5 candidate planning | [Ready to start] |
-| **P4** | P11 Browser visual evidence closure | [Deferred] |
-| **P5** | DRY_RUN → ONLINE promotion criteria | [Deferred] |
-| **P6** | Freshness cadence guard | [Deferred] |
-| **P7** | Catalog freshness / inventory guard | [Deferred] |
-| **P8** | P12 Worktree-wide housekeeping | [Deferred] |
-| **P9** | Evidence consolidation | [Deferred] |
+| **P4** | P61-A Post-P59 API/DB verification | [Ready to start] |
+| **P5** | P11 Browser visual evidence closure | [Deferred] |
+| **P6** | DRY_RUN → ONLINE promotion criteria | [Deferred] |
+| **P7** | Freshness cadence guard | [Deferred] |
+| **P8** | Catalog freshness / inventory guard | [Deferred] |
+| **P9** | P12 Worktree-wide housekeeping | [Deferred] |
 | **P10** | Post-launch operations | [Deferred] |
 
 ## 7. Critical Blockers
@@ -112,14 +153,18 @@
 - **Impact scope:** Promotion governance.
 - **Why blocker:** G4 McNemar direction is champion-favored (c=50 > b=42 on hit_count >= 3). Waiver authorizes WATCHLIST only, not ONLINE.
 - **Risk if ignored:** Replacing champion on an event (hit_count >= 3) where champion wins discordant pairs more often.
-- **Gate conditions:** 300+ additional OOS draws + McNemar hit_count >= 3 direction parity (b >= c) + McNemar hit_count >= 2 p < 0.05 + explicit P55+ authorization.
+- **Gate conditions:** 300+ additional OOS draws + McNemar hit_count >= 3 direction parity (b >= c) + McNemar hit_count >= 2 p < 0.05 + explicit P61+ authorization.
 - **Priority:** P2 (monitoring; no immediate action required)
 
-### Blocker 4: Wave 5 Coverage Gap [READY TO UNLOCK]
-- **Impact scope:** Coverage gap of ~46,500 rows.
-- **Why matters:** 28/59 strategy groups are row-backed; full 1500-period coverage requires Wave 5+.
-- **Risk if ignored:** Replay remains incomplete for majority of tracked strategies.
-- **Resolution:** Wave 5 candidate planning (P3/P55-A) can start now.
+### Blocker 4: ~~Wave 5 Coverage Gap~~ [RESOLVED]
+- **Resolution:** P55–P59 complete; `fourier30_markov30_2bet` row-backed (1500 rows); production rows 43960.
+- **Remaining:** `cold_complement_2bet` and `zonal_entropy_2bet` remain WATCHLIST_REHEARSAL_ONLY.
+
+### Blocker 5: Remote Push [ACTIVE — Non-critical]
+- **Impact scope:** Remote sync.
+- **Why blocked:** GitHub branch protection requires `replay-default-validation` CI check; direct push to main rejected (GH006).
+- **Resolution:** Create a PR from a local branch, allow CI to run, then merge to main via PR.
+- **Priority:** P4 (non-blocking for local governance work)
 
 ## 8. Recommended Optimization Directions
 
@@ -129,55 +174,61 @@
 - **What to do:** No action required now. Re-evaluate at 150-draw gate (~draw 115000191).
 - **Priority:** P2 (monitoring)
 
-### 2. Wave 5 Candidate Planning (P3 — Ready)
-- **Why:** Coverage gap is large; P50–P53 results are now complete.
-- **System maturity gain:** Expands replay coverage beyond POWER_LOTTO Wave 4.
-- **What to do:** Plan-only; select next 3-6 executable strategies from 31 remaining `needs_promotion` group; rank by: signal strength, pool compatibility, replay adapter feasibility.
-- **Priority:** P3
-
-### 3. P11 Browser Visual Evidence Closure (P4 — Deferred)
-- **Why:** API is verified; UI visual rendering for POWER_LOTTO special fields not confirmed.
-- **What to do:** Browser smoke with screenshot evidence; no DB write.
+### 2. P61-A Post-P59 API/DB Verification (P4 — Ready)
+- **Why:** P59 inserted 1500 rows; API verification confirms replay rows are served correctly via `/api/replay/history` and `/api/replay/summary`.
+- **System maturity gain:** End-to-end confirmation that Wave 5 rows are queryable.
+- **What to do:** Read-only API calls; confirm POWER_LOTTO semantics; no DB write.
 - **Priority:** P4
 
-### 4. P12 Worktree-Wide Housekeeping (P8 — Deferred)
+### 3. P11 Browser Visual Evidence Closure (P5 — Deferred)
+- **Why:** API is verified; UI visual rendering for POWER_LOTTO Wave 5 special fields not confirmed.
+- **What to do:** Browser smoke with screenshot evidence; no DB write.
+- **Priority:** P5
+
+### 4. P12 Worktree-Wide Housekeeping (P9 — Deferred)
 - **Why:** Pre-existing dirty files (.gitignore, pid, fuse_hidden*, backups, runtime) clutter git status.
 - **What to do:** Clean or explicitly acknowledge; no production DB changes.
-- **Priority:** P8
+- **Priority:** P9
 
-## 9. Roadmap Changes Applied in P54
+## 9. Roadmap Changes Applied in P60
 
 - [Confirmed] Updated `00-Plan/roadmap/roadmap.md`:
-  - Added P49HYG, P50, P51, P52, P53, P54 rows to Current Phase Snapshot table
-  - Updated Wave 4 strategy status table with P53 classifications
-  - Added WATCHLIST OOS holdout plan summary
-  - Updated Alignment Assessment to mark P49–P53 resolved
-  - Updated Priorities to advance completed phases
-  - Replaced old Critical Blockers table with resolved/active status
-  - Updated Optimization Directions to reflect current state
-  - Updated Today's Focus to reflect P54 completion and P55 options
-  - Updated final roadmap marker to `CTO_ROADMAP_AFTER_P53_POWERLOTTO_WATCHLIST_20260525`
+  - Added P55, P56, P57, P58, P59, P60 rows to Current Phase Snapshot table
+  - Updated production rows to 43960 (+1500 from P59)
+  - Added P59 Wave 5 to coverage table (`fourier30_markov30_2bet`, 1500 rows)
+  - Updated alignment assessment: Wave 5 planning confirmed complete
+  - Updated priorities: P3 Wave 5 planning marked complete; P4 updated to P61-A
+  - Added remote push blocker note (GH006: `replay-default-validation`)
+  - Updated Today's Focus to P60 completion with P61 options
+  - Updated final roadmap marker to `CTO_ROADMAP_AFTER_P59_POWERLOTTO_WAVE5_APPLY_20260525`
 - [Confirmed] Updated `00-Plan/roadmap/CTO-Analysis.md` (this file):
-  - Full CTO review updated to P54 date
-  - Input sources updated to P48–P54
-  - All assessments updated to reflect P49HYG–P53 completions
-- [Confirmed] Optionally created `docs/replay/p54_replay_roadmap_update_after_p53_watchlist_20260525.md`
-- [Confirmed] Optionally created `outputs/replay/p54_replay_roadmap_update_after_p53_watchlist_20260525.json`
-- [Confirmed] Optionally created `tests/test_p54_replay_roadmap_update.py`
+  - Full CTO review updated to P60 date
+  - Input sources updated to P48–P60
+  - All assessments updated to reflect P55–P59 completions
+  - Added completed work sections for P54–P59
+  - Updated priorities: P3 complete, P4 → P61-A
+  - Updated blockers: Blocker 4 resolved; Blocker 5 (remote push) added
+  - Updated optimization directions: Wave 5 complete; P61-A next
+- [Confirmed] Created `docs/replay/p60_post_p59_remote_sync_and_roadmap_update_20260525.md`
+- [Confirmed] Created `outputs/replay/p60_post_p59_remote_sync_and_roadmap_update_20260525.json`
+- [Confirmed] Created `tests/test_p60_post_p59_roadmap_update.py`
 - [Confirmed] Did NOT modify `00-Plan/roadmap/CEO-Decision.md`
 - [Confirmed] Did NOT modify `00-Plan/roadmap/active_task.md`
 - [Confirmed] Did NOT write production DB
 - [Confirmed] Did NOT promote any lifecycle
 - [Confirmed] Did NOT replace champion strategy
+- [Confirmed] Did NOT force push
 
 ## 10. Risks / Unknowns
 
-- [Confirmed] Production DB row count: 42460
+- [Confirmed] Production DB row count: 43960
 - [Confirmed] Champion `fourier_rhythm_3bet` active; not replaced
-- [Confirmed] `midfreq_fourier_mk_3bet` WATCHLIST via docs-only; DRY_RUN lifecycle unchanged in DB
-- [Risk] G4 direction weakness (c > b at hit_count >= 3) persists; candidate must demonstrate improvement before ONLINE promotion
-- [Risk] ~46,500 rows remain to full coverage; Wave 5 scope will be large
+- [Confirmed] `fourier30_markov30_2bet` DRY_RUN lifecycle unchanged in DB (no ONLINE promotion)
+- [Confirmed] `cold_complement_2bet` and `zonal_entropy_2bet`: WATCHLIST_REHEARSAL_ONLY; dry-run rows exist; not production-applied
+- [Risk] G4 direction weakness (c > b at hit_count >= 3) for `midfreq_fourier_mk_3bet` persists; candidate must demonstrate improvement before ONLINE promotion
+- [Risk] ~45,000 rows remain to full coverage; Wave 6+ scope will be large
 - [Risk] Pre-existing worktree debt (dirty files) is not yet cleaned; P12 remains deferred
+- [Risk] Remote push of main to origin blocked by CI requirement; 9 local commits not yet synced to origin
 - [Unknown] Whether WATCHLIST candidate's G4 direction will improve at 150-draw gate
 - [Inferred] `pp3_freqort_4bet` and `midfreq_fourier_2bet` may improve with 500 additional draws; worth re-evaluating at Wave 5 planning stage
 

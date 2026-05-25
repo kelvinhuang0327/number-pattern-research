@@ -1,6 +1,6 @@
 # Lottery Replay Roadmap
 
-**Last Updated:** 2026-05-25 Asia/Taipei (P54 update after P53 — POWER_LOTTO midfreq_fourier_mk_3bet WATCHLIST staging complete)
+**Last Updated:** 2026-05-25 Asia/Taipei (P60 update after P59 — POWER_LOTTO Wave 5 fourier30_markov30_2bet production apply complete)
 **Owner:** CTO agent
 **Primary Goal:** Strategy Historical Replay must become production-usable: the operator can select lottery type, strategy, date range, and 100/500/1000/1500-period presets, then inspect per-draw prediction-vs-actual comparisons in the existing historical prediction-list style. All system-developed strategies must be visible with an honest state: row-backed, artifact-only, retired, rejected-registered, observation, no-data, reconstructible, manual-review, unsupported, or dry-run. The core delivery is not catalog visibility alone and not dry-run artifacts alone: it is a governed backfill/replay engine with 1500-period prediction-vs-actual rows for all executable strategies, without fake rows or unguarded production writes.
 **Repo Policy:** Use `/Users/kelvin/Kelvin-WorkSpace/LotteryNew` only. Do not create a new repo.
@@ -25,7 +25,13 @@
 | P51 POWER_LOTTO Wave 4 rolling-window + McNemar gate | [Confirmed] Complete and merged | `0415cc8`; `docs/replay/p51_powerlotto_wave4_rolling_window_mcnemar_gate_20260525.md`; 250/250 PASS | `midfreq_fourier_mk_3bet` classified P52_PROMOTION_CANDIDATE (6/7 gates PASS); `pp3_freqort_4bet` and `midfreq_fourier_2bet` INCONCLUSIVE. |
 | P52 POWER_LOTTO promotion readiness decision | [Confirmed] Complete and merged | `1b32e6a`; `docs/replay/p52_powerlotto_midfreq_fourier_mk_3bet_promotion_readiness_20260525.md`; 250/250 PASS | G4 McNemar b=42, c=50, champion-favored → `G4_REQUIRES_WAIVER`; ONLINE promotion not justified without waiver. |
 | P53 POWER_LOTTO WATCHLIST waiver staging | [Confirmed] Complete and merged | `5992b27`; `docs/replay/p53_powerlotto_midfreq_fourier_mk_3bet_watchlist_waiver_20260525.md`; 307/307 PASS | G4 waiver granted; `midfreq_fourier_mk_3bet` staged as WATCHLIST via docs-only; champion `fourier_rhythm_3bet` remains active; rows unchanged at 42460. |
-| P54 Roadmap / CTO update after P53 | [In Progress] This task | `docs/replay/p54_replay_roadmap_update_after_p53_watchlist_20260525.md` | Roadmap and CTO docs updated to reflect P49HYG–P53 chain completion. |
+| P54 Roadmap / CTO update after P53 | [Confirmed] Complete and merged | `e6ca756`; `docs/replay/p54_replay_roadmap_update_after_p53_watchlist_20260525.md` | Roadmap and CTO docs updated to reflect P49HYG–P53 chain completion. |
+| P55 Wave 5 POWER_LOTTO candidate planning | [Confirmed] Complete and merged | `776c173`; `docs/replay/p55_powerlotto_wave5_candidate_planning_20260525.md` | Three Wave 5 candidates identified: `fourier30_markov30_2bet`, `cold_complement_2bet`, `zonal_entropy_2bet`; plan-only, no DB write. |
+| P56 Wave 5 POWER_LOTTO adapter bootstrap + dry-run rehearsal | [Confirmed] Complete and merged | `c3f0325`; `docs/replay/p56_powerlotto_wave5_adapter_bootstrap_dryrun_20260525.md` | Adapters bootstrapped; dry-run rows generated; production rows unchanged at 42460. |
+| P57 Wave 5 POWER_LOTTO controlled rehearsal readiness | [Confirmed] Complete and merged | `aea8ff7`; `docs/replay/p57_powerlotto_wave5_controlled_rehearsal_readiness_20260525.md` | Rehearsal readiness confirmed; no production DB write; rows unchanged at 42460. |
+| P58 Wave 5 POWER_LOTTO controlled apply proposal | [Confirmed] Complete and merged | `4b6a0c4`; `outputs/replay/p58_powerlotto_wave5_controlled_apply_proposal_20260525.json` | Proposal-only (Mode A); `fourier30_markov30_2bet` selected for apply; `cold_complement_2bet` and `zonal_entropy_2bet` excluded as WATCHLIST_REHEARSAL_ONLY; no DB write. |
+| P59 Wave 5 POWER_LOTTO controlled production apply | [Confirmed] Complete and merged | `b4afa65`; `outputs/replay/p59_powerlotto_wave5_controlled_apply_20260525.json`; 295/295 PASS | 1500 rows inserted (`fourier30_markov30_2bet`); production rows 42460 → 43960; M3+ hit rate 4.07% vs baseline 3.87%; no ONLINE promotion; no champion replacement. |
+| P60 Post-P59 remote sync / evidence consolidation / roadmap update | [In Progress] This task | `docs/replay/p60_post_p59_remote_sync_and_roadmap_update_20260525.md` | Remote push blocked by branch protection (GH006); roadmap updated to reflect P55–P59 chain; no DB write. |
 
 ---
 
@@ -35,13 +41,16 @@ Verified during CTO review on 2026-05-25.
 
 | Metric | Value |
 |---|---:|
-| Production replay rows | 42460 |
+| Production replay rows | 43960 |
 | Legacy rows | 460 |
 | P48 controlled apply rows | 4500 |
 | P48 controlled apply ID | `P48_POWERLOTTO_WAVE4_4500_PROD_20260524` |
+| P59 controlled apply rows | 1500 |
+| P59 controlled apply ID | `P58_POWERLOTTO_WAVE5_FOURIER30_MARKOV30_1500_PROD_20260525` |
 | POWER_LOTTO Wave 4 strategies applied | 3 |
-| Strategy groups with production rows | 28 / 59 |
-| Approximate remaining rows to 1500-period full executable coverage | ~46500 |
+| POWER_LOTTO Wave 5 strategies applied | 1 |
+| Strategy groups with production rows | 29 / 59 |
+| Approximate remaining rows to 1500-period full executable coverage | ~45000 |
 
 Production replay coverage groups:
 
@@ -52,6 +61,7 @@ Production replay coverage groups:
 | P37 Wave 2 DAILY_539 DRY_RUN | 6 | 9000 | [Confirmed] Production row-backed, not ONLINE |
 | P43 Wave 3 BIG_LOTTO DRY_RUN | 6 | 9000 | [Confirmed] Production row-backed, not ONLINE |
 | P48 Wave 4 POWER_LOTTO DRY_RUN | 3 | 4500 | [Confirmed] Production row-backed, not ONLINE |
+| P59 Wave 5 POWER_LOTTO DRY_RUN | 1 | 1500 | [Confirmed] Production row-backed, not ONLINE |
 
 P48 POWER_LOTTO Wave 4 production rows and P50–P53 classification:
 
@@ -97,7 +107,7 @@ POWER_LOTTO semantics that must remain stable:
 | P52 promotion readiness | [Confirmed] Complete | G4 direction champion-favored; `G4_REQUIRES_WAIVER`; waiver required for WATCHLIST. |
 | P53 WATCHLIST staging | [Confirmed] Complete | G4 waiver granted; docs-only WATCHLIST declaration; champion unchanged; 307/307 PASS. |
 | Lifecycle ONLINE promotion | [Deferred] | ONLINE promotion for `midfreq_fourier_mk_3bet` requires 300+ draws + explicit P55+ authorization. |
-| Wave 5 planning | [Deferred] | Wave 5 planning ready to begin after P54 roadmap update. |
+| Wave 5 planning (P55–P59) | [Confirmed] Complete and merged | P55 candidate planning → P56 dry-run → P57 rehearsal → P58 proposal → P59 apply; `fourier30_markov30_2bet` row-backed; WATCHLIST: `cold_complement_2bet`, `zonal_entropy_2bet`. |
 | Date-range default half-year | [Missing] | Still a UX gap; deferred to P3. |
 
 ---
@@ -109,7 +119,7 @@ POWER_LOTTO semantics that must remain stable:
 | **P0** | P49HYG artifact / git hygiene closure | Resolve untracked P49 docs/json/tests | [Confirmed] **Complete** — `79ab784`, PR #185 | ✅ Done. |
 | **P1** | P50–P53 POWER_LOTTO Wave 4 analysis + WATCHLIST staging | Analysis, promotion gate, and WATCHLIST governance | [Confirmed] **Complete** — commits `0415cc8`, `1b32e6a`, `5992b27` | ✅ Done. `midfreq_fourier_mk_3bet` = WATCHLIST. Others = INCONCLUSIVE. Rows = 42460. |
 | **P2** | `midfreq_fourier_mk_3bet` WATCHLIST OOS monitoring | Monitor 150/300/500 draw gates; re-evaluate G4 direction | [Active] 500-draw plan created in P53 | Interim gate at 150 additional draws from 115000041. Pass/fail criteria in `p53_*.md`. |
-| **P3** | Wave 5 candidate planning | Rank next executable strategies; plan adapters | [Ready to start] P50–P53 results available | Plan-only; no adapter wiring or DB writes before Wave 5 dry-run. |
+| **P3** | ~~Wave 5 candidate planning~~ | P55–P59 complete | [Confirmed] **Complete** — P55–P59 merged; `fourier30_markov30_2bet` row-backed (43960 rows) | ✅ Done. |
 | **P4** | P11 Browser visual evidence closure | Confirm Replay UI displays P48 POWER_LOTTO strategies and special fields | [Deferred] Explicitly deferred from P49 | Browser smoke/screenshot or explicit CTO waiver; no DB write. |
 | **P5** | DRY_RUN -> ONLINE promotion criteria | Formalize cross-lottery promotion gate | [Deferred] | Statistical criteria and governance; no automatic lifecycle mutation. |
 | **P6** | Freshness cadence guard | Keep replay rows current after new draws | [Deferred] | Read-only or gated cadence report for missing latest rows. |
@@ -194,33 +204,36 @@ Items to downgrade, merge, pause, or retire:
 
 ## 7. Today's Focus
 
-**P54 OPTION A complete.** Roadmap updated to reflect P49HYG–P53 chain completion.
+**P60 complete.** Roadmap updated to reflect P55–P59 Wave 5 chain completion.
 
-### Immediate State (post-P54)
-- P49HYG–P53 all merged to main. ✅
-- Production rows: **42460** (unchanged). ✅
+### Immediate State (post-P60)
+- P55–P59 all merged to main. ✅
+- Production rows: **43960** (+1500 from P59). ✅
+- `fourier30_markov30_2bet`: **row-backed** (DRY_RUN, 1500 rows, no ONLINE promotion). ✅
+- `cold_complement_2bet`: **WATCHLIST_REHEARSAL_ONLY** (not applied). ✅
+- `zonal_entropy_2bet`: **WATCHLIST_REHEARSAL_ONLY** (not applied). ✅
 - `midfreq_fourier_mk_3bet`: **WATCHLIST** (docs-only, G4 waiver, champion remains active). ✅
-- `pp3_freqort_4bet` and `midfreq_fourier_2bet`: **INCONCLUSIVE** (need 500+ additional draws). ✅
+- Remote push blocked by branch protection (GH006: `replay-default-validation` required). ⚠️
 
 ### Governance Boundaries (Permanent)
-- Do not re-run P48 production apply.
+- Do not re-run P48 or P59 production apply.
 - Do not write new replay rows without explicit production apply authorization.
-- Do not promote `midfreq_fourier_mk_3bet` to ONLINE until 300+ additional draws + explicit P55+ authorization.
+- Do not promote `fourier30_markov30_2bet`, `midfreq_fourier_mk_3bet`, or any Wave 5 strategy to ONLINE without explicit authorization.
 - Do not replace champion `fourier_rhythm_3bet`.
 - Do not mutate registry.
-- Do not wire Wave 5 adapters before Wave 5 dry-run authorization.
+- Do not force push main without explicit authorization.
 
-### Recommended Next Session (P55 options — operator chooses one)
+### Recommended Next Session (P61 options — operator chooses one)
 
 | Option | Task | Scope |
 |---|---|---|
-| P55-A | Wave 5 candidate planning | Plan-only; select next 3-6 executable strategies; no DB write |
-| P55-B | P11 Browser visual evidence closure | Replay UI smoke for POWER_LOTTO special fields |
-| P55-C | P12 Worktree-wide housekeeping | Clean pre-existing dirty files; no production DB change |
-| P55-D | WATCHLIST monitoring after 150 draws | Re-evaluate `midfreq_fourier_mk_3bet` at interim gate 1 |
+| P61-A | Post-P59 API/DB verification | Verify `/api/replay/history` returns P59 rows; confirm POWER_LOTTO semantics; read-only |
+| P61-B | P11 Browser visual evidence closure | Replay UI smoke for POWER_LOTTO Wave 5 strategies |
+| P61-C | P12 Worktree-wide housekeeping | Clean pre-existing dirty files; no production DB change |
+| P61-D | Wave 6 candidate planning | Plan-only; next strategies after Wave 5 |
 
 Final roadmap marker:
 
 ```text
-CTO_ROADMAP_AFTER_P53_POWERLOTTO_WATCHLIST_20260525
+CTO_ROADMAP_AFTER_P59_POWERLOTTO_WAVE5_APPLY_20260525
 ```

@@ -1,0 +1,77 @@
+{
+  "classification": "P49_POWERLOTTO_POST_APPLY_API_UI_VERIFICATION_PASS",
+  "phase": "P49",
+  "title": "POWER_LOTTO Post-Apply API/UI Verification",
+  "date": "2026-05-24",
+  "controlled_apply_id": "P48_POWERLOTTO_WAVE4_4500_PROD_20260524",
+  "lottery_type": "POWER_LOTTO",
+  "p48_strategies_verified": [
+    "pp3_freqort_4bet",
+    "midfreq_fourier_mk_3bet",
+    "midfreq_fourier_2bet"
+  ],
+  "db_checks": {
+    "total_production_rows": 42460,
+    "p48_apply_id_rows": 4500,
+    "per_strategy_rows": {
+      "pp3_freqort_4bet": 1500,
+      "midfreq_fourier_mk_3bet": 1500,
+      "midfreq_fourier_2bet": 1500
+    },
+    "null_actual_special": 0,
+    "dry_run_non_zero": 0,
+    "actual_numbers_out_of_range_1_38": 0,
+    "actual_special_out_of_range_1_8": 0,
+    "predicted_numbers_length_not_6": 0,
+    "hit_count_gt_6": 0,
+    "special_hit_mismatch": 0,
+    "truth_level": "POWERLOTTO_WAVE4_STRATEGY_BACKFILL_VERIFIED",
+    "replay_run_id": "p48_wave4_prod_20260524",
+    "cross_lottery_contamination": 0
+  },
+  "api_checks": {
+    "endpoint_history": "/api/replay/history",
+    "endpoint_summary": "/api/replay/summary",
+    "backend_port": 8002,
+    "per_strategy_api_total": {
+      "pp3_freqort_4bet": 1500,
+      "midfreq_fourier_mk_3bet": 1500,
+      "midfreq_fourier_2bet": 1500
+    },
+    "response_fields_verified": [
+      "strategy_id",
+      "lottery_type",
+      "predicted_numbers",
+      "actual_numbers",
+      "predicted_special",
+      "actual_special",
+      "hit_count",
+      "special_hit"
+    ],
+    "hit_count_semantics": "first-zone only (0-6), verified",
+    "special_hit_semantics": "0 or 1, verified",
+    "null_actual_special_in_api_records": 0,
+    "cross_lottery_contamination_in_api": 0,
+    "pagination_correct": true,
+    "summary_all_p48_strategies_present": true
+  },
+  "guards": {
+    "drift_guard": "REPLAY_LIFECYCLE_DRIFT_GUARD_PASS",
+    "governance_guard": "BRANCH_GOVERNANCE_PASS",
+    "branch": "main",
+    "expected_rows": 42460
+  },
+  "tests": {
+    "test_file": "tests/test_p49_powerlotto_post_apply_api_verification.py",
+    "total_tests": 61,
+    "passed": 61,
+    "failed": 0,
+    "full_suite_tests": 170,
+    "full_suite_passed": 170,
+    "full_suite_failed": 0
+  },
+  "no_db_writes": true,
+  "no_lifecycle_promotion": true,
+  "no_registry_mutation": true,
+  "marker": "P49_POWERLOTTO_POST_APPLY_API_UI_VERIFICATION_PASS"
+}

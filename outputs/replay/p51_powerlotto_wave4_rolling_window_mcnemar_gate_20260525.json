@@ -1,0 +1,311 @@
+{
+  "task": "P51",
+  "description": "POWER_LOTTO Wave 4 Rolling-Window + McNemar Promotion Gate",
+  "generated_at": "2026-05-25T03:48:14.262812+00:00",
+  "apply_id": "P48_POWERLOTTO_WAVE4_4500_PROD_20260524",
+  "theoretical_baseline": 0.9474,
+  "mcnemar_threshold": 3,
+  "baseline_strategy": "fourier_rhythm_3bet",
+  "no_db_write": true,
+  "no_lifecycle_promotion": true,
+  "no_registry_mutation": true,
+  "strategies": {
+    "pp3_freqort_4bet": {
+      "row_count": 1500,
+      "min_draw": "101000002",
+      "max_draw": "115000040",
+      "mean_hit_overall": 1.002,
+      "special_hit_count": 178,
+      "special_hit_rate": 0.118667,
+      "rolling_windows": {
+        "W150": {
+          "window_size": 150,
+          "mean_hit": 0.853333,
+          "delta_vs_baseline": -0.094067,
+          "above_baseline": false
+        },
+        "W500": {
+          "window_size": 500,
+          "mean_hit": 0.932,
+          "delta_vs_baseline": -0.0154,
+          "above_baseline": false
+        },
+        "W1500": {
+          "window_size": 1500,
+          "mean_hit": 1.002,
+          "delta_vs_baseline": 0.0546,
+          "above_baseline": true
+        }
+      },
+      "permutation_test": {
+        "observed_mean": 1.002,
+        "null_mean": 0.947575,
+        "p_value": 0.0084,
+        "significant": true,
+        "n_permutations": 10000,
+        "method": "bootstrap one-tailed: P(null_mean >= observed) under H0: true_mean=0.9474"
+      },
+      "ttest_vs_baseline": {
+        "theoretical_baseline": 0.9474,
+        "t_statistic": 2.46297,
+        "p_two_tailed": 0.013891,
+        "p_one_tailed": 0.006945,
+        "significant_one_tailed": true
+      },
+      "mcnemar_test": {
+        "baseline_strategy": "fourier_rhythm_3bet",
+        "threshold": 3,
+        "n_paired_draws": 1500,
+        "b_strategy_wins": 11,
+        "c_baseline_wins": 4,
+        "chi2": 2.4,
+        "p_value": 0.121335,
+        "significant": false,
+        "method": "McNemar with continuity correction"
+      },
+      "gates": {
+        "G1_sample_size": {
+          "required": ">= 1500",
+          "actual": 1500,
+          "pass": true
+        },
+        "G2_three_window_mean_hit": {
+          "required": "W150/W500/W1500 all > 0.9474",
+          "W150": 0.853333,
+          "W500": 0.932,
+          "W1500": 1.002,
+          "pass": false
+        },
+        "G3_permutation_test": {
+          "required": "p < 0.05 vs theoretical null",
+          "p_value": 0.0084,
+          "pass": true
+        },
+        "G4_mcnemar_vs_champion": {
+          "required": "p < 0.05 on hit_count >= 3 paired McNemar vs fourier_rhythm_3bet",
+          "p_value": 0.12133525035848214,
+          "pass": false
+        },
+        "G5_special_hit_ci": {
+          "required": "special_hit_rate within [0.1079, 0.1421] (2-sigma of 1/8)",
+          "actual": 0.118667,
+          "ci_lo": 0.107922,
+          "ci_hi": 0.142078,
+          "pass": true
+        },
+        "G6_rolling_stability": {
+          "required": "positive delta vs theoretical in all windows",
+          "W150_delta": -0.09406666666666663,
+          "W500_delta": -0.01539999999999997,
+          "W1500_delta": 0.05459999999999998,
+          "pass": false
+        },
+        "G7_governance": {
+          "required": "no promotion unless separate P52 authorization",
+          "pass": true,
+          "note": "P51 is read-only; P52 authorization required for promotion"
+        }
+      },
+      "classification": "INCONCLUSIVE"
+    },
+    "midfreq_fourier_mk_3bet": {
+      "row_count": 1500,
+      "min_draw": "101000002",
+      "max_draw": "115000040",
+      "mean_hit_overall": 1.027333,
+      "special_hit_count": 178,
+      "special_hit_rate": 0.118667,
+      "rolling_windows": {
+        "W150": {
+          "window_size": 150,
+          "mean_hit": 0.986667,
+          "delta_vs_baseline": 0.039267,
+          "above_baseline": true
+        },
+        "W500": {
+          "window_size": 500,
+          "mean_hit": 1.008,
+          "delta_vs_baseline": 0.0606,
+          "above_baseline": true
+        },
+        "W1500": {
+          "window_size": 1500,
+          "mean_hit": 1.027333,
+          "delta_vs_baseline": 0.079933,
+          "above_baseline": true
+        }
+      },
+      "permutation_test": {
+        "observed_mean": 1.027333,
+        "null_mean": 0.947103,
+        "p_value": 0.0003,
+        "significant": true,
+        "n_permutations": 10000,
+        "method": "bootstrap one-tailed: P(null_mean >= observed) under H0: true_mean=0.9474"
+      },
+      "ttest_vs_baseline": {
+        "theoretical_baseline": 0.9474,
+        "t_statistic": 3.650811,
+        "p_two_tailed": 0.00027,
+        "p_one_tailed": 0.000135,
+        "significant_one_tailed": true
+      },
+      "mcnemar_test": {
+        "baseline_strategy": "fourier_rhythm_3bet",
+        "threshold": 3,
+        "n_paired_draws": 1500,
+        "b_strategy_wins": 42,
+        "c_baseline_wins": 50,
+        "chi2": 0.532609,
+        "p_value": 0.465512,
+        "significant": false,
+        "method": "McNemar with continuity correction"
+      },
+      "gates": {
+        "G1_sample_size": {
+          "required": ">= 1500",
+          "actual": 1500,
+          "pass": true
+        },
+        "G2_three_window_mean_hit": {
+          "required": "W150/W500/W1500 all > 0.9474",
+          "W150": 0.986667,
+          "W500": 1.008,
+          "W1500": 1.027333,
+          "pass": true
+        },
+        "G3_permutation_test": {
+          "required": "p < 0.05 vs theoretical null",
+          "p_value": 0.0003,
+          "pass": true
+        },
+        "G4_mcnemar_vs_champion": {
+          "required": "p < 0.05 on hit_count >= 3 paired McNemar vs fourier_rhythm_3bet",
+          "p_value": 0.46551216987418653,
+          "pass": false
+        },
+        "G5_special_hit_ci": {
+          "required": "special_hit_rate within [0.1079, 0.1421] (2-sigma of 1/8)",
+          "actual": 0.118667,
+          "ci_lo": 0.107922,
+          "ci_hi": 0.142078,
+          "pass": true
+        },
+        "G6_rolling_stability": {
+          "required": "positive delta vs theoretical in all windows",
+          "W150_delta": 0.03926666666666667,
+          "W500_delta": 0.06059999999999999,
+          "W1500_delta": 0.07993333333333341,
+          "pass": true
+        },
+        "G7_governance": {
+          "required": "no promotion unless separate P52 authorization",
+          "pass": true,
+          "note": "P51 is read-only; P52 authorization required for promotion"
+        }
+      },
+      "classification": "P52_PROMOTION_CANDIDATE"
+    },
+    "midfreq_fourier_2bet": {
+      "row_count": 1500,
+      "min_draw": "101000002",
+      "max_draw": "115000040",
+      "mean_hit_overall": 0.972667,
+      "special_hit_count": 178,
+      "special_hit_rate": 0.118667,
+      "rolling_windows": {
+        "W150": {
+          "window_size": 150,
+          "mean_hit": 0.866667,
+          "delta_vs_baseline": -0.080733,
+          "above_baseline": false
+        },
+        "W500": {
+          "window_size": 500,
+          "mean_hit": 0.974,
+          "delta_vs_baseline": 0.0266,
+          "above_baseline": true
+        },
+        "W1500": {
+          "window_size": 1500,
+          "mean_hit": 0.972667,
+          "delta_vs_baseline": 0.025267,
+          "above_baseline": true
+        }
+      },
+      "permutation_test": {
+        "observed_mean": 0.972667,
+        "null_mean": 0.947155,
+        "p_value": 0.1188,
+        "significant": false,
+        "n_permutations": 10000,
+        "method": "bootstrap one-tailed: P(null_mean >= observed) under H0: true_mean=0.9474"
+      },
+      "ttest_vs_baseline": {
+        "theoretical_baseline": 0.9474,
+        "t_statistic": 1.176037,
+        "p_two_tailed": 0.239767,
+        "p_one_tailed": 0.119883,
+        "significant_one_tailed": false
+      },
+      "mcnemar_test": {
+        "baseline_strategy": "fourier_rhythm_3bet",
+        "threshold": 3,
+        "n_paired_draws": 1500,
+        "b_strategy_wins": 65,
+        "c_baseline_wins": 69,
+        "chi2": 0.067164,
+        "p_value": 0.795511,
+        "significant": false,
+        "method": "McNemar with continuity correction"
+      },
+      "gates": {
+        "G1_sample_size": {
+          "required": ">= 1500",
+          "actual": 1500,
+          "pass": true
+        },
+        "G2_three_window_mean_hit": {
+          "required": "W150/W500/W1500 all > 0.9474",
+          "W150": 0.866667,
+          "W500": 0.974,
+          "W1500": 0.972667,
+          "pass": false
+        },
+        "G3_permutation_test": {
+          "required": "p < 0.05 vs theoretical null",
+          "p_value": 0.1188,
+          "pass": false
+        },
+        "G4_mcnemar_vs_champion": {
+          "required": "p < 0.05 on hit_count >= 3 paired McNemar vs fourier_rhythm_3bet",
+          "p_value": 0.7955113852223689,
+          "pass": false
+        },
+        "G5_special_hit_ci": {
+          "required": "special_hit_rate within [0.1079, 0.1421] (2-sigma of 1/8)",
+          "actual": 0.118667,
+          "ci_lo": 0.107922,
+          "ci_hi": 0.142078,
+          "pass": true
+        },
+        "G6_rolling_stability": {
+          "required": "positive delta vs theoretical in all windows",
+          "W150_delta": -0.08073333333333332,
+          "W500_delta": 0.026599999999999957,
+          "W1500_delta": 0.02526666666666666,
+          "pass": false
+        },
+        "G7_governance": {
+          "required": "no promotion unless separate P52 authorization",
+          "pass": true,
+          "note": "P51 is read-only; P52 authorization required for promotion"
+        }
+      },
+      "classification": "INCONCLUSIVE"
+    }
+  },
+  "overall_classification": "P51_POWERLOTTO_PROMOTION_GATE_COMPLETED",
+  "has_p52_candidates": true,
+  "p51_governance_note": "P51 is read-only verification. No lifecycle promotion performed. P52 authorization required to promote any candidate strategy."
+}

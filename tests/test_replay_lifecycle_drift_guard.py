@@ -57,6 +57,8 @@ ALLOWED_TRUTH_LEVELS = {
     "BIGLOTTO_WAVE3_STRATEGY_BACKFILL_VERIFIED",
     # P48 POWER_LOTTO Wave 4 DRY_RUN strategies production apply (2026-05-24)
     "POWERLOTTO_WAVE4_STRATEGY_BACKFILL_VERIFIED",
+    # P59 POWER_LOTTO Wave 5 controlled production apply (2026-05-25)
+    "POWER_LOTTO_WAVE5_CONTROLLED_APPLY_VERIFIED",
     "null",
 }
 
@@ -203,8 +205,10 @@ class TestDriftGuardScript:
         assert rc.get("p43") == 9000, f"P43 count mismatch: {rc.get('p43')} != 9000"
         # P48 applied 4500 POWER_LOTTO Wave 4 DRY_RUN rows (3 strategies × 1500)
         assert rc.get("p48") == 4500, f"P48 count mismatch: {rc.get('p48')} != 4500"
-        # New total = 460 legacy + 1500 P14D + 3000 P16 + 1500 P19B + 3000 P20 + 3000 P21B + 7500 P31B + 9000 P37 + 9000 P43 + 4500 P48
-        assert rc.get("total") == 42460, f"total count mismatch: {rc.get('total')} != 42460"
+        # P59 applied 1500 POWER_LOTTO Wave 5 rows (fourier30_markov30_2bet, 2026-05-25)
+        assert rc.get("p59") == 1500, f"P59 count mismatch: {rc.get('p59')} != 1500"
+        # New total = 460 + 1500 + 3000 + 1500 + 3000 + 3000 + 7500 + 9000 + 9000 + 4500 + 1500
+        assert rc.get("total") == 43960, f"total count mismatch: {rc.get('total')} != 43960"
         # V1/V2/P2B/P2F/P3BC remain 0
         assert rc.get("v1") == 0, f"V1 count mismatch: {rc.get('v1')} != 0"
         assert rc.get("v2") == 0, f"V2 count mismatch: {rc.get('v2')} != 0"

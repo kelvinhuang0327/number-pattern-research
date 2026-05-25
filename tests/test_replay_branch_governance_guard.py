@@ -59,7 +59,7 @@ def test_02_script_passes_on_canonical(tmp_path):
     result = subprocess.run(
         [PYTHON, str(SCRIPT_PATH),
          "--expected-branch", current,
-         "--expected-rows", "42460",
+         "--expected-rows", "43960",
          "--json-out", str(out)],
         capture_output=True, text=True,
     )

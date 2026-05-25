@@ -40,7 +40,9 @@ WAVE5_STRATEGIES = [
     "fourier30_markov30_2bet",
     "zonal_entropy_2bet",
 ]
-EXPECTED_PROD_ROWS = 42460
+EXPECTED_PROD_ROWS = 42460    # P57-era value; used for P57/P56 JSON output assertions
+DB_TOTAL_ROWS = 43960         # Current DB total after P59 controlled apply
+DB_PL_ROWS = 10640            # Current POWER_LOTTO rows after P59 (+1500)
 ROWS_PER_STRATEGY = 1500
 THEORETICAL_M3_BASELINE = 0.0387  # 3.87%
 
@@ -149,17 +151,20 @@ class TestProductionDBIntegrity:
         cur = prod_conn.execute(
             "SELECT COUNT(*) AS cnt FROM strategy_prediction_replays"
         )
-        assert cur.fetchone()["cnt"] == EXPECTED_PROD_ROWS
+        assert cur.fetchone()["cnt"] == DB_TOTAL_ROWS
 
     def test_power_lotto_rows(self, prod_conn):
         cur = prod_conn.execute(
             "SELECT COUNT(*) AS cnt FROM strategy_prediction_replays "
             "WHERE lottery_type = 'POWER_LOTTO'"
         )
-        assert cur.fetchone()["cnt"] == 9140
+        assert cur.fetchone()["cnt"] == DB_PL_ROWS
 
     def test_wave5_not_in_production(self, prod_conn):
-        for sid in WAVE5_STRATEGIES:
+        """WATCHLIST strategies must not be in production. fourier30_markov30_2bet
+        was promoted to production by P59 controlled apply."""
+        watchlist = ["cold_complement_2bet", "zonal_entropy_2bet"]
+        for sid in watchlist:
             cur = prod_conn.execute(
                 "SELECT COUNT(*) AS cnt FROM strategy_prediction_replays "
                 "WHERE strategy_id = ? AND lottery_type = 'POWER_LOTTO'",
@@ -167,7 +172,7 @@ class TestProductionDBIntegrity:
             )
             count = cur.fetchone()["cnt"]
             assert count == 0, \
-                f"{sid} found in production DB ({count} rows) — must be DRY_RUN only"
+                f"{sid} found in production DB ({count} rows) — must remain DRY_RUN only"
 
     def test_champion_present(self, prod_conn):
         cur = prod_conn.execute(

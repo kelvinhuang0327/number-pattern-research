@@ -30,7 +30,8 @@ PROD_DB = PROJECT_ROOT / "lottery_api" / "data" / "lottery_v2.db"
 P58_STRATEGY = "fourier30_markov30_2bet"
 WATCHLIST = {"cold_complement_2bet", "zonal_entropy_2bet"}
 CONTROLLED_APPLY_ID = "P58_POWERLOTTO_WAVE5_FOURIER30_MARKOV30_1500_PROD_20260525"
-EXPECTED_PROD_ROWS = 42460
+EXPECTED_PROD_ROWS = 42460    # P58-era value; used for P57/P58 JSON assertions
+CURRENT_PROD_ROWS = 43960     # Current DB total after P59 controlled apply
 EXPECTED_NEW_ROWS = 1500
 EXPECTED_ROWS_AFTER = 43960
 
@@ -141,12 +142,14 @@ class TestDuplicateCheck(unittest.TestCase):
         self.conn.close()
 
     def test_fourier30_not_in_production(self):
+        """fourier30_markov30_2bet was promoted to production by P59 controlled apply.
+        Verify it has exactly 1500 rows as applied."""
         count = self.conn.execute(
             "SELECT COUNT(*) FROM strategy_prediction_replays "
             "WHERE strategy_id = ? AND lottery_type = 'POWER_LOTTO'",
             (P58_STRATEGY,),
         ).fetchone()[0]
-        self.assertEqual(count, 0, f"{P58_STRATEGY} already in POWER_LOTTO production")
+        self.assertEqual(count, 1500, f"{P58_STRATEGY} expected 1500 rows (P59 applied), got {count}")
 
     def test_cold_complement_not_in_power_lotto(self):
         count = self.conn.execute(
@@ -163,21 +166,22 @@ class TestDuplicateCheck(unittest.TestCase):
         self.assertEqual(count, 0)
 
     def test_wave5_not_in_power_lotto_distinct(self):
-        """Wave 5 strategy IDs must not appear in POWER_LOTTO distinct strategy list."""
+        """WATCHLIST Wave 5 strategy IDs must not appear in POWER_LOTTO.
+        Note: fourier30_markov30_2bet was promoted by P59 controlled apply."""
         rows = self.conn.execute(
             "SELECT DISTINCT strategy_id FROM strategy_prediction_replays "
             "WHERE lottery_type = 'POWER_LOTTO'"
         ).fetchall()
         strategy_ids = {r["strategy_id"] for r in rows}
-        wave5 = {P58_STRATEGY, "cold_complement_2bet", "zonal_entropy_2bet"}
-        self.assertEqual(len(wave5 & strategy_ids), 0,
-                         f"Wave 5 strategies found in POWER_LOTTO: {wave5 & strategy_ids}")
+        watchlist = {"cold_complement_2bet", "zonal_entropy_2bet"}
+        self.assertEqual(len(watchlist & strategy_ids), 0,
+                         f"WATCHLIST strategies found in POWER_LOTTO: {watchlist & strategy_ids}")
 
     def test_total_production_rows_unchanged(self):
         count = self.conn.execute(
             "SELECT COUNT(*) FROM strategy_prediction_replays"
         ).fetchone()[0]
-        self.assertEqual(count, EXPECTED_PROD_ROWS)
+        self.assertEqual(count, CURRENT_PROD_ROWS)
 
     def test_champion_still_present(self):
         count = self.conn.execute(
@@ -499,33 +503,34 @@ class TestP58ProductionDBState(unittest.TestCase):
         count = self.conn.execute(
             "SELECT COUNT(*) FROM strategy_prediction_replays"
         ).fetchone()[0]
-        self.assertEqual(count, EXPECTED_PROD_ROWS,
-                         f"Production rows changed: expected {EXPECTED_PROD_ROWS}, got {count}")
+        self.assertEqual(count, CURRENT_PROD_ROWS,
+                         f"Production rows: expected {CURRENT_PROD_ROWS}, got {count}")
 
     def test_power_lotto_rows_unchanged(self):
         count = self.conn.execute(
             "SELECT COUNT(*) FROM strategy_prediction_replays "
             "WHERE lottery_type = 'POWER_LOTTO'"
         ).fetchone()[0]
-        self.assertEqual(count, 9140)
+        self.assertEqual(count, 10640)
 
     def test_no_p58_controlled_apply_id_in_db(self):
-        """controlled_apply_id for P58 must NOT appear in production DB (proposal mode)."""
+        """P59 applied 1500 rows using the P58 controlled_apply_id.
+        Verify exactly 1500 rows (no more, no less)."""
         count = self.conn.execute(
             "SELECT COUNT(*) FROM strategy_prediction_replays "
             "WHERE controlled_apply_id = ?",
             (CONTROLLED_APPLY_ID,),
         ).fetchone()[0]
-        self.assertEqual(count, 0,
-                         f"P58 controlled_apply_id found in production DB: {count} rows")
+        self.assertEqual(count, 1500,
+                         f"P58/P59 CAID row count: expected 1500 (P59 apply), got {count}")
 
     def test_power_lotto_strategy_count_unchanged(self):
-        """Still exactly 6 distinct strategy IDs in POWER_LOTTO."""
+        """7 distinct strategy IDs in POWER_LOTTO after P59 promoted fourier30_markov30_2bet."""
         count = self.conn.execute(
             "SELECT COUNT(DISTINCT strategy_id) FROM strategy_prediction_replays "
             "WHERE lottery_type = 'POWER_LOTTO'"
         ).fetchone()[0]
-        self.assertEqual(count, 6)
+        self.assertEqual(count, 7)
 
 
 if __name__ == "__main__":

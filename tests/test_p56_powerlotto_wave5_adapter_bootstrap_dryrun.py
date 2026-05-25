@@ -27,8 +27,10 @@ sys.path.insert(0, PROJECT_ROOT)
 
 DB_PATH = os.path.join(PROJECT_ROOT, "lottery_api", "data", "lottery_v2.db")
 
-EXPECTED_TOTAL_ROWS = 42460
-EXPECTED_PL_ROWS = 9140
+EXPECTED_TOTAL_ROWS = 42460   # P56-era value; used for P56 JSON output assertions
+EXPECTED_PL_ROWS = 9140       # P56-era POWER_LOTTO row count
+DB_TOTAL_ROWS = 43960         # Current DB total after P59 controlled apply
+DB_PL_ROWS = 10640            # Current POWER_LOTTO rows after P59 (+1500)
 EXPECTED_DRY_RUN_ROWS = 4500       # 3 strategies × 1500 draws
 EXPECTED_ROWS_PER_STRATEGY = 1500
 
@@ -422,14 +424,14 @@ class TestP56ProductionIntegrity:
 
     def test_total_rows_unchanged(self):
         count = _db_count_total()
-        assert count == EXPECTED_TOTAL_ROWS, (
-            f"Production DB total rows: expected {EXPECTED_TOTAL_ROWS}, got {count}"
+        assert count == DB_TOTAL_ROWS, (
+            f"Production DB total rows: expected {DB_TOTAL_ROWS}, got {count}"
         )
 
     def test_power_lotto_rows_unchanged(self):
         count = _db_count_by_lottery("POWER_LOTTO")
-        assert count == EXPECTED_PL_ROWS, (
-            f"POWER_LOTTO rows: expected {EXPECTED_PL_ROWS}, got {count}"
+        assert count == DB_PL_ROWS, (
+            f"POWER_LOTTO rows: expected {DB_PL_ROWS}, got {count}"
         )
 
     def test_champion_still_online(self):
@@ -448,17 +450,19 @@ class TestP56ProductionIntegrity:
         )
 
     def test_wave5_strategies_not_in_production_db(self):
-        """Wave 5 strategies must NOT appear in production DB (dry-run only)."""
+        """WATCHLIST strategies (cold_complement_2bet, zonal_entropy_2bet) must NOT be in
+        production DB. Note: fourier30_markov30_2bet was promoted to production by P59."""
+        watchlist = ["cold_complement_2bet", "zonal_entropy_2bet"]
         conn = sqlite3.connect(DB_PATH)
         try:
-            for sid in WAVE5_STRATEGY_IDS:
+            for sid in watchlist:
                 count = conn.execute(
                     "SELECT COUNT(*) FROM strategy_prediction_replays WHERE strategy_id=?",
                     (sid,),
                 ).fetchone()[0]
                 assert count == 0, (
-                    f"Wave 5 strategy {sid} found in production DB ({count} rows) — "
-                    "dry-run must not write to production DB"
+                    f"WATCHLIST strategy {sid} found in production DB ({count} rows) — "
+                    "must remain dry-run only"
                 )
         finally:
             conn.close()

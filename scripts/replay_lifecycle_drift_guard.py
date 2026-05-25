@@ -81,6 +81,8 @@ BASELINE = {
     "p43_apply_id": "P43_BIGLOTTO_WAVE3_9000_PROD_20260523",
     # P48: POWER_LOTTO Wave 4 DRY_RUN strategies (3 × 1500 = 4500 rows) (2026-05-24)
     "p48_apply_id": "P48_POWERLOTTO_WAVE4_4500_PROD_20260524",
+    # P59: POWER_LOTTO Wave 5 controlled production apply — fourier30_markov30_2bet (1500 rows) (2026-05-25)
+    "p59_apply_id": "P58_POWERLOTTO_WAVE5_FOURIER30_MARKOV30_1500_PROD_20260525",
     "v1_count": 0,
     "v2_count": 0,
     "legacy_count": 460,
@@ -96,7 +98,8 @@ BASELINE = {
     "p37_count": 9000,
     "p43_count": 9000,
     "p48_count": 4500,
-    "total_count": 42460,
+    "p59_count": 1500,
+    "total_count": 43960,
 }
 
 # Known V3 tombstone strategy IDs — must have 0 rows in replay table
@@ -130,6 +133,8 @@ ALLOWED_TRUTH_LEVELS = {
     "BIGLOTTO_WAVE3_STRATEGY_BACKFILL_VERIFIED",
     # P48 POWER_LOTTO Wave 4 DRY_RUN strategies production apply (2026-05-24)
     "POWERLOTTO_WAVE4_STRATEGY_BACKFILL_VERIFIED",
+    # P59 POWER_LOTTO Wave 5 controlled production apply (2026-05-25)
+    "POWER_LOTTO_WAVE5_CONTROLLED_APPLY_VERIFIED",
 }
 
 
@@ -218,6 +223,11 @@ def run_checks(db_path: pathlib.Path) -> dict:
         (BASELINE["p48_apply_id"],),
     ).fetchone()[0]
 
+    p59_count = c.execute(
+        "SELECT COUNT(*) FROM strategy_prediction_replays WHERE controlled_apply_id=?",
+        (BASELINE["p59_apply_id"],),
+    ).fetchone()[0]
+
     legacy_count = c.execute(
         "SELECT COUNT(*) FROM strategy_prediction_replays WHERE controlled_apply_id IS NULL"
     ).fetchone()[0]
@@ -286,6 +296,10 @@ def run_checks(db_path: pathlib.Path) -> dict:
         violations.append(
             f"P48 row count mismatch: expected {BASELINE['p48_count']}, got {p48_count}"
         )
+    if p59_count != BASELINE["p59_count"]:
+        violations.append(
+            f"P59 row count mismatch: expected {BASELINE['p59_count']}, got {p59_count}"
+        )
     if total_count != BASELINE["total_count"]:
         violations.append(
             f"total row count mismatch: expected {BASELINE['total_count']}, got {total_count}"
@@ -307,6 +321,7 @@ def run_checks(db_path: pathlib.Path) -> dict:
         "p37": p37_count,
         "p43": p43_count,
         "p48": p48_count,
+        "p59": p59_count,
         "total": total_count,
     }
 
@@ -385,6 +400,7 @@ def run_checks(db_path: pathlib.Path) -> dict:
         BASELINE["p20_apply_id"], BASELINE["p21b_apply_id"],
         BASELINE["p31b_apply_id"], BASELINE["p37_apply_id"],
         BASELINE["p43_apply_id"], BASELINE["p48_apply_id"],
+        BASELINE["p59_apply_id"],
         "null", None,
     }
     for aid_key, cnt in controlled_apply_id_counts.items():

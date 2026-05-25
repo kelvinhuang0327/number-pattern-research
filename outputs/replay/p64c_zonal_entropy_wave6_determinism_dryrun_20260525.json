@@ -1,0 +1,282 @@
+{
+  "schema_version": "1.0",
+  "task_id": "P64c",
+  "strategy_id": "zonal_entropy_2bet",
+  "run_id": "p64c_zonal_entropy_wave6_determinism_dryrun_20260525",
+  "marker": "P64C_ZONAL_ENTROPY_WAVE6_DETERMINISM_DRYRUN_20260525",
+  "generated_at": "2026-05-25T09:10:43.217007+00:00",
+  "temp_db_path": "/tmp/p64c_zonal_entropy_temp.db",
+  "governance": {
+    "db_writes": false,
+    "online_promotions": false,
+    "champion_replacement": false,
+    "registry_mutation": false,
+    "production_apply": false,
+    "production_rows_before": 43960,
+    "production_rows_after": 43960,
+    "drift_guard": "PASS",
+    "branch_governance_guard": "PASS"
+  },
+  "adapter": {
+    "class": "ZonalEntropy2BetAdapter",
+    "file": "lottery_api/models/p56_wave5_powerlotto_adapters.py",
+    "strategy_version": "v0.1-p56",
+    "deterministic": true,
+    "no_random_seed": true,
+    "no_random_sample": true,
+    "algorithm": "entropy_adaptive_zone_selection",
+    "mechanism": "Entropy-adaptive zone selection \u2014 LOW entropy: reinforce dominant zone cluster (hot mode, window=30); HIGH entropy (>2.2 bits): revert to cold/gap (cold mode, window=100)",
+    "entropy_chaos_threshold_bits": 2.2,
+    "zone_entropy_window": 30,
+    "cold_fallback_window": 100,
+    "pool": "1-38 first zone",
+    "pick": 6,
+    "special_pool": "1-8",
+    "min_history": 30
+  },
+  "dry_run": {
+    "window_periods": 1500,
+    "lifecycle": "DRY_RUN",
+    "temp_db": "/tmp/p64c_zonal_entropy_temp.db",
+    "in_memory": false,
+    "temp_db_only": true
+  },
+  "determinism_check": {
+    "determinism_pass": true,
+    "checks_run": 5,
+    "violations": 0,
+    "check_details": [
+      {
+        "history_length": 318,
+        "call_1_numbers": [
+          2,
+          5,
+          6,
+          9,
+          15,
+          26
+        ],
+        "call_1_special": 1,
+        "call_2_numbers": [
+          2,
+          5,
+          6,
+          9,
+          15,
+          26
+        ],
+        "call_2_special": 1,
+        "identical": true
+      },
+      {
+        "history_length": 637,
+        "call_1_numbers": [
+          9,
+          11,
+          17,
+          18,
+          19,
+          32
+        ],
+        "call_1_special": 3,
+        "call_2_numbers": [
+          9,
+          11,
+          17,
+          18,
+          19,
+          32
+        ],
+        "call_2_special": 3,
+        "identical": true
+      },
+      {
+        "history_length": 956,
+        "call_1_numbers": [
+          3,
+          4,
+          13,
+          19,
+          22,
+          25
+        ],
+        "call_1_special": 3,
+        "call_2_numbers": [
+          3,
+          4,
+          13,
+          19,
+          22,
+          25
+        ],
+        "call_2_special": 3,
+        "identical": true
+      },
+      {
+        "history_length": 1275,
+        "call_1_numbers": [
+          1,
+          9,
+          10,
+          22,
+          32,
+          37
+        ],
+        "call_1_special": 2,
+        "call_2_numbers": [
+          1,
+          9,
+          10,
+          22,
+          32,
+          37
+        ],
+        "call_2_special": 2,
+        "identical": true
+      },
+      {
+        "history_length": 1594,
+        "call_1_numbers": [
+          5,
+          8,
+          18,
+          31,
+          34,
+          37
+        ],
+        "call_1_special": 3,
+        "call_2_numbers": [
+          5,
+          8,
+          18,
+          31,
+          34,
+          37
+        ],
+        "call_2_special": 3,
+        "identical": true
+      }
+    ],
+    "fix_applied": false,
+    "fix_details": "No fix needed. P56 reimplemented ZonalEntropy2BetAdapter without random.seed() or random.sample(). Source risk was in tools/power_scientific_zonal.py (NOT in the adapter).",
+    "source_risk_status": "RESOLVED_IN_P56",
+    "adapter_random_seed": false,
+    "adapter_random_sample": false
+  },
+  "metrics": {
+    "total_rows": 1500,
+    "predicted_rows": 1500,
+    "insufficient_history_rows": 0,
+    "error_rows": 0,
+    "hit_distribution": {
+      "0": 478,
+      "1": 693,
+      "2": 274,
+      "3": 51,
+      "4": 4
+    },
+    "m3plus_count": 55,
+    "m3plus_rate_pct": 3.6667,
+    "theoretical_m3plus_baseline_pct": 3.87,
+    "vs_baseline_pp": -0.2033,
+    "special_hit_count": 178,
+    "special_hit_rate_pct": 11.8667,
+    "avg_hit_count": 0.94,
+    "target_draw_min": 101000003,
+    "target_draw_max": 115000041,
+    "duplicate_target_draws": 0,
+    "regime_distribution": {
+      "chaotic": 1500,
+      "stable": 0,
+      "unknown": 0,
+      "chaotic_pct": 100.0
+    },
+    "prior_p57_m3plus_pct": 3.67,
+    "vs_prior_p57_pp": -0.0033
+  },
+  "semantic_validations": {
+    "all_pass": true,
+    "checks": {
+      "pick_6_unique_numbers": {
+        "pass": true,
+        "violations": 0,
+        "detail": "All predicted_numbers must have exactly 6 elements"
+      },
+      "numbers_in_range_1_38": {
+        "pass": true,
+        "violations": 0,
+        "detail": "All predicted_numbers must be in [1, 38]"
+      },
+      "special_in_range_1_8": {
+        "pass": true,
+        "violations": 0,
+        "detail": "predicted_special must be in [1, 8]"
+      },
+      "no_duplicate_numbers": {
+        "pass": true,
+        "violations": 0,
+        "detail": "No duplicate numbers within a prediction"
+      },
+      "hit_count_integrity": {
+        "pass": true,
+        "violations": 0,
+        "detail": "hit_count must equal len(hit_numbers) and be \u2264 6"
+      },
+      "no_leakage_indicators": {
+        "pass": true,
+        "violations": 0,
+        "detail": "hit_count must never exceed 6 (leakage indicator)"
+      }
+    }
+  },
+  "leakage_validation": {
+    "leakage_violations": 0,
+    "null_cutoff_rows": 0,
+    "leakage_free": true,
+    "detail": "Causal ordering: prediction_cutoff_date < draw_date for all rows"
+  },
+  "idempotency_check": {
+    "idempotent": true,
+    "count_before": 1500,
+    "count_after": 1500,
+    "detail": "Re-insert produced no new rows (INSERT OR IGNORE)"
+  },
+  "rollback_check": {
+    "production_rows": 43960,
+    "production_rows_ok": true,
+    "zonal_entropy_production_rows": 0,
+    "zonal_entropy_production_rows_ok": true,
+    "detail": "Production DB untouched"
+  },
+  "readiness": {
+    "classification": "READY_FOR_P65_WITH_CAUTION",
+    "rationale": "M3+=3.67% vs baseline 3.87% (-0.20pp), within 2SE noise band. P57 precedent: 3.67% (\u22120.20pp, p=0.656). Determinism verified. Caution: watch live performance first 50 draws.",
+    "prior_p57_m3plus_pct": 3.67,
+    "prior_p57_baseline_pct": 3.87,
+    "prior_p57_delta_pp": -0.2,
+    "prior_p57_mcnemar_p": 0.656,
+    "prior_p57_classification": "WATCHLIST_REHEARSAL_ONLY"
+  },
+  "p65_proposal": {
+    "proposed_strategy_id": "zonal_entropy_2bet",
+    "proposed_apply_rows": 1500,
+    "expected_production_rows_after": 45460,
+    "caid_template": "P65_POWERLOTTO_WAVE6_ZONAL_ENTROPY_1500_PROD_20260525",
+    "required_duplicate_check": "SELECT COUNT(*) FROM strategy_prediction_replays WHERE strategy_id='zonal_entropy_2bet'",
+    "expected_before_apply": 0,
+    "backup_required": true,
+    "backup_table": "strategy_prediction_replays_backup_before_p65_zonal_entropy",
+    "rollback_sql": "DELETE FROM strategy_prediction_replays WHERE strategy_id='zonal_entropy_2bet'",
+    "explicit_production_apply_authorization_required": "YES apply zonal_entropy_2bet 1500 rows to production for P65",
+    "caution_notes": "M3+ rate below theoretical baseline by < 1.0pp. P57 precedent: \u22120.20pp (z=\u22120.40, p=0.656, not significant). Recommend monitoring first 50 draws post-apply."
+  },
+  "preceding_tasks": [
+    "P63",
+    "P64a",
+    "P64b"
+  ],
+  "p64a_readiness": "READY_FOR_P65_WITH_CAUTION",
+  "p64b_gate": "FAIL",
+  "base_commit": "b49c969",
+  "classification": "P64C_ZONAL_ENTROPY_WAVE6_READY_WITH_CAUTION"
+}

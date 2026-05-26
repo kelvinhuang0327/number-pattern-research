@@ -1,0 +1,44 @@
+{
+  "phase": "P86",
+  "policy_version": "p86-v1",
+  "classification": "SOURCE_UNAVAILABLE",
+  "as_of": "2026-05-26T09:44:36.915721+00:00",
+  "db": {
+    "path": "/Users/kelvin/Kelvin-WorkSpace/LotteryNew/lottery_api/data/lottery_v2.db",
+    "lottery_type": "POWER_LOTTO",
+    "max_draw": 115000041,
+    "replay_rows": 46962,
+    "db_writes": false,
+    "replay_rows_inserted": 0
+  },
+  "source": {
+    "method": "none",
+    "max_draw": null,
+    "data": null
+  },
+  "policy": {
+    "classification": "SOURCE_UNAVAILABLE",
+    "db_max_draw": 115000041,
+    "source_max_draw": null,
+    "forbidden_automatic_behavior": [
+      "auto_db_insert",
+      "auto_replay_apply",
+      "fallback_to_official_api_without_explicit_decision",
+      "new_staging_table_creation"
+    ],
+    "action": "source_unavailable",
+    "message": "No source provided and network read not authorized or failed. Run with --source-snapshot <path> or --allow-network-read to compare against a source.",
+    "allowed_next_steps": [
+      "provide_source_snapshot",
+      "pass_allow_network_read_flag"
+    ]
+  },
+  "governance": {
+    "no_db_writes": true,
+    "no_replay_inserts": true,
+    "no_official_api_writes": true,
+    "no_new_tables": true,
+    "no_ingestion": true,
+    "read_only": true
+  }
+}

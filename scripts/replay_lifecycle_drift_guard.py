@@ -86,6 +86,9 @@ BASELINE = {
     # P66: POWER_LOTTO Wave 6 controlled production apply — cold_complement_2bet + zonal_entropy_2bet (3000 rows) (2026-05-25)
     "p66_cold_apply_id": "P66_POWERLOTTO_WAVE6_COLD_COMPLEMENT_1500_PROD_20260525",
     "p66_zonal_apply_id": "P66_POWERLOTTO_WAVE6_ZONAL_ENTROPY_1500_PROD_20260525",
+    # P79: POWER_LOTTO Batch A draw-ext apply — fourier_rhythm_3bet + fourier30_markov30_2bet for draw 115000041 (2026-05-26)
+    "p79_fourier_rhythm_apply_id": "P78_POWERLOTTO_BATCH_A_FOURIER_RHYTHM_DRAWEXT_20260526",
+    "p79_fourier30_markov30_apply_id": "P78_POWERLOTTO_BATCH_A_FOURIER30_MARKOV30_DRAWEXT_20260526",
     "v1_count": 0,
     "v2_count": 0,
     "legacy_count": 460,
@@ -104,7 +107,10 @@ BASELINE = {
     "p59_count": 1500,
     "p66_cold_count": 1500,
     "p66_zonal_count": 1500,
-    "total_count": 46960,
+    # P79 Batch A draw-ext: 1 row each for fourier_rhythm_3bet and fourier30_markov30_2bet (2026-05-26)
+    "p79_fourier_rhythm_count": 1,
+    "p79_fourier30_markov30_count": 1,
+    "total_count": 46962,
 }
 
 # Known V3 tombstone strategy IDs — must have 0 rows in replay table
@@ -142,6 +148,8 @@ ALLOWED_TRUTH_LEVELS = {
     "POWER_LOTTO_WAVE5_CONTROLLED_APPLY_VERIFIED",
     # P66 POWER_LOTTO Wave 6 controlled production apply (2026-05-25)
     "POWER_LOTTO_WAVE6_CONTROLLED_APPLY_VERIFIED",
+    # P79 POWER_LOTTO Batch A draw-ext apply — draw 115000041 (2026-05-26)
+    "POWERLOTTO_DRAW_EXT_VERIFIED",
 }
 
 
@@ -245,6 +253,16 @@ def run_checks(db_path: pathlib.Path) -> dict:
         (BASELINE["p66_zonal_apply_id"],),
     ).fetchone()[0]
 
+    p79_fourier_rhythm_count = c.execute(
+        "SELECT COUNT(*) FROM strategy_prediction_replays WHERE controlled_apply_id=?",
+        (BASELINE["p79_fourier_rhythm_apply_id"],),
+    ).fetchone()[0]
+
+    p79_fourier30_markov30_count = c.execute(
+        "SELECT COUNT(*) FROM strategy_prediction_replays WHERE controlled_apply_id=?",
+        (BASELINE["p79_fourier30_markov30_apply_id"],),
+    ).fetchone()[0]
+
     legacy_count = c.execute(
         "SELECT COUNT(*) FROM strategy_prediction_replays WHERE controlled_apply_id IS NULL"
     ).fetchone()[0]
@@ -325,6 +343,14 @@ def run_checks(db_path: pathlib.Path) -> dict:
         violations.append(
             f"P66-zonal row count mismatch: expected {BASELINE['p66_zonal_count']}, got {p66_zonal_count}"
         )
+    if p79_fourier_rhythm_count != BASELINE["p79_fourier_rhythm_count"]:
+        violations.append(
+            f"P79-fourier-rhythm row count mismatch: expected {BASELINE['p79_fourier_rhythm_count']}, got {p79_fourier_rhythm_count}"
+        )
+    if p79_fourier30_markov30_count != BASELINE["p79_fourier30_markov30_count"]:
+        violations.append(
+            f"P79-fourier30-markov30 row count mismatch: expected {BASELINE['p79_fourier30_markov30_count']}, got {p79_fourier30_markov30_count}"
+        )
     if total_count != BASELINE["total_count"]:
         violations.append(
             f"total row count mismatch: expected {BASELINE['total_count']}, got {total_count}"
@@ -349,6 +375,8 @@ def run_checks(db_path: pathlib.Path) -> dict:
         "p59": p59_count,
         "p66_cold": p66_cold_count,
         "p66_zonal": p66_zonal_count,
+        "p79_fourier_rhythm": p79_fourier_rhythm_count,
+        "p79_fourier30_markov30": p79_fourier30_markov30_count,
         "total": total_count,
     }
 
@@ -418,7 +446,7 @@ def run_checks(db_path: pathlib.Path) -> dict:
             # Already caught in row_counts section, no double-record
             pass
 
-    # Unexpected apply IDs (not V1, V2, P2B, P2F, P3BC, P14D, P16, P19B, P20, P21B, P31B, P37, P43, P48, or NULL) are violations
+    # Unexpected apply IDs (not V1, V2, P2B, P2F, P3BC, P14D, P16, P19B, P20, P21B, P31B, P37, P43, P48, P59, P66, P79, or NULL) are violations
     known_apply_ids = {
         BASELINE["v1_apply_id"], BASELINE["v2_apply_id"],
         BASELINE["p2b_apply_id"], BASELINE["p2f_apply_id"],
@@ -429,6 +457,7 @@ def run_checks(db_path: pathlib.Path) -> dict:
         BASELINE["p43_apply_id"], BASELINE["p48_apply_id"],
         BASELINE["p59_apply_id"],
         BASELINE["p66_cold_apply_id"], BASELINE["p66_zonal_apply_id"],
+        BASELINE["p79_fourier_rhythm_apply_id"], BASELINE["p79_fourier30_markov30_apply_id"],
         "null", None,
     }
     for aid_key, cnt in controlled_apply_id_counts.items():

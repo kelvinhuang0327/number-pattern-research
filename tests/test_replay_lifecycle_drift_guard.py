@@ -61,6 +61,8 @@ ALLOWED_TRUTH_LEVELS = {
     "POWER_LOTTO_WAVE5_CONTROLLED_APPLY_VERIFIED",
     # P66 POWER_LOTTO Wave 6 controlled production apply (2026-05-25)
     "POWER_LOTTO_WAVE6_CONTROLLED_APPLY_VERIFIED",
+    # P79 POWER_LOTTO Batch A draw-ext apply — draw 115000041 (2026-05-26)
+    "POWERLOTTO_DRAW_EXT_VERIFIED",
     "null",
 }
 
@@ -178,13 +180,11 @@ class TestDriftGuardScript:
         # enum integrity (no unexpected values), not backfill completeness.
 
     def test_db_counts_match_baseline(self, tmp_path):
-        """DB row counts must match the P66 post-apply baseline: legacy=460, p14d=1500, p16=3000, p19b=1500, total=46960.
+        """DB row counts must match the P79 post-apply baseline: legacy=460, total=46962.
 
-        Updated 2026-05-20 (P19B): Added 1500 fourier_rhythm_3bet POWER_LOTTO rows.
-        P14D ts3_regime_3bet (BIG_LOTTO): 1500 rows.
-        P16 biglotto_triple_strike + biglotto_deviation_2bet: 3000 rows.
-        P19B fourier_rhythm_3bet (POWER_LOTTO): 1500 rows.
+        Updated 2026-05-26 (P79): Added 2 Batch A draw-ext rows for POWER_LOTTO draw 115000041.
         P66 (2026-05-25): Added 1500 cold_complement_2bet + 1500 zonal_entropy_2bet = 3000 rows.
+        P79 (2026-05-26): Added 1 fourier_rhythm_3bet + 1 fourier30_markov30_2bet = 2 rows.
         """
         _, result = _run_drift_guard(tmp_path)
         rc = result.get("row_counts", {})
@@ -213,8 +213,11 @@ class TestDriftGuardScript:
         # P66 applied 3000 POWER_LOTTO Wave 6 rows (cold_complement_2bet + zonal_entropy_2bet, 2026-05-25)
         assert rc.get("p66_cold") == 1500, f"P66-cold count mismatch: {rc.get('p66_cold')} != 1500"
         assert rc.get("p66_zonal") == 1500, f"P66-zonal count mismatch: {rc.get('p66_zonal')} != 1500"
-        # New total = 460 + 1500 + 3000 + 1500 + 3000 + 3000 + 7500 + 9000 + 9000 + 4500 + 1500 + 3000
-        assert rc.get("total") == 46960, f"total count mismatch: {rc.get('total')} != 46960"
+        # P79 applied 2 Batch A draw-ext rows for POWER_LOTTO draw 115000041 (2026-05-26)
+        assert rc.get("p79_fourier_rhythm") == 1, f"P79-fourier-rhythm count mismatch: {rc.get('p79_fourier_rhythm')} != 1"
+        assert rc.get("p79_fourier30_markov30") == 1, f"P79-fourier30-markov30 count mismatch: {rc.get('p79_fourier30_markov30')} != 1"
+        # New total = 460 + 1500 + 3000 + 1500 + 3000 + 3000 + 7500 + 9000 + 9000 + 4500 + 1500 + 3000 + 2
+        assert rc.get("total") == 46962, f"total count mismatch: {rc.get('total')} != 46962"
         # V1/V2/P2B/P2F/P3BC remain 0
         assert rc.get("v1") == 0, f"V1 count mismatch: {rc.get('v1')} != 0"
         assert rc.get("v2") == 0, f"V2 count mismatch: {rc.get('v2')} != 0"

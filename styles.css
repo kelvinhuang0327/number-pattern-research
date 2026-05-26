@@ -376,6 +376,9 @@ body {
     display: block;
 }
 
+/* 通用隱藏工具 class — 用於隱藏 nav-btn 等元素 */
+.ui-hidden { display: none !important; }
+
 @keyframes fadeIn {
     from {
         opacity: 0;

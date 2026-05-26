@@ -268,10 +268,10 @@ def test_lifecycle_filter_browser_dom_changes():
                 return route.continue_()
 
             page.route("**/api/replay/**", route_handler)
-            page.goto(f"{base_url}/index.html?rp_lc=ONLINE", wait_until="load")
+            page.goto(f"{base_url}/index.html?rp_lc=ONLINE", wait_until="networkidle")
             page.wait_for_selector('#rp-lifecycle-select', state='attached')
 
-            page.locator('[data-section="replay"]').evaluate('(el) => el.click()')
+            page.locator('[data-section="replay"]').click()
             page.wait_for_selector('#rp-query-btn', state='visible')
 
             page.locator('#rp-query-btn').click()

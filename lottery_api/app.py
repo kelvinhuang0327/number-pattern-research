@@ -6,7 +6,7 @@ import logging
 import os
 
 # Import Routers
-from routes import prediction, data, optimization, admin, backtest, replay
+from routes import prediction, data, optimization, admin, backtest, replay, ingest
 
 # Import System Utilities
 from utils.scheduler import scheduler
@@ -72,6 +72,9 @@ app.include_router(backtest.router, tags=["Backtest"])
 
 # replay: /api/replay/* — strategy historical prediction replay (read-only audit)
 app.include_router(replay.router, tags=["Replay"])
+
+# ingest: /api/ingest/* — draw ingestion / backfill / log
+app.include_router(ingest.router, tags=["Ingest"])
 
 if __name__ == "__main__":
     import uvicorn

@@ -7,6 +7,7 @@ import { SmartBettingComponent } from '../ui/components/SmartBettingComponent.js
 import { QuickPredictionService } from '../engine/QuickPredictionService.js';
 import { getLotteryRules } from '../utils/Constants.js';
 import { AutoLearningManager } from '../ui/AutoLearningManager.js';
+import { AutoFetchManager } from '../ui/AutoFetchManager.js';
 import { apiClient } from '../services/ApiClient.js';
 import { progressManager } from '../ui/ProgressManager.js';
 import { RecordManager } from '../ui/RecordManager.js';
@@ -30,6 +31,7 @@ export class App {
         this.autoLearningManager = new AutoLearningManager(this.dataProcessor, this.uiManager);
         console.log('✅ AutoLearningManager instantiated');
         this.recordManager = new RecordManager(this);
+        this.autoFetchManager = new AutoFetchManager();
 
         this.currentPage = 1;
         this.itemsPerPage = 20;

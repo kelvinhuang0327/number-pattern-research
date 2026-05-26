@@ -1,0 +1,266 @@
+{
+  "phase": "P83",
+  "title": "Stable-Baseline Closure / Launch-Readiness Evidence Map",
+  "date": "2026-05-26",
+  "classification": "P83_STABLE_BASELINE_CLOSURE_VERIFIED",
+  "type": "documentation_and_evidence_consolidation",
+  "db_writes": false,
+  "replay_rows_inserted": 0,
+  "ingestion_performed": false,
+
+  "baseline_metrics": {
+    "replay_rows": 46962,
+    "power_lotto_max_draw": 115000041,
+    "power_lotto_max_draw_date": "2026/05/21",
+    "power_lotto_max_draw_numbers": [6, 14, 22, 28, 35, 38],
+    "power_lotto_max_draw_special": 1,
+    "batch_a_coverage_pct": 100.0,
+    "batch_a_strategies": [
+      "fourier_rhythm_3bet",
+      "fourier30_markov30_2bet"
+    ],
+    "p79_sentinel_rows": [
+      {
+        "id": 46961,
+        "strategy_id": "fourier_rhythm_3bet",
+        "dry_run": 0,
+        "truth_level": "POWERLOTTO_DRAW_EXT_VERIFIED"
+      },
+      {
+        "id": 46962,
+        "strategy_id": "fourier30_markov30_2bet",
+        "dry_run": 0,
+        "truth_level": "POWERLOTTO_DRAW_EXT_VERIFIED"
+      }
+    ]
+  },
+
+  "phase_evidence": [
+    {
+      "phase": "P77C",
+      "pr": 203,
+      "merge_commit": "4b2eebc",
+      "branch": "p77c-draw-reimport-powerlotto-115000041",
+      "date": "2026-05-26",
+      "classification": "P77C_DRAW_REIMPORT_SUCCESS",
+      "description": "Recovery re-import of POWER_LOTTO draw 115000041 after DB restore removed it. Confirmed draw in canonical draws table.",
+      "key_metrics": {
+        "draw_imported": "115000041",
+        "draw_date": "2026/05/21",
+        "draw_numbers": "[6, 14, 22, 28, 35, 38]",
+        "draw_special": 1,
+        "db_writes": true,
+        "rows_inserted": 1
+      }
+    },
+    {
+      "phase": "P78",
+      "pr": 202,
+      "merge_commit": "71511ff",
+      "branch": "p78-batch-a-plan-regeneration",
+      "date": "2026-05-26",
+      "classification": "P78_BATCH_A_PLAN_REGENERATION_COMPLETE",
+      "description": "Batch A apply plan regeneration in dry-run only. Confirmed 2 rows expected for P79. No DB writes.",
+      "key_metrics": {
+        "final_plan_status": "PLAN_READY_FOR_P79_APPLY",
+        "expected_insert_delta": 2,
+        "db_writes": false,
+        "strategies": ["fourier_rhythm_3bet", "fourier30_markov30_2bet"]
+      }
+    },
+    {
+      "phase": "P79",
+      "pr": 204,
+      "merge_commit": "00d5bbe",
+      "branch": "p79-batch-a-controlled-apply-powerlotto-115000041",
+      "date": "2026-05-26",
+      "classification": "P79_BATCH_A_CONTROLLED_APPLY_SUCCESS",
+      "description": "Batch A controlled apply — inserted 2 production replay rows for draw 115000041. Replay row count: 46960 → 46962.",
+      "key_metrics": {
+        "rows_before": 46960,
+        "rows_after": 46962,
+        "rows_inserted": 2,
+        "dry_run": false,
+        "truth_level": "POWERLOTTO_DRAW_EXT_VERIFIED",
+        "sentinel_ids": [46961, 46962]
+      }
+    },
+    {
+      "phase": "P80",
+      "pr": 205,
+      "merge_commit": "d9c4da4",
+      "branch": "p80-replay-ui-api-verification",
+      "date": "2026-05-26",
+      "classification": "P80_REPLAY_UI_API_VERIFICATION_PASS",
+      "description": "Replay UI and API visibility verification for POWER_LOTTO draw 115000041. Confirmed draw and replay rows visible via API. No DB writes.",
+      "key_metrics": {
+        "api_draw_visible": true,
+        "api_replay_visible": true,
+        "db_writes": false,
+        "note": "Browser E2E known flaky — documented separately"
+      }
+    },
+    {
+      "phase": "P81",
+      "pr": 206,
+      "merge_commit": "8c50144",
+      "branch": "p81-monitoring-pipeline-verification",
+      "date": "2026-05-26",
+      "classification": "P81_MONITORING_PIPELINE_VERIFICATION_PASS",
+      "description": "Monitoring and scoring pipeline verification for POWER_LOTTO draw 115000041. Read-only. No DB writes.",
+      "key_metrics": {
+        "scoring_path_verified": true,
+        "monitoring_path_verified": true,
+        "db_writes": false,
+        "api_port": 8002
+      }
+    },
+    {
+      "phase": "P82",
+      "pr": 207,
+      "merge_commit": "0a76f75",
+      "branch": "p82-replay-freshness-guard",
+      "date": "2026-05-26",
+      "classification": "P82_REPLAY_FRESHNESS_GUARD_PASS",
+      "description": "Read-only freshness / source gap guard for POWER_LOTTO. Fills draw-level gap not covered by /api/replay/freshness. No DB writes.",
+      "key_metrics": {
+        "guard_classification": "FRESHNESS_PASS",
+        "draw_gap_detected": false,
+        "replay_gap_detected": false,
+        "batch_a_coverage_pct": 100.0,
+        "strategies_checked": 9,
+        "db_writes": false,
+        "tests_pass": 21,
+        "tests_total": 21
+      }
+    }
+  ],
+
+  "launch_readiness_checklist": [
+    {
+      "item": "source_recovery_complete",
+      "description": "POWER_LOTTO draw 115000041 recovered and confirmed in canonical draws table",
+      "status": "PASS",
+      "evidence_phase": "P77C",
+      "evidence_commit": "4b2eebc"
+    },
+    {
+      "item": "draw_freshness_verified",
+      "description": "Latest draw 115000041 (2026/05/21) is current and no draw gap detected",
+      "status": "PASS",
+      "evidence_phase": "P82",
+      "evidence_commit": "0a76f75"
+    },
+    {
+      "item": "replay_rows_applied",
+      "description": "Batch A: 2 production replay rows applied (id=46961, id=46962), dry_run=0",
+      "status": "PASS",
+      "evidence_phase": "P79",
+      "evidence_commit": "00d5bbe"
+    },
+    {
+      "item": "api_visibility_verified",
+      "description": "Draw and replay data visible via Lottery API (port 8002)",
+      "status": "PASS",
+      "evidence_phase": "P80",
+      "evidence_commit": "d9c4da4"
+    },
+    {
+      "item": "monitoring_scoring_path_verified",
+      "description": "Monitoring and scoring pipelines confirmed operational for POWER_LOTTO",
+      "status": "PASS",
+      "evidence_phase": "P81",
+      "evidence_commit": "8c50144"
+    },
+    {
+      "item": "freshness_guard_added",
+      "description": "Draw-level freshness guard in place; /api/replay/freshness gap documented and patched by P82",
+      "status": "PASS",
+      "evidence_phase": "P82",
+      "evidence_commit": "0a76f75"
+    },
+    {
+      "item": "browser_e2e",
+      "description": "replay-browser-e2e-validation CI check",
+      "status": "FLAKY",
+      "note": "Pre-existing flaky failure. Not P82-introduced. Not blocking. Tracked separately.",
+      "evidence_phase": "P82",
+      "evidence_commit": "0a76f75"
+    }
+  ],
+
+  "guard_results": {
+    "p82_freshness_guard": "FRESHNESS_PASS",
+    "drift_guard": "REPLAY_LIFECYCLE_DRIFT_GUARD_PASS",
+    "branch_governance": "BRANCH_GOVERNANCE_PASS",
+    "forbidden_staging_scan": "CLEAN",
+    "replay_default_validation_ci": "SUCCESS",
+    "browser_e2e_ci": "FLAKY_FAILURE_PRE_EXISTING"
+  },
+
+  "browser_e2e_status": "FLAKY",
+  "browser_e2e_note": "replay-browser-e2e-validation CI check has a pre-existing flaky failure. It is NOT marked PASS. It is not P82-introduced. Must be tracked and resolved separately before operator-facing launch.",
+
+  "risk_register": [
+    {
+      "id": "R01",
+      "category": "browser_e2e",
+      "description": "replay-browser-e2e-validation CI check has pre-existing flaky failure",
+      "severity": "MEDIUM",
+      "owner": "eng",
+      "status": "OPEN",
+      "resolution": "Must be resolved before operator-facing launch. Not DB-related."
+    },
+    {
+      "id": "R02",
+      "category": "api_port_confusion",
+      "description": "Port 8000 vs port 8002: Lottery API runs on port 8002, not 8000. Confusion has caused false API-down reports",
+      "severity": "LOW",
+      "owner": "ops",
+      "status": "DOCUMENTED",
+      "resolution": "Always use port 8002 for Lottery API. Document in runbooks."
+    },
+    {
+      "id": "R03",
+      "category": "date_filter_format",
+      "description": "API date filters require slash format (YYYY/MM/DD), not dash format (YYYY-MM-DD)",
+      "severity": "LOW",
+      "owner": "eng",
+      "status": "DOCUMENTED",
+      "resolution": "Use YYYY/MM/DD format in all date filter queries."
+    },
+    {
+      "id": "R04",
+      "category": "db_file_local_only",
+      "description": "lottery_v2.db is a local-only file. It is not staged, not committed, not replicated remotely",
+      "severity": "MEDIUM",
+      "owner": "ops",
+      "status": "DOCUMENTED",
+      "resolution": "Ensure DB is backed up locally before any migration. No DB is ever pushed to git."
+    },
+    {
+      "id": "R05",
+      "category": "no_official_api_ingestion",
+      "description": "No official draw API ingestion has been performed in P77C–P82. All draws imported from uploaded source files",
+      "severity": "LOW",
+      "owner": "eng",
+      "status": "DOCUMENTED",
+      "resolution": "Official API ingestion requires explicit authorization. Do not trigger unless authorized."
+    }
+  ],
+
+  "next_recommendation": {
+    "phase": "P84",
+    "title": "UI/Operator Walkthrough or Launch-Readiness Signoff",
+    "description": "Conduct operator walkthrough of replay UI and API endpoints. Resolve browser E2E flakiness. Produce launch-readiness signoff document.",
+    "constraints": [
+      "No DB writes",
+      "No new replay rows",
+      "No ingestion unless new draw source explicitly authorized",
+      "Browser E2E must be PASS before marking launch READY"
+    ]
+  },
+
+  "generated_at": "2026-05-26T00:00:00Z",
+  "generated_by": "P83_STABLE_BASELINE_CLOSURE"
+}

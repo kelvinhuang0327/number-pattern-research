@@ -1,0 +1,93 @@
+{
+  "phase": "P80_REPLAY_UI_API_VERIFICATION",
+  "task_date": "2026-05-26",
+  "branch": "p80-replay-ui-api-verification",
+  "operator": "kelvinhuang0327",
+  "preconditions": {
+    "pr_203_merged": true,
+    "pr_204_merged": true,
+    "replay_rows": 46962,
+    "p79_rows_present": true,
+    "p79_fourier_rhythm_dry_run": 0,
+    "p79_fourier30_markov30_dry_run": 0
+  },
+  "api_base": "http://localhost:8002",
+  "verification": {
+    "api_health": {
+      "url": "http://localhost:8002/health",
+      "status": "healthy",
+      "pass": true
+    },
+    "replay_history_by_date": {
+      "url": "http://localhost:8002/api/replay/history?lottery_type=POWER_LOTTO&date_from=2026/05/21&date_to=2026/05/21",
+      "total": 2,
+      "records": [
+        {
+          "id": 46961,
+          "strategy_id": "fourier_rhythm_3bet",
+          "target_draw": "115000041",
+          "target_date": "2026/05/21",
+          "hit_count": 1,
+          "hit_numbers": "[28]",
+          "truth_level": "POWERLOTTO_DRAW_EXT_VERIFIED",
+          "dry_run": 0,
+          "display_status": "SHOW_REPLAY_RESULT"
+        },
+        {
+          "id": 46962,
+          "strategy_id": "fourier30_markov30_2bet",
+          "target_draw": "115000041",
+          "target_date": "2026/05/21",
+          "hit_count": 2,
+          "hit_numbers": "[14, 38]",
+          "truth_level": "POWERLOTTO_DRAW_EXT_VERIFIED",
+          "dry_run": 0,
+          "display_status": "SHOW_REPLAY_RESULT"
+        }
+      ],
+      "pass": true
+    },
+    "replay_history_fourier_rhythm_filter": {
+      "url": "http://localhost:8002/api/replay/history?lottery_type=POWER_LOTTO&strategy_id=fourier_rhythm_3bet&date_from=2026/05/21&date_to=2026/05/21",
+      "total": 1,
+      "strategy_id": "fourier_rhythm_3bet",
+      "hit_count": 1,
+      "pass": true
+    },
+    "replay_history_fourier30_markov30_filter": {
+      "url": "http://localhost:8002/api/replay/history?lottery_type=POWER_LOTTO&strategy_id=fourier30_markov30_2bet&date_from=2026/05/21&date_to=2026/05/21",
+      "total": 1,
+      "strategy_id": "fourier30_markov30_2bet",
+      "hit_count": 2,
+      "pass": true
+    },
+    "replay_summary": {
+      "url": "http://localhost:8002/api/replay/summary?lottery_type=POWER_LOTTO",
+      "fourier_rhythm_3bet_total_rows": 1501,
+      "fourier30_markov30_2bet_total_rows": 1501,
+      "note": "1500 historical + 1 P79 draw-ext row each",
+      "pass": true
+    },
+    "frontend": {
+      "url": "http://localhost:3000",
+      "http_status": 200,
+      "pass": true
+    }
+  },
+  "db_state": {
+    "total_replay_rows": 46962,
+    "p79_rows": [
+      {"id": 46961, "strategy_id": "fourier_rhythm_3bet", "hit_count": 1, "dry_run": 0},
+      {"id": 46962, "strategy_id": "fourier30_markov30_2bet", "hit_count": 2, "dry_run": 0}
+    ]
+  },
+  "all_checks_passed": true,
+  "final_classification": "P80_REPLAY_UI_API_VERIFICATION_PASS",
+  "notes": [
+    "API date filter requires slash format (2026/05/21) matching DB storage format",
+    "Both P79 rows visible via GET /api/replay/history with correct hit_count and truth_level",
+    "fourier_rhythm_3bet: 1501 total rows (1500 historical + 1 draw-ext)",
+    "fourier30_markov30_2bet: 1501 total rows (1500 historical + 1 draw-ext)",
+    "Frontend returns HTTP 200"
+  ]
+}

@@ -1,0 +1,180 @@
+{
+  "project_context_lock": "LotteryNew",
+  "repo": "/Users/kelvin/Kelvin-WorkSpace/LotteryNew",
+  "branch": "p76-powerlotto-draw-ingestion-gate",
+  "head": "a73906d",
+  "task_id": "P76",
+  "task_name": "POWER_LOTTO Draw Ingestion Gate",
+  "created_at": "2026-05-26",
+
+  "replay_rows_before": 46960,
+  "replay_rows_after": 46960,
+
+  "powerlotto_draw_min": 97000001,
+  "powerlotto_draw_max": 115000040,
+  "powerlotto_draw_count": 1912,
+  "powerlotto_draws_after_115000040_count": 0,
+
+  "powerlotto_last_draw_date": "2026/05/18",
+  "powerlotto_draw_schedule": "Monday and Thursday",
+  "analysis_date": "2026-05-26",
+  "estimated_missing_draws": [
+    {
+      "estimated_draw_id": 115000041,
+      "estimated_date": "2026-05-21",
+      "day": "Thursday",
+      "status": "NOT_IN_DB_OFFICIAL_API_LIKELY_AVAILABLE"
+    },
+    {
+      "estimated_draw_id": 115000042,
+      "estimated_date": "2026-05-25",
+      "day": "Monday",
+      "status": "NOT_IN_DB_OFFICIAL_API_LIKELY_AVAILABLE"
+    }
+  ],
+
+  "p75_blocker_summary": {
+    "classification": "P75_BLOCKED_BY_SOURCE_DATA_GAP",
+    "strategies_affected": [
+      "fourier_rhythm_3bet",
+      "fourier30_markov30_2bet"
+    ],
+    "current_coverage": {
+      "fourier_rhythm_3bet": {
+        "row_count": 1500,
+        "draw_min": 101000002,
+        "draw_max": 115000040,
+        "controlled_apply_id": "P19B_POWERLOTTO_FOURIER_1500_PROD_20260520"
+      },
+      "fourier30_markov30_2bet": {
+        "row_count": 1500,
+        "draw_min": 101000002,
+        "draw_max": 115000040,
+        "controlled_apply_id": "P58_POWERLOTTO_WAVE5_FOURIER30_MARKOV30_1500_PROD_20260525"
+      }
+    },
+    "db_max_draw_integer": 115000040,
+    "draws_after_max_in_db": 0,
+    "reason": "Both Batch A strategies already cover all 1500 available POWER_LOTTO draws (101000002-115000040). No draws beyond 115000040 exist in DB. P74 apply script would produce 0 eligible rows."
+  },
+
+  "ingestion_source_discovery": {
+    "official_api_available": true,
+    "official_api_base": "https://api.taiwanlottery.com/TLCAPIWeB",
+    "power_lotto_endpoint": "/Lottery/SuperLotto638Result",
+    "api_result_key": "superLotto638Res",
+    "fetcher_module": "lottery_api/fetcher/taiwan_lottery_fetcher.py",
+    "backfill_engine": "lottery_api/fetcher/backfill_engine.py",
+    "ingest_route": "lottery_api/routes/ingest.py",
+    "controlled_import_pattern": "scripts/p3bc_controlled_draw_import.py",
+    "dry_run_pattern": "scripts/p3bb_official_draw_ingestion_dryrun.py",
+    "last_ingest_log_powerlotto_draw": "115000040",
+    "last_ingest_log_powerlotto_timestamp": "2026-05-18T14:53:53.058202+00:00",
+    "last_ingest_log_overall_timestamp": "2026-05-25T08:25:32.291043+00:00",
+    "last_ingest_log_overall_lottery_type": "DAILY_539",
+    "ingestion_pipeline_status": "FUNCTIONAL_BUT_NOT_RECENTLY_RUN_FOR_POWER_LOTTO"
+  },
+
+  "ingestion_readiness_status": "INGESTION_POSSIBLE_PENDING_OFFICIAL_API_FETCH",
+  "ingestion_readiness_detail": "Official Taiwan Lottery API is the canonical source. Fetcher infrastructure is in place. Estimated 2 new draws (115000041 on 2026-05-21, 115000042 on 2026-05-25) should be available but have not been ingested. A dry-run fetch must be performed before any controlled import.",
+
+  "required_ingestion_gates": [
+    {
+      "gate": "source_provenance",
+      "description": "Fetch MUST use official API: api.taiwanlottery.com/TLCAPIWeB/Lottery/SuperLotto638Result. No manually fabricated draw data allowed.",
+      "status": "REQUIRED_BEFORE_INGESTION"
+    },
+    {
+      "gate": "backup",
+      "description": "sqlite3 backup of lottery_v2.db required before any draw insert. Filename must include branch name and timestamp.",
+      "status": "REQUIRED_BEFORE_INGESTION"
+    },
+    {
+      "gate": "dry_run_fetch",
+      "description": "Run official API fetch in dry-run mode (no DB write). Verify returned draw data matches expected schema: lotteryType=POWER_LOTTO, draw=integer string, date=YYYY/MM/DD, numbers=list[6], special=int.",
+      "status": "REQUIRED_BEFORE_INGESTION"
+    },
+    {
+      "gate": "duplicate_draw_check",
+      "description": "For each candidate draw: SELECT COUNT(*) FROM draws WHERE lottery_type='POWER_LOTTO' AND draw=? must return 0 before insert.",
+      "status": "REQUIRED_BEFORE_INGESTION"
+    },
+    {
+      "gate": "schema_validation",
+      "description": "Each draw must have: lottery_type='POWER_LOTTO', draw=6-digit string starting with '115', date in 'YYYY/MM/DD' format, numbers=sorted list of 6 integers 1-38, special=integer 1-8.",
+      "status": "REQUIRED_BEFORE_INGESTION"
+    },
+    {
+      "gate": "lottery_type_validation",
+      "description": "lottery_type must exactly equal 'POWER_LOTTO'. Reject DAILY_539 or BIG_LOTTO rows from POWER_LOTTO ingestion gate.",
+      "status": "REQUIRED_BEFORE_INGESTION"
+    },
+    {
+      "gate": "controlled_import_id",
+      "description": "Ingestion must use a unique controlled_import_id (e.g. P76_POWERLOTTO_DRAW_INGEST_20260526) to ensure idempotency and auditability.",
+      "status": "REQUIRED_BEFORE_INGESTION"
+    },
+    {
+      "gate": "post_ingestion_draw_count",
+      "description": "After import, verify draws table count for POWER_LOTTO increased by exactly the number of new draws inserted. Also verify CAST(draw AS INTEGER) > 115000040 now returns > 0.",
+      "status": "REQUIRED_AFTER_INGESTION"
+    },
+    {
+      "gate": "drift_guard",
+      "description": "Run scripts/replay_lifecycle_drift_guard.py --strict after ingestion to confirm replay table integrity.",
+      "status": "REQUIRED_AFTER_INGESTION"
+    },
+    {
+      "gate": "branch_governance_guard",
+      "description": "Run scripts/replay_branch_governance_guard.py --expected-rows 46960 after draw ingestion (before P74 apply). Replay rows must remain 46960 until P74 apply runs.",
+      "status": "REQUIRED_AFTER_INGESTION"
+    }
+  ],
+
+  "p75_plan_regeneration_requirements": {
+    "trigger": "After new POWER_LOTTO draws are ingested AND prediction engine generates prediction_items for those draws",
+    "steps": [
+      {
+        "step": 1,
+        "action": "Verify draws table: SELECT COUNT(*) FROM draws WHERE lottery_type='POWER_LOTTO' AND CAST(draw AS INTEGER) > 115000040 returns > 0"
+      },
+      {
+        "step": 2,
+        "action": "Generate prediction_items for fourier_rhythm_3bet and fourier30_markov30_2bet for each new draw > 115000040"
+      },
+      {
+        "step": 3,
+        "action": "Regenerate outputs/replay/p74_batch_a_apply_plan_20260526.json with populated plan_insert_rows_by_strategy and final_plan_status='PLAN_READY_FOR_P76_APPLY'"
+      },
+      {
+        "step": 4,
+        "action": "Run dry-run: .venv/bin/python scripts/p74_batch_a_controlled_apply.py --dry-run. Confirm eligible_rows > 0 and 0 duplicate controlled_apply_ids."
+      },
+      {
+        "step": 5,
+        "action": "Obtain authorization phrase: 'YES apply P71 controlled replay rows'"
+      },
+      {
+        "step": 6,
+        "action": "Run: .venv/bin/python scripts/p74_batch_a_controlled_apply.py --backup lottery_api/data/lottery_v2.db.bak_p76_pre_batch_a_<DATE> --apply"
+      },
+      {
+        "step": 7,
+        "action": "Verify rows = 49960 (46960 + 1500 fourier_rhythm_3bet + 1500 fourier30_markov30_2bet for new draws)"
+      }
+    ],
+    "expected_rows_after_batch_a_apply": 49960
+  },
+
+  "no_replay_db_write": true,
+  "no_fake_draws": true,
+  "no_fake_prediction_rows": true,
+  "no_force_push": true,
+  "no_reset_hard": true,
+  "no_git_clean": true,
+  "no_lifecycle_promotion": true,
+  "no_champion_replacement": true,
+  "no_registry_mutation": true,
+
+  "final_classification": "P76_POWERLOTTO_DRAW_INGESTION_GATE_MERGED_TO_MAIN"
+}

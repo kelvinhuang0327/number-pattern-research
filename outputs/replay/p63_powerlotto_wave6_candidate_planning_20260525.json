@@ -1,0 +1,291 @@
+{
+  "schema_version": "1.0",
+  "task_id": "P63",
+  "task_name": "POWER_LOTTO Wave 6 Candidate Planning",
+  "classification": "P63_POWERLOTTO_WAVE6_CANDIDATE_PLANNING_COMPLETED",
+  "marker": "P63_POWERLOTTO_WAVE6_CANDIDATE_PLANNING_20260525",
+  "date": "2026-05-25",
+  "branch": "p63-powerlotto-wave6-candidate-planning",
+  "base_commit": "57f9ec3",
+  "preceding_task": "P62",
+  "next_task": "P64",
+
+  "governance": {
+    "db_writes": false,
+    "online_promotions": false,
+    "champion_replacement": false,
+    "registry_mutation": false,
+    "production_apply": false,
+    "production_rows_before": 43960,
+    "production_rows_after": 43960,
+    "p59_rows_before": 1500,
+    "p59_rows_after": 1500,
+    "drift_guard": "PASS",
+    "branch_governance_guard": "PASS"
+  },
+
+  "current_powerlotto_coverage": {
+    "total_rows": 10640,
+    "strategies": [
+      {
+        "strategy_id": "fourier_rhythm_3bet",
+        "lifecycle_status": "ONLINE",
+        "is_champion": true,
+        "rows": 1500,
+        "avg_hit": 0.993,
+        "hit3plus": 74,
+        "wave": "pre-wave4"
+      },
+      {
+        "strategy_id": "power_orthogonal_5bet",
+        "lifecycle_status": "ONLINE",
+        "is_champion": false,
+        "rows": 1570,
+        "avg_hit": 0.992,
+        "hit3plus": 77,
+        "wave": "pre-wave4"
+      },
+      {
+        "strategy_id": "power_precision_3bet",
+        "lifecycle_status": "ONLINE",
+        "is_champion": false,
+        "rows": 1570,
+        "avg_hit": 0.992,
+        "hit3plus": 77,
+        "wave": "pre-wave4"
+      },
+      {
+        "strategy_id": "midfreq_fourier_mk_3bet",
+        "lifecycle_status": "WATCHLIST",
+        "is_champion": false,
+        "rows": 1500,
+        "avg_hit": 1.027,
+        "hit3plus": 66,
+        "wave": "wave4"
+      },
+      {
+        "strategy_id": "midfreq_fourier_2bet",
+        "lifecycle_status": "INCONCLUSIVE",
+        "is_champion": false,
+        "rows": 1500,
+        "avg_hit": 0.973,
+        "hit3plus": 70,
+        "wave": "wave4"
+      },
+      {
+        "strategy_id": "pp3_freqort_4bet",
+        "lifecycle_status": "INCONCLUSIVE",
+        "is_champion": false,
+        "rows": 1500,
+        "avg_hit": 1.002,
+        "hit3plus": 81,
+        "wave": "wave4"
+      },
+      {
+        "strategy_id": "fourier30_markov30_2bet",
+        "lifecycle_status": "PRODUCTION_APPLY",
+        "is_champion": false,
+        "rows": 1500,
+        "avg_hit": 0.964,
+        "hit3plus": 61,
+        "wave": "wave5",
+        "controlled_apply_id": "P58_POWERLOTTO_WAVE5_FOURIER30_MARKOV30_1500_PROD_20260525"
+      }
+    ],
+    "watchlist_zero_rows": [
+      {
+        "strategy_id": "cold_complement_2bet",
+        "lifecycle_status": "WATCHLIST_REHEARSAL_ONLY",
+        "rows": 0,
+        "wave": "wave5",
+        "p57_m3plus": 0.0367,
+        "baseline_m3plus": 0.0387,
+        "edge_pp": -0.20,
+        "mcnemar_p": 0.656
+      },
+      {
+        "strategy_id": "zonal_entropy_2bet",
+        "lifecycle_status": "WATCHLIST_REHEARSAL_ONLY",
+        "rows": 0,
+        "wave": "wave5",
+        "p57_m3plus": 0.0367,
+        "baseline_m3plus": 0.0387,
+        "edge_pp": -0.20,
+        "mcnemar_p": 0.656
+      }
+    ]
+  },
+
+  "wave6_shortlist": [
+    {
+      "rank": 1,
+      "strategy_id": "cold_complement_2bet",
+      "mechanism": "Cold-reversion complementary selection — cold ranks 1-6 (bet-0), 7-12 (bet-1); 100% non-overlap",
+      "bets_per_draw": 2,
+      "total_score": 92,
+      "dimension_scores": {
+        "executable_readiness": 10,
+        "data_availability": 10,
+        "adapter_complexity": 10,
+        "powerlotto_compatibility": 10,
+        "evidence_quality": 7,
+        "uniqueness": 10,
+        "overlap_risk_inverse": 10,
+        "testability": 9,
+        "coverage_value": 9,
+        "governance_risk_inverse": 7
+      },
+      "prior_status": "WATCHLIST_REHEARSAL_ONLY",
+      "adapter_file": "lottery_api/models/p56_wave5_powerlotto_adapters.py",
+      "adapter_class": "ColdComplement2BetAdapter",
+      "adapter_exists": true,
+      "source_tool": "tools/power_twin_strike.py",
+      "determinism_concern": false,
+      "p64_work": "none_adapter_ready",
+      "wave5_p57_m3plus": 0.0367,
+      "baseline_m3plus": 0.0387,
+      "wave6_rationale": "WATCHLIST holdout from Wave 5; -0.20pp within noise (SE≈0.50pp at N=1500); 1500 additional OOS draws would resolve signal question"
+    },
+    {
+      "rank": 3,
+      "strategy_id": "zonal_entropy_2bet",
+      "mechanism": "Entropy-adaptive zone selection — LOW entropy: reinforce dominant zone cluster; HIGH entropy: revert to cold/gap",
+      "bets_per_draw": 2,
+      "total_score": 78,
+      "dimension_scores": {
+        "executable_readiness": 8,
+        "data_availability": 10,
+        "adapter_complexity": 7,
+        "powerlotto_compatibility": 9,
+        "evidence_quality": 6,
+        "uniqueness": 8,
+        "overlap_risk_inverse": 8,
+        "testability": 7,
+        "coverage_value": 8,
+        "governance_risk_inverse": 7
+      },
+      "prior_status": "WATCHLIST_REHEARSAL_ONLY",
+      "adapter_file": "lottery_api/models/p56_wave5_powerlotto_adapters.py",
+      "adapter_class": "ZonalEntropy2BetAdapter",
+      "adapter_exists": true,
+      "source_tool": "tools/power_scientific_zonal.py",
+      "determinism_concern": true,
+      "determinism_fix_required": "Remove or verify random.seed(42) in ZonalEntropy2BetAdapter; confirm dual-call output is identical",
+      "p64_work": "determinism_review_then_dry_run",
+      "wave5_p57_m3plus": 0.0367,
+      "baseline_m3plus": 0.0387,
+      "wave6_rationale": "WATCHLIST holdout from Wave 5; same borderline result as cold_complement; regime-adaptive entropy axis is novel; must fix determinism before P64 rehearsal"
+    },
+    {
+      "rank": 2,
+      "strategy_id": "lag_reversion_2bet",
+      "mechanism": "Per-ball median interval overdue ranking — score = current_lag / median_interval; top 12 split into 2 bets",
+      "bets_per_draw": 2,
+      "total_score": 80,
+      "dimension_scores": {
+        "executable_readiness": 6,
+        "data_availability": 10,
+        "adapter_complexity": 6,
+        "powerlotto_compatibility": 9,
+        "evidence_quality": 4,
+        "uniqueness": 10,
+        "overlap_risk_inverse": 10,
+        "testability": 8,
+        "coverage_value": 10,
+        "governance_risk_inverse": 7
+      },
+      "prior_status": "NEW_CANDIDATE",
+      "adapter_file": null,
+      "adapter_class": null,
+      "adapter_exists": false,
+      "source_tool": "tools/power_lag_reversion.py",
+      "source_model": "lottery_api/models/lag_reversion.py",
+      "determinism_concern": false,
+      "p64_work": "mini_backtest_first_then_conditional_adapter_build",
+      "p64_mini_backtest_windows": [150, 500, 1500],
+      "p64_evidence_gate": "M3+/draw >= 0.0387 (baseline) in at least one window",
+      "wave6_rationale": "Novel mechanism completely orthogonal to all 7 existing strategies; must run mini-backtest before adapter build (evidence quality LOW)"
+    }
+  ],
+
+  "non_selected_candidates": [
+    {
+      "strategy_id": "h6_gate_mk20_ew85",
+      "disposition": "DEFERRED_P65_PLUS",
+      "reason": "OBSERVATION stub in lifecycle registry v0.0; no predict() method implemented; min_history=0 indicates placeholder not production-grade"
+    },
+    {
+      "strategy_id": "cooccurrence_graph_2bet",
+      "disposition": "DEFERRED_P65_PLUS",
+      "reason": "Requires python-louvain dep not in venv; Louvain community detection is non-deterministic (fails governance determinism requirement)"
+    },
+    {
+      "strategy_id": "wavelet_mra_2bet",
+      "disposition": "DEFERRED_P65_PLUS",
+      "reason": "Requires pywt (PyWavelets) dep not in venv; dep install needed before evaluation"
+    },
+    {
+      "strategy_id": "power_precision_2bet",
+      "disposition": "EXCLUDED",
+      "reason": "Uses UnifiedPredictionEngine which imports torch-dependent modules; fails P62 dep guard"
+    },
+    {
+      "strategy_id": "power_triple_strike",
+      "disposition": "EXCLUDED",
+      "reason": "Edge -3.04% below baseline; documented in FCF_TS3_POWERLOTTO_REPORT.md"
+    },
+    {
+      "strategy_id": "power_fcf",
+      "disposition": "EXCLUDED",
+      "reason": "Edge -16.21% vs baseline; documented in FCF_TS3_POWERLOTTO_REPORT.md"
+    },
+    {
+      "strategy_id": "shlc_midfreq_power",
+      "disposition": "EXCLUDED",
+      "reason": "REJECTED in lifecycle registry; edge -2.92% documented"
+    },
+    {
+      "strategy_id": "regime_adaptive_5bet",
+      "disposition": "DEFERRED",
+      "reason": "High complexity (5-bet); overlaps with power_orthogonal_5bet mechanism; no clear edge evidence"
+    }
+  ],
+
+  "p64_sequencing": {
+    "recommended_option": "A",
+    "option_a_full_wave6": [
+      {
+        "phase": "P64a",
+        "candidate": "cold_complement_2bet",
+        "work": "Reuse ColdComplement2BetAdapter from P56; run 1500-draw temp-DB dry-run; McNemar vs baseline → classify"
+      },
+      {
+        "phase": "P64b",
+        "candidate": "zonal_entropy_2bet",
+        "work": "Remove random.seed(42) from ZonalEntropy2BetAdapter; determinism validation; run 1500-draw temp-DB dry-run; McNemar vs baseline → classify"
+      },
+      {
+        "phase": "P64c",
+        "candidate": "lag_reversion_2bet",
+        "work": "Run tools/power_lag_reversion.py over 150/500/1500 windows; if M3+/draw >= baseline 3.87% → build adapter; if not → defer"
+      }
+    ],
+    "option_b_partial": {
+      "candidate": "cold_complement_2bet",
+      "reason": "Highest readiness (zero adapter work); defer zonal and lag to P65"
+    },
+    "p65": "Controlled rehearsal readiness gate (mirror P57 pattern for Wave 6)",
+    "p66": "Controlled apply proposal (mirror P58 pattern)",
+    "p67": "Controlled production apply for Wave 6 top candidate(s)",
+    "governance_constraints": [
+      "Only ONE WATCHLIST candidate may advance to production apply per wave",
+      "lag_reversion_2bet requires positive mini-backtest evidence before adapter build",
+      "No production apply in P64 (dry-run only)",
+      "Production rows must remain 43960 throughout P64"
+    ]
+  },
+
+  "test_file": "tests/test_p63_powerlotto_wave6_candidate_planning.py",
+  "doc_file": "docs/replay/p63_powerlotto_wave6_candidate_planning_20260525.md",
+  "json_file": "outputs/replay/p63_powerlotto_wave6_candidate_planning_20260525.json"
+}

@@ -1,0 +1,106 @@
+{
+  "phase": "P62",
+  "classification": "P62_POST_P59_HTTP_API_VERIFICATION_PASS",
+  "description": "Post-P59 HTTP API verification closure. lottery_api server started after applying torch optional-dependency guards. All replay endpoints verified over live HTTP on port 8002.",
+  "timestamp": "2026-05-25T00:00:00Z",
+  "branch": "p62-post-p59-http-api-verification-closure",
+  "base_commit": "f797f70",
+
+  "dependency_diagnosis": {
+    "root_cause": "lottery_api/models/unified_predictor.py imported meta_stacking_predictor and diffusion_predictor at module level; both import torch unconditionally.",
+    "dependency_chain": [
+      "lottery_api/app.py",
+      "routes/prediction.py",
+      "predictors.py",
+      "models/unified_predictor.py",
+      "models/meta_stacking_predictor.py  ← import torch (CRASH)",
+      "models/diffusion_predictor.py      ← import torch (CRASH)"
+    ],
+    "existing_pattern": "unified_predictor.py already guarded sota_predictor and mab_ensemble with try/except ImportError. Same pattern applied to meta_stacking_predictor and diffusion_predictor.",
+    "secondary_blocker": "python-multipart missing (required by routes/data.py for file upload route). Installed as lightweight standard FastAPI dependency (no heavy deps).",
+    "fix_applied": "Option A: Optional dependency guard — torch-dependent predictors disabled at startup when torch missing; prediction endpoints would fail at runtime but replay endpoints remain healthy."
+  },
+
+  "fix_applied": {
+    "file": "lottery_api/models/unified_predictor.py",
+    "change": "Wrapped 'from .meta_stacking_predictor import MetaStackingPredictor' and 'from .diffusion_predictor import LotteryDiffusionGenerator' in try/except ImportError blocks. Guarded runtime instantiation with 'if MetaStackingPredictor is not None' checks.",
+    "risk": "NONE for replay routes. Prediction routes that use MetaStackingPredictor/LotteryDiffusionGenerator will degrade gracefully when torch is missing.",
+    "secondary_fix": "python-multipart installed via pip for form-data parsing in routes/data.py"
+  },
+
+  "server": {
+    "port": 8002,
+    "startup": "SUCCESS",
+    "startup_warnings": [
+      "MetaStackingPredictor disabled (torch missing)",
+      "LotteryDiffusionGenerator disabled (torch missing)",
+      "PatternAwareTransformerPredictor disabled (torch missing)",
+      "meta_stacker disabled (torch missing)",
+      "diffusion_gen disabled (torch missing)"
+    ],
+    "health_check": "PASS"
+  },
+
+  "db_verification": {
+    "total_rows": 43960,
+    "expected_total": 43960,
+    "p59_rows": 1500,
+    "expected_p59": 1500,
+    "fourier30_markov30_2bet_rows": 1500,
+    "p59_caid": "P58_POWERLOTTO_WAVE5_FOURIER30_MARKOV30_1500_PROD_20260525",
+    "status": "PASS"
+  },
+
+  "http_api_verification": {
+    "base_url": "http://localhost:8002",
+    "summary_endpoint": {
+      "url": "/api/replay/summary?lottery_type=POWER_LOTTO&strategy_id=fourier30_markov30_2bet",
+      "http_status": 200,
+      "fourier30_total_rows": 1500,
+      "fourier30_predicted_count": 1500,
+      "fourier30_avg_hit_count": 0.964,
+      "fourier30_hit_3plus_count": 61,
+      "fourier30_special_hit_count": 187,
+      "status": "PASS"
+    },
+    "history_endpoint": {
+      "url": "/api/replay/history?lottery_type=POWER_LOTTO&strategy_id=fourier30_markov30_2bet&page=1&page_size=5",
+      "http_status": 200,
+      "total_rows_reported": 1500,
+      "records_returned": 5,
+      "sample_strategy_id": "fourier30_markov30_2bet",
+      "sample_target_draw": "115000040",
+      "sample_replay_status": "PREDICTED",
+      "sample_hit_count": 2,
+      "sample_predicted_numbers": [9, 13, 14, 27, 34, 38],
+      "status": "PASS"
+    },
+    "strategies_endpoint": {
+      "url": "/api/replay/strategies?lottery_type=POWER_LOTTO",
+      "http_status": 200,
+      "lifecycle_strategies_count": 5,
+      "fourier30_in_lifecycle_catalog": false,
+      "note": "fourier30_markov30_2bet is a production-apply strategy, not a lifecycle-registered strategy. It is correctly visible in /api/replay/summary and /api/replay/history.",
+      "status": "PASS"
+    }
+  },
+
+  "watchlist_not_applied": {
+    "cold_complement_2bet": 0,
+    "zonal_entropy_2bet": 0,
+    "status": "PASS"
+  },
+
+  "governance": {
+    "no_db_write": true,
+    "no_online_promotion": true,
+    "no_champion_replacement": true,
+    "no_registry_mutation": true,
+    "no_force_push": true,
+    "production_rows_unchanged": true,
+    "production_rows": 43960
+  },
+
+  "overall_status": "PASS",
+  "marker": "P62_POST_P59_HTTP_API_VERIFICATION_PASS_20260525"
+}

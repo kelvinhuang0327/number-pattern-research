@@ -1,0 +1,223 @@
+{
+  "run_id": "p57_wave5_powerlotto_rehearsal_readiness_20260525",
+  "classification": "P57_POWERLOTTO_WAVE5_PARTIAL_COHORT_RECOMMENDED",
+  "phase": "P57",
+  "lottery_type": "POWER_LOTTO",
+  "started_at": "2026-05-25T05:21:27.381193+00:00",
+  "finished_at": "2026-05-25T05:21:27.422048+00:00",
+  "pre_flight": {
+    "production_rows": 42460,
+    "production_rows_ok": true,
+    "p56_artifact_integrity": true,
+    "wave5_not_in_prod": true,
+    "champion_online": true
+  },
+  "theoretical_m3_baseline": 0.0387,
+  "theoretical_special_baseline": 0.125,
+  "strategy_readiness": {
+    "cold_complement_2bet": {
+      "row_count": 1500,
+      "predicted": 1500,
+      "errors": 0,
+      "leakage_violations": 0,
+      "duplicate_rate": 0.0,
+      "hit_3plus": 55,
+      "hit_3plus_rate": 0.0367,
+      "hit_count_distribution": {
+        "0": 477,
+        "1": 694,
+        "2": 274,
+        "3": 51,
+        "4": 4,
+        "5": 0,
+        "6": 0
+      },
+      "special_hits": 178,
+      "special_hit_rate": 0.1187,
+      "theoretical_m3_baseline": 0.0387,
+      "theoretical_special_baseline": 0.125,
+      "m3_vs_baseline_pp": -0.2,
+      "special_vs_baseline_pp": -0.63,
+      "deterministic_reproducible": true,
+      "adapter_source_risk": "LOW",
+      "semantic_compliance": true,
+      "z_test": {
+        "z": -0.4012,
+        "p_value": 0.6559,
+        "significant_at_05": false
+      },
+      "classification": "WATCHLIST_REHEARSAL_ONLY",
+      "classification_reason": "M3+ 3.67% < baseline 3.87%. Below baseline \u2014 not recommended for production apply at this time.",
+      "in_prod_db": false
+    },
+    "fourier30_markov30_2bet": {
+      "row_count": 1500,
+      "predicted": 1500,
+      "errors": 0,
+      "leakage_violations": 0,
+      "duplicate_rate": 0.0,
+      "hit_3plus": 61,
+      "hit_3plus_rate": 0.0407,
+      "hit_count_distribution": {
+        "0": 472,
+        "1": 675,
+        "2": 292,
+        "3": 57,
+        "4": 4,
+        "5": 0,
+        "6": 0
+      },
+      "special_hits": 178,
+      "special_hit_rate": 0.1187,
+      "theoretical_m3_baseline": 0.0387,
+      "theoretical_special_baseline": 0.125,
+      "m3_vs_baseline_pp": 0.2,
+      "special_vs_baseline_pp": -0.63,
+      "deterministic_reproducible": true,
+      "adapter_source_risk": "LOW",
+      "semantic_compliance": true,
+      "z_test": {
+        "z": 0.402,
+        "p_value": 0.3438,
+        "significant_at_05": false
+      },
+      "classification": "READY_FOR_P58_WITH_CAUTION",
+      "classification_reason": "M3+ 4.07% > baseline 3.87% but NOT statistically significant (z=0.40, p=0.344). 1500-draw window is insufficient to confirm edge.",
+      "in_prod_db": false
+    },
+    "zonal_entropy_2bet": {
+      "row_count": 1500,
+      "predicted": 1500,
+      "errors": 0,
+      "leakage_violations": 0,
+      "duplicate_rate": 0.0,
+      "hit_3plus": 55,
+      "hit_3plus_rate": 0.0367,
+      "hit_count_distribution": {
+        "0": 477,
+        "1": 694,
+        "2": 274,
+        "3": 51,
+        "4": 4,
+        "5": 0,
+        "6": 0
+      },
+      "special_hits": 178,
+      "special_hit_rate": 0.1187,
+      "theoretical_m3_baseline": 0.0387,
+      "theoretical_special_baseline": 0.125,
+      "m3_vs_baseline_pp": -0.2,
+      "special_vs_baseline_pp": -0.63,
+      "deterministic_reproducible": true,
+      "adapter_source_risk": "LOW",
+      "semantic_compliance": true,
+      "z_test": {
+        "z": -0.4012,
+        "p_value": 0.6559,
+        "significant_at_05": false
+      },
+      "classification": "WATCHLIST_REHEARSAL_ONLY",
+      "classification_reason": "M3+ 3.67% < baseline 3.87%. Below baseline \u2014 not recommended for production apply at this time.",
+      "in_prod_db": false
+    }
+  },
+  "coverage_value": {
+    "cold_complement_2bet": {
+      "below_baseline": true,
+      "margin_from_baseline": 0.0021,
+      "adds_coverage_value": true,
+      "coverage_note": "Within 0.3pp of baseline \u2014 adds coverage diversity with acceptable performance cost"
+    },
+    "fourier30_markov30_2bet": {
+      "below_baseline": false,
+      "margin_from_baseline": 0.0019,
+      "adds_coverage_value": true,
+      "coverage_note": "Within 0.3pp of baseline \u2014 adds coverage diversity with acceptable performance cost"
+    },
+    "zonal_entropy_2bet": {
+      "below_baseline": true,
+      "margin_from_baseline": 0.0021,
+      "adds_coverage_value": true,
+      "coverage_note": "Within 0.3pp of baseline \u2014 adds coverage diversity with acceptable performance cost"
+    }
+  },
+  "cohort_decision": "PARTIAL_COHORT_P58",
+  "p58_cohort": [
+    "fourier30_markov30_2bet"
+  ],
+  "watchlist": [
+    "cold_complement_2bet",
+    "zonal_entropy_2bet"
+  ],
+  "p58_proposal": {
+    "phase": "P58",
+    "title": "POWER_LOTTO Wave 5 Controlled Production Apply",
+    "controlled_apply_id": "p58_powerlotto_wave5_controlled_apply",
+    "strategies": [
+      "fourier30_markov30_2bet"
+    ],
+    "rows_per_strategy": 1500,
+    "expected_new_rows": 1500,
+    "production_rows_before": 42460,
+    "projected_rows_after": 43960,
+    "authorization_phrase_required": "YES apply Wave 5 POWER_LOTTO strategies to production DB",
+    "pre_apply_checks": [
+      "drift guard PASS (--strict)",
+      "branch governance guard PASS (--expected-rows 42460)",
+      "duplicate check: 0 rows already exist for (lottery_type, target_draw, strategy_id)",
+      "schema validation PASS on all rows before apply",
+      "leakage check PASS (0 violations)",
+      "forbidden staging scan PASS",
+      "sqlite3 row count == 42460 before apply"
+    ],
+    "rollback_requirements": [
+      "Take DB backup: cp lottery_api/data/lottery_v2.db lottery_api/data/lottery_v2.db.bak_p58",
+      "Apply via transaction: BEGIN; INSERT ...; COMMIT;",
+      "On failure: ROLLBACK; restore from backup",
+      "Verify row count == projected_after after commit"
+    ],
+    "forbidden_staging": [
+      "DB / data files",
+      "pid files",
+      "backups",
+      "runtime files",
+      "raw feeds",
+      ".fuse_hidden*",
+      ".gitignore",
+      ".claude/worktrees",
+      "unrelated p-series outputs/docs/tests",
+      "CEO-Decision.md / active_task.md unless authorized"
+    ],
+    "tests_required": [
+      "tests/test_replay_lifecycle_drift_guard.py",
+      "tests/test_replay_api_contract.py",
+      "tests/test_replay_branch_governance_guard.py",
+      "tests/test_p56_powerlotto_wave5_adapter_bootstrap_dryrun.py",
+      "tests/test_p57_powerlotto_wave5_controlled_rehearsal_readiness.py",
+      "tests/test_p58_powerlotto_wave5_controlled_apply.py (to be created)"
+    ],
+    "governance_constraints": [
+      "No git add -A or git add .",
+      "Whitelist-only staging",
+      "lifecycle must be set to ONLINE for production rows",
+      "Champion fourier_rhythm_3bet must remain ONLINE",
+      "No registry mutation beyond controlled apply rows",
+      "No live API calls",
+      "No browser smoke tests"
+    ],
+    "branch": "p58-powerlotto-wave5-controlled-apply (to be created, requires authorization)",
+    "note": "P58 must be separately authorized. P57 recommendation does NOT constitute P58 authorization."
+  },
+  "governance": {
+    "production_db_write": false,
+    "lifecycle_promotion": false,
+    "champion_replacement": false,
+    "registry_mutation": false,
+    "live_api_call": false
+  },
+  "overall_ok": true,
+  "p56_ref": {
+    "commit": "c3f0325",
+    "classification": "P56_POWERLOTTO_WAVE5_ADAPTER_BOOTSTRAP_DRYRUN_COMPLETED"
+  }
+}

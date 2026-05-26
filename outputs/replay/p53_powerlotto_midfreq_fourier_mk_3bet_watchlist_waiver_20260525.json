@@ -1,0 +1,178 @@
+{
+  "task": "P53",
+  "description": "POWER_LOTTO midfreq_fourier_mk_3bet WATCHLIST Waiver Staging",
+  "generated_at": "2026-05-25T04:30:00.000000+00:00",
+  "phase_classification": "P53_WATCHLIST_STAGED_WITH_G4_WAIVER",
+  "p52_source": "outputs/replay/p52_powerlotto_midfreq_fourier_mk_3bet_promotion_readiness_20260525.json",
+  "p52_commit": "1b32e6a",
+  "p53_branch": "p53-powerlotto-watchlist-waiver-staging",
+  "governance": {
+    "no_db_write": true,
+    "no_lifecycle_promotion": true,
+    "no_registry_mutation": true,
+    "no_online_promotion": true,
+    "no_champion_replacement": true,
+    "no_wave5_wiring": true,
+    "production_rows_before": 42460,
+    "production_rows_after": 42460,
+    "watchlist_staging_method": "docs-only governance declaration"
+  },
+  "waiver": {
+    "waiver_id": "P53_G4_WAIVER_20260525",
+    "waiver_granted": true,
+    "waiver_phrase_received": "YES waive G4 for P53 WATCHLIST staging because candidate has stable mean-hit advantage but champion still wins hit_count>=3",
+    "waiver_authorizes": "WATCHLIST staging only",
+    "waiver_does_not_authorize": ["ONLINE promotion", "champion replacement", "production DB row write", "Wave 5 wiring"]
+  },
+  "preflight": {
+    "repo": "/Users/kelvin/Kelvin-WorkSpace/LotteryNew",
+    "branch": "p53-powerlotto-watchlist-waiver-staging",
+    "base_branch": "main",
+    "p52_on_main": true,
+    "production_rows": 42460,
+    "drift_guard": "REPLAY_LIFECYCLE_DRIFT_GUARD_PASS",
+    "branch_governance_guard": "BRANCH_GOVERNANCE_PASS",
+    "dirty_files_acknowledged": true
+  },
+  "p52_key_findings": {
+    "strategy": "midfreq_fourier_mk_3bet",
+    "mean_hit": 1.027333,
+    "theoretical_baseline": 0.9474,
+    "champion_mean_hit": 0.9927,
+    "mean_hit_vs_champion_delta": 0.034633,
+    "permutation_p": 0.0003,
+    "rolling_windows": {
+      "W150": 0.986667,
+      "W500": 1.008,
+      "W1500": 1.027333,
+      "all_above_theoretical_baseline": true
+    },
+    "cohens_d_vs_champion": 0.038,
+    "cohens_d_interpretation": "negligible"
+  },
+  "g4_restatement": {
+    "threshold": "hit_count >= 3",
+    "b_candidate_wins": 42,
+    "c_champion_wins": 50,
+    "n_discordant": 92,
+    "direction": "CHAMPION_FAVORED",
+    "chi2_continuity_corrected": 0.5326,
+    "p_value": 0.465512,
+    "significant": false,
+    "policy": "G4_REQUIRES_WAIVER",
+    "waiver_granted": true
+  },
+  "supplementary_mcnemar_g5a": {
+    "threshold": "hit_count >= 2",
+    "b_candidate_wins": 184,
+    "c_champion_wins": 157,
+    "n_discordant": 341,
+    "both_win": 223,
+    "neither_wins": 936,
+    "total_paired": 1500,
+    "direction": "CANDIDATE_FAVORED",
+    "chi2_continuity_corrected": 1.9824,
+    "p_value": 0.159137,
+    "exact_binomial_p": 0.159037,
+    "significant": false,
+    "interpretation": "Direction reversal: candidate wins more discordant pairs at hit>=2 tier. Candidate advantage is concentrated in moderate-hit (1-2) draws. Not yet statistically significant at alpha=0.05 but directionally favorable.",
+    "p53_conclusion": "G5a DIRECTION_PASS — candidate not rejected at moderate prize tier"
+  },
+  "hit_distributions": {
+    "candidate_midfreq_fourier_mk_3bet": {
+      "hit_0": {"count": 439, "pct": 29.27},
+      "hit_1": {"count": 654, "pct": 43.60},
+      "hit_2": {"count": 341, "pct": 22.73},
+      "hit_3": {"count": 59,  "pct": 3.93},
+      "hit_4": {"count": 7,   "pct": 0.47},
+      "total": 1500,
+      "mean_hit": 1.027333
+    },
+    "champion_fourier_rhythm_3bet": {
+      "hit_0": {"count": 467, "pct": 31.13},
+      "hit_1": {"count": 653, "pct": 43.53},
+      "hit_2": {"count": 306, "pct": 20.40},
+      "hit_3": {"count": 72,  "pct": 4.80},
+      "hit_4": {"count": 2,   "pct": 0.13},
+      "total": 1500,
+      "mean_hit": 0.9927
+    },
+    "profile_note": "Candidate has fewer 0-hit draws and more 2-hit draws; champion has more 3-hit draws. Candidate advantage is at moderate prize tier, champion advantage is at high prize tier."
+  },
+  "special_hit": {
+    "candidate_midfreq_fourier_mk_3bet": {
+      "special_hit_count": 178,
+      "total_draws": 1500,
+      "special_hit_rate": 0.118667
+    },
+    "champion_fourier_rhythm_3bet": {
+      "special_hit_count": 0,
+      "total_draws": 1500,
+      "special_hit_rate": 0.0
+    },
+    "comparability_caveat": "Champion has 0 special hits — likely uses null predicted_special. These strategies are not comparable on special_hit metric. Candidate 11.87% is close to theoretical 12.5% per single-bet baseline.",
+    "semantic_note": "special_hit is kept separate from hit_count per POWER_LOTTO semantics. NOT folded into hit_count."
+  },
+  "watchlist_declaration": {
+    "strategy_id": "midfreq_fourier_mk_3bet",
+    "lottery_type": "POWER_LOTTO",
+    "watchlist_status": "WATCHLIST",
+    "watchlist_since": "2026-05-25",
+    "waiver_id": "P53_G4_WAIVER_20260525",
+    "champion_active": "fourier_rhythm_3bet",
+    "champion_status": "ACTIVE — NOT replaced",
+    "staging_method": "docs-only governance declaration (no DB write)",
+    "online_promotion_authorized": false,
+    "promotion_requires": "Explicit P54 authorization + separate task + 300+ additional OOS draws"
+  },
+  "oos_holdout_plan": {
+    "start_draw": "115000041",
+    "current_latest_draw": "115000040",
+    "target_oos_draws": 500,
+    "draw_frequency": "approximately 2x per week",
+    "estimated_calendar_span_years": 4.8,
+    "interim_gates": [
+      {"draws": 150, "calendar": "~18 months from 2026-05-25", "action": "review WATCHLIST continuation"},
+      {"draws": 300, "calendar": "~36 months from 2026-05-25", "action": "review G4 direction parity + promotion eligibility check"},
+      {"draws": 500, "calendar": "~48 months from 2026-05-25", "action": "full OOS evaluation — promotion or archive decision"}
+    ],
+    "metrics_to_track": {
+      "mean_hit": {"current": 1.027333, "watchlist_floor": 1.000, "promotion_threshold": 1.020},
+      "W150": {"current": 0.986667, "floor": 0.9474},
+      "W500": {"current": 1.008, "floor": 0.9474},
+      "mcnemar_hit_ge2_p": {"current": 0.159, "watchlist_target": "< 0.10", "promotion_target": "< 0.05"},
+      "mcnemar_hit_ge3_direction": {"current": "champion-favored (50>42)", "watchlist_target": "parity or better", "promotion_target": "b >= c AND p < 0.10"},
+      "permutation_p": {"current": 0.0003, "watchlist_floor": "< 0.05"},
+      "special_hit_rate": {"current": 0.118667, "normal_range": [0.08, 0.16]}
+    },
+    "conditional_fail_triggers": [
+      "Any W-window drops below theoretical baseline for 2 consecutive review periods",
+      "mean_hit drops below 0.980",
+      "McNemar hit>=3 c/b ratio exceeds 1.3 (currently 50/42 = 1.190)"
+    ],
+    "full_fail_archive_triggers": [
+      "W1500 drops below theoretical baseline after 300+ additional draws",
+      "permutation p rises above 0.10 after full OOS extension",
+      "Both McNemar thresholds fail direction parity"
+    ],
+    "online_promotion_triggers": [
+      "300+ additional draws accumulated",
+      "McNemar hit>=3 reaches direction parity (b >= c) OR p < 0.10",
+      "McNemar hit>=2 reaches p < 0.05",
+      "All W-windows above baseline",
+      "No drift event (PSI < 0.20) during monitoring period",
+      "Separate P54 authorization with explicit promotion phrase"
+    ],
+    "no_fake_rows": true
+  },
+  "per_strategy_classifications": {
+    "midfreq_fourier_mk_3bet": "WATCHLIST_STAGED_WITH_G4_WAIVER",
+    "pp3_freqort_4bet": "INCONCLUSIVE",
+    "midfreq_fourier_2bet": "INCONCLUSIVE"
+  },
+  "coverage_denominator": {
+    "strategy_groups_row_backed": "28 / 59",
+    "gap_to_target_rows": 46500
+  },
+  "overall_p53_classification": "P53_WATCHLIST_STAGED_WITH_G4_WAIVER"
+}

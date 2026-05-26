@@ -1,0 +1,128 @@
+{
+  "schema_version": "1.0",
+  "task_id": "P64b",
+  "strategy_id": "lag_reversion_2bet",
+  "run_id": "p64b_lag_reversion_wave6_mini_backtest_20260525",
+  "generated_at": "2026-05-25T08:58:00.218516+00:00",
+  "marker": "P64B_LAG_REVERSION_WAVE6_MINI_BACKTEST_20260525",
+  "governance": {
+    "db_writes": false,
+    "online_promotions": false,
+    "champion_replacement": false,
+    "registry_mutation": false,
+    "production_apply": false,
+    "production_rows_before": 43960,
+    "production_rows_after": 43960,
+    "temp_db": null
+  },
+  "algorithm": {
+    "name": "lag_reversion_median_interval_overdue",
+    "lag_window": 500,
+    "mechanism": "Per-ball median interval overdue ranking \u2014 score = current_lag / (median_interval + 0.1)",
+    "bet0_selection": "Top 6 numbers by overdue score",
+    "special_method": "frequency_mean_reversion_100w",
+    "deterministic": true,
+    "no_random_seed": true,
+    "source_model": "lottery_api/models/lag_reversion.py",
+    "source_tool": "tools/power_lag_reversion.py",
+    "pool": 38,
+    "pick": 6,
+    "special_pool": 8
+  },
+  "backtest_config": {
+    "windows": [
+      150,
+      500,
+      1500
+    ],
+    "evidence_gate_threshold_m3plus_pct": 3.87,
+    "min_history": 10,
+    "in_memory_only": true,
+    "no_db_writes": true
+  },
+  "window_results": {
+    "150": {
+      "window": 150,
+      "actual_window": 150,
+      "predicted_count": 150,
+      "skipped_count": 0,
+      "hit_distribution": {
+        "0": 43,
+        "1": 79,
+        "2": 27,
+        "3": 1,
+        "4": 0,
+        "5": 0,
+        "6": 0
+      },
+      "m3plus_count": 1,
+      "m3plus_rate_pct": 0.6667,
+      "theoretical_baseline_pct": 3.87,
+      "vs_baseline_pp": -3.2033,
+      "special_hit_count": 16,
+      "special_hit_rate_pct": 10.6667,
+      "avg_hit_count": 0.9067,
+      "gate_pass": false
+    },
+    "500": {
+      "window": 500,
+      "actual_window": 500,
+      "predicted_count": 500,
+      "skipped_count": 0,
+      "hit_distribution": {
+        "0": 149,
+        "1": 245,
+        "2": 96,
+        "3": 10,
+        "4": 0,
+        "5": 0,
+        "6": 0
+      },
+      "m3plus_count": 10,
+      "m3plus_rate_pct": 2.0,
+      "theoretical_baseline_pct": 3.87,
+      "vs_baseline_pp": -1.87,
+      "special_hit_count": 62,
+      "special_hit_rate_pct": 12.4,
+      "avg_hit_count": 0.934,
+      "gate_pass": false
+    },
+    "1500": {
+      "window": 1500,
+      "actual_window": 1500,
+      "predicted_count": 1500,
+      "skipped_count": 0,
+      "hit_distribution": {
+        "0": 456,
+        "1": 699,
+        "2": 289,
+        "3": 55,
+        "4": 1,
+        "5": 0,
+        "6": 0
+      },
+      "m3plus_count": 56,
+      "m3plus_rate_pct": 3.7333,
+      "theoretical_baseline_pct": 3.87,
+      "vs_baseline_pp": -0.1367,
+      "special_hit_count": 178,
+      "special_hit_rate_pct": 11.8667,
+      "avg_hit_count": 0.964,
+      "gate_pass": false
+    }
+  },
+  "evidence_gate": {
+    "threshold_m3plus_pct": 3.87,
+    "gate_passed": false,
+    "gate_pass_windows": [],
+    "best_window": 1500,
+    "best_m3plus_pct": 3.7333,
+    "best_vs_baseline_pp": -0.1367,
+    "adapter_decision": "DEFER_ADAPTER_BUILD",
+    "rationale": "M3+ < 3.87% in all windows. Best: 3.73% in window-1500 (-0.14pp). Adapter build deferred."
+  },
+  "preceding_task": "P64a",
+  "next_task": "P64c (zonal_entropy_2bet determinism fix or defer)",
+  "base_commit": "80611f3",
+  "classification": "P64B_LAG_REVERSION_WAVE6_MINI_BACKTEST_GATE_FAIL"
+}

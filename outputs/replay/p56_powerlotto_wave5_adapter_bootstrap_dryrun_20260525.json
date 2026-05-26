@@ -1,0 +1,119 @@
+{
+  "run_id": "p56_wave5_powerlotto_dryrun_20260525",
+  "classification": "P56_POWERLOTTO_WAVE5_ADAPTER_BOOTSTRAP_DRYRUN_COMPLETED",
+  "wave": "5",
+  "lottery_type": "POWER_LOTTO",
+  "branch": "p56-powerlotto-wave5-adapter-bootstrap-dryrun",
+  "started_at": "2026-05-25T05:10:52.552620+00:00",
+  "finished_at": "2026-05-25T05:10:53.462226+00:00",
+  "strategies": [
+    "cold_complement_2bet",
+    "fourier30_markov30_2bet",
+    "zonal_entropy_2bet"
+  ],
+  "rows_per_strategy": 1500,
+  "expected_dry_run_rows": 4500,
+  "actual_raw_rows": 4500,
+  "production_rows_before": 42460,
+  "production_rows_after": 42460,
+  "production_rows_ok": true,
+  "schema_validation": {
+    "valid": true,
+    "errors": []
+  },
+  "data_leakage_check": {
+    "violation_count": 0,
+    "violations": [],
+    "pass": true
+  },
+  "row_counts_by_strategy": {
+    "cold_complement_2bet": 1500,
+    "fourier30_markov30_2bet": 1500,
+    "zonal_entropy_2bet": 1500
+  },
+  "hit_stats": {
+    "cold_complement_2bet": {
+      "predicted": 1500,
+      "errors": 0,
+      "total": 1500,
+      "hit_3plus": 55,
+      "hit_3plus_rate": 0.0367,
+      "special_hits": 178,
+      "special_hit_rate": 0.1187,
+      "hit_breakdown": {
+        "0": 477,
+        "1": 694,
+        "2": 274,
+        "3": 51,
+        "4": 4,
+        "5": 0,
+        "6": 0
+      }
+    },
+    "fourier30_markov30_2bet": {
+      "predicted": 1500,
+      "errors": 0,
+      "total": 1500,
+      "hit_3plus": 61,
+      "hit_3plus_rate": 0.0407,
+      "special_hits": 178,
+      "special_hit_rate": 0.1187,
+      "hit_breakdown": {
+        "0": 472,
+        "1": 675,
+        "2": 292,
+        "3": 57,
+        "4": 4,
+        "5": 0,
+        "6": 0
+      }
+    },
+    "zonal_entropy_2bet": {
+      "predicted": 1500,
+      "errors": 0,
+      "total": 1500,
+      "hit_3plus": 55,
+      "hit_3plus_rate": 0.0367,
+      "special_hits": 178,
+      "special_hit_rate": 0.1187,
+      "hit_breakdown": {
+        "0": 477,
+        "1": 694,
+        "2": 274,
+        "3": 51,
+        "4": 4,
+        "5": 0,
+        "6": 0
+      }
+    }
+  },
+  "rehearsal": {
+    "r1_apply": {
+      "r1_inserted": 4500,
+      "r1_total_after": 4500,
+      "r1_expected": 4500,
+      "r1_ok": true
+    },
+    "r2_idempotency": {
+      "r2_before": 4500,
+      "r2_duplicate_inserted": 0,
+      "r2_after": 4500,
+      "r2_idempotent": true
+    },
+    "r3_rollback": {
+      "r3_before": 4500,
+      "r3_after": 0,
+      "r3_rollback_ok": true
+    }
+  },
+  "temp_db_path": "/tmp/p56_temp.db",
+  "governance": {
+    "production_db_write": false,
+    "lifecycle_promotion": false,
+    "champion_replacement": false,
+    "all_dry_run": true,
+    "adapters_not_in_registry": true
+  },
+  "adapter_file": "lottery_api/models/p56_wave5_powerlotto_adapters.py",
+  "overall_ok": true
+}

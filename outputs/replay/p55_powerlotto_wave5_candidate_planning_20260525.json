@@ -1,0 +1,230 @@
+{
+  "task": "P55",
+  "task_name": "POWER_LOTTO Wave 5 Candidate Planning",
+  "classification": "P55_POWERLOTTO_WAVE5_CANDIDATE_PLANNING_COMPLETED",
+  "date": "2026-05-25",
+  "branch": "p55-wave5-powerlotto-candidate-planning",
+  "no_db_write": true,
+  "production_rows": 42460,
+  "powerlotto_rows_before": 9140,
+  "powerlotto_rows_after": 9140,
+
+  "governance_constraints": {
+    "no_adapter_implementation": true,
+    "no_lifecycle_promotion": true,
+    "no_registry_mutation": true,
+    "no_db_write": true,
+    "no_champion_replacement": true,
+    "champion": "fourier_rhythm_3bet",
+    "champion_status": "ONLINE"
+  },
+
+  "current_coverage": {
+    "pre_wave4_strategies": [
+      {
+        "strategy_id": "fourier_rhythm_3bet",
+        "status": "ONLINE",
+        "rows": 1500,
+        "note": "champion"
+      },
+      {
+        "strategy_id": "power_orthogonal_5bet",
+        "status": "PREDICTED",
+        "rows": 1570
+      },
+      {
+        "strategy_id": "power_precision_3bet",
+        "status": "PREDICTED",
+        "rows": 1570
+      }
+    ],
+    "wave4_strategies": [
+      {
+        "strategy_id": "midfreq_fourier_mk_3bet",
+        "classification": "WATCHLIST",
+        "rows": 1500,
+        "note": "G4_REQUIRES_WAIVER, 500-draw OOS gate active"
+      },
+      {
+        "strategy_id": "midfreq_fourier_2bet",
+        "classification": "INCONCLUSIVE",
+        "rows": 1500,
+        "note": "p=0.073 > 0.05, below gate"
+      },
+      {
+        "strategy_id": "pp3_freqort_4bet",
+        "classification": "INCONCLUSIVE",
+        "rows": 1500,
+        "note": "RSM edge -0.68%, below baseline"
+      }
+    ],
+    "total_powerlotto_rows": 9140
+  },
+
+  "strategy_universe": {
+    "p0_total_strategies": 512,
+    "powerlotto_typed": 12,
+    "already_covered": 6,
+    "evaluated_as_candidates": 10,
+    "rejected_in_registry": 13
+  },
+
+  "candidate_scores": {
+    "cold_complement_2bet": {
+      "description": "Cold-reversion 2-bet (power_twin_strike pattern)",
+      "mechanism": "Cold frequency — ranks 1-6 (bet-0) and 7-12 (bet-1), non-overlapping",
+      "tool": "tools/power_twin_strike.py",
+      "bet_count": 2,
+      "score": 75,
+      "priority": "HIGH",
+      "validated_edge_n200": 0.0045,
+      "needs_1500p_confirmation": true,
+      "dimensions": {
+        "executable_readiness": 8,
+        "data_availability": 10,
+        "adapter_complexity": 8,
+        "powerlotto_compatibility": 10,
+        "backfill_feasibility": 9,
+        "uniqueness": 10,
+        "overlap_risk_inverted": 9,
+        "testability": 9,
+        "coverage_value": 9,
+        "governance_risk_inverted": 5
+      }
+    },
+    "fourier30_markov30_2bet": {
+      "description": "Short-window Fourier30+Markov30 2-bet",
+      "mechanism": "FFT on 30-period window (bet-0) + Markov transition on 30-period (bet-1)",
+      "tool": "RSM monitored; P42 parallel for BIG_LOTTO",
+      "bet_count": 2,
+      "score": 72,
+      "priority": "HIGH",
+      "note": "Distinct from champion Fourier-500; short-window captures regime shifts",
+      "dimensions": {
+        "executable_readiness": 9,
+        "data_availability": 10,
+        "adapter_complexity": 7,
+        "powerlotto_compatibility": 8,
+        "backfill_feasibility": 9,
+        "uniqueness": 9,
+        "overlap_risk_inverted": 8,
+        "testability": 9,
+        "coverage_value": 8,
+        "governance_risk_inverted": 5
+      }
+    },
+    "zonal_entropy_2bet": {
+      "description": "Entropy-adaptive zonal selection (scientific_power_predict pattern)",
+      "mechanism": "Shannon entropy on 30-draw zone distribution; regime-switch cold/cluster",
+      "tool": "tools/power_scientific_zonal.py",
+      "bet_count": 2,
+      "score": 64,
+      "priority": "MEDIUM",
+      "prerequisite": "Determinism review required — remove random.seed(42)",
+      "dimensions": {
+        "executable_readiness": 6,
+        "data_availability": 10,
+        "adapter_complexity": 5,
+        "powerlotto_compatibility": 9,
+        "backfill_feasibility": 7,
+        "uniqueness": 8,
+        "overlap_risk_inverted": 7,
+        "testability": 7,
+        "coverage_value": 7,
+        "governance_risk_inverted": 3
+      }
+    }
+  },
+
+  "wave5_shortlist": [
+    {
+      "rank": 1,
+      "strategy_id": "cold_complement_2bet",
+      "score": 75,
+      "priority": "HIGH",
+      "p56_adapter_effort": "LOW"
+    },
+    {
+      "rank": 2,
+      "strategy_id": "fourier30_markov30_2bet",
+      "score": 72,
+      "priority": "HIGH",
+      "p56_adapter_effort": "LOW-MEDIUM"
+    },
+    {
+      "rank": 3,
+      "strategy_id": "zonal_entropy_2bet",
+      "score": 64,
+      "priority": "MEDIUM",
+      "p56_adapter_effort": "MEDIUM",
+      "prerequisite": "determinism_review"
+    }
+  ],
+
+  "excluded_candidates": [
+    {
+      "strategy_id": "power_triple_strike",
+      "disposition": "EXCLUDED",
+      "reason": "Edge -3.04% < baseline 11.14% in 1500p walk-forward (FCF_TS3 report). Fails ROI gate."
+    },
+    {
+      "strategy_id": "powerlotto_2bet_fourier_rhythm",
+      "disposition": "EXCLUDED",
+      "reason": "High overlap with champion fourier_rhythm_3bet (same algorithm, subset bet)"
+    },
+    {
+      "strategy_id": "powerlotto_3bet_power_precision",
+      "disposition": "EXCLUDED",
+      "reason": "Duplicate of power_precision_3bet (already row-backed, 1570 rows)"
+    },
+    {
+      "strategy_id": "powerlotto_5bet_orthogonal",
+      "disposition": "EXCLUDED",
+      "reason": "Duplicate of power_orthogonal_5bet (already row-backed, 1570 rows)"
+    },
+    {
+      "strategy_id": "pp3_freqort_3bet",
+      "disposition": "DEFERRED",
+      "reason": "Too similar to Wave 4 INCONCLUSIVE pp3_freqort_4bet; only bet-count differs"
+    },
+    {
+      "strategy_id": "power_lotto_pp3_sum_regime",
+      "disposition": "DEFERRED",
+      "reason": "WATCHING status; no clear implementation path"
+    },
+    {
+      "strategy_id": "regime_adaptive_5bet",
+      "disposition": "DEFERRED",
+      "reason": "5-bet complexity HIGH; mechanistic overlap with power_orthogonal_5bet"
+    }
+  ],
+
+  "p56_readiness_plan": {
+    "adapter_file": "lottery_api/models/p56_wave5_powerlotto_adapters.py",
+    "pattern_reference": "lottery_api/models/p47_wave4_powerlotto_adapters.py",
+    "lifecycle_for_all": "DRY_RUN",
+    "dry_run_target_db": "/tmp/p56_temp.db",
+    "planned_rows": {
+      "cold_complement_2bet": 3000,
+      "fourier30_markov30_2bet": 3000,
+      "zonal_entropy_2bet": 3000,
+      "total": 9000
+    },
+    "governance_sequence": ["P56", "P57", "P58", "P59"],
+    "p56_must_not": [
+      "no production apply (dry_run=0)",
+      "no lifecycle promotion to ONLINE",
+      "no modification of replay_strategy_registry._ALL_ADAPTERS",
+      "no writes to lottery_v2.db",
+      "no alteration of CEO-Decision.md"
+    ]
+  },
+
+  "post_flight": {
+    "production_rows": 42460,
+    "powerlotto_rows": 9140,
+    "drift_guard": "PASS",
+    "branch_governance_guard": "PASS",
+    "forbidden_staging_scan": "CLEAR"
+  }
+}

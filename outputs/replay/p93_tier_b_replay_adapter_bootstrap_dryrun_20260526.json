@@ -1,0 +1,108 @@
+{
+  "task": "P93",
+  "title": "Tier B Replay Adapter Bootstrap + Temp-DB Dry-run Rehearsal",
+  "date": "2026-05-26",
+  "generated_at": "2026-05-26T14:27:36.665817+00:00",
+  "final_classification": "P93_TIER_B_REPLAY_ADAPTER_BOOTSTRAP_DRYRUN_COMPLETE",
+  "db_writes_to_prod": false,
+  "production_db_path": "/Users/kelvin/Kelvin-WorkSpace/LotteryNew/lottery_api/data/lottery_v2.db",
+  "temp_db_path": "/tmp/p93_tierb_dryrun_rehearsal.db",
+  "production_rows_before": 46962,
+  "production_rows_after": 46962,
+  "prod_unchanged": true,
+  "power_lotto_max_draw_before": "115000041",
+  "power_lotto_max_draw_after": "115000041",
+  "target_strategies_count": 5,
+  "complete_count": 5,
+  "blocked_count": 0,
+  "total_temp_dry_run_rows": 7500,
+  "dry_run_flag_all_rows": true,
+  "strategies": [
+    {
+      "strategy_id": "daily539_f4cold_3bet",
+      "lottery_type": "DAILY_539",
+      "expected_bets": 3,
+      "status": "COMPLETE",
+      "rows_generated": 1500,
+      "rows_ready": 1500,
+      "rows_blocked": 0,
+      "block_reasons": {},
+      "target_window": 1500
+    },
+    {
+      "strategy_id": "daily539_f4cold_5bet",
+      "lottery_type": "DAILY_539",
+      "expected_bets": 5,
+      "status": "COMPLETE",
+      "rows_generated": 1500,
+      "rows_ready": 1500,
+      "rows_blocked": 0,
+      "block_reasons": {},
+      "target_window": 1500
+    },
+    {
+      "strategy_id": "biglotto_echo_aware_3bet",
+      "lottery_type": "BIG_LOTTO",
+      "expected_bets": 3,
+      "status": "COMPLETE",
+      "rows_generated": 1500,
+      "rows_ready": 1500,
+      "rows_blocked": 0,
+      "block_reasons": {},
+      "target_window": 1500
+    },
+    {
+      "strategy_id": "power_fourier_rhythm_2bet",
+      "lottery_type": "POWER_LOTTO",
+      "expected_bets": 2,
+      "status": "COMPLETE",
+      "rows_generated": 1500,
+      "rows_ready": 1500,
+      "rows_blocked": 0,
+      "block_reasons": {},
+      "target_window": 1500
+    },
+    {
+      "strategy_id": "biglotto_ts3_markov_4bet_w30",
+      "lottery_type": "BIG_LOTTO",
+      "expected_bets": 4,
+      "status": "COMPLETE",
+      "rows_generated": 1500,
+      "rows_ready": 1500,
+      "rows_blocked": 0,
+      "block_reasons": {},
+      "target_window": 1500
+    }
+  ],
+  "p94_recommendation": {
+    "scope": "controlled apply P93 dry-run validated strategies into production DB",
+    "preconditions": [
+      "All P93 tests PASS",
+      "Drift guard PASS",
+      "Branch governance PASS",
+      "Production replay_rows remains 46962",
+      "POWER_LOTTO max_draw remains 115000041",
+      "P93 final_classification == P93_TIER_B_REPLAY_ADAPTER_BOOTSTRAP_DRYRUN_COMPLETE"
+    ],
+    "expected_insert_delta": 7500,
+    "expected_post_p94_total": 54462,
+    "strategies_to_apply": [
+      "daily539_f4cold_3bet",
+      "daily539_f4cold_5bet",
+      "biglotto_echo_aware_3bet",
+      "power_fourier_rhythm_2bet",
+      "biglotto_ts3_markov_4bet_w30"
+    ]
+  },
+  "governance": {
+    "no_prod_db_writes": true,
+    "no_replay_row_insert_prod": true,
+    "no_lifecycle_mutation": true,
+    "no_champion_registry_mutation": true,
+    "no_official_api_ingestion": true,
+    "dry_run_flag": true,
+    "temp_db_only": true,
+    "causal_isolation": true,
+    "duplicate_guard": true
+  }
+}

@@ -1,0 +1,149 @@
+{
+  "project_context_lock": "LotteryNew",
+  "task": "P73_LOCAL_DB_RECOVERY_GUARD_APPLY_AUTH_HARDENING",
+  "date": "20260526",
+  "repo": "/Users/kelvin/Kelvin-WorkSpace/LotteryNew",
+  "branch": "p73-local-db-recovery-guard-apply-auth-hardening",
+  "head": "5e29c7b",
+  "authorization_mode": "READINESS_ONLY",
+  "production_rows_before": 46960,
+  "production_rows_after": 46960,
+  "p72_incident": {
+    "description": "During P72 post-merge verification, `git reset --hard origin/main` overwrote local live DB",
+    "rows_before_incident": 46960,
+    "rows_after_incident": 37960,
+    "row_delta": -9000,
+    "classification": "46960_to_37960_then_recovered",
+    "trigger": "git reset --hard origin/main",
+    "root_cause": "local live DB (lottery_api/data/lottery_v2.db) is git-tracked; `git reset --hard` reverted file to origin/main committed state, discarding 9000 locally-applied rows",
+    "recovery_steps": [
+      "cp lottery_api/data/lottery_v2.db.bak_p59_20260525_135638 lottery_api/data/lottery_v2.db",
+      "python scripts/p59_powerlotto_wave5_controlled_apply.py  (43960 rows, +1500)",
+      "python scripts/p66_wave6_controlled_apply.py             (46960 rows, +3000)"
+    ],
+    "recovery_result": "rows = 46960, drift guard PASS, branch governance PASS"
+  },
+  "root_cause": "lottery_api/data/lottery_v2.db is tracked by git; local live inserts accumulate as unstaged diffs; any `git reset --hard` is destructive when local DB is authoritative and ahead of committed state",
+  "prohibited_commands": [
+    "git reset --hard",
+    "git clean",
+    "git checkout -- lottery_api/data/lottery_v2.db",
+    "git stash (when DB is dirty)",
+    "rm -f lottery_api/data/lottery_v2.db"
+  ],
+  "required_pre_apply_backup_gate": {
+    "description": "Before any `YES apply P71 controlled replay rows` authorization is acted upon, the following gate must pass",
+    "steps": [
+      "1. Record current row count: sqlite3 lottery_api/data/lottery_v2.db 'SELECT COUNT(*) FROM strategy_prediction_replays;' — must equal 46960",
+      "2. Create timestamped backup: cp lottery_api/data/lottery_v2.db lottery_api/data/lottery_v2.db.bak_pre_p74_apply_$(date +%Y%m%d_%H%M%S)",
+      "3. Verify backup row count equals source: sqlite3 <backup_path> 'SELECT COUNT(*) FROM strategy_prediction_replays;' — must equal 46960",
+      "4. Record backup path in apply evidence JSON",
+      "5. Verify three reference controlled_apply_ids are present (1500 rows each)",
+      "6. Run drift guard PASS",
+      "7. Run branch governance PASS",
+      "8. Only then proceed with controlled apply"
+    ],
+    "abort_conditions": [
+      "source_rows != 46960",
+      "backup_rows != source_rows",
+      "drift guard FAIL",
+      "branch governance FAIL",
+      "backup file not created"
+    ]
+  },
+  "safe_post_merge_verification": {
+    "preferred_commands": [
+      "git fetch origin main",
+      "git log --oneline origin/main | head -10",
+      "git show origin/main:<path>   (inspect individual files)",
+      "git diff HEAD origin/main --name-only  (check what differs)"
+    ],
+    "forbidden_commands": [
+      "git reset --hard origin/main  (FORBIDDEN when local DB is authoritative)",
+      "git reset --hard  (FORBIDDEN unless explicit reset-hard authorization present and DB backup verified)",
+      "git clean  (FORBIDDEN)",
+      "git checkout -- . (FORBIDDEN)"
+    ],
+    "safe_merge_path": "If local branch must be fast-forwarded to origin/main: (1) verify DB backup exists, (2) get explicit `YES reset hard after verified DB backup` authorization, (3) only then run `git reset --hard origin/main`",
+    "post_merge_db_check": "After any git sync operation: immediately run `sqlite3 lottery_api/data/lottery_v2.db 'SELECT COUNT(*) FROM strategy_prediction_replays;'` and verify row count == 46960"
+  },
+  "apply_authorization_gate": {
+    "required_phrase": "YES apply P71 controlled replay rows",
+    "additional_requirements": [
+      "pre_apply_backup_gate must pass",
+      "duplicate_check must pass (no controlled_apply_id collision)",
+      "rollback_plan must be documented",
+      "drift_guard must PASS immediately before apply",
+      "branch_governance must PASS immediately before apply",
+      "post_apply_row_count must match expected",
+      "api_verification must confirm rows served correctly"
+    ]
+  },
+  "recommended_next_apply_scope": {
+    "phase": "P74",
+    "preferred_batch": "Batch_A_only_first",
+    "rationale": "Smallest risk surface; POWER_LOTTO; ACTIVE/ONLINE lifecycle; no duplicate ID risk; no RETIRED gate needed",
+    "batch_a_expected_rows": 3000,
+    "batch_a_total_after": 49960,
+    "full_apply_rows": 12000,
+    "full_apply_total_after": 58960,
+    "b2_b3_gate": "BLOCKED until lifecycle_promotion_gate explicitly resolved",
+    "midfreq_fourier_2bet_gate": "BLOCKED until lottery_type=DAILY_539 filter verified and post-apply POWER_LOTTO row count confirmed = 1500"
+  },
+  "batch_risk_table": [
+    {
+      "batch": "A",
+      "strategies": ["fourier_rhythm_3bet", "fourier30_markov30_2bet"],
+      "lottery_type": "POWER_LOTTO",
+      "lifecycle": ["ONLINE", "ACTIVE"],
+      "risk": "LOW",
+      "blocked": false,
+      "notes": "Ready for P74 apply; safe first wave"
+    },
+    {
+      "batch": "B1",
+      "strategies": ["539_3bet_orthogonal", "acb_single_539"],
+      "lottery_type": "DAILY_539",
+      "lifecycle": ["ACTIVE", "ACTIVE"],
+      "risk": "LOW",
+      "blocked": false,
+      "notes": "Ready for P74 apply after Batch A verified"
+    },
+    {
+      "batch": "B2",
+      "strategies": ["midfreq_acb_2bet", "midfreq_fourier_2bet"],
+      "lottery_type": "DAILY_539",
+      "lifecycle": ["RETIRED", "RETIRED"],
+      "risk": "MEDIUM",
+      "blocked": true,
+      "block_reason": "RETIRED lifecycle requires explicit lifecycle_promotion_gate before production apply",
+      "midfreq_fourier_2bet_extra_risk": "midfreq_fourier_2bet: dual strategy_id risk; must enforce WHERE lottery_type = 'DAILY_539'; post-apply verify POWER_LOTTO rows still = 1500"
+    },
+    {
+      "batch": "B3",
+      "strategies": ["acb_1bet", "acb_markov_midfreq_3bet"],
+      "lottery_type": "DAILY_539",
+      "lifecycle": ["RETIRED", "RETIRED"],
+      "risk": "MEDIUM",
+      "blocked": true,
+      "block_reason": "RETIRED lifecycle requires explicit lifecycle_promotion_gate before production apply"
+    }
+  ],
+  "exclusions": [
+    {"strategy": "BIG_LOTTO", "reason": "excluded from P71 scope"},
+    {"strategy": "cold_complement_2bet", "reason": "sub-baseline ROI"},
+    {"strategy": "zonal_entropy_2bet", "reason": "fallback-equivalent"},
+    {"strategy": "midfreq_fourier_mk_3bet", "reason": "OOS deferred"}
+  ],
+  "p6_sync_debt": "NOT resolved in P73; requires separate explicit authorization",
+  "no_db_write": true,
+  "no_force_push": true,
+  "no_reset_hard": true,
+  "no_git_clean": true,
+  "no_lifecycle_promotion": true,
+  "no_champion_replacement": true,
+  "no_registry_mutation": true,
+  "no_production_apply": true,
+  "requires_future_explicit_apply_authorization": true,
+  "final_classification": "P73_LOCAL_DB_RECOVERY_GUARD_APPLY_AUTH_HARDENING_MERGED_TO_MAIN"
+}

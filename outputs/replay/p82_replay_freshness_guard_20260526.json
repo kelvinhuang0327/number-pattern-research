@@ -1,0 +1,69 @@
+{
+  "guard": "P82_REPLAY_FRESHNESS_GUARD",
+  "checked_at": "2026-05-26T08:35:26.188402+00:00",
+  "db_path": "/Users/kelvin/Kelvin-WorkSpace/LotteryNew/lottery_api/data/lottery_v2.db",
+  "results": {
+    "POWER_LOTTO": {
+      "phase": "P82_REPLAY_FRESHNESS_GUARD",
+      "checked_at": "2026-05-26T08:35:26.186491+00:00",
+      "lottery_type": "POWER_LOTTO",
+      "db_path": "/Users/kelvin/Kelvin-WorkSpace/LotteryNew/lottery_api/data/lottery_v2.db",
+      "latest_draw": "115000041",
+      "latest_draw_date": "2026/05/21",
+      "replay_rows_total": 46962,
+      "strategies_checked": 9,
+      "strategies_with_latest_draw": [
+        "fourier30_markov30_2bet",
+        "fourier_rhythm_3bet"
+      ],
+      "strategies_without_latest_draw": [
+        "power_orthogonal_5bet",
+        "power_precision_3bet",
+        "cold_complement_2bet",
+        "midfreq_fourier_2bet",
+        "midfreq_fourier_mk_3bet",
+        "pp3_freqort_4bet",
+        "zonal_entropy_2bet"
+      ],
+      "batch_a_strategies": [
+        "fourier_rhythm_3bet",
+        "fourier30_markov30_2bet"
+      ],
+      "batch_a_covered": [
+        "fourier_rhythm_3bet",
+        "fourier30_markov30_2bet"
+      ],
+      "batch_a_gap": [],
+      "historical_strategies": [
+        "cold_complement_2bet",
+        "midfreq_fourier_2bet",
+        "midfreq_fourier_mk_3bet",
+        "power_orthogonal_5bet",
+        "power_precision_3bet",
+        "pp3_freqort_4bet",
+        "zonal_entropy_2bet"
+      ],
+      "historical_gap_expected": [
+        "cold_complement_2bet",
+        "midfreq_fourier_2bet",
+        "midfreq_fourier_mk_3bet",
+        "power_orthogonal_5bet",
+        "power_precision_3bet",
+        "pp3_freqort_4bet",
+        "zonal_entropy_2bet"
+      ],
+      "batch_a_coverage_pct": 100.0,
+      "overall_coverage_pct": 22.2,
+      "draw_gap_detected": false,
+      "replay_gap_detected": false,
+      "classification": "FRESHNESS_PASS",
+      "notes": [
+        "Batch A strategies: expected to have draw-ext row for latest draw.",
+        "Historical-only strategies: gap vs latest draw is EXPECTED (historical backfill only).",
+        "draw_gap_detected=True means NO strategy has the latest draw (critical).",
+        "replay_gap_detected=True means a Batch A strategy is missing latest draw (warning)."
+      ]
+    }
+  },
+  "overall_classification": "FRESHNESS_PASS"
+}

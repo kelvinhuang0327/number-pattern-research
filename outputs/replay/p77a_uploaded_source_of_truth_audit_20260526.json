@@ -1,0 +1,261 @@
+{
+  "task": "P77A",
+  "description": "Uploaded Source-of-Truth Audit for Replay Refresh",
+  "generated_at": "2026-05-26T07:00:00.000000+00:00",
+  "final_classification": "P77A_SOURCE_HAS_NEW_DRAWS_DB_IMPORT_INCOMPLETE",
+  "project_context_lock": "LotteryNew",
+  "repo": "/Users/kelvin/Kelvin-WorkSpace/LotteryNew",
+  "branch": "p77a-uploaded-source-of-truth-audit",
+  "head": "5356da5",
+  "governance": {
+    "no_db_write": true,
+    "no_draw_insert": true,
+    "no_replay_row_insert": true,
+    "no_official_api_call": true,
+    "no_new_tables": true,
+    "no_new_repo": true,
+    "no_new_worktree": true,
+    "no_git_reset_hard": true,
+    "no_git_clean": true,
+    "no_force_push": true,
+    "no_ceo_decision_modify": true,
+    "no_active_task_modify": true,
+    "audit_type": "read_only",
+    "production_rows_before": 46960,
+    "production_rows_after": 46960
+  },
+  "preflight": {
+    "repo_confirmed": "/Users/kelvin/Kelvin-WorkSpace/LotteryNew",
+    "starting_branch": "main",
+    "audit_branch": "p77a-uploaded-source-of-truth-audit",
+    "head": "5356da5",
+    "production_replay_rows": 46960,
+    "power_lotto_max_draw_in_db": "115000040",
+    "power_lotto_max_date_in_db": "2026/05/18",
+    "power_lotto_total_draws_in_db": 1912,
+    "power_lotto_draws_after_115000040": 0,
+    "drift_guard": "REPLAY_LIFECYCLE_DRIFT_GUARD_PASS",
+    "branch_governance_guard_pre": "BRANCH_GOVERNANCE_PASS — branch='main' rows=46960",
+    "branch_governance_guard_post": "BRANCH_GOVERNANCE_PASS — branch='p77a-uploaded-source-of-truth-audit' rows=46960"
+  },
+  "production_db_summary": {
+    "path": "lottery_api/data/lottery_v2.db",
+    "lottery_type_summary": [
+      {"lottery_type": "3_STAR", "count": 4115, "min_draw": 96000002, "max_draw": 115000024, "max_date": "2026/01/28"},
+      {"lottery_type": "BIG_LOTTO", "count": 2136, "min_draw": 96000001, "max_draw": 115000054, "max_date": "2026/05/19"},
+      {"lottery_type": "DAILY_539", "count": 5865, "min_draw": 96000001, "max_draw": 115000121, "max_date": "2026/05/18"},
+      {"lottery_type": "POWER_LOTTO", "count": 1912, "min_draw": 97000001, "max_draw": 115000040, "max_date": "2026/05/18"}
+    ],
+    "power_lotto_draws_after_115000040": 0
+  },
+  "source_candidates_inspected": [
+    {
+      "candidate_id": "C1",
+      "path": "backups/lottery_v2_pre_p66_wave6_20260525_093850.db",
+      "type": "SQLite DB (backup)",
+      "backup_timestamp": "2026-05-25T09:38:50",
+      "accessible": true,
+      "draws_table_exists": true,
+      "power_lotto_count": 1913,
+      "power_lotto_min_draw": 97000001,
+      "power_lotto_max_draw": 115000041,
+      "power_lotto_max_date": "2026/05/21",
+      "power_lotto_draws_after_115000040": 1,
+      "contains_115000041_plus": true,
+      "draw_115000041_detail": {
+        "draw": "115000041",
+        "date": "2026/05/21",
+        "numbers": [6, 14, 22, 28, 35, 38],
+        "special": 1,
+        "created_at": "2026-05-25T08:22:13",
+        "lottery_type": "POWER_LOTTO"
+      },
+      "assessment": "PRIMARY SOURCE FOUND — This backup contains draw 115000041 with full data. It was created at 2026-05-25 09:38:50, after draw 115000041 was inserted at 08:22:13. The current production DB does not have this draw."
+    },
+    {
+      "candidate_id": "C2",
+      "path": "backups/lottery_v2_pre_p66_wave6_20260526_044224.db",
+      "type": "SQLite DB (backup)",
+      "backup_timestamp": "2026-05-26T04:42:24",
+      "accessible": true,
+      "draws_table_exists": true,
+      "power_lotto_count": 1912,
+      "power_lotto_min_draw": 97000001,
+      "power_lotto_max_draw": 115000040,
+      "power_lotto_max_date": "2026/05/18",
+      "power_lotto_draws_after_115000040": 0,
+      "contains_115000041_plus": false,
+      "assessment": "Does not contain 115000041+. This backup was made after some DB state that removed 115000041. Matches current production DB max."
+    },
+    {
+      "candidate_id": "C3",
+      "path": "backups/lottery_v2_pre_p7_controlled_apply_20260520.db",
+      "type": "SQLite DB (backup)",
+      "backup_timestamp": "2026-05-20",
+      "accessible": true,
+      "draws_table_exists": true,
+      "power_lotto_count": 1912,
+      "power_lotto_max_draw": 115000040,
+      "power_lotto_max_date": "2026/05/18",
+      "power_lotto_draws_after_115000040": 0,
+      "contains_115000041_plus": false,
+      "assessment": "Pre-P7 backup. Same max as production DB. No new draws."
+    },
+    {
+      "candidate_id": "C4",
+      "path": "lottery_api/data/lottery_v2.db.bak_p59_20260525_135638",
+      "type": "SQLite DB (.bak file)",
+      "backup_timestamp": "2026-05-25T13:56:38",
+      "accessible": true,
+      "draws_table_exists": true,
+      "power_lotto_count": 1912,
+      "power_lotto_max_draw": 115000040,
+      "power_lotto_max_date": "2026/05/18",
+      "power_lotto_draws_after_115000040": 0,
+      "contains_115000041_plus": false,
+      "assessment": "P59 bak file (created 13:56 on May 25, after the first backup C1 at 09:38). Does NOT contain 115000041 — confirms DB was rolled back to 115000040 by the time of P59 execution."
+    },
+    {
+      "candidate_id": "C5",
+      "path": "lottery_api/data/lottery.db",
+      "type": "SQLite DB (legacy)",
+      "accessible": true,
+      "draws_table_exists": true,
+      "power_lotto_count": 1863,
+      "power_lotto_max_draw": 114000095,
+      "power_lotto_max_date": "2025/11/27",
+      "power_lotto_draws_after_115000040": 0,
+      "contains_115000041_plus": false,
+      "assessment": "Legacy DB. Stale — max draw 114000095 (Nov 2025). Not a source for recent draws."
+    },
+    {
+      "candidate_id": "C6",
+      "path": "lottery-api/data/lottery_history.json",
+      "type": "JSON",
+      "accessible": true,
+      "lottery_types_present": ["BIG_LOTTO"],
+      "power_lotto_count": 0,
+      "contains_115000041_plus": false,
+      "assessment": "BIG_LOTTO only (draws 97000020-97000105, timestamp 2026-01-15). No POWER_LOTTO data at all."
+    },
+    {
+      "candidate_id": "C7",
+      "path": "tests/大樂透加開獎項_2025.csv",
+      "type": "CSV",
+      "accessible": true,
+      "total_rows": 5180,
+      "lottery_types_present": ["春節加碼活動", "端午節加碼活動", "中秋節加碼活動"],
+      "power_lotto_count": 0,
+      "contains_115000041_plus": false,
+      "assessment": "BIG_LOTTO festival bonus draw data only. No POWER_LOTTO (威力彩) rows."
+    },
+    {
+      "candidate_id": "C8",
+      "path": "archive/data/大樂透加開獎項_2025.csv",
+      "type": "CSV",
+      "accessible": true,
+      "total_rows": 5180,
+      "lottery_types_present": ["春節加碼活動", "端午節加碼活動", "中秋節加碼活動"],
+      "power_lotto_count": 0,
+      "contains_115000041_plus": false,
+      "assessment": "Identical content to C7. BIG_LOTTO festival data only. No POWER_LOTTO rows."
+    },
+    {
+      "candidate_id": "C9",
+      "path": "data/converted_2024.csv",
+      "type": "CSV",
+      "accessible": true,
+      "lottery_types_present": ["BIG_LOTTO (implicitly)"],
+      "power_lotto_count": 0,
+      "contains_115000041_plus": false,
+      "assessment": "BIG_LOTTO 2024 draws (period 113000001+). No POWER_LOTTO rows."
+    },
+    {
+      "candidate_id": "C10",
+      "path": "data/lottery_v2.db",
+      "type": "SQLite DB",
+      "accessible": true,
+      "draws_table_exists": true,
+      "power_lotto_count": 0,
+      "contains_115000041_plus": false,
+      "assessment": "Empty POWER_LOTTO draws table. Not a source."
+    },
+    {
+      "candidate_id": "C11",
+      "path": "lottery_api/data/ingest_log.jsonl",
+      "type": "JSONL (ingest log)",
+      "accessible": true,
+      "total_entries": 16,
+      "power_lotto_entries": 3,
+      "last_power_lotto_ingest": "2026-05-18T14:53:53Z (draw 115000040)",
+      "mentions_115000041": false,
+      "contains_115000041_plus": false,
+      "assessment": "Last POWER_LOTTO ingest was 115000040 on 2026-05-18. No logged ingestion for 115000041. The 2026-05-25 08:22:13 creation in backup C1 was NOT logged through the standard backfill pipeline."
+    }
+  ],
+  "key_timeline": {
+    "2026-05-18T14:53:53Z": "POWER_LOTTO draw 115000040 backfilled via standard pipeline (logged in ingest_log.jsonl)",
+    "2026-05-25T08:22:13": "Draw 115000041 created in DB (found in backup C1 with this created_at — NOT logged in ingest_log.jsonl)",
+    "2026-05-25T08:25:19Z": "scan_missing for POWER_LOTTO returned missing=0 (115000041 was already in DB at this time)",
+    "2026-05-25T09:38:50": "Backup C1 created — captures DB state WITH draw 115000041",
+    "BETWEEN_C1_AND_P59": "Draw 115000041 was REMOVED from production DB (mechanism unclear — possible DB restore, rollback, or replacement from older snapshot)",
+    "2026-05-25T13:56:38": "P59 .bak file created — shows DB back to max 115000040 (115000041 already gone)",
+    "2026-05-26T04:42:24": "Backup C2 created — confirms max remains 115000040",
+    "2026-05-26 (current)": "Production DB max = 115000040, draws after 115000040 = 0"
+  },
+  "audit_answers": {
+    "Q1_where_is_original_source": "No standalone uploaded source file (CSV/XLSX/JSON) containing POWER_LOTTO draws was found. The only local source containing draw 115000041 is a backup DB: backups/lottery_v2_pre_p66_wave6_20260525_093850.db. The draw was inserted at 2026-05-25 08:22:13 through a mechanism not logged in ingest_log.jsonl (possibly direct DB write or API call outside the standard pipeline).",
+    "Q2_which_local_files_contain_draw_history": "See source_candidates_inspected for complete list. Primary candidates: C1 (backup with 115000041), C4 (P59 bak — max 115000040), C5 (legacy DB — max 114000095), lottery-api/data/lottery_history.json (BIG_LOTTO only).",
+    "Q3_max_draw_per_candidate": "C1 (backup 20260525_093850): max=115000041 (2026/05/21). All others: max ≤ 115000040.",
+    "Q4_uploaded_source_contains_115000041_plus": "YES — backup C1 contains draw 115000041 with full data: date=2026/05/21, numbers=[6,14,22,28,35,38], special=1. No uploaded file (CSV/XLSX/JSON) was found. The source is a backup DB.",
+    "Q5_blocker_root_cause": "SCENARIO_A: Source data EXISTS for 115000041 in backup C1, but is not in the current production DB. The draw was inserted at 2026-05-25 08:22:13, captured in backup at 09:38:50, then removed from production before the next captured state (P59 bak at 13:56:38). DB import is incomplete for draw 115000041. Draws 115000042+ are not in any local source (SCENARIO_B applies for draws beyond 115000041).",
+    "Q6_safest_next_step": "P77B: Controlled canonical draw refresh. Use backup C1 as verified source for draw 115000041. For draws 115000042+, use official API with P76 gates. All imports must go through P76 ingestion gate (schema validation, duplicate check, dry-run, DB backup, controlled_import_id). No direct DB write without governance."
+  },
+  "source_of_truth_conclusion": {
+    "classification": "P77A_SOURCE_HAS_NEW_DRAWS_DB_IMPORT_INCOMPLETE",
+    "primary_evidence": "backups/lottery_v2_pre_p66_wave6_20260525_093850.db contains POWER_LOTTO draw 115000041 (date=2026/05/21, numbers=[6,14,22,28,35,38], special=1)",
+    "draw_115000041_confirmed": true,
+    "draw_115000041_source": "backups/lottery_v2_pre_p66_wave6_20260525_093850.db",
+    "draw_115000042_plus_in_local_source": false,
+    "draw_115000042_plus_recommendation": "Use official Taiwan Lottery API with P76 ingestion gates",
+    "current_db_gap_count_minimum": 1,
+    "current_db_gap_draws": ["115000041"],
+    "potential_additional_gaps": ["115000042 (est. 2026-05-25, Mon)", "115000043 (est. 2026-05-29, Thu)"],
+    "no_fabrication_required": true,
+    "data_is_real": true
+  },
+  "recommended_next_phase": {
+    "phase": "P77B",
+    "name": "Controlled Canonical Draw Refresh",
+    "description": "Import draw 115000041 from backup C1 into production draws table using P76 ingestion gates. Then fetch and import 115000042+ from official API.",
+    "steps": [
+      "1. P77B pre-flight: verify backup C1 checksum and draw 115000041 data integrity",
+      "2. DB backup: create lottery_v2.db.bak_p77b_<timestamp> before any write",
+      "3. Dry-run validation of draw 115000041 data (schema check, duplicate check)",
+      "4. Controlled import of 115000041 from backup C1 into draws table (not as replay row)",
+      "5. Official API fetch for 115000042+ in dry-run mode per P76 gates",
+      "6. Controlled import of 115000042+ after schema validation",
+      "7. Post-import verification: draws > 115000040 count > 0, drift guard PASS",
+      "8. POWER_LOTTO replay rows for fourier_rhythm_3bet and fourier30_markov30_2bet remain at 1500 (no replay apply in P77B)"
+    ],
+    "constraints": [
+      "Use existing canonical draws table only",
+      "No new tables",
+      "No replay row inserts in P77B",
+      "All imports via P76 ingestion gates",
+      "Controlled import ID required (e.g. P77B_POWERLOTTO_DRAW_REFRESH_20260526)"
+    ],
+    "unblocks": "P74/P75 Batch A apply for fourier_rhythm_3bet and fourier30_markov30_2bet"
+  },
+  "forbidden_staging_scan": {
+    "db_files_staged": false,
+    "backup_files_staged": false,
+    "pid_runtime_files_staged": false,
+    "overall": "STAGE_CLEAN"
+  },
+  "files_created": [
+    "outputs/replay/p77a_uploaded_source_of_truth_audit_20260526.json",
+    "docs/replay/p77a_uploaded_source_of_truth_audit_20260526.md",
+    "tests/test_p77a_uploaded_source_of_truth_audit.py"
+  ]
+}

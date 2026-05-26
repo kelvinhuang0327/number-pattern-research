@@ -1,0 +1,243 @@
+{
+  "project_context_lock": "LotteryNew",
+  "task": "P78_BATCH_A_PLAN_REGENERATION",
+  "description": "Batch A dry-run plan regeneration for POWER_LOTTO draw 115000041",
+  "generated_at": "2026-05-26T08:00:00.000000+00:00",
+  "final_classification": "P78_BATCH_A_PLAN_REGENERATION_COMPLETE",
+  "repo": "/Users/kelvin/Kelvin-WorkSpace/LotteryNew",
+  "branch": "main",
+  "p77b_commit": "46c1848",
+  "p74_plan_source": "outputs/replay/p74_batch_a_apply_plan_20260526.json",
+  "dry_run": true,
+  "no_db_write": true,
+  "governance": {
+    "no_replay_row_insert": true,
+    "no_draws_table_write": true,
+    "no_lifecycle_promotion": true,
+    "no_champion_replacement": true,
+    "no_registry_mutation": true,
+    "no_new_tables": true,
+    "no_official_api_insert": true,
+    "no_force_push": true,
+    "no_git_reset_hard": true,
+    "no_git_clean": true,
+    "no_ceo_decision_modify": true,
+    "no_active_task_modify": true,
+    "dry_run_only": true
+  },
+  "preflight": {
+    "repo": "/Users/kelvin/Kelvin-WorkSpace/LotteryNew",
+    "branch": "main",
+    "production_replay_rows_before": 46960,
+    "production_replay_rows_after": 46960,
+    "power_lotto_max_draw": 115000041,
+    "power_lotto_draw_count": 1913,
+    "target_draw_in_db": true,
+    "target_draw_data_verified": true,
+    "batch_a_rows_for_target_draw_before": 0,
+    "drift_guard_pre": "REPLAY_LIFECYCLE_DRIFT_GUARD_PASS",
+    "branch_governance_pre": "BRANCH_GOVERNANCE_PASS — branch='main' rows=46960"
+  },
+  "target_draw": {
+    "draw": "115000041",
+    "date": "2026/05/21",
+    "numbers": [6, 14, 22, 28, 35, 38],
+    "special": 1,
+    "lottery_type": "POWER_LOTTO",
+    "source": "P77B_POWERLOTTO_DRAW_REFRESH_20260526"
+  },
+  "history_cutoff": {
+    "draw": "115000040",
+    "date": "2026/05/18",
+    "history_rows_used": 1912,
+    "note": "All POWER_LOTTO draws with CAST(draw AS INTEGER) <= 115000040"
+  },
+  "candidate_strategies": [
+    {
+      "strategy_id": "fourier_rhythm_3bet",
+      "strategy_name": "威力彩 Fourier Rhythm 3注",
+      "lottery_type": "POWER_LOTTO",
+      "lifecycle": "ONLINE",
+      "batch": "A",
+      "existing_rows": 1500,
+      "existing_draw_range": {"min": 101000002, "max": 115000040},
+      "existing_controlled_apply_id": "P19B_POWERLOTTO_FOURIER_1500_PROD_20260520",
+      "proposed_controlled_apply_id": "P78_POWERLOTTO_BATCH_A_FOURIER_RHYTHM_DRAWEXT_20260526",
+      "new_rows_in_plan": 1,
+      "plan_status": "PLAN_READY"
+    },
+    {
+      "strategy_id": "fourier30_markov30_2bet",
+      "strategy_name": "fourier30_markov30_2bet",
+      "lottery_type": "POWER_LOTTO",
+      "lifecycle": "ACTIVE",
+      "batch": "A",
+      "existing_rows": 1500,
+      "existing_draw_range": {"min": 101000002, "max": 115000040},
+      "existing_controlled_apply_id": "P58_POWERLOTTO_WAVE5_FOURIER30_MARKOV30_1500_PROD_20260525",
+      "proposed_controlled_apply_id": "P78_POWERLOTTO_BATCH_A_FOURIER30_MARKOV30_DRAWEXT_20260526",
+      "new_rows_in_plan": 1,
+      "plan_status": "PLAN_READY"
+    }
+  ],
+  "controlled_apply_ids_reserved": [
+    "P78_POWERLOTTO_BATCH_A_FOURIER_RHYTHM_DRAWEXT_20260526",
+    "P78_POWERLOTTO_BATCH_A_FOURIER30_MARKOV30_DRAWEXT_20260526"
+  ],
+  "prediction_generation": {
+    "method": "live_strategy_engine",
+    "fourier_rhythm_3bet": {
+      "adapter": "lottery_api.models.replay_strategy_registry._PowerFourierRhythm3BetAdapter",
+      "function": "tools.power_fourier_rhythm.fourier_rhythm_predict(n_bets=3, window=500)",
+      "all_bets_raw": [
+        [3, 23, 24, 28, 30, 36],
+        [1, 4, 14, 15, 27, 38],
+        [6, 13, 17, 32, 34, 35]
+      ],
+      "stored_bet": [3, 23, 24, 28, 30, 36],
+      "note": "Only bet-0 stored per adapter contract (_extract_first_bet)"
+    },
+    "fourier30_markov30_2bet": {
+      "adapter": "lottery_api.models.p56_wave5_powerlotto_adapters.Fourier30Markov30_2BetAdapter",
+      "function": "predict_fourier30_markov30_2bet_bet0(history)",
+      "stored_bet": [13, 14, 27, 29, 34, 38]
+    }
+  },
+  "plan_insert_rows_by_strategy": {
+    "fourier_rhythm_3bet": [
+      {
+        "strategy_id": "fourier_rhythm_3bet",
+        "strategy_name": "威力彩 Fourier Rhythm 3注",
+        "lottery_type": "POWER_LOTTO",
+        "target_draw": "115000041",
+        "target_date": "2026/05/21",
+        "history_cutoff_draw": "115000040",
+        "replay_status": "PREDICTED",
+        "predicted_numbers": "[3, 23, 24, 28, 30, 36]",
+        "predicted_special": null,
+        "actual_numbers": "[6, 14, 22, 28, 35, 38]",
+        "actual_special": 1,
+        "hit_numbers": "[28]",
+        "hit_count": 1,
+        "special_hit": 0,
+        "truth_level": "POWERLOTTO_DRAW_EXT_VERIFIED",
+        "controlled_apply_id": "P78_POWERLOTTO_BATCH_A_FOURIER_RHYTHM_DRAWEXT_20260526",
+        "source": "P78_BATCH_A_PLAN_REGENERATION",
+        "dry_run": 1
+      }
+    ],
+    "fourier30_markov30_2bet": [
+      {
+        "strategy_id": "fourier30_markov30_2bet",
+        "strategy_name": "fourier30_markov30_2bet",
+        "lottery_type": "POWER_LOTTO",
+        "target_draw": "115000041",
+        "target_date": "2026/05/21",
+        "history_cutoff_draw": "115000040",
+        "replay_status": "PREDICTED",
+        "predicted_numbers": "[13, 14, 27, 29, 34, 38]",
+        "predicted_special": null,
+        "actual_numbers": "[6, 14, 22, 28, 35, 38]",
+        "actual_special": 1,
+        "hit_numbers": "[14, 38]",
+        "hit_count": 2,
+        "special_hit": 0,
+        "truth_level": "POWERLOTTO_DRAW_EXT_VERIFIED",
+        "controlled_apply_id": "P78_POWERLOTTO_BATCH_A_FOURIER30_MARKOV30_DRAWEXT_20260526",
+        "source": "P78_BATCH_A_PLAN_REGENERATION",
+        "dry_run": 1
+      }
+    ]
+  },
+  "total_plan_insert_rows": 2,
+  "eligible_rows_by_strategy": {
+    "fourier_rhythm_3bet": 1,
+    "fourier30_markov30_2bet": 1
+  },
+  "duplicate_check_result": {
+    "p78_existing_rows": 0,
+    "collision_free": true,
+    "check_sql": "SELECT COUNT(*) FROM strategy_prediction_replays WHERE controlled_apply_id IN ('P78_POWERLOTTO_BATCH_A_FOURIER_RHYTHM_DRAWEXT_20260526', 'P78_POWERLOTTO_BATCH_A_FOURIER30_MARKOV30_DRAWEXT_20260526') — Result: 0",
+    "duplicate_risk": "NONE"
+  },
+  "numeric_draw_comparison_verified": {
+    "method_used": "CAST(draw AS INTEGER)",
+    "text_sort_disabled": true,
+    "note": "All draw comparisons use CAST(draw AS INTEGER). draw column is TEXT; lexicographic comparison would misorder draws (e.g. '97xxx' > '115xxx' as text)."
+  },
+  "actual_vs_prediction_comparison": {
+    "fourier_rhythm_3bet": {
+      "predicted": [3, 23, 24, 28, 30, 36],
+      "actual": [6, 14, 22, 28, 35, 38],
+      "hits": [28],
+      "hit_count": 1,
+      "m3_plus": false,
+      "special_actual": 1,
+      "special_hit": false
+    },
+    "fourier30_markov30_2bet": {
+      "predicted": [13, 14, 27, 29, 34, 38],
+      "actual": [6, 14, 22, 28, 35, 38],
+      "hits": [14, 38],
+      "hit_count": 2,
+      "m3_plus": false,
+      "special_actual": 1,
+      "special_hit": false
+    }
+  },
+  "p79_readiness": {
+    "can_proceed": true,
+    "eligible_rows_total": 2,
+    "expected_p79_insert_delta": 2,
+    "rows_before_p79": 46960,
+    "rows_after_p79_expected": 46962,
+    "duplicate_risk": "NONE",
+    "blocker": null,
+    "authorization_phrase_required": "YES proceed with P79 Batch A controlled apply for draw 115000041",
+    "notes": [
+      "Both strategies have exactly 1 eligible row each for target_draw=115000041.",
+      "No duplicate collision risk — P78 controlled_apply_ids are clean (0 existing rows).",
+      "actual_numbers and hit_count are pre-computed and verified against live DB draw.",
+      "Draw 115000041 is CONFIRMED in production DB (P77B, controlled_import_id=P77B_POWERLOTTO_DRAW_REFRESH_20260526).",
+      "Draws 115000042+ are not in production DB. P79 scope is limited to draw 115000041.",
+      "P79 apply script should extend p74_batch_a_controlled_apply.py with this plan JSON and updated controlled_apply_ids."
+    ]
+  },
+  "strategy_lifecycle_check": {
+    "fourier_rhythm_3bet": {
+      "lifecycle_label": "ONLINE",
+      "changed": false,
+      "note": "Lifecycle label unchanged. No promotion triggered."
+    },
+    "fourier30_markov30_2bet": {
+      "lifecycle_label": "ACTIVE",
+      "changed": false,
+      "note": "Lifecycle label unchanged. No promotion triggered."
+    }
+  },
+  "dry_run_summary": {
+    "classification": "P78_BATCH_A_DRY_RUN_PLAN_READY",
+    "total_plan_rows": 2,
+    "eligible_rows": 2,
+    "skipped_rows": 0,
+    "collision_free": true,
+    "db_write_occurred": false,
+    "replay_rows_before": 46960,
+    "replay_rows_after": 46960,
+    "p79_delta": 2
+  },
+  "drift_guard_post": "REPLAY_LIFECYCLE_DRIFT_GUARD_PASS",
+  "branch_governance_post": "BRANCH_GOVERNANCE_PASS — branch='main' rows=46960",
+  "forbidden_staging_scan": {
+    "db_files_staged": false,
+    "backup_files_staged": false,
+    "pid_runtime_files_staged": false,
+    "overall": "STAGE_CLEAN"
+  },
+  "final_plan_status": "PLAN_READY_FOR_P79_APPLY",
+  "files_created": [
+    "outputs/replay/p78_batch_a_plan_regeneration_20260526.json",
+    "docs/replay/p78_batch_a_plan_regeneration_20260526.md",
+    "tests/test_p78_batch_a_plan_regeneration.py"
+  ]
+}

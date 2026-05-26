@@ -1,0 +1,96 @@
+{
+  "project_context_lock": "LotteryNew",
+  "task": "P74_BATCH_A_CONTROLLED_APPLY",
+  "date": "20260526",
+  "repo": "/Users/kelvin/Kelvin-WorkSpace/LotteryNew",
+  "branch": "p74-batch-a-controlled-apply",
+  "head": "03d813d",
+  "authorization_mode": "APPLY_AUTHORIZED_BUT_BLOCKED",
+  "authorization_mode_detail": "Both authorization phrases present. Apply blocked by missing P74-specific apply script and source data for draws > 115000040.",
+  "backup_path": "lottery_api/data/lottery_v2.db.bak_p74_pre_batch_a_20260526_125453",
+  "backup_verified": true,
+  "backup_rows": 46960,
+  "production_rows_before": 46960,
+  "production_rows_after": 46960,
+  "expected_rows_after_if_applied": 49960,
+  "candidates": [
+    {
+      "strategy_id": "fourier_rhythm_3bet",
+      "lottery_type": "POWER_LOTTO",
+      "lifecycle": "ONLINE",
+      "batch": "A",
+      "proposed_controlled_apply_id": "P74_POWERLOTTO_BATCH_A_FOURIER_RHYTHM_1500_PROD_20260526",
+      "existing_controlled_apply_id": "P19B_POWERLOTTO_FOURIER_1500_PROD_20260520",
+      "existing_rows": 1500,
+      "existing_draw_range": {"min": 101000002, "max": 115000040},
+      "new_rows_needed": 1500,
+      "required_draw_range": "draws > 115000040"
+    },
+    {
+      "strategy_id": "fourier30_markov30_2bet",
+      "lottery_type": "POWER_LOTTO",
+      "lifecycle": "ACTIVE",
+      "batch": "A",
+      "proposed_controlled_apply_id": "P74_POWERLOTTO_BATCH_A_FOURIER30_MARKOV30_1500_PROD_20260526",
+      "existing_controlled_apply_id": "P58_POWERLOTTO_WAVE5_FOURIER30_MARKOV30_1500_PROD_20260525",
+      "existing_rows": 1500,
+      "existing_draw_range": {"min": 101000002, "max": 115000040},
+      "new_rows_needed": 1500,
+      "required_draw_range": "draws > 115000040"
+    }
+  ],
+  "controlled_apply_ids": [
+    "P74_POWERLOTTO_BATCH_A_FOURIER_RHYTHM_1500_PROD_20260526",
+    "P74_POWERLOTTO_BATCH_A_FOURIER30_MARKOV30_1500_PROD_20260526"
+  ],
+  "duplicate_check_results": {
+    "p74_existing_rows": 0,
+    "p74_controlled_apply_id_collision": false,
+    "draw_overlap_risk": "HIGH — existing rows cover 101000002-115000040; P74 must target draws > 115000040 to avoid full duplicate skip",
+    "source_data_available": false,
+    "apply_script_available": false,
+    "apply_blocked": true,
+    "block_reason": "No P74-specific apply script exists. No source data for draws > 115000040. p7_controlled_replay_row_apply.py reads P7 JSON only and cannot be reused for P74 without a new source plan JSON."
+  },
+  "apply_results": {
+    "executed": false,
+    "reason": "Apply blocked by missing apply script and source data",
+    "db_write_occurred": false,
+    "rows_inserted": 0
+  },
+  "guard_results": {
+    "drift_guard": "PASS",
+    "branch_governance": "BRANCH_GOVERNANCE_PASS — branch='p74-batch-a-controlled-apply' rows=46960"
+  },
+  "rollback_plan": {
+    "trigger": "if apply proceeds and post-apply row count != 49960 or drift guard fails",
+    "step_1": "stop immediately, do not continue apply",
+    "step_2": "restore from backup: cp lottery_api/data/lottery_v2.db.bak_p74_pre_batch_a_20260526_125453 lottery_api/data/lottery_v2.db",
+    "step_3": "verify restored row count = 46960",
+    "step_4": "run drift guard to confirm PASS",
+    "step_5": "document rollback event and root cause before any retry"
+  },
+  "required_next_steps_for_apply": [
+    "1. Create P74 apply plan JSON with 1500 predictions per strategy for draws > 115000040",
+    "2. Create scripts/p74_batch_a_controlled_apply.py reading the P74 plan JSON",
+    "3. Run dry-run mode of script to verify no duplicate (strategy_id + target_draw + lottery_type) collisions",
+    "4. Re-obtain both authorization phrases in a new task session",
+    "5. Execute apply with backup gate verified (backup already exists at bak_p74_pre_batch_a_20260526_125453)"
+  ],
+  "scope_enforcement": {
+    "no_daily_539": true,
+    "no_big_lotto": true,
+    "no_retired_strategies": true,
+    "no_sub_baseline": true,
+    "no_fallback_equivalent": true,
+    "batch_b1_b2_b3": "NOT applied in P74"
+  },
+  "no_force_push": true,
+  "no_reset_hard": true,
+  "no_git_clean": true,
+  "no_lifecycle_promotion": true,
+  "no_champion_replacement": true,
+  "no_registry_mutation": true,
+  "no_unscoped_strategy_apply": true,
+  "final_classification": "P74_BATCH_A_READY_WAITING_FOR_APPLY_AUTHORIZATION"
+}

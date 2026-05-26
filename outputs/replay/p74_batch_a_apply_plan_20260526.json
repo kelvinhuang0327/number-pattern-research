@@ -1,0 +1,68 @@
+{
+  "project_context_lock": "LotteryNew",
+  "task": "P74_BATCH_A_APPLY_PLAN",
+  "generation_date": "20260526",
+  "generation_mode": "PLAN_ONLY",
+  "production_rows_current": 46960,
+  "source_draw_discovery": {
+    "lottery_type": "POWER_LOTTO",
+    "db_draw_min": 97000001,
+    "db_draw_max": 115000040,
+    "db_draw_total": 1912,
+    "existing_replay_draw_min": 101000002,
+    "existing_replay_draw_max": 115000040,
+    "draws_after_115000040": 0,
+    "eligible_draws_for_plan": 0,
+    "gap_reason": "DB max POWER_LOTTO draw is 115000040. All eligible draws are already covered by existing replay rows. Future draws (>115000040) have not been ingested yet."
+  },
+  "existing_draw_range": {
+    "min": 101000002,
+    "max": 115000040
+  },
+  "candidate_strategies": [
+    {
+      "strategy_id": "fourier_rhythm_3bet",
+      "lottery_type": "POWER_LOTTO",
+      "lifecycle": "ONLINE",
+      "batch": "A",
+      "proposed_controlled_apply_id": "P74_POWERLOTTO_BATCH_A_FOURIER_RHYTHM_1500_PROD_20260526",
+      "existing_controlled_apply_id": "P19B_POWERLOTTO_FOURIER_1500_PROD_20260520",
+      "existing_rows": 1500,
+      "new_rows_in_plan": 0,
+      "plan_status": "BLOCKED_BY_SOURCE_DATA_GAP"
+    },
+    {
+      "strategy_id": "fourier30_markov30_2bet",
+      "lottery_type": "POWER_LOTTO",
+      "lifecycle": "ACTIVE",
+      "batch": "A",
+      "proposed_controlled_apply_id": "P74_POWERLOTTO_BATCH_A_FOURIER30_MARKOV30_1500_PROD_20260526",
+      "existing_controlled_apply_id": "P58_POWERLOTTO_WAVE5_FOURIER30_MARKOV30_1500_PROD_20260525",
+      "existing_rows": 1500,
+      "new_rows_in_plan": 0,
+      "plan_status": "BLOCKED_BY_SOURCE_DATA_GAP"
+    }
+  ],
+  "controlled_apply_ids_reserved": [
+    "P74_POWERLOTTO_BATCH_A_FOURIER_RHYTHM_1500_PROD_20260526",
+    "P74_POWERLOTTO_BATCH_A_FOURIER30_MARKOV30_1500_PROD_20260526"
+  ],
+  "plan_insert_rows_by_strategy": {
+    "fourier_rhythm_3bet": [],
+    "fourier30_markov30_2bet": []
+  },
+  "total_plan_insert_rows": 0,
+  "duplicate_check_summary": {
+    "p74_existing_rows": 0,
+    "duplicate_risk": "NONE — no rows to insert due to source data gap",
+    "existing_draws_would_all_be_duplicates_if_retried": true
+  },
+  "no_db_write": true,
+  "unblock_requirements": [
+    "1. Ingest at least 1500 new POWER_LOTTO draws with draw_id > 115000040 into the draws table",
+    "2. Run prediction engine to generate prediction_items for those draws for both strategies",
+    "3. Re-run P75 plan generation script to populate plan_insert_rows_by_strategy",
+    "4. Verify 0 duplicate collisions, then apply in P76 with explicit authorization"
+  ],
+  "final_plan_status": "PLAN_BLOCKED_BY_SOURCE_DATA_GAP"
+}

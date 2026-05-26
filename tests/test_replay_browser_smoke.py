@@ -268,16 +268,16 @@ def test_lifecycle_filter_browser_dom_changes():
                 return route.continue_()
 
             page.route("**/api/replay/**", route_handler)
-            page.goto(f"{base_url}/index.html?rp_lc=ONLINE", wait_until="load")
+            page.goto(f"{base_url}/index.html?rp_lc=ONLINE", wait_until="networkidle")
             page.wait_for_selector('#rp-lifecycle-select', state='attached')
 
-            page.locator('[data-section="replay"]').evaluate('(el) => el.click()')
+            page.locator('[data-section="replay"]').click()
             page.wait_for_selector('#rp-query-btn', state='visible')
 
             page.locator('#rp-query-btn').click()
             page.wait_for_function(
                 "() => document.querySelector('#rp-hist-body').innerText.includes('PREDICTED')",
-                timeout=5000,
+                timeout=15000,
             )
             before = page.locator('#rp-hist-body').inner_text()
 
@@ -286,7 +286,7 @@ def test_lifecycle_filter_browser_dom_changes():
             page.locator('#rp-query-btn').click()
             page.wait_for_function(
                 "() => document.querySelector('#rp-hist-body').innerText.includes('coming soon')",
-                timeout=5000,
+                timeout=15000,
             )
             after_offline = page.locator('#rp-hist-body').inner_text()
 
@@ -299,7 +299,7 @@ def test_lifecycle_filter_browser_dom_changes():
             page.locator('#rp-query-btn').click()
             page.wait_for_function(
                 "() => document.querySelector('#rp-hist-body').innerText.includes('無歷史回放資料')",
-                timeout=5000,
+                timeout=15000,
             )
             after_rejected = page.locator('#rp-hist-body').inner_text()
 

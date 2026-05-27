@@ -89,6 +89,8 @@ BASELINE = {
     # P79: POWER_LOTTO Batch A draw-ext apply — fourier_rhythm_3bet + fourier30_markov30_2bet for draw 115000041 (2026-05-26)
     "p79_fourier_rhythm_apply_id": "P78_POWERLOTTO_BATCH_A_FOURIER_RHYTHM_DRAWEXT_20260526",
     "p79_fourier30_markov30_apply_id": "P78_POWERLOTTO_BATCH_A_FOURIER30_MARKOV30_DRAWEXT_20260526",
+    # P94: Tier B Controlled Apply — 7500 rows (2026-05-26)
+    "p94_apply_id": "P94_TIERB_CONTROLLED_APPLY_20260526",
     "v1_count": 0,
     "v2_count": 0,
     "legacy_count": 460,
@@ -110,7 +112,9 @@ BASELINE = {
     # P79 Batch A draw-ext: 1 row each for fourier_rhythm_3bet and fourier30_markov30_2bet (2026-05-26)
     "p79_fourier_rhythm_count": 1,
     "p79_fourier30_markov30_count": 1,
-    "total_count": 46962,
+    # P94 Tier B Controlled Apply: 7500 rows (2026-05-26)
+    "p94_count": 7500,
+    "total_count": 54462,  # 46962 (pre-P94) + 7500 (P94 Tier B) = 54462
 }
 
 # Known V3 tombstone strategy IDs — must have 0 rows in replay table
@@ -150,6 +154,8 @@ ALLOWED_TRUTH_LEVELS = {
     "POWER_LOTTO_WAVE6_CONTROLLED_APPLY_VERIFIED",
     # P79 POWER_LOTTO Batch A draw-ext apply — draw 115000041 (2026-05-26)
     "POWERLOTTO_DRAW_EXT_VERIFIED",
+    # P94 Tier B Controlled Apply (2026-05-26)
+    "TIERB_DRYRUN_VALIDATED",
 }
 
 
@@ -263,6 +269,11 @@ def run_checks(db_path: pathlib.Path) -> dict:
         (BASELINE["p79_fourier30_markov30_apply_id"],),
     ).fetchone()[0]
 
+    p94_count = c.execute(
+        "SELECT COUNT(*) FROM strategy_prediction_replays WHERE controlled_apply_id=?",
+        (BASELINE["p94_apply_id"],),
+    ).fetchone()[0]
+
     legacy_count = c.execute(
         "SELECT COUNT(*) FROM strategy_prediction_replays WHERE controlled_apply_id IS NULL"
     ).fetchone()[0]
@@ -351,6 +362,10 @@ def run_checks(db_path: pathlib.Path) -> dict:
         violations.append(
             f"P79-fourier30-markov30 row count mismatch: expected {BASELINE['p79_fourier30_markov30_count']}, got {p79_fourier30_markov30_count}"
         )
+    if p94_count != BASELINE["p94_count"]:
+        violations.append(
+            f"P94 row count mismatch: expected {BASELINE['p94_count']}, got {p94_count}"
+        )
     if total_count != BASELINE["total_count"]:
         violations.append(
             f"total row count mismatch: expected {BASELINE['total_count']}, got {total_count}"
@@ -377,6 +392,7 @@ def run_checks(db_path: pathlib.Path) -> dict:
         "p66_zonal": p66_zonal_count,
         "p79_fourier_rhythm": p79_fourier_rhythm_count,
         "p79_fourier30_markov30": p79_fourier30_markov30_count,
+        "p94": p94_count,
         "total": total_count,
     }
 
@@ -446,7 +462,7 @@ def run_checks(db_path: pathlib.Path) -> dict:
             # Already caught in row_counts section, no double-record
             pass
 
-    # Unexpected apply IDs (not V1, V2, P2B, P2F, P3BC, P14D, P16, P19B, P20, P21B, P31B, P37, P43, P48, P59, P66, P79, or NULL) are violations
+    # Unexpected apply IDs (not V1, V2, P2B, P2F, P3BC, P14D, P16, P19B, P20, P21B, P31B, P37, P43, P48, P59, P66, P79, P94, or NULL) are violations
     known_apply_ids = {
         BASELINE["v1_apply_id"], BASELINE["v2_apply_id"],
         BASELINE["p2b_apply_id"], BASELINE["p2f_apply_id"],
@@ -458,6 +474,7 @@ def run_checks(db_path: pathlib.Path) -> dict:
         BASELINE["p59_apply_id"],
         BASELINE["p66_cold_apply_id"], BASELINE["p66_zonal_apply_id"],
         BASELINE["p79_fourier_rhythm_apply_id"], BASELINE["p79_fourier30_markov30_apply_id"],
+        BASELINE["p94_apply_id"],
         "null", None,
     }
     for aid_key, cnt in controlled_apply_id_counts.items():

@@ -163,17 +163,25 @@ def test_10_4star_data_gap_blocking(p98_json):
 
 def test_11_no_4star_backtest_metrics(p98_json):
     results_str = json.dumps(p98_json["strategy_results"])
-    # 4_STAR should not appear as a lottery_type
+    # 4_STAR should not appear as a lottery_type in P98 strategy_results
     assert "4_STAR" not in results_str, (
         "4_STAR backtest data found in strategy_results — violation"
     )
-    # Confirm DB also has 0 rows
+    # P107B baseline repair: P104 ingested 2922 4_STAR rows after P98 was run.
+    # The live-DB cross-check 'star4_rows == 0' was valid at P98 time but is
+    # stale after P105 accepted the new DB baseline (3_STAR=4179, 4_STAR=2922).
+    # 4_STAR backtest remains NOT AUTHORIZED (P105/P106/P107A governance).
+    # We now assert the accepted post-P104 baseline, not the historical P98 one.
     conn = sqlite3.connect(DB_PATH)
     star4_rows = conn.execute(
         "SELECT COUNT(*) FROM draws WHERE lottery_type='4_STAR'"
     ).fetchone()[0]
     conn.close()
-    assert star4_rows == 0, f"4_STAR has {star4_rows} rows — expected 0"
+    # Post-P104 accepted baseline: 2922 4_STAR rows, backtest still unauthorized
+    assert star4_rows == 2922, (
+        f"4_STAR count mismatch: expected 2922 (P104 ingested), got {star4_rows}. "
+        "If rows changed, re-run P107B baseline repair."
+    )
 
 
 # ── Test 12: P99 recommendation present ──────────────────────────────────────

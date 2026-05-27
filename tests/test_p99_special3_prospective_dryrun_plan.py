@@ -213,21 +213,37 @@ def test_13_evaluation_status_pending(artifact):
 # ── Test 14 ───────────────────────────────────────────────────────────────────
 
 def test_14_special4_data_gap_blocking(artifact):
-    """special4_status == DATA_GAP_BLOCKING and star4_backtest == NOT_RUN."""
+    """special4_status == DATA_GAP_BLOCKING and star4_backtest == NOT_RUN.
+
+    P107B baseline repair note:
+    The P99 artifact historically recorded special4_status=DATA_GAP_BLOCKING
+    because 4_STAR data was absent at P99 evaluation time. That historical
+    artifact fact remains correct and must not be rewritten.
+    P104 subsequently ingested 2922 4_STAR rows (source_unknown provenance).
+    P105/P106/P107A governance accepted the new DB baseline but explicitly
+    confirmed: 4_STAR backtest remains NOT AUTHORIZED.
+    The live-DB cross-check 'star4_count == 0' is therefore stale.
+    We assert the post-P104 accepted baseline instead.
+    """
+    # Historical artifact assertions remain correct (P99 was recorded correctly)
     assert artifact.get("special4_status") == "DATA_GAP_BLOCKING", (
-        f"special4_status expected DATA_GAP_BLOCKING, "
+        f"special4_status expected DATA_GAP_BLOCKING (historical P99 artifact), "
         f"got {artifact.get('special4_status')!r}"
     )
     assert artifact.get("star4_backtest") == "NOT_RUN", (
         f"star4_backtest expected NOT_RUN, got {artifact.get('star4_backtest')!r}"
     )
-    # Cross-check with live DB
+    # P107B baseline repair: live DB cross-check updated to post-P104 baseline.
+    # 4_STAR rows exist (P104 ingestion) but backtest remains unauthorized.
     conn = sqlite3.connect(DB_PATH)
     star4_count = conn.execute(
         "SELECT COUNT(*) FROM draws WHERE lottery_type='4_STAR'"
     ).fetchone()[0]
     conn.close()
-    assert star4_count == 0, f"4_STAR rows should be 0, got {star4_count}"
+    assert star4_count == 2922, (
+        f"4_STAR count mismatch: expected 2922 (P104 accepted baseline), "
+        f"got {star4_count}. Historical artifact DATA_GAP_BLOCKING remains valid."
+    )
 
 
 # ── Test 15 ───────────────────────────────────────────────────────────────────

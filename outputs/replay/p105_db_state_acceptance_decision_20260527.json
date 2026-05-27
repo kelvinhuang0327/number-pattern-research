@@ -1,0 +1,137 @@
+{
+  "schema_version": "1.0",
+  "task": "P105",
+  "task_name": "DB State Acceptance Decision (Option A, Special3 Evaluation Only)",
+  "generated_at": "2026-05-27T00:00:00Z",
+  "project_context_lock": "LotteryNew",
+  "canonical_repo": "/Users/kelvin/Kelvin-WorkSpace/LotteryNew",
+  "canonical_branch": "main",
+
+  "classification": "P105_DB_STATE_ACCEPTED_FOR_SPECIAL3_EVALUATION_ONLY",
+
+  "user_input_verbatim": "A-",
+  "interpretation": "Option A - Accept current DB state for Special3 evaluation only",
+  "selected_option": "A",
+
+  "preflight": {
+    "repo_root": "/Users/kelvin/Kelvin-WorkSpace/LotteryNew",
+    "branch_at_task_start": "ceo-decision-after-p104-2026-05-27 (switched to main before branching; same commit cf8db28)",
+    "branch_for_p105": "p105-db-state-acceptance-special3-evaluation-only",
+    "head_commit": "cf8db28710c7fb000435c005a9db7b4f3de2e4b2",
+    "replay_rows": 54462,
+    "per_lottery": {
+      "3_STAR": {"count": 4179, "max_draw": 115000106},
+      "4_STAR": {"count": 2922, "max_draw": 115000103},
+      "POWER_LOTTO": {"count": 1913, "max_draw": 115000041}
+    },
+    "drift_guard": "REPLAY_LIFECYCLE_DRIFT_GUARD_PASS",
+    "branch_governance_guard": "BRANCH_GOVERNANCE_PASS — branch=main rows=54462",
+    "context_contamination_check": "NO_CROSS_PROJECT_CONTEXT_FOUND",
+    "p104_artifacts_verified": true
+  },
+
+  "p104_input_summary": {
+    "pr_number": 233,
+    "merge_commit": "cf8db28710c7fb000435c005a9db7b4f3de2e4b2",
+    "pr_title": "P104: Post-Ingestion DB Audit + Source Trace",
+    "data_integrity_status": "PASS_WITH_NOTES",
+    "source_trace_findings": {
+      "raw_source_file": "NOT_FOUND",
+      "ingest_log_3_STAR_entries": 0,
+      "ingest_log_4_STAR_entries": 0,
+      "fetcher_supports_3_STAR": false,
+      "fetcher_supports_4_STAR": false,
+      "overall": "SOURCE_UNKNOWN"
+    },
+    "notes": "Date-format inconsistencies detected; no DB writes, no replay row inserts, no DB/history staged in P104."
+  },
+
+  "source_unknown_caveat": "The 3_STAR rows (count=4179, max_draw=115000106) and 4_STAR rows (count=2922, max_draw=115000103) currently in the production DB have no traceable ingestion path. No raw source file was found, no ingest_log entries exist, and the fetcher does not support these lottery types. This caveat MUST be propagated to all downstream evaluations (P106 Special3 evaluation). Evaluation results derived from these rows carry a source-unknown confidence penalty.",
+
+  "never_again_clause": "NEVER AGAIN: Future production DB schema mutations or row insertions MUST have ALL of the following before being authorized: (1) a corresponding ingest_log entry recording source, timestamp, and row count; (2) a verified fetcher or documented source-acquisition path; (3) explicit governance authorization in the active task document. Any DB row mutation without these three elements constitutes a governance violation and MUST be rolled back.",
+
+  "authorize": {
+    "p106_special3_evaluation": true,
+    "four_star_backtest": false,
+    "special3_production_promotion": false,
+    "db_write": false,
+    "db_stage": false,
+    "lifecycle_mutation": false,
+    "champion_replacement": false,
+    "registry_mutation": false,
+    "migrations": false,
+    "db_staging": false,
+    "force_push": false,
+    "p107_stale_baseline_repair": false,
+    "p1_2_cross_lottery_audit": false,
+    "p1_4_source_acquisition_plan": false,
+    "worktree_housekeeping": false
+  },
+
+  "stale_baseline_test_waiver": {
+    "affected_phases": ["P98", "P99", "P100", "P101", "P102", "P103"],
+    "waiver_reason": "These tests carry stale baselines (expecting 3_STAR=4115/max=115000024 and 4_STAR=0). This is KNOWN DEBT and is deferred to P107 (Stale Baseline Guard Repair). These tests are NOT modified in P105.",
+    "scope": "P107_NOT_P105"
+  },
+
+  "forbidden_staging_scans": {
+    "scan1_filesystem_artifacts": "STAGE_CLEAN",
+    "scan2_db_data_history": "DB_STAGE_CLEAN",
+    "scan3_prior_phase_outputs": "OUTPUT_STAGE_CLEAN",
+    "scan4_prior_phase_docs": "DOC_STAGE_CLEAN",
+    "scan5_test_files": "TEST_STAGE_CLEAN",
+    "scan5_script_files": "SCRIPT_STAGE_CLEAN",
+    "scan5_roadmap_files": "ROADMAP_STAGE_CLEAN",
+    "scan5_gitignore": "GITIGNORE_STAGE_CLEAN",
+    "overall": "ALL_CLEAN"
+  },
+
+  "next_actions": [
+    {
+      "phase": "P1.1 / P106",
+      "name": "Special3 Prospective Evaluation Rerun",
+      "description": "Score P99 prospective predictions against accepted 3_STAR actual rows. Carry source-unknown caveat.",
+      "authorized": true,
+      "scope": "separate_task"
+    },
+    {
+      "phase": "P0.2 / P107",
+      "name": "Stale Baseline Guard Repair",
+      "description": "Repair P98-P103 active guards to current accepted state (3_STAR=4179/115000106, 4_STAR=2922/115000103) without rewriting historical artifacts.",
+      "authorized": true,
+      "scope": "separate_pr"
+    },
+    {
+      "phase": "P1.2",
+      "name": "Cross-Lottery Prediction-Helpfulness Audit",
+      "description": "POWER_LOTTO / DAILY_539 / BIG_LOTTO audit. Must output concrete promote/demote/Wave-N action recommendations.",
+      "authorized": true,
+      "scope": "separate_task"
+    },
+    {
+      "phase": "P1.3",
+      "name": "4_STAR Provenance Decision Path",
+      "description": "Rows present != backtest authorized. Decide governance path for 4_STAR data.",
+      "authorized": true,
+      "scope": "separate_task"
+    },
+    {
+      "phase": "P1.4",
+      "name": "Source-Acquisition Plan for 3/4 Star",
+      "description": "Design official source / fetcher / ingest_log path for 3_STAR and 4_STAR lotteries.",
+      "authorized": true,
+      "scope": "separate_task"
+    }
+  ],
+
+  "commit_info": {
+    "branch": "p105-db-state-acceptance-special3-evaluation-only",
+    "base_commit": "cf8db28710c7fb000435c005a9db7b4f3de2e4b2",
+    "allowed_staged_files": [
+      "outputs/replay/p105_db_state_acceptance_decision_20260527.json",
+      "docs/replay/p105_db_state_acceptance_decision_20260527.md",
+      "tests/test_p105_db_state_acceptance_decision.py",
+      "scripts/p105_db_state_acceptance_decision.py"
+    ]
+  }
+}

@@ -1,0 +1,55 @@
+{
+  "task": "P100_SPECIAL3_PROSPECTIVE_EVALUATION",
+  "phase": "P100",
+  "date": "20260527",
+  "generated_at": "2026-05-27T05:00:01.581111+00:00",
+  "dry_run_only": true,
+  "db_writes": false,
+  "replay_rows_changed": 0,
+  "replay_rows_before": 54462,
+  "replay_rows_after": 54462,
+  "no_production_promotion": true,
+  "star4_backtest": false,
+  "special4_status": "DATA_GAP_BLOCKING",
+  "special4_star4_draws": 0,
+  "lottery_type": "3_STAR",
+  "p99_artifact": "outputs/replay/special3_prospective_dryrun_plan_20260527.json",
+  "p99_classification": "P99_SPECIAL3_PROSPECTIVE_DRYRUN_PLAN_READY",
+  "p99_history_end_draw": "115000024",
+  "p99_history_end_date": "2026/01/28",
+  "p99_target_draw": "NEXT_AFTER_CURRENT_MAX",
+  "p99_evaluation_status": "PENDING_ACTUAL_DRAW",
+  "p99_dry_run_only": true,
+  "p99_excluded_strategies": [
+    "position_cold_rebound_topk"
+  ],
+  "p99_candidates": [
+    "position_frequency_topk",
+    "recent_position_hot_topk",
+    "sum_band_frequency",
+    "span_band_frequency",
+    "ensemble_rank_v1"
+  ],
+  "p99_ensemble_v2_members": [
+    "position_frequency_topk",
+    "recent_position_hot_topk",
+    "sum_band_frequency",
+    "span_band_frequency"
+  ],
+  "p99_prediction_blocks": 24,
+  "current_db_max_3star_draw": "115000024",
+  "current_db_max_3star_date": "2026/01/28",
+  "actual_draw_available": false,
+  "classification": "P100_SPECIAL3_PROSPECTIVE_EVALUATION_HOLD_NO_ACTUAL_DRAW",
+  "evaluation_status": "PENDING_ACTUAL_DRAW",
+  "hold_reason": "No new 3_STAR draw has been ingested since P99 history_end_draw=115000024. Current DB max 3_STAR draw=115000024 equals history_end. Cannot evaluate prospective predictions without actual draw result. Do NOT fabricate or infer actual draw.",
+  "actual_draw_number": null,
+  "actual_numbers_serialized": null,
+  "evaluation_results": null,
+  "recommended_next_action": "Rerun special3_prospective_evaluation.py after next 3_STAR draw is ingested into DB (draw > 115000024)",
+  "p101_recommendation": {
+    "status": "NOT_YET_ELIGIBLE",
+    "reason": "P101 requires P100 EVALUATED status. Current status is HOLD. Run P100 again after actual draw is available.",
+    "trigger": "P100 evaluation_status == EVALUATED"
+  }
+}

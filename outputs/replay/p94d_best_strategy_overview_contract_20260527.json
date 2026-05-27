@@ -1,0 +1,283 @@
+{
+  "task": "P94D",
+  "title": "Best Strategy Overview — Data Contract",
+  "date": "2026-05-27",
+  "final_classification": "P94D_BEST_STRATEGY_OVERVIEW_CONTRACT_READY",
+  "db_writes": false,
+  "replay_row_changes": 0,
+  "lifecycle_promotions": 0,
+  "baseline_snapshot": {
+    "strategy_prediction_replays_rows": 54462,
+    "power_lotto_max_draw": "115000041"
+  },
+  "p94c_status": "PLANNING_ONLY",
+  "p94c_note": "PR #222 open as of 2026-05-27. DAILY_539 tab will show SOURCE_UNAVAILABLE until artifact available.",
+
+  "design_decisions": [
+    {
+      "id": "D1",
+      "decision": "Rankings belong in 最佳策略總覽, not the raw historical replay list"
+    },
+    {
+      "id": "D2",
+      "decision": "Raw replay list remains for draw-by-draw prediction-vs-actual audit"
+    },
+    {
+      "id": "D3",
+      "decision": "Benchmark JSONs (P94A/P94B/P94C) are the canonical source for ranking data"
+    },
+    {
+      "id": "D4",
+      "decision": "Adapter/prediction runner is the source for next-period numbers"
+    },
+    {
+      "id": "D5",
+      "decision": "Rejected/offline strategies may appear in benchmark ranking with caveat"
+    },
+    {
+      "id": "D6",
+      "decision": "Rejected/offline strategies must not be default next-number recommendation unless operator enables replay_only_mode"
+    },
+    {
+      "id": "D7",
+      "decision": "Unsupported bet-count cases must show UNSUPPORTED_BET_COUNT, never fabricated numbers"
+    },
+    {
+      "id": "D8",
+      "decision": "POWER_LOTTO special number must be shown separately (predicted_special)"
+    },
+    {
+      "id": "D9",
+      "decision": "DAILY_539 has no special number (predicted_special: null)"
+    },
+    {
+      "id": "D10",
+      "decision": "BIG_LOTTO has 6 main numbers, no special (predicted_special: null)"
+    }
+  ],
+
+  "data_sources": {
+    "BIG_LOTTO": {
+      "artifact": "outputs/replay/p94a_biglotto_all_strategy_betcount_benchmark_20260526.json",
+      "pr": 221,
+      "pr_status": "MERGED"
+    },
+    "POWER_LOTTO": {
+      "artifact": "outputs/replay/p94b_powerlotto_all_strategy_betcount_benchmark_20260527.json",
+      "pr": 220,
+      "pr_status": "MERGED"
+    },
+    "DAILY_539": {
+      "artifact": "outputs/replay/p94c_daily539_all_strategy_betcount_benchmark_*.json",
+      "pr": 222,
+      "pr_status": "OPEN",
+      "availability": "SOURCE_UNAVAILABLE"
+    }
+  },
+
+  "ranking_filters": {
+    "lottery_type": ["BIG_LOTTO", "POWER_LOTTO", "DAILY_539"],
+    "bet_count": [1, 2, 3, 5],
+    "observation_window": [30, 100, 500, 1500],
+    "ranking_metric": {
+      "default": "m3plus_rate",
+      "options": ["m3plus_rate", "avg_hit_count", "m4plus_rate", "stability_score"]
+    }
+  },
+
+  "ranking_card_schema": {
+    "description": "Schema for each card in the 最佳策略總覽 ranking grid",
+    "fields": {
+      "rank": { "type": "integer", "description": "1-based rank within the filter context" },
+      "strategy_id": { "type": "string", "description": "Unique strategy identifier" },
+      "display_name": { "type": "string", "description": "Human-readable strategy name" },
+      "lottery_type": { "type": "string", "enum": ["BIG_LOTTO", "POWER_LOTTO", "DAILY_539"] },
+      "bet_count": { "type": "integer", "enum": [1, 2, 3, 5] },
+      "observation_window": { "type": "integer", "enum": [30, 100, 500, 1500] },
+      "lifecycle_status": { "type": "string", "enum": ["PRODUCTION", "ONLINE", "DRY_RUN", "PROVISIONAL", "OFFLINE", "REJECTED"] },
+      "source_category": { "type": "string", "enum": ["row-backed", "adapter-only", "benchmark-only"] },
+      "row_backed": { "type": "boolean", "description": "true if strategy has production replay rows in DB" },
+      "benchmark_only": { "type": "boolean", "description": "true if strategy appears in benchmark but has no production rows" },
+      "adapter_generated": { "type": "boolean", "description": "true if metrics computed from adapter simulation (not DB rows)" },
+      "rejected_or_offline_caveat": {
+        "type": ["string", "null"],
+        "enum": [null, "REJECTED: historical benchmark only", "OFFLINE: decommissioned", "DRY_RUN: not yet production"]
+      },
+      "sample_size": { "type": "integer", "description": "Number of draws evaluated in this window" },
+      "m3plus_rate": { "type": ["number", "null"], "description": "Fraction of draws with 3+ main number hits" },
+      "avg_hit_count": { "type": ["number", "null"], "description": "Average main number hits per draw" },
+      "m4plus_rate": { "type": ["number", "null"], "description": "Fraction of draws with 4+ main number hits" },
+      "m5_rate": { "type": ["number", "null"], "description": "Fraction of draws with 5+ main number hits" },
+      "m6_rate": { "type": ["number", "null"], "description": "Fraction of draws with 6 main number hits (BIG_LOTTO only)" },
+      "zero_hit_rate": { "type": ["number", "null"], "description": "Fraction of draws with 0 hits" },
+      "special_hit_rate": {
+        "type": ["number", "null"],
+        "description": "Fraction of draws where special ball was hit (POWER_LOTTO only; null for BIG_LOTTO and DAILY_539)"
+      },
+      "stability_score": { "type": ["number", "null"], "description": "1 - std/mean of m3plus_rate across windows; null if <2 windows with sample_size>=30" },
+      "stability_across_windows": {
+        "type": "object",
+        "description": "Per-window m3plus_rate snapshot for sparkline",
+        "properties": {
+          "30": { "type": "object" },
+          "100": { "type": "object" },
+          "500": { "type": "object" },
+          "1500": { "type": "object" }
+        }
+      },
+      "warning_flags": {
+        "type": "array",
+        "items": {
+          "type": "string",
+          "enum": ["SMALL_SAMPLE", "SHORT_WINDOW_ONLY", "BENCHMARK_ONLY", "REJECTED_STRATEGY", "NO_ADAPTER", "UNSUPPORTED_BET_COUNT"]
+        }
+      }
+    },
+    "lottery_type_rules": {
+      "BIG_LOTTO": {
+        "main_numbers": 6,
+        "main_pool": [1, 49],
+        "special_number": false,
+        "special_hit_rate": null,
+        "m6_rate": "applicable"
+      },
+      "POWER_LOTTO": {
+        "main_numbers": 6,
+        "main_pool": [1, 38],
+        "special_number": true,
+        "special_pool": [1, 8],
+        "special_hit_rate": "required",
+        "m6_rate": "not_applicable"
+      },
+      "DAILY_539": {
+        "main_numbers": 5,
+        "main_pool": [1, 39],
+        "special_number": false,
+        "special_hit_rate": null,
+        "m6_rate": "not_applicable"
+      }
+    }
+  },
+
+  "next_prediction_schema": {
+    "description": "Schema for the next-period prediction panel on each ranking card",
+    "fields": {
+      "next_draw_lottery_type": { "type": "string", "enum": ["BIG_LOTTO", "POWER_LOTTO", "DAILY_539"] },
+      "next_draw_source": { "type": "string", "enum": ["adapter", "replay_only"] },
+      "next_draw_number": { "type": ["string", "null"], "description": "Expected draw number for next period; null if unknown" },
+      "prediction_generated_at": { "type": "string", "format": "date-time" },
+      "strategy_id": { "type": "string" },
+      "bet_count": { "type": "integer" },
+      "predicted_bets": {
+        "type": ["array", "null"],
+        "description": "Array of bet arrays. null if generation_status != READY",
+        "items": { "type": "array", "items": { "type": "integer" } }
+      },
+      "predicted_special": {
+        "type": ["integer", "null"],
+        "description": "Special ball per bet for POWER_LOTTO. null for BIG_LOTTO and DAILY_539"
+      },
+      "adapter_name": { "type": ["string", "null"] },
+      "generation_status": {
+        "type": "string",
+        "enum": ["READY", "ADAPTER_MISSING", "UNSUPPORTED_BET_COUNT", "REJECTED_REPLAY_ONLY", "SOURCE_UNAVAILABLE"],
+        "description": "READY=predictions available; ADAPTER_MISSING=no adapter; UNSUPPORTED_BET_COUNT=adapter cannot produce this bet_count; REJECTED_REPLAY_ONLY=strategy rejected, blocked unless replay_only_mode; SOURCE_UNAVAILABLE=benchmark artifact not yet loaded"
+      },
+      "disclaimer": {
+        "type": "string",
+        "const": "Benchmark ranking does not guarantee next-draw performance. Past edge is not a predictor of future returns."
+      }
+    },
+    "lottery_type_rules": {
+      "BIG_LOTTO": {
+        "predicted_bets_length": 6,
+        "predicted_special": null
+      },
+      "POWER_LOTTO": {
+        "predicted_bets_length": 6,
+        "predicted_special": "required_integer_1_to_8"
+      },
+      "DAILY_539": {
+        "predicted_bets_length": 5,
+        "predicted_special": null
+      }
+    }
+  },
+
+  "rejected_offline_policy": {
+    "may_appear_in_ranking": true,
+    "sort_order": "after_production_online_dryrun",
+    "default_generation_status": "REJECTED_REPLAY_ONLY",
+    "operator_override": "replay_only_mode=true enables next-number generation for rejected/offline strategies",
+    "ui_treatment": "yellow warning banner on rejected/offline cards"
+  },
+
+  "unsupported_bet_count_policy": {
+    "generation_status": "UNSUPPORTED_BET_COUNT",
+    "ranking_visibility": "card still shown with benchmark metrics",
+    "next_prediction_panel": "disabled",
+    "fabrication": "never"
+  },
+
+  "warning_flag_triggers": {
+    "SMALL_SAMPLE": "sample_size < 100",
+    "SHORT_WINDOW_ONLY": "strategy has data in w30/w100 but missing w500/w1500",
+    "BENCHMARK_ONLY": "strategy has no production replay rows in DB",
+    "REJECTED_STRATEGY": "lifecycle is REJECTED or OFFLINE",
+    "NO_ADAPTER": "no adapter registered for this strategy",
+    "UNSUPPORTED_BET_COUNT": "adapter does not support the requested bet_count"
+  },
+
+  "stability_score_formula": {
+    "formula": "1.0 - std(m3plus_rate across windows with sample_size>=30) / mean(m3plus_rate)",
+    "range": "0.0 (unstable) to 1.0 (stable)",
+    "null_condition": "fewer than 2 windows have sample_size >= 30"
+  },
+
+  "ui_placement": {
+    "best_strategy_overview_page": {
+      "components": ["filter_bar", "ranking_grid", "per_card_expand"],
+      "filter_bar": ["lottery_type", "bet_count", "observation_window", "ranking_metric"],
+      "card_expand": ["benchmark_metrics", "stability_chart", "warning_flags", "next_prediction_panel"],
+      "footer": "Rankings based on historical benchmark. Not financial advice."
+    },
+    "raw_replay_list_page": {
+      "description": "Separate page/tab for draw-by-draw prediction-vs-actual",
+      "no_ranking": true,
+      "no_next_number_recommendation": true
+    }
+  },
+
+  "recommended_p95_implementation": {
+    "api_endpoints": [
+      {
+        "method": "GET",
+        "path": "/api/best-strategy-overview",
+        "query_params": ["lottery_type", "bet_count", "observation_window", "ranking_metric"],
+        "data_source": "P94A/B/C benchmark JSON files (not DB)",
+        "returns": "RankingCard[]"
+      },
+      {
+        "method": "GET",
+        "path": "/api/best-strategy-overview/{strategy_id}/next-prediction",
+        "data_source": "adapter runner",
+        "returns": "NextPrediction"
+      }
+    ],
+    "frontend": {
+      "new_tab": "最佳策略總覽",
+      "filter_bar": true,
+      "responsive_ranking_grid": true,
+      "expand_on_click_prediction_panel": true,
+      "graceful_source_unavailable": "DAILY_539 shows SOURCE_UNAVAILABLE until P94C artifact available"
+    },
+    "benchmark_refresh": "auto-updates when new P94A/B/C artifact is produced",
+    "db_mutations": "none"
+  },
+
+  "artifact_checklist": {
+    "md_contract": "docs/replay/p94d_best_strategy_overview_contract_20260527.md",
+    "json_contract": "outputs/replay/p94d_best_strategy_overview_contract_20260527.json",
+    "test_file": "tests/test_p94d_best_strategy_overview_contract.py"
+  }
+}

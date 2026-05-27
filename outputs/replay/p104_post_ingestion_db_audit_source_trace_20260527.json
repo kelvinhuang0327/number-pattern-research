@@ -1,0 +1,224 @@
+{
+  "p104_classification": "P104_POST_INGESTION_DB_AUDIT_SOURCE_UNKNOWN_READY",
+  "audit_date": "2026-05-27",
+  "audit_type": "read_only_forensic",
+  "governance": {
+    "branch": "p104-post-ingestion-db-audit-source-trace",
+    "base_branch": "main",
+    "pr_number": null,
+    "db_writes": false,
+    "replay_row_inserts": false,
+    "db_staged": false,
+    "lottery_history_staged": false
+  },
+
+  "preflight": {
+    "repo": "/Users/kelvin/Kelvin-WorkSpace/LotteryNew",
+    "branch_at_start": "main",
+    "pr_232_state": "MERGED",
+    "pr_232_merge_commit": "7e7b822a4dd96113677bbe7f4ff3d9c202a1238a",
+    "replay_rows_before": 54462,
+    "power_lotto_max_draw_before": 115000041,
+    "preflight_pass": true
+  },
+
+  "db_snapshot": {
+    "replay_rows": 54462,
+    "power_lotto_max_draw": 115000041,
+    "star3_count": 4179,
+    "star3_min_draw": 96000002,
+    "star3_max_draw": 115000106,
+    "star3_min_date": "2007/01/02",
+    "star3_max_date": "2026/01/28",
+    "star4_count": 2922,
+    "star4_min_draw": 96000002,
+    "star4_max_draw": 115000103,
+    "star4_min_date": "2007-01-02",
+    "star4_max_date": "2026-04-27"
+  },
+
+  "star3_delta": {
+    "old_baseline_count": 4115,
+    "old_baseline_max_draw": 115000024,
+    "current_count": 4179,
+    "current_max_draw": 115000106,
+    "delta_rows": 64,
+    "delta_draws": 63,
+    "new_draw_range": "115000028 to 115000106",
+    "new_date_range": "2026-02-02 to 2026-04-30",
+    "note": "64 rows in DB where draw > 115000024 (row at 115000024 was existing baseline)"
+  },
+
+  "star4_delta": {
+    "old_baseline_count": 0,
+    "old_baseline_max_draw": null,
+    "current_count": 2922,
+    "current_max_draw": 115000103,
+    "delta_rows": 2922,
+    "new_draw_range": "96000002 to 115000103",
+    "new_date_range": "2007-01-02 to 2026-04-27",
+    "note": "Complete table populated from scratch; 0 rows in any backup DB"
+  },
+
+  "star3_integrity": {
+    "duplicate_draws": 0,
+    "invalid_digit_range": 0,
+    "wrong_number_count": 0,
+    "gaps_in_new_range": 19,
+    "gap_draws": [
+      115000025, 115000026, 115000027, 115000029, 115000031,
+      115000034, 115000038, 115000039, 115000052, 115000054,
+      115000059, 115000060, 115000067, 115000068, 115000071,
+      115000079, 115000080, 115000085, 115000094
+    ],
+    "date_format_inconsistency": {
+      "old_rows_format": "YYYY/MM/DD (slash)",
+      "new_rows_format": "YYYY-MM-DD (dash)",
+      "affected_new_rows": 63,
+      "note": "Date format changed at boundary around draw 115000020; new rows consistently dash-format"
+    },
+    "date_ordering_violations_apparent": 2,
+    "date_ordering_violation_detail": [
+      "draw=115000020(date=2026-01-23) < prev draw=115000019(date=2026/01/22) — cross-format boundary artifact",
+      "draw=115000028(date=2026-02-02) < prev draw=115000024(date=2026/01/28) — cross-format boundary artifact"
+    ],
+    "date_ordering_root_cause": "String comparison: '-' (ASCII 45) < '/' (ASCII 47), so '2026-01-23' < '2026/01/28' as strings. Logical chronological order is correct.",
+    "integrity_verdict": "PASS_WITH_NOTES",
+    "integrity_notes": [
+      "No duplicate draws",
+      "No out-of-range digits (all 0-9)",
+      "All numbers are 3-element arrays",
+      "19 gaps in draw sequence — expected, 3_STAR has non-daily schedule",
+      "Date format inconsistency is cosmetic, not a data error",
+      "Chronological order correct when dates are parsed as date objects"
+    ]
+  },
+
+  "star4_integrity": {
+    "duplicate_draws": 0,
+    "invalid_digit_range": 0,
+    "wrong_number_count": 0,
+    "date_format": "YYYY-MM-DD (dash, consistent throughout)",
+    "date_ordering_violations_apparent": 1,
+    "date_ordering_violation_detail": [
+      "draw=113000297(date=2024-12-11) < prev draw=113000293(date=2024-12-6) — single-digit day causes string comparison artifact"
+    ],
+    "date_ordering_root_cause": "draw=113000293 has date='2024-12-6' (non-zero-padded); string '2024-12-11' < '2024-12-6'. Logical order is correct.",
+    "non_zero_padded_dates": 1,
+    "integrity_verdict": "PASS_WITH_NOTES",
+    "integrity_notes": [
+      "No duplicate draws",
+      "No out-of-range digits (all 0-9)",
+      "All numbers are 4-element arrays",
+      "1 non-zero-padded date (2024-12-6) causes apparent ordering violation — cosmetic",
+      "Chronological order correct when dates are parsed as date objects"
+    ]
+  },
+
+  "source_trace": {
+    "source_file_found": false,
+    "ingestion_path_known": false,
+    "source_classification": "no_source_found",
+    "ingest_log_3star_entries": 0,
+    "ingest_log_4star_entries": 0,
+    "ingest_log_has_entries_for": ["BIG_LOTTO", "POWER_LOTTO", "DAILY_539"],
+    "fetcher_supports_3star": false,
+    "fetcher_supports_4star": false,
+    "fetcher_source_config_types": ["BIG_LOTTO", "POWER_LOTTO", "DAILY_539"],
+    "raw_csv_xlsx_found": false,
+    "backup_db_timeline": {
+      "bak_20260518_539": {"star3_count": 4115, "star3_max": 115000024, "star4_count": 0},
+      "bak_before_reset_hard_20260526_153346": {"star3_count": 4115, "star3_max": 115000024, "star4_count": 0},
+      "bak_p59_20260525_135638": {"star3_count": 4115, "star3_max": 115000024, "star4_count": 0},
+      "bak_p74_pre_batch_a_20260526_125453": {"star3_count": 4115, "star3_max": 115000024, "star4_count": 0},
+      "bak_p77b_draw_refresh_20260526_150549": {"star3_count": 4115, "star3_max": 115000024, "star4_count": 0},
+      "bak_p77c_draw_reimport_20260526_155217": {"star3_count": 4115, "star3_max": 115000024, "star4_count": 0},
+      "bak_p79_pre_apply_20260526_160020": {"star3_count": 4115, "star3_max": 115000024, "star4_count": 0},
+      "bak_p94_pre_apply_20260526_223934": {"star3_count": 4115, "star3_max": 115000024, "star4_count": 0},
+      "backups_pre_p0_20260519": {"star3_count": 4115, "star3_max": 115000024, "star4_count": 0},
+      "backups_pre_p66_wave6_20260525": {"star3_count": 4115, "star3_max": 115000024, "star4_count": 0}
+    },
+    "ingestion_window": "After bak_p94 (2026-05-26 22:39:34) and before 2026-05-27 audit",
+    "candidate_scripts": [
+      {
+        "path": "lottery_api/database.py",
+        "classification": "script_capable_but_not_evidence",
+        "note": "LOTTERY_TYPES list includes 3_STAR and 4_STAR; has INSERT OR IGNORE logic; capable of writing but no evidence it was invoked for these types in this session"
+      },
+      {
+        "path": "tools/upload_lottery_data.py",
+        "classification": "artifact_not_source",
+        "note": "References lottery.db (old schema, not lottery_v2.db); LOTTERY_RULES has no 3_STAR or 4_STAR entries"
+      },
+      {
+        "path": "research/3_star_analysis/automation/core.py",
+        "classification": "artifact_not_source",
+        "note": "Read-only; queries draws table but does not insert"
+      }
+    ],
+    "lottery_history_json": {
+      "current_types": ["DAILY_539"],
+      "contains_3star": false,
+      "contains_4star": false,
+      "classification": "artifact_not_source",
+      "note": "Only contains DAILY_539 data; not a source for 3_STAR or 4_STAR DB rows"
+    },
+    "wal_shm_status": "lottery_v2.db-wal is 0 bytes (no pending WAL frames); -shm present but inactive. DB is in a clean checkpointed state at time of audit.",
+    "conclusion": "All pre-P104 backups show 3_STAR count=4115 max=115000024 and 4_STAR count=0. Ingestion occurred after P94 backup (2026-05-26 22:39:34). No raw source file found, no ingest_log entry for 3_STAR/4_STAR, no fetcher support. Date format difference (dash vs slash) and complete 4_STAR historical import suggest data came from an external tool or manual operation outside this Claude Code session. Ingestion path is OUT_OF_BAND."
+  },
+
+  "governance_impact": {
+    "p100_evaluation_technically_possible": true,
+    "p100_evaluation_authorized": false,
+    "p100_authorization_condition": "Requires explicit user/CTO decision on DB acceptance (Options A/B/C below). P100 must not run in P104.",
+    "star4_backtest_status": "NOT_RUN",
+    "star4_backtest_authorized": false,
+    "star4_backtest_condition": "Requires P105/P106 provenance validation before any 4_STAR analysis",
+    "db_baseline_status": "POST_INGESTION_AUDIT_PENDING_SOURCE_CONFIRMATION",
+    "db_staging_recommendation": "DO_NOT_STAGE",
+    "db_revert_recommendation": "DO_NOT_REVERT_AUTOMATICALLY",
+    "special3_production_promotion": "NOT_DONE",
+    "replay_rows_after": 54462,
+    "power_lotto_max_draw_after": 115000041
+  },
+
+  "next_action_decision_matrix": {
+    "option_A": {
+      "label": "Accept current DB state after audit",
+      "condition": "User/CTO accepts data integrity PASS_WITH_NOTES and acknowledges out-of-band ingestion",
+      "outcome": "Mark DB as ACCEPTED; create DB-state PR with explicit authorization; proceed to P100 evaluation in next phase",
+      "risk": "Source provenance permanently unknown; no raw data for re-ingestion if DB corrupts"
+    },
+    "option_B": {
+      "label": "Require raw source file for provenance",
+      "condition": "User provides raw CSV/JSON/XLSX used for ingestion",
+      "outcome": "Run source validation against DB rows; if passes, accept state with provenance confirmed; classification upgrades to P104_POST_INGESTION_DB_AUDIT_SOURCE_CONFIRMED_READY",
+      "risk": "May block P100 if source cannot be recovered"
+    },
+    "option_C": {
+      "label": "Restore previous DB backup",
+      "condition": "User decides out-of-band provenance is unacceptable and wants clean state",
+      "outcome": "Restore bak_p94_pre_apply (3_STAR=4115, 4_STAR=0); P100 returns to HOLD_NO_ACTUAL_DRAW state",
+      "risk": "Discards 63 new 3_STAR draws and 2922 4_STAR draws that passed integrity checks"
+    },
+    "option_D": {
+      "label": "Create controlled DB-state PR after acceptance",
+      "condition": "After Option A or B resolution",
+      "outcome": "Explicit PR documenting accepted DB state; no DB file staged; commit only audit artifacts",
+      "risk": "Low — purely documentary"
+    },
+    "recommended": "Ask user to identify the ingestion source (external script, manual API call, tool run outside repo). If source identified, classify as SOURCE_CONFIRMED_READY (Option B). If user cannot identify source but accepts the data quality, proceed with Option A. Only use Option C if data quality is unacceptable."
+  },
+
+  "known_risks_and_unknowns": [
+    "Source of 63 new 3_STAR draws (115000028-115000106) unknown",
+    "Source of 2922 new 4_STAR draws (96000002-115000103) unknown",
+    "No raw source file found anywhere in workspace",
+    "Neither fetcher nor ingest_log covers 3_STAR or 4_STAR",
+    "Ingestion occurred after P94 backup (2026-05-26 22:39) — likely external to this Claude Code session",
+    "Date format inconsistency in 3_STAR (slash vs dash) suggests different source pipeline than existing rows",
+    "4_STAR data spans from 2007 (full historical import) — suggests bulk upload, not incremental fetch",
+    "19 gaps in 3_STAR new range are expected (non-daily schedule), not a data quality issue",
+    "DB integrity checks PASS; no corruption detected"
+  ]
+}

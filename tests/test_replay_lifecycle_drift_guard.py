@@ -63,6 +63,8 @@ ALLOWED_TRUTH_LEVELS = {
     "POWER_LOTTO_WAVE6_CONTROLLED_APPLY_VERIFIED",
     # P79 POWER_LOTTO Batch A draw-ext apply — draw 115000041 (2026-05-26)
     "POWERLOTTO_DRAW_EXT_VERIFIED",
+    # P94 Tier B Controlled Apply (2026-05-26)
+    "TIERB_DRYRUN_VALIDATED",
     "null",
 }
 
@@ -180,11 +182,12 @@ class TestDriftGuardScript:
         # enum integrity (no unexpected values), not backfill completeness.
 
     def test_db_counts_match_baseline(self, tmp_path):
-        """DB row counts must match the P79 post-apply baseline: legacy=460, total=46962.
+        """DB row counts must match the P94 post-apply baseline: legacy=460, total=54462.
 
-        Updated 2026-05-26 (P79): Added 2 Batch A draw-ext rows for POWER_LOTTO draw 115000041.
+        Updated 2026-05-27 (P96): Updated total from 46962 to 54462.
+        P94 (2026-05-26): Added 7500 Tier B Controlled Apply rows (TIERB_DRYRUN_VALIDATED).
+        P79 (2026-05-26): Added 2 Batch A draw-ext rows for POWER_LOTTO draw 115000041.
         P66 (2026-05-25): Added 1500 cold_complement_2bet + 1500 zonal_entropy_2bet = 3000 rows.
-        P79 (2026-05-26): Added 1 fourier_rhythm_3bet + 1 fourier30_markov30_2bet = 2 rows.
         """
         _, result = _run_drift_guard(tmp_path)
         rc = result.get("row_counts", {})
@@ -216,8 +219,10 @@ class TestDriftGuardScript:
         # P79 applied 2 Batch A draw-ext rows for POWER_LOTTO draw 115000041 (2026-05-26)
         assert rc.get("p79_fourier_rhythm") == 1, f"P79-fourier-rhythm count mismatch: {rc.get('p79_fourier_rhythm')} != 1"
         assert rc.get("p79_fourier30_markov30") == 1, f"P79-fourier30-markov30 count mismatch: {rc.get('p79_fourier30_markov30')} != 1"
-        # New total = 460 + 1500 + 3000 + 1500 + 3000 + 3000 + 7500 + 9000 + 9000 + 4500 + 1500 + 3000 + 2
-        assert rc.get("total") == 46962, f"total count mismatch: {rc.get('total')} != 46962"
+        # P94 applied 7500 Tier B Controlled Apply rows (2026-05-26)
+        assert rc.get("p94") == 7500, f"P94 count mismatch: {rc.get('p94')} != 7500"
+        # New total = 46962 (pre-P94) + 7500 (P94 Tier B) = 54462
+        assert rc.get("total") == 54462, f"total count mismatch: {rc.get('total')} != 54462"
         # V1/V2/P2B/P2F/P3BC remain 0
         assert rc.get("v1") == 0, f"V1 count mismatch: {rc.get('v1')} != 0"
         assert rc.get("v2") == 0, f"V2 count mismatch: {rc.get('v2')} != 0"

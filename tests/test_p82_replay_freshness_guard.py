@@ -21,7 +21,10 @@ PYTHON = sys.executable
 
 EXPECTED_LATEST_DRAW = "115000041"
 EXPECTED_LATEST_DATE = "2026/05/21"
-EXPECTED_REPLAY_ROWS = 46962
+EXPECTED_REPLAY_ROWS = 54462  # post-P94 Tier B Controlled Apply baseline (was 46962 pre-P94)
+# Historical: the P82 artifact was generated 2026-05-26 before P94 Tier B Controlled Apply.
+# At that time the DB had 46962 rows. The artifact is a fixed snapshot; do NOT update it.
+HISTORICAL_P82_ARTIFACT_ROWS = 46962
 EXPECTED_BATCH_A = {"fourier_rhythm_3bet", "fourier30_markov30_2bet"}
 EXPECTED_COVERAGE_PCT = 100.0
 
@@ -98,7 +101,9 @@ def test_08_latest_draw_date(pl_result):
 
 
 def test_09_replay_rows_total(pl_result):
-    assert pl_result["replay_rows_total"] == EXPECTED_REPLAY_ROWS
+    # The P82 artifact (2026-05-26) recorded 46962 rows at snapshot time (pre-P94).
+    # This is a historical artifact check; live DB is validated in test_17_replay_rows_db.
+    assert pl_result["replay_rows_total"] == HISTORICAL_P82_ARTIFACT_ROWS
 
 
 def test_10_draw_gap_not_detected(pl_result):

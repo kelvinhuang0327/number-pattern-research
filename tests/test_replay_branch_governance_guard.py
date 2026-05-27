@@ -59,7 +59,7 @@ def test_02_script_passes_on_canonical(tmp_path):
     result = subprocess.run(
         [PYTHON, str(SCRIPT_PATH),
          "--expected-branch", current,
-         "--expected-rows", "46962",
+         "--expected-rows", "54462",  # post-P94 Tier B Controlled Apply baseline (was 46962 pre-P94)
          "--json-out", str(out)],
         capture_output=True, text=True,
     )

@@ -1,0 +1,1687 @@
+{
+  "task": "special3_oos_permutation_review",
+  "phase": "P98",
+  "dry_run": true,
+  "db_writes": false,
+  "replay_rows_changed": 0,
+  "no_production_promotion": true,
+  "special4_status": "DATA_GAP_BLOCKING",
+  "special4_backtest": "NOT_RUN",
+  "generated": "20260527",
+  "random_seed": 42,
+  "draws_loaded": 4115,
+  "p97_input_summary": {
+    "draws_used": 4115,
+    "windows_used": [
+      150,
+      500,
+      1500
+    ],
+    "provisional_strategies": [
+      "position_frequency_topk",
+      "ensemble_rank_v1",
+      "recent_position_hot_topk",
+      "sum_band_frequency",
+      "span_band_frequency"
+    ],
+    "rejected_strategies": [
+      "position_cold_rebound_topk"
+    ],
+    "p97_classification": "P97_SPECIAL3_SPECIAL4_DRYRUN_CLOSURE_READY"
+  },
+  "oos_method": "walk_forward_4_fold_chronological",
+  "permutation_method": "binomial_analytical_one_sided",
+  "oos_folds_definition": [
+    {
+      "fold": "fold_a_early",
+      "train_frac": "0\u21921/3",
+      "test_frac": "1/3\u21921/2"
+    },
+    {
+      "fold": "fold_b_mid",
+      "train_frac": "0\u21921/2",
+      "test_frac": "1/2\u21922/3"
+    },
+    {
+      "fold": "fold_c_late",
+      "train_frac": "0\u21922/3",
+      "test_frac": "2/3\u21925/6"
+    },
+    {
+      "fold": "fold_d_holdout",
+      "train_frac": "0\u21925/6",
+      "test_frac": "5/6\u21921"
+    }
+  ],
+  "strategy_results": {
+    "position_frequency_topk": {
+      "p97_classification": "PROVISIONAL",
+      "oos_folds": {
+        "fold_a_early": {
+          "train_size": 1371,
+          "test_size": 686,
+          "train_end_idx": 1371,
+          "test_start_idx": 1371,
+          "test_end_idx": 2057,
+          "top10": {
+            "n_train": 1371,
+            "n_test": 686,
+            "direct_hits": 65,
+            "direct_hit_rate": 0.094752,
+            "box_hit_rate": 0.094752,
+            "position_digit_accuracy": 0.55345,
+            "sum_band_accuracy": 0.645773,
+            "span_band_accuracy": 0.35277,
+            "random_baseline": 0.01,
+            "edge_vs_random": 0.084752
+          },
+          "top20": {
+            "n_train": 1371,
+            "n_test": 686,
+            "direct_hits": 124,
+            "direct_hit_rate": 0.180758,
+            "box_hit_rate": 0.180758,
+            "position_digit_accuracy": 0.648688,
+            "sum_band_accuracy": 0.645773,
+            "span_band_accuracy": 0.35277,
+            "random_baseline": 0.02,
+            "edge_vs_random": 0.160758
+          },
+          "top50": {
+            "n_train": 1371,
+            "n_test": 686,
+            "direct_hits": 289,
+            "direct_hit_rate": 0.421283,
+            "box_hit_rate": 0.421283,
+            "position_digit_accuracy": 0.807094,
+            "sum_band_accuracy": 1.0,
+            "span_band_accuracy": 0.827988,
+            "random_baseline": 0.05,
+            "edge_vs_random": 0.371283
+          },
+          "top100": {
+            "n_train": 1371,
+            "n_test": 686,
+            "direct_hits": 457,
+            "direct_hit_rate": 0.666181,
+            "box_hit_rate": 0.666181,
+            "position_digit_accuracy": 0.888727,
+            "sum_band_accuracy": 1.0,
+            "span_band_accuracy": 0.827988,
+            "random_baseline": 0.1,
+            "edge_vs_random": 0.566181
+          }
+        },
+        "fold_b_mid": {
+          "train_size": 2057,
+          "test_size": 686,
+          "train_end_idx": 2057,
+          "test_start_idx": 2057,
+          "test_end_idx": 2743,
+          "top10": {
+            "n_train": 2057,
+            "n_test": 686,
+            "direct_hits": 62,
+            "direct_hit_rate": 0.090379,
+            "box_hit_rate": 0.090379,
+            "position_digit_accuracy": 0.538873,
+            "sum_band_accuracy": 0.64723,
+            "span_band_accuracy": 0.341108,
+            "random_baseline": 0.01,
+            "edge_vs_random": 0.080379
+          },
+          "top20": {
+            "n_train": 2057,
+            "n_test": 686,
+            "direct_hits": 125,
+            "direct_hit_rate": 0.182216,
+            "box_hit_rate": 0.182216,
+            "position_digit_accuracy": 0.637026,
+            "sum_band_accuracy": 0.64723,
+            "span_band_accuracy": 0.341108,
+            "random_baseline": 0.02,
+            "edge_vs_random": 0.162216
+          },
+          "top50": {
+            "n_train": 2057,
+            "n_test": 686,
+            "direct_hits": 279,
+            "direct_hit_rate": 0.406706,
+            "box_hit_rate": 0.406706,
+            "position_digit_accuracy": 0.802235,
+            "sum_band_accuracy": 1.0,
+            "span_band_accuracy": 0.830904,
+            "random_baseline": 0.05,
+            "edge_vs_random": 0.356706
+          },
+          "top100": {
+            "n_train": 2057,
+            "n_test": 686,
+            "direct_hits": 463,
+            "direct_hit_rate": 0.674927,
+            "box_hit_rate": 0.674927,
+            "position_digit_accuracy": 0.891642,
+            "sum_band_accuracy": 1.0,
+            "span_band_accuracy": 0.830904,
+            "random_baseline": 0.1,
+            "edge_vs_random": 0.574927
+          }
+        },
+        "fold_c_late": {
+          "train_size": 2743,
+          "test_size": 686,
+          "train_end_idx": 2743,
+          "test_start_idx": 2743,
+          "test_end_idx": 3429,
+          "top10": {
+            "n_train": 2743,
+            "n_test": 686,
+            "direct_hits": 67,
+            "direct_hit_rate": 0.097668,
+            "box_hit_rate": 0.097668,
+            "position_digit_accuracy": 0.55102,
+            "sum_band_accuracy": 0.620991,
+            "span_band_accuracy": 0.344023,
+            "random_baseline": 0.01,
+            "edge_vs_random": 0.087668
+          },
+          "top20": {
+            "n_train": 2743,
+            "n_test": 686,
+            "direct_hits": 124,
+            "direct_hit_rate": 0.180758,
+            "box_hit_rate": 0.180758,
+            "position_digit_accuracy": 0.641885,
+            "sum_band_accuracy": 0.620991,
+            "span_band_accuracy": 0.344023,
+            "random_baseline": 0.02,
+            "edge_vs_random": 0.160758
+          },
+          "top50": {
+            "n_train": 2743,
+            "n_test": 686,
+            "direct_hits": 275,
+            "direct_hit_rate": 0.400875,
+            "box_hit_rate": 0.400875,
+            "position_digit_accuracy": 0.800292,
+            "sum_band_accuracy": 1.0,
+            "span_band_accuracy": 0.810496,
+            "random_baseline": 0.05,
+            "edge_vs_random": 0.350875
+          },
+          "top100": {
+            "n_train": 2743,
+            "n_test": 686,
+            "direct_hits": 452,
+            "direct_hit_rate": 0.658892,
+            "box_hit_rate": 0.658892,
+            "position_digit_accuracy": 0.886297,
+            "sum_band_accuracy": 1.0,
+            "span_band_accuracy": 0.810496,
+            "random_baseline": 0.1,
+            "edge_vs_random": 0.558892
+          }
+        },
+        "fold_d_holdout": {
+          "train_size": 3429,
+          "test_size": 686,
+          "train_end_idx": 3429,
+          "test_start_idx": 3429,
+          "test_end_idx": 4115,
+          "top10": {
+            "n_train": 3429,
+            "n_test": 686,
+            "direct_hits": 51,
+            "direct_hit_rate": 0.074344,
+            "box_hit_rate": 0.074344,
+            "position_digit_accuracy": 0.533528,
+            "sum_band_accuracy": 0.620991,
+            "span_band_accuracy": 0.344023,
+            "random_baseline": 0.01,
+            "edge_vs_random": 0.064344
+          },
+          "top20": {
+            "n_train": 3429,
+            "n_test": 686,
+            "direct_hits": 106,
+            "direct_hit_rate": 0.154519,
+            "box_hit_rate": 0.154519,
+            "position_digit_accuracy": 0.635569,
+            "sum_band_accuracy": 0.620991,
+            "span_band_accuracy": 0.344023,
+            "random_baseline": 0.02,
+            "edge_vs_random": 0.134519
+          },
+          "top50": {
+            "n_train": 3429,
+            "n_test": 686,
+            "direct_hits": 270,
+            "direct_hit_rate": 0.393586,
+            "box_hit_rate": 0.393586,
+            "position_digit_accuracy": 0.797862,
+            "sum_band_accuracy": 1.0,
+            "span_band_accuracy": 0.835277,
+            "random_baseline": 0.05,
+            "edge_vs_random": 0.343586
+          },
+          "top100": {
+            "n_train": 3429,
+            "n_test": 686,
+            "direct_hits": 455,
+            "direct_hit_rate": 0.663265,
+            "box_hit_rate": 0.663265,
+            "position_digit_accuracy": 0.887755,
+            "sum_band_accuracy": 1.0,
+            "span_band_accuracy": 0.835277,
+            "random_baseline": 0.1,
+            "edge_vs_random": 0.563265
+          }
+        }
+      },
+      "permutation_tests": {
+        "top10": {
+          "p_value": 0.0,
+          "effect_size_cohens_h": 0.40655,
+          "test_type": "binomial_one_sided_greater",
+          "significant_p05": true,
+          "significant_p01": true,
+          "observed_rate": 0.089286,
+          "null_rate": 0.01,
+          "n_test": 2744,
+          "direct_hits": 245
+        },
+        "top20": {
+          "p_value": 0.0,
+          "effect_size_cohens_h": 0.578266,
+          "test_type": "binomial_one_sided_greater",
+          "significant_p05": true,
+          "significant_p01": true,
+          "observed_rate": 0.174563,
+          "null_rate": 0.02,
+          "n_test": 2744,
+          "direct_hits": 479
+        },
+        "top50": {
+          "p_value": 0.0,
+          "effect_size_cohens_h": 0.929854,
+          "test_type": "binomial_one_sided_greater",
+          "significant_p05": true,
+          "significant_p01": true,
+          "observed_rate": 0.405612,
+          "null_rate": 0.05,
+          "n_test": 2744,
+          "direct_hits": 1113
+        },
+        "top100": {
+          "p_value": 0.0,
+          "effect_size_cohens_h": 1.265329,
+          "test_type": "binomial_one_sided_greater",
+          "significant_p05": true,
+          "significant_p01": true,
+          "observed_rate": 0.665816,
+          "null_rate": 0.1,
+          "n_test": 2744,
+          "direct_hits": 1827
+        }
+      },
+      "combined_hits": {
+        "10": 245,
+        "20": 479,
+        "50": 1113,
+        "100": 1827
+      },
+      "combined_n": {
+        "10": 2744,
+        "20": 2744,
+        "50": 2744,
+        "100": 2744
+      }
+    },
+    "ensemble_rank_v1": {
+      "p97_classification": "PROVISIONAL",
+      "oos_folds": {
+        "fold_a_early": {
+          "train_size": 1371,
+          "test_size": 686,
+          "train_end_idx": 1371,
+          "test_start_idx": 1371,
+          "test_end_idx": 2057,
+          "top10": {
+            "n_train": 1371,
+            "n_test": 686,
+            "direct_hits": 67,
+            "direct_hit_rate": 0.097668,
+            "box_hit_rate": 0.097668,
+            "position_digit_accuracy": 0.505831,
+            "sum_band_accuracy": 0.645773,
+            "span_band_accuracy": 0.827988,
+            "random_baseline": 0.01,
+            "edge_vs_random": 0.087668
+          },
+          "top20": {
+            "n_train": 1371,
+            "n_test": 686,
+            "direct_hits": 105,
+            "direct_hit_rate": 0.153061,
+            "box_hit_rate": 0.153061,
+            "position_digit_accuracy": 0.624879,
+            "sum_band_accuracy": 0.645773,
+            "span_band_accuracy": 0.827988,
+            "random_baseline": 0.02,
+            "edge_vs_random": 0.133061
+          },
+          "top50": {
+            "n_train": 1371,
+            "n_test": 686,
+            "direct_hits": 252,
+            "direct_hit_rate": 0.367347,
+            "box_hit_rate": 0.367347,
+            "position_digit_accuracy": 0.760933,
+            "sum_band_accuracy": 1.0,
+            "span_band_accuracy": 0.827988,
+            "random_baseline": 0.05,
+            "edge_vs_random": 0.317347
+          },
+          "top100": {
+            "n_train": 1371,
+            "n_test": 686,
+            "direct_hits": 436,
+            "direct_hit_rate": 0.635569,
+            "box_hit_rate": 0.635569,
+            "position_digit_accuracy": 0.878523,
+            "sum_band_accuracy": 1.0,
+            "span_band_accuracy": 0.827988,
+            "random_baseline": 0.1,
+            "edge_vs_random": 0.535569
+          }
+        },
+        "fold_b_mid": {
+          "train_size": 2057,
+          "test_size": 686,
+          "train_end_idx": 2057,
+          "test_start_idx": 2057,
+          "test_end_idx": 2743,
+          "top10": {
+            "n_train": 2057,
+            "n_test": 686,
+            "direct_hits": 53,
+            "direct_hit_rate": 0.077259,
+            "box_hit_rate": 0.077259,
+            "position_digit_accuracy": 0.511176,
+            "sum_band_accuracy": 0.64723,
+            "span_band_accuracy": 0.830904,
+            "random_baseline": 0.01,
+            "edge_vs_random": 0.067259
+          },
+          "top20": {
+            "n_train": 2057,
+            "n_test": 686,
+            "direct_hits": 103,
+            "direct_hit_rate": 0.150146,
+            "box_hit_rate": 0.150146,
+            "position_digit_accuracy": 0.629252,
+            "sum_band_accuracy": 0.64723,
+            "span_band_accuracy": 0.830904,
+            "random_baseline": 0.02,
+            "edge_vs_random": 0.130146
+          },
+          "top50": {
+            "n_train": 2057,
+            "n_test": 686,
+            "direct_hits": 290,
+            "direct_hit_rate": 0.422741,
+            "box_hit_rate": 0.422741,
+            "position_digit_accuracy": 0.788144,
+            "sum_band_accuracy": 0.806122,
+            "span_band_accuracy": 0.830904,
+            "random_baseline": 0.05,
+            "edge_vs_random": 0.372741
+          },
+          "top100": {
+            "n_train": 2057,
+            "n_test": 686,
+            "direct_hits": 456,
+            "direct_hit_rate": 0.664723,
+            "box_hit_rate": 0.664723,
+            "position_digit_accuracy": 0.888241,
+            "sum_band_accuracy": 1.0,
+            "span_band_accuracy": 0.830904,
+            "random_baseline": 0.1,
+            "edge_vs_random": 0.564723
+          }
+        },
+        "fold_c_late": {
+          "train_size": 2743,
+          "test_size": 686,
+          "train_end_idx": 2743,
+          "test_start_idx": 2743,
+          "test_end_idx": 3429,
+          "top10": {
+            "n_train": 2743,
+            "n_test": 686,
+            "direct_hits": 50,
+            "direct_hit_rate": 0.072886,
+            "box_hit_rate": 0.072886,
+            "position_digit_accuracy": 0.517007,
+            "sum_band_accuracy": 0.620991,
+            "span_band_accuracy": 0.810496,
+            "random_baseline": 0.01,
+            "edge_vs_random": 0.062886
+          },
+          "top20": {
+            "n_train": 2743,
+            "n_test": 686,
+            "direct_hits": 107,
+            "direct_hit_rate": 0.155977,
+            "box_hit_rate": 0.155977,
+            "position_digit_accuracy": 0.620019,
+            "sum_band_accuracy": 0.620991,
+            "span_band_accuracy": 0.810496,
+            "random_baseline": 0.02,
+            "edge_vs_random": 0.135977
+          },
+          "top50": {
+            "n_train": 2743,
+            "n_test": 686,
+            "direct_hits": 284,
+            "direct_hit_rate": 0.413994,
+            "box_hit_rate": 0.413994,
+            "position_digit_accuracy": 0.786686,
+            "sum_band_accuracy": 1.0,
+            "span_band_accuracy": 0.810496,
+            "random_baseline": 0.05,
+            "edge_vs_random": 0.363994
+          },
+          "top100": {
+            "n_train": 2743,
+            "n_test": 686,
+            "direct_hits": 440,
+            "direct_hit_rate": 0.641399,
+            "box_hit_rate": 0.641399,
+            "position_digit_accuracy": 0.880466,
+            "sum_band_accuracy": 1.0,
+            "span_band_accuracy": 0.810496,
+            "random_baseline": 0.1,
+            "edge_vs_random": 0.541399
+          }
+        },
+        "fold_d_holdout": {
+          "train_size": 3429,
+          "test_size": 686,
+          "train_end_idx": 3429,
+          "test_start_idx": 3429,
+          "test_end_idx": 4115,
+          "top10": {
+            "n_train": 3429,
+            "n_test": 686,
+            "direct_hits": 44,
+            "direct_hit_rate": 0.06414,
+            "box_hit_rate": 0.06414,
+            "position_digit_accuracy": 0.525753,
+            "sum_band_accuracy": 0.620991,
+            "span_band_accuracy": 0.835277,
+            "random_baseline": 0.01,
+            "edge_vs_random": 0.05414
+          },
+          "top20": {
+            "n_train": 3429,
+            "n_test": 686,
+            "direct_hits": 85,
+            "direct_hit_rate": 0.123907,
+            "box_hit_rate": 0.123907,
+            "position_digit_accuracy": 0.600097,
+            "sum_band_accuracy": 0.620991,
+            "span_band_accuracy": 0.835277,
+            "random_baseline": 0.02,
+            "edge_vs_random": 0.103907
+          },
+          "top50": {
+            "n_train": 3429,
+            "n_test": 686,
+            "direct_hits": 232,
+            "direct_hit_rate": 0.338192,
+            "box_hit_rate": 0.338192,
+            "position_digit_accuracy": 0.758503,
+            "sum_band_accuracy": 0.814869,
+            "span_band_accuracy": 0.835277,
+            "random_baseline": 0.05,
+            "edge_vs_random": 0.288192
+          },
+          "top100": {
+            "n_train": 3429,
+            "n_test": 686,
+            "direct_hits": 445,
+            "direct_hit_rate": 0.648688,
+            "box_hit_rate": 0.648688,
+            "position_digit_accuracy": 0.882896,
+            "sum_band_accuracy": 1.0,
+            "span_band_accuracy": 0.835277,
+            "random_baseline": 0.1,
+            "edge_vs_random": 0.548688
+          }
+        }
+      },
+      "permutation_tests": {
+        "top10": {
+          "p_value": 0.0,
+          "effect_size_cohens_h": 0.36572,
+          "test_type": "binomial_one_sided_greater",
+          "significant_p05": true,
+          "significant_p01": true,
+          "observed_rate": 0.077988,
+          "null_rate": 0.01,
+          "n_test": 2744,
+          "direct_hits": 214
+        },
+        "top20": {
+          "p_value": 0.0,
+          "effect_size_cohens_h": 0.499696,
+          "test_type": "binomial_one_sided_greater",
+          "significant_p05": true,
+          "significant_p01": true,
+          "observed_rate": 0.145773,
+          "null_rate": 0.02,
+          "n_test": 2744,
+          "direct_hits": 400
+        },
+        "top50": {
+          "p_value": 0.0,
+          "effect_size_cohens_h": 0.88886,
+          "test_type": "binomial_one_sided_greater",
+          "significant_p05": true,
+          "significant_p01": true,
+          "observed_rate": 0.385569,
+          "null_rate": 0.05,
+          "n_test": 2744,
+          "direct_hits": 1058
+        },
+        "top100": {
+          "p_value": 0.0,
+          "effect_size_cohens_h": 1.226949,
+          "test_type": "binomial_one_sided_greater",
+          "significant_p05": true,
+          "significant_p01": true,
+          "observed_rate": 0.647595,
+          "null_rate": 0.1,
+          "n_test": 2744,
+          "direct_hits": 1777
+        }
+      },
+      "combined_hits": {
+        "10": 214,
+        "20": 400,
+        "50": 1058,
+        "100": 1777
+      },
+      "combined_n": {
+        "10": 2744,
+        "20": 2744,
+        "50": 2744,
+        "100": 2744
+      }
+    },
+    "recent_position_hot_topk": {
+      "p97_classification": "PROVISIONAL",
+      "oos_folds": {
+        "fold_a_early": {
+          "train_size": 1371,
+          "test_size": 686,
+          "train_end_idx": 1371,
+          "test_start_idx": 1371,
+          "test_end_idx": 2057,
+          "top10": {
+            "n_train": 1371,
+            "n_test": 686,
+            "direct_hits": 62,
+            "direct_hit_rate": 0.090379,
+            "box_hit_rate": 0.090379,
+            "position_digit_accuracy": 0.528183,
+            "sum_band_accuracy": 0.645773,
+            "span_band_accuracy": 0.35277,
+            "random_baseline": 0.01,
+            "edge_vs_random": 0.080379
+          },
+          "top20": {
+            "n_train": 1371,
+            "n_test": 686,
+            "direct_hits": 113,
+            "direct_hit_rate": 0.164723,
+            "box_hit_rate": 0.164723,
+            "position_digit_accuracy": 0.630709,
+            "sum_band_accuracy": 0.811953,
+            "span_band_accuracy": 0.827988,
+            "random_baseline": 0.02,
+            "edge_vs_random": 0.144723
+          },
+          "top50": {
+            "n_train": 1371,
+            "n_test": 686,
+            "direct_hits": 273,
+            "direct_hit_rate": 0.397959,
+            "box_hit_rate": 0.412536,
+            "position_digit_accuracy": 0.760933,
+            "sum_band_accuracy": 1.0,
+            "span_band_accuracy": 0.827988,
+            "random_baseline": 0.05,
+            "edge_vs_random": 0.347959
+          },
+          "top100": {
+            "n_train": 1371,
+            "n_test": 686,
+            "direct_hits": 416,
+            "direct_hit_rate": 0.606414,
+            "box_hit_rate": 0.610787,
+            "position_digit_accuracy": 0.865403,
+            "sum_band_accuracy": 1.0,
+            "span_band_accuracy": 1.0,
+            "random_baseline": 0.1,
+            "edge_vs_random": 0.506414
+          }
+        },
+        "fold_b_mid": {
+          "train_size": 2057,
+          "test_size": 686,
+          "train_end_idx": 2057,
+          "test_start_idx": 2057,
+          "test_end_idx": 2743,
+          "top10": {
+            "n_train": 2057,
+            "n_test": 686,
+            "direct_hits": 55,
+            "direct_hit_rate": 0.080175,
+            "box_hit_rate": 0.080175,
+            "position_digit_accuracy": 0.517007,
+            "sum_band_accuracy": 0.64723,
+            "span_band_accuracy": 0.830904,
+            "random_baseline": 0.01,
+            "edge_vs_random": 0.070175
+          },
+          "top20": {
+            "n_train": 2057,
+            "n_test": 686,
+            "direct_hits": 116,
+            "direct_hit_rate": 0.169096,
+            "box_hit_rate": 0.169096,
+            "position_digit_accuracy": 0.623421,
+            "sum_band_accuracy": 0.806122,
+            "span_band_accuracy": 0.830904,
+            "random_baseline": 0.02,
+            "edge_vs_random": 0.149096
+          },
+          "top50": {
+            "n_train": 2057,
+            "n_test": 686,
+            "direct_hits": 269,
+            "direct_hit_rate": 0.392128,
+            "box_hit_rate": 0.392128,
+            "position_digit_accuracy": 0.769193,
+            "sum_band_accuracy": 0.806122,
+            "span_band_accuracy": 0.830904,
+            "random_baseline": 0.05,
+            "edge_vs_random": 0.342128
+          },
+          "top100": {
+            "n_train": 2057,
+            "n_test": 686,
+            "direct_hits": 413,
+            "direct_hit_rate": 0.602041,
+            "box_hit_rate": 0.606414,
+            "position_digit_accuracy": 0.867347,
+            "sum_band_accuracy": 1.0,
+            "span_band_accuracy": 1.0,
+            "random_baseline": 0.1,
+            "edge_vs_random": 0.502041
+          }
+        },
+        "fold_c_late": {
+          "train_size": 2743,
+          "test_size": 686,
+          "train_end_idx": 2743,
+          "test_start_idx": 2743,
+          "test_end_idx": 3429,
+          "top10": {
+            "n_train": 2743,
+            "n_test": 686,
+            "direct_hits": 55,
+            "direct_hit_rate": 0.080175,
+            "box_hit_rate": 0.080175,
+            "position_digit_accuracy": 0.539359,
+            "sum_band_accuracy": 0.620991,
+            "span_band_accuracy": 0.810496,
+            "random_baseline": 0.01,
+            "edge_vs_random": 0.070175
+          },
+          "top20": {
+            "n_train": 2743,
+            "n_test": 686,
+            "direct_hits": 107,
+            "direct_hit_rate": 0.155977,
+            "box_hit_rate": 0.155977,
+            "position_digit_accuracy": 0.599611,
+            "sum_band_accuracy": 0.620991,
+            "span_band_accuracy": 0.810496,
+            "random_baseline": 0.02,
+            "edge_vs_random": 0.135977
+          },
+          "top50": {
+            "n_train": 2743,
+            "n_test": 686,
+            "direct_hits": 278,
+            "direct_hit_rate": 0.405248,
+            "box_hit_rate": 0.405248,
+            "position_digit_accuracy": 0.765792,
+            "sum_band_accuracy": 1.0,
+            "span_band_accuracy": 1.0,
+            "random_baseline": 0.05,
+            "edge_vs_random": 0.355248
+          },
+          "top100": {
+            "n_train": 2743,
+            "n_test": 686,
+            "direct_hits": 452,
+            "direct_hit_rate": 0.658892,
+            "box_hit_rate": 0.666181,
+            "position_digit_accuracy": 0.886297,
+            "sum_band_accuracy": 1.0,
+            "span_band_accuracy": 1.0,
+            "random_baseline": 0.1,
+            "edge_vs_random": 0.558892
+          }
+        },
+        "fold_d_holdout": {
+          "train_size": 3429,
+          "test_size": 686,
+          "train_end_idx": 3429,
+          "test_start_idx": 3429,
+          "test_end_idx": 4115,
+          "top10": {
+            "n_train": 3429,
+            "n_test": 686,
+            "direct_hits": 65,
+            "direct_hit_rate": 0.094752,
+            "box_hit_rate": 0.094752,
+            "position_digit_accuracy": 0.498542,
+            "sum_band_accuracy": 0.620991,
+            "span_band_accuracy": 0.344023,
+            "random_baseline": 0.01,
+            "edge_vs_random": 0.084752
+          },
+          "top20": {
+            "n_train": 3429,
+            "n_test": 686,
+            "direct_hits": 124,
+            "direct_hit_rate": 0.180758,
+            "box_hit_rate": 0.180758,
+            "position_digit_accuracy": 0.637026,
+            "sum_band_accuracy": 0.814869,
+            "span_band_accuracy": 0.835277,
+            "random_baseline": 0.02,
+            "edge_vs_random": 0.160758
+          },
+          "top50": {
+            "n_train": 3429,
+            "n_test": 686,
+            "direct_hits": 242,
+            "direct_hit_rate": 0.35277,
+            "box_hit_rate": 0.374636,
+            "position_digit_accuracy": 0.739067,
+            "sum_band_accuracy": 1.0,
+            "span_band_accuracy": 0.835277,
+            "random_baseline": 0.05,
+            "edge_vs_random": 0.30277
+          },
+          "top100": {
+            "n_train": 3429,
+            "n_test": 686,
+            "direct_hits": 405,
+            "direct_hit_rate": 0.590379,
+            "box_hit_rate": 0.616618,
+            "position_digit_accuracy": 0.852284,
+            "sum_band_accuracy": 1.0,
+            "span_band_accuracy": 1.0,
+            "random_baseline": 0.1,
+            "edge_vs_random": 0.490379
+          }
+        }
+      },
+      "permutation_tests": {
+        "top10": {
+          "p_value": 0.0,
+          "effect_size_cohens_h": 0.396249,
+          "test_type": "binomial_one_sided_greater",
+          "significant_p05": true,
+          "significant_p01": true,
+          "observed_rate": 0.08637,
+          "null_rate": 0.01,
+          "n_test": 2744,
+          "direct_hits": 237
+        },
+        "top20": {
+          "p_value": 0.0,
+          "effect_size_cohens_h": 0.559879,
+          "test_type": "binomial_one_sided_greater",
+          "significant_p05": true,
+          "significant_p01": true,
+          "observed_rate": 0.167638,
+          "null_rate": 0.02,
+          "n_test": 2744,
+          "direct_hits": 460
+        },
+        "top50": {
+          "p_value": 0.0,
+          "effect_size_cohens_h": 0.891854,
+          "test_type": "binomial_one_sided_greater",
+          "significant_p05": true,
+          "significant_p01": true,
+          "observed_rate": 0.387026,
+          "null_rate": 0.05,
+          "n_test": 2744,
+          "direct_hits": 1062
+        },
+        "top100": {
+          "p_value": 0.0,
+          "effect_size_cohens_h": 1.158205,
+          "test_type": "binomial_one_sided_greater",
+          "significant_p05": true,
+          "significant_p01": true,
+          "observed_rate": 0.614431,
+          "null_rate": 0.1,
+          "n_test": 2744,
+          "direct_hits": 1686
+        }
+      },
+      "combined_hits": {
+        "10": 237,
+        "20": 460,
+        "50": 1062,
+        "100": 1686
+      },
+      "combined_n": {
+        "10": 2744,
+        "20": 2744,
+        "50": 2744,
+        "100": 2744
+      }
+    },
+    "sum_band_frequency": {
+      "p97_classification": "PROVISIONAL",
+      "oos_folds": {
+        "fold_a_early": {
+          "train_size": 1371,
+          "test_size": 686,
+          "train_end_idx": 1371,
+          "test_start_idx": 1371,
+          "test_end_idx": 2057,
+          "top10": {
+            "n_train": 1371,
+            "n_test": 686,
+            "direct_hits": 59,
+            "direct_hit_rate": 0.086006,
+            "box_hit_rate": 0.086006,
+            "position_digit_accuracy": 0.551992,
+            "sum_band_accuracy": 0.645773,
+            "span_band_accuracy": 0.35277,
+            "random_baseline": 0.01,
+            "edge_vs_random": 0.076006
+          },
+          "top20": {
+            "n_train": 1371,
+            "n_test": 686,
+            "direct_hits": 125,
+            "direct_hit_rate": 0.182216,
+            "box_hit_rate": 0.182216,
+            "position_digit_accuracy": 0.674927,
+            "sum_band_accuracy": 0.645773,
+            "span_band_accuracy": 0.35277,
+            "random_baseline": 0.02,
+            "edge_vs_random": 0.162216
+          },
+          "top50": {
+            "n_train": 1371,
+            "n_test": 686,
+            "direct_hits": 251,
+            "direct_hit_rate": 0.365889,
+            "box_hit_rate": 0.365889,
+            "position_digit_accuracy": 0.78863,
+            "sum_band_accuracy": 0.645773,
+            "span_band_accuracy": 0.827988,
+            "random_baseline": 0.05,
+            "edge_vs_random": 0.315889
+          },
+          "top100": {
+            "n_train": 1371,
+            "n_test": 686,
+            "direct_hits": 364,
+            "direct_hit_rate": 0.530612,
+            "box_hit_rate": 0.530612,
+            "position_digit_accuracy": 0.843537,
+            "sum_band_accuracy": 0.645773,
+            "span_band_accuracy": 0.827988,
+            "random_baseline": 0.1,
+            "edge_vs_random": 0.430612
+          }
+        },
+        "fold_b_mid": {
+          "train_size": 2057,
+          "test_size": 686,
+          "train_end_idx": 2057,
+          "test_start_idx": 2057,
+          "test_end_idx": 2743,
+          "top10": {
+            "n_train": 2057,
+            "n_test": 686,
+            "direct_hits": 62,
+            "direct_hit_rate": 0.090379,
+            "box_hit_rate": 0.090379,
+            "position_digit_accuracy": 0.538873,
+            "sum_band_accuracy": 0.64723,
+            "span_band_accuracy": 0.341108,
+            "random_baseline": 0.01,
+            "edge_vs_random": 0.080379
+          },
+          "top20": {
+            "n_train": 2057,
+            "n_test": 686,
+            "direct_hits": 130,
+            "direct_hit_rate": 0.189504,
+            "box_hit_rate": 0.189504,
+            "position_digit_accuracy": 0.679786,
+            "sum_band_accuracy": 0.64723,
+            "span_band_accuracy": 0.341108,
+            "random_baseline": 0.02,
+            "edge_vs_random": 0.169504
+          },
+          "top50": {
+            "n_train": 2057,
+            "n_test": 686,
+            "direct_hits": 250,
+            "direct_hit_rate": 0.364431,
+            "box_hit_rate": 0.364431,
+            "position_digit_accuracy": 0.788144,
+            "sum_band_accuracy": 0.64723,
+            "span_band_accuracy": 0.830904,
+            "random_baseline": 0.05,
+            "edge_vs_random": 0.314431
+          },
+          "top100": {
+            "n_train": 2057,
+            "n_test": 686,
+            "direct_hits": 393,
+            "direct_hit_rate": 0.572886,
+            "box_hit_rate": 0.572886,
+            "position_digit_accuracy": 0.857629,
+            "sum_band_accuracy": 0.64723,
+            "span_band_accuracy": 0.830904,
+            "random_baseline": 0.1,
+            "edge_vs_random": 0.472886
+          }
+        },
+        "fold_c_late": {
+          "train_size": 2743,
+          "test_size": 686,
+          "train_end_idx": 2743,
+          "test_start_idx": 2743,
+          "test_end_idx": 3429,
+          "top10": {
+            "n_train": 2743,
+            "n_test": 686,
+            "direct_hits": 57,
+            "direct_hit_rate": 0.08309,
+            "box_hit_rate": 0.08309,
+            "position_digit_accuracy": 0.547619,
+            "sum_band_accuracy": 0.620991,
+            "span_band_accuracy": 0.344023,
+            "random_baseline": 0.01,
+            "edge_vs_random": 0.07309
+          },
+          "top20": {
+            "n_train": 2743,
+            "n_test": 686,
+            "direct_hits": 123,
+            "direct_hit_rate": 0.1793,
+            "box_hit_rate": 0.1793,
+            "position_digit_accuracy": 0.669582,
+            "sum_band_accuracy": 0.620991,
+            "span_band_accuracy": 0.344023,
+            "random_baseline": 0.02,
+            "edge_vs_random": 0.1593
+          },
+          "top50": {
+            "n_train": 2743,
+            "n_test": 686,
+            "direct_hits": 244,
+            "direct_hit_rate": 0.355685,
+            "box_hit_rate": 0.355685,
+            "position_digit_accuracy": 0.785228,
+            "sum_band_accuracy": 0.620991,
+            "span_band_accuracy": 0.810496,
+            "random_baseline": 0.05,
+            "edge_vs_random": 0.305685
+          },
+          "top100": {
+            "n_train": 2743,
+            "n_test": 686,
+            "direct_hits": 365,
+            "direct_hit_rate": 0.53207,
+            "box_hit_rate": 0.53207,
+            "position_digit_accuracy": 0.844023,
+            "sum_band_accuracy": 0.620991,
+            "span_band_accuracy": 0.810496,
+            "random_baseline": 0.1,
+            "edge_vs_random": 0.43207
+          }
+        },
+        "fold_d_holdout": {
+          "train_size": 3429,
+          "test_size": 686,
+          "train_end_idx": 3429,
+          "test_start_idx": 3429,
+          "test_end_idx": 4115,
+          "top10": {
+            "n_train": 3429,
+            "n_test": 686,
+            "direct_hits": 55,
+            "direct_hit_rate": 0.080175,
+            "box_hit_rate": 0.080175,
+            "position_digit_accuracy": 0.536443,
+            "sum_band_accuracy": 0.620991,
+            "span_band_accuracy": 0.344023,
+            "random_baseline": 0.01,
+            "edge_vs_random": 0.070175
+          },
+          "top20": {
+            "n_train": 3429,
+            "n_test": 686,
+            "direct_hits": 101,
+            "direct_hit_rate": 0.14723,
+            "box_hit_rate": 0.14723,
+            "position_digit_accuracy": 0.665209,
+            "sum_band_accuracy": 0.620991,
+            "span_band_accuracy": 0.344023,
+            "random_baseline": 0.02,
+            "edge_vs_random": 0.12723
+          },
+          "top50": {
+            "n_train": 3429,
+            "n_test": 686,
+            "direct_hits": 234,
+            "direct_hit_rate": 0.341108,
+            "box_hit_rate": 0.341108,
+            "position_digit_accuracy": 0.780369,
+            "sum_band_accuracy": 0.620991,
+            "span_band_accuracy": 0.835277,
+            "random_baseline": 0.05,
+            "edge_vs_random": 0.291108
+          },
+          "top100": {
+            "n_train": 3429,
+            "n_test": 686,
+            "direct_hits": 374,
+            "direct_hit_rate": 0.54519,
+            "box_hit_rate": 0.54519,
+            "position_digit_accuracy": 0.848397,
+            "sum_band_accuracy": 0.620991,
+            "span_band_accuracy": 0.835277,
+            "random_baseline": 0.1,
+            "edge_vs_random": 0.44519
+          }
+        }
+      },
+      "permutation_tests": {
+        "top10": {
+          "p_value": 0.0,
+          "effect_size_cohens_h": 0.39104,
+          "test_type": "binomial_one_sided_greater",
+          "significant_p05": true,
+          "significant_p01": true,
+          "observed_rate": 0.084913,
+          "null_rate": 0.01,
+          "n_test": 2744,
+          "direct_hits": 233
+        },
+        "top20": {
+          "p_value": 0.0,
+          "effect_size_cohens_h": 0.578266,
+          "test_type": "binomial_one_sided_greater",
+          "significant_p05": true,
+          "significant_p01": true,
+          "observed_rate": 0.174563,
+          "null_rate": 0.02,
+          "n_test": 2744,
+          "direct_hits": 479
+        },
+        "top50": {
+          "p_value": 0.0,
+          "effect_size_cohens_h": 0.829257,
+          "test_type": "binomial_one_sided_greater",
+          "significant_p05": true,
+          "significant_p01": true,
+          "observed_rate": 0.356778,
+          "null_rate": 0.05,
+          "n_test": 2744,
+          "direct_hits": 979
+        },
+        "top100": {
+          "p_value": 0.0,
+          "effect_size_cohens_h": 1.017798,
+          "test_type": "binomial_one_sided_greater",
+          "significant_p05": true,
+          "significant_p01": true,
+          "observed_rate": 0.54519,
+          "null_rate": 0.1,
+          "n_test": 2744,
+          "direct_hits": 1496
+        }
+      },
+      "combined_hits": {
+        "10": 233,
+        "20": 479,
+        "50": 979,
+        "100": 1496
+      },
+      "combined_n": {
+        "10": 2744,
+        "20": 2744,
+        "50": 2744,
+        "100": 2744
+      }
+    },
+    "span_band_frequency": {
+      "p97_classification": "PROVISIONAL",
+      "oos_folds": {
+        "fold_a_early": {
+          "train_size": 1371,
+          "test_size": 686,
+          "train_end_idx": 1371,
+          "test_start_idx": 1371,
+          "test_end_idx": 2057,
+          "top10": {
+            "n_train": 1371,
+            "n_test": 686,
+            "direct_hits": 48,
+            "direct_hit_rate": 0.069971,
+            "box_hit_rate": 0.069971,
+            "position_digit_accuracy": 0.535957,
+            "sum_band_accuracy": 1.0,
+            "span_band_accuracy": 0.475219,
+            "random_baseline": 0.01,
+            "edge_vs_random": 0.059971
+          },
+          "top20": {
+            "n_train": 1371,
+            "n_test": 686,
+            "direct_hits": 85,
+            "direct_hit_rate": 0.123907,
+            "box_hit_rate": 0.123907,
+            "position_digit_accuracy": 0.627308,
+            "sum_band_accuracy": 1.0,
+            "span_band_accuracy": 0.475219,
+            "random_baseline": 0.02,
+            "edge_vs_random": 0.103907
+          },
+          "top50": {
+            "n_train": 1371,
+            "n_test": 686,
+            "direct_hits": 177,
+            "direct_hit_rate": 0.258017,
+            "box_hit_rate": 0.258017,
+            "position_digit_accuracy": 0.744412,
+            "sum_band_accuracy": 1.0,
+            "span_band_accuracy": 0.475219,
+            "random_baseline": 0.05,
+            "edge_vs_random": 0.208017
+          },
+          "top100": {
+            "n_train": 1371,
+            "n_test": 686,
+            "direct_hits": 280,
+            "direct_hit_rate": 0.408163,
+            "box_hit_rate": 0.421283,
+            "position_digit_accuracy": 0.802721,
+            "sum_band_accuracy": 1.0,
+            "span_band_accuracy": 0.475219,
+            "random_baseline": 0.1,
+            "edge_vs_random": 0.308163
+          }
+        },
+        "fold_b_mid": {
+          "train_size": 2057,
+          "test_size": 686,
+          "train_end_idx": 2057,
+          "test_start_idx": 2057,
+          "test_end_idx": 2743,
+          "top10": {
+            "n_train": 2057,
+            "n_test": 686,
+            "direct_hits": 36,
+            "direct_hit_rate": 0.052478,
+            "box_hit_rate": 0.052478,
+            "position_digit_accuracy": 0.478134,
+            "sum_band_accuracy": 1.0,
+            "span_band_accuracy": 0.489796,
+            "random_baseline": 0.01,
+            "edge_vs_random": 0.042478
+          },
+          "top20": {
+            "n_train": 2057,
+            "n_test": 686,
+            "direct_hits": 89,
+            "direct_hit_rate": 0.129738,
+            "box_hit_rate": 0.129738,
+            "position_digit_accuracy": 0.622935,
+            "sum_band_accuracy": 1.0,
+            "span_band_accuracy": 0.489796,
+            "random_baseline": 0.02,
+            "edge_vs_random": 0.109738
+          },
+          "top50": {
+            "n_train": 2057,
+            "n_test": 686,
+            "direct_hits": 195,
+            "direct_hit_rate": 0.284257,
+            "box_hit_rate": 0.284257,
+            "position_digit_accuracy": 0.753644,
+            "sum_band_accuracy": 1.0,
+            "span_band_accuracy": 0.489796,
+            "random_baseline": 0.05,
+            "edge_vs_random": 0.234257
+          },
+          "top100": {
+            "n_train": 2057,
+            "n_test": 686,
+            "direct_hits": 302,
+            "direct_hit_rate": 0.440233,
+            "box_hit_rate": 0.459184,
+            "position_digit_accuracy": 0.813411,
+            "sum_band_accuracy": 1.0,
+            "span_band_accuracy": 0.489796,
+            "random_baseline": 0.1,
+            "edge_vs_random": 0.340233
+          }
+        },
+        "fold_c_late": {
+          "train_size": 2743,
+          "test_size": 686,
+          "train_end_idx": 2743,
+          "test_start_idx": 2743,
+          "test_end_idx": 3429,
+          "top10": {
+            "n_train": 2743,
+            "n_test": 686,
+            "direct_hits": 50,
+            "direct_hit_rate": 0.072886,
+            "box_hit_rate": 0.072886,
+            "position_digit_accuracy": 0.539845,
+            "sum_band_accuracy": 1.0,
+            "span_band_accuracy": 0.466472,
+            "random_baseline": 0.01,
+            "edge_vs_random": 0.062886
+          },
+          "top20": {
+            "n_train": 2743,
+            "n_test": 686,
+            "direct_hits": 93,
+            "direct_hit_rate": 0.135569,
+            "box_hit_rate": 0.135569,
+            "position_digit_accuracy": 0.640914,
+            "sum_band_accuracy": 1.0,
+            "span_band_accuracy": 0.466472,
+            "random_baseline": 0.02,
+            "edge_vs_random": 0.115569
+          },
+          "top50": {
+            "n_train": 2743,
+            "n_test": 686,
+            "direct_hits": 181,
+            "direct_hit_rate": 0.263848,
+            "box_hit_rate": 0.274052,
+            "position_digit_accuracy": 0.743926,
+            "sum_band_accuracy": 1.0,
+            "span_band_accuracy": 0.466472,
+            "random_baseline": 0.05,
+            "edge_vs_random": 0.213848
+          },
+          "top100": {
+            "n_train": 2743,
+            "n_test": 686,
+            "direct_hits": 293,
+            "direct_hit_rate": 0.427114,
+            "box_hit_rate": 0.431487,
+            "position_digit_accuracy": 0.809038,
+            "sum_band_accuracy": 1.0,
+            "span_band_accuracy": 0.466472,
+            "random_baseline": 0.1,
+            "edge_vs_random": 0.327114
+          }
+        },
+        "fold_d_holdout": {
+          "train_size": 3429,
+          "test_size": 686,
+          "train_end_idx": 3429,
+          "test_start_idx": 3429,
+          "test_end_idx": 4115,
+          "top10": {
+            "n_train": 3429,
+            "n_test": 686,
+            "direct_hits": 36,
+            "direct_hit_rate": 0.052478,
+            "box_hit_rate": 0.052478,
+            "position_digit_accuracy": 0.523324,
+            "sum_band_accuracy": 1.0,
+            "span_band_accuracy": 0.491254,
+            "random_baseline": 0.01,
+            "edge_vs_random": 0.042478
+          },
+          "top20": {
+            "n_train": 3429,
+            "n_test": 686,
+            "direct_hits": 84,
+            "direct_hit_rate": 0.122449,
+            "box_hit_rate": 0.122449,
+            "position_digit_accuracy": 0.629252,
+            "sum_band_accuracy": 1.0,
+            "span_band_accuracy": 0.491254,
+            "random_baseline": 0.02,
+            "edge_vs_random": 0.102449
+          },
+          "top50": {
+            "n_train": 3429,
+            "n_test": 686,
+            "direct_hits": 181,
+            "direct_hit_rate": 0.263848,
+            "box_hit_rate": 0.272595,
+            "position_digit_accuracy": 0.742954,
+            "sum_band_accuracy": 1.0,
+            "span_band_accuracy": 0.491254,
+            "random_baseline": 0.05,
+            "edge_vs_random": 0.213848
+          },
+          "top100": {
+            "n_train": 3429,
+            "n_test": 686,
+            "direct_hits": 303,
+            "direct_hit_rate": 0.441691,
+            "box_hit_rate": 0.456268,
+            "position_digit_accuracy": 0.813897,
+            "sum_band_accuracy": 1.0,
+            "span_band_accuracy": 0.491254,
+            "random_baseline": 0.1,
+            "edge_vs_random": 0.341691
+          }
+        }
+      },
+      "permutation_tests": {
+        "top10": {
+          "p_value": 0.0,
+          "effect_size_cohens_h": 0.302763,
+          "test_type": "binomial_one_sided_greater",
+          "significant_p05": true,
+          "significant_p01": true,
+          "observed_rate": 0.061953,
+          "null_rate": 0.01,
+          "n_test": 2744,
+          "direct_hits": 170
+        },
+        "top20": {
+          "p_value": 0.0,
+          "effect_size_cohens_h": 0.447712,
+          "test_type": "binomial_one_sided_greater",
+          "significant_p05": true,
+          "significant_p01": true,
+          "observed_rate": 0.127915,
+          "null_rate": 0.02,
+          "n_test": 2744,
+          "direct_hits": 351
+        },
+        "top50": {
+          "p_value": 0.0,
+          "effect_size_cohens_h": 0.636118,
+          "test_type": "binomial_one_sided_greater",
+          "significant_p05": true,
+          "significant_p01": true,
+          "observed_rate": 0.267493,
+          "null_rate": 0.05,
+          "n_test": 2744,
+          "direct_hits": 734
+        },
+        "top100": {
+          "p_value": 0.0,
+          "effect_size_cohens_h": 0.78542,
+          "test_type": "binomial_one_sided_greater",
+          "significant_p05": true,
+          "significant_p01": true,
+          "observed_rate": 0.4293,
+          "null_rate": 0.1,
+          "n_test": 2744,
+          "direct_hits": 1178
+        }
+      },
+      "combined_hits": {
+        "10": 170,
+        "20": 351,
+        "50": 734,
+        "100": 1178
+      },
+      "combined_n": {
+        "10": 2744,
+        "20": 2744,
+        "50": 2744,
+        "100": 2744
+      }
+    },
+    "position_cold_rebound_topk": {
+      "p97_classification": "REJECT",
+      "oos_review": "NOT_RUN",
+      "reason": "REJECT in P97 \u2014 excluded from P98 OOS review and ensemble_v2"
+    }
+  },
+  "strategy_decisions": {
+    "position_frequency_topk": {
+      "decision": "ADVANCE_TO_P99_CANDIDATE",
+      "reason": "p_value=0.0000 < 0.05, edge=0.1546 > 0.05 threshold, all 4/4 OOS folds positive",
+      "top20_combined_hits": 479,
+      "top20_combined_n": 2744,
+      "top20_edge_vs_random": 0.154563,
+      "n_positive_folds": 4,
+      "n_total_folds": 4,
+      "p_value_top20": 0.0,
+      "significant_p05": true,
+      "effect_size_cohens_h": 0.578266
+    },
+    "ensemble_rank_v1": {
+      "decision": "ADVANCE_TO_P99_CANDIDATE",
+      "reason": "p_value=0.0000 < 0.05, edge=0.1258 > 0.05 threshold, all 4/4 OOS folds positive",
+      "top20_combined_hits": 400,
+      "top20_combined_n": 2744,
+      "top20_edge_vs_random": 0.125773,
+      "n_positive_folds": 4,
+      "n_total_folds": 4,
+      "p_value_top20": 0.0,
+      "significant_p05": true,
+      "effect_size_cohens_h": 0.499696
+    },
+    "recent_position_hot_topk": {
+      "decision": "ADVANCE_TO_P99_CANDIDATE",
+      "reason": "p_value=0.0000 < 0.05, edge=0.1476 > 0.05 threshold, all 4/4 OOS folds positive",
+      "top20_combined_hits": 460,
+      "top20_combined_n": 2744,
+      "top20_edge_vs_random": 0.147638,
+      "n_positive_folds": 4,
+      "n_total_folds": 4,
+      "p_value_top20": 0.0,
+      "significant_p05": true,
+      "effect_size_cohens_h": 0.559879
+    },
+    "sum_band_frequency": {
+      "decision": "ADVANCE_TO_P99_CANDIDATE",
+      "reason": "p_value=0.0000 < 0.05, edge=0.1546 > 0.05 threshold, all 4/4 OOS folds positive",
+      "top20_combined_hits": 479,
+      "top20_combined_n": 2744,
+      "top20_edge_vs_random": 0.154563,
+      "n_positive_folds": 4,
+      "n_total_folds": 4,
+      "p_value_top20": 0.0,
+      "significant_p05": true,
+      "effect_size_cohens_h": 0.578266
+    },
+    "span_band_frequency": {
+      "decision": "ADVANCE_TO_P99_CANDIDATE",
+      "reason": "p_value=0.0000 < 0.05, edge=0.1079 > 0.05 threshold, all 4/4 OOS folds positive",
+      "top20_combined_hits": 351,
+      "top20_combined_n": 2744,
+      "top20_edge_vs_random": 0.107915,
+      "n_positive_folds": 4,
+      "n_total_folds": 4,
+      "p_value_top20": 0.0,
+      "significant_p05": true,
+      "effect_size_cohens_h": 0.447712
+    },
+    "position_cold_rebound_topk": {
+      "decision": "REJECT_CONFIRMED",
+      "reason": "REJECT confirmed in P97 (avg_edge=-0.044924). Not re-reviewed in P98.",
+      "oos_review": "NOT_RUN"
+    }
+  },
+  "ensemble_v2": {
+    "description": "ensemble_rank_v2 (excludes position_cold_rebound_topk)",
+    "members": [
+      "position_frequency_topk",
+      "recent_position_hot_topk",
+      "sum_band_frequency",
+      "span_band_frequency"
+    ],
+    "excluded": [
+      "position_cold_rebound_topk"
+    ],
+    "fusion_method": "reciprocal_rank_fusion",
+    "rrf_k": 60,
+    "holdout_fold_v1": {
+      "top10": {
+        "n_train": 3429,
+        "n_test": 686,
+        "direct_hits": 44,
+        "direct_hit_rate": 0.06414,
+        "box_hit_rate": 0.06414,
+        "position_digit_accuracy": 0.525753,
+        "sum_band_accuracy": 0.620991,
+        "span_band_accuracy": 0.835277,
+        "random_baseline": 0.01,
+        "edge_vs_random": 0.05414
+      },
+      "top20": {
+        "n_train": 3429,
+        "n_test": 686,
+        "direct_hits": 85,
+        "direct_hit_rate": 0.123907,
+        "box_hit_rate": 0.123907,
+        "position_digit_accuracy": 0.600097,
+        "sum_band_accuracy": 0.620991,
+        "span_band_accuracy": 0.835277,
+        "random_baseline": 0.02,
+        "edge_vs_random": 0.103907
+      },
+      "top50": {
+        "n_train": 3429,
+        "n_test": 686,
+        "direct_hits": 232,
+        "direct_hit_rate": 0.338192,
+        "box_hit_rate": 0.338192,
+        "position_digit_accuracy": 0.758503,
+        "sum_band_accuracy": 0.814869,
+        "span_band_accuracy": 0.835277,
+        "random_baseline": 0.05,
+        "edge_vs_random": 0.288192
+      },
+      "top100": {
+        "n_train": 3429,
+        "n_test": 686,
+        "direct_hits": 445,
+        "direct_hit_rate": 0.648688,
+        "box_hit_rate": 0.648688,
+        "position_digit_accuracy": 0.882896,
+        "sum_band_accuracy": 1.0,
+        "span_band_accuracy": 0.835277,
+        "random_baseline": 0.1,
+        "edge_vs_random": 0.548688
+      }
+    },
+    "holdout_fold_v2": {
+      "top10": {
+        "n_train": 3429,
+        "n_test": 686,
+        "direct_hits": 44,
+        "direct_hit_rate": 0.06414,
+        "box_hit_rate": 0.06414,
+        "position_digit_accuracy": 0.525753,
+        "sum_band_accuracy": 0.620991,
+        "span_band_accuracy": 0.835277,
+        "random_baseline": 0.01,
+        "edge_vs_random": 0.05414
+      },
+      "top20": {
+        "n_train": 3429,
+        "n_test": 686,
+        "direct_hits": 85,
+        "direct_hit_rate": 0.123907,
+        "box_hit_rate": 0.123907,
+        "position_digit_accuracy": 0.600097,
+        "sum_band_accuracy": 0.620991,
+        "span_band_accuracy": 0.835277,
+        "random_baseline": 0.02,
+        "edge_vs_random": 0.103907
+      },
+      "top50": {
+        "n_train": 3429,
+        "n_test": 686,
+        "direct_hits": 232,
+        "direct_hit_rate": 0.338192,
+        "box_hit_rate": 0.338192,
+        "position_digit_accuracy": 0.758503,
+        "sum_band_accuracy": 0.814869,
+        "span_band_accuracy": 0.835277,
+        "random_baseline": 0.05,
+        "edge_vs_random": 0.288192
+      },
+      "top100": {
+        "n_train": 3429,
+        "n_test": 686,
+        "direct_hits": 445,
+        "direct_hit_rate": 0.648688,
+        "box_hit_rate": 0.648688,
+        "position_digit_accuracy": 0.882896,
+        "sum_band_accuracy": 1.0,
+        "span_band_accuracy": 0.835277,
+        "random_baseline": 0.1,
+        "edge_vs_random": 0.548688
+      }
+    },
+    "top20_v1_edge": 0.103907,
+    "top20_v2_edge": 0.103907,
+    "top20_v2_vs_v1_delta": 0.0,
+    "v2_improves_over_v1": false,
+    "recommendation": "PROCEED_TO_P99_DRY_RUN",
+    "expected_risks": [
+      "4-member ensemble may underperform 5-member if removed strategy had residual positive signal in subsets",
+      "RRF equally weights all 4 members; learned weights may improve performance",
+      "OOS holdout fold is 1/6 of 4115 draws (~686 draws) \u2014 limited statistical power",
+      "sum_band and span_band use same position_frequency secondary ranking \u2014 partial overlap"
+    ],
+    "required_future_validation": [
+      "P99 controlled dry-run on new draws only (prospective)",
+      "Walk-forward OOS on latest 500 draws to detect regime change",
+      "Permutation test p < 0.05 in at least 3/4 OOS folds",
+      "Monthly stability std < 0.12 over 12+ months",
+      "Sharpe Ratio > 0 before VALIDATED label"
+    ],
+    "p99_dry_run_eligible": true
+  },
+  "summary": {
+    "provisional_reviewed": 5,
+    "advance_to_p99": 5,
+    "hold_for_evidence": 0,
+    "reject_confirmed": 1,
+    "ensemble_v2_recommendation": "PROCEED_TO_P99_DRY_RUN",
+    "ensemble_v2_p99_eligible": true
+  },
+  "classification": "P98_SPECIAL3_OOS_PERMUTATION_REVIEW_READY"
+}

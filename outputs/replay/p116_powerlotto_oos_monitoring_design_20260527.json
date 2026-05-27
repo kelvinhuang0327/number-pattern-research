@@ -1,0 +1,222 @@
+{
+  "classification": "P116_POWERLOTTO_OOS_MONITORING_DESIGN_READY",
+  "task_id": "P116_POWERLOTTO_OOS_MONITORING_DESIGN",
+  "generated_date": "20260527",
+  "generated_at": "2026-05-27T10:14:11.455509+00:00",
+  "p112_reference": {
+    "classification": "P112_CROSS_LOTTERY_HELPFULNESS_AUDIT_READY",
+    "artifact_path": "outputs/replay/p112_cross_lottery_prediction_helpfulness_audit_20260527.json"
+  },
+  "p113_reference": {
+    "classification": "P113_P112_ACTION_DECISION_MATRIX_READY",
+    "artifact_path": "outputs/replay/p113_p112_action_decision_matrix_20260527.json"
+  },
+  "p114_reference": {
+    "classification": "P114_TEMPORAL_STABILITY_AUDIT_READY",
+    "artifact_path": "outputs/replay/p114_temporal_stability_audit_20260527.json"
+  },
+  "db_writes": false,
+  "replay_rows_before": 54462,
+  "replay_rows_after": 54462,
+  "no_strategy_promotion": true,
+  "no_lifecycle_mutation": true,
+  "no_registry_mutation": true,
+  "no_4star_backtest": true,
+  "no_special3_p108_rerun": true,
+  "no_p115_quarantine_work": true,
+  "source_unknown_caveat_preserved": true,
+  "monitored_lottery_type": "POWER_LOTTO",
+  "monitoring_candidates": [
+    "midfreq_fourier_mk_3bet",
+    "pp3_freqort_4bet"
+  ],
+  "per_strategy_monitoring_design": [
+    {
+      "strategy_id": "midfreq_fourier_mk_3bet",
+      "lottery_type": "POWER_LOTTO",
+      "p112_classification": "PREDICTION_HELPFUL",
+      "p112_edge_vs_baseline": 0.079965,
+      "p112_avg_hit_count": 1.027333,
+      "p112_replay_rows": 1500,
+      "p113_action": "WATCHLIST_QUEUE",
+      "p114_stability_label": "STABLE_POSITIVE",
+      "p114_decision": "READY_FOR_OOS_MONITORING_DESIGN",
+      "p114_temporal_windows": {
+        "first_third_edge": 0.076632,
+        "middle_third_edge": 0.102632,
+        "last_third_edge": 0.060632,
+        "rolling_100_edge": 0.052632,
+        "rolling_250_edge": 0.056632,
+        "positive_thirds_count": 3
+      },
+      "oos_status": "DESIGN_READY",
+      "minimum_new_draws": 30,
+      "preferred_new_draws": 50,
+      "promotion_discussion_minimum": 80,
+      "rolling_windows": [
+        10,
+        20,
+        30
+      ],
+      "metrics": [
+        "avg_hit_count",
+        "edge_vs_hypergeometric_baseline",
+        "positive_edge_rate_by_window",
+        "hit_count_distribution",
+        "draw_coverage",
+        "freshness_status"
+      ],
+      "pass_criteria": [
+        "minimum 30 new POWER_LOTTO draws completed",
+        "edge_vs_baseline positive over full OOS window",
+        "positive edge in at least 2 of 3 rolling windows (10/20/30)",
+        "no freshness guard failure",
+        "replay_rows unchanged except under explicitly authorized future apply",
+        "branch governance guard passes"
+      ],
+      "watch_criteria": [
+        "edge positive but unstable across rolling windows",
+        "positive edge in only 1 of 3 rolling windows",
+        "insufficient draw count but direction positive (< 30 new draws)",
+        "edge magnitude decreasing trend but still above zero"
+      ],
+      "fail_criteria": [
+        "negative edge over full OOS window",
+        "negative edge in at least 2 of 3 rolling windows",
+        "data freshness guard failure",
+        "any unauthorized DB mutation detected",
+        "replay_rows changed without explicit authorization"
+      ],
+      "promotion_authorized": false,
+      "future_promotion_proposal_requirements": [
+        "minimum 80 new POWER_LOTTO draws observed post-OOS monitoring start",
+        "PASS status sustained for at least 50 new draws",
+        "edge_vs_baseline positive over full 80+ draw OOS window",
+        "positive edge in at least 2 of 3 rolling windows (10/20/30)",
+        "freshness guard passing throughout",
+        "explicit governance authorization in a new numbered task",
+        "source_unknown caveat resolved or explicitly accepted",
+        "P108 Special3 100-draw gate satisfied (37 more draws needed)",
+        "dedicated promotion task created (P117 or later)",
+        "branch governance guard passing at promotion-task commit"
+      ],
+      "demotion_or_quarantine_triggers": [
+        "negative edge over full OOS window at any evaluation checkpoint",
+        "negative edge in at least 2 of 3 rolling windows sustained across 2+ evaluations",
+        "data freshness failure lasting 10+ draws",
+        "unauthorized DB mutation detected",
+        "stability label degrades to UNSTABLE or STABLE_NEGATIVE in future re-audit",
+        "replay_rows changed without explicit future authorization"
+      ]
+    },
+    {
+      "strategy_id": "pp3_freqort_4bet",
+      "lottery_type": "POWER_LOTTO",
+      "p112_classification": "PREDICTION_HELPFUL",
+      "p112_edge_vs_baseline": 0.054632,
+      "p112_avg_hit_count": 1.002,
+      "p112_replay_rows": 1500,
+      "p113_action": "WATCHLIST_QUEUE",
+      "p114_stability_label": "MOSTLY_POSITIVE",
+      "p114_decision": "READY_FOR_CONTROLLED_OBSERVATION_PLAN",
+      "p114_temporal_windows": {
+        "first_third_edge": 0.084632,
+        "middle_third_edge": 0.094632,
+        "last_third_edge": -0.015368,
+        "rolling_100_edge": -0.087368,
+        "rolling_250_edge": -0.071368,
+        "positive_thirds_count": 2,
+        "recent_softness_note": "rolling_100=-0.087 and rolling_250=-0.071 indicate recent underperformance; controlled observation warranted before any promotion discussion"
+      },
+      "oos_status": "CONTROLLED_OBSERVATION_READY",
+      "minimum_new_draws": 40,
+      "preferred_new_draws": 60,
+      "promotion_discussion_minimum": 100,
+      "rolling_windows": [
+        10,
+        20,
+        40
+      ],
+      "metrics": [
+        "avg_hit_count",
+        "edge_vs_hypergeometric_baseline",
+        "positive_edge_rate_by_window",
+        "stability_label_change",
+        "draw_coverage",
+        "freshness_status"
+      ],
+      "pass_criteria": [
+        "minimum 40 new POWER_LOTTO draws completed",
+        "edge_vs_baseline positive over full OOS window",
+        "positive edge in at least 2 of 3 rolling windows (10/20/40)",
+        "stability label improves from MOSTLY_POSITIVE to STABLE_POSITIVE in future audit",
+        "no freshness guard failure",
+        "replay_rows unchanged except under explicitly authorized future apply"
+      ],
+      "watch_criteria": [
+        "edge positive but mixed across rolling windows",
+        "stability remains MOSTLY_POSITIVE (no regression, no improvement)",
+        "positive edge over full window but only 1 of 3 rolling windows positive",
+        "insufficient draw count but recent direction recovering"
+      ],
+      "fail_criteria": [
+        "negative edge over full OOS window",
+        "stability degrades to MIXED or UNSTABLE in future re-audit",
+        "negative edge in at least 2 of 3 rolling windows",
+        "data freshness guard failure",
+        "any unauthorized DB mutation detected",
+        "replay_rows changed without explicit authorization"
+      ],
+      "promotion_authorized": false,
+      "future_promotion_proposal_requirements": [
+        "minimum 100 new POWER_LOTTO draws observed post-OOS monitoring start",
+        "PASS status sustained for at least 60 new draws",
+        "edge_vs_baseline positive over full 100+ draw OOS window",
+        "stability label must improve to STABLE_POSITIVE in a future temporal re-audit",
+        "positive edge in at least 2 of 3 rolling windows (10/20/40)",
+        "freshness guard passing throughout",
+        "explicit governance authorization in a new numbered task",
+        "source_unknown caveat resolved or explicitly accepted",
+        "P108 Special3 100-draw gate satisfied (37 more draws needed)",
+        "dedicated promotion task created (P118 or later)",
+        "branch governance guard passing at promotion-task commit"
+      ],
+      "demotion_or_quarantine_triggers": [
+        "stability degrades to MIXED or UNSTABLE in future re-audit",
+        "negative edge over full OOS window",
+        "negative edge in at least 2 of 3 rolling windows sustained across 2+ evaluations",
+        "rolling 100-draw edge remains negative after 40 new draws",
+        "data freshness failure lasting 10+ draws",
+        "unauthorized DB mutation detected",
+        "replay_rows changed without explicit future authorization"
+      ]
+    }
+  ],
+  "global_monitoring_invariants": [
+    "replay_rows must remain 54462 unless a future apply is explicitly authorized in a separate numbered task",
+    "no DB writes in OOS monitoring design phase",
+    "freshness guard must pass before any evaluation checkpoint",
+    "branch governance guard must pass at every commit",
+    "no lifecycle/champion/registry mutation without explicit future authorization in a new numbered task",
+    "no strategy promotion without explicit future authorization",
+    "no 4_STAR backtest until source_unknown caveat is resolved and explicitly authorized",
+    "P108 Special3 re-evaluation blocked until 37 more 3_STAR draws complete",
+    "P115 quarantine governance for fourier30_markov30_biglotto is a separate task"
+  ],
+  "next_task_recommendations": [
+    "P115: Quarantine governance for fourier30_markov30_biglotto (BIG_LOTTO, STABLE_NEGATIVE)",
+    "P117: OOS monitoring execution checkpoint (after minimum new draws are available)",
+    "P108: Special3 100-draw re-evaluation (blocked until 37 more 3_STAR draws)"
+  ],
+  "limitations": [
+    "This design is read-only. No OOS draw data is available yet; design is based on historical replay rows.",
+    "hit_count measures number overlap only; prize-tier weighting not applied.",
+    "temporal stability assessed on historical replay rows only; OOS performance may differ.",
+    "4_STAR backtest remains unauthorized due to source_unknown caveat.",
+    "Special3/P106/P108 evaluation excluded; blocked until 100 prospective draws.",
+    "No live monitoring job is implemented by this task.",
+    "Promotion discussion minimum thresholds are guidelines, not guarantees; all promotion requires explicit future authorization.",
+    "P115 quarantine governance for fourier30_markov30_biglotto is out of scope for P116."
+  ],
+  "final_classification": "P116_POWERLOTTO_OOS_MONITORING_DESIGN_READY"
+}

@@ -4077,11 +4077,7 @@
     bsoLoad();
   }
 
-  if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', bsoInit);
-  } else {
-    bsoInit();
-  }
+  bsoInit();
 })();
         </script>
 </body>

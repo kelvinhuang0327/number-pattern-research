@@ -1752,19 +1752,45 @@
                 <p>顯示各彩種正式驗證中的最佳策略與策略排名；下方區塊為即時下一期預測。</p>
             </div>
 
-            <!-- Best Strategy Summary Panel -->
+            <!-- P95 Best Strategy Overview Panel -->
             <div id="decision-v3-panel" style="margin-bottom:20px">
                 <div class="card">
-                    <div class="card-header" style="display:flex;align-items:center;gap:8px;justify-content:space-between">
-                        <span>🏆 各彩種正式策略總覽</span>
+                    <div class="card-header" style="display:flex;align-items:center;gap:8px;justify-content:space-between;flex-wrap:wrap">
+                        <span>🏆 最佳策略排名 (P95 Benchmark)</span>
                         <button id="decision-refresh-btn" class="btn btn-secondary" style="font-size:12px;padding:4px 10px">🔄 重新整理</button>
+                    </div>
+                    <!-- Filter bar -->
+                    <div id="bso-filter-bar" style="display:flex;flex-wrap:wrap;gap:8px;padding:10px 16px;border-bottom:1px solid #30363d;background:#0d1117">
+                        <select id="bso-lottery" style="padding:4px 8px;font-size:12px;background:#161b22;color:#c9d1d9;border:1px solid #30363d;border-radius:4px">
+                            <option value="BIG_LOTTO">大樂透</option>
+                            <option value="POWER_LOTTO">威力彩</option>
+                            <option value="DAILY_539">今彩539</option>
+                        </select>
+                        <select id="bso-betcount" style="padding:4px 8px;font-size:12px;background:#161b22;color:#c9d1d9;border:1px solid #30363d;border-radius:4px">
+                            <option value="1">1注</option>
+                            <option value="2">2注</option>
+                            <option value="3" selected>3注</option>
+                            <option value="5">5注</option>
+                        </select>
+                        <select id="bso-window" style="padding:4px 8px;font-size:12px;background:#161b22;color:#c9d1d9;border:1px solid #30363d;border-radius:4px">
+                            <option value="30">近30期</option>
+                            <option value="100">近100期</option>
+                            <option value="500">近500期</option>
+                            <option value="1500" selected>近1500期</option>
+                        </select>
+                        <select id="bso-metric" style="padding:4px 8px;font-size:12px;background:#161b22;color:#c9d1d9;border:1px solid #30363d;border-radius:4px">
+                            <option value="m3plus_rate" selected>M3+ 命中率</option>
+                            <option value="avg_hit_count">平均命中數</option>
+                            <option value="m4plus_rate">M4+ 命中率</option>
+                            <option value="stability_score">穩定分數</option>
+                        </select>
                     </div>
                     <div class="card-body">
                         <div id="decision-v3-content" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:12px">
                             <div style="text-align:center;color:#888;padding:20px;grid-column:1/-1">載入各彩種正式策略總覽…</div>
                         </div>
-                        <div style="font-size:11px;color:#888;margin-top:10px;padding-top:8px;border-top:1px solid #eee">
-                            💡 這裡顯示系統目前已驗證（PRODUCTION / WATCH） 的最佳策略與各注數排名，僅作總覽，不是下一期建議。
+                        <div style="font-size:11px;color:#888;margin-top:10px;padding-top:8px;border-top:1px solid #30363d">
+                            ⚠️ Rankings based on historical benchmark data and do not guarantee future results. Past edge is not a predictor of future returns.
                         </div>
                     </div>
                 </div>
@@ -3893,6 +3919,168 @@
       errEl.style.display   = '';
       console.warn('[replay] freshness load failed', e);
     }
+  }
+})();
+        </script>
+
+        <script>
+// ===== P95 BEST STRATEGY OVERVIEW JS =====
+(function() {
+  'use strict';
+
+  const API_BASE = (typeof window !== 'undefined' && window.API_BASE ? String(window.API_BASE) : '').replace(/\/$/, '');
+  const BSO_BASE = `${API_BASE}/api/best-strategy-overview`;
+
+  const LOTTERY_LABELS = { BIG_LOTTO: '大樂透', POWER_LOTTO: '威力彩', DAILY_539: '今彩539' };
+  const LIFECYCLE_CLASS = {
+    PRODUCTION: 'rv-decision-production', ONLINE: 'rv-decision-production',
+    DRY_RUN: 'rv-decision-watch', PROVISIONAL: 'rv-decision-watch',
+    REJECTED: 'rv-decision-rejected', OFFLINE: 'rv-decision-rejected', RETIRED: 'rv-decision-rejected',
+    OBSERVATION: 'rv-decision-watch',
+  };
+
+  function pct(v) { return v != null ? (v * 100).toFixed(1) + '%' : '—'; }
+  function num(v) { return v != null ? Number(v).toFixed(3) : '—'; }
+
+  function renderWarningBanner(caveat) {
+    if (!caveat) return '';
+    return `<div style="background:rgba(187,128,9,.15);border:1px solid #e3b341;border-radius:4px;padding:6px 10px;font-size:11px;color:#e3b341;margin-bottom:8px">⚠️ ${caveat}</div>`;
+  }
+
+  function renderFlags(flags) {
+    if (!flags || !flags.length) return '';
+    return flags.map(f => `<span style="background:#21262d;border-radius:3px;padding:1px 5px;font-size:10px;color:#8b949e;margin-right:3px">${f}</span>`).join('');
+  }
+
+  function renderStabilityBar(stability) {
+    if (!stability || !Object.keys(stability).length) return '';
+    const wins = ['30','100','500','1500'];
+    const bars = wins.map(w => {
+      const entry = stability[w];
+      const rate = entry && entry.m3plus_rate != null ? entry.m3plus_rate : null;
+      const fill = rate != null ? Math.min(100, Math.round(rate * 1000)) : 0;
+      const title = `w${w}: ${rate != null ? pct(rate) : 'N/A'}`;
+      return `<span title="${title}" style="display:inline-block;width:18px;height:14px;background:${rate != null ? '#238636' : '#30363d'};opacity:${0.4 + fill/150};border-radius:2px;margin-right:2px"></span>`;
+    }).join('');
+    return `<div style="margin-top:6px;font-size:10px;color:#8b949e">穩定性 <span style="margin-left:4px">${bars}</span></div>`;
+  }
+
+  function renderPredictionPanel(sid, lottery) {
+    return `
+      <div id="bso-pred-${sid}" style="margin-top:10px;border-top:1px solid #21262d;padding-top:8px">
+        <button onclick="bsoLoadPred('${sid}','${lottery}')" class="btn btn-secondary" style="font-size:11px;padding:3px 10px">🎯 查看下期預測</button>
+        <div id="bso-pred-result-${sid}" style="margin-top:6px;font-size:12px;color:#c9d1d9"></div>
+      </div>`;
+  }
+
+  function renderCard(card, lottery) {
+    const lc = card.lifecycle_status || '';
+    const lcClass = LIFECYCLE_CLASS[lc.toUpperCase()] || '';
+    const hasSpecial = lottery === 'POWER_LOTTO' && card.special_hit_rate != null;
+    return `
+      <div class="card" style="border:1px solid #30363d;border-radius:6px;padding:12px;cursor:pointer" onclick="bsoExpandCard(this)">
+        <div style="display:flex;align-items:center;gap:6px;margin-bottom:6px">
+          <span style="font-weight:700;font-size:18px;color:#7d8590">#${card.rank}</span>
+          <span style="font-size:13px;font-weight:600;flex:1;color:#c9d1d9">${card.display_name}</span>
+          <span class="rv-decision ${lcClass}" style="font-size:10px">${lc}</span>
+        </div>
+        ${renderWarningBanner(card.rejected_or_offline_caveat)}
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:4px;font-size:12px;margin-bottom:6px">
+          <div><span style="color:#7d8590">M3+</span> <b>${pct(card.m3plus_rate)}</b></div>
+          <div><span style="color:#7d8590">平均</span> <b>${num(card.avg_hit_count)}</b></div>
+          <div><span style="color:#7d8590">M4+</span> <b>${pct(card.m4plus_rate)}</b></div>
+          <div><span style="color:#7d8590">零命</span> <b>${pct(card.zero_hit_rate)}</b></div>
+          ${hasSpecial ? `<div style="grid-column:1/-1"><span style="color:#7d8590">特別號</span> <b>${pct(card.special_hit_rate)}</b></div>` : ''}
+          <div><span style="color:#7d8590">樣本</span> <b>${card.sample_size || '—'}</b></div>
+        </div>
+        ${renderFlags(card.warning_flags)}
+        <div class="bso-expand-body" style="display:none;margin-top:8px">
+          ${renderStabilityBar(card.stability_across_windows)}
+          ${renderPredictionPanel(card.strategy_id, lottery)}
+        </div>
+      </div>`;
+  }
+
+  async function bsoLoad() {
+    const lottery  = document.getElementById('bso-lottery')?.value || 'BIG_LOTTO';
+    const betCount = document.getElementById('bso-betcount')?.value || '3';
+    const window_  = document.getElementById('bso-window')?.value || '1500';
+    const metric   = document.getElementById('bso-metric')?.value || 'm3plus_rate';
+    const content  = document.getElementById('decision-v3-content');
+    if (!content) return;
+    content.innerHTML = '<div style="text-align:center;color:#888;padding:20px;grid-column:1/-1">載入中…</div>';
+    try {
+      const url = `${BSO_BASE}?lottery_type=${lottery}&bet_count=${betCount}&observation_window=${window_}&ranking_metric=${metric}`;
+      const res = await fetch(url);
+      if (!res.ok) throw new Error(`HTTP ${res.status}`);
+      const data = await res.json();
+      if (data.generation_status === 'SOURCE_UNAVAILABLE') {
+        content.innerHTML = `<div style="text-align:center;color:#888;padding:20px;grid-column:1/-1">📭 ${LOTTERY_LABELS[lottery] || lottery} 基準資料尚未就緒</div>`;
+        return;
+      }
+      const cards = data.cards || [];
+      if (!cards.length) {
+        content.innerHTML = '<div style="text-align:center;color:#888;padding:20px;grid-column:1/-1">此條件下無排名資料</div>';
+        return;
+      }
+      content.innerHTML = cards.map(c => renderCard(c, lottery)).join('');
+    } catch (e) {
+      content.innerHTML = `<div style="text-align:center;color:#f85149;padding:20px;grid-column:1/-1">載入失敗：${e.message}</div>`;
+    }
+  }
+
+  window.bsoExpandCard = function(el) {
+    const body = el.querySelector('.bso-expand-body');
+    if (!body) return;
+    const open = body.style.display !== 'none';
+    body.style.display = open ? 'none' : 'block';
+  };
+
+  window.bsoLoadPred = async function(strategyId, lottery) {
+    const el = document.getElementById(`bso-pred-result-${strategyId}`);
+    if (!el) return;
+    el.textContent = '載入中…';
+    try {
+      const url = `${BSO_BASE}/${encodeURIComponent(strategyId)}/next-prediction?lottery_type=${lottery}`;
+      const res = await fetch(url);
+      if (!res.ok) throw new Error(`HTTP ${res.status}`);
+      const data = await res.json();
+      const status = data.generation_status || 'UNKNOWN';
+      if (status === 'READY') {
+        const bets = (data.predicted_bets || []).map((b, i) => {
+          const sp = data.predicted_special && lottery === 'POWER_LOTTO' ? ` 特:${data.predicted_special}` : '';
+          return `<div>注${i+1}: [${b.join(', ')}]${sp}</div>`;
+        }).join('');
+        el.innerHTML = `<div style="color:#3fb950">${bets || '(無號碼)'}</div><div style="font-size:10px;color:#8b949e;margin-top:4px">${data.disclaimer}</div>`;
+      } else {
+        const msgs = {
+          ADAPTER_MISSING: '無適配器',
+          UNSUPPORTED_BET_COUNT: '不支援此注數',
+          REJECTED_REPLAY_ONLY: '策略已淘汰，僅歷史參考',
+          SOURCE_UNAVAILABLE: '資料來源不可用',
+        };
+        el.innerHTML = `<span style="color:#e3b341">${msgs[status] || status}</span><div style="font-size:10px;color:#8b949e;margin-top:2px">${data.disclaimer || ''}</div>`;
+      }
+    } catch (e) {
+      el.textContent = `錯誤：${e.message}`;
+    }
+  };
+
+  // Wire up filter changes and refresh button
+  function bsoInit() {
+    ['bso-lottery','bso-betcount','bso-window','bso-metric'].forEach(id => {
+      const el = document.getElementById(id);
+      if (el) el.addEventListener('change', bsoLoad);
+    });
+    const btn = document.getElementById('decision-refresh-btn');
+    if (btn) btn.addEventListener('click', bsoLoad);
+    bsoLoad();
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', bsoInit);
+  } else {
+    bsoInit();
   }
 })();
         </script>

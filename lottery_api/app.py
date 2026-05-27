@@ -7,6 +7,7 @@ import os
 
 # Import Routers
 from routes import prediction, data, optimization, admin, backtest, replay, ingest
+from routes import best_strategy_overview
 
 # Import System Utilities
 from utils.scheduler import scheduler
@@ -75,6 +76,9 @@ app.include_router(replay.router, tags=["Replay"])
 
 # ingest: /api/ingest/* — draw ingestion / backfill / log
 app.include_router(ingest.router, tags=["Ingest"])
+
+# best_strategy_overview: /api/best-strategy-overview/* — P95 benchmark ranking (read-only)
+app.include_router(best_strategy_overview.router, tags=["BestStrategyOverview"])
 
 if __name__ == "__main__":
     import uvicorn

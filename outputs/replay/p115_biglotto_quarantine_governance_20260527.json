@@ -1,0 +1,214 @@
+{
+  "classification": "P115_BIGLOTTO_QUARANTINE_GOVERNANCE_READY",
+  "task_id": "P115_BIGLOTTO_QUARANTINE_GOVERNANCE",
+  "generated_date": "2026-05-27",
+  "p112_reference": {
+    "classification": "P112_CROSS_LOTTERY_HELPFULNESS_AUDIT_READY",
+    "artifact_path": "outputs/replay/p112_cross_lottery_prediction_helpfulness_audit_20260527.json",
+    "task_id": "P112_CROSS_LOTTERY_PREDICTION_HELPFULNESS_AUDIT"
+  },
+  "p113_reference": {
+    "classification": "P113_P112_ACTION_DECISION_MATRIX_READY",
+    "artifact_path": "outputs/replay/p113_p112_action_decision_matrix_20260527.json",
+    "task_id": "P113_P112_ACTION_DECISION_MATRIX"
+  },
+  "p114_reference": {
+    "classification": "P114_TEMPORAL_STABILITY_AUDIT_READY",
+    "artifact_path": "outputs/replay/p114_temporal_stability_audit_20260527.json",
+    "task_id": "P114_TEMPORAL_STABILITY_AUDIT"
+  },
+  "p116_reference": {
+    "classification": "P116_POWERLOTTO_OOS_MONITORING_DESIGN_READY",
+    "artifact_path": "outputs/replay/p116_powerlotto_oos_monitoring_design_20260527.json",
+    "task_id": "P116_POWERLOTTO_OOS_MONITORING_DESIGN"
+  },
+  "db_writes": false,
+  "replay_rows_before": 54462,
+  "replay_rows_after": 54462,
+  "no_strategy_promotion": true,
+  "no_lifecycle_mutation": true,
+  "no_registry_mutation": true,
+  "no_actual_quarantine_applied": true,
+  "no_replay_row_delete": true,
+  "no_4star_backtest": true,
+  "no_special3_p108_rerun": true,
+  "no_powerlotto_p117_execution": true,
+  "source_unknown_caveat_preserved": true,
+  "target_lottery_type": "BIG_LOTTO",
+  "target_strategy_id": "fourier30_markov30_biglotto",
+  "negative_evidence_summary": {
+    "p112_classification": "SUB_BASELINE",
+    "p112_edge_vs_baseline": -0.013361,
+    "p112_primary_metric_value": 0.721333,
+    "p112_baseline_metric_value": 0.734694,
+    "p113_action": "DEMOTE_OR_QUARANTINE_CANDIDATE",
+    "p113_rationale": "P112 classified this strategy as SUB_BASELINE. Performance is below hypergeometric baseline. Candidate for demotion/quarantine in future governance task (P115 or equivalent).",
+    "p114_stability_label": "STABLE_NEGATIVE",
+    "p114_decision": "READY_FOR_QUARANTINE_GOVERNANCE",
+    "temporal_window_negative_count": 5,
+    "temporal_window_total_count": 5,
+    "all_windows_negative": true,
+    "temporal_windows": {
+      "first_third": {
+        "row_count": 500,
+        "avg_hit_count": 0.718,
+        "avg_special_hit": 0.0,
+        "baseline_avg_hit_count": 0.734694,
+        "edge_vs_baseline": -0.016694,
+        "positive_edge": false
+      },
+      "middle_third": {
+        "row_count": 500,
+        "avg_hit_count": 0.716,
+        "avg_special_hit": 0.0,
+        "baseline_avg_hit_count": 0.734694,
+        "edge_vs_baseline": -0.018694,
+        "positive_edge": false
+      },
+      "last_third": {
+        "row_count": 500,
+        "avg_hit_count": 0.73,
+        "avg_special_hit": 0.0,
+        "baseline_avg_hit_count": 0.734694,
+        "edge_vs_baseline": -0.004694,
+        "positive_edge": false
+      },
+      "rolling_100": {
+        "row_count": 100,
+        "avg_hit_count": 0.73,
+        "avg_special_hit": 0.0,
+        "baseline_avg_hit_count": 0.734694,
+        "edge_vs_baseline": -0.004694,
+        "positive_edge": false
+      },
+      "rolling_250": {
+        "row_count": 250,
+        "avg_hit_count": 0.716,
+        "avg_special_hit": 0.0,
+        "baseline_avg_hit_count": 0.734694,
+        "edge_vs_baseline": -0.018694,
+        "positive_edge": false
+      }
+    }
+  },
+  "quarantine_governance_design": {
+    "quarantine_status": "GOVERNANCE_READY",
+    "production_quarantine_applied": false,
+    "recommended_operator_label": "STABLE_NEGATIVE_QUARANTINE_CANDIDATE",
+    "recommended_catalog_disclosure": "Strategy has persistent negative edge across all temporal windows (first_third, middle_third, last_third, rolling_100, rolling_250). P112 classified as SUB_BASELINE (edge=-0.013361 vs hypergeometric baseline=0.734694). P113 action=DEMOTE_OR_QUARANTINE_CANDIDATE. P114 stability=STABLE_NEGATIVE across 5/5 temporal windows. Keep visible in catalog but label as not recommended for active use. Do not promote. Actual quarantine requires explicit future authorization.",
+    "future_quarantine_authorization_required": true,
+    "future_authorization_phrase": "YES quarantine strategy fourier30_markov30_biglotto for stable negative evidence",
+    "minimum_evidence_required_before_actual_quarantine": [
+      "P112 classification is SUB_BASELINE or equivalent negative classification",
+      "P113 action is DEMOTE_OR_QUARANTINE_CANDIDATE",
+      "P114 stability_label is STABLE_NEGATIVE",
+      "Negative edge appears across at least 3 major temporal windows",
+      "DB invariants unchanged (replay_rows=54462)",
+      "No source_unknown or data drift issue explains the negative result",
+      "Explicit user authorization is present using the authorized phrase",
+      "A separate lifecycle mutation artifact has been produced and reviewed"
+    ],
+    "future_quarantine_action_requirements": [
+      "Must NOT delete replay rows",
+      "Must NOT rewrite historical predictions",
+      "Must NOT alter DB without explicit DB mutation authorization",
+      "Must produce a separate lifecycle mutation artifact before any mutation",
+      "Must update catalog/operator disclosure if and only if separately authorized",
+      "Must re-run DB invariant verification before and after any mutation",
+      "Must re-run both guards (lifecycle drift + branch governance) after any mutation"
+    ],
+    "evidence_satisfied": true,
+    "evidence_gaps": []
+  },
+  "pass_hold_quarantine_candidate_criteria": {
+    "pass": {
+      "label": "PASS",
+      "description": "Strategy no longer shows negative edge after a future re-test.",
+      "criteria": [
+        "A future temporal audit shows positive edge across majority of windows",
+        "P112 reclassification from SUB_BASELINE to ABOVE_BASELINE or WATCHLIST_CANDIDATE",
+        "P113 action upgraded from DEMOTE_OR_QUARANTINE_CANDIDATE"
+      ],
+      "action": "Do not quarantine. Return to observation or watchlist queue."
+    },
+    "hold": {
+      "label": "HOLD",
+      "description": "Evidence is mixed or insufficient. Continue observation only.",
+      "criteria": [
+        "Mixed temporal windows (some positive, some negative)",
+        "Insufficient replay rows for reliable temporal split",
+        "Data quality concerns (source_unknown or drift issues)",
+        "P113 action is OBSERVATION_QUEUE or CONTINUE_OBSERVATION"
+      ],
+      "action": "Do not quarantine yet. Schedule re-audit after more data."
+    },
+    "quarantine_candidate": {
+      "label": "QUARANTINE_CANDIDATE",
+      "description": "Persistent negative edge across major windows. Full evidence chain supports demotion/quarantine candidate.",
+      "criteria": [
+        "P112 classification is SUB_BASELINE",
+        "P113 action is DEMOTE_OR_QUARANTINE_CANDIDATE",
+        "P114 stability_label is STABLE_NEGATIVE",
+        "Negative edge across at least 3 of 5 temporal windows",
+        "DB invariants unchanged",
+        "No data quality issue explains the negative result"
+      ],
+      "action": "Designate as quarantine candidate. Explicit future authorization still required before actual lifecycle mutation.",
+      "current_assessment": "fourier30_markov30_biglotto meets QUARANTINE_CANDIDATE criteria as of P115."
+    }
+  },
+  "global_invariants": [
+    "No DB write in this task (db_writes=false)",
+    "No replay row insert or delete",
+    "No historical artifact rewrite (P98-P116 artifacts are immutable)",
+    "No lifecycle mutation without explicit future authorization and separate lifecycle mutation artifact",
+    "No catalog label mutation without explicit future authorization",
+    "No strategy promotion",
+    "No 4_STAR backtest (unauthorized, source unknown)",
+    "No Special3 P108 re-evaluation (blocked until 37 more 3_STAR draws = 100 prospective total)",
+    "No POWER_LOTTO P117 OOS execution (separate task scope)",
+    "No registry mutation",
+    "DB opened read-only via mode=ro URI"
+  ],
+  "next_task_recommendations": [
+    {
+      "task_id": "P117",
+      "description": "POWER_LOTTO OOS monitoring execution checkpoint",
+      "lottery_type": "POWER_LOTTO",
+      "priority": "HIGH",
+      "prerequisite": "New POWER_LOTTO draws must be available (>=30 draws after P116 design date)",
+      "blocked": false
+    },
+    {
+      "task_id": "P118",
+      "description": "fourier30_markov30_biglotto actual quarantine execution (lifecycle mutation)",
+      "lottery_type": "BIG_LOTTO",
+      "priority": "MEDIUM",
+      "prerequisite": "Explicit user authorization phrase: 'YES quarantine strategy fourier30_markov30_biglotto for stable negative evidence'. Separate lifecycle mutation artifact required.",
+      "blocked": true,
+      "block_reason": "Awaiting explicit user authorization and separate lifecycle mutation artifact"
+    },
+    {
+      "task_id": "P108",
+      "description": "Special3 100-draw prospective re-evaluation",
+      "lottery_type": "3_STAR",
+      "priority": "LOW",
+      "prerequisite": "37 more 3_STAR prospective draws needed (63/100 as of P107A)",
+      "blocked": true,
+      "block_reason": "Only 63/100 prospective draws available. Need 37 more."
+    }
+  ],
+  "limitations": [
+    "This task is governance-design-only. No production state was changed.",
+    "No actual quarantine was applied to fourier30_markov30_biglotto.",
+    "No lifecycle, champion, or registry metadata was mutated.",
+    "BIG_LOTTO hypergeometric baseline (0.734694) derived from replay data; prize-tier weighting not applied.",
+    "Temporal window analysis covers historical replay rows only; prospective performance may differ.",
+    "4_STAR strategies excluded from all analysis (source unknown, backtest unauthorized).",
+    "Special3/3_STAR strategies excluded (P108 blocked until 100 prospective draws).",
+    "POWER_LOTTO P117 OOS execution is a separate task; no OOS draws were consumed here.",
+    "Source_unknown caveat for 4_STAR rows is preserved; this audit does not resolve it.",
+    "The recommended_catalog_disclosure is advisory only; actual catalog mutation requires separate authorization."
+  ],
+  "final_classification": "P115_BIGLOTTO_QUARANTINE_GOVERNANCE_READY"
+}

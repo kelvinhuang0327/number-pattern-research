@@ -3,7 +3,7 @@ Tests for P127 — Adapter Build Specs for Remaining Multi-Bet Strategies.
 
 These tests validate:
 - P127 JSON artifact correctness
-- DB state (rows = 72462, bet_index schema)
+- DB state (rows = 72422 post RSR-6 cleanup, bet_index schema)
 - P126G source artifact validation
 - Adapter spec structure and governance fields
 - Apply gate status
@@ -32,7 +32,8 @@ P127_JSON = REPO_ROOT / "outputs" / "replay" / f"p127_adapter_build_specs_remain
 P127_MD   = REPO_ROOT / "docs" / "replay" / f"p127_adapter_build_specs_remaining_multi_bet_{ARTIFACT_DATE}.md"
 P126G_JSON = REPO_ROOT / "outputs" / "replay" / f"p126g_all_tier_b_apply_closure_audit_{ARTIFACT_DATE}.json"
 
-EXPECTED_TOTAL_ROWS = 72462
+EXPECTED_TOTAL_ROWS = 72462          # Historical: DB state when P127 artifact was generated
+EXPECTED_TOTAL_ROWS_CURRENT = 72422  # Post RSR-6 cleanup (−40 orphan bet_index=2 rows)
 EXPECTED_STRATEGY_COUNT = 12
 
 REQUIRED_SPEC_FIELDS = [
@@ -121,7 +122,7 @@ def test_generated_at_present(artifact):
 
 def test_live_db_total_rows(db_conn):
     count = db_conn.execute("SELECT COUNT(*) FROM strategy_prediction_replays").fetchone()[0]
-    assert count == EXPECTED_TOTAL_ROWS, f"DB has {count} rows, expected {EXPECTED_TOTAL_ROWS}"
+    assert count == EXPECTED_TOTAL_ROWS_CURRENT, f"DB has {count} rows, expected {EXPECTED_TOTAL_ROWS_CURRENT}"
 
 
 def test_live_db_bet_index_column_exists(db_conn):
@@ -528,8 +529,8 @@ def test_live_db_power_orthogonal_5bet_rows(db_conn):
         "SELECT COUNT(*) FROM strategy_prediction_replays WHERE strategy_id = ? AND lottery_type = ?",
         ("power_orthogonal_5bet", "POWER_LOTTO")
     ).fetchone()[0]
-    # 1550 bet_index=1 + 20 bet_index=2 = 1570 (pre-existing orphan rows, RSR-6)
-    assert count == 1570
+    # 1550 bet_index=1 only (RSR-6 cleanup deleted the 20 orphan bet_index=2 rows)
+    assert count == 1550
 
 
 def test_live_db_power_precision_3bet_rows(db_conn):
@@ -537,8 +538,8 @@ def test_live_db_power_precision_3bet_rows(db_conn):
         "SELECT COUNT(*) FROM strategy_prediction_replays WHERE strategy_id = ? AND lottery_type = ?",
         ("power_precision_3bet", "POWER_LOTTO")
     ).fetchone()[0]
-    # 1550 bet_index=1 + 20 bet_index=2 = 1570 (pre-existing orphan rows, RSR-6)
-    assert count == 1570
+    # 1550 bet_index=1 only (RSR-6 cleanup deleted the 20 orphan bet_index=2 rows)
+    assert count == 1550
 
 
 def test_live_db_fourier_rhythm_3bet_rows(db_conn):

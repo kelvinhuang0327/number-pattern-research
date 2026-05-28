@@ -5,7 +5,7 @@ Tests for P128 Wave 2 Phase 1 multi-bet adapter implementation.
 
 Verifies:
   - JSON artifact exists and has correct fields
-  - DB row count = 72462 (unchanged)
+  - DB row count = 72422 (post RSR-6 cleanup: 40 orphan rows deleted)
   - bet_index schema is present
   - P127 classification is valid
   - phase_scope fields (no DB write, no controlled_apply, replay_rows=0)
@@ -33,7 +33,8 @@ JSON_ARTIFACT = WORKTREE_ROOT / "outputs" / "replay" / "p128_wave2_adapter_phase
 MD_ARTIFACT = WORKTREE_ROOT / "docs" / "replay" / "p128_wave2_adapter_phase1_20260528.md"
 ADAPTER_MODULE = WORKTREE_ROOT / "lottery_api" / "models" / "p128_wave2_phase1_adapters.py"
 
-EXPECTED_DB_ROWS = 72462
+EXPECTED_DB_ROWS = 72422          # Post RSR-6 cleanup (−40 orphan bet_index=2 rows)
+EXPECTED_DB_ROWS_AT_P128_TIME = 72462  # Historical: DB state when P128 artifact was generated
 EXPECTED_CLASSIFICATION = "P128_WAVE2_ADAPTER_PHASE1_READY"
 EXPECTED_TASK_ID = "P128"
 EXPECTED_P127_CLASSIFICATION = "P127_ADAPTER_BUILD_SPECS_READY"
@@ -96,9 +97,10 @@ class TestDbRowCount:
         )
 
     def test_artifact_db_row_count(self, artifact):
+        # Artifact was generated pre-RSR-6 cleanup; check historical value
         db = artifact["db_snapshot"]
-        assert db["row_count"] == EXPECTED_DB_ROWS
-        assert db["expected"] == EXPECTED_DB_ROWS
+        assert db["row_count"] == EXPECTED_DB_ROWS_AT_P128_TIME
+        assert db["expected"] == EXPECTED_DB_ROWS_AT_P128_TIME
 
 
 # ─── Section 3: bet_index schema ──────────────────────────────────────────────
@@ -151,8 +153,9 @@ class TestPhaseScope:
         assert scope["replay_rows_inserted"] == 0
 
     def test_production_db_rows_after(self, artifact):
+        # Artifact was generated pre-RSR-6 cleanup; check historical value
         scope = artifact["phase_scope"]
-        assert scope["production_db_rows_after"] == EXPECTED_DB_ROWS
+        assert scope["production_db_rows_after"] == EXPECTED_DB_ROWS_AT_P128_TIME
 
 
 # ─── Section 6: adapter_contract.function_name ────────────────────────────────
@@ -294,7 +297,8 @@ class TestMarkdownContent:
         assert EXPECTED_CLASSIFICATION in md_text
 
     def test_contains_db_rows(self, md_text):
-        assert str(EXPECTED_DB_ROWS) in md_text
+        # Artifact was generated pre-RSR-6 cleanup; check historical value appears
+        assert str(EXPECTED_DB_ROWS_AT_P128_TIME) in md_text
 
     def test_contains_rsr6_note(self, md_text):
         assert "RSR-6" in md_text

@@ -5,7 +5,7 @@ Regression tests for P126G: All Tier-B multi-bet apply closure audit.
 
 Validates:
   - P126G JSON artifact exists with correct classification and all required fields
-  - DB state: 72462 rows, bet_index column present
+  - DB state: 72422 rows (post RSR-6 cleanup), bet_index column present
   - all_candidates_completion fields: 5/5 candidates, 18000 total inserted
   - Per-strategy bet_index distribution matches expected
   - Duplicate guard validation PASS
@@ -33,7 +33,8 @@ DB_PATH     = REPO_ROOT / "lottery_api/data/lottery_v2.db"
 DRIFT_GUARD = REPO_ROOT / "scripts/replay_lifecycle_drift_guard.py"
 PYTHON      = sys.executable
 
-EXPECTED_TOTAL_ROWS             = 72462
+EXPECTED_TOTAL_ROWS             = 72462   # Historical: DB state when P126G artifact was generated
+EXPECTED_TOTAL_ROWS_CURRENT     = 72422   # Post RSR-6 cleanup (−40 orphan bet_index=2 rows)
 EXPECTED_CANDIDATES             = 5
 EXPECTED_TOTAL_INSERTED_P126B_F = 18000
 
@@ -308,7 +309,7 @@ def test_markdown_contains_classification(artifact):
 # ---------------------------------------------------------------------------
 def test_live_db_total_rows(db_conn):
     count = db_conn.execute("SELECT COUNT(*) FROM strategy_prediction_replays").fetchone()[0]
-    assert count == EXPECTED_TOTAL_ROWS, f"Expected {EXPECTED_TOTAL_ROWS}, got {count}"
+    assert count == EXPECTED_TOTAL_ROWS_CURRENT, f"Expected {EXPECTED_TOTAL_ROWS_CURRENT}, got {count}"
 
 
 def test_live_db_bet_index_column(db_conn):

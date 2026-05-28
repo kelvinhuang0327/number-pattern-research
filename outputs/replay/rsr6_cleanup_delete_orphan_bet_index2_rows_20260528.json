@@ -1,0 +1,133 @@
+{
+  "task_id": "RSR6_CLEANUP",
+  "classification": "RSR6_ORPHAN_BET_INDEX2_CLEANUP_APPLIED",
+  "generated_at": "2026-05-28T12:42:12.835332Z",
+  "authorization": {
+    "exact_required_phrase": "RSR6_CLEANUP_AUTHORIZED_DELETE_40_ORPHAN_BET_INDEX2_ROWS_POWER_PRECISION_AND_ORTHOGONAL_20260528",
+    "authorization_present": true,
+    "cleanup_allowed": true,
+    "authorization_text_observed": "RSR6_CLEANUP_AUTHORIZED_DELETE_40_ORPHAN_BET_INDEX2_ROWS_POWER_PRECISION_AND_ORTHOGONAL_20260528"
+  },
+  "repo_worktree_check": {
+    "worktree_path": "/Users/kelvin/Kelvin-WorkSpace/LotteryNew/.claude/worktrees/zen-gates-ff6802",
+    "expected_worktree": "zen-gates-ff6802",
+    "worktree_confirmed": true
+  },
+  "db_snapshot_before": {
+    "total_rows": 72462,
+    "bet_index_schema_exists": true,
+    "orphan_selector_count": 40,
+    "bet_index1_rows_per_strategy": {
+      "power_orthogonal_5bet": 1550,
+      "power_precision_3bet": 1550
+    }
+  },
+  "backup": {
+    "backup_path": "/Users/kelvin/Kelvin-WorkSpace/LotteryNew/.claude/worktrees/zen-gates-ff6802/backups/lottery_v2_before_rsr6_cleanup_20260528T124212Z.db",
+    "backup_row_count": 72462,
+    "backup_created": true,
+    "backup_verified": true
+  },
+  "source_audit_summary": {
+    "audit_artifact": "/Users/kelvin/Kelvin-WorkSpace/LotteryNew/.claude/worktrees/zen-gates-ff6802/outputs/replay/rsr6_orphan_bet_index2_audit_20260528.json",
+    "audit_classification": "RSR6_ORPHAN_BET_INDEX2_AUDIT_READY",
+    "audit_task_id": "RSR6",
+    "audit_commit": "49eca63",
+    "audit_recommended_resolution": "Option A Quarantine Delete",
+    "orphan_rows_audited": 40
+  },
+  "delete_scope": {
+    "affected_strategies": [
+      "power_precision_3bet",
+      "power_orthogonal_5bet"
+    ],
+    "expected_delete_rows": 40,
+    "actual_deleted_rows": 40,
+    "target_draw_range": "99000085–99000104",
+    "replay_run_id": 6,
+    "bet_index": 2,
+    "selector_strict": true,
+    "selector_conditions": [
+      "strategy_id IN ['power_precision_3bet', 'power_orthogonal_5bet']",
+      "bet_index = 2",
+      "replay_run_id = 6",
+      "source IS NULL OR source = ''",
+      "controlled_apply_id IS NULL",
+      "provenance_hash IS NULL",
+      "truth_level IS NULL",
+      "target_draw BETWEEN 99000085 AND 99000104"
+    ]
+  },
+  "deleted_rows_summary": {
+    "power_precision_3bet_deleted": 20,
+    "power_orthogonal_5bet_deleted": 20,
+    "total_deleted": 40,
+    "confirmed_by_row_count_delta": 40
+  },
+  "db_snapshot_after": {
+    "total_rows": 72422,
+    "orphan_selector_count": 0,
+    "bet_index1_rows_per_strategy": {
+      "power_orthogonal_5bet": 1550,
+      "power_precision_3bet": 1550
+    }
+  },
+  "orphan_selector_validation_after": {
+    "orphan_count_after": 0,
+    "orphan_count_is_zero": true
+  },
+  "row_preservation_check": {
+    "power_precision_3bet_bet_index1_before": 1550,
+    "power_precision_3bet_bet_index1_after": 1550,
+    "power_precision_3bet_preserved": true,
+    "power_orthogonal_5bet_bet_index1_before": 1550,
+    "power_orthogonal_5bet_bet_index1_after": 1550,
+    "power_orthogonal_5bet_preserved": true,
+    "all_bet_index1_rows_preserved": true
+  },
+  "drift_guard_update": {
+    "legacy_count_before": 460,
+    "legacy_count_after": 420,
+    "total_count_before": 72462,
+    "total_count_after": 72422,
+    "drift_guard_script_updated": true,
+    "drift_guard_baseline_fields_changed": [
+      "legacy_count",
+      "total_count"
+    ],
+    "drift_guard_pass_expected_at": 72422
+  },
+  "apply_gate_impact_after_cleanup": {
+    "power_precision_3bet_rsr6_cleaned": true,
+    "power_orthogonal_5bet_rsr6_cleaned": true,
+    "apply_ready_re_evaluation_required": true,
+    "controlled_apply_executed": false,
+    "replay_rows_inserted": 0
+  },
+  "blocked_or_excluded": {
+    "no_controlled_apply_in_RSR6_cleanup": true,
+    "no_replay_rows_inserted": true,
+    "4_STAR_excluded": true,
+    "P108_not_run": true,
+    "P117_not_run": true,
+    "P118_not_run": true,
+    "rejected_strategies_no_action": true,
+    "no_scheduler_install": true,
+    "no_lifecycle_champion_registry_mutation": true,
+    "P126B_P126F_rows_untouched": true
+  },
+  "rollback_reference": {
+    "backup_path": "/Users/kelvin/Kelvin-WorkSpace/LotteryNew/.claude/worktrees/zen-gates-ff6802/backups/lottery_v2_before_rsr6_cleanup_20260528T124212Z.db",
+    "backup_row_count": 72462,
+    "restore_command": "cp '/Users/kelvin/Kelvin-WorkSpace/LotteryNew/.claude/worktrees/zen-gates-ff6802/backups/lottery_v2_before_rsr6_cleanup_20260528T124212Z.db' '/Users/kelvin/Kelvin-WorkSpace/LotteryNew/.claude/worktrees/zen-gates-ff6802/lottery_api/data/lottery_v2.db'",
+    "restore_verification": "sqlite3 /Users/kelvin/Kelvin-WorkSpace/LotteryNew/.claude/worktrees/zen-gates-ff6802/lottery_api/data/lottery_v2.db \"SELECT COUNT(*) FROM strategy_prediction_replays;\""
+  },
+  "roadmap_update_status": "RSR-6 cleanup section added to roadmap.md and CTO-Analysis.md (2026-05-28)",
+  "remaining_risks": [
+    "power_precision_3bet bet_index=1 rows (replay_run_id=2,6) still have no controlled_apply_id — these are not orphans but should be reviewed in apply gate re-evaluation",
+    "P10/P12 apply gate re-evaluation must verify bet_index=1 rows are valid before controlled_apply",
+    "P128 Phase 3 dry-run scope must exclude bet_index=2 rows for P10/P12"
+  ],
+  "next_recommended_task": "P128 Phase 3: dry-run / apply readiness re-evaluation for safe Wave 2 candidates (P7/P8/P9/P11 first, P10/P12 after apply gate re-evaluation)",
+  "summary": "RSR-6 cleanup complete. Deleted 40 orphan bet_index=2 rows (72462→72422 total). P10/P12 RSR-6 blocks cleared. Apply gate re-evaluation required before controlled_apply."
+}

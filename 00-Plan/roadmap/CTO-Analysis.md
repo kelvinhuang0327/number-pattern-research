@@ -843,3 +843,23 @@ WHERE strategy_id IN ('power_precision_3bet','power_orthogonal_5bet')
 ```text
 CTO_ROADMAP_UPDATED_AFTER_RSR6_ORPHAN_BET_INDEX2_AUDIT_20260528
 ```
+
+---
+
+## RSR-6 Cleanup Execution (2026-05-28)
+
+**Status**: COMPLETE — `RSR6_ORPHAN_BET_INDEX2_CLEANUP_APPLIED`
+
+**Action**: Deleted 40 orphan `bet_index=2` rows (power_precision_3bet ×20, power_orthogonal_5bet ×20, draw range 99000085–99000104, replay_run_id=6, controlled_apply_id IS NULL, provenance_hash IS NULL).
+
+**DB delta**: 72,462 → 72,422 rows. Drift guard PASS. Backup created.
+
+**Apply gate**: P10/P12 RSR-6 blocks CLEARED. P7/P8/P9/P11 unaffected. Apply re-evaluation required for P10/P12 before controlled_apply.
+
+**Remaining risks**: bet_index=1 rows with replay_run_id=2,6 and controlled_apply_id IS NULL still require apply gate validation for P10/P12.
+
+**Next**: P128 Phase 3 — controlled_apply for Wave 2 safe candidates (P7/P8/P9/P11 first, P10/P12 after gate re-evaluation).
+
+```text
+CTO_ANALYSIS_UPDATED_AFTER_RSR6_CLEANUP_EXECUTION_20260528
+```

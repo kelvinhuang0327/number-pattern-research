@@ -93,7 +93,7 @@ BASELINE = {
     "p94_apply_id": "P94_TIERB_CONTROLLED_APPLY_20260526",
     "v1_count": 0,
     "v2_count": 0,
-    "legacy_count": 460,
+    "legacy_count": 420,
     "p2b_count": 0,
     "p2f_count": 0,
     "p3bc_count": 0,
@@ -129,7 +129,7 @@ BASELINE = {
     # P126F: DAILY_539 daily539_f4cold_5bet bet-2 + bet-3 + bet-4 + bet-5 controlled apply (2026-05-28)
     "p126f_apply_id": "P126F_DAILY539_F4COLD_5BET_20260528",
     "p126f_count": 6000,
-    "total_count": 72462,  # 61962 (pre-P126E) + 4500 (P126E bet-2+bet-3+bet-4) = 66462
+    "total_count": 72422,  # Updated after RSR-6 cleanup: deleted 40 orphan bet_index=2 rows (2026-05-28)  # 61962 (pre-P126E) + 4500 (P126E bet-2+bet-3+bet-4) = 66462
 }
 
 # Known V3 tombstone strategy IDs — must have 0 rows in replay table

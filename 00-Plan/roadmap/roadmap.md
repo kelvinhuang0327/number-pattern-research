@@ -404,3 +404,32 @@ Post-cleanup: 72,422 rows. Unlocks P10/P12 apply gate.
 ```text
 CTO_ROADMAP_UPDATED_AFTER_RSR6_ORPHAN_BET_INDEX2_AUDIT_20260528
 ```
+
+---
+
+### RSR-6 Cleanup Execution [2026-05-28]
+
+**Classification**: RSR6_ORPHAN_BET_INDEX2_CLEANUP_APPLIED  
+Authorized deletion of 40 orphan `bet_index=2` rows for `power_precision_3bet` and `power_orthogonal_5bet`.
+
+**Authorization phrase**: `RSR6_CLEANUP_AUTHORIZED_DELETE_40_ORPHAN_BET_INDEX2_ROWS_POWER_PRECISION_AND_ORTHOGONAL_20260528`
+
+**Results**:
+- DB rows: 72,462 → 72,422 (−40 rows)
+- `bet_index=1` rows preserved intact for both strategies
+- Drift guard baseline updated: `legacy_count` 460→420, `total_count` 72462→72422
+- Drift guard PASS at 72,422
+- Backup: `backups/lottery_v2_before_rsr6_cleanup_20260528T124212Z.db`
+
+**Apply gate impact**:
+- P10 (`power_precision_3bet`) — RSR-6 block CLEARED, apply gate re-evaluation required
+- P12 (`power_orthogonal_5bet`) — RSR-6 block CLEARED, apply gate re-evaluation required
+- P7/P8/P9/P11 — unaffected, no RSR-6 blocks
+
+**Not executed**: no controlled_apply, no replay rows inserted, no scheduler install.
+
+**Next task**: P128 Phase 3 — controlled_apply for safe Wave 2 candidates (P7/P8/P9/P11 first).
+
+```text
+CTO_ROADMAP_UPDATED_AFTER_RSR6_CLEANUP_EXECUTION_20260528
+```

@@ -1,8 +1,8 @@
-# CTO Analysis - After P129 bet_index Schema Migration Rehearsal
+# CTO Analysis - After P129A Production Migration Authorization Gate
 
 ## 1. CTO Review Date
 
-2026-05-28 Asia/Taipei (updated after P129).
+2026-05-28 Asia/Taipei (updated after P129A).
 
 Final CTO classification target: `CTO_ROADMAP_UPDATED_WITH_RISKS`.
 
@@ -266,14 +266,29 @@ Changes from prior roadmap:
 - [Confirmed] P126 apply remains BLOCKED until production migration is authorized and executed.
 - [Confirmed] Drift guard PASS — production DB unchanged.
 
-### Next Step: P129A Authorization Gate
+### P129A CTO Update (2026-05-28)
 
-Production migration requires Kelvin to state:
+P129A gate report confirmed. Classification: `P129A_WAITING_FOR_KELVIN_MIGRATION_AUTHORIZATION`.
+
+- [Confirmed] P129 rehearsal artifact valid (classification: `P129_BET_INDEX_SCHEMA_MIGRATION_REHEARSAL_READY`).
+- [Confirmed] P129 rehearsal: 18-step migration OK, 54462 rows preserved, production_db_modified=false.
+- [Confirmed] Key finding documented: 120 duplicate (strategy, draw) groups require ROW_NUMBER() COPY SQL.
+- [Confirmed] Corrected migration SQL (step 4) documented in P129A artifact.
+- [Confirmed] Production DB unchanged: 54462 rows, no bet_index column.
+- [Confirmed] Authorization phrase `YES authorize migration_plan_p128 because <reason>` not yet received.
+- [Confirmed] P126 apply remains BLOCKED — schema migration not yet authorized.
+- [Confirmed] 4_STAR / P108 / P117 / P118 remain blocked.
+
+### Next Step: Kelvin Authorization Required
+
+Production migration requires Kelvin to state exactly:
 ```
 YES authorize migration_plan_p128 because <reason>
 ```
 
-This is the only gate before production execution. Per-strategy P126 apply authorization phrases are separate and required after migration.
+On receiving that phrase, P129B executes the production migration using the corrected
+ROW_NUMBER() COPY SQL. Per-strategy P126 apply authorization phrases are separate
+and required after migration completes.
 - [Confirmed] Added multi-bet replay truth model as P0.3.
 - [Confirmed] Added all implemented strategy x lottery x 1-5 bet-count coverage matrix as P1.1.
 - [Confirmed] Preserved 4_STAR backtest block and source_unknown caveat.

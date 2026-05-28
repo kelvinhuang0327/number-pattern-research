@@ -1,0 +1,144 @@
+{
+  "task_id": "P129A",
+  "classification": "P129A_WAITING_FOR_KELVIN_MIGRATION_AUTHORIZATION",
+  "generated_at": "2026-05-28T07:50:33.521102+00:00",
+  "production_db_snapshot_before": {
+    "replay_rows": 54462,
+    "has_bet_index_column": false,
+    "current_unique_constraint": "UNIQUE(lottery_type, target_draw, strategy_id, replay_run_id)",
+    "invariant_ok": true
+  },
+  "production_db_snapshot_after": {
+    "replay_rows": 54462,
+    "has_bet_index_column": false,
+    "invariant_ok": true
+  },
+  "p129_source_summary": {
+    "artifact_path": "/Users/kelvin/Kelvin-WorkSpace/LotteryNew/.claude/worktrees/zen-gates-ff6802/outputs/replay/p129_bet_index_schema_migration_rehearsal_20260528.json",
+    "classification": "P129_BET_INDEX_SCHEMA_MIGRATION_REHEARSAL_READY",
+    "classification_ok": true,
+    "migration_rehearsal_ok": true,
+    "production_db_modified_in_p129": false,
+    "rows_before": 54462,
+    "rows_after": 54462,
+    "steps_count": 18,
+    "duplicate_groups": 120,
+    "extra_rows": 160,
+    "p128_copy_sql_refinement_required": true,
+    "row_number_required": true,
+    "rows_with_bet_index_1": 54302,
+    "rows_with_bet_index_gt1": 160,
+    "row_preservation_ok": true,
+    "all_checks_passed": true
+  },
+  "rehearsal_findings": {
+    "migration_rehearsal_ok": true,
+    "steps_completed": 18,
+    "rows_preserved_in_rehearsal": 54462,
+    "production_db_modified_in_p129": false,
+    "duplicate_groups_discovered": 120,
+    "extra_rows_from_old_runs": 160,
+    "p128_copy_sql_naive_fails": true,
+    "corrected_copy_sql_required": true,
+    "corrected_copy_sql": {
+      "step_number": 4,
+      "original_sql_p128": "INSERT INTO strategy_prediction_replays_new SELECT id, lottery_type, target_draw, ..., 1 AS bet_index FROM strategy_prediction_replays",
+      "corrected_sql_p129": "INSERT INTO strategy_prediction_replays_new SELECT id, lottery_type, target_draw, ..., ROW_NUMBER() OVER (PARTITION BY lottery_type, target_draw, strategy_id ORDER BY id) AS bet_index FROM strategy_prediction_replays",
+      "why_original_fails": "120 duplicate (lottery_type, target_draw, strategy_id) groups from old replay runs each have distinct replay_run_id values, so the current constraint allows them. If all are copied with bet_index=1, the new UNIQUE(lottery_type, target_draw, strategy_id, bet_index) rejects the second row of each group with IntegrityError.",
+      "why_corrected_works": "ROW_NUMBER() assigns bet_index=1 to the first row and bet_index=2 to the second row within each duplicate group (ordered by id). All 54462 rows are preserved. No data loss. Existing non-duplicate rows (54302) all receive bet_index=1.",
+      "row_count_preserved": 54462,
+      "rows_bet_index_1_after": 54302,
+      "rows_bet_index_2_after": 160
+    },
+    "bet_index_default_validation": {
+      "rows_with_bet_index_1": 54302,
+      "rows_with_bet_index_gt1": 160,
+      "all_rows_valid": true
+    }
+  },
+  "corrected_migration_sql_required": true,
+  "row_number_copy_sql_required": true,
+  "migration_execution_performed": false,
+  "production_db_modified": false,
+  "authorization_gate": {
+    "exact_required_phrase": "YES authorize migration_plan_p128 because <reason>",
+    "authorization_present": false,
+    "migration_allowed": false,
+    "classification": "P129A_WAITING_FOR_KELVIN_MIGRATION_AUTHORIZATION",
+    "stop_reason": "WAITING_FOR_KELVIN_MIGRATION_AUTHORIZATION",
+    "matched_phrases": [],
+    "note": "Authorization phrase must be the exact string 'YES authorize migration_plan_p128 because <reason>' with a real reason replacing <reason>. The prompt text itself is not an authorization."
+  },
+  "p126_apply_status": {
+    "status": "BLOCKED",
+    "reason": "P126 apply requires both: (1) production schema migration authorized and executed (P129A gate not yet passed), (2) per-strategy Kelvin authorization phrases for each of the 5 strategies. P129A gate is currently WAITING_FOR_KELVIN_MIGRATION_AUTHORIZATION.",
+    "total_new_rows_if_applied": 18000,
+    "total_rows_after_apply": 72462,
+    "apply_blocked_until": [
+      "Kelvin provides: YES authorize migration_plan_p128 because <reason>",
+      "Production migration executed successfully (P129B)",
+      "Per-strategy authorization phrases provided (5 phrases required)"
+    ]
+  },
+  "blocked_or_excluded": [
+    {
+      "item": "production_migration_execution",
+      "reason": "P129A authorization gate not passed — exact phrase not yet provided"
+    },
+    {
+      "item": "p126_apply",
+      "reason": "Blocked until production migration completes (P129A → P129B) and per-strategy phrases provided"
+    },
+    {
+      "item": "4_STAR",
+      "reason": "Explicitly excluded from all Tier-B multi-bet work per governance"
+    },
+    {
+      "item": "P108",
+      "reason": "P108 execution blocked — trigger not met"
+    },
+    {
+      "item": "P117",
+      "reason": "P117 execution blocked — trigger not met"
+    },
+    {
+      "item": "P118",
+      "reason": "P118 execution blocked — authorization phrase absent"
+    },
+    {
+      "item": "rejected_strategies",
+      "reason": "No rejected strategies may be promoted or included"
+    },
+    {
+      "item": "scheduler_cron_launchd",
+      "reason": "No scheduler installation in P129A"
+    },
+    {
+      "item": "lifecycle_champion_registry_mutation",
+      "reason": "No strategy promotion / lifecycle / champion / registry mutation in P129A"
+    }
+  ],
+  "required_authorization_phrases": {
+    "migration_authorization": "YES authorize migration_plan_p128 because <reason>",
+    "note": "Replace <reason> with a real justification. Phrase is case-sensitive and must be provided verbatim by Kelvin.",
+    "per_strategy_phrases_also_required_after_migration": [
+      "YES authorize controlled_apply for biglotto_echo_aware_3bet because <reason>",
+      "YES authorize controlled_apply for daily539_f4cold_5bet because <reason>",
+      "YES authorize controlled_apply for daily539_f4cold_3bet because <reason>",
+      "YES authorize controlled_apply for power_fourier_rhythm_2bet because <reason>",
+      "YES authorize controlled_apply for biglotto_ts3_markov_4bet_w30 because <reason>"
+    ]
+  },
+  "summary": {
+    "task_id": "P129A",
+    "classification": "P129A_WAITING_FOR_KELVIN_MIGRATION_AUTHORIZATION",
+    "production_db_modified": false,
+    "migration_execution_performed": false,
+    "p129_rehearsal_valid": true,
+    "authorization_present": false,
+    "stop_reason": "WAITING_FOR_KELVIN_MIGRATION_AUTHORIZATION",
+    "production_rows_before": 54462,
+    "production_rows_after": 54462,
+    "next_step": "Kelvin reviews P129 rehearsal report and P129A gate report, then provides: YES authorize migration_plan_p128 because <reason>. On receiving that phrase, P129B executes the production migration using the corrected ROW_NUMBER() COPY SQL."
+  }
+}

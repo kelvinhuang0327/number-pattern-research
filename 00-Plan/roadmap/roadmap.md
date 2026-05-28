@@ -1,6 +1,6 @@
 # Lottery Replay Roadmap
 
-**Last Updated:** 2026-05-28 Asia/Taipei (CTO update after P129 bet_index schema migration rehearsal)
+**Last Updated:** 2026-05-28 Asia/Taipei (CTO update after P129A production migration authorization gate)
 **Owner:** CTO agent
 **Primary Goal:** Make every implemented LotteryNew strategy replayable with honest historical prediction-vs-actual evidence across every supported lottery type and every implemented 1-5 bet-count variant. This must be done without fake rows, untracked DB writes, premature promotion, or no-change governance PR churn. Current system state: P128 defined bet_index schema migration plan; P129 rehearsed the migration on a temp DB copy (all 54462 rows preserved, key finding: ROW_NUMBER() required for 120 duplicate old-run groups). Production migration awaiting Kelvin authorization. P108 / P117 / P118 / 4_STAR triggers remain blocked.
 **Repo Policy:** Use `/Users/kelvin/Kelvin-WorkSpace/LotteryNew` only. Do not create a new repo. Implementation and governed tasks must run from canonical repo with `git rev-parse --git-dir == .git`; Claude/Codex auto-created worktree branches are not allowed.
@@ -27,6 +27,7 @@
 | P126 Tier-B multi-bet controlled_apply dry-run plan | [Confirmed] Complete | `outputs/replay/p126_controlled_apply_plan_tier_b_multi_bet_20260528.json`; `P126_DRY_RUN_PLAN_READY` | Dry-run plan for 5 strategies × 1500 draws = +18000 rows. All prov/dup guards pass. P126 apply BLOCKED pending migration authorization. |
 | P128 native multi-bet storage design | [Confirmed] Complete | `outputs/replay/p128_native_multi_bet_storage_design_20260528.json`; `P128_NATIVE_MULTI_BET_STORAGE_DESIGN_READY` | Option A (one-row-per-bet + bet_index) selected. 18-step SQLite migration plan defined. Migration NOT executed — requires Kelvin authorization phrase. |
 | P129 bet_index schema migration rehearsal | [Confirmed] Complete | `outputs/replay/p129_bet_index_schema_migration_rehearsal_20260528.json`; `P129_BET_INDEX_SCHEMA_MIGRATION_REHEARSAL_READY` | 18-step migration rehearsed on temp DB copy. All 54462 rows preserved. Key finding: 120 duplicate (strategy, draw) groups from old runs require ROW_NUMBER() COPY (not naive '1 AS bet_index'). Production DB unchanged. P126 apply BLOCKED until production migration authorized. |
+| P129A production migration authorization gate | [Waiting] WAITING_FOR_KELVIN_MIGRATION_AUTHORIZATION | `outputs/replay/p129a_production_migration_authorization_gate_20260528.json`; `P129A_WAITING_FOR_KELVIN_MIGRATION_AUTHORIZATION` | Gate report confirming P129 rehearsal valid, corrected ROW_NUMBER() SQL documented, production DB clean (54462 rows). Blocked: exact phrase `YES authorize migration_plan_p128 because <reason>` not yet provided. P126 apply remains BLOCKED. |
 
 ---
 

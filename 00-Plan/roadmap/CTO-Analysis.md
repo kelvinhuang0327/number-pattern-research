@@ -1,4 +1,4 @@
-# CTO Analysis - After P123 Scheduled Trigger Recheck Setup
+# CTO Analysis - After P125 Adapter Gap Plan From P124 Matrix
 
 ## 1. CTO Review Date
 
@@ -9,21 +9,24 @@ Final CTO classification target: `CTO_ROADMAP_UPDATED_WITH_RISKS`.
 ## 2. Input Sources
 
 - [Confirmed] User handoff report in the current conversation, limited to LotteryNew content.
-- [Confirmed] `00-Plan/roadmap/roadmap.md` before this update: last updated after P104 and stale against P123 HEAD.
-- [Confirmed] `00-Plan/roadmap/CTO-Analysis.md` before this update: last updated after P104 and stale against P123 HEAD.
+- [Confirmed] `00-Plan/roadmap/roadmap.md` before this update: last updated after P124.
+- [Confirmed] `00-Plan/roadmap/CTO-Analysis.md` before this update: last updated after P124.
 - [Confirmed] Git pre-flight from canonical repo:
   - repo: `/Users/kelvin/Kelvin-WorkSpace/LotteryNew`
   - branch: `main`
   - git-dir: `.git`
-  - HEAD: `684bffc P123: scheduled trigger recheck setup (#248)`
-- [Confirmed] PR #248: MERGED, merge commit `684bffcea3080f8f1f31c5b9acc3a572907ec4f3`.
-- [Confirmed] P119-P123 artifacts:
+  - HEAD: `77d7d7d Merge P124 multi-bet replay truth and coverage matrix`
+- [Confirmed] P124 merged via no-ff from `p124-multi-bet-truth-coverage-matrix` branch.
+- [Confirmed] P119-P125 artifacts:
   - `outputs/replay/p119_evidence_trigger_matrix_20260527.json`
   - `outputs/replay/p120_trigger_evaluation_20260527.json`
   - `outputs/replay/p121_trigger_recheck_20260527.json`
   - `outputs/replay/p122_trigger_recheck_contamination_guard_20260527.json`
   - `outputs/replay/p123_scheduled_trigger_recheck_setup_20260527.json`
   - `outputs/replay/trigger_rechecks/p123_trigger_recheck_smoke_20260527.json`
+  - `outputs/replay/p124_multi_bet_truth_and_coverage_matrix_20260528.json`
+  - `outputs/replay/p125_adapter_gap_plan_from_p124_20260528.json`
+  - `docs/replay/p125_adapter_gap_plan_from_p124_20260528.md`
 - [Confirmed] Strategy replay / helpfulness references:
   - P91 all-strategy replay expansion inventory
   - P92 Tier B adapter audit / dry-run plan
@@ -41,10 +44,10 @@ Final CTO classification target: `CTO_ROADMAP_UPDATED_WITH_RISKS`.
   - `4_STAR count/max = 2922 / 115000103`
   - `POWER_LOTTO count/max = 1913 / 115000041`
 - [Confirmed] Verification during this CTO review:
-  - P119-P123 focused tests: `318 passed`
+  - P125 tests: `54 passed`
+  - P124 + P119-P123 regression: `345 passed`
   - Drift guard: `REPLAY_LIFECYCLE_DRIFT_GUARD_PASS`
-  - Branch governance guard: `BRANCH_GOVERNANCE_PASS` on `main` with 54462 rows
-  - Staging area: empty
+  - Branch governance: `main`, HEAD `77d7d7d`, 54462 rows
 - [Confirmed] Existing dirty worktree remains outside this CTO scope, including DB/history/pid/runtime/untracked files. CTO touched only `roadmap.md` and `CTO-Analysis.md`.
 
 ## 3. Roadmap Alignment Assessment
@@ -55,12 +58,12 @@ Final CTO classification target: `CTO_ROADMAP_UPDATED_WITH_RISKS`.
 | P120-P122 repeated trigger rechecks | [Aligned] initially; [Outdated] as an ongoing pattern | They were useful to confirm no change, but three consecutive blocked states mean more no-change PRs are wasteful. |
 | P123 scheduled/manual trigger wrapper | [Aligned] | Correctly replaces no-change PR churn with a reusable operator/manual wrapper. |
 | P123 first worktree attempt STOP | [Aligned] / [Blocked] | The STOP was correct and exposed a real process risk: Claude/Codex worktree branches must be rejected. |
-| Current system state | [Aligned] | Healthy standby / wait-for-data-or-authorization, not failure. |
+| P124 multi-bet truth and coverage matrix | [Aligned] | Proved zero native multi-bet rows exist. All 36 strategy×lottery pairs are first_bet_only_fallback or rejected. 5 Tier-B controlled_apply candidates and 12 adapter_build candidates identified. |
+| P125 adapter gap plan | [Aligned] | Read-only plan artifact. Ranked 5 controlled_apply-ready, 12 adapter_build-needed. Proposed P126/P127/P128 next sequence. No DB writes. |
+| Current system state | [Aligned] | Healthy standby / wait-for-authorization, not failure. |
 | 4_STAR backtest | [Blocked] | Source unknown remains active; rows alone do not authorize backtest. |
-| All implemented strategies historical replay | [Missing] | User's top priority is broader than current trigger waits. Roadmap needs an all lottery type x 1-5 bet-count coverage program. |
-| Multi-bet replay truth | [Blocked] | P93/P94 show multi-bet adapters exist for some strategies, but current replay convention often stores first bet only. This blocks truthful "1-5注" claims. |
+| Multi-bet replay coverage | [Partially Mapped] | P124 proved gap; P125 defines remediation path. P126/P127/P128 required for actual coverage expansion. |
 | OS scheduler install | [Deferred] | P123 did not install cron/launchd. Future scheduling requires explicit authorization. |
-| Worker task prompt output | [Blocked by instruction] | User request also says CTO must not produce a new worker task prompt and CTO may only update two files. |
 
 ## 4. Completed Work Assessment
 
@@ -326,6 +329,55 @@ P124 was completed as a read-only worker task on branch `p124-multi-bet-truth-co
 - [Confirmed] No P108/P117/P118 execution, no 4_STAR backtest, no scheduler install
 - [Confirmed] P124 tests: 27 passed, P119-P123 regression: 318 passed
 - [Confirmed] Drift guard: PASS, Branch governance: PASS
+
+---
+
+## 15. P125 Follow-Up Note (2026-05-28)
+
+P124 branch was merged to `main` (commit `77d7d7d`) as Phase 1 of P125.
+P125 was then implemented as a read-only adapter gap plan on `main`.
+
+### P125 Summary
+- **Script:** `scripts/p125_adapter_gap_plan_from_p124.py`
+- **JSON:** `outputs/replay/p125_adapter_gap_plan_from_p124_20260528.json`
+- **Markdown:** `docs/replay/p125_adapter_gap_plan_from_p124_20260528.md`
+- **Tests:** `tests/test_p125_adapter_gap_plan_from_p124.py` — 54 passed
+- **Classification:** `P125_ADAPTER_GAP_PLAN_READY`
+
+### P125 Outputs
+| Section | Count |
+|---|---|
+| controlled_apply_ready (Tier-B, P126 scope) | 5 |
+| adapter_build_needed (P127 scope) | 12 |
+| relabel_only | 2 |
+| no_action kept | 17 |
+| replay_storage_design_risks | 4 (RSR-1 through RSR-4) |
+
+### Confirmations (P125)
+- [Confirmed] No DB writes, no staging of lottery_v2.db or lottery_history.json
+- [Confirmed] No strategy promotion, lifecycle mutation, registry mutation
+- [Confirmed] No P108/P117/P118 execution, no 4_STAR backtest, no scheduler install
+- [Confirmed] No fabricated replay rows
+- [Confirmed] P125 tests: 54 passed, P124 + P119-P123 regression: 345 passed
+- [Confirmed] Drift guard: REPLAY_LIFECYCLE_DRIFT_GUARD_PASS
+- [Confirmed] replay_rows = 54462 (unchanged before and after P125)
+
+### Remaining Risks
+| Risk | Status |
+|---|---|
+| Native multi-bet storage format not decided | P128 required before any apply |
+| 5 Tier-B controlled_apply candidates need explicit authorization per apply | P126 gate |
+| 12 adapter_build strategies need new get_all_bets() implementations | P127 gate |
+| 4_STAR provenance still unresolved | Blocked indefinitely |
+| P108 needs ~37 more Special3 draws | Blocked |
+| P117 POWER_LOTTO OOS needs 30-40 more draws | Blocked |
+
+### Next Task
+**P126_CONTROLLED_APPLY_PLAN_FOR_TIER_B_MULTI_BET_ADAPTERS**
+- Requires explicit apply authorization per strategy
+- Must run dry-run before any apply
+- Must verify no duplicate bet-1 rows
+- Must confirm P128 storage design or explicitly authorize one-row-per-bet convention
 
 ### Next Task
 `P125_ADAPTER_GAP_PLAN` — plan controlled_apply passes for the 5 Tier-B adapter-ready strategies and define adapter build specs for remaining multi-bet strategies.

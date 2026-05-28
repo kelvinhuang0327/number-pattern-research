@@ -1,8 +1,8 @@
 # Lottery Replay Roadmap
 
-**Last Updated:** 2026-05-28 Asia/Taipei (CTO update after P123 scheduled/manual trigger recheck setup)
+**Last Updated:** 2026-05-28 Asia/Taipei (CTO update after P125 adapter gap plan from P124 matrix)
 **Owner:** CTO agent
-**Primary Goal:** Make every implemented LotteryNew strategy replayable with honest historical prediction-vs-actual evidence across every supported lottery type and every implemented 1-5 bet-count variant. This must be done without fake rows, untracked DB writes, premature promotion, or no-change governance PR churn. Current system state is healthy standby: P108 / P117 / P118 / 4_STAR triggers are blocked until data or authorization changes, and future no-change checks should use the P123 wrapper rather than new P-task PRs.
+**Primary Goal:** Make every implemented LotteryNew strategy replayable with honest historical prediction-vs-actual evidence across every supported lottery type and every implemented 1-5 bet-count variant. This must be done without fake rows, untracked DB writes, premature promotion, or no-change governance PR churn. Current system state: P124 proved zero native multi-bet rows exist; P125 identified 5 Tier-B controlled_apply candidates and 12 adapter_build candidates. P108 / P117 / P118 / 4_STAR triggers remain blocked.
 **Repo Policy:** Use `/Users/kelvin/Kelvin-WorkSpace/LotteryNew` only. Do not create a new repo. Implementation and governed tasks must run from canonical repo with `git rev-parse --git-dir == .git`; Claude/Codex auto-created worktree branches are not allowed.
 
 ---
@@ -22,7 +22,8 @@
 | P121 trigger recheck | [Confirmed] Complete and merged | PR #246, merge `a2d7995`; `P121_ALL_TRIGGERS_STILL_BLOCKED` | First no-change recheck. |
 | P122 trigger recheck + contamination guard | [Confirmed] Complete and merged | PR #247, merge `9dcef2e`; `P122_ALL_TRIGGERS_STILL_BLOCKED` | Third consecutive no-change state and cross-project contamination guard. |
 | P123 scheduled/manual trigger recheck wrapper | [Confirmed] Complete and merged | PR #248, merge `684bffcea3080f8f1f31c5b9acc3a572907ec4f3`; `P123_SCHEDULED_TRIGGER_RECHECK_SETUP_READY` | Use `scripts/p123_scheduled_trigger_recheck.py` for future no-change checks. No crontab/launchd installed. |
-| P124 multi-bet replay truth model + coverage matrix | [Confirmed] Complete | `outputs/replay/p124_multi_bet_truth_and_coverage_matrix_20260528.json`; `P124_MULTI_BET_TRUTH_AND_COVERAGE_MATRIX_READY` | Read-only audit. 36 strategy×lottery pairs mapped. Zero native_multi_bet; 16 first_bet_only_fallback gaps; 5 Tier-B adapters ready for controlled_apply; 9 need adapter_build. Next: P125_ADAPTER_GAP_PLAN. |
+| P124 multi-bet replay truth model + coverage matrix | [Confirmed] Complete | `outputs/replay/p124_multi_bet_truth_and_coverage_matrix_20260528.json`; `P124_MULTI_BET_TRUTH_AND_COVERAGE_MATRIX_READY` | Read-only audit. 36 strategy×lottery pairs mapped. Zero native_multi_bet; 16 first_bet_only_fallback gaps; 5 Tier-B adapters ready for controlled_apply; 9 need adapter_build. |
+| P125 adapter gap plan from P124 matrix | [Confirmed] Complete | `outputs/replay/p125_adapter_gap_plan_from_p124_20260528.json`, `docs/replay/p125_adapter_gap_plan_from_p124_20260528.md`; `P125_ADAPTER_GAP_PLAN_READY` | Read-only plan. 5 controlled_apply_ready, 12 adapter_build_needed, 2 relabel_only, 4 RSRs. Proposed P126/P127/P128 sequence. 54 tests pass. No DB writes. |
 
 ---
 
@@ -189,36 +190,37 @@ Upgrade / downgrade decisions:
 
 ## 7. Today's Focus
 
-**CTO recommendation:** do not open another no-change trigger PR. Treat the system as healthy standby and use P123 for operator/manual trigger checks.
+**CTO recommendation:** P124 proved zero native multi-bet rows. P125 produced the adapter gap plan. Next step is P126 (controlled apply for 5 Tier-B candidates) once explicit apply authorization is given.
 
 Confirmed current state:
 
-- [Confirmed] P123 merged: PR #248, merge commit `684bffcea3080f8f1f31c5b9acc3a572907ec4f3`.
-- [Confirmed] P123 classification: `P123_SCHEDULED_TRIGGER_RECHECK_SETUP_READY`.
-- [Confirmed] P123 first smoke classification: `P122_ALL_TRIGGERS_STILL_BLOCKED`.
+- [Confirmed] P124 branch `p124-multi-bet-truth-coverage-matrix` merged to `main` (commit `77d7d7d`).
+- [Confirmed] P125 committed to `main` as "P125: add adapter gap plan from P124 matrix".
+- [Confirmed] P125 classification: `P125_ADAPTER_GAP_PLAN_READY`.
 - [Confirmed] DB invariants: replay rows `54462`, 3_STAR `4179/max=115000106`, 4_STAR `2922/max=115000103`, POWER_LOTTO `1913/max=115000041`.
 - [Confirmed] P108 still needs 37 more Special3 draws.
 - [Confirmed] P117 still needs 30/40 more POWER_LOTTO draws.
 - [Confirmed] P118 exact phrase is absent.
 - [Confirmed] 4_STAR provenance is absent; backtest unauthorized.
-- [Confirmed] P123 installed no crontab and created no launchd plist.
-- [Confirmed] Focused verification during this CTO update: P119-P123 tests `318 passed`; drift guard PASS; branch governance PASS.
+- [Confirmed] P125 installed no crontab and created no launchd plist.
+- [Confirmed] Verification during this CTO update: P125 tests `54 passed`; P124 + P119-P123 regression `345 passed`; drift guard PASS.
 
 Recommended near-term order:
 
 | Rank | Work | Why |
 |---|---|---|
-| 1 | Operator/manual P123 trigger check only when data or authorization may have changed | Maintains healthy standby without PR churn. |
-| 2 | CEO-approved read-only multi-bet replay truth model / all-strategy coverage matrix | Directly supports the top product goal while blocked triggers wait. |
-| 3 | Adapter/apply planning from the coverage matrix | Only after gaps are measured and truthful multi-bet semantics are defined. |
+| 1 | P126 controlled_apply dry-run and apply for 5 Tier-B candidates | P125 identified the 5 candidates; they have working adapters; controlled_apply just needs explicit authorization |
+| 2 | P127 adapter build for 12 missing get_all_bets() adapters | Unlocks replay expansion for 12 more strategy×lottery pairs after adapters are tested |
+| 3 | P128 native multi-bet storage design | RSR-1 blocks any multi-bet expansion until format is decided; design must precede any apply |
+| 4 | Operator/manual P123 trigger check only when data or authorization may have changed | Maintains healthy standby without PR churn |
 
 CTO prompt boundary:
 
 - [Confirmed] This CTO update does not create or modify `00-Plan/roadmap/active_task.md`.
-- [Blocked] A new worker task prompt is not emitted because this request explicitly says CTO must not produce a new worker task prompt and CTO may only update `roadmap.md` and `CTO-Analysis.md`.
+- [Confirmed] This CTO update modifies only `roadmap.md` and `CTO-Analysis.md`.
 
 Final roadmap marker:
 
 ```text
-CTO_ROADMAP_UPDATED_AFTER_P123_TRIGGER_RECHECK_SETUP_20260528
+CTO_ROADMAP_UPDATED_AFTER_P125_ADAPTER_GAP_PLAN_20260528
 ```

@@ -739,3 +739,62 @@ Final roadmap marker:
 ```text
 CTO_ROADMAP_UPDATED_AFTER_P128_WAVE2_ADAPTER_PHASE1_20260528
 ```
+
+---
+
+## P128 Phase 2 — Wave 2 Multi-Bet Adapters (Priority 7-12)
+
+**Date**: 2026-05-28  
+**Branch**: `claude/zen-gates-ff6802`  
+**Commit**: P128: implement Wave 2 phase 2 multi-bet adapters
+
+### Adapters Implemented
+
+| Priority | Strategy ID | Lottery | Bets | DB Rows | RSR |
+|----------|-------------|---------|------|---------|-----|
+| P7 | `acb_markov_midfreq_3bet` | DAILY_539 | 3 | 1500 | None |
+| P8 | `midfreq_fourier_mk_3bet` | POWER_LOTTO | 3 | 1500 | None |
+| P9 | `fourier_rhythm_3bet` | POWER_LOTTO | 3 | 1501 | RSR-7 (+1, not blocked) |
+| P10 | `power_precision_3bet` | POWER_LOTTO | 3 | 1570 | **RSR-6 BLOCKED** |
+| P11 | `pp3_freqort_4bet` | POWER_LOTTO | 4 | 1500 | None |
+| P12 | `power_orthogonal_5bet` | POWER_LOTTO | 5 | 1570 | **RSR-6 BLOCKED** |
+
+### RSR-6 Audit (FORMAL)
+
+Both `power_precision_3bet` and `power_orthogonal_5bet` have 20 orphan `bet_index=2`
+rows each (draws 99000085–99000094 range, source=''). Apply BLOCKED until reconciled.
+
+**Next action**: File RSR-6-RESOLUTION subtask. Audit, quarantine or delete orphan rows.
+Then re-enable apply gate for P10/P12.
+
+### RSR-7 Audit
+
+`fourier_rhythm_3bet` has 1501 rows (+1 extra). `bet_index=1` only. Low priority,
+does not block adapter.
+
+### Status
+
+- 6 adapters PASS  
+- 86 tests PASS  
+- 88 Phase 1 regression tests PASS  
+- DB rows: 72,462 (invariant maintained)  
+- `replay_lifecycle_drift_guard.py`: PASS  
+- No DB write. No controlled_apply.
+
+### Files Created
+
+- `lottery_api/models/p128_wave2_phase2_adapters.py`
+- `tests/test_p128_wave2_adapter_phase2.py`
+- `scripts/p128_wave2_adapter_phase2.py`
+- `outputs/replay/p128_wave2_adapter_phase2_20260528.json`
+- `docs/replay/p128_wave2_adapter_phase2_20260528.md`
+
+### Next Recommended Task
+
+1. RSR-6-RESOLUTION: audit + quarantine orphan rows for P10/P12
+2. P128 controlled_apply: wire Phase 1 adapters (P1-P6) into production pipeline
+3. P128 Phase 3 (if applicable): controlled_apply for Phase 2 adapters once RSR-6 resolved
+
+```text
+CTO_ROADMAP_UPDATED_AFTER_P128_WAVE2_ADAPTER_PHASE2_20260528
+```

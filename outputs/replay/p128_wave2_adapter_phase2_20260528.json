@@ -1,0 +1,128 @@
+{
+  "task_id": "P128_PHASE2",
+  "classification": "P128_WAVE2_ADAPTER_PHASE2_READY",
+  "generated_at": "2026-05-28T12:18:34.530622+00:00",
+  "provenance_sha256": "66b2ed1a12fa9bd9589e120f06c0616d356e941342c991095f1498593e689bef",
+  "phase_scope": {
+    "source": "P127 recommended implementation order",
+    "selected_priority_range": "7-12",
+    "strategy_count": 6,
+    "db_write_in_p128_phase2": false,
+    "controlled_apply_executed": false,
+    "replay_rows_inserted": 0,
+    "production_db_rows_expected": 72462,
+    "production_db_rows_after": 72462,
+    "db_row_count_invariant": true
+  },
+  "adapter_results": [
+    {
+      "priority": 7,
+      "strategy_id": "acb_markov_midfreq_3bet",
+      "lottery_type": "DAILY_539",
+      "bet_count": 3,
+      "rsr6_blocked": false,
+      "rsr7_note": null,
+      "status": "PASS",
+      "error": null
+    },
+    {
+      "priority": 8,
+      "strategy_id": "midfreq_fourier_mk_3bet",
+      "lottery_type": "POWER_LOTTO",
+      "bet_count": 3,
+      "rsr6_blocked": false,
+      "rsr7_note": null,
+      "status": "PASS",
+      "error": null
+    },
+    {
+      "priority": 9,
+      "strategy_id": "fourier_rhythm_3bet",
+      "lottery_type": "POWER_LOTTO",
+      "bet_count": 3,
+      "rsr6_blocked": false,
+      "rsr7_note": "RSR-7: 1501 rows in DB (+1 extra). Adapter defined. Low priority anomaly.",
+      "status": "PASS",
+      "error": null
+    },
+    {
+      "priority": 10,
+      "strategy_id": "power_precision_3bet",
+      "lottery_type": "POWER_LOTTO",
+      "bet_count": 3,
+      "rsr6_blocked": true,
+      "rsr7_note": "RSR-6: 20 orphan bet_index=2 rows. Apply BLOCKED until reconciliation.",
+      "status": "PASS",
+      "error": null
+    },
+    {
+      "priority": 11,
+      "strategy_id": "pp3_freqort_4bet",
+      "lottery_type": "POWER_LOTTO",
+      "bet_count": 4,
+      "rsr6_blocked": false,
+      "rsr7_note": null,
+      "status": "PASS",
+      "error": null
+    },
+    {
+      "priority": 12,
+      "strategy_id": "power_orthogonal_5bet",
+      "lottery_type": "POWER_LOTTO",
+      "bet_count": 5,
+      "rsr6_blocked": true,
+      "rsr7_note": "RSR-6: 20 orphan bet_index=2 rows. Apply BLOCKED until reconciliation.",
+      "status": "PASS",
+      "error": null
+    }
+  ],
+  "db_strategy_row_counts": {
+    "acb_markov_midfreq_3bet": 1500,
+    "midfreq_fourier_mk_3bet": 1500,
+    "fourier_rhythm_3bet": 1501,
+    "power_precision_3bet": 1570,
+    "pp3_freqort_4bet": 1500,
+    "power_orthogonal_5bet": 1570
+  },
+  "rsr6_audit_status": {
+    "power_precision_3bet": {
+      "strategy_id": "power_precision_3bet",
+      "bet_index_1_rows": 1550,
+      "bet_index_2_orphan_rows": 20,
+      "orphan_bet_index_2_detected": true,
+      "apply_ready_blocked": true,
+      "recommended_followup": "Audit 20 orphan bet_index=2 rows (draws 99000085–99000094 range). Quarantine or delete before controlled_apply adds new bi>=2 rows."
+    },
+    "power_orthogonal_5bet": {
+      "strategy_id": "power_orthogonal_5bet",
+      "bet_index_1_rows": 1550,
+      "bet_index_2_orphan_rows": 20,
+      "orphan_bet_index_2_detected": true,
+      "apply_ready_blocked": true,
+      "recommended_followup": "Audit 20 orphan bet_index=2 rows (draws 99000085–99000094 range). Quarantine or delete before controlled_apply adds new bi>=2 rows."
+    },
+    "orphan_bet_index_2_detected": true,
+    "apply_ready_blocked_if_unresolved": true,
+    "recommended_followup": "RSR-6 resolution task: audit 20 orphan bet_index=2 rows per strategy. Quarantine or delete orphans before any controlled_apply that writes bi>=2. File as RSR-6-RESOLUTION subtask under P128 or successor phase."
+  },
+  "rsr7_audit_status": {
+    "strategy_id": "fourier_rhythm_3bet",
+    "db_rows": 1501,
+    "expected_rows": 1500,
+    "extra_rows": 1,
+    "bet_index_range": "1 only",
+    "adapter_blocked": false,
+    "note": "RSR-7: +1 extra row. Low priority. Does NOT block adapter implementation."
+  },
+  "blocked_or_excluded": {
+    "no_db_write": true,
+    "no_controlled_apply": true,
+    "4star_excluded": true,
+    "p108_p117_p118_not_run": true,
+    "rejected_strategies_no_action": true,
+    "no_scheduler_change": true,
+    "no_lifecycle_champion_registry_mutation": true
+  },
+  "overall_status": "PASS",
+  "summary": "P128 Phase 2: implemented 6 get_all_bets() adapters (priority 7-12). 86 tests pass. DB rows = 72462 (invariant maintained). RSR-6: power_precision_3bet and power_orthogonal_5bet flagged (20 orphan bet_index=2 rows each — apply BLOCKED until reconciled). RSR-7: fourier_rhythm_3bet has +1 extra row (low priority, not blocked)."
+}

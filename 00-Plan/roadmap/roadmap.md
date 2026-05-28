@@ -352,3 +352,33 @@ DB unchanged: 72,462 rows.
 ```text
 CTO_ROADMAP_UPDATED_AFTER_P128_WAVE2_ADAPTER_PHASE1_20260528
 ```
+
+---
+
+### P128 Phase 2 — Wave 2 Multi-Bet Adapters (Priority 7-12) [2026-05-28]
+
+**6 adapters implemented** for 3-bet, 4-bet, 5-bet strategies (priority 7-12).
+
+| Priority | Strategy ID | Lottery | Bets | RSR |
+|----------|-------------|---------|------|-----|
+| P7 | `acb_markov_midfreq_3bet` | DAILY_539 | 3 | — |
+| P8 | `midfreq_fourier_mk_3bet` | POWER_LOTTO | 3 | — |
+| P9 | `fourier_rhythm_3bet` | POWER_LOTTO | 3 | RSR-7 (+1, not blocked) |
+| P10 | `power_precision_3bet` | POWER_LOTTO | 3 | **RSR-6 BLOCKED** |
+| P11 | `pp3_freqort_4bet` | POWER_LOTTO | 4 | — |
+| P12 | `power_orthogonal_5bet` | POWER_LOTTO | 5 | **RSR-6 BLOCKED** |
+
+**RSR-6 (FORMAL AUDIT):** `power_precision_3bet` and `power_orthogonal_5bet` each
+have 20 orphan `bet_index=2` rows. Apply gate BLOCKED until RSR-6-RESOLUTION done.
+
+**Status:** 86/86 tests PASS. 88/88 Phase 1 regression PASS. DB=72,462 (invariant held).
+**Apply gate:** CLOSED for P10/P12 (RSR-6). OPEN for P7/P8/P9/P11 (adapter-only).
+
+**Next tasks:**
+1. RSR-6-RESOLUTION — audit orphan rows for P10/P12
+2. P128 controlled_apply — wire Phase 1 (P1-P6) into production
+3. Phase 3 — controlled_apply for Phase 2 once RSR-6 resolved
+
+```text
+CTO_ROADMAP_UPDATED_AFTER_P128_WAVE2_ADAPTER_PHASE2_20260528
+```

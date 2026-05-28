@@ -925,3 +925,16 @@ CTO_ANALYSIS_UPDATED_AFTER_P128_PHASE3_WAVE2_SAFE_CANDIDATES_READINESS_20260528
 ```text
 CTO_ANALYSIS_UPDATED_AFTER_P130_WAVE2_SAFE_CANDIDATES_DRY_RUN_PLAN_20260528
 ```
+
+---
+
+### P131: acb_markov_midfreq_3bet Wave 2 Apply (2026-05-28)
+
+**Status**: COMPLETE | **Classification**: P131_ACB_MARKOV_MIDFREQ_3BET_APPLIED
+
+CTO Note: P7 Wave 2 safe candidate `acb_markov_midfreq_3bet` (DAILY_539) applied.
+3,000 bet-2/bet-3 rows inserted via P128 phase2 adapter. DB 72,422 → 75422.
+P8/P9/P11 await individual authorization. P10/P12 not apply-ready.
+Next: P132 (midfreq_fourier_mk_3bet, P8, POWER_LOTTO).
+
+**Artifact**: `outputs/replay/p131_apply_acb_markov_midfreq_3bet_20260528.json`

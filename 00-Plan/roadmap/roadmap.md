@@ -499,3 +499,25 @@ Per-strategy controlled_apply dry-run plan for P7/P8/P9/P11 safe candidates. No 
 ```text
 CTO_ROADMAP_UPDATED_AFTER_P130_WAVE2_SAFE_CANDIDATES_DRY_RUN_PLAN_20260528
 ```
+
+---
+
+### P131 — acb_markov_midfreq_3bet Wave 2 Controlled Apply [2026-05-28]
+
+**Classification**: P131_ACB_MARKOV_MIDFREQ_3BET_APPLIED
+
+P7 `acb_markov_midfreq_3bet` (DAILY_539) bet-2 and bet-3 rows applied via P128 phase2 adapter.
+
+- **Rows inserted:** +3,000 (1,500 bet-2 + 1,500 bet-3)
+- **DB rows:** 72,422 → 75422
+- **Backup:** `/Users/kelvin/Kelvin-WorkSpace/LotteryNew/.claude/worktrees/zen-gates-ff6802/backups/lottery_v2.db.p131_backup_20260528T140744Z.db`
+- **Drift guard:** PASS at 75422
+- **P8/P9/P11 not applied** — require per-strategy authorization
+- **P10/P12 not apply-ready** — pending post-RSR6 re-evaluation
+
+**Next task**: P132 — apply `midfreq_fourier_mk_3bet` (P8, POWER_LOTTO) bet-2 + bet-3.
+Authorization phrase: `P130_AUTHORIZED_APPLY_MIDFREQ_FOURIER_MK_3BET_POWERLOTTO_BET2_BET3_V20260528`
+
+```text
+CTO_ROADMAP_UPDATED_AFTER_P131_ACB_MARKOV_MIDFREQ_3BET_APPLIED_20260528
+```

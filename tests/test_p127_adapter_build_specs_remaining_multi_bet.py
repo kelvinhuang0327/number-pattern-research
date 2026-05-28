@@ -33,7 +33,7 @@ P127_MD   = REPO_ROOT / "docs" / "replay" / f"p127_adapter_build_specs_remaining
 P126G_JSON = REPO_ROOT / "outputs" / "replay" / f"p126g_all_tier_b_apply_closure_audit_{ARTIFACT_DATE}.json"
 
 EXPECTED_TOTAL_ROWS = 72462          # Historical: DB state when P127 artifact was generated
-EXPECTED_TOTAL_ROWS_CURRENT = 72422  # Post RSR-6 cleanup (−40 orphan bet_index=2 rows)
+EXPECTED_TOTAL_ROWS_CURRENT = 75422  # Post P131 apply (acb_markov_midfreq_3bet +3000)
 EXPECTED_STRATEGY_COUNT = 12
 
 REQUIRED_SPEC_FIELDS = [
@@ -478,10 +478,11 @@ def test_live_db_adapter_strategies_no_new_bets_added(db_conn):
         """,
         ADAPTER_STRATEGY_IDS
     ).fetchone()[0]
-    # power_orthogonal_5bet and power_precision_3bet have pre-existing 20 rows each (RSR-6)
-    # We assert no NEW rows added beyond this pre-existing 40
-    assert rows <= 40, \
-        f"Expected at most 40 orphan bet_index>1 rows (RSR-6), found {rows}"
+    # power_orthogonal_5bet and power_precision_3bet had 20 rows each (RSR-6 orphans, now 0).
+    # P131 applied acb_markov_midfreq_3bet bet-2+bet-3 = 3000 rows (authorized Wave 2 apply).
+    # No other P127 adapter strategies have bet_index>1 rows.
+    assert rows == 3000, \
+        f"Expected 3000 bet_index>1 rows (P131 acb_markov_midfreq_3bet), found {rows}"
 
 
 def test_live_db_acb_markov_midfreq_3bet_rows(db_conn):
@@ -489,7 +490,8 @@ def test_live_db_acb_markov_midfreq_3bet_rows(db_conn):
         "SELECT COUNT(*) FROM strategy_prediction_replays WHERE strategy_id = ? AND lottery_type = ?",
         ("acb_markov_midfreq_3bet", "DAILY_539")
     ).fetchone()[0]
-    assert count == 1500
+    # P131 applied bet-2 and bet-3 rows (1500 each) → 4500 total
+    assert count == 4500
 
 
 def test_live_db_midfreq_acb_2bet_rows(db_conn):

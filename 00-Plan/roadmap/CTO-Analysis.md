@@ -887,3 +887,41 @@ CTO_ANALYSIS_UPDATED_AFTER_RSR6_CLEANUP_EXECUTION_20260528
 ```text
 CTO_ANALYSIS_UPDATED_AFTER_P128_PHASE3_WAVE2_SAFE_CANDIDATES_READINESS_20260528
 ```
+
+---
+
+## P130 — Wave 2 Safe Candidates Controlled_Apply Dry-Run Plan (2026-05-28)
+
+**Status**: COMPLETE — `P130_WAVE2_SAFE_CANDIDATES_DRY_RUN_PLAN_READY`
+
+**Action**: Per-strategy controlled_apply dry-run plan produced for P7/P8/P9/P11. No DB writes. No apply executed.
+
+### Per-Strategy Plan Summary
+
+| Priority | Strategy | Lottery | Missing Bet Indices | Est. Insert Rows | P9 Anomaly |
+|----------|----------|---------|---------------------|-----------------|-----------|
+| P7 | `acb_markov_midfreq_3bet` | DAILY_539 | 2, 3 | 3,000 | — |
+| P8 | `midfreq_fourier_mk_3bet` | POWER_LOTTO | 2, 3 | 3,000 | — |
+| P11 | `pp3_freqort_4bet` | POWER_LOTTO | 2, 3, 4 | 4,500 | — |
+| P9 | `fourier_rhythm_3bet` | POWER_LOTTO | 2, 3 | 3,002 | draw-ext +1 (115000041) |
+| **Total** | | | | **13,502** | |
+
+**Recommended apply order**: P7 → P8 → P11 → P9 (P9 last — verify draw 115000041 draw-ext row inclusion)
+
+**DB rows**: 72,422 (unchanged). Drift guard PASS. All 69 tests PASS. Full regression: 454/454 PASS.
+
+**Blocked** (P10/P12): `apply_ready=false`, `re_evaluation_required=true`. RSR-6 cleanup done (1550 bi=1 rows each), but apply gate re-evaluation not yet complete.
+
+**Authorization phrase templates** (NOT YET ISSUED — separate authorization required per strategy):
+- P7: `P130_AUTHORIZED_APPLY_ACB_MARKOV_MIDFREQ_3BET_DAILY539_BET2_BET3_V20260528`
+- P8: `P130_AUTHORIZED_APPLY_MIDFREQ_FOURIER_MK_3BET_POWERLOTTO_BET2_BET3_V20260528`
+- P11: `P130_AUTHORIZED_APPLY_PP3_FREQORT_4BET_POWERLOTTO_BET2_BET3_BET4_V20260528`
+- P9: `P130_AUTHORIZED_APPLY_FOURIER_RHYTHM_3BET_POWERLOTTO_BET2_BET3_V20260528`
+
+**Non-actions confirmed**: no controlled_apply, no DB writes, no apply execution script created, no P10/P12 apply-ready declaration, no scheduler install, no 4_STAR/P108/P117/P118.
+
+**Next**: Issue per-strategy authorization phrases → run P131 controlled_apply execution → verify row counts → run regression suite.
+
+```text
+CTO_ANALYSIS_UPDATED_AFTER_P130_WAVE2_SAFE_CANDIDATES_DRY_RUN_PLAN_20260528
+```

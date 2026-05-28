@@ -461,3 +461,41 @@ Dry-run readiness re-evaluation for Wave 2 Phase 2 candidates after RSR-6 cleanu
 ```text
 CTO_ROADMAP_UPDATED_AFTER_P128_PHASE3_WAVE2_SAFE_CANDIDATES_READINESS_20260528
 ```
+
+---
+
+### P130 — Wave 2 Safe Candidates Controlled_Apply Dry-Run Plan [2026-05-28]
+
+**Classification**: P130_WAVE2_SAFE_CANDIDATES_DRY_RUN_PLAN_READY
+
+Per-strategy controlled_apply dry-run plan for P7/P8/P9/P11 safe candidates. No DB writes. No apply executed.
+
+**Safe candidates planned (P7/P8/P9/P11)**:
+
+| Priority | Strategy | Lottery | Missing Bet Indices | Est. Insert Rows | Anomaly |
+|----------|----------|---------|---------------------|-----------------|---------|
+| P7 | `acb_markov_midfreq_3bet` | DAILY_539 | 2, 3 | 3,000 | — |
+| P8 | `midfreq_fourier_mk_3bet` | POWER_LOTTO | 2, 3 | 3,000 | — |
+| P11 | `pp3_freqort_4bet` | POWER_LOTTO | 2, 3, 4 | 4,500 | — |
+| P9 | `fourier_rhythm_3bet` | POWER_LOTTO | 2, 3 | 3,002 | draw-ext +1 row (115000041) |
+| **Total** | | | | **13,502** | |
+
+**Recommended apply order**: P7 → P8 → P11 → P9 (P9 last due to 1501-row draw-ext anomaly)
+
+**Authorization phrase templates** (NOT YET ISSUED — require separate authorization per strategy):
+- P7: `P130_AUTHORIZED_APPLY_ACB_MARKOV_MIDFREQ_3BET_DAILY539_BET2_BET3_V20260528`
+- P8: `P130_AUTHORIZED_APPLY_MIDFREQ_FOURIER_MK_3BET_POWERLOTTO_BET2_BET3_V20260528`
+- P9: `P130_AUTHORIZED_APPLY_FOURIER_RHYTHM_3BET_POWERLOTTO_BET2_BET3_V20260528`
+- P11: `P130_AUTHORIZED_APPLY_PP3_FREQORT_4BET_POWERLOTTO_BET2_BET3_BET4_V20260528`
+
+**Blocked (P10/P12)**: apply gate re-evaluation required before authorization can be issued.
+
+**DB rows**: 72,422 (unchanged). Drift guard PASS.
+
+**Duplicate guard**: all 4 safe candidates conflict-free (`UNIQUE(lottery_type, target_draw, strategy_id, bet_index) ABORT ON CONFLICT`).
+
+**Next task**: Issue per-strategy authorization phrases → execute controlled_apply dry-run execution script → verify row counts → execute controlled_apply.
+
+```text
+CTO_ROADMAP_UPDATED_AFTER_P130_WAVE2_SAFE_CANDIDATES_DRY_RUN_PLAN_20260528
+```

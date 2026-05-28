@@ -1,8 +1,8 @@
-# CTO Analysis - After P129A Production Migration Authorization Gate
+# CTO Analysis - After P129B Production Bet_Index Schema Migration Applied
 
 ## 1. CTO Review Date
 
-2026-05-28 Asia/Taipei (updated after P129A).
+2026-05-28 Asia/Taipei (updated after P129B).
 
 Final CTO classification target: `CTO_ROADMAP_UPDATED_WITH_RISKS`.
 
@@ -279,16 +279,36 @@ P129A gate report confirmed. Classification: `P129A_WAITING_FOR_KELVIN_MIGRATION
 - [Confirmed] P126 apply remains BLOCKED — schema migration not yet authorized.
 - [Confirmed] 4_STAR / P108 / P117 / P118 remain blocked.
 
-### Next Step: Kelvin Authorization Required
+### P129B CTO Update (2026-05-28)
 
-Production migration requires Kelvin to state exactly:
-```
-YES authorize migration_plan_p128 because <reason>
-```
+P129B production migration applied. Classification: `P129B_PRODUCTION_BET_INDEX_SCHEMA_MIGRATION_APPLIED`.
 
-On receiving that phrase, P129B executes the production migration using the corrected
-ROW_NUMBER() COPY SQL. Per-strategy P126 apply authorization phrases are separate
-and required after migration completes.
+- [Confirmed] Authorization phrase received and validated: `YES authorize migration_plan_p128 because P129A gate confirmed corrected ROW_NUMBER migration is required and rehearsal preserved all 54462 rows`.
+- [Confirmed] Backup created before migration: `lottery_api/data/backups/lottery_v2.db.p129b_backup_20260528T080035Z.db` (54462 rows, PASS).
+- [Confirmed] 18-step migration applied to production DB — all 18 steps OK.
+- [Confirmed] Corrected ROW_NUMBER() COPY SQL used (not naive '1 AS bet_index').
+- [Confirmed] All 54462 rows preserved after migration.
+- [Confirmed] bet_index column added: `INTEGER NOT NULL DEFAULT 1`.
+- [Confirmed] New UNIQUE(lottery_type, target_draw, strategy_id, bet_index) constraint active.
+- [Confirmed] Old UNIQUE(lottery_type, target_draw, strategy_id, replay_run_id) constraint removed.
+- [Confirmed] 120 duplicate (strategy, draw) groups now have bet_index 1, 2 (or 3) — data preserved, no rows lost.
+- [Confirmed] bet_index distribution: 54302 rows with bet_index=1, 160 rows with bet_index>1, 0 invalid.
+- [Confirmed] idx_spr_bet_index index created.
+- [Confirmed] UNIQUE constraint validated: rejects duplicate (strategy, draw, bet_index); allows multi-bet slots.
+- [Confirmed] Drift guard PASS — 54462 rows, no violations.
+- [Confirmed] P126 apply remains BLOCKED — requires 5 individual per-strategy authorization phrases from Kelvin.
+- [Confirmed] 4_STAR / P108 / P117 / P118 remain blocked.
+- [Confirmed] No scheduler / cron / launchd installed.
+- [Confirmed] No P126 apply executed.
+
+### Next Step: Per-Strategy P126 Authorization Required
+
+To apply P126 +18000 rows, Kelvin must provide all 5 per-strategy phrases in a new P126A apply gate:
+1. `YES authorize controlled_apply for biglotto_echo_aware_3bet because <reason>`
+2. `YES authorize controlled_apply for daily539_f4cold_5bet because <reason>`
+3. `YES authorize controlled_apply for daily539_f4cold_3bet because <reason>`
+4. `YES authorize controlled_apply for power_fourier_rhythm_2bet because <reason>`
+5. `YES authorize controlled_apply for biglotto_ts3_markov_4bet_w30 because <reason>`
 - [Confirmed] Added multi-bet replay truth model as P0.3.
 - [Confirmed] Added all implemented strategy x lottery x 1-5 bet-count coverage matrix as P1.1.
 - [Confirmed] Preserved 4_STAR backtest block and source_unknown caveat.

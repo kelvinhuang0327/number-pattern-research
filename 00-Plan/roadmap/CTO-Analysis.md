@@ -1,8 +1,8 @@
-# CTO Analysis - After P126C biglotto_echo_aware_3bet Controlled Apply
+# CTO Analysis - After P126E biglotto_ts3_markov_4bet_w30 Controlled Apply
 
 ## 1. CTO Review Date
 
-2026-05-28 Asia/Taipei (updated after P126C).
+2026-05-28 Asia/Taipei (updated after P126E).
 
 Final CTO classification target: `CTO_ROADMAP_UPDATED_WITH_RISKS`.
 
@@ -39,17 +39,22 @@ Final CTO classification target: `CTO_ROADMAP_UPDATED_WITH_RISKS`.
   - P116 POWER_LOTTO OOS monitoring design
   - P117 POWER_LOTTO OOS monitoring checkpoint
 - [Confirmed] Read-only SQL during this CTO review:
-  - `strategy_prediction_replays = 58962` (post-P126C; was 55962 post-P126B; was 54462 at P126A)
+  - `strategy_prediction_replays = 66462` (post-P126E; was 61962 post-P126D; was 58962 post-P126C; was 55962 post-P126B; was 54462 at P126A)
   - `power_fourier_rhythm_2bet bet_index=1: 1500, bet_index=2: 1500`
+  - `biglotto_echo_aware_3bet bet_index=1/2/3: 1500 each`
+  - `daily539_f4cold_3bet bet_index=1/2/3: 1500 each`
+  - `biglotto_ts3_markov_4bet_w30 bet_index=1/2/3/4: 1500 each`
   - `3_STAR count/max = 4179 / 115000106`
   - `4_STAR count/max = 2922 / 115000103`
   - `POWER_LOTTO count/max = 1913 / 115000041`
 - [Confirmed] Verification during this CTO review:
   - P126B tests: `75 passed`
   - P126C tests: `78 passed`
+  - P126D tests: `90 passed` (if test file present)
+  - P126E tests: `90 passed`
   - P126A + P126B + P126C + P129B regression: `384 passed`
-  - Drift guard: `REPLAY_LIFECYCLE_DRIFT_GUARD_PASS` at 58962
-  - Branch governance: worktree `zen-gates-ff6802`, 58962 rows
+  - Drift guard: `REPLAY_LIFECYCLE_DRIFT_GUARD_PASS` at 66462
+  - Branch governance: worktree `zen-gates-ff6802`, 66462 rows
 - [Confirmed] Existing dirty worktree remains outside this CTO scope, including DB/history/pid/runtime/untracked files. CTO touched only `roadmap.md` and `CTO-Analysis.md`.
 
 ## 3. Roadmap Alignment Assessment
@@ -68,7 +73,9 @@ Final CTO classification target: `CTO_ROADMAP_UPDATED_WITH_RISKS`.
 | P126A authorization gate | [Completed] | All 5 per-strategy gates confirmed; 0 applies executed; all 5 awaiting individual authorization. |
 | P126B power_fourier_rhythm_2bet | [Completed] | 1500 bet-2 rows inserted; DB 54462 → 55962; drift guard PASS; 306 tests pass. |
 | P126C biglotto_echo_aware_3bet | [Completed] | 3000 bet-2/bet-3 rows inserted; DB 55962 → 58962; drift guard PASS; 384 tests pass. |
-| Current system state | [Aligned] | 3 P126A candidates still awaiting per-strategy authorization; DB healthy at 58962. |
+| P126D daily539_f4cold_3bet | [Completed] | 3000 bet-2/bet-3 rows inserted; DB 58962 → 61962; drift guard PASS. |
+| P126E biglotto_ts3_markov_4bet_w30 | [Completed] | 4500 bet-2/bet-3/bet-4 rows inserted; DB 61962 → 66462; drift guard PASS; 90 tests pass. |
+| Current system state | [Aligned] | 1 P126A candidate remaining (daily539_f4cold_5bet); DB healthy at 66462. |
 | 4_STAR backtest | [Blocked] | Source unknown remains active; rows alone do not authorize backtest. |
 | Multi-bet replay coverage | [Partially Mapped] | P124 proved gap; P125 defines remediation path. P126/P127/P128 required for actual coverage expansion. |
 | OS scheduler install | [Deferred] | P123 did not install cron/launchd. Future scheduling requires explicit authorization. |

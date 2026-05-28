@@ -295,10 +295,12 @@ class TestLiveDB:
         c.close()
 
     def test_total_rows_58962(self, conn):
+        # NOTE: total count grows as subsequent P126D/P126E applies are executed.
+        # Verify total is at least the P126C post-apply count.
         total = conn.execute(
             "SELECT COUNT(*) FROM strategy_prediction_replays"
         ).fetchone()[0]
-        assert total == 58962
+        assert total >= 58962, f"Expected at least 58962 rows, got {total}"
 
     def test_biglotto_echo_aware_3bet_total_4500(self, conn):
         total = conn.execute(
@@ -342,7 +344,9 @@ class TestLiveDB:
         assert total == 3000
 
     def test_remaining_candidates_not_touched(self, conn):
-        for cid in ["daily539_f4cold_3bet", "biglotto_ts3_markov_4bet_w30", "daily539_f4cold_5bet"]:
+        # NOTE: P126D applied daily539_f4cold_3bet; P126E applied biglotto_ts3_markov_4bet_w30.
+        # Only daily539_f4cold_5bet must remain untouched (no bet_index>1).
+        for cid in ["daily539_f4cold_5bet"]:
             extra = conn.execute(
                 "SELECT COUNT(*) FROM strategy_prediction_replays "
                 "WHERE strategy_id=? AND bet_index>1",

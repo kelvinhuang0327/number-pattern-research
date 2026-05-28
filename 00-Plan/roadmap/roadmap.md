@@ -1,8 +1,8 @@
 # Lottery Replay Roadmap
 
-**Last Updated:** 2026-05-28 Asia/Taipei (CTO update after P126C biglotto_echo_aware_3bet controlled apply)
+**Last Updated:** 2026-05-28 Asia/Taipei (updated after P126E biglotto_ts3_markov_4bet_w30 controlled apply)
 **Owner:** CTO agent
-**Primary Goal:** Make every implemented LotteryNew strategy replayable with honest historical prediction-vs-actual evidence across every supported lottery type and every implemented 1-5 bet-count variant. This must be done without fake rows, untracked DB writes, premature promotion, or no-change governance PR churn. Current system state: P126C applied 3000 bet-2/bet-3 rows for biglotto_echo_aware_3bet (DB 55962 → 58962). 3 P126A candidates still awaiting individual per-strategy authorization. P108 / P117 / P118 / 4_STAR triggers remain blocked.
+**Primary Goal:** Make every implemented LotteryNew strategy replayable with honest historical prediction-vs-actual evidence across every supported lottery type and every implemented 1-5 bet-count variant. This must be done without fake rows, untracked DB writes, premature promotion, or no-change governance PR churn. Current system state: P126E applied 4500 bet-2/bet-3/bet-4 rows for biglotto_ts3_markov_4bet_w30 (DB 61962 → 66462). 1 P126A candidate (daily539_f4cold_5bet) still awaiting individual per-strategy authorization. P108 / P117 / P118 / 4_STAR triggers remain blocked.
 **Repo Policy:** Use `/Users/kelvin/Kelvin-WorkSpace/LotteryNew` only. Do not create a new repo. Implementation and governed tasks must run from canonical repo with `git rev-parse --git-dir == .git`; Claude/Codex auto-created worktree branches are not allowed.
 
 ---
@@ -32,6 +32,8 @@
 | P126A per-strategy controlled apply authorization gate | [Confirmed] Complete | `outputs/replay/p126a_controlled_apply_authorization_gate_20260528.json`; `P126A_WAITING_FOR_PER_STRATEGY_APPLY_AUTHORIZATION` | Gate established for 5 Tier-B strategies. No apply executed. 54462 rows confirmed at P126A. Schema ready. Each strategy requires independent exact phrase. 4 candidates still awaiting authorization. |
 | P126B power_fourier_rhythm_2bet controlled apply | [Confirmed] Complete | `outputs/replay/p126b_apply_power_fourier_rhythm_2bet_20260528.json`; `P126B_POWER_FOURIER_RHYTHM_2BET_APPLIED` | 1500 bet-2 rows inserted for POWER_LOTTO power_fourier_rhythm_2bet. DB 54462 → 55962. bet-1=1500, bet-2=1500. Drift guard PASS at 55962. 306 tests pass. Other 4 P126A candidates untouched. |
 | P126C biglotto_echo_aware_3bet controlled apply | [Confirmed] Complete | `outputs/replay/p126c_apply_biglotto_echo_aware_3bet_20260528.json`; `P126C_BIGLOTTO_ECHO_AWARE_3BET_APPLIED` | 3000 bet-2/bet-3 rows inserted for BIG_LOTTO biglotto_echo_aware_3bet. DB 55962 → 58962. bet-1=1500, bet-2=1500, bet-3=1500 (total 4500). Drift guard PASS at 58962. 384 tests pass. Remaining 3 P126A candidates untouched. |
+| P126D daily539_f4cold_3bet controlled apply | [Confirmed] Complete | `outputs/replay/p126d_apply_daily539_f4cold_3bet_20260528.json`; `P126D_DAILY539_F4COLD_3BET_APPLIED` | 3000 bet-2/bet-3 rows inserted for DAILY_539 daily539_f4cold_3bet. DB 58962 → 61962. bet-1=1500, bet-2=1500, bet-3=1500 (total 4500). Drift guard PASS at 61962. |
+| P126E biglotto_ts3_markov_4bet_w30 controlled apply | [Confirmed] Complete | `outputs/replay/p126e_apply_biglotto_ts3_markov_4bet_w30_20260528.json`; `P126E_BIGLOTTO_TS3_MARKOV_4BET_W30_APPLIED` | 4500 bet-2/bet-3/bet-4 rows inserted for BIG_LOTTO biglotto_ts3_markov_4bet_w30. DB 61962 → 66462. bet-1=1500, bet-2=1500, bet-3=1500, bet-4=1500 (total 6000). Drift guard PASS at 66462. 90 tests pass. |
 
 ---
 
@@ -41,7 +43,7 @@ Verified during CTO review on 2026-05-28 using read-only SQL, P119-P123 artifact
 
 | Metric | Value |
 |---|---:|
-| Production replay rows | 58962 (post-P126C; was 55962 post-P126B; was 54462 at P126A) |
+| Production replay rows | 66462 (post-P126E; was 61962 post-P126D; was 58962 post-P126C; was 55962 post-P126B; was 54462 at P126A) |
 | 3_STAR rows / max draw | 4179 / 115000106 |
 | 4_STAR rows / max draw | 2922 / 115000103 |
 | POWER_LOTTO rows / max draw | 1913 / 115000041 |

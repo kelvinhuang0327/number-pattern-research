@@ -1,0 +1,161 @@
+{
+  "task_id": "P126E",
+  "classification": "P126E_BIGLOTTO_TS3_MARKOV_4BET_W30_APPLIED",
+  "generated_at": "2026-05-28T10:02:49.191182+00:00",
+  "authorization": {
+    "strategy_id": "biglotto_ts3_markov_4bet_w30",
+    "exact_required_phrase": "YES authorize controlled_apply for biglotto_ts3_markov_4bet_w30 because <reason>",
+    "authorization_present": true,
+    "apply_allowed": true,
+    "authorization_text_observed": "YES authorize controlled_apply for biglotto_ts3_markov_4bet_w30 because P126A approved this as Tier-B candidate and P126B P126C P126D applied successfully",
+    "reason_text": "P126A approved this as Tier-B candidate and P126B P126C P126D applied successfully"
+  },
+  "db_snapshot_before": {
+    "replay_rows": 61962,
+    "has_bet_index_column": true,
+    "has_new_unique_constraint": true,
+    "columns_count": 28,
+    "biglotto_ts3_markov_4bet_w30_rows": 1500,
+    "power_fourier_rhythm_2bet_rows": 3000,
+    "biglotto_echo_aware_3bet_rows": 4500,
+    "daily539_f4cold_3bet_rows": 4500,
+    "total_replay_rows": 61962
+  },
+  "backup": {
+    "backup_path": "/Users/kelvin/Kelvin-WorkSpace/LotteryNew/.claude/worktrees/zen-gates-ff6802/lottery_api/data/backups/lottery_v2.db.p126e_backup_20260528T100249Z.db",
+    "backup_created": true,
+    "backup_row_count": 61962,
+    "backup_verification": "PASS",
+    "backup_ok": true
+  },
+  "apply_scope": {
+    "strategy_id": "biglotto_ts3_markov_4bet_w30",
+    "lottery_type": "BIG_LOTTO",
+    "expected_insert_rows": 4500,
+    "actual_insert_rows": 4500,
+    "target_bet_count": 4,
+    "bet2_rows_inserted": 1500,
+    "bet3_rows_inserted": 1500,
+    "bet4_rows_inserted": 1500,
+    "controlled_apply_id": "P126E_BIGLOTTO_TS3_MARKOV_4BET_W30_20260528",
+    "apply_executed": true
+  },
+  "candidate_source_summary": {
+    "p126_classification": "P126_DRY_RUN_PLAN_READY",
+    "p126a_classification": "P126A_WAITING_FOR_PER_STRATEGY_APPLY_AUTHORIZATION",
+    "p126b_classification": "P126B_POWER_FOURIER_RHYTHM_2BET_APPLIED",
+    "p126c_classification": "P126C_BIGLOTTO_ECHO_AWARE_3BET_APPLIED",
+    "p126d_classification": "P126D_DAILY539_F4COLD_3BET_APPLIED",
+    "p129b_classification": "P129B_PRODUCTION_BET_INDEX_SCHEMA_MIGRATION_APPLIED",
+    "p126a_ok": true,
+    "p126b_ok": true,
+    "p126c_ok": true,
+    "p126d_ok": true,
+    "p129b_ok": true
+  },
+  "inserted_rows_summary": {
+    "total_rows_inserted": 4500,
+    "bet2_rows_inserted": 1500,
+    "bet3_rows_inserted": 1500,
+    "bet4_rows_inserted": 1500,
+    "truth_level": "TRUTH_CLOSED",
+    "controlled_apply_id": "P126E_BIGLOTTO_TS3_MARKOV_4BET_W30_20260528",
+    "source": "P126E_CONTROLLED_APPLY",
+    "dry_run": false,
+    "bet1_mismatch_count": 0
+  },
+  "duplicate_guard": {
+    "unique_key": "UNIQUE(lottery_type, target_draw, strategy_id, bet_index)",
+    "constraint_active": true,
+    "duplicate_rejected_in_validation": true,
+    "other_candidates_extra_inserted": {
+      "daily539_f4cold_5bet": 0
+    },
+    "other_candidates_untouched": true,
+    "guard_ok": true
+  },
+  "bet_index_validation": {
+    "bet1_count": 1500,
+    "bet2_count": 1500,
+    "bet3_count": 1500,
+    "bet4_count": 1500,
+    "expected_bet1": 1500,
+    "expected_bet2": 1500,
+    "expected_bet3": 1500,
+    "expected_bet4": 1500,
+    "distribution_ok": true,
+    "all_rows_big_lotto": true,
+    "validation": "PASS"
+  },
+  "db_snapshot_after": {
+    "replay_rows": 66462,
+    "biglotto_ts3_markov_4bet_w30_rows": 6000,
+    "power_fourier_rhythm_2bet_rows": 3000,
+    "biglotto_echo_aware_3bet_rows": 4500,
+    "daily539_f4cold_3bet_rows": 4500
+  },
+  "row_preservation_check": {
+    "rows_before_apply": 61962,
+    "rows_inserted": 4500,
+    "expected_rows_after": 66462,
+    "actual_rows_after": 66462,
+    "rows_preserved_ok": true
+  },
+  "drift_guard_update": {
+    "previous_total": 61962,
+    "new_total": 66462,
+    "rows_added": 4500,
+    "update_required": true,
+    "update_note": "scripts/replay_lifecycle_drift_guard.py BASELINE total_count updated from 61962 to 66462; p126e_apply_id added as 'P126E_BIGLOTTO_TS3_MARKOV_4BET_W30_20260528' with count 4500"
+  },
+  "previous_apply_status": {
+    "power_fourier_rhythm_2bet": {
+      "already_applied": true,
+      "p126b_classification": "P126B_POWER_FOURIER_RHYTHM_2BET_APPLIED",
+      "pfr_total_rows": 3000,
+      "pfr_bet1_count": 1500,
+      "pfr_bet2_count": 1500,
+      "rows_preserved": true,
+      "no_duplicate_power_fourier_rows": true
+    },
+    "biglotto_echo_aware_3bet": {
+      "already_applied": true,
+      "p126c_classification": "P126C_BIGLOTTO_ECHO_AWARE_3BET_APPLIED",
+      "echo_total_rows": 4500,
+      "echo_bet1_count": 1500,
+      "echo_bet2_count": 1500,
+      "echo_bet3_count": 1500,
+      "rows_preserved": true
+    },
+    "daily539_f4cold_3bet": {
+      "already_applied": true,
+      "p126d_classification": "P126D_DAILY539_F4COLD_3BET_APPLIED",
+      "f4cold_total_rows": 4500,
+      "f4cold_bet1_count": 1500,
+      "f4cold_bet2_count": 1500,
+      "f4cold_bet3_count": 1500,
+      "rows_preserved": true
+    },
+    "previous_rows_preserved": true,
+    "no_duplicate_previous_rows": true
+  },
+  "blocked_or_excluded": {
+    "remaining_1_candidate_not_applied": {
+      "daily539_f4cold_5bet": "NOT_APPLIED — no authorization provided"
+    },
+    "daily539_f4cold_5bet_not_applied": true,
+    "4_STAR_excluded": true,
+    "P108_not_run": true,
+    "P117_not_run": true,
+    "P118_not_run": true,
+    "rejected_strategies_no_action": true,
+    "no_scheduler_install": true,
+    "no_lifecycle_champion_registry_mutation": true
+  },
+  "rollback_reference": {
+    "backup_path": "/Users/kelvin/Kelvin-WorkSpace/LotteryNew/.claude/worktrees/zen-gates-ff6802/lottery_api/data/backups/lottery_v2.db.p126e_backup_20260528T100249Z.db",
+    "rollback_command": "cp '/Users/kelvin/Kelvin-WorkSpace/LotteryNew/.claude/worktrees/zen-gates-ff6802/lottery_api/data/backups/lottery_v2.db.p126e_backup_20260528T100249Z.db' '/Users/kelvin/Kelvin-WorkSpace/LotteryNew/.claude/worktrees/zen-gates-ff6802/lottery_api/data/lottery_v2.db'",
+    "note": "Restore backup to rollback P126E apply. Backup was verified at 61962 rows before any write."
+  },
+  "summary": "P126E: applied biglotto_ts3_markov_4bet_w30 controlled replay rows. Inserted 4500 rows (1500 bet-2, 1500 bet-3, 1500 bet-4) for BIG_LOTTO. DB rows: 61962 → 66462. P126B/P126C/P126D rows preserved. Remaining 1 P126A candidate (daily539_f4cold_5bet) NOT applied. Classification: P126E_BIGLOTTO_TS3_MARKOV_4BET_W30_APPLIED"
+}

@@ -389,13 +389,12 @@ class TestLiveProductionDB:
         conn.close()
 
     def test_other_candidates_row_count_unchanged(self):
-        """Remaining candidates (excl. biglotto_echo_aware_3bet applied in P126C) must not have
-        bet_index>1 rows added beyond P94."""
+        """Only daily539_f4cold_5bet (not yet applied as of P126E) must have no bet_index>1 rows.
+        P126C applied biglotto_echo_aware_3bet, P126D applied daily539_f4cold_3bet,
+        P126E applied biglotto_ts3_markov_4bet_w30 — these are expected to have multi-bet rows."""
         conn = self._conn()
-        for cid in OTHER_CANDIDATES:
-            if cid == "biglotto_echo_aware_3bet":
-                # P126C applied bet-2 and bet-3 for this strategy — skip bet-1 check
-                continue
+        # Only remaining unapplied candidate must be clean
+        for cid in ["daily539_f4cold_5bet"]:
             extra = conn.execute(
                 "SELECT COUNT(*) FROM strategy_prediction_replays WHERE strategy_id=? AND bet_index>1",
                 (cid,)

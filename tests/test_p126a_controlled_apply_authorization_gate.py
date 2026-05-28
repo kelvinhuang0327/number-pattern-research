@@ -522,11 +522,12 @@ class TestLiveProductionDB:
     def test_db_exists(self):
         assert DB_PATH.exists()
 
-    def test_row_count_54462(self):
+    def test_row_count_at_least_54462(self):
+        # P126A confirmed 54462 rows; subsequent applies (P126B+) grow this further.
         conn = sqlite3.connect(DB_PATH)
         try:
             count = conn.execute("SELECT COUNT(*) FROM strategy_prediction_replays").fetchone()[0]
-            assert count == 54462
+            assert count >= 54462
         finally:
             conn.close()
 

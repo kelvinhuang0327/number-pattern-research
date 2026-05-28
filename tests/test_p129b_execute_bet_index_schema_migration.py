@@ -462,11 +462,12 @@ class TestLiveProductionDB:
     def test_db_exists(self):
         assert DB_PATH.exists()
 
-    def test_row_count_54462(self):
+    def test_row_count_at_least_54462(self):
+        # P129B established 54462 rows; P126B and subsequent applies grow this further.
         conn = sqlite3.connect(DB_PATH)
         try:
             count = conn.execute("SELECT COUNT(*) FROM strategy_prediction_replays").fetchone()[0]
-            assert count == 54462
+            assert count >= 54462
         finally:
             conn.close()
 
@@ -499,12 +500,14 @@ class TestLiveProductionDB:
             conn.close()
 
     def test_bet_index_gt1_count(self):
+        # P129B migration produced 160 rows with bet_index>1 from ROW_NUMBER dedup.
+        # P126B and later applies legitimately add more bet_index=2 rows.
         conn = sqlite3.connect(DB_PATH)
         try:
             count = conn.execute(
                 "SELECT COUNT(*) FROM strategy_prediction_replays WHERE bet_index > 1"
             ).fetchone()[0]
-            assert count == 160
+            assert count >= 160
         finally:
             conn.close()
 

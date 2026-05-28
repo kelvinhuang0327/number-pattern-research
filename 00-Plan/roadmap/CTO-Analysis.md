@@ -1,8 +1,8 @@
-# CTO Analysis - After P126A Per-Strategy Controlled Apply Authorization Gate
+# CTO Analysis - After P126B power_fourier_rhythm_2bet Controlled Apply
 
 ## 1. CTO Review Date
 
-2026-05-28 Asia/Taipei (updated after P126A).
+2026-05-28 Asia/Taipei (updated after P126B).
 
 Final CTO classification target: `CTO_ROADMAP_UPDATED_WITH_RISKS`.
 
@@ -39,15 +39,16 @@ Final CTO classification target: `CTO_ROADMAP_UPDATED_WITH_RISKS`.
   - P116 POWER_LOTTO OOS monitoring design
   - P117 POWER_LOTTO OOS monitoring checkpoint
 - [Confirmed] Read-only SQL during this CTO review:
-  - `strategy_prediction_replays = 54462`
+  - `strategy_prediction_replays = 55962` (post-P126B; was 54462 at P126A)
+  - `power_fourier_rhythm_2bet bet_index=1: 1500, bet_index=2: 1500`
   - `3_STAR count/max = 4179 / 115000106`
   - `4_STAR count/max = 2922 / 115000103`
   - `POWER_LOTTO count/max = 1913 / 115000041`
 - [Confirmed] Verification during this CTO review:
-  - P125 tests: `54 passed`
-  - P124 + P119-P123 regression: `345 passed`
-  - Drift guard: `REPLAY_LIFECYCLE_DRIFT_GUARD_PASS`
-  - Branch governance: `main`, HEAD `77d7d7d`, 54462 rows
+  - P126B tests: `75 passed`
+  - P126A + P126B + P129B regression: `306 passed`
+  - Drift guard: `REPLAY_LIFECYCLE_DRIFT_GUARD_PASS` at 55962
+  - Branch governance: worktree `zen-gates-ff6802`, 55962 rows
 - [Confirmed] Existing dirty worktree remains outside this CTO scope, including DB/history/pid/runtime/untracked files. CTO touched only `roadmap.md` and `CTO-Analysis.md`.
 
 ## 3. Roadmap Alignment Assessment
@@ -60,7 +61,12 @@ Final CTO classification target: `CTO_ROADMAP_UPDATED_WITH_RISKS`.
 | P123 first worktree attempt STOP | [Aligned] / [Blocked] | The STOP was correct and exposed a real process risk: Claude/Codex worktree branches must be rejected. |
 | P124 multi-bet truth and coverage matrix | [Aligned] | Proved zero native multi-bet rows exist. All 36 strategy×lottery pairs are first_bet_only_fallback or rejected. 5 Tier-B controlled_apply candidates and 12 adapter_build candidates identified. |
 | P125 adapter gap plan | [Aligned] | Read-only plan artifact. Ranked 5 controlled_apply-ready, 12 adapter_build-needed. Proposed P126/P127/P128 next sequence. No DB writes. |
-| Current system state | [Aligned] | Healthy standby / wait-for-authorization, not failure. |
+| P126 dry-run plan | [Aligned] | 5 Tier-B per-strategy candidates confirmed for controlled apply; governance constraints set. |
+| P128 bet_index schema design | [Aligned] | Native multi-bet storage design defined; ROW_NUMBER migration confirmed correct. |
+| P129B bet_index migration | [Completed] | Production migration applied; 54462 rows preserved; UNIQUE constraint updated to (lottery_type, target_draw, strategy_id, bet_index). |
+| P126A authorization gate | [Completed] | All 5 per-strategy gates confirmed; 0 applies executed; all 5 awaiting individual authorization. |
+| P126B power_fourier_rhythm_2bet | [Completed] | 1500 bet-2 rows inserted; DB 54462 → 55962; drift guard PASS; 306 tests pass. |
+| Current system state | [Aligned] | 4 P126A candidates still awaiting per-strategy authorization; DB healthy at 55962. |
 | 4_STAR backtest | [Blocked] | Source unknown remains active; rows alone do not authorize backtest. |
 | Multi-bet replay coverage | [Partially Mapped] | P124 proved gap; P125 defines remediation path. P126/P127/P128 required for actual coverage expansion. |
 | OS scheduler install | [Deferred] | P123 did not install cron/launchd. Future scheduling requires explicit authorization. |

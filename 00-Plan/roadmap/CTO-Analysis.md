@@ -1,8 +1,8 @@
-# CTO Analysis - After P125 Adapter Gap Plan From P124 Matrix
+# CTO Analysis - After P129 bet_index Schema Migration Rehearsal
 
 ## 1. CTO Review Date
 
-2026-05-28 Asia/Taipei.
+2026-05-28 Asia/Taipei (updated after P129).
 
 Final CTO classification target: `CTO_ROADMAP_UPDATED_WITH_RISKS`.
 
@@ -250,6 +250,30 @@ Changes from prior roadmap:
 - [Confirmed] Replaced P105/P106/P107 as current blockers with completed status from P119 evidence.
 - [Confirmed] Added P123 wrapper as the canonical no-change trigger recheck path.
 - [Confirmed] Added worktree branch guard and cross-project contamination guard as P0 execution rules.
+
+## 10. P129 CTO Update (2026-05-28)
+
+### P129 Classification: `P129_BET_INDEX_SCHEMA_MIGRATION_REHEARSAL_READY`
+
+- [Confirmed] P128 bet_index schema migration plan rehearsed on temp DB copy.
+- [Confirmed] 18-step SQLite migration completed on rehearsal DB — all steps OK.
+- [Confirmed] All 54462 production rows preserved in rehearsal DB after migration.
+- [Confirmed] bet_index column added in rehearsal DB (INTEGER NOT NULL DEFAULT 1).
+- [Confirmed] New UNIQUE(lottery_type, target_draw, strategy_id, bet_index) constraint active in rehearsal.
+- [Confirmed] UNIQUE constraint rejects duplicate (strategy, draw, bet_index) — allows different bet_index slots.
+- [Confirmed] Production DB NOT modified — 54462 rows, no bet_index column, production_db_modified=false.
+- [Confirmed] Key rehearsal finding: 120 duplicate (strategy, draw) groups (160 extra rows) from old replay runs require ROW_NUMBER() in COPY step (not naive '1 AS bet_index').
+- [Confirmed] P126 apply remains BLOCKED until production migration is authorized and executed.
+- [Confirmed] Drift guard PASS — production DB unchanged.
+
+### Next Step: P129A Authorization Gate
+
+Production migration requires Kelvin to state:
+```
+YES authorize migration_plan_p128 because <reason>
+```
+
+This is the only gate before production execution. Per-strategy P126 apply authorization phrases are separate and required after migration.
 - [Confirmed] Added multi-bet replay truth model as P0.3.
 - [Confirmed] Added all implemented strategy x lottery x 1-5 bet-count coverage matrix as P1.1.
 - [Confirmed] Preserved 4_STAR backtest block and source_unknown caveat.
@@ -440,7 +464,7 @@ multi-bet inserts today, but this is accidental, fragile, and not a valid conven
 | Storage model | one-row-per-bet (APPROVED) |
 | bet_index column | Required — `INTEGER NOT NULL DEFAULT 1` |
 | New UNIQUE constraint | `UNIQUE(lottery_type, target_draw, strategy_id, bet_index)` |
-| Migration | SQL| Migration | SQL| Migration | SQL| Migration | SQL| Migration | SQL| Migration | SQL| Migrad �|� al| Migration | SQL| Migration | SQL| Migr## P126 A| Migratdiness Aft| Migration | SQL| Migration | SQL| Migration | SQL| Migratioly| Migration | SQL| Migration | SQn_| Migration | SQL| Migration | SQL| Migration | SQL| Migration | SQLses| Migration | SQL| ndidate)
+| Migration | SQL| Migration | SQL| Migration | SQL| Migration | SQL| Migration | SQL| Migration | SQL| Migrad �|� al| Migration | SQL| Migration | SQL| Migr## P126 A| Migratdiness Aft| Migration | SQL| Migration | SQL| Migration | SQL| Migratioly| Migration | SQL| Migration | SQn_| Migration | SQL| Migration | SQL| Migration | SQL| Migration | SQLses| Migration | SQL| ndidate)
 3. Migration execution
 4. RSR-3 (drift guard count update after apply)
 

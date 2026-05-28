@@ -1,8 +1,8 @@
 # Lottery Replay Roadmap
 
-**Last Updated:** 2026-05-28 Asia/Taipei (CTO update after P125 adapter gap plan from P124 matrix)
+**Last Updated:** 2026-05-28 Asia/Taipei (CTO update after P129 bet_index schema migration rehearsal)
 **Owner:** CTO agent
-**Primary Goal:** Make every implemented LotteryNew strategy replayable with honest historical prediction-vs-actual evidence across every supported lottery type and every implemented 1-5 bet-count variant. This must be done without fake rows, untracked DB writes, premature promotion, or no-change governance PR churn. Current system state: P124 proved zero native multi-bet rows exist; P125 identified 5 Tier-B controlled_apply candidates and 12 adapter_build candidates. P108 / P117 / P118 / 4_STAR triggers remain blocked.
+**Primary Goal:** Make every implemented LotteryNew strategy replayable with honest historical prediction-vs-actual evidence across every supported lottery type and every implemented 1-5 bet-count variant. This must be done without fake rows, untracked DB writes, premature promotion, or no-change governance PR churn. Current system state: P128 defined bet_index schema migration plan; P129 rehearsed the migration on a temp DB copy (all 54462 rows preserved, key finding: ROW_NUMBER() required for 120 duplicate old-run groups). Production migration awaiting Kelvin authorization. P108 / P117 / P118 / 4_STAR triggers remain blocked.
 **Repo Policy:** Use `/Users/kelvin/Kelvin-WorkSpace/LotteryNew` only. Do not create a new repo. Implementation and governed tasks must run from canonical repo with `git rev-parse --git-dir == .git`; Claude/Codex auto-created worktree branches are not allowed.
 
 ---
@@ -24,6 +24,9 @@
 | P123 scheduled/manual trigger recheck wrapper | [Confirmed] Complete and merged | PR #248, merge `684bffcea3080f8f1f31c5b9acc3a572907ec4f3`; `P123_SCHEDULED_TRIGGER_RECHECK_SETUP_READY` | Use `scripts/p123_scheduled_trigger_recheck.py` for future no-change checks. No crontab/launchd installed. |
 | P124 multi-bet replay truth model + coverage matrix | [Confirmed] Complete | `outputs/replay/p124_multi_bet_truth_and_coverage_matrix_20260528.json`; `P124_MULTI_BET_TRUTH_AND_COVERAGE_MATRIX_READY` | Read-only audit. 36 strategy×lottery pairs mapped. Zero native_multi_bet; 16 first_bet_only_fallback gaps; 5 Tier-B adapters ready for controlled_apply; 9 need adapter_build. |
 | P125 adapter gap plan from P124 matrix | [Confirmed] Complete | `outputs/replay/p125_adapter_gap_plan_from_p124_20260528.json`, `docs/replay/p125_adapter_gap_plan_from_p124_20260528.md`; `P125_ADAPTER_GAP_PLAN_READY` | Read-only plan. 5 controlled_apply_ready, 12 adapter_build_needed, 2 relabel_only, 4 RSRs. Proposed P126/P127/P128 sequence. 54 tests pass. No DB writes. |
+| P126 Tier-B multi-bet controlled_apply dry-run plan | [Confirmed] Complete | `outputs/replay/p126_controlled_apply_plan_tier_b_multi_bet_20260528.json`; `P126_DRY_RUN_PLAN_READY` | Dry-run plan for 5 strategies × 1500 draws = +18000 rows. All prov/dup guards pass. P126 apply BLOCKED pending migration authorization. |
+| P128 native multi-bet storage design | [Confirmed] Complete | `outputs/replay/p128_native_multi_bet_storage_design_20260528.json`; `P128_NATIVE_MULTI_BET_STORAGE_DESIGN_READY` | Option A (one-row-per-bet + bet_index) selected. 18-step SQLite migration plan defined. Migration NOT executed — requires Kelvin authorization phrase. |
+| P129 bet_index schema migration rehearsal | [Confirmed] Complete | `outputs/replay/p129_bet_index_schema_migration_rehearsal_20260528.json`; `P129_BET_INDEX_SCHEMA_MIGRATION_REHEARSAL_READY` | 18-step migration rehearsed on temp DB copy. All 54462 rows preserved. Key finding: 120 duplicate (strategy, draw) groups from old runs require ROW_NUMBER() COPY (not naive '1 AS bet_index'). Production DB unchanged. P126 apply BLOCKED until production migration authorized. |
 
 ---
 

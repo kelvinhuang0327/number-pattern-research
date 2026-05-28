@@ -1,6 +1,6 @@
 # Lottery Replay Roadmap
 
-**Last Updated:** 2026-05-28 Asia/Taipei (CTO update after P129B production bet_index schema migration applied)
+**Last Updated:** 2026-05-28 Asia/Taipei (CTO update after P126A per-strategy controlled apply authorization gate)
 **Owner:** CTO agent
 **Primary Goal:** Make every implemented LotteryNew strategy replayable with honest historical prediction-vs-actual evidence across every supported lottery type and every implemented 1-5 bet-count variant. This must be done without fake rows, untracked DB writes, premature promotion, or no-change governance PR churn. Current system state: P129B applied bet_index schema migration to production DB (54462 rows preserved, bet_index column added, UNIQUE constraint updated). P126 apply BLOCKED until per-strategy authorization phrases provided. P108 / P117 / P118 / 4_STAR triggers remain blocked.
 **Repo Policy:** Use `/Users/kelvin/Kelvin-WorkSpace/LotteryNew` only. Do not create a new repo. Implementation and governed tasks must run from canonical repo with `git rev-parse --git-dir == .git`; Claude/Codex auto-created worktree branches are not allowed.
@@ -29,6 +29,7 @@
 | P129 bet_index schema migration rehearsal | [Confirmed] Complete | `outputs/replay/p129_bet_index_schema_migration_rehearsal_20260528.json`; `P129_BET_INDEX_SCHEMA_MIGRATION_REHEARSAL_READY` | 18-step migration rehearsed on temp DB copy. All 54462 rows preserved. Key finding: 120 duplicate (strategy, draw) groups from old runs require ROW_NUMBER() COPY (not naive '1 AS bet_index'). Production DB unchanged. P126 apply BLOCKED until production migration authorized. |
 | P129A production migration authorization gate | [Confirmed] Complete | `outputs/replay/p129a_production_migration_authorization_gate_20260528.json`; `P129A_WAITING_FOR_KELVIN_MIGRATION_AUTHORIZATION` | Gate report confirming P129 rehearsal valid, corrected ROW_NUMBER() SQL documented, production DB clean (54462 rows). Authorization phrase was provided in P129B execution. P129B has now applied the migration. |
 | P129B bet_index schema migration applied | [Confirmed] Complete | `outputs/replay/p129b_execute_bet_index_schema_migration_20260528.json`; `P129B_PRODUCTION_BET_INDEX_SCHEMA_MIGRATION_APPLIED` | 18-step migration applied to production DB. Backup created before migration. All 54462 rows preserved. bet_index column added (INTEGER NOT NULL DEFAULT 1). UNIQUE constraint updated to (lottery_type, target_draw, strategy_id, bet_index). ROW_NUMBER() COPY used (120 duplicate groups now have bet_index 1,2,3). Drift guard PASS. P126 apply BLOCKED until 5 per-strategy authorization phrases provided. |
+| P126A per-strategy controlled apply authorization gate | [Waiting] WAITING_FOR_PER_STRATEGY_APPLY_AUTHORIZATION | `outputs/replay/p126a_controlled_apply_authorization_gate_20260528.json`; `P126A_WAITING_FOR_PER_STRATEGY_APPLY_AUTHORIZATION` | Gate established for 5 Tier-B strategies. No apply executed. 54462 rows unchanged. Schema ready (bet_index + UNIQUE constraint active). Each strategy requires independent exact phrase from Kelvin. Recommended first: power_fourier_rhythm_2bet (+1500 rows, lowest risk). |
 
 ---
 

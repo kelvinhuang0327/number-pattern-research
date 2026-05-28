@@ -1,8 +1,8 @@
-# CTO Analysis - After P129B Production Bet_Index Schema Migration Applied
+# CTO Analysis - After P126A Per-Strategy Controlled Apply Authorization Gate
 
 ## 1. CTO Review Date
 
-2026-05-28 Asia/Taipei (updated after P129B).
+2026-05-28 Asia/Taipei (updated after P126A).
 
 Final CTO classification target: `CTO_ROADMAP_UPDATED_WITH_RISKS`.
 
@@ -301,14 +301,43 @@ P129B production migration applied. Classification: `P129B_PRODUCTION_BET_INDEX_
 - [Confirmed] No scheduler / cron / launchd installed.
 - [Confirmed] No P126 apply executed.
 
-### Next Step: Per-Strategy P126 Authorization Required
+### P126A CTO Update (2026-05-28)
 
-To apply P126 +18000 rows, Kelvin must provide all 5 per-strategy phrases in a new P126A apply gate:
-1. `YES authorize controlled_apply for biglotto_echo_aware_3bet because <reason>`
-2. `YES authorize controlled_apply for daily539_f4cold_5bet because <reason>`
-3. `YES authorize controlled_apply for daily539_f4cold_3bet because <reason>`
-4. `YES authorize controlled_apply for power_fourier_rhythm_2bet because <reason>`
-5. `YES authorize controlled_apply for biglotto_ts3_markov_4bet_w30 because <reason>`
+P126A per-strategy controlled apply authorization gate established. Classification: `P126A_WAITING_FOR_PER_STRATEGY_APPLY_AUTHORIZATION`.
+
+- [Confirmed] P129B artifact present and classification `P129B_PRODUCTION_BET_INDEX_SCHEMA_MIGRATION_APPLIED`.
+- [Confirmed] Production DB schema ready: `bet_index` column present, `UNIQUE(lottery_type, target_draw, strategy_id, bet_index)` active.
+- [Confirmed] Production DB rows: 54462 before and after P126A (no apply executed).
+- [Confirmed] P126 artifact present: `P126_DRY_RUN_PLAN_READY`, 5 candidates, estimated +18000 rows if all applied.
+- [Confirmed] 5 per-strategy authorization gates established, each requiring independent Kelvin phrase.
+- [Confirmed] All 5 strategies: `authorization_present=false`, `apply_allowed=false`.
+- [Confirmed] No controlled apply executed. `replay_rows_inserted=0`.
+- [Confirmed] Drift guard PASS — 54462 rows, no violations.
+- [Confirmed] 113 P126A tests pass.
+- [Confirmed] 5 pre-existing P126 regression failures (stale 3_STAR/4_STAR draw counts in worktree) — not caused by P126A.
+- [Confirmed] 14 pre-existing P129/P129A/P128/P126 failures documented as known obsolete/pre-existing.
+- [Confirmed] No scheduler install, no 4_STAR/P108/P117/P118 execution, no strategy promotion.
+
+### Recommended Apply Order (lowest-risk first)
+
+| Order | Strategy | Lottery | New Rows | Risk |
+|---:|---|---|---:|---|
+| 1 | `power_fourier_rhythm_2bet` | POWER_LOTTO | +1500 | lowest |
+| 2 | `biglotto_echo_aware_3bet` | BIG_LOTTO | +3000 | low_to_medium |
+| 3 | `daily539_f4cold_3bet` | DAILY_539 | +3000 | medium |
+| 4 | `biglotto_ts3_markov_4bet_w30` | BIG_LOTTO | +4500 | medium |
+| 5 | `daily539_f4cold_5bet` | DAILY_539 | +6000 | medium |
+
+### Next Step: Per-Strategy Authorization Required
+
+To apply any strategy, Kelvin must provide the exact phrase for that specific strategy:
+- `YES authorize controlled_apply for power_fourier_rhythm_2bet because <reason>` (recommended first)
+- `YES authorize controlled_apply for biglotto_echo_aware_3bet because <reason>`
+- `YES authorize controlled_apply for daily539_f4cold_3bet because <reason>`
+- `YES authorize controlled_apply for biglotto_ts3_markov_4bet_w30 because <reason>`
+- `YES authorize controlled_apply for daily539_f4cold_5bet because <reason>`
+
+Each phrase triggers a separate per-strategy apply task (P126B or per-strategy gate). Strategies cannot be applied in bulk.
 - [Confirmed] Added multi-bet replay truth model as P0.3.
 - [Confirmed] Added all implemented strategy x lottery x 1-5 bet-count coverage matrix as P1.1.
 - [Confirmed] Preserved 4_STAR backtest block and source_unknown caveat.

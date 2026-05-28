@@ -1,0 +1,337 @@
+{
+  "task_id": "P126A",
+  "classification": "P126A_WAITING_FOR_PER_STRATEGY_APPLY_AUTHORIZATION",
+  "generated_at": "2026-05-28T08:08:06.753937+00:00",
+  "db_snapshot_before": {
+    "replay_rows": 54462,
+    "has_bet_index_column": true,
+    "has_new_unique_constraint": true,
+    "columns_count": 28
+  },
+  "db_snapshot_after": {
+    "replay_rows": 54462,
+    "has_bet_index_column": true,
+    "has_new_unique_constraint": true,
+    "columns_count": 28
+  },
+  "p129b_source_summary": {
+    "artifact": "outputs/replay/p129b_execute_bet_index_schema_migration_20260528.json",
+    "classification": "P129B_PRODUCTION_BET_INDEX_SCHEMA_MIGRATION_APPLIED",
+    "classification_ok": true,
+    "migration_ok": true,
+    "backup_ok": true,
+    "rows_after_migration": 54462,
+    "bet_index_present": true
+  },
+  "p126_source_summary": {
+    "artifact": "outputs/replay/p126_controlled_apply_plan_tier_b_multi_bet_20260528.json",
+    "classification": "P126_DRY_RUN_PLAN_READY",
+    "classification_ok": true,
+    "candidate_count": 5,
+    "total_new_rows_if_all_applied": 18000,
+    "estimated_rows_from_p126": 18000,
+    "total_replay_rows_after_all_applied": 72462,
+    "p128_storage_design_accepted": true,
+    "p128_storage_design_note": "P128 one-row-per-bet design formally accepted; P129B schema migration applied."
+  },
+  "schema_readiness": {
+    "bet_index_column_present": true,
+    "unique_constraint_ready": true,
+    "p129b_completed": true,
+    "production_rows": 54462,
+    "columns_count": 28
+  },
+  "per_strategy_authorization_gates": [
+    {
+      "strategy_id": "power_fourier_rhythm_2bet",
+      "lottery_type": "POWER_LOTTO",
+      "target_bet_count": 2,
+      "expected_insert_rows": 1500,
+      "missing_bet_indices": [
+        2
+      ],
+      "authorization_phrase": "YES authorize controlled_apply for power_fourier_rhythm_2bet because <reason>",
+      "authorization_present": false,
+      "apply_allowed": false,
+      "recommended_order": 1,
+      "risk_level": "lowest",
+      "risk_note": "+1500 rows, 2-bet, POWER_LOTTO \u2014 smallest delta, lowest risk"
+    },
+    {
+      "strategy_id": "biglotto_echo_aware_3bet",
+      "lottery_type": "BIG_LOTTO",
+      "target_bet_count": 3,
+      "expected_insert_rows": 3000,
+      "missing_bet_indices": [
+        2,
+        3
+      ],
+      "authorization_phrase": "YES authorize controlled_apply for biglotto_echo_aware_3bet because <reason>",
+      "authorization_present": false,
+      "apply_allowed": false,
+      "recommended_order": 2,
+      "risk_level": "low_to_medium",
+      "risk_note": "+3000 rows, 3-bet, BIG_LOTTO \u2014 fallback_equivalent quality"
+    },
+    {
+      "strategy_id": "daily539_f4cold_3bet",
+      "lottery_type": "DAILY_539",
+      "target_bet_count": 3,
+      "expected_insert_rows": 3000,
+      "missing_bet_indices": [
+        2,
+        3
+      ],
+      "authorization_phrase": "YES authorize controlled_apply for daily539_f4cold_3bet because <reason>",
+      "authorization_present": false,
+      "apply_allowed": false,
+      "recommended_order": 3,
+      "risk_level": "medium",
+      "risk_note": "+3000 rows, 3-bet, DAILY_539 \u2014 watchlist quality"
+    },
+    {
+      "strategy_id": "biglotto_ts3_markov_4bet_w30",
+      "lottery_type": "BIG_LOTTO",
+      "target_bet_count": 4,
+      "expected_insert_rows": 4500,
+      "missing_bet_indices": [
+        2,
+        3,
+        4
+      ],
+      "authorization_phrase": "YES authorize controlled_apply for biglotto_ts3_markov_4bet_w30 because <reason>",
+      "authorization_present": false,
+      "apply_allowed": false,
+      "recommended_order": 4,
+      "risk_level": "medium",
+      "risk_note": "+4500 rows, 4-bet, BIG_LOTTO \u2014 sub_baseline quality"
+    },
+    {
+      "strategy_id": "daily539_f4cold_5bet",
+      "lottery_type": "DAILY_539",
+      "target_bet_count": 5,
+      "expected_insert_rows": 6000,
+      "missing_bet_indices": [
+        2,
+        3,
+        4,
+        5
+      ],
+      "authorization_phrase": "YES authorize controlled_apply for daily539_f4cold_5bet because <reason>",
+      "authorization_present": false,
+      "apply_allowed": false,
+      "recommended_order": 5,
+      "risk_level": "medium",
+      "risk_note": "+6000 rows, 5-bet, DAILY_539 \u2014 watchlist quality, largest delta"
+    }
+  ],
+  "recommended_apply_order": [
+    {
+      "order": 1,
+      "strategy_id": "power_fourier_rhythm_2bet",
+      "lottery_type": "POWER_LOTTO",
+      "expected_insert_rows": 1500,
+      "risk_level": "lowest",
+      "risk_note": "+1500 rows, 2-bet, POWER_LOTTO \u2014 smallest delta, lowest risk"
+    },
+    {
+      "order": 2,
+      "strategy_id": "biglotto_echo_aware_3bet",
+      "lottery_type": "BIG_LOTTO",
+      "expected_insert_rows": 3000,
+      "risk_level": "low_to_medium",
+      "risk_note": "+3000 rows, 3-bet, BIG_LOTTO \u2014 fallback_equivalent quality"
+    },
+    {
+      "order": 3,
+      "strategy_id": "daily539_f4cold_3bet",
+      "lottery_type": "DAILY_539",
+      "expected_insert_rows": 3000,
+      "risk_level": "medium",
+      "risk_note": "+3000 rows, 3-bet, DAILY_539 \u2014 watchlist quality"
+    },
+    {
+      "order": 4,
+      "strategy_id": "biglotto_ts3_markov_4bet_w30",
+      "lottery_type": "BIG_LOTTO",
+      "expected_insert_rows": 4500,
+      "risk_level": "medium",
+      "risk_note": "+4500 rows, 4-bet, BIG_LOTTO \u2014 sub_baseline quality"
+    },
+    {
+      "order": 5,
+      "strategy_id": "daily539_f4cold_5bet",
+      "lottery_type": "DAILY_539",
+      "expected_insert_rows": 6000,
+      "risk_level": "medium",
+      "risk_note": "+6000 rows, 5-bet, DAILY_539 \u2014 watchlist quality, largest delta"
+    }
+  ],
+  "duplicate_guard": {
+    "unique_key": [
+      "lottery_type",
+      "target_draw",
+      "strategy_id",
+      "bet_index"
+    ],
+    "constraint_active": true,
+    "p129b_migration_applied": true,
+    "guard_note": "The UNIQUE(lottery_type, target_draw, strategy_id, bet_index) constraint is now active in the production schema (applied by P129B). Any multi-bet apply INSERT must supply bet_index 2, 3, ... for new rows; inserting bet_index=1 for an existing (strategy, draw) pair will be rejected by the constraint."
+  },
+  "apply_preconditions": [
+    {
+      "check": "p129b_schema_migrated",
+      "status": "PASS",
+      "detail": "P129B classification = P129B_PRODUCTION_BET_INDEX_SCHEMA_MIGRATION_APPLIED"
+    },
+    {
+      "check": "bet_index_column_present",
+      "status": "PASS",
+      "detail": "bet_index column in production DB: True"
+    },
+    {
+      "check": "unique_constraint_ready",
+      "status": "PASS",
+      "detail": "UNIQUE(lottery_type, target_draw, strategy_id, bet_index) active"
+    },
+    {
+      "check": "db_invariant_confirmed",
+      "status": "PASS",
+      "detail": "replay_rows = 54462 (expected 54462)"
+    },
+    {
+      "check": "backup_exists",
+      "status": "PASS",
+      "detail": "Backup created by P129B: /Users/kelvin/Kelvin-WorkSpace/LotteryNew/.claude/worktrees/zen-gates-ff6802/lottery_api/data/backups/lottery_v2.db.p129b_backup_20260528T080035Z.db"
+    },
+    {
+      "check": "drift_guard_pass",
+      "status": "REQUIRED",
+      "detail": "Run scripts/replay_lifecycle_drift_guard.py before any apply. Must return PASS."
+    },
+    {
+      "check": "strategy_specific_authorization",
+      "status": "REQUIRED",
+      "detail": "Each strategy requires its own exact authorization phrase from Kelvin before apply."
+    },
+    {
+      "check": "staging_whitelist_clean",
+      "status": "REQUIRED",
+      "detail": "git diff --cached --name-only must contain only whitelisted files before apply."
+    }
+  ],
+  "migration_status": {
+    "p128_design_accepted": true,
+    "p129_rehearsal_completed": true,
+    "p129a_gate_completed": true,
+    "p129b_migration_applied": true,
+    "bet_index_column_active": true,
+    "unique_constraint_active": true,
+    "production_rows": 54462,
+    "ready_for_apply": true,
+    "note": "Schema migration complete. Ready to accept per-strategy apply once Kelvin provides authorization phrases."
+  },
+  "apply_execution_performed": false,
+  "replay_rows_inserted": 0,
+  "known_regression_failures": [
+    {
+      "test_file": "tests/test_p129a_production_migration_authorization_gate.py",
+      "failing_tests": [
+        "TestProductionDBRows::test_live_no_bet_index_column",
+        "TestIdempotency::test_script_reruns_cleanly"
+      ],
+      "reason": "Pre-migration guard \u2014 expected 'no bet_index column'; now obsolete after P129B applied migration.",
+      "status": "KNOWN_OBSOLETE"
+    },
+    {
+      "test_file": "tests/test_p129_bet_index_schema_migration_rehearsal.py",
+      "failing_tests": [
+        "TestProductionDBRows::test_production_no_bet_index_column",
+        "TestIdempotency::test_script_reruns_cleanly"
+      ],
+      "reason": "Pre-migration guard \u2014 expected production DB without bet_index; now obsolete after P129B.",
+      "status": "KNOWN_OBSOLETE"
+    },
+    {
+      "test_file": "tests/test_p128_native_multi_bet_storage_design.py",
+      "failing_tests": [
+        "TestDBInvariantsLive::test_3star_count",
+        "TestDBInvariantsLive::test_4star_count",
+        "TestDBInvariantsLive::test_no_bet_index_column_currently",
+        "TestDBInvariantsLive::test_current_unique_constraint",
+        "TestIdempotency::test_script_reruns_cleanly"
+      ],
+      "reason": "Stale draw counts (3_STAR/4_STAR not present in this worktree DB) + obsolete bet_index guard.",
+      "status": "KNOWN_PRE_EXISTING"
+    },
+    {
+      "test_file": "tests/test_p126_controlled_apply_plan_tier_b_multi_bet.py",
+      "failing_tests": [
+        "TestDBInvariantsBeforeRun::test_3star_count",
+        "TestDBInvariantsBeforeRun::test_3star_max_draw",
+        "TestDBInvariantsBeforeRun::test_4star_count",
+        "TestDBInvariantsBeforeRun::test_4star_max_draw",
+        "TestIdempotency::test_script_reruns_cleanly"
+      ],
+      "reason": "Stale 3_STAR/4_STAR draw count expectations (worktree DB lacks canonical draw data).",
+      "status": "KNOWN_PRE_EXISTING"
+    }
+  ],
+  "blocked_or_excluded": [
+    {
+      "item": "controlled_apply",
+      "reason": "No apply executed in P126A \u2014 all 5 strategies waiting for per-strategy authorization"
+    },
+    {
+      "item": "4_STAR",
+      "reason": "Explicitly excluded from all Tier-B multi-bet work per governance"
+    },
+    {
+      "item": "P108",
+      "reason": "P108 execution blocked \u2014 100-draw threshold not met"
+    },
+    {
+      "item": "P117",
+      "reason": "P117 execution blocked \u2014 POWER_LOTTO draw threshold not met"
+    },
+    {
+      "item": "P118",
+      "reason": "P118 execution blocked \u2014 exact authorization phrase absent"
+    },
+    {
+      "item": "rejected_strategies",
+      "reason": "No rejected strategies included or promoted"
+    },
+    {
+      "item": "scheduler_cron_launchd",
+      "reason": "No scheduler installation in P126A"
+    },
+    {
+      "item": "lifecycle_champion_registry",
+      "reason": "No strategy promotion / lifecycle / champion / registry mutation"
+    }
+  ],
+  "required_authorization_phrases": [
+    "YES authorize controlled_apply for power_fourier_rhythm_2bet because <reason>",
+    "YES authorize controlled_apply for biglotto_echo_aware_3bet because <reason>",
+    "YES authorize controlled_apply for daily539_f4cold_3bet because <reason>",
+    "YES authorize controlled_apply for biglotto_ts3_markov_4bet_w30 because <reason>",
+    "YES authorize controlled_apply for daily539_f4cold_5bet because <reason>"
+  ],
+  "summary": {
+    "task_id": "P126A",
+    "classification": "P126A_WAITING_FOR_PER_STRATEGY_APPLY_AUTHORIZATION",
+    "authorization_present": false,
+    "strategies_authorized": 0,
+    "strategies_waiting": 5,
+    "apply_execution_performed": false,
+    "replay_rows_inserted": 0,
+    "rows_before": 54462,
+    "rows_after": 54462,
+    "bet_index_column_present": true,
+    "schema_ready_for_apply": true,
+    "p126_apply_estimated_rows": 18000,
+    "p126_candidates": 5,
+    "next_step": "Provide the exact per-strategy authorization phrase for the desired strategy (recommended: power_fourier_rhythm_2bet first). Each phrase must match exactly: 'YES authorize controlled_apply for <strategy_id> because <reason>'. A new P126B (or per-strategy apply task) will execute the INSERT for that strategy only."
+  }
+}

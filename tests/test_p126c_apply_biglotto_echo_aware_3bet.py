@@ -345,14 +345,14 @@ class TestLiveDB:
 
     def test_remaining_candidates_not_touched(self, conn):
         # NOTE: P126D applied daily539_f4cold_3bet; P126E applied biglotto_ts3_markov_4bet_w30.
-        # Only daily539_f4cold_5bet must remain untouched (no bet_index>1).
-        for cid in ["daily539_f4cold_5bet"]:
-            extra = conn.execute(
-                "SELECT COUNT(*) FROM strategy_prediction_replays "
-                "WHERE strategy_id=? AND bet_index>1",
-                (cid,)
-            ).fetchone()[0]
-            assert extra == 0, f"{cid} unexpectedly has bet_index>1 rows: {extra}"
+        # P126F (applied after P126C/P126E) applied daily539_f4cold_5bet bet-2..bet-5 (6000 rows).
+        # All 5 Tier-B candidates are now complete; no candidates remain unapplied.
+        # Verify daily539_f4cold_5bet has exactly 6000 extra bet rows (post-P126F state).
+        count = conn.execute(
+            "SELECT COUNT(*) FROM strategy_prediction_replays "
+            "WHERE strategy_id='daily539_f4cold_5bet' AND bet_index>1"
+        ).fetchone()[0]
+        assert count == 6000, f"Expected 6000 (P126F applied), got {count}"
 
     def test_p126c_controlled_apply_id_rows_3000(self, conn):
         cnt = conn.execute(

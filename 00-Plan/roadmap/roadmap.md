@@ -275,7 +275,7 @@ CTO_ROADMAP_UPDATED_AFTER_P126_DRY_RUN_PLAN_20260528
 |---|---|---|
 | RSR-1 | No storage format decided | ✅ RESOLVED — Option A (one-row-per-bet + bet_index) |
 | RSR-2 | No bet_index column | ✅ RESOLVED — migration plan defined |
-| RSR-3 | Drift guard count update | ⏳ Remaining — after P126 apply |
+| RSR-3 | Drift guard count update | ✅ RESOLVED — drift guard updated to 72,462 (P126F) |
 | RSR-4 | API/UI consumer update | ⏳ Remaining — parallel track |
 
 ### Updated Near-Term Order (post-P128)
@@ -290,4 +290,16 @@ CTO_ROADMAP_UPDATED_AFTER_P126_DRY_RUN_PLAN_20260528
 
 ```text
 CTO_ROADMAP_UPDATED_AFTER_P128_STORAGE_DESIGN_20260528
+```
+
+---
+
+### P126 Wave Status: CLOSED
+
+**P126B → P126F** — All 5 Tier-B multi-bet candidates applied.  
+**P126G** — Closure audit complete. 15/15 checks passed.  
+DB final: 72,462 rows (baseline 54,462 + 18,000 inserted).
+
+```text
+CTO_ROADMAP_UPDATED_AFTER_P126G_CLOSURE_AUDIT_20260528
 ```

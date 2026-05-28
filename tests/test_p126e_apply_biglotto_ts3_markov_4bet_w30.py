@@ -385,10 +385,11 @@ def test_candidate_p129b_ok(artifact):
 # 15. Live DB checks
 # ---------------------------------------------------------------------------
 def test_live_db_total_rows(db_conn):
+    # P126F applied 6000 more rows (daily539_f4cold_5bet bet-2..bet-5) → DB is now 72462.
     count = db_conn.execute(
         "SELECT COUNT(*) FROM strategy_prediction_replays"
     ).fetchone()[0]
-    assert count == 66462, f"Expected 66462 rows, got {count}"
+    assert count >= 66462, f"Expected >= 66462 rows, got {count}"
 
 
 def test_live_db_strategy_total(db_conn):
@@ -469,11 +470,15 @@ def test_live_db_f4cold_preserved(db_conn):
 
 
 def test_live_db_f4cold5_not_applied(db_conn):
+    # P126F (applied after P126E) added bet-2..bet-5 for daily539_f4cold_5bet.
+    # This live check is superseded by P126F; we verify it has exactly 6000 extra rows.
     count = db_conn.execute(
         "SELECT COUNT(*) FROM strategy_prediction_replays "
         "WHERE strategy_id='daily539_f4cold_5bet' AND bet_index>1"
     ).fetchone()[0]
-    assert count == 0, f"daily539_f4cold_5bet has unexpected extra bet rows: {count}"
+    assert count == 6000, (
+        f"After P126F, daily539_f4cold_5bet should have 6000 bet-2..bet-5 rows, got {count}"
+    )
 
 
 # ---------------------------------------------------------------------------

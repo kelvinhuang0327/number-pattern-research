@@ -1,0 +1,288 @@
+{
+  "task_id": "P126G",
+  "classification": "P126G_ALL_TIER_B_MULTI_BET_APPLY_CLOSED",
+  "generated_at": "2026-05-28T10:29:19.079228+00:00",
+  "repo_worktree_check": {
+    "pass": true,
+    "top": "/Users/kelvin/Kelvin-WorkSpace/LotteryNew/.claude/worktrees/zen-gates-ff6802",
+    "branch": "claude/zen-gates-ff6802",
+    "expected_suffix": "zen-gates-ff6802",
+    "expected_branch": "claude/zen-gates-ff6802"
+  },
+  "db_snapshot": {
+    "path": "/Users/kelvin/Kelvin-WorkSpace/LotteryNew/.claude/worktrees/zen-gates-ff6802/lottery_api/data/lottery_v2.db",
+    "total_rows": 72462,
+    "expected_rows": 72462,
+    "pass": true
+  },
+  "schema_check": {
+    "pass": true,
+    "bet_index_present": true,
+    "not_null": true,
+    "default_1": true,
+    "all_columns": [
+      "id",
+      "lottery_type",
+      "target_draw",
+      "target_date",
+      "strategy_id",
+      "strategy_name",
+      "strategy_version",
+      "history_cutoff_draw",
+      "replay_status",
+      "reject_reason",
+      "predicted_numbers",
+      "predicted_special",
+      "actual_numbers",
+      "actual_special",
+      "hit_numbers",
+      "hit_count",
+      "special_hit",
+      "replay_run_id",
+      "generated_at",
+      "truth_level",
+      "controlled_apply_id",
+      "source",
+      "provenance_hash",
+      "provenance_source",
+      "dry_run",
+      "prediction_cutoff_date",
+      "prediction_generated_at",
+      "bet_index"
+    ]
+  },
+  "source_artifact_summary": {
+    "p126a": {
+      "pass": true,
+      "path": "/Users/kelvin/Kelvin-WorkSpace/LotteryNew/.claude/worktrees/zen-gates-ff6802/outputs/replay/p126a_controlled_apply_authorization_gate_20260528.json",
+      "classification": "P126A_WAITING_FOR_PER_STRATEGY_APPLY_AUTHORIZATION",
+      "expected_classification": "P126A_WAITING_FOR_PER_STRATEGY_APPLY_AUTHORIZATION",
+      "task_id": "P126A"
+    },
+    "p126b": {
+      "pass": true,
+      "path": "/Users/kelvin/Kelvin-WorkSpace/LotteryNew/.claude/worktrees/zen-gates-ff6802/outputs/replay/p126b_apply_power_fourier_rhythm_2bet_20260528.json",
+      "classification": "P126B_POWER_FOURIER_RHYTHM_2BET_APPLIED",
+      "expected_classification": "P126B_POWER_FOURIER_RHYTHM_2BET_APPLIED",
+      "task_id": "P126B"
+    },
+    "p126c": {
+      "pass": true,
+      "path": "/Users/kelvin/Kelvin-WorkSpace/LotteryNew/.claude/worktrees/zen-gates-ff6802/outputs/replay/p126c_apply_biglotto_echo_aware_3bet_20260528.json",
+      "classification": "P126C_BIGLOTTO_ECHO_AWARE_3BET_APPLIED",
+      "expected_classification": "P126C_BIGLOTTO_ECHO_AWARE_3BET_APPLIED",
+      "task_id": "P126C"
+    },
+    "p126d": {
+      "pass": true,
+      "path": "/Users/kelvin/Kelvin-WorkSpace/LotteryNew/.claude/worktrees/zen-gates-ff6802/outputs/replay/p126d_apply_daily539_f4cold_3bet_20260528.json",
+      "classification": "P126D_DAILY539_F4COLD_3BET_APPLIED",
+      "expected_classification": "P126D_DAILY539_F4COLD_3BET_APPLIED",
+      "task_id": "P126D"
+    },
+    "p126e": {
+      "pass": true,
+      "path": "/Users/kelvin/Kelvin-WorkSpace/LotteryNew/.claude/worktrees/zen-gates-ff6802/outputs/replay/p126e_apply_biglotto_ts3_markov_4bet_w30_20260528.json",
+      "classification": "P126E_BIGLOTTO_TS3_MARKOV_4BET_W30_APPLIED",
+      "expected_classification": "P126E_BIGLOTTO_TS3_MARKOV_4BET_W30_APPLIED",
+      "task_id": "P126E"
+    },
+    "p126f": {
+      "pass": true,
+      "path": "/Users/kelvin/Kelvin-WorkSpace/LotteryNew/.claude/worktrees/zen-gates-ff6802/outputs/replay/p126f_apply_daily539_f4cold_5bet_20260528.json",
+      "classification": "P126F_DAILY539_F4COLD_5BET_APPLIED",
+      "expected_classification": "P126F_DAILY539_F4COLD_5BET_APPLIED",
+      "task_id": "P126F"
+    },
+    "p129b": {
+      "pass": true,
+      "path": "/Users/kelvin/Kelvin-WorkSpace/LotteryNew/.claude/worktrees/zen-gates-ff6802/outputs/replay/p129b_execute_bet_index_schema_migration_20260528.json",
+      "classification": "P129B_PRODUCTION_BET_INDEX_SCHEMA_MIGRATION_APPLIED",
+      "expected_classification": "P129B_PRODUCTION_BET_INDEX_SCHEMA_MIGRATION_APPLIED",
+      "task_id": "P129B"
+    }
+  },
+  "all_candidates_completion": {
+    "pass": true,
+    "total_candidates": 5,
+    "applied_candidates": 5,
+    "remaining_candidates": 0,
+    "baseline_rows_before_p126_apply": 54462,
+    "final_replay_rows": 72462,
+    "total_inserted_rows_from_p126b_to_p126f": 18000,
+    "p126b_rows": 1500,
+    "p126c_rows": 3000,
+    "p126d_rows": 3000,
+    "p126e_rows": 4500,
+    "p126f_rows": 6000
+  },
+  "strategy_distribution": {
+    "pass": true,
+    "strategies": {
+      "power_fourier_rhythm_2bet": {
+        "pass": true,
+        "lottery_type": "POWER_LOTTO",
+        "total_rows": 3000,
+        "expected_total": 3000,
+        "bet_distribution": {
+          "1": 1500,
+          "2": 1500
+        },
+        "expected_distribution": {
+          "1": 1500,
+          "2": 1500
+        }
+      },
+      "biglotto_echo_aware_3bet": {
+        "pass": true,
+        "lottery_type": "BIG_LOTTO",
+        "total_rows": 4500,
+        "expected_total": 4500,
+        "bet_distribution": {
+          "1": 1500,
+          "2": 1500,
+          "3": 1500
+        },
+        "expected_distribution": {
+          "1": 1500,
+          "2": 1500,
+          "3": 1500
+        }
+      },
+      "daily539_f4cold_3bet": {
+        "pass": true,
+        "lottery_type": "DAILY_539",
+        "total_rows": 4500,
+        "expected_total": 4500,
+        "bet_distribution": {
+          "1": 1500,
+          "2": 1500,
+          "3": 1500
+        },
+        "expected_distribution": {
+          "1": 1500,
+          "2": 1500,
+          "3": 1500
+        }
+      },
+      "biglotto_ts3_markov_4bet_w30": {
+        "pass": true,
+        "lottery_type": "BIG_LOTTO",
+        "total_rows": 6000,
+        "expected_total": 6000,
+        "bet_distribution": {
+          "1": 1500,
+          "2": 1500,
+          "3": 1500,
+          "4": 1500
+        },
+        "expected_distribution": {
+          "1": 1500,
+          "2": 1500,
+          "3": 1500,
+          "4": 1500
+        }
+      },
+      "daily539_f4cold_5bet": {
+        "pass": true,
+        "lottery_type": "DAILY_539",
+        "total_rows": 7500,
+        "expected_total": 7500,
+        "bet_distribution": {
+          "1": 1500,
+          "2": 1500,
+          "3": 1500,
+          "4": 1500,
+          "5": 1500
+        },
+        "expected_distribution": {
+          "1": 1500,
+          "2": 1500,
+          "3": 1500,
+          "4": 1500,
+          "5": 1500
+        }
+      }
+    }
+  },
+  "duplicate_guard_validation": {
+    "pass": true,
+    "duplicate_tuples_found": 0,
+    "constraint_method": "no_duplicates_confirmed",
+    "unique_index_present": false
+  },
+  "drift_guard_result": {
+    "pass": true,
+    "return_code": 0,
+    "stdout_tail": "Drift guard checked at: 2026-05-28T10:29:19.075477Z\nDB: /Users/kelvin/Kelvin-WorkSpace/LotteryNew/.claude/worktrees/zen-gates-ff6802/lottery_api/data/lottery_v2.db\n\nRow counts \u2014 V1=0  V2=0  legacy=460  total=72462\nV3 tombstone strategies with 0 rows: 1/1\ntruth_level \u2014 REGENERATED=0  ARTIFACT=0  null=460\n\nNo violations found.\n\nFinal classification: REPLAY_LIFECYCLE_DRIFT_GUARD_PASS\nStatus: PASS\n",
+    "classification": "REPLAY_LIFECYCLE_DRIFT_GUARD_PASS"
+  },
+  "test_coverage_audit": {
+    "pass": true,
+    "test_files": {
+      "test_p126a": {
+        "exists": true,
+        "path": "/Users/kelvin/Kelvin-WorkSpace/LotteryNew/.claude/worktrees/zen-gates-ff6802/tests/test_p126a_controlled_apply_authorization_gate.py"
+      },
+      "test_p126b": {
+        "exists": true,
+        "path": "/Users/kelvin/Kelvin-WorkSpace/LotteryNew/.claude/worktrees/zen-gates-ff6802/tests/test_p126b_apply_power_fourier_rhythm_2bet.py"
+      },
+      "test_p126c": {
+        "exists": true,
+        "path": "/Users/kelvin/Kelvin-WorkSpace/LotteryNew/.claude/worktrees/zen-gates-ff6802/tests/test_p126c_apply_biglotto_echo_aware_3bet.py"
+      },
+      "test_p126e": {
+        "exists": true,
+        "path": "/Users/kelvin/Kelvin-WorkSpace/LotteryNew/.claude/worktrees/zen-gates-ff6802/tests/test_p126e_apply_biglotto_ts3_markov_4bet_w30.py"
+      },
+      "test_p126f": {
+        "exists": true,
+        "path": "/Users/kelvin/Kelvin-WorkSpace/LotteryNew/.claude/worktrees/zen-gates-ff6802/tests/test_p126f_apply_daily539_f4cold_5bet.py"
+      },
+      "test_p129b": {
+        "exists": true,
+        "path": "/Users/kelvin/Kelvin-WorkSpace/LotteryNew/.claude/worktrees/zen-gates-ff6802/tests/test_p129b_execute_bet_index_schema_migration.py"
+      },
+      "test_p126g": {
+        "exists": true,
+        "path": "/Users/kelvin/Kelvin-WorkSpace/LotteryNew/.claude/worktrees/zen-gates-ff6802/tests/test_p126g_all_tier_b_apply_closure_audit.py"
+      }
+    }
+  },
+  "roadmap_update_status": {
+    "cto_analysis_updated": true,
+    "roadmap_updated": true,
+    "p126b_f_marked_complete": true,
+    "p126_wave_closed": true
+  },
+  "blocked_or_excluded": {
+    "4_STAR_excluded": true,
+    "P108_not_run": true,
+    "P117_not_run": true,
+    "P118_not_run": true,
+    "rejected_strategies_no_action": true,
+    "no_scheduler_install": true,
+    "no_lifecycle_mutation": true,
+    "no_champion_mutation": true,
+    "no_registry_mutation": true,
+    "no_additional_apply_executed_in_P126G": true,
+    "no_db_writes_in_P126G": true,
+    "note": "P126G is a closure audit only. No DB writes, no new replay rows, no strategy promotion, no scheduler install, no lifecycle/champion/registry mutation, no 4_STAR/P108/P117/P118 execution."
+  },
+  "remaining_risks": [
+    "RSR-4: API/UI consumers may need WHERE bet_index = 1 filter for display-facing queries.",
+    "UNIQUE constraint enforcement relies on SQLite default behaviour (no explicit index verified in current schema).",
+    "daily539_f4cold_5bet strategy status is PROVISIONAL \u2014 requires stat validation before promotion.",
+    "Backup files (.p126f_backup_*, etc.) in lottery_api/data/backups/ are not committed; verify retention policy.",
+    "No end-to-end scoring / hit-rate evaluation has been performed for the newly inserted multi-bet rows."
+  ],
+  "next_recommended_task": "RSR-4: Update API/UI consumers to add WHERE bet_index = 1 filter. Then evaluate multi-bet hit-rate distribution across the 5 Tier-B strategies.",
+  "summary": {
+    "overall_pass": true,
+    "total_checks": 15,
+    "failures": [],
+    "failure_count": 0,
+    "message": "P126 Tier-B controlled apply wave CLOSED. 5/5 candidates complete. 18000 rows inserted (P126B\u2192P126F). Final DB = 72462 rows. Drift guard PASS."
+  }
+}

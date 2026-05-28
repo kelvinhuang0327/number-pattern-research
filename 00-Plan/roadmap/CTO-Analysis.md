@@ -562,3 +562,52 @@ Final roadmap marker:
 ```text
 CTO_ROADMAP_UPDATED_AFTER_P128_STORAGE_DESIGN_20260528
 ```
+
+---
+
+## P129A / P129B — Migration Authorization + Execution
+
+- **Task:** `P129A_AUTHORIZE_BET_INDEX_SCHEMA_MIGRATION` / `P129B_EXECUTE_BET_INDEX_SCHEMA_MIGRATION`
+- **Date:** 2026-05-28
+- **Artifact:** `outputs/replay/p129b_execute_bet_index_schema_migration_20260528.json`
+- **Classification:** `P129B_PRODUCTION_BET_INDEX_SCHEMA_MIGRATION_APPLIED`
+
+### Summary
+- bet_index column (INTEGER NOT NULL DEFAULT 1) added to `strategy_prediction_replays`
+- New UNIQUE constraint: `UNIQUE(lottery_type, target_draw, strategy_id, bet_index)` enforced
+- All 54,462 existing rows backfilled with `bet_index = 1`
+- DB total rows unchanged at 54,462 after migration
+- RSR-1 and RSR-2 resolved
+
+---
+
+## P126A — Controlled Apply Authorization Gate
+
+- **Task:** `P126A_CONTROLLED_APPLY_AUTHORIZATION_GATE`
+- **Date:** 2026-05-28
+- **Artifact:** `outputs/replay/p126a_controlled_apply_authorization_gate_20260528.json`
+- **Classification:** `P126A_WAITING_FOR_PER_STRATEGY_APPLY_AUTHORIZATION`
+
+### Candidates Authorized (5 / 5)
+| Order | S| Order | S| Order | S| Order | S| Order | S|---|---|---|-| Order | S| Order | S| Order | S| Order | S| Order | S|---|---|---|-| Order | S| Order | S| Orre_3bet| Order | S| Order | 3,| Order | S| Order | S| Order | S| Order | S| Order | S|---|---|---|-| Order | S| Oarkov| Order | S| Order | S| Order | S| Order | S| Order | S|---|---|---|-| OrY_53| Order | ,0| Order | S| Order | S| Order | S| Order | S| Order | S|---|---|---|-| Order | S| O| Strategy | Lottery | +Rows | DB Total After | Commit |
+|---|---|---|---|---|---|
+| P126B | `power_fourier_rhythm_2bet` | POWER_LOTTO | +1,500 | 55,962 | ✅ |
+| P126C | `biglotto_echo_aware_3bet` | BIG_LOTTO | +3,000 | 58,962 | ✅ |
+| P126D | `daily539_f4cold_3bet` | DAILY_539 | +3,000 | 61,962 | ✅ |
+| P126E | `biglotto_ts3_markov_4bet_w30` | BIG_LOTTO | +4,500 | 66,462 | ✅ |
+| P126F | `daily539_f4cold_5bet` | DAILY_539 | +6,000 | 72,462 | ✅ |
+| *| *| *| *| *| *| *| *| *| *| *| *| *| *| *| *| *| *| *| *| *| *| *| *| *|ll | *| *| *| *| *| *| *| *| *| *| TA| *| *| *| *| *| *| *| *| *| *| *| *| *| *| *| *| *| *| *| *| *| *| *| *| *|ll | *| *| *| *| *| *| *| *| *| *| TA| *| *| *| *| *| *| *| *| *| *| *| *| *| *| *| *| *| *| *| *| *| *| *| *| *|ll | *| *| *| *| *| *| *| *| *| *| TA| *| *| *| *| *| *| *| *| *| *| *| *| *| *| *| *| *| *| *| *| *| *| *| *| *|ll | *| *| *| *| *| *| *| *| *| *| TA| *| *| *| *| *| *| *| *| *| *| *| *| *| *| *| *| *| *| *| *| *| *| *| *| *|ll | *| *| *| *| *| *| *| *| *| *| TA| *| *| *| *| *| *| *| *| *| *| *| *| *| *| *| *| *| *| *ly_closure_audit.py`
+- **JSO- **JSO- **JSO- **JSO- **JSO- **JSO- **JSO- **JSO- **JSO- **JSO- **JSO- **JS*M- **JSO- **JSO- **JSO- **JSO- **JSO- **JSO- **JSO- **JSO- **JSO- **JSO**Classification:** `P126G_ALL_TIER_B_MULTI_BET_APPLY_CLOSED`
+- **Tests:** `- **Tests:** `- **Tests:** `- **Tests:** `- **Tests:** `- **Tests:** `- **Tesdaily539_f4cold_5bet.py` — all passed
+
+### Final State
+| Metric | Value| Metric | Value| Metric | Value| Metric | Value| Metric | Value| Metric | Value| Metric | Value| Metric | Value| Metric | Value| Metric | Value| Metric | Value| Metric | Value| Metric | Value| Metric | Value| Metric | Value| Metric | Value| Metric | Value| Metric | Value| Metric | Value| Metric | Value| Metric | Value| Metric | Value| Metric | Value| Metric | Value| Metric | Value| Metric | Value| Metric | Value| Metric | Value| Metric | Value| Metric | Value| Metric | Value| Metric | Value| Metric | Value| Metric | Value| Metric | Value| Metric | Value| Metric | Value| Metric | Value| Metric | Value| Metric | Value| Metric | Value|E_| Metric | Value| Metric | Value| Metric | Value| Metric | Value| Metric | Value| Metric | Value| Metric | Value| Metric | Value| Metric | Value| Metric | Value| Metric | Value| Metric | Value| Metric | Value| Metrilidation before promotion
+
+### P126 Wave Status
+**CLOSED** — all 5 Tier-B multi-bet strategies applied and verified.
+
+Final roadmap marker:
+
+```text
+CTO_ROADMAP_UPDATED_AFTER_P126G_CLOSURE_AUDIT_20260528
+```

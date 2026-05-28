@@ -389,17 +389,15 @@ class TestLiveProductionDB:
         conn.close()
 
     def test_other_candidates_row_count_unchanged(self):
-        """Only daily539_f4cold_5bet (not yet applied as of P126E) must have no bet_index>1 rows.
-        P126C applied biglotto_echo_aware_3bet, P126D applied daily539_f4cold_3bet,
-        P126E applied biglotto_ts3_markov_4bet_w30 — these are expected to have multi-bet rows."""
+        """P126F applied daily539_f4cold_5bet bet-2..bet-5 after P126B/C/D/E.
+        All 5 Tier-B candidates are now complete. Verify post-P126F state:
+        daily539_f4cold_5bet has exactly 6000 extra bet rows (bet_index>1)."""
         conn = self._conn()
-        # Only remaining unapplied candidate must be clean
-        for cid in ["daily539_f4cold_5bet"]:
-            extra = conn.execute(
-                "SELECT COUNT(*) FROM strategy_prediction_replays WHERE strategy_id=? AND bet_index>1",
-                (cid,)
-            ).fetchone()[0]
-            assert extra == 0, f"{cid} unexpectedly has bet_index>1 rows: {extra}"
+        count = conn.execute(
+            "SELECT COUNT(*) FROM strategy_prediction_replays "
+            "WHERE strategy_id='daily539_f4cold_5bet' AND bet_index>1"
+        ).fetchone()[0]
+        assert count == 6000, f"Expected 6000 (P126F applied), got {count}"
         conn.close()
 
     def test_bet_index_column_exists(self):

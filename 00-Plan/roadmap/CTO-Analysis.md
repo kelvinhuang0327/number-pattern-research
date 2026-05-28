@@ -416,3 +416,46 @@ Final roadmap marker:
 ```text
 CTO_ROADMAP_UPDATED_AFTER_P126_DRY_RUN_PLAN_20260528
 ```
+
+---
+
+## P128: Native Multi-Bet Replay Storage Design
+
+**Task ID:** P128
+**Classification:** P128_NATIVE_MULTI_BET_STORAGE_DESIGN_READY
+**Commit:** pending (this session)
+**DB rows before / after:** 54462 / 54462 (read-only â€” zero writes)
+
+### Problem Resolved
+
+P126 identified RSR-1 (no storage format decided for multi-bet rows) and RSR-2 (no bet_index column).
+P128 resolves both. The current UNIQUE constraint `(lottery_type, target_draw, strategy_id, replay_run_id)`
+has all P94 Tier-B rows with `replay_run_id=NULL` â€” SQLite's NULL-distinct behavior technically permits
+multi-bet inserts today, but this is accidental, fragile, and not a valid convention.
+
+### Decision
+
+| Aspect | Decision |
+|---|---|
+| Storage model | one-row-per-bet (APPROVED) |
+| bet_index column | Required â€” `INTEGER NOT NULL DEFAULT 1` |
+| New UNIQUE constraint | `UNIQUE(lottery_type, target_draw, strategy_id, bet_index)` |
+| Migration | SQL| Migration | SQL| Migration | SQL| Migration | SQL| Migration | SQL| Migration | SQL| Migrad â|” al| Migration | SQL| Migration | SQL| Migr## P126 A| Migratdiness Aft| Migration | SQL| Migration | SQL| Migration | SQL| Migratioly| Migration | SQL| Migration | SQn_| Migration | SQL| Migration | SQL| Migration | SQL| Migration | SQLses| Migration | SQL| ndidate)
+3. Migration execution
+4. RSR-3 (drift guard count update after apply)
+
+### Artifacts
+
+- `script- `script- `script- `script- `script- `script- `script- `script- `script- `script- `script- `script- `s528.j- `script- `script- `script- `script- `script- `script- `script- `script- `script- `script- `script- `bet_- `script- `script- `script- `script- `script- `script- `script- `script- `script- B wr- `script- [Co- `script- `script- ge- `scripec- `script- `script- `script- `script- `scripr, no strategy promotion
+- [Confirmed] No 4_STAR / P108 / P117 / P118
+- [Confirmed] PRAGMA query_only = ON on all DB connections
+- [Confirmed] replay_rows = 54462 (unchanged)
+- [Confirmed] RSR-1 resolved, RSR-2 resolved
+- [Confirmed] P128 tests: 146 passed; P126+P125+P124 regression: 232 passed
+- [Confirmed] Drift guard: REPLAY_LIFECYCLE_DRIFT_GUARD_PASS
+
+Final roadmap marker:
+
+```text
+CTO_ROADMAP_UPDATED_AFTER_P128_STORAGE_DESIGN_20260528
+```

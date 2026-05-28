@@ -250,3 +250,33 @@ Updated near-term order (post-P126):
 ```text
 CTO_ROADMAP_UPDATED_AFTER_P126_DRY_RUN_PLAN_20260528
 ```
+
+---
+
+## P128: Native Multi-Bet Replay Storage Design
+
+**Status:** COMPLETE
+**Classification:** P128_NATIVE_MULTI_BET_STORAGE_DESIGN_READY
+
+### RSR Tracking
+
+| RSR | Description | Status |
+|---|---|---|
+| RSR-1 | No storage format decided | ✅ RESOLVED — Option A (one-row-per-bet + bet_index) |
+| RSR-2 | No bet_index column | ✅ RESOLVED — migration plan defined |
+| RSR-3 | Drift guard count update | ⏳ Remaining — after P126 apply |
+| RSR-4 | API/UI consumer update | ⏳ Remaining — parallel track |
+
+### Updated Near-Term Order (post-P128)
+
+| Rank | Work | Why |
+|---|---|---|
+| 1 | Migration authorization | `YES authorize migration_plan_p128 because <reason>` required from Kelvin |
+| 2 | Execute P128 migration plan | 18-step SQLite table recreation; adds bet_index column |
+| 3 | P126 Apply (5 Tier-B candidates) | Requires migration + 5 per-strategy auth phrases |
+| 4 | RSR-3: update drift guard | After apply; expected count = 72462 |
+| 5 | RSR-4: API/UI consumer update | Add WHERE bet_index = 1 filters |
+
+```text
+CTO_ROADMAP_UPDATED_AFTER_P128_STORAGE_DESIGN_20260528
+```

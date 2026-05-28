@@ -303,3 +303,24 @@ DB final: 72,462 rows (baseline 54,462 + 18,000 inserted).
 ```text
 CTO_ROADMAP_UPDATED_AFTER_P126G_CLOSURE_AUDIT_20260528
 ```
+
+---
+
+### P127 Wave Status: ADAPTER SPEC PHASE
+
+**P127** — Adapter build specs for 12 remaining multi-bet strategies.  
+Spec-only phase. No DB writes. No controlled_apply.  
+DB unchanged: 72,462 rows.
+
+**Recommended implementation order:** 2-bet strategies first (priorities 1–6),
+then 3-bet (7–10), then 4-bet (11), then 5-bet (12).
+
+**Apply gate:** CLOSED — pending adapter implementation + per-strategy authorization per P126A pattern.
+
+**Known anomalies to resolve before apply:**
+- RSR-6: `power_orthogonal_5bet` + `power_precision_3bet` have orphan bet_index=2 rows (20 each)
+- RSR-7: `fourier_rhythm_3bet` + `fourier30_markov30_2bet` have 1501 rows (1 extra each)
+
+```text
+CTO_ROADMAP_UPDATED_AFTER_P127_ADAPTER_BUILD_SPECS_20260528
+```

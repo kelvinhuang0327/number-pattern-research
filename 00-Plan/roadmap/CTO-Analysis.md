@@ -611,3 +611,67 @@ Final roadmap marker:
 ```text
 CTO_ROADMAP_UPDATED_AFTER_P126G_CLOSURE_AUDIT_20260528
 ```
+
+---
+
+## P127 — Adapter Build Specs for Remaining Multi-Bet Strategies
+
+- **Task:** `P127_ADAPTER_BUILD_SPECS_FOR_REMAINING_MULTI_BET_STRATEGIES`
+- **Date:** 2026-05-28
+- **Script:** `scripts/p127_adapter_build_specs_remaining_multi_bet.py`
+- **JSON:** `outputs/replay/p127_adapter_build_specs_remaining_multi_bet_20260528.json`
+- **MD:** `docs/replay/p127_adapter_build_specs_remaining_multi_bet_20260528.md`
+- **Tests:** `tests/test_p127_adapter_build_specs_remaining_multi_bet.py` — 71 passed
+- **Classification:** `P127_ADAPTER_BUILD_SPECS_READY`
+
+### P127 Scope
+
+**Adapter spec phase only.** No DB writes. No controlled_apply. No replay rows inserted.
+
+Reads P125/P126G artifacts and DB state (read-only) to produce structured adapter build
+specifications for all 12 remaining `adapter_build` strategies.
+
+### Strategy Matrix (12 Strategies, by Implementation Priority)
+
+| Priority | strategy_id | lottery_type | target_bets | current_rows | quality |
+|---|---|---|---|---|---|
+| 1 | `midfreq_acb_2bet` | DAILY_539 | 2 | 1,500 | watchlist |
+| 2 | `midfreq_fourier_2bet` | DAILY_539 | 2 | 1,500 | watchlist |
+| 3 | `zonal_entropy_2bet` | POWER_LOTTO | 2 | 1,500 | fallback_equivalent |
+| 4 | `cold_complement_2bet` | POWER_LOTTO | 2 | 1,500 | fallback_equivalent |
+| 5 | `midfreq_fourier_2bet` | POWER_LOTTO | 2 | 1,500 | watchlist |
+| 6 | `fourier30_markov30_2bet` | POWER_LOTTO | 2 | 1,501 ⚠️ | watchlist |
+| 7 | `acb_markov_midfreq_3bet` | DAILY_539 | 3 | 1,500 | watchlist |
+| 8 | `midfreq_fourier_mk_3bet` | POWER_LOTTO | 3 | 1,500 | prediction_helpful |
+| 9 | `fourier_rhythm_3bet` | POWER_LOTTO | 3 | 1,501 ⚠️ | watchlist |
+| 10 | `power_precision_3bet` | POWER_LOTTO | 3 | 1,570 ⚠️ RSR-6 | watchlist |
+| 11 | `pp3_freqort_4bet` | POWER_LOTTO | 4 | 1,500 | prediction_helpful |
+| 12 | `power_orthogonal_5bet` | POWER_LOTTO | 5 | 1,570 ⚠️ RSR-6 | watchlist |
+
+⚠️ = non-standard row count; RSR-6 = orphan bet_index=2 rows, must audit before apply.
+
+### Apply Gate Status
+- `adapter_implementation_done = false`
+- `controlled_apply_executed = false`
+- `replay_rows_inserted = 0`
+- `production_db_rows = 72,462` (unchanged)
+
+### Confirmed Non-Actions
+- No DB rows inserted
+- No controlled_apply executed
+- No scheduler / cron / launchd
+- No 4_STAR / P108 / P117 / P118
+- No lifecycle / champion / registry mutation
+
+### New Risks Identified
+| Risk | Description |
+|---|---|
+| RSR-5 | 12 adapter implementations pending |
+| RSR-6 | `power_orthogonal_5bet` + `power_precision_3bet` have orphan bet_index=2 rows (20 each) |
+| RSR-7 | `fourier_rhythm_3bet` + `fourier30_markov30_2bet` have 1501 rows (1 extra each) |
+
+Final roadmap marker:
+
+```text
+CTO_ROADMAP_UPDATED_AFTER_P127_ADAPTER_BUILD_SPECS_20260528
+```

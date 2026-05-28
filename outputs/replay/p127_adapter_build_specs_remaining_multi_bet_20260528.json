@@ -1,0 +1,906 @@
+{
+  "task_id": "P127",
+  "classification": "P127_ADAPTER_BUILD_SPECS_READY",
+  "generated_at": "2026-05-28T11:44:42.684688+00:00",
+  "repo_worktree_check": {
+    "pass": true,
+    "worktree_root": "/Users/kelvin/Kelvin-WorkSpace/LotteryNew/.claude/worktrees/zen-gates-ff6802",
+    "worktree_name": "zen-gates-ff6802",
+    "branch": "claude/zen-gates-ff6802",
+    "expected_worktree": "zen-gates-ff6802",
+    "expected_branch": "claude/zen-gates-ff6802"
+  },
+  "db_snapshot": {
+    "path": "/Users/kelvin/Kelvin-WorkSpace/LotteryNew/.claude/worktrees/zen-gates-ff6802/lottery_api/data/lottery_v2.db",
+    "total_rows_before": 72462,
+    "total_rows_after": 72462,
+    "expected_rows": 72462,
+    "pass": true
+  },
+  "schema_check": {
+    "pass": true,
+    "present": true,
+    "col_type": "INTEGER",
+    "not_null": true,
+    "default_value": "1",
+    "column_index": 27
+  },
+  "p126g_source_summary": {
+    "pass": true,
+    "task_id": "P126G",
+    "classification": "P126G_ALL_TIER_B_MULTI_BET_APPLY_CLOSED",
+    "applied_candidates": 5,
+    "total_inserted_rows": 18000,
+    "final_replay_rows": 72462,
+    "baseline_before_p126": 54462
+  },
+  "adapter_build_strategy_count": 12,
+  "adapter_build_specs": [
+    {
+      "strategy_id": "pp3_freqort_4bet",
+      "lottery_type": "POWER_LOTTO",
+      "target_bet_count": 4,
+      "algorithm_family": "frequency_sort",
+      "quality_label": "prediction_helpful",
+      "p125_rank_score": 53,
+      "current_replay_rows": 1500,
+      "current_bet_index_distribution": {
+        "1": 1500
+      },
+      "missing_adapter_component": "pp3_freqort_multi_bet_adapter",
+      "adapter_function": "get_all_bets_pp3_freqort",
+      "proposed_adapter_contract": {
+        "method_signature": "def get_all_bets_pp3_freqort(draw_context: dict) -> list[list[int]]",
+        "expected_output_count": 4,
+        "output_format": "List of 4 sublists, each with 6 integers",
+        "lottery_range": "1–39 (special 1–10)",
+        "must_not_fabricate": true,
+        "must_use_historical_draw_context_only": true,
+        "draw_context_keys_required": [
+          "history_cutoff_draw",
+          "historical_draws",
+          "lottery_type"
+        ],
+        "deterministic_ordering_rule": "Bets ordered by descending model confidence score. Ties broken by ascending number sum, then lexicographic sort. Seed = SHA256(strategy_id + target_draw + draw_context hash)[:8].",
+        "storage_format": "one_row_per_bet (P128 APPROVED — bet_index 1..N)"
+      },
+      "deterministic_ordering_rule": "Bets ordered by descending model confidence score. Ties broken by ascending number sum, then lexicographic sort. Seed = SHA256(strategy_id + target_draw + draw_context hash)[:8].",
+      "duplicate_guard": {
+        "strategy": "UNIQUE(lottery_type, target_draw, strategy_id, bet_index)",
+        "pre_insert_check": "SELECT COUNT(*) = 0 WHERE bet_index IN (2..4)",
+        "abort_on_conflict": true
+      },
+      "provenance_requirements": {
+        "controlled_apply_id": "P128_APPLY_PP3_FREQORT_4BET_vN",
+        "provenance_hash": "SHA256(strategy_id + target_draw + bet_index + predicted_numbers)",
+        "provenance_source": "historical_only",
+        "dry_run_required_before_apply": true
+      },
+      "tests_required": [
+        "test_pp3_freqort_4bet_adapter_output_count_eq_4",
+        "test_pp3_freqort_4bet_no_future_data_in_draw_context",
+        "test_pp3_freqort_4bet_deterministic_output_same_seed",
+        "test_pp3_freqort_4bet_all_numbers_in_valid_range",
+        "test_pp3_freqort_4bet_no_duplicate_numbers_within_bet",
+        "test_pp3_freqort_4bet_no_duplicate_bets_across_outputs",
+        "test_pp3_freqort_4bet_integration_with_historical_draw_context",
+        "test_pp3_freqort_4bet_provenance_hash_matches_inputs"
+      ],
+      "risk_level": "medium",
+      "implementation_priority": 11,
+      "apply_authorization_required_later": true,
+      "db_write_in_p127": false,
+      "notes": null
+    },
+    {
+      "strategy_id": "midfreq_fourier_mk_3bet",
+      "lottery_type": "POWER_LOTTO",
+      "target_bet_count": 3,
+      "algorithm_family": "fourier_markov",
+      "quality_label": "prediction_helpful",
+      "p125_rank_score": 51,
+      "current_replay_rows": 1500,
+      "current_bet_index_distribution": {
+        "1": 1500
+      },
+      "missing_adapter_component": "fourier_multi_bet_adapter",
+      "adapter_function": "get_all_bets_fourier_mk",
+      "proposed_adapter_contract": {
+        "method_signature": "def get_all_bets_fourier_mk(draw_context: dict) -> list[list[int]]",
+        "expected_output_count": 3,
+        "output_format": "List of 3 sublists, each with 6 integers",
+        "lottery_range": "1–39 (special 1–10)",
+        "must_not_fabricate": true,
+        "must_use_historical_draw_context_only": true,
+        "draw_context_keys_required": [
+          "history_cutoff_draw",
+          "historical_draws",
+          "lottery_type"
+        ],
+        "deterministic_ordering_rule": "Bets ordered by descending model confidence score. Ties broken by ascending number sum, then lexicographic sort. Seed = SHA256(strategy_id + target_draw + draw_context hash)[:8].",
+        "storage_format": "one_row_per_bet (P128 APPROVED — bet_index 1..N)"
+      },
+      "deterministic_ordering_rule": "Bets ordered by descending model confidence score. Ties broken by ascending number sum, then lexicographic sort. Seed = SHA256(strategy_id + target_draw + draw_context hash)[:8].",
+      "duplicate_guard": {
+        "strategy": "UNIQUE(lottery_type, target_draw, strategy_id, bet_index)",
+        "pre_insert_check": "SELECT COUNT(*) = 0 WHERE bet_index IN (2..3)",
+        "abort_on_conflict": true
+      },
+      "provenance_requirements": {
+        "controlled_apply_id": "P128_APPLY_MIDFREQ_FOURIER_MK_3BET_vN",
+        "provenance_hash": "SHA256(strategy_id + target_draw + bet_index + predicted_numbers)",
+        "provenance_source": "historical_only",
+        "dry_run_required_before_apply": true
+      },
+      "tests_required": [
+        "test_midfreq_fourier_mk_3bet_adapter_output_count_eq_3",
+        "test_midfreq_fourier_mk_3bet_no_future_data_in_draw_context",
+        "test_midfreq_fourier_mk_3bet_deterministic_output_same_seed",
+        "test_midfreq_fourier_mk_3bet_all_numbers_in_valid_range",
+        "test_midfreq_fourier_mk_3bet_no_duplicate_numbers_within_bet",
+        "test_midfreq_fourier_mk_3bet_no_duplicate_bets_across_outputs",
+        "test_midfreq_fourier_mk_3bet_integration_with_historical_draw_context",
+        "test_midfreq_fourier_mk_3bet_provenance_hash_matches_inputs"
+      ],
+      "risk_level": "medium",
+      "implementation_priority": 8,
+      "apply_authorization_required_later": true,
+      "db_write_in_p127": false,
+      "notes": null
+    },
+    {
+      "strategy_id": "acb_markov_midfreq_3bet",
+      "lottery_type": "DAILY_539",
+      "target_bet_count": 3,
+      "algorithm_family": "markov_chain",
+      "quality_label": "watchlist",
+      "p125_rank_score": 41,
+      "current_replay_rows": 1500,
+      "current_bet_index_distribution": {
+        "1": 1500
+      },
+      "missing_adapter_component": "markov_multi_bet_adapter",
+      "adapter_function": "get_all_bets_acb_markov",
+      "proposed_adapter_contract": {
+        "method_signature": "def get_all_bets_acb_markov(draw_context: dict) -> list[list[int]]",
+        "expected_output_count": 3,
+        "output_format": "List of 3 sublists, each with 5 integers",
+        "lottery_range": "1–39",
+        "must_not_fabricate": true,
+        "must_use_historical_draw_context_only": true,
+        "draw_context_keys_required": [
+          "history_cutoff_draw",
+          "historical_draws",
+          "lottery_type"
+        ],
+        "deterministic_ordering_rule": "Bets ordered by descending model confidence score. Ties broken by ascending number sum, then lexicographic sort. Seed = SHA256(strategy_id + target_draw + draw_context hash)[:8].",
+        "storage_format": "one_row_per_bet (P128 APPROVED — bet_index 1..N)"
+      },
+      "deterministic_ordering_rule": "Bets ordered by descending model confidence score. Ties broken by ascending number sum, then lexicographic sort. Seed = SHA256(strategy_id + target_draw + draw_context hash)[:8].",
+      "duplicate_guard": {
+        "strategy": "UNIQUE(lottery_type, target_draw, strategy_id, bet_index)",
+        "pre_insert_check": "SELECT COUNT(*) = 0 WHERE bet_index IN (2..3)",
+        "abort_on_conflict": true
+      },
+      "provenance_requirements": {
+        "controlled_apply_id": "P128_APPLY_ACB_MARKOV_MIDFREQ_3BET_vN",
+        "provenance_hash": "SHA256(strategy_id + target_draw + bet_index + predicted_numbers)",
+        "provenance_source": "historical_only",
+        "dry_run_required_before_apply": true
+      },
+      "tests_required": [
+        "test_acb_markov_midfreq_3bet_adapter_output_count_eq_3",
+        "test_acb_markov_midfreq_3bet_no_future_data_in_draw_context",
+        "test_acb_markov_midfreq_3bet_deterministic_output_same_seed",
+        "test_acb_markov_midfreq_3bet_all_numbers_in_valid_range",
+        "test_acb_markov_midfreq_3bet_no_duplicate_numbers_within_bet",
+        "test_acb_markov_midfreq_3bet_no_duplicate_bets_across_outputs",
+        "test_acb_markov_midfreq_3bet_integration_with_historical_draw_context",
+        "test_acb_markov_midfreq_3bet_provenance_hash_matches_inputs"
+      ],
+      "risk_level": "medium",
+      "implementation_priority": 7,
+      "apply_authorization_required_later": true,
+      "db_write_in_p127": false,
+      "notes": null
+    },
+    {
+      "strategy_id": "midfreq_acb_2bet",
+      "lottery_type": "DAILY_539",
+      "target_bet_count": 2,
+      "algorithm_family": "mid_frequency",
+      "quality_label": "watchlist",
+      "p125_rank_score": 39,
+      "current_replay_rows": 1500,
+      "current_bet_index_distribution": {
+        "1": 1500
+      },
+      "missing_adapter_component": "midfreq_multi_bet_adapter",
+      "adapter_function": "get_all_bets_midfreq_acb",
+      "proposed_adapter_contract": {
+        "method_signature": "def get_all_bets_midfreq_acb(draw_context: dict) -> list[list[int]]",
+        "expected_output_count": 2,
+        "output_format": "List of 2 sublists, each with 5 integers",
+        "lottery_range": "1–39",
+        "must_not_fabricate": true,
+        "must_use_historical_draw_context_only": true,
+        "draw_context_keys_required": [
+          "history_cutoff_draw",
+          "historical_draws",
+          "lottery_type"
+        ],
+        "deterministic_ordering_rule": "Bets ordered by descending model confidence score. Ties broken by ascending number sum, then lexicographic sort. Seed = SHA256(strategy_id + target_draw + draw_context hash)[:8].",
+        "storage_format": "one_row_per_bet (P128 APPROVED — bet_index 1..N)"
+      },
+      "deterministic_ordering_rule": "Bets ordered by descending model confidence score. Ties broken by ascending number sum, then lexicographic sort. Seed = SHA256(strategy_id + target_draw + draw_context hash)[:8].",
+      "duplicate_guard": {
+        "strategy": "UNIQUE(lottery_type, target_draw, strategy_id, bet_index)",
+        "pre_insert_check": "SELECT COUNT(*) = 0 WHERE bet_index IN (2..2)",
+        "abort_on_conflict": true
+      },
+      "provenance_requirements": {
+        "controlled_apply_id": "P128_APPLY_MIDFREQ_ACB_2BET_vN",
+        "provenance_hash": "SHA256(strategy_id + target_draw + bet_index + predicted_numbers)",
+        "provenance_source": "historical_only",
+        "dry_run_required_before_apply": true
+      },
+      "tests_required": [
+        "test_midfreq_acb_2bet_adapter_output_count_eq_2",
+        "test_midfreq_acb_2bet_no_future_data_in_draw_context",
+        "test_midfreq_acb_2bet_deterministic_output_same_seed",
+        "test_midfreq_acb_2bet_all_numbers_in_valid_range",
+        "test_midfreq_acb_2bet_no_duplicate_numbers_within_bet",
+        "test_midfreq_acb_2bet_no_duplicate_bets_across_outputs",
+        "test_midfreq_acb_2bet_integration_with_historical_draw_context",
+        "test_midfreq_acb_2bet_provenance_hash_matches_inputs"
+      ],
+      "risk_level": "medium",
+      "implementation_priority": 1,
+      "apply_authorization_required_later": true,
+      "db_write_in_p127": false,
+      "notes": null
+    },
+    {
+      "strategy_id": "midfreq_fourier_2bet",
+      "lottery_type": "DAILY_539",
+      "target_bet_count": 2,
+      "algorithm_family": "fourier",
+      "quality_label": "watchlist",
+      "p125_rank_score": 39,
+      "current_replay_rows": 1500,
+      "current_bet_index_distribution": {
+        "1": 1500
+      },
+      "missing_adapter_component": "fourier_multi_bet_adapter",
+      "adapter_function": "get_all_bets_fourier_d539",
+      "proposed_adapter_contract": {
+        "method_signature": "def get_all_bets_fourier_d539(draw_context: dict) -> list[list[int]]",
+        "expected_output_count": 2,
+        "output_format": "List of 2 sublists, each with 5 integers",
+        "lottery_range": "1–39",
+        "must_not_fabricate": true,
+        "must_use_historical_draw_context_only": true,
+        "draw_context_keys_required": [
+          "history_cutoff_draw",
+          "historical_draws",
+          "lottery_type"
+        ],
+        "deterministic_ordering_rule": "Bets ordered by descending model confidence score. Ties broken by ascending number sum, then lexicographic sort. Seed = SHA256(strategy_id + target_draw + draw_context hash)[:8].",
+        "storage_format": "one_row_per_bet (P128 APPROVED — bet_index 1..N)"
+      },
+      "deterministic_ordering_rule": "Bets ordered by descending model confidence score. Ties broken by ascending number sum, then lexicographic sort. Seed = SHA256(strategy_id + target_draw + draw_context hash)[:8].",
+      "duplicate_guard": {
+        "strategy": "UNIQUE(lottery_type, target_draw, strategy_id, bet_index)",
+        "pre_insert_check": "SELECT COUNT(*) = 0 WHERE bet_index IN (2..2)",
+        "abort_on_conflict": true
+      },
+      "provenance_requirements": {
+        "controlled_apply_id": "P128_APPLY_MIDFREQ_FOURIER_2BET_vN",
+        "provenance_hash": "SHA256(strategy_id + target_draw + bet_index + predicted_numbers)",
+        "provenance_source": "historical_only",
+        "dry_run_required_before_apply": true
+      },
+      "tests_required": [
+        "test_midfreq_fourier_2bet_adapter_output_count_eq_2",
+        "test_midfreq_fourier_2bet_no_future_data_in_draw_context",
+        "test_midfreq_fourier_2bet_deterministic_output_same_seed",
+        "test_midfreq_fourier_2bet_all_numbers_in_valid_range",
+        "test_midfreq_fourier_2bet_no_duplicate_numbers_within_bet",
+        "test_midfreq_fourier_2bet_no_duplicate_bets_across_outputs",
+        "test_midfreq_fourier_2bet_integration_with_historical_draw_context",
+        "test_midfreq_fourier_2bet_provenance_hash_matches_inputs"
+      ],
+      "risk_level": "medium",
+      "implementation_priority": 2,
+      "apply_authorization_required_later": true,
+      "db_write_in_p127": false,
+      "notes": null
+    },
+    {
+      "strategy_id": "zonal_entropy_2bet",
+      "lottery_type": "POWER_LOTTO",
+      "target_bet_count": 2,
+      "algorithm_family": "zonal_entropy",
+      "quality_label": "fallback_equivalent",
+      "p125_rank_score": 39,
+      "current_replay_rows": 1500,
+      "current_bet_index_distribution": {
+        "1": 1500
+      },
+      "missing_adapter_component": "zonal_multi_bet_adapter",
+      "adapter_function": "get_all_bets_zonal_entropy",
+      "proposed_adapter_contract": {
+        "method_signature": "def get_all_bets_zonal_entropy(draw_context: dict) -> list[list[int]]",
+        "expected_output_count": 2,
+        "output_format": "List of 2 sublists, each with 6 integers",
+        "lottery_range": "1–39 (special 1–10)",
+        "must_not_fabricate": true,
+        "must_use_historical_draw_context_only": true,
+        "draw_context_keys_required": [
+          "history_cutoff_draw",
+          "historical_draws",
+          "lottery_type"
+        ],
+        "deterministic_ordering_rule": "Bets ordered by descending model confidence score. Ties broken by ascending number sum, then lexicographic sort. Seed = SHA256(strategy_id + target_draw + draw_context hash)[:8].",
+        "storage_format": "one_row_per_bet (P128 APPROVED — bet_index 1..N)"
+      },
+      "deterministic_ordering_rule": "Bets ordered by descending model confidence score. Ties broken by ascending number sum, then lexicographic sort. Seed = SHA256(strategy_id + target_draw + draw_context hash)[:8].",
+      "duplicate_guard": {
+        "strategy": "UNIQUE(lottery_type, target_draw, strategy_id, bet_index)",
+        "pre_insert_check": "SELECT COUNT(*) = 0 WHERE bet_index IN (2..2)",
+        "abort_on_conflict": true
+      },
+      "provenance_requirements": {
+        "controlled_apply_id": "P128_APPLY_ZONAL_ENTROPY_2BET_vN",
+        "provenance_hash": "SHA256(strategy_id + target_draw + bet_index + predicted_numbers)",
+        "provenance_source": "historical_only",
+        "dry_run_required_before_apply": true
+      },
+      "tests_required": [
+        "test_zonal_entropy_2bet_adapter_output_count_eq_2",
+        "test_zonal_entropy_2bet_no_future_data_in_draw_context",
+        "test_zonal_entropy_2bet_deterministic_output_same_seed",
+        "test_zonal_entropy_2bet_all_numbers_in_valid_range",
+        "test_zonal_entropy_2bet_no_duplicate_numbers_within_bet",
+        "test_zonal_entropy_2bet_no_duplicate_bets_across_outputs",
+        "test_zonal_entropy_2bet_integration_with_historical_draw_context",
+        "test_zonal_entropy_2bet_provenance_hash_matches_inputs"
+      ],
+      "risk_level": "medium",
+      "implementation_priority": 3,
+      "apply_authorization_required_later": true,
+      "db_write_in_p127": false,
+      "notes": null
+    },
+    {
+      "strategy_id": "cold_complement_2bet",
+      "lottery_type": "POWER_LOTTO",
+      "target_bet_count": 2,
+      "algorithm_family": "cold_number_complement",
+      "quality_label": "fallback_equivalent",
+      "p125_rank_score": 39,
+      "current_replay_rows": 1500,
+      "current_bet_index_distribution": {
+        "1": 1500
+      },
+      "missing_adapter_component": "cold_complement_multi_bet_adapter",
+      "adapter_function": "get_all_bets_cold_complement",
+      "proposed_adapter_contract": {
+        "method_signature": "def get_all_bets_cold_complement(draw_context: dict) -> list[list[int]]",
+        "expected_output_count": 2,
+        "output_format": "List of 2 sublists, each with 6 integers",
+        "lottery_range": "1–39 (special 1–10)",
+        "must_not_fabricate": true,
+        "must_use_historical_draw_context_only": true,
+        "draw_context_keys_required": [
+          "history_cutoff_draw",
+          "historical_draws",
+          "lottery_type"
+        ],
+        "deterministic_ordering_rule": "Bets ordered by descending model confidence score. Ties broken by ascending number sum, then lexicographic sort. Seed = SHA256(strategy_id + target_draw + draw_context hash)[:8].",
+        "storage_format": "one_row_per_bet (P128 APPROVED — bet_index 1..N)"
+      },
+      "deterministic_ordering_rule": "Bets ordered by descending model confidence score. Ties broken by ascending number sum, then lexicographic sort. Seed = SHA256(strategy_id + target_draw + draw_context hash)[:8].",
+      "duplicate_guard": {
+        "strategy": "UNIQUE(lottery_type, target_draw, strategy_id, bet_index)",
+        "pre_insert_check": "SELECT COUNT(*) = 0 WHERE bet_index IN (2..2)",
+        "abort_on_conflict": true
+      },
+      "provenance_requirements": {
+        "controlled_apply_id": "P128_APPLY_COLD_COMPLEMENT_2BET_vN",
+        "provenance_hash": "SHA256(strategy_id + target_draw + bet_index + predicted_numbers)",
+        "provenance_source": "historical_only",
+        "dry_run_required_before_apply": true
+      },
+      "tests_required": [
+        "test_cold_complement_2bet_adapter_output_count_eq_2",
+        "test_cold_complement_2bet_no_future_data_in_draw_context",
+        "test_cold_complement_2bet_deterministic_output_same_seed",
+        "test_cold_complement_2bet_all_numbers_in_valid_range",
+        "test_cold_complement_2bet_no_duplicate_numbers_within_bet",
+        "test_cold_complement_2bet_no_duplicate_bets_across_outputs",
+        "test_cold_complement_2bet_integration_with_historical_draw_context",
+        "test_cold_complement_2bet_provenance_hash_matches_inputs"
+      ],
+      "risk_level": "medium",
+      "implementation_priority": 4,
+      "apply_authorization_required_later": true,
+      "db_write_in_p127": false,
+      "notes": null
+    },
+    {
+      "strategy_id": "power_orthogonal_5bet",
+      "lottery_type": "POWER_LOTTO",
+      "target_bet_count": 5,
+      "algorithm_family": "orthogonal_diversification",
+      "quality_label": "watchlist",
+      "p125_rank_score": 35,
+      "current_replay_rows": 1570,
+      "current_bet_index_distribution": {
+        "1": 1550,
+        "2": 20
+      },
+      "missing_adapter_component": "orthogonal_multi_bet_adapter",
+      "adapter_function": "get_all_bets_power_orthogonal",
+      "proposed_adapter_contract": {
+        "method_signature": "def get_all_bets_power_orthogonal(draw_context: dict) -> list[list[int]]",
+        "expected_output_count": 5,
+        "output_format": "List of 5 sublists, each with 6 integers",
+        "lottery_range": "1–39 (special 1–10)",
+        "must_not_fabricate": true,
+        "must_use_historical_draw_context_only": true,
+        "draw_context_keys_required": [
+          "history_cutoff_draw",
+          "historical_draws",
+          "lottery_type"
+        ],
+        "deterministic_ordering_rule": "Bets ordered by descending model confidence score. Ties broken by ascending number sum, then lexicographic sort. Seed = SHA256(strategy_id + target_draw + draw_context hash)[:8].",
+        "storage_format": "one_row_per_bet (P128 APPROVED — bet_index 1..N)"
+      },
+      "deterministic_ordering_rule": "Bets ordered by descending model confidence score. Ties broken by ascending number sum, then lexicographic sort. Seed = SHA256(strategy_id + target_draw + draw_context hash)[:8].",
+      "duplicate_guard": {
+        "strategy": "UNIQUE(lottery_type, target_draw, strategy_id, bet_index)",
+        "pre_insert_check": "SELECT COUNT(*) = 0 WHERE bet_index IN (2..5)",
+        "abort_on_conflict": true
+      },
+      "provenance_requirements": {
+        "controlled_apply_id": "P128_APPLY_POWER_ORTHOGONAL_5BET_vN",
+        "provenance_hash": "SHA256(strategy_id + target_draw + bet_index + predicted_numbers)",
+        "provenance_source": "historical_only",
+        "dry_run_required_before_apply": true
+      },
+      "tests_required": [
+        "test_power_orthogonal_5bet_adapter_output_count_eq_5",
+        "test_power_orthogonal_5bet_no_future_data_in_draw_context",
+        "test_power_orthogonal_5bet_deterministic_output_same_seed",
+        "test_power_orthogonal_5bet_all_numbers_in_valid_range",
+        "test_power_orthogonal_5bet_no_duplicate_numbers_within_bet",
+        "test_power_orthogonal_5bet_no_duplicate_bets_across_outputs",
+        "test_power_orthogonal_5bet_integration_with_historical_draw_context",
+        "test_power_orthogonal_5bet_provenance_hash_matches_inputs"
+      ],
+      "risk_level": "medium",
+      "implementation_priority": 12,
+      "apply_authorization_required_later": true,
+      "db_write_in_p127": false,
+      "notes": [
+        "Non-standard row count: 1570 (expected 1500 for bet_index=1 only)",
+        "Partial bet_index rows already present: bet_index [2] (20 rows) — may indicate prior incomplete apply"
+      ]
+    },
+    {
+      "strategy_id": "power_precision_3bet",
+      "lottery_type": "POWER_LOTTO",
+      "target_bet_count": 3,
+      "algorithm_family": "precision_scoring",
+      "quality_label": "watchlist",
+      "p125_rank_score": 31,
+      "current_replay_rows": 1570,
+      "current_bet_index_distribution": {
+        "1": 1550,
+        "2": 20
+      },
+      "missing_adapter_component": "precision_multi_bet_adapter",
+      "adapter_function": "get_all_bets_power_precision",
+      "proposed_adapter_contract": {
+        "method_signature": "def get_all_bets_power_precision(draw_context: dict) -> list[list[int]]",
+        "expected_output_count": 3,
+        "output_format": "List of 3 sublists, each with 6 integers",
+        "lottery_range": "1–39 (special 1–10)",
+        "must_not_fabricate": true,
+        "must_use_historical_draw_context_only": true,
+        "draw_context_keys_required": [
+          "history_cutoff_draw",
+          "historical_draws",
+          "lottery_type"
+        ],
+        "deterministic_ordering_rule": "Bets ordered by descending model confidence score. Ties broken by ascending number sum, then lexicographic sort. Seed = SHA256(strategy_id + target_draw + draw_context hash)[:8].",
+        "storage_format": "one_row_per_bet (P128 APPROVED — bet_index 1..N)"
+      },
+      "deterministic_ordering_rule": "Bets ordered by descending model confidence score. Ties broken by ascending number sum, then lexicographic sort. Seed = SHA256(strategy_id + target_draw + draw_context hash)[:8].",
+      "duplicate_guard": {
+        "strategy": "UNIQUE(lottery_type, target_draw, strategy_id, bet_index)",
+        "pre_insert_check": "SELECT COUNT(*) = 0 WHERE bet_index IN (2..3)",
+        "abort_on_conflict": true
+      },
+      "provenance_requirements": {
+        "controlled_apply_id": "P128_APPLY_POWER_PRECISION_3BET_vN",
+        "provenance_hash": "SHA256(strategy_id + target_draw + bet_index + predicted_numbers)",
+        "provenance_source": "historical_only",
+        "dry_run_required_before_apply": true
+      },
+      "tests_required": [
+        "test_power_precision_3bet_adapter_output_count_eq_3",
+        "test_power_precision_3bet_no_future_data_in_draw_context",
+        "test_power_precision_3bet_deterministic_output_same_seed",
+        "test_power_precision_3bet_all_numbers_in_valid_range",
+        "test_power_precision_3bet_no_duplicate_numbers_within_bet",
+        "test_power_precision_3bet_no_duplicate_bets_across_outputs",
+        "test_power_precision_3bet_integration_with_historical_draw_context",
+        "test_power_precision_3bet_provenance_hash_matches_inputs"
+      ],
+      "risk_level": "medium",
+      "implementation_priority": 10,
+      "apply_authorization_required_later": true,
+      "db_write_in_p127": false,
+      "notes": [
+        "Non-standard row count: 1570 (expected 1500 for bet_index=1 only)",
+        "Partial bet_index rows already present: bet_index [2] (20 rows) — may indicate prior incomplete apply"
+      ]
+    },
+    {
+      "strategy_id": "fourier_rhythm_3bet",
+      "lottery_type": "POWER_LOTTO",
+      "target_bet_count": 3,
+      "algorithm_family": "fourier_rhythm",
+      "quality_label": "watchlist",
+      "p125_rank_score": 31,
+      "current_replay_rows": 1501,
+      "current_bet_index_distribution": {
+        "1": 1501
+      },
+      "missing_adapter_component": "fourier_multi_bet_adapter",
+      "adapter_function": "get_all_bets_fourier_rhythm",
+      "proposed_adapter_contract": {
+        "method_signature": "def get_all_bets_fourier_rhythm(draw_context: dict) -> list[list[int]]",
+        "expected_output_count": 3,
+        "output_format": "List of 3 sublists, each with 6 integers",
+        "lottery_range": "1–39 (special 1–10)",
+        "must_not_fabricate": true,
+        "must_use_historical_draw_context_only": true,
+        "draw_context_keys_required": [
+          "history_cutoff_draw",
+          "historical_draws",
+          "lottery_type"
+        ],
+        "deterministic_ordering_rule": "Bets ordered by descending model confidence score. Ties broken by ascending number sum, then lexicographic sort. Seed = SHA256(strategy_id + target_draw + draw_context hash)[:8].",
+        "storage_format": "one_row_per_bet (P128 APPROVED — bet_index 1..N)"
+      },
+      "deterministic_ordering_rule": "Bets ordered by descending model confidence score. Ties broken by ascending number sum, then lexicographic sort. Seed = SHA256(strategy_id + target_draw + draw_context hash)[:8].",
+      "duplicate_guard": {
+        "strategy": "UNIQUE(lottery_type, target_draw, strategy_id, bet_index)",
+        "pre_insert_check": "SELECT COUNT(*) = 0 WHERE bet_index IN (2..3)",
+        "abort_on_conflict": true
+      },
+      "provenance_requirements": {
+        "controlled_apply_id": "P128_APPLY_FOURIER_RHYTHM_3BET_vN",
+        "provenance_hash": "SHA256(strategy_id + target_draw + bet_index + predicted_numbers)",
+        "provenance_source": "historical_only",
+        "dry_run_required_before_apply": true
+      },
+      "tests_required": [
+        "test_fourier_rhythm_3bet_adapter_output_count_eq_3",
+        "test_fourier_rhythm_3bet_no_future_data_in_draw_context",
+        "test_fourier_rhythm_3bet_deterministic_output_same_seed",
+        "test_fourier_rhythm_3bet_all_numbers_in_valid_range",
+        "test_fourier_rhythm_3bet_no_duplicate_numbers_within_bet",
+        "test_fourier_rhythm_3bet_no_duplicate_bets_across_outputs",
+        "test_fourier_rhythm_3bet_integration_with_historical_draw_context",
+        "test_fourier_rhythm_3bet_provenance_hash_matches_inputs"
+      ],
+      "risk_level": "medium",
+      "implementation_priority": 9,
+      "apply_authorization_required_later": true,
+      "db_write_in_p127": false,
+      "notes": [
+        "Non-standard row count: 1501 (expected 1500 for bet_index=1 only)"
+      ]
+    },
+    {
+      "strategy_id": "midfreq_fourier_2bet",
+      "lottery_type": "POWER_LOTTO",
+      "target_bet_count": 2,
+      "algorithm_family": "fourier",
+      "quality_label": "watchlist",
+      "p125_rank_score": 29,
+      "current_replay_rows": 1500,
+      "current_bet_index_distribution": {
+        "1": 1500
+      },
+      "missing_adapter_component": "fourier_multi_bet_adapter",
+      "adapter_function": "get_all_bets_fourier_power",
+      "proposed_adapter_contract": {
+        "method_signature": "def get_all_bets_fourier_power(draw_context: dict) -> list[list[int]]",
+        "expected_output_count": 2,
+        "output_format": "List of 2 sublists, each with 6 integers",
+        "lottery_range": "1–39 (special 1–10)",
+        "must_not_fabricate": true,
+        "must_use_historical_draw_context_only": true,
+        "draw_context_keys_required": [
+          "history_cutoff_draw",
+          "historical_draws",
+          "lottery_type"
+        ],
+        "deterministic_ordering_rule": "Bets ordered by descending model confidence score. Ties broken by ascending number sum, then lexicographic sort. Seed = SHA256(strategy_id + target_draw + draw_context hash)[:8].",
+        "storage_format": "one_row_per_bet (P128 APPROVED — bet_index 1..N)"
+      },
+      "deterministic_ordering_rule": "Bets ordered by descending model confidence score. Ties broken by ascending number sum, then lexicographic sort. Seed = SHA256(strategy_id + target_draw + draw_context hash)[:8].",
+      "duplicate_guard": {
+        "strategy": "UNIQUE(lottery_type, target_draw, strategy_id, bet_index)",
+        "pre_insert_check": "SELECT COUNT(*) = 0 WHERE bet_index IN (2..2)",
+        "abort_on_conflict": true
+      },
+      "provenance_requirements": {
+        "controlled_apply_id": "P128_APPLY_MIDFREQ_FOURIER_2BET_vN",
+        "provenance_hash": "SHA256(strategy_id + target_draw + bet_index + predicted_numbers)",
+        "provenance_source": "historical_only",
+        "dry_run_required_before_apply": true
+      },
+      "tests_required": [
+        "test_midfreq_fourier_2bet_adapter_output_count_eq_2",
+        "test_midfreq_fourier_2bet_no_future_data_in_draw_context",
+        "test_midfreq_fourier_2bet_deterministic_output_same_seed",
+        "test_midfreq_fourier_2bet_all_numbers_in_valid_range",
+        "test_midfreq_fourier_2bet_no_duplicate_numbers_within_bet",
+        "test_midfreq_fourier_2bet_no_duplicate_bets_across_outputs",
+        "test_midfreq_fourier_2bet_integration_with_historical_draw_context",
+        "test_midfreq_fourier_2bet_provenance_hash_matches_inputs"
+      ],
+      "risk_level": "medium",
+      "implementation_priority": 5,
+      "apply_authorization_required_later": true,
+      "db_write_in_p127": false,
+      "notes": null
+    },
+    {
+      "strategy_id": "fourier30_markov30_2bet",
+      "lottery_type": "POWER_LOTTO",
+      "target_bet_count": 2,
+      "algorithm_family": "fourier_markov_composite",
+      "quality_label": "watchlist",
+      "p125_rank_score": 29,
+      "current_replay_rows": 1501,
+      "current_bet_index_distribution": {
+        "1": 1501
+      },
+      "missing_adapter_component": "fourier_markov_multi_bet_adapter",
+      "adapter_function": "get_all_bets_fourier30_markov30",
+      "proposed_adapter_contract": {
+        "method_signature": "def get_all_bets_fourier30_markov30(draw_context: dict) -> list[list[int]]",
+        "expected_output_count": 2,
+        "output_format": "List of 2 sublists, each with 6 integers",
+        "lottery_range": "1–39 (special 1–10)",
+        "must_not_fabricate": true,
+        "must_use_historical_draw_context_only": true,
+        "draw_context_keys_required": [
+          "history_cutoff_draw",
+          "historical_draws",
+          "lottery_type"
+        ],
+        "deterministic_ordering_rule": "Bets ordered by descending model confidence score. Ties broken by ascending number sum, then lexicographic sort. Seed = SHA256(strategy_id + target_draw + draw_context hash)[:8].",
+        "storage_format": "one_row_per_bet (P128 APPROVED — bet_index 1..N)"
+      },
+      "deterministic_ordering_rule": "Bets ordered by descending model confidence score. Ties broken by ascending number sum, then lexicographic sort. Seed = SHA256(strategy_id + target_draw + draw_context hash)[:8].",
+      "duplicate_guard": {
+        "strategy": "UNIQUE(lottery_type, target_draw, strategy_id, bet_index)",
+        "pre_insert_check": "SELECT COUNT(*) = 0 WHERE bet_index IN (2..2)",
+        "abort_on_conflict": true
+      },
+      "provenance_requirements": {
+        "controlled_apply_id": "P128_APPLY_FOURIER30_MARKOV30_2BET_vN",
+        "provenance_hash": "SHA256(strategy_id + target_draw + bet_index + predicted_numbers)",
+        "provenance_source": "historical_only",
+        "dry_run_required_before_apply": true
+      },
+      "tests_required": [
+        "test_fourier30_markov30_2bet_adapter_output_count_eq_2",
+        "test_fourier30_markov30_2bet_no_future_data_in_draw_context",
+        "test_fourier30_markov30_2bet_deterministic_output_same_seed",
+        "test_fourier30_markov30_2bet_all_numbers_in_valid_range",
+        "test_fourier30_markov30_2bet_no_duplicate_numbers_within_bet",
+        "test_fourier30_markov30_2bet_no_duplicate_bets_across_outputs",
+        "test_fourier30_markov30_2bet_integration_with_historical_draw_context",
+        "test_fourier30_markov30_2bet_provenance_hash_matches_inputs"
+      ],
+      "risk_level": "medium",
+      "implementation_priority": 6,
+      "apply_authorization_required_later": true,
+      "db_write_in_p127": false,
+      "notes": [
+        "Non-standard row count: 1501 (expected 1500 for bet_index=1 only)"
+      ]
+    }
+  ],
+  "recommended_implementation_order": [
+    {
+      "priority": 1,
+      "strategy_id": "midfreq_acb_2bet",
+      "lottery_type": "DAILY_539",
+      "target_bet_count": 2,
+      "rationale": "bet_count=2, quality=watchlist, rank_score=39"
+    },
+    {
+      "priority": 2,
+      "strategy_id": "midfreq_fourier_2bet",
+      "lottery_type": "DAILY_539",
+      "target_bet_count": 2,
+      "rationale": "bet_count=2, quality=watchlist, rank_score=39"
+    },
+    {
+      "priority": 3,
+      "strategy_id": "zonal_entropy_2bet",
+      "lottery_type": "POWER_LOTTO",
+      "target_bet_count": 2,
+      "rationale": "bet_count=2, quality=fallback_equivalent, rank_score=39"
+    },
+    {
+      "priority": 4,
+      "strategy_id": "cold_complement_2bet",
+      "lottery_type": "POWER_LOTTO",
+      "target_bet_count": 2,
+      "rationale": "bet_count=2, quality=fallback_equivalent, rank_score=39"
+    },
+    {
+      "priority": 5,
+      "strategy_id": "midfreq_fourier_2bet",
+      "lottery_type": "POWER_LOTTO",
+      "target_bet_count": 2,
+      "rationale": "bet_count=2, quality=watchlist, rank_score=29"
+    },
+    {
+      "priority": 6,
+      "strategy_id": "fourier30_markov30_2bet",
+      "lottery_type": "POWER_LOTTO",
+      "target_bet_count": 2,
+      "rationale": "bet_count=2, quality=watchlist, rank_score=29"
+    },
+    {
+      "priority": 7,
+      "strategy_id": "acb_markov_midfreq_3bet",
+      "lottery_type": "DAILY_539",
+      "target_bet_count": 3,
+      "rationale": "bet_count=3, quality=watchlist, rank_score=41"
+    },
+    {
+      "priority": 8,
+      "strategy_id": "midfreq_fourier_mk_3bet",
+      "lottery_type": "POWER_LOTTO",
+      "target_bet_count": 3,
+      "rationale": "bet_count=3, quality=prediction_helpful, rank_score=51"
+    },
+    {
+      "priority": 9,
+      "strategy_id": "fourier_rhythm_3bet",
+      "lottery_type": "POWER_LOTTO",
+      "target_bet_count": 3,
+      "rationale": "bet_count=3, quality=watchlist, rank_score=31"
+    },
+    {
+      "priority": 10,
+      "strategy_id": "power_precision_3bet",
+      "lottery_type": "POWER_LOTTO",
+      "target_bet_count": 3,
+      "rationale": "bet_count=3, quality=watchlist, rank_score=31"
+    },
+    {
+      "priority": 11,
+      "strategy_id": "pp3_freqort_4bet",
+      "lottery_type": "POWER_LOTTO",
+      "target_bet_count": 4,
+      "rationale": "bet_count=4, quality=prediction_helpful, rank_score=53"
+    },
+    {
+      "priority": 12,
+      "strategy_id": "power_orthogonal_5bet",
+      "lottery_type": "POWER_LOTTO",
+      "target_bet_count": 5,
+      "rationale": "bet_count=5, quality=watchlist, rank_score=35"
+    }
+  ],
+  "apply_gate_status": {
+    "adapter_implementation_done": false,
+    "controlled_apply_executed": false,
+    "replay_rows_inserted": 0,
+    "production_db_rows_expected": 72462,
+    "production_db_rows_after": 72462,
+    "note": "P127 is spec-only. No apply will be executed until adapter implementations are complete and per-strategy authorization is granted."
+  },
+  "blocked_or_excluded": {
+    "4_STAR_excluded": true,
+    "4_STAR_reason": "source_unknown — provenance unresolvable",
+    "P108_not_run": true,
+    "P108_reason": "insufficient Special3 draws (~37 more needed)",
+    "P117_not_run": true,
+    "P117_reason": "POWER_LOTTO OOS insufficient (~30-40 more draws needed)",
+    "P118_not_run": true,
+    "P118_reason": "blocked pending P117 completion",
+    "rejected_strategies_no_action": true,
+    "no_scheduler_install": true,
+    "no_lifecycle_mutation": true,
+    "no_champion_registry_mutation": true,
+    "no_db_write_in_P127": true,
+    "no_controlled_apply_in_P127": true
+  },
+  "test_plan_summary": {
+    "tests_per_strategy": 8,
+    "total_expected_tests": 96,
+    "test_categories": [
+      "adapter_output_count_correctness",
+      "no_future_data_leak",
+      "deterministic_output",
+      "valid_number_range",
+      "no_intra_bet_duplicates",
+      "no_inter_bet_duplicates",
+      "historical_context_integration",
+      "provenance_hash_verification"
+    ],
+    "regression_gate": [
+      "tests/test_p126g_all_tier_b_apply_closure_audit.py",
+      "tests/test_p126f_apply_daily539_f4cold_5bet.py",
+      "tests/test_p126e_apply_biglotto_ts3_markov_4bet_w30.py",
+      "tests/test_p126c_apply_biglotto_echo_aware_3bet.py",
+      "tests/test_p126b_apply_power_fourier_rhythm_2bet.py",
+      "tests/test_p126a_controlled_apply_authorization_gate.py",
+      "tests/test_p129b_execute_bet_index_schema_migration.py"
+    ]
+  },
+  "roadmap_update_status": {
+    "cto_analysis_updated": true,
+    "roadmap_updated": true,
+    "marker": "CTO_ROADMAP_UPDATED_AFTER_P127_ADAPTER_BUILD_SPECS_20260528"
+  },
+  "remaining_risks": [
+    {
+      "id": "RSR-4",
+      "description": "API/UI consumers need WHERE bet_index = 1 filter",
+      "status": "open",
+      "owner": "parallel track"
+    },
+    {
+      "id": "RSR-5",
+      "description": "Adapter implementations not yet built for 12 strategies",
+      "status": "open — P127 delivers specs; implementation is next"
+    },
+    {
+      "id": "RSR-6",
+      "description": "power_orthogonal_5bet and power_precision_3bet have orphan bet_index=2 rows (20 rows each) from prior partial apply — must audit before P128 apply wave",
+      "status": "open — deduplication audit required"
+    },
+    {
+      "id": "RSR-7",
+      "description": "fourier_rhythm_3bet and fourier30_markov30_2bet have 1501 rows (1 extra row each) — minor anomaly, monitor",
+      "status": "open — low priority"
+    },
+    {
+      "id": "RSR-8",
+      "description": "daily539_f4cold_5bet PROVISIONAL — requires stat validation before promotion",
+      "status": "open"
+    },
+    {
+      "id": "BLOCKED-P108",
+      "description": "P108 blocked — insufficient Special3 draws",
+      "status": "blocked"
+    },
+    {
+      "id": "BLOCKED-P117",
+      "description": "P117 POWER_LOTTO OOS blocked — insufficient draws",
+      "status": "blocked"
+    }
+  ],
+  "next_recommended_task": {
+    "task_id": "P128_APPLY_WAVE_2",
+    "description": "Implement get_all_bets() adapters for the 12 remaining strategies following the P127 spec matrix. Start with 2-bet strategies (priority 1-6). Each adapter must pass unit tests before controlled_apply authorization is granted. Audit RSR-6 (orphan bet_index=2 rows) before any apply for power_orthogonal_5bet and power_precision_3bet.",
+    "prerequisite_gate": "Adapter implementation + unit tests pass → per-strategy apply authorization"
+  },
+  "summary": "P127 adapter build spec phase complete. 12 adapter_build strategies identified. No DB writes executed. Production DB remains at 72462 rows. All 15 P126G checks confirmed. Recommended implementation order established (2-bet strategies first). Apply gate remains closed pending adapter implementation."
+}

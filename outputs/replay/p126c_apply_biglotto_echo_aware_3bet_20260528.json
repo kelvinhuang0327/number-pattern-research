@@ -1,0 +1,204 @@
+{
+  "task_id": "P126C",
+  "classification": "P126C_BIGLOTTO_ECHO_AWARE_3BET_APPLIED",
+  "generated_at": "2026-05-28T09:13:19.655819+00:00",
+  "authorization": {
+    "strategy_id": "biglotto_echo_aware_3bet",
+    "exact_required_phrase": "YES authorize controlled_apply for biglotto_echo_aware_3bet because <reason>",
+    "authorization_present": true,
+    "apply_allowed": true,
+    "authorization_text_observed": "YES authorize controlled_apply for biglotto_echo_aware_3bet because P126B succeeded and this is the next +3000 row controlled apply candidate",
+    "reason_text": "P126B succeeded and this is the next +3000 row controlled apply candidate",
+    "stop_reason": null
+  },
+  "db_snapshot_before": {
+    "replay_rows": 55962,
+    "has_bet_index_column": true,
+    "has_new_unique_constraint": true,
+    "columns_count": 28,
+    "biglotto_echo_aware_3bet_rows": 1500,
+    "power_fourier_rhythm_2bet_rows": 3000,
+    "total_replay_rows": 55962
+  },
+  "backup": {
+    "backup_path": "/Users/kelvin/Kelvin-WorkSpace/LotteryNew/.claude/worktrees/zen-gates-ff6802/lottery_api/data/backups/lottery_v2.db.p126c_backup_20260528T091319Z.db",
+    "backup_created": true,
+    "backup_row_count": 55962,
+    "backup_verification": "PASS",
+    "backup_ok": true
+  },
+  "apply_scope": {
+    "strategy_id": "biglotto_echo_aware_3bet",
+    "lottery_type": "BIG_LOTTO",
+    "target_bet_count": 3,
+    "expected_insert_rows": 3000,
+    "actual_insert_rows": 3000,
+    "apply_executed": true,
+    "controlled_apply_id": "P126C_BIGLOTTO_ECHO_AWARE_3BET_20260528",
+    "bet2_rows_inserted": 1500,
+    "bet3_rows_inserted": 1500,
+    "bet1_mismatch_count": 0,
+    "mismatch_draws_sample": []
+  },
+  "candidate_source_summary": {
+    "p126_artifact": "outputs/replay/p126_controlled_apply_plan_tier_b_multi_bet_20260528.json",
+    "p126_classification": "P126_DRY_RUN_PLAN_READY",
+    "p126_classification_ok": true,
+    "candidate_found": true,
+    "expected_insert_rows": 3000,
+    "quality_label": "fallback_equivalent",
+    "risk_level": "low_to_medium",
+    "provenance_guard_pass": true,
+    "duplicate_guard_pass": true
+  },
+  "inserted_rows_summary": {
+    "strategy_id": "biglotto_echo_aware_3bet",
+    "lottery_type": "BIG_LOTTO",
+    "bet_indexes_inserted": [
+      2,
+      3
+    ],
+    "bet2_rows_inserted": 1500,
+    "bet3_rows_inserted": 1500,
+    "total_rows_inserted": 3000,
+    "controlled_apply_id": "P126C_BIGLOTTO_ECHO_AWARE_3BET_20260528",
+    "source": "P126C_CONTROLLED_APPLY",
+    "truth_level": "TIERB_DRYRUN_VALIDATED",
+    "dry_run": 0
+  },
+  "duplicate_guard": {
+    "unique_key": [
+      "lottery_type",
+      "target_draw",
+      "strategy_id",
+      "bet_index"
+    ],
+    "constraint_active": true,
+    "duplicate_rejected_in_validation": true,
+    "other_candidates_extra_inserted": {
+      "daily539_f4cold_3bet": 0,
+      "biglotto_ts3_markov_4bet_w30": 0,
+      "daily539_f4cold_5bet": 0
+    },
+    "other_candidates_untouched": true,
+    "guard_ok": true
+  },
+  "bet_index_validation": {
+    "bet1_count": 1500,
+    "bet2_count": 1500,
+    "bet3_count": 1500,
+    "expected_bet1": 1500,
+    "expected_bet2": 1500,
+    "expected_bet3": 1500,
+    "distribution_ok": true,
+    "lottery_type_all_correct": true,
+    "all_rows_big_lotto": true,
+    "validation": "PASS"
+  },
+  "db_snapshot_after": {
+    "replay_rows": 58962,
+    "has_bet_index_column": true,
+    "has_new_unique_constraint": true,
+    "columns_count": 28,
+    "biglotto_echo_aware_3bet_rows": 4500,
+    "power_fourier_rhythm_2bet_rows": 3000,
+    "total_replay_rows": 58962
+  },
+  "row_preservation_check": {
+    "rows_before_apply": 55962,
+    "rows_inserted": 3000,
+    "expected_rows_after": 58962,
+    "actual_rows_after": 58962,
+    "rows_preserved_ok": true
+  },
+  "drift_guard_update": {
+    "previous_total": 55962,
+    "new_total": 58962,
+    "rows_added": 3000,
+    "new_controlled_apply_id": "P126C_BIGLOTTO_ECHO_AWARE_3BET_20260528",
+    "drift_guard_script": "scripts/replay_lifecycle_drift_guard.py",
+    "update_required": true,
+    "update_note": "Add BASELINE['p126c_apply_id'] = 'P126C_BIGLOTTO_ECHO_AWARE_3BET_20260528' and BASELINE['p126c_count'] = 3000, update BASELINE['total_count'] = 58962"
+  },
+  "previous_apply_status": {
+    "power_fourier_rhythm_2bet": {
+      "already_applied": true,
+      "p126b_classification": "P126B_POWER_FOURIER_RHYTHM_2BET_APPLIED",
+      "rows_preserved": true,
+      "pfr_total_rows": 3000,
+      "pfr_bet1_count": 1500,
+      "pfr_bet2_count": 1500,
+      "no_duplicate_power_fourier_rows": true
+    }
+  },
+  "blocked_or_excluded": [
+    {
+      "item": "daily539_f4cold_3bet",
+      "reason": "Not authorized in P126C \u2014 requires separate per-strategy gate"
+    },
+    {
+      "item": "biglotto_ts3_markov_4bet_w30",
+      "reason": "Not authorized in P126C \u2014 requires separate per-strategy gate"
+    },
+    {
+      "item": "daily539_f4cold_5bet",
+      "reason": "Not authorized in P126C \u2014 requires separate per-strategy gate"
+    },
+    {
+      "item": "power_fourier_rhythm_2bet",
+      "reason": "Already applied in P126B \u2014 not re-applied"
+    },
+    {
+      "item": "4_STAR",
+      "reason": "Explicitly excluded from all Tier-B multi-bet work"
+    },
+    {
+      "item": "P108",
+      "reason": "P108 execution blocked \u2014 100-draw threshold not met"
+    },
+    {
+      "item": "P117",
+      "reason": "P117 execution blocked \u2014 POWER_LOTTO draw threshold not met"
+    },
+    {
+      "item": "P118",
+      "reason": "P118 execution blocked \u2014 exact authorization phrase absent"
+    },
+    {
+      "item": "rejected_strategies",
+      "reason": "No rejected strategies included or promoted"
+    },
+    {
+      "item": "scheduler_cron_launchd",
+      "reason": "No scheduler installation in P126C"
+    },
+    {
+      "item": "lifecycle_champion_registry",
+      "reason": "No strategy promotion / lifecycle / champion / registry mutation"
+    }
+  ],
+  "rollback_reference": {
+    "backup_path": "/Users/kelvin/Kelvin-WorkSpace/LotteryNew/.claude/worktrees/zen-gates-ff6802/lottery_api/data/backups/lottery_v2.db.p126c_backup_20260528T091319Z.db",
+    "rollback_command": "cp '/Users/kelvin/Kelvin-WorkSpace/LotteryNew/.claude/worktrees/zen-gates-ff6802/lottery_api/data/backups/lottery_v2.db.p126c_backup_20260528T091319Z.db' '/Users/kelvin/Kelvin-WorkSpace/LotteryNew/.claude/worktrees/zen-gates-ff6802/lottery_api/data/lottery_v2.db'",
+    "note": "If apply outcome is unsatisfactory, restore from backup. Verify row count after restore: sqlite3 /Users/kelvin/Kelvin-WorkSpace/LotteryNew/.claude/worktrees/zen-gates-ff6802/lottery_api/data/lottery_v2.db 'SELECT COUNT(*) FROM strategy_prediction_replays;' must return 55962."
+  },
+  "summary": {
+    "task_id": "P126C",
+    "classification": "P126C_BIGLOTTO_ECHO_AWARE_3BET_APPLIED",
+    "authorization_present": true,
+    "apply_executed": true,
+    "strategy_id": "biglotto_echo_aware_3bet",
+    "lottery_type": "BIG_LOTTO",
+    "rows_before": 55962,
+    "rows_inserted": 3000,
+    "rows_after": 58962,
+    "strategy_rows_total": 4500,
+    "bet_index_distribution_ok": true,
+    "unique_constraint_ok": true,
+    "other_candidates_untouched": true,
+    "power_fourier_rhythm_2bet_preserved": true,
+    "all_validation_ok": true,
+    "drift_guard_update_required": true,
+    "next_step": "Update drift guard baseline to reflect 58962 rows. Remaining P126A candidates for future authorization: daily539_f4cold_3bet, biglotto_ts3_markov_4bet_w30, daily539_f4cold_5bet."
+  }
+}

@@ -117,7 +117,10 @@ BASELINE = {
     # P126B: POWER_LOTTO power_fourier_rhythm_2bet bet-2 controlled apply (2026-05-28)
     "p126b_apply_id": "P126B_POWER_FOURIER_RHYTHM_2BET_20260528",
     "p126b_count": 1500,
-    "total_count": 55962,  # 54462 (pre-P126B) + 1500 (P126B bet-2) = 55962
+    # P126C: BIG_LOTTO biglotto_echo_aware_3bet bet-2 + bet-3 controlled apply (2026-05-28)
+    "p126c_apply_id": "P126C_BIGLOTTO_ECHO_AWARE_3BET_20260528",
+    "p126c_count": 3000,
+    "total_count": 58962,  # 55962 (pre-P126C) + 3000 (P126C bet-2+bet-3) = 58962
 }
 
 # Known V3 tombstone strategy IDs — must have 0 rows in replay table
@@ -282,6 +285,11 @@ def run_checks(db_path: pathlib.Path) -> dict:
         (BASELINE["p126b_apply_id"],),
     ).fetchone()[0]
 
+    p126c_count = c.execute(
+        "SELECT COUNT(*) FROM strategy_prediction_replays WHERE controlled_apply_id=?",
+        (BASELINE["p126c_apply_id"],),
+    ).fetchone()[0]
+
     legacy_count = c.execute(
         "SELECT COUNT(*) FROM strategy_prediction_replays WHERE controlled_apply_id IS NULL"
     ).fetchone()[0]
@@ -378,6 +386,10 @@ def run_checks(db_path: pathlib.Path) -> dict:
         violations.append(
             f"P126B row count mismatch: expected {BASELINE['p126b_count']}, got {p126b_count}"
         )
+    if p126c_count != BASELINE["p126c_count"]:
+        violations.append(
+            f"P126C row count mismatch: expected {BASELINE['p126c_count']}, got {p126c_count}"
+        )
     if total_count != BASELINE["total_count"]:
         violations.append(
             f"total row count mismatch: expected {BASELINE['total_count']}, got {total_count}"
@@ -406,6 +418,7 @@ def run_checks(db_path: pathlib.Path) -> dict:
         "p79_fourier30_markov30": p79_fourier30_markov30_count,
         "p94": p94_count,
         "p126b": p126b_count,
+        "p126c": p126c_count,
         "total": total_count,
     }
 
@@ -489,6 +502,7 @@ def run_checks(db_path: pathlib.Path) -> dict:
         BASELINE["p79_fourier_rhythm_apply_id"], BASELINE["p79_fourier30_markov30_apply_id"],
         BASELINE["p94_apply_id"],
         BASELINE["p126b_apply_id"],
+        BASELINE["p126c_apply_id"],
         "null", None,
     }
     for aid_key, cnt in controlled_apply_id_counts.items():

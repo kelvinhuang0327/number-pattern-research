@@ -1,0 +1,542 @@
+{
+  "task_id": "P128_PHASE3",
+  "classification": "P128_PHASE3_WAVE2_SAFE_CANDIDATES_READINESS_READY",
+  "generated_at": "2026-05-28T12:59:17.760663Z",
+  "repo_worktree_check": {
+    "worktree_path": "/Users/kelvin/Kelvin-WorkSpace/LotteryNew/.claude/worktrees/zen-gates-ff6802",
+    "expected_worktree": "zen-gates-ff6802",
+    "worktree_confirmed": true
+  },
+  "db_snapshot": {
+    "total_rows": 72422,
+    "expected_rows": 72422,
+    "bet_index_schema_exists": true,
+    "orphan_bet_index2_count": 0,
+    "orphan_cleared": true,
+    "rows_match_expected": true
+  },
+  "rsr6_cleanup_source_summary": {
+    "artifact": "/Users/kelvin/Kelvin-WorkSpace/LotteryNew/.claude/worktrees/zen-gates-ff6802/outputs/replay/rsr6_cleanup_delete_orphan_bet_index2_rows_20260528.json",
+    "task_id": "RSR6_CLEANUP",
+    "classification": "RSR6_ORPHAN_BET_INDEX2_CLEANUP_APPLIED",
+    "deleted_rows": 40,
+    "db_rows_after": 72422,
+    "backup_path": "/Users/kelvin/Kelvin-WorkSpace/LotteryNew/.claude/worktrees/zen-gates-ff6802/backups/lottery_v2_before_rsr6_cleanup_20260528T124212Z.db",
+    "classification_pass": true
+  },
+  "p128_phase2_source_summary": {
+    "artifact": "/Users/kelvin/Kelvin-WorkSpace/LotteryNew/.claude/worktrees/zen-gates-ff6802/outputs/replay/p128_wave2_adapter_phase2_20260528.json",
+    "task_id": "P128_PHASE2",
+    "classification": "P128_WAVE2_ADAPTER_PHASE2_READY",
+    "strategy_count": 6,
+    "classification_pass": true
+  },
+  "safe_candidate_scope": {
+    "candidate_strategy_ids": [
+      "acb_markov_midfreq_3bet",
+      "midfreq_fourier_mk_3bet",
+      "fourier_rhythm_3bet",
+      "pp3_freqort_4bet"
+    ],
+    "excludes_rsr6_blocked": true,
+    "db_write_in_phase3": false,
+    "controlled_apply_executed": false,
+    "replay_rows_inserted": 0,
+    "production_db_rows_expected": 72422,
+    "production_db_rows_after": 72422,
+    "all_safe_candidates_dry_run_ready": true
+  },
+  "blocked_candidate_scope": {
+    "power_precision_3bet": {
+      "strategy_id": "power_precision_3bet",
+      "reason": "post_rsr6_cleanup_apply_gate_re_evaluation_required",
+      "apply_ready": false,
+      "rsr6_cleanup_completed": true,
+      "current_bi1_rows": 1550,
+      "orphan_bet_index2_cleared": true
+    },
+    "power_orthogonal_5bet": {
+      "strategy_id": "power_orthogonal_5bet",
+      "reason": "post_rsr6_cleanup_apply_gate_re_evaluation_required",
+      "apply_ready": false,
+      "rsr6_cleanup_completed": true,
+      "current_bi1_rows": 1550,
+      "orphan_bet_index2_cleared": true
+    },
+    "reason": "post_rsr6_cleanup_apply_gate_re_evaluation_required",
+    "apply_ready": false
+  },
+  "readiness_matrix": [
+    {
+      "priority": 7,
+      "strategy_id": "acb_markov_midfreq_3bet",
+      "lottery_type": "DAILY_539",
+      "target_bet_count": 3,
+      "current_bi1_rows": 1500,
+      "missing_bet_indices": [
+        2,
+        3
+      ],
+      "estimated_insert_rows": 3000,
+      "adapter_function_exists": true,
+      "no_conflicts": true,
+      "all_readiness_checks_pass": true,
+      "status": "DRY_RUN_READY",
+      "dry_run_ready": true,
+      "rsr6_blocked": false
+    },
+    {
+      "priority": 8,
+      "strategy_id": "midfreq_fourier_mk_3bet",
+      "lottery_type": "POWER_LOTTO",
+      "target_bet_count": 3,
+      "current_bi1_rows": 1500,
+      "missing_bet_indices": [
+        2,
+        3
+      ],
+      "estimated_insert_rows": 3000,
+      "adapter_function_exists": true,
+      "no_conflicts": true,
+      "all_readiness_checks_pass": true,
+      "status": "DRY_RUN_READY",
+      "dry_run_ready": true,
+      "rsr6_blocked": false
+    },
+    {
+      "priority": 9,
+      "strategy_id": "fourier_rhythm_3bet",
+      "lottery_type": "POWER_LOTTO",
+      "target_bet_count": 3,
+      "current_bi1_rows": 1501,
+      "missing_bet_indices": [
+        2,
+        3
+      ],
+      "estimated_insert_rows": 3002,
+      "adapter_function_exists": true,
+      "no_conflicts": true,
+      "all_readiness_checks_pass": true,
+      "status": "DRY_RUN_READY",
+      "dry_run_ready": true,
+      "rsr6_blocked": false
+    },
+    {
+      "priority": 10,
+      "strategy_id": "power_precision_3bet",
+      "lottery_type": "POWER_LOTTO",
+      "target_bet_count": 3,
+      "current_bi1_rows": 1550,
+      "missing_bet_indices": [
+        2,
+        3
+      ],
+      "estimated_insert_rows_if_cleared": 3100,
+      "adapter_function_exists": true,
+      "apply_ready": false,
+      "status": "BLOCKED_APPLY_GATE_RE_EVALUATION",
+      "dry_run_ready": false,
+      "rsr6_blocked": true,
+      "blocked_reason": "post_rsr6_cleanup_apply_gate_re_evaluation_required"
+    },
+    {
+      "priority": 11,
+      "strategy_id": "pp3_freqort_4bet",
+      "lottery_type": "POWER_LOTTO",
+      "target_bet_count": 4,
+      "current_bi1_rows": 1500,
+      "missing_bet_indices": [
+        2,
+        3,
+        4
+      ],
+      "estimated_insert_rows": 4500,
+      "adapter_function_exists": true,
+      "no_conflicts": true,
+      "all_readiness_checks_pass": true,
+      "status": "DRY_RUN_READY",
+      "dry_run_ready": true,
+      "rsr6_blocked": false
+    },
+    {
+      "priority": 12,
+      "strategy_id": "power_orthogonal_5bet",
+      "lottery_type": "POWER_LOTTO",
+      "target_bet_count": 5,
+      "current_bi1_rows": 1550,
+      "missing_bet_indices": [
+        2,
+        3,
+        4,
+        5
+      ],
+      "estimated_insert_rows_if_cleared": 6200,
+      "adapter_function_exists": true,
+      "apply_ready": false,
+      "status": "BLOCKED_APPLY_GATE_RE_EVALUATION",
+      "dry_run_ready": false,
+      "rsr6_blocked": true,
+      "blocked_reason": "post_rsr6_cleanup_apply_gate_re_evaluation_required"
+    }
+  ],
+  "safe_candidate_details": [
+    {
+      "priority": 7,
+      "strategy_id": "acb_markov_midfreq_3bet",
+      "lottery_type": "DAILY_539",
+      "target_bet_count": 3,
+      "current_total_rows": 1500,
+      "current_bet_index_distribution": {
+        "1": 1500
+      },
+      "current_bi1_rows": 1500,
+      "missing_bet_indices": [
+        2,
+        3
+      ],
+      "estimated_insert_rows": 3000,
+      "adapter_function": "get_all_bets_acb_markov_midfreq",
+      "adapter_function_exists": true,
+      "existing_conflicting_rows": {},
+      "readiness_checks": {
+        "adapter_function_exists": true,
+        "bet_index_1_rows_present": true,
+        "no_conflicting_bet_index_rows": true,
+        "dry_run_required_before_apply": true,
+        "duplicate_guard_defined": true,
+        "provenance_hash_schema_defined": true,
+        "controlled_apply_id_template_defined": true
+      },
+      "all_readiness_checks_pass": true,
+      "status": "DRY_RUN_READY",
+      "dry_run_required_before_apply": true,
+      "duplicate_guard_strategy": "UNIQUE(lottery_type, target_draw, strategy_id, bet_index)",
+      "duplicate_guard_pre_insert_check": "SELECT COUNT(*) = 0 WHERE bet_index IN (2..3)",
+      "abort_on_conflict": true,
+      "provenance_hash_formula": "SHA256(strategy_id + target_draw + bet_index + predicted_numbers)",
+      "controlled_apply_id_template": "P128_APPLY_ACB_MARKOV_MIDFREQ_3BET_vN",
+      "provenance_source": "historical_only",
+      "rsr6_blocked": false,
+      "blocked_reason": null
+    },
+    {
+      "priority": 8,
+      "strategy_id": "midfreq_fourier_mk_3bet",
+      "lottery_type": "POWER_LOTTO",
+      "target_bet_count": 3,
+      "current_total_rows": 1500,
+      "current_bet_index_distribution": {
+        "1": 1500
+      },
+      "current_bi1_rows": 1500,
+      "missing_bet_indices": [
+        2,
+        3
+      ],
+      "estimated_insert_rows": 3000,
+      "adapter_function": "get_all_bets_midfreq_fourier_mk",
+      "adapter_function_exists": true,
+      "existing_conflicting_rows": {},
+      "readiness_checks": {
+        "adapter_function_exists": true,
+        "bet_index_1_rows_present": true,
+        "no_conflicting_bet_index_rows": true,
+        "dry_run_required_before_apply": true,
+        "duplicate_guard_defined": true,
+        "provenance_hash_schema_defined": true,
+        "controlled_apply_id_template_defined": true
+      },
+      "all_readiness_checks_pass": true,
+      "status": "DRY_RUN_READY",
+      "dry_run_required_before_apply": true,
+      "duplicate_guard_strategy": "UNIQUE(lottery_type, target_draw, strategy_id, bet_index)",
+      "duplicate_guard_pre_insert_check": "SELECT COUNT(*) = 0 WHERE bet_index IN (2..3)",
+      "abort_on_conflict": true,
+      "provenance_hash_formula": "SHA256(strategy_id + target_draw + bet_index + predicted_numbers)",
+      "controlled_apply_id_template": "P128_APPLY_MIDFREQ_FOURIER_MK_3BET_vN",
+      "provenance_source": "historical_only",
+      "rsr6_blocked": false,
+      "blocked_reason": null
+    },
+    {
+      "priority": 9,
+      "strategy_id": "fourier_rhythm_3bet",
+      "lottery_type": "POWER_LOTTO",
+      "target_bet_count": 3,
+      "current_total_rows": 1501,
+      "current_bet_index_distribution": {
+        "1": 1501
+      },
+      "current_bi1_rows": 1501,
+      "missing_bet_indices": [
+        2,
+        3
+      ],
+      "estimated_insert_rows": 3002,
+      "adapter_function": "get_all_bets_fourier_rhythm",
+      "adapter_function_exists": true,
+      "existing_conflicting_rows": {},
+      "readiness_checks": {
+        "adapter_function_exists": true,
+        "bet_index_1_rows_present": true,
+        "no_conflicting_bet_index_rows": true,
+        "dry_run_required_before_apply": true,
+        "duplicate_guard_defined": true,
+        "provenance_hash_schema_defined": true,
+        "controlled_apply_id_template_defined": true
+      },
+      "all_readiness_checks_pass": true,
+      "status": "DRY_RUN_READY",
+      "dry_run_required_before_apply": true,
+      "duplicate_guard_strategy": "UNIQUE(lottery_type, target_draw, strategy_id, bet_index)",
+      "duplicate_guard_pre_insert_check": "SELECT COUNT(*) = 0 WHERE bet_index IN (2..3)",
+      "abort_on_conflict": true,
+      "provenance_hash_formula": "SHA256(strategy_id + target_draw + bet_index + predicted_numbers)",
+      "controlled_apply_id_template": "P128_APPLY_FOURIER_RHYTHM_3BET_vN",
+      "provenance_source": "historical_only",
+      "rsr6_blocked": false,
+      "blocked_reason": null
+    },
+    {
+      "priority": 11,
+      "strategy_id": "pp3_freqort_4bet",
+      "lottery_type": "POWER_LOTTO",
+      "target_bet_count": 4,
+      "current_total_rows": 1500,
+      "current_bet_index_distribution": {
+        "1": 1500
+      },
+      "current_bi1_rows": 1500,
+      "missing_bet_indices": [
+        2,
+        3,
+        4
+      ],
+      "estimated_insert_rows": 4500,
+      "adapter_function": "get_all_bets_pp3_freqort",
+      "adapter_function_exists": true,
+      "existing_conflicting_rows": {},
+      "readiness_checks": {
+        "adapter_function_exists": true,
+        "bet_index_1_rows_present": true,
+        "no_conflicting_bet_index_rows": true,
+        "dry_run_required_before_apply": true,
+        "duplicate_guard_defined": true,
+        "provenance_hash_schema_defined": true,
+        "controlled_apply_id_template_defined": true
+      },
+      "all_readiness_checks_pass": true,
+      "status": "DRY_RUN_READY",
+      "dry_run_required_before_apply": true,
+      "duplicate_guard_strategy": "UNIQUE(lottery_type, target_draw, strategy_id, bet_index)",
+      "duplicate_guard_pre_insert_check": "SELECT COUNT(*) = 0 WHERE bet_index IN (2..4)",
+      "abort_on_conflict": true,
+      "provenance_hash_formula": "SHA256(strategy_id + target_draw + bet_index + predicted_numbers)",
+      "controlled_apply_id_template": "P128_APPLY_PP3_FREQORT_4BET_vN",
+      "provenance_source": "historical_only",
+      "rsr6_blocked": false,
+      "blocked_reason": null
+    }
+  ],
+  "blocked_candidate_details": [
+    {
+      "priority": 10,
+      "strategy_id": "power_precision_3bet",
+      "lottery_type": "POWER_LOTTO",
+      "target_bet_count": 3,
+      "current_total_rows": 1550,
+      "current_bet_index_distribution": {
+        "1": 1550
+      },
+      "current_bi1_rows": 1550,
+      "estimated_insert_rows_if_cleared": 3100,
+      "adapter_function": "get_all_bets_power_precision",
+      "adapter_function_exists": true,
+      "rsr6_blocked": true,
+      "rsr6_cleanup_completed": true,
+      "rsr6_cleanup_commit": "f624409",
+      "apply_ready": false,
+      "blocked_reason": "post_rsr6_cleanup_apply_gate_re_evaluation_required",
+      "re_evaluation_checklist": {
+        "rsr6_orphan_rows_deleted": true,
+        "only_bet_index_1_rows_remain": true,
+        "current_bi1_rows": 1550,
+        "no_remaining_orphan_bet_index_2": true,
+        "adapter_function_exists": true,
+        "duplicate_guard_defined": true,
+        "provenance_requirements_defined": true,
+        "apply_authorization_required_separately": true,
+        "per_strategy_authorization_phrase_required": true,
+        "dry_run_required_before_apply": true,
+        "note": "RSR-6 cleanup completed (commit f624409). Orphan bet_index=2 rows deleted. Apply gate re-evaluation needed before controlled_apply. Must verify: (1) bi=1 rows are valid production-quality records, (2) estimated insert rows are accurate, (3) duplicate guard pre-check passes, (4) per-strategy authorization phrase obtained."
+      },
+      "status": "BLOCKED_APPLY_GATE_RE_EVALUATION"
+    },
+    {
+      "priority": 12,
+      "strategy_id": "power_orthogonal_5bet",
+      "lottery_type": "POWER_LOTTO",
+      "target_bet_count": 5,
+      "current_total_rows": 1550,
+      "current_bet_index_distribution": {
+        "1": 1550
+      },
+      "current_bi1_rows": 1550,
+      "estimated_insert_rows_if_cleared": 6200,
+      "adapter_function": "get_all_bets_power_orthogonal",
+      "adapter_function_exists": true,
+      "rsr6_blocked": true,
+      "rsr6_cleanup_completed": true,
+      "rsr6_cleanup_commit": "f624409",
+      "apply_ready": false,
+      "blocked_reason": "post_rsr6_cleanup_apply_gate_re_evaluation_required",
+      "re_evaluation_checklist": {
+        "rsr6_orphan_rows_deleted": true,
+        "only_bet_index_1_rows_remain": true,
+        "current_bi1_rows": 1550,
+        "no_remaining_orphan_bet_index_2": true,
+        "adapter_function_exists": true,
+        "duplicate_guard_defined": true,
+        "provenance_requirements_defined": true,
+        "apply_authorization_required_separately": true,
+        "per_strategy_authorization_phrase_required": true,
+        "dry_run_required_before_apply": true,
+        "note": "RSR-6 cleanup completed (commit f624409). Orphan bet_index=2 rows deleted. Apply gate re-evaluation needed before controlled_apply. Must verify: (1) bi=1 rows are valid production-quality records, (2) estimated insert rows are accurate, (3) duplicate guard pre-check passes, (4) per-strategy authorization phrase obtained."
+      },
+      "status": "BLOCKED_APPLY_GATE_RE_EVALUATION"
+    }
+  ],
+  "estimated_insert_rows": {
+    "safe_candidates_total_estimated": 13502,
+    "blocked_candidates_total_if_cleared": 9300,
+    "all_wave2_phase2_total_if_cleared": 22802,
+    "db_rows_after_safe_apply_estimated": 85924,
+    "db_rows_after_all_cleared_estimated": 95224,
+    "per_safe_candidate": [
+      {
+        "strategy_id": "acb_markov_midfreq_3bet",
+        "estimated_insert_rows": 3000,
+        "bet_indices_to_add": [
+          2,
+          3
+        ]
+      },
+      {
+        "strategy_id": "midfreq_fourier_mk_3bet",
+        "estimated_insert_rows": 3000,
+        "bet_indices_to_add": [
+          2,
+          3
+        ]
+      },
+      {
+        "strategy_id": "fourier_rhythm_3bet",
+        "estimated_insert_rows": 3002,
+        "bet_indices_to_add": [
+          2,
+          3
+        ]
+      },
+      {
+        "strategy_id": "pp3_freqort_4bet",
+        "estimated_insert_rows": 4500,
+        "bet_indices_to_add": [
+          2,
+          3,
+          4
+        ]
+      }
+    ]
+  },
+  "duplicate_guard_summary": {
+    "strategy": "UNIQUE(lottery_type, target_draw, strategy_id, bet_index)",
+    "abort_on_conflict": true,
+    "pre_insert_check_required": true,
+    "per_strategy_pre_checks": [
+      {
+        "strategy_id": "acb_markov_midfreq_3bet",
+        "pre_insert_check": "SELECT COUNT(*) = 0 WHERE bet_index IN (2..3)",
+        "abort_on_conflict": true
+      },
+      {
+        "strategy_id": "midfreq_fourier_mk_3bet",
+        "pre_insert_check": "SELECT COUNT(*) = 0 WHERE bet_index IN (2..3)",
+        "abort_on_conflict": true
+      },
+      {
+        "strategy_id": "fourier_rhythm_3bet",
+        "pre_insert_check": "SELECT COUNT(*) = 0 WHERE bet_index IN (2..3)",
+        "abort_on_conflict": true
+      },
+      {
+        "strategy_id": "pp3_freqort_4bet",
+        "pre_insert_check": "SELECT COUNT(*) = 0 WHERE bet_index IN (2..4)",
+        "abort_on_conflict": true
+      }
+    ],
+    "all_safe_candidates_guard_defined": true
+  },
+  "provenance_readiness_summary": {
+    "hash_formula": "SHA256(strategy_id + target_draw + bet_index + predicted_numbers)",
+    "source": "historical_only",
+    "dry_run_required_before_any_apply": true,
+    "per_safe_candidate": [
+      {
+        "strategy_id": "acb_markov_midfreq_3bet",
+        "controlled_apply_id_template": "P128_APPLY_ACB_MARKOV_MIDFREQ_3BET_vN",
+        "provenance_hash_formula": "SHA256(strategy_id + target_draw + bet_index + predicted_numbers)",
+        "all_requirements_defined": true
+      },
+      {
+        "strategy_id": "midfreq_fourier_mk_3bet",
+        "controlled_apply_id_template": "P128_APPLY_MIDFREQ_FOURIER_MK_3BET_vN",
+        "provenance_hash_formula": "SHA256(strategy_id + target_draw + bet_index + predicted_numbers)",
+        "all_requirements_defined": true
+      },
+      {
+        "strategy_id": "fourier_rhythm_3bet",
+        "controlled_apply_id_template": "P128_APPLY_FOURIER_RHYTHM_3BET_vN",
+        "provenance_hash_formula": "SHA256(strategy_id + target_draw + bet_index + predicted_numbers)",
+        "all_requirements_defined": true
+      },
+      {
+        "strategy_id": "pp3_freqort_4bet",
+        "controlled_apply_id_template": "P128_APPLY_PP3_FREQORT_4BET_vN",
+        "provenance_hash_formula": "SHA256(strategy_id + target_draw + bet_index + predicted_numbers)",
+        "all_requirements_defined": true
+      }
+    ],
+    "all_safe_candidates_provenance_defined": true
+  },
+  "apply_gate_status": {
+    "dry_run_only": true,
+    "controlled_apply_executed": false,
+    "replay_rows_inserted": 0,
+    "per_strategy_authorization_required_later": true,
+    "safe_candidates_next_step": "Obtain per-strategy authorization phrase, run dry-run apply script, verify estimated insert rows match actual, then execute controlled_apply",
+    "blocked_candidates_next_step": "Re-evaluate P10/P12 apply gate: verify bi=1 rows quality, confirm no legacy anomalies, obtain fresh authorization",
+    "production_db_rows_unchanged": true
+  },
+  "blocked_or_excluded": {
+    "no_db_write_in_P128_Phase3": true,
+    "no_controlled_apply_in_P128_Phase3": true,
+    "P10_P12_not_apply_ready_until_re_evaluation": true,
+    "4_STAR_excluded": true,
+    "P108_not_run": true,
+    "P117_not_run": true,
+    "P118_not_run": true,
+    "rejected_strategies_no_action": true,
+    "no_scheduler_install": true,
+    "no_lifecycle_champion_registry_mutation": true,
+    "P126B_P126F_rows_untouched": true
+  },
+  "roadmap_update_status": "P128 Phase 3 section added to roadmap.md and CTO-Analysis.md (2026-05-28)",
+  "remaining_risks": [
+    "P10/P12 apply gate re-evaluation must validate that bet_index=1 rows with replay_run_id=2,6 and controlled_apply_id IS NULL are valid production records before any controlled_apply proceeds",
+    "Dry-run execution for P7/P8/P9/P11 requires per-strategy authorization phrases not yet issued",
+    "fourier_rhythm_3bet has 1501 rows (1 extra draw vs 1500 baseline) — verify target draw range before estimating insert rows",
+    "P128 Phase 3 estimated insert rows are approximations; actual inserts require dry-run execution and deduplication checks"
+  ],
+  "next_recommended_task": "P128 Phase 3b (or P130): Execute controlled_apply dry-run for P7/P8/P9/P11 safe candidates with per-strategy authorization. P10/P12 apply gate re-evaluation as separate task.",
+  "summary": "P128 Phase 3 dry-run readiness re-evaluation complete. 4 safe candidates (P7/P8/P9/P11) are DRY_RUN_READY with estimated 13502 insert rows. P10/P12 RSR-6 cleanup done but apply gate re-evaluation still required. No DB writes in this phase."
+}

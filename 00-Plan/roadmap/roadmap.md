@@ -433,3 +433,31 @@ Authorized deletion of 40 orphan `bet_index=2` rows for `power_precision_3bet` a
 ```text
 CTO_ROADMAP_UPDATED_AFTER_RSR6_CLEANUP_EXECUTION_20260528
 ```
+
+---
+
+### P128 Phase 3 — Wave 2 Safe Candidate Readiness [2026-05-28]
+
+**Classification**: P128_PHASE3_WAVE2_SAFE_CANDIDATES_READINESS_READY
+
+Dry-run readiness re-evaluation for Wave 2 Phase 2 candidates after RSR-6 cleanup. No DB writes.
+
+**Safe candidates (P7/P8/P9/P11)** — `DRY_RUN_READY`:
+
+| Priority | Strategy | Lottery | Bets | Est. Insert Rows |
+|----------|----------|---------|------|-----------------|
+| P7 | `acb_markov_midfreq_3bet` | DAILY_539 | 3 | 3,000 |
+| P8 | `midfreq_fourier_mk_3bet` | POWER_LOTTO | 3 | 3,000 |
+| P9 | `fourier_rhythm_3bet` | POWER_LOTTO | 3 | 3,002 |
+| P11 | `pp3_freqort_4bet` | POWER_LOTTO | 4 | 4,500 |
+| **Total** | | | | **13,502** |
+
+**Blocked (P10/P12)**: RSR-6 cleanup done (commit f624409), apply gate re-evaluation required separately.
+
+**DB rows**: 72,422 (unchanged). Drift guard PASS.
+
+**Next task**: P128 Phase 3b — controlled_apply dry-run for P7/P8/P9/P11 with per-strategy authorization.
+
+```text
+CTO_ROADMAP_UPDATED_AFTER_P128_PHASE3_WAVE2_SAFE_CANDIDATES_READINESS_20260528
+```

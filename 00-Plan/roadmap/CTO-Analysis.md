@@ -863,3 +863,27 @@ CTO_ROADMAP_UPDATED_AFTER_RSR6_ORPHAN_BET_INDEX2_AUDIT_20260528
 ```text
 CTO_ANALYSIS_UPDATED_AFTER_RSR6_CLEANUP_EXECUTION_20260528
 ```
+
+---
+
+## P128 Phase 3 — Wave 2 Safe Candidate Readiness (2026-05-28)
+
+**Status**: COMPLETE — `P128_PHASE3_WAVE2_SAFE_CANDIDATES_READINESS_READY`
+
+**Action**: Dry-run readiness re-evaluation after RSR-6 cleanup. No DB writes.
+
+**Safe candidates** (P7/P8/P9/P11 — DRY_RUN_READY):
+- Adapters confirmed present in `p128_wave2_phase2_adapters.py`
+- bi=1 rows intact: acb_markov=1500, midfreq_fourier_mk=1500, fourier_rhythm=1501, pp3_freqort=1500
+- Total estimated insert rows if applied: **13,502**
+- Duplicate guard and provenance requirements all defined
+
+**Blocked** (P10/P12 — BLOCKED_APPLY_GATE_RE_EVALUATION):
+- RSR-6 cleanup done: 1550 bi=1 rows each, 0 orphan bi=2 rows
+- Not apply-ready; per-strategy re-evaluation required
+
+**Next**: P128 Phase 3b — controlled_apply dry-run for P7/P8/P9/P11 with per-strategy authorization phrases.
+
+```text
+CTO_ANALYSIS_UPDATED_AFTER_P128_PHASE3_WAVE2_SAFE_CANDIDATES_READINESS_20260528
+```

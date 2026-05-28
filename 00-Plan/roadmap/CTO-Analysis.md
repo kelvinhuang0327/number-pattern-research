@@ -1,262 +1,331 @@
-# CTO Analysis — After P59 POWER_LOTTO Wave 5 Production Apply (P60 Update)
+# CTO Analysis - After P123 Scheduled Trigger Recheck Setup
 
 ## 1. CTO Review Date
 
-2026-05-25 Asia/Taipei (P60 update after P59 — POWER_LOTTO Wave 5 fourier30_markov30_2bet production apply complete)
+2026-05-28 Asia/Taipei.
+
+Final CTO classification target: `CTO_ROADMAP_UPDATED_WITH_RISKS`.
 
 ## 2. Input Sources
 
-- [Confirmed] P48 output: `docs/replay/p48_powerlotto_wave4_production_apply_20260524.md`; rows 37960 → 42460
-- [Confirmed] P49HYG output: `79ab784` (PR #185); 191/191 PASS; artifact hygiene closed
-- [Confirmed] P50 output: `docs/replay/p50_powerlotto_wave4_performance_analysis_20260525.md` (analysis-only)
-- [Confirmed] P51 output: `docs/replay/p51_powerlotto_wave4_rolling_window_mcnemar_gate_20260525.md`; commit `0415cc8`; 250/250 PASS
-- [Confirmed] P52 output: `docs/replay/p52_powerlotto_midfreq_fourier_mk_3bet_promotion_readiness_20260525.md`; commit `1b32e6a`; 250/250 PASS
-- [Confirmed] P53 output: `docs/replay/p53_powerlotto_midfreq_fourier_mk_3bet_watchlist_waiver_20260525.md`; commit `5992b27`; 307/307 PASS
-- [Confirmed] P54 output: `docs/replay/p54_replay_roadmap_update_after_p53_watchlist_20260525.md`; commit `e6ca756` (docs-only)
-- [Confirmed] P55 output: `docs/replay/p55_powerlotto_wave5_candidate_planning_20260525.md`; commit `776c173`; plan-only
-- [Confirmed] P56 output: `docs/replay/p56_powerlotto_wave5_adapter_bootstrap_dryrun_20260525.md`; commit `c3f0325`; dry-run, no production DB write
-- [Confirmed] P57 output: `docs/replay/p57_powerlotto_wave5_controlled_rehearsal_readiness_20260525.md`; commit `aea8ff7`; read-only
-- [Confirmed] P58 output: `outputs/replay/p58_powerlotto_wave5_controlled_apply_proposal_20260525.json`; commit `4b6a0c4`; proposal-only (Mode A)
-- [Confirmed] P59 output: `outputs/replay/p59_powerlotto_wave5_controlled_apply_20260525.json`; commit `b4afa65`; 295/295 PASS; 1500 rows inserted
-- [Confirmed] P60 output: `docs/replay/p60_post_p59_remote_sync_and_roadmap_update_20260525.md` (this update)
-- [Confirmed] git state during CTO P60 review:
+- [Confirmed] User handoff report in the current conversation, limited to LotteryNew content.
+- [Confirmed] `00-Plan/roadmap/roadmap.md` before this update: last updated after P104 and stale against P123 HEAD.
+- [Confirmed] `00-Plan/roadmap/CTO-Analysis.md` before this update: last updated after P104 and stale against P123 HEAD.
+- [Confirmed] Git pre-flight from canonical repo:
   - repo: `/Users/kelvin/Kelvin-WorkSpace/LotteryNew`
   - branch: `main`
-  - HEAD: `b4afa65 P59: POWER_LOTTO Wave 5 controlled production apply COMPLETED`
-  - main: includes P59 merge (fast-forward `4b6a0c4`→`b4afa65`)
-- [Confirmed] production DB row count: **43960** (+1500 from P59)
-- [Confirmed] Pre-flight checks during P60:
-  - drift guard: REPLAY_LIFECYCLE_DRIFT_GUARD_PASS
-  - branch governance guard: BRANCH_GOVERNANCE_PASS (main, 43960)
-- [Confirmed] Remote push: blocked by branch protection (GH006: `replay-default-validation` required)
+  - git-dir: `.git`
+  - HEAD: `684bffc P123: scheduled trigger recheck setup (#248)`
+- [Confirmed] PR #248: MERGED, merge commit `684bffcea3080f8f1f31c5b9acc3a572907ec4f3`.
+- [Confirmed] P119-P123 artifacts:
+  - `outputs/replay/p119_evidence_trigger_matrix_20260527.json`
+  - `outputs/replay/p120_trigger_evaluation_20260527.json`
+  - `outputs/replay/p121_trigger_recheck_20260527.json`
+  - `outputs/replay/p122_trigger_recheck_contamination_guard_20260527.json`
+  - `outputs/replay/p123_scheduled_trigger_recheck_setup_20260527.json`
+  - `outputs/replay/trigger_rechecks/p123_trigger_recheck_smoke_20260527.json`
+- [Confirmed] Strategy replay / helpfulness references:
+  - P91 all-strategy replay expansion inventory
+  - P92 Tier B adapter audit / dry-run plan
+  - P93 Tier B replay adapter bootstrap dry-run
+  - P94 Tier B controlled apply
+  - P112 cross-lottery prediction-helpfulness audit
+  - P113 action decision matrix
+  - P114 temporal stability audit
+  - P115 BIG_LOTTO quarantine governance design
+  - P116 POWER_LOTTO OOS monitoring design
+  - P117 POWER_LOTTO OOS monitoring checkpoint
+- [Confirmed] Read-only SQL during this CTO review:
+  - `strategy_prediction_replays = 54462`
+  - `3_STAR count/max = 4179 / 115000106`
+  - `4_STAR count/max = 2922 / 115000103`
+  - `POWER_LOTTO count/max = 1913 / 115000041`
+- [Confirmed] Verification during this CTO review:
+  - P119-P123 focused tests: `318 passed`
+  - Drift guard: `REPLAY_LIFECYCLE_DRIFT_GUARD_PASS`
+  - Branch governance guard: `BRANCH_GOVERNANCE_PASS` on `main` with 54462 rows
+  - Staging area: empty
+- [Confirmed] Existing dirty worktree remains outside this CTO scope, including DB/history/pid/runtime/untracked files. CTO touched only `roadmap.md` and `CTO-Analysis.md`.
 
 ## 3. Roadmap Alignment Assessment
 
 | Finding | Classification | CTO Assessment |
 |---|---|---|
-| P49HYG artifact closure | [Confirmed] Complete | `79ab784`, PR #185; 191 tests PASS; artifact debt resolved. |
-| P50 performance analysis | [Confirmed] Complete | Analysis-only; three strategies classified; no DB write. |
-| P51 rolling-window + McNemar gate | [Confirmed] Complete | `midfreq_fourier_mk_3bet` is P51 PROMOTION_CANDIDATE (6/7 gates); perm p=0.0003. |
-| P52 promotion readiness | [Confirmed] Complete | G4 McNemar: b=42, c=50, champion-favored → G4_REQUIRES_WAIVER. Waiver required. |
-| P53 WATCHLIST waiver staging | [Confirmed] Complete | G4 waiver granted; docs-only WATCHLIST; champion active; rows unchanged. |
-| P55 Wave 5 candidate planning | [Confirmed] Complete | Three candidates selected: `fourier30_markov30_2bet` (primary), `cold_complement_2bet`, `zonal_entropy_2bet` (WATCHLIST_REHEARSAL_ONLY). |
-| P56 Wave 5 adapter bootstrap + dry-run | [Confirmed] Complete | Adapters bootstrapped; dry-run rows generated; production rows unchanged at 42460. |
-| P57 Wave 5 controlled rehearsal readiness | [Confirmed] Complete | Rehearsal readiness confirmed; no production DB write; rows unchanged at 42460. |
-| P58 Wave 5 controlled apply proposal | [Confirmed] Complete | Proposal-only (Mode A); `fourier30_markov30_2bet` selected; WATCHLIST exclusions confirmed. |
-| P59 Wave 5 controlled production apply | [Confirmed] Complete | 1500 rows inserted; rows 42460→43960; M3+ hit rate 4.07% vs 3.87% baseline; 295/295 PASS. |
-| ONLINE promotion | [Confirmed] NOT performed | No lifecycle mutation through P59. DRY_RUN remains for all Wave 5 strategies. |
-| Champion replacement | [Confirmed] NOT performed | `fourier_rhythm_3bet` remains active production champion. |
-| Wave 6 planning | [Not started] | Next coverage expansion; Wave 5 results now available as reference. |
+| P119 evidence trigger matrix | [Aligned] | Consolidated P105-P117 evidence and made trigger conditions deterministic. |
+| P120-P122 repeated trigger rechecks | [Aligned] initially; [Outdated] as an ongoing pattern | They were useful to confirm no change, but three consecutive blocked states mean more no-change PRs are wasteful. |
+| P123 scheduled/manual trigger wrapper | [Aligned] | Correctly replaces no-change PR churn with a reusable operator/manual wrapper. |
+| P123 first worktree attempt STOP | [Aligned] / [Blocked] | The STOP was correct and exposed a real process risk: Claude/Codex worktree branches must be rejected. |
+| Current system state | [Aligned] | Healthy standby / wait-for-data-or-authorization, not failure. |
+| 4_STAR backtest | [Blocked] | Source unknown remains active; rows alone do not authorize backtest. |
+| All implemented strategies historical replay | [Missing] | User's top priority is broader than current trigger waits. Roadmap needs an all lottery type x 1-5 bet-count coverage program. |
+| Multi-bet replay truth | [Blocked] | P93/P94 show multi-bet adapters exist for some strategies, but current replay convention often stores first bet only. This blocks truthful "1-5注" claims. |
+| OS scheduler install | [Deferred] | P123 did not install cron/launchd. Future scheduling requires explicit authorization. |
+| Worker task prompt output | [Blocked by instruction] | User request also says CTO must not produce a new worker task prompt and CTO may only update two files. |
 
 ## 4. Completed Work Assessment
 
-### P49HYG — Artifact / Git Hygiene Closure
-- [Confirmed] Commit: `79ab784`, PR #185
-- [Confirmed] 191/191 tests PASS
-- [Confirmed] Production rows: 42460 (unchanged)
-- [Confirmed] Drift guard PASS, branch governance PASS
-- [Confirmed] P49 docs/json/tests committed
+### P119 - Evidence Trigger Matrix
 
-### P50 — POWER_LOTTO Wave 4 Performance Analysis
-- [Confirmed] Analysis-only; no DB write
-- [Confirmed] Three strategies analyzed from `controlled_apply_id = P48_POWERLOTTO_WAVE4_4500_PROD_20260524`
-- [Confirmed] POWER_LOTTO semantics maintained: `hit_count` = first-zone only, `special_hit` = second-zone only
+- [Confirmed] Classification: `P119_EVIDENCE_TRIGGER_MATRIX_READY`.
+- [Confirmed] Trigger matrix covers:
+  - P108 Special3 100-draw re-evaluation
+  - P117 POWER_LOTTO OOS retrigger
+  - P118 BIG_LOTTO actual quarantine
+  - 4_STAR provenance and backtest
+- [Confirmed] All triggers were blocked at P119.
+- [Confirmed] Current DB snapshot: replay rows 54462, 3_STAR 4179/max 115000106, 4_STAR 2922/max 115000103, POWER_LOTTO 1913/max 115000041.
 
-### P51 — Rolling-Window + McNemar Promotion Gate
-- [Confirmed] Commit: `0415cc8`; 250/250 PASS
-- [Confirmed] `midfreq_fourier_mk_3bet`: mean_hit=1.027, perm p=0.0003, W150/W500/W1500 all above baseline
-- [Confirmed] G4 McNemar: b=42, c=50, champion-favored, p=0.466 → G4_REQUIRES_WAIVER
-- [Confirmed] `pp3_freqort_4bet`: INCONCLUSIVE (early windows underperform)
-- [Confirmed] `midfreq_fourier_2bet`: INCONCLUSIVE (G2/G3/G6 FAIL)
+### P120-P122 - Consecutive Trigger Rechecks
 
-### P52 — Promotion Readiness Decision
-- [Confirmed] Commit: `1b32e6a`; 250/250 PASS
-- [Confirmed] Classification: `P52_PROMOTION_READINESS_WAIVER_REQUIRED`
-- [Confirmed] Decision: ONLINE promotion not justified without waiver
-- [Confirmed] Recommendation: P53 WATCHLIST if waiver granted
+- [Confirmed] P120 classification: `P120_ALL_TRIGGERS_BLOCKED`.
+- [Confirmed] P121 classification: `P121_ALL_TRIGGERS_STILL_BLOCKED`.
+- [Confirmed] P122 classification: `P122_ALL_TRIGGERS_STILL_BLOCKED`.
+- [Confirmed] P122 added cross-project contamination guard.
+- [Confirmed] No P108, P117 OOS, P118 quarantine, or 4_STAR backtest was run.
+- [Confirmed] No strategy promotion, lifecycle mutation, registry mutation, DB write, replay row delete, or replay row insert occurred.
 
-### P54 — Roadmap / CTO Update After P53
-- [Confirmed] Commit: `e6ca756`
-- [Confirmed] Docs-only; no DB write; rows unchanged at 42460
+### P123 - Scheduled / Manual Trigger Recheck Setup
 
-### P55 — Wave 5 POWER_LOTTO Candidate Planning
-- [Confirmed] Commit: `776c173`
-- [Confirmed] Three candidates ranked: `fourier30_markov30_2bet` (primary apply candidate), `cold_complement_2bet`, `zonal_entropy_2bet` (WATCHLIST_REHEARSAL_ONLY)
-- [Confirmed] Plan-only; no adapter wiring; no DB write
+- [Confirmed] PR #248 merged; merge commit `684bffcea3080f8f1f31c5b9acc3a572907ec4f3`.
+- [Confirmed] Classification: `P123_SCHEDULED_TRIGGER_RECHECK_SETUP_READY`.
+- [Confirmed] Created `scripts/p123_scheduled_trigger_recheck.py`.
+- [Confirmed] First smoke artifact: `outputs/replay/trigger_rechecks/p123_trigger_recheck_smoke_20260527.json`.
+- [Confirmed] First smoke classification: `P122_ALL_TRIGGERS_STILL_BLOCKED`.
+- [Confirmed] P123 did not install crontab, create launchd plist, or register an OS scheduler.
+- [Confirmed] P123 worktree guard requires `git-dir=.git`, rejects `.git/worktrees/`, `claude/`, and `codex/`.
 
-### P56 — Wave 5 POWER_LOTTO Adapter Bootstrap + Dry-Run Rehearsal
-- [Confirmed] Commit: `c3f0325`
-- [Confirmed] Adapters bootstrapped for all three candidates
-- [Confirmed] Dry-run rows generated and validated
-- [Confirmed] Production rows unchanged: 42460
+### Replay Coverage / Prediction-Helpfulness Context
 
-### P57 — Wave 5 POWER_LOTTO Controlled Rehearsal Readiness
-- [Confirmed] Commit: `aea8ff7`
-- [Confirmed] Rehearsal readiness confirmed; R1/R2/R3 PASS
-- [Confirmed] Production rows unchanged: 42460; no production DB write
-
-### P58 — Wave 5 POWER_LOTTO Controlled Apply Proposal
-- [Confirmed] Commit: `4b6a0c4`
-- [Confirmed] Mode A — PROPOSAL_ONLY; no production DB write
-- [Confirmed] `fourier30_markov30_2bet` selected for controlled apply
-- [Confirmed] `cold_complement_2bet` and `zonal_entropy_2bet` excluded: WATCHLIST_REHEARSAL_ONLY
-- [Confirmed] Controlled Apply ID: `P58_POWERLOTTO_WAVE5_FOURIER30_MARKOV30_1500_PROD_20260525`
-
-### P59 — Wave 5 POWER_LOTTO Controlled Production Apply
-- [Confirmed] Commit: `b4afa65`; 295/295 PASS
-- [Confirmed] Classification: `P59_POWERLOTTO_WAVE5_CONTROLLED_APPLY_COMPLETED`
-- [Confirmed] Strategy: `fourier30_markov30_2bet` (fourier30_markov30, POWER_LOTTO)
-- [Confirmed] Controlled Apply ID: `P58_POWERLOTTO_WAVE5_FOURIER30_MARKOV30_1500_PROD_20260525`
-- [Confirmed] Inserted: 1500 rows; production rows 42460 → 43960
-- [Confirmed] M3+ hit rate: 4.07% (baseline: 3.87%)
-- [Confirmed] No ONLINE promotion; no champion replacement; no registry mutation
-- [Confirmed] POWER_LOTTO semantics: `hit_count` = first-zone only; `predicted_numbers` ⊆ [1,38]; `predicted_special` ⊆ [1,8]
-- [Confirmed] Drift guard PASS; branch governance PASS; staging area CLEAN
+- [Confirmed] P91 identified 512 strategy universe entries and 31 row-backed strategy slots.
+- [Confirmed] P92 found 5 adapter-ready Tier B strategies, 1 adapter-partial strategy, 3 already-covered strategies, and 1 rejected strategy.
+- [Confirmed] P93 dry-run rehearsed 5 Tier B adapters, including 3/5-bet DAILY_539 and 2/3/4-bet BIG_LOTTO/POWER_LOTTO strategies.
+- [Confirmed] P94 controlled apply added Tier B rows and P96 later set 54462 as accepted replay baseline.
+- [Confirmed] P112 audited 36 row-backed strategies across POWER_LOTTO, DAILY_539, and BIG_LOTTO for prediction-helpfulness.
+- [Confirmed] P112 excluded 3_STAR and 4_STAR: P108 blocked for 3_STAR, 4_STAR unauthorized due source_unknown.
+- [Confirmed] P93/P94 evidence shows a multi-bet caveat: many replay rows are one row per strategy/draw and may represent only bet 1 unless a true multi-bet adapter path exists.
 
 ## 5. Unfinished Work Assessment
 
-- [Active] `midfreq_fourier_mk_3bet` WATCHLIST OOS monitoring pending future draws from 115000041
-- [Active] `cold_complement_2bet` WATCHLIST_REHEARSAL_ONLY — Wave 5 dry-run exists; production apply pending future authorization
-- [Active] `zonal_entropy_2bet` WATCHLIST_REHEARSAL_ONLY — Wave 5 dry-run exists; production apply pending future authorization
-- [Deferred] P11 Replay UI browser visual evidence (explicitly deferred from P49)
-- [Deferred] P12 Worktree-wide housekeeping (dirty files: .gitignore, pid, fuse_hidden*, etc.)
-- [Deferred] Wave 6 candidate planning (ready to start as P61-D)
-- [Deferred] DRY_RUN → ONLINE promotion criteria formalization
-- [Deferred] Freshness cadence guard and catalog freshness guard
-- [Blocked] Remote push of main to origin — branch protection requires `replay-default-validation` CI check; requires PR flow
+- [Blocked] P108 Special3 100-draw re-evaluation: 63/100 prospective draws; 37 remaining.
+- [Blocked] P117 POWER_LOTTO OOS checkpoint: 0 new POWER_LOTTO draws; 30 remaining for partial, 40 for full.
+- [Blocked] P118 BIG_LOTTO actual quarantine: exact authorization phrase absent.
+- [Blocked] 4_STAR provenance/backtest: source_unknown caveat active; provenance artifact absent.
+- [Missing] All implemented strategy x lottery x bet-count coverage matrix for the user goal: all supported lottery types and all implemented 1-5 bet-count variants.
+- [Blocked] Multi-bet replay truth model: current row convention can underrepresent native multi-bet strategies.
+- [Deferred] Runtime artifact retention policy for `outputs/replay/trigger_rechecks/`.
+- [Deferred] OS scheduler installation; not authorized by P123.
+- [Deferred] Worktree hygiene and DB staging policy remains valuable but outside this CTO task.
 
-## 6. P1–P10 Priority Status
+## 6. P0 / P1 / P2 / P3-P10 Reprioritization
 
-| Priority | Phase | Status |
-|---|---|---|
-| ~~P0~~ | P49HYG artifact closure | [Confirmed] Complete |
-| ~~P1~~ | P50–P53 POWER_LOTTO Wave 4 analysis + WATCHLIST | [Confirmed] Complete |
-| ~~P3~~ | Wave 5 candidate planning + apply (P55–P59) | [Confirmed] Complete — 43960 rows |
-| **P2** | `midfreq_fourier_mk_3bet` WATCHLIST OOS monitoring | [Active] 500-draw plan; first gate at +150 draws |
-| **P4** | P61-A Post-P59 API/DB verification | [Ready to start] |
-| **P5** | P11 Browser visual evidence closure | [Deferred] |
-| **P6** | DRY_RUN → ONLINE promotion criteria | [Deferred] |
-| **P7** | Freshness cadence guard | [Deferred] |
-| **P8** | Catalog freshness / inventory guard | [Deferred] |
-| **P9** | P12 Worktree-wide housekeeping | [Deferred] |
-| **P10** | Post-launch operations | [Deferred] |
+| Priority | Work | Status | Rationale |
+|---|---|---|---|
+| **P0.1** | Trigger governance standby through P123 wrapper | [Confirmed] P123 ready | Prevent no-change PR churn and preserve healthy wait state. |
+| **P0.2** | Canonical execution and contamination guard standardization | [Required] | Worktree branch and cross-project contamination are proven process risks. |
+| **P0.3** | Multi-bet replay truth model | [Missing] | Correctness blocker for replaying all 1-5 bet combinations. |
+| **P1.1** | All implemented strategy x lottery x 1-5 bet-count coverage matrix | [Ready for CEO approval] | Highest product-value next step while draw/authorization triggers are blocked. |
+| **P1.2** | Adapter gap plan for truthful coverage completion | [Depends on P1.1] | Converts coverage gaps into ranked implementation phases without DB writes. |
+| **P1.3** | Prediction-helpfulness guard for expansion | [Partially complete via P112-P114] | Coverage must not imply quality, promotion, or recommendation. |
+| **P2** | Trigger-met execution paths | [Blocked] | P108/P117/P118/4_STAR tasks only after P123 classification changes. |
+| **P3** | 4_STAR provenance path | [Blocked] | Backtest requires provenance and explicit authorization. |
+| **P4** | Runtime trigger artifact retention / latest-pointer policy | [Deferred] | Prevent long-term trigger-recheck artifact noise. |
+| **P5** | Optional scheduler installation | [Deferred] | Requires explicit OS-level authorization. |
+| **P6** | Replay UI/API disclosure for bet-count truth | [Deferred] | UI should not misrepresent first-bet fallback as full multi-bet replay. |
+| **P7** | Worktree hygiene / DB staging policy | [Deferred but risky] | Dirty working tree remains a staging hazard. |
+| **P8** | Future OOS monitoring after draw thresholds | [Waiting on data] | P108/P117 re-enter only when thresholds are crossed. |
+| **P9** | External reference review | [Paused] | New repo is forbidden and this is not critical path. |
+| **P10** | Post-launch operations cadence | [Deferred] | Long-term monitoring and regression cadence. |
+
+Changes from prior roadmap:
+
+- [Confirmed] P105/P106/P107B are no longer current P0 blockers; they are completed and incorporated in P119 evidence.
+- [Confirmed] P123 wrapper usage replaces future no-change P124/P125 trigger recheck PRs.
+- [Confirmed] Worktree branch guard is upgraded to P0.
+- [Confirmed] Multi-bet replay truth model is upgraded to P0.3 because the user's highest priority requires truthful 1-5 bet replay.
+- [Confirmed] All implemented strategy coverage matrix is upgraded to P1.1.
+- [Confirmed] 4_STAR backtest remains blocked.
+- [Confirmed] OS scheduler installation remains deferred.
 
 ## 7. Critical Blockers
 
-### Blocker 1: ~~P49 Artifact / Git Hygiene~~ [RESOLVED]
-- **Resolution:** `79ab784`, PR #185. Complete.
+### Blocker 1: Trigger Wait-State
 
-### Blocker 2: ~~P50–P53 Wave 4 Analysis~~ [RESOLVED]
-- **Resolution:** P50–P53 commits merged to main. All three strategies classified.
+- **Impact scope:** P108, P117, P118, 4_STAR.
+- **Why blocker:** All governed execution paths need data or explicit authorization that is not present.
+- **Risk if ignored:** Premature evaluation, OOS checkpoint, quarantine, or backtest would violate governance.
+- **Priority:** P0.1.
+- **Acceptance criteria:** Use P123 wrapper; if classification remains `P122_ALL_TRIGGERS_STILL_BLOCKED`, do not open a new branch, PR, or P-task.
 
-### Blocker 3: `midfreq_fourier_mk_3bet` ONLINE Promotion Gate [ACTIVE]
-- **Impact scope:** Promotion governance.
-- **Why blocker:** G4 McNemar direction is champion-favored (c=50 > b=42 on hit_count >= 3). Waiver authorizes WATCHLIST only, not ONLINE.
-- **Risk if ignored:** Replacing champion on an event (hit_count >= 3) where champion wins discordant pairs more often.
-- **Gate conditions:** 300+ additional OOS draws + McNemar hit_count >= 3 direction parity (b >= c) + McNemar hit_count >= 2 p < 0.05 + explicit P61+ authorization.
-- **Priority:** P2 (monitoring; no immediate action required)
+### Blocker 2: Worktree Branch / Context Contamination Risk
 
-### Blocker 4: ~~Wave 5 Coverage Gap~~ [RESOLVED]
-- **Resolution:** P55–P59 complete; `fourier30_markov30_2bet` row-backed (1500 rows); production rows 43960.
-- **Remaining:** `cold_complement_2bet` and `zonal_entropy_2bet` remain WATCHLIST_REHEARSAL_ONLY.
+- **Impact scope:** Repo integrity and multi-agent safety.
+- **Why blocker:** P123 first attempt proved Claude worktree branch risk; prior prompts also had cross-project contamination.
+- **Risk if ignored:** Work lands in wrong path/branch or inherits Betting/Stock/Novel/SCB governance.
+- **Priority:** P0.2.
+- **Acceptance criteria:** Every governed prompt checks repo path, branch, `git rev-parse --git-dir`, and project lock before implementation.
 
-### Blocker 5: Remote Push [ACTIVE — Non-critical]
-- **Impact scope:** Remote sync.
-- **Why blocked:** GitHub branch protection requires `replay-default-validation` CI check; direct push to main rejected (GH006).
-- **Resolution:** Create a PR from a local branch, allow CI to run, then merge to main via PR.
-- **Priority:** P4 (non-blocking for local governance work)
+### Blocker 3: Multi-Bet Replay Truth Ambiguity
 
-## 8. Recommended Optimization Directions
+- **Impact scope:** Product correctness for all 1-5 bet-count combinations.
+- **Why blocker:** Existing rows may represent only the first bet even when strategy names or adapters imply multiple bets.
+- **Risk if ignored:** The UI/API could claim full multi-bet historical replay when only bet 1 was evaluated.
+- **Priority:** P0.3.
+- **Acceptance criteria:** Read-only truth model classifies every implemented strategy/bet-count variant as native multi-bet, first-bet-only fallback, adapter-missing, already-covered, unsupported, rejected, or fabrication-prohibited.
 
-### 1. `midfreq_fourier_mk_3bet` WATCHLIST OOS Monitoring (P2 — Active)
-- **Why:** G4 direction weakness may improve over time as more data accumulates.
-- **System maturity gain:** Evidence-based ONLINE promotion decision vs. intuition-based.
-- **What to do:** No action required now. Re-evaluate at 150-draw gate (~draw 115000191).
-- **Priority:** P2 (monitoring)
+### Blocker 4: Incomplete All-Implemented-Strategy Coverage Matrix
 
-### 2. P61-A Post-P59 API/DB Verification (P4 — Ready)
-- **Why:** P59 inserted 1500 rows; API verification confirms replay rows are served correctly via `/api/replay/history` and `/api/replay/summary`.
-- **System maturity gain:** End-to-end confirmation that Wave 5 rows are queryable.
-- **What to do:** Read-only API calls; confirm POWER_LOTTO semantics; no DB write.
-- **Priority:** P4
+- **Impact scope:** Product maturity and planning.
+- **Why blocker:** The highest product goal needs a measurable gap list before implementation.
+- **Risk if ignored:** Worker tasks may add rows opportunistically rather than completing all implemented strategies systematically.
+- **Priority:** P1.1.
+- **Acceptance criteria:** Matrix covers all implemented strategy IDs, lottery types, native bet counts, supported target bet counts 1-5, current replay rows, adapter status, quality label, and next action.
 
-### 3. P11 Browser Visual Evidence Closure (P5 — Deferred)
-- **Why:** API is verified; UI visual rendering for POWER_LOTTO Wave 5 special fields not confirmed.
-- **What to do:** Browser smoke with screenshot evidence; no DB write.
-- **Priority:** P5
+### Blocker 5: 4_STAR Source Unknown
 
-### 4. P12 Worktree-Wide Housekeeping (P9 — Deferred)
-- **Why:** Pre-existing dirty files (.gitignore, pid, fuse_hidden*, backups, runtime) clutter git status.
-- **What to do:** Clean or explicitly acknowledge; no production DB changes.
-- **Priority:** P9
+- **Impact scope:** Data quality and backtest authorization.
+- **Why blocker:** P104/P119-P123 preserve source_unknown; provenance artifact absent.
+- **Risk if ignored:** Backtest on unverifiable actuals.
+- **Priority:** P3.
+- **Acceptance criteria:** Separate provenance acceptance artifact and explicit backtest authorization before any 4_STAR backtest.
 
-## 9. Roadmap Changes Applied in P60
+## 8. Recommended System Optimization Directions
 
-- [Confirmed] Updated `00-Plan/roadmap/roadmap.md`:
-  - Added P55, P56, P57, P58, P59, P60 rows to Current Phase Snapshot table
-  - Updated production rows to 43960 (+1500 from P59)
-  - Added P59 Wave 5 to coverage table (`fourier30_markov30_2bet`, 1500 rows)
-  - Updated alignment assessment: Wave 5 planning confirmed complete
-  - Updated priorities: P3 Wave 5 planning marked complete; P4 updated to P61-A
-  - Added remote push blocker note (GH006: `replay-default-validation`)
-  - Updated Today's Focus to P60 completion with P61 options
-  - Updated final roadmap marker to `CTO_ROADMAP_AFTER_P59_POWERLOTTO_WAVE5_APPLY_20260525`
-- [Confirmed] Updated `00-Plan/roadmap/CTO-Analysis.md` (this file):
-  - Full CTO review updated to P60 date
-  - Input sources updated to P48–P60
-  - All assessments updated to reflect P55–P59 completions
-  - Added completed work sections for P54–P59
-  - Updated priorities: P3 complete, P4 → P61-A
-  - Updated blockers: Blocker 4 resolved; Blocker 5 (remote push) added
-  - Updated optimization directions: Wave 5 complete; P61-A next
-- [Confirmed] Created `docs/replay/p60_post_p59_remote_sync_and_roadmap_update_20260525.md`
-- [Confirmed] Created `outputs/replay/p60_post_p59_remote_sync_and_roadmap_update_20260525.json`
-- [Confirmed] Created `tests/test_p60_post_p59_roadmap_update.py`
-- [Confirmed] Did NOT modify `00-Plan/roadmap/CEO-Decision.md`
-- [Confirmed] Did NOT modify `00-Plan/roadmap/active_task.md`
-- [Confirmed] Did NOT write production DB
-- [Confirmed] Did NOT promote any lifecycle
-- [Confirmed] Did NOT replace champion strategy
-- [Confirmed] Did NOT force push
+### 1. Make P123 The Standing Trigger Gate
+
+- **Corresponding roadmap phase:** P0.1.
+- **Why important:** It prevents no-change PR churn while keeping trigger checks deterministic.
+- **System maturity gain:** Turns monitoring into a low-cost operator action.
+- **Expected benefit:** Lower CI/agent cost and clearer standby state.
+- **Risk:** Operators may assume cron/launchd is installed; it is not.
+- **Acceptance:** P123 wrapper run from canonical repo; no branch/PR when classification remains blocked.
+- **Priority:** P0.
+
+### 2. Standardize Execution Guardrails
+
+- **Corresponding roadmap phase:** P0.2.
+- **Why important:** Worktree branch and cross-project contamination are not theoretical; both appeared in this workflow.
+- **System maturity gain:** Protects canonical repo integrity.
+- **Expected benefit:** Less recovery work and fewer accidental scope violations.
+- **Risk:** Long prompt guard sections may drift until centralized.
+- **Acceptance:** All future governed tasks check `show-toplevel`, branch, `git-dir=.git`, forbidden branch prefixes, and `PROJECT_CONTEXT_LOCK=LotteryNew`.
+- **Priority:** P0.
+
+### 3. Define The Multi-Bet Replay Truth Model
+
+- **Corresponding roadmap phase:** P0.3.
+- **Why important:** The user's top priority cannot be met if first-bet-only rows masquerade as 1-5 bet replay.
+- **System maturity gain:** Makes historical replay verifiable at the bet-count level.
+- **Expected benefit:** Accurate gap planning for all lottery types and 1-5 bet variants.
+- **Risk:** May reveal that existing row-backed coverage is less complete than strategy names imply.
+- **Acceptance:** Read-only artifact; no DB writes; no fabricated rows; clear classifications for every implemented strategy variant.
+- **Priority:** P0.
+
+### 4. Build All-Strategy Bet-Count Coverage Matrix
+
+- **Corresponding roadmap phase:** P1.1.
+- **Why important:** It is the first concrete step toward "all implemented strategies historical replay."
+- **System maturity gain:** Converts a broad product ambition into a measurable backlog.
+- **Expected benefit:** Planners can rank adapter work and controlled apply work by gap severity and quality value.
+- **Risk:** Scope can balloon if it includes unimplemented or rejected strategies without labels.
+- **Acceptance:** Matrix covers strategy_id, lottery_type, native bet count, supported 1-5 target counts, replay rows, adapter status, blocker, quality label, and proposed next task type.
+- **Priority:** P1.
+
+### 5. Keep Provenance-First Expansion For Source-Unknown Data
+
+- **Corresponding roadmap phase:** P2/P3.
+- **Why important:** 4_STAR rows exist but remain source-unknown.
+- **System maturity gain:** Prevents data availability from being confused with analysis authorization.
+- **Expected benefit:** Future 4_STAR work can proceed safely once provenance is resolved.
+- **Risk:** Backtest pressure may bypass source controls.
+- **Acceptance:** Provenance accepted and backtest explicitly authorized before any 4_STAR analysis.
+- **Priority:** P2/P3.
+
+## 9. Roadmap Changes Applied
+
+- [Confirmed] Updated `roadmap.md` from P104-current to P123-current.
+- [Confirmed] Added P119-P123 phase status, PR/merge evidence, and current trigger wait-state.
+- [Confirmed] Replaced P105/P106/P107 as current blockers with completed status from P119 evidence.
+- [Confirmed] Added P123 wrapper as the canonical no-change trigger recheck path.
+- [Confirmed] Added worktree branch guard and cross-project contamination guard as P0 execution rules.
+- [Confirmed] Added multi-bet replay truth model as P0.3.
+- [Confirmed] Added all implemented strategy x lottery x 1-5 bet-count coverage matrix as P1.1.
+- [Confirmed] Preserved 4_STAR backtest block and source_unknown caveat.
+- [Confirmed] Documented that CTO did not emit or write an `active_task.md` prompt because the instructions forbid new worker task prompt output and CTO may only update two files.
+- [Confirmed] Did not modify `00-Plan/roadmap/CEO-Decision.md`.
+- [Confirmed] Did not modify `00-Plan/roadmap/active_task.md`.
+- [Confirmed] Did not write production DB, install scheduler, create repo, create branch, create PR, mutate lifecycle/champion/registry, run P108/P117/P118, or backtest 4_STAR.
 
 ## 10. Risks / Unknowns
 
-- [Confirmed] Production DB row count: 43960
-- [Confirmed] Champion `fourier_rhythm_3bet` active; not replaced
-- [Confirmed] `fourier30_markov30_2bet` DRY_RUN lifecycle unchanged in DB (no ONLINE promotion)
-- [Confirmed] `cold_complement_2bet` and `zonal_entropy_2bet`: WATCHLIST_REHEARSAL_ONLY; dry-run rows exist; not production-applied
-- [Risk] G4 direction weakness (c > b at hit_count >= 3) for `midfreq_fourier_mk_3bet` persists; candidate must demonstrate improvement before ONLINE promotion
-- [Risk] ~45,000 rows remain to full coverage; Wave 6+ scope will be large
-- [Risk] Pre-existing worktree debt (dirty files) is not yet cleaned; P12 remains deferred
-- [Risk] Remote push of main to origin blocked by CI requirement; 9 local commits not yet synced to origin
-- [Unknown] Whether WATCHLIST candidate's G4 direction will improve at 150-draw gate
-- [Inferred] `pp3_freqort_4bet` and `midfreq_fourier_2bet` may improve with 500 additional draws; worth re-evaluating at Wave 5 planning stage
+- [Confirmed] All four triggers remain blocked: P108 needs 37 Special3 draws, P117 needs 30/40 POWER_LOTTO draws, P118 needs exact phrase, 4_STAR needs provenance.
+- [Confirmed] P123 wrapper is not an installed scheduler.
+- [Confirmed] Dirty worktree remains and includes DB/history/pid/runtime/untracked files; this CTO task did not clean them.
+- [Confirmed] Current replay rows do not automatically prove full native multi-bet coverage.
+- [Confirmed] 4_STAR source remains unknown.
+- [Unknown] Whether future operator wants a real cron/launchd schedule.
+- [Unknown] Whether `outputs/replay/trigger_rechecks/` should remain fully tracked, partly ignored, or use a latest pointer.
+- [Unknown] Full number of implemented strategy x lottery x bet-count gaps until the proposed coverage matrix is built.
+- [Inferred] The next high-value work is not another trigger recheck PR, but a read-only multi-bet coverage/gap audit.
+- [Inferred] Some previously row-backed strategies may need relabeling as first-bet-only for product honesty.
 
 ## 11. CTO Final Recommendation
 
-P54 OPTION A is complete. Roadmap and CTO docs updated to reflect full P49HYG–P53 chain.
+Do not open P124/P125 merely to re-confirm no trigger change. Use `scripts/p123_scheduled_trigger_recheck.py` from the canonical repo when data or authorization might have changed. If it returns `P122_ALL_TRIGGERS_STILL_BLOCKED`, stay in `WAIT_FOR_DATA_OR_AUTHORIZATION`.
 
-**Immediate recommendation for P55:**
-1. Choose one of:
-   - P55-A: Wave 5 candidate planning (plan-only; next logical step for coverage expansion)
-   - P55-B: P11 Browser visual evidence closure (if UI launch readiness is priority)
-   - P55-C: P12 Worktree-wide housekeeping (if clean git status is priority)
-   - P55-D: WATCHLIST monitoring review at 150-draw gate (not yet reached; defer until draws accumulate)
-2. Do NOT promote `midfreq_fourier_mk_3bet` to ONLINE until 300+ draws and explicit authorization.
-3. Do NOT replace champion `fourier_rhythm_3bet`.
-4. Keep production rows at 42460 until Wave 5 dry-run authorization.
+Given the user's highest priority, the next CEO-approved governed work should be a read-only **multi-bet replay truth model and all implemented strategy x lottery x 1-5 bet-count coverage matrix**. This should inventory the current strategy universe and replay rows, classify true native multi-bet coverage versus first-bet-only fallback, and produce a precise gap list. It must not write DB rows, stage DB/history files, run P108/P117/P118, backtest 4_STAR, install schedulers, or promote strategies.
 
-## 12. CTO Summary In 10 Lines
+### CEO-Gated First Executable Task Status
 
-1. [Confirmed] P49HYG–P53 chain complete; all merged to main.
-2. [Confirmed] Production rows: 42460 (unchanged through entire P49HYG–P54 sequence).
-3. [Confirmed] `midfreq_fourier_mk_3bet` = WATCHLIST (docs-only); mean_hit=1.027; perm p=0.0003.
-4. [Confirmed] G4 McNemar (hit>=3): b=42, c=50, champion-favored; waiver granted for WATCHLIST only.
-5. [Confirmed] G5a McNemar (hit>=2): b=184, c=157, candidate-favored, p=0.159 — direction reversal finding.
-6. [Confirmed] Champion `fourier_rhythm_3bet` active; NOT replaced; ONLINE promotion NOT performed.
-7. [Confirmed] `pp3_freqort_4bet` and `midfreq_fourier_2bet` remain INCONCLUSIVE.
-8. [Active] 500-draw OOS holdout plan running; first gate at +150 draws from draw 115000041.
-9. [Ready] Wave 5 candidate planning (P3) is next unlocked work; ~46,500 rows gap remaining.
-10. [Confirmed] P54 roadmap/CTO docs updated; no DB write; no lifecycle mutation; no forbidden files staged.
+- [Blocked] A full worker task prompt is not emitted by this CTO update because the instruction set explicitly says "CTO must not produce a new worker task prompt" and CTO may only update `roadmap.md` and `CTO-Analysis.md`.
+- [Inferred] If CEO overrides that restriction later, the first executable task should be a read-only multi-bet replay coverage matrix, not a no-change trigger recheck PR.
+- [Confirmed] `00-Plan/roadmap/active_task.md` was not modified.
 
-Final Classification: `CTO_ROADMAP_AFTER_P53_POWERLOTTO_WATCHLIST_20260525`
+## 12. CTO Summary In 5 Lines
+
+1. [Confirmed] P123 is merged; wrapper `scripts/p123_scheduled_trigger_recheck.py` replaces no-change trigger PRs.
+2. [Confirmed] Current runtime classification remains `P122_ALL_TRIGGERS_STILL_BLOCKED`; system is healthy standby.
+3. [Blocked] P108, P117, P118, and 4_STAR remain blocked by data/provenance/authorization.
+4. [P0] Future work must enforce `git-dir=.git` and project contamination guards.
+5. [P1] Highest product-value next work is read-only all implemented strategy x lottery x 1-5 bet-count replay coverage truth mapping.
+
+## 13. CEO Summary In 5 Lines
+
+1. [Confirmed] Stop spending PRs on no-change trigger checks; use P123 wrapper manually when inputs change.
+2. [Confirmed] No P108/P117/P118/4_STAR task is eligible today.
+3. [Risk] Full historical replay across 1-5 bets is not yet proven because some rows are first-bet-only.
+4. [Decision] Approve a read-only coverage/gap audit before any new replay apply.
+5. [Guard] No DB writes, no scheduler install, no worktree branch, no cross-project governance.
+
+Final Classification: `CTO_ROADMAP_UPDATED_WITH_RISKS`
+
+---
+
+## 14. P124 Follow-Up Note (2026-05-28)
+
+P124 was completed as a read-only worker task on branch `p124-multi-bet-truth-coverage-matrix`.
+
+### P124 Summary
+- **Artifact:** `outputs/replay/p124_multi_bet_truth_and_coverage_matrix_20260528.json`
+- **Classification:** `P124_MULTI_BET_TRUTH_AND_COVERAGE_MATRIX_READY`
+- **DB snapshot confirmed:** replay_rows=54462, 3_STAR=4179/115000106, 4_STAR=2922/115000103, POWER_LOTTO=1913/115000041 (unchanged)
+- **Coverage matrix:** 36 strategy×lottery pairs across DAILY_539, BIG_LOTTO, POWER_LOTTO
+- **Key finding:** Zero strategies currently achieve `native_multi_bet` storage. All 36 pairs store exactly 1 predicted_numbers list per row.
+
+### Gap Summary
+| Gap Type | Count | Next Action |
+|---|---|---|
+| first_bet_only_fallback (with Tier-B adapter available) | 5 | controlled_apply |
+| first_bet_only_fallback (adapter build required) | 9 | adapter_build |
+| first_bet_only_fallback (partial adapter, relabel needed) | 2 | relabel_first_bet_only |
+| already_covered (1-bet strategies) | 7 | no_action |
+| rejected (expansion forbidden) | 13 | no_action |
+
+### Confirmations
+- [Confirmed] No DB writes, no staging of lottery_v2.db or lottery_history.json
+- [Confirmed] No strategy promotion, lifecycle mutation, registry mutation
+- [Confirmed] No P108/P117/P118 execution, no 4_STAR backtest, no scheduler install
+- [Confirmed] P124 tests: 27 passed, P119-P123 regression: 318 passed
+- [Confirmed] Drift guard: PASS, Branch governance: PASS
+
+### Next Task
+`P125_ADAPTER_GAP_PLAN` — plan controlled_apply passes for the 5 Tier-B adapter-ready strategies and define adapter build specs for remaining multi-bet strategies.

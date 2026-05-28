@@ -381,3 +381,38 @@ P125 was then implemented as a read-only adapter gap plan on `main`.
 
 ### Next Task
 `P125_ADAPTER_GAP_PLAN` — plan controlled_apply passes for the 5 Tier-B adapter-ready strategies and define adapter build specs for remaining multi-bet strategies.
+
+---
+
+## P126 — Controlled Apply Dry-Run Plan for Tier-B Multi-Bet Adapters
+
+- **Task:** `P126_CONTROLLED_APPLY_PLAN_FOR_TIER_B_MULTI_BET_ADAPTERS`
+- **Date:** 2026-05-28
+- **Script:** `scripts/p126_controlled_apply_plan_tier_b_multi_bet.py`
+- **JSON:** `outputs/replay/p126_controlled_apply_plan_tier_b_multi_bet_20260528.json`
+- **MD:** `docs/replay/p126_controlled_apply_plan_tier_b_multi_bet_20260528.md`
+- **Tests:** `tests/test_p126_controlled_apply_plan_tier_b_multi_bet.py` — 151 passed
+- **Classification:** `P126_DRY_RUN_PLAN_READY`
+
+### P126 Row Delta Summary
+| Apply Order | Strategy | Lottery | Bets | +New Rows | Total After |
+|---|---|---|---|---|---|
+| 1 | `biglotto_echo_aware_3bet` | BIG_LOTTO | 3 | +3000 | 57462 |
+| 2 | `daily539_f4cold_5bet` | DAILY_539 | 5 | +6000 | 63462 |
+| 3 | `daily539_f4cold_3bet` | DAILY_539 | 3 | +3000 | 66462 |
+| 4 | `power_fourier_rhythm_2bet` | POWER_LOTTO | 2 | +1500 | 67962 |
+| 5 | `biglotto_ts3_markov_4bet_w30` | BIG_LOTTO | 4 | +4500 | 72462 |
+| **TOTAL** | | | | **+18| **TOTAL** | | | | **+18| **TOTAL** | | | | **+18| **TOTAL** | | | | Pro| **TOTAL** | | | | **+18| **TOTAL** | | | | **+18| **TOTAL** | | | |ONTROLLED_APPLY |
+| Dupli| Dupli| Dupli| Dupli| Dupli| Dupli| Dupli| Dupli| Dupli| Dupli| Duplin| Dupli| Dupli| Dupli| Dupli| Dupli| Dupli| Dupli| Dupli| Dupli| Dupli| Duplin| DupliLA| Dupli| Dupli| Dupli| Dupli| Dupli| Dupli| Dupli| Dupli| Dupli| Dupli| Duplinri| Dupli| Dupli| Dupli| Dupli| Dupli| Dupli| Dupli| Dupli| Dupli| Dupli| Duplin| Dupli|or lottery_history.json
+- [Confirmed] No strategy promotion, scheduler install, lifecycle mutation
+- [Confirmed] No P108/P117/P118 execution, no 4_STAR action, no fabricated rows
+- [Confirmed] PRAGMA query_only = ON enforced on every DB connection
+- [Confirmed] P126 tests: 151 passed; P125+P124+P119-P123 regression: 399 passed
+- [Confirmed] Drift guard: REPLAY_LIFECYCLE_DRIFT_GUARD_PASS
+- [Confirmed] replay_rows = 54462 (unchanged be- [Confirmed] replay_rows = 54462 (unchanged be- [Confirmed] replay_28)- [Confirmed] replay_rows = 54462 (unchanged be- [Confirmed] replay_rows = 54462 (unchanged be- [Confirmed] replay_28)- [Confirmed] replay_rows = 54462 (unchanged be- [Confirmed] reatio- [Confirmed] replay_rows = 54462 (unchanged be- [Confirmed] replay_rows = 54462 (unchanged be- [Confirmed] replay_28)- [Confirmed] replay_rows = 54462 (unchanged be- [Confirmed] replay_rows = 54462 (unchanged be- [Confirmed] replay_28)- [Confirmed] replay_rows = 54462 (unchanged be- [Confirmed] reatio- [Confirmed] replay_rows = 54462 (unchanged be- [he- [Confirmed] replay_rows = 54462 (unchanged be- [Confirmed] replay_rows Kelvin
+
+Final roadmap marker:
+
+```text
+CTO_ROADMAP_UPDATED_AFTER_P126_DRY_RUN_PLAN_20260528
+```

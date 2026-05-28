@@ -224,3 +224,29 @@ Final roadmap marker:
 ```text
 CTO_ROADMAP_UPDATED_AFTER_P125_ADAPTER_GAP_PLAN_20260528
 ```
+
+---
+
+## Phase Snapshot After P126
+
+| Task | Status | Classification | DB Rows |
+|---|---|---|---|
+| P119 | DONE | P119_EVIDENCE_TRIGGER_MATRIX_LOCKED | 54462 |
+| P120 | DONE | P120_TRIGGER_EVALUATION_DONE | 54462 |
+| P121 | DONE | P121_TRIGGER_RECHECK_DONE | 54462 |
+| P122 | DONE | P122_CONTAMINATION_GUARD_PASS | 54462 |
+| P123 | DONE | P123_SCHEDULED_TRIGGER_RECHECK_SETUP_DONE | 54462 |
+| P124 | DONE | P124_MERGED_TO_MAIN_WITH_ACKNOWLEDGED_ROADMAP_FILE_VIOLATION | 54462 |
+| P125 | DONE | P125_ADAPTER_GAP_PLAN_READY | 54462 |
+| P126 | DONE | P126_DRY_RUN_PLAN_READY | 54462 (no writes) |
+
+Updated near-term order (post-P126):
+
+| Rank | Work | Why |
+|---|---|---|
+| 1 | P128 native multi-bet storage design | RSR-1 blocks any multi-bet apply until format decided |
+| 2 | P126 Apply — authorize and execute for 5 Tier-B candidates | Requires P128 decision or one-row-per-bet explicit authorization, then per-strategy phrase f| 2 | P126 Apply — authorize and execute for 5 Tier-B candidates | Requires P128 decisio in para| 2 | P126 Apply — authoregy| 2 | P126 Apply — authorize and exel P123 | 2 | P126 Applyly| 2 | P126 Apply — authorize and execute for 5 Tier-ns healt| 2 | P126 Apply — authorize and execute for 5 Tiers | 2 | P126 Apply — authorize and execute for 5 Tma| 2 | P126 Apply — authorize and execute for 5 modifie| 2 | P126 Apply — authorize and execute for 5 Tier-B candidar:
+
+```text
+CTO_ROADMAP_UPDATED_AFTER_P126_DRY_RUN_PLAN_20260528
+```

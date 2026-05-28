@@ -1,0 +1,147 @@
+{
+  "task_id": "P126D",
+  "classification": "P126D_DAILY539_F4COLD_3BET_APPLIED",
+  "generated_at": "2026-05-28T09:29:57.234769+00:00",
+  "authorization": {
+    "strategy_id": "daily539_f4cold_3bet",
+    "exact_required_phrase": "YES authorize controlled_apply for daily539_f4cold_3bet because <reason>",
+    "authorization_present": true,
+    "apply_allowed": true,
+    "authorization_text_observed": "YES authorize controlled_apply for daily539_f4cold_3bet because P126B and P126C succeeded and this is the next +3000 row controlled apply candidate",
+    "reason_text": "P126B and P126C succeeded and this is the next +3000 row controlled apply candidate"
+  },
+  "db_snapshot_before": {
+    "replay_rows": 58962,
+    "has_bet_index_column": true,
+    "has_new_unique_constraint": true,
+    "columns_count": 28,
+    "daily539_f4cold_3bet_rows": 1500,
+    "power_fourier_rhythm_2bet_rows": 3000,
+    "biglotto_echo_aware_3bet_rows": 4500,
+    "total_replay_rows": 58962
+  },
+  "backup": {
+    "backup_path": "/Users/kelvin/Kelvin-WorkSpace/LotteryNew/.claude/worktrees/zen-gates-ff6802/lottery_api/data/backups/lottery_v2.db.p126d_backup_20260528T092957Z.db",
+    "backup_created": true,
+    "backup_row_count": 58962,
+    "backup_verification": "PASS",
+    "backup_ok": true
+  },
+  "apply_scope": {
+    "strategy_id": "daily539_f4cold_3bet",
+    "lottery_type": "DAILY_539",
+    "expected_insert_rows": 3000,
+    "actual_insert_rows": 3000,
+    "target_bet_count": 3,
+    "bet2_rows_inserted": 1500,
+    "bet3_rows_inserted": 1500,
+    "controlled_apply_id": "P126D_DAILY539_F4COLD_3BET_20260528",
+    "apply_executed": true
+  },
+  "candidate_source_summary": {
+    "p126_classification": "P126_DRY_RUN_PLAN_READY",
+    "p126a_classification": "P126A_WAITING_FOR_PER_STRATEGY_APPLY_AUTHORIZATION",
+    "p126b_classification": "P126B_POWER_FOURIER_RHYTHM_2BET_APPLIED",
+    "p126c_classification": "P126C_BIGLOTTO_ECHO_AWARE_3BET_APPLIED",
+    "p129b_classification": "P129B_PRODUCTION_BET_INDEX_SCHEMA_MIGRATION_APPLIED",
+    "p126a_ok": true,
+    "p126b_ok": true,
+    "p126c_ok": true,
+    "p129b_ok": true
+  },
+  "inserted_rows_summary": {
+    "total_rows_inserted": 3000,
+    "bet2_rows_inserted": 1500,
+    "bet3_rows_inserted": 1500,
+    "truth_level": "TRUTH_CLOSED",
+    "controlled_apply_id": "P126D_DAILY539_F4COLD_3BET_20260528",
+    "source": "P126D_CONTROLLED_APPLY",
+    "dry_run": false,
+    "bet1_mismatch_count": 0
+  },
+  "duplicate_guard": {
+    "unique_key": "UNIQUE(lottery_type, target_draw, strategy_id, bet_index)",
+    "constraint_active": true,
+    "duplicate_rejected_in_validation": true,
+    "other_candidates_extra_inserted": {
+      "biglotto_ts3_markov_4bet_w30": 0,
+      "daily539_f4cold_5bet": 0
+    },
+    "other_candidates_untouched": true,
+    "guard_ok": true
+  },
+  "bet_index_validation": {
+    "bet1_count": 1500,
+    "bet2_count": 1500,
+    "bet3_count": 1500,
+    "expected_bet1": 1500,
+    "expected_bet2": 1500,
+    "expected_bet3": 1500,
+    "distribution_ok": true,
+    "all_rows_daily539": true,
+    "validation": "PASS"
+  },
+  "db_snapshot_after": {
+    "replay_rows": 61962,
+    "daily539_f4cold_3bet_rows": 4500,
+    "power_fourier_rhythm_2bet_rows": 3000,
+    "biglotto_echo_aware_3bet_rows": 4500
+  },
+  "row_preservation_check": {
+    "rows_before_apply": 58962,
+    "rows_inserted": 3000,
+    "expected_rows_after": 61962,
+    "actual_rows_after": 61962,
+    "rows_preserved_ok": true
+  },
+  "drift_guard_update": {
+    "previous_total": 58962,
+    "new_total": 61962,
+    "rows_added": 3000,
+    "update_required": true,
+    "update_note": "scripts/replay_lifecycle_drift_guard.py BASELINE total_count updated from 58962 to 61962; p126d_apply_id added as 'P126D_DAILY539_F4COLD_3BET_20260528' with count 3000"
+  },
+  "previous_apply_status": {
+    "power_fourier_rhythm_2bet": {
+      "already_applied": true,
+      "p126b_classification": "P126B_POWER_FOURIER_RHYTHM_2BET_APPLIED",
+      "pfr_total_rows": 3000,
+      "pfr_bet1_count": 1500,
+      "pfr_bet2_count": 1500,
+      "rows_preserved": true,
+      "no_duplicate_power_fourier_rows": true
+    },
+    "biglotto_echo_aware_3bet": {
+      "already_applied": true,
+      "p126c_classification": "P126C_BIGLOTTO_ECHO_AWARE_3BET_APPLIED",
+      "echo_total_rows": 4500,
+      "echo_bet1_count": 1500,
+      "echo_bet2_count": 1500,
+      "echo_bet3_count": 1500,
+      "rows_preserved": true
+    },
+    "previous_rows_preserved": true,
+    "no_duplicate_previous_rows": true
+  },
+  "blocked_or_excluded": {
+    "remaining_2_candidates_not_applied": {
+      "biglotto_ts3_markov_4bet_w30": "NOT_APPLIED — no authorization provided",
+      "daily539_f4cold_5bet": "NOT_APPLIED — no authorization provided"
+    },
+    "biglotto_ts3_markov_4bet_w30_not_applied": true,
+    "daily539_f4cold_5bet_not_applied": true,
+    "4_STAR_excluded": true,
+    "P108_not_run": true,
+    "P117_not_run": true,
+    "P118_not_run": true,
+    "rejected_strategies_no_action": true,
+    "no_scheduler_install": true,
+    "no_lifecycle_champion_registry_mutation": true
+  },
+  "rollback_reference": {
+    "backup_path": "/Users/kelvin/Kelvin-WorkSpace/LotteryNew/.claude/worktrees/zen-gates-ff6802/lottery_api/data/backups/lottery_v2.db.p126d_backup_20260528T092957Z.db",
+    "rollback_command": "cp '/Users/kelvin/Kelvin-WorkSpace/LotteryNew/.claude/worktrees/zen-gates-ff6802/lottery_api/data/backups/lottery_v2.db.p126d_backup_20260528T092957Z.db' '/Users/kelvin/Kelvin-WorkSpace/LotteryNew/.claude/worktrees/zen-gates-ff6802/lottery_api/data/lottery_v2.db'",
+    "note": "Restore backup to rollback P126D apply. Backup was verified at 58962 rows before any write."
+  },
+  "summary": "P126D: applied daily539_f4cold_3bet controlled replay rows. Inserted 3000 rows (1500 bet-2, 1500 bet-3) for DAILY_539. DB rows: 58962 → 61962. P126B/P126C rows preserved. Remaining 2 P126A candidates (biglotto_ts3_markov_4bet_w30, daily539_f4cold_5bet) NOT applied. Classification: P126D_DAILY539_F4COLD_3BET_APPLIED"
+}

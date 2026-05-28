@@ -120,7 +120,10 @@ BASELINE = {
     # P126C: BIG_LOTTO biglotto_echo_aware_3bet bet-2 + bet-3 controlled apply (2026-05-28)
     "p126c_apply_id": "P126C_BIGLOTTO_ECHO_AWARE_3BET_20260528",
     "p126c_count": 3000,
-    "total_count": 58962,  # 55962 (pre-P126C) + 3000 (P126C bet-2+bet-3) = 58962
+    # P126D: DAILY_539 daily539_f4cold_3bet bet-2 + bet-3 controlled apply (2026-05-28)
+    "p126d_apply_id": "P126D_DAILY539_F4COLD_3BET_20260528",
+    "p126d_count": 3000,
+    "total_count": 61962,  # 58962 (pre-P126D) + 3000 (P126D bet-2+bet-3) = 61962
 }
 
 # Known V3 tombstone strategy IDs — must have 0 rows in replay table
@@ -419,6 +422,7 @@ def run_checks(db_path: pathlib.Path) -> dict:
         "p94": p94_count,
         "p126b": p126b_count,
         "p126c": p126c_count,
+        "p126d": p126d_count if "p126d_apply_id" in BASELINE else 0,
         "total": total_count,
     }
 

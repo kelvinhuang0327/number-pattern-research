@@ -1,0 +1,175 @@
+{
+  "task_id": "P126F",
+  "classification": "P126F_DAILY539_F4COLD_5BET_APPLIED",
+  "generated_at": "2026-05-28T10:19:43.286318+00:00",
+  "authorization": {
+    "authorization_present": true,
+    "strategy_id": "daily539_f4cold_5bet",
+    "reason_text": "P126B P126C P126D and P126E succeeded and this is the final +6000 row controlled apply candidate",
+    "apply_allowed": true,
+    "authorization_text_observed": "YES authorize controlled_apply for daily539_f4cold_5bet because P126B P126C P126D and P126E succeeded and this is the final +6000 row controlled apply candidate"
+  },
+  "db_snapshot_before": {
+    "replay_rows": 66462,
+    "strategy_rows": 1500,
+    "bet1_rows": 1500,
+    "extra_rows": 0,
+    "has_bet_index_column": true,
+    "has_new_unique_constraint": false
+  },
+  "db_snapshot_after": {
+    "replay_rows": 72462,
+    "strategy_rows": 7500,
+    "bet1_rows": 1500,
+    "extra_rows": 6000,
+    "has_bet_index_column": true,
+    "has_new_unique_constraint": false
+  },
+  "backup": {
+    "backup_path": "/Users/kelvin/Kelvin-WorkSpace/LotteryNew/.claude/worktrees/zen-gates-ff6802/lottery_api/data/backups/lottery_v2.db.p126f_backup_20260528T101943Z.db",
+    "backup_created": true,
+    "backup_row_count": 66462,
+    "backup_verification": "PASS",
+    "backup_ok": true
+  },
+  "apply_scope": {
+    "strategy_id": "daily539_f4cold_5bet",
+    "lottery_type": "DAILY_539",
+    "target_bet_count": 5,
+    "expected_insert_rows": 6000,
+    "actual_insert_rows": 6000,
+    "bet2_rows_inserted": 1500,
+    "bet3_rows_inserted": 1500,
+    "bet4_rows_inserted": 1500,
+    "bet5_rows_inserted": 1500,
+    "controlled_apply_id": "P126F_DAILY539_F4COLD_5BET_20260528"
+  },
+  "inserted_rows_summary": {
+    "total_rows_inserted": 6000,
+    "bet2_rows_inserted": 1500,
+    "bet3_rows_inserted": 1500,
+    "bet4_rows_inserted": 1500,
+    "bet5_rows_inserted": 1500,
+    "truth_level": "REAL",
+    "controlled_apply_id": "P126F_DAILY539_F4COLD_5BET_20260528",
+    "source": "P126F_CONTROLLED_APPLY",
+    "dry_run": false
+  },
+  "bet_index_validation": {
+    "bet1_count": 1500,
+    "bet2_count": 1500,
+    "bet3_count": 1500,
+    "bet4_count": 1500,
+    "bet5_count": 1500,
+    "expected_bet1": 1500,
+    "expected_bet2": 1500,
+    "expected_bet3": 1500,
+    "expected_bet4": 1500,
+    "expected_bet5": 1500,
+    "distribution_ok": true,
+    "all_rows_daily539": true,
+    "validation": "PASS"
+  },
+  "duplicate_guard": {
+    "unique_key": "UNIQUE(lottery_type, target_draw, strategy_id, bet_index)",
+    "constraint_active": true,
+    "duplicate_rejected_in_validation": true,
+    "other_candidates_extra_inserted": 0,
+    "other_candidates_untouched": true,
+    "guard_ok": true
+  },
+  "row_preservation_check": {
+    "rows_before_apply": 66462,
+    "rows_inserted": 6000,
+    "expected_rows_after": 72462,
+    "actual_rows_after": 72462,
+    "rows_preserved_ok": true
+  },
+  "candidate_source_summary": {
+    "p126a_classification": "P126A_WAITING_FOR_PER_STRATEGY_APPLY_AUTHORIZATION",
+    "total_inserted_rows_from_p126b_to_p126f": 18000,
+    "blocked_or_excluded": [
+      "4_STAR",
+      "P108",
+      "P117",
+      "P118"
+    ]
+  },
+  "previous_apply_status": {
+    "power_fourier_rhythm_2bet": {
+      "p126b_classification": "P126B_POWER_FOURIER_RHYTHM_2BET_APPLIED",
+      "already_applied": true,
+      "rows_preserved": true,
+      "pfr_total_rows": 3000,
+      "pfr_bet1_count": 1500,
+      "pfr_bet2_count": 1500
+    },
+    "biglotto_echo_aware_3bet": {
+      "p126c_classification": "P126C_BIGLOTTO_ECHO_AWARE_3BET_APPLIED",
+      "already_applied": true,
+      "rows_preserved": true,
+      "echo_total_rows": 4500,
+      "echo_bet1_count": 1500,
+      "echo_bet2_count": 1500,
+      "echo_bet3_count": 1500
+    },
+    "daily539_f4cold_3bet": {
+      "p126d_classification": "P126D_DAILY539_F4COLD_3BET_APPLIED",
+      "already_applied": true,
+      "rows_preserved": true,
+      "f4cold3_total_rows": 4500,
+      "f4cold3_bet1_count": 1500,
+      "f4cold3_bet2_count": 1500,
+      "f4cold3_bet3_count": 1500
+    },
+    "biglotto_ts3_markov_4bet_w30": {
+      "p126e_classification": "P126E_BIGLOTTO_TS3_MARKOV_4BET_W30_APPLIED",
+      "already_applied": true,
+      "rows_preserved": true,
+      "ts3markov_total_rows": 6000,
+      "ts3markov_bet1_count": 1500,
+      "ts3markov_bet4_count": 1500
+    }
+  },
+  "all_p126_candidates_status": {
+    "applied_candidates": 5,
+    "remaining_candidates": 0,
+    "all_complete": true,
+    "candidates": {
+      "power_fourier_rhythm_2bet": "P126B_APPLIED",
+      "biglotto_echo_aware_3bet": "P126C_APPLIED",
+      "daily539_f4cold_3bet": "P126D_APPLIED",
+      "biglotto_ts3_markov_4bet_w30": "P126E_APPLIED",
+      "daily539_f4cold_5bet": "P126F_APPLIED"
+    }
+  },
+  "drift_guard_update": {
+    "previous_total": 66462,
+    "new_total": 72462,
+    "rows_added": 6000,
+    "update_required": true,
+    "update_note": "BASELINE total_count updated 66462→72462; p126f_apply_id and p126f_count added.",
+    "result": {
+      "updated": true,
+      "old_total_count": 66462,
+      "new_total_count": 72462,
+      "p126f_apply_id": "P126F_DAILY539_F4COLD_5BET_20260528",
+      "p126f_count": 6000
+    }
+  },
+  "rollback_reference": {
+    "backup_path": "/Users/kelvin/Kelvin-WorkSpace/LotteryNew/.claude/worktrees/zen-gates-ff6802/lottery_api/data/backups/lottery_v2.db.p126f_backup_20260528T101943Z.db",
+    "rollback_command": "cp /Users/kelvin/Kelvin-WorkSpace/LotteryNew/.claude/worktrees/zen-gates-ff6802/lottery_api/data/backups/lottery_v2.db.p126f_backup_20260528T101943Z.db /Users/kelvin/Kelvin-WorkSpace/LotteryNew/.claude/worktrees/zen-gates-ff6802/lottery_api/data/lottery_v2.db && echo 'Rollback complete'",
+    "note": "Restore this backup to revert P126F. Then re-run drift guard validation."
+  },
+  "governance": {
+    "scheduler_installed": false,
+    "4_star_applied": false,
+    "p108_applied": false,
+    "p117_applied": false,
+    "p118_applied": false,
+    "strategy_promotion_performed": false,
+    "only_daily539_f4cold_5bet_applied": true,
+    "all_5_p126a_candidates_complete": true
+  }
+}

@@ -324,3 +324,31 @@ then 3-bet (7–10), then 4-bet (11), then 5-bet (12).
 ```text
 CTO_ROADMAP_UPDATED_AFTER_P127_ADAPTER_BUILD_SPECS_20260528
 ```
+
+---
+
+### P128 Wave 2 Phase 1 Status: ADAPTER PHASE 1 COMPLETE
+
+**P128** — `get_all_bets()` implemented for priority 1-6 (all 2-bet strategies).  
+Adapter-only phase. No DB writes. No controlled_apply.  
+DB unchanged: 72,462 rows.
+
+**Adapters implemented (priority 1-6):**
+- P1: `midfreq_acb_2bet` → `get_all_bets_midfreq_acb()` (DAILY_539)
+- P2: `midfreq_fourier_2bet` → `get_all_bets_fourier_d539()` (DAILY_539)
+- P3: `zonal_entropy_2bet` → `get_all_bets_zonal_entropy()` (POWER_LOTTO)
+- P4: `cold_complement_2bet` → `get_all_bets_cold_complement()` (POWER_LOTTO)
+- P5: `midfreq_fourier_2bet` → `get_all_bets_fourier_power()` (POWER_LOTTO)
+- P6: `fourier30_markov30_2bet` → `get_all_bets_fourier30_markov30()` (POWER_LOTTO)
+
+**Priority 7-12:** DEFERRED to Phase 2.  
+**Apply gate:** CLOSED — pending Phase 2 completion + CTO sign-off.  
+**Test coverage:** 88 new tests PASS; 542 regression tests PASS.
+
+**RSR status:**
+- RSR-6: deferred to Phase 2 (affects priority 10/12 only)
+- RSR-7: `fourier30_markov30_2bet` 1501 rows (+1) — low priority, noted
+
+```text
+CTO_ROADMAP_UPDATED_AFTER_P128_WAVE2_ADAPTER_PHASE1_20260528
+```

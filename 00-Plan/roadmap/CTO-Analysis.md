@@ -675,3 +675,67 @@ Final roadmap marker:
 ```text
 CTO_ROADMAP_UPDATED_AFTER_P127_ADAPTER_BUILD_SPECS_20260528
 ```
+
+---
+
+## P128 Update — Wave 2 Phase 1 Multi-Bet Adapter Implementation
+
+**Date:** 2026-05-28  
+**CTO Classification:** `P128_WAVE2_ADAPTER_PHASE1_READY`
+
+### What Was Done
+
+P128 Phase 1 implemented `get_all_bets()` adapter functions for the 6 highest-priority
+(all 2-bet) strategies from the P127 build spec. No DB writes. No controlled_apply.
+
+### Priority 1-6 Adapter Status
+
+| Priority | Strategy ID | Lottery Type | Function | Status |
+|----------|-------------|--------------|----------|--------|
+| P1 | `midfreq_acb_2bet` | DAILY_539 | `get_all_bets_midfreq_acb()` | IMPLEMENTED |
+| P2 | `midfreq_fourier_2bet` | DAILY_539 | `get_all_bets_fourier_d539()` | IMPLEMENTED |
+| P3 | `zonal_entropy_2bet` | POWER_LOTTO | `get_all_bets_zonal_entropy()` | IMPLEMENTED |
+| P4 | `cold_complement_2bet` | POWER_LOTTO | `get_all_bets_cold_complement()` | IMPLEMENTED |
+| P5 | `midfreq_fourier_2bet` | POWER_LOTTO | `get_all_bets_fourier_power()` | IMPLEMENTED |
+| P6 | `fourier30_markov30_2bet` | POWER_LOTTO | `get_all_bets_fourier30_markov30()` | IMPLEMENTED |
+
+Priority 7-12: **DEFERRED** to Phase 2.
+
+### Phase Scope Audit
+
+| Field | Value |
+|-------|-------|
+| `db_write_in_p128` | `false` |
+| `controlled_apply_executed` | `false` |
+| `replay_rows_inserted` | `0` |
+| `production_db_rows_after` | `72,462` (unchanged) |
+
+### Test Coverage
+
+- **88 new tests** in `tests/test_p128_wave2_adapter_phase1.py` — all PASS
+- **542 regression tests** from prior P-tasks — all PASS
+- **Drift guard:** PASS at 72,462
+
+### RSR Status
+
+| RSR | Description | P128 Status |
+|-----|-------------|-------------|
+| RSR-6 | Orphan bet_index=2 rows in priority 10/12 | DEFERRED to Phase 2 |
+| RSR-7 | `fourier30_markov30_2bet` has 1501 rows (+1) | LOW — does not block |
+
+### CTO Non-Actions
+
+- No rows written to `lottery_api/data/lottery_v2.db`
+- No controlled_apply executed
+- No 4_STAR / P108 / P117 / P118
+- No lifecycle / champion / registry mutation
+
+### Next Recommended Task
+
+P128 Phase 2: implement priority 7-12 adapters, then controlled_apply for Phase 1.
+
+Final roadmap marker:
+
+```text
+CTO_ROADMAP_UPDATED_AFTER_P128_WAVE2_ADAPTER_PHASE1_20260528
+```

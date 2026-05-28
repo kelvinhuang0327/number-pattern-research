@@ -382,3 +382,25 @@ have 20 orphan `bet_index=2` rows. Apply gate BLOCKED until RSR-6-RESOLUTION don
 ```text
 CTO_ROADMAP_UPDATED_AFTER_P128_WAVE2_ADAPTER_PHASE2_20260528
 ```
+
+---
+
+### RSR-6 Orphan bet_index=2 Audit [2026-05-28]
+
+**Classification**: RSR6_ORPHAN_BET_INDEX2_AUDIT_READY  
+40 orphan `bet_index=2` rows audited for `power_precision_3bet` and `power_orthogonal_5bet`.
+
+**Findings**: Pre-P126 batch (`replay_run_id=6`, 2026-05-07) wrote `bet_index=2` rows
+for draws 99000085–99000104 without source/provenance. Valid `bet_index=1` rows exist for
+all affected draws. DB rows: 72,462 (no writes in audit).
+
+**Resolution**: Option A (DELETE 40 rows, authorization required).
+Post-cleanup: 72,422 rows. Unlocks P10/P12 apply gate.
+
+**Apply gate**: P10/P12 BLOCKED. P7/P8/P9/P11 not RSR-6 blocked.
+
+**Next task**: RSR6_CLEANUP_EXECUTION → P128 Phase 3 controlled_apply.
+
+```text
+CTO_ROADMAP_UPDATED_AFTER_RSR6_ORPHAN_BET_INDEX2_AUDIT_20260528
+```

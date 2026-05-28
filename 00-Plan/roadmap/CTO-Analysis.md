@@ -798,3 +798,48 @@ does not block adapter.
 ```text
 CTO_ROADMAP_UPDATED_AFTER_P128_WAVE2_ADAPTER_PHASE2_20260528
 ```
+
+---
+
+## RSR-6 Orphan bet_index=2 Audit [2026-05-28]
+
+**Classification**: RSR6_ORPHAN_BET_INDEX2_AUDIT_READY  
+**Branch**: `claude/zen-gates-ff6802`  
+**DB rows**: 72,462 (unchanged — no writes in RSR-6 audit)
+
+### Audit Findings
+
+- **40 orphan bet_index=2 rows** found across `power_precision_3bet` (20) and `power_orthogonal_5bet` (20).
+- Draw range: `99000085–99000104`.
+- Source: `replay_run_id=6`, generated 2026-05-07. `source=''`, `controlled_apply_id=NULL`, `provenance_hash=NULL`.
+- These are **pre-P126 batch overflow rows** — the batch runner wrote bi=1 for draws 99000055–99000084, then overflowed into bi=2 for 99000085–99000104.
+- Valid `bet_index=1` rows exist for all 20 orphan draws (from `replay_run_id=2`).
+
+### Resolution Recommendation
+
+**Option A — Quarantine Delete** (recommended):
+```sql
+DELETE FROM strategy_prediction_replays
+WHERE strategy_id IN ('power_precision_3bet','power_orthogonal_5bet')
+  AND bet_index = 2 AND (source IS NULL OR source = '') AND replay_run_id = 6;
+```
+- Rows to delete: 40
+- Post-cleanup rows: 72,422
+- Risk: LOW (bi=1 rows exist for all affected draws)
+- **Requires authorization phrase before execution**
+
+### Apply Gate Status
+
+| Strategy | Apply Ready | Condition |
+|----------|-------------|----------|
+| `power_precision_3bet` (P10) | ❌ NO | RSR-6 Option A + drift guard at 72,422 |
+| `power_orthogonal_5bet` (P12) | ❌ NO | RSR-6 Option A + drift guard at 72,422 |
+| P7/P8/P9/P11 | Not evaluated | Not RSR-6 blocked |
+
+### Next Task
+
+`RSR6_CLEANUP_EXECUTION` → DELETE 40 rows under authorization → drift guard at 72,422 → re-evaluate P10/P12 apply gate → P128 Phase 3 controlled_apply for P7/P8/P9/P11.
+
+```text
+CTO_ROADMAP_UPDATED_AFTER_RSR6_ORPHAN_BET_INDEX2_AUDIT_20260528
+```

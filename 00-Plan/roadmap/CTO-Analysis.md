@@ -1,8 +1,8 @@
-# CTO Analysis - After P134 fourier_rhythm_3bet Controlled Apply and P135 Closure Audit
+# CTO Analysis - After P136 Post-RSR6 Re-evaluation for P10/P12 Baseline Rows
 
 ## 1. CTO Review Date
 
-2026-05-29 Asia/Taipei (updated after P134/P135).
+2026-05-29 Asia/Taipei (updated after P136).
 
 Final CTO classification target: `CTO_ROADMAP_UPDATED_WITH_RISKS`.
 
@@ -996,4 +996,33 @@ CTO Note: P135 is read-only. Wave 2 safe candidates are closed at 85924 rows aft
 
 ```text
 CTO_ANALYSIS_UPDATED_AFTER_P135_WAVE2_CLOSURE_20260529
+```
+
+---
+
+### P136: Post-RSR6 Re-evaluation for P10/P12 Baseline Rows (2026-05-29)
+
+**Status**: COMPLETE | **Classification**: P136_POST_RSR6_P10_P12_REEVALUATION_READY
+
+CTO Note: P136 is read-only and focuses only on P10/P12 post-RSR6 baseline governance.
+Both strategies remain blocked for apply. Current audited state per strategy:
+
+- bet-1 rows: 1550
+- bet-2+ rows: 0
+- production baseline rows: 1500
+- NULL-provenance legacy rows: 50
+
+P136 conclusion: legacy rows are left unchanged in this phase; any quarantine/re-mark/cleanup decision requires a dedicated authorization gate task.
+
+- **DB rows:** 85924 (no change in P136)
+- **Drift guard:** PASS at 85924
+- **No DB write:** confirmed
+- **No controlled_apply:** confirmed
+
+**Next task**: P137 authorization gate for P10/P12 legacy-row governance (quarantine/re-mark/noop decision), then reassess future dry-run gate readiness.
+
+**Artifact**: `outputs/replay/p136_post_rsr6_p10_p12_baseline_reevaluation_20260529.json`
+
+```text
+CTO_ANALYSIS_UPDATED_AFTER_P136_POST_RSR6_REEVALUATION_20260529
 ```

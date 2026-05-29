@@ -1,8 +1,8 @@
 # Lottery Replay Roadmap
 
-**Last Updated:** 2026-05-29 Asia/Taipei (updated after P134 fourier_rhythm_3bet controlled apply and P135 closure audit)
+**Last Updated:** 2026-05-29 Asia/Taipei (updated after P136 post-RSR6 re-evaluation for P10/P12 baseline rows)
 **Owner:** CTO agent
-**Primary Goal:** Make every implemented LotteryNew strategy replayable with honest historical prediction-vs-actual evidence across every supported lottery type and every implemented 1-5 bet-count variant. This must be done without fake rows, untracked DB writes, premature promotion, or no-change governance PR churn. Current system state: Wave 2 safe candidates are now closed at 85924 rows after P131/P132/P133/P134. P10 / P12 remain blocked pending post-RSR6 apply gate re-evaluation. P108 / P117 / P118 / 4_STAR triggers remain blocked.
+**Primary Goal:** Make every implemented LotteryNew strategy replayable with honest historical prediction-vs-actual evidence across every supported lottery type and every implemented 1-5 bet-count variant. This must be done without fake rows, untracked DB writes, premature promotion, or no-change governance PR churn. Current system state: Wave 2 safe candidates remain closed at 85924 rows. P136 completed post-RSR6 re-evaluation for P10/P12 and confirmed both remain apply-blocked pending a separate authorization gate for legacy-row governance. P108 / P117 / P118 / 4_STAR triggers remain blocked.
 **Repo Policy:** Use `/Users/kelvin/Kelvin-WorkSpace/LotteryNew` only. Do not create a new repo. Implementation and governed tasks must run from canonical repo with `git rev-parse --git-dir == .git`; Claude/Codex auto-created worktree branches are not allowed.
 
 ---
@@ -610,4 +610,30 @@ P9 anomaly is closed and verified at draw-ext 115000041. P10/P12 remain blocked 
 
 ```text
 CTO_ROADMAP_UPDATED_AFTER_P135_WAVE2_CLOSURE_20260529
+```
+
+---
+
+### P136 — Post-RSR6 Re-evaluation for P10/P12 Baseline Rows [2026-05-29]
+
+**Classification**: P136_POST_RSR6_P10_P12_REEVALUATION_READY
+
+P136 is a read-only governance audit for `power_precision_3bet` and `power_orthogonal_5bet`.
+It confirms both strategies still have:
+
+- `1550` bet-1 rows each
+- `0` bet-2+ rows each
+- `1500` production baseline rows + `50` NULL-provenance legacy rows each
+
+P136 does not mutate DB state and does not execute controlled apply.
+
+- **DB rows:** 85,924 (no change in P136)
+- **Drift guard:** PASS at 85924
+- **Apply ready:** still false for P10/P12
+- **Resolution type:** authorization gate required for any future quarantine/re-mark cleanup decision
+
+**Next task**: P137 authorization gate for P10/P12 legacy-row governance decision, then re-check dry-run readiness.
+
+```text
+CTO_ROADMAP_UPDATED_AFTER_P136_POST_RSR6_REEVALUATION_20260529
 ```

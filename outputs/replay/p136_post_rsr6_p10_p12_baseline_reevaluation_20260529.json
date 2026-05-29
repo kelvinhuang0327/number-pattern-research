@@ -1,0 +1,222 @@
+{
+  "task_id": "P136",
+  "classification": "P136_POST_RSR6_P10_P12_REEVALUATION_READY",
+  "generated_at": "2026-05-29T02:54:42.597823+00:00",
+  "repo_worktree_check": {
+    "worktree_path": "/Users/kelvin/Kelvin-WorkSpace/LotteryNew/.claude/worktrees/zen-gates-ff6802",
+    "expected_worktree": "/Users/kelvin/Kelvin-WorkSpace/LotteryNew/.claude/worktrees/zen-gates-ff6802",
+    "branch": "claude/zen-gates-ff6802",
+    "git_dir": "/Users/kelvin/Kelvin-WorkSpace/LotteryNew/.git/worktrees/zen-gates-ff6802",
+    "head_sha": "25c8d2b71ca958bd17cf52d0b6c516739745812e",
+    "worktree_confirmed": true
+  },
+  "db_snapshot": {
+    "total_rows": 85924,
+    "expected_rows": 85924,
+    "rows_match_expected": true,
+    "bet_index_schema_exists": true,
+    "columns_count": 28
+  },
+  "p135_source_summary": {
+    "artifact": "/Users/kelvin/Kelvin-WorkSpace/LotteryNew/.claude/worktrees/zen-gates-ff6802/outputs/replay/p135_wave2_safe_candidates_closure_and_p10_p12_plan_20260529.json",
+    "task_id": "P135",
+    "classification": "P135_WAVE2_SAFE_CANDIDATES_CLOSED_P10_P12_REEVALUATION_PLAN_READY",
+    "classification_pass": true,
+    "commit": "25c8d2b71ca958bd17cf52d0b6c516739745812e"
+  },
+  "rsr6_cleanup_source_summary": {
+    "artifact": "/Users/kelvin/Kelvin-WorkSpace/LotteryNew/.claude/worktrees/zen-gates-ff6802/outputs/replay/rsr6_cleanup_delete_orphan_bet_index2_rows_20260528.json",
+    "task_id": "RSR6_CLEANUP",
+    "classification": "RSR6_ORPHAN_BET_INDEX2_CLEANUP_APPLIED",
+    "classification_pass": true,
+    "deleted_rows": 40,
+    "db_rows_after_cleanup": 72422
+  },
+  "p10_p12_current_distribution": {
+    "power_precision_3bet_bet1_rows": 1550,
+    "power_precision_3bet_bet2_plus_rows": 0,
+    "power_orthogonal_5bet_bet1_rows": 1550,
+    "power_orthogonal_5bet_bet2_plus_rows": 0
+  },
+  "baseline_row_audit": {
+    "production_baseline_rows_per_strategy": 1500,
+    "null_provenance_legacy_rows_per_strategy": 50,
+    "total_rows_per_strategy": 1550,
+    "db_write_in_p136": false,
+    "power_precision_3bet": {
+      "production_baseline_rows": 1500,
+      "null_provenance_legacy_rows": 50,
+      "total_rows": 1550
+    },
+    "power_orthogonal_5bet": {
+      "production_baseline_rows": 1500,
+      "null_provenance_legacy_rows": 50,
+      "total_rows": 1550
+    }
+  },
+  "null_provenance_legacy_audit": {
+    "power_precision_3bet": {
+      "replay_run_id_counts": {
+        "NULL": 1500,
+        "2": 20,
+        "6": 30
+      },
+      "controlled_apply_id_counts": {
+        "NULL": 50,
+        "P20_POWERLOTTO_REMAINING_1500_PROD_20260520": 1500
+      },
+      "truth_level_counts": {
+        "NULL": 50,
+        "POWERLOTTO_REMAINING_STRATEGIES_BACKFILL_VERIFIED": 1500
+      },
+      "source_counts": {
+        "NULL": 50,
+        "P20_POWERLOTTO_REMAINING_STRATEGIES_PRODUCTION_APPLY": 1500
+      },
+      "provenance_hash_null_rows": 50,
+      "provenance_hash_non_null_rows": 1500,
+      "production_baseline_rows": 1500,
+      "null_provenance_legacy_rows": 50
+    },
+    "power_orthogonal_5bet": {
+      "replay_run_id_counts": {
+        "NULL": 1500,
+        "2": 20,
+        "6": 30
+      },
+      "controlled_apply_id_counts": {
+        "NULL": 50,
+        "P20_POWERLOTTO_REMAINING_1500_PROD_20260520": 1500
+      },
+      "truth_level_counts": {
+        "NULL": 50,
+        "POWERLOTTO_REMAINING_STRATEGIES_BACKFILL_VERIFIED": 1500
+      },
+      "source_counts": {
+        "NULL": 50,
+        "P20_POWERLOTTO_REMAINING_STRATEGIES_PRODUCTION_APPLY": 1500
+      },
+      "provenance_hash_null_rows": 50,
+      "provenance_hash_non_null_rows": 1500,
+      "production_baseline_rows": 1500,
+      "null_provenance_legacy_rows": 50
+    },
+    "summary": {
+      "null_legacy_rows_per_strategy": 50,
+      "production_baseline_rows_per_strategy": 1500,
+      "legacy_rows_keepable_in_p136": true,
+      "keep_reason": "P136 is read-only and only produces governance recommendations."
+    }
+  },
+  "per_strategy_reevaluation_matrix": {
+    "power_precision_3bet": {
+      "strategy_id": "power_precision_3bet",
+      "baseline_valid_for_future_dry_run": true,
+      "requires_remark_plan": true,
+      "requires_quarantine_plan": true,
+      "requires_cleanup_authorization": true,
+      "remains_apply_blocked": true,
+      "reason": "null_provenance_legacy_rows_present_after_rsr6_cleanup",
+      "guard_before_any_mutation": [
+        "read_only_revalidation_on_same_worktree",
+        "authorization_phrase_required",
+        "no_controlled_apply_until_resolution",
+        "post_mutation_drift_guard_required"
+      ]
+    },
+    "power_orthogonal_5bet": {
+      "strategy_id": "power_orthogonal_5bet",
+      "baseline_valid_for_future_dry_run": true,
+      "requires_remark_plan": true,
+      "requires_quarantine_plan": true,
+      "requires_cleanup_authorization": true,
+      "remains_apply_blocked": true,
+      "reason": "null_provenance_legacy_rows_present_after_rsr6_cleanup",
+      "guard_before_any_mutation": [
+        "read_only_revalidation_on_same_worktree",
+        "authorization_phrase_required",
+        "no_controlled_apply_until_resolution",
+        "post_mutation_drift_guard_required"
+      ]
+    }
+  },
+  "recommended_resolution": {
+    "global_decision": "KEEP_AS_IS_IN_P136_AND_PREPARE_MUTATION_GATE",
+    "per_strategy": {
+      "power_precision_3bet": {
+        "recommendation": "prepare_authorization_gate_for_quarantine_or_re_mark_decision",
+        "apply_ready_now": false,
+        "why_not_apply_ready": "null_provenance_legacy_rows_present_after_rsr6_cleanup",
+        "safe_keep_decision_in_p136": true,
+        "safe_keep_rationale": "P136 is read-only; keeping 50 NULL-provenance rows unchanged avoids ungoverned mutation. Mutation must move to a separate authorized task."
+      },
+      "power_orthogonal_5bet": {
+        "recommendation": "prepare_authorization_gate_for_quarantine_or_re_mark_decision",
+        "apply_ready_now": false,
+        "why_not_apply_ready": "null_provenance_legacy_rows_present_after_rsr6_cleanup",
+        "safe_keep_decision_in_p136": true,
+        "safe_keep_rationale": "P136 is read-only; keeping 50 NULL-provenance rows unchanged avoids ungoverned mutation. Mutation must move to a separate authorized task."
+      }
+    }
+  },
+  "future_dry_run_gate_checklist": {
+    "preconditions": [
+      "worktree_and_branch_check_pass",
+      "production_db_rows_still_85924_before_any_new_task",
+      "drift_guard_pass_before_and_after_any_mutation_task",
+      "p10_p12_bet_index_gt1_rows_remain_zero_until_authorized_mutation"
+    ],
+    "governance_checks": [
+      "authorization_phrase_present_for_any_mutation",
+      "mutation_scope_limited_to_p10_p12_legacy_rows",
+      "no_wave2_safe_candidate_rows_touched",
+      "no_P126B_to_P126F_rows_touched",
+      "no_p131_to_p134_rows_touched"
+    ],
+    "apply_gate_checks": [
+      "rebuild_distribution_after_resolution",
+      "recompute_apply_ready_flags",
+      "run_dry_run_only_first_if_apply_gate_reopened",
+      "controlled_apply_requires_separate_phrase_even_after_dry_run"
+    ]
+  },
+  "authorization_gate_if_mutation_needed": {
+    "required_before_mutation": true,
+    "suggested_authorization_phrase": "P136_AUTHORIZED_P10_P12_BASELINE_LEGACY_ROW_RESOLUTION_PLAN_V20260529",
+    "allowed_actions_in_future_task_only": [
+      "quarantine_null_provenance_rows",
+      "re_mark_with_explicit_provenance_metadata",
+      "or_noop_keep_decision_with_documented_waiver"
+    ],
+    "mutation_forbidden_in_p136": true
+  },
+  "apply_gate_status": {
+    "controlled_apply_executed": false,
+    "replay_rows_inserted": 0,
+    "power_precision_3bet_apply_ready": false,
+    "power_orthogonal_5bet_apply_ready": false,
+    "per_strategy_authorization_required_later": true,
+    "production_db_rows_expected": 85924,
+    "production_db_rows_after": 85924
+  },
+  "blocked_or_excluded": {
+    "no_db_write_in_p136": true,
+    "no_controlled_apply_in_p136": true,
+    "no_replay_rows_inserted": true,
+    "4_STAR_excluded": true,
+    "P108_not_run": true,
+    "P117_not_run": true,
+    "P118_not_run": true,
+    "rejected_strategies_no_action": true,
+    "no_scheduler_install": true,
+    "no_lifecycle_champion_registry_mutation": true
+  },
+  "roadmap_update_status": "roadmap.md and CTO-Analysis.md updated to mark P136 as post-RSR6 re-evaluation phase for P10/P12.",
+  "remaining_risks": [
+    "P10/P12 still have 50 NULL-provenance bet-1 rows per strategy; they are governance debt until a separate authorized mutation task resolves them.",
+    "Any mutation without an explicit authorization gate risks touching validated production baseline rows.",
+    "Apply readiness remains blocked until legacy row governance is finalized."
+  ],
+  "next_recommended_task": "P137 authorization gate task for P10/P12 legacy-row resolution (quarantine or re-mark decision), then reassess dry-run readiness.",
+  "summary": "P136 completed read-only post-RSR6 re-evaluation for P10/P12. Distribution is stable at 1550 bet-1 and 0 bet-2+ per strategy, with 1500 production baseline rows and 50 NULL-provenance legacy rows each. Apply remains blocked."
+}

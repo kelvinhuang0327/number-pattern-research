@@ -18,7 +18,7 @@ LOTTERY_TYPE = "DAILY_539"
 
 EXPECTED_ROWS_BEFORE    = 72422
 EXPECTED_ROWS_AFTER     = 75422
-EXPECTED_ROWS_CURRENT   = 78422   # Post P132 apply (midfreq_fourier_mk_3bet +3000)
+EXPECTED_ROWS_CURRENT   = 82922   # Post P133 apply (pp3_freqort_4bet +4500)
 EXPECTED_INSERT_ROWS    = 3000
 EXPECTED_BET1           = 1500
 EXPECTED_BET2           = 1500
@@ -123,7 +123,7 @@ def test_db_actual_total():
     conn = _db()
     total = conn.execute("SELECT COUNT(*) FROM strategy_prediction_replays").fetchone()[0]
     conn.close()
-    # P132 applied midfreq_fourier_mk_3bet after P131 — live DB is now 78422
+    # P133 applied pp3_freqort_4bet after P132 — live DB is now 82922
     assert total == EXPECTED_ROWS_CURRENT
 
 
@@ -349,14 +349,15 @@ def test_p9_not_applied_db():
     assert cnt == 0, f"P9 fourier_rhythm_3bet has {cnt} extra bet rows — should be 0"
 
 
-def test_p11_not_applied_db():
+def test_p11_applied_after_p133_db():
+    # P133 applied pp3_freqort_4bet bet-2/bet-3/bet-4 = 4500 rows after P131/P132
     conn = _db()
     cnt = conn.execute(
         "SELECT COUNT(*) FROM strategy_prediction_replays "
         "WHERE strategy_id='pp3_freqort_4bet' AND bet_index>1"
     ).fetchone()[0]
     conn.close()
-    assert cnt == 0, f"P11 pp3_freqort_4bet has {cnt} extra bet rows — should be 0"
+    assert cnt == 4500, f"P11 pp3_freqort_4bet should have 4500 bet_index>1 rows after P133, got {cnt}"
 
 
 def test_p10_not_applied_db():

@@ -951,3 +951,16 @@ P131 acb_markov_midfreq_3bet (4500 rows) preserved. P9/P11 await individual auth
 Next: P133 (pp3_freqort_4bet, P11, POWER_LOTTO, +4500 rows).
 
 **Artifact**: `outputs/replay/p132_apply_midfreq_fourier_mk_3bet_20260528.json`
+
+---
+
+### P133: pp3_freqort_4bet Wave 2 Apply (2026-05-29)
+
+**Status**: COMPLETE | **Classification**: P133_PP3_FREQORT_4BET_APPLIED
+
+CTO Note: P11 Wave 2 safe candidate `pp3_freqort_4bet` (POWER_LOTTO) applied.
+4,500 bet-2/bet-3/bet-4 rows inserted via P128 phase2 adapter. DB 78,422 → 82922.
+P131 acb_markov_midfreq_3bet (4500 rows) preserved. P132 midfreq_fourier_mk_3bet (4500 rows) preserved.
+P9 fourier_rhythm_3bet deferred to P134 (1501-row anomaly). P10/P12 await re-evaluation.
+
+**Artifact**: `outputs/replay/p133_apply_pp3_freqort_4bet_20260528.json`

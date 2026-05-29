@@ -544,3 +544,27 @@ Authorization phrase: `P130_AUTHORIZED_APPLY_PP3_FREQORT_4BET_POWERLOTTO_BET2_BE
 ```text
 CTO_ROADMAP_UPDATED_AFTER_P132_MIDFREQ_FOURIER_MK_3BET_APPLIED_20260529
 ```
+
+---
+
+### P133 — pp3_freqort_4bet Wave 2 Controlled Apply [2026-05-29]
+
+**Classification**: P133_PP3_FREQORT_4BET_APPLIED
+
+P11 `pp3_freqort_4bet` (POWER_LOTTO) bet-2, bet-3, and bet-4 rows applied via P128 phase2 adapter.
+
+- **Rows inserted:** +4,500 (1,500 bet-2 + 1,500 bet-3 + 1,500 bet-4)
+- **DB rows:** 78,422 → 82922
+- **Backup:** `/Users/kelvin/Kelvin-WorkSpace/LotteryNew/.claude/worktrees/zen-gates-ff6802/backups/lottery_v2.db.p133_backup_20260529T021339Z.db`
+- **Drift guard:** PASS at 82922
+- **P131 acb_markov_midfreq_3bet rows preserved:** 4,500
+- **P132 midfreq_fourier_mk_3bet rows preserved:** 4,500
+- **P9 not applied** — deferred to P134 (1501-row anomaly)
+- **P10/P12 not apply-ready** — pending post-RSR6 re-evaluation
+
+**Next task**: P134 — apply `fourier_rhythm_3bet` (P9, POWER_LOTTO) bet-2 + bet-3.
+Handle 1501-row draw-ext anomaly (115000041).
+
+```text
+CTO_ROADMAP_UPDATED_AFTER_P133_PP3_FREQORT_4BET_APPLIED_20260529
+```

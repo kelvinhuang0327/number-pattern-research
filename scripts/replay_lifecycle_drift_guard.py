@@ -135,7 +135,10 @@ BASELINE = {
     # P132: POWER_LOTTO midfreq_fourier_mk_3bet bet-2 + bet-3 Wave 2 controlled apply (2026-05-29)
     "p132_apply_id": "P132_MIDFREQ_FOURIER_MK_3BET_POWERLOTTO_V20260528",
     "p132_count": 3000,
-    "total_count": 78422,  # Updated after RSR-6 cleanup: deleted 40 orphan bet_index=2 rows (2026-05-28)  # 61962 (pre-P126E) + 4500 (P126E bet-2+bet-3+bet-4) = 66462
+    # P133: POWER_LOTTO pp3_freqort_4bet bet-2 + bet-3 + bet-4 Wave 2 controlled apply (2026-05-29)
+    "p133_apply_id": "P133_PP3_FREQORT_4BET_POWERLOTTO_V20260528",
+    "p133_count": 4500,
+    "total_count": 82922,  # Updated after RSR-6 cleanup: deleted 40 orphan bet_index=2 rows (2026-05-28)  # 61962 (pre-P126E) + 4500 (P126E bet-2+bet-3+bet-4) = 66462
 }
 
 # Known V3 tombstone strategy IDs — must have 0 rows in replay table
@@ -330,6 +333,11 @@ def run_checks(db_path: pathlib.Path) -> dict:
         (BASELINE["p132_apply_id"],),
     ).fetchone()[0] if "p132_apply_id" in BASELINE else 0
 
+    p133_count = c.execute(
+        "SELECT COUNT(*) FROM strategy_prediction_replays WHERE controlled_apply_id=?",
+        (BASELINE["p133_apply_id"],),
+    ).fetchone()[0] if "p133_apply_id" in BASELINE else 0
+
     legacy_count = c.execute(
         "SELECT COUNT(*) FROM strategy_prediction_replays WHERE controlled_apply_id IS NULL"
     ).fetchone()[0]
@@ -450,6 +458,10 @@ def run_checks(db_path: pathlib.Path) -> dict:
         violations.append(
             f"P132 row count mismatch: expected {BASELINE['p132_count']}, got {p132_count}"
         )
+    if "p133_apply_id" in BASELINE and p133_count != BASELINE["p133_count"]:
+        violations.append(
+            f"P133 row count mismatch: expected {BASELINE['p133_count']}, got {p133_count}"
+        )
     if total_count != BASELINE["total_count"]:
         violations.append(
             f"total row count mismatch: expected {BASELINE['total_count']}, got {total_count}"
@@ -484,6 +496,7 @@ def run_checks(db_path: pathlib.Path) -> dict:
         "p126f": p126f_count if "p126f_apply_id" in BASELINE else 0,
         "p131": p131_count if "p131_apply_id" in BASELINE else 0,
         "p132": p132_count if "p132_apply_id" in BASELINE else 0,
+        "p133": p133_count if "p133_apply_id" in BASELINE else 0,
         "total": total_count,
     }
 
@@ -573,6 +586,7 @@ def run_checks(db_path: pathlib.Path) -> dict:
         BASELINE["p126f_apply_id"],
         BASELINE["p131_apply_id"],
         BASELINE["p132_apply_id"],
+        BASELINE["p133_apply_id"],
         "null", None,
     }
     for aid_key, cnt in controlled_apply_id_counts.items():

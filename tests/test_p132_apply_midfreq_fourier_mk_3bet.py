@@ -38,6 +38,7 @@ PYTHON    = sys.executable
 
 EXPECTED_DB_ROWS_BEFORE   = 75422
 EXPECTED_DB_ROWS_AFTER    = 78422
+EXPECTED_DB_ROWS_CURRENT  = 82922   # Post P133 apply (pp3_freqort_4bet +4500)
 EXPECTED_INSERT_ROWS      = 3000
 EXPECTED_BET2_ROWS        = 1500
 EXPECTED_BET3_ROWS        = 1500
@@ -465,7 +466,8 @@ def test_live_db_total_rows(db_conn):
     count = db_conn.execute(
         "SELECT COUNT(*) FROM strategy_prediction_replays"
     ).fetchone()[0]
-    assert count == EXPECTED_DB_ROWS_AFTER, f"Expected {EXPECTED_DB_ROWS_AFTER}, got {count}"
+    # P133 applied pp3_freqort_4bet after P132 — live DB is now 82922
+    assert count == EXPECTED_DB_ROWS_CURRENT, f"Expected {EXPECTED_DB_ROWS_CURRENT}, got {count}"
 
 
 def test_live_db_midfreq_total(db_conn):
@@ -530,11 +532,12 @@ def test_live_db_p9_not_applied(db_conn):
     assert count == 0, f"P9 fourier_rhythm_3bet bet_index>1 must be 0, got {count}"
 
 
-def test_live_db_p11_not_applied(db_conn):
+def test_live_db_p11_applied_after_p133(db_conn):
+    # P133 applied pp3_freqort_4bet bet-2/bet-3/bet-4 = 4500 rows after P132
     count = db_conn.execute(
         "SELECT COUNT(*) FROM strategy_prediction_replays WHERE strategy_id='pp3_freqort_4bet' AND bet_index > 1",
     ).fetchone()[0]
-    assert count == 0, f"P11 pp3_freqort_4bet bet_index>1 must be 0, got {count}"
+    assert count == 4500, f"P11 pp3_freqort_4bet bet_index>1 should be 4500 after P133, got {count}"
 
 
 def test_live_db_no_duplicates(db_conn):

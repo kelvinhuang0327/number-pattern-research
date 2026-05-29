@@ -1124,3 +1124,39 @@ RSR6 orphan rows resolved, P138B legacy governance resolved, adapter functions a
 ```text
 CTO_ANALYSIS_UPDATED_AFTER_P139_P10_P12_MULTIBET_DRY_RUN_GATE_20260529
 ```
+
+---
+
+### P140A: P10/P12 Draw Context Contract Fix (2026-05-29)
+
+**Status**: COMPLETE | **Classification**: P140A_DRAW_CONTEXT_CONTRACT_READY_FOR_P10_P12_APPLY
+
+CTO Note: P140A is a read-only pre-apply contract fix (no DB writes, no controlled_apply).
+
+**Problem (identified in P139):** P127 spec text used `"historical_draws"` as the draw_context key name, but all P128 phase1+phase2 adapter implementations use `draw_context["history"]`. Apply scripts following the P127 spec would crash with `KeyError`.
+
+**Fix applied:** `normalize_draw_context()` added to `lottery_api/models/p128_wave2_phase2_adapters.py`.
+- Accepts `"history"` (canonical) or `"historical_draws"` (backward-compat alias)
+- Pass-through if `"history"` already present; maps `"historical_draws"` → `"history"` otherwise
+- `RSR6_BLOCKED_STRATEGIES` retained (not cleared — beyond P140A scope)
+
+**Smoke tests:**
+- `power_precision_3bet`: PASS — 3 bets, 6 numbers each, deterministic, alias-key safe
+- `power_orthogonal_5bet`: PASS — 5 bets, 6 numbers each, deterministic, alias-key safe
+
+- **DB rows:** 85924 (unchanged)
+- **Drift guard:** PASS at 85924
+- **No DB write:** confirmed
+- **No controlled_apply:** confirmed
+- **1011 regression tests:** all pass
+
+**P140/P141 apply scripts must call `normalize_draw_context()` before adapter invocation.**
+
+**Next task**: P140 — power_precision_3bet multi-bet controlled_apply (bet-2+3, 3000 rows).
+Authorization phrase: `P139_AUTHORIZED_APPLY_POWER_PRECISION_3BET_BET2_BET3_USING_1500_PRODUCTION_BASE_20260529`
+
+**Artifact**: `outputs/replay/p140a_draw_context_contract_fix_p10_p12_20260529.json`
+
+```text
+CTO_ANALYSIS_UPDATED_AFTER_P140A_DRAW_CONTEXT_CONTRACT_FIX_20260529
+```

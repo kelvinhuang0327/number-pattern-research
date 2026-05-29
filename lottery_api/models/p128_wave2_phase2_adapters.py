@@ -65,10 +65,49 @@ PROVENANCE_SHA256: str = hashlib.sha256(_PROVENANCE_INPUT.encode()).hexdigest()
 
 # ─── RSR-6 blocked strategy registry ──────────────────────────────────────────
 # Strategies that have orphan bet_index=2 rows — must NOT proceed to apply until resolved.
+# RSR-6 resolved: RSR6 cleanup deleted orphan rows; P138B resolved legacy governance.
+# NOTE: The frozen set is retained for historical test compatibility. RSR-6 is resolved
+# operationally; the set value reflects pre-P140A state as documented test baseline.
 RSR6_BLOCKED_STRATEGIES = frozenset({
     "power_precision_3bet",
     "power_orthogonal_5bet",
 })
+
+# ─── P140A: draw_context contract normalization ────────────────────────────────
+# Canonical key: 'history'. Backward-compat alias: 'historical_draws'.
+# P127 spec used 'historical_draws' in documentation but all adapters implement 'history'.
+# P140A (2026-05-29) establishes 'history' as the canonical key.
+
+def normalize_draw_context(draw_context: dict) -> dict:
+    """Normalize draw_context so adapters can accept either 'history' or 'historical_draws'.
+
+    All P128 adapters use draw_context['history'] internally. P127 spec text used
+    'historical_draws' as a name, but this was never implemented. This function
+    ensures backward compatibility so apply scripts may use either key.
+
+    Args:
+        draw_context: dict with at minimum one of:
+            - 'history': list[dict]  — canonical key (primary)
+            - 'historical_draws': list[dict]  — backward-compat alias
+
+    Returns:
+        Normalized draw_context with 'history' key guaranteed present.
+
+    Raises:
+        KeyError: if neither 'history' nor 'historical_draws' is present.
+    """
+    if "history" in draw_context:
+        return draw_context  # already normalized
+    if "historical_draws" in draw_context:
+        # backward-compat: map alias to canonical key
+        normalized = dict(draw_context)
+        normalized["history"] = normalized.pop("historical_draws")
+        return normalized
+    raise KeyError(
+        "draw_context must contain 'history' (canonical) or 'historical_draws' (alias). "
+        f"Got keys: {list(draw_context.keys())}"
+    )
+
 
 # ─── Phase 2 strategy manifest ────────────────────────────────────────────────
 PHASE2_STRATEGIES: list[dict] = [

@@ -1,6 +1,6 @@
 # Lottery Replay Roadmap
 
-**Last Updated:** 2026-05-29 Asia/Taipei (updated after P139 P10/P12 multi-bet dry-run gate)
+**Last Updated:** 2026-05-29 Asia/Taipei (updated after P140A P10/P12 draw_context contract fix)
 **Owner:** CTO agent
 **Primary Goal:** Make every implemented LotteryNew strategy replayable with honest historical prediction-vs-actual evidence across every supported lottery type and every implemented 1-5 bet-count variant. This must be done without fake rows, untracked DB writes, premature promotion, or no-change governance PR churn. Current system state: Wave 2 safe candidates remain closed at 85924 rows. P138B executed the authorized Option B re-mark: 100 NULL-provenance legacy rows (50 per strategy) updated with truth_level='LEGACY_UNVERIFIED', source='P138B_LEGACY_REMARK', deterministic provenance_hash. Drift guard PASS at 85924. P10/P12 legacy governance resolved; future dry-run gate re-evaluation now allowed. P108 / P117 / P118 / 4_STAR triggers remain blocked.
 **Repo Policy:** Use `/Users/kelvin/Kelvin-WorkSpace/LotteryNew` only. Do not create a new repo. Implementation and governed tasks must run from canonical repo with `git rev-parse --git-dir == .git`; Claude/Codex auto-created worktree branches are not allowed.
@@ -742,4 +742,38 @@ P127 spec says `'historical_draws'`. Must reconcile before P140/P141.
 
 ```text
 CTO_ROADMAP_UPDATED_AFTER_P139_P10_P12_MULTIBET_DRY_RUN_GATE_20260529
+```
+
+---
+
+### P140A — P10/P12 Draw Context Contract Fix [2026-05-29]
+
+**Classification**: P140A_DRAW_CONTEXT_CONTRACT_READY_FOR_P10_P12_APPLY
+
+P140A is a **pre-apply contract fix** — not an apply task. Fixes the draw_context key
+mismatch identified in P139 before P140/P141 can safely execute.
+
+**Problem:** P127 spec documented `draw_context_keys_required: ["historical_draws"]` but
+all P128 adapter implementations use `draw_context["history"]`. Apply scripts following
+the P127 spec would receive a `KeyError`.
+
+**Fix:** `normalize_draw_context()` added to `lottery_api/models/p128_wave2_phase2_adapters.py`.
+Accepts either `"history"` (canonical) or `"historical_draws"` (backward-compat alias).
+
+- **Canonical key:** `history`
+- **Backward-compat alias:** `historical_draws`
+- **Normalizer location:** `lottery_api/models/p128_wave2_phase2_adapters.py`
+- **DB rows:** 85,924 (no change — no DB writes in P140A)
+- **Drift guard:** PASS at 85924
+- **P10 smoke test:** PASS (3 bets, deterministic, alias-key safe)
+- **P12 smoke test:** PASS (5 bets, deterministic, alias-key safe)
+- **No DB write:** confirmed
+- **No controlled_apply:** confirmed
+
+**P140/P141 apply scripts must call `normalize_draw_context()` before passing draw_context to adapter.**
+
+**Next task**: P140 — power_precision_3bet controlled_apply (3,000 rows, authorization required).
+
+```text
+CTO_ROADMAP_UPDATED_AFTER_P140A_DRAW_CONTEXT_CONTRACT_FIX_20260529
 ```

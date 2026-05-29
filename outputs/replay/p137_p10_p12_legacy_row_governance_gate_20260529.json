@@ -1,0 +1,203 @@
+{
+  "task_id": "P137",
+  "classification": "P137_P10_P12_LEGACY_ROW_GOVERNANCE_GATE_READY",
+  "generated_at": "2026-05-29T03:28:48.251675+00:00",
+  "canonical_repo": "/Users/kelvin/Kelvin-WorkSpace/LotteryNew/.claude/worktrees/zen-gates-ff6802",
+  "canonical_branch": "claude/zen-gates-ff6802",
+  "repo_branch_check": {
+    "expected_repo": "/Users/kelvin/Kelvin-WorkSpace/LotteryNew/.claude/worktrees/zen-gates-ff6802",
+    "actual_repo": "/Users/kelvin/Kelvin-WorkSpace/LotteryNew/.claude/worktrees/zen-gates-ff6802",
+    "expected_branch": "claude/zen-gates-ff6802",
+    "actual_branch": "claude/zen-gates-ff6802",
+    "repo_ok": true,
+    "branch_ok": true
+  },
+  "db_snapshot": {
+    "db_path": "/Users/kelvin/Kelvin-WorkSpace/LotteryNew/.claude/worktrees/zen-gates-ff6802/lottery_api/data/lottery_v2.db",
+    "total_rows": 85924,
+    "expected_rows": 85924,
+    "rows_ok": true,
+    "bet_index_schema_present": true,
+    "head_sha": "affc70f046e3311e005dd53603afc10e955274bb"
+  },
+  "p136_source_summary": {
+    "artifact_path": "/Users/kelvin/Kelvin-WorkSpace/LotteryNew/.claude/worktrees/zen-gates-ff6802/outputs/replay/p136_post_rsr6_p10_p12_baseline_reevaluation_20260529.json",
+    "artifact_found": true,
+    "classification": "P136_POST_RSR6_P10_P12_REEVALUATION_READY",
+    "expected_classification": "P136_POST_RSR6_P10_P12_REEVALUATION_READY",
+    "classification_ok": true
+  },
+  "rsr6_cleanup_source_summary": {
+    "artifact_path": "/Users/kelvin/Kelvin-WorkSpace/LotteryNew/.claude/worktrees/zen-gates-ff6802/outputs/replay/rsr6_cleanup_delete_orphan_bet_index2_rows_20260528.json",
+    "artifact_found": true,
+    "classification": "RSR6_ORPHAN_BET_INDEX2_CLEANUP_APPLIED",
+    "expected_classification": "RSR6_ORPHAN_BET_INDEX2_CLEANUP_APPLIED",
+    "classification_ok": true
+  },
+  "p10_p12_current_distribution": {
+    "power_precision_3bet_bet1_rows": 1550,
+    "power_precision_3bet_bet2_plus_rows": 0,
+    "power_orthogonal_5bet_bet1_rows": 1550,
+    "power_orthogonal_5bet_bet2_plus_rows": 0,
+    "per_strategy": {
+      "power_precision_3bet": {
+        "bet1_rows": 1550,
+        "bet2_plus_rows": 0,
+        "bet_index_distribution": {
+          "1": 1550
+        }
+      },
+      "power_orthogonal_5bet": {
+        "bet1_rows": 1550,
+        "bet2_plus_rows": 0,
+        "bet_index_distribution": {
+          "1": 1550
+        }
+      }
+    }
+  },
+  "null_provenance_legacy_audit": {
+    "power_precision_3bet_null_provenance_rows": 50,
+    "power_orthogonal_5bet_null_provenance_rows": 50,
+    "production_baseline_rows_per_strategy": 1500,
+    "total_legacy_rows_under_decision": 100,
+    "db_write_in_p137": false,
+    "per_strategy_detail": {
+      "power_precision_3bet": {
+        "null_provenance_rows": 50,
+        "production_baseline_rows": 1500,
+        "replay_run_id_breakdown": {
+          "2": 20,
+          "6": 30
+        },
+        "draw_range": {
+          "min_draw": 99000055,
+          "max_draw": 99000104
+        }
+      },
+      "power_orthogonal_5bet": {
+        "null_provenance_rows": 50,
+        "production_baseline_rows": 1500,
+        "replay_run_id_breakdown": {
+          "2": 20,
+          "6": 30
+        },
+        "draw_range": {
+          "min_draw": 99000055,
+          "max_draw": 99000104
+        }
+      }
+    },
+    "legacy_draw_range_note": "NULL-provenance rows span draws 99000055–99000104 for both strategies. These are early replay_run_id=2 (20 rows) and replay_run_id=6 (30 rows) inserts predating P20 production backfill, with no controlled_apply_id, truth_level, source, or provenance_hash set at time of insertion."
+  },
+  "governance_decision_matrix": {
+    "decision_context": "Both P10 (power_precision_3bet) and P12 (power_orthogonal_5bet) each contain 50 rows with NULL provenance_hash, NULL controlled_apply_id, NULL truth_level, and NULL source. These rows predate the P20 production backfill. RSR6 removed orphan bet_index>1 rows but did not address NULL-provenance rows. P136 confirmed the state is stable and deferred the governance decision to P137.",
+    "option_a": {
+      "name": "Keep legacy rows as governed legacy baseline",
+      "description": "Accept the 50+50 NULL-provenance rows as part of the historical record. No DB mutation. Document them as 'governed legacy baseline' via policy artifact only.",
+      "db_mutation_required": false,
+      "mutation_type": "NONE",
+      "risk_level": "LOW",
+      "risk_notes": "No DB change risk. However, the NULL provenance remains permanently unresolved. Future governance tooling or drift guards may flag these rows indefinitely. apply_gate checks that validate provenance completeness would need to explicitly allow NULL-provenance rows for P10/P12.",
+      "apply_readiness_impact": "P10/P12 remain apply_ready=false unless the future dry-run gate is updated to accept NULL-provenance rows as a recognized legacy class.",
+      "rollback_requirement": "NOT REQUIRED — no mutation",
+      "backup_requirement": "NOT REQUIRED — no mutation",
+      "authorization_phrase_template": "I authorize Option A for P10/P12 NULL-provenance legacy rows: accept 50 rows per strategy as governed legacy baseline with no DB mutation, and approve future dry-run gate to proceed acknowledging this legacy class.",
+      "can_unblock_future_dry_run_gate": true,
+      "dry_run_gate_note": "Dry-run gate must be updated to include a legacy_class acceptance clause. Requires explicit authorization before dry-run gate executes."
+    },
+    "option_b": {
+      "name": "Re-mark legacy rows with explicit truth/provenance metadata",
+      "description": "UPDATE the 50+50 NULL-provenance rows to assign explicit metadata: truth_level='LEGACY_UNVERIFIED', controlled_apply_id='P137_LEGACY_REMARK', source='LEGACY_REPLAY_RUN', provenance_hash=deterministic_hash(strategy_id+draw). This converts NULL-provenance rows to a traceable governed state.",
+      "db_mutation_required": true,
+      "mutation_type": "UPDATE 100 rows (50 per strategy)",
+      "risk_level": "MEDIUM",
+      "risk_notes": "DB mutation required. Must be executed with a pre-mutation backup. The re-marked provenance_hash would be synthetically generated, not derived from the original prediction run — this must be documented. Risk of introducing incorrect metadata if hash logic is misspecified.",
+      "apply_readiness_impact": "After successful re-marking, P10/P12 could potentially pass provenance completeness checks and proceed to future dry-run gate. apply_ready=false until re-mark is executed and verified.",
+      "rollback_requirement": "REQUIRED — pre-mutation DB backup, rollback script",
+      "backup_requirement": "REQUIRED — full DB backup before UPDATE execution",
+      "authorization_phrase_template": "I authorize Option B for P10/P12 NULL-provenance legacy rows: execute a governed re-mark UPDATE of 100 rows assigning truth_level='LEGACY_UNVERIFIED', controlled_apply_id='P137_LEGACY_REMARK', source='LEGACY_REPLAY_RUN', and deterministic provenance_hash, with DB backup taken before execution. I understand this introduces synthetic provenance metadata.",
+      "can_unblock_future_dry_run_gate": true,
+      "dry_run_gate_note": "After re-marking, dry-run gate can treat P10/P12 as fully governed. Requires verification that all 100 rows have non-NULL provenance_hash post-mutation."
+    },
+    "option_c": {
+      "name": "Quarantine/delete legacy rows with strict selector",
+      "description": "DELETE the 50+50 NULL-provenance rows using a strict selector: WHERE strategy_id IN ('power_precision_3bet','power_orthogonal_5bet') AND provenance_hash IS NULL AND CAST(target_draw AS INTEGER) BETWEEN 99000055 AND 99000104. P10/P12 would then have exactly 1500 clean production baseline rows each.",
+      "db_mutation_required": true,
+      "mutation_type": "DELETE 100 rows (50 per strategy)",
+      "risk_level": "MEDIUM-HIGH",
+      "risk_notes": "Data deletion is irreversible without backup restoration. The deleted rows represent draws 99000055–99000104 which are historical prediction records. Deletion reduces per-strategy row count from 1550 to 1500 and brings both strategies to a clean P20 baseline. Drift guard total would drop from 85924 to 85824 — a permanent 100-row reduction. Requires updated drift guard baseline after execution.",
+      "apply_readiness_impact": "After deletion, P10/P12 would have 1500 clean production rows only. apply_ready could be re-evaluated after drift guard re-baseline. However, the 1500-row baseline itself may still require a separate multi-bet row controlled_apply before apply_ready=true.",
+      "rollback_requirement": "REQUIRED — pre-deletion DB backup, explicit restore procedure",
+      "backup_requirement": "REQUIRED — full DB backup before DELETE execution",
+      "authorization_phrase_template": "I authorize Option C for P10/P12 NULL-provenance legacy rows: execute a governed DELETE of 100 rows (strategy_id IN ('power_precision_3bet','power_orthogonal_5bet') AND provenance_hash IS NULL AND CAST(target_draw AS INTEGER) BETWEEN 99000055 AND 99000104) with DB backup taken before execution. I acknowledge that total DB rows will decrease from 85924 to 85824 and drift guard baseline must be updated after deletion.",
+      "can_unblock_future_dry_run_gate": true,
+      "dry_run_gate_note": "After deletion, P10/P12 start with a clean 1500-row production baseline. Drift guard baseline must be updated to 85824 before future dry-run gate executes. Dry-run gate can then plan multi-bet row insertions from a clean state."
+    }
+  },
+  "recommended_decision": {
+    "recommended_option": "option_b",
+    "rationale": "Option B (re-mark) is recommended because it resolves the NULL-provenance state without data loss (unlike Option C) and without leaving permanent untracked metadata (unlike Option A). Re-marking with LEGACY_UNVERIFIED truth_level explicitly acknowledges that these rows predate the P20 provenance pipeline while preserving the historical record. The synthetic provenance_hash approach is well-established in the codebase (see P20 backfill). Option A creates permanent technical debt in governance tooling. Option C reduces the dataset unnecessarily for rows that are otherwise valid historical data.",
+    "caveat": "This recommendation is advisory only. Option B requires explicit CTO authorization before execution. The authorization phrase in option_b.authorization_phrase_template must be provided verbatim before any DB mutation proceeds.",
+    "this_is_not_authorization": true,
+    "authorization_status": "PENDING — not yet authorized"
+  },
+  "authorization_phrase_templates": {
+    "option_a_phrase": "I authorize Option A for P10/P12 NULL-provenance legacy rows: accept 50 rows per strategy as governed legacy baseline with no DB mutation, and approve future dry-run gate to proceed acknowledging this legacy class.",
+    "option_b_phrase": "I authorize Option B for P10/P12 NULL-provenance legacy rows: execute a governed re-mark UPDATE of 100 rows assigning truth_level='LEGACY_UNVERIFIED', controlled_apply_id='P137_LEGACY_REMARK', source='LEGACY_REPLAY_RUN', and deterministic provenance_hash, with DB backup taken before execution. I understand this introduces synthetic provenance metadata.",
+    "option_c_phrase": "I authorize Option C for P10/P12 NULL-provenance legacy rows: execute a governed DELETE of 100 rows (strategy_id IN ('power_precision_3bet','power_orthogonal_5bet') AND provenance_hash IS NULL AND CAST(target_draw AS INTEGER) BETWEEN 99000055 AND 99000104) with DB backup taken before execution. I acknowledge that total DB rows will decrease from 85924 to 85824 and drift guard baseline must be updated after deletion.",
+    "note": "The exact phrase must be provided verbatim by the authorizing party. Paraphrasing or partial repetition does not constitute authorization."
+  },
+  "future_dry_run_gate_impact": {
+    "current_blocker": "P10/P12 are blocked from dry-run gate because both strategies contain NULL-provenance legacy rows. The apply gate cannot validate provenance completeness until the governance decision is made and executed.",
+    "after_option_a": {
+      "dry_run_gate_feasible": true,
+      "condition": "Dry-run gate must include explicit legacy_class acceptance clause for NULL-provenance rows.",
+      "estimated_next_task": "P138A: dry-run gate with legacy_class acceptance for P10/P12"
+    },
+    "after_option_b": {
+      "dry_run_gate_feasible": true,
+      "condition": "All 100 rows have non-NULL provenance_hash. Drift guard re-check at 85924.",
+      "estimated_next_task": "P138B: dry-run gate for P10/P12 post-re-mark"
+    },
+    "after_option_c": {
+      "dry_run_gate_feasible": true,
+      "condition": "Drift guard re-baseline at 85824. P10/P12 have clean 1500-row production state.",
+      "estimated_next_task": "P138C: drift guard re-baseline + dry-run gate for P10/P12 post-deletion"
+    },
+    "p10_p12_multi_bet_note": "Even after resolving the NULL-provenance issue, P10/P12 will still need a separate multi-bet controlled_apply to insert bet-2+ rows. P10 is power_precision_3bet (bet-2, bet-3 needed). P12 is power_orthogonal_5bet (bet-2 through bet-5 needed). The governance gate decision is a prerequisite, not a sufficient condition, for apply_ready."
+  },
+  "apply_gate_status": {
+    "controlled_apply_executed": false,
+    "replay_rows_inserted": 0,
+    "db_rows_before": 85924,
+    "db_rows_after": 85924,
+    "power_precision_3bet_apply_ready": false,
+    "power_orthogonal_5bet_apply_ready": false,
+    "per_strategy_authorization_required_later": true
+  },
+  "blocked_or_excluded": [
+    "no DB write in P137",
+    "no controlled_apply in P137",
+    "no replay rows inserted",
+    "P10/P12 still blocked until governance decision authorization",
+    "4_STAR excluded",
+    "P108 not run",
+    "P117 not run",
+    "P118 not run",
+    "rejected strategies no_action",
+    "no scheduler install",
+    "no lifecycle / champion / registry mutation"
+  ],
+  "roadmap_update_status": "pending — will be updated in this run",
+  "remaining_risks": [
+    "NULL-provenance rows remain unresolved until governance option is authorized and executed.",
+    "P10/P12 cannot enter dry-run gate until governance decision is made.",
+    "Option B introduces synthetic provenance_hash that must be clearly labeled LEGACY_UNVERIFIED.",
+    "Option C permanently reduces DB row count from 85924 to 85824 — drift guard baseline must be updated.",
+    "Option A leaves NULL-provenance rows permanently unresolved — future governance tools may re-flag them.",
+    "No multi-bet row gap covered in P137 — P10/P12 still need bet-2+ rows regardless of governance option chosen."
+  ],
+  "next_recommended_task": "After governance decision authorization: P138 — execute chosen governance option for P10/P12 legacy rows, then re-assess dry-run gate readiness.",
+  "summary": "P137 is a read-only governance gate for power_precision_3bet (P10) and power_orthogonal_5bet (P12). Both strategies contain 50 NULL-provenance legacy rows each (total 100 rows, draws 99000055–99000104) in addition to 1500 clean production baseline rows. Three governance options are defined: Option A (keep as governed legacy baseline, no DB mutation), Option B (re-mark with LEGACY_UNVERIFIED metadata, UPDATE 100 rows), Option C (quarantine/delete 100 rows, DB drops to 85824). Recommended: Option B. No DB writes, no controlled_apply, no row insertions performed in P137. Authorization required before any option is executed."
+}

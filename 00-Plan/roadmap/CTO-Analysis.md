@@ -1,8 +1,8 @@
-# CTO Analysis - After P136 Post-RSR6 Re-evaluation for P10/P12 Baseline Rows
+# CTO Analysis - After P137 P10/P12 Legacy Row Governance Authorization Gate
 
 ## 1. CTO Review Date
 
-2026-05-29 Asia/Taipei (updated after P136).
+2026-05-29 Asia/Taipei (updated after P137 P10/P12 legacy-row governance authorization gate).
 
 Final CTO classification target: `CTO_ROADMAP_UPDATED_WITH_RISKS`.
 
@@ -1025,4 +1025,35 @@ P136 conclusion: legacy rows are left unchanged in this phase; any quarantine/re
 
 ```text
 CTO_ANALYSIS_UPDATED_AFTER_P136_POST_RSR6_REEVALUATION_20260529
+```
+
+---
+
+### P137: P10/P12 Legacy Row Governance Authorization Gate (2026-05-29)
+
+**Status**: COMPLETE | **Classification**: P137_P10_P12_LEGACY_ROW_GOVERNANCE_GATE_READY
+
+CTO Note: P137 is a **read-only governance gate** that defines three governance options
+for the 100 NULL-provenance legacy rows in P10/P12 (50 rows per strategy, draws 99000055–99000104).
+
+Three options defined:
+- **Option A** (no DB mutation, risk LOW): accept as governed legacy baseline
+- **Option B** (UPDATE 100 rows, risk MEDIUM): re-mark with LEGACY_UNVERIFIED metadata — **RECOMMENDED**
+- **Option C** (DELETE 100 rows, risk MEDIUM-HIGH): quarantine/delete, DB drops 85924→85824
+
+Authorization phrase templates provided for all three options. No option is authorized yet.
+
+- **DB rows:** 85924 (no change in P137)
+- **Drift guard:** PASS at 85924
+- **No DB write:** confirmed
+- **No controlled_apply:** confirmed
+- **NULL-provenance rows under decision:** 100 (50 per strategy)
+- **P10/P12 apply_ready:** still false — pending CTO authorization of chosen option
+
+**Next task**: P138 — execute chosen governance option after CTO authorization, then reassess dry-run gate.
+
+**Artifact**: `outputs/replay/p137_p10_p12_legacy_row_governance_gate_20260529.json`
+
+```text
+CTO_ANALYSIS_UPDATED_AFTER_P137_P10_P12_LEGACY_ROW_GOVERNANCE_GATE_20260529
 ```

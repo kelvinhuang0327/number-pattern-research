@@ -1,8 +1,8 @@
 # Lottery Replay Roadmap
 
-**Last Updated:** 2026-05-29 Asia/Taipei (updated after P136 post-RSR6 re-evaluation for P10/P12 baseline rows)
+**Last Updated:** 2026-05-29 Asia/Taipei (updated after P137 P10/P12 legacy-row governance authorization gate)
 **Owner:** CTO agent
-**Primary Goal:** Make every implemented LotteryNew strategy replayable with honest historical prediction-vs-actual evidence across every supported lottery type and every implemented 1-5 bet-count variant. This must be done without fake rows, untracked DB writes, premature promotion, or no-change governance PR churn. Current system state: Wave 2 safe candidates remain closed at 85924 rows. P136 completed post-RSR6 re-evaluation for P10/P12 and confirmed both remain apply-blocked pending a separate authorization gate for legacy-row governance. P108 / P117 / P118 / 4_STAR triggers remain blocked.
+**Primary Goal:** Make every implemented LotteryNew strategy replayable with honest historical prediction-vs-actual evidence across every supported lottery type and every implemented 1-5 bet-count variant. This must be done without fake rows, untracked DB writes, premature promotion, or no-change governance PR churn. Current system state: Wave 2 safe candidates remain closed at 85924 rows. P137 completed the legacy-row governance authorization gate for P10/P12: three decision options defined (Option A keep, Option B re-mark RECOMMENDED, Option C delete), authorization phrase templates provided, no DB mutation. P10/P12 remain apply_ready=false pending CTO authorization of chosen option. P108 / P117 / P118 / 4_STAR triggers remain blocked.
 **Repo Policy:** Use `/Users/kelvin/Kelvin-WorkSpace/LotteryNew` only. Do not create a new repo. Implementation and governed tasks must run from canonical repo with `git rev-parse --git-dir == .git`; Claude/Codex auto-created worktree branches are not allowed.
 
 ---
@@ -220,9 +220,9 @@ Recommended near-term order:
 
 | Rank | Work | Why |
 |---|---|---|
-| 1 | P136 P10/P12 post-RSR6 apply gate re-evaluation | Required before any further action on the two blocked Power strategies |
-| 2 | Main-sync summary for Wave 2 closure | Capture the 85924-row closure state and the P10/P12 blocked remainder |
-| 3 | P127 adapter build for 12 missing get_all_bets() adapters | Still useful after Wave 2 closure for broader replay coverage |
+| 1 | P138 execute chosen governance option for P10/P12 legacy rows (after CTO authorization) | Unblocks P10/P12 from apply-ready gate |
+| 2 | P10/P12 dry-run gate reassessment after governance option executed | Re-assess apply_ready after legacy-row resolution |
+| 3 | Main-sync summary for Wave 2 closure | Capture the 85924-row closure state and the P10/P12 blocked remainder |
 | 4 | Operator/manual P123 trigger check only when data or authorization may have changed | Maintains healthy standby without PR churn |
 
 CTO prompt boundary:
@@ -636,4 +636,32 @@ P136 does not mutate DB state and does not execute controlled apply.
 
 ```text
 CTO_ROADMAP_UPDATED_AFTER_P136_POST_RSR6_REEVALUATION_20260529
+```
+
+---
+
+### P137 — P10/P12 Legacy Row Governance Authorization Gate [2026-05-29]
+
+**Classification**: P137_P10_P12_LEGACY_ROW_GOVERNANCE_GATE_READY
+
+P137 is a **read-only governance gate** for `power_precision_3bet` (P10) and `power_orthogonal_5bet` (P12).
+It defines three governance options for the 50 NULL-provenance legacy rows per strategy (100 total):
+
+- **Option A**: Keep as governed legacy baseline (no DB mutation) — risk LOW
+- **Option B**: Re-mark with LEGACY_UNVERIFIED metadata (UPDATE 100 rows) — risk MEDIUM — **RECOMMENDED**
+- **Option C**: Quarantine/delete 100 rows (DB 85924→85824) — risk MEDIUM-HIGH
+
+Authorization phrase templates provided for each option. No option is authorized yet.
+
+- **DB rows:** 85,924 (no change in P137)
+- **Drift guard:** PASS at 85924
+- **Apply ready:** still false for P10/P12
+- **No DB write:** confirmed
+- **No controlled_apply:** confirmed
+- **NULL-provenance rows under decision:** 100 (50 per strategy, draws 99000055–99000104)
+
+**Next task**: P138 — execute chosen governance option after CTO authorization, then re-assess dry-run gate readiness.
+
+```text
+CTO_ROADMAP_UPDATED_AFTER_P137_P10_P12_LEGACY_ROW_GOVERNANCE_GATE_20260529
 ```

@@ -1189,3 +1189,16 @@ Next: P141 (power_orthogonal_5bet, P12, POWER_LOTTO, +6000 rows).
 - Only `power_orthogonal_5bet` multi-bet rows were inserted.
 - Drift guard baseline updated to 94924.
 - Marker: `CTO_ROADMAP_UPDATED_AFTER_P141_POWER_ORTHOGONAL_5BET_APPLIED_20260529`
+
+
+## P142 Wave 2 Multi-Bet Apply Chain Closure Audit (2026-05-29)
+- P142 confirmed Wave 2 multi-bet apply chain fully closed.
+- Final DB state: 94924 rows. Drift guard PASS.
+- Wave 2 safe candidates (acb_markov_midfreq_3bet/midfreq_fourier_mk_3bet/fourier_rhythm_3bet/pp3_freqort_4bet): all applied via P131-P134.
+- P10/P12 (power_precision_3bet/power_orthogonal_5bet): fully applied via P140-P141.
+- Inserted rows: P131=3000, P132=3000, P133=4500, P134=3002, P140=3000, P141=6000, total=22502.
+- LEGACY_UNVERIFIED rows (50 each) untouched; excluded from apply base.
+- No DB mutation in P142. Closure audit only.
+- Marker: `CTO_ROADMAP_UPDATED_AFTER_P142_WAVE2_MULTI_BET_APPLY_CHAIN_CLOSED_20260529`
+
+**Artifact**: `outputs/replay/p142_wave2_multibet_apply_chain_closure_audit_20260529.json`

@@ -815,3 +815,14 @@ CTO_ROADMAP_UPDATED_AFTER_P140_POWER_PRECISION_3BET_APPLIED_20260529
 - Applied `power_orthogonal_5bet` bet-2..bet-5 (+6000 rows).
 - DB: 88924 -> 94924.
 - Marker: `CTO_ROADMAP_UPDATED_AFTER_P141_POWER_ORTHOGONAL_5BET_APPLIED_20260529`
+
+
+## P142 Wave 2 Multi-Bet Apply Chain Closure (2026-05-29)
+- Classification: `P142_WAVE2_MULTI_BET_APPLY_CHAIN_CLOSED`
+- Wave 2 multi-bet apply chain fully closed at DB rows=94924.
+- Wave 2 safe candidates (P131-P134): acb_markov_midfreq_3bet, midfreq_fourier_mk_3bet, fourier_rhythm_3bet, pp3_freqort_4bet — all applied.
+- P10/P12 (P140-P141): power_precision_3bet (bet-2/bet-3), power_orthogonal_5bet (bet-2..bet-5) — all applied.
+- Total Wave 2 multi-bet rows inserted: 22,502.
+- LEGACY_UNVERIFIED rows (50 per strategy) excluded from apply base; unmodified.
+- Drift guard PASS at 94924. No DB write in P142.
+- Marker: `CTO_ROADMAP_UPDATED_AFTER_P142_WAVE2_MULTI_BET_APPLY_CHAIN_CLOSED_20260529`

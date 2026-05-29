@@ -1,0 +1,199 @@
+{
+  "task_id": "P142",
+  "classification": "P142_WAVE2_MULTI_BET_APPLY_CHAIN_CLOSED",
+  "generated_at": "2026-05-29T08:15:31.569213+00:00",
+  "canonical_repo": "/Users/kelvin/Kelvin-WorkSpace/LotteryNew/.claude/worktrees/zen-gates-ff6802",
+  "canonical_branch": "claude/zen-gates-ff6802",
+  "repo_branch_check": {
+    "expected_repo": "/Users/kelvin/Kelvin-WorkSpace/LotteryNew/.claude/worktrees/zen-gates-ff6802",
+    "actual_repo": "/Users/kelvin/Kelvin-WorkSpace/LotteryNew/.claude/worktrees/zen-gates-ff6802",
+    "expected_branch": "claude/zen-gates-ff6802",
+    "actual_branch": "claude/zen-gates-ff6802",
+    "git_dir": "/Users/kelvin/Kelvin-WorkSpace/LotteryNew/.git/worktrees/zen-gates-ff6802",
+    "repo_ok": true,
+    "branch_ok": true
+  },
+  "db_snapshot": {
+    "total_rows": 94924,
+    "bet_index_schema_exists": true,
+    "rows_match_expected": true
+  },
+  "source_artifact_summary": {
+    "p141": {
+      "classification": "P141_POWER_ORTHOGONAL_5BET_APPLIED",
+      "pass": true
+    },
+    "p141a": {
+      "classification": "P141A_POWER_ORTHOGONAL_5BET_AUTHORIZATION_GATE_READY",
+      "pass": true
+    },
+    "p140": {
+      "classification": "P140_POWER_PRECISION_3BET_APPLIED",
+      "pass": true
+    },
+    "p140a": {
+      "classification": "P140A_DRAW_CONTEXT_CONTRACT_READY_FOR_P10_P12_APPLY",
+      "pass": true
+    },
+    "p139": {
+      "classification": "P139_P10_P12_MULTI_BET_DRY_RUN_GATE_READY",
+      "pass": true
+    },
+    "p138b": {
+      "classification": "P138B_P10_P12_LEGACY_ROWS_REMARKED",
+      "pass": true
+    },
+    "p137": {
+      "classification": "P137_P10_P12_LEGACY_ROW_GOVERNANCE_GATE_READY",
+      "pass": true
+    },
+    "p136": {
+      "classification": "P136_POST_RSR6_P10_P12_REEVALUATION_READY",
+      "pass": true
+    },
+    "p135": {
+      "classification": "P135_WAVE2_SAFE_CANDIDATES_CLOSED_P10_P12_REEVALUATION_PLAN_READY",
+      "pass": true
+    },
+    "p134": {
+      "classification": "P134_FOURIER_RHYTHM_3BET_APPLIED",
+      "pass": true
+    },
+    "p133": {
+      "classification": "P133_PP3_FREQORT_4BET_APPLIED",
+      "pass": true
+    },
+    "p132": {
+      "classification": "P132_MIDFREQ_FOURIER_MK_3BET_APPLIED",
+      "pass": true
+    },
+    "p131": {
+      "classification": "P131_ACB_MARKOV_MIDFREQ_3BET_APPLIED",
+      "pass": true
+    },
+    "p130": {
+      "classification": "P130_WAVE2_SAFE_CANDIDATES_DRY_RUN_PLAN_READY",
+      "pass": true
+    },
+    "all_required_classifications_pass": true
+  },
+  "wave2_safe_candidate_closure": {
+    "p7_acb_markov_midfreq_3bet_status": "APPLIED",
+    "p7_bet_index_distribution": {
+      "1": 1500,
+      "2": 1500,
+      "3": 1500
+    },
+    "p8_midfreq_fourier_mk_3bet_status": "APPLIED",
+    "p8_bet_index_distribution": {
+      "1": 1500,
+      "2": 1500,
+      "3": 1500
+    },
+    "p9_fourier_rhythm_3bet_status": "APPLIED",
+    "p9_bet_index_distribution": {
+      "1": 1501,
+      "2": 1501,
+      "3": 1501
+    },
+    "p11_pp3_freqort_4bet_status": "APPLIED",
+    "p11_bet_index_distribution": {
+      "1": 1500,
+      "2": 1500,
+      "3": 1500,
+      "4": 1500
+    },
+    "total_inserted_rows_p131_to_p134": 13502,
+    "all_safe_candidates_closed": true
+  },
+  "p10_p12_closure": {
+    "power_precision_3bet_status": "APPLIED",
+    "power_precision_3bet_bet_index_distribution": {
+      "1": 1550,
+      "2": 1500,
+      "3": 1500
+    },
+    "power_orthogonal_5bet_status": "APPLIED",
+    "power_orthogonal_5bet_bet_index_distribution": {
+      "1": 1550,
+      "2": 1500,
+      "3": 1500,
+      "4": 1500,
+      "5": 1500
+    },
+    "total_inserted_rows_p140_to_p141": 9000,
+    "p10_p12_final_apply_chain_completed": true
+  },
+  "inserted_rows_summary": {
+    "p131_rows": 3000,
+    "p132_rows": 3000,
+    "p133_rows": 4500,
+    "p134_rows": 3002,
+    "p140_rows": 3000,
+    "p141_rows": 6000,
+    "total_wave2_multibet_inserted_rows": 22502,
+    "p131_to_p134_subtotal": 13502,
+    "p140_to_p141_subtotal": 9000
+  },
+  "db_row_chain": {
+    "after_rsr6_cleanup_rows": 72422,
+    "after_p131_rows": 75422,
+    "after_p132_rows": 78422,
+    "after_p133_rows": 82922,
+    "after_p134_rows": 85924,
+    "after_p140_rows": 88924,
+    "after_p141_rows": 94924,
+    "current_rows": 94924,
+    "chain_consistent": true
+  },
+  "legacy_unverified_audit": {
+    "power_precision_3bet_legacy_unverified_rows": 50,
+    "power_precision_3bet_production_baseline_rows": 1500,
+    "power_orthogonal_5bet_legacy_unverified_rows": 50,
+    "power_orthogonal_5bet_production_baseline_rows": 1500,
+    "legacy_rows_modified_by_p140_p141": 0,
+    "legacy_rows_excluded_from_apply_base": true,
+    "power_precision_3bet_legacy_rows_in_bet_index_gt1": 0,
+    "power_orthogonal_5bet_legacy_rows_in_bet_index_gt1": 0,
+    "no_legacy_contamination_in_multi_bet_rows": true
+  },
+  "duplicate_guard_summary": {
+    "unique_constraint": "UNIQUE(lottery_type, target_draw, strategy_id, bet_index)",
+    "duplicate_groups_found": 0,
+    "no_duplicates": true
+  },
+  "drift_guard_result": {
+    "status": "PASS",
+    "classification": "REPLAY_LIFECYCLE_DRIFT_GUARD_PASS",
+    "total_rows": 94924
+  },
+  "non_actions": {
+    "db_write_in_p142": false,
+    "controlled_apply_executed_in_p142": false,
+    "replay_rows_inserted_in_p142": 0,
+    "replay_rows_deleted_in_p142": 0,
+    "scheduler_installed": false,
+    "lifecycle_champion_registry_mutation": false,
+    "four_star_executed": false,
+    "p108_executed": false,
+    "p117_executed": false,
+    "p118_executed": false
+  },
+  "dirty_file_hygiene": {
+    "backups_untracked_not_staged": true,
+    "p135_p136_autouse_regen_risk_noted": true,
+    "forbidden_files_staged": false,
+    "forbidden_staged_files": [],
+    "staged_file_count_at_runtime": 0
+  },
+  "roadmap_update_status": "already present: CTO_ROADMAP_UPDATED_AFTER_P142_WAVE2_MULTI_BET_APPLY_CHAIN_CLOSED_20260529",
+  "remaining_risks": [
+    "P135/P136 autouse fixtures regenerate artifacts dynamically on each test run; these regenerated files may appear as unstaged changes but are not P142 products.",
+    "LEGACY_UNVERIFIED rows (50 per P10/P12 strategy) remain in DB as null-provenance legacy rows; no remediation plan finalized in P142.",
+    "backups/ directory remains untracked; rollback commands reference pre-P141 backup which has 88924 rows.",
+    "Wave 2 applies complete but no live draw monitoring enabled yet; production monitoring activation is a separate task.",
+    "P10/P12 apply chain closed but power_precision_3bet and power_orthogonal_5bet have not been promoted to production strategy champion registry."
+  ],
+  "next_recommended_task": "P143: post-Wave-2 governance — strategy champion registry update, live monitoring activation, and null-provenance legacy row remediation plan.",
+  "summary": "P142 confirms Wave 2 multi-bet apply chain fully closed at DB rows=94924. Wave 2 safe candidates (P131-P134): acb_markov_midfreq_3bet, midfreq_fourier_mk_3bet, fourier_rhythm_3bet, pp3_freqort_4bet — all applied. P10/P12 (P140-P141): power_precision_3bet, power_orthogonal_5bet — all applied. Total Wave 2 multi-bet rows inserted: 22,502 (P131-P134=13,502 + P140-P141=9,000). LEGACY_UNVERIFIED rows (50 per strategy) excluded from apply base; unmodified. Drift guard PASS at 94924. No DB write in P142."
+}

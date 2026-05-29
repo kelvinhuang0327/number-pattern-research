@@ -1084,3 +1084,43 @@ Authorization phrase: `P137_AUTHORIZED_OPTION_B_REMARK_P10_P12_LEGACY_ROWS_AS_LE
 ```text
 CTO_ANALYSIS_UPDATED_AFTER_P138B_P10_P12_LEGACY_REMARK_20260529
 ```
+
+---
+
+### P139: P10/P12 Multi-Bet Dry-Run Gate After Legacy Remark (2026-05-29)
+
+**Status**: COMPLETE | **Classification**: P139_P10_P12_MULTI_BET_DRY_RUN_GATE_READY
+
+CTO Note: P139 is a read-only dry-run gate. Both P10 and P12 are now DRY_RUN_READY.
+RSR6 orphan rows resolved, P138B legacy governance resolved, adapter functions available.
+
+**LEGACY_UNVERIFIED handling**: `EXCLUDE_FROM_APPLY_BASE`
+- Apply base: 1,500 production rows per strategy
+- Excluded: 50 LEGACY_UNVERIFIED rows per strategy (retained in DB, not sourced for multi-bet)
+
+**Dry-run plan summary**:
+
+| Task | Strategy | Bet Indices | Est. Insert | DB Total After |
+|---|---|---|---:|---:|
+| P140 | `power_precision_3bet` | 2, 3 | 3,000 | 88,924 |
+| P141 | `power_orthogonal_5bet` | 2, 3, 4, 5 | 6,000 | 94,924 |
+
+**Authorization phrase templates for future apply** (P139 does NOT authorize):
+- P140: `P139_AUTHORIZED_APPLY_POWER_PRECISION_3BET_BET2_BET3_USING_1500_PRODUCTION_BASE_20260529`
+- P141: `P139_AUTHORIZED_APPLY_POWER_ORTHOGONAL_5BET_BET2_THRU_BET5_USING_1500_PRODUCTION_BASE_20260529`
+
+**Remaining gap**: draw_context key mismatch (`'history'` vs `'historical_draws'` per P127 spec) — must resolve before P140/P141.
+
+- **DB rows:** 85924 (unchanged)
+- **Drift guard:** PASS at 85924
+- **No DB write:** confirmed
+- **No controlled_apply:** confirmed
+- **P10/P12 apply_ready:** still false — authorization required per-strategy
+
+**Next task**: P140 — power_precision_3bet multi-bet controlled_apply (bet-2+3, 3000 rows, requires authorization phrase).
+
+**Artifact**: `outputs/replay/p139_p10_p12_multibet_dry_run_gate_20260529.json`
+
+```text
+CTO_ANALYSIS_UPDATED_AFTER_P139_P10_P12_MULTIBET_DRY_RUN_GATE_20260529
+```

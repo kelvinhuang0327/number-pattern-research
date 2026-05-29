@@ -1,0 +1,325 @@
+{
+  "task_id": "P139",
+  "classification": "P139_P10_P12_MULTI_BET_DRY_RUN_GATE_READY",
+  "generated_at": "2026-05-29T04:02:42.970688+00:00",
+  "canonical_repo": "/Users/kelvin/Kelvin-WorkSpace/LotteryNew/.claude/worktrees/zen-gates-ff6802",
+  "canonical_branch": "claude/zen-gates-ff6802",
+  "repo_branch_check": {
+    "expected_repo": "/Users/kelvin/Kelvin-WorkSpace/LotteryNew/.claude/worktrees/zen-gates-ff6802",
+    "actual_repo": "/Users/kelvin/Kelvin-WorkSpace/LotteryNew/.claude/worktrees/zen-gates-ff6802",
+    "expected_branch": "claude/zen-gates-ff6802",
+    "actual_branch": "claude/zen-gates-ff6802",
+    "repo_ok": true,
+    "branch_ok": true
+  },
+  "db_snapshot": {
+    "db_path": "/Users/kelvin/Kelvin-WorkSpace/LotteryNew/.claude/worktrees/zen-gates-ff6802/lottery_api/data/lottery_v2.db",
+    "total_rows": 85924,
+    "expected_rows": 85924,
+    "rows_ok": true,
+    "bet_index_schema_present": true,
+    "head_sha": "c2ad1175c4fa9c5113264e418f5f40ca7a985b72"
+  },
+  "p138b_source_summary": {
+    "artifact_path": "/Users/kelvin/Kelvin-WorkSpace/LotteryNew/.claude/worktrees/zen-gates-ff6802/outputs/replay/p138b_remark_p10_p12_legacy_rows_20260529.json",
+    "classification": "P138B_P10_P12_LEGACY_ROWS_REMARKED",
+    "expected_classification": "P138B_P10_P12_LEGACY_ROWS_REMARKED",
+    "classification_ok": true,
+    "actual_rows_remarked": 100,
+    "p10_governance_resolved": true,
+    "p12_governance_resolved": true
+  },
+  "p10_p12_current_distribution": {
+    "power_precision_3bet_bet1_rows": 1550,
+    "power_precision_3bet_bet2_plus_rows": 0,
+    "power_orthogonal_5bet_bet1_rows": 1550,
+    "power_orthogonal_5bet_bet2_plus_rows": 0
+  },
+  "legacy_unverified_audit": {
+    "power_precision_3bet_legacy_unverified_rows": 50,
+    "power_orthogonal_5bet_legacy_unverified_rows": 50,
+    "total_legacy_unverified_rows": 100,
+    "null_provenance_selector_count": 0,
+    "db_write_in_p139": false
+  },
+  "adapter_contract_status": {
+    "adapter_module": "lottery_api/models/p128_wave2_phase2_adapters.py",
+    "power_precision_3bet": {
+      "adapter_function": "get_all_bets_power_precision",
+      "function_exists": true,
+      "rsr6_blocker": "RESOLVED — RSR6 cleaned orphan bet_index=2 rows",
+      "legacy_governance_blocker": "RESOLVED — P138B re-marked 50 NULL-prov rows",
+      "adapter_ready_for_dry_run": true,
+      "draw_context_key": "history",
+      "note": "Adapter docstring still shows RSR-6 warning — stale. Both blockers are now resolved. Adapter is forward-use ready."
+    },
+    "power_orthogonal_5bet": {
+      "adapter_function": "get_all_bets_power_orthogonal",
+      "function_exists": true,
+      "rsr6_blocker": "RESOLVED — RSR6 cleaned orphan bet_index=2 rows",
+      "legacy_governance_blocker": "RESOLVED — P138B re-marked 50 NULL-prov rows",
+      "adapter_ready_for_dry_run": true,
+      "draw_context_key": "history",
+      "note": "Adapter docstring still shows RSR-6 warning — stale. Both blockers are now resolved. Adapter is forward-use ready."
+    },
+    "gap_note": "Both adapters exist. The draw_context key used by the actual implementation is 'history' (list of draw dicts with 'numbers'), not 'historical_draws' as spec'd in P127. This mismatch must be reconciled before controlled_apply."
+  },
+  "dry_run_plan": {
+    "power_precision_3bet": {
+      "strategy_id": "power_precision_3bet",
+      "lottery_type": "POWER_LOTTO",
+      "target_bet_count": 3,
+      "current_bet_index_distribution": {
+        "1": 1550,
+        "2+": 0
+      },
+      "missing_bet_indices": [
+        2,
+        3
+      ],
+      "apply_base_rows": 1500,
+      "estimated_insert_rows": 3000,
+      "adapter_contract_status": {
+        "function": "get_all_bets_power_precision",
+        "module": "lottery_api/models/p128_wave2_phase2_adapters.py",
+        "status": "AVAILABLE",
+        "blockers_cleared": [
+          "RSR6_orphan_rows",
+          "P138B_legacy_governance"
+        ],
+        "draw_context_key": "history"
+      },
+      "legacy_unverified_handling": {
+        "decision": "EXCLUDE_FROM_APPLY_BASE",
+        "excluded_rows": 50,
+        "apply_base_rows": 1500
+      },
+      "duplicate_guard": {
+        "strategy": "UNIQUE(lottery_type, target_draw, strategy_id, bet_index)",
+        "pre_insert_check": "SELECT COUNT(*) = 0 WHERE strategy_id=? AND bet_index IN (2,3)",
+        "abort_on_conflict": true
+      },
+      "provenance_requirements": {
+        "controlled_apply_id": "P140_APPLY_POWER_PRECISION_3BET_v1",
+        "provenance_hash": "SHA256(strategy_id + target_draw + bet_index + predicted_numbers)",
+        "truth_level": "POWERLOTTO_REMAINING_STRATEGIES_BACKFILL_VERIFIED",
+        "source": "P140_POWER_PRECISION_3BET_MULTI_BET_APPLY"
+      },
+      "dry_run_ready": true,
+      "dry_run_ready_conditions": [
+        "Adapter function exists and is callable",
+        "RSR6 orphan blocker resolved",
+        "P138B legacy governance resolved",
+        "LEGACY_UNVERIFIED rows excluded from apply base",
+        "duplicate guard defined",
+        "provenance requirements defined"
+      ],
+      "apply_authorization_required_later": true,
+      "db_write_in_p139": false,
+      "remaining_gaps": [
+        "draw_context key 'history' vs P127 spec 'historical_draws' — must reconcile before apply",
+        "Adapter docstring still shows stale RSR-6 warning — cosmetic only, not a blocker",
+        "Full DB backup required before controlled_apply"
+      ]
+    },
+    "power_orthogonal_5bet": {
+      "strategy_id": "power_orthogonal_5bet",
+      "lottery_type": "POWER_LOTTO",
+      "target_bet_count": 5,
+      "current_bet_index_distribution": {
+        "1": 1550,
+        "2+": 0
+      },
+      "missing_bet_indices": [
+        2,
+        3,
+        4,
+        5
+      ],
+      "apply_base_rows": 1500,
+      "estimated_insert_rows": 6000,
+      "adapter_contract_status": {
+        "function": "get_all_bets_power_orthogonal",
+        "module": "lottery_api/models/p128_wave2_phase2_adapters.py",
+        "status": "AVAILABLE",
+        "blockers_cleared": [
+          "RSR6_orphan_rows",
+          "P138B_legacy_governance"
+        ],
+        "draw_context_key": "history"
+      },
+      "legacy_unverified_handling": {
+        "decision": "EXCLUDE_FROM_APPLY_BASE",
+        "excluded_rows": 50,
+        "apply_base_rows": 1500
+      },
+      "duplicate_guard": {
+        "strategy": "UNIQUE(lottery_type, target_draw, strategy_id, bet_index)",
+        "pre_insert_check": "SELECT COUNT(*) = 0 WHERE strategy_id=? AND bet_index IN (2,3,4,5)",
+        "abort_on_conflict": true
+      },
+      "provenance_requirements": {
+        "controlled_apply_id": "P141_APPLY_POWER_ORTHOGONAL_5BET_v1",
+        "provenance_hash": "SHA256(strategy_id + target_draw + bet_index + predicted_numbers)",
+        "truth_level": "POWERLOTTO_REMAINING_STRATEGIES_BACKFILL_VERIFIED",
+        "source": "P141_POWER_ORTHOGONAL_5BET_MULTI_BET_APPLY"
+      },
+      "dry_run_ready": true,
+      "dry_run_ready_conditions": [
+        "Adapter function exists and is callable",
+        "RSR6 orphan blocker resolved",
+        "P138B legacy governance resolved",
+        "LEGACY_UNVERIFIED rows excluded from apply base",
+        "duplicate guard defined",
+        "provenance requirements defined"
+      ],
+      "apply_authorization_required_later": true,
+      "db_write_in_p139": false,
+      "remaining_gaps": [
+        "draw_context key 'history' vs P127 spec 'historical_draws' — must reconcile before apply",
+        "Adapter docstring still shows stale RSR-6 warning — cosmetic only, not a blocker",
+        "Full DB backup required before controlled_apply",
+        "4 missing bet indices — larger apply than P10; higher insert volume (6000 rows)"
+      ]
+    }
+  },
+  "legacy_row_handling_decision": {
+    "decision": "EXCLUDE_FROM_APPLY_BASE",
+    "apply_base_rows": 1500,
+    "rationale": "The 50 LEGACY_UNVERIFIED rows per strategy (draws 99000055–99000104) were inserted from early replay runs (replay_run_id 2 and 6) before the P20 production backfill pipeline was established. Although P138B assigned synthetic provenance_hash, these rows represent pre-production legacy draws. For the first multi-bet controlled_apply, only the 1500 production baseline rows (truth_level=POWERLOTTO_REMAINING_STRATEGIES_BACKFILL_VERIFIED) should be used as the base. This keeps the apply clean, avoids mixing legacy and production data in multi-bet rows, and simplifies the apply selector. If legacy multi-bet coverage is needed later, it can be addressed as a separate authorized task.",
+    "apply_selector": "WHERE strategy_id=? AND bet_index=1 AND truth_level='POWERLOTTO_REMAINING_STRATEGIES_BACKFILL_VERIFIED' AND provenance_hash IS NOT NULL AND controlled_apply_id='P20_POWERLOTTO_REMAINING_1500_PROD_20260520'",
+    "excluded_row_count": 50,
+    "excluded_truth_level": "LEGACY_UNVERIFIED",
+    "future_legacy_multibet_task": "Optional post-apply task; requires separate authorization"
+  },
+  "estimated_insert_rows_summary": {
+    "power_precision_3bet": {
+      "apply_base": 1500,
+      "missing_indices": [
+        2,
+        3
+      ],
+      "estimated_insert_rows": 3000,
+      "db_total_after_apply": 88924
+    },
+    "power_orthogonal_5bet": {
+      "apply_base": 1500,
+      "missing_indices": [
+        2,
+        3,
+        4,
+        5
+      ],
+      "estimated_insert_rows": 6000,
+      "db_total_after_apply": 94924
+    },
+    "combined_total_insert_rows": 9000,
+    "db_total_after_both": 94924
+  },
+  "recommended_apply_order": {
+    "recommendation": "P10_FIRST",
+    "rationale": "power_precision_3bet (P10) should be applied first because: (1) lower estimated row count (3000 vs 6000), reducing blast radius on first apply; (2) only 2 missing bet indices vs 4 for P12; (3) P10 has implementation_priority=10 (lower = higher priority per P127); (4) P10 algorithm (precision_scoring) is simpler than P12 (orthogonal_diversification). Apply P12 after P10 is verified. Each requires separate authorization.",
+    "apply_order": [
+      {
+        "step": 1,
+        "strategy_id": "power_precision_3bet",
+        "task_name": "P140",
+        "estimated_rows": 3000,
+        "bet_indices": [
+          2,
+          3
+        ],
+        "authorization_required": true
+      },
+      {
+        "step": 2,
+        "strategy_id": "power_orthogonal_5bet",
+        "task_name": "P141",
+        "estimated_rows": 6000,
+        "bet_indices": [
+          2,
+          3,
+          4,
+          5
+        ],
+        "authorization_required": true
+      }
+    ]
+  },
+  "authorization_phrase_templates": {
+    "p10_apply_phrase": "P139_AUTHORIZED_APPLY_POWER_PRECISION_3BET_BET2_BET3_USING_1500_PRODUCTION_BASE_20260529",
+    "p12_apply_phrase": "P139_AUTHORIZED_APPLY_POWER_ORTHOGONAL_5BET_BET2_THRU_BET5_USING_1500_PRODUCTION_BASE_20260529",
+    "note": "These phrases must be provided verbatim before executing P140 and P141 respectively. Paraphrasing or partial repetition does not constitute authorization. P139 does NOT authorize either apply — these templates are for future use.",
+    "this_is_not_authorization": true
+  },
+  "duplicate_guard_summary": {
+    "guard_type": "UNIQUE constraint on (lottery_type, target_draw, strategy_id, bet_index)",
+    "pre_insert_check": "COUNT(*) = 0 for target bet indices before any insert",
+    "abort_on_conflict": true,
+    "power_precision_3bet": {
+      "check": "SELECT COUNT(*) = 0 WHERE strategy_id='power_precision_3bet' AND bet_index IN (2,3)",
+      "expected_count_before_apply": 0
+    },
+    "power_orthogonal_5bet": {
+      "check": "SELECT COUNT(*) = 0 WHERE strategy_id='power_orthogonal_5bet' AND bet_index IN (2,3,4,5)",
+      "expected_count_before_apply": 0
+    }
+  },
+  "provenance_readiness_summary": {
+    "power_precision_3bet": {
+      "controlled_apply_id": "P140_APPLY_POWER_PRECISION_3BET_v1",
+      "truth_level": "POWERLOTTO_REMAINING_STRATEGIES_BACKFILL_VERIFIED",
+      "provenance_hash_method": "SHA256(strategy_id + target_draw + bet_index + predicted_numbers)",
+      "source": "P140_POWER_PRECISION_3BET_MULTI_BET_APPLY",
+      "provenance_source": "historical_only",
+      "ready": true
+    },
+    "power_orthogonal_5bet": {
+      "controlled_apply_id": "P141_APPLY_POWER_ORTHOGONAL_5BET_v1",
+      "truth_level": "POWERLOTTO_REMAINING_STRATEGIES_BACKFILL_VERIFIED",
+      "provenance_hash_method": "SHA256(strategy_id + target_draw + bet_index + predicted_numbers)",
+      "source": "P141_POWER_ORTHOGONAL_5BET_MULTI_BET_APPLY",
+      "provenance_source": "historical_only",
+      "ready": true
+    }
+  },
+  "apply_gate_status": {
+    "dry_run_gate_only": true,
+    "controlled_apply_executed": false,
+    "replay_rows_inserted": 0,
+    "db_rows_before": 85924,
+    "db_rows_after": 85924,
+    "per_strategy_authorization_required_later": true,
+    "p10_dry_run_ready": true,
+    "p12_dry_run_ready": true
+  },
+  "blocked_or_excluded": [
+    "no DB write in P139",
+    "no controlled_apply in P139",
+    "no replay rows inserted",
+    "P10/P12 require future per-strategy apply authorization",
+    "4_STAR excluded",
+    "P108 not run",
+    "P117 not run",
+    "P118 not run",
+    "rejected strategies no_action",
+    "no scheduler install",
+    "no lifecycle / champion / registry mutation"
+  ],
+  "drift_guard_result": {
+    "status": "PASS",
+    "pass": true,
+    "total_rows": 85924
+  },
+  "roadmap_update_status": "pending — will be updated in this run",
+  "remaining_risks": [
+    "draw_context key mismatch: adapter uses 'history' but P127 spec says 'historical_draws' — must reconcile before P140/P141.",
+    "Adapter docstrings still show stale RSR-6 warnings — cosmetic only, not a blocker.",
+    "LEGACY_UNVERIFIED rows (50 per strategy) are excluded from apply base — if legacy multi-bet coverage is needed, a separate authorized task is required.",
+    "P10/P12 are watchlist quality (p125_rank_score 31/35) — apply provides replay coverage but does not imply production deployment.",
+    "After P140+P141, drift guard baseline will shift to 94,924 — drift guard may need a comment update.",
+    "Full DB backup required before each controlled_apply (P140, P141)."
+  ],
+  "next_recommended_task": "P140: power_precision_3bet multi-bet controlled_apply (bet-2 + bet-3, 3000 rows, requires authorization phrase P139_AUTHORIZED_APPLY_POWER_PRECISION_3BET_BET2_BET3_USING_1500_PRODUCTION_BASE_20260529).",
+  "summary": "P139 is a read-only dry-run gate for power_precision_3bet (P10) and power_orthogonal_5bet (P12). Both strategies are now DRY_RUN_READY: RSR6 orphan blocker resolved, P138B legacy governance resolved, adapter functions available. LEGACY_UNVERIFIED rows EXCLUDED from apply base (1500 production rows only). P10 estimated: 3000 inserts (bet-2+3). P12 estimated: 6000 inserts (bet-2+3+4+5). Recommended order: P10 first (P140), P12 second (P141). Authorization phrase templates provided; no apply authorized in P139. DB rows: 85924 (unchanged). Drift guard: PASS."
+}

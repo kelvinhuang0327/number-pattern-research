@@ -1,6 +1,6 @@
 # Lottery Replay Roadmap
 
-**Last Updated:** 2026-05-29 Asia/Taipei (updated after P138B P10/P12 legacy-row LEGACY_UNVERIFIED re-mark execution)
+**Last Updated:** 2026-05-29 Asia/Taipei (updated after P139 P10/P12 multi-bet dry-run gate)
 **Owner:** CTO agent
 **Primary Goal:** Make every implemented LotteryNew strategy replayable with honest historical prediction-vs-actual evidence across every supported lottery type and every implemented 1-5 bet-count variant. This must be done without fake rows, untracked DB writes, premature promotion, or no-change governance PR churn. Current system state: Wave 2 safe candidates remain closed at 85924 rows. P138B executed the authorized Option B re-mark: 100 NULL-provenance legacy rows (50 per strategy) updated with truth_level='LEGACY_UNVERIFIED', source='P138B_LEGACY_REMARK', deterministic provenance_hash. Drift guard PASS at 85924. P10/P12 legacy governance resolved; future dry-run gate re-evaluation now allowed. P108 / P117 / P118 / 4_STAR triggers remain blocked.
 **Repo Policy:** Use `/Users/kelvin/Kelvin-WorkSpace/LotteryNew` only. Do not create a new repo. Implementation and governed tasks must run from canonical repo with `git rev-parse --git-dir == .git`; Claude/Codex auto-created worktree branches are not allowed.
@@ -692,4 +692,54 @@ updated with explicit LEGACY_UNVERIFIED governance metadata.
 
 ```text
 CTO_ROADMAP_UPDATED_AFTER_P138B_P10_P12_LEGACY_REMARK_20260529
+```
+
+---
+
+### P139 — P10/P12 Multi-Bet Dry-Run Gate After Legacy Remark [2026-05-29]
+
+**Classification**: P139_P10_P12_MULTI_BET_DRY_RUN_GATE_READY
+
+P139 is a **read-only dry-run gate** re-evaluating apply readiness for `power_precision_3bet` (P10)
+and `power_orthogonal_5bet` (P12) after RSR6 cleanup + P138B legacy governance resolution.
+
+**Both strategies are now DRY_RUN_READY.** All prior blockers cleared.
+
+| Blocker | Status |
+|---|---|
+| RSR6 orphan bet_index=2 rows | RESOLVED (RSR6 cleanup, −40 rows) |
+| P138B legacy governance (NULL-prov) | RESOLVED (P138B re-mark, 100 rows) |
+| Adapter functions | AVAILABLE (P128 phase2 adapters) |
+
+**LEGACY_UNVERIFIED handling decision**: `EXCLUDE_FROM_APPLY_BASE`
+- Apply base: 1,500 production rows per strategy (truth_level=`POWERLOTTO_REMAINING_STRATEGIES_BACKFILL_VERIFIED`)
+- Excluded: 50 LEGACY_UNVERIFIED rows per strategy (kept in DB, not used as multi-bet source)
+
+**Estimated insert rows**:
+
+| Task | Strategy | Missing Bet Indices | Est. Insert | DB Total After |
+|---|---|---|---:|---:|
+| P140 | `power_precision_3bet` | 2, 3 | 3,000 | 88,924 |
+| P141 | `power_orthogonal_5bet` | 2, 3, 4, 5 | 6,000 | 94,924 |
+| **Combined** | | | **9,000** | **94,924** |
+
+**Recommended apply order**: P10 first (P140), then P12 (P141).
+
+**Authorization phrase templates** (NOT YET AUTHORIZED — future use only):
+- P140: `P139_AUTHORIZED_APPLY_POWER_PRECISION_3BET_BET2_BET3_USING_1500_PRODUCTION_BASE_20260529`
+- P141: `P139_AUTHORIZED_APPLY_POWER_ORTHOGONAL_5BET_BET2_THRU_BET5_USING_1500_PRODUCTION_BASE_20260529`
+
+**Known gap before apply**: draw_context key mismatch — adapter uses `'history'` key,
+P127 spec says `'historical_draws'`. Must reconcile before P140/P141.
+
+- **DB rows:** 85,924 (no change in P139)
+- **Drift guard:** PASS at 85924
+- **No DB write:** confirmed
+- **No controlled_apply:** confirmed
+- **P10/P12 apply_ready:** still false — require per-strategy authorization for P140/P141
+
+**Next task**: P140 — power_precision_3bet multi-bet controlled_apply (bet-2+3, 3000 rows).
+
+```text
+CTO_ROADMAP_UPDATED_AFTER_P139_P10_P12_MULTIBET_DRY_RUN_GATE_20260529
 ```

@@ -870,3 +870,15 @@ CTO_ROADMAP_UPDATED_AFTER_P140_POWER_PRECISION_3BET_APPLIED_20260529
 - Runner availability: existing_runner_found assessed; implementation_required_before_execution=true.
 - No DB write, no controlled_apply, no scheduler, no live API call, no monitoring run in P145B.
 - Marker: `CTO_ROADMAP_UPDATED_AFTER_P145B_MANUAL_ON_DEMAND_MONITORING_AUTHORIZATION_GATE_20260529`
+
+## P146A Observation-Only Live Monitoring Runner (2026-05-29) — DONE
+- Classification: `P146A_OBSERVATION_ONLY_MONITORING_RUNNER_READY`
+- Observation-only live monitoring runner implemented for all 6 Wave 2 candidate strategies.
+- Runner contract: output_mode=file_artifact_only, production_db_write=false, live_api_call=false, supports_fixture_input=true.
+- 12-field observation record schema defined and validated via fixture/mock smoke test (MOCK_OBSERVATION_ONLY).
+- Runner readiness matrix: all 6 strategies ready for P146B authorized run.
+- Fixture smoke test passed; smoke output written to outputs/replay/live_monitoring_observation_only/smoke_test/.
+- Historical vs live boundary enforced: historical_backfill_is_not_live_evidence=true, mock_fixture_is_not_live_evidence=true, champion_eval_ready_from_p146a=false.
+- P146B execution plan defined; required_authorization_phrase documented.
+- No DB write, no live API call, no scheduler installed, no live monitoring run executed in P146A.
+- Marker: `CTO_ROADMAP_UPDATED_AFTER_P146A_OBSERVATION_ONLY_LIVE_MONITORING_RUNNER_20260529`

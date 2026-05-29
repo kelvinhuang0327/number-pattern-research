@@ -1247,3 +1247,15 @@ Next: P141 (power_orthogonal_5bet, P12, POWER_LOTTO, +6000 rows).
 - Marker: `CTO_ROADMAP_UPDATED_AFTER_P145B_MANUAL_ON_DEMAND_MONITORING_AUTHORIZATION_GATE_20260529`
 
 **Artifact**: `outputs/replay/p145b_manual_on_demand_monitoring_authorization_gate_20260529.json`
+
+## P146A Observation-Only Live Monitoring Runner (2026-05-29) — DONE
+- P146A observation-only live monitoring runner implemented for 6 Wave 2 strategies.
+- Runner contract: file_artifact_only, no DB write, no live API, fixture input supported.
+- 12-field observation record schema validated via fixture/mock smoke test (MOCK_OBSERVATION_ONLY).
+- All 6 strategies confirmed ready for P146B authorized run; runner readiness matrix complete.
+- Historical vs live evidence boundary enforced; champion_eval_ready_from_p146a=false.
+- P146B execution plan defined with required authorization phrase.
+- No DB mutation. No live API call. No scheduler install. No monitoring run executed in P146A.
+- Marker: `CTO_ROADMAP_UPDATED_AFTER_P146A_OBSERVATION_ONLY_LIVE_MONITORING_RUNNER_20260529`
+
+**Artifact**: `outputs/replay/p146a_observation_only_live_monitoring_runner_20260529.json`

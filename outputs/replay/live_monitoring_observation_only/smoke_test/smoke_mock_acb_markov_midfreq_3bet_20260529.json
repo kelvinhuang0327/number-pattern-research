@@ -1,0 +1,14 @@
+{
+  "monitored_strategy_id": "acb_markov_midfreq_3bet",
+  "lottery_type": "DAILY_539",
+  "target_draw": "115000072",
+  "prediction_generated_at": "2026-05-28T18:00:00+00:00",
+  "draw_result_available_at": "2026-05-29T20:30:00+08:00",
+  "predicted_numbers": "[4, 10, 17, 34, 36]",
+  "actual_numbers": "[10, 17, 22, 34, 38]",
+  "hit_count": 3,
+  "evaluation_status": "MOCK_EVALUATED",
+  "source_trace": "P146A_FIXTURE_SMOKE_TEST_ONLY",
+  "monitoring_truth_level": "MOCK_OBSERVATION_ONLY",
+  "created_at": "2026-05-29T09:39:33.715732+00:00"
+}

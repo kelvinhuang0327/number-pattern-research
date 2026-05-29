@@ -1,0 +1,274 @@
+{
+  "task_id": "P146A",
+  "classification": "P146A_OBSERVATION_ONLY_MONITORING_RUNNER_READY",
+  "generated_at": "2026-05-29T09:39:33.715732+00:00",
+  "canonical_repo": "/Users/kelvin/Kelvin-WorkSpace/LotteryNew/.claude/worktrees/zen-gates-ff6802",
+  "canonical_branch": "claude/zen-gates-ff6802",
+  "repo_branch_check": {
+    "repo_ok": true,
+    "branch_ok": true,
+    "repo": "/Users/kelvin/Kelvin-WorkSpace/LotteryNew/.claude/worktrees/zen-gates-ff6802",
+    "branch": "claude/zen-gates-ff6802"
+  },
+  "db_snapshot": {
+    "total_rows": 94924,
+    "bet_index_column_exists": true,
+    "db_path": "/Users/kelvin/Kelvin-WorkSpace/LotteryNew/.claude/worktrees/zen-gates-ff6802/lottery_api/data/lottery_v2.db",
+    "drift_guard": "PASS"
+  },
+  "p145b_source_summary": {
+    "classification": "P145B_MANUAL_ON_DEMAND_MONITORING_AUTHORIZATION_GATE_READY",
+    "task_id": "P145B",
+    "runner_availability_assessment": {
+      "existing_runner_found": false,
+      "existing_runner_path": null,
+      "runner_missing": true,
+      "fixture_or_mock_available": false,
+      "implementation_required_before_execution": true,
+      "runner_search_note": "Searched for live monitoring runner scripts in scripts/ and tools/. Existing tools (edge_monitor_live.py, rolling_strategy_monitor.py) provide backtest/RSM monitoring but do NOT implement per-draw live prediction generation + post-draw evaluation for Wave 2 strategies. A dedicated P146 monitoring runner must be implemented before execution."
+    },
+    "observation_only_execution_plan": {
+      "output_mode": "file_artifact_only",
+      "production_db_write": false,
+      "scheduler_install": false,
+      "live_api_call": false,
+      "recommended_output_directory": "outputs/replay/live_monitoring_observation_only/",
+      "next_execution_gate": "P146_LIVE_MONITORING_FIRST_DRAW_EVALUATION",
+      "description": "When manual on-demand monitoring is authorized, the execution plan is: (1) Generate forward-looking prediction JSON artifact for each strategy. (2) Store artifact in recommended_output_directory (file only, no DB write). (3) After draw result is available, run post-draw evaluation script. (4) Write observation JSON artifact to recommended_output_directory. (5) No DB write until P146 gate is explicitly authorized. This plan is OBSERVATION ONLY — no production side effects."
+    }
+  },
+  "p144b_source_summary": {
+    "classification": "P144B_LIVE_DRAW_MONITORING_ACTIVATION_GATE_READY",
+    "task_id": "P144B",
+    "live_monitoring_contract_version": "1.0"
+  },
+  "monitoring_candidate_inventory": [
+    {
+      "strategy_id": "acb_markov_midfreq_3bet",
+      "lottery_type": "DAILY_539",
+      "bet_count": 3,
+      "wave2_task_source": "P131",
+      "historical_truth_level": "DAILY539_RETIRED_STRATEGY_BACKFILL_VERIFIED",
+      "live_monitoring_candidate": true,
+      "live_evidence_available_now": false,
+      "monitoring_note": "All DB rows are historical backfill. No live draw monitoring active. Live evidence requires post-apply monitoring run."
+    },
+    {
+      "strategy_id": "midfreq_fourier_mk_3bet",
+      "lottery_type": "POWER_LOTTO",
+      "bet_count": 3,
+      "wave2_task_source": "P132",
+      "historical_truth_level": "POWERLOTTO_WAVE4_STRATEGY_BACKFILL_VERIFIED",
+      "live_monitoring_candidate": true,
+      "live_evidence_available_now": false,
+      "monitoring_note": "All DB rows are historical backfill. No live draw monitoring active. Live evidence requires post-apply monitoring run."
+    },
+    {
+      "strategy_id": "fourier_rhythm_3bet",
+      "lottery_type": "POWER_LOTTO",
+      "bet_count": 3,
+      "wave2_task_source": "P134",
+      "historical_truth_level": "POWERLOTTO_SINGLE_STRATEGY_BACKFILL_VERIFIED",
+      "live_monitoring_candidate": true,
+      "live_evidence_available_now": false,
+      "monitoring_note": "All DB rows are historical backfill. No live draw monitoring active. Live evidence requires post-apply monitoring run."
+    },
+    {
+      "strategy_id": "pp3_freqort_4bet",
+      "lottery_type": "POWER_LOTTO",
+      "bet_count": 4,
+      "wave2_task_source": "P133",
+      "historical_truth_level": "POWERLOTTO_WAVE4_STRATEGY_BACKFILL_VERIFIED",
+      "live_monitoring_candidate": true,
+      "live_evidence_available_now": false,
+      "monitoring_note": "All DB rows are historical backfill. No live draw monitoring active. Live evidence requires post-apply monitoring run."
+    },
+    {
+      "strategy_id": "power_precision_3bet",
+      "lottery_type": "POWER_LOTTO",
+      "bet_count": 3,
+      "wave2_task_source": "P140",
+      "historical_truth_level": "POWERLOTTO_REMAINING_STRATEGIES_BACKFILL_VERIFIED",
+      "live_monitoring_candidate": true,
+      "live_evidence_available_now": false,
+      "monitoring_note": "All DB rows are historical backfill. No live draw monitoring active. Live evidence requires post-apply monitoring run."
+    },
+    {
+      "strategy_id": "power_orthogonal_5bet",
+      "lottery_type": "POWER_LOTTO",
+      "bet_count": 5,
+      "wave2_task_source": "P141",
+      "historical_truth_level": "POWERLOTTO_REMAINING_STRATEGIES_BACKFILL_VERIFIED",
+      "live_monitoring_candidate": true,
+      "live_evidence_available_now": false,
+      "monitoring_note": "All DB rows are historical backfill. No live draw monitoring active. Live evidence requires post-apply monitoring run."
+    }
+  ],
+  "runner_contract": {
+    "output_mode": "file_artifact_only",
+    "production_db_write": false,
+    "scheduler_install": false,
+    "live_api_call": false,
+    "supports_fixture_input": true,
+    "supports_authorized_manual_run_later": true,
+    "recommended_output_directory": "outputs/replay/live_monitoring_observation_only/",
+    "description": "P146A runner operates in observation-only mode. All outputs are file artifacts. No DB writes, no scheduler installation, no live API calls. Fixture/mock runs are supported for schema validation. Authorized manual runs (P146B) remain a future gate."
+  },
+  "observation_record_schema": {
+    "schema_version": "1.0",
+    "fields": [
+      "monitored_strategy_id",
+      "lottery_type",
+      "target_draw",
+      "prediction_generated_at",
+      "draw_result_available_at",
+      "predicted_numbers",
+      "actual_numbers",
+      "hit_count",
+      "evaluation_status",
+      "source_trace",
+      "monitoring_truth_level",
+      "created_at"
+    ],
+    "field_count": 12,
+    "field_details": {
+      "monitored_strategy_id": "TEXT — strategy identifier",
+      "lottery_type": "TEXT — DAILY_539 or POWER_LOTTO",
+      "target_draw": "TEXT — draw number string",
+      "prediction_generated_at": "TEXT — ISO timestamp when prediction was generated",
+      "draw_result_available_at": "TEXT — ISO timestamp when draw result was confirmed",
+      "predicted_numbers": "TEXT — JSON array of predicted numbers",
+      "actual_numbers": "TEXT — JSON array of actual draw numbers",
+      "hit_count": "INTEGER — number of matching numbers",
+      "evaluation_status": "TEXT — PENDING | EVALUATED | SKIPPED | MOCK_EVALUATED",
+      "source_trace": "TEXT — traceability key linking to prediction log entry",
+      "monitoring_truth_level": "TEXT — truth level label (LIVE_MONITORING_VERIFIED or MOCK_OBSERVATION_ONLY)",
+      "created_at": "TEXT — ISO timestamp when monitoring record was created"
+    }
+  },
+  "historical_vs_live_boundary": {
+    "historical_backfill_is_not_live_evidence": true,
+    "mock_fixture_is_not_live_evidence": true,
+    "live_evidence_requires_authorized_post_apply_monitoring_run": true,
+    "champion_eval_ready_from_p146a": false,
+    "description": "Historical backfill rows (even verified ones) are not live monitoring evidence. Mock/fixture smoke test records are tagged MOCK_OBSERVATION_ONLY and are NOT live evidence. Live evidence (LIVE_MONITORING_VERIFIED truth_level) requires an authorized P146B monitoring run after a real draw has occurred. Champion evaluation cannot proceed from P146A artifacts alone."
+  },
+  "runner_readiness_matrix": [
+    {
+      "strategy_id": "acb_markov_midfreq_3bet",
+      "lottery_type": "DAILY_539",
+      "runner_supported": true,
+      "fixture_smoke_supported": true,
+      "output_path_template": "outputs/replay/live_monitoring_observation_only/acb_markov_midfreq_3bet_{draw_id}_observation.json",
+      "live_api_required": true,
+      "db_write_required": false,
+      "scheduler_required": false,
+      "ready_for_authorized_p146b_run": true
+    },
+    {
+      "strategy_id": "midfreq_fourier_mk_3bet",
+      "lottery_type": "POWER_LOTTO",
+      "runner_supported": true,
+      "fixture_smoke_supported": true,
+      "output_path_template": "outputs/replay/live_monitoring_observation_only/midfreq_fourier_mk_3bet_{draw_id}_observation.json",
+      "live_api_required": true,
+      "db_write_required": false,
+      "scheduler_required": false,
+      "ready_for_authorized_p146b_run": true
+    },
+    {
+      "strategy_id": "fourier_rhythm_3bet",
+      "lottery_type": "POWER_LOTTO",
+      "runner_supported": true,
+      "fixture_smoke_supported": true,
+      "output_path_template": "outputs/replay/live_monitoring_observation_only/fourier_rhythm_3bet_{draw_id}_observation.json",
+      "live_api_required": true,
+      "db_write_required": false,
+      "scheduler_required": false,
+      "ready_for_authorized_p146b_run": true
+    },
+    {
+      "strategy_id": "pp3_freqort_4bet",
+      "lottery_type": "POWER_LOTTO",
+      "runner_supported": true,
+      "fixture_smoke_supported": true,
+      "output_path_template": "outputs/replay/live_monitoring_observation_only/pp3_freqort_4bet_{draw_id}_observation.json",
+      "live_api_required": true,
+      "db_write_required": false,
+      "scheduler_required": false,
+      "ready_for_authorized_p146b_run": true
+    },
+    {
+      "strategy_id": "power_precision_3bet",
+      "lottery_type": "POWER_LOTTO",
+      "runner_supported": true,
+      "fixture_smoke_supported": true,
+      "output_path_template": "outputs/replay/live_monitoring_observation_only/power_precision_3bet_{draw_id}_observation.json",
+      "live_api_required": true,
+      "db_write_required": false,
+      "scheduler_required": false,
+      "ready_for_authorized_p146b_run": true
+    },
+    {
+      "strategy_id": "power_orthogonal_5bet",
+      "lottery_type": "POWER_LOTTO",
+      "runner_supported": true,
+      "fixture_smoke_supported": true,
+      "output_path_template": "outputs/replay/live_monitoring_observation_only/power_orthogonal_5bet_{draw_id}_observation.json",
+      "live_api_required": true,
+      "db_write_required": false,
+      "scheduler_required": false,
+      "ready_for_authorized_p146b_run": true
+    }
+  ],
+  "fixture_smoke_result": {
+    "live_api_called": false,
+    "production_db_written": false,
+    "output_record_schema_valid": true,
+    "smoke_passed": true,
+    "missing_fields": [],
+    "monitoring_truth_level": "MOCK_OBSERVATION_ONLY",
+    "fixture_strategy": "acb_markov_midfreq_3bet",
+    "fixture_draw": "115000072",
+    "fixture_hit_count": 3,
+    "smoke_output_file": "outputs/replay/live_monitoring_observation_only/smoke_test/smoke_mock_acb_markov_midfreq_3bet_20260529.json",
+    "note": "Fixture/mock only. No live draw data. No DB write. MOCK_OBSERVATION_ONLY tagged."
+  },
+  "p146b_execution_plan": {
+    "next_task": "P146B_AUTHORIZED_OBSERVATION_ONLY_MONITORING_RUN",
+    "required_authorization_phrase": "P145B_AUTHORIZED_MANUAL_ON_DEMAND_MONITORING_OBSERVATION_ONLY_FOR_6_WAVE2_CANDIDATES_20260529",
+    "production_db_write_allowed": false,
+    "output_mode": "file_artifact_only",
+    "scheduler_required": false,
+    "live_api_call_allowed": false,
+    "description": "P146B requires explicit authorization phrase to execute. When authorized, P146B will: (1) Generate forward-looking prediction artifacts per strategy. (2) After draw result is available, run post-draw evaluation. (3) Write observation JSON to outputs/replay/live_monitoring_observation_only/. (4) No DB writes until a further gate explicitly permits them."
+  },
+  "non_actions": {
+    "db_write_in_p146a": false,
+    "live_api_called": false,
+    "scheduler_installed": false,
+    "live_monitoring_run_executed_in_p146a": false,
+    "controlled_apply_executed": false,
+    "registry_updated": false,
+    "champion_promoted": false,
+    "four_star_executed": false,
+    "p108_executed": false,
+    "p117_executed": false,
+    "p118_executed": false
+  },
+  "dirty_file_hygiene": {
+    "backups_untracked_not_staged": true,
+    "forbidden_files_staged": false,
+    "forbidden_files_list": []
+  },
+  "roadmap_update_status": "pending",
+  "remaining_risks": [
+    "Live monitoring run (P146B) still requires manual authorization phrase.",
+    "No actual draw result has been evaluated against any live prediction yet.",
+    "Champion evaluation (P147+) cannot proceed until at least one LIVE_MONITORING_VERIFIED row exists.",
+    "All 6 strategies remain in historical-backfill-only state; live evidence gap persists.",
+    "Fixture smoke test validates schema only — real draw fixture data not yet available."
+  ],
+  "next_recommended_task": "P146B_AUTHORIZED_OBSERVATION_ONLY_MONITORING_RUN",
+  "summary": "P146A implements the observation-only live monitoring runner for 6 Wave 2 candidate strategies. All prerequisites verified (DB=94924 rows, P145B/P144B/P144A artifacts). Runner contract defined: file-artifact-only, no DB write, no live API, fixture input supported. 12-field observation record schema validated via fixture smoke test (MOCK_OBSERVATION_ONLY). Runner readiness matrix confirms all 6 strategies ready for P146B authorized run. No DB writes, no live API calls, no scheduler installed in this task."
+}

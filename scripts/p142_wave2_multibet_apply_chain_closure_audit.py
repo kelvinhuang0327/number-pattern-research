@@ -125,6 +125,12 @@ def validate_preflight() -> dict:
         "outputs/replay/p145b_manual_on_demand_monitoring_authorization_gate_20260529.json",
         "docs/replay/p145b_manual_on_demand_monitoring_authorization_gate_20260529.md",
         "tests/test_p145b_manual_on_demand_monitoring_authorization_gate.py",
+        # P146A successor task files
+        "scripts/p146a_observation_only_live_monitoring_runner.py",
+        "outputs/replay/p146a_observation_only_live_monitoring_runner_20260529.json",
+        "docs/replay/p146a_observation_only_live_monitoring_runner_20260529.md",
+        "tests/test_p146a_observation_only_live_monitoring_runner.py",
+        "outputs/replay/live_monitoring_observation_only/smoke_test/smoke_mock_acb_markov_midfreq_3bet_20260529.json",
     }
     unrelated = []
     for line in status_lines:
@@ -134,6 +140,8 @@ def validate_preflight() -> dict:
         if path_str.startswith("backups/"):
             continue
         if path_str in allowed:
+            continue
+        if path_str.startswith("outputs/replay/live_monitoring_observation_only/"):
             continue
         unrelated.append(path_str)
     if unrelated:

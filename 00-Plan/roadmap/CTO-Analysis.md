@@ -938,3 +938,16 @@ P8/P9/P11 await individual authorization. P10/P12 not apply-ready.
 Next: P132 (midfreq_fourier_mk_3bet, P8, POWER_LOTTO).
 
 **Artifact**: `outputs/replay/p131_apply_acb_markov_midfreq_3bet_20260528.json`
+
+---
+
+### P132: midfreq_fourier_mk_3bet Wave 2 Apply (2026-05-29)
+
+**Status**: COMPLETE | **Classification**: P132_MIDFREQ_FOURIER_MK_3BET_APPLIED
+
+CTO Note: P8 Wave 2 safe candidate `midfreq_fourier_mk_3bet` (POWER_LOTTO) applied.
+3,000 bet-2/bet-3 rows inserted via P128 phase2 adapter. DB 75,422 → 78422.
+P131 acb_markov_midfreq_3bet (4500 rows) preserved. P9/P11 await individual authorization.
+Next: P133 (pp3_freqort_4bet, P11, POWER_LOTTO, +4500 rows).
+
+**Artifact**: `outputs/replay/p132_apply_midfreq_fourier_mk_3bet_20260528.json`

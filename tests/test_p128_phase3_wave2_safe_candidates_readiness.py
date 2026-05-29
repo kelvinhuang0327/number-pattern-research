@@ -23,7 +23,7 @@ PHASE3_MD = (
 DB_PATH = REPO_ROOT / "lottery_api" / "data" / "lottery_v2.db"
 
 EXPECTED_DB_ROWS = 72422            # P128P3 artifact snapshot (no DB write in P128P3)
-EXPECTED_DB_ROWS_CURRENT = 75422    # After P131 applied acb_markov_midfreq_3bet +3000
+EXPECTED_DB_ROWS_CURRENT = 78422    # After P132 applied midfreq_fourier_mk_3bet +3000
 SAFE_CANDIDATE_IDS = [
     "acb_markov_midfreq_3bet",
     "midfreq_fourier_mk_3bet",
@@ -345,15 +345,16 @@ def test_markdown_has_classification():
 
 
 def test_safe_candidates_no_bi2_rows(db_conn):
-    # P131 applied acb_markov_midfreq_3bet bet-2 (authorized). P8/P9/P11 still 0.
-    P131_APPLIED = {"acb_markov_midfreq_3bet"}
+    # P131 applied acb_markov_midfreq_3bet bet-2 (authorized). P132 applied midfreq_fourier_mk_3bet bet-2.
+    # P9/P11 still 0.
+    P131_P132_APPLIED = {"acb_markov_midfreq_3bet", "midfreq_fourier_mk_3bet"}
     for sid in SAFE_CANDIDATE_IDS:
         count = db_conn.execute(
             "SELECT COUNT(*) FROM strategy_prediction_replays WHERE strategy_id=? AND bet_index=2",
             (sid,),
         ).fetchone()[0]
-        if sid in P131_APPLIED:
-            assert count == 1500, f"{sid} should have 1500 bi=2 rows after P131, got {count}"
+        if sid in P131_P132_APPLIED:
+            assert count == 1500, f"{sid} should have 1500 bi=2 rows after P131/P132, got {count}"
         else:
             assert count == 0, f"{sid} should have 0 bi=2 rows (not yet applied), got {count}"
 

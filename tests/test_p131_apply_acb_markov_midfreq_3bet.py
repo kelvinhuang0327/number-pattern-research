@@ -18,6 +18,7 @@ LOTTERY_TYPE = "DAILY_539"
 
 EXPECTED_ROWS_BEFORE    = 72422
 EXPECTED_ROWS_AFTER     = 75422
+EXPECTED_ROWS_CURRENT   = 78422   # Post P132 apply (midfreq_fourier_mk_3bet +3000)
 EXPECTED_INSERT_ROWS    = 3000
 EXPECTED_BET1           = 1500
 EXPECTED_BET2           = 1500
@@ -122,7 +123,8 @@ def test_db_actual_total():
     conn = _db()
     total = conn.execute("SELECT COUNT(*) FROM strategy_prediction_replays").fetchone()[0]
     conn.close()
-    assert total == EXPECTED_ROWS_AFTER
+    # P132 applied midfreq_fourier_mk_3bet after P131 — live DB is now 78422
+    assert total == EXPECTED_ROWS_CURRENT
 
 
 # ---------------------------------------------------------------------------
@@ -326,14 +328,15 @@ def test_no_lifecycle_champion_registry_mutation():
     assert d["blocked_or_excluded"]["no_lifecycle_champion_registry_mutation"] is True
 
 
-def test_p8_not_applied_db():
+def test_p8_applied_after_p132_db():
+    # P132 applied midfreq_fourier_mk_3bet bet-2+bet-3 = 3000 rows after P131
     conn = _db()
     cnt = conn.execute(
         "SELECT COUNT(*) FROM strategy_prediction_replays "
         "WHERE strategy_id='midfreq_fourier_mk_3bet' AND bet_index>1"
     ).fetchone()[0]
     conn.close()
-    assert cnt == 0, f"P8 midfreq_fourier_mk_3bet has {cnt} extra bet rows — should be 0"
+    assert cnt == 3000, f"P8 midfreq_fourier_mk_3bet should have 3000 bet_index>1 rows after P132, got {cnt}"
 
 
 def test_p9_not_applied_db():

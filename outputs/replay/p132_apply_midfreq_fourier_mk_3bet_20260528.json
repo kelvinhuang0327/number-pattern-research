@@ -1,0 +1,168 @@
+{
+  "task_id": "P132",
+  "classification": "P132_MIDFREQ_FOURIER_MK_3BET_APPLIED",
+  "generated_at": "2026-05-29T01:45:50.443206+00:00",
+  "authorization": {
+    "exact_required_phrase": "P130_AUTHORIZED_APPLY_MIDFREQ_FOURIER_MK_3BET_POWERLOTTO_BET2_BET3_V20260528",
+    "authorization_present": true,
+    "apply_allowed": true,
+    "authorization_text_observed": "P130_AUTHORIZED_APPLY_MIDFREQ_FOURIER_MK_3BET_POWERLOTTO_BET2_BET3_V20260528",
+    "stop_reason": null
+  },
+  "repo_worktree_check": {
+    "worktree_path": "/Users/kelvin/Kelvin-WorkSpace/LotteryNew/.claude/worktrees/zen-gates-ff6802",
+    "expected_worktree": "zen-gates-ff6802",
+    "worktree_confirmed": true
+  },
+  "db_snapshot_before": {
+    "replay_rows": 75422,
+    "has_bet_index_column": true,
+    "has_new_unique_constraint": true,
+    "columns_count": 28,
+    "midfreq_fourier_mk_3bet_rows": 1500,
+    "midfreq_fourier_mk_3bet_bet_dist": {
+      "1": 1500
+    },
+    "acb_markov_midfreq_3bet_rows": 4500,
+    "total_replay_rows": 75422
+  },
+  "backup": {
+    "backup_path": "/Users/kelvin/Kelvin-WorkSpace/LotteryNew/.claude/worktrees/zen-gates-ff6802/backups/lottery_v2.db.p132_backup_20260529T014550Z.db",
+    "backup_created": true,
+    "backup_row_count": 75422,
+    "backup_verification": "PASS",
+    "backup_ok": true,
+    "rollback_command": "cp '/Users/kelvin/Kelvin-WorkSpace/LotteryNew/.claude/worktrees/zen-gates-ff6802/backups/lottery_v2.db.p132_backup_20260529T014550Z.db' '/Users/kelvin/Kelvin-WorkSpace/LotteryNew/.claude/worktrees/zen-gates-ff6802/lottery_api/data/lottery_v2.db'"
+  },
+  "p131_source_summary": {
+    "artifact": "/Users/kelvin/Kelvin-WorkSpace/LotteryNew/.claude/worktrees/zen-gates-ff6802/outputs/replay/p131_apply_acb_markov_midfreq_3bet_20260528.json",
+    "classification": "P131_ACB_MARKOV_MIDFREQ_3BET_APPLIED",
+    "classification_pass": true,
+    "p131_db_rows_after": 75422
+  },
+  "p130_source_summary": {
+    "artifact": "/Users/kelvin/Kelvin-WorkSpace/LotteryNew/.claude/worktrees/zen-gates-ff6802/outputs/replay/p130_wave2_safe_candidates_dry_run_plan_20260528.json",
+    "classification": "P130_WAVE2_SAFE_CANDIDATES_DRY_RUN_PLAN_READY",
+    "classification_pass": true,
+    "p8_in_safe_candidates": true,
+    "p8_apply_ready": true,
+    "p8_estimated_insert_rows": 3000,
+    "p8_conflict_free": true
+  },
+  "apply_scope": {
+    "strategy_id": "midfreq_fourier_mk_3bet",
+    "lottery_type": "POWER_LOTTO",
+    "expected_insert_rows": 3000,
+    "actual_insert_rows": 3000,
+    "target_bet_count": 3,
+    "bet2_rows_inserted": 1500,
+    "bet3_rows_inserted": 1500,
+    "controlled_apply_id": "P132_MIDFREQ_FOURIER_MK_3BET_POWERLOTTO_V20260528",
+    "apply_executed": true,
+    "adapter_function": "get_all_bets_midfreq_fourier_mk",
+    "adapter_source": "lottery_api/models/p128_wave2_phase2_adapters.py"
+  },
+  "inserted_rows_summary": {
+    "total_rows_inserted": 3000,
+    "bet2_rows_inserted": 1500,
+    "bet3_rows_inserted": 1500,
+    "truth_level": "inherited from bet-1 rows",
+    "controlled_apply_id": "P132_MIDFREQ_FOURIER_MK_3BET_POWERLOTTO_V20260528",
+    "source": "P132_CONTROLLED_APPLY",
+    "dry_run": false,
+    "bet1_mismatch_count": 1500
+  },
+  "duplicate_guard": {
+    "unique_key": "UNIQUE(lottery_type, target_draw, strategy_id, bet_index)",
+    "strategy": "ABORT ON CONFLICT",
+    "constraint_active": true,
+    "duplicate_rejected_in_validation": true,
+    "other_candidates_extra_inserted": {
+      "fourier_rhythm_3bet": 0,
+      "pp3_freqort_4bet": 0,
+      "power_precision_3bet": 0,
+      "power_orthogonal_5bet": 0
+    },
+    "other_wave2_untouched": true,
+    "guard_ok": true
+  },
+  "bet_index_validation": {
+    "bet1_count": 1500,
+    "bet2_count": 1500,
+    "bet3_count": 1500,
+    "expected_bet1": 1500,
+    "expected_bet2": 1500,
+    "expected_bet3": 1500,
+    "distribution_ok": true,
+    "all_rows_power_lotto": true,
+    "validation": "PASS"
+  },
+  "db_snapshot_after": {
+    "replay_rows": 78422,
+    "midfreq_fourier_mk_3bet_rows": 4500,
+    "acb_markov_midfreq_3bet_rows": 4500,
+    "other_wave2_extra": {
+      "fourier_rhythm_3bet": 0,
+      "pp3_freqort_4bet": 0,
+      "power_precision_3bet": 0,
+      "power_orthogonal_5bet": 0
+    }
+  },
+  "row_preservation_check": {
+    "rows_before_apply": 75422,
+    "rows_inserted": 3000,
+    "expected_rows_after": 78422,
+    "actual_rows_after": 78422,
+    "rows_preserved_ok": true,
+    "p131_rows_preserved": true,
+    "p131_acb_total": 4500,
+    "p131_acb_bet1": 1500,
+    "p131_acb_bet2": 1500,
+    "p131_acb_bet3": 1500
+  },
+  "drift_guard_update": {
+    "previous_total": 75422,
+    "new_total": 78422,
+    "rows_added": 3000,
+    "update_required": true,
+    "update_note": "scripts/replay_lifecycle_drift_guard.py BASELINE total_count updated from 75422 to 78422; p132_apply_id='P132_MIDFREQ_FOURIER_MK_3BET_POWERLOTTO_V20260528' count=3000 added"
+  },
+  "blocked_or_excluded": {
+    "P9_not_applied": true,
+    "P11_not_applied": true,
+    "P10_P12_not_apply_ready_until_re_evaluation": true,
+    "4_STAR_excluded": true,
+    "P108_not_run": true,
+    "P117_not_run": true,
+    "P118_not_run": true,
+    "rejected_strategies_no_action": true,
+    "no_scheduler_install": true,
+    "no_lifecycle_champion_registry_mutation": true,
+    "p9_p11_untouched_verified": true,
+    "p10_p12_untouched_verified": true,
+    "detail": {
+      "fourier_rhythm_3bet": "NOT_APPLIED — P9 requires separate authorization",
+      "pp3_freqort_4bet": "NOT_APPLIED — P11 requires separate authorization",
+      "power_precision_3bet": "NOT_APPLY_READY — P10 pending post-RSR6 re-evaluation",
+      "power_orthogonal_5bet": "NOT_APPLY_READY — P12 pending post-RSR6 re-evaluation"
+    }
+  },
+  "rollback_reference": {
+    "backup_path": "/Users/kelvin/Kelvin-WorkSpace/LotteryNew/.claude/worktrees/zen-gates-ff6802/backups/lottery_v2.db.p132_backup_20260529T014550Z.db",
+    "rollback_command": "cp '/Users/kelvin/Kelvin-WorkSpace/LotteryNew/.claude/worktrees/zen-gates-ff6802/backups/lottery_v2.db.p132_backup_20260529T014550Z.db' '/Users/kelvin/Kelvin-WorkSpace/LotteryNew/.claude/worktrees/zen-gates-ff6802/lottery_api/data/lottery_v2.db'",
+    "note": "Restore backup to rollback P132 apply. Backup verified at 75422 rows before any write."
+  },
+  "roadmap_update_status": {
+    "roadmap_updated": true,
+    "cto_analysis_updated": true,
+    "notes": "P132 section added to roadmap.md and CTO-Analysis.md. DB: 75422 → 78422. Next: P133 (pp3_freqort_4bet, P11, POWER_LOTTO)."
+  },
+  "remaining_risks": [
+    "P9 fourier_rhythm_3bet has 1501-row anomaly (draw-ext 115000041) — apply gate must handle +1 row variance",
+    "P11 pp3_freqort_4bet inserts 4500 rows (bet-2/bet-3/bet-4) — requires separate authorization",
+    "P10/P12 blocked pending post-RSR6 re-evaluation",
+    "bet1_mismatch_count=1500 (soft warning, bet-2/bet-3 are independently correct)"
+  ],
+  "next_recommended_task": "P133: apply pp3_freqort_4bet (P11, POWER_LOTTO) bet-2 + bet-3 + bet-4 (+4500 rows). Authorization phrase: P130_AUTHORIZED_APPLY_PP3_FREQORT_4BET_POWERLOTTO_BET2_BET3_BET4_V20260528. After P11: P134 (fourier_rhythm_3bet P9, 1501-row anomaly, handle last).",
+  "summary": "P132: applied midfreq_fourier_mk_3bet controlled replay rows. Inserted 3000 rows (1500 bet-2, 1500 bet-3) for POWER_LOTTO. DB rows: 75422 → 78422. P131 acb_markov_midfreq_3bet rows preserved (4500). P9/P11 not applied. P10/P12 not apply-ready. Classification: P132_MIDFREQ_FOURIER_MK_3BET_APPLIED"
+}

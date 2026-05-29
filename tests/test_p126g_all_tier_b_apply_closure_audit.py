@@ -34,7 +34,7 @@ DRIFT_GUARD = REPO_ROOT / "scripts/replay_lifecycle_drift_guard.py"
 PYTHON      = sys.executable
 
 EXPECTED_TOTAL_ROWS             = 72462   # Historical: DB state when P126G artifact was generated
-EXPECTED_TOTAL_ROWS_CURRENT     = 75422   # Post P131 apply (acb_markov_midfreq_3bet +3000)
+EXPECTED_TOTAL_ROWS_CURRENT     = 78422   # Post P132 apply (midfreq_fourier_mk_3bet +3000)
 EXPECTED_CANDIDATES             = 5
 EXPECTED_TOTAL_INSERTED_P126B_F = 18000
 

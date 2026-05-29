@@ -521,3 +521,26 @@ Authorization phrase: `P130_AUTHORIZED_APPLY_MIDFREQ_FOURIER_MK_3BET_POWERLOTTO_
 ```text
 CTO_ROADMAP_UPDATED_AFTER_P131_ACB_MARKOV_MIDFREQ_3BET_APPLIED_20260528
 ```
+
+---
+
+### P132 — midfreq_fourier_mk_3bet Wave 2 Controlled Apply [2026-05-29]
+
+**Classification**: P132_MIDFREQ_FOURIER_MK_3BET_APPLIED
+
+P8 `midfreq_fourier_mk_3bet` (POWER_LOTTO) bet-2 and bet-3 rows applied via P128 phase2 adapter.
+
+- **Rows inserted:** +3,000 (1,500 bet-2 + 1,500 bet-3)
+- **DB rows:** 75,422 → 78422
+- **Backup:** `/Users/kelvin/Kelvin-WorkSpace/LotteryNew/.claude/worktrees/zen-gates-ff6802/backups/lottery_v2.db.p132_backup_20260529T014550Z.db`
+- **Drift guard:** PASS at 78422
+- **P131 acb_markov_midfreq_3bet rows preserved:** 4,500
+- **P9/P11 not applied** — require per-strategy authorization
+- **P10/P12 not apply-ready** — pending post-RSR6 re-evaluation
+
+**Next task**: P133 — apply `pp3_freqort_4bet` (P11, POWER_LOTTO) bet-2 + bet-3 + bet-4.
+Authorization phrase: `P130_AUTHORIZED_APPLY_PP3_FREQORT_4BET_POWERLOTTO_BET2_BET3_BET4_V20260528`
+
+```text
+CTO_ROADMAP_UPDATED_AFTER_P132_MIDFREQ_FOURIER_MK_3BET_APPLIED_20260529
+```

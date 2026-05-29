@@ -2,7 +2,7 @@
 
 **Task ID:** P128  
 **Classification:** `P128_WAVE2_ADAPTER_PHASE1_READY`  
-**Generated:** 2026-05-28T12:00:47.984164+00:00  
+**Generated:** 2026-05-28T12:08:01.951627+00:00  
 **Scope:** Adapter-only (no DB write, no controlled_apply, no replay row insertion)
 
 ---

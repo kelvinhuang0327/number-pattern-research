@@ -19,7 +19,7 @@ MD_PATH = REPO_ROOT / "docs" / "replay" / "p130_wave2_safe_candidates_dry_run_pl
 DB_PATH = REPO_ROOT / "lottery_api" / "data" / "lottery_v2.db"
 
 EXPECTED_DB_ROWS = 72422            # P130 artifact snapshot (no DB write in P130)
-EXPECTED_DB_ROWS_CURRENT = 75422    # After P131 applied acb_markov_midfreq_3bet +3000
+EXPECTED_DB_ROWS_CURRENT = 78422    # After P132 applied midfreq_fourier_mk_3bet +3000
 SAFE_CANDIDATE_IDS = [
     "acb_markov_midfreq_3bet",
     "midfreq_fourier_mk_3bet",
@@ -107,8 +107,9 @@ def test_db_rows_live(db_conn):
     ).fetchone()[0]
     # P130 was a dry-run (no DB write). Live DB grows as subsequent applies execute.
     # P131 applied acb_markov_midfreq_3bet +3000 rows (72422 → 75422).
+    # P132 applied midfreq_fourier_mk_3bet +3000 rows (75422 → 78422).
     assert count == EXPECTED_DB_ROWS_CURRENT, (
-        f"DB has {count} rows, expected {EXPECTED_DB_ROWS_CURRENT} (post-P131)"
+        f"DB has {count} rows, expected {EXPECTED_DB_ROWS_CURRENT} (post-P132)"
     )
 
 
@@ -443,15 +444,15 @@ def test_markdown_has_auth_phrase_templates():
 
 
 def test_safe_candidates_no_bi2_rows_live(db_conn):
-    # P131 applied acb_markov_midfreq_3bet bet-2/bet-3 (authorized). P8/P9/P11 still 0.
-    P131_APPLIED = {"acb_markov_midfreq_3bet"}
+    # P131 applied acb_markov_midfreq_3bet bet-2/bet-3. P132 applied midfreq_fourier_mk_3bet. P9/P11 still 0.
+    P131_P132_APPLIED = {"acb_markov_midfreq_3bet", "midfreq_fourier_mk_3bet"}
     for sid in SAFE_CANDIDATE_IDS:
         count = db_conn.execute(
             "SELECT COUNT(*) FROM strategy_prediction_replays WHERE strategy_id=? AND bet_index=2",
             (sid,),
         ).fetchone()[0]
-        if sid in P131_APPLIED:
-            assert count == 1500, f"{sid} should have 1500 bi=2 rows after P131, got {count}"
+        if sid in P131_P132_APPLIED:
+            assert count == 1500, f"{sid} should have 1500 bi=2 rows after P131/P132, got {count}"
         else:
             assert count == 0, f"{sid} should have 0 bi=2 rows (not yet applied), got {count}"
 

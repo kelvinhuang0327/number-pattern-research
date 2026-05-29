@@ -893,3 +893,14 @@ CTO_ROADMAP_UPDATED_AFTER_P140_POWER_PRECISION_3BET_APPLIED_20260529
 - Champion evaluation (P147) blocked pending real live draw evidence.
 - No DB write, no live API call, no scheduler installed, no champion promotion in P146B.
 - Marker: `CTO_ROADMAP_UPDATED_AFTER_P146B_AUTHORIZED_OBSERVATION_ONLY_MONITORING_RUN_20260529`
+
+## P144C Legacy Unverified Remediation Authorization Gate (2026-05-29) — DONE
+- Classification: `P144C_LEGACY_UNVERIFIED_REMEDIATION_AUTHORIZATION_GATE_READY`
+- 100 LEGACY_UNVERIFIED rows documented: 50 power_precision_3bet + 50 power_orthogonal_5bet (all bet_index=1, controlled_apply_id=NULL, source=P138B_LEGACY_REMARK).
+- 4 remediation options defined (A: keep baseline, B: enrich provenance, C: quarantine, D: delete with strict selector).
+- Recommended option: option_a (keep as governed legacy baseline — no DB mutation required).
+- All 4 authorization phrases documented in artifact.
+- LEGACY_UNVERIFIED rows already isolated; no contamination of P140/P141 multi-bet rows.
+- No DB write, no remediation executed, no champion promotion in P144C.
+- Next gate: P144D (Legacy Unverified Remediation Execution — requires explicit authorization phrase).
+- Marker: `CTO_ROADMAP_UPDATED_AFTER_P144C_LEGACY_UNVERIFIED_REMEDIATION_AUTHORIZATION_GATE_20260529`

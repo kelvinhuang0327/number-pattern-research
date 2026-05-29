@@ -65,14 +65,17 @@ _AUTOUSE_PREFIXES = (
     "outputs/replay/p135_", "outputs/replay/p136_", "outputs/replay/p142_",
     "outputs/replay/p143_", "outputs/replay/p144a_", "outputs/replay/p144b_",
     "outputs/replay/p146a_", "outputs/replay/p146b_",
+    "outputs/replay/p144c_",
     "outputs/replay/live_monitoring_observation_only/",
     "docs/replay/p135_", "docs/replay/p136_", "docs/replay/p142_",
     "docs/replay/p143_", "docs/replay/p144a_", "docs/replay/p144b_",
     "docs/replay/p146a_", "docs/replay/p146b_",
+    "docs/replay/p144c_",
     "scripts/p141_", "scripts/p141a_", "scripts/p142_", "scripts/p143_",
-    "scripts/p144a_", "scripts/p144b_", "scripts/p146a_", "scripts/p146b_",
+    "scripts/p144a_", "scripts/p144b_", "scripts/p144c_", "scripts/p146a_", "scripts/p146b_",
     "tests/test_p141_", "tests/test_p141a_", "tests/test_p142_", "tests/test_p143_",
-    "tests/test_p144a_", "tests/test_p144b_", "tests/test_p146a_", "tests/test_p146b_",
+    "tests/test_p144a_", "tests/test_p144b_", "tests/test_p144c_",
+    "tests/test_p146a_", "tests/test_p146b_",
 )
 
 

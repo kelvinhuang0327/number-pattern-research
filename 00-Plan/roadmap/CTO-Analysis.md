@@ -1269,3 +1269,14 @@ Next: P141 (power_orthogonal_5bet, P12, POWER_LOTTO, +6000 rows).
 - Marker: `CTO_ROADMAP_UPDATED_AFTER_P146B_AUTHORIZED_OBSERVATION_ONLY_MONITORING_RUN_20260529`
 
 **Artifact**: `outputs/replay/p146b_authorized_observation_only_monitoring_run_20260529.json`
+
+## P144C Legacy Unverified Remediation Authorization Gate (2026-05-29) — DONE
+- 100 LEGACY_UNVERIFIED rows documented (50 power_precision_3bet + 50 power_orthogonal_5bet, all bet_index=1, source=P138B_LEGACY_REMARK).
+- 4 remediation options with authorization phrases defined; recommended option_a (keep as governed baseline, no DB mutation).
+- Strict selector SQL criteria documented for safe future remediation.
+- LEGACY_UNVERIFIED rows isolated; no contamination of P140/P141 multi-bet rows confirmed.
+- No DB writes executed. No controlled_apply. No champion promotion. Authorization gate only.
+- Next gate: P144D (requires explicit authorization phrase before remediation execution).
+- Marker: `CTO_ROADMAP_UPDATED_AFTER_P144C_LEGACY_UNVERIFIED_REMEDIATION_AUTHORIZATION_GATE_20260529`
+
+**Artifact**: `outputs/replay/p144c_legacy_unverified_remediation_authorization_gate_20260529.json`

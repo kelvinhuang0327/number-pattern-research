@@ -131,6 +131,11 @@ def validate_preflight() -> dict:
         "outputs/replay/p146b_authorized_observation_only_monitoring_run_20260529.json",
         "docs/replay/p146b_authorized_observation_only_monitoring_run_20260529.md",
         "tests/test_p146b_authorized_observation_only_monitoring_run.py",
+        # P144C successor task files
+        "scripts/p144c_legacy_unverified_remediation_authorization_gate.py",
+        "outputs/replay/p144c_legacy_unverified_remediation_authorization_gate_20260529.json",
+        "docs/replay/p144c_legacy_unverified_remediation_authorization_gate_20260529.md",
+        "tests/test_p144c_legacy_unverified_remediation_authorization_gate.py",
         # P143 own files (new / being generated)
         "scripts/p143_post_wave2_governance_readiness_plan.py",
         f"outputs/replay/p143_post_wave2_governance_readiness_plan_{DATE_SUFFIX}.json",

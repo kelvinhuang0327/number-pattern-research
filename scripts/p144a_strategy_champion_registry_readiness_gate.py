@@ -51,11 +51,11 @@ _OWN_FILES = {
 }
 _AUTOUSE_PREFIXES = (
     "outputs/replay/p135_", "outputs/replay/p136_", "outputs/replay/p142_",
-    "outputs/replay/p143_",
+    "outputs/replay/p143_", "outputs/replay/p144b_",
     "docs/replay/p135_", "docs/replay/p136_", "docs/replay/p142_",
-    "docs/replay/p143_",
-    "scripts/p142_", "scripts/p143_",
-    "tests/test_p142_", "tests/test_p143_",
+    "docs/replay/p143_", "docs/replay/p144b_",
+    "scripts/p142_", "scripts/p143_", "scripts/p144b_",
+    "tests/test_p142_", "tests/test_p143_", "tests/test_p144b_",
 )
 
 

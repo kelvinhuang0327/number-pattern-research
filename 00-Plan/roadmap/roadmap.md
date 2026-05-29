@@ -848,3 +848,14 @@ CTO_ROADMAP_UPDATED_AFTER_P140_POWER_PRECISION_3BET_APPLIED_20260529
 - No registry mutation in P144A.
 - Next gates: P144B (live monitoring activation), P144C (legacy remediation).
 - Marker: `CTO_ROADMAP_UPDATED_AFTER_P144A_STRATEGY_CHAMPION_REGISTRY_READINESS_GATE_20260529`
+
+
+## P144B Live Draw Monitoring Activation Gate (2026-05-29)
+- Classification: `P144B_LIVE_DRAW_MONITORING_ACTIVATION_GATE_READY`
+- Live monitoring contract defined for all 6 Wave 2 strategies.
+- Historical vs live data boundary documented; champion_eval_ready_from_live_data=false.
+- Readiness matrix: all 6 strategies monitoring_ready=false, authorization_required_later=true.
+- Recommended path: option_c (observation-only artifact) now; option_a (manual on-demand) after P145B authorization.
+- No DB write, no controlled_apply, no scheduler, no live API call in P144B.
+- Next gate: P145B (live monitoring authorization and execution gate).
+- Marker: `CTO_ROADMAP_UPDATED_AFTER_P144B_LIVE_DRAW_MONITORING_ACTIVATION_GATE_20260529`

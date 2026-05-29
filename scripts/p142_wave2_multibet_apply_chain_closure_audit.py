@@ -112,6 +112,11 @@ def validate_preflight() -> dict:
         "outputs/replay/p144a_strategy_champion_registry_readiness_gate_20260529.json",
         "docs/replay/p144a_strategy_champion_registry_readiness_gate_20260529.md",
         "tests/test_p144a_strategy_champion_registry_readiness_gate.py",
+        # P144B successor task files
+        "scripts/p144b_live_draw_monitoring_activation_gate.py",
+        "outputs/replay/p144b_live_draw_monitoring_activation_gate_20260529.json",
+        "docs/replay/p144b_live_draw_monitoring_activation_gate_20260529.md",
+        "tests/test_p144b_live_draw_monitoring_activation_gate.py",
     }
     unrelated = []
     for line in status_lines:

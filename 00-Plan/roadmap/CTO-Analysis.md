@@ -1224,3 +1224,14 @@ Next: P141 (power_orthogonal_5bet, P12, POWER_LOTTO, +6000 rows).
 - Marker: `CTO_ROADMAP_UPDATED_AFTER_P144A_STRATEGY_CHAMPION_REGISTRY_READINESS_GATE_20260529`
 
 **Artifact**: `outputs/replay/p144a_strategy_champion_registry_readiness_gate_20260529.json`
+
+
+## P144B Live Draw Monitoring Activation Gate (2026-05-29)
+- P144B defined live monitoring contract for 6 Wave 2 strategies; no activation executed.
+- Historical backfill rows are NOT live evidence; champion eval blocked until live monitoring active.
+- All 6 strategies: monitoring_ready=false, live_evidence_available_now=false, authorization_required_later=true.
+- Recommended options: C (observation artifact) now; A (manual on-demand) after P145B authorization.
+- No DB mutation. No registry update. No scheduler. Read-only gate.
+- Marker: `CTO_ROADMAP_UPDATED_AFTER_P144B_LIVE_DRAW_MONITORING_ACTIVATION_GATE_20260529`
+
+**Artifact**: `outputs/replay/p144b_live_draw_monitoring_activation_gate_20260529.json`

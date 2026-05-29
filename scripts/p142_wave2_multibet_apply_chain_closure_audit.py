@@ -102,6 +102,9 @@ def validate_preflight() -> dict:
         f"tests/test_p142_wave2_multibet_apply_chain_closure_audit.py",
         "00-Plan/roadmap/roadmap.md",
         "00-Plan/roadmap/CTO-Analysis.md",
+        # P141/P141A scripts (may be modified to add successor allowlist entries)
+        "scripts/p141_apply_power_orthogonal_5bet.py",
+        "scripts/p141a_power_orthogonal_5bet_authorization_gate.py",
         # P143 successor task files
         "scripts/p143_post_wave2_governance_readiness_plan.py",
         "outputs/replay/p143_post_wave2_governance_readiness_plan_20260529.json",
@@ -117,6 +120,11 @@ def validate_preflight() -> dict:
         "outputs/replay/p144b_live_draw_monitoring_activation_gate_20260529.json",
         "docs/replay/p144b_live_draw_monitoring_activation_gate_20260529.md",
         "tests/test_p144b_live_draw_monitoring_activation_gate.py",
+        # P145B successor task files
+        "scripts/p145b_manual_on_demand_monitoring_authorization_gate.py",
+        "outputs/replay/p145b_manual_on_demand_monitoring_authorization_gate_20260529.json",
+        "docs/replay/p145b_manual_on_demand_monitoring_authorization_gate_20260529.md",
+        "tests/test_p145b_manual_on_demand_monitoring_authorization_gate.py",
     }
     unrelated = []
     for line in status_lines:

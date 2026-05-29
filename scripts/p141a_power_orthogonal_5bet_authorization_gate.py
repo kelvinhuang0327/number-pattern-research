@@ -64,6 +64,11 @@ def preflight() -> tuple[dict, str]:
         "tests/test_p141a_power_orthogonal_5bet_authorization_gate.py",
         "00-Plan/roadmap/roadmap.md",
         "00-Plan/roadmap/CTO-Analysis.md",
+        # P145B successor task files
+        "scripts/p145b_manual_on_demand_monitoring_authorization_gate.py",
+        "outputs/replay/p145b_manual_on_demand_monitoring_authorization_gate_20260529.json",
+        "docs/replay/p145b_manual_on_demand_monitoring_authorization_gate_20260529.md",
+        "tests/test_p145b_manual_on_demand_monitoring_authorization_gate.py",
     }
 
     non_exempt = []

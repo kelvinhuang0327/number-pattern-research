@@ -859,3 +859,14 @@ CTO_ROADMAP_UPDATED_AFTER_P140_POWER_PRECISION_3BET_APPLIED_20260529
 - No DB write, no controlled_apply, no scheduler, no live API call in P144B.
 - Next gate: P145B (live monitoring authorization and execution gate).
 - Marker: `CTO_ROADMAP_UPDATED_AFTER_P144B_LIVE_DRAW_MONITORING_ACTIVATION_GATE_20260529`
+
+
+## P145B Manual On-Demand Monitoring Authorization Gate (2026-05-29)
+- Classification: `P145B_MANUAL_ON_DEMAND_MONITORING_AUTHORIZATION_GATE_READY`
+- Manual on-demand monitoring authorization gate defined for all 6 Wave 2 strategies.
+- Authorization phrase template defined; authorization_required_before_execution=true.
+- execution_performed_in_p145b=false; production_db_write_allowed=false.
+- Observation-only execution plan documented; next gate: P146_LIVE_MONITORING_FIRST_DRAW_EVALUATION.
+- Runner availability: existing_runner_found assessed; implementation_required_before_execution=true.
+- No DB write, no controlled_apply, no scheduler, no live API call, no monitoring run in P145B.
+- Marker: `CTO_ROADMAP_UPDATED_AFTER_P145B_MANUAL_ON_DEMAND_MONITORING_AUTHORIZATION_GATE_20260529`

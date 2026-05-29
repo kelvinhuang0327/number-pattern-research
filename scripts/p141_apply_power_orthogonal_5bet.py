@@ -89,6 +89,11 @@ def validate_preflight(auth_text: str) -> tuple[dict, str, bool]:
         "scripts/replay_lifecycle_drift_guard.py",
         "00-Plan/roadmap/roadmap.md",
         "00-Plan/roadmap/CTO-Analysis.md",
+        # P145B successor task files
+        "scripts/p145b_manual_on_demand_monitoring_authorization_gate.py",
+        "outputs/replay/p145b_manual_on_demand_monitoring_authorization_gate_20260529.json",
+        "docs/replay/p145b_manual_on_demand_monitoring_authorization_gate_20260529.md",
+        "tests/test_p145b_manual_on_demand_monitoring_authorization_gate.py",
     }
     bad = []
     for line in status:

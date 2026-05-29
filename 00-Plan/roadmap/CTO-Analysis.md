@@ -1235,3 +1235,15 @@ Next: P141 (power_orthogonal_5bet, P12, POWER_LOTTO, +6000 rows).
 - Marker: `CTO_ROADMAP_UPDATED_AFTER_P144B_LIVE_DRAW_MONITORING_ACTIVATION_GATE_20260529`
 
 **Artifact**: `outputs/replay/p144b_live_draw_monitoring_activation_gate_20260529.json`
+
+
+## P145B Manual On-Demand Monitoring Authorization Gate (2026-05-29)
+- P145B manual on-demand monitoring authorization gate completed for 6 Wave 2 strategies.
+- Authorization gate defined; no monitoring executed; observation-only plan documented.
+- authorization_required_before_execution=true; production_db_write_allowed=false.
+- Runner not yet implemented; implementation required before P146 execution.
+- Next gate: P146_LIVE_MONITORING_FIRST_DRAW_EVALUATION.
+- No DB mutation. No registry update. No scheduler. Read-only gate.
+- Marker: `CTO_ROADMAP_UPDATED_AFTER_P145B_MANUAL_ON_DEMAND_MONITORING_AUTHORIZATION_GATE_20260529`
+
+**Artifact**: `outputs/replay/p145b_manual_on_demand_monitoring_authorization_gate_20260529.json`

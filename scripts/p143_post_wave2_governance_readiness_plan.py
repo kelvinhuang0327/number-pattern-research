@@ -101,6 +101,9 @@ def validate_preflight() -> dict:
         "docs/replay/p142_",
         "scripts/p142_wave2_multibet_apply_chain_closure_audit.py",
         "tests/test_p142_wave2_multibet_apply_chain_closure_audit.py",
+        # P141/P141A predecessor scripts (may be modified to add successor allowlist entries)
+        "scripts/p141_apply_power_orthogonal_5bet.py",
+        "scripts/p141a_power_orthogonal_5bet_authorization_gate.py",
         # P144A successor task files
         "scripts/p144a_strategy_champion_registry_readiness_gate.py",
         "outputs/replay/p144a_strategy_champion_registry_readiness_gate_20260529.json",
@@ -111,6 +114,11 @@ def validate_preflight() -> dict:
         "outputs/replay/p144b_live_draw_monitoring_activation_gate_20260529.json",
         "docs/replay/p144b_live_draw_monitoring_activation_gate_20260529.md",
         "tests/test_p144b_live_draw_monitoring_activation_gate.py",
+        # P145B successor task files
+        "scripts/p145b_manual_on_demand_monitoring_authorization_gate.py",
+        "outputs/replay/p145b_manual_on_demand_monitoring_authorization_gate_20260529.json",
+        "docs/replay/p145b_manual_on_demand_monitoring_authorization_gate_20260529.md",
+        "tests/test_p145b_manual_on_demand_monitoring_authorization_gate.py",
         # P143 own files (new / being generated)
         "scripts/p143_post_wave2_governance_readiness_plan.py",
         f"outputs/replay/p143_post_wave2_governance_readiness_plan_{DATE_SUFFIX}.json",

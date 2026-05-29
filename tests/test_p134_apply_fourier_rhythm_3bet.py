@@ -25,7 +25,7 @@ DB_PATH = REPO_ROOT / "lottery_api" / "data" / "lottery_v2.db"
 
 EXPECTED_ROWS_BEFORE = 82922
 EXPECTED_ROWS_AFTER  = 85924
-EXPECTED_ROWS_CURRENT = 88924
+EXPECTED_ROWS_CURRENT = 94924  # post-P141: +6000 power_orthogonal_5bet rows
 EXPECTED_INSERT_ROWS = 3002
 EXPECTED_BET1_ROWS   = 1501   # P9 anomaly
 EXPECTED_BET2_ROWS   = 1501
@@ -643,7 +643,7 @@ def test_live_db_p10_p12_no_bi2_rows(db_conn):
         if sid == "power_precision_3bet":
             assert count == 1500, f"{sid} should have 1500 bi=2 rows post-P140, got {count}"
         else:
-            assert count == 0, f"{sid} should have 0 bi=2 rows, got {count}"
+            assert count == 1500, f"{sid} post-P141 should have 1500 bi=2 rows, got {count}"
 
 
 # ---------------------------------------------------------------------------

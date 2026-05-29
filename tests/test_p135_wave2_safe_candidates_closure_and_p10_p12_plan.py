@@ -24,7 +24,7 @@ MD_PATH = REPO_ROOT / "docs" / "replay" / "p135_wave2_safe_candidates_closure_an
 DB_PATH = REPO_ROOT / "lottery_api" / "data" / "lottery_v2.db"
 
 EXPECTED_CLASSIFICATION = "P135_WAVE2_SAFE_CANDIDATES_CLOSED_P10_P12_REEVALUATION_PLAN_READY"
-EXPECTED_ROWS = 88924
+EXPECTED_ROWS = 94924  # post-P141: +6000 power_orthogonal_5bet rows
 EXPECTED_WAVE2_TOTAL = 4
 EXPECTED_P131_ROWS = 3000
 EXPECTED_P132_ROWS = 3000
@@ -134,7 +134,7 @@ def test_strategy_distribution_blocked_candidates(artifact):
     assert blocked["power_precision_3bet"]["apply_ready"] is False
     assert blocked["power_orthogonal_5bet"]["apply_ready"] is False
     assert blocked["power_precision_3bet"]["bet_index_gt1_rows"] == 3000
-    assert blocked["power_orthogonal_5bet"]["bet_index_gt1_rows"] == 0
+    assert blocked["power_orthogonal_5bet"]["bet_index_gt1_rows"] == 6000  # post-P141: bet-2..bet-5 applied
 
 
 def test_p9_anomaly_closure(artifact):
@@ -166,13 +166,13 @@ def test_p10_p12_provenance_states(artifact):
     assert pp["legacy_null_provenance_rows"] == 50
     assert po["legacy_null_provenance_rows"] == 50
     assert pp["bet_index_gt1_rows"] == 3000
-    assert po["bet_index_gt1_rows"] == 0
+    assert po["bet_index_gt1_rows"] == 6000  # post-P141: bet-2..bet-5 applied
     assert pp["controlled_apply_id_counts"]["P20_POWERLOTTO_REMAINING_1500_PROD_20260520"] == 1500
     assert po["controlled_apply_id_counts"]["P20_POWERLOTTO_REMAINING_1500_PROD_20260520"] == 1500
     assert pp["controlled_apply_id_counts"]["NULL"] == 50
     assert po["controlled_apply_id_counts"]["NULL"] == 50
     assert pp["truth_level_counts"]["POWERLOTTO_REMAINING_STRATEGIES_BACKFILL_VERIFIED"] == 4500
-    assert po["truth_level_counts"]["POWERLOTTO_REMAINING_STRATEGIES_BACKFILL_VERIFIED"] == 1500
+    assert po["truth_level_counts"]["POWERLOTTO_REMAINING_STRATEGIES_BACKFILL_VERIFIED"] == 7500  # post-P141: +6000
 
 
 def test_p10_p12_reevaluation_plan(artifact):
@@ -276,7 +276,7 @@ def test_markdown_contains_expected_content():
     assert "Wave 2 safe candidates are now complete" in text
     assert "P10 and P12 remain blocked" in text
     assert "115000041" in text
-    assert "88924" in text
+    assert "94924" in text  # post-P141: DB total updated to 94924
     assert "no DB writes" in text
     assert "no controlled_apply" in text
 
@@ -300,7 +300,7 @@ def test_live_db_p10_p12_bet_index_gt1_rows(db_conn):
         if sid == "power_precision_3bet":
             assert count == 3000
         else:
-            assert count == 0
+            assert count == 6000  # post-P141: bet-2..bet-5 applied
 
 
 def test_no_forbidden_files_staged():

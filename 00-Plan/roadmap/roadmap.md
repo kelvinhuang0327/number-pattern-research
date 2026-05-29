@@ -808,3 +808,10 @@ CTO_ROADMAP_UPDATED_AFTER_P140_POWER_PRECISION_3BET_APPLIED_20260529
 - Scope: read-only gate; no DB write, no controlled_apply, no replay rows inserted.
 - Next: P141 apply `power_orthogonal_5bet` bet-2/3/4/5 (+6000 rows; 88924 -> 94924).
 - Marker: `CTO_ROADMAP_UPDATED_AFTER_P141A_POWER_ORTHOGONAL_5BET_AUTH_GATE_20260529`
+
+
+## P141 Controlled Apply (2026-05-29)
+- Classification: `P141_POWER_ORTHOGONAL_5BET_APPLIED`
+- Applied `power_orthogonal_5bet` bet-2..bet-5 (+6000 rows).
+- DB: 88924 -> 94924.
+- Marker: `CTO_ROADMAP_UPDATED_AFTER_P141_POWER_ORTHOGONAL_5BET_APPLIED_20260529`

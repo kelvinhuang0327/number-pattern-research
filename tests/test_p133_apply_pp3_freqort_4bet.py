@@ -39,7 +39,7 @@ PYTHON    = sys.executable
 
 EXPECTED_DB_ROWS_BEFORE   = 78422
 EXPECTED_DB_ROWS_AFTER    = 82922
-EXPECTED_DB_ROWS_CURRENT  = 88924   # Post P140 apply (power_precision_3bet +3000 over P134 state)
+EXPECTED_DB_ROWS_CURRENT  = 94924   # post-P141: +6000 power_orthogonal_5bet rows
 EXPECTED_INSERT_ROWS      = 4500
 EXPECTED_BET2_ROWS        = 1500
 EXPECTED_BET3_ROWS        = 1500
@@ -612,7 +612,8 @@ def test_live_db_p12_not_applied(db_conn):
     count = db_conn.execute(
         "SELECT COUNT(*) FROM strategy_prediction_replays WHERE strategy_id='power_orthogonal_5bet' AND bet_index > 1",
     ).fetchone()[0]
-    assert count == 0, f"P12 power_orthogonal_5bet bet_index>1 must be 0, got {count}"
+    # post-P141: P141 applied bet-2..bet-5 (+6000 rows)
+    assert count == 6000, f"P12 power_orthogonal_5bet bet_index>1 post-P141 should be 6000, got {count}"
 
 
 def test_live_db_no_duplicates(db_conn):

@@ -18,7 +18,7 @@ LOTTERY_TYPE = "DAILY_539"
 
 EXPECTED_ROWS_BEFORE    = 72422
 EXPECTED_ROWS_AFTER     = 75422
-EXPECTED_ROWS_CURRENT   = 88924   # Post P140 apply (power_precision_3bet +3000 over P134 state)
+EXPECTED_ROWS_CURRENT   = 94924   # post-P141: +6000 power_orthogonal_5bet rows
 EXPECTED_INSERT_ROWS    = 3000
 EXPECTED_BET1           = 1500
 EXPECTED_BET2           = 1500
@@ -378,7 +378,8 @@ def test_p12_not_applied_db():
         "WHERE strategy_id='power_orthogonal_5bet' AND bet_index>1"
     ).fetchone()[0]
     conn.close()
-    assert cnt == 0, f"P12 power_orthogonal_5bet has {cnt} extra bet rows — should be 0"
+    # post-P141: bet-2..bet-5 applied (+6000 rows)
+    assert cnt == 6000, f"P12 power_orthogonal_5bet post-P141 should have 6000 bet-2+ rows, got {cnt}"
 
 
 # ---------------------------------------------------------------------------

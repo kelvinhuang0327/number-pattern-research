@@ -33,7 +33,7 @@ P127_MD   = REPO_ROOT / "docs" / "replay" / f"p127_adapter_build_specs_remaining
 P126G_JSON = REPO_ROOT / "outputs" / "replay" / f"p126g_all_tier_b_apply_closure_audit_{ARTIFACT_DATE}.json"
 
 EXPECTED_TOTAL_ROWS = 72462          # Historical: DB state when P127 artifact was generated
-EXPECTED_TOTAL_ROWS_CURRENT = 88924  # Post P140 apply (power_precision_3bet +3000 over P134 state)
+EXPECTED_TOTAL_ROWS_CURRENT = 94924  # post-P141: +6000 power_orthogonal_5bet rows
 EXPECTED_STRATEGY_COUNT = 12
 
 REQUIRED_SPEC_FIELDS = [
@@ -478,13 +478,14 @@ def test_live_db_adapter_strategies_no_new_bets_added(db_conn):
         """,
         ADAPTER_STRATEGY_IDS
     ).fetchone()[0]
-    # power_precision_3bet gained 3000 rows in P140 (bet-2 + bet-3); power_orthogonal_5bet remains bet-1 only.
-    # P131 applied acb_markov_midfreq_3bet bet-2+bet-3 = 3000 rows (authorized Wave 2 apply).
-    # P132 applied midfreq_fourier_mk_3bet bet-2+bet-3 = 3000 rows (authorized Wave 2 apply).
-    # P133 applied pp3_freqort_4bet bet-2+bet-3+bet-4 = 4500 rows (authorized Wave 2 apply).
-    # P134 applied fourier_rhythm_3bet bet-2+bet-3 = 3002 rows (authorized Wave 2 apply, P9 anomaly).
-    assert rows == 16502, \
-        f"Expected 16502 bet_index>1 rows (P131 acb +3000, P132 midfreq_mk +3000, P133 pp3 +4500, P134 fourier +3002, P140 power_precision +3000), found {rows}"
+    # power_precision_3bet gained 3000 rows in P140 (bet-2 + bet-3).
+    # P131 applied acb_markov_midfreq_3bet bet-2+bet-3 = 3000 rows.
+    # P132 applied midfreq_fourier_mk_3bet bet-2+bet-3 = 3000 rows.
+    # P133 applied pp3_freqort_4bet bet-2+bet-3+bet-4 = 4500 rows.
+    # P134 applied fourier_rhythm_3bet bet-2+bet-3 = 3002 rows (P9 anomaly).
+    # P141 applied power_orthogonal_5bet bet-2..bet-5 = 6000 rows.
+    assert rows == 22502, \
+        f"Expected 22502 bet_index>1 rows (P131+3000, P132+3000, P133+4500, P134+3002, P140+3000, P141+6000), found {rows}"
 
 
 def test_live_db_acb_markov_midfreq_3bet_rows(db_conn):
@@ -534,8 +535,8 @@ def test_live_db_power_orthogonal_5bet_rows(db_conn):
         "SELECT COUNT(*) FROM strategy_prediction_replays WHERE strategy_id = ? AND lottery_type = ?",
         ("power_orthogonal_5bet", "POWER_LOTTO")
     ).fetchone()[0]
-    # 1550 bet_index=1 only (RSR-6 cleanup deleted the 20 orphan bet_index=2 rows)
-    assert count == 1550
+    # post-P141: 1550 bet-1 + 6000 bet-2..bet-5 = 7550 total
+    assert count == 7550
 
 
 def test_live_db_power_precision_3bet_rows(db_conn):

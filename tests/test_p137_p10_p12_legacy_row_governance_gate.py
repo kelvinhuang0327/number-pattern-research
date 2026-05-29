@@ -12,7 +12,7 @@ P137_MD = WORKTREE / "docs/replay/p137_p10_p12_legacy_row_governance_gate_202605
 P136_JSON = WORKTREE / "outputs/replay/p136_post_rsr6_p10_p12_baseline_reevaluation_20260529.json"
 
 EXPECTED_DB_ROWS = 85924
-LIVE_DB_ROWS = 88924
+LIVE_DB_ROWS = 94924  # post-P141: +6000 power_orthogonal_5bet rows
 
 
 @pytest.fixture(scope="module")
@@ -157,7 +157,7 @@ def test_p12_no_bet2_plus_live(conn):
     row = conn.execute(
         "SELECT COUNT(*) FROM strategy_prediction_replays WHERE strategy_id='power_orthogonal_5bet' AND bet_index>1"
     ).fetchone()
-    assert row[0] == 0
+    assert row[0] == 6000  # post-P141: bet-2..bet-5 applied
 
 
 # --- NULL provenance legacy audit ---

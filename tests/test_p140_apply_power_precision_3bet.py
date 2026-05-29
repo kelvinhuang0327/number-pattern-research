@@ -47,8 +47,9 @@ OTHER_WAVE2   = [
 ]
 
 EXPECTED_ROWS_BEFORE        = 85924
-EXPECTED_ROWS_AFTER         = 88924
+EXPECTED_ROWS_AFTER         = 88924   # historical: DB rows when P140 completed
 EXPECTED_INSERT_ROWS        = 3000
+CURRENT_DB_ROWS             = 94924   # post-P141: live DB expected row count
 EXPECTED_BET1_TOTAL         = 1550
 EXPECTED_BET2               = 1500
 EXPECTED_BET3               = 1500
@@ -552,7 +553,7 @@ class TestMarkdownContent:
 class TestLiveDB:
     def test_total_rows_88924(self, db):
         cnt = db.execute("SELECT COUNT(*) FROM strategy_prediction_replays").fetchone()[0]
-        assert cnt == EXPECTED_ROWS_AFTER, f"Expected {EXPECTED_ROWS_AFTER}, got {cnt}"
+        assert cnt == CURRENT_DB_ROWS, f"Expected {CURRENT_DB_ROWS} (post-P141), got {cnt}"
 
     def test_power_precision_bet1_total(self, db):
         cnt = db.execute(
@@ -623,7 +624,8 @@ class TestLiveDB:
             "WHERE strategy_id=? AND bet_index>1",
             (P12_CANDIDATE,)
         ).fetchone()[0]
-        assert cnt == 0, f"{P12_CANDIDATE} must not have bet-2+ rows"
+        # post-P141: P141 applied bet-2..bet-5 (+6000 rows)
+        assert cnt == 6000, f"{P12_CANDIDATE} post-P141 should have 6000 bet-2+ rows, got {cnt}"
 
     def test_p7_preserved(self, db):
         cnt = db.execute(
@@ -678,7 +680,8 @@ class TestDriftGuardFile:
 
     def test_drift_guard_total_count_updated(self):
         content = DRIFT_GUARD.read_text(encoding="utf-8")
-        assert f'"total_count": {EXPECTED_ROWS_AFTER},' in content
+        # post-P141: drift guard total_count updated to 94924
+        assert f'"total_count": {CURRENT_DB_ROWS},' in content
 
     def test_drift_guard_p140_count(self):
         content = DRIFT_GUARD.read_text(encoding="utf-8")

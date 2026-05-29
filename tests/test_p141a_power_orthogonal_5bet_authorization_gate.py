@@ -53,9 +53,9 @@ def test_repo_branch_ok(artifact):
 
 
 def test_db_rows_88924(artifact, conn):
-    assert artifact["db_snapshot"]["total_rows"] == 88924
+    assert artifact["db_snapshot"]["total_rows"] == 88924  # historical artifact value, fixed
     rows = conn.execute("SELECT COUNT(*) FROM strategy_prediction_replays").fetchone()[0]
-    assert rows == 88924
+    assert rows == 94924  # post-P141: +6000 power_orthogonal_5bet rows
 
 
 def test_bet_index_column_exists(conn):

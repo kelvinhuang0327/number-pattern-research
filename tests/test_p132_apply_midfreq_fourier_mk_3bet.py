@@ -38,7 +38,7 @@ PYTHON    = sys.executable
 
 EXPECTED_DB_ROWS_BEFORE   = 75422
 EXPECTED_DB_ROWS_AFTER    = 78422
-EXPECTED_DB_ROWS_CURRENT  = 88924   # Post P140 apply (power_precision_3bet +3000 over P134 state)
+EXPECTED_DB_ROWS_CURRENT  = 94924   # post-P141: +6000 power_orthogonal_5bet rows
 EXPECTED_INSERT_ROWS      = 3000
 EXPECTED_BET2_ROWS        = 1500
 EXPECTED_BET3_ROWS        = 1500

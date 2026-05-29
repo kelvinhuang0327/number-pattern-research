@@ -21,7 +21,7 @@ MD_PATH = REPO_ROOT / "docs" / "replay" / "p136_post_rsr6_p10_p12_baseline_reeva
 DB_PATH = REPO_ROOT / "lottery_api" / "data" / "lottery_v2.db"
 
 EXPECTED_CLASSIFICATION = "P136_POST_RSR6_P10_P12_REEVALUATION_READY"
-EXPECTED_ROWS = 88924
+EXPECTED_ROWS = 94924  # post-P141: +6000 power_orthogonal_5bet rows
 
 
 @pytest.fixture(scope="module", autouse=True)
@@ -85,7 +85,7 @@ def test_distribution(artifact):
     assert d["power_precision_3bet_bet1_rows"] == 1550
     assert d["power_precision_3bet_bet2_plus_rows"] == 3000
     assert d["power_orthogonal_5bet_bet1_rows"] == 1550
-    assert d["power_orthogonal_5bet_bet2_plus_rows"] == 0
+    assert d["power_orthogonal_5bet_bet2_plus_rows"] == 6000  # post-P141: bet-2..bet-5 applied
 
 
 def test_baseline_row_audit(artifact):
@@ -112,11 +112,12 @@ def test_null_provenance_legacy_audit(artifact):
 def test_per_strategy_reevaluation_matrix(artifact):
     m = artifact["per_strategy_reevaluation_matrix"]
     for sid in ("power_precision_3bet", "power_orthogonal_5bet"):
-        # baseline_valid is True when null_prov in (0, 50) — see P136 script logic
+        # baseline_valid is True when null_prov in (0, 50) AND no bet_index>1 rows
+        # post-P141: power_orthogonal_5bet already has bet_index>1 rows, so also False
         if sid == "power_precision_3bet":
             assert m[sid]["baseline_valid_for_future_dry_run"] is False
         else:
-            assert m[sid]["baseline_valid_for_future_dry_run"] is True
+            assert m[sid]["baseline_valid_for_future_dry_run"] is False  # post-P141: already applied
         assert m[sid]["requires_remark_plan"] is True
         assert m[sid]["requires_quarantine_plan"] is True
         assert m[sid]["requires_cleanup_authorization"] is True
@@ -177,7 +178,7 @@ def test_live_db_constraints(db_conn):
         if sid == "power_precision_3bet":
             assert bet2p == 3000
         else:
-            assert bet2p == 0
+            assert bet2p == 6000  # post-P141: bet-2..bet-5 applied
 
 
 def test_no_forbidden_files_staged():

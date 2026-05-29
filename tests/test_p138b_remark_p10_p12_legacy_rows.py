@@ -12,7 +12,7 @@ P138B_JSON = WORKTREE / "outputs/replay/p138b_remark_p10_p12_legacy_rows_2026052
 P138B_MD = WORKTREE / "docs/replay/p138b_remark_p10_p12_legacy_rows_20260529.md"
 
 EXPECTED_DB_ROWS = 85924
-LIVE_DB_ROWS = 88924
+LIVE_DB_ROWS = 94924  # post-P141: +6000 power_orthogonal_5bet rows
 P10_ID = "power_precision_3bet"
 P12_ID = "power_orthogonal_5bet"
 
@@ -292,7 +292,7 @@ def test_p12_no_bet2_plus_live(conn):
         "SELECT COUNT(*) FROM strategy_prediction_replays "
         "WHERE strategy_id='power_orthogonal_5bet' AND bet_index>1"
     ).fetchone()
-    assert row[0] == 0
+    assert row[0] == 6000  # post-P141: bet-2..bet-5 applied
 
 
 # --- Drift guard ---

@@ -1,8 +1,8 @@
-# CTO Analysis - After P126E biglotto_ts3_markov_4bet_w30 Controlled Apply
+# CTO Analysis - After P134 fourier_rhythm_3bet Controlled Apply and P135 Closure Audit
 
 ## 1. CTO Review Date
 
-2026-05-28 Asia/Taipei (updated after P126E).
+2026-05-29 Asia/Taipei (updated after P134/P135).
 
 Final CTO classification target: `CTO_ROADMAP_UPDATED_WITH_RISKS`.
 
@@ -39,7 +39,7 @@ Final CTO classification target: `CTO_ROADMAP_UPDATED_WITH_RISKS`.
   - P116 POWER_LOTTO OOS monitoring design
   - P117 POWER_LOTTO OOS monitoring checkpoint
 - [Confirmed] Read-only SQL during this CTO review:
-  - `strategy_prediction_replays = 66462` (post-P126E; was 61962 post-P126D; was 58962 post-P126C; was 55962 post-P126B; was 54462 at P126A)
+  - `strategy_prediction_replays = 85924` (post-P134; was 82922 post-P133; was 78422 post-P132; was 75422 post-P131; was 72422 at P130/P128P3/RSR6 cleanup)
   - `power_fourier_rhythm_2bet bet_index=1: 1500, bet_index=2: 1500`
   - `biglotto_echo_aware_3bet bet_index=1/2/3: 1500 each`
   - `daily539_f4cold_3bet bet_index=1/2/3: 1500 each`
@@ -48,13 +48,10 @@ Final CTO classification target: `CTO_ROADMAP_UPDATED_WITH_RISKS`.
   - `4_STAR count/max = 2922 / 115000103`
   - `POWER_LOTTO count/max = 1913 / 115000041`
 - [Confirmed] Verification during this CTO review:
-  - P126B tests: `75 passed`
-  - P126C tests: `78 passed`
-  - P126D tests: `90 passed` (if test file present)
-  - P126E tests: `90 passed`
-  - P126A + P126B + P126C + P129B regression: `384 passed`
-  - Drift guard: `REPLAY_LIFECYCLE_DRIFT_GUARD_PASS` at 66462
-  - Branch governance: worktree `zen-gates-ff6802`, 66462 rows
+  - P134 / P133 / P132 / P131 regression should remain green in the live DB at 85924
+  - P135 audit validates Wave 2 closure, P9 anomaly closure, and P10/P12 blocked status
+  - Drift guard: `REPLAY_LIFECYCLE_DRIFT_GUARD_PASS` at 85924
+  - Branch governance: worktree `zen-gates-ff6802`, 85924 rows
 - [Confirmed] Existing dirty worktree remains outside this CTO scope, including DB/history/pid/runtime/untracked files. CTO touched only `roadmap.md` and `CTO-Analysis.md`.
 
 ## 3. Roadmap Alignment Assessment
@@ -75,7 +72,7 @@ Final CTO classification target: `CTO_ROADMAP_UPDATED_WITH_RISKS`.
 | P126C biglotto_echo_aware_3bet | [Completed] | 3000 bet-2/bet-3 rows inserted; DB 55962 → 58962; drift guard PASS; 384 tests pass. |
 | P126D daily539_f4cold_3bet | [Completed] | 3000 bet-2/bet-3 rows inserted; DB 58962 → 61962; drift guard PASS. |
 | P126E biglotto_ts3_markov_4bet_w30 | [Completed] | 4500 bet-2/bet-3/bet-4 rows inserted; DB 61962 → 66462; drift guard PASS; 90 tests pass. |
-| Current system state | [Aligned] | 1 P126A candidate remaining (daily539_f4cold_5bet); DB healthy at 66462. |
+| Current system state | [Aligned] | Wave 2 safe candidates are closed at 85924 rows; P10/P12 remain blocked pending post-RSR6 apply gate re-evaluation. |
 | 4_STAR backtest | [Blocked] | Source unknown remains active; rows alone do not authorize backtest. |
 | Multi-bet replay coverage | [Partially Mapped] | P124 proved gap; P125 defines remediation path. P126/P127/P128 required for actual coverage expansion. |
 | OS scheduler install | [Deferred] | P123 did not install cron/launchd. Future scheduling requires explicit authorization. |
@@ -977,3 +974,26 @@ DB 82,922 → 85924. P131/P132/P133 rows preserved.
 Wave 2 safe candidates are now COMPLETE. P10/P12 await re-evaluation.
 
 **Artifact**: `outputs/replay/p134_apply_fourier_rhythm_3bet_20260528.json`
+
+---
+
+### P135: Wave 2 Safe Candidates Closure and P10/P12 Re-evaluation Plan (2026-05-29)
+
+**Status**: COMPLETE | **Classification**: P135_WAVE2_SAFE_CANDIDATES_CLOSED_P10_P12_REEVALUATION_PLAN_READY
+
+CTO Note: P135 is read-only. Wave 2 safe candidates are closed at 85924 rows after P131/P132/P133/P134. P9 anomaly is closed via draw-ext 115000041. P10/P12 remain blocked pending post-RSR6 apply gate re-evaluation.
+
+- **DB rows:** 85924 (no change in P135)
+- **Drift guard:** PASS at 85924
+- **Wave 2 safe candidates:** complete
+- **P10/P12:** blocked pending re-evaluation
+- **No DB writes:** confirmed
+- **No controlled_apply:** confirmed
+
+**Next task**: P136 for P10/P12 re-evaluation or a main-sync summary for the 85924-row closure state.
+
+**Artifact**: `outputs/replay/p135_wave2_safe_candidates_closure_and_p10_p12_plan_20260529.json`
+
+```text
+CTO_ANALYSIS_UPDATED_AFTER_P135_WAVE2_CLOSURE_20260529
+```

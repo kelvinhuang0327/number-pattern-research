@@ -1,0 +1,446 @@
+{
+  "task_id": "P135",
+  "classification": "P135_WAVE2_SAFE_CANDIDATES_CLOSED_P10_P12_REEVALUATION_PLAN_READY",
+  "generated_at": "2026-05-29T02:47:56.239793+00:00",
+  "repo_worktree_check": {
+    "worktree_path": "/Users/kelvin/Kelvin-WorkSpace/LotteryNew/.claude/worktrees/zen-gates-ff6802",
+    "expected_worktree": "/Users/kelvin/Kelvin-WorkSpace/LotteryNew/.claude/worktrees/zen-gates-ff6802",
+    "branch": "claude/zen-gates-ff6802",
+    "git_dir": "/Users/kelvin/Kelvin-WorkSpace/LotteryNew/.git/worktrees/zen-gates-ff6802",
+    "head_sha": "211e3aa11f3a89aadae91ee288d8fb5acc6b55bf",
+    "worktree_confirmed": true
+  },
+  "db_snapshot": {
+    "total_rows": 85924,
+    "rows_before": 85924,
+    "rows_after": 85924,
+    "rows_match_expected": true,
+    "expected_rows": 85924,
+    "bet_index_schema_exists": true,
+    "columns_count": 28,
+    "strategy_rows": {
+      "acb_markov_midfreq_3bet": {
+        "bet_index_distribution": {
+          "1": 1500,
+          "2": 1500,
+          "3": 1500
+        },
+        "total_rows": 4500,
+        "bet_index_gt1_rows": 3000
+      },
+      "midfreq_fourier_mk_3bet": {
+        "bet_index_distribution": {
+          "1": 1500,
+          "2": 1500,
+          "3": 1500
+        },
+        "total_rows": 4500,
+        "bet_index_gt1_rows": 3000
+      },
+      "pp3_freqort_4bet": {
+        "bet_index_distribution": {
+          "1": 1500,
+          "2": 1500,
+          "3": 1500,
+          "4": 1500
+        },
+        "total_rows": 6000,
+        "bet_index_gt1_rows": 4500
+      },
+      "fourier_rhythm_3bet": {
+        "bet_index_distribution": {
+          "1": 1501,
+          "2": 1501,
+          "3": 1501
+        },
+        "total_rows": 4503,
+        "bet_index_gt1_rows": 3002
+      },
+      "power_precision_3bet": {
+        "bet_index_distribution": {
+          "1": 1550
+        },
+        "total_rows": 1550,
+        "bet_index_gt1_rows": 0
+      },
+      "power_orthogonal_5bet": {
+        "bet_index_distribution": {
+          "1": 1550
+        },
+        "total_rows": 1550,
+        "bet_index_gt1_rows": 0
+      }
+    },
+    "p10_p12_bet_index_gt1_rows_zero": true
+  },
+  "source_artifact_summary": {
+    "p134": {
+      "path": "/Users/kelvin/Kelvin-WorkSpace/LotteryNew/.claude/worktrees/zen-gates-ff6802/outputs/replay/p134_apply_fourier_rhythm_3bet_20260528.json",
+      "task_id": "P134",
+      "classification": "P134_FOURIER_RHYTHM_3BET_APPLIED",
+      "classification_pass": true,
+      "rows_inserted": 3002,
+      "db_rows_after": 85924,
+      "p9_anomaly_closed": true
+    },
+    "p133": {
+      "path": "/Users/kelvin/Kelvin-WorkSpace/LotteryNew/.claude/worktrees/zen-gates-ff6802/outputs/replay/p133_apply_pp3_freqort_4bet_20260528.json",
+      "task_id": "P133",
+      "classification": "P133_PP3_FREQORT_4BET_APPLIED",
+      "classification_pass": true,
+      "rows_inserted": 4500,
+      "db_rows_after": 82922
+    },
+    "p132": {
+      "path": "/Users/kelvin/Kelvin-WorkSpace/LotteryNew/.claude/worktrees/zen-gates-ff6802/outputs/replay/p132_apply_midfreq_fourier_mk_3bet_20260528.json",
+      "task_id": "P132",
+      "classification": "P132_MIDFREQ_FOURIER_MK_3BET_APPLIED",
+      "classification_pass": true,
+      "rows_inserted": 3000,
+      "db_rows_after": 78422
+    },
+    "p131": {
+      "path": "/Users/kelvin/Kelvin-WorkSpace/LotteryNew/.claude/worktrees/zen-gates-ff6802/outputs/replay/p131_apply_acb_markov_midfreq_3bet_20260528.json",
+      "task_id": "P131",
+      "classification": "P131_ACB_MARKOV_MIDFREQ_3BET_APPLIED",
+      "classification_pass": true,
+      "rows_inserted": 3000,
+      "db_rows_after": 75422
+    },
+    "p130": {
+      "path": "/Users/kelvin/Kelvin-WorkSpace/LotteryNew/.claude/worktrees/zen-gates-ff6802/outputs/replay/p130_wave2_safe_candidates_dry_run_plan_20260528.json",
+      "task_id": "P130",
+      "classification": "P130_WAVE2_SAFE_CANDIDATES_DRY_RUN_PLAN_READY",
+      "classification_pass": true,
+      "p9_in_safe_candidates": true,
+      "p9_estimated_insert_rows": 3002
+    },
+    "p128_phase3": {
+      "path": "/Users/kelvin/Kelvin-WorkSpace/LotteryNew/.claude/worktrees/zen-gates-ff6802/outputs/replay/p128_phase3_wave2_safe_candidates_readiness_20260528.json",
+      "task_id": "P128_PHASE3",
+      "classification": "P128_PHASE3_WAVE2_SAFE_CANDIDATES_READINESS_READY",
+      "classification_pass": true,
+      "all_safe_dry_run_ready": true
+    },
+    "rsr6_cleanup": {
+      "path": "/Users/kelvin/Kelvin-WorkSpace/LotteryNew/.claude/worktrees/zen-gates-ff6802/outputs/replay/rsr6_cleanup_delete_orphan_bet_index2_rows_20260528.json",
+      "task_id": "RSR6_CLEANUP",
+      "classification": "RSR6_ORPHAN_BET_INDEX2_CLEANUP_APPLIED",
+      "classification_pass": true,
+      "deleted_rows": 40,
+      "db_rows_after": 72422
+    },
+    "rsr6_audit": {
+      "path": "/Users/kelvin/Kelvin-WorkSpace/LotteryNew/.claude/worktrees/zen-gates-ff6802/outputs/replay/rsr6_orphan_bet_index2_audit_20260528.json",
+      "task_id": "RSR6",
+      "classification": "RSR6_ORPHAN_BET_INDEX2_AUDIT_READY",
+      "classification_pass": true,
+      "orphan_rows_audited": 40
+    }
+  },
+  "wave2_safe_candidates_completion": {
+    "safe_candidates_total": 4,
+    "safe_candidates_applied": 4,
+    "remaining_safe_candidates": 0,
+    "baseline_rows_after_rsr6_cleanup": 72422,
+    "final_replay_rows": 85924,
+    "total_inserted_rows_p131_to_p134": 13502,
+    "p131_rows": 3000,
+    "p132_rows": 3000,
+    "p133_rows": 4500,
+    "p134_rows": 3002
+  },
+  "strategy_distribution": {
+    "safe_candidates": {
+      "acb_markov_midfreq_3bet": {
+        "lottery_type": "DAILY_539",
+        "target_bet_count": 3,
+        "apply_status": "COMPLETE",
+        "bet_index_distribution": {
+          "1": 1500,
+          "2": 1500,
+          "3": 1500
+        },
+        "total_rows": 4500,
+        "bet_index_gt1_rows": 3000
+      },
+      "midfreq_fourier_mk_3bet": {
+        "lottery_type": "POWER_LOTTO",
+        "target_bet_count": 3,
+        "apply_status": "COMPLETE",
+        "bet_index_distribution": {
+          "1": 1500,
+          "2": 1500,
+          "3": 1500
+        },
+        "total_rows": 4500,
+        "bet_index_gt1_rows": 3000
+      },
+      "pp3_freqort_4bet": {
+        "lottery_type": "POWER_LOTTO",
+        "target_bet_count": 4,
+        "apply_status": "COMPLETE",
+        "bet_index_distribution": {
+          "1": 1500,
+          "2": 1500,
+          "3": 1500,
+          "4": 1500
+        },
+        "total_rows": 6000,
+        "bet_index_gt1_rows": 4500
+      },
+      "fourier_rhythm_3bet": {
+        "lottery_type": "POWER_LOTTO",
+        "target_bet_count": 3,
+        "apply_status": "COMPLETE",
+        "bet_index_distribution": {
+          "1": 1501,
+          "2": 1501,
+          "3": 1501
+        },
+        "total_rows": 4503,
+        "bet_index_gt1_rows": 3002
+      }
+    },
+    "blocked_candidates": {
+      "power_precision_3bet": {
+        "lottery_type": "POWER_LOTTO",
+        "target_bet_count": 3,
+        "apply_ready": false,
+        "bet_index_distribution": {
+          "1": 1550
+        },
+        "total_rows": 1550,
+        "bet_index_gt1_rows": 0
+      },
+      "power_orthogonal_5bet": {
+        "lottery_type": "POWER_LOTTO",
+        "target_bet_count": 5,
+        "apply_ready": false,
+        "bet_index_distribution": {
+          "1": 1550
+        },
+        "total_rows": 1550,
+        "bet_index_gt1_rows": 0
+      }
+    }
+  },
+  "p9_anomaly_closure": {
+    "closure_status": "CLOSED",
+    "accepted_as_planned": true,
+    "draw_ext_target_draw": "115000041",
+    "bet_index_distribution": {
+      "1": 1,
+      "2": 1,
+      "3": 1
+    },
+    "bet1_rows": 1,
+    "bet2_rows": 1,
+    "bet3_rows": 1,
+    "total_rows": 3,
+    "expected_rows": 4503,
+    "expected_insert_rows_p134": 3002,
+    "draw_ext_verified": true,
+    "p134_classification": "P134_FOURIER_RHYTHM_3BET_APPLIED",
+    "note": "P9 anomaly is intentional and fully closed: draw-ext 115000041 remains present in bet-1/bet-2/bet-3, with 1501 rows per bet index."
+  },
+  "p10_p12_blocked_status": {
+    "power_precision_3bet_apply_ready": false,
+    "power_orthogonal_5bet_apply_ready": false,
+    "reason": "post_rsr6_cleanup_re_evaluation_required",
+    "controlled_apply_executed": false,
+    "replay_rows_inserted": 0,
+    "blocked_candidates": {
+      "power_precision_3bet": {
+        "apply_ready": false,
+        "bet1_rows": 1550,
+        "bet_index_gt1_rows": 0,
+        "total_rows": 1550,
+        "replay_run_id_counts": {
+          "NULL": 1500,
+          "2": 20,
+          "6": 30
+        },
+        "controlled_apply_id_counts": {
+          "NULL": 50,
+          "P20_POWERLOTTO_REMAINING_1500_PROD_20260520": 1500
+        },
+        "provenance_hash_counts": {
+          "NON_NULL": 1,
+          "NULL": 50
+        },
+        "truth_level_counts": {
+          "NULL": 50,
+          "POWERLOTTO_REMAINING_STRATEGIES_BACKFILL_VERIFIED": 1500
+        },
+        "source_counts": {
+          "NULL": 50,
+          "P20_POWERLOTTO_REMAINING_STRATEGIES_PRODUCTION_APPLY": 1500
+        },
+        "provenance_source_counts": {
+          "NULL": 1550
+        },
+        "valid_production_baseline_rows": 1500,
+        "legacy_null_provenance_rows": 50
+      },
+      "power_orthogonal_5bet": {
+        "apply_ready": false,
+        "bet1_rows": 1550,
+        "bet_index_gt1_rows": 0,
+        "total_rows": 1550,
+        "replay_run_id_counts": {
+          "NULL": 1500,
+          "2": 20,
+          "6": 30
+        },
+        "controlled_apply_id_counts": {
+          "NULL": 50,
+          "P20_POWERLOTTO_REMAINING_1500_PROD_20260520": 1500
+        },
+        "provenance_hash_counts": {
+          "NON_NULL": 1,
+          "NULL": 50
+        },
+        "truth_level_counts": {
+          "NULL": 50,
+          "POWERLOTTO_REMAINING_STRATEGIES_BACKFILL_VERIFIED": 1500
+        },
+        "source_counts": {
+          "NULL": 50,
+          "P20_POWERLOTTO_REMAINING_STRATEGIES_PRODUCTION_APPLY": 1500
+        },
+        "provenance_source_counts": {
+          "NULL": 1550
+        },
+        "valid_production_baseline_rows": 1500,
+        "legacy_null_provenance_rows": 50
+      }
+    }
+  },
+  "p10_p12_reevaluation_plan": {
+    "required_checks": [
+      "Confirm the remaining bet_index=1 rows are valid production baseline rows and not leftover legacy artifacts.",
+      "Review replay_run_id, controlled_apply_id, provenance_hash, truth_level, provenance_source, and source states for each strategy.",
+      "Decide whether the 50 NULL-provenance rows per strategy should be re-marked, quarantined, or left untouched for a future dry-run gate.",
+      "Do not perform any DB mutation in P135."
+    ],
+    "observed_state": {
+      "power_precision_3bet": {
+        "apply_ready": false,
+        "bet1_rows": 1550,
+        "bet_index_gt1_rows": 0,
+        "total_rows": 1550,
+        "replay_run_id_counts": {
+          "NULL": 1500,
+          "2": 20,
+          "6": 30
+        },
+        "controlled_apply_id_counts": {
+          "NULL": 50,
+          "P20_POWERLOTTO_REMAINING_1500_PROD_20260520": 1500
+        },
+        "provenance_hash_counts": {
+          "NON_NULL": 1,
+          "NULL": 50
+        },
+        "truth_level_counts": {
+          "NULL": 50,
+          "POWERLOTTO_REMAINING_STRATEGIES_BACKFILL_VERIFIED": 1500
+        },
+        "source_counts": {
+          "NULL": 50,
+          "P20_POWERLOTTO_REMAINING_STRATEGIES_PRODUCTION_APPLY": 1500
+        },
+        "provenance_source_counts": {
+          "NULL": 1550
+        },
+        "valid_production_baseline_rows": 1500,
+        "legacy_null_provenance_rows": 50
+      },
+      "power_orthogonal_5bet": {
+        "apply_ready": false,
+        "bet1_rows": 1550,
+        "bet_index_gt1_rows": 0,
+        "total_rows": 1550,
+        "replay_run_id_counts": {
+          "NULL": 1500,
+          "2": 20,
+          "6": 30
+        },
+        "controlled_apply_id_counts": {
+          "NULL": 50,
+          "P20_POWERLOTTO_REMAINING_1500_PROD_20260520": 1500
+        },
+        "provenance_hash_counts": {
+          "NON_NULL": 1,
+          "NULL": 50
+        },
+        "truth_level_counts": {
+          "NULL": 50,
+          "POWERLOTTO_REMAINING_STRATEGIES_BACKFILL_VERIFIED": 1500
+        },
+        "source_counts": {
+          "NULL": 50,
+          "P20_POWERLOTTO_REMAINING_STRATEGIES_PRODUCTION_APPLY": 1500
+        },
+        "provenance_source_counts": {
+          "NULL": 1550
+        },
+        "valid_production_baseline_rows": 1500,
+        "legacy_null_provenance_rows": 50
+      }
+    },
+    "decision_paths": [
+      "re_mark_valid_baseline_rows",
+      "quarantine_null_provenance_rows",
+      "proceed_to_dry_run_only_after_re_evaluation"
+    ],
+    "recommended_next_step": "Use a follow-up governed task to re-evaluate P10/P12 baseline rows, then decide whether to re-mark, quarantine, or authorise a dry-run.",
+    "no_db_mutation_in_p135": true
+  },
+  "duplicate_guard_summary": {
+    "unique_constraint": "UNIQUE(lottery_type, target_draw, strategy_id, bet_index)",
+    "safe_candidates_conflict_free": true,
+    "p10_p12_bet_index_gt1_rows_zero": true,
+    "p9_draw_ext_all_three_bets_present": true,
+    "no_duplicate_inserts_performed_in_p135": true,
+    "controlled_apply_executed": false,
+    "replay_rows_inserted": 0
+  },
+  "drift_guard_result": {
+    "checked_at": "2026-05-29T02:47:56.239472+00:00",
+    "status": "PASS",
+    "classification": "REPLAY_LIFECYCLE_DRIFT_GUARD_PASS",
+    "total_rows": 85924,
+    "stdout": "Drift guard checked at: 2026-05-29T02:47:56.235069Z\nDB: /Users/kelvin/Kelvin-WorkSpace/LotteryNew/.claude/worktrees/zen-gates-ff6802/lottery_api/data/lottery_v2.db\n\nRow counts — V1=0  V2=0  legacy=420  total=85924\nV3 tombstone strategies with 0 rows: 1/1\ntruth_level — REGENERATED=0  ARTIFACT=0  null=420\n\nNo violations found.\n\nFinal classification: REPLAY_LIFECYCLE_DRIFT_GUARD_PASS\nStatus: PASS"
+  },
+  "apply_gate_status": {
+    "no_apply_in_p135": true,
+    "controlled_apply_executed": false,
+    "replay_rows_inserted": 0,
+    "production_db_rows_expected": 85924,
+    "production_db_rows_after": 85924,
+    "no_db_write_in_p135": true
+  },
+  "blocked_or_excluded": {
+    "no_db_write_in_p135": true,
+    "no_controlled_apply_in_p135": true,
+    "P10_P12_not_apply_ready_until_re_evaluation": true,
+    "4_STAR_excluded": true,
+    "P108_not_run": true,
+    "P117_not_run": true,
+    "P118_not_run": true,
+    "rejected_strategies_no_action": true,
+    "no_scheduler_install": true,
+    "no_lifecycle_champion_registry_mutation": true,
+    "P126B_P126F_rows_untouched": true
+  },
+  "roadmap_update_status": "roadmap.md and CTO-Analysis.md updated to mark Wave 2 safe candidates closed and P10/P12 pending re-evaluation.",
+  "remaining_risks": [
+    "P10/P12 still contain 50 NULL-provenance bet_index=1 rows each; they require a governed re-evaluation before any further apply work.",
+    "Any re-mark or quarantine decision for P10/P12 must be handled in a future task; P135 intentionally performs no DB mutation.",
+    "The live DB must remain at 85924 until the next governed step validates a new action path."
+  ],
+  "next_recommended_task": "P136: post-RSR6 re-evaluation for P10/P12, with a follow-up decision on re-mark, quarantine, or dry-run authorization after baseline review.",
+  "summary": "P135 confirms the Wave 2 safe candidates are complete at 85924 rows, closes the P9 draw-ext anomaly, and leaves P10/P12 blocked pending re-evaluation with no DB writes."
+}

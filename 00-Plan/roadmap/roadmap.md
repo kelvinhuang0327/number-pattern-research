@@ -1,8 +1,8 @@
 # Lottery Replay Roadmap
 
-**Last Updated:** 2026-05-28 Asia/Taipei (updated after P126E biglotto_ts3_markov_4bet_w30 controlled apply)
+**Last Updated:** 2026-05-29 Asia/Taipei (updated after P134 fourier_rhythm_3bet controlled apply and P135 closure audit)
 **Owner:** CTO agent
-**Primary Goal:** Make every implemented LotteryNew strategy replayable with honest historical prediction-vs-actual evidence across every supported lottery type and every implemented 1-5 bet-count variant. This must be done without fake rows, untracked DB writes, premature promotion, or no-change governance PR churn. Current system state: P126E applied 4500 bet-2/bet-3/bet-4 rows for biglotto_ts3_markov_4bet_w30 (DB 61962 → 66462). 1 P126A candidate (daily539_f4cold_5bet) still awaiting individual per-strategy authorization. P108 / P117 / P118 / 4_STAR triggers remain blocked.
+**Primary Goal:** Make every implemented LotteryNew strategy replayable with honest historical prediction-vs-actual evidence across every supported lottery type and every implemented 1-5 bet-count variant. This must be done without fake rows, untracked DB writes, premature promotion, or no-change governance PR churn. Current system state: Wave 2 safe candidates are now closed at 85924 rows after P131/P132/P133/P134. P10 / P12 remain blocked pending post-RSR6 apply gate re-evaluation. P108 / P117 / P118 / 4_STAR triggers remain blocked.
 **Repo Policy:** Use `/Users/kelvin/Kelvin-WorkSpace/LotteryNew` only. Do not create a new repo. Implementation and governed tasks must run from canonical repo with `git rev-parse --git-dir == .git`; Claude/Codex auto-created worktree branches are not allowed.
 
 ---
@@ -43,7 +43,7 @@ Verified during CTO review on 2026-05-28 using read-only SQL, P119-P123 artifact
 
 | Metric | Value |
 |---|---:|
-| Production replay rows | 66462 (post-P126E; was 61962 post-P126D; was 58962 post-P126C; was 55962 post-P126B; was 54462 at P126A) |
+| Production replay rows | 85924 (post-P134; was 82922 post-P133; was 78422 post-P132; was 75422 post-P131; was 72422 at P130/P128P3/RSR6 cleanup) |
 | 3_STAR rows / max draw | 4179 / 115000106 |
 | 4_STAR rows / max draw | 2922 / 115000103 |
 | POWER_LOTTO rows / max draw | 1913 / 115000041 |
@@ -201,7 +201,7 @@ Upgrade / downgrade decisions:
 
 ## 7. Today's Focus
 
-**CTO recommendation:** P124 proved zero native multi-bet rows. P125 produced the adapter gap plan. Next step is P126 (controlled apply for 5 Tier-B candidates) once explicit apply authorization is given.
+**CTO recommendation:** P135 closes the Wave 2 safe candidates at 85924 rows and keeps P10/P12 blocked pending post-RSR6 apply gate re-evaluation. Next step is P136 for P10/P12 review or a main-sync summary once the re-evaluation decision is made.
 
 Confirmed current state:
 
@@ -220,9 +220,9 @@ Recommended near-term order:
 
 | Rank | Work | Why |
 |---|---|---|
-| 1 | P126 controlled_apply dry-run and apply for 5 Tier-B candidates | P125 identified the 5 candidates; they have working adapters; controlled_apply just needs explicit authorization |
-| 2 | P127 adapter build for 12 missing get_all_bets() adapters | Unlocks replay expansion for 12 more strategy×lottery pairs after adapters are tested |
-| 3 | P128 native multi-bet storage design | RSR-1 blocks any multi-bet expansion until format is decided; design must precede any apply |
+| 1 | P136 P10/P12 post-RSR6 apply gate re-evaluation | Required before any further action on the two blocked Power strategies |
+| 2 | Main-sync summary for Wave 2 closure | Capture the 85924-row closure state and the P10/P12 blocked remainder |
+| 3 | P127 adapter build for 12 missing get_all_bets() adapters | Still useful after Wave 2 closure for broader replay coverage |
 | 4 | Operator/manual P123 trigger check only when data or authorization may have changed | Maintains healthy standby without PR churn |
 
 CTO prompt boundary:
@@ -233,7 +233,7 @@ CTO prompt boundary:
 Final roadmap marker:
 
 ```text
-CTO_ROADMAP_UPDATED_AFTER_P125_ADAPTER_GAP_PLAN_20260528
+CTO_ROADMAP_UPDATED_AFTER_P135_WAVE2_CLOSURE_20260529
 ```
 
 ---
@@ -588,4 +588,26 @@ P9 anomaly: 1501 bet-1 rows (draw-ext 115000041) → +3002 rows.
 
 ```text
 CTO_ROADMAP_UPDATED_AFTER_P134_FOURIER_RHYTHM_3BET_APPLIED_20260529
+```
+
+---
+
+### P135 — Wave 2 Safe Candidates Closure and P10/P12 Re-evaluation Plan [2026-05-29]
+
+**Classification**: P135_WAVE2_SAFE_CANDIDATES_CLOSED_P10_P12_REEVALUATION_PLAN_READY
+
+P135 is a read-only closure audit. Wave 2 safe candidates are complete at 85924 rows after P131/P132/P133/P134.
+P9 anomaly is closed and verified at draw-ext 115000041. P10/P12 remain blocked pending post-RSR6 apply gate re-evaluation.
+
+- **DB rows:** 85,924 (no change in P135)
+- **Drift guard:** PASS at 85924
+- **Wave 2 safe candidates:** COMPLETE
+- **P10/P12:** still blocked, apply gate re-evaluation required
+- **No DB writes:** confirmed
+- **No controlled_apply:** confirmed
+
+**Next task**: P136 for P10/P12 post-RSR6 re-evaluation or a main-sync summary for the 85924-row closure state.
+
+```text
+CTO_ROADMAP_UPDATED_AFTER_P135_WAVE2_CLOSURE_20260529
 ```

@@ -1160,3 +1160,18 @@ Authorization phrase: `P139_AUTHORIZED_APPLY_POWER_PRECISION_3BET_BET2_BET3_USIN
 ```text
 CTO_ANALYSIS_UPDATED_AFTER_P140A_DRAW_CONTEXT_CONTRACT_FIX_20260529
 ```
+
+---
+
+### P140: power_precision_3bet Wave Apply (2026-05-29)
+
+**Status**: COMPLETE | **Classification**: P140_POWER_PRECISION_3BET_APPLIED
+
+CTO Note: P10 `power_precision_3bet` (POWER_LOTTO) applied.
+3,000 bet-2/bet-3 rows inserted via P128 phase2 adapter with normalize_draw_context().
+Apply base = 1500 production rows (LEGACY_UNVERIFIED 50 rows excluded).
+DB 85924 → 88924.
+power_orthogonal_5bet reserved for P141.
+Next: P141 (power_orthogonal_5bet, P12, POWER_LOTTO, +6000 rows).
+
+**Artifact**: `outputs/replay/p140_apply_power_precision_3bet_20260529.json`

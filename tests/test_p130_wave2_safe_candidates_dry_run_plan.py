@@ -19,7 +19,7 @@ MD_PATH = REPO_ROOT / "docs" / "replay" / "p130_wave2_safe_candidates_dry_run_pl
 DB_PATH = REPO_ROOT / "lottery_api" / "data" / "lottery_v2.db"
 
 EXPECTED_DB_ROWS = 72422            # P130 artifact snapshot (no DB write in P130)
-EXPECTED_DB_ROWS_CURRENT = 85924    # After P134 applied fourier_rhythm_3bet +3002
+EXPECTED_DB_ROWS_CURRENT = 88924    # After P140 applied power_precision_3bet +3000 over P134 state
 SAFE_CANDIDATE_IDS = [
     "acb_markov_midfreq_3bet",
     "midfreq_fourier_mk_3bet",
@@ -482,7 +482,10 @@ def test_blocked_candidates_no_bi2_rows_live(db_conn):
             "SELECT COUNT(*) FROM strategy_prediction_replays WHERE strategy_id=? AND bet_index=2",
             (sid,),
         ).fetchone()[0]
-        assert count == 0, f"{sid} should have 0 bi=2 rows after RSR-6 cleanup, got {count}"
+        if sid == "power_precision_3bet":
+            assert count == 1500, f"{sid} should have 1500 bi=2 rows post-P140, got {count}"
+        else:
+            assert count == 0, f"{sid} should have 0 bi=2 rows after RSR-6 cleanup, got {count}"
 
 
 def test_blocked_candidates_bi1_rows_1550(db_conn):

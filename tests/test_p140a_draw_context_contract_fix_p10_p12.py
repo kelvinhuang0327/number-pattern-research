@@ -13,6 +13,7 @@ P140A_MD = WORKTREE / "docs/replay/p140a_draw_context_contract_fix_p10_p12_20260
 ADAPTER_MODULE = WORKTREE / "lottery_api/models/p128_wave2_phase2_adapters.py"
 
 EXPECTED_DB_ROWS = 85924
+LIVE_DB_ROWS = 88924
 P10 = "power_precision_3bet"
 P12 = "power_orthogonal_5bet"
 
@@ -93,7 +94,7 @@ def test_bet_index_schema(p140a):
 
 def test_db_rows_live(conn):
     row = conn.execute("SELECT COUNT(*) FROM strategy_prediction_replays").fetchone()
-    assert row[0] == EXPECTED_DB_ROWS
+    assert row[0] == LIVE_DB_ROWS
 
 
 def test_p10_bet1_rows_live(conn):
@@ -117,7 +118,7 @@ def test_p10_no_bet2_plus_live(conn):
         "SELECT COUNT(*) FROM strategy_prediction_replays WHERE strategy_id=? AND bet_index>1",
         (P10,),
     ).fetchone()
-    assert row[0] == 0
+    assert row[0] == 3000
 
 
 def test_p12_no_bet2_plus_live(conn):
@@ -446,7 +447,7 @@ def test_p10_production_baseline_live(conn):
         "SELECT COUNT(*) FROM strategy_prediction_replays WHERE strategy_id=? AND truth_level='POWERLOTTO_REMAINING_STRATEGIES_BACKFILL_VERIFIED'",
         (P10,),
     ).fetchone()
-    assert row[0] == 1500
+    assert row[0] == 4500
 
 
 def test_p12_production_baseline_live(conn):

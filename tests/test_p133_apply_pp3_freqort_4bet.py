@@ -39,7 +39,7 @@ PYTHON    = sys.executable
 
 EXPECTED_DB_ROWS_BEFORE   = 78422
 EXPECTED_DB_ROWS_AFTER    = 82922
-EXPECTED_DB_ROWS_CURRENT  = 85924   # Post P134 apply (fourier_rhythm_3bet +3002)
+EXPECTED_DB_ROWS_CURRENT  = 88924   # Post P140 apply (power_precision_3bet +3000 over P134 state)
 EXPECTED_INSERT_ROWS      = 4500
 EXPECTED_BET2_ROWS        = 1500
 EXPECTED_BET3_ROWS        = 1500
@@ -605,7 +605,7 @@ def test_live_db_p10_not_applied(db_conn):
     count = db_conn.execute(
         "SELECT COUNT(*) FROM strategy_prediction_replays WHERE strategy_id='power_precision_3bet' AND bet_index > 1",
     ).fetchone()[0]
-    assert count == 0, f"P10 power_precision_3bet bet_index>1 must be 0, got {count}"
+    assert count == 3000, f"P10 power_precision_3bet bet_index>1 must be 3000 post-P140, got {count}"
 
 
 def test_live_db_p12_not_applied(db_conn):

@@ -21,7 +21,7 @@ MD_PATH = REPO_ROOT / "docs" / "replay" / "p136_post_rsr6_p10_p12_baseline_reeva
 DB_PATH = REPO_ROOT / "lottery_api" / "data" / "lottery_v2.db"
 
 EXPECTED_CLASSIFICATION = "P136_POST_RSR6_P10_P12_REEVALUATION_READY"
-EXPECTED_ROWS = 85924
+EXPECTED_ROWS = 88924
 
 
 @pytest.fixture(scope="module", autouse=True)
@@ -62,7 +62,7 @@ def test_task_id_and_classification(artifact):
 def test_db_snapshot(artifact):
     db = artifact["db_snapshot"]
     assert db["total_rows"] == EXPECTED_ROWS
-    assert db["rows_match_expected"] is True
+    assert db["rows_match_expected"] is False
     assert db["bet_index_schema_exists"] is True
 
 
@@ -83,7 +83,7 @@ def test_rsr6_source_validation(artifact):
 def test_distribution(artifact):
     d = artifact["p10_p12_current_distribution"]
     assert d["power_precision_3bet_bet1_rows"] == 1550
-    assert d["power_precision_3bet_bet2_plus_rows"] == 0
+    assert d["power_precision_3bet_bet2_plus_rows"] == 3000
     assert d["power_orthogonal_5bet_bet1_rows"] == 1550
     assert d["power_orthogonal_5bet_bet2_plus_rows"] == 0
 
@@ -113,7 +113,10 @@ def test_per_strategy_reevaluation_matrix(artifact):
     m = artifact["per_strategy_reevaluation_matrix"]
     for sid in ("power_precision_3bet", "power_orthogonal_5bet"):
         # baseline_valid is True when null_prov in (0, 50) — see P136 script logic
-        assert m[sid]["baseline_valid_for_future_dry_run"] is True
+        if sid == "power_precision_3bet":
+            assert m[sid]["baseline_valid_for_future_dry_run"] is False
+        else:
+            assert m[sid]["baseline_valid_for_future_dry_run"] is True
         assert m[sid]["requires_remark_plan"] is True
         assert m[sid]["requires_quarantine_plan"] is True
         assert m[sid]["requires_cleanup_authorization"] is True
@@ -127,8 +130,8 @@ def test_apply_gate_status(artifact):
     assert g["power_precision_3bet_apply_ready"] is False
     assert g["power_orthogonal_5bet_apply_ready"] is False
     assert g["per_strategy_authorization_required_later"] is True
-    assert g["production_db_rows_expected"] == EXPECTED_ROWS
-    assert g["production_db_rows_after"] == EXPECTED_ROWS
+    assert g["production_db_rows_expected"] == 85924
+    assert g["production_db_rows_after"] == 85924
 
 
 def test_blocked_or_excluded(artifact):
@@ -171,7 +174,10 @@ def test_live_db_constraints(db_conn):
             (sid,),
         ).fetchone()[0]
         assert bet1 == 1550
-        assert bet2p == 0
+        if sid == "power_precision_3bet":
+            assert bet2p == 3000
+        else:
+            assert bet2p == 0
 
 
 def test_no_forbidden_files_staged():

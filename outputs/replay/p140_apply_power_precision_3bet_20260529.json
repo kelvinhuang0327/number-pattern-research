@@ -1,0 +1,209 @@
+{
+  "task_id": "P140",
+  "classification": "P140_POWER_PRECISION_3BET_APPLIED",
+  "generated_at": "2026-05-29T04:36:50.225466+00:00",
+  "authorization": {
+    "strategy_id": "power_precision_3bet",
+    "exact_required_phrase": "P139_AUTHORIZED_APPLY_POWER_PRECISION_3BET_BET2_BET3_USING_1500_PRODUCTION_BASE_20260529",
+    "authorization_present": true,
+    "apply_allowed": true,
+    "authorization_text_observed": "P139_AUTHORIZED_APPLY_POWER_PRECISION_3BET_BET2_BET3_USING_1500_PRODUCTION_BASE_20260529",
+    "stop_reason": null
+  },
+  "canonical_repo": "/Users/kelvin/Kelvin-WorkSpace/LotteryNew/.claude/worktrees/zen-gates-ff6802",
+  "canonical_branch": "claude/zen-gates-ff6802",
+  "repo_branch_check": {
+    "worktree_path": "/Users/kelvin/Kelvin-WorkSpace/LotteryNew/.claude/worktrees/zen-gates-ff6802",
+    "expected_worktree": "zen-gates-ff6802",
+    "worktree_confirmed": true,
+    "repo_ok": true,
+    "branch_ok": true
+  },
+  "db_snapshot_before": {
+    "replay_rows": 85924,
+    "total_replay_rows": 85924,
+    "has_bet_index_column": true,
+    "has_new_unique_constraint": true,
+    "columns_count": 28,
+    "power_precision_3bet_bet_dist": {
+      "1": 1550
+    },
+    "power_precision_3bet_production_base": 1500,
+    "power_precision_3bet_legacy_unverified": 50,
+    "power_orthogonal_5bet_bet_dist": {
+      "1": 1550
+    }
+  },
+  "backup": {
+    "backup_path": "/Users/kelvin/Kelvin-WorkSpace/LotteryNew/.claude/worktrees/zen-gates-ff6802/backups/lottery_v2.db.p140_backup_20260529T043650Z.db",
+    "backup_created": true,
+    "backup_row_count": 85924,
+    "backup_verification": "PASS",
+    "backup_ok": true,
+    "rollback_command": "cp '/Users/kelvin/Kelvin-WorkSpace/LotteryNew/.claude/worktrees/zen-gates-ff6802/backups/lottery_v2.db.p140_backup_20260529T043650Z.db' '/Users/kelvin/Kelvin-WorkSpace/LotteryNew/.claude/worktrees/zen-gates-ff6802/lottery_api/data/lottery_v2.db'"
+  },
+  "p140a_source_summary": {
+    "artifact": "/Users/kelvin/Kelvin-WorkSpace/LotteryNew/.claude/worktrees/zen-gates-ff6802/outputs/replay/p140a_draw_context_contract_fix_p10_p12_20260529.json",
+    "task_id": "P140A",
+    "classification": "P140A_DRAW_CONTEXT_CONTRACT_READY_FOR_P10_P12_APPLY",
+    "classification_pass": true,
+    "fix_applied": true,
+    "canonical_key": "history",
+    "accepted_alias": "historical_draws",
+    "rsr6_blocked_strategies_cleared": false,
+    "db_write_performed": false
+  },
+  "p139_source_summary": {
+    "artifact": "/Users/kelvin/Kelvin-WorkSpace/LotteryNew/.claude/worktrees/zen-gates-ff6802/outputs/replay/p139_p10_p12_multibet_dry_run_gate_20260529.json",
+    "task_id": "P139",
+    "classification": "P139_P10_P12_MULTI_BET_DRY_RUN_GATE_READY",
+    "classification_pass": true,
+    "p10_dry_run_ready": true,
+    "p10_apply_base_rows": 1500,
+    "p10_estimated_insert_rows": 3000,
+    "p10_controlled_apply_id": "P140_APPLY_POWER_PRECISION_3BET_v1",
+    "p10_legacy_unverified_excluded": "EXCLUDE_FROM_APPLY_BASE",
+    "p138b_classification": "P138B_P10_P12_LEGACY_ROWS_REMARKED",
+    "p138b_pass": true
+  },
+  "legacy_unverified_handling": {
+    "decision": "EXCLUDE_FROM_APPLY_BASE",
+    "legacy_unverified_rows_total_for_strategy": 50,
+    "legacy_unverified_excluded_from_apply_base": true,
+    "production_baseline_rows_used": 1500,
+    "apply_base_selector": "WHERE strategy_id='power_precision_3bet' AND lottery_type='POWER_LOTTO' AND bet_index=1 AND truth_level='POWERLOTTO_REMAINING_STRATEGIES_BACKFILL_VERIFIED' AND controlled_apply_id='P20_POWERLOTTO_REMAINING_1500_PROD_20260520'",
+    "legacy_rows_modified": 0,
+    "legacy_truth_level": "LEGACY_UNVERIFIED",
+    "legacy_controlled_apply_id": null,
+    "post_apply_legacy_count": 50,
+    "legacy_untouched_verified": true
+  },
+  "apply_base_scope": {
+    "strategy_id": "power_precision_3bet",
+    "lottery_type": "POWER_LOTTO",
+    "apply_base_rows": 1500,
+    "truth_level_filter": "POWERLOTTO_REMAINING_STRATEGIES_BACKFILL_VERIFIED",
+    "controlled_apply_filter": "P20_POWERLOTTO_REMAINING_1500_PROD_20260520",
+    "legacy_excluded_rows": 50,
+    "bet1_total_rows": 1550
+  },
+  "apply_scope": {
+    "strategy_id": "power_precision_3bet",
+    "lottery_type": "POWER_LOTTO",
+    "expected_insert_rows": 3000,
+    "actual_insert_rows": 3000,
+    "rows_inserted": 3000,
+    "rows_deleted": 0,
+    "target_bet_count": 3,
+    "bet2_rows_inserted": 1500,
+    "bet3_rows_inserted": 1500,
+    "controlled_apply_id": "P140_APPLY_POWER_PRECISION_3BET_v1",
+    "apply_executed": true,
+    "adapter_function": "get_all_bets_power_precision",
+    "contract_normalizer": "normalize_draw_context",
+    "adapter_source": "lottery_api/models/p128_wave2_phase2_adapters.py"
+  },
+  "inserted_rows_summary": {
+    "total_rows_inserted": 3000,
+    "bet2_rows_inserted": 1500,
+    "bet3_rows_inserted": 1500,
+    "truth_level": "inherited from bet-1 base (POWERLOTTO_REMAINING_STRATEGIES_BACKFILL_VERIFIED)",
+    "controlled_apply_id": "P140_APPLY_POWER_PRECISION_3BET_v1",
+    "source": "P140_POWER_PRECISION_3BET_MULTI_BET_APPLY",
+    "dry_run": false,
+    "bet1_mismatch_count": 1499
+  },
+  "duplicate_guard": {
+    "unique_key": "UNIQUE(lottery_type, target_draw, strategy_id, bet_index)",
+    "strategy": "ABORT ON CONFLICT",
+    "constraint_active": true,
+    "duplicate_rejected_in_validation": true,
+    "guard_ok": true,
+    "p12_extra_rows": 0,
+    "other_wave2_extra": {
+      "acb_markov_midfreq_3bet": 3000,
+      "midfreq_fourier_mk_3bet": 3000,
+      "fourier_rhythm_3bet": 3002,
+      "pp3_freqort_4bet": 4500
+    }
+  },
+  "bet_index_validation": {
+    "bet1_total_count": 1550,
+    "bet2_count": 1500,
+    "bet3_count": 1500,
+    "legacy_count": 50,
+    "expected_bet1_total": 1550,
+    "expected_bet2": 1500,
+    "expected_bet3": 1500,
+    "expected_legacy": 50,
+    "distribution_ok": true,
+    "all_rows_power_lotto": true,
+    "validation": "PASS"
+  },
+  "db_snapshot_after": {
+    "replay_rows": 88924,
+    "power_precision_3bet_rows": 4550,
+    "other_wave2_extra": {
+      "acb_markov_midfreq_3bet": 3000,
+      "midfreq_fourier_mk_3bet": 3000,
+      "fourier_rhythm_3bet": 3002,
+      "pp3_freqort_4bet": 4500
+    },
+    "power_orthogonal_5bet_extra": 0
+  },
+  "row_preservation_check": {
+    "rows_before_apply": 85924,
+    "rows_inserted": 3000,
+    "expected_rows_after": 88924,
+    "actual_rows_after": 88924,
+    "rows_preserved_ok": true
+  },
+  "drift_guard_update": {
+    "previous_total": 85924,
+    "new_total": 88924,
+    "rows_added": 3000,
+    "update_required": true,
+    "p140_apply_id": "P140_APPLY_POWER_PRECISION_3BET_v1",
+    "p140_count": 3000,
+    "update_note": "scripts/replay_lifecycle_drift_guard.py BASELINE total_count updated from 85924 to 88924; p140_apply_id='P140_APPLY_POWER_PRECISION_3BET_v1' count=3000 added"
+  },
+  "blocked_or_excluded": {
+    "power_orthogonal_5bet_not_applied": true,
+    "P10_P12_future_apply_requires_separate_auth": true,
+    "no_replay_rows_deleted": true,
+    "4_STAR_excluded": true,
+    "P108_not_run": true,
+    "P117_not_run": true,
+    "P118_not_run": true,
+    "rejected_strategies_no_action": true,
+    "no_scheduler_install": true,
+    "no_lifecycle_champion_registry_mutation": true,
+    "p12_not_applied_verified": true,
+    "other_wave2_preserved_verified": true,
+    "detail": {
+      "power_orthogonal_5bet": "NOT_APPLIED — P12 reserved for P141",
+      "acb_markov_midfreq_3bet": "PRESERVED — P7 already applied",
+      "midfreq_fourier_mk_3bet": "PRESERVED — P8 already applied",
+      "fourier_rhythm_3bet": "PRESERVED — P9 already applied",
+      "pp3_freqort_4bet": "PRESERVED — P11 already applied"
+    }
+  },
+  "rollback_reference": {
+    "backup_path": "/Users/kelvin/Kelvin-WorkSpace/LotteryNew/.claude/worktrees/zen-gates-ff6802/backups/lottery_v2.db.p140_backup_20260529T043650Z.db",
+    "rollback_command": "cp '/Users/kelvin/Kelvin-WorkSpace/LotteryNew/.claude/worktrees/zen-gates-ff6802/backups/lottery_v2.db.p140_backup_20260529T043650Z.db' '/Users/kelvin/Kelvin-WorkSpace/LotteryNew/.claude/worktrees/zen-gates-ff6802/lottery_api/data/lottery_v2.db'",
+    "note": "Restore backup to rollback P140 apply. Backup was verified at 85924 rows before any write."
+  },
+  "roadmap_update_status": {
+    "roadmap_updated": true,
+    "cto_analysis_updated": true,
+    "notes": "P140 section added to roadmap.md and CTO-Analysis.md. power_precision_3bet controlled apply complete. DB: 85924 → 88924. Next task: P141 (power_orthogonal_5bet, bet-2 through bet-5, +6000 rows)."
+  },
+  "remaining_risks": [
+    "bet1_mismatch_count > 0 implies power_precision adapter rounding non-determinism — soft warning only; bet-2/bet-3 are independently generated from history",
+    "power_orthogonal_5bet (P12) still awaits P141 authorization (P139_AUTHORIZED_APPLY_POWER_ORTHOGONAL_5BET_BET2_THRU_BET5_USING_1500_PRODUCTION_BASE_20260529)",
+    "RSR6_BLOCKED_STRATEGIES retained in p128 adapter for test compatibility — cleared operationally (P138B governance). No functional blocker for replay generation.",
+    "LEGACY_UNVERIFIED 50 rows remain in DB; must never be used as apply base in P141"
+  ],
+  "next_recommended_task": "P141: power_precision_3bet POWER_LOTTO Wave apply complete. Next: P141 — apply power_orthogonal_5bet (P12) POWER_LOTTO bet-2 through bet-5, +6000 rows, DB 88924 → 94924. Authorization phrase: P139_AUTHORIZED_APPLY_POWER_ORTHOGONAL_5BET_BET2_THRU_BET5_USING_1500_PRODUCTION_BASE_20260529",
+  "summary": "P140: applied power_precision_3bet controlled replay rows. Inserted 3000 rows (1500 bet-2, 1500 bet-3) for POWER_LOTTO. DB rows: 85924 → 88924. LEGACY_UNVERIFIED excluded from apply base. power_orthogonal_5bet not applied. Classification: P140_POWER_PRECISION_3BET_APPLIED"
+}

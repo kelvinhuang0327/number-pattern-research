@@ -38,7 +38,7 @@ PYTHON    = sys.executable
 
 EXPECTED_DB_ROWS_BEFORE   = 75422
 EXPECTED_DB_ROWS_AFTER    = 78422
-EXPECTED_DB_ROWS_CURRENT  = 85924   # Post P134 apply (fourier_rhythm_3bet +3002)
+EXPECTED_DB_ROWS_CURRENT  = 88924   # Post P140 apply (power_precision_3bet +3000 over P134 state)
 EXPECTED_INSERT_ROWS      = 3000
 EXPECTED_BET2_ROWS        = 1500
 EXPECTED_BET3_ROWS        = 1500

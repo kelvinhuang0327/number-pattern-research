@@ -12,6 +12,7 @@ P139_MD = WORKTREE / "docs/replay/p139_p10_p12_multibet_dry_run_gate_20260529.md
 P138B_JSON = WORKTREE / "outputs/replay/p138b_remark_p10_p12_legacy_rows_20260529.json"
 
 EXPECTED_DB_ROWS = 85924
+LIVE_DB_ROWS = 88924
 
 
 @pytest.fixture(scope="module")
@@ -80,7 +81,7 @@ def test_bet_index_schema(p139):
 
 def test_db_rows_live(conn):
     row = conn.execute("SELECT COUNT(*) FROM strategy_prediction_replays").fetchone()
-    assert row[0] == EXPECTED_DB_ROWS
+    assert row[0] == LIVE_DB_ROWS
 
 
 def test_bet_index_live(conn):
@@ -140,7 +141,7 @@ def test_p10_no_bet2_plus_live(conn):
     row = conn.execute(
         "SELECT COUNT(*) FROM strategy_prediction_replays WHERE strategy_id='power_precision_3bet' AND bet_index>1"
     ).fetchone()
-    assert row[0] == 0
+    assert row[0] == 3000
 
 
 def test_p12_bet1_live(conn):

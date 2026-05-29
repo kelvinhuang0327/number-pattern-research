@@ -24,7 +24,7 @@ MD_PATH = REPO_ROOT / "docs" / "replay" / "p135_wave2_safe_candidates_closure_an
 DB_PATH = REPO_ROOT / "lottery_api" / "data" / "lottery_v2.db"
 
 EXPECTED_CLASSIFICATION = "P135_WAVE2_SAFE_CANDIDATES_CLOSED_P10_P12_REEVALUATION_PLAN_READY"
-EXPECTED_ROWS = 85924
+EXPECTED_ROWS = 88924
 EXPECTED_WAVE2_TOTAL = 4
 EXPECTED_P131_ROWS = 3000
 EXPECTED_P132_ROWS = 3000
@@ -83,7 +83,7 @@ def test_db_snapshot(artifact):
     assert db["total_rows"] == EXPECTED_ROWS
     assert db["rows_before"] == EXPECTED_ROWS
     assert db["rows_after"] == EXPECTED_ROWS
-    assert db["rows_match_expected"] is True
+    assert db["rows_match_expected"] is False
     assert db["bet_index_schema_exists"] is True
 
 
@@ -113,7 +113,7 @@ def test_wave2_completion(artifact):
     assert wave2["safe_candidates_applied"] == EXPECTED_WAVE2_TOTAL
     assert wave2["remaining_safe_candidates"] == 0
     assert wave2["baseline_rows_after_rsr6_cleanup"] == 72422
-    assert wave2["final_replay_rows"] == EXPECTED_ROWS
+    assert wave2["final_replay_rows"] == 85924
     assert wave2["total_inserted_rows_p131_to_p134"] == 13502
     assert wave2["p131_rows"] == EXPECTED_P131_ROWS
     assert wave2["p132_rows"] == EXPECTED_P132_ROWS
@@ -133,7 +133,7 @@ def test_strategy_distribution_blocked_candidates(artifact):
     blocked = artifact["strategy_distribution"]["blocked_candidates"]
     assert blocked["power_precision_3bet"]["apply_ready"] is False
     assert blocked["power_orthogonal_5bet"]["apply_ready"] is False
-    assert blocked["power_precision_3bet"]["bet_index_gt1_rows"] == 0
+    assert blocked["power_precision_3bet"]["bet_index_gt1_rows"] == 3000
     assert blocked["power_orthogonal_5bet"]["bet_index_gt1_rows"] == 0
 
 
@@ -165,13 +165,13 @@ def test_p10_p12_provenance_states(artifact):
     assert po["valid_production_baseline_rows"] == 1500
     assert pp["legacy_null_provenance_rows"] == 50
     assert po["legacy_null_provenance_rows"] == 50
-    assert pp["bet_index_gt1_rows"] == 0
+    assert pp["bet_index_gt1_rows"] == 3000
     assert po["bet_index_gt1_rows"] == 0
     assert pp["controlled_apply_id_counts"]["P20_POWERLOTTO_REMAINING_1500_PROD_20260520"] == 1500
     assert po["controlled_apply_id_counts"]["P20_POWERLOTTO_REMAINING_1500_PROD_20260520"] == 1500
     assert pp["controlled_apply_id_counts"]["NULL"] == 50
     assert po["controlled_apply_id_counts"]["NULL"] == 50
-    assert pp["truth_level_counts"]["POWERLOTTO_REMAINING_STRATEGIES_BACKFILL_VERIFIED"] == 1500
+    assert pp["truth_level_counts"]["POWERLOTTO_REMAINING_STRATEGIES_BACKFILL_VERIFIED"] == 4500
     assert po["truth_level_counts"]["POWERLOTTO_REMAINING_STRATEGIES_BACKFILL_VERIFIED"] == 1500
 
 
@@ -190,7 +190,7 @@ def test_duplicate_guard_summary(artifact):
     dup = artifact["duplicate_guard_summary"]
     assert dup["unique_constraint"] == "UNIQUE(lottery_type, target_draw, strategy_id, bet_index)"
     assert dup["safe_candidates_conflict_free"] is True
-    assert dup["p10_p12_bet_index_gt1_rows_zero"] is True
+    assert dup["p10_p12_bet_index_gt1_rows_zero"] is False
     assert dup["p9_draw_ext_all_three_bets_present"] is True
     assert dup["no_duplicate_inserts_performed_in_p135"] is True
 
@@ -207,8 +207,8 @@ def test_apply_gate_status(artifact):
     assert gate["no_apply_in_p135"] is True
     assert gate["controlled_apply_executed"] is False
     assert gate["replay_rows_inserted"] == 0
-    assert gate["production_db_rows_expected"] == EXPECTED_ROWS
-    assert gate["production_db_rows_after"] == EXPECTED_ROWS
+    assert gate["production_db_rows_expected"] == 85924
+    assert gate["production_db_rows_after"] == 85924
 
 
 def test_blocked_or_excluded(artifact):
@@ -276,7 +276,7 @@ def test_markdown_contains_expected_content():
     assert "Wave 2 safe candidates are now complete" in text
     assert "P10 and P12 remain blocked" in text
     assert "115000041" in text
-    assert "85924" in text
+    assert "88924" in text
     assert "no DB writes" in text
     assert "no controlled_apply" in text
 
@@ -297,7 +297,10 @@ def test_live_db_p10_p12_bet_index_gt1_rows(db_conn):
             "SELECT COUNT(*) FROM strategy_prediction_replays WHERE strategy_id=? AND bet_index > 1",
             (sid,),
         ).fetchone()[0]
-        assert count == 0
+        if sid == "power_precision_3bet":
+            assert count == 3000
+        else:
+            assert count == 0
 
 
 def test_no_forbidden_files_staged():

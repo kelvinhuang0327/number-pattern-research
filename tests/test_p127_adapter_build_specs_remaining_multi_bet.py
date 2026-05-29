@@ -33,7 +33,7 @@ P127_MD   = REPO_ROOT / "docs" / "replay" / f"p127_adapter_build_specs_remaining
 P126G_JSON = REPO_ROOT / "outputs" / "replay" / f"p126g_all_tier_b_apply_closure_audit_{ARTIFACT_DATE}.json"
 
 EXPECTED_TOTAL_ROWS = 72462          # Historical: DB state when P127 artifact was generated
-EXPECTED_TOTAL_ROWS_CURRENT = 85924  # Post P134 apply (fourier_rhythm_3bet +3002)
+EXPECTED_TOTAL_ROWS_CURRENT = 88924  # Post P140 apply (power_precision_3bet +3000 over P134 state)
 EXPECTED_STRATEGY_COUNT = 12
 
 REQUIRED_SPEC_FIELDS = [
@@ -478,13 +478,13 @@ def test_live_db_adapter_strategies_no_new_bets_added(db_conn):
         """,
         ADAPTER_STRATEGY_IDS
     ).fetchone()[0]
-    # power_orthogonal_5bet and power_precision_3bet had 20 rows each (RSR-6 orphans, now 0).
+    # power_precision_3bet gained 3000 rows in P140 (bet-2 + bet-3); power_orthogonal_5bet remains bet-1 only.
     # P131 applied acb_markov_midfreq_3bet bet-2+bet-3 = 3000 rows (authorized Wave 2 apply).
     # P132 applied midfreq_fourier_mk_3bet bet-2+bet-3 = 3000 rows (authorized Wave 2 apply).
     # P133 applied pp3_freqort_4bet bet-2+bet-3+bet-4 = 4500 rows (authorized Wave 2 apply).
     # P134 applied fourier_rhythm_3bet bet-2+bet-3 = 3002 rows (authorized Wave 2 apply, P9 anomaly).
-    assert rows == 13502, \
-        f"Expected 13502 bet_index>1 rows (P131 acb +3000, P132 midfreq_mk +3000, P133 pp3 +4500, P134 fourier +3002), found {rows}"
+    assert rows == 16502, \
+        f"Expected 16502 bet_index>1 rows (P131 acb +3000, P132 midfreq_mk +3000, P133 pp3 +4500, P134 fourier +3002, P140 power_precision +3000), found {rows}"
 
 
 def test_live_db_acb_markov_midfreq_3bet_rows(db_conn):
@@ -543,8 +543,8 @@ def test_live_db_power_precision_3bet_rows(db_conn):
         "SELECT COUNT(*) FROM strategy_prediction_replays WHERE strategy_id = ? AND lottery_type = ?",
         ("power_precision_3bet", "POWER_LOTTO")
     ).fetchone()[0]
-    # 1550 bet_index=1 only (RSR-6 cleanup deleted the 20 orphan bet_index=2 rows)
-    assert count == 1550
+    # P140 applied power_precision_3bet bet-2 and bet-3 (+3000) on top of bet-1 baseline.
+    assert count == 4550
 
 
 def test_live_db_fourier_rhythm_3bet_rows(db_conn):

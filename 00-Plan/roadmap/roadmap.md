@@ -777,3 +777,26 @@ Accepts either `"history"` (canonical) or `"historical_draws"` (backward-compat 
 ```text
 CTO_ROADMAP_UPDATED_AFTER_P140A_DRAW_CONTEXT_CONTRACT_FIX_20260529
 ```
+
+---
+
+### P140 — power_precision_3bet Wave Apply [2026-05-29]
+
+**Classification**: P140_POWER_PRECISION_3BET_APPLIED
+
+P10 `power_precision_3bet` (POWER_LOTTO) bet-2 and bet-3 rows applied via P128 phase2 adapter.
+LEGACY_UNVERIFIED rows (50) excluded from apply base. Apply base = 1500 production baseline rows.
+
+- **Rows inserted:** +3,000 (1,500 bet-2 + 1,500 bet-3)
+- **DB rows:** 85924 → 88924
+- **Backup:** `/Users/kelvin/Kelvin-WorkSpace/LotteryNew/.claude/worktrees/zen-gates-ff6802/backups/lottery_v2.db.p140_backup_20260529T043650Z.db`
+- **Drift guard:** PASS at 88924
+- **power_orthogonal_5bet not applied** — reserved for P141
+- **LEGACY_UNVERIFIED rows unchanged** — excluded from apply base
+
+**Next task**: P141 — apply `power_orthogonal_5bet` (P12) POWER_LOTTO bet-2 through bet-5.
+Authorization phrase: `P139_AUTHORIZED_APPLY_POWER_ORTHOGONAL_5BET_BET2_THRU_BET5_USING_1500_PRODUCTION_BASE_20260529`
+
+```text
+CTO_ROADMAP_UPDATED_AFTER_P140_POWER_PRECISION_3BET_APPLIED_20260529
+```

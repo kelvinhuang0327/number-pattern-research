@@ -25,6 +25,7 @@ DB_PATH = REPO_ROOT / "lottery_api" / "data" / "lottery_v2.db"
 
 EXPECTED_ROWS_BEFORE = 82922
 EXPECTED_ROWS_AFTER  = 85924
+EXPECTED_ROWS_CURRENT = 88924
 EXPECTED_INSERT_ROWS = 3002
 EXPECTED_BET1_ROWS   = 1501   # P9 anomaly
 EXPECTED_BET2_ROWS   = 1501
@@ -548,8 +549,8 @@ def test_live_db_total_rows(db_conn):
     count = db_conn.execute(
         "SELECT COUNT(*) FROM strategy_prediction_replays"
     ).fetchone()[0]
-    assert count == EXPECTED_ROWS_AFTER, (
-        f"DB has {count} rows, expected {EXPECTED_ROWS_AFTER}"
+    assert count == EXPECTED_ROWS_CURRENT, (
+        f"DB has {count} rows, expected {EXPECTED_ROWS_CURRENT}"
     )
 
 
@@ -639,7 +640,10 @@ def test_live_db_p10_p12_no_bi2_rows(db_conn):
             "SELECT COUNT(*) FROM strategy_prediction_replays WHERE strategy_id=? AND bet_index=2",
             (sid,),
         ).fetchone()[0]
-        assert count == 0, f"{sid} should have 0 bi=2 rows, got {count}"
+        if sid == "power_precision_3bet":
+            assert count == 1500, f"{sid} should have 1500 bi=2 rows post-P140, got {count}"
+        else:
+            assert count == 0, f"{sid} should have 0 bi=2 rows, got {count}"
 
 
 # ---------------------------------------------------------------------------
@@ -666,8 +670,8 @@ def test_drift_guard_total_count():
         capture_output=True,
         text=True,
     )
-    assert f"total={EXPECTED_ROWS_AFTER}" in result.stdout, (
-        f"Expected total={EXPECTED_ROWS_AFTER} in drift guard output:\n{result.stdout}"
+    assert f"total={EXPECTED_ROWS_CURRENT}" in result.stdout, (
+        f"Expected total={EXPECTED_ROWS_CURRENT} in drift guard output:\n{result.stdout}"
     )
 
 

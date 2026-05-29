@@ -800,3 +800,11 @@ Authorization phrase: `P139_AUTHORIZED_APPLY_POWER_ORTHOGONAL_5BET_BET2_THRU_BET
 ```text
 CTO_ROADMAP_UPDATED_AFTER_P140_POWER_PRECISION_3BET_APPLIED_20260529
 ```
+
+
+## P141A Authorization Gate (2026-05-29)
+- Classification: `P141A_POWER_ORTHOGONAL_5BET_AUTHORIZATION_GATE_READY`
+- Purpose: issue explicit authorization artifact for next P141 controlled_apply.
+- Scope: read-only gate; no DB write, no controlled_apply, no replay rows inserted.
+- Next: P141 apply `power_orthogonal_5bet` bet-2/3/4/5 (+6000 rows; 88924 -> 94924).
+- Marker: `CTO_ROADMAP_UPDATED_AFTER_P141A_POWER_ORTHOGONAL_5BET_AUTH_GATE_20260529`

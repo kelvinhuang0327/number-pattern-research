@@ -1175,3 +1175,10 @@ power_orthogonal_5bet reserved for P141.
 Next: P141 (power_orthogonal_5bet, P12, POWER_LOTTO, +6000 rows).
 
 **Artifact**: `outputs/replay/p140_apply_power_precision_3bet_20260529.json`
+
+
+## P141A Authorization Gate Update (2026-05-29)
+- P141A created explicit authorization artifact for P141 apply execution.
+- DB remained unchanged at 88924; drift guard PASS maintained.
+- Controlled apply NOT executed in P141A; this is a governance gate only.
+- Marker: `CTO_ROADMAP_UPDATED_AFTER_P141A_POWER_ORTHOGONAL_5BET_AUTH_GATE_20260529`

@@ -837,3 +837,14 @@ CTO_ROADMAP_UPDATED_AFTER_P140_POWER_PRECISION_3BET_APPLIED_20260529
   3. LEGACY_UNVERIFIED remediation — PENDING_DECISION, 100 rows (50 per P10/P12 strategy).
 - Recommended next gates: P144A (registry), P144B (monitoring), P144C (legacy remediation).
 - Marker: `CTO_ROADMAP_UPDATED_AFTER_P143_POST_WAVE2_GOVERNANCE_READINESS_PLAN_20260529`
+
+
+## P144A Strategy Champion Registry Readiness Gate (2026-05-29)
+- Classification: `P144A_STRATEGY_CHAMPION_REGISTRY_READINESS_GATE_READY`
+- Candidate strategy inventory produced for all 6 Wave 2 strategies.
+- Champion registry readiness matrix: all 6 strategies in REPLAY_ROWS_APPLIED_NO_LIVE_DATA state.
+- No live draw data available; champion_eval_ready=false for all candidates.
+- Recommended path: Option B (observation-only watchlist) + Option A (wait for live data).
+- No registry mutation in P144A.
+- Next gates: P144B (live monitoring activation), P144C (legacy remediation).
+- Marker: `CTO_ROADMAP_UPDATED_AFTER_P144A_STRATEGY_CHAMPION_REGISTRY_READINESS_GATE_20260529`

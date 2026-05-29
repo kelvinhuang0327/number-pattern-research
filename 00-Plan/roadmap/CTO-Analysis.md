@@ -1214,3 +1214,13 @@ Next: P141 (power_orthogonal_5bet, P12, POWER_LOTTO, +6000 rows).
 - Marker: `CTO_ROADMAP_UPDATED_AFTER_P143_POST_WAVE2_GOVERNANCE_READINESS_PLAN_20260529`
 
 **Artifact**: `outputs/replay/p143_post_wave2_governance_readiness_plan_20260529.json`
+
+
+## P144A Strategy Champion Registry Readiness Gate (2026-05-29)
+- P144A confirmed: all 6 Wave 2 candidate strategies have replay rows but no live draw data.
+- champion_eval_ready=false for all; registry update blocked until live monitoring active.
+- Recommended next gates: P144B (live monitoring), P144C (legacy remediation), P145 (champion eval after threshold).
+- No DB mutation. No registry update. Read-only gate.
+- Marker: `CTO_ROADMAP_UPDATED_AFTER_P144A_STRATEGY_CHAMPION_REGISTRY_READINESS_GATE_20260529`
+
+**Artifact**: `outputs/replay/p144a_strategy_champion_registry_readiness_gate_20260529.json`

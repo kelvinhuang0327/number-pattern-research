@@ -124,7 +124,13 @@ def validate_preflight() -> dict:
         "outputs/replay/p146a_observation_only_live_monitoring_runner_20260529.json",
         "docs/replay/p146a_observation_only_live_monitoring_runner_20260529.md",
         "tests/test_p146a_observation_only_live_monitoring_runner.py",
+        "outputs/replay/live_monitoring_observation_only/smoke_test/smoke_mock_acb_markov_midfreq_3bet_20260529.json",
         "outputs/replay/live_monitoring_observation_only/",
+        # P146B successor task files
+        "scripts/p146b_authorized_observation_only_monitoring_run.py",
+        "outputs/replay/p146b_authorized_observation_only_monitoring_run_20260529.json",
+        "docs/replay/p146b_authorized_observation_only_monitoring_run_20260529.md",
+        "tests/test_p146b_authorized_observation_only_monitoring_run.py",
         # P143 own files (new / being generated)
         "scripts/p143_post_wave2_governance_readiness_plan.py",
         f"outputs/replay/p143_post_wave2_governance_readiness_plan_{DATE_SUFFIX}.json",

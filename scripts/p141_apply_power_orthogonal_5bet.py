@@ -94,12 +94,27 @@ def validate_preflight(auth_text: str) -> tuple[dict, str, bool]:
         "outputs/replay/p145b_manual_on_demand_monitoring_authorization_gate_20260529.json",
         "docs/replay/p145b_manual_on_demand_monitoring_authorization_gate_20260529.md",
         "tests/test_p145b_manual_on_demand_monitoring_authorization_gate.py",
+        # P146A successor task files
+        "scripts/p146a_observation_only_live_monitoring_runner.py",
+        "outputs/replay/p146a_observation_only_live_monitoring_runner_20260529.json",
+        "docs/replay/p146a_observation_only_live_monitoring_runner_20260529.md",
+        "tests/test_p146a_observation_only_live_monitoring_runner.py",
+        "outputs/replay/live_monitoring_observation_only/smoke_test/smoke_mock_acb_markov_midfreq_3bet_20260529.json",
+        # P146B successor task files
+        "scripts/p146b_authorized_observation_only_monitoring_run.py",
+        "outputs/replay/p146b_authorized_observation_only_monitoring_run_20260529.json",
+        "docs/replay/p146b_authorized_observation_only_monitoring_run_20260529.md",
+        "tests/test_p146b_authorized_observation_only_monitoring_run.py",
     }
     bad = []
     for line in status:
         if not line.strip():
             continue
         path = line[3:]
+        if path.startswith("outputs/replay/live_monitoring_observation_only/"):
+            continue
+        if path.startswith("backups/"):
+            continue
         if path not in allowed:
             bad.append(line)
     if bad:

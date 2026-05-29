@@ -1259,3 +1259,13 @@ Next: P141 (power_orthogonal_5bet, P12, POWER_LOTTO, +6000 rows).
 - Marker: `CTO_ROADMAP_UPDATED_AFTER_P146A_OBSERVATION_ONLY_LIVE_MONITORING_RUNNER_20260529`
 
 **Artifact**: `outputs/replay/p146a_observation_only_live_monitoring_runner_20260529.json`
+
+## P146B Authorized Observation-Only Monitoring Run (2026-05-29) — DONE
+- P146B authorized mock/fixture monitoring run executed for all 6 Wave 2 candidate strategies.
+- Authorization phrase verified; all stop conditions passed.
+- 6 observation records created (MOCK_OBSERVATION_ONLY); no champion evidence eligibility.
+- Champion evaluation (P147) blocked pending real live draw evidence.
+- No DB mutation. No live API call. No scheduler install. No champion promotion in P146B.
+- Marker: `CTO_ROADMAP_UPDATED_AFTER_P146B_AUTHORIZED_OBSERVATION_ONLY_MONITORING_RUN_20260529`
+
+**Artifact**: `outputs/replay/p146b_authorized_observation_only_monitoring_run_20260529.json`

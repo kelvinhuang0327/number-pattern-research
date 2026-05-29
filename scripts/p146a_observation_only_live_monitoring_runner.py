@@ -111,14 +111,14 @@ _OWN_FILES = {
 _AUTOUSE_PREFIXES = (
     "outputs/replay/p135_", "outputs/replay/p136_", "outputs/replay/p142_",
     "outputs/replay/p143_", "outputs/replay/p144a_", "outputs/replay/p144b_",
-    "outputs/replay/p145b_",
+    "outputs/replay/p145b_", "outputs/replay/p146b_",
     "docs/replay/p135_", "docs/replay/p136_", "docs/replay/p142_",
     "docs/replay/p143_", "docs/replay/p144a_", "docs/replay/p144b_",
-    "docs/replay/p145b_",
-    "scripts/p142_", "scripts/p143_", "scripts/p144a_", "scripts/p144b_",
-    "scripts/p145b_",
-    "tests/test_p142_", "tests/test_p143_", "tests/test_p144a_", "tests/test_p144b_",
-    "tests/test_p145b_",
+    "docs/replay/p145b_", "docs/replay/p146b_",
+    "scripts/p141_", "scripts/p141a_", "scripts/p142_", "scripts/p143_",
+    "scripts/p144a_", "scripts/p144b_", "scripts/p145b_", "scripts/p146b_",
+    "tests/test_p141_", "tests/test_p141a_", "tests/test_p142_", "tests/test_p143_",
+    "tests/test_p144a_", "tests/test_p144b_", "tests/test_p145b_", "tests/test_p146b_",
 )
 
 

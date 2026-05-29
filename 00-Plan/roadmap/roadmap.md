@@ -882,3 +882,14 @@ CTO_ROADMAP_UPDATED_AFTER_P140_POWER_PRECISION_3BET_APPLIED_20260529
 - P146B execution plan defined; required_authorization_phrase documented.
 - No DB write, no live API call, no scheduler installed, no live monitoring run executed in P146A.
 - Marker: `CTO_ROADMAP_UPDATED_AFTER_P146A_OBSERVATION_ONLY_LIVE_MONITORING_RUNNER_20260529`
+
+## P146B Authorized Observation-Only Monitoring Run (2026-05-29) — DONE
+- Classification: `P146B_AUTHORIZED_OBSERVATION_ONLY_MONITORING_RUN_COMPLETED`
+- Authorization phrase verified; all 6 stop conditions passed (DB=94924, predecessors confirmed).
+- Authorized mock/fixture monitoring run executed for all 6 Wave 2 candidate strategies.
+- 6 observation records written to outputs/replay/live_monitoring_observation_only/{strategy_id}/.
+- All records tagged MOCK_OBSERVATION_ONLY; no champion evidence eligibility.
+- Historical vs live boundary enforced: champion_eval_ready_from_p146b=false.
+- Champion evaluation (P147) blocked pending real live draw evidence.
+- No DB write, no live API call, no scheduler installed, no champion promotion in P146B.
+- Marker: `CTO_ROADMAP_UPDATED_AFTER_P146B_AUTHORIZED_OBSERVATION_ONLY_MONITORING_RUN_20260529`

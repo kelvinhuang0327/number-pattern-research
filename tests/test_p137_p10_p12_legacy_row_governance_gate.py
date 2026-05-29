@@ -182,17 +182,19 @@ def test_no_db_write_in_p137(p137):
 
 
 def test_p10_null_prov_live(conn):
+    # Pre-P138B: 50 NULL-prov rows; post-P138B re-mark (authorized Option B): 0
     row = conn.execute(
         "SELECT COUNT(*) FROM strategy_prediction_replays WHERE strategy_id='power_precision_3bet' AND provenance_hash IS NULL"
     ).fetchone()
-    assert row[0] == 50
+    assert row[0] in (0, 50)
 
 
 def test_p12_null_prov_live(conn):
+    # Pre-P138B: 50 NULL-prov rows; post-P138B re-mark (authorized Option B): 0
     row = conn.execute(
         "SELECT COUNT(*) FROM strategy_prediction_replays WHERE strategy_id='power_orthogonal_5bet' AND provenance_hash IS NULL"
     ).fetchone()
-    assert row[0] == 50
+    assert row[0] in (0, 50)
 
 
 # --- Governance decision matrix ---

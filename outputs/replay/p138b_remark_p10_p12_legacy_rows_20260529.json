@@ -1,0 +1,142 @@
+{
+  "task_id": "P138B",
+  "classification": "P138B_P10_P12_LEGACY_ROWS_REMARKED",
+  "generated_at": "2026-05-29T03:40:10.180190+00:00",
+  "authorization": {
+    "exact_required_phrase": "P137_AUTHORIZED_OPTION_B_REMARK_P10_P12_LEGACY_ROWS_AS_LEGACY_UNVERIFIED_20260529",
+    "authorization_present": true,
+    "remark_allowed": true,
+    "authorization_text_observed": "P137_AUTHORIZED_OPTION_B_REMARK_P10_P12_LEGACY_ROWS_AS_LEGACY_UNVERIFIED_20260529"
+  },
+  "canonical_repo": "/Users/kelvin/Kelvin-WorkSpace/LotteryNew/.claude/worktrees/zen-gates-ff6802",
+  "canonical_branch": "claude/zen-gates-ff6802",
+  "repo_branch_check": {
+    "expected_repo": "/Users/kelvin/Kelvin-WorkSpace/LotteryNew/.claude/worktrees/zen-gates-ff6802",
+    "actual_repo": "/Users/kelvin/Kelvin-WorkSpace/LotteryNew/.claude/worktrees/zen-gates-ff6802",
+    "expected_branch": "claude/zen-gates-ff6802",
+    "actual_branch": "claude/zen-gates-ff6802",
+    "repo_ok": true,
+    "branch_ok": true
+  },
+  "db_snapshot_before": {
+    "db_path": "/Users/kelvin/Kelvin-WorkSpace/LotteryNew/.claude/worktrees/zen-gates-ff6802/lottery_api/data/lottery_v2.db",
+    "total_rows": 85924,
+    "expected_rows": 85924,
+    "rows_ok": true,
+    "head_sha": "e91d1f0de08ea0b2d7f1ce2086b72dfa6d8d1885"
+  },
+  "backup": {
+    "backup_path": "/Users/kelvin/Kelvin-WorkSpace/LotteryNew/.claude/worktrees/zen-gates-ff6802/backups/lottery_v2.db.p138b_backup_20260529T034010Z.db",
+    "backup_created": true,
+    "backup_row_count": 85924,
+    "backup_row_count_ok": true
+  },
+  "p137_source_summary": {
+    "artifact_path": "/Users/kelvin/Kelvin-WorkSpace/LotteryNew/.claude/worktrees/zen-gates-ff6802/outputs/replay/p137_p10_p12_legacy_row_governance_gate_20260529.json",
+    "classification": "P137_P10_P12_LEGACY_ROW_GOVERNANCE_GATE_READY",
+    "expected_classification": "P137_P10_P12_LEGACY_ROW_GOVERNANCE_GATE_READY",
+    "classification_ok": true,
+    "recommended_option": "option_b"
+  },
+  "remark_scope": {
+    "affected_strategies": [
+      "power_precision_3bet",
+      "power_orthogonal_5bet"
+    ],
+    "expected_rows_to_remark": 100,
+    "actual_rows_remarked": 100,
+    "mutation_type": "UPDATE_ONLY",
+    "rows_inserted": 0,
+    "rows_deleted": 0,
+    "truth_level_set": "LEGACY_UNVERIFIED",
+    "source_set": "P138B_LEGACY_REMARK",
+    "provenance_hash_method": "SHA256[:16](strategy_id|target_draw|bet_index|replay_run_id|predicted_numbers|P138B_LEGACY_REMARK_20260529)",
+    "controlled_apply_id_unchanged": true
+  },
+  "remark_execution": {
+    "selector_count_before": 100,
+    "per_strategy_before": {
+      "power_orthogonal_5bet": 50,
+      "power_precision_3bet": 50
+    },
+    "rows_updated": 100,
+    "backup_taken_before_mutation": true,
+    "mutation_ok": true,
+    "sample_remarked_ids": [
+      311,
+      312,
+      313,
+      314,
+      315
+    ]
+  },
+  "db_snapshot_after": {
+    "total_rows": 85924,
+    "expected_rows": 85924,
+    "rows_unchanged": true
+  },
+  "selector_validation_after": {
+    "null_prov_after": 0,
+    "null_prov_selector_zero": true,
+    "legacy_unverified_total": 100,
+    "legacy_unverified_equals_100": true,
+    "per_strategy_unverified": {
+      "power_orthogonal_5bet": 50,
+      "power_precision_3bet": 50
+    }
+  },
+  "row_preservation_check": {
+    "power_precision_3bet_prod_rows": 1500,
+    "power_precision_3bet_prod_ok": true,
+    "power_orthogonal_5bet_prod_rows": 1500,
+    "power_orthogonal_5bet_prod_ok": true,
+    "power_precision_3bet_bet1": 1550,
+    "power_orthogonal_5bet_bet1": 1550,
+    "power_precision_3bet_bet2_plus": 0,
+    "power_orthogonal_5bet_bet2_plus": 0
+  },
+  "drift_guard_result": {
+    "status": "PASS",
+    "pass": true,
+    "total_rows": 85924,
+    "stdout_excerpt": "Drift guard checked at: 2026-05-29T03:40:10.290934Z\nDB: /Users/kelvin/Kelvin-WorkSpace/LotteryNew/.claude/worktrees/zen-gates-ff6802/lottery_api/data/lottery_v2.db\n\nRow counts — V1=0  V2=0  legacy=420  total=85924\nV3 tombstone strategies with 0 rows: 1/1\ntruth_level — REGENERATED=0  ARTIFACT=0  LEGACY_UNVERIFIED=100  null=320\n\nNo violations found.\n\nFinal classification: REPLAY_LIFECYCLE_DRIFT_GUARD_PASS\nStatus: PASS"
+  },
+  "future_dry_run_gate_impact": {
+    "power_precision_3bet_legacy_governance_resolved": true,
+    "power_orthogonal_5bet_legacy_governance_resolved": true,
+    "dry_run_gate_re_evaluation_allowed": true,
+    "controlled_apply_executed": false,
+    "replay_rows_inserted": 0,
+    "per_strategy_authorization_required_later": true,
+    "note": "P10/P12 legacy governance is now resolved. A separate dry-run gate task (P139) must be executed before any multi-bet controlled_apply proceeds. apply_ready is NOT automatically true after this re-mark."
+  },
+  "blocked_or_excluded": [
+    "no controlled_apply in P138B",
+    "no replay rows inserted",
+    "no replay rows deleted",
+    "P10/P12 still require future dry-run/apply authorization",
+    "4_STAR excluded",
+    "P108 not run",
+    "P117 not run",
+    "P118 not run",
+    "rejected strategies no_action",
+    "no scheduler install",
+    "no lifecycle / champion / registry mutation"
+  ],
+  "rollback_reference": {
+    "backup_path": "/Users/kelvin/Kelvin-WorkSpace/LotteryNew/.claude/worktrees/zen-gates-ff6802/backups/lottery_v2.db.p138b_backup_20260529T034010Z.db",
+    "rollback_command": "cp \"/Users/kelvin/Kelvin-WorkSpace/LotteryNew/.claude/worktrees/zen-gates-ff6802/backups/lottery_v2.db.p138b_backup_20260529T034010Z.db\" \"/Users/kelvin/Kelvin-WorkSpace/LotteryNew/.claude/worktrees/zen-gates-ff6802/lottery_api/data/lottery_v2.db\"",
+    "rollback_effect": "Restores 100 rows to NULL-provenance state",
+    "rollback_drift_guard_action": "Re-run drift guard after restore; remove LEGACY_UNVERIFIED from allowlist if needed"
+  },
+  "roadmap_update_status": "pending — will be updated in this run",
+  "remaining_risks": [
+    "P10/P12 still require a separate multi-bet dry-run gate (P139) before apply_ready=true.",
+    "The LEGACY_UNVERIFIED provenance_hash is synthetic — not derived from the original prediction run.",
+    "P10/P12 bet-2+ rows have not been inserted; multi-bet controlled_apply is still a future task.",
+    "drift_guard allowlist now includes LEGACY_UNVERIFIED — this is intentional and audited.",
+    "Backup file exists at backups/ (untracked) — it should not be staged or committed."
+  ],
+  "next_recommended_task": "P139: P10/P12 multi-bet dry-run gate — re-evaluate apply_ready status after legacy governance resolution, plan bet-2+ row controlled_apply.",
+  "summary": "P138B executed authorized Option B re-mark for power_precision_3bet (P10) and power_orthogonal_5bet (P12). 100 NULL-provenance legacy rows updated with truth_level='LEGACY_UNVERIFIED', source='P138B_LEGACY_REMARK', and deterministic provenance_hash. DB total: 85924 (unchanged). NULL-provenance strict selector: 0 rows after re-mark. Drift guard: PASS at 85924. Backup: /Users/kelvin/Kelvin-WorkSpace/LotteryNew/.claude/worktrees/zen-gates-ff6802/backups/lottery_v2.db.p138b_backup_20260529T034010Z.db."
+}

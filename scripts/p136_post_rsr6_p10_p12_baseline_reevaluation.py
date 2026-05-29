@@ -252,11 +252,13 @@ def detailed_status(conn: sqlite3.Connection, sid: str) -> dict:
 
 
 def reevaluation_matrix_for_strategy(sid: str, detail: dict, dist: dict) -> dict:
+    # null_provenance_legacy_rows == 50: pre-P138B (governance gate pending)
+    # null_provenance_legacy_rows == 0: post-P138B re-mark (governance resolved)
     baseline_valid = (
         dist["bet1_rows"] == 1550
         and dist["bet2_plus_rows"] == 0
         and detail["production_baseline_rows"] == 1500
-        and detail["null_provenance_legacy_rows"] == 50
+        and detail["null_provenance_legacy_rows"] in (0, 50)
     )
     return {
         "strategy_id": sid,

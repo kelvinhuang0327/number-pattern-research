@@ -1,8 +1,8 @@
 # Lottery Replay Roadmap
 
-**Last Updated:** 2026-05-29 Asia/Taipei (updated after P137 P10/P12 legacy-row governance authorization gate)
+**Last Updated:** 2026-05-29 Asia/Taipei (updated after P138B P10/P12 legacy-row LEGACY_UNVERIFIED re-mark execution)
 **Owner:** CTO agent
-**Primary Goal:** Make every implemented LotteryNew strategy replayable with honest historical prediction-vs-actual evidence across every supported lottery type and every implemented 1-5 bet-count variant. This must be done without fake rows, untracked DB writes, premature promotion, or no-change governance PR churn. Current system state: Wave 2 safe candidates remain closed at 85924 rows. P137 completed the legacy-row governance authorization gate for P10/P12: three decision options defined (Option A keep, Option B re-mark RECOMMENDED, Option C delete), authorization phrase templates provided, no DB mutation. P10/P12 remain apply_ready=false pending CTO authorization of chosen option. P108 / P117 / P118 / 4_STAR triggers remain blocked.
+**Primary Goal:** Make every implemented LotteryNew strategy replayable with honest historical prediction-vs-actual evidence across every supported lottery type and every implemented 1-5 bet-count variant. This must be done without fake rows, untracked DB writes, premature promotion, or no-change governance PR churn. Current system state: Wave 2 safe candidates remain closed at 85924 rows. P138B executed the authorized Option B re-mark: 100 NULL-provenance legacy rows (50 per strategy) updated with truth_level='LEGACY_UNVERIFIED', source='P138B_LEGACY_REMARK', deterministic provenance_hash. Drift guard PASS at 85924. P10/P12 legacy governance resolved; future dry-run gate re-evaluation now allowed. P108 / P117 / P118 / 4_STAR triggers remain blocked.
 **Repo Policy:** Use `/Users/kelvin/Kelvin-WorkSpace/LotteryNew` only. Do not create a new repo. Implementation and governed tasks must run from canonical repo with `git rev-parse --git-dir == .git`; Claude/Codex auto-created worktree branches are not allowed.
 
 ---
@@ -220,10 +220,9 @@ Recommended near-term order:
 
 | Rank | Work | Why |
 |---|---|---|
-| 1 | P138 execute chosen governance option for P10/P12 legacy rows (after CTO authorization) | Unblocks P10/P12 from apply-ready gate |
-| 2 | P10/P12 dry-run gate reassessment after governance option executed | Re-assess apply_ready after legacy-row resolution |
-| 3 | Main-sync summary for Wave 2 closure | Capture the 85924-row closure state and the P10/P12 blocked remainder |
-| 4 | Operator/manual P123 trigger check only when data or authorization may have changed | Maintains healthy standby without PR churn |
+| 1 | P139 P10/P12 multi-bet dry-run gate | Legacy governance resolved; can now re-evaluate apply_ready |
+| 2 | Main-sync summary for Wave 2 closure | Capture the 85924-row closure state and P10/P12 governance outcome |
+| 3 | Operator/manual P123 trigger check only when data or authorization may have changed | Maintains healthy standby without PR churn |
 
 CTO prompt boundary:
 
@@ -664,4 +663,33 @@ Authorization phrase templates provided for each option. No option is authorized
 
 ```text
 CTO_ROADMAP_UPDATED_AFTER_P137_P10_P12_LEGACY_ROW_GOVERNANCE_GATE_20260529
+```
+
+---
+
+### P138B — P10/P12 Legacy Row Re-mark Execution [2026-05-29]
+
+**Classification**: P138B_P10_P12_LEGACY_ROWS_REMARKED
+
+P138B executed the authorized Option B re-mark for `power_precision_3bet` (P10) and
+`power_orthogonal_5bet` (P12). 100 NULL-provenance legacy rows (50 per strategy)
+updated with explicit LEGACY_UNVERIFIED governance metadata.
+
+- **Authorization phrase confirmed:** `P137_AUTHORIZED_OPTION_B_REMARK_P10_P12_LEGACY_ROWS_AS_LEGACY_UNVERIFIED_20260529`
+- **Rows updated:** 100 (UPDATE_ONLY — no inserts, no deletes)
+- **truth_level set:** `LEGACY_UNVERIFIED`
+- **source set:** `P138B_LEGACY_REMARK`
+- **provenance_hash:** deterministic SHA256[:16] per row
+- **DB rows:** 85924 (unchanged)
+- **Drift guard:** PASS at 85924 (LEGACY_UNVERIFIED added to allowlist)
+- **NULL-provenance strict selector after:** 0
+- **Backup:** `backups/lottery_v2.db.p138b_backup_20260529T034010Z.db`
+- **No controlled_apply:** confirmed
+- **No replay rows inserted:** confirmed
+- **P10/P12 legacy governance resolved:** both True
+
+**Next task**: P139 — P10/P12 multi-bet dry-run gate (plan bet-2+ controlled_apply).
+
+```text
+CTO_ROADMAP_UPDATED_AFTER_P138B_P10_P12_LEGACY_REMARK_20260529
 ```

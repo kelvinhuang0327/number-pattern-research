@@ -91,7 +91,8 @@ def test_distribution(artifact):
 def test_baseline_row_audit(artifact):
     b = artifact["baseline_row_audit"]
     assert b["production_baseline_rows_per_strategy"] == 1500
-    assert b["null_provenance_legacy_rows_per_strategy"] == 50
+    # Pre-P138B: 50; post-P138B re-mark: 0 — both valid audit states
+    assert b["null_provenance_legacy_rows_per_strategy"] in (0, 50)
     assert b["total_rows_per_strategy"] == 1550
     assert b["db_write_in_p136"] is False
 
@@ -102,14 +103,16 @@ def test_null_provenance_legacy_audit(artifact):
     po = a["power_orthogonal_5bet"]
     assert pp["production_baseline_rows"] == 1500
     assert po["production_baseline_rows"] == 1500
-    assert pp["null_provenance_legacy_rows"] == 50
-    assert po["null_provenance_legacy_rows"] == 50
+    # Pre-P138B: 50 NULL-prov rows; post-P138B re-mark: 0 — both valid
+    assert pp["null_provenance_legacy_rows"] in (0, 50)
+    assert po["null_provenance_legacy_rows"] in (0, 50)
     assert a["summary"]["legacy_rows_keepable_in_p136"] is True
 
 
 def test_per_strategy_reevaluation_matrix(artifact):
     m = artifact["per_strategy_reevaluation_matrix"]
     for sid in ("power_precision_3bet", "power_orthogonal_5bet"):
+        # baseline_valid is True when null_prov in (0, 50) — see P136 script logic
         assert m[sid]["baseline_valid_for_future_dry_run"] is True
         assert m[sid]["requires_remark_plan"] is True
         assert m[sid]["requires_quarantine_plan"] is True

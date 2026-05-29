@@ -1,8 +1,8 @@
-# CTO Analysis - After P137 P10/P12 Legacy Row Governance Authorization Gate
+# CTO Analysis - After P138B P10/P12 Legacy Row LEGACY_UNVERIFIED Re-mark
 
 ## 1. CTO Review Date
 
-2026-05-29 Asia/Taipei (updated after P137 P10/P12 legacy-row governance authorization gate).
+2026-05-29 Asia/Taipei (updated after P138B P10/P12 legacy-row LEGACY_UNVERIFIED re-mark execution).
 
 Final CTO classification target: `CTO_ROADMAP_UPDATED_WITH_RISKS`.
 
@@ -1056,4 +1056,31 @@ Authorization phrase templates provided for all three options. No option is auth
 
 ```text
 CTO_ANALYSIS_UPDATED_AFTER_P137_P10_P12_LEGACY_ROW_GOVERNANCE_GATE_20260529
+```
+
+---
+
+### P138B: P10/P12 Legacy Row Re-mark Execution (2026-05-29)
+
+**Status**: COMPLETE | **Classification**: P138B_P10_P12_LEGACY_ROWS_REMARKED
+
+CTO Note: P138B executed the authorized Option B re-mark.
+100 NULL-provenance legacy rows (50 each in P10/P12) updated with LEGACY_UNVERIFIED metadata.
+Authorization phrase: `P137_AUTHORIZED_OPTION_B_REMARK_P10_P12_LEGACY_ROWS_AS_LEGACY_UNVERIFIED_20260529`
+
+- **Rows updated:** 100 (UPDATE_ONLY — no inserts, no deletes)
+- **DB rows:** 85924 (unchanged)
+- **Drift guard:** PASS at 85924 (LEGACY_UNVERIFIED added to truth_level allowlist)
+- **NULL-provenance strict selector after:** 0
+- **Backup:** `backups/lottery_v2.db.p138b_backup_20260529T034010Z.db`
+- **No controlled_apply:** confirmed
+- **P10/P12 legacy governance resolved:** both True
+- **P10/P12 apply_ready:** still false — requires separate dry-run gate (P139)
+
+**Next task**: P139 — P10/P12 multi-bet dry-run gate, re-evaluate apply_ready post-governance resolution.
+
+**Artifact**: `outputs/replay/p138b_remark_p10_p12_legacy_rows_20260529.json`
+
+```text
+CTO_ANALYSIS_UPDATED_AFTER_P138B_P10_P12_LEGACY_REMARK_20260529
 ```

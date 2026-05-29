@@ -183,6 +183,8 @@ ALLOWED_TRUTH_LEVELS = {
     "POWERLOTTO_DRAW_EXT_VERIFIED",
     # P94 Tier B Controlled Apply (2026-05-26)
     "TIERB_DRYRUN_VALIDATED",
+    # P138B P10/P12 legacy row re-mark (2026-05-29)
+    "LEGACY_UNVERIFIED",
 }
 
 
@@ -675,6 +677,7 @@ def main() -> int:
     tlc = result["truth_level_counts"]
     print(f"truth_level — REGENERATED={tlc.get('REGENERATED_RETROSPECTIVE', 0)}  "
           f"ARTIFACT={tlc.get('ARTIFACT_RECONSTRUCTED_RETROSPECTIVE', 0)}  "
+          f"LEGACY_UNVERIFIED={tlc.get('LEGACY_UNVERIFIED', 0)}  "
           f"null={tlc.get('null', 0)}")
 
     print()

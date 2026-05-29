@@ -1,0 +1,379 @@
+{
+  "task_id": "P143",
+  "classification": "P143_POST_WAVE2_GOVERNANCE_READINESS_PLAN_READY",
+  "generated_at": "2026-05-29T08:24:14.636402+00:00",
+  "canonical_repo": "/Users/kelvin/Kelvin-WorkSpace/LotteryNew/.claude/worktrees/zen-gates-ff6802",
+  "canonical_branch": "claude/zen-gates-ff6802",
+  "repo_branch_check": {
+    "expected_repo": "/Users/kelvin/Kelvin-WorkSpace/LotteryNew/.claude/worktrees/zen-gates-ff6802",
+    "actual_repo": "/Users/kelvin/Kelvin-WorkSpace/LotteryNew/.claude/worktrees/zen-gates-ff6802",
+    "expected_branch": "claude/zen-gates-ff6802",
+    "actual_branch": "claude/zen-gates-ff6802",
+    "git_dir": "/Users/kelvin/Kelvin-WorkSpace/LotteryNew/.git/worktrees/zen-gates-ff6802",
+    "repo_ok": true,
+    "branch_ok": true
+  },
+  "db_snapshot": {
+    "total_rows": 94924,
+    "bet_index_schema_exists": true,
+    "rows_match_expected": true
+  },
+  "source_artifact_summary": {
+    "p142": {
+      "classification": "P142_WAVE2_MULTI_BET_APPLY_CHAIN_CLOSED",
+      "pass": true
+    },
+    "p141": {
+      "classification": "P141_POWER_ORTHOGONAL_5BET_APPLIED",
+      "pass": true
+    },
+    "p141a": {
+      "classification": "P141A_POWER_ORTHOGONAL_5BET_AUTHORIZATION_GATE_READY",
+      "pass": true
+    },
+    "p140": {
+      "classification": "P140_POWER_PRECISION_3BET_APPLIED",
+      "pass": true
+    },
+    "p140a": {
+      "classification": "P140A_DRAW_CONTEXT_CONTRACT_READY_FOR_P10_P12_APPLY",
+      "pass": true
+    },
+    "p139": {
+      "classification": "P139_P10_P12_MULTI_BET_DRY_RUN_GATE_READY",
+      "pass": true
+    },
+    "p138b": {
+      "classification": "P138B_P10_P12_LEGACY_ROWS_REMARKED",
+      "pass": true
+    },
+    "p137": {
+      "classification": "P137_P10_P12_LEGACY_ROW_GOVERNANCE_GATE_READY",
+      "pass": true
+    },
+    "p136": {
+      "classification": "P136_POST_RSR6_P10_P12_REEVALUATION_READY",
+      "pass": true
+    },
+    "p135": {
+      "classification": "P135_WAVE2_SAFE_CANDIDATES_CLOSED_P10_P12_REEVALUATION_PLAN_READY",
+      "pass": true
+    },
+    "p134": {
+      "classification": "P134_FOURIER_RHYTHM_3BET_APPLIED",
+      "pass": true
+    },
+    "p133": {
+      "classification": "P133_PP3_FREQORT_4BET_APPLIED",
+      "pass": true
+    },
+    "p132": {
+      "classification": "P132_MIDFREQ_FOURIER_MK_3BET_APPLIED",
+      "pass": true
+    },
+    "p131": {
+      "classification": "P131_ACB_MARKOV_MIDFREQ_3BET_APPLIED",
+      "pass": true
+    },
+    "p130": {
+      "classification": "P130_WAVE2_SAFE_CANDIDATES_DRY_RUN_PLAN_READY",
+      "pass": true
+    },
+    "all_required_classifications_pass": true
+  },
+  "wave2_chain_closure_summary": {
+    "p142_classification": "P142_WAVE2_MULTI_BET_APPLY_CHAIN_CLOSED",
+    "current_rows": 94924,
+    "total_wave2_multibet_inserted_rows": 22502,
+    "p131_rows": 3000,
+    "p132_rows": 3000,
+    "p133_rows": 4500,
+    "p134_rows": 3002,
+    "p140_rows": 3000,
+    "p141_rows": 6000,
+    "p10_p12_final_apply_chain_completed": true,
+    "after_rsr6_cleanup_rows": 72422,
+    "after_p134_rows": 85924,
+    "after_p140_rows": 88924,
+    "after_p141_rows": 94924
+  },
+  "final_strategy_distribution_matrix": {
+    "acb_markov_midfreq_3bet": {
+      "bet_index_distribution": {
+        "1": 1500,
+        "2": 1500,
+        "3": 1500
+      },
+      "total_rows": 4500
+    },
+    "fourier_rhythm_3bet": {
+      "bet_index_distribution": {
+        "1": 1501,
+        "2": 1501,
+        "3": 1501
+      },
+      "total_rows": 4503
+    },
+    "midfreq_fourier_mk_3bet": {
+      "bet_index_distribution": {
+        "1": 1500,
+        "2": 1500,
+        "3": 1500
+      },
+      "total_rows": 4500
+    },
+    "power_orthogonal_5bet": {
+      "bet_index_distribution": {
+        "1": 1550,
+        "2": 1500,
+        "3": 1500,
+        "4": 1500,
+        "5": 1500
+      },
+      "total_rows": 7550
+    },
+    "power_precision_3bet": {
+      "bet_index_distribution": {
+        "1": 1550,
+        "2": 1500,
+        "3": 1500
+      },
+      "total_rows": 4550
+    },
+    "pp3_freqort_4bet": {
+      "bet_index_distribution": {
+        "1": 1500,
+        "2": 1500,
+        "3": 1500,
+        "4": 1500
+      },
+      "total_rows": 6000
+    }
+  },
+  "governance_readiness_matrix": {
+    "strategy_champion_registry_update": {
+      "current_status": "NOT_STARTED",
+      "description": "Wave 2 strategies have replay rows applied but have not been evaluated for promotion to the strategy champion registry.",
+      "prerequisites": [
+        "P143 governance readiness plan (this task)",
+        "Per-strategy live draw performance data (0 live draws evaluated post-apply)",
+        "Champion evaluation criteria document",
+        "Explicit CTO/PM authorization per strategy"
+      ],
+      "db_mutation_required": false,
+      "authorization_required": true,
+      "risk_level": "MEDIUM",
+      "recommended_next_gate": "P144A: strategy champion registry readiness gate",
+      "blocking_reason": "No live draw performance data yet; registry promotion requires minimum monitored period."
+    },
+    "live_draw_monitoring_activation": {
+      "current_status": "NOT_STARTED",
+      "description": "Replay rows are in DB but no live monitoring is enabled for post-apply draw tracking or strategy performance evaluation.",
+      "prerequisites": [
+        "P143 governance readiness plan (this task)",
+        "DB rows = 94924 confirmed (done)",
+        "Drift guard PASS at 94924 (done)",
+        "Strategy distribution validated (done)",
+        "Monitoring tool or scheduler design review",
+        "Explicit monitoring activation authorization"
+      ],
+      "db_mutation_required": false,
+      "authorization_required": true,
+      "risk_level": "LOW",
+      "recommended_next_gate": "P144B: live draw monitoring activation gate",
+      "blocking_reason": "Monitoring framework not yet designed for Wave 2 post-apply state."
+    },
+    "legacy_unverified_remediation": {
+      "current_status": "PENDING_DECISION",
+      "description": "50 LEGACY_UNVERIFIED rows per strategy (power_precision_3bet, power_orthogonal_5bet) remain in DB with null provenance. They were excluded from multi-bet apply base but have not been remediated.",
+      "prerequisites": [
+        "P143 governance readiness plan (this task)",
+        "Decision on remediation option (keep/remark/quarantine/archive)",
+        "Explicit authorization for any DB mutation",
+        "Backup verification before any mutation"
+      ],
+      "db_mutation_required": true,
+      "authorization_required": true,
+      "risk_level": "LOW",
+      "recommended_next_gate": "P144C: legacy unverified remediation authorization gate",
+      "blocking_reason": "Remediation options not yet evaluated and authorized; any DB mutation requires per-option authorization."
+    }
+  },
+  "champion_registry_readiness": {
+    "registry_update_executed_in_p143": false,
+    "candidate_strategies": {
+      "acb_markov_midfreq_3bet": {
+        "total_rows_in_db": 4500,
+        "max_bet_index": 3,
+        "replay_rows_applied": true,
+        "live_draw_performance_data": false,
+        "champion_eval_ready": false,
+        "blocking_reason": "No live draw monitoring data yet; minimum evaluation period required."
+      },
+      "midfreq_fourier_mk_3bet": {
+        "total_rows_in_db": 4500,
+        "max_bet_index": 3,
+        "replay_rows_applied": true,
+        "live_draw_performance_data": false,
+        "champion_eval_ready": false,
+        "blocking_reason": "No live draw monitoring data yet; minimum evaluation period required."
+      },
+      "fourier_rhythm_3bet": {
+        "total_rows_in_db": 4503,
+        "max_bet_index": 3,
+        "replay_rows_applied": true,
+        "live_draw_performance_data": false,
+        "champion_eval_ready": false,
+        "blocking_reason": "No live draw monitoring data yet; minimum evaluation period required."
+      },
+      "pp3_freqort_4bet": {
+        "total_rows_in_db": 6000,
+        "max_bet_index": 4,
+        "replay_rows_applied": true,
+        "live_draw_performance_data": false,
+        "champion_eval_ready": false,
+        "blocking_reason": "No live draw monitoring data yet; minimum evaluation period required."
+      },
+      "power_precision_3bet": {
+        "total_rows_in_db": 4550,
+        "max_bet_index": 3,
+        "replay_rows_applied": true,
+        "live_draw_performance_data": false,
+        "champion_eval_ready": false,
+        "blocking_reason": "No live draw monitoring data yet; minimum evaluation period required."
+      },
+      "power_orthogonal_5bet": {
+        "total_rows_in_db": 7550,
+        "max_bet_index": 5,
+        "replay_rows_applied": true,
+        "live_draw_performance_data": false,
+        "champion_eval_ready": false,
+        "blocking_reason": "No live draw monitoring data yet; minimum evaluation period required."
+      }
+    },
+    "total_candidates": 6,
+    "wave2_safe_candidates": [
+      "acb_markov_midfreq_3bet",
+      "midfreq_fourier_mk_3bet",
+      "fourier_rhythm_3bet",
+      "pp3_freqort_4bet"
+    ],
+    "p10_p12_strategies": [
+      "power_precision_3bet",
+      "power_orthogonal_5bet"
+    ],
+    "champion_eval_ready_count": 0,
+    "authorization_required_later": true,
+    "recommended_next_gate": "P144A: strategy champion registry readiness gate",
+    "note": "All Wave 2 strategies have replay rows applied and are eligible for champion evaluation after a monitored period. No registry mutation in P143."
+  },
+  "live_monitoring_readiness": {
+    "monitoring_activated_in_p143": false,
+    "scheduler_installed": false,
+    "db_rows_prerequisite": {
+      "required": 94924,
+      "actual": 94924,
+      "satisfied": true
+    },
+    "drift_guard_prerequisite": {
+      "required": "PASS at 94924",
+      "actual": "PASS",
+      "satisfied": true
+    },
+    "strategy_distribution_prerequisite": {
+      "required": "All Wave 2 strategies applied",
+      "actual": "All Wave 2 strategies applied",
+      "satisfied": true
+    },
+    "readiness_prerequisites": [
+      "DB rows=94924 confirmed ✅",
+      "Drift guard PASS at 94924 ✅",
+      "Wave 2 strategy distribution validated ✅",
+      "Monitoring tool design and implementation (NOT DONE)",
+      "Monitoring scheduler design review (NOT DONE)",
+      "Explicit monitoring activation authorization (NOT DONE)"
+    ],
+    "infrastructure_prerequisites_met": false,
+    "authorization_required_later": true,
+    "recommended_next_gate": "P144B: live draw monitoring activation gate",
+    "note": "DB and drift guard prerequisites are satisfied. Monitoring tooling and authorization are the remaining blockers."
+  },
+  "legacy_unverified_remediation_readiness": {
+    "legacy_unverified_rows_total": 100,
+    "power_precision_3bet_legacy_rows": 50,
+    "power_orthogonal_5bet_legacy_rows": 50,
+    "remediation_executed_in_p143": false,
+    "db_write_in_p143": false,
+    "options": {
+      "keep": {
+        "description": "Leave LEGACY_UNVERIFIED rows as-is indefinitely.",
+        "db_mutation": false,
+        "risk": "LOW",
+        "pros": "Zero risk, no authorization required.",
+        "cons": "Rows remain with null provenance; may cause confusion in future audits."
+      },
+      "remark": {
+        "description": "Re-mark LEGACY_UNVERIFIED rows with a descriptive truth_level (e.g. POWERLOTTO_LEGACY_NULL_PROVENANCE_ACKNOWLEDGED).",
+        "db_mutation": true,
+        "risk": "LOW",
+        "pros": "Clarifies provenance status without deleting data.",
+        "cons": "Requires DB mutation and per-strategy authorization."
+      },
+      "quarantine": {
+        "description": "Move LEGACY_UNVERIFIED rows to a quarantine truth_level or separate flag to isolate them from future analysis.",
+        "db_mutation": true,
+        "risk": "MEDIUM",
+        "pros": "Clear isolation of null-provenance data.",
+        "cons": "Requires DB mutation, authorization, and rollback plan."
+      },
+      "archive": {
+        "description": "Export LEGACY_UNVERIFIED rows to CSV/JSON archive and delete from DB.",
+        "db_mutation": true,
+        "risk": "HIGH",
+        "pros": "Cleanest DB state.",
+        "cons": "Permanent deletion; highest risk; requires explicit authorization and backup."
+      }
+    },
+    "recommended_option": "remark",
+    "recommended_option_rationale": "Re-marking preserves data integrity and audit trail with minimal risk. Does not affect multi-bet apply base. Cleanest path without deletion risk.",
+    "authorization_required_later": true,
+    "recommended_next_gate": "P144C: legacy unverified remediation authorization gate",
+    "note": "Total 100 LEGACY_UNVERIFIED rows remain. All options evaluated; no mutation executed in P143."
+  },
+  "non_actions": {
+    "db_write_in_p143": false,
+    "controlled_apply_executed_in_p143": false,
+    "replay_rows_inserted_in_p143": 0,
+    "replay_rows_deleted_in_p143": 0,
+    "registry_update_executed_in_p143": false,
+    "monitoring_activated_in_p143": false,
+    "scheduler_installed": false,
+    "four_star_executed": false,
+    "p108_executed": false,
+    "p117_executed": false,
+    "p118_executed": false
+  },
+  "dirty_file_hygiene": {
+    "backups_untracked_not_staged": true,
+    "p135_p136_autouse_regen_risk_noted": true,
+    "forbidden_files_staged": false,
+    "forbidden_staged_files": [],
+    "staged_file_count_at_runtime": 0
+  },
+  "drift_guard_result": {
+    "status": "PASS",
+    "classification": "REPLAY_LIFECYCLE_DRIFT_GUARD_PASS",
+    "total_rows": 94924
+  },
+  "roadmap_update_status": "already present: CTO_ROADMAP_UPDATED_AFTER_P143_POST_WAVE2_GOVERNANCE_READINESS_PLAN_20260529",
+  "remaining_risks": [
+    "P135/P136 autouse fixtures regenerate artifacts dynamically on each test run; regenerated files appear as unstaged changes but are not P143 products.",
+    "LEGACY_UNVERIFIED rows (50 per P10/P12 strategy, total=100) remain without null-provenance remediation; recommended option is remark pending authorization.",
+    "backups/ directory remains untracked; rollback commands reference pre-P141 backup.",
+    "No live draw monitoring active for Wave 2 strategies post-apply; monitoring framework not yet designed.",
+    "Strategy champion registry not updated; all six Wave 2 strategies pending evaluation after minimum monitored period.",
+    "Wave 2 multi-bet rows in DB represent backfill only; no real-time prediction pipeline activated yet."
+  ],
+  "next_recommended_task": "P144A: strategy champion registry readiness gate; P144B: live draw monitoring activation gate; P144C: legacy unverified remediation authorization gate. May be executed as separate tasks or combined as P144 governance gate.",
+  "summary": "P143 produces the post-Wave2 governance readiness plan. DB=94924, drift guard PASS, Wave 2 chain closed (total inserted=22,502). Three governance directions assessed: strategy champion registry (NOT_STARTED), live draw monitoring (NOT_STARTED), LEGACY_UNVERIFIED remediation (PENDING_DECISION). No DB writes, no registry updates, no monitoring activation. Recommended option for legacy remediation: remark. Next: P144A/P144B/P144C authorization gates."
+}

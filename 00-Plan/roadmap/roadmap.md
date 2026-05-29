@@ -826,3 +826,14 @@ CTO_ROADMAP_UPDATED_AFTER_P140_POWER_PRECISION_3BET_APPLIED_20260529
 - LEGACY_UNVERIFIED rows (50 per strategy) excluded from apply base; unmodified.
 - Drift guard PASS at 94924. No DB write in P142.
 - Marker: `CTO_ROADMAP_UPDATED_AFTER_P142_WAVE2_MULTI_BET_APPLY_CHAIN_CLOSED_20260529`
+
+
+## P143 Post-Wave2 Governance Readiness Plan (2026-05-29)
+- Classification: `P143_POST_WAVE2_GOVERNANCE_READINESS_PLAN_READY`
+- Post-Wave2 governance readiness matrix produced. No DB mutation.
+- Three governance directions assessed:
+  1. Strategy champion registry update — NOT_STARTED, requires live draw monitoring data.
+  2. Live draw monitoring activation — NOT_STARTED, infrastructure prerequisites not yet met.
+  3. LEGACY_UNVERIFIED remediation — PENDING_DECISION, 100 rows (50 per P10/P12 strategy).
+- Recommended next gates: P144A (registry), P144B (monitoring), P144C (legacy remediation).
+- Marker: `CTO_ROADMAP_UPDATED_AFTER_P143_POST_WAVE2_GOVERNANCE_READINESS_PLAN_20260529`

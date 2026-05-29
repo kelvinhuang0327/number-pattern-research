@@ -102,12 +102,16 @@ def validate_preflight() -> dict:
         f"tests/test_p142_wave2_multibet_apply_chain_closure_audit.py",
         "00-Plan/roadmap/roadmap.md",
         "00-Plan/roadmap/CTO-Analysis.md",
+        # P143 successor task files (allowed after P143 is built)
+        "scripts/p143_post_wave2_governance_readiness_plan.py",
+        "outputs/replay/p143_post_wave2_governance_readiness_plan_20260529.json",
+        "docs/replay/p143_post_wave2_governance_readiness_plan_20260529.md",
+        "tests/test_p143_post_wave2_governance_readiness_plan.py",
     }
     unrelated = []
     for line in status_lines:
         if not line.strip():
             continue
-        xy = line[:2]
         path_str = line[3:].strip()
         if path_str.startswith("backups/"):
             continue

@@ -1202,3 +1202,15 @@ Next: P141 (power_orthogonal_5bet, P12, POWER_LOTTO, +6000 rows).
 - Marker: `CTO_ROADMAP_UPDATED_AFTER_P142_WAVE2_MULTI_BET_APPLY_CHAIN_CLOSED_20260529`
 
 **Artifact**: `outputs/replay/p142_wave2_multibet_apply_chain_closure_audit_20260529.json`
+
+
+## P143 Post-Wave2 Governance Readiness Plan (2026-05-29)
+- P143 produced governance readiness matrix for post-Wave2 state.
+- DB remains at 94924 rows. Drift guard PASS. No DB mutation.
+- Three governance directions: champion registry (NOT_STARTED), live monitoring (NOT_STARTED), legacy remediation (PENDING_DECISION).
+- LEGACY_UNVERIFIED rows: 100 total (50 power_precision_3bet + 50 power_orthogonal_5bet); recommended option: remark.
+- All six Wave 2 strategies eligible for champion evaluation after monitored period.
+- Next: P144A/P144B/P144C authorization gates.
+- Marker: `CTO_ROADMAP_UPDATED_AFTER_P143_POST_WAVE2_GOVERNANCE_READINESS_PLAN_20260529`
+
+**Artifact**: `outputs/replay/p143_post_wave2_governance_readiness_plan_20260529.json`

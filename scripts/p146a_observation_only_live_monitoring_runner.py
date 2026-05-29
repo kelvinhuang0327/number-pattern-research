@@ -229,16 +229,23 @@ def run_fixture_smoke_test(now_ts: str) -> tuple[dict, Path]:
 # ── Phase 2: Dirty file hygiene ───────────────────────────────────────────────
 
 def check_dirty_hygiene() -> dict:
-    status_out = _git(["status", "--short"])
-    lines = [l.strip() for l in status_out.splitlines() if l.strip()]
+    # Use raw subprocess to avoid _git()'s .strip() mangling the first line's leading space
+    result = subprocess.run(
+        ["git", "status", "--short"], cwd=REPO_ROOT, capture_output=True, text=True, check=True
+    )
+    # Do NOT strip lines — leading space is part of the XY status code (git format: XY<space><path>)
+    lines = [l.rstrip("\n") for l in result.stdout.splitlines() if l.strip()]
     forbidden_staged: list[str] = []
     backups_untracked = False
 
     for line in lines:
         if not line:
             continue
+        if len(line) < 3:
+            continue
+        # git status --short: XY<space><path>  (XY = 2 chars, then space, then path)
         status_code = line[:2]
-        file_path = line[3:].strip()
+        file_path = line[3:]
 
         if file_path.startswith("backups/") and "?" in status_code:
             backups_untracked = True

@@ -19,7 +19,7 @@ MD_PATH = REPO_ROOT / "docs" / "replay" / "p130_wave2_safe_candidates_dry_run_pl
 DB_PATH = REPO_ROOT / "lottery_api" / "data" / "lottery_v2.db"
 
 EXPECTED_DB_ROWS = 72422            # P130 artifact snapshot (no DB write in P130)
-EXPECTED_DB_ROWS_CURRENT = 82922    # After P133 applied pp3_freqort_4bet +4500
+EXPECTED_DB_ROWS_CURRENT = 85924    # After P134 applied fourier_rhythm_3bet +3002
 SAFE_CANDIDATE_IDS = [
     "acb_markov_midfreq_3bet",
     "midfreq_fourier_mk_3bet",
@@ -109,8 +109,9 @@ def test_db_rows_live(db_conn):
     # P131 applied acb_markov_midfreq_3bet +3000 rows (72422 → 75422).
     # P132 applied midfreq_fourier_mk_3bet +3000 rows (75422 → 78422).
     # P133 applied pp3_freqort_4bet +4500 rows (78422 → 82922).
+    # P134 applied fourier_rhythm_3bet +3002 rows (82922 → 85924).
     assert count == EXPECTED_DB_ROWS_CURRENT, (
-        f"DB has {count} rows, expected {EXPECTED_DB_ROWS_CURRENT} (post-P133)"
+        f"DB has {count} rows, expected {EXPECTED_DB_ROWS_CURRENT} (post-P134)"
     )
 
 
@@ -445,18 +446,19 @@ def test_markdown_has_auth_phrase_templates():
 
 
 def test_safe_candidates_no_bi2_rows_live(db_conn):
-    # P131 applied acb_markov_midfreq_3bet. P132 applied midfreq_fourier_mk_3bet.
-    # P133 applied pp3_freqort_4bet. P9 fourier_rhythm_3bet still 0.
-    APPLIED = {"acb_markov_midfreq_3bet", "midfreq_fourier_mk_3bet", "pp3_freqort_4bet"}
+    # All Wave 2 safe candidates applied: P131/P132/P133/P134.
+    # fourier_rhythm_3bet (P9 anomaly) has 1501 bi=2 rows.
+    APPLIED_1500 = {"acb_markov_midfreq_3bet", "midfreq_fourier_mk_3bet", "pp3_freqort_4bet"}
+    APPLIED_1501 = {"fourier_rhythm_3bet"}   # P9 anomaly via P134
     for sid in SAFE_CANDIDATE_IDS:
         count = db_conn.execute(
             "SELECT COUNT(*) FROM strategy_prediction_replays WHERE strategy_id=? AND bet_index=2",
             (sid,),
         ).fetchone()[0]
-        if sid in APPLIED:
+        if sid in APPLIED_1500:
             assert count == 1500, f"{sid} should have 1500 bi=2 rows after P131/P132/P133, got {count}"
-        else:
-            assert count == 0, f"{sid} should have 0 bi=2 rows (not yet applied), got {count}"
+        elif sid in APPLIED_1501:
+            assert count == 1501, f"{sid} should have 1501 bi=2 rows after P134 (P9 anomaly), got {count}"
 
 
 def test_safe_candidates_bi1_rows_present(db_conn):

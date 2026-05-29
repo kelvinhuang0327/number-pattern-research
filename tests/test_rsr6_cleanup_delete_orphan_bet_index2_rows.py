@@ -122,8 +122,8 @@ def test_db_rows_after_live(db_conn):
     count = db_conn.execute(
         "SELECT COUNT(*) FROM strategy_prediction_replays"
     ).fetchone()[0]
-    # RSR-6 cleanup landed at 72422. P131 +3000 (→75422). P132 +3000 (→78422). P133 +4500 (→82922).
-    assert count == 82922, f"Live DB row count: expected 82922 (post-P133), got {count}"
+    # RSR-6 cleanup landed at 72422. P131 +3000 (→75422). P132 +3000 (→78422). P133 +4500 (→82922). P134 +3002 (→85924).
+    assert count == 85924, f"Live DB row count: expected 85924 (post-P134), got {count}"
 
 
 # ---------------------------------------------------------------------------

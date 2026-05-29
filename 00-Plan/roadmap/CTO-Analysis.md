@@ -964,3 +964,16 @@ P131 acb_markov_midfreq_3bet (4500 rows) preserved. P132 midfreq_fourier_mk_3bet
 P9 fourier_rhythm_3bet deferred to P134 (1501-row anomaly). P10/P12 await re-evaluation.
 
 **Artifact**: `outputs/replay/p133_apply_pp3_freqort_4bet_20260528.json`
+
+---
+
+### P134: fourier_rhythm_3bet Wave 2 Apply (2026-05-29)
+
+**Status**: COMPLETE | **Classification**: P134_FOURIER_RHYTHM_3BET_APPLIED
+
+CTO Note: P9 Wave 2 safe candidate `fourier_rhythm_3bet` (POWER_LOTTO) applied.
+3,002 bet-2/bet-3 rows inserted via P128 phase2 adapter (P9 anomaly: 1501 rows base).
+DB 82,922 → 85924. P131/P132/P133 rows preserved.
+Wave 2 safe candidates are now COMPLETE. P10/P12 await re-evaluation.
+
+**Artifact**: `outputs/replay/p134_apply_fourier_rhythm_3bet_20260528.json`

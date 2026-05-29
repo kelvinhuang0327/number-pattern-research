@@ -33,7 +33,7 @@ P127_MD   = REPO_ROOT / "docs" / "replay" / f"p127_adapter_build_specs_remaining
 P126G_JSON = REPO_ROOT / "outputs" / "replay" / f"p126g_all_tier_b_apply_closure_audit_{ARTIFACT_DATE}.json"
 
 EXPECTED_TOTAL_ROWS = 72462          # Historical: DB state when P127 artifact was generated
-EXPECTED_TOTAL_ROWS_CURRENT = 82922  # Post P133 apply (pp3_freqort_4bet +4500)
+EXPECTED_TOTAL_ROWS_CURRENT = 85924  # Post P134 apply (fourier_rhythm_3bet +3002)
 EXPECTED_STRATEGY_COUNT = 12
 
 REQUIRED_SPEC_FIELDS = [
@@ -482,9 +482,9 @@ def test_live_db_adapter_strategies_no_new_bets_added(db_conn):
     # P131 applied acb_markov_midfreq_3bet bet-2+bet-3 = 3000 rows (authorized Wave 2 apply).
     # P132 applied midfreq_fourier_mk_3bet bet-2+bet-3 = 3000 rows (authorized Wave 2 apply).
     # P133 applied pp3_freqort_4bet bet-2+bet-3+bet-4 = 4500 rows (authorized Wave 2 apply).
-    # No other P127 adapter strategies have bet_index>1 rows.
-    assert rows == 10500, \
-        f"Expected 10500 bet_index>1 rows (P131 acb +3000, P132 midfreq_mk +3000, P133 pp3 +4500), found {rows}"
+    # P134 applied fourier_rhythm_3bet bet-2+bet-3 = 3002 rows (authorized Wave 2 apply, P9 anomaly).
+    assert rows == 13502, \
+        f"Expected 13502 bet_index>1 rows (P131 acb +3000, P132 midfreq_mk +3000, P133 pp3 +4500, P134 fourier +3002), found {rows}"
 
 
 def test_live_db_acb_markov_midfreq_3bet_rows(db_conn):
@@ -552,8 +552,8 @@ def test_live_db_fourier_rhythm_3bet_rows(db_conn):
         "SELECT COUNT(*) FROM strategy_prediction_replays WHERE strategy_id = ? AND lottery_type = ?",
         ("fourier_rhythm_3bet", "POWER_LOTTO")
     ).fetchone()[0]
-    # 1501 (1 extra row, RSR-7)
-    assert count == 1501
+    # P134 applied bet-2 and bet-3 rows (1501 each) → 4503 total (1501×3, P9 anomaly)
+    assert count == 4503
 
 
 def test_live_db_fourier30_markov30_2bet_rows(db_conn):

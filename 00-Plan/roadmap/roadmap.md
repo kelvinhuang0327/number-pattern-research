@@ -568,3 +568,24 @@ Handle 1501-row draw-ext anomaly (115000041).
 ```text
 CTO_ROADMAP_UPDATED_AFTER_P133_PP3_FREQORT_4BET_APPLIED_20260529
 ```
+
+---
+
+### P134 — fourier_rhythm_3bet Wave 2 Controlled Apply [2026-05-29]
+
+**Classification**: P134_FOURIER_RHYTHM_3BET_APPLIED
+
+P9 `fourier_rhythm_3bet` (POWER_LOTTO) bet-2 and bet-3 rows applied via P128 phase2 adapter.
+P9 anomaly: 1501 bet-1 rows (draw-ext 115000041) → +3002 rows.
+
+- **Rows inserted:** +3,002 (1,501 bet-2 + 1,501 bet-3)
+- **DB rows:** 82,922 → 85924
+- **Backup:** `/Users/kelvin/Kelvin-WorkSpace/LotteryNew/.claude/worktrees/zen-gates-ff6802/backups/lottery_v2.db.p134_backup_20260529T022924Z.db`
+- **Drift guard:** PASS at 85924
+- **P131/P132/P133 rows preserved**
+- **Wave 2 safe candidates: COMPLETE**
+- **P10/P12 not apply-ready** — pending post-RSR6 re-evaluation
+
+```text
+CTO_ROADMAP_UPDATED_AFTER_P134_FOURIER_RHYTHM_3BET_APPLIED_20260529
+```

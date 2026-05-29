@@ -23,7 +23,7 @@ PHASE3_MD = (
 DB_PATH = REPO_ROOT / "lottery_api" / "data" / "lottery_v2.db"
 
 EXPECTED_DB_ROWS = 72422            # P128P3 artifact snapshot (no DB write in P128P3)
-EXPECTED_DB_ROWS_CURRENT = 82922    # After P133 applied pp3_freqort_4bet +4500
+EXPECTED_DB_ROWS_CURRENT = 85924    # After P134 applied fourier_rhythm_3bet +3002
 SAFE_CANDIDATE_IDS = [
     "acb_markov_midfreq_3bet",
     "midfreq_fourier_mk_3bet",
@@ -83,9 +83,9 @@ def test_db_rows_artifact(phase3_data):
 
 def test_db_rows_live(db_conn):
     count = db_conn.execute("SELECT COUNT(*) FROM strategy_prediction_replays").fetchone()[0]
-    # P128P3 was read-only. P131 applied acb_markov_midfreq_3bet +3000 rows.
+    # P128P3 was read-only. P131→P132→P133→P134 applied Wave 2 safe candidates.
     assert count == EXPECTED_DB_ROWS_CURRENT, (
-        f"DB has {count} rows, expected {EXPECTED_DB_ROWS_CURRENT} (post-P131)"
+        f"DB has {count} rows, expected {EXPECTED_DB_ROWS_CURRENT} (post-P134)"
     )
 
 
@@ -346,15 +346,18 @@ def test_markdown_has_classification():
 
 def test_safe_candidates_no_bi2_rows(db_conn):
     # P131 applied acb_markov_midfreq_3bet. P132 applied midfreq_fourier_mk_3bet.
-    # P133 applied pp3_freqort_4bet. P9 fourier_rhythm_3bet still 0.
-    APPLIED = {"acb_markov_midfreq_3bet", "midfreq_fourier_mk_3bet", "pp3_freqort_4bet"}
+    # P133 applied pp3_freqort_4bet. P134 applied fourier_rhythm_3bet (1501 rows, P9 anomaly).
+    APPLIED_1500 = {"acb_markov_midfreq_3bet", "midfreq_fourier_mk_3bet", "pp3_freqort_4bet"}
+    APPLIED_1501 = {"fourier_rhythm_3bet"}   # P9 anomaly
     for sid in SAFE_CANDIDATE_IDS:
         count = db_conn.execute(
             "SELECT COUNT(*) FROM strategy_prediction_replays WHERE strategy_id=? AND bet_index=2",
             (sid,),
         ).fetchone()[0]
-        if sid in APPLIED:
+        if sid in APPLIED_1500:
             assert count == 1500, f"{sid} should have 1500 bi=2 rows after P131/P132/P133, got {count}"
+        elif sid in APPLIED_1501:
+            assert count == 1501, f"{sid} should have 1501 bi=2 rows after P134 (P9 anomaly), got {count}"
         else:
             assert count == 0, f"{sid} should have 0 bi=2 rows (not yet applied), got {count}"
 

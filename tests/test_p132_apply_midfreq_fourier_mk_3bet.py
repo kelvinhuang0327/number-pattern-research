@@ -38,7 +38,7 @@ PYTHON    = sys.executable
 
 EXPECTED_DB_ROWS_BEFORE   = 75422
 EXPECTED_DB_ROWS_AFTER    = 78422
-EXPECTED_DB_ROWS_CURRENT  = 82922   # Post P133 apply (pp3_freqort_4bet +4500)
+EXPECTED_DB_ROWS_CURRENT  = 85924   # Post P134 apply (fourier_rhythm_3bet +3002)
 EXPECTED_INSERT_ROWS      = 3000
 EXPECTED_BET2_ROWS        = 1500
 EXPECTED_BET3_ROWS        = 1500
@@ -466,7 +466,7 @@ def test_live_db_total_rows(db_conn):
     count = db_conn.execute(
         "SELECT COUNT(*) FROM strategy_prediction_replays"
     ).fetchone()[0]
-    # P133 applied pp3_freqort_4bet after P132 — live DB is now 82922
+    # P134 applied fourier_rhythm_3bet after P133 — live DB is now 85924
     assert count == EXPECTED_DB_ROWS_CURRENT, f"Expected {EXPECTED_DB_ROWS_CURRENT}, got {count}"
 
 
@@ -525,11 +525,12 @@ def test_live_db_p131_acb_preserved(db_conn):
     assert count == EXPECTED_P131_TOTAL, f"P131 acb_markov_midfreq_3bet: expected {EXPECTED_P131_TOTAL}, got {count}"
 
 
-def test_live_db_p9_not_applied(db_conn):
+def test_live_db_p9_applied_after_p134(db_conn):
+    # P134 applied fourier_rhythm_3bet bet-2+bet-3 = 3002 rows (P9 anomaly)
     count = db_conn.execute(
         "SELECT COUNT(*) FROM strategy_prediction_replays WHERE strategy_id='fourier_rhythm_3bet' AND bet_index > 1",
     ).fetchone()[0]
-    assert count == 0, f"P9 fourier_rhythm_3bet bet_index>1 must be 0, got {count}"
+    assert count == 3002, f"P9 fourier_rhythm_3bet should have 3002 bi>1 rows after P134, got {count}"
 
 
 def test_live_db_p11_applied_after_p133(db_conn):

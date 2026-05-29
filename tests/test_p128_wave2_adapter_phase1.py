@@ -33,7 +33,7 @@ JSON_ARTIFACT = WORKTREE_ROOT / "outputs" / "replay" / "p128_wave2_adapter_phase
 MD_ARTIFACT = WORKTREE_ROOT / "docs" / "replay" / "p128_wave2_adapter_phase1_20260528.md"
 ADAPTER_MODULE = WORKTREE_ROOT / "lottery_api" / "models" / "p128_wave2_phase1_adapters.py"
 
-EXPECTED_DB_ROWS = 82922          # Post P133 apply (pp3_freqort_4bet +4500 rows)
+EXPECTED_DB_ROWS = 85924          # Post P134 apply (fourier_rhythm_3bet +3002 rows)
 EXPECTED_DB_ROWS_AT_P128_TIME = 72462  # Historical: DB state when P128 artifact was generated
 EXPECTED_CLASSIFICATION = "P128_WAVE2_ADAPTER_PHASE1_READY"
 EXPECTED_TASK_ID = "P128"

@@ -1306,3 +1306,17 @@ Next: P141 (power_orthogonal_5bet, P12, POWER_LOTTO, +6000 rows).
 - Marker: `CTO_ROADMAP_UPDATED_AFTER_P147_CHAMPION_EVALUATION_GATE_READINESS_AUDIT_20260530`
 
 **Artifact**: `outputs/replay/p147_champion_evaluation_gate_readiness_audit_20260529.json`
+
+## P148 Live Monitoring Verified Evidence Collection Gate (2026-05-30) — DONE
+- Classification: `P148_LIVE_MONITORING_VERIFIED_EVIDENCE_COLLECTION_GATE_READY`
+- Evidence collection gate established for LIVE_MONITORING_VERIFIED records across all 6 Wave 2 strategies.
+- Current state: 0 LIVE_MONITORING_VERIFIED records in production DB or output directories.
+- Gate defines schema (12+ fields), ingestion path, stop conditions, and champion eval unlock criteria.
+- Champion evaluation remains BLOCKED: champion_evaluation_allowed=false for all 6 strategies.
+- Recommended execution path: Option A (manual, file artifact, no DB write) or Option B (local runner, file artifact, no DB write). Both low-risk; no DB mutation during collection phase.
+- No DB write, no controlled_apply, no champion promotion, no registry update, no scheduler install in P148.
+- Drift guard PASS at 94924 rows.
+- Next gate: P148B_MANUAL_LIVE_VERIFIED_EVIDENCE_FILE_ARTIFACT_RUN
+- Marker: `CTO_ROADMAP_UPDATED_AFTER_P148_LIVE_MONITORING_VERIFIED_EVIDENCE_COLLECTION_GATE_20260530`
+
+**Artifact**: `outputs/replay/p148_live_monitoring_verified_evidence_collection_gate_20260529.json`

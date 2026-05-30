@@ -1,0 +1,193 @@
+{
+  "task_id": "P148",
+  "classification": "P148_LIVE_MONITORING_VERIFIED_EVIDENCE_COLLECTION_GATE_READY",
+  "generated_at": "2026-05-30T08:26:27.424758+00:00",
+  "canonical_repo": "/Users/kelvin/Kelvin-WorkSpace/LotteryNew/.claude/worktrees/zen-gates-ff6802",
+  "canonical_branch": "claude/zen-gates-ff6802",
+  "repo_branch_check": {
+    "repo_ok": true,
+    "branch_ok": true
+  },
+  "db_snapshot": {
+    "total_rows": 94924,
+    "legacy_unverified_rows": 100,
+    "live_monitoring_verified_rows": 0
+  },
+  "p147_source_summary": {
+    "classification": "P147_CHAMPION_EVALUATION_BLOCKED_PENDING_LIVE_MONITORING_VERIFIED",
+    "champion_evaluation_allowed": false,
+    "champion_promotion_allowed": false,
+    "registry_update_allowed": false
+  },
+  "p146b_source_summary": {
+    "classification": "P146B_AUTHORIZED_OBSERVATION_ONLY_MONITORING_RUN_COMPLETED",
+    "all_records_mock_observation_only": true
+  },
+  "candidate_strategy_inventory": [
+    {
+      "strategy_id": "acb_markov_midfreq_3bet",
+      "lottery_type": "DAILY_539",
+      "live_verified_records": 0,
+      "collection_ready": false,
+      "blocking_reason": "no LIVE_MONITORING_VERIFIED evidence"
+    },
+    {
+      "strategy_id": "midfreq_fourier_mk_3bet",
+      "lottery_type": "POWER_LOTTO",
+      "live_verified_records": 0,
+      "collection_ready": false,
+      "blocking_reason": "no LIVE_MONITORING_VERIFIED evidence"
+    },
+    {
+      "strategy_id": "fourier_rhythm_3bet",
+      "lottery_type": "POWER_LOTTO",
+      "live_verified_records": 0,
+      "collection_ready": false,
+      "blocking_reason": "no LIVE_MONITORING_VERIFIED evidence"
+    },
+    {
+      "strategy_id": "pp3_freqort_4bet",
+      "lottery_type": "POWER_LOTTO",
+      "live_verified_records": 0,
+      "collection_ready": false,
+      "blocking_reason": "no LIVE_MONITORING_VERIFIED evidence"
+    },
+    {
+      "strategy_id": "power_precision_3bet",
+      "lottery_type": "POWER_LOTTO",
+      "live_verified_records": 0,
+      "collection_ready": false,
+      "blocking_reason": "no LIVE_MONITORING_VERIFIED evidence"
+    },
+    {
+      "strategy_id": "power_orthogonal_5bet",
+      "lottery_type": "POWER_LOTTO",
+      "live_verified_records": 0,
+      "collection_ready": false,
+      "blocking_reason": "no LIVE_MONITORING_VERIFIED evidence"
+    }
+  ],
+  "current_evidence_state": {
+    "live_monitoring_verified_records_found": 0,
+    "mock_observation_records_found": 7,
+    "champion_evaluation_currently_blocked": true,
+    "champion_promotion_allowed": false,
+    "registry_update_allowed": false
+  },
+  "live_verified_evidence_contract": {
+    "monitoring_truth_level_required": "LIVE_MONITORING_VERIFIED",
+    "required_fields": [
+      "monitored_strategy_id",
+      "lottery_type",
+      "target_draw",
+      "prediction_generated_at",
+      "draw_result_available_at",
+      "predicted_numbers",
+      "actual_numbers",
+      "hit_count",
+      "evaluation_status",
+      "source_trace",
+      "monitoring_truth_level",
+      "created_at",
+      "verification_method",
+      "evidence_source"
+    ],
+    "contract_complete": true,
+    "file_artifact_first": true,
+    "production_db_write_required_for_p148": false
+  },
+  "evidence_source_readiness_audit": {
+    "local_verified_source_available": false,
+    "manual_draw_result_input_possible": true,
+    "external_live_api_required": false,
+    "fixture_mock_insufficient_for_live_verified": true,
+    "scheduler_required": false,
+    "authorization_required_before_execution": true,
+    "notes": "Local draw history DB contains historical data only. Manual input of post-apply draw results is the lowest-risk path. External live API would require explicit authorization. Mock/fixture data cannot substitute for LIVE_MONITORING_VERIFIED."
+  },
+  "collection_path_options": {
+    "option_a_manual_draw_result_file_artifact": {
+      "description": "Manually input post-apply draw results to generate LIVE_MONITORING_VERIFIED file artifact",
+      "requires_db_write": false,
+      "requires_live_api": false,
+      "requires_scheduler": false,
+      "requires_authorization_phrase": true,
+      "risk_level": "LOW",
+      "recommended": true
+    },
+    "option_b_local_verified_draw_source_file_artifact": {
+      "description": "Use local lottery_v2.db draw history (post-apply draws only) to verify predictions and generate file artifact",
+      "requires_db_write": false,
+      "requires_live_api": false,
+      "requires_scheduler": false,
+      "requires_authorization_phrase": true,
+      "risk_level": "LOW",
+      "recommended": true
+    },
+    "option_c_live_api_after_explicit_authorization": {
+      "description": "Call external lottery draw API after receiving explicit authorization phrase",
+      "requires_db_write": false,
+      "requires_live_api": true,
+      "requires_scheduler": false,
+      "requires_authorization_phrase": true,
+      "risk_level": "MEDIUM",
+      "recommended": false
+    },
+    "option_d_scheduled_monitoring_after_explicit_authorization": {
+      "description": "Install scheduler/cron for automatic monitoring after explicit authorization phrase",
+      "requires_db_write": true,
+      "requires_live_api": true,
+      "requires_scheduler": true,
+      "requires_authorization_phrase": true,
+      "risk_level": "HIGH",
+      "recommended": false
+    }
+  },
+  "recommended_collection_path": {
+    "path": "option_a_or_b",
+    "rationale": "Manual input or local verified source requires no live API, no scheduler, and no DB writes. Produces file artifact first. Lowest risk.",
+    "next_gate": "P148B_MANUAL_LIVE_VERIFIED_EVIDENCE_FILE_ARTIFACT_RUN"
+  },
+  "next_execution_gate": {
+    "gate_id": "P148B_MANUAL_LIVE_VERIFIED_EVIDENCE_FILE_ARTIFACT_RUN",
+    "description": "Run P148B to collect real post-apply draw results manually and generate LIVE_MONITORING_VERIFIED file artifacts (no DB write)",
+    "prerequisites": [
+      "At least 1 real post-apply draw result available for a candidate strategy",
+      "Prediction artifact for that draw already exists",
+      "Explicit authorization phrase provided"
+    ],
+    "alternative_gate": "P148A_SOURCE_INTEGRATION_PLAN",
+    "alternative_condition": "If no post-apply draw results available yet"
+  },
+  "non_actions": {
+    "db_write_in_p148": false,
+    "controlled_apply_executed_in_p148": false,
+    "replay_rows_inserted_in_p148": 0,
+    "replay_rows_updated_in_p148": 0,
+    "replay_rows_deleted_in_p148": 0,
+    "live_monitoring_verified_record_created_in_p148": false,
+    "registry_update_executed_in_p148": false,
+    "champion_promotion_executed_in_p148": false,
+    "monitoring_run_executed_in_p148": false,
+    "scheduler_installed": false,
+    "live_api_called": false,
+    "four_star_executed": false,
+    "p108_executed": false,
+    "p117_executed": false,
+    "p118_executed": false
+  },
+  "dirty_file_hygiene": {
+    "backups_untracked_not_staged": true,
+    "p135_p136_p142_autouse_regen_risk_noted": true,
+    "forbidden_files_staged": false
+  },
+  "roadmap_update_status": "updated",
+  "remaining_risks": [
+    "No real post-apply draw results available yet for any candidate strategy",
+    "Champion evaluation remains blocked until LIVE_MONITORING_VERIFIED evidence collected",
+    "Option C/D (live API / scheduler) require explicit authorization before execution",
+    "LEGACY_UNVERIFIED rows (100) governed baseline \u2014 excluded from evaluation"
+  ],
+  "next_recommended_task": "P148B_MANUAL_LIVE_VERIFIED_EVIDENCE_FILE_ARTIFACT_RUN",
+  "summary": "P148 gate established: LIVE_MONITORING_VERIFIED evidence collection plan ready. All 6 champion candidate strategies require at least 1 real post-apply draw observation. Recommended path: Option A/B (manual/local, file artifact only, no DB write). Next: P148B for actual evidence collection."
+}

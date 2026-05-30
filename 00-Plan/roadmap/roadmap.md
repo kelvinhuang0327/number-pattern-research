@@ -927,3 +927,14 @@ CTO_ROADMAP_UPDATED_AFTER_P140_POWER_PRECISION_3BET_APPLIED_20260529
 - Drift guard PASS at 94924 rows. 1744/1744 regression tests PASS.
 - Next gate: P148_LIVE_MONITORING_VERIFIED_EVIDENCE_COLLECTION_GATE
 - Marker: `CTO_ROADMAP_UPDATED_AFTER_P147_CHAMPION_EVALUATION_GATE_READINESS_AUDIT_20260530`
+
+## P148 Live Monitoring Verified Evidence Collection Gate (2026-05-30) — DONE
+- Classification: `P148_LIVE_MONITORING_VERIFIED_EVIDENCE_COLLECTION_GATE_READY`
+- Evidence collection gate established: defines schema, ingestion path, and stop conditions for LIVE_MONITORING_VERIFIED records.
+- 0 LIVE_MONITORING_VERIFIED records currently exist in DB or output directories.
+- Champion evaluation remains BLOCKED until at least 1 LIVE_MONITORING_VERIFIED record per strategy is collected.
+- Recommended execution path: Option A (manual on-demand, file artifact only, no DB write) or Option B (local runner, file artifact, no DB write). Both are low-risk; no DB write occurs during evidence collection phase.
+- No DB write, no controlled_apply, no champion promotion, no registry update in P148.
+- Drift guard PASS at 94924 rows.
+- Next gate: P148B_MANUAL_LIVE_VERIFIED_EVIDENCE_FILE_ARTIFACT_RUN
+- Marker: `CTO_ROADMAP_UPDATED_AFTER_P148_LIVE_MONITORING_VERIFIED_EVIDENCE_COLLECTION_GATE_20260530`

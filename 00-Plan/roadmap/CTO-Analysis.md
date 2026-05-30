@@ -2,7 +2,7 @@
 
 ## 1. CTO Review Date
 
-2026-05-30 Asia/Taipei (updated after P148C local draw result source audit gate run).
+2026-05-30 Asia/Taipei (updated after P149 replay product coverage audit).
 
 Final CTO classification target: `CTO_ROADMAP_UPDATED_WITH_RISKS`.
 
@@ -1332,3 +1332,17 @@ Next: P141 (power_orthogonal_5bet, P12, POWER_LOTTO, +6000 rows).
 - Marker: `CTO_ROADMAP_UPDATED_AFTER_P148B_MANUAL_LIVE_VERIFIED_EVIDENCE_FILE_ARTIFACT_RUN_20260530`
 
 **Artifact**: `outputs/replay/p148b_manual_live_verified_evidence_file_artifact_run_20260529.json`
+
+## P149 Replay Product Coverage Audit (2026-05-30) — DONE
+- Classification: `P149_REPLAY_PRODUCT_COVERAGE_AUDIT_READY`
+- Full-strategy historical replay product coverage audit completed. Shifts mainline focus from champion/live-evidence governance back to replay product completeness.
+- 40 strategy IDs discovered (18 in registry, 35 in DB, 13 in both). 94924 replay rows across 36 strategy-lottery pairs.
+- Key findings: 22 DB-only strategies missing registry lifecycle; 5 registry-only strategies (1 ONLINE: h6_gate_mk20_ew85 has zero rows); bet_index not surfaced in API history response; UI has no multi-bet display; no_data_reason field absent from schema.
+- 10 product gaps identified (1 CRITICAL, 3 HIGH, 5 MEDIUM, 1 LOW).
+- P148C blocks champion evaluation but NOT replay product display — historical actual_numbers are valid for replay hit-rate statistics per boundary analysis.
+- No DB write, no controlled_apply, no champion promotion, no registry update in P149.
+- Drift guard PASS at 94924 rows. Regression: 303/303 PASS + 55/55 P149 tests PASS.
+- Next: P150_REPLAY_API_ALL_STRATEGY_COVERAGE (recommended)
+- Marker: `CTO_ROADMAP_UPDATED_AFTER_P149_REPLAY_PRODUCT_COVERAGE_AUDIT_20260530`
+
+**Artifact**: `outputs/replay/p149_replay_product_coverage_audit_20260529.json`

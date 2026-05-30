@@ -958,3 +958,13 @@ CTO_ROADMAP_UPDATED_AFTER_P140_POWER_PRECISION_3BET_APPLIED_20260529
 - No DB write, no controlled_apply, no champion promotion, no registry update, no live API call in P148C.
 - Next: P148D — accept Kelvin manual draw result input, validate, create LIVE_MONITORING_VERIFIED record.
 - Marker: `CTO_ROADMAP_UPDATED_AFTER_P148C_LOCAL_DRAW_RESULT_SOURCE_AUDIT_GATE_20260530`
+
+## P149 Replay Product Coverage Audit (2026-05-30) — DONE
+- Classification: `P149_REPLAY_PRODUCT_COVERAGE_AUDIT_READY`
+- Full-strategy historical replay product coverage audit. Shifts mainline from champion governance to replay product completeness.
+- 40 strategy IDs discovered: 18 in registry, 35 in DB, 13 in both; 22 DB-only missing registry lifecycle.
+- 10 product gaps: 1 CRITICAL (h6_gate_mk20_ew85 ONLINE but zero rows), 3 HIGH (22 DB-only strategies, bet_index absent from API, no multi-bet display in UI).
+- P148C does NOT block replay display — historical actual_numbers valid for replay; only blocks champion evaluation.
+- No DB write, no controlled_apply, no champion promotion in P149. Drift guard PASS at 94924 rows.
+- Next: P150_REPLAY_API_ALL_STRATEGY_COVERAGE
+- Marker: `CTO_ROADMAP_UPDATED_AFTER_P149_REPLAY_PRODUCT_COVERAGE_AUDIT_20260530`

@@ -1,8 +1,8 @@
-# CTO Analysis - After P153 Replay Product E2E Acceptance Audit
+# CTO Analysis - After P154 Replay Product Release Candidate Closure
 
 ## 1. CTO Review Date
 
-2026-05-30 Asia/Taipei (updated after P153 replay product E2E acceptance audit).
+2026-05-30 Asia/Taipei (updated after P154 replay product release candidate closure).
 
 Final CTO classification target: `CTO_ROADMAP_UPDATED_WITH_RISKS`.
 
@@ -65,7 +65,22 @@ P153 confirms the LotteryNew replay product has achieved end-to-end functional c
 
 **69 P153 tests + 233 regression tests pass.**
 
-**Next**: P154_REPLAY_PRODUCT_RELEASE_CANDIDATE_CLOSURE (or P154_REPLAY_UI_POLISH_AND_OPERATOR_REVIEW)
+**Next**: Post-RC backlog — P155/P156/P157/P158 (non-blocking); Champion chain proceeds independently.
+
+## 0e. P154 Update (2026-05-30)
+
+**Classification**: `P154_REPLAY_PRODUCT_RELEASE_CANDIDATE_CLOSED`
+
+P154 formally closes the LotteryNew replay product release candidate:
+- **0 blocking gaps** — replay product goal fully achieved
+- **40/40 strategies** in catalog, **94924** rows, multi-bet max Bet 5
+- **Operator Guide** created: `docs/replay/REPLAY_PRODUCT_OPERATOR_GUIDE_20260529.md`
+- **4 non-blocking risks** logged in post-RC backlog (P155–P158)
+- Champion evaluation BLOCKED in its own governance chain — does NOT affect replay product
+
+**69 P154 tests + 302 regression tests pass.**
+
+**Post-RC backlog priority**: P156 (DB_ONLY lifecycle governance) > P155 (UI polish) > P157 (h6_gate decision) > P158 (E2E browser smoke)
 
 ## 2. Input Sources
 

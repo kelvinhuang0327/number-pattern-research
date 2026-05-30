@@ -2,7 +2,7 @@
 
 ## 1. CTO Review Date
 
-2026-05-29 Asia/Taipei (updated after P138B P10/P12 legacy-row LEGACY_UNVERIFIED re-mark execution).
+2026-05-30 Asia/Taipei (updated after P148B manual live verified evidence gate run).
 
 Final CTO classification target: `CTO_ROADMAP_UPDATED_WITH_RISKS`.
 
@@ -1320,3 +1320,15 @@ Next: P141 (power_orthogonal_5bet, P12, POWER_LOTTO, +6000 rows).
 - Marker: `CTO_ROADMAP_UPDATED_AFTER_P148_LIVE_MONITORING_VERIFIED_EVIDENCE_COLLECTION_GATE_20260530`
 
 **Artifact**: `outputs/replay/p148_live_monitoring_verified_evidence_collection_gate_20260529.json`
+
+## P148B Manual Live Verified Evidence File Artifact Run (2026-05-30) — DONE (gate run, BLOCKED)
+- Classification: `P148B_CHAMPION_EVALUATION_GATE_BLOCKED`
+- CTO Note: No verifiable source found for post-apply draw results. Champion evaluation gate is BLOCKED.
+- Gate script and test artifacts produced and committed; drift guard PASS at 94924 rows.
+- Champion evaluation cannot proceed: champion_evaluation_allowed=false for all strategies; no LIVE_MONITORING_VERIFIED records confirmed from real draw sources.
+- Action required: Kelvin must provide actual post-apply draw results (draw numbers, dates, winning numbers) for the live monitoring period. Once provided, P148B can be re-run with real evidence to unlock champion evaluation.
+- No DB write, no controlled_apply, no champion promotion, no registry update in P148B.
+- Next: P148B_AWAITING_MANUAL_DRAW_RESULT_INPUT
+- Marker: `CTO_ROADMAP_UPDATED_AFTER_P148B_MANUAL_LIVE_VERIFIED_EVIDENCE_FILE_ARTIFACT_RUN_20260530`
+
+**Artifact**: `outputs/replay/p148b_manual_live_verified_evidence_file_artifact_run_20260529.json`

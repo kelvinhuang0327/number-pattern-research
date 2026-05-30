@@ -1,6 +1,6 @@
 # Lottery Replay Roadmap
 
-**Last Updated:** 2026-05-29 Asia/Taipei (updated after P140A P10/P12 draw_context contract fix)
+**Last Updated:** 2026-05-30 Asia/Taipei (updated after P148B manual live verified evidence gate run)
 **Owner:** CTO agent
 **Primary Goal:** Make every implemented LotteryNew strategy replayable with honest historical prediction-vs-actual evidence across every supported lottery type and every implemented 1-5 bet-count variant. This must be done without fake rows, untracked DB writes, premature promotion, or no-change governance PR churn. Current system state: Wave 2 safe candidates remain closed at 85924 rows. P138B executed the authorized Option B re-mark: 100 NULL-provenance legacy rows (50 per strategy) updated with truth_level='LEGACY_UNVERIFIED', source='P138B_LEGACY_REMARK', deterministic provenance_hash. Drift guard PASS at 85924. P10/P12 legacy governance resolved; future dry-run gate re-evaluation now allowed. P108 / P117 / P118 / 4_STAR triggers remain blocked.
 **Repo Policy:** Use `/Users/kelvin/Kelvin-WorkSpace/LotteryNew` only. Do not create a new repo. Implementation and governed tasks must run from canonical repo with `git rev-parse --git-dir == .git`; Claude/Codex auto-created worktree branches are not allowed.
@@ -938,3 +938,12 @@ CTO_ROADMAP_UPDATED_AFTER_P140_POWER_PRECISION_3BET_APPLIED_20260529
 - Drift guard PASS at 94924 rows.
 - Next gate: P148B_MANUAL_LIVE_VERIFIED_EVIDENCE_FILE_ARTIFACT_RUN
 - Marker: `CTO_ROADMAP_UPDATED_AFTER_P148_LIVE_MONITORING_VERIFIED_EVIDENCE_COLLECTION_GATE_20260530`
+
+## P148B Manual Live Verified Evidence File Artifact Run (2026-05-30) — DONE (gate run, BLOCKED)
+- Classification: `P148B_CHAMPION_EVALUATION_GATE_BLOCKED`
+- Gate run executed: script and test artifacts produced; drift guard PASS at 94924 rows.
+- Champion evaluation BLOCKED: no verifiable post-apply draw results found; no live draw source confirmed.
+- Blocked pending Kelvin manual draw result input — Kelvin must provide actual post-apply draw results for the live monitoring period.
+- No DB write, no controlled_apply, no champion promotion, no registry update in P148B.
+- Next: P148B_AWAITING_MANUAL_DRAW_RESULT_INPUT
+- Marker: `CTO_ROADMAP_UPDATED_AFTER_P148B_MANUAL_LIVE_VERIFIED_EVIDENCE_FILE_ARTIFACT_RUN_20260530`

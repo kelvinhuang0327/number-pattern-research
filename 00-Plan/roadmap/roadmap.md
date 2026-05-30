@@ -915,3 +915,15 @@ CTO_ROADMAP_UPDATED_AFTER_P140_POWER_PRECISION_3BET_APPLIED_20260529
 - Drift guard PASS at 94924 rows. 1712/1712 regression tests PASS.
 - Next gate: P147 (Champion Evaluation — requires real live draw evidence).
 - Marker: `CTO_ROADMAP_UPDATED_AFTER_P144D_KEEP_LEGACY_UNVERIFIED_GOVERNED_BASELINE_20260530`
+
+## P147 Champion Evaluation Gate Readiness Audit (2026-05-30) — DONE
+- Classification: `P147_CHAMPION_EVALUATION_BLOCKED_PENDING_LIVE_MONITORING_VERIFIED`
+- Champion evaluation gate: BLOCKED for all 6 candidate strategies.
+- Zero LIVE_MONITORING_VERIFIED records found in DB or observation-only directory.
+- All 7 observation-only output files are tagged MOCK_OBSERVATION_ONLY (from P146B); no live evidence eligibility.
+- LEGACY_UNVERIFIED rows (100): governed baseline per P144D; excluded from eval but do NOT block live monitoring.
+- All gates closed: champion_evaluation_allowed=false, champion_promotion_allowed=false, registry_update_allowed=false.
+- No DB write, no controlled_apply, no registry update, no champion promotion, no monitoring run in P147.
+- Drift guard PASS at 94924 rows. 1744/1744 regression tests PASS.
+- Next gate: P148_LIVE_MONITORING_VERIFIED_EVIDENCE_COLLECTION_GATE
+- Marker: `CTO_ROADMAP_UPDATED_AFTER_P147_CHAMPION_EVALUATION_GATE_READINESS_AUDIT_20260530`

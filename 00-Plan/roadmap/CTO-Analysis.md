@@ -1293,3 +1293,16 @@ Next: P141 (power_orthogonal_5bet, P12, POWER_LOTTO, +6000 rows).
 - Marker: `CTO_ROADMAP_UPDATED_AFTER_P144D_KEEP_LEGACY_UNVERIFIED_GOVERNED_BASELINE_20260530`
 
 **Artifact**: `outputs/replay/p144d_keep_legacy_unverified_governed_baseline_20260529.json`
+
+## P147 Champion Evaluation Gate Readiness Audit (2026-05-30) — DONE
+- Classification: `P147_CHAMPION_EVALUATION_BLOCKED_PENDING_LIVE_MONITORING_VERIFIED`
+- Audited all 6 Wave-2 champion candidates: acb_markov_midfreq_3bet, midfreq_fourier_mk_3bet, fourier_rhythm_3bet, pp3_freqort_4bet, power_precision_3bet, power_orthogonal_5bet.
+- Zero LIVE_MONITORING_VERIFIED records in production DB; 7 observation files all tagged MOCK_OBSERVATION_ONLY.
+- All champion gates closed: champion_evaluation_allowed=false, champion_promotion_allowed=false, registry_update_allowed=false.
+- LEGACY_UNVERIFIED rows (100): governed baseline per P144D; excluded from eval; do NOT block live monitoring.
+- No DB write, no controlled_apply, no registry update, no champion promotion, no monitoring run executed in P147.
+- Drift guard PASS at 94924 rows. Regression: 1744/1744 PASS.
+- Next gate: P148_LIVE_MONITORING_VERIFIED_EVIDENCE_COLLECTION_GATE
+- Marker: `CTO_ROADMAP_UPDATED_AFTER_P147_CHAMPION_EVALUATION_GATE_READINESS_AUDIT_20260530`
+
+**Artifact**: `outputs/replay/p147_champion_evaluation_gate_readiness_audit_20260529.json`

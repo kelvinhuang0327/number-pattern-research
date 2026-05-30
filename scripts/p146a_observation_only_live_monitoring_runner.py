@@ -122,6 +122,7 @@ _AUTOUSE_PREFIXES = (
     "tests/test_p141_", "tests/test_p141a_", "tests/test_p142_", "tests/test_p143_",
     "tests/test_p144a_", "tests/test_p144b_", "tests/test_p144c_",
     "tests/test_p145b_", "tests/test_p146b_",
+    "outputs/replay/p147_", "docs/replay/p147_", "scripts/p147_", "tests/test_p147_",
 )
 
 

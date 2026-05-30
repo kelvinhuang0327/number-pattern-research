@@ -141,6 +141,16 @@ def validate_preflight() -> dict:
         "outputs/replay/p144c_legacy_unverified_remediation_authorization_gate_20260529.json",
         "docs/replay/p144c_legacy_unverified_remediation_authorization_gate_20260529.md",
         "tests/test_p144c_legacy_unverified_remediation_authorization_gate.py",
+        # P144D successor task files
+        "scripts/p144d_keep_legacy_unverified_governed_baseline.py",
+        "outputs/replay/p144d_keep_legacy_unverified_governed_baseline_20260529.json",
+        "docs/replay/p144d_keep_legacy_unverified_governed_baseline_20260529.md",
+        "tests/test_p144d_keep_legacy_unverified_governed_baseline.py",
+        # P147 successor task files
+        "scripts/p147_champion_evaluation_gate_readiness_audit.py",
+        "outputs/replay/p147_champion_evaluation_gate_readiness_audit_20260529.json",
+        "docs/replay/p147_champion_evaluation_gate_readiness_audit_20260529.md",
+        "tests/test_p147_champion_evaluation_gate_readiness_audit.py",
     }
     unrelated = []
     for line in status_lines:

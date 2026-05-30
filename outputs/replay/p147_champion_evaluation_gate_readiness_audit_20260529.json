@@ -1,0 +1,205 @@
+{
+  "task_id": "P147",
+  "classification": "P147_CHAMPION_EVALUATION_BLOCKED_PENDING_LIVE_MONITORING_VERIFIED",
+  "generated_at": "2026-05-30T07:44:02.238014+00:00",
+  "canonical_repo": "/Users/kelvin/Kelvin-WorkSpace/LotteryNew/.claude/worktrees/zen-gates-ff6802",
+  "canonical_branch": "claude/zen-gates-ff6802",
+  "repo_branch_check": {
+    "repo_ok": true,
+    "branch_ok": true
+  },
+  "db_snapshot": {
+    "total_rows": 94924,
+    "legacy_unverified_rows": 100,
+    "live_monitoring_verified_rows": 0
+  },
+  "p144d_source_summary": {
+    "classification": "P144D_LEGACY_UNVERIFIED_KEEP_GOVERNED_BASELINE_DECISION_RECORDED",
+    "selected_option": "option_a_keep_governed_legacy_baseline",
+    "db_mutation_required": false
+  },
+  "p146b_source_summary": {
+    "classification": "P146B_AUTHORIZED_OBSERVATION_ONLY_MONITORING_RUN_COMPLETED",
+    "champion_promotion_allowed": false,
+    "registry_update_allowed": false
+  },
+  "candidate_strategy_inventory": [
+    {
+      "strategy_id": "acb_markov_midfreq_3bet",
+      "lottery_type": "DAILY_539",
+      "total_replay_rows": 4500,
+      "truth_levels_found": {
+        "DAILY539_RETIRED_STRATEGY_BACKFILL_VERIFIED": 4500
+      }
+    },
+    {
+      "strategy_id": "midfreq_fourier_mk_3bet",
+      "lottery_type": "POWER_LOTTO",
+      "total_replay_rows": 4500,
+      "truth_levels_found": {
+        "POWERLOTTO_WAVE4_STRATEGY_BACKFILL_VERIFIED": 4500
+      }
+    },
+    {
+      "strategy_id": "fourier_rhythm_3bet",
+      "lottery_type": "POWER_LOTTO",
+      "total_replay_rows": 4503,
+      "truth_levels_found": {
+        "POWERLOTTO_DRAW_EXT_VERIFIED": 3,
+        "POWERLOTTO_SINGLE_STRATEGY_BACKFILL_VERIFIED": 4500
+      }
+    },
+    {
+      "strategy_id": "pp3_freqort_4bet",
+      "lottery_type": "POWER_LOTTO",
+      "total_replay_rows": 6000,
+      "truth_levels_found": {
+        "POWERLOTTO_WAVE4_STRATEGY_BACKFILL_VERIFIED": 6000
+      }
+    },
+    {
+      "strategy_id": "power_precision_3bet",
+      "lottery_type": "POWER_LOTTO",
+      "total_replay_rows": 4550,
+      "truth_levels_found": {
+        "LEGACY_UNVERIFIED": 50,
+        "POWERLOTTO_REMAINING_STRATEGIES_BACKFILL_VERIFIED": 4500
+      }
+    },
+    {
+      "strategy_id": "power_orthogonal_5bet",
+      "lottery_type": "POWER_LOTTO",
+      "total_replay_rows": 7550,
+      "truth_levels_found": {
+        "LEGACY_UNVERIFIED": 50,
+        "POWERLOTTO_REMAINING_STRATEGIES_BACKFILL_VERIFIED": 7500
+      }
+    }
+  ],
+  "monitoring_evidence_audit": {
+    "observation_only_records_found": 7,
+    "mock_observation_records_found": 7,
+    "live_monitoring_verified_records_found": 0,
+    "historical_backfill_records_excluded": true,
+    "live_evidence_available": false
+  },
+  "champion_evaluation_readiness_matrix": [
+    {
+      "strategy_id": "acb_markov_midfreq_3bet",
+      "lottery_type": "DAILY_539",
+      "observation_records_found": 1,
+      "live_monitoring_verified_records": 0,
+      "mock_observation_records": 1,
+      "champion_eval_ready": false,
+      "promotion_allowed": false,
+      "registry_update_allowed": false,
+      "blocking_reason": "no LIVE_MONITORING_VERIFIED evidence"
+    },
+    {
+      "strategy_id": "midfreq_fourier_mk_3bet",
+      "lottery_type": "POWER_LOTTO",
+      "observation_records_found": 1,
+      "live_monitoring_verified_records": 0,
+      "mock_observation_records": 1,
+      "champion_eval_ready": false,
+      "promotion_allowed": false,
+      "registry_update_allowed": false,
+      "blocking_reason": "no LIVE_MONITORING_VERIFIED evidence"
+    },
+    {
+      "strategy_id": "fourier_rhythm_3bet",
+      "lottery_type": "POWER_LOTTO",
+      "observation_records_found": 1,
+      "live_monitoring_verified_records": 0,
+      "mock_observation_records": 1,
+      "champion_eval_ready": false,
+      "promotion_allowed": false,
+      "registry_update_allowed": false,
+      "blocking_reason": "no LIVE_MONITORING_VERIFIED evidence"
+    },
+    {
+      "strategy_id": "pp3_freqort_4bet",
+      "lottery_type": "POWER_LOTTO",
+      "observation_records_found": 1,
+      "live_monitoring_verified_records": 0,
+      "mock_observation_records": 1,
+      "champion_eval_ready": false,
+      "promotion_allowed": false,
+      "registry_update_allowed": false,
+      "blocking_reason": "no LIVE_MONITORING_VERIFIED evidence"
+    },
+    {
+      "strategy_id": "power_precision_3bet",
+      "lottery_type": "POWER_LOTTO",
+      "observation_records_found": 1,
+      "live_monitoring_verified_records": 0,
+      "mock_observation_records": 1,
+      "champion_eval_ready": false,
+      "promotion_allowed": false,
+      "registry_update_allowed": false,
+      "blocking_reason": "no LIVE_MONITORING_VERIFIED evidence"
+    },
+    {
+      "strategy_id": "power_orthogonal_5bet",
+      "lottery_type": "POWER_LOTTO",
+      "observation_records_found": 1,
+      "live_monitoring_verified_records": 0,
+      "mock_observation_records": 1,
+      "champion_eval_ready": false,
+      "promotion_allowed": false,
+      "registry_update_allowed": false,
+      "blocking_reason": "no LIVE_MONITORING_VERIFIED evidence"
+    }
+  ],
+  "minimum_live_evidence_requirement": {
+    "minimum_live_draws_per_strategy": 1,
+    "recommended_live_draws_per_strategy": 10,
+    "mock_observation_qualifies": false,
+    "historical_backfill_qualifies": false,
+    "legacy_unverified_qualifies": false,
+    "requirement_description": "At least 1 LIVE_MONITORING_VERIFIED record per strategy required before champion evaluation. Minimum 10 live draws recommended before promotion. Mock/historical/legacy records do not qualify."
+  },
+  "legacy_unverified_governed_baseline_policy": {
+    "total_legacy_unverified_rows": 100,
+    "exclude_from_champion_evaluation": true,
+    "exclude_from_apply_base": true,
+    "live_monitoring_blocked_by_legacy_rows": false,
+    "p144d_decision_recorded": true
+  },
+  "champion_gate_decision": {
+    "champion_evaluation_allowed": false,
+    "champion_promotion_allowed": false,
+    "registry_update_allowed": false,
+    "blocked_reason": "no LIVE_MONITORING_VERIFIED evidence for any candidate strategy",
+    "next_gate_required": "P148_LIVE_MONITORING_VERIFIED_EVIDENCE_COLLECTION_GATE"
+  },
+  "non_actions": {
+    "db_write_in_p147": false,
+    "controlled_apply_executed_in_p147": false,
+    "replay_rows_inserted_in_p147": 0,
+    "replay_rows_updated_in_p147": 0,
+    "replay_rows_deleted_in_p147": 0,
+    "registry_update_executed_in_p147": false,
+    "champion_promotion_executed_in_p147": false,
+    "monitoring_run_executed_in_p147": false,
+    "scheduler_installed": false,
+    "live_api_called": false,
+    "four_star_executed": false,
+    "p108_executed": false,
+    "p117_executed": false,
+    "p118_executed": false
+  },
+  "dirty_file_hygiene": {
+    "backups_untracked_not_staged": true,
+    "p135_p136_p142_autouse_regen_risk_noted": true,
+    "forbidden_files_staged": false
+  },
+  "roadmap_update_status": "updated",
+  "remaining_risks": [
+    "No live draw evidence yet collected for any champion candidate strategy",
+    "P147 champion evaluation remains blocked until real post-apply draws are observed and verified",
+    "LEGACY_UNVERIFIED rows (100) are governed baseline and excluded from evaluation but do not block live monitoring"
+  ],
+  "next_recommended_task": "P148_LIVE_MONITORING_VERIFIED_EVIDENCE_COLLECTION_GATE",
+  "summary": "P147 champion evaluation gate audit: ALL 6 candidate strategies blocked from evaluation and promotion. Zero LIVE_MONITORING_VERIFIED records found. Mock/historical records do not qualify. Next step: P148 live evidence collection gate."
+}

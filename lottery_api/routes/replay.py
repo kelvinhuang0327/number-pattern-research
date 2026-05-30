@@ -39,6 +39,7 @@ from lottery_api.models.replay_strategy_registry import (
     list_non_executable_strategy_ids,
     summarize_strategy_lifecycle_counts,
     normalise_lifecycle_status,
+    get_strategy_lifecycle_metadata,
 )
 from lottery_api.models.replay_strategy_state_labels import (
     get_full_label_catalog as _p26_get_full_label_catalog,
@@ -485,10 +486,11 @@ async def get_replay_history(
                     hit_numbers, hit_count, special_hit,
                     replay_run_id, generated_at, truth_level,
                     controlled_apply_id, source, provenance_hash, provenance_source,
-                    prediction_cutoff_date, prediction_generated_at
+                    prediction_cutoff_date, prediction_generated_at,
+                    bet_index
                 FROM strategy_prediction_replays
                 WHERE {where_sql}
-                ORDER BY CAST(target_draw AS INTEGER) DESC, strategy_id ASC
+                ORDER BY CAST(target_draw AS INTEGER) DESC, strategy_id ASC, bet_index ASC
                 LIMIT ? OFFSET ?
                 """,
                 params + [page_size, offset],
@@ -537,6 +539,8 @@ async def get_replay_history(
                     # P17: prediction timestamp fields (NULL for rows applied before P16A)
                     "prediction_cutoff_date":   r["prediction_cutoff_date"],
                     "prediction_generated_at":  r["prediction_generated_at"],
+                    # P150: bet_index — distinguishes bets within a multi-bet row group
+                    "bet_index":                r["bet_index"],
                 })
 
             return {
@@ -1039,6 +1043,109 @@ async def get_replay_strategy_catalog():
         }
     except Exception as e:
         logger.exception("get_replay_strategy_catalog failed")
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+# ─── P150: All-Strategy Catalog (bet_index + no_data_reason) ─────────────────
+
+@router.get("/api/replay/all-strategy-catalog")
+async def get_replay_all_strategy_catalog():
+    """
+    P150: Read-only all-strategy catalog covering ALL 40 discovered strategies.
+
+    Returns every strategy registered in the source-controlled registry
+    (replay_strategy_registry.py), including:
+      - ONLINE strategies with replay rows
+      - RETIRED / REJECTED strategies (no rows)
+      - OBSERVATION strategies (e.g. h6_gate_mk20_ew85 with zero rows)
+      - DB-only strategies with lifecycle placeholder entries
+
+    Each entry includes:
+      - replay_row_count  — actual row count from DB
+      - lifecycle_status  — from source-controlled registry
+      - no_data_reason    — populated for zero-row strategies (P150)
+      - bet_index support — multi-bet rows are distinguishable via bet_index
+
+    READ-ONLY: no DB writes, no strategy execution, no promotions.
+    """
+    try:
+        conn = _open_conn()
+        try:
+            # Build DB row counts per (strategy_id, lottery_type)
+            rows = conn.execute(
+                "SELECT strategy_id, lottery_type, COUNT(*) AS row_count "
+                "FROM strategy_prediction_replays "
+                "GROUP BY strategy_id, lottery_type"
+            ).fetchall()
+            db_counts: dict[tuple, int] = {
+                (r["strategy_id"], r["lottery_type"]): r["row_count"]
+                for r in rows
+            }
+            # Also collect total per strategy_id
+            db_total: dict[str, int] = {}
+            for (sid, lt), cnt in db_counts.items():
+                db_total[sid] = db_total.get(sid, 0) + cnt
+
+            # All strategies from source-controlled registry
+            all_strategies = list_strategy_lifecycle_metadata()
+
+            entries = []
+            for s in all_strategies:
+                sid = s["strategy_id"]
+                row_count = db_total.get(sid, 0)
+                no_data_reason = s.get("no_data_reason")
+                # Derive no_data_reason for zero-row strategies not already set
+                if row_count == 0 and no_data_reason is None:
+                    lc = s["lifecycle_status"]
+                    if lc == "REJECTED":
+                        no_data_reason = "REJECTED_NO_REPLAY_DATA"
+                    elif lc in ("RETIRED", "OFFLINE"):
+                        no_data_reason = "ARTIFACT_ONLY"
+                    elif lc == "DB_ONLY_MISSING_LIFECYCLE":
+                        no_data_reason = None  # has rows; this shouldn't happen
+                    else:
+                        no_data_reason = "NO_REPLAY_DATA"
+
+                entries.append({
+                    "strategy_id":          sid,
+                    "strategy_name":        s["strategy_name"],
+                    "strategy_version":     s["strategy_version"],
+                    "supported_lottery_types": s["supported_lottery_types"],
+                    "lifecycle_status":     s["lifecycle_status"],
+                    "replay_row_count":     row_count,
+                    "no_data_reason":       no_data_reason,
+                    "is_row_backed":        row_count > 0,
+                    "is_queryable":         row_count > 0,
+                })
+
+            # Visibility summary
+            total = len(entries)
+            row_backed = sum(1 for e in entries if e["is_row_backed"])
+            zero_row = total - row_backed
+            lifecycle_counts: dict[str, int] = {}
+            for e in entries:
+                lc = e["lifecycle_status"]
+                lifecycle_counts[lc] = lifecycle_counts.get(lc, 0) + 1
+
+            return {
+                "generated_at":           datetime.now(timezone.utc).isoformat(),
+                "phase":                  "P150",
+                "total_strategies":       total,
+                "row_backed_count":       row_backed,
+                "zero_replay_row_count":  zero_row,
+                "lifecycle_counts":       lifecycle_counts,
+                "bet_index_in_api":       True,
+                "no_data_reason_in_api":  True,
+                "strategies":             entries,
+                "no_db_write":            True,
+                "disclaimer":             _DISCLAIMER,
+            }
+        finally:
+            conn.close()
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.exception("get_replay_all_strategy_catalog failed")
         raise HTTPException(status_code=500, detail=str(e))
 
 

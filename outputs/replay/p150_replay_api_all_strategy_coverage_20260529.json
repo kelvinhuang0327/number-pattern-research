@@ -1,0 +1,142 @@
+{
+  "task_id": "P150",
+  "classification": "P150_REPLAY_API_ALL_STRATEGY_COVERAGE_READY",
+  "generated_at": "2026-05-30T11:32:11.467760+00:00",
+  "canonical_repo": "/Users/kelvin/Kelvin-WorkSpace/LotteryNew/.claude/worktrees/zen-gates-ff6802",
+  "canonical_branch": "claude/zen-gates-ff6802",
+  "repo_branch_check": {
+    "repo_ok": true,
+    "branch_ok": true,
+    "actual_repo": "/Users/kelvin/Kelvin-WorkSpace/LotteryNew/.claude/worktrees/zen-gates-ff6802",
+    "actual_branch": "claude/zen-gates-ff6802"
+  },
+  "db_snapshot": {
+    "row_count": 94924,
+    "drift_guard_pass": true,
+    "bet_index_column_exists": true
+  },
+  "p149_source_summary": {
+    "artifact_path": "outputs/replay/p149_replay_product_coverage_audit_20260529.json",
+    "classification": "P149_REPLAY_PRODUCT_COVERAGE_AUDIT_READY",
+    "commit": "d455ac0"
+  },
+  "p148c_source_summary": {
+    "artifact_path": "outputs/replay/p148c_local_draw_result_source_audit_gate_20260529.json",
+    "classification": "P148C_LOCAL_DRAW_RESULT_FOUND_BUT_NOT_LIVE_VERIFIED_ELIGIBLE"
+  },
+  "replay_api_changes": {
+    "files_modified": [
+      "lottery_api/routes/replay.py",
+      "lottery_api/models/replay_strategy_registry.py"
+    ],
+    "bet_index_added_to_schema": true,
+    "no_data_reason_added": true,
+    "all_strategy_endpoint_enhanced": true
+  },
+  "strategy_catalog_coverage_changes": {
+    "registry_type": "source_controlled",
+    "lifecycle_placeholders_added": 22,
+    "db_only_strategies_now_visible": 22
+  },
+  "bet_index_api_support": {
+    "bet_index_returned_in_replay_history": true,
+    "multi_bet_rows_distinguishable": true,
+    "test_coverage_added": true
+  },
+  "no_data_reason_support": {
+    "no_data_reason_returned": true,
+    "zero_replay_rows_strategies_visible": true,
+    "rejected_no_data_strategies_visible": true,
+    "h6_gate_mk20_ew85_no_data_reason": "ONLINE_ZERO_REPLAY_ROWS"
+  },
+  "all_strategy_coverage_summary": {
+    "total_strategies_discovered_from_p149": 40,
+    "db_only_missing_lifecycle_from_p149": 22,
+    "registry_only_zero_replay_rows_from_p149": 5,
+    "strategies_visible_in_replay_catalog_after_p150": 40,
+    "remaining_visibility_gaps": [
+      "midfreq_fourier_2bet exists in DB for both DAILY_539 (RETIRED) and POWER_LOTTO (DB_ONLY_MISSING_LIFECYCLE) — registry stub only covers DAILY_539; POWER_LOTTO variant rows are accessible via history API but lifecycle shows RETIRED"
+    ]
+  },
+  "zero_replay_rows_strategy_handling": {
+    "strategies": [
+      "biglotto_ts3_acb_4bet",
+      "biglotto_ts3_markov_freq_5bet",
+      "power_shlc_midfreq",
+      "p1_deviation_2bet_539",
+      "h6_gate_mk20_ew85"
+    ],
+    "approach": "no_data_reason_in_registry_not_db_write"
+  },
+  "db_only_strategy_lifecycle_handling": {
+    "strategy_count": 22,
+    "approach": "source_controlled_registry_placeholder",
+    "strategies_updated": [
+      "539_3bet_orthogonal",
+      "acb_single_539",
+      "bet2_fourier_expansion_biglotto",
+      "biglotto_echo_aware_3bet",
+      "biglotto_ts3_markov_4bet_w30",
+      "cold_complement_2bet",
+      "cold_complement_biglotto",
+      "coldpool15_biglotto",
+      "daily539_f4cold_3bet",
+      "daily539_f4cold_5bet",
+      "fourier30_markov30_2bet",
+      "fourier30_markov30_biglotto",
+      "markov_1bet_539",
+      "markov_2bet_biglotto",
+      "markov_single_biglotto",
+      "midfreq_fourier_mk_3bet",
+      "p0b_539_3bet_f_cold_fmid",
+      "p0c_539_3bet_f_cold_x2",
+      "power_fourier_rhythm_2bet",
+      "pp3_freqort_4bet",
+      "zonal_entropy_2bet",
+      "zone_gap_3bet_539"
+    ]
+  },
+  "h6_gate_mk20_ew85_handling": {
+    "status": "OBSERVATION",
+    "no_data_reason": "ONLINE_ZERO_REPLAY_ROWS",
+    "replay_rows_inserted": 0,
+    "action_taken": "registry_marker_added"
+  },
+  "tests_summary": {
+    "new_tests_file": "tests/test_p150_replay_api_all_strategy_coverage.py",
+    "tests_added": 20,
+    "all_pass": true
+  },
+  "non_actions": {
+    "db_write_in_p150": false,
+    "controlled_apply_executed_in_p150": false,
+    "replay_rows_inserted_in_p150": 0,
+    "replay_rows_updated_in_p150": 0,
+    "replay_rows_deleted_in_p150": 0,
+    "champion_promotion_executed_in_p150": false,
+    "registry_promotion_executed_in_p150": false,
+    "live_api_called": false,
+    "scheduler_installed": false,
+    "four_star_executed": false,
+    "p108_executed": false,
+    "p117_executed": false,
+    "p118_executed": false
+  },
+  "dirty_file_hygiene": {
+    "backups_untracked_not_staged": true,
+    "unrelated_dirty_files": [],
+    "status": "CLEAN"
+  },
+  "roadmap_update_status": {
+    "cto_analysis_updated": true,
+    "roadmap_updated": true
+  },
+  "remaining_risks": [
+    "midfreq_fourier_2bet exists in DB for both DAILY_539 and POWER_LOTTO — registry stub covers DAILY_539 only; POWER_LOTTO rows still visible via history API",
+    "22 DB-only strategies have lifecycle_status=DB_ONLY_MISSING_LIFECYCLE — formal governance review needed to assign correct RETIRED/REJECTED/OFFLINE status",
+    "h6_gate_mk20_ew85 has zero replay rows despite OBSERVATION status — shadow evaluation not yet backfilled; requires separate replay generation task",
+    "GAP-006 (UI multi-bet display) and GAP-007 (UI no_data badges) remain open — addressed in P151_REPLAY_UI_MULTI_BET_DISPLAY"
+  ],
+  "next_recommended_task": "P151_REPLAY_UI_MULTI_BET_DISPLAY",
+  "summary": "P150 adds bet_index to /api/replay/history response (READ-ONLY, no DB write), adds no_data_reason support to source-controlled registry and new /api/replay/all-strategy-catalog endpoint, and registers 22 DB-only strategies as lifecycle placeholders (DB_ONLY_MISSING_LIFECYCLE). Total registry now covers all 40 strategies. h6_gate_mk20_ew85 marked ONLINE_ZERO_REPLAY_ROWS. 4 REJECTED strategies marked REJECTED_NO_REPLAY_DATA. Zero DB writes, zero replay rows mutated."
+}

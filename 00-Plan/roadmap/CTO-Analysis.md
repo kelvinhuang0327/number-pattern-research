@@ -1,8 +1,8 @@
-# CTO Analysis - After P138B P10/P12 Legacy Row LEGACY_UNVERIFIED Re-mark
+# CTO Analysis - After P150 Replay API All Strategy Coverage
 
 ## 1. CTO Review Date
 
-2026-05-30 Asia/Taipei (updated after P149 replay product coverage audit).
+2026-05-30 Asia/Taipei (updated after P150 replay API all strategy coverage).
 
 Final CTO classification target: `CTO_ROADMAP_UPDATED_WITH_RISKS`.
 

@@ -44,8 +44,12 @@ logger = logging.getLogger(__name__)
 
 # ─── Lifecycle Status SSOT ────────────────────────────────────────────────────
 
-# Canonical lifecycle status values (P0-A)
-LIFECYCLE_STATUSES = ("ONLINE", "OFFLINE", "REJECTED", "OBSERVATION", "RETIRED")
+# Canonical lifecycle status values (P0-A / P150)
+LIFECYCLE_STATUSES = (
+    "ONLINE", "OFFLINE", "REJECTED", "OBSERVATION", "RETIRED",
+    # P150: DB-only strategies present in replay rows but missing lifecycle registration
+    "DB_ONLY_MISSING_LIFECYCLE",
+)
 
 # Legacy alias mapping — ACTIVE is normalised to ONLINE in all outputs
 _LEGACY_STATUS_MAP: dict[str, str] = {
@@ -96,11 +100,12 @@ class LifecycleNotExecutable(Exception):
 class _StrategyMeta:
     __slots__ = ("strategy_id", "strategy_name", "strategy_version",
                  "supported_lottery_types", "min_history", "status",
-                 "lifecycle_status")
+                 "lifecycle_status", "no_data_reason")
 
     def __init__(self, strategy_id: str, strategy_name: str,
                  strategy_version: str, supported_lottery_types: List[str],
-                 min_history: int = 100, status: str = "ONLINE"):
+                 min_history: int = 100, status: str = "ONLINE",
+                 no_data_reason: Optional[str] = None):
         self.strategy_id            = strategy_id
         self.strategy_name          = strategy_name
         self.strategy_version       = strategy_version
@@ -109,6 +114,8 @@ class _StrategyMeta:
         # Normalise legacy ACTIVE → ONLINE
         self.status                 = normalise_lifecycle_status(status)
         self.lifecycle_status       = self.status  # canonical alias
+        # P150: optional reason when strategy has zero replay rows
+        self.no_data_reason         = no_data_reason
 
 
 # ─── Number validation helpers ────────────────────────────────────────────────
@@ -222,7 +229,8 @@ class _LifecycleStub(ReplayStrategyAdapter):
     """
     def __init__(self, strategy_id: str, strategy_name: str,
                  strategy_version: str, supported_lottery_types: List[str],
-                 min_history: int = 0, status: str = "RETIRED"):
+                 min_history: int = 0, status: str = "RETIRED",
+                 no_data_reason: Optional[str] = None):
         self.meta = _StrategyMeta(
             strategy_id=strategy_id,
             strategy_name=strategy_name,
@@ -230,6 +238,7 @@ class _LifecycleStub(ReplayStrategyAdapter):
             supported_lottery_types=supported_lottery_types,
             min_history=min_history,
             status=status,
+            no_data_reason=no_data_reason,
         )
 
     def get_one_bet(self, history, lottery_type):
@@ -478,6 +487,7 @@ _NON_EXECUTABLE_STUBS: List[_LifecycleStub] = [
         strategy_version="v0.0",
         supported_lottery_types=["BIG_LOTTO"],
         status="REJECTED",
+        no_data_reason="REJECTED_NO_REPLAY_DATA",
     ),
     _LifecycleStub(
         strategy_id="biglotto_ts3_markov_freq_5bet",
@@ -485,6 +495,7 @@ _NON_EXECUTABLE_STUBS: List[_LifecycleStub] = [
         strategy_version="v0.0",
         supported_lottery_types=["BIG_LOTTO"],
         status="REJECTED",
+        no_data_reason="REJECTED_NO_REPLAY_DATA",
     ),
     _LifecycleStub(
         strategy_id="power_shlc_midfreq",
@@ -492,6 +503,7 @@ _NON_EXECUTABLE_STUBS: List[_LifecycleStub] = [
         strategy_version="v0.0",
         supported_lottery_types=["POWER_LOTTO"],
         status="REJECTED",
+        no_data_reason="REJECTED_NO_REPLAY_DATA",
     ),
     _LifecycleStub(
         strategy_id="p1_deviation_2bet_539",
@@ -499,6 +511,7 @@ _NON_EXECUTABLE_STUBS: List[_LifecycleStub] = [
         strategy_version="v0.0",
         supported_lottery_types=["DAILY_539"],
         status="REJECTED",
+        no_data_reason="REJECTED_NO_REPLAY_DATA",
     ),
     # ── RETIRED ──
     _LifecycleStub(
@@ -543,6 +556,166 @@ _NON_EXECUTABLE_STUBS: List[_LifecycleStub] = [
         strategy_version="v0.0",
         supported_lottery_types=["POWER_LOTTO"],
         status="OBSERVATION",
+        # P150: OBSERVATION strategy with zero replay rows — shadow evaluation only
+        no_data_reason="ONLINE_ZERO_REPLAY_ROWS",
+    ),
+    # ── DB_ONLY_MISSING_LIFECYCLE (P150) ──────────────────────────────────────
+    # 22 strategies present in replay rows but not previously registered.
+    # Added as lifecycle placeholders — NOT executable, NOT promoted.
+    # DB write: NONE. Source-controlled catalog only.
+    _LifecycleStub(
+        strategy_id="539_3bet_orthogonal",
+        strategy_name="今彩539 3注正交",
+        strategy_version="v0.0",
+        supported_lottery_types=["DAILY_539"],
+        status="DB_ONLY_MISSING_LIFECYCLE",
+    ),
+    _LifecycleStub(
+        strategy_id="acb_single_539",
+        strategy_name="今彩539 ACB Single",
+        strategy_version="v0.0",
+        supported_lottery_types=["DAILY_539"],
+        status="DB_ONLY_MISSING_LIFECYCLE",
+    ),
+    _LifecycleStub(
+        strategy_id="bet2_fourier_expansion_biglotto",
+        strategy_name="大樂透 2注 Fourier Expansion",
+        strategy_version="v0.0",
+        supported_lottery_types=["BIG_LOTTO"],
+        status="DB_ONLY_MISSING_LIFECYCLE",
+    ),
+    _LifecycleStub(
+        strategy_id="biglotto_echo_aware_3bet",
+        strategy_name="大樂透 Echo Aware 3注",
+        strategy_version="v0.0",
+        supported_lottery_types=["BIG_LOTTO"],
+        status="DB_ONLY_MISSING_LIFECYCLE",
+    ),
+    _LifecycleStub(
+        strategy_id="biglotto_ts3_markov_4bet_w30",
+        strategy_name="大樂透 TS3+Markov 4注 w30",
+        strategy_version="v0.0",
+        supported_lottery_types=["BIG_LOTTO"],
+        status="DB_ONLY_MISSING_LIFECYCLE",
+    ),
+    _LifecycleStub(
+        strategy_id="cold_complement_2bet",
+        strategy_name="威力彩 Cold Complement 2注",
+        strategy_version="v0.0",
+        supported_lottery_types=["POWER_LOTTO"],
+        status="DB_ONLY_MISSING_LIFECYCLE",
+    ),
+    _LifecycleStub(
+        strategy_id="cold_complement_biglotto",
+        strategy_name="大樂透 Cold Complement",
+        strategy_version="v0.0",
+        supported_lottery_types=["BIG_LOTTO"],
+        status="DB_ONLY_MISSING_LIFECYCLE",
+    ),
+    _LifecycleStub(
+        strategy_id="coldpool15_biglotto",
+        strategy_name="大樂透 Cold Pool 15",
+        strategy_version="v0.0",
+        supported_lottery_types=["BIG_LOTTO"],
+        status="DB_ONLY_MISSING_LIFECYCLE",
+    ),
+    _LifecycleStub(
+        strategy_id="daily539_f4cold_3bet",
+        strategy_name="今彩539 F4Cold 3注",
+        strategy_version="v0.0",
+        supported_lottery_types=["DAILY_539"],
+        status="DB_ONLY_MISSING_LIFECYCLE",
+    ),
+    _LifecycleStub(
+        strategy_id="daily539_f4cold_5bet",
+        strategy_name="今彩539 F4Cold 5注",
+        strategy_version="v0.0",
+        supported_lottery_types=["DAILY_539"],
+        status="DB_ONLY_MISSING_LIFECYCLE",
+    ),
+    _LifecycleStub(
+        strategy_id="fourier30_markov30_2bet",
+        strategy_name="威力彩 Fourier30+Markov30 2注",
+        strategy_version="v0.0",
+        supported_lottery_types=["POWER_LOTTO"],
+        status="DB_ONLY_MISSING_LIFECYCLE",
+    ),
+    _LifecycleStub(
+        strategy_id="fourier30_markov30_biglotto",
+        strategy_name="大樂透 Fourier30+Markov30",
+        strategy_version="v0.0",
+        supported_lottery_types=["BIG_LOTTO"],
+        status="DB_ONLY_MISSING_LIFECYCLE",
+    ),
+    _LifecycleStub(
+        strategy_id="markov_1bet_539",
+        strategy_name="今彩539 Markov 1注",
+        strategy_version="v0.0",
+        supported_lottery_types=["DAILY_539"],
+        status="DB_ONLY_MISSING_LIFECYCLE",
+    ),
+    _LifecycleStub(
+        strategy_id="markov_2bet_biglotto",
+        strategy_name="大樂透 Markov 2注",
+        strategy_version="v0.0",
+        supported_lottery_types=["BIG_LOTTO"],
+        status="DB_ONLY_MISSING_LIFECYCLE",
+    ),
+    _LifecycleStub(
+        strategy_id="markov_single_biglotto",
+        strategy_name="大樂透 Markov Single",
+        strategy_version="v0.0",
+        supported_lottery_types=["BIG_LOTTO"],
+        status="DB_ONLY_MISSING_LIFECYCLE",
+    ),
+    _LifecycleStub(
+        strategy_id="midfreq_fourier_mk_3bet",
+        strategy_name="威力彩 MidFreq+Fourier+MK 3注",
+        strategy_version="v0.0",
+        supported_lottery_types=["POWER_LOTTO"],
+        status="DB_ONLY_MISSING_LIFECYCLE",
+    ),
+    _LifecycleStub(
+        strategy_id="p0b_539_3bet_f_cold_fmid",
+        strategy_name="今彩539 P0B 3注 F+Cold+Fmid",
+        strategy_version="v0.0",
+        supported_lottery_types=["DAILY_539"],
+        status="DB_ONLY_MISSING_LIFECYCLE",
+    ),
+    _LifecycleStub(
+        strategy_id="p0c_539_3bet_f_cold_x2",
+        strategy_name="今彩539 P0C 3注 F+Cold×2",
+        strategy_version="v0.0",
+        supported_lottery_types=["DAILY_539"],
+        status="DB_ONLY_MISSING_LIFECYCLE",
+    ),
+    _LifecycleStub(
+        strategy_id="power_fourier_rhythm_2bet",
+        strategy_name="威力彩 Fourier Rhythm 2注",
+        strategy_version="v0.0",
+        supported_lottery_types=["POWER_LOTTO"],
+        status="DB_ONLY_MISSING_LIFECYCLE",
+    ),
+    _LifecycleStub(
+        strategy_id="pp3_freqort_4bet",
+        strategy_name="威力彩 PP3+FreqOrt 4注",
+        strategy_version="v0.0",
+        supported_lottery_types=["POWER_LOTTO"],
+        status="DB_ONLY_MISSING_LIFECYCLE",
+    ),
+    _LifecycleStub(
+        strategy_id="zonal_entropy_2bet",
+        strategy_name="威力彩 Zonal Entropy 2注",
+        strategy_version="v0.0",
+        supported_lottery_types=["POWER_LOTTO"],
+        status="DB_ONLY_MISSING_LIFECYCLE",
+    ),
+    _LifecycleStub(
+        strategy_id="zone_gap_3bet_539",
+        strategy_name="今彩539 Zone Gap 3注",
+        strategy_version="v0.0",
+        supported_lottery_types=["DAILY_539"],
+        status="DB_ONLY_MISSING_LIFECYCLE",
     ),
 ]
 
@@ -608,6 +781,7 @@ def list_strategies(
             "min_history":              a.meta.min_history,
             "status":                   a.meta.status,           # canonical
             "strategy_lifecycle_status": a.meta.lifecycle_status, # explicit alias
+            "no_data_reason":           a.meta.no_data_reason,   # P150
         })
     return out
 
@@ -669,6 +843,7 @@ def list_strategy_lifecycle_metadata(
             "supported_lottery_types":   a.meta.supported_lottery_types,
             "min_history":               a.meta.min_history,
             "lifecycle_status":          a.meta.lifecycle_status,
+            "no_data_reason":            a.meta.no_data_reason,  # P150
         })
     return out
 
@@ -689,6 +864,7 @@ def get_strategy_lifecycle_metadata(strategy_id: str) -> dict:
                 "supported_lottery_types":  a.meta.supported_lottery_types,
                 "min_history":              a.meta.min_history,
                 "lifecycle_status":         a.meta.lifecycle_status,
+                "no_data_reason":           a.meta.no_data_reason,  # P150
             }
     raise KeyError(
         f"strategy_id {strategy_id!r} is not registered in the lifecycle registry. "

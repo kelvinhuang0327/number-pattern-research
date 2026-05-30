@@ -904,3 +904,14 @@ CTO_ROADMAP_UPDATED_AFTER_P140_POWER_PRECISION_3BET_APPLIED_20260529
 - No DB write, no remediation executed, no champion promotion in P144C.
 - Next gate: P144D (Legacy Unverified Remediation Execution — requires explicit authorization phrase).
 - Marker: `CTO_ROADMAP_UPDATED_AFTER_P144C_LEGACY_UNVERIFIED_REMEDIATION_AUTHORIZATION_GATE_20260529`
+
+## P144D Legacy Unverified Keep Governed Baseline Decision (2026-05-30) — DONE
+- Classification: `P144D_LEGACY_UNVERIFIED_KEEP_GOVERNED_BASELINE_DECISION_RECORDED`
+- Authorization phrase verified: `P144C_AUTHORIZED_KEEP_LEGACY_UNVERIFIED_AS_GOVERNED_BASELINE_20260529`
+- Option A selected: keep 100 LEGACY_UNVERIFIED rows as governed baseline — no DB mutation required.
+- Rows excluded from champion evaluation and apply base (strict selector: truth_level != LEGACY_UNVERIFIED).
+- Live monitoring NOT blocked; champion evaluation (P147) blocked until live draw evidence verified.
+- No DB write, no remediation mutation, no controlled_apply, no registry update, no champion promotion in P144D.
+- Drift guard PASS at 94924 rows. 1712/1712 regression tests PASS.
+- Next gate: P147 (Champion Evaluation — requires real live draw evidence).
+- Marker: `CTO_ROADMAP_UPDATED_AFTER_P144D_KEEP_LEGACY_UNVERIFIED_GOVERNED_BASELINE_20260530`

@@ -1280,3 +1280,16 @@ Next: P141 (power_orthogonal_5bet, P12, POWER_LOTTO, +6000 rows).
 - Marker: `CTO_ROADMAP_UPDATED_AFTER_P144C_LEGACY_UNVERIFIED_REMEDIATION_AUTHORIZATION_GATE_20260529`
 
 **Artifact**: `outputs/replay/p144c_legacy_unverified_remediation_authorization_gate_20260529.json`
+
+## P144D Legacy Unverified Keep Governed Baseline Decision (2026-05-30) — DONE
+- Classification: `P144D_LEGACY_UNVERIFIED_KEEP_GOVERNED_BASELINE_DECISION_RECORDED`
+- Authorization phrase verified: `P144C_AUTHORIZED_KEEP_LEGACY_UNVERIFIED_AS_GOVERNED_BASELINE_20260529`
+- Option A selected: keep 100 LEGACY_UNVERIFIED rows as governed baseline — no DB mutation.
+- Rows excluded from champion evaluation and apply base by strict selector definitions.
+- Live monitoring NOT blocked by legacy rows; champion evaluation (P147) blocked until live monitoring verified.
+- No DB write, no controlled_apply, no remediation mutation, no registry update, no champion promotion in P144D.
+- Drift guard PASS at 94924 rows. Regression: 1712/1712 PASS.
+- Next gate: P147 (Champion Evaluation Gate — requires live draw evidence).
+- Marker: `CTO_ROADMAP_UPDATED_AFTER_P144D_KEEP_LEGACY_UNVERIFIED_GOVERNED_BASELINE_20260530`
+
+**Artifact**: `outputs/replay/p144d_keep_legacy_unverified_governed_baseline_20260529.json`

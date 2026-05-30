@@ -1,0 +1,133 @@
+{
+  "task_id": "P144D",
+  "classification": "P144D_LEGACY_UNVERIFIED_KEEP_GOVERNED_BASELINE_DECISION_RECORDED",
+  "generated_at": "2026-05-30T07:17:03.702985+00:00",
+  "authorization": {
+    "exact_required_phrase": "P144C_AUTHORIZED_KEEP_LEGACY_UNVERIFIED_AS_GOVERNED_BASELINE_20260529",
+    "provided_phrase": "P144C_AUTHORIZED_KEEP_LEGACY_UNVERIFIED_AS_GOVERNED_BASELINE_20260529",
+    "authorization_present": true,
+    "decision_allowed": true,
+    "authorization_source": "explicit_command_argument"
+  },
+  "canonical_repo": "/Users/kelvin/Kelvin-WorkSpace/LotteryNew/.claude/worktrees/zen-gates-ff6802",
+  "canonical_branch": "claude/zen-gates-ff6802",
+  "repo_branch_check": {
+    "expected_repo": "/Users/kelvin/Kelvin-WorkSpace/LotteryNew/.claude/worktrees/zen-gates-ff6802",
+    "actual_repo": "/Users/kelvin/Kelvin-WorkSpace/LotteryNew/.claude/worktrees/zen-gates-ff6802",
+    "expected_branch": "claude/zen-gates-ff6802",
+    "actual_branch": "claude/zen-gates-ff6802",
+    "repo_ok": true,
+    "branch_ok": true
+  },
+  "db_snapshot": {
+    "db_path": "/Users/kelvin/Kelvin-WorkSpace/LotteryNew/.claude/worktrees/zen-gates-ff6802/lottery_api/data/lottery_v2.db",
+    "total_rows": 94924,
+    "expected_rows": 94924,
+    "rows_ok": true,
+    "bet_index_column_exists": true
+  },
+  "p144c_source_summary": {
+    "classification": "P144C_LEGACY_UNVERIFIED_REMEDIATION_AUTHORIZATION_GATE_READY",
+    "task_id": "P144C",
+    "generated_at": "2026-05-29T10:15:22.724905+00:00",
+    "recommended_option": "option_a_keep_governed_legacy_baseline"
+  },
+  "p146b_source_summary": {
+    "classification": "P146B_AUTHORIZED_OBSERVATION_ONLY_MONITORING_RUN_COMPLETED",
+    "task_id": "P146B",
+    "generated_at": "2026-05-29T10:01:42.758778+00:00"
+  },
+  "p142_source_summary": {
+    "classification": "P142_WAVE2_MULTI_BET_APPLY_CHAIN_CLOSED",
+    "task_id": "P142",
+    "generated_at": "2026-05-29T08:15:31.569213+00:00"
+  },
+  "legacy_unverified_current_state": {
+    "power_precision_3bet_legacy_unverified_rows": 50,
+    "power_orthogonal_5bet_legacy_unverified_rows": 50,
+    "total_legacy_unverified_rows": 100,
+    "all_rows_bet_index_1": true,
+    "all_rows_controlled_apply_id_null": true,
+    "p140_p141_multi_bet_contamination": false,
+    "actual_source": "P138B_LEGACY_REMARK",
+    "sample_provenance_hashes": [
+      "70cb65c56204e4fa",
+      "ef64afcd7543832b",
+      "4b243fb92dd8c20e"
+    ],
+    "counts_ok": true
+  },
+  "selected_remediation_option": {
+    "selected_option": "option_a_keep_governed_legacy_baseline",
+    "db_mutation_required": false,
+    "row_count_impact": 0,
+    "risk_level": "NONE",
+    "execution_performed_in_p144d": true,
+    "remediation_mutation_performed": false,
+    "description": "Keep LEGACY_UNVERIFIED rows as a governed legacy baseline. No DB mutation required."
+  },
+  "governed_baseline_policy": {
+    "keep_legacy_unverified_rows": true,
+    "exclude_from_champion_evaluation": true,
+    "exclude_from_apply_base": true,
+    "live_monitoring_blocked_by_legacy_rows": false,
+    "registry_update_blocked_by_legacy_rows": false,
+    "future_remediation_allowed_with_new_authorization": true,
+    "policy_rationale": "LEGACY_UNVERIFIED rows are isolated to bet_index=1, controlled_apply_id IS NULL. Multi-bet rows (bet_index > 1) are BACKFILL_VERIFIED and unaffected. Champion evaluation filters by truth_level so legacy rows are excluded by design."
+  },
+  "strict_selector_definitions": {
+    "strategy_id_in": [
+      "power_precision_3bet",
+      "power_orthogonal_5bet"
+    ],
+    "truth_level": "LEGACY_UNVERIFIED",
+    "bet_index": 1,
+    "controlled_apply_id": "IS NULL",
+    "source": "P138B_LEGACY_REMARK",
+    "note": "provenance_hash is a per-row SHA256[:16] derived from strategy_id|target_draw|bet_index|replay_run_id|predicted_numbers|P138B_LEGACY_REMARK_20260529",
+    "sql_where_clause": "strategy_id IN ('power_precision_3bet','power_orthogonal_5bet') AND truth_level = 'LEGACY_UNVERIFIED' AND bet_index = 1 AND controlled_apply_id IS NULL AND source = 'P138B_LEGACY_REMARK'"
+  },
+  "champion_monitoring_impact": {
+    "champion_promotion_allowed_in_p144d": false,
+    "champion_eval_still_requires_live_monitoring_verified": true,
+    "live_monitoring_can_continue": true,
+    "p147_blocked_until_live_monitoring_verified": true,
+    "note": "Option A (keep governed baseline) does not block live monitoring. Champion promotion gate (P147) requires live monitoring verified draws — this condition is independent of LEGACY_UNVERIFIED row existence."
+  },
+  "non_actions": {
+    "db_write_in_p144d": false,
+    "controlled_apply_executed_in_p144d": false,
+    "remediation_mutation_executed_in_p144d": false,
+    "replay_rows_inserted_in_p144d": 0,
+    "replay_rows_updated_in_p144d": 0,
+    "replay_rows_deleted_in_p144d": 0,
+    "registry_update_executed_in_p144d": false,
+    "champion_promotion_executed_in_p144d": false,
+    "monitoring_run_executed_in_p144d": false,
+    "scheduler_installed": false,
+    "live_api_called": false,
+    "four_star_executed": false,
+    "p108_executed": false,
+    "p117_executed": false,
+    "p118_executed": false
+  },
+  "dirty_file_hygiene": {
+    "backups_untracked_not_staged": true,
+    "p135_p136_p142_autouse_regen_risk_noted": true,
+    "forbidden_files_staged": false,
+    "status_output": "M docs/replay/p135_wave2_safe_candidates_closure_and_p10_p12_plan_20260529.md\n M docs/replay/p136_post_rsr6_p10_p12_baseline_reevaluation_20260529.md\n M docs/replay/p146a_observation_only_live_monitoring_runner_20260529.md\n M outputs/replay/live_monitoring_observation_only/smoke_test/smoke_mock_acb_markov_midfreq_3bet_20260529.json\n M outputs/replay/p135_wave2_safe_candidates_closure_and_p10_p12_plan_20260529.json\n M outputs/replay/p136_post_rsr6_p10_p12_baseline_reevaluation_20260529.json\n M outputs/replay/p146a_observation_only_live_monitoring_runner_20260529.json\n M scripts/p142_wave2_multibet_apply_chain_closure_audit.py\n M scripts/p143_post_wave2_governance_readiness_plan.py\n M scripts/p144a_strategy_champion_registry_readiness_gate.py\n M scripts/p144b_live_draw_monitoring_activation_gate.py\n M scripts/p145b_manual_on_demand_monitoring_authorization_gate.py\n?? backups/\n?? docs/replay/p144d_keep_legacy_unverified_governed_baseline_20260529.md\n?? outputs/replay/p144d_keep_legacy_unverified_governed_baseline_20260529.json\n?? scripts/p144d_keep_legacy_unverified_governed_baseline.py\n?? tests/test_p144d_keep_legacy_unverified_governed_baseline.py"
+  },
+  "roadmap_update_status": {
+    "roadmap_md_updated": true,
+    "cto_analysis_updated": true,
+    "p144d_marked_done": true
+  },
+  "remaining_risks": [
+    "LEGACY_UNVERIFIED rows remain in DB indefinitely until future remediation with new authorization.",
+    "Champion promotion (P147) requires live monitoring verified draws — not yet achieved.",
+    "Future schema migrations must preserve bet_index=1 / LEGACY_UNVERIFIED isolation.",
+    "Any new controlled_apply must use strict selector to avoid overwriting legacy rows."
+  ],
+  "next_recommended_task": "P147_CHAMPION_EVALUATION_GATE",
+  "summary": "P144D records the Option A decision: keep 100 LEGACY_UNVERIFIED rows (50 power_precision_3bet + 50 power_orthogonal_5bet, all bet_index=1, controlled_apply_id IS NULL, source=P138B_LEGACY_REMARK) as a governed legacy baseline. No DB mutation was performed. DB row count remains 94924. Champion evaluation and apply base exclude LEGACY_UNVERIFIED rows by truth_level filter. Live monitoring is NOT blocked. P147 champion promotion gate remains blocked until live monitoring verified draws are accumulated."
+}

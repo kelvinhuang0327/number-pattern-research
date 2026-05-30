@@ -296,6 +296,15 @@
         /* P2: new disclaimer row backgrounds */
         .rp-row-artifact-prov { background:#fff4ec; border-bottom:1px solid #30363d; }
         .rp-row-tombstone-no-source { background:#f6f8fa; border-bottom:1px solid #30363d; }
+        /* P151: bet_index multi-bet badge */
+        .rp-bet-index-badge { display:inline-block; padding:1px 5px; border-radius:6px; font-size:9px; font-weight:700; background:rgba(230,100,20,.15); color:#c05010; white-space:nowrap; }
+        /* P151: no_data_reason badges */
+        .rp-ndr-badge { display:inline-block; padding:1px 7px; border-radius:10px; font-size:10px; font-weight:600; white-space:nowrap; }
+        .rp-ndr-zero-online  { background:#fff3cd; color:#856404; border:1px solid #ffc107; }
+        .rp-ndr-rejected     { background:#f8d7da; color:#721c24; border:1px solid #f5c6cb; }
+        .rp-ndr-db-only      { background:#cce5ff; color:#004085; border:1px solid #b8daff; }
+        .rp-ndr-artifact     { background:#e2e3e5; color:#383d41; border:1px solid #d6d8db; }
+        .rp-ndr-none         { background:#d4edda; color:#155724; border:1px solid #c3e6cb; }
 
         /* schedule status badges */
         .pt-sched-none     { background:#21262d; color:#7d8590; }
@@ -2240,6 +2249,43 @@
               </div>
             </div>
 
+            <!-- P151: 全策略目錄（all-strategy-catalog, includes zero-row + no_data_reason） -->
+            <div class="card mb-16" id="rp-all-catalog-card" data-testid="rp-all-catalog-card" style="border-left:4px solid #e67e22">
+              <div class="card-body" style="padding:14px 16px">
+                <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;flex-wrap:wrap;gap:8px">
+                  <strong style="font-size:14px" data-testid="rp-all-catalog-title">📋 全策略目錄（含零回放列策略）</strong>
+                  <span id="rp-all-catalog-total-badge" data-testid="rp-all-catalog-total-badge" style="padding:2px 10px;border-radius:12px;font-size:12px;font-weight:600;background:#e67e22;color:#fff">— 策略</span>
+                </div>
+                <!-- Summary row -->
+                <div id="rp-all-catalog-summary" data-testid="rp-all-catalog-summary" style="display:none;margin-bottom:10px">
+                  <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:4px" id="rp-all-catalog-chips" data-testid="rp-all-catalog-chips"></div>
+                  <div style="font-size:11px;color:#8b949e;margin-top:4px" id="rp-all-catalog-footnote" data-testid="rp-all-catalog-footnote"></div>
+                </div>
+                <div id="rp-all-catalog-loading" style="color:#666;font-size:13px">⏳ 全策略目錄讀取中…</div>
+                <div id="rp-all-catalog-error"   style="display:none;color:#8b949e;font-size:12px">ℹ️ 全策略目錄暫時無法讀取</div>
+                <div id="rp-all-catalog-list-wrap" style="display:none;overflow-x:auto">
+                  <table style="width:100%;border-collapse:collapse;font-size:12px" data-testid="rp-all-catalog-table">
+                    <thead>
+                      <tr style="background:#161b22;color:#8b949e">
+                        <th style="padding:6px 8px;text-align:left;border-bottom:1px solid #30363d;white-space:nowrap">策略 ID</th>
+                        <th style="padding:6px 8px;text-align:left;border-bottom:1px solid #30363d;white-space:nowrap">策略名稱</th>
+                        <th style="padding:6px 8px;text-align:left;border-bottom:1px solid #30363d;white-space:nowrap">彩種</th>
+                        <th style="padding:6px 8px;text-align:center;border-bottom:1px solid #30363d;white-space:nowrap">生命週期</th>
+                        <th style="padding:6px 8px;text-align:center;border-bottom:1px solid #30363d;white-space:nowrap">Rows</th>
+                        <th style="padding:6px 8px;text-align:left;border-bottom:1px solid #30363d;white-space:nowrap">無資料原因</th>
+                      </tr>
+                    </thead>
+                    <tbody id="rp-all-catalog-tbody" data-testid="rp-all-catalog-tbody">
+                      <tr><td colspan="6" style="text-align:center;color:#888;padding:12px">載入中…</td></tr>
+                    </tbody>
+                  </table>
+                </div>
+                <div style="margin-top:8px;font-size:10px;color:#8b949e;line-height:1.5" data-testid="rp-all-catalog-disclaimer">
+                  ⚠️ 本表顯示所有已登錄策略，含零回放列策略。<b>零回放列不代表策略被採用或有預測成效</b>，僅為 lifecycle 完整性登錄。DB 寫入僅限授權的 controlled_apply 流程，本頁不新增 rows。
+                </div>
+              </div>
+            </div>
+
           </div>
         </section>
 
@@ -3218,7 +3264,7 @@
           <span style="color:${causal.color};font-weight:600">${causal.icon} ${causal.label}</span>
         </div>
         <div><span style="color:#888">生成時間：</span>${r.generated_at ? r.generated_at.replace('T', ' ').slice(0, 19) : '—'}</div>
-        <div><span style="color:#888">一注預測：</span>每策略每期只保留一注</div>
+        <div><span style="color:#888">注次（bet_index）：</span><b data-testid="rp-detail-bet-index">Bet ${r.bet_index != null ? r.bet_index : 1}</b>${(r.bet_index != null && r.bet_index > 1) ? ' <span class="rp-bet-index-badge">multi-bet</span>' : ' <span style="font-size:11px;color:#888">（單注）</span>'}</div>
         <div><span style="color:#888">預測基準日：</span>${r.prediction_cutoff_date
           ? `<span class="rp-ts-cutoff">${r.prediction_cutoff_date}</span>`
           : '<span style="color:#aaa;font-size:11px">預測基準日未知（legacy）</span>'}</div>
@@ -3407,7 +3453,7 @@
       return `<tr class="${rowClass}" title="${_esc(tooltipTitle)}">
         <td>${r.target_draw}</td>
         <td>${r.target_date || ''}</td>
-        <td style="font-size:11px">${r.strategy_id}${(r.lifecycle_status === 'RETIRED' || r.strategy_lifecycle_status === 'RETIRED') ? ' <span style="font-size:9px;padding:1px 4px;border-radius:6px;background:rgba(52,152,219,.15);color:#2980b9;font-weight:600">回放</span>' : ''}</td>
+        <td style="font-size:11px">${r.strategy_id}${(r.lifecycle_status === 'RETIRED' || r.strategy_lifecycle_status === 'RETIRED') ? ' <span style="font-size:9px;padding:1px 4px;border-radius:6px;background:rgba(52,152,219,.15);color:#2980b9;font-weight:600">回放</span>' : ''}${(r.bet_index != null && r.bet_index > 1) ? ' <span class="rp-bet-index-badge" data-testid="rp-bet-index-badge">Bet ' + r.bet_index + '</span>' : ''}</td>
         <td>${rpBadges(predicted, hits)} ${predSpecial}</td>
         <td>${rpBadges(actual, hits)} ${actSpecial}</td>
         <td>${rpBadges(hits, hits)}${specialHit}</td>
@@ -3644,6 +3690,7 @@
           rpLoadFreshness();
           rpLoadLifecycleRegistry();
           rpLoadCatalog();
+          rpLoadAllStrategyCatalog();
         }
       });
     });
@@ -3674,6 +3721,8 @@
     // P29: initialize catalog click handler and load catalog on page entry
     rpInitCatalogClickHandler();
     rpLoadCatalog();
+    // P151: load all-strategy catalog (includes zero-row + no_data_reason)
+    rpLoadAllStrategyCatalog();
   });
 
   // ── P7: Strategy Lifecycle Registry (read-only) ──────────────────────────
@@ -3736,6 +3785,105 @@
 
   function _esc(str) {
     return String(str || '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+  }
+
+  // ── P151: no_data_reason badge renderer ──────────────────────────────────
+  function rpNoDataReasonBadge(reason) {
+    if (!reason) return '<span class="rp-ndr-badge rp-ndr-none" data-testid="rp-ndr-badge-none">✓ 有資料</span>';
+    const map = {
+      'ONLINE_ZERO_REPLAY_ROWS':  ['rp-ndr-zero-online',  '⚠️ ONLINE_ZERO_REPLAY_ROWS'],
+      'REJECTED_NO_REPLAY_DATA':  ['rp-ndr-rejected',     '✕ REJECTED_NO_REPLAY_DATA'],
+      'DB_ONLY_MISSING_LIFECYCLE':['rp-ndr-db-only',      'ℹ️ DB_ONLY_MISSING_LIFECYCLE'],
+      'ARTIFACT_ONLY':            ['rp-ndr-artifact',     '📋 ARTIFACT_ONLY'],
+      'NO_REPLAY_DATA':           ['rp-ndr-artifact',     '— NO_REPLAY_DATA'],
+    };
+    const [cls, label] = map[reason] || ['rp-ndr-artifact', reason];
+    return `<span class="rp-ndr-badge ${cls}" data-testid="rp-ndr-badge" data-reason="${_esc(reason)}">${_esc(label)}</span>`;
+  }
+
+  // ── P151: All-Strategy Catalog (P150 endpoint, includes zero-row + no_data_reason) ──
+  async function rpLoadAllStrategyCatalog() {
+    const loading   = document.getElementById('rp-all-catalog-loading');
+    const errEl     = document.getElementById('rp-all-catalog-error');
+    const listWrap  = document.getElementById('rp-all-catalog-list-wrap');
+    const tbody     = document.getElementById('rp-all-catalog-tbody');
+    const summary   = document.getElementById('rp-all-catalog-summary');
+    const totalBadge = document.getElementById('rp-all-catalog-total-badge');
+    const chips      = document.getElementById('rp-all-catalog-chips');
+    const footnote   = document.getElementById('rp-all-catalog-footnote');
+    if (!loading || !errEl || !listWrap || !tbody) return;
+
+    loading.style.display  = '';
+    errEl.style.display    = 'none';
+    listWrap.style.display = 'none';
+    if (summary) summary.style.display = 'none';
+
+    try {
+      const resp = await fetch(`${API_BASE}/api/replay/all-strategy-catalog`);
+      if (!resp.ok) throw new Error('HTTP ' + resp.status);
+      const data = await resp.json();
+
+      const strategies = Array.isArray(data.strategies) ? data.strategies : [];
+      const total      = data.total_strategies || strategies.length;
+      const rowBacked  = data.row_backed_count || 0;
+      const zeroRow    = data.zero_replay_row_count || (total - rowBacked);
+      const lcCounts   = data.lifecycle_counts || {};
+
+      if (totalBadge) totalBadge.textContent = total + ' 策略';
+
+      if (chips) {
+        const chipDefs = [
+          { key: 'ONLINE',                bg: '#1a7f37', color: '#fff', label: 'ONLINE' },
+          { key: 'OBSERVATION',           bg: '#7d5a00', color: '#fff', label: 'OBSERVATION' },
+          { key: 'RETIRED',               bg: '#4a4a4a', color: '#ccc', label: 'RETIRED' },
+          { key: 'REJECTED',              bg: '#6e3737', color: '#fff', label: 'REJECTED' },
+          { key: 'DB_ONLY_MISSING_LIFECYCLE', bg: '#0969da', color: '#fff', label: 'DB-only' },
+        ];
+        chips.innerHTML = chipDefs
+          .filter(function(c) { return lcCounts[c.key] > 0; })
+          .map(function(c) {
+            return '<span data-testid="rp-all-catalog-chip-' + _esc(c.key) + '" style="padding:2px 10px;border-radius:12px;font-size:12px;font-weight:600;background:' + c.bg + ';color:' + c.color + '">' + _esc(c.label) + ' ' + (lcCounts[c.key] || 0) + '</span>';
+          }).join('');
+      }
+
+      if (footnote) {
+        const pct = total > 0 ? (rowBacked / total * 100).toFixed(1) : '0.0';
+        footnote.textContent = '📌 row-backed: ' + rowBacked + '/' + total + ' (' + pct + '%)  |  zero-row: ' + zeroRow;
+      }
+
+      if (summary) summary.style.display = '';
+
+      const lcColors = {
+        ONLINE: '#1a7f37', OBSERVATION: '#7d5a00', RETIRED: '#4a4a4a',
+        REJECTED: '#9b2335', DB_ONLY_MISSING_LIFECYCLE: '#0969da', OFFLINE: '#555',
+      };
+
+      tbody.innerHTML = strategies.map(function(s) {
+        const lc = s.lifecycle_status || '—';
+        const lcColor = lcColors[lc] || '#555';
+        const lotTypes = Array.isArray(s.supported_lottery_types)
+          ? s.supported_lottery_types.join(', ')
+          : (s.supported_lottery_types || '—');
+        const rowCount = s.replay_row_count != null ? s.replay_row_count : 0;
+        const ndrBadge = s.no_data_reason ? rpNoDataReasonBadge(s.no_data_reason) : (rowCount > 0 ? rpNoDataReasonBadge(null) : rpNoDataReasonBadge('NO_REPLAY_DATA'));
+
+        return '<tr data-testid="rp-all-catalog-row" data-strategy-id="' + _esc(s.strategy_id) + '" style="border-bottom:1px solid #21262d">' +
+          '<td style="padding:5px 8px;font-family:monospace;font-size:11px;white-space:nowrap">' + _esc(s.strategy_id) + '</td>' +
+          '<td style="padding:5px 8px;font-size:11px">' + _esc(s.strategy_name || '—') + '</td>' +
+          '<td style="padding:5px 8px;font-size:11px;color:#8b949e;white-space:nowrap">' + _esc(lotTypes) + '</td>' +
+          '<td style="padding:5px 8px;text-align:center"><span style="padding:1px 7px;border-radius:10px;font-size:11px;font-weight:600;background:' + lcColor + ';color:#fff">' + _esc(lc) + '</span></td>' +
+          '<td style="padding:5px 8px;text-align:center;font-weight:' + (rowCount > 0 ? '600' : 'normal') + ';color:' + (rowCount > 0 ? '#1a7f37' : '#888') + '">' + rowCount + '</td>' +
+          '<td style="padding:5px 8px">' + ndrBadge + '</td>' +
+          '</tr>';
+      }).join('') || '<tr><td colspan="6" style="text-align:center;color:#888;padding:12px">無策略資料</td></tr>';
+
+      loading.style.display  = 'none';
+      listWrap.style.display = '';
+    } catch (err) {
+      loading.style.display = 'none';
+      errEl.style.display   = '';
+      console.warn('[P151] all-strategy-catalog load failed (non-blocking):', err);
+    }
   }
 
   // ── P29: Strategy Catalog (reads /api/replay/strategy-catalog; read-only) ──

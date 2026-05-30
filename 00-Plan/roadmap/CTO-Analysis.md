@@ -1,8 +1,8 @@
-# CTO Analysis - After P151B Historical Artifact Pollution Reconciliation
+# CTO Analysis - After P151 Replay UI Multi-Bet Display
 
 ## 1. CTO Review Date
 
-2026-05-30 Asia/Taipei (updated after P151B historical artifact pollution reconciliation).
+2026-05-30 Asia/Taipei (updated after P151 replay UI multi-bet display).
 
 Final CTO classification target: `CTO_ROADMAP_UPDATED_WITH_RISKS`.
 
@@ -20,7 +20,22 @@ P151 (Replay UI multi-bet display) was blocked because a prior agent session rer
 
 **Confirmed state**: DB=94924, drift guard PASS, worktree clean (only `backups/` untracked). No DB writes, no replay rows, no UI changes, no champion/registry promotion.
 
-**Next**: `P151_REPLAY_UI_MULTI_BET_DISPLAY_FROM_CLEAN_WORKTREE`
+**Next**: `P152_REPLAY_UI_SOURCE_CONTROLLED_APPLY_ID_DISPLAY`
+
+## 0b. P151 Update (2026-05-30)
+
+**Classification**: `P151_REPLAY_UI_MULTI_BET_DISPLAY_READY`
+
+P151 closes the replay UI gap left by P150. Changes to `index.html`:
+- `bet_index` badge ("Bet N") in history rows for multi-bet rows
+- `bet_index` shown in detail drill-down panel (was hardcoded "一注預測")
+- New **全策略目錄** card calling `/api/replay/all-strategy-catalog` (P150 endpoint)
+- `rpNoDataReasonBadge()` renders ONLINE_ZERO_REPLAY_ROWS / REJECTED_NO_REPLAY_DATA / DB_ONLY_MISSING_LIFECYCLE badges
+- `h6_gate_mk20_ew85` and 4 REJECTED strategies now visible in UI with correct badges
+
+**53 P151 tests + 123 regression tests pass. DB = 94924 unchanged.**
+
+**Deferred to P152**: `source` and `controlled_apply_id` fields from `/api/replay/history` not yet surfaced in UI.
 
 ## 2. Input Sources
 

@@ -1,0 +1,168 @@
+{
+  "task_id": "P151",
+  "classification": "P151_REPLAY_UI_MULTI_BET_DISPLAY_READY",
+  "generated_at": "2026-05-30T12:43:02.821247+00:00",
+  "canonical_repo": "/Users/kelvin/Kelvin-WorkSpace/LotteryNew/.claude/worktrees/zen-gates-ff6802",
+  "canonical_branch": "claude/zen-gates-ff6802",
+  "repo_branch_check": {
+    "repo_ok": true,
+    "branch_ok": true,
+    "actual_repo": "/Users/kelvin/Kelvin-WorkSpace/LotteryNew/.claude/worktrees/zen-gates-ff6802",
+    "actual_branch": "claude/zen-gates-ff6802"
+  },
+  "db_snapshot": {
+    "rows": 94924,
+    "expected": 94924,
+    "match": true,
+    "table": "strategy_prediction_replays"
+  },
+  "drift_guard_status": "PASS",
+  "p151b_source_summary": {
+    "classification": "P151B_HISTORICAL_ARTIFACT_POLLUTION_RECONCILED_READY_FOR_P151",
+    "ok": true
+  },
+  "p150_source_summary": {
+    "classification": "P150_REPLAY_API_ALL_STRATEGY_COVERAGE_READY",
+    "ok": true
+  },
+  "p149_source_summary": {
+    "classification": "P149_REPLAY_PRODUCT_COVERAGE_AUDIT_READY",
+    "ok": true
+  },
+  "ui_entrypoint_audit": {
+    "framework": "vanilla-js-spa",
+    "ui_file": "index.html",
+    "replay_section_id": "replay-section",
+    "ui_entrypoint_found": true,
+    "api_base": "/api/replay",
+    "existing_catalog_endpoint": "/api/replay/strategy-catalog",
+    "new_all_strategy_endpoint": "/api/replay/all-strategy-catalog",
+    "frontend_types": "none (vanilla JS, no TypeScript)"
+  },
+  "ui_changes": {
+    "files_modified": [
+      "index.html"
+    ],
+    "bet_index_badge_css_added": true,
+    "no_data_reason_badge_css_added": true,
+    "all_catalog_html_section_added": true,
+    "bet_index_badge_in_history_row": true,
+    "bet_index_in_detail_panel": true,
+    "rpNoDataReasonBadge_function_added": true,
+    "rpLoadAllStrategyCatalog_function_added": true,
+    "rpLoadAllStrategyCatalog_wired_nav_and_init": true
+  },
+  "api_client_contract_changes": {
+    "new_endpoint_called": "/api/replay/all-strategy-catalog",
+    "existing_endpoint_unchanged": "/api/replay/strategy-catalog",
+    "bet_index_from_history_endpoint": true,
+    "no_data_reason_from_all_catalog_endpoint": true,
+    "frontend_types_updated": false,
+    "note": "Vanilla JS SPA — no TypeScript types to update"
+  },
+  "multi_bet_display_support": {
+    "bet_index_visible_in_ui": true,
+    "bet_label_format": "Bet N badge (rp-bet-index-badge class) in strategy_id cell; shown only when bet_index > 1",
+    "multi_bet_rows_distinguishable": true,
+    "detail_panel_shows_bet_index": true,
+    "detail_panel_label": "注次（bet_index）：Bet N",
+    "test_coverage_added": true
+  },
+  "no_data_display_support": {
+    "zero_replay_rows_strategies_visible": true,
+    "no_data_reason_visible": true,
+    "rejected_no_data_strategies_visible": true,
+    "db_only_missing_lifecycle_visible": true,
+    "online_zero_replay_rows_visible": true,
+    "artifact_only_visible": true,
+    "test_coverage_added": true
+  },
+  "h6_gate_mk20_ew85_ui_handling": {
+    "visible_in_catalog": true,
+    "catalog_section": "rp-all-catalog-card (P151 all-strategy catalog)",
+    "replay_rows_inserted": false,
+    "no_data_reason": "ONLINE_ZERO_REPLAY_ROWS",
+    "ui_badge": "⚠️ ONLINE_ZERO_REPLAY_ROWS (rp-ndr-zero-online)",
+    "note": "h6_gate_mk20_ew85 is OBSERVATION lifecycle with 0 rows; visible in all-strategy catalog with ONLINE_ZERO_REPLAY_ROWS badge"
+  },
+  "rejected_no_data_ui_handling": {
+    "rejected_no_data_visible": true,
+    "catalog_section": "rp-all-catalog-card (P151 all-strategy catalog)",
+    "replay_rows_inserted": false,
+    "no_data_reason": "REJECTED_NO_REPLAY_DATA",
+    "ui_badge": "✕ REJECTED_NO_REPLAY_DATA (rp-ndr-rejected)",
+    "count": 4,
+    "note": "4 REJECTED strategies visible with REJECTED_NO_REPLAY_DATA badge"
+  },
+  "truth_level_source_display_readiness": {
+    "truth_level_visible_or_hooked": true,
+    "source_visible_or_hooked": false,
+    "controlled_apply_id_visible_or_hooked": false,
+    "deferred_to_p152_if_missing_from_api": true,
+    "note": "truth_level is already rendered via renderTruthLevelBadge() in rpBuildHistoryRows and rpRenderLifecycleRegistryRows. source and controlled_apply_id are returned by /api/replay/history but not yet surfaced in the UI — deferred to P152."
+  },
+  "tests_summary": {
+    "p151_tests": "tests/test_p151_replay_ui_multi_bet_display.py",
+    "regression_tests": [
+      "tests/test_p151b_historical_artifact_pollution_reconciliation.py",
+      "tests/test_p150_replay_api_all_strategy_coverage.py",
+      "tests/test_p149_replay_product_coverage_audit.py"
+    ]
+  },
+  "non_actions": {
+    "db_write_in_p151": false,
+    "controlled_apply_executed_in_p151": false,
+    "replay_rows_inserted_in_p151": 0,
+    "replay_rows_updated_in_p151": 0,
+    "replay_rows_deleted_in_p151": 0,
+    "champion_promotion_executed_in_p151": false,
+    "registry_promotion_executed_in_p151": false,
+    "live_api_called": false,
+    "scheduler_installed": false,
+    "four_star_executed": false,
+    "p108_executed": false,
+    "p117_executed": false,
+    "p118_executed": false
+  },
+  "dirty_file_hygiene": {
+    "backups_untracked_not_staged": true,
+    "backups_deleted": false,
+    "forbidden_files_staged": false
+  },
+  "roadmap_update_status": {
+    "cto_analysis_updated": true,
+    "roadmap_updated": true
+  },
+  "remaining_risks": [
+    "source and controlled_apply_id fields from /api/replay/history not yet surfaced in UI — deferred to P152",
+    "all-strategy-catalog uses supported_lottery_types[] (array); existing strategy-catalog uses lottery_type (string) — two separate sections to avoid breakage",
+    "bet_index badge only shown for bet_index > 1; bet_index == 1 rows appear unchanged (intentional for backwards compat)",
+    "backups/ untracked in worktree — not staged",
+    "Champion evaluation (P147) remains blocked",
+    "P108/P117/P118/4★ triggers remain blocked"
+  ],
+  "next_recommended_task": "P152_REPLAY_UI_SOURCE_CONTROLLED_APPLY_ID_DISPLAY",
+  "summary": "P151 adds bet_index display to replay history rows and detail panels, adds a new all-strategy-catalog section showing all 40 strategies including zero-row strategies with no_data_reason badges. h6_gate_mk20_ew85 (ONLINE_ZERO_REPLAY_ROWS) and 4 REJECTED strategies are now visible in the UI. No DB writes. DB remains at 94924 rows.",
+  "head_at_generation": "4daf36c P151B: reconcile historical artifact pollution before replay UI",
+  "html_audit_detail": {
+    "found": true,
+    "file": "index.html",
+    "bet_index_badge_in_history_row": true,
+    "bet_index_badge_css": true,
+    "bet_index_in_detail_panel": true,
+    "bet_index_label_updated": true,
+    "all_catalog_card_present": true,
+    "all_catalog_tbody_present": true,
+    "all_catalog_endpoint_called": true,
+    "no_data_reason_badge_fn_present": true,
+    "ndr_css_zero_online": true,
+    "ndr_css_rejected": true,
+    "ndr_css_db_only": true,
+    "ndr_online_zero_replay_rows_label": true,
+    "ndr_rejected_label": true,
+    "ndr_db_only_label": true,
+    "rpLoadAllStrategyCatalog_defined": true,
+    "rpLoadAllStrategyCatalog_wired_nav": true,
+    "all_catalog_disclaimer_present": true
+  }
+}

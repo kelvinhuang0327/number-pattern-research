@@ -97,6 +97,22 @@ Registry is source-controlled Python; no DB mutation needed. P156B required for 
 
 **Next**: `P156B_DB_ONLY_LIFECYCLE_DECISION_GATE` — per-strategy authorization phrases before registry update.
 
+## 0g. P156B Update (2026-05-30)
+
+**Classification**: `P156B_DB_ONLY_LIFECYCLE_DECISION_GATE_READY_WAITING_FOR_AUTHORIZATION`
+
+P156B builds the authorization gate for 22 DB_ONLY strategies. No authorization provided in this run.
+
+**Authorization options** (Kelvin to choose):
+- **Group A** (7 ONLINE HIGH): group phrase or 7 individual phrases
+- **Group C** (6 RETIRED MEDIUM): group phrase or 6 individual phrases
+- **Group D non-review** (5 RETIRED HIGH): group phrase or 5 individual phrases
+- **Human review 4** (cold_complement_2bet, zonal_entropy_2bet, fourier30_markov30_2bet, fourier30_markov30_biglotto): individual phrases only
+
+Registry NOT modified. P156C executes after authorization.
+
+**49 P156B tests + 384 regression tests pass. DB = 94924 unchanged.**
+
 ## 2. Input Sources
 
 - [Confirmed] User handoff report in the current conversation, limited to LotteryNew content.

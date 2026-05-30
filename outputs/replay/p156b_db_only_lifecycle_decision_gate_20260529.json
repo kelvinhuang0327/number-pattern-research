@@ -1,0 +1,497 @@
+{
+  "task_id": "P156B",
+  "classification": "P156B_DB_ONLY_LIFECYCLE_DECISION_GATE_READY_WAITING_FOR_AUTHORIZATION",
+  "generated_at": "2026-05-30T14:31:45.926705+00:00",
+  "canonical_repo": "/Users/kelvin/Kelvin-WorkSpace/LotteryNew/.claude/worktrees/zen-gates-ff6802",
+  "canonical_branch": "claude/zen-gates-ff6802",
+  "repo_branch_check": {
+    "repo_ok": true,
+    "branch_ok": true,
+    "actual_repo": "/Users/kelvin/Kelvin-WorkSpace/LotteryNew/.claude/worktrees/zen-gates-ff6802",
+    "actual_branch": "claude/zen-gates-ff6802"
+  },
+  "db_snapshot": {
+    "rows": 94924,
+    "expected": 94924,
+    "match": true
+  },
+  "drift_guard_status": "PASS",
+  "p156_source_summary": {
+    "classification": "P156_DB_ONLY_LIFECYCLE_GOVERNANCE_AUDIT_READY",
+    "ok": true,
+    "matrix_row_count": 22
+  },
+  "p154_source_summary": {
+    "classification": "P154_REPLAY_PRODUCT_RELEASE_CANDIDATE_CLOSED",
+    "ok": true
+  },
+  "decision_gate_matrix": [
+    {
+      "strategy_id": "539_3bet_orthogonal",
+      "lottery_type": "DAILY_539",
+      "replay_rows_count": 1500,
+      "current_lifecycle": "DB_ONLY_MISSING_LIFECYCLE",
+      "recommended_lifecycle": "RETIRED",
+      "confidence": "MEDIUM",
+      "reason": "P37 Wave2 backfill only; 1500 rows; max_bet=1; no subsequent controlled_apply; similar to RETIRED acb_1bet etc.",
+      "requires_human_review": false,
+      "exact_authorization_phrase": "YES update lifecycle for 539_3bet_orthogonal to RETIRED per P156 recommendation",
+      "update_allowed_in_p156b": false,
+      "group": "C"
+    },
+    {
+      "strategy_id": "acb_single_539",
+      "lottery_type": "DAILY_539",
+      "replay_rows_count": 1500,
+      "current_lifecycle": "DB_ONLY_MISSING_LIFECYCLE",
+      "recommended_lifecycle": "RETIRED",
+      "confidence": "MEDIUM",
+      "reason": "P37 Wave2 backfill only; 1500 rows; max_bet=1; no subsequent controlled_apply",
+      "requires_human_review": false,
+      "exact_authorization_phrase": "YES update lifecycle for acb_single_539 to RETIRED per P156 recommendation",
+      "update_allowed_in_p156b": false,
+      "group": "C"
+    },
+    {
+      "strategy_id": "bet2_fourier_expansion_biglotto",
+      "lottery_type": "BIG_LOTTO",
+      "replay_rows_count": 1500,
+      "current_lifecycle": "DB_ONLY_MISSING_LIFECYCLE",
+      "recommended_lifecycle": "RETIRED",
+      "confidence": "HIGH",
+      "reason": "P43 Wave3 backfill only; BIG_LOTTO 49C6 signal space exhausted (L91); no subsequent controlled_apply",
+      "requires_human_review": false,
+      "exact_authorization_phrase": "YES update lifecycle for bet2_fourier_expansion_biglotto to RETIRED per P156 recommendation",
+      "update_allowed_in_p156b": false,
+      "group": "D"
+    },
+    {
+      "strategy_id": "biglotto_echo_aware_3bet",
+      "lottery_type": "BIG_LOTTO",
+      "replay_rows_count": 4500,
+      "current_lifecycle": "DB_ONLY_MISSING_LIFECYCLE",
+      "recommended_lifecycle": "ONLINE",
+      "confidence": "HIGH",
+      "reason": "P94+P126C controlled_apply; TIERB_DRYRUN_VALIDATED; 3-bet expanded; actively maintained",
+      "requires_human_review": false,
+      "exact_authorization_phrase": "YES update lifecycle for biglotto_echo_aware_3bet to ONLINE per P156 recommendation",
+      "update_allowed_in_p156b": false,
+      "group": "A"
+    },
+    {
+      "strategy_id": "biglotto_ts3_markov_4bet_w30",
+      "lottery_type": "BIG_LOTTO",
+      "replay_rows_count": 6000,
+      "current_lifecycle": "DB_ONLY_MISSING_LIFECYCLE",
+      "recommended_lifecycle": "ONLINE",
+      "confidence": "HIGH",
+      "reason": "P94+P126E controlled_apply; TIERB_DRYRUN_VALIDATED; 4-bet expanded; actively maintained",
+      "requires_human_review": false,
+      "exact_authorization_phrase": "YES update lifecycle for biglotto_ts3_markov_4bet_w30 to ONLINE per P156 recommendation",
+      "update_allowed_in_p156b": false,
+      "group": "A"
+    },
+    {
+      "strategy_id": "cold_complement_2bet",
+      "lottery_type": "POWER_LOTTO",
+      "replay_rows_count": 1500,
+      "current_lifecycle": "DB_ONLY_MISSING_LIFECYCLE",
+      "recommended_lifecycle": "ONLINE",
+      "confidence": "MEDIUM",
+      "reason": "P66 Wave6 controlled_apply; 1500 rows; recent production apply; human review recommended",
+      "requires_human_review": true,
+      "exact_authorization_phrase": "YES update lifecycle for cold_complement_2bet to ONLINE per P156 recommendation",
+      "update_allowed_in_p156b": false,
+      "group": "B"
+    },
+    {
+      "strategy_id": "cold_complement_biglotto",
+      "lottery_type": "BIG_LOTTO",
+      "replay_rows_count": 1500,
+      "current_lifecycle": "DB_ONLY_MISSING_LIFECYCLE",
+      "recommended_lifecycle": "RETIRED",
+      "confidence": "HIGH",
+      "reason": "P43 Wave3 backfill only; BIG_LOTTO 49C6 signal space exhausted (L91); no subsequent controlled_apply",
+      "requires_human_review": false,
+      "exact_authorization_phrase": "YES update lifecycle for cold_complement_biglotto to RETIRED per P156 recommendation",
+      "update_allowed_in_p156b": false,
+      "group": "D"
+    },
+    {
+      "strategy_id": "coldpool15_biglotto",
+      "lottery_type": "BIG_LOTTO",
+      "replay_rows_count": 1500,
+      "current_lifecycle": "DB_ONLY_MISSING_LIFECYCLE",
+      "recommended_lifecycle": "RETIRED",
+      "confidence": "HIGH",
+      "reason": "P43 Wave3 backfill only; BIG_LOTTO 49C6 signal space exhausted (L91); no subsequent controlled_apply",
+      "requires_human_review": false,
+      "exact_authorization_phrase": "YES update lifecycle for coldpool15_biglotto to RETIRED per P156 recommendation",
+      "update_allowed_in_p156b": false,
+      "group": "D"
+    },
+    {
+      "strategy_id": "daily539_f4cold_3bet",
+      "lottery_type": "DAILY_539",
+      "replay_rows_count": 4500,
+      "current_lifecycle": "DB_ONLY_MISSING_LIFECYCLE",
+      "recommended_lifecycle": "ONLINE",
+      "confidence": "HIGH",
+      "reason": "P94+P126D controlled_apply; TIERB_DRYRUN_VALIDATED; 3-bet expanded; actively maintained",
+      "requires_human_review": false,
+      "exact_authorization_phrase": "YES update lifecycle for daily539_f4cold_3bet to ONLINE per P156 recommendation",
+      "update_allowed_in_p156b": false,
+      "group": "A"
+    },
+    {
+      "strategy_id": "daily539_f4cold_5bet",
+      "lottery_type": "DAILY_539",
+      "replay_rows_count": 7500,
+      "current_lifecycle": "DB_ONLY_MISSING_LIFECYCLE",
+      "recommended_lifecycle": "ONLINE",
+      "confidence": "HIGH",
+      "reason": "P94+P126F controlled_apply; TIERB_DRYRUN_VALIDATED; 5-bet expanded; actively maintained",
+      "requires_human_review": false,
+      "exact_authorization_phrase": "YES update lifecycle for daily539_f4cold_5bet to ONLINE per P156 recommendation",
+      "update_allowed_in_p156b": false,
+      "group": "A"
+    },
+    {
+      "strategy_id": "fourier30_markov30_2bet",
+      "lottery_type": "POWER_LOTTO",
+      "replay_rows_count": 1501,
+      "current_lifecycle": "DB_ONLY_MISSING_LIFECYCLE",
+      "recommended_lifecycle": "ONLINE",
+      "confidence": "MEDIUM",
+      "reason": "P59 Wave5 + P78 draw extension; 1501 rows; draw-extension sentinel present; human review recommended",
+      "requires_human_review": true,
+      "exact_authorization_phrase": "YES update lifecycle for fourier30_markov30_2bet to ONLINE per P156 recommendation",
+      "update_allowed_in_p156b": false,
+      "group": "B"
+    },
+    {
+      "strategy_id": "fourier30_markov30_biglotto",
+      "lottery_type": "BIG_LOTTO",
+      "replay_rows_count": 1500,
+      "current_lifecycle": "DB_ONLY_MISSING_LIFECYCLE",
+      "recommended_lifecycle": "RETIRED",
+      "confidence": "HIGH",
+      "reason": "P43 Wave3 backfill only; BIG_LOTTO 49C6 signal space exhausted; P118 quarantine candidate (negative evidence)",
+      "requires_human_review": true,
+      "exact_authorization_phrase": "YES update lifecycle for fourier30_markov30_biglotto to RETIRED per P156 recommendation",
+      "update_allowed_in_p156b": false,
+      "group": "D"
+    },
+    {
+      "strategy_id": "markov_1bet_539",
+      "lottery_type": "DAILY_539",
+      "replay_rows_count": 1500,
+      "current_lifecycle": "DB_ONLY_MISSING_LIFECYCLE",
+      "recommended_lifecycle": "RETIRED",
+      "confidence": "MEDIUM",
+      "reason": "P37 Wave2 backfill only; 1500 rows; max_bet=1; no subsequent controlled_apply",
+      "requires_human_review": false,
+      "exact_authorization_phrase": "YES update lifecycle for markov_1bet_539 to RETIRED per P156 recommendation",
+      "update_allowed_in_p156b": false,
+      "group": "C"
+    },
+    {
+      "strategy_id": "markov_2bet_biglotto",
+      "lottery_type": "BIG_LOTTO",
+      "replay_rows_count": 1500,
+      "current_lifecycle": "DB_ONLY_MISSING_LIFECYCLE",
+      "recommended_lifecycle": "RETIRED",
+      "confidence": "HIGH",
+      "reason": "P43 Wave3 backfill only; BIG_LOTTO 49C6 signal space exhausted (L91); no subsequent controlled_apply",
+      "requires_human_review": false,
+      "exact_authorization_phrase": "YES update lifecycle for markov_2bet_biglotto to RETIRED per P156 recommendation",
+      "update_allowed_in_p156b": false,
+      "group": "D"
+    },
+    {
+      "strategy_id": "markov_single_biglotto",
+      "lottery_type": "BIG_LOTTO",
+      "replay_rows_count": 1500,
+      "current_lifecycle": "DB_ONLY_MISSING_LIFECYCLE",
+      "recommended_lifecycle": "RETIRED",
+      "confidence": "HIGH",
+      "reason": "P43 Wave3 backfill only; BIG_LOTTO 49C6 signal space exhausted (L91); no subsequent controlled_apply",
+      "requires_human_review": false,
+      "exact_authorization_phrase": "YES update lifecycle for markov_single_biglotto to RETIRED per P156 recommendation",
+      "update_allowed_in_p156b": false,
+      "group": "D"
+    },
+    {
+      "strategy_id": "midfreq_fourier_mk_3bet",
+      "lottery_type": "POWER_LOTTO",
+      "replay_rows_count": 4500,
+      "current_lifecycle": "DB_ONLY_MISSING_LIFECYCLE",
+      "recommended_lifecycle": "ONLINE",
+      "confidence": "HIGH",
+      "reason": "P48+P132 controlled_apply; Wave4+recent multi-bet expansion; actively maintained",
+      "requires_human_review": false,
+      "exact_authorization_phrase": "YES update lifecycle for midfreq_fourier_mk_3bet to ONLINE per P156 recommendation",
+      "update_allowed_in_p156b": false,
+      "group": "A"
+    },
+    {
+      "strategy_id": "p0b_539_3bet_f_cold_fmid",
+      "lottery_type": "DAILY_539",
+      "replay_rows_count": 1500,
+      "current_lifecycle": "DB_ONLY_MISSING_LIFECYCLE",
+      "recommended_lifecycle": "RETIRED",
+      "confidence": "MEDIUM",
+      "reason": "P37 Wave2 backfill only; 1500 rows; max_bet=1; no subsequent controlled_apply",
+      "requires_human_review": false,
+      "exact_authorization_phrase": "YES update lifecycle for p0b_539_3bet_f_cold_fmid to RETIRED per P156 recommendation",
+      "update_allowed_in_p156b": false,
+      "group": "C"
+    },
+    {
+      "strategy_id": "p0c_539_3bet_f_cold_x2",
+      "lottery_type": "DAILY_539",
+      "replay_rows_count": 1500,
+      "current_lifecycle": "DB_ONLY_MISSING_LIFECYCLE",
+      "recommended_lifecycle": "RETIRED",
+      "confidence": "MEDIUM",
+      "reason": "P37 Wave2 backfill only; 1500 rows; max_bet=1; no subsequent controlled_apply",
+      "requires_human_review": false,
+      "exact_authorization_phrase": "YES update lifecycle for p0c_539_3bet_f_cold_x2 to RETIRED per P156 recommendation",
+      "update_allowed_in_p156b": false,
+      "group": "C"
+    },
+    {
+      "strategy_id": "power_fourier_rhythm_2bet",
+      "lottery_type": "POWER_LOTTO",
+      "replay_rows_count": 3000,
+      "current_lifecycle": "DB_ONLY_MISSING_LIFECYCLE",
+      "recommended_lifecycle": "ONLINE",
+      "confidence": "HIGH",
+      "reason": "P94+P126B controlled_apply; TIERB_DRYRUN_VALIDATED; 2-bet expanded; actively maintained",
+      "requires_human_review": false,
+      "exact_authorization_phrase": "YES update lifecycle for power_fourier_rhythm_2bet to ONLINE per P156 recommendation",
+      "update_allowed_in_p156b": false,
+      "group": "A"
+    },
+    {
+      "strategy_id": "pp3_freqort_4bet",
+      "lottery_type": "POWER_LOTTO",
+      "replay_rows_count": 6000,
+      "current_lifecycle": "DB_ONLY_MISSING_LIFECYCLE",
+      "recommended_lifecycle": "ONLINE",
+      "confidence": "HIGH",
+      "reason": "P48+P133 controlled_apply; Wave4+recent multi-bet expansion; actively maintained",
+      "requires_human_review": false,
+      "exact_authorization_phrase": "YES update lifecycle for pp3_freqort_4bet to ONLINE per P156 recommendation",
+      "update_allowed_in_p156b": false,
+      "group": "A"
+    },
+    {
+      "strategy_id": "zonal_entropy_2bet",
+      "lottery_type": "POWER_LOTTO",
+      "replay_rows_count": 1500,
+      "current_lifecycle": "DB_ONLY_MISSING_LIFECYCLE",
+      "recommended_lifecycle": "ONLINE",
+      "confidence": "MEDIUM",
+      "reason": "P66 Wave6 controlled_apply; 1500 rows; recent production apply; human review recommended",
+      "requires_human_review": true,
+      "exact_authorization_phrase": "YES update lifecycle for zonal_entropy_2bet to ONLINE per P156 recommendation",
+      "update_allowed_in_p156b": false,
+      "group": "B"
+    },
+    {
+      "strategy_id": "zone_gap_3bet_539",
+      "lottery_type": "DAILY_539",
+      "replay_rows_count": 1500,
+      "current_lifecycle": "DB_ONLY_MISSING_LIFECYCLE",
+      "recommended_lifecycle": "RETIRED",
+      "confidence": "MEDIUM",
+      "reason": "P37 Wave2 backfill only; 1500 rows; max_bet=1; no subsequent controlled_apply",
+      "requires_human_review": false,
+      "exact_authorization_phrase": "YES update lifecycle for zone_gap_3bet_539 to RETIRED per P156 recommendation",
+      "update_allowed_in_p156b": false,
+      "group": "C"
+    }
+  ],
+  "group_authorization_options": {
+    "group_a_online_high_confidence": {
+      "description": "Group A: 7 HIGH confidence ONLINE strategies (P94+P126x/P13x multi-bet)",
+      "strategy_ids": [
+        "biglotto_echo_aware_3bet",
+        "biglotto_ts3_markov_4bet_w30",
+        "daily539_f4cold_3bet",
+        "daily539_f4cold_5bet",
+        "power_fourier_rhythm_2bet",
+        "midfreq_fourier_mk_3bet",
+        "pp3_freqort_4bet"
+      ],
+      "group_phrase": "YES update lifecycle for Group A (biglotto_echo_aware_3bet, biglotto_ts3_markov_4bet_w30, daily539_f4cold_3bet, daily539_f4cold_5bet, power_fourier_rhythm_2bet, midfreq_fourier_mk_3bet, pp3_freqort_4bet) to ONLINE per P156 recommendation",
+      "individual_phrases": [
+        "YES update lifecycle for biglotto_echo_aware_3bet to ONLINE per P156 recommendation",
+        "YES update lifecycle for biglotto_ts3_markov_4bet_w30 to ONLINE per P156 recommendation",
+        "YES update lifecycle for daily539_f4cold_3bet to ONLINE per P156 recommendation",
+        "YES update lifecycle for daily539_f4cold_5bet to ONLINE per P156 recommendation",
+        "YES update lifecycle for power_fourier_rhythm_2bet to ONLINE per P156 recommendation",
+        "YES update lifecycle for midfreq_fourier_mk_3bet to ONLINE per P156 recommendation",
+        "YES update lifecycle for pp3_freqort_4bet to ONLINE per P156 recommendation"
+      ],
+      "group_update_allowed": true,
+      "human_review_required": false
+    },
+    "group_retired_high_confidence": {
+      "description": "Group D: 6 HIGH confidence RETIRED strategies (BIG_LOTTO Wave3 backfill, L91 exhausted)",
+      "strategy_ids": [
+        "bet2_fourier_expansion_biglotto",
+        "cold_complement_biglotto",
+        "coldpool15_biglotto",
+        "markov_2bet_biglotto",
+        "markov_single_biglotto"
+      ],
+      "group_phrase": "YES update lifecycle for Group D non-review (bet2_fourier_expansion_biglotto, cold_complement_biglotto, coldpool15_biglotto, markov_2bet_biglotto, markov_single_biglotto) to RETIRED per P156 recommendation",
+      "individual_phrases": [
+        "YES update lifecycle for bet2_fourier_expansion_biglotto to RETIRED per P156 recommendation",
+        "YES update lifecycle for cold_complement_biglotto to RETIRED per P156 recommendation",
+        "YES update lifecycle for coldpool15_biglotto to RETIRED per P156 recommendation",
+        "YES update lifecycle for markov_2bet_biglotto to RETIRED per P156 recommendation",
+        "YES update lifecycle for markov_single_biglotto to RETIRED per P156 recommendation"
+      ],
+      "group_update_allowed": true,
+      "human_review_required": false,
+      "note": "fourier30_markov30_biglotto excluded — requires individual human review due to P118 quarantine candidacy"
+    },
+    "group_retired_medium_confidence": {
+      "description": "Group C: 6 MEDIUM confidence RETIRED strategies (DAILY_539 Wave2 backfill only)",
+      "strategy_ids": [
+        "539_3bet_orthogonal",
+        "acb_single_539",
+        "markov_1bet_539",
+        "p0b_539_3bet_f_cold_fmid",
+        "p0c_539_3bet_f_cold_x2",
+        "zone_gap_3bet_539"
+      ],
+      "group_phrase": "YES update lifecycle for Group C (539_3bet_orthogonal, acb_single_539, markov_1bet_539, p0b_539_3bet_f_cold_fmid, p0c_539_3bet_f_cold_x2, zone_gap_3bet_539) to RETIRED per P156 recommendation",
+      "individual_phrases": [
+        "YES update lifecycle for 539_3bet_orthogonal to RETIRED per P156 recommendation",
+        "YES update lifecycle for acb_single_539 to RETIRED per P156 recommendation",
+        "YES update lifecycle for markov_1bet_539 to RETIRED per P156 recommendation",
+        "YES update lifecycle for p0b_539_3bet_f_cold_fmid to RETIRED per P156 recommendation",
+        "YES update lifecycle for p0c_539_3bet_f_cold_x2 to RETIRED per P156 recommendation",
+        "YES update lifecycle for zone_gap_3bet_539 to RETIRED per P156 recommendation"
+      ],
+      "group_update_allowed": true,
+      "human_review_required": false
+    },
+    "human_review_group_disallowed": {
+      "description": "4 strategies require individual review before lifecycle update",
+      "strategy_ids": [
+        "cold_complement_2bet",
+        "fourier30_markov30_2bet",
+        "fourier30_markov30_biglotto",
+        "zonal_entropy_2bet"
+      ],
+      "group_update_allowed": false,
+      "reason": "Must be authorized individually — uncertain active status (Group B) or P118 quarantine candidacy (fourier30_markov30_biglotto)",
+      "individual_phrases": [
+        "YES update lifecycle for cold_complement_2bet to ONLINE per P156 recommendation",
+        "YES update lifecycle for fourier30_markov30_2bet to ONLINE per P156 recommendation",
+        "YES update lifecycle for fourier30_markov30_biglotto to RETIRED per P156 recommendation",
+        "YES update lifecycle for zonal_entropy_2bet to ONLINE per P156 recommendation"
+      ]
+    },
+    "exact_group_authorization_phrase_templates": {
+      "group_a_template": "YES update lifecycle for Group A ({strategy_list}) to ONLINE per P156 recommendation",
+      "group_cd_template": "YES update lifecycle for Group C/D ({strategy_list}) to RETIRED per P156 recommendation",
+      "individual_template": "YES update lifecycle for {strategy_id} to {recommended_lifecycle} per P156 recommendation"
+    }
+  },
+  "human_review_required_strategies": [
+    {
+      "strategy_id": "cold_complement_2bet",
+      "recommended_lifecycle": "ONLINE",
+      "reason": "Wave6 POWER_LOTTO; recommend ONLINE but verify if still actively monitored",
+      "individual_phrase": "YES update lifecycle for cold_complement_2bet to ONLINE per P156 recommendation"
+    },
+    {
+      "strategy_id": "zonal_entropy_2bet",
+      "recommended_lifecycle": "ONLINE",
+      "reason": "Wave6 POWER_LOTTO; recommend ONLINE but verify if still actively monitored",
+      "individual_phrase": "YES update lifecycle for zonal_entropy_2bet to ONLINE per P156 recommendation"
+    },
+    {
+      "strategy_id": "fourier30_markov30_2bet",
+      "recommended_lifecycle": "ONLINE",
+      "reason": "Wave5 + P78 draw extension; likely active but verify",
+      "individual_phrase": "YES update lifecycle for fourier30_markov30_2bet to ONLINE per P156 recommendation"
+    },
+    {
+      "strategy_id": "fourier30_markov30_biglotto",
+      "recommended_lifecycle": "RETIRED",
+      "reason": "P118 quarantine candidate (negative evidence); confirm before RETIRED",
+      "individual_phrase": "YES update lifecycle for fourier30_markov30_biglotto to RETIRED per P156 recommendation"
+    }
+  ],
+  "authorization_status": {
+    "authorization_present": false,
+    "valid_authorization_count": 0,
+    "invalid_authorization_count": 0,
+    "authorized_strategy_ids": [],
+    "authorization_required_before_registry_update": true,
+    "how_to_authorize": "Provide the exact authorization phrase(s) in your next message. You may use group phrases or individual phrases. Human-review strategies must be authorized individually.",
+    "pending_authorization_count": 22
+  },
+  "p156c_execution_plan": {
+    "p156c_required": true,
+    "p156c_scope": "Update lottery_api/models/replay_strategy_registry.py with authorized lifecycle per P156B decision gate",
+    "registry_file_path": "lottery_api/models/replay_strategy_registry.py",
+    "db_write_required": false,
+    "source_control_registry_update_required": true,
+    "p156c_must_reverify_phase0": true,
+    "p156c_must_run_regression_tests": true,
+    "p156c_must_not_change_unathourized": true
+  },
+  "registry_update_safety_assessment": {
+    "registry_is_source_controlled": true,
+    "registry_is_db_table": false,
+    "db_mutation_required": false,
+    "update_executed_in_p156b": false,
+    "safe_to_execute_only_after_p156c_authorization": true,
+    "registry_file_not_staged_in_p156b": true
+  },
+  "non_actions": {
+    "db_write_in_p156b": false,
+    "lifecycle_update_executed_in_p156b": false,
+    "registry_file_modified_in_p156b": false,
+    "controlled_apply_executed_in_p156b": false,
+    "replay_rows_inserted_in_p156b": 0,
+    "replay_rows_updated_in_p156b": 0,
+    "replay_rows_deleted_in_p156b": 0,
+    "champion_promotion_executed_in_p156b": false,
+    "registry_promotion_executed_in_p156b": false,
+    "live_api_called": false,
+    "scheduler_installed": false,
+    "four_star_executed": false,
+    "p108_executed": false,
+    "p117_executed": false,
+    "p118_executed": false
+  },
+  "dirty_file_hygiene": {
+    "backups_untracked_not_staged": true,
+    "backups_deleted": false,
+    "forbidden_files_staged": false,
+    "registry_file_staged": false,
+    "remaining_unrelated_dirty": []
+  },
+  "roadmap_update_status": {
+    "cto_analysis_updated": true,
+    "roadmap_updated": true
+  },
+  "remaining_risks": [
+    "4 human-review strategies await individual authorization",
+    "Group A/C/D group authorization phrases not yet provided — awaiting Kelvin's decision",
+    "After authorization: P156C must verify Phase 0 + run all tests before committing registry update",
+    "fourier30_markov30_biglotto (P118 quarantine candidate) should be confirmed RETIRED before update"
+  ],
+  "next_recommended_task": "P156C_DB_ONLY_LIFECYCLE_REGISTRY_UPDATE_EXECUTION (after authorization)",
+  "summary": "P156B produces decision gate for 22 DB_ONLY_MISSING_LIFECYCLE strategies. No authorization phrases provided in this run — classification WAITING_FOR_AUTHORIZATION. Group A (7 ONLINE HIGH), Group C (6 RETIRED MEDIUM), Group D-non-review (5 RETIRED HIGH) can be authorized via group phrases. 4 human-review strategies need individual authorization. Registry NOT modified. DB = 94924 unchanged.",
+  "head_at_generation": "89d30c3 P156: audit DB-only lifecycle governance"
+}

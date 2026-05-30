@@ -1,0 +1,217 @@
+{
+  "task_id": "P153",
+  "classification": "P153_REPLAY_PRODUCT_ACCEPTANCE_READY_WITH_POLISH_RECOMMENDED",
+  "generated_at": "2026-05-30T13:17:22.271099+00:00",
+  "canonical_repo": "/Users/kelvin/Kelvin-WorkSpace/LotteryNew/.claude/worktrees/zen-gates-ff6802",
+  "canonical_branch": "claude/zen-gates-ff6802",
+  "repo_branch_check": {
+    "repo_ok": true,
+    "branch_ok": true,
+    "actual_repo": "/Users/kelvin/Kelvin-WorkSpace/LotteryNew/.claude/worktrees/zen-gates-ff6802",
+    "actual_branch": "claude/zen-gates-ff6802"
+  },
+  "db_snapshot": {
+    "rows": 94924,
+    "expected": 94924,
+    "match": true,
+    "stats": {
+      "total": 94924,
+      "distinct_strategies": 35,
+      "max_bet_index": 5,
+      "multi_bet_rows": 40622,
+      "with_source": 94604,
+      "with_cap_id": 94504,
+      "with_prov_hash": 94602,
+      "with_actual_numbers": 94924,
+      "legacy_unverified": 100,
+      "tierb_dryrun": 25500
+    }
+  },
+  "drift_guard_status": "PASS",
+  "p152_source_summary": {
+    "classification": "P152_REPLAY_UI_SOURCE_CONTROLLED_APPLY_ID_DISPLAY_READY",
+    "ok": true
+  },
+  "p151_source_summary": {
+    "classification": "P151_REPLAY_UI_MULTI_BET_DISPLAY_READY",
+    "ok": true
+  },
+  "p150_source_summary": {
+    "classification": "P150_REPLAY_API_ALL_STRATEGY_COVERAGE_READY",
+    "ok": true
+  },
+  "p149_source_summary": {
+    "classification": "P149_REPLAY_PRODUCT_COVERAGE_AUDIT_READY",
+    "ok": true
+  },
+  "replay_product_boundary": {
+    "historical_actual_numbers_allowed_for_replay_display": true,
+    "live_monitoring_verified_required_for_champion_evaluation_only": true,
+    "champion_block_does_not_block_replay_product": true,
+    "legacy_unverified_display_allowed_with_badge": true,
+    "replay_product_goal": "All implemented strategies' historical prediction vs actual results are displayable",
+    "note": "LIVE_MONITORING_VERIFIED is only required for champion promotion (P147). Replay display uses historical actual_numbers from DB, which are always available."
+  },
+  "catalog_acceptance_matrix": {
+    "total_strategies_visible": 40,
+    "expected_total_strategies": 40,
+    "catalog_coverage_complete": true,
+    "lifecycle_breakdown": {
+      "ONLINE": 8,
+      "REJECTED": 4,
+      "RETIRED": 5,
+      "OBSERVATION": 1,
+      "DB_ONLY_MISSING_LIFECYCLE": 22
+    },
+    "db_only_missing_lifecycle_visible": true,
+    "db_only_strategy_count": 22,
+    "registry_only_zero_replay_visible": true,
+    "h6_gate_mk20_ew85_visible": true,
+    "h6_gate_mk20_ew85_no_data_reason": "ONLINE_ZERO_REPLAY_ROWS",
+    "rejected_no_data_visible": true,
+    "rejected_no_data_count": 4,
+    "no_data_reason_counts": {
+      "null": 35,
+      "REJECTED_NO_REPLAY_DATA": 4,
+      "ONLINE_ZERO_REPLAY_ROWS": 1
+    }
+  },
+  "replay_history_api_acceptance_matrix": {
+    "bet_index_returned": true,
+    "truth_level_returned": true,
+    "source_returned": true,
+    "controlled_apply_id_returned": true,
+    "provenance_hash_returned": true,
+    "actual_numbers_returned": true,
+    "hit_count_returned": true,
+    "predicted_numbers_returned": true,
+    "all_strategy_catalog_endpoint": true,
+    "no_data_reason_in_catalog": true,
+    "api_coverage_complete": true,
+    "multi_bet_in_db": true,
+    "max_bet_index_in_db": 5,
+    "source_coverage_pct": 99.7,
+    "cap_id_coverage_pct": 99.6,
+    "actual_numbers_coverage_pct": 100.0
+  },
+  "all_strategy_catalog_api_acceptance_matrix": {
+    "endpoint_exists": true,
+    "total_strategies_returned": 40,
+    "lifecycle_field_returned": true,
+    "replay_row_count_returned": true,
+    "no_data_reason_returned": true,
+    "db_only_missing_lifecycle_returned": true,
+    "online_zero_replay_rows_returned": true,
+    "rejected_no_replay_data_returned": true
+  },
+  "replay_ui_acceptance_matrix": {
+    "bet_index_visible": true,
+    "bet_index_detail_visible": true,
+    "no_data_reason_visible": true,
+    "truth_level_visible": true,
+    "source_visible": true,
+    "controlled_apply_id_visible": true,
+    "provenance_hash_visible": true,
+    "h6_gate_mk20_ew85_visible": true,
+    "rejected_no_data_visible": true,
+    "db_only_missing_lifecycle_visible": true,
+    "all_strategy_catalog_section": true,
+    "legacy_unverified_badge": true,
+    "tierb_badge": true,
+    "source_in_history_row": true,
+    "ui_coverage_complete": true
+  },
+  "multi_bet_acceptance": {
+    "bet_index_in_db": true,
+    "max_bet_index": 5,
+    "multi_bet_rows_count": 40622,
+    "bet_index_returned_by_api": true,
+    "bet_index_badge_in_ui": true,
+    "bet_index_detail_panel": true,
+    "multi_bet_distinguishable": true
+  },
+  "no_data_acceptance": {
+    "online_zero_replay_rows_ui": true,
+    "rejected_no_data_ui": true,
+    "db_only_missing_lifecycle_ui": true,
+    "no_data_reason_badge_fn": true,
+    "all_no_data_patterns_covered": true
+  },
+  "provenance_metadata_acceptance": {
+    "truth_level_in_api": true,
+    "truth_level_in_ui_detail": true,
+    "truth_level_in_ui_history_row": true,
+    "source_in_api": true,
+    "source_in_ui_detail": true,
+    "source_in_ui_history_row": true,
+    "controlled_apply_id_in_api": true,
+    "controlled_apply_id_in_ui": true,
+    "provenance_hash_in_api": true,
+    "provenance_hash_in_ui": true,
+    "legacy_unverified_badge": true,
+    "tierb_badge": true,
+    "provenance_source_deferred": true,
+    "all_primary_provenance_fields_covered": true
+  },
+  "champion_governance_boundary": {
+    "champion_evaluation_blocked": true,
+    "block_reason": "Requires LIVE_MONITORING_VERIFIED evidence (P147 governance)",
+    "replay_product_affected_by_champion_block": false,
+    "p108_trigger_status": "BLOCKED (prospective draws insufficient)",
+    "p117_trigger_status": "BLOCKED (new draws needed)",
+    "p118_trigger_status": "BLOCKED (authorization phrase absent)",
+    "four_star_provenance_status": "BLOCKED (source unknown)"
+  },
+  "tests_summary": {
+    "p153_tests": "tests/test_p153_replay_product_end_to_end_acceptance_audit.py",
+    "regression_tests": [
+      "tests/test_p152_replay_ui_source_controlled_apply_id_display.py",
+      "tests/test_p151_replay_ui_multi_bet_display.py",
+      "tests/test_p151b_historical_artifact_pollution_reconciliation.py",
+      "tests/test_p150_replay_api_all_strategy_coverage.py",
+      "tests/test_p149_replay_product_coverage_audit.py"
+    ]
+  },
+  "non_actions": {
+    "db_write_in_p153": false,
+    "controlled_apply_executed_in_p153": false,
+    "replay_rows_inserted_in_p153": 0,
+    "replay_rows_updated_in_p153": 0,
+    "replay_rows_deleted_in_p153": 0,
+    "champion_promotion_executed_in_p153": false,
+    "registry_promotion_executed_in_p153": false,
+    "live_api_called": false,
+    "scheduler_installed": false,
+    "four_star_executed": false,
+    "p108_executed": false,
+    "p117_executed": false,
+    "p118_executed": false
+  },
+  "dirty_file_hygiene": {
+    "backups_untracked_not_staged": true,
+    "backups_deleted": false,
+    "forbidden_files_staged": false,
+    "remaining_unrelated_dirty": []
+  },
+  "roadmap_update_status": {
+    "cto_analysis_updated": true,
+    "roadmap_updated": true
+  },
+  "remaining_risks": [
+    "22 DB_ONLY_MISSING_LIFECYCLE strategies: registered in registry but lifecycle is placeholder — needs formal governance review (non-blocking for replay display)",
+    "h6_gate_mk20_ew85: OBSERVATION strategy with 0 replay rows — visible in catalog but no history data (must go through authorized controlled_apply to get rows)",
+    "100 LEGACY_UNVERIFIED rows: governed baseline decision (P144D), displayed with orange badge",
+    "provenance_source (DB col 23) not yet displayed in UI — low priority, available via API",
+    "Champion evaluation (P147) BLOCKED until live evidence criteria met — does not block replay product",
+    "P108/P117/P118/4★ triggers remain BLOCKED"
+  ],
+  "polish_items": [
+    "22 DB_ONLY_MISSING_LIFECYCLE strategies need formal lifecycle governance",
+    "h6_gate_mk20_ew85 has 0 replay rows — visible in catalog but no history data yet",
+    "100 LEGACY_UNVERIFIED rows — governed baseline, not blocker",
+    "provenance_source (DB col 23) not yet displayed in UI"
+  ],
+  "next_recommended_task": "P154_REPLAY_UI_POLISH_AND_OPERATOR_REVIEW",
+  "summary": "P153 confirms replay product E2E acceptance: 40/40 strategies in catalog, API returns all provenance fields (bet_index/truth_level/source/controlled_apply_id/provenance_hash), UI displays all metadata. 4 polish items remain (non-blocking). DB=94924 rows unchanged. No DB writes.",
+  "head_at_generation": "babe6d6 P152: display replay source and controlled apply metadata"
+}

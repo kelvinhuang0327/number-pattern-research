@@ -1,8 +1,8 @@
-# CTO Analysis - After P152 Replay UI Source / Controlled Apply ID Display
+# CTO Analysis - After P153 Replay Product E2E Acceptance Audit
 
 ## 1. CTO Review Date
 
-2026-05-30 Asia/Taipei (updated after P152 replay UI source/controlled_apply_id display).
+2026-05-30 Asia/Taipei (updated after P153 replay product E2E acceptance audit).
 
 Final CTO classification target: `CTO_ROADMAP_UPDATED_WITH_RISKS`.
 
@@ -49,6 +49,23 @@ P152 closes the provenance metadata gap deferred from P151. Changes to `index.ht
 **No API changes needed** — all fields already in `/api/replay/history` response since P150.
 
 **57 P152 tests + 176 regression tests pass. DB = 94924 unchanged.**
+
+## 0d. P153 Update (2026-05-30)
+
+**Classification**: `P153_REPLAY_PRODUCT_ACCEPTANCE_READY_WITH_POLISH_RECOMMENDED`
+
+P153 confirms the LotteryNew replay product has achieved end-to-end functional closure across P149–P152:
+- **40/40 strategies** visible in all-strategy catalog
+- **API**: bet_index, truth_level, source, controlled_apply_id, provenance_hash, actual_numbers — all returned
+- **UI**: multi-bet badge, no_data_reason, provenance detail — all visible
+- **Champion governance** BLOCKED but does NOT block replay product
+- **DB**: 94924 rows, drift guard PASS, no writes
+
+**4 polish items (non-blocking)**: 22 DB_ONLY lifecycle governance, h6_gate_mk20_ew85 zero rows, 100 LEGACY_UNVERIFIED rows, provenance_source UI deferred.
+
+**69 P153 tests + 233 regression tests pass.**
+
+**Next**: P154_REPLAY_PRODUCT_RELEASE_CANDIDATE_CLOSURE (or P154_REPLAY_UI_POLISH_AND_OPERATOR_REVIEW)
 
 ## 2. Input Sources
 

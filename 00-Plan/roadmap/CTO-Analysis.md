@@ -1,10 +1,26 @@
-# CTO Analysis - After P150 Replay API All Strategy Coverage
+# CTO Analysis - After P151B Historical Artifact Pollution Reconciliation
 
 ## 1. CTO Review Date
 
-2026-05-30 Asia/Taipei (updated after P150 replay API all strategy coverage).
+2026-05-30 Asia/Taipei (updated after P151B historical artifact pollution reconciliation).
 
 Final CTO classification target: `CTO_ROADMAP_UPDATED_WITH_RISKS`.
+
+## 0. P151B Update (2026-05-30)
+
+**Classification**: `P151B_HISTORICAL_ARTIFACT_POLLUTION_RECONCILED_READY_FOR_P151`
+
+P151 (Replay UI multi-bet display) was blocked because a prior agent session reran P145B/P146A artifact scripts after the P146A runner already existed, producing semantic field flips in historical artifacts. P151B authorized and restored 5 files:
+
+- `docs/replay/p145b_manual_on_demand_monitoring_authorization_gate_20260529.md`
+- `docs/replay/p146a_observation_only_live_monitoring_runner_20260529.md`
+- `outputs/replay/p145b_manual_on_demand_monitoring_authorization_gate_20260529.json`
+- `outputs/replay/p146a_observation_only_live_monitoring_runner_20260529.json`
+- `outputs/replay/live_monitoring_observation_only/smoke_test/smoke_mock_acb_markov_midfreq_3bet_20260529.json`
+
+**Confirmed state**: DB=94924, drift guard PASS, worktree clean (only `backups/` untracked). No DB writes, no replay rows, no UI changes, no champion/registry promotion.
+
+**Next**: `P151_REPLAY_UI_MULTI_BET_DISPLAY_FROM_CLEAN_WORKTREE`
 
 ## 2. Input Sources
 

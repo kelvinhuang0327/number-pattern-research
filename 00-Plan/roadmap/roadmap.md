@@ -1,6 +1,6 @@
 # Lottery Replay Roadmap
 
-**Last Updated:** 2026-05-30 Asia/Taipei (updated after P150 replay API all strategy coverage)
+**Last Updated:** 2026-05-30 Asia/Taipei (updated after P151B historical artifact pollution reconciliation)
 **Owner:** CTO agent
 **Primary Goal:** Make every implemented LotteryNew strategy replayable with honest historical prediction-vs-actual evidence across every supported lottery type and every implemented 1-5 bet-count variant. This must be done without fake rows, untracked DB writes, premature promotion, or no-change governance PR churn. Current system state: DB at 94924 rows. P149 audited replay product coverage: 40 strategies discovered, 22 DB-only missing lifecycle, 5 registry-only zero-row strategies. P150 closed GAP-004/005 (bet_index in /api/replay/history, no_data_reason in all-strategy catalog), added 22 DB-only lifecycle stubs to source-controlled registry, marked h6_gate_mk20_ew85 as ONLINE_ZERO_REPLAY_ROWS. Total registry now covers all 40 strategies. Champion evaluation (P147) remains BLOCKED. P108 / P117 / P118 / 4_STAR triggers remain blocked.
 **Repo Policy:** Use `/Users/kelvin/Kelvin-WorkSpace/LotteryNew` only. Do not create a new repo. Implementation and governed tasks must run from canonical repo with `git rev-parse --git-dir == .git`; Claude/Codex auto-created worktree branches are not allowed.
@@ -36,6 +36,8 @@
 | P126E biglotto_ts3_markov_4bet_w30 controlled apply | [Confirmed] Complete | `outputs/replay/p126e_apply_biglotto_ts3_markov_4bet_w30_20260528.json`; `P126E_BIGLOTTO_TS3_MARKOV_4BET_W30_APPLIED` | 4500 bet-2/bet-3/bet-4 rows inserted for BIG_LOTTO biglotto_ts3_markov_4bet_w30. DB 61962 → 66462. bet-1=1500, bet-2=1500, bet-3=1500, bet-4=1500 (total 6000). Drift guard PASS at 66462. 90 tests pass. |
 | P149 replay product coverage audit | [Confirmed] Complete | `outputs/replay/p149_replay_product_coverage_audit_20260529.json`; `P149_REPLAY_PRODUCT_COVERAGE_AUDIT_READY` | Read-only audit. 40 strategies discovered: 18 in registry, 35 in DB, 22 DB-only missing lifecycle, 5 registry-only zero-row. 9-gap matrix defined. Zero DB writes. |
 | P150 replay API all strategy coverage | [Confirmed] Complete | `outputs/replay/p150_replay_api_all_strategy_coverage_20260529.json`; `P150_REPLAY_API_ALL_STRATEGY_COVERAGE_READY` | bet_index added to /api/replay/history; no_data_reason added to source-controlled registry; /api/replay/all-strategy-catalog endpoint added; 22 DB-only lifecycle stubs registered; h6_gate_mk20_ew85 marked ONLINE_ZERO_REPLAY_ROWS. Total registry: 40 strategies. Zero DB writes. |
+| P151A dirty-worktree hygiene audit | [Confirmed] STOP — escalated | P151A stopped due to semantic flip in P145B/P146A artifacts (new agent rerun pollution) | P151A correctly STOPped and escalated. Required P151B authorization to restore. |
+| P151B historical artifact pollution reconciliation | [Confirmed] Complete | `outputs/replay/p151b_historical_artifact_pollution_reconciliation_20260529.json`; `P151B_HISTORICAL_ARTIFACT_POLLUTION_RECONCILED_READY_FOR_P151` | 5 dirty historical artifacts (P145B/P146A rerun pollution) restored to HEAD. DB 94924 confirmed. Drift guard PASS. No DB writes. Worktree clean. P151 UI unblocked. |
 
 ---
 

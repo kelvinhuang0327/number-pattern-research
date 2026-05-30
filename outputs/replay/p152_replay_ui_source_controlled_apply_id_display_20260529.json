@@ -1,0 +1,158 @@
+{
+  "task_id": "P152",
+  "classification": "P152_REPLAY_UI_SOURCE_CONTROLLED_APPLY_ID_DISPLAY_READY",
+  "generated_at": "2026-05-30T12:56:47.182235+00:00",
+  "canonical_repo": "/Users/kelvin/Kelvin-WorkSpace/LotteryNew/.claude/worktrees/zen-gates-ff6802",
+  "canonical_branch": "claude/zen-gates-ff6802",
+  "repo_branch_check": {
+    "repo_ok": true,
+    "branch_ok": true,
+    "actual_repo": "/Users/kelvin/Kelvin-WorkSpace/LotteryNew/.claude/worktrees/zen-gates-ff6802",
+    "actual_branch": "claude/zen-gates-ff6802"
+  },
+  "db_snapshot": {
+    "rows": 94924,
+    "expected": 94924,
+    "match": true,
+    "table": "strategy_prediction_replays"
+  },
+  "drift_guard_status": "PASS",
+  "p151_source_summary": {
+    "classification": "P151_REPLAY_UI_MULTI_BET_DISPLAY_READY",
+    "ok": true
+  },
+  "p150_source_summary": {
+    "classification": "P150_REPLAY_API_ALL_STRATEGY_COVERAGE_READY",
+    "ok": true
+  },
+  "api_metadata_field_audit": {
+    "db_has_source": true,
+    "db_has_controlled_apply_id": true,
+    "db_has_provenance_hash": true,
+    "db_has_truth_level": true,
+    "db_has_provenance_source": true,
+    "api_returns_source_before_p152": true,
+    "api_returns_controlled_apply_id_before_p152": true,
+    "api_returns_provenance_hash_before_p152": true,
+    "api_change_required": false,
+    "api_change_completed": false,
+    "note": "All provenance fields already in API response since P150; no API change needed for P152"
+  },
+  "api_changes": {
+    "api_modified_in_p152": false,
+    "reason": "All fields (source, controlled_apply_id, provenance_hash, truth_level) already returned by /api/replay/history since P150 — no API change required"
+  },
+  "ui_entrypoint_audit": {
+    "framework": "vanilla-js-spa",
+    "ui_file": "index.html",
+    "replay_section": "id=replay-section",
+    "entrypoint_found": true
+  },
+  "ui_changes": {
+    "files_modified": [
+      "index.html"
+    ],
+    "detail_panel_source_added": true,
+    "detail_panel_cap_id_added": true,
+    "detail_panel_prov_hash_added": true,
+    "detail_panel_truth_level_explicit": true,
+    "history_row_source_subtitle": true,
+    "p151_regressions_preserved": true
+  },
+  "source_display_support": {
+    "source_visible_in_detail": true,
+    "source_visible_or_hooked_in_history": true,
+    "null_source_shows_legacy_unknown": true,
+    "test_coverage_added": true
+  },
+  "controlled_apply_id_display_support": {
+    "controlled_apply_id_visible_in_detail": true,
+    "null_controlled_apply_id_handled": true,
+    "legacy_uncontrolled_label": "N/A（legacy/uncontrolled）",
+    "test_coverage_added": true
+  },
+  "provenance_hash_display_readiness": {
+    "provenance_hash_available": true,
+    "provenance_hash_visible_or_debug_hooked": true,
+    "short_hash_format_or_reason_deferred": "8-char prefix + … in detail panel",
+    "deferred_to_future_if_needed": false
+  },
+  "legacy_unverified_display_support": {
+    "legacy_unverified_truth_level_badge_visible": true,
+    "legacy_unverified_source_visible": true,
+    "p138b_legacy_remark_visible_or_tested": true,
+    "truth_level_shown_explicitly_in_detail": true,
+    "test_coverage_added": true,
+    "note": "LEGACY_UNVERIFIED rows: truth_level=LEGACY_UNVERIFIED badge, source=P138B_LEGACY_REMARK shown in detail and history row subtitle"
+  },
+  "tierb_controlled_apply_display_support": {
+    "tierb_truth_level_visible": true,
+    "controlled_apply_rows_metadata_visible_or_tested": true,
+    "test_coverage_added": true,
+    "note": "TIERB_DRYRUN_VALIDATED rows: controlled_apply_id (e.g. P94_TIERB_CONTROLLED_APPLY_20260526) and source (P94_TIERB_CONTROLLED_APPLY) visible in detail panel"
+  },
+  "tests_summary": {
+    "p152_tests": "tests/test_p152_replay_ui_source_controlled_apply_id_display.py",
+    "regression_tests": [
+      "tests/test_p151_replay_ui_multi_bet_display.py",
+      "tests/test_p151b_historical_artifact_pollution_reconciliation.py",
+      "tests/test_p150_replay_api_all_strategy_coverage.py",
+      "tests/test_p149_replay_product_coverage_audit.py"
+    ]
+  },
+  "non_actions": {
+    "db_write_in_p152": false,
+    "controlled_apply_executed_in_p152": false,
+    "replay_rows_inserted_in_p152": 0,
+    "replay_rows_updated_in_p152": 0,
+    "replay_rows_deleted_in_p152": 0,
+    "champion_promotion_executed_in_p152": false,
+    "registry_promotion_executed_in_p152": false,
+    "live_api_called": false,
+    "scheduler_installed": false,
+    "four_star_executed": false,
+    "p108_executed": false,
+    "p117_executed": false,
+    "p118_executed": false
+  },
+  "dirty_file_hygiene": {
+    "backups_untracked_not_staged": true,
+    "backups_deleted": false,
+    "forbidden_files_staged": false,
+    "remaining_unrelated_dirty": [
+      "index.html"
+    ]
+  },
+  "roadmap_update_status": {
+    "cto_analysis_updated": true,
+    "roadmap_updated": true
+  },
+  "remaining_risks": [
+    "provenance_source field (DB col 23) not yet displayed — low priority, available via detail panel if needed in P153+",
+    "truth_level badge for LEGACY_UNVERIFIED uses default 'UNKNOWN' badge since it's not in renderTruthLevelBadge map — add explicit LEGACY_UNVERIFIED badge in a future task",
+    "backups/ untracked in worktree",
+    "Champion evaluation (P147) remains BLOCKED",
+    "P108/P117/P118/4★ triggers remain BLOCKED"
+  ],
+  "next_recommended_task": "P153_REPLAY_UI_LEGACY_UNVERIFIED_TRUTH_BADGE",
+  "summary": "P152 adds source / controlled_apply_id / provenance_hash / truth_level to the replay history detail expand panel, and adds source as a subtitle in history table rows. API already returned all fields since P150 — no API changes needed. DB remains at 94924 rows. No DB writes.",
+  "head_at_generation": "c521254 P151: add replay UI multi-bet display",
+  "html_audit_detail": {
+    "found": true,
+    "source_in_detail": true,
+    "controlled_apply_id_in_detail": true,
+    "provenance_hash_in_detail": true,
+    "truth_level_in_detail": true,
+    "source_label_present": true,
+    "controlled_apply_id_label_present": true,
+    "provenance_hash_label_present": true,
+    "truth_level_label_present": true,
+    "null_controlled_apply_id_handled": true,
+    "null_source_handled": true,
+    "source_in_history_row": true,
+    "legacy_unknown_label": true,
+    "bet_index_badge_still_present": true,
+    "all_catalog_still_present": true,
+    "no_data_reason_badge_still_present": true
+  }
+}

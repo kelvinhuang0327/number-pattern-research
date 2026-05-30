@@ -3077,6 +3077,19 @@
             /* P18: Big Lotto 1500-draw production backfill truth levels */
             'BIGLOTTO_SINGLE_STRATEGY_BACKFILL_VERIFIED': '<span class="rp-truth-badge rp-truth-backfill-verified" title="BIG LOTTO BACKFILL：P14D 大樂透 ts3_regime_3bet 1500期回放資料，已驗證" aria-label="BIG LOTTO BACKFILL: P14D ts3_regime_3bet 1500-draw production backfill, verified">BIG LOTTO BACKFILL</span>',
             'BIGLOTTO_REMAINING_STRATEGIES_BACKFILL_VERIFIED': '<span class="rp-truth-badge rp-truth-remaining-backfill" title="BIG LOTTO BACKFILL (P16)：大樂透其餘 ONLINE 策略 1500期回放資料，已驗證" aria-label="BIG LOTTO BACKFILL P16: Remaining Big Lotto ONLINE strategies 1500-draw production backfill, verified">BIG LOTTO BACKFILL (P16)</span>',
+            /* P152: production backfill truth levels (all truth_level variants) */
+            'LEGACY_UNVERIFIED': '<span class="rp-truth-badge" style="background:#e67e22;color:#fff" data-testid="rp-truth-legacy-unverified" title="LEGACY UNVERIFIED：此 row 為舊版 legacy 資料，未經 V3 驗證流程，不可作為 production replay 依據" aria-label="LEGACY UNVERIFIED: Legacy row not verified under V3 governance">LEGACY UNVERIFIED</span>',
+            'TIERB_DRYRUN_VALIDATED': '<span class="rp-truth-badge rp-truth-production" data-testid="rp-truth-tierb" title="TIER-B VALIDATED：Tier-B 策略 dry-run 通過，已套用至 production DB" aria-label="TIER-B DRY-RUN VALIDATED: Tier-B strategy dry-run passed, applied to production">TIER-B</span>',
+            'POWERLOTTO_REMAINING_STRATEGIES_BACKFILL_VERIFIED': '<span class="rp-truth-badge rp-truth-remaining-backfill" title="POWERLOTTO BACKFILL (P20)：威力彩其餘策略 1500期回放，已驗證">POWER BACKFILL (P20)</span>',
+            'POWERLOTTO_WAVE4_STRATEGY_BACKFILL_VERIFIED': '<span class="rp-truth-badge rp-truth-backfill-verified" title="POWERLOTTO WAVE4 BACKFILL (P48)：威力彩 Wave 4 策略 1500期回放，已驗證">POWER W4 BACKFILL</span>',
+            'DAILY539_RETIRED_STRATEGY_BACKFILL_VERIFIED': '<span class="rp-truth-badge" style="background:#4a4a4a;color:#ccc" title="DAILY539 RETIRED BACKFILL (P31B)：今彩539 退役策略 1500期回放，已驗證">539 RETIRED BACKFILL</span>',
+            'DAILY539_WAVE2_STRATEGY_BACKFILL_VERIFIED': '<span class="rp-truth-badge rp-truth-remaining-backfill" title="DAILY539 WAVE2 BACKFILL (P37)：今彩539 Wave 2 策略回放，已驗證">539 W2 BACKFILL</span>',
+            'BIGLOTTO_WAVE3_STRATEGY_BACKFILL_VERIFIED': '<span class="rp-truth-badge rp-truth-backfill-verified" title="BIG LOTTO WAVE3 BACKFILL (P43)：大樂透 Wave 3 策略回放，已驗證">BIG W3 BACKFILL</span>',
+            'POWERLOTTO_SINGLE_STRATEGY_BACKFILL_VERIFIED': '<span class="rp-truth-badge rp-truth-backfill-verified" title="POWERLOTTO SINGLE BACKFILL (P19)：威力彩單策略回放，已驗證">POWER SINGLE BACKFILL</span>',
+            'DAILY539_BACKFILL_VERIFIED': '<span class="rp-truth-badge rp-truth-remaining-backfill" title="DAILY539 BACKFILL (P21)：今彩539 回放，已驗證">539 BACKFILL</span>',
+            'POWER_LOTTO_WAVE5_CONTROLLED_APPLY_VERIFIED': '<span class="rp-truth-badge rp-truth-production" title="POWER WAVE5 VERIFIED (P59)：威力彩 Wave 5 controlled apply 已驗證">POWER W5</span>',
+            'POWER_LOTTO_WAVE6_CONTROLLED_APPLY_VERIFIED': '<span class="rp-truth-badge rp-truth-production" title="POWER WAVE6 VERIFIED (P66)：威力彩 Wave 6 controlled apply 已驗證">POWER W6</span>',
+            'POWERLOTTO_DRAW_EXT_VERIFIED': '<span class="rp-truth-badge rp-truth-production" title="POWERLOTTO DRAW EXT VERIFIED (P78)：威力彩 draw extension sentinel，已驗證">POWER DRAW EXT</span>',
         };
         return badges[truthLevel] || '<span class="rp-truth-badge" style="background:#ccc;color:#666" title="UNKNOWN: Truth level could not be determined" aria-label="UNKNOWN: Truth level could not be determined">UNKNOWN</span>';
     }
@@ -3271,6 +3284,10 @@
         <div><span style="color:#888">建立時間：</span>${r.prediction_generated_at
           ? `<span class="rp-ts-genat">${r.prediction_generated_at.replace('T', ' ').slice(0, 16)}</span>${r.truth_level === 'BIGLOTTO_SINGLE_STRATEGY_BACKFILL_VERIFIED' ? ' <span class="rp-metadata-backfill-label">補登 metadata</span>' : ''}`
           : '—'}</div>
+        <div><span style="color:#888">Truth Level：</span><span data-testid="rp-detail-truth-level">${r.truth_level ? renderTruthLevelBadge(r.truth_level) : '<span style="color:#aaa;font-size:11px">— (未設定)</span>'}</span></div>
+        <div><span style="color:#888">來源（source）：</span><code data-testid="rp-detail-source" style="font-size:10px;background:#f0f0f0;padding:1px 4px;border-radius:3px;word-break:break-all">${r.source ? _esc(r.source) : '<span style="color:#aaa">— (legacy/unknown)</span>'}</code></div>
+        <div><span style="color:#888">Controlled Apply ID：</span><code data-testid="rp-detail-controlled-apply-id" style="font-size:10px;background:#f0f0f0;padding:1px 4px;border-radius:3px;word-break:break-all">${r.controlled_apply_id ? _esc(r.controlled_apply_id) : '<span style="color:#aaa;font-size:11px">N/A（legacy/uncontrolled）</span>'}</code></div>
+        <div><span style="color:#888">Provenance Hash：</span><code data-testid="rp-detail-provenance-hash" style="font-size:10px;font-family:monospace;color:#555">${r.provenance_hash ? _esc(String(r.provenance_hash).slice(0, 8)) + '…' : '—'}</code></div>
       </div>
       <div style="margin-bottom:8px">${numbersSection}</div>
       <div style="padding:6px 10px;background:#f0f4ff;border-radius:4px;color:#555;font-size:11px;line-height:1.6">
@@ -3453,7 +3470,7 @@
       return `<tr class="${rowClass}" title="${_esc(tooltipTitle)}">
         <td>${r.target_draw}</td>
         <td>${r.target_date || ''}</td>
-        <td style="font-size:11px">${r.strategy_id}${(r.lifecycle_status === 'RETIRED' || r.strategy_lifecycle_status === 'RETIRED') ? ' <span style="font-size:9px;padding:1px 4px;border-radius:6px;background:rgba(52,152,219,.15);color:#2980b9;font-weight:600">回放</span>' : ''}${(r.bet_index != null && r.bet_index > 1) ? ' <span class="rp-bet-index-badge" data-testid="rp-bet-index-badge">Bet ' + r.bet_index + '</span>' : ''}</td>
+        <td style="font-size:11px">${r.strategy_id}${(r.lifecycle_status === 'RETIRED' || r.strategy_lifecycle_status === 'RETIRED') ? ' <span style="font-size:9px;padding:1px 4px;border-radius:6px;background:rgba(52,152,219,.15);color:#2980b9;font-weight:600">回放</span>' : ''}${(r.bet_index != null && r.bet_index > 1) ? ' <span class="rp-bet-index-badge" data-testid="rp-bet-index-badge">Bet ' + r.bet_index + '</span>' : ''}${r.source ? '<br><span data-testid="rp-row-source" style="font-size:9px;color:#999;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;display:inline-block;max-width:160px" title="' + _esc(r.source) + '">' + _esc(r.source.length > 28 ? r.source.slice(0, 28) + '…' : r.source) + '</span>' : ''}</td>
         <td>${rpBadges(predicted, hits)} ${predSpecial}</td>
         <td>${rpBadges(actual, hits)} ${actSpecial}</td>
         <td>${rpBadges(hits, hits)}${specialHit}</td>

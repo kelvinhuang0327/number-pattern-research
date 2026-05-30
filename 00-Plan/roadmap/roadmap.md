@@ -1,6 +1,6 @@
 # Lottery Replay Roadmap
 
-**Last Updated:** 2026-05-30 Asia/Taipei (updated after P151 replay UI multi-bet display)
+**Last Updated:** 2026-05-30 Asia/Taipei (updated after P152 replay UI source/controlled_apply_id display)
 **Owner:** CTO agent
 **Primary Goal:** Make every implemented LotteryNew strategy replayable with honest historical prediction-vs-actual evidence across every supported lottery type and every implemented 1-5 bet-count variant. This must be done without fake rows, untracked DB writes, premature promotion, or no-change governance PR churn. Current system state: DB at 94924 rows. P149 audited replay product coverage: 40 strategies discovered, 22 DB-only missing lifecycle, 5 registry-only zero-row strategies. P150 closed GAP-004/005 (bet_index in /api/replay/history, no_data_reason in all-strategy catalog), added 22 DB-only lifecycle stubs to source-controlled registry, marked h6_gate_mk20_ew85 as ONLINE_ZERO_REPLAY_ROWS. Total registry now covers all 40 strategies. Champion evaluation (P147) remains BLOCKED. P108 / P117 / P118 / 4_STAR triggers remain blocked.
 **Repo Policy:** Use `/Users/kelvin/Kelvin-WorkSpace/LotteryNew` only. Do not create a new repo. Implementation and governed tasks must run from canonical repo with `git rev-parse --git-dir == .git`; Claude/Codex auto-created worktree branches are not allowed.
@@ -39,6 +39,7 @@
 | P151A dirty-worktree hygiene audit | [Confirmed] STOP — escalated | P151A stopped due to semantic flip in P145B/P146A artifacts (new agent rerun pollution) | P151A correctly STOPped and escalated. Required P151B authorization to restore. |
 | P151B historical artifact pollution reconciliation | [Confirmed] Complete | `outputs/replay/p151b_historical_artifact_pollution_reconciliation_20260529.json`; `P151B_HISTORICAL_ARTIFACT_POLLUTION_RECONCILED_READY_FOR_P151` | 5 dirty historical artifacts (P145B/P146A rerun pollution) restored to HEAD. DB 94924 confirmed. Drift guard PASS. No DB writes. Worktree clean. P151 UI unblocked. |
 | P151 replay UI multi-bet display | [Confirmed] Complete | `outputs/replay/p151_replay_ui_multi_bet_display_20260529.json`; `P151_REPLAY_UI_MULTI_BET_DISPLAY_READY` | Added bet_index badge to history rows and detail panel; added all-strategy-catalog section (40 strategies, zero-row + no_data_reason badges); h6_gate_mk20_ew85 (ONLINE_ZERO_REPLAY_ROWS) and 4 REJECTED visible. 53 tests pass. DB 94924 unchanged. No DB writes. |
+| P152 replay UI source/controlled_apply_id display | [Confirmed] Complete | `outputs/replay/p152_replay_ui_source_controlled_apply_id_display_20260529.json`; `P152_REPLAY_UI_SOURCE_CONTROLLED_APPLY_ID_DISPLAY_READY` | Added source/controlled_apply_id/provenance_hash/truth_level to detail panel; source subtitle in history rows; LEGACY_UNVERIFIED and TIERB_DRYRUN_VALIDATED explicit badges added. No API changes. 57 tests pass. DB 94924 unchanged. |
 
 ---
 

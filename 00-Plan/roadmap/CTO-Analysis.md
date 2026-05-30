@@ -1,8 +1,8 @@
-# CTO Analysis - After P151 Replay UI Multi-Bet Display
+# CTO Analysis - After P152 Replay UI Source / Controlled Apply ID Display
 
 ## 1. CTO Review Date
 
-2026-05-30 Asia/Taipei (updated after P151 replay UI multi-bet display).
+2026-05-30 Asia/Taipei (updated after P152 replay UI source/controlled_apply_id display).
 
 Final CTO classification target: `CTO_ROADMAP_UPDATED_WITH_RISKS`.
 
@@ -36,6 +36,19 @@ P151 closes the replay UI gap left by P150. Changes to `index.html`:
 **53 P151 tests + 123 regression tests pass. DB = 94924 unchanged.**
 
 **Deferred to P152**: `source` and `controlled_apply_id` fields from `/api/replay/history` not yet surfaced in UI.
+
+## 0c. P152 Update (2026-05-30)
+
+**Classification**: `P152_REPLAY_UI_SOURCE_CONTROLLED_APPLY_ID_DISPLAY_READY`
+
+P152 closes the provenance metadata gap deferred from P151. Changes to `index.html`:
+- Detail panel: `source`, `controlled_apply_id`, `provenance_hash`, `truth_level` now explicitly shown
+- History table rows: `source` shown as subtitle under strategy_id
+- `renderTruthLevelBadge` extended: explicit badges for `LEGACY_UNVERIFIED` (orange), `TIERB_DRYRUN_VALIDATED` (green), and 10 production backfill truth levels
+
+**No API changes needed** — all fields already in `/api/replay/history` response since P150.
+
+**57 P152 tests + 176 regression tests pass. DB = 94924 unchanged.**
 
 ## 2. Input Sources
 

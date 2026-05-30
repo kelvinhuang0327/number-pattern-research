@@ -82,6 +82,21 @@ P154 formally closes the LotteryNew replay product release candidate:
 
 **Post-RC backlog priority**: P156 (DB_ONLY lifecycle governance) > P155 (UI polish) > P157 (h6_gate decision) > P158 (E2E browser smoke)
 
+## 0f. P156 Update (2026-05-30)
+
+**Classification**: `P156_DB_ONLY_LIFECYCLE_GOVERNANCE_AUDIT_READY`
+
+P156 audited all 22 DB_ONLY_MISSING_LIFECYCLE strategies (read-only):
+- **ONLINE recommended (10)**: 7 HIGH confidence (P94+P126x/P13x multi-bet) + 3 MEDIUM (Wave5/6)
+- **RETIRED recommended (12)**: 6 HIGH (BIG_LOTTO L91 exhausted) + 6 MEDIUM (DAILY_539 Wave2 backfill only)
+- **4 need human review**: cold_complement_2bet, zonal_entropy_2bet, fourier30_markov30_2bet, fourier30_markov30_biglotto
+
+Registry is source-controlled Python; no DB mutation needed. P156B required for actual lifecycle updates.
+
+**43 P156 tests + 341 regression tests pass. DB = 94924 unchanged. Registry NOT modified.**
+
+**Next**: `P156B_DB_ONLY_LIFECYCLE_DECISION_GATE` — per-strategy authorization phrases before registry update.
+
 ## 2. Input Sources
 
 - [Confirmed] User handoff report in the current conversation, limited to LotteryNew content.

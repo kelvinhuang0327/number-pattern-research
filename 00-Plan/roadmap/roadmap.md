@@ -1,6 +1,6 @@
 # Lottery Replay Roadmap
 
-**Last Updated:** 2026-05-30 Asia/Taipei (updated after P154 replay product release candidate closure)
+**Last Updated:** 2026-05-30 Asia/Taipei (updated after P156 DB_ONLY lifecycle governance audit)
 **Owner:** CTO agent
 **Primary Goal:** Make every implemented LotteryNew strategy replayable with honest historical prediction-vs-actual evidence across every supported lottery type and every implemented 1-5 bet-count variant. This must be done without fake rows, untracked DB writes, premature promotion, or no-change governance PR churn. Current system state: DB at 94924 rows. P149 audited replay product coverage: 40 strategies discovered, 22 DB-only missing lifecycle, 5 registry-only zero-row strategies. P150 closed GAP-004/005 (bet_index in /api/replay/history, no_data_reason in all-strategy catalog), added 22 DB-only lifecycle stubs to source-controlled registry, marked h6_gate_mk20_ew85 as ONLINE_ZERO_REPLAY_ROWS. Total registry now covers all 40 strategies. Champion evaluation (P147) remains BLOCKED. P108 / P117 / P118 / 4_STAR triggers remain blocked.
 **Repo Policy:** Use `/Users/kelvin/Kelvin-WorkSpace/LotteryNew` only. Do not create a new repo. Implementation and governed tasks must run from canonical repo with `git rev-parse --git-dir == .git`; Claude/Codex auto-created worktree branches are not allowed.
@@ -42,6 +42,7 @@
 | P152 replay UI source/controlled_apply_id display | [Confirmed] Complete | `outputs/replay/p152_replay_ui_source_controlled_apply_id_display_20260529.json`; `P152_REPLAY_UI_SOURCE_CONTROLLED_APPLY_ID_DISPLAY_READY` | Added source/controlled_apply_id/provenance_hash/truth_level to detail panel; source subtitle in history rows; LEGACY_UNVERIFIED and TIERB_DRYRUN_VALIDATED explicit badges added. No API changes. 57 tests pass. DB 94924 unchanged. |
 | P153 replay product E2E acceptance audit | [Confirmed] Complete | `outputs/replay/p153_replay_product_end_to_end_acceptance_audit_20260529.json`; `P153_REPLAY_PRODUCT_ACCEPTANCE_READY_WITH_POLISH_RECOMMENDED` | 40/40 strategies in catalog, API complete (bet_index+provenance), UI complete. 4 polish items (non-blocking). 69 tests pass. DB 94924. |
 | P154 replay product RC closure | [Confirmed] Complete | `outputs/replay/p154_replay_product_release_candidate_closure_20260529.json`; `P154_REPLAY_PRODUCT_RELEASE_CANDIDATE_CLOSED` | 0 blocking gaps. 4 non-blocking risks logged in backlog. Operator guide created. 69 tests pass. DB 94924. Post-RC backlog: P155-P158. |
+| P156 DB_ONLY lifecycle governance audit | [Confirmed] Complete | `outputs/replay/p156_db_only_lifecycle_governance_audit_20260529.json`; `P156_DB_ONLY_LIFECYCLE_GOVERNANCE_AUDIT_READY` | Audited 22 DB_ONLY_MISSING_LIFECYCLE strategies. ONLINE=10 (7 HIGH+3 MEDIUM), RETIRED=12 (6 HIGH+6 MEDIUM). 4 need human review. Registry source-controlled. P156B required for actual updates. 43 tests pass. |
 
 ---
 

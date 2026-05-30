@@ -2,7 +2,7 @@
 
 ## 1. CTO Review Date
 
-2026-05-30 Asia/Taipei (updated after P148B manual live verified evidence gate run).
+2026-05-30 Asia/Taipei (updated after P148C local draw result source audit gate run).
 
 Final CTO classification target: `CTO_ROADMAP_UPDATED_WITH_RISKS`.
 

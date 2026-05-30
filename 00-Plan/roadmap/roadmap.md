@@ -1,8 +1,8 @@
 # Lottery Replay Roadmap
 
-**Last Updated:** 2026-05-30 Asia/Taipei (updated after P148B manual live verified evidence gate run)
+**Last Updated:** 2026-05-30 Asia/Taipei (updated after P148C local draw result source audit gate run)
 **Owner:** CTO agent
-**Primary Goal:** Make every implemented LotteryNew strategy replayable with honest historical prediction-vs-actual evidence across every supported lottery type and every implemented 1-5 bet-count variant. This must be done without fake rows, untracked DB writes, premature promotion, or no-change governance PR churn. Current system state: Wave 2 safe candidates remain closed at 85924 rows. P138B executed the authorized Option B re-mark: 100 NULL-provenance legacy rows (50 per strategy) updated with truth_level='LEGACY_UNVERIFIED', source='P138B_LEGACY_REMARK', deterministic provenance_hash. Drift guard PASS at 85924. P10/P12 legacy governance resolved; future dry-run gate re-evaluation now allowed. P108 / P117 / P118 / 4_STAR triggers remain blocked.
+**Primary Goal:** Make every implemented LotteryNew strategy replayable with honest historical prediction-vs-actual evidence across every supported lottery type and every implemented 1-5 bet-count variant. This must be done without fake rows, untracked DB writes, premature promotion, or no-change governance PR churn. Current system state: DB at 94924 rows. P148C audited local draw result sources for all 6 Wave 2 candidate strategies. Classification: P148C_LOCAL_DRAW_RESULT_FOUND_BUT_NOT_LIVE_VERIFIED_ELIGIBLE. All DB actual_numbers are historical backfill; P146B obs files are MOCK_OBSERVATION_ONLY. No LIVE_MONITORING_VERIFIED rows exist. Champion evaluation (P147) remains BLOCKED pending Kelvin manual draw result input for P148D. P108 / P117 / P118 / 4_STAR triggers remain blocked.
 **Repo Policy:** Use `/Users/kelvin/Kelvin-WorkSpace/LotteryNew` only. Do not create a new repo. Implementation and governed tasks must run from canonical repo with `git rev-parse --git-dir == .git`; Claude/Codex auto-created worktree branches are not allowed.
 
 ---
@@ -940,10 +940,21 @@ CTO_ROADMAP_UPDATED_AFTER_P140_POWER_PRECISION_3BET_APPLIED_20260529
 - Marker: `CTO_ROADMAP_UPDATED_AFTER_P148_LIVE_MONITORING_VERIFIED_EVIDENCE_COLLECTION_GATE_20260530`
 
 ## P148B Manual Live Verified Evidence File Artifact Run (2026-05-30) — DONE (gate run, BLOCKED)
-- Classification: `P148B_CHAMPION_EVALUATION_GATE_BLOCKED`
+- Classification: `P148B_BLOCKED_PENDING_MANUAL_DRAW_RESULT_INPUT`
 - Gate run executed: script and test artifacts produced; drift guard PASS at 94924 rows.
 - Champion evaluation BLOCKED: no verifiable post-apply draw results found; no live draw source confirmed.
-- Blocked pending Kelvin manual draw result input — Kelvin must provide actual post-apply draw results for the live monitoring period.
+- P148B reported evidence_file_search={} and "no local source"; P148C corrects this (see below).
 - No DB write, no controlled_apply, no champion promotion, no registry update in P148B.
-- Next: P148B_AWAITING_MANUAL_DRAW_RESULT_INPUT
+- Next: P148C local draw result source audit gate
 - Marker: `CTO_ROADMAP_UPDATED_AFTER_P148B_MANUAL_LIVE_VERIFIED_EVIDENCE_FILE_ARTIFACT_RUN_20260530`
+
+## P148C Local Draw Result Source Audit Gate (2026-05-30) — DONE (audit, BLOCKED)
+- Classification: `P148C_LOCAL_DRAW_RESULT_FOUND_BUT_NOT_LIVE_VERIFIED_ELIGIBLE`
+- Audit executed: all 6 candidate strategies audited in DB and P146B observation files checked.
+- P148B assumption correction: P146B observation files DO contain actual_numbers but are tagged MOCK_OBSERVATION_ONLY — fixture/simulated data, not real post-apply draw results. P148B "no source" claim was imprecise.
+- All DB actual_numbers for candidate strategies are historical backfill (Wave1/Wave2/Wave4/P131/P134); none qualify as LIVE_MONITORING_VERIFIED.
+- P146B target draws: DAILY_539 115000072 has actual=[7,14,15,19,22] (historical backfill); POWER_LOTTO draw 1894 has obs actual=[3,12,19,24,33,38] (MOCK_OBSERVATION_ONLY). Neither eligible.
+- 0 LIVE_MONITORING_VERIFIED rows in DB. Champion evaluation (P147) remains BLOCKED.
+- No DB write, no controlled_apply, no champion promotion, no registry update, no live API call in P148C.
+- Next: P148D — accept Kelvin manual draw result input, validate, create LIVE_MONITORING_VERIFIED record.
+- Marker: `CTO_ROADMAP_UPDATED_AFTER_P148C_LOCAL_DRAW_RESULT_SOURCE_AUDIT_GATE_20260530`

@@ -79,6 +79,9 @@ _AUTOUSE_PREFIXES = (
     "tests/test_p144a_", "tests/test_p144b_", "tests/test_p144c_", "tests/test_p144d_",
     "tests/test_p146a_", "tests/test_p146b_",
     "outputs/replay/p147_", "docs/replay/p147_", "scripts/p147_", "tests/test_p147_",
+    "outputs/replay/p148_", "docs/replay/p148_", "scripts/p148_", "tests/test_p148_",
+    "outputs/replay/p148b_", "docs/replay/p148b_", "scripts/p148b_", "tests/test_p148b_",
+    "outputs/replay/p148c_", "docs/replay/p148c_", "scripts/p148c_", "tests/test_p148c_",
 )
 
 

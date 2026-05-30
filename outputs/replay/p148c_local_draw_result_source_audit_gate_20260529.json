@@ -1,0 +1,273 @@
+{
+  "task_id": "P148C",
+  "classification": "P148C_LOCAL_DRAW_RESULT_FOUND_BUT_NOT_LIVE_VERIFIED_ELIGIBLE",
+  "generated_at": "2026-05-30T10:24:56.543335+00:00",
+  "canonical_repo": "/Users/kelvin/Kelvin-WorkSpace/LotteryNew/.claude/worktrees/zen-gates-ff6802",
+  "canonical_branch": "claude/zen-gates-ff6802",
+  "repo_branch_check": {
+    "repo_ok": true,
+    "branch_ok": true,
+    "actual_repo": "/Users/kelvin/Kelvin-WorkSpace/LotteryNew/.claude/worktrees/zen-gates-ff6802",
+    "actual_branch": "claude/zen-gates-ff6802"
+  },
+  "db_snapshot": {
+    "row_count": 94924,
+    "drift_guard_pass": true,
+    "bet_index_column_exists": true
+  },
+  "p148b_source_summary": {
+    "artifact_path": "outputs/replay/p148b_manual_live_verified_evidence_file_artifact_run_20260529.json",
+    "classification": "P148B_BLOCKED_PENDING_MANUAL_DRAW_RESULT_INPUT",
+    "commit": "7cb64fd"
+  },
+  "p148_source_summary": {
+    "artifact_path": "outputs/replay/p148_live_monitoring_verified_evidence_collection_gate_20260529.json",
+    "classification": "P148_LIVE_MONITORING_VERIFIED_EVIDENCE_COLLECTION_GATE_READY",
+    "commit": "4f07e71"
+  },
+  "p147_source_summary": {
+    "artifact_path": "outputs/replay/p147_champion_evaluation_gate_readiness_audit_20260529.json",
+    "classification": "P147_CHAMPION_EVALUATION_BLOCKED_PENDING_LIVE_MONITORING_VERIFIED"
+  },
+  "p148b_assumption_correction": "P148B concluded 'no local source found' and reported evidence_file_search={}. P148C corrects this: P146B observation files DO contain actual_numbers (e.g., acb_markov_midfreq_3bet draw 115000072 actual=[4,17,22,31,35], fourier_rhythm_3bet draw 1894 actual=[3,12,19,24,33,38]). However, all P146B files are tagged monitoring_truth_level=MOCK_OBSERVATION_ONLY because they used fixture/simulated draw data, not real draw API results. These records are NOT eligible for LIVE_MONITORING_VERIFIED. The P148B BLOCKED classification remains correct \u2014 but for a more precise reason: local files exist with actual_numbers but they are mock-only, not real post-apply evidence.",
+  "candidate_strategy_draw_audit": [
+    {
+      "strategy_id": "acb_markov_midfreq_3bet",
+      "strategy_name": "\u4eca\u5f69539 ACB+Markov \u4e2d\u983b 3\u6ce8",
+      "lottery_type": "DAILY_539",
+      "target_draw": "115000121",
+      "predicted_numbers": "[14, 24, 30, 38, 39]",
+      "actual_numbers": "[8, 15, 20, 32, 33]",
+      "hit_count": 0,
+      "truth_level": "DAILY539_RETIRED_STRATEGY_BACKFILL_VERIFIED",
+      "source": "P31B_WAVE1_PRODUCTION_APPLY",
+      "generated_at": "2026-05-23T06:14:15.952834+00:00",
+      "controlled_apply_id": "P31B_DAILY539_RETIRED_7500_PROD_20260523",
+      "is_historical_backfill": true,
+      "is_post_apply_live_eligible": false,
+      "note": "Historical backfill \u2014 does not qualify as LIVE_MONITORING_VERIFIED"
+    },
+    {
+      "strategy_id": "midfreq_fourier_mk_3bet",
+      "strategy_name": "\u5a01\u529b\u5f69 MidFreq+Fourier+Markov 3\u6ce8",
+      "lottery_type": "POWER_LOTTO",
+      "target_draw": "115000040",
+      "predicted_numbers": "[3, 4, 15, 27, 28, 36]",
+      "actual_numbers": "[6, 7, 14, 25, 29, 34]",
+      "hit_count": 0,
+      "truth_level": "POWERLOTTO_WAVE4_STRATEGY_BACKFILL_VERIFIED",
+      "source": "P48_WAVE4_PRODUCTION_APPLY",
+      "generated_at": "2026-05-24T13:54:20.518508+00:00",
+      "controlled_apply_id": "P48_POWERLOTTO_WAVE4_4500_PROD_20260524",
+      "is_historical_backfill": true,
+      "is_post_apply_live_eligible": false,
+      "note": "Historical backfill \u2014 does not qualify as LIVE_MONITORING_VERIFIED"
+    },
+    {
+      "strategy_id": "fourier_rhythm_3bet",
+      "strategy_name": "\u5a01\u529b\u5f69 Fourier Rhythm 3\u6ce8",
+      "lottery_type": "POWER_LOTTO",
+      "target_draw": "115000041",
+      "predicted_numbers": "[3, 23, 24, 28, 30, 36]",
+      "actual_numbers": "[6, 14, 22, 28, 35, 38]",
+      "hit_count": 1,
+      "truth_level": "POWERLOTTO_DRAW_EXT_VERIFIED",
+      "source": "P78_BATCH_A_PLAN_REGENERATION",
+      "generated_at": "2026-05-26 08:00:41",
+      "controlled_apply_id": "P78_POWERLOTTO_BATCH_A_FOURIER_RHYTHM_DRAWEXT_20260526",
+      "is_historical_backfill": true,
+      "is_post_apply_live_eligible": false,
+      "note": "Historical backfill \u2014 does not qualify as LIVE_MONITORING_VERIFIED"
+    },
+    {
+      "strategy_id": "pp3_freqort_4bet",
+      "strategy_name": "\u5a01\u529b\u5f69 PP3+FreqOrt 4\u6ce8",
+      "lottery_type": "POWER_LOTTO",
+      "target_draw": "115000040",
+      "predicted_numbers": "[14, 23, 24, 27, 28, 36]",
+      "actual_numbers": "[6, 7, 14, 25, 29, 34]",
+      "hit_count": 1,
+      "truth_level": "POWERLOTTO_WAVE4_STRATEGY_BACKFILL_VERIFIED",
+      "source": "P48_WAVE4_PRODUCTION_APPLY",
+      "generated_at": "2026-05-24T13:54:20.518508+00:00",
+      "controlled_apply_id": "P48_POWERLOTTO_WAVE4_4500_PROD_20260524",
+      "is_historical_backfill": true,
+      "is_post_apply_live_eligible": false,
+      "note": "Historical backfill \u2014 does not qualify as LIVE_MONITORING_VERIFIED"
+    },
+    {
+      "strategy_id": "power_precision_3bet",
+      "strategy_name": "\u5a01\u529b\u5f69 Precision 3\u6ce8",
+      "lottery_type": "POWER_LOTTO",
+      "target_draw": "115000040",
+      "predicted_numbers": "[14, 23, 24, 27, 28, 36]",
+      "actual_numbers": "[6, 7, 14, 25, 29, 34]",
+      "hit_count": 1,
+      "truth_level": "POWERLOTTO_REMAINING_STRATEGIES_BACKFILL_VERIFIED",
+      "source": "P20_POWERLOTTO_REMAINING_STRATEGIES_PRODUCTION_APPLY",
+      "generated_at": "2026-05-21T01:24:47.786379+00:00",
+      "controlled_apply_id": "P20_POWERLOTTO_REMAINING_1500_PROD_20260520",
+      "is_historical_backfill": true,
+      "is_post_apply_live_eligible": false,
+      "note": "Historical backfill \u2014 does not qualify as LIVE_MONITORING_VERIFIED"
+    },
+    {
+      "strategy_id": "power_orthogonal_5bet",
+      "strategy_name": "\u5a01\u529b\u5f69 Orthogonal 5\u6ce8",
+      "lottery_type": "POWER_LOTTO",
+      "target_draw": "115000040",
+      "predicted_numbers": "[14, 23, 24, 27, 28, 36]",
+      "actual_numbers": "[6, 7, 14, 25, 29, 34]",
+      "hit_count": 1,
+      "truth_level": "POWERLOTTO_REMAINING_STRATEGIES_BACKFILL_VERIFIED",
+      "source": "P20_POWERLOTTO_REMAINING_STRATEGIES_PRODUCTION_APPLY",
+      "generated_at": "2026-05-21T01:24:47.786379+00:00",
+      "controlled_apply_id": "P20_POWERLOTTO_REMAINING_1500_PROD_20260520",
+      "is_historical_backfill": true,
+      "is_post_apply_live_eligible": false,
+      "note": "Historical backfill \u2014 does not qualify as LIVE_MONITORING_VERIFIED"
+    }
+  ],
+  "p146b_target_draw_audit": {
+    "DAILY_539": {
+      "target_draw": "115000072",
+      "actual_numbers": "[7, 14, 15, 19, 22]",
+      "truth_level": "DAILY539_WAVE2_STRATEGY_BACKFILL_VERIFIED",
+      "source": "P37_WAVE2_PRODUCTION_APPLY",
+      "is_post_apply_eligible": false,
+      "reason": "DB row exists with actual_numbers=[7,14,15,19,22] but truth_level=DAILY539_WAVE2_STRATEGY_BACKFILL_VERIFIED is historical backfill. P146B observation record has actual_numbers=[4,17,22,31,35] but truth_level=MOCK_OBSERVATION_ONLY \u2014 not post-apply eligible."
+    },
+    "POWER_LOTTO": {
+      "target_draw": "1894",
+      "db_rows_with_draw_1894": 0,
+      "actual_numbers": "[3, 12, 19, 24, 33, 38]",
+      "truth_level": "MOCK_OBSERVATION_ONLY",
+      "source": "p146b_obs_1894_20260529.json (MOCK_OBSERVATION_ONLY)",
+      "is_post_apply_eligible": false,
+      "reason": "DB has 0 rows with target_draw='1894' (POWER_LOTTO uses 115xxxxxx format in DB). P146B observation file has actual_numbers=[3, 12, 19, 24, 33, 38] but monitoring_truth_level=MOCK_OBSERVATION_ONLY \u2014 mock fixture only, not real post-apply draw result. Not eligible for LIVE_MONITORING_VERIFIED."
+    }
+  },
+  "local_draw_result_source_audit": {
+    "sources_found": [
+      {
+        "type": "p146b_mock_observation_only_files",
+        "count": 6,
+        "files": [
+          {
+            "path": "outputs/replay/live_monitoring_observation_only/pp3_freqort_4bet/p146b_obs_1894_20260529.json",
+            "truth_level": "MOCK_OBSERVATION_ONLY",
+            "actual_numbers": "[3, 12, 19, 24, 33, 38]",
+            "evaluation_status": "OBSERVATION_ONLY_MOCK_RUN",
+            "is_live_eligible": false,
+            "note": "MOCK_OBSERVATION_ONLY \u2014 not real draw result"
+          },
+          {
+            "path": "outputs/replay/live_monitoring_observation_only/power_orthogonal_5bet/p146b_obs_1894_20260529.json",
+            "truth_level": "MOCK_OBSERVATION_ONLY",
+            "actual_numbers": "[3, 12, 19, 24, 33, 38]",
+            "evaluation_status": "OBSERVATION_ONLY_MOCK_RUN",
+            "is_live_eligible": false,
+            "note": "MOCK_OBSERVATION_ONLY \u2014 not real draw result"
+          },
+          {
+            "path": "outputs/replay/live_monitoring_observation_only/midfreq_fourier_mk_3bet/p146b_obs_1894_20260529.json",
+            "truth_level": "MOCK_OBSERVATION_ONLY",
+            "actual_numbers": "[3, 12, 19, 24, 33, 38]",
+            "evaluation_status": "OBSERVATION_ONLY_MOCK_RUN",
+            "is_live_eligible": false,
+            "note": "MOCK_OBSERVATION_ONLY \u2014 not real draw result"
+          },
+          {
+            "path": "outputs/replay/live_monitoring_observation_only/acb_markov_midfreq_3bet/p146b_obs_115000072_20260529.json",
+            "truth_level": "MOCK_OBSERVATION_ONLY",
+            "actual_numbers": "[4, 17, 22, 31, 35]",
+            "evaluation_status": "OBSERVATION_ONLY_MOCK_RUN",
+            "is_live_eligible": false,
+            "note": "MOCK_OBSERVATION_ONLY \u2014 not real draw result"
+          },
+          {
+            "path": "outputs/replay/live_monitoring_observation_only/power_precision_3bet/p146b_obs_1894_20260529.json",
+            "truth_level": "MOCK_OBSERVATION_ONLY",
+            "actual_numbers": "[3, 12, 19, 24, 33, 38]",
+            "evaluation_status": "OBSERVATION_ONLY_MOCK_RUN",
+            "is_live_eligible": false,
+            "note": "MOCK_OBSERVATION_ONLY \u2014 not real draw result"
+          },
+          {
+            "path": "outputs/replay/live_monitoring_observation_only/fourier_rhythm_3bet/p146b_obs_1894_20260529.json",
+            "truth_level": "MOCK_OBSERVATION_ONLY",
+            "actual_numbers": "[3, 12, 19, 24, 33, 38]",
+            "evaluation_status": "OBSERVATION_ONLY_MOCK_RUN",
+            "is_live_eligible": false,
+            "note": "MOCK_OBSERVATION_ONLY \u2014 not real draw result"
+          }
+        ],
+        "live_eligible": false,
+        "note": "All P146B observation files tagged MOCK_OBSERVATION_ONLY. actual_numbers are fixture/simulated, not real draw results."
+      },
+      {
+        "type": "db_live_monitoring_verified_rows",
+        "count": 0,
+        "live_eligible": false,
+        "note": "LIVE_MONITORING_VERIFIED rows in DB: 0. None exist \u2014 champion evaluation remains blocked."
+      }
+    ],
+    "best_source": null,
+    "mock_observation_files_exist": true,
+    "mock_observation_file_count": 6,
+    "live_monitoring_verified_rows_in_db": 0,
+    "notes": "P146B observation files have actual_numbers populated but all tagged MOCK_OBSERVATION_ONLY \u2014 these are fixture/simulated data, not real post-apply draw results. No LIVE_MONITORING_VERIFIED rows exist in DB. No manual draw result input files found in local directories. All DB actual_numbers are from historical backfill operations (Wave1/Wave2/Wave3/Wave4/Wave5/Wave6), not from post-apply live monitoring. Kelvin must provide real draw results to unblock."
+  },
+  "post_apply_eligibility_assessment": {
+    "wave2_apply_completed": true,
+    "monitoring_candidate_draw_identified": false,
+    "eligibility_criteria_met": false,
+    "reason": "Wave 2 controlled apply chain (P131-P141/P142) is confirmed complete at 94924 rows. However, no real post-apply draw result has been provided. P146B observation files are MOCK_OBSERVATION_ONLY (fixture data) \u2014 they do not qualify as post-apply verified evidence. DB actual_numbers for all candidate strategies are from historical backfill operations, not from post-apply live monitoring. Kelvin must provide actual draw results (draw number + winning numbers) for at least one candidate strategy for LIVE_MONITORING_VERIFIED evidence to be created."
+  },
+  "usable_verified_source_decision": {
+    "usable_source_found": true,
+    "source_type": "historical_backfill",
+    "source_path_or_db_query": "db:strategy_prediction_replays (backfill truth_levels only)",
+    "reason": "DB has actual_numbers for all 6 candidate strategies but all are from historical backfill (Wave1/Wave2/Wave4/controlled_apply). None qualify as post-apply live monitoring evidence. P146B observation files have actual_numbers but are MOCK_OBSERVATION_ONLY. Kelvin must provide real post-apply draw results to create LIVE_MONITORING_VERIFIED records.",
+    "requires_kelvin_manual_input": true,
+    "ready_for_p148d": false
+  },
+  "live_verified_evidence_creation_status": {
+    "live_monitoring_verified_record_created_in_p148c": false,
+    "p148d_required_for_record_creation": true,
+    "champion_evaluation_unlocked_in_p148c": false
+  },
+  "non_actions": {
+    "db_write_in_p148c": false,
+    "controlled_apply_executed_in_p148c": false,
+    "live_monitoring_verified_record_created_in_p148c": false,
+    "registry_update_executed_in_p148c": false,
+    "champion_promotion_executed_in_p148c": false,
+    "scheduler_installed": false,
+    "live_api_called": false,
+    "four_star_executed": false,
+    "p108_executed": false,
+    "p117_executed": false,
+    "p118_executed": false
+  },
+  "dirty_file_hygiene": {
+    "backups_untracked_not_staged": true,
+    "unrelated_dirty_files": [],
+    "status": "CLEAN"
+  },
+  "roadmap_update_status": {
+    "cto_analysis_updated": true,
+    "roadmap_updated": true
+  },
+  "remaining_risks": [
+    "No real post-apply draw results available for any candidate strategy",
+    "P146B observation files are MOCK_OBSERVATION_ONLY \u2014 actual_numbers are fixture/simulated data, not real draw results",
+    "DB actual_numbers for candidate strategies are all historical backfill (Wave1/Wave2/Wave4/P131/P134) \u2014 not LIVE_MONITORING_VERIFIED eligible",
+    "Champion evaluation (P147) remains blocked until LIVE_MONITORING_VERIFIED evidence is collected",
+    "Kelvin must provide real draw results (draw number + winning numbers) for at least one candidate strategy",
+    "P148B assumption correction: P148B reported 'no local source' but P146B obs files DO have actual_numbers \u2014 however these are MOCK_OBSERVATION_ONLY and ineligible",
+    "P148D will require Kelvin manual draw result input to create any LIVE_MONITORING_VERIFIED DB record"
+  ],
+  "next_recommended_task": "P148D",
+  "summary": "P148C classification: P148C_LOCAL_DRAW_RESULT_FOUND_BUT_NOT_LIVE_VERIFIED_ELIGIBLE. All 6 candidate strategies have actual_numbers in DB but all are from historical backfill (DAILY539_RETIRED_STRATEGY_BACKFILL_VERIFIED, POWERLOTTO_WAVE4_STRATEGY_BACKFILL_VERIFIED, etc.). P146B observation files have actual_numbers but are MOCK_OBSERVATION_ONLY \u2014 fixture/simulated data. No LIVE_MONITORING_VERIFIED rows exist in DB. Champion evaluation (P147) remains BLOCKED. P148B assumption correction: P148B reported no local source found; P148C clarifies that P146B obs files DO have actual_numbers but they are mock-only and ineligible. Kelvin must provide real post-apply draw results for at least one candidate strategy to enable P148D to create LIVE_MONITORING_VERIFIED evidence."
+}

@@ -128,6 +128,22 @@ P156C applied all 22 authorized lifecycle updates to `replay_strategy_registry.p
 
 **Remaining post-RC backlog**: P157 (h6_gate decision), P158 (browser smoke)
 
+## 0i. P157 Update (2026-05-30)
+
+**Classification**: `P157_REPLAY_VISIBILITY_INVARIANT_CONFIRMED_H6_DECISION_GATE_READY`
+
+P157 confirms the replay visibility invariant: **lifecycle is a label, not a visibility/exclusion gate**. All 40 strategies remain visible after P156C updates.
+- RETIRED (17): all have replay rows → queryable with RETIRED badge ✅
+- REJECTED (4): visible with REJECTED_NO_REPLAY_DATA badge ✅
+- OBSERVATION (1, h6_gate): visible with ONLINE_ZERO_REPLAY_ROWS badge ✅
+- P156C lifecycle updates did NOT reduce visibility ✅
+
+**h6_gate_mk20_ew85**: OBSERVATION / 0 rows / visible. Recommended: **Option A — Keep OBSERVATION, no change**.
+
+**48 P157 tests + 271 regression tests pass. DB = 94924 unchanged.**
+
+**Remaining post-RC backlog**: P158 (E2E browser smoke) only
+
 ## 2. Input Sources
 
 - [Confirmed] User handoff report in the current conversation, limited to LotteryNew content.

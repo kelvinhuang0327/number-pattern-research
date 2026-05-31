@@ -1,7 +1,7 @@
 # LotteryNew 歷史回放功能 — Operator Guide
 
-**版本**: P154 Release Candidate
-**生成日期**: 2026-05-30
+**版本**: P157 — Visibility Invariant Confirmed
+**生成日期**: 2026-05-30（P157 更新）
 **適用範圍**: 歷史回放（Replay）功能操作與維護人員
 
 ---
@@ -46,11 +46,15 @@ LotteryNew 歷史回放功能讓操作員可以查看每個已實作策略在歷
 |------|------|------|
 | ONLINE | 綠 | 目前運行中的策略 |
 | OBSERVATION | 黃褐 | 觀察中，尚未正式上線 |
-| RETIRED | 深灰 | 已退役，仍保留歷史資料 |
+| RETIRED | 深灰 | 已退役，**仍保留歷史資料並可查詢**（visibility invariant） |
 | REJECTED | 紅 | 經驗證後被拒絕，無回放資料 |
 | DB_ONLY_MISSING_LIFECYCLE | 藍 | DB 有資料但 lifecycle 尚未正式登錄（待治理審核） |
 
-**目前**: 40 個策略已在目錄中，覆蓋全部已實作策略。
+**目前**: 40 個策略已在目錄中，覆蓋全部已實作策略（P157 visibility invariant 確認）。
+
+> ⚠️ **重要原則（P157 確認）**：`lifecycle` 只是標籤，**不是 visibility 排除條件**。
+> 無論策略是 RETIRED / REJECTED / OBSERVATION，都必須出現在歷史回放目錄中。
+> 有 replay rows 的退役策略仍可查詢歷史預測 vs 實際開獎。
 
 ---
 

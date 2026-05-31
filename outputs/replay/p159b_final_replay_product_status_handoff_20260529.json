@@ -1,0 +1,223 @@
+{
+  "task_id": "P159B",
+  "classification": "P159B_FINAL_REPLAY_PRODUCT_STATUS_HANDOFF_COMPLETE",
+  "generated_at": "2026-05-31T05:25:38.933904+00:00",
+  "canonical_repo": "/Users/kelvin/Kelvin-WorkSpace/LotteryNew/.claude/worktrees/zen-gates-ff6802",
+  "canonical_branch": "claude/zen-gates-ff6802",
+  "repo_branch_check": {
+    "repo_ok": true,
+    "branch_ok": true,
+    "actual_repo": "/Users/kelvin/Kelvin-WorkSpace/LotteryNew/.claude/worktrees/zen-gates-ff6802",
+    "actual_branch": "claude/zen-gates-ff6802"
+  },
+  "db_snapshot": {
+    "rows": 94924,
+    "expected": 94924,
+    "match": true
+  },
+  "drift_guard_status": "PASS",
+  "p159_source_summary": {
+    "classification": "P159_PROVENANCE_SOURCE_UI_POLISH_READY",
+    "ok": true
+  },
+  "p158b_source_summary": {
+    "classification": "P158B_REPLAY_STATIC_UI_SMOKE_READY",
+    "ok": true
+  },
+  "p158_source_summary": {
+    "classification": "P158_REPLAY_PRODUCT_GOVERNANCE_CHAIN_CLOSED",
+    "ok": true
+  },
+  "final_replay_product_status": {
+    "replay_product_complete": true,
+    "governance_chain_closed": true,
+    "smoke_evidence_ready": true,
+    "provenance_polish_complete": true,
+    "blocking_tasks_remaining": 0,
+    "total_strategies_visible": 40,
+    "replay_rows": 94924,
+    "db_only_missing_lifecycle_remaining": 0,
+    "lifecycle_counts": {
+      "ONLINE": 18,
+      "REJECTED": 4,
+      "RETIRED": 17,
+      "OBSERVATION": 1
+    },
+    "drift_guard": "PASS",
+    "all_provenance_fields_displayed": true
+  },
+  "completed_chain_summary": [
+    {
+      "task": "P149",
+      "status": "COMPLETE",
+      "summary": "Replay product coverage audit"
+    },
+    {
+      "task": "P150",
+      "status": "COMPLETE",
+      "summary": "API: bet_index, all-strategy-catalog, no_data_reason"
+    },
+    {
+      "task": "P151",
+      "status": "COMPLETE",
+      "summary": "UI: bet_index, all-catalog, no_data_reason badges"
+    },
+    {
+      "task": "P151B",
+      "status": "COMPLETE",
+      "summary": "Worktree hygiene"
+    },
+    {
+      "task": "P152",
+      "status": "COMPLETE",
+      "summary": "UI: source/controlled_apply_id/provenance_hash/truth_level"
+    },
+    {
+      "task": "P153",
+      "status": "COMPLETE",
+      "summary": "E2E acceptance audit: 40/40, API+UI complete"
+    },
+    {
+      "task": "P154",
+      "status": "COMPLETE",
+      "summary": "RC closure. 0 blocking gaps. Operator guide."
+    },
+    {
+      "task": "P156",
+      "status": "COMPLETE",
+      "summary": "Audit 22 DB_ONLY → ONLINE(10)+RETIRED(12)"
+    },
+    {
+      "task": "P156B",
+      "status": "COMPLETE",
+      "summary": "Decision gate with 22 auth phrases"
+    },
+    {
+      "task": "P156C",
+      "status": "COMPLETE",
+      "summary": "22 lifecycle updates applied. DB_ONLY=0."
+    },
+    {
+      "task": "P157",
+      "status": "COMPLETE",
+      "summary": "Visibility invariant: lifecycle is label not gate"
+    },
+    {
+      "task": "P158",
+      "status": "COMPLETE",
+      "summary": "Governance chain CLOSED"
+    },
+    {
+      "task": "P158B",
+      "status": "COMPLETE",
+      "summary": "Static smoke evidence: 7 dimensions"
+    },
+    {
+      "task": "P159",
+      "status": "COMPLETE",
+      "summary": "provenance_source in UI"
+    },
+    {
+      "task": "P159B",
+      "status": "COMPLETE",
+      "summary": "Final status handoff"
+    }
+  ],
+  "final_visibility_invariant": {
+    "all_lifecycle_strategies_visible_in_replay": true,
+    "retired_strategies_visible": true,
+    "rejected_strategies_visible": true,
+    "observation_strategies_visible": true,
+    "no_data_strategies_visible": true,
+    "lifecycle_is_label_not_visibility_gate": true,
+    "confirmed_by": "P157"
+  },
+  "final_metadata_display_status": {
+    "truth_level_visible": true,
+    "source_visible": true,
+    "controlled_apply_id_visible": true,
+    "provenance_hash_visible": true,
+    "provenance_source_visible": true,
+    "bet_index_visible": true,
+    "no_data_reason_visible": true,
+    "all_catalog_visible": true,
+    "source_in_history_row": true,
+    "all_fields_complete": true
+  },
+  "final_non_blocking_items": [
+    {
+      "item": "h6_gate_mk20_ew85 zero replay rows",
+      "severity": "VERY_LOW",
+      "blocking": false,
+      "status": "Visible in catalog with ONLINE_ZERO_REPLAY_ROWS badge. No action needed.",
+      "optional_task": "P160 (requires explicit authorization)"
+    },
+    {
+      "item": "P108/P117/P118/4★ governance triggers",
+      "severity": "N/A",
+      "blocking": false,
+      "status": "BLOCKED in separate champion chain. Not replay product concern.",
+      "optional_task": "Proceeds on its own timeline"
+    },
+    {
+      "item": "Champion evaluation",
+      "severity": "N/A",
+      "blocking": false,
+      "status": "BLOCKED pending live evidence. Separate chain.",
+      "optional_task": "Proceeds on its own timeline"
+    },
+    {
+      "item": "backups/ untracked",
+      "severity": "NONE",
+      "blocking": false,
+      "status": "Not staged, not deleted. Non-issue.",
+      "optional_task": null
+    }
+  ],
+  "next_step_policy": {
+    "next_recommended_task": "NONE_BLOCKING",
+    "replay_product_line_complete": true,
+    "p160_requires_explicit_authorization": true,
+    "champion_chain_is_separate": true,
+    "p108_p117_p118_four_star_chain_is_separate": true,
+    "statement": "The LotteryNew replay product is fully complete. Governance chain (P149-P157) CLOSED. Browser smoke evidence (P158B) READY. All provenance fields displayed (P159). No further replay product tasks are needed unless explicitly requested."
+  },
+  "tests_summary": {
+    "p159b_tests": "tests/test_p159b_final_replay_product_status_handoff.py",
+    "full_chain_spot_check": [
+      "tests/test_p159_provenance_source_ui_polish.py",
+      "tests/test_p158b_replay_e2e_browser_smoke_expansion.py",
+      "tests/test_p158_replay_product_governance_chain_closure.py",
+      "tests/test_p157_replay_visibility_invariant_and_h6_zero_rows_decision_gate.py",
+      "tests/test_p154_replay_product_release_candidate_closure.py"
+    ]
+  },
+  "non_actions": {
+    "db_write_in_p159b": false,
+    "lifecycle_update_executed_in_p159b": false,
+    "controlled_apply_executed_in_p159b": false,
+    "replay_rows_inserted_in_p159b": 0,
+    "replay_rows_updated_in_p159b": 0,
+    "replay_rows_deleted_in_p159b": 0,
+    "champion_promotion_executed_in_p159b": false,
+    "registry_promotion_executed_in_p159b": false,
+    "live_api_called": false,
+    "scheduler_installed": false,
+    "four_star_executed": false,
+    "p108_executed": false,
+    "p117_executed": false,
+    "p118_executed": false
+  },
+  "dirty_file_hygiene": {
+    "backups_untracked_not_staged": true,
+    "backups_deleted": false,
+    "forbidden_files_staged": false,
+    "remaining_unrelated_dirty": []
+  },
+  "roadmap_update_status": {
+    "cto_analysis_updated": true,
+    "roadmap_updated": true
+  },
+  "summary": "P159B declares the LotteryNew replay product fully complete. Chain P149-P159 closed. 40 strategies, 94924 rows, all provenance fields displayed, visibility invariant confirmed. 0 blocking tasks. Champion chain separate.",
+  "head_at_generation": "babe6fe P159: display replay provenance source"
+}

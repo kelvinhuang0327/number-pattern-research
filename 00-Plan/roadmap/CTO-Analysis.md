@@ -187,6 +187,27 @@ P159 adds `provenance_source` (DB col 23) to the replay history detail panel. Pu
 
 **All optional polish complete. Only P160 (h6_gate on request) remains.**
 
+## 0m. P159B Update (2026-05-30) — FINAL HANDOFF
+
+**Classification**: `P159B_FINAL_REPLAY_PRODUCT_STATUS_HANDOFF_COMPLETE`
+
+**The LotteryNew replay product (P149–P159) is fully and completely done.**
+
+| Final State | Value |
+|-------------|-------|
+| Governance chain | CLOSED (P158) |
+| RC | CLOSED (P154) |
+| Browser smoke | READY (P158B) |
+| Provenance fields displayed | All 5 ✅ |
+| Strategies visible | 40/40 |
+| Replay rows | 94924 |
+| DB_ONLY remaining | 0 |
+| Blocking tasks | 0 |
+
+Next: `NONE_BLOCKING`. P160 only on explicit request.
+
+**44 P159B tests + 389 regression spot-check = 433 total. DB = 94924 unchanged.**
+
 ## 2. Input Sources
 
 - [Confirmed] User handoff report in the current conversation, limited to LotteryNew content.

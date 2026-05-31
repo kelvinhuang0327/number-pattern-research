@@ -48,6 +48,7 @@
 | P157 replay visibility invariant + h6 gate | [Confirmed] Complete | `outputs/replay/p157_replay_visibility_invariant_and_h6_zero_rows_decision_gate_20260529.json`; `P157_REPLAY_VISIBILITY_INVARIANT_CONFIRMED_H6_DECISION_GATE_READY` | Visibility invariant confirmed: lifecycle is label not exclusion gate. All 40 strategies visible. RETIRED strategies queryable. h6_gate OBSERVATION/0 rows → Option A (keep). 48 tests pass. |
 | **P158 Replay Product Governance Chain Closure** | **[CLOSED]** | `outputs/replay/p158_replay_product_governance_chain_closure_20260529.json`; `P158_REPLAY_PRODUCT_GOVERNANCE_CHAIN_CLOSED` | **Governance chain CLOSED. 40/40 strategies, 94924 rows, DB_ONLY=0, visibility invariant confirmed. 68 tests + 521 regression = 589 total. No DB writes. Champion chain separate.** |
 | P158B Replay E2E Browser Smoke Expansion | [Confirmed] Complete | `outputs/replay/p158b_replay_e2e_browser_smoke_expansion_20260529.json`; `P158B_REPLAY_STATIC_UI_SMOKE_READY` | Static HTML/JS smoke: 7 dimensions confirmed (entrypoint/catalog/lifecycle/no-data/multi-bet/provenance/champion). 77 tests pass. DB 94924. |
+| P159 Provenance Source UI Polish | [Confirmed] Complete — All Polish Done | `outputs/replay/p159_provenance_source_ui_polish_20260529.json`; `P159_PROVENANCE_SOURCE_UI_POLISH_READY` | Added provenance_source to detail panel. API already returned it. 34 tests pass. DB 94924. All provenance fields now displayed. |
 
 ---
 

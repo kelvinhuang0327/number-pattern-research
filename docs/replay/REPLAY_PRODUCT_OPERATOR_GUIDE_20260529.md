@@ -135,6 +135,11 @@ LotteryNew 歷史回放功能讓操作員可以查看每個已實作策略在歷
 - 顯示前 8 字元的 hash（完整 hash 可查 API）
 - 用於驗證資料完整性
 
+### Provenance Source（P159 新增）
+- 顯示產生這筆 replay row 的腳本/程序名稱
+- 例：`P94_CONTROLLED_APPLY`、`p47_wave4_powerlotto_adapters.py`
+- null → 顯示「N/A（未提供）」
+
 ### 在歷史列表中
 - strategy_id 欄位下方會顯示 `source` 的縮短版（前 28 字元）
 

@@ -3288,6 +3288,7 @@
         <div><span style="color:#888">來源（source）：</span><code data-testid="rp-detail-source" style="font-size:10px;background:#f0f0f0;padding:1px 4px;border-radius:3px;word-break:break-all">${r.source ? _esc(r.source) : '<span style="color:#aaa">— (legacy/unknown)</span>'}</code></div>
         <div><span style="color:#888">Controlled Apply ID：</span><code data-testid="rp-detail-controlled-apply-id" style="font-size:10px;background:#f0f0f0;padding:1px 4px;border-radius:3px;word-break:break-all">${r.controlled_apply_id ? _esc(r.controlled_apply_id) : '<span style="color:#aaa;font-size:11px">N/A（legacy/uncontrolled）</span>'}</code></div>
         <div><span style="color:#888">Provenance Hash：</span><code data-testid="rp-detail-provenance-hash" style="font-size:10px;font-family:monospace;color:#555">${r.provenance_hash ? _esc(String(r.provenance_hash).slice(0, 8)) + '…' : '—'}</code></div>
+        <div><span style="color:#888">Provenance Source：</span><code data-testid="rp-detail-provenance-source" style="font-size:10px;background:#f0f0f0;padding:1px 4px;border-radius:3px;word-break:break-all">${r.provenance_source ? _esc(r.provenance_source) : '<span style="color:#aaa;font-size:11px">N/A（未提供）</span>'}</code></div>
       </div>
       <div style="margin-bottom:8px">${numbersSection}</div>
       <div style="padding:6px 10px;background:#f0f4ff;border-radius:4px;color:#555;font-size:11px;line-height:1.6">

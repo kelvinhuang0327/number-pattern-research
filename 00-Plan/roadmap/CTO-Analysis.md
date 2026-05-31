@@ -175,7 +175,17 @@ P158B static smoke audit confirms all P151-P157 replay product features present 
 
 **77 P158B tests + 497 regression tests = 574 total. DB = 94924 unchanged.**
 
-**Optional remaining**: P159 (provenance_source UI), P160 (h6_gate rows on request)
+**Optional remaining**: P159 ✅ DONE, P160 (h6_gate rows on request)
+
+## 0l. P159 Update (2026-05-30)
+
+**Classification**: `P159_PROVENANCE_SOURCE_UI_POLISH_READY`
+
+P159 adds `provenance_source` (DB col 23) to the replay history detail panel. Pure UI polish — no DB writes, no API changes (API returned it since P150). All 5 provenance metadata fields now displayed: `truth_level` / `source` / `controlled_apply_id` / `provenance_hash` / `provenance_source` ✅
+
+**34 P159 tests + 574 regression tests = 608 total. DB = 94924 unchanged.**
+
+**All optional polish complete. Only P160 (h6_gate on request) remains.**
 
 ## 2. Input Sources
 

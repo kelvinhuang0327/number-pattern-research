@@ -1,0 +1,127 @@
+{
+  "task_id": "P159",
+  "classification": "P159_PROVENANCE_SOURCE_UI_POLISH_READY",
+  "generated_at": "2026-05-31T05:14:00.654517+00:00",
+  "canonical_repo": "/Users/kelvin/Kelvin-WorkSpace/LotteryNew/.claude/worktrees/zen-gates-ff6802",
+  "canonical_branch": "claude/zen-gates-ff6802",
+  "repo_branch_check": {
+    "repo_ok": true,
+    "branch_ok": true,
+    "actual_repo": "/Users/kelvin/Kelvin-WorkSpace/LotteryNew/.claude/worktrees/zen-gates-ff6802",
+    "actual_branch": "claude/zen-gates-ff6802"
+  },
+  "db_snapshot": {
+    "rows": 94924,
+    "expected": 94924,
+    "match": true
+  },
+  "drift_guard_status": "PASS",
+  "p158b_source_summary": {
+    "classification": "P158B_REPLAY_STATIC_UI_SMOKE_READY",
+    "ok": true
+  },
+  "p158_source_summary": {
+    "classification": "P158_REPLAY_PRODUCT_GOVERNANCE_CHAIN_CLOSED",
+    "ok": true
+  },
+  "provenance_source_field_audit": {
+    "db_has_provenance_source": true,
+    "db_column_index": 23,
+    "rows_with_provenance_source": 70500,
+    "rows_without_provenance_source": 24424,
+    "coverage_pct": 74.3,
+    "sample_values": [
+      "p31a_wave1_retired_adapters.py",
+      "p36_wave2_daily539_adapters.py",
+      "p42_wave3_biglotto_adapters.py",
+      "p47_wave4_powerlotto_adapters.py",
+      "p56_wave5_powerlotto_adapters.py"
+    ],
+    "api_returns_provenance_source_before_p159": true,
+    "api_change_required": false,
+    "api_change_completed": false,
+    "ui_display_required": true,
+    "ui_display_completed": true
+  },
+  "api_changes": {
+    "api_modified_in_p159": false,
+    "reason": "provenance_source already in /api/replay/history response (line 528, replay.py) since P150. No API change needed."
+  },
+  "ui_changes": {
+    "files_modified": [
+      "index.html"
+    ],
+    "provenance_source_in_detail_added": true,
+    "testid_added": "rp-detail-provenance-source",
+    "null_handling": "N/A（未提供）",
+    "p152_regressions_preserved": true,
+    "p151_regressions_preserved": true
+  },
+  "provenance_source_display_support": {
+    "provenance_source_visible_in_detail": true,
+    "null_provenance_source_handled": true,
+    "label_text": "Provenance Source：",
+    "testid": "rp-detail-provenance-source",
+    "test_coverage_added": true
+  },
+  "operator_guide_update": {
+    "operator_guide_updated": true,
+    "includes_provenance_source_explanation": true,
+    "guide_path": "docs/replay/REPLAY_PRODUCT_OPERATOR_GUIDE_20260529.md"
+  },
+  "tests_summary": {
+    "p159_tests": "tests/test_p159_provenance_source_ui_polish.py",
+    "regression_tests": [
+      "tests/test_p158b_replay_e2e_browser_smoke_expansion.py",
+      "tests/test_p158_replay_product_governance_chain_closure.py",
+      "tests/test_p152_replay_ui_source_controlled_apply_id_display.py",
+      "tests/test_p151_replay_ui_multi_bet_display.py"
+    ]
+  },
+  "non_actions": {
+    "db_write_in_p159": false,
+    "lifecycle_update_executed_in_p159": false,
+    "controlled_apply_executed_in_p159": false,
+    "replay_rows_inserted_in_p159": 0,
+    "replay_rows_updated_in_p159": 0,
+    "replay_rows_deleted_in_p159": 0,
+    "champion_promotion_executed_in_p159": false,
+    "registry_promotion_executed_in_p159": false,
+    "live_api_called": false,
+    "scheduler_installed": false,
+    "four_star_executed": false,
+    "p108_executed": false,
+    "p117_executed": false,
+    "p118_executed": false
+  },
+  "dirty_file_hygiene": {
+    "backups_untracked_not_staged": true,
+    "backups_deleted": false,
+    "forbidden_files_staged": false,
+    "remaining_unrelated_dirty": [
+      "index.html"
+    ]
+  },
+  "roadmap_update_status": {
+    "cto_analysis_updated": true,
+    "roadmap_updated": true
+  },
+  "remaining_risks": [
+    "All primary provenance fields now displayed (source, controlled_apply_id, provenance_hash, provenance_source, truth_level)",
+    "h6_gate_mk20_ew85: 0 rows — non-blocking, visible in catalog",
+    "P108/P117/P118/4★ governance BLOCKED — separate chain"
+  ],
+  "next_recommended_task": "NONE_BLOCKING — All optional polish items completed. Replay product fully polished.",
+  "summary": "P159 adds provenance_source to replay history detail panel. DB col 23 exists, API already returned it since P150. Pure UI polish: added rp-detail-provenance-source with null handling. DB=94924 unchanged. No DB writes.",
+  "head_at_generation": "2959504 P158B: add replay product browser smoke evidence",
+  "html_audit": {
+    "provenance_source_in_detail": true,
+    "provenance_source_label": true,
+    "null_provenance_source_handled": true,
+    "p152_provenance_hash_preserved": true,
+    "p152_source_preserved": true,
+    "p152_cap_id_preserved": true,
+    "p151_bet_index_preserved": true,
+    "p151_all_catalog_preserved": true
+  }
+}

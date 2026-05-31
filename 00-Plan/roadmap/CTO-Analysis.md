@@ -165,7 +165,17 @@ P158 formally closes the LotteryNew replay product governance chain (P149–P157
 
 **68 P158 tests + 521 regression tests = 589 total. DB = 94924 unchanged. No DB writes.**
 
-**Post-governance optional backlog**: P158B (E2E browser smoke), P159 (provenance_source UI), P160 (h6_gate on request)
+**Post-governance optional backlog**: P158B ✅ DONE, P159 (provenance_source UI), P160 (h6_gate on request)
+
+## 0k. P158B Update (2026-05-30)
+
+**Classification**: `P158B_REPLAY_STATIC_UI_SMOKE_READY`
+
+P158B static smoke audit confirms all P151-P157 replay product features present in index.html (7 dimensions: entrypoint / all-catalog / lifecycle-visibility / no-data / multi-bet / provenance / champion-boundary). No Playwright needed — uses existing static inspection pattern.
+
+**77 P158B tests + 497 regression tests = 574 total. DB = 94924 unchanged.**
+
+**Optional remaining**: P159 (provenance_source UI), P160 (h6_gate rows on request)
 
 ## 2. Input Sources
 

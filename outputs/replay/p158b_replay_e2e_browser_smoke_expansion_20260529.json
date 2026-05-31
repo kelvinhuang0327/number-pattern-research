@@ -1,0 +1,204 @@
+{
+  "task_id": "P158B",
+  "classification": "P158B_REPLAY_STATIC_UI_SMOKE_READY",
+  "generated_at": "2026-05-31T05:05:04.279836+00:00",
+  "canonical_repo": "/Users/kelvin/Kelvin-WorkSpace/LotteryNew/.claude/worktrees/zen-gates-ff6802",
+  "canonical_branch": "claude/zen-gates-ff6802",
+  "repo_branch_check": {
+    "repo_ok": true,
+    "branch_ok": true,
+    "actual_repo": "/Users/kelvin/Kelvin-WorkSpace/LotteryNew/.claude/worktrees/zen-gates-ff6802",
+    "actual_branch": "claude/zen-gates-ff6802"
+  },
+  "db_snapshot": {
+    "rows": 94924,
+    "expected": 94924,
+    "match": true
+  },
+  "drift_guard_status": "PASS",
+  "p158_source_summary": {
+    "classification": "P158_REPLAY_PRODUCT_GOVERNANCE_CHAIN_CLOSED",
+    "ok": true
+  },
+  "p157_source_summary": {
+    "classification": "P157_REPLAY_VISIBILITY_INVARIANT_CONFIRMED_H6_DECISION_GATE_READY",
+    "ok": true
+  },
+  "p154_source_summary": {
+    "classification": "P154_REPLAY_PRODUCT_RELEASE_CANDIDATE_CLOSED",
+    "ok": true
+  },
+  "browser_smoke_strategy": {
+    "existing_browser_framework_found": true,
+    "smoke_mode": "static_html_inspection",
+    "no_new_large_dependency_added": true,
+    "reason": "Repo has test_replay_browser_smoke.py using static HTML/JS string inspection. P158B extends this pattern to cover P151/P152/P157 features. No Playwright, no live API, no external browser process needed.",
+    "existing_smoke_files": [
+      "tests/test_replay_browser_smoke.py",
+      "tests/test_replay_lifecycle_browser_e2e.py",
+      "tests/test_p25a_full_replay_page_browser_verification.py"
+    ]
+  },
+  "replay_entrypoint_smoke": {
+    "replay_section_exists": true,
+    "replay_api_base_configured": true,
+    "replay_history_endpoint_present": true,
+    "replay_strategy_endpoint_present": false,
+    "smoke_passed": true
+  },
+  "all_strategy_catalog_smoke": {
+    "expected_total_strategies": 40,
+    "actual_total_in_registry": 40,
+    "catalog_visibility_verified": true,
+    "all_catalog_card_present": true,
+    "all_catalog_endpoint_called": true,
+    "all_catalog_load_fn": true,
+    "retired_visible": true,
+    "rejected_visible": true,
+    "observation_visible": true,
+    "no_data_visible": true,
+    "smoke_passed": true
+  },
+  "lifecycle_visibility_smoke": {
+    "lifecycle_is_label_not_gate": true,
+    "retired_visible": true,
+    "rejected_visible": true,
+    "observation_visible": true,
+    "db_only_remaining_zero": true,
+    "lifecycle_counts_post_p156c": {
+      "ONLINE": 18,
+      "REJECTED": 4,
+      "RETIRED": 17,
+      "OBSERVATION": 1
+    },
+    "visibility_invariant_confirmed": true,
+    "smoke_passed": true
+  },
+  "no_data_smoke": {
+    "no_data_reason_fn_present": true,
+    "online_zero_replay_rows_label": true,
+    "rejected_no_replay_data_label": true,
+    "db_only_missing_lifecycle_label": true,
+    "ndr_badge_css_present": true,
+    "h6_gate_visible_zero_rows": true,
+    "smoke_passed": true
+  },
+  "multi_bet_smoke": {
+    "bet_index_visible": true,
+    "bet_n_label_visible": true,
+    "max_bet_index_expected": 5,
+    "max_bet_index_in_db": 5,
+    "multi_bet_rows_in_db": 40622,
+    "bet_index_detail_panel": true,
+    "bet_index_css": true,
+    "smoke_passed": true
+  },
+  "provenance_metadata_smoke": {
+    "truth_level_visible": true,
+    "source_visible": true,
+    "controlled_apply_id_visible": true,
+    "provenance_hash_visible": true,
+    "source_in_history_row": true,
+    "legacy_unverified_badge": true,
+    "tierb_badge": true,
+    "smoke_passed": true
+  },
+  "champion_boundary_smoke": {
+    "champion_evaluation_blocked": true,
+    "replay_ui_blocked_by_champion": false,
+    "historical_actual_numbers_used": false,
+    "live_monitoring_for_champion_only": true,
+    "smoke_passed": true
+  },
+  "tests_summary": {
+    "p158b_tests": "tests/test_p158b_replay_e2e_browser_smoke_expansion.py",
+    "regression_tests": [
+      "tests/test_p158_replay_product_governance_chain_closure.py",
+      "tests/test_p157_replay_visibility_invariant_and_h6_zero_rows_decision_gate.py",
+      "tests/test_p156c_db_only_lifecycle_registry_update_execution.py"
+    ]
+  },
+  "non_actions": {
+    "db_write_in_p158b": false,
+    "lifecycle_update_executed_in_p158b": false,
+    "controlled_apply_executed_in_p158b": false,
+    "replay_rows_inserted_in_p158b": 0,
+    "replay_rows_updated_in_p158b": 0,
+    "replay_rows_deleted_in_p158b": 0,
+    "champion_promotion_executed_in_p158b": false,
+    "registry_promotion_executed_in_p158b": false,
+    "live_api_called": false,
+    "scheduler_installed": false,
+    "four_star_executed": false,
+    "p108_executed": false,
+    "p117_executed": false,
+    "p118_executed": false
+  },
+  "dirty_file_hygiene": {
+    "backups_untracked_not_staged": true,
+    "backups_deleted": false,
+    "forbidden_files_staged": false,
+    "remaining_unrelated_dirty": []
+  },
+  "roadmap_update_status": {
+    "cto_analysis_updated": true,
+    "roadmap_updated": true
+  },
+  "remaining_risks": [
+    "No live browser integration testing (no Playwright/Selenium) — static smoke only",
+    "h6_gate_mk20_ew85 still 0 rows (non-blocking, visible in catalog)",
+    "P108/P117/P118/4★ governance BLOCKED — separate chain"
+  ],
+  "next_recommended_task": "NONE_BLOCKING — Replay product governance chain CLOSED. Optional P159 (provenance_source UI).",
+  "summary": "P158B static smoke audit confirms all P151-P157 replay product features present in index.html. Smoke mode: static_html_inspection. 40/40 strategies. DB=94924 unchanged. lifecycle is label not gate. champion boundary confirmed. No DB writes.",
+  "html_smoke_detail": {
+    "replay_section_exists": true,
+    "replay_api_base_configured": true,
+    "replay_history_endpoint": true,
+    "replay_strategy_endpoint": false,
+    "all_catalog_card_exists": true,
+    "all_catalog_tbody_exists": true,
+    "all_catalog_endpoint_called": true,
+    "all_catalog_load_fn": true,
+    "all_catalog_disclaimer": true,
+    "all_catalog_lifecycle_chips": true,
+    "retired_badge_present": true,
+    "rejected_badge_present": true,
+    "observation_lifecycle_color": true,
+    "lifecycle_label_not_excluded": true,
+    "lifecycle_filter_ui": true,
+    "catalog_covers_all_lifecycle": true,
+    "no_data_reason_fn": true,
+    "online_zero_replay_rows": true,
+    "rejected_no_replay_data": true,
+    "db_only_missing_lifecycle": true,
+    "ndr_badge_css_zero_online": true,
+    "ndr_badge_css_rejected": true,
+    "ndr_badge_css_db_only": true,
+    "bet_index_badge_css": true,
+    "bet_index_badge_rendered": true,
+    "bet_n_label_in_js": true,
+    "bet_index_detail_testid": true,
+    "bet_index_detail_label": true,
+    "multi_bet_distinguishable": true,
+    "truth_level_in_detail": true,
+    "source_in_detail": true,
+    "controlled_apply_id_in_detail": true,
+    "provenance_hash_in_detail": true,
+    "source_in_history_row": true,
+    "legacy_unverified_badge": true,
+    "tierb_badge": true,
+    "source_label_text": true,
+    "cap_id_label_text": true,
+    "api_bet_index_returned": true,
+    "api_truth_level_returned": true,
+    "api_source_returned": true,
+    "api_controlled_apply_id": true,
+    "api_provenance_hash": true,
+    "api_actual_numbers": true,
+    "champion_eval_not_in_replay_ui": true,
+    "replay_not_blocked_by_champion": true,
+    "historical_actual_numbers_used": false
+  },
+  "head_at_generation": "1f20c88 P158: close replay product governance chain"
+}

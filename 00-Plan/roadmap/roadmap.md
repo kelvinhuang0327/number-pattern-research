@@ -1,6 +1,6 @@
 # Lottery Replay Roadmap
 
-**Last Updated:** 2026-05-30 Asia/Taipei (updated after P157 replay visibility invariant)
+**Last Updated:** 2026-05-30 Asia/Taipei — **Replay Product Governance Chain CLOSED** (P158)
 **Owner:** CTO agent
 **Primary Goal:** Make every implemented LotteryNew strategy replayable with honest historical prediction-vs-actual evidence across every supported lottery type and every implemented 1-5 bet-count variant. This must be done without fake rows, untracked DB writes, premature promotion, or no-change governance PR churn. Current system state: DB at 94924 rows. P149 audited replay product coverage: 40 strategies discovered, 22 DB-only missing lifecycle, 5 registry-only zero-row strategies. P150 closed GAP-004/005 (bet_index in /api/replay/history, no_data_reason in all-strategy catalog), added 22 DB-only lifecycle stubs to source-controlled registry, marked h6_gate_mk20_ew85 as ONLINE_ZERO_REPLAY_ROWS. Total registry now covers all 40 strategies. Champion evaluation (P147) remains BLOCKED. P108 / P117 / P118 / 4_STAR triggers remain blocked.
 **Repo Policy:** Use `/Users/kelvin/Kelvin-WorkSpace/LotteryNew` only. Do not create a new repo. Implementation and governed tasks must run from canonical repo with `git rev-parse --git-dir == .git`; Claude/Codex auto-created worktree branches are not allowed.
@@ -46,6 +46,7 @@
 | P156B DB_ONLY lifecycle decision gate | [Confirmed] Complete | `outputs/replay/p156b_db_only_lifecycle_decision_gate_20260529.json`; `P156B_DB_ONLY_LIFECYCLE_DECISION_GATE_READY_WAITING_FOR_AUTHORIZATION` | Decision gate ready. 22 exact authorization phrases generated. Group phrases available for Group A/C/D-non-review. 4 human-review strategies need individual auth. Registry NOT modified. P156C required after authorization. 49 tests pass. |
 | P156C DB_ONLY lifecycle registry update | [Confirmed] Complete — R001 CLOSED | `outputs/replay/p156c_db_only_lifecycle_registry_update_execution_20260529.json`; `P156C_DB_ONLY_LIFECYCLE_REGISTRY_UPDATE_APPLIED` | All 22 authorized lifecycle updates applied. ONLINE=18(+10), RETIRED=17(+12), DB_ONLY=0. 40 tests pass. DB 94924 unchanged. No DB write. Registry R001 risk CLOSED. |
 | P157 replay visibility invariant + h6 gate | [Confirmed] Complete | `outputs/replay/p157_replay_visibility_invariant_and_h6_zero_rows_decision_gate_20260529.json`; `P157_REPLAY_VISIBILITY_INVARIANT_CONFIRMED_H6_DECISION_GATE_READY` | Visibility invariant confirmed: lifecycle is label not exclusion gate. All 40 strategies visible. RETIRED strategies queryable. h6_gate OBSERVATION/0 rows → Option A (keep). 48 tests pass. |
+| **P158 Replay Product Governance Chain Closure** | **[CLOSED]** | `outputs/replay/p158_replay_product_governance_chain_closure_20260529.json`; `P158_REPLAY_PRODUCT_GOVERNANCE_CHAIN_CLOSED` | **Governance chain CLOSED. 40/40 strategies, 94924 rows, DB_ONLY=0, visibility invariant confirmed. 68 tests + 521 regression = 589 total. No DB writes. Champion chain separate.** |
 
 ---
 

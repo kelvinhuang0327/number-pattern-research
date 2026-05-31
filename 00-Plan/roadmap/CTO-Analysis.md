@@ -144,6 +144,29 @@ P157 confirms the replay visibility invariant: **lifecycle is a label, not a vis
 
 **Remaining post-RC backlog**: P158 (E2E browser smoke) only
 
+## 0j. P158 Update (2026-05-30) — GOVERNANCE CHAIN CLOSED
+
+**Classification**: `P158_REPLAY_PRODUCT_GOVERNANCE_CHAIN_CLOSED`
+
+P158 formally closes the LotteryNew replay product governance chain (P149–P157):
+
+| Metric | Value |
+|--------|-------|
+| Total strategies | 40/40 |
+| Replay rows | 94924 |
+| DB_ONLY_MISSING_LIFECYCLE | 0 (P156C) |
+| Lifecycle breakdown | ONLINE=18, RETIRED=17, REJECTED=4, OBSERVATION=1 |
+| Multi-bet max | Bet 5 / 40622 rows |
+| API provenance | bet_index / truth_level / source / controlled_apply_id / provenance_hash ✅ |
+| UI display | Bet N badge / no_data_reason / provenance detail ✅ |
+| Visibility invariant | lifecycle is label, not exclusion gate ✅ |
+| h6_gate_mk20_ew85 | OBSERVATION / 0 rows / visible / Option A (keep) |
+| Champion chain | BLOCKED — separate, non-blocking |
+
+**68 P158 tests + 521 regression tests = 589 total. DB = 94924 unchanged. No DB writes.**
+
+**Post-governance optional backlog**: P158B (E2E browser smoke), P159 (provenance_source UI), P160 (h6_gate on request)
+
 ## 2. Input Sources
 
 - [Confirmed] User handoff report in the current conversation, limited to LotteryNew content.

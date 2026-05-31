@@ -1,0 +1,240 @@
+{
+  "task_id": "P158",
+  "classification": "P158_REPLAY_PRODUCT_GOVERNANCE_CHAIN_CLOSED",
+  "generated_at": "2026-05-31T04:54:38.093735+00:00",
+  "canonical_repo": "/Users/kelvin/Kelvin-WorkSpace/LotteryNew/.claude/worktrees/zen-gates-ff6802",
+  "canonical_branch": "claude/zen-gates-ff6802",
+  "repo_branch_check": {
+    "repo_ok": true,
+    "branch_ok": true,
+    "actual_repo": "/Users/kelvin/Kelvin-WorkSpace/LotteryNew/.claude/worktrees/zen-gates-ff6802",
+    "actual_branch": "claude/zen-gates-ff6802"
+  },
+  "db_snapshot": {
+    "rows": 94924,
+    "expected": 94924,
+    "match": true
+  },
+  "drift_guard_status": "PASS",
+  "p157_source_summary": {
+    "classification": "P157_REPLAY_VISIBILITY_INVARIANT_CONFIRMED_H6_DECISION_GATE_READY",
+    "ok": true
+  },
+  "p156c_source_summary": {
+    "classification": "P156C_DB_ONLY_LIFECYCLE_REGISTRY_UPDATE_APPLIED",
+    "ok": true
+  },
+  "p154_source_summary": {
+    "classification": "P154_REPLAY_PRODUCT_RELEASE_CANDIDATE_CLOSED",
+    "ok": true
+  },
+  "governance_chain_closure_status": {
+    "replay_product_rc_closed": true,
+    "replay_product_governance_chain_closed": true,
+    "blocking_gaps_count": 0,
+    "blocking_gaps": [],
+    "db_rows": 94924,
+    "total_strategies_visible": 40,
+    "db_only_missing_lifecycle_remaining": 0,
+    "h6_gate_visible_zero_rows": true,
+    "champion_chain_separate": true,
+    "p149_to_p157_all_confirmed": true
+  },
+  "p149_to_p157_completion_matrix": [
+    {
+      "task": "P149",
+      "classification": "P149_REPLAY_PRODUCT_COVERAGE_AUDIT_READY",
+      "confirmed": true,
+      "summary": "Replay product coverage audit: 40 strategies, product boundary"
+    },
+    {
+      "task": "P150",
+      "classification": "P150_REPLAY_API_ALL_STRATEGY_COVERAGE_READY",
+      "confirmed": true,
+      "summary": "API: bet_index, all-strategy-catalog, no_data_reason"
+    },
+    {
+      "task": "P151",
+      "classification": "P151_REPLAY_UI_MULTI_BET_DISPLAY_READY",
+      "confirmed": true,
+      "summary": "UI: bet_index badge, all-catalog section, no_data_reason badges"
+    },
+    {
+      "task": "P151B",
+      "classification": "P151B_HISTORICAL_ARTIFACT_POLLUTION_RECONCILED_READY_FOR_P151",
+      "confirmed": true,
+      "summary": "Worktree hygiene"
+    },
+    {
+      "task": "P152",
+      "classification": "P152_REPLAY_UI_SOURCE_CONTROLLED_APPLY_ID_DISPLAY_READY",
+      "confirmed": true,
+      "summary": "UI: source/controlled_apply_id/provenance in detail panel"
+    },
+    {
+      "task": "P153",
+      "classification": "P153_REPLAY_PRODUCT_ACCEPTANCE_READY_WITH_POLISH_RECOMMENDED",
+      "confirmed": true,
+      "summary": "E2E acceptance: 40/40 strategies, API+UI complete"
+    },
+    {
+      "task": "P154",
+      "classification": "P154_REPLAY_PRODUCT_RELEASE_CANDIDATE_CLOSED",
+      "confirmed": true,
+      "summary": "Release candidate closed. 0 blocking gaps. Operator guide."
+    },
+    {
+      "task": "P156",
+      "classification": "P156_DB_ONLY_LIFECYCLE_GOVERNANCE_AUDIT_READY",
+      "confirmed": true,
+      "summary": "Audit 22 DB_ONLY strategies → ONLINE(10) + RETIRED(12)"
+    },
+    {
+      "task": "P156B",
+      "classification": "P156B_DB_ONLY_LIFECYCLE_DECISION_GATE_READY_WAITING_FOR_AUTHORIZATION",
+      "confirmed": true,
+      "summary": "Decision gate with 22 authorization phrases"
+    },
+    {
+      "task": "P156C",
+      "classification": "P156C_DB_ONLY_LIFECYCLE_REGISTRY_UPDATE_APPLIED",
+      "confirmed": true,
+      "summary": "All 22 lifecycle updates applied. DB_ONLY=0."
+    },
+    {
+      "task": "P157",
+      "classification": "P157_REPLAY_VISIBILITY_INVARIANT_CONFIRMED_H6_DECISION_GATE_READY",
+      "confirmed": true,
+      "summary": "Visibility invariant confirmed. h6_gate: OBSERVATION/0 rows/visible. Option A."
+    }
+  ],
+  "replay_visibility_final_invariant": {
+    "all_lifecycle_strategies_visible_in_replay": true,
+    "retired_strategies_visible": true,
+    "rejected_strategies_visible": true,
+    "observation_strategies_visible": true,
+    "no_data_strategies_visible": true,
+    "lifecycle_is_label_not_visibility_gate": true,
+    "lifecycle_filter_may_filter_but_default_catalog_includes_all": true,
+    "confirmed_by": "P157",
+    "principle": "lifecycle is a display label, badge, filter, and risk annotation. It NEVER excludes a strategy from the replay product catalog. Every strategy ever developed, evaluated, or governed must appear in the catalog. Strategies with rows show prediction vs actual history. Strategies without rows show no_data_reason badge."
+  },
+  "replay_product_acceptance_proof": {
+    "catalog_acceptance_passed": true,
+    "api_acceptance_passed": true,
+    "ui_acceptance_passed": true,
+    "multi_bet_acceptance_passed": true,
+    "no_data_acceptance_passed": true,
+    "provenance_metadata_acceptance_passed": true,
+    "operator_guide_created": true,
+    "drift_guard_passed": true,
+    "total_strategies": 40,
+    "total_replay_rows": 94924,
+    "multi_bet_max_bet_index": 5,
+    "multi_bet_rows": 40622,
+    "online_strategies": 18,
+    "retired_strategies": 17,
+    "rejected_strategies": 4,
+    "observation_strategies": 1
+  },
+  "lifecycle_governance_closure": {
+    "p156c_completed": true,
+    "db_only_missing_lifecycle_before": 22,
+    "db_only_missing_lifecycle_after": 0,
+    "registry_update_completed": true,
+    "db_write_required": false,
+    "r001_post_rc_risk_closed": true
+  },
+  "h6_gate_final_decision": {
+    "strategy_id": "h6_gate_mk20_ew85",
+    "lifecycle_current": "OBSERVATION",
+    "replay_rows_count": 0,
+    "visible_in_catalog": true,
+    "no_data_reason_current": "ONLINE_ZERO_REPLAY_ROWS",
+    "recommended_decision": "keep_observation_zero_rows",
+    "no_apply_executed": true,
+    "note": "h6_gate_mk20_ew85 is visible in the catalog with ONLINE_ZERO_REPLAY_ROWS badge. No action required. If replay rows are ever needed, authorize controlled_apply in a future P-task."
+  },
+  "champion_governance_boundary": {
+    "champion_evaluation_blocked": true,
+    "replay_product_blocked_by_champion": false,
+    "live_monitoring_verified_for_champion_only": true,
+    "p108_trigger_status": "BLOCKED",
+    "p117_trigger_status": "BLOCKED",
+    "p118_trigger_status": "BLOCKED",
+    "four_star_provenance": "BLOCKED",
+    "note": "Champion evaluation chain proceeds independently. Does not affect replay product."
+  },
+  "final_non_blocking_backlog": {
+    "P158B_REPLAY_E2E_BROWSER_SMOKE_EXPANSION": {
+      "description": "Optional Playwright/Selenium E2E tests for replay UI (Bet N badge, all-catalog, no_data_reason rendering)",
+      "priority": "OPTIONAL",
+      "blocks_replay_product": false
+    },
+    "P159_PROVENANCE_SOURCE_UI_POLISH": {
+      "description": "Surface provenance_source (DB col 23) in replay history detail panel",
+      "priority": "OPTIONAL",
+      "blocks_replay_product": false
+    },
+    "P160_H6_GATE_CONTROLLED_APPLY_READINESS": {
+      "description": "If replay rows for h6_gate_mk20_ew85 are desired, audit adapter readiness before controlled_apply",
+      "priority": "OPTIONAL_ON_REQUEST",
+      "blocks_replay_product": false
+    },
+    "champion_live_monitoring_chain": {
+      "description": "P108/P117/P118/4★ — separate governance chain, proceeds on its own timeline",
+      "priority": "SEPARATE_CHAIN",
+      "blocks_replay_product": false
+    }
+  },
+  "tests_summary": {
+    "p158_tests": "tests/test_p158_replay_product_governance_chain_closure.py",
+    "full_chain_regression": [
+      "tests/test_p157_replay_visibility_invariant_and_h6_zero_rows_decision_gate.py",
+      "tests/test_p156c_db_only_lifecycle_registry_update_execution.py",
+      "tests/test_p156b_db_only_lifecycle_decision_gate.py",
+      "tests/test_p156_db_only_lifecycle_governance_audit.py",
+      "tests/test_p154_replay_product_release_candidate_closure.py",
+      "tests/test_p153_replay_product_end_to_end_acceptance_audit.py",
+      "tests/test_p152_replay_ui_source_controlled_apply_id_display.py",
+      "tests/test_p151_replay_ui_multi_bet_display.py",
+      "tests/test_p150_replay_api_all_strategy_coverage.py",
+      "tests/test_p149_replay_product_coverage_audit.py"
+    ]
+  },
+  "non_actions": {
+    "db_write_in_p158": false,
+    "lifecycle_update_executed_in_p158": false,
+    "controlled_apply_executed_in_p158": false,
+    "replay_rows_inserted_in_p158": 0,
+    "replay_rows_updated_in_p158": 0,
+    "replay_rows_deleted_in_p158": 0,
+    "champion_promotion_executed_in_p158": false,
+    "registry_promotion_executed_in_p158": false,
+    "live_api_called": false,
+    "scheduler_installed": false,
+    "four_star_executed": false,
+    "p108_executed": false,
+    "p117_executed": false,
+    "p118_executed": false
+  },
+  "dirty_file_hygiene": {
+    "backups_untracked_not_staged": true,
+    "backups_deleted": false,
+    "forbidden_files_staged": false,
+    "remaining_unrelated_dirty": []
+  },
+  "roadmap_update_status": {
+    "cto_analysis_updated": true,
+    "roadmap_updated": true
+  },
+  "remaining_risks": [
+    "h6_gate_mk20_ew85: 0 replay rows — visible in catalog; no action required",
+    "P108/P117/P118/4★ governance triggers BLOCKED — separate chain, non-blocking",
+    "Champion evaluation blocked pending live evidence — separate chain, non-blocking",
+    "Optional backlog (P158B/P159/P160) deferred"
+  ],
+  "next_recommended_task": "NONE_BLOCKING — replay product governance chain CLOSED. Optional: P158B browser smoke.",
+  "summary": "P158 formally closes the LotteryNew replay product governance chain (P149-P157). All 40 strategies visible. DB=94924 rows. Lifecycle governance complete (DB_ONLY=0). Visibility invariant confirmed. h6_gate OBSERVATION/0 rows/visible. Champion chain separate. No DB writes. Governance chain CLOSED.",
+  "head_at_generation": "58f0c76 P157: confirm replay visibility invariant and h6 zero rows gate"
+}

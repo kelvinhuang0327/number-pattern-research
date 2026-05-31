@@ -559,163 +559,165 @@ _NON_EXECUTABLE_STUBS: List[_LifecycleStub] = [
         # P150: OBSERVATION strategy with zero replay rows — shadow evaluation only
         no_data_reason="ONLINE_ZERO_REPLAY_ROWS",
     ),
-    # ── DB_ONLY_MISSING_LIFECYCLE (P150) ──────────────────────────────────────
-    # 22 strategies present in replay rows but not previously registered.
-    # Added as lifecycle placeholders — NOT executable, NOT promoted.
+    # ── P150 DB-ONLY strategies — P156C lifecycle governance applied ──────────
+    # 22 strategies originally added as DB_ONLY_MISSING_LIFECYCLE placeholders (P150).
+    # Lifecycles updated per P156 audit + P156C authorization (2026-05-30):
+    #   ONLINE (10):  Group A (P94+P126x/P13x multi-bet) + Group B (Wave5/6)
+    #   RETIRED (12): Group C (539 Wave2 backfill) + Group D (BIG Wave3 backfill)
     # DB write: NONE. Source-controlled catalog only.
     _LifecycleStub(
         strategy_id="539_3bet_orthogonal",
         strategy_name="今彩539 3注正交",
         strategy_version="v0.0",
         supported_lottery_types=["DAILY_539"],
-        status="DB_ONLY_MISSING_LIFECYCLE",
+        status="RETIRED",  # P156C: Wave2 backfill only; no subsequent controlled_apply
     ),
     _LifecycleStub(
         strategy_id="acb_single_539",
         strategy_name="今彩539 ACB Single",
         strategy_version="v0.0",
         supported_lottery_types=["DAILY_539"],
-        status="DB_ONLY_MISSING_LIFECYCLE",
+        status="RETIRED",  # P156C: Wave2 backfill only; no subsequent controlled_apply
     ),
     _LifecycleStub(
         strategy_id="bet2_fourier_expansion_biglotto",
         strategy_name="大樂透 2注 Fourier Expansion",
         strategy_version="v0.0",
         supported_lottery_types=["BIG_LOTTO"],
-        status="DB_ONLY_MISSING_LIFECYCLE",
+        status="RETIRED",  # P156C: Wave3 backfill only; BIG_LOTTO L91 signal exhausted
     ),
     _LifecycleStub(
         strategy_id="biglotto_echo_aware_3bet",
         strategy_name="大樂透 Echo Aware 3注",
         strategy_version="v0.0",
         supported_lottery_types=["BIG_LOTTO"],
-        status="DB_ONLY_MISSING_LIFECYCLE",
+        status="ONLINE",  # P156C: P94+P126C; TIERB_DRYRUN_VALIDATED; 3-bet multi
     ),
     _LifecycleStub(
         strategy_id="biglotto_ts3_markov_4bet_w30",
         strategy_name="大樂透 TS3+Markov 4注 w30",
         strategy_version="v0.0",
         supported_lottery_types=["BIG_LOTTO"],
-        status="DB_ONLY_MISSING_LIFECYCLE",
+        status="ONLINE",  # P156C: P94+P126E; TIERB_DRYRUN_VALIDATED; 4-bet multi
     ),
     _LifecycleStub(
         strategy_id="cold_complement_2bet",
         strategy_name="威力彩 Cold Complement 2注",
         strategy_version="v0.0",
         supported_lottery_types=["POWER_LOTTO"],
-        status="DB_ONLY_MISSING_LIFECYCLE",
+        status="ONLINE",  # P156C: P66 Wave6 production apply; human-reviewed ONLINE
     ),
     _LifecycleStub(
         strategy_id="cold_complement_biglotto",
         strategy_name="大樂透 Cold Complement",
         strategy_version="v0.0",
         supported_lottery_types=["BIG_LOTTO"],
-        status="DB_ONLY_MISSING_LIFECYCLE",
+        status="RETIRED",  # P156C: Wave3 backfill only; BIG_LOTTO L91 signal exhausted
     ),
     _LifecycleStub(
         strategy_id="coldpool15_biglotto",
         strategy_name="大樂透 Cold Pool 15",
         strategy_version="v0.0",
         supported_lottery_types=["BIG_LOTTO"],
-        status="DB_ONLY_MISSING_LIFECYCLE",
+        status="RETIRED",  # P156C: Wave3 backfill only; BIG_LOTTO L91 signal exhausted
     ),
     _LifecycleStub(
         strategy_id="daily539_f4cold_3bet",
         strategy_name="今彩539 F4Cold 3注",
         strategy_version="v0.0",
         supported_lottery_types=["DAILY_539"],
-        status="DB_ONLY_MISSING_LIFECYCLE",
+        status="ONLINE",  # P156C: P94+P126D; TIERB_DRYRUN_VALIDATED; 3-bet multi
     ),
     _LifecycleStub(
         strategy_id="daily539_f4cold_5bet",
         strategy_name="今彩539 F4Cold 5注",
         strategy_version="v0.0",
         supported_lottery_types=["DAILY_539"],
-        status="DB_ONLY_MISSING_LIFECYCLE",
+        status="ONLINE",  # P156C: P94+P126F; TIERB_DRYRUN_VALIDATED; 5-bet multi
     ),
     _LifecycleStub(
         strategy_id="fourier30_markov30_2bet",
         strategy_name="威力彩 Fourier30+Markov30 2注",
         strategy_version="v0.0",
         supported_lottery_types=["POWER_LOTTO"],
-        status="DB_ONLY_MISSING_LIFECYCLE",
+        status="ONLINE",  # P156C: P59 Wave5+P78 draw extension; human-reviewed ONLINE
     ),
     _LifecycleStub(
         strategy_id="fourier30_markov30_biglotto",
         strategy_name="大樂透 Fourier30+Markov30",
         strategy_version="v0.0",
         supported_lottery_types=["BIG_LOTTO"],
-        status="DB_ONLY_MISSING_LIFECYCLE",
+        status="RETIRED",  # P156C: Wave3 backfill only; P118 quarantine candidate; human-confirmed RETIRED
     ),
     _LifecycleStub(
         strategy_id="markov_1bet_539",
         strategy_name="今彩539 Markov 1注",
         strategy_version="v0.0",
         supported_lottery_types=["DAILY_539"],
-        status="DB_ONLY_MISSING_LIFECYCLE",
+        status="RETIRED",  # P156C: Wave2 backfill only; no subsequent controlled_apply
     ),
     _LifecycleStub(
         strategy_id="markov_2bet_biglotto",
         strategy_name="大樂透 Markov 2注",
         strategy_version="v0.0",
         supported_lottery_types=["BIG_LOTTO"],
-        status="DB_ONLY_MISSING_LIFECYCLE",
+        status="RETIRED",  # P156C: Wave3 backfill only; BIG_LOTTO L91 signal exhausted
     ),
     _LifecycleStub(
         strategy_id="markov_single_biglotto",
         strategy_name="大樂透 Markov Single",
         strategy_version="v0.0",
         supported_lottery_types=["BIG_LOTTO"],
-        status="DB_ONLY_MISSING_LIFECYCLE",
+        status="RETIRED",  # P156C: Wave3 backfill only; BIG_LOTTO L91 signal exhausted
     ),
     _LifecycleStub(
         strategy_id="midfreq_fourier_mk_3bet",
         strategy_name="威力彩 MidFreq+Fourier+MK 3注",
         strategy_version="v0.0",
         supported_lottery_types=["POWER_LOTTO"],
-        status="DB_ONLY_MISSING_LIFECYCLE",
+        status="ONLINE",  # P156C: P48+P132; Wave4+recent multi-bet expansion
     ),
     _LifecycleStub(
         strategy_id="p0b_539_3bet_f_cold_fmid",
         strategy_name="今彩539 P0B 3注 F+Cold+Fmid",
         strategy_version="v0.0",
         supported_lottery_types=["DAILY_539"],
-        status="DB_ONLY_MISSING_LIFECYCLE",
+        status="RETIRED",  # P156C: Wave2 backfill only; no subsequent controlled_apply
     ),
     _LifecycleStub(
         strategy_id="p0c_539_3bet_f_cold_x2",
         strategy_name="今彩539 P0C 3注 F+Cold×2",
         strategy_version="v0.0",
         supported_lottery_types=["DAILY_539"],
-        status="DB_ONLY_MISSING_LIFECYCLE",
+        status="RETIRED",  # P156C: Wave2 backfill only; no subsequent controlled_apply
     ),
     _LifecycleStub(
         strategy_id="power_fourier_rhythm_2bet",
         strategy_name="威力彩 Fourier Rhythm 2注",
         strategy_version="v0.0",
         supported_lottery_types=["POWER_LOTTO"],
-        status="DB_ONLY_MISSING_LIFECYCLE",
+        status="ONLINE",  # P156C: P94+P126B; TIERB_DRYRUN_VALIDATED; 2-bet multi
     ),
     _LifecycleStub(
         strategy_id="pp3_freqort_4bet",
         strategy_name="威力彩 PP3+FreqOrt 4注",
         strategy_version="v0.0",
         supported_lottery_types=["POWER_LOTTO"],
-        status="DB_ONLY_MISSING_LIFECYCLE",
+        status="ONLINE",  # P156C: P48+P133; Wave4+recent multi-bet expansion
     ),
     _LifecycleStub(
         strategy_id="zonal_entropy_2bet",
         strategy_name="威力彩 Zonal Entropy 2注",
         strategy_version="v0.0",
         supported_lottery_types=["POWER_LOTTO"],
-        status="DB_ONLY_MISSING_LIFECYCLE",
+        status="ONLINE",  # P156C: P66 Wave6 production apply; human-reviewed ONLINE
     ),
     _LifecycleStub(
         strategy_id="zone_gap_3bet_539",
         strategy_name="今彩539 Zone Gap 3注",
         strategy_version="v0.0",
         supported_lottery_types=["DAILY_539"],
-        status="DB_ONLY_MISSING_LIFECYCLE",
+        status="RETIRED",  # P156C: Wave2 backfill only; no subsequent controlled_apply
     ),
 ]
 

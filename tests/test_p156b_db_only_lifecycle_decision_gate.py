@@ -299,10 +299,14 @@ def test_no_forbidden_files_staged():
     assert forbidden == [], f"Forbidden staged: {forbidden}"
 
 
-def test_registry_file_unchanged():
-    """Registry Python file must NOT be modified."""
+def test_registry_file_not_modified_in_p156b_commit():
+    """Registry Python file was NOT modified in the P156B commit itself (091f692).
+    Note: P156C subsequently modified the registry — this test checks the P156B commit only."""
+    P156B_COMMIT = "091f692"
     r = subprocess.run(
-        ["git", "diff", "--name-only", "lottery_api/models/replay_strategy_registry.py"],
+        ["git", "diff", "--name-only",
+         f"{P156B_COMMIT}~1", P156B_COMMIT,
+         "--", "lottery_api/models/replay_strategy_registry.py"],
         capture_output=True, text=True, cwd=CANONICAL_REPO,
     )
-    assert r.stdout.strip() == "", "replay_strategy_registry.py must not be modified in P156B"
+    assert r.stdout.strip() == "", "replay_strategy_registry.py must not have been modified in P156B commit"

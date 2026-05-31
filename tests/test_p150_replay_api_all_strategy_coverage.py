@@ -180,12 +180,18 @@ def test_db_only_lifecycle_handling(artifact):
 
 
 def test_db_only_missing_lifecycle_status_in_registry():
-    """DB_ONLY_MISSING_LIFECYCLE strategies must be in registry"""
+    """P150 added 22 DB_ONLY_MISSING_LIFECYCLE stubs; P156C later updated all 22 to ONLINE/RETIRED.
+    Post-P156C: 0 DB_ONLY_MISSING_LIFECYCLE stubs remain. Total strategies still 40."""
+    import importlib
     sys.path.insert(0, str(REPO_ROOT))
-    from lottery_api.models.replay_strategy_registry import list_strategy_lifecycle_metadata
-    all_s = list_strategy_lifecycle_metadata()
+    import lottery_api.models.replay_strategy_registry as reg_mod
+    importlib.reload(reg_mod)
+    all_s = reg_mod.list_strategy_lifecycle_metadata()
     db_only = [s for s in all_s if s["lifecycle_status"] == "DB_ONLY_MISSING_LIFECYCLE"]
-    assert len(db_only) == 22, f"Expected 22 DB_ONLY_MISSING_LIFECYCLE stubs, got {len(db_only)}"
+    # P156C resolved all 22 DB_ONLY stubs — 0 remain
+    assert len(db_only) == 0, f"Expected 0 DB_ONLY_MISSING_LIFECYCLE after P156C, got {len(db_only)}"
+    # Total must still be 40
+    assert len(all_s) == 40, f"Expected 40 total strategies, got {len(all_s)}"
 
 
 def test_catalog_shows_zero_replay_row_strategies():

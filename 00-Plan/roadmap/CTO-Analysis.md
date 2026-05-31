@@ -113,6 +113,21 @@ Registry NOT modified. P156C executes after authorization.
 
 **49 P156B tests + 384 regression tests pass. DB = 94924 unchanged.**
 
+## 0h. P156C Update (2026-05-30)
+
+**Classification**: `P156C_DB_ONLY_LIFECYCLE_REGISTRY_UPDATE_APPLIED`
+
+P156C applied all 22 authorized lifecycle updates to `replay_strategy_registry.py`:
+- **ONLINE** (+10 = 18 total): Group A (7 HIGH) + Group B (3 MEDIUM, human-reviewed)
+- **RETIRED** (+12 = 17 total): Group C (6) + Group D non-review (5) + fourier30_markov30_biglotto (1)
+- **DB_ONLY_MISSING_LIFECYCLE**: 22 → **0** ✅ R001 risk from P154 post-RC backlog **CLOSED**
+
+**No DB writes. DB = 94924 unchanged.**
+
+**40 P156C tests + 433 regression tests pass (473 total).**
+
+**Remaining post-RC backlog**: P157 (h6_gate decision), P158 (browser smoke)
+
 ## 2. Input Sources
 
 - [Confirmed] User handoff report in the current conversation, limited to LotteryNew content.

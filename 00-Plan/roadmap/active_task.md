@@ -579,3 +579,193 @@ Canonical Branch: `main`
 **Production DB rows: `94924`** | **bet_index: PRESENT**
 P178A closure policy: **ACTIVE** — POWER_LOTTO research CLOSED
 Local commit: **CREATED** | Push: **NOT YET — P192 BLOCKED**
+
+---
+
+## P192 — Push to origin/main — REJECTED (2026-06-01)
+
+**Status:** PUSH_REJECTED
+**Final Classification:** `P192_PUSH_REJECTED`
+
+| Item | Value |
+|------|-------|
+| Push attempted | `git push origin main` |
+| Result | **REJECTED** |
+| Reason | GH006: Protected branch — required check `replay-default-validation` not satisfied |
+| Large file warning | `lottery_api/data/lottery_v2.db` = 96 MB; `backups/p188_*.db` = 51 MB |
+| P191 local commit | **INTACT** — `012d4a3` |
+| origin/main | **UNCHANGED** — `684bffce` |
+
+---
+
+## P193 — Push Rejection Remediation Plan — COMPLETE (2026-06-01)
+
+**Status:** PUSH_REJECTION_REMEDIATION_PLAN_READY
+**Final Classification:** `P193_PUSH_REJECTION_REMEDIATION_PLAN_READY`
+
+### P193 Results
+
+| Item | Status |
+|------|--------|
+| Phase 0 verification | **ALL PASS** |
+| P191 local commit | **INTACT** — `012d4a3` |
+| origin/main | **UNCHANGED** |
+| Production DB | 94,924 rows, bet_index PRESENT |
+| Remediation options | **5 options assessed (A-E)** |
+| CTO recommendation | **Option B — Remove DB binaries from commit** |
+| File modifications | **0** |
+| stage/commit/push | **0 / 0 / 0** |
+
+### Remediation Recommendations
+
+| Option | Description | Recommendation |
+|--------|-------------|----------------|
+| **A** | Create PR from feature branch (current binary-heavy commit) | Conditional |
+| **B** ⭐ | Remove DB binaries from commit, add .gitignore, PR | **PRIMARY** |
+| C | Configure git LFS | Not recommended without policy |
+| D | Disable branch protection | **Explicitly NOT** |
+| E | Keep local commit unpushed | Short-term hold only |
+
+## P194 BLOCKED — CEO Authorization Required
+
+| Option | Authorization Phrase |
+|--------|---------------------|
+| **A ⭐** | `YES start P194 remove DB binaries from local commit plan only` |
+| B | `YES start P194 create PR from current local commit plan only` |
+| C | `YES start P194 git LFS feasibility plan only` |
+| D | `YES start P194 keep local commit unpushed and document state` |
+| E | `YES start P194 rollback decision gate only` |
+
+Canonical Repo: `/Users/kelvin/Kelvin-WorkSpace/LotteryNew`
+Canonical Branch: `main`
+**Production DB rows: `94924`** | **bet_index: PRESENT** | Local commit: `012d4a3` (UNPUSHED)
+P178A closure policy: **ACTIVE** | Remote push: **BLOCKED — P194 BLOCKED**
+
+---
+
+## P194 — Remove DB Binaries from Local Commit Plan — COMPLETE (2026-06-01)
+
+**Status:** REMOVE_DB_BINARIES_PLAN_READY
+**Final Classification:** `P194_REMOVE_DB_BINARIES_FROM_LOCAL_COMMIT_PLAN_READY`
+
+### P194 Results
+
+| Item | Status |
+|------|--------|
+| Phase 0 verification | **ALL PASS** |
+| P191 local commit | **INTACT** — `012d4a3` (should NOT be pushed as-is) |
+| Production DB | 94924 rows, 96MB, bet_index PRESENT |
+| Large binaries in commit | `lottery_v2.db` = 96MB, `backup` = 51MB |
+| Manifest SHA256 captured | `a5ac27a6...` (production DB), `5eea5313...` (backup) |
+| Recommended approach | **Approach 1: git reset --soft + recommit without binaries** |
+| File modifications | **0** |
+
+### Recommended P195 Path
+
+**Approach 1** (Soft reset + recommit): undo P191 commit keeping staged files, unstage DB binaries, create manifest + `.gitignore`, recommit. Local DB files remain intact.
+
+**Then**: Create feature branch + PR (Approach 3) to satisfy `replay-default-validation` CI.
+
+## P195 BLOCKED — CEO Authorization Required
+
+| Option | Authorization Phrase |
+|--------|---------------------|
+| **A ⭐** | `YES start P195 remove DB binaries from local commit execution plan only` |
+| B | `YES start P195 amend local commit to remove DB binaries no push` |
+| C | `YES start P195 create non-binary PR branch plan only` |
+| D | `YES start P195 keep local commit unpushed and document state` |
+| E | `YES start P195 rollback decision gate only` |
+
+Canonical Repo: `/Users/kelvin/Kelvin-WorkSpace/LotteryNew`
+Canonical Branch: `main`
+**Production DB rows: `94924`** | **bet_index: PRESENT** | P191 commit: `012d4a3` (unpushed, binary-heavy)
+P178A closure policy: **ACTIVE** | Remote push: **BLOCKED — binary removal required first**
+
+---
+
+## P195 — Remove DB Binaries Execution Plan — COMPLETE (2026-06-01)
+
+**Status:** REMOVE_DB_BINARIES_EXECUTION_PLAN_READY
+**Final Classification:** `P195_REMOVE_DB_BINARIES_FROM_LOCAL_COMMIT_EXECUTION_PLAN_READY`
+
+### P195 Results
+
+| Item | Status |
+|------|--------|
+| Phase 0 verification | **ALL PASS** |
+| P191 local commit | **INTACT** — `012d4a3` (binary-heavy, should NOT be pushed as-is) |
+| Production DB | 94924 rows, 96MB — SHA256: `a5ac27a6...` |
+| Backup DB | 54462 rows, 51MB — SHA256: `5eea5313...` |
+| P196 execution plan | **READY** — 9 steps documented |
+| Manifest design | **READY** — `docs/db_migration_manifest_p188_p191.json` |
+| File modifications | **0** |
+
+### P196 Key Steps (designed in P195)
+
+1. Create `docs/db_migration_manifest_p188_p191.json` (before reset)
+2. `git reset --soft HEAD~1` (undo P191, keep staged)
+3. `git restore --staged lottery_api/data/lottery_v2.db` (unstage binary)
+4. `git restore --staged backups/p188_*.db` (unstage binary)
+5. Update `.gitignore` (prevent future DB commits)
+6. Stage manifest + `.gitignore`
+7. Recommit without binaries
+8. Verify DB still 94924 rows, tests PASS
+9. STOP — no push in P196
+
+## P196 BLOCKED — CEO Authorization Required
+
+| Option | Authorization Phrase |
+|--------|---------------------|
+| **A ⭐** | `YES execute P196 remove DB binaries from local commit using soft reset and recommit non-binary files, no push` |
+| B | `YES start P196 binary removal dry-run checklist only` |
+| C | `YES start P196 create external DB manifest only` |
+| D | `YES start P196 keep local binary commit unpushed and pause` |
+| E | `YES start P196 rollback decision gate only` |
+
+Canonical Repo: `/Users/kelvin/Kelvin-WorkSpace/LotteryNew`
+Canonical Branch: `main`
+**Production DB rows: `94924`** | **bet_index: PRESENT** | P191 commit: `012d4a3` (unpushed, binary-heavy)
+P178A closure policy: **ACTIVE** | DB binary removal: **PLANNED — P196 BLOCKED**
+
+---
+
+## P196 — Remove DB Binaries: Soft Reset and Recommit — IN PROGRESS → COMPLETE (2026-06-01)
+
+**Status:** REMOVE_DB_BINARIES_RECOMMIT_NON_BINARY_READY
+**Final Classification:** `P196_REMOVE_DB_BINARIES_RECOMMIT_NON_BINARY_READY`
+
+### P196 Results
+
+| Item | Status |
+|------|--------|
+| DB binary manifest created | **DONE** — `p196_db_binary_external_storage_manifest_20260601.json` |
+| `git reset --soft HEAD~1` | **EXECUTED** — P191 binary-heavy commit undone |
+| `git rm --cached lottery_v2.db` | **EXECUTED** — DB removed from index, local file intact |
+| `git rm --cached backup.db` | **EXECUTED** — backup removed from index, local file intact |
+| `.gitignore` updated | **DONE** — DB binary paths excluded |
+| Non-binary recommit | **CREATED** |
+| Production DB (local) | **94924 rows, bet_index PRESENT — PRESERVED** |
+| Backup DB (local) | **54462 rows — PRESERVED** |
+| DB binary in new commit | **NONE** |
+| Push | **NO** |
+
+### Key Evidence
+
+- Production DB SHA256: `a5ac27a6887d8c1d8da97349dbc97c36e9429270dd45f81b3b67a8d5793c4f87`
+- Backup SHA256: `5eea53135fb65369a3dd90512e7f8bfc4411b756abadf00a03b2b9b7d4e24da9`
+- Manifest: `outputs/research/power_lotto/p196_db_binary_external_storage_manifest_20260601.json`
+
+## P197 BLOCKED — CEO Authorization Required
+
+| Option | Authorization Phrase |
+|--------|---------------------|
+| **A** | `YES start P197 create PR branch from non-binary local commit plan only` |
+| **B** | `YES start P197 create PR branch and push for CI no merge` |
+| C | `YES start P197 post-recommit verification only` |
+| D | `YES start P197 keep non-binary local commit unpushed and pause` |
+| E | `YES start P197 rollback decision gate only` |
+
+Canonical Repo: `/Users/kelvin/Kelvin-WorkSpace/LotteryNew`
+Canonical Branch: `main`
+**Local DB rows: `94924`** | **bet_index: PRESENT** | DB binaries: **EXCLUDED from git**
+P178A closure policy: **ACTIVE** | Push: **NOT YET — P197 BLOCKED**

@@ -326,3 +326,109 @@ Reviewed whitelist (109 files) staged and local commit created. No push.
 ```text
 CTO_ROADMAP_UPDATED_AFTER_P191_STAGE_LOCAL_COMMIT_20260601
 ```
+
+---
+
+## P192 — Push to origin/main — REJECTED (2026-06-01)
+
+**Classification**: `P192_PUSH_REJECTED`
+
+Direct push to main rejected by GitHub branch protection.
+
+| Item | Value |
+|------|-------|
+| Push result | **REJECTED** — GH006 branch protection, required check `replay-default-validation` |
+| Large file | lottery_v2.db = 96MB; backup = 51MB (exceed 50MB recommendation) |
+| Local commit | `012d4a3` INTACT |
+| origin/main | UNCHANGED |
+| Remote/main reconciliation | **NOT YET** |
+
+```text
+CTO_ROADMAP_UPDATED_AFTER_P192_PUSH_REJECTED_20260601
+```
+
+---
+
+## P193 — Push Rejection Remediation Plan — COMPLETE (2026-06-01)
+
+**Classification**: `P193_PUSH_REJECTION_REMEDIATION_PLAN_READY`
+
+Remediation plan produced. No file modifications. CTO recommends Option B (remove DB binaries).
+
+| Item | Value |
+|------|-------|
+| Options assessed | 5 (A-E) |
+| CTO primary | **Option B — Remove DB binaries from commit** |
+| Remote/main | **NOT YET** |
+| POWER_LOTTO R2 research | **CLOSED** (P178A) |
+| P194 | **BLOCKED — CEO authorization required** |
+
+```text
+CTO_ROADMAP_UPDATED_AFTER_P193_PUSH_REJECTION_REMEDIATION_PLAN_20260601
+```
+
+---
+
+## P194 — Remove DB Binaries from Local Commit Plan — COMPLETE (2026-06-01)
+
+**Classification**: `P194_REMOVE_DB_BINARIES_FROM_LOCAL_COMMIT_PLAN_READY`
+
+Binary removal plan produced. No file modifications in P194.
+
+| Item | Value |
+|------|-------|
+| P191 local commit | `012d4a3` INTACT — should NOT be pushed as-is |
+| Large binary inventory | lottery_v2.db = 96MB, backup = 51MB |
+| SHA256 evidence | `a5ac27a6...` (prod DB), `5eea5313...` (backup) |
+| Recommended approach | Approach 1: soft reset + recommit + manifest + .gitignore |
+| Binary removal strategy | PLANNED (not yet executed) |
+| POWER_LOTTO R2 research | **CLOSED** (P178A) |
+| P195 | **BLOCKED — CEO authorization required** |
+
+```text
+CTO_ROADMAP_UPDATED_AFTER_P194_REMOVE_DB_BINARIES_PLAN_20260601
+```
+
+---
+
+## P195 — Remove DB Binaries Execution Plan — COMPLETE (2026-06-01)
+
+**Classification**: `P195_REMOVE_DB_BINARIES_FROM_LOCAL_COMMIT_EXECUTION_PLAN_READY`
+
+9-step execution plan for P196 produced. Manifest design ready. No file modifications.
+
+| Item | Value |
+|------|-------|
+| P194 plan | COMPLETE |
+| P196 execution plan | READY — soft reset + recommit + manifest + .gitignore |
+| DB SHA256 evidence | `a5ac27a6...` (prod), `5eea5313...` (backup) |
+| Manifest path | `docs/db_migration_manifest_p188_p191.json` |
+| Binary removal | PLANNED (not yet executed) |
+| POWER_LOTTO R2 research | **CLOSED** (P178A) |
+| P196 | **BLOCKED — CEO authorization required** |
+
+```text
+CTO_ROADMAP_UPDATED_AFTER_P195_REMOVE_DB_BINARIES_EXECUTION_PLAN_20260601
+```
+
+---
+
+## P196 — Remove DB Binaries: Soft Reset and Recommit — COMPLETE (2026-06-01)
+
+**Classification**: `P196_REMOVE_DB_BINARIES_RECOMMIT_NON_BINARY_READY`
+
+Binary-heavy P191 commit replaced with non-binary recommit. Local DB and backup preserved.
+
+| Item | Value |
+|------|-------|
+| Binary-heavy P191 commit | **REPLACED** by non-binary local commit |
+| DB binary in new commit | **NONE** |
+| Production DB (local) | 94924 rows, 96MB — **LOCAL ONLY** |
+| Backup DB (local) | 54462 rows, 51MB — **LOCAL ONLY** |
+| Push | **NOT YET** |
+| POWER_LOTTO R2 research | **CLOSED** (P178A) |
+| P197 | **BLOCKED — CEO authorization required** |
+
+```text
+CTO_ROADMAP_UPDATED_AFTER_P196_REMOVE_DB_BINARIES_RECOMMIT_20260601
+```

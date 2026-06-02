@@ -254,13 +254,18 @@ def test_p196_no_staged_files():
 
 
 def test_p196_new_commit_has_no_db_binary():
+    # Use --name-status to distinguish additions (A) from deletions (D).
+    # A deletion of lottery_v2.db is expected and correct; an addition is not.
     r = subprocess.run(
-        ["git", "show", "--name-only", "HEAD"],
+        ["git", "show", "--name-status", "HEAD"],
         capture_output=True, text=True
     )
     assert r.returncode == 0
-    for db_suffix in [".db\n", ".db-wal\n", ".db-shm\n"]:
-        assert db_suffix not in r.stdout, f"DB binary found in new commit: {db_suffix}"
+    for line in r.stdout.splitlines():
+        if line.startswith("A") or line.startswith("M"):
+            path = line.split("\t", 1)[-1] if "\t" in line else ""
+            assert not (path.endswith(".db") or path.endswith(".db-wal") or path.endswith(".db-shm")), \
+                f"DB binary ADDED/MODIFIED in new commit: {path}"
 
 
 def test_p196_git_commit_message():

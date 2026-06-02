@@ -3,7 +3,6 @@
   "date": "2026-06-01",
   "final_classification": "P196_REMOVE_DB_BINARIES_RECOMMIT_NON_BINARY_READY",
   "authorization_phrase_detected": "YES execute P196 remove DB binaries from local commit using soft reset and recommit non-binary files, no push",
-
   "phase_0_verification": {
     "status": "PASS",
     "repo": "/Users/kelvin/Kelvin-WorkSpace/LotteryNew",
@@ -31,9 +30,7 @@
     "drift_guard_before": "REPLAY_LIFECYCLE_DRIFT_GUARD_PASS",
     "stop_conditions_triggered": []
   },
-
   "p195_classification_referenced": "P195_REMOVE_DB_BINARIES_FROM_LOCAL_COMMIT_EXECUTION_PLAN_READY",
-
   "pre_rewrite_state": {
     "binary_files_tracked_in_p191_commit": [
       "lottery_api/data/lottery_v2.db",
@@ -47,7 +44,6 @@
     "p191_commit_total_files": 109,
     "manifest_created_before_reset": true
   },
-
   "db_binary_manifest": {
     "manifest_path": "outputs/research/power_lotto/p196_db_binary_external_storage_manifest_20260601.json",
     "production_db_sha256": "a5ac27a6887d8c1d8da97349dbc97c36e9429270dd45f81b3b67a8d5793c4f87",
@@ -58,47 +54,49 @@
     "backup_size_bytes": 53374976,
     "integrity_check": "ok"
   },
-
   "soft_reset_result": {
     "command": "git reset --soft HEAD~1",
-    "status": "POPULATED_AFTER_RESET",
-    "head_after": "POPULATED_AFTER_RESET",
-    "staged_files_after_reset": "POPULATED_AFTER_RESET",
-    "production_db_rows_after_reset": "POPULATED_AFTER_RESET",
-    "backup_rows_after_reset": "POPULATED_AFTER_RESET"
+    "status": "EXECUTED",
+    "head_after": "d1a6817 P128: define native multi-bet replay storage design",
+    "staged_files_after_reset": 109,
+    "production_db_rows_after_reset": 94924,
+    "backup_rows_after_reset": 54462
   },
-
   "binary_untracking_result": {
     "commands": [
       "git rm --cached lottery_api/data/lottery_v2.db",
       "git rm --cached backups/p188_lottery_v2_backup_20260601_153821.db"
     ],
-    "status": "POPULATED_AFTER_UNTRACK",
-    "db_file_still_on_disk": "POPULATED_AFTER_UNTRACK",
-    "backup_file_still_on_disk": "POPULATED_AFTER_UNTRACK",
-    "db_rows_after_untrack": "POPULATED_AFTER_UNTRACK"
+    "status": "EXECUTED",
+    "db_file_still_on_disk": true,
+    "backup_file_still_on_disk": true,
+    "db_rows_after_untrack": 94924,
+    "backup_rows_after_untrack": 54462,
+    "db_in_staged_as_deletion": true,
+    "backup_in_staged_as_addition": false
   },
-
   "non_binary_recommit_result": {
-    "status": "POPULATED_AFTER_COMMIT",
-    "new_commit_hash": "POPULATED_AFTER_COMMIT",
+    "status": "COMMITTED",
+    "new_commit_hash": "a3e30ae03ebcb8abdae18338f0b88897c4c27c77",
+    "new_commit_short": "a3e30ae",
     "new_commit_message": "P188-P196: reconcile replay DB governance without DB binaries",
-    "files_staged_for_commit": "POPULATED_AFTER_COMMIT",
+    "files_changed": 114,
     "db_binary_in_new_commit": false,
+    "db_deletion_recorded": "delete mode 100644 lottery_api/data/lottery_v2.db",
     "no_push": true
   },
-
   "post_recommit_verification": {
-    "status": "POPULATED_AFTER_COMMIT",
-    "production_db_rows": "POPULATED_AFTER_COMMIT",
-    "backup_rows": "POPULATED_AFTER_COMMIT",
+    "status": "PASS",
+    "production_db_rows": 94924,
+    "backup_rows": 54462,
     "db_binary_tracked_after": false,
+    "backup_binary_tracked_after": false,
     "staged_files_after": 0,
-    "tests_pass": "POPULATED_AFTER_COMMIT",
-    "drift_guard": "POPULATED_AFTER_COMMIT",
-    "no_push": true
+    "tests_pass": "1011 passed pre-commit (post-commit P196 contract test being updated)",
+    "drift_guard": "REPLAY_LIFECYCLE_DRIFT_GUARD_PASS",
+    "no_push": true,
+    "head": "a3e30ae03ebcb8abdae18338f0b88897c4c27c77"
   },
-
   "governance_confirmations": {
     "no_push": true,
     "no_force_push": true,
@@ -114,9 +112,8 @@
     "power_lotto_research_closed": true,
     "migrated_db_local_state_preserved": true,
     "production_db_rows": 94924,
-    "local_commit_created": false
+    "local_commit_created": true
   },
-
   "next_task_options": [
     "YES start P197 create PR branch from non-binary local commit plan only",
     "YES start P197 create PR branch and push for CI no merge",
@@ -124,6 +121,5 @@
     "YES start P197 keep non-binary local commit unpushed and pause",
     "YES start P197 rollback decision gate only"
   ],
-
   "next_task_blocked_by_user_authorization": true
 }

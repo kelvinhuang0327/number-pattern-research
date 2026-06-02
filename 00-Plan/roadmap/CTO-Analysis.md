@@ -458,3 +458,143 @@ This creates a gate that verifies the local commit before any push decision.
 ```text
 CTO_ROADMAP_UPDATED_AFTER_P191_STAGE_LOCAL_COMMIT_20260601
 ```
+
+---
+
+## P192-P193 — CTO Assessment: Push Rejection and Remediation Plan (2026-06-01)
+
+**P192 Status**: `P192_PUSH_REJECTED`  
+**P193 Status**: `P193_PUSH_REJECTION_REMEDIATION_PLAN_READY`
+
+### Push Rejection Root Causes
+
+| Cause | Detail |
+|-------|--------|
+| Branch protection (GH006) | `replay-default-validation` status check required before merging to `main`. Direct push is blocked. |
+| Large binary warning | `lottery_api/data/lottery_v2.db` = 96 MB (approaching GitHub 100 MB hard limit). `backups/p188_*.db` = 51 MB (over 50 MB recommendation). |
+
+### CTO Recommendation for P194
+
+**Primary: Option B — Remove DB binaries from the P191 commit before any PR/push.**
+
+The production DB and backup are runtime artifacts, not source code. Committing a 96 MB SQLite binary causes:
+1. Every clone downloads 96 MB (grows with data ingestion)
+2. Approaching GitHub's 100 MB hard limit
+3. Slower CI, higher LFS/storage costs if tracked
+
+**Removing from git does NOT delete the local file.** The production DB must remain at `lottery_api/data/lottery_v2.db` (94924 rows, bet_index PRESENT) and the backup at `backups/p188_*.db`.
+
+**P194 should plan the binary removal (git reset --soft + re-commit without binaries) before any push attempt.**
+
+After binary removal, open a PR from a feature branch. Branch protection (`replay-default-validation`) will be satisfied by the CI run on the PR.
+
+### Must NOT:
+- Bypass branch protection
+- Force push  
+- Delete local production DB
+- Push DB binary without a clear binary-storage strategy
+
+```text
+CTO_ROADMAP_UPDATED_AFTER_P192_P193_PUSH_REJECTION_REMEDIATION_20260601
+```
+
+---
+
+## P194 — CTO Assessment: Remove DB Binaries Plan (2026-06-01)
+
+**Status**: `P194_REMOVE_DB_BINARIES_FROM_LOCAL_COMMIT_PLAN_READY`
+
+### Binary Inventory in P191 Commit
+
+| File | Size | SHA256 prefix | Action |
+|------|------|---------------|--------|
+| `lottery_api/data/lottery_v2.db` | 96MB | `a5ac27a6` | REMOVE from git, keep locally |
+| `backups/p188_lottery_v2_backup_20260601_153821.db` | 51MB | `5eea5313` | REMOVE from git, keep locally |
+| `backups/p188_*.db.sha256` | <1KB | N/A | KEEP in git (audit evidence) |
+
+### CTO Recommendation for P195
+
+**Execute Approach 1 (soft reset + recommit) then Approach 3 (feature branch PR).**
+
+P195 should:
+1. `git reset --soft HEAD~1` — undo P191 commit, keep staged content
+2. `git restore --staged lottery_api/data/lottery_v2.db` — unstage (NOT delete local file)
+3. `git restore --staged backups/p188_*.db` — unstage (NOT delete local file)
+4. Create `docs/db_migration_manifest_p188_p191.json` with sha256, row counts, byte sizes
+5. Update `.gitignore` to exclude DB paths permanently
+6. Recommit without binaries
+
+After P195, P196 should create a feature branch and open a PR to satisfy `replay-default-validation`.
+
+**Production DB must NOT be deleted at any step.** The 94924-row migrated state with bet_index is the authoritative local state.
+
+```text
+CTO_ROADMAP_UPDATED_AFTER_P194_REMOVE_DB_BINARIES_PLAN_20260601
+```
+
+---
+
+## P195 — CTO Assessment: Remove DB Binaries Execution Plan (2026-06-01)
+
+**Status**: `P195_REMOVE_DB_BINARIES_FROM_LOCAL_COMMIT_EXECUTION_PLAN_READY`
+
+### Execution Plan Summary
+
+P196 will execute 9 steps to remove DB binaries from the local P191 commit:
+
+| Step | Action | Safety |
+|------|--------|--------|
+| 1 | Create `docs/db_migration_manifest_p188_p191.json` | Before any git op |
+| 2 | `git reset --soft HEAD~1` | Local only; files untouched |
+| 3-4 | `git restore --staged *.db` | Unstage, NOT delete |
+| 5-6 | Update .gitignore + stage manifest | Prevent future DB commits |
+| 7 | Recommit without binaries | New clean commit |
+| 8 | Verify DB = 94924 rows, tests PASS | Full safety gate |
+| 9 | STOP — no push | P197 handles PR |
+
+### DB Evidence After Binary Removal
+
+The manifest will contain:
+- Production DB SHA256: `a5ac27a6887d8c1d8da97349dbc97c36e9429270dd45f81b3b67a8d5793c4f87`
+- Production DB rows: 94924, size: 99,368,960 bytes
+- Backup SHA256: `5eea53135fb65369a3dd90512e7f8bfc4411b756abadf00a03b2b9b7d4e24da9`
+- Backup rows: 54462, size: 53,374,976 bytes
+
+### CTO Recommendation for P196
+
+**Authorize P196 Option A** when ready:
+```
+YES execute P196 remove DB binaries from local commit using soft reset and recommit non-binary files, no push
+```
+
+> ⚠️ Use `git reset --soft` NOT `--hard`  
+> ⚠️ Use `git restore --staged` NOT `git rm`  
+> ✅ Verify DB rows = 94924 before AND after reset  
+> ✅ Do NOT push — push goes through P197 feature branch + PR  
+
+```text
+CTO_ROADMAP_UPDATED_AFTER_P195_EXECUTION_PLAN_20260601
+```
+
+---
+
+## P196 — CTO Assessment: Remove DB Binaries and Recommit (2026-06-01)
+
+**Status**: `P196_REMOVE_DB_BINARIES_RECOMMIT_NON_BINARY_READY`
+
+P196 executed the soft reset and recommit. The P191 binary-heavy commit (`012d4a3`) has been replaced by a non-binary local commit. The production DB (`lottery_api/data/lottery_v2.db`, 96MB, 94924 rows) and backup (`backups/p188_*.db`, 51MB) remain intact locally and are excluded from git tracking via `.gitignore`.
+
+### Verification Evidence
+- Production DB SHA256: `a5ac27a6887d8c1d8da97349dbc97c36e9429270dd45f81b3b67a8d5793c4f87`
+- Backup SHA256: `5eea53135fb65369a3dd90512e7f8bfc4411b756abadf00a03b2b9b7d4e24da9`
+- Manifest: `outputs/research/power_lotto/p196_db_binary_external_storage_manifest_20260601.json`
+
+### CTO Recommendation for P197
+
+Create a feature branch from the current clean local commit, push it to origin, open a PR to main, let `replay-default-validation` CI run, then merge.
+
+**P197 Authorization (recommended):** `YES start P197 create PR branch and push for CI no merge`
+
+```text
+CTO_ROADMAP_UPDATED_AFTER_P196_REMOVE_DB_BINARIES_RECOMMIT_20260601
+```

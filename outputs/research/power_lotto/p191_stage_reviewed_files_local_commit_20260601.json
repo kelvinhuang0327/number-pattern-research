@@ -440,14 +440,20 @@
   },
   "commit_result": {
     "status": "COMMITTED",
-    "commit_hash": "POPULATED_AFTER_COMMIT",
-    "commit_message": "P188-P191: reconcile replay DB and post-migration governance"
+    "commit_hash": "012d4a3f74a35a24c9f1518795bc79098897d7f5",
+    "commit_short": "012d4a3",
+    "commit_message": "P188-P191: reconcile replay DB and post-migration governance",
+    "files_changed": 109,
+    "insertions": 30117,
+    "deletions": 555
   },
   "post_commit_verification": {
-    "staged_files_after": "POPULATED_AFTER_COMMIT",
+    "staged_files_after": 0,
     "db_rows": 94924,
-    "drift_guard": "POPULATED_AFTER_COMMIT",
-    "no_push": true
+    "integrity": "ok",
+    "drift_guard": "REPLAY_LIFECYCLE_DRIFT_GUARD_PASS",
+    "no_push": true,
+    "local_commit": "012d4a3f74a35a24c9f1518795bc79098897d7f5"
   },
   "governance_confirmations": {
     "local_commit_created": true,

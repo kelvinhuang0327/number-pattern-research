@@ -1,0 +1,221 @@
+{
+  "task_id": "P185_ROW_DELTA_IMPORT_REHEARSAL_TEMP_COPY_ONLY",
+  "final_classification": "P185_ROW_DELTA_IMPORT_REHEARSAL_TEMP_COPY_READY",
+  "date": "2026-06-01",
+  "authorization_phrase_detected": "YES start P185 row delta import rehearsal on temp copy only",
+  "phase_0_verification": {
+    "repo": "/Users/kelvin/Kelvin-WorkSpace/LotteryNew",
+    "branch": "main",
+    "git_dir": ".git",
+    "is_worktree": false,
+    "production_main_db_rows_before": 54462,
+    "production_main_bet_index_before": "ABSENT",
+    "zen_gates_db_rows": 94924,
+    "zen_gates_bet_index": "PRESENT",
+    "p184_classification": "P184_CONTROLLED_DB_MIGRATION_REHEARSAL_TEMP_COPY_READY",
+    "p178a_to_p184_tests": "407 passed, 5 skipped",
+    "drift_guard": "REPLAY_LIFECYCLE_DRIFT_GUARD_PASS",
+    "status": "PASS"
+  },
+  "p184_classification_referenced": "P184_CONTROLLED_DB_MIGRATION_REHEARSAL_TEMP_COPY_READY",
+  "source_reference": {
+    "worktree": "/Users/kelvin/Kelvin-WorkSpace/LotteryNew/.claude/worktrees/zen-gates-ff6802",
+    "branch": "claude/zen-gates-ff6802",
+    "db_rows": 94924,
+    "bet_index": "PRESENT",
+    "unique_constraint": "UNIQUE(lottery_type, target_draw, strategy_id, bet_index)"
+  },
+  "target_main_state": {
+    "repo": "/Users/kelvin/Kelvin-WorkSpace/LotteryNew",
+    "branch": "main",
+    "db_rows": 54462,
+    "bet_index": "ABSENT",
+    "unique_constraint": "UNIQUE(lottery_type, target_draw, strategy_id, replay_run_id)"
+  },
+  "temp_rehearsal_db": {
+    "path": "outputs/research/power_lotto/p185_rehearsal/lottery_v2_p185_temp_rehearsal_20260601.db",
+    "source": "lottery_api/data/lottery_v2.db",
+    "rows_at_copy": 54462,
+    "rows_after_dedup_schema": 54302,
+    "rows_after_import": 94924,
+    "bet_index_after_migration": "PRESENT",
+    "unique_constraint_after_migration": "UNIQUE(lottery_type, target_draw, strategy_id, bet_index)",
+    "integrity_check": "ok"
+  },
+  "duplicate_dedup_result": {
+    "status": "PASS",
+    "duplicate_groups": 120,
+    "rows_in_dup_groups": 280,
+    "dropped_rows": 160,
+    "base_rows_after_dedup": 54302,
+    "dedup_strategy": "MAX(id) per (lottery_type, target_draw, strategy_id)",
+    "dropped_rows_null_provenance": true,
+    "dropped_rows_with_non_null_provenance": 0,
+    "post_dedup_matches_zen_gates_bet_index_1": true,
+    "per_lottery_type_base_match": {
+      "BIG_LOTTO": {"temp": 16600, "zen_b1": 16600, "match": true},
+      "DAILY_539": {"temp": 22600, "zen_b1": 22600, "match": true},
+      "POWER_LOTTO": {"temp": 15102, "zen_b1": 15102, "match": true},
+      "TOTAL": {"temp": 54302, "zen_b1": 54302, "match": true}
+    },
+    "duplicates_after_schema": 0
+  },
+  "row_delta_import_result": {
+    "status": "PASS",
+    "zen_gates_multibet_rows": 40622,
+    "imported_rows": 40622,
+    "final_temp_rows": 94924,
+    "wave_attribution": {
+      "P141_APPLY_POWER_ORTHOGONAL_5BET_v1": 6000,
+      "P126F_DAILY539_F4COLD_5BET_20260528": 6000,
+      "P133_PP3_FREQORT_4BET_POWERLOTTO_V20260528": 4500,
+      "P126E_BIGLOTTO_TS3_MARKOV_4BET_W30_20260528": 4500,
+      "P134_FOURIER_RHYTHM_3BET_POWERLOTTO_V20260528": 3002,
+      "P140_APPLY_POWER_PRECISION_3BET_v1": 3000,
+      "P132_MIDFREQ_FOURIER_MK_3BET_POWERLOTTO_V20260528": 3000,
+      "P131_ACB_MARKOV_MIDFREQ_3BET_DAILY539_V20260528": 3000,
+      "P126D_DAILY539_F4COLD_3BET_20260528": 3000,
+      "P126C_BIGLOTTO_ECHO_AWARE_3BET_20260528": 3000,
+      "P126B_POWER_FOURIER_RHYTHM_2BET_20260528": 1500,
+      "NULL_controlled_apply_id": 120
+    },
+    "wave_total_check": 40622,
+    "null_controlled_apply_id_note": "120 multi-bet rows have NULL controlled_apply_id. These likely pre-date the controlled_apply tagging convention. Not a blocker — provenance_hash covers them at 40502/40622."
+  },
+  "aggregate_comparison_result": {
+    "status": "PASS",
+    "per_lottery_type": {
+      "BIG_LOTTO": {"temp_final": 24140, "zen_gates": 24140, "match": true},
+      "DAILY_539": {"temp_final": 34680, "zen_gates": 34680, "match": true},
+      "POWER_LOTTO": {"temp_final": 36104, "zen_gates": 36104, "match": true},
+      "TOTAL": {"temp_final": 94924, "zen_gates": 94924, "match": true}
+    },
+    "bet_index_distribution": {
+      "1": {"temp": 54302, "zen": 54302, "match": true},
+      "2": {"temp": 16581, "zen": 16581, "match": true},
+      "3": {"temp": 15041, "zen": 15041, "match": true},
+      "4": {"temp": 6000, "zen": 6000, "match": true},
+      "5": {"temp": 3000, "zen": 3000, "match": true}
+    },
+    "duplicate_check_final": 0
+  },
+  "provenance_preservation_result": {
+    "status": "PASS_WITH_NOTE",
+    "imported_rows_total": 40622,
+    "controlled_apply_id_not_null": 40502,
+    "provenance_hash_not_null": 40502,
+    "truth_level_not_null": 40502,
+    "null_provenance_rows": 120,
+    "null_provenance_pct": 0.3,
+    "note": "120 of 40622 imported rows (0.3%) have NULL controlled_apply_id/provenance_hash/truth_level. These are the rows with NULL controlled_apply_id from zen-gates. Provenance coverage = 99.7%. Not a blocker for rehearsal.",
+    "bet_index_1_provenance": {
+      "controlled_apply_id_not_null": 54002,
+      "provenance_hash_not_null": 54000,
+      "truth_level_not_null": 54002,
+      "note": "Identical to production DB counts — single-bet rows preserved exactly"
+    }
+  },
+  "acceptance_criteria_result": {
+    "production_db_unchanged": true,
+    "production_db_rows_before": 54462,
+    "production_db_rows_after": 54462,
+    "production_bet_index_unchanged": "ABSENT",
+    "temp_db_base_dedup_rows": 54302,
+    "temp_db_final_rows": 94924,
+    "temp_db_bet_index_present": true,
+    "imported_rows": 40622,
+    "uniqueness_check_passed": true,
+    "per_lottery_aggregate_matched": true,
+    "bet_index_distribution_matched": true,
+    "provenance_preserved": true,
+    "integrity_check": "ok",
+    "no_production_db_write": true,
+    "no_db_copy_to_production": true,
+    "no_controlled_apply": true,
+    "no_stage_commit_push": true,
+    "summary": "P185 FULL REHEARSAL PASS — temp DB reached 94924 rows matching zen-gates exactly. Production DB untouched."
+  },
+  "risk_assessment": {
+    "production_migration_still_high_risk": {
+      "level": "HIGH",
+      "note": "Rehearsal passed but production migration is irreversible without backup. Backup + lock required before any production write."
+    },
+    "dedup_policy_risk": {
+      "level": "MEDIUM",
+      "note": "MAX(id) dedup drops 160 rows. Confirmed all dropped rows have NULL provenance (safe). Policy must be explicitly authorized before production migration — it cannot be undone without restoring from backup."
+    },
+    "row_import_mapping_risk": {
+      "level": "LOW",
+      "note": "All 40622 rows imported successfully. Column mapping validated. 120 rows have NULL controlled_apply_id but this is a pre-existing zen-gates characteristic, not a mapping error."
+    },
+    "provenance_preservation_risk": {
+      "level": "LOW",
+      "note": "99.7% provenance coverage on imported rows. 120 NULL-provenance rows pre-date the tagging convention. Acceptable."
+    },
+    "schema_mismatch_risk": {
+      "level": "RESOLVED",
+      "note": "Table recreation path validated in P184 and confirmed in P185. UNIQUE constraint matches zen-gates. 0 duplicates."
+    },
+    "rollback_risk": {
+      "level": "LOW",
+      "note": "Production DB not touched. Rollback = restore from timestamped immutable backup. Temp DB is disposable."
+    },
+    "production_lock_backup_risk": {
+      "level": "HIGH",
+      "note": "Production migration requires: (1) stop all API writers, (2) create immutable backup, (3) verify backup, (4) execute migration in transaction, (5) verify count=94924, (6) restart API. Any failure triggers immediate restore."
+    },
+    "test_compatibility_after_migration": {
+      "level": "MEDIUM",
+      "note": "After production migration, requires_zen_gates_db markers in contract tests should be updated to remove the SKIP condition (main DB will be 94924 with bet_index). Drift guard must be updated from 54462 to 94924. These are post-migration cleanup steps."
+    }
+  },
+  "governance_confirmations": {
+    "production_main_db_rows_before": 54462,
+    "production_main_db_rows_after": 54462,
+    "production_main_bet_index_before": "ABSENT",
+    "production_main_bet_index_after": "ABSENT",
+    "production_main_db_unchanged": true,
+    "no_production_db_write": true,
+    "no_db_copy_to_production": true,
+    "no_controlled_apply": true,
+    "no_registry_mutation": true,
+    "no_merge": true,
+    "no_rebase": true,
+    "no_cherry_pick": true,
+    "no_checkout_other_branch": true,
+    "no_stage": true,
+    "no_commit": true,
+    "no_push": true,
+    "power_lotto_research_closed": true,
+    "main_zen_gates_split_still_unresolved": true,
+    "p178a_closure_policy": "ACTIVE — POWER_LOTTO research CLOSED"
+  },
+  "next_task_options": [
+    {
+      "phrase": "YES start P186 production DB migration authorization gate only",
+      "effect": "Define exact authorization checklist, dedup policy approval, backup procedure, and production migration phrase. No DB write.",
+      "recommended": true
+    },
+    {
+      "phrase": "YES start P186 DB migration risk review only",
+      "effect": "Independent risk review of P184+P185 rehearsal results before committing to production migration.",
+      "recommended": false
+    },
+    {
+      "phrase": "YES start P186 replay product UI backlog implementation plan only",
+      "effect": "Plan for multi-bet display (Bet 1-5), bet_index filter, lifecycle tooltips. No DB migration.",
+      "recommended": false
+    },
+    {
+      "phrase": "YES start P186 maintain documented divergence and pause DB migration",
+      "effect": "Accept main/zen-gates split. Document reasons. Pause migration indefinitely.",
+      "recommended": false
+    },
+    {
+      "phrase": "YES start P186 production DB migration dry-run checklist only",
+      "effect": "Produce step-by-step dry-run checklist from rehearsal SQL log for operator review. No execution.",
+      "recommended": false
+    }
+  ],
+  "next_task_blocked_by_user_authorization": true
+}

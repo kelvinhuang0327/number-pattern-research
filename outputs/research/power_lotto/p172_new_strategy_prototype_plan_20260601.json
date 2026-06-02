@@ -1,0 +1,281 @@
+{
+  "task": "P172_POWER_LOTTO_NEW_STRATEGY_PROTOTYPE_PLAN_ONLY",
+  "final_classification": "P172_POWER_LOTTO_NEW_STRATEGY_PROTOTYPE_PLAN_READY",
+  "date": "2026-06-01",
+  "branch": "claude/zen-gates-ff6802",
+  "authorization_phrase_detected": "YES start P172 POWER_LOTTO new strategy prototype plan",
+  "phase_0_verification": {
+    "result": "PASS",
+    "repo": "/Users/kelvin/Kelvin-WorkSpace/LotteryNew/.claude/worktrees/zen-gates-ff6802",
+    "branch": "claude/zen-gates-ff6802",
+    "head": "c8b423d0c1de26253be4cec79ae6de77719d1074",
+    "db_rows": 94924,
+    "db_rows_unchanged": true,
+    "drift_guard": "PASS",
+    "p167_script": "PASS",
+    "p170_script": "PASS",
+    "p161_to_p171_tests": "584 PASSED (P161:23 standalone + P162-P171:561)",
+    "p171_artifact_classification": "P171_POWER_LOTTO_NEW_STRATEGY_FEATURE_ENGINEERING_DISCOVERY_PLAN_READY",
+    "p171_artifact_exists": true,
+    "p172_was_blocked": true
+  },
+  "p171_summary": {
+    "classification": "P171_POWER_LOTTO_NEW_STRATEGY_FEATURE_ENGINEERING_DISCOVERY_PLAN_READY",
+    "r1_conclusion": "NO_DEFENSIBLE_EDGE_FOUND across P161-P170. Zero strategies beat random after Bonferroni/BH correction. Ensemble/voting (P167) and sensitivity (P170) both confirm non-stationary NULL result.",
+    "feature_families_inventoried": 10,
+    "strategy_candidates_inventoried": 8,
+    "edge_found_in_p171": false,
+    "p171_is_plan_only": true
+  },
+  "data_availability_check": {
+    "replay_db_power_lotto_rows": 36000,
+    "replay_db_distinct_draws": 1499,
+    "draws_table_power_lotto_rows": 1913,
+    "draws_table_has_actual_numbers": true,
+    "draws_table_format": "JSON array e.g. [6, 14, 22, 28, 35, 38]",
+    "draws_table_has_special": true,
+    "conclusion": "draws table (1913 rows) provides actual historical POWER_LOTTO numbers needed for all 10 feature families. No external data source required. All features can be computed from existing DB."
+  },
+  "top_3_prototype_candidates": [
+    {
+      "rank": 1,
+      "candidate_id": "C01",
+      "name": "weighted_recency_frequency_strategy",
+      "feature_family": "F01",
+      "why_top_3": "Uses only draws table (actual numbers per draw) with exponential decay weighting. Theoretically motivated by P170 confirmed non-stationarity (recent draws differ from historical). Lowest implementation complexity among recency-based approaches. Single pre-declarable parameter (decay_half_life). Most distinct from existing uniform-window MidFreq strategy.",
+      "data_requirements": {
+        "primary_table": "draws",
+        "required_columns": ["draw", "lottery_type", "numbers"],
+        "needs_external_data": false,
+        "needs_replay_db_for_eval": true
+      },
+      "can_complete_with_replay_db_only": false,
+      "needs_draws_table": true,
+      "leakage_risk": "LOW — decay weights applied to draws strictly before target_draw by CAST(draw AS INTEGER) ordering",
+      "overfitting_risk": "MEDIUM — decay_half_life is a single hyperparameter; must be pre-declared before OOS evaluation",
+      "p173_pre_declared_config": {
+        "decay_half_life_draws": 50,
+        "lookback_window_draws": 200,
+        "top_k": 6,
+        "rationale": "half_life=50 balances recency sensitivity against noise; lookback=200 provides sufficient historical context without over-weighting distant past"
+      },
+      "minimum_oos_draws": 200,
+      "p173_prototype_scope": "Read-only query against draws table. Compute decay-weighted frequency vector for each target_draw using strictly prior draws. Extract predicted-number hit against actual_numbers in replay DB. No DB write.",
+      "expected_comparison_baselines": ["36/38 random baseline", "C08 constrained random", "MidFreq existing strategy (P161 pool mean 0.9674)"]
+    },
+    {
+      "rank": 2,
+      "candidate_id": "C02",
+      "name": "gap_adjusted_overdue_strategy",
+      "feature_family": "F05",
+      "why_top_3": "Lowest overfitting risk of all 8 candidates (single threshold parameter, theoretically grounded by geometric distribution). Uses draws table for gap computation. Geometric mean gap for POWER_LOTTO main = 38/6 ≈ 6.33 is a fixed theoretical value requiring no estimation. Clear null hypothesis: if gap signal has no predictive power, overdue z-scores should be uncorrelated with future hits. Cleanest falsification criterion.",
+      "data_requirements": {
+        "primary_table": "draws",
+        "required_columns": ["draw", "lottery_type", "numbers"],
+        "needs_external_data": false,
+        "needs_replay_db_for_eval": true
+      },
+      "can_complete_with_replay_db_only": false,
+      "needs_draws_table": true,
+      "leakage_risk": "LOW — last-seen distance computed from draws strictly before target_draw",
+      "overfitting_risk": "LOW — geometric mean gap (38/6) is theoretical, not estimated. Overdue z-score threshold is the only free parameter.",
+      "p173_pre_declared_config": {
+        "overdue_z_threshold": 1.5,
+        "geometric_mean_gap": 6.333,
+        "top_k": 6,
+        "rationale": "z_threshold=1.5 selects numbers >1.5 SD overdue; if fewer than 6 qualify, rank remaining by z-score. Geometric mean 38/6 is the theoretical expected gap under fair random draw."
+      },
+      "minimum_oos_draws": 200,
+      "p173_prototype_scope": "Read-only query against draws table. For each target_draw, compute draws_since_last_hit for each number 1-38. Normalize by geometric mean gap. Select top-6 by overdue z-score. Evaluate hit against actual_numbers in replay DB. No DB write.",
+      "expected_comparison_baselines": ["36/38 random baseline", "冷號互補 existing strategy", "C08 constrained random"]
+    },
+    {
+      "rank": 3,
+      "candidate_id": "C04",
+      "name": "zone_balanced_frequency_strategy",
+      "feature_family": "F07",
+      "why_top_3": "Zone boundaries are fixed (low=1-13, mid=14-25, high=26-38) eliminating boundary-tuning leakage entirely. Zone count targets derived from first 500 training draws only. No external data needed beyond the actual draw numbers. Most distinct from all existing strategies (Zonal Entropy measures entropy of prediction set; this constrains zone count of selected numbers). Can be prototyped with pure SQL/Python without complex numerical methods.",
+      "data_requirements": {
+        "primary_table": "draws",
+        "required_columns": ["draw", "lottery_type", "numbers"],
+        "needs_external_data": false,
+        "needs_replay_db_for_eval": true
+      },
+      "can_complete_with_replay_db_only": false,
+      "needs_draws_table": true,
+      "leakage_risk": "LOW — zone boundaries are fixed mathematical partitions; zone-count targets computed from training draws only",
+      "overfitting_risk": "MEDIUM — zone count targets (expected low/mid/high counts per draw) must be computed from training split only and pre-declared before OOS",
+      "p173_pre_declared_config": {
+        "zone_low": "1-13",
+        "zone_mid": "14-25",
+        "zone_high": "26-38",
+        "zone_count_target_method": "empirical_mode_from_first_500_training_draws",
+        "selection_method": "frequency_rank_within_zone_constraint",
+        "top_k": 6,
+        "rationale": "Zones partition 1-38 into equal thirds (13/12/13 numbers). Empirical mode from training ensures no OOS leakage. Frequency rank within zones uses recency-uniform window."
+      },
+      "minimum_oos_draws": 200,
+      "p173_prototype_scope": "Read-only query against draws table. Compute zone-count distribution from training draws. For each target_draw, select top-6 numbers satisfying zone balance constraint, ranked by historical frequency within each zone. Evaluate hit against actual_numbers in replay DB. No DB write.",
+      "expected_comparison_baselines": ["36/38 random baseline", "Zonal Entropy existing strategy (P161)", "C08 constrained random"]
+    }
+  ],
+  "deferred_candidates": [
+    {
+      "candidate_id": "C03",
+      "name": "co_occurrence_pair_graph_strategy",
+      "reason_deferred": "HIGH overfitting risk: pair space C(38,2)=703 edges requires aggressive Bonferroni correction (family=703 minimum). Minimum 300 OOS draws is a harder constraint than C01/C02/C04 (200 draws). Graph construction complexity is disproportionate for a first prototype. Defer until C01/C02/C04 OOS results known — if those fail, co-occurrence graph provides minimal additional hope given pair-space dimensionality.",
+      "reactivation_condition": "C01, C02, C04 OOS results complete and published. May reconsider if any of those show marginal positive signals that motivate a more complex model."
+    },
+    {
+      "candidate_id": "C05",
+      "name": "entropy_dispersion_controlled_strategy",
+      "reason_deferred": "Requires draw-level sum/span/MAD from draws table — available, but capturing similar information as C04 zone balance at higher implementation complexity. C04 is simpler and tests a related hypothesis (structural balance in draws). Defer C05 until C04 result known. If C04 shows no edge, C05 is unlikely to succeed by adding more statistical moments of the same distribution.",
+      "reactivation_condition": "C04 OOS result complete. Reactivate only if C04 passes primary significance threshold."
+    },
+    {
+      "candidate_id": "C06",
+      "name": "regime_adaptive_window_strategy",
+      "reason_deferred": "HIGH overfitting risk: CUSUM threshold + window size per regime (3+ parameters). MEDIUM leakage risk: one-sided CUSUM implementation requires careful engineering. Most complex implementation of the 8 candidates. P170 confirmed non-stationarity motivates regime detection, but C01 (recency decay) already partially addresses this with lower risk. Defer until simpler candidates evaluated.",
+      "reactivation_condition": "C01 OOS complete. If C01 shows no edge, reconsider whether regime-adaptive approach is justified."
+    },
+    {
+      "candidate_id": "C07",
+      "name": "hybrid_rank_aggregation_strategy",
+      "reason_deferred": "Requires F01+F05+F06+F07 (4 feature families) to be implemented and validated individually before aggregation. Borda-count aggregation of 4 unvalidated signals risks amplifying noise rather than signal. HIGH overfitting risk from weight grid. Minimum 300 OOS draws. Defer until at least 2 of the 4 component features show individual OOS signal.",
+      "reactivation_condition": "At least 2 of C01, C02, C04 show individually positive OOS signals (even if not corrected-significant). Then hybrid aggregation may improve robustness."
+    },
+    {
+      "candidate_id": "C08",
+      "name": "constrained_random_baseline_challenger",
+      "reason_deferred": "C08 is a null model (constrained random), not a predictive strategy. It is used as a secondary comparison baseline in P173 validation runs for C01/C02/C04. It will be implemented as part of P173 validation framework, not as a standalone prototype candidate.",
+      "reactivation_condition": "N/A — not a predictive strategy; implemented as baseline in P173."
+    }
+  ],
+  "p173_minimal_prototype_plan": {
+    "task_name": "P173_POWER_LOTTO_NEW_STRATEGY_MINIMAL_PROTOTYPE_READ_ONLY",
+    "scope": "Minimal feature extraction prototype for Top 3 candidates (C01, C02, C04). Read-only DB. No strategy code in registry. No replay row insertion.",
+    "feature_extraction_input_contract": {
+      "primary_input_table": "draws",
+      "filter": "lottery_type = 'POWER_LOTTO'",
+      "ordering": "ORDER BY CAST(draw AS INTEGER) ASC",
+      "available_rows": 1913,
+      "key_columns": ["draw", "date", "numbers", "special"],
+      "numbers_format": "JSON array of 6 integers from 1-38",
+      "evaluation_join_table": "strategy_prediction_replays",
+      "evaluation_filter": "lottery_type = 'POWER_LOTTO'",
+      "evaluation_distinct_draws": 1499
+    },
+    "pre_declared_candidate_configs": {
+      "C01_weighted_recency_frequency": {
+        "decay_half_life_draws": 50,
+        "lookback_window_draws": 200,
+        "top_k": 6
+      },
+      "C02_gap_adjusted_overdue": {
+        "overdue_z_threshold": 1.5,
+        "geometric_mean_gap": 6.333,
+        "top_k": 6
+      },
+      "C04_zone_balanced_frequency": {
+        "zone_low_range": [1, 13],
+        "zone_mid_range": [14, 25],
+        "zone_high_range": [26, 38],
+        "zone_count_target_method": "empirical_mode_from_first_500_training_draws",
+        "top_k": 6
+      }
+    },
+    "train_test_time_split": {
+      "ordering_column": "CAST(draw AS INTEGER)",
+      "training_draws": "first 1000 POWER_LOTTO draws in draws table (chronological)",
+      "oos_draws": "draws 1001-1499 in draws table that overlap with replay DB distinct draws",
+      "no_shuffling": true,
+      "test_set_never_used_for_tuning": true
+    },
+    "walk_forward_oos_protocol": {
+      "initial_training_size": 500,
+      "evaluation_block_size": 50,
+      "method": "expanding_window",
+      "no_oos_refitting": true,
+      "accumulate_oos_results": true
+    },
+    "baseline_comparisons": [
+      {
+        "baseline_id": "B1",
+        "name": "fair_random_36_of_38",
+        "hit_rate": 0.9473684210526315,
+        "source": "P161 confirmed"
+      },
+      {
+        "baseline_id": "B2",
+        "name": "constrained_random_C08",
+        "description": "Random draw constrained to historical zone and parity distribution",
+        "implementation": "Monte Carlo simulation using training-draw zone/parity empirical distribution"
+      },
+      {
+        "baseline_id": "B3",
+        "name": "p161_best_strategy",
+        "strategy": "midfreq_fourier_mk_3bet",
+        "pool_mean_hit_rate": 0.9674,
+        "source": "P161 artifact"
+      }
+    ],
+    "multiple_testing_correction": {
+      "primary": "Bonferroni",
+      "family_size": 3,
+      "alpha": 0.05,
+      "bonferroni_threshold": 0.016667,
+      "secondary": "BH (Benjamini-Hochberg)",
+      "report_both": true,
+      "report_uncorrected_separately": true
+    },
+    "null_reporting_rule": "If no candidate achieves p_bonferroni < 0.05 / 3 = 0.0167 on OOS walk-forward evaluation: report NULL honestly. Do not claim edge based on uncorrected p-values. Do not retroactively reframe. P173 NULL is acceptable and must be reported as such."
+  },
+  "p173_boundary": {
+    "p173_task_name": "P173_POWER_LOTTO_NEW_STRATEGY_MINIMAL_PROTOTYPE_READ_ONLY",
+    "allowed_in_p173": [
+      "read-only SQL queries against draws and strategy_prediction_replays tables",
+      "analysis scripts in analysis/power_lotto/ directory (read-only computation)",
+      "OOS evaluation of pre-declared C01, C02, C04 configs",
+      "output artifacts in outputs/research/power_lotto/ only",
+      "contract test in tests/ directory"
+    ],
+    "forbidden_in_p173": [
+      "DB write of any kind",
+      "registry mutation (strategy_replay_runs, lifecycle tables)",
+      "replay row insertion",
+      "champion promotion",
+      "controlled_apply",
+      "deployment to production",
+      "betting advice",
+      "strategy code in lottery_api/ or tools/ directories",
+      "modifying existing analysis scripts",
+      "tuning hyperparameters after seeing OOS data"
+    ],
+    "p173_authorization_required": true,
+    "p173_blocked_by_user_authorization": true,
+    "p173_authorization_phrase_required": "YES start P173 POWER_LOTTO minimal prototype read-only"
+  },
+  "governance_confirmations": {
+    "db_rows_before": 94924,
+    "db_rows_after": 94924,
+    "db_unchanged": true,
+    "no_db_write": true,
+    "no_registry_mutation": true,
+    "no_strategy_implementation": true,
+    "no_controlled_apply": true,
+    "no_champion_promotion": true,
+    "no_betting_advice": true,
+    "no_win_guarantee_claim": true,
+    "no_stage": true,
+    "no_commit": true,
+    "no_push": true,
+    "no_checkout_branch": true,
+    "no_merge_rebase_reset": true,
+    "r2_no_edge_found_yet": true,
+    "p161_to_p171_null_results_stand": true,
+    "main_zen_gates_split_still_unresolved": true
+  },
+  "next_task": "P173_POWER_LOTTO_NEW_STRATEGY_MINIMAL_PROTOTYPE_READ_ONLY",
+  "next_task_blocked_by_user_authorization": true,
+  "next_task_authorization_required_phrase": "YES start P173 POWER_LOTTO minimal prototype read-only"
+}

@@ -1,0 +1,343 @@
+{
+  "task": "P180_COMBINED_MAIN_ZEN_GATES_RECONCILIATION_AND_REPLAY_BACKLOG_PLAN_ONLY",
+  "final_classification": "P180_COMBINED_RECONCILIATION_AND_REPLAY_BACKLOG_PLAN_READY",
+  "date": "2026-06-01",
+  "branch": "claude/zen-gates-ff6802",
+  "authorization_phrase_detected": "YES start P180 combined reconciliation and replay backlog plan only",
+  "phase_0_verification": {
+    "result": "PASS",
+    "repo": "/Users/kelvin/Kelvin-WorkSpace/LotteryNew/.claude/worktrees/zen-gates-ff6802",
+    "branch": "claude/zen-gates-ff6802",
+    "head": "c8b423d0c1de26253be4cec79ae6de77719d1074",
+    "db_rows": 94924,
+    "db_rows_unchanged": true,
+    "bet_index_present": true,
+    "drift_guard": "PASS",
+    "p178a_test": "PASS",
+    "p179_test": "PASS"
+  },
+  "p178a_classification_referenced": "P178A_POWER_LOTTO_R2_RESEARCH_CLOSED_ARCHIVED",
+  "p179_classification_referenced": "P179_REPLAY_PRODUCT_GOVERNANCE_BACKLOG_DECISION_GATE_READY",
+  "part_a_reconciliation_plan": {
+    "title": "main/zen-gates Reconciliation Plan (Plan Only)",
+    "current_split_summary": {
+      "zen_gates_db_rows": 94924,
+      "zen_gates_bet_index": "PRESENT (column 27, INTEGER NOT NULL DEFAULT 1)",
+      "main_db_rows": 54462,
+      "main_bet_index": "ABSENT (known from P163 audit)",
+      "row_delta": 40462,
+      "split_status": "UNRESOLVED",
+      "split_origin": "zen-gates worktree contains P149-P178A research chain; main branch reflects older production state",
+      "code_only_in_zen_gates": [
+        "analysis/power_lotto/ scripts (P161-P176)",
+        "tests/test_p161_*.py through tests/test_p179_*.py",
+        "outputs/research/power_lotto/ artifacts (P161-P179)",
+        "00-Plan/roadmap/ updates (P161-P179)"
+      ],
+      "code_only_in_main": [
+        "P149-P159B replay product implementation (API, UI, scripts)",
+        "production governance chain artifacts prior to zen-gates worktree creation"
+      ]
+    },
+    "reconciliation_options": [
+      {
+        "option_id": "A1",
+        "label": "Promote zen-gates branch to canonical mainline",
+        "description": "Merge zen-gates worktree branch (claude/zen-gates-ff6802) into main, treating zen-gates as the canonical state. DB and code both follow zen-gates.",
+        "pros": [
+          "Resolves all divergence in one step",
+          "zen-gates has complete bet_index schema and all P149-P179 artifacts",
+          "All 1122 contract tests would run against production DB"
+        ],
+        "cons": [
+          "Requires careful merge conflict resolution (code present in main not in zen-gates)",
+          "DB migration from main 54462 to zen-gates-equivalent 94924 is a separate step",
+          "Cannot be done without explicit merge authorization and DB backup plan"
+        ],
+        "risk_level": "HIGH",
+        "requires_authorization": "Exact merge authorization phrase + DB migration plan + backup rehearsal"
+      },
+      {
+        "option_id": "A2",
+        "label": "Backport code/docs/tests only to main, DB migration separate",
+        "description": "Copy analysis scripts, test contracts, roadmap documents, and research artifacts from zen-gates to main without any DB changes. DB migration is deferred as a separate authorized task.",
+        "pros": [
+          "Lower risk — no DB changes",
+          "Preserves main production DB state",
+          "Can be done incrementally",
+          "Tests and docs immediately available in main"
+        ],
+        "cons": [
+          "test_p161-p179 contract tests will fail against main DB (54462 rows, no bet_index) until DB migration",
+          "Two-phase approach requires careful sequencing"
+        ],
+        "risk_level": "MEDIUM",
+        "requires_authorization": "Exact branch merge/copy authorization + per-file review"
+      },
+      {
+        "option_id": "A3",
+        "label": "Controlled DB migration plan from main 54462 to zen-gates-equivalent 94924",
+        "description": "Plan for migrating main branch DB to match zen-gates state: add bet_index column, insert 40462 missing rows, verify schema and row counts.",
+        "pros": [
+          "Resolves the DB divergence directly",
+          "Enables full test suite to run in production"
+        ],
+        "cons": [
+          "HIGH risk — requires backup, rehearsal, rollback plan, exact authorization",
+          "40462 rows delta and schema change must be carefully staged",
+          "Production DB mutation — irreversible without backup"
+        ],
+        "risk_level": "HIGH",
+        "requires_authorization": "DB backup confirmation + rehearsal script + exact migration authorization phrase + rollback plan"
+      },
+      {
+        "option_id": "A4",
+        "label": "Maintain documented divergence temporarily",
+        "description": "Accept the zen-gates / main split as temporary, document it clearly, and continue research/work only in zen-gates worktree until a full reconciliation plan is authorized.",
+        "pros": [
+          "Zero risk — no changes",
+          "Buys time to plan A1/A2/A3 carefully",
+          "All active work is already in zen-gates worktree"
+        ],
+        "cons": [
+          "Technical debt accumulates",
+          "main branch becomes increasingly stale",
+          "Limits future go-live options"
+        ],
+        "risk_level": "LOW — for now; risk grows with time",
+        "requires_authorization": "No authorization needed to maintain status quo"
+      }
+    ],
+    "required_future_authorization_chain": {
+      "merge_to_main": "Exact authorization phrase required for any merge. No autonomous merge.",
+      "db_migration": "DB backup confirmation + rehearsal run + exact migration authorization phrase. Must specify source, target, row count delta, schema change.",
+      "controlled_apply": "Per-step exact authorization for any controlled_apply. No batch authorization.",
+      "schema_change": "Explicit column-level authorization for any schema change (e.g., adding bet_index to main)."
+    },
+    "risk_assessment": {
+      "schema_mismatch_risk": "HIGH — main DB missing bet_index column; all P161-P179 contract tests assume bet_index present",
+      "row_count_drift_risk": "HIGH — 40462 row delta; any drift detection will flag mismatch",
+      "artifact_test_parity_risk": "MEDIUM — tests/test_p161-p179 exist only in zen-gates; main has 0 of these test files",
+      "production_governance_risk": "HIGH — main branch holds P149-P159B production governance chain not fully present in zen-gates"
+    },
+    "acceptance_criteria_for_reconciled_state": {
+      "db_row_count_target": 94924,
+      "bet_index_schema_target": "PRESENT in production DB",
+      "drift_guard_target": "REPLAY_LIFECYCLE_DRIFT_GUARD_PASS",
+      "tests_target": "All P161-P179 contract tests pass against production DB",
+      "code_parity_target": "All analysis scripts and test contracts present in main branch",
+      "roadmap_docs_target": "active_task.md, roadmap.md, CTO-Analysis.md current in main branch"
+    }
+  },
+  "part_b_replay_backlog_plan": {
+    "title": "Replay Product Backlog Audit Plan (Plan Only)",
+    "current_state": {
+      "p149_p159b_chain_complete": true,
+      "strategies_visible": "40/40",
+      "lifecycle_as_label_not_exclusion_gate": true,
+      "db_only_missing_lifecycle_count": 0,
+      "multi_bet_max": "Bet 5",
+      "provenance_fields_displayed": true,
+      "production_db_rows": 94924,
+      "replay_product_status": "Governance chain closed per P159B"
+    },
+    "backlog_categories": [
+      {
+        "category": "production_governance_main_sync",
+        "description": "Sync P149-P159B production governance chain and research artifacts to main branch. Resolve main/zen-gates split.",
+        "priority": "P0 — blocks future release of any replay improvements",
+        "items": [
+          "Merge or backport P149-P179 code/docs/tests to main",
+          "DB migration plan for main (54462 → 94924 rows, add bet_index)",
+          "Verify drift guard passes in production environment"
+        ]
+      },
+      {
+        "category": "ui_polish",
+        "description": "UI improvements for replay product display.",
+        "priority": "P1 — user-facing quality",
+        "items": [
+          "Multi-bet prediction display (Bet 1 through Bet 5) in replay UI",
+          "bet_index filter in replay UI",
+          "Lifecycle status labels with explanation tooltips",
+          "Provenance source display (GENERATED vs ARTIFACT vs LEGACY_UNVERIFIED)"
+        ]
+      },
+      {
+        "category": "api_contract_hardening",
+        "description": "API contract improvements for replay endpoints.",
+        "priority": "P1 — developer experience",
+        "items": [
+          "Expose bet_index in replay API response",
+          "Pagination for large strategy result sets",
+          "Structured error responses for missing draw data"
+        ]
+      },
+      {
+        "category": "operator_guide_monitoring_docs",
+        "description": "Documentation and monitoring for production operators.",
+        "priority": "P2 — operational readiness",
+        "items": [
+          "Operator guide for replay product interpretation",
+          "Drift guard monitoring guide (when and how to run)",
+          "Incident response playbook for DB row count anomalies"
+        ]
+      },
+      {
+        "category": "long_term_trigger_governance",
+        "description": "Governance framework for long-term trigger conditions.",
+        "priority": "P2 — deferred but needs tracking",
+        "items": [
+          "P108 Special3 (needs 100 prospective draws; currently 37 remaining)",
+          "P117 POWER_LOTTO OOS monitoring (needs 40 new draws; currently 0)",
+          "P118 BIG_LOTTO quarantine (needs exact authorization phrase)",
+          "POWER_LOTTO passive monitoring (needs >=500 new draws after 115000041)"
+        ]
+      },
+      {
+        "category": "source_provenance_caveats",
+        "description": "Outstanding source/provenance items requiring resolution.",
+        "priority": "P3 — governance completeness",
+        "items": [
+          "4_STAR backtest: provenance artifact absent, source unknown — cannot proceed until provenance established",
+          "LEGACY_UNVERIFIED rows (320 rows): define long-term disposition policy",
+          "h6_gate_mk20_ew85: ONLINE but zero replay rows — requires investigation"
+        ]
+      }
+    ],
+    "prioritized_backlog": [
+      {
+        "task_id": "B-P0-1",
+        "title": "main/zen-gates reconciliation plan execution",
+        "scope": "Execute Option A2 (backport code/docs/tests) as first step; DB migration as separate subsequent task",
+        "risk": "MEDIUM",
+        "acceptance": "All P161-P179 test files present in main; all roadmap docs current",
+        "type": "implementation — requires separate authorization",
+        "candidate_p181": true
+      },
+      {
+        "task_id": "B-P1-1",
+        "title": "Multi-bet display in replay UI",
+        "scope": "Display Bet 1 through Bet 5 predictions per strategy per draw in existing replay UI",
+        "risk": "LOW",
+        "acceptance": "UI shows bet_index column; all 5 bets visible for multi-bet strategies",
+        "type": "implementation — requires separate authorization",
+        "candidate_p181": true
+      },
+      {
+        "task_id": "B-P1-2",
+        "title": "bet_index exposed in replay API",
+        "scope": "Add bet_index field to /api/replay/* response objects",
+        "risk": "LOW",
+        "acceptance": "API returns bet_index for each prediction row; contract test updated",
+        "type": "implementation — requires separate authorization",
+        "candidate_p181": false
+      },
+      {
+        "task_id": "B-P2-1",
+        "title": "Drift guard + DB migration operator guide",
+        "scope": "Document drift guard interpretation and DB migration runbook",
+        "risk": "VERY LOW",
+        "acceptance": "docs/operator_guide.md exists and covers key scenarios",
+        "type": "documentation — low risk",
+        "candidate_p181": true
+      },
+      {
+        "task_id": "B-P3-1",
+        "title": "4_STAR provenance investigation",
+        "scope": "Read-only investigation of 4_STAR strategy source before any backtest",
+        "risk": "LOW (read-only)",
+        "acceptance": "Provenance documented; decision made whether to backtest or archive",
+        "type": "investigation — read-only",
+        "candidate_p181": false
+      }
+    ],
+    "exclusions": {
+      "no_power_lotto_research_restart": "ENFORCED — P178A closure policy active",
+      "no_wagering_recommendation": "ENFORCED",
+      "no_new_strategy_prototype": "ENFORCED",
+      "no_db_write_in_p180": "ENFORCED",
+      "no_scheduler_install": "ENFORCED — no cron/launchd without separate authorization"
+    }
+  },
+  "part_c_p181_decision_gate": {
+    "p181_authorization_options": [
+      {
+        "phrase": "YES start P181 main zen-gates reconciliation detailed plan only",
+        "effect": "Detailed execution plan for A2 (backport) or A1 (full merge). No execution."
+      },
+      {
+        "phrase": "YES start P181 replay product backlog audit execution only",
+        "effect": "Execute highest-priority backlog items (B-P0-1, B-P1-1, B-P2-1). Implementation requires per-item authorization."
+      },
+      {
+        "phrase": "YES start P181 code-docs-tests parity plan only",
+        "effect": "Plan for bringing code/docs/tests to parity between main and zen-gates. No implementation."
+      },
+      {
+        "phrase": "YES start P181 controlled DB migration rehearsal plan only",
+        "effect": "Design migration rehearsal script and rollback plan. No actual DB migration."
+      },
+      {
+        "phrase": "YES start P181 long-term monitoring governance plan only",
+        "effect": "Document P108/P117/P118/4_STAR trigger governance. No execution."
+      }
+    ]
+  },
+  "part_d_cto_recommendation": {
+    "primary": "Code/docs/tests parity plan (A2 backport) before any production DB migration",
+    "secondary": "Replay product backlog audit execution (starting with B-P0-1 and B-P1-1)",
+    "db_migration_policy": "DB migration (A3) only after: detailed migration plan, dry-run rehearsal, DB backup, and explicit per-step authorization phrase. Never autonomous.",
+    "do_not_reopen_power_lotto": "POWER_LOTTO research remains CLOSED per P178A. Do not restart without meeting reopen conditions.",
+    "do_not_deploy": "No deployment or champion promotion from P180.",
+    "recommendation_text": "The highest near-term risk is the main/zen-gates code divergence — specifically, the 1122 contract tests and research artifacts existing only in zen-gates. An A2 backport (code/docs/tests only, no DB change) resolves most of the documentation and test coverage gap at low risk. DB migration (A3) should follow only after a full rehearsal plan is designed and authorized. For the replay product backlog, multi-bet display (B-P1-1) and operator documentation (B-P2-1) are low-risk, high-value items."
+  },
+  "explicit_forbidden_actions": {
+    "no_db_write": "ENFORCED",
+    "no_db_migration": "ENFORCED",
+    "no_merge": "ENFORCED",
+    "no_rebase": "ENFORCED",
+    "no_checkout_other_branch": "ENFORCED",
+    "no_controlled_apply": "ENFORCED",
+    "no_registry_mutation": "ENFORCED",
+    "no_champion_promotion": "ENFORCED",
+    "no_deployment": "ENFORCED",
+    "no_power_lotto_research_rerun": "ENFORCED — P178A closure policy active",
+    "no_new_strategy": "ENFORCED",
+    "no_scheduler_install": "ENFORCED",
+    "no_4_star_backtest": "ENFORCED — provenance artifact absent",
+    "no_p108_p117_p118_execution": "ENFORCED — wait-state conditions not met",
+    "no_wagering_recommendation": "ENFORCED",
+    "no_win_guarantee": "ENFORCED",
+    "no_stage_commit_push": "ENFORCED"
+  },
+  "governance_confirmations": {
+    "db_rows_before": 94924,
+    "db_rows_after": 94924,
+    "db_unchanged": true,
+    "bet_index_present": true,
+    "no_db_write": true,
+    "no_registry_mutation": true,
+    "no_merge": true,
+    "no_controlled_apply": true,
+    "no_champion_promotion": true,
+    "no_deployment": true,
+    "no_wagering_recommendations": true,
+    "no_win_guarantee_claim": true,
+    "no_stage": true,
+    "no_commit": true,
+    "no_push": true,
+    "p178a_closure_policy_active": true,
+    "power_lotto_active_research_closed": true,
+    "main_zen_gates_split_still_unresolved": true
+  },
+  "next_task": "AWAITING_CEO_AUTHORIZATION_FOR_P181",
+  "next_task_blocked_by_user_authorization": true,
+  "next_p181_authorization_options": [
+    "YES start P181 main zen-gates reconciliation detailed plan only",
+    "YES start P181 replay product backlog audit execution only",
+    "YES start P181 code-docs-tests parity plan only",
+    "YES start P181 controlled DB migration rehearsal plan only",
+    "YES start P181 long-term monitoring governance plan only"
+  ]
+}

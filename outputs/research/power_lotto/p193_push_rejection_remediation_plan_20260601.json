@@ -1,0 +1,259 @@
+{
+  "task": "P193_PUSH_REJECTION_REMEDIATION_PLAN_ONLY",
+  "date": "2026-06-01",
+  "final_classification": "P193_PUSH_REJECTION_REMEDIATION_PLAN_READY",
+  "authorization_phrase_detected": "YES start P193 push rejection remediation plan only",
+
+  "phase_0_verification": {
+    "status": "PASS",
+    "repo": "/Users/kelvin/Kelvin-WorkSpace/LotteryNew",
+    "branch": "main",
+    "git_dir": ".git",
+    "in_worktree": false,
+    "head_commit": "012d4a3f74a35a24c9f1518795bc79098897d7f5",
+    "head_short": "012d4a3",
+    "head_message": "P188-P191: reconcile replay DB and post-migration governance",
+    "origin_remote": "https://github.com/kelvinhuang0327/number-pattern-research.git",
+    "origin_main": "684bffcea3080f8f1f31c5b9acc3a572907ec4f3",
+    "origin_main_is_ancestor_of_head": true,
+    "commits_ahead_of_origin": 6,
+    "commits_behind_origin": 0,
+    "staged_files": 0,
+    "production_db_rows": 94924,
+    "bet_index_present": true,
+    "integrity_check": "ok",
+    "p178a_to_p191_tests": "797 passed, 0 failed, 0 skipped",
+    "drift_guard_result": "REPLAY_LIFECYCLE_DRIFT_GUARD_PASS",
+    "stop_conditions_triggered": []
+  },
+
+  "p192_rejection_summary": {
+    "p192_final_classification": "P192_PUSH_REJECTED",
+    "push_command_attempted": "git push origin main",
+    "push_result": "rejected",
+    "rejection_errors": [
+      {
+        "code": "GH006",
+        "message": "Protected branch update failed for refs/heads/main",
+        "detail": "Required status check 'replay-default-validation' is expected — must pass before merging to main"
+      }
+    ],
+    "large_file_warnings": [
+      {
+        "file": "lottery_api/data/lottery_v2.db",
+        "size_mb": 96,
+        "github_warning": "exceeds GitHub recommended maximum of 50 MB",
+        "note": "Approaching GitHub hard limit of 100 MB; may cause push failures for other contributors"
+      },
+      {
+        "file": "backups/p188_lottery_v2_backup_20260601_153821.db",
+        "size_mb": 51,
+        "github_warning": "exceeds GitHub recommended maximum of 50 MB",
+        "note": "Slightly over 50 MB recommendation"
+      }
+    ],
+    "p191_local_commit_intact": true,
+    "p191_commit_hash": "012d4a3f74a35a24c9f1518795bc79098897d7f5",
+    "p192_modified_files": 0,
+    "origin_main_unchanged": true
+  },
+
+  "current_git_state": {
+    "local_head": "012d4a3f74a35a24c9f1518795bc79098897d7f5",
+    "origin_main": "684bffcea3080f8f1f31c5b9acc3a572907ec4f3",
+    "local_ahead_by": 6,
+    "commits_ahead": [
+      "012d4a3 P188-P191: reconcile replay DB and post-migration governance",
+      "d1a6817 P128: define native multi-bet replay storage design",
+      "a42c7cb P126: controlled apply dry-run plan for Tier-B multi-bet adapters",
+      "eb749a5 P125: add adapter gap plan from P124 matrix",
+      "77d7d7d Merge P124 multi-bet replay truth and coverage matrix",
+      "ed6798e P124: multi-bet replay truth model + coverage matrix"
+    ],
+    "staged_files": 0,
+    "push_status": "REJECTED_GH006_BRANCH_PROTECTION"
+  },
+
+  "large_binary_inventory": {
+    "tracked_binary_files": [
+      {
+        "path": "lottery_api/data/lottery_v2.db",
+        "size_mb": 96,
+        "in_commit": "012d4a3",
+        "rows": 94924,
+        "critical": true,
+        "note": "Production DB — migrated to 94924 rows with bet_index. Contains replay evidence. Approaching GitHub 100 MB hard limit."
+      },
+      {
+        "path": "backups/p188_lottery_v2_backup_20260601_153821.db",
+        "size_mb": 51,
+        "in_commit": "012d4a3",
+        "rows": 54462,
+        "critical": true,
+        "note": "P188 pre-migration backup. Audit trail. Slightly over 50 MB recommendation."
+      },
+      {
+        "path": "backups/p188_lottery_v2_backup_20260601_153821.db.sha256",
+        "size_mb": 0,
+        "in_commit": "012d4a3",
+        "critical": false,
+        "note": "SHA256 hash file — tiny text file, safe to track in git"
+      }
+    ],
+    "github_limits": {
+      "recommended_max_mb": 50,
+      "hard_limit_mb": 100,
+      "production_db_status": "WARNING — 96MB approaching 100MB hard limit",
+      "backup_db_status": "WARNING — 51MB slightly over 50MB recommendation"
+    }
+  },
+
+  "remediation_options": {
+    "option_A": {
+      "id": "CREATE_PR_FROM_FEATURE_BRANCH",
+      "authorization_phrase": "YES start P194 create PR from current local commit plan only",
+      "description": "Create a feature branch from current HEAD, push the feature branch (no branch protection on feature branches), open a PR to main, let 'replay-default-validation' CI run, merge if CI passes.",
+      "risks": [
+        "Large binary warning (96MB DB, 51MB backup) will still appear on the PR",
+        "GitHub may warn about file sizes but will not necessarily block the PR merge",
+        "The production DB binary in git history creates long-term repo bloat (every clone downloads 96MB DB)",
+        "Future pushes may fail if DB grows past 100 MB hard limit",
+        "Other contributors may have slow clones"
+      ],
+      "benefits": [
+        "Respects branch protection — CI runs before merge",
+        "No commit history rewrite needed",
+        "P161-P191 research artifacts, tests, and scripts get published",
+        "Quickest path to getting non-binary content published"
+      ],
+      "recommendation": "CONDITIONAL — acceptable only if team explicitly accepts large binary in repo history"
+    },
+    "option_B": {
+      "id": "REMOVE_DB_BINARIES_FROM_COMMIT_AND_REPLAN_STORAGE",
+      "authorization_phrase": "YES start P194 remove DB binaries from local commit plan only",
+      "description": "Rewrite the P191 local commit to exclude lottery_api/data/lottery_v2.db and backups/p188_*.db. Add these paths to .gitignore. Store the DB and backup outside git (local-only, secure storage, or separate artifact store). Commit only: SHA256 hash file, all research artifacts, tests, scripts, roadmap docs. Then push via PR (Option A path) after binary removal.",
+      "steps_required": [
+        "1. git reset --soft HEAD~ (un-commit, keep staged)",
+        "2. git restore --staged lottery_api/data/lottery_v2.db backups/p188_*.db",
+        "3. Echo db paths to .gitignore",
+        "4. git add .gitignore + remaining staged files",
+        "5. git commit with same message",
+        "6. Verify local DB is still intact (NOT deleted)",
+        "7. Create feature branch and push for PR"
+      ],
+      "risks": [
+        "Requires local history rewrite (git reset) — must be separately authorized",
+        "Production DB must NOT be deleted during the process",
+        "Backup must NOT be deleted — keep locally outside git",
+        "If DB paths are added to .gitignore, future DB state changes stay local-only (requires manual backup/snapshot strategy outside git)"
+      ],
+      "benefits": [
+        "Eliminates large binary from git history entirely",
+        "Repo remains lightweight for all clones",
+        "No approaching GitHub 100 MB hard limit",
+        "Research artifacts, tests, scripts, roadmap docs all get published cleanly",
+        "Best long-term solution for a repo with a growing production DB"
+      ],
+      "recommendation": "PRIMARY RECOMMENDED — safest and cleanest long-term approach",
+      "db_preservation_guarantee": "Production DB and backup MUST remain intact on local disk. Removing from git does NOT delete local files. Only removes from git tracking."
+    },
+    "option_C": {
+      "id": "GIT_LFS_FOR_DB_BINARIES",
+      "authorization_phrase": "YES start P194 git LFS feasibility plan only",
+      "description": "Configure Git Large File Storage (LFS) for *.db files. Migrate existing large files in history with git-lfs migrate. Re-push with LFS pointers replacing binary blobs.",
+      "risks": [
+        "Requires git-lfs install and GitHub LFS quota",
+        "All contributors must have git-lfs installed for correct checkout",
+        "LFS bandwidth/storage costs on GitHub (beyond free tier)",
+        "History rewrite via git-lfs migrate affects all commits referencing the large files",
+        "Complex setup; not recommended without repo-wide policy decision"
+      ],
+      "benefits": [
+        "Keeps files 'in git' semantically while avoiding binary blob storage limits",
+        "Clean history without blob size issues"
+      ],
+      "recommendation": "NOT RECOMMENDED without explicit repo policy decision and LFS quota budget"
+    },
+    "option_D": {
+      "id": "TEMPORARILY_DISABLE_BRANCH_PROTECTION",
+      "authorization_phrase": "NOT AUTHORIZED — branch protection must not be bypassed",
+      "description": "Temporarily remove the 'replay-default-validation' required check from main branch protection, direct-push, then re-enable.",
+      "risks": [
+        "Bypasses required CI governance — 'replay-default-validation' exists for a reason",
+        "Direct push to main without CI is a governance violation",
+        "Large binary problem (96MB DB) is NOT resolved by this option",
+        "Requires GitHub admin access",
+        "Sets a bad precedent for future governance bypass"
+      ],
+      "recommendation": "EXPLICITLY NOT RECOMMENDED — do not bypass branch protection"
+    },
+    "option_E": {
+      "id": "KEEP_LOCAL_COMMIT_UNPUSHED",
+      "authorization_phrase": "YES start P194 keep local commit unpushed and document state",
+      "description": "Accept that the P191 local commit stays on local main only. Document the state. The 6-commit local-only chain (P124-P128 + P191) remains unpublished.",
+      "risks": [
+        "Remote repo (origin/main) stays at P124 baseline — no recovery of P128, P191 work on remote",
+        "Local-only state is fragile — if local repo is lost, all work since P124 is gone",
+        "Other collaborators cannot access P128/P191 changes"
+      ],
+      "benefits": [
+        "No action required — zero risk of data loss from bad push",
+        "Allows more planning time"
+      ],
+      "recommendation": "ACCEPTABLE as short-term holding state, not as final resolution"
+    }
+  },
+
+  "cto_recommendation": {
+    "primary": "Option B — REMOVE_DB_BINARIES_FROM_COMMIT_AND_REPLAN_STORAGE",
+    "primary_rationale": [
+      "The production DB (lottery_v2.db, 96MB) does not belong in git history. It is a runtime artifact, not source code.",
+      "Committing a 96MB binary means every git clone downloads 96MB. This will only grow as more data is ingested.",
+      "The DB is approaching GitHub's 100MB hard limit. Future data ingestion will push it over.",
+      "The backup DB (51MB) similarly doesn't belong in git — the SHA256 hash is sufficient evidence.",
+      "Removing binaries from the commit and adding them to .gitignore is reversible and safe, as long as the local DB file is preserved.",
+      "After binary removal, all research artifacts, tests, scripts, drift guard, and roadmap docs can be pushed cleanly via PR (Option B + A combined)."
+    ],
+    "secondary": "Option A — CREATE_PR_FROM_FEATURE_BRANCH (after Option B binary removal)",
+    "secondary_rationale": "Branch protection requires 'replay-default-validation' CI. A PR from a feature branch is the correct way to satisfy this. After Option B removes binaries, open a PR for the text-only content.",
+    "do_not": [
+      "Do NOT disable branch protection",
+      "Do NOT force push",
+      "Do NOT push DB binary blindly (96MB approaching hard limit)",
+      "Do NOT delete the local migrated production DB (it is the authoritative state)",
+      "Do NOT delete the backup DB locally (needed as rollback evidence)"
+    ],
+    "db_governance_note": "Removing DB from git tracking does NOT delete the local file. The production DB (lottery_v2.db at 94924 rows, bet_index PRESENT) MUST remain intact on local disk as the authoritative migrated state. Only git tracking is removed.",
+    "gitignore_strategy": "Add to .gitignore: lottery_api/data/lottery_v2.db, lottery_api/data/*.db.bak_*, backups/*.db (except sha256). Store DB migrations and schema changes as SQL files only. Document DB location in README or ops runbook."
+  },
+
+  "governance_confirmations": {
+    "no_file_modification_outside_whitelist": true,
+    "no_db_write": true,
+    "no_commit_rewrite": true,
+    "no_stage": true,
+    "no_commit": true,
+    "no_push": true,
+    "no_force_push": true,
+    "no_branch_protection_bypass": true,
+    "no_checkout_other_branch": true,
+    "no_amend": true,
+    "no_reset": true,
+    "no_rebase": true,
+    "power_lotto_research_closed": true,
+    "db_migration_local_state_preserved": true,
+    "production_db_rows": 94924,
+    "bet_index_present": true,
+    "p191_local_commit_intact": true
+  },
+
+  "next_task_options": [
+    "YES start P194 remove DB binaries from local commit plan only",
+    "YES start P194 create PR from current local commit plan only",
+    "YES start P194 git LFS feasibility plan only",
+    "YES start P194 keep local commit unpushed and document state",
+    "YES start P194 rollback decision gate only"
+  ],
+
+  "next_task_blocked_by_user_authorization": true
+}

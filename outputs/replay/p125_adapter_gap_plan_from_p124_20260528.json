@@ -1,0 +1,680 @@
+{
+  "task_id": "P125",
+  "generated_at": "2026-05-28T03:20:22.522598+00:00",
+  "classification": "P125_ADAPTER_GAP_PLAN_READY",
+  "p124_source_artifact": "outputs/replay/p124_multi_bet_truth_and_coverage_matrix_20260528.json",
+  "db_snapshot": {
+    "replay_rows": 54462,
+    "3_STAR": {
+      "count": 4179,
+      "max_draw": "115000106"
+    },
+    "4_STAR": {
+      "count": 2922,
+      "max_draw": "115000103"
+    },
+    "POWER_LOTTO": {
+      "count": 1913,
+      "max_draw": "115000041"
+    },
+    "BIG_LOTTO": {
+      "count": 22235,
+      "max_draw": "115000055"
+    },
+    "DAILY_539": {
+      "count": 5865,
+      "max_draw": "115000121"
+    }
+  },
+  "controlled_apply_ready": [
+    {
+      "strategy_id": "biglotto_echo_aware_3bet",
+      "lottery_type": "BIG_LOTTO",
+      "target_bet_count": 3,
+      "current_label": "first_bet_only_fallback",
+      "proposed_action": "controlled_apply_dry_run_then_apply",
+      "tier_b_confirmed": true,
+      "expected_rows_estimate": "~4500 (estimate: 1500 draws \u00d7 3 bets)",
+      "quality_label": "fallback_equivalent",
+      "risk_level": "low_to_medium",
+      "required_pre_apply_tests": [
+        "verify_adapter_get_all_bets_returns_correct_count",
+        "verify_no_fabricated_numbers",
+        "dry_run_single_draw_sanity_check",
+        "confirm_db_row_count_before_apply",
+        "confirm_staging_whitelist_clean"
+      ],
+      "explicit_apply_authorization_required": true,
+      "p126_scope": true,
+      "rank_score": 51
+    },
+    {
+      "strategy_id": "daily539_f4cold_5bet",
+      "lottery_type": "DAILY_539",
+      "target_bet_count": 5,
+      "current_label": "first_bet_only_fallback",
+      "proposed_action": "controlled_apply_dry_run_then_apply",
+      "tier_b_confirmed": true,
+      "expected_rows_estimate": "~7500 (estimate: 1500 draws \u00d7 5 bets)",
+      "quality_label": "watchlist",
+      "risk_level": "medium",
+      "required_pre_apply_tests": [
+        "verify_adapter_get_all_bets_returns_correct_count",
+        "verify_no_fabricated_numbers",
+        "dry_run_single_draw_sanity_check",
+        "confirm_db_row_count_before_apply",
+        "confirm_staging_whitelist_clean"
+      ],
+      "explicit_apply_authorization_required": true,
+      "p126_scope": true,
+      "rank_score": 50
+    },
+    {
+      "strategy_id": "daily539_f4cold_3bet",
+      "lottery_type": "DAILY_539",
+      "target_bet_count": 3,
+      "current_label": "first_bet_only_fallback",
+      "proposed_action": "controlled_apply_dry_run_then_apply",
+      "tier_b_confirmed": true,
+      "expected_rows_estimate": "~4500 (estimate: 1500 draws \u00d7 3 bets)",
+      "quality_label": "watchlist",
+      "risk_level": "medium",
+      "required_pre_apply_tests": [
+        "verify_adapter_get_all_bets_returns_correct_count",
+        "verify_no_fabricated_numbers",
+        "dry_run_single_draw_sanity_check",
+        "confirm_db_row_count_before_apply",
+        "confirm_staging_whitelist_clean"
+      ],
+      "explicit_apply_authorization_required": true,
+      "p126_scope": true,
+      "rank_score": 46
+    },
+    {
+      "strategy_id": "power_fourier_rhythm_2bet",
+      "lottery_type": "POWER_LOTTO",
+      "target_bet_count": 2,
+      "current_label": "first_bet_only_fallback",
+      "proposed_action": "controlled_apply_dry_run_then_apply",
+      "tier_b_confirmed": true,
+      "expected_rows_estimate": "~3000 (estimate: 1500 draws \u00d7 2 bets)",
+      "quality_label": "watchlist",
+      "risk_level": "medium",
+      "required_pre_apply_tests": [
+        "verify_adapter_get_all_bets_returns_correct_count",
+        "verify_no_fabricated_numbers",
+        "dry_run_single_draw_sanity_check",
+        "confirm_db_row_count_before_apply",
+        "confirm_staging_whitelist_clean"
+      ],
+      "explicit_apply_authorization_required": true,
+      "p126_scope": true,
+      "rank_score": 34
+    },
+    {
+      "strategy_id": "biglotto_ts3_markov_4bet_w30",
+      "lottery_type": "BIG_LOTTO",
+      "target_bet_count": 4,
+      "current_label": "first_bet_only_fallback",
+      "proposed_action": "controlled_apply_dry_run_then_apply",
+      "tier_b_confirmed": true,
+      "expected_rows_estimate": "~6000 (estimate: 1500 draws \u00d7 4 bets)",
+      "quality_label": "sub_baseline",
+      "risk_level": "medium",
+      "required_pre_apply_tests": [
+        "verify_adapter_get_all_bets_returns_correct_count",
+        "verify_no_fabricated_numbers",
+        "dry_run_single_draw_sanity_check",
+        "confirm_db_row_count_before_apply",
+        "confirm_staging_whitelist_clean"
+      ],
+      "explicit_apply_authorization_required": true,
+      "p126_scope": true,
+      "rank_score": 33
+    }
+  ],
+  "adapter_build_needed": [
+    {
+      "strategy_id": "pp3_freqort_4bet",
+      "lottery_type": "POWER_LOTTO",
+      "desired_bet_count": 4,
+      "current_label": "first_bet_only_fallback",
+      "quality_label": "prediction_helpful",
+      "missing_component": "pp3_freqort_multi_bet_adapter",
+      "proposed_adapter_contract": {
+        "method": "get_all_bets(draw_context) -> List[List[int]]",
+        "expected_outputs": 4,
+        "lottery_type": "POWER_LOTTO",
+        "storage_format": "one_row_per_bet OR multi_numbers_per_row (P128 decision pending)",
+        "must_not_fabricate": true,
+        "must_use_historical_draw_context_only": true
+      },
+      "test_plan": [
+        "unit_test_pp3_freqort_multi_bet_adapter_correct_output_count",
+        "no_future_data_leak_assertion",
+        "single_draw_sanity_check",
+        "integration_test_with_historical_draw_context"
+      ],
+      "risk_level": "medium",
+      "no_db_write_in_p125": true,
+      "p127_scope": true,
+      "rank_score": 53
+    },
+    {
+      "strategy_id": "midfreq_fourier_mk_3bet",
+      "lottery_type": "POWER_LOTTO",
+      "desired_bet_count": 3,
+      "current_label": "first_bet_only_fallback",
+      "quality_label": "prediction_helpful",
+      "missing_component": "fourier_multi_bet_adapter",
+      "proposed_adapter_contract": {
+        "method": "get_all_bets(draw_context) -> List[List[int]]",
+        "expected_outputs": 3,
+        "lottery_type": "POWER_LOTTO",
+        "storage_format": "one_row_per_bet OR multi_numbers_per_row (P128 decision pending)",
+        "must_not_fabricate": true,
+        "must_use_historical_draw_context_only": true
+      },
+      "test_plan": [
+        "unit_test_fourier_multi_bet_adapter_correct_output_count",
+        "no_future_data_leak_assertion",
+        "single_draw_sanity_check",
+        "integration_test_with_historical_draw_context"
+      ],
+      "risk_level": "medium",
+      "no_db_write_in_p125": true,
+      "p127_scope": true,
+      "rank_score": 51
+    },
+    {
+      "strategy_id": "acb_markov_midfreq_3bet",
+      "lottery_type": "DAILY_539",
+      "desired_bet_count": 3,
+      "current_label": "first_bet_only_fallback",
+      "quality_label": "watchlist",
+      "missing_component": "markov_multi_bet_adapter",
+      "proposed_adapter_contract": {
+        "method": "get_all_bets(draw_context) -> List[List[int]]",
+        "expected_outputs": 3,
+        "lottery_type": "DAILY_539",
+        "storage_format": "one_row_per_bet OR multi_numbers_per_row (P128 decision pending)",
+        "must_not_fabricate": true,
+        "must_use_historical_draw_context_only": true
+      },
+      "test_plan": [
+        "unit_test_markov_multi_bet_adapter_correct_output_count",
+        "no_future_data_leak_assertion",
+        "single_draw_sanity_check",
+        "integration_test_with_historical_draw_context"
+      ],
+      "risk_level": "medium",
+      "no_db_write_in_p125": true,
+      "p127_scope": true,
+      "rank_score": 41
+    },
+    {
+      "strategy_id": "midfreq_acb_2bet",
+      "lottery_type": "DAILY_539",
+      "desired_bet_count": 2,
+      "current_label": "first_bet_only_fallback",
+      "quality_label": "watchlist",
+      "missing_component": "midfreq_multi_bet_adapter",
+      "proposed_adapter_contract": {
+        "method": "get_all_bets(draw_context) -> List[List[int]]",
+        "expected_outputs": 2,
+        "lottery_type": "DAILY_539",
+        "storage_format": "one_row_per_bet OR multi_numbers_per_row (P128 decision pending)",
+        "must_not_fabricate": true,
+        "must_use_historical_draw_context_only": true
+      },
+      "test_plan": [
+        "unit_test_midfreq_multi_bet_adapter_correct_output_count",
+        "no_future_data_leak_assertion",
+        "single_draw_sanity_check",
+        "integration_test_with_historical_draw_context"
+      ],
+      "risk_level": "medium",
+      "no_db_write_in_p125": true,
+      "p127_scope": true,
+      "rank_score": 39
+    },
+    {
+      "strategy_id": "midfreq_fourier_2bet",
+      "lottery_type": "DAILY_539",
+      "desired_bet_count": 2,
+      "current_label": "first_bet_only_fallback",
+      "quality_label": "watchlist",
+      "missing_component": "fourier_multi_bet_adapter",
+      "proposed_adapter_contract": {
+        "method": "get_all_bets(draw_context) -> List[List[int]]",
+        "expected_outputs": 2,
+        "lottery_type": "DAILY_539",
+        "storage_format": "one_row_per_bet OR multi_numbers_per_row (P128 decision pending)",
+        "must_not_fabricate": true,
+        "must_use_historical_draw_context_only": true
+      },
+      "test_plan": [
+        "unit_test_fourier_multi_bet_adapter_correct_output_count",
+        "no_future_data_leak_assertion",
+        "single_draw_sanity_check",
+        "integration_test_with_historical_draw_context"
+      ],
+      "risk_level": "medium",
+      "no_db_write_in_p125": true,
+      "p127_scope": true,
+      "rank_score": 39
+    },
+    {
+      "strategy_id": "zonal_entropy_2bet",
+      "lottery_type": "POWER_LOTTO",
+      "desired_bet_count": 2,
+      "current_label": "first_bet_only_fallback",
+      "quality_label": "fallback_equivalent",
+      "missing_component": "zonal_multi_bet_adapter",
+      "proposed_adapter_contract": {
+        "method": "get_all_bets(draw_context) -> List[List[int]]",
+        "expected_outputs": 2,
+        "lottery_type": "POWER_LOTTO",
+        "storage_format": "one_row_per_bet OR multi_numbers_per_row (P128 decision pending)",
+        "must_not_fabricate": true,
+        "must_use_historical_draw_context_only": true
+      },
+      "test_plan": [
+        "unit_test_zonal_multi_bet_adapter_correct_output_count",
+        "no_future_data_leak_assertion",
+        "single_draw_sanity_check",
+        "integration_test_with_historical_draw_context"
+      ],
+      "risk_level": "medium",
+      "no_db_write_in_p125": true,
+      "p127_scope": true,
+      "rank_score": 39
+    },
+    {
+      "strategy_id": "cold_complement_2bet",
+      "lottery_type": "POWER_LOTTO",
+      "desired_bet_count": 2,
+      "current_label": "first_bet_only_fallback",
+      "quality_label": "fallback_equivalent",
+      "missing_component": "cold_complement_multi_bet_adapter",
+      "proposed_adapter_contract": {
+        "method": "get_all_bets(draw_context) -> List[List[int]]",
+        "expected_outputs": 2,
+        "lottery_type": "POWER_LOTTO",
+        "storage_format": "one_row_per_bet OR multi_numbers_per_row (P128 decision pending)",
+        "must_not_fabricate": true,
+        "must_use_historical_draw_context_only": true
+      },
+      "test_plan": [
+        "unit_test_cold_complement_multi_bet_adapter_correct_output_count",
+        "no_future_data_leak_assertion",
+        "single_draw_sanity_check",
+        "integration_test_with_historical_draw_context"
+      ],
+      "risk_level": "medium",
+      "no_db_write_in_p125": true,
+      "p127_scope": true,
+      "rank_score": 39
+    },
+    {
+      "strategy_id": "power_orthogonal_5bet",
+      "lottery_type": "POWER_LOTTO",
+      "desired_bet_count": 5,
+      "current_label": "first_bet_only_fallback",
+      "quality_label": "watchlist",
+      "missing_component": "orthogonal_multi_bet_adapter",
+      "proposed_adapter_contract": {
+        "method": "get_all_bets(draw_context) -> List[List[int]]",
+        "expected_outputs": 5,
+        "lottery_type": "POWER_LOTTO",
+        "storage_format": "one_row_per_bet OR multi_numbers_per_row (P128 decision pending)",
+        "must_not_fabricate": true,
+        "must_use_historical_draw_context_only": true
+      },
+      "test_plan": [
+        "unit_test_orthogonal_multi_bet_adapter_correct_output_count",
+        "no_future_data_leak_assertion",
+        "single_draw_sanity_check",
+        "integration_test_with_historical_draw_context"
+      ],
+      "risk_level": "medium",
+      "no_db_write_in_p125": true,
+      "p127_scope": true,
+      "rank_score": 35
+    },
+    {
+      "strategy_id": "power_precision_3bet",
+      "lottery_type": "POWER_LOTTO",
+      "desired_bet_count": 3,
+      "current_label": "first_bet_only_fallback",
+      "quality_label": "watchlist",
+      "missing_component": "precision_multi_bet_adapter",
+      "proposed_adapter_contract": {
+        "method": "get_all_bets(draw_context) -> List[List[int]]",
+        "expected_outputs": 3,
+        "lottery_type": "POWER_LOTTO",
+        "storage_format": "one_row_per_bet OR multi_numbers_per_row (P128 decision pending)",
+        "must_not_fabricate": true,
+        "must_use_historical_draw_context_only": true
+      },
+      "test_plan": [
+        "unit_test_precision_multi_bet_adapter_correct_output_count",
+        "no_future_data_leak_assertion",
+        "single_draw_sanity_check",
+        "integration_test_with_historical_draw_context"
+      ],
+      "risk_level": "medium",
+      "no_db_write_in_p125": true,
+      "p127_scope": true,
+      "rank_score": 31
+    },
+    {
+      "strategy_id": "fourier_rhythm_3bet",
+      "lottery_type": "POWER_LOTTO",
+      "desired_bet_count": 3,
+      "current_label": "first_bet_only_fallback",
+      "quality_label": "watchlist",
+      "missing_component": "fourier_multi_bet_adapter",
+      "proposed_adapter_contract": {
+        "method": "get_all_bets(draw_context) -> List[List[int]]",
+        "expected_outputs": 3,
+        "lottery_type": "POWER_LOTTO",
+        "storage_format": "one_row_per_bet OR multi_numbers_per_row (P128 decision pending)",
+        "must_not_fabricate": true,
+        "must_use_historical_draw_context_only": true
+      },
+      "test_plan": [
+        "unit_test_fourier_multi_bet_adapter_correct_output_count",
+        "no_future_data_leak_assertion",
+        "single_draw_sanity_check",
+        "integration_test_with_historical_draw_context"
+      ],
+      "risk_level": "medium",
+      "no_db_write_in_p125": true,
+      "p127_scope": true,
+      "rank_score": 31
+    },
+    {
+      "strategy_id": "midfreq_fourier_2bet",
+      "lottery_type": "POWER_LOTTO",
+      "desired_bet_count": 2,
+      "current_label": "first_bet_only_fallback",
+      "quality_label": "watchlist",
+      "missing_component": "fourier_multi_bet_adapter",
+      "proposed_adapter_contract": {
+        "method": "get_all_bets(draw_context) -> List[List[int]]",
+        "expected_outputs": 2,
+        "lottery_type": "POWER_LOTTO",
+        "storage_format": "one_row_per_bet OR multi_numbers_per_row (P128 decision pending)",
+        "must_not_fabricate": true,
+        "must_use_historical_draw_context_only": true
+      },
+      "test_plan": [
+        "unit_test_fourier_multi_bet_adapter_correct_output_count",
+        "no_future_data_leak_assertion",
+        "single_draw_sanity_check",
+        "integration_test_with_historical_draw_context"
+      ],
+      "risk_level": "medium",
+      "no_db_write_in_p125": true,
+      "p127_scope": true,
+      "rank_score": 29
+    },
+    {
+      "strategy_id": "fourier30_markov30_2bet",
+      "lottery_type": "POWER_LOTTO",
+      "desired_bet_count": 2,
+      "current_label": "first_bet_only_fallback",
+      "quality_label": "watchlist",
+      "missing_component": "fourier_markov_multi_bet_adapter",
+      "proposed_adapter_contract": {
+        "method": "get_all_bets(draw_context) -> List[List[int]]",
+        "expected_outputs": 2,
+        "lottery_type": "POWER_LOTTO",
+        "storage_format": "one_row_per_bet OR multi_numbers_per_row (P128 decision pending)",
+        "must_not_fabricate": true,
+        "must_use_historical_draw_context_only": true
+      },
+      "test_plan": [
+        "unit_test_fourier_markov_multi_bet_adapter_correct_output_count",
+        "no_future_data_leak_assertion",
+        "single_draw_sanity_check",
+        "integration_test_with_historical_draw_context"
+      ],
+      "risk_level": "medium",
+      "no_db_write_in_p125": true,
+      "p127_scope": true,
+      "rank_score": 29
+    }
+  ],
+  "relabel_only": [
+    {
+      "strategy_id": "biglotto_deviation_2bet",
+      "lottery_type": "BIG_LOTTO",
+      "current_label": "first_bet_only_fallback",
+      "proposed_label": "first_bet_only_fallback_confirmed",
+      "action": "metadata_relabel_only",
+      "no_db_write_in_p125": true
+    },
+    {
+      "strategy_id": "biglotto_triple_strike",
+      "lottery_type": "BIG_LOTTO",
+      "current_label": "first_bet_only_fallback",
+      "proposed_label": "first_bet_only_fallback_confirmed",
+      "action": "metadata_relabel_only",
+      "no_db_write_in_p125": true
+    }
+  ],
+  "replay_storage_design_risks": [
+    {
+      "risk_id": "RSR-1",
+      "description": "One predicted_numbers list per replay row",
+      "detail": "Current strategy_prediction_replays schema stores a single JSON list of predicted numbers per row. Multi-bet strategies with N bets require either: (a) N separate rows per draw, or (b) a JSON array-of-arrays per row. Neither is formally decided or implemented.",
+      "impact": "Blocks native_multi_bet storage for all strategies",
+      "mitigation": "P128 must design and approve the storage format before any apply",
+      "severity": "high"
+    },
+    {
+      "risk_id": "RSR-2",
+      "description": "First-bet-only labeling inconsistency",
+      "detail": "19 strategy\u00d7lottery pairs have first_bet_only_fallback in P124 matrix but are stored as if they were full multi-bet strategies. Row counts may mislead consumers about actual bet diversity.",
+      "impact": "User-facing replay may overstate prediction variety",
+      "mitigation": "P126/P127 controlled_apply and adapter builds must update labels alongside rows",
+      "severity": "medium"
+    },
+    {
+      "risk_id": "RSR-3",
+      "description": "No replay row deduplication guard for multi-bet inserts",
+      "detail": "If controlled_apply generates rows for bets 2-5 for already-covered draws, there is no current guard against inserting duplicate bet-1 rows. P126 must enforce upsert-or-skip logic keyed on (strategy_id, draw, bet_index).",
+      "impact": "Duplicate rows could inflate replay counts and mislead drift guard",
+      "mitigation": "P126 dry-run must verify row-count delta matches exactly N_bets \u00d7 N_draws",
+      "severity": "medium"
+    },
+    {
+      "risk_id": "RSR-4",
+      "description": "Adapter get_all_bets() not uniformly implemented",
+      "detail": "P93/P94 Tier-B adapters implement get_all_bets() for some strategies, but P124 confirms 12 strategies still lack any multi-bet adapter. P127 must define and implement the missing adapters before apply.",
+      "impact": "Cannot expand replay coverage for 12 strategies until P127 completes",
+      "mitigation": "P127 adapter builds with full unit test coverage",
+      "severity": "medium"
+    }
+  ],
+  "blocked_or_forbidden": {
+    "rejected_strategies": {
+      "description": "Strategies with lifecycle=REJECTED must remain no_action. Expansion is forbidden.",
+      "strategy_ids": [
+        "acb_single_539",
+        "539_3bet_orthogonal",
+        "p0b_539_3bet_f_cold_fmid",
+        "p0c_539_3bet_f_cold_x2",
+        "markov_1bet_539",
+        "zone_gap_3bet_539",
+        "cold_complement_biglotto",
+        "coldpool15_biglotto",
+        "fourier30_markov30_biglotto",
+        "markov_2bet_biglotto",
+        "markov_single_biglotto",
+        "bet2_fourier_expansion_biglotto"
+      ],
+      "rule": "no_action_forever_unless_explicit_authorization"
+    },
+    "4_STAR_source_unknown": {
+      "description": "4_STAR rows exist in DB but provenance is unknown. No backtest until provenance is accepted.",
+      "lottery_type": "4_STAR",
+      "status": "source_unknown",
+      "excluded_from": [
+        "controlled_apply",
+        "adapter_build",
+        "backtest",
+        "any_replay_expansion"
+      ],
+      "rule": "provenance_decision_required_before_any_analysis"
+    },
+    "P108_Special3": {
+      "description": "P108 requires 100 prospective Special3 draws. Currently ~63/100.",
+      "status": "still_blocked",
+      "rule": "do_not_execute_until_100_draws_confirmed"
+    },
+    "P117_POWER_LOTTO_OOS": {
+      "description": "P117 POWER_LOTTO OOS retrigger needs 30-40 more draws after 115000041.",
+      "status": "still_blocked",
+      "rule": "do_not_execute_until_draw_threshold_met"
+    },
+    "P118_BIG_LOTTO_quarantine": {
+      "description": "P118 BIG_LOTTO actual quarantine requires exact authorization phrase.",
+      "status": "still_blocked",
+      "rule": "exact_phrase_absent_do_not_apply"
+    },
+    "fabricated_rows": {
+      "description": "Fabricating replay rows is forbidden regardless of coverage gap.",
+      "rule": "fabrication_prohibited_all_rows_must_derive_from_historical_draws"
+    },
+    "native_multi_bet_storage_design": {
+      "description": "Current schema stores one predicted_numbers list per row. Schema/format changes require P128 design decision first.",
+      "status": "pending_P128_design",
+      "rule": "no_schema_change_until_P128_approved"
+    }
+  },
+  "recommended_sequence": [
+    {
+      "sequence": 1,
+      "phase": "P126",
+      "title": "Controlled Apply Dry-Run and Apply for 5 Tier-B Candidates",
+      "description": "Run controlled_apply dry-run for each of the 5 Tier-B candidates. Verify bet-count output, no fabrication, and row-count delta. If dry-run passes, apply with explicit authorization. All 5 strategies must have explicit_apply_authorization_required=true.",
+      "candidates": [
+        "daily539_f4cold_3bet",
+        "daily539_f4cold_5bet",
+        "biglotto_echo_aware_3bet",
+        "biglotto_ts3_markov_4bet_w30",
+        "power_fourier_rhythm_2bet"
+      ],
+      "preconditions": [
+        "P128 storage design approved OR apply using current one-row-per-bet convention",
+        "Dry-run passes: row-count delta = N_draws \u00d7 target_bets",
+        "No duplicate bet-1 rows",
+        "Staging whitelist clean"
+      ],
+      "no_db_write_in_p125": true
+    },
+    {
+      "sequence": 2,
+      "phase": "P127",
+      "title": "Adapter Build for 12 Missing Multi-Bet Adapters",
+      "description": "Build get_all_bets() adapters for the 12 strategies currently missing them. Priority order: prediction_helpful (pp3_freqort_4bet, midfreq_fourier_mk_3bet) first, then fallback_equivalent, then watchlist. Each adapter must have unit tests and no-future-data-leak assertions.",
+      "priority_order": [
+        "pp3_freqort_4bet (POWER_LOTTO / prediction_helpful)",
+        "midfreq_fourier_mk_3bet (POWER_LOTTO / prediction_helpful)",
+        "zonal_entropy_2bet (POWER_LOTTO / fallback_equivalent)",
+        "cold_complement_2bet (POWER_LOTTO / fallback_equivalent)",
+        "acb_markov_midfreq_3bet (DAILY_539 / watchlist)",
+        "midfreq_acb_2bet (DAILY_539 / watchlist)",
+        "midfreq_fourier_2bet (DAILY_539 / watchlist)",
+        "power_precision_3bet (POWER_LOTTO / watchlist)",
+        "power_orthogonal_5bet (POWER_LOTTO / watchlist)",
+        "fourier_rhythm_3bet (POWER_LOTTO / watchlist)",
+        "midfreq_fourier_2bet (POWER_LOTTO / watchlist)",
+        "fourier30_markov30_2bet (POWER_LOTTO / watchlist)"
+      ],
+      "no_db_write_in_p125": true
+    },
+    {
+      "sequence": 3,
+      "phase": "P128",
+      "title": "Native Multi-Bet Replay Storage Design",
+      "description": "Design the storage format for native multi-bet replay rows. Decide between: (a) one row per bet per draw, or (b) array-of-arrays per row. Define schema migration plan, drift guard update, and API compatibility rules. This is a design-only phase; no schema changes in P128 itself.",
+      "open_questions": [
+        "Row-per-bet: simpler queries but N\u00d7 row growth",
+        "Array-per-row: compact but breaks current replay consumer assumptions",
+        "Backward compatibility with existing 54462 rows",
+        "Drift guard update to track multi-bet rows separately"
+      ],
+      "no_db_write_in_p125": true
+    }
+  ],
+  "p126_candidate_scope": {
+    "description": "Controlled apply dry-run + apply for 5 Tier-B multi-bet strategies",
+    "candidates": [
+      "biglotto_echo_aware_3bet",
+      "daily539_f4cold_5bet",
+      "daily539_f4cold_3bet",
+      "power_fourier_rhythm_2bet",
+      "biglotto_ts3_markov_4bet_w30"
+    ],
+    "authorization_required": true,
+    "no_db_write_in_p125": true
+  },
+  "p127_candidate_scope": {
+    "description": "Build missing get_all_bets() adapters for 12 strategies",
+    "strategies": [
+      "pp3_freqort_4bet",
+      "midfreq_fourier_mk_3bet",
+      "acb_markov_midfreq_3bet",
+      "midfreq_acb_2bet",
+      "midfreq_fourier_2bet",
+      "zonal_entropy_2bet",
+      "cold_complement_2bet",
+      "power_orthogonal_5bet",
+      "power_precision_3bet",
+      "fourier_rhythm_3bet",
+      "midfreq_fourier_2bet",
+      "fourier30_markov30_2bet"
+    ],
+    "no_db_write_in_p125": true
+  },
+  "p128_candidate_scope": {
+    "description": "Design native multi-bet replay storage format (schema / format decision)",
+    "open_questions": [
+      "one_row_per_bet vs array_of_arrays_per_row",
+      "backward_compatibility_with_54462_existing_rows",
+      "drift_guard_update_for_multi_bet_tracking",
+      "API_consumer_compatibility"
+    ],
+    "no_db_write_in_p125": true
+  },
+  "summary": {
+    "total_p124_coverage_matrix_rows": 36,
+    "controlled_apply_ready_count": 5,
+    "adapter_build_needed_count": 12,
+    "relabel_only_count": 2,
+    "no_action_kept": 17,
+    "rejected_strategies_count": 12,
+    "native_multi_bet_count": 0,
+    "db_writes_in_p125": 0,
+    "scheduler_installed": false,
+    "4_STAR_included": false,
+    "P108_executed": false,
+    "P117_executed": false,
+    "P118_executed": false,
+    "fabricated_rows": 0
+  },
+  "governance": {
+    "db_writes": 0,
+    "scheduler_installed": false,
+    "strategy_promoted": false,
+    "fabricated_rows": 0,
+    "4_STAR_included": false,
+    "P108_executed": false,
+    "P117_executed": false,
+    "P118_executed": false
+  }
+}

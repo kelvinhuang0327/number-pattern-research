@@ -1,0 +1,471 @@
+{
+  "task_id": "P126",
+  "classification": "P126_DRY_RUN_PLAN_READY",
+  "generated_at": "2026-05-28T03:43:38.897359+00:00",
+  "p124_source_artifact": "outputs/replay/p124_multi_bet_truth_and_coverage_matrix_20260528.json",
+  "p125_source_artifact": "outputs/replay/p125_adapter_gap_plan_from_p124_20260528.json",
+  "db_snapshot_before": {
+    "replay_rows": 54462,
+    "3_STAR": {
+      "count": 4179,
+      "max_draw": 115000106
+    },
+    "4_STAR": {
+      "count": 2922,
+      "max_draw": 115000103
+    },
+    "POWER_LOTTO": {
+      "count": 1913,
+      "max_draw": 115000041
+    }
+  },
+  "dry_run_candidates": [
+    {
+      "strategy_id": "biglotto_echo_aware_3bet",
+      "lottery_type": "BIG_LOTTO",
+      "target_bet_count": 3,
+      "quality_label": "fallback_equivalent",
+      "risk_level": "low_to_medium",
+      "rank_score": 51,
+      "apply_order": 1,
+      "existing_rows": 1500,
+      "draw_count": 1500,
+      "draw_min": 102000012,
+      "draw_max": 115000055,
+      "new_rows_if_applied": 3000,
+      "total_rows_after_apply": 4500,
+      "storage_approach": "one_row_per_bet",
+      "storage_approach_note": "For each of the 1500 draws: keep existing bet-1 row; add 2 additional row(s) for bet-2 through bet-3. Requires P128 storage design to be formally accepted before apply.",
+      "provenance_guard": {
+        "status": "PASS",
+        "expected_controlled_apply_id_prefix": "P94_TIERB_CONTROLLED_APPLY",
+        "expected_source": "P94_TIERB_CONTROLLED_APPLY",
+        "expected_truth_level": "TIERB_DRYRUN_VALIDATED",
+        "found_sources": [
+          "P94_TIERB_CONTROLLED_APPLY_20260526"
+        ],
+        "notes": [
+          "All rows from trusted P94 source"
+        ]
+      },
+      "duplicate_guard": {
+        "status": "PASS",
+        "duplicate_draws_found": 0,
+        "notes": "No duplicate draws. Existing rows are all bet-1 only."
+      },
+      "preconditions": [
+        {
+          "check": "db_invariant_confirmed",
+          "status": "PASS",
+          "detail": "replay_rows=54462 before apply"
+        },
+        {
+          "check": "p128_storage_design_or_convention_accepted",
+          "status": "PENDING",
+          "detail": "P128 not yet designed. One-row-per-bet convention assumed but not formally accepted."
+        },
+        {
+          "check": "provenance_guard",
+          "status": "PASS",
+          "detail": "All rows from trusted P94 source"
+        },
+        {
+          "check": "duplicate_guard",
+          "status": "PASS",
+          "detail": "No duplicate draws. Existing rows are all bet-1 only."
+        },
+        {
+          "check": "staging_whitelist_clean",
+          "status": "REQUIRED",
+          "detail": "Must verify git diff --cached --name-only contains only whitelisted files before apply."
+        },
+        {
+          "check": "explicit_apply_authorization",
+          "status": "REQUIRED",
+          "detail": "Kelvin must explicitly state: YES authorize controlled_apply for biglotto_echo_aware_3bet"
+        }
+      ],
+      "dry_run_status": "READY",
+      "explicit_apply_authorization_required": true,
+      "db_writes_in_p126": 0,
+      "apply_authorization_phrase": "YES authorize controlled_apply for biglotto_echo_aware_3bet because <reason>"
+    },
+    {
+      "strategy_id": "daily539_f4cold_5bet",
+      "lottery_type": "DAILY_539",
+      "target_bet_count": 5,
+      "quality_label": "watchlist",
+      "risk_level": "medium",
+      "rank_score": 50,
+      "apply_order": 2,
+      "existing_rows": 1500,
+      "draw_count": 1500,
+      "draw_min": 110000190,
+      "draw_max": 115000121,
+      "new_rows_if_applied": 6000,
+      "total_rows_after_apply": 7500,
+      "storage_approach": "one_row_per_bet",
+      "storage_approach_note": "For each of the 1500 draws: keep existing bet-1 row; add 4 additional row(s) for bet-2 through bet-5. Requires P128 storage design to be formally accepted before apply.",
+      "provenance_guard": {
+        "status": "PASS",
+        "expected_controlled_apply_id_prefix": "P94_TIERB_CONTROLLED_APPLY",
+        "expected_source": "P94_TIERB_CONTROLLED_APPLY",
+        "expected_truth_level": "TIERB_DRYRUN_VALIDATED",
+        "found_sources": [
+          "P94_TIERB_CONTROLLED_APPLY_20260526"
+        ],
+        "notes": [
+          "All rows from trusted P94 source"
+        ]
+      },
+      "duplicate_guard": {
+        "status": "PASS",
+        "duplicate_draws_found": 0,
+        "notes": "No duplicate draws. Existing rows are all bet-1 only."
+      },
+      "preconditions": [
+        {
+          "check": "db_invariant_confirmed",
+          "status": "PASS",
+          "detail": "replay_rows=54462 before apply"
+        },
+        {
+          "check": "p128_storage_design_or_convention_accepted",
+          "status": "PENDING",
+          "detail": "P128 not yet designed. One-row-per-bet convention assumed but not formally accepted."
+        },
+        {
+          "check": "provenance_guard",
+          "status": "PASS",
+          "detail": "All rows from trusted P94 source"
+        },
+        {
+          "check": "duplicate_guard",
+          "status": "PASS",
+          "detail": "No duplicate draws. Existing rows are all bet-1 only."
+        },
+        {
+          "check": "staging_whitelist_clean",
+          "status": "REQUIRED",
+          "detail": "Must verify git diff --cached --name-only contains only whitelisted files before apply."
+        },
+        {
+          "check": "explicit_apply_authorization",
+          "status": "REQUIRED",
+          "detail": "Kelvin must explicitly state: YES authorize controlled_apply for daily539_f4cold_5bet"
+        }
+      ],
+      "dry_run_status": "READY",
+      "explicit_apply_authorization_required": true,
+      "db_writes_in_p126": 0,
+      "apply_authorization_phrase": "YES authorize controlled_apply for daily539_f4cold_5bet because <reason>"
+    },
+    {
+      "strategy_id": "daily539_f4cold_3bet",
+      "lottery_type": "DAILY_539",
+      "target_bet_count": 3,
+      "quality_label": "watchlist",
+      "risk_level": "medium",
+      "rank_score": 46,
+      "apply_order": 3,
+      "existing_rows": 1500,
+      "draw_count": 1500,
+      "draw_min": 110000190,
+      "draw_max": 115000121,
+      "new_rows_if_applied": 3000,
+      "total_rows_after_apply": 4500,
+      "storage_approach": "one_row_per_bet",
+      "storage_approach_note": "For each of the 1500 draws: keep existing bet-1 row; add 2 additional row(s) for bet-2 through bet-3. Requires P128 storage design to be formally accepted before apply.",
+      "provenance_guard": {
+        "status": "PASS",
+        "expected_controlled_apply_id_prefix": "P94_TIERB_CONTROLLED_APPLY",
+        "expected_source": "P94_TIERB_CONTROLLED_APPLY",
+        "expected_truth_level": "TIERB_DRYRUN_VALIDATED",
+        "found_sources": [
+          "P94_TIERB_CONTROLLED_APPLY_20260526"
+        ],
+        "notes": [
+          "All rows from trusted P94 source"
+        ]
+      },
+      "duplicate_guard": {
+        "status": "PASS",
+        "duplicate_draws_found": 0,
+        "notes": "No duplicate draws. Existing rows are all bet-1 only."
+      },
+      "preconditions": [
+        {
+          "check": "db_invariant_confirmed",
+          "status": "PASS",
+          "detail": "replay_rows=54462 before apply"
+        },
+        {
+          "check": "p128_storage_design_or_convention_accepted",
+          "status": "PENDING",
+          "detail": "P128 not yet designed. One-row-per-bet convention assumed but not formally accepted."
+        },
+        {
+          "check": "provenance_guard",
+          "status": "PASS",
+          "detail": "All rows from trusted P94 source"
+        },
+        {
+          "check": "duplicate_guard",
+          "status": "PASS",
+          "detail": "No duplicate draws. Existing rows are all bet-1 only."
+        },
+        {
+          "check": "staging_whitelist_clean",
+          "status": "REQUIRED",
+          "detail": "Must verify git diff --cached --name-only contains only whitelisted files before apply."
+        },
+        {
+          "check": "explicit_apply_authorization",
+          "status": "REQUIRED",
+          "detail": "Kelvin must explicitly state: YES authorize controlled_apply for daily539_f4cold_3bet"
+        }
+      ],
+      "dry_run_status": "READY",
+      "explicit_apply_authorization_required": true,
+      "db_writes_in_p126": 0,
+      "apply_authorization_phrase": "YES authorize controlled_apply for daily539_f4cold_3bet because <reason>"
+    },
+    {
+      "strategy_id": "power_fourier_rhythm_2bet",
+      "lottery_type": "POWER_LOTTO",
+      "target_bet_count": 2,
+      "quality_label": "watchlist",
+      "risk_level": "medium",
+      "rank_score": 34,
+      "apply_order": 4,
+      "existing_rows": 1500,
+      "draw_count": 1500,
+      "draw_min": 101000003,
+      "draw_max": 115000041,
+      "new_rows_if_applied": 1500,
+      "total_rows_after_apply": 3000,
+      "storage_approach": "one_row_per_bet",
+      "storage_approach_note": "For each of the 1500 draws: keep existing bet-1 row; add 1 additional row(s) for bet-2 through bet-2. Requires P128 storage design to be formally accepted before apply.",
+      "provenance_guard": {
+        "status": "PASS",
+        "expected_controlled_apply_id_prefix": "P94_TIERB_CONTROLLED_APPLY",
+        "expected_source": "P94_TIERB_CONTROLLED_APPLY",
+        "expected_truth_level": "TIERB_DRYRUN_VALIDATED",
+        "found_sources": [
+          "P94_TIERB_CONTROLLED_APPLY_20260526"
+        ],
+        "notes": [
+          "All rows from trusted P94 source"
+        ]
+      },
+      "duplicate_guard": {
+        "status": "PASS",
+        "duplicate_draws_found": 0,
+        "notes": "No duplicate draws. Existing rows are all bet-1 only."
+      },
+      "preconditions": [
+        {
+          "check": "db_invariant_confirmed",
+          "status": "PASS",
+          "detail": "replay_rows=54462 before apply"
+        },
+        {
+          "check": "p128_storage_design_or_convention_accepted",
+          "status": "PENDING",
+          "detail": "P128 not yet designed. One-row-per-bet convention assumed but not formally accepted."
+        },
+        {
+          "check": "provenance_guard",
+          "status": "PASS",
+          "detail": "All rows from trusted P94 source"
+        },
+        {
+          "check": "duplicate_guard",
+          "status": "PASS",
+          "detail": "No duplicate draws. Existing rows are all bet-1 only."
+        },
+        {
+          "check": "staging_whitelist_clean",
+          "status": "REQUIRED",
+          "detail": "Must verify git diff --cached --name-only contains only whitelisted files before apply."
+        },
+        {
+          "check": "explicit_apply_authorization",
+          "status": "REQUIRED",
+          "detail": "Kelvin must explicitly state: YES authorize controlled_apply for power_fourier_rhythm_2bet"
+        }
+      ],
+      "dry_run_status": "READY",
+      "explicit_apply_authorization_required": true,
+      "db_writes_in_p126": 0,
+      "apply_authorization_phrase": "YES authorize controlled_apply for power_fourier_rhythm_2bet because <reason>"
+    },
+    {
+      "strategy_id": "biglotto_ts3_markov_4bet_w30",
+      "lottery_type": "BIG_LOTTO",
+      "target_bet_count": 4,
+      "quality_label": "sub_baseline",
+      "risk_level": "medium",
+      "rank_score": 33,
+      "apply_order": 5,
+      "existing_rows": 1500,
+      "draw_count": 1500,
+      "draw_min": 102000012,
+      "draw_max": 115000055,
+      "new_rows_if_applied": 4500,
+      "total_rows_after_apply": 6000,
+      "storage_approach": "one_row_per_bet",
+      "storage_approach_note": "For each of the 1500 draws: keep existing bet-1 row; add 3 additional row(s) for bet-2 through bet-4. Requires P128 storage design to be formally accepted before apply.",
+      "provenance_guard": {
+        "status": "PASS",
+        "expected_controlled_apply_id_prefix": "P94_TIERB_CONTROLLED_APPLY",
+        "expected_source": "P94_TIERB_CONTROLLED_APPLY",
+        "expected_truth_level": "TIERB_DRYRUN_VALIDATED",
+        "found_sources": [
+          "P94_TIERB_CONTROLLED_APPLY_20260526"
+        ],
+        "notes": [
+          "All rows from trusted P94 source"
+        ]
+      },
+      "duplicate_guard": {
+        "status": "PASS",
+        "duplicate_draws_found": 0,
+        "notes": "No duplicate draws. Existing rows are all bet-1 only."
+      },
+      "preconditions": [
+        {
+          "check": "db_invariant_confirmed",
+          "status": "PASS",
+          "detail": "replay_rows=54462 before apply"
+        },
+        {
+          "check": "p128_storage_design_or_convention_accepted",
+          "status": "PENDING",
+          "detail": "P128 not yet designed. One-row-per-bet convention assumed but not formally accepted."
+        },
+        {
+          "check": "provenance_guard",
+          "status": "PASS",
+          "detail": "All rows from trusted P94 source"
+        },
+        {
+          "check": "duplicate_guard",
+          "status": "PASS",
+          "detail": "No duplicate draws. Existing rows are all bet-1 only."
+        },
+        {
+          "check": "staging_whitelist_clean",
+          "status": "REQUIRED",
+          "detail": "Must verify git diff --cached --name-only contains only whitelisted files before apply."
+        },
+        {
+          "check": "explicit_apply_authorization",
+          "status": "REQUIRED",
+          "detail": "Kelvin must explicitly state: YES authorize controlled_apply for biglotto_ts3_markov_4bet_w30"
+        }
+      ],
+      "dry_run_status": "READY",
+      "explicit_apply_authorization_required": true,
+      "db_writes_in_p126": 0,
+      "apply_authorization_phrase": "YES authorize controlled_apply for biglotto_ts3_markov_4bet_w30 because <reason>"
+    }
+  ],
+  "storage_risk_summary": {
+    "RSR-1": {
+      "title": "Native multi-bet storage format not decided",
+      "description": "Current schema has no bet_index column. P126 plan assumes one-row-per-bet convention. P128 must formally decide between one-row-per-bet (N× row growth, simpler queries) vs. array-of-arrays per row (compact, breaks existing consumers).",
+      "blocker_for_apply": true,
+      "resolution": "P128 design decision or explicit Kelvin authorization of one-row-per-bet"
+    },
+    "RSR-2": {
+      "title": "No bet_index column in current schema",
+      "description": "After adding bet-2 through bet-N rows, there is no column to distinguish bet index. Consumer queries that do SELECT ... WHERE strategy_id=? will return all bets mixed. Schema migration (adding bet_index) requires P128.",
+      "blocker_for_apply": false,
+      "resolution": "Interim: encode bet index in source/controlled_apply_id field. Permanent: add bet_index column in P128."
+    },
+    "RSR-3": {
+      "title": "Drift guard must be updated for multi-bet row counts",
+      "description": "replay_lifecycle_drift_guard.py currently expects exactly 54462 rows. After multi-bet apply the expected count must be updated to 54462 + new_rows_applied.",
+      "blocker_for_apply": false,
+      "resolution": "Update drift guard expected count after each batch apply."
+    },
+    "RSR-4": {
+      "title": "API and UI consumers assume one-row-per-draw",
+      "description": "Existing API endpoints and dashboard likely assume one replay row per (strategy, draw) pair. Multi-bet rows will appear as duplicate draws without bet_index awareness.",
+      "blocker_for_apply": false,
+      "resolution": "Update API and UI in parallel with or after P128 schema decision."
+    }
+  },
+  "summary": {
+    "candidate_count": 5,
+    "total_new_rows_if_all_applied": 18000,
+    "total_replay_rows_after_all_applied": 72462,
+    "db_writes_in_p126": 0,
+    "all_candidates_prov_guard_pass": true,
+    "all_candidates_dup_guard_pass": true,
+    "all_candidates_authorization_required": true,
+    "p128_pending": true,
+    "explicit_apply_authorization_required": true
+  },
+  "governance": {
+    "db_writes": 0,
+    "scheduler_installed": false,
+    "strategy_promoted": false,
+    "fabricated_rows": 0,
+    "4_STAR_included": false,
+    "P108_executed": false,
+    "P117_executed": false,
+    "P118_executed": false,
+    "pragma_query_only": "ON (enforced on every DB connection)",
+    "forbidden_files_staged": false
+  },
+  "blocked_or_forbidden": {
+    "4_STAR_source_unknown": {
+      "action": "no_action",
+      "reason": "Provenance absent; backtest unauthorized"
+    },
+    "P108_Special3": {
+      "action": "no_action",
+      "reason": "Trigger blocked; ~37 more draws needed"
+    },
+    "P117_POWER_LOTTO_OOS": {
+      "action": "no_action",
+      "reason": "Trigger blocked; 30-40 more draws needed"
+    },
+    "P118_BIG_LOTTO_quarantine": {
+      "action": "no_action",
+      "reason": "Exact authorization phrase absent"
+    },
+    "fabricated_rows": {
+      "action": "no_action",
+      "reason": "Fabrication is permanently forbidden"
+    }
+  },
+  "next_tasks": {
+    "P126_apply": {
+      "description": "Execute controlled_apply for each of the 5 candidates",
+      "preconditions": [
+        "P128 storage design approved OR one-row-per-bet convention explicitly authorized",
+        "Per-strategy authorization phrase provided by Kelvin",
+        "Drift guard confirms replay_rows matches expected value before each batch"
+      ],
+      "authorization_phrases_required": [
+        "YES authorize controlled_apply for biglotto_echo_aware_3bet because <reason>",
+        "YES authorize controlled_apply for daily539_f4cold_5bet because <reason>",
+        "YES authorize controlled_apply for daily539_f4cold_3bet because <reason>",
+        "YES authorize controlled_apply for power_fourier_rhythm_2bet because <reason>",
+        "YES authorize controlled_apply for biglotto_ts3_markov_4bet_w30 because <reason>"
+      ]
+    },
+    "P127": {
+      "description": "Adapter build for 12 missing get_all_bets() adapters",
+      "dependency": "Can proceed in parallel with or after P126 apply"
+    },
+    "P128": {
+      "description": "Native multi-bet replay storage design decision",
+      "dependency": "Blocks full multi-bet schema until resolved"
+    }
+  },
+  "plan_hash": "9aa3fcad0809ed02"
+}

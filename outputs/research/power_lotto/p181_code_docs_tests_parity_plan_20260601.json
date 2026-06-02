@@ -1,0 +1,363 @@
+{
+  "task": "P181_CODE_DOCS_TESTS_PARITY_PLAN_ONLY",
+  "final_classification": "P181_CODE_DOCS_TESTS_PARITY_PLAN_READY",
+  "date": "2026-06-01",
+  "branch": "claude/zen-gates-ff6802",
+  "authorization_phrase_detected": "YES start P181 code-docs-tests parity plan only",
+  "phase_0_verification": {
+    "result": "PASS",
+    "repo": "/Users/kelvin/Kelvin-WorkSpace/LotteryNew/.claude/worktrees/zen-gates-ff6802",
+    "branch": "claude/zen-gates-ff6802",
+    "head": "c8b423d0c1de26253be4cec79ae6de77719d1074",
+    "db_rows": 94924,
+    "bet_index_present": true,
+    "drift_guard": "PASS",
+    "p178a_test": "PASS",
+    "p179_test": "PASS",
+    "p180_test": "PASS"
+  },
+  "p178a_classification_referenced": "P178A_POWER_LOTTO_R2_RESEARCH_CLOSED_ARCHIVED",
+  "p179_classification_referenced": "P179_REPLAY_PRODUCT_GOVERNANCE_BACKLOG_DECISION_GATE_READY",
+  "p180_classification_referenced": "P180_COMBINED_RECONCILIATION_AND_REPLAY_BACKLOG_PLAN_READY",
+  "part_a_parity_gap_inventory": {
+    "title": "Current Parity Gap Inventory (From Prior Artifacts — No main checkout required)",
+    "source": "P163 reconcile readiness audit + P180 combined plan. No new main branch checkout or inspection performed in P181.",
+    "known_facts_from_prior_audits": {
+      "zen_gates_db_rows": 94924,
+      "zen_gates_bet_index": "PRESENT (col 27, INTEGER NOT NULL DEFAULT 1)",
+      "main_db_rows": 54462,
+      "main_bet_index": "ABSENT (confirmed in P163)",
+      "row_delta": 40462,
+      "split_status": "UNRESOLVED"
+    },
+    "zen_gates_only_assets": {
+      "analysis_scripts": [
+        "analysis/power_lotto/p161_effectiveness_baseline.py",
+        "analysis/power_lotto/p167_ensemble_voting_research.py",
+        "analysis/power_lotto/p170_threshold_sensitivity_and_signal_tracking.py",
+        "analysis/power_lotto/p173_new_strategy_minimal_prototype_read_only.py",
+        "analysis/power_lotto/p176_advanced_feature_minimal_prototype_read_only.py"
+      ],
+      "test_contracts": {
+        "count": 26,
+        "range": "tests/test_p161_*.py through tests/test_p180_*.py",
+        "files": [
+          "tests/test_p161_power_lotto_effectiveness_baseline.py",
+          "tests/test_p162_p161_result_closure_contract.py",
+          "tests/test_p163_reconcile_readiness_audit_contract.py",
+          "tests/test_p164_reconcile_plan_decision_gate_contract.py",
+          "tests/test_p165b_designate_zen_gates_canonical_research_dataset_contract.py",
+          "tests/test_p166_ensemble_voting_research_plan_contract.py",
+          "tests/test_p167_ensemble_voting_research_contract.py",
+          "tests/test_p168_research_decision_review_contract.py",
+          "tests/test_p169_signal_review_and_threshold_sensitivity_plan_contract.py",
+          "tests/test_p170_threshold_sensitivity_and_signal_tracking_contract.py",
+          "tests/test_p171_new_strategy_feature_engineering_discovery_plan_contract.py",
+          "tests/test_p172_new_strategy_prototype_plan_contract.py",
+          "tests/test_p173_new_strategy_minimal_prototype_read_only_contract.py",
+          "tests/test_p174_r2_decision_review_contract.py",
+          "tests/test_p175_advanced_feature_candidate_plan_contract.py",
+          "tests/test_p176_advanced_feature_minimal_prototype_read_only_contract.py",
+          "tests/test_p177_r2_closure_decision_review_contract.py",
+          "tests/test_p178a_r2_research_closure_archive_contract.py",
+          "tests/test_p179_replay_product_governance_backlog_decision_gate_contract.py",
+          "tests/test_p180_combined_reconciliation_and_replay_backlog_plan_contract.py"
+        ]
+      },
+      "research_artifacts_json": {
+        "count": 20,
+        "path": "outputs/research/power_lotto/",
+        "range": "p161_*.json through p180_*.json"
+      },
+      "roadmap_docs": [
+        "00-Plan/roadmap/active_task.md",
+        "00-Plan/roadmap/roadmap.md",
+        "00-Plan/roadmap/CTO-Analysis.md"
+      ],
+      "key_scripts": [
+        "scripts/replay_lifecycle_drift_guard.py"
+      ]
+    },
+    "main_only_assets_estimate": {
+      "note": "Based on P163 audit — no new main checkout performed in P181",
+      "estimated_main_only": [
+        "P149-P159B replay product implementation code (API, UI, lifecycle scripts)",
+        "lottery_api/ production code and any P149-P159B specific changes",
+        "Any production governance artifacts from the pre-zen-gates-split period"
+      ]
+    }
+  },
+  "part_b_parity_scope": {
+    "title": "Code/Docs/Tests Parity Scope",
+    "code_parity_scope": {
+      "include": [
+        "analysis/power_lotto/p161_effectiveness_baseline.py",
+        "analysis/power_lotto/p167_ensemble_voting_research.py",
+        "analysis/power_lotto/p170_threshold_sensitivity_and_signal_tracking.py",
+        "analysis/power_lotto/p173_new_strategy_minimal_prototype_read_only.py",
+        "analysis/power_lotto/p176_advanced_feature_minimal_prototype_read_only.py",
+        "scripts/replay_lifecycle_drift_guard.py (verify parity with main version)"
+      ],
+      "exclude": [
+        "lottery_api/ production code — may conflict with main P149-P159B changes",
+        "Any UI/API code not reviewed for main-compatibility",
+        "Tools that depend on zen-gates DB schema (bet_index) without gate"
+      ],
+      "risk": "LOW — analysis scripts are read-only; lottery_api/ changes require separate review"
+    },
+    "docs_parity_scope": {
+      "include": [
+        "00-Plan/roadmap/active_task.md (current P161-P181 state)",
+        "00-Plan/roadmap/roadmap.md (current phase snapshot)",
+        "00-Plan/roadmap/CTO-Analysis.md (P161-P181 recommendations)",
+        "docs/replay/ markdown files if present in zen-gates and absent in main",
+        "outputs/research/power_lotto/ all 20 JSON + 20 MD research artifacts (P161-P180)"
+      ],
+      "exclude": [
+        "outputs/replay/ artifacts tied to specific draw results",
+        "Any docs that reference zen-gates-specific DB row counts without caveat"
+      ],
+      "risk": "VERY LOW — documentation only"
+    },
+    "tests_parity_scope": {
+      "include": [
+        "All 20 test files: tests/test_p161_*.py through tests/test_p180_*.py",
+        "pytest.ini configuration (verify compatibility with main)"
+      ],
+      "exclude": [
+        "test_p161_*.py DB-dependent tests without DB gate — see Part D",
+        "Any test that assumes bet_index present without conditional skip"
+      ],
+      "risk": "MEDIUM — DB-dependent tests will fail against main 54462-row DB until migration",
+      "requires_test_compatibility_strategy": true
+    },
+    "explicitly_excluded_from_p181": [
+      "DB file copy",
+      "DB migration",
+      "Schema migration (adding bet_index to main)",
+      "Row insertion into main DB",
+      "controlled_apply",
+      "Branch merge to main",
+      "Checkout of main branch",
+      "POWER_LOTTO strategy research rerun",
+      "Any new prototype or feature implementation"
+    ]
+  },
+  "part_c_backport_execution_design": {
+    "title": "Future Backport Execution Design for P182 (P181 does not execute this)",
+    "steps": [
+      {
+        "step": 1,
+        "action": "Create clean comparison checklist",
+        "description": "Enumerate all zen-gates files to backport using the inventory from Part A. Classify each as: docs-only, test-only, analysis-script, or requires-main-review.",
+        "tooling": "git diff zen-gates main -- <file> for each file in inventory",
+        "output": "Comparison checklist artifact with per-file disposition"
+      },
+      {
+        "step": 2,
+        "action": "Determine exact file list for backport",
+        "description": "From checklist, select files where zen-gates version supersedes main or where main is missing the file entirely.",
+        "criteria": "Include: docs, tests, analysis scripts. Exclude: lottery_api/ production code without explicit review."
+      },
+      {
+        "step": 3,
+        "action": "Classify files by risk tier",
+        "description": "Safe: docs-only, research artifacts, roadmap docs. Medium: analysis scripts (read-only but DB-dependent). Risky: lottery_api/ production changes.",
+        "tiers": {
+          "safe": ["00-Plan/roadmap/*.md", "outputs/research/power_lotto/*.json/.md", "docs/replay/*.md"],
+          "medium": ["analysis/power_lotto/*.py", "scripts/replay_lifecycle_drift_guard.py"],
+          "risky": ["lottery_api/**", "tools/**"]
+        }
+      },
+      {
+        "step": 4,
+        "action": "Define future P182 allowed whitelist",
+        "description": "P182 allowed files: all Safe tier files + Medium tier analysis scripts. Risky tier requires separate P183 review.",
+        "proposed_p182_whitelist_categories": [
+          "00-Plan/roadmap/ (all 3 files)",
+          "outputs/research/power_lotto/ (all research artifacts P161-P181)",
+          "docs/replay/ (all replay docs)",
+          "tests/test_p161_*.py through tests/test_p181_*.py",
+          "analysis/power_lotto/*.py",
+          "scripts/replay_lifecycle_drift_guard.py"
+        ]
+      },
+      {
+        "step": 5,
+        "action": "Define pre-flight for P182 in main branch",
+        "description": "Before running any backport in main: verify main DB rows (should be 54462), verify no uncommitted changes in main, verify CI/CD is not running, create DB backup if any DB-touching operations are planned.",
+        "pre_flight_checks": [
+          "git status --short in main → must be clean",
+          "sqlite3 main_db.db 'SELECT COUNT(*) FROM strategy_prediction_replays;' → must be 54462",
+          "Confirm no production CI pipeline running",
+          "Create timestamped DB backup if schema or data changes planned"
+        ]
+      },
+      {
+        "step": 6,
+        "action": "Define acceptance tests after future backport",
+        "description": "Post-backport verification: docs tests pass, analysis scripts importable, drift guard runs, DB-dependent tests gated.",
+        "acceptance_criteria": [
+          "python -m pytest tests/test_p178a_*.py tests/test_p179_*.py tests/test_p180_*.py tests/test_p181_*.py PASS (docs-only tests)",
+          "uv run python scripts/replay_lifecycle_drift_guard.py → PASS",
+          "DB row count unchanged at 54462 (no migration in P182)",
+          "bet_index-dependent tests: marked as xfail or requires_db_migration skip"
+        ]
+      },
+      {
+        "step": 7,
+        "action": "Define how to preserve main DB without change",
+        "description": "P182 backport must never write to DB. All DB-touching scripts must be run with PRAGMA query_only=ON or equivalent read-only guard.",
+        "db_protection": "No DB write commands in P182 whitelist. Any script writing to DB is excluded from P182."
+      },
+      {
+        "step": 8,
+        "action": "Define test gate strategy for DB-dependent tests",
+        "description": "For tests that assume 94924 rows and bet_index: mark with custom pytest marker @pytest.mark.requires_zen_gates_db. These tests SKIP in main (54462 rows, no bet_index) until DB migration authorized.",
+        "gate_implementation": "Add conftest.py check: if db_rows != 94924 or bet_index absent → skip @requires_zen_gates_db tests. This does NOT weaken assertions — it gates them correctly."
+      }
+    ]
+  },
+  "part_d_test_compatibility_strategy": {
+    "title": "Test Compatibility Strategy for main Branch",
+    "problem": "P161-P180 contract tests were authored against zen-gates DB (94924 rows, bet_index present). Main DB has 54462 rows and no bet_index. Backporting tests to main without DB migration creates a state where tests are present but many will fail.",
+    "solution": {
+      "approach": "Tiered test gating using pytest markers and conftest.py fixture",
+      "tiers": [
+        {
+          "tier": "T1 — DB-independent tests",
+          "description": "Tests that only verify artifact existence, JSON content, classification strings, roadmap doc content.",
+          "examples": ["test_p178a_json_exists", "test_p179_final_classification", "test_p180_p178a_referenced"],
+          "gate": "None — always run",
+          "expected_behavior_on_main": "PASS (no DB dependency)"
+        },
+        {
+          "tier": "T2 — DB row-count dependent tests",
+          "description": "Tests that verify DB row count == 94924.",
+          "examples": ["test_p161_db_total_rows", "test_p173_db_rows_unchanged"],
+          "gate": "@pytest.mark.requires_zen_gates_db — SKIP on main until DB migration",
+          "expected_behavior_on_main": "SKIP (not FAIL)"
+        },
+        {
+          "tier": "T3 — bet_index dependent tests",
+          "description": "Tests that verify bet_index column presence.",
+          "examples": ["test_p161_bet_index_column_present"],
+          "gate": "@pytest.mark.requires_bet_index — SKIP on main until schema migration",
+          "expected_behavior_on_main": "SKIP (not FAIL)"
+        },
+        {
+          "tier": "T4 — Analysis script execution tests",
+          "description": "Tests that run analysis scripts (P161, P167, P170, P173, P176) which require 94924-row DB.",
+          "gate": "@pytest.mark.requires_zen_gates_db — SKIP on main until DB migration",
+          "expected_behavior_on_main": "SKIP (not FAIL)"
+        }
+      ],
+      "forbidden_approaches": [
+        "Weakening test assertions (e.g., changing == 94924 to >= 54000) — FORBIDDEN",
+        "Changing contract semantics to accommodate stale DB — FORBIDDEN",
+        "Removing DB row count checks — FORBIDDEN",
+        "Hardcoding main-specific row counts in zen-gates tests — FORBIDDEN"
+      ],
+      "conftest_design": {
+        "file": "tests/conftest.py (already exists — extend, do not replace)",
+        "additions": [
+          "Register @pytest.mark.requires_zen_gates_db marker",
+          "Register @pytest.mark.requires_bet_index marker",
+          "In pytest_runtest_setup: skip requires_zen_gates_db if DB rows != 94924",
+          "In pytest_runtest_setup: skip requires_bet_index if bet_index column absent"
+        ]
+      }
+    }
+  },
+  "part_e_p182_options": {
+    "title": "Recommended P182 Options",
+    "authorization_options": [
+      {
+        "phrase": "YES start P182 code-docs-tests parity backport execution plan only",
+        "effect": "Detailed execution plan for backporting docs/tests/analysis scripts to main. Plan only — no files modified."
+      },
+      {
+        "phrase": "YES start P182 code-docs-tests parity backport implementation no DB write",
+        "effect": "Execute Safe + Medium tier backport to main branch. No DB write, no schema change. Tests gated per Part D strategy.",
+        "recommended": true
+      },
+      {
+        "phrase": "YES start P182 controlled DB migration rehearsal plan only",
+        "effect": "Design migration rehearsal: add bet_index to main, insert 40462 rows. Plan only — no migration executed."
+      },
+      {
+        "phrase": "YES start P182 replay product UI backlog implementation plan only",
+        "effect": "Plan for B-P1-1 (multi-bet UI) and B-P2-1 (operator docs) implementation. No implementation in P182."
+      },
+      {
+        "phrase": "YES start P182 maintain documented divergence and pause reconciliation",
+        "effect": "Accepts current split as long-term state. Documents divergence. No backport. No migration."
+      }
+    ]
+  },
+  "part_f_cto_recommendation": {
+    "primary": "P182 code/docs/tests parity backport implementation no DB write — only after P181 plan is reviewed by user",
+    "secondary": "DB migration remains deferred until after successful code/docs/tests backport and explicit rehearsal design",
+    "implementation_environment_note": "If future P182 backport touches main branch, it MUST be launched from the correct main repo/branch environment, NOT from zen-gates worktree. Zen-gates runtime is not suitable for main-targeting commits.",
+    "p181_remains_plan_only": true,
+    "do_not_reopen_power_lotto": "P178A closure policy remains active. POWER_LOTTO research remains CLOSED.",
+    "db_migration_policy": "DB migration (A3) only after: code/docs/tests parity confirmed + rehearsal plan designed + DB backup + explicit per-step authorization phrase.",
+    "recommendation_text": "P181 provides a complete blueprint for achieving code/docs/tests parity without touching the DB. The recommended next step is P182 code/docs/tests parity backport with no DB write. This resolves the most critical divergence (1122 test contracts and 20 research artifacts not present in main) at MEDIUM risk. DB migration follows as a separate, later step only after code parity is confirmed."
+  },
+  "explicit_forbidden_actions": {
+    "no_db_write": "ENFORCED",
+    "no_db_migration": "ENFORCED",
+    "no_db_copy": "ENFORCED",
+    "no_merge": "ENFORCED",
+    "no_rebase": "ENFORCED",
+    "no_checkout_other_branch": "ENFORCED",
+    "no_controlled_apply": "ENFORCED",
+    "no_registry_mutation": "ENFORCED",
+    "no_champion_promotion": "ENFORCED",
+    "no_deployment": "ENFORCED",
+    "no_power_lotto_research_rerun": "ENFORCED — P178A closure policy active",
+    "no_new_strategy": "ENFORCED",
+    "no_scheduler_install": "ENFORCED",
+    "no_4_star_backtest": "ENFORCED — provenance artifact absent",
+    "no_p108_p117_p118_execution": "ENFORCED — wait-state conditions not met",
+    "no_wagering_recommendation": "ENFORCED",
+    "no_win_guarantee": "ENFORCED",
+    "no_stage_commit_push": "ENFORCED",
+    "no_backport_execution_in_p181": "ENFORCED — P181 is plan-only; no files copied or modified in main",
+    "no_merge_performed": "CONFIRMED — no merge was performed in this task",
+    "no_checkout_performed": "CONFIRMED — main branch was not checked out",
+    "no_db_write_performed": "CONFIRMED — no DB write occurred"
+  },
+  "governance_confirmations": {
+    "db_rows_before": 94924,
+    "db_rows_after": 94924,
+    "db_unchanged": true,
+    "bet_index_present": true,
+    "no_db_write": true,
+    "no_registry_mutation": true,
+    "no_merge": true,
+    "no_checkout": true,
+    "no_controlled_apply": true,
+    "no_champion_promotion": true,
+    "no_deployment": true,
+    "no_wagering_recommendations": true,
+    "no_win_guarantee_claim": true,
+    "no_stage": true,
+    "no_commit": true,
+    "no_push": true,
+    "p181_is_plan_only": true,
+    "no_backport_executed": true,
+    "p178a_closure_policy_active": true,
+    "power_lotto_active_research_closed": true,
+    "main_zen_gates_split_still_unresolved": true
+  },
+  "next_task": "AWAITING_CEO_AUTHORIZATION_FOR_P182",
+  "next_task_blocked_by_user_authorization": true,
+  "next_p182_authorization_options": [
+    "YES start P182 code-docs-tests parity backport execution plan only",
+    "YES start P182 code-docs-tests parity backport implementation no DB write",
+    "YES start P182 controlled DB migration rehearsal plan only",
+    "YES start P182 replay product UI backlog implementation plan only",
+    "YES start P182 maintain documented divergence and pause reconciliation"
+  ]
+}

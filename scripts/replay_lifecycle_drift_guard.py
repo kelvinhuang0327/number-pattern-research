@@ -91,9 +91,31 @@ BASELINE = {
     "p79_fourier30_markov30_apply_id": "P78_POWERLOTTO_BATCH_A_FOURIER30_MARKOV30_DRAWEXT_20260526",
     # P94: Tier B Controlled Apply — 7500 rows (2026-05-26)
     "p94_apply_id": "P94_TIERB_CONTROLLED_APPLY_20260526",
+    # P126B: POWER_LOTTO fourier_rhythm_2bet multi-bet (1500 rows) (2026-05-28)
+    "p126b_apply_id": "P126B_POWER_FOURIER_RHYTHM_2BET_20260528",
+    # P126C: BIG_LOTTO echo_aware_3bet multi-bet (3000 rows) (2026-05-28)
+    "p126c_apply_id": "P126C_BIGLOTTO_ECHO_AWARE_3BET_20260528",
+    # P126D: DAILY_539 f4cold_3bet multi-bet (3000 rows) (2026-05-28)
+    "p126d_apply_id": "P126D_DAILY539_F4COLD_3BET_20260528",
+    # P126E: BIG_LOTTO ts3_markov_4bet multi-bet (4500 rows) (2026-05-28)
+    "p126e_apply_id": "P126E_BIGLOTTO_TS3_MARKOV_4BET_W30_20260528",
+    # P126F: DAILY_539 f4cold_5bet multi-bet (6000 rows) (2026-05-28)
+    "p126f_apply_id": "P126F_DAILY539_F4COLD_5BET_20260528",
+    # P131: DAILY_539 acb_markov_midfreq_3bet multi-bet (3000 rows) (2026-05-28)
+    "p131_apply_id": "P131_ACB_MARKOV_MIDFREQ_3BET_DAILY539_V20260528",
+    # P132: POWER_LOTTO midfreq_fourier_mk_3bet multi-bet (3000 rows) (2026-05-28)
+    "p132_apply_id": "P132_MIDFREQ_FOURIER_MK_3BET_POWERLOTTO_V20260528",
+    # P133: POWER_LOTTO pp3_freqort_4bet multi-bet (4500 rows) (2026-05-28)
+    "p133_apply_id": "P133_PP3_FREQORT_4BET_POWERLOTTO_V20260528",
+    # P134: POWER_LOTTO fourier_rhythm_3bet multi-bet (3002 rows) (2026-05-28)
+    "p134_apply_id": "P134_FOURIER_RHYTHM_3BET_POWERLOTTO_V20260528",
+    # P140: POWER_LOTTO power_precision_3bet multi-bet (3000 rows)
+    "p140_apply_id": "P140_APPLY_POWER_PRECISION_3BET_v1",
+    # P141: POWER_LOTTO power_orthogonal_5bet multi-bet (6000 rows)
+    "p141_apply_id": "P141_APPLY_POWER_ORTHOGONAL_5BET_v1",
     "v1_count": 0,
     "v2_count": 0,
-    "legacy_count": 460,
+    "legacy_count": 420,  # Post-P188: 460 original - 160 dedup dropped + 120 imported NULL-CA = 420
     "p2b_count": 0,
     "p2f_count": 0,
     "p3bc_count": 0,
@@ -114,7 +136,19 @@ BASELINE = {
     "p79_fourier30_markov30_count": 1,
     # P94 Tier B Controlled Apply: 7500 rows (2026-05-26)
     "p94_count": 7500,
-    "total_count": 54462,  # 46962 (pre-P94) + 7500 (P94 Tier B) = 54462
+    # P188 multi-bet import (2026-06-01)
+    "p126b_count": 1500,
+    "p126c_count": 3000,
+    "p126d_count": 3000,
+    "p126e_count": 4500,
+    "p126f_count": 6000,
+    "p131_count": 3000,
+    "p132_count": 3000,
+    "p133_count": 4500,
+    "p134_count": 3002,
+    "p140_count": 3000,
+    "p141_count": 6000,
+    "total_count": 94924,  # Post-P188: 54462 → 94924 after migration (dedup + import 40622 multi-bet rows)
 }
 
 # Known V3 tombstone strategy IDs — must have 0 rows in replay table
@@ -274,6 +308,61 @@ def run_checks(db_path: pathlib.Path) -> dict:
         (BASELINE["p94_apply_id"],),
     ).fetchone()[0]
 
+    p126b_count = c.execute(
+        "SELECT COUNT(*) FROM strategy_prediction_replays WHERE controlled_apply_id=?",
+        (BASELINE["p126b_apply_id"],),
+    ).fetchone()[0]
+
+    p126c_count = c.execute(
+        "SELECT COUNT(*) FROM strategy_prediction_replays WHERE controlled_apply_id=?",
+        (BASELINE["p126c_apply_id"],),
+    ).fetchone()[0]
+
+    p126d_count = c.execute(
+        "SELECT COUNT(*) FROM strategy_prediction_replays WHERE controlled_apply_id=?",
+        (BASELINE["p126d_apply_id"],),
+    ).fetchone()[0]
+
+    p126e_count = c.execute(
+        "SELECT COUNT(*) FROM strategy_prediction_replays WHERE controlled_apply_id=?",
+        (BASELINE["p126e_apply_id"],),
+    ).fetchone()[0]
+
+    p126f_count = c.execute(
+        "SELECT COUNT(*) FROM strategy_prediction_replays WHERE controlled_apply_id=?",
+        (BASELINE["p126f_apply_id"],),
+    ).fetchone()[0]
+
+    p131_count = c.execute(
+        "SELECT COUNT(*) FROM strategy_prediction_replays WHERE controlled_apply_id=?",
+        (BASELINE["p131_apply_id"],),
+    ).fetchone()[0]
+
+    p132_count = c.execute(
+        "SELECT COUNT(*) FROM strategy_prediction_replays WHERE controlled_apply_id=?",
+        (BASELINE["p132_apply_id"],),
+    ).fetchone()[0]
+
+    p133_count = c.execute(
+        "SELECT COUNT(*) FROM strategy_prediction_replays WHERE controlled_apply_id=?",
+        (BASELINE["p133_apply_id"],),
+    ).fetchone()[0]
+
+    p134_count = c.execute(
+        "SELECT COUNT(*) FROM strategy_prediction_replays WHERE controlled_apply_id=?",
+        (BASELINE["p134_apply_id"],),
+    ).fetchone()[0]
+
+    p140_count = c.execute(
+        "SELECT COUNT(*) FROM strategy_prediction_replays WHERE controlled_apply_id=?",
+        (BASELINE["p140_apply_id"],),
+    ).fetchone()[0]
+
+    p141_count = c.execute(
+        "SELECT COUNT(*) FROM strategy_prediction_replays WHERE controlled_apply_id=?",
+        (BASELINE["p141_apply_id"],),
+    ).fetchone()[0]
+
     legacy_count = c.execute(
         "SELECT COUNT(*) FROM strategy_prediction_replays WHERE controlled_apply_id IS NULL"
     ).fetchone()[0]
@@ -366,6 +455,28 @@ def run_checks(db_path: pathlib.Path) -> dict:
         violations.append(
             f"P94 row count mismatch: expected {BASELINE['p94_count']}, got {p94_count}"
         )
+    if p126b_count != BASELINE["p126b_count"]:
+        violations.append(f"P126B row count mismatch: expected {BASELINE['p126b_count']}, got {p126b_count}")
+    if p126c_count != BASELINE["p126c_count"]:
+        violations.append(f"P126C row count mismatch: expected {BASELINE['p126c_count']}, got {p126c_count}")
+    if p126d_count != BASELINE["p126d_count"]:
+        violations.append(f"P126D row count mismatch: expected {BASELINE['p126d_count']}, got {p126d_count}")
+    if p126e_count != BASELINE["p126e_count"]:
+        violations.append(f"P126E row count mismatch: expected {BASELINE['p126e_count']}, got {p126e_count}")
+    if p126f_count != BASELINE["p126f_count"]:
+        violations.append(f"P126F row count mismatch: expected {BASELINE['p126f_count']}, got {p126f_count}")
+    if p131_count != BASELINE["p131_count"]:
+        violations.append(f"P131 row count mismatch: expected {BASELINE['p131_count']}, got {p131_count}")
+    if p132_count != BASELINE["p132_count"]:
+        violations.append(f"P132 row count mismatch: expected {BASELINE['p132_count']}, got {p132_count}")
+    if p133_count != BASELINE["p133_count"]:
+        violations.append(f"P133 row count mismatch: expected {BASELINE['p133_count']}, got {p133_count}")
+    if p134_count != BASELINE["p134_count"]:
+        violations.append(f"P134 row count mismatch: expected {BASELINE['p134_count']}, got {p134_count}")
+    if p140_count != BASELINE["p140_count"]:
+        violations.append(f"P140 row count mismatch: expected {BASELINE['p140_count']}, got {p140_count}")
+    if p141_count != BASELINE["p141_count"]:
+        violations.append(f"P141 row count mismatch: expected {BASELINE['p141_count']}, got {p141_count}")
     if total_count != BASELINE["total_count"]:
         violations.append(
             f"total row count mismatch: expected {BASELINE['total_count']}, got {total_count}"
@@ -393,6 +504,17 @@ def run_checks(db_path: pathlib.Path) -> dict:
         "p79_fourier_rhythm": p79_fourier_rhythm_count,
         "p79_fourier30_markov30": p79_fourier30_markov30_count,
         "p94": p94_count,
+        "p126b": p126b_count,
+        "p126c": p126c_count,
+        "p126d": p126d_count,
+        "p126e": p126e_count,
+        "p126f": p126f_count,
+        "p131": p131_count,
+        "p132": p132_count,
+        "p133": p133_count,
+        "p134": p134_count,
+        "p140": p140_count,
+        "p141": p141_count,
         "total": total_count,
     }
 
@@ -475,6 +597,10 @@ def run_checks(db_path: pathlib.Path) -> dict:
         BASELINE["p66_cold_apply_id"], BASELINE["p66_zonal_apply_id"],
         BASELINE["p79_fourier_rhythm_apply_id"], BASELINE["p79_fourier30_markov30_apply_id"],
         BASELINE["p94_apply_id"],
+        BASELINE["p126b_apply_id"], BASELINE["p126c_apply_id"],
+        BASELINE["p126d_apply_id"], BASELINE["p126e_apply_id"], BASELINE["p126f_apply_id"],
+        BASELINE["p131_apply_id"], BASELINE["p132_apply_id"], BASELINE["p133_apply_id"],
+        BASELINE["p134_apply_id"], BASELINE["p140_apply_id"], BASELINE["p141_apply_id"],
         "null", None,
     }
     for aid_key, cnt in controlled_apply_id_counts.items():

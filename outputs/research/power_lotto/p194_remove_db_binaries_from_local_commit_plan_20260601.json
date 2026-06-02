@@ -1,0 +1,303 @@
+{
+  "task": "P194_REMOVE_DB_BINARIES_FROM_LOCAL_COMMIT_PLAN_ONLY",
+  "date": "2026-06-01",
+  "final_classification": "P194_REMOVE_DB_BINARIES_FROM_LOCAL_COMMIT_PLAN_READY",
+  "authorization_phrase_detected": "YES start P194 remove DB binaries from local commit plan only",
+
+  "phase_0_verification": {
+    "status": "PASS",
+    "repo": "/Users/kelvin/Kelvin-WorkSpace/LotteryNew",
+    "branch": "main",
+    "git_dir": ".git",
+    "in_worktree": false,
+    "head_commit": "012d4a3f74a35a24c9f1518795bc79098897d7f5",
+    "head_message": "P188-P191: reconcile replay DB and post-migration governance",
+    "origin_main": "684bffcea3080f8f1f31c5b9acc3a572907ec4f3",
+    "origin_main_is_ancestor": true,
+    "commits_ahead": 6,
+    "staged_files": 0,
+    "production_db_rows": 94924,
+    "bet_index_null_count": 0,
+    "integrity_check": "ok",
+    "p188_backup_exists": true,
+    "p188_backup_sha256_exists": true,
+    "p193_artifact_exists": true,
+    "p193_classification": "P193_PUSH_REJECTION_REMEDIATION_PLAN_READY",
+    "p178a_to_p193_tests": "865 passed, 0 failed, 0 skipped",
+    "drift_guard": "REPLAY_LIFECYCLE_DRIFT_GUARD_PASS",
+    "stop_conditions_triggered": []
+  },
+
+  "p193_classification_referenced": "P193_PUSH_REJECTION_REMEDIATION_PLAN_READY",
+
+  "current_state_summary": {
+    "p191_local_commit": "012d4a3f74a35a24c9f1518795bc79098897d7f5",
+    "p191_commit_message": "P188-P191: reconcile replay DB and post-migration governance",
+    "p191_files_committed": 109,
+    "p192_push_result": "REJECTED — GH006 branch protection + large binary warning",
+    "p193_remediation_plan": "READY — CTO recommends Option B (remove DB binaries)",
+    "origin_main_status": "UNCHANGED — 684bffce (6 commits behind local)",
+    "remote_reconciliation": "NOT YET",
+    "push_blocker_1": "Branch protection: required status check replay-default-validation must pass",
+    "push_blocker_2": "lottery_api/data/lottery_v2.db = 96MB in committed blob (approaching 100MB hard limit)",
+    "commits_ahead_of_origin": [
+      "012d4a3 P188-P191: reconcile replay DB and post-migration governance",
+      "d1a6817 P128: define native multi-bet replay storage design",
+      "a42c7cb P126: controlled apply dry-run plan for Tier-B multi-bet adapters",
+      "eb749a5 P125: add adapter gap plan from P124 matrix",
+      "77d7d7d Merge P124 multi-bet replay truth and coverage matrix",
+      "ed6798e P124: multi-bet replay truth model + coverage matrix"
+    ],
+    "p194_modifies_files": false
+  },
+
+  "large_binary_inventory": {
+    "binaries_in_p191_commit": [
+      {
+        "path": "lottery_api/data/lottery_v2.db",
+        "size_bytes": 99368960,
+        "size_human": "96M",
+        "sha256": "a5ac27a6887d8c1d8da97349dbc97c36e9429270dd45f81b3b67a8d5793c4f87",
+        "rows": 94924,
+        "bet_index": "PRESENT",
+        "integrity": "ok",
+        "github_status": "WARNING — exceeds 50MB recommendation; approaching 100MB hard limit",
+        "remove_from_git": true,
+        "local_preservation": "MUST keep at lottery_api/data/lottery_v2.db after rewrite"
+      },
+      {
+        "path": "backups/p188_lottery_v2_backup_20260601_153821.db",
+        "size_bytes": 53374976,
+        "size_human": "51M",
+        "sha256": "5eea53135fb65369a3dd90512e7f8bfc4411b756abadf00a03b2b9b7d4e24da9",
+        "rows": 54462,
+        "bet_index": "ABSENT",
+        "github_status": "WARNING — slightly over 50MB recommendation",
+        "remove_from_git": true,
+        "local_preservation": "MUST keep at backups/p188_lottery_v2_backup_20260601_153821.db after rewrite"
+      },
+      {
+        "path": "backups/p188_lottery_v2_backup_20260601_153821.db.sha256",
+        "size_bytes": 95,
+        "sha256": "N/A — tiny text",
+        "remove_from_git": false,
+        "note": "SHA256 hash file — tiny, safe to keep in git as audit evidence"
+      }
+    ],
+    "total_binary_bytes_to_remove": 152743936,
+    "total_binary_human": "146MB",
+    "safe_to_keep_in_git": ["backups/p188_lottery_v2_backup_20260601_153821.db.sha256"]
+  },
+
+  "binary_removal_strategy": {
+    "core_principle": "Remove DB binary blobs from pushed git history. Preserve all local files on disk. Replace binary evidence with: manifest JSON, SHA256 hash file, row count, schema summary, integrity check result.",
+    "preserve_local_db": {
+      "path": "lottery_api/data/lottery_v2.db",
+      "action": "DO NOT DELETE — must remain at full 94924-row migrated state",
+      "rows": 94924,
+      "sha256": "a5ac27a6887d8c1d8da97349dbc97c36e9429270dd45f81b3b67a8d5793c4f87"
+    },
+    "preserve_local_backup": {
+      "path": "backups/p188_lottery_v2_backup_20260601_153821.db",
+      "action": "DO NOT DELETE — must remain as P188 pre-migration evidence",
+      "rows": 54462,
+      "sha256": "5eea53135fb65369a3dd90512e7f8bfc4411b756abadf00a03b2b9b7d4e24da9"
+    },
+    "manifest_to_create_in_p195": {
+      "path": "docs/db_migration_manifest_p188_p191.json",
+      "purpose": "Replace binary evidence in git with a text manifest containing DB metadata, SHA256, row count, and schema summary",
+      "contents": {
+        "production_db_path": "lottery_api/data/lottery_v2.db",
+        "production_db_rows": 94924,
+        "production_db_bet_index": "PRESENT NOT NULL DEFAULT 1",
+        "production_db_sha256": "a5ac27a6887d8c1d8da97349dbc97c36e9429270dd45f81b3b67a8d5793c4f87",
+        "production_db_size_bytes": 99368960,
+        "production_db_not_in_git": true,
+        "backup_path": "backups/p188_lottery_v2_backup_20260601_153821.db",
+        "backup_rows": 54462,
+        "backup_bet_index": "ABSENT",
+        "backup_sha256": "5eea53135fb65369a3dd90512e7f8bfc4411b756abadf00a03b2b9b7d4e24da9",
+        "backup_size_bytes": 53374976,
+        "backup_not_in_git": true,
+        "migration_p188": "54462 -> 94924 rows, bet_index added, 160 null-provenance rows deduped"
+      }
+    },
+    "gitignore_entries_to_add": [
+      "lottery_api/data/lottery_v2.db",
+      "lottery_api/data/lottery_v2.db-wal",
+      "lottery_api/data/lottery_v2.db-shm",
+      "lottery_api/data/*.bak_*",
+      "backups/*.db",
+      "backups/*.db-shm",
+      "backups/*.db-wal",
+      "outputs/research/power_lotto/p184_rehearsal/*.db",
+      "outputs/research/power_lotto/p184_rehearsal/*.db-shm",
+      "outputs/research/power_lotto/p184_rehearsal/*.db-wal",
+      "outputs/research/power_lotto/p185_rehearsal/*.db",
+      "outputs/research/power_lotto/p185_rehearsal/*.db-shm",
+      "outputs/research/power_lotto/p185_rehearsal/*.db-wal"
+    ],
+    "note_on_sha256_file": "backups/p188_lottery_v2_backup_20260601_153821.db.sha256 STAYS in git — it is the lightweight audit trail"
+  },
+
+  "candidate_execution_approaches": {
+    "approach_1": {
+      "id": "SOFT_RESET_AND_RECOMMIT",
+      "description": "git reset --soft HEAD~1 to undo P191 commit while keeping staged state. Unstage DB binaries. Add .gitignore and manifest. Recommit without binaries.",
+      "steps": [
+        "0. VERIFY: sqlite3 lottery_api/data/lottery_v2.db 'SELECT COUNT(*) ...' = 94924 (safety check before reset)",
+        "1. git reset --soft HEAD~1  (undoes P191 commit; keeps all 109 files staged; local DB files untouched)",
+        "2. git restore --staged lottery_api/data/lottery_v2.db  (unstage production DB)",
+        "3. git restore --staged backups/p188_lottery_v2_backup_20260601_153821.db  (unstage backup DB)",
+        "4. Create docs/db_migration_manifest_p188_p191.json with DB metadata, sha256, row counts",
+        "5. Append gitignore entries for *.db paths to .gitignore",
+        "6. git add .gitignore docs/db_migration_manifest_p188_p191.json",
+        "7. git commit -m 'P182-P191: reconcile replay governance (no DB binaries)' --no-edit  [with same body]",
+        "8. VERIFY: sqlite3 lottery_api/data/lottery_v2.db 'SELECT COUNT(*) ...' = 94924  (DB must still exist)",
+        "9. VERIFY: git diff --cached --name-only = empty  (nothing staged)",
+        "10. VERIFY: git show HEAD --name-only | grep '.db$' = empty  (no .db in new commit)"
+      ],
+      "risk_level": "MEDIUM",
+      "risks": [
+        "reset --soft undoes HEAD~1 only — the 6 commits ahead structure changes to 5 non-binary + no binary commit",
+        "If dirty working tree has unexpected files, they may be accidentally staged after reset",
+        "Must NOT run git add -A after reset — only explicit files",
+        "P124-P128 commits are NOT affected (they don't contain DB binaries)"
+      ],
+      "benefits": [
+        "Clean: rewrites only the P191 commit",
+        "No branch creation needed",
+        "Local DB files preserved in working tree",
+        "Resulting commit is push-safe (no large binaries)"
+      ],
+      "recommendation": "PRIMARY RECOMMENDED",
+      "prerequisite": "Explicit P195 authorization phrase required before execution"
+    },
+    "approach_2": {
+      "id": "GIT_RM_CACHED_AND_AMEND",
+      "description": "Remove binaries from index with git rm --cached, then amend the P191 commit.",
+      "steps": [
+        "0. VERIFY DB rows = 94924 (safety check)",
+        "1. git rm --cached lottery_api/data/lottery_v2.db  (removes from index, keeps local file)",
+        "2. git rm --cached backups/p188_lottery_v2_backup_20260601_153821.db  (removes from index)",
+        "3. Create manifest + update .gitignore",
+        "4. git add .gitignore docs/db_migration_manifest_p188_p191.json",
+        "5. git commit --amend  (rewrites P191 in place; keeping same message)",
+        "6. VERIFY local DB still exists and has 94924 rows"
+      ],
+      "risk_level": "MEDIUM",
+      "risks": [
+        "git rm --cached does NOT delete local file, but operator must confirm",
+        "amend rewrites P191 commit hash — changes the commit identity",
+        "Must ensure git rm --cached is used, NOT git rm (which would delete the file)"
+      ],
+      "benefits": [
+        "Simpler than Approach 1 (no reset needed)",
+        "Rewrites only the P191 commit",
+        "Local files preserved"
+      ],
+      "recommendation": "ACCEPTABLE ALTERNATIVE — slightly higher confusion risk than Approach 1"
+    },
+    "approach_3": {
+      "id": "NEW_FEATURE_BRANCH_CHERRY_PICK",
+      "description": "Create new feature branch from origin/main. Cherry-pick P191 changes excluding DB binaries. Push feature branch. Open PR.",
+      "steps": [
+        "0. VERIFY DB rows = 94924",
+        "1. git checkout -b feature/p182-p191-governance origin/main",
+        "2. git cherry-pick --no-commit 012d4a3",
+        "3. git restore --staged lottery_api/data/lottery_v2.db",
+        "4. git restore --staged backups/p188_lottery_v2_backup_20260601_153821.db",
+        "5. Create manifest + update .gitignore",
+        "6. git add .gitignore docs/db_migration_manifest_p188_p191.json",
+        "7. git commit -m 'P182-P191: reconcile replay governance (no DB binaries)'",
+        "8. git push origin feature/p182-p191-governance",
+        "9. Open PR to main; wait for replay-default-validation CI to pass",
+        "10. Merge PR via GitHub"
+      ],
+      "risk_level": "LOW-MEDIUM",
+      "risks": [
+        "Requires branch creation and checkout — must be explicitly authorized",
+        "P124-P128 commits on local main are NOT pushed via this path (they stay local)",
+        "Local main diverges from the feature branch",
+        "More complex merge history"
+      ],
+      "benefits": [
+        "Cleanest PR workflow — respects branch protection from the start",
+        "Does not rewrite local main commit history",
+        "Feature branch can be tested by CI before merge"
+      ],
+      "recommendation": "PREFERRED FOR PR WORKFLOW — but adds branch complexity"
+    },
+    "approach_4": {
+      "id": "KEEP_LOCAL_COMMIT_UNPUSHED_EXPORT_MANIFEST",
+      "description": "Do not rewrite anything. Keep P191 commit as-is on local main. Export a text manifest of DB state. Pause remote reconciliation.",
+      "steps": [
+        "No git operations needed",
+        "Create docs/db_migration_manifest_p188_p191.json for record-keeping",
+        "Document current state in active_task.md"
+      ],
+      "risk_level": "LOWEST",
+      "risks": [
+        "Remote repo (origin/main) remains at P124 state — no P125-P191 work published",
+        "Local-only state is fragile — if local disk fails, all work since P124 is lost",
+        "Does not resolve binary problem; just defers it"
+      ],
+      "recommendation": "ACCEPTABLE as short-term hold only; not a resolution"
+    }
+  },
+
+  "cto_recommendation": {
+    "primary_approach": "Approach 1 — SOFT_RESET_AND_RECOMMIT",
+    "rationale": [
+      "git reset --soft HEAD~1 is clean and well-understood",
+      "It precisely undoes only the P191 commit while keeping all content staged",
+      "Unstaging the DB binaries is explicit and auditable",
+      "The local DB files are NOT affected by the reset (they stay at 94924 rows)",
+      "Results in a clean, push-safe commit without large binaries",
+      "After Approach 1, Approach 3 (feature branch PR) should be used to satisfy branch protection"
+    ],
+    "combined_path": "Approach 1 (remove binaries from local commit) → Approach 3 (create feature branch and PR) → CI passes → merge to main",
+    "critical_safety_rules": [
+      "NEVER run git rm lottery_api/data/lottery_v2.db — only git rm --cached or git restore --staged",
+      "NEVER run git reset --hard — only git reset --soft",
+      "VERIFY DB rows = 94924 BEFORE and AFTER the reset",
+      "Do NOT push the current P191 commit as-is",
+      "Do NOT disable branch protection",
+      "Do NOT force push to main"
+    ],
+    "gitignore_importance": "Adding DB paths to .gitignore is critical to prevent future accidental commits of the 96MB production DB. Once done, the DB can grow freely without approaching GitHub's 100MB hard limit.",
+    "manifest_importance": "The docs/db_migration_manifest_p188_p191.json replaces binary evidence with verifiable metadata: sha256, row counts, byte sizes. Any auditor can verify the migration by running local DB queries against the sha256 in the manifest.",
+    "ci_note": "The replay-default-validation CI check runs on PRs. After binary removal, the commit will be small enough for CI to handle. Ensure the CI check passes before merging."
+  },
+
+  "governance_confirmations": {
+    "no_db_write": true,
+    "no_db_delete": true,
+    "no_backup_delete": true,
+    "no_commit_rewrite": true,
+    "no_amend": true,
+    "no_reset": true,
+    "no_branch_creation": true,
+    "no_stage": true,
+    "no_commit": true,
+    "no_push": true,
+    "no_force_push": true,
+    "branch_protection_not_bypassed": true,
+    "no_checkout_other_branch": true,
+    "power_lotto_research_closed": true,
+    "migrated_db_local_state_preserved": true,
+    "production_db_rows": 94924,
+    "bet_index_present": true,
+    "p191_local_commit_intact": true
+  },
+
+  "next_task_options": [
+    "YES start P195 remove DB binaries from local commit execution plan only",
+    "YES start P195 amend local commit to remove DB binaries no push",
+    "YES start P195 create non-binary PR branch plan only",
+    "YES start P195 keep local commit unpushed and document state",
+    "YES start P195 rollback decision gate only"
+  ],
+
+  "next_task_blocked_by_user_authorization": true
+}

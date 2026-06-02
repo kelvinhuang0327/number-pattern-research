@@ -1,0 +1,74 @@
+{
+  "manifest_type": "DB_BINARY_EXTERNAL_STORAGE_MANIFEST",
+  "task": "P196_REMOVE_DB_BINARIES_SOFT_RESET_RECOMMIT_NON_BINARY_NO_PUSH",
+  "created_at": "2026-06-01",
+  "purpose": "Text-based evidence of P188 DB migration and P191 binary removal. Replaces binary blobs in git history. Auditors can verify migration by running sqlite3 queries against local DB and comparing sha256 values.",
+
+  "production_db": {
+    "path": "lottery_api/data/lottery_v2.db",
+    "git_tracked": false,
+    "note": "NOT tracked in git — local only. Add path to .gitignore to prevent future accidental commits.",
+    "sha256": "a5ac27a6887d8c1d8da97349dbc97c36e9429270dd45f81b3b67a8d5793c4f87",
+    "size_bytes": 99368960,
+    "size_human": "96M",
+    "rows": 94924,
+    "bet_index_present": true,
+    "bet_index_definition": "INTEGER NOT NULL DEFAULT 1",
+    "bet_index_null_count": 0,
+    "integrity_check": "ok",
+    "migration_from_rows": 54462,
+    "dedup_dropped_rows": 160,
+    "imported_multi_bet_rows": 40622,
+    "migration_task": "P188_PRODUCTION_DB_MIGRATION_EXECUTED_RECONCILED_94924",
+    "schema_key_columns": [
+      "id INTEGER PRIMARY KEY",
+      "lottery_type TEXT NOT NULL",
+      "target_draw TEXT NOT NULL",
+      "strategy_id TEXT NOT NULL",
+      "bet_index INTEGER NOT NULL DEFAULT 1",
+      "replay_status TEXT NOT NULL",
+      "controlled_apply_id TEXT",
+      "provenance_hash TEXT",
+      "truth_level TEXT",
+      "dry_run INTEGER DEFAULT 0"
+    ]
+  },
+
+  "backup_db": {
+    "path": "backups/p188_lottery_v2_backup_20260601_153821.db",
+    "git_tracked": false,
+    "note": "NOT tracked in git — local only. Pre-migration backup preserved as rollback reference.",
+    "sha256": "5eea53135fb65369a3dd90512e7f8bfc4411b756abadf00a03b2b9b7d4e24da9",
+    "sha256_file_in_git": "backups/p188_lottery_v2_backup_20260601_153821.db.sha256",
+    "size_bytes": 53374976,
+    "size_human": "51M",
+    "rows": 54462,
+    "bet_index_present": false,
+    "note_2": "Pre-migration state — no bet_index column. Use sha256 to verify backup integrity."
+  },
+
+  "p188_artifacts": {
+    "sql_log_in_git": "outputs/research/power_lotto/p188_production_db_migration_sql_log_20260601.sql",
+    "execution_report_json": "outputs/research/power_lotto/p188_production_db_migration_execution_20260601.json",
+    "execution_report_md": "outputs/research/power_lotto/p188_production_db_migration_execution_20260601.md"
+  },
+
+  "p191_binary_heavy_commit": {
+    "hash": "012d4a3f74a35a24c9f1518795bc79098897d7f5",
+    "message": "P188-P191: reconcile replay DB and post-migration governance",
+    "note": "This commit contained DB binaries (lottery_v2.db 96MB + backup 51MB). P196 replaces it with a non-binary recommit."
+  },
+
+  "external_storage_policy": {
+    "external_storage_required": true,
+    "note": "DB binaries are intentionally excluded from pushable git history. Store production DB and backup on local disk, secure offsite backup, or a data management system outside git.",
+    "do_not_delete_local_copies": "Do NOT delete local copies of lottery_api/data/lottery_v2.db or backups/p188_*.db until external backup is confirmed and validated.",
+    "verification_command": "shasum -a 256 lottery_api/data/lottery_v2.db  → must match a5ac27a6..."
+  },
+
+  "governance": {
+    "no_controlled_apply": true,
+    "power_lotto_research_closed": true,
+    "db_migration_local_state_preserved": true
+  }
+}

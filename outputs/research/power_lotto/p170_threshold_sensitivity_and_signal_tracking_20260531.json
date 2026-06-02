@@ -1,0 +1,359 @@
+{
+  "task": "P170_POWER_LOTTO_THRESHOLD_SENSITIVITY_AND_SIGNAL_TRACKING_READ_ONLY",
+  "date": "2026-06-01",
+  "final_classification": "P170_POWER_LOTTO_SENSITIVITY_DOES_NOT_SUPPORT_TRACKING",
+  "authorization_phrase": "YES execute P170 threshold sensitivity and signal tracking read-only, no DB write, no P167 verdict change",
+  "phase_0_verification": {
+    "all_checks_passed": true,
+    "worktree_path": "/Users/kelvin/Kelvin-WorkSpace/LotteryNew/.claude/worktrees/zen-gates-ff6802",
+    "branch": "claude/zen-gates-ff6802",
+    "db_rows_before": 94924,
+    "db_rows_after": 94924,
+    "db_unchanged": true,
+    "drift_guard": "PASS"
+  },
+  "p167_classification_preserved": "P167_POWER_LOTTO_NO_DEFENSIBLE_EDGE_FOUND",
+  "p167_verdict_changes": false,
+  "p169_plan_source": "outputs/research/power_lotto/p169_signal_review_and_threshold_sensitivity_plan_20260531.json",
+  "canonical_dataset": {
+    "total_rows": 94924,
+    "power_lotto_rows": 36000,
+    "complete_draws": 1499
+  },
+  "threshold_sensitivity": {
+    "pre_declared_scenarios": [
+      "S1",
+      "S2",
+      "S3",
+      "S4",
+      "S5"
+    ],
+    "scenarios": [
+      {
+        "scenario_id": "S1",
+        "threshold": 450,
+        "label": "RETROSPECTIVE_SENSITIVITY_ONLY",
+        "n_windows_computed": 2,
+        "both_windows_positive": false,
+        "window_results": [
+          {
+            "window": "oos_window_1",
+            "oos_draws_actual": 450,
+            "threshold": 450,
+            "qualifies": true,
+            "mean_hit_count": 1.046667,
+            "z_vs_random": 2.3884,
+            "p_raw": 0.016922,
+            "above_random": true,
+            "above_best_single": true,
+            "status": "COMPUTED"
+          },
+          {
+            "window": "oos_window_2",
+            "oos_draws_actual": 450,
+            "threshold": 450,
+            "qualifies": true,
+            "mean_hit_count": 0.937778,
+            "z_vs_random": -0.2533,
+            "p_raw": 0.800021,
+            "above_random": false,
+            "above_best_single": false,
+            "status": "COMPUTED"
+          }
+        ],
+        "corrections": [
+          {
+            "key": "S1_w1",
+            "p_raw": 0.016922,
+            "p_bonferroni": 0.033844,
+            "p_bh": 0.033844,
+            "significant_bonferroni": true,
+            "significant_bh": true
+          },
+          {
+            "key": "S1_w2",
+            "p_raw": 0.800021,
+            "p_bonferroni": 1.0,
+            "p_bh": 0.800021,
+            "significant_bonferroni": false,
+            "significant_bh": false
+          }
+        ],
+        "p167_verdict_changes": false,
+        "interpretation": "RETROSPECTIVE_SENSITIVITY_ONLY at 450-draw threshold: 2 computed windows. Mixed or negative direction. This does NOT change P167 verdict."
+      },
+      {
+        "scenario_id": "S2",
+        "threshold": 475,
+        "label": "RETROSPECTIVE_SENSITIVITY_ONLY",
+        "n_windows_computed": 2,
+        "both_windows_positive": false,
+        "window_results": [
+          {
+            "window": "oos_window_1",
+            "oos_draws_actual": 475,
+            "threshold": 475,
+            "qualifies": true,
+            "mean_hit_count": 1.035789,
+            "z_vs_random": 2.1367,
+            "p_raw": 0.032626,
+            "above_random": true,
+            "above_best_single": true,
+            "status": "COMPUTED"
+          },
+          {
+            "window": "oos_window_2",
+            "oos_draws_actual": 475,
+            "threshold": 475,
+            "qualifies": true,
+            "mean_hit_count": 0.941053,
+            "z_vs_random": -0.1692,
+            "p_raw": 0.865635,
+            "above_random": false,
+            "above_best_single": false,
+            "status": "COMPUTED"
+          }
+        ],
+        "corrections": [
+          {
+            "key": "S2_w1",
+            "p_raw": 0.032626,
+            "p_bonferroni": 0.065252,
+            "p_bh": 0.065252,
+            "significant_bonferroni": false,
+            "significant_bh": false
+          },
+          {
+            "key": "S2_w2",
+            "p_raw": 0.865635,
+            "p_bonferroni": 1.0,
+            "p_bh": 0.865635,
+            "significant_bonferroni": false,
+            "significant_bh": false
+          }
+        ],
+        "p167_verdict_changes": false,
+        "interpretation": "RETROSPECTIVE_SENSITIVITY_ONLY at 475-draw threshold: 2 computed windows. Mixed or negative direction. This does NOT change P167 verdict."
+      },
+      {
+        "scenario_id": "S3",
+        "threshold": 499,
+        "label": "RETROSPECTIVE_SENSITIVITY_ONLY",
+        "n_windows_computed": 2,
+        "both_windows_positive": false,
+        "window_results": [
+          {
+            "window": "oos_window_1",
+            "oos_draws_actual": 499,
+            "threshold": 499,
+            "qualifies": true,
+            "mean_hit_count": 1.042084,
+            "z_vs_random": 2.3004,
+            "p_raw": 0.021425,
+            "above_random": true,
+            "above_best_single": true,
+            "status": "COMPUTED"
+          },
+          {
+            "window": "oos_window_2",
+            "oos_draws_actual": 499,
+            "threshold": 499,
+            "qualifies": true,
+            "mean_hit_count": 0.92986,
+            "z_vs_random": -0.482,
+            "p_raw": 0.629798,
+            "above_random": false,
+            "above_best_single": false,
+            "status": "COMPUTED"
+          }
+        ],
+        "corrections": [
+          {
+            "key": "S3_w1",
+            "p_raw": 0.021425,
+            "p_bonferroni": 0.04285,
+            "p_bh": 0.04285,
+            "significant_bonferroni": true,
+            "significant_bh": true
+          },
+          {
+            "key": "S3_w2",
+            "p_raw": 0.629798,
+            "p_bonferroni": 1.0,
+            "p_bh": 0.629798,
+            "significant_bonferroni": false,
+            "significant_bh": false
+          }
+        ],
+        "p167_verdict_changes": false,
+        "interpretation": "RETROSPECTIVE_SENSITIVITY_ONLY at 499-draw threshold: 2 computed windows. Mixed or negative direction. This does NOT change P167 verdict."
+      },
+      {
+        "scenario_id": "S4",
+        "threshold": 500,
+        "label": "ORIGINAL_PROTOCOL",
+        "n_windows_computed": 1,
+        "both_windows_positive": null,
+        "window_results": [
+          {
+            "window": "oos_window_1",
+            "oos_draws_actual": 500,
+            "threshold": 500,
+            "qualifies": true,
+            "mean_hit_count": 1.04,
+            "z_vs_random": 2.2514,
+            "p_raw": 0.024359,
+            "above_random": true,
+            "above_best_single": true,
+            "status": "COMPUTED"
+          },
+          {
+            "window": "oos_window_2",
+            "oos_draws_actual": 499,
+            "threshold": 500,
+            "qualifies": false,
+            "status": "INSUFFICIENT_OOS_DATA_ORIGINAL_PROTOCOL"
+          }
+        ],
+        "corrections": [
+          {
+            "key": "S4_w1",
+            "p_raw": 0.024359,
+            "p_bonferroni": 0.024359,
+            "p_bh": 0.024359,
+            "significant_bonferroni": true,
+            "significant_bh": true
+          }
+        ],
+        "p167_verdict_changes": false,
+        "interpretation": "ORIGINAL_PROTOCOL: Window 2 has 499 draws < 500 minimum. Only 1 computed OOS window. Stability unconfirmed. Module F gate FAILED. This is the P167 reference result \u2014 unchanged."
+      },
+      {
+        "scenario_id": "S5",
+        "threshold": 525,
+        "label": "RETROSPECTIVE_SENSITIVITY_ONLY",
+        "n_windows_computed": 1,
+        "both_windows_positive": null,
+        "window_results": [
+          {
+            "window": "oos_window_1",
+            "oos_draws_actual": 525,
+            "threshold": 525,
+            "qualifies": true,
+            "mean_hit_count": 1.034286,
+            "z_vs_random": 2.1622,
+            "p_raw": 0.030602,
+            "above_random": true,
+            "above_best_single": true,
+            "status": "COMPUTED"
+          },
+          {
+            "window": "oos_window_2",
+            "oos_draws_actual": 499,
+            "threshold": 525,
+            "qualifies": false,
+            "status": "INSUFFICIENT_OOS_DATA"
+          }
+        ],
+        "corrections": [
+          {
+            "key": "S5_w1",
+            "p_raw": 0.030602,
+            "p_bonferroni": 0.030602,
+            "p_bh": 0.030602,
+            "significant_bonferroni": true,
+            "significant_bh": true
+          }
+        ],
+        "p167_verdict_changes": false,
+        "interpretation": "RETROSPECTIVE_SENSITIVITY_ONLY at 525-draw threshold: 1 computed window, positive direction. Insufficient for stability. This does NOT change P167 verdict."
+      }
+    ],
+    "summary": {
+      "s1_450_stable": false,
+      "s2_475_stable": false,
+      "s3_499_stable": false,
+      "s4_500_original_fails": true,
+      "s5_525_computed_windows": 1,
+      "threshold_robust_at_lower_thresholds": false
+    },
+    "interpretation_note": "Sensitivity scenarios S1/S2/S3 use lower OOS window thresholds (450/475/499 draws). Results at these thresholds are RETROSPECTIVE_SENSITIVITY_ONLY \u2014 they do NOT retroactively satisfy the P167 original protocol (S4, threshold=500). S4 remains INSUFFICIENT_OOS_DATA. P167 verdict is unchanged."
+  },
+  "signal_tracking": {
+    "prospective_draws_available": 0,
+    "prospective_draws_min_required": 100,
+    "prospective_tracking_status": "AWAITING_PROSPECTIVE_DATA",
+    "prospective_draws_list": [],
+    "held_out_note": "No truly prospective draws (> 115000041) available in sufficient quantity. Held-out retrospective window (last 200 draws of P167 dataset) used as proxy. These draws WERE part of the P167 analysis dataset \u2014 this is NOT genuine prospective evidence.",
+    "signal_a": {
+      "signal_id": "A_consensus_voting",
+      "source": "P167 Module A",
+      "config": "equal-weight voting, bet_index=1, top-6 by vote count",
+      "held_out_n": 200,
+      "held_out_type": "RETROSPECTIVE_HELD_OUT \u2014 last 200 draws of P167 dataset, NOT truly prospective",
+      "mean_hit_count": 0.865,
+      "z_vs_random": -1.4374,
+      "p_raw": 0.150614,
+      "above_random": false,
+      "above_best_single": false,
+      "in_sample_reference_p_bh": 0.038218,
+      "oos_window1_reference_p_bh": 0.048718
+    },
+    "signal_e": {
+      "signal_id": "E_main_number",
+      "source": "P167 Module E",
+      "config": "per-draw mean hit count across all 10 strategies, bet_index=1, main numbers only",
+      "held_out_n": 200,
+      "held_out_type": "RETROSPECTIVE_HELD_OUT \u2014 last 200 draws of P167 dataset, NOT truly prospective",
+      "mean_hit_count": 0.92,
+      "z_vs_random": -0.7796,
+      "p_raw": 0.435643,
+      "above_random": false,
+      "above_best_single": false,
+      "in_sample_reference_p_bh": 0.024
+    },
+    "corrections": [
+      {
+        "key": "signal_a_held_out",
+        "p_raw": 0.150614,
+        "p_bonferroni": 0.301228,
+        "p_bh": 0.301228,
+        "significant_bonferroni": false,
+        "significant_bh": false
+      },
+      {
+        "key": "signal_e_held_out",
+        "p_raw": 0.435643,
+        "p_bonferroni": 0.871286,
+        "p_bh": 0.435643,
+        "significant_bonferroni": false,
+        "significant_bh": false
+      }
+    ],
+    "tracking_recommendation": "SIGNAL_WEAKENED_IN_HELD_OUT"
+  },
+  "supports_continued_tracking": false,
+  "no_action_confirmations": {
+    "no_db_write": true,
+    "no_p167_verdict_change": true,
+    "no_retroactive_499_reclassification": true,
+    "no_registry_mutation": true,
+    "no_champion_promotion": true,
+    "no_controlled_apply": true,
+    "no_commit": true,
+    "no_push": true,
+    "no_merge": true,
+    "no_betting_advice": true,
+    "no_win_guarantee": true,
+    "no_real_money_wording": true
+  },
+  "governance_invariants": {
+    "db_rows": 94924,
+    "drift_guard": "PASS",
+    "main_zen_gates_split": "UNRESOLVED",
+    "p167_null_result_stands": true,
+    "no_success_rate_method_found": true
+  },
+  "next_task": "P171_POWER_LOTTO_RESEARCH_CEO_DECISION_REVIEW",
+  "next_task_note": "P170 results require CEO/user review before any deployment decision. Sensitivity-only results are NOT deployment evidence. Prospective tracking requires genuinely future draws (> 115000041). P171 is a decision review \u2014 no autonomous deployment permitted."
+}

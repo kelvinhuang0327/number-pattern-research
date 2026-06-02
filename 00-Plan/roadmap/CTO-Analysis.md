@@ -1,461 +1,460 @@
-# CTO Analysis - After P125 Adapter Gap Plan From P124 Matrix
+# CTO Analysis - Roadmap Alignment And System Optimization Direction
 
 ## 1. CTO Review Date
 
-2026-05-28 Asia/Taipei.
+2026-06-01 Asia/Taipei.
 
 Final CTO classification target: `CTO_ROADMAP_UPDATED_WITH_RISKS`.
 
 ## 2. Input Sources
 
-- [Confirmed] User handoff report in the current conversation, limited to LotteryNew content.
-- [Confirmed] `00-Plan/roadmap/roadmap.md` before this update: last updated after P124.
-- [Confirmed] `00-Plan/roadmap/CTO-Analysis.md` before this update: last updated after P124.
-- [Confirmed] Git pre-flight from canonical repo:
+- [Confirmed] Current roadmap before this update: `00-Plan/roadmap/roadmap.md`.
+- [Confirmed] Current CTO analysis before this update: `00-Plan/roadmap/CTO-Analysis.md`.
+- [Confirmed] CEO decision and active-task state:
+  - `00-Plan/roadmap/CEO-Decision.md`
+  - `00-Plan/roadmap/active_task.md` (read only; not modified)
+- [Confirmed] User-supplied attachment: `/Users/kelvin/.codex/attachments/c3fa47b0-8143-410e-a7fc-c49d7c0ec99e/pasted-text.txt`.
+- [Confirmed] P161/P162 second-zone and baseline evidence:
+  - `outputs/research/power_lotto/p161_effectiveness_baseline_20260531.md`
+  - `outputs/research/power_lotto/p162_p161_result_closure_20260531.md`
+- [Confirmed] P177/P178A POWER_LOTTO closure evidence:
+  - `outputs/research/power_lotto/p177_r2_closure_decision_review_20260601.md`
+  - `outputs/research/power_lotto/p178a_r2_research_closure_archive_20260601.md`
+- [Confirmed] P179-P185 governance, parity, and migration rehearsal artifacts:
+  - `outputs/research/power_lotto/p179_replay_product_governance_backlog_decision_gate_20260601.md`
+  - `outputs/research/power_lotto/p180_combined_reconciliation_and_replay_backlog_plan_20260601.md`
+  - `outputs/research/power_lotto/p181_code_docs_tests_parity_plan_20260601.md`
+  - `outputs/research/power_lotto/p182_code_docs_tests_parity_backport_20260601.md`
+  - `outputs/research/power_lotto/p183_controlled_db_migration_rehearsal_plan_20260601.md`
+  - `outputs/research/power_lotto/p184_controlled_db_migration_rehearsal_temp_copy_20260601.md`
+  - `outputs/research/power_lotto/p185_row_delta_import_rehearsal_temp_copy_20260601.md`
+- [Confirmed] Read-only git preflight:
   - repo: `/Users/kelvin/Kelvin-WorkSpace/LotteryNew`
   - branch: `main`
   - git-dir: `.git`
-  - HEAD: `77d7d7d Merge P124 multi-bet replay truth and coverage matrix`
-- [Confirmed] P124 merged via no-ff from `p124-multi-bet-truth-coverage-matrix` branch.
-- [Confirmed] P119-P125 artifacts:
-  - `outputs/replay/p119_evidence_trigger_matrix_20260527.json`
-  - `outputs/replay/p120_trigger_evaluation_20260527.json`
-  - `outputs/replay/p121_trigger_recheck_20260527.json`
-  - `outputs/replay/p122_trigger_recheck_contamination_guard_20260527.json`
-  - `outputs/replay/p123_scheduled_trigger_recheck_setup_20260527.json`
-  - `outputs/replay/trigger_rechecks/p123_trigger_recheck_smoke_20260527.json`
-  - `outputs/replay/p124_multi_bet_truth_and_coverage_matrix_20260528.json`
-  - `outputs/replay/p125_adapter_gap_plan_from_p124_20260528.json`
-  - `docs/replay/p125_adapter_gap_plan_from_p124_20260528.md`
-- [Confirmed] Strategy replay / helpfulness references:
-  - P91 all-strategy replay expansion inventory
-  - P92 Tier B adapter audit / dry-run plan
-  - P93 Tier B replay adapter bootstrap dry-run
-  - P94 Tier B controlled apply
-  - P112 cross-lottery prediction-helpfulness audit
-  - P113 action decision matrix
-  - P114 temporal stability audit
-  - P115 BIG_LOTTO quarantine governance design
-  - P116 POWER_LOTTO OOS monitoring design
-  - P117 POWER_LOTTO OOS monitoring checkpoint
-- [Confirmed] Read-only SQL during this CTO review:
-  - `strategy_prediction_replays = 54462`
-  - `3_STAR count/max = 4179 / 115000106`
-  - `4_STAR count/max = 2922 / 115000103`
-  - `POWER_LOTTO count/max = 1913 / 115000041`
-- [Confirmed] Verification during this CTO review:
-  - P125 tests: `54 passed`
-  - P124 + P119-P123 regression: `345 passed`
-  - Drift guard: `REPLAY_LIFECYCLE_DRIFT_GUARD_PASS`
-  - Branch governance: `main`, HEAD `77d7d7d`, 54462 rows
-- [Confirmed] Existing dirty worktree remains outside this CTO scope, including DB/history/pid/runtime/untracked files. CTO touched only `roadmap.md` and `CTO-Analysis.md`.
+  - HEAD: `d1a6817 P128: define native multi-bet replay storage design`
+- [Confirmed] Read-only SQLite checks:
+  - production main DB: 54462 replay rows, `bet_index` absent, POWER_LOTTO rows 15142
+  - P185 temp rehearsal DB: 94924 replay rows, `bet_index` present, POWER_LOTTO rows 36104
+  - P185 temp `bet_index` distribution: 1=54302, 2=16581, 3=15041, 4=6000, 5=3000
+- [Confirmed] Code search found special-number display and analysis paths in UI/API code, including `src/core/App.js`, `src/core/handlers/UIDisplayHandler.js`, `analysis/power_lotto/p161_effectiveness_baseline.py`, and `analysis/power_lotto/p167_ensemble_voting_research.py`.
+- [Confirmed] No new tests were run in this CTO review. Test status below is cited from existing artifacts only.
+- [Confirmed] No web search was used; all evidence is local project state.
 
 ## 3. Roadmap Alignment Assessment
 
 | Finding | Classification | CTO Assessment |
 |---|---|---|
-| P119 evidence trigger matrix | [Aligned] | Consolidated P105-P117 evidence and made trigger conditions deterministic. |
-| P120-P122 repeated trigger rechecks | [Aligned] initially; [Outdated] as an ongoing pattern | They were useful to confirm no change, but three consecutive blocked states mean more no-change PRs are wasteful. |
-| P123 scheduled/manual trigger wrapper | [Aligned] | Correctly replaces no-change PR churn with a reusable operator/manual wrapper. |
-| P123 first worktree attempt STOP | [Aligned] / [Blocked] | The STOP was correct and exposed a real process risk: Claude/Codex worktree branches must be rejected. |
-| P124 multi-bet truth and coverage matrix | [Aligned] | Proved zero native multi-bet rows exist. All 36 strategy×lottery pairs are first_bet_only_fallback or rejected. 5 Tier-B controlled_apply candidates and 12 adapter_build candidates identified. |
-| P125 adapter gap plan | [Aligned] | Read-only plan artifact. Ranked 5 controlled_apply-ready, 12 adapter_build-needed. Proposed P126/P127/P128 next sequence. No DB writes. |
-| Current system state | [Aligned] | Healthy standby / wait-for-authorization, not failure. |
-| 4_STAR backtest | [Blocked] | Source unknown remains active; rows alone do not authorize backtest. |
-| Multi-bet replay coverage | [Partially Mapped] | P124 proved gap; P125 defines remediation path. P126/P127/P128 required for actual coverage expansion. |
-| OS scheduler install | [Deferred] | P123 did not install cron/launchd. Future scheduling requires explicit authorization. |
+| P179-P185 work sequence | [Aligned] | It follows the post-P178A recommendation: stop active POWER_LOTTO research and resolve replay product governance / main-vs-zen-gates reconciliation. |
+| P185 row-delta import rehearsal | [Missing] | The artifact exists and passed, but roadmap had not cleanly incorporated it. Roadmap now marks it complete and P186 blocked. |
+| P186 production migration gate | [Blocked] | Production migration is not authorized. Gate must approve dedup, backup, production lock, SQL log, validation, rollback, and exact execution phrase. |
+| P161-P178A research closure | [Aligned] | Correctly reports a NULL result, closes active POWER_LOTTO research, and forbids promotion/wagering claims. |
+| User's second-zone optimization request | [Drift] / [Blocked] | The requested direction conflicts with P178A active-research closure and current special-ball evidence below random. CTO reframes it as containment/diagnostic-only, not optimization or promotion. |
+| Existing roadmap P0 trigger standby | [Outdated] | Still useful as a guardrail, but no longer the top maturity blocker. Current P0 is canonical data reconciliation and migration authorization. |
+| P126/P127 direct applies | [Outdated] | Superseded by P184/P185 validated migration path toward the 94924-row state. |
+| Roadmap file quality | [Outdated] | The file mixed 2026-05-28 priorities, 2026-06-01 appended updates, and corrupted table text. A compact rewrite was necessary to keep it usable. |
+| Worker prompt request | [Blocked] | The request simultaneously asks for a worker prompt and forbids CTO from producing a new worker task prompt. CTO follows the stricter boundary and does not write `active_task.md`. |
 
 ## 4. Completed Work Assessment
 
-### P119 - Evidence Trigger Matrix
+### Replay Product / Reconciliation Chain
 
-- [Confirmed] Classification: `P119_EVIDENCE_TRIGGER_MATRIX_READY`.
-- [Confirmed] Trigger matrix covers:
-  - P108 Special3 100-draw re-evaluation
-  - P117 POWER_LOTTO OOS retrigger
-  - P118 BIG_LOTTO actual quarantine
-  - 4_STAR provenance and backtest
-- [Confirmed] All triggers were blocked at P119.
-- [Confirmed] Current DB snapshot: replay rows 54462, 3_STAR 4179/max 115000106, 4_STAR 2922/max 115000103, POWER_LOTTO 1913/max 115000041.
+- [Confirmed] P179 completed a replay product governance backlog decision gate.
+- [Confirmed] P180 completed a combined main/zen-gates reconciliation and replay backlog plan.
+- [Confirmed] P181 completed a code/docs/tests parity plan.
+- [Confirmed] P182 copied P161-P181 research artifacts/scripts/tests to main without DB write.
+- [Confirmed] P183 produced the controlled DB migration rehearsal plan and identified that SQLite table recreation is required.
+- [Confirmed] P184 schema rehearsal on temp copy passed; 160 no-provenance rows are removed by the validated `MAX(id)` dedup policy.
+- [Confirmed] P185 row-delta import rehearsal on temp copy passed; final temp DB exactly matches zen-gates with 94924 rows.
 
-### P120-P122 - Consecutive Trigger Rechecks
+### POWER_LOTTO Research Chain
 
-- [Confirmed] P120 classification: `P120_ALL_TRIGGERS_BLOCKED`.
-- [Confirmed] P121 classification: `P121_ALL_TRIGGERS_STILL_BLOCKED`.
-- [Confirmed] P122 classification: `P122_ALL_TRIGGERS_STILL_BLOCKED`.
-- [Confirmed] P122 added cross-project contamination guard.
-- [Confirmed] No P108, P117 OOS, P118 quarantine, or 4_STAR backtest was run.
-- [Confirmed] No strategy promotion, lifecycle mutation, registry mutation, DB write, replay row delete, or replay row insert occurred.
+- [Confirmed] P161 baseline used 94924-row zen-gates state and found POWER_LOTTO strategies statistically indistinguishable from random after multiple-test correction.
+- [Confirmed] P161/P162 special-ball result: predicted-special rows n=9000, hit rate 0.1181 vs random 0.125, below baseline.
+- [Confirmed] P167/P170/P173/P176 did not produce a corrected-significant OOS edge.
+- [Confirmed] P177 recommended closing active POWER_LOTTO research.
+- [Confirmed] P178A formally closed active POWER_LOTTO research, prototypes, promotion, deployment, and controlled_apply; no wagering recommendation.
 
-### P123 - Scheduled / Manual Trigger Recheck Setup
+### Test / Verification Status From Artifacts
 
-- [Confirmed] PR #248 merged; merge commit `684bffcea3080f8f1f31c5b9acc3a572907ec4f3`.
-- [Confirmed] Classification: `P123_SCHEDULED_TRIGGER_RECHECK_SETUP_READY`.
-- [Confirmed] Created `scripts/p123_scheduled_trigger_recheck.py`.
-- [Confirmed] First smoke artifact: `outputs/replay/trigger_rechecks/p123_trigger_recheck_smoke_20260527.json`.
-- [Confirmed] First smoke classification: `P122_ALL_TRIGGERS_STILL_BLOCKED`.
-- [Confirmed] P123 did not install crontab, create launchd plist, or register an OS scheduler.
-- [Confirmed] P123 worktree guard requires `git-dir=.git`, rejects `.git/worktrees/`, `claude/`, and `codex/`.
-
-### Replay Coverage / Prediction-Helpfulness Context
-
-- [Confirmed] P91 identified 512 strategy universe entries and 31 row-backed strategy slots.
-- [Confirmed] P92 found 5 adapter-ready Tier B strategies, 1 adapter-partial strategy, 3 already-covered strategies, and 1 rejected strategy.
-- [Confirmed] P93 dry-run rehearsed 5 Tier B adapters, including 3/5-bet DAILY_539 and 2/3/4-bet BIG_LOTTO/POWER_LOTTO strategies.
-- [Confirmed] P94 controlled apply added Tier B rows and P96 later set 54462 as accepted replay baseline.
-- [Confirmed] P112 audited 36 row-backed strategies across POWER_LOTTO, DAILY_539, and BIG_LOTTO for prediction-helpfulness.
-- [Confirmed] P112 excluded 3_STAR and 4_STAR: P108 blocked for 3_STAR, 4_STAR unauthorized due source_unknown.
-- [Confirmed] P93/P94 evidence shows a multi-bet caveat: many replay rows are one row per strategy/draw and may represent only bet 1 unless a true multi-bet adapter path exists.
+- [Confirmed] P177 reports P161-P176 tests: 980 passed.
+- [Confirmed] P178A reports P161-P177 tests: 1054 passed.
+- [Confirmed] P182 reports drift guard PASS and 54,462-row main DB unchanged.
+- [Confirmed] P183 reports P178A-P182 tests: 309 passed / 4 skipped.
+- [Confirmed] P184 reports P178A-P183 tests: 361 passed / 5 skipped.
+- [Confirmed] P185 reports full rehearsal PASS and production DB write = 0.
+- [Unknown] Current full test-suite status was not rerun during this CTO review.
 
 ## 5. Unfinished Work Assessment
 
-- [Blocked] P108 Special3 100-draw re-evaluation: 63/100 prospective draws; 37 remaining.
-- [Blocked] P117 POWER_LOTTO OOS checkpoint: 0 new POWER_LOTTO draws; 30 remaining for partial, 40 for full.
-- [Blocked] P118 BIG_LOTTO actual quarantine: exact authorization phrase absent.
-- [Blocked] 4_STAR provenance/backtest: source_unknown caveat active; provenance artifact absent.
-- [Missing] All implemented strategy x lottery x bet-count coverage matrix for the user goal: all supported lottery types and all implemented 1-5 bet-count variants.
-- [Blocked] Multi-bet replay truth model: current row convention can underrepresent native multi-bet strategies.
-- [Deferred] Runtime artifact retention policy for `outputs/replay/trigger_rechecks/`.
-- [Deferred] OS scheduler installation; not authorized by P123.
-- [Deferred] Worktree hygiene and DB staging policy remains valuable but outside this CTO task.
+- [Blocked] P186 production DB migration authorization gate: no CEO authorization yet.
+- [Blocked] Production migration execution: cannot happen until P186 gate and exact authorization phrase are complete.
+- [Blocked] Main/zen-gates canonical state: main remains 54462 rows without `bet_index`; validated target is 94924 rows with `bet_index`.
+- [Missing] Post-migration quality gate: tests currently designed to SKIP on stale main need a controlled transition after migration.
+- [Missing] Product disclosure for special-ball confidence: current evidence says special-ball is below random, but UI/API code can display special predictions.
+- [Blocked] Second-zone diagnostic task: user supplied a candidate prompt, but CTO cannot emit worker prompts here; P178A also blocks active POWER_LOTTO research unless CEO reopens scope.
+- [Deferred] Passive monitoring: P178A says reopen only after >=500 new POWER_LOTTO draws, structural change, independent evidence, pre-registered hypothesis, or explicit CEO governance.
+- [Deferred] Dirty worktree cleanup: outside CTO scope and requires explicit file allowlist.
 
 ## 6. P0 / P1 / P2 / P3-P10 Reprioritization
 
 | Priority | Work | Status | Rationale |
 |---|---|---|---|
-| **P0.1** | Trigger governance standby through P123 wrapper | [Confirmed] P123 ready | Prevent no-change PR churn and preserve healthy wait state. |
-| **P0.2** | Canonical execution and contamination guard standardization | [Required] | Worktree branch and cross-project contamination are proven process risks. |
-| **P0.3** | Multi-bet replay truth model | [Missing] | Correctness blocker for replaying all 1-5 bet combinations. |
-| **P1.1** | All implemented strategy x lottery x 1-5 bet-count coverage matrix | [Ready for CEO approval] | Highest product-value next step while draw/authorization triggers are blocked. |
-| **P1.2** | Adapter gap plan for truthful coverage completion | [Depends on P1.1] | Converts coverage gaps into ranked implementation phases without DB writes. |
-| **P1.3** | Prediction-helpfulness guard for expansion | [Partially complete via P112-P114] | Coverage must not imply quality, promotion, or recommendation. |
-| **P2** | Trigger-met execution paths | [Blocked] | P108/P117/P118/4_STAR tasks only after P123 classification changes. |
-| **P3** | 4_STAR provenance path | [Blocked] | Backtest requires provenance and explicit authorization. |
-| **P4** | Runtime trigger artifact retention / latest-pointer policy | [Deferred] | Prevent long-term trigger-recheck artifact noise. |
-| **P5** | Optional scheduler installation | [Deferred] | Requires explicit OS-level authorization. |
-| **P6** | Replay UI/API disclosure for bet-count truth | [Deferred] | UI should not misrepresent first-bet fallback as full multi-bet replay. |
-| **P7** | Worktree hygiene / DB staging policy | [Deferred but risky] | Dirty working tree remains a staging hazard. |
-| **P8** | Future OOS monitoring after draw thresholds | [Waiting on data] | P108/P117 re-enter only when thresholds are crossed. |
-| **P9** | External reference review | [Paused] | New repo is forbidden and this is not critical path. |
-| **P10** | Post-launch operations cadence | [Deferred] | Long-term monitoring and regression cadence. |
+| **P0.1** | P186 production DB migration authorization gate | [Blocked] | The migration path is rehearsed, but production write safety is unresolved. |
+| **P0.2** | Canonical main/zen-gates reconciliation | [Blocked] | Split-brain DB state blocks truthful replay product, test parity, and research reproducibility. |
+| **P0.3** | Second-zone special-ball containment | [Missing] / [Blocked] | Existing evidence is below random; product must not present special-ball as an edge. |
+| **P0.4** | Governance conflict resolution for prompt generation | [Blocked] | CTO is forbidden to create a worker task prompt in this request. |
+| **P1.1** | Post-migration quality gate and drift guard transition | [Deferred] | Needed immediately after migration, but must not precede actual production state. |
+| **P1.2** | Replay UI/API disclosure for `bet_index`, provenance, lifecycle, and special-ball confidence | [Deferred] | Product maturity depends on honest labeling and avoiding overclaiming. |
+| **P1.3** | Migration operator guide from P184/P185 evidence | [Deferred] | Converts rehearsal knowledge into safe operational execution. |
+| **P2.1** | Passive POWER_LOTTO monitoring under P178A reopen rules | [Waiting] | Low-cost future option; not active research. |
+| **P2.2** | Second-zone diagnostic-only audit if CEO authorizes | [Blocked] | Could be useful, but only read-only and non-promotional with non-conflicting task ID. |
+| **P3-P10** | Other lottery research, scheduler, external review, packaging, long-term cadence | [Deferred] | Keep roadmap continuity, but do not consume P0/P1 resources. |
 
-Changes from prior roadmap:
+Upgrade / downgrade decisions:
 
-- [Confirmed] P105/P106/P107B are no longer current P0 blockers; they are completed and incorporated in P119 evidence.
-- [Confirmed] P123 wrapper usage replaces future no-change P124/P125 trigger recheck PRs.
-- [Confirmed] Worktree branch guard is upgraded to P0.
-- [Confirmed] Multi-bet replay truth model is upgraded to P0.3 because the user's highest priority requires truthful 1-5 bet replay.
-- [Confirmed] All implemented strategy coverage matrix is upgraded to P1.1.
-- [Confirmed] 4_STAR backtest remains blocked.
-- [Confirmed] OS scheduler installation remains deferred.
+- [Confirmed] P186 gate is upgraded to P0 because it controls production DB safety.
+- [Confirmed] Main/zen-gates reconciliation remains P0 because current main cannot represent multi-bet replay truth.
+- [Inferred] Second-zone containment should be P0/P1 because known below-random evidence can affect product correctness if shown as a recommendation signal.
+- [Confirmed] Active POWER_LOTTO feature engineering is retired/closed under P178A.
+- [Confirmed] Additional strategy prototypes are downgraded unless reopen conditions are met.
+- [Confirmed] P123 trigger checks are retained as standing governance, not today's primary P0.
+- [Confirmed] Direct controlled_apply/apply work is downgraded until canonical migration is resolved.
 
 ## 7. Critical Blockers
 
-### Blocker 1: Trigger Wait-State
+### Blocker 1: Main/Zen-Gates Baseline Split
 
-- **Impact scope:** P108, P117, P118, 4_STAR.
-- **Why blocker:** All governed execution paths need data or explicit authorization that is not present.
-- **Risk if ignored:** Premature evaluation, OOS checkpoint, quarantine, or backtest would violate governance.
+- **Impact scope:** data quality, replay product correctness, tests, research reproducibility.
+- **Why blocker:** main has 54462 replay rows and no `bet_index`; the validated target state has 94924 rows and `bet_index`.
+- **Risk if ignored:** UI, tests, and research can report different truths depending on checkout/DB.
+- **Priority:** P0.1/P0.2.
+- **Acceptance criteria:** P186 gate completes before any production write; canonical baseline is documented; production migration only executes under exact CEO authorization.
+
+### Blocker 2: Production Migration Safety
+
+- **Impact scope:** production DB integrity.
+- **Why blocker:** P184/P185 validate a migration that drops 160 no-provenance rows and imports 40622 rows. This is safe in rehearsal, not automatically safe in production.
+- **Risk if ignored:** irreversible row loss, no rollback path, or inconsistent DB during live writers.
 - **Priority:** P0.1.
-- **Acceptance criteria:** Use P123 wrapper; if classification remains `P122_ALL_TRIGGERS_STILL_BLOCKED`, do not open a new branch, PR, or P-task.
+- **Acceptance criteria:** immutable backup, production lock, approved `MAX(id)` dedup, reviewed SQL, post-migration validation, rollback plan, exact phrase.
 
-### Blocker 2: Worktree Branch / Context Contamination Risk
+### Blocker 3: Second-Zone Special-Ball Negative Evidence
 
-- **Impact scope:** Repo integrity and multi-agent safety.
-- **Why blocker:** P123 first attempt proved Claude worktree branch risk; prior prompts also had cross-project contamination.
-- **Risk if ignored:** Work lands in wrong path/branch or inherits Betting/Stock/Novel/SCB governance.
-- **Priority:** P0.2.
-- **Acceptance criteria:** Every governed prompt checks repo path, branch, `git rev-parse --git-dir`, and project lock before implementation.
-
-### Blocker 3: Multi-Bet Replay Truth Ambiguity
-
-- **Impact scope:** Product correctness for all 1-5 bet-count combinations.
-- **Why blocker:** Existing rows may represent only the first bet even when strategy names or adapters imply multiple bets.
-- **Risk if ignored:** The UI/API could claim full multi-bet historical replay when only bet 1 was evaluated.
+- **Impact scope:** product correctness and user trust.
+- **Why blocker:** P161/P162 show special-ball hit rate below random; continuing to treat it as an optimization target risks overfitting.
+- **Risk if ignored:** weak or negative signal may contaminate recommendation score, UI confidence, or future research planning.
 - **Priority:** P0.3.
-- **Acceptance criteria:** Read-only truth model classifies every implemented strategy/bet-count variant as native multi-bet, first-bet-only fallback, adapter-missing, already-covered, unsupported, rejected, or fabrication-prohibited.
+- **Acceptance criteria:** special-ball output remains display-only / random-baseline comparison unless a future read-only diagnostic proves stable OOS evidence.
 
-### Blocker 4: Incomplete All-Implemented-Strategy Coverage Matrix
+### Blocker 4: Research Closure vs New Optimization Request
 
-- **Impact scope:** Product maturity and planning.
-- **Why blocker:** The highest product goal needs a measurable gap list before implementation.
-- **Risk if ignored:** Worker tasks may add rows opportunistically rather than completing all implemented strategies systematically.
-- **Priority:** P1.1.
-- **Acceptance criteria:** Matrix covers all implemented strategy IDs, lottery types, native bet counts, supported target bet counts 1-5, current replay rows, adapter status, quality label, and next action.
+- **Impact scope:** agent/workflow governance.
+- **Why blocker:** P178A closes active POWER_LOTTO research; user attachment asks for a new P185 second-zone task while P185 already exists as DB rehearsal.
+- **Risk if ignored:** duplicate task IDs, unauthorized research restart, or worker executing the wrong scope.
+- **Priority:** P0.4/P2.2.
+- **Acceptance criteria:** CEO assigns a new non-conflicting task ID and explicitly authorizes diagnostic-only scope; no CTO-generated worker prompt in this review.
 
-### Blocker 5: 4_STAR Source Unknown
+### Blocker 5: Dirty Worktree And Runtime/Data Files
 
-- **Impact scope:** Data quality and backtest authorization.
-- **Why blocker:** P104/P119-P123 preserve source_unknown; provenance artifact absent.
-- **Risk if ignored:** Backtest on unverifiable actuals.
-- **Priority:** P3.
-- **Acceptance criteria:** Separate provenance acceptance artifact and explicit backtest authorization before any 4_STAR backtest.
+- **Impact scope:** release safety and staging discipline.
+- **Why blocker:** many DB/history/runtime/untracked files are dirty before CTO work begins.
+- **Risk if ignored:** accidental staging of runtime DB state or hidden generated artifacts.
+- **Priority:** P1/P7.
+- **Acceptance criteria:** future implementation task uses strict file allowlist; no broad staging; cleanup only under explicit authorization.
 
 ## 8. Recommended System Optimization Directions
 
-### 1. Make P123 The Standing Trigger Gate
+### 1. Canonical Data Reconciliation And Migration Gate
 
-- **Corresponding roadmap phase:** P0.1.
-- **Why important:** It prevents no-change PR churn while keeping trigger checks deterministic.
-- **System maturity gain:** Turns monitoring into a low-cost operator action.
-- **Expected benefit:** Lower CI/agent cost and clearer standby state.
-- **Risk:** Operators may assume cron/launchd is installed; it is not.
-- **Acceptance:** P123 wrapper run from canonical repo; no branch/PR when classification remains blocked.
+- **Corresponding roadmap phase:** P0.1/P0.2.
+- **Why important:** The system needs one truthful replay dataset.
+- **System maturity gain:** Converts rehearsed migration evidence into a governed production decision.
+- **Expected benefit:** Test parity, UI correctness, and research reproducibility all improve.
+- **Risk:** Production DB write is irreversible without backup and lock discipline.
+- **Acceptance:** P186 authorization gate complete; no production DB write during P186.
 - **Priority:** P0.
 
-### 2. Standardize Execution Guardrails
+### 2. Second-Zone Special-Ball Evidence Containment
 
-- **Corresponding roadmap phase:** P0.2.
-- **Why important:** Worktree branch and cross-project contamination are not theoretical; both appeared in this workflow.
-- **System maturity gain:** Protects canonical repo integrity.
-- **Expected benefit:** Less recovery work and fewer accidental scope violations.
-- **Risk:** Long prompt guard sections may drift until centralized.
-- **Acceptance:** All future governed tasks check `show-toplevel`, branch, `git-dir=.git`, forbidden branch prefixes, and `PROJECT_CONTEXT_LOCK=LotteryNew`.
-- **Priority:** P0.
+- **Corresponding roadmap phase:** P0.3/P2.2.
+- **Why important:** Current special-ball results are below random, so "optimization" is risky language.
+- **System maturity gain:** Protects product recommendations from weak-signal contamination.
+- **Expected benefit:** Clear user-facing confidence boundary: display-only until proven otherwise.
+- **Risk:** Overfitting or false-positive hunting if scope becomes strategy development.
+- **Acceptance:** No promotion/scoring; any future diagnostic is read-only, baseline-compared, walk-forward guarded, and CEO-authorized.
+- **Priority:** P0/P1.
 
-### 3. Define The Multi-Bet Replay Truth Model
-
-- **Corresponding roadmap phase:** P0.3.
-- **Why important:** The user's top priority cannot be met if first-bet-only rows masquerade as 1-5 bet replay.
-- **System maturity gain:** Makes historical replay verifiable at the bet-count level.
-- **Expected benefit:** Accurate gap planning for all lottery types and 1-5 bet variants.
-- **Risk:** May reveal that existing row-backed coverage is less complete than strategy names imply.
-- **Acceptance:** Read-only artifact; no DB writes; no fabricated rows; clear classifications for every implemented strategy variant.
-- **Priority:** P0.
-
-### 4. Build All-Strategy Bet-Count Coverage Matrix
+### 3. Post-Migration Quality Gate
 
 - **Corresponding roadmap phase:** P1.1.
-- **Why important:** It is the first concrete step toward "all implemented strategies historical replay."
-- **System maturity gain:** Converts a broad product ambition into a measurable backlog.
-- **Expected benefit:** Planners can rank adapter work and controlled apply work by gap severity and quality value.
-- **Risk:** Scope can balloon if it includes unimplemented or rejected strategies without labels.
-- **Acceptance:** Matrix covers strategy_id, lottery_type, native bet count, supported 1-5 target counts, replay rows, adapter status, blocker, quality label, and proposed next task type.
+- **Why important:** P182 backported tests that intentionally skip on stale main.
+- **System maturity gain:** Makes test results reflect the canonical DB state.
+- **Expected benefit:** Future regression failures become meaningful instead of environment artifacts.
+- **Risk:** Updating drift guards before migration would encode false state.
+- **Acceptance:** After production migration only, update drift guard/markers so DB-dependent contracts PASS against canonical main.
 - **Priority:** P1.
 
-### 5. Keep Provenance-First Expansion For Source-Unknown Data
+### 4. Roadmap And Task Namespace Governance
 
-- **Corresponding roadmap phase:** P2/P3.
-- **Why important:** 4_STAR rows exist but remain source-unknown.
-- **System maturity gain:** Prevents data availability from being confused with analysis authorization.
-- **Expected benefit:** Future 4_STAR work can proceed safely once provenance is resolved.
-- **Risk:** Backtest pressure may bypass source controls.
-- **Acceptance:** Provenance accepted and backtest explicitly authorized before any 4_STAR analysis.
-- **Priority:** P2/P3.
+- **Corresponding roadmap phase:** P0.4/P1.3.
+- **Why important:** P185 is already used for DB row-delta rehearsal; the user attachment also labels a second-zone task P185.
+- **System maturity gain:** Prevents wrong-task execution by Planner/Worker.
+- **Expected benefit:** Cleaner handoff and lower multi-agent error risk.
+- **Risk:** Without cleanup, active_task/roadmap/CEO files diverge again.
+- **Acceptance:** Future second-zone task uses a new ID and is created only by CEO/Planner authorization, not by CTO in this review.
+- **Priority:** P1.
+
+### 5. Product Disclosure For Replay Evidence
+
+- **Corresponding roadmap phase:** P1.2/P4.
+- **Why important:** Replay product value is evidence transparency, not lottery edge claims.
+- **System maturity gain:** UI/API can separate main hits, special hits, bet slots, provenance, lifecycle, and NULL results.
+- **Expected benefit:** Users do not confuse display evidence with betting advice.
+- **Risk:** Product copy may lag research conclusions.
+- **Acceptance:** No UI/API text implies guaranteed improvement, wagering advice, or validated special-ball edge.
+- **Priority:** P1/P2.
 
 ## 9. Roadmap Changes Applied
 
-- [Confirmed] Updated `roadmap.md` from P104-current to P123-current.
-- [Confirmed] Added P119-P123 phase status, PR/merge evidence, and current trigger wait-state.
-- [Confirmed] Replaced P105/P106/P107 as current blockers with completed status from P119 evidence.
-- [Confirmed] Added P123 wrapper as the canonical no-change trigger recheck path.
-- [Confirmed] Added worktree branch guard and cross-project contamination guard as P0 execution rules.
-- [Confirmed] Added multi-bet replay truth model as P0.3.
-- [Confirmed] Added all implemented strategy x lottery x 1-5 bet-count coverage matrix as P1.1.
-- [Confirmed] Preserved 4_STAR backtest block and source_unknown caveat.
-- [Confirmed] Documented that CTO did not emit or write an `active_task.md` prompt because the instructions forbid new worker task prompt output and CTO may only update two files.
-- [Confirmed] Did not modify `00-Plan/roadmap/CEO-Decision.md`.
-- [Confirmed] Did not modify `00-Plan/roadmap/active_task.md`.
-- [Confirmed] Did not write production DB, install scheduler, create repo, create branch, create PR, mutate lifecycle/champion/registry, run P108/P117/P118, or backtest 4_STAR.
+- [Confirmed] Rewrote `00-Plan/roadmap/roadmap.md` into a compact current-state roadmap because the prior file was not maintainable: mixed stale priorities, appended P179-P185 sections, and corrupted table rows.
+- [Confirmed] Preserved historical continuity by summarizing P119-P128, P149-P159B, P161-P178A, and P179-P185 rather than deleting their evidence trail.
+- [Confirmed] Updated `Last Updated` to 2026-06-01 Asia/Taipei.
+- [Confirmed] Added P185 as complete and P186 as blocked.
+- [Confirmed] Upgraded P186 migration gate and canonical reconciliation to P0.
+- [Confirmed] Added second-zone special-ball containment as P0/P1.
+- [Confirmed] Marked active POWER_LOTTO research as closed under P178A.
+- [Confirmed] Downgraded old trigger standby and direct controlled_apply work from near-term focus.
+- [Confirmed] Documented the worker-prompt conflict and did not modify `00-Plan/roadmap/active_task.md`.
+- [Confirmed] CTO modified only `00-Plan/roadmap/roadmap.md` and `00-Plan/roadmap/CTO-Analysis.md`.
+- [Confirmed] CTO did not write `CEO-Decision.md`, `active_task.md`, `production/*`, `registry/*`, `data/*`, or any new repo.
 
 ## 10. Risks / Unknowns
 
-- [Confirmed] All four triggers remain blocked: P108 needs 37 Special3 draws, P117 needs 30/40 POWER_LOTTO draws, P118 needs exact phrase, 4_STAR needs provenance.
-- [Confirmed] P123 wrapper is not an installed scheduler.
-- [Confirmed] Dirty worktree remains and includes DB/history/pid/runtime/untracked files; this CTO task did not clean them.
-- [Confirmed] Current replay rows do not automatically prove full native multi-bet coverage.
-- [Confirmed] 4_STAR source remains unknown.
-- [Unknown] Whether future operator wants a real cron/launchd schedule.
-- [Unknown] Whether `outputs/replay/trigger_rechecks/` should remain fully tracked, partly ignored, or use a latest pointer.
-- [Unknown] Full number of implemented strategy x lottery x bet-count gaps until the proposed coverage matrix is built.
-- [Inferred] The next high-value work is not another trigger recheck PR, but a read-only multi-bet coverage/gap audit.
-- [Inferred] Some previously row-backed strategies may need relabeling as first-bet-only for product honesty.
+- [Confirmed] Production main DB remains 54462 rows and lacks `bet_index`.
+- [Confirmed] P185 temp rehearsal reaches 94924 rows and matches zen-gates exactly by counts/distribution.
+- [Confirmed] Production migration is still blocked by CEO authorization.
+- [Confirmed] P161/P162 special-ball result is below random: 0.1181 vs 0.125.
+- [Confirmed] P178A closes active POWER_LOTTO research and forbids promotion/deployment/controlled_apply.
+- [Confirmed] Current worktree is dirty outside CTO scope.
+- [Confirmed] User attachment requests a new P185 second-zone task, but P185 is already used for DB row-delta rehearsal.
+- [Unknown] Whether special-ball predictions currently affect any production scoring or only UI display; code search confirms display paths, not weighting semantics.
+- [Unknown] Whether CEO wants to authorize a diagnostic-only second-zone audit with a new task ID.
+- [Unknown] Whether P186 should proceed immediately or the user wants a risk-review-only pause.
+- [Inferred] The highest maturity gain is migration governance, not additional strategy research.
+- [Inferred] Second-zone work should focus on containment/disclosure first, not "improvement."
 
 ## 11. CTO Final Recommendation
 
-Do not open P124/P125 merely to re-confirm no trigger change. Use `scripts/p123_scheduled_trigger_recheck.py` from the canonical repo when data or authorization might have changed. If it returns `P122_ALL_TRIGGERS_STILL_BLOCKED`, stay in `WAIT_FOR_DATA_OR_AUTHORIZATION`.
+Proceed with **P186 production DB migration authorization gate only** as the next roadmap-level focus. P186 must be plan/gate-only: no production DB write, no copy from zen-gates, no controlled_apply, no research restart. It should explicitly approve or reject the dedup policy, backup, production lock, SQL log, validation checklist, rollback, and exact production execution phrase.
 
-Given the user's highest priority, the next CEO-approved governed work should be a read-only **multi-bet replay truth model and all implemented strategy x lottery x 1-5 bet-count coverage matrix**. This should inventory the current strategy universe and replay rows, classify true native multi-bet coverage versus first-bet-only fallback, and produce a precise gap list. It must not write DB rows, stage DB/history files, run P108/P117/P118, backtest 4_STAR, install schedulers, or promote strategies.
+For the user's "second-zone optimization" supplement: do not optimize or promote second-zone special-ball strategies now. Current evidence is below random and POWER_LOTTO active research is closed. The correct system direction is containment: display-only or random-baseline-comparison until CEO explicitly authorizes a new read-only diagnostic with a non-conflicting task ID.
 
-### CEO-Gated First Executable Task Status
-
-- [Blocked] A full worker task prompt is not emitted by this CTO update because the instruction set explicitly says "CTO must not produce a new worker task prompt" and CTO may only update `roadmap.md` and `CTO-Analysis.md`.
-- [Inferred] If CEO overrides that restriction later, the first executable task should be a read-only multi-bet replay coverage matrix, not a no-change trigger recheck PR.
-- [Confirmed] `00-Plan/roadmap/active_task.md` was not modified.
+**CEO-gated first executable task prompt status:** [Blocked]. CTO does not emit a worker task prompt and does not write `active_task.md` because the same request explicitly forbids CTO from producing a new worker task prompt and limits CTO writes to two files.
 
 ## 12. CTO Summary In 5 Lines
 
-1. [Confirmed] P123 is merged; wrapper `scripts/p123_scheduled_trigger_recheck.py` replaces no-change trigger PRs.
-2. [Confirmed] Current runtime classification remains `P122_ALL_TRIGGERS_STILL_BLOCKED`; system is healthy standby.
-3. [Blocked] P108, P117, P118, and 4_STAR remain blocked by data/provenance/authorization.
-4. [P0] Future work must enforce `git-dir=.git` and project contamination guards.
-5. [P1] Highest product-value next work is read-only all implemented strategy x lottery x 1-5 bet-count replay coverage truth mapping.
+1. [Confirmed] P185 rehearsal passed on temp DB; production main remains 54462 rows with no `bet_index`.
+2. [Blocked] P186 production migration authorization gate is the current P0.
+3. [Confirmed] POWER_LOTTO R1/R2 research is closed with NULL results across 17 candidates.
+4. [Confirmed] Second-zone special hit rate is below random, so optimization/promotion is not allowed.
+5. [Blocked] No worker prompt or `active_task.md` update is produced by CTO under this request.
 
 ## 13. CEO Summary In 5 Lines
 
-1. [Confirmed] Stop spending PRs on no-change trigger checks; use P123 wrapper manually when inputs change.
-2. [Confirmed] No P108/P117/P118/4_STAR task is eligible today.
-3. [Risk] Full historical replay across 1-5 bets is not yet proven because some rows are first-bet-only.
-4. [Decision] Approve a read-only coverage/gap audit before any new replay apply.
-5. [Guard] No DB writes, no scheduler install, no worktree branch, no cross-project governance.
+1. Approve P186 gate if you want to move toward the validated 94924-row canonical DB.
+2. Do not approve production migration execution until P186 defines backup, lock, SQL, rollback, and exact phrase.
+3. Treat second-zone as display-only / diagnostic-only unless new evidence beats random OOS.
+4. Keep POWER_LOTTO active research closed under P178A.
+5. Assign a new task ID if you later want a second-zone diagnostic; do not reuse P185.
 
 Final Classification: `CTO_ROADMAP_UPDATED_WITH_RISKS`
 
 ---
 
-## 14. P124 Follow-Up Note (2026-05-28)
+## P186 — CTO Assessment: Production Migration Authorization Gate (2026-06-01)
 
-P124 was completed as a read-only worker task on branch `p124-multi-bet-truth-coverage-matrix`.
+**Status**: `P186_PRODUCTION_DB_MIGRATION_AUTHORIZATION_GATE_READY`
 
-### P124 Summary
-- **Artifact:** `outputs/replay/p124_multi_bet_truth_and_coverage_matrix_20260528.json`
-- **Classification:** `P124_MULTI_BET_TRUTH_AND_COVERAGE_MATRIX_READY`
-- **DB snapshot confirmed:** replay_rows=54462, 3_STAR=4179/115000106, 4_STAR=2922/115000103, POWER_LOTTO=1913/115000041 (unchanged)
-- **Coverage matrix:** 36 strategy×lottery pairs across DAILY_539, BIG_LOTTO, POWER_LOTTO
-- **Key finding:** Zero strategies currently achieve `native_multi_bet` storage. All 36 pairs store exactly 1 predicted_numbers list per row.
+### Gate Complete
 
-### Gap Summary
-| Gap Type | Count | Next Action |
-|---|---|---|
-| first_bet_only_fallback (with Tier-B adapter available) | 5 | controlled_apply |
-| first_bet_only_fallback (adapter build required) | 9 | adapter_build |
-| first_bet_only_fallback (partial adapter, relabel needed) | 2 | relabel_first_bet_only |
-| already_covered (1-bet strategies) | 7 | no_action |
-| rejected (expansion forbidden) | 13 | no_action |
+12 authorization conditions defined. P187 is the first task that will write to production DB. It is **DESTRUCTIVE and irreversible without a backup**.
 
-### Confirmations
-- [Confirmed] No DB writes, no staging of lottery_v2.db or lottery_history.json
-- [Confirmed] No strategy promotion, lifecycle mutation, registry mutation
-- [Confirmed] No P108/P117/P118 execution, no 4_STAR backtest, no scheduler install
-- [Confirmed] P124 tests: 27 passed, P119-P123 regression: 318 passed
-- [Confirmed] Drift guard: PASS, Branch governance: PASS
+### Critical Requirements for P187
 
----
+| Requirement | Why |
+|-------------|-----|
+| Exact phrase (verbatim) | No paraphrase accepted — typo-resistant authorization |
+| Timestamped backup (verified, chmod 444) | Without this, rollback is impossible |
+| Production lock (all writers stopped) | Concurrent writes during table recreation = corruption |
+| SQL from P185 rehearsal log | No ad-hoc SQL in production migration |
 
-## 15. P125 Follow-Up Note (2026-05-28)
+### CTO Recommendation
 
-P124 branch was merged to `main` (commit `77d7d7d`) as Phase 1 of P125.
-P125 was then implemented as a read-only adapter gap plan on `main`.
+Proceed to P187 **only** with the exact phrase and only after verifying all 15 preflight checklist items pass. The backup step (PF-12/13/14) is the single most critical safety gate.
 
-### P125 Summary
-- **Script:** `scripts/p125_adapter_gap_plan_from_p124.py`
-- **JSON:** `outputs/replay/p125_adapter_gap_plan_from_p124_20260528.json`
-- **Markdown:** `docs/replay/p125_adapter_gap_plan_from_p124_20260528.md`
-- **Tests:** `tests/test_p125_adapter_gap_plan_from_p124.py` — 54 passed
-- **Classification:** `P125_ADAPTER_GAP_PLAN_READY`
-
-### P125 Outputs
-| Section | Count |
-|---|---|
-| controlled_apply_ready (Tier-B, P126 scope) | 5 |
-| adapter_build_needed (P127 scope) | 12 |
-| relabel_only | 2 |
-| no_action kept | 17 |
-| replay_storage_design_risks | 4 (RSR-1 through RSR-4) |
-
-### Confirmations (P125)
-- [Confirmed] No DB writes, no staging of lottery_v2.db or lottery_history.json
-- [Confirmed] No strategy promotion, lifecycle mutation, registry mutation
-- [Confirmed] No P108/P117/P118 execution, no 4_STAR backtest, no scheduler install
-- [Confirmed] No fabricated replay rows
-- [Confirmed] P125 tests: 54 passed, P124 + P119-P123 regression: 345 passed
-- [Confirmed] Drift guard: REPLAY_LIFECYCLE_DRIFT_GUARD_PASS
-- [Confirmed] replay_rows = 54462 (unchanged before and after P125)
-
-### Remaining Risks
-| Risk | Status |
-|---|---|
-| Native multi-bet storage format not decided | P128 required before any apply |
-| 5 Tier-B controlled_apply candidates need explicit authorization per apply | P126 gate |
-| 12 adapter_build strategies need new get_all_bets() implementations | P127 gate |
-| 4_STAR provenance still unresolved | Blocked indefinitely |
-| P108 needs ~37 more Special3 draws | Blocked |
-| P117 POWER_LOTTO OOS needs 30-40 more draws | Blocked |
-
-### Next Task
-**P126_CONTROLLED_APPLY_PLAN_FOR_TIER_B_MULTI_BET_ADAPTERS**
-- Requires explicit apply authorization per strategy
-- Must run dry-run before any apply
-- Must verify no duplicate bet-1 rows
-- Must confirm P128 storage design or explicitly authorize one-row-per-bet convention
-
-### Next Task
-`P125_ADAPTER_GAP_PLAN` — plan controlled_apply passes for the 5 Tier-B adapter-ready strategies and define adapter build specs for remaining multi-bet strategies.
-
----
-
-## P126 — Controlled Apply Dry-Run Plan for Tier-B Multi-Bet Adapters
-
-- **Task:** `P126_CONTROLLED_APPLY_PLAN_FOR_TIER_B_MULTI_BET_ADAPTERS`
-- **Date:** 2026-05-28
-- **Script:** `scripts/p126_controlled_apply_plan_tier_b_multi_bet.py`
-- **JSON:** `outputs/replay/p126_controlled_apply_plan_tier_b_multi_bet_20260528.json`
-- **MD:** `docs/replay/p126_controlled_apply_plan_tier_b_multi_bet_20260528.md`
-- **Tests:** `tests/test_p126_controlled_apply_plan_tier_b_multi_bet.py` — 151 passed
-- **Classification:** `P126_DRY_RUN_PLAN_READY`
-
-### P126 Row Delta Summary
-| Apply Order | Strategy | Lottery | Bets | +New Rows | Total After |
-|---|---|---|---|---|---|
-| 1 | `biglotto_echo_aware_3bet` | BIG_LOTTO | 3 | +3000 | 57462 |
-| 2 | `daily539_f4cold_5bet` | DAILY_539 | 5 | +6000 | 63462 |
-| 3 | `daily539_f4cold_3bet` | DAILY_539 | 3 | +3000 | 66462 |
-| 4 | `power_fourier_rhythm_2bet` | POWER_LOTTO | 2 | +1500 | 67962 |
-| 5 | `biglotto_ts3_markov_4bet_w30` | BIG_LOTTO | 4 | +4500 | 72462 |
-| **TOTAL** | | | | **+18| **TOTAL** | | | | **+18| **TOTAL** | | | | **+18| **TOTAL** | | | | Pro| **TOTAL** | | | | **+18| **TOTAL** | | | | **+18| **TOTAL** | | | |ONTROLLED_APPLY |
-| Dupli| Dupli| Dupli| Dupli| Dupli| Dupli| Dupli| Dupli| Dupli| Dupli| Duplin| Dupli| Dupli| Dupli| Dupli| Dupli| Dupli| Dupli| Dupli| Dupli| Dupli| Duplin| DupliLA| Dupli| Dupli| Dupli| Dupli| Dupli| Dupli| Dupli| Dupli| Dupli| Dupli| Duplinri| Dupli| Dupli| Dupli| Dupli| Dupli| Dupli| Dupli| Dupli| Dupli| Dupli| Duplin| Dupli|or lottery_history.json
-- [Confirmed] No strategy promotion, scheduler install, lifecycle mutation
-- [Confirmed] No P108/P117/P118 execution, no 4_STAR action, no fabricated rows
-- [Confirmed] PRAGMA query_only = ON enforced on every DB connection
-- [Confirmed] P126 tests: 151 passed; P125+P124+P119-P123 regression: 399 passed
-- [Confirmed] Drift guard: REPLAY_LIFECYCLE_DRIFT_GUARD_PASS
-- [Confirmed] replay_rows = 54462 (unchanged be- [Confirmed] replay_rows = 54462 (unchanged be- [Confirmed] replay_28)- [Confirmed] replay_rows = 54462 (unchanged be- [Confirmed] replay_rows = 54462 (unchanged be- [Confirmed] replay_28)- [Confirmed] replay_rows = 54462 (unchanged be- [Confirmed] reatio- [Confirmed] replay_rows = 54462 (unchanged be- [Confirmed] replay_rows = 54462 (unchanged be- [Confirmed] replay_28)- [Confirmed] replay_rows = 54462 (unchanged be- [Confirmed] replay_rows = 54462 (unchanged be- [Confirmed] replay_28)- [Confirmed] replay_rows = 54462 (unchanged be- [Confirmed] reatio- [Confirmed] replay_rows = 54462 (unchanged be- [he- [Confirmed] replay_rows = 54462 (unchanged be- [Confirmed] replay_rows Kelvin
-
-Final roadmap marker:
+**Do NOT** run P187 without:
+1. Verbatim exact authorization phrase
+2. Verified immutable backup (54462 rows confirmed)
+3. All API writers stopped
 
 ```text
-CTO_ROADMAP_UPDATED_AFTER_P126_DRY_RUN_PLAN_20260528
+CTO_ROADMAP_UPDATED_AFTER_P186_AUTHORIZATION_GATE_20260601
 ```
 
 ---
 
-## P128: Native Multi-Bet Replay Storage Design
+## P187 — CTO Assessment: Dry-Run Checklist (2026-06-01)
 
-**Task ID:** P128
-**Classification:** P128_NATIVE_MULTI_BET_STORAGE_DESIGN_READY
-**Commit:** pending (this session)
-**DB rows before / after:** 54462 / 54462 (read-only — zero writes)
+**Status**: `P187_PRODUCTION_DB_MIGRATION_DRY_RUN_CHECKLIST_READY`
 
-### Problem Resolved
+### Checklist Ready for Operator Use
 
-P126 identified RSR-1 (no storage format decided for multi-bet rows) and RSR-2 (no bet_index column).
-P128 resolves both. The current UNIQUE constraint `(lottery_type, target_draw, strategy_id, replay_run_id)`
-has all P94 Tier-B rows with `replay_run_id=NULL` — SQLite's NULL-distinct behavior technically permits
-multi-bet inserts today, but this is accidental, fragile, and not a valid convention.
+The 13-item DRC checklist is the definitive pre-migration gate. Operator must complete all items in order, stopping on any failure. DRC-13 is the final go/no-go gate that requires explicit operator confirmation of all prior items.
 
-### Decision
+**Critical gates**: DRC-06 (exact phrase verbatim), DRC-11 (backup verified + chmod 444), DRC-10 (writers stopped).
 
-| Aspect | Decision |
-|---|---|
-| Storage model | one-row-per-bet (APPROVED) |
-| bet_index column | Required — `INTEGER NOT NULL DEFAULT 1` |
-| New UNIQUE constraint | `UNIQUE(lottery_type, target_draw, strategy_id, bet_index)` |
-| Migration | SQL| Migration | SQL| Migration | SQL| Migration | SQL| Migration | SQL| Migration | SQL| Migrad �|� al| Migration | SQL| Migration | SQL| Migr## P126 A| Migratdiness Aft| Migration | SQL| Migration | SQL| Migration | SQL| Migratioly| Migration | SQL| Migration | SQn_| Migration | SQL| Migration | SQL| Migration | SQL| Migration | SQLses| Migration | SQL| ndidate)
-3. Migration execution
-4. RSR-3 (drift guard count update after apply)
+### P188 Authorization
 
-### Artifacts
+Destructive P188 may proceed **only** if:
+1. Exact phrase provided verbatim in P188 prompt
+2. All 13 DRC items pass in order
+3. Backup verified at 54,462 rows and immutable before first SQL statement
 
-- `script- `script- `script- `script- `script- `script- `script- `script- `script- `script- `script- `script- `s528.j- `script- `script- `script- `script- `script- `script- `script- `script- `script- `script- `script- `bet_- `script- `script- `script- `script- `script- `script- `script- `script- `script- B wr- `script- [Co- `script- `script- ge- `scripec- `script- `script- `script- `script- `scripr, no strategy promotion
-- [Confirmed] No 4_STAR / P108 / P117 / P118
-- [Confirmed] PRAGMA query_only = ON on all DB connections
-- [Confirmed] replay_rows = 54462 (unchanged)
-- [Confirmed] RSR-1 resolved, RSR-2 resolved
-- [Confirmed] P128 tests: 146 passed; P126+P125+P124 regression: 232 passed
-- [Confirmed] Drift guard: REPLAY_LIFECYCLE_DRIFT_GUARD_PASS
-
-Final roadmap marker:
+If backup step (DRC-11) fails for any reason, P188 must STOP — do not proceed without verified backup.
 
 ```text
-CTO_ROADMAP_UPDATED_AFTER_P128_STORAGE_DESIGN_20260528
+CTO_ROADMAP_UPDATED_AFTER_P187_DRY_RUN_CHECKLIST_20260601
+```
+
+---
+
+## P188 — CTO Assessment: Production DB Migration (2026-06-01)
+
+**Status**: `P188_PRODUCTION_DB_MIGRATION_EXECUTED_RECONCILED_94924`
+
+### Migration Outcome
+
+Production DB migrated: 54,462 → 94,924 rows. bet_index PRESENT. The DB-level reconciliation between main and zen-gates is **COMPLETE**. Backup exists at `backups/p188_lottery_v2_backup_20260601_153821.db` (54,462 rows, integrity ok).
+
+### Remaining P189 Actions
+
+| Action | Priority |
+|--------|----------|
+| Update drift guard (54462→94924, accept new CA IDs) | **HIGH** |
+| Fix 9 stale pre-migration contract test assertions | HIGH |
+| Remove/update requires_zen_gates_db skip markers | MEDIUM |
+| Evaluate commit/push plan for P182-P188 changes | HIGH |
+| UI: multi-bet display, bet_index filter | LOW |
+
+### CTO Recommendation
+
+**Primary**: `YES start P189 post-migration verification and commit readiness audit`
+
+The drift guard update is critical — it currently FAILS which could mask future regressions. Fix it before any commit. The 9 stale test assertions should be updated or marked as archive-only.
+
+**Do NOT rollback** unless a data integrity issue is discovered. The backup is available if needed.
+
+```text
+CTO_ROADMAP_UPDATED_AFTER_P188_PRODUCTION_DB_MIGRATION_20260601
+```
+
+---
+
+## P189 — CTO Assessment: Post-Migration Verification (2026-06-01)
+
+**Status**: `P189_POST_MIGRATION_VERIFICATION_COMMIT_READINESS_READY`
+
+All technical post-migration checks PASS: drift guard PASS at 94924, 600 tests PASS, 0 FAIL, backup verified. The repo is **commit-ready** from a technical standpoint.
+
+**CTO Recommendation**: `YES start P190 commit readiness and staging plan only`
+
+Before any git stage/commit/push: review which files should be committed together (DB file may be excluded per `.gitignore`), draft commit message, and confirm with user.
+
+```text
+CTO_ROADMAP_UPDATED_AFTER_P189_POST_MIGRATION_VERIFICATION_20260601
+```
+```
+
+---
+
+## P190 — CTO Assessment: Commit Readiness and Staging Plan (2026-06-01)
+
+**Status**: `P190_COMMIT_READINESS_AND_STAGING_PLAN_READY`
+
+### CTO Assessment
+
+P190 completed a thorough commit readiness audit and produced an 8-group staging whitelist for P191. All Phase 0 preconditions verified: DB=94924 rows, bet_index PRESENT, integrity_check=ok, drift guard PASS, 644 tests PASS, 0 staged files. No DB writes, no stage/commit/push performed.
+
+### Key Governance Points
+
+| Point | Status |
+|-------|--------|
+| DB rows = 94924 | CONFIRMED |
+| bet_index = PRESENT | CONFIRMED |
+| Drift guard = PASS | CONFIRMED |
+| Tests 644 PASS | CONFIRMED |
+| stage/commit/push | **NOT YET — P191 BLOCKED** |
+| POWER_LOTTO research | **CLOSED** (P178A) |
+| Forbidden staging policy | Documented and enforced |
+
+### CTO Recommendation for P191
+
+**P191 MUST NOT use `git add -A` or `git add .`**. The working tree contains forbidden files: `*.pid`, `runtime/`, `.gstack/`, `.fuse_hidden*`, `lottery_api/data/*.db.bak_*`. Any broad staging would commit process state, OS temp files, and old DB backups.
+
+P191 staging sequence:
+1. Run `PRAGMA wal_checkpoint(TRUNCATE)` on lottery_v2.db before staging
+2. Stage Group A (DB) + Group B (backup) + Group C (research) + Group D (tests) + Group E (drift guard/config) + Group F (analysis) + Group H (roadmap)
+3. Run forbidden scan: `git diff --cached --name-only` — verify no forbidden files
+4. Run full test suite (644 tests) before committing
+5. Create local commit first (Option B) before any push decision
+
+**Recommended P191 Authorization**: `YES start P191 stage reviewed files and create local commit only, no push`
+
+This creates a reversible local commit. Push to origin/main requires a separate explicit CEO authorization (Option C).
+
+**Do NOT select P191 Option C (push)** without first verifying:
+- Branch protection rules (`gh api repos/.../branches/main/protection`)
+- CI configuration
+- That no forbidden files are staged
+
+```text
+CTO_ROADMAP_UPDATED_AFTER_P190_COMMIT_READINESS_STAGING_PLAN_20260601
+```
+
+---
+
+## P191 — CTO Assessment: Stage Reviewed Files and Local Commit (2026-06-01)
+
+**Status**: `P191_STAGE_REVIEWED_FILES_LOCAL_COMMIT_READY`
+
+### CTO Assessment
+
+P191 staged 109 files (0 forbidden) and created a local commit. WAL checkpoint ran successfully before staging (lottery_v2.db-wal = 0 bytes). Full pre-commit test suite passed. No push executed — this is a local commit only.
+
+| Check | Status |
+|-------|--------|
+| WAL checkpoint | TRUNCATE — .db-wal = 0 bytes |
+| Forbidden staging scan | PASSED (0 forbidden files) |
+| Files staged | 109 |
+| Local commit created | YES |
+| Push | NO |
+| Tests | PASS |
+| DB rows | 94924 |
+
+### CTO Recommendation for P192
+
+**Do not push** without verifying:
+1. Branch protection rules: `gh api repos/{owner}/{repo}/branches/main/protection`
+2. CI configuration
+3. That the commit hash is correct with `git log -1 --oneline`
+
+**Recommended P192 Authorization**: `YES start P192 push authorization gate only`
+
+This creates a gate that verifies the local commit before any push decision.
+
+**Direct push option**: `YES start P192 push local commit to origin main` — only if branch protection and CI are confirmed acceptable.
+
+```text
+CTO_ROADMAP_UPDATED_AFTER_P191_STAGE_LOCAL_COMMIT_20260601
 ```

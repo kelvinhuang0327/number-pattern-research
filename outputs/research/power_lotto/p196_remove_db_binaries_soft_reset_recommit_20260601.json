@@ -1,0 +1,129 @@
+{
+  "task": "P196_REMOVE_DB_BINARIES_SOFT_RESET_RECOMMIT_NON_BINARY_NO_PUSH",
+  "date": "2026-06-01",
+  "final_classification": "P196_REMOVE_DB_BINARIES_RECOMMIT_NON_BINARY_READY",
+  "authorization_phrase_detected": "YES execute P196 remove DB binaries from local commit using soft reset and recommit non-binary files, no push",
+
+  "phase_0_verification": {
+    "status": "PASS",
+    "repo": "/Users/kelvin/Kelvin-WorkSpace/LotteryNew",
+    "branch": "main",
+    "git_dir": ".git",
+    "in_worktree": false,
+    "head_before_reset": "012d4a3f74a35a24c9f1518795bc79098897d7f5",
+    "head_message_before": "P188-P191: reconcile replay DB and post-migration governance",
+    "origin_main": "684bffcea3080f8f1f31c5b9acc3a572907ec4f3",
+    "origin_main_is_ancestor": true,
+    "commits_ahead_before": 6,
+    "staged_files_before": 0,
+    "production_db_rows_before": 94924,
+    "bet_index_null_count_before": 0,
+    "integrity_check_before": "ok",
+    "production_db_sha256": "a5ac27a6887d8c1d8da97349dbc97c36e9429270dd45f81b3b67a8d5793c4f87",
+    "production_db_size_bytes": 99368960,
+    "backup_exists": true,
+    "backup_sha256": "5eea53135fb65369a3dd90512e7f8bfc4411b756abadf00a03b2b9b7d4e24da9",
+    "backup_size_bytes": 53374976,
+    "rehearsal_dbs_git_tracked": false,
+    "p195_artifact_exists": true,
+    "p195_classification": "P195_REMOVE_DB_BINARIES_FROM_LOCAL_COMMIT_EXECUTION_PLAN_READY",
+    "p178a_to_p195_tests": "1011 passed, 0 failed, 0 skipped",
+    "drift_guard_before": "REPLAY_LIFECYCLE_DRIFT_GUARD_PASS",
+    "stop_conditions_triggered": []
+  },
+
+  "p195_classification_referenced": "P195_REMOVE_DB_BINARIES_FROM_LOCAL_COMMIT_EXECUTION_PLAN_READY",
+
+  "pre_rewrite_state": {
+    "binary_files_tracked_in_p191_commit": [
+      "lottery_api/data/lottery_v2.db",
+      "backups/p188_lottery_v2_backup_20260601_153821.db",
+      "backups/p188_lottery_v2_backup_20260601_153821.db.sha256"
+    ],
+    "rehearsal_dbs_on_disk_not_tracked": [
+      "outputs/research/power_lotto/p184_rehearsal/lottery_v2_p184_temp_rehearsal_20260601.db",
+      "outputs/research/power_lotto/p185_rehearsal/lottery_v2_p185_temp_rehearsal_20260601.db"
+    ],
+    "p191_commit_total_files": 109,
+    "manifest_created_before_reset": true
+  },
+
+  "db_binary_manifest": {
+    "manifest_path": "outputs/research/power_lotto/p196_db_binary_external_storage_manifest_20260601.json",
+    "production_db_sha256": "a5ac27a6887d8c1d8da97349dbc97c36e9429270dd45f81b3b67a8d5793c4f87",
+    "production_db_rows": 94924,
+    "production_db_size_bytes": 99368960,
+    "backup_sha256": "5eea53135fb65369a3dd90512e7f8bfc4411b756abadf00a03b2b9b7d4e24da9",
+    "backup_rows": 54462,
+    "backup_size_bytes": 53374976,
+    "integrity_check": "ok"
+  },
+
+  "soft_reset_result": {
+    "command": "git reset --soft HEAD~1",
+    "status": "POPULATED_AFTER_RESET",
+    "head_after": "POPULATED_AFTER_RESET",
+    "staged_files_after_reset": "POPULATED_AFTER_RESET",
+    "production_db_rows_after_reset": "POPULATED_AFTER_RESET",
+    "backup_rows_after_reset": "POPULATED_AFTER_RESET"
+  },
+
+  "binary_untracking_result": {
+    "commands": [
+      "git rm --cached lottery_api/data/lottery_v2.db",
+      "git rm --cached backups/p188_lottery_v2_backup_20260601_153821.db"
+    ],
+    "status": "POPULATED_AFTER_UNTRACK",
+    "db_file_still_on_disk": "POPULATED_AFTER_UNTRACK",
+    "backup_file_still_on_disk": "POPULATED_AFTER_UNTRACK",
+    "db_rows_after_untrack": "POPULATED_AFTER_UNTRACK"
+  },
+
+  "non_binary_recommit_result": {
+    "status": "POPULATED_AFTER_COMMIT",
+    "new_commit_hash": "POPULATED_AFTER_COMMIT",
+    "new_commit_message": "P188-P196: reconcile replay DB governance without DB binaries",
+    "files_staged_for_commit": "POPULATED_AFTER_COMMIT",
+    "db_binary_in_new_commit": false,
+    "no_push": true
+  },
+
+  "post_recommit_verification": {
+    "status": "POPULATED_AFTER_COMMIT",
+    "production_db_rows": "POPULATED_AFTER_COMMIT",
+    "backup_rows": "POPULATED_AFTER_COMMIT",
+    "db_binary_tracked_after": false,
+    "staged_files_after": 0,
+    "tests_pass": "POPULATED_AFTER_COMMIT",
+    "drift_guard": "POPULATED_AFTER_COMMIT",
+    "no_push": true
+  },
+
+  "governance_confirmations": {
+    "no_push": true,
+    "no_force_push": true,
+    "no_db_file_deleted": true,
+    "no_backup_file_deleted": true,
+    "no_production_db_modified": true,
+    "no_controlled_apply": true,
+    "no_registry_mutation": true,
+    "no_research_rerun": true,
+    "no_checkout_other_branch": true,
+    "no_branch_creation": true,
+    "no_rebase": true,
+    "power_lotto_research_closed": true,
+    "migrated_db_local_state_preserved": true,
+    "production_db_rows": 94924,
+    "local_commit_created": false
+  },
+
+  "next_task_options": [
+    "YES start P197 create PR branch from non-binary local commit plan only",
+    "YES start P197 create PR branch and push for CI no merge",
+    "YES start P197 post-recommit verification only",
+    "YES start P197 keep non-binary local commit unpushed and pause",
+    "YES start P197 rollback decision gate only"
+  ],
+
+  "next_task_blocked_by_user_authorization": true
+}

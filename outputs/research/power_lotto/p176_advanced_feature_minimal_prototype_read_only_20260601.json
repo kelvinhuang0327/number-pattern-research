@@ -1,0 +1,189 @@
+{
+  "task": "P176_POWER_LOTTO_R2_ADVANCED_FEATURE_MINIMAL_PROTOTYPE_READ_ONLY",
+  "final_classification": "P176_POWER_LOTTO_R2_ADVANCED_FEATURE_NULL_RESULT",
+  "date": "2026-06-01",
+  "branch": "claude/zen-gates-ff6802",
+  "authorization_phrase_detected": "YES start P176 POWER_LOTTO R2 advanced feature minimal prototype read-only",
+  "phase_0_verification": {
+    "result": "PASS",
+    "repo": "/Users/kelvin/Kelvin-WorkSpace/LotteryNew/.claude/worktrees/zen-gates-ff6802",
+    "branch": "claude/zen-gates-ff6802",
+    "db_rows": 94924,
+    "draws_table_power_lotto_rows": 1913,
+    "drift_guard": "PASS",
+    "p167_script": "PASS",
+    "p170_script": "PASS",
+    "p173_script": "PASS",
+    "p161_to_p175_tests": "915 PASSED"
+  },
+  "p175_summary": {
+    "classification": "P175_POWER_LOTTO_R2_ADVANCED_FEATURE_CANDIDATE_PLAN_READY",
+    "candidates_planned": [
+      "C03",
+      "C05",
+      "C06",
+      "C07"
+    ],
+    "bonferroni_family_size": 4,
+    "bonferroni_threshold": 0.0125,
+    "p173_null_unchanged": true,
+    "no_edge_found_prior_to_p176": true
+  },
+  "implementation_summary": {
+    "c03_approach": "Incremental pair co-occurrence adjacency matrix; degree centrality >= min_threshold=2; top-6 by centrality",
+    "c05_approach": "Greedy selection minimizing projected L2 distance from prior draw sum/span targets; expanding window",
+    "c06_approach": "One-sided CUSUM on normalized draw sum z-score; regime determines frequency window (high=50, neutral=100, low=200)",
+    "c07_approach": "Equal-weight Borda aggregation of C01+C02+C04+C03 rankings; deterministic tie-break by candidate_id",
+    "leakage_prevention": "All feature extraction uses strictly draws[0..i-1] via incremental state objects updated AFTER each prediction"
+  },
+  "candidate_results": {
+    "C03": {
+      "n_oos": 1413,
+      "mean_hit_count": 0.949045,
+      "vs_random_baseline": 0.001676,
+      "p_raw": 0.469768,
+      "p_bonferroni": 1.0,
+      "bh_status": "FAIL_BH",
+      "corrected_status": "FAIL_CORRECTED",
+      "config_used": {
+        "min_pair_cooccurrence": 2,
+        "lookback": "all_prior_draws",
+        "centrality": "degree",
+        "top_k": 6
+      },
+      "leakage_check": "PASS — pair matrix updated AFTER prediction; incremental state uses only draws[0..i-1]",
+      "pair_space_burden_note": "C(38,2)=703 edges. Degree-centrality selection implicitly tests pair-space. Bonferroni family=4 does NOT correct for internal pair selection. Effective Type I error for C03 may exceed 0.0125."
+    },
+    "C05": {
+      "n_oos": 1413,
+      "mean_hit_count": 0.934183,
+      "vs_random_baseline": -0.013186,
+      "p_raw": 0.724649,
+      "p_bonferroni": 1.0,
+      "bh_status": "FAIL_BH",
+      "corrected_status": "FAIL_CORRECTED",
+      "config_used": {
+        "metrics": [
+          "draw_sum",
+          "draw_span",
+          "draw_mad"
+        ],
+        "scoring": "negative_L2_from_prior_mean",
+        "top_k": 6
+      },
+      "leakage_check": "PASS — dispersion stats updated AFTER prediction; targets from draws[0..i-1] only"
+    },
+    "C06": {
+      "n_oos": 1413,
+      "mean_hit_count": 0.949752,
+      "vs_random_baseline": 0.002384,
+      "p_raw": 0.457046,
+      "p_bonferroni": 1.0,
+      "bh_status": "FAIL_BH",
+      "corrected_status": "FAIL_CORRECTED",
+      "config_used": {
+        "cusum_threshold": 2.0,
+        "cusum_slack": 0.5,
+        "regime_windows": {
+          "high": 50,
+          "neutral": 100,
+          "low": 200
+        },
+        "cusum_type": "one-sided upward on draw-sum z-score",
+        "top_k": 6
+      },
+      "leakage_check": "PASS — CUSUM and regime state updated AFTER prediction; one-sided only, strictly causal",
+      "no_future_labels": "CONFIRMED — regime at draw i uses only draws[0..i-1]"
+    },
+    "C07": {
+      "n_oos": 1413,
+      "mean_hit_count": 0.979476,
+      "vs_random_baseline": 0.032108,
+      "p_raw": 0.073112,
+      "p_bonferroni": 0.292447,
+      "bh_status": "FAIL_BH",
+      "corrected_status": "FAIL_CORRECTED",
+      "config_used": {
+        "components": [
+          "C01",
+          "C02",
+          "C04",
+          "C03"
+        ],
+        "weights": "equal",
+        "aggregation": "Borda_count",
+        "tie_breaking": "alphabetical_by_candidate_id",
+        "top_k": 6
+      },
+      "leakage_check": "PASS — each component uses draws[0..i-1]; C03 uses same config as standalone C03"
+    }
+  },
+  "multiple_testing_result": {
+    "family_size": 4,
+    "alpha": 0.05,
+    "bonferroni_threshold": 0.0125,
+    "p_raw_list": [
+      0.469768,
+      0.724649,
+      0.457046,
+      0.073112
+    ],
+    "p_bonferroni_list": [
+      1.0,
+      1.0,
+      1.0,
+      0.292447
+    ],
+    "p_bh_list": [
+      0.626358,
+      0.724649,
+      0.626358,
+      0.292447
+    ],
+    "any_pass_corrected": false,
+    "c03_internal_pair_space_not_corrected": true
+  },
+  "leakage_audit": {
+    "C03": "Incremental pair matrix; add_draw() called AFTER prediction; strictly draws[0..i-1]. PASS.",
+    "C05": "Incremental dispersion stats; add() called AFTER prediction; strictly draws[0..i-1]. PASS.",
+    "C06": "Incremental CUSUM; add() called AFTER prediction; one-sided; strictly draws[0..i-1]. PASS.",
+    "C07": "All 4 component rankings use draws[0..i-1]; Borda is deterministic post-ranking; PASS."
+  },
+  "oos_protocol_actual": {
+    "initial_training_size": 500,
+    "oos_draws": 1413,
+    "total_draws": 1913,
+    "method": "expanding_window",
+    "no_shuffling": true,
+    "no_oos_refitting": true,
+    "statistical_unit": "per draw",
+    "no_bet_row_pseudo_replication": true,
+    "random_baseline": 0.947368
+  },
+  "conclusion": {
+    "any_candidate_pass_corrected": false,
+    "r2_null_result": true,
+    "honest_statement": "C03/C05/C06/C07 are all statistically indistinguishable from fair-random 36/38 selection after Bonferroni correction (family=4, threshold=0.0125). R2 advanced feature research yields NULL result. Cumulative evidence: R1 (P161-P170) + R2 Top 3 (P173) + R2 Advanced (P176) = NULL. R2 research is concluded.",
+    "recommendation": "P177 R2 closure decision review. No further feature engineering in POWER_LOTTO is warranted without structural change."
+  },
+  "governance_confirmations": {
+    "db_rows_before": 94924,
+    "db_rows_after": 94924,
+    "db_unchanged": true,
+    "no_db_write": true,
+    "no_registry_mutation": true,
+    "no_controlled_apply": true,
+    "no_champion_promotion": true,
+    "no_wagering_recommendations": true,
+    "no_win_guarantee_claim": true,
+    "no_stage": true,
+    "no_commit": true,
+    "no_push": true,
+    "p173_null_unchanged": true,
+    "p161_to_p175_null_results_unchanged": true,
+    "main_zen_gates_split_still_unresolved": true
+  },
+  "next_task": "P177_POWER_LOTTO_R2_CLOSURE_DECISION_REVIEW",
+  "next_task_blocked_by_user_authorization": true,
+  "next_task_authorization_required_phrase": "YES start P177 POWER_LOTTO R2 closure decision review"
+}

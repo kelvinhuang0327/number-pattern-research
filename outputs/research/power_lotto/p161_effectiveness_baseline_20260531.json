@@ -1,0 +1,1207 @@
+{
+  "task_id": "P161_POWER_LOTTO_REPLAY_STRATEGY_EFFECTIVENESS_BASELINE",
+  "version": "2.1",
+  "generated_at": "2026-06-01T05:22:30.387697+00:00",
+  "classification": "P161_POWER_LOTTO_EFFECTIVENESS_BASELINE_READY",
+  "read_only": true,
+  "pragma_query_only": true,
+  "db_path": "lottery_api/data/lottery_v2.db",
+  "db_snapshot": {
+    "total_rows_before": 94924,
+    "total_rows_after": 94924,
+    "total_rows_unchanged": true,
+    "power_lotto_rows": 36104,
+    "power_lotto_distinct_strategies": 10,
+    "power_lotto_distinct_draws": 1551,
+    "statistical_unit": "distinct target_draw",
+    "statistical_unit_n": 1551,
+    "note_rows_vs_unit": "36104 rows = sum over strategies of (n_draws x n_bet_slots). The statistical unit is distinct target_draw (1551), NOT 36104 rows."
+  },
+  "baselines": {
+    "main_random_E_hit_count": 0.9473684210526315,
+    "main_random_formula": "6 * 6/38 = 36/38",
+    "special_random": 0.125,
+    "special_random_formula": "1/8 (POWER_LOTTO special pool 1..8)"
+  },
+  "section_2_main_vs_special_separated": {
+    "pool_main_avg_hit_count": 0.967427,
+    "pool_main_vs_random_delta": 0.020059,
+    "pool_main_verdict": "ABOVE",
+    "special_predicted_special_not_null_n": 9000,
+    "special_hits": 1063,
+    "special_hit_rate": 0.118111,
+    "special_vs_random_delta": -0.006889,
+    "special_verdict": "BELOW",
+    "special_diluted_all_row_avg_DO_NOT_USE": 0.029443,
+    "note": "Special uses predicted_special IS NOT NULL only (9000 rows). The all-row special_hit avg (~0.0294) is diluted by strategies that never predict a special and MUST NOT be used."
+  },
+  "section_1_3_per_strategy": [
+    {
+      "strategy_id": "cold_complement_2bet",
+      "lifecycle": "ONLINE",
+      "registry_lottery_types": [
+        "POWER_LOTTO"
+      ],
+      "n_draws": 1500,
+      "n_bet_rows": 1500,
+      "n_bet_slots": 1,
+      "draw_range": [
+        101000002,
+        115000040
+      ],
+      "mean_hit_count": 0.940667,
+      "max_hit_count": 4,
+      "ci95_mean_lo": 0.899629,
+      "ci95_mean_hi": 0.981704,
+      "sem": 0.020938,
+      "statistical_unit": "per_draw_mean_hit_count",
+      "bet_row_mean_hit_count_pseudo_replicated": 0.940667,
+      "hit_count_dist": {
+        "0": 477,
+        "1": 694,
+        "2": 274,
+        "3": 51,
+        "4": 4,
+        "5": 0,
+        "6": 0
+      },
+      "main_random_baseline": 0.947368,
+      "main_verdict_vs_random": "BELOW",
+      "main_z": -0.3201,
+      "main_p_raw": 0.748908,
+      "main_test_note": "z-test on per-draw mean hit_count (n=n_draws independent draws), NOT on per-bet rows (which would pseudo-replicate within-draw bets).",
+      "special": {
+        "predicted_special_n": 1500,
+        "special_hits": 171,
+        "special_hit_rate": 0.114,
+        "special_random_baseline": 0.125,
+        "special_verdict_vs_random": "BELOW",
+        "special_binom_p_raw": 0.211476
+      },
+      "meets_min_ndraws_for_ranking": true
+    },
+    {
+      "strategy_id": "fourier30_markov30_2bet",
+      "lifecycle": "ONLINE",
+      "registry_lottery_types": [
+        "POWER_LOTTO"
+      ],
+      "n_draws": 1501,
+      "n_bet_rows": 1501,
+      "n_bet_slots": 1,
+      "draw_range": [
+        101000002,
+        115000041
+      ],
+      "mean_hit_count": 0.96469,
+      "max_hit_count": 4,
+      "ci95_mean_lo": 0.922828,
+      "ci95_mean_hi": 1.006553,
+      "sem": 0.021359,
+      "statistical_unit": "per_draw_mean_hit_count",
+      "bet_row_mean_hit_count_pseudo_replicated": 0.96469,
+      "hit_count_dist": {
+        "0": 472,
+        "1": 675,
+        "2": 293,
+        "3": 57,
+        "4": 4,
+        "5": 0,
+        "6": 0
+      },
+      "main_random_baseline": 0.947368,
+      "main_verdict_vs_random": "ABOVE",
+      "main_z": 0.811,
+      "main_p_raw": 0.417371,
+      "main_test_note": "z-test on per-draw mean hit_count (n=n_draws independent draws), NOT on per-bet rows (which would pseudo-replicate within-draw bets).",
+      "special": {
+        "predicted_special_n": 1500,
+        "special_hits": 187,
+        "special_hit_rate": 0.124667,
+        "special_random_baseline": 0.125,
+        "special_verdict_vs_random": "BELOW",
+        "special_binom_p_raw": 1.0
+      },
+      "meets_min_ndraws_for_ranking": true
+    },
+    {
+      "strategy_id": "fourier_rhythm_3bet",
+      "lifecycle": "ONLINE",
+      "registry_lottery_types": [
+        "POWER_LOTTO"
+      ],
+      "n_draws": 1501,
+      "n_bet_rows": 4503,
+      "n_bet_slots": 3,
+      "draw_range": [
+        101000002,
+        115000041
+      ],
+      "mean_hit_count": 0.974906,
+      "max_hit_count": 4,
+      "ci95_mean_lo": 0.948262,
+      "ci95_mean_hi": 1.001549,
+      "sem": 0.013594,
+      "statistical_unit": "per_draw_mean_hit_count",
+      "bet_row_mean_hit_count_pseudo_replicated": 0.974906,
+      "hit_count_dist": {
+        "0": 1416,
+        "1": 1997,
+        "2": 887,
+        "3": 193,
+        "4": 10,
+        "5": 0,
+        "6": 0
+      },
+      "main_random_baseline": 0.947368,
+      "main_verdict_vs_random": "ABOVE",
+      "main_z": 2.0257,
+      "main_p_raw": 0.042793,
+      "main_test_note": "z-test on per-draw mean hit_count (n=n_draws independent draws), NOT on per-bet rows (which would pseudo-replicate within-draw bets).",
+      "special": null,
+      "meets_min_ndraws_for_ranking": true
+    },
+    {
+      "strategy_id": "midfreq_fourier_2bet",
+      "lifecycle": "RETIRED",
+      "registry_lottery_types": [
+        "DAILY_539"
+      ],
+      "n_draws": 1500,
+      "n_bet_rows": 1500,
+      "n_bet_slots": 1,
+      "draw_range": [
+        101000002,
+        115000040
+      ],
+      "mean_hit_count": 0.972667,
+      "max_hit_count": 4,
+      "ci95_mean_lo": 0.930558,
+      "ci95_mean_hi": 1.014776,
+      "sem": 0.021485,
+      "statistical_unit": "per_draw_mean_hit_count",
+      "bet_row_mean_hit_count_pseudo_replicated": 0.972667,
+      "hit_count_dist": {
+        "0": 466,
+        "1": 681,
+        "2": 283,
+        "3": 68,
+        "4": 2,
+        "5": 0,
+        "6": 0
+      },
+      "main_random_baseline": 0.947368,
+      "main_verdict_vs_random": "ABOVE",
+      "main_z": 1.1775,
+      "main_p_raw": 0.238993,
+      "main_test_note": "z-test on per-draw mean hit_count (n=n_draws independent draws), NOT on per-bet rows (which would pseudo-replicate within-draw bets).",
+      "special": {
+        "predicted_special_n": 1500,
+        "special_hits": 178,
+        "special_hit_rate": 0.118667,
+        "special_random_baseline": 0.125,
+        "special_verdict_vs_random": "BELOW",
+        "special_binom_p_raw": 0.482283
+      },
+      "meets_min_ndraws_for_ranking": true
+    },
+    {
+      "strategy_id": "midfreq_fourier_mk_3bet",
+      "lifecycle": "ONLINE",
+      "registry_lottery_types": [
+        "POWER_LOTTO"
+      ],
+      "n_draws": 1500,
+      "n_bet_rows": 4500,
+      "n_bet_slots": 3,
+      "draw_range": [
+        101000002,
+        115000040
+      ],
+      "mean_hit_count": 0.989556,
+      "max_hit_count": 4,
+      "ci95_mean_lo": 0.958583,
+      "ci95_mean_hi": 1.020528,
+      "sem": 0.015803,
+      "statistical_unit": "per_draw_mean_hit_count",
+      "bet_row_mean_hit_count_pseudo_replicated": 0.989556,
+      "hit_count_dist": {
+        "0": 1409,
+        "1": 1947,
+        "2": 940,
+        "3": 190,
+        "4": 14,
+        "5": 0,
+        "6": 0
+      },
+      "main_random_baseline": 0.947368,
+      "main_verdict_vs_random": "ABOVE",
+      "main_z": 2.6696,
+      "main_p_raw": 0.007594,
+      "main_test_note": "z-test on per-draw mean hit_count (n=n_draws independent draws), NOT on per-bet rows (which would pseudo-replicate within-draw bets).",
+      "special": {
+        "predicted_special_n": 1500,
+        "special_hits": 178,
+        "special_hit_rate": 0.118667,
+        "special_random_baseline": 0.125,
+        "special_verdict_vs_random": "BELOW",
+        "special_binom_p_raw": 0.482283
+      },
+      "meets_min_ndraws_for_ranking": true
+    },
+    {
+      "strategy_id": "power_fourier_rhythm_2bet",
+      "lifecycle": "ONLINE",
+      "registry_lottery_types": [
+        "POWER_LOTTO"
+      ],
+      "n_draws": 1500,
+      "n_bet_rows": 3000,
+      "n_bet_slots": 2,
+      "draw_range": [
+        101000003,
+        115000041
+      ],
+      "mean_hit_count": 0.963333,
+      "max_hit_count": 4,
+      "ci95_mean_lo": 0.936739,
+      "ci95_mean_hi": 0.989928,
+      "sem": 0.013569,
+      "statistical_unit": "per_draw_mean_hit_count",
+      "bet_row_mean_hit_count_pseudo_replicated": 0.963333,
+      "hit_count_dist": {
+        "0": 968,
+        "1": 1317,
+        "2": 579,
+        "3": 129,
+        "4": 7,
+        "5": 0,
+        "6": 0
+      },
+      "main_random_baseline": 0.947368,
+      "main_verdict_vs_random": "ABOVE",
+      "main_z": 1.1766,
+      "main_p_raw": 0.239363,
+      "main_test_note": "z-test on per-draw mean hit_count (n=n_draws independent draws), NOT on per-bet rows (which would pseudo-replicate within-draw bets).",
+      "special": null,
+      "meets_min_ndraws_for_ranking": true
+    },
+    {
+      "strategy_id": "power_orthogonal_5bet",
+      "lifecycle": "ONLINE",
+      "registry_lottery_types": [
+        "POWER_LOTTO"
+      ],
+      "n_draws": 1550,
+      "n_bet_rows": 7550,
+      "n_bet_slots": 5,
+      "draw_range": [
+        99000055,
+        115000040
+      ],
+      "mean_hit_count": 0.961161,
+      "max_hit_count": 4,
+      "ci95_mean_lo": 0.936495,
+      "ci95_mean_hi": 0.985827,
+      "sem": 0.012585,
+      "statistical_unit": "per_draw_mean_hit_count",
+      "bet_row_mean_hit_count_pseudo_replicated": 0.963311,
+      "hit_count_dist": {
+        "0": 2406,
+        "1": 3356,
+        "2": 1464,
+        "3": 307,
+        "4": 17,
+        "5": 0,
+        "6": 0
+      },
+      "main_random_baseline": 0.947368,
+      "main_verdict_vs_random": "ABOVE",
+      "main_z": 1.096,
+      "main_p_raw": 0.273085,
+      "main_test_note": "z-test on per-draw mean hit_count (n=n_draws independent draws), NOT on per-bet rows (which would pseudo-replicate within-draw bets).",
+      "special": null,
+      "meets_min_ndraws_for_ranking": true
+    },
+    {
+      "strategy_id": "power_precision_3bet",
+      "lifecycle": "ONLINE",
+      "registry_lottery_types": [
+        "POWER_LOTTO"
+      ],
+      "n_draws": 1550,
+      "n_bet_rows": 4550,
+      "n_bet_slots": 3,
+      "draw_range": [
+        99000055,
+        115000040
+      ],
+      "mean_hit_count": 0.956344,
+      "max_hit_count": 4,
+      "ci95_mean_lo": 0.932852,
+      "ci95_mean_hi": 0.979836,
+      "sem": 0.011986,
+      "statistical_unit": "per_draw_mean_hit_count",
+      "bet_row_mean_hit_count_pseudo_replicated": 0.958022,
+      "hit_count_dist": {
+        "0": 1463,
+        "1": 2014,
+        "2": 885,
+        "3": 177,
+        "4": 11,
+        "5": 0,
+        "6": 0
+      },
+      "main_random_baseline": 0.947368,
+      "main_verdict_vs_random": "ABOVE",
+      "main_z": 0.7488,
+      "main_p_raw": 0.453953,
+      "main_test_note": "z-test on per-draw mean hit_count (n=n_draws independent draws), NOT on per-bet rows (which would pseudo-replicate within-draw bets).",
+      "special": null,
+      "meets_min_ndraws_for_ranking": true
+    },
+    {
+      "strategy_id": "pp3_freqort_4bet",
+      "lifecycle": "ONLINE",
+      "registry_lottery_types": [
+        "POWER_LOTTO"
+      ],
+      "n_draws": 1500,
+      "n_bet_rows": 6000,
+      "n_bet_slots": 4,
+      "draw_range": [
+        101000002,
+        115000040
+      ],
+      "mean_hit_count": 0.971,
+      "max_hit_count": 4,
+      "ci95_mean_lo": 0.945117,
+      "ci95_mean_hi": 0.996883,
+      "sem": 0.013206,
+      "statistical_unit": "per_draw_mean_hit_count",
+      "bet_row_mean_hit_count_pseudo_replicated": 0.971,
+      "hit_count_dist": {
+        "0": 1913,
+        "1": 2635,
+        "2": 1178,
+        "3": 261,
+        "4": 13,
+        "5": 0,
+        "6": 0
+      },
+      "main_random_baseline": 0.947368,
+      "main_verdict_vs_random": "ABOVE",
+      "main_z": 1.7895,
+      "main_p_raw": 0.073533,
+      "main_test_note": "z-test on per-draw mean hit_count (n=n_draws independent draws), NOT on per-bet rows (which would pseudo-replicate within-draw bets).",
+      "special": {
+        "predicted_special_n": 1500,
+        "special_hits": 178,
+        "special_hit_rate": 0.118667,
+        "special_random_baseline": 0.125,
+        "special_verdict_vs_random": "BELOW",
+        "special_binom_p_raw": 0.482283
+      },
+      "meets_min_ndraws_for_ranking": true
+    },
+    {
+      "strategy_id": "zonal_entropy_2bet",
+      "lifecycle": "ONLINE",
+      "registry_lottery_types": [
+        "POWER_LOTTO"
+      ],
+      "n_draws": 1500,
+      "n_bet_rows": 1500,
+      "n_bet_slots": 1,
+      "draw_range": [
+        101000002,
+        115000040
+      ],
+      "mean_hit_count": 0.946,
+      "max_hit_count": 4,
+      "ci95_mean_lo": 0.904778,
+      "ci95_mean_hi": 0.987222,
+      "sem": 0.021032,
+      "statistical_unit": "per_draw_mean_hit_count",
+      "bet_row_mean_hit_count_pseudo_replicated": 0.946,
+      "hit_count_dist": {
+        "0": 483,
+        "1": 671,
+        "2": 291,
+        "3": 54,
+        "4": 1,
+        "5": 0,
+        "6": 0
+      },
+      "main_random_baseline": 0.947368,
+      "main_verdict_vs_random": "BELOW",
+      "main_z": -0.0651,
+      "main_p_raw": 0.948124,
+      "main_test_note": "z-test on per-draw mean hit_count (n=n_draws independent draws), NOT on per-bet rows (which would pseudo-replicate within-draw bets).",
+      "special": {
+        "predicted_special_n": 1500,
+        "special_hits": 171,
+        "special_hit_rate": 0.114,
+        "special_random_baseline": 0.125,
+        "special_verdict_vs_random": "BELOW",
+        "special_binom_p_raw": 0.211476
+      },
+      "meets_min_ndraws_for_ranking": true
+    }
+  ],
+  "section_4_lifecycle_groups": {
+    "groups": [
+      {
+        "lifecycle": "ONLINE",
+        "n_strategies": 9,
+        "strategy_ids": [
+          "cold_complement_2bet",
+          "fourier30_markov30_2bet",
+          "fourier_rhythm_3bet",
+          "midfreq_fourier_mk_3bet",
+          "power_fourier_rhythm_2bet",
+          "power_orthogonal_5bet",
+          "power_precision_3bet",
+          "pp3_freqort_4bet",
+          "zonal_entropy_2bet"
+        ],
+        "n_bet_rows": 34604,
+        "group_mean_hit_count": 0.966511,
+        "vs_random": "ABOVE"
+      },
+      {
+        "lifecycle": "RETIRED",
+        "n_strategies": 1,
+        "strategy_ids": [
+          "midfreq_fourier_2bet"
+        ],
+        "n_bet_rows": 1500,
+        "group_mean_hit_count": 0.972667,
+        "vs_random": "ABOVE"
+      }
+    ],
+    "label": "DESCRIPTIVE_ONLY",
+    "survivorship_bias_caveat": "Lifecycle labels (ONLINE/RETIRED/REJECTED/OBSERVATION) were assigned partly on PAST performance/governance. Comparing 'ONLINE > RETIRED' is therefore partly circular (survivorship / selection bias) and is NOT evidence that the label predicts future hit rate UNLESS restricted to draws AFTER the label was assigned. No such post-label split is performed here.",
+    "note_power_lotto_composition": "Among the 10 POWER_LOTTO strategies WITH replay data: 9 ONLINE, 1 RETIRED (midfreq_fourier_2bet, see cross-lottery mismatch). No REJECTED or OBSERVATION strategies carry POWER_LOTTO replay rows, so a 4-way lifecycle comparison is not possible with this data."
+  },
+  "section_5_multi_bet_slots": {
+    "per_strategy_slot": [
+      {
+        "strategy_id": "cold_complement_2bet",
+        "bet_index": 1,
+        "n_draws": 1500,
+        "n_rows": 1500,
+        "mean_hit_count": 0.940667,
+        "max_hit_count": 4,
+        "ci95_lo": 0.899629,
+        "ci95_hi": 0.981704,
+        "vs_random": "BELOW",
+        "z": -0.3201,
+        "p_raw": 0.748908
+      },
+      {
+        "strategy_id": "fourier30_markov30_2bet",
+        "bet_index": 1,
+        "n_draws": 1501,
+        "n_rows": 1501,
+        "mean_hit_count": 0.96469,
+        "max_hit_count": 4,
+        "ci95_lo": 0.922828,
+        "ci95_hi": 1.006553,
+        "vs_random": "ABOVE",
+        "z": 0.811,
+        "p_raw": 0.417371
+      },
+      {
+        "strategy_id": "fourier_rhythm_3bet",
+        "bet_index": 1,
+        "n_draws": 1501,
+        "n_rows": 1501,
+        "mean_hit_count": 0.992672,
+        "max_hit_count": 4,
+        "ci95_lo": 0.949767,
+        "ci95_hi": 1.035576,
+        "vs_random": "ABOVE",
+        "z": 2.0695,
+        "p_raw": 0.038497
+      },
+      {
+        "strategy_id": "fourier_rhythm_3bet",
+        "bet_index": 2,
+        "n_draws": 1501,
+        "n_rows": 1501,
+        "mean_hit_count": 0.992005,
+        "max_hit_count": 4,
+        "ci95_lo": 0.948804,
+        "ci95_hi": 1.035207,
+        "vs_random": "ABOVE",
+        "z": 2.0251,
+        "p_raw": 0.04286
+      },
+      {
+        "strategy_id": "fourier_rhythm_3bet",
+        "bet_index": 3,
+        "n_draws": 1501,
+        "n_rows": 1501,
+        "mean_hit_count": 0.94004,
+        "max_hit_count": 4,
+        "ci95_lo": 0.899012,
+        "ci95_hi": 0.981068,
+        "vs_random": "BELOW",
+        "z": -0.3501,
+        "p_raw": 0.726273
+      },
+      {
+        "strategy_id": "midfreq_fourier_2bet",
+        "bet_index": 1,
+        "n_draws": 1500,
+        "n_rows": 1500,
+        "mean_hit_count": 0.972667,
+        "max_hit_count": 4,
+        "ci95_lo": 0.930558,
+        "ci95_hi": 1.014776,
+        "vs_random": "ABOVE",
+        "z": 1.1775,
+        "p_raw": 0.238993
+      },
+      {
+        "strategy_id": "midfreq_fourier_mk_3bet",
+        "bet_index": 1,
+        "n_draws": 1500,
+        "n_rows": 1500,
+        "mean_hit_count": 1.027333,
+        "max_hit_count": 4,
+        "ci95_lo": 0.984421,
+        "ci95_hi": 1.070246,
+        "vs_random": "ABOVE",
+        "z": 3.6523,
+        "p_raw": 0.00026
+      },
+      {
+        "strategy_id": "midfreq_fourier_mk_3bet",
+        "bet_index": 2,
+        "n_draws": 1500,
+        "n_rows": 1500,
+        "mean_hit_count": 1.002,
+        "max_hit_count": 4,
+        "ci95_lo": 0.958551,
+        "ci95_hi": 1.045449,
+        "vs_random": "ABOVE",
+        "z": 2.4644,
+        "p_raw": 0.013724
+      },
+      {
+        "strategy_id": "midfreq_fourier_mk_3bet",
+        "bet_index": 3,
+        "n_draws": 1500,
+        "n_rows": 1500,
+        "mean_hit_count": 0.939333,
+        "max_hit_count": 4,
+        "ci95_lo": 0.89707,
+        "ci95_hi": 0.981596,
+        "vs_random": "BELOW",
+        "z": -0.3726,
+        "p_raw": 0.709423
+      },
+      {
+        "strategy_id": "power_fourier_rhythm_2bet",
+        "bet_index": 1,
+        "n_draws": 1500,
+        "n_rows": 1500,
+        "mean_hit_count": 0.992667,
+        "max_hit_count": 4,
+        "ci95_lo": 0.949733,
+        "ci95_hi": 1.0356,
+        "vs_random": "ABOVE",
+        "z": 2.0679,
+        "p_raw": 0.038648
+      },
+      {
+        "strategy_id": "power_fourier_rhythm_2bet",
+        "bet_index": 2,
+        "n_draws": 1500,
+        "n_rows": 1500,
+        "mean_hit_count": 0.934,
+        "max_hit_count": 4,
+        "ci95_lo": 0.891839,
+        "ci95_hi": 0.976161,
+        "vs_random": "BELOW",
+        "z": -0.6215,
+        "p_raw": 0.534298
+      },
+      {
+        "strategy_id": "power_orthogonal_5bet",
+        "bet_index": 1,
+        "n_draws": 1550,
+        "n_rows": 1550,
+        "mean_hit_count": 0.992903,
+        "max_hit_count": 4,
+        "ci95_lo": 0.950706,
+        "ci95_hi": 1.035101,
+        "vs_random": "ABOVE",
+        "z": 2.115,
+        "p_raw": 0.034433
+      },
+      {
+        "strategy_id": "power_orthogonal_5bet",
+        "bet_index": 2,
+        "n_draws": 1500,
+        "n_rows": 1500,
+        "mean_hit_count": 1.002,
+        "max_hit_count": 4,
+        "ci95_lo": 0.958551,
+        "ci95_hi": 1.045449,
+        "vs_random": "ABOVE",
+        "z": 2.4644,
+        "p_raw": 0.013724
+      },
+      {
+        "strategy_id": "power_orthogonal_5bet",
+        "bet_index": 3,
+        "n_draws": 1500,
+        "n_rows": 1500,
+        "mean_hit_count": 0.940667,
+        "max_hit_count": 4,
+        "ci95_lo": 0.899629,
+        "ci95_hi": 0.981704,
+        "vs_random": "BELOW",
+        "z": -0.3201,
+        "p_raw": 0.748908
+      },
+      {
+        "strategy_id": "power_orthogonal_5bet",
+        "bet_index": 4,
+        "n_draws": 1500,
+        "n_rows": 1500,
+        "mean_hit_count": 0.939333,
+        "max_hit_count": 4,
+        "ci95_lo": 0.89707,
+        "ci95_hi": 0.981596,
+        "vs_random": "BELOW",
+        "z": -0.3726,
+        "p_raw": 0.709423
+      },
+      {
+        "strategy_id": "power_orthogonal_5bet",
+        "bet_index": 5,
+        "n_draws": 1500,
+        "n_rows": 1500,
+        "mean_hit_count": 0.940667,
+        "max_hit_count": 4,
+        "ci95_lo": 0.899629,
+        "ci95_hi": 0.981704,
+        "vs_random": "BELOW",
+        "z": -0.3201,
+        "p_raw": 0.748908
+      },
+      {
+        "strategy_id": "power_precision_3bet",
+        "bet_index": 1,
+        "n_draws": 1550,
+        "n_rows": 1550,
+        "mean_hit_count": 0.992903,
+        "max_hit_count": 4,
+        "ci95_lo": 0.950706,
+        "ci95_hi": 1.035101,
+        "vs_random": "ABOVE",
+        "z": 2.115,
+        "p_raw": 0.034433
+      },
+      {
+        "strategy_id": "power_precision_3bet",
+        "bet_index": 2,
+        "n_draws": 1500,
+        "n_rows": 1500,
+        "mean_hit_count": 0.940667,
+        "max_hit_count": 4,
+        "ci95_lo": 0.899629,
+        "ci95_hi": 0.981704,
+        "vs_random": "BELOW",
+        "z": -0.3201,
+        "p_raw": 0.748908
+      },
+      {
+        "strategy_id": "power_precision_3bet",
+        "bet_index": 3,
+        "n_draws": 1500,
+        "n_rows": 1500,
+        "mean_hit_count": 0.939333,
+        "max_hit_count": 4,
+        "ci95_lo": 0.89707,
+        "ci95_hi": 0.981596,
+        "vs_random": "BELOW",
+        "z": -0.3726,
+        "p_raw": 0.709423
+      },
+      {
+        "strategy_id": "pp3_freqort_4bet",
+        "bet_index": 1,
+        "n_draws": 1500,
+        "n_rows": 1500,
+        "mean_hit_count": 1.002,
+        "max_hit_count": 4,
+        "ci95_lo": 0.958551,
+        "ci95_hi": 1.045449,
+        "vs_random": "ABOVE",
+        "z": 2.4644,
+        "p_raw": 0.013724
+      },
+      {
+        "strategy_id": "pp3_freqort_4bet",
+        "bet_index": 2,
+        "n_draws": 1500,
+        "n_rows": 1500,
+        "mean_hit_count": 1.002,
+        "max_hit_count": 4,
+        "ci95_lo": 0.958551,
+        "ci95_hi": 1.045449,
+        "vs_random": "ABOVE",
+        "z": 2.4644,
+        "p_raw": 0.013724
+      },
+      {
+        "strategy_id": "pp3_freqort_4bet",
+        "bet_index": 3,
+        "n_draws": 1500,
+        "n_rows": 1500,
+        "mean_hit_count": 0.940667,
+        "max_hit_count": 4,
+        "ci95_lo": 0.899629,
+        "ci95_hi": 0.981704,
+        "vs_random": "BELOW",
+        "z": -0.3201,
+        "p_raw": 0.748908
+      },
+      {
+        "strategy_id": "pp3_freqort_4bet",
+        "bet_index": 4,
+        "n_draws": 1500,
+        "n_rows": 1500,
+        "mean_hit_count": 0.939333,
+        "max_hit_count": 4,
+        "ci95_lo": 0.89707,
+        "ci95_hi": 0.981596,
+        "vs_random": "BELOW",
+        "z": -0.3726,
+        "p_raw": 0.709423
+      },
+      {
+        "strategy_id": "zonal_entropy_2bet",
+        "bet_index": 1,
+        "n_draws": 1500,
+        "n_rows": 1500,
+        "mean_hit_count": 0.946,
+        "max_hit_count": 4,
+        "ci95_lo": 0.904778,
+        "ci95_hi": 0.987222,
+        "vs_random": "BELOW",
+        "z": -0.0651,
+        "p_raw": 0.948124
+      }
+    ],
+    "by_bet_position_aggregate": [
+      {
+        "bet_index": 1,
+        "n_strategies_with_slot": 10,
+        "n_rows": 15102,
+        "mean_hit_count": 0.982519,
+        "ci95_lo": 0.969143,
+        "ci95_hi": 0.995895,
+        "vs_random": "ABOVE",
+        "z": 5.1506,
+        "p_raw": 0.0
+      },
+      {
+        "bet_index": 2,
+        "n_strategies_with_slot": 6,
+        "n_rows": 9001,
+        "mean_hit_count": 0.97878,
+        "ci95_lo": 0.961301,
+        "ci95_hi": 0.996259,
+        "vs_random": "ABOVE",
+        "z": 3.5222,
+        "p_raw": 0.000428
+      },
+      {
+        "bet_index": 3,
+        "n_strategies_with_slot": 5,
+        "n_rows": 7501,
+        "mean_hit_count": 0.940008,
+        "ci95_lo": 0.92144,
+        "ci95_hi": 0.958576,
+        "vs_random": "BELOW",
+        "z": -0.7769,
+        "p_raw": 0.437191
+      },
+      {
+        "bet_index": 4,
+        "n_strategies_with_slot": 2,
+        "n_rows": 3000,
+        "mean_hit_count": 0.939333,
+        "ci95_lo": 0.909454,
+        "ci95_hi": 0.969213,
+        "vs_random": "BELOW",
+        "z": -0.5271,
+        "p_raw": 0.598146
+      },
+      {
+        "bet_index": 5,
+        "n_strategies_with_slot": 1,
+        "n_rows": 1500,
+        "mean_hit_count": 0.940667,
+        "ci95_lo": 0.899629,
+        "ci95_hi": 0.981704,
+        "vs_random": "BELOW",
+        "z": -0.3201,
+        "p_raw": 0.748908
+      }
+    ],
+    "coverage_normalized_note": "Each bet slot = exactly 6 main numbers (one bet). Per-slot means are compared like-for-like; we do NOT sum hits across slots, which would inflate hit rate simply by selecting more numbers (L37 geometric-benefit trap). Only bet slots actually present in the DB are analysed (3 '2bet' strategies are stored first-bet-only).",
+    "bet_slot_storage_note": "DB-stored bet counts differ from strategy names: cold_complement_2bet / fourier30_markov30_2bet / zonal_entropy_2bet / midfreq_fourier_2bet are stored as bet_index=1 only. power_fourier_rhythm_2bet=2, fourier_rhythm_3bet/midfreq_fourier_mk_3bet/power_precision_3bet=3, pp3_freqort_4bet=4, power_orthogonal_5bet=5.",
+    "unbalanced_panel_note": "The bet panel is UNBALANCED for power_orthogonal_5bet and power_precision_3bet: bet_index=1 covers 1550 draws but bets 2-5 (resp. 2-3) cover only 1500 — the extra 50 bet1-only draws come from an earlier single-strategy replay wave (P19/P20) preceding the P140/P141 multi-bet apply. The per-draw mean averages whatever bets exist per draw, so this does not bias the statistical-unit test."
+  },
+  "section_6_multiple_testing": {
+    "family_size_finite_p": 40,
+    "correction_methods": [
+      "bonferroni",
+      "benjamini_hochberg"
+    ],
+    "alpha": 0.05,
+    "family": [
+      {
+        "key": "main::cold_complement_2bet",
+        "kind": "strategy_main_vs_random",
+        "p_raw": 0.748908,
+        "p_bonferroni": 1.0,
+        "p_bh": 0.80963
+      },
+      {
+        "key": "main::fourier30_markov30_2bet",
+        "kind": "strategy_main_vs_random",
+        "p_raw": 0.417371,
+        "p_bonferroni": 1.0,
+        "p_bh": 0.771653
+      },
+      {
+        "key": "main::fourier_rhythm_3bet",
+        "kind": "strategy_main_vs_random",
+        "p_raw": 0.042793,
+        "p_bonferroni": 1.0,
+        "p_bh": 0.142867
+      },
+      {
+        "key": "main::midfreq_fourier_2bet",
+        "kind": "strategy_main_vs_random",
+        "p_raw": 0.238993,
+        "p_bonferroni": 1.0,
+        "p_bh": 0.531918
+      },
+      {
+        "key": "main::midfreq_fourier_mk_3bet",
+        "kind": "strategy_main_vs_random",
+        "p_raw": 0.007594,
+        "p_bonferroni": 0.30376,
+        "p_bh": 0.091493
+      },
+      {
+        "key": "main::power_fourier_rhythm_2bet",
+        "kind": "strategy_main_vs_random",
+        "p_raw": 0.239363,
+        "p_bonferroni": 1.0,
+        "p_bh": 0.531918
+      },
+      {
+        "key": "main::power_orthogonal_5bet",
+        "kind": "strategy_main_vs_random",
+        "p_raw": 0.273085,
+        "p_bonferroni": 1.0,
+        "p_bh": 0.574916
+      },
+      {
+        "key": "main::power_precision_3bet",
+        "kind": "strategy_main_vs_random",
+        "p_raw": 0.453953,
+        "p_bonferroni": 1.0,
+        "p_bh": 0.771653
+      },
+      {
+        "key": "main::pp3_freqort_4bet",
+        "kind": "strategy_main_vs_random",
+        "p_raw": 0.073533,
+        "p_bonferroni": 1.0,
+        "p_bh": 0.226255
+      },
+      {
+        "key": "main::zonal_entropy_2bet",
+        "kind": "strategy_main_vs_random",
+        "p_raw": 0.948124,
+        "p_bonferroni": 1.0,
+        "p_bh": 0.972435
+      },
+      {
+        "key": "special::cold_complement_2bet",
+        "kind": "strategy_special_vs_random",
+        "p_raw": 0.211476,
+        "p_bonferroni": 1.0,
+        "p_bh": 0.531918
+      },
+      {
+        "key": "special::fourier30_markov30_2bet",
+        "kind": "strategy_special_vs_random",
+        "p_raw": 1.0,
+        "p_bonferroni": 1.0,
+        "p_bh": 1.0
+      },
+      {
+        "key": "special::midfreq_fourier_2bet",
+        "kind": "strategy_special_vs_random",
+        "p_raw": 0.482283,
+        "p_bonferroni": 1.0,
+        "p_bh": 0.771653
+      },
+      {
+        "key": "special::midfreq_fourier_mk_3bet",
+        "kind": "strategy_special_vs_random",
+        "p_raw": 0.482283,
+        "p_bonferroni": 1.0,
+        "p_bh": 0.771653
+      },
+      {
+        "key": "special::pp3_freqort_4bet",
+        "kind": "strategy_special_vs_random",
+        "p_raw": 0.482283,
+        "p_bonferroni": 1.0,
+        "p_bh": 0.771653
+      },
+      {
+        "key": "special::zonal_entropy_2bet",
+        "kind": "strategy_special_vs_random",
+        "p_raw": 0.211476,
+        "p_bonferroni": 1.0,
+        "p_bh": 0.531918
+      },
+      {
+        "key": "slot::cold_complement_2bet#bet1",
+        "kind": "bet_slot_main_vs_random",
+        "p_raw": 0.748908,
+        "p_bonferroni": 1.0,
+        "p_bh": 0.80963
+      },
+      {
+        "key": "slot::fourier30_markov30_2bet#bet1",
+        "kind": "bet_slot_main_vs_random",
+        "p_raw": 0.417371,
+        "p_bonferroni": 1.0,
+        "p_bh": 0.771653
+      },
+      {
+        "key": "slot::fourier_rhythm_3bet#bet1",
+        "kind": "bet_slot_main_vs_random",
+        "p_raw": 0.038497,
+        "p_bonferroni": 1.0,
+        "p_bh": 0.142867
+      },
+      {
+        "key": "slot::fourier_rhythm_3bet#bet2",
+        "kind": "bet_slot_main_vs_random",
+        "p_raw": 0.04286,
+        "p_bonferroni": 1.0,
+        "p_bh": 0.142867
+      },
+      {
+        "key": "slot::fourier_rhythm_3bet#bet3",
+        "kind": "bet_slot_main_vs_random",
+        "p_raw": 0.726273,
+        "p_bonferroni": 1.0,
+        "p_bh": 0.80963
+      },
+      {
+        "key": "slot::midfreq_fourier_2bet#bet1",
+        "kind": "bet_slot_main_vs_random",
+        "p_raw": 0.238993,
+        "p_bonferroni": 1.0,
+        "p_bh": 0.531918
+      },
+      {
+        "key": "slot::midfreq_fourier_mk_3bet#bet1",
+        "kind": "bet_slot_main_vs_random",
+        "p_raw": 0.00026,
+        "p_bonferroni": 0.0104,
+        "p_bh": 0.0104
+      },
+      {
+        "key": "slot::midfreq_fourier_mk_3bet#bet2",
+        "kind": "bet_slot_main_vs_random",
+        "p_raw": 0.013724,
+        "p_bonferroni": 0.54896,
+        "p_bh": 0.091493
+      },
+      {
+        "key": "slot::midfreq_fourier_mk_3bet#bet3",
+        "kind": "bet_slot_main_vs_random",
+        "p_raw": 0.709423,
+        "p_bonferroni": 1.0,
+        "p_bh": 0.80963
+      },
+      {
+        "key": "slot::power_fourier_rhythm_2bet#bet1",
+        "kind": "bet_slot_main_vs_random",
+        "p_raw": 0.038648,
+        "p_bonferroni": 1.0,
+        "p_bh": 0.142867
+      },
+      {
+        "key": "slot::power_fourier_rhythm_2bet#bet2",
+        "kind": "bet_slot_main_vs_random",
+        "p_raw": 0.534298,
+        "p_bonferroni": 1.0,
+        "p_bh": 0.80963
+      },
+      {
+        "key": "slot::power_orthogonal_5bet#bet1",
+        "kind": "bet_slot_main_vs_random",
+        "p_raw": 0.034433,
+        "p_bonferroni": 1.0,
+        "p_bh": 0.142867
+      },
+      {
+        "key": "slot::power_orthogonal_5bet#bet2",
+        "kind": "bet_slot_main_vs_random",
+        "p_raw": 0.013724,
+        "p_bonferroni": 0.54896,
+        "p_bh": 0.091493
+      },
+      {
+        "key": "slot::power_orthogonal_5bet#bet3",
+        "kind": "bet_slot_main_vs_random",
+        "p_raw": 0.748908,
+        "p_bonferroni": 1.0,
+        "p_bh": 0.80963
+      },
+      {
+        "key": "slot::power_orthogonal_5bet#bet4",
+        "kind": "bet_slot_main_vs_random",
+        "p_raw": 0.709423,
+        "p_bonferroni": 1.0,
+        "p_bh": 0.80963
+      },
+      {
+        "key": "slot::power_orthogonal_5bet#bet5",
+        "kind": "bet_slot_main_vs_random",
+        "p_raw": 0.748908,
+        "p_bonferroni": 1.0,
+        "p_bh": 0.80963
+      },
+      {
+        "key": "slot::power_precision_3bet#bet1",
+        "kind": "bet_slot_main_vs_random",
+        "p_raw": 0.034433,
+        "p_bonferroni": 1.0,
+        "p_bh": 0.142867
+      },
+      {
+        "key": "slot::power_precision_3bet#bet2",
+        "kind": "bet_slot_main_vs_random",
+        "p_raw": 0.748908,
+        "p_bonferroni": 1.0,
+        "p_bh": 0.80963
+      },
+      {
+        "key": "slot::power_precision_3bet#bet3",
+        "kind": "bet_slot_main_vs_random",
+        "p_raw": 0.709423,
+        "p_bonferroni": 1.0,
+        "p_bh": 0.80963
+      },
+      {
+        "key": "slot::pp3_freqort_4bet#bet1",
+        "kind": "bet_slot_main_vs_random",
+        "p_raw": 0.013724,
+        "p_bonferroni": 0.54896,
+        "p_bh": 0.091493
+      },
+      {
+        "key": "slot::pp3_freqort_4bet#bet2",
+        "kind": "bet_slot_main_vs_random",
+        "p_raw": 0.013724,
+        "p_bonferroni": 0.54896,
+        "p_bh": 0.091493
+      },
+      {
+        "key": "slot::pp3_freqort_4bet#bet3",
+        "kind": "bet_slot_main_vs_random",
+        "p_raw": 0.748908,
+        "p_bonferroni": 1.0,
+        "p_bh": 0.80963
+      },
+      {
+        "key": "slot::pp3_freqort_4bet#bet4",
+        "kind": "bet_slot_main_vs_random",
+        "p_raw": 0.709423,
+        "p_bonferroni": 1.0,
+        "p_bh": 0.80963
+      },
+      {
+        "key": "slot::zonal_entropy_2bet#bet1",
+        "kind": "bet_slot_main_vs_random",
+        "p_raw": 0.948124,
+        "p_bonferroni": 1.0,
+        "p_bh": 0.972435
+      }
+    ],
+    "primary_unit": "per_strategy_main_per_draw_mean",
+    "survivors_after_bonferroni_above_random": [],
+    "survivors_after_bh_above_random": [],
+    "any_strategy_beats_random_after_correction": false,
+    "secondary_bet_slot_survivors_after_bonferroni_above_random": [
+      "slot::midfreq_fourier_mk_3bet#bet1"
+    ],
+    "secondary_bet_slot_survivors_after_bh_above_random": [
+      "slot::midfreq_fourier_mk_3bet#bet1"
+    ],
+    "min_ndraws_gate_for_ranking": 500,
+    "note": "Family = 10 strategy-main tests + per-strategy special tests + per-bet-slot tests. No naked ranking: a min n_draws>=500 gate and 95% CIs are enforced before ranking (L47/L91).",
+    "secondary_slot_survivor_caveat": "One INDIVIDUAL bet slot — midfreq_fourier_mk_3bet bet_index=1 (per-draw mean ~1.027, raw p~0.0003, p_bonf~0.010, p_BH~0.010) — does survive correction as an ABOVE-random slot. This is a DESCRIPTIVE, FULL-HISTORY (in-sample) finding only. It is NOT a predictive claim: (a) it is the single first bet of a strategy whose 3-bet per-draw aggregate does NOT survive (bet3 sits below random), (b) no walk-forward / OOS>=500 evaluation has been run (L101), and (c) selecting the best-looking slot post hoc on full history is itself a selection effect. Treat as a hypothesis to test prospectively, NOT as evidence the slot 'works'."
+  },
+  "section_7_leakage_labeling": {
+    "all_in_sample_comparisons_are": "DESCRIPTIVE",
+    "predictive_claim_requirement": "PREDICTIVE claims require walk-forward / only-past-data evaluation with an OOS window >= 500 distinct draws (L101). This baseline selects/ranks strategies on the FULL replay history and therefore CANNOT assert that any strategy 'works' going forward.",
+    "per_strategy_label": "DESCRIPTIVE_IN_SAMPLE",
+    "lifecycle_group_label": "DESCRIPTIVE_IN_SAMPLE",
+    "bet_slot_label": "DESCRIPTIVE_IN_SAMPLE",
+    "predictive_label": "NOT_ESTABLISHED_NO_WALK_FORWARD"
+  },
+  "best_single_strategy": {
+    "strategy_id": "midfreq_fourier_mk_3bet",
+    "lifecycle": "ONLINE",
+    "n_draws": 1500,
+    "mean_hit_count": 0.989556,
+    "ci95": [
+      0.958583,
+      1.020528
+    ],
+    "vs_random": "ABOVE",
+    "p_raw": 0.007594,
+    "p_bonferroni": 0.30376,
+    "p_bh": 0.091493,
+    "beats_random_after_correction": false
+  },
+  "lifecycle_unresolved_strategy_ids": [],
+  "cross_lottery_registry_mismatch": [
+    {
+      "strategy_id": "midfreq_fourier_2bet",
+      "registry_lottery_types": [
+        "DAILY_539"
+      ],
+      "observed_lottery_type": "POWER_LOTTO",
+      "lifecycle": "RETIRED"
+    }
+  ],
+  "honest_null_statement": "POWER_LOTTO replay strategies are, in aggregate and individually after multiple-testing correction, statistically indistinguishable from a fair-random 6-of-38 process on main numbers, and at/below random on the special number. This is an EXPECTED, ACCEPTABLE NULL/at-random result. No strategy is shown to beat random out-of-sample; NO betting advice and NO guaranteed-win claim is made or implied.",
+  "governance": {
+    "db_writes": 0,
+    "registry_mutations": 0,
+    "controlled_apply": false,
+    "forbidden_actions_taken": "NONE"
+  }
+}

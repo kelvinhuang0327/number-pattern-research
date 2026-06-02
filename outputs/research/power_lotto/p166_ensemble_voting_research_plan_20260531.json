@@ -1,0 +1,221 @@
+{
+  "task": "P166_POWER_LOTTO_ENSEMBLE_VOTING_RESEARCH_PLAN_ONLY",
+  "date": "2026-06-01",
+  "final_classification": "P166_POWER_LOTTO_ENSEMBLE_VOTING_RESEARCH_PLAN_READY",
+  "plan_only": true,
+  "phase_0_verification": {
+    "all_checks_passed": true,
+    "worktree_path": "/Users/kelvin/Kelvin-WorkSpace/LotteryNew/.claude/worktrees/zen-gates-ff6802",
+    "branch": "claude/zen-gates-ff6802",
+    "head_commit": "c8b423d0c1de26253be4cec79ae6de77719d1074",
+    "db_rows": 94924,
+    "drift_guard": "PASS",
+    "p161_test": "PASS",
+    "p162_test": "PASS",
+    "p163_test": "PASS",
+    "p164_test": "PASS",
+    "p165b_test": "PASS",
+    "p161_json_artifact": "outputs/research/power_lotto/p161_effectiveness_baseline_20260531.json",
+    "p165b_json_artifact": "outputs/research/power_lotto/p165b_designate_zen_gates_canonical_research_dataset_20260531.json"
+  },
+  "canonical_research_dataset": {
+    "worktree_path": "/Users/kelvin/Kelvin-WorkSpace/LotteryNew/.claude/worktrees/zen-gates-ff6802",
+    "branch": "claude/zen-gates-ff6802",
+    "db_rows": 94924,
+    "power_lotto_rows": 36104,
+    "distinct_draws": 1551,
+    "bet_index_present": true,
+    "designated_in": "P165B"
+  },
+  "p161_baseline_summary": {
+    "task": "P161_POWER_LOTTO_EFFECTIVENESS_BASELINE_READY",
+    "strategies_evaluated": 10,
+    "draws_range": "101000002 to 115000041",
+    "main_random_baseline": 0.9474,
+    "special_random_baseline": 0.125,
+    "family_size_for_correction": 40,
+    "correction_methods": ["bonferroni", "benjamini_hochberg"],
+    "alpha": 0.05,
+    "strategies_above_random_raw": 7,
+    "strategies_surviving_bonferroni": 0,
+    "strategies_surviving_bh": 0,
+    "best_raw_p_value": {
+      "strategy": "midfreq_fourier_mk_3bet",
+      "p_raw": 0.007594,
+      "p_bonferroni": 0.30376,
+      "p_bh": 0.091493,
+      "verdict": "NOT SIGNIFICANT after correction"
+    },
+    "second_best_raw_p": {
+      "strategy": "fourier_rhythm_3bet",
+      "p_raw": 0.042793,
+      "p_bonferroni": 1.0,
+      "p_bh": 0.142867,
+      "verdict": "NOT SIGNIFICANT after correction"
+    },
+    "null_result_confirmed": true,
+    "null_caveat": "Zero strategies beat random baseline after Bonferroni or BH multiple-testing correction (family=40). P161 result is NULL. No success-rate improvement method has been identified. P166 searches for ensemble/voting approaches that may reveal signal not visible in single-strategy per-draw evaluation."
+  },
+  "research_goal": "Search for statistically defensible success-rate improvement by combining signals from multiple POWER_LOTTO strategies via ensemble voting, slot-weighting, and walk-forward OOS validation. P166 defines the protocol only — implementation and execution begin in P167 after explicit user authorization. A NULL result remains possible and must be reported honestly.",
+  "null_baseline_caveat": "P161 confirmed a NULL result: zero strategies beat random after Bonferroni/BH correction (family=40). Any ensemble approach that claims improvement must survive the same or stricter statistical guards (Bonferroni/BH on combined family, OOS >= 500 draws, walk-forward out-of-sample, permutation test). In-sample descriptive results must NOT be presented as predictive evidence. The prior probability of finding genuine signal is low. P167 must report NULL honestly if no edge is found.",
+  "leakage_safe_protocol": {
+    "split_policy": "All model selection, parameter tuning, and feature weighting must use only draws strictly before the evaluation window. No lookahead allowed.",
+    "walk_forward": "Expanding or rolling window. Evaluation window starts no earlier than draw N+1 where N is the last training draw. Minimum OOS window: 500 draws for predictive claims.",
+    "rolling_window_sizes": [100, 300, 500, "full"],
+    "only_past_data_selection": "Strategy weights, vote thresholds, and slot weights must be derived from a training period that ends before the test draw.",
+    "oos_minimum_draws": 500,
+    "multiple_testing_correction": "Bonferroni and BH applied to the full family including all modules tested. Family size must be declared upfront before running tests.",
+    "baseline_comparison": "All metrics compared against (1) random baseline, (2) best single-strategy from P161, (3) a random ensemble null distribution via permutation.",
+    "statistical_unit": "per_draw, using draw as the independent unit. Bet rows within the same draw are NOT independent units. Multi-bet slots must aggregate to draw level before significance testing.",
+    "prohibited_practices": [
+      "Selecting best ensemble configuration after seeing test results and reporting as prospective",
+      "Using bet row count as N in significance tests instead of draw count",
+      "Reporting raw p-values as significant without correction",
+      "Mixing training draws with test draws in the same p-value computation",
+      "Claiming improvement based on in-sample descriptive results only"
+    ]
+  },
+  "research_modules": {
+    "module_a": {
+      "id": "A",
+      "name": "strategy_consensus_voting",
+      "research_question": "Does a majority-vote or weighted-vote ensemble across POWER_LOTTO strategies produce higher per-draw hit rates than any single strategy or random baseline after multiple-testing correction?",
+      "input_data": "P161 per-draw hit_count for all 10 strategies (36104 POWER_LOTTO rows, 1551 draws), strategy_id, draw_id, bet_index, main_numbers, special_number",
+      "metric": "Per-draw ensemble hit count (max across agreed-upon predictions vs actual draw), consensus vote rate (fraction of strategies that agree on >= 1 number), mean hit count over OOS window",
+      "baseline": "Random baseline 0.9474; best single-strategy from P161 (fourier_rhythm_3bet mean=0.9749); permutation null distribution",
+      "leakage_risk": "MEDIUM — vote threshold and strategy weighting must be frozen on training window before test window begins. Re-selecting weights after seeing test performance is leakage.",
+      "statistical_guard": "Bonferroni correction on all vote threshold variants tested; walk-forward OOS >= 500 draws; permutation test with >= 1000 shuffles of draw labels",
+      "pass_fail_criterion": "p_bh < 0.05 AND mean OOS hit count > best single-strategy baseline (0.9749) AND improvement survives permutation test",
+      "type": "predictive",
+      "implementation_boundary": "P167 — not to be executed in P166"
+    },
+    "module_b": {
+      "id": "B",
+      "name": "bet_index_slot_effectiveness_and_weighting",
+      "research_question": "Do higher bet_index slots (bet 2, bet 3, etc.) produce systematically different per-draw hit rates than bet 1? Does slot-level weighting improve ensemble accuracy?",
+      "input_data": "P161 multi-bet rows with bet_index > 1 (36104 rows); only strategies with n_bet_slots > 1 (fourier_rhythm_3bet n_bet_slots=3 etc.); per-draw aggregated by slot",
+      "metric": "Per-slot mean hit count (per draw, per slot); slot-level lift over bet_index=1; slot contribution to ensemble vote",
+      "baseline": "Random baseline 0.9474 per slot; P161 per-draw mean for each strategy",
+      "leakage_risk": "LOW for descriptive slot comparison; MEDIUM if slot weights are tuned on test data",
+      "statistical_guard": "Descriptive comparison: confidence interval overlap test; Predictive weighting: frozen on training draws only; Bonferroni on number of slot comparisons",
+      "pass_fail_criterion": "Slot i is useful if its mean hit count > bet_index=1 baseline by >= 1 SEM AND lift is stable across rolling windows; slot weight improves OOS ensemble vs equal-weight ensemble",
+      "type": "descriptive+predictive",
+      "note": "P161 found most strategies have n_bet_slots=1 (pseudo-replicated rows). Only strategies with genuine multi-bet slots should be included in slot analysis. Strategies with n_bet_slots=1 are excluded.",
+      "implementation_boundary": "P167 — not to be executed in P166"
+    },
+    "module_c": {
+      "id": "C",
+      "name": "recent_window_vs_full_history_comparison",
+      "research_question": "Does ensemble performance in the most recent 100/300/500 draws differ from full-history performance? Is there evidence of non-stationarity that makes recent-window training more predictive than full-history training?",
+      "input_data": "All 36104 POWER_LOTTO rows; draw range split into recent (last 500 draws) vs historical (remaining); rolling window analysis",
+      "metric": "Per-draw hit count in recent window vs full-history; slope of hit rate over time (linear regression on rolling mean); stability of ensemble vote agreement",
+      "baseline": "Random baseline 0.9474; full-history mean; random drift null (shuffle draw order 1000x)",
+      "leakage_risk": "LOW for descriptive trend analysis; MEDIUM for predictive window selection (must freeze window size on training period)",
+      "statistical_guard": "t-test or Mann-Whitney on recent vs historical hit rates; Ljung-Box test for autocorrelation in hit rate over time; minimum window size for significance = 100 draws",
+      "pass_fail_criterion": "Recent window is preferred over full history if: (1) recent hit rate > full-history hit rate with p_bh < 0.05, AND (2) improvement is stable across at least 3 consecutive non-overlapping recent windows",
+      "type": "descriptive+predictive",
+      "implementation_boundary": "P167 — not to be executed in P166"
+    },
+    "module_d": {
+      "id": "D",
+      "name": "lifecycle_aware_descriptive_grouping",
+      "research_question": "Do strategies with different lifecycle labels (ONLINE, RETIRED, DB_ONLY) show different hit-rate distributions? Is there a survivorship-bias-corrected signal from lifecycle group comparison?",
+      "input_data": "P161 per-strategy results with lifecycle labels from P156C registry; 10 strategies with ONLINE/RETIRED lifecycle",
+      "metric": "Mean hit count by lifecycle group; hit count distribution overlap (KL divergence or overlap coefficient); group-level BH-corrected comparison",
+      "baseline": "Random baseline 0.9474; null hypothesis = lifecycle group does not predict hit rate",
+      "leakage_risk": "HIGH — survivorship bias. Strategies labeled ONLINE were selected because they appeared to work in training data. Lifecycle label cannot be used as a predictive feature without OOS validation on draws after the label was assigned.",
+      "statistical_guard": "Report descriptive group statistics only; explicitly label results as DESCRIPTIVE with survivorship caveat; do NOT use lifecycle label as a predictor in any model without OOS-only evaluation window",
+      "pass_fail_criterion": "Descriptive only — PASS if group statistics are computed with survivorship caveat clearly documented. No predictive pass/fail criterion applies in P166.",
+      "type": "descriptive",
+      "survivorship_caveat": "CRITICAL — lifecycle labels were assigned after observing historical performance. Any performance difference between ONLINE and RETIRED strategies is potentially confounded by selection bias. This analysis is descriptive only.",
+      "implementation_boundary": "P167 may compute descriptive statistics; must NOT use lifecycle as a predictive feature without explicit OOS guard"
+    },
+    "module_e": {
+      "id": "E",
+      "name": "main_number_vs_special_number_separated",
+      "research_question": "Treating main-number hit rate and special-number hit rate as separate targets, can an ensemble improve either target independently? Is special-number prediction systematically below random (as seen in P161)?",
+      "input_data": "P161 main hit counts (6 of 38 pool) and special hit counts (1 of 8 pool); per-draw separated; strategies that produce special number predictions",
+      "metric": "Main-number per-draw mean hit count (baseline 0.9474); special-number per-draw hit rate (baseline 0.125); ensemble improvement over single strategy on each target separately",
+      "baseline": "Main: random 0.9474; Special: random 0.125; P161 result: best main raw p=0.0076 (not significant after correction); special hit rates below 0.125 for all strategies in P161",
+      "leakage_risk": "LOW for descriptive separate analysis; MEDIUM for ensemble targeting specific number",
+      "statistical_guard": "Separate Bonferroni family for main and special; minimum OOS window 500 draws for special (low hit rate = high variance); report NULL honestly if no improvement",
+      "pass_fail_criterion": "Main improvement: ensemble mean > 0.9749 (best P161 strategy) AND p_bh < 0.05 OOS. Special improvement: ensemble hit rate > 0.125 AND p_binom_bh < 0.05 OOS with >= 500 draws.",
+      "type": "descriptive+predictive",
+      "p161_special_finding": "All 9 strategies with special predictions were BELOW random baseline (0.125). Special number prediction may be near-random or negatively predictive for current strategies.",
+      "implementation_boundary": "P167 — not to be executed in P166"
+    },
+    "module_f": {
+      "id": "F",
+      "name": "walk_forward_oos_validation_and_multiple_testing_correction",
+      "research_question": "Across all modules A-E, which ensemble configurations survive a strict walk-forward OOS protocol with pre-declared family-size multiple-testing correction?",
+      "input_data": "All 36104 POWER_LOTTO rows; training period: first draws up to a cutoff; test period: last >= 500 draws strictly after cutoff",
+      "metric": "Final OOS per-draw mean hit count vs random baseline; BH-adjusted p-value across all tested configurations; permutation test p-value (shuffle draw labels 1000x); walk-forward stability (consistency across 3+ non-overlapping OOS windows)",
+      "baseline": "Random baseline 0.9474; best P161 single strategy 0.9749; random permutation null",
+      "leakage_risk": "HIGH if configurations are selected after seeing OOS results. All configurations must be pre-declared in the P167 implementation plan before any OOS data is touched.",
+      "statistical_guard": "Pre-registration of all configurations before OOS evaluation; family size = number of pre-declared configurations; Bonferroni threshold = 0.05 / family_size; BH procedure applied; permutation test with 1000 shuffles; walk-forward across at least 3 non-overlapping 500-draw OOS windows",
+      "pass_fail_criterion": "At least one configuration must achieve: p_bh < 0.05 AND p_permutation < 0.05 AND OOS mean hit count > 0.9749 (best single strategy) AND stable across 3 walk-forward windows. If no configuration passes: report NULL.",
+      "type": "predictive",
+      "critical_note": "This module is the final gate. Modules A-E may produce descriptive or in-sample findings. Only configurations that survive Module F's walk-forward OOS protocol may be considered for P167 deployment or further evaluation. In-sample results from A-E do NOT constitute evidence of predictive value.",
+      "implementation_boundary": "P167 — Module F must be the last step in any P167 implementation, executed after all other module analyses are frozen"
+    }
+  },
+  "p167_implementation_boundary": {
+    "allowed_scope": [
+      "Implement the 6 research modules described above using zen-gates canonical dataset",
+      "Produce per-module descriptive statistics and OOS test results",
+      "Run walk-forward OOS validation (Module F) as the final gate",
+      "Report NULL honestly if no configuration survives Module F",
+      "Produce P167 artifact with per-module results and final classification"
+    ],
+    "forbidden_in_p167_without_separate_authorization": [
+      "Writing new rows to DB",
+      "Modifying registry or lifecycle labels",
+      "Creating new strategy entries",
+      "Champion promotion",
+      "Controlled_apply",
+      "Providing win-promise claims or real-money tips of any kind",
+      "Claiming success-rate improvement without Module F OOS evidence",
+      "Modifying main branch DB or code"
+    ],
+    "success_criteria": [
+      "Must beat random baseline (0.9474) in OOS evaluation",
+      "Must beat best single strategy baseline (fourier_rhythm_3bet mean=0.9749) in OOS evaluation",
+      "Must survive Bonferroni or BH correction on pre-declared family size",
+      "Must use distinct target_draw as statistical unit (not bet rows as N)",
+      "Must separate in-sample descriptive results from OOS predictive results",
+      "Must report NULL honestly if no edge found after Module F"
+    ],
+    "failure_criteria": [
+      "If no configuration beats random baseline OOS: P167 result = NULL, no deployment",
+      "If p_bh >= 0.05 for all configurations: P167 result = NULL",
+      "If walk-forward windows are inconsistent (any window negative): flag as UNSTABLE",
+      "If OOS < 500 draws available: report INSUFFICIENT_OOS_DATA, do not claim significance"
+    ]
+  },
+  "no_action_confirmations": {
+    "no_db_write": true,
+    "no_strategy_implementation": true,
+    "no_new_ensemble_algorithm_executed": true,
+    "no_new_strategy_results_produced": true,
+    "no_registry_mutation": true,
+    "no_champion_promotion": true,
+    "no_controlled_apply": true,
+    "no_scheduler_cron": true,
+    "no_commit": true,
+    "no_push": true,
+    "no_merge": true,
+    "no_betting_advice": true,
+    "no_win_guarantee": true,
+    "no_real_money_wording": true
+  },
+  "governance_invariants": {
+    "db_rows_must_remain": 94924,
+    "drift_guard_must_pass": true,
+    "main_zen_gates_split": "UNRESOLVED — not resolved by P166",
+    "null_result_still_current": true,
+    "no_success_rate_method_found": true
+  },
+  "next_task": "P167_POWER_LOTTO_ENSEMBLE_VOTING_RESEARCH_IMPLEMENTATION",
+  "next_task_state": "BLOCKED_WAITING_FOR_USER_AUTHORIZATION",
+  "next_task_note": "P166 defines the research plan only. P167 implementation may not begin without explicit user authorization. No autonomous execution of research modules. Authorization phrase for P167 must be provided by the user before P167 begins."
+}

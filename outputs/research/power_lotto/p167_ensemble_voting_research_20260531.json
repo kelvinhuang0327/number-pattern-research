@@ -1,0 +1,514 @@
+{
+  "task": "P167_POWER_LOTTO_ENSEMBLE_VOTING_RESEARCH_IMPLEMENTATION",
+  "date": "2026-06-01",
+  "final_classification": "P167_POWER_LOTTO_NO_DEFENSIBLE_EDGE_FOUND",
+  "authorization_phrase": "YES execute P167 POWER_LOTTO ensemble/voting research implementation, read-only only, no DB write",
+  "phase_0_verification": {
+    "worktree_path": "/Users/kelvin/Kelvin-WorkSpace/LotteryNew/.claude/worktrees/zen-gates-ff6802",
+    "branch": "claude/zen-gates-ff6802",
+    "db_rows_before": 94924,
+    "db_rows_after": 94924,
+    "db_unchanged": true,
+    "drift_guard": "PASS"
+  },
+  "canonical_dataset": {
+    "total_rows": 94924,
+    "power_lotto_rows": 36000,
+    "complete_draws": 1499,
+    "strategies": [
+      "cold_complement_2bet",
+      "fourier30_markov30_2bet",
+      "fourier_rhythm_3bet",
+      "midfreq_fourier_2bet",
+      "midfreq_fourier_mk_3bet",
+      "power_fourier_rhythm_2bet",
+      "power_orthogonal_5bet",
+      "power_precision_3bet",
+      "pp3_freqort_4bet",
+      "zonal_entropy_2bet"
+    ]
+  },
+  "statistical_unit_declaration": "distinct target_draw \u2014 all predictive tests use per-draw aggregated statistics, NOT bet rows as independent units",
+  "multiple_testing_correction": {
+    "method": "Bonferroni and Benjamini-Hochberg",
+    "family_size": 10,
+    "alpha": 0.05,
+    "family": [
+      [
+        "module_a_ensemble_vs_random",
+        0.015287
+      ],
+      [
+        "slot_2_vs_slot1",
+        0.630466
+      ],
+      [
+        "slot_3_vs_slot1",
+        6e-06
+      ],
+      [
+        "slot_4_vs_slot1",
+        0.004392
+      ],
+      [
+        "slot_5_vs_slot1",
+        0.041186
+      ],
+      [
+        "window_recent_1000_vs_full",
+        0.619796
+      ],
+      [
+        "window_recent_500_vs_full",
+        0.067676
+      ],
+      [
+        "module_e_main_vs_random",
+        0.007296
+      ],
+      [
+        "module_e_special_vs_random",
+        0.417787
+      ],
+      [
+        "module_f_oos_window_1_vs_random",
+        0.024359
+      ]
+    ],
+    "corrections": [
+      {
+        "key": "module_a_ensemble_vs_random",
+        "p_raw": 0.015287,
+        "p_bonferroni": 0.15287,
+        "p_bh": 0.038218,
+        "significant_bonferroni": false,
+        "significant_bh": true
+      },
+      {
+        "key": "slot_2_vs_slot1",
+        "p_raw": 0.630466,
+        "p_bonferroni": 1.0,
+        "p_bh": 0.630466,
+        "significant_bonferroni": false,
+        "significant_bh": false
+      },
+      {
+        "key": "slot_3_vs_slot1",
+        "p_raw": 6e-06,
+        "p_bonferroni": 6e-05,
+        "p_bh": 6e-05,
+        "significant_bonferroni": true,
+        "significant_bh": true
+      },
+      {
+        "key": "slot_4_vs_slot1",
+        "p_raw": 0.004392,
+        "p_bonferroni": 0.04392,
+        "p_bh": 0.02196,
+        "significant_bonferroni": true,
+        "significant_bh": true
+      },
+      {
+        "key": "slot_5_vs_slot1",
+        "p_raw": 0.041186,
+        "p_bonferroni": 0.41186,
+        "p_bh": 0.068643,
+        "significant_bonferroni": false,
+        "significant_bh": false
+      },
+      {
+        "key": "window_recent_1000_vs_full",
+        "p_raw": 0.619796,
+        "p_bonferroni": 1.0,
+        "p_bh": 0.688662,
+        "significant_bonferroni": false,
+        "significant_bh": false
+      },
+      {
+        "key": "window_recent_500_vs_full",
+        "p_raw": 0.067676,
+        "p_bonferroni": 0.67676,
+        "p_bh": 0.09668,
+        "significant_bonferroni": false,
+        "significant_bh": false
+      },
+      {
+        "key": "module_e_main_vs_random",
+        "p_raw": 0.007296,
+        "p_bonferroni": 0.07296,
+        "p_bh": 0.02432,
+        "significant_bonferroni": false,
+        "significant_bh": true
+      },
+      {
+        "key": "module_e_special_vs_random",
+        "p_raw": 0.417787,
+        "p_bonferroni": 1.0,
+        "p_bh": 0.522234,
+        "significant_bonferroni": false,
+        "significant_bh": false
+      },
+      {
+        "key": "module_f_oos_window_1_vs_random",
+        "p_raw": 0.024359,
+        "p_bonferroni": 0.24359,
+        "p_bh": 0.048718,
+        "significant_bonferroni": false,
+        "significant_bh": true
+      }
+    ],
+    "any_significant_bonferroni": true,
+    "any_significant_bh": true
+  },
+  "leakage_safe_statement": "All ensemble configurations pre-declared before OOS evaluation. Module F uses expanding walk-forward windows with no parameter selection on OOS data.",
+  "module_results": {
+    "module_a": {
+      "module": "A",
+      "name": "strategy_consensus_voting",
+      "type": "predictive",
+      "configuration": "equal-weight voting, bet_index=1 only, top-6 by vote count",
+      "n_draws": 1499,
+      "mean_hit_count": 1.000667,
+      "sem": 0.021974,
+      "random_baseline": 0.947368,
+      "best_single_strategy_baseline": 0.974906,
+      "z_vs_random": 2.4255,
+      "p_raw_vs_random": 0.015287,
+      "above_random": true,
+      "above_best_single": true,
+      "hit_count_mean": 1.0007,
+      "leakage_caveat": "No trained parameters \u2014 top-6 voting is fully pre-declared. No leakage risk for this configuration.",
+      "preliminary_verdict": "ABOVE_RANDOM",
+      "hit_distribution": {
+        "0": 461,
+        "1": 655,
+        "2": 306,
+        "3": 75,
+        "4": 2,
+        "5": 0,
+        "6": 0
+      },
+      "pre_declared_family_contribution": 1
+    },
+    "module_b": {
+      "module": "B",
+      "name": "bet_index_slot_effectiveness",
+      "type": "descriptive",
+      "statistical_unit": "bet_row (NOT independent draws \u2014 descriptive only)",
+      "leakage_caveat": "Slot analysis uses all available data descriptively. Predictive slot weighting would require OOS validation with frozen weights.",
+      "slots_available": [
+        1,
+        2,
+        3,
+        4,
+        5
+      ],
+      "slot_stats": {
+        "1": {
+          "n_obs": 14990,
+          "mean_hit_count": 0.983389,
+          "sem": 0.006855,
+          "z_vs_random": 5.2546,
+          "p_vs_random": 0.0,
+          "p_vs_slot1": null,
+          "note": "Row-level observations \u2014 NOT independent draws. Descriptive only for multi-slot strategies."
+        },
+        "2": {
+          "n_obs": 8994,
+          "mean_hit_count": 0.979097,
+          "sem": 0.008921,
+          "z_vs_random": 3.5565,
+          "p_vs_random": 0.000376,
+          "p_vs_slot1": 0.630466,
+          "note": "Row-level observations \u2014 NOT independent draws. Descriptive only for multi-slot strategies."
+        },
+        "3": {
+          "n_obs": 7495,
+          "mean_hit_count": 0.94036,
+          "sem": 0.009478,
+          "z_vs_random": -0.7394,
+          "p_vs_random": 0.459655,
+          "p_vs_slot1": 6e-06,
+          "note": "Row-level observations \u2014 NOT independent draws. Descriptive only for multi-slot strategies."
+        },
+        "4": {
+          "n_obs": 2998,
+          "mean_hit_count": 0.93996,
+          "sem": 0.015246,
+          "z_vs_random": -0.4859,
+          "p_vs_random": 0.62702,
+          "p_vs_slot1": 0.004392,
+          "note": "Row-level observations \u2014 NOT independent draws. Descriptive only for multi-slot strategies."
+        },
+        "5": {
+          "n_obs": 1499,
+          "mean_hit_count": 0.940627,
+          "sem": 0.020945,
+          "z_vs_random": -0.3219,
+          "p_vs_random": 0.747556,
+          "p_vs_slot1": 0.041186,
+          "note": "Row-level observations \u2014 NOT independent draws. Descriptive only for multi-slot strategies."
+        }
+      },
+      "slot_vs_slot1_corrections": [
+        {
+          "key": "slot_2_vs_slot1",
+          "p_raw": 0.630466,
+          "p_bonferroni": 1.0,
+          "p_bh": 0.630466,
+          "significant_bonferroni": false,
+          "significant_bh": false
+        },
+        {
+          "key": "slot_3_vs_slot1",
+          "p_raw": 6e-06,
+          "p_bonferroni": 2.3e-05,
+          "p_bh": 2.3e-05,
+          "significant_bonferroni": true,
+          "significant_bh": true
+        },
+        {
+          "key": "slot_4_vs_slot1",
+          "p_raw": 0.004392,
+          "p_bonferroni": 0.017568,
+          "p_bh": 0.008784,
+          "significant_bonferroni": true,
+          "significant_bh": true
+        },
+        {
+          "key": "slot_5_vs_slot1",
+          "p_raw": 0.041186,
+          "p_bonferroni": 0.164743,
+          "p_bh": 0.054914,
+          "significant_bonferroni": false,
+          "significant_bh": false
+        }
+      ],
+      "any_slot_significantly_better_than_slot1_bh": true,
+      "verdict": "Descriptive only \u2014 slot differences, if any, require OOS validation before predictive use.",
+      "pre_declared_family_contribution": 4
+    },
+    "module_c": {
+      "module": "C",
+      "name": "recent_window_vs_full_history",
+      "type": "descriptive",
+      "leakage_caveat": "Window comparison is descriptive. Predictive window selection must freeze choice on training data.",
+      "window_results": {
+        "full": {
+          "n_draws": 1499,
+          "mean_hit_count": 1.000667,
+          "sem": 0.021974,
+          "z_vs_random": 2.4255,
+          "p_vs_random": 0.015287
+        },
+        "recent_1000": {
+          "n_draws": 1000,
+          "mean_hit_count": 0.987,
+          "sem": 0.027547,
+          "z_vs_random": 1.4387,
+          "p_vs_random": 0.150237,
+          "z_vs_full": -0.4961,
+          "p_vs_full": 0.619796
+        },
+        "recent_500": {
+          "n_draws": 500,
+          "mean_hit_count": 0.934,
+          "sem": 0.036487,
+          "z_vs_random": -0.3664,
+          "p_vs_random": 0.714074,
+          "z_vs_full": -1.8272,
+          "p_vs_full": 0.067676
+        }
+      },
+      "window_vs_full_corrections": [
+        {
+          "key": "window_recent_1000_vs_full",
+          "p_raw": 0.619796,
+          "p_bonferroni": 1.0,
+          "p_bh": 0.619796,
+          "significant_bonferroni": false,
+          "significant_bh": false
+        },
+        {
+          "key": "window_recent_500_vs_full",
+          "p_raw": 0.067676,
+          "p_bonferroni": 0.135353,
+          "p_bh": 0.135353,
+          "significant_bonferroni": false,
+          "significant_bh": false
+        }
+      ],
+      "any_window_significantly_differs_bh": false,
+      "verdict": "Recent window is preferred only if significantly different AND improvement is stable.",
+      "pre_declared_family_contribution": 2
+    },
+    "module_d": {
+      "module": "D",
+      "name": "lifecycle_aware_descriptive_grouping",
+      "type": "descriptive_only",
+      "survivorship_caveat": "CRITICAL: Truth_level labels were assigned after observing historical performance. Strategies in higher-quality truth_level groups may appear to perform better due to selection bias, not genuine predictive skill. This analysis is DESCRIPTIVE ONLY.",
+      "truth_level_groups": {
+        "POWER_LOTTO_WAVE5_CONTROLLED_APPLY_VERIFIED": {
+          "strategies": [
+            "fourier30_markov30_2bet"
+          ]
+        },
+        "POWER_LOTTO_WAVE6_CONTROLLED_APPLY_VERIFIED": {
+          "strategies": [
+            "cold_complement_2bet",
+            "zonal_entropy_2bet"
+          ]
+        },
+        "POWERLOTTO_SINGLE_STRATEGY_BACKFILL_VERIFIED": {
+          "strategies": [
+            "fourier_rhythm_3bet"
+          ]
+        },
+        "POWERLOTTO_WAVE4_STRATEGY_BACKFILL_VERIFIED": {
+          "strategies": [
+            "midfreq_fourier_2bet",
+            "midfreq_fourier_mk_3bet",
+            "pp3_freqort_4bet"
+          ]
+        },
+        "POWERLOTTO_REMAINING_STRATEGIES_BACKFILL_VERIFIED": {
+          "strategies": [
+            "power_orthogonal_5bet",
+            "power_precision_3bet"
+          ]
+        },
+        "TIERB_DRYRUN_VALIDATED": {
+          "strategies": [
+            "power_fourier_rhythm_2bet"
+          ]
+        }
+      },
+      "note": "Lifecycle labels not available in replay row schema; using truth_level as proxy. No predictive grouping performed.",
+      "pre_declared_family_contribution": 0
+    },
+    "module_e": {
+      "module": "E",
+      "name": "main_special_separated",
+      "type": "descriptive+predictive",
+      "main_analysis": {
+        "n_draws": 1499,
+        "mean_hit_count_across_strategies": 0.983389,
+        "sem": 0.013425,
+        "random_baseline": 0.9473684210526315,
+        "z_vs_random": 2.683,
+        "p_raw": 0.007296,
+        "statistical_unit": "per_draw mean across strategies (draw as independent unit)"
+      },
+      "special_analysis": {
+        "n_draws_with_special": 1499,
+        "strategies_providing_special": [
+          "cold_complement_2bet",
+          "fourier30_markov30_2bet",
+          "midfreq_fourier_2bet",
+          "midfreq_fourier_mk_3bet",
+          "pp3_freqort_4bet",
+          "zonal_entropy_2bet"
+        ],
+        "mean_special_hit_rate": 0.11819,
+        "sem": 0.005207,
+        "random_baseline": 0.125,
+        "p_raw_binom": 0.417787,
+        "note": "P161 finding: all strategies with special predictions were at or below random 0.125."
+      },
+      "corrections": [
+        {
+          "key": "main_vs_random",
+          "p_raw": 0.007296,
+          "p_bonferroni": 0.014592,
+          "p_bh": 0.014592,
+          "significant_bonferroni": true,
+          "significant_bh": true
+        },
+        {
+          "key": "special_vs_random",
+          "p_raw": 0.417787,
+          "p_bonferroni": 0.835573,
+          "p_bh": 0.417787,
+          "significant_bonferroni": false,
+          "significant_bh": false
+        }
+      ],
+      "pre_declared_family_contribution": 2
+    },
+    "module_f": {
+      "module": "F",
+      "name": "walk_forward_oos_validation",
+      "type": "predictive_final_gate",
+      "pre_declared_configuration": "equal-weight voting, bet_index=1, top-6 by vote count \u2014 frozen before OOS",
+      "oos_minimum_draws_required": 500,
+      "n_windows_required_by_p166": 3,
+      "n_windows_computed": 1,
+      "insufficient_windows_note": "With 1500 draws, only 2 non-overlapping OOS windows of 500 draws are possible. A 3rd 500-draw OOS window would require >= 2000 total draws. The P166 plan requires 3 windows; this dataset is INSUFFICIENT for full Module F criteria. Results reported for 2 windows with clear limitation caveat.",
+      "window_results": [
+        {
+          "window": "oos_window_1",
+          "status": "COMPUTED",
+          "train_draws": 500,
+          "oos_draws": 500,
+          "mean_hit_count": 1.04,
+          "sem": 0.041144,
+          "random_baseline": 0.9473684210526315,
+          "best_single_baseline": 0.974906,
+          "z_vs_random": 2.2514,
+          "p_vs_random_raw": 0.024359,
+          "z_vs_best_single": 1.5821,
+          "p_vs_best_raw": 0.113623,
+          "above_random": true,
+          "above_best_single": true
+        },
+        {
+          "window": "oos_window_2",
+          "status": "INSUFFICIENT_OOS_DATA",
+          "oos_draws": 499,
+          "min_required": 500
+        }
+      ],
+      "combined_oos": {
+        "n_draws": 500,
+        "mean_hit_count": 1.04,
+        "z_vs_random": 2.2514,
+        "p_raw": 0.024359,
+        "above_random": true,
+        "above_best_single": true
+      },
+      "stable_vs_random_both_windows": false,
+      "stable_vs_best_single_both_windows": false,
+      "pass_final_gate": false,
+      "verdict": "FAIL \u2014 ensemble does not meet final gate criteria",
+      "pre_declared_family_contribution": 2
+    }
+  },
+  "success_rate_method_found": false,
+  "edge_summary": {
+    "found": false,
+    "null_result": true,
+    "reasons": [
+      "Module F final gate FAILED \u2014 ensemble did not consistently beat random and best-single-strategy across OOS windows"
+    ],
+    "recommendation": "NULL result. No statistically defensible ensemble edge found in POWER_LOTTO. Consider halting POWER_LOTTO research or redirecting to new feature hypotheses."
+  },
+  "no_action_confirmations": {
+    "no_db_write": true,
+    "no_registry_mutation": true,
+    "no_champion_promotion": true,
+    "no_controlled_apply": true,
+    "no_commit": true,
+    "no_push": true,
+    "no_merge": true,
+    "no_win_guarantee": true,
+    "no_real_money_wording": true,
+    "no_replay_rows_added": true
+  },
+  "governance_invariants": {
+    "db_rows": 94924,
+    "drift_guard": "PASS",
+    "main_zen_gates_split": "UNRESOLVED"
+  },
+  "next_task": "P168_POWER_LOTTO_RESEARCH_DECISION_REVIEW",
+  "next_task_note": "P167 results must be reviewed by user before any deployment decision. P167 does NOT authorize strategy deployment, champion promotion, or controlled_apply."
+}

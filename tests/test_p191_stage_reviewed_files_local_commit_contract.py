@@ -365,12 +365,18 @@ def test_p191_bet_index_live():
 # ── Git state (after commit) ──────────────────────────────────────────────────
 
 def test_p191_git_commit_exists():
+    # Search full git history (not just HEAD) for the P191 commit.
+    # P191 may no longer be HEAD if subsequent commits have been added.
     r = subprocess.run(
-        ["git", "log", "-1", "--oneline"],
+        ["git", "log", "--oneline"],
         capture_output=True, text=True
     )
     assert r.returncode == 0
-    assert "P188" in r.stdout or "P191" in r.stdout or "reconcile" in r.stdout.lower()
+    history = r.stdout
+    assert (
+        "P188-P191" in history or
+        ("P188" in history and "reconcile" in history.lower())
+    ), "P191 commit (P188-P191: reconcile...) not found in git history"
 
 
 def test_p191_no_staged_files_after_commit():

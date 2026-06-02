@@ -269,13 +269,20 @@ def test_p196_new_commit_has_no_db_binary():
 
 
 def test_p196_git_commit_message():
+    # Search full git history (not just HEAD) for the P196 non-binary recommit.
+    # P196 may no longer be HEAD if subsequent commits have been added.
+    # Note: P196 message uses "binaries" (not "binary"); search for "binaries" or "P196".
     r = subprocess.run(
-        ["git", "log", "-1", "--format=%s"],
+        ["git", "log", "--format=%s"],
         capture_output=True, text=True
     )
     assert r.returncode == 0
-    msg = r.stdout.strip()
-    assert "P188" in msg or "P196" in msg or "binary" in msg.lower() or "reconcile" in msg.lower()
+    history = r.stdout
+    assert (
+        "P196" in history or
+        "binaries" in history.lower() or
+        ("P188" in history and "reconcile" in history.lower())
+    ), "P196 binary-removal commit (P188-P196: ...without DB binaries) not found in git history"
 
 
 # ── Governance ────────────────────────────────────────────────────────────────

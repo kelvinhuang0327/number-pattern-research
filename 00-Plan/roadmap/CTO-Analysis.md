@@ -12,7 +12,7 @@ Final CTO classification target: `CTO_ROADMAP_UPDATED_WITH_RISKS`.
 - [Confirmed] Current CTO analysis before this update: `00-Plan/roadmap/CTO-Analysis.md`.
 - [Confirmed] Read-only CEO / active-task context: `00-Plan/roadmap/CEO-Decision.md`, `00-Plan/roadmap/active_task.md`.
 - [Confirmed] User handoff attachment: `/Users/kelvin/.codex/attachments/51fdb507-325c-4600-8bdf-ecbe6a71ab06/pasted-text.txt`.
-- [Confirmed] Current repo / git checks: repo `/Users/kelvin/Kelvin-WorkSpace/LotteryNew`, branch `main`, HEAD `061bdc19c0a59e6948e8335b888257a1f7c521f6`.
+- [Confirmed] Current repo / git checks as of 2026-06-02 CTO review: repo `/Users/kelvin/Kelvin-WorkSpace/LotteryNew`, branch `main`, HEAD at that review = `061bdc19c0a59e6948e8335b888257a1f7c521f6` (immutable historical snapshot; not current HEAD — verify current HEAD with `git rev-parse HEAD`).
 - [Confirmed] Current SQLite checks on `lottery_api/data/lottery_v2.db`: integrity `ok`, `strategy_prediction_replays` rows 94,924, `bet_index` present, 0 duplicate replay keys, POWER_LOTTO rows 36,104.
 - [Confirmed] Current archive evidence: `/Users/kelvin/Kelvin-WorkSpace/_archive/lottery_stale_repos_20260602_162329/README_DO_NOT_USE.md`.
 - [Confirmed] Current git log evidence: PR #249 merge `061bdc1`; P203 `d119ea6`; P200 `4a36b12`; P193-P198 `41449fb`; P188-P196 `a3e30ae`.

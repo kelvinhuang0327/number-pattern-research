@@ -37,7 +37,7 @@ This section is the current source of truth. The 2026-06-01 sections and P186-P1
 |---|---:|---|
 | Current repo | `/Users/kelvin/Kelvin-WorkSpace/LotteryNew` | [Confirmed] |
 | Current branch | `main` | [Confirmed] |
-| Current HEAD | `6e220f244061a1be5aa8bddf7339f3139640c30d` (`Merge pull request #252`) | [Confirmed] |
+| Current HEAD | HEAD must equal `origin/main`; verify with `git rev-parse HEAD` and `git rev-parse origin/main` before any task. Do not hardcode a live hash here — it becomes stale after every PR merge. Last known PR merge hash (immutable fact): `c8ac14c` (PR #253). | [Self-verifying] |
 | Root `Lottery*` folders | only `/Users/kelvin/Kelvin-WorkSpace/LotteryNew` | [Confirmed] |
 | Archived stale repos | `_archive/lottery_stale_repos_20260602_162329/{Lottery,LotteryNew-clean}` | [Confirmed] |
 | Production replay table | `strategy_prediction_replays` | [Confirmed] |
@@ -180,7 +180,7 @@ P217_CURRENT_STATE_METADATA_SYNC_20260603
 > Current truth is **§0 (Current Roadmap Override — 2026-06-02)** above, not the values below:
 > - Production replay DB = **94,924 rows**, `bet_index` **present** (0 nulls), POWER_LOTTO **36,104** — not the `54462` / `absent` / `15142` shown below.
 > - `P186` / `P188` production DB migration is **COMPLETE** (executed + merged via PR #249) — not `[Blocked]`.
-> - Current `main` HEAD = `6e220f2` (= `origin/main`, post PR #252) — not `d1a6817`.
+> - PR #252 merge commit = `6e220f2` (immutable historical fact); for current HEAD verify with `git rev-parse HEAD` — not `d1a6817`.
 >
 > Do not read any §1–§7 baseline value, `[Confirmed]` stamp, blocker, or P0–P10 priority as current. See §0.
 

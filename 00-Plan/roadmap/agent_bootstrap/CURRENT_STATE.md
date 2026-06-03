@@ -1,7 +1,7 @@
 # Current State — LotteryNew
 
-**Last Reviewed:** 2026-06-03 Asia/Taipei (P217 metadata sync)  
-**State Marker:** `P210_COMPLETE_P211_HELD_BY_USER_P212_P216_GOVERNANCE_COMPLETE_REMOTE_RATIFIED`  
+**Last Reviewed:** 2026-06-03 Asia/Taipei (P218 structural HEAD metadata fix)  
+**State Marker:** `P210_COMPLETE_P211_HELD_BY_USER_P212_P217_GOVERNANCE_COMPLETE_REMOTE_RATIFIED_P218_STRUCTURAL_HEAD_FIX`  
 **Purpose:** Project-specific state for future agents. Read this after `SHARED_AGENT_BOOTSTRAP.md` and `TASK_TEMPLATES.md`.
 
 ## Canonical Execution Context
@@ -11,8 +11,8 @@
 | Project | LotteryNew | [Confirmed] |
 | Canonical repo | `/Users/kelvin/Kelvin-WorkSpace/LotteryNew` | [Confirmed] |
 | Canonical branch | `main` | [Confirmed] |
-| Current HEAD | `6e220f244061a1be5aa8bddf7339f3139640c30d` (`Merge pull request #252`) | [Confirmed] |
-| `origin/main` | `6e220f244061a1be5aa8bddf7339f3139640c30d` | [Confirmed] |
+| Current HEAD | HEAD must equal `origin/main`; verify with `git rev-parse HEAD` and `git rev-parse origin/main` before any task. Do not hardcode a live hash here — this field becomes stale after every PR merge. Last recorded PR merge: `c8ac14c` (Merge pull request #253, P217 metadata sync). | [Self-verifying] |
+| `origin/main` | Must equal HEAD; see above. Verify with `git rev-parse origin/main`. | [Self-verifying] |
 | Git dir | `.git` | [Confirmed] |
 | Active worker task | none | [Confirmed] |
 | P211 status | `HELD_BY_USER`; do not auto-resume or re-prompt | [Confirmed] |
@@ -71,6 +71,8 @@ Read-only baseline commands:
 | P214 post-ratification governance state sync | COMPLETE | `active_task.md` + `CEO-Decision.md` updated to reflect P213 completion. |
 | P215 remote governance ratification (PR flow) | COMPLETE | Branch `bootstrap-governance-ratification` → PR #250 → required check passed → merged. `origin/main` = `4eb8051`. |
 | P216 post-ratification roadmap/analysis doc sync | COMPLETE | CTO 2026-06-02 `roadmap.md` + `CTO-Analysis.md` committed via PR #252, merge `6e220f2`. |
+| P217 current-state metadata sync | COMPLETE | PR #253, merge `c8ac14c`. Governance metadata synced to reflect P213–P216 completion. |
+| P218 structural HEAD metadata fix | COMPLETE | Dev branch `p218-structural-current-head-metadata-fix`. Replaced live-current HEAD hash fields with self-verifying language across four governance docs. |
 | Shared agent bootstrap adoption | TRACKED / RATIFIED / COMPLETE | Files committed via `8d34f4c` and pushed to `origin/main` via PR #250 (merge `4eb8051`, 2026-06-03). All three files are now git-protected source-controlled artifacts. |
 
 ## Completed Milestones

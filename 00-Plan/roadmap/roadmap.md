@@ -1,9 +1,170 @@
 # Lottery Replay Roadmap
 
-**Last Updated:** 2026-06-01 Asia/Taipei (CTO alignment after P185 rehearsal + SZC1/SZC2 governance completion)
+**Last Updated:** 2026-06-02 Asia/Taipei (CTO alignment after PR #249 merge + P209 repo archive closure)
 **Owner:** CTO agent
-**Primary Goal:** Keep LotteryNew replay, research, and product evidence truthful, reproducible, and governed. The current maturity bottleneck is no longer strategy discovery; it is canonical data reconciliation, production migration authorization, honest product disclosure, and prevention of weak second-zone/special-ball signals from contaminating recommendations.
-**Repo Policy:** Use `/Users/kelvin/Kelvin-WorkSpace/LotteryNew` only. Do not create a new repo. Production DB, registry, and data writes require explicit governed authorization. CTO roadmap updates are limited to this file and `00-Plan/roadmap/CTO-Analysis.md`.
+**Primary Goal:** Keep LotteryNew replay, research, and product evidence truthful, reproducible, and governed. The current maturity bottleneck has shifted from migration rehearsal to short/mid-window strategy protocol design, anti-overfit validation, canonical repo dispatch safety, and honest product disclosure.
+**Repo Policy:** Use `/Users/kelvin/Kelvin-WorkSpace/LotteryNew` only. Do not create a new repo. Production DB, registry, and data writes require explicit governed authorization. CTO roadmap updates are limited to this file and `00-Plan/roadmap/CTO-Analysis.md`. CTO must not write `CEO-Decision.md`, `active_task.md`, `production/*`, `registry/*`, `data/*`, or any new repo.
+
+---
+
+## 0. Current Roadmap Override — 2026-06-02
+
+This section is the current source of truth. The 2026-06-01 sections and P186-P196 appendices below are retained for history and are superseded where they conflict with this section.
+
+### 0.1 Latest Phase Status
+
+| Phase / Chain | Status | Evidence | CTO Note |
+|---|---|---|---|
+| P149-P159B replay product closure | [Confirmed] Complete | `00-Plan/roadmap/CEO-Decision.md`; prior P159B handoff | Historical product baseline accepted; now merged through the reconciliation chain. |
+| R1/R2 POWER_LOTTO research P161-P178A | [Confirmed] Closed NULL result | `outputs/research/power_lotto/p178a_r2_research_closure_archive_20260601.*` | 17 strategies/candidates produced no corrected-significant OOS edge. Do not restart old R2 candidates. |
+| P183-P188 DB migration chain | [Confirmed] Complete | `outputs/research/power_lotto/p188_production_db_migration_execution_20260601.*`; read-only SQLite check | Production local DB is now 94,924 rows with `bet_index` present and 0 duplicate keys. |
+| P189-P205 post-migration / PR #249 chain | [Confirmed] Complete | git log `061bdc1`, `d119ea6`, `4a36b12`, `41449fb`, `a3e30ae`; handoff report | Drift guard, stale HEAD-only tests, DB binary exclusion, PR/CI, and merge are reported complete. |
+| P206-P207 local main sync / branch cleanup decision | [Confirmed] Complete by handoff | user handoff report; current HEAD `061bdc19...` on `main` | Latest known full suite from handoff: 1097 passed, 0 failed; CTO did not rerun tests in this review. |
+| P208-P209 repo archive cleanup closure | [Confirmed] Complete | `/Users/kelvin/Kelvin-WorkSpace/_archive/lottery_stale_repos_20260602_162329/README_DO_NOT_USE.md`; root `Lottery*` listing | `Lottery/` and `LotteryNew-clean/` are archived, not deleted; future dispatch must use only canonical `LotteryNew`. |
+| SZC1/SZC2 second-zone containment | [Confirmed] Complete | existing SZC evidence cited in 2026-06-01 roadmap/CEO decision | Second-zone remains display-only / no-signal unless future pre-registered evidence beats random. |
+| P210 short/mid-window strategy protocol | [Missing] / [Blocked] | user 2026-06-02 supplement | New direction is valid as a design target, but scope/windows/gates are not frozen and implementation is not authorized. |
+| New worker task prompt / `active_task.md` | [Blocked] | current CTO instruction conflict | User asks for a prompt but also forbids CTO from producing worker prompts and limits CTO writes to two files. CTO does not update `active_task.md`. |
+
+### 0.2 Current System Baseline
+
+| System State | Value | Status |
+|---|---:|---|
+| Current repo | `/Users/kelvin/Kelvin-WorkSpace/LotteryNew` | [Confirmed] |
+| Current branch | `main` | [Confirmed] |
+| Current HEAD | `061bdc19c0a59e6948e8335b888257a1f7c521f6` (`Merge pull request #249`) | [Confirmed] |
+| Root `Lottery*` folders | only `/Users/kelvin/Kelvin-WorkSpace/LotteryNew` | [Confirmed] |
+| Archived stale repos | `_archive/lottery_stale_repos_20260602_162329/{Lottery,LotteryNew-clean}` | [Confirmed] |
+| Production replay table | `strategy_prediction_replays` | [Confirmed] |
+| Production replay rows | 94,924 | [Confirmed] read-only SQLite |
+| Production `bet_index` column | present | [Confirmed] read-only SQLite |
+| Duplicate `(lottery_type,target_draw,strategy_id,bet_index)` keys | 0 | [Confirmed] read-only SQLite |
+| POWER_LOTTO rows | 36,104 | [Confirmed] read-only SQLite |
+| `bet_index` distribution | 1=54,302; 2=16,581; 3=15,041; 4=6,000; 5=3,000 | [Confirmed] read-only SQLite |
+| Latest known full suite | 1097 passed / 0 failed | [Confirmed] handoff report; [Unknown] not rerun by CTO |
+| Worktree status | dirty outside CTO scope | [Confirmed] `git status --short` |
+| Formal 2026-06-02 CEO decision for P210 | absent from allowed CTO sources | [Unknown] |
+
+### 0.3 Roadmap Alignment Assessment
+
+| Item | Classification | Assessment |
+|---|---|---|
+| P188-P205 migration / PR completion | [Aligned] | This directly resolves the prior P0 canonical DB blocker and branch-protection / DB-binary risks. |
+| P206-P209 repo archive cleanup | [Aligned] | Strongly aligns with "no new repo" and reduces wrong-repo dispatch risk. |
+| P186/P187/P188 still shown as blockers in older sections | [Outdated] | The older 2026-06-01 blocker state is superseded by P188 completion and PR #249 merge. |
+| Main/zen-gates split as current P0 | [Outdated] | Current local main is at 94,924 rows with `bet_index`; the split is no longer the top blocker. |
+| Short/mid-window strategy direction | [Missing] | User's latest direction is not yet represented as a governed phase with frozen windows, scope, and validation gates. |
+| Long-term frequency as primary filter | [Drift] / [Outdated] | Latest user direction demotes full-period frequency distribution to reference information only. |
+| Reusing old POWER_LOTTO R2 candidates | [Outdated] / [Blocked] | P178A closed R2 active research; new work must be a new pre-registered protocol, not a rerun. |
+| Worker prompt output today | [Blocked] | CTO cannot produce a new worker prompt or write `active_task.md` under the strict limits in this request. |
+
+### 0.4 Reprioritized P0-P10
+
+| Priority | Phase | Focus | Current Status | Acceptance Criteria |
+|---|---|---|---|---|
+| **P0.1** | P210 protocol governance | Freeze short/mid-window strategy scope before any implementation | [Blocked] CEO/user decision needed | Windows, lottery scope, metrics, baselines, holdout/walk-forward plan, multiple-testing correction, and "long-term as reference only" rule are documented. |
+| **P0.2** | Anti-overfit validation gate | Prevent short-window noise from becoming false signal | [Missing] | Any future strategy claim must beat random and best-simple baselines under pre-registered walk-forward/OOS with corrected significance and CI. |
+| **P0.3** | Canonical execution / repo dispatch guard | Ensure every agent uses only `LotteryNew/main` and not archived/stale worktrees | [Confirmed] baseline; [Missing] task guard template | Prompts and worker reports must STOP on `.claude/worktrees/*`, archive paths, wrong branch, wrong HEAD/DB baseline, or broad staging. |
+| **P0.4** | CTO/CEO task-generation boundary | Resolve prompt-generation conflict for the next executable task | [Blocked] | CEO/Planner explicitly authorizes one task prompt or relaxes CTO prompt restriction; CTO writes only allowed files. |
+| **P1.1** | Short/mid-window diagnostic implementation | Execute read-only analysis after P210 protocol approval | [Deferred] | Report/JSON only; no production write; no strategy promotion; compares 10-50 and 100-300 windows against random/simple baselines. |
+| **P1.2** | Product disclosure and second-zone containment | Make UI/API wording consistent with NULL/no-signal evidence | [Deferred] | No surface implies guaranteed improvement, betting advice, or second-zone predictive edge. |
+| **P1.3** | Post-merge quality gate maintenance | Keep drift guard, DB manifest, and CI assumptions aligned with 94,924-row local state | [Confirmed] baseline; [Deferred] maintenance | CI/test artifacts continue to pass; DB binary remains excluded from git; manifests evidence local DB state. |
+| **P2.1** | Passive monitoring / reopen rules | Monitor POWER_LOTTO only under P178A reopen conditions | [Waiting] | Reopen only after >=500 new draws after 115000041, structural change, independent evidence, or explicit governance design. |
+| **P2.2** | Archive retention / cleanup decision | Decide whether archived stale repos remain indefinitely | [Deferred] | No deletion without explicit destructive authorization; archive README remains clear. |
+| **P3** | Other lottery research | DAILY_539, BIG_LOTTO, 3_STAR, 4_STAR research | [Deferred] | Separate authorization; must inherit P210 validation gates. |
+| **P4** | Replay product backlog | UI polish, monitoring dashboards, operator reporting | [Deferred] | Does not consume P0/P1 validation or governance capacity. |
+| **P5** | Optional scheduler / automation | Cron/launchd/automation setup | [Deferred] | Explicit OS-level authorization only. |
+| **P6** | External reference review | Architecture notes only if useful | [Paused] | No clone/new repo. |
+| **P7** | Worktree hygiene | Clean dirty runtime/data files | [Deferred but risky] | Only with explicit cleanup authorization and file allowlist. |
+| **P8** | Future OOS re-evaluation | Retest only after new data thresholds | [Waiting] | Pre-registered configs; no post-hoc threshold tuning. |
+| **P9** | Product packaging | Release notes / operational docs | [Deferred] | After P210/P1 evidence boundary is stable. |
+| **P10** | Long-term cadence | Periodic governance review | [Deferred] | Low-cost checks without no-change churn. |
+
+Upgrade / downgrade decisions:
+
+| Item | Decision | Reason |
+|---|---|---|
+| Short/mid-window protocol | Upgrade to P0 | This is the next true maturity gate because implementation without frozen validation would overfit. |
+| Anti-overfit validation | Upgrade to P0 | Short windows (10-50) are noisy; corrected significance and walk-forward gates are mandatory. |
+| Canonical repo dispatch guard | Keep P0/P1 | Wrong worktree/repo dispatch repeatedly caused STOP conditions; archive now exists and must not be used. |
+| P186/P187/P188 migration blocker | Downgrade to historical complete | Current DB is 94,924 rows with `bet_index`; PR #249 merged. |
+| Long-term full-period frequency as filter | Downgrade / retire as primary filter | Latest direction makes it reference-only, not a gating condition. |
+| Active POWER_LOTTO R2 optimization | Retire / keep closed | P178A closed R2 after NULL results. |
+| Second-zone optimization | Retire as active goal; keep containment | Existing evidence remains below random; display-only unless future pre-registered proof appears. |
+| P123 trigger standby and old apply chains | Keep P3+ guardrails | Useful history, not today's bottleneck. |
+
+### 0.5 Critical Blockers
+
+| Blocker | Impact | Why It Blocks | Risk If Ignored | Priority | Acceptance |
+|---|---|---|---|---|---|
+| Undefined short/mid-window protocol | Research correctness, product value | User direction is clear conceptually but windows, lottery scope, metrics, and baselines are not frozen | A worker may implement ad-hoc strategy search and overfit recent draws | P0.1 | Plan-only protocol documents 10-50 and 100-300 window sets, scope, baselines, OOS/walk-forward, correction, and no production writes. |
+| Short-window overfitting / multiple testing | System correctness, trust | Many windows/strategies can create false positives | False "improved prediction" claims or strategy promotion from noise | P0.2 | Pre-registered evaluation, random and simple-frequency baselines, best-single-strategy baseline, CI, corrected p-values, and negative-result acceptance. |
+| Task-prompt governance conflict | Workflow orchestration | Current request asks for a worker prompt but also forbids CTO from producing one and limits CTO writes to two files | CTO could violate governance or produce an unauthorized task | P0.4 | CEO/Planner supplies or authorizes the next prompt; CTO does not write `active_task.md`. |
+| Wrong repo/worktree dispatch | Reproducibility, safety | `.claude/worktrees/*` and archived stale repos still exist and have incompatible states | Agents may run stale DB/code and produce invalid evidence | P0.3 | Every future task includes canonical repo/branch/DB STOP guard and archive DO_NOT_USE rule. |
+| Evidence disclosure gap | Product maturity | Lottery outputs can be misread as betting advice or validated edge | User trust and safety risk from overclaiming | P1.2 | UI/API/report copy separates historical evidence from predictive claims and keeps second-zone display-only. |
+
+### 0.6 Recommended System Optimization Directions
+
+#### Direction A: Short/Mid-Window Strategy Protocol Governance
+
+- **Roadmap phase:** P0.1 / P210.
+- **Why important:** The user’s latest direction is promising but high-risk unless the evaluation design is frozen first.
+- **System maturity gain:** Converts intuition into a reproducible research protocol before code or strategy changes.
+- **Expected benefit:** Future work can test 10-50 and 100-300 draw windows without leaking future data or tuning after results.
+- **Risk:** Too much freedom in window choice will manufacture false positives.
+- **Acceptance:** Plan-only protocol defines scope, windows, baselines, OOS/walk-forward, correction method, report format, and no production writes.
+- **Priority:** P0.
+
+#### Direction B: Anti-Overfit Validation And Quality Gates
+
+- **Roadmap phase:** P0.2 / P1.1.
+- **Why important:** Short-term signals are noisy and must beat random/simple baselines, not just look better in-sample.
+- **System maturity gain:** Makes "better prediction" claims falsifiable.
+- **Expected benefit:** Negative results become acceptable and positive results become harder to fake.
+- **Risk:** Slower iteration and fewer exciting results, but higher truthfulness.
+- **Acceptance:** CI/report gate requires corrected significance, confidence intervals, fixed window registry, and explicit NULL classification.
+- **Priority:** P0.
+
+#### Direction C: Canonical Repo / DB Execution Integrity
+
+- **Roadmap phase:** P0.3.
+- **Why important:** The canonical repo is now cleanly identified, but stale worktrees/archive folders still exist.
+- **System maturity gain:** Prevents dispatch, staging, or DB-baseline mistakes.
+- **Expected benefit:** Less agent STOP churn and fewer invalid reports from stale repositories.
+- **Risk:** Overly strict guards may block legitimate diagnostic work unless exceptions are explicit.
+- **Acceptance:** Worker reports verify repo, branch, HEAD, DB rows, `bet_index`, duplicate keys, and archive/worktree STOP conditions.
+- **Priority:** P0/P1.
+
+#### Direction D: Evidence Disclosure And Recommendation Containment
+
+- **Roadmap phase:** P1.2.
+- **Why important:** Replay evidence and lottery prediction UI must not imply guaranteed improvement or wagering advice.
+- **System maturity gain:** Aligns product language with NULL/no-signal research.
+- **Expected benefit:** Higher operator trust and lower overclaiming risk.
+- **Risk:** Product surfaces may lag research updates.
+- **Acceptance:** Main-number, second-zone, lifecycle, provenance, and confidence states are labeled honestly; second-zone remains display-only.
+- **Priority:** P1.
+
+#### Direction E: Roadmap / Task Namespace Governance
+
+- **Roadmap phase:** P0.4 / P1.3.
+- **Why important:** P-number collisions and stale `active_task.md` have caused ambiguity.
+- **System maturity gain:** Keeps CTO/CEO/Planner/Worker boundaries crisp.
+- **Expected benefit:** Safer handoffs and fewer unauthorized worker tasks.
+- **Risk:** Current request remains internally contradictory.
+- **Acceptance:** Only CEO/Planner creates the next executable prompt; CTO records recommendations without producing worker prompts.
+- **Priority:** P1.
+
+### 0.7 Today's Recommended Focus
+
+**CTO recommendation:** Focus today on **P210 short/mid-window strategy protocol discussion/design only** as the next CEO/Planner-authorized task direction. Do not implement code, do not write production/registry/data, do not create a new repo, do not rerun old POWER_LOTTO R2 candidates, and do not promote second-zone predictions.
+
+The first executable worker prompt is **not emitted by CTO** because this request explicitly forbids CTO from producing a new worker task prompt and limits CTO writes to `roadmap.md` and `CTO-Analysis.md`.
+
+Final current roadmap marker:
+
+```text
+CTO_ROADMAP_UPDATED_WITH_RISKS_20260602
+```
 
 ---
 

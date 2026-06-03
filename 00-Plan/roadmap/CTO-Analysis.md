@@ -2,6 +2,253 @@
 
 ## 1. CTO Review Date
 
+2026-06-02 Asia/Taipei.
+
+Final CTO classification target: `CTO_ROADMAP_UPDATED_WITH_RISKS`.
+
+## 2. Input Sources
+
+- [Confirmed] Current roadmap before this update: `00-Plan/roadmap/roadmap.md`.
+- [Confirmed] Current CTO analysis before this update: `00-Plan/roadmap/CTO-Analysis.md`.
+- [Confirmed] Read-only CEO / active-task context: `00-Plan/roadmap/CEO-Decision.md`, `00-Plan/roadmap/active_task.md`.
+- [Confirmed] User handoff attachment: `/Users/kelvin/.codex/attachments/51fdb507-325c-4600-8bdf-ecbe6a71ab06/pasted-text.txt`.
+- [Confirmed] Current repo / git checks: repo `/Users/kelvin/Kelvin-WorkSpace/LotteryNew`, branch `main`, HEAD `061bdc19c0a59e6948e8335b888257a1f7c521f6`.
+- [Confirmed] Current SQLite checks on `lottery_api/data/lottery_v2.db`: integrity `ok`, `strategy_prediction_replays` rows 94,924, `bet_index` present, 0 duplicate replay keys, POWER_LOTTO rows 36,104.
+- [Confirmed] Current archive evidence: `/Users/kelvin/Kelvin-WorkSpace/_archive/lottery_stale_repos_20260602_162329/README_DO_NOT_USE.md`.
+- [Confirmed] Current git log evidence: PR #249 merge `061bdc1`; P203 `d119ea6`; P200 `4a36b12`; P193-P198 `41449fb`; P188-P196 `a3e30ae`.
+- [Confirmed] Existing research/governance artifacts under `outputs/research/power_lotto/`, including P178A closure, P188 migration, P189 verification, P196 DB binary manifest.
+- [Confirmed] Git status was dirty before CTO edits and includes files outside CTO scope. CTO touched only allowed roadmap files.
+- [Unknown] A formal 2026-06-02 CEO final decision for the user’s new P210 short/mid-window direction is not present in the allowed sources.
+- [Unknown] CTO did not rerun the full test suite in this analysis-only review; latest known test counts are from the handoff.
+
+## 3. Roadmap Alignment Assessment
+
+| Item | Classification | Assessment |
+|---|---|---|
+| P188 production DB migration and P189-P205 PR chain | [Aligned] | This resolves the prior P0 main/zen-gates split and DB-binary/branch-protection risks. |
+| P206-P209 canonical repo/archive cleanup | [Aligned] | Directly supports the no-new-repo policy and reduces agent dispatch mistakes. |
+| Roadmap still treating P186/P187/P188 as blockers | [Outdated] | Current local main is 94,924 rows with `bet_index`; those blockers are historical. |
+| P178A POWER_LOTTO R2 closure | [Aligned] | Old R2 candidate reruns remain retired; new work must be a fresh protocol. |
+| User’s short/mid-window direction | [Missing] | Roadmap lacked a governed P210 phase for 10-50 and 100-300 draw windows. |
+| Long-term frequency as primary filter | [Drift] | Latest user direction demotes long-term/full-period frequency to reference information only. |
+| Worker prompt output request | [Blocked] | CTO is simultaneously asked to output a worker prompt and forbidden from producing one or writing `active_task.md`. |
+
+## 4. Completed Work Assessment
+
+### Reconciliation / DB / PR Chain
+
+- [Confirmed] P188 production DB migration was executed and current local DB has 94,924 rows, `bet_index` present, and 0 duplicate replay keys.
+- [Confirmed] P189 post-migration verification and drift-guard transition were reported complete.
+- [Confirmed] P196 removed DB binaries from pushable history and preserved DB evidence via manifest; `git ls-files` confirms the DB binary itself is not tracked.
+- [Confirmed] P200 repaired stale HEAD-only commit tests.
+- [Confirmed] P203 refreshed randomness audit cadence.
+- [Confirmed] P205 merged PR #249 into `main`; local HEAD is the PR #249 merge commit.
+
+### Repo Governance / Dispatch Chain
+
+- [Confirmed] Handoff reports P206 local main sync and P207 branch cleanup decision complete.
+- [Confirmed] `Lottery/` and `LotteryNew-clean/` are archived under `_archive/lottery_stale_repos_20260602_162329/` with `README_DO_NOT_USE.md`.
+- [Confirmed] Root `/Users/kelvin/Kelvin-WorkSpace/Lottery*` listing shows only `/Users/kelvin/Kelvin-WorkSpace/LotteryNew`.
+
+### Research / Evidence Chain
+
+- [Confirmed] P161-P178A POWER_LOTTO R1/R2 research remains NULL/closed; no active old-candidate optimization is authorized.
+- [Confirmed] Second-zone evidence remains no-signal / below random in prior evidence and containment decisions.
+- [Confirmed] Latest user direction is not to use long-term frequency as a primary filter; it should become reference/observation only.
+
+### Test / Verification Status From Sources
+
+- [Confirmed] Handoff reports P200 full suite: 1074 passed, 0 failed, 0 skipped.
+- [Confirmed] Handoff reports P203: 1097 passed, 0 failed.
+- [Confirmed] Handoff reports P204 PR CI green: default SUCCESS, browser SUCCESS, dedicated-db SKIPPED acceptable.
+- [Confirmed] Handoff reports P206/P207: 1097 passed, 0 failed.
+- [Unknown] CTO did not rerun tests in this review; no new test result is claimed.
+
+## 5. Unfinished Work Assessment
+
+- [Missing] P210 short/mid-window strategy protocol: no frozen windows, lottery scope, metric hierarchy, holdout plan, or acceptance taxonomy yet.
+- [Blocked] First executable worker prompt: current instructions forbid CTO from generating a worker prompt and writing `active_task.md`; no 2026-06-02 CEO final decision for P210 is present.
+- [Missing] Anti-overfit gate for short-window research: multiple-testing correction, CI, and walk-forward/OOS gates must be defined before implementation.
+- [Missing] Long-term frequency governance: full-period frequency must be explicitly demoted to reference-only in future protocols.
+- [Deferred] Product disclosure: UI/API/report wording still needs to remain aligned with NULL/no-signal evidence and no wagering advice.
+- [Deferred] Archive deletion decision: archive should remain unless explicit destructive authorization is provided.
+- [Deferred] Dirty worktree cleanup: outside CTO scope and requires a file allowlist.
+
+## 6. P0 / P1 / P2 / P3-P10 Reprioritization
+
+| Priority | Work | Status | Rationale |
+|---|---|---|---|
+| **P0.1** | P210 short/mid-window protocol governance | [Blocked] | This is the next correctness gate before any new strategy work. |
+| **P0.2** | Anti-overfit validation gate | [Missing] | 10-50 draw windows are noisy; false positives are the main system risk. |
+| **P0.3** | Canonical repo / DB execution guard | [Confirmed] baseline; [Missing] future task guard | Archive/worktree dispatch errors previously caused STOP and can invalidate results. |
+| **P0.4** | CTO/CEO task-generation boundary | [Blocked] | The current prompt conflicts with itself; CTO cannot emit the worker task. |
+| **P1.1** | Read-only short/mid-window diagnostic execution | [Deferred] | Valuable only after P210 protocol is approved. |
+| **P1.2** | Product disclosure and second-zone containment | [Deferred] | Protects product trust and avoids implying lottery edge. |
+| **P1.3** | Post-merge quality gate maintenance | [Confirmed] baseline; [Deferred] | Keep tests, DB manifest, and drift assumptions synchronized. |
+| **P2.1** | Passive POWER_LOTTO monitoring | [Waiting] | Reopen only under P178A conditions or new governance. |
+| **P2.2** | Archive retention / cleanup decision | [Deferred] | Keep archive unless destructive deletion is explicitly approved. |
+| **P3-P10** | Other lottery research, scheduler, external review, packaging, cadence | [Deferred] | Maintain continuity but do not consume P0/P1 capacity. |
+
+Upgrade / downgrade decisions:
+
+- [Confirmed] Short/mid-window protocol is upgraded to P0 because the user’s new direction cannot safely proceed without frozen validation.
+- [Confirmed] Anti-overfit validation is upgraded to P0 because short windows can easily generate false positives.
+- [Confirmed] P186/P187/P188 migration blockers are downgraded to historical complete because current local DB is reconciled.
+- [Confirmed] Long-term/full-period frequency is downgraded from potential filter to reference-only observation.
+- [Confirmed] Active POWER_LOTTO R2 optimization and second-zone optimization remain retired/contained unless a new pre-registered protocol is approved.
+- [Inferred] P206-P209 repo/archive guardrails should remain high priority even though cleanup itself is complete.
+
+## 7. Critical Blockers
+
+### Blocker 1: P210 Protocol Undefined
+
+- **Impact scope:** strategy correctness, research reproducibility, product value.
+- **Why blocker:** The new direction names short/mid windows, but does not yet freeze exact windows, lottery scope, metrics, baselines, or evidence thresholds.
+- **Risk if ignored:** A worker can tune windows after seeing results and create false signal.
+- **Recommended priority:** P0.1.
+- **Acceptance criteria:** Plan-only protocol defines 10-50 and 100-300 window sets, scope, baselines, OOS/walk-forward design, multiple-testing correction, CI, NULL taxonomy, and no production writes.
+
+### Blocker 2: Short-Window Overfit Risk
+
+- **Impact scope:** correctness, trust, future strategy promotion.
+- **Why blocker:** Short windows have small sample sizes; testing many windows/strategies without correction makes false positives likely.
+- **Risk if ignored:** Recent-noise patterns become "optimized" recommendations.
+- **Recommended priority:** P0.2.
+- **Acceptance criteria:** Every future result compares against random, simple-frequency, and best-single-strategy baselines with corrected significance and confidence intervals.
+
+### Blocker 3: Task Prompt Governance Conflict
+
+- **Impact scope:** agent/workflow orchestration.
+- **Why blocker:** The request asks CTO to output a worker prompt but also forbids CTO from producing a new worker task prompt and limits writes to two files.
+- **Risk if ignored:** CTO violates governance or creates an unauthorized `active_task.md`.
+- **Recommended priority:** P0.4.
+- **Acceptance criteria:** CEO/Planner explicitly authorizes or produces the next task prompt; CTO does not write `active_task.md`.
+
+### Blocker 4: Wrong Repo / Worktree Dispatch
+
+- **Impact scope:** reproducibility, DB correctness, operational safety.
+- **Why blocker:** Archived stale repos and `.claude/worktrees/*` still exist and can carry incompatible DB/code states.
+- **Risk if ignored:** Future evidence can be generated from stale data and look valid.
+- **Recommended priority:** P0.3.
+- **Acceptance criteria:** Future tasks STOP unless repo is `/Users/kelvin/Kelvin-WorkSpace/LotteryNew`, branch is `main`, DB rows are 94,924, `bet_index` is present, duplicate keys are 0, and path is not archive/worktree.
+
+### Blocker 5: Product Evidence Disclosure Gap
+
+- **Impact scope:** product maturity and user trust.
+- **Why blocker:** Lottery outputs can be misread as betting advice or a validated edge, especially with second-zone fields.
+- **Risk if ignored:** Product overclaims historical replay evidence.
+- **Recommended priority:** P1.2.
+- **Acceptance criteria:** Reports/UI/API clearly label historical evidence, NULL results, second-zone display-only status, and no wagering advice.
+
+## 8. Recommended System Optimization Directions
+
+### 1. Short/Mid-Window Strategy Protocol Governance
+
+- **Corresponding roadmap phase:** P0.1 / P210.
+- **Why important:** It turns the latest user intuition into a safe, testable research design before implementation.
+- **System maturity gain:** Prevents ad-hoc research from becoming unverified product claims.
+- **Expected benefit:** A stable protocol for 10-50 and 100-300 draw windows that can produce credible positive or NULL results.
+- **Risk:** Window choice can become post-hoc tuning if not frozen.
+- **Acceptance:** Plan-only artifact; no code/data/production writes; windows, metrics, baselines, OOS/walk-forward, correction, and final classification taxonomy documented.
+- **Suggested priority:** P0.
+
+### 2. Anti-Overfit Validation And Quality Gate
+
+- **Corresponding roadmap phase:** P0.2 / P1.1.
+- **Why important:** Short windows can look powerful while being statistical noise.
+- **System maturity gain:** Makes future strategy claims falsifiable and comparable.
+- **Expected benefit:** Protects the system from false-positive promotion and gives Planner/Worker a reusable gate.
+- **Risk:** Slower iteration and fewer promoted candidates.
+- **Acceptance:** Corrected significance, CI, random/simple/best-single baselines, draw-level OOS, and NULL-is-valid classification are mandatory.
+- **Suggested priority:** P0.
+
+### 3. Canonical Repo / DB Execution Integrity
+
+- **Corresponding roadmap phase:** P0.3.
+- **Why important:** The project just resolved stale repo sprawl; future work must not regress.
+- **System maturity gain:** Makes every result traceable to the same DB and branch baseline.
+- **Expected benefit:** Fewer STOPs, fewer invalid reports, safer staging.
+- **Risk:** Guard exceptions may be needed for read-only historical comparison, but must be explicit.
+- **Acceptance:** Worker reports verify repo/branch/HEAD/DB rows/`bet_index`/duplicates and reject archive/worktree paths.
+- **Suggested priority:** P0/P1.
+
+### 4. Evidence Disclosure And Recommendation Containment
+
+- **Corresponding roadmap phase:** P1.2.
+- **Why important:** Replay/product evidence must not be mistaken for guaranteed prediction or betting guidance.
+- **System maturity gain:** Keeps product semantics aligned with research truth.
+- **Expected benefit:** Higher trust and safer user interpretation.
+- **Risk:** UI/API language can lag behind research conclusions.
+- **Acceptance:** Main-number, second-zone, lifecycle, provenance, confidence, and NULL/no-signal states are labeled honestly.
+- **Suggested priority:** P1.
+
+### 5. Roadmap / Task Namespace Governance
+
+- **Corresponding roadmap phase:** P0.4 / P1.3.
+- **Why important:** Prior P-number collisions and active-task write races created execution ambiguity.
+- **System maturity gain:** Keeps CTO/CEO/Planner/Worker boundaries clear.
+- **Expected benefit:** Less wrong-task execution and less unauthorized prompt generation.
+- **Risk:** Current request remains contradictory until CEO/Planner resolves it.
+- **Acceptance:** Next task prompt is created only by CEO/Planner authorization; CTO records recommendations only.
+- **Suggested priority:** P1.
+
+## 9. Roadmap Changes Applied
+
+- [Confirmed] Updated `00-Plan/roadmap/roadmap.md` Last Updated to 2026-06-02 Asia/Taipei.
+- [Confirmed] Added `## 0. Current Roadmap Override — 2026-06-02` so old 2026-06-01 sections remain historical but no longer control current priorities.
+- [Confirmed] Marked P188-P205 as complete/aligned and P186/P187/P188 blockers as outdated.
+- [Confirmed] Marked P206-P209 repo/archive cleanup as complete/aligned.
+- [Confirmed] Added P210 short/mid-window protocol governance as current P0.
+- [Confirmed] Added anti-overfit validation and canonical repo dispatch guard as P0.
+- [Confirmed] Downgraded long-term/full-period frequency to reference-only and retired old R2/second-zone optimization as active goals.
+- [Confirmed] Documented the worker-prompt / `active_task.md` conflict and did not write `active_task.md`.
+- [Confirmed] CTO modified only `00-Plan/roadmap/roadmap.md` and `00-Plan/roadmap/CTO-Analysis.md`.
+
+## 10. Risks / Unknowns
+
+- [Unknown] No formal 2026-06-02 CEO final decision for P210 exists in the checked files.
+- [Unknown] CTO did not rerun the full test suite; latest pass counts are from the handoff report.
+- [Unknown] Exact P210 scope is not frozen: all lotteries vs POWER_LOTTO vs second-zone-specific remains undecided.
+- [Unknown] Exact short/mid windows are not frozen beyond the user's approximate 10-50 and 100-300 ranges.
+- [Confirmed] Current worktree is dirty outside CTO scope; broad staging remains unsafe.
+- [Confirmed] Archived stale repos exist and must not be used for dispatch.
+- [Confirmed] Production DB binary is intentionally local/untracked; reproducibility relies on manifests and validation checks, not git-tracked DB files.
+- [Inferred] The highest next maturity gain is protocol + validation governance, not immediate code implementation.
+
+## 11. CTO Final Recommendation
+
+Proceed with **P210 short/mid-window strategy protocol design only** as the next system direction, pending CEO/Planner authorization. The protocol must be plan-only: no code implementation, no production DB write, no registry/data write, no controlled_apply, no strategy promotion, no betting advice, and no new repo.
+
+The protocol should explicitly encode the user's latest rule: long-term/full-period frequency distribution is reference/observation only, not a primary filter. Primary evidence should focus on pre-registered short windows (about 10-50 draws) and mid windows (about 100-300 draws), tested with walk-forward/OOS, corrected significance, confidence intervals, and simple/random/best-single baselines.
+
+**First executable task prompt status:** [Blocked]. CTO does not emit a worker prompt and does not write `00-Plan/roadmap/active_task.md` because this same request forbids CTO from producing a new worker task prompt and limits CTO writes to two files. A CEO/Planner decision is needed to create the next executable prompt.
+
+## 12. CTO Summary In 5 Lines
+
+1. [Confirmed] Migration and PR #249 are complete; current local main DB is 94,924 rows with `bet_index`.
+2. [Confirmed] Stale repos are archived; only `LotteryNew/main` should be used for future dispatch.
+3. [Missing] The new short/mid-window strategy direction needs a plan-only P210 protocol before implementation.
+4. [Blocked] CTO cannot emit today’s worker prompt or write `active_task.md` under the current restrictions.
+5. [Inferred] The best next optimization is validation governance, not immediate strategy code.
+
+## 13. CEO Summary In 5 Lines
+
+1. Prior migration blocker is resolved; the new blocker is safe definition of short/mid-window research.
+2. Approve a plan-only P210 if you want workers to proceed.
+3. Keep long-term frequency as reference-only and require anti-overfit gates for short windows.
+4. Do not allow production/data/registry writes or strategy promotion in the first P210 step.
+5. Have CEO/Planner produce the one executable prompt; CTO is blocked from doing so here.
+
+Final Classification: `CTO_ROADMAP_UPDATED_WITH_RISKS`
+
+---
+
+## Historical CTO Analysis — 2026-06-01 And Later Appendices
+
+# CTO Analysis - Roadmap Alignment And System Optimization Direction
+
+## 1. CTO Review Date
+
 2026-06-01 Asia/Taipei.
 
 Final CTO classification target: `CTO_ROADMAP_UPDATED_WITH_RISKS`.

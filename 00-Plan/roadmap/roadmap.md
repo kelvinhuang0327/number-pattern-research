@@ -168,7 +168,16 @@ CTO_ROADMAP_UPDATED_WITH_RISKS_20260602
 
 ---
 
-## 1. Current Phase Snapshot
+> **⚠️ SUPERSEDED — §1–§7 below are the 2026-06-01 pre-migration snapshot (historical, NOT current truth).**
+>
+> Current truth is **§0 (Current Roadmap Override — 2026-06-02)** above, not the values below:
+> - Production replay DB = **94,924 rows**, `bet_index` **present** (0 nulls), POWER_LOTTO **36,104** — not the `54462` / `absent` / `15142` shown below.
+> - `P186` / `P188` production DB migration is **COMPLETE** (executed + merged via PR #249) — not `[Blocked]`.
+> - Current `main` HEAD = `62077c7` (= `origin/main`) — not `d1a6817`.
+>
+> Do not read any §1–§7 baseline value, `[Confirmed]` stamp, blocker, or P0–P10 priority as current. See §0.
+
+## 1. Phase Snapshot (2026-06-01 historical)
 
 | Phase / Chain | Status | Evidence | CTO Note |
 |---|---|---|---|
@@ -189,7 +198,7 @@ CTO_ROADMAP_UPDATED_WITH_RISKS_20260602
 
 ---
 
-## 2. Current System Baseline
+## 2. System Baseline (2026-06-01 historical — pre-migration)
 
 Read-only checks performed by CTO on 2026-06-01:
 
@@ -218,7 +227,7 @@ Known worktree risk:
 
 ---
 
-## 3. Roadmap Alignment Assessment
+## 3. Roadmap Alignment Assessment (2026-06-01 historical)
 
 | Item | Classification | Assessment |
 |---|---|---|
@@ -234,7 +243,7 @@ Known worktree risk:
 
 ---
 
-## 4. Reprioritized P0-P10
+## 4. Reprioritized P0-P10 (2026-06-01 historical)
 
 | Priority | Phase | Focus | Current Status | Acceptance Criteria |
 |---|---|---|---|---|
@@ -269,7 +278,7 @@ Upgrade / downgrade decisions:
 
 ---
 
-## 5. Critical Blockers
+## 5. Critical Blockers (2026-06-01 historical)
 
 | Blocker | Impact | Why It Blocks | Risk If Ignored | Priority | Acceptance |
 |---|---|---|---|---|---|
@@ -282,7 +291,7 @@ Upgrade / downgrade decisions:
 
 ---
 
-## 6. Recommended System Optimization Directions
+## 6. Recommended System Optimization Directions (2026-06-01 historical)
 
 ### Direction A: Canonical Data Reconciliation And Migration Gate
 
@@ -336,7 +345,7 @@ Upgrade / downgrade decisions:
 
 ---
 
-## 7. Today's Recommended Focus
+## 7. Today's Recommended Focus (2026-06-01 historical)
 
 **CTO recommendation:** Keep focus on **P186/P187/P188 migration governance chain** while preserving enforced second-zone containment (SZC1/SZC2 complete, display-only guard active).
 

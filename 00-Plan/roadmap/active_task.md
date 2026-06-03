@@ -1,9 +1,9 @@
 # Active Task — Today (2026-06-03)
 
-> **No automatic next worker task.** P212 + P213 + P214 are all COMPLETE.  
+> **No automatic next worker task.** P212 + P213 + P214 + P215 + P216 are all COMPLETE.  
 > P211 remains **HELD by user (2026-06-02 「先暫停」)** — do NOT auto-resume / do NOT re-prompt.  
-> Agent bootstrap git-ratification USER GATE is **CLOSED** — commit `8d34f4c` landed locally 2026-06-03; push NOT AUTHORIZED / NOT DONE.  
-> Next direction is entirely at the user's discretion: push `8d34f4c`, restart P211, open a roadmap sync task, or another direction.
+> Agent bootstrap git-ratification is **CLOSED and REMOTE-SYNCED** — commits `8d34f4c` + `7b9c179` merged to `origin/main` via PR #250 (merge `4eb8051`, 2026-06-03). Push COMPLETE through protected-branch PR flow.  
+> Next direction is entirely at the user's discretion: restart P211, or another direction.
 
 ---
 
@@ -13,7 +13,7 @@ Production-DB-migration chain (`P182–P197`) is **DONE and MERGED via PR #249**
 
 ---
 
-## ✅ COMPLETED TODAY — P212 + P213 + P214
+## ✅ COMPLETED TODAY — P212 + P213 + P214 + P215 + P216
 
 ### P212 — Agent Bootstrap CURRENT_STATE Honesty Correction
 **Status:** `BOOTSTRAP_HONESTY_CORRECTION_READY` + `BOOTSTRAP_HONESTY_CORRECTION_LOCAL_ONLY`  
@@ -28,12 +28,22 @@ Production-DB-migration chain (`P182–P197`) is **DONE and MERGED via PR #249**
 - `00-Plan/roadmap/agent_bootstrap/CURRENT_STATE.md`
 
 **USER GATE:** `CLOSED` — commit `8d34f4c` executed 2026-06-03 under user authorization.  
-**Push:** NOT AUTHORIZED / NOT DONE. Push is a separate user decision.  
+**Push:** COMPLETE via PR #250 (see P215 below). Done through protected-branch PR flow, not direct push.  
 **DB baseline confirmed post-commit:** 94924 rows / drift guard PASS.
 
 ### P214 — Post-Ratification Governance State Sync
 **Status:** `POST_RATIFICATION_GOVERNANCE_STATE_SYNC_COMMITTED`  
 **Scope:** Update `active_task.md` + `CEO-Decision.md` to reflect P213 completion and USER GATE closure.
+
+### P215 — Remote Governance Ratification Push (via PR flow)
+**Status:** `GOVERNANCE_RATIFICATION_PUSH_COMPLETE`  
+**Context:** Direct push to `main` was blocked by branch protection (required check `replay-default-validation`, `enforce_admins: true`) — correct governance, **not** a worker failure.  
+**Resolution (CEO Option A — PR flow):** branch `bootstrap-governance-ratification` → PR [#250](https://github.com/kelvinhuang0327/number-pattern-research/pull/250) → required check **passed (16s)** → merged.  
+**Result:** `origin/main` `061bdc1` → `4eb8051` (merge commit), now contains P213 `8d34f4c` + P214 `7b9c179`. Local `main` fast-forwarded, 0/0 ahead/behind origin. Temp branch deleted (local + remote). Remote ratification **COMPLETE**.
+
+### P216 — Post-Ratification Roadmap / Analysis Doc Sync
+**Status:** `ROADMAP_POST_RATIFICATION_SYNC_COMMITTED`  
+**Scope:** Commit the CTO 2026-06-02 `roadmap.md` + `CTO-Analysis.md` cleanup (as-authored) plus this `active_task.md` P215/P216 record, via a second governance-docs-only PR. No DB / registry / production / code; the 44 unrelated dirty/untracked working-tree files were excluded. `CEO-Decision.md` left unchanged (its `061bdc19` references are historical as-verified snapshots).
 
 ---
 
@@ -41,9 +51,9 @@ Production-DB-migration chain (`P182–P197`) is **DONE and MERGED via PR #249**
 
 **Status:** `CLOSED` — completed by commit `8d34f4c` (2026-06-03, user-authorized).
 
-- Three files are now **git-tracked source-controlled artifacts** in `main` (locally; not yet pushed to remote).
-- To push: user must explicitly authorize `git push origin main` (separate decision, separate task if needed).
-- Risk note: remote `origin/main` still points to `061bdc19` until push is done. Files exist locally in HEAD `8d34f4c` only.
+- Three files are now **git-tracked source-controlled artifacts** on `origin/main` (pushed via PR #250, merge `4eb8051`, 2026-06-03).
+- Push was completed through the **protected-branch PR flow** (CEO Option A), not a direct push — branch protection (`enforce_admins: true`, required check `replay-default-validation`) was respected.
+- Remote `origin/main` = `4eb8051` and contains the ratified bootstrap files (`8d34f4c` + `7b9c179`). Remote ratification **COMPLETE**.
 
 ---
 
@@ -73,8 +83,9 @@ Production-DB-migration chain (`P182–P197`) is **DONE and MERGED via PR #249**
 | **P212 agent_bootstrap CURRENT_STATE honesty correction** | `BOOTSTRAP_HONESTY_CORRECTION_READY` | **COMPLETE** |
 | **P213 agent_bootstrap git-ratification commit** | `AGENT_BOOTSTRAP_GIT_RATIFICATION_COMMITTED` | **COMPLETE — commit `8d34f4c`** |
 | **P214 post-ratification governance state sync** | `POST_RATIFICATION_GOVERNANCE_STATE_SYNC_COMMITTED` | **COMPLETE** |
-| agent_bootstrap push to remote | — | **USER DECISION — not yet authorized** |
+| **P215 agent_bootstrap push to remote (PR flow)** | `GOVERNANCE_RATIFICATION_PUSH_COMPLETE` | **COMPLETE — PR #250, merge `4eb8051`** |
+| **P216 post-ratification roadmap/analysis doc sync** | `ROADMAP_POST_RATIFICATION_SYNC_COMMITTED` | **COMPLETE** |
 
 ---
 
-Final Classification (this file): `ACTIVE_TASK_P214_COMPLETE_NO_ACTIVE_WORKER_TASK`
+Final Classification (this file): `ACTIVE_TASK_P216_COMPLETE_REMOTE_RATIFIED_NO_ACTIVE_WORKER_TASK`

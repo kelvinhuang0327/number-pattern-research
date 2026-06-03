@@ -1,0 +1,246 @@
+{
+  "task_id": "P229",
+  "date": "2026-06-03",
+  "classification": "P229_LOTTERY_RESEARCH_CLOSEOUT_REPORT_COMPLETE",
+  "phase_0": {
+    "result": "ALL_PASS",
+    "repo_root": "/Users/kelvin/Kelvin-WorkSpace/LotteryNew",
+    "branch": "main",
+    "head": "c167e778d3896745222dfb41674a9ff1d6a47ce4",
+    "origin_main": "c167e778d3896745222dfb41674a9ff1d6a47ce4",
+    "staged_files": 0,
+    "drift_guard": "REPLAY_LIFECYCLE_DRIFT_GUARD_PASS"
+  },
+  "db_baseline": {
+    "total_replay_rows": 94924,
+    "big_lotto": 24140,
+    "daily_539": 34680,
+    "power_lotto": 36104,
+    "star_3_replay_rows": 0,
+    "star_4_replay_rows": 0,
+    "bet_index_nulls": 0,
+    "dup_keys": 0,
+    "integrity": "ok"
+  },
+  "research_chain": [
+    {
+      "phase": "P211A",
+      "description": "POWER_LOTTO second-zone bias-reduction read-only diagnostic",
+      "pr": "#255",
+      "classification": "NO_SIGNAL_DISPLAY_ONLY_CONFIRMED",
+      "summary": "All Bonferroni-corrected p > 0.04. Hit-rate edge NULL after bias correction. Second-zone display-only confirmed."
+    },
+    {
+      "phase": "P221F",
+      "description": "Cross-lottery feature-discovery protocol frozen",
+      "pr": "#256",
+      "classification": "PROTOCOL_FROZEN",
+      "summary": "Windows: short 100/125/150, mid 500/750/1000, all-history=reference. Anti-overfit gate active."
+    },
+    {
+      "phase": "P222",
+      "description": "Cross-lottery feature-discovery scan (35 strategies x 3 lotteries)",
+      "pr": "#257",
+      "classification": "CANDIDATES_FOUND_NEED_MORE_OOS",
+      "summary": "BIG_LOTTO=NULL. midfreq_fourier_2bet/DAILY_539 showed raw p=5.2e-35 (inflated by overlapping slice). midfreq_fourier_mk_3bet/POWER BH-FDR only."
+    },
+    {
+      "phase": "P223B",
+      "description": "Candidate OOS cross-year validation (5 candidates)",
+      "pr": "#258",
+      "classification": "P223B_CANDIDATE_OOS_VALIDATION_COMPLETE",
+      "summary": "One survivor on overlapping P222 slice: midfreq_fourier_2bet/DAILY_539 CROSS_YEAR_CONFIRMED. Others: NEEDS_MORE_OOS/WEAK_OBSERVATION/REJECTED."
+    },
+    {
+      "phase": "P224",
+      "description": "DAILY_539 survivor deeper validation — clean deduplicated slice",
+      "pr": "#259",
+      "classification": "P224_SURVIVOR_NEEDS_MORE_OOS",
+      "summary": "1500 distinct draws. p=0.0674 (fails 0.05). CI [0.632, 0.706] crosses baseline. 6/10 blocks above. Edge rests on 19 hit=3 rows. Honest prior: lean NULL."
+    },
+    {
+      "phase": "P224B_P224C",
+      "description": "DAILY_539 survivor future OOS monitoring protocol",
+      "pr": "#260",
+      "classification": "P224B_FUTURE_OOS_MONITORING_PROTOCOL_READY",
+      "summary": "Reopen gate: >=300 new DAILY_539 draws (preferred 500). Full P224B gate required. Failure = historical artifact."
+    },
+    {
+      "phase": "P225",
+      "description": "Governance closeout sync P211A-P224C",
+      "pr": "#261 #262",
+      "classification": "P225_GOVERNANCE_CLOSEOUT_SYNC_COMPLETE",
+      "summary": "roadmap.md §0.1 + CURRENT_STATE.md updated. Stale windows corrected. Survivor WAIT_FOR_OOS recorded."
+    },
+    {
+      "phase": "P226",
+      "description": "3_STAR / 4_STAR replay-gap discovery",
+      "pr": "#263",
+      "classification": "P226_STAR_REPLAY_GAP_DISCOVERY_COMPLETE",
+      "summary": "3_STAR 4179 draws; 4_STAR 2922 draws. Replay rows=0 for both. Sorted DB storage causes positional order loss. Straight-play BLOCKED. Box-play feasible. Baselines: 3_STAR 1/120=0.00833; 4_STAR 1/210=0.00476."
+    },
+    {
+      "phase": "P227A",
+      "description": "Star box-play adapter design (plan-only)",
+      "pr": "#263",
+      "classification": "P227A_STAR_BOX_PLAY_ADAPTER_DESIGN_READY",
+      "summary": "star_box_exact_match (Counter/multiset), star_digit_overlap_count, star_calculate_box_score. calculate_match_score prohibited. dry_run=1 isolation. 4-layer authorization boundary. Power warning: 3_STAR needs ~10k draws; 4_STAR ~17k."
+    },
+    {
+      "phase": "P227B",
+      "description": "Star box-play code-only dry-run implementation",
+      "pr": "#264",
+      "classification": "P227B_STAR_BOX_PLAY_DRYRUN_CODE_COMPLETE",
+      "summary": "lottery_api/models/star_box_play.py. 42/42 targeted tests PASS. No DB write. calculate_match_score not used (AST test)."
+    },
+    {
+      "phase": "P227C",
+      "description": "Star box-play dry-run scan (120 hypotheses, power gate)",
+      "pr": "#265",
+      "classification": "P227C_STAR_BOX_PLAY_UNDERPOWERED_NO_SIGNAL",
+      "summary": "3_STAR: 0 Bonferroni, 1 BH-FDR weak (F7_high_low/w750, p=0.0008, UNDERPOWERED n_oos=2090<10000). 4_STAR: 0 Bonferroni, 0 BH-FDR. 69/69 tests PASS. Both UNDERPOWERED_NO_SIGNAL."
+    },
+    {
+      "phase": "P228",
+      "description": "Governance closeout sync P226-P227C",
+      "pr": "#266",
+      "classification": "P228_STAR_REPLAY_GOVERNANCE_CLOSEOUT_COMPLETE",
+      "summary": "roadmap.md + CURRENT_STATE.md updated to reflect P226-P227C. 3_STAR/4_STAR UNDERPOWERED_NO_SIGNAL and STRAIGHT_PLAY_BLOCKED_REINGEST_REQUIRED recorded."
+    },
+    {
+      "phase": "P229",
+      "description": "Lottery research closeout report (this document)",
+      "pr": "TBD",
+      "classification": "P229_LOTTERY_RESEARCH_CLOSEOUT_REPORT_COMPLETE",
+      "summary": "Comprehensive closeout report for P211A-P228. No new research. No DB write."
+    }
+  ],
+  "candidate_status": [
+    {
+      "candidate": "POWER_LOTTO second-zone hit-rate edge",
+      "lottery": "POWER_LOTTO",
+      "status": "DISPLAY_ONLY_NULL_EDGE",
+      "evidence": "P211A: all Bonferroni-corrected p > 0.04",
+      "deployable": false,
+      "future_gate": "none — final unless new pre-registered evidence"
+    },
+    {
+      "candidate": "midfreq_fourier_2bet",
+      "lottery": "DAILY_539",
+      "status": "WAIT_FOR_OOS",
+      "evidence": "P224: clean-slice p=0.0674 (fails 0.05); CI crosses baseline; edge rests on 19 hit=3 rows",
+      "deployable": false,
+      "future_gate": ">=300 new DAILY_539 target draws (preferred 500); full P224B gate"
+    },
+    {
+      "candidate": "P225 model design",
+      "lottery": "DAILY_539",
+      "status": "DEFERRED",
+      "evidence": "no validated signal to design around",
+      "deployable": false,
+      "future_gate": "requires validated survivor first"
+    },
+    {
+      "candidate": "box-play edge",
+      "lottery": "3_STAR",
+      "status": "UNDERPOWERED_NO_SIGNAL",
+      "evidence": "P227C: 0 Bonferroni; 1 BH-FDR weak obs (UNDERPOWERED, n_oos=2090 < 10000 required)",
+      "deployable": false,
+      "future_gate": ">=10000 total draws or positional re-ingestion; fresh pre-registration"
+    },
+    {
+      "candidate": "box-play edge",
+      "lottery": "4_STAR",
+      "status": "UNDERPOWERED_NO_SIGNAL",
+      "evidence": "P227C: 0 Bonferroni; 0 BH-FDR",
+      "deployable": false,
+      "future_gate": ">=17000 total draws or positional re-ingestion"
+    },
+    {
+      "candidate": "straight-play",
+      "lottery": "3_STAR / 4_STAR",
+      "status": "BLOCKED_REINGEST_REQUIRED",
+      "evidence": "positional order lost in sorted DB storage (100% sorted draws)",
+      "deployable": false,
+      "future_gate": "re-ingestion from raw positional source; separate DB-write authorization"
+    }
+  ],
+  "governance_freeze": {
+    "db_unchanged": true,
+    "star_replay_rows": 0,
+    "registry_unchanged": true,
+    "production_unchanged": true,
+    "recommendation_logic_unchanged": true,
+    "controlled_apply_used": false,
+    "strategy_promoted": false,
+    "betting_advice_given": false,
+    "all_claims_are_historical_or_dryrun_evidence": true
+  },
+  "future_action_menu": {
+    "A_stop_passive_monitoring": {
+      "description": "No new research. Wait for >=300-500 new DAILY_539 draws; recheck per P224B.",
+      "authorization_needed": "none",
+      "recommended": true
+    },
+    "B_daily539_backward_oos_extension": {
+      "description": "Use ~4376 un-replayed older DAILY_539 draws to resolve survivor p=0.0674.",
+      "authorization_needed": "explicit DB-write / backfill authorization; inherits P224B gates",
+      "recommended": "if user wants faster resolution"
+    },
+    "C_star_straight_play_reingestion_plan_only": {
+      "description": "Design plan-only protocol for re-ingesting star draws with positional order. No DB write in plan phase.",
+      "authorization_needed": "code-change scope for re-ingestion script; separate DB-write for actual data",
+      "recommended": "only if user wants to pursue star straight-play"
+    },
+    "D_wait_for_new_draws": {
+      "description": "DAILY_539 draws arrive ~6/week. 300 new draws ~50 weeks; 500 draws ~83 weeks.",
+      "authorization_needed": "none",
+      "recommended": "slowest but zero-risk option"
+    },
+    "E_archive_and_pause": {
+      "description": "Close all active worker tasks. Retain artifacts. No further research until user restarts.",
+      "authorization_needed": "none",
+      "recommended": true
+    }
+  },
+  "authorization_matrix": {
+    "read_only": ["Read DB (no write)", "Run phase-0 verification", "Read governance docs", "Run dry-run scans"],
+    "requires_code_change": ["New dry-run scan script", "Re-ingestion script design", "New adapter implementation"],
+    "requires_db_write": ["Generate replay rows", "Backward-OOS backfill", "Re-ingestion of historical draws"],
+    "requires_production_promotion": ["Strategy deployment", "Registry mutation", "Recommendation-logic change"],
+    "not_authorized": ["Betting advice", "Guaranteed prediction claims", "Force push", "Bypass governance"]
+  },
+  "risks_and_blind_spots": [
+    "Overfitting via multiple comparisons — re-scanning same data without new draws manufactures false positives",
+    "Underpowered star lottery tests — 3_STAR/4_STAR far below required draw counts",
+    "Sorted storage limitations — positional order lost; straight-play impossible from current data",
+    "Repeated-digit ambiguity — 0 repeats observed but schema allows them; baseline may shift if repeats appear",
+    "DAILY_539 survivor fragility — edge rests on 19 out of 1500 rows; classic noise hallmark",
+    "Future OOS dependence — 300-500 new DAILY_539 draws takes 50-83 weeks at current rate",
+    "P223B over-promotion risk — CROSS_YEAR_CONFIRMED on overlapping slice overturned by P224 dedup; P224 is authoritative",
+    "Governance drift — future agents must read CURRENT_STATE.md (updated through P228) as authoritative"
+  ],
+  "final_recommendation": {
+    "active_production_work": false,
+    "p225_model_design": "DEFERRED — no validated signal",
+    "preferred_action": "Option A or E: passive monitoring or archive and pause",
+    "if_user_wants_faster_resolution": "Option B: backward-OOS extension with explicit DB-write authorization",
+    "if_user_wants_star_lotteries": "Option C: plan-only re-ingestion design (no DB write in plan phase)",
+    "betting_advice": "NOT AUTHORIZED UNDER ANY CIRCUMSTANCES",
+    "summary": "No deployable signal found across P211A-P228. Research chain is complete. Wait for new data or pause."
+  },
+  "required_completion_check": {
+    "completed": true,
+    "test_result": "Phase_0_PASS drift_guard_PASS DB_PASS full_pytest_NOT_RUN",
+    "blocker": "none",
+    "files_modified": [
+      "outputs/research/p229_lottery_research_closeout_report_20260603.md",
+      "outputs/research/p229_lottery_research_closeout_report_20260603.json"
+    ],
+    "staged": 0,
+    "committed": 0,
+    "pushed": 0,
+    "allow_next_round": true,
+    "final_classification": "P229_LOTTERY_RESEARCH_CLOSEOUT_REPORT_COMPLETE"
+  }
+}

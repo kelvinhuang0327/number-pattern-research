@@ -1,13 +1,13 @@
 # Lottery Replay Roadmap
 
-**Last Updated:** 2026-06-02 Asia/Taipei (CTO alignment after PR #249 merge + P209 repo archive closure)
+**Last Updated:** 2026-06-03 Asia/Taipei (P217 current-state metadata sync — PR #250/#251/#252 merged; bootstrap ratified)
 **Owner:** CTO agent
 **Primary Goal:** Keep LotteryNew replay, research, and product evidence truthful, reproducible, and governed. The current maturity bottleneck has shifted from migration rehearsal to short/mid-window strategy protocol design, anti-overfit validation, canonical repo dispatch safety, and honest product disclosure.
 **Repo Policy:** Use `/Users/kelvin/Kelvin-WorkSpace/LotteryNew` only. Do not create a new repo. Production DB, registry, and data writes require explicit governed authorization. CTO roadmap updates are limited to this file and `00-Plan/roadmap/CTO-Analysis.md`. CTO must not write `CEO-Decision.md`, `active_task.md`, `production/*`, `registry/*`, `data/*`, or any new repo.
 
 ---
 
-## 0. Current Roadmap Override — 2026-06-02
+## 0. Current Roadmap Override — 2026-06-03 (updated; originally authored 2026-06-02)
 
 This section is the current source of truth. The 2026-06-01 sections and P186-P196 appendices below are retained for history and are superseded where they conflict with this section.
 
@@ -22,8 +22,14 @@ This section is the current source of truth. The 2026-06-01 sections and P186-P1
 | P206-P207 local main sync / branch cleanup decision | [Confirmed] Complete by handoff | user handoff report; current HEAD `061bdc19...` on `main` | Latest known full suite from handoff: 1097 passed, 0 failed; CTO did not rerun tests in this review. |
 | P208-P209 repo archive cleanup closure | [Confirmed] Complete | `/Users/kelvin/Kelvin-WorkSpace/_archive/lottery_stale_repos_20260602_162329/README_DO_NOT_USE.md`; root `Lottery*` listing | `Lottery/` and `LotteryNew-clean/` are archived, not deleted; future dispatch must use only canonical `LotteryNew`. |
 | SZC1/SZC2 second-zone containment | [Confirmed] Complete | existing SZC evidence cited in 2026-06-01 roadmap/CEO decision | Second-zone remains display-only / no-signal unless future pre-registered evidence beats random. |
-| P210 short/mid-window strategy protocol | [Missing] / [Blocked] | user 2026-06-02 supplement | New direction is valid as a design target, but scope/windows/gates are not frozen and implementation is not authorized. |
-| New worker task prompt / `active_task.md` | [Blocked] | current CTO instruction conflict | User asks for a prompt but also forbids CTO from producing worker prompts and limits CTO writes to two files. CTO does not update `active_task.md`. |
+| P210 short/mid-window strategy protocol | [Complete] / CEO accepted | `outputs/research/power_lotto/p210_short_mid_window_protocol_plan_20260602.md`; CEO-Decision.md 2026-06-02 section | Protocol frozen as reference. P211 held by user (`HELD_BY_USER`). |
+| P211 short/mid-window read-only diagnostic | HELD_BY_USER | user 2026-06-02 「先暫停」 | Do not auto-resume. Restart requires explicit user authorization. |
+| P212 agent_bootstrap honesty correction | [Complete] | `active_task.md` P212 record | CURRENT_STATE.md corrected from `adoption COMPLETE` → honest provisional. |
+| P213 agent_bootstrap git-ratification commit | [Complete] | commit `8d34f4c` | Three bootstrap files committed and source-controlled. USER GATE: CLOSED. |
+| P214 post-ratification governance state sync | [Complete] | commit `7b9c179`; PR #250 | `active_task.md` + `CEO-Decision.md` updated. |
+| P215 remote governance ratification (PR flow) | [Complete] | PR #250, merge `4eb8051` (2026-06-03) | `origin/main` contains ratified bootstrap; required CI check passed. |
+| P216 post-ratification roadmap/analysis doc sync | [Complete] | PR #251 + PR #252, merge `6e220f2` | CTO-authored `roadmap.md` + stale-remark remediation merged to `origin/main`. |
+| New worker task prompt / `active_task.md` | [No active worker task] | `active_task.md` 2026-06-03 final state | P216 is last completed task. Next direction at user's discretion. |
 
 ### 0.2 Current System Baseline
 
@@ -31,7 +37,7 @@ This section is the current source of truth. The 2026-06-01 sections and P186-P1
 |---|---:|---|
 | Current repo | `/Users/kelvin/Kelvin-WorkSpace/LotteryNew` | [Confirmed] |
 | Current branch | `main` | [Confirmed] |
-| Current HEAD | `061bdc19c0a59e6948e8335b888257a1f7c521f6` (`Merge pull request #249`) | [Confirmed] |
+| Current HEAD | `6e220f244061a1be5aa8bddf7339f3139640c30d` (`Merge pull request #252`) | [Confirmed] |
 | Root `Lottery*` folders | only `/Users/kelvin/Kelvin-WorkSpace/LotteryNew` | [Confirmed] |
 | Archived stale repos | `_archive/lottery_stale_repos_20260602_162329/{Lottery,LotteryNew-clean}` | [Confirmed] |
 | Production replay table | `strategy_prediction_replays` | [Confirmed] |
@@ -61,7 +67,7 @@ This section is the current source of truth. The 2026-06-01 sections and P186-P1
 
 | Priority | Phase | Focus | Current Status | Acceptance Criteria |
 |---|---|---|---|---|
-| **P0.1** | P210 protocol governance | Freeze short/mid-window strategy scope before any implementation | [Blocked] CEO/user decision needed | Windows, lottery scope, metrics, baselines, holdout/walk-forward plan, multiple-testing correction, and "long-term as reference only" rule are documented. |
+| **P0.1** | P210 protocol governance | Freeze short/mid-window strategy scope before any implementation | [Complete] CEO accepted (2026-06-02) | Protocol frozen as reference: windows, lottery scope, metrics, baselines, OOS/walk-forward, correction, and no production writes documented. P211 HELD_BY_USER. |
 | **P0.2** | Anti-overfit validation gate | Prevent short-window noise from becoming false signal | [Missing] | Any future strategy claim must beat random and best-simple baselines under pre-registered walk-forward/OOS with corrected significance and CI. |
 | **P0.3** | Canonical execution / repo dispatch guard | Ensure every agent uses only `LotteryNew/main` and not archived/stale worktrees | [Confirmed] baseline; [Missing] task guard template | Prompts and worker reports must STOP on `.claude/worktrees/*`, archive paths, wrong branch, wrong HEAD/DB baseline, or broad staging. |
 | **P0.4** | CTO/CEO task-generation boundary | Resolve prompt-generation conflict for the next executable task | [Blocked] | CEO/Planner explicitly authorizes one task prompt or relaxes CTO prompt restriction; CTO writes only allowed files. |
@@ -164,6 +170,7 @@ Final current roadmap marker:
 
 ```text
 CTO_ROADMAP_UPDATED_WITH_RISKS_20260602
+P217_CURRENT_STATE_METADATA_SYNC_20260603
 ```
 
 ---
@@ -173,7 +180,7 @@ CTO_ROADMAP_UPDATED_WITH_RISKS_20260602
 > Current truth is **§0 (Current Roadmap Override — 2026-06-02)** above, not the values below:
 > - Production replay DB = **94,924 rows**, `bet_index` **present** (0 nulls), POWER_LOTTO **36,104** — not the `54462` / `absent` / `15142` shown below.
 > - `P186` / `P188` production DB migration is **COMPLETE** (executed + merged via PR #249) — not `[Blocked]`.
-> - Current `main` HEAD = `62077c7` (= `origin/main`) — not `d1a6817`.
+> - Current `main` HEAD = `6e220f2` (= `origin/main`, post PR #252) — not `d1a6817`.
 >
 > Do not read any §1–§7 baseline value, `[Confirmed]` stamp, blocker, or P0–P10 priority as current. See §0.
 

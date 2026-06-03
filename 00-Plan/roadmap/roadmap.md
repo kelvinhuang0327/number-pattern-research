@@ -29,7 +29,15 @@ This section is the current source of truth. The 2026-06-01 sections and P186-P1
 | P214 post-ratification governance state sync | [Complete] | commit `7b9c179`; PR #250 | `active_task.md` + `CEO-Decision.md` updated. |
 | P215 remote governance ratification (PR flow) | [Complete] | PR #250, merge `4eb8051` (2026-06-03) | `origin/main` contains ratified bootstrap; required CI check passed. |
 | P216 post-ratification roadmap/analysis doc sync | [Complete] | PR #251 + PR #252, merge `6e220f2` | CTO-authored `roadmap.md` + stale-remark remediation merged to `origin/main`. |
-| New worker task prompt / `active_task.md` | [No active worker task] | `active_task.md` 2026-06-03 final state | P216 is last completed task. Next direction at user's discretion. |
+| P217 current-state metadata sync | [Complete] | PR #253, merge `c8ac14c` | Governance metadata synced to reflect P213–P216 completion. |
+| P218 structural HEAD metadata fix | [Complete] | PR #254, merge `f3155fc` | Replaced live HEAD hash fields with self-verifying language across four governance docs. |
+| P211A POWER_LOTTO second-zone bias-reduction diagnostic | [Complete] NULL result / display-only confirmed | `outputs/research/power_lotto/p211a_second_zone_bias_reduction_diagnostic_20260603.md`; PR #255 | Hit-rate edge NULL (all Bonferroni-corrected p > 0.04); second-zone remains display-only. Do not promote. |
+| P221F cross-lottery feature-discovery protocol freeze | [Complete] | `outputs/research/p221_cross_lottery_feature_discovery_protocol_20260603.md`; PR #256 | Windows frozen: short 100/125/150, mid 500/750/1000, all-history = reference. Universe: BIG_LOTTO + DAILY_539 + POWER_LOTTO; 3_STAR / 4_STAR draw-only (0 replay rows). Anti-overfit gate active. |
+| P222 cross-lottery feature-discovery scan | [Complete] `CANDIDATES_FOUND_NEED_MORE_OOS` | `outputs/research/p222_cross_lottery_feature_discovery_scan_20260603.md`; PR #257 | 35 strategies × 14 bet-index × 3 lotteries. BIG_LOTTO row-level = baseline. DAILY_539 and POWER_LOTTO show corrected in-sample candidates but no cross-year confirmation. |
+| P223B candidate OOS cross-year validation | [Complete] `P223B_CANDIDATE_OOS_VALIDATION_COMPLETE` | `outputs/research/p223b_candidate_oos_cross_year_validation_20260603.md`; PR #258 | Of 5 candidates, only `midfreq_fourier_2bet / DAILY_539` survived as `CROSS_YEAR_CONFIRMED` on the (overlapping) P222 slice. Others: NEEDS_MORE_OOS / WEAK_OBSERVATION / REJECTED. |
+| P224 DAILY_539 survivor deeper validation | [Complete] `P224_SURVIVOR_NEEDS_MORE_OOS` | `outputs/research/p224_daily539_midfreq_fourier_2bet_deeper_validation_20260603.md`; PR #259 | Clean deduplicated slice (1500 rows = 1500 distinct draws, bet_index=1): mean 0.6693 vs baseline 0.6410, one-sided **p=0.0674** (fails 0.05), CI [0.632, 0.706] crosses baseline, 6/10 blocks above. Edge rests on 19 `hit_count=3` rows; removing them drops mean below baseline. **Survivor status: WAIT_FOR_OOS — not deployable.** P223B `CROSS_YEAR_CONFIRMED` was produced on the overlapping P222 slice; dedup flipped it to NEEDS_MORE_OOS. Honest prior: lean NULL. |
+| P224B/P224C survivor future-OOS monitoring protocol | [Complete] `P224B_FUTURE_OOS_MONITORING_PROTOCOL_READY` | `outputs/research/p224b_daily539_survivor_future_oos_monitoring_protocol_20260603.md`; PR #260, merge `ebfc597` | Reopen gate: ≥300 new DAILY_539 target draws (preferred 500). Must pass mean / CI / corrected p / block-stability / robustness / comparison gates. Failure → historical artifact. No deployment, no DB write, no registry write, no recommendation-logic change authorized. |
+| P225 governance closeout sync (this task) | [Complete] doc-only | `00-Plan/roadmap/roadmap.md` §0.1 + `CURRENT_STATE.md`; PR #261 (CEO-Decision/active_task) + this PR | Records P217–P224C in phase table; fixes stale CURRENT_STATE windows; marks survivor WAIT_FOR_OOS. |
 
 ### 0.2 Current System Baseline
 
@@ -58,25 +66,26 @@ This section is the current source of truth. The 2026-06-01 sections and P186-P1
 | P206-P209 repo archive cleanup | [Aligned] | Strongly aligns with "no new repo" and reduces wrong-repo dispatch risk. |
 | P186/P187/P188 still shown as blockers in older sections | [Outdated] | The older 2026-06-01 blocker state is superseded by P188 completion and PR #249 merge. |
 | Main/zen-gates split as current P0 | [Outdated] | Current local main is at 94,924 rows with `bet_index`; the split is no longer the top blocker. |
-| Short/mid-window strategy direction | [Missing] | User's latest direction is not yet represented as a governed phase with frozen windows, scope, and validation gates. |
-| Long-term frequency as primary filter | [Drift] / [Outdated] | Latest user direction demotes full-period frequency distribution to reference information only. |
+| Short/mid-window strategy direction | [Complete / Executed → NULL] | P221F frozen windows (short 100/125/150, mid 500/750/1000, all-history=reference) exactly match user direction. P222 scan ran to completion. Sole survivor fragile (clean-slice p=0.0674, edge rests on 19 rows). |
+| Long-term frequency as primary filter | [Retired as filter / Reference-only] | User direction adopted: long-term frequency demoted to reference-only. P221F/P222 used only frozen mid/short windows as primary. |
 | Reusing old POWER_LOTTO R2 candidates | [Outdated] / [Blocked] | P178A closed R2 active research; new work must be a new pre-registered protocol, not a rerun. |
-| Worker prompt output today | [Blocked] | CTO cannot produce a new worker prompt or write `active_task.md` under the strict limits in this request. |
+| Worker prompt output today | [Resolved] | CEO Decision 2026-06-03 resolved governance boundary; P225 active_task set. |
 
 ### 0.4 Reprioritized P0-P10
 
 | Priority | Phase | Focus | Current Status | Acceptance Criteria |
 |---|---|---|---|---|
-| **P0.1** | P210 protocol governance | Freeze short/mid-window strategy scope before any implementation | [Complete] CEO accepted (2026-06-02) | Protocol frozen as reference: windows, lottery scope, metrics, baselines, OOS/walk-forward, correction, and no production writes documented. P211 HELD_BY_USER. |
-| **P0.2** | Anti-overfit validation gate | Prevent short-window noise from becoming false signal | [Missing] | Any future strategy claim must beat random and best-simple baselines under pre-registered walk-forward/OOS with corrected significance and CI. |
-| **P0.3** | Canonical execution / repo dispatch guard | Ensure every agent uses only `LotteryNew/main` and not archived/stale worktrees | [Confirmed] baseline; [Missing] task guard template | Prompts and worker reports must STOP on `.claude/worktrees/*`, archive paths, wrong branch, wrong HEAD/DB baseline, or broad staging. |
-| **P0.4** | CTO/CEO task-generation boundary | Resolve prompt-generation conflict for the next executable task | [Blocked] | CEO/Planner explicitly authorizes one task prompt or relaxes CTO prompt restriction; CTO writes only allowed files. |
-| **P1.1** | Short/mid-window diagnostic implementation | Execute read-only analysis after P210 protocol approval | [Deferred] | Report/JSON only; no production write; no strategy promotion; compares 10-50 and 100-300 windows against random/simple baselines. |
-| **P1.2** | Product disclosure and second-zone containment | Make UI/API wording consistent with NULL/no-signal evidence | [Deferred] | No surface implies guaranteed improvement, betting advice, or second-zone predictive edge. |
-| **P1.3** | Post-merge quality gate maintenance | Keep drift guard, DB manifest, and CI assumptions aligned with 94,924-row local state | [Confirmed] baseline; [Deferred] maintenance | CI/test artifacts continue to pass; DB binary remains excluded from git; manifests evidence local DB state. |
-| **P2.1** | Passive monitoring / reopen rules | Monitor POWER_LOTTO only under P178A reopen conditions | [Waiting] | Reopen only after >=500 new draws after 115000041, structural change, independent evidence, or explicit governance design. |
-| **P2.2** | Archive retention / cleanup decision | Decide whether archived stale repos remain indefinitely | [Deferred] | No deletion without explicit destructive authorization; archive README remains clear. |
-| **P3** | Other lottery research | DAILY_539, BIG_LOTTO, 3_STAR, 4_STAR research | [Deferred] | Separate authorization; must inherit P210 validation gates. |
+| **P0.1** | P210 / P221F protocol governance | Freeze short/mid-window strategy scope before any implementation | [Complete] P221F frozen (2026-06-03) | Windows short 100/125/150, mid 500/750/1000, all-history=reference. Anti-overfit gate active for all future scans. P211 HELD_BY_USER. |
+| **P0.2** | Anti-overfit validation gate | Prevent short-window noise from becoming false signal | [Active / Enforced] — P221F gate applied to P222 | P221F protocol provides the gate; P222 scan applied it; P224 clean-slice dedup verified it. All future research must inherit P221F validation rules. |
+| **P0.3** | Canonical execution / repo dispatch guard | Ensure every agent uses only `LotteryNew/main` and not archived/stale worktrees | [Confirmed] baseline; STOP guards in all P22x prompts | Prompts and worker reports must STOP on `.claude/worktrees/*`, archive paths, wrong branch, wrong HEAD/DB baseline, or broad staging. |
+| **P0.4** | CTO/CEO task-generation boundary | Resolve prompt-generation conflict for the next executable task | [Resolved] CEO Decision 2026-06-03 | P225 active_task set; governance boundary clarified. |
+| **P1.1** | 3_STAR / 4_STAR replay-gap diagnostic (plan-only) | Only unmined lottery family — 7,101 draws / 0 replay rows | [Deferred — needs separate authorization] | plan-only protocol first; inherit P221F anti-overfit gate; no production/DB/registry write. |
+| **P1.2** | DAILY_539 survivor backward-OOS extension | Resolve survivor p=0.0674 using ~4,376 un-replayed older draws instead of waiting ~1 year | [Deferred — needs DB-write authorization] | Requires explicit authorization for replay-row generation; inherits P224B monitoring gates; must report failure honestly. |
+| **P1.3** | Product disclosure and second-zone containment | Make UI/API wording consistent with NULL/no-signal evidence | [Deferred] | No surface implies guaranteed improvement, betting advice, or second-zone predictive edge. |
+| **P2.1** | Passive monitoring / reopen rules for DAILY_539 survivor | Monitor `midfreq_fourier_2bet / DAILY_539` under P224B reopen conditions | [WAIT_FOR_OOS] — reopen gate defined in P224B | Reopen after ≥300 new DAILY_539 target draws (preferred 500); must pass mean / CI / corrected p / block-stability / robustness / comparison gates. Failure → historical artifact. |
+| **P2.2** | Passive monitoring / reopen rules for POWER_LOTTO | Monitor POWER_LOTTO only under P178A reopen conditions | [Waiting] | Reopen only after ≥500 new draws after 115000041, structural change, independent evidence, or explicit governance design. |
+| **P2.3** | Archive retention / cleanup decision | Decide whether archived stale repos remain indefinitely | [Deferred] | No deletion without explicit destructive authorization; archive README remains clear. |
+| **P3** | Other P222 candidates (midfreq_fourier_mk_3bet/POWER etc.) | Observation-only; not deployable; no current authorization | [Observation-only / Deferred] | Separate authorization required; must inherit P221F validation gates. |
 | **P4** | Replay product backlog | UI polish, monitoring dashboards, operator reporting | [Deferred] | Does not consume P0/P1 validation or governance capacity. |
 | **P5** | Optional scheduler / automation | Cron/launchd/automation setup | [Deferred] | Explicit OS-level authorization only. |
 | **P6** | External reference review | Architecture notes only if useful | [Paused] | No clone/new repo. |
@@ -89,88 +98,84 @@ Upgrade / downgrade decisions:
 
 | Item | Decision | Reason |
 |---|---|---|
-| Short/mid-window protocol | Upgrade to P0 | This is the next true maturity gate because implementation without frozen validation would overfit. |
-| Anti-overfit validation | Upgrade to P0 | Short windows (10-50) are noisy; corrected significance and walk-forward gates are mandatory. |
-| Canonical repo dispatch guard | Keep P0/P1 | Wrong worktree/repo dispatch repeatedly caused STOP conditions; archive now exists and must not be used. |
+| Short/mid-window protocol | **[Done]** P221F frozen | Windows operationalized in P222 scan; P221F is the permanent gate. |
+| Anti-overfit validation | **[Active]** P221F gate enforced | P222/P223B/P224 applied it; all future research must inherit it. |
+| Canonical repo dispatch guard | Keep P0/P1 | Wrong worktree/repo dispatch repeatedly caused STOP conditions; archive exists and must not be used. |
 | P186/P187/P188 migration blocker | Downgrade to historical complete | Current DB is 94,924 rows with `bet_index`; PR #249 merged. |
-| Long-term full-period frequency as filter | Downgrade / retire as primary filter | Latest direction makes it reference-only, not a gating condition. |
+| Long-term full-period frequency as filter | **[Retired]** reference-only | User direction adopted; P221F/P222 used only frozen mid/short windows as primary. |
 | Active POWER_LOTTO R2 optimization | Retire / keep closed | P178A closed R2 after NULL results. |
-| Second-zone optimization | Retire as active goal; keep containment | Existing evidence remains below random; display-only unless future pre-registered proof appears. |
+| Second-zone optimization | Retire as active goal; keep containment | P211A confirmed NULL hit-rate edge; display-only unless future pre-registered proof appears. |
+| DAILY_539 survivor | **[WAIT_FOR_OOS]** — reopen gate: ≥300 draws (preferred 500) | P224 clean-slice p=0.0674; edge rests on 19 rows; not deployable. P224B monitoring protocol active. |
+| 3_STAR / 4_STAR unmined frontier | Upgrade to P1 | 7,101 draws / 0 replay rows — only unmined lottery family; plan-only authorization needed. |
 | P123 trigger standby and old apply chains | Keep P3+ guardrails | Useful history, not today's bottleneck. |
 
 ### 0.5 Critical Blockers
 
 | Blocker | Impact | Why It Blocks | Risk If Ignored | Priority | Acceptance |
 |---|---|---|---|---|---|
-| Undefined short/mid-window protocol | Research correctness, product value | User direction is clear conceptually but windows, lottery scope, metrics, and baselines are not frozen | A worker may implement ad-hoc strategy search and overfit recent draws | P0.1 | Plan-only protocol documents 10-50 and 100-300 window sets, scope, baselines, OOS/walk-forward, correction, and no production writes. |
-| Short-window overfitting / multiple testing | System correctness, trust | Many windows/strategies can create false positives | False "improved prediction" claims or strategy promotion from noise | P0.2 | Pre-registered evaluation, random and simple-frequency baselines, best-single-strategy baseline, CI, corrected p-values, and negative-result acceptance. |
-| Task-prompt governance conflict | Workflow orchestration | Current request asks for a worker prompt but also forbids CTO from producing one and limits CTO writes to two files | CTO could violate governance or produce an unauthorized task | P0.4 | CEO/Planner supplies or authorizes the next prompt; CTO does not write `active_task.md`. |
+| DAILY_539 survivor misclassified as promotable | Research correctness | P223B `CROSS_YEAR_CONFIRMED` was on overlapping slice; P224 clean dedup gives p=0.0674 | A worker or agent could promote a fragile near-null result as deployable | P0 | Survivor recorded as `WAIT_FOR_OOS`; reopen requires ≥300 new draws + full P224B gate. |
+| Short-window overfitting / multiple testing | System correctness, trust | Many windows/strategies can create false positives | False "improved prediction" claims or strategy promotion from noise | P0.2 | P221F anti-overfit gate enforced; all future research must pre-register windows and baselines. |
 | Wrong repo/worktree dispatch | Reproducibility, safety | `.claude/worktrees/*` and archived stale repos still exist and have incompatible states | Agents may run stale DB/code and produce invalid evidence | P0.3 | Every future task includes canonical repo/branch/DB STOP guard and archive DO_NOT_USE rule. |
-| Evidence disclosure gap | Product maturity | Lottery outputs can be misread as betting advice or validated edge | User trust and safety risk from overclaiming | P1.2 | UI/API/report copy separates historical evidence from predictive claims and keeps second-zone display-only. |
+| Governance docs stale (P217–P224C) | Agent correctness | A fresh agent reading old governance docs would misread current state | Wrong task scope, incorrect baseline, or unauthorized promotion | P0 | This P225 task resolves it; §0.1 + CURRENT_STATE.md now reflect P224C. |
+| Evidence disclosure gap | Product maturity | Lottery outputs can be misread as betting advice or validated edge | User trust and safety risk from overclaiming | P1.3 | UI/API/report copy separates historical evidence from predictive claims; second-zone display-only confirmed by P211A. |
 
-### 0.6 Recommended System Optimization Directions
+### 0.6 Recommended System Optimization Directions (updated by P225, 2026-06-03)
 
-#### Direction A: Short/Mid-Window Strategy Protocol Governance
+#### Direction A: P221F Anti-Overfit Gate — Permanent / Already Active
 
-- **Roadmap phase:** P0.1 / P210.
-- **Why important:** The user’s latest direction is promising but high-risk unless the evaluation design is frozen first.
-- **System maturity gain:** Converts intuition into a reproducible research protocol before code or strategy changes.
-- **Expected benefit:** Future work can test 10-50 and 100-300 draw windows without leaking future data or tuning after results.
-- **Risk:** Too much freedom in window choice will manufacture false positives.
-- **Acceptance:** Plan-only protocol defines scope, windows, baselines, OOS/walk-forward, correction method, report format, and no production writes.
-- **Priority:** P0.
+- **Roadmap phase:** P0.2 / P221F. **Status: [Active / Enforced]**
+- **Why important:** Short/mid-window signals are noisy; corrected significance + pre-registered windows + clean dedup prevent false-positive promotion. P222/P223B/P224 applied the gate.
+- **Rule:** All future research chains must pre-register windows and baselines using P221F as the reference gate.
+- **Priority:** P0 — permanent.
 
-#### Direction B: Anti-Overfit Validation And Quality Gates
+#### Direction B: 3_STAR / 4_STAR Replay-Gap Diagnostic
 
-- **Roadmap phase:** P0.2 / P1.1.
-- **Why important:** Short-term signals are noisy and must beat random/simple baselines, not just look better in-sample.
-- **System maturity gain:** Makes "better prediction" claims falsifiable.
-- **Expected benefit:** Negative results become acceptable and positive results become harder to fake.
-- **Risk:** Slower iteration and fewer exciting results, but higher truthfulness.
-- **Acceptance:** CI/report gate requires corrected significance, confidence intervals, fixed window registry, and explicit NULL classification.
-- **Priority:** P0.
+- **Roadmap phase:** P1.1. **Status: [Deferred — needs explicit authorization]**
+- **Why important:** 7,101 draws / 0 replay rows — the only lottery family never scanned. Genuinely new signal space.
+- **Risk:** Small pool (3_STAR: 3 of 10; 4_STAR: 4 of 10) requires distinct combinatorial baselines.
+- **Acceptance:** Plan-only protocol first; inherit P221F anti-overfit gate; read-only; no production/DB write.
+- **Priority:** P1.
 
-#### Direction C: Canonical Repo / DB Execution Integrity
+#### Direction C: DAILY_539 Survivor Backward-OOS Extension
 
-- **Roadmap phase:** P0.3.
-- **Why important:** The canonical repo is now cleanly identified, but stale worktrees/archive folders still exist.
-- **System maturity gain:** Prevents dispatch, staging, or DB-baseline mistakes.
-- **Expected benefit:** Less agent STOP churn and fewer invalid reports from stale repositories.
-- **Risk:** Overly strict guards may block legitimate diagnostic work unless exceptions are explicit.
-- **Acceptance:** Worker reports verify repo, branch, HEAD, DB rows, `bet_index`, duplicate keys, and archive/worktree STOP conditions.
-- **Priority:** P0/P1.
+- **Roadmap phase:** P1.2. **Status: [Deferred — needs DB-write authorization]**
+- **Why important:** ~4,376 un-replayed older DAILY_539 draws exist. Backward extension can resolve survivor p=0.0674 on a larger sample now instead of waiting ~1 year.
+- **Risk:** DB write needed; pre-2021 draws carry regime-change caveats.
+- **Acceptance:** Explicit DB-write authorization required; P224B reopen gates must all pass; failure = historical artifact.
+- **Priority:** P1.
 
 #### Direction D: Evidence Disclosure And Recommendation Containment
 
-- **Roadmap phase:** P1.2.
-- **Why important:** Replay evidence and lottery prediction UI must not imply guaranteed improvement or wagering advice.
-- **System maturity gain:** Aligns product language with NULL/no-signal research.
-- **Expected benefit:** Higher operator trust and lower overclaiming risk.
-- **Risk:** Product surfaces may lag research updates.
-- **Acceptance:** Main-number, second-zone, lifecycle, provenance, and confidence states are labeled honestly; second-zone remains display-only.
+- **Roadmap phase:** P1.3. **Status: [Deferred]**
+- **Why important:** Replay evidence must not imply guaranteed improvement or wagering advice. P211A confirmed second-zone NULL.
+- **Acceptance:** All surfaces label second-zone display-only; no betting advice; no guaranteed prediction claim.
 - **Priority:** P1.
 
-#### Direction E: Roadmap / Task Namespace Governance
+#### Direction E: Canonical Repo / DB Execution Integrity
 
-- **Roadmap phase:** P0.4 / P1.3.
-- **Why important:** P-number collisions and stale `active_task.md` have caused ambiguity.
-- **System maturity gain:** Keeps CTO/CEO/Planner/Worker boundaries crisp.
-- **Expected benefit:** Safer handoffs and fewer unauthorized worker tasks.
-- **Risk:** Current request remains internally contradictory.
-- **Acceptance:** Only CEO/Planner creates the next executable prompt; CTO records recommendations without producing worker prompts.
-- **Priority:** P1.
+- **Roadmap phase:** P0.3. **Status: [Confirmed baseline; guards enforced in P22x tasks]**
+- **Why important:** Stale worktrees/archive paths still exist and can produce invalid evidence if used.
+- **Priority:** P0 / P1 — ongoing maintenance.
 
-### 0.7 Today's Recommended Focus
+### 0.7 Current State Summary (updated by P225, 2026-06-03)
 
-**CTO recommendation:** Focus today on **P210 short/mid-window strategy protocol discussion/design only** as the next CEO/Planner-authorized task direction. Do not implement code, do not write production/registry/data, do not create a new repo, do not rerun old POWER_LOTTO R2 candidates, and do not promote second-zone predictions.
+**Research chain P211A–P224C is complete. Both user directions executed and returned NULL/fragile.**
 
-The first executable worker prompt is **not emitted by CTO** because this request explicitly forbids CTO from producing a new worker task prompt and limits CTO writes to `roadmap.md` and `CTO-Analysis.md`.
+- Direction #1 (window reframe): P221F frozen windows (short 100/125/150, mid 500/750/1000, all-history=reference) operationalized. Gate active.
+- Direction #2 (mine all-lottery × all-method): P222 scan complete. Sole survivor `midfreq_fourier_2bet / DAILY_539` fragile (clean-slice p=0.0674, edge rests on 19 rows). **Status: WAIT_FOR_OOS.**
+
+**Next authorized steps (each needs separate explicit authorization):**
+- P1.1: 3_STAR / 4_STAR plan-only diagnostic.
+- P1.2: DAILY_539 survivor backward-OOS extension (DB-write required).
+- Passive monitoring per P224B (>= 300 new DAILY_539 draws before next recheck).
+
+**Forbidden:** rerun same P221F sweep on same data; promote any strategy; start P225 model design; write DB / registry / production / recommendation logic.
 
 Final current roadmap marker:
 
 ```text
-CTO_ROADMAP_UPDATED_WITH_RISKS_20260602
-P217_CURRENT_STATE_METADATA_SYNC_20260603
+P225_GOVERNANCE_CLOSEOUT_SYNC_COMPLETE_20260603
+P224C_MERGED_EBFC597_SURVIVOR_WAIT_FOR_OOS
 ```
 
 ---

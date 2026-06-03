@@ -1,0 +1,751 @@
+{
+  "task_id": "P223B",
+  "title": "Candidate OOS / Cross-Year Validation",
+  "date": "2026-06-03",
+  "status": "COMPLETE / READ-ONLY",
+  "classification": "P223B_CANDIDATE_OOS_VALIDATION_COMPLETE",
+  "governance": {
+    "authorized_by": "User explicit task prompt 2026-06-03",
+    "db_write": false,
+    "registry_write": false,
+    "production_write": false,
+    "recommendation_logic_change": false,
+    "strategy_promotion": false,
+    "controlled_apply": false,
+    "historical_replay_evidence_only": true,
+    "not_betting_advice": true,
+    "null_accepted_as_success": true
+  },
+  "phase_0": {
+    "repo_root": "/Users/kelvin/Kelvin-WorkSpace/LotteryNew",
+    "branch": "main",
+    "git_dir": ".git",
+    "head": "38535e5e18c3ce4f904997ed05bceae871f70700",
+    "origin_main": "38535e5e18c3ce4f904997ed05bceae871f70700",
+    "staged_files": [],
+    "db_counts": {
+      "total": 94924,
+      "big_lotto": 24140,
+      "daily_539": 34680,
+      "power_lotto": 36104,
+      "bet_index_nulls": 0,
+      "duplicate_keys": 0,
+      "integrity_check": "ok"
+    },
+    "drift_guard": "REPLAY_LIFECYCLE_DRIFT_GUARD_PASS",
+    "p221f_artifacts_tracked": [
+      "outputs/research/p221_cross_lottery_feature_discovery_protocol_20260603.md",
+      "outputs/research/p221_cross_lottery_feature_discovery_protocol_20260603.json"
+    ],
+    "status": {
+      "repo_root_ok": true,
+      "branch_ok": true,
+      "git_dir_ok": true,
+      "head_matches_origin_main": true,
+      "staged_empty": true,
+      "rows_ok": true,
+      "big_ok": true,
+      "daily_ok": true,
+      "power_ok": true,
+      "bet_nulls_ok": true,
+      "dup_ok": true,
+      "integrity_ok": true,
+      "drift_ok": true,
+      "p221f_tracked": true
+    }
+  },
+  "p222_candidate_set": [
+    "strategy: midfreq_fourier_2bet / DAILY_539",
+    "strategy: midfreq_fourier_mk_3bet / POWER_LOTTO",
+    "bet-index: DAILY_539 bet1",
+    "bet-index: POWER_LOTTO bet1",
+    "bet-index: POWER_LOTTO bet2"
+  ],
+  "validation_method": {
+    "scope": "read-only OOS and cross-year validation only; no new features; no new windows; no universe expansion",
+    "tail_windows": [
+      150,
+      300,
+      500
+    ],
+    "cross_years": [
+      "2024",
+      "2025",
+      "2026"
+    ],
+    "baselines": {
+      "random_uniform": "lottery-level main-number random baseline",
+      "p222_row_level": "same numeric value as the P222 row-level baseline for the target lottery",
+      "all_history_reference": "P222 all-history reference baseline",
+      "best_competing_non_candidate": "best non-candidate baseline available in the same lottery family"
+    },
+    "corrections": {
+      "bonferroni_family_size": 5,
+      "bh_fdr_family_size": 5
+    },
+    "unit_labeling": "row-level / strategy-level / bet-index-level are labeled explicitly; special-zone is reported separately and does not affect scoring"
+  },
+  "summary": [
+    {
+      "candidate": "midfreq_fourier_2bet",
+      "kind": "strategy",
+      "classification": "CROSS_YEAR_CONFIRMED",
+      "overall_mean_hit_count": 0.821,
+      "baseline": 0.641026,
+      "raw_p_value": 5.1884185373427e-35,
+      "bonf_q_5": 2.5942092686713497e-34,
+      "bh_q_5": 2.5942092686713497e-34,
+      "tail_150": "above",
+      "tail_300": "above",
+      "tail_500": "above",
+      "years": {
+        "2024": "above",
+        "2025": "above",
+        "2026": "above"
+      }
+    },
+    {
+      "candidate": "midfreq_fourier_mk_3bet",
+      "kind": "strategy",
+      "classification": "CANDIDATE_NEEDS_MORE_OOS",
+      "overall_mean_hit_count": 0.989556,
+      "baseline": 0.947368,
+      "raw_p_value": 0.0008437903535141857,
+      "bonf_q_5": 0.004218951767570928,
+      "bh_q_5": 0.0008437903535141857,
+      "tail_150": "above",
+      "tail_300": "above",
+      "tail_500": "above",
+      "years": {
+        "2024": "above",
+        "2025": "below",
+        "2026": "above"
+      }
+    },
+    {
+      "candidate": "DAILY_539 bet1",
+      "kind": "bet-index",
+      "classification": "CANDIDATE_NEEDS_MORE_OOS",
+      "overall_mean_hit_count": 0.662212,
+      "baseline": 0.641026,
+      "raw_p_value": 9.783072127617287e-06,
+      "bonf_q_5": 4.891536063808643e-05,
+      "bh_q_5": 1.6305120212695478e-05,
+      "tail_150": "above",
+      "tail_300": "below",
+      "tail_500": "above",
+      "years": {
+        "2024": "below",
+        "2025": "above",
+        "2026": "above"
+      }
+    },
+    {
+      "candidate": "POWER_LOTTO bet1",
+      "kind": "bet-index",
+      "classification": "WEAK_OBSERVATION_ONLY",
+      "overall_mean_hit_count": 0.982519,
+      "baseline": 0.947368,
+      "raw_p_value": 2.5937602257053535e-07,
+      "bonf_q_5": 1.2968801128526768e-06,
+      "bh_q_5": 6.484400564263384e-07,
+      "tail_150": "below",
+      "tail_300": "below",
+      "tail_500": "above",
+      "years": {
+        "2024": "above",
+        "2025": "below",
+        "2026": "below"
+      }
+    },
+    {
+      "candidate": "POWER_LOTTO bet2",
+      "kind": "bet-index",
+      "classification": "REJECTED_NO_OOS_EDGE",
+      "overall_mean_hit_count": 0.97878,
+      "baseline": 0.947368,
+      "raw_p_value": 0.00042763936227556177,
+      "bonf_q_5": 0.002138196811377809,
+      "bh_q_5": 0.0005345492028444522,
+      "tail_150": "below",
+      "tail_300": "below",
+      "tail_500": "below",
+      "years": {
+        "2024": "above",
+        "2025": "below",
+        "2026": "below"
+      }
+    }
+  ],
+  "candidates": [
+    {
+      "kind": "strategy",
+      "identifier": "midfreq_fourier_2bet",
+      "display_label": "midfreq_fourier_2bet / DAILY_539 family",
+      "lottery_type": "DAILY_539",
+      "unit_label": "strategy-level (row grain)",
+      "strategy_id": "midfreq_fourier_2bet",
+      "n_rows": 3000,
+      "distinct_draws": 2543,
+      "overall_mean_hit_count": 0.821,
+      "overall_mean_hit_count_ci": [
+        0.792426,
+        0.849574
+      ],
+      "baseline_random_uniform": 0.641026,
+      "baseline_p222_row_level": 0.641026,
+      "all_history_reference_baseline": 0.625161,
+      "best_competing_non_candidate_baseline": {
+        "label": "daily539_f4cold",
+        "mean_hit_count": 0.678616
+      },
+      "raw_p_value": 5.1884185373427e-35,
+      "bonferroni_q_value_5": 2.5942092686713497e-34,
+      "bh_q_value_5": 2.5942092686713497e-34,
+      "tail_oos": {
+        "150": {
+          "n": 150,
+          "mean_hit_count": 0.866667,
+          "mean_hit_count_ci": [
+            0.735134,
+            0.998199
+          ],
+          "sd_hit_count": 0.821922,
+          "p_value_vs_baseline": 0.0007730325127715696,
+          "direction": "above"
+        },
+        "300": {
+          "n": 300,
+          "mean_hit_count": 0.956667,
+          "mean_hit_count_ci": [
+            0.860551,
+            1.052782
+          ],
+          "sd_hit_count": 0.849385,
+          "p_value_vs_baseline": 1.222656984141232e-10,
+          "direction": "above"
+        },
+        "500": {
+          "n": 500,
+          "mean_hit_count": 0.974,
+          "mean_hit_count_ci": [
+            0.89692,
+            1.05108
+          ],
+          "sd_hit_count": 0.879388,
+          "p_value_vs_baseline": 2.524061220195455e-17,
+          "direction": "above"
+        }
+      },
+      "yearly_results": {
+        "2024": {
+          "n": 419,
+          "mean_hit_count": 0.727924,
+          "mean_hit_count_ci": [
+            0.652355,
+            0.803492
+          ],
+          "p_value_vs_baseline": 0.02420809663049972,
+          "direction": "above"
+        },
+        "2025": {
+          "n": 420,
+          "mean_hit_count": 0.72381,
+          "mean_hit_count_ci": [
+            0.65243,
+            0.795189
+          ],
+          "p_value_vs_baseline": 0.023018903727379865,
+          "direction": "above"
+        },
+        "2026": {
+          "n": 161,
+          "mean_hit_count": 0.84472,
+          "mean_hit_count_ci": [
+            0.723522,
+            0.965919
+          ],
+          "p_value_vs_baseline": 0.0009875637413586215,
+          "direction": "above"
+        }
+      },
+      "classification": "CROSS_YEAR_CONFIRMED",
+      "rationale": "All tail windows are above baseline and 2024/2025/2026 annual means are above baseline, so this is the only clear cross-year survivor."
+    },
+    {
+      "kind": "strategy",
+      "identifier": "midfreq_fourier_mk_3bet",
+      "display_label": "midfreq_fourier_mk_3bet / POWER_LOTTO",
+      "lottery_type": "POWER_LOTTO",
+      "unit_label": "strategy-level (row grain)",
+      "strategy_id": "midfreq_fourier_mk_3bet",
+      "n_rows": 4500,
+      "distinct_draws": 1500,
+      "overall_mean_hit_count": 0.989556,
+      "overall_mean_hit_count_ci": [
+        0.964785,
+        1.014326
+      ],
+      "baseline_random_uniform": 0.947368,
+      "baseline_p222_row_level": 0.947368,
+      "all_history_reference_baseline": 0.946486,
+      "best_competing_non_candidate_baseline": {
+        "label": "fourier_rhythm_3bet",
+        "mean_hit_count": 0.974906
+      },
+      "raw_p_value": 0.0008437903535141857,
+      "bonferroni_q_value_5": 0.004218951767570928,
+      "bh_q_value_5": 0.0008437903535141857,
+      "tail_oos": {
+        "150": {
+          "n": 150,
+          "mean_hit_count": 0.993333,
+          "mean_hit_count_ci": [
+            0.849607,
+            1.13706
+          ],
+          "sd_hit_count": 0.898121,
+          "p_value_vs_baseline": 0.5307827872074731,
+          "direction": "above"
+        },
+        "300": {
+          "n": 300,
+          "mean_hit_count": 0.966667,
+          "mean_hit_count_ci": [
+            0.869397,
+            1.063936
+          ],
+          "sd_hit_count": 0.859586,
+          "p_value_vs_baseline": 0.6973826164789647,
+          "direction": "above"
+        },
+        "500": {
+          "n": 500,
+          "mean_hit_count": 0.97,
+          "mean_hit_count_ci": [
+            0.895982,
+            1.044018
+          ],
+          "sd_hit_count": 0.844452,
+          "p_value_vs_baseline": 0.548990916515727,
+          "direction": "above"
+        }
+      },
+      "yearly_results": {
+        "2024": {
+          "n": 315,
+          "mean_hit_count": 0.980952,
+          "mean_hit_count_ci": [
+            0.890382,
+            1.071523
+          ],
+          "p_value_vs_baseline": 0.46737237363422424,
+          "direction": "above"
+        },
+        "2025": {
+          "n": 312,
+          "mean_hit_count": 0.942308,
+          "mean_hit_count_ci": [
+            0.851066,
+            1.03355
+          ],
+          "p_value_vs_baseline": 0.9134332017311504,
+          "direction": "below"
+        },
+        "2026": {
+          "n": 120,
+          "mean_hit_count": 0.95,
+          "mean_hit_count_ci": [
+            0.79531,
+            1.10469
+          ],
+          "p_value_vs_baseline": 0.9734012624067926,
+          "direction": "above"
+        }
+      },
+      "classification": "CANDIDATE_NEEDS_MORE_OOS",
+      "rationale": "Tail windows are above baseline, but the 2025 annual block falls below baseline and the cross-year support is not yet stable enough for confirmation."
+    },
+    {
+      "kind": "bet-index",
+      "identifier": "DAILY_539 bet1",
+      "display_label": "DAILY_539 bet1",
+      "lottery_type": "DAILY_539",
+      "unit_label": "bet-index-level (row grain)",
+      "bet_index": 1,
+      "n_rows": 22600,
+      "distinct_draws": 1550,
+      "overall_mean_hit_count": 0.662212,
+      "overall_mean_hit_count_ci": [
+        0.652822,
+        0.671603
+      ],
+      "baseline_random_uniform": 0.641026,
+      "baseline_p222_row_level": 0.641026,
+      "all_history_reference_baseline": 0.625161,
+      "best_competing_non_candidate_baseline": {
+        "label": "DAILY_539 bet5",
+        "mean_hit_count": 0.672667
+      },
+      "raw_p_value": 9.783072127617287e-06,
+      "bonferroni_q_value_5": 4.891536063808643e-05,
+      "bh_q_value_5": 1.6305120212695478e-05,
+      "tail_oos": {
+        "150": {
+          "n": 150,
+          "mean_hit_count": 0.693333,
+          "mean_hit_count_ci": [
+            0.572233,
+            0.814433
+          ],
+          "sd_hit_count": 0.756718,
+          "p_value_vs_baseline": 0.19849401804127864,
+          "direction": "above"
+        },
+        "300": {
+          "n": 300,
+          "mean_hit_count": 0.58,
+          "mean_hit_count_ci": [
+            0.501307,
+            0.658693
+          ],
+          "sd_hit_count": 0.695414,
+          "p_value_vs_baseline": 0.9356581629436052,
+          "direction": "below"
+        },
+        "500": {
+          "n": 500,
+          "mean_hit_count": 0.662,
+          "mean_hit_count_ci": [
+            0.597602,
+            0.726398
+          ],
+          "sd_hit_count": 0.734681,
+          "p_value_vs_baseline": 0.26136135461212673,
+          "direction": "above"
+        }
+      },
+      "yearly_results": {
+        "2024": {
+          "n": 4710,
+          "mean_hit_count": 0.620807,
+          "mean_hit_count_ci": [
+            0.600553,
+            0.64106
+          ],
+          "p_value_vs_baseline": 0.9746602995175823,
+          "direction": "below"
+        },
+        "2025": {
+          "n": 4740,
+          "mean_hit_count": 0.667089,
+          "mean_hit_count_ci": [
+            0.646427,
+            0.68775
+          ],
+          "p_value_vs_baseline": 0.006664591040395851,
+          "direction": "above"
+        },
+        "2026": {
+          "n": 1815,
+          "mean_hit_count": 0.661708,
+          "mean_hit_count_ci": [
+            0.628454,
+            0.694962
+          ],
+          "p_value_vs_baseline": 0.11113424414741213,
+          "direction": "above"
+        }
+      },
+      "classification": "CANDIDATE_NEEDS_MORE_OOS",
+      "rationale": "Family correction survives, but the 2024 block is below baseline and the 300-row tail window is also below baseline, so the signal is not yet stable enough for confirmation."
+    },
+    {
+      "kind": "bet-index",
+      "identifier": "POWER_LOTTO bet1",
+      "display_label": "POWER_LOTTO bet1",
+      "lottery_type": "POWER_LOTTO",
+      "unit_label": "bet-index-level (row grain)",
+      "bet_index": 1,
+      "n_rows": 15102,
+      "distinct_draws": 1551,
+      "overall_mean_hit_count": 0.982519,
+      "overall_mean_hit_count_ci": [
+        0.969144,
+        0.995894
+      ],
+      "baseline_random_uniform": 0.947368,
+      "baseline_p222_row_level": 0.947368,
+      "all_history_reference_baseline": 0.946486,
+      "best_competing_non_candidate_baseline": {
+        "label": "POWER_LOTTO bet5",
+        "mean_hit_count": 0.940667
+      },
+      "raw_p_value": 2.5937602257053535e-07,
+      "bonferroni_q_value_5": 1.2968801128526768e-06,
+      "bh_q_value_5": 6.484400564263384e-07,
+      "tail_oos": {
+        "150": {
+          "n": 150,
+          "mean_hit_count": 0.866667,
+          "mean_hit_count_ci": [
+            0.737754,
+            0.995579
+          ],
+          "sd_hit_count": 0.805536,
+          "p_value_vs_baseline": 0.8901783095762463,
+          "direction": "below"
+        },
+        "300": {
+          "n": 300,
+          "mean_hit_count": 0.923333,
+          "mean_hit_count_ci": [
+            0.82793,
+            1.018737
+          ],
+          "sd_hit_count": 0.843083,
+          "p_value_vs_baseline": 0.6894993134985139,
+          "direction": "below"
+        },
+        "500": {
+          "n": 500,
+          "mean_hit_count": 0.95,
+          "mean_hit_count_ci": [
+            0.871625,
+            1.028375
+          ],
+          "sd_hit_count": 0.894148,
+          "p_value_vs_baseline": 0.4740789099265247,
+          "direction": "above"
+        }
+      },
+      "yearly_results": {
+        "2024": {
+          "n": 1050,
+          "mean_hit_count": 0.961905,
+          "mean_hit_count_ci": [
+            0.912289,
+            1.01152
+          ],
+          "p_value_vs_baseline": 0.2833239029935358,
+          "direction": "above"
+        },
+        "2025": {
+          "n": 1040,
+          "mean_hit_count": 0.882692,
+          "mean_hit_count_ci": [
+            0.833704,
+            0.931681
+          ],
+          "p_value_vs_baseline": 0.9951859078220201,
+          "direction": "below"
+        },
+        "2026": {
+          "n": 403,
+          "mean_hit_count": 0.940447,
+          "mean_hit_count_ci": [
+            0.857542,
+            1.023351
+          ],
+          "p_value_vs_baseline": 0.5652876058897538,
+          "direction": "below"
+        }
+      },
+      "special_tail_oos": {
+        "150": {
+          "n": 150,
+          "mean_hit_count": 0.073333,
+          "mean_hit_count_ci": [
+            0.031615,
+            0.115051
+          ],
+          "sd_hit_count": 0.260683,
+          "p_value_vs_baseline": 0.9923965233289724,
+          "direction": "below"
+        },
+        "300": {
+          "n": 300,
+          "mean_hit_count": 0.073333,
+          "mean_hit_count_ci": [
+            0.043834,
+            0.102832
+          ],
+          "sd_hit_count": 0.260683,
+          "p_value_vs_baseline": 0.9997013965158594,
+          "direction": "below"
+        },
+        "500": {
+          "n": 500,
+          "mean_hit_count": 0.066,
+          "mean_hit_count_ci": [
+            0.044237,
+            0.087763
+          ],
+          "sd_hit_count": 0.248282,
+          "p_value_vs_baseline": 0.9999999462697206,
+          "direction": "below"
+        }
+      },
+      "special_yearly_results": {
+        "2024": {
+          "n": 1050,
+          "mean_hit_count": 0.069524,
+          "mean_hit_count_ci": [
+            0.054139,
+            0.084908
+          ],
+          "p_value_vs_baseline": 0.9999999999992127,
+          "direction": "below"
+        },
+        "2025": {
+          "n": 1040,
+          "mean_hit_count": 0.068269,
+          "mean_hit_count_ci": [
+            0.052941,
+            0.083598
+          ],
+          "p_value_vs_baseline": 0.9999999999997977,
+          "direction": "below"
+        },
+        "2026": {
+          "n": 403,
+          "mean_hit_count": 0.07196,
+          "mean_hit_count_ci": [
+            0.046729,
+            0.097191
+          ],
+          "p_value_vs_baseline": 0.9999810771408283,
+          "direction": "below"
+        }
+      },
+      "classification": "WEAK_OBSERVATION_ONLY",
+      "rationale": "The family correction survives, but 150/300 tail windows are below baseline and the special-zone signal is below the 0.125 reference; this is too unstable for promotion."
+    },
+    {
+      "kind": "bet-index",
+      "identifier": "POWER_LOTTO bet2",
+      "display_label": "POWER_LOTTO bet2",
+      "lottery_type": "POWER_LOTTO",
+      "unit_label": "bet-index-level (row grain)",
+      "bet_index": 2,
+      "n_rows": 9001,
+      "distinct_draws": 1501,
+      "overall_mean_hit_count": 0.97878,
+      "overall_mean_hit_count_ci": [
+        0.961302,
+        0.996258
+      ],
+      "baseline_random_uniform": 0.947368,
+      "baseline_p222_row_level": 0.947368,
+      "all_history_reference_baseline": 0.946486,
+      "best_competing_non_candidate_baseline": {
+        "label": "POWER_LOTTO bet5",
+        "mean_hit_count": 0.940667
+      },
+      "raw_p_value": 0.00042763936227556177,
+      "bonferroni_q_value_5": 0.002138196811377809,
+      "bh_q_value_5": 0.0005345492028444522,
+      "tail_oos": {
+        "150": {
+          "n": 150,
+          "mean_hit_count": 0.913333,
+          "mean_hit_count_ci": [
+            0.782749,
+            1.043917
+          ],
+          "sd_hit_count": 0.815979,
+          "p_value_vs_baseline": 0.6954378782511745,
+          "direction": "below"
+        },
+        "300": {
+          "n": 300,
+          "mean_hit_count": 0.94,
+          "mean_hit_count_ci": [
+            0.84115,
+            1.03885
+          ],
+          "sd_hit_count": 0.873537,
+          "p_value_vs_baseline": 0.5583263892206751,
+          "direction": "below"
+        },
+        "500": {
+          "n": 500,
+          "mean_hit_count": 0.942,
+          "mean_hit_count_ci": [
+            0.869791,
+            1.014209
+          ],
+          "sd_hit_count": 0.823794,
+          "p_value_vs_baseline": 0.5582663110687797,
+          "direction": "below"
+        }
+      },
+      "yearly_results": {
+        "2024": {
+          "n": 630,
+          "mean_hit_count": 0.953968,
+          "mean_hit_count_ci": [
+            0.888438,
+            1.019499
+          ],
+          "p_value_vs_baseline": 0.4221270651500397,
+          "direction": "above"
+        },
+        "2025": {
+          "n": 624,
+          "mean_hit_count": 0.886218,
+          "mean_hit_count_ci": [
+            0.822236,
+            0.950199
+          ],
+          "p_value_vs_baseline": 0.9695514615876022,
+          "direction": "below"
+        },
+        "2026": {
+          "n": 242,
+          "mean_hit_count": 0.929752,
+          "mean_hit_count_ci": [
+            0.825463,
+            1.034042
+          ],
+          "p_value_vs_baseline": 0.6299316957600959,
+          "direction": "below"
+        }
+      },
+      "classification": "REJECTED_NO_OOS_EDGE",
+      "rationale": "All tail windows are below baseline, so this candidate does not survive OOS validation despite corrected in-sample support."
+    }
+  ],
+  "overall_recommendation": {
+    "p224_deeper_validation": [
+      "midfreq_fourier_2bet"
+    ],
+    "rejected_candidates": [
+      "POWER_LOTTO bet2"
+    ],
+    "hold_for_more_oos": [
+      "midfreq_fourier_mk_3bet",
+      "DAILY_539 bet1"
+    ],
+    "weak_observation_candidates": [
+      "POWER_LOTTO bet1"
+    ],
+    "no_deployable_strategy_from_p223b": true,
+    "no_production_or_recommendation_change_authorized": true,
+    "historical_replay_evidence_only": true,
+    "not_betting_advice": true
+  },
+  "null_statement": "No production claim is authorized. No strategy is deployable from P223B alone. Results are historical replay evidence only, not betting advice.",
+  "required_completion_check": {
+    "是否真的完成": "YES",
+    "測試結果 PASS / FAIL / NOT RUN": "PASS for read-only validation and JSON parse; full test suite NOT RUN",
+    "仍卡住的唯一問題": "none",
+    "修改檔案清單": [
+      "/Users/kelvin/Kelvin-WorkSpace/LotteryNew/outputs/research/p223b_candidate_oos_cross_year_validation_20260603.md",
+      "/Users/kelvin/Kelvin-WorkSpace/LotteryNew/outputs/research/p223b_candidate_oos_cross_year_validation_20260603.json"
+    ],
+    "staged / commit / push 狀態": "0 / 0 / 0",
+    "是否允許進入下一輪": "YES",
+    "Final Classification": "P223B_CANDIDATE_OOS_VALIDATION_COMPLETE"
+  }
+}

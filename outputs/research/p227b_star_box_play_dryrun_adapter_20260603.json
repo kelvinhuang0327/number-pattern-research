@@ -1,0 +1,212 @@
+{
+  "task": "P227B_STAR_BOX_PLAY_DRYRUN_CODE_COMPLETE",
+  "date": "2026-06-03",
+  "read_only": true,
+  "db_writes": 0,
+  "draw_inventory": {
+    "3_STAR": {
+      "n_draws": 4179,
+      "min_draw": "100000002",
+      "max_draw": "99000261",
+      "min_date": "2007/01/02",
+      "max_date": "2026/01/28",
+      "repeats_in_db": 0,
+      "pct_sorted": 100.0
+    },
+    "4_STAR": {
+      "n_draws": 2922,
+      "min_draw": "100000003",
+      "max_draw": "99000261",
+      "min_date": "2007-01-02",
+      "max_date": "2026-04-27",
+      "repeats_in_db": 0,
+      "pct_sorted": 100.0
+    }
+  },
+  "replay_inventory": {
+    "3_STAR": 0,
+    "4_STAR": 0
+  },
+  "total_replay_rows_unchanged": 94924,
+  "straight_play_blocked_reason": "Straight-play requires per-digit positional order. Current DB stores draws as sorted arrays; positional information is lost. Re-ingest from raw positional source and obtain separate authorization before implementing straight-play.",
+  "demo_results": {
+    "3_STAR": [
+      {
+        "target_draw": "115000105",
+        "predicted": [
+          5,
+          6,
+          9
+        ],
+        "actual": [
+          3,
+          4,
+          9
+        ],
+        "exact_box_hit": false,
+        "digit_overlap": 1,
+        "hit_count_encoded": 0,
+        "dry_run": 1,
+        "_note": "naive repeat-prediction demo \u2014 not a real strategy"
+      },
+      {
+        "target_draw": "115000104",
+        "predicted": [
+          3,
+          4,
+          9
+        ],
+        "actual": [
+          1,
+          2,
+          3
+        ],
+        "exact_box_hit": false,
+        "digit_overlap": 1,
+        "hit_count_encoded": 0,
+        "dry_run": 1,
+        "_note": "naive repeat-prediction demo \u2014 not a real strategy"
+      },
+      {
+        "target_draw": "115000103",
+        "predicted": [
+          1,
+          2,
+          3
+        ],
+        "actual": [
+          1,
+          4,
+          6
+        ],
+        "exact_box_hit": false,
+        "digit_overlap": 1,
+        "hit_count_encoded": 0,
+        "dry_run": 1,
+        "_note": "naive repeat-prediction demo \u2014 not a real strategy"
+      },
+      {
+        "target_draw": "115000102",
+        "predicted": [
+          1,
+          4,
+          6
+        ],
+        "actual": [
+          3,
+          4,
+          9
+        ],
+        "exact_box_hit": false,
+        "digit_overlap": 1,
+        "hit_count_encoded": 0,
+        "dry_run": 1,
+        "_note": "naive repeat-prediction demo \u2014 not a real strategy"
+      }
+    ],
+    "4_STAR": [
+      {
+        "target_draw": "115000101",
+        "predicted": [
+          0,
+          1,
+          5,
+          6
+        ],
+        "actual": [
+          1,
+          5,
+          7,
+          8
+        ],
+        "exact_box_hit": false,
+        "digit_overlap": 2,
+        "hit_count_encoded": 0,
+        "dry_run": 1,
+        "_note": "naive repeat-prediction demo \u2014 not a real strategy"
+      },
+      {
+        "target_draw": "115000099",
+        "predicted": [
+          1,
+          5,
+          7,
+          8
+        ],
+        "actual": [
+          1,
+          4,
+          6,
+          7
+        ],
+        "exact_box_hit": false,
+        "digit_overlap": 2,
+        "hit_count_encoded": 0,
+        "dry_run": 1,
+        "_note": "naive repeat-prediction demo \u2014 not a real strategy"
+      },
+      {
+        "target_draw": "115000096",
+        "predicted": [
+          1,
+          4,
+          6,
+          7
+        ],
+        "actual": [
+          0,
+          2,
+          3,
+          6
+        ],
+        "exact_box_hit": false,
+        "digit_overlap": 1,
+        "hit_count_encoded": 0,
+        "dry_run": 1,
+        "_note": "naive repeat-prediction demo \u2014 not a real strategy"
+      },
+      {
+        "target_draw": "115000092",
+        "predicted": [
+          0,
+          2,
+          3,
+          6
+        ],
+        "actual": [
+          1,
+          2,
+          3,
+          6
+        ],
+        "exact_box_hit": false,
+        "digit_overlap": 3,
+        "hit_count_encoded": 0,
+        "dry_run": 1,
+        "_note": "naive repeat-prediction demo \u2014 not a real strategy"
+      }
+    ]
+  },
+  "baselines": {
+    "3_STAR": {
+      "no_repeat": 0.008333333333333333,
+      "with_repeat": 0.004545454545454545,
+      "active": "no_repeat",
+      "combination_space_no_repeat": 120
+    },
+    "4_STAR": {
+      "no_repeat": 0.004761904761904762,
+      "with_repeat": 0.0013986013986013986,
+      "active": "no_repeat",
+      "combination_space_no_repeat": 210
+    }
+  },
+  "module_functions": [
+    "star_box_exact_match",
+    "star_digit_overlap_count",
+    "star_calculate_box_score",
+    "get_box_baseline",
+    "validate_star_input",
+    "build_dryrun_row"
+  ]
+}

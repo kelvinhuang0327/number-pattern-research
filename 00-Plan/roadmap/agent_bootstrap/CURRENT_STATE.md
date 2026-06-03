@@ -1,7 +1,7 @@
 # Current State — LotteryNew
 
-**Last Reviewed:** 2026-06-03 Asia/Taipei  
-**State Marker:** `P210_COMPLETE_P211_HELD_BY_USER_P212_HONESTY_CORRECTION_DONE`  
+**Last Reviewed:** 2026-06-03 Asia/Taipei (P217 metadata sync)  
+**State Marker:** `P210_COMPLETE_P211_HELD_BY_USER_P212_P216_GOVERNANCE_COMPLETE_REMOTE_RATIFIED`  
 **Purpose:** Project-specific state for future agents. Read this after `SHARED_AGENT_BOOTSTRAP.md` and `TASK_TEMPLATES.md`.
 
 ## Canonical Execution Context
@@ -11,8 +11,8 @@
 | Project | LotteryNew | [Confirmed] |
 | Canonical repo | `/Users/kelvin/Kelvin-WorkSpace/LotteryNew` | [Confirmed] |
 | Canonical branch | `main` | [Confirmed] |
-| Current HEAD | `061bdc19c0a59e6948e8335b888257a1f7c521f6` | [Confirmed] |
-| `origin/main` | `061bdc19c0a59e6948e8335b888257a1f7c521f6` | [Confirmed] |
+| Current HEAD | `6e220f244061a1be5aa8bddf7339f3139640c30d` (`Merge pull request #252`) | [Confirmed] |
+| `origin/main` | `6e220f244061a1be5aa8bddf7339f3139640c30d` | [Confirmed] |
 | Git dir | `.git` | [Confirmed] |
 | Active worker task | none | [Confirmed] |
 | P211 status | `HELD_BY_USER`; do not auto-resume or re-prompt | [Confirmed] |
@@ -66,7 +66,12 @@ Read-only baseline commands:
 | P206-P209 repo archive cleanup | COMPLETE | Stale `Lottery/` and `LotteryNew-clean/` are archived and marked DO_NOT_USE. |
 | P210 short/mid-window protocol | COMPLETE / CEO accepted | Protocol is frozen as reference. |
 | P211 read-only diagnostic | HELD_BY_USER | Do not start unless user explicitly authorizes P211 or a new direction. |
-| Shared agent bootstrap adoption | CONTENT-APPROVED by CEO 2026-06-03; GIT-RATIFICATION PENDING | Files are **untracked, never committed**; provisional reference only until user authorizes a commit (`WAITING_FOR_USER_AUTHORIZATION`). |
+| P212 agent_bootstrap honesty correction | COMPLETE | CURRENT_STATE.md corrected from unqualified `adoption COMPLETE` → honest provisional state. |
+| P213 agent_bootstrap git-ratification commit | COMPLETE | Commit `8d34f4c`; three bootstrap files now source-controlled on `origin/main`. |
+| P214 post-ratification governance state sync | COMPLETE | `active_task.md` + `CEO-Decision.md` updated to reflect P213 completion. |
+| P215 remote governance ratification (PR flow) | COMPLETE | Branch `bootstrap-governance-ratification` → PR #250 → required check passed → merged. `origin/main` = `4eb8051`. |
+| P216 post-ratification roadmap/analysis doc sync | COMPLETE | CTO 2026-06-02 `roadmap.md` + `CTO-Analysis.md` committed via PR #252, merge `6e220f2`. |
+| Shared agent bootstrap adoption | TRACKED / RATIFIED / COMPLETE | Files committed via `8d34f4c` and pushed to `origin/main` via PR #250 (merge `4eb8051`, 2026-06-03). All three files are now git-protected source-controlled artifacts. |
 
 ## Completed Milestones
 
@@ -76,7 +81,8 @@ Read-only baseline commands:
 - [Confirmed] DB binaries are excluded from git-tracked source; evidence is maintained through manifests and validation checks.
 - [Confirmed] P210 protocol accepted by CEO.
 - [Confirmed] P211 held by user decision; no active worker task.
-- [CONTENT-APPROVED, GIT-RATIFICATION PENDING] Shared bootstrap files exist under `00-Plan/roadmap/agent_bootstrap/` — content approved by CEO 2026-06-03; git-ratification NOT YET DONE (untracked, never committed); treat as provisional reference until user authorizes a commit.
+- [Confirmed] P212–P216 governance chain complete; all pushed to `origin/main` via PR #250 / PR #251 / PR #252.
+- [Confirmed] Shared bootstrap files under `00-Plan/roadmap/agent_bootstrap/` are git-tracked source-controlled artifacts (committed `8d34f4c`, pushed via PR #250, merge `4eb8051`, 2026-06-03).
 
 ## Current Blockers / Holds
 
@@ -85,7 +91,7 @@ Read-only baseline commands:
 - [Risk] Worktree contains existing dirty/untracked files outside the current governance scope; future tasks must use narrow write allowlists.
 - [Risk] Root-level untracked bootstrap drafts were superseded by formal `agent_bootstrap/` files and should not be relied on.
 - [Unknown] Whether the P210 report artifact should be committed or remain local reference; do not assume it is source-controlled.
-- [WAITING_FOR_USER_AUTHORIZATION] Agent bootstrap git-ratification: `00-Plan/roadmap/agent_bootstrap/` (SHARED_AGENT_BOOTSTRAP.md / TASK_TEMPLATES.md / CURRENT_STATE.md) are **100% untracked** — `git ls-files` and `git log` both empty for this directory. Content is CEO-approved but institutional status (git protection) = NOT YET DONE. Files can be lost by `git clean` / accidental deletion with zero git trace. Do NOT treat these files as immutable or source-controlled until a user-authorized commit completes.
+- [Resolved] Agent bootstrap git-ratification: `00-Plan/roadmap/agent_bootstrap/` (SHARED_AGENT_BOOTSTRAP.md / TASK_TEMPLATES.md / CURRENT_STATE.md) are **git-tracked and remote-synced** — committed `8d34f4c`, pushed to `origin/main` via PR #250 (merge `4eb8051`, 2026-06-03). Files are now immutable git-protected artifacts. Treat as source-controlled.
 
 ## Latest User Direction / Product Intent
 

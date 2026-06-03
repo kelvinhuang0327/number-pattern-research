@@ -37,7 +37,12 @@ This section is the current source of truth. The 2026-06-01 sections and P186-P1
 | P223B candidate OOS cross-year validation | [Complete] `P223B_CANDIDATE_OOS_VALIDATION_COMPLETE` | `outputs/research/p223b_candidate_oos_cross_year_validation_20260603.md`; PR #258 | Of 5 candidates, only `midfreq_fourier_2bet / DAILY_539` survived as `CROSS_YEAR_CONFIRMED` on the (overlapping) P222 slice. Others: NEEDS_MORE_OOS / WEAK_OBSERVATION / REJECTED. |
 | P224 DAILY_539 survivor deeper validation | [Complete] `P224_SURVIVOR_NEEDS_MORE_OOS` | `outputs/research/p224_daily539_midfreq_fourier_2bet_deeper_validation_20260603.md`; PR #259 | Clean deduplicated slice (1500 rows = 1500 distinct draws, bet_index=1): mean 0.6693 vs baseline 0.6410, one-sided **p=0.0674** (fails 0.05), CI [0.632, 0.706] crosses baseline, 6/10 blocks above. Edge rests on 19 `hit_count=3` rows; removing them drops mean below baseline. **Survivor status: WAIT_FOR_OOS — not deployable.** P223B `CROSS_YEAR_CONFIRMED` was produced on the overlapping P222 slice; dedup flipped it to NEEDS_MORE_OOS. Honest prior: lean NULL. |
 | P224B/P224C survivor future-OOS monitoring protocol | [Complete] `P224B_FUTURE_OOS_MONITORING_PROTOCOL_READY` | `outputs/research/p224b_daily539_survivor_future_oos_monitoring_protocol_20260603.md`; PR #260, merge `ebfc597` | Reopen gate: ≥300 new DAILY_539 target draws (preferred 500). Must pass mean / CI / corrected p / block-stability / robustness / comparison gates. Failure → historical artifact. No deployment, no DB write, no registry write, no recommendation-logic change authorized. |
-| P225 governance closeout sync (this task) | [Complete] doc-only | `00-Plan/roadmap/roadmap.md` §0.1 + `CURRENT_STATE.md`; PR #261 (CEO-Decision/active_task) + this PR | Records P217–P224C in phase table; fixes stale CURRENT_STATE windows; marks survivor WAIT_FOR_OOS. |
+| P225 governance closeout sync | [Complete] doc-only | `00-Plan/roadmap/roadmap.md` §0.1 + `CURRENT_STATE.md`; PR #261 + PR #262 | Records P217–P224C in phase table; fixes stale CURRENT_STATE windows; marks survivor WAIT_FOR_OOS. |
+| P226 3_STAR / 4_STAR replay-gap discovery | [Complete] `P226_STAR_REPLAY_GAP_DISCOVERY_COMPLETE` | `outputs/research/p226_star_replay_gap_discovery_plan_20260603.md`; PR #263 | 3_STAR 4,179 draws; 4_STAR 2,922 draws; replay rows = 0 for both. DB stores sorted numbers → positional order lost. Straight-play BLOCKED until re-ingestion. Box-play feasible on sorted data. Baselines: 3_STAR 1/C(10,3)=0.00833; 4_STAR 1/C(10,4)=0.00476. |
+| P227A 3_STAR / 4_STAR box-play adapter design | [Complete] `P227A_STAR_BOX_PLAY_ADAPTER_DESIGN_READY` + `STRAIGHT_PLAY_BLOCKED_REINGEST_REQUIRED` | `outputs/research/p227a_star_box_play_dryrun_adapter_design_20260603.md`; PR #263 | Design-only. Metric semantics defined: `star_box_exact_match` (multiset Counter, not set), `star_digit_overlap_count`, `star_calculate_box_score`. `calculate_match_score` prohibited. `dry_run=1` isolation documented. 4-layer authorization boundary. UNDERPOWERED warning: 3_STAR needs ~10k draws; 4_STAR ~17k. |
+| P227B 3_STAR / 4_STAR box-play code dry-run | [Complete] `P227B_STAR_BOX_PLAY_DRYRUN_CODE_COMPLETE` + `STRAIGHT_PLAY_REINGEST_REQUIRED` | `lottery_api/models/star_box_play.py`; `tests/test_p227b_star_box_play_semantics.py`; `outputs/research/p227b_star_box_play_dryrun_adapter_20260603.md`; PR #264 | Code-only implementation. **42/42 targeted tests PASS.** `calculate_match_score` not used (AST test). `dry_run=1` always. No DB write. |
+| P227C 3_STAR / 4_STAR box-play dry-run scan | [Complete] `P227C_STAR_BOX_PLAY_UNDERPOWERED_NO_SIGNAL` | `outputs/research/p227c_star_box_play_dryrun_scan_20260603.md`; PR #265, merge `7ab5407` | 120 hypotheses (10 features × 6 windows × 2 lotteries); Bonferroni threshold 0.000417. **3_STAR: 0 Bonferroni, 1 BH-FDR (F7_high_low/w750, p=0.0008, UNDERPOWERED)**; **4_STAR: 0 Bonferroni, 0 BH-FDR, UNDERPOWERED**. **69/69 targeted tests PASS.** Both lotteries UNDERPOWERED_NO_SIGNAL. Not deployable. Straight-play BLOCKED. |
+| P228 governance closeout sync (this task) | [Complete] doc-only | `00-Plan/roadmap/roadmap.md` §0.1 + `CURRENT_STATE.md`; this PR | Records P226–P227C in phase table; marks 3_STAR/4_STAR box-play UNDERPOWERED_NO_SIGNAL and straight-play BLOCKED_REINGEST_REQUIRED. |
 
 ### 0.2 Current System Baseline
 
@@ -79,7 +84,7 @@ This section is the current source of truth. The 2026-06-01 sections and P186-P1
 | **P0.2** | Anti-overfit validation gate | Prevent short-window noise from becoming false signal | [Active / Enforced] — P221F gate applied to P222 | P221F protocol provides the gate; P222 scan applied it; P224 clean-slice dedup verified it. All future research must inherit P221F validation rules. |
 | **P0.3** | Canonical execution / repo dispatch guard | Ensure every agent uses only `LotteryNew/main` and not archived/stale worktrees | [Confirmed] baseline; STOP guards in all P22x prompts | Prompts and worker reports must STOP on `.claude/worktrees/*`, archive paths, wrong branch, wrong HEAD/DB baseline, or broad staging. |
 | **P0.4** | CTO/CEO task-generation boundary | Resolve prompt-generation conflict for the next executable task | [Resolved] CEO Decision 2026-06-03 | P225 active_task set; governance boundary clarified. |
-| **P1.1** | 3_STAR / 4_STAR replay-gap diagnostic (plan-only) | Only unmined lottery family — 7,101 draws / 0 replay rows | [Deferred — needs separate authorization] | plan-only protocol first; inherit P221F anti-overfit gate; no production/DB/registry write. |
+| **P1.1** | 3_STAR / 4_STAR replay-gap diagnostic → P226–P227C | Only unmined lottery family | [Complete] `P227C_STAR_BOX_PLAY_UNDERPOWERED_NO_SIGNAL` | P226 gap discovery + P227A design + P227B code + P227C scan complete. Both lotteries UNDERPOWERED_NO_SIGNAL; not deployable; straight-play BLOCKED_REINGEST_REQUIRED. Future work requires ≥10,000 3_STAR draws or positional re-ingestion. |
 | **P1.2** | DAILY_539 survivor backward-OOS extension | Resolve survivor p=0.0674 using ~4,376 un-replayed older draws instead of waiting ~1 year | [Deferred — needs DB-write authorization] | Requires explicit authorization for replay-row generation; inherits P224B monitoring gates; must report failure honestly. |
 | **P1.3** | Product disclosure and second-zone containment | Make UI/API wording consistent with NULL/no-signal evidence | [Deferred] | No surface implies guaranteed improvement, betting advice, or second-zone predictive edge. |
 | **P2.1** | Passive monitoring / reopen rules for DAILY_539 survivor | Monitor `midfreq_fourier_2bet / DAILY_539` under P224B reopen conditions | [WAIT_FOR_OOS] — reopen gate defined in P224B | Reopen after ≥300 new DAILY_539 target draws (preferred 500); must pass mean / CI / corrected p / block-stability / robustness / comparison gates. Failure → historical artifact. |
@@ -106,7 +111,7 @@ Upgrade / downgrade decisions:
 | Active POWER_LOTTO R2 optimization | Retire / keep closed | P178A closed R2 after NULL results. |
 | Second-zone optimization | Retire as active goal; keep containment | P211A confirmed NULL hit-rate edge; display-only unless future pre-registered proof appears. |
 | DAILY_539 survivor | **[WAIT_FOR_OOS]** — reopen gate: ≥300 draws (preferred 500) | P224 clean-slice p=0.0674; edge rests on 19 rows; not deployable. P224B monitoring protocol active. |
-| 3_STAR / 4_STAR unmined frontier | Upgrade to P1 | 7,101 draws / 0 replay rows — only unmined lottery family; plan-only authorization needed. |
+| 3_STAR / 4_STAR box-play | **[COMPLETE → UNDERPOWERED_NO_SIGNAL]** P226–P227C | P227C: 0 Bonferroni pass, 1 BH-FDR weak observation (UNDERPOWERED); not deployable. Straight-play BLOCKED_REINGEST_REQUIRED. |
 | P123 trigger standby and old apply chains | Keep P3+ guardrails | Useful history, not today's bottleneck. |
 
 ### 0.5 Critical Blockers
@@ -116,25 +121,25 @@ Upgrade / downgrade decisions:
 | DAILY_539 survivor misclassified as promotable | Research correctness | P223B `CROSS_YEAR_CONFIRMED` was on overlapping slice; P224 clean dedup gives p=0.0674 | A worker or agent could promote a fragile near-null result as deployable | P0 | Survivor recorded as `WAIT_FOR_OOS`; reopen requires ≥300 new draws + full P224B gate. |
 | Short-window overfitting / multiple testing | System correctness, trust | Many windows/strategies can create false positives | False "improved prediction" claims or strategy promotion from noise | P0.2 | P221F anti-overfit gate enforced; all future research must pre-register windows and baselines. |
 | Wrong repo/worktree dispatch | Reproducibility, safety | `.claude/worktrees/*` and archived stale repos still exist and have incompatible states | Agents may run stale DB/code and produce invalid evidence | P0.3 | Every future task includes canonical repo/branch/DB STOP guard and archive DO_NOT_USE rule. |
-| Governance docs stale (P217–P224C) | Agent correctness | A fresh agent reading old governance docs would misread current state | Wrong task scope, incorrect baseline, or unauthorized promotion | P0 | This P225 task resolves it; §0.1 + CURRENT_STATE.md now reflect P224C. |
+| Governance docs stale (P217–P227C) | Agent correctness | A fresh agent reading old governance docs would misread current state | Wrong task scope, incorrect baseline, or unauthorized promotion | P0 | P225 + P228 resolve this; §0.1 + CURRENT_STATE.md now reflect P227C. |
 | Evidence disclosure gap | Product maturity | Lottery outputs can be misread as betting advice or validated edge | User trust and safety risk from overclaiming | P1.3 | UI/API/report copy separates historical evidence from predictive claims; second-zone display-only confirmed by P211A. |
 
-### 0.6 Recommended System Optimization Directions (updated by P225, 2026-06-03)
+### 0.6 Recommended System Optimization Directions (updated by P228, 2026-06-03)
 
 #### Direction A: P221F Anti-Overfit Gate — Permanent / Already Active
 
 - **Roadmap phase:** P0.2 / P221F. **Status: [Active / Enforced]**
-- **Why important:** Short/mid-window signals are noisy; corrected significance + pre-registered windows + clean dedup prevent false-positive promotion. P222/P223B/P224 applied the gate.
+- **Why important:** Short/mid-window signals are noisy; corrected significance + pre-registered windows + clean dedup prevent false-positive promotion. P222/P223B/P224/P227C all applied the gate.
 - **Rule:** All future research chains must pre-register windows and baselines using P221F as the reference gate.
 - **Priority:** P0 — permanent.
 
-#### Direction B: 3_STAR / 4_STAR Replay-Gap Diagnostic
+#### Direction B: 3_STAR / 4_STAR — COMPLETE (UNDERPOWERED_NO_SIGNAL)
 
-- **Roadmap phase:** P1.1. **Status: [Deferred — needs explicit authorization]**
-- **Why important:** 7,101 draws / 0 replay rows — the only lottery family never scanned. Genuinely new signal space.
-- **Risk:** Small pool (3_STAR: 3 of 10; 4_STAR: 4 of 10) requires distinct combinatorial baselines.
-- **Acceptance:** Plan-only protocol first; inherit P221F anti-overfit gate; read-only; no production/DB write.
-- **Priority:** P1.
+- **Roadmap phase:** P1.1 → P226–P227C. **Status: [Complete — UNDERPOWERED_NO_SIGNAL]**
+- **Summary:** P226–P227C chain ran to completion. Box-play semantics implemented (P227B), 120 hypotheses scanned (P227C). 0 Bonferroni passes in either lottery; 1 BH-FDR weak observation in 3_STAR (F7_high_low/w750, p=0.0008, UNDERPOWERED). Both classified `UNDERPOWERED_NO_SIGNAL`. Not deployable.
+- **Straight-play:** BLOCKED — sorted DB storage causes positional order loss; re-ingestion requires separate authorization.
+- **Future condition:** 3_STAR needs ≥10,000 draws (currently 4,179); 4_STAR needs ≥17,000 (currently 2,922). Any re-scan must inherit P221F gate with fresh pre-registration.
+- **Priority:** P3 — deferred until sufficient data accumulates.
 
 #### Direction C: DAILY_539 Survivor Backward-OOS Extension
 
@@ -157,25 +162,29 @@ Upgrade / downgrade decisions:
 - **Why important:** Stale worktrees/archive paths still exist and can produce invalid evidence if used.
 - **Priority:** P0 / P1 — ongoing maintenance.
 
-### 0.7 Current State Summary (updated by P225, 2026-06-03)
+### 0.7 Current State Summary (updated by P228, 2026-06-03)
 
-**Research chain P211A–P224C is complete. Both user directions executed and returned NULL/fragile.**
+**Research chains P211A–P224C (DAILY_539/BIG_LOTTO/POWER_LOTTO) and P226–P227C (3_STAR/4_STAR) are complete.**
 
 - Direction #1 (window reframe): P221F frozen windows (short 100/125/150, mid 500/750/1000, all-history=reference) operationalized. Gate active.
 - Direction #2 (mine all-lottery × all-method): P222 scan complete. Sole survivor `midfreq_fourier_2bet / DAILY_539` fragile (clean-slice p=0.0674, edge rests on 19 rows). **Status: WAIT_FOR_OOS.**
+- 3_STAR / 4_STAR chain (P226–P227C): Box-play scanned, 120 hypotheses, **UNDERPOWERED_NO_SIGNAL**. Straight-play BLOCKED (sorted storage). Not deployable. Both lotteries need 2.5–6× more draws for adequate power.
+
+**No active deployable candidate in any lottery.**
 
 **Next authorized steps (each needs separate explicit authorization):**
-- P1.1: 3_STAR / 4_STAR plan-only diagnostic.
-- P1.2: DAILY_539 survivor backward-OOS extension (DB-write required).
-- Passive monitoring per P224B (>= 300 new DAILY_539 draws before next recheck).
+- P1.2: DAILY_539 survivor backward-OOS extension (~4,376 un-replayed older draws; DB-write required).
+- Passive monitoring per P224B (≥300 new DAILY_539 draws before next recheck; preferred 500).
+- 3_STAR/4_STAR re-scan: only after ≥10,000 3_STAR draws or positional re-ingestion (straight-play).
 
-**Forbidden:** rerun same P221F sweep on same data; promote any strategy; start P225 model design; write DB / registry / production / recommendation logic.
+**Forbidden:** rerun same P221F/P227C sweeps on same data; promote any strategy; write DB / registry / production / recommendation logic; start P225/P229 model design without authorization.
 
 Final current roadmap marker:
 
 ```text
-P225_GOVERNANCE_CLOSEOUT_SYNC_COMPLETE_20260603
-P224C_MERGED_EBFC597_SURVIVOR_WAIT_FOR_OOS
+P228_STAR_REPLAY_GOVERNANCE_CLOSEOUT_COMPLETE_20260603
+P227C_COMPLETE_UNDERPOWERED_NO_SIGNAL
+P224C_MERGED_SURVIVOR_WAIT_FOR_OOS
 ```
 
 ---

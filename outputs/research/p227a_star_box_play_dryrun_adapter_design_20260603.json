@@ -1,0 +1,216 @@
+{
+  "task": "P227A_STAR_BOX_PLAY_DRYRUN_ADAPTER_DESIGN",
+  "date": "2026-06-03",
+  "status": "COMPLETE",
+  "classifications": [
+    "P227A_STAR_BOX_PLAY_ADAPTER_DESIGN_READY",
+    "P227A_STAR_STRAIGHT_PLAY_BLOCKED_REINGEST_REQUIRED"
+  ],
+  "read_only": true,
+  "db_writes": 0,
+  "code_changes": 0,
+  "phase_0": {
+    "result": "ALL_PASS",
+    "repo_root": "/Users/kelvin/Kelvin-WorkSpace/LotteryNew",
+    "branch_verified": "main",
+    "head": "2ac9f1f0552aa8e0f0750e0b493b893cdc82b7a3",
+    "origin_main": "2ac9f1f0552aa8e0f0750e0b493b893cdc82b7a3",
+    "staged_files": 0,
+    "replay_total": 94924,
+    "big_lotto": 24140,
+    "daily_539": 34680,
+    "power_lotto": 36104,
+    "bet_index_nulls": 0,
+    "dup_keys": 0,
+    "integrity": "ok",
+    "drift_guard": "REPLAY_LIFECYCLE_DRIFT_GUARD_PASS",
+    "p226_artifacts_present": true
+  },
+  "p226_findings_recap": {
+    "draws_3_star": 4179,
+    "draws_4_star": 2922,
+    "replay_rows_3_star": 0,
+    "replay_rows_4_star": 0,
+    "registry_coverage": "none",
+    "lottery_types_json_is_permutation": true,
+    "lottery_types_json_repeats_allowed": true,
+    "db_storage": "sorted_combination_no_repeats_observed",
+    "positional_order_lost": true,
+    "calculate_match_score_semantics": "set_intersection_wrong_for_permutations",
+    "existing_adapters_for_star": 0
+  },
+  "play_mode_decision": {
+    "authorized": "box_exact",
+    "blocked": "straight_play",
+    "blocked_reason": "positional_order_lost_in_db_sorted_storage",
+    "blocked_resolution": "requires_reingestion_from_raw_source_separate_authorization"
+  },
+  "data_assumptions": {
+    "3_STAR": {
+      "pick_count": 3,
+      "digit_range": [0, 9],
+      "combination_space": 120,
+      "repeats_in_current_db": 0,
+      "baseline_no_repeat": 0.008333,
+      "baseline_with_repeats": 0.004545,
+      "active_baseline": "no_repeat_C(10,3)=120",
+      "sorted_storage": true
+    },
+    "4_STAR": {
+      "pick_count": 4,
+      "digit_range": [0, 9],
+      "combination_space": 210,
+      "repeats_in_current_db": 0,
+      "baseline_no_repeat": 0.004762,
+      "baseline_with_repeats": 0.001399,
+      "active_baseline": "no_repeat_C(10,4)=210",
+      "sorted_storage": true
+    }
+  },
+  "metrics": {
+    "primary": {
+      "name": "star_box_exact_hit",
+      "formula": "int(sorted(predicted) == sorted(actual))",
+      "schema_field": "hit_count",
+      "encoding": "0 for miss, pick_count for exact hit",
+      "valid_for_box_play": true,
+      "valid_for_straight_play": false
+    },
+    "secondary": {
+      "name": "star_digit_overlap_count",
+      "formula": "len(multiset_intersection(predicted, actual))",
+      "schema_field": "stored as JSON in hit_numbers or provenance",
+      "note": "not a prize-winning threshold; secondary analysis only"
+    },
+    "prohibited": {
+      "name": "calculate_match_score",
+      "reason": "set intersection drops repeated digits; wrong semantics for permutation lotteries",
+      "rule": "star adapter must never call calculate_match_score"
+    }
+  },
+  "statistical_power": {
+    "3_STAR": {
+      "available_draws": 4179,
+      "expected_exact_hits_at_baseline": 34.8,
+      "detection_20pct_lift_alpha005_power80_required_n": 10000,
+      "verdict": "UNDERPOWERED"
+    },
+    "4_STAR": {
+      "available_draws": 2922,
+      "expected_exact_hits_at_baseline": 13.9,
+      "detection_20pct_lift_alpha005_power80_required_n": 17000,
+      "verdict": "UNDERPOWERED"
+    }
+  },
+  "adapter_design": {
+    "proposed_class": "StarBoxPlayAdapter",
+    "proposed_file": "lottery_api/models/p227b_star_box_play_adapter.py",
+    "status": "DESIGN_ONLY_NOT_IMPLEMENTED",
+    "key_method": "star_calculate_match(predicted, actual, play_mode='box_exact')",
+    "dry_run_output": "dict_only_no_db_write",
+    "dry_run_flag": "dry_run=1_always",
+    "truth_level": "BOX_PLAY_DRY_RUN_BOX_EXACT",
+    "db_isolation_option": "Option_B_recommended_file_only_no_db_write",
+    "unique_constraint_strategy_id_suffix": "_dry_run",
+    "must_not_call": ["calculate_match_score"],
+    "must_always_set": {"dry_run": 1, "special_hit": 0},
+    "must_sort_before_compare": true
+  },
+  "test_plan": {
+    "proposed_file": "tests/test_p227a_star_box_play_semantics.py",
+    "status": "DESIGN_ONLY_NOT_IMPLEMENTED",
+    "test_categories": [
+      "box_exact_hit_correct",
+      "box_exact_hit_wrong_order_still_hits",
+      "box_exact_miss",
+      "partial_overlap",
+      "repeated_digit_box_exact_match",
+      "repeated_digit_partial_overlap",
+      "adapter_sorts_before_comparison",
+      "dry_run_flag_always_1",
+      "truth_level_labels_dry_run",
+      "adapter_does_not_call_calculate_match_score",
+      "no_special_hit_used",
+      "dry_run_does_not_write_db"
+    ]
+  },
+  "p227b_scope": {
+    "minimal_new_files": [
+      "lottery_api/models/p227b_star_box_play_adapter.py",
+      "tests/test_p227a_star_box_play_semantics.py",
+      "outputs/research/p227b_star_box_play_dryrun_results_YYYYMMDD.json",
+      "outputs/research/p227b_star_box_play_dryrun_results_YYYYMMDD.md"
+    ],
+    "must_not_modify": [
+      "lottery_api/quick_strategy_evaluation.py",
+      "lottery_api/comprehensive_strategy_evaluation.py",
+      "lottery_api/database.py",
+      "lottery_api/models/p36_wave2_daily539_adapters.py",
+      "lottery_api/models/p42_wave3_biglotto_adapters.py",
+      "lottery_api/models/p47_wave4_powerlotto_adapters.py",
+      "lottery_api/models/p93_tierb_replay_adapters.py",
+      "lottery_api/data/lottery_types.json",
+      "strategy_prediction_replays (DB table)",
+      "all governance documents"
+    ],
+    "implementation_layers": {
+      "layer_1_pure_functions": "star_calculate_match + _call_strategy — no DB needed, requires code-change authorization",
+      "layer_2_file_runner": "StarBoxPlayDryRunRunner — writes JSON/CSV artifacts only, no DB, requires code-change authorization",
+      "layer_3_db_writer": "StarBoxPlayDBWriter — inserts dry_run=1 rows, requires SEPARATE DB-write authorization",
+      "layer_4_promotion": "dry_run=0 production rows — requires SEPARATE production-promotion authorization"
+    },
+    "pre_registration_required_before_p227b": [
+      "play_mode: box_exact",
+      "strategy_families: list all before running",
+      "windows: short 100/125/150, mid 500/750/1000, all-history=reference",
+      "primary_metric: star_box_exact_hit",
+      "baselines: 1/C(10,3) and 1/C(10,4) for current no-repeat data",
+      "correction: Bonferroni or BH-FDR",
+      "power_analysis: report required N; classify INSUFFICIENT_STATISTICAL_POWER if below",
+      "null_accepted: true"
+    ]
+  },
+  "authorization_requirements": {
+    "authorized_by_this_task": ["design artifact production only"],
+    "requires_separate_authorization": [
+      "any code change (even new file creation)",
+      "any DB write (strategy_prediction_replays rows, even dry_run=1)",
+      "re-ingestion of historical draw data with positional order",
+      "registry mutation",
+      "production-replay promotion",
+      "recommendation-logic changes",
+      "strategy deployment",
+      "betting advice or prediction guarantee"
+    ]
+  },
+  "post_task_validation": {
+    "replay_total": 94924,
+    "big_lotto": 24140,
+    "daily_539": 34680,
+    "power_lotto": 36104,
+    "bet_index_nulls": 0,
+    "dup_keys": 0,
+    "integrity": "ok",
+    "drift_guard": "REPLAY_LIFECYCLE_DRIFT_GUARD_PASS",
+    "staged_files": 0,
+    "files_modified_existing": 0,
+    "new_artifacts": [
+      "outputs/research/p227a_star_box_play_dryrun_adapter_design_20260603.md",
+      "outputs/research/p227a_star_box_play_dryrun_adapter_design_20260603.json"
+    ]
+  },
+  "required_completion_check": {
+    "completed": true,
+    "test_result": "Phase_0_PASS drift_guard_PASS DB_PASS full_pytest_NOT_RUN",
+    "blocker": "straight_play_blocked_reingestion_required; box_play_statistically_underpowered_but_design_ready",
+    "files_modified": [
+      "outputs/research/p227a_star_box_play_dryrun_adapter_design_20260603.md",
+      "outputs/research/p227a_star_box_play_dryrun_adapter_design_20260603.json"
+    ],
+    "staged": 0,
+    "committed": 0,
+    "pushed": 0,
+    "allow_next_round": true,
+    "final_classification": "P227A_STAR_BOX_PLAY_ADAPTER_DESIGN_READY + P227A_STAR_STRAIGHT_PLAY_BLOCKED_REINGEST_REQUIRED"
+  }
+}

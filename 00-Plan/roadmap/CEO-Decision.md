@@ -754,3 +754,91 @@ After P212 completed the honesty correction (CURRENT_STATE.md corrected from unq
 The governance correction cycle for agent bootstrap adoption is complete on the local-commit dimension. The CEO previously flagged the gap between "files exist" and "files are institutionally ratified." That gap is now closed at the local-git level. Remote ratification (push) and any downstream tasks remain at user discretion.
 
 `CEO_ADDENDUM_BOOTSTRAP_RATIFICATION_COMPLETE`
+
+---
+
+# CEO Decision — 2026-06-03 (P221F→P224C Cross-Lottery Feature-Discovery Chain + Survivor Ruling + 兩方向裁決)
+
+**Classification:** `CEO_DECISION_PARTIALLY_APPROVED`
+**Write authorization:** User explicitly authorized (2026-06-03) scoped write of `CEO-Decision.md` + `active_task.md` only, then authorized landing via the standard dev-branch + PR flow (`p225-governance-closeout-sync`), explicitly lifting the CEO no-branch/commit/push restriction for this doc-only change. The pre-existing 44-file dirty/untracked worktree is left untouched (narrow allowlist; `git add` names only these two files; no DB/registry/production writes).
+
+## 1. CEO Review Date
+2026-06-03 Asia/Taipei.
+
+## 2. Reviewed Inputs
+- CTO closeout report (P221→P224C, `CTO_ROADMAP_ANALYSIS_BLOCKED`).
+- User direction (兩方向): (1) demote full-period frequency to reference, focus mid 500-1000 / short 100-150; (2) mine all-lottery × all-method replay comparison data for success-rate features.
+- Artifacts (read in full): `p221_cross_lottery_feature_discovery_protocol`, `p222_cross_lottery_feature_discovery_scan`, `p223b_candidate_oos_cross_year_validation`, `p224_daily539_midfreq_fourier_2bet_deeper_validation`, `p224b_daily539_survivor_future_oos_monitoring_protocol` (all 20260603).
+- Governance docs: `roadmap.md` §0, `active_task.md`, `CURRENT_STATE.md`, `SHARED_AGENT_BOOTSTRAP.md`.
+- Independent Phase 0 (not quoted from CTO): HEAD `ebfc597` == origin/main (0/0); replay 94924 (BIG 24140 / DAILY_539 34680 / POWER 36104); bet_index nulls 0; dup keys 0; integrity `ok`; drift guard `REPLAY_LIFECYCLE_DRIFT_GUARD_PASS` (exit 0); staged 0; worktree dirty (44 unrelated).
+
+## 3. Yesterday/Today Work Value Assessment
+| Item | Value |
+|---|---|
+| P221F protocol freeze | [Confirmed] High process value — pre-registered windows/universe/baselines/anti-overfit gate, leakage-safe. |
+| P222 cross-lottery scan | [Confirmed] High process value, **signal = NULL** — 35 strategies × 14 bet-index × 3 lotteries swept; honest `NEED_MORE_OOS`. |
+| P223B → P224 survivor | [Confirmed] Highest value — **P224 dedup corrected P222's inflated p=5.2e-35 down to clean-slice p=0.0674**. Honest negative. |
+| P224B OOS monitoring | [Confirmed] Objective reopen gate (300/500 new draws; failure → historical artifact). |
+| Net | [Risk] Maturity gain is in **methodology + honesty**, not in finding edge. Real signal remains NULL (consistent with L82/L90/L91). |
+
+**Survivor honesty correction (critical):** `midfreq_fourier_2bet / DAILY_539` clean slice (1500 rows = 1500 distinct draws, bet_index=1): mean **0.6693** vs baseline 0.6410, one-sided **p=0.0674 (fails 0.05)**, CI [0.632, 0.706] crosses baseline, 6/10 blocks above, and **the entire nominal edge rests on 19 `hit_count=3` rows** (removing them → 0.639 < baseline). P223B's `CROSS_YEAR_CONFIRMED` was produced on the duplicated/overlapping P222 slice (3000 rows / 2543 distinct draws); dedup in P224 flipped it to `NEEDS_MORE_OOS`. Honest prior: **lean NULL**, not "almost confirmed."
+
+## 4. CTO Judgment Review — **部分採納 (PARTIALLY APPROVED)**
+**Adopt:** ① do not start P225 (strategy); ② closeout first, do not force new research; ③ survivor → wait-for-OOS; ④ governance-file writes gated under the dirty tree.
+**Correct / extend (CTO gaps):**
+1. Survivor must be recorded as fragile near-null (clean p=0.067, 19-row dependency), not neutral "needs more OOS."
+2. "Wait for OOS" has a faster alternative: **DAILY_539 has ~4,376 un-replayed older draws** (5,876 total − 1,500 replayed) → backward replay extension can resolve the survivor on a larger sample **now**, instead of ~1 year for 300 future draws (DAILY_539 ≈ 6 draws/week).
+3. Genuinely unmined frontier = **3_STAR / 4_STAR**: 4,179 + 2,922 = **7,101 draws, 0 replay rows**. CTO under-ranked this at P2.
+4. Governance docs are stale at ~P216–P218; P211A/P221F/P222/P223B/P224/P224C are **not recorded** while HEAD is at P224C.
+5. `CURRENT_STATE.md` "Latest User Direction" windows (mid 100-300 / short 10-50) are **wrong** — user's actual + P221F's frozen windows are mid 500-1000 / short 100-150.
+
+## 5. Roadmap Gap Assessment (CTO follow-up required — CEO does not edit roadmap.md directly)
+- §0.1 phase table: add P211A, P221F, P222, P223B, P224, P224C rows with evidence paths.
+- §0.4 priority: upgrade 3_STAR/4_STAR unmined frequency P3 → P1; mark survivor `WAIT_FOR_OOS`; mark direction #1/#2 as executed → NULL.
+- `CURRENT_STATE.md`: fix stale windows to 500-1000 / 100-150; bump State Marker to P224C.
+- These edits are assigned to today's **P225 governance closeout** worker task (see `active_task.md`), not done in this CEO PR.
+
+## 6. CEO Priority Decision
+| Level | Item | Status |
+|---|---|---|
+| **P0** | Governance closeout sync (record P211A–P224C; survivor `WAIT_FOR_OOS`; fix CURRENT_STATE windows) — doc-only | **Today's active_task (P225)** |
+| **P0.2** | Anti-overfit gate (P221F frozen) enforced on any future research | Ready |
+| **P1.1** | 3_STAR/4_STAR replay-gap diagnostic (plan-only) — only unmined family | Needs separate authorization |
+| **P1.2** | DAILY_539 survivor backward-OOS extension (4,376 old draws) | Needs DB-write authorization (generates replay rows) |
+| **P2** | Other P222 candidates (midfreq_fourier_mk_3bet/POWER etc.) | Observation-only |
+| **P3–P10** | production promotion / registry / DB write / recommendation / controlled apply / betting advice | **Unauthorized — frozen** |
+
+**Downgrade/retire:** full-period frequency as filter → reference-only (direction #1, already in roadmap §0.4). Re-running the same P221F sweep on the same data → **not recommended** (manufactures false positives; violates L100/L101).
+
+## 7. Today Focus Direction
+**核心裁決：使用者的兩個方向今天已被執行完，且回到 NULL。**
+- Direction #1 (window reframe) = P221F window families (short 100/125/150, mid 500/750/1000, all-history=reference) — an exact match to the user's stated windows. Already operationalized.
+- Direction #2 (mine all-lottery × all-method) = P222 scan. Already run; sole survivor is fragile (p=0.067).
+- Therefore the correct way to honor "exhaust everything" is **new signal space, not re-runs**: (a) 3_STAR/4_STAR (0 replay rows), (b) survivor backward-OOS extension (resolve now vs. wait a year). Both plan-first, read-only-first, inheriting the P221F anti-overfit gate.
+- **Today (P0):** governance closeout only. New research frontiers (P1.1/P1.2) are queued and each needs separate explicit authorization.
+
+## 8. Risks / Blind Spots
+- [Risk] Multiple-testing false positives if the sweep is re-run — any re-scan must be newly pre-registered, no post-hoc window selection.
+- [Risk] Survivor overfit — edge rests on 19 hit=3 rows (echoes L62/L100).
+- [Risk] Backward extension is not free — generating replay rows = DB write (needs authorization); pre-2021 draws carry regime-change caveats.
+- [Blind spot] Governance drift — HEAD at P224C, docs stale at P217; a fresh agent would misread current state. P225 closeout fixes this.
+
+## 9. CEO Final Decision
+`CEO_DECISION_PARTIALLY_APPROVED`. CTO closeout direction adopted; survivor honesty + backward-OOS option + 3_STAR/4_STAR frontier + governance-staleness fixes added. Today's single executable task = **P225 governance closeout sync** (doc-only, scoped allowlist, no DB/registry/production, no new research). P225-strategy promotion, backward-OOS DB write, and any betting/recommendation change remain unauthorized. P210 COMPLETE / P211 HELD_BY_USER unchanged.
+
+## 10. CEO Summary (10 行內)
+1. CTO 部分採納：closeout / 不推 P225 / wait-OOS 採納。
+2. 使用者兩方向今天已執行完 → NULL（P221F 窗口=使用者窗口；P222=方向#2）。
+3. Survivor clean-slice p=0.067、靠 19 筆 hit=3 → fragile near-null，非「快成功」。
+4. 「窮盡一切」正確下一步 = 3_STAR/4_STAR（未挖）+ survivor 向後 OOS 延伸（4,376 舊期，免等一年）。
+5. 重跑同一份 sweep = 製造假陽性，不採納。
+6. 治理檔 stale 到 P217、CURRENT_STATE 窗口寫錯 → P0 closeout 修正。
+7. 今日唯一任務 = P225 治理 closeout sync（doc-only）。
+8. production / DB / registry / recommendation / controlled apply 全部維持凍結。
+9. Phase 0 全 PASS；唯一卡點 dirty tree + main-edit hook，已由使用者明確授權 dev-branch PR 解除。
+10. Final: `CEO_DECISION_PARTIALLY_APPROVED`.
+
+### CEO Final Decision (2026-06-03, P221F→P224C review)
+`CEO_DECISION_PARTIALLY_APPROVED`
+
+Final Classification: `CEO_DECISION_PARTIALLY_APPROVED`

@@ -9,7 +9,7 @@
 
 ## ⚠️ STATUS CORRECTION (still in effect) — Migration chain is COMPLETE + MERGED
 
-Production-DB-migration chain (`P182–P197`) is **DONE and MERGED via PR #249** — NOT pending. CEO read-only verify (2026-06-03): replay DB = **94924** rows, `bet_index` PRESENT (0 nulls), 0 dup keys, POWER_LOTTO replay = **36104**, integrity `ok`, HEAD = origin/main = `061bdc19`, drift guard `REPLAY_LIFECYCLE_DRIFT_GUARD_PASS`, archive closed. **No pending human migration gate. Do NOT re-run any production DB migration.**
+Production-DB-migration chain (`P182–P197`) is **DONE and MERGED via PR #249** — NOT pending. CEO read-only verify (2026-06-03): replay DB = **94924** rows, `bet_index` PRESENT (0 nulls), 0 dup keys, POWER_LOTTO replay = **36104**, integrity `ok`, HEAD == origin/main (verify with `git rev-parse HEAD` and `git rev-parse origin/main` — do not hardcode a live hash here), drift guard `REPLAY_LIFECYCLE_DRIFT_GUARD_PASS`, archive closed. **No pending human migration gate. Do NOT re-run any production DB migration.**
 
 ---
 

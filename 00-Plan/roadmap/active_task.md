@@ -1,18 +1,19 @@
 # Active Task — Today (2026-06-04 PM)
 
 > **STATUS: `WAITING_FOR_USER_AUTHORIZATION`**
-> P237D governance closeout complete (PR #285 merged; P237C NIST randomness-audit tripwire design doc recorded).
-> Final Classification: `P237D_P237C_DESIGN_DOC_MERGED_GOVERNANCE_CLOSEOUT_COMPLETE`
+> P238C governance closeout complete (PR #287 merged; P238A NIST randomness-audit artifact-only build plan recorded).
+> Final Classification: `P238C_P238A_BUILD_PLAN_MERGED_GOVERNANCE_CLOSEOUT_COMPLETE`
 
 ---
 
 ## Context (verified read-only, 2026-06-04 PM)
-- repo `/Users/kelvin/Kelvin-WorkSpace/LotteryNew`; branch `main`; HEAD == origin/main == `5cf7852` (post PR #282 + #283 merge).
+- repo `/Users/kelvin/Kelvin-WorkSpace/LotteryNew`; canonical branch `main`; HEAD must equal origin/main and be verified before any task.
 - DB `strategy_prediction_replays` = 94,924 rows; integrity `ok`; drift guard `REPLAY_LIFECYCLE_DRIFT_GUARD_PASS`.
 - `LIFECYCLE_UNRESOLVED = 0` (P233B). No deployable candidate in any lottery.
 - P235A Lofea feasibility review: `FIT_AS_DESIGN_INSPIRATION_ONLY`. No deployable evidence. Adopt now = NO.
 - P234 / P234A: Scientific Statistical Diagnostics Layer = P2.4 design-only; no implementation authorized.
-- P237C NIST randomness-audit tripwire design doc is merged on main via PR #285. It is diagnostics-only / design-only. No build, code, DB, registry, production, recommendation, monitoring, strategy, or P211 restart is authorized.
+- P237C NIST randomness-audit tripwire design doc is merged on main via PR #285.
+- P238A NIST randomness-audit artifact-only build plan is merged on main via PR #287. It is a future-build plan only. No executable build, code, scripts, tests, DB write, registry mutation, production/recommendation change, monitoring job, strategy, betting advice, or P211 restart is authorized.
 
 ## What was completed this session
 | Task | Result |
@@ -25,11 +26,13 @@
 | P236B Governance merge closeout | `P236B_GOVERNANCE_MERGE_CLOSEOUT_COMPLETE` (this PR). Merged PR #282 then #283; verified P236A artifacts + drift + DB 94,924; synced governance docs. |
 | P237C NIST randomness-audit tripwire design doc | `P237C_NIST_RANDOMNESS_AUDIT_TRIPWIRE_DESIGN_READY` (PR #285). Design-doc only. Defines draw-level randomness-audit diagnostics, tripwire taxonomy, multiple-testing guardrails, and future artifact schema. No build, no code, no DB/registry/production/recommendation change. |
 | P237D P237C merge + governance closeout | `P237D_P237C_DESIGN_DOC_MERGED_GOVERNANCE_CLOSEOUT_COMPLETE`. Merged PR #285; recorded P237C in governance; returned to `WAITING_FOR_USER_AUTHORIZATION`. No NIST build started. |
+| P238A NIST randomness-audit artifact-only build plan | `P238A_NIST_RANDOMNESS_AUDIT_ARTIFACT_ONLY_BUILD_PLAN_READY` (PR #287). Build-plan artifact only: `outputs/research/p238a_nist_randomness_audit_artifact_only_build_plan_20260604.md`. No executable NIST build, code, scripts, tests, DB/registry/production/recommendation change, monitoring job, strategy, or betting advice. |
+| P238C P238A build-plan merge + governance closeout | `P238C_P238A_BUILD_PLAN_MERGED_GOVERNANCE_CLOSEOUT_COMPLETE`. Merged PR #287; recorded P238A in governance; returned to `WAITING_FOR_USER_AUTHORIZATION`. Future P238B build remains unauthorized. |
 
 ## Authorized-on-request options (NONE auto-started — require explicit user authorization)
 - **OPT-C: P234 statistical-methods diagnostics INVENTORY (design-only).** Read-only inventory/design-doc; no module build, no code, no DB. Cites Lofea framings (Universe-length, in/out-frequency split) as inspiration only.
 - **OPT-D (NEW, from P236A): NIST-style randomness-audit SSOT + tripwire design-doc (design-only).** Read-only design-doc for a diagnostics-only randomness audit that acts as the null-baseline SSOT and a tripwire — alerts only if draws ever stop being random; **NOT a predictor, NOT a win-rate claim**. No build, no code, no DB. Build requires separate explicit authorization. Ref: `outputs/research/p236a_external_statistical_methods_scouting_20260604.md` §7.1.
-- **Future NIST randomness-audit build (not authorized):** P237C design doc exists at `outputs/research/p237c_nist_randomness_audit_tripwire_design_20260604.md`; any executable audit/build remains separate explicit authorization only. RED alert semantics in the design authorize human review only, not strategy or production changes.
+- **Future NIST randomness-audit build (not authorized):** P237C design doc exists at `outputs/research/p237c_nist_randomness_audit_tripwire_design_20260604.md`; P238A build plan exists at `outputs/research/p238a_nist_randomness_audit_artifact_only_build_plan_20260604.md`. Any executable audit/build remains separate explicit authorization only. RED alert semantics authorize human review only, not strategy or production changes.
 - **Passive monitoring** — wait for ≥300 new DAILY_539 draws (preferred 500); per P224B reopen gate.
 - **3_STAR/4_STAR re-scan** — only after ≥10,000 total 3_STAR draws (have 4,179) or positional re-ingestion.
 - **POWER_LOTTO first-zone future OOS** — only after significant new draws + explicit authorization + P221F gate.
@@ -57,4 +60,4 @@
 6. 是否允許進入下一輪
 7. Final Classification
 
-Final Classification (this file): `P237D_P237C_DESIGN_DOC_MERGED_GOVERNANCE_CLOSEOUT_COMPLETE`
+Final Classification (this file): `P238C_P238A_BUILD_PLAN_MERGED_GOVERNANCE_CLOSEOUT_COMPLETE`

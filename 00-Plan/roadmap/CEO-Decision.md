@@ -1308,3 +1308,34 @@ The P237C artifact is a future-build specification only. It does **not** authori
 - Future NIST build requires separate explicit user authorization.
 
 Final Classification: `P237D_P237C_DESIGN_DOC_MERGED_GOVERNANCE_CLOSEOUT_COMPLETE`
+
+---
+
+# CEO Decision — 2026-06-04 (PM/evening) — P238C P238A Build-Plan Merge And Governance Closeout
+
+## 1. CEO Review Date
+
+2026-06-04 Asia/Taipei. Final Classification: `P238C_P238A_BUILD_PLAN_MERGED_GOVERNANCE_CLOSEOUT_COMPLETE`.
+
+## 2. Reviewed Inputs
+
+- [Confirmed] P238A build-plan artifact: `outputs/research/p238a_nist_randomness_audit_artifact_only_build_plan_20260604.md`.
+- [Confirmed] PR #287 merged into `main`.
+- [Confirmed] P238A classification: `P238A_NIST_RANDOMNESS_AUDIT_ARTIFACT_ONLY_BUILD_PLAN_READY`.
+- [Confirmed] P238A is artifact-only planning: no executable NIST build, no code, no scripts, no tests, no DB write, no registry mutation, no production/recommendation change, no monitoring job, no strategy, no P211 restart, and no betting advice.
+
+## 3. Decision
+
+CEO accepts P238A as a completed diagnostics-only future-build plan and records PR #287 as merged.
+
+The P238A artifact does **not** authorize P238B, a NIST randomness-audit build, monitoring job, implementation file, DB write, registry mutation, production/recommendation change, strategy promotion, or betting advice. Any executable audit/build requires separate explicit user authorization and must remain diagnostics-only.
+
+## 4. Current State
+
+- `active_task.md` returns to `WAITING_FOR_USER_AUTHORIZATION`.
+- P211 remains `HELD_BY_USER`.
+- No active worker task exists after closeout.
+- No deployable candidate exists in any lottery.
+- Future P238B build requires separate explicit user authorization.
+
+Final Classification: `P238C_P238A_BUILD_PLAN_MERGED_GOVERNANCE_CLOSEOUT_COMPLETE`

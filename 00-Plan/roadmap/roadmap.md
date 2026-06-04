@@ -1,6 +1,6 @@
 # Lottery Replay Roadmap
 
-**Last Updated:** 2026-06-04 Asia/Taipei (P235B Lofea feasibility governance closeout — P235A `FIT_AS_DESIGN_INSPIRATION_ONLY` merged PR #281; no deployable edge; design inspiration only; WAITING_FOR_USER_AUTHORIZATION)
+**Last Updated:** 2026-06-04 Asia/Taipei (P236B governance merge closeout — merged PR #282 then PR #283; P236A external statistical methods scouting `FALSIFICATION_AND_DIAGNOSTICS_ONLY`, hit-rate closed, no deployable edge; HEAD `5cf7852`; WAITING_FOR_USER_AUTHORIZATION)
 **Owner:** CTO agent
 **Primary Goal:** Keep LotteryNew replay, research, and product evidence truthful, reproducible, and governed. The current maturity bottleneck has shifted from migration rehearsal to short/mid-window strategy protocol design, anti-overfit validation, canonical repo dispatch safety, and honest product disclosure.
 **Repo Policy:** Use `/Users/kelvin/Kelvin-WorkSpace/LotteryNew` only. Do not create a new repo. Production DB, registry, and data writes require explicit governed authorization. CTO roadmap updates are limited to this file and `00-Plan/roadmap/CTO-Analysis.md`. CTO must not write `CEO-Decision.md`, `active_task.md`, `production/*`, `registry/*`, `data/*`, or any new repo.
@@ -57,7 +57,9 @@ This section is the current source of truth. The 2026-06-01 sections and P186-P1
 | **P234 Scientific Statistical Diagnostics Layer adoption analysis** | **[Complete]** `CTO_STATISTICAL_METHODS_ADOPTION_WITH_RISKS` | `00-Plan/roadmap/CTO-Analysis.md` §2026-06-04 statistical methods adoption analysis; roadmap §0.6 Direction F | CTO analysis only. Recommends adopting open-source-style statistical methods as a **read-only diagnostics layer**, not as new hypotheses/strategies and not as a win-rate improvement claim. Required boundaries: no DB write, no production write, no executable registry change, no active-task prompt, no strategy promotion. |
 | **P234A Governance follow-up** | **[Complete]** `P234A_GOVERNANCE_FOLLOWUP_CEO_DECISION_PARTIALLY_APPROVED_P2_DESIGN_ONLY` | `00-Plan/roadmap/roadmap.md`; `00-Plan/roadmap/CTO-Analysis.md`; PR #280, merge commit `8b70aee` | Doc-only: demoted P0.5→P2.4 design-only; added CEO Follow-Up Note to CTO-Analysis.md; fixed namespace (Lofea=P235A). No code/DB/production change. |
 | **P235A Lofea read-only feasibility review** | **[Complete]** `P235A_LOFEA_FEASIBILITY_REVIEW_COMPLETE_DESIGN_INSPIRATION_ONLY` | `outputs/research/p235a_lofea_readonly_feasibility_review_20260604.{md,json}`; PR #281, merge commit `03ba6d1` | Read-only feasibility review. Lofea = CC-BY-NC Python feature-engineering toolkit for 1/10-per-column lotteries. **No deployable predictive evidence.** Classification: `FIT_AS_DESIGN_INSPIRATION_ONLY`. Adopt now = NO. No code/DB/registry/production write. |
-| **P235B Lofea feasibility governance closeout** | **[Complete]** `P235B_LOFEA_FEASIBILITY_GOVERNANCE_CLOSEOUT_MERGED` | `00-Plan/roadmap/roadmap.md`; `00-Plan/roadmap/agent_bootstrap/CURRENT_STATE.md`; `00-Plan/roadmap/active_task.md`; this PR | Doc-only closeout recording P235A complete. active_task → `WAITING_FOR_USER_AUTHORIZATION`. No code/DB/production change. |
+| **P235B Lofea feasibility governance closeout** | **[Complete]** `P235B_LOFEA_FEASIBILITY_GOVERNANCE_CLOSEOUT_MERGED` | `00-Plan/roadmap/roadmap.md`; `00-Plan/roadmap/agent_bootstrap/CURRENT_STATE.md`; `00-Plan/roadmap/active_task.md`; PR #282 | Doc-only closeout recording P235A complete. active_task → `WAITING_FOR_USER_AUTHORIZATION`. No code/DB/production change. |
+| **P236A External statistical methods scouting** | **[Complete]** `P236A_EXTERNAL_STAT_METHODS_SCOUTING_COMPLETE_FALSIFICATION_AND_DIAGNOSTICS_ONLY` | `outputs/research/p236a_external_statistical_methods_scouting_20260604.{md,json}`; `00-Plan/roadmap/CEO-Decision.md` addendum; PR #283 | Read-only falsification scout. Hit-rate closed (L82/L91/P178A). 7/8 proposed methods already owned + enforced (P234). Sources S1–S8 verified. Two net-new diagnostics, **neither hit-rate**: NIST-style randomness-audit SSOT/tripwire (design-only) + payout/anti-crowd EV (L102 marginal). No deployable edge; no DB/registry/production write; no predictability claim. CEO `CEO_DECISION_PARTIALLY_APPROVED`. |
+| **P236B Governance merge closeout** | **[Complete]** `P236B_GOVERNANCE_MERGE_CLOSEOUT_COMPLETE` | `00-Plan/roadmap/active_task.md`; `00-Plan/roadmap/agent_bootstrap/CURRENT_STATE.md`; `00-Plan/roadmap/roadmap.md`; this PR | Merged PR #282 then PR #283; verified P236A artifacts + JSON + drift PASS + DB 94,924 unchanged; synced governance docs. No code/DB/production change; no build started. |
 
 ### 0.2 Current System Baseline
 
@@ -187,7 +189,7 @@ Upgrade / downgrade decisions:
 - **Required gates (if/when authorized):** pre-registered universe/windows/baselines, explicit family size, Bonferroni/BH-FDR where applicable, walk-forward or out-of-sample validation for any validation use, unit labels (row/draw/bet-index/strategy), NULL-is-success reporting.
 - **Priority:** P2 design-only — all subcomponents. Build only after explicit user authorization. Authorized on-request options: OPT-B P235A Lofea read-only feasibility review, OPT-C P234 statistical-methods diagnostics inventory (design-doc only).
 
-### 0.7 Current State Summary (updated by P235B governance closeout, 2026-06-04)
+### 0.7 Current State Summary (updated by P236B governance merge closeout, 2026-06-04)
 
 **Research chains P211A–P231B (all lotteries), P226–P227C (3_STAR/4_STAR), P232A (all-catalog scoreboard), and P233A/B (registry hygiene, LIFECYCLE_UNRESOLVED 20→0) are complete.**
 
@@ -198,6 +200,8 @@ Upgrade / downgrade decisions:
 - P234/P234A governance: Scientific Statistical Diagnostics Layer framing adopted as read-only diagnostics. P0.5 urgency rejected/demoted to **P2 design-only** (7/8 methods already exist + enforced). CTO final: `CTO_STATISTICAL_METHODS_ADOPTION_WITH_RISKS`. CEO: `CEO_DECISION_PARTIALLY_APPROVED`. No implementation authorized.
 - P235A Lofea feasibility review: **`FIT_AS_DESIGN_INSPIRATION_ONLY`**. Lofea is a CC-BY-NC Python feature-engineering toolkit for 1/10-per-column lotteries. **No deployable predictive evidence.** Adopt now = NO. Design inspiration only for P2.4 / Direction F (not yet authorized). Any reuse must be natively re-derived, pass P221F + multiple-testing + walk-forward/OOS, zero DB/registry/production writes. CC-BY-NC: no vendoring (WebComm is commercial).
 - P235B governance closeout: active_task → `WAITING_FOR_USER_AUTHORIZATION`. No new research authorized.
+- P236A external statistical methods scouting: **`FALSIFICATION_AND_DIAGNOSTICS_ONLY`**. Hit-rate prediction closed (L82/L91/P178A); external methods do not reopen it. 7/8 proposed methods already owned + enforced (P234). Two net-new diagnostics, **neither hit-rate**: NIST-style randomness-audit SSOT/tripwire (design-only; alerts only if draws stop being random) + payout/anti-crowd EV (E[payout|win], not P(win); L102 marginal). No deployable edge. CEO `CEO_DECISION_PARTIALLY_APPROVED`. PR #283 merged.
+- P236B governance merge closeout: merged PR #282 then PR #283; verified P236A artifacts + drift + DB 94,924 unchanged; governance docs synced. NIST tripwire = future read-only design/build option (OPT-D), **not started**, build needs separate authorization.
 
 **No active deployable candidate in any lottery.**
 
@@ -212,6 +216,8 @@ Upgrade / downgrade decisions:
 Final current roadmap marker:
 
 ```text
+P236B_GOVERNANCE_MERGE_CLOSEOUT_COMPLETE
+P236A_EXTERNAL_STAT_METHODS_SCOUTING_COMPLETE_FALSIFICATION_AND_DIAGNOSTICS_ONLY
 P235B_LOFEA_FEASIBILITY_GOVERNANCE_CLOSEOUT_MERGED
 P235A_LOFEA_FEASIBILITY_REVIEW_COMPLETE_DESIGN_INSPIRATION_ONLY
 P234A_GOVERNANCE_FOLLOWUP_CEO_DECISION_PARTIALLY_APPROVED_P2_DESIGN_ONLY

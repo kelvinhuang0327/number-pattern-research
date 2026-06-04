@@ -1,7 +1,7 @@
 # Current State — LotteryNew
 
-**Last Reviewed:** 2026-06-04 Asia/Taipei (P235B Lofea feasibility governance closeout — P235A `FIT_AS_DESIGN_INSPIRATION_ONLY` merged PR #281; P234A governance follow-up merged PR #280; no deployable candidate; WAITING_FOR_USER_AUTHORIZATION)
-**State Marker:** `P235B_LOFEA_FEASIBILITY_GOVERNANCE_CLOSEOUT_MERGED`
+**Last Reviewed:** 2026-06-04 Asia/Taipei (P236B governance merge closeout — merged PR #282 then PR #283; P236A external statistical methods scouting recorded `FALSIFICATION_AND_DIAGNOSTICS_ONLY`, no deployable edge; HEAD `5cf7852`; no deployable candidate; WAITING_FOR_USER_AUTHORIZATION)
+**State Marker:** `P236B_GOVERNANCE_MERGE_CLOSEOUT_COMPLETE`
 **Purpose:** Project-specific state for future agents. Read this after `SHARED_AGENT_BOOTSTRAP.md` and `TASK_TEMPLATES.md`.
 
 ## Canonical Execution Context
@@ -99,6 +99,8 @@ Read-only baseline commands:
 | **P234A Governance follow-up** | **COMPLETE** — `P234A_GOVERNANCE_FOLLOWUP_CEO_DECISION_PARTIALLY_APPROVED_P2_DESIGN_ONLY` | Doc-only. roadmap.md P0.5→P2.4; CTO-Analysis.md CEO Follow-Up Note added; namespace fixed (Lofea=P235A). PR #280 merged. |
 | **P235A Lofea read-only feasibility review** | **COMPLETE** — `P235A_LOFEA_FEASIBILITY_REVIEW_COMPLETE_DESIGN_INSPIRATION_ONLY` | Read-only. Lofea = CC-BY-NC feature-engineering toolkit, 1/10-per-column lotteries. No deployable evidence. Adopt now = NO. Design inspiration only. PR #281 merged. |
 | **P235B Lofea feasibility governance closeout** | **COMPLETE** — `P235B_LOFEA_FEASIBILITY_GOVERNANCE_CLOSEOUT_MERGED` | Doc-only closeout. active_task → WAITING_FOR_USER_AUTHORIZATION. No code/DB/production change. |
+| **P236A External statistical methods scouting** | **COMPLETE** — `P236A_EXTERNAL_STAT_METHODS_SCOUTING_COMPLETE_FALSIFICATION_AND_DIAGNOSTICS_ONLY` | Read-only scout. Hit-rate closed (L82/L91/P178A); 7/8 proposed methods already owned + enforced (P234). Sources S1–S8 verified. Two net-new diagnostics, **neither hit-rate**: NIST-style randomness-audit SSOT/tripwire (design-only) + payout/anti-crowd EV (L102 marginal). No deployable edge. CEO `CEO_DECISION_PARTIALLY_APPROVED`. PR #283 merged. |
+| **P236B Governance merge closeout** | **COMPLETE** — `P236B_GOVERNANCE_MERGE_CLOSEOUT_COMPLETE` | Merged PR #282 then PR #283; verified P236A artifacts + JSON parse + drift PASS + DB 94,924 unchanged; synced governance docs (active_task / CURRENT_STATE / roadmap). No code/DB/production change. No build started. |
 
 ## Completed Milestones
 
@@ -135,6 +137,8 @@ Read-only baseline commands:
 - [Confirmed] P234A: Governance follow-up doc-only. roadmap.md P0.5→P2.4; CTO-Analysis.md CEO Follow-Up Note; namespace Lofea=P235A. PR #280 merged.
 - [Confirmed] P235A: Lofea read-only feasibility review complete. `FIT_AS_DESIGN_INSPIRATION_ONLY`. Lofea = CC-BY-NC feature-engineering toolkit, 1/10-per-column lotteries. No deployable predictive evidence. Adopt now = NO. Design inspiration only; any reuse must be natively re-derived + P221F + multiple-testing + walk-forward/OOS. PR #281 merged.
 - [Confirmed] P235B: Lofea feasibility governance closeout complete. active_task → WAITING_FOR_USER_AUTHORIZATION. No code/DB/production change.
+- [Confirmed] P236A: External statistical methods scouting complete. Read-only. Hit-rate prediction closed (L82/L91/P178A); 7/8 proposed methods already owned + enforced (P234). Sources S1–S8 verified (NIST SP 800-22; sklearn TimeSeriesSplit / permutation_test_score; statsmodels multipletests; unpopular-number literature; Lofea). Two net-new diagnostics, **neither hit-rate**: (1) NIST-style randomness-audit SSOT + tripwire (design-only — alerts only if draws stop being random; not a predictor); (2) payout/anti-crowd EV (raises E[payout|win] not P(win); L102 marginal p=0.257). No deployable edge. `FALSIFICATION_AND_DIAGNOSTICS_ONLY`. CEO `CEO_DECISION_PARTIALLY_APPROVED`. PR #283 merged.
+- [Confirmed] P236B: Governance merge closeout complete. Merged PR #282 then PR #283; verified P236A artifacts exist + JSON parse + drift PASS + DB 94,924 unchanged; synced governance docs. No code/DB/production change; no build started. NIST tripwire remains a future read-only design/build option (OPT-D), not authorized.
 
 ## Current Blockers / Holds
 
@@ -160,12 +164,13 @@ Read-only baseline commands:
 
 ## Recommended Next Direction
 
-No active deployable candidate in any lottery. **The P211A–P231B arc has exhausted all current in-window candidates. P232A all-catalog scoreboard confirms no deployable candidate. P233B registry hygiene resolved LIFECYCLE_UNRESOLVED to 0. P234/P234A CTO statistical-methods analysis complete (P2.4 design-only). P235A Lofea feasibility review complete (design-inspiration only, no deployable edge). Governance record is now complete.** Do not start new research without explicit user authorization. Queued options:
+No active deployable candidate in any lottery. **The P211A–P231B arc has exhausted all current in-window candidates. P232A all-catalog scoreboard confirms no deployable candidate. P233B registry hygiene resolved LIFECYCLE_UNRESOLVED to 0. P234/P234A CTO statistical-methods analysis complete (P2.4 design-only). P235A Lofea feasibility review complete (design-inspiration only, no deployable edge). P236A external statistical methods scouting complete (falsification/diagnostics-only; hit-rate closed; 7/8 methods already owned; net-new = NIST randomness-audit tripwire + payout EV; no deployable edge). Governance record is now complete.** Do not start new research without explicit user authorization. Queued options:
 
 1. **Passive monitoring** — wait for ≥300 new DAILY_539 draws (preferred 500); per P224B protocol, new OOS evidence could reopen, but prior shifted toward NULL after P230B1 below-baseline.
 2. **3_STAR/4_STAR re-scan** — only after ≥10,000 total 3_STAR draws (currently 4,179) accumulate naturally, or after positional re-ingestion for straight-play; requires fresh pre-registration.
 3. **Explore entirely new strategies / hypotheses** — requires explicit authorization, fresh P221F pre-registration, and a new task prompt.
 4. **POWER_LOTTO first-zone future OOS** — `midfreq_fourier_mk_3bet` remains observation-only (P231B NULL); future OOS monitoring only with explicit authorization and P221F gate.
+5. **NIST-style randomness-audit SSOT + tripwire design-doc (OPT-D, from P236A)** — read-only diagnostics-only design-doc; not a predictor, no win-rate claim. Build requires separate explicit authorization. Ref: `outputs/research/p236a_external_statistical_methods_scouting_20260604.md` §7.1.
 
 Retired: DAILY_539 survivor backward-OOS extension (P1.2) — resolved; POWER_LOTTO first-zone backward-OOS (P231B) — resolved NULL.
 

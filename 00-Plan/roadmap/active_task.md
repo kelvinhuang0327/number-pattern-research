@@ -1,11 +1,11 @@
 # Active Task — Today (2026-06-04)
 
-> **No active worker task after P232B governance closeout.**
-> P232A COMPLETE + MERGED (PR #274, merge commit `86d4f52`, 2026-06-04).
-> P232A Final Classification: `P232A_ALL_CATALOG_STRATEGY_HISTORICAL_REPLAY_SCOREBOARD_COMPLETE`
-> P232A scoreboard: 41 total strategy+lottery entries (21 catalog-registered, 20 LIFECYCLE_UNRESOLVED); 36 replay-backed, 5 no-replay; historical-only, no deployable classification.
-> P232B governance closeout (doc-only): `P232B_ALL_CATALOG_SCOREBOARD_GOVERNANCE_CLOSEOUT_PR_OPEN`
-> CEO Decision 2026-06-04: `CEO_DECISION_P232A_SCOREBOARD_ACCEPTED_GOVERNANCE_CLOSEOUT`
+> **No active worker task after P233C governance closeout.**
+> P233B COMPLETE + MERGED (PR #277, merge commit `24f9f81`, 2026-06-04).
+> P233B Final Classification: `P233B_LIFECYCLE_UNRESOLVED_NON_EXECUTABLE_STUB_UPDATE_MERGED`
+> P233B result: LIFECYCLE_UNRESOLVED 20 → 0; added 20 non-executable stubs (REJECTED=12, RETIRED=8); no executable adapter added; DB unchanged 94924.
+> P233C governance closeout (doc-only): `P233C_LIFECYCLE_UNRESOLVED_REGISTRY_HYGIENE_GOVERNANCE_CLOSEOUT_PR_OPEN`
+> CEO Decision 2026-06-04: `CEO_DECISION_P233B_REGISTRY_HYGIENE_ACCEPTED_GOVERNANCE_CLOSEOUT`
 > New research requires separate explicit user authorization.
 
 ---
@@ -108,8 +108,9 @@ git diff --name-only                 # after edits: only the 4 P231B files
 - **3_STAR / 4_STAR** box-play — `UNDERPOWERED_NO_SIGNAL`; straight-play `BLOCKED_REINGEST_REQUIRED`.
 - **P211** short/mid-window read-only diagnostic — `HELD_BY_USER` (2026-06-02 「先暫停」). Do not auto-resume.
 - Production promotion / registry / DB write / recommendation-logic change / controlled apply / betting advice — all **unauthorized / frozen**.
-- No active deployable candidate in any lottery after P231B and P232A scoreboard. New research requires separate explicit user authorization.
-- **P232A scoreboard** — `P232A_ALL_CATALOG_STRATEGY_HISTORICAL_REPLAY_SCOREBOARD_COMPLETE`. Historical evidence only. 20 LIFECYCLE_UNRESOLVED entries observed (in DB but not in catalog); registry alignment is future governance observation, not an immediate action item. Any use requires separate authorization + P221F gates.
+- No active deployable candidate in any lottery after P231B, P232A scoreboard, and P233B registry hygiene. New research requires separate explicit user authorization.
+- **P232A scoreboard** — `P232A_ALL_CATALOG_STRATEGY_HISTORICAL_REPLAY_SCOREBOARD_COMPLETE`. Historical evidence only. LIFECYCLE_UNRESOLVED resolved to 0 by P233B.
+- **P233B registry hygiene** — `P233B_LIFECYCLE_UNRESOLVED_NON_EXECUTABLE_STUB_UPDATE_MERGED`. LIFECYCLE_UNRESOLVED 20→0. 12 REJECTED + 8 RETIRED non-executable stubs added. No executable adapter added. No deployable candidate created.
 
 ---
 
@@ -135,6 +136,9 @@ git diff --name-only                 # after edits: only the 4 P231B files
 | **P231B POWER_LOTTO first-zone backward-OOS dry-run** | **`P231B_POWERLOTTO_FIRST_ZONE_BACKWARD_OOS_DRYRUN_NULL`** | **COMPLETE (PR #272, merge commit `2beb24e`)** |
 | P231C POWER_LOTTO first-zone governance closeout | `P231C_POWERLOTTO_FIRST_ZONE_BACKWARD_OOS_GOVERNANCE_CLOSEOUT_MERGED` | COMPLETE (PR #273) |
 | **P232A All-catalog historical replay scoreboard** | **`P232A_ALL_CATALOG_STRATEGY_HISTORICAL_REPLAY_SCOREBOARD_COMPLETE`** | **COMPLETE (PR #274, merge commit `86d4f52`)** |
-| P232B All-catalog scoreboard governance closeout | `P232B_ALL_CATALOG_SCOREBOARD_GOVERNANCE_CLOSEOUT_PR_OPEN` | IN PROGRESS (this task) |
+| P232B All-catalog scoreboard governance closeout | `P232B_ALL_CATALOG_SCOREBOARD_GOVERNANCE_CLOSEOUT_MERGED` | COMPLETE (PR #275) |
+| **P233A Lifecycle-unresolved registry hygiene plan** | **`P233A_LIFECYCLE_UNRESOLVED_REGISTRY_HYGIENE_PLAN_MERGED`** | **COMPLETE (PR #276)** |
+| **P233B Non-executable stub update (LIFECYCLE_UNRESOLVED 20→0)** | **`P233B_LIFECYCLE_UNRESOLVED_NON_EXECUTABLE_STUB_UPDATE_MERGED`** | **COMPLETE (PR #277, merge commit `24f9f81`)** |
+| P233C Lifecycle unresolved registry hygiene governance closeout | `P233C_LIFECYCLE_UNRESOLVED_REGISTRY_HYGIENE_GOVERNANCE_CLOSEOUT_PR_OPEN` | IN PROGRESS (this task) |
 
-Final Classification (this file): `P232B_ALL_CATALOG_SCOREBOARD_GOVERNANCE_CLOSEOUT_PR_OPEN`
+Final Classification (this file): `P233C_LIFECYCLE_UNRESOLVED_REGISTRY_HYGIENE_GOVERNANCE_CLOSEOUT_PR_OPEN`

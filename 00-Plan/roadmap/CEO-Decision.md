@@ -1091,3 +1091,59 @@ The scoreboard provides a complete picture of the replay universe across all lif
 `CEO_DECISION_P232A_SCOREBOARD_ACCEPTED_GOVERNANCE_CLOSEOUT`. P232A is a valid and useful historical scoreboard. No deployable candidate is present. LIFECYCLE_UNRESOLVED = 20 is a future governance observation, not an immediate action. Any next research step requires separate authorization and P221F gates. P232B governance closeout (this doc-only task) is the only authorized action today. P210 COMPLETE / P211 HELD_BY_USER / DAILY_539 HISTORICAL_ARTIFACT / POWER_LOTTO first-zone NULL / second-zone DISPLAY_ONLY — all unchanged.
 
 Final Classification: `CEO_DECISION_P232A_SCOREBOARD_ACCEPTED_GOVERNANCE_CLOSEOUT`
+
+
+---
+
+# CEO Decision — 2026-06-04 (P233A/P233B Registry Hygiene Accepted + P233C Governance Closeout)
+
+> 本段為 P233A/P233B lifecycle unresolved registry hygiene 的 CEO 驗收裁決與 P233C governance closeout。
+> 上方所有歷史段落全部保留（CLAUDE.md「舊策略不得刪除，只能歸檔」）。
+> P233A PR #276 已合併；P233B PR #277 已合併（merge commit `24f9f814ac6299a89ec5d28ae578c38027f8fadc`）。
+> P233C governance closeout 由 dev branch `p233c-lifecycle-unresolved-registry-hygiene-governance-closeout` 完成後透過 PR 落入 main。
+
+## 1. CEO Review Date
+
+2026-06-04 Asia/Taipei. Final Classification: `CEO_DECISION_P233B_REGISTRY_HYGIENE_ACCEPTED_GOVERNANCE_CLOSEOUT`.
+
+## 2. Reviewed Inputs
+
+- [Confirmed] Phase 0 (P233B merged state): repo `/Users/kelvin/Kelvin-WorkSpace/LotteryNew`, branch `main`, HEAD == origin/main == `24f9f81`, staged empty.
+- [Confirmed] DB: 94,924 rows (unchanged); integrity `ok`; drift guard `REPLAY_LIFECYCLE_DRIFT_GUARD_PASS`.
+- [Confirmed] P233B JSON key fields verified:
+  - `final_classification = P233B_LIFECYCLE_UNRESOLVED_NON_EXECUTABLE_STUB_UPDATE_COMPLETE`
+  - `db_write_performed = False`; `db_rows_before == db_rows_after == 94924`
+  - `added_stub_count = 20`
+  - `rejected_stub_count = 12` (evidence: `rejected/` archive files)
+  - `retired_stub_count = 8` (evidence: P59/P66/P79/P94/P126D controlled applies)
+  - `lifecycle_unresolved_before = 20` → `lifecycle_unresolved_after = 0`
+  - `executable_adapter_added = False`
+  - `production_change = False`; `recommendation_change = False`
+- [Confirmed] P232A scoreboard rerun on main: `LIFECYCLE_UNRESOLVED = 0`; total union 41 unchanged.
+- [Confirmed] 10/10 targeted tests PASS (`test_p233b_lifecycle_unresolved_non_executable_stub_update.py`).
+- [Confirmed] No production / registry executable / recommendation logic / DB change occurred.
+
+## 3. P233A/P233B Value Assessment
+
+| Item | CEO Mark | Value |
+|---|---|---|
+| P233A read-only plan (evidence-based lifecycle suggestions) | [Confirmed] | High governance value. All 20 entries traced to rejected/ archive or production-apply history; no guessing. |
+| P233B non-executable stubs (12 REJECTED + 8 RETIRED) | [Confirmed] | High governance value. LIFECYCLE_UNRESOLVED drops to 0. lifecycle visibility invariant now complete. |
+| All 20 stubs raise `LifecycleNotExecutable` | [Confirmed] | Safety verified by test. No prediction path exists. |
+| DB and production unchanged | [Confirmed] | Zero risk. No backward-incompatible change. |
+
+## 4. CEO Verdict
+
+**CEO ACCEPTS P233B registry hygiene as COMPLETE.**
+
+The governance gap has been closed: all 20 formerly-LIFECYCLE_UNRESOLVED entries now have explicit REJECTED or RETIRED labels in the registry. The `_ALL_ADAPTERS` list is now the complete and accurate governance record for all strategy+lottery pairs that have ever accumulated replay rows. Key notes:
+
+1. **No deployable candidate created.** REJECTED/RETIRED lifecycle labels do not authorize re-deployment or promotion of any of these 20 strategies.
+2. **No production behavior changed.** All 20 stubs raise `LifecycleNotExecutable`; the executable adapter set (8 ONLINE) is unchanged.
+3. **Future research** using the all-catalog scoreboard will now see honest REJECTED/RETIRED labels instead of LIFECYCLE_UNRESOLVED.
+
+## 5. CEO Final Decision
+
+`CEO_DECISION_P233B_REGISTRY_HYGIENE_ACCEPTED_GOVERNANCE_CLOSEOUT`. Registry hygiene is complete. LIFECYCLE_UNRESOLVED = 0. No new research authorized. No production/recommendation/DB change. P210 COMPLETE / P211 HELD_BY_USER / DAILY_539 HISTORICAL_ARTIFACT / POWER_LOTTO first-zone NULL / second-zone DISPLAY_ONLY — all unchanged.
+
+Final Classification: `CEO_DECISION_P233B_REGISTRY_HYGIENE_ACCEPTED_GOVERNANCE_CLOSEOUT`

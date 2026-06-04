@@ -1,6 +1,6 @@
 # Lottery Replay Roadmap
 
-**Last Updated:** 2026-06-04 Asia/Taipei (P230C governance closeout — DAILY_539 survivor reclassified as HISTORICAL_ARTIFACT_DIRECTION after P230B1 backward-OOS below-baseline)
+**Last Updated:** 2026-06-04 Asia/Taipei (P234A governance follow-up — CEO `CEO_DECISION_PARTIALLY_APPROVED`: CTO P234 framing adopted, P0.5 urgency rejected/demoted to P2 design-only; no implementation authorized; Lofea feasibility renamed P235A)
 **Owner:** CTO agent
 **Primary Goal:** Keep LotteryNew replay, research, and product evidence truthful, reproducible, and governed. The current maturity bottleneck has shifted from migration rehearsal to short/mid-window strategy protocol design, anti-overfit validation, canonical repo dispatch safety, and honest product disclosure.
 **Repo Policy:** Use `/Users/kelvin/Kelvin-WorkSpace/LotteryNew` only. Do not create a new repo. Production DB, registry, and data writes require explicit governed authorization. CTO roadmap updates are limited to this file and `00-Plan/roadmap/CTO-Analysis.md`. CTO must not write `CEO-Decision.md`, `active_task.md`, `production/*`, `registry/*`, `data/*`, or any new repo.
@@ -53,7 +53,8 @@ This section is the current source of truth. The 2026-06-01 sections and P186-P1
 | **P232B All-catalog scoreboard governance closeout** | **[Complete]** `P232B_ALL_CATALOG_SCOREBOARD_GOVERNANCE_CLOSEOUT_MERGED` | governance docs; PR #275 | Doc-only sync recording P232A complete and LIFECYCLE_UNRESOLVED observation. |
 | **P233A Lifecycle-unresolved registry hygiene plan** | **[Complete]** `P233A_LIFECYCLE_UNRESOLVED_REGISTRY_HYGIENE_PLAN_MERGED` | `outputs/research/p233a_lifecycle_unresolved_registry_hygiene_plan_20260604.{md,json}`; PR #276 | Read-only plan for 20 LIFECYCLE_UNRESOLVED entries. Evidence-based: 12 REJECTED (rejected/ archive) + 8 RETIRED (P59/P66/P79/P94/P126D controlled applies). |
 | **P233B Non-executable stub update** | **[Complete]** `P233B_LIFECYCLE_UNRESOLVED_NON_EXECUTABLE_STUB_UPDATE_MERGED` | `lottery_api/models/replay_strategy_registry.py`; `outputs/research/p233b_lifecycle_unresolved_non_executable_stub_update_20260604.{md,json}`; PR #277, merge commit `24f9f81` | 20 `_NON_EXECUTABLE_STUB` entries added. LIFECYCLE_UNRESOLVED 20→0. No executable adapter added. Zero DB write. 10/10 tests PASS. |
-| **P233C Lifecycle unresolved registry hygiene governance closeout** | **[In Progress]** `P233C_LIFECYCLE_UNRESOLVED_REGISTRY_HYGIENE_GOVERNANCE_CLOSEOUT_PR_OPEN` | governance docs; this PR | Doc-only sync recording P233A/B complete and LIFECYCLE_UNRESOLVED=0. No code/DB/production change. |
+| **P233C Lifecycle unresolved registry hygiene governance closeout** | **[Complete]** `P233C_LIFECYCLE_UNRESOLVED_REGISTRY_HYGIENE_GOVERNANCE_CLOSEOUT` | `00-Plan/roadmap/agent_bootstrap/CURRENT_STATE.md`; user handoff attachment | Doc-only sync recording P233A/B complete and LIFECYCLE_UNRESOLVED=0. No code/DB/production change. |
+| **P234 Scientific Statistical Diagnostics Layer adoption analysis** | **[Complete]** `CTO_STATISTICAL_METHODS_ADOPTION_WITH_RISKS` | `00-Plan/roadmap/CTO-Analysis.md` §2026-06-04 statistical methods adoption analysis; roadmap §0.6 Direction F | CTO analysis only. Recommends adopting open-source-style statistical methods as a **read-only diagnostics layer**, not as new hypotheses/strategies and not as a win-rate improvement claim. Required boundaries: no DB write, no production write, no executable registry change, no active-task prompt, no strategy promotion. |
 
 ### 0.2 Current System Baseline
 
@@ -95,6 +96,7 @@ This section is the current source of truth. The 2026-06-01 sections and P186-P1
 | **P0.2** | Anti-overfit validation gate | Prevent short-window noise from becoming false signal | [Active / Enforced] — P221F gate applied to P222 | P221F protocol provides the gate; P222 scan applied it; P224 clean-slice dedup verified it. All future research must inherit P221F validation rules. |
 | **P0.3** | Canonical execution / repo dispatch guard | Ensure every agent uses only `LotteryNew/main` and not archived/stale worktrees | [Confirmed] baseline; STOP guards in all P22x prompts | Prompts and worker reports must STOP on `.claude/worktrees/*`, archive paths, wrong branch, wrong HEAD/DB baseline, or broad staging. |
 | **P0.4** | CTO/CEO task-generation boundary | Resolve prompt-generation conflict for the next executable task | [Resolved] CEO Decision 2026-06-03 | P225 active_task set; governance boundary clarified. |
+| **P2.4** | Scientific Statistical Diagnostics Layer | Consolidate scattered diagnostics (random baselines, multiple-testing correction, rolling windows, stability labels, feature bottleneck report) into a reusable read-only layer | [P2 design-only — CEO `CEO_DECISION_PARTIALLY_APPROVED`] 7/8 methods already exist and are enforced (P221F gate; Bonferroni/BH in P222/P223B/P227C; rolling windows in RSM/P114/P224). No current consumer. Implementation requires separate explicit user authorization. | Layer is diagnostics-only, artifact-only; no new strategies, no DB/registry/production writes, no recommendation logic, no predictability claim. Authorized options: P235A Lofea feasibility review (OPT-B) or P234 inventory design-doc (OPT-C). |
 | **P1.1** | 3_STAR / 4_STAR replay-gap diagnostic → P226–P227C | Only unmined lottery family | [Complete] `P227C_STAR_BOX_PLAY_UNDERPOWERED_NO_SIGNAL` | P226 gap discovery + P227A design + P227B code + P227C scan complete. Both lotteries UNDERPOWERED_NO_SIGNAL; not deployable; straight-play BLOCKED_REINGEST_REQUIRED. Future work requires ≥10,000 3_STAR draws or positional re-ingestion. |
 | **P1.2** | DAILY_539 survivor backward-OOS extension | Resolve survivor p=0.0674 using older draws | **[Complete — BELOW_BASELINE → reclassified]** P230A + P230B1 + P230C | P230B1 dry-run (4,265 backward draws, zero DB write): mean 0.6375 < baseline 0.6410; all eras/robustness fail. **Reclassified HISTORICAL_ARTIFACT_DIRECTION in P230C.** No P230B2 DB backfill. No P225. |
 | **P1.3** | Product disclosure and second-zone containment | Make UI/API wording consistent with NULL/no-signal evidence | [Deferred] | No surface implies guaranteed improvement, betting advice, or second-zone predictive edge. |
@@ -173,7 +175,16 @@ Upgrade / downgrade decisions:
 - **Why important:** Stale worktrees/archive paths still exist and can produce invalid evidence if used.
 - **Priority:** P0 / P1 — ongoing maintenance.
 
-### 0.7 Current State Summary (updated by P233C, 2026-06-04)
+#### Direction F: Scientific Statistical Diagnostics Layer — P2 Design-Only
+
+- **Roadmap phase:** P2.4. **Status: [CEO `CEO_DECISION_PARTIALLY_APPROVED` — CTO framing adopted; P0.5 urgency rejected/demoted; implementation requires separate explicit user authorization]**
+- **Scope:** Consolidate scattered diagnostics into a reusable read-only layer: historical draw parser inventory, number/position frequency summaries, rolling windows, null/random baselines, permutation/binomial tests, multiple-testing correction, stability diagnostics, and feature bottleneck reporting.
+- **Why important:** The project already has 7/8 methods scattered and enforced (P221F gate; Bonferroni/BH in P222/P223B/P227C; rolling windows in RSM/P114/P224). The only genuinely new work is consolidation + a feature-bottleneck report schema — which has **no current consumer** until a future authorized research run needs it.
+- **Boundary:** Diagnostics-only and artifact-only. It must not create hypotheses, add strategies, write DB, write production state, write executable registry entries, generate worker prompts, or claim improved lottery win rate. No predictability claim.
+- **Required gates (if/when authorized):** pre-registered universe/windows/baselines, explicit family size, Bonferroni/BH-FDR where applicable, walk-forward or out-of-sample validation for any validation use, unit labels (row/draw/bet-index/strategy), NULL-is-success reporting.
+- **Priority:** P2 design-only — all subcomponents. Build only after explicit user authorization. Authorized on-request options: OPT-B P235A Lofea read-only feasibility review, OPT-C P234 statistical-methods diagnostics inventory (design-doc only).
+
+### 0.7 Current State Summary (updated by P234A governance follow-up, 2026-06-04)
 
 **Research chains P211A–P231B (all lotteries), P226–P227C (3_STAR/4_STAR), P232A (all-catalog scoreboard), and P233A/B (registry hygiene, LIFECYCLE_UNRESOLVED 20→0) are complete.**
 
@@ -181,6 +192,7 @@ Upgrade / downgrade decisions:
 - Direction #2 (mine all-lottery × all-method): P222 scan complete. Sole survivor `midfreq_fourier_2bet / DAILY_539` fragile → **reclassified `REJECTED_BY_BACKWARD_OOS / HISTORICAL_ARTIFACT_DIRECTION` (P230C)**. DAILY_539 backward-OOS (P230B1): mean 0.6375 < baseline 0.6410; all eras/robustness fail.
 - POWER_LOTTO first-zone: P231B backward-OOS NULL. `midfreq_fourier_mk_3bet` mean 0.969 vs 0.947 baseline; CI crosses; p=0.30; robustness fails. **Non-deployable. Observation-only.**
 - 3_STAR / 4_STAR chain (P226–P227C): Box-play scanned, 120 hypotheses, **UNDERPOWERED_NO_SIGNAL**. Straight-play BLOCKED (sorted storage). Not deployable.
+- P234 CTO statistical methods adoption analysis: Scientific Statistical Diagnostics Layer framing adopted as **read-only diagnostics**, not a new strategy/hypothesis engine. CTO final: `CTO_STATISTICAL_METHODS_ADOPTION_WITH_RISKS`. CEO follow-up `CEO_DECISION_PARTIALLY_APPROVED`: P0.5 urgency rejected/demoted to **P2 design-only**; 7/8 methods already exist + enforced; consolidation has no current consumer; implementation requires separate explicit user authorization. Lofea feasibility = **P235A** (not P234A). No new strategies, no DB/registry/production writes, no recommendation changes authorized.
 
 **No active deployable candidate in any lottery.**
 
@@ -195,7 +207,9 @@ Upgrade / downgrade decisions:
 Final current roadmap marker:
 
 ```text
-P233C_LIFECYCLE_UNRESOLVED_REGISTRY_HYGIENE_GOVERNANCE_CLOSEOUT_PR_OPEN
+P234A_GOVERNANCE_FOLLOWUP_CEO_DECISION_PARTIALLY_APPROVED_P2_DESIGN_ONLY
+P234_CTO_STATISTICAL_METHODS_ADOPTION_WITH_RISKS
+P233C_LIFECYCLE_UNRESOLVED_REGISTRY_HYGIENE_GOVERNANCE_CLOSEOUT
 P233B_LIFECYCLE_UNRESOLVED_NON_EXECUTABLE_STUB_UPDATE_MERGED_PR277
 P232B_ALL_CATALOG_SCOREBOARD_GOVERNANCE_CLOSEOUT_MERGED_PR275
 P232A_ALL_CATALOG_STRATEGY_HISTORICAL_REPLAY_SCOREBOARD_COMPLETE_MERGED_PR274

@@ -1,79 +1,86 @@
-# Active Task — Today (2026-06-03)
+# Active Task — Today (2026-06-04)
 
-> **Single active task: `P225_GOVERNANCE_CLOSEOUT_SYNC` (doc-only).**
-> Set by CEO Decision 2026-06-03 (P221F→P224C review, `CEO_DECISION_PARTIALLY_APPROVED`).
-> P211 remains **HELD_BY_USER**. No strategy P225, no DB/registry/production write, no new research in this task.
-
----
-
-## Context (verified read-only, 2026-06-03)
-
-- HEAD == origin/main == `ebfc597` (P224C merge). Replay DB 94,924 rows (BIG 24,140 / DAILY_539 34,680 / POWER 36,104); bet_index nulls 0; dup keys 0; integrity `ok`; drift guard `REPLAY_LIFECYCLE_DRIFT_GUARD_PASS`.
-- **Governance drift:** git HEAD is at P224C, but `roadmap.md §0` / `CURRENT_STATE.md` are stale at ~P216–P218. The chain **P211A / P221F / P222 / P223B / P224 / P224C is unrecorded** in the roadmap phase tables.
-- **User two directions are already executed → NULL:** Direction #1 (window reframe) = P221F frozen windows (short 100/125/150, mid 500/750/1000, all-history=reference). Direction #2 (mine all-lottery × all-method) = P222 scan. Sole survivor `midfreq_fourier_2bet / DAILY_539` is fragile: clean-slice mean 0.6693 vs baseline 0.6410, one-sided **p=0.0674**, edge rests on 19 `hit_count=3` rows. → `WAIT_FOR_OOS`.
-- **Stale fact to fix:** `CURRENT_STATE.md` "Latest User Direction" still says mid 100-300 / short 10-50 — wrong; should be **mid 500-1000 / short 100-150**.
-- CEO-Decision.md + active_task.md were synced by the CEO in PR `p225-governance-closeout-sync`. This task covers the remaining two stale docs only.
+> **Single active task: `P231B_POWERLOTTO_FIRST_ZONE_BACKWARD_OOS_DRYRUN` (code-only, ZERO DB write).**
+> Set by CEO Decision 2026-06-04 (`CEO_DECISION_PARTIALLY_APPROVED`). Responds to user priority: **POWER_LOTTO first**.
+> **Status: READY — `WAITING_FOR_USER_AUTHORIZATION` (code-change + dev branch). Strong model recommended.**
+> Supersedes the stale P225 task (P225 COMPLETE via PR #261/#262; chain merged through P230C / PR #270).
 
 ---
 
-## P225 — Governance Closeout Sync (record P211A–P224C; fix stale windows/metadata)
+## Context (verified read-only, 2026-06-04)
+
+- HEAD == origin/main == `9035650` (PR #270 / P230C). Replay DB 94,924 rows (BIG 24,140 / DAILY_539 34,680 / POWER 36,104); bet_index nulls 0; dup keys 0; integrity `ok`; drift guard `REPLAY_LIFECYCLE_DRIFT_GUARD_PASS`.
+- POWER_LOTTO first zone = 1–38 pick 6 (random baseline 36/38 = **0.947368**). Second zone = 1–8 pick 1 (random baseline **0.125**).
+- DB-verified candidate: `midfreq_fourier_mk_3bet / POWER_LOTTO` = 4,500 rows / 1,500 draws / bet 1,2,3.
+- P231A (`P231A_POWERLOTTO_REENTRY_PLAN_READY`) identified this as the **only** plausible first-zone candidate: P222 in-sample corrected-significant (Bonf q≈0.03) but **P223B cross-year unstable (2025 below baseline) → `CANDIDATE_NEEDS_MORE_OOS`, not deployable.**
+- Second zone is NULL/display-only (P211A; predicted-special 0.1181 < 0.125). Must not enter scoring/recommendation.
+
+---
+
+## P231B — POWER_LOTTO First-Zone Backward-OOS Code Dry-Run
 
 ### 背景
-After the P221F→P224C cross-lottery feature-discovery chain merged to main (HEAD `ebfc597`), the roadmap phase table and current-state doc were not updated. A fresh agent reading them would misjudge current state and could wrongly believe the survivor is promotable or that the active windows are 100-300/10-50.
+P231A produced the plan + pre-registration for falsifying the only first-zone POWER_LOTTO candidate. This task runs the pre-registered backward-OOS dry-run, mirroring the proven P230A→P230B1 read-only pipeline used to reclassify the DAILY_539 survivor.
 
-### 目標（doc-only）
-Bring two governance docs to truthful current state:
-1. `00-Plan/roadmap/roadmap.md` §0.1 — add phase rows: **P211A** (second-zone bias-reduction diagnostic, NO_SIGNAL/display-only), **P221F** (cross-lottery feature-discovery protocol frozen), **P222** (scan COMPLETE, `CANDIDATES_FOUND_NEED_MORE_OOS`), **P223B** (`CANDIDATE_OOS_VALIDATION_COMPLETE`), **P224** (`SURVIVOR_NEEDS_MORE_OOS`), **P224C/P224B** (`FUTURE_OOS_MONITORING_PROTOCOL_READY`). Cite evidence paths under `outputs/research/`.
-2. `roadmap.md` §0.4 — mark survivor `midfreq_fourier_2bet/DAILY_539` as **WAIT_FOR_OOS** (reopen gate: ≥300 new DAILY_539 draws, preferred 500); record user directions #1/#2 as **executed → NULL**; upgrade **3_STAR/4_STAR unmined frequency** from P3 → **P1** (7,101 draws, 0 replay rows — only unmined family).
-3. `00-Plan/roadmap/agent_bootstrap/CURRENT_STATE.md` — fix "Latest User Direction" windows to **mid 500-1000 / short 100-150**; bump State Marker to reflect P224C; add survivor `WAIT_FOR_OOS` to Holds.
+### 目標（code-only / artifact-only / ZERO DB write）
+Run a read-only (`mode=ro`) backward-OOS dry-run of `midfreq_fourier_mk_3bet / POWER_LOTTO` **first-zone** hits on POWER_LOTTO draws strictly earlier than the common replay start (target `101000002`, 2012/01/05), and decide whether the candidate survives or is a historical artifact. No DB write, no replay rows, no promotion.
+
+### Pre-Registration (frozen by P231A — do NOT change after seeing results)
+- Candidate: `midfreq_fourier_mk_3bet / POWER_LOTTO`, strategy-level only.
+- Primary metric: first-zone `hit_count`; baseline 36/38 = 0.947368.
+- Secondary: special (second-zone) hit DISPLAYED SEPARATELY ONLY — never used for candidate scoring.
+- Older window: target draws strictly earlier than 2012/01/05; report both adapter-min (P47 `MidFreqFourierMk3BetAdapter`, ~382) and conservative 100-warmup (~312) inventories.
+- Success gates: mean > baseline AND CI not misleadingly below baseline AND block stability AND year/era split stability AND robustness to high-hit-tail removal AND no second-zone promotion.
+- Failure gate: mean below baseline or unstable → classify `HISTORICAL_ARTIFACT_DIRECTION`, close candidate.
 
 ### 允許修改範圍（narrow allowlist）
-- `00-Plan/roadmap/roadmap.md`
-- `00-Plan/roadmap/agent_bootstrap/CURRENT_STATE.md`
-- (CEO-Decision.md + active_task.md already synced by CEO — do NOT re-touch.)
+- `scripts/p231b_powerlotto_first_zone_backward_oos_dryrun.py`
+- `tests/test_p231b_powerlotto_first_zone_backward_oos_dryrun.py`
+- `outputs/research/p231b_powerlotto_first_zone_backward_oos_dryrun_20260604.md`
+- `outputs/research/p231b_powerlotto_first_zone_backward_oos_dryrun_20260604.json`
 
 ### 禁止修改範圍
 - Any DB / `lottery_v2.db*` / registry / `production/*` / `data/*` / `runtime/*` / `logs/*`.
-- Any code, recommendation logic, strategy state, or controlled-apply path.
-- `CTO-Analysis.md` (CTO-owned; if CTO content needs change, note it as CTO follow-up).
-- The **44 pre-existing dirty/untracked working-tree files** — leave untouched; never `git add -A` / `git add .`.
-- No strategy P225, no backward-OOS replay generation, no second-zone promotion, no betting advice.
+- Recommendation logic, strategy state, controlled-apply, registry lifecycle.
+- `roadmap.md`, `CTO-Analysis.md`, `CURRENT_STATE.md`, `CEO-Decision.md` (governance sync is a separate task).
+- The pre-existing dirty/untracked working-tree files — leave untouched; never `git add -A` / `git add .`.
+- No new scan / feature search / window selection; no second-zone promotion; no betting advice.
 
 ### Phase 0 Verification (must pass before editing)
-- `git rev-parse --show-toplevel` == `/Users/kelvin/Kelvin-WorkSpace/LotteryNew`
-- `git rev-parse --git-dir` == `.git`
-- `git rev-parse HEAD` == `git rev-parse origin/main`
+- `git rev-parse --show-toplevel` == `/Users/kelvin/Kelvin-WorkSpace/LotteryNew`; `--git-dir` == `.git`.
+- `git rev-parse HEAD` == `git rev-parse origin/main`.
 - Working on a **dev branch (NOT main)** — repo hook blocks all Edit/Write on `main`.
-- `git diff --cached --name-only` == empty (0 staged) before edits.
-- `sqlite3 lottery_api/data/lottery_v2.db "SELECT COUNT(*) FROM strategy_prediction_replays;"` == 94924
-- `python3 scripts/replay_lifecycle_drift_guard.py --strict` == `REPLAY_LIFECYCLE_DRIFT_GUARD_PASS`
+- `git diff --cached --name-only` == empty before edits.
+- `sqlite3 lottery_api/data/lottery_v2.db "SELECT COUNT(*) FROM strategy_prediction_replays;"` == 94924 AND POWER_LOTTO == 36104; bet_index nulls 0; dup keys 0; integrity ok.
+- `python3 scripts/replay_lifecycle_drift_guard.py --strict` == `REPLAY_LIFECYCLE_DRIFT_GUARD_PASS`.
 
 ### STOP Conditions
-- Repo/branch/HEAD/DB baseline diverges from Phase 0.
-- On `main` (cannot edit — create/checkout a dev branch first; branch+commit+push authorized for THIS doc-only task only).
-- Staged files exist before task, or any non-whitelisted file would be staged.
-- Task would require DB/registry/production write, controlled apply, deployment, or strategy promotion.
-- Any of the 44 unrelated dirty/untracked files would be added.
-- Drift guard fails.
+- Repo/branch/HEAD/DB baseline diverges from Phase 0; on `main`; staged files exist before task.
+- Any DB/registry/production write, controlled apply, deployment, or strategy promotion would be required.
+- Any of the unrelated dirty/untracked files would be staged; drift guard fails.
+- The candidate or gates would need to change after seeing results (pre-registration violation).
 
 ### 驗收標準
-- `git diff --name-only` (vs branch base) lists **only** `00-Plan/roadmap/roadmap.md` and `00-Plan/roadmap/agent_bootstrap/CURRENT_STATE.md`.
-- roadmap §0.1 contains the six new phase rows with correct classifications + evidence paths.
-- CURRENT_STATE windows read mid 500-1000 / short 100-150; survivor WAIT_FOR_OOS recorded.
-- Drift guard still PASS after edits.
-- 0 of the 44 unrelated files staged.
+- `git diff --name-only` (vs branch base) lists **only** the 4 whitelisted P231B files.
+- `dry_run=1` / `mode=ro` enforced; AST/test proves no DB write path is reachable.
+- JSON parses; Markdown and JSON conclusions match; baseline 0.947368 used; second-zone reported separately.
+- DB rows remain 94924 / POWER 36104; nulls 0; dup 0; integrity ok; drift guard PASS after task.
+- Final classification ∈ {`P231B_POWERLOTTO_FIRST_ZONE_BACKWARD_OOS_ABOVE_BASELINE`, `P231B_POWERLOTTO_FIRST_ZONE_BACKWARD_OOS_BELOW_BASELINE`, `P231B_BLOCKED`}.
 
 ### 測試指令
 ```bash
 git rev-parse HEAD; git rev-parse origin/main
-git diff --cached --name-only        # expect empty before staging
+git branch --show-current            # must NOT be main
+sqlite3 lottery_api/data/lottery_v2.db "SELECT COUNT(*) FROM strategy_prediction_replays;"  # 94924
 python3 scripts/replay_lifecycle_drift_guard.py --strict
-git diff --name-only                 # after edits: only the 2 whitelisted docs
+python3 -m pytest tests/test_p231b_powerlotto_first_zone_backward_oos_dryrun.py -q
+git diff --name-only                 # after edits: only the 4 P231B files
 ```
 (Full pytest suite optional; if not run, report NOT RUN — do not claim PASS.)
 
 ### 輸出報告位置
-PR description for branch `p225-governance-closeout-sync-roadmap` (or appended to this task record). No separate JSON required for a doc-only sync.
+`outputs/research/p231b_powerlotto_first_zone_backward_oos_dryrun_20260604.{md,json}`
+(branch e.g. `p231b-powerlotto-first-zone-backward-oos-dryrun`; branch+commit+PR authorized for THIS code-only / zero-DB-write task only, AND only after explicit user code-change authorization.)
 
 ### Required Completion Check
 1. 是否真的完成
@@ -83,17 +90,19 @@ PR description for branch `p225-governance-closeout-sync-roadmap` (or appended t
 5. staged / commit / push 狀態
 6. 是否允許進入下一輪
 7. Final Classification
+8. Worker是否需要強模型（YES — code semantics + leakage guard）
 
-### Final Classification (target)
-`P225_GOVERNANCE_CLOSEOUT_SYNC_COMPLETE`
+### Final Classification (this file)
+`ACTIVE_TASK_P231B_POWERLOTTO_FIRST_ZONE_BACKWARD_OOS_SET`
 
 ---
 
 ## Holds / Frozen (unchanged)
 
+- **DAILY_539 survivor** `midfreq_fourier_2bet` — `REJECTED_BY_BACKWARD_OOS / HISTORICAL_ARTIFACT_DIRECTION` (P230C). Do not treat as active survivor.
+- **POWER_LOTTO second zone** — `DISPLAY_ONLY / NULL_EDGE` (P211A). Never enters scoring/recommendation.
+- **3_STAR / 4_STAR** box-play — `UNDERPOWERED_NO_SIGNAL`; straight-play `BLOCKED_REINGEST_REQUIRED`.
 - **P211** short/mid-window read-only diagnostic — `HELD_BY_USER` (2026-06-02 「先暫停」). Do not auto-resume.
-- **DAILY_539 survivor** `midfreq_fourier_2bet` — `WAIT_FOR_OOS`. Reopen P225-strategy only after ≥300 (preferred 500) new DAILY_539 draws AND passing P224B gates. Backward-OOS extension (4,376 old draws) is a separate **DB-write** task needing explicit authorization.
-- **3_STAR/4_STAR replay-gap** (P1.1) and other P222 candidates (P2) — queued; each needs separate explicit authorization before any scan.
 - Production promotion / registry / DB write / recommendation-logic change / controlled apply / betting advice — all **unauthorized / frozen**.
 
 ---
@@ -104,14 +113,18 @@ PR description for branch `p225-governance-closeout-sync-roadmap` (or appended t
 |---|---|---|
 | P210 short/mid-window protocol | `..._DISCUSSION_READY` | COMPLETE (CEO-accepted) |
 | P211 read-only diagnostic | — | **HELD by user** |
-| P212–P216 governance ratification chain | various `..._COMPLETE` | COMPLETE + MERGED (PR #250/#251/#252) |
-| P217 current-state metadata sync | — | COMPLETE (PR #253, `c8ac14c`) |
-| P218 structural HEAD metadata fix | — | COMPLETE (PR #254) |
-| P211A second-zone bias-reduction diagnostic | NO_SIGNAL / display-only | COMPLETE (PR #255) |
+| P211A POWER_LOTTO second-zone diagnostic | NO_SIGNAL / display-only | COMPLETE (PR #255) |
 | P221F cross-lottery feature-discovery protocol | `PROTOCOL_FROZEN` | COMPLETE (PR #256) |
 | P222 cross-lottery feature-discovery scan | `CANDIDATES_FOUND_NEED_MORE_OOS` | COMPLETE (PR #257) |
 | P223B candidate OOS cross-year validation | `OOS_VALIDATION_COMPLETE` | COMPLETE (PR #258) |
 | P224 DAILY_539 survivor deeper validation | `SURVIVOR_NEEDS_MORE_OOS` | COMPLETE (PR #259) |
-| P224B/P224C survivor future-OOS monitoring | `FUTURE_OOS_MONITORING_PROTOCOL_READY` | COMPLETE (PR #260, `ebfc597`) |
+| P224B/P224C survivor future-OOS monitoring | `FUTURE_OOS_MONITORING_PROTOCOL_READY` | COMPLETE (PR #260) |
+| P225 governance closeout sync | `..._COMPLETE` | COMPLETE (PR #261/#262) |
+| P226–P227C 3_STAR/4_STAR box-play | `UNDERPOWERED_NO_SIGNAL` | COMPLETE (PR #263–#265) |
+| P228 governance closeout sync | `..._COMPLETE` | COMPLETE (PR #266/#267) |
+| P230A DAILY_539 backward-OOS extension plan | `..._PLAN_READY` | COMPLETE (PR #268) |
+| P230B1 DAILY_539 backward-OOS code dry-run | `..._BELOW_BASELINE` | COMPLETE (PR #269) |
+| P230C DAILY_539 survivor reclassification | `..._HISTORICAL_ARTIFACT` | COMPLETE (PR #270) |
+| P231A POWER_LOTTO first-zone re-entry review | `P231A_POWERLOTTO_REENTRY_PLAN_READY` | COMPLETE (artifact only) |
 
-Final Classification (this file): `ACTIVE_TASK_P225_GOVERNANCE_CLOSEOUT_SYNC_SET`
+Final Classification (this file): `ACTIVE_TASK_P231B_POWERLOTTO_FIRST_ZONE_BACKWARD_OOS_SET`

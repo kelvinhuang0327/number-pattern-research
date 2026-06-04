@@ -842,3 +842,91 @@ The governance correction cycle for agent bootstrap adoption is complete on the 
 `CEO_DECISION_PARTIALLY_APPROVED`
 
 Final Classification: `CEO_DECISION_PARTIALLY_APPROVED`
+
+---
+
+# CEO Decision — 2026-06-04 (POWER_LOTTO-First Replay Research Direction + P230C/P231A 二次審查)
+
+## 1. CEO Review Date
+
+2026-06-04 Asia/Taipei. Final Classification: `CEO_DECISION_PARTIALLY_APPROVED`.
+
+## 2. Reviewed Inputs
+
+- [Confirmed] Phase 0 read-only: repo `/Users/kelvin/Kelvin-WorkSpace/LotteryNew`, branch `main`, git-dir `.git`, HEAD == origin/main == `9035650` (PR #270 / P230C), 0 staged files.
+- [Confirmed] DB `lottery_api/data/lottery_v2.db` / `strategy_prediction_replays`: 94,924 rows (BIG 24,140 / DAILY_539 34,680 / POWER 36,104), bet_index nulls 0, duplicate keys 0, integrity `ok`, drift guard `REPLAY_LIFECYCLE_DRIFT_GUARD_PASS`.
+- [Confirmed] DB-verified: `midfreq_fourier_mk_3bet/POWER_LOTTO` = 4,500 rows / 1,500 draws / bet 1,2,3. `midfreq_fourier_2bet` exists in both DAILY_539 (1,500) and POWER_LOTTO (1,500) — single cross-lottery strategy id (explains prior `cand=3000` scare).
+- [Confirmed] `outputs/research/p231a_powerlotto_first_zone_reentry_review_20260604.{md,json}` = `P231A_POWERLOTTO_REENTRY_PLAN_READY`; JSON parses.
+- [Confirmed] `roadmap.md §0` current to P230C; `CURRENT_STATE.md` marker `P230C_DAILY539_SURVIVOR_RECLASSIFIED_HISTORICAL_ARTIFACT`, "no active worker".
+- [Risk] `CTO-Analysis.md` top section dated 2026-06-02 (P210 era) — stale vs the P221F→P231A chain.
+- [Risk] `active_task.md` stale at P225 / HEAD `ebfc597` — contradicts CURRENT_STATE "no active worker".
+- [Confirmed] `.claude/settings.json` PreToolUse hook blocks all Edit/Write on `main` (exit 2); dev-branch authorized by user (董事長) for THIS governance-doc write.
+
+## 3. Yesterday Work Value Assessment
+
+| Work | CEO Mark | Value |
+|---|---|---|
+| P230A/B1/C DAILY_539 backward-OOS → reclassification | [Confirmed] | High. Falsified a p=0.0674 near-survivor with 4,265 independent draws (mean 0.6375 < baseline 0.6410, all eras/robustness fail). Zero DB write; 12/12 tests; CI pass. Real maturity gain — blocks false promotion of a lucky window. |
+| P231A POWER_LOTTO first-zone re-entry review | [Confirmed] | High + on-mandate (user "POWER_LOTTO first"). Clean zone-1/zone-2 split; DB-verified inventory; pre-registered falsification plan. Read-only / plan-only. |
+| Net research position | [Risk] | Honest, but NO deployable strategy in any lottery across the entire P211A–P231A arc. Treat as "rigorous NULL-confirmation" regime, not "winning predictor" regime. |
+
+## 4. CTO Judgment Review — 部分採納
+
+- **Adopt**: anti-overfit / plan-only / no-production-write principles (permanent); `roadmap.md §0` (updated 2026-06-04, records to P230C — the CTO's *current* truth); "NULL = valid success".
+- **Do NOT adopt as today's priority**: `CTO-Analysis.md` top section (2026-06-02, P210-era) P0–P10 — it predates the whole P221F→P231A chain and is stale.
+- **CTO blind spots (CTO follow-up, doc-only)**: (1) refresh or mark-superseded `CTO-Analysis.md`; (2) record **P231A** in `roadmap §0` + `CURRENT_STATE.md` (same drift class as the prior P217–P227C staleness); (3) promote POWER_LOTTO first-zone candidate from P3 → P1 to reflect user priority + P231A plan-ready.
+
+## 5. Roadmap Gap Assessment
+
+- `roadmap §0.1` missing the P231A row; `roadmap §0.4` still lists `midfreq_fourier_mk_3bet/POWER` at **P3 observation-only**.
+- `CURRENT_STATE.md` "Recommended Next Direction" lacks the POWER_LOTTO first-zone backward-OOS path.
+- All above are CTO-owned files; CEO records them here as **CTO follow-up** and does not edit them in this decision.
+
+## 6. CEO Priority Decision
+
+| Priority | Item | Status |
+|---|---|---|
+| **P0** | P221F anti-overfit gate + canonical repo/DB STOP guard | [Active / permanent] |
+| **P0** | Governance sync: record P231A into `roadmap §0` + `CURRENT_STATE.md`; supersede `CTO-Analysis.md` top | [Open — CTO follow-up] |
+| **P1 (today)** | **P231B POWER_LOTTO first-zone `midfreq_fourier_mk_3bet` backward-OOS code dry-run (zero DB write)** | [Ready — WAITING_FOR_USER_AUTHORIZATION: code-change + dev branch] |
+| **P1** | Product disclosure / second-zone containment | [Deferred] |
+| **P2** | DAILY_539 survivor passive monitoring (reclassified HISTORICAL_ARTIFACT); POWER_LOTTO P178A reopen watch | [Waiting] |
+| **P3–P10** | 3_STAR/4_STAR re-scan (needs ≥10k/≥17k draws or positional re-ingest), other P222 candidates, scheduler, worktree hygiene, packaging, cadence | [Deferred] |
+
+## 7. Today Focus Direction — P231B POWER_LOTTO First-Zone Backward-OOS Code Dry-Run
+
+- **Roadmap phase**: P1 (upgraded from P3 by user "POWER_LOTTO first" + P231A plan-ready).
+- **Why important**: first-zone is the only candidate family never subjected to backward-OOS falsification; reuses the proven P230B1 read-only `mode=ro` pipeline.
+- **Maturity gain**: turns a weak, cross-year-unstable observation into a falsifiable verdict.
+- **Expected benefit**: clean PASS (worth future monitoring) or clean FAIL (close as historical artifact, stop loss) — both valuable.
+- **Risk**: window reuse (blocked by P231A pre-registration); second-zone leakage (forced display-only separation); small independent older slice (~312–382) → falsify-only, cannot confirm deployment.
+- **Acceptance**: see `active_task.md` P231B.
+- **CTO advice**: principles adopted; stale 2026-06-02 P0 not adopted; direction derived from completed P231A.
+
+## 8. Risks / Blind Spots
+
+1. [Risk] Multi-round NULL → false-positive-factory temptation; pre-registration enforced.
+2. [Risk] POWER_LOTTO older slice (~312–382) ≪ DAILY_539 (4,265) → falsify-only, never deployment-confirming.
+3. [Risk] `active_task.md` was stale (P225); this decision overwrites it with P231B.
+4. [Risk] Second-zone special must never enter first-zone scoring/recommendation.
+5. [Unknown] User authorization for code-change + dev branch to execute P231B (needs strong model).
+6. [Confirmed] CEO cannot persist governance docs on `main` (hook); dev-branch authorized by user for this write only.
+
+## 9. CEO Final Decision
+
+`CEO_DECISION_PARTIALLY_APPROVED`. CEO partially adopts the CTO conclusion — adopt anti-overfit principles and `roadmap §0` current truth; reject the stale 2026-06-02 P0–P10 as today's priority. Today's single direction = **P231B POWER_LOTTO first-zone backward-OOS code dry-run** (zero DB write, artifact-only, pre-registered per P231A). Second zone stays display-only / NULL. No production / registry / recommendation / DB-write / strategy promotion authorized. P231A governance sync into roadmap / CURRENT_STATE / CTO-Analysis is a separate CTO follow-up (doc-only). P211 HELD_BY_USER unchanged.
+
+## 10. CEO Summary (10 行內)
+
+1. Phase 0 全 PASS；DB 94,924 / POWER 36,104 未動。
+2. 昨日 P230/P231A = 高價值誠實負結果，但全系統仍無可部署策略。
+3. 威力彩一區：唯一弱候選 `midfreq_fourier_mk_3bet`，跨年不穩，PLAN_READY。
+4. 威力彩二區：NULL，display-only（0.1181 < 0.125）。
+5. 今日：P231B 一區 backward-OOS code dry-run，零 DB 寫入，pre-registered。
+6. CTO 部分採納；其 2026-06-02 分析已過時（P210 時代）。
+7. CTO follow-up：補錄 P231A；一區 P3→P1；CTO-Analysis 頂部標 superseded。
+8. active_task.md 以單一 P231B 任務覆蓋舊 P225。
+9. CEO 無法於 main 落盤（hook）；使用者已授權 dev branch 寫此治理檔。
+10. Final: `CEO_DECISION_PARTIALLY_APPROVED`.
+
+Final Classification: `CEO_DECISION_PARTIALLY_APPROVED`

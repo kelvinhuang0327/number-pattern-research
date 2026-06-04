@@ -1220,3 +1220,60 @@ Partially approve. ADOPT the diagnostics-only safety framing; REJECT the P0.5 ur
 10. No DB/registry/production write; no hook bypass; clean state preserved.
 
 Final Classification: `CEO_DECISION_PARTIALLY_APPROVED`
+
+---
+---
+
+# CEO Decision — 2026-06-04 (PM/evening) — P236A External Statistical Methods Scouting
+
+> Second review of the CTO "External Statistical Methods Adoption" proposal (`CTO_STATISTICAL_METHODS_ADOPTION_WITH_RISKS`) and the user directive *"import useful external methods ASAP to improve prediction success rate."* Prior sections retained as history (CLAUDE.md: 舊策略不得刪除，只能歸檔). CEO wrote only `CEO-Decision.md` (this file) on a **dev branch** `p236a-external-stat-methods-scouting` (main Edit|Write hook respected; no bypass). No DB/registry/production write.
+
+## 1. CEO Review Date
+2026-06-04 (PM) Asia/Taipei. Final Classification: `CEO_DECISION_PARTIALLY_APPROVED`.
+
+## 2. Reviewed Inputs
+- [Confirmed] User handoff: P235A complete (`DESIGN_INSPIRATION_ONLY`), PR #281 merged → main `03ba6d1`; P235B closeout = PR #282 still **OPEN**.
+- [Confirmed] CTO external-methods analysis: priority table (NIST randomness audit; walk-forward/permutation/multiple-correction; Lofea-inspired native features; Bayesian/Dirichlet shrinkage; ML falsification family; payout/popularity), `CTO_STATISTICAL_METHODS_ADOPTION_WITH_RISKS`.
+- [Confirmed] User directive + explicit selection: **full P236A scouting**, after being shown and accepting on record that hit-rate improvement is closed and the honest expected outcome is NULL.
+- [Confirmed] CEO Phase 0 (read-only, this session): repo=LotteryNew, branch was `main`, HEAD==origin/main==`03ba6d1`; DB integrity ok / replay 94,924 / bet_index nulls 0 / dup keys 0; drift guard `REPLAY_LIFECYCLE_DRIFT_GUARD_PASS`; PR #282 OPEN, MERGEABLE, mergeStateStatus CLEAN, exactly 3 governance files.
+
+## 3. CTO Judgment Review — **部分採納 (Partially Approved)**
+| CTO judgment | CEO verdict | Reason |
+|---|---|---|
+| Goal = run external methods through the read-only validation gate; mark NULL if they don't beat baseline | **ADOPT** | Scientifically honest framing; matches CLAUDE.md validation discipline. |
+| Deliverable = source index + whitelist/blacklist + candidate feature family + validation rubric | **ADOPT** | Produced as `outputs/research/p236a_external_statistical_methods_scouting_20260604.{md,json}`. |
+| NIST randomness audit (diagnostics, not predictor) | **ADOPT (reframed as tripwire)** | The one genuine net-new import: SSOT null baseline + alert if draws ever stop being random — the only condition under which prediction could reopen. Diagnostics-only. |
+| Walk-forward / permutation / multiple-correction as P0 | **CORRECT — already owned** | P234 finding: 7/8 already exist + enforced (P221F; P222/P223B/P227C; RSM/P114/P224). Not net-new. |
+| Payout / unpopular-number model | **ADOPT as separate metric** | Raises E[payout\|win], NOT P(win); already marginal (L102 p=0.257). Read-only spike, labeled payout-not-hit-rate. |
+| Lofea-inspired native features | **HOLD at P235A** | `DESIGN_INSPIRATION_ONLY`; native re-derive only; no vendoring (CC-BY-NC). |
+| ML / Bayesian benchmark family | **GRAYLIST** | Falsification/benchmark-only; catastrophic overfit on low-base-rate games (L86/L89/L90). |
+| Implied premise: external methods can "improve prediction success rate" (hit-rate) | **REJECT / CORRECT** | Closed by the system's own evidence: L91 (BIG_LOTTO indistinguishable from random), L82 (539 exhausted), P178A (POWER_LOTTO 17 NULL), SZC1 (second-zone 0.1181<0.125). No external method reopens it. |
+
+## 4. CEO Priority Decision
+| Priority | Item | Status |
+|---|---|---|
+| **P0** | Hit-rate prediction = CLOSED (L82/L91/P178A). No task may claim improved win rate. | Enforced |
+| **P1** | NIST-style randomness-audit SSOT + tripwire — **read-only design-doc first**; build requires separate authorization | Authorized-on-request |
+| **P1** | Payout / anti-crowd EV — optional read-only spike, payout≠hit-rate, L102 caveat | Authorized-on-request |
+| **P2** | Broad ML/Bayesian/Lofea scouting | Falsification/benchmark/design-only; do not deploy |
+| **P3+** | Any predictor build | Not authorized |
+
+## 5. Execution Note (this session)
+- [Confirmed] Because the user asked for speed, the CEO collapsed decision + worker-execution into one read-only pass: the **P236A scouting artifact was produced this session** (2 files), plus this CEO addendum. All read-only; DB/registry/production write = 0.
+- [Confirmed] External sources S1–S8 fetched/verified (NIST SP 800-22; scikit-learn TimeSeriesSplit & permutation_test_score; statsmodels multipletests; unpopular-number literature; Lofea).
+
+## 6. Governance / Merge-Order (CTO/next-session follow-up)
+- [Confirmed] **PR #282 (P235A/B closeout) should merge FIRST** — it owns `active_task.md` / `roadmap.md` / `CURRENT_STATE.md`. The P236A branch deliberately does **not** touch those three files to avoid a competing edit; it adds only the 2 artifact files + this CEO-Decision addendum (zero overlap with #282).
+- [Inferred] After #282 lands, a trivial `active_task.md` follow-up should: (a) record P236A scouting complete, (b) add the **randomness-audit SSOT design-doc** as a new authorized-on-request option, (c) return to `WAITING_FOR_USER_AUTHORIZATION`. The post-#282 WAITING end-state remains correct.
+- [Confirmed] P211 `HELD_BY_USER` unchanged; P234 design-only unchanged; Lofea `DESIGN_INSPIRATION_ONLY` unchanged; no OPT-C / no implementation auto-started.
+
+## 7. Risks / Blind Spots
+1. [Risk] Predictability illusion — the scout could be misread as "a way to win"; every artifact fences hit-rate as closed.
+2. [Risk] Re-treading paid-for NULLs — broad scouting largely repeats P234/P235A/P178A; value is concentrated in the §7 net-new items, not the broad sweep.
+3. [Risk] Audit multiplicity — 15 NIST tests × 4 games × windows manufactures chance failures; the tripwire must be multiplicity-corrected.
+4. [Risk] Payout/hit-rate conflation — must never be reported as improving win odds.
+
+## 8. CEO Final Decision
+Partially approve. ADOPT the CTO falsification framing and the scouting deliverable; ADOPT the randomness-audit SSOT/tripwire and payout-EV as the only two net-new, read-only, non-hit-rate imports (design/spike-only, separate authorization to build). REJECT/CORRECT the implied hit-rate-improvement premise — it is closed by the system's own evidence. The P236A artifact is produced read-only on a dev branch + PR; #282 merges first; CEO did not edit `roadmap.md` / `CTO-Analysis.md` / `active_task.md`.
+
+Final Classification: `CEO_DECISION_PARTIALLY_APPROVED`

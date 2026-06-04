@@ -48,7 +48,9 @@ This section is the current source of truth. The 2026-06-01 sections and P186-P1
 | **P230C DAILY_539 survivor reclassification closeout** | **[Complete]** `P230C_DAILY539_SURVIVOR_RECLASSIFIED_HISTORICAL_ARTIFACT` | `00-Plan/roadmap/roadmap.md` §0.1 + `CURRENT_STATE.md`; PR #270 | `midfreq_fourier_2bet / DAILY_539` reclassified from `WAIT_FOR_OOS` → **`REJECTED_BY_BACKWARD_OOS / HISTORICAL_ARTIFACT_DIRECTION`**. No P230B2 DB backfill recommended. No P225 model design recommended. No production/registry/recommendation change. |
 | **P231A POWER_LOTTO first-zone re-entry review** | **[Complete]** `P231A_POWERLOTTO_REENTRY_PLAN_READY` | `outputs/research/p231a_powerlotto_first_zone_reentry_review_20260604.{md,json}`; artifact only | Plan + pre-registration for P231B backward-OOS falsification of `midfreq_fourier_mk_3bet / POWER_LOTTO` first-zone candidate. DB-verified candidate: 4,500 rows / 1,500 draws / bet 1,2,3. |
 | **P231B POWER_LOTTO first-zone backward-OOS dry-run** | **[Complete]** `P231B_POWERLOTTO_FIRST_ZONE_BACKWARD_OOS_DRYRUN_NULL` | `outputs/research/p231b_powerlotto_first_zone_backward_oos_dryrun_20260604.{md,json}`; `scripts/p231b_powerlotto_first_zone_backward_oos_dryrun.py`; `tests/test_p231b_powerlotto_first_zone_backward_oos_dryrun.py`; PR #272, merge commit `2beb24e` | Zero DB write (read-only `mode=ro`). 382 replayable backward draws (2008–2012, boundary `101000002`). Deterministic bet-1 only (P230B1 discipline; bets 2,3 not invented). First-zone mean **0.96859** vs baseline **0.94737** (36/38); 95% CI crosses baseline; one-sided **p = 0.3018** (not significant); both robustness checks fail (exclude hit≥3 → 0.9113; exclude strongest block → 0.875); block stability mixed. Second-zone display-only (0.1099 < 0.125, p=0.826). **14 targeted tests: 12/14 PASS (2 env-skip, not failures).** No production/registry/recommendation change. Candidate non-deployable; observation-only. |
-| **P231C POWER_LOTTO first-zone governance closeout** | **[In Progress]** `P231C_POWERLOTTO_FIRST_ZONE_BACKWARD_OOS_GOVERNANCE_CLOSEOUT_PR_OPEN` | `00-Plan/roadmap/roadmap.md` §0.1 + `CURRENT_STATE.md` + `active_task.md` + `CEO-Decision.md`; this PR | Doc-only governance sync recording P231B NULL result. No code/DB/registry/production change. |
+| **P231C POWER_LOTTO first-zone governance closeout** | **[Complete]** `P231C_POWERLOTTO_FIRST_ZONE_BACKWARD_OOS_GOVERNANCE_CLOSEOUT_MERGED` | `00-Plan/roadmap/roadmap.md` §0.1 + `CURRENT_STATE.md` + `active_task.md` + `CEO-Decision.md`; PR #273 | Doc-only governance sync recording P231B NULL result. No code/DB/registry/production change. |
+| **P232A All-catalog historical replay scoreboard** | **[Complete]** `P232A_ALL_CATALOG_STRATEGY_HISTORICAL_REPLAY_SCOREBOARD_COMPLETE` | `outputs/research/p232a_all_catalog_strategy_replay_scoreboard_20260604.{md,json}`; `scripts/p232a_all_catalog_strategy_replay_scoreboard.py`; `tests/test_p232a_all_catalog_strategy_replay_scoreboard.py`; PR #274, merge commit `86d4f52` | Read-only scoreboard: 41 union strategy+lottery entries (21 catalog-registered, 20 LIFECYCLE_UNRESOLVED), 36 replay-backed, 5 no-replay. lifecycle is a label only. Zero DB write. 20/20 targeted tests PASS. No deployable/promote/forbidden classifications. Historical evidence only. |
+| **P232B All-catalog scoreboard governance closeout** | **[In Progress]** `P232B_ALL_CATALOG_SCOREBOARD_GOVERNANCE_CLOSEOUT_PR_OPEN` | `00-Plan/roadmap/roadmap.md` §0.1 + `CURRENT_STATE.md` + `active_task.md` + `CEO-Decision.md`; this PR | Doc-only governance sync recording P232A complete and LIFECYCLE_UNRESOLVED observation. No code/DB/registry/production change. |
 
 ### 0.2 Current System Baseline
 
@@ -168,9 +170,9 @@ Upgrade / downgrade decisions:
 - **Why important:** Stale worktrees/archive paths still exist and can produce invalid evidence if used.
 - **Priority:** P0 / P1 — ongoing maintenance.
 
-### 0.7 Current State Summary (updated by P231C, 2026-06-04)
+### 0.7 Current State Summary (updated by P232B, 2026-06-04)
 
-**Research chains P211A–P231B (all lotteries) and P226–P227C (3_STAR/4_STAR) are complete.**
+**Research chains P211A–P231B (all lotteries), P226–P227C (3_STAR/4_STAR), and P232A (all-catalog scoreboard) are complete.**
 
 - Direction #1 (window reframe): P221F frozen windows (short 100/125/150, mid 500/750/1000, all-history=reference) operationalized. Gate active.
 - Direction #2 (mine all-lottery × all-method): P222 scan complete. Sole survivor `midfreq_fourier_2bet / DAILY_539` fragile → **reclassified `REJECTED_BY_BACKWARD_OOS / HISTORICAL_ARTIFACT_DIRECTION` (P230C)**. DAILY_539 backward-OOS (P230B1): mean 0.6375 < baseline 0.6410; all eras/robustness fail.
@@ -190,10 +192,11 @@ Upgrade / downgrade decisions:
 Final current roadmap marker:
 
 ```text
-P231C_POWERLOTTO_FIRST_ZONE_BACKWARD_OOS_GOVERNANCE_CLOSEOUT_PR_OPEN
+P232B_ALL_CATALOG_SCOREBOARD_GOVERNANCE_CLOSEOUT_PR_OPEN
+P232A_ALL_CATALOG_STRATEGY_HISTORICAL_REPLAY_SCOREBOARD_COMPLETE_MERGED_PR274
+P231C_POWERLOTTO_FIRST_ZONE_BACKWARD_OOS_GOVERNANCE_CLOSEOUT_MERGED_PR273
 P231B_POWERLOTTO_FIRST_ZONE_BACKWARD_OOS_DRYRUN_NULL_MERGED_PR272
 P230C_DAILY539_SURVIVOR_RECLASSIFIED_HISTORICAL_ARTIFACT
-P228_STAR_REPLAY_GOVERNANCE_CLOSEOUT_COMPLETE_20260603
 ```
 
 ---

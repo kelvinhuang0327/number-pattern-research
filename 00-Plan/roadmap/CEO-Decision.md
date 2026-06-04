@@ -1339,3 +1339,46 @@ The P238A artifact does **not** authorize P238B, a NIST randomness-audit build, 
 - Future P238B build requires separate explicit user authorization.
 
 Final Classification: `P238C_P238A_BUILD_PLAN_MERGED_GOVERNANCE_CLOSEOUT_COMPLETE`
+
+---
+
+# CEO Decision — 2026-06-04 (Evening) — P238D P238B Artifact Build Merge And Governance Closeout
+
+## 1. Context
+
+2026-06-04 Asia/Taipei. Final Classification: `P238D_P238B_ARTIFACT_BUILD_MERGED_GOVERNANCE_CLOSEOUT_COMPLETE`.
+
+- [Confirmed] PR #289 merged into main.
+- [Confirmed] P238B script: `scripts/p238b_nist_randomness_audit_artifact_build.py`.
+- [Confirmed] P238B tests: `tests/test_p238b_nist_randomness_audit_artifact_build.py`. 6/6 PASS.
+- [Confirmed] P238B Markdown artifact: `outputs/research/p238b_nist_randomness_audit_artifact_20260604.md`.
+- [Confirmed] P238B JSON artifact: `outputs/research/p238b_nist_randomness_audit_artifact_20260604.json`. Parses successfully.
+- [Confirmed] JSON `classification` field: `RANDOMNESS_AUDIT_YELLOW_OBSERVATION_ONLY`.
+- [Confirmed] JSON `final_classification`: `P238B_NIST_RANDOMNESS_AUDIT_ARTIFACT_ONLY_BUILD_COMPLETE`.
+- [Confirmed] All no-claim booleans false: `predictability_claim=false`, `win_rate_claim=false`, `betting_advice=false`, `strategy_authorized=false`, `production_change_authorized=false`, `monitoring_job_authorized=false`, `db_write_performed=false`, `registry_write_performed=false`.
+- [Confirmed] DB: 94,924 replay rows; integrity ok; bet_index nulls 0; duplicate keys 0; drift guard PASS.
+
+## 2. P238B Result Summary
+
+- Audit classification: `RANDOMNESS_AUDIT_YELLOW_OBSERVATION_ONLY`
+- Overall alert level: YELLOW (3 yellow, 0 orange, 0 red)
+- YELLOW is observation-only. Historical anomalies are capped at YELLOW.
+- ORANGE/RED require independent future confirmation from a separate task with separate explicit user authorization.
+- RED alert semantics authorize human diagnostic review only; they do **not** authorize prediction, strategy, production, registry, recommendation, monitoring, DB write, or betting advice.
+- This result does not constitute a predictability claim, win-rate claim, or betting advice.
+
+## 3. Decision
+
+CEO accepts P238B as a completed diagnostics-only artifact-only build and records PR #289 as merged.
+
+The P238B result does **not** authorize P211 restart, a follow-on confirmation task, strategy exploration, production/recommendation change, registry mutation, monitoring job, DB write, or betting advice. Any future NIST escalation task requires separate explicit user authorization.
+
+## 4. Current State
+
+- `active_task.md` returns to `WAITING_FOR_USER_AUTHORIZATION`.
+- P211 remains `HELD_BY_USER`.
+- No active worker task exists after closeout.
+- No deployable candidate exists in any lottery.
+- NIST audit YELLOW result stands; no follow-on action authorized without separate explicit user authorization.
+
+Final Classification: `P238D_P238B_ARTIFACT_BUILD_MERGED_GOVERNANCE_CLOSEOUT_COMPLETE`

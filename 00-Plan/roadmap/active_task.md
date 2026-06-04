@@ -1,8 +1,8 @@
 # Active Task — Today (2026-06-04 PM)
 
 > **STATUS: `WAITING_FOR_USER_AUTHORIZATION`**
-> P238C governance closeout complete (PR #287 merged; P238A NIST randomness-audit artifact-only build plan recorded).
-> Final Classification: `P238C_P238A_BUILD_PLAN_MERGED_GOVERNANCE_CLOSEOUT_COMPLETE`
+> P238D governance closeout complete (PR #289 merged; P238B NIST randomness-audit artifact build recorded; classification = RANDOMNESS_AUDIT_YELLOW_OBSERVATION_ONLY; observation-only, no strategy/production change).
+> Final Classification: `P238D_P238B_ARTIFACT_BUILD_MERGED_GOVERNANCE_CLOSEOUT_COMPLETE`
 
 ---
 
@@ -28,11 +28,13 @@
 | P237D P237C merge + governance closeout | `P237D_P237C_DESIGN_DOC_MERGED_GOVERNANCE_CLOSEOUT_COMPLETE`. Merged PR #285; recorded P237C in governance; returned to `WAITING_FOR_USER_AUTHORIZATION`. No NIST build started. |
 | P238A NIST randomness-audit artifact-only build plan | `P238A_NIST_RANDOMNESS_AUDIT_ARTIFACT_ONLY_BUILD_PLAN_READY` (PR #287). Build-plan artifact only: `outputs/research/p238a_nist_randomness_audit_artifact_only_build_plan_20260604.md`. No executable NIST build, code, scripts, tests, DB/registry/production/recommendation change, monitoring job, strategy, or betting advice. |
 | P238C P238A build-plan merge + governance closeout | `P238C_P238A_BUILD_PLAN_MERGED_GOVERNANCE_CLOSEOUT_COMPLETE`. Merged PR #287; recorded P238A in governance; returned to `WAITING_FOR_USER_AUTHORIZATION`. Future P238B build remains unauthorized. |
+| P238B NIST randomness audit artifact build | `P238B_NIST_RANDOMNESS_AUDIT_ARTIFACT_ONLY_BUILD_COMPLETE` (PR #289). Artifact-only build. Artifacts: `outputs/research/p238b_nist_randomness_audit_artifact_20260604.{json,md}`. Classification: `RANDOMNESS_AUDIT_YELLOW_OBSERVATION_ONLY`. YELLOW is observation-only: no strategy, no production, no registry, no recommendation, no monitoring, no DB write, no betting advice. ORANGE/RED requires independent future confirmation. All no-claim booleans false. |
+| P238D P238B artifact build merge + governance closeout | `P238D_P238B_ARTIFACT_BUILD_MERGED_GOVERNANCE_CLOSEOUT_COMPLETE`. Merged PR #289; recorded P238B in governance; returned to `WAITING_FOR_USER_AUTHORIZATION`. P211 remains HELD_BY_USER. |
 
 ## Authorized-on-request options (NONE auto-started — require explicit user authorization)
 - **OPT-C: P234 statistical-methods diagnostics INVENTORY (design-only).** Read-only inventory/design-doc; no module build, no code, no DB. Cites Lofea framings (Universe-length, in/out-frequency split) as inspiration only.
 - **OPT-D (NEW, from P236A): NIST-style randomness-audit SSOT + tripwire design-doc (design-only).** Read-only design-doc for a diagnostics-only randomness audit that acts as the null-baseline SSOT and a tripwire — alerts only if draws ever stop being random; **NOT a predictor, NOT a win-rate claim**. No build, no code, no DB. Build requires separate explicit authorization. Ref: `outputs/research/p236a_external_statistical_methods_scouting_20260604.md` §7.1.
-- **Future NIST randomness-audit build (not authorized):** P237C design doc exists at `outputs/research/p237c_nist_randomness_audit_tripwire_design_20260604.md`; P238A build plan exists at `outputs/research/p238a_nist_randomness_audit_artifact_only_build_plan_20260604.md`. Any executable audit/build remains separate explicit authorization only. RED alert semantics authorize human review only, not strategy or production changes.
+- **NIST randomness-audit build (COMPLETE — YELLOW observation-only):** P238B artifact build is merged via PR #289. Classification: `RANDOMNESS_AUDIT_YELLOW_OBSERVATION_ONLY`. YELLOW is observation-only and does not authorize strategy, production, registry, recommendation, monitoring, DB write, or betting advice. ORANGE/RED would require independent future confirmation. RED authorizes human review only, not strategy or production changes. Artifacts: `outputs/research/p238b_nist_randomness_audit_artifact_20260604.{json,md}`.
 - **Passive monitoring** — wait for ≥300 new DAILY_539 draws (preferred 500); per P224B reopen gate.
 - **3_STAR/4_STAR re-scan** — only after ≥10,000 total 3_STAR draws (have 4,179) or positional re-ingestion.
 - **POWER_LOTTO first-zone future OOS** — only after significant new draws + explicit authorization + P221F gate.
@@ -60,4 +62,4 @@
 6. 是否允許進入下一輪
 7. Final Classification
 
-Final Classification (this file): `P238C_P238A_BUILD_PLAN_MERGED_GOVERNANCE_CLOSEOUT_COMPLETE`
+Final Classification (this file): `P238D_P238B_ARTIFACT_BUILD_MERGED_GOVERNANCE_CLOSEOUT_COMPLETE`

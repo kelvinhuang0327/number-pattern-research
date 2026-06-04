@@ -1,7 +1,7 @@
 # Current State — LotteryNew
 
-**Last Reviewed:** 2026-06-04 Asia/Taipei (P238C governance closeout — PR #287 merged; P238A NIST randomness-audit artifact-only build plan recorded; no NIST build started; no deployable edge; WAITING_FOR_USER_AUTHORIZATION)
-**State Marker:** `P238C_P238A_BUILD_PLAN_MERGED_GOVERNANCE_CLOSEOUT_COMPLETE`
+**Last Reviewed:** 2026-06-04 Asia/Taipei (P238D governance closeout — PR #289 merged; P238B NIST randomness-audit artifact build recorded; classification RANDOMNESS_AUDIT_YELLOW_OBSERVATION_ONLY; YELLOW is observation-only; no deployable edge; WAITING_FOR_USER_AUTHORIZATION)
+**State Marker:** `P238D_P238B_ARTIFACT_BUILD_MERGED_GOVERNANCE_CLOSEOUT_COMPLETE`
 **Purpose:** Project-specific state for future agents. Read this after `SHARED_AGENT_BOOTSTRAP.md` and `TASK_TEMPLATES.md`.
 
 ## Canonical Execution Context
@@ -14,7 +14,7 @@
 | Current HEAD | HEAD must equal `origin/main`; verify with `git rev-parse HEAD` and `git rev-parse origin/main` before any task. Do not hardcode a live hash here — this field becomes stale after every PR merge. Last recorded PR merge: P228 governance closeout (branch `p228-star-replay-governance-closeout`). | [Self-verifying] |
 | `origin/main` | Must equal HEAD; see above. Verify with `git rev-parse origin/main`. | [Self-verifying] |
 | Git dir | `.git` | [Confirmed] |
-| Active worker task | none (P238C governance closeout complete) | [Confirmed] |
+| Active worker task | none (P238D governance closeout complete) | [Confirmed] |
 | P211 status | `HELD_BY_USER`; do not auto-resume or re-prompt | [Confirmed] |
 
 ## Forbidden Execution Paths
@@ -105,6 +105,8 @@ Read-only baseline commands:
 | **P237D P237C merge + governance closeout** | **COMPLETE** — `P237D_P237C_DESIGN_DOC_MERGED_GOVERNANCE_CLOSEOUT_COMPLETE` | Governance sync after PR #285 merge. Records P237C design doc and returns system to `WAITING_FOR_USER_AUTHORIZATION`. Future NIST build requires separate explicit authorization. |
 | **P238A NIST randomness-audit artifact-only build plan** | **COMPLETE** — `P238A_NIST_RANDOMNESS_AUDIT_ARTIFACT_ONLY_BUILD_PLAN_READY` | Artifact-only future-build plan. Artifact: `outputs/research/p238a_nist_randomness_audit_artifact_only_build_plan_20260604.md`. **PR #287 merged.** No executable build/code/scripts/tests/DB/registry/production/recommendation/monitoring/strategy/P211 change. |
 | **P238C P238A build-plan merge + governance closeout** | **COMPLETE** — `P238C_P238A_BUILD_PLAN_MERGED_GOVERNANCE_CLOSEOUT_COMPLETE` | Governance sync after PR #287 merge. Records P238A and returns system to `WAITING_FOR_USER_AUTHORIZATION`. Future P238B build requires separate explicit authorization. |
+| **P238B NIST randomness audit artifact build** | **COMPLETE** — `P238B_NIST_RANDOMNESS_AUDIT_ARTIFACT_ONLY_BUILD_COMPLETE` | Artifact-only build. **PR #289 merged.** Artifacts: `outputs/research/p238b_nist_randomness_audit_artifact_20260604.{json,md}`. Classification: `RANDOMNESS_AUDIT_YELLOW_OBSERVATION_ONLY`. YELLOW is observation-only; ORANGE/RED require independent future confirmation; RED authorizes human review only. All no-claim booleans false. No DB/registry/production/recommendation/monitoring/strategy change. |
+| **P238D P238B artifact build merge + governance closeout** | **COMPLETE** — `P238D_P238B_ARTIFACT_BUILD_MERGED_GOVERNANCE_CLOSEOUT_COMPLETE` | Governance sync after PR #289 merge. Records P238B and returns system to `WAITING_FOR_USER_AUTHORIZATION`. P211 remains HELD_BY_USER. |
 
 ## Completed Milestones
 
@@ -147,11 +149,13 @@ Read-only baseline commands:
 - [Confirmed] P237D: P237C merge + governance closeout complete. No NIST build, no code/scripts/tests, no DB/registry/production/recommendation change, no monitoring job, no P211 restart, no strategy exploration.
 - [Confirmed] P238A: NIST randomness-audit artifact-only build plan complete and merged via PR #287. The plan converts P237C into a future artifact-only build specification; it does not implement the audit and does not authorize P238B.
 - [Confirmed] P238C: P238A merge + governance closeout complete. No NIST build, no code/scripts/tests, no DB/registry/production/recommendation change, no monitoring job, no P211 restart, no strategy exploration.
+- [Confirmed] P238B: NIST randomness-audit artifact build complete and merged via PR #289. Artifact-only. Classification: `RANDOMNESS_AUDIT_YELLOW_OBSERVATION_ONLY`. YELLOW is observation-only; ORANGE/RED require independent future confirmation; RED authorizes human review only, not strategy or production. All no-claim booleans false. Zero DB write. 6/6 targeted tests PASS.
+- [Confirmed] P238D: P238B merge + governance closeout complete. PR #289 merged; governance files synced; returned to `WAITING_FOR_USER_AUTHORIZATION`. No new build, no code, no DB/registry/production/recommendation change, no P211 restart.
 
 ## Current Blockers / Holds
 
 - [Blocked] P211 is held by user. Do not auto-resume.
-- [Hold] NIST randomness-audit tripwire build is **not authorized**. P237C design doc and P238A build plan exist only as future-build specifications; any implementation requires separate explicit user authorization.
+- [Complete / YELLOW] NIST randomness-audit artifact build: P238B complete (PR #289 merged). Classification: `RANDOMNESS_AUDIT_YELLOW_OBSERVATION_ONLY`. YELLOW is observation-only. No escalation or future confirmation task is authorized without separate explicit user authorization. ORANGE/RED require independent future confirmation; RED authorizes human review only, not strategy or production.
 - [Closed] DAILY_539 survivor `midfreq_fourier_2bet` = **REJECTED_BY_BACKWARD_OOS / HISTORICAL_ARTIFACT_DIRECTION** (P230C). P230B1 backward-OOS dry-run (4,265 draws, 2007/05–2021/08): mean 0.6375 < baseline 0.6410; all era/robustness checks fail. In-window edge is a historical artifact. **No deployment. No P230B2 DB backfill.** Production / registry / recommendation logic unchanged.
 - [Closed / NULL] POWER_LOTTO first-zone candidate `midfreq_fourier_mk_3bet` = **`P231B_POWERLOTTO_FIRST_ZONE_BACKWARD_OOS_DRYRUN_NULL`** (P231B). Backward-OOS 382 draws: mean 0.969 vs baseline 0.947; CI crosses baseline; p=0.30; both robustness checks below baseline; block stability mixed. **Non-deployable. Observation-only. No promotion. No production/registry/recommendation change.**
 - [Hold] 3_STAR / 4_STAR box-play = **UNDERPOWERED_NO_SIGNAL**. Not deployable. Need ≥10,000 3_STAR draws (have 4,179) or ≥17,000 4_STAR draws (have 2,922) for adequate power. Any re-scan must inherit P221F gate with fresh pre-registration.
@@ -173,13 +177,13 @@ Read-only baseline commands:
 
 ## Recommended Next Direction
 
-No active deployable candidate in any lottery. **The P211A–P231B arc has exhausted all current in-window candidates. P232A all-catalog scoreboard confirms no deployable candidate. P233B registry hygiene resolved LIFECYCLE_UNRESOLVED to 0. P234/P234A CTO statistical-methods analysis complete (P2.4 design-only). P235A Lofea feasibility review complete (design-inspiration only, no deployable edge). P236A external statistical methods scouting complete (falsification/diagnostics-only; hit-rate closed; 7/8 methods already owned; net-new = NIST randomness-audit tripwire + payout EV; no deployable edge). P237C NIST randomness-audit tripwire design doc and P238A artifact-only build plan are complete/merged, but no build is authorized. Governance record is now complete.** Do not start new research without explicit user authorization. Queued options:
+No active deployable candidate in any lottery. **The P211A–P231B arc has exhausted all current in-window candidates. P232A all-catalog scoreboard confirms no deployable candidate. P233B registry hygiene resolved LIFECYCLE_UNRESOLVED to 0. P234/P234A CTO statistical-methods analysis complete (P2.4 design-only). P235A Lofea feasibility review complete (design-inspiration only, no deployable edge). P236A external statistical methods scouting complete (falsification/diagnostics-only; hit-rate closed; 7/8 methods already owned; net-new = NIST randomness-audit tripwire + payout EV; no deployable edge). P237C NIST randomness-audit tripwire design doc and P238A artifact-only build plan are complete/merged. P238B NIST randomness-audit artifact build is now complete (PR #289 merged); classification YELLOW is observation-only and does not authorize strategy, production, or any follow-on escalation without separate explicit authorization. Governance record is now complete.** Do not start new research without explicit user authorization. Queued options:
 
 1. **Passive monitoring** — wait for ≥300 new DAILY_539 draws (preferred 500); per P224B protocol, new OOS evidence could reopen, but prior shifted toward NULL after P230B1 below-baseline.
 2. **3_STAR/4_STAR re-scan** — only after ≥10,000 total 3_STAR draws (currently 4,179) accumulate naturally, or after positional re-ingestion for straight-play; requires fresh pre-registration.
 3. **Explore entirely new strategies / hypotheses** — requires explicit authorization, fresh P221F pre-registration, and a new task prompt.
 4. **POWER_LOTTO first-zone future OOS** — `midfreq_fourier_mk_3bet` remains observation-only (P231B NULL); future OOS monitoring only with explicit authorization and P221F gate.
-5. **NIST-style randomness-audit SSOT + tripwire build (future only)** — P237C design doc is available at `outputs/research/p237c_nist_randomness_audit_tripwire_design_20260604.md`; P238A build plan is available at `outputs/research/p238a_nist_randomness_audit_artifact_only_build_plan_20260604.md`. Build remains unauthorized and requires separate explicit authorization. It is diagnostics-only, not a predictor, no win-rate claim.
+5. **NIST randomness-audit follow-on (future only, if any)** — P238B build is complete (YELLOW). Any escalation or confirmation task requires separate explicit authorization. YELLOW is observation-only; it does not authorize strategy, production, or any follow-on action. RED would authorize human review only, not strategy or production.
 
 Retired: DAILY_539 survivor backward-OOS extension (P1.2) — resolved; POWER_LOTTO first-zone backward-OOS (P231B) — resolved NULL.
 

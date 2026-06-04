@@ -50,7 +50,10 @@ This section is the current source of truth. The 2026-06-01 sections and P186-P1
 | **P231B POWER_LOTTO first-zone backward-OOS dry-run** | **[Complete]** `P231B_POWERLOTTO_FIRST_ZONE_BACKWARD_OOS_DRYRUN_NULL` | `outputs/research/p231b_powerlotto_first_zone_backward_oos_dryrun_20260604.{md,json}`; `scripts/p231b_powerlotto_first_zone_backward_oos_dryrun.py`; `tests/test_p231b_powerlotto_first_zone_backward_oos_dryrun.py`; PR #272, merge commit `2beb24e` | Zero DB write (read-only `mode=ro`). 382 replayable backward draws (2008–2012, boundary `101000002`). Deterministic bet-1 only (P230B1 discipline; bets 2,3 not invented). First-zone mean **0.96859** vs baseline **0.94737** (36/38); 95% CI crosses baseline; one-sided **p = 0.3018** (not significant); both robustness checks fail (exclude hit≥3 → 0.9113; exclude strongest block → 0.875); block stability mixed. Second-zone display-only (0.1099 < 0.125, p=0.826). **14 targeted tests: 12/14 PASS (2 env-skip, not failures).** No production/registry/recommendation change. Candidate non-deployable; observation-only. |
 | **P231C POWER_LOTTO first-zone governance closeout** | **[Complete]** `P231C_POWERLOTTO_FIRST_ZONE_BACKWARD_OOS_GOVERNANCE_CLOSEOUT_MERGED` | `00-Plan/roadmap/roadmap.md` §0.1 + `CURRENT_STATE.md` + `active_task.md` + `CEO-Decision.md`; PR #273 | Doc-only governance sync recording P231B NULL result. No code/DB/registry/production change. |
 | **P232A All-catalog historical replay scoreboard** | **[Complete]** `P232A_ALL_CATALOG_STRATEGY_HISTORICAL_REPLAY_SCOREBOARD_COMPLETE` | `outputs/research/p232a_all_catalog_strategy_replay_scoreboard_20260604.{md,json}`; `scripts/p232a_all_catalog_strategy_replay_scoreboard.py`; `tests/test_p232a_all_catalog_strategy_replay_scoreboard.py`; PR #274, merge commit `86d4f52` | Read-only scoreboard: 41 union strategy+lottery entries (21 catalog-registered, 20 LIFECYCLE_UNRESOLVED), 36 replay-backed, 5 no-replay. lifecycle is a label only. Zero DB write. 20/20 targeted tests PASS. No deployable/promote/forbidden classifications. Historical evidence only. |
-| **P232B All-catalog scoreboard governance closeout** | **[In Progress]** `P232B_ALL_CATALOG_SCOREBOARD_GOVERNANCE_CLOSEOUT_PR_OPEN` | `00-Plan/roadmap/roadmap.md` §0.1 + `CURRENT_STATE.md` + `active_task.md` + `CEO-Decision.md`; this PR | Doc-only governance sync recording P232A complete and LIFECYCLE_UNRESOLVED observation. No code/DB/registry/production change. |
+| **P232B All-catalog scoreboard governance closeout** | **[Complete]** `P232B_ALL_CATALOG_SCOREBOARD_GOVERNANCE_CLOSEOUT_MERGED` | governance docs; PR #275 | Doc-only sync recording P232A complete and LIFECYCLE_UNRESOLVED observation. |
+| **P233A Lifecycle-unresolved registry hygiene plan** | **[Complete]** `P233A_LIFECYCLE_UNRESOLVED_REGISTRY_HYGIENE_PLAN_MERGED` | `outputs/research/p233a_lifecycle_unresolved_registry_hygiene_plan_20260604.{md,json}`; PR #276 | Read-only plan for 20 LIFECYCLE_UNRESOLVED entries. Evidence-based: 12 REJECTED (rejected/ archive) + 8 RETIRED (P59/P66/P79/P94/P126D controlled applies). |
+| **P233B Non-executable stub update** | **[Complete]** `P233B_LIFECYCLE_UNRESOLVED_NON_EXECUTABLE_STUB_UPDATE_MERGED` | `lottery_api/models/replay_strategy_registry.py`; `outputs/research/p233b_lifecycle_unresolved_non_executable_stub_update_20260604.{md,json}`; PR #277, merge commit `24f9f81` | 20 `_NON_EXECUTABLE_STUB` entries added. LIFECYCLE_UNRESOLVED 20→0. No executable adapter added. Zero DB write. 10/10 tests PASS. |
+| **P233C Lifecycle unresolved registry hygiene governance closeout** | **[In Progress]** `P233C_LIFECYCLE_UNRESOLVED_REGISTRY_HYGIENE_GOVERNANCE_CLOSEOUT_PR_OPEN` | governance docs; this PR | Doc-only sync recording P233A/B complete and LIFECYCLE_UNRESOLVED=0. No code/DB/production change. |
 
 ### 0.2 Current System Baseline
 
@@ -170,9 +173,9 @@ Upgrade / downgrade decisions:
 - **Why important:** Stale worktrees/archive paths still exist and can produce invalid evidence if used.
 - **Priority:** P0 / P1 — ongoing maintenance.
 
-### 0.7 Current State Summary (updated by P232B, 2026-06-04)
+### 0.7 Current State Summary (updated by P233C, 2026-06-04)
 
-**Research chains P211A–P231B (all lotteries), P226–P227C (3_STAR/4_STAR), and P232A (all-catalog scoreboard) are complete.**
+**Research chains P211A–P231B (all lotteries), P226–P227C (3_STAR/4_STAR), P232A (all-catalog scoreboard), and P233A/B (registry hygiene, LIFECYCLE_UNRESOLVED 20→0) are complete.**
 
 - Direction #1 (window reframe): P221F frozen windows (short 100/125/150, mid 500/750/1000, all-history=reference) operationalized. Gate active.
 - Direction #2 (mine all-lottery × all-method): P222 scan complete. Sole survivor `midfreq_fourier_2bet / DAILY_539` fragile → **reclassified `REJECTED_BY_BACKWARD_OOS / HISTORICAL_ARTIFACT_DIRECTION` (P230C)**. DAILY_539 backward-OOS (P230B1): mean 0.6375 < baseline 0.6410; all eras/robustness fail.
@@ -192,11 +195,11 @@ Upgrade / downgrade decisions:
 Final current roadmap marker:
 
 ```text
-P232B_ALL_CATALOG_SCOREBOARD_GOVERNANCE_CLOSEOUT_PR_OPEN
+P233C_LIFECYCLE_UNRESOLVED_REGISTRY_HYGIENE_GOVERNANCE_CLOSEOUT_PR_OPEN
+P233B_LIFECYCLE_UNRESOLVED_NON_EXECUTABLE_STUB_UPDATE_MERGED_PR277
+P232B_ALL_CATALOG_SCOREBOARD_GOVERNANCE_CLOSEOUT_MERGED_PR275
 P232A_ALL_CATALOG_STRATEGY_HISTORICAL_REPLAY_SCOREBOARD_COMPLETE_MERGED_PR274
-P231C_POWERLOTTO_FIRST_ZONE_BACKWARD_OOS_GOVERNANCE_CLOSEOUT_MERGED_PR273
 P231B_POWERLOTTO_FIRST_ZONE_BACKWARD_OOS_DRYRUN_NULL_MERGED_PR272
-P230C_DAILY539_SURVIVOR_RECLASSIFIED_HISTORICAL_ARTIFACT
 ```
 
 ---

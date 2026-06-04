@@ -1,7 +1,7 @@
 # Current State — LotteryNew
 
-**Last Reviewed:** 2026-06-04 Asia/Taipei (P232B governance closeout — P232A all-catalog historical replay scoreboard complete; 41 strategy+lottery entries; 20 LIFECYCLE_UNRESOLVED; no active worker task)
-**State Marker:** `P232B_ALL_CATALOG_SCOREBOARD_GOVERNANCE_CLOSEOUT`
+**Last Reviewed:** 2026-06-04 Asia/Taipei (P233C governance closeout — LIFECYCLE_UNRESOLVED 20→0; 20 non-executable stubs added; registry hygiene complete; no active worker task)
+**State Marker:** `P233C_LIFECYCLE_UNRESOLVED_REGISTRY_HYGIENE_GOVERNANCE_CLOSEOUT`
 **Purpose:** Project-specific state for future agents. Read this after `SHARED_AGENT_BOOTSTRAP.md` and `TASK_TEMPLATES.md`.
 
 ## Canonical Execution Context
@@ -14,7 +14,7 @@
 | Current HEAD | HEAD must equal `origin/main`; verify with `git rev-parse HEAD` and `git rev-parse origin/main` before any task. Do not hardcode a live hash here — this field becomes stale after every PR merge. Last recorded PR merge: P228 governance closeout (branch `p228-star-replay-governance-closeout`). | [Self-verifying] |
 | `origin/main` | Must equal HEAD; see above. Verify with `git rev-parse origin/main`. | [Self-verifying] |
 | Git dir | `.git` | [Confirmed] |
-| Active worker task | none (P232B governance closeout complete) | [Confirmed] |
+| Active worker task | none (P233C governance closeout complete) | [Confirmed] |
 | P211 status | `HELD_BY_USER`; do not auto-resume or re-prompt | [Confirmed] |
 
 ## Forbidden Execution Paths
@@ -91,7 +91,10 @@ Read-only baseline commands:
 | **P231B POWER_LOTTO first-zone backward-OOS dry-run** | **COMPLETE** — `P231B_POWERLOTTO_FIRST_ZONE_BACKWARD_OOS_DRYRUN_NULL` | Zero DB write; 382 replayable backward draws (2008–2012); deterministic bet-1 only. First-zone mean 0.96859 vs baseline 0.94737; CI crosses; p=0.3018; robustness fails. **PR #272 merged.** No production/registry/recommendation change. Candidate non-deployable. |
 | **P231C POWER_LOTTO first-zone governance closeout** | **COMPLETE** — `P231C_POWERLOTTO_FIRST_ZONE_BACKWARD_OOS_GOVERNANCE_CLOSEOUT_MERGED` | Doc-only sync recording P231B NULL result into all governance files. PR #273. No code/DB/registry/production change. |
 | **P232A All-catalog historical replay scoreboard** | **COMPLETE** — `P232A_ALL_CATALOG_STRATEGY_HISTORICAL_REPLAY_SCOREBOARD_COMPLETE` | Read-only scoreboard; 41 total strategy+lottery entries (21 catalog-registered incl. 8 ONLINE/4 REJECTED/5 RETIRED/1 OBS/3 DRY_RUN; 20 LIFECYCLE_UNRESOLVED); 36 replay-backed; 5 no-replay. lifecycle label only. Zero DB write. 20/20 tests PASS. Historical evidence only. PR #274. |
-| **P232B All-catalog scoreboard governance closeout** | **COMPLETE** — `P232B_ALL_CATALOG_SCOREBOARD_GOVERNANCE_CLOSEOUT` | Doc-only sync recording P232A complete and LIFECYCLE_UNRESOLVED observation. No code/DB/registry/production change. |
+| **P232B All-catalog scoreboard governance closeout** | **COMPLETE** — `P232B_ALL_CATALOG_SCOREBOARD_GOVERNANCE_CLOSEOUT_MERGED` | Doc-only sync recording P232A complete. PR #275. |
+| **P233A Lifecycle-unresolved registry hygiene plan** | **COMPLETE** — `P233A_LIFECYCLE_UNRESOLVED_REGISTRY_HYGIENE_PLAN_MERGED` | Read-only plan for 20 LIFECYCLE_UNRESOLVED entries. 12 REJECTED + 8 RETIRED suggestions. 18/18 tests PASS. PR #276. |
+| **P233B Non-executable stub update** | **COMPLETE** — `P233B_LIFECYCLE_UNRESOLVED_NON_EXECUTABLE_STUB_UPDATE_MERGED` | 20 `_NON_EXECUTABLE_STUB` entries added to `replay_strategy_registry.py`. LIFECYCLE_UNRESOLVED 20→0. No executable adapter. Zero DB write. 10/10 tests PASS. PR #277. |
+| **P233C Lifecycle unresolved registry hygiene governance closeout** | **COMPLETE** — `P233C_LIFECYCLE_UNRESOLVED_REGISTRY_HYGIENE_GOVERNANCE_CLOSEOUT` | Doc-only sync recording P233A/B complete. No code/DB/production change. |
 
 ## Completed Milestones
 
@@ -120,7 +123,10 @@ Read-only baseline commands:
 - [Confirmed] P231B: POWER_LOTTO first-zone backward-OOS code dry-run complete. 382 older draws (2008–2012); deterministic bet-1 only; zero DB write. Mean 0.96859 vs baseline 0.94737; CI crosses baseline; p=0.3018; **both robustness checks fail**; block stability mixed. Classification: **`P231B_POWERLOTTO_FIRST_ZONE_BACKWARD_OOS_DRYRUN_NULL`**. 14 targeted tests (12/14 PASS, 2 env-skip). PR #272 merged, merge commit `2beb24e`. No production/registry/recommendation change. Candidate remains non-deployable.
 - [Confirmed] P231C: POWER_LOTTO first-zone governance closeout complete. P231B NULL result recorded in all governance files (doc-only, no code/DB/registry/production change).
 - [Confirmed] P232A: All-catalog historical replay scoreboard complete. 41 total strategy+lottery entries; 21 catalog-registered (8 ONLINE, 4 REJECTED, 5 RETIRED, 1 OBSERVATION, 3 DRY_RUN); 20 LIFECYCLE_UNRESOLVED (in replay DB but not in any catalog); 36 replay-backed; 5 no-replay. lifecycle is a label only. Zero DB write. 20/20 targeted tests PASS. No forbidden classification emitted. PR #274 merged.
-- [Confirmed] P232B: All-catalog scoreboard governance closeout complete. P232A results and LIFECYCLE_UNRESOLVED observation recorded in governance files (doc-only, no code/DB/registry/production change).
+- [Confirmed] P232B: All-catalog scoreboard governance closeout complete. PR #275.
+- [Confirmed] P233A: Lifecycle-unresolved registry hygiene plan complete. Evidence-based lifecycle suggestions for 20 entries: 12 REJECTED (rejected/ archive) + 8 RETIRED (P59/P66/P79/P94/P126D production applies). 18/18 tests PASS. PR #276.
+- [Confirmed] P233B: Non-executable stub update complete. 20 `_NON_EXECUTABLE_STUB` entries added to `replay_strategy_registry.py`. **LIFECYCLE_UNRESOLVED 20→0.** No executable adapter added. Zero DB write. 10/10 tests PASS. PR #277.
+- [Confirmed] P233C: Lifecycle unresolved registry hygiene governance closeout complete. P233A/B results recorded in governance files (doc-only, no code/DB/production change).
 
 ## Current Blockers / Holds
 
@@ -130,7 +136,7 @@ Read-only baseline commands:
 - [Hold] 3_STAR / 4_STAR box-play = **UNDERPOWERED_NO_SIGNAL**. Not deployable. Need ≥10,000 3_STAR draws (have 4,179) or ≥17,000 4_STAR draws (have 2,922) for adequate power. Any re-scan must inherit P221F gate with fresh pre-registration.
 - [Blocked] 3_STAR / 4_STAR straight-play = **BLOCKED_REINGEST_REQUIRED**. Positional order lost in DB sorted storage. Re-ingestion from raw positional source requires separate authorization.
 - [Risk] Worktree contains existing dirty/untracked files outside governance scope; future tasks must use narrow write allowlists.
-- [Observation] LIFECYCLE_UNRESOLVED = 20 strategy+lottery entries exist in replay DB but have no catalog/registry entry. Not a blocker; future registry alignment requires separate authorization. Do not auto-promote or auto-register any LIFECYCLE_UNRESOLVED entry.
+- [Resolved] LIFECYCLE_UNRESOLVED: **0** (was 20). P233B added 20 non-executable stubs to `replay_strategy_registry.py`. All formerly-unresolved entries now have REJECTED or RETIRED labels. No executable adapter added.
 - [Resolved] Governance doc staleness at P217–P232A: resolved by P225 + P228 + P231C + P232B closeout.
 - [Resolved] DAILY_539 survivor backward-OOS extension (P1.2): resolved by P230A plan + P230B1 dry-run; result BELOW_BASELINE → reclassified in P230C.
 - [Resolved] POWER_LOTTO first-zone backward-OOS (P1 candidate): resolved by P231B dry-run; result NULL → observation-only in P231C.
@@ -146,7 +152,7 @@ Read-only baseline commands:
 
 ## Recommended Next Direction
 
-No active deployable candidate in any lottery. **The P211A–P231B arc has exhausted all current in-window candidates: DAILY_539 reclassified as HISTORICAL_ARTIFACT_DIRECTION (P230C); POWER_LOTTO first-zone backward-OOS NULL (P231B). P232A all-catalog scoreboard confirms no deployable candidate exists across all 41 strategy+lottery entries.** Do not start new research without explicit user authorization. Queued options:
+No active deployable candidate in any lottery. **The P211A–P231B arc has exhausted all current in-window candidates. P232A all-catalog scoreboard confirms no deployable candidate. P233B registry hygiene resolved LIFECYCLE_UNRESOLVED to 0 — governance record is now complete.** Do not start new research without explicit user authorization. Queued options:
 
 1. **Passive monitoring** — wait for ≥300 new DAILY_539 draws (preferred 500); per P224B protocol, new OOS evidence could reopen, but prior shifted toward NULL after P230B1 below-baseline.
 2. **3_STAR/4_STAR re-scan** — only after ≥10,000 total 3_STAR draws (currently 4,179) accumulate naturally, or after positional re-ingestion for straight-play; requires fresh pre-registration.

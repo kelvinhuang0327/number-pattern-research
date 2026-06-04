@@ -1021,3 +1021,73 @@ Final Classification: `CEO_DECISION_PARTIALLY_APPROVED`
 `CEO_DECISION_P231B_NULL_ACCEPTED_GOVERNANCE_CLOSEOUT`. NULL is a valid and complete result. `midfreq_fourier_mk_3bet / POWER_LOTTO` first-zone candidate remains non-deployable / observation-only. No production / registry / DB write / recommendation-logic change / strategy promotion authorized. P231C governance closeout (doc-only) is today's only authorized task. P210 COMPLETE / P211 HELD_BY_USER / DAILY_539 survivor HISTORICAL_ARTIFACT / second-zone DISPLAY_ONLY — all unchanged.
 
 Final Classification: `CEO_DECISION_P231B_NULL_ACCEPTED_GOVERNANCE_CLOSEOUT`
+
+
+---
+
+# CEO Decision — 2026-06-04 (P232A All-Catalog Historical Replay Scoreboard Accepted + P232B Governance Closeout)
+
+> 本段為 P232A scoreboard 的 CEO 驗收裁決與 P232B governance closeout。上方所有歷史段落全部保留（CLAUDE.md「舊策略不得刪除，只能歸檔」）。
+> P232A PR #274 已於 2026-06-04 合併至 main（merge commit `86d4f523359a9bab239b6bf11600b2e6940763a2`）。
+> P232B governance closeout 由 dev branch `p232b-all-catalog-scoreboard-governance-closeout` 完成後透過 PR 落入 main。
+
+## 1. CEO Review Date
+
+2026-06-04 Asia/Taipei. Final Classification: `CEO_DECISION_P232A_SCOREBOARD_ACCEPTED_GOVERNANCE_CLOSEOUT`.
+
+## 2. Reviewed Inputs
+
+- [Confirmed] Phase 0 read-only (P232A merged state): repo `/Users/kelvin/Kelvin-WorkSpace/LotteryNew`, branch `main`, HEAD == origin/main == `86d4f52`, staged empty.
+- [Confirmed] DB: 94,924 rows (unchanged); integrity `ok`; drift guard `REPLAY_LIFECYCLE_DRIFT_GUARD_PASS`.
+- [Confirmed] P232A artifacts in main (PR #274 merged, commit `e0128a2`):
+  - `outputs/research/p232a_all_catalog_strategy_replay_scoreboard_20260604.json` — parses cleanly.
+  - `outputs/research/p232a_all_catalog_strategy_replay_scoreboard_20260604.md`
+  - `scripts/p232a_all_catalog_strategy_replay_scoreboard.py`
+  - `tests/test_p232a_all_catalog_strategy_replay_scoreboard.py` — 20/20 targeted tests PASS.
+- [Confirmed] P232A JSON key fields verified:
+  - `final_classification = P232A_ALL_CATALOG_STRATEGY_HISTORICAL_REPLAY_SCOREBOARD_COMPLETE`
+  - `db_write_performed = False`; `db_rows_before == db_rows_after == 94924`
+  - `total_catalog_strategy_count = 21`
+  - `total_replay_strategy_count = 36`
+  - `total_no_replay_count = 5`
+  - `total_strategy_count_after_union = 41`
+  - `unresolved_lifecycle_count = 20`
+  - Zero forbidden classifications (no DEPLOYABLE / PROMOTE / ONLINE_RECOMMENDED / PRODUCTION_READY / BEST_STRATEGY_TO_USE)
+- [Confirmed] No production / registry / recommendation logic change in P232A or P232B.
+
+## 3. P232A Scoreboard Value Assessment
+
+| Item | CEO Mark | Value |
+|---|---|---|
+| All-catalog inclusion (lifecycle as label, not filter) | [Confirmed] | High governance value. RETIRED/REJECTED/OBSERVATION entries all appear with row_count or NO_REPLAY_ROWS. lifecycle visibility invariant upheld. |
+| LIFECYCLE_UNRESOLVED = 20 entries | [Confirmed] | Useful observation. 20 strategy+lottery combos exist in replay DB but lack registry catalog entries. Not a blocker; recorded as future governance observation. |
+| No forbidden classifications | [Confirmed] | Zero DEPLOYABLE/PROMOTE/etc. emitted. |
+| 20/20 targeted tests PASS | [Confirmed] | Covers zero DB write, lifecycle-as-label, no-row inclusion, LIFECYCLE_UNRESOLVED, row-level vs draw-level, second-zone display-only, no forbidden classifications, deterministic rerun. |
+| Historical-only framing | [Confirmed] | Correctly framed as historical evidence only — not betting advice, not deployability ranking. |
+
+## 4. CEO Verdict
+
+**CEO ACCEPTS P232A scoreboard as a useful historical evidence foundation.**
+
+The scoreboard provides a complete picture of the replay universe across all lifecycle states and all three active lotteries. Key governance observations:
+
+1. **No deployable candidate** — consistent with P211A–P231B arc. NULL_OR_BASELINE_LIKE / WEAK_OBSERVATION_ONLY / LIFECYCLE_UNRESOLVED are historical labels, not promotion signals.
+2. **LIFECYCLE_UNRESOLVED = 20** — these 20 strategy+lottery combos exist in the replay DB but have no catalog/registry entry. This is an observation for future registry hygiene, not an immediate action item. Do not auto-promote or auto-register any LIFECYCLE_UNRESOLVED entry without separate explicit authorization and P221F anti-overfit gates.
+3. **Future use** — any use of this scoreboard to motivate a new research task (e.g., re-evaluate a WEAK_OBSERVATION_ONLY strategy) requires separate explicit authorization, OOS walk-forward validation per P221F protocol, pre-registration, and correct leakage controls. The scoreboard alone does NOT authorize any strategy evaluation, promotion, or deployment.
+
+## 5. CEO Priority Decision (Post-P232A)
+
+| Priority | Item | Status |
+|---|---|---|
+| **P0** | P221F anti-overfit gate + canonical repo/DB STOP guard | [Active / permanent] |
+| **P0** | P232B governance closeout (record P232A COMPLETE; this task) | [Active] |
+| **P1** | Product disclosure / second-zone containment | [Deferred] |
+| **P2** | DAILY_539 / POWER_LOTTO passive monitoring | [Waiting] — no active candidates |
+| **Future** | Registry hygiene for LIFECYCLE_UNRESOLVED = 20 entries | [Observation — needs separate explicit authorization] |
+| **Frozen** | production promotion / registry / DB write / recommendation / controlled apply / betting advice | **Unauthorized** |
+
+## 6. CEO Final Decision
+
+`CEO_DECISION_P232A_SCOREBOARD_ACCEPTED_GOVERNANCE_CLOSEOUT`. P232A is a valid and useful historical scoreboard. No deployable candidate is present. LIFECYCLE_UNRESOLVED = 20 is a future governance observation, not an immediate action. Any next research step requires separate authorization and P221F gates. P232B governance closeout (this doc-only task) is the only authorized action today. P210 COMPLETE / P211 HELD_BY_USER / DAILY_539 HISTORICAL_ARTIFACT / POWER_LOTTO first-zone NULL / second-zone DISPLAY_ONLY — all unchanged.
+
+Final Classification: `CEO_DECISION_P232A_SCOREBOARD_ACCEPTED_GOVERNANCE_CLOSEOUT`

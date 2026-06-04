@@ -930,3 +930,94 @@ Final Classification: `CEO_DECISION_PARTIALLY_APPROVED`
 10. Final: `CEO_DECISION_PARTIALLY_APPROVED`.
 
 Final Classification: `CEO_DECISION_PARTIALLY_APPROVED`
+
+
+---
+
+# CEO Decision — 2026-06-04 (P231B POWER_LOTTO First-Zone Backward-OOS NULL Accepted + P231C Governance Closeout)
+
+> 本段為 P231B 結果的 CEO 二次審查與 P231C governance closeout 裁決。上方所有歷史段落全部保留（CLAUDE.md「舊策略不得刪除，只能歸檔」）。
+> P231B PR #272 已於 2026-06-04 合併至 main（merge commit `2beb24e74bfbee5dbc5628d7790e6f81376a854c`）。
+> 本段由 P231C governance closeout worker 在 `p231c-powerlotto-first-zone-backward-oos-governance-closeout` dev branch 撰寫，透過 PR 流程落入 main。
+
+## 1. CEO Review Date
+
+2026-06-04 Asia/Taipei. Final Classification: `CEO_DECISION_P231B_NULL_ACCEPTED_GOVERNANCE_CLOSEOUT`.
+
+## 2. Reviewed Inputs
+
+- [Confirmed] Phase 0 read-only (P231B PR merge state): repo `/Users/kelvin/Kelvin-WorkSpace/LotteryNew`, branch `main` after merge, HEAD == origin/main == `2beb24e74bfbee5dbc5628d7790e6f81376a854c` (PR #272 / P231B merge), 0 staged files.
+- [Confirmed] DB `lottery_api/data/lottery_v2.db` / `strategy_prediction_replays`: 94,924 rows (BIG 24,140 / DAILY_539 34,680 / POWER 36,104), bet_index nulls 0, duplicate keys 0, integrity `ok`, drift guard `REPLAY_LIFECYCLE_DRIFT_GUARD_PASS`.
+- [Confirmed] P231B artifacts now in main (PR #272 merged, commit `95e2297`):
+  - `outputs/research/p231b_powerlotto_first_zone_backward_oos_dryrun_20260604.json` — parses; `final_classification = P231B_POWERLOTTO_FIRST_ZONE_BACKWARD_OOS_DRYRUN_NULL`; `db_write_performed = false`; `db_rows_before == db_rows_after == 94924`.
+  - `outputs/research/p231b_powerlotto_first_zone_backward_oos_dryrun_20260604.md`
+  - `scripts/p231b_powerlotto_first_zone_backward_oos_dryrun.py` — read-only DB (`mode=ro`); deterministic bet-1 only; bets 2,3 not invented (P230B1 discipline).
+  - `tests/test_p231b_powerlotto_first_zone_backward_oos_dryrun.py` — 14 targeted tests; 12/14 PASS on main (2 env-gated skips due to live-backend WAL, not failures).
+- [Confirmed] P231B result verified from JSON:
+  - Candidate: `midfreq_fourier_mk_3bet / POWER_LOTTO`, first zone (1–38, pick 6), deterministic bet-1 only.
+  - Backward boundary: `101000002`; backward total: 412 draws; replayable (adapter-min 30): **382**; conservative-100: 312.
+  - Window: `97000031 (2008/05/08)` to `101000001 (2012/01/02)`.
+  - First-zone result: mean **0.96859** vs baseline **0.94737** (36/38); 95% CI **[0.8885, 1.0487]** crosses baseline; one-sided **p = 0.3018** (not significant); direction "above" (point estimate only).
+  - Block stability: 50→4/8, 100→2/4, 150→2/3 blocks above — mixed; no majority-above at primary (100) block size.
+  - Robustness: exclude hit≥3 → mean **0.9113 < baseline**; exclude strongest block → mean **0.875 < baseline**. **Both checks fail.**
+  - Year splits: 2008 below (0.809); 2009–2011 above but all p > 0.15; mixed, unstable across eras.
+  - Second zone (display-only): mean **0.1099 < baseline 0.125**, p = 0.826 — below random, consistent with P211A.
+  - Authorization fields: DB write / registry / production / recommendation change / second-zone promotion / strategy promotion — all **NOT AUTHORIZED**.
+- [Confirmed] No production / registry / recommendation logic change occurred in P231B or P231C.
+
+## 3. P231B Work Value Assessment
+
+| Work | CEO Mark | Value |
+|---|---|---|
+| P231B backward-OOS dry-run (382 older draws, zero DB write) | [Confirmed] | High. Falsifies POWER_LOTTO first-zone candidate with independent older data. Mean above baseline is a point estimate only; CI crosses, p=0.30, both robustness checks fail — honest NULL. No overpromising. |
+| 14 targeted tests (12 PASS, 2 env-skip) | [Confirmed] | High process value. Leakage guard, determinism, read-only proof, statistics replication all verified. |
+| PR #272 merge + post-merge verification | [Confirmed] | COMPLETE. Artifacts in main; 94,924 DB rows unchanged. |
+| Net research position | [Risk] | Confirmed NULL / non-deployable. Consistent with full arc P211A–P231B: no deployable strategy in any lottery. |
+
+## 4. CEO Verdict
+
+**CEO ACCEPTS P231B result as NULL.**
+
+- The point estimate (0.969 vs 0.947) is marginally above random baseline, but:
+  - CI [0.889, 1.049] **crosses baseline** — statistically indistinguishable from random.
+  - One-sided p = **0.3018** — no evidence against the null hypothesis.
+  - **Both** robustness checks (exclude hit≥3; exclude strongest block) fall **below** baseline — the observed excess depends on a few high-hit draws and one strong block, not a stable edge.
+  - Block stability is mixed at all block sizes (no majority-above at primary 100-block).
+  - Second zone remains display-only and below random (consistent with P211A).
+- **Correct interpretation: NULL. The backward-OOS window does not confirm a durable first-zone edge.**
+- **Candidate `midfreq_fourier_mk_3bet / POWER_LOTTO` first-zone**: prior `CANDIDATE_NEEDS_MORE_OOS` (P223B) **unchanged** — backward-OOS did not falsify (mean ≥ baseline), but also did not confirm (p=0.30, unstable, robustness fails). Candidate is **observation-only / non-deployable**. No promotion. No production change.
+- Second-zone remains `NULL / DISPLAY_ONLY` per P211A. Never enters scoring or recommendation.
+- No DB write, no registry change, no recommendation-logic change, no strategy promotion, no betting advice — all remain unauthorized.
+
+## 5. CEO Priority Decision (Post-P231B)
+
+| Priority | Item | Status |
+|---|---|---|
+| **P0** | P221F anti-overfit gate + canonical repo/DB STOP guard | [Active / permanent] |
+| **P0** | P231C governance closeout (record P231B COMPLETE; this task) | [Active] |
+| **P1** | Product disclosure / second-zone containment | [Deferred] |
+| **P2** | DAILY_539 / POWER_LOTTO passive monitoring | [Waiting] — no active candidates; no new research without authorization |
+| **P3–P10** | 3_STAR/4_STAR re-scan (needs ≥10k/≥17k draws), other research, scheduler, worktree hygiene | [Deferred] |
+| **Frozen** | production promotion / registry / DB write / recommendation / controlled apply / betting advice | **Unauthorized** |
+
+## 6. Recommended Next Direction
+
+**No active deployable candidate in any lottery.** The P211A–P231B arc has exhausted all current in-window candidates via backward-OOS falsification or direct null results. Do not start new research without explicit user authorization. Queued options (each needs separate authorization):
+
+1. **Passive monitoring** — wait for ≥300 new DAILY_539 draws (preferred 500); per P224B protocol. DAILY_539 backward-OOS (P230B1) was below baseline; prior shifted toward NULL.
+2. **3_STAR/4_STAR re-scan** — only after ≥10,000 total 3_STAR draws (currently 4,179) accumulate naturally, or after positional re-ingestion for straight-play; requires fresh pre-registration.
+3. **Explore entirely new strategies / hypotheses** — requires explicit authorization, fresh P221F pre-registration, and a new task prompt.
+4. **POWER_LOTTO first-zone candidate future OOS** — if new draws accumulate significantly, re-evaluate `midfreq_fourier_mk_3bet` first-zone using the P221F gate. Not authorized now.
+
+## 7. Risks / Blind Spots
+
+1. [Risk] Point-estimate excess (0.969 > 0.947) may be misread as weak positive signal; both robustness checks fail and p=0.30 — this is noise.
+2. [Risk] Backward-OOS is older-regime (2008–2011) only; regime change since 2012 may differ. Cannot use backward OOS to confirm deployment.
+3. [Risk] Independent older slice (~312–382) is far smaller than DAILY_539 (4,265) — limited power to falsify; but also limited power to confirm.
+4. [Confirmed] No production / registry / recommendation change occurred. All guards PASS post-merge.
+
+## 8. CEO Final Decision
+
+`CEO_DECISION_P231B_NULL_ACCEPTED_GOVERNANCE_CLOSEOUT`. NULL is a valid and complete result. `midfreq_fourier_mk_3bet / POWER_LOTTO` first-zone candidate remains non-deployable / observation-only. No production / registry / DB write / recommendation-logic change / strategy promotion authorized. P231C governance closeout (doc-only) is today's only authorized task. P210 COMPLETE / P211 HELD_BY_USER / DAILY_539 survivor HISTORICAL_ARTIFACT / second-zone DISPLAY_ONLY — all unchanged.
+
+Final Classification: `CEO_DECISION_P231B_NULL_ACCEPTED_GOVERNANCE_CLOSEOUT`

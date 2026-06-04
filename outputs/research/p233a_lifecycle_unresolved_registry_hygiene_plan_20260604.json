@@ -1,0 +1,451 @@
+{
+  "phase": "P233A_LIFECYCLE_UNRESOLVED_REGISTRY_HYGIENE_PLAN",
+  "date": "20260604",
+  "execution_status": "PLAN_EXECUTED_OK",
+  "db_read_only": true,
+  "db_write_performed": false,
+  "db_rows_before": 94924,
+  "db_rows_after": 94924,
+  "registry_modified": false,
+  "unresolved_count": 20,
+  "lifecycle_suggestion_summary": {
+    "REJECTED": 12,
+    "RETIRED": 8,
+    "UNKNOWN_REQUIRES_REVIEW": 0
+  },
+  "per_lottery_counts": {
+    "BIG_LOTTO": 8,
+    "DAILY_539": 8,
+    "POWER_LOTTO": 4
+  },
+  "unresolved_entries": [
+    {
+      "strategy_id": "bet2_fourier_expansion_biglotto",
+      "lottery_type": "BIG_LOTTO",
+      "row_count": 1500,
+      "distinct_target_draws": 1500,
+      "first_target_draw": "102000011",
+      "last_target_draw": "115000054",
+      "bet_index_values": [
+        1
+      ],
+      "is_multi_bet": false,
+      "mean_hit_count_row_level": 0.724,
+      "delta_vs_baseline": -0.01069387755102047,
+      "historical_classification": "LIFECYCLE_UNRESOLVED",
+      "has_rejected_archive": true,
+      "suggested_lifecycle": "REJECTED",
+      "evidence_summary": "rejected/bet2_fourier_expansion_biglotto.json exists in archive directory — prior governance REJECTED decision recorded.",
+      "registry_action": "ADD_NON_EXECUTABLE_STUB",
+      "proposed_stub_name": "大樂透 Bet2 Fourier Expansion"
+    },
+    {
+      "strategy_id": "biglotto_echo_aware_3bet",
+      "lottery_type": "BIG_LOTTO",
+      "row_count": 4500,
+      "distinct_target_draws": 1500,
+      "first_target_draw": "102000012",
+      "last_target_draw": "115000055",
+      "bet_index_values": [
+        1,
+        2,
+        3
+      ],
+      "is_multi_bet": true,
+      "mean_hit_count_row_level": 0.7477777777777778,
+      "delta_vs_baseline": 0.013083900226757317,
+      "historical_classification": "LIFECYCLE_UNRESOLVED",
+      "has_rejected_archive": false,
+      "suggested_lifecycle": "RETIRED",
+      "evidence_summary": "P93/P94 Tier-B Controlled Replay Apply (commit cd981f3); referenced in scripts/p93_tierb_dryrun_rehearsal.py and scripts/p94a_biglotto_all_strategy_betcount_benchmark.py. Superseded by biglotto_deviation_2bet / ts3_regime_3bet (ONLINE).",
+      "registry_action": "ADD_NON_EXECUTABLE_STUB",
+      "proposed_stub_name": "大樂透 Echo Aware 3注"
+    },
+    {
+      "strategy_id": "biglotto_ts3_markov_4bet_w30",
+      "lottery_type": "BIG_LOTTO",
+      "row_count": 6000,
+      "distinct_target_draws": 1500,
+      "first_target_draw": "102000012",
+      "last_target_draw": "115000055",
+      "bet_index_values": [
+        1,
+        2,
+        3,
+        4
+      ],
+      "is_multi_bet": true,
+      "mean_hit_count_row_level": 0.733,
+      "delta_vs_baseline": -0.0016938775510204618,
+      "historical_classification": "LIFECYCLE_UNRESOLVED",
+      "has_rejected_archive": false,
+      "suggested_lifecycle": "RETIRED",
+      "evidence_summary": "P93/P94 Tier-B Controlled Replay Apply (commit cd981f3); referenced in scripts/p93_tierb_dryrun_rehearsal.py and scripts/p113_p112_action_decision_matrix.py. 4-bet variant superseded by current BIG_LOTTO ONLINE strategies.",
+      "registry_action": "ADD_NON_EXECUTABLE_STUB",
+      "proposed_stub_name": "大樂透 TS3+Markov 4注 w30"
+    },
+    {
+      "strategy_id": "cold_complement_biglotto",
+      "lottery_type": "BIG_LOTTO",
+      "row_count": 1500,
+      "distinct_target_draws": 1500,
+      "first_target_draw": "102000011",
+      "last_target_draw": "115000054",
+      "bet_index_values": [
+        1
+      ],
+      "is_multi_bet": false,
+      "mean_hit_count_row_level": 0.7353333333333333,
+      "delta_vs_baseline": 0.0006394557823128366,
+      "historical_classification": "LIFECYCLE_UNRESOLVED",
+      "has_rejected_archive": true,
+      "suggested_lifecycle": "REJECTED",
+      "evidence_summary": "rejected/cold_complement_biglotto.json exists in archive directory. Also referenced in scripts/p44_wave3_biglotto_performance_analysis.py Wave 3 analysis (prior to current ONLINE strategies).",
+      "registry_action": "ADD_NON_EXECUTABLE_STUB",
+      "proposed_stub_name": "大樂透 Cold Complement"
+    },
+    {
+      "strategy_id": "coldpool15_biglotto",
+      "lottery_type": "BIG_LOTTO",
+      "row_count": 1500,
+      "distinct_target_draws": 1500,
+      "first_target_draw": "102000011",
+      "last_target_draw": "115000054",
+      "bet_index_values": [
+        1
+      ],
+      "is_multi_bet": false,
+      "mean_hit_count_row_level": 0.7353333333333333,
+      "delta_vs_baseline": 0.0006394557823128366,
+      "historical_classification": "LIFECYCLE_UNRESOLVED",
+      "has_rejected_archive": true,
+      "suggested_lifecycle": "REJECTED",
+      "evidence_summary": "rejected/coldpool15_biglotto.json exists. tools/backtest_biglotto_coldpool_15.py explicitly labels action as '→ 歸檔 rejected/coldpool15_biglotto.json'.",
+      "registry_action": "ADD_NON_EXECUTABLE_STUB",
+      "proposed_stub_name": "大樂透 ColdPool-15"
+    },
+    {
+      "strategy_id": "fourier30_markov30_biglotto",
+      "lottery_type": "BIG_LOTTO",
+      "row_count": 1500,
+      "distinct_target_draws": 1500,
+      "first_target_draw": "102000011",
+      "last_target_draw": "115000054",
+      "bet_index_values": [
+        1
+      ],
+      "is_multi_bet": false,
+      "mean_hit_count_row_level": 0.7213333333333334,
+      "delta_vs_baseline": -0.013360544217687065,
+      "historical_classification": "LIFECYCLE_UNRESOLVED",
+      "has_rejected_archive": true,
+      "suggested_lifecycle": "REJECTED",
+      "evidence_summary": "rejected/fourier30_markov30_biglotto.json exists. Referenced in scripts/p44_wave3_biglotto_performance_analysis.py Wave 3 analysis.",
+      "registry_action": "ADD_NON_EXECUTABLE_STUB",
+      "proposed_stub_name": "大樂透 Fourier30+Markov30"
+    },
+    {
+      "strategy_id": "markov_2bet_biglotto",
+      "lottery_type": "BIG_LOTTO",
+      "row_count": 1500,
+      "distinct_target_draws": 1500,
+      "first_target_draw": "102000011",
+      "last_target_draw": "115000054",
+      "bet_index_values": [
+        1
+      ],
+      "is_multi_bet": false,
+      "mean_hit_count_row_level": 0.728,
+      "delta_vs_baseline": -0.006693877551020466,
+      "historical_classification": "LIFECYCLE_UNRESOLVED",
+      "has_rejected_archive": true,
+      "suggested_lifecycle": "REJECTED",
+      "evidence_summary": "rejected/markov_2bet_biglotto.json exists. Referenced in scripts/p44_wave3_biglotto_performance_analysis.py.",
+      "registry_action": "ADD_NON_EXECUTABLE_STUB",
+      "proposed_stub_name": "大樂透 Markov 2注"
+    },
+    {
+      "strategy_id": "markov_single_biglotto",
+      "lottery_type": "BIG_LOTTO",
+      "row_count": 1500,
+      "distinct_target_draws": 1500,
+      "first_target_draw": "102000011",
+      "last_target_draw": "115000054",
+      "bet_index_values": [
+        1
+      ],
+      "is_multi_bet": false,
+      "mean_hit_count_row_level": 0.728,
+      "delta_vs_baseline": -0.006693877551020466,
+      "historical_classification": "LIFECYCLE_UNRESOLVED",
+      "has_rejected_archive": true,
+      "suggested_lifecycle": "REJECTED",
+      "evidence_summary": "rejected/markov_single_biglotto.json exists. Referenced in scripts/p44_wave3_biglotto_performance_analysis.py.",
+      "registry_action": "ADD_NON_EXECUTABLE_STUB",
+      "proposed_stub_name": "大樂透 Markov Single"
+    },
+    {
+      "strategy_id": "539_3bet_orthogonal",
+      "lottery_type": "DAILY_539",
+      "row_count": 1500,
+      "distinct_target_draws": 1500,
+      "first_target_draw": "110000190",
+      "last_target_draw": "115000121",
+      "bet_index_values": [
+        1
+      ],
+      "is_multi_bet": false,
+      "mean_hit_count_row_level": 0.672,
+      "delta_vs_baseline": 0.030974358974358962,
+      "historical_classification": "LIFECYCLE_UNRESOLVED",
+      "has_rejected_archive": true,
+      "suggested_lifecycle": "REJECTED",
+      "evidence_summary": "rejected/539_3bet_orthogonal.json exists in archive directory — prior governance REJECTED decision recorded.",
+      "registry_action": "ADD_NON_EXECUTABLE_STUB",
+      "proposed_stub_name": "今彩539 3注正交"
+    },
+    {
+      "strategy_id": "acb_single_539",
+      "lottery_type": "DAILY_539",
+      "row_count": 1500,
+      "distinct_target_draws": 1500,
+      "first_target_draw": "110000190",
+      "last_target_draw": "115000121",
+      "bet_index_values": [
+        1
+      ],
+      "is_multi_bet": false,
+      "mean_hit_count_row_level": 0.672,
+      "delta_vs_baseline": 0.030974358974358962,
+      "historical_classification": "LIFECYCLE_UNRESOLVED",
+      "has_rejected_archive": true,
+      "suggested_lifecycle": "REJECTED",
+      "evidence_summary": "rejected/acb_single_539.json exists in archive directory. Likely an earlier ACB single-bet variant before acb_1bet (RETIRED).",
+      "registry_action": "ADD_NON_EXECUTABLE_STUB",
+      "proposed_stub_name": "今彩539 ACB Single"
+    },
+    {
+      "strategy_id": "daily539_f4cold_3bet",
+      "lottery_type": "DAILY_539",
+      "row_count": 4500,
+      "distinct_target_draws": 1500,
+      "first_target_draw": "110000190",
+      "last_target_draw": "115000121",
+      "bet_index_values": [
+        1,
+        2,
+        3
+      ],
+      "is_multi_bet": true,
+      "mean_hit_count_row_level": 0.6557777777777778,
+      "delta_vs_baseline": 0.014752136752136713,
+      "historical_classification": "LIFECYCLE_UNRESOLVED",
+      "has_rejected_archive": false,
+      "suggested_lifecycle": "RETIRED",
+      "evidence_summary": "Referenced in scripts/p94_tierb_controlled_apply.py Tier-B apply list (P94_TIER_B_CONTROLLED_APPLY_SUCCESS, commit cd981f3). Also scripts/replay_lifecycle_drift_guard.py line ~98: 'P126D: DAILY_539 f4cold_3bet multi-bet (3000 rows)'. Superseded by daily539_f4cold (ONLINE).",
+      "registry_action": "ADD_NON_EXECUTABLE_STUB",
+      "proposed_stub_name": "今彩539 F4Cold 3注"
+    },
+    {
+      "strategy_id": "daily539_f4cold_5bet",
+      "lottery_type": "DAILY_539",
+      "row_count": 7500,
+      "distinct_target_draws": 1500,
+      "first_target_draw": "110000190",
+      "last_target_draw": "115000121",
+      "bet_index_values": [
+        1,
+        2,
+        3,
+        4,
+        5
+      ],
+      "is_multi_bet": true,
+      "mean_hit_count_row_level": 0.6492,
+      "delta_vs_baseline": 0.00817435897435892,
+      "historical_classification": "LIFECYCLE_UNRESOLVED",
+      "has_rejected_archive": false,
+      "suggested_lifecycle": "RETIRED",
+      "evidence_summary": "Referenced in scripts/p94_tierb_controlled_apply.py Tier-B apply list (P94_TIER_B_CONTROLLED_APPLY_SUCCESS). 5-bet multi-bet variant. Superseded by daily539_f4cold (ONLINE).",
+      "registry_action": "ADD_NON_EXECUTABLE_STUB",
+      "proposed_stub_name": "今彩539 F4Cold 5注"
+    },
+    {
+      "strategy_id": "markov_1bet_539",
+      "lottery_type": "DAILY_539",
+      "row_count": 1500,
+      "distinct_target_draws": 1500,
+      "first_target_draw": "110000190",
+      "last_target_draw": "115000121",
+      "bet_index_values": [
+        1
+      ],
+      "is_multi_bet": false,
+      "mean_hit_count_row_level": 0.634,
+      "delta_vs_baseline": -0.007025641025641072,
+      "historical_classification": "LIFECYCLE_UNRESOLVED",
+      "has_rejected_archive": true,
+      "suggested_lifecycle": "REJECTED",
+      "evidence_summary": "rejected/markov_1bet_539.json exists in archive directory — prior governance REJECTED decision recorded.",
+      "registry_action": "ADD_NON_EXECUTABLE_STUB",
+      "proposed_stub_name": "今彩539 Markov 1注"
+    },
+    {
+      "strategy_id": "p0b_539_3bet_f_cold_fmid",
+      "lottery_type": "DAILY_539",
+      "row_count": 1500,
+      "distinct_target_draws": 1500,
+      "first_target_draw": "110000190",
+      "last_target_draw": "115000121",
+      "bet_index_values": [
+        1
+      ],
+      "is_multi_bet": false,
+      "mean_hit_count_row_level": 0.6773333333333333,
+      "delta_vs_baseline": 0.03630769230769226,
+      "historical_classification": "LIFECYCLE_UNRESOLVED",
+      "has_rejected_archive": true,
+      "suggested_lifecycle": "REJECTED",
+      "evidence_summary": "rejected/p0b_539_3bet_f_cold_fmid.json exists in archive directory. git history shows it was previously a _LifecycleStub in replay_strategy_registry.py before being removed.",
+      "registry_action": "ADD_NON_EXECUTABLE_STUB",
+      "proposed_stub_name": "今彩539 P0B 3注 F+Cold+FMid"
+    },
+    {
+      "strategy_id": "p0c_539_3bet_f_cold_x2",
+      "lottery_type": "DAILY_539",
+      "row_count": 1500,
+      "distinct_target_draws": 1500,
+      "first_target_draw": "110000190",
+      "last_target_draw": "115000121",
+      "bet_index_values": [
+        1
+      ],
+      "is_multi_bet": false,
+      "mean_hit_count_row_level": 0.6773333333333333,
+      "delta_vs_baseline": 0.03630769230769226,
+      "historical_classification": "LIFECYCLE_UNRESOLVED",
+      "has_rejected_archive": true,
+      "suggested_lifecycle": "REJECTED",
+      "evidence_summary": "rejected/p0c_539_3bet_f_cold_x2.json exists in archive directory. Paired with p0b as P0C variant; likely same rejection round.",
+      "registry_action": "ADD_NON_EXECUTABLE_STUB",
+      "proposed_stub_name": "今彩539 P0C 3注 F+Cold×2"
+    },
+    {
+      "strategy_id": "zone_gap_3bet_539",
+      "lottery_type": "DAILY_539",
+      "row_count": 1500,
+      "distinct_target_draws": 1500,
+      "first_target_draw": "110000190",
+      "last_target_draw": "115000121",
+      "bet_index_values": [
+        1
+      ],
+      "is_multi_bet": false,
+      "mean_hit_count_row_level": 0.6286666666666667,
+      "delta_vs_baseline": -0.012358974358974373,
+      "historical_classification": "LIFECYCLE_UNRESOLVED",
+      "has_rejected_archive": true,
+      "suggested_lifecycle": "REJECTED",
+      "evidence_summary": "rejected/zone_gap_3bet_539.json exists in archive directory — prior governance REJECTED decision recorded.",
+      "registry_action": "ADD_NON_EXECUTABLE_STUB",
+      "proposed_stub_name": "今彩539 Zone Gap 3注"
+    },
+    {
+      "strategy_id": "cold_complement_2bet",
+      "lottery_type": "POWER_LOTTO",
+      "row_count": 1500,
+      "distinct_target_draws": 1500,
+      "first_target_draw": "101000002",
+      "last_target_draw": "115000040",
+      "bet_index_values": [
+        1
+      ],
+      "is_multi_bet": false,
+      "mean_hit_count_row_level": 0.9406666666666667,
+      "delta_vs_baseline": -0.006701754385964875,
+      "historical_classification": "LIFECYCLE_UNRESOLVED",
+      "has_rejected_archive": false,
+      "suggested_lifecycle": "RETIRED",
+      "evidence_summary": "scripts/replay_lifecycle_drift_guard.py line ~86: 'P66: POWER_LOTTO Wave 6 controlled production apply — cold_complement_2bet + zonal_entropy_2bet (3000 rows) (2026-05-25)'. Was production-applied; superseded by fourier_rhythm_3bet / power_orthogonal_5bet (ONLINE).",
+      "registry_action": "ADD_NON_EXECUTABLE_STUB",
+      "proposed_stub_name": "威力彩 Cold Complement 2注"
+    },
+    {
+      "strategy_id": "fourier30_markov30_2bet",
+      "lottery_type": "POWER_LOTTO",
+      "row_count": 1501,
+      "distinct_target_draws": 1501,
+      "first_target_draw": "101000002",
+      "last_target_draw": "115000041",
+      "bet_index_values": [
+        1
+      ],
+      "is_multi_bet": false,
+      "mean_hit_count_row_level": 0.9646902065289806,
+      "delta_vs_baseline": 0.017321785476349105,
+      "historical_classification": "LIFECYCLE_UNRESOLVED",
+      "has_rejected_archive": false,
+      "suggested_lifecycle": "RETIRED",
+      "evidence_summary": "scripts/replay_lifecycle_drift_guard.py line ~84: 'P59: POWER_LOTTO Wave 5 controlled production apply — fourier30_markov30_2bet (1500 rows) (2026-05-25)'. Also P79 Batch A draw-ext apply (line ~89/134). Was production-applied; superseded by fourier_rhythm_3bet (ONLINE).",
+      "registry_action": "ADD_NON_EXECUTABLE_STUB",
+      "proposed_stub_name": "威力彩 Fourier30+Markov30 2注"
+    },
+    {
+      "strategy_id": "power_fourier_rhythm_2bet",
+      "lottery_type": "POWER_LOTTO",
+      "row_count": 3000,
+      "distinct_target_draws": 1500,
+      "first_target_draw": "101000003",
+      "last_target_draw": "115000041",
+      "bet_index_values": [
+        1,
+        2
+      ],
+      "is_multi_bet": true,
+      "mean_hit_count_row_level": 0.9633333333333334,
+      "delta_vs_baseline": 0.01596491228070185,
+      "historical_classification": "LIFECYCLE_UNRESOLVED",
+      "has_rejected_archive": false,
+      "suggested_lifecycle": "RETIRED",
+      "evidence_summary": "tools/quick_predict.py defines power_fourier_rhythm_2bet() — a 2-bet production prediction function. git history shows it was previously a _LifecycleStub in replay_strategy_registry.py before being removed. Superseded by fourier_rhythm_3bet (ONLINE).",
+      "registry_action": "ADD_NON_EXECUTABLE_STUB",
+      "proposed_stub_name": "威力彩 Power Fourier Rhythm 2注"
+    },
+    {
+      "strategy_id": "zonal_entropy_2bet",
+      "lottery_type": "POWER_LOTTO",
+      "row_count": 1500,
+      "distinct_target_draws": 1500,
+      "first_target_draw": "101000002",
+      "last_target_draw": "115000040",
+      "bet_index_values": [
+        1
+      ],
+      "is_multi_bet": false,
+      "mean_hit_count_row_level": 0.946,
+      "delta_vs_baseline": -0.0013684210526315743,
+      "historical_classification": "LIFECYCLE_UNRESOLVED",
+      "has_rejected_archive": false,
+      "suggested_lifecycle": "RETIRED",
+      "evidence_summary": "scripts/replay_lifecycle_drift_guard.py line ~86: 'P66: POWER_LOTTO Wave 6 controlled production apply — cold_complement_2bet + zonal_entropy_2bet (3000 rows) (2026-05-25)'. Was production-applied; superseded by ONLINE strategies.",
+      "registry_action": "ADD_NON_EXECUTABLE_STUB",
+      "proposed_stub_name": "威力彩 Zonal Entropy 2注"
+    }
+  ],
+  "p233b_allowlist_if_authorized": [
+    "lottery_api/models/replay_strategy_registry.py",
+    "outputs/research/p233b_lifecycle_unresolved_registry_hygiene_execute_YYYYMMDD.json",
+    "outputs/research/p233b_lifecycle_unresolved_registry_hygiene_execute_YYYYMMDD.md",
+    "tests/test_p233b_lifecycle_unresolved_registry_hygiene_execute.py"
+  ],
+  "caveats": [
+    "P233A is a PLAN ONLY — no registry file is modified.",
+    "lifecycle suggestions are conservative governance labels for future _NON_EXECUTABLE_STUB additions; they do not affect any production system.",
+    "REJECTED suggestion = evidence of prior governance rejection decision (rejected/ archive file exists).",
+    "RETIRED suggestion = strategy was production-applied via authorized controlled apply (P59/P66/P79/P94/P126D) and has been superseded by current ONLINE strategies.",
+    "No strategy is suggested as ONLINE, DEPLOYABLE, or any promotion label.",
+    "P233B execution (actual registry edits) requires separate explicit user authorization.",
+    "Historical replay metrics do not authorize deployment — they are evidence only."
+  ],
+  "final_classification": "P233A_LIFECYCLE_UNRESOLVED_REGISTRY_HYGIENE_PLAN_COMPLETE"
+}

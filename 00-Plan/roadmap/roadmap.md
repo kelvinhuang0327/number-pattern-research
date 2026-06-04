@@ -45,7 +45,10 @@ This section is the current source of truth. The 2026-06-01 sections and P186-P1
 | P228 governance closeout sync | [Complete] doc-only | `00-Plan/roadmap/roadmap.md` §0.1 + `CURRENT_STATE.md`; PR #266/#267 | Records P226–P227C in phase table; marks 3_STAR/4_STAR box-play UNDERPOWERED_NO_SIGNAL and straight-play BLOCKED_REINGEST_REQUIRED. |
 | **P230A DAILY_539 backward-OOS extension plan** | **[Complete]** `P230A_DAILY539_BACKWARD_OOS_EXTENSION_PLAN_READY` | `outputs/research/p230a_daily539_backward_oos_extension_plan_20260603.md`; PR #268 | Plan-only; identified 4,265 replayable backward-OOS draws (2007/05–2021/08); leakage guard (ordinal predecessor, not numeric subtraction at ROC-year boundaries); artifact-first dry-run architecture; no DB write. |
 | **P230B1 DAILY_539 backward-OOS code-only dry-run** | **[Complete]** `P230B1_BACKWARD_OOS_DRYRUN_BELOW_BASELINE` | `outputs/research/p230b1_daily539_backward_oos_dryrun_20260603.md`; `scripts/p230b1_daily539_backward_oos_dryrun.py`; PR #269 | Zero DB write (read-only `mode=ro`). 4,265 backward draws generated. Mean hit_count 0.6375 < baseline 0.6410 (z=−0.32, p=0.626). Below baseline in early (0.632) and late (0.621) eras; only middle era marginal (0.657, p=0.184). Both robustness checks fail (exclude hit≥3 → 0.612; exclude strongest block → 0.633). In-window edge does not persist on backward history. **12/12 targeted tests PASS.** |
-| **P230C DAILY_539 survivor reclassification closeout** | **[Complete] (this task)** `P230C_DAILY539_SURVIVOR_RECLASSIFIED_HISTORICAL_ARTIFACT` | `00-Plan/roadmap/roadmap.md` §0.1 + `CURRENT_STATE.md`; this PR | `midfreq_fourier_2bet / DAILY_539` reclassified from `WAIT_FOR_OOS` → **`REJECTED_BY_BACKWARD_OOS / HISTORICAL_ARTIFACT_DIRECTION`**. No P230B2 DB backfill recommended. No P225 model design recommended. No production/registry/recommendation change. |
+| **P230C DAILY_539 survivor reclassification closeout** | **[Complete]** `P230C_DAILY539_SURVIVOR_RECLASSIFIED_HISTORICAL_ARTIFACT` | `00-Plan/roadmap/roadmap.md` §0.1 + `CURRENT_STATE.md`; PR #270 | `midfreq_fourier_2bet / DAILY_539` reclassified from `WAIT_FOR_OOS` → **`REJECTED_BY_BACKWARD_OOS / HISTORICAL_ARTIFACT_DIRECTION`**. No P230B2 DB backfill recommended. No P225 model design recommended. No production/registry/recommendation change. |
+| **P231A POWER_LOTTO first-zone re-entry review** | **[Complete]** `P231A_POWERLOTTO_REENTRY_PLAN_READY` | `outputs/research/p231a_powerlotto_first_zone_reentry_review_20260604.{md,json}`; artifact only | Plan + pre-registration for P231B backward-OOS falsification of `midfreq_fourier_mk_3bet / POWER_LOTTO` first-zone candidate. DB-verified candidate: 4,500 rows / 1,500 draws / bet 1,2,3. |
+| **P231B POWER_LOTTO first-zone backward-OOS dry-run** | **[Complete]** `P231B_POWERLOTTO_FIRST_ZONE_BACKWARD_OOS_DRYRUN_NULL` | `outputs/research/p231b_powerlotto_first_zone_backward_oos_dryrun_20260604.{md,json}`; `scripts/p231b_powerlotto_first_zone_backward_oos_dryrun.py`; `tests/test_p231b_powerlotto_first_zone_backward_oos_dryrun.py`; PR #272, merge commit `2beb24e` | Zero DB write (read-only `mode=ro`). 382 replayable backward draws (2008–2012, boundary `101000002`). Deterministic bet-1 only (P230B1 discipline; bets 2,3 not invented). First-zone mean **0.96859** vs baseline **0.94737** (36/38); 95% CI crosses baseline; one-sided **p = 0.3018** (not significant); both robustness checks fail (exclude hit≥3 → 0.9113; exclude strongest block → 0.875); block stability mixed. Second-zone display-only (0.1099 < 0.125, p=0.826). **14 targeted tests: 12/14 PASS (2 env-skip, not failures).** No production/registry/recommendation change. Candidate non-deployable; observation-only. |
+| **P231C POWER_LOTTO first-zone governance closeout** | **[In Progress]** `P231C_POWERLOTTO_FIRST_ZONE_BACKWARD_OOS_GOVERNANCE_CLOSEOUT_PR_OPEN` | `00-Plan/roadmap/roadmap.md` §0.1 + `CURRENT_STATE.md` + `active_task.md` + `CEO-Decision.md`; this PR | Doc-only governance sync recording P231B NULL result. No code/DB/registry/production change. |
 
 ### 0.2 Current System Baseline
 
@@ -93,7 +96,7 @@ This section is the current source of truth. The 2026-06-01 sections and P186-P1
 | **P2.1** | Passive monitoring / reopen rules for DAILY_539 survivor | Monitor `midfreq_fourier_2bet / DAILY_539` | **[RECLASSIFIED — HISTORICAL_ARTIFACT_DIRECTION]** P230C | P230B1 backward-OOS: mean 0.6375 < baseline; all checks fail. Formally reclassified in P230C. Future OOS (≥300 new draws) could reopen, but prior shifted toward NULL. No deployment. No P230B2 backfill. No P225. |
 | **P2.2** | Passive monitoring / reopen rules for POWER_LOTTO | Monitor POWER_LOTTO only under P178A reopen conditions | [Waiting] | Reopen only after ≥500 new draws after 115000041, structural change, independent evidence, or explicit governance design. |
 | **P2.3** | Archive retention / cleanup decision | Decide whether archived stale repos remain indefinitely | [Deferred] | No deletion without explicit destructive authorization; archive README remains clear. |
-| **P3** | Other P222 candidates (midfreq_fourier_mk_3bet/POWER etc.) | Observation-only; not deployable; no current authorization | [Observation-only / Deferred] | Separate authorization required; must inherit P221F validation gates. |
+| **P3** | POWER_LOTTO first-zone candidate `midfreq_fourier_mk_3bet` | Backward-OOS NULL (P231B) — non-deployable; observation-only; no promotion authorized | [Complete — `P231B_POWERLOTTO_FIRST_ZONE_BACKWARD_OOS_DRYRUN_NULL`] | P231B: mean 0.969 vs 0.947 baseline; CI crosses; p=0.30; robustness fails. No production/registry/recommendation change. Future OOS monitoring only with explicit authorization and P221F gates. |
 | **P4** | Replay product backlog | UI polish, monitoring dashboards, operator reporting | [Deferred] | Does not consume P0/P1 validation or governance capacity. |
 | **P5** | Optional scheduler / automation | Cron/launchd/automation setup | [Deferred] | Explicit OS-level authorization only. |
 | **P6** | External reference review | Architecture notes only if useful | [Paused] | No clone/new repo. |
@@ -165,29 +168,32 @@ Upgrade / downgrade decisions:
 - **Why important:** Stale worktrees/archive paths still exist and can produce invalid evidence if used.
 - **Priority:** P0 / P1 — ongoing maintenance.
 
-### 0.7 Current State Summary (updated by P228, 2026-06-03)
+### 0.7 Current State Summary (updated by P231C, 2026-06-04)
 
-**Research chains P211A–P224C (DAILY_539/BIG_LOTTO/POWER_LOTTO) and P226–P227C (3_STAR/4_STAR) are complete.**
+**Research chains P211A–P231B (all lotteries) and P226–P227C (3_STAR/4_STAR) are complete.**
 
 - Direction #1 (window reframe): P221F frozen windows (short 100/125/150, mid 500/750/1000, all-history=reference) operationalized. Gate active.
-- Direction #2 (mine all-lottery × all-method): P222 scan complete. Sole survivor `midfreq_fourier_2bet / DAILY_539` fragile (clean-slice p=0.0674, edge rests on 19 rows). **Status: WAIT_FOR_OOS.**
-- 3_STAR / 4_STAR chain (P226–P227C): Box-play scanned, 120 hypotheses, **UNDERPOWERED_NO_SIGNAL**. Straight-play BLOCKED (sorted storage). Not deployable. Both lotteries need 2.5–6× more draws for adequate power.
+- Direction #2 (mine all-lottery × all-method): P222 scan complete. Sole survivor `midfreq_fourier_2bet / DAILY_539` fragile → **reclassified `REJECTED_BY_BACKWARD_OOS / HISTORICAL_ARTIFACT_DIRECTION` (P230C)**. DAILY_539 backward-OOS (P230B1): mean 0.6375 < baseline 0.6410; all eras/robustness fail.
+- POWER_LOTTO first-zone: P231B backward-OOS NULL. `midfreq_fourier_mk_3bet` mean 0.969 vs 0.947 baseline; CI crosses; p=0.30; robustness fails. **Non-deployable. Observation-only.**
+- 3_STAR / 4_STAR chain (P226–P227C): Box-play scanned, 120 hypotheses, **UNDERPOWERED_NO_SIGNAL**. Straight-play BLOCKED (sorted storage). Not deployable.
 
 **No active deployable candidate in any lottery.**
 
 **Next authorized steps (each needs separate explicit authorization):**
-- P1.2: DAILY_539 survivor backward-OOS extension (~4,376 un-replayed older draws; DB-write required).
-- Passive monitoring per P224B (≥300 new DAILY_539 draws before next recheck; preferred 500).
+- Passive monitoring per P224B (≥300 new DAILY_539 draws before next recheck; preferred 500). Prior shifted toward NULL after P230B1.
 - 3_STAR/4_STAR re-scan: only after ≥10,000 3_STAR draws or positional re-ingestion (straight-play).
+- Explore entirely new strategies / hypotheses: requires explicit authorization, fresh P221F pre-registration.
+- POWER_LOTTO first-zone future OOS: only after significant new draws accumulate; requires P221F gate.
 
-**Forbidden:** rerun same P221F/P227C sweeps on same data; promote any strategy; write DB / registry / production / recommendation logic; start P225/P229 model design without authorization.
+**Forbidden:** rerun same P221F/P227C/P231B sweeps on same data; promote any strategy; write DB / registry / production / recommendation logic; start model design without authorization.
 
 Final current roadmap marker:
 
 ```text
+P231C_POWERLOTTO_FIRST_ZONE_BACKWARD_OOS_GOVERNANCE_CLOSEOUT_PR_OPEN
+P231B_POWERLOTTO_FIRST_ZONE_BACKWARD_OOS_DRYRUN_NULL_MERGED_PR272
+P230C_DAILY539_SURVIVOR_RECLASSIFIED_HISTORICAL_ARTIFACT
 P228_STAR_REPLAY_GOVERNANCE_CLOSEOUT_COMPLETE_20260603
-P227C_COMPLETE_UNDERPOWERED_NO_SIGNAL
-P224C_MERGED_SURVIVOR_WAIT_FOR_OOS
 ```
 
 ---

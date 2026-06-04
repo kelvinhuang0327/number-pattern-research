@@ -1,9 +1,11 @@
 # Active Task — Today (2026-06-04)
 
-> **Single active task: `P231B_POWERLOTTO_FIRST_ZONE_BACKWARD_OOS_DRYRUN` (code-only, ZERO DB write).**
-> Set by CEO Decision 2026-06-04 (`CEO_DECISION_PARTIALLY_APPROVED`). Responds to user priority: **POWER_LOTTO first**.
-> **Status: READY — `WAITING_FOR_USER_AUTHORIZATION` (code-change + dev branch). Strong model recommended.**
-> Supersedes the stale P225 task (P225 COMPLETE via PR #261/#262; chain merged through P230C / PR #270).
+> **No active worker task after P231C governance closeout.**
+> P231B COMPLETE + MERGED (PR #272, merge commit `2beb24e`, 2026-06-04).
+> P231B Final Classification: `P231B_POWERLOTTO_FIRST_ZONE_BACKWARD_OOS_DRYRUN_NULL`
+> P231C governance closeout (doc-only): `P231C_POWERLOTTO_FIRST_ZONE_BACKWARD_OOS_GOVERNANCE_CLOSEOUT_PR_OPEN`
+> CEO Decision 2026-06-04: `CEO_DECISION_P231B_NULL_ACCEPTED_GOVERNANCE_CLOSEOUT`
+> New research requires separate explicit user authorization.
 
 ---
 
@@ -93,17 +95,19 @@ git diff --name-only                 # after edits: only the 4 P231B files
 8. Worker是否需要強模型（YES — code semantics + leakage guard）
 
 ### Final Classification (this file)
-`ACTIVE_TASK_P231B_POWERLOTTO_FIRST_ZONE_BACKWARD_OOS_SET`
+`P231C_POWERLOTTO_FIRST_ZONE_BACKWARD_OOS_GOVERNANCE_CLOSEOUT_PR_OPEN`
 
 ---
 
 ## Holds / Frozen (unchanged)
 
 - **DAILY_539 survivor** `midfreq_fourier_2bet` — `REJECTED_BY_BACKWARD_OOS / HISTORICAL_ARTIFACT_DIRECTION` (P230C). Do not treat as active survivor.
+- **POWER_LOTTO first-zone candidate** `midfreq_fourier_mk_3bet` — `P231B_POWERLOTTO_FIRST_ZONE_BACKWARD_OOS_DRYRUN_NULL`. Non-deployable. Observation-only. No promotion. No production/registry/recommendation change.
 - **POWER_LOTTO second zone** — `DISPLAY_ONLY / NULL_EDGE` (P211A). Never enters scoring/recommendation.
 - **3_STAR / 4_STAR** box-play — `UNDERPOWERED_NO_SIGNAL`; straight-play `BLOCKED_REINGEST_REQUIRED`.
 - **P211** short/mid-window read-only diagnostic — `HELD_BY_USER` (2026-06-02 「先暫停」). Do not auto-resume.
 - Production promotion / registry / DB write / recommendation-logic change / controlled apply / betting advice — all **unauthorized / frozen**.
+- No active deployable candidate in any lottery after P231B. New research requires separate explicit user authorization.
 
 ---
 
@@ -126,5 +130,7 @@ git diff --name-only                 # after edits: only the 4 P231B files
 | P230B1 DAILY_539 backward-OOS code dry-run | `..._BELOW_BASELINE` | COMPLETE (PR #269) |
 | P230C DAILY_539 survivor reclassification | `..._HISTORICAL_ARTIFACT` | COMPLETE (PR #270) |
 | P231A POWER_LOTTO first-zone re-entry review | `P231A_POWERLOTTO_REENTRY_PLAN_READY` | COMPLETE (artifact only) |
+| **P231B POWER_LOTTO first-zone backward-OOS dry-run** | **`P231B_POWERLOTTO_FIRST_ZONE_BACKWARD_OOS_DRYRUN_NULL`** | **COMPLETE (PR #272, merge commit `2beb24e`)** |
+| P231C POWER_LOTTO first-zone governance closeout | `P231C_POWERLOTTO_FIRST_ZONE_BACKWARD_OOS_GOVERNANCE_CLOSEOUT_PR_OPEN` | IN PROGRESS (this task) |
 
-Final Classification (this file): `ACTIVE_TASK_P231B_POWERLOTTO_FIRST_ZONE_BACKWARD_OOS_SET`
+Final Classification (this file): `P231C_POWERLOTTO_FIRST_ZONE_BACKWARD_OOS_GOVERNANCE_CLOSEOUT_PR_OPEN`

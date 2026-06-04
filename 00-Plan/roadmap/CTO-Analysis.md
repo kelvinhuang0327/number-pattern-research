@@ -1,5 +1,143 @@
 # CTO Analysis - Roadmap Alignment And System Optimization Direction
 
+## 2026-06-04 CTO Statistical Methods Adoption Analysis
+
+Final Classification: `CTO_STATISTICAL_METHODS_ADOPTION_WITH_RISKS`
+
+### CEO Follow-Up Note (2026-06-04 — P234A governance follow-up)
+
+CEO verdict: **`CEO_DECISION_PARTIALLY_APPROVED`** (PR #279 pending merge).
+
+- **ADOPTED:** The read-only diagnostics-only framing. No predictability claim, no promotion, mandatory correction/OOS. The 8-method inventory and gap analysis are accurate.
+- **REJECTED/DEMOTED:** The **P0.5 "build now" urgency**. 7/8 methods already exist and are already enforced: P221F gate (multiple-testing correction, pre-registered windows), Bonferroni/BH-FDR in P222/P223B/P227C, rolling windows in RSM/P114/P224. The only genuinely new work — consolidation + a feature-bottleneck report schema — has **no current consumer** until a future authorized research run needs it. Demoted to **P2 design-only**.
+- **NAMESPACE FIX:** P234 = CTO statistical-methods adoption analysis (this document). Any Lofea feasibility review must be **P235A**, not P234/P234A.
+- **IMPLEMENTATION BOUNDARY:** No build authorized. Any implementation step requires separate explicit user authorization. Options authorized on-request only: OPT-B P235A Lofea read-only feasibility review, OPT-C P234 statistical-methods diagnostics inventory (design-doc only).
+
+### 0. Input Sources And Scope
+
+- [Confirmed] Required roadmap source read: `00-Plan/roadmap/roadmap.md`.
+- [Confirmed] User-requested `ai_workflow/current_state.md` does not exist in this repo. Closest current-state SSOT is `00-Plan/roadmap/agent_bootstrap/CURRENT_STATE.md`, which was read instead.
+- [Confirmed] Current state source read: `00-Plan/roadmap/agent_bootstrap/CURRENT_STATE.md`.
+- [Confirmed] Handoff attachment read: `/Users/kelvin/.codex/attachments/415c49a6-38b7-47bf-9789-b7fb1d4cdd30/pasted-text.txt`.
+- [Confirmed] Replay / validation / diagnostics / registry sources reviewed include `lottery_api/models/replay_strategy_registry.py`, `scripts/p232a_all_catalog_strategy_replay_scoreboard.py`, `outputs/research/p221_cross_lottery_feature_discovery_protocol_20260603.md`, `outputs/research/p222_cross_lottery_feature_discovery_scan_20260603.md`, `outputs/research/p223b_candidate_oos_cross_year_validation_20260603.md`, `outputs/research/p224_daily539_midfreq_fourier_2bet_deeper_validation_20260603.md`, `scripts/p227c_star_box_play_dryrun_scan.py`, `outputs/research/p227c_star_box_play_dryrun_scan_20260603.md`, `scripts/p230b1_daily539_backward_oos_dryrun.py`, `scripts/p231b_powerlotto_first_zone_backward_oos_dryrun.py`, `scripts/p51_powerlotto_wave4_rolling_window_mcnemar_gate.py`, `scripts/p114_temporal_stability_audit.py`, `scripts/special3_oos_permutation_review.py`, `scripts/special3_baseline_dryrun.py`, `tools/baseline_validator.py`, `lottery_api/engine/rolling_strategy_monitor.py`, `lottery_api/models/feature_analyzer.py`, `lottery_api/models/feature_importance.py`, `lottery_api/feature_importance_analyzer.py`, official draw ingestion dry-runs, and P226/P232/P233 reports.
+- [Confirmed] Current repo and branch check at review time: `/Users/kelvin/Kelvin-WorkSpace/LotteryNew`, branch `main`, HEAD equals `origin/main` (`6cf2e1ac1b65e59b8691b45df9b8efc241c9deaa`).
+- [Confirmed] Worktree is dirty outside CTO scope before this update. CTO touched only `00-Plan/roadmap/roadmap.md` and `00-Plan/roadmap/CTO-Analysis.md`.
+- [Confirmed] This is analysis and roadmap documentation only. No DB write, production write, executable registry change, active-task update, strategy creation, or hypothesis creation was performed.
+- [Unknown] Full test suite was not rerun for this doc-only analysis.
+
+### 1. CTO Method Adoption Summary
+
+[Confirmed] The project already has a mature replay / governance spine: causal replay adapters, read-only scoreboards, lifecycle registry labels, non-executable stubs, strict DB baselines, and recent P221F/P222/P223B/P224/P227C/P230B1/P231B validation artifacts that treat NULL as success.
+
+[Confirmed] Most of the eight open-source-style statistical methods already exist somewhere, but they are split across one-off scripts, reports, legacy research files, and production-adjacent monitoring code. They are not yet a single reusable `Scientific Statistical Diagnostics Layer`.
+
+[Inferred] The highest-value adoption path is to consolidate these methods as read-only diagnostics that explain false positives, no-edge outcomes, underpowered scans, and feature bottlenecks. The layer should not create new strategies or imply lottery predictability.
+
+[Confirmed] Roadmap should be adjusted. A new P0.5 direction, `Scientific Statistical Diagnostics Layer`, was added to `roadmap.md` as recommended / not implemented.
+
+### 2. Eight-Method Evaluation Table
+
+| # | Method | Current System State | System Maturity Value | Replay / Validation Help | Lowers False Positive? | Explains No-Edge / Failed Strategy? | Roadmap? | Priority |
+|---:|---|---|---|---|---|---|---|---|
+| 1 | historical draw parser | [Partial] Official draw ingestion dry-runs exist for BIG_LOTTO / DAILY_539 / POWER_LOTTO; controlled import has authorization gates. P226 confirms 3_STAR / 4_STAR positional order is lost in current DB. | High for data integrity and source provenance. | Prevents replay against malformed, duplicated, or position-destroyed draw data. | Indirectly yes, by preventing invalid baselines and leakage. | Yes, especially for blocked star straight-play and date-format inconsistencies. | Yes, as inventory/parser audit only. | P1 |
+| 2 | number frequency / position frequency | [Partial] Frequency features exist in strategy code, P221F feature families, P222 draw-side structural summary, P227C digit frequency, and Special3 position-frequency dry-runs. Position frequency is blocked for 3_STAR / 4_STAR straight-play because DB stores sorted arrays. | Medium; useful descriptive inventory, dangerous if promoted as signal. | Helps inspect feature coverage and lottery-specific data feasibility. | Only with correction/OOS; otherwise it increases false positives. | Yes, can show frequency features are baseline-like or underpowered. | Yes, diagnostics-only. | P2 |
+| 3 | rolling window statistics | [Confirmed/Partial] P221F fixed windows, P222 tail checks, P224 tail/block stability, P230B1/P231B block splits, P114 temporal audit, and RSM 30/100/300 exist. Windows and labels vary. | Very high; rolling behavior is central to anti-overfit review. | Separates transient windows from stable OOS behavior. | Yes, when windows are pre-registered. | Yes, shows unstable blocks, weak tails, era failures. | Yes, centralize under diagnostics layer. | P0 |
+| 4 | null simulation / random baseline | [Confirmed/Partial] P232A baselines, P222 random/uniform/all-history comparisons, P227C binomial baselines, Special3 Monte Carlo/binomial, and `tools/baseline_validator.py` exist. Some older baseline formulas/names are inconsistent. | Very high; every replay metric needs a lottery-specific null. | Makes strategy metrics comparable to expected random outcomes. | Yes, essential. | Yes, supports `NULL_OR_BASELINE_LIKE`, `UNDERPOWERED_NO_SIGNAL`, and below-baseline decisions. | Yes, P0. | P0 |
+| 5 | permutation test | [Partial] P51 bootstrap/permutation, Special3 analytical binomial "permutation" review, rejected archives, and older research artifacts use this idea. Not centralized and naming is inconsistent. | High for non-parametric sanity checks and distribution-free stress tests. | Useful for feature scans and paired comparisons when analytical assumptions are weak. | Yes, if pre-registered and corrected. | Yes, can distinguish weak observations from random-like behavior. | Yes, but after baseline/correction SSOT. | P1 |
+| 6 | multiple testing correction | [Confirmed/Partial] P222/P223B/P227C explicitly use Bonferroni and/or BH-FDR; P221F requires correction. Older scripts and ad-hoc research are inconsistent. | Critical; project scans many strategies/windows/features. | Prevents broad scans from promoting noise. | Yes, directly. | Yes, explains why raw p-values fail after family correction. | Yes, mandatory P0 gate. | P0 |
+| 7 | signal stability diagnostics | [Confirmed/Partial] P224/P230B1/P231B block/year/era/robustness checks, P114 temporal stability labels, P227C power gate, and RSM trend classifier exist. Schema and terminology vary. | Very high; stability is the bridge between statistical result and governance decision. | Identifies fragile edges, hit-count concentration, era dependence, and underpowered observations. | Yes, by requiring consistency beyond one lucky segment. | Yes, this is the best explanation layer for failed strategies. | Yes, P0/P1. | P0 |
+| 8 | feature bottleneck report | [Missing/Partial] P226 replay-gap discovery, P232A scoreboard, P233A/B registry hygiene, and P221F inventories behave like bottleneck reports, but no unified report exists. | High for CTO/Planner decisions; prevents running analyses that data cannot support. | Shows missing replay rows, no parser support, blocked positional data, insufficient power, and lifecycle mismatch before validation. | Indirectly yes, by blocking invalid scans. | Yes, especially for no-data/no-replay/underpowered outcomes. | Yes, as read-only report. | P1 |
+
+### 3. Existing System Gap Analysis
+
+#### Already Exists
+
+- [Confirmed] Causal replay adapters with strict prior-history rule in `replay_strategy_registry.py`.
+- [Confirmed] Lifecycle registry and non-executable stubs; `LIFECYCLE_UNRESOLVED` is now 0 after P233B.
+- [Confirmed] All-catalog historical replay scoreboard (P232A) with row/draw/bet-index metrics, random baselines, and historical-only caveats.
+- [Confirmed] P221F anti-overfit protocol: frozen windows, fixed universe, predeclared baselines, unit labels, zero-row inclusion, no post-hoc window selection.
+- [Confirmed] P222/P223B/P224/P227C/P230B1/P231B provide corrected p-values, OOS/tail/block checks, robustness checks, power warnings, and NULL classifications.
+- [Confirmed] Official draw ingestion dry-runs and controlled import gates exist for key lottery types.
+
+#### Partially Exists But Incomplete
+
+- [Partial] Historical parser is not a unified parser layer; 3_STAR / 4_STAR straight-play is blocked by sorted storage and positional loss.
+- [Partial] Frequency/position-frequency diagnostics exist, but are scattered and not separated cleanly from older strategy / retrospective code.
+- [Partial] Rolling windows exist in several forms: P221F uses 100/125/150 and 500/750/1000; RSM uses 30/100/300; P51 uses W150/W500/W1500; P114 uses thirds plus rolling_100/250.
+- [Partial] Random/null baselines are repeated in many scripts rather than centralized; P51 contains comments showing historical confusion around POWER_LOTTO baseline semantics.
+- [Partial] Permutation / binomial / bootstrap tests exist but naming differs and not all reports expose method assumptions consistently.
+- [Partial] Stability diagnostics exist, but labels differ (`MIXED`, `WATCHLIST`, `UNDERPOWERED_NO_SIGNAL`, `HISTORICAL_ARTIFACT_DIRECTION`, etc.) and are not one schema.
+
+#### Completely Missing
+
+- [Confirmed] No reusable `Scientific Statistical Diagnostics Layer` module/report schema exists yet.
+- [Confirmed] No unified feature bottleneck report that joins parser readiness, replay coverage, feature availability, statistical power, registry lifecycle, and validation gates.
+- [Inferred] No single multiple-testing ledger records family size across strategy × lottery × window × feature scans outside each individual artifact.
+- [Inferred] No single diagnostics-only API contract that downstream validation/report/dashboard code can consume without touching production or registry.
+
+#### Existing But Inconsistent
+
+- [Confirmed] Naming mixes `diagnostic`, `validation`, `dry-run`, `scoreboard`, `promotion gate`, `monitor`, and `recommendation`.
+- [Confirmed] Units are sometimes row-level, draw-level, bet-index-level, strategy-level, or special-zone; newer reports label them, older code may not.
+- [Confirmed] `RollingStrategyMonitor` writes `data/rolling_monitor_*.json` and has recommendation-oriented language, which does not match the current read-only governance layer.
+- [Confirmed] `feature_discovery_and_retrospective.py` is retrospective single-draw feature discovery and should be treated as historical research / anti-pattern evidence, not a source of new hypotheses.
+- [Confirmed] Special-zone metrics are now display-only in governance, but older code and reports require continued containment checks.
+
+### 4. P0 / P1 / P2 / P3+ Priority Ordering
+
+| Priority | Methods / Work | Rationale |
+|---|---|---|
+| P0 | multiple testing correction; null/random baseline SSOT; rolling-window/statistical unit labels; signal stability diagnostics | These are already active correctness gates and directly prevent false positives. |
+| P1 | historical draw parser inventory; permutation/binomial test API; feature bottleneck report | Needed to make diagnostics reusable and explain blocked/no-edge outcomes before any validation run. |
+| P2 | number frequency / position frequency summaries; descriptive feature inventory; dashboard-ready historical summaries | Useful for visibility, but high risk if interpreted as predictive signal. Keep diagnostics-only. |
+| P3+ | report/dashboard UI and strategy governance integration | Should wait until the diagnostics schema is stable. Governance integration should block or label only, not promote. |
+
+### 5. Roadmap Adjustment Decision
+
+[Confirmed] Roadmap requires adjustment. `Scientific Statistical Diagnostics Layer` should be added because the project already uses scientific methods but lacks a unified read-only layer.
+
+[Confirmed] Applied roadmap update:
+
+- Added P234 row in §0.1 with final classification `CTO_STATISTICAL_METHODS_ADOPTION_WITH_RISKS`.
+- Added P0.5 `Scientific Statistical Diagnostics Layer` in §0.4.
+- Added §0.6 Direction F describing scope, boundary, required gates, and priority.
+- Added P234 note in §0.7 current state summary.
+
+[Confirmed] No roadmap update authorizes implementation, worker prompt generation, DB write, production write, executable registry write, strategy promotion, or new strategy/hypothesis creation.
+
+### 6. Recommended Phased Adoption Sequence
+
+| Phase | Name | Scope | Allowed Outputs | Explicitly Forbidden |
+|---|---|---|---|---|
+| Phase 0 | read-only inventory | Inventory existing parsers, baselines, windows, correction methods, stability labels, feature availability, replay coverage, and lifecycle coverage. | `outputs/research/*` inventory artifact and docs only. | New hypotheses, strategy code, DB/registry/production writes. |
+| Phase 1 | diagnostics-only | Centralize baseline calculations, correction methods, rolling windows, stability summaries, and bottleneck report schema. | Read-only diagnostic JSON/MD artifacts. | Any recommendation ranking or claim of improved win rate. |
+| Phase 2 | validation framework integration | Let replay validation consume diagnostics as gates: corrected p, OOS/walk-forward, power status, stability, unit labels. | Validation artifacts and tests for schema/gates. | Promotion from diagnostics alone; registry mutation. |
+| Phase 3 | report / dashboard | Display historical-only diagnostics, no-edge explanations, underpowered warnings, and parser/replay coverage. | UI/report surfaces labeled historical-only. | Betting advice, deployability rankings, second-zone promotion. |
+| Phase 4 | strategy governance integration | Use diagnostics to block unsafe promotion, quarantine stale claims, or require more OOS. | Governance labels only with explicit authorization. | Automatic ONLINE promotion or executable adapter creation. |
+
+### 7. Risks And Guardrails
+
+| Risk | Assessment | Guardrail |
+|---|---|---|
+| System may imply random lottery numbers are predictable | [Confirmed] High risk if frequency/rolling windows are surfaced casually. | Every artifact says historical-only, not betting advice, not future edge proof, not win-rate improvement. |
+| Data snooping / p-hacking | [Confirmed] High risk because project scans strategies × lotteries × windows × features. | Pre-register universe, windows, baselines, family size, metric units, and acceptance taxonomy before scanning. |
+| Multiple testing omitted | [Confirmed] Must be required for any scan with more than one feature/window/strategy. | Bonferroni as strict gate; BH-FDR only exploratory unless pre-authorized. |
+| OOS / walk-forward omitted | [Confirmed] Must be required before any validation-framework integration. | Backward-OOS may falsify but not confirm deployment; future OOS preferred. |
+| Production / registry / DB impact | [Inferred] Low if isolated; high if wired to RSM/recommendation. | Diagnostics layer must be read-only, artifact-only, and cannot call executable promotion paths. |
+| Scope expansion | [Confirmed] High if "feature discovery" becomes strategy research. | No new hypotheses/strategies in P234 adoption. Feature bottleneck reports describe constraints only. |
+| Legacy naming confusion | [Confirmed] Existing names like "promotion gate" and "recommendation" can conflict with current governance. | Normalize diagnostics labels and separate old research from current governance artifacts. |
+| Star-lottery positional semantics | [Confirmed] Straight-play blocked until re-ingestion. | Parser/bottleneck report must mark positional features blocked and avoid set-intersection scoring for straight-play. |
+
+### 8. CTO Final Recommendation
+
+Adopt the eight open-source-style statistical methods only as a **Scientific Statistical Diagnostics Layer**, not as a strategy engine. The layer is valuable because it can make the current no-edge reality more explainable, reduce false-positive promotion risk, and expose parser/replay/feature bottlenecks before costly validation work starts.
+
+The first adoption unit should be Phase 0 inventory plus Phase 1 diagnostics-only design. Do not start implementation from this analysis alone; do not create a worker prompt here; do not write DB, production, executable registry, or recommendation logic; do not introduce new hypotheses or strategies; do not claim improved lottery win rate.
+
+Final Classification: `CTO_STATISTICAL_METHODS_ADOPTION_WITH_RISKS`
+
+---
+
 ## 1. CTO Review Date
 
 2026-06-02 Asia/Taipei.

@@ -1277,3 +1277,34 @@ Final Classification: `CEO_DECISION_PARTIALLY_APPROVED`
 Partially approve. ADOPT the CTO falsification framing and the scouting deliverable; ADOPT the randomness-audit SSOT/tripwire and payout-EV as the only two net-new, read-only, non-hit-rate imports (design/spike-only, separate authorization to build). REJECT/CORRECT the implied hit-rate-improvement premise — it is closed by the system's own evidence. The P236A artifact is produced read-only on a dev branch + PR; #282 merges first; CEO did not edit `roadmap.md` / `CTO-Analysis.md` / `active_task.md`.
 
 Final Classification: `CEO_DECISION_PARTIALLY_APPROVED`
+
+---
+
+# CEO Decision — 2026-06-04 (PM/evening) — P237D P237C Merge And Governance Closeout
+
+## 1. CEO Review Date
+
+2026-06-04 Asia/Taipei. Final Classification: `P237D_P237C_DESIGN_DOC_MERGED_GOVERNANCE_CLOSEOUT_COMPLETE`.
+
+## 2. Reviewed Inputs
+
+- [Confirmed] P237C design-doc artifact: `outputs/research/p237c_nist_randomness_audit_tripwire_design_20260604.md`.
+- [Confirmed] PR #285 merged into `main`; merge commit `c0d4eaa`.
+- [Confirmed] P237C classification: `P237C_NIST_RANDOMNESS_AUDIT_TRIPWIRE_DESIGN_READY`.
+- [Confirmed] P237C is design-doc only: no build, no code, no scripts, no tests, no DB write, no registry mutation, no production/recommendation change, no strategy adapter, no monitoring job, no P211 restart, no strategy exploration.
+
+## 3. Decision
+
+CEO accepts P237C as a completed diagnostics-only design artifact and records PR #285 as merged.
+
+The P237C artifact is a future-build specification only. It does **not** authorize a NIST randomness-audit build, monitoring job, implementation file, DB write, registry mutation, production/recommendation change, strategy promotion, or betting advice. Its RED alert semantics authorize human diagnostic review only; they do not authorize prediction, strategy, or production changes.
+
+## 4. Current State
+
+- `active_task.md` returns to `WAITING_FOR_USER_AUTHORIZATION`.
+- P211 remains `HELD_BY_USER`.
+- No active worker task exists after closeout.
+- No deployable candidate exists in any lottery.
+- Future NIST build requires separate explicit user authorization.
+
+Final Classification: `P237D_P237C_DESIGN_DOC_MERGED_GOVERNANCE_CLOSEOUT_COMPLETE`

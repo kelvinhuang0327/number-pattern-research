@@ -1,6 +1,6 @@
 # Lottery Replay Roadmap
 
-**Last Updated:** 2026-06-04 Asia/Taipei (P236B governance merge closeout — merged PR #282 then PR #283; P236A external statistical methods scouting `FALSIFICATION_AND_DIAGNOSTICS_ONLY`, hit-rate closed, no deployable edge; HEAD `5cf7852`; WAITING_FOR_USER_AUTHORIZATION)
+**Last Updated:** 2026-06-04 Asia/Taipei (P237D governance closeout — PR #285 merged; P237C NIST randomness-audit tripwire design doc `P237C_NIST_RANDOMNESS_AUDIT_TRIPWIRE_DESIGN_READY`; no NIST build; no deployable edge; WAITING_FOR_USER_AUTHORIZATION)
 **Owner:** CTO agent
 **Primary Goal:** Keep LotteryNew replay, research, and product evidence truthful, reproducible, and governed. The current maturity bottleneck has shifted from migration rehearsal to short/mid-window strategy protocol design, anti-overfit validation, canonical repo dispatch safety, and honest product disclosure.
 **Repo Policy:** Use `/Users/kelvin/Kelvin-WorkSpace/LotteryNew` only. Do not create a new repo. Production DB, registry, and data writes require explicit governed authorization. CTO roadmap updates are limited to this file and `00-Plan/roadmap/CTO-Analysis.md`. CTO must not write `CEO-Decision.md`, `active_task.md`, `production/*`, `registry/*`, `data/*`, or any new repo.
@@ -60,6 +60,8 @@ This section is the current source of truth. The 2026-06-01 sections and P186-P1
 | **P235B Lofea feasibility governance closeout** | **[Complete]** `P235B_LOFEA_FEASIBILITY_GOVERNANCE_CLOSEOUT_MERGED` | `00-Plan/roadmap/roadmap.md`; `00-Plan/roadmap/agent_bootstrap/CURRENT_STATE.md`; `00-Plan/roadmap/active_task.md`; PR #282 | Doc-only closeout recording P235A complete. active_task → `WAITING_FOR_USER_AUTHORIZATION`. No code/DB/production change. |
 | **P236A External statistical methods scouting** | **[Complete]** `P236A_EXTERNAL_STAT_METHODS_SCOUTING_COMPLETE_FALSIFICATION_AND_DIAGNOSTICS_ONLY` | `outputs/research/p236a_external_statistical_methods_scouting_20260604.{md,json}`; `00-Plan/roadmap/CEO-Decision.md` addendum; PR #283 | Read-only falsification scout. Hit-rate closed (L82/L91/P178A). 7/8 proposed methods already owned + enforced (P234). Sources S1–S8 verified. Two net-new diagnostics, **neither hit-rate**: NIST-style randomness-audit SSOT/tripwire (design-only) + payout/anti-crowd EV (L102 marginal). No deployable edge; no DB/registry/production write; no predictability claim. CEO `CEO_DECISION_PARTIALLY_APPROVED`. |
 | **P236B Governance merge closeout** | **[Complete]** `P236B_GOVERNANCE_MERGE_CLOSEOUT_COMPLETE` | `00-Plan/roadmap/active_task.md`; `00-Plan/roadmap/agent_bootstrap/CURRENT_STATE.md`; `00-Plan/roadmap/roadmap.md`; this PR | Merged PR #282 then PR #283; verified P236A artifacts + JSON + drift PASS + DB 94,924 unchanged; synced governance docs. No code/DB/production change; no build started. |
+| **P237C NIST randomness-audit tripwire design doc** | **[Complete]** `P237C_NIST_RANDOMNESS_AUDIT_TRIPWIRE_DESIGN_READY` | `outputs/research/p237c_nist_randomness_audit_tripwire_design_20260604.md`; PR #285, merge commit `c0d4eaa` | Design-doc only. Defines draw-level randomness diagnostics, tripwire alert taxonomy, multiple-testing/anti-overfit gates, rolling-window design, and future artifact schema. It explicitly rejects prediction, win-rate, betting-advice, strategy, production, and monitoring claims. No build/code/scripts/tests/DB/registry/production/recommendation change. |
+| **P237D P237C merge + governance closeout** | **[Complete]** `P237D_P237C_DESIGN_DOC_MERGED_GOVERNANCE_CLOSEOUT_COMPLETE` | governance docs after PR #285 merge | Merge + governance closeout only. Records P237C and returns to `WAITING_FOR_USER_AUTHORIZATION`. Future NIST build remains unauthorized and requires separate explicit user authorization. |
 
 ### 0.2 Current System Baseline
 
@@ -202,6 +204,8 @@ Upgrade / downgrade decisions:
 - P235B governance closeout: active_task → `WAITING_FOR_USER_AUTHORIZATION`. No new research authorized.
 - P236A external statistical methods scouting: **`FALSIFICATION_AND_DIAGNOSTICS_ONLY`**. Hit-rate prediction closed (L82/L91/P178A); external methods do not reopen it. 7/8 proposed methods already owned + enforced (P234). Two net-new diagnostics, **neither hit-rate**: NIST-style randomness-audit SSOT/tripwire (design-only; alerts only if draws stop being random) + payout/anti-crowd EV (E[payout|win], not P(win); L102 marginal). No deployable edge. CEO `CEO_DECISION_PARTIALLY_APPROVED`. PR #283 merged.
 - P236B governance merge closeout: merged PR #282 then PR #283; verified P236A artifacts + drift + DB 94,924 unchanged; governance docs synced. NIST tripwire = future read-only design/build option (OPT-D), **not started**, build needs separate authorization.
+- P237C NIST randomness-audit tripwire design doc: **`P237C_NIST_RANDOMNESS_AUDIT_TRIPWIRE_DESIGN_READY`**. PR #285 merged. Design-doc only; diagnostics-only; no predictor, no win-rate claim, no betting advice. RED alert would authorize human review only, not strategy or production. No build/code/scripts/tests/DB/registry/production/recommendation/monitoring change.
+- P237D governance closeout: records P237C on governance docs and returns to `WAITING_FOR_USER_AUTHORIZATION`. Future NIST build remains unauthorized.
 
 **No active deployable candidate in any lottery.**
 
@@ -210,12 +214,15 @@ Upgrade / downgrade decisions:
 - 3_STAR/4_STAR re-scan: only after ≥10,000 3_STAR draws or positional re-ingestion (straight-play).
 - Explore entirely new strategies / hypotheses: requires explicit authorization, fresh P221F pre-registration.
 - POWER_LOTTO first-zone future OOS: only after significant new draws accumulate; requires P221F gate.
+- NIST randomness-audit tripwire build: only if explicitly authorized as a new task using the P237C design doc; diagnostics-only, artifact-first, no strategy/production implication.
 
 **Forbidden:** rerun same P221F/P227C/P231B sweeps on same data; promote any strategy; write DB / registry / production / recommendation logic; start model design without authorization.
 
 Final current roadmap marker:
 
 ```text
+P237D_P237C_DESIGN_DOC_MERGED_GOVERNANCE_CLOSEOUT_COMPLETE
+P237C_NIST_RANDOMNESS_AUDIT_TRIPWIRE_DESIGN_READY
 P236B_GOVERNANCE_MERGE_CLOSEOUT_COMPLETE
 P236A_EXTERNAL_STAT_METHODS_SCOUTING_COMPLETE_FALSIFICATION_AND_DIAGNOSTICS_ONLY
 P235B_LOFEA_FEASIBILITY_GOVERNANCE_CLOSEOUT_MERGED

@@ -1,7 +1,7 @@
 # Current State — LotteryNew
 
-**Last Reviewed:** 2026-06-03 Asia/Taipei (P228 governance closeout — P226–P227C star replay chain)
-**State Marker:** `P228_STAR_REPLAY_GOVERNANCE_CLOSEOUT_COMPLETE_P226_P227C_UNDERPOWERED_NO_SIGNAL`
+**Last Reviewed:** 2026-06-04 Asia/Taipei (P230C governance closeout — DAILY_539 survivor reclassified as HISTORICAL_ARTIFACT_DIRECTION after P230B1 backward-OOS below-baseline)
+**State Marker:** `P230C_DAILY539_SURVIVOR_RECLASSIFIED_HISTORICAL_ARTIFACT`
 **Purpose:** Project-specific state for future agents. Read this after `SHARED_AGENT_BOOTSTRAP.md` and `TASK_TEMPLATES.md`.
 
 ## Canonical Execution Context
@@ -14,7 +14,7 @@
 | Current HEAD | HEAD must equal `origin/main`; verify with `git rev-parse HEAD` and `git rev-parse origin/main` before any task. Do not hardcode a live hash here — this field becomes stale after every PR merge. Last recorded PR merge: P228 governance closeout (branch `p228-star-replay-governance-closeout`). | [Self-verifying] |
 | `origin/main` | Must equal HEAD; see above. Verify with `git rev-parse origin/main`. | [Self-verifying] |
 | Git dir | `.git` | [Confirmed] |
-| Active worker task | none (P228 closeout complete) | [Confirmed] |
+| Active worker task | none (P230C closeout complete) | [Confirmed] |
 | P211 status | `HELD_BY_USER`; do not auto-resume or re-prompt | [Confirmed] |
 
 ## Forbidden Execution Paths
@@ -83,7 +83,10 @@ Read-only baseline commands:
 | **P227A 3_STAR/4_STAR box-play adapter design** | **COMPLETE** — `P227A_STAR_BOX_PLAY_ADAPTER_DESIGN_READY` | Design-only. Metric semantics: `star_box_exact_match` (multiset), `star_digit_overlap_count`, `star_calculate_box_score`. `calculate_match_score` prohibited. `dry_run=1` isolation. Power warning documented. PR #263. |
 | **P227B 3_STAR/4_STAR box-play code dry-run** | **COMPLETE** — `P227B_STAR_BOX_PLAY_DRYRUN_CODE_COMPLETE` | `lottery_api/models/star_box_play.py` implemented. **42/42 targeted tests PASS.** No DB write. Straight-play BLOCKED. PR #264. |
 | **P227C 3_STAR/4_STAR box-play dry-run scan** | **COMPLETE** — `P227C_STAR_BOX_PLAY_UNDERPOWERED_NO_SIGNAL` | 120 hypotheses (10 features × 6 windows × 2 lotteries). **69/69 targeted tests PASS.** 3_STAR: 0 Bonferroni, 1 BH-FDR weak (UNDERPOWERED). 4_STAR: 0 Bonferroni, 0 BH-FDR. **Both lotteries UNDERPOWERED_NO_SIGNAL. Not deployable.** PR #265. |
-| **P228 governance closeout sync** | **COMPLETE (this task)** | roadmap.md + CURRENT_STATE.md updated to reflect P226–P227C. |
+| **P228 governance closeout sync** | **COMPLETE** | roadmap.md + CURRENT_STATE.md updated to reflect P226–P227C. |
+| **P230A DAILY_539 backward-OOS extension plan** | **COMPLETE** — `P230A_DAILY539_BACKWARD_OOS_EXTENSION_PLAN_READY` | Plan-only; identified 4,265 replayable backward draws; leakage guard; architecture design. PR #268. |
+| **P230B1 DAILY_539 backward-OOS code-only dry-run** | **COMPLETE** — `P230B1_BACKWARD_OOS_DRYRUN_BELOW_BASELINE` | Zero DB write; backward-OOS mean 0.6375 < baseline 0.6410 (z=−0.32, p=0.626); all era/robustness checks fail. PR #269. |
+| **P230C DAILY_539 survivor reclassification closeout** | **COMPLETE (this task)** — `P230C_DAILY539_SURVIVOR_RECLASSIFIED_HISTORICAL_ARTIFACT` | `midfreq_fourier_2bet / DAILY_539` reclassified from `WAIT_FOR_OOS` to `REJECTED_BY_BACKWARD_OOS / HISTORICAL_ARTIFACT_DIRECTION`. No new research started. |
 
 ## Completed Milestones
 
@@ -105,16 +108,19 @@ Read-only baseline commands:
 - [Confirmed] P227A: box-play adapter design complete; straight-play blocked documented with re-ingestion requirement.
 - [Confirmed] P227B: `star_box_play.py` implemented; 42/42 tests PASS; no DB write; `calculate_match_score` not used.
 - [Confirmed] P227C: 120-hypothesis scan; UNDERPOWERED_NO_SIGNAL for both lotteries; 69/69 tests PASS; no DB write.
+- [Confirmed] P230A: DAILY_539 backward-OOS extension plan ready; 4,265 replayable backward draws identified; leakage guard and dry-run architecture defined. PR #268.
+- [Confirmed] P230B1: backward-OOS code-only dry-run complete; mean 0.6375 < baseline 0.6410 (z=−0.32, p=0.626); all era/robustness checks fail; zero DB write. `BELOW_BASELINE`. PR #269.
+- [Confirmed] P230C: DAILY_539 survivor `midfreq_fourier_2bet` reclassified from WAIT_FOR_OOS → **REJECTED_BY_BACKWARD_OOS / HISTORICAL_ARTIFACT_DIRECTION**. No deployment. No P230B2 DB backfill recommended. No P225 model design recommended.
 
 ## Current Blockers / Holds
 
 - [Blocked] P211 is held by user. Do not auto-resume.
-- [Hold] DAILY_539 survivor `midfreq_fourier_2bet` = **WAIT_FOR_OOS**. Reopen requires ≥300 new DAILY_539 target draws (preferred 500) AND all P224B gates must pass. Failure = historical artifact.
+- [Closed] DAILY_539 survivor `midfreq_fourier_2bet` = **REJECTED_BY_BACKWARD_OOS / HISTORICAL_ARTIFACT_DIRECTION**. P230B1 backward-OOS dry-run (4,265 draws, 2007/05–2021/08) produced mean 0.6375 < baseline 0.6410 (z=−0.32, p=0.626); below baseline in early and late eras; failed both robustness checks. In-window edge is a historical artifact / lucky window. **No deployment. No P230B2 DB backfill recommended. No P225 model design recommended.** Production / registry / recommendation logic unchanged.
 - [Hold] 3_STAR / 4_STAR box-play = **UNDERPOWERED_NO_SIGNAL**. Not deployable. Need ≥10,000 3_STAR draws (have 4,179) or ≥17,000 4_STAR draws (have 2,922) for adequate power. Any re-scan must inherit P221F gate with fresh pre-registration.
 - [Blocked] 3_STAR / 4_STAR straight-play = **BLOCKED_REINGEST_REQUIRED**. Positional order lost in DB sorted storage. Re-ingestion from raw positional source requires separate authorization.
-- [Deferred] DAILY_539 survivor backward-OOS extension (P1.2) — ~4,376 un-replayed older draws; requires explicit DB-write authorization; inherits P224B gates.
 - [Risk] Worktree contains existing dirty/untracked files outside governance scope; future tasks must use narrow write allowlists.
-- [Resolved] Governance doc staleness at P217–P227C: resolved by P225 + P228 closeout; roadmap.md §0.1 and CURRENT_STATE.md now reflect P227C.
+- [Resolved] Governance doc staleness at P217–P227C: resolved by P225 + P228 closeout.
+- [Resolved] DAILY_539 survivor backward-OOS extension (P1.2): resolved by P230A plan + P230B1 dry-run; result BELOW_BASELINE → reclassified in P230C.
 
 ## Latest User Direction / Product Intent
 
@@ -127,11 +133,13 @@ Read-only baseline commands:
 
 ## Recommended Next Direction
 
-No active deployable candidate in any lottery. Do not start new research without explicit user authorization. Queued options:
+No active deployable candidate in any lottery. **The DAILY_539 sole survivor has been reclassified as HISTORICAL_ARTIFACT_DIRECTION (P230C).** Do not start new research without explicit user authorization. Queued options:
 
-1. **DAILY_539 survivor backward-OOS extension** (P1.2) — ~4,376 un-replayed older DAILY_539 draws; faster than waiting ~1 year for 300 future draws; requires explicit DB-write authorization; inherits P224B gates.
-2. **Passive monitoring** — wait for ≥300 new DAILY_539 draws (preferred 500), then recheck survivor per P224B protocol.
-3. **3_STAR/4_STAR re-scan** — only after ≥10,000 total 3_STAR draws (currently 4,179) accumulate naturally, or after positional re-ingestion for straight-play; requires fresh pre-registration.
+1. **Passive monitoring** — wait for ≥300 new DAILY_539 draws (preferred 500); per P224B protocol, new OOS evidence could reopen the question, but the prior shifted toward NULL given backward-OOS below baseline.
+2. **3_STAR/4_STAR re-scan** — only after ≥10,000 total 3_STAR draws (currently 4,179) accumulate naturally, or after positional re-ingestion for straight-play; requires fresh pre-registration.
+3. **Explore entirely new strategies / hypotheses** — requires explicit authorization, fresh P221F pre-registration, and a new task prompt.
+
+Retired option: **DAILY_539 survivor backward-OOS extension (P1.2)** — executed as P230A + P230B1; result BELOW_BASELINE; P230B2 DB backfill is no longer warranted.
 
 For any new research task, include:
 

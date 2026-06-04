@@ -1,7 +1,7 @@
 # Current State — LotteryNew
 
-**Last Reviewed:** 2026-06-04 Asia/Taipei (P233C governance closeout — LIFECYCLE_UNRESOLVED 20→0; 20 non-executable stubs added; registry hygiene complete; no active worker task)
-**State Marker:** `P233C_LIFECYCLE_UNRESOLVED_REGISTRY_HYGIENE_GOVERNANCE_CLOSEOUT`
+**Last Reviewed:** 2026-06-04 Asia/Taipei (P235B Lofea feasibility governance closeout — P235A `FIT_AS_DESIGN_INSPIRATION_ONLY` merged PR #281; P234A governance follow-up merged PR #280; no deployable candidate; WAITING_FOR_USER_AUTHORIZATION)
+**State Marker:** `P235B_LOFEA_FEASIBILITY_GOVERNANCE_CLOSEOUT_MERGED`
 **Purpose:** Project-specific state for future agents. Read this after `SHARED_AGENT_BOOTSTRAP.md` and `TASK_TEMPLATES.md`.
 
 ## Canonical Execution Context
@@ -95,6 +95,10 @@ Read-only baseline commands:
 | **P233A Lifecycle-unresolved registry hygiene plan** | **COMPLETE** — `P233A_LIFECYCLE_UNRESOLVED_REGISTRY_HYGIENE_PLAN_MERGED` | Read-only plan for 20 LIFECYCLE_UNRESOLVED entries. 12 REJECTED + 8 RETIRED suggestions. 18/18 tests PASS. PR #276. |
 | **P233B Non-executable stub update** | **COMPLETE** — `P233B_LIFECYCLE_UNRESOLVED_NON_EXECUTABLE_STUB_UPDATE_MERGED` | 20 `_NON_EXECUTABLE_STUB` entries added to `replay_strategy_registry.py`. LIFECYCLE_UNRESOLVED 20→0. No executable adapter. Zero DB write. 10/10 tests PASS. PR #277. |
 | **P233C Lifecycle unresolved registry hygiene governance closeout** | **COMPLETE** — `P233C_LIFECYCLE_UNRESOLVED_REGISTRY_HYGIENE_GOVERNANCE_CLOSEOUT` | Doc-only sync recording P233A/B complete. No code/DB/production change. |
+| **P234 CTO statistical methods adoption analysis** | **COMPLETE** — `CTO_STATISTICAL_METHODS_ADOPTION_WITH_RISKS` | CTO analysis only. Scientific Statistical Diagnostics Layer framing adopted as read-only diagnostics, not implementation. P0.5 urgency demoted to P2 design-only. |
+| **P234A Governance follow-up** | **COMPLETE** — `P234A_GOVERNANCE_FOLLOWUP_CEO_DECISION_PARTIALLY_APPROVED_P2_DESIGN_ONLY` | Doc-only. roadmap.md P0.5→P2.4; CTO-Analysis.md CEO Follow-Up Note added; namespace fixed (Lofea=P235A). PR #280 merged. |
+| **P235A Lofea read-only feasibility review** | **COMPLETE** — `P235A_LOFEA_FEASIBILITY_REVIEW_COMPLETE_DESIGN_INSPIRATION_ONLY` | Read-only. Lofea = CC-BY-NC feature-engineering toolkit, 1/10-per-column lotteries. No deployable evidence. Adopt now = NO. Design inspiration only. PR #281 merged. |
+| **P235B Lofea feasibility governance closeout** | **COMPLETE** — `P235B_LOFEA_FEASIBILITY_GOVERNANCE_CLOSEOUT_MERGED` | Doc-only closeout. active_task → WAITING_FOR_USER_AUTHORIZATION. No code/DB/production change. |
 
 ## Completed Milestones
 
@@ -127,6 +131,10 @@ Read-only baseline commands:
 - [Confirmed] P233A: Lifecycle-unresolved registry hygiene plan complete. Evidence-based lifecycle suggestions for 20 entries: 12 REJECTED (rejected/ archive) + 8 RETIRED (P59/P66/P79/P94/P126D production applies). 18/18 tests PASS. PR #276.
 - [Confirmed] P233B: Non-executable stub update complete. 20 `_NON_EXECUTABLE_STUB` entries added to `replay_strategy_registry.py`. **LIFECYCLE_UNRESOLVED 20→0.** No executable adapter added. Zero DB write. 10/10 tests PASS. PR #277.
 - [Confirmed] P233C: Lifecycle unresolved registry hygiene governance closeout complete. P233A/B results recorded in governance files (doc-only, no code/DB/production change).
+- [Confirmed] P234: CTO statistical methods adoption analysis complete. Scientific Statistical Diagnostics Layer framing adopted as read-only diagnostics; P0.5 urgency demoted to P2.4 design-only by CEO. `CTO_STATISTICAL_METHODS_ADOPTION_WITH_RISKS`.
+- [Confirmed] P234A: Governance follow-up doc-only. roadmap.md P0.5→P2.4; CTO-Analysis.md CEO Follow-Up Note; namespace Lofea=P235A. PR #280 merged.
+- [Confirmed] P235A: Lofea read-only feasibility review complete. `FIT_AS_DESIGN_INSPIRATION_ONLY`. Lofea = CC-BY-NC feature-engineering toolkit, 1/10-per-column lotteries. No deployable predictive evidence. Adopt now = NO. Design inspiration only; any reuse must be natively re-derived + P221F + multiple-testing + walk-forward/OOS. PR #281 merged.
+- [Confirmed] P235B: Lofea feasibility governance closeout complete. active_task → WAITING_FOR_USER_AUTHORIZATION. No code/DB/production change.
 
 ## Current Blockers / Holds
 
@@ -152,7 +160,7 @@ Read-only baseline commands:
 
 ## Recommended Next Direction
 
-No active deployable candidate in any lottery. **The P211A–P231B arc has exhausted all current in-window candidates. P232A all-catalog scoreboard confirms no deployable candidate. P233B registry hygiene resolved LIFECYCLE_UNRESOLVED to 0 — governance record is now complete.** Do not start new research without explicit user authorization. Queued options:
+No active deployable candidate in any lottery. **The P211A–P231B arc has exhausted all current in-window candidates. P232A all-catalog scoreboard confirms no deployable candidate. P233B registry hygiene resolved LIFECYCLE_UNRESOLVED to 0. P234/P234A CTO statistical-methods analysis complete (P2.4 design-only). P235A Lofea feasibility review complete (design-inspiration only, no deployable edge). Governance record is now complete.** Do not start new research without explicit user authorization. Queued options:
 
 1. **Passive monitoring** — wait for ≥300 new DAILY_539 draws (preferred 500); per P224B protocol, new OOS evidence could reopen, but prior shifted toward NULL after P230B1 below-baseline.
 2. **3_STAR/4_STAR re-scan** — only after ≥10,000 total 3_STAR draws (currently 4,179) accumulate naturally, or after positional re-ingestion for straight-play; requires fresh pre-registration.

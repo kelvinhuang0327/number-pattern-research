@@ -1,0 +1,129 @@
+{
+  "task_id": "P236A",
+  "task_name": "External Statistical Methods Scouting For LotteryNew",
+  "review_date": "2026-06-04 Asia/Taipei",
+  "review_type": "read-only scouting (source index + method whitelist/blacklist + candidate feature family + validation rubric); no implementation, no DB/registry/production write, no strategy, no betting advice, no predictability claim",
+  "authorization": "User directed 'import useful external methods ASAP to improve prediction success rate' and selected full P236A scouting (2026-06-04), after being shown and accepting on record that hit-rate improvement is closed by the system's own evidence and the honest expected outcome of broad scouting is NULL.",
+  "honest_framing": "Falsification-oriented scout, not an edge hunt. Hit-rate prediction is closed (L82 539 signal exhausted, L91 BIG_LOTTO indistinguishable from random, P178A POWER_LOTTO 17 candidates NULL, SZC1 second-zone 0.1181<0.125). External methods do NOT reopen it. NULL is a valid complete result.",
+  "already_in_system_audit": {
+    "summary": "Per P234 CEO decision, 7 of 8 proposed external statistical methods already exist and are enforced.",
+    "owned": {
+      "pre_registration_anti_overfit_gate": "P221F",
+      "multiple_testing_correction_bonferroni_bh": "P222 / P223B / P227C",
+      "walk_forward_rolling_window_oos": "RSM / P114 / P224",
+      "three_window_validation_150_500_1500": "standard pipeline / CLAUDE.md",
+      "permutation_test": "standard pipeline (with L96 Monte-Carlo-null fix)",
+      "mcnemar_replacement_gate": "L48 / L61 / standard pipeline",
+      "random_baseline_comparison": "RSM / per-game baselines"
+    },
+    "gap": "Formal randomness-audit SSOT + continuous tripwire (NIST SP 800-22 style) is the single net-new diagnostic not already owned."
+  },
+  "source_index": [
+    {"id": "S1", "method": "NIST SP 800-22 Rev 1a statistical test suite (15 tests; null = sequence is random)", "url": "https://csrc.nist.gov/pubs/sp/800/22/r1/upd1/final", "url2": "https://csrc.nist.gov/projects/random-bit-generation/documentation-and-software", "purpose": "randomness audit / null SSOT / tripwire; detects non-randomness; NOT a predictor", "class": "WHITELIST_DIAGNOSTIC", "verified": true},
+    {"id": "S2", "method": "scikit-learn TimeSeriesSplit (walk-forward, expanding window)", "url": "https://scikit-learn.org/stable/modules/generated/sklearn.model_selection.TimeSeriesSplit.html", "purpose": "leakage-safe OOS splitting", "class": "WHITELIST_ALREADY_OWNED", "owned_at": "RSM/P114/P224", "verified": true},
+    {"id": "S3", "method": "scikit-learn permutation_test_score", "url": "https://scikit-learn.org/stable/modules/generated/sklearn.model_selection.permutation_test_score.html", "purpose": "p-hacking guard via permutation null; use Binomial(baseline) MC null where label-shuffle preserves mean (L96)", "class": "WHITELIST_ALREADY_OWNED", "verified": true},
+    {"id": "S4", "method": "statsmodels multipletests (Bonferroni / BH-FDR)", "url": "https://www.statsmodels.org/stable/generated/statsmodels.stats.multitest.multipletests.html", "purpose": "multiple-comparison correction", "class": "WHITELIST_ALREADY_OWNED", "owned_at": "P222/P223B/P227C", "verified": true},
+    {"id": "S5", "method": "Bayesian / Dirichlet-multinomial shrinkage (frequency smoothing)", "url": "standard method", "purpose": "benchmark (smoothed frequency), not a strategy; must beat random baseline", "class": "GRAYLIST_BENCHMARK_ONLY", "verified": true},
+    {"id": "S6", "method": "ML benchmark family (Naive Bayes / logistic / tree / XGBoost / sequence models)", "url": "scikit-learn / xgboost", "purpose": "falsification benchmarks only; severe overfit on low-base-rate games (L86/L89/L90)", "class": "GRAYLIST_FALSIFICATION_ONLY", "verified": true},
+    {"id": "S7", "method": "Lofea lottery feature-engineering toolkit (CC-BY-NC)", "url": "https://github.com/JeffMv/Lofea", "purpose": "design inspiration only (P235A); native re-derive only, no vendoring", "class": "GRAYLIST_DESIGN_INSPIRATION", "verified": true},
+    {"id": "S8", "method": "Unpopular-number / conscious-selection literature", "url": "http://understandinguncertainty.org/it-possible-improve-your-chances-winning-big-national-lottery.html", "url2": "https://rss.onlinelibrary.wiley.com/doi/full/10.1111/j.1740-9713.2012.00540.x", "url3": "https://www.cambridge.org/core/journals/judgment-and-decision-making/article/number-preferences-in-lotteries/47BA27051627CEED421AD3AEE255521E", "purpose": "payout lever: avoid crowded numbers -> less jackpot sharing -> higher E[payout|win]; NOT P(win)", "class": "GRAYLIST_PAYOUT_METRIC", "verified": true},
+    {"id": "S9", "method": "CDM-profit / martingale / betting-progression systems", "url": "various", "purpose": "negative-EV amplifiers; ruin_prob=1.000 (L99)", "class": "BLACKLIST", "verified": true},
+    {"id": "S10", "method": "Web 'lottery predictor' services / generators claiming edge", "url": "various", "purpose": "no evidence; scam-adjacent; violate governance", "class": "BLACKLIST", "verified": true}
+  ],
+  "external_facts_confirmed": [
+    "NIST SP 800-22's stated purpose is to detect non-random patterns in (P)RNG output for cryptographic validation; it confirms/falsifies randomness and does not forecast next values.",
+    "The unpopular-number literature consistently finds choosing unpopular combinations raises expected winnings via reduced prize-sharing, not the probability of winning; '7' is universally over-picked.",
+    "scikit-learn TimeSeriesSplit implements walk-forward with expanding training supersets; permutation_test_score builds a permutation null and can take TimeSeriesSplit as its cv."
+  ],
+  "candidate_feature_families_design_only": [
+    {"family": "Universe length (distinct-number breadth in rolling K-draw window + dynamics)", "status": "descriptive only; mostly novel framing; expected NULL under the gate"},
+    {"family": "In-frame vs out-of-frame frequency split", "status": "descriptive only; partial overlap with midfreq"},
+    {"family": "Gap/cold/recency, parity, zone, markov", "status": "already implemented; no new import"}
+  ],
+  "validation_rubric": [
+    "Pre-registration (P221F): hypothesis/windows/statistic fixed before touching OOS.",
+    "Null/baseline SSOT stated per game (539 M3+; POWER second-zone 1/8=0.125; BIG 6x6/49).",
+    "Three-window validation 150/500/1500 all ROI > baseline.",
+    "Permutation test p<0.05 using Binomial(baseline) Monte-Carlo null (not label-shuffle, L96).",
+    "Walk-forward/OOS expanding window, >=500 OOS draws (L101); unit = distinct draws.",
+    "Multiple-testing correction (Bonferroni/BH) across candidates x bet-slots x thresholds x windows (L47).",
+    "McNemar vs incumbent, replacement requires p<0.05 (L48/L61); passing gate != beating production (L76/L88).",
+    "Coverage-normalized at fixed bet count (no geometric-benefit trap, L37).",
+    "Sharpe>0 plus honest economic note (all games -EV; ruin_prob=1.000, L99).",
+    "Reproducibility: fixed seed, data snapshot, version tag.",
+    "NULL = success; in-sample improvement may never be claimed as generalizable."
+  ],
+  "net_new_imports": {
+    "primary_recommended": {
+      "name": "NIST-style randomness-audit SSOT + tripwire",
+      "type": "diagnostics-only, read-only, design-only (separate authorization to build)",
+      "what": "read-only module running an SP 800-22-adapted battery over each lottery's draw stream; produces the canonical randomness-audit report = SSOT null baseline all research must cite.",
+      "why": "lotteries are fair-random today and cannot be predicted; a continuous audit is a tripwire that alerts if draws ever stop being random — the only evidence-based condition under which prediction research reopens.",
+      "is_not": "not a predictor, not an edge, not betting advice",
+      "boundaries": "read-only; no DB write (artifact output only); per-game; multiple-testing-corrected (15 tests x games); reproducible seed/snapshot"
+    },
+    "secondary_optional": {
+      "name": "Payout / anti-crowd expected-value",
+      "type": "read-only spike, labeled payout-not-hit-rate",
+      "metric": "raises E[payout|win] via reduced jackpot-sharing; does NOT raise P(win); EV stays negative",
+      "prior_result": "L102: anti-crowd on BIG_LOTTO ADVISORY_ONLY (perm p=0.257, swap 0.7%, w100=+0.00%)",
+      "expectation": "marginal at best"
+    }
+  },
+  "risks": [
+    "FALSE-PREDICTABILITY FRAMING: whole exercise risks being read as 'we found a way to win'; every artifact must fence hit-rate as closed.",
+    "RE-TREADING PAID-FOR NULLS: broad scouting largely repeats P234 (7/8 owned), P235A (Lofea), P178A, L82/L91; cost without new info unless scoped to net-new items.",
+    "AUDIT MULTIPLICITY: 15 NIST tests x 4 games x windows manufactures chance failures; tripwire must be multiplicity-corrected or becomes a false-alarm generator.",
+    "ML OVERFIT (S6): low base-rate games overfit catastrophically (L86 +6.5%->+0.12%; L89 ratio 10.35x); ML is falsification-only.",
+    "PAYOUT != HIT-RATE (S8): must never be reported as improving win odds; EV stays negative.",
+    "VENDORING / LICENSE (S7): Lofea CC-BY-NC; native re-derive only.",
+    "LEAKAGE: multi-draw labels/windows can leak future draws; enforce data-leakage-prevention.",
+    "SCOPE CREEP: scouting only; building the net-new items requires separate authorization."
+  ],
+  "governance_checks": {
+    "historical_or_diagnostic_only_evidence": "respected",
+    "no_betting_advice": "respected",
+    "no_predictability_or_winrate_claim": "respected — hit-rate explicitly closed",
+    "p221f_anti_overfit_gate_required_for_any_reuse": true,
+    "multiple_testing_correction_required": true,
+    "walk_forward_or_oos_required_before_validation_use": true,
+    "statistical_unit_labels_required": "distinct draws (not rows)",
+    "zero_db_registry_production_write": true,
+    "no_strategy_promotion": true,
+    "p211_held_by_user_unchanged": true,
+    "p234_design_only_unchanged": true,
+    "lofea_design_inspiration_only_unchanged": true
+  },
+  "db_baseline_observed": {
+    "head": "03ba6d1ad2c84e8458bb896c17eb4686bf93f5d2",
+    "head_equals_origin_main": true,
+    "integrity": "ok",
+    "replay_rows": 94924,
+    "bet_index_nulls": 0,
+    "duplicate_keys": 0,
+    "drift_guard": "REPLAY_LIFECYCLE_DRIFT_GUARD_PASS",
+    "verified_read_only": true
+  },
+  "recommendation": {
+    "adopt_new_predictor_now": "NO",
+    "net_new_external_import_worth_doing": "ONE — NIST-style randomness-audit SSOT/tripwire (diagnostics-only), as a separately-authorized read-only build.",
+    "secondary_optional": "Payout/anti-crowd EV read-only spike, labeled payout-not-hit-rate, with L102 caveat.",
+    "broad_ml_bayesian_scouting": "falsification/benchmark-only; do not deploy.",
+    "lofea": "DESIGN_INSPIRATION_ONLY (unchanged).",
+    "do_nothing": "valid default — 7/8 methods already enforced.",
+    "smallest_safe_next_step": "read-only design-doc for the randomness-audit SSOT; still no build, no DB; any build is a separate authorization."
+  },
+  "tests": {
+    "external_sources_verified": "PASS (S1-S8 fetched this session)",
+    "json_parse": "PASS (validated with python3 -m json.tool)",
+    "git_diff_check": "PASS",
+    "drift_guard_after": "PASS",
+    "db_unchanged": "94924 / integrity ok",
+    "full_pytest_suite": "NOT RUN (scouting / artifact-only task)"
+  },
+  "modified_files": [
+    "outputs/research/p236a_external_statistical_methods_scouting_20260604.md",
+    "outputs/research/p236a_external_statistical_methods_scouting_20260604.json"
+  ],
+  "final_classification": "P236A_EXTERNAL_STAT_METHODS_SCOUTING_COMPLETE_FALSIFICATION_AND_DIAGNOSTICS_ONLY"
+}

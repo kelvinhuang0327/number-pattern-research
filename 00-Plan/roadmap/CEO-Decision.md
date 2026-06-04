@@ -1147,3 +1147,76 @@ The governance gap has been closed: all 20 formerly-LIFECYCLE_UNRESOLVED entries
 `CEO_DECISION_P233B_REGISTRY_HYGIENE_ACCEPTED_GOVERNANCE_CLOSEOUT`. Registry hygiene is complete. LIFECYCLE_UNRESOLVED = 0. No new research authorized. No production/recommendation/DB change. P210 COMPLETE / P211 HELD_BY_USER / DAILY_539 HISTORICAL_ARTIFACT / POWER_LOTTO first-zone NULL / second-zone DISPLAY_ONLY — all unchanged.
 
 Final Classification: `CEO_DECISION_P233B_REGISTRY_HYGIENE_ACCEPTED_GOVERNANCE_CLOSEOUT`
+
+---
+
+## CEO Second Review — 2026-06-04 (PM): CTO P234 Statistical Methods Adoption
+
+Final Classification: `CEO_DECISION_PARTIALLY_APPROVED`
+
+### 1. Reviewed Inputs
+- `00-Plan/roadmap/CTO-Analysis.md` (§2026-06-04 statistical methods adoption, lines 1–128) — **UNCOMMITTED on main at review time**
+- `00-Plan/roadmap/roadmap.md` (§0 override; P234 row in §0.1; P0.5 in §0.4; Direction F) — **UNCOMMITTED on main at review time**
+- `00-Plan/roadmap/active_task.md`; `00-Plan/roadmap/agent_bootstrap/CURRENT_STATE.md`
+- User handoff (P232C / P233A–P233D; external open-source project Lofea)
+- Phase 0 read-only verification (this turn): HEAD == origin/main == `6cf2e1a`; DB 94,924 / integrity ok; drift guard PASS; staged = 0. Full pytest suite **NOT RUN** (decision/doc task).
+
+### 2. Recent Work Value Assessment
+| Work | CEO Mark | Value |
+|---|---|---|
+| P232A all-catalog scoreboard | [Confirmed] | High. 41 union entries; historical-only; no deployable classification. |
+| P233A/B registry hygiene (LIFECYCLE_UNRESOLVED 20→0) | [Confirmed] | High governance value; closed a real catalog/registry alignment gap. |
+| P233C/P233D closeout + checkpoint | [Confirmed] | Correct; system verified clean. |
+| CTO P234 statistical-methods analysis | [Inferred] | Sound framing, but mis-prioritized and delivered as uncommitted dirty edits on main. |
+
+### 3. CTO Judgment Review — 部分採納 (Partially Approve)
+| CTO Position | CEO Verdict | Reason |
+|---|---|---|
+| Adopt 8 methods as **read-only diagnostics only**; no predictability claim, no promotion | ADOPT | [Confirmed] Correct, consistent with L82/L90/L91. |
+| 8-method inventory / gap analysis | ADOPT | [Confirmed] Accurate. |
+| Priority **P0.5**; correction/baseline/stability as **P0** | DO NOT ADOPT | [Inferred] Those methods already exist and are already enforced (P221F gate; Bonferroni/BH in P222/P223B/P227C; rolling windows in RSM/P114/P224). Nothing to build at P0. |
+| Build the diagnostics layer now | DO NOT ADOPT | [Inferred] No active research consumes it. Demote to P2 design-only. |
+| Leave `roadmap.md` + `CTO-Analysis.md` uncommitted on main | REJECT AS-IS | [Risk] Governance irregularity; must be PR'd or reverted. User elected to leave untouched this round. |
+| Task id **P234** for stat-methods | FLAG | Collides with handoff's **P234A = Lofea**. Reassign Lofea → **P235A**. |
+
+### 4. Roadmap Gap Assessment (CTO follow-up required — CEO does not edit roadmap.md)
+- [Confirmed] P234 edits are uncommitted on main (user elected to leave them untouched this round).
+- [Inferred] Downgrade P0.5 → P2 design-only; relabel already-enforced methods as "existing/enforced", not "to adopt at P0".
+- [Confirmed] Resolve P234 vs P234A namespace: stat-methods = P234, Lofea = P235A.
+
+### 5. CEO Priority Decision
+| Priority | Item | Status |
+|---|---|---|
+| **P0** | HOLD clean steady state; no worker, no DB/registry/production write | Active |
+| **P1** | (if authorized) ONE read-only artifact: P235A Lofea feasibility OR stat-methods diagnostics inventory (design-only) | Awaiting authorization |
+| **P2** | Scientific Statistical Diagnostics Layer = design-only, deferred (downgraded from CTO P0.5) | Deferred |
+| **P3+** | Passive monitoring (≥300–500 new DAILY_539 draws); 3_STAR/4_STAR re-scan (≥10k draws / re-ingest); new hypotheses; diagnostics dashboard | Explicit-auth-only |
+
+### 6. Today Focus Direction
+- **Direction A (recommended):** HOLD; do not expand scope. CTO follow-up may later PR-or-revert the dirty docs.
+- **Direction B (optional):** P235A Lofea read-only feasibility review — analysis artifact only; no clone, no vendored code, no DB/registry/production write.
+- **Not recommended:** starting the diagnostics-layer build today.
+
+### 7. Risks / Blind Spots
+1. [Risk] Predictability illusion — surfacing frequency/rolling stats casually implies the lottery is beatable. Mitigation: historical-only labels, no betting advice.
+2. [Risk] Idle-time scope creep — "research never stops" must not become "build refactors with no consumer".
+3. [Risk] Uncommitted-on-main governance drift — roadmap claims P234 done but it is not merged.
+4. [Risk] Edit|Write hook bypass — governance writes must go through a dev branch, never bypass the main guard.
+5. [Unknown] Lofea code quality / CC-BY-NC license fit — README-level only so far.
+
+### 8. CEO Final Decision
+Partially approve. ADOPT the diagnostics-only safety framing; REJECT the P0.5 urgency and the uncommitted-on-main delivery. Default = HOLD. Any forward step is a single read-only artifact and requires explicit user authorization. CTO follow-up required to fix roadmap priority/namespace and to PR-or-revert the dirty docs. CEO did not edit `roadmap.md` / `CTO-Analysis.md`.
+
+### 9. 10-line CEO Summary
+1. System clean: HEAD==origin/main, DB 94,924, drift PASS, LIFECYCLE_UNRESOLVED=0, no active task.
+2. P232/P233 chain is real and valuable; no deployable candidate anywhere.
+3. CTO P234 analysis is sound in framing but mis-prioritized.
+4. 7/8 "methods" already exist and are already enforced — not P0 work.
+5. Only new work = consolidation + bottleneck report = no current consumer.
+6. Verdict: partially approve; adopt framing, reject P0.5 urgency.
+7. roadmap.md / CTO-Analysis.md are uncommitted on main — left untouched this round per user.
+8. P234 vs P234A namespace clash — Lofea → P235A.
+9. Default today = HOLD; optional read-only Lofea review only if authorized.
+10. No DB/registry/production write; no hook bypass; clean state preserved.
+
+Final Classification: `CEO_DECISION_PARTIALLY_APPROVED`

@@ -1297,3 +1297,20 @@ T4 promotion (2026-05-05)
 - GATE_OPEN 需 e-value K≥100 + BOCD 同位確認 + 乾淨資料稽核 + ≥500 clean OOS draws + 獨立複驗窗口 + Bonferroni 通過 + 人類明確授權 + 研究任務預先登記——當前零條件達成。
 - anomaly detection is NOT prediction；GATE_OPEN 仍不授權生產建議/下注建議/registry mutation。
 - Evidence: outputs/research/p245b_bias_gate_layer_20260605.{md,json}; tests/ 24/24 PASS.
+
+---
+
+## P246 BIG_LOTTO Data-Integrity Audit (2026-06-05)
+
+**L_P246_A — BIG_LOTTO draws table confirmed ~90.5% contaminated (3 families, fully quantified)**
+- Total: 22,238 rows. Canonical plausible: 2,113 (≈2,118 expected; delta −5). Contaminated: 20,125 (90.5%).
+- Family 1 — SIM_HYPHEN: 19,100 rows (85.9%). Hyphen composite IDs (103000009-01…-100). Excluded by P219 NOT LIKE '%-%' filter.
+- Family 2 — DATE_FORMAT_ALIEN: 375 rows (1.7%). YYYYMMDD date-literal IDs (20090727). sum~74.7, max≤24 — NOT 6/49.
+- Family 3 — SMALL_POOL_ALIEN: 650 rows (2.9%). Serial IDs but max(numbers)≤25 (~23.5% of serial rows). Likely 6/38 or older format mislabeled. Primary driver of all P219 structural-break signals.
+- Evidence: analysis/p246_big_lotto_data_integrity_audit.py; outputs/research/p246_…20260605.{md,json}; 23/23 tests PASS.
+
+**L_P246_B — All P219 BIG_LOTTO corrected-significant signals fully explained by contamination**
+- M4 CUSUM (11× null): draw-sum jumps between ~75 (DATE_FORMAT) / ~100 (SMALL_POOL) and ~148 (real 6/49).
+- M3 drift (4×) / M2 gap (4×): numbers 26–49 absent during alien eras → L1 drift and gap overdispersion.
+- M1 markov / M6 entropy: restricted pool in alien blocks inflates consecutive overlap, lowers entropy.
+- Anomaly is NOT predictor. GATE_RED_DATA_CONTAMINATION remains until Type D quarantine authorized and re-audit passes.

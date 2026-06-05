@@ -150,3 +150,8 @@ _（目前無進行中任務）_
 - 結果：P245B 確立 sequential e-value + BOCD + 多重校正 + 資料完整性 閘門設計。P245A 缺席確認，不依賴。當前閘門：DAILY_539/POWER/3_STAR/4_STAR = YELLOW；BIG_LOTTO = GATE_RED_DATA_CONTAMINATION。GATE_OPEN 8 條件無一達成。24/24 tests PASS。
 - 影響：偏差研究重啟有清晰、可審計的門檻；anomaly≠prediction 強制語言；BIG_LOTTO 資料清理仍需另開 Type D 授權。
 - 產出：outputs/research/p245b_bias_gate_layer_20260605.{md,json}, tests/test_p245b_bias_gate_layer.py。
+
+### 2026-06-05 — P246 BIG_LOTTO Data-Integrity Audit (GATE_RED confirmed, quarantine plan produced)
+- 結果：22,238 rows = 2,113 canonical + 20,125 contaminated (90.5%). 三個污染家族：SIM_HYPHEN 19,100 / DATE_FORMAT_ALIEN 375 / SMALL_POOL_ALIEN 650（主要 P219 信號來源）。全部 P219 BIG_LOTTO corrected-significant signals 已解釋為資料污染。23/23 tests PASS。
+- 影響：GATE_RED_DATA_CONTAMINATION 維持不變。Type D 授權 + 執行 quarantine + re-audit 方可升門。不授權任何策略/預測/生產推薦。
+- 產出：analysis/p246_…py, outputs/research/p246_…20260605.{md,json}, tests/test_p246_….py。

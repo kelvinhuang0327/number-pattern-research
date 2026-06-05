@@ -11,6 +11,15 @@
 
 _（目前無進行中任務）_
 
+### P246B BIG_LOTTO 分類修正 ✅ 2026-06-05 完成
+- [x] 修正 P246 SIM_HYPHEN 標籤 → ADD_ON_PRIZE_EXCLUDED
+- [x] 確認 19,100 筆連字號列為加碼/特別獎記錄，非偽造資料
+- [x] 產出 P246B 分類修正文物（JSON+MD）
+- [x] 產出 P247 修正版排除計畫文物（JSON+MD，計畫 only，無 DB 寫入）
+- [x] 測試 47/47 PASS
+- [x] 更新 memory/lessons.md（L107）
+- 完成標準：修正文物在 main 上；BIG_LOTTO 研究 gate 維持封鎖；不含 DB 寫入
+
 ### P219 外部10法診斷掃描 ✅ 2026-06-05 完成（predictive-NULL）
 - [x] 背景：用戶（cost-no-object）授權跑全部10類外部方法，目標提高預測成功率
 - [x] Pre-register（P221F gate）：`outputs/research/p219_..._plan_20260605.md`

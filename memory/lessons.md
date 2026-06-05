@@ -5,6 +5,27 @@
 
 ---
 
+## L107 — P246B 資料污染 vs 研究族群不匹配 (2026-06-05)
+
+**來源：** P246B 用戶/領域指正
+
+**結論：** P246 將 19,100 筆連字號 BIG_LOTTO 列（如 103000009-01）標記為 SIM_HYPHEN（模擬/合成資料），此標記錯誤。
+用戶/領域指正：連字號 ID 為加碼或特別獎記錄，屬於真實彩券相關資料，非偽造資料。
+
+**修正：**
+- 舊標籤 `SIM_HYPHEN` → 正確標籤 `ADD_ON_PRIZE_EXCLUDED`
+- 排除理由：**族群不匹配**（加碼/特別獎記錄類型與正規 6/49 主開獎不可比較），非資料偽造
+- 這些記錄須**保留**（不得刪除），可移至隔離/審計表但須保留全部欄位與值
+- 描述這些記錄為 fake / simulated / synthetic / invalid / contaminated 一律視為錯誤
+
+**適用原則：**
+- 資料污染（data contamination）= 數值與遊戲規則不符或來源錯誤（適用 DATE_FORMAT_ALIEN / SMALL_POOL_ALIEN）
+- 族群不匹配（population mismatch）= 資料本身有效但與目標研究族群不同類型（適用 ADD_ON_PRIZE_EXCLUDED）
+- 隔離計畫語言應用 segregation/exclusion/separation，勿用 quarantine contaminated rows
+- ADD_ON_PRIZE_EXCLUDED 保留政策必須明示；Type D 才可執行 DB 操作
+
+---
+
 ## 115000027 期驗證結論 (2026-02-26)
 
 **L_027_A — Sum公式修正：統一目標 [mu-0.5σ, mu+0.5σ] 優於條件式目標**

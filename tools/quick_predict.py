@@ -166,7 +166,12 @@ def load_history(lottery_type, dry_run=False):
         return load_history_readonly(lottery_type)
 
     db = DatabaseManager(db_path=DB_PATH)
-    history = db.get_all_draws(lottery_type=lottery_type)
+    # Use canonical helper for research/strategy callers.
+    # BIG_LOTTO: excludes ADD_ON_PRIZE_EXCLUDED (add-on/special prize records),
+    # DATE_FORMAT_ALIEN, and SMALL_POOL_ALIEN — these are out-of-scope for
+    # canonical 6/49 main-draw research.  Raw records remain in the DB and
+    # are accessible via get_all_draws() for display/history purposes.
+    history = db.get_canonical_draws(lottery_type=lottery_type)
     return sorted(history, key=lambda x: (x['date'], x['draw']))
 
 

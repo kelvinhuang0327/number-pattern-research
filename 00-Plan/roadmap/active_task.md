@@ -1,12 +1,12 @@
 # Active Task — Today (2026-06-05)
 
 > **STATUS: `WAITING_FOR_USER_AUTHORIZATION`**
-> P242 read-only statistical diagnostics schema implementation complete (Type C, same-PR closeout).
-> Module: `lottery_api/diagnostics/statistical_diagnostics_schema.py`. 42/42 targeted tests PASS.
-> Additive module only. No DB access. No production/recommendation/registry/strategy change. No separate closeout PR needed.
+> P243A diagnostic report fixture pack complete (Type C, same-PR closeout).
+> 4 evidence-backed historical fixtures validated through P242 schema. 55/55 targeted tests PASS.
+> No DB write. No production/recommendation/registry/strategy change. No separate closeout PR needed.
 > P238B NIST audit remains `RANDOMNESS_AUDIT_YELLOW_OBSERVATION_ONLY` (observation-only).
 > P211 remains `HELD_BY_USER`.
-> Final Classification: `P242_READ_ONLY_STATISTICAL_DIAGNOSTICS_SCHEMA_IMPLEMENTATION_COMPLETE`
+> Final Classification: `P243A_DIAGNOSTIC_REPORT_FIXTURE_PACK_COMPLETE`
 
 ---
 
@@ -29,6 +29,7 @@
 | P241A Type-A next direction decision support | `P241A_TYPE_A_NEXT_SUBSTANTIVE_DIRECTION_DECISION_SUPPORT_COMPLETE` — Type A; response only; no files changed; recommended P241B |
 | P241B P234 statistical diagnostics inventory | `P241B_P234_STATISTICAL_DIAGNOSTICS_INVENTORY_COMPLETE` — Type B same-PR closeout; 33/33 tests PASS; design-doc only; no code implementation |
 | P242 Read-only statistical diagnostics schema implementation | `P242_READ_ONLY_STATISTICAL_DIAGNOSTICS_SCHEMA_IMPLEMENTATION_COMPLETE` — Type C same-PR closeout; 42/42 tests PASS; additive module only |
+| P243A Diagnostic report fixture pack | `P243A_DIAGNOSTIC_REPORT_FIXTURE_PACK_COMPLETE` — Type C same-PR closeout; 55/55 tests PASS; 4 evidence-backed historical fixtures |
 
 P240B artifacts on main:
 - `outputs/research/p240b_governance_simplification_design_proposal_20260604.md`
@@ -94,4 +95,4 @@ All safety boundaries unchanged. No DB write, no registry mutation, no productio
 6. 是否允許進入下一輪
 7. Final Classification
 
-Final Classification (this file): `P242_READ_ONLY_STATISTICAL_DIAGNOSTICS_SCHEMA_IMPLEMENTATION_COMPLETE`
+Final Classification (this file): `P243A_DIAGNOSTIC_REPORT_FIXTURE_PACK_COMPLETE`

@@ -5,6 +5,23 @@
 
 ---
 
+## L112 — P246G 直接 SQL 路徑的 canonical 化方式 (2026-06-05)
+
+**來源：** P246G 剩餘研究呼叫端處理
+
+**結論：** `drift_detector._load_draws()` 使用直接 SQLite（非 DatabaseManager），無法直接呼叫 `get_canonical_draws()`。正確做法：在 SQL 中加入 BIG_LOTTO 分支，附加 `AND draw NOT LIKE '%-%' AND NOT (LENGTH(draw)=8 AND draw LIKE '20%')`，加上 Python 後置過濾 `max(parsed) > 25`。
+
+**5 個確認研究呼叫端已完成 canonical 化（P246E–G）：**
+1. `tools/quick_predict.py:169`（P246E）
+2. `tools/rsm_bootstrap.py:118`（P246F）
+3. `lottery_api/engine/core_satellite.py:373`（P246F）
+4. `lottery_api/engine/drift_detector._load_draws()`（P246G）
+5. `lottery_api/backtest_framework.BacktestEngine.backtest():69`（P246G）
+
+**仍延後：** `advanced_learning.py` scheduler.get_data() 路徑需獨立追蹤；60+ 歷史腳本非即時生產路徑
+
+---
+
 ## L111 — P246F 研究呼叫端 canonical 化掃描要點 (2026-06-05)
 
 **來源：** P246F 研究呼叫端掃描

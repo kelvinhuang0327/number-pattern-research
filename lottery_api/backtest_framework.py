@@ -65,8 +65,8 @@ class BacktestFramework:
         """
         logger.info(f"🔍 開始回測方法: {method_name} (彩票: {lottery_type})")
 
-        # 獲取所有歷史數據
-        all_history = self.db.get_all_draws(lottery_type)
+        # 獲取正規主開獎歷史（canonical helper 排除 BIG_LOTTO 加碼/特別獎記錄）
+        all_history = self.db.get_canonical_draws(lottery_type)
 
         if len(all_history) < min_history + test_size:
             logger.warning(

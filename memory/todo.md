@@ -11,6 +11,16 @@
 
 _（目前無進行中任務）_
 
+### P246G 剩餘 BIG_LOTTO 研究呼叫端 canonical 化 ✅ 2026-06-05 完成
+- [x] 確認 PR #321 (P246F) CI PASS，合併至 main；199/199 通過
+- [x] 更新 drift_detector._load_draws()：BIG_LOTTO 直接 SQL + Python 後置過濾（P246G）
+- [x] 更新 backtest_framework.BacktestEngine.backtest()：get_canonical_draws()（P246G）
+- [x] 延後 advanced_learning.py（scheduler.get_data() 路徑不透明）
+- [x] 延後 60+ 歷史腳本（非即時生產路徑）
+- [x] 測試 229/229 PASS；產出 P246G 文物（JSON+MD）
+- [x] 更新 memory/lessons.md（L112）
+- 完成標準：5 個確認研究呼叫端已 canonical 化（P246E+F+G）；無 DB 寫入
+
 ### P246F BIG_LOTTO 研究呼叫端 canonical 化掃描 ✅ 2026-06-05 完成
 - [x] 確認 PR #320 (P246E) CI PASS，合併至 main
 - [x] 掃描 get_all_draws/get_canonical_draws 全呼叫端並分類

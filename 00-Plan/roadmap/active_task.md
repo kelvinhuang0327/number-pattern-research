@@ -1,11 +1,11 @@
 # Active Task — Today (2026-06-05)
 
 > **STATUS: `WAITING_FOR_USER_AUTHORIZATION`**
-> P214B 3_STAR/4_STAR straight-play read-only diagnostic implementation complete (Type C).
-> Classification: `P214B_3STAR_4STAR_STRAIGHT_PLAY_READONLY_DIAGNOSTIC_COMPLETE` — additive script + artifacts; no DB write; no ingestion; no replay generation; no strategy scan; 3_STAR power MARGINAL / 4_STAR exact-match INOPERABLE; per-position TRACTABLE for both; 80/80 tests PASS; production replay rows unchanged at 94,924; draw rows unchanged at 64,361.
-> Recommended next: `HOLD` or authorize P214C straight-play diagnostic scan. Authorization phrase: `Authorize P214C 3_STAR/4_STAR straight-play read-only diagnostic scan (Type C, no DB write, no strategy promotion, Bonferroni-corrected, per-position only for 4_STAR, walk-forward OOS required)`.
+> P214C 3_STAR/4_STAR straight-play Bonferroni-corrected diagnostic scan complete (Type C).
+> Classification: `P214C_3STAR_4STAR_STRAIGHT_PLAY_BONFERRONI_DIAGNOSTIC_SCAN_COMPLETE` — 7 chi-squared tests (family pre-declared); Bonferroni alpha=0.05/7≈0.00714; **0 Bonferroni-significant findings** (NULL result); 1 uncorrected-weak (4_STAR pos_2 p≈0.025, fails Bonferroni → EXPLORATORY_WEAK_SIGNAL_UNCONFIRMED); walk-forward OOS check descriptive-only; no DB write; no replay generation; no strategy scan; 75/75 tests PASS; production replay rows unchanged at 94,924; draw rows unchanged at 64,361.
+> Recommended next: **HOLD** — result is NULL. No Bonferroni-significant digit bias detected in 3_STAR or 4_STAR positional distributions. No straight-play strategy is authorized.
 > P238B NIST audit remains `RANDOMNESS_AUDIT_YELLOW_OBSERVATION_ONLY`.
-> Final Classification: `P214B_3STAR_4STAR_STRAIGHT_PLAY_READONLY_DIAGNOSTIC_COMPLETE`
+> Final Classification: `P214C_3STAR_4STAR_STRAIGHT_PLAY_BONFERRONI_DIAGNOSTIC_SCAN_COMPLETE`
 
 ---
 
@@ -50,7 +50,8 @@
 | P213K missing source-row ingestion feasibility design | `P213K_MISSING_SOURCE_ROW_INGESTION_FEASIBILITY_DESIGN_COMPLETE` — Type B read-only; artifacts `outputs/research/p213k_missing_source_row_ingestion_feasibility_design_20260605.{md,json}`; 13/13 PASS; no DB write; no ingestion; 4,599 source-only rows analyzed; future insertion requires separate Type D gate |
 | P213L controlled missing source-row ingestion | `P213L_3STAR_4STAR_CONTROLLED_MISSING_SOURCE_ROW_INGESTION_COMPLETE` — Type D; 14/14 PASS; backup `backups/p213l_lottery_v2_backup_20260605_20260605_151715.db`; sha256 `1b2abd793a3ea3f2d300337eb2db6d2621b52e1600453bc20141377fa6475485`; rows inserted 4,599; draw rows 59,762→64,361; replay rows unchanged 94,924; source-to-DB match 11,700/11,700; drift guard PASS |
 | P214 3_STAR/4_STAR straight-play feasibility protocol design | `P214_3STAR_4STAR_STRAIGHT_PLAY_FEASIBILITY_PROTOCOL_DESIGN_COMPLETE` — Type B read-only; 38/38 PASS; no DB write; no ingestion; no scan; baselines 3_STAR 1/1000 / 4_STAR 1/10000; 4_STAR exact-match INOPERABLE at N=5,850; per-position analysis tractable; P213L data-ready confirmed; P227C box-play null prior noted; multiple-testing policy and leakage guard defined; recommended HOLD or authorize P214B; draw rows unchanged 64,361; replay rows unchanged 94,924; drift guard PASS |
-| P214B 3_STAR/4_STAR straight-play read-only diagnostic | `P214B_3STAR_4STAR_STRAIGHT_PLAY_READONLY_DIAGNOSTIC_COMPLETE` — Type C additive; 80/80 PASS; script `scripts/p214b_3star_4star_straight_play_readonly_diagnostic.py`; artifacts `outputs/research/p214b_3star_4star_straight_play_readonly_diagnostic_20260605.{md,json,rows.json}`; no DB write; no replay generation; no strategy scan; 3_STAR MARGINAL / 4_STAR INOPERABLE exact-match; per-position TRACTABLE; significance tests run = 0; draw rows unchanged 64,361; replay rows unchanged 94,924; drift guard PASS |
+| P214B 3_STAR/4_STAR straight-play read-only diagnostic | `P214B_3STAR_4STAR_STRAIGHT_PLAY_READONLY_DIAGNOSTIC_COMPLETE` — Type C additive; 80/80 PASS; no DB write; no replay generation; no strategy scan; 3_STAR MARGINAL / 4_STAR INOPERABLE exact-match; per-position TRACTABLE; significance tests = 0; draw rows unchanged 64,361; replay rows unchanged 94,924; drift guard PASS |
+| P214C 3_STAR/4_STAR straight-play Bonferroni diagnostic scan | `P214C_3STAR_4STAR_STRAIGHT_PLAY_BONFERRONI_DIAGNOSTIC_SCAN_COMPLETE` — Type C; 75/75 PASS; 7 tests (family pre-declared); Bonferroni alpha=0.007143; **0 Bonferroni-significant findings**; 1 uncorrected-weak (4_STAR pos_2 p≈0.025 → EXPLORATORY_WEAK_SIGNAL_UNCONFIRMED, fails Bonferroni); walk-forward OOS descriptive only; no DB write; no replay generation; no strategy scan; NULL result; draw rows unchanged 64,361; replay rows unchanged 94,924; drift guard PASS |
 
 P240B artifacts on main:
 - `outputs/research/p240b_governance_simplification_design_proposal_20260604.md`

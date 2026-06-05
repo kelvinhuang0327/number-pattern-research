@@ -1,11 +1,15 @@
 # Active Task — Today (2026-06-05)
 
 > **STATUS: `WAITING_FOR_USER_AUTHORIZATION`**
-> P213L controlled missing source-row ingestion complete (Type D DB write).
-> Classification: `P213L_3STAR_4STAR_CONTROLLED_MISSING_SOURCE_ROW_INGESTION_COMPLETE` — inserted 4,599 source-only 3_STAR/4_STAR rows (3_STAR 1,671; 4_STAR 2,928) after exact dry-run gate, backup, checksum, and backup integrity check; production replay rows unchanged at 94,924; draw rows 59,762 → 64,361; source-to-DB match now 11,700/11,700 with 0 mismatches and 0 missing. 14/14 tests PASS.
-> Recommended next: `HOLD` or separate explicit straight-play feasibility / diagnostic authorization only; P213L does not authorize strategy scan, recommendation change, registry mutation, or betting advice.
+> P214 3_STAR/4_STAR straight-play feasibility and diagnostic protocol design complete (Type B read-only design doc).
+> Classification: `P214_3STAR_4STAR_STRAIGHT_PLAY_FEASIBILITY_PROTOCOL_DESIGN_COMPLETE` — design artifact only; no DB write; no ingestion; no strategy scan; 3_STAR/4_STAR source coverage DATA_READY_NO_SCAN_AUTHORIZED after P213H/P213L; straight-play remains unauthorized until next explicit task; production replay rows unchanged at 94,924; draw rows unchanged at 64,361; 38/38 tests PASS.
+> Recommended next: `HOLD` or authorize P214B straight-play code implementation (Type C, no DB write, no strategy scan, additive only). Authorization phrase: `Authorize P214B 3_STAR/4_STAR straight-play dry-run code implementation (Type C, no DB write, no strategy scan, additive only)`.
 > P238B NIST audit remains `RANDOMNESS_AUDIT_YELLOW_OBSERVATION_ONLY`.
-> Final Classification: `P213L_3STAR_4STAR_CONTROLLED_MISSING_SOURCE_ROW_INGESTION_COMPLETE`
+> Final Classification: `P214_3STAR_4STAR_STRAIGHT_PLAY_FEASIBILITY_PROTOCOL_DESIGN_COMPLETE`
+
+---
+
+> **Previous (P213L): `P213L_3STAR_4STAR_CONTROLLED_MISSING_SOURCE_ROW_INGESTION_COMPLETE`** — inserted 4,599 source-only 3_STAR/4_STAR rows; draw rows 59,762 → 64,361; source-to-DB match 11,700/11,700; replay rows unchanged at 94,924. 14/14 tests PASS.
 
 ---
 
@@ -45,6 +49,7 @@
 | P213H 3_STAR/4_STAR controlled positional backfill | `P213H_3STAR_4STAR_CONTROLLED_POSITIONAL_BACKFILL_COMPLETE` — Type D; 12/12 PASS; backup `backups/p213h_lottery_v2_backup_20260605_20260605_142219.db`; sha256 `214f05870e741164495cd0dbf46158ba1e92835d7a7c072df47a20a0795896c1`; rows updated 7,101; missing 4,599 not inserted; replay rows unchanged 94,924; drift guard PASS |
 | P213K missing source-row ingestion feasibility design | `P213K_MISSING_SOURCE_ROW_INGESTION_FEASIBILITY_DESIGN_COMPLETE` — Type B read-only; artifacts `outputs/research/p213k_missing_source_row_ingestion_feasibility_design_20260605.{md,json}`; 13/13 PASS; no DB write; no ingestion; 4,599 source-only rows analyzed; future insertion requires separate Type D gate |
 | P213L controlled missing source-row ingestion | `P213L_3STAR_4STAR_CONTROLLED_MISSING_SOURCE_ROW_INGESTION_COMPLETE` — Type D; 14/14 PASS; backup `backups/p213l_lottery_v2_backup_20260605_20260605_151715.db`; sha256 `1b2abd793a3ea3f2d300337eb2db6d2621b52e1600453bc20141377fa6475485`; rows inserted 4,599; draw rows 59,762→64,361; replay rows unchanged 94,924; source-to-DB match 11,700/11,700; drift guard PASS |
+| P214 3_STAR/4_STAR straight-play feasibility protocol design | `P214_3STAR_4STAR_STRAIGHT_PLAY_FEASIBILITY_PROTOCOL_DESIGN_COMPLETE` — Type B read-only; 38/38 PASS; no DB write; no ingestion; no scan; baselines 3_STAR 1/1000 / 4_STAR 1/10000; 4_STAR exact-match INOPERABLE at N=5,850; per-position analysis tractable; P213L data-ready confirmed; P227C box-play null prior noted; multiple-testing policy and leakage guard defined; recommended HOLD or authorize P214B; draw rows unchanged 64,361; replay rows unchanged 94,924; drift guard PASS |
 
 P240B artifacts on main:
 - `outputs/research/p240b_governance_simplification_design_proposal_20260604.md`

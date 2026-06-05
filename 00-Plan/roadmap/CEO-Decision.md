@@ -1782,3 +1782,34 @@ No DB write. No strategy authorized. Returns to WAITING_FOR_USER_AUTHORIZATION.
 - **Remain HOLD**: No action.
 
 Final Classification: `P213_NEW_HYPOTHESIS_SCOUTING_PLAN_COMPLETE`
+
+---
+
+# CEO Decision — 2026-06-05 (Later) — P213B 3_STAR/4_STAR Positional Data Recovery Feasibility
+
+## 1. Context
+
+2026-06-05 Asia/Taipei. Final Classification: `P213B_3STAR_4STAR_POSITIONAL_DATA_RECOVERY_FEASIBILITY_COMPLETE`.
+Authorization: `Authorize P213B 3_STAR/4_STAR positional data recovery feasibility design (read-only, no DB write)`
+
+- [Confirmed] Artifacts: `outputs/research/p213b_3star_4star_positional_data_recovery_feasibility_20260605.{md,json}`. 37/37 PASS.
+- [Confirmed] DB: 94,924 rows; integrity ok; drift guard PASS. Type B under P240D.
+
+## 2. P213B Summary
+
+Root cause confirmed: `lottery_api/database.py:463 — json.dumps(sorted(numbers))` and `fetcher:127 — sorted(...)`. Both layers sort numbers before storage. No 3_STAR/4_STAR API endpoint in current fetcher.
+
+Feasibility: `P213B_POSITIONAL_RECOVERY_POSSIBLE_BUT_SOURCE_UNCONFIRMED`. The key unknown is whether the Taiwan Lottery API returns balls in draw order or already sorted.
+
+4-phase recovery plan documented: Phase A (source audit, read-only) → Phase B (schema design) → Phase C (dry-run import) → Phase D (production re-ingestion, Type D authorization required).
+
+## 3. Decision
+
+CEO accepts P213B as completing the positional data feasibility design. No DB write. No schema change. No code changes. Returns to WAITING_FOR_USER_AUTHORIZATION.
+
+## 4. Next Options
+
+- **Phase A source audit**: `"Authorize P213C 3_STAR/4_STAR source audit (read-only API inspection, no DB write)"` — confirms whether source data has positional order.
+- **Remain HOLD**: No action.
+
+Final Classification: `P213B_3STAR_4STAR_POSITIONAL_DATA_RECOVERY_FEASIBILITY_COMPLETE`

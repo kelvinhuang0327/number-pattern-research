@@ -1,0 +1,88 @@
+{
+  "task_id": "P213F",
+  "classification": "P213F_3STAR_4STAR_POSITIONAL_CODE_FIX_COMPLETE",
+  "task_type": "Type C",
+  "source_authorization": "Authorize P213F 3_STAR/4_STAR positional code fix implementation and tests (no production DB write)",
+  "lottery_scope": ["3_STAR", "4_STAR"],
+  "date": "2026-06-05",
+
+  "modified_files": ["lottery_api/database.py"],
+
+  "schema_changes": {
+    "column_added": "numbers_positional TEXT DEFAULT NULL",
+    "table": "draws",
+    "change_type": "additive nullable column",
+    "existing_columns_unchanged": true,
+    "numbers_column_semantics_unchanged": true,
+    "production_db_migration_applied": false,
+    "production_db_migration_note": "Column added to CREATE TABLE definition and try/except migration; production DB will include column on next _init_database() call or via P213H explicit authorization"
+  },
+
+  "behavior_changes": {
+    "numbers_field": "Always sorted JSON array for all lottery types — semantics unchanged",
+    "numbers_positional_field": {
+      "3_STAR": "json.dumps(original draw order)",
+      "4_STAR": "json.dumps(original draw order)",
+      "BIG_LOTTO": "NULL",
+      "POWER_LOTTO": "NULL",
+      "DAILY_539": "NULL",
+      "historical_rows": "NULL until P213H re-ingestion"
+    },
+    "insert_or_ignore_semantics": "Unchanged",
+    "read_paths": "Unchanged — all consumers use numbers field"
+  },
+
+  "tests": {
+    "file": "tests/test_p213f_3star_4star_positional_code_fix.py",
+    "total": 29,
+    "result": "PASS",
+    "db_isolation": "All tests use :memory: or tmp_path; production DB never written",
+    "groups": [
+      {"group": "schema_in_memory_db", "count": 3},
+      {"group": "3_star_permutation_storage", "count": 4},
+      {"group": "4_star_permutation_storage", "count": 3},
+      {"group": "non_permutation_backward_compatibility", "count": 6},
+      {"group": "duplicate_insert_guard", "count": 1},
+      {"group": "read_query_compatibility", "count": 2},
+      {"group": "production_db_isolation", "count": 2},
+      {"group": "source_code_checks", "count": 4},
+      {"group": "artifact_checks", "count": 3}
+    ]
+  },
+
+  "production_db_write": false,
+  "production_db_rows_before": 94924,
+  "production_db_rows_after": 94924,
+  "drift_guard": "REPLAY_LIFECYCLE_DRIFT_GUARD_PASS",
+
+  "no_registry_mutation": true,
+  "no_production_change": true,
+  "no_monitoring_change": true,
+  "no_strategy_authorization": true,
+  "no_betting_advice": true,
+  "same_pr_closeout": true,
+
+  "p238b_interpretation": "RANDOMNESS_AUDIT_YELLOW_OBSERVATION_ONLY — observation only; not a strategy signal; not betting advice; not a production change; unchanged by this task",
+
+  "remaining_limitations": [
+    "4179 3_STAR and 2922 4_STAR historical rows have NULL numbers_positional until re-ingestion",
+    "Raw source CSV/TXT files not in repo — external download required (P213G)",
+    "Production DB migration not yet applied — numbers_positional column not yet in production DB",
+    "Raw source format validation required before any historical data can be trusted (P213G)"
+  ],
+
+  "recommended_next_direction": "P213G_dry_run_source_parser_validation",
+  "exact_authorization_phrase_for_next_direction": "Authorize P213G 3_STAR/4_STAR historical draw re-download and dry-run source parser validation (no DB write to production)",
+
+  "final_state": {
+    "classification": "P213F_3STAR_4STAR_POSITIONAL_CODE_FIX_COMPLETE",
+    "production_db_rows_unchanged": 94924,
+    "drift_guard": "REPLAY_LIFECYCLE_DRIFT_GUARD_PASS",
+    "p213e_remains_complete": true,
+    "p238b_remains_observation_only": true,
+    "star_games_remain_underpowered_no_signal": true,
+    "active_task_status": "WAITING_FOR_USER_AUTHORIZATION",
+    "no_active_worker": true,
+    "separate_closeout_pr_needed": false
+  }
+}

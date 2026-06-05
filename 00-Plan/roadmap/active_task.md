@@ -1,11 +1,11 @@
 # Active Task — Today (2026-06-05)
 
 > **STATUS: `WAITING_FOR_USER_AUTHORIZATION`**
-> P213K missing source-row ingestion feasibility design complete (Type B read-only).
-> Classification: `P213K_MISSING_SOURCE_ROW_INGESTION_FEASIBILITY_DESIGN_COMPLETE` — no DB write; no ingestion; 4,599 source-only 3_STAR/4_STAR rows analyzed (3_STAR 1,671; 4_STAR 2,928); future insertion feasible only under separate Type D gate with backup/rollback; production replay rows unchanged at 94,924. 13/13 tests PASS.
-> Recommended next: `HOLD` or future explicit Type D ingestion gate authorization only.
+> P213L controlled missing source-row ingestion complete (Type D DB write).
+> Classification: `P213L_3STAR_4STAR_CONTROLLED_MISSING_SOURCE_ROW_INGESTION_COMPLETE` — inserted 4,599 source-only 3_STAR/4_STAR rows (3_STAR 1,671; 4_STAR 2,928) after exact dry-run gate, backup, checksum, and backup integrity check; production replay rows unchanged at 94,924; draw rows 59,762 → 64,361; source-to-DB match now 11,700/11,700 with 0 mismatches and 0 missing. 14/14 tests PASS.
+> Recommended next: `HOLD` or separate explicit straight-play feasibility / diagnostic authorization only; P213L does not authorize strategy scan, recommendation change, registry mutation, or betting advice.
 > P238B NIST audit remains `RANDOMNESS_AUDIT_YELLOW_OBSERVATION_ONLY`.
-> Final Classification: `P213K_MISSING_SOURCE_ROW_INGESTION_FEASIBILITY_DESIGN_COMPLETE`
+> Final Classification: `P213L_3STAR_4STAR_CONTROLLED_MISSING_SOURCE_ROW_INGESTION_COMPLETE`
 
 ---
 
@@ -44,6 +44,7 @@
 | P213I-C 3_STAR/4_STAR real-source dry-run artifact closeout | `P213I_C_REAL_SOURCE_DRY_RUN_ARTIFACT_CLOSEOUT_COMPLETE` — Type C same-PR; 4/4 PASS; real CSV sources found; 11,700 rows parsed; 7,101 matched; 4,599 missing; 0 mismatches; no production DB write |
 | P213H 3_STAR/4_STAR controlled positional backfill | `P213H_3STAR_4STAR_CONTROLLED_POSITIONAL_BACKFILL_COMPLETE` — Type D; 12/12 PASS; backup `backups/p213h_lottery_v2_backup_20260605_20260605_142219.db`; sha256 `214f05870e741164495cd0dbf46158ba1e92835d7a7c072df47a20a0795896c1`; rows updated 7,101; missing 4,599 not inserted; replay rows unchanged 94,924; drift guard PASS |
 | P213K missing source-row ingestion feasibility design | `P213K_MISSING_SOURCE_ROW_INGESTION_FEASIBILITY_DESIGN_COMPLETE` — Type B read-only; artifacts `outputs/research/p213k_missing_source_row_ingestion_feasibility_design_20260605.{md,json}`; 13/13 PASS; no DB write; no ingestion; 4,599 source-only rows analyzed; future insertion requires separate Type D gate |
+| P213L controlled missing source-row ingestion | `P213L_3STAR_4STAR_CONTROLLED_MISSING_SOURCE_ROW_INGESTION_COMPLETE` — Type D; 14/14 PASS; backup `backups/p213l_lottery_v2_backup_20260605_20260605_151715.db`; sha256 `1b2abd793a3ea3f2d300337eb2db6d2621b52e1600453bc20141377fa6475485`; rows inserted 4,599; draw rows 59,762→64,361; replay rows unchanged 94,924; source-to-DB match 11,700/11,700; drift guard PASS |
 
 P240B artifacts on main:
 - `outputs/research/p240b_governance_simplification_design_proposal_20260604.md`
@@ -58,7 +59,7 @@ P240D adopted rules (SHARED_AGENT_BOOTSTRAP.md §Task Type Classification):
 - Type E: strategy / production / controlled_apply — no simplification
 - No-op HOLD rule: no new task if prior round already clean and no external event
 
-All safety boundaries unchanged. No DB write, no registry mutation, no production/recommendation/monitoring/strategy change.
+All safety boundaries unchanged. P213L was the explicitly authorized Type D draw-side DB insertion only; no registry mutation, production/recommendation/monitoring/strategy change, controlled apply, or betting advice.
 
 ---
 
@@ -96,7 +97,7 @@ All safety boundaries unchanged. No DB write, no registry mutation, no productio
 - **DAILY_539** survivor — `REJECTED_BY_BACKWARD_OOS / HISTORICAL_ARTIFACT_DIRECTION` (P230C).
 - **POWER_LOTTO** first-zone — `P231B_POWERLOTTO_FIRST_ZONE_BACKWARD_OOS_DRYRUN_NULL`. Non-deployable.
 - **POWER_LOTTO second zone** — `DISPLAY_ONLY / NULL_EDGE` (P211A).
-- **3_STAR / 4_STAR** — `UNDERPOWERED_NO_SIGNAL` (box-play); `BLOCKED_REINGEST_REQUIRED` (straight-play).
+- **3_STAR / 4_STAR** — `UNDERPOWERED_NO_SIGNAL` (box-play); straight-play source coverage is now `DATA_READY_NO_SCAN_AUTHORIZED` after P213L, but any feasibility/diagnostic/scan requires separate explicit authorization and P221F-style anti-overfit gates.
 - **Lofea** — design inspiration only; no implementation authorized (CC-BY-NC; no vendoring; must pass P221F + multiple-testing + walk-forward/OOS for any future use).
 - Production / registry / DB write / recommendation / controlled apply / betting advice — all **unauthorized / frozen**.
 
@@ -109,4 +110,4 @@ All safety boundaries unchanged. No DB write, no registry mutation, no productio
 6. 是否允許進入下一輪
 7. Final Classification
 
-Final Classification (this file): `P213K_MISSING_SOURCE_ROW_INGESTION_FEASIBILITY_DESIGN_COMPLETE`
+Final Classification (this file): `P213L_3STAR_4STAR_CONTROLLED_MISSING_SOURCE_ROW_INGESTION_COMPLETE`

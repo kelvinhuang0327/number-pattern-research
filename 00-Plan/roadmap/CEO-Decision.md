@@ -1892,3 +1892,56 @@ CEO accepts P213K as a completed read-only feasibility design. P213K does not au
 Next explicit authorization phrase if continuing: `Authorize P213L controlled missing source-row ingestion gate for 3_STAR/4_STAR (Type D DB write, backup required, insert source-only rows only, no strategy scan, no recommendation change)`
 
 Final Classification: `P213K_MISSING_SOURCE_ROW_INGESTION_FEASIBILITY_DESIGN_COMPLETE`
+
+---
+
+# CEO Decision — 2026-06-05 (Later) — P213L Controlled Missing Source-Row Ingestion
+
+## 1. Context
+
+2026-06-05 Asia/Taipei. Final Classification: `P213L_3STAR_4STAR_CONTROLLED_MISSING_SOURCE_ROW_INGESTION_COMPLETE`.
+
+Authorization: `Authorize P213L controlled missing source-row ingestion for 3_STAR/4_STAR (DB write authorized, backup required, insert missing source rows only, no strategy scan)`
+
+- [Confirmed] Type D DB write executed with exact dry-run gate, backup, checksum, and backup integrity verification.
+- [Confirmed] Backup: `backups/p213l_lottery_v2_backup_20260605_20260605_151715.db`.
+- [Confirmed] SHA256: `1b2abd793a3ea3f2d300337eb2db6d2621b52e1600453bc20141377fa6475485`.
+- [Confirmed] Backup integrity: `ok`.
+- [Confirmed] Tests: `tests/test_p213l_3star_4star_controlled_missing_row_ingestion.py`. 14/14 PASS.
+- [Confirmed] Artifacts: `outputs/research/p213l_3star_4star_controlled_missing_row_ingestion_20260605.{md,json}`, rows JSON, and audit JSON.
+
+## 2. P213L Result
+
+P213L inserted only the 4,599 P213I/P213K source-only rows for 3_STAR and 4_STAR. Existing rows were not updated, deleted, or rewritten.
+
+- Dry-run insert candidates before apply: 4,599.
+- Duplicate source keys: 0.
+- Existing DB key conflicts before apply: 0.
+- Canonical mismatches: 0.
+- Non-star rows: 0.
+- Rows inserted: 4,599.
+- Rows skipped existing before apply: 0.
+- Draw rows before/after: 59,762 / 64,361.
+- 3_STAR draw rows before/after: 4,179 / 5,850.
+- 4_STAR draw rows before/after: 2,922 / 5,850.
+- Production replay rows before/after: 94,924 / 94,924.
+- Source-to-DB match after apply: 11,700 / 11,700.
+- Source-to-DB mismatches after apply: 0.
+- Source-to-DB missing after apply: 0.
+- Non-star rows touched: 0.
+- `numbers` column changed for existing rows: false.
+- Drift guard: `REPLAY_LIFECYCLE_DRIFT_GUARD_PASS`.
+
+## 3. Decision
+
+CEO accepts P213L as a completed controlled missing source-row ingestion. This is draw-side data recovery only. It does not authorize straight-play feasibility, strategy scans, production changes, registry mutation, recommendation logic, monitoring, controlled apply, betting advice, or wagering recommendation.
+
+Rollback instruction: restore the backup over `lottery_api/data/lottery_v2.db` only with separate explicit rollback authorization.
+
+## 4. Corrected Next Scope
+
+- **Remain HOLD**: No action; system returns to `WAITING_FOR_USER_AUTHORIZATION`.
+- **Future 3_STAR/4_STAR straight-play feasibility / diagnostic**: requires separate explicit authorization and P221F-style anti-overfit pre-registration. No DB write is implied by P213L.
+- **Future strategy scan or recommendation work**: requires separate explicit authorization and must not inherit authorization from P213L.
+
+Final Classification: `P213L_3STAR_4STAR_CONTROLLED_MISSING_SOURCE_ROW_INGESTION_COMPLETE`

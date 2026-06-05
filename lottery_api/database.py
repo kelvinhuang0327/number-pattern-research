@@ -75,12 +75,18 @@ class DatabaseManager:
                     numbers TEXT NOT NULL,
                     special INTEGER DEFAULT 0,
                     jackpot_amount REAL DEFAULT NULL,
+                    numbers_positional TEXT DEFAULT NULL,
                     created_at TEXT DEFAULT CURRENT_TIMESTAMP,
                     UNIQUE(draw, lottery_type)
                 )
             """)
             try:
                 cursor.execute("ALTER TABLE draws ADD COLUMN jackpot_amount REAL DEFAULT NULL")
+                conn.commit()
+            except Exception:
+                pass
+            try:
+                cursor.execute("ALTER TABLE draws ADD COLUMN numbers_positional TEXT DEFAULT NULL")
                 conn.commit()
             except Exception:
                 pass
@@ -461,6 +467,11 @@ class DatabaseManager:
                         pass
                         
                 numbers_json = json.dumps(sorted(numbers))
+                lottery_type = draw.get('lotteryType', draw.get('lottery_type', ''))
+                if lottery_type in ('3_STAR', '4_STAR'):
+                    numbers_positional_json = json.dumps(numbers)
+                else:
+                    numbers_positional_json = None
                 jackpot_amount = draw.get('jackpot_amount', draw.get('jackpot'))
                 if jackpot_amount in (None, ""):
                     jackpot_amount = None
@@ -492,12 +503,13 @@ class DatabaseManager:
                 batch_data.append((
                     draw.get('draw'),
                     draw.get('date'),
-                    draw.get('lotteryType'),
+                    lottery_type,
                     numbers_json,
                     draw.get('special', 0),
                     jackpot_amount,
                     sell_amount,
                     total_amount,
+                    numbers_positional_json,
                 ))
             
             # 使用 executemany 批次插入（大幅提升性能）
@@ -509,8 +521,8 @@ class DatabaseManager:
             
             # 這裡使用方法1（優先性能）+ 後續統計
             cursor.executemany("""
-                INSERT OR IGNORE INTO draws (draw, date, lottery_type, numbers, special, jackpot_amount, sell_amount, total_amount)
-                VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+                INSERT OR IGNORE INTO draws (draw, date, lottery_type, numbers, special, jackpot_amount, sell_amount, total_amount, numbers_positional)
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
             """, batch_data)
             
             inserted = cursor.rowcount

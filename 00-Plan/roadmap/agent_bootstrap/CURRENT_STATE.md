@@ -1,7 +1,7 @@
 # Current State — LotteryNew
 
-**Last Reviewed:** 2026-06-05 Asia/Taipei (P213E 3_STAR/4_STAR schema implementation design review — only database.py changes; try/except migration; 17-test plan; non-permutation unaffected; WAITING_FOR_USER_AUTHORIZATION)
-**State Marker:** `P213E_3STAR_4STAR_POSITIONAL_SCHEMA_IMPLEMENTATION_DESIGN_REVIEW_COMPLETE`
+**Last Reviewed:** 2026-06-05 Asia/Taipei (P213F 3_STAR/4_STAR positional code fix — additive numbers_positional column; dual-write for 3_STAR/4_STAR; no production DB write; 29/29 PASS; WAITING_FOR_USER_AUTHORIZATION)
+**State Marker:** `P213F_3STAR_4STAR_POSITIONAL_CODE_FIX_COMPLETE`
 **Purpose:** Project-specific state for future agents. Read this after `SHARED_AGENT_BOOTSTRAP.md` and `TASK_TEMPLATES.md`.
 
 ## Canonical Execution Context
@@ -14,7 +14,7 @@
 | Current HEAD | HEAD must equal `origin/main`; verify with `git rev-parse HEAD` and `git rev-parse origin/main` before any task. Do not hardcode a live hash here — this field becomes stale after every PR merge. Last recorded PR merge: P228 governance closeout (branch `p228-star-replay-governance-closeout`). | [Self-verifying] |
 | `origin/main` | Must equal HEAD; see above. Verify with `git rev-parse origin/main`. | [Self-verifying] |
 | Git dir | `.git` | [Confirmed] |
-| Active worker task | none (P213E 3_STAR/4_STAR schema implementation design review complete) | [Confirmed] |
+| Active worker task | none (P213F 3_STAR/4_STAR positional code fix complete) | [Confirmed] |
 | P211 status | `HELD_BY_USER`; do not auto-resume or re-prompt | [Confirmed] |
 
 ## Forbidden Execution Paths

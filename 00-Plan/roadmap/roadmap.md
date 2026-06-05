@@ -1,6 +1,6 @@
 # Lottery Replay Roadmap
 
-**Last Updated:** 2026-06-05 Asia/Taipei (P213 new hypothesis scouting plan — 4 candidate categories; recommended H_STAR_POSITIONAL_REINGEST; WAITING_FOR_USER_AUTHORIZATION)
+**Last Updated:** 2026-06-05 Asia/Taipei (P213B 3_STAR/4_STAR positional feasibility — root cause confirmed; source unconfirmed; POSSIBLE_BUT_SOURCE_UNCONFIRMED; WAITING_FOR_USER_AUTHORIZATION)
 **Owner:** CTO agent
 **Primary Goal:** Keep LotteryNew replay, research, and product evidence truthful, reproducible, and governed. The current maturity bottleneck has shifted from migration rehearsal to short/mid-window strategy protocol design, anti-overfit validation, canonical repo dispatch safety, and honest product disclosure.
 **Repo Policy:** Use `/Users/kelvin/Kelvin-WorkSpace/LotteryNew` only. Do not create a new repo. Production DB, registry, and data writes require explicit governed authorization. CTO roadmap updates are limited to this file and `00-Plan/roadmap/CTO-Analysis.md`. CTO must not write `CEO-Decision.md`, `active_task.md`, `production/*`, `registry/*`, `data/*`, or any new repo.
@@ -78,7 +78,8 @@ This section is the current source of truth. The 2026-06-01 sections and P186-P1
 | **P211R Short/mid-window diagnostic** | **[Complete]** `P211R_SHORT_MID_WINDOW_DIAGNOSTIC_COMPLETE` | `scripts/p211r_short_mid_window_diagnostic.py`; `tests/test_p211r_short_mid_window_diagnostic.py`; `outputs/research/p211r_short_mid_window_diagnostic_20260605.{md,json}`; governance (same-PR) | Type C. 34/34 PASS. P211 restarted. IS-window candidates confirmed historical artifacts. |
 | **P211S Post-P211R decision support** | **[Complete]** `P211S_POST_P211R_DECISION_SUPPORT_COMPLETE` | Response only (Type A) | Type A. No files. Recommended P212 gap check. |
 | **P212 POWER_LOTTO backward-OOS gap check** | **[Complete]** `P212_POWER_LOTTO_BACKWARD_OOS_GAP_CHECK_COMPLETE` | `scripts/p212_power_lotto_backward_oos_gap_check.py`; artifacts; governance (same-PR) | Type C. 31/31 PASS. Historical artifact. |
-| **P213 New hypothesis scouting plan** | **[Complete]** `P213_NEW_HYPOTHESIS_SCOUTING_PLAN_COMPLETE` | `tests/test_p213_new_hypothesis_scouting_plan.py`; `outputs/research/p213_new_hypothesis_scouting_plan_20260605.{md,json}`; governance docs (same-PR closeout) | Type B. 36/36 PASS. Surveys all closed lines; 4 hypothesis categories (H_STAR_POSITIONAL_REINGEST, H_DAILY539_FUTURE_OOS_GATE, H_REGIME_SEGMENTATION, H_NIST_CONFIRMATION_DESIGN); recommended: H_STAR_POSITIONAL_REINGEST. Same-PR closeout. |
+| **P213 New hypothesis scouting plan** | **[Complete]** `P213_NEW_HYPOTHESIS_SCOUTING_PLAN_COMPLETE` | `tests/test_p213_new_hypothesis_scouting_plan.py`; `outputs/research/p213_new_hypothesis_scouting_plan_20260605.{md,json}`; governance (same-PR) | Type B. 36/36 PASS. Recommended H_STAR_POSITIONAL_REINGEST. |
+| **P213B 3_STAR/4_STAR positional feasibility** | **[Complete]** `P213B_3STAR_4STAR_POSITIONAL_DATA_RECOVERY_FEASIBILITY_COMPLETE` | `tests/test_p213b_3star_4star_positional_data_recovery_feasibility.py`; `outputs/research/p213b_3star_4star_positional_data_recovery_feasibility_20260605.{md,json}`; governance (same-PR) | Type B. 37/37 PASS. Root cause: `database.py:463` sorts numbers. Feasibility: POSSIBLE_BUT_SOURCE_UNCONFIRMED. 4-phase recovery plan. Next: Phase A source audit. Same-PR closeout. |
 
 ### 0.2 Current System Baseline
 
@@ -208,7 +209,7 @@ Upgrade / downgrade decisions:
 - **Required gates (if/when authorized):** pre-registered universe/windows/baselines, explicit family size, Bonferroni/BH-FDR where applicable, walk-forward or out-of-sample validation for any validation use, unit labels (row/draw/bet-index/strategy), NULL-is-success reporting.
 - **Priority:** P2 design-only — all subcomponents. Build only after explicit user authorization. Authorized on-request options: OPT-B P235A Lofea read-only feasibility review, OPT-C P234 statistical-methods diagnostics inventory (design-doc only).
 
-### 0.7 Current State Summary (updated by P213 new hypothesis scouting plan, 2026-06-05)
+### 0.7 Current State Summary (updated by P213B positional data recovery feasibility, 2026-06-05)
 
 **Research chains P211A–P231B (all lotteries), P226–P227C (3_STAR/4_STAR), P232A (all-catalog scoreboard), and P233A/B (registry hygiene, LIFECYCLE_UNRESOLVED 20→0) are complete.**
 
@@ -239,7 +240,8 @@ Upgrade / downgrade decisions:
 - P211R Short/mid-window diagnostic: **`P211R_SHORT_MID_WINDOW_DIAGNOSTIC_COMPLETE`**. 9 IS-window candidates all confirmed historical artifacts.
 - P211S: Type A decision support. Recommended P212 gap check.
 - P212 POWER_LOTTO backward-OOS gap check: **`P212_POWER_LOTTO_BACKWARD_OOS_GAP_CHECK_HISTORICAL_ARTIFACT`**. All P211R IS-window candidates confirmed historical artifacts.
-- P213 New hypothesis scouting plan: **`P213_NEW_HYPOTHESIS_SCOUTING_PLAN_COMPLETE`**. Type B same-PR. 36/36 PASS. All closed research lines surveyed; 4 hypothesis categories defined; recommended next direction: **H_STAR_POSITIONAL_REINGEST** (3_STAR/4_STAR straight-play feasibility — the only unanalyzed signal space). Authorization: `"Authorize P213B 3_STAR/4_STAR positional data recovery feasibility design (read-only, no DB write)"`.
+- P213 New hypothesis scouting plan: **`P213_NEW_HYPOTHESIS_SCOUTING_PLAN_COMPLETE`**. Type B same-PR. 36/36 PASS. Recommended H_STAR_POSITIONAL_REINGEST.
+- P213B 3_STAR/4_STAR positional data recovery feasibility: **`P213B_3STAR_4STAR_POSITIONAL_DATA_RECOVERY_FEASIBILITY_COMPLETE`** (feasibility: `P213B_POSITIONAL_RECOVERY_POSSIBLE_BUT_SOURCE_UNCONFIRMED`). Type B same-PR. 37/37 PASS. Root cause confirmed: `database.py:463 json.dumps(sorted(numbers))` and fetcher `sorted(...)`. No 3_STAR/4_STAR API endpoint in current fetcher. Source positional order unconfirmed. 4-phase recovery plan documented. Next step: Phase A source audit (`"Authorize P213C 3_STAR/4_STAR source audit (read-only API inspection, no DB write)"`). No code changes. No DB write.
 
 **No active deployable candidate in any lottery.**
 
@@ -258,6 +260,7 @@ Upgrade / downgrade decisions:
 Final current roadmap marker:
 
 ```text
+P213B_3STAR_4STAR_POSITIONAL_DATA_RECOVERY_FEASIBILITY_COMPLETE
 P213_NEW_HYPOTHESIS_SCOUTING_PLAN_COMPLETE
 P212_POWER_LOTTO_BACKWARD_OOS_GAP_CHECK_COMPLETE
 P211R_SHORT_MID_WINDOW_DIAGNOSTIC_COMPLETE

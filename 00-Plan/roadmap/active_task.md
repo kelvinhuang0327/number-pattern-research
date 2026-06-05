@@ -1,12 +1,12 @@
 # Active Task — Today (2026-06-05)
 
 > **STATUS: `WAITING_FOR_USER_AUTHORIZATION`**
-> P213 new hypothesis scouting plan complete (Type B, same-PR closeout).
-> Survey of all closed research lines; 4 candidate hypothesis categories; recommended direction: H_STAR_POSITIONAL_REINGEST.
-> Authorization for recommended next step: `"Authorize P213B 3_STAR/4_STAR positional data recovery feasibility design (read-only, no DB write)"`
-> 36/36 targeted tests PASS. No code changes. No DB write. No strategy promotion.
+> P213B 3_STAR/4_STAR positional data recovery feasibility complete (Type B, same-PR closeout).
+> Root cause confirmed: `database.py:463 json.dumps(sorted(numbers))` and `fetcher:127 sorted(...)`. No 3_STAR/4_STAR API endpoint in current fetcher. Source positional order unknown.
+> Feasibility: `P213B_POSITIONAL_RECOVERY_POSSIBLE_BUT_SOURCE_UNCONFIRMED`. 37/37 tests PASS.
+> Recommended next: `"Authorize P213C 3_STAR/4_STAR source audit (read-only API inspection, no DB write)"`
 > P238B NIST audit remains `RANDOMNESS_AUDIT_YELLOW_OBSERVATION_ONLY`.
-> Final Classification: `P213_NEW_HYPOTHESIS_SCOUTING_PLAN_COMPLETE`
+> Final Classification: `P213B_3STAR_4STAR_POSITIONAL_DATA_RECOVERY_FEASIBILITY_COMPLETE`
 
 ---
 
@@ -35,7 +35,8 @@
 | P211R Short/mid-window diagnostic | `P211R_SHORT_MID_WINDOW_DIAGNOSTIC_COMPLETE` (artifact: P211R_IS_CANDIDATES_PRIOR_OOS_REJECTED_HISTORICAL_ARTIFACT) — Type C same-PR; 34/34 PASS |
 | P211S Post-P211R decision support | `P211S_POST_P211R_DECISION_SUPPORT_COMPLETE` — Type A; no files; recommended P212 gap check |
 | P212 POWER_LOTTO backward-OOS gap check | `P212_POWER_LOTTO_BACKWARD_OOS_GAP_CHECK_COMPLETE` (artifact: P212_POWER_LOTTO_BACKWARD_OOS_GAP_CHECK_HISTORICAL_ARTIFACT) — Type C same-PR; 31/31 PASS; 0 pre-boundary draws; early period below baseline |
-| P213 New hypothesis scouting plan | `P213_NEW_HYPOTHESIS_SCOUTING_PLAN_COMPLETE` — Type B same-PR; 36/36 PASS; 4 candidate categories; recommended: H_STAR_POSITIONAL_REINGEST |
+| P213 New hypothesis scouting plan | `P213_NEW_HYPOTHESIS_SCOUTING_PLAN_COMPLETE` — Type B same-PR; 36/36 PASS; recommended: H_STAR_POSITIONAL_REINGEST |
+| P213B 3_STAR/4_STAR positional feasibility | `P213B_3STAR_4STAR_POSITIONAL_DATA_RECOVERY_FEASIBILITY_COMPLETE` (feasibility: POSSIBLE_BUT_SOURCE_UNCONFIRMED) — Type B same-PR; 37/37 PASS |
 
 P240B artifacts on main:
 - `outputs/research/p240b_governance_simplification_design_proposal_20260604.md`
@@ -101,4 +102,4 @@ All safety boundaries unchanged. No DB write, no registry mutation, no productio
 6. 是否允許進入下一輪
 7. Final Classification
 
-Final Classification (this file): `P213_NEW_HYPOTHESIS_SCOUTING_PLAN_COMPLETE`
+Final Classification (this file): `P213B_3STAR_4STAR_POSITIONAL_DATA_RECOVERY_FEASIBILITY_COMPLETE`

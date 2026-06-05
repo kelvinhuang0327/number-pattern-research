@@ -1,0 +1,158 @@
+{
+  "task_id": "P213B",
+  "classification": "P213B_POSITIONAL_RECOVERY_POSSIBLE_BUT_SOURCE_UNCONFIRMED",
+  "final_task_classification": "P213B_3STAR_4STAR_POSITIONAL_DATA_RECOVERY_FEASIBILITY_COMPLETE",
+  "task_type": "Type B",
+  "task_type_description": "Read-only design doc / artifact under P240D governance simplification rules",
+  "generated_at": "2026-06-05",
+  "source_authorization": "Authorize P213B 3_STAR/4_STAR positional data recovery feasibility design (read-only, no DB write)",
+
+  "lottery_scope": ["3_STAR", "4_STAR"],
+
+  "current_status": {
+    "3_STAR": {
+      "draws_in_draws_table": 4179,
+      "replay_rows": 0,
+      "storage_format": "sorted JSON array",
+      "positional_order_available": false,
+      "box_play_status": "UNDERPOWERED_NO_SIGNAL",
+      "straight_play_status": "BLOCKED_REINGEST_REQUIRED",
+      "box_play_gate": "10000_draws_needed",
+      "straight_play_gate": "positional_reingest_type_d_authorization_required"
+    },
+    "4_STAR": {
+      "draws_in_draws_table": 2922,
+      "replay_rows": 0,
+      "storage_format": "sorted JSON array",
+      "positional_order_available": false,
+      "box_play_status": "UNDERPOWERED_NO_SIGNAL",
+      "straight_play_status": "BLOCKED_REINGEST_REQUIRED",
+      "box_play_gate": "17000_draws_needed",
+      "straight_play_gate": "positional_reingest_type_d_authorization_required"
+    }
+  },
+
+  "root_cause_confirmed": {
+    "location_1": "lottery_api/database.py:463 — json.dumps(sorted(numbers))",
+    "location_2": "lottery_api/fetcher/taiwan_lottery_fetcher.py:127-130 — numbers = sorted(draw_nums[...])",
+    "description": "Both the fetcher and DB layer explicitly sort numbers before storage. Positional order is lost at ingestion time.",
+    "reversibility": "Reversible IF the upstream source provides positional order."
+  },
+
+  "evidence_inventory": {
+    "confirmed": [
+      "lottery_api/database.py:463 — explicit sort at DB write",
+      "lottery_api/fetcher/taiwan_lottery_fetcher.py:127 — explicit sort at fetch",
+      "P226 artifact — 100% sorted storage confirmed for 4179 3_STAR and 2922 4_STAR draws",
+      "taiwan_lottery_fetcher.py SOURCE_CONFIG — no 3_STAR or 4_STAR endpoint"
+    ],
+    "present_uninspected": [
+      "lottery_api/data/ingest_log.jsonl — present but not inspected; may contain original ingestion method",
+      "lottery_api/fetcher/backfill_engine.py — present but not inspected; may sort or not sort"
+    ],
+    "missing": [
+      "3_STAR/4_STAR API endpoint in current fetcher",
+      "Raw positional backup files for 3_STAR/4_STAR draws",
+      "Original ingestion script for 3_STAR/4_STAR data",
+      "Evidence of Taiwan Lottery API positional order for 3_STAR/4_STAR"
+    ]
+  },
+
+  "source_candidates_found": [
+    "draws table in lottery_v2.db (sorted only — not useful for positional recovery)",
+    "ingest_log.jsonl (uninspected — possible clue to original ingestion method)",
+    "backfill_engine.py (uninspected — may have 3_STAR/4_STAR support)"
+  ],
+
+  "source_candidates_missing": [
+    "Taiwan Lottery API 3_STAR/4_STAR endpoint (unknown if exists or returns positional order)",
+    "Historical raw JSON/CSV files with positional draw data",
+    "Original import script that populated existing 3_STAR/4_STAR rows"
+  ],
+
+  "feasibility_classification": "P213B_POSITIONAL_RECOVERY_POSSIBLE_BUT_SOURCE_UNCONFIRMED",
+
+  "future_recovery_plan": {
+    "phase_a": {
+      "name": "Read-Only Source Audit",
+      "type": "Type B",
+      "description": "Inspect backfill_engine.py, ingest_log.jsonl, and confirm Taiwan Lottery API positional order availability.",
+      "authorization_phrase": "Authorize P213C 3_STAR/4_STAR source audit (read-only API inspection, no DB write)"
+    },
+    "phase_b": {
+      "name": "Schema Design",
+      "type": "Type B",
+      "description": "Design numbers_positional column addition to draws table and straight-play replay adapter.",
+      "authorization_phrase": "Authorize P213D 3_STAR/4_STAR positional schema design (read-only design doc, no DB write)"
+    },
+    "phase_c": {
+      "name": "Dry-Run Import",
+      "type": "Type C",
+      "description": "Dry-run fetch without sorting; compare against existing sorted data; produce diff report.",
+      "authorization_phrase": "Authorize P213E 3_STAR/4_STAR positional dry-run import (no DB write to production DB)"
+    },
+    "phase_d": {
+      "name": "Production Re-ingestion",
+      "type": "Type D",
+      "description": "Immutable backup, schema change, backfill positional data, verify row count, drift guard.",
+      "authorization_phrase": "Authorize 3_STAR/4_STAR positional data re-ingestion (DB write authorized, backup confirmed, dry-run passed)"
+    }
+  },
+
+  "required_future_authorizations": [
+    "Phase A: Authorize P213C 3_STAR/4_STAR source audit (read-only API inspection, no DB write)",
+    "Phase B: Authorize P213D 3_STAR/4_STAR positional schema design (read-only design doc, no DB write)",
+    "Phase C: Authorize P213E 3_STAR/4_STAR positional dry-run import (no DB write to production DB)",
+    "Phase D: Authorize 3_STAR/4_STAR positional data re-ingestion (DB write authorized, backup confirmed, dry-run passed)"
+  ],
+
+  "risks": [
+    "Source data may already be sorted (Taiwan Lottery API may return sorted results)",
+    "Digit order ambiguity in API response parsing",
+    "Legacy sorted storage in numbers column must not be changed (add new column instead)",
+    "Duplicate draw IDs during re-ingestion",
+    "Mismatch between raw source and current DB draw IDs",
+    "Accidental DB write if Phase C dry-run becomes Phase D without authorization",
+    "Straight-play analysis would still be underpowered at current draw counts"
+  ],
+
+  "mitigations": [
+    "Phase A source audit confirms before any Phase D commitment",
+    "Add numbers_positional column — preserve existing numbers column",
+    "Phase C diff report catches discrepancies before Phase D",
+    "Explicit separate authorization phrase required for Phase D",
+    "All P221F gates required before any straight-play scan"
+  ],
+
+  "recommended_next_direction": "H_STAR_POSITIONAL_REINGEST_PHASE_A",
+  "exact_authorization_phrase_for_next_direction": "Authorize P213C 3_STAR/4_STAR source audit (read-only API inspection, no DB write)",
+
+  "no_code_changes": true,
+  "no_db_write": true,
+  "no_schema_change": true,
+  "no_ingestion": true,
+  "no_registry_mutation": true,
+  "no_production_change": true,
+  "no_monitoring_change": true,
+  "no_strategy_authorization": true,
+  "no_betting_advice": true,
+  "p238b_interpretation": "RANDOMNESS_AUDIT_YELLOW_OBSERVATION_ONLY",
+
+  "same_pr_closeout": true,
+  "same_pr_closeout_reason": "Type B: all changes read-only; governance changes <=4 files, <=120 lines; CI passes; no merge conflict",
+  "separate_closeout_pr_required": false,
+
+  "targeted_tests": {
+    "test_file": "tests/test_p213b_3star_4star_positional_data_recovery_feasibility.py",
+    "result": "PASS"
+  },
+
+  "final_state": {
+    "active_task_status": "WAITING_FOR_USER_AUTHORIZATION",
+    "p238b_nist_status": "RANDOMNESS_AUDIT_YELLOW_OBSERVATION_ONLY",
+    "db_rows": 94924,
+    "drift_guard": "REPLAY_LIFECYCLE_DRIFT_GUARD_PASS",
+    "deployable_candidate_exists": false,
+    "separate_closeout_pr_needed": false
+  }
+}

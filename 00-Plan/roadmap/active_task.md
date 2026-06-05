@@ -1,11 +1,11 @@
 # Active Task — Today (2026-06-05)
 
 > **STATUS: `WAITING_FOR_USER_AUTHORIZATION`**
-> P213F 3_STAR/4_STAR positional code fix complete (Type C, same-PR closeout). Additive: `numbers_positional TEXT DEFAULT NULL` column added to `database.py`; try/except migration; dual-write for 3_STAR/4_STAR; all other types unchanged.
-> Production DB rows: 94,924 (unchanged). No production DB write. 29/29 tests PASS.
-> Recommended next: `"Authorize P213G 3_STAR/4_STAR historical draw re-download and dry-run source parser validation (no DB write to production)"`
+> P213G 3_STAR/4_STAR dry-run source parser validation complete (Type C, same-PR closeout).
+> Classification: `P213G_SOURCE_FORMAT_VALIDATED_WITH_MOCK_ONLY` — format confirmed from mock tools; `開出順序` field present; no real historical files available in repo; 5/5 fixtures parse correctly. No production DB write. 27/27 tests PASS.
+> Recommended next: `"Authorize P213H 3_STAR/4_STAR controlled production DB migration (DB write authorized, backup confirmed, dry-run passed)"`
 > P238B NIST audit remains `RANDOMNESS_AUDIT_YELLOW_OBSERVATION_ONLY`.
-> Final Classification: `P213F_3STAR_4STAR_POSITIONAL_CODE_FIX_COMPLETE`
+> Final Classification: `P213G_SOURCE_FORMAT_VALIDATED_WITH_MOCK_ONLY`
 
 ---
 
@@ -40,6 +40,7 @@
 | P213D 3_STAR/4_STAR schema/code fix design | `P213D_3STAR_4STAR_POSITIONAL_SCHEMA_CODE_FIX_DESIGN_COMPLETE` — Type B same-PR; 51/51 PASS; recommended Option C (additive `numbers_positional` column); backward compatible; 5-phase future implementation plan |
 | P213E 3_STAR/4_STAR schema impl design review | `P213E_3STAR_4STAR_POSITIONAL_SCHEMA_IMPLEMENTATION_DESIGN_REVIEW_COMPLETE` — Type B same-PR; 60/60 PASS; only database.py changes; try/except migration pattern; 17-test plan; non-permutation unaffected |
 | P213F 3_STAR/4_STAR positional code fix | `P213F_3STAR_4STAR_POSITIONAL_CODE_FIX_COMPLETE` — Type C same-PR; 29/29 PASS; additive `numbers_positional` column; dual-write for 3_STAR/4_STAR; non-permutation NULL; no production DB write |
+| P213G 3_STAR/4_STAR dry-run source parser | `P213G_SOURCE_FORMAT_VALIDATED_WITH_MOCK_ONLY` — Type C same-PR; 27/27 PASS; format validated with mock; `開出順序` confirmed parseable; no real historical files; no production DB write |
 
 P240B artifacts on main:
 - `outputs/research/p240b_governance_simplification_design_proposal_20260604.md`
@@ -105,4 +106,4 @@ All safety boundaries unchanged. No DB write, no registry mutation, no productio
 6. 是否允許進入下一輪
 7. Final Classification
 
-Final Classification (this file): `P213F_3STAR_4STAR_POSITIONAL_CODE_FIX_COMPLETE`
+Final Classification (this file): `P213G_SOURCE_FORMAT_VALIDATED_WITH_MOCK_ONLY`

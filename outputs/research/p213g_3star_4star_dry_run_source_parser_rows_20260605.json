@@ -1,0 +1,80 @@
+{
+  "task_id": "P213G",
+  "generated": "2026-06-05",
+  "source_status": "P213G_SOURCE_FORMAT_VALIDATED_WITH_MOCK_ONLY",
+  "source_provenance": "Mock content from lottery_api/tools/debug_validator.py and debug_comprehensive.py; represents Taiwan Lottery TXT source format; no real historical CSV/TXT files present in repo",
+  "dry_run_only": true,
+  "production_db_write": false,
+  "total_fixtures": 5,
+  "valid_parsed": 5,
+  "invalid_parsed": 0,
+  "db_comparison": {
+    "db_available": true,
+    "matched": 0,
+    "mismatched": 2,
+    "not_in_db": 3,
+    "mismatch_note": "Expected — fixture draw IDs 112000001/112000002 exist in production DB but with different real numbers; fixture numbers are made-up for format validation only"
+  },
+  "parsed_rows": [
+    {
+      "source": "fixture:3star_reversed",
+      "lottery_type": "3_STAR",
+      "draw_id": "112000001",
+      "date": "112/01/01",
+      "positional": [3, 2, 1],
+      "sorted_numbers": [1, 2, 3],
+      "source_has_draw_order": true,
+      "positional_match": true,
+      "sorted_match": true,
+      "errors": []
+    },
+    {
+      "source": "fixture:3star_already_sorted",
+      "lottery_type": "3_STAR",
+      "draw_id": "112000002",
+      "date": "112/01/02",
+      "positional": [0, 5, 9],
+      "sorted_numbers": [0, 5, 9],
+      "source_has_draw_order": true,
+      "positional_match": true,
+      "sorted_match": true,
+      "errors": []
+    },
+    {
+      "source": "fixture:3star_all_different",
+      "lottery_type": "3_STAR",
+      "draw_id": "112000003",
+      "date": "112/01/03",
+      "positional": [7, 1, 4],
+      "sorted_numbers": [1, 4, 7],
+      "source_has_draw_order": true,
+      "positional_match": true,
+      "sorted_match": true,
+      "errors": []
+    },
+    {
+      "source": "fixture:4star_reversed_joined",
+      "lottery_type": "4_STAR",
+      "draw_id": "112000001",
+      "date": "112/01/01",
+      "positional": [4, 3, 2, 1],
+      "sorted_numbers": [1, 2, 3, 4],
+      "source_has_draw_order": true,
+      "positional_match": true,
+      "sorted_match": true,
+      "errors": []
+    },
+    {
+      "source": "fixture:4star_already_sorted",
+      "lottery_type": "4_STAR",
+      "draw_id": "112000002",
+      "date": "112/01/02",
+      "positional": [0, 1, 5, 9],
+      "sorted_numbers": [0, 1, 5, 9],
+      "source_has_draw_order": true,
+      "positional_match": true,
+      "sorted_match": true,
+      "errors": []
+    }
+  ]
+}

@@ -1290,3 +1290,10 @@ T4 promotion (2026-05-05)
 - 唯一通過 Bonferroni/BH 的 test 全在 BIG_LOTTO（M1 overlap, M4 CUSUM 11×null, M2 gap 4×, M3 drift 4×, M6 entropy/compression）+ 1 個弱 DAILY_539:M3_drift（BH-only, Bonferroni-FAIL, 1.2×, 無 M1/M4 佐證 → borderline false positive）。
 - 移除 375 date 列後信號仍在（剩 650 小池列）→ 證明多重污染源。DAILY_539 為 clean+stationary 對照（10 blocks sum~100/max~33 全平）→ 方法不會在乾淨資料上製造假信號。
 - 教訓：M3/M4 類偵測器對 mixed-source / non-stationary 歷史紀錄會「正確地」觸發，但偵測的是資料異質性，對下一期號碼零預測力。掃描出 corrected-significant ≠ 可利用 edge（L76 再確認）。
+
+**L_P245B_A — P245B 確立偏差閘門架構（sequential e-value + BOCD + 多重校正 + 資料完整性）**
+- 依賴 P236A/P237C/P238B/P219；P245A 缺席（不依賴）。
+- 當前閘門狀態：539/POWER/3_STAR/4_STAR = GATE_YELLOW_OBSERVATION_ONLY（P238B），BIG_LOTTO = GATE_RED_DATA_CONTAMINATION（P219）。
+- GATE_OPEN 需 e-value K≥100 + BOCD 同位確認 + 乾淨資料稽核 + ≥500 clean OOS draws + 獨立複驗窗口 + Bonferroni 通過 + 人類明確授權 + 研究任務預先登記——當前零條件達成。
+- anomaly detection is NOT prediction；GATE_OPEN 仍不授權生產建議/下注建議/registry mutation。
+- Evidence: outputs/research/p245b_bias_gate_layer_20260605.{md,json}; tests/ 24/24 PASS.

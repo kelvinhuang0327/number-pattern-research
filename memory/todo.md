@@ -145,3 +145,8 @@ _（目前無進行中任務）_
   - BL 5注 ts3_markov_freq_5bet_w30: **STABLE** (+1.04/+0.04/+2.37%) z=-0.22，100p近中性需持續觀察
   - PL 5注 orthogonal_5bet: **STABLE** (-1.24/+3.09/+3.42%) z=-0.60，30p短暫負Edge屬正常波動
 - 同步更新：BASELINES 支援4/5注、rsm_bootstrap.py 加入三個新策略
+
+### 2026-06-05 — P245B 偏差閘門層設計（corrected, builds on P237C/P238B/P219）
+- 結果：P245B 確立 sequential e-value + BOCD + 多重校正 + 資料完整性 閘門設計。P245A 缺席確認，不依賴。當前閘門：DAILY_539/POWER/3_STAR/4_STAR = YELLOW；BIG_LOTTO = GATE_RED_DATA_CONTAMINATION。GATE_OPEN 8 條件無一達成。24/24 tests PASS。
+- 影響：偏差研究重啟有清晰、可審計的門檻；anomaly≠prediction 強制語言；BIG_LOTTO 資料清理仍需另開 Type D 授權。
+- 產出：outputs/research/p245b_bias_gate_layer_20260605.{md,json}, tests/test_p245b_bias_gate_layer.py。

@@ -1,8 +1,13 @@
-# Active Task — Today (2026-06-04 PM)
+# Active Task — Today (2026-06-05)
 
 > **STATUS: `WAITING_FOR_USER_AUTHORIZATION`**
-> P238D governance closeout complete (PR #289 merged; P238B NIST randomness-audit artifact build recorded; classification = RANDOMNESS_AUDIT_YELLOW_OBSERVATION_ONLY; observation-only, no strategy/production change).
-> Final Classification: `P238D_P238B_ARTIFACT_BUILD_MERGED_GOVERNANCE_CLOSEOUT_COMPLETE`
+> P240C governance closeout complete.
+> P240B governance simplification design proposal recorded (PR #291 merged 2026-06-04T14:29:34Z; 17/17 targeted tests PASS).
+> P240B is a **proposal only** — simplification rules are NOT adopted. Existing governance rules remain active.
+> Adoption of P240B simplification rules requires separate explicit authorization phrase: "Authorize P240C governance simplification rule adoption".
+> P238B NIST audit remains `RANDOMNESS_AUDIT_YELLOW_OBSERVATION_ONLY` (observation-only).
+> P211 remains `HELD_BY_USER`.
+> Final Classification: `P240C_P240B_GOVERNANCE_CLOSEOUT_COMPLETE`
 
 ---
 
@@ -15,7 +20,24 @@
 - P237C NIST randomness-audit tripwire design doc is merged on main via PR #285.
 - P238A NIST randomness-audit artifact-only build plan is merged on main via PR #287. It is a future-build plan only. No executable build, code, scripts, tests, DB write, registry mutation, production/recommendation change, monitoring job, strategy, betting advice, or P211 restart is authorized.
 
-## What was completed this session
+## What was completed this session (P240C addendum — 2026-06-05)
+
+| Task | Result |
+|---|---|
+| P240B Governance Simplification Design Proposal | `P240B_GOVERNANCE_SIMPLIFICATION_DESIGN_PROPOSAL_COMPLETE` (PR #291 merged 2026-06-04T14:29:34Z) |
+| P240C P240B Governance Closeout | `P240C_P240B_GOVERNANCE_CLOSEOUT_COMPLETE` — records P240B; proposal remains proposal-only; no adoption; existing rules active |
+
+P240B artifacts on main:
+- `outputs/research/p240b_governance_simplification_design_proposal_20260604.md`
+- `outputs/research/p240b_governance_simplification_design_proposal_20260604.json`
+- `tests/test_p240b_governance_simplification_design_proposal.py` (17/17 PASS)
+
+P240B is **not adopted**. Governance simplification requires separate explicit authorization.
+No DB write, no registry mutation, no production/recommendation/monitoring/strategy change.
+
+---
+
+## What was completed in prior sessions
 | Task | Result |
 |---|---|
 | P234 CTO statistical methods adoption analysis | `CTO_STATISTICAL_METHODS_ADOPTION_WITH_RISKS` |
@@ -62,4 +84,4 @@
 6. 是否允許進入下一輪
 7. Final Classification
 
-Final Classification (this file): `P238D_P238B_ARTIFACT_BUILD_MERGED_GOVERNANCE_CLOSEOUT_COMPLETE`
+Final Classification (this file): `P240C_P240B_GOVERNANCE_CLOSEOUT_COMPLETE`

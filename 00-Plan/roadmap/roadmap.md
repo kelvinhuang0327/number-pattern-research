@@ -1,6 +1,6 @@
 # Lottery Replay Roadmap
 
-**Last Updated:** 2026-06-04 Asia/Taipei (P238D governance closeout — PR #289 merged; P238B NIST randomness-audit artifact build `P238B_NIST_RANDOMNESS_AUDIT_ARTIFACT_ONLY_BUILD_COMPLETE`; classification `RANDOMNESS_AUDIT_YELLOW_OBSERVATION_ONLY`; YELLOW is observation-only; no deployable edge; WAITING_FOR_USER_AUTHORIZATION)
+**Last Updated:** 2026-06-05 Asia/Taipei (P240C governance closeout — PR #291 merged; P240B governance simplification design proposal recorded; proposal-only, not adopted; existing governance rules remain active; WAITING_FOR_USER_AUTHORIZATION)
 **Owner:** CTO agent
 **Primary Goal:** Keep LotteryNew replay, research, and product evidence truthful, reproducible, and governed. The current maturity bottleneck has shifted from migration rehearsal to short/mid-window strategy protocol design, anti-overfit validation, canonical repo dispatch safety, and honest product disclosure.
 **Repo Policy:** Use `/Users/kelvin/Kelvin-WorkSpace/LotteryNew` only. Do not create a new repo. Production DB, registry, and data writes require explicit governed authorization. CTO roadmap updates are limited to this file and `00-Plan/roadmap/CTO-Analysis.md`. CTO must not write `CEO-Decision.md`, `active_task.md`, `production/*`, `registry/*`, `data/*`, or any new repo.
@@ -66,6 +66,8 @@ This section is the current source of truth. The 2026-06-01 sections and P186-P1
 | **P238C P238A build-plan merge + governance closeout** | **[Complete]** `P238C_P238A_BUILD_PLAN_MERGED_GOVERNANCE_CLOSEOUT_COMPLETE` | governance docs after PR #287 merge | Merge + governance closeout only. Records P238A and returns to `WAITING_FOR_USER_AUTHORIZATION`. Future P238B build remains unauthorized and requires separate explicit user authorization. |
 | **P238B NIST randomness audit artifact build** | **[Complete]** `P238B_NIST_RANDOMNESS_AUDIT_ARTIFACT_ONLY_BUILD_COMPLETE` | `outputs/research/p238b_nist_randomness_audit_artifact_20260604.{json,md}`; `scripts/p238b_nist_randomness_audit_artifact_build.py`; `tests/test_p238b_nist_randomness_audit_artifact_build.py`; PR #289 | Artifact-only build. Classification: `RANDOMNESS_AUDIT_YELLOW_OBSERVATION_ONLY`. YELLOW is observation-only. ORANGE/RED require independent future confirmation. RED authorizes human review only, not strategy or production. All no-claim booleans false. Zero DB write. 6/6 targeted tests PASS. |
 | **P238D P238B artifact build merge + governance closeout** | **[Complete]** `P238D_P238B_ARTIFACT_BUILD_MERGED_GOVERNANCE_CLOSEOUT_COMPLETE` | governance docs after PR #289 merge | Merge + governance closeout only. Records P238B and returns to `WAITING_FOR_USER_AUTHORIZATION`. P211 remains HELD_BY_USER. No new build, no DB/registry/production/recommendation/monitoring change. |
+| **P240B Governance simplification design proposal** | **[Complete]** `P240B_GOVERNANCE_SIMPLIFICATION_DESIGN_PROPOSAL_COMPLETE` | `outputs/research/p240b_governance_simplification_design_proposal_20260604.{md,json}`; `tests/test_p240b_governance_simplification_design_proposal.py`; PR #291, merged 2026-06-04T14:29:34Z at commit 112d6b7 | Design proposal only. 17/17 targeted tests PASS. **Proposal-only — simplification rules are NOT adopted.** Existing governance rules remain active. No DB write, no registry mutation, no production/recommendation/monitoring/strategy change. Adoption requires explicit authorization phrase. |
+| **P240C P240B governance closeout** | **[Complete]** `P240C_P240B_GOVERNANCE_CLOSEOUT_COMPLETE` | governance docs (active_task, CURRENT_STATE, roadmap, CEO-Decision) | Governance closeout only. Records P240B artifacts and PR #291. P240B proposal remains proposal-only; not adopted. Returns to `WAITING_FOR_USER_AUTHORIZATION`. P211 remains HELD_BY_USER. P238B NIST YELLOW remains observation-only. No DB/registry/production/strategy change. |
 
 ### 0.2 Current System Baseline
 
@@ -195,7 +197,7 @@ Upgrade / downgrade decisions:
 - **Required gates (if/when authorized):** pre-registered universe/windows/baselines, explicit family size, Bonferroni/BH-FDR where applicable, walk-forward or out-of-sample validation for any validation use, unit labels (row/draw/bet-index/strategy), NULL-is-success reporting.
 - **Priority:** P2 design-only — all subcomponents. Build only after explicit user authorization. Authorized on-request options: OPT-B P235A Lofea read-only feasibility review, OPT-C P234 statistical-methods diagnostics inventory (design-doc only).
 
-### 0.7 Current State Summary (updated by P238D governance closeout, 2026-06-04)
+### 0.7 Current State Summary (updated by P240C governance closeout, 2026-06-05)
 
 **Research chains P211A–P231B (all lotteries), P226–P227C (3_STAR/4_STAR), P232A (all-catalog scoreboard), and P233A/B (registry hygiene, LIFECYCLE_UNRESOLVED 20→0) are complete.**
 
@@ -214,10 +216,16 @@ Upgrade / downgrade decisions:
 - P238C governance closeout: records P238A on governance docs and returns to `WAITING_FOR_USER_AUTHORIZATION`. Future P238B build requires separate explicit authorization.
 - P238B NIST randomness-audit artifact build: **`P238B_NIST_RANDOMNESS_AUDIT_ARTIFACT_ONLY_BUILD_COMPLETE`**. PR #289 merged. Artifact-only build complete. Classification: `RANDOMNESS_AUDIT_YELLOW_OBSERVATION_ONLY`. YELLOW is observation-only and does not authorize strategy, production, registry, recommendation, monitoring, DB write, or betting advice. ORANGE/RED require independent future confirmation. RED authorizes human review only. All no-claim booleans false. Zero DB write. 6/6 targeted tests PASS.
 - P238D governance closeout: records P238B on governance docs and returns to `WAITING_FOR_USER_AUTHORIZATION`. P211 remains HELD_BY_USER. No new build. NIST audit YELLOW observation-only result stands.
+- P240B governance simplification design proposal: **`P240B_GOVERNANCE_SIMPLIFICATION_DESIGN_PROPOSAL_COMPLETE`**. PR #291 merged 2026-06-04T14:29:34Z. Artifacts: `outputs/research/p240b_governance_simplification_design_proposal_20260604.{json,md}`. 17/17 targeted tests PASS. **Proposal-only — simplification rules are NOT adopted.** Existing governance rules remain active. No DB/registry/production/strategy change.
+- P240C governance closeout: records P240B in governance files. P240B proposal remains proposal-only. Returns to `WAITING_FOR_USER_AUTHORIZATION`. P211 remains HELD_BY_USER. P238B NIST YELLOW remains observation-only.
 
 **No active deployable candidate in any lottery.**
 
+**P240B governance simplification is a proposal only. Not adopted. Existing rules remain active.**
+
 **Next authorized steps (each needs separate explicit authorization):**
+- Adopt P240B governance simplification rules (requires explicit phrase: "Authorize P240C governance simplification rule adoption").
+- Restart P211 short/mid-window diagnostic (HELD_BY_USER — requires explicit authorization).
 - Passive monitoring per P224B (≥300 new DAILY_539 draws before next recheck; preferred 500). Prior shifted toward NULL after P230B1.
 - 3_STAR/4_STAR re-scan: only after ≥10,000 3_STAR draws or positional re-ingestion (straight-play).
 - Explore entirely new strategies / hypotheses: requires explicit authorization, fresh P221F pre-registration.
@@ -229,6 +237,8 @@ Upgrade / downgrade decisions:
 Final current roadmap marker:
 
 ```text
+P240C_P240B_GOVERNANCE_CLOSEOUT_COMPLETE
+P240B_GOVERNANCE_SIMPLIFICATION_DESIGN_PROPOSAL_COMPLETE
 P238D_P238B_ARTIFACT_BUILD_MERGED_GOVERNANCE_CLOSEOUT_COMPLETE
 P238B_NIST_RANDOMNESS_AUDIT_ARTIFACT_ONLY_BUILD_COMPLETE
 P238C_P238A_BUILD_PLAN_MERGED_GOVERNANCE_CLOSEOUT_COMPLETE

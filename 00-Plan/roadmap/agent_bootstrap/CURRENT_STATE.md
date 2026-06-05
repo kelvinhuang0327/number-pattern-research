@@ -1,7 +1,7 @@
 # Current State — LotteryNew
 
-**Last Reviewed:** 2026-06-05 Asia/Taipei (P214C 3_STAR/4_STAR Bonferroni-corrected diagnostic scan — Type C; 7 tests; 0 Bonferroni-significant; NULL result; no DB write; no replay generation; draw rows 64,361; replay rows 94,924; drift PASS; 75/75 tests PASS; WAITING_FOR_USER_AUTHORIZATION)
-**State Marker:** `P214C_3STAR_4STAR_STRAIGHT_PLAY_BONFERRONI_DIAGNOSTIC_SCAN_COMPLETE`
+**Last Reviewed:** 2026-06-05 Asia/Taipei (P214E governance wording cleanup — Type B; P211 hold resolved to HISTORICAL_ARTIFACT; 3_STAR/4_STAR arc wording updated; roadmap marker updated; no DB write; no scan; WAITING_FOR_USER_AUTHORIZATION)
+**State Marker:** `P214E_GOVERNANCE_WORDING_CLEANUP_COMPLETE`
 **Purpose:** Project-specific state for future agents. Read this after `SHARED_AGENT_BOOTSTRAP.md` and `TASK_TEMPLATES.md`.
 
 ## Canonical Execution Context
@@ -14,8 +14,8 @@
 | Current HEAD | HEAD must equal `origin/main`; verify with `git rev-parse HEAD` and `git rev-parse origin/main` before any task. Do not hardcode a live hash here — this field becomes stale after every PR merge. Last recorded PR merge: P228 governance closeout (branch `p228-star-replay-governance-closeout`). | [Self-verifying] |
 | `origin/main` | Must equal HEAD; see above. Verify with `git rev-parse origin/main`. | [Self-verifying] |
 | Git dir | `.git` | [Confirmed] |
-| Active worker task | none (P214C Bonferroni diagnostic scan complete — NULL result) | [Confirmed] |
-| P211 status | `HELD_BY_USER`; do not auto-resume or re-prompt | [Confirmed] |
+| Active worker task | none (P214E governance wording cleanup complete) | [Confirmed] |
+| P211 status | `P211R_COMPLETE_HISTORICAL_ARTIFACT` — P211R ran; 9 IS-window candidates all have prior OOS rejection; no deployable edge; no follow-up authorized without new explicit authorization | [Confirmed] |
 
 ## Forbidden Execution Paths
 
@@ -77,7 +77,7 @@ Read-only baseline commands:
 | P188-P205 migration / PR #249 | COMPLETE + MERGED | DB reconciled to 94,924 rows; DB binary remains local/untracked. |
 | P206-P209 repo archive cleanup | COMPLETE | Stale `Lottery/` and `LotteryNew-clean/` are archived and marked DO_NOT_USE. |
 | P210 short/mid-window protocol | COMPLETE / CEO accepted | Protocol is frozen as reference. |
-| P211 read-only diagnostic | HELD_BY_USER | Do not start unless user explicitly authorizes P211 or a new direction. |
+| P211R short/mid-window diagnostic | COMPLETE — `P211R_SHORT_MID_WINDOW_DIAGNOSTIC_COMPLETE` | 9 IS-window candidates; all have prior OOS rejection; HISTORICAL_ARTIFACT; no deployable edge; no follow-up authorized without new explicit authorization. |
 | P212–P218 governance chain | COMPLETE | See `active_task.md` historical index and `CEO-Decision.md` for details. |
 | P211A POWER_LOTTO second-zone diagnostic | COMPLETE — NULL / display-only confirmed | Hit-rate edge NULL (all Bonferroni-corrected p > 0.04); second-zone remains display-only. |
 | P221F cross-lottery feature-discovery protocol | COMPLETE — frozen | Windows: short 100/125/150, mid 500/750/1000, all-history=reference. Anti-overfit gate active. |
@@ -178,7 +178,7 @@ Read-only baseline commands:
 
 ## Current Blockers / Holds
 
-- [Blocked] P211 is held by user. Do not auto-resume.
+- [Resolved] P211 hold resolved by P211R execution. P211R ran; result HISTORICAL_ARTIFACT (9 IS-window candidates, all prior OOS rejected). No follow-up authorized without new explicit authorization.
 - [Complete / YELLOW] NIST randomness-audit artifact build: P238B complete (PR #289 merged). Classification: `RANDOMNESS_AUDIT_YELLOW_OBSERVATION_ONLY`. YELLOW is observation-only. No escalation or future confirmation task is authorized without separate explicit user authorization. ORANGE/RED require independent future confirmation; RED authorizes human review only, not strategy or production.
 - [Adopted] P240B governance simplification: P240D complete. Task Type A/B/C/D/E + No-op HOLD rule adopted into SHARED_AGENT_BOOTSTRAP.md and TASK_TEMPLATES.md. All safety boundaries unchanged.
 - [Closed] DAILY_539 survivor `midfreq_fourier_2bet` = **REJECTED_BY_BACKWARD_OOS / HISTORICAL_ARTIFACT_DIRECTION** (P230C). P230B1 backward-OOS dry-run (4,265 draws, 2007/05–2021/08): mean 0.6375 < baseline 0.6410; all era/robustness checks fail. In-window edge is a historical artifact. **No deployment. No P230B2 DB backfill.** Production / registry / recommendation logic unchanged.

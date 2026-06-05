@@ -1,11 +1,10 @@
 # Active Task — Today (2026-06-05)
 
 > **STATUS: `WAITING_FOR_USER_AUTHORIZATION`**
-> P214C 3_STAR/4_STAR straight-play Bonferroni-corrected diagnostic scan complete (Type C).
-> Classification: `P214C_3STAR_4STAR_STRAIGHT_PLAY_BONFERRONI_DIAGNOSTIC_SCAN_COMPLETE` — 7 chi-squared tests (family pre-declared); Bonferroni alpha=0.05/7≈0.00714; **0 Bonferroni-significant findings** (NULL result); 1 uncorrected-weak (4_STAR pos_2 p≈0.025, fails Bonferroni → EXPLORATORY_WEAK_SIGNAL_UNCONFIRMED); walk-forward OOS check descriptive-only; no DB write; no replay generation; no strategy scan; 75/75 tests PASS; production replay rows unchanged at 94,924; draw rows unchanged at 64,361.
-> Recommended next: **HOLD** — result is NULL. No Bonferroni-significant digit bias detected in 3_STAR or 4_STAR positional distributions. No straight-play strategy is authorized.
+> P214E governance wording cleanup complete (Type B). P211 hold wording reconciled: P211R ran → HISTORICAL_ARTIFACT; HELD_BY_USER removed from all governance sections. P214C NULL result wording updated in Holds. Stale 3_STAR draw count corrected (4,179→5,850). Roadmap marker updated.
+> Final Classification: `P214E_GOVERNANCE_WORDING_CLEANUP_COMPLETE`
 > P238B NIST audit remains `RANDOMNESS_AUDIT_YELLOW_OBSERVATION_ONLY`.
-> Final Classification: `P214C_3STAR_4STAR_STRAIGHT_PLAY_BONFERRONI_DIAGNOSTIC_SCAN_COMPLETE`
+> Recommended next: **HOLD** — P214C arc is NULL; P211R is HISTORICAL_ARTIFACT. No active research direction.
 
 ---
 
@@ -52,6 +51,8 @@
 | P214 3_STAR/4_STAR straight-play feasibility protocol design | `P214_3STAR_4STAR_STRAIGHT_PLAY_FEASIBILITY_PROTOCOL_DESIGN_COMPLETE` — Type B read-only; 38/38 PASS; no DB write; no ingestion; no scan; baselines 3_STAR 1/1000 / 4_STAR 1/10000; 4_STAR exact-match INOPERABLE at N=5,850; per-position analysis tractable; P213L data-ready confirmed; P227C box-play null prior noted; multiple-testing policy and leakage guard defined; recommended HOLD or authorize P214B; draw rows unchanged 64,361; replay rows unchanged 94,924; drift guard PASS |
 | P214B 3_STAR/4_STAR straight-play read-only diagnostic | `P214B_3STAR_4STAR_STRAIGHT_PLAY_READONLY_DIAGNOSTIC_COMPLETE` — Type C additive; 80/80 PASS; no DB write; no replay generation; no strategy scan; 3_STAR MARGINAL / 4_STAR INOPERABLE exact-match; per-position TRACTABLE; significance tests = 0; draw rows unchanged 64,361; replay rows unchanged 94,924; drift guard PASS |
 | P214C 3_STAR/4_STAR straight-play Bonferroni diagnostic scan | `P214C_3STAR_4STAR_STRAIGHT_PLAY_BONFERRONI_DIAGNOSTIC_SCAN_COMPLETE` — Type C; 75/75 PASS; 7 tests (family pre-declared); Bonferroni alpha=0.007143; **0 Bonferroni-significant findings**; 1 uncorrected-weak (4_STAR pos_2 p≈0.025 → EXPLORATORY_WEAK_SIGNAL_UNCONFIRMED, fails Bonferroni); walk-forward OOS descriptive only; no DB write; no replay generation; no strategy scan; NULL result; draw rows unchanged 64,361; replay rows unchanged 94,924; drift guard PASS |
+| P214D Post-P214C straight-play arc decision support | `P214D_POST_P214C_STRAIGHT_PLAY_RESEARCH_ARC_DECISION_SUPPORT_COMPLETE` — Type A; response only; no files; DB unchanged; recommended HOLD; 0 corrected-significant findings confirmed; uncorrected-weak p≈0.025 must not be promoted; OOS consistency direction does not change NULL conclusion |
+| P214E Governance wording cleanup | `P214E_GOVERNANCE_WORDING_CLEANUP_COMPLETE` — Type B; minimal wording cleanup; P211 hold → P211R_COMPLETE_HISTORICAL_ARTIFACT; 3_STAR draw count corrected; 3_STAR/4_STAR hold entry updated; roadmap marker updated; no DB write; no scan |
 
 P240B artifacts on main:
 - `outputs/research/p240b_governance_simplification_design_proposal_20260604.md`
@@ -91,7 +92,7 @@ All safety boundaries unchanged. P213L was the explicitly authorized Type D draw
 - **OPT-D (NEW, from P236A): NIST-style randomness-audit SSOT + tripwire design-doc (design-only).** Read-only design-doc for a diagnostics-only randomness audit that acts as the null-baseline SSOT and a tripwire — alerts only if draws ever stop being random; **NOT a predictor, NOT a win-rate claim**. No build, no code, no DB. Build requires separate explicit authorization. Ref: `outputs/research/p236a_external_statistical_methods_scouting_20260604.md` §7.1.
 - **NIST randomness-audit build (COMPLETE — YELLOW observation-only):** P238B artifact build is merged via PR #289. Classification: `RANDOMNESS_AUDIT_YELLOW_OBSERVATION_ONLY`. YELLOW is observation-only and does not authorize strategy, production, registry, recommendation, monitoring, DB write, or betting advice. ORANGE/RED would require independent future confirmation. RED authorizes human review only, not strategy or production changes. Artifacts: `outputs/research/p238b_nist_randomness_audit_artifact_20260604.{json,md}`.
 - **Passive monitoring** — wait for ≥300 new DAILY_539 draws (preferred 500); per P224B reopen gate.
-- **3_STAR/4_STAR re-scan** — only after ≥10,000 total 3_STAR draws (have 4,179) or positional re-ingestion.
+- **3_STAR/4_STAR re-scan** — straight-play arc NULL (P214C). Box-play: UNDERPOWERED_NO_SIGNAL (have 5,850 3_STAR draws; power insufficient for exact-match). Any new scan requires fresh explicit authorization with pre-registered hypotheses not derived from observed P214C anomaly.
 - **POWER_LOTTO first-zone future OOS** — only after significant new draws + explicit authorization + P221F gate.
 
 ## Hard guards for any authorized task
@@ -100,11 +101,11 @@ All safety boundaries unchanged. P213L was the explicitly authorized Type D draw
 - STOP if any guard fails or scope would require forbidden actions.
 
 ## Holds / Frozen
-- **P211** short/mid-window diagnostic — `HELD_BY_USER`. Do not auto-resume.
+- **P211** short/mid-window diagnostic — `P211R_COMPLETE_HISTORICAL_ARTIFACT` (P211R ran; 9 IS-window candidates all have prior OOS rejection; no deployable edge; no follow-up authorized). P211 hold is resolved; do not re-run without new explicit authorization.
 - **DAILY_539** survivor — `REJECTED_BY_BACKWARD_OOS / HISTORICAL_ARTIFACT_DIRECTION` (P230C).
 - **POWER_LOTTO** first-zone — `P231B_POWERLOTTO_FIRST_ZONE_BACKWARD_OOS_DRYRUN_NULL`. Non-deployable.
 - **POWER_LOTTO second zone** — `DISPLAY_ONLY / NULL_EDGE` (P211A).
-- **3_STAR / 4_STAR** — `UNDERPOWERED_NO_SIGNAL` (box-play); straight-play source coverage is now `DATA_READY_NO_SCAN_AUTHORIZED` after P213L, but any feasibility/diagnostic/scan requires separate explicit authorization and P221F-style anti-overfit gates.
+- **3_STAR / 4_STAR** — straight-play arc complete (P214/P214B/P214C); result `NULL` (0/7 Bonferroni-significant; 1 uncorrected-weak fails correction). Box-play result remains `UNDERPOWERED_NO_SIGNAL` (P227C). No strategy authorized. HOLD recommended.
 - **Lofea** — design inspiration only; no implementation authorized (CC-BY-NC; no vendoring; must pass P221F + multiple-testing + walk-forward/OOS for any future use).
 - Production / registry / DB write / recommendation / controlled apply / betting advice — all **unauthorized / frozen**.
 

@@ -1,0 +1,162 @@
+{
+  "schema_version": "1.0",
+  "task_id": "P247_PLAN",
+  "date": "2026-06-05",
+  "classification": "P247_BIG_LOTTO_CORRECTED_EXCLUSION_PLAN_ARTIFACT_ONLY",
+  "depends_on": "P246B",
+  "operation_name": "BIG_LOTTO canonical research sample segregation — add-on prize and non-canonical row family exclusion from research dataset",
+  "apply_authorization_required": {
+    "required": true,
+    "type": "Type D explicit human gate",
+    "description": "No DB write, migration, or row movement may be performed without a separate explicit Type D authorization. This plan artifact authorizes design only.",
+    "forbidden_without_authorization": [
+      "Any INSERT, UPDATE, DELETE, or CREATE on lottery_v2.db",
+      "Any migration script execution",
+      "Any row movement or archive operation",
+      "Any view creation that modifies query behavior for production consumers"
+    ]
+  },
+  "preservation_policy": {
+    "ADD_ON_PRIZE_EXCLUDED": {
+      "policy": "PRESERVE — do not delete. These are valid lottery-related records.",
+      "allowed_operations": [
+        "Move to segregation/audit table that preserves all columns and values",
+        "Add metadata column (e.g. row_family, exclusion_reason) to identify family",
+        "Create exclusion view or filter for research queries only"
+      ],
+      "forbidden_operations": [
+        "DELETE FROM draws WHERE draw LIKE '%-%'",
+        "Describe as fake, simulated, synthetic, or invalid in any audit log or table comment",
+        "Permanently discard without backup"
+      ]
+    },
+    "DATE_FORMAT_ALIEN": {
+      "policy": "PRESERVE — cautious handling. Non-canonical concern; may be a different game.",
+      "allowed_operations": [
+        "Move to segregation/audit table",
+        "Tag with row_family=DATE_FORMAT_ALIEN"
+      ],
+      "forbidden_operations": [
+        "Delete without backup",
+        "Claim as definitively fake without domain confirmation"
+      ]
+    },
+    "SMALL_POOL_ALIEN": {
+      "policy": "PRESERVE — cautious handling. Non-canonical concern; likely mislabeled game.",
+      "allowed_operations": [
+        "Move to segregation/audit table",
+        "Tag with row_family=SMALL_POOL_ALIEN"
+      ],
+      "forbidden_operations": [
+        "Delete without backup",
+        "Claim as definitively fake without domain confirmation"
+      ]
+    }
+  },
+  "proposed_db_write_scope": {
+    "note": "These are proposed operations only. None may be executed without Type D explicit human gate authorization.",
+    "phase_1_backup": {
+      "description": "Timestamped backup before any write.",
+      "command_template": "cp lottery_api/data/lottery_v2.db backups/p247_big_lotto_segregation_backup_YYYYMMDD_HHMMSS.db",
+      "sha256_required": true
+    },
+    "phase_2_segregation_table": {
+      "description": "Create draws_big_lotto_excluded table (or equivalent audit/quarantine table). Move non-canonical rows. Preserve all columns and values.",
+      "table_name_preferred": "draws_big_lotto_excluded",
+      "columns_required": [
+        "All original draws table columns",
+        "row_family TEXT (e.g. ADD_ON_PRIZE_EXCLUDED, DATE_FORMAT_ALIEN, SMALL_POOL_ALIEN)",
+        "exclusion_reason TEXT",
+        "excluded_at TEXT (ISO timestamp)"
+      ],
+      "row_families_to_segregate": [
+        "ADD_ON_PRIZE_EXCLUDED",
+        "DATE_FORMAT_ALIEN",
+        "SMALL_POOL_ALIEN"
+      ],
+      "sql_filters": {
+        "ADD_ON_PRIZE_EXCLUDED": "draw LIKE '%-%'",
+        "DATE_FORMAT_ALIEN": "LENGTH(draw)=8 AND draw LIKE '20%' AND draw NOT LIKE '%-%'",
+        "SMALL_POOL_ALIEN": "Requires Python-driven inspection: max(numbers_as_list) <= 25 per row"
+      },
+      "approach_preference": "Additive segregation table preferred over in-place deletion. Research queries exclude non-canonical rows via WHERE clause or research view, not by permanent deletion."
+    },
+    "phase_3_research_exclusion_view": {
+      "description": "Create or update a research-population view that filters to CANONICAL_MAIN_DRAW rows only.",
+      "view_name_preferred": "draws_big_lotto_canonical",
+      "filter_logic": "draw NOT LIKE '%-%' AND LENGTH(draw) < 8 AND max_number > 25",
+      "note": "View is for research queries only; original draws table retains all rows including segregated families."
+    },
+    "phase_4_verification": {
+      "description": "Verify canonical row count and drift guard after segregation.",
+      "expected_canonical_main_draw_count": 2113,
+      "governance_expected": 2118,
+      "delta_tolerance": 10,
+      "expected_add_on_prize_excluded_count": 19100,
+      "expected_date_format_alien_count": 375,
+      "expected_small_pool_alien_count": 650,
+      "drift_guard_check": "replay rows must remain unchanged (baseline 94,924)",
+      "integrity_check": "PRAGMA integrity_check -> ok",
+      "no_side_effects_check": "Counts for POWER_LOTTO, DAILY_539, and all non-BIG_LOTTO types must be unchanged"
+    }
+  },
+  "excluded_from_research_families": [
+    "ADD_ON_PRIZE_EXCLUDED",
+    "DATE_FORMAT_ALIEN",
+    "SMALL_POOL_ALIEN"
+  ],
+  "canonical_main_draw_family": {
+    "label": "CANONICAL_MAIN_DRAW",
+    "old_label": "CANONICAL_PLAUSIBLE",
+    "count": 2113,
+    "governance_expected": 2118
+  },
+  "pre_apply_checks": [
+    "P246B taxonomy correction artifact is on main and tests pass",
+    "DB backup does not already exist for this operation date",
+    "replay rows = 94,924 (read-only check before write)",
+    "PRAGMA integrity_check = ok",
+    "No other DB write is in progress",
+    "Drift guard PASS (read-only check)",
+    "Non-BIG_LOTTO row counts stable",
+    "Phase 0 branch/HEAD/status check passes"
+  ],
+  "backup_requirements": {
+    "required": true,
+    "format": "timestamped .db copy",
+    "location": "backups/p247_big_lotto_segregation_backup_YYYYMMDD_HHMMSS.db",
+    "sha256_required": true,
+    "must_complete_before_any_write": true
+  },
+  "post_apply_reconciliation": {
+    "canonical_main_draw_count_check": "SELECT COUNT(*) FROM draws WHERE lottery_type='BIG_LOTTO' AND draw NOT LIKE '%-%' ...",
+    "excluded_table_count_check": "SELECT row_family, COUNT(*) FROM draws_big_lotto_excluded GROUP BY row_family",
+    "replay_rows_unchanged": "SELECT COUNT(*) FROM strategy_prediction_replays -- must remain 94,924",
+    "non_big_lotto_unchanged": "SELECT lottery_type, COUNT(*) FROM draws WHERE lottery_type != 'BIG_LOTTO' GROUP BY lottery_type",
+    "integrity_check": "PRAGMA integrity_check",
+    "drift_guard": "Run tools/drift_guard.py or equivalent"
+  },
+  "forbidden_actions": [
+    "DB_write_without_Type_D_authorization",
+    "Deleting_ADD_ON_PRIZE_EXCLUDED_rows",
+    "Describing_add_on_rows_as_fake_simulated_synthetic_or_invalid",
+    "registry_mutation",
+    "production_recommendation_change",
+    "strategy_promotion",
+    "betting_advice",
+    "GATE_OPEN_for_BIG_LOTTO_research",
+    "Claiming_exploitable_edge_from_any_row_family",
+    "Modifying_POWER_LOTTO_DAILY_539_or_3STAR_4STAR_rows",
+    "Changing_replay_rows"
+  ],
+  "what_this_plan_does_not_authorize": [
+    "No strategy development or promotion on BIG_LOTTO",
+    "No prediction research or GATE_OPEN",
+    "No production recommendation change",
+    "No registry mutation",
+    "No controlled_apply",
+    "No betting advice",
+    "BIG_LOTTO research gate remains blocked until segregation is executed, verified, and a clean re-audit passes"
+  ],
+  "final_decision": "P247 is a corrected exclusion/segregation plan for BIG_LOTTO canonical research sample separation. It replaces the prior P246 quarantine plan's language of contamination removal with a preservation-first segregation approach. ADD_ON_PRIZE_EXCLUDED rows are to be moved to an audit/segregation table, not deleted. DB apply requires a separate explicit Type D authorization. No action in this artifact changes any DB state, production recommendation, strategy, or research gate."
+}

@@ -1,0 +1,140 @@
+{
+  "schema_version": "1.0",
+  "task_id": "P246B",
+  "date": "2026-06-05",
+  "classification": "P246B_BIG_LOTTO_TAXONOMY_CORRECTION_COMPLETE",
+  "supersedes": {
+    "task": "P246",
+    "scope": "taxonomy_wording_of_SIM_HYPHEN_only",
+    "row_counts_preserved": true,
+    "note": "P246 row counts are preserved unchanged. Only the label and interpretation of the hyphenated-ID family is corrected."
+  },
+  "correction_reason": "P246 labeled 19,100 hyphenated BIG_LOTTO rows as SIM_HYPHEN (simulation-like contamination). User/domain correction: hyphenated IDs such as 103000009-01 are add-on/special prize records, not simulated or fake data. They are valid lottery-related records that are out-of-scope for canonical 6/49 main-draw research due to population mismatch.",
+  "user_domain_correction": {
+    "old_label": "SIM_HYPHEN",
+    "old_description": "Simulation artifacts / synthetic variants per real draw date",
+    "corrected_label": "ADD_ON_PRIZE_EXCLUDED",
+    "corrected_description": "Add-on or special prize records with hyphenated draw IDs (e.g. 103000009-01). These are valid lottery-related records but are outside the canonical BIG_LOTTO 6/49 main-draw research population. They must not be described as fake, simulated, synthetic, or invalid.",
+    "exclusion_reason": "Population mismatch: add-on/special prize record type differs from canonical 6/49 main draws. Excluded from predictive and randomness research due to incomparability, not due to data falseness.",
+    "preservation_policy": "These records must be preserved. They may not be deleted or described as contamination.",
+    "source": "User/domain correction received 2026-06-05"
+  },
+  "corrected_taxonomy": {
+    "ADD_ON_PRIZE_EXCLUDED": {
+      "old_label": "SIM_HYPHEN",
+      "count": 19100,
+      "pct": 85.89,
+      "draw_id_pattern": "draw LIKE '%-%' (e.g. 103000009-01, 100000009-02)",
+      "description": "Add-on or special prize records. Hyphenated draw IDs indicate these are not canonical 6/49 main draws. Valid lottery-related records excluded from main-draw research due to population mismatch.",
+      "is_fake": false,
+      "is_simulated": false,
+      "is_invalid": false,
+      "is_lottery_related": true,
+      "excluded_from_research": true,
+      "exclusion_basis": "Population mismatch — add-on/special prize records are not comparable to canonical 6/49 main draws",
+      "inferred_note": "[Inferred from draw ID pattern and user/domain correction; no authoritative source document confirmed independently]"
+    },
+    "DATE_FORMAT_ALIEN": {
+      "count": 375,
+      "pct": 1.69,
+      "draw_id_pattern": "LENGTH(draw)=8 AND draw LIKE '20%' AND draw NOT LIKE '%-%' (e.g. 20090727)",
+      "description": "8-digit YYYYMMDD IDs. Numbers are not 6/49 pool (sum_mean~74.7, max<=24). Non-canonical row family. Data-integrity concern: numbers inconsistent with 6/49 game rules.",
+      "is_lottery_related": "[Inferred — possibly a different game or import error; not confirmed by domain correction]",
+      "excluded_from_research": true,
+      "exclusion_basis": "Non-canonical draw ID format and numbers inconsistent with 6/49 pool; data-integrity concern remains",
+      "inferred_note": "[Inferred; classification not changed by this correction]"
+    },
+    "SMALL_POOL_ALIEN": {
+      "count": 650,
+      "pct": 2.92,
+      "draw_id_pattern": "Serial IDs (e.g. 96000058) but max(numbers)<=25",
+      "description": "Normal serial IDs but numbers restricted to pool <=25. Possibly a different game (6/38 or earlier 6/42 format) mislabeled as BIG_LOTTO. Non-canonical concern remains.",
+      "is_lottery_related": "[Inferred — possibly a different game mislabeled as BIG_LOTTO]",
+      "excluded_from_research": true,
+      "exclusion_basis": "Numbers incompatible with 6/49 pool; primary driver of P219 structural-break signals",
+      "inferred_note": "[Inferred; classification not changed by this correction]"
+    },
+    "CANONICAL_MAIN_DRAW": {
+      "old_label": "CANONICAL_PLAUSIBLE",
+      "count": 2113,
+      "pct": 9.5,
+      "draw_id_pattern": "Serial IDs (e.g. 96000001) with max(numbers) in 26-49",
+      "description": "Plausible canonical 6/49 main draws. Governance expectation ~2118; delta -5 (within tolerance for ongoing ingestion). These form the intended canonical research population.",
+      "excluded_from_research": false,
+      "inferred_note": "Still referred to as CANONICAL_PLAUSIBLE in P246; renamed here for clarity"
+    }
+  },
+  "row_family_counts": {
+    "ADD_ON_PRIZE_EXCLUDED": 19100,
+    "DATE_FORMAT_ALIEN": 375,
+    "SMALL_POOL_ALIEN": 650,
+    "CANONICAL_MAIN_DRAW": 2113,
+    "TOTAL": 22238
+  },
+  "canonical_research_population": {
+    "count": 2113,
+    "governance_expected": 2118,
+    "delta": -5,
+    "status": "PENDING_SEPARATION — BIG_LOTTO predictive/bias research remains blocked until canonical main-draw dataset is separated from non-canonical row families and verified"
+  },
+  "excluded_but_valid_records": {
+    "ADD_ON_PRIZE_EXCLUDED": {
+      "count": 19100,
+      "valid_lottery_related": true,
+      "exclusion_reason": "Population mismatch — add-on/special prize record type is not comparable to canonical 6/49 main draws",
+      "preservation_required": true
+    }
+  },
+  "noncanonical_concerns": {
+    "DATE_FORMAT_ALIEN": {
+      "count": 375,
+      "concern": "Non-canonical draw ID format (8-digit YYYYMMDD); numbers not consistent with 6/49 game rules. Data-integrity concern remains pending domain clarification.",
+      "action": "Excluded from canonical research population; requires cautious handling"
+    },
+    "SMALL_POOL_ALIEN": {
+      "count": 650,
+      "concern": "Numbers restricted to pool <=25 despite BIG_LOTTO label. Possibly mislabeled game. Primary driver of P219 structural-break false signals.",
+      "action": "Excluded from canonical research population; requires cautious handling"
+    }
+  },
+  "distinction_contamination_vs_population_mismatch": {
+    "data_contamination": "DATE_FORMAT_ALIEN and SMALL_POOL_ALIEN remain data-integrity / non-canonical concerns because their numbers are inconsistent with 6/49 game rules or their IDs suggest import errors.",
+    "research_population_mismatch": "ADD_ON_PRIZE_EXCLUDED (formerly SIM_HYPHEN) rows are valid lottery-related records that happen to be add-on/special prize records. They are excluded because they are a different record type, not because they are false or corrupted.",
+    "summary": "Contamination implies falseness or corruption. Population mismatch implies valid data of the wrong type for a specific research question."
+  },
+  "forbidden_phrases_or_claims": [
+    "ADD_ON_PRIZE_EXCLUDED rows are simulated",
+    "ADD_ON_PRIZE_EXCLUDED rows are fake",
+    "ADD_ON_PRIZE_EXCLUDED rows are synthetic",
+    "ADD_ON_PRIZE_EXCLUDED rows are invalid",
+    "ADD_ON_PRIZE_EXCLUDED rows are contaminated",
+    "hyphenated rows are not real lottery data",
+    "19,100 rows are non-lottery records",
+    "SIM_HYPHEN interpretation is still valid"
+  ],
+  "allowed_actions": [
+    "read_only_investigation",
+    "taxonomy_correction_artifact",
+    "corrected_future_plan_artifact",
+    "memory_and_lesson_update",
+    "tests_for_corrected_taxonomy"
+  ],
+  "forbidden_actions": [
+    "DB_write",
+    "DB_migration_apply",
+    "registry_mutation",
+    "production_recommendation_change",
+    "controlled_apply",
+    "strategy_promotion",
+    "betting_advice",
+    "deleting_ADD_ON_PRIZE_EXCLUDED_rows",
+    "GATE_OPEN_promotion_for_BIG_LOTTO",
+    "claiming_exploitable_edge"
+  ],
+  "big_lotto_research_status": {
+    "gate_state": "GATE_RED_PENDING_CANONICAL_SEPARATION",
+    "reason": "BIG_LOTTO draws table contains 20,125 non-canonical rows (ADD_ON_PRIZE_EXCLUDED + DATE_FORMAT_ALIEN + SMALL_POOL_ALIEN). Even with corrected taxonomy, the canonical main-draw dataset has not been separated and verified. All BIG_LOTTO predictive and bias research remains blocked.",
+    "unblocked_condition": "After Type D segregation/exclusion operation is executed and verified: canonical main-draw count ~2118, excluded rows preserved, drift guard PASS, no side effects on other lottery types."
+  },
+  "final_decision": "P246B supersedes P246 taxonomy wording for the hyphenated-ID row family only. The 19,100 rows formerly labeled SIM_HYPHEN are reclassified as ADD_ON_PRIZE_EXCLUDED — valid lottery-related add-on/special prize records that are excluded from canonical 6/49 main-draw research due to population mismatch, not data falseness. Row counts from P246 are preserved unchanged. DATE_FORMAT_ALIEN and SMALL_POOL_ALIEN remain non-canonical concerns. CANONICAL_MAIN_DRAW count remains 2,113. BIG_LOTTO predictive/bias research remains blocked (GATE_RED_PENDING_CANONICAL_SEPARATION) until a correctly authorized Type D segregation/exclusion operation is executed and verified."
+}

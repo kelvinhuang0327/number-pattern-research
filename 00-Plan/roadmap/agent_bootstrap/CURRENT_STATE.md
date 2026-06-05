@@ -1,7 +1,7 @@
 # Current State — LotteryNew
 
-**Last Reviewed:** 2026-06-05 Asia/Taipei (P241B P234 statistical diagnostics inventory — Type B same-PR closeout; design-doc only; no code implementation; 33/33 tests PASS; WAITING_FOR_USER_AUTHORIZATION)
-**State Marker:** `P241B_P234_STATISTICAL_DIAGNOSTICS_INVENTORY_COMPLETE`
+**Last Reviewed:** 2026-06-05 Asia/Taipei (P242 statistical diagnostics schema implementation — Type C same-PR closeout; additive module only; 42/42 tests PASS; WAITING_FOR_USER_AUTHORIZATION)
+**State Marker:** `P242_READ_ONLY_STATISTICAL_DIAGNOSTICS_SCHEMA_IMPLEMENTATION_COMPLETE`
 **Purpose:** Project-specific state for future agents. Read this after `SHARED_AGENT_BOOTSTRAP.md` and `TASK_TEMPLATES.md`.
 
 ## Canonical Execution Context
@@ -14,7 +14,7 @@
 | Current HEAD | HEAD must equal `origin/main`; verify with `git rev-parse HEAD` and `git rev-parse origin/main` before any task. Do not hardcode a live hash here — this field becomes stale after every PR merge. Last recorded PR merge: P228 governance closeout (branch `p228-star-replay-governance-closeout`). | [Self-verifying] |
 | `origin/main` | Must equal HEAD; see above. Verify with `git rev-parse origin/main`. | [Self-verifying] |
 | Git dir | `.git` | [Confirmed] |
-| Active worker task | none (P241B statistical diagnostics inventory complete) | [Confirmed] |
+| Active worker task | none (P242 statistical diagnostics schema implementation complete) | [Confirmed] |
 | P211 status | `HELD_BY_USER`; do not auto-resume or re-prompt | [Confirmed] |
 
 ## Forbidden Execution Paths
@@ -157,7 +157,9 @@ Read-only baseline commands:
 - [Confirmed] P240C: P240B governance closeout complete. Records P240B artifacts and PR #291 in governance files. P240B proposal remains proposal-only. Existing governance rules remain active. DB unchanged at 94,924 rows. Drift guard PASS. Returned to `WAITING_FOR_USER_AUTHORIZATION`. P211 remains HELD_BY_USER. P238B NIST result remains RANDOMNESS_AUDIT_YELLOW_OBSERVATION_ONLY.
 - [Confirmed] P240D: Governance simplification rule adoption complete. P240B proposal adopted into `SHARED_AGENT_BOOTSTRAP.md` (§Task Type Classification) and `TASK_TEMPLATES.md` (header note). Task Types A/B/C/D/E and No-op HOLD rule are now active. All safety boundaries unchanged. No DB write, no registry mutation, no production/recommendation/monitoring/strategy change. Returned to `WAITING_FOR_USER_AUTHORIZATION`.
 - [Confirmed] P241A: Type A decision support complete. No files modified. Recommended P241B OPT-C statistical diagnostics inventory.
-- [Confirmed] P241B: P234 statistical diagnostics inventory complete. Type B same-PR closeout. Artifacts: `outputs/research/p241b_p234_statistical_diagnostics_inventory_20260605.{md,json}`. 33/33 targeted tests PASS. Read-only design/inventory only. 16 existing diagnostic methods inventoried; 13 gap categories identified; 43-field feature-bottleneck report schema proposed. No code implementation. No DB write. No registry mutation. No production/recommendation/monitoring/strategy change. No separate closeout PR required.
+- [Confirmed] P241A: Type A decision support complete. No files modified.
+- [Confirmed] P241B: P234 statistical diagnostics inventory complete. Type B same-PR closeout. 33/33 PASS. 16 methods inventoried; 13 gaps; 43-field schema. No code implementation. No DB/registry/production change.
+- [Confirmed] P242: Read-only statistical diagnostics schema implementation complete. Type C same-PR closeout. Module: `lottery_api/diagnostics/statistical_diagnostics_schema.py`. 42/42 targeted tests PASS. 43 REQUIRED_SCHEMA_FIELDS, 7 enum classes, 4 helpers, conservative safety defaults, NIST alert semantics. No DB access. No production/recommendation/registry/strategy change. No separate closeout PR required.
 
 ## Current Blockers / Holds
 

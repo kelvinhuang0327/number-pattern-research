@@ -5,6 +5,25 @@
 
 ---
 
+## L108 — P246C database.py 無 canonical filter 傳回混合族群 (2026-06-05)
+
+**來源：** P246C 影響範圍審計
+
+**結論：** `lottery_api/database.py` 的 `get_all_draws()` 與 `get_draws()` 以 `lottery_type IN (...)` 查詢，**不過濾 draw LIKE '%-%'**，傳回全部 22,238 筆 BIG_LOTTO 列（含 19,100 筆 ADD_ON_PRIZE_EXCLUDED）。
+
+**影響：**
+- 任何透過這兩個函數取得 BIG_LOTTO 資料的路徑，均使用混合族群
+- `analysis/p219_*.py` 已正確使用 `draw NOT LIKE '%-%'` 過濾 — 不受影響
+- P238B NIST 審計以 sample_size=22238 建立（含加碼記錄）— 歷史文物標記為 YELLOW
+- 兩個測試硬編碼 `>= 22238`（test_p238b / test_p243a）— 隔離後需更新為 >= 2113
+
+**適用原則：**
+- 任何新 BIG_LOTTO 研究查詢必須加 `draw NOT LIKE '%-%'` filter（加碼記錄族群不匹配）
+- 資料庫 API 路徑（顯示用途）可傳回全部記錄，但須標示記錄類型
+- 測試斷言若依賴 BIG_LOTTO 總列數，需等 P247 Type D 隔離後再更新
+
+---
+
 ## L107 — P246B 資料污染 vs 研究族群不匹配 (2026-06-05)
 
 **來源：** P246B 用戶/領域指正

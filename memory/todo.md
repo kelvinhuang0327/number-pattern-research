@@ -11,6 +11,16 @@
 
 _（目前無進行中任務）_
 
+### P246C BIG_LOTTO 加碼記錄影響範圍審計 ✅ 2026-06-05 完成
+- [x] 確認 PR #317 (P246B) CI PASS，合併至 main
+- [x] 掃描全 repo：database.py get_all_draws/get_draws 無 canonical filter（DIRECTLY_AFFECTED）
+- [x] 確認 P219 已正確過濾（draw NOT LIKE '%-%'）→ NOT_AFFECTED
+- [x] 確認 P238B NIST 文物以 sample_size=22238 建立（含加碼記錄）→ DIRECTLY_AFFECTED
+- [x] 發現 2 個測試硬編碼 22238（P238B test + P243A fixture）→ 隔離後需更新
+- [x] 產出 P246C 文物（JSON+MD）+ 測試 41/41 PASS
+- [x] 更新 memory/todo.md + lessons.md
+- 完成標準：影響範圍已記錄；無 DB 寫入；P247 apply 仍需 Type D 授權
+
 ### P246B BIG_LOTTO 分類修正 ✅ 2026-06-05 完成
 - [x] 修正 P246 SIM_HYPHEN 標籤 → ADD_ON_PRIZE_EXCLUDED
 - [x] 確認 19,100 筆連字號列為加碼/特別獎記錄，非偽造資料

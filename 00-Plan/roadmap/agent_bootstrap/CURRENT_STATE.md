@@ -1,7 +1,7 @@
 # Current State — LotteryNew
 
-**Last Reviewed:** 2026-06-05 Asia/Taipei (P213G dry-run source parser — SOURCE_FORMAT_VALIDATED_WITH_MOCK_ONLY; format confirmed; 開出順序 parseable; no real files; no DB write; WAITING_FOR_USER_AUTHORIZATION)
-**State Marker:** `P213G_SOURCE_FORMAT_VALIDATED_WITH_MOCK_ONLY`
+**Last Reviewed:** 2026-06-05 Asia/Taipei (P213I-C real-source dry-run artifact closeout — P213I_3STAR_4STAR_REAL_SOURCE_DRY_RUN_ARTIFACT_BUILD_COMPLETE; 11,700 rows parsed; 7,101 matched; 4,599 missing; 0 mismatches; no DB write; WAITING_FOR_USER_AUTHORIZATION)
+**State Marker:** `P213I_C_REAL_SOURCE_DRY_RUN_ARTIFACT_CLOSEOUT_COMPLETE`
 **Purpose:** Project-specific state for future agents. Read this after `SHARED_AGENT_BOOTSTRAP.md` and `TASK_TEMPLATES.md`.
 
 ## Canonical Execution Context
@@ -14,7 +14,7 @@
 | Current HEAD | HEAD must equal `origin/main`; verify with `git rev-parse HEAD` and `git rev-parse origin/main` before any task. Do not hardcode a live hash here — this field becomes stale after every PR merge. Last recorded PR merge: P228 governance closeout (branch `p228-star-replay-governance-closeout`). | [Self-verifying] |
 | `origin/main` | Must equal HEAD; see above. Verify with `git rev-parse origin/main`. | [Self-verifying] |
 | Git dir | `.git` | [Confirmed] |
-| Active worker task | none (P213G 3_STAR/4_STAR dry-run source parser validation complete) | [Confirmed] |
+| Active worker task | none (P213I-C real-source dry-run artifact closeout complete) | [Confirmed] |
 | P211 status | `HELD_BY_USER`; do not auto-resume or re-prompt | [Confirmed] |
 
 ## Forbidden Execution Paths

@@ -1,11 +1,11 @@
 # Active Task — Today (2026-06-05)
 
 > **STATUS: `WAITING_FOR_USER_AUTHORIZATION`**
-> P213G 3_STAR/4_STAR dry-run source parser validation complete (Type C, same-PR closeout).
-> Classification: `P213G_SOURCE_FORMAT_VALIDATED_WITH_MOCK_ONLY` — format confirmed from mock tools; `開出順序` field present; no real historical files available in repo; 5/5 fixtures parse correctly. No production DB write. 27/27 tests PASS.
-> Recommended next: `"Authorize P213H 3_STAR/4_STAR controlled production DB migration (DB write authorized, backup confirmed, dry-run passed)"`
+> P213I-C real-source dry-run artifact closeout complete (Type C, same-PR closeout).
+> Classification: `P213I_C_REAL_SOURCE_DRY_RUN_ARTIFACT_CLOSEOUT_COMPLETE` — real CSV sources found under `00-Plan/roadmap/number`; `獎號1..N` encodes positional order; 11,700 rows parsed; 7,101 matched; 4,599 missing; 0 mismatches; no production DB write. 4/4 tests PASS.
+> Recommended next: `HOLD until explicit P213H DB-write authorization is provided`
 > P238B NIST audit remains `RANDOMNESS_AUDIT_YELLOW_OBSERVATION_ONLY`.
-> Final Classification: `P213G_SOURCE_FORMAT_VALIDATED_WITH_MOCK_ONLY`
+> Final Classification: `P213I_C_REAL_SOURCE_DRY_RUN_ARTIFACT_CLOSEOUT_COMPLETE`
 
 ---
 
@@ -41,6 +41,7 @@
 | P213E 3_STAR/4_STAR schema impl design review | `P213E_3STAR_4STAR_POSITIONAL_SCHEMA_IMPLEMENTATION_DESIGN_REVIEW_COMPLETE` — Type B same-PR; 60/60 PASS; only database.py changes; try/except migration pattern; 17-test plan; non-permutation unaffected |
 | P213F 3_STAR/4_STAR positional code fix | `P213F_3STAR_4STAR_POSITIONAL_CODE_FIX_COMPLETE` — Type C same-PR; 29/29 PASS; additive `numbers_positional` column; dual-write for 3_STAR/4_STAR; non-permutation NULL; no production DB write |
 | P213G 3_STAR/4_STAR dry-run source parser | `P213G_SOURCE_FORMAT_VALIDATED_WITH_MOCK_ONLY` — Type C same-PR; 27/27 PASS; format validated with mock; `開出順序` confirmed parseable; no real historical files; no production DB write |
+| P213I-C 3_STAR/4_STAR real-source dry-run artifact closeout | `P213I_C_REAL_SOURCE_DRY_RUN_ARTIFACT_CLOSEOUT_COMPLETE` — Type C same-PR; 4/4 PASS; real CSV sources found; 11,700 rows parsed; 7,101 matched; 4,599 missing; 0 mismatches; no production DB write |
 
 P240B artifacts on main:
 - `outputs/research/p240b_governance_simplification_design_proposal_20260604.md`
@@ -106,4 +107,4 @@ All safety boundaries unchanged. No DB write, no registry mutation, no productio
 6. 是否允許進入下一輪
 7. Final Classification
 
-Final Classification (this file): `P213G_SOURCE_FORMAT_VALIDATED_WITH_MOCK_ONLY`
+Final Classification (this file): `P213I_C_REAL_SOURCE_DRY_RUN_ARTIFACT_CLOSEOUT_COMPLETE`

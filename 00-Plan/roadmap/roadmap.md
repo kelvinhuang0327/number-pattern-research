@@ -23,7 +23,7 @@ This section is the current source of truth. The 2026-06-01 sections and P186-P1
 | P208-P209 repo archive cleanup closure | [Confirmed] Complete | `/Users/kelvin/Kelvin-WorkSpace/_archive/lottery_stale_repos_20260602_162329/README_DO_NOT_USE.md`; root `Lottery*` listing | `Lottery/` and `LotteryNew-clean/` are archived, not deleted; future dispatch must use only canonical `LotteryNew`. |
 | SZC1/SZC2 second-zone containment | [Confirmed] Complete | existing SZC evidence cited in 2026-06-01 roadmap/CEO decision | Second-zone remains display-only / no-signal unless future pre-registered evidence beats random. |
 | P210 short/mid-window strategy protocol | [Complete] / CEO accepted | `outputs/research/power_lotto/p210_short_mid_window_protocol_plan_20260602.md`; CEO-Decision.md 2026-06-02 section | Protocol frozen as reference. P211 held by user (`HELD_BY_USER`). |
-| P211 short/mid-window read-only diagnostic | HELD_BY_USER | user 2026-06-02 「先暫停」 | Do not auto-resume. Restart requires explicit user authorization. |
+| P211R short/mid-window read-only diagnostic | COMPLETE — `P211R_SHORT_MID_WINDOW_DIAGNOSTIC_COMPLETE` | artifact `outputs/research/p211r_short_mid_window_diagnostic_20260605.{md,json}` | 9 IS-window candidates; all confirmed historical artifacts (prior OOS rejection). No deployable edge. No follow-up authorized without new explicit authorization. |
 | P212 agent_bootstrap honesty correction | [Complete] | `active_task.md` P212 record | CURRENT_STATE.md corrected from `adoption COMPLETE` → honest provisional. |
 | P213 agent_bootstrap git-ratification commit | [Complete] | commit `8d34f4c` | Three bootstrap files committed and source-controlled. USER GATE: CLOSED. |
 | P214 post-ratification governance state sync | [Complete] | commit `7b9c179`; PR #250 | `active_task.md` + `CEO-Decision.md` updated. |
@@ -258,9 +258,9 @@ Upgrade / downgrade decisions:
 **Governance simplification (P240D) is now adopted. Task Type A/B/C/D/E and No-op HOLD rule are active.**
 
 **Next authorized steps (each needs separate explicit authorization):**
-- Restart P211 short/mid-window diagnostic (HELD_BY_USER — requires explicit authorization).
+- P211 hold resolved: P211R ran and produced HISTORICAL_ARTIFACT result. Any new diagnostic direction requires fresh explicit authorization and pre-registration.
 - Passive monitoring per P224B (≥300 new DAILY_539 draws before next recheck; preferred 500). Prior shifted toward NULL after P230B1.
-- 3_STAR/4_STAR straight-play feasibility / diagnostic: requires separate explicit authorization and P221F-style pre-registration; P213L only recovered source rows and did not authorize a scan.
+- 3_STAR/4_STAR: straight-play arc P214/P214B/P214C COMPLETE with NULL result (0/7 Bonferroni-significant). Box-play remains UNDERPOWERED_NO_SIGNAL. Any new scan requires fresh explicit authorization with hypotheses not derived from observed P214C anomaly.
 - Explore entirely new strategies / hypotheses: requires explicit authorization, fresh P221F pre-registration.
 - POWER_LOTTO first-zone future OOS: only after significant new draws accumulate; requires P221F gate.
 - NIST randomness-audit follow-on (if any): P238B is YELLOW observation-only. Any escalation or confirmation task requires separate explicit authorization. YELLOW does not authorize strategy, production, or any follow-on action.
@@ -270,6 +270,11 @@ Upgrade / downgrade decisions:
 Final current roadmap marker:
 
 ```text
+P214E_GOVERNANCE_WORDING_CLEANUP_COMPLETE
+P214D_POST_P214C_STRAIGHT_PLAY_RESEARCH_ARC_DECISION_SUPPORT_COMPLETE
+P214C_3STAR_4STAR_STRAIGHT_PLAY_BONFERRONI_DIAGNOSTIC_SCAN_COMPLETE
+P214B_3STAR_4STAR_STRAIGHT_PLAY_READONLY_DIAGNOSTIC_COMPLETE
+P214_3STAR_4STAR_STRAIGHT_PLAY_FEASIBILITY_PROTOCOL_DESIGN_COMPLETE
 P213L_3STAR_4STAR_CONTROLLED_MISSING_SOURCE_ROW_INGESTION_COMPLETE
 P213K_MISSING_SOURCE_ROW_INGESTION_FEASIBILITY_DESIGN_COMPLETE
 P213B_3STAR_4STAR_POSITIONAL_DATA_RECOVERY_FEASIBILITY_COMPLETE

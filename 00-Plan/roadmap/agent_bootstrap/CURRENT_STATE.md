@@ -1,7 +1,7 @@
 # Current State — LotteryNew
 
-**Last Reviewed:** 2026-06-05 Asia/Taipei (P213K missing source-row ingestion feasibility design — Type B read-only; 4,599 source-only 3_STAR/4_STAR rows analyzed; no DB write; no ingestion; replay rows 94,924; drift PASS; WAITING_FOR_USER_AUTHORIZATION)
-**State Marker:** `P213K_MISSING_SOURCE_ROW_INGESTION_FEASIBILITY_DESIGN_COMPLETE`
+**Last Reviewed:** 2026-06-05 Asia/Taipei (P213L controlled missing source-row ingestion — Type D DB write; inserted 4,599 source-only 3_STAR/4_STAR rows; draw rows 59,762→64,361; source-to-DB match 11,700/11,700; replay rows 94,924; drift PASS; WAITING_FOR_USER_AUTHORIZATION)
+**State Marker:** `P213L_3STAR_4STAR_CONTROLLED_MISSING_SOURCE_ROW_INGESTION_COMPLETE`
 **Purpose:** Project-specific state for future agents. Read this after `SHARED_AGENT_BOOTSTRAP.md` and `TASK_TEMPLATES.md`.
 
 ## Canonical Execution Context
@@ -14,7 +14,7 @@
 | Current HEAD | HEAD must equal `origin/main`; verify with `git rev-parse HEAD` and `git rev-parse origin/main` before any task. Do not hardcode a live hash here — this field becomes stale after every PR merge. Last recorded PR merge: P228 governance closeout (branch `p228-star-replay-governance-closeout`). | [Self-verifying] |
 | `origin/main` | Must equal HEAD; see above. Verify with `git rev-parse origin/main`. | [Self-verifying] |
 | Git dir | `.git` | [Confirmed] |
-| Active worker task | none (P213K missing source-row ingestion feasibility design complete) | [Confirmed] |
+| Active worker task | none (P213L controlled missing source-row ingestion complete) | [Confirmed] |
 | P211 status | `HELD_BY_USER`; do not auto-resume or re-prompt | [Confirmed] |
 
 ## Forbidden Execution Paths
@@ -34,9 +34,13 @@ Do not dispatch or execute from:
 | SQLite integrity | `ok` | [Confirmed] |
 | Replay table | `strategy_prediction_replays` | [Confirmed] |
 | Replay rows | 94,924 | [Confirmed] |
+| Draw rows | 64,361 | [Confirmed] |
 | BIG_LOTTO rows | 24,140 | [Confirmed] |
 | DAILY_539 rows | 34,680 | [Confirmed] |
 | POWER_LOTTO rows | 36,104 | [Confirmed] |
+| 3_STAR draw rows | 5,850 | [Confirmed] |
+| 4_STAR draw rows | 5,850 | [Confirmed] |
+| 3_STAR/4_STAR source-to-DB match | 11,700 / 11,700 (0 mismatches, 0 missing) | [Confirmed] |
 | 3_STAR replay rows | 0 (zero — no replay rows exist) | [Confirmed] |
 | 4_STAR replay rows | 0 (zero — no replay rows exist) | [Confirmed] |
 | `bet_index` column | present | [Confirmed] |
@@ -177,7 +181,7 @@ Read-only baseline commands:
 - [Closed] DAILY_539 survivor `midfreq_fourier_2bet` = **REJECTED_BY_BACKWARD_OOS / HISTORICAL_ARTIFACT_DIRECTION** (P230C). P230B1 backward-OOS dry-run (4,265 draws, 2007/05–2021/08): mean 0.6375 < baseline 0.6410; all era/robustness checks fail. In-window edge is a historical artifact. **No deployment. No P230B2 DB backfill.** Production / registry / recommendation logic unchanged.
 - [Closed / NULL] POWER_LOTTO first-zone candidate `midfreq_fourier_mk_3bet` = **`P231B_POWERLOTTO_FIRST_ZONE_BACKWARD_OOS_DRYRUN_NULL`** (P231B). Backward-OOS 382 draws: mean 0.969 vs baseline 0.947; CI crosses baseline; p=0.30; both robustness checks below baseline; block stability mixed. **Non-deployable. Observation-only. No promotion. No production/registry/recommendation change.**
 - [Hold] 3_STAR / 4_STAR box-play = **UNDERPOWERED_NO_SIGNAL**. Not deployable. Need ≥10,000 3_STAR draws (have 4,179) or ≥17,000 4_STAR draws (have 2,922) for adequate power. Any re-scan must inherit P221F gate with fresh pre-registration.
-- [Blocked] 3_STAR / 4_STAR straight-play = **BLOCKED_REINGEST_REQUIRED**. Positional order lost in DB sorted storage. Re-ingestion from raw positional source requires separate authorization.
+- [Data-ready / no scan authorized] 3_STAR / 4_STAR straight-play source coverage restored by P213H/P213L: 11,700 source rows match DB canonical and positional values. No feasibility diagnostic, strategy scan, registry change, recommendation change, or betting claim is authorized without separate explicit authorization.
 - [Risk] Worktree contains existing dirty/untracked files outside governance scope; future tasks must use narrow write allowlists.
 - [Resolved] LIFECYCLE_UNRESOLVED: **0** (was 20). P233B added 20 non-executable stubs to `replay_strategy_registry.py`. All formerly-unresolved entries now have REJECTED or RETIRED labels. No executable adapter added.
 - [Resolved] Governance doc staleness at P217–P232A: resolved by P225 + P228 + P231C + P232B closeout.
@@ -195,16 +199,12 @@ Read-only baseline commands:
 
 ## Recommended Next Direction
 
-No active deployable candidate in any lottery. **The P211A–P231B arc has exhausted all current in-window candidates. P232A–P233B registry hygiene resolved LIFECYCLE_UNRESOLVED to 0. P234/P234A CTO statistical-methods analysis complete (P2.4 design-only). P235A Lofea feasibility review complete (design-inspiration only). P236A–P238D complete (NIST audit YELLOW observation-only). P240B–P240D complete (governance simplification adopted). P241A–P241B complete (statistical diagnostics inventory design-only; no code implementation). Governance record is complete.** Do not start new research without explicit user authorization. Queued options:
+No active deployable candidate in any lottery. **The P211A–P231B arc has exhausted all current in-window candidates. P232A–P233B registry hygiene resolved LIFECYCLE_UNRESOLVED to 0. P234/P234A CTO statistical-methods analysis complete (P2.4 design-only). P235A Lofea feasibility review complete (design-inspiration only). P236A–P238D complete (NIST audit YELLOW observation-only). P240B–P240D complete (governance simplification adopted). P241A–P244C complete. P213H/P213L completed draw-side source recovery for 3_STAR/4_STAR. Governance record is complete.** Do not start new research without explicit user authorization. Queued options:
 
-1. **Phase A source audit** — `"Authorize P213C 3_STAR/4_STAR source audit (read-only API inspection, no DB write)"` — next step from P213B; confirms whether source data has positional order.
-2. **Passive monitoring** — wait for ≥300 new DAILY_539 live draws per P224B protocol.
-3. **Remain HOLD** — no action; system stays WAITING_FOR_USER_AUTHORIZATION.
-2. **P211 restart** — `"Start P211"` — requires explicit authorization. Currently HELD_BY_USER.
-3. **Passive monitoring** — wait for ≥300 new DAILY_539 draws (preferred 500); per P224B protocol.
-4. **3_STAR/4_STAR re-scan** — only after ≥10,000 total 3_STAR draws or positional re-ingestion.
-5. **NIST randomness-audit follow-on** — YELLOW observation-only; separate explicit authorization required.
-6. **Remain HOLD** — no action; system stays WAITING_FOR_USER_AUTHORIZATION.
+1. **Remain HOLD** — no action; system stays WAITING_FOR_USER_AUTHORIZATION.
+2. **3_STAR/4_STAR straight-play feasibility / diagnostic design** — separate explicit authorization required; no strategy scan or DB write unless specifically authorized; must inherit P221F anti-overfit gates.
+3. **Passive monitoring** — wait for ≥300 new DAILY_539 live draws per P224B protocol.
+4. **NIST randomness-audit follow-on** — YELLOW observation-only; separate explicit authorization required.
 
 Retired: DAILY_539 survivor backward-OOS extension (P1.2) — resolved; POWER_LOTTO first-zone backward-OOS (P231B) — resolved NULL.
 

@@ -1,6 +1,6 @@
 # Lottery Replay Roadmap
 
-**Last Updated:** 2026-06-05 Asia/Taipei (P213K missing source-row ingestion feasibility design — Type B read-only; 4,599 source-only 3_STAR/4_STAR rows analyzed; no DB write; no ingestion; replay rows 94,924; drift PASS; WAITING_FOR_USER_AUTHORIZATION)
+**Last Updated:** 2026-06-05 Asia/Taipei (P213L controlled missing source-row ingestion — Type D DB write; inserted 4,599 source-only 3_STAR/4_STAR rows; draw rows 59,762→64,361; source-to-DB match 11,700/11,700; replay rows 94,924; drift PASS; WAITING_FOR_USER_AUTHORIZATION)
 **Owner:** CTO agent
 **Primary Goal:** Keep LotteryNew replay, research, and product evidence truthful, reproducible, and governed. The current maturity bottleneck has shifted from migration rehearsal to short/mid-window strategy protocol design, anti-overfit validation, canonical repo dispatch safety, and honest product disclosure.
 **Repo Policy:** Use `/Users/kelvin/Kelvin-WorkSpace/LotteryNew` only. Do not create a new repo. Production DB, registry, and data writes require explicit governed authorization. CTO roadmap updates are limited to this file and `00-Plan/roadmap/CTO-Analysis.md`. CTO must not write `CEO-Decision.md`, `active_task.md`, `production/*`, `registry/*`, `data/*`, or any new repo.
@@ -88,6 +88,7 @@ This section is the current source of truth. The 2026-06-01 sections and P186-P1
 | **P213I-C 3_STAR/4_STAR real-source dry-run artifact closeout** | **[Complete]** `P213I_C_REAL_SOURCE_DRY_RUN_ARTIFACT_CLOSEOUT_COMPLETE` | `scripts/p213i_3star_4star_real_source_dry_run_validation.py`; `tests/test_p213i_3star_4star_real_source_dry_run_validation.py`; `outputs/research/p213i_3star_4star_real_source_dry_run_validation_20260605.{md,json}`; `outputs/research/p213i_3star_4star_real_source_rows_20260605.json`; `outputs/research/p213i_3star_4star_real_source_mismatches_20260605.json`; governance (same-PR) | Type C. 4/4 PASS. Real-source CSVs found: 40 total; 11,700 rows parsed; 7,101 matched; 4,599 missing; 0 mismatches. Positional order encoded by `獎號1..N`; dates normalized before comparison; no production DB write. Same-PR closeout. |
 | **P213H 3_STAR/4_STAR controlled positional backfill** | **[Complete]** `P213H_3STAR_4STAR_CONTROLLED_POSITIONAL_BACKFILL_COMPLETE` | `scripts/p213h_3star_4star_controlled_positional_backfill.py`; `tests/test_p213h_3star_4star_controlled_positional_backfill.py`; `outputs/research/p213h_3star_4star_controlled_positional_backfill_20260605.{md,json}`; row/audit artifacts; backup DB + sha256 | Type D. 12/12 PASS. Backup `backups/p213h_lottery_v2_backup_20260605_20260605_142219.db` sha256 `214f05870e741164495cd0dbf46158ba1e92835d7a7c072df47a20a0795896c1`. Updated 7,101 existing star rows; 4,599 missing source rows not inserted; replay rows unchanged at 94,924; drift guard PASS. |
 | **P213K missing source-row ingestion feasibility design** | **[Complete]** `P213K_MISSING_SOURCE_ROW_INGESTION_FEASIBILITY_DESIGN_COMPLETE` | `outputs/research/p213k_missing_source_row_ingestion_feasibility_design_20260605.{md,json}`; `tests/test_p213k_missing_source_row_ingestion_feasibility_design.py`; governance (same-PR) | Type B. 13/13 PASS. No DB write; no ingestion. Analyzed 4,599 source-only rows (3_STAR 1,671; 4_STAR 2,928). Future insertion feasible only under separate Type D gate with fresh backup/rollback; straight-play scan not authorized. |
+| **P213L controlled missing source-row ingestion** | **[Complete]** `P213L_3STAR_4STAR_CONTROLLED_MISSING_SOURCE_ROW_INGESTION_COMPLETE` | `scripts/p213l_3star_4star_controlled_missing_row_ingestion.py`; `tests/test_p213l_3star_4star_controlled_missing_row_ingestion.py`; `outputs/research/p213l_3star_4star_controlled_missing_row_ingestion_20260605.{md,json}`; row/audit artifacts; backup DB + sha256 | Type D. 14/14 PASS. Backup `backups/p213l_lottery_v2_backup_20260605_20260605_151715.db` sha256 `1b2abd793a3ea3f2d300337eb2db6d2621b52e1600453bc20141377fa6475485`. Inserted 4,599 source-only star rows; draw rows 59,762→64,361; source-to-DB match 11,700/11,700; replay rows unchanged 94,924; no strategy scan authorized. |
 
 ### 0.2 Current System Baseline
 
@@ -130,7 +131,7 @@ This section is the current source of truth. The 2026-06-01 sections and P186-P1
 | **P0.3** | Canonical execution / repo dispatch guard | Ensure every agent uses only `LotteryNew/main` and not archived/stale worktrees | [Confirmed] baseline; STOP guards in all P22x prompts | Prompts and worker reports must STOP on `.claude/worktrees/*`, archive paths, wrong branch, wrong HEAD/DB baseline, or broad staging. |
 | **P0.4** | CTO/CEO task-generation boundary | Resolve prompt-generation conflict for the next executable task | [Resolved] CEO Decision 2026-06-03 | P225 active_task set; governance boundary clarified. |
 | **P2.4** | Scientific Statistical Diagnostics Layer | Consolidate scattered diagnostics (random baselines, multiple-testing correction, rolling windows, stability labels, feature bottleneck report) into a reusable read-only layer | [P2 design-only — CEO `CEO_DECISION_PARTIALLY_APPROVED`] 7/8 methods already exist and are enforced (P221F gate; Bonferroni/BH in P222/P223B/P227C; rolling windows in RSM/P114/P224). No current consumer. Implementation requires separate explicit user authorization. | Layer is diagnostics-only, artifact-only; no new strategies, no DB/registry/production writes, no recommendation logic, no predictability claim. Authorized options: P235A Lofea feasibility review (OPT-B) or P234 inventory design-doc (OPT-C). |
-| **P1.1** | 3_STAR / 4_STAR replay-gap diagnostic → P226–P227C | Only unmined lottery family | [Complete] `P227C_STAR_BOX_PLAY_UNDERPOWERED_NO_SIGNAL` | P226 gap discovery + P227A design + P227B code + P227C scan complete. Both lotteries UNDERPOWERED_NO_SIGNAL; not deployable; straight-play BLOCKED_REINGEST_REQUIRED. Future work requires ≥10,000 3_STAR draws or positional re-ingestion. |
+| **P1.1** | 3_STAR / 4_STAR replay-gap diagnostic → P226–P227C / P213H–P213L data recovery | Only unmined lottery family | [Data recovered; no scan authorized] `P213L_3STAR_4STAR_CONTROLLED_MISSING_SOURCE_ROW_INGESTION_COMPLETE` | Box-play remains UNDERPOWERED_NO_SIGNAL and not deployable. Straight-play source coverage is now restored for 11,700 rows after P213H/P213L, but any feasibility/diagnostic/scan requires separate explicit authorization and P221F-style anti-overfit gates. |
 | **P1.2** | DAILY_539 survivor backward-OOS extension | Resolve survivor p=0.0674 using older draws | **[Complete — BELOW_BASELINE → reclassified]** P230A + P230B1 + P230C | P230B1 dry-run (4,265 backward draws, zero DB write): mean 0.6375 < baseline 0.6410; all eras/robustness fail. **Reclassified HISTORICAL_ARTIFACT_DIRECTION in P230C.** No P230B2 DB backfill. No P225. |
 | **P1.3** | Product disclosure and second-zone containment | Make UI/API wording consistent with NULL/no-signal evidence | [Deferred] | No surface implies guaranteed improvement, betting advice, or second-zone predictive edge. |
 | **P2.1** | Passive monitoring / reopen rules for DAILY_539 survivor | Monitor `midfreq_fourier_2bet / DAILY_539` | **[RECLASSIFIED — HISTORICAL_ARTIFACT_DIRECTION]** P230C | P230B1 backward-OOS: mean 0.6375 < baseline; all checks fail. Formally reclassified in P230C. Future OOS (≥300 new draws) could reopen, but prior shifted toward NULL. No deployment. No P230B2 backfill. No P225. |
@@ -157,7 +158,7 @@ Upgrade / downgrade decisions:
 | Active POWER_LOTTO R2 optimization | Retire / keep closed | P178A closed R2 after NULL results. |
 | Second-zone optimization | Retire as active goal; keep containment | P211A confirmed NULL hit-rate edge; display-only unless future pre-registered proof appears. |
 | DAILY_539 survivor | **[REJECTED_BY_BACKWARD_OOS / HISTORICAL_ARTIFACT_DIRECTION]** — reclassified P230C | P224 clean-slice p=0.0674 (WAIT_FOR_OOS); P230B1 backward-OOS 4,265 draws: mean 0.6375 < baseline 0.6410; all eras/robustness fail. No deployment. No P230B2 DB backfill recommended. No P225 model design recommended. |
-| 3_STAR / 4_STAR box-play | **[COMPLETE → UNDERPOWERED_NO_SIGNAL]** P226–P227C | P227C: 0 Bonferroni pass, 1 BH-FDR weak observation (UNDERPOWERED); not deployable. Straight-play BLOCKED_REINGEST_REQUIRED. |
+| 3_STAR / 4_STAR box-play / straight-play data state | **Box-play UNDERPOWERED_NO_SIGNAL; straight-play source coverage restored but no scan authorized** | P227C: 0 Bonferroni pass, 1 BH-FDR weak observation (UNDERPOWERED); not deployable. P213H/P213L restored positional/source rows for 11,700 star draws; future straight-play work requires separate authorization. |
 | P123 trigger standby and old apply chains | Keep P3+ guardrails | Useful history, not today's bottleneck. |
 
 ### 0.5 Critical Blockers
@@ -217,14 +218,14 @@ Upgrade / downgrade decisions:
 - **Required gates (if/when authorized):** pre-registered universe/windows/baselines, explicit family size, Bonferroni/BH-FDR where applicable, walk-forward or out-of-sample validation for any validation use, unit labels (row/draw/bet-index/strategy), NULL-is-success reporting.
 - **Priority:** P2 design-only — all subcomponents. Build only after explicit user authorization. Authorized on-request options: OPT-B P235A Lofea read-only feasibility review, OPT-C P234 statistical-methods diagnostics inventory (design-doc only).
 
-### 0.7 Current State Summary (updated by P213B positional data recovery feasibility, 2026-06-05)
+### 0.7 Current State Summary (updated by P213L controlled missing source-row ingestion, 2026-06-05)
 
 **Research chains P211A–P231B (all lotteries), P226–P227C (3_STAR/4_STAR), P232A (all-catalog scoreboard), and P233A/B (registry hygiene, LIFECYCLE_UNRESOLVED 20→0) are complete.**
 
 - Direction #1 (window reframe): P221F frozen windows (short 100/125/150, mid 500/750/1000, all-history=reference) operationalized. Gate active.
 - Direction #2 (mine all-lottery × all-method): P222 scan complete. Sole survivor `midfreq_fourier_2bet / DAILY_539` fragile → **reclassified `REJECTED_BY_BACKWARD_OOS / HISTORICAL_ARTIFACT_DIRECTION` (P230C)**. DAILY_539 backward-OOS (P230B1): mean 0.6375 < baseline 0.6410; all eras/robustness fail.
 - POWER_LOTTO first-zone: P231B backward-OOS NULL. `midfreq_fourier_mk_3bet` mean 0.969 vs 0.947 baseline; CI crosses; p=0.30; robustness fails. **Non-deployable. Observation-only.**
-- 3_STAR / 4_STAR chain (P226–P227C): Box-play scanned, 120 hypotheses, **UNDERPOWERED_NO_SIGNAL**. Straight-play BLOCKED (sorted storage). Not deployable.
+- 3_STAR / 4_STAR chain: Box-play scanned, 120 hypotheses, **UNDERPOWERED_NO_SIGNAL**. P213H/P213L restored draw-side positional/source coverage for 11,700 rows (5,850 each for 3_STAR/4_STAR). Straight-play is data-ready for a separately authorized feasibility/diagnostic task, but no scan, strategy, registry, recommendation, production change, or betting claim is authorized by P213L.
 - P234/P234A governance: Scientific Statistical Diagnostics Layer framing adopted as read-only diagnostics. P0.5 urgency rejected/demoted to **P2 design-only** (7/8 methods already exist + enforced). CTO final: `CTO_STATISTICAL_METHODS_ADOPTION_WITH_RISKS`. CEO: `CEO_DECISION_PARTIALLY_APPROVED`. No implementation authorized.
 - P235A Lofea feasibility review: **`FIT_AS_DESIGN_INSPIRATION_ONLY`**. Lofea is a CC-BY-NC Python feature-engineering toolkit for 1/10-per-column lotteries. **No deployable predictive evidence.** Adopt now = NO. Design inspiration only for P2.4 / Direction F (not yet authorized). Any reuse must be natively re-derived, pass P221F + multiple-testing + walk-forward/OOS, zero DB/registry/production writes. CC-BY-NC: no vendoring (WebComm is commercial).
 - P235B governance closeout: active_task → `WAITING_FOR_USER_AUTHORIZATION`. No new research authorized.
@@ -250,6 +251,7 @@ Upgrade / downgrade decisions:
 - P212 POWER_LOTTO backward-OOS gap check: **`P212_POWER_LOTTO_BACKWARD_OOS_GAP_CHECK_HISTORICAL_ARTIFACT`**. All P211R IS-window candidates confirmed historical artifacts.
 - P213 New hypothesis scouting plan: **`P213_NEW_HYPOTHESIS_SCOUTING_PLAN_COMPLETE`**. Type B same-PR. 36/36 PASS. Recommended H_STAR_POSITIONAL_REINGEST.
 - P213B 3_STAR/4_STAR positional data recovery feasibility: **`P213B_3STAR_4STAR_POSITIONAL_DATA_RECOVERY_FEASIBILITY_COMPLETE`** (feasibility: `P213B_POSITIONAL_RECOVERY_POSSIBLE_BUT_SOURCE_UNCONFIRMED`). Type B same-PR. 37/37 PASS. Root cause confirmed: `database.py:463 json.dumps(sorted(numbers))` and fetcher `sorted(...)`. No 3_STAR/4_STAR API endpoint in current fetcher. Source positional order unconfirmed. 4-phase recovery plan documented. Next step: Phase A source audit (`"Authorize P213C 3_STAR/4_STAR source audit (read-only API inspection, no DB write)"`). No code changes. No DB write.
+- P213L controlled missing source-row ingestion: **`P213L_3STAR_4STAR_CONTROLLED_MISSING_SOURCE_ROW_INGESTION_COMPLETE`**. Type D. 14/14 PASS. Backup `backups/p213l_lottery_v2_backup_20260605_20260605_151715.db`, sha256 `1b2abd793a3ea3f2d300337eb2db6d2621b52e1600453bc20141377fa6475485`, integrity `ok`. Inserted 4,599 source-only rows; production replay rows unchanged 94,924; draw rows 59,762→64,361; source-to-DB match 11,700/11,700; drift guard PASS. No strategy scan or recommendation change authorized.
 
 **No active deployable candidate in any lottery.**
 
@@ -258,7 +260,7 @@ Upgrade / downgrade decisions:
 **Next authorized steps (each needs separate explicit authorization):**
 - Restart P211 short/mid-window diagnostic (HELD_BY_USER — requires explicit authorization).
 - Passive monitoring per P224B (≥300 new DAILY_539 draws before next recheck; preferred 500). Prior shifted toward NULL after P230B1.
-- 3_STAR/4_STAR re-scan: only after ≥10,000 3_STAR draws or positional re-ingestion (straight-play).
+- 3_STAR/4_STAR straight-play feasibility / diagnostic: requires separate explicit authorization and P221F-style pre-registration; P213L only recovered source rows and did not authorize a scan.
 - Explore entirely new strategies / hypotheses: requires explicit authorization, fresh P221F pre-registration.
 - POWER_LOTTO first-zone future OOS: only after significant new draws accumulate; requires P221F gate.
 - NIST randomness-audit follow-on (if any): P238B is YELLOW observation-only. Any escalation or confirmation task requires separate explicit authorization. YELLOW does not authorize strategy, production, or any follow-on action.
@@ -268,6 +270,8 @@ Upgrade / downgrade decisions:
 Final current roadmap marker:
 
 ```text
+P213L_3STAR_4STAR_CONTROLLED_MISSING_SOURCE_ROW_INGESTION_COMPLETE
+P213K_MISSING_SOURCE_ROW_INGESTION_FEASIBILITY_DESIGN_COMPLETE
 P213B_3STAR_4STAR_POSITIONAL_DATA_RECOVERY_FEASIBILITY_COMPLETE
 P213_NEW_HYPOTHESIS_SCOUTING_PLAN_COMPLETE
 P212_POWER_LOTTO_BACKWARD_OOS_GAP_CHECK_COMPLETE

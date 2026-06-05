@@ -1528,3 +1528,51 @@ P241B does **not** authorize: P242 implementation, P211 restart, DB write, regis
 - **Remain HOLD**: No action; system stays WAITING_FOR_USER_AUTHORIZATION.
 
 Final Classification: `P241B_P234_STATISTICAL_DIAGNOSTICS_INVENTORY_COMPLETE`
+
+---
+
+# CEO Decision — 2026-06-05 (Later) — P242 Statistical Diagnostics Schema Implementation
+
+## 1. Context
+
+2026-06-05 Asia/Taipei. Final Classification: `P242_READ_ONLY_STATISTICAL_DIAGNOSTICS_SCHEMA_IMPLEMENTATION_COMPLETE`.
+
+Authorization: `Authorize P242 read-only statistical diagnostics schema implementation (no DB write, no production change)`
+
+- [Confirmed] Module: `lottery_api/diagnostics/statistical_diagnostics_schema.py` (new file; additive only).
+- [Confirmed] Init: `lottery_api/diagnostics/__init__.py` (new file; exposes public API).
+- [Confirmed] Tests: `tests/test_p242_statistical_diagnostics_schema.py`. 42/42 PASS.
+- [Confirmed] DB: 94,924 rows; integrity ok; bet_index nulls 0; duplicate keys 0; drift guard PASS.
+- [Confirmed] Type C under P240D — same-PR governance closeout applied.
+
+## 2. P242 Summary
+
+P242 implements the P241B schema as a pure Python module with no DB access, no production side effects. It provides:
+- 43-field `REQUIRED_SCHEMA_FIELDS` tuple
+- 7 enum/constant classes (LotteryType, LifecycleStatus, CorrectionMethod, PsiStatus, NistAlertLevel, DriftGuardResult, TaskType)
+- 4 helper functions: `default_safety_fields`, `build_diagnostic_report`, `validate_diagnostic_report`, `classify_nist_alert`
+- Conservative safety defaults (all dangerous authorization booleans = False)
+- NIST alert semantics: YELLOW = observation-only; RED = human review only; no level authorizes strategy/production/betting
+
+## 3. Decision
+
+CEO accepts P242 as a completed additive read-only schema module.
+
+P242 does **not** authorize: statistical scan execution, strategy promotion, DB write, registry mutation, production/recommendation/monitoring change, P211 restart, betting advice, or prediction edge claim.
+
+## 4. Current State
+
+- `active_task.md` returns to `WAITING_FOR_USER_AUTHORIZATION`.
+- P211 remains `HELD_BY_USER`.
+- P238B NIST result remains `RANDOMNESS_AUDIT_YELLOW_OBSERVATION_ONLY`.
+- No active worker task exists.
+- No deployable candidate exists in any lottery.
+- P2.4 statistical diagnostics layer: inventory (P241B) + schema module (P242) complete; no further implementation authorized without separate explicit authorization.
+
+## 5. Next Options
+
+- **Remain HOLD**: No action; system stays WAITING_FOR_USER_AUTHORIZATION.
+- **Start P211**: `"Start P211"` — requires explicit authorization.
+- **Extend schema**: `"Authorize P243 statistical diagnostics schema extension (no DB write)"` — Type C additive.
+
+Final Classification: `P242_READ_ONLY_STATISTICAL_DIAGNOSTICS_SCHEMA_IMPLEMENTATION_COMPLETE`

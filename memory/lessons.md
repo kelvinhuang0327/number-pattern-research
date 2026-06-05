@@ -5,6 +5,24 @@
 
 ---
 
+## L110 — P246E get_canonical_draws() 實作要點 (2026-06-05)
+
+**來源：** P246E Phase 1 實作
+
+**結論：** `database.py` 新增 `get_canonical_draws()` helper，BIG_LOTTO 三層過濾：
+1. SQL: `draw NOT LIKE '%-%'`（排除 ADD_ON_PRIZE_EXCLUDED，19,100 筆）
+2. SQL: `NOT (LENGTH(draw)=8 AND draw LIKE '20%')`（排除 DATE_FORMAT_ALIEN，375 筆）
+3. Python: `max(numbers) > 25`（排除 SMALL_POOL_ALIEN，~650 筆）
+結果：canonical 2,113 筆（與預期完全一致）。
+
+**注意事項：**
+- 非 BIG_LOTTO 類型使用直接 `lottery_type=?` 查詢，**不呼叫** `get_related_lottery_types()`，避免觸發 `apscheduler` 重量級匯入
+- `get_all_draws()` 和 `get_draws()` **不修改**，繼續傳回全 22,238 筆（展示/歷史用途）
+- `quick_predict.py` `load_history()` 改為呼叫 `get_canonical_draws()`
+- Phase 2（DB View）和 Phase 3（Annotation Table）仍需 Type D 授權
+
+---
+
 ## L109 — P246D BIG_LOTTO 加碼記錄隔離設計原則 (2026-06-05)
 
 **來源：** P246D 隔離設計

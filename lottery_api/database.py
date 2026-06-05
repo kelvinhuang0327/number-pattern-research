@@ -706,7 +706,82 @@ class DatabaseManager:
             raise
         finally:
             conn.close()
-    
+
+    def get_canonical_draws(self, lottery_type: str, limit: Optional[int] = None) -> List[Dict]:
+        """
+        Return only canonical main-draw rows for the given lottery type.
+
+        For BIG_LOTTO, this excludes three non-canonical row families:
+          - ADD_ON_PRIZE_EXCLUDED: hyphenated draw IDs (e.g. 103000009-01)
+            These are valid lottery-related add-on/special prize records.
+            They are excluded from canonical 6/49 research due to population
+            mismatch, NOT because they are fake or invalid.
+          - DATE_FORMAT_ALIEN: 8-digit YYYYMMDD draw IDs (e.g. 20090727)
+            Numbers inconsistent with 6/49 pool.
+          - SMALL_POOL_ALIEN: serial IDs but max(numbers) <= 25
+            Likely a different game mislabeled as BIG_LOTTO.
+
+        Raw history access remains available via get_all_draws() and get_draws().
+        This helper is for research, strategy, and replay callers only.
+
+        For non-BIG_LOTTO types, behaviour matches get_all_draws().
+        """
+        conn = self._get_connection()
+        cursor = conn.cursor()
+        try:
+            if lottery_type == 'BIG_LOTTO':
+                # SQL-level filter: excludes ADD_ON_PRIZE_EXCLUDED and DATE_FORMAT_ALIEN
+                query = """
+                    SELECT id, draw, date, lottery_type, numbers, special, jackpot_amount
+                    FROM draws
+                    WHERE lottery_type = 'BIG_LOTTO'
+                      AND draw NOT LIKE '%-%'
+                      AND NOT (LENGTH(draw) = 8 AND draw LIKE '20%')
+                    ORDER BY CAST(draw AS INTEGER) DESC
+                """
+                if limit:
+                    query += f" LIMIT {int(limit)}"
+                cursor.execute(query)
+            else:
+                # For non-BIG_LOTTO types, no non-canonical row families are known.
+                # Use a direct query to avoid importing get_related_lottery_types
+                # (which may trigger heavy scheduler imports in test environments).
+                query = """
+                    SELECT id, draw, date, lottery_type, numbers, special, jackpot_amount
+                    FROM draws
+                    WHERE lottery_type = ?
+                    ORDER BY CAST(draw AS INTEGER) DESC
+                """
+                if limit:
+                    query += f" LIMIT {int(limit)}"
+                cursor.execute(query, (lottery_type,))
+
+            rows = cursor.fetchall()
+            draws = []
+            for row in rows:
+                numbers = json.loads(row['numbers'])
+                # Python-level filter: exclude SMALL_POOL_ALIEN (max number <= 25)
+                # Only applies to BIG_LOTTO; other lottery types are not filtered here
+                if lottery_type == 'BIG_LOTTO' and numbers and max(numbers) <= 25:
+                    continue
+                draws.append({
+                    'draw': row['draw'],
+                    'date': row['date'],
+                    'lotteryType': row['lottery_type'],
+                    'numbers': numbers,
+                    'special': _normalize_special_for_output(row['lottery_type'], row['special']),
+                    'jackpot_amount': row['jackpot_amount'],
+                })
+            logger.info(
+                f"[get_canonical_draws] {lottery_type}: {len(draws)} canonical rows returned"
+            )
+            return draws
+        except Exception as e:
+            logger.error(f"❌ get_canonical_draws failed: {e}")
+            raise
+        finally:
+            conn.close()
+
     def get_stats(self, lottery_type: Optional[str] = None) -> Dict:
         """
         獲取統計信息

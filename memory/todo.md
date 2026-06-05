@@ -11,6 +11,16 @@
 
 _（目前無進行中任務）_
 
+### P246E BIG_LOTTO canonical draw helper 實作 ✅ 2026-06-05 完成
+- [x] 確認 PR #319 (P246D) CI PASS，合併至 main
+- [x] 在 database.py 新增 get_canonical_draws()：三層過濾（SQL×2 + Python×1）
+- [x] canonical=2113，raw=22238，ADD_ON 19,100 筆保留在 DB
+- [x] 更新 quick_predict.py load_history() 使用 get_canonical_draws()
+- [x] 非 BIG_LOTTO 類型通過 (POWER_LOTTO、DAILY_539 count 不變)
+- [x] 測試 165/165 PASS；產出 P246E 文物（JSON+MD）
+- [x] 更新 memory/lessons.md（L110）
+- 完成標準：isolation checks all pass；無 DB 寫入；加碼記錄 raw 存取保留
+
 ### P246D BIG_LOTTO 加碼記錄隔離設計 ✅ 2026-06-05 完成
 - [x] 確認 PR #318 (P246C) CI PASS，合併至 main
 - [x] 讀取 DB read-only：確認無 canonical view，共 22,238 筆 BIG_LOTTO

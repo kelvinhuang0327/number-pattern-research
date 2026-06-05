@@ -1,12 +1,14 @@
 # Active Task — Today (2026-06-05)
 
 > **STATUS: `WAITING_FOR_USER_AUTHORIZATION`**
-> P213C 3_STAR/4_STAR source audit complete (Type B, same-PR closeout).
-> Source classification: `P213C_SOURCE_AUDIT_SOURCE_CANDIDATE_FOUND_NEEDS_VALIDATION`.
-> Confirmed: `lottery_types.json` has `isPermutation: true` for both; `csv_validator.py:286,451` preserves order; root cause is `database.py:463 json.dumps(sorted(numbers))`; raw TXT format includes `開出順序`; original CSV files not in repo. 50/50 tests PASS.
-> Recommended next: `"Authorize P213D 3_STAR/4_STAR positional schema and code fix design (read-only design doc, no DB write)"`
+> P213D 3_STAR/4_STAR positional schema and code fix design complete (Type B, same-PR closeout).
+> Recommended option: Option C — dual-write additive `numbers_positional` column; backward compatible; `numbers` semantics unchanged.
+> Root cause confirmed: `database.py:463` sorts unconditionally; `csv_validator.py` already correct.
+> Future phases: P213E (implementation design review) → P213F (code fix + tests) → P213G (dry-run source validation) → P213H (controlled DB migration). Each requires explicit authorization.
+> 51/51 tests PASS.
+> Recommended next: `"Authorize P213E 3_STAR/4_STAR positional schema implementation design review (read-only, no DB write)"`
 > P238B NIST audit remains `RANDOMNESS_AUDIT_YELLOW_OBSERVATION_ONLY`.
-> Final Classification: `P213C_3STAR_4STAR_SOURCE_AUDIT_COMPLETE`
+> Final Classification: `P213D_3STAR_4STAR_POSITIONAL_SCHEMA_CODE_FIX_DESIGN_COMPLETE`
 
 ---
 
@@ -38,6 +40,7 @@
 | P213 New hypothesis scouting plan | `P213_NEW_HYPOTHESIS_SCOUTING_PLAN_COMPLETE` — Type B same-PR; 36/36 PASS; recommended: H_STAR_POSITIONAL_REINGEST |
 | P213B 3_STAR/4_STAR positional feasibility | `P213B_3STAR_4STAR_POSITIONAL_DATA_RECOVERY_FEASIBILITY_COMPLETE` (feasibility: POSSIBLE_BUT_SOURCE_UNCONFIRMED) — Type B same-PR; 37/37 PASS |
 | P213C 3_STAR/4_STAR source audit | `P213C_3STAR_4STAR_SOURCE_AUDIT_COMPLETE` — Type B same-PR; 50/50 PASS; source candidate found; `開出順序` confirmed in raw format; original CSV not in repo |
+| P213D 3_STAR/4_STAR schema/code fix design | `P213D_3STAR_4STAR_POSITIONAL_SCHEMA_CODE_FIX_DESIGN_COMPLETE` — Type B same-PR; 51/51 PASS; recommended Option C (additive `numbers_positional` column); backward compatible; 5-phase future implementation plan |
 
 P240B artifacts on main:
 - `outputs/research/p240b_governance_simplification_design_proposal_20260604.md`
@@ -103,4 +106,4 @@ All safety boundaries unchanged. No DB write, no registry mutation, no productio
 6. 是否允許進入下一輪
 7. Final Classification
 
-Final Classification (this file): `P213C_3STAR_4STAR_SOURCE_AUDIT_COMPLETE`
+Final Classification (this file): `P213D_3STAR_4STAR_POSITIONAL_SCHEMA_CODE_FIX_DESIGN_COMPLETE`

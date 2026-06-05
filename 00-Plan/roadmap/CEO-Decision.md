@@ -1382,3 +1382,55 @@ The P238B result does **not** authorize P211 restart, a follow-on confirmation t
 - NIST audit YELLOW result stands; no follow-on action authorized without separate explicit user authorization.
 
 Final Classification: `P238D_P238B_ARTIFACT_BUILD_MERGED_GOVERNANCE_CLOSEOUT_COMPLETE`
+
+---
+
+# CEO Decision — 2026-06-05 — P240C P240B Governance Closeout
+
+## 1. Context
+
+2026-06-05 Asia/Taipei. Final Classification: `P240C_P240B_GOVERNANCE_CLOSEOUT_COMPLETE`.
+
+- [Confirmed] P240B governance simplification design proposal: PR #291 merged 2026-06-04T14:29:34Z at commit 112d6b7.
+- [Confirmed] P240B Markdown artifact: `outputs/research/p240b_governance_simplification_design_proposal_20260604.md`.
+- [Confirmed] P240B JSON artifact: `outputs/research/p240b_governance_simplification_design_proposal_20260604.json`. Parses successfully. `final_classification: P240B_GOVERNANCE_SIMPLIFICATION_DESIGN_PROPOSAL_COMPLETE`. `proposal_only: true`. `adoption_authorized: false`.
+- [Confirmed] P240B targeted test: `tests/test_p240b_governance_simplification_design_proposal.py`. 17/17 PASS.
+- [Confirmed] DB: 94,924 replay rows; integrity ok; bet_index nulls 0; duplicate keys 0; drift guard REPLAY_LIFECYCLE_DRIFT_GUARD_PASS.
+
+## 2. P240B Summary
+
+P240B is a governance simplification design proposal only. It documents a proposed simplification of governance rules for future agents (reduced mandatory-read files, leaner Phase 0 checks, proposal-only testing requirements). It does **not** constitute adoption of those rules.
+
+Key facts:
+- Proposal-only: the simplified governance rules described in P240B are **not active**.
+- Existing governance rules remain in full effect.
+- No DB write was performed. No registry mutation. No production or recommendation change. No monitoring job. No strategy work. No P211 restart.
+- The proposal was validated by 17/17 targeted tests confirming the artifact format and content, not by activating the rules.
+
+## 3. Decision
+
+CEO records P240B as a completed design proposal and PR #291 as merged.
+
+**P240B governance simplification rules are NOT adopted.** Existing governance rules (SHARED_AGENT_BOOTSTRAP.md, TASK_TEMPLATES.md, CURRENT_STATE.md, active_task.md, phase 0 checks, allowed file whitelists, STOP conditions) remain fully active and binding on all future agents.
+
+Adoption of P240B simplification rules requires a **separate explicit user authorization** containing the phrase: `Authorize P240C governance simplification rule adoption`. That authorization has **not** been granted as of this decision.
+
+## 4. Next Decision Options
+
+The user may choose one of the following:
+
+- **Option A — Adopt simplification rules**: Provide explicit authorization phrase "Authorize P240C governance simplification rule adoption". A separate task will then apply the simplified rules to governance files.
+- **Option B — Keep existing governance rules**: No further action needed. System remains at current governance. WAITING_FOR_USER_AUTHORIZATION.
+- **Option C — Restart P211**: Provide explicit authorization for P211 short/mid-window diagnostic. P211 remains HELD_BY_USER until explicit restart authorization.
+- **Option D — Remain WAITING_FOR_USER_AUTHORIZATION**: No further action. No research, no governance change, no strategy work starts without explicit authorization.
+
+## 5. Current State
+
+- `active_task.md` returns to `WAITING_FOR_USER_AUTHORIZATION`.
+- P211 remains `HELD_BY_USER`.
+- P238B NIST result remains `RANDOMNESS_AUDIT_YELLOW_OBSERVATION_ONLY` — observation-only; no strategy/production/recommendation change authorized.
+- No active worker task exists after closeout.
+- No deployable candidate exists in any lottery.
+- P240B proposal exists but is not adopted; existing governance rules remain active.
+
+Final Classification: `P240C_P240B_GOVERNANCE_CLOSEOUT_COMPLETE`

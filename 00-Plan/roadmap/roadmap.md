@@ -1,6 +1,6 @@
 # Lottery Replay Roadmap
 
-**Last Updated:** 2026-06-05 Asia/Taipei (P213B 3_STAR/4_STAR positional feasibility — root cause confirmed; source unconfirmed; POSSIBLE_BUT_SOURCE_UNCONFIRMED; WAITING_FOR_USER_AUTHORIZATION)
+**Last Updated:** 2026-06-05 Asia/Taipei (P213C 3_STAR/4_STAR source audit — source candidate found; `開出順序` confirmed in raw format; original CSV not in repo; WAITING_FOR_USER_AUTHORIZATION)
 **Owner:** CTO agent
 **Primary Goal:** Keep LotteryNew replay, research, and product evidence truthful, reproducible, and governed. The current maturity bottleneck has shifted from migration rehearsal to short/mid-window strategy protocol design, anti-overfit validation, canonical repo dispatch safety, and honest product disclosure.
 **Repo Policy:** Use `/Users/kelvin/Kelvin-WorkSpace/LotteryNew` only. Do not create a new repo. Production DB, registry, and data writes require explicit governed authorization. CTO roadmap updates are limited to this file and `00-Plan/roadmap/CTO-Analysis.md`. CTO must not write `CEO-Decision.md`, `active_task.md`, `production/*`, `registry/*`, `data/*`, or any new repo.
@@ -80,6 +80,7 @@ This section is the current source of truth. The 2026-06-01 sections and P186-P1
 | **P212 POWER_LOTTO backward-OOS gap check** | **[Complete]** `P212_POWER_LOTTO_BACKWARD_OOS_GAP_CHECK_COMPLETE` | `scripts/p212_power_lotto_backward_oos_gap_check.py`; artifacts; governance (same-PR) | Type C. 31/31 PASS. Historical artifact. |
 | **P213 New hypothesis scouting plan** | **[Complete]** `P213_NEW_HYPOTHESIS_SCOUTING_PLAN_COMPLETE` | `tests/test_p213_new_hypothesis_scouting_plan.py`; `outputs/research/p213_new_hypothesis_scouting_plan_20260605.{md,json}`; governance (same-PR) | Type B. 36/36 PASS. Recommended H_STAR_POSITIONAL_REINGEST. |
 | **P213B 3_STAR/4_STAR positional feasibility** | **[Complete]** `P213B_3STAR_4STAR_POSITIONAL_DATA_RECOVERY_FEASIBILITY_COMPLETE` | `tests/test_p213b_3star_4star_positional_data_recovery_feasibility.py`; `outputs/research/p213b_3star_4star_positional_data_recovery_feasibility_20260605.{md,json}`; governance (same-PR) | Type B. 37/37 PASS. Root cause: `database.py:463` sorts numbers. Feasibility: POSSIBLE_BUT_SOURCE_UNCONFIRMED. 4-phase recovery plan. Next: Phase A source audit. Same-PR closeout. |
+| **P213C 3_STAR/4_STAR source audit** | **[Complete]** `P213C_3STAR_4STAR_SOURCE_AUDIT_COMPLETE` | `tests/test_p213c_3star_4star_source_audit.py`; `outputs/research/p213c_3star_4star_source_audit_20260605.{md,json}`; governance (same-PR) | Type B. 50/50 PASS. Classification: `P213C_SOURCE_AUDIT_SOURCE_CANDIDATE_FOUND_NEEDS_VALIDATION`. `lottery_types.json` isPermutation confirmed; `csv_validator.py` permutation order preserved; `database.py:463` root cause confirmed; raw TXT format includes `開出順序`; original CSV files not in repo. No DB write. Same-PR closeout. |
 
 ### 0.2 Current System Baseline
 

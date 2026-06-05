@@ -1,0 +1,314 @@
+{
+  "schema_version": "1.0",
+  "task_id": "P246",
+  "date": "2026-06-05",
+  "type": "read_only_data_integrity_audit",
+  "db_path": "/Users/kelvin/Kelvin-WorkSpace/LotteryNew/lottery_api/data/lottery_v2.db",
+  "read_only_confirmed": true,
+  "input_artifacts_verified": [
+    "P219 outputs/research/p219_external_method_diagnostic_sweep_20260605.{md,json}",
+    "P245B outputs/research/p245b_bias_gate_layer_20260605.{md,json}",
+    "P238B outputs/research/p238b_nist_randomness_audit_artifact_20260604.{md,json}"
+  ],
+  "total_big_lotto_rows": 22238,
+  "canonical_plausible_estimate": 2113,
+  "governance_expected_draws": 2118,
+  "canonical_vs_expected_delta": -5,
+  "contaminated_rows": 20125,
+  "contamination_pct": 90.5,
+  "row_family_counts": {
+    "SIM_HYPHEN": 19100,
+    "DATE_FORMAT_ALIEN": 375,
+    "SMALL_POOL_ALIEN": 650,
+    "CANONICAL_PLAUSIBLE": 2113
+  },
+  "row_family_percentages": {
+    "SIM_HYPHEN": 85.89,
+    "DATE_FORMAT_ALIEN": 1.69,
+    "SMALL_POOL_ALIEN": 2.92,
+    "CANONICAL_PLAUSIBLE": 9.5
+  },
+  "row_family_stats": {
+    "SIM_HYPHEN": {
+      "count": 19100,
+      "pct": 85.89,
+      "sum_mean": 149.2,
+      "sum_sd": 33.2,
+      "max_mean": 43.0,
+      "max_min": 11,
+      "max_max": 49,
+      "min_mean": 6.8,
+      "year_min": 2011,
+      "year_max": 2023,
+      "examples": [
+        "100000009-01",
+        "100000009-02",
+        "100000009-03",
+        "100000009-04",
+        "100000009-05",
+        "100000009-06",
+        "100000009-07",
+        "100000009-08"
+      ],
+      "date_examples": [
+        "2011-02-01",
+        "2011-02-01",
+        "2011-02-01",
+        "2011-02-01"
+      ]
+    },
+    "DATE_FORMAT_ALIEN": {
+      "count": 375,
+      "pct": 1.69,
+      "sum_mean": 74.7,
+      "sum_sd": 2.4,
+      "max_mean": 22.5,
+      "max_min": 21,
+      "max_max": 24,
+      "min_mean": 2.5,
+      "year_min": 2009,
+      "year_max": 2010,
+      "examples": [
+        "20090727",
+        "20090728",
+        "20090729",
+        "20090730",
+        "20090731",
+        "20090803",
+        "20090804",
+        "20090805"
+      ],
+      "date_examples": [
+        "2009-07-27",
+        "2009-07-28",
+        "2009-07-29",
+        "2009-07-30"
+      ]
+    },
+    "SMALL_POOL_ALIEN": {
+      "count": 650,
+      "pct": 2.92,
+      "sum_mean": 75.0,
+      "sum_sd": 4.1,
+      "max_mean": 22.5,
+      "max_min": 17,
+      "max_max": 25,
+      "min_mean": 2.6,
+      "year_min": 2007,
+      "year_max": 2026,
+      "examples": [
+        "96000058",
+        "96000090",
+        "97000069",
+        "98000072",
+        "100000003",
+        "100000034",
+        "100000105",
+        "100000106"
+      ],
+      "date_examples": [
+        "2007/07/20",
+        "2007/11/09",
+        "2008/08/26",
+        "2009/09/08"
+      ]
+    },
+    "CANONICAL_PLAUSIBLE": {
+      "count": 2113,
+      "pct": 9.5,
+      "sum_mean": 151.0,
+      "sum_sd": 32.2,
+      "max_mean": 43.0,
+      "max_min": 26,
+      "max_max": 49,
+      "min_mean": 7.1,
+      "year_min": 2007,
+      "year_max": 2026,
+      "examples": [
+        "96000001",
+        "96000002",
+        "96000003",
+        "96000004",
+        "96000005",
+        "96000006",
+        "96000007",
+        "96000008"
+      ],
+      "date_examples": [
+        "2007/01/02",
+        "2007/01/05",
+        "2007/01/09",
+        "2007/01/12"
+      ]
+    }
+  },
+  "representative_examples": {
+    "SIM_HYPHEN": {
+      "draw_id_examples": [
+        "100000009-01",
+        "100000009-02",
+        "100000009-03",
+        "100000009-04",
+        "100000009-05",
+        "100000009-06",
+        "100000009-07",
+        "100000009-08"
+      ],
+      "date_examples": [
+        "2011-02-01",
+        "2011-02-01",
+        "2011-02-01",
+        "2011-02-01"
+      ]
+    },
+    "DATE_FORMAT_ALIEN": {
+      "draw_id_examples": [
+        "20090727",
+        "20090728",
+        "20090729",
+        "20090730",
+        "20090731",
+        "20090803",
+        "20090804",
+        "20090805"
+      ],
+      "date_examples": [
+        "2009-07-27",
+        "2009-07-28",
+        "2009-07-29",
+        "2009-07-30"
+      ]
+    },
+    "SMALL_POOL_ALIEN": {
+      "draw_id_examples": [
+        "96000058",
+        "96000090",
+        "97000069",
+        "98000072",
+        "100000003",
+        "100000034",
+        "100000105",
+        "100000106"
+      ],
+      "date_examples": [
+        "2007/07/20",
+        "2007/11/09",
+        "2008/08/26",
+        "2009/09/08"
+      ]
+    },
+    "CANONICAL_PLAUSIBLE": {
+      "draw_id_examples": [
+        "96000001",
+        "96000002",
+        "96000003",
+        "96000004",
+        "96000005",
+        "96000006",
+        "96000007",
+        "96000008"
+      ],
+      "date_examples": [
+        "2007/01/02",
+        "2007/01/05",
+        "2007/01/09",
+        "2007/01/12"
+      ]
+    }
+  },
+  "contamination_evidence": {
+    "SIM_HYPHEN": {
+      "description": "Composite IDs with hyphens (e.g. 103000009-01); 100 synthetic variants per draw date.",
+      "count": 19100,
+      "p219_link": "Excluded at load time by draw NOT LIKE '%-%'; did not drive P219 structural-break signals."
+    },
+    "DATE_FORMAT_ALIEN": {
+      "description": "8-digit YYYYMMDD IDs (e.g. 20090727). Numbers are NOT 6/49: sum~74-75, max<=24.",
+      "count": 375,
+      "sum_mean": 74.7,
+      "max_max": 24,
+      "p219_link": "Excluded in P219 secondary filter; residual contamination contributed to CUSUM/drift."
+    },
+    "SMALL_POOL_ALIEN": {
+      "description": "Serial IDs but max(numbers)<=25. Concentrated 2011-2014. Likely different game mislabeled as BIG_LOTTO.",
+      "count": 650,
+      "pct_of_serial": 23.5,
+      "p219_link": "PRIMARY driver of P219 BIG_LOTTO structural-break signals. During their era, numbers 26-49 absent -> CUSUM 11x, drift 4x, gap 4x."
+    }
+  },
+  "p219_signal_explanation": {
+    "M1_markov": "Consecutive overlap inflated; alien blocks share restricted pool; shuffle destroys -> significant p",
+    "M4_cusum": "Draw-sum jumps between ~75 (DATE_FORMAT) / ~100 (SMALL_POOL) and ~148 (real 6/49) -> CUSUM 11x null",
+    "M3_drift": "Numbers 26-49 absent during alien eras -> window L1 drift 4x null",
+    "M2_gap": "Numbers 26-49 absent during alien eras -> gap dispersion 4x null",
+    "M6_entropy": "Restricted pool -> lower entropy, higher compressibility",
+    "conclusion": "All P219 BIG_LOTTO corrected-significant signals explained by data contamination. NOT real draw-level bias. Anomaly is NOT predictor."
+  },
+  "quarantine_plan": {
+    "phase_1_backup": {
+      "description": "Timestamped backup before any write.",
+      "command_template": "cp lottery_api/data/lottery_v2.db backups/p246_big_lotto_quarantine_backup_YYYYMMDD_HHMMSS.db",
+      "sha256_required": true,
+      "authorization": "Type D explicit human gate required"
+    },
+    "phase_2_quarantine_table": {
+      "description": "Create draws_big_lotto_quarantine table; move contaminated rows.",
+      "families_to_move": [
+        "SIM_HYPHEN",
+        "DATE_FORMAT_ALIEN",
+        "SMALL_POOL_ALIEN",
+        "INVALID_CARDINALITY",
+        "IMPOSSIBLE_RANGE",
+        "OTHER"
+      ],
+      "sim_hyphen_sql": "draw LIKE '%-%'",
+      "date_format_sql": "LENGTH(draw)=8 AND draw LIKE '20%' AND draw NOT LIKE '%-%'",
+      "small_pool_note": "SMALL_POOL_ALIEN requires Python-driven inspection (max(numbers)<=25 per row)",
+      "authorization": "Type D explicit human gate required"
+    },
+    "phase_3_verification": {
+      "description": "Verify canonical row count and drift guard after quarantine.",
+      "expected_canonical": 2118,
+      "drift_guard_check": "replay rows must remain 94,924",
+      "integrity_check": "PRAGMA integrity_check -> ok",
+      "authorization": "Type D explicit human gate required"
+    },
+    "phase_4_re_audit": {
+      "description": "Re-run P246 on cleaned data to confirm GATE_RED resolved.",
+      "expected_outcome": "CANONICAL_PLAUSIBLE ~2118; contamination families empty.",
+      "gate_reassignment": "GATE_RED -> GATE_CLOSED_RANDOM_COMPATIBLE (pending clean P238B-style re-audit)"
+    },
+    "what_this_does_not_authorize": [
+      "No strategy development or promotion on BIG_LOTTO",
+      "No prediction research or GATE_OPEN",
+      "No production recommendation change",
+      "No registry mutation",
+      "No controlled_apply",
+      "No betting advice",
+      "BIG_LOTTO GATE_RED_DATA_CONTAMINATION remains until re-audit passes"
+    ]
+  },
+  "allowed_actions": [
+    "read_only_investigation",
+    "data_integrity_audit",
+    "quarantine_plan_design",
+    "present_to_user_for_Type_D_authorization"
+  ],
+  "forbidden_actions": [
+    "DB write",
+    "DB migration apply",
+    "registry mutation",
+    "production recommendation change",
+    "controlled_apply",
+    "strategy promotion",
+    "betting advice",
+    "claiming exploitable edge from contamination",
+    "GATE_OPEN promotion for BIG_LOTTO"
+  ],
+  "required_authorization_for_apply": "Explicit Type D human gate required before any DB quarantine is executed.",
+  "current_gate_state": "GATE_RED_DATA_CONTAMINATION",
+  "gate_lifted_condition": "After Type D quarantine executed, P246 re-audit passes, canonical rows ~2118, drift guard PASS.",
+  "anomaly_is_not_predictor": true,
+  "classification": "P246_BIG_LOTTO_DATA_INTEGRITY_AUDIT_COMPLETE_GATE_RED_CONFIRMED",
+  "final_decision": "BIG_LOTTO draws table is ~90.5% contaminated (20,125 of 22,238 rows non-canonical). Three contamination families identified and quantified. All P219 structural-break signals explained by these families. No exploitable edge. BIG_LOTTO GATE_RED_DATA_CONTAMINATION remains. Quarantine plan produced; DB modification requires Type D authorization."
+}

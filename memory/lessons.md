@@ -5,6 +5,26 @@
 
 ---
 
+## L109 — P246D BIG_LOTTO 加碼記錄隔離設計原則 (2026-06-05)
+
+**來源：** P246D 隔離設計
+
+**結論：** 隔離 BIG_LOTTO 加碼記錄的正確方式是過濾（filter/view），而非刪除。
+P219 的 `draw NOT LIKE '%-%'` filter 是已驗證的黃金標準。資料庫目前無任何 canonical view，需新增。
+
+**正確隔離路徑（分四階段）：**
+1. **Phase 1（無需 DB 寫入）**: 在 `database.py` 新增 `get_canonical_draws()` helper，過濾 BIG_LOTTO 的加碼記錄（draw NOT LIKE '%-%' 且非 DATE_FORMAT_ALIEN）。更新研究/策略/回放呼叫端（key: `quick_predict.py:169`）。
+2. **Phase 2（Type D）**: 建立 `draws_big_lotto_canonical_main` SQL view
+3. **Phase 3（Type D）**: 建立 `draw_row_family_annotations` 標記表，Python 驅動偵測 SMALL_POOL_ALIEN（max(numbers)<=25）
+4. **Phase 4**: 重新執行受影響文物/測試（P238B NIST、test_p238b >= 22238 → >= 2113）
+
+**關鍵規則：**
+- ADD_ON_PRIZE_EXCLUDED 列必須保留，任何 DELETE 操作均被拒絕
+- 展示/歷史 API（`get_draws`、`get_all_draws`）可傳回全部記錄，但須標示加碼記錄類型
+- `SMALL_POOL_ALIEN` 無法單靠 SQL 過濾，需 Python 判斷 max(numbers)>25
+
+---
+
 ## L108 — P246C database.py 無 canonical filter 傳回混合族群 (2026-06-05)
 
 **來源：** P246C 影響範圍審計

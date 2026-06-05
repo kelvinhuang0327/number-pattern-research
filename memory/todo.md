@@ -11,6 +11,17 @@
 
 _（目前無進行中任務）_
 
+### P246D BIG_LOTTO 加碼記錄隔離設計 ✅ 2026-06-05 完成
+- [x] 確認 PR #318 (P246C) CI PASS，合併至 main
+- [x] 讀取 DB read-only：確認無 canonical view，共 22,238 筆 BIG_LOTTO
+- [x] 評估 5 個隔離選項（OPT-A/B/C/D/E）；拒絕直接刪除（OPT-E）
+- [x] 推薦四階段隔離路徑：Phase 1 code helper（無 DB 寫入）→ Phase 2 SQL view → Phase 3 annotation table → Phase 4 re-validate
+- [x] 確認 Phase 1 立即可實作：新增 get_canonical_draws()，filter draw NOT LIKE '%-%'
+- [x] 確認 quick_predict.py:169 是 Phase 1 首要更新目標
+- [x] 產出 P246D 文物（JSON+MD）+ 測試 45/45 PASS（全 133 PASS）
+- [x] 更新 memory/lessons.md（L109）
+- 完成標準：隔離設計已明確；保留加碼記錄；P247 apply 仍需 Type D 授權
+
 ### P246C BIG_LOTTO 加碼記錄影響範圍審計 ✅ 2026-06-05 完成
 - [x] 確認 PR #317 (P246B) CI PASS，合併至 main
 - [x] 掃描全 repo：database.py get_all_draws/get_draws 無 canonical filter（DIRECTLY_AFFECTED）

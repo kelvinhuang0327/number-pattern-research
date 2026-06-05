@@ -1617,3 +1617,51 @@ No DB write. No registry mutation. No production/recommendation/monitoring chang
 - P2.4 diagnostics layer: inventory (P241B) + schema module (P242) + fixture pack (P243A) complete.
 
 Final Classification: `P243A_DIAGNOSTIC_REPORT_FIXTURE_PACK_COMPLETE`
+
+---
+
+# CEO Decision — 2026-06-05 (Later) — P244C Diagnostics Integration Plan
+
+## 1. Context
+
+2026-06-05 Asia/Taipei. Final Classification: `P244C_DIAGNOSTICS_INTEGRATION_PLAN_COMPLETE`.
+
+Authorization: `Authorize P244C diagnostics integration plan (read-only design doc, no code changes)`
+
+- [Confirmed] Artifacts: `outputs/research/p244c_diagnostics_integration_plan_20260605.{md,json}`.
+- [Confirmed] Tests: `tests/test_p244c_diagnostics_integration_plan.py`. 34/34 PASS.
+- [Confirmed] DB: 94,924 rows; integrity ok; drift guard PASS.
+- [Confirmed] Type B under P240D — same-PR governance closeout applied.
+
+## 2. P244C Summary
+
+P244C completes the P2.4 diagnostics layer by connecting the P242 schema to future research workflows:
+- 8-step integration workflow for P211/P221F research tasks
+- Field mapping: P242 REQUIRED_SCHEMA_FIELDS → research checkpoints
+- 7 confidence-language templates (OBSERVATION_ONLY, NULL, UNDERPOWERED, WAIT_FOR_OOS, REJECTED, HUMAN_REVIEW_ONLY, SCHEMA_VALIDATED_ONLY)
+- 16 blocker labels for governance gates
+- Forbidden-language list
+- Reusable prompt snippet for future P211/P221F tasks
+
+## 3. Decision
+
+CEO accepts P244C as completing the P2.4 statistical diagnostics design layer. The layer now has: inventory (P241B) + schema module (P242) + fixture pack (P243A) + integration plan (P244C).
+
+**P2.4 layer is ready for P211 integration.** P211 restart requires separate explicit authorization: `"Start P211"`.
+
+No code changes. No DB write. No registry mutation. No production/recommendation/monitoring change. P211 remains HELD_BY_USER.
+
+## 4. Current State
+
+- `active_task.md` returns to `WAITING_FOR_USER_AUTHORIZATION`.
+- P211 remains `HELD_BY_USER`.
+- P238B NIST result remains `RANDOMNESS_AUDIT_YELLOW_OBSERVATION_ONLY`.
+- No deployable candidate in any lottery.
+- P2.4 diagnostics layer complete: P241B + P242 + P243A + P244C.
+
+## 5. Next Options
+
+- **Start P211**: `"Start P211"` — use P244C §3–§8 prompt snippet for schema discipline.
+- **Remain HOLD**: No action; system stays WAITING_FOR_USER_AUTHORIZATION.
+
+Final Classification: `P244C_DIAGNOSTICS_INTEGRATION_PLAN_COMPLETE`

@@ -1,0 +1,139 @@
+{
+  "task_id": "P214B",
+  "classification": "P214B_3STAR_4STAR_STRAIGHT_PLAY_READONLY_DIAGNOSTIC_COMPLETE",
+  "task_type": "Type C",
+  "date": "2026-06-05",
+  "production_db_write": false,
+  "ingestion_performed": false,
+  "replay_generation_performed": false,
+  "strategy_scan_performed": false,
+  "source_status": "DATA_READY_NO_STRATEGY_SCAN_AUTHORIZED",
+  "draw_rows_total": 64361,
+  "star_rows_by_lottery": {
+    "3_STAR": 5850,
+    "4_STAR": 5850
+  },
+  "star_replay_rows_by_lottery": {
+    "3_STAR": 0,
+    "4_STAR": 0
+  },
+  "baselines": {
+    "3_STAR_exact_ordered": "1/1000 = 0.001",
+    "4_STAR_exact_ordered": "1/10000 = 0.0001",
+    "per_position_digit_accuracy": "1/10 = 0.1"
+  },
+  "metrics_computed": [
+    "per_position_digit_distribution",
+    "per_position_chi2_descriptive",
+    "per_position_entropy_bits",
+    "repeated_digit_rate",
+    "rolling_window_summaries_w150_w500_w750_w1000"
+  ],
+  "findings_by_lottery": {
+    "3_STAR": {
+      "draw_count": 5850,
+      "expected_exact_hits_under_random": 5.85,
+      "power_status_exact": "MARGINAL",
+      "power_status_positional": "TRACTABLE",
+      "repeated_digit_rate": 0.28564,
+      "position_summary": {
+        "pos_0": {
+          "entropy_bits": 3.32077,
+          "chi2_descriptive": 9.4427,
+          "max_deviation_from_uniform": 0.00786,
+          "most_deviant_digit": 6
+        },
+        "pos_1": {
+          "entropy_bits": 3.32114,
+          "chi2_descriptive": 6.3385,
+          "max_deviation_from_uniform": 0.00564,
+          "most_deviant_digit": 1
+        },
+        "pos_2": {
+          "entropy_bits": 3.32054,
+          "chi2_descriptive": 11.1111,
+          "max_deviation_from_uniform": 0.00957,
+          "most_deviant_digit": 1
+        }
+      }
+    },
+    "4_STAR": {
+      "draw_count": 5850,
+      "expected_exact_hits_under_random": 0.585,
+      "power_status_exact": "INOPERABLE",
+      "power_status_positional": "TRACTABLE",
+      "exact_match_excluded": true,
+      "repeated_digit_rate": 0.50051,
+      "position_summary": {
+        "pos_0": {
+          "entropy_bits": 3.32026,
+          "chi2_descriptive": 13.4154,
+          "max_deviation_from_uniform": 0.00821,
+          "most_deviant_digit": 8
+        },
+        "pos_1": {
+          "entropy_bits": 3.32081,
+          "chi2_descriptive": 8.9744,
+          "max_deviation_from_uniform": 0.00821,
+          "most_deviant_digit": 0
+        },
+        "pos_2": {
+          "entropy_bits": 3.3196,
+          "chi2_descriptive": 19.0325,
+          "max_deviation_from_uniform": 0.01077,
+          "most_deviant_digit": 6
+        },
+        "pos_3": {
+          "entropy_bits": 3.32082,
+          "chi2_descriptive": 9.135,
+          "max_deviation_from_uniform": 0.00974,
+          "most_deviant_digit": 3
+        }
+      }
+    }
+  },
+  "power_warnings": {
+    "3_STAR_exact_match": "At N=5850 draws, expected exact hits under random = 5.85. Bonferroni-corrected threshold (~60 hypotheses) requires ~14 hits. 2x signal detection is borderline. Do not overclaim.",
+    "4_STAR_exact_match": "At N=5850 draws, expected exact hits under random = 0.585. Most likely 0 exact hits in the entire dataset. 4_STAR exact-match cannot distinguish null from any moderate signal. Exact-match analysis is excluded. Per-position analysis only.",
+    "per_position_3_STAR": "TRACTABLE — 17,550 digit observations",
+    "per_position_4_STAR": "TRACTABLE — 23,400 digit observations"
+  },
+  "leakage_guard": {
+    "all_history_used_for": "descriptive context only",
+    "walk_forward_oos": "not run in this diagnostic",
+    "no_parameter_fitting": true,
+    "pre_registered_windows_used": [
+      "w150",
+      "w500",
+      "w750",
+      "w1000"
+    ]
+  },
+  "multiple_testing_policy": {
+    "significance_tests_run": 0,
+    "chi2_values_are": "descriptive context only — not significance claims",
+    "bonferroni_required_for_p214c": true
+  },
+  "p227c_prior_context": "UNDERPOWERED_NO_SIGNAL for both 3_STAR and 4_STAR box-play",
+  "recommended_next_direction": "HOLD or authorize P214C straight-play diagnostic scan with pre-declared family, Bonferroni correction, walk-forward OOS, and per-position only for 4_STAR.",
+  "exact_authorization_phrase_for_next_direction": "Authorize P214C 3_STAR/4_STAR straight-play read-only diagnostic scan (Type C, no DB write, no strategy promotion, Bonferroni-corrected, per-position only for 4_STAR, walk-forward OOS required)",
+  "no_registry_mutation": true,
+  "no_production_recommendation_change": true,
+  "no_monitoring_change": true,
+  "no_strategy_authorization": true,
+  "no_betting_advice": true,
+  "no_recommended_numbers": true,
+  "p238b_interpretation": "RANDOMNESS_AUDIT_YELLOW_OBSERVATION_ONLY — observation only; no strategy, production, recommendation, monitoring, DB write, or betting implication.",
+  "tests": {
+    "command": "python3 -m unittest tests/test_p214b_3star_4star_straight_play_readonly_diagnostic.py -v"
+  },
+  "final_state": {
+    "active_task_status": "WAITING_FOR_USER_AUTHORIZATION",
+    "production_db_rows_unchanged": true,
+    "draw_rows_unchanged_at": 64361,
+    "replay_rows_unchanged_at": 94924,
+    "drift_guard": "REPLAY_LIFECYCLE_DRIFT_GUARD_PASS",
+    "p238b_remains": "RANDOMNESS_AUDIT_YELLOW_OBSERVATION_ONLY",
+    "no_active_worker_after_completion": true
+  }
+}

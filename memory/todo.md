@@ -11,6 +11,16 @@
 
 _（目前無進行中任務）_
 
+### P219 外部10法診斷掃描 ✅ 2026-06-05 完成（predictive-NULL）
+- [x] 背景：用戶（cost-no-object）授權跑全部10類外部方法，目標提高預測成功率
+- [x] Pre-register（P221F gate）：`outputs/research/p219_..._plan_20260605.md`
+- [x] 鎖定 clean distinct-real-draw 宇宙（BIG_LOTTO 排除 19,100 模擬列）
+- [x] 實作 read-only 引擎（pure stdlib, MC/permutation nulls）：`analysis/p219_external_method_diagnostic_sweep.py`
+- [x] 跑 10 families × 5 games = 44 tests，Bonferroni+BH 校正
+- [x] 測試 10/10 PASS（假陽性控制 + 注入偏差功率 + 校正單調性 + 可重現 + 模擬列排除）
+- [x] 裁決：predictive 家族全 NULL；唯一 corrected-sig 全為 BIG_LOTTO 資料污染 artifact
+- [x] 完成標準：predictive-NULL 證明 + 資料污染根因（≥3 來源）+ feature-bottleneck report
+
 ---
 
 ## 待辦 Backlog
@@ -114,6 +124,14 @@ _（目前無進行中任務）_
 ## Review 區段
 
 > 每個任務完成後在此記錄：結果摘要、遇到的問題、後續影響
+
+### 2026-06-05 — P219 外部10法診斷掃描（predictive-NULL + 資料污染發現）
+- 結果：10 families × 5 games = 44 multiplicity-corrected tests。**forward-predictive 家族（M5/M8/M9）在所有遊戲全 NULL**（最佳 +0.49pp p=0.226 在污染資料上）。MI≈0，無 exploitable edge。再確認 L82/L91/P178A/P236A。
+- 唯一 corrected-significant：全在 BIG_LOTTO（M1/M2/M3/M4/M6）+ 弱 539:M3（BH-only Bonferroni-FAIL）。
+- 根因（裁決）：**非彩票偏差，而是 BIG_LOTTO `draws` 表資料污染** — 22,238 列僅 ~2,113 為真 6/49（19,100 模擬 + 375 date-format 異種 + 650 小池異種）。drift/changepoint 偵測到的是「資料管線斷點」，anomaly≠predictor。
+- 問題：BIG_LOTTO raw `draws` 會污染任何分析；統計單位必須 = distinct real 6/49。
+- 影響：(1) 用戶目標「提高預測成功率」= 無外部方法可達（fair-random）；(2) **flag 資料完整性任務**（read-only audit + quarantine plan，需另開 Type B/D，不在本任務改 DB）；(3) 教訓 L_P219_A/B/C 入 lessons.md。
+- 產出：`analysis/p219_external_method_diagnostic_sweep.py`, `outputs/research/p219_..._{plan_,}20260605.{md,json}`, `tests/test_p219_..._sweep.py`（10/10 PASS）。
 
 ### 2026-02-24 — Workflow 基礎建設
 - 結果：CLAUDE.md + rejected/ + memory/ + strategies/ 四件套建立完成

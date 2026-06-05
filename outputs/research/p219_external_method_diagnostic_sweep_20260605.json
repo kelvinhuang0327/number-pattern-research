@@ -1,0 +1,673 @@
+{
+  "seed": 20260605,
+  "b_scale": 1.0,
+  "games": {
+    "DAILY_539": {
+      "n_draws": 5879,
+      "config": {
+        "pool": 39,
+        "k": 5,
+        "kind": "number"
+      },
+      "methods": {
+        "M1_markov": {
+          "stat": "mean_consecutive_overlap",
+          "obs": 0.6456277645457639,
+          "p": 0.623688155922039,
+          "null_mean": 0.6409393501190881,
+          "B": 2000,
+          "tail": "two-sided",
+          "label": "DAILY_539:M1_markov",
+          "bonferroni_sig": false,
+          "bh_sig": false
+        },
+        "M2_gap": {
+          "stat": "pooled_gap_var_over_mean",
+          "obs": 6.8428317665495335,
+          "p": 0.519350811485643,
+          "null_mean": 6.788822286832029,
+          "B": 800,
+          "tail": "two-sided",
+          "label": "DAILY_539:M2_gap",
+          "bonferroni_sig": false,
+          "bh_sig": false
+        },
+        "M3_drift": {
+          "stat": "max_window_L1_drift(W=200)",
+          "obs": 0.22354856268072804,
+          "p": 0.003992015968063872,
+          "null_mean": 0.1869443163803368,
+          "B": 500,
+          "tail": "greater",
+          "label": "DAILY_539:M3_drift",
+          "bonferroni_sig": false,
+          "bh_sig": true
+        },
+        "M4_changepoint": {
+          "stat": "cusum_range_normalized",
+          "obs": 104.68077590932451,
+          "p": 0.30434782608695654,
+          "null_mean": 95.32465849950565,
+          "B": 2000,
+          "tail": "greater",
+          "label": "DAILY_539:M4_changepoint",
+          "bonferroni_sig": false,
+          "bh_sig": false
+        },
+        "M5_bayes": {
+          "stat": "dirichlet_topk_oos_hitrate(oos=500)",
+          "obs": 0.1112,
+          "baseline": 0.1282051282051282,
+          "edge": -0.0170051282051282,
+          "p": 0.9975012493753124,
+          "null_mean": 0.1285478,
+          "B": 2000,
+          "tail": "greater",
+          "label": "DAILY_539:M5_bayes",
+          "bonferroni_sig": false,
+          "bh_sig": false
+        },
+        "M6_entropy": {
+          "entropy": {
+            "stat": "freq_distribution_shannon_entropy_bits",
+            "obs": 5.284588046122839,
+            "p": 0.9850249584026622,
+            "null_mean": 5.284572817775026,
+            "B": 600,
+            "tail": "two-sided",
+            "label": "DAILY_539:M6_entropy:entropy",
+            "bonferroni_sig": false,
+            "bh_sig": false
+          },
+          "compression": {
+            "stat": "zlib_compression_ratio",
+            "obs": 0.29405544968340813,
+            "p": 0.43926788685524126,
+            "null_mean": 0.2936740603827368,
+            "B": 600,
+            "tail": "two-sided",
+            "label": "DAILY_539:M6_entropy:compression",
+            "bonferroni_sig": false,
+            "bh_sig": false
+          }
+        },
+        "M7_spectral": {
+          "stat": "max_schuster_periodogram_power(pmax=40)",
+          "obs": 2641.659273867087,
+          "dominant_period": 37,
+          "p": 0.36658354114713215,
+          "null_mean": 2481.4868414909924,
+          "B": 400,
+          "tail": "greater",
+          "label": "DAILY_539:M7_spectral",
+          "bonferroni_sig": false,
+          "bh_sig": false
+        },
+        "M8_perm_model": {
+          "stat": "freq_generator_oos_hitrate(oos=500)",
+          "obs": 0.1112,
+          "baseline": 0.1282051282051282,
+          "edge": -0.0170051282051282,
+          "p": 0.9945027486256871,
+          "null_mean": 0.1283754,
+          "B": 2000,
+          "tail": "greater",
+          "label": "DAILY_539:M8_perm_model",
+          "bonferroni_sig": false,
+          "bh_sig": false
+        },
+        "M9_conformal": {
+          "stat": "conformal_set_size_reduction_vs_trivial",
+          "obs": -0.02564102564102555,
+          "chosen_set_size": 32,
+          "test_coverage": 0.8131519274376418,
+          "target": 0.8,
+          "p": 0.9983361064891847,
+          "null_mean": -0.01912393162393153,
+          "B": 600,
+          "tail": "greater",
+          "label": "DAILY_539:M9_conformal",
+          "bonferroni_sig": false,
+          "bh_sig": false
+        },
+        "M10_bottleneck": {
+          "baseline": 0.1282051282051282,
+          "oos_len": 500,
+          "n_bets": 2500,
+          "min_detectable_edge_pp": 1.872181203545376,
+          "mutual_information": {
+            "trailing_freq_to_next_hit_bits": 8.841328351939448e-06,
+            "pct_of_outcome_entropy": 1.600254576502344e-05
+          }
+        }
+      }
+    },
+    "BIG_LOTTO": {
+      "n_draws": 3138,
+      "config": {
+        "pool": 49,
+        "k": 6,
+        "kind": "number"
+      },
+      "methods": {
+        "M1_markov": {
+          "stat": "mean_consecutive_overlap",
+          "obs": 0.9856550844756137,
+          "p": 0.0009995002498750624,
+          "null_mean": 0.8128130379343322,
+          "B": 2000,
+          "tail": "two-sided",
+          "label": "BIG_LOTTO:M1_markov",
+          "bonferroni_sig": true,
+          "bh_sig": true
+        },
+        "M2_gap": {
+          "stat": "pooled_gap_var_over_mean",
+          "obs": 30.476375801614164,
+          "p": 0.0024968789013732834,
+          "null_mean": 7.144156645182809,
+          "B": 800,
+          "tail": "two-sided",
+          "label": "BIG_LOTTO:M2_gap",
+          "bonferroni_sig": false,
+          "bh_sig": true
+        },
+        "M3_drift": {
+          "stat": "max_window_L1_drift(W=200)",
+          "obs": 0.6977905247503718,
+          "p": 0.001996007984031936,
+          "null_mean": 0.17819220310176334,
+          "B": 500,
+          "tail": "greater",
+          "label": "BIG_LOTTO:M3_drift",
+          "bonferroni_sig": false,
+          "bh_sig": true
+        },
+        "M4_changepoint": {
+          "stat": "cusum_range_normalized",
+          "obs": 761.5675122733594,
+          "p": 0.0004997501249375312,
+          "null_mean": 69.42074407676333,
+          "B": 2000,
+          "tail": "greater",
+          "label": "BIG_LOTTO:M4_changepoint",
+          "bonferroni_sig": true,
+          "bh_sig": true
+        },
+        "M5_bayes": {
+          "stat": "dirichlet_topk_oos_hitrate(oos=500)",
+          "obs": 0.12733333333333333,
+          "baseline": 0.12244897959183673,
+          "edge": 0.004884353741496594,
+          "p": 0.22588705647176413,
+          "null_mean": 0.12247,
+          "B": 2000,
+          "tail": "greater",
+          "label": "BIG_LOTTO:M5_bayes",
+          "bonferroni_sig": false,
+          "bh_sig": false
+        },
+        "M6_entropy": {
+          "entropy": {
+            "stat": "freq_distribution_shannon_entropy_bits",
+            "obs": 5.536464683259435,
+            "p": 0.0033277870216306157,
+            "null_mean": 5.613045853434196,
+            "B": 600,
+            "tail": "two-sided",
+            "label": "BIG_LOTTO:M6_entropy:entropy",
+            "bonferroni_sig": false,
+            "bh_sig": true
+          },
+          "compression": {
+            "stat": "zlib_compression_ratio",
+            "obs": 0.28551601835074597,
+            "p": 0.0033277870216306157,
+            "null_mean": 0.30560373750383407,
+            "B": 600,
+            "tail": "two-sided",
+            "label": "BIG_LOTTO:M6_entropy:compression",
+            "bonferroni_sig": false,
+            "bh_sig": true
+          }
+        },
+        "M7_spectral": {
+          "stat": "max_schuster_periodogram_power(pmax=40)",
+          "obs": 2806.933390902037,
+          "dominant_period": 34,
+          "p": 1.0,
+          "null_mean": 8647.366855171285,
+          "B": 400,
+          "tail": "greater",
+          "label": "BIG_LOTTO:M7_spectral",
+          "bonferroni_sig": false,
+          "bh_sig": false
+        },
+        "M8_perm_model": {
+          "stat": "freq_generator_oos_hitrate(oos=500)",
+          "obs": 0.12733333333333333,
+          "baseline": 0.12244897959183673,
+          "edge": 0.004884353741496594,
+          "p": 0.20739630184907545,
+          "null_mean": 0.1222535,
+          "B": 2000,
+          "tail": "greater",
+          "label": "BIG_LOTTO:M8_perm_model",
+          "bonferroni_sig": false,
+          "bh_sig": false
+        },
+        "M9_conformal": {
+          "stat": "conformal_set_size_reduction_vs_trivial",
+          "obs": -0.020408163265306145,
+          "chosen_set_size": 40,
+          "test_coverage": 0.802547770700637,
+          "target": 0.8,
+          "p": 0.9833610648918469,
+          "null_mean": -0.01339285714285714,
+          "B": 600,
+          "tail": "greater",
+          "label": "BIG_LOTTO:M9_conformal",
+          "bonferroni_sig": false,
+          "bh_sig": false
+        },
+        "M10_bottleneck": {
+          "baseline": 0.12244897959183673,
+          "oos_len": 500,
+          "n_bets": 3000,
+          "min_detectable_edge_pp": 1.6757575198417345,
+          "mutual_information": {
+            "trailing_freq_to_next_hit_bits": 0.009586139704553475,
+            "pct_of_outcome_entropy": 0.017872596651231483
+          }
+        }
+      }
+    },
+    "POWER_LOTTO": {
+      "n_draws": 1916,
+      "config": {
+        "pool": 38,
+        "k": 6,
+        "kind": "number"
+      },
+      "methods": {
+        "M1_markov": {
+          "stat": "mean_consecutive_overlap",
+          "obs": 0.9347258485639687,
+          "p": 0.5177411294352824,
+          "null_mean": 0.9472736292428199,
+          "B": 2000,
+          "tail": "two-sided",
+          "label": "POWER_LOTTO:M1_markov",
+          "bonferroni_sig": false,
+          "bh_sig": false
+        },
+        "M2_gap": {
+          "stat": "pooled_gap_var_over_mean",
+          "obs": 5.2429960171799195,
+          "p": 0.45942571785268416,
+          "null_mean": 5.318336328689611,
+          "B": 800,
+          "tail": "two-sided",
+          "label": "POWER_LOTTO:M2_gap",
+          "bonferroni_sig": false,
+          "bh_sig": false
+        },
+        "M3_drift": {
+          "stat": "max_window_L1_drift(W=200)",
+          "obs": 0.1437821851078636,
+          "p": 0.8063872255489022,
+          "null_mean": 0.1521215170494085,
+          "B": 500,
+          "tail": "greater",
+          "label": "POWER_LOTTO:M3_drift",
+          "bonferroni_sig": false,
+          "bh_sig": false
+        },
+        "M4_changepoint": {
+          "stat": "cusum_range_normalized",
+          "obs": 46.62231769279127,
+          "p": 0.7011494252873564,
+          "null_mean": 53.58660981538945,
+          "B": 2000,
+          "tail": "greater",
+          "label": "POWER_LOTTO:M4_changepoint",
+          "bonferroni_sig": false,
+          "bh_sig": false
+        },
+        "M5_bayes": {
+          "stat": "dirichlet_topk_oos_hitrate(oos=500)",
+          "obs": 0.15733333333333333,
+          "baseline": 0.15789473684210525,
+          "edge": -0.0005614035087719293,
+          "p": 0.5382308845577212,
+          "null_mean": 0.15793316666666665,
+          "B": 2000,
+          "tail": "greater",
+          "label": "POWER_LOTTO:M5_bayes",
+          "bonferroni_sig": false,
+          "bh_sig": false
+        },
+        "M6_entropy": {
+          "entropy": {
+            "stat": "freq_distribution_shannon_entropy_bits",
+            "obs": 5.245824694025449,
+            "p": 0.778702163061564,
+            "null_mean": 5.2459203191114945,
+            "B": 600,
+            "tail": "two-sided",
+            "label": "POWER_LOTTO:M6_entropy:entropy",
+            "bonferroni_sig": false,
+            "bh_sig": false
+          },
+          "compression": {
+            "stat": "zlib_compression_ratio",
+            "obs": 0.2932716515609265,
+            "p": 0.5723793677204659,
+            "null_mean": 0.29373627726398666,
+            "B": 600,
+            "tail": "two-sided",
+            "label": "POWER_LOTTO:M6_entropy:compression",
+            "bonferroni_sig": false,
+            "bh_sig": false
+          }
+        },
+        "M7_spectral": {
+          "stat": "max_schuster_periodogram_power(pmax=40)",
+          "obs": 3430.7523697037295,
+          "dominant_period": 30,
+          "p": 0.14214463840399003,
+          "null_mean": 2632.8327785778356,
+          "B": 400,
+          "tail": "greater",
+          "label": "POWER_LOTTO:M7_spectral",
+          "bonferroni_sig": false,
+          "bh_sig": false
+        },
+        "M8_perm_model": {
+          "stat": "freq_generator_oos_hitrate(oos=500)",
+          "obs": 0.15733333333333333,
+          "baseline": 0.15789473684210525,
+          "edge": -0.0005614035087719293,
+          "p": 0.5337331334332833,
+          "null_mean": 0.15781866666666666,
+          "B": 2000,
+          "tail": "greater",
+          "label": "POWER_LOTTO:M8_perm_model",
+          "bonferroni_sig": false,
+          "bh_sig": false
+        },
+        "M9_conformal": {
+          "stat": "conformal_set_size_reduction_vs_trivial",
+          "obs": -0.019736842105263053,
+          "chosen_set_size": 31,
+          "test_coverage": 0.8188657407407408,
+          "target": 0.8,
+          "p": 0.9650582362728786,
+          "null_mean": -0.016392543859649028,
+          "B": 600,
+          "tail": "greater",
+          "label": "POWER_LOTTO:M9_conformal",
+          "bonferroni_sig": false,
+          "bh_sig": false
+        },
+        "M10_bottleneck": {
+          "baseline": 0.15789473684210525,
+          "oos_len": 500,
+          "n_bets": 3000,
+          "min_detectable_edge_pp": 1.864079462836097,
+          "mutual_information": {
+            "trailing_freq_to_next_hit_bits": 1.6405420799184007e-05,
+            "pct_of_outcome_entropy": 2.607141999898182e-05
+          }
+        }
+      }
+    },
+    "3_STAR": {
+      "n_draws": 5850,
+      "config": {
+        "pool": 10,
+        "k": 3,
+        "kind": "digit"
+      },
+      "methods": {
+        "M1_markov": {
+          "stat": "consecutive_digit_match_rate",
+          "obs": 0.09916224995725766,
+          "p": 0.7206396801599201,
+          "null_mean": 0.10005263007921582,
+          "B": 2000,
+          "tail": "two-sided",
+          "label": "3_STAR:M1_markov",
+          "bonferroni_sig": false,
+          "bh_sig": false
+        },
+        "M3_drift": {
+          "stat": "max_window_L1_drift(W=200)",
+          "obs": 0.2164957264957265,
+          "p": 0.716566866267465,
+          "null_mean": 0.22384962962962962,
+          "B": 500,
+          "tail": "greater",
+          "label": "3_STAR:M3_drift",
+          "bonferroni_sig": false,
+          "bh_sig": false
+        },
+        "M4_changepoint": {
+          "stat": "cusum_range_normalized",
+          "obs": 80.30038462666046,
+          "p": 0.7246376811594203,
+          "null_mean": 94.54093602934856,
+          "B": 2000,
+          "tail": "greater",
+          "label": "3_STAR:M4_changepoint",
+          "bonferroni_sig": false,
+          "bh_sig": false
+        },
+        "M6_entropy": {
+          "entropy": {
+            "stat": "freq_distribution_shannon_entropy_bits",
+            "obs": 4.905780589325239,
+            "p": 0.9118136439267887,
+            "null_mean": 4.905779972056737,
+            "B": 600,
+            "tail": "two-sided",
+            "label": "3_STAR:M6_entropy:entropy",
+            "bonferroni_sig": false,
+            "bh_sig": false
+          },
+          "compression": {
+            "stat": "zlib_compression_ratio",
+            "obs": 0.32240234764523207,
+            "p": 0.7753743760399334,
+            "null_mean": 0.3222109841685898,
+            "B": 600,
+            "tail": "two-sided",
+            "label": "3_STAR:M6_entropy:compression",
+            "bonferroni_sig": false,
+            "bh_sig": false
+          }
+        },
+        "M7_spectral": {
+          "stat": "max_schuster_periodogram_power(pmax=40)",
+          "obs": 97.88181234851967,
+          "dominant_period": 26,
+          "p": 0.47880299251870323,
+          "null_mean": 103.29315037468878,
+          "B": 400,
+          "tail": "greater",
+          "label": "3_STAR:M7_spectral",
+          "bonferroni_sig": false,
+          "bh_sig": false
+        },
+        "M8_perm_model": {
+          "stat": "freq_generator_oos_hitrate(oos=500)",
+          "obs": 0.1,
+          "baseline": 0.1,
+          "edge": 0.0,
+          "p": 0.4912543728135932,
+          "null_mean": 0.09991466666666667,
+          "B": 2000,
+          "tail": "greater",
+          "label": "3_STAR:M8_perm_model",
+          "bonferroni_sig": false,
+          "bh_sig": false
+        },
+        "M10_bottleneck": {
+          "baseline": 0.1,
+          "oos_len": 500,
+          "n_bets": 1500,
+          "min_detectable_edge_pp": 2.1688706738761536,
+          "mutual_information": {}
+        }
+      }
+    },
+    "4_STAR": {
+      "n_draws": 5850,
+      "config": {
+        "pool": 10,
+        "k": 4,
+        "kind": "digit"
+      },
+      "methods": {
+        "M1_markov": {
+          "stat": "consecutive_digit_match_rate",
+          "obs": 0.09873482646606258,
+          "p": 0.5197401299350325,
+          "null_mean": 0.10000482988545051,
+          "B": 2000,
+          "tail": "two-sided",
+          "label": "4_STAR:M1_markov",
+          "bonferroni_sig": false,
+          "bh_sig": false
+        },
+        "M3_drift": {
+          "stat": "max_window_L1_drift(W=200)",
+          "obs": 0.20271367521367523,
+          "p": 0.9221556886227545,
+          "null_mean": 0.2149477777777778,
+          "B": 500,
+          "tail": "greater",
+          "label": "4_STAR:M3_drift",
+          "bonferroni_sig": false,
+          "bh_sig": false
+        },
+        "M4_changepoint": {
+          "stat": "cusum_range_normalized",
+          "obs": 66.32703838207095,
+          "p": 0.9335332333833083,
+          "null_mean": 94.8387837510877,
+          "B": 2000,
+          "tail": "greater",
+          "label": "4_STAR:M4_changepoint",
+          "bonferroni_sig": false,
+          "bh_sig": false
+        },
+        "M6_entropy": {
+          "entropy": {
+            "stat": "freq_distribution_shannon_entropy_bits",
+            "obs": 5.320374091949939,
+            "p": 0.129783693843594,
+            "null_mean": 5.3208228504506145,
+            "B": 600,
+            "tail": "two-sided",
+            "label": "4_STAR:M6_entropy:entropy",
+            "bonferroni_sig": false,
+            "bh_sig": false
+          },
+          "compression": {
+            "stat": "zlib_compression_ratio",
+            "obs": 0.3265240710271587,
+            "p": 0.9584026622296173,
+            "null_mean": 0.32656449211877747,
+            "B": 600,
+            "tail": "two-sided",
+            "label": "4_STAR:M6_entropy:compression",
+            "bonferroni_sig": false,
+            "bh_sig": false
+          }
+        },
+        "M7_spectral": {
+          "stat": "max_schuster_periodogram_power(pmax=40)",
+          "obs": 145.60962592821164,
+          "dominant_period": 36,
+          "p": 0.36159600997506236,
+          "null_mean": 139.23081499216357,
+          "B": 400,
+          "tail": "greater",
+          "label": "4_STAR:M7_spectral",
+          "bonferroni_sig": false,
+          "bh_sig": false
+        },
+        "M8_perm_model": {
+          "stat": "freq_generator_oos_hitrate(oos=500)",
+          "obs": 0.097,
+          "baseline": 0.1,
+          "edge": -0.0030000000000000027,
+          "p": 0.6806596701649176,
+          "null_mean": 0.09986875,
+          "B": 2000,
+          "tail": "greater",
+          "label": "4_STAR:M8_perm_model",
+          "bonferroni_sig": false,
+          "bh_sig": false
+        },
+        "M10_bottleneck": {
+          "baseline": 0.1,
+          "oos_len": 500,
+          "n_bets": 2000,
+          "min_detectable_edge_pp": 1.8782971010998233,
+          "mutual_information": {}
+        }
+      }
+    }
+  },
+  "multiplicity": {
+    "family_size_m": 44,
+    "alpha": 0.05,
+    "bonferroni_alpha": 0.0011363636363636365,
+    "bonferroni_significant": [
+      "BIG_LOTTO:M1_markov",
+      "BIG_LOTTO:M4_changepoint"
+    ],
+    "bh_significant": [
+      "BIG_LOTTO:M1_markov",
+      "BIG_LOTTO:M2_gap",
+      "BIG_LOTTO:M3_drift",
+      "BIG_LOTTO:M4_changepoint",
+      "BIG_LOTTO:M6_entropy:compression",
+      "BIG_LOTTO:M6_entropy:entropy",
+      "DAILY_539:M3_drift"
+    ],
+    "uncorrected_p_lt_05": [
+      [
+        "BIG_LOTTO:M1_markov",
+        0.001
+      ],
+      [
+        "BIG_LOTTO:M2_gap",
+        0.0025
+      ],
+      [
+        "BIG_LOTTO:M3_drift",
+        0.002
+      ],
+      [
+        "BIG_LOTTO:M4_changepoint",
+        0.0005
+      ],
+      [
+        "BIG_LOTTO:M6_entropy:compression",
+        0.0033
+      ],
+      [
+        "BIG_LOTTO:M6_entropy:entropy",
+        0.0033
+      ],
+      [
+        "DAILY_539:M3_drift",
+        0.004
+      ]
+    ]
+  },
+  "classification": "P219_TEN_METHOD_DIAGNOSTIC_SWEEP_COMPLETE_WITH_CORRECTED_SIGNAL"
+}

@@ -1748,3 +1748,37 @@ CEO accepts P212 as completing the POWER_LOTTO IS-window diagnostic chain. No de
 - **Passive monitoring**: Wait for ≥300 new DAILY_539 draws per P224B protocol.
 
 Final Classification: `P212_POWER_LOTTO_BACKWARD_OOS_GAP_CHECK_COMPLETE`
+
+---
+
+# CEO Decision — 2026-06-05 (Later) — P213 New Hypothesis Scouting Plan
+
+## 1. Context
+
+2026-06-05 Asia/Taipei. Final Classification: `P213_NEW_HYPOTHESIS_SCOUTING_PLAN_COMPLETE`.
+
+Authorization: `Authorize P213 new hypothesis scouting plan (read-only design doc, no code changes, no DB write)`
+
+- [Confirmed] Artifacts: `outputs/research/p213_new_hypothesis_scouting_plan_20260605.{md,json}`. 36/36 PASS.
+- [Confirmed] DB: 94,924 rows; integrity ok; drift guard PASS. Type B under P240D.
+
+## 2. P213 Summary
+
+All research chains surveyed (P211R, P212, P231B, P230C, P227C, P238B, L90/L91). Four hypothesis categories identified:
+- H_STAR_POSITIONAL_REINGEST (recommended) — 3_STAR/4_STAR straight-play feasibility
+- H_DAILY539_FUTURE_OOS_GATE — passive monitoring gate (not open)
+- H_REGIME_SEGMENTATION — design-only, needs pre-registration
+- H_NIST_CONFIRMATION_DESIGN — contingent on ORANGE/RED trigger
+
+## 3. Decision
+
+CEO accepts P213 as completing the post-P212 scouting step. Recommended direction H_STAR_POSITIONAL_REINGEST is the only genuinely unanalyzed signal space.
+
+No DB write. No strategy authorized. Returns to WAITING_FOR_USER_AUTHORIZATION.
+
+## 4. Next Options
+
+- **3_STAR/4_STAR feasibility design**: `"Authorize P213B 3_STAR/4_STAR positional data recovery feasibility design (read-only, no DB write)"` — Type B design doc.
+- **Remain HOLD**: No action.
+
+Final Classification: `P213_NEW_HYPOTHESIS_SCOUTING_PLAN_COMPLETE`

@@ -1,11 +1,12 @@
 # Active Task — Today (2026-06-05)
 
 > **STATUS: `WAITING_FOR_USER_AUTHORIZATION`**
-> P212 POWER_LOTTO backward-OOS gap check complete (Type C, same-PR closeout).
-> Both `fourier30_markov30_2bet` and `zonal_entropy_2bet` have 0 pre-boundary draws. Temporal split shows early period BELOW baseline for both.
-> Classification: `P212_POWER_LOTTO_BACKWARD_OOS_GAP_CHECK_HISTORICAL_ARTIFACT`. No deployable edge. 31/31 tests PASS.
+> P213 new hypothesis scouting plan complete (Type B, same-PR closeout).
+> Survey of all closed research lines; 4 candidate hypothesis categories; recommended direction: H_STAR_POSITIONAL_REINGEST.
+> Authorization for recommended next step: `"Authorize P213B 3_STAR/4_STAR positional data recovery feasibility design (read-only, no DB write)"`
+> 36/36 targeted tests PASS. No code changes. No DB write. No strategy promotion.
 > P238B NIST audit remains `RANDOMNESS_AUDIT_YELLOW_OBSERVATION_ONLY`.
-> Final Classification: `P212_POWER_LOTTO_BACKWARD_OOS_GAP_CHECK_COMPLETE`
+> Final Classification: `P213_NEW_HYPOTHESIS_SCOUTING_PLAN_COMPLETE`
 
 ---
 
@@ -33,7 +34,8 @@
 | P244C Diagnostics integration plan | `P244C_DIAGNOSTICS_INTEGRATION_PLAN_COMPLETE` — Type B same-PR closeout; 34/34 tests PASS; field mapping + confidence templates + blocker vocab + prompt snippet |
 | P211R Short/mid-window diagnostic | `P211R_SHORT_MID_WINDOW_DIAGNOSTIC_COMPLETE` (artifact: P211R_IS_CANDIDATES_PRIOR_OOS_REJECTED_HISTORICAL_ARTIFACT) — Type C same-PR; 34/34 PASS |
 | P211S Post-P211R decision support | `P211S_POST_P211R_DECISION_SUPPORT_COMPLETE` — Type A; no files; recommended P212 gap check |
-| P212 POWER_LOTTO backward-OOS gap check | `P212_POWER_LOTTO_BACKWARD_OOS_GAP_CHECK_COMPLETE` (artifact: P212_POWER_LOTTO_BACKWARD_OOS_GAP_CHECK_HISTORICAL_ARTIFACT) — Type C same-PR; 31/31 PASS; 0 pre-boundary draws; early period below baseline for both strategies |
+| P212 POWER_LOTTO backward-OOS gap check | `P212_POWER_LOTTO_BACKWARD_OOS_GAP_CHECK_COMPLETE` (artifact: P212_POWER_LOTTO_BACKWARD_OOS_GAP_CHECK_HISTORICAL_ARTIFACT) — Type C same-PR; 31/31 PASS; 0 pre-boundary draws; early period below baseline |
+| P213 New hypothesis scouting plan | `P213_NEW_HYPOTHESIS_SCOUTING_PLAN_COMPLETE` — Type B same-PR; 36/36 PASS; 4 candidate categories; recommended: H_STAR_POSITIONAL_REINGEST |
 
 P240B artifacts on main:
 - `outputs/research/p240b_governance_simplification_design_proposal_20260604.md`
@@ -99,4 +101,4 @@ All safety boundaries unchanged. No DB write, no registry mutation, no productio
 6. 是否允許進入下一輪
 7. Final Classification
 
-Final Classification (this file): `P212_POWER_LOTTO_BACKWARD_OOS_GAP_CHECK_COMPLETE`
+Final Classification (this file): `P213_NEW_HYPOTHESIS_SCOUTING_PLAN_COMPLETE`

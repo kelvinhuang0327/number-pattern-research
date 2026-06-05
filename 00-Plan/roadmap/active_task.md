@@ -1,14 +1,12 @@
 # Active Task — Today (2026-06-05)
 
 > **STATUS: `WAITING_FOR_USER_AUTHORIZATION`**
-> P213D 3_STAR/4_STAR positional schema and code fix design complete (Type B, same-PR closeout).
-> Recommended option: Option C — dual-write additive `numbers_positional` column; backward compatible; `numbers` semantics unchanged.
-> Root cause confirmed: `database.py:463` sorts unconditionally; `csv_validator.py` already correct.
-> Future phases: P213E (implementation design review) → P213F (code fix + tests) → P213G (dry-run source validation) → P213H (controlled DB migration). Each requires explicit authorization.
-> 51/51 tests PASS.
-> Recommended next: `"Authorize P213E 3_STAR/4_STAR positional schema implementation design review (read-only, no DB write)"`
+> P213E 3_STAR/4_STAR positional schema implementation design review complete (Type B, same-PR closeout).
+> Confirmed: only `database.py` needs modification; established try/except migration pattern; `csv_validator.py` unchanged; 17-test plan specified; non-permutation games provably unaffected.
+> 60/60 tests PASS.
+> Recommended next: `"Authorize P213F 3_STAR/4_STAR positional code fix implementation and tests (no production DB write)"`
 > P238B NIST audit remains `RANDOMNESS_AUDIT_YELLOW_OBSERVATION_ONLY`.
-> Final Classification: `P213D_3STAR_4STAR_POSITIONAL_SCHEMA_CODE_FIX_DESIGN_COMPLETE`
+> Final Classification: `P213E_3STAR_4STAR_POSITIONAL_SCHEMA_IMPLEMENTATION_DESIGN_REVIEW_COMPLETE`
 
 ---
 
@@ -41,6 +39,7 @@
 | P213B 3_STAR/4_STAR positional feasibility | `P213B_3STAR_4STAR_POSITIONAL_DATA_RECOVERY_FEASIBILITY_COMPLETE` (feasibility: POSSIBLE_BUT_SOURCE_UNCONFIRMED) — Type B same-PR; 37/37 PASS |
 | P213C 3_STAR/4_STAR source audit | `P213C_3STAR_4STAR_SOURCE_AUDIT_COMPLETE` — Type B same-PR; 50/50 PASS; source candidate found; `開出順序` confirmed in raw format; original CSV not in repo |
 | P213D 3_STAR/4_STAR schema/code fix design | `P213D_3STAR_4STAR_POSITIONAL_SCHEMA_CODE_FIX_DESIGN_COMPLETE` — Type B same-PR; 51/51 PASS; recommended Option C (additive `numbers_positional` column); backward compatible; 5-phase future implementation plan |
+| P213E 3_STAR/4_STAR schema impl design review | `P213E_3STAR_4STAR_POSITIONAL_SCHEMA_IMPLEMENTATION_DESIGN_REVIEW_COMPLETE` — Type B same-PR; 60/60 PASS; only database.py changes; try/except migration pattern; 17-test plan; non-permutation unaffected |
 
 P240B artifacts on main:
 - `outputs/research/p240b_governance_simplification_design_proposal_20260604.md`
@@ -106,4 +105,4 @@ All safety boundaries unchanged. No DB write, no registry mutation, no productio
 6. 是否允許進入下一輪
 7. Final Classification
 
-Final Classification (this file): `P213D_3STAR_4STAR_POSITIONAL_SCHEMA_CODE_FIX_DESIGN_COMPLETE`
+Final Classification (this file): `P213E_3STAR_4STAR_POSITIONAL_SCHEMA_IMPLEMENTATION_DESIGN_REVIEW_COMPLETE`

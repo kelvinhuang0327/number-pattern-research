@@ -1270,3 +1270,23 @@ T4 promotion (2026-05-05)
 
 - REPLAY_GOLIVE_READY_20260508
   - Evidence: tests/test_replay_api_contract.py 25 passed; tests/test_replay_freshness_cadence.py 8 passed; docs/REPLAY_OPERATION_SOP.md; scripts/snapshot_replay_db.py. Recorded in memory/lessons.md under REPLA  - Evidence: tests/test_replay_api_contract.py 25 passed; tests/test_replay_freshnessEE_DELTA_RELEASE_HANDOFF_FREEZE_VERIFIED
+
+---
+
+## P219 外部10法診斷掃描 (2026-06-05)
+
+**L_P219_A — 外部10法掃描全 predictive-NULL（再次確認 L82/L91/P178A/P236A）**
+- 10 method families × 5 games = 44 multiplicity-corrected tests，pre-registered（P221F），統計單位=distinct real draws，全 MC/permutation 經驗 p。
+- 三個 forward-predictive 家族（M5 Dirichlet / M8 freq-generator / M9 conformal）在所有 5 遊戲全 NULL：最佳 edge=BIG_LOTTO +0.49pp p=0.226（且在污染資料上），539/POWER edge 為負（L101 unconditional dilution），conformal set 比 trivial 還大。
+- M10 bottleneck：MI(trailing-freq→next-hit) 在 clean 遊戲 ≈ 8.8e-6 bits（539）/ 1.6e-5（POWER），遠低於 min-detectable-edge（~1.7–2.2pp）。channel 為空，無 bottleneck 可拓寬。
+- Evidence: analysis/p219_external_method_diagnostic_sweep.py; outputs/research/p219_external_method_diagnostic_sweep_20260605.{md,json}; tests/ 10/10 PASS.
+
+**L_P219_B — BIG_LOTTO `draws` 表嚴重資料污染（核心發現，非預測信號）**
+- BIG_LOTTO 22,238 列中僅 ~2,113 為可信 6/49（吻合 canonical「≈2,118 期」）。污染來源 ≥3：19,100 模擬列（hyphen 複合 ID `103000009-01..-100`）、375 date-format 異種（sum 74.7±2.4, max≤24, ID `20YYMMDD`）、~650 小池異種（2011-2014, max≤25, sum dip 至 ~100）。
+- 任何 BIG_LOTTO 分析若用 raw `draws` 將被污染；統計單位必須 = distinct real 6/49 draws。
+- Evidence: outputs/research/p219_..._20260605.md §4；read-only DB 重現（clean-set re-run + block trajectory + 539 control）。
+
+**L_P219_C — drift/changepoint 偵測到的是「資料管線斷點」而非「彩票偏差」（anomaly≠predictor 實證）**
+- 唯一通過 Bonferroni/BH 的 test 全在 BIG_LOTTO（M1 overlap, M4 CUSUM 11×null, M2 gap 4×, M3 drift 4×, M6 entropy/compression）+ 1 個弱 DAILY_539:M3_drift（BH-only, Bonferroni-FAIL, 1.2×, 無 M1/M4 佐證 → borderline false positive）。
+- 移除 375 date 列後信號仍在（剩 650 小池列）→ 證明多重污染源。DAILY_539 為 clean+stationary 對照（10 blocks sum~100/max~33 全平）→ 方法不會在乾淨資料上製造假信號。
+- 教訓：M3/M4 類偵測器對 mixed-source / non-stationary 歷史紀錄會「正確地」觸發，但偵測的是資料異質性，對下一期號碼零預測力。掃描出 corrected-significant ≠ 可利用 edge（L76 再確認）。

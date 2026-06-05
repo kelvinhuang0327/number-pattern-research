@@ -1858,3 +1858,37 @@ Rollback instruction: restore the backup over `lottery_api/data/lottery_v2.db` o
 - **Future straight-play analysis**: requires separate pre-registration and must inherit anti-overfit gates; P213H itself is not a strategy signal.
 
 Final Classification: `P213H_3STAR_4STAR_CONTROLLED_POSITIONAL_BACKFILL_COMPLETE`
+
+---
+
+# CEO Decision — 2026-06-05 (Later) — P213K Missing Source-Row Ingestion Feasibility Design
+
+## 1. Context
+
+2026-06-05 Asia/Taipei. Final Classification: `P213K_MISSING_SOURCE_ROW_INGESTION_FEASIBILITY_DESIGN_COMPLETE`.
+
+Authorization: `Authorize P213K missing source-row ingestion feasibility/design only (read-only, no DB write, no ingestion)`
+
+- [Confirmed] Type B read-only design; no DB write and no ingestion.
+- [Confirmed] Artifacts: `outputs/research/p213k_missing_source_row_ingestion_feasibility_design_20260605.{md,json}`.
+- [Confirmed] Tests: `tests/test_p213k_missing_source_row_ingestion_feasibility_design.py`. 13/13 PASS.
+- [Confirmed] DB: 94,924 replay rows unchanged; integrity ok; drift guard PASS.
+
+## 2. P213K Result
+
+P213K analyzed the 4,599 P213I source-only rows intentionally left uninserted by P213H:
+- 3_STAR: 1,671 missing source-only rows.
+- 4_STAR: 2,928 missing source-only rows.
+- Source duplicate `(lottery_type, draw)` keys: 0.
+- Exact missing keys found in DB: 0.
+- Same-lottery same-date substitute rows in DB: 0.
+
+Conclusion: future insertion is feasible only under a separate Type D gate with fresh backup, rollback plan, exact candidate dry-run, and no strategy scan or recommendation change.
+
+## 3. Decision
+
+CEO accepts P213K as a completed read-only feasibility design. P213K does not authorize insertion, ingestion, DB write, straight-play scan, box-play re-scan, registry mutation, production/recommendation change, monitoring, strategy promotion, P211 restart, or betting advice.
+
+Next explicit authorization phrase if continuing: `Authorize P213L controlled missing source-row ingestion gate for 3_STAR/4_STAR (Type D DB write, backup required, insert source-only rows only, no strategy scan, no recommendation change)`
+
+Final Classification: `P213K_MISSING_SOURCE_ROW_INGESTION_FEASIBILITY_DESIGN_COMPLETE`

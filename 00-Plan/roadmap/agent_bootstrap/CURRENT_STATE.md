@@ -1,7 +1,7 @@
 # Current State — LotteryNew
 
-**Last Reviewed:** 2026-06-05 Asia/Taipei (P213H controlled production DB positional backfill — 7,101 existing 3_STAR/4_STAR rows updated; 4,599 missing source rows not inserted; backup + sha256 recorded; replay rows 94,924; drift PASS; WAITING_FOR_USER_AUTHORIZATION)
-**State Marker:** `P213H_3STAR_4STAR_CONTROLLED_POSITIONAL_BACKFILL_COMPLETE`
+**Last Reviewed:** 2026-06-05 Asia/Taipei (P213K missing source-row ingestion feasibility design — Type B read-only; 4,599 source-only 3_STAR/4_STAR rows analyzed; no DB write; no ingestion; replay rows 94,924; drift PASS; WAITING_FOR_USER_AUTHORIZATION)
+**State Marker:** `P213K_MISSING_SOURCE_ROW_INGESTION_FEASIBILITY_DESIGN_COMPLETE`
 **Purpose:** Project-specific state for future agents. Read this after `SHARED_AGENT_BOOTSTRAP.md` and `TASK_TEMPLATES.md`.
 
 ## Canonical Execution Context
@@ -14,7 +14,7 @@
 | Current HEAD | HEAD must equal `origin/main`; verify with `git rev-parse HEAD` and `git rev-parse origin/main` before any task. Do not hardcode a live hash here — this field becomes stale after every PR merge. Last recorded PR merge: P228 governance closeout (branch `p228-star-replay-governance-closeout`). | [Self-verifying] |
 | `origin/main` | Must equal HEAD; see above. Verify with `git rev-parse origin/main`. | [Self-verifying] |
 | Git dir | `.git` | [Confirmed] |
-| Active worker task | none (P213H controlled production DB positional backfill complete) | [Confirmed] |
+| Active worker task | none (P213K missing source-row ingestion feasibility design complete) | [Confirmed] |
 | P211 status | `HELD_BY_USER`; do not auto-resume or re-prompt | [Confirmed] |
 
 ## Forbidden Execution Paths

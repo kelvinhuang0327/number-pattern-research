@@ -1481,3 +1481,50 @@ No DB write. No registry mutation. No production/recommendation/strategy change.
 - Governance simplification rules (Type A/B/C/D/E + No-op HOLD) are now active.
 
 Final Classification: `P240D_GOVERNANCE_SIMPLIFICATION_RULE_ADOPTION_COMPLETE`
+
+---
+
+# CEO Decision — 2026-06-05 (Later) — P241B P234 Statistical Diagnostics Inventory
+
+## 1. Context
+
+2026-06-05 Asia/Taipei. Final Classification: `P241B_P234_STATISTICAL_DIAGNOSTICS_INVENTORY_COMPLETE`.
+
+Authorization: `Authorize P241B P234 statistical diagnostics inventory (read-only design doc, no code changes)`
+Source: P234/P234A CEO `CEO_DECISION_PARTIALLY_APPROVED`; P2.4 design-only (OPT-C).
+
+- [Confirmed] P241B artifacts: `outputs/research/p241b_p234_statistical_diagnostics_inventory_20260605.{md,json}`.
+- [Confirmed] P241B test: `tests/test_p241b_p234_statistical_diagnostics_inventory.py`. 33/33 PASS.
+- [Confirmed] Task type: B (read-only design doc / artifact). Same-PR closeout applied.
+- [Confirmed] DB: 94,924 rows; integrity ok; bet_index nulls 0; duplicate keys 0; drift guard PASS.
+
+## 2. P241B Summary
+
+- Inventories 16 existing diagnostic methods across the P211A–P241A research chain.
+- Identifies 13 gap categories (no centralized family-size register, no shared baseline registry, no shared leakage-guard function, no feature-bottleneck schema, etc.).
+- Proposes a 43-field feature-bottleneck report schema (identity, sample/window, baseline/metric, statistical, robustness, classification/gate, confidence/safety fields).
+- Defines implementation gate language: no executable module built; future P242 requires separate authorization.
+- Classifies P241B as Type B under P240D; same-PR closeout justified; no separate P241C PR needed.
+
+## 3. Decision
+
+CEO accepts P241B as a completed read-only design/inventory artifact. This fulfills the P2.4 OPT-C design-only option approved in P234A.
+
+P241B does **not** authorize: P242 implementation, P211 restart, DB write, registry mutation, production/recommendation/monitoring change, strategy promotion, or betting advice.
+
+## 4. Current State
+
+- `active_task.md` returns to `WAITING_FOR_USER_AUTHORIZATION`.
+- P211 remains `HELD_BY_USER`.
+- P238B NIST result remains `RANDOMNESS_AUDIT_YELLOW_OBSERVATION_ONLY`.
+- No active worker task exists.
+- No deployable candidate exists in any lottery.
+- P2.4 statistical diagnostics layer: design-only inventory complete; implementation requires P242 authorization.
+
+## 5. Next Options
+
+- **Authorize P242**: `"Authorize P242 read-only statistical diagnostics schema implementation (no DB write, no production change)"` — Type C additive code.
+- **Start P211**: `"Start P211"` — requires explicit authorization.
+- **Remain HOLD**: No action; system stays WAITING_FOR_USER_AUTHORIZATION.
+
+Final Classification: `P241B_P234_STATISTICAL_DIAGNOSTICS_INVENTORY_COMPLETE`

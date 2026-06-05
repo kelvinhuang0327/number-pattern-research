@@ -1,7 +1,7 @@
 # Current State — LotteryNew
 
-**Last Reviewed:** 2026-06-05 Asia/Taipei (P240D governance simplification rule adoption — P240B proposal adopted into SHARED_AGENT_BOOTSTRAP.md and TASK_TEMPLATES.md; Task Type A/B/C/D/E + No-op HOLD rule active; WAITING_FOR_USER_AUTHORIZATION)
-**State Marker:** `P240D_GOVERNANCE_SIMPLIFICATION_RULE_ADOPTION_COMPLETE`
+**Last Reviewed:** 2026-06-05 Asia/Taipei (P241B P234 statistical diagnostics inventory — Type B same-PR closeout; design-doc only; no code implementation; 33/33 tests PASS; WAITING_FOR_USER_AUTHORIZATION)
+**State Marker:** `P241B_P234_STATISTICAL_DIAGNOSTICS_INVENTORY_COMPLETE`
 **Purpose:** Project-specific state for future agents. Read this after `SHARED_AGENT_BOOTSTRAP.md` and `TASK_TEMPLATES.md`.
 
 ## Canonical Execution Context
@@ -14,7 +14,7 @@
 | Current HEAD | HEAD must equal `origin/main`; verify with `git rev-parse HEAD` and `git rev-parse origin/main` before any task. Do not hardcode a live hash here — this field becomes stale after every PR merge. Last recorded PR merge: P228 governance closeout (branch `p228-star-replay-governance-closeout`). | [Self-verifying] |
 | `origin/main` | Must equal HEAD; see above. Verify with `git rev-parse origin/main`. | [Self-verifying] |
 | Git dir | `.git` | [Confirmed] |
-| Active worker task | none (P240D governance simplification rule adoption complete) | [Confirmed] |
+| Active worker task | none (P241B statistical diagnostics inventory complete) | [Confirmed] |
 | P211 status | `HELD_BY_USER`; do not auto-resume or re-prompt | [Confirmed] |
 
 ## Forbidden Execution Paths
@@ -156,6 +156,8 @@ Read-only baseline commands:
 - [Confirmed] P240B: Governance simplification design proposal complete. PR #291 merged 2026-06-04T14:29:34Z at commit 112d6b7. Artifacts: `outputs/research/p240b_governance_simplification_design_proposal_20260604.{md,json}`. Test: `tests/test_p240b_governance_simplification_design_proposal.py` 17/17 PASS. Classification: `P240B_GOVERNANCE_SIMPLIFICATION_DESIGN_PROPOSAL_COMPLETE`. **Proposal-only — simplification rules are NOT adopted.** Existing governance rules remain active. No DB write, no registry mutation, no production/recommendation/monitoring/strategy change. Adoption requires explicit authorization phrase: "Authorize P240C governance simplification rule adoption".
 - [Confirmed] P240C: P240B governance closeout complete. Records P240B artifacts and PR #291 in governance files. P240B proposal remains proposal-only. Existing governance rules remain active. DB unchanged at 94,924 rows. Drift guard PASS. Returned to `WAITING_FOR_USER_AUTHORIZATION`. P211 remains HELD_BY_USER. P238B NIST result remains RANDOMNESS_AUDIT_YELLOW_OBSERVATION_ONLY.
 - [Confirmed] P240D: Governance simplification rule adoption complete. P240B proposal adopted into `SHARED_AGENT_BOOTSTRAP.md` (§Task Type Classification) and `TASK_TEMPLATES.md` (header note). Task Types A/B/C/D/E and No-op HOLD rule are now active. All safety boundaries unchanged. No DB write, no registry mutation, no production/recommendation/monitoring/strategy change. Returned to `WAITING_FOR_USER_AUTHORIZATION`.
+- [Confirmed] P241A: Type A decision support complete. No files modified. Recommended P241B OPT-C statistical diagnostics inventory.
+- [Confirmed] P241B: P234 statistical diagnostics inventory complete. Type B same-PR closeout. Artifacts: `outputs/research/p241b_p234_statistical_diagnostics_inventory_20260605.{md,json}`. 33/33 targeted tests PASS. Read-only design/inventory only. 16 existing diagnostic methods inventoried; 13 gap categories identified; 43-field feature-bottleneck report schema proposed. No code implementation. No DB write. No registry mutation. No production/recommendation/monitoring/strategy change. No separate closeout PR required.
 
 ## Current Blockers / Holds
 
@@ -183,14 +185,14 @@ Read-only baseline commands:
 
 ## Recommended Next Direction
 
-No active deployable candidate in any lottery. **The P211A–P231B arc has exhausted all current in-window candidates. P232A all-catalog scoreboard confirms no deployable candidate. P233B registry hygiene resolved LIFECYCLE_UNRESOLVED to 0. P234/P234A CTO statistical-methods analysis complete (P2.4 design-only). P235A Lofea feasibility review complete (design-inspiration only, no deployable edge). P236A external statistical methods scouting complete (falsification/diagnostics-only; hit-rate closed; 7/8 methods already owned; net-new = NIST randomness-audit tripwire + payout EV; no deployable edge). P237C/P238A/P238B/P238D complete (NIST audit YELLOW observation-only). P240B/P240C/P240D complete (governance simplification adopted). Governance record is complete.** Do not start new research without explicit user authorization. Queued options:
+No active deployable candidate in any lottery. **The P211A–P231B arc has exhausted all current in-window candidates. P232A–P233B registry hygiene resolved LIFECYCLE_UNRESOLVED to 0. P234/P234A CTO statistical-methods analysis complete (P2.4 design-only). P235A Lofea feasibility review complete (design-inspiration only). P236A–P238D complete (NIST audit YELLOW observation-only). P240B–P240D complete (governance simplification adopted). P241A–P241B complete (statistical diagnostics inventory design-only; no code implementation). Governance record is complete.** Do not start new research without explicit user authorization. Queued options:
 
-1. **Passive monitoring** — wait for ≥300 new DAILY_539 draws (preferred 500); per P224B protocol.
-2. **3_STAR/4_STAR re-scan** — only after ≥10,000 total 3_STAR draws or positional re-ingestion; requires fresh pre-registration.
-3. **Explore entirely new strategies / hypotheses** — requires explicit authorization, fresh P221F pre-registration.
-4. **POWER_LOTTO first-zone future OOS** — observation-only (P231B NULL); future OOS only with explicit authorization and P221F gate.
+1. **Authorize P242 diagnostics schema implementation** — `"Authorize P242 read-only statistical diagnostics schema implementation (no DB write, no production change)"` — Type C additive code; implements the P241B schema as a read-only module.
+2. **P211 restart** — `"Start P211"` — requires explicit authorization. Currently HELD_BY_USER.
+3. **Passive monitoring** — wait for ≥300 new DAILY_539 draws (preferred 500); per P224B protocol.
+4. **3_STAR/4_STAR re-scan** — only after ≥10,000 total 3_STAR draws or positional re-ingestion.
 5. **NIST randomness-audit follow-on** — YELLOW observation-only; separate explicit authorization required.
-6. **P211 restart** — requires explicit authorization. Currently HELD_BY_USER.
+6. **Remain HOLD** — no action; system stays WAITING_FOR_USER_AUTHORIZATION.
 
 Retired: DAILY_539 survivor backward-OOS extension (P1.2) — resolved; POWER_LOTTO first-zone backward-OOS (P231B) — resolved NULL.
 

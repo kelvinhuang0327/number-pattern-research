@@ -1,12 +1,12 @@
 # Active Task — Today (2026-06-05)
 
 > **STATUS: `WAITING_FOR_USER_AUTHORIZATION`**
-> P240D governance simplification rule adoption complete.
-> P240B proposal adopted into SHARED_AGENT_BOOTSTRAP.md and TASK_TEMPLATES.md (Task Type Classification A/B/C/D/E + No-op HOLD rule).
-> Existing safety boundaries unchanged. No DB write, no registry mutation, no production/recommendation/strategy change.
+> P241B P234 statistical diagnostics inventory complete (Type B, same-PR closeout).
+> Artifacts: `outputs/research/p241b_p234_statistical_diagnostics_inventory_20260605.{md,json}`. 33/33 targeted tests PASS.
+> Read-only design/inventory only. No code implementation. No DB write. No registry mutation. No separate closeout PR needed.
 > P238B NIST audit remains `RANDOMNESS_AUDIT_YELLOW_OBSERVATION_ONLY` (observation-only).
 > P211 remains `HELD_BY_USER`.
-> Final Classification: `P240D_GOVERNANCE_SIMPLIFICATION_RULE_ADOPTION_COMPLETE`
+> Final Classification: `P241B_P234_STATISTICAL_DIAGNOSTICS_INVENTORY_COMPLETE`
 
 ---
 
@@ -26,6 +26,8 @@
 | P240B Governance Simplification Design Proposal | `P240B_GOVERNANCE_SIMPLIFICATION_DESIGN_PROPOSAL_COMPLETE` (PR #291 merged 2026-06-04T14:29:34Z) |
 | P240C P240B Governance Closeout | `P240C_P240B_GOVERNANCE_CLOSEOUT_COMPLETE` (PR #292 merged 2026-06-05T01:50:13Z) |
 | P240D Governance Simplification Rule Adoption | `P240D_GOVERNANCE_SIMPLIFICATION_RULE_ADOPTION_COMPLETE` — Task Type A/B/C/D/E + No-op HOLD rule adopted into SHARED_AGENT_BOOTSTRAP.md and TASK_TEMPLATES.md |
+| P241A Type-A next direction decision support | `P241A_TYPE_A_NEXT_SUBSTANTIVE_DIRECTION_DECISION_SUPPORT_COMPLETE` — Type A; response only; no files changed; recommended P241B |
+| P241B P234 statistical diagnostics inventory | `P241B_P234_STATISTICAL_DIAGNOSTICS_INVENTORY_COMPLETE` — Type B same-PR closeout; 33/33 tests PASS; design-doc only; no code implementation |
 
 P240B artifacts on main:
 - `outputs/research/p240b_governance_simplification_design_proposal_20260604.md`
@@ -91,4 +93,4 @@ All safety boundaries unchanged. No DB write, no registry mutation, no productio
 6. 是否允許進入下一輪
 7. Final Classification
 
-Final Classification (this file): `P240D_GOVERNANCE_SIMPLIFICATION_RULE_ADOPTION_COMPLETE`
+Final Classification (this file): `P241B_P234_STATISTICAL_DIAGNOSTICS_INVENTORY_COMPLETE`

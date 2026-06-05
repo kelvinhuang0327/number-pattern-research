@@ -1,6 +1,6 @@
 # Lottery Replay Roadmap
 
-**Last Updated:** 2026-06-05 Asia/Taipei (P242 statistical diagnostics schema implementation — Type C same-PR closeout; additive module; 42/42 tests PASS; WAITING_FOR_USER_AUTHORIZATION)
+**Last Updated:** 2026-06-05 Asia/Taipei (P243A diagnostic report fixture pack — Type C same-PR closeout; 4 evidence-backed historical fixtures; 55/55 tests PASS; WAITING_FOR_USER_AUTHORIZATION)
 **Owner:** CTO agent
 **Primary Goal:** Keep LotteryNew replay, research, and product evidence truthful, reproducible, and governed. The current maturity bottleneck has shifted from migration rehearsal to short/mid-window strategy protocol design, anti-overfit validation, canonical repo dispatch safety, and honest product disclosure.
 **Repo Policy:** Use `/Users/kelvin/Kelvin-WorkSpace/LotteryNew` only. Do not create a new repo. Production DB, registry, and data writes require explicit governed authorization. CTO roadmap updates are limited to this file and `00-Plan/roadmap/CTO-Analysis.md`. CTO must not write `CEO-Decision.md`, `active_task.md`, `production/*`, `registry/*`, `data/*`, or any new repo.
@@ -71,7 +71,8 @@ This section is the current source of truth. The 2026-06-01 sections and P186-P1
 | **P240D Governance simplification rule adoption** | **[Complete]** `P240D_GOVERNANCE_SIMPLIFICATION_RULE_ADOPTION_COMPLETE` | `00-Plan/roadmap/agent_bootstrap/SHARED_AGENT_BOOTSTRAP.md`; `00-Plan/roadmap/agent_bootstrap/TASK_TEMPLATES.md`; governance docs | P240B proposal adopted. Task Type A/B/C/D/E and No-op HOLD rule added to SHARED_AGENT_BOOTSTRAP.md §Task Type Classification. TASK_TEMPLATES.md updated with reference. All safety boundaries unchanged. No DB/registry/production/strategy change. |
 | **P241A Type-A next direction decision support** | **[Complete]** `P241A_TYPE_A_NEXT_SUBSTANTIVE_DIRECTION_DECISION_SUPPORT_COMPLETE` | Response only (Type A — no files) | Type A decision support. No files modified. No PR. Recommended P241B OPT-C statistical diagnostics inventory as next Type B task. |
 | **P241B P234 statistical diagnostics inventory** | **[Complete]** `P241B_P234_STATISTICAL_DIAGNOSTICS_INVENTORY_COMPLETE` | `outputs/research/p241b_p234_statistical_diagnostics_inventory_20260605.{md,json}`; `tests/test_p241b_p234_statistical_diagnostics_inventory.py`; governance docs (same-PR closeout) | Type B. 33/33 targeted tests PASS. 16 diagnostic methods inventoried; 13 gap categories; 43-field feature-bottleneck schema proposed. No code implementation. No DB/registry/production/strategy change. Same-PR closeout under P240D Type B rule. |
-| **P242 Read-only statistical diagnostics schema implementation** | **[Complete]** `P242_READ_ONLY_STATISTICAL_DIAGNOSTICS_SCHEMA_IMPLEMENTATION_COMPLETE` | `lottery_api/diagnostics/statistical_diagnostics_schema.py`; `lottery_api/diagnostics/__init__.py`; `tests/test_p242_statistical_diagnostics_schema.py`; `outputs/research/p242_statistical_diagnostics_schema_implementation_20260605.{md,json}`; governance docs (same-PR closeout) | Type C. 42/42 targeted tests PASS. Implements P241B schema as pure Python module (43 REQUIRED_SCHEMA_FIELDS, 7 enum classes, 4 helper functions). No DB access. No production/recommendation/registry/strategy change. Same-PR closeout under P240D Type C rule. |
+| **P242 Read-only statistical diagnostics schema implementation** | **[Complete]** `P242_READ_ONLY_STATISTICAL_DIAGNOSTICS_SCHEMA_IMPLEMENTATION_COMPLETE` | `lottery_api/diagnostics/statistical_diagnostics_schema.py`; `lottery_api/diagnostics/__init__.py`; `tests/test_p242_statistical_diagnostics_schema.py`; governance docs (same-PR) | Type C. 42/42 PASS. Pure Python module; 43 REQUIRED_SCHEMA_FIELDS; 4 helpers; conservative safety defaults; NIST semantics. |
+| **P243A Diagnostic report fixture pack** | **[Complete]** `P243A_DIAGNOSTIC_REPORT_FIXTURE_PACK_COMPLETE` | `tests/test_p243a_diagnostic_report_fixture_pack.py`; `outputs/research/p243a_diagnostic_report_fixture_pack_20260605.{md,json}`; governance docs (same-PR closeout) | Type C. 55/55 targeted tests PASS. 4 evidence-backed historical fixtures (P238B NIST YELLOW, P231B POWER_LOTTO NULL, P227C 3_STAR UNDERPOWERED, P230C DAILY_539 REJECTED). No DB write. No production/recommendation/registry/strategy change. Same-PR closeout under P240D Type C rule. |
 
 ### 0.2 Current System Baseline
 
@@ -201,7 +202,7 @@ Upgrade / downgrade decisions:
 - **Required gates (if/when authorized):** pre-registered universe/windows/baselines, explicit family size, Bonferroni/BH-FDR where applicable, walk-forward or out-of-sample validation for any validation use, unit labels (row/draw/bet-index/strategy), NULL-is-success reporting.
 - **Priority:** P2 design-only — all subcomponents. Build only after explicit user authorization. Authorized on-request options: OPT-B P235A Lofea read-only feasibility review, OPT-C P234 statistical-methods diagnostics inventory (design-doc only).
 
-### 0.7 Current State Summary (updated by P242 statistical diagnostics schema implementation, 2026-06-05)
+### 0.7 Current State Summary (updated by P243A diagnostic report fixture pack, 2026-06-05)
 
 **Research chains P211A–P231B (all lotteries), P226–P227C (3_STAR/4_STAR), P232A (all-catalog scoreboard), and P233A/B (registry hygiene, LIFECYCLE_UNRESOLVED 20→0) are complete.**
 
@@ -225,7 +226,8 @@ Upgrade / downgrade decisions:
 - P240D governance simplification rule adoption: **`P240D_GOVERNANCE_SIMPLIFICATION_RULE_ADOPTION_COMPLETE`**. P240B proposal adopted into SHARED_AGENT_BOOTSTRAP.md (§Task Type Classification) and TASK_TEMPLATES.md. Task Types A/B/C/D/E and No-op HOLD rule are now active governance rules. All safety boundaries unchanged. No DB/registry/production/strategy change.
 - P241A Type-A decision support: **`P241A_TYPE_A_NEXT_SUBSTANTIVE_DIRECTION_DECISION_SUPPORT_COMPLETE`**. Type A. No files modified. Recommended P241B.
 - P241B P234 statistical diagnostics inventory: **`P241B_P234_STATISTICAL_DIAGNOSTICS_INVENTORY_COMPLETE`**. Type B same-PR closeout. 33/33 PASS. 16 methods inventoried; 13 gaps; 43-field schema proposed. No code implementation.
-- P242 Read-only statistical diagnostics schema implementation: **`P242_READ_ONLY_STATISTICAL_DIAGNOSTICS_SCHEMA_IMPLEMENTATION_COMPLETE`**. Type C same-PR closeout. 42/42 targeted tests PASS. Module `lottery_api/diagnostics/statistical_diagnostics_schema.py` implements the P241B schema as a pure Python module (43 REQUIRED_SCHEMA_FIELDS, 7 enum classes, 4 helpers: `default_safety_fields`, `build_diagnostic_report`, `validate_diagnostic_report`, `classify_nist_alert`). No DB access. No production/recommendation/registry/strategy change.
+- P242 Read-only statistical diagnostics schema implementation: **`P242_READ_ONLY_STATISTICAL_DIAGNOSTICS_SCHEMA_IMPLEMENTATION_COMPLETE`**. Type C same-PR. 42/42 PASS. Pure Python module; no DB access; no production change.
+- P243A Diagnostic report fixture pack: **`P243A_DIAGNOSTIC_REPORT_FIXTURE_PACK_COMPLETE`**. Type C same-PR. 55/55 targeted tests PASS. 4 evidence-backed historical fixtures apply the P242 schema to completed cases (P238B NIST YELLOW, P231B POWER_LOTTO NULL, P227C 3_STAR UNDERPOWERED, P230C DAILY_539 REJECTED). All fixtures validated through `validate_diagnostic_report`. No DB write. No production/recommendation/registry/strategy change.
 
 **No active deployable candidate in any lottery.**
 
@@ -244,6 +246,7 @@ Upgrade / downgrade decisions:
 Final current roadmap marker:
 
 ```text
+P243A_DIAGNOSTIC_REPORT_FIXTURE_PACK_COMPLETE
 P242_READ_ONLY_STATISTICAL_DIAGNOSTICS_SCHEMA_IMPLEMENTATION_COMPLETE
 P241B_P234_STATISTICAL_DIAGNOSTICS_INVENTORY_COMPLETE
 P241A_TYPE_A_NEXT_SUBSTANTIVE_DIRECTION_DECISION_SUPPORT_COMPLETE

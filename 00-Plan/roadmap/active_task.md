@@ -1,12 +1,12 @@
 # Active Task — Today (2026-06-05)
 
 > **STATUS: `WAITING_FOR_USER_AUTHORIZATION`**
-> P243A diagnostic report fixture pack complete (Type C, same-PR closeout).
-> 4 evidence-backed historical fixtures validated through P242 schema. 55/55 targeted tests PASS.
-> No DB write. No production/recommendation/registry/strategy change. No separate closeout PR needed.
+> P244C diagnostics integration plan complete (Type B, same-PR closeout).
+> Maps P2.4 schema to P211/P221F checkpoints; provides confidence-language templates, blocker vocabulary, prompt snippet. 34/34 targeted tests PASS.
+> No code changes. No DB write. No registry mutation. No production/recommendation/strategy change. No separate closeout PR needed.
 > P238B NIST audit remains `RANDOMNESS_AUDIT_YELLOW_OBSERVATION_ONLY` (observation-only).
 > P211 remains `HELD_BY_USER`.
-> Final Classification: `P243A_DIAGNOSTIC_REPORT_FIXTURE_PACK_COMPLETE`
+> Final Classification: `P244C_DIAGNOSTICS_INTEGRATION_PLAN_COMPLETE`
 
 ---
 
@@ -30,6 +30,8 @@
 | P241B P234 statistical diagnostics inventory | `P241B_P234_STATISTICAL_DIAGNOSTICS_INVENTORY_COMPLETE` — Type B same-PR closeout; 33/33 tests PASS; design-doc only; no code implementation |
 | P242 Read-only statistical diagnostics schema implementation | `P242_READ_ONLY_STATISTICAL_DIAGNOSTICS_SCHEMA_IMPLEMENTATION_COMPLETE` — Type C same-PR closeout; 42/42 tests PASS; additive module only |
 | P243A Diagnostic report fixture pack | `P243A_DIAGNOSTIC_REPORT_FIXTURE_PACK_COMPLETE` — Type C same-PR closeout; 55/55 tests PASS; 4 evidence-backed historical fixtures |
+| P243B P2.4 readiness decision | `P243B_P2_4_DIAGNOSTICS_LAYER_READINESS_DECISION_COMPLETE` — Type A; response only; recommended P244C |
+| P244C Diagnostics integration plan | `P244C_DIAGNOSTICS_INTEGRATION_PLAN_COMPLETE` — Type B same-PR closeout; 34/34 tests PASS; field mapping + confidence templates + blocker vocab + prompt snippet |
 
 P240B artifacts on main:
 - `outputs/research/p240b_governance_simplification_design_proposal_20260604.md`
@@ -95,4 +97,4 @@ All safety boundaries unchanged. No DB write, no registry mutation, no productio
 6. 是否允許進入下一輪
 7. Final Classification
 
-Final Classification (this file): `P243A_DIAGNOSTIC_REPORT_FIXTURE_PACK_COMPLETE`
+Final Classification (this file): `P244C_DIAGNOSTICS_INTEGRATION_PLAN_COMPLETE`

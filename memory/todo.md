@@ -11,6 +11,16 @@
 
 _（目前無進行中任務）_
 
+### P246F BIG_LOTTO 研究呼叫端 canonical 化掃描 ✅ 2026-06-05 完成
+- [x] 確認 PR #320 (P246E) CI PASS，合併至 main
+- [x] 掃描 get_all_draws/get_canonical_draws 全呼叫端並分類
+- [x] 更新 tools/rsm_bootstrap.py:118 → get_canonical_draws()（P246F）
+- [x] 更新 lottery_api/engine/core_satellite.py:373 → get_canonical_draws()（P246F）
+- [x] 確認 drift_detector、advanced_learning、backtest_framework 延後至 P246G
+- [x] 測試 199/199 PASS；產出 P246F 文物（JSON+MD）
+- [x] 更新 memory/lessons.md（L111）
+- 完成標準：3 個確認研究呼叫端已 canonical 化；加碼記錄 raw 存取保留；無 DB 寫入
+
 ### P246E BIG_LOTTO canonical draw helper 實作 ✅ 2026-06-05 完成
 - [x] 確認 PR #319 (P246D) CI PASS，合併至 main
 - [x] 在 database.py 新增 get_canonical_draws()：三層過濾（SQL×2 + Python×1）

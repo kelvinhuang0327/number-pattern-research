@@ -370,7 +370,8 @@ def main():
             sys.exit(1)
 
         db = DatabaseManager(db_path=db_path)
-        history = list(reversed(db.get_all_draws(args.lottery)))
+        # Use canonical helper so BIG_LOTTO research excludes add-on/special prize records.
+        history = list(reversed(db.get_canonical_draws(args.lottery)))
         if not history:
             print(f"找不到 {args.lottery} 的歷史數據")
             sys.exit(1)

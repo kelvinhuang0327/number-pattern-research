@@ -5,6 +5,26 @@
 
 ---
 
+## L111 — P246F 研究呼叫端 canonical 化掃描要點 (2026-06-05)
+
+**來源：** P246F 研究呼叫端掃描
+
+**結論：** 已完成 3 個確認研究/策略呼叫端的 canonical 化：
+1. `tools/quick_predict.py:169`（P246E）
+2. `tools/rsm_bootstrap.py:118`（P246F）— RSM 策略 bootstrap，直接餵入 RollingStrategyMonitor
+3. `lottery_api/engine/core_satellite.py:373`（P246F）— 從歷史生成策略注數
+
+**仍需後續處理（P246G）：**
+- `lottery_api/engine/drift_detector._load_draws()` — 使用直接 SQLite，非 DatabaseManager，需獨立修改 SQL
+- `lottery_api/routes/advanced_learning.py` — scheduler.get_data() 路徑尚未追蹤
+- `lottery_api/backtest_framework.py` + 60+ 歷史/探索腳本 — 批量掃描超出最小範圍
+
+**重要：**
+- `get_all_draws()` 和 `get_draws()` 保持不變（展示/歷史用途合法）
+- 任何新 BIG_LOTTO 研究呼叫端都必須使用 `get_canonical_draws()` 而非 `get_all_draws()`
+
+---
+
 ## L110 — P246E get_canonical_draws() 實作要點 (2026-06-05)
 
 **來源：** P246E Phase 1 實作

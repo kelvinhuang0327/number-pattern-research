@@ -115,8 +115,11 @@ def run_bootstrap_and_report(lottery_type, strategy_configs, n_periods=300):
     print(f"{'=' * 72}")
 
     db = DatabaseManager(DB_PATH)
-    draws = sorted(db.get_all_draws(lottery_type), key=lambda x: (x['date'], x['draw']))
-    print(f"  資料庫: {len(draws)} 期")
+    # Use canonical helper for BIG_LOTTO to exclude add-on/special prize records
+    # (ADD_ON_PRIZE_EXCLUDED, DATE_FORMAT_ALIEN, SMALL_POOL_ALIEN).
+    # These are valid historical records but must not feed strategy research.
+    draws = sorted(db.get_canonical_draws(lottery_type), key=lambda x: (x['date'], x['draw']))
+    print(f"  資料庫: {len(draws)} 期 (canonical research draws)")
 
     # 建立 RSM
     rsm = RollingStrategyMonitor(lottery_type, data_dir=DATA_DIR)

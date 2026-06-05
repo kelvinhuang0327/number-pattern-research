@@ -1,6 +1,6 @@
 # Lottery Replay Roadmap
 
-**Last Updated:** 2026-06-05 Asia/Taipei (P244C diagnostics integration plan — Type B same-PR closeout; field mapping + confidence templates + blocker vocab + prompt snippet; 34/34 tests PASS; WAITING_FOR_USER_AUTHORIZATION)
+**Last Updated:** 2026-06-05 Asia/Taipei (P211R short/mid-window diagnostic — P211 restarted; IS-window candidates have prior OOS rejection; classification P211R_IS_CANDIDATES_PRIOR_OOS_REJECTED_HISTORICAL_ARTIFACT; WAITING_FOR_USER_AUTHORIZATION)
 **Owner:** CTO agent
 **Primary Goal:** Keep LotteryNew replay, research, and product evidence truthful, reproducible, and governed. The current maturity bottleneck has shifted from migration rehearsal to short/mid-window strategy protocol design, anti-overfit validation, canonical repo dispatch safety, and honest product disclosure.
 **Repo Policy:** Use `/Users/kelvin/Kelvin-WorkSpace/LotteryNew` only. Do not create a new repo. Production DB, registry, and data writes require explicit governed authorization. CTO roadmap updates are limited to this file and `00-Plan/roadmap/CTO-Analysis.md`. CTO must not write `CEO-Decision.md`, `active_task.md`, `production/*`, `registry/*`, `data/*`, or any new repo.
@@ -75,6 +75,7 @@ This section is the current source of truth. The 2026-06-01 sections and P186-P1
 | **P243A Diagnostic report fixture pack** | **[Complete]** `P243A_DIAGNOSTIC_REPORT_FIXTURE_PACK_COMPLETE` | `tests/test_p243a_diagnostic_report_fixture_pack.py`; `outputs/research/p243a_diagnostic_report_fixture_pack_20260605.{md,json}`; governance docs (same-PR closeout) | Type C. 55/55 targeted tests PASS. 4 evidence-backed historical fixtures. No DB write. Same-PR closeout. |
 | **P243B P2.4 readiness decision** | **[Complete]** `P243B_P2_4_DIAGNOSTICS_LAYER_READINESS_DECISION_COMPLETE` | Response only (Type A — no files) | Type A decision support. No files. Recommended P244C integration plan. |
 | **P244C Diagnostics integration plan** | **[Complete]** `P244C_DIAGNOSTICS_INTEGRATION_PLAN_COMPLETE` | `tests/test_p244c_diagnostics_integration_plan.py`; `outputs/research/p244c_diagnostics_integration_plan_20260605.{md,json}`; governance docs (same-PR closeout) | Type B. 34/34 targeted tests PASS. Maps P242 schema to P211/P221F checkpoints; 7 confidence templates; 16 blocker labels; prompt snippet; forbidden-language list. No code changes. Same-PR closeout. |
+| **P211R Short/mid-window diagnostic** | **[Complete]** `P211R_SHORT_MID_WINDOW_DIAGNOSTIC_COMPLETE` | `scripts/p211r_short_mid_window_diagnostic.py`; `tests/test_p211r_short_mid_window_diagnostic.py`; `outputs/research/p211r_short_mid_window_diagnostic_20260605.{md,json}`; governance docs (same-PR closeout) | Type C. P211 restarted by explicit authorization. 34/34 targeted tests PASS. 75 IS-window tests (POWER_LOTTO + DAILY_539, windows 150/500/1000, bet_index=1, Bonferroni). 9 candidates all have prior OOS rejection evidence. Artifact classification: `P211R_IS_CANDIDATES_PRIOR_OOS_REJECTED_HISTORICAL_ARTIFACT`. No deployable edge. Same-PR closeout. |
 
 ### 0.2 Current System Baseline
 
@@ -204,7 +205,7 @@ Upgrade / downgrade decisions:
 - **Required gates (if/when authorized):** pre-registered universe/windows/baselines, explicit family size, Bonferroni/BH-FDR where applicable, walk-forward or out-of-sample validation for any validation use, unit labels (row/draw/bet-index/strategy), NULL-is-success reporting.
 - **Priority:** P2 design-only — all subcomponents. Build only after explicit user authorization. Authorized on-request options: OPT-B P235A Lofea read-only feasibility review, OPT-C P234 statistical-methods diagnostics inventory (design-doc only).
 
-### 0.7 Current State Summary (updated by P244C diagnostics integration plan, 2026-06-05)
+### 0.7 Current State Summary (updated by P211R short/mid-window diagnostic, 2026-06-05)
 
 **Research chains P211A–P231B (all lotteries), P226–P227C (3_STAR/4_STAR), P232A (all-catalog scoreboard), and P233A/B (registry hygiene, LIFECYCLE_UNRESOLVED 20→0) are complete.**
 
@@ -231,7 +232,8 @@ Upgrade / downgrade decisions:
 - P242 Read-only statistical diagnostics schema implementation: **`P242_READ_ONLY_STATISTICAL_DIAGNOSTICS_SCHEMA_IMPLEMENTATION_COMPLETE`**. Type C same-PR. 42/42 PASS. Pure Python module; no DB access; no production change.
 - P243A Diagnostic report fixture pack: **`P243A_DIAGNOSTIC_REPORT_FIXTURE_PACK_COMPLETE`**. Type C same-PR. 55/55 PASS. 4 evidenced fixtures. No DB write.
 - P243B P2.4 readiness decision: **`P243B_P2_4_DIAGNOSTICS_LAYER_READINESS_DECISION_COMPLETE`**. Type A. No files modified. Recommended P244C.
-- P244C Diagnostics integration plan: **`P244C_DIAGNOSTICS_INTEGRATION_PLAN_COMPLETE`**. Type B same-PR. 34/34 targeted tests PASS. Maps P242 schema (44 fields, 4 helpers) to P211/P221F research checkpoints; provides 7 confidence-language templates (OBSERVATION_ONLY, NULL, UNDERPOWERED, WAIT_FOR_OOS, REJECTED, HUMAN_REVIEW_ONLY, SCHEMA_VALIDATED_ONLY); 16 blocker labels; forbidden-language list; reusable prompt snippet. P2.4 diagnostics layer now complete and ready for P211 integration. No code changes. No DB/registry/production/strategy change.
+- P244C Diagnostics integration plan: **`P244C_DIAGNOSTICS_INTEGRATION_PLAN_COMPLETE`**. Type B same-PR. 34/34 PASS. P2.4 layer complete and ready for P211 integration.
+- P211R Short/mid-window diagnostic: **`P211R_SHORT_MID_WINDOW_DIAGNOSTIC_COMPLETE`** (artifact classification: `P211R_IS_CANDIDATES_PRIOR_OOS_REJECTED_HISTORICAL_ARTIFACT`). Type C same-PR. 34/34 targeted tests PASS. P211 restarted by explicit user authorization. IS-window diagnostic: 75 tests (POWER_LOTTO + DAILY_539, windows 150/500/1000, bet_index=1, Bonferroni per lottery). 9 IS-window Bonferroni-significant results — all have prior OOS rejection evidence (midfreq_fourier_mk_3bet P231B NULL; midfreq_fourier_2bet P230C REJECTED; midfreq_acb_2bet NEEDS_MORE_OOS). No deployable edge. No DB write. No strategy promotion.
 
 **No active deployable candidate in any lottery.**
 
@@ -250,6 +252,7 @@ Upgrade / downgrade decisions:
 Final current roadmap marker:
 
 ```text
+P211R_SHORT_MID_WINDOW_DIAGNOSTIC_COMPLETE
 P244C_DIAGNOSTICS_INTEGRATION_PLAN_COMPLETE
 P243A_DIAGNOSTIC_REPORT_FIXTURE_PACK_COMPLETE
 P242_READ_ONLY_STATISTICAL_DIAGNOSTICS_SCHEMA_IMPLEMENTATION_COMPLETE

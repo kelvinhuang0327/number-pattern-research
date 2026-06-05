@@ -1,7 +1,7 @@
 # Current State — LotteryNew
 
-**Last Reviewed:** 2026-06-05 Asia/Taipei (P244C diagnostics integration plan — Type B same-PR closeout; field mapping + confidence templates + blocker vocab + prompt snippet; 34/34 tests PASS; WAITING_FOR_USER_AUTHORIZATION)
-**State Marker:** `P244C_DIAGNOSTICS_INTEGRATION_PLAN_COMPLETE`
+**Last Reviewed:** 2026-06-05 Asia/Taipei (P211R short/mid-window diagnostic — P211 restarted by explicit authorization; IS-window candidates have prior OOS rejection evidence; classification P211R_IS_CANDIDATES_PRIOR_OOS_REJECTED_HISTORICAL_ARTIFACT; WAITING_FOR_USER_AUTHORIZATION)
+**State Marker:** `P211R_SHORT_MID_WINDOW_DIAGNOSTIC_COMPLETE`
 **Purpose:** Project-specific state for future agents. Read this after `SHARED_AGENT_BOOTSTRAP.md` and `TASK_TEMPLATES.md`.
 
 ## Canonical Execution Context
@@ -14,7 +14,7 @@
 | Current HEAD | HEAD must equal `origin/main`; verify with `git rev-parse HEAD` and `git rev-parse origin/main` before any task. Do not hardcode a live hash here — this field becomes stale after every PR merge. Last recorded PR merge: P228 governance closeout (branch `p228-star-replay-governance-closeout`). | [Self-verifying] |
 | `origin/main` | Must equal HEAD; see above. Verify with `git rev-parse origin/main`. | [Self-verifying] |
 | Git dir | `.git` | [Confirmed] |
-| Active worker task | none (P244C diagnostics integration plan complete) | [Confirmed] |
+| Active worker task | none (P211R short/mid-window diagnostic complete) | [Confirmed] |
 | P211 status | `HELD_BY_USER`; do not auto-resume or re-prompt | [Confirmed] |
 
 ## Forbidden Execution Paths
@@ -162,7 +162,8 @@ Read-only baseline commands:
 - [Confirmed] P242: Read-only statistical diagnostics schema implementation complete. Type C same-PR. Module: `lottery_api/diagnostics/statistical_diagnostics_schema.py`. 42/42 PASS.
 - [Confirmed] P243A: Diagnostic report fixture pack complete. Type C same-PR. 55/55 PASS. 4 evidenced fixtures.
 - [Confirmed] P243B: P2.4 readiness decision complete. Type A. Recommended P244C.
-- [Confirmed] P244C: Diagnostics integration plan complete. Type B same-PR. Artifacts: `outputs/research/p244c_diagnostics_integration_plan_20260605.{md,json}`. 34/34 targeted tests PASS. Maps P242 schema to P211/P221F checkpoints; provides 7 confidence-language templates, 16 blocker labels, prompt snippet, forbidden-language list, field mapping. No code changes. No DB/registry/production/strategy change. No separate closeout PR. Type C same-PR. Artifacts: `outputs/research/p243a_diagnostic_report_fixture_pack_20260605.{md,json}`. 55/55 targeted tests PASS. 4 evidence-backed historical fixtures (P238B NIST YELLOW, P231B POWER_LOTTO NULL, P227C 3_STAR UNDERPOWERED, P230C DAILY_539 REJECTED). No DB write. No production/recommendation/registry/strategy change. Type C same-PR closeout. Module: `lottery_api/diagnostics/statistical_diagnostics_schema.py`. 42/42 targeted tests PASS. 43 REQUIRED_SCHEMA_FIELDS, 7 enum classes, 4 helpers, conservative safety defaults, NIST alert semantics. No DB access. No production/recommendation/registry/strategy change. No separate closeout PR required.
+- [Confirmed] P244C: Diagnostics integration plan complete. Type B same-PR. 34/34 PASS. Field mapping + confidence templates + blocker vocab + prompt snippet. P2.4 layer now ready for P211 integration.
+- [Confirmed] P211R: P211 restarted by explicit user authorization. Short/mid-window diagnostic complete. Type C same-PR. Script: `scripts/p211r_short_mid_window_diagnostic.py`. 34/34 targeted tests PASS. 75 IS-window tests (POWER_LOTTO + DAILY_539, windows 150/500/1000, bet_index=1, Bonferroni per lottery). 9 IS-window Bonferroni-significant results — all have prior OOS rejection evidence (P231B NULL for midfreq_fourier_mk_3bet; P230C REJECTED for midfreq_fourier_2bet). Classification: `P211R_IS_CANDIDATES_PRIOR_OOS_REJECTED_HISTORICAL_ARTIFACT`. No deployable edge. No DB write. No strategy promotion. Artifacts: `outputs/research/p211r_short_mid_window_diagnostic_20260605.{md,json}`. No separate closeout PR. Type B same-PR. Artifacts: `outputs/research/p244c_diagnostics_integration_plan_20260605.{md,json}`. 34/34 targeted tests PASS. Maps P242 schema to P211/P221F checkpoints; provides 7 confidence-language templates, 16 blocker labels, prompt snippet, forbidden-language list, field mapping. No code changes. No DB/registry/production/strategy change. No separate closeout PR. Type C same-PR. Artifacts: `outputs/research/p243a_diagnostic_report_fixture_pack_20260605.{md,json}`. 55/55 targeted tests PASS. 4 evidence-backed historical fixtures (P238B NIST YELLOW, P231B POWER_LOTTO NULL, P227C 3_STAR UNDERPOWERED, P230C DAILY_539 REJECTED). No DB write. No production/recommendation/registry/strategy change. Type C same-PR closeout. Module: `lottery_api/diagnostics/statistical_diagnostics_schema.py`. 42/42 targeted tests PASS. 43 REQUIRED_SCHEMA_FIELDS, 7 enum classes, 4 helpers, conservative safety defaults, NIST alert semantics. No DB access. No production/recommendation/registry/strategy change. No separate closeout PR required.
 
 ## Current Blockers / Holds
 
@@ -192,7 +193,8 @@ Read-only baseline commands:
 
 No active deployable candidate in any lottery. **The P211A–P231B arc has exhausted all current in-window candidates. P232A–P233B registry hygiene resolved LIFECYCLE_UNRESOLVED to 0. P234/P234A CTO statistical-methods analysis complete (P2.4 design-only). P235A Lofea feasibility review complete (design-inspiration only). P236A–P238D complete (NIST audit YELLOW observation-only). P240B–P240D complete (governance simplification adopted). P241A–P241B complete (statistical diagnostics inventory design-only; no code implementation). Governance record is complete.** Do not start new research without explicit user authorization. Queued options:
 
-1. **Start P211** — `"Start P211"` — requires explicit authorization; use P244C §3–§8 prompt snippet for schema discipline. P2.4 layer (P241B+P242+P243A+P244C) is ready for P211 integration.
+1. **P211R complete** — P211 restarted and IS-window diagnostic run. Classification: HISTORICAL_ARTIFACT. No new OOS task immediately needed unless new data accumulates.
+2. **Start new hypothesis** — `"Authorize P212 new hypothesis [description]"` — requires explicit P221F pre-registration.
 2. **P211 restart** — `"Start P211"` — requires explicit authorization. Currently HELD_BY_USER.
 3. **Passive monitoring** — wait for ≥300 new DAILY_539 draws (preferred 500); per P224B protocol.
 4. **3_STAR/4_STAR re-scan** — only after ≥10,000 total 3_STAR draws or positional re-ingestion.

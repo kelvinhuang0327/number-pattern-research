@@ -1665,3 +1665,57 @@ No code changes. No DB write. No registry mutation. No production/recommendation
 - **Remain HOLD**: No action; system stays WAITING_FOR_USER_AUTHORIZATION.
 
 Final Classification: `P244C_DIAGNOSTICS_INTEGRATION_PLAN_COMPLETE`
+
+---
+
+# CEO Decision — 2026-06-05 (Later) — P211R Short/Mid-Window Diagnostic
+
+## 1. Context
+
+2026-06-05 Asia/Taipei. Final Classification: `P211R_SHORT_MID_WINDOW_DIAGNOSTIC_COMPLETE`.
+
+Authorization: `Start P211 short/mid-window diagnostic. Use P2.4 diagnostics layer discipline. Read-only research artifact only.`
+
+- [Confirmed] Script: `scripts/p211r_short_mid_window_diagnostic.py`.
+- [Confirmed] Tests: `tests/test_p211r_short_mid_window_diagnostic.py`. 34/34 PASS.
+- [Confirmed] Artifacts: `outputs/research/p211r_short_mid_window_diagnostic_20260605.{md,json}`.
+- [Confirmed] DB: 94,924 rows; integrity ok; drift guard PASS.
+- [Confirmed] Type C under P240D — same-PR governance closeout applied.
+
+## 2. P211R Summary
+
+P211 restarted as a short/mid-window IS-window diagnostic using P221F frozen windows (150, 500, 1000 draws) and P2.4 schema discipline. POWER_LOTTO and DAILY_539 analyzed (bet_index=1, Bonferroni correction per lottery family).
+
+Results:
+- 75 total IS-window tests
+- 9 Bonferroni-corrected-significant (p < α/K)
+- All 9 candidates have prior OOS rejection evidence:
+  - `midfreq_fourier_mk_3bet / POWER_LOTTO`: P231B backward-OOS NULL (p=0.3018)
+  - `midfreq_fourier_2bet / DAILY_539`: P230C backward-OOS REJECTED (mean below baseline, all era checks fail)
+  - Other candidates: fragile IS-window results consistent with known historical artifact pattern
+
+**Artifact classification: `P211R_IS_CANDIDATES_PRIOR_OOS_REJECTED_HISTORICAL_ARTIFACT`**
+
+This confirms: IS-window diagnostic candidates are historical artifacts. No independent OOS evidence supports deployment.
+
+## 3. Decision
+
+CEO accepts P211R as a completed read-only IS-window diagnostic. P211 is now no longer HELD_BY_USER — it has been run and returned a result.
+
+P211R does **not** authorize: strategy promotion, production change, DB write, registry mutation, recommendation change, monitoring job, betting advice, or wagering recommendation.
+
+## 4. Current State
+
+- `active_task.md` returns to `WAITING_FOR_USER_AUTHORIZATION`.
+- P211 has been run. It is no longer HELD_BY_USER. Its result is HISTORICAL_ARTIFACT.
+- P238B NIST result remains `RANDOMNESS_AUDIT_YELLOW_OBSERVATION_ONLY`.
+- No deployable candidate in any lottery.
+- No new OOS task is immediately needed unless new data accumulates (P224B gate: ≥300 new DAILY_539 draws).
+
+## 5. Next Options
+
+- **Remain HOLD**: No action; system stays WAITING_FOR_USER_AUTHORIZATION.
+- **New hypothesis from scratch**: `"Authorize P212 new hypothesis [description]"` — requires P221F pre-registration.
+- **Passive monitoring**: Wait for ≥300 new DAILY_539 draws per P224B protocol.
+
+Final Classification: `P211R_SHORT_MID_WINDOW_DIAGNOSTIC_COMPLETE`

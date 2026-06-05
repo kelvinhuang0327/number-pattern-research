@@ -1,12 +1,12 @@
 # Active Task — Today (2026-06-05)
 
 > **STATUS: `WAITING_FOR_USER_AUTHORIZATION`**
-> P244C diagnostics integration plan complete (Type B, same-PR closeout).
-> Maps P2.4 schema to P211/P221F checkpoints; provides confidence-language templates, blocker vocabulary, prompt snippet. 34/34 targeted tests PASS.
-> No code changes. No DB write. No registry mutation. No production/recommendation/strategy change. No separate closeout PR needed.
+> P211R short/mid-window diagnostic complete (Type C, same-PR closeout).
+> P211 restarted by explicit user authorization. Classification: `P211R_IS_CANDIDATES_PRIOR_OOS_REJECTED_HISTORICAL_ARTIFACT`
+> 75 tests (POWER_LOTTO + DAILY_539), 9 IS-window Bonferroni-significant — all have prior OOS rejection evidence (P231B NULL, P230C REJECTED).
+> No deployable edge. No DB write. No strategy promotion. 34/34 targeted tests PASS.
 > P238B NIST audit remains `RANDOMNESS_AUDIT_YELLOW_OBSERVATION_ONLY` (observation-only).
-> P211 remains `HELD_BY_USER`.
-> Final Classification: `P244C_DIAGNOSTICS_INTEGRATION_PLAN_COMPLETE`
+> Final Classification: `P211R_SHORT_MID_WINDOW_DIAGNOSTIC_COMPLETE`
 
 ---
 
@@ -32,6 +32,7 @@
 | P243A Diagnostic report fixture pack | `P243A_DIAGNOSTIC_REPORT_FIXTURE_PACK_COMPLETE` — Type C same-PR closeout; 55/55 tests PASS; 4 evidence-backed historical fixtures |
 | P243B P2.4 readiness decision | `P243B_P2_4_DIAGNOSTICS_LAYER_READINESS_DECISION_COMPLETE` — Type A; response only; recommended P244C |
 | P244C Diagnostics integration plan | `P244C_DIAGNOSTICS_INTEGRATION_PLAN_COMPLETE` — Type B same-PR closeout; 34/34 tests PASS; field mapping + confidence templates + blocker vocab + prompt snippet |
+| P211R Short/mid-window diagnostic | `P211R_SHORT_MID_WINDOW_DIAGNOSTIC_COMPLETE` (P211R artifact classification: P211R_IS_CANDIDATES_PRIOR_OOS_REJECTED_HISTORICAL_ARTIFACT) — Type C same-PR closeout; 34/34 tests PASS; P211 restarted; IS-window candidates all have prior OOS rejection evidence |
 
 P240B artifacts on main:
 - `outputs/research/p240b_governance_simplification_design_proposal_20260604.md`
@@ -97,4 +98,4 @@ All safety boundaries unchanged. No DB write, no registry mutation, no productio
 6. 是否允許進入下一輪
 7. Final Classification
 
-Final Classification (this file): `P244C_DIAGNOSTICS_INTEGRATION_PLAN_COMPLETE`
+Final Classification (this file): `P211R_SHORT_MID_WINDOW_DIAGNOSTIC_COMPLETE`

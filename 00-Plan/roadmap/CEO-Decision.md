@@ -1813,3 +1813,48 @@ CEO accepts P213B as completing the positional data feasibility design. No DB wr
 - **Remain HOLD**: No action.
 
 Final Classification: `P213B_3STAR_4STAR_POSITIONAL_DATA_RECOVERY_FEASIBILITY_COMPLETE`
+
+---
+
+# CEO Decision — 2026-06-05 (Later) — P213H Controlled 3_STAR/4_STAR Positional Backfill
+
+## 1. Context
+
+2026-06-05 Asia/Taipei. Final Classification: `P213H_3STAR_4STAR_CONTROLLED_POSITIONAL_BACKFILL_COMPLETE`.
+
+Authorization: `Authorize P213H 3_STAR/4_STAR controlled production DB backfill for numbers_positional (DB write authorized, backup required, matched rows only, no insertion of missing source rows)`
+
+- [Confirmed] Type D DB write executed with backup and checksum.
+- [Confirmed] Backup: `backups/p213h_lottery_v2_backup_20260605_20260605_142219.db`
+- [Confirmed] SHA256: `214f05870e741164495cd0dbf46158ba1e92835d7a7c072df47a20a0795896c1`
+- [Confirmed] Backup integrity: `ok`.
+- [Confirmed] P213I source evidence: 11,700 source rows; 7,101 DB-backed matches; 4,599 source-only missing rows; 0 mismatches.
+
+## 2. P213H Result
+
+P213H backfilled `numbers_positional` only for existing 3_STAR / 4_STAR rows that matched the P213I source canonical numbers.
+
+- Rows updated: 7,101
+- Rows already populated before write: 0
+- Missing source rows left untouched: 4,599
+- Mismatches skipped: 0
+- Production replay rows before/after: 94,924 / 94,924
+- Draw rows before/after: 59,762 / 59,762
+- Non-star rows touched: 0
+- `numbers` column changed: false
+- Drift guard: `REPLAY_LIFECYCLE_DRIFT_GUARD_PASS`
+- Tests: 12/12 PASS
+
+## 3. Decision
+
+CEO accepts P213H as a completed controlled positional backfill. This is data recovery only. It does not authorize inserting the 4,599 missing source rows, production ingestion, registry mutation, strategy promotion, recommendation logic, monitoring, P211 restart, betting advice, or statistical scans.
+
+Rollback instruction: restore the backup over `lottery_api/data/lottery_v2.db` only with separate explicit rollback authorization.
+
+## 4. Next Options
+
+- **Remain HOLD**: No action; system returns to `WAITING_FOR_USER_AUTHORIZATION`.
+- **Future missing-row insertion plan**: requires a separate Type D authorization and fresh backup/rollback gate.
+- **Future straight-play analysis**: requires separate pre-registration and must inherit anti-overfit gates; P213H itself is not a strategy signal.
+
+Final Classification: `P213H_3STAR_4STAR_CONTROLLED_POSITIONAL_BACKFILL_COMPLETE`

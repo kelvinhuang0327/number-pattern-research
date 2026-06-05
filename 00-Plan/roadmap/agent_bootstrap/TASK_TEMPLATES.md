@@ -2,6 +2,8 @@
 
 These templates are project-neutral. Project-specific details must come from `CURRENT_STATE.md`, `CEO-Decision.md`, `active_task.md`, and the task-specific prompt.
 
+> **Task Type Classification (adopted P240D — 2026-06-05):** See `SHARED_AGENT_BOOTSTRAP.md` §Task Type Classification for the five task types (A/B/C/D/E) and the No-op HOLD rule. Types A–C have streamlined PR/closeout patterns. Types D–E are unchanged. All safety boundaries remain mandatory.
+
 ## Template 1 — Plan-Only Task
 
 Use for:

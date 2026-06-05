@@ -1,13 +1,12 @@
 # Active Task — Today (2026-06-05)
 
 > **STATUS: `WAITING_FOR_USER_AUTHORIZATION`**
-> P240C governance closeout complete.
-> P240B governance simplification design proposal recorded (PR #291 merged 2026-06-04T14:29:34Z; 17/17 targeted tests PASS).
-> P240B is a **proposal only** — simplification rules are NOT adopted. Existing governance rules remain active.
-> Adoption of P240B simplification rules requires separate explicit authorization phrase: "Authorize P240C governance simplification rule adoption".
+> P240D governance simplification rule adoption complete.
+> P240B proposal adopted into SHARED_AGENT_BOOTSTRAP.md and TASK_TEMPLATES.md (Task Type Classification A/B/C/D/E + No-op HOLD rule).
+> Existing safety boundaries unchanged. No DB write, no registry mutation, no production/recommendation/strategy change.
 > P238B NIST audit remains `RANDOMNESS_AUDIT_YELLOW_OBSERVATION_ONLY` (observation-only).
 > P211 remains `HELD_BY_USER`.
-> Final Classification: `P240C_P240B_GOVERNANCE_CLOSEOUT_COMPLETE`
+> Final Classification: `P240D_GOVERNANCE_SIMPLIFICATION_RULE_ADOPTION_COMPLETE`
 
 ---
 
@@ -20,20 +19,28 @@
 - P237C NIST randomness-audit tripwire design doc is merged on main via PR #285.
 - P238A NIST randomness-audit artifact-only build plan is merged on main via PR #287. It is a future-build plan only. No executable build, code, scripts, tests, DB write, registry mutation, production/recommendation change, monitoring job, strategy, betting advice, or P211 restart is authorized.
 
-## What was completed this session (P240C addendum — 2026-06-05)
+## What was completed this session
 
 | Task | Result |
 |---|---|
 | P240B Governance Simplification Design Proposal | `P240B_GOVERNANCE_SIMPLIFICATION_DESIGN_PROPOSAL_COMPLETE` (PR #291 merged 2026-06-04T14:29:34Z) |
-| P240C P240B Governance Closeout | `P240C_P240B_GOVERNANCE_CLOSEOUT_COMPLETE` — records P240B; proposal remains proposal-only; no adoption; existing rules active |
+| P240C P240B Governance Closeout | `P240C_P240B_GOVERNANCE_CLOSEOUT_COMPLETE` (PR #292 merged 2026-06-05T01:50:13Z) |
+| P240D Governance Simplification Rule Adoption | `P240D_GOVERNANCE_SIMPLIFICATION_RULE_ADOPTION_COMPLETE` — Task Type A/B/C/D/E + No-op HOLD rule adopted into SHARED_AGENT_BOOTSTRAP.md and TASK_TEMPLATES.md |
 
 P240B artifacts on main:
 - `outputs/research/p240b_governance_simplification_design_proposal_20260604.md`
 - `outputs/research/p240b_governance_simplification_design_proposal_20260604.json`
 - `tests/test_p240b_governance_simplification_design_proposal.py` (17/17 PASS)
 
-P240B is **not adopted**. Governance simplification requires separate explicit authorization.
-No DB write, no registry mutation, no production/recommendation/monitoring/strategy change.
+P240D adopted rules (SHARED_AGENT_BOOTSTRAP.md §Task Type Classification):
+- Type A: decision support — response only, no PR required
+- Type B: read-only artifact — same-PR closeout allowed (≤4 files, ≤120 lines)
+- Type C: small additive implementation — same-PR closeout allowed under Type B caps
+- Type D: DB write / destructive — no simplification
+- Type E: strategy / production / controlled_apply — no simplification
+- No-op HOLD rule: no new task if prior round already clean and no external event
+
+All safety boundaries unchanged. No DB write, no registry mutation, no production/recommendation/monitoring/strategy change.
 
 ---
 
@@ -84,4 +91,4 @@ No DB write, no registry mutation, no production/recommendation/monitoring/strat
 6. 是否允許進入下一輪
 7. Final Classification
 
-Final Classification (this file): `P240C_P240B_GOVERNANCE_CLOSEOUT_COMPLETE`
+Final Classification (this file): `P240D_GOVERNANCE_SIMPLIFICATION_RULE_ADOPTION_COMPLETE`

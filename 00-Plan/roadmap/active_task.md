@@ -1,11 +1,11 @@
 # Active Task — Today (2026-06-05)
 
 > **STATUS: `WAITING_FOR_USER_AUTHORIZATION`**
-> P213H controlled production DB positional backfill complete (Type D DB write).
-> Classification: `P213H_3STAR_4STAR_CONTROLLED_POSITIONAL_BACKFILL_COMPLETE` — backup created; 7,101 existing 3_STAR/4_STAR rows updated with `numbers_positional`; 4,599 source-only rows left uninserted; 0 mismatches; production replay rows unchanged at 94,924. 12/12 tests PASS.
-> Recommended next: `HOLD until separate explicit authorization is provided`
+> P213K missing source-row ingestion feasibility design complete (Type B read-only).
+> Classification: `P213K_MISSING_SOURCE_ROW_INGESTION_FEASIBILITY_DESIGN_COMPLETE` — no DB write; no ingestion; 4,599 source-only 3_STAR/4_STAR rows analyzed (3_STAR 1,671; 4_STAR 2,928); future insertion feasible only under separate Type D gate with backup/rollback; production replay rows unchanged at 94,924. 13/13 tests PASS.
+> Recommended next: `HOLD` or future explicit Type D ingestion gate authorization only.
 > P238B NIST audit remains `RANDOMNESS_AUDIT_YELLOW_OBSERVATION_ONLY`.
-> Final Classification: `P213H_3STAR_4STAR_CONTROLLED_POSITIONAL_BACKFILL_COMPLETE`
+> Final Classification: `P213K_MISSING_SOURCE_ROW_INGESTION_FEASIBILITY_DESIGN_COMPLETE`
 
 ---
 
@@ -43,6 +43,7 @@
 | P213G 3_STAR/4_STAR dry-run source parser | `P213G_SOURCE_FORMAT_VALIDATED_WITH_MOCK_ONLY` — Type C same-PR; 27/27 PASS; format validated with mock; `開出順序` confirmed parseable; no real historical files; no production DB write |
 | P213I-C 3_STAR/4_STAR real-source dry-run artifact closeout | `P213I_C_REAL_SOURCE_DRY_RUN_ARTIFACT_CLOSEOUT_COMPLETE` — Type C same-PR; 4/4 PASS; real CSV sources found; 11,700 rows parsed; 7,101 matched; 4,599 missing; 0 mismatches; no production DB write |
 | P213H 3_STAR/4_STAR controlled positional backfill | `P213H_3STAR_4STAR_CONTROLLED_POSITIONAL_BACKFILL_COMPLETE` — Type D; 12/12 PASS; backup `backups/p213h_lottery_v2_backup_20260605_20260605_142219.db`; sha256 `214f05870e741164495cd0dbf46158ba1e92835d7a7c072df47a20a0795896c1`; rows updated 7,101; missing 4,599 not inserted; replay rows unchanged 94,924; drift guard PASS |
+| P213K missing source-row ingestion feasibility design | `P213K_MISSING_SOURCE_ROW_INGESTION_FEASIBILITY_DESIGN_COMPLETE` — Type B read-only; artifacts `outputs/research/p213k_missing_source_row_ingestion_feasibility_design_20260605.{md,json}`; 13/13 PASS; no DB write; no ingestion; 4,599 source-only rows analyzed; future insertion requires separate Type D gate |
 
 P240B artifacts on main:
 - `outputs/research/p240b_governance_simplification_design_proposal_20260604.md`
@@ -108,4 +109,4 @@ All safety boundaries unchanged. No DB write, no registry mutation, no productio
 6. 是否允許進入下一輪
 7. Final Classification
 
-Final Classification (this file): `P213H_3STAR_4STAR_CONTROLLED_POSITIONAL_BACKFILL_COMPLETE`
+Final Classification (this file): `P213K_MISSING_SOURCE_ROW_INGESTION_FEASIBILITY_DESIGN_COMPLETE`

@@ -174,3 +174,72 @@ Every task must end with:
 5. staged / commit / push 狀態
 6. 是否允許進入下一輪
 7. Final Classification
+
+---
+
+## Task Type Classification (Adopted P240D — 2026-06-05)
+
+Tasks are classified into five types. Types D and E are never simplified. All types retain Phase 0, STOP conditions, Allowed File Whitelist, Required Completion Check, and all explicit authorization requirements.
+
+### Type A — Read-only Decision Support
+
+- No files modified. Response only.
+- No PR, no commit, no artifact unless user explicitly requests persistence.
+- Phase 0 still required when repo/DB state is relevant.
+- Required Completion Check still required in the response.
+- Examples: decision matrices, next-direction reviews, option comparisons, gate-proximity checks.
+
+### Type B — Read-only Design Doc or Artifact
+
+- Produces Markdown / JSON artifact files. No code changes. No DB write.
+- Artifact creation and governance closeout may be in the **same PR** if:
+  - All changes are read-only (no DB, registry, production code)
+  - Governance changes: ≤4 files modified, ≤120 new governance lines
+  - CI passes; no merge conflict
+- Separate closeout PR still required if: external branch merge drift, CI failure, governance changes >4 files or >120 lines, or any DB/registry/production change.
+- Examples: design docs, build plans, research artifacts, feasibility reviews.
+
+### Type C — Small Additive Implementation
+
+- Adds new scripts, tests, artifact files. No modification of existing production code paths. No DB write. No registry mutation.
+- Implementation and governance closeout may be in the **same PR** if:
+  - All code is additive (new files only)
+  - Targeted tests pass
+  - `git diff --check` passes
+  - Governance changes stay within Type B caps (≤4 files, ≤120 lines)
+- Separate closeout PR still required if: CI change, external merge drift, conflicts, sensitive scope, or >Type B governance caps.
+- Examples: dry-run scripts, research scripts, non-production artifact-build scripts.
+
+### Type D — DB Write / Ingestion / Destructive
+
+- No simplification. Existing governance unchanged.
+- Separate explicit authorization phrase required per operation.
+- Dedicated Phase 0 with DB baseline snapshot before and after.
+- Cannot be consolidated with read-only changes.
+- Required Completion Check must verify DB rows before/after.
+
+### Type E — Strategy / Production / Controlled Apply / Recommendation
+
+- No simplification. Strictest governance unchanged.
+- Full Phase 0 + STOP guards + explicit authorization + QA verification.
+- No consolidation with any other task type.
+- Examples: strategy promotion, registry mutation, controlled_apply, recommendation logic changes.
+
+### No-op HOLD Rule
+
+Do **not** schedule a new task that re-verifies state already confirmed in the immediately preceding round if no new external event has occurred.
+
+Triggers that justify a new verification task:
+- A new PR was merged
+- DB row count changed
+- CI status changed on a pending PR
+- New draw data was ingested
+- A time-based gate opened (e.g., P224B ≥300 draws)
+- User explicitly requests verification
+
+Non-triggers (do not schedule a task for these):
+- Previous round ended cleanly; no new event occurred
+- System is already at `WAITING_FOR_USER_AUTHORIZATION`
+- A decision matrix was just produced
+
+If already clean at `WAITING_FOR_USER_AUTHORIZATION`, provide a decision matrix or wait for user instruction.

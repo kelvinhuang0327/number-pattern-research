@@ -1434,3 +1434,50 @@ The user may choose one of the following:
 - P240B proposal exists but is not adopted; existing governance rules remain active.
 
 Final Classification: `P240C_P240B_GOVERNANCE_CLOSEOUT_COMPLETE`
+
+---
+
+# CEO Decision — 2026-06-05 (Later) — P240D Governance Simplification Rule Adoption
+
+## 1. Context
+
+2026-06-05 Asia/Taipei. Final Classification: `P240D_GOVERNANCE_SIMPLIFICATION_RULE_ADOPTION_COMPLETE`.
+
+Explicit user authorization provided: "Authorize P240D governance simplification rule adoption."
+
+- [Confirmed] P240B proposal previously recorded as proposal-only in P240C (PR #292 merged 2026-06-05T01:50:13Z).
+- [Confirmed] P240D adopts P240B into `SHARED_AGENT_BOOTSTRAP.md` §Task Type Classification and `TASK_TEMPLATES.md`.
+- [Confirmed] DB: 94,924 replay rows; integrity ok; bet_index nulls 0; duplicate keys 0; drift guard PASS.
+
+## 2. Adopted Rules Summary
+
+P240D adopts the following into SHARED_AGENT_BOOTSTRAP.md §Task Type Classification:
+
+| Type | Definition | Simplification |
+|---|---|---|
+| A | Read-only decision support | Response only; no PR, no commit, no artifact unless user requests |
+| B | Read-only design doc / artifact | Same-PR closeout allowed (<=4 files, <=120 lines, CI pass, no conflict) |
+| C | Small additive implementation | Same-PR closeout allowed under Type B caps; additive code only |
+| D | DB write / ingestion / destructive | No simplification; separate explicit authorization required |
+| E | Strategy / production / controlled_apply | No simplification; strictest governance unchanged |
+
+No-op HOLD rule: Do not schedule a task that re-verifies state already confirmed in the prior round with no new external event.
+
+All safety boundaries unchanged: Phase 0, STOP conditions, Allowed File Whitelist, Required Completion Check, and explicit authorization for DB/registry/production/monitoring/strategy/P211/controlled_apply all remain mandatory.
+
+## 3. Decision
+
+CEO accepts P240D as complete. P240B governance simplification rules are now **adopted** and active.
+
+No DB write. No registry mutation. No production/recommendation/strategy change. P211 remains HELD_BY_USER. P238B NIST result remains RANDOMNESS_AUDIT_YELLOW_OBSERVATION_ONLY.
+
+## 4. Current State
+
+- `active_task.md` returns to `WAITING_FOR_USER_AUTHORIZATION`.
+- P211 remains `HELD_BY_USER`.
+- P238B NIST result remains `RANDOMNESS_AUDIT_YELLOW_OBSERVATION_ONLY`.
+- No active worker task exists after adoption.
+- No deployable candidate exists in any lottery.
+- Governance simplification rules (Type A/B/C/D/E + No-op HOLD) are now active.
+
+Final Classification: `P240D_GOVERNANCE_SIMPLIFICATION_RULE_ADOPTION_COMPLETE`

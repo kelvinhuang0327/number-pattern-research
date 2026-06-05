@@ -1,0 +1,161 @@
+{
+  "task_id": "P212",
+  "classification": "P212_POWER_LOTTO_BACKWARD_OOS_GAP_CHECK_HISTORICAL_ARTIFACT",
+  "task_type": "Type C",
+  "source_authorization": "Authorize P212 POWER_LOTTO backward-OOS for fourier30_markov30_2bet and zonal_entropy_2bet (read-only, no DB write)",
+  "lottery_type": "POWER_LOTTO",
+  "strategies_analyzed": [
+    "fourier30_markov30_2bet",
+    "zonal_entropy_2bet"
+  ],
+  "backward_oos_window": "P231B boundary 101000002 (0 draws available for both strategies)",
+  "temporal_split_proxy": "early 500 / late draws split as OOS approximation",
+  "sample_size_by_strategy": {
+    "fourier30_markov30_2bet": 1501,
+    "zonal_entropy_2bet": 1500
+  },
+  "baseline_method": "empirical_all_history_bet_index_1",
+  "baseline_value": 0.982519,
+  "observed_metrics": {
+    "fourier30_markov30_2bet": {
+      "early_mean": 0.942,
+      "late_mean": 0.976024
+    },
+    "zonal_entropy_2bet": {
+      "early_mean": 0.91,
+      "late_mean": 0.964
+    }
+  },
+  "delta_vs_baseline": {
+    "fourier30_markov30_2bet": {
+      "early_delta": -0.040519,
+      "late_delta": -0.006495
+    },
+    "zonal_entropy_2bet": {
+      "early_delta": -0.072519,
+      "late_delta": -0.018519
+    }
+  },
+  "raw_p_values": {
+    "fourier30_markov30_2bet": {
+      "p_early": 1.0,
+      "p_late": 0.986703
+    },
+    "zonal_entropy_2bet": {
+      "p_early": 1.0,
+      "p_late": 1.0
+    }
+  },
+  "family_k": 2,
+  "correction_method": "bonferroni_k2",
+  "corrected_significance": {
+    "fourier30_markov30_2bet": false,
+    "zonal_entropy_2bet": false
+  },
+  "robustness_checks": {
+    "fourier30_markov30_2bet": "early_period_below_baseline_NOT_ROBUST",
+    "zonal_entropy_2bet": "early_period_below_baseline_NOT_ROBUST"
+  },
+  "feature_bottlenecks": [
+    "no_pre_boundary_draws_available_for_backward_oos",
+    "both_strategies_start_at_draw_101000002",
+    "temporal_split_proxy_used_as_oos_approximation",
+    "early_period_below_all_history_baseline_for_both_strategies",
+    "is_window_significance_concentrated_in_recent_draws_consistent_with_historical_artifact"
+  ],
+  "allowed_next_actions": [
+    "observation_only",
+    "future_backward_oos_only_if_pre_boundary_draws_are_ever_added_to_replay_table",
+    "passive_monitoring_until_new_draws_accumulate",
+    "return_to_waiting_for_user_authorization"
+  ],
+  "forbidden_next_actions": [
+    "strategy_promotion",
+    "production_change",
+    "registry_write",
+    "db_write",
+    "betting_advice",
+    "wagering_recommendation",
+    "claim_deployable_edge"
+  ],
+  "no_claim_attestation": "This gap check produces no claim about lottery number predictability, higher winning probability, or wagering recommendations. Both strategies have no pre-boundary draws available for P231B-style backward-OOS. The temporal split proxy confirms early-period performance is below the all-history baseline, consistent with the historical artifact pattern seen in P231B and P230C. All safety booleans are False. No strategy is authorized for promotion.",
+  "db_write_authorized": false,
+  "registry_write_authorized": false,
+  "production_authorized": false,
+  "monitoring_authorized": false,
+  "strategy_authorized": false,
+  "betting_advice": false,
+  "p238b_interpretation": "RANDOMNESS_AUDIT_YELLOW_OBSERVATION_ONLY",
+  "per_strategy_results": [
+    {
+      "strategy_id": "fourier30_markov30_2bet",
+      "lottery_type": "POWER_LOTTO",
+      "backward_oos_draws": 0,
+      "backward_oos_available": false,
+      "backward_oos_boundary": 101000002,
+      "full_history_draws": 1501,
+      "baseline_value": 0.982519,
+      "early_n": 500,
+      "early_mean": 0.942,
+      "early_delta_vs_baseline": -0.040519,
+      "p_early_raw": 1.0,
+      "late_n": 1001,
+      "late_mean": 0.976024,
+      "late_delta_vs_baseline": -0.006495,
+      "p_late_raw": 0.986703,
+      "correction_method": "bonferroni",
+      "family_size_k": 2,
+      "corrected_threshold": 0.025,
+      "p_early_corrected": 1.0,
+      "p_late_corrected": 1.0,
+      "early_is_above_baseline": false,
+      "is_corrected_significant": false,
+      "robustness_note": "early_period_below_baseline_NOT_ROBUST",
+      "classification": "P212_TEMPORAL_SPLIT_EARLY_BELOW_BASELINE_HISTORICAL_ARTIFACT",
+      "confidence_language": "fourier30_markov30_2bet/POWER_LOTTO: No backward-OOS data before draw 101000002. Temporal split proxy \u2014 early 500 draws mean 0.9420 vs baseline 0.9825 (delta -0.0405); p_early=1.0000 (Bonferroni-corrected 1.0000). IS-window (late 1001 draws) mean 0.9760. Classification: P212_TEMPORAL_SPLIT_EARLY_BELOW_BASELINE_HISTORICAL_ARTIFACT. Historical evidence only. Not a wagering recommendation.",
+      "db_write_authorized": false,
+      "registry_write_authorized": false,
+      "production_authorized": false,
+      "betting_advice": false
+    },
+    {
+      "strategy_id": "zonal_entropy_2bet",
+      "lottery_type": "POWER_LOTTO",
+      "backward_oos_draws": 0,
+      "backward_oos_available": false,
+      "backward_oos_boundary": 101000002,
+      "full_history_draws": 1500,
+      "baseline_value": 0.982519,
+      "early_n": 500,
+      "early_mean": 0.91,
+      "early_delta_vs_baseline": -0.072519,
+      "p_early_raw": 1.0,
+      "late_n": 1000,
+      "late_mean": 0.964,
+      "late_delta_vs_baseline": -0.018519,
+      "p_late_raw": 1.0,
+      "correction_method": "bonferroni",
+      "family_size_k": 2,
+      "corrected_threshold": 0.025,
+      "p_early_corrected": 1.0,
+      "p_late_corrected": 1.0,
+      "early_is_above_baseline": false,
+      "is_corrected_significant": false,
+      "robustness_note": "early_period_below_baseline_NOT_ROBUST",
+      "classification": "P212_TEMPORAL_SPLIT_EARLY_BELOW_BASELINE_HISTORICAL_ARTIFACT",
+      "confidence_language": "zonal_entropy_2bet/POWER_LOTTO: No backward-OOS data before draw 101000002. Temporal split proxy \u2014 early 500 draws mean 0.9100 vs baseline 0.9825 (delta -0.0725); p_early=1.0000 (Bonferroni-corrected 1.0000). IS-window (late 1000 draws) mean 0.9640. Classification: P212_TEMPORAL_SPLIT_EARLY_BELOW_BASELINE_HISTORICAL_ARTIFACT. Historical evidence only. Not a wagering recommendation.",
+      "db_write_authorized": false,
+      "registry_write_authorized": false,
+      "production_authorized": false,
+      "betting_advice": false
+    }
+  ],
+  "final_state": {
+    "active_task_status": "WAITING_FOR_USER_AUTHORIZATION",
+    "p238b_nist_status": "RANDOMNESS_AUDIT_YELLOW_OBSERVATION_ONLY",
+    "db_rows": 94924,
+    "drift_guard": "REPLAY_LIFECYCLE_DRIFT_GUARD_PASS",
+    "deployable_candidate_exists": false,
+    "separate_closeout_pr_needed": false
+  }
+}

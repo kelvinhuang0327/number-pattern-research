@@ -1,12 +1,11 @@
 # Active Task — Today (2026-06-05)
 
 > **STATUS: `WAITING_FOR_USER_AUTHORIZATION`**
-> P211R short/mid-window diagnostic complete (Type C, same-PR closeout).
-> P211 restarted by explicit user authorization. Classification: `P211R_IS_CANDIDATES_PRIOR_OOS_REJECTED_HISTORICAL_ARTIFACT`
-> 75 tests (POWER_LOTTO + DAILY_539), 9 IS-window Bonferroni-significant — all have prior OOS rejection evidence (P231B NULL, P230C REJECTED).
-> No deployable edge. No DB write. No strategy promotion. 34/34 targeted tests PASS.
-> P238B NIST audit remains `RANDOMNESS_AUDIT_YELLOW_OBSERVATION_ONLY` (observation-only).
-> Final Classification: `P211R_SHORT_MID_WINDOW_DIAGNOSTIC_COMPLETE`
+> P212 POWER_LOTTO backward-OOS gap check complete (Type C, same-PR closeout).
+> Both `fourier30_markov30_2bet` and `zonal_entropy_2bet` have 0 pre-boundary draws. Temporal split shows early period BELOW baseline for both.
+> Classification: `P212_POWER_LOTTO_BACKWARD_OOS_GAP_CHECK_HISTORICAL_ARTIFACT`. No deployable edge. 31/31 tests PASS.
+> P238B NIST audit remains `RANDOMNESS_AUDIT_YELLOW_OBSERVATION_ONLY`.
+> Final Classification: `P212_POWER_LOTTO_BACKWARD_OOS_GAP_CHECK_COMPLETE`
 
 ---
 
@@ -32,7 +31,9 @@
 | P243A Diagnostic report fixture pack | `P243A_DIAGNOSTIC_REPORT_FIXTURE_PACK_COMPLETE` — Type C same-PR closeout; 55/55 tests PASS; 4 evidence-backed historical fixtures |
 | P243B P2.4 readiness decision | `P243B_P2_4_DIAGNOSTICS_LAYER_READINESS_DECISION_COMPLETE` — Type A; response only; recommended P244C |
 | P244C Diagnostics integration plan | `P244C_DIAGNOSTICS_INTEGRATION_PLAN_COMPLETE` — Type B same-PR closeout; 34/34 tests PASS; field mapping + confidence templates + blocker vocab + prompt snippet |
-| P211R Short/mid-window diagnostic | `P211R_SHORT_MID_WINDOW_DIAGNOSTIC_COMPLETE` (P211R artifact classification: P211R_IS_CANDIDATES_PRIOR_OOS_REJECTED_HISTORICAL_ARTIFACT) — Type C same-PR closeout; 34/34 tests PASS; P211 restarted; IS-window candidates all have prior OOS rejection evidence |
+| P211R Short/mid-window diagnostic | `P211R_SHORT_MID_WINDOW_DIAGNOSTIC_COMPLETE` (artifact: P211R_IS_CANDIDATES_PRIOR_OOS_REJECTED_HISTORICAL_ARTIFACT) — Type C same-PR; 34/34 PASS |
+| P211S Post-P211R decision support | `P211S_POST_P211R_DECISION_SUPPORT_COMPLETE` — Type A; no files; recommended P212 gap check |
+| P212 POWER_LOTTO backward-OOS gap check | `P212_POWER_LOTTO_BACKWARD_OOS_GAP_CHECK_COMPLETE` (artifact: P212_POWER_LOTTO_BACKWARD_OOS_GAP_CHECK_HISTORICAL_ARTIFACT) — Type C same-PR; 31/31 PASS; 0 pre-boundary draws; early period below baseline for both strategies |
 
 P240B artifacts on main:
 - `outputs/research/p240b_governance_simplification_design_proposal_20260604.md`
@@ -98,4 +99,4 @@ All safety boundaries unchanged. No DB write, no registry mutation, no productio
 6. 是否允許進入下一輪
 7. Final Classification
 
-Final Classification (this file): `P211R_SHORT_MID_WINDOW_DIAGNOSTIC_COMPLETE`
+Final Classification (this file): `P212_POWER_LOTTO_BACKWARD_OOS_GAP_CHECK_COMPLETE`

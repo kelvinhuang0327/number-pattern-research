@@ -1719,3 +1719,32 @@ P211R does **not** authorize: strategy promotion, production change, DB write, r
 - **Passive monitoring**: Wait for ≥300 new DAILY_539 draws per P224B protocol.
 
 Final Classification: `P211R_SHORT_MID_WINDOW_DIAGNOSTIC_COMPLETE`
+
+---
+
+# CEO Decision — 2026-06-05 (Later) — P212 POWER_LOTTO Backward-OOS Gap Check
+
+## 1. Context
+
+2026-06-05 Asia/Taipei. Final Classification: `P212_POWER_LOTTO_BACKWARD_OOS_GAP_CHECK_COMPLETE`.
+
+Authorization: `Authorize P212 POWER_LOTTO backward-OOS for fourier30_markov30_2bet and zonal_entropy_2bet (read-only, no DB write)`
+
+- [Confirmed] Script: `scripts/p212_power_lotto_backward_oos_gap_check.py`. 31/31 PASS.
+- [Confirmed] DB: 94,924 rows; integrity ok; drift guard PASS.
+
+## 2. P212 Summary
+
+Both target strategies start at draw 101000002 — zero pre-boundary draws available. Temporal split proxy (early 500 draws): `fourier30_markov30_2bet` early mean 0.9420 < baseline 0.9825; `zonal_entropy_2bet` early mean 0.9100 < baseline 0.9825. IS-window significance is a recency artifact. Classification: `P212_POWER_LOTTO_BACKWARD_OOS_GAP_CHECK_HISTORICAL_ARTIFACT`. All P211R IS-window candidates are now confirmed historical artifacts.
+
+## 3. Decision
+
+CEO accepts P212 as completing the POWER_LOTTO IS-window diagnostic chain. No deployable edge. No strategy authorized. Returns to WAITING_FOR_USER_AUTHORIZATION.
+
+## 4. Next Options
+
+- **Remain HOLD**: No action.
+- **New hypothesis**: `"Authorize P213 new hypothesis [description]"` — requires P221F pre-registration.
+- **Passive monitoring**: Wait for ≥300 new DAILY_539 draws per P224B protocol.
+
+Final Classification: `P212_POWER_LOTTO_BACKWARD_OOS_GAP_CHECK_COMPLETE`

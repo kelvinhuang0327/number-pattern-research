@@ -58,20 +58,43 @@ PSI_CRITICAL = 0.25
 
 
 def _load_draws(lottery_type: str, limit: int = 3000) -> List[List[int]]:
-    """從資料庫載入最新 N 期開獎號碼"""
+    """從資料庫載入最新 N 期開獎號碼（僅含正規主開獎）
+
+    For BIG_LOTTO, excludes non-canonical row families:
+      - ADD_ON_PRIZE_EXCLUDED: hyphenated draw IDs (add-on/special prize records;
+        valid lottery records but excluded from canonical 6/49 research)
+      - DATE_FORMAT_ALIEN: 8-digit YYYYMMDD draw IDs
+      - SMALL_POOL_ALIEN: max(numbers) <= 25 (Python-level post-filter)
+    Raw records remain accessible via get_all_draws() for display/history.
+    """
     conn = sqlite3.connect(DB_PATH)
     c = conn.cursor()
-    c.execute(
-        'SELECT numbers FROM draws WHERE lottery_type=? ORDER BY date ASC LIMIT ?',
-        (lottery_type, limit)
-    )
+    if lottery_type == 'BIG_LOTTO':
+        # SQL-level canonical filter for BIG_LOTTO
+        c.execute(
+            "SELECT numbers FROM draws "
+            "WHERE lottery_type=? "
+            "AND draw NOT LIKE '%-%' "
+            "AND NOT (LENGTH(draw)=8 AND draw LIKE '20%') "
+            "ORDER BY date ASC LIMIT ?",
+            (lottery_type, limit)
+        )
+    else:
+        c.execute(
+            'SELECT numbers FROM draws WHERE lottery_type=? ORDER BY date ASC LIMIT ?',
+            (lottery_type, limit)
+        )
     rows = c.fetchall()
     conn.close()
     result = []
     for (nums_str,) in rows:
         try:
             nums = json.loads(nums_str) if isinstance(nums_str, str) else nums_str
-            result.append([int(n) for n in nums])
+            parsed = [int(n) for n in nums]
+            # Python-level: exclude SMALL_POOL_ALIEN (max number <= 25) for BIG_LOTTO
+            if lottery_type == 'BIG_LOTTO' and parsed and max(parsed) <= 25:
+                continue
+            result.append(parsed)
         except Exception:
             continue
     return result

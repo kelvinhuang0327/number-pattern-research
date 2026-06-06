@@ -5,6 +5,29 @@
 
 ---
 
+## L118 — P247B BIG_LOTTO canonical view 正式建立 (2026-06-06)
+
+**來源：** P247B Type D controlled DB apply
+
+**關鍵執行結果：**
+- `CREATE VIEW draws_big_lotto_canonical_main` 成功建立於 `lottery_api/data/lottery_v2.db`
+- View 返回 2,113 筆正規主開獎（驗證：no hyphen, no date-format, all max>25）
+- 原始 BIG_LOTTO 22,238 筆完整保留；ADD_ON_PRIZE_EXCLUDED 19,100 筆原始可存取
+- Backup: `backups/p247b_lottery_v2_backup_20260606_113816.db` + SHA256 ✅
+- DB integrity check: ok ✅
+- 31 個 P247B 測試全部通過
+
+**重要教訓：**
+- Python 的 `json_each` 是 table-valued function，必須用 `FROM json_each(...)` 語法，不能用 `SELECT json_each(...)`（直接呼叫無效）
+- P247A dry-run 的 `test_p247a_canonical_view_not_in_db` 在 P247B apply 後會失敗（屬預期的歷史狀態測試）；這不是 regression，而是 P247B 刻意改變 DB 狀態的結果
+- Type D 執行清單完成：backup → CREATE VIEW → post-verify → 文物生成 → 測試 PASS
+
+**完成後狀態：**
+- `draws_big_lotto_canonical_main` VIEW 已存在於生產 DB
+- 下一步建議：annotation table（Type D 需另行授權）或直接使用 VIEW 於研究
+
+---
+
 ## L117 — P247A DB 級隔離 dry-run 要點 (2026-06-06)
 
 **來源：** P247A DB 級正規分離 dry-run 計畫

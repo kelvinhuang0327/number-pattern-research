@@ -53,6 +53,37 @@
 
 ---
 
+## L128 — P251A evidence dashboard contract dry-run (2026-06-06)
+
+**來源：** P251A cross-lottery evidence dashboard dry-run plan
+
+**重要設計原則：**
+- P250A inventory 是 dashboard 的 evidence source，不是 UI 實作
+- `global_summary` 必須把 current registry 與 historical snapshot 分開呈現
+- `lifecycle_badge_vocabulary` 只能做 badge / filter，不可做排除條件
+- `strategy_table_columns` 與 `evidence_state_columns` 必須同時保留 current lifecycle 與 historical snapshot lifecycle
+
+**固定欄位區塊：**
+- `global_summary`
+- `lottery_summary`
+- `lifecycle_badge_vocabulary`
+- `strategy_table_columns`
+- `evidence_state_columns`
+- `filter_semantics`
+- `no_exclusion_rules`
+- `stale_snapshot_warning`
+- `no_betting_advice_notice`
+- `implementation_candidates_for_future`
+
+**展示原則：**
+- current registry = live SSOT
+- P232A = historical snapshot
+- artifact-only rows remain visible by default
+- BIG_LOTTO replay / draw / canonical counts must stay separated
+- no active deployable candidate is a required headline, not an inference
+
+---
+
 ## L125 — P249A 後隔離 roadmap triage 重點發現 (2026-06-06)
 
 **來源：** P249A post-isolation roadmap triage

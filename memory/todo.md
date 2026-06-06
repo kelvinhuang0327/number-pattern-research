@@ -11,6 +11,20 @@
 
 _（目前無進行中任務）_
 
+### P247F BIG_LOTTO 分析工具遷移至 canonical helper ✅ 2026-06-06 完成
+- [x] Phase 0 驗證：main=f5079f2=origin/main，P247E merge 可見，view=2113/helper=2113
+- [x] 掃描 P247D 識別的 FUTURE_SCOPE 工具（9 個：5 analyze_* + 4 audit_*）
+- [x] 確認全部 9 工具：研究用途、已使用正確 DB 路徑、只需單行方法替換
+- [x] 建立 p247f-big-lotto-analysis-tool-migration 分支
+- [x] 修改 9 個工具：get_all_draws('BIG_LOTTO') → get_canonical_draws('BIG_LOTTO')
+- [x] 撰寫 analysis/p247f_big_lotto_analysis_tool_migration.py
+- [x] 產出 P247F 文物（JSON+MD）
+- [x] 撰寫 tests/test_p247f_big_lotto_analysis_tool_migration.py → 49/49 PASS
+- [x] 全套 P247B-F: 199/199 PASS
+- [x] 更新 memory/lessons.md（L122）
+- [x] P247 弧（A→F）全部完成
+- 完成標準：9 工具遷移完成；無殘留 raw BIG_LOTTO 呼叫；49 測試 PASS；無 DB write
+
 ### P247E get_canonical_draws 採用 DB canonical view ✅ 2026-06-06 完成
 - [x] Phase 0 驗證：main=24ae45a=origin/main，P247D merge 可見，view=2113 confirmed
 - [x] 讀取 database.py：了解現有 SQL+Python 雙層過濾結構

@@ -5,6 +5,34 @@
 
 ---
 
+## L113 — P246H 排程器快取的 canonical 化模式 (2026-06-05)
+
+**來源：** P246H advanced_learning scheduler 追蹤
+
+**關鍵發現：**
+- `scheduler.get_data(lottery_type)` 是所有進階學習/優化路由的資料消費點
+- `scheduler.data_by_type['BIG_LOTTO']` 由 `optimization.py:90` 的 `db.get_all_draws()` 填入（22,238 筆，含加碼記錄）
+- `advanced_learning.py` 本身無 DB 匯入；以 scheduler 參數接收資料
+
+**修正模式：在消費點（get_data）套用 canonical filter，而非修改資料填入端**
+```python
+def get_data(self, lottery_type: str) -> list:
+    data = self.data_by_type.get(lottery_type, [])
+    if lottery_type == 'BIG_LOTTO':
+        # filter at return time — non-destructive
+        return [d for d in data
+                if '-' not in str(d.get('draw',''))
+                and not (len(str(d.get('draw',''))) == 8 and str(d.get('draw','')).startswith('20'))
+                and (not d.get('numbers') or max(d['numbers']) > 25)]
+    return data
+```
+
+**優點：** 非破壞性（原始快取保留）、所有 get_data() 呼叫端自動受益
+
+**P246E-H 總計：** 6 個確認研究呼叫端已完成 canonical 化
+
+---
+
 ## L112 — P246G 直接 SQL 路徑的 canonical 化方式 (2026-06-05)
 
 **來源：** P246G 剩餘研究呼叫端處理

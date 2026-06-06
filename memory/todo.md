@@ -11,6 +11,16 @@
 
 _（目前無進行中任務）_
 
+### P246H advanced_learning scheduler 追蹤 ✅ 2026-06-05 完成
+- [x] 確認 PR #322 (P246G) CI PASS，合併至 main；229/229 通過
+- [x] 追蹤 scheduler.get_data() 完整呼叫鏈：advanced_learning → scheduler → data_by_type
+- [x] 找到根因：optimization.py:90 get_all_draws() 無過濾，22,238 筆進入快取
+- [x] 在 scheduler.get_data() 消費點套用 canonical filter（非破壞性）
+- [x] advanced_learning.py 呼叫端自動受益，無需修改 advanced_learning 本身
+- [x] 測試 258/258 PASS；產出 P246H 文物（JSON+MD）
+- [x] 更新 memory/lessons.md（L113）
+- 完成標準：P246E-H 共 6 個確認研究呼叫端已 canonical 化；無 DB 寫入
+
 ### P246G 剩餘 BIG_LOTTO 研究呼叫端 canonical 化 ✅ 2026-06-05 完成
 - [x] 確認 PR #321 (P246F) CI PASS，合併至 main；199/199 通過
 - [x] 更新 drift_detector._load_draws()：BIG_LOTTO 直接 SQL + Python 後置過濾（P246G）

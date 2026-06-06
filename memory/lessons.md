@@ -5,6 +5,28 @@
 
 ---
 
+## L125 — P249A 後隔離 roadmap triage 重點發現 (2026-06-06)
+
+**來源：** P249A post-isolation roadmap triage
+
+**關鍵發現：**
+- CURRENT_STATE.md 的 "BIG_LOTTO rows | 24,140" 是 **replay rows**（不是 draw rows）
+  - 24,140 + 34,680 + 36,104 = 94,924 = 全部 replay rows ✓
+  - 實際 BIG_LOTTO draw rows = 22,238（lottery_type='BIG_LOTTO' 的 draws 表）
+  - 此混淆不會影響目前運作，但未來 agent 可能誤解
+- 所有主要研究線全部關閉或 NULL：
+  - DAILY_539: P230C REJECTED（已無 WAIT_FOR_OOS 候選）
+  - POWER_LOTTO: P231B NULL（p=0.3018）
+  - 3_STAR/4_STAR box-play: P227C UNDERPOWERED_NO_SIGNAL
+  - 3_STAR/4_STAR straight-play: P214C NULL（0 Bonferroni significant）
+  - BIG_LOTTO: L90/L91 信號空間窮盡 + P246-P248A canonical 隔離完成
+- P224B 的 "≥300 new DAILY_539 draws" gate 已不適用：DAILY_539 候選已被 P230C REJECTED（非 WAIT_FOR_OOS）
+- **推薦下一步：T1+T2 — roadmap.md sync + CURRENT_STATE label fix（Type B doc-only）**
+  - roadmap.md 未反映 P246-P248A 18 個任務
+  - CURRENT_STATE "BIG_LOTTO rows" 標籤需釐清為 replay rows
+
+---
+
 ## L124 — P248A BIG_LOTTO canonical 隔離 governance closure (2026-06-06)
 
 **來源：** P248A governance closure — P246B–P247G 弧完整結案

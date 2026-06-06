@@ -5,6 +5,30 @@
 
 ---
 
+## L117 — P247A DB 級隔離 dry-run 要點 (2026-06-06)
+
+**來源：** P247A DB 級正規分離 dry-run 計畫
+
+**關鍵發現：**
+- SQLite JSON1/json_each 可用 → 可在 VIEW 中直接過濾 SMALL_POOL_ALIEN（max>25），不需 Python 後置過濾
+- Proposed canonical view SQL dry-run 驗證：返回 2,113 筆（與 get_canonical_draws() 一致）
+- VIEW 是非破壞性增補（原始 draws 表保持 22,238 筆不變）
+- 22238 = 19100(ADD_ON) + 375(DATE_FMT) + 650(SMALL_POOL) + 2113(CANONICAL) ✅
+
+**Proposed canonical view SQL（dry-run only，未執行）：**
+```sql
+CREATE VIEW IF NOT EXISTS draws_big_lotto_canonical_main AS
+SELECT d.* FROM draws d
+WHERE d.lottery_type = 'BIG_LOTTO'
+  AND d.draw NOT LIKE '%-%'
+  AND NOT (LENGTH(d.draw) = 8 AND d.draw LIKE '20%')
+  AND (SELECT MAX(CAST(j.value AS INTEGER)) FROM json_each(d.numbers) j) > 25;
+```
+
+**Type D 執行清單：** backup + SHA256 → CREATE VIEW → CREATE TABLE (annotation) → post-apply 驗證 → 更新 test_p238b → 確認 GATE_RED 維持
+
+---
+
 ## L116 — P246K 大樂透正規族群隨機性審計：GREEN（P238B YELLOW 係污染假訊號）(2026-06-06)
 
 **來源：** P246K 正規族群 NIST 重新審計

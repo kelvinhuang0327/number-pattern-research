@@ -11,6 +11,16 @@
 
 _（目前無進行中任務）_
 
+### P247A BIG_LOTTO DB 級正規分離 dry-run 計畫 ✅ 2026-06-06 完成
+- [x] 確認 PR #326 (P246K) CI PASS，合併至 main；357+1skipped 通過
+- [x] 讀取 DB read-only：確認全部計數正確（22238/19100/375/650/2113）
+- [x] 確認 JSON1/json_each 可用：可在 VIEW 中直接過濾 SMALL_POOL_ALIEN
+- [x] Dry-run proposed canonical view SQL：返回 2,113 ✅
+- [x] 確認 VIEW 和 annotation table 未在 DB 中建立（dry-run only）
+- [x] 產出 P247A 文物（JSON+MD）+ 測試 385+1skipped PASS
+- [x] 更新 memory/lessons.md（L117）
+- 完成標準：dry-run 計畫已驗證；SQL 未執行；Type D 需另行授權
+
 ### P246K 大樂透正規族群 NIST 重新審計 ✅ 2026-06-06 完成
 - [x] 確認 PR #325 (P246J) CI PASS，合併至 main；324/324 通過
 - [x] 以 get_canonical_draws("BIG_LOTTO") 載入 2,113 筆正規主開獎

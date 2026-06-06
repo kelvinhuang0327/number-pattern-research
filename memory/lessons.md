@@ -5,6 +5,36 @@
 
 ---
 
+## L122 — P247F BIG_LOTTO 分析工具遷移至 canonical helper (2026-06-06)
+
+**來源：** P247F Phase 3 analysis tool migration
+
+**執行摘要：**
+- 9 個 BIG_LOTTO 研究/分析工具從 `get_all_draws('BIG_LOTTO')` 遷移至 `get_canonical_draws('BIG_LOTTO')`
+- 全部 9 個工具已使用正確的 canonical DB 路徑，只需更換一行方法呼叫
+- 變更最小：單行 diff，不改動任何邏輯、常數、或函式簽章
+
+**遷移工具清單：**
+1. tools/analyze_banker_accuracy.py
+2. tools/analyze_banker_plus_kill.py
+3. tools/analyze_biglotto_special.py（special 指特別獎號，非加開；正確使用 canonical）
+4. tools/analyze_market_temperature.py
+5. tools/analyze_top_n_for_2.py
+6. tools/audit_big_lotto_3bet.py
+7. tools/audit_big_lotto_baseline.py
+8. tools/audit_big_lotto_hyper.py
+9. tools/audit_big_lotto_rigorous.py
+
+**未遷移（保留原因）：**
+- `lottery_api/routes/*.py` (RAW_HISTORY_ALLOWED)：API display 需要完整 raw rows
+- `lottery_api/backtest_*.py` (DEFERRED_ARCHIVED)：一次性歷史回測腳本，非 active pipeline
+- `lottery_api/predict_*.py` (DEFERRED_ARCHIVED)：歸檔的單次預測腳本
+
+**P247 完整弧（A→F）：** 已全部完成
+- A: dry-run 計畫 → B: CREATE VIEW → C: 後置核對 → D: consumer audit → E: helper 採用 view → F: 工具遷移
+
+---
+
 ## L121 — P247E get_canonical_draws 採用 DB view (2026-06-06)
 
 **來源：** P247E database.py helper view adoption

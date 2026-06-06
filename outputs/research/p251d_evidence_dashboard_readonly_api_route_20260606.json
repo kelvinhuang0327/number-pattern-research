@@ -1,0 +1,65 @@
+{
+  "schema_version": "1.0",
+  "task_id": "P251D",
+  "classification": "EVIDENCE_DASHBOARD_READONLY_API_ROUTE_IMPLEMENTED",
+  "source_artifacts": {
+    "p251b_dashboard_data": "outputs/research/p251b_cross_lottery_evidence_dashboard_data_20260606.json",
+    "p251c_contract_plan": "outputs/research/p251c_evidence_dashboard_api_payload_contract_plan_20260606.json"
+  },
+  "route_convention_scan": {
+    "route_file": "lottery_api/routes/replay.py",
+    "existing_replay_namespace": "/api/replay/*",
+    "implemented_endpoint_present": true,
+    "strategy_catalog_present": true,
+    "freshness_present": true,
+    "artifact_loader_present": true,
+    "forbidden_imports_present": []
+  },
+  "implemented_endpoint": {
+    "path": "/api/replay/evidence-dashboard",
+    "http_method": "GET",
+    "route_file": "lottery_api/routes/replay.py",
+    "artifact_backed": true,
+    "db_query_performed": false
+  },
+  "implementation_files": [
+    "lottery_api/routes/replay.py",
+    "analysis/p251d_evidence_dashboard_readonly_api_route.py",
+    "outputs/research/p251d_evidence_dashboard_readonly_api_route_20260606.json",
+    "outputs/research/p251d_evidence_dashboard_readonly_api_route_20260606.md",
+    "tests/test_p251d_evidence_dashboard_readonly_api_route.py"
+  ],
+  "response_contract_preserved": {
+    "task_id": "P251B",
+    "classification": "CROSS_LOTTERY_EVIDENCE_DASHBOARD_DATA_ARTIFACT",
+    "strategy_rows_len": 41,
+    "artifact_only_visible_count": 3,
+    "default_lifecycle_statuses": [
+      "ONLINE",
+      "REJECTED",
+      "RETIRED",
+      "OBSERVATION",
+      "ARTIFACT_ONLY",
+      "LIFECYCLE_UNRESOLVED"
+    ],
+    "exclude_by_lifecycle": false,
+    "big_lotto_replay_rows": 24140,
+    "big_lotto_draw_rows": 22238,
+    "big_lotto_canonical_rows": 2113,
+    "big_lotto_add_on_rows": 19100,
+    "no_deployable_candidate": true,
+    "no_betting_advice_notice_present": true,
+    "contract_path_matches_p251c": true
+  },
+  "no_db_write_confirmed": true,
+  "no_registry_mutation_confirmed": true,
+  "no_strategy_promotion_confirmed": true,
+  "no_ui_implementation_confirmed": true,
+  "no_betting_advice_confirmed": true,
+  "tests": {
+    "targeted_route_tests": "tests/test_p251d_evidence_dashboard_readonly_api_route.py",
+    "p251c_regression": "tests/test_p251c_evidence_dashboard_api_payload_contract_plan.py",
+    "p251b_regression": "tests/test_p251b_cross_lottery_evidence_dashboard_data_builder.py"
+  },
+  "final_decision": "P251D complete. Implemented GET /api/replay/evidence-dashboard as a read-only artifact-backed replay endpoint that serves the published P251B payload without DB reads, registry mutation, strategy promotion, UI work, or betting advice."
+}

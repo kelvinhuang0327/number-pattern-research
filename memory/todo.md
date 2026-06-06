@@ -11,6 +11,16 @@
 
 _（目前無進行中任務）_
 
+### P246K 大樂透正規族群 NIST 重新審計 ✅ 2026-06-06 完成
+- [x] 確認 PR #325 (P246J) CI PASS，合併至 main；324/324 通過
+- [x] 以 get_canonical_draws("BIG_LOTTO") 載入 2,113 筆正規主開獎
+- [x] 驗證排除規則：hyphen=0, date_fmt=0, small_pool=0, all max>25 ✅
+- [x] 執行 5 項隨機性測試：全部 GREEN（p 均 > 0.05）
+- [x] 結論：P238B YELLOW 係混合族群假訊號；正規族群與公平隨機 6/49 相容
+- [x] 測試 357/1-SKIPPED；產出 P246K 文物（JSON+MD）
+- [x] 更新 memory/lessons.md（L116）
+- 完成標準：正規族群 GREEN 已確認；無 DB 寫入；預測/策略無授權；GATE_RED 維持
+
 ### P246J BIG_LOTTO 加碼隔離弧結案 ✅ 2026-06-06 完成
 - [x] 確認 PR #324 (P246I) CI PASS，合併至 main；288/288 通過
 - [x] 確認 6 個生產研究路徑已 canonical 化（source 驗證全 PASS）

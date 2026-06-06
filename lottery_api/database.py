@@ -707,6 +707,18 @@ class DatabaseManager:
         finally:
             conn.close()
 
+    # P247B created draws_big_lotto_canonical_main in lottery_api/data/lottery_v2.db.
+    # P247E: get_canonical_draws uses this view as the preferred source for BIG_LOTTO.
+    _CANONICAL_VIEW_BIG_LOTTO = 'draws_big_lotto_canonical_main'
+
+    def _big_lotto_canonical_view_exists(self, cursor) -> bool:
+        """Return True if draws_big_lotto_canonical_main is present in this DB."""
+        row = cursor.execute(
+            "SELECT name FROM sqlite_master WHERE type='view' AND name=?",
+            (self._CANONICAL_VIEW_BIG_LOTTO,)
+        ).fetchone()
+        return row is not None
+
     def get_canonical_draws(self, lottery_type: str, limit: Optional[int] = None) -> List[Dict]:
         """
         Return only canonical main-draw rows for the given lottery type.
@@ -721,6 +733,10 @@ class DatabaseManager:
           - SMALL_POOL_ALIEN: serial IDs but max(numbers) <= 25
             Likely a different game mislabeled as BIG_LOTTO.
 
+        P247E: For BIG_LOTTO, prefers querying draws_big_lotto_canonical_main (DB view)
+        which applies all three exclusion filters at the SQL level. Falls back to the
+        original SQL+Python dual-filter when the view is absent (e.g. test DBs).
+
         Raw history access remains available via get_all_draws() and get_draws().
         This helper is for research, strategy, and replay callers only.
 
@@ -730,18 +746,68 @@ class DatabaseManager:
         cursor = conn.cursor()
         try:
             if lottery_type == 'BIG_LOTTO':
-                # SQL-level filter: excludes ADD_ON_PRIZE_EXCLUDED and DATE_FORMAT_ALIEN
-                query = """
-                    SELECT id, draw, date, lottery_type, numbers, special, jackpot_amount
-                    FROM draws
-                    WHERE lottery_type = 'BIG_LOTTO'
-                      AND draw NOT LIKE '%-%'
-                      AND NOT (LENGTH(draw) = 8 AND draw LIKE '20%')
-                    ORDER BY CAST(draw AS INTEGER) DESC
-                """
-                if limit:
-                    query += f" LIMIT {int(limit)}"
-                cursor.execute(query)
+                if self._big_lotto_canonical_view_exists(cursor):
+                    # Preferred path (P247E): query the DB-level canonical view.
+                    # All three exclusion families are filtered at SQL level.
+                    query = f"""
+                        SELECT id, draw, date, lottery_type, numbers, special, jackpot_amount
+                        FROM {self._CANONICAL_VIEW_BIG_LOTTO}
+                        ORDER BY CAST(draw AS INTEGER) DESC
+                    """
+                    if limit:
+                        query += f" LIMIT {int(limit)}"
+                    cursor.execute(query)
+                    rows = cursor.fetchall()
+                    draws = []
+                    for row in rows:
+                        numbers = json.loads(row['numbers'])
+                        draws.append({
+                            'draw': row['draw'],
+                            'date': row['date'],
+                            'lotteryType': row['lottery_type'],
+                            'numbers': numbers,
+                            'special': _normalize_special_for_output(row['lottery_type'], row['special']),
+                            'jackpot_amount': row['jackpot_amount'],
+                        })
+                    logger.info(
+                        f"[get_canonical_draws] BIG_LOTTO: {len(draws)} rows via view"
+                    )
+                else:
+                    # Fallback: view absent (e.g. test DB without view).
+                    # SQL-level filter: excludes ADD_ON_PRIZE_EXCLUDED and DATE_FORMAT_ALIEN.
+                    # Python-level filter: excludes SMALL_POOL_ALIEN (max number <= 25).
+                    logger.warning(
+                        f"[get_canonical_draws] BIG_LOTTO: view absent, using fallback filter"
+                    )
+                    query = """
+                        SELECT id, draw, date, lottery_type, numbers, special, jackpot_amount
+                        FROM draws
+                        WHERE lottery_type = 'BIG_LOTTO'
+                          AND draw NOT LIKE '%-%'
+                          AND NOT (LENGTH(draw) = 8 AND draw LIKE '20%')
+                        ORDER BY CAST(draw AS INTEGER) DESC
+                    """
+                    if limit:
+                        query += f" LIMIT {int(limit)}"
+                    cursor.execute(query)
+                    rows = cursor.fetchall()
+                    draws = []
+                    for row in rows:
+                        numbers = json.loads(row['numbers'])
+                        if numbers and max(numbers) <= 25:
+                            continue
+                        draws.append({
+                            'draw': row['draw'],
+                            'date': row['date'],
+                            'lotteryType': row['lottery_type'],
+                            'numbers': numbers,
+                            'special': _normalize_special_for_output(row['lottery_type'], row['special']),
+                            'jackpot_amount': row['jackpot_amount'],
+                        })
+                    logger.info(
+                        f"[get_canonical_draws] BIG_LOTTO: {len(draws)} rows via fallback filter"
+                    )
+                return draws
             else:
                 # For non-BIG_LOTTO types, no non-canonical row families are known.
                 # Use a direct query to avoid importing get_related_lottery_types
@@ -755,27 +821,22 @@ class DatabaseManager:
                 if limit:
                     query += f" LIMIT {int(limit)}"
                 cursor.execute(query, (lottery_type,))
-
-            rows = cursor.fetchall()
-            draws = []
-            for row in rows:
-                numbers = json.loads(row['numbers'])
-                # Python-level filter: exclude SMALL_POOL_ALIEN (max number <= 25)
-                # Only applies to BIG_LOTTO; other lottery types are not filtered here
-                if lottery_type == 'BIG_LOTTO' and numbers and max(numbers) <= 25:
-                    continue
-                draws.append({
-                    'draw': row['draw'],
-                    'date': row['date'],
-                    'lotteryType': row['lottery_type'],
-                    'numbers': numbers,
-                    'special': _normalize_special_for_output(row['lottery_type'], row['special']),
-                    'jackpot_amount': row['jackpot_amount'],
-                })
-            logger.info(
-                f"[get_canonical_draws] {lottery_type}: {len(draws)} canonical rows returned"
-            )
-            return draws
+                rows = cursor.fetchall()
+                draws = []
+                for row in rows:
+                    numbers = json.loads(row['numbers'])
+                    draws.append({
+                        'draw': row['draw'],
+                        'date': row['date'],
+                        'lotteryType': row['lottery_type'],
+                        'numbers': numbers,
+                        'special': _normalize_special_for_output(row['lottery_type'], row['special']),
+                        'jackpot_amount': row['jackpot_amount'],
+                    })
+                logger.info(
+                    f"[get_canonical_draws] {lottery_type}: {len(draws)} canonical rows returned"
+                )
+                return draws
         except Exception as e:
             logger.error(f"❌ get_canonical_draws failed: {e}")
             raise

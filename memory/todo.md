@@ -11,6 +11,19 @@
 
 _（目前無進行中任務）_
 
+### P247E get_canonical_draws 採用 DB canonical view ✅ 2026-06-06 完成
+- [x] Phase 0 驗證：main=24ae45a=origin/main，P247D merge 可見，view=2113 confirmed
+- [x] 讀取 database.py：了解現有 SQL+Python 雙層過濾結構
+- [x] 建立 p247e-get-canonical-draws-view-adoption 分支
+- [x] 更新 database.py：加入 _CANONICAL_VIEW_BIG_LOTTO + _big_lotto_canonical_view_exists() + view 優先路徑 + fallback
+- [x] 撰寫 analysis/p247e_get_canonical_draws_view_adoption.py
+- [x] 執行驗證：helper_rows=2113, view_path=True, shape_ok, limit_ok, fallback_ok
+- [x] 產出 P247E 文物（JSON+MD）
+- [x] 撰寫 tests/test_p247e_get_canonical_draws_view_adoption.py → 40/40 PASS
+- [x] P246E + P247B/C/D 全部通過（182 總計）
+- [x] 更新 memory/lessons.md（L121）
+- 完成標準：helper 使用 view；fallback 安全；shape 不變；40 測試 PASS；無 DB write
+
 ### P247D BIG_LOTTO canonical view 消費者採用審計 ✅ 2026-06-06 完成
 - [x] Phase 0 驗證：main=79717d1=origin/main，P247C merge 可見，dirty 僅 runtime files
 - [x] 讀取 P247C/B/A 文物確認 view 已存在

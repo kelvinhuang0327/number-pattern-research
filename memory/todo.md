@@ -38,6 +38,17 @@ _（目前無進行中任務）_
 - [x] 更新 memory/lessons.md（L125）
 - 完成標準：8 候選任務 + 推薦明確；43 測試 PASS；無 DB write；無 overclaim
 
+### P250A cross-lottery strategy replay inventory ✅ 2026-06-06 完成
+- [x] Phase 0 驗證：main 與 origin/main 同步、P249B merge 可見、dirty set 只含已知 tolerated runtime items + `data/lottery_v2.db` metadata-only touch
+- [x] 讀取 current registry SSOT + P232A historical scoreboard 快照 + 現況 governance files
+- [x] 盤點 38 個 current registry entries，並保留 3 個 POWER_LOTTO artifact-only entries 於歷史 replay/catalog view
+- [x] Read-only DB 驗證：integrity ok、replay rows 94,924、draw rows 64,361、BIG_LOTTO canonical 2,113
+- [x] 撰寫 analysis/p250a_cross_lottery_strategy_replay_inventory.py
+- [x] 產出 P250A 文物（JSON+MD）
+- [x] 撰寫 tests/test_p250a_cross_lottery_strategy_replay_inventory.py → 5/5 PASS
+- [x] 更新 memory/lessons.md（L127）
+- 完成標準：current registry / historical snapshot 分層清楚；41 inventory entries；無 DB write；無策略邏輯變更；無 betting advice
+
 ### P248A BIG_LOTTO canonical 隔離 governance closure ✅ 2026-06-06 完成
 - [x] Phase 0 驗證：main=e87dc7b=origin/main，P247G merge 可見
 - [x] 讀取 P247G artifact + governance files（CURRENT_STATE.md, active_task.md）

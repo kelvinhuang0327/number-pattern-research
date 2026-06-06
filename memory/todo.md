@@ -411,3 +411,8 @@ _（目前無進行中任務）_
 - 結果：22,238 rows = 2,113 canonical + 20,125 contaminated (90.5%). 三個污染家族：SIM_HYPHEN 19,100 / DATE_FORMAT_ALIEN 375 / SMALL_POOL_ALIEN 650（主要 P219 信號來源）。全部 P219 BIG_LOTTO corrected-significant signals 已解釋為資料污染。23/23 tests PASS。
 - 影響：GATE_RED_DATA_CONTAMINATION 維持不變。Type D 授權 + 執行 quarantine + re-audit 方可升門。不授權任何策略/預測/生產推薦。
 - 產出：analysis/p246_…py, outputs/research/p246_…20260605.{md,json}, tests/test_p246_….py。
+
+### 2026-06-06 — P251C evidence dashboard API payload contract plan
+- 已規劃 future-only read-only API payload contract，建議 endpoint 為 `/api/replay/evidence-dashboard`，與現有 replay audit 命名一致。
+- P251C 維持 no route / no UI / no DB write / no registry mutation / no strategy promotion / no betting advice。
+- 提醒：artifact tests 可能會 rewrite 既有 P251A/P251B markdown timestamp，完成後要 restore 再做 diff-check。

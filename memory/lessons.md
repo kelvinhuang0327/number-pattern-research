@@ -1819,3 +1819,8 @@ T4 promotion (2026-05-05)
 - M3 drift (4×) / M2 gap (4×): numbers 26–49 absent during alien eras → L1 drift and gap overdispersion.
 - M1 markov / M6 entropy: restricted pool in alien blocks inflates consecutive overlap, lowers entropy.
 - Anomaly is NOT predictor. GATE_RED_DATA_CONTAMINATION remains until Type D quarantine authorized and re-audit passes.
+
+## P251C evidence dashboard API payload contract planning (2026-06-06)
+- Future-only dashboard payload contracts fit best under the existing `/api/replay/*` read-only audit namespace when no route is implemented yet.
+- `/api/replay/evidence-dashboard` is a clean convention fit because it matches the replay family, remains read-only, and avoids colliding with the existing `/api/replay/strategy-catalog` endpoint.
+- Lesson: if a test calls `main()` on a published artifact builder, it may rewrite timestamp-only markdown outputs from earlier tasks; restore those artifacts before diff-checking the new task.

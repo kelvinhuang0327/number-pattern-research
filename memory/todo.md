@@ -11,6 +11,20 @@
 
 _（目前無進行中任務）_
 
+### P247D BIG_LOTTO canonical view 消費者採用審計 ✅ 2026-06-06 完成
+- [x] Phase 0 驗證：main=79717d1=origin/main，P247C merge 可見，dirty 僅 runtime files
+- [x] 讀取 P247C/B/A 文物確認 view 已存在
+- [x] 建立 p247d-big-lotto-canonical-view-consumer-adoption-audit 分支
+- [x] 掃描 draws_big_lotto_canonical_main / get_canonical_draws / get_all_draws 使用者
+- [x] 分類 21 個消費者路徑（3 VIEW_BACKED / 4 HELPER_CANONICAL / 1 KEEP_HELPER / 3 RAW / 7 FUTURE_SCOPE / 3 NOT_AFFECTED）
+- [x] Read-only DB 驗證：view=2113, raw=22238, add_on=19100, integrity=ok
+- [x] 撰寫 analysis/p247d_big_lotto_canonical_view_consumer_adoption_audit.py
+- [x] 產出 P247D 文物（JSON+MD）
+- [x] 撰寫 tests/test_p247d_big_lotto_canonical_view_consumer_adoption_audit.py → 41/41 PASS
+- [x] P247A/B/C 全部通過（97/97）；總 P247 套件：138 測試全 PASS
+- [x] 更新 memory/lessons.md（L120）
+- 完成標準：採用審計文物完整；所有測試通過；無 DB write；無策略/生產修改
+
 ### P247C BIG_LOTTO view 後置核對與 dry-run 測試清理 ✅ 2026-06-06 完成
 - [x] Phase 0 驗證：main=b47b9c2=origin/main，P247B merge 可見，dirty 僅 runtime files
 - [x] 讀取 P247B/P247A 文物：確認 view_created=True, counts 全部正確

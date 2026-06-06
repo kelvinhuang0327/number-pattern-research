@@ -5,6 +5,28 @@
 
 ---
 
+## L120 — P247D canonical view 消費者採用審計 (2026-06-06)
+
+**來源：** P247D consumer adoption audit
+
+**關鍵發現：**
+- 生產預測管線（backtest_framework, rsm_bootstrap, quick_predict）已全部使用 `get_canonical_draws()` — 不需要改動
+- 3 個路徑直接使用 VIEW（P247B/C tests + analysis），3 個路徑必須保持 raw（API display）
+- `get_canonical_draws()` 與 VIEW 語義等效（均返回 2,113 筆），但實作不同：helper 使用 SQL+Python 雙層過濾，VIEW 全部在 SQL 層完成
+- `lottery_api/database.py get_canonical_draws()` 可在未來更新為內部查詢 VIEW — 消除 Python 層 SMALL_POOL_ALIEN 過濾，單一真相來源；但需要 database.py 授權（P247D 範圍外）
+- 6+ 個 BIG_LOTTO 分析工具仍使用 `get_all_draws()` → FUTURE_SCOPE
+
+**SQLite URI read-only 模式注意事項：**
+- `sqlite3.connect(f"file:{path}?mode=ro", uri=True)` 需要使用 `path.resolve()` 確保絕對路徑
+- 未 resolve 的相對路徑（含 `..`）在 URI 模式下會失敗：`unable to open database file`
+
+**分類原則：**
+- RAW_HISTORY_ALLOWED：API display/history 路徑必須保持 raw（ADD_ON_PRIZE_EXCLUDED 需要顯示）
+- ALREADY_HELPER_CANONICAL：已使用 helper = 不需要改動（helper 與 view 等效）
+- FUTURE_SCOPE：不在 P247D 範圍內的修改一律標記，不允許在審計任務中執行
+
+---
+
 ## L119 — P247C 後置核對與 P247A dry-run 測試清理 (2026-06-06)
 
 **來源：** P247C post-apply reconciliation

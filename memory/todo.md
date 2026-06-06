@@ -421,3 +421,7 @@ _（目前無進行中任務）_
 - 已在 replay router 實作 `GET /api/replay/evidence-dashboard`，直接回傳 P251B published artifact。
 - 路由維持 read-only：no DB query, no registry mutation, no strategy promotion, no UI, no betting advice。
 - 測試採 direct-call async route pattern，避免 app startup / scheduler / DB side effects。
+
+### 2026-06-06 — P251E evidence dashboard API runtime smoke + governance closure
+- 已完成 app/TestClient smoke，確認 `GET /api/replay/evidence-dashboard` 在 live app/router 上回傳 HTTP 200，且 payload 與 P251B published artifact 完全一致。
+- 已完成 P251A–P251E dashboard API arc 治理收尾；後續若有新 dashboard 工作，應以現有 read-only artifact-backed route 為基礎，而不是重開 DB-backed 路徑。

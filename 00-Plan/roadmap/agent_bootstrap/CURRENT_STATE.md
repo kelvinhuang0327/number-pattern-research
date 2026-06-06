@@ -1,7 +1,7 @@
 # Current State — LotteryNew
 
-**Last Reviewed:** 2026-06-06 Asia/Taipei (P249B roadmap sync + row-label clarification — Type B doc-only; BIG_LOTTO replay-row labels disambiguated; roadmap.md synced with P246B–P249A arc; no DB write; WAITING_FOR_USER_AUTHORIZATION)
-**State Marker:** `P249B_ROADMAP_SYNC_ROW_LABEL_CLARIFICATION_COMPLETE`
+**Last Reviewed:** 2026-06-06 Asia/Taipei (P251E evidence dashboard API runtime smoke + governance closure — app/TestClient smoke passed; read-only route confirmed artifact-backed; P251A–P251E dashboard API arc closed; no DB write; WAITING_FOR_USER_AUTHORIZATION)
+**State Marker:** `EVIDENCE_DASHBOARD_API_RUNTIME_SMOKE_GOVERNANCE_CLOSURE`
 **Purpose:** Project-specific state for future agents. Read this after `SHARED_AGENT_BOOTSTRAP.md` and `TASK_TEMPLATES.md`.
 
 ## Canonical Execution Context
@@ -14,7 +14,7 @@
 | Current HEAD | HEAD must equal `origin/main`; verify with `git rev-parse HEAD` and `git rev-parse origin/main` before any task. Do not hardcode a live hash here — this field becomes stale after every PR merge. Last recorded PR merge: P228 governance closeout (branch `p228-star-replay-governance-closeout`). | [Self-verifying] |
 | `origin/main` | Must equal HEAD; see above. Verify with `git rev-parse origin/main`. | [Self-verifying] |
 | Git dir | `.git` | [Confirmed] |
-| Active worker task | none (P214E governance wording cleanup complete) | [Confirmed] |
+| Active worker task | none (P251E evidence dashboard runtime smoke + governance closure complete) | [Confirmed] |
 | P211 status | `P211R_COMPLETE_HISTORICAL_ARTIFACT` — P211R ran; 9 IS-window candidates all have prior OOS rejection; no deployable edge; no follow-up authorized without new explicit authorization | [Confirmed] |
 
 ## Forbidden Execution Paths
@@ -172,6 +172,11 @@ Read-only baseline commands:
 - [Confirmed] **P248A BIG_LOTTO canonical isolation governance closure complete (2026-06-06).** 17/17 dependency artifacts verified. Governance files updated. No DB write. No prediction/betting recommendation. Returned to `WAITING_FOR_USER_AUTHORIZATION`. Classification: `P248A_BIG_LOTTO_CANONICAL_ISOLATION_GOVERNANCE_CLOSURE_COMPLETE`.
 - [Confirmed] **P249A Post-isolation roadmap triage complete (2026-06-06).** 8 candidate next tasks ranked. T1+T2 recommended (Type B doc-only). Key finding: "BIG_LOTTO rows | 24,140" in CURRENT_STATE was replay rows, not draw rows (disambiguated in P249B). No DB write. Classification: `P249A_POST_ISOLATION_ROADMAP_TRIAGE_COMPLETE`.
 - [Confirmed] **P249B Roadmap sync + row-label clarification complete (2026-06-06).** CURRENT_STATE.md labels disambiguated (replay rows vs draw rows vs canonical rows). roadmap.md phase table and §0.7 updated for P246B–P249A arc. No DB write. Type B doc-only. Classification: `P249B_ROADMAP_SYNC_ROW_LABEL_CLARIFICATION_COMPLETE`.
+- [Confirmed] **P251A Evidence dashboard dry-run contract complete (2026-06-06).** Read-only cross-lottery dashboard contract artifact published. Preserves SSOT=current registry, P232A=historical snapshot, artifact-only visibility, lifecycle badge/filter semantics, and no active deployable candidate.
+- [Confirmed] **P251B Evidence dashboard data artifact complete (2026-06-06).** Dashboard-ready artifact published with 41 visible historical strategy rows, 38 current registry entries, and 3 artifact-only rows. BIG_LOTTO replay/raw/canonical/add-on row semantics remain separated.
+- [Confirmed] **P251C Evidence dashboard API payload contract plan complete (2026-06-06).** Future API payload contract placed under `/api/replay/evidence-dashboard`; no route or UI implemented in that step.
+- [Confirmed] **P251D Evidence dashboard read-only API route complete (2026-06-06).** `GET /api/replay/evidence-dashboard` implemented in `lottery_api/routes/replay.py` as a read-only artifact-backed endpoint serving the published P251B payload unchanged. No DB query/write, no registry mutation, no strategy promotion, no UI, no betting advice.
+- [Confirmed] **P251E Evidence dashboard API runtime smoke + governance closure complete (2026-06-06).** Full app/TestClient smoke confirms the mounted route returns HTTP 200 and exactly matches the P251B payload under the P251C contract path. Governance docs now close the P251A–P251E dashboard API arc. No DB write, registry mutation, strategy promotion, UI implementation, or betting advice.
 - [Confirmed] P241A: Type A decision support complete. No files modified. Recommended P241B OPT-C statistical diagnostics inventory.
 - [Confirmed] P241A: Type A decision support complete. No files modified.
 - [Confirmed] P241B: P234 statistical diagnostics inventory complete. Type B same-PR closeout. 33/33 PASS. 16 methods inventoried; 13 gaps; 43-field schema. No code implementation. No DB/registry/production change.
@@ -194,7 +199,7 @@ Read-only baseline commands:
 - [Closed / NULL] POWER_LOTTO first-zone candidate `midfreq_fourier_mk_3bet` = **`P231B_POWERLOTTO_FIRST_ZONE_BACKWARD_OOS_DRYRUN_NULL`** (P231B). Backward-OOS 382 draws: mean 0.969 vs baseline 0.947; CI crosses baseline; p=0.30; both robustness checks below baseline; block stability mixed. **Non-deployable. Observation-only. No promotion. No production/registry/recommendation change.**
 - [Hold] 3_STAR / 4_STAR box-play = **UNDERPOWERED_NO_SIGNAL**. Not deployable. Need ≥10,000 3_STAR draws (have 5,850 after P213L) or ≥17,000 4_STAR draws (have 5,850 after P213L) for adequate power. Any re-scan must inherit P221F gate with fresh pre-registration.
 - [Scanned / NULL result] 3_STAR / 4_STAR straight-play: P214C Bonferroni scan complete. 7 per-position chi-squared tests; 0 Bonferroni-significant findings; 1 uncorrected-weak (4_STAR pos_2, fails Bonferroni) → EXPLORATORY_WEAK_SIGNAL_UNCONFIRMED. Result: NULL. No straight-play strategy authorized. Digit distributions are consistent with uniform random draws after correction. HOLD recommended.
-- [Risk] Worktree contains existing dirty/untracked files outside governance scope; future tasks must use narrow write allowlists.
+- [Risk] Worktree contains existing dirty/untracked files outside governance scope; future tasks must use narrow write allowlists. Tolerated runtime dirties remain: `backend.pid`, `frontend.pid`, `claude-code-showcase`, `claude-code-showcase.worktrees/`, `runtime/`, and the metadata-only same-size touch on `data/lottery_v2.db`.
 - [Resolved] LIFECYCLE_UNRESOLVED: **0** (was 20). P233B added 20 non-executable stubs to `replay_strategy_registry.py`. All formerly-unresolved entries now have REJECTED or RETIRED labels. No executable adapter added.
 - [Resolved] Governance doc staleness at P217–P232A: resolved by P225 + P228 + P231C + P232B closeout.
 - [Resolved] DAILY_539 survivor backward-OOS extension (P1.2): resolved by P230A plan + P230B1 dry-run; result BELOW_BASELINE → reclassified in P230C.
@@ -211,7 +216,7 @@ Read-only baseline commands:
 
 ## Recommended Next Direction
 
-No active deployable candidate in any lottery. **The P211A–P231B arc has exhausted all current in-window candidates. P232A–P233B registry hygiene resolved LIFECYCLE_UNRESOLVED to 0. P234/P234A CTO statistical-methods analysis complete (P2.4 design-only). P235A Lofea feasibility review complete (design-inspiration only). P236A–P238D complete (NIST audit YELLOW observation-only). P240B–P240D complete (governance simplification adopted). P241A–P244C complete. P213H/P213L completed draw-side source recovery for 3_STAR/4_STAR. P214 straight-play feasibility protocol design complete. P214B straight-play descriptive diagnostic complete. P214C Bonferroni-corrected scan complete — NULL result (0/7 Bonferroni-significant; straight-play signal space consistent with uniform random). Governance record is complete.** Do not start new research without explicit user authorization. Queued options:
+No active deployable candidate in any lottery. **The P211A–P231B arc has exhausted all current in-window candidates. P232A–P233B registry hygiene resolved LIFECYCLE_UNRESOLVED to 0. P234/P234A CTO statistical-methods analysis complete (P2.4 design-only). P235A Lofea feasibility review complete (design-inspiration only). P236A–P238D complete (NIST audit YELLOW observation-only). P240B–P240D complete (governance simplification adopted). P241A–P244C complete. P213H/P213L completed draw-side source recovery for 3_STAR/4_STAR. P214 straight-play feasibility protocol design complete. P214B straight-play descriptive diagnostic complete. P214C Bonferroni-corrected scan complete — NULL result (0/7 Bonferroni-significant; straight-play signal space consistent with uniform random). P251A–P251E evidence dashboard API arc is complete: contract artifact, dashboard data artifact, API payload contract, read-only replay route, and runtime smoke/governance closure are all merged. Governance record is complete.** Do not start new research without explicit user authorization. Queued options:
 
 1. **Remain HOLD** — no action; system stays WAITING_FOR_USER_AUTHORIZATION.
 2. **3_STAR/4_STAR straight-play feasibility / diagnostic design** — separate explicit authorization required; no strategy scan or DB write unless specifically authorized; must inherit P221F anti-overfit gates.

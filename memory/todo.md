@@ -11,6 +11,20 @@
 
 _（目前無進行中任務）_
 
+### P249A 後隔離 roadmap triage ✅ 2026-06-06 完成
+- [x] Phase 0 驗證：main=080f21a=origin/main，P248A merge 可見，active_task=WAITING_FOR_USER_AUTHORIZATION
+- [x] 讀取 governance files + 現有研究線狀態
+- [x] 確認所有主要研究線關閉/NULL（DAILY_539/POWER_LOTTO/3_4STAR/BIG_LOTTO）
+- [x] 發現 CURRENT_STATE "BIG_LOTTO rows | 24,140" = replay rows（非 draw rows）
+- [x] 建立 8 個候選任務排名
+- [x] 推薦：T1+T2（roadmap.md sync + CURRENT_STATE label fix，Type B doc-only）
+- [x] 撰寫 analysis/p249a_post_isolation_roadmap_triage.py
+- [x] 產出 P249A 文物（JSON+MD）
+- [x] 撰寫 tests/test_p249a_post_isolation_roadmap_triage.py → 43/43 PASS
+- [x] 全套 P247G + P248A + P249A: 163/163 PASS
+- [x] 更新 memory/lessons.md（L125）
+- 完成標準：8 候選任務 + 推薦明確；43 測試 PASS；無 DB write；無 overclaim
+
 ### P248A BIG_LOTTO canonical 隔離 governance closure ✅ 2026-06-06 完成
 - [x] Phase 0 驗證：main=e87dc7b=origin/main，P247G merge 可見
 - [x] 讀取 P247G artifact + governance files（CURRENT_STATE.md, active_task.md）

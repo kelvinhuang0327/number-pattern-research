@@ -5,6 +5,29 @@
 
 ---
 
+## L115 — P246J BIG_LOTTO 加碼隔離弧結案要點 (2026-06-06)
+
+**來源：** P246J 弧結案
+
+**結案摘要（P246B-I，9 個任務）：**
+- P246B：SIM_HYPHEN → ADD_ON_PRIZE_EXCLUDED（加碼/特別獎記錄，非偽造）
+- P246C-D：影響審計 + 隔離設計（保留優先，Phase 1/2/3 分階）
+- P246E：新增 `get_canonical_draws()`；`quick_predict.py` 更新
+- P246F：`rsm_bootstrap.py` + `core_satellite.py` 更新
+- P246G：`drift_detector._load_draws()` + `backtest_framework.py` 更新
+- P246H：`scheduler.get_data()` 在回傳時過濾，所有 advanced_learning 路徑受益
+- P246I：`test_p238b` + `test_p243a` 加 inline comment 區分 raw (22,238) vs canonical (2,113)
+
+**整體結果：**
+- 6 個確認生產研究路徑已 canonical 化
+- 加碼記錄保留於原始 DB 且可存取
+- 未執行任何 DB 寫入/刪除/遷移
+- GATE_RED 持續生效，待 P247 Type D + 正規審計後解除
+
+**建議後續：P246K**（正規族群 NIST 重新審計，無需 DB 寫入）
+
+---
+
 ## L114 — P246I 測試/文物人口斷言清理規則 (2026-06-06)
 
 **來源：** P246I 清理

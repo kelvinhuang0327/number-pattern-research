@@ -11,6 +11,16 @@
 
 _（目前無進行中任務）_
 
+### P246J BIG_LOTTO 加碼隔離弧結案 ✅ 2026-06-06 完成
+- [x] 確認 PR #324 (P246I) CI PASS，合併至 main；288/288 通過
+- [x] 確認 6 個生產研究路徑已 canonical 化（source 驗證全 PASS）
+- [x] 撰寫 P246B-I 完整時間軸摘要
+- [x] 記錄剩餘風險（無 DB-level canonical view；archived scripts；GATE_RED 維持）
+- [x] 建議後續：P246K 正規族群 NIST 重新審計（無需 Type D）
+- [x] 測試 324/324 PASS；產出 P246J 文物（JSON+MD）
+- [x] 更新 memory/lessons.md（L115）
+- 完成標準：P246 弧已結案；加碼記錄隔離確認；GATE_RED 維持；無 DB 寫入
+
 ### P246I BIG_LOTTO 人口斷言清理 ✅ 2026-06-06 完成
 - [x] 確認 PR #323 (P246H) CI PASS，合併至 main；258/258 通過
 - [x] 掃描 22238/sample_size 相關測試/文物

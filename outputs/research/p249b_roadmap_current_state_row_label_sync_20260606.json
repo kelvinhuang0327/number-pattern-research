@@ -1,0 +1,77 @@
+{
+  "schema_version": "1.0",
+  "task_id": "P249B",
+  "classification": "GOVERNANCE_DOC_SYNC_TYPE_B",
+  "p249a_merged_state_verified": true,
+  "governance_files_updated": [
+    "00-Plan/roadmap/agent_bootstrap/CURRENT_STATE.md",
+    "00-Plan/roadmap/roadmap.md",
+    "00-Plan/roadmap/active_task.md"
+  ],
+  "row_label_corrections": {
+    "original_label": "BIG_LOTTO rows | 24,140",
+    "original_semantics": "AMBIGUOUS — could be interpreted as BIG_LOTTO draw rows",
+    "actual_semantics": "Replay rows for BIG_LOTTO in strategy_prediction_replays table",
+    "verification": "24,140 + 34,680 + 36,104 = 94,924 = total replay rows (confirmed)",
+    "corrected_labels": {
+      "BIG_LOTTO replay rows (strategy_prediction_replays)": 24140,
+      "BIG_LOTTO raw draw rows (draws table, lottery_type='BIG_LOTTO')": 22238,
+      "BIG_LOTTO canonical main-draw rows (draws_big_lotto_canonical_main view)": 2113,
+      "BIG_LOTTO ADD_ON_PRIZE_EXCLUDED (valid add-on/special prize records)": 19100,
+      "DAILY_539 replay rows (strategy_prediction_replays)": 34680,
+      "DAILY_539 draw rows (draws table)": 5879,
+      "POWER_LOTTO replay rows (strategy_prediction_replays)": 36104,
+      "POWER_LOTTO draw rows (draws table)": 1916
+    },
+    "sum_check": "24140 + 34680 + 36104 = 94924 (total replay rows) ✓",
+    "add_on_note": "ADD_ON_PRIZE_EXCLUDED = 19,100 hyphenated draw IDs. These are valid lottery-related add-on/special prize records, NOT fake or simulated. Excluded from canonical 6/49 research due to pool mismatch, but preserved and raw-accessible."
+  },
+  "roadmap_sync_summary": {
+    "roadmap_md_last_updated_before": "2026-06-05 (P213L)",
+    "roadmap_md_updated_to": "2026-06-06 (P249B)",
+    "phase_table_entry_added": "P246B–P249B BIG_LOTTO canonical isolation arc + governance",
+    "current_state_summary_updated": "§0.7 — added P246B–P249B bullet",
+    "roadmap_marker_updated": true,
+    "arc_summary": {
+      "P246B_through_P246K": "Taxonomy corrected, impact audit, isolation design, helper, callers canonicalized, canonical NIST GREEN",
+      "P247A_through_P247G": "DB view created (Type D), helper view-backed, 9 tools migrated, regression guard",
+      "P248A": "Governance closure — 17 artifacts verified",
+      "P249A": "Post-isolation triage — 8 candidates ranked",
+      "P249B": "Row-label clarification + roadmap sync (this task)"
+    }
+  },
+  "governance_verification": {
+    "current_state_has_replay_label": true,
+    "current_state_has_raw_draw_rows": true,
+    "current_state_has_canonical_rows": true,
+    "current_state_has_add_on": true,
+    "roadmap_has_p246_arc": true,
+    "roadmap_has_p247_arc": true,
+    "roadmap_has_canonical": true,
+    "active_task_waiting": true,
+    "active_task_has_p249b": true,
+    "p249a_artifact_exists": true,
+    "all_ok": true
+  },
+  "active_task_status": "WAITING_FOR_USER_AUTHORIZATION",
+  "no_db_write_confirmed": true,
+  "no_source_code_changes": true,
+  "no_strategy_promotion": true,
+  "no_betting_advice": true,
+  "no_production_recommendation_change": true,
+  "forbidden_actions_confirmed": {
+    "DB write": "NOT PERFORMED",
+    "DB migration": "NOT PERFORMED",
+    "CREATE VIEW / CREATE TABLE": "NOT PERFORMED",
+    "DELETE rows": "NOT PERFORMED",
+    "UPDATE rows": "NOT PERFORMED",
+    "INSERT rows": "NOT PERFORMED",
+    "source code changes": "NOT PERFORMED",
+    "strategy logic change": "NOT PERFORMED",
+    "registry mutation": "NOT PERFORMED",
+    "production recommendation change": "NOT PERFORMED",
+    "strategy promotion": "NOT PERFORMED",
+    "betting advice": "NOT PERFORMED"
+  },
+  "final_decision": "P249B complete. CURRENT_STATE.md row-count labels disambiguated: 'BIG_LOTTO rows | 24,140' = replay rows (24140+34680+36104=94924 total replays). Actual BIG_LOTTO raw draw rows = 22,238; canonical research rows = 2,113; ADD_ON = 19,100 raw-accessible. roadmap.md synced with P246B–P249A arc. active_task.md updated. No DB write. No strategy promotion. Type B doc-only complete."
+}

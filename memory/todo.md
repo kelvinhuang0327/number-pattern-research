@@ -11,6 +11,19 @@
 
 _（目前無進行中任務）_
 
+### P249B roadmap sync + row label 清理 ✅ 2026-06-06 完成
+- [x] Phase 0 驗證：main=f1ba0b8=origin/main，P249A merge 可見，active_task=WAITING_FOR_USER_AUTHORIZATION
+- [x] 繼續 P249B 分支（從前次中斷繼續）
+- [x] 更新 CURRENT_STATE.md：行計數標籤清楚區分 replay rows / draw rows / canonical rows
+- [x] 更新 roadmap.md：P246B–P249A arc phase entry + §0.7 bullet + 更新 marker
+- [x] 更新 active_task.md：P249B 完成記錄、WAITING_FOR_USER_AUTHORIZATION
+- [x] 撰寫 analysis/p249b_roadmap_current_state_row_label_sync.py
+- [x] 產出 P249B 文物（JSON+MD）
+- [x] 撰寫 tests/test_p249b_roadmap_current_state_row_label_sync.py → 41/41 PASS
+- [x] 全套 P248A + P249A + P249B: 137/137 PASS
+- [x] 更新 memory/lessons.md（L126）
+- 完成標準：標籤清楚；roadmap 同步；41 測試 PASS；無 DB write；無 overclaim
+
 ### P249A 後隔離 roadmap triage ✅ 2026-06-06 完成
 - [x] Phase 0 驗證：main=080f21a=origin/main，P248A merge 可見，active_task=WAITING_FOR_USER_AUTHORIZATION
 - [x] 讀取 governance files + 現有研究線狀態

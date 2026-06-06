@@ -1,7 +1,7 @@
 # Current State — LotteryNew
 
-**Last Reviewed:** 2026-06-06 Asia/Taipei (P248A governance closure — P246B–P247G BIG_LOTTO canonical isolation arc recorded; active_task updated; no DB write; no scan; WAITING_FOR_USER_AUTHORIZATION)
-**State Marker:** `P248A_BIG_LOTTO_CANONICAL_ISOLATION_GOVERNANCE_CLOSURE_COMPLETE`
+**Last Reviewed:** 2026-06-06 Asia/Taipei (P249B roadmap sync + row-label clarification — Type B doc-only; BIG_LOTTO replay-row labels disambiguated; roadmap.md synced with P246B–P249A arc; no DB write; WAITING_FOR_USER_AUTHORIZATION)
+**State Marker:** `P249B_ROADMAP_SYNC_ROW_LABEL_CLARIFICATION_COMPLETE`
 **Purpose:** Project-specific state for future agents. Read this after `SHARED_AGENT_BOOTSTRAP.md` and `TASK_TEMPLATES.md`.
 
 ## Canonical Execution Context
@@ -34,10 +34,15 @@ Do not dispatch or execute from:
 | SQLite integrity | `ok` | [Confirmed] |
 | Replay table | `strategy_prediction_replays` | [Confirmed] |
 | Replay rows | 94,924 | [Confirmed] |
-| Draw rows | 64,361 | [Confirmed] |
-| BIG_LOTTO rows | 24,140 | [Confirmed] |
-| DAILY_539 rows | 34,680 | [Confirmed] |
-| POWER_LOTTO rows | 36,104 | [Confirmed] |
+| Draw rows (total draws table) | 64,361 | [Confirmed] |
+| BIG_LOTTO replay rows (strategy_prediction_replays) | 24,140 | [Confirmed] — **replay rows, not draw rows**; 24140+34680+36104=94924 |
+| BIG_LOTTO raw draw rows (draws table, lottery_type='BIG_LOTTO') | 22,238 | [P247G Confirmed] — includes ADD_ON/DATE_FORMAT/SMALL_POOL/CANONICAL families |
+| BIG_LOTTO canonical main-draw rows (draws_big_lotto_canonical_main view) | 2,113 | [P247G Confirmed] — research/strategy/analysis canonical sample |
+| BIG_LOTTO ADD_ON_PRIZE_EXCLUDED | 19,100 | [P247G Confirmed] — valid add-on/special prize records; raw-accessible |
+| DAILY_539 replay rows (strategy_prediction_replays) | 34,680 | [Confirmed] — **replay rows, not draw rows** |
+| DAILY_539 draw rows (draws table) | 5,879 | [P249B Confirmed] |
+| POWER_LOTTO replay rows (strategy_prediction_replays) | 36,104 | [Confirmed] — **replay rows, not draw rows** |
+| POWER_LOTTO draw rows (draws table) | 1,916 | [P249B Confirmed] |
 | 3_STAR draw rows | 5,850 | [Confirmed] |
 | 4_STAR draw rows | 5,850 | [Confirmed] |
 | 3_STAR/4_STAR source-to-DB match | 11,700 / 11,700 (0 mismatches, 0 missing) | [Confirmed] |
@@ -165,6 +170,8 @@ Read-only baseline commands:
 - [Confirmed] P240D: Governance simplification rule adoption complete. P240B proposal adopted into `SHARED_AGENT_BOOTSTRAP.md` (§Task Type Classification) and `TASK_TEMPLATES.md` (header note). Task Types A/B/C/D/E and No-op HOLD rule are now active. All safety boundaries unchanged. No DB write, no registry mutation, no production/recommendation/monitoring/strategy change. Returned to `WAITING_FOR_USER_AUTHORIZATION`.
 - [Confirmed] **P246B–P247G BIG_LOTTO canonical isolation arc complete (2026-06-06).** Taxonomy corrected (SIM_HYPHEN→ADD_ON_PRIZE_EXCLUDED; valid lottery records), impact audit done, preserve-and-isolate architecture built, DB view `draws_big_lotto_canonical_main` created (Type D, PR #328), helper `get_canonical_draws()` view-backed (P247E), 9 active analysis tools migrated (P247F), final regression guard added (P247G). **Canonical BIG_LOTTO: 2,113 rows. Raw total: 22,238. ADD_ON: 19,100 raw-accessible.** P246K canonical randomness audit GREEN (random-compatible; does not imply prediction edge). All active research/strategy/analysis paths use canonical sample. Raw display/history access preserved. PRs #316–#333 merged.
 - [Confirmed] **P248A BIG_LOTTO canonical isolation governance closure complete (2026-06-06).** 17/17 dependency artifacts verified. Governance files updated. No DB write. No prediction/betting recommendation. Returned to `WAITING_FOR_USER_AUTHORIZATION`. Classification: `P248A_BIG_LOTTO_CANONICAL_ISOLATION_GOVERNANCE_CLOSURE_COMPLETE`.
+- [Confirmed] **P249A Post-isolation roadmap triage complete (2026-06-06).** 8 candidate next tasks ranked. T1+T2 recommended (Type B doc-only). Key finding: "BIG_LOTTO rows | 24,140" in CURRENT_STATE was replay rows, not draw rows (disambiguated in P249B). No DB write. Classification: `P249A_POST_ISOLATION_ROADMAP_TRIAGE_COMPLETE`.
+- [Confirmed] **P249B Roadmap sync + row-label clarification complete (2026-06-06).** CURRENT_STATE.md labels disambiguated (replay rows vs draw rows vs canonical rows). roadmap.md phase table and §0.7 updated for P246B–P249A arc. No DB write. Type B doc-only. Classification: `P249B_ROADMAP_SYNC_ROW_LABEL_CLARIFICATION_COMPLETE`.
 - [Confirmed] P241A: Type A decision support complete. No files modified. Recommended P241B OPT-C statistical diagnostics inventory.
 - [Confirmed] P241A: Type A decision support complete. No files modified.
 - [Confirmed] P241B: P234 statistical diagnostics inventory complete. Type B same-PR closeout. 33/33 PASS. 16 methods inventoried; 13 gaps; 43-field schema. No code implementation. No DB/registry/production change.

@@ -29,6 +29,30 @@
 
 ---
 
+## L127 — P250A 現況 registry 與歷史 scoreboard 分層 (2026-06-06)
+
+**來源：** P250A cross-lottery strategy replay inventory
+
+**重要區分：**
+- `lottery_api/models/replay_strategy_registry.py` 是現況 SSOT，提供 38 個 current registry entries
+- `outputs/research/p232a_all_catalog_strategy_replay_scoreboard_20260604.json` 是歷史 replay 快照，保留 41 個歷史 inventory entries
+- 其中 3 個 POWER_LOTTO artifact-only entries 仍需出現在 replay/catalog view 中，不能因 lifecycle 標籤不在 current registry 就被隱藏
+
+**統一原則：**
+- lifecycle 只做 badge / filter，不做排除條件
+- current lifecycle status 與 historical snapshot status 可以同時存在，避免把舊快照誤當現況
+- replay coverage 應同時說明 replay rows、draw rows、canonical rows，並標示 BIG_LOTTO raw vs canonical 的語義差異
+
+**P250A 盤點結論：**
+- current registry entries = 38
+- historical inventory entries = 41
+- artifact-only entries = 3
+- BIG_LOTTO replay rows = 24,140; raw draw rows = 22,238; canonical rows = 2,113
+- DAILY_539 replay rows = 34,680; POWER_LOTTO replay rows = 36,104
+- current inventory 仍然沒有任何 active deployable candidate
+
+---
+
 ## L125 — P249A 後隔離 roadmap triage 重點發現 (2026-06-06)
 
 **來源：** P249A post-isolation roadmap triage

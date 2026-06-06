@@ -1,11 +1,11 @@
-# Active Task — Today (2026-06-05)
+# Active Task — Today (2026-06-06)
 
 > **STATUS: `WAITING_FOR_USER_AUTHORIZATION`**
-> P248A governance closure complete (Type B). BIG_LOTTO canonical isolation arc (P246B–P247G) recorded in governance. Canonical state: view+helper=2,113 rows, raw=22,238, add-on=19,100 raw-accessible. 15 active paths protected by regression guard. P246K canonical randomness GREEN (random-compatible; no prediction edge implied). No DB write.
-> Final Classification: `P248A_BIG_LOTTO_CANONICAL_ISOLATION_GOVERNANCE_CLOSURE_COMPLETE`
-> P238B NIST audit (raw population): superseded for canonical gating by P246K GREEN; raw-population YELLOW remains OBSERVATION_ONLY.
+> P249B roadmap sync + row-label clarification complete (Type B doc-only). CURRENT_STATE.md row-count labels disambiguated: "BIG_LOTTO rows | 24,140" = replay rows (not draw rows); actual BIG_LOTTO raw draw rows = 22,238; canonical research rows = 2,113. roadmap.md phase table and §0.7 updated for P246B–P249A arc. active_task.md updated.
+> Final Classification: `P249B_ROADMAP_SYNC_ROW_LABEL_CLARIFICATION_COMPLETE`
 > P246K canonical NIST audit: `RANDOMNESS_AUDIT_GREEN_RANDOM_COMPATIBLE` — does not authorize any new prediction/strategy direction.
-> Recommended next: **HOLD** — P246–P248A arc complete. No active research direction. Next research requires new pre-registration and explicit authorization.
+> P238B NIST audit (raw population): superseded for canonical gating by P246K GREEN; raw-population YELLOW remains OBSERVATION_ONLY.
+> Recommended next: **HOLD** — P249A triage complete; T1+T2 (this task) done. Next research requires new pre-registration and explicit authorization. Candidates ranked in P249A artifact.
 
 ---
 
@@ -22,7 +22,14 @@
 - P237C NIST randomness-audit tripwire design doc is merged on main via PR #285.
 - P238A NIST randomness-audit artifact-only build plan is merged on main via PR #287. It is a future-build plan only. No executable build, code, scripts, tests, DB write, registry mutation, production/recommendation change, monitoring job, strategy, betting advice, or P211 restart is authorized.
 
-## What was completed this session (P248A / 2026-06-06)
+## What was completed this session (P249B / 2026-06-06)
+
+| Task | Result |
+|---|---|
+| P249A Post-isolation roadmap triage | `P249A_POST_ISOLATION_ROADMAP_TRIAGE_COMPLETE` — Type B; 8 candidates ranked; T1+T2 recommended; all research lines NULL/closed |
+| P249B Roadmap sync + row-label clarification | `P249B_ROADMAP_SYNC_ROW_LABEL_CLARIFICATION_COMPLETE` — Type B doc-only; CURRENT_STATE labels fixed; roadmap.md synced |
+
+## What was completed in the prior P248A session (2026-06-06)
 
 | Task | Result |
 |---|---|

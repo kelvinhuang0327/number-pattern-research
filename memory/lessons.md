@@ -5,6 +5,30 @@
 
 ---
 
+## L126 — P249B 治理文件列標清理 (2026-06-06)
+
+**來源：** P249B Type B doc-only governance sync
+
+**CURRENT_STATE.md 行計數語義：**
+- `BIG_LOTTO rows | 24,140` 原來是 **replay rows**（strategy_prediction_replays 表）
+- 24,140 + 34,680 + 36,104 = **94,924 = 全部 replay rows** ✓
+- BIG_LOTTO **raw draw rows** = 22,238（draws 表）
+- BIG_LOTTO **canonical research rows** = 2,113（draws_big_lotto_canonical_main view）
+- DAILY_539 **draw rows** = 5,879（不是 34,680！那是 replay rows）
+- POWER_LOTTO **draw rows** = 1,916（不是 36,104！那是 replay rows）
+- 修正後標籤：replay rows 與 draw rows 分開記錄
+
+**roadmap.md 同步：**
+- 加入 P246B–P249B 弧的 phase table entry 和 §0.7 bullet
+- 更新 roadmap marker code block（P249B 置於最上方）
+- Last Updated 從 2026-06-05 更新為 2026-06-06
+
+**原則：**
+- 治理文件中的行計數標籤必須明確區分 "replay rows"、"draw rows"、"canonical rows"
+- 三者含義完全不同，混用會導致未來 agent 誤解資料規模
+
+---
+
 ## L125 — P249A 後隔離 roadmap triage 重點發現 (2026-06-06)
 
 **來源：** P249A post-isolation roadmap triage

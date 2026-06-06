@@ -1,6 +1,6 @@
 # Lottery Replay Roadmap
 
-**Last Updated:** 2026-06-05 Asia/Taipei (P213L controlled missing source-row ingestion — Type D DB write; inserted 4,599 source-only 3_STAR/4_STAR rows; draw rows 59,762→64,361; source-to-DB match 11,700/11,700; replay rows 94,924; drift PASS; WAITING_FOR_USER_AUTHORIZATION)
+**Last Updated:** 2026-06-06 Asia/Taipei (P249B roadmap sync — BIG_LOTTO canonical isolation arc P246B–P249A recorded; row-label clarification; no DB write; WAITING_FOR_USER_AUTHORIZATION)
 **Owner:** CTO agent
 **Primary Goal:** Keep LotteryNew replay, research, and product evidence truthful, reproducible, and governed. The current maturity bottleneck has shifted from migration rehearsal to short/mid-window strategy protocol design, anti-overfit validation, canonical repo dispatch safety, and honest product disclosure.
 **Repo Policy:** Use `/Users/kelvin/Kelvin-WorkSpace/LotteryNew` only. Do not create a new repo. Production DB, registry, and data writes require explicit governed authorization. CTO roadmap updates are limited to this file and `00-Plan/roadmap/CTO-Analysis.md`. CTO must not write `CEO-Decision.md`, `active_task.md`, `production/*`, `registry/*`, `data/*`, or any new repo.
@@ -89,6 +89,7 @@ This section is the current source of truth. The 2026-06-01 sections and P186-P1
 | **P213H 3_STAR/4_STAR controlled positional backfill** | **[Complete]** `P213H_3STAR_4STAR_CONTROLLED_POSITIONAL_BACKFILL_COMPLETE` | `scripts/p213h_3star_4star_controlled_positional_backfill.py`; `tests/test_p213h_3star_4star_controlled_positional_backfill.py`; `outputs/research/p213h_3star_4star_controlled_positional_backfill_20260605.{md,json}`; row/audit artifacts; backup DB + sha256 | Type D. 12/12 PASS. Backup `backups/p213h_lottery_v2_backup_20260605_20260605_142219.db` sha256 `214f05870e741164495cd0dbf46158ba1e92835d7a7c072df47a20a0795896c1`. Updated 7,101 existing star rows; 4,599 missing source rows not inserted; replay rows unchanged at 94,924; drift guard PASS. |
 | **P213K missing source-row ingestion feasibility design** | **[Complete]** `P213K_MISSING_SOURCE_ROW_INGESTION_FEASIBILITY_DESIGN_COMPLETE` | `outputs/research/p213k_missing_source_row_ingestion_feasibility_design_20260605.{md,json}`; `tests/test_p213k_missing_source_row_ingestion_feasibility_design.py`; governance (same-PR) | Type B. 13/13 PASS. No DB write; no ingestion. Analyzed 4,599 source-only rows (3_STAR 1,671; 4_STAR 2,928). Future insertion feasible only under separate Type D gate with fresh backup/rollback; straight-play scan not authorized. |
 | **P213L controlled missing source-row ingestion** | **[Complete]** `P213L_3STAR_4STAR_CONTROLLED_MISSING_SOURCE_ROW_INGESTION_COMPLETE` | `scripts/p213l_3star_4star_controlled_missing_row_ingestion.py`; `tests/test_p213l_3star_4star_controlled_missing_row_ingestion.py`; `outputs/research/p213l_3star_4star_controlled_missing_row_ingestion_20260605.{md,json}`; row/audit artifacts; backup DB + sha256 | Type D. 14/14 PASS. Backup `backups/p213l_lottery_v2_backup_20260605_20260605_151715.db` sha256 `1b2abd793a3ea3f2d300337eb2db6d2621b52e1600453bc20141377fa6475485`. Inserted 4,599 source-only star rows; draw rows 59,762→64,361; source-to-DB match 11,700/11,700; replay rows unchanged 94,924; no strategy scan authorized. |
+| **P246B–P249B BIG_LOTTO canonical isolation arc + governance** | **[Complete]** `P249B_ROADMAP_SYNC_ROW_LABEL_CLARIFICATION_COMPLETE` | `outputs/research/p246b_*` through `outputs/research/p249b_*`; PRs #316–#336; `lottery_api/database.py`; `scripts/p247b_apply_big_lotto_canonical_view.py`; tests 266+ PASS | **P246B–P246K** (Type B/C/D): taxonomy corrected (SIM_HYPHEN→ADD_ON_PRIZE_EXCLUDED; valid add-on/special prize records), impact audit, preserve-and-isolate architecture, get_canonical_draws() helper isolation, active research callers canonicalized, canonical NIST re-audit GREEN. **P247A–P247G** (Type B/C/D): DB view `draws_big_lotto_canonical_main` created (Type D, PR #328), helper view-backed (P247E), 9 analysis tools migrated (P247F), final regression guard 15 active paths (P247G). **P248A** (Type B): governance closure. **P249A** (Type B): roadmap triage; all research lines NULL/closed; recommended T1+T2 doc-only. **P249B** (Type B): row-label clarification + this roadmap sync. Canonical BIG_LOTTO: 2,113 rows. Raw: 22,238. ADD_ON: 19,100 raw-accessible. No rows deleted. No strategy promotion. No prediction edge implied. |
 
 ### 0.2 Current System Baseline
 
@@ -218,7 +219,7 @@ Upgrade / downgrade decisions:
 - **Required gates (if/when authorized):** pre-registered universe/windows/baselines, explicit family size, Bonferroni/BH-FDR where applicable, walk-forward or out-of-sample validation for any validation use, unit labels (row/draw/bet-index/strategy), NULL-is-success reporting.
 - **Priority:** P2 design-only — all subcomponents. Build only after explicit user authorization. Authorized on-request options: OPT-B P235A Lofea read-only feasibility review, OPT-C P234 statistical-methods diagnostics inventory (design-doc only).
 
-### 0.7 Current State Summary (updated by P213L controlled missing source-row ingestion, 2026-06-05)
+### 0.7 Current State Summary (updated by P249B roadmap sync + row-label clarification, 2026-06-06)
 
 **Research chains P211A–P231B (all lotteries), P226–P227C (3_STAR/4_STAR), P232A (all-catalog scoreboard), and P233A/B (registry hygiene, LIFECYCLE_UNRESOLVED 20→0) are complete.**
 
@@ -252,6 +253,7 @@ Upgrade / downgrade decisions:
 - P213 New hypothesis scouting plan: **`P213_NEW_HYPOTHESIS_SCOUTING_PLAN_COMPLETE`**. Type B same-PR. 36/36 PASS. Recommended H_STAR_POSITIONAL_REINGEST.
 - P213B 3_STAR/4_STAR positional data recovery feasibility: **`P213B_3STAR_4STAR_POSITIONAL_DATA_RECOVERY_FEASIBILITY_COMPLETE`** (feasibility: `P213B_POSITIONAL_RECOVERY_POSSIBLE_BUT_SOURCE_UNCONFIRMED`). Type B same-PR. 37/37 PASS. Root cause confirmed: `database.py:463 json.dumps(sorted(numbers))` and fetcher `sorted(...)`. No 3_STAR/4_STAR API endpoint in current fetcher. Source positional order unconfirmed. 4-phase recovery plan documented. Next step: Phase A source audit (`"Authorize P213C 3_STAR/4_STAR source audit (read-only API inspection, no DB write)"`). No code changes. No DB write.
 - P213L controlled missing source-row ingestion: **`P213L_3STAR_4STAR_CONTROLLED_MISSING_SOURCE_ROW_INGESTION_COMPLETE`**. Type D. 14/14 PASS. Backup `backups/p213l_lottery_v2_backup_20260605_20260605_151715.db`, sha256 `1b2abd793a3ea3f2d300337eb2db6d2621b52e1600453bc20141377fa6475485`, integrity `ok`. Inserted 4,599 source-only rows; production replay rows unchanged 94,924; draw rows 59,762→64,361; source-to-DB match 11,700/11,700; drift guard PASS. No strategy scan or recommendation change authorized.
+- P246B–P249B BIG_LOTTO canonical isolation arc + governance: **`P249B_ROADMAP_SYNC_ROW_LABEL_CLARIFICATION_COMPLETE`**. 21 tasks (P246B through P249B). PRs #316–#336. DB view `draws_big_lotto_canonical_main` created (Type D). Helper `get_canonical_draws()` view-backed. 9 analysis tools migrated. 15 active paths regression-guarded. Canonical NIST re-audit GREEN (random-compatible; no prediction edge). Governance docs synced. CURRENT_STATE row-count labels disambiguated (replay rows ≠ draw rows). Canonical BIG_LOTTO: 2,113 rows. Raw: 22,238. ADD_ON: 19,100 raw-accessible. No rows deleted. No strategy promotion. No prediction edge implied.
 
 **No active deployable candidate in any lottery.**
 
@@ -270,6 +272,18 @@ Upgrade / downgrade decisions:
 Final current roadmap marker:
 
 ```text
+P249B_ROADMAP_SYNC_ROW_LABEL_CLARIFICATION_COMPLETE
+P249A_POST_ISOLATION_ROADMAP_TRIAGE_COMPLETE
+P248A_BIG_LOTTO_CANONICAL_ISOLATION_GOVERNANCE_CLOSURE_COMPLETE
+P247G_BIG_LOTTO_CANONICAL_ISOLATION_FINAL_GUARD_COMPLETE
+P247F_BIG_LOTTO_ANALYSIS_TOOL_MIGRATION_COMPLETE
+P247E_GET_CANONICAL_DRAWS_VIEW_ADOPTION_COMPLETE
+P247D_BIG_LOTTO_CANONICAL_VIEW_CONSUMER_ADOPTION_AUDIT_COMPLETE
+P247C_BIG_LOTTO_VIEW_POST_APPLY_RECONCILIATION_COMPLETE
+P247B_BIG_LOTTO_CANONICAL_VIEW_APPLIED
+P247A_BIG_LOTTO_CANONICAL_VIEW_DRY_RUN_PLAN_COMPLETE
+P246K_CANONICAL_BIG_LOTTO_NIST_REAUDIT_COMPLETE
+P246J_BIG_LOTTO_ADDON_ISOLATION_ARC_CLOSURE_COMPLETE
 P214E_GOVERNANCE_WORDING_CLEANUP_COMPLETE
 P214D_POST_P214C_STRAIGHT_PLAY_RESEARCH_ARC_DECISION_SUPPORT_COMPLETE
 P214C_3STAR_4STAR_STRAIGHT_PLAY_BONFERRONI_DIAGNOSTIC_SCAN_COMPLETE

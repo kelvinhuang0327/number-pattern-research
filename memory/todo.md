@@ -11,6 +11,21 @@
 
 _（目前無進行中任務）_
 
+### P247B BIG_LOTTO canonical view 正式建立 ✅ 2026-06-06 完成
+- [x] 確認 PR #327 (P247A) CI PASS (SUCCESS)，合併至 main；385/1skipped 通過
+- [x] 讀取 P247A JSON 文物：確認 proposed SQL, counts, json1_available=True
+- [x] Phase 0 驗證：branch=main, HEAD=d6eb331, dirty 僅 known runtime files
+- [x] 建立 p247b-apply-big-lotto-canonical-view 分支
+- [x] 撰寫 scripts/p247b_apply_big_lotto_canonical_view.py（dry-run + apply 模式）
+- [x] Dry-run 驗證：所有 pre-apply 條件通過（raw=22238, add_on=19100, canon=2113, json1=True）
+- [x] 建立 DB backup: p247b_lottery_v2_backup_20260606_113816.db + SHA256 ✅
+- [x] 執行 CREATE VIEW draws_big_lotto_canonical_main → view 成功建立
+- [x] Post-apply 驗證：view=2113, raw=22238, add_on=19100, integrity=ok, 無 hyphen/date-fmt/small-pool
+- [x] 產出 P247B 文物（JSON+MD）
+- [x] 撰寫 tests/test_p247b_apply_big_lotto_canonical_view.py → 31/31 PASS
+- [x] 更新 memory/lessons.md（L118）
+- 完成標準：VIEW 已建立；所有計數正確；raw rows 保留；DB integrity ok；31 測試 PASS
+
 ### P247A BIG_LOTTO DB 級正規分離 dry-run 計畫 ✅ 2026-06-06 完成
 - [x] 確認 PR #326 (P246K) CI PASS，合併至 main；357+1skipped 通過
 - [x] 讀取 DB read-only：確認全部計數正確（22238/19100/375/650/2113）

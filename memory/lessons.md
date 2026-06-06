@@ -5,6 +5,26 @@
 
 ---
 
+## L119 — P247C 後置核對與 P247A dry-run 測試清理 (2026-06-06)
+
+**來源：** P247C post-apply reconciliation
+
+**關鍵發現：**
+- P247B VIEW 後，P247A dry-run 的 `test_p247a_canonical_view_not_in_db` 必然失敗（view 已存在）
+- 正確修法：改為驗證 P247A 自身的 `sql_applied=False` / `db_write_performed=False`（從 artifact），而非查詢 live DB 的 view 是否存在
+- P247A artifact 本身不需修改；只需更新測試邏輯（從 live DB 查詢改為 artifact 驗證）
+- dry_run_validation.canonical_view_already_exists=False 是 P247A 快照時的歷史事實，可作為 anchor
+
+**Post-apply 計數確認（P247C）：**
+- View `draws_big_lotto_canonical_main` = 2,113 ✅
+- Raw BIG_LOTTO = 22,238 ✅（19,100 + 375 + 650 + 2,113 = 22,238 ✅ sum check）
+- ADD_ON_PRIZE_EXCLUDED raw-accessible = 19,100 ✅
+- DB integrity: ok ✅
+
+**原則：** 歷史 dry-run 測試驗證 artifact 狀態，不驗證 live DB 狀態（live DB 會隨後續 apply 改變）
+
+---
+
 ## L118 — P247B BIG_LOTTO canonical view 正式建立 (2026-06-06)
 
 **來源：** P247B Type D controlled DB apply

@@ -11,6 +11,19 @@
 
 _（目前無進行中任務）_
 
+### P247C BIG_LOTTO view 後置核對與 dry-run 測試清理 ✅ 2026-06-06 完成
+- [x] Phase 0 驗證：main=b47b9c2=origin/main，P247B merge 可見，dirty 僅 runtime files
+- [x] 讀取 P247B/P247A 文物：確認 view_created=True, counts 全部正確
+- [x] 建立 p247c-big-lotto-view-post-apply-reconciliation 分支
+- [x] 撰寫 analysis/p247c_big_lotto_view_post_apply_reconciliation.py（read-only）
+- [x] 執行分析：view=2113, raw=22238, add_on=19100, integrity=ok, all_checks=True
+- [x] 修正 test_p247a_canonical_view_not_in_db → test_p247a_canonical_view_not_applied_by_p247a（artifact 驗證取代 live DB 查詢）
+- [x] 產出 P247C 文物（JSON+MD）
+- [x] 撰寫 tests/test_p247c_big_lotto_view_post_apply_reconciliation.py → 38/38 PASS
+- [x] P247A 測試：28/28 PASS（無舊 failure）；P247B: 31/31 PASS；P246K: 33/33 PASS
+- [x] 更新 memory/lessons.md（L119）
+- 完成標準：所有 P247A/B/C 測試通過；無 DB write；read-only 核對正確
+
 ### P247B BIG_LOTTO canonical view 正式建立 ✅ 2026-06-06 完成
 - [x] 確認 PR #327 (P247A) CI PASS (SUCCESS)，合併至 main；385/1skipped 通過
 - [x] 讀取 P247A JSON 文物：確認 proposed SQL, counts, json1_available=True

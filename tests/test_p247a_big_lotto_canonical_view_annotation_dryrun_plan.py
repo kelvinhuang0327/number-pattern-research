@@ -77,19 +77,18 @@ def test_p247a_proposed_annotation_table_sql_exists(p247a_data):
     assert "CREATE TABLE" in sql
     assert "draw_row_family_annotations" in sql
 
-def test_p247a_canonical_view_not_in_db():
-    """Verify the view was not actually created in the DB."""
-    db_path = REPO_ROOT / "lottery_api" / "data" / "lottery_v2.db"
-    if not db_path.exists():
-        pytest.skip("DB not available")
-    import sqlite3
-    conn = sqlite3.connect(f"file:{db_path}?mode=ro", uri=True)
-    views = [r[0] for r in conn.execute(
-        "SELECT name FROM sqlite_master WHERE type='view'"
-    ).fetchall()]
-    conn.close()
-    assert "draws_big_lotto_canonical_main" not in views, \
-        "Canonical view must NOT exist in DB (dry-run only)"
+def test_p247a_canonical_view_not_applied_by_p247a(p247a_data):
+    """Verify P247A itself did not apply the view SQL (dry-run only).
+
+    Note: P247B later created draws_big_lotto_canonical_main via Type D controlled
+    apply. This test verifies P247A's own dry-run-only nature via the artifact,
+    not the live DB state (which is now legitimately post-P247B).
+    """
+    assert p247a_data.get("sql_applied") is False, "P247A must not have applied SQL"
+    assert p247a_data.get("db_write_performed") is False, "P247A must not have written to DB"
+    v = p247a_data.get("dry_run_validation", {})
+    assert v.get("canonical_view_already_exists") is False, \
+        "At P247A dry-run time, view must not have existed (P247B applied it later)"
 
 def test_p247a_annotation_table_not_in_db():
     """Verify the annotation table was not actually created."""

@@ -143,7 +143,13 @@ def test_real_db_no_write_and_core_schema():
     assert result["data_snapshot"]["db_open_mode"] == "read-only"
     assert result["active_audit_inventory"]
     active = {item["lottery_type"]: item["draw_rows"] for item in result["active_audit_inventory"]}
-    assert active["BIG_LOTTO"] >= 22238
+    # P246I NOTE: BIG_LOTTO raw total = 22,238 (includes 19,100 ADD_ON_PRIZE_EXCLUDED add-on/special
+    # prize records). These are valid lottery-related records preserved in the DB. They are excluded
+    # from canonical 6/49 main-draw research (canonical count ~2,113) by get_canonical_draws().
+    # The P238B NIST audit ran on all raw rows (mixed population). A canonical-only re-audit is
+    # recommended after P247 Type D segregation. This assertion tests raw DB row count, NOT the
+    # canonical research population. See P246B/P246C/P246I for taxonomy and isolation details.
+    assert active["BIG_LOTTO"] >= 22238  # raw total (including add-on rows); canonical ~2,113
     assert active["DAILY_539"] >= 5879
     assert active["POWER_LOTTO"] >= 1916
     assert active["3_STAR"] >= 4179

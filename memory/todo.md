@@ -11,6 +11,16 @@
 
 _（目前無進行中任務）_
 
+### P246I BIG_LOTTO 人口斷言清理 ✅ 2026-06-06 完成
+- [x] 確認 PR #323 (P246H) CI PASS，合併至 main；258/258 通過
+- [x] 掃描 22238/sample_size 相關測試/文物
+- [x] test_p238b:146 加 P246I inline comment（斷言值保留 >= 22238）
+- [x] test_p243a:58 加 P246I inline comment（sample_size=22238 歷史值保留）
+- [x] P238B NIST 文物不修改（YELLOW 歷史結果保留）
+- [x] 測試 288/288 PASS；產出 P246I 文物（JSON+MD）
+- [x] 更新 memory/lessons.md（L114）
+- 完成標準：raw (22238) vs canonical (2113) 已明確區分；斷言值未改；無 DB 寫入
+
 ### P246H advanced_learning scheduler 追蹤 ✅ 2026-06-05 完成
 - [x] 確認 PR #322 (P246G) CI PASS，合併至 main；229/229 通過
 - [x] 追蹤 scheduler.get_data() 完整呼叫鏈：advanced_learning → scheduler → data_by_type

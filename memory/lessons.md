@@ -5,6 +5,25 @@
 
 ---
 
+## L116 — P246K 大樂透正規族群隨機性審計：GREEN（P238B YELLOW 係污染假訊號）(2026-06-06)
+
+**來源：** P246K 正規族群 NIST 重新審計
+
+**結論：** 大樂透正規 6/49 主開獎（2,113 期）通過全部 5 項隨機性測試（p 均 > 0.05）：
+- Draw-sum KS test: p=0.2458 ✅
+- Number frequency chi-square: p=0.7720 ✅
+- Runs test: p=0.9569 ✅
+- Ljung-Box lag-10: p=0.4129 ✅
+- Shannon entropy normalized: 0.999584 ✅
+
+**P238B YELLOW 係假訊號：** P238B 在混合 22,238 筆族群執行，YELLOW 由 DATE_FORMAT_ALIEN 和 SMALL_POOL_ALIEN 造成。在正規族群上 YELLOW 不成立。
+
+**重要限制：** GREEN 隨機性 ≠ 可利用信號。大樂透預測研究仍受 L91 結論限制（信號空間窮盡）。GATE_RED for predictive research 維持。
+
+**後續建議：** P247 Type D DB 級隔離（需另行授權）。
+
+---
+
 ## L115 — P246J BIG_LOTTO 加碼隔離弧結案要點 (2026-06-06)
 
 **來源：** P246J 弧結案

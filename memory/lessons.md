@@ -5,6 +5,32 @@
 
 ---
 
+## L121 — P247E get_canonical_draws 採用 DB view (2026-06-06)
+
+**來源：** P247E database.py helper view adoption
+
+**實作模式：**
+- 在 `DatabaseManager` 加入 `_CANONICAL_VIEW_BIG_LOTTO` class constant 和 `_big_lotto_canonical_view_exists(cursor)` method
+- `get_canonical_draws("BIG_LOTTO")` 優先查詢 VIEW，view 缺席時降級為原 SQL+Python 雙層過濾（fallback）
+- Return shape 完全不變：`{'draw','date','lotteryType','numbers','special','jackpot_amount'}`
+- limit 行為保留
+- 非 BIG_LOTTO 路徑不受影響
+
+**重要發現：**
+- `DatabaseManager()` 預設路徑為 `data/lottery_v2.db`（小 217KB），非正規 DB
+- 正規 DB 為 `lottery_api/data/lottery_v2.db`（99MB），必須明確傳入：`DatabaseManager(str(DB_PATH))`
+- `get_all_draws("BIG_LOTTO")` 在測試環境（無 apscheduler）會拋錯；改用直接 SQLite 查詢驗證 raw access
+- fallback 可用 tmp_path 無 view 的測試 DB 測試，確認 ADD_ON 和 SMALL_POOL 過濾仍有效
+
+**P247 弧總結（A→E 完成）：**
+- P247A: dry-run 計畫（SQL 未執行）
+- P247B: CREATE VIEW Type D apply
+- P247C: post-apply 核對 + P247A test fix
+- P247D: consumer adoption audit（21 路徑分類）
+- P247E: database.py helper 採用 view（Phase 2 完成）
+
+---
+
 ## L120 — P247D canonical view 消費者採用審計 (2026-06-06)
 
 **來源：** P247D consumer adoption audit

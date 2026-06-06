@@ -54,6 +54,12 @@ router = APIRouter()
 logger = logging.getLogger(__name__)
 _FIXTURE_HISTORY_PATH = Path(_api_root).parent / "outputs" / "replay" / "non_online_replay_fixture_20260511.json"
 _FIXTURE_SOURCE = "synthetic_fixture"
+_EVIDENCE_DASHBOARD_PATH = (
+    Path(_api_root).parent
+    / "outputs"
+    / "research"
+    / "p251b_cross_lottery_evidence_dashboard_data_20260606.json"
+)
 
 # Conservative disclaimer used by all replay endpoints
 _DISCLAIMER = (
@@ -1039,6 +1045,46 @@ async def get_replay_strategy_catalog():
         }
     except Exception as e:
         logger.exception("get_replay_strategy_catalog failed")
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+def _load_evidence_dashboard_payload() -> dict:
+    """Load the published P251B evidence dashboard artifact without mutating state."""
+    if not _EVIDENCE_DASHBOARD_PATH.exists():
+        raise HTTPException(
+            status_code=500,
+            detail=f"evidence dashboard artifact not found: {_EVIDENCE_DASHBOARD_PATH}",
+        )
+    try:
+        with _EVIDENCE_DASHBOARD_PATH.open("r", encoding="utf-8") as handle:
+            payload = json.load(handle)
+    except json.JSONDecodeError as exc:
+        raise HTTPException(
+            status_code=500,
+            detail=f"evidence dashboard artifact is invalid JSON: {exc}",
+        ) from exc
+    if not isinstance(payload, dict):
+        raise HTTPException(
+            status_code=500,
+            detail="evidence dashboard artifact must be a JSON object",
+        )
+    return payload
+
+
+@router.get("/api/replay/evidence-dashboard")
+async def get_replay_evidence_dashboard():
+    """
+    P251D: Read-only evidence dashboard payload.
+
+    Serves the published P251B dashboard artifact using the P251C contract path.
+    READ-ONLY: no DB query, no registry mutation, no prediction generation.
+    """
+    try:
+        return _load_evidence_dashboard_payload()
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.exception("get_replay_evidence_dashboard failed")
         raise HTTPException(status_code=500, detail=str(e))
 
 

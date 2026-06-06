@@ -416,3 +416,8 @@ _（目前無進行中任務）_
 - 已規劃 future-only read-only API payload contract，建議 endpoint 為 `/api/replay/evidence-dashboard`，與現有 replay audit 命名一致。
 - P251C 維持 no route / no UI / no DB write / no registry mutation / no strategy promotion / no betting advice。
 - 提醒：artifact tests 可能會 rewrite 既有 P251A/P251B markdown timestamp，完成後要 restore 再做 diff-check。
+
+### 2026-06-06 — P251D evidence dashboard read-only API route
+- 已在 replay router 實作 `GET /api/replay/evidence-dashboard`，直接回傳 P251B published artifact。
+- 路由維持 read-only：no DB query, no registry mutation, no strategy promotion, no UI, no betting advice。
+- 測試採 direct-call async route pattern，避免 app startup / scheduler / DB side effects。

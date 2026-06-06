@@ -1824,3 +1824,7 @@ T4 promotion (2026-05-05)
 - Future-only dashboard payload contracts fit best under the existing `/api/replay/*` read-only audit namespace when no route is implemented yet.
 - `/api/replay/evidence-dashboard` is a clean convention fit because it matches the replay family, remains read-only, and avoids colliding with the existing `/api/replay/strategy-catalog` endpoint.
 - Lesson: if a test calls `main()` on a published artifact builder, it may rewrite timestamp-only markdown outputs from earlier tasks; restore those artifacts before diff-checking the new task.
+
+## P251D read-only evidence dashboard API route (2026-06-06)
+- Artifact-backed replay endpoints can stay extremely small: load the published JSON, validate basic structure, and return it unchanged instead of re-computing or touching DB state.
+- For this repo, direct-calling the async replay route function is the safest test pattern because it avoids FastAPI startup side effects and keeps DB-free read-only routes easy to verify.

@@ -49,6 +49,17 @@ _（目前無進行中任務）_
 - [x] 更新 memory/lessons.md（L127）
 - 完成標準：current registry / historical snapshot 分層清楚；41 inventory entries；無 DB write；無策略邏輯變更；無 betting advice
 
+### P251A cross-lottery evidence dashboard dry-run plan ✅ 2026-06-06 完成
+- [x] Phase 0 驗證：main=dd6f795=origin/main，P250B merge 可見，dirty set 仍只含既有 tolerated runtime items
+- [x] 讀取 P250A inventory artifact（current registry SSOT + P232A historical snapshot）
+- [x] 建立 dashboard data-contract dry-run plan，包含 global_summary / lottery_summary / badge vocabulary / column contracts / filter semantics / no-exclusion rules / stale snapshot warning / no betting advice / future candidates
+- [x] 撰寫 analysis/p251a_cross_lottery_evidence_dashboard_dryrun_plan.py
+- [x] 產出 P251A 文物（JSON+MD）
+- [x] 撰寫 tests/test_p251a_cross_lottery_evidence_dashboard_dryrun_plan.py → 5/5 PASS
+- [x] 交叉回歸 P250A tests → 5/5 PASS
+- [x] 更新 memory/lessons.md（L128）
+- 完成標準：dashboard contract 清楚區分 current registry vs historical snapshot；artifact-only rows 保持可見；無 DB write；無 UI/API 實作；無 betting advice
+
 ### P248A BIG_LOTTO canonical 隔離 governance closure ✅ 2026-06-06 完成
 - [x] Phase 0 驗證：main=e87dc7b=origin/main，P247G merge 可見
 - [x] 讀取 P247G artifact + governance files（CURRENT_STATE.md, active_task.md）

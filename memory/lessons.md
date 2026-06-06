@@ -5,6 +5,31 @@
 
 ---
 
+## L124 — P248A BIG_LOTTO canonical 隔離 governance closure (2026-06-06)
+
+**來源：** P248A governance closure — P246B–P247G 弧完整結案
+
+**治理文件更新：**
+- `CURRENT_STATE.md`：狀態標記更新為 `P248A_BIG_LOTTO_CANONICAL_ISOLATION_GOVERNANCE_CLOSURE_COMPLETE`
+- `active_task.md`：P246B–P248A 完成記錄、WAITING_FOR_USER_AUTHORIZATION
+
+**關鍵不過度宣稱原則（no-overclaim）：**
+- P246K canonical NIST 審計 GREEN = 資料品質確認（2,113 筆正規主開獎與公平隨機相容）
+- GREEN ≠ 可利用預測信號；GREEN ≠ 授權任何策略/生產/投注建議
+- 預測研究需要 pre-registration + corrected-multiple-testing + walk-forward OOS + P245B bias gate
+
+**Artifact 日期後綴注意：**
+- P246B–P246I 用 `20260605`（在前一天完成）
+- P246J–P247G、P248A 用 `20260606`
+- 在 P248A 掃描 dependency artifacts 時需正確對應日期後綴
+
+**P246–P248A 弧完整記錄：**
+- 17 個任務 / 17 個 artifact → 全部 OK
+- 22,238 raw / 19,100 ADD_ON raw-accessible / 2,113 canonical
+- 15 active paths 受 regression guard 保護
+
+---
+
 ## L123 — P247G BIG_LOTTO canonical 隔離最終驗證與 regression guard (2026-06-06)
 
 **來源：** P247G final guard — P247 弧（A→G）完成

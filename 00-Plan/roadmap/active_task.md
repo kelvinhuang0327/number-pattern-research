@@ -1,10 +1,11 @@
 # Active Task — Today (2026-06-05)
 
 > **STATUS: `WAITING_FOR_USER_AUTHORIZATION`**
-> P214E governance wording cleanup complete (Type B). P211 hold wording reconciled: P211R ran → HISTORICAL_ARTIFACT; HELD_BY_USER removed from all governance sections. P214C NULL result wording updated in Holds. Stale 3_STAR draw count corrected (4,179→5,850). Roadmap marker updated.
-> Final Classification: `P214E_GOVERNANCE_WORDING_CLEANUP_COMPLETE`
-> P238B NIST audit remains `RANDOMNESS_AUDIT_YELLOW_OBSERVATION_ONLY`.
-> Recommended next: **HOLD** — P214C arc is NULL; P211R is HISTORICAL_ARTIFACT. No active research direction.
+> P248A governance closure complete (Type B). BIG_LOTTO canonical isolation arc (P246B–P247G) recorded in governance. Canonical state: view+helper=2,113 rows, raw=22,238, add-on=19,100 raw-accessible. 15 active paths protected by regression guard. P246K canonical randomness GREEN (random-compatible; no prediction edge implied). No DB write.
+> Final Classification: `P248A_BIG_LOTTO_CANONICAL_ISOLATION_GOVERNANCE_CLOSURE_COMPLETE`
+> P238B NIST audit (raw population): superseded for canonical gating by P246K GREEN; raw-population YELLOW remains OBSERVATION_ONLY.
+> P246K canonical NIST audit: `RANDOMNESS_AUDIT_GREEN_RANDOM_COMPATIBLE` — does not authorize any new prediction/strategy direction.
+> Recommended next: **HOLD** — P246–P248A arc complete. No active research direction. Next research requires new pre-registration and explicit authorization.
 
 ---
 
@@ -21,7 +22,30 @@
 - P237C NIST randomness-audit tripwire design doc is merged on main via PR #285.
 - P238A NIST randomness-audit artifact-only build plan is merged on main via PR #287. It is a future-build plan only. No executable build, code, scripts, tests, DB write, registry mutation, production/recommendation change, monitoring job, strategy, betting advice, or P211 restart is authorized.
 
-## What was completed this session
+## What was completed this session (P248A / 2026-06-06)
+
+| Task | Result |
+|---|---|
+| P246B BIG_LOTTO taxonomy correction | `P246B_BIG_LOTTO_TAXONOMY_CORRECTION_COMPLETE` — SIM_HYPHEN→ADD_ON_PRIZE_EXCLUDED; valid lottery add-on/special prize records confirmed |
+| P246C BIG_LOTTO add-on impact audit | `P246C_BIG_LOTTO_ADDON_IMPACT_AUDIT_COMPLETE` — caller impact assessed |
+| P246D BIG_LOTTO add-on segregation design | `P246D_BIG_LOTTO_ADDON_SEGREGATION_DESIGN_COMPLETE` — preserve-and-isolate architecture |
+| P246E Canonical draw helper isolation | `P246E_CANONICAL_DRAW_HELPER_ISOLATION_COMPLETE` — get_canonical_draws() + quick_predict.py |
+| P246F Research caller canonicalization sweep | `P246F_RESEARCH_CALLER_CANONICALIZATION_SWEEP_COMPLETE` — rsm_bootstrap + core_satellite |
+| P246G Remaining BIG_LOTTO caller canonicalization | `P246G_REMAINING_BIG_LOTTO_CALLER_CANONICALIZATION_COMPLETE` — drift_detector + backtest_framework |
+| P246H Advanced learning scheduler trace | `P246H_ADVANCED_LEARNING_SCHEDULER_TRACE_COMPLETE` — scheduler canonicalized |
+| P246I BIG_LOTTO population assertion cleanup | `P246I_BIG_LOTTO_POPULATION_ASSERTION_CLEANUP_COMPLETE` — raw vs canonical assertions clarified |
+| P246J BIG_LOTTO add-on isolation arc closure | `P246J_BIG_LOTTO_ADDON_ISOLATION_ARC_CLOSURE_COMPLETE` — P246 arc closed |
+| P246K Canonical BIG_LOTTO NIST re-audit | `P246K_CANONICAL_BIG_LOTTO_NIST_REAUDIT_COMPLETE` — 5/5 GREEN on 2,113 canonical draws |
+| P247A BIG_LOTTO canonical view dry-run plan | `P247A_BIG_LOTTO_CANONICAL_VIEW_DRY_RUN_PLAN_COMPLETE` — SQL dry-run only; no apply |
+| P247B BIG_LOTTO canonical view apply (Type D) | `P247B_BIG_LOTTO_CANONICAL_VIEW_APPLIED` — CREATE VIEW draws_big_lotto_canonical_main; 2,113 rows; PR #328 |
+| P247C Post-apply reconciliation | `P247C_BIG_LOTTO_VIEW_POST_APPLY_RECONCILIATION_COMPLETE` — counts verified; test cleanup |
+| P247D Consumer adoption audit | `P247D_BIG_LOTTO_CANONICAL_VIEW_CONSUMER_ADOPTION_AUDIT_COMPLETE` — 21 paths classified |
+| P247E get_canonical_draws view adoption | `P247E_GET_CANONICAL_DRAWS_VIEW_ADOPTION_COMPLETE` — helper view-backed; single source of truth |
+| P247F Analysis tool migration | `P247F_BIG_LOTTO_ANALYSIS_TOOL_MIGRATION_COMPLETE` — 9 tools migrated to canonical helper |
+| P247G Canonical isolation final guard | `P247G_BIG_LOTTO_CANONICAL_ISOLATION_FINAL_GUARD_COMPLETE` — 15 active paths; regression guard |
+| P248A Governance closure | `P248A_BIG_LOTTO_CANONICAL_ISOLATION_GOVERNANCE_CLOSURE_COMPLETE` — this task; Type B |
+
+## What was completed in the prior P214 session (historical reference)
 
 | Task | Result |
 |---|---|

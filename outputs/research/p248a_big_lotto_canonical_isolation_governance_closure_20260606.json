@@ -1,0 +1,246 @@
+{
+  "schema_version": "1.0",
+  "task_id": "P248A",
+  "classification": "GOVERNANCE_CLOSURE",
+  "p247g_merged_state_verified": true,
+  "dependency_artifacts_verified": {
+    "results": [
+      {
+        "task": "P246B",
+        "artifact": "p246b_big_lotto_taxonomy_correction_20260605.json",
+        "exists": true,
+        "task_id_ok": true,
+        "status": "OK"
+      },
+      {
+        "task": "P246C",
+        "artifact": "p246c_big_lotto_addon_impact_audit_20260605.json",
+        "exists": true,
+        "task_id_ok": true,
+        "status": "OK"
+      },
+      {
+        "task": "P246D",
+        "artifact": "p246d_big_lotto_addon_segregation_design_20260605.json",
+        "exists": true,
+        "task_id_ok": true,
+        "status": "OK"
+      },
+      {
+        "task": "P246E",
+        "artifact": "p246e_canonical_draw_helper_isolation_20260605.json",
+        "exists": true,
+        "task_id_ok": true,
+        "status": "OK"
+      },
+      {
+        "task": "P246F",
+        "artifact": "p246f_research_caller_canonicalization_sweep_20260605.json",
+        "exists": true,
+        "task_id_ok": true,
+        "status": "OK"
+      },
+      {
+        "task": "P246G",
+        "artifact": "p246g_remaining_big_lotto_caller_canonicalization_20260605.json",
+        "exists": true,
+        "task_id_ok": true,
+        "status": "OK"
+      },
+      {
+        "task": "P246H",
+        "artifact": "p246h_advanced_learning_scheduler_trace_20260605.json",
+        "exists": true,
+        "task_id_ok": true,
+        "status": "OK"
+      },
+      {
+        "task": "P246I",
+        "artifact": "p246i_big_lotto_population_assertion_cleanup_20260605.json",
+        "exists": true,
+        "task_id_ok": true,
+        "status": "OK"
+      },
+      {
+        "task": "P246J",
+        "artifact": "p246j_big_lotto_addon_isolation_closure_20260606.json",
+        "exists": true,
+        "task_id_ok": true,
+        "status": "OK"
+      },
+      {
+        "task": "P246K",
+        "artifact": "p246k_canonical_big_lotto_nist_reaudit_20260606.json",
+        "exists": true,
+        "task_id_ok": true,
+        "status": "OK"
+      },
+      {
+        "task": "P247A",
+        "artifact": "p247a_big_lotto_canonical_view_annotation_dryrun_plan_20260606.json",
+        "exists": true,
+        "task_id_ok": true,
+        "status": "OK"
+      },
+      {
+        "task": "P247B",
+        "artifact": "p247b_apply_big_lotto_canonical_view_20260606.json",
+        "exists": true,
+        "task_id_ok": true,
+        "status": "OK"
+      },
+      {
+        "task": "P247C",
+        "artifact": "p247c_big_lotto_view_post_apply_reconciliation_20260606.json",
+        "exists": true,
+        "task_id_ok": true,
+        "status": "OK"
+      },
+      {
+        "task": "P247D",
+        "artifact": "p247d_big_lotto_canonical_view_consumer_adoption_audit_20260606.json",
+        "exists": true,
+        "task_id_ok": true,
+        "status": "OK"
+      },
+      {
+        "task": "P247E",
+        "artifact": "p247e_get_canonical_draws_view_adoption_20260606.json",
+        "exists": true,
+        "task_id_ok": true,
+        "status": "OK"
+      },
+      {
+        "task": "P247F",
+        "artifact": "p247f_big_lotto_analysis_tool_migration_20260606.json",
+        "exists": true,
+        "task_id_ok": true,
+        "status": "OK"
+      },
+      {
+        "task": "P247G",
+        "artifact": "p247g_big_lotto_canonical_isolation_final_guard_20260606.json",
+        "exists": true,
+        "task_id_ok": true,
+        "status": "OK"
+      }
+    ],
+    "all_ok": true
+  },
+  "canonical_state": {
+    "raw_big_lotto_total": 22238,
+    "add_on_prize_excluded": 19100,
+    "date_format_alien": 375,
+    "small_pool_alien": 650,
+    "canonical_main_draw": 2113,
+    "sum_check": "19100 + 375 + 650 + 2113 = 22238",
+    "db_view": "draws_big_lotto_canonical_main",
+    "helper_method": "get_canonical_draws('BIG_LOTTO')",
+    "helper_backed_by_view": true,
+    "raw_access_method": "get_all_draws('BIG_LOTTO')",
+    "raw_access_preserved": true,
+    "add_on_records_raw_accessible": true
+  },
+  "active_paths_protected": [
+    {
+      "path": "tools/quick_predict.py",
+      "status": "ALREADY_HELPER_CANONICAL"
+    },
+    {
+      "path": "tools/rsm_bootstrap.py",
+      "status": "ALREADY_HELPER_CANONICAL"
+    },
+    {
+      "path": "lottery_api/backtest_framework.py",
+      "status": "ALREADY_HELPER_CANONICAL"
+    },
+    {
+      "path": "lottery_api/engine/core_satellite.py",
+      "status": "ALREADY_HELPER_CANONICAL"
+    },
+    {
+      "path": "lottery_api/engine/drift_detector.py",
+      "status": "ALREADY_OWN_CANONICAL_FILTER"
+    },
+    {
+      "path": "lottery_api/utils/scheduler.py",
+      "status": "ALREADY_OWN_CANONICAL_FILTER"
+    },
+    {
+      "path": "tools/analyze_banker_accuracy.py",
+      "status": "UPDATED_TO_CANONICAL (P247F)"
+    },
+    {
+      "path": "tools/analyze_banker_plus_kill.py",
+      "status": "UPDATED_TO_CANONICAL (P247F)"
+    },
+    {
+      "path": "tools/analyze_biglotto_special.py",
+      "status": "UPDATED_TO_CANONICAL (P247F)"
+    },
+    {
+      "path": "tools/analyze_market_temperature.py",
+      "status": "UPDATED_TO_CANONICAL (P247F)"
+    },
+    {
+      "path": "tools/analyze_top_n_for_2.py",
+      "status": "UPDATED_TO_CANONICAL (P247F)"
+    },
+    {
+      "path": "tools/audit_big_lotto_3bet.py",
+      "status": "UPDATED_TO_CANONICAL (P247F)"
+    },
+    {
+      "path": "tools/audit_big_lotto_baseline.py",
+      "status": "UPDATED_TO_CANONICAL (P247F)"
+    },
+    {
+      "path": "tools/audit_big_lotto_hyper.py",
+      "status": "UPDATED_TO_CANONICAL (P247F)"
+    },
+    {
+      "path": "tools/audit_big_lotto_rigorous.py",
+      "status": "UPDATED_TO_CANONICAL (P247F)"
+    }
+  ],
+  "active_path_count": 15,
+  "raw_access_preserved": true,
+  "raw_display_history_paths_unchanged": true,
+  "gate_status": {
+    "P246K_canonical_randomness_audit": "GREEN — 5/5 randomness tests pass on 2,113 canonical draws",
+    "P238B_raw_population_nist": "YELLOW — observation-only; superseded for canonical gating by P246K",
+    "green_implies_prediction_edge": false,
+    "green_implies_betting_advice": false,
+    "green_implies_strategy_promotion": false,
+    "prediction_research_gate": "BIG_LOTTO prediction/hit-rate research remains subject to existing pre-registration, corrected-multiple-testing, walk-forward OOS, and P245B bias gate requirements.",
+    "no_overclaim_statement": "GREEN canonical randomness is a data quality / isolation audit result. It confirms that the 2,113 canonical main-draw rows are statistically random-compatible (no detectable bias in the canonical sample itself). It does not imply exploitable prediction signal and does not authorize any new strategy, production recommendation, deployment, or betting advice."
+  },
+  "remaining_deferred_items": [
+    "Archived scripts (lottery_api/backtest_115000*.py, predict_*.py, compare_*.py): DEFERRED — migrate to get_canonical_draws() if/when reactivated.",
+    "Annotation table (draw_row_family_annotations): optional future Type D; not required for current active-path isolation.",
+    "Raw history/display UI labeling: future UI/API task if row-family labels are desired in user-facing interfaces.",
+    "BIG_LOTTO hit-rate research: remains subject to existing pre-registration, corrected-multiple-testing, walk-forward OOS, and P245B bias gate requirements. GREEN canonical randomness does not authorize any new prediction direction."
+  ],
+  "governance_files_updated": [
+    "00-Plan/roadmap/agent_bootstrap/CURRENT_STATE.md",
+    "00-Plan/roadmap/active_task.md"
+  ],
+  "db_write_performed": false,
+  "no_row_insert_update_delete": true,
+  "no_prediction_betting_recommendation": true,
+  "no_production_recommendation_change": true,
+  "forbidden_actions_confirmed": {
+    "DB write": "NOT PERFORMED",
+    "DB migration": "NOT PERFORMED",
+    "CREATE VIEW / CREATE TABLE": "NOT PERFORMED",
+    "DELETE rows": "NOT PERFORMED",
+    "UPDATE rows": "NOT PERFORMED",
+    "INSERT rows": "NOT PERFORMED",
+    "strategy logic change": "NOT PERFORMED",
+    "frontend/API display behavior change": "NOT PERFORMED",
+    "registry mutation": "NOT PERFORMED",
+    "production recommendation change": "NOT PERFORMED",
+    "prediction/betting advice": "NOT PERFORMED"
+  },
+  "final_decision": "P248A governance closure complete. P246B–P247G BIG_LOTTO canonical isolation arc recorded in governance. Canonical state: view+helper=2113 rows, raw=22238, add-on=19100 raw-accessible. 15 active research paths protected. Green canonical randomness (P246K) does not imply prediction edge. No DB write. No row mutation. No prediction/betting recommendation."
+}

@@ -1,0 +1,166 @@
+{
+  "schema_version": "1.0",
+  "task_id": "P251E",
+  "classification": "EVIDENCE_DASHBOARD_API_RUNTIME_SMOKE_GOVERNANCE_CLOSURE",
+  "generated_at": "2026-06-06T19:59:15",
+  "source_artifacts": {
+    "p250a_inventory": "outputs/research/p250a_cross_lottery_strategy_replay_inventory_20260606.json",
+    "p251a_contract": "outputs/research/p251a_cross_lottery_evidence_dashboard_dryrun_plan_20260606.json",
+    "p251b_dashboard_data": "outputs/research/p251b_cross_lottery_evidence_dashboard_data_20260606.json",
+    "p251c_contract_plan": "outputs/research/p251c_evidence_dashboard_api_payload_contract_plan_20260606.json",
+    "p251d_route_artifact": "outputs/research/p251d_evidence_dashboard_readonly_api_route_20260606.json"
+  },
+  "phase0_summary": {
+    "repo_root": "/Users/kelvin/Kelvin-WorkSpace/LotteryNew",
+    "branch": "main",
+    "head": "6770e914eb46b86d4919323d8ef0100f7c03c43b",
+    "origin_main": "6770e914eb46b86d4919323d8ef0100f7c03c43b",
+    "status_short": [
+      "M 00-Plan/roadmap/active_task.md",
+      " M 00-Plan/roadmap/agent_bootstrap/CURRENT_STATE.md",
+      " M 00-Plan/roadmap/roadmap.md",
+      " M backend.pid",
+      " M claude-code-showcase",
+      " M data/lottery_v2.db",
+      " M frontend.pid",
+      " M memory/lessons.md",
+      " M memory/todo.md",
+      "?? analysis/p251e_evidence_dashboard_api_runtime_smoke_governance_closure.py",
+      "?? claude-code-showcase.worktrees/",
+      "?? data/performance_history.json",
+      "?? outputs/research/p251e_evidence_dashboard_api_runtime_smoke_governance_closure_20260606.json",
+      "?? outputs/research/p251e_evidence_dashboard_api_runtime_smoke_governance_closure_20260606.md",
+      "?? runtime/",
+      "?? tests/test_p251e_evidence_dashboard_api_runtime_smoke_governance_closure.py"
+    ],
+    "status_sb": [
+      "## main...origin/main",
+      " M 00-Plan/roadmap/active_task.md",
+      " M 00-Plan/roadmap/agent_bootstrap/CURRENT_STATE.md",
+      " M 00-Plan/roadmap/roadmap.md",
+      " M backend.pid",
+      " M claude-code-showcase",
+      " M data/lottery_v2.db",
+      " M frontend.pid",
+      " M memory/lessons.md",
+      " M memory/todo.md",
+      "?? analysis/p251e_evidence_dashboard_api_runtime_smoke_governance_closure.py",
+      "?? claude-code-showcase.worktrees/",
+      "?? data/performance_history.json",
+      "?? outputs/research/p251e_evidence_dashboard_api_runtime_smoke_governance_closure_20260606.json",
+      "?? outputs/research/p251e_evidence_dashboard_api_runtime_smoke_governance_closure_20260606.md",
+      "?? runtime/",
+      "?? tests/test_p251e_evidence_dashboard_api_runtime_smoke_governance_closure.py"
+    ],
+    "p251d_merge_visible_on_main": true,
+    "phase0_passed_before_task_edits": true,
+    "tolerated_runtime_dirty_items": [
+      "?? claude-code-showcase.worktrees/",
+      "?? runtime/",
+      "M backend.pid",
+      "M claude-code-showcase",
+      "M data/lottery_v2.db",
+      "M frontend.pid"
+    ],
+    "task_scope_dirty_items": [
+      "?? analysis/p251e_evidence_dashboard_api_runtime_smoke_governance_closure.py",
+      "?? outputs/research/p251e_evidence_dashboard_api_runtime_smoke_governance_closure_20260606.json",
+      "?? outputs/research/p251e_evidence_dashboard_api_runtime_smoke_governance_closure_20260606.md",
+      "?? tests/test_p251e_evidence_dashboard_api_runtime_smoke_governance_closure.py",
+      "M 00-Plan/roadmap/active_task.md",
+      "M 00-Plan/roadmap/agent_bootstrap/CURRENT_STATE.md",
+      "M 00-Plan/roadmap/roadmap.md",
+      "M memory/lessons.md",
+      "M memory/todo.md"
+    ],
+    "unexpected_dirty_items": [
+      "?? data/performance_history.json"
+    ],
+    "tolerated_dirty_only_before_task": false,
+    "no_staged_files": false
+  },
+  "runtime_route_smoke": {
+    "mode": "APP_TESTCLIENT",
+    "status": "PASS",
+    "app_path": "lottery_api/app.py",
+    "route_file": "lottery_api/routes/replay.py",
+    "endpoint": "/api/replay/evidence-dashboard",
+    "http_method": "GET",
+    "status_code": 200,
+    "response_equals_p251b_artifact": true,
+    "router_function_name": "get_replay_evidence_dashboard",
+    "startup_smoke_completed": true
+  },
+  "response_contract_validation": {
+    "required_top_level_sections_present": true,
+    "strategy_rows_len": 41,
+    "strategy_rows_len_ok": true,
+    "artifact_only_visible_count": 3,
+    "artifact_only_visible_count_ok": true,
+    "default_lifecycle_statuses": [
+      "ONLINE",
+      "REJECTED",
+      "RETIRED",
+      "OBSERVATION",
+      "ARTIFACT_ONLY",
+      "LIFECYCLE_UNRESOLVED"
+    ],
+    "default_lifecycle_statuses_ok": true,
+    "lifecycle_filter_excludes_by_default": false,
+    "lifecycle_filter_default_ok": true,
+    "big_lotto_replay_rows": 24140,
+    "big_lotto_raw_draw_rows": 22238,
+    "big_lotto_canonical_rows": 2113,
+    "big_lotto_add_on_rows": 19100,
+    "big_lotto_semantics_ok": true,
+    "no_active_deployable_candidate": true,
+    "no_betting_advice_notice_present": true,
+    "no_betting_advice_notice_text": "This dashboard data artifact is evidence-only and is not betting advice.",
+    "no_betting_advice_notice_ok": true
+  },
+  "no_db_write_confirmed": true,
+  "no_registry_mutation_confirmed": true,
+  "no_strategy_promotion_confirmed": true,
+  "no_ui_implementation_confirmed": true,
+  "no_betting_advice_confirmed": true,
+  "governance_updates": {
+    "files_updated": [
+      "00-Plan/roadmap/active_task.md",
+      "00-Plan/roadmap/agent_bootstrap/CURRENT_STATE.md",
+      "00-Plan/roadmap/roadmap.md",
+      "memory/lessons.md",
+      "memory/todo.md"
+    ],
+    "required_terms_present": {
+      "active_task": true,
+      "current_state": true,
+      "roadmap": true,
+      "lessons": true,
+      "todo": true
+    },
+    "arc_closed": true,
+    "arc_summary": [
+      "P251A contract dry-run recorded.",
+      "P251B dashboard data artifact recorded.",
+      "P251C API payload contract plan recorded.",
+      "P251D read-only API route recorded.",
+      "P251E runtime smoke and governance closure recorded."
+    ]
+  },
+  "tests": {
+    "targeted_p251e": "tests/test_p251e_evidence_dashboard_api_runtime_smoke_governance_closure.py",
+    "p251d_regression": "tests/test_p251d_evidence_dashboard_readonly_api_route.py",
+    "p251c_regression": "tests/test_p251c_evidence_dashboard_api_payload_contract_plan.py",
+    "p251b_regression": "tests/test_p251b_cross_lottery_evidence_dashboard_data_builder.py"
+  },
+  "final_decision": "P251E confirms the read-only evidence dashboard API is mounted under the live app, serves the published P251B artifact through the P251C contract path, performs no DB query or write, and closes the P251A-D dashboard API governance arc.",
+  "supporting_evidence": {
+    "p250a_task_id": "P250A",
+    "p251a_task_id": "P251A",
+    "p251b_task_id": "P251B",
+    "p251c_task_id": "P251C",
+    "p251d_task_id": "P251D",
+    "p251c_proposed_endpoint": "/api/replay/evidence-dashboard",
+    "p251d_route_path": "/api/replay/evidence-dashboard"
+  }
+}

@@ -1828,3 +1828,7 @@ T4 promotion (2026-05-05)
 ## P251D read-only evidence dashboard API route (2026-06-06)
 - Artifact-backed replay endpoints can stay extremely small: load the published JSON, validate basic structure, and return it unchanged instead of re-computing or touching DB state.
 - For this repo, direct-calling the async replay route function is the safest test pattern because it avoids FastAPI startup side effects and keeps DB-free read-only routes easy to verify.
+
+## P251E evidence dashboard API runtime smoke + governance closure (2026-06-06)
+- The repo-level `.venv` can support a true FastAPI `TestClient` smoke even when system `python3` lacks `fastapi`; verify both so environment gaps do not get misreported as product failures.
+- For governance closeout tasks, keep the dashboard arc explicit end-to-end: contract artifact, dashboard artifact, API payload contract, read-only route, then runtime smoke and governance closure.

@@ -1,8 +1,8 @@
 # Active Task — Today (2026-06-06)
 
 > **STATUS: `WAITING_FOR_USER_AUTHORIZATION`**
-> P249B roadmap sync + row-label clarification complete (Type B doc-only). CURRENT_STATE.md row-count labels disambiguated: "BIG_LOTTO rows | 24,140" = replay rows (not draw rows); actual BIG_LOTTO raw draw rows = 22,238; canonical research rows = 2,113. roadmap.md phase table and §0.7 updated for P246B–P249A arc. active_task.md updated.
-> Final Classification: `P249B_ROADMAP_SYNC_ROW_LABEL_CLARIFICATION_COMPLETE`
+> P251E evidence dashboard API runtime smoke + governance closure complete. The read-only `GET /api/replay/evidence-dashboard` route is mounted on the live app, returns the published P251B artifact under the P251C contract path, and remains artifact-backed with no DB query/write, registry mutation, strategy promotion, UI work, or betting advice. Governance docs now close the P251A–P251E dashboard API arc.
+> Final Classification: `EVIDENCE_DASHBOARD_API_RUNTIME_SMOKE_GOVERNANCE_CLOSURE`
 > P246K canonical NIST audit: `RANDOMNESS_AUDIT_GREEN_RANDOM_COMPATIBLE` — does not authorize any new prediction/strategy direction.
 > P238B NIST audit (raw population): superseded for canonical gating by P246K GREEN; raw-population YELLOW remains OBSERVATION_ONLY.
 > Recommended next: **HOLD** — P249A triage complete; T1+T2 (this task) done. Next research requires new pre-registration and explicit authorization. Candidates ranked in P249A artifact.
@@ -22,7 +22,17 @@
 - P237C NIST randomness-audit tripwire design doc is merged on main via PR #285.
 - P238A NIST randomness-audit artifact-only build plan is merged on main via PR #287. It is a future-build plan only. No executable build, code, scripts, tests, DB write, registry mutation, production/recommendation change, monitoring job, strategy, betting advice, or P211 restart is authorized.
 
-## What was completed this session (P249B / 2026-06-06)
+## What was completed this session (P251E / 2026-06-06)
+
+| Task | Result |
+|---|---|
+| P251A Evidence dashboard dry-run contract | `CROSS_LOTTERY_EVIDENCE_DASHBOARD_DRYRUN_PLAN` — dashboard-ready read-only contract and vocabulary plan |
+| P251B Evidence dashboard data artifact | `CROSS_LOTTERY_EVIDENCE_DASHBOARD_DATA_ARTIFACT` — 41 visible historical rows, 38 current registry entries, 3 artifact-only rows |
+| P251C API payload contract plan | `EVIDENCE_DASHBOARD_API_PAYLOAD_CONTRACT_PLAN` — future route/path contract under `/api/replay/evidence-dashboard` |
+| P251D Read-only API route | `EVIDENCE_DASHBOARD_READONLY_API_ROUTE_IMPLEMENTED` — artifact-backed GET route implemented in replay router |
+| P251E Runtime smoke + governance closure | `EVIDENCE_DASHBOARD_API_RUNTIME_SMOKE_GOVERNANCE_CLOSURE` — app/TestClient smoke passed; governance arc closed |
+
+## What was completed earlier this session (P249B / 2026-06-06)
 
 | Task | Result |
 |---|---|
@@ -149,4 +159,4 @@ All safety boundaries unchanged. P213L was the explicitly authorized Type D draw
 6. 是否允許進入下一輪
 7. Final Classification
 
-Final Classification (this file): `P213L_3STAR_4STAR_CONTROLLED_MISSING_SOURCE_ROW_INGESTION_COMPLETE`
+Final Classification (this file): `EVIDENCE_DASHBOARD_API_RUNTIME_SMOKE_GOVERNANCE_CLOSURE`

@@ -55,7 +55,12 @@ def make_f1_nist_yellow():
         strategy_id=None,
         diagnostic_subject="NIST-style randomness audit — draw sequence",
         lifecycle_status=LifecycleStatus.OBSERVATION,
-        sample_size=22238,
+        # P246I NOTE: sample_size=22238 = all BIG_LOTTO rows at P238B run time (2026-06-04),
+        # including 19,100 ADD_ON_PRIZE_EXCLUDED add-on/special prize records (valid but
+        # excluded from canonical 6/49 research). Canonical research population ~2,113.
+        # This fixture preserves the historical P238B state. Do not change the value;
+        # a canonical-population re-run requires separate authorization. See P246I.
+        sample_size=22238,  # historical: raw total (add-on-inclusive); canonical ~2,113
         window_definition="all_history",
         is_oos=False,
         split_boundary=None,

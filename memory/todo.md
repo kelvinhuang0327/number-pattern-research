@@ -11,6 +11,20 @@
 
 _（目前無進行中任務）_
 
+### P247G BIG_LOTTO canonical 隔離最終驗證 ✅ 2026-06-06 完成
+- [x] Phase 0 驗證：main=41f7f58=origin/main，P247F merge 可見
+- [x] DB/helper 全驗：view=2113, helper=2113, raw=22238, add_on=19100, integrity=ok
+- [x] 15 個 active 路徑掃描：全部 OK（0 regression）
+- [x] Raw access 驗：get_all_draws/get_draws 仍存在 database.py
+- [x] 建立 p247g-big-lotto-canonical-isolation-final-guard 分支
+- [x] 撰寫 analysis/p247g_big_lotto_canonical_isolation_final_guard.py
+- [x] 產出 P247G 文物（JSON+MD）
+- [x] 撰寫 tests/test_p247g_big_lotto_canonical_isolation_final_guard.py → 67/67 PASS
+- [x] 全套 P247B-G: 266/266 PASS
+- [x] 更新 memory/lessons.md（L123）
+- [x] P247 弧（A→G）完全完成 ✅
+- 完成標準：15 路徑全 canonical；regression guard 覆蓋；266 測試 PASS；無 DB write
+
 ### P247F BIG_LOTTO 分析工具遷移至 canonical helper ✅ 2026-06-06 完成
 - [x] Phase 0 驗證：main=f5079f2=origin/main，P247E merge 可見，view=2113/helper=2113
 - [x] 掃描 P247D 識別的 FUTURE_SCOPE 工具（9 個：5 analyze_* + 4 audit_*）

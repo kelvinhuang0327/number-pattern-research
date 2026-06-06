@@ -5,6 +5,38 @@
 
 ---
 
+## L123 — P247G BIG_LOTTO canonical 隔離最終驗證與 regression guard (2026-06-06)
+
+**來源：** P247G final guard — P247 弧（A→G）完成
+
+**最終狀態確認：**
+- View `draws_big_lotto_canonical_main` = 2,113 rows ✅
+- `get_canonical_draws('BIG_LOTTO')` = 2,113 rows (view-backed) ✅
+- Raw BIG_LOTTO = 22,238 rows (preserved) ✅
+- ADD_ON_PRIZE_EXCLUDED = 19,100 rows (raw-accessible) ✅
+- 15 個 active 研究路徑全部 canonical ✅
+- DB integrity: ok ✅
+
+**Regression Guard 設計：**
+- `test_p247g_big_lotto_canonical_isolation_final_guard.py` 含 30 個 parametrize 測試
+- 每個 active 路徑：(1) 確認不含 `get_all_draws('BIG_LOTTO')` (2) 確認含 canonical pattern
+- 未來任何 active 研究腳本若重新使用 raw BIG_LOTTO 呼叫，guard 測試立即失敗
+
+**P247 弧（A→G）完整歷程：**
+```
+A: dry-run 計畫（2026-06-06）
+B: CREATE VIEW Type D apply → 2,113 rows
+C: post-apply 核對 + P247A test cleanup
+D: consumer audit → 21 路徑分類
+E: get_canonical_draws() 採用 view → 單一真相來源
+F: 9 工具遷移 → get_canonical_draws()
+G: 最終驗證 + regression guard（本任務）
+```
+
+**SQLite note：** `sqlite3.connect(f"file:{db}?mode=ro", uri=True)` 在 WAL 環境下可能失敗；使用直接路徑連線即可。
+
+---
+
 ## L122 — P247F BIG_LOTTO 分析工具遷移至 canonical helper (2026-06-06)
 
 **來源：** P247F Phase 3 analysis tool migration

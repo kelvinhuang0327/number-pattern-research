@@ -1,0 +1,182 @@
+{
+  "schema_version": "1.0",
+  "task_id": "P247G",
+  "classification": "CANONICAL_ISOLATION_FINAL_GUARD",
+  "p247f_merged_state_verified": true,
+  "db_path": "/Users/kelvin/Kelvin-WorkSpace/LotteryNew/lottery_api/data/lottery_v2.db",
+  "read_only_confirmed": true,
+  "view_name": "draws_big_lotto_canonical_main",
+  "view_row_count": 2113,
+  "helper_row_count": 2113,
+  "raw_big_lotto_count": 22238,
+  "add_on_count": 19100,
+  "db_integrity": "ok",
+  "annotation_table_exists": false,
+  "db_precheck_all_correct": true,
+  "active_paths_verified": {
+    "all_ok": true,
+    "path_count": 15,
+    "results": [
+      {
+        "path": "tools/quick_predict.py",
+        "classification": "ALREADY_HELPER_CANONICAL",
+        "has_expected_pattern": true,
+        "has_raw_big_lotto": false,
+        "status": "OK"
+      },
+      {
+        "path": "tools/rsm_bootstrap.py",
+        "classification": "ALREADY_HELPER_CANONICAL",
+        "has_expected_pattern": true,
+        "has_raw_big_lotto": false,
+        "status": "OK"
+      },
+      {
+        "path": "lottery_api/backtest_framework.py",
+        "classification": "ALREADY_HELPER_CANONICAL",
+        "has_expected_pattern": true,
+        "has_raw_big_lotto": false,
+        "status": "OK"
+      },
+      {
+        "path": "lottery_api/engine/core_satellite.py",
+        "classification": "ALREADY_HELPER_CANONICAL",
+        "has_expected_pattern": true,
+        "has_raw_big_lotto": false,
+        "status": "OK"
+      },
+      {
+        "path": "lottery_api/engine/drift_detector.py",
+        "classification": "ALREADY_OWN_CANONICAL_FILTER",
+        "has_expected_pattern": true,
+        "has_raw_big_lotto": false,
+        "status": "OK"
+      },
+      {
+        "path": "lottery_api/utils/scheduler.py",
+        "classification": "ALREADY_OWN_CANONICAL_FILTER",
+        "has_expected_pattern": true,
+        "has_raw_big_lotto": false,
+        "status": "OK"
+      },
+      {
+        "path": "tools/analyze_banker_accuracy.py",
+        "classification": "UPDATED_TO_CANONICAL",
+        "has_expected_pattern": true,
+        "has_raw_big_lotto": false,
+        "status": "OK"
+      },
+      {
+        "path": "tools/analyze_banker_plus_kill.py",
+        "classification": "UPDATED_TO_CANONICAL",
+        "has_expected_pattern": true,
+        "has_raw_big_lotto": false,
+        "status": "OK"
+      },
+      {
+        "path": "tools/analyze_biglotto_special.py",
+        "classification": "UPDATED_TO_CANONICAL",
+        "has_expected_pattern": true,
+        "has_raw_big_lotto": false,
+        "status": "OK"
+      },
+      {
+        "path": "tools/analyze_market_temperature.py",
+        "classification": "UPDATED_TO_CANONICAL",
+        "has_expected_pattern": true,
+        "has_raw_big_lotto": false,
+        "status": "OK"
+      },
+      {
+        "path": "tools/analyze_top_n_for_2.py",
+        "classification": "UPDATED_TO_CANONICAL",
+        "has_expected_pattern": true,
+        "has_raw_big_lotto": false,
+        "status": "OK"
+      },
+      {
+        "path": "tools/audit_big_lotto_3bet.py",
+        "classification": "UPDATED_TO_CANONICAL",
+        "has_expected_pattern": true,
+        "has_raw_big_lotto": false,
+        "status": "OK"
+      },
+      {
+        "path": "tools/audit_big_lotto_baseline.py",
+        "classification": "UPDATED_TO_CANONICAL",
+        "has_expected_pattern": true,
+        "has_raw_big_lotto": false,
+        "status": "OK"
+      },
+      {
+        "path": "tools/audit_big_lotto_hyper.py",
+        "classification": "UPDATED_TO_CANONICAL",
+        "has_expected_pattern": true,
+        "has_raw_big_lotto": false,
+        "status": "OK"
+      },
+      {
+        "path": "tools/audit_big_lotto_rigorous.py",
+        "classification": "UPDATED_TO_CANONICAL",
+        "has_expected_pattern": true,
+        "has_raw_big_lotto": false,
+        "status": "OK"
+      }
+    ]
+  },
+  "raw_paths_preserved": {
+    "get_all_draws_exists": true,
+    "get_draws_exists": true,
+    "raw_access_preserved": true
+  },
+  "regression_guard_added": true,
+  "regression_guard_description": "tests/test_p247g_big_lotto_canonical_isolation_final_guard.py scans all 15 active BIG_LOTTO research paths and fails if any contain raw get_all_draws('BIG_LOTTO') calls. Archived/exploratory scripts are documented as deferred and excluded from the guard.",
+  "deferred_archived_paths": [
+    {
+      "path_glob": "lottery_api/backtest_115000*.py",
+      "classification": "DEFERRED_ARCHIVED",
+      "reason": "One-off historical backtest scripts, not in active pipeline"
+    },
+    {
+      "path_glob": "lottery_api/backtest_big_lotto_2025_ensemble.py",
+      "classification": "DEFERRED_ARCHIVED",
+      "reason": "Archived ensemble backtest script"
+    },
+    {
+      "path_glob": "lottery_api/predict_*.py",
+      "classification": "DEFERRED_ARCHIVED",
+      "reason": "Archived one-off predict scripts"
+    },
+    {
+      "path_glob": "lottery_api/compare_*.py",
+      "classification": "DEFERRED_ARCHIVED",
+      "reason": "Historical comparison scripts, not in active pipeline"
+    }
+  ],
+  "p247_arc_summary": {
+    "P247A": "dry-run plan for DB view",
+    "P247B": "CREATE VIEW draws_big_lotto_canonical_main (Type D apply)",
+    "P247C": "post-apply reconciliation + P247A test cleanup",
+    "P247D": "consumer adoption audit (21 paths classified)",
+    "P247E": "get_canonical_draws() updated to use view internally",
+    "P247F": "9 analysis tools migrated to get_canonical_draws()",
+    "P247G": "final verification and regression guard"
+  },
+  "db_write_performed": false,
+  "no_row_insert_update_delete": true,
+  "add_on_records_preserved": true,
+  "forbidden_actions_confirmed": {
+    "DB write": "NOT PERFORMED",
+    "DB migration": "NOT PERFORMED",
+    "CREATE VIEW / CREATE TABLE": "NOT PERFORMED",
+    "DELETE rows": "NOT PERFORMED",
+    "UPDATE rows": "NOT PERFORMED",
+    "INSERT rows": "NOT PERFORMED",
+    "strategy logic change": "NOT PERFORMED",
+    "frontend/API display behavior change": "NOT PERFORMED",
+    "registry mutation": "NOT PERFORMED",
+    "production recommendation change": "NOT PERFORMED"
+  },
+  "recommended_next_task": "P247 arc is complete. Remaining work is DEFERRED: (1) archived scripts in lottery_api/ — migrate if/when reactivated; (2) annotation table draw_row_family_annotations — requires separate Type D.",
+  "final_decision": "P247G final guard complete. P247 arc (A→F) fully verified. View: 2113 canonical rows. Helper: 2113. Raw: 22238 preserved. Add-on: 19100 raw-accessible. 15 active research paths verified canonical. Raw display paths preserved. Regression guard test added. No DB write. No row mutation."
+}

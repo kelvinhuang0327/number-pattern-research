@@ -1,0 +1,149 @@
+{
+  "schema_version": "1.0",
+  "task_id": "P252C",
+  "classification": "BASELINE_CALCULATOR_SSOT_IMPLEMENTED",
+  "generated_at": "2026-06-07T16:02:09.349351",
+  "p252b_dependency_verified": {
+    "found": true,
+    "path": "outputs/research/p252b_unified_external_method_coverage_audit_20260607.json",
+    "m4_status": "CONFIRMED_PARTIAL",
+    "m4_priority": "P0",
+    "p252b_task_id": "P252B",
+    "p252b_classification": "UNIFIED_EXTERNAL_METHOD_COVERAGE_AUDIT"
+  },
+  "implemented_module": "lottery_api/utils/baseline_calculator.py",
+  "implemented_functions": [
+    {
+      "name": "combination_count",
+      "signature": "(pool_size, pick_count) -> int",
+      "description": "C(pool_size, pick_count) via math.comb — number of ways to choose k from n",
+      "note": "Replaces ad-hoc factorial calculations scattered across scripts"
+    },
+    {
+      "name": "single_ticket_probability",
+      "signature": "(pool_size, pick_count, match_threshold=3) -> float",
+      "description": "P(≥ match_threshold matches) for one ticket — hypergeometric model",
+      "note": "Analytically exact; confirms 1.86% BIG_LOTTO, 3.87% POWER_LOTTO, 1.00% DAILY_539"
+    },
+    {
+      "name": "n_ticket_probability",
+      "signature": "(pool_size, pick_count, n_tickets, match_threshold=3) -> float",
+      "description": "P(at least one of N tickets hits) = 1 - (1-p_single)^N",
+      "note": "Correct N-bet formula; L14 bug used per-ticket rate — this function is the fix"
+    },
+    {
+      "name": "expected_hits",
+      "signature": "(n_trials, probability) -> float",
+      "description": "Expected hit count = n_trials × probability",
+      "note": "Pure arithmetic; used to sanity-check backtest result plausibility"
+    },
+    {
+      "name": "baseline_hit_rate",
+      "signature": "(n_hits, n_trials) -> float",
+      "description": "Observed hit rate = n_hits / n_trials with bounds checking",
+      "note": "Validates inputs; replaces unchecked division in multiple scripts"
+    },
+    {
+      "name": "validate_lottery_config",
+      "signature": "(pool_size, pick_count, n_tickets=1, match_threshold=3) -> dict",
+      "description": "Validate config parameters; returns {valid, errors, warnings}",
+      "note": "Never raises — structured error return; call before any baseline computation"
+    },
+    {
+      "name": "random_baseline_summary",
+      "signature": "(pool_size, pick_count, n_tickets, n_trials, ...) -> dict",
+      "description": "Canonical structured baseline summary with no_edge_claim=True",
+      "note": "SSOT output schema; includes observed_hits comparison when provided"
+    }
+  ],
+  "module_safety": {
+    "exists": true,
+    "forbidden_imports_found": [],
+    "safe": true
+  },
+  "exercise_results": {
+    "combination_count_49_6": 13983816,
+    "combination_count_38_6": 2760681,
+    "combination_count_39_5": 575757,
+    "p_single_BIG_LOTTO": 0.018638,
+    "p_single_POWER_LOTTO": 0.038698,
+    "p_single_DAILY_539": 0.010041,
+    "reference_check_BIG_LOTTO_ok": true,
+    "reference_check_POWER_LOTTO_ok": true,
+    "reference_check_DAILY_539_ok": true,
+    "p_4ticket_BIG_LOTTO": 0.072492,
+    "formula_check_ok": true,
+    "expected_hits_1500_BIG": 27.96,
+    "baseline_hit_rate_28_1500": 0.018667,
+    "validate_ok_valid": true,
+    "validate_ok_errors": [],
+    "validate_bad_valid": false,
+    "validate_bad_has_errors": true,
+    "summary_schema_version": "1.0",
+    "summary_no_edge_claim": true,
+    "summary_no_betting_advice": true,
+    "summary_baseline_hit_rate": 0.07249181,
+    "summary_has_assumptions": true,
+    "summary_has_limitations": true,
+    "determinism_ok": true,
+    "known_configs": [
+      "BIG_LOTTO",
+      "POWER_LOTTO",
+      "DAILY_539",
+      "3_STAR",
+      "4_STAR"
+    ]
+  },
+  "baseline_schema": {
+    "required_fields": [
+      "schema_version",
+      "baseline_type",
+      "lottery_type",
+      "pool_size",
+      "pick_count",
+      "n_tickets",
+      "match_threshold",
+      "trials",
+      "single_ticket_probability",
+      "n_ticket_probability",
+      "expected_hits",
+      "baseline_hit_rate",
+      "assumptions",
+      "limitations",
+      "no_edge_claim",
+      "no_betting_advice",
+      "warnings"
+    ],
+    "optional_fields": [
+      "observed_hits",
+      "observed_hit_rate",
+      "edge_vs_baseline"
+    ],
+    "no_edge_claim_always_true": true,
+    "no_betting_advice_always_true": true
+  },
+  "known_lottery_configs": [
+    "BIG_LOTTO",
+    "POWER_LOTTO",
+    "DAILY_539",
+    "3_STAR",
+    "4_STAR"
+  ],
+  "reference_value_checks": {
+    "BIG_LOTTO_ok": true,
+    "POWER_LOTTO_ok": true,
+    "DAILY_539_ok": true,
+    "formula_4ticket_ok": true,
+    "determinism_ok": true
+  },
+  "l14_fix_confirmed": {
+    "description": "L14 bug: per-ticket baseline used instead of N-ticket formula. n_ticket_probability() implements correct 1-(1-p)^N. validate_lottery_config() rejects invalid configs before computation.",
+    "correct_formula": "P(N tickets) = 1 - (1 - P(1 ticket))^N",
+    "fix_location": "lottery_api/utils/baseline_calculator.py::n_ticket_probability"
+  },
+  "no_db_write_confirmed": true,
+  "no_registry_mutation_confirmed": true,
+  "no_strategy_promotion_confirmed": true,
+  "no_betting_advice_confirmed": true,
+  "final_decision": "P252C complete. baseline_calculator.py SSOT implemented at lottery_api/utils/baseline_calculator.py. 7 pure-Python functions cover M4 null baseline gap from P252B. Reference values verified: BIG_LOTTO 1.86%, POWER_LOTTO 3.87%, DAILY_539 1.00%. L14 N-bet fix confirmed in n_ticket_probability(). No DB write. No registry mutation. No strategy promotion. No betting advice. Recommended next: P252D — implement M5 permutation_test.py SSOT (P0 priority)."
+}

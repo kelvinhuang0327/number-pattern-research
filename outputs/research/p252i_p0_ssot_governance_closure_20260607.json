@@ -1,0 +1,222 @@
+{
+  "schema_version": "1.0",
+  "task_id": "P252I",
+  "classification": "P0_EXTERNAL_METHOD_SSOT_GOVERNANCE_CLOSURE_COMPLETE",
+  "generated_at": "2026-06-07T18:26:04.275521",
+  "phase0_summary": {
+    "branch": "p252i-p0-ssot-governance-closure (from main b66b170)",
+    "dirty_items": "backend.pid, frontend.pid, claude-code-showcase, data/lottery_v2.db — all tolerated",
+    "stop_triggered": false
+  },
+  "verified_artifacts": [
+    {
+      "task_id": "P252B",
+      "pr": "PR #343",
+      "artifact_found": true,
+      "classification_match": true,
+      "expected_classification": "UNIFIED_EXTERNAL_METHOD_COVERAGE_AUDIT",
+      "actual_classification": "UNIFIED_EXTERNAL_METHOD_COVERAGE_AUDIT",
+      "description": "Audited 8 external methods; identified M3/M4/M5/M6 as P0"
+    },
+    {
+      "task_id": "P252C",
+      "pr": "PR #344",
+      "artifact_found": true,
+      "classification_match": true,
+      "expected_classification": "BASELINE_CALCULATOR_SSOT_IMPLEMENTED",
+      "actual_classification": "BASELINE_CALCULATOR_SSOT_IMPLEMENTED",
+      "description": "baseline_calculator.py — L14 fix, N-ticket probability, per-lottery reference values"
+    },
+    {
+      "task_id": "P252D",
+      "pr": "PR #346",
+      "artifact_found": true,
+      "classification_match": true,
+      "expected_classification": "CORRECTION_GATE_SSOT_IMPLEMENTED",
+      "actual_classification": "CORRECTION_GATE_SSOT_IMPLEMENTED",
+      "description": "correction_gate.py — Bonferroni + BH-FDR, family gate, no_edge_claim"
+    },
+    {
+      "task_id": "P252E",
+      "pr": "PR #347",
+      "artifact_found": true,
+      "classification_match": true,
+      "expected_classification": "PERMUTATION_TEST_SSOT_IMPLEMENTED",
+      "actual_classification": "PERMUTATION_TEST_SSOT_IMPLEMENTED",
+      "description": "permutation_test.py — Phipson-Smyth plus-one, L96 warning, greater/less/two-sided"
+    },
+    {
+      "task_id": "P252F",
+      "pr": "PR #348",
+      "artifact_found": true,
+      "classification_match": true,
+      "expected_classification": "ROLLING_WINDOW_STATISTICS_SSOT_IMPLEMENTED",
+      "actual_classification": "ROLLING_WINDOW_STATISTICS_SSOT_IMPLEMENTED",
+      "description": "rolling_window.py — P221F_WINDOWS + RSM_WINDOWS constants, tail/forward slices"
+    },
+    {
+      "task_id": "P252G",
+      "pr": "PR #349",
+      "artifact_found": true,
+      "classification_match": true,
+      "expected_classification": "P0_EXTERNAL_METHOD_SSOT_ADOPTION_AUDIT",
+      "actual_classification": "P0_EXTERNAL_METHOD_SSOT_ADOPTION_AUDIT",
+      "description": "Adoption audit: 24 findings, 6 active duplicates, 9 historical, 4 deferred"
+    },
+    {
+      "task_id": "P252H",
+      "pr": "PR #350",
+      "artifact_found": true,
+      "classification_match": true,
+      "expected_classification": "P0_SSOT_ADOPTION_MIGRATION_COMPLETE",
+      "actual_classification": "P0_SSOT_ADOPTION_MIGRATION_COMPLETE",
+      "description": "1 exact import (RSM), 5 governance comment annotations; no behavior change"
+    }
+  ],
+  "all_artifacts_ok": true,
+  "verified_modules": [
+    {
+      "method_id": "M4",
+      "module": "lottery_api/utils/baseline_calculator.py",
+      "task": "P252C",
+      "exists": true,
+      "safe_no_db": true,
+      "key_functions": [
+        "combination_count",
+        "single_ticket_probability",
+        "n_ticket_probability",
+        "random_baseline_summary"
+      ]
+    },
+    {
+      "method_id": "M6",
+      "module": "lottery_api/utils/correction_gate.py",
+      "task": "P252D",
+      "exists": true,
+      "safe_no_db": true,
+      "key_functions": [
+        "bonferroni_correction",
+        "benjamini_hochberg_fdr",
+        "correction_gate_summary"
+      ]
+    },
+    {
+      "method_id": "M5",
+      "module": "lottery_api/utils/permutation_test.py",
+      "task": "P252E",
+      "exists": true,
+      "safe_no_db": true,
+      "key_functions": [
+        "empirical_p_value",
+        "permutation_summary",
+        "deterministic_shuffle"
+      ]
+    },
+    {
+      "method_id": "M3",
+      "module": "lottery_api/utils/rolling_window.py",
+      "task": "P252F",
+      "exists": true,
+      "safe_no_db": true,
+      "key_functions": [
+        "rolling_slices",
+        "tail_window",
+        "rolling_summary",
+        "P221F_WINDOWS",
+        "RSM_WINDOWS"
+      ]
+    }
+  ],
+  "all_modules_ok": true,
+  "p252h_migration_confirmed": {
+    "found": true,
+    "classification": "P0_SSOT_ADOPTION_MIGRATION_COMPLETE",
+    "files_changed": [
+      "lottery_api/engine/rolling_strategy_monitor.py",
+      "analysis/p219_external_method_diagnostic_sweep.py",
+      "scripts/p214c_3star_4star_straight_play_bonferroni_diagnostic_scan.py",
+      "scripts/p227c_star_box_play_dryrun_scan.py",
+      "scripts/p211r_short_mid_window_diagnostic.py",
+      "lottery_api/utils/benchmark_framework.py"
+    ],
+    "exact_import_count": 1,
+    "comment_only_count": 5,
+    "all_6_findings_addressed": true,
+    "no_behavior_changes": true,
+    "all_verifications_pass": true
+  },
+  "completed_p0_methods": [
+    {
+      "method_id": "M3",
+      "name": "Rolling Window Statistics",
+      "module": "lottery_api/utils/rolling_window.py",
+      "task": "P252F"
+    },
+    {
+      "method_id": "M4",
+      "name": "Null Simulation / Random Baseline",
+      "module": "lottery_api/utils/baseline_calculator.py",
+      "task": "P252C"
+    },
+    {
+      "method_id": "M5",
+      "name": "Permutation Test",
+      "module": "lottery_api/utils/permutation_test.py",
+      "task": "P252E"
+    },
+    {
+      "method_id": "M6",
+      "name": "Multiple Testing Correction",
+      "module": "lottery_api/utils/correction_gate.py",
+      "task": "P252D"
+    }
+  ],
+  "remaining_deferred_items": [
+    {
+      "item": "tools/ exploratory scripts (50+ files)",
+      "category": "ARCHIVED_OR_EXPLORATORY_DEFER",
+      "rationale": "Not in active research arcs; migration not blocked",
+      "trigger": "Reactivation of an exploratory tool for new research"
+    },
+    {
+      "item": "lottery_api/tools/backtest_2025_*.py (4 files)",
+      "category": "ARCHIVED_OR_EXPLORATORY_DEFER",
+      "rationale": "Old 2025 backtest tools; not in production path",
+      "trigger": "Reactivation for new backtest research"
+    },
+    {
+      "item": "scripts/p238b_nist_randomness_audit_artifact_build.py",
+      "category": "HISTORICAL_ARTIFACT_DO_NOT_EDIT",
+      "rationale": "Completed task (P238B). Frozen.",
+      "trigger": "NEVER — freeze permanently"
+    },
+    {
+      "item": "analysis/power_lotto/p161-p176_*.py (4 files)",
+      "category": "HISTORICAL_ARTIFACT_DO_NOT_EDIT",
+      "rationale": "zen-gates era historical research artifacts. Frozen.",
+      "trigger": "NEVER — freeze permanently"
+    },
+    {
+      "item": "lottery_api/utils/benchmark_framework.py _get_random_baseline()",
+      "category": "ADVISORY_COMMENT_ADDED",
+      "rationale": "MC simulation ≠ analytical formula; different tools. Comment added in P252H.",
+      "trigger": "Full migration if benchmark_framework is refactored for new research"
+    }
+  ],
+  "future_trigger_conditions": [
+    "Any new research arc that uses baseline/correction/permutation/rolling logic must import from the SSOT modules (P252C-F) rather than reimplementing locally.",
+    "If tools/ exploratory scripts are reactivated for a new research task, the activated script should import SSOT modules before going to review.",
+    "If benchmark_framework.py is refactored, _get_random_baseline() should be replaced by baseline_calculator.n_ticket_probability() in the refactored version.",
+    "Any P0 method (M3/M4/M5/M6) research task must include a tests/test_p252{x}_*.py that verifies imports from the SSOT rather than local reimplementation."
+  ],
+  "governance_updates": {
+    "active_task_updated": false,
+    "current_state_updated": false,
+    "roadmap_updated": false
+  },
+  "no_db_write_confirmed": true,
+  "no_registry_mutation_confirmed": true,
+  "no_strategy_promotion_confirmed": true,
+  "no_betting_advice_confirmed": true,
+  "final_decision": "P252I complete. P0 External Method SSOT arc (P252B-H) is fully closed. All four P0 SSOT modules verified: baseline_calculator (M4), correction_gate (M6), permutation_test (M5), rolling_window (M3). P252H addressed all 6 P252G active duplicate findings (1 exact import, 5 governance comments). Remaining deferred: archived/exploratory scripts (not in active research). No deployable prediction edge. No betting advice. No strategy promotion. System returns to WAITING_FOR_USER_AUTHORIZATION. Recommended next: HOLD or new user-authorized research task."
+}

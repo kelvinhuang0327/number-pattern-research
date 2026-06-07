@@ -2,6 +2,9 @@
 
 > **STATUS: `WAITING_FOR_USER_AUTHORIZATION`**
 > P251E evidence dashboard API runtime smoke + governance closure complete. The read-only `GET /api/replay/evidence-dashboard` route is mounted on the live app, returns the published P251B artifact under the P251C contract path, and remains artifact-backed with no DB query/write, registry mutation, strategy promotion, UI work, or betting advice. Governance docs now close the P251A–P251E dashboard API arc.
+
+> **Previous (P252I): `P0_EXTERNAL_METHOD_SSOT_GOVERNANCE_CLOSURE_COMPLETE`** — P252B-H P0 SSOT arc closed. Four SSOT modules verified. P252H adoption migration complete. Deferred items documented. No DB write. No strategy promotion. WAITING_FOR_USER_AUTHORIZATION.
+
 > Final Classification: `EVIDENCE_DASHBOARD_API_RUNTIME_SMOKE_GOVERNANCE_CLOSURE`
 > P246K canonical NIST audit: `RANDOMNESS_AUDIT_GREEN_RANDOM_COMPATIBLE` — does not authorize any new prediction/strategy direction.
 > P238B NIST audit (raw population): superseded for canonical gating by P246K GREEN; raw-population YELLOW remains OBSERVATION_ONLY.

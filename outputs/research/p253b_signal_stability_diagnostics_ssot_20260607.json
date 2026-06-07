@@ -1,0 +1,143 @@
+{
+  "schema_version": "1.0",
+  "task_id": "P253B",
+  "classification": "SIGNAL_STABILITY_DIAGNOSTICS_SSOT_IMPLEMENTED",
+  "generated_at": "2026-06-07T20:53:13.236547",
+  "p253a_dependency_verified": {
+    "found": true,
+    "path": "outputs/research/p253a_p1_external_method_readiness_triage_20260607.json",
+    "task_id": "P253A",
+    "classification": "P1_EXTERNAL_METHOD_READINESS_TRIAGE_COMPLETE",
+    "classification_match": true
+  },
+  "p252f_dependency_verified": {
+    "found": true,
+    "path": "outputs/research/p252f_rolling_window_statistics_ssot_20260607.json",
+    "task_id": "P252F",
+    "classification": "ROLLING_WINDOW_STATISTICS_SSOT_IMPLEMENTED",
+    "classification_match": true
+  },
+  "implemented_module": "lottery_api/utils/stability_diagnostics.py",
+  "implemented_constants": [
+    "STABILITY_DIMENSIONS — vocabulary: block=era=year, subset_exclusion, rolling_window",
+    "STABILITY_STATUS — STABLE/MIXED/UNSTABLE/UNDERPOWERED/UNKNOWN",
+    "DEFAULT_STABILITY_THRESHOLDS — stable_min_score=0.70, mixed_min_score=0.40, min_windows=2",
+    "MODULE_VERSION = '1.0'",
+    "SCHEMA_VERSION = '1.0'"
+  ],
+  "implemented_functions": [
+    {
+      "name": "validate_stability_inputs",
+      "signature": "(window_results, min_windows=2, min_count=1) -> dict",
+      "description": "Validate sequence; returns {valid, errors, warnings, n_windows, underpowered}",
+      "note": "Never raises; UNDERPOWERED flagged when n_windows < min_windows"
+    },
+    {
+      "name": "classify_stability",
+      "signature": "(values, threshold=None, higher_is_better=True, min_windows=2) -> tuple[str, float]",
+      "description": "score = 1-(range/(|mean|+ε)); STABLE≥0.70, MIXED≥0.40, else UNSTABLE",
+      "note": "Research-layer labels; distinct from DriftDetector STABLE/WARNING/CRITICAL"
+    },
+    {
+      "name": "block_stability",
+      "signature": "(block_results, metric_key, threshold=None, family_label=None, ...) -> dict",
+      "description": "Per-block stability with full schema including no_edge_claim=True",
+      "note": "block = era = year (synonyms). Accepts list of dicts with metric_key."
+    },
+    {
+      "name": "subset_exclusion_stability",
+      "signature": "(full_result, subset_results, metric_key, tolerance=None, ...) -> dict",
+      "description": "Leave-one-out robustness: robust_fraction = n_robust/n_total",
+      "note": "Default tolerance = max(0.5%, 5% of |full_result|); robust_fraction≥0.8=STABLE"
+    },
+    {
+      "name": "stability_summary",
+      "signature": "(results, dimension, metric_key, family_label=None, ...) -> dict",
+      "description": "Canonical SSOT output: accepts values or dicts; no_edge_claim=True",
+      "note": "Primary entry point; works with rolling_window.py (P252F) slice output"
+    }
+  ],
+  "module_safety": {
+    "exists": true,
+    "forbidden_imports_found": [],
+    "safe": true
+  },
+  "exercise_results": {
+    "has_block": true,
+    "has_era": true,
+    "has_year": true,
+    "has_subset_exclusion": true,
+    "has_rolling_window": true,
+    "stable_threshold": 0.7,
+    "mixed_threshold": 0.4,
+    "validate_ok": true,
+    "validate_underpowered": true,
+    "classify_stable_status": "STABLE",
+    "classify_stable_score": 0.893333,
+    "classify_stable_is_stable": true,
+    "classify_unstable_status": "UNSTABLE",
+    "classify_unstable_is_not_stable": true,
+    "classify_underpowered": true,
+    "block_stability_status": "STABLE",
+    "block_stability_no_edge_claim": true,
+    "block_stability_schema_version": "1.0",
+    "block_stability_dimension": "block",
+    "block_stability_underpowered": false,
+    "block_stability_has_synonyms": true,
+    "subset_stable_status": "STABLE",
+    "subset_stable_no_edge_claim": true,
+    "subset_stable_is_stable": true,
+    "subset_unstable_not_stable": true,
+    "summary_no_edge_claim": true,
+    "summary_schema_version": "1.0",
+    "summary_diagnostic_type": "signal_stability_diagnostics",
+    "summary_status": "STABLE",
+    "determinism_ok": true,
+    "summary_dict_input_ok": true
+  },
+  "stability_schema": {
+    "required_fields": [
+      "schema_version",
+      "diagnostic_type",
+      "family_label",
+      "dimension",
+      "metric_key",
+      "status",
+      "threshold",
+      "min_windows",
+      "window_count",
+      "underpowered",
+      "values",
+      "value_min",
+      "value_max",
+      "value_range",
+      "value_mean",
+      "stability_score",
+      "no_edge_claim",
+      "no_betting_advice",
+      "assumptions",
+      "limitations"
+    ],
+    "no_edge_claim_always_true": true,
+    "no_betting_advice_always_true": true,
+    "vocabulary_alignment": "block = era = year (P252B M7 synonyms confirmed)",
+    "status_labels": [
+      "STABLE",
+      "MIXED",
+      "UNSTABLE",
+      "UNDERPOWERED",
+      "UNKNOWN"
+    ]
+  },
+  "supersession_notes": {
+    "p230b1_era_label": "P230B1 uses 'era' informally — stability_summary(dimension='era') is the SSOT",
+    "p231b_block_stability": "P231B uses manual block split — block_stability() is the SSOT",
+    "p114_temporal_stability": "P114 temporal audit — completed historical artifact; SSOT for new tasks",
+    "drift_detector_labels": "DriftDetector uses STABLE/WARNING/CRITICAL for PSI. This module uses STABLE/MIXED/UNSTABLE for research — intentionally different."
+  },
+  "no_db_write_confirmed": true,
+  "no_registry_mutation_confirmed": true,
+  "no_strategy_promotion_confirmed": true,
+  "no_betting_advice_confirmed": true,
+  "final_decision": "P253B complete. stability_diagnostics.py SSOT implemented at lottery_api/utils/stability_diagnostics.py. Vocabulary gap closed: block=era=year, robustness=subset_exclusion. 5 pure-Python functions + constants cover M7 signal stability gap. No DB write. No registry mutation. No strategy promotion. No betting advice. Recommended next: P253C — M1 Historical Draw Parser inventory (Type B read-only)."
+}

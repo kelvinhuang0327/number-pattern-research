@@ -1,0 +1,141 @@
+{
+  "schema_version": "1.0",
+  "task_id": "P252E",
+  "classification": "PERMUTATION_TEST_SSOT_IMPLEMENTED",
+  "generated_at": "2026-06-07T16:30:17.413049",
+  "p252b_dependency_verified": {
+    "found": true,
+    "path": "outputs/research/p252b_unified_external_method_coverage_audit_20260607.json",
+    "task_id": "P252B",
+    "classification": "UNIFIED_EXTERNAL_METHOD_COVERAGE_AUDIT",
+    "m_id_priority": "P0"
+  },
+  "p252c_dependency_verified": {
+    "found": true,
+    "path": "outputs/research/p252c_baseline_calculator_ssot_20260607.json",
+    "task_id": "P252C",
+    "classification": "BASELINE_CALCULATOR_SSOT_IMPLEMENTED",
+    "m_id_priority": null
+  },
+  "p252d_dependency_verified": {
+    "found": true,
+    "path": "outputs/research/p252d_correction_gate_ssot_20260607.json",
+    "task_id": "P252D",
+    "classification": "CORRECTION_GATE_SSOT_IMPLEMENTED",
+    "m_id_priority": null
+  },
+  "implemented_module": "lottery_api/utils/permutation_test.py",
+  "implemented_functions": [
+    {
+      "name": "validate_permutation_inputs",
+      "signature": "(observed_statistic, null_distribution, alternative) -> dict",
+      "description": "Validate inputs; returns {valid, errors, n_null}; never raises",
+      "note": "Required gate: checks finite observed, non-empty null, known alternative"
+    },
+    {
+      "name": "empirical_p_value",
+      "signature": "(observed, null_distribution, alternative='greater', plus_one=True) -> float",
+      "description": "Empirical p = (1 + count_extreme) / (B + 1) — Phipson-Smyth formula",
+      "note": "Exact formula from p219 (reference); plus_one=True prevents p=0; L96 bug absent"
+    },
+    {
+      "name": "compare_observed_to_null",
+      "signature": "(observed_statistic, null_distribution) -> dict",
+      "description": "Compute null_min/max/mean/std/median and obs_percentile for audit",
+      "note": "Pure stdlib (statistics module); useful for reporting without correction gate"
+    },
+    {
+      "name": "permutation_summary",
+      "signature": "(observed, null_distribution, alternative='greater', plus_one=True, seed=None, family_label=None) -> dict",
+      "description": "Canonical SSOT output dict with no_edge_claim=True",
+      "note": "Primary entry point; always emits L96 warning in limitations"
+    },
+    {
+      "name": "deterministic_shuffle",
+      "signature": "(values, seed) -> list",
+      "description": "Return seeded-shuffled copy of values for reproducible null generation",
+      "note": "Does not generate null distribution itself — caller drives MC loop"
+    }
+  ],
+  "module_safety": {
+    "exists": true,
+    "forbidden_imports_found": [],
+    "safe": true
+  },
+  "exercise_results": {
+    "validate_ok": true,
+    "validate_empty_invalid": true,
+    "validate_bad_alt_invalid": true,
+    "validate_nan_obs_invalid": true,
+    "p_greater_expected": 0.5,
+    "p_greater_correct": true,
+    "p_most_extreme": 0.16666667,
+    "p_most_extreme_not_zero": true,
+    "p_most_extreme_correct": true,
+    "p_least_extreme": 1.0,
+    "p_least_extreme_is_1": true,
+    "p_less_expected": 0.66666667,
+    "p_less_correct": true,
+    "p_two_sided": 1.0,
+    "p_two_sided_capped": true,
+    "p_no_plus_one_can_be_zero": true,
+    "compare_null_count": 5,
+    "compare_null_min": 0.01,
+    "compare_null_max": 0.05,
+    "compare_obs_percentile": 60.0,
+    "compare_obs_above_mean": true,
+    "summary_no_edge_claim": true,
+    "summary_no_betting_advice": true,
+    "summary_schema_version": "1.0",
+    "summary_test_type": "permutation_test",
+    "summary_has_l96_warning": true,
+    "summary_seed_recorded": true,
+    "summary_family_label": "P252E_TEST",
+    "determinism_ok": true,
+    "shuffle_deterministic": true,
+    "shuffle_different_seed": true,
+    "shuffle_preserves_set": true,
+    "shuffle_original_unchanged": true
+  },
+  "permutation_schema": {
+    "required_fields": [
+      "schema_version",
+      "test_type",
+      "family_label",
+      "alternative",
+      "observed_statistic",
+      "null_count",
+      "null_min",
+      "null_max",
+      "null_mean",
+      "null_std",
+      "null_median",
+      "obs_percentile",
+      "empirical_p_value",
+      "plus_one_correction",
+      "seed",
+      "no_edge_claim",
+      "no_betting_advice",
+      "assumptions",
+      "limitations"
+    ],
+    "no_edge_claim_always_true": true,
+    "no_betting_advice_always_true": true,
+    "l96_warning_in_limitations": true
+  },
+  "l96_fix_documented": {
+    "description": "L96 bug: shuffling binary hit-labels preserves their mean, making the null distribution overlap the observed → p always ≈ 1.0. Fix: use Binomial(1, baseline_i) MC draws for the null, not label shuffle. This module does not generate null distributions — it receives a pre-generated one. The L96 warning is surfaced in every summary's limitations field.",
+    "l96_warning_field": "limitations[0]",
+    "correct_null_generation": "Binomial MC draws or seeded random permutation of draw sequences"
+  },
+  "supersession_notes": {
+    "p219_empirical_p": "empirical_p() in analysis/p219_external_method_diagnostic_sweep.py — identical formula, structured output and L96 warning added",
+    "p227c_block_stability": "block_stability() in p227c — different concept; not superseded here",
+    "special3_binomial": "binomial_permutation_test() in special3 uses scipy.stats — that is an analytical test, not MC permutation; different tool"
+  },
+  "no_db_write_confirmed": true,
+  "no_registry_mutation_confirmed": true,
+  "no_strategy_promotion_confirmed": true,
+  "no_betting_advice_confirmed": true,
+  "final_decision": "P252E complete. permutation_test.py SSOT implemented at lottery_api/utils/permutation_test.py. 5 pure-Python functions cover M5 permutation test gap from P252B. Phipson-Smyth plus-one formula verified: p_most_extreme = 1/6 (not 0). L96 warning embedded in every summary output. No DB write. No registry mutation. No strategy promotion. No betting advice. Recommended next: P252F — implement M7 signal stability diagnostics SSOT (P1)."
+}

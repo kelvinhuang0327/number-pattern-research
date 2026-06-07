@@ -1,0 +1,494 @@
+{
+  "schema_version": "1.0",
+  "task_id": "P252G",
+  "classification": "P0_EXTERNAL_METHOD_SSOT_ADOPTION_AUDIT",
+  "generated_at": "2026-06-07T16:53:58.933654",
+  "phase0_summary": {
+    "branch": "p252g-p0-external-method-ssot-adoption-audit",
+    "head": "6e25d60e39e8f8d87b7a4b6ceb8d01c45341f2a8",
+    "origin_main": "6e25d60e39e8f8d87b7a4b6ceb8d01c45341f2a8",
+    "head_eq_origin_main": true,
+    "dirty_items": "backend.pid, frontend.pid, claude-code-showcase, data/lottery_v2.db — all tolerated"
+  },
+  "ssot_modules_verified": [
+    {
+      "module_id": "M4",
+      "task": "P252C",
+      "module_path": "lottery_api/utils/baseline_calculator.py",
+      "module_exists": true,
+      "module_safe_no_db": true,
+      "import_lines": [
+        "from lottery_api.utils.baseline_calculator import (",
+        "from __future__ import annotations",
+        "import math",
+        "from typing import Optional"
+      ],
+      "artifact_path": "outputs/research/p252c_baseline_calculator_ssot_20260607.json",
+      "artifact_classification": "BASELINE_CALCULATOR_SSOT_IMPLEMENTED",
+      "expected_classification": "BASELINE_CALCULATOR_SSOT_IMPLEMENTED",
+      "classification_match": true,
+      "description": "N-bet baseline: 1-(1-p)^N; L14 fix; per-lottery reference values"
+    },
+    {
+      "module_id": "M6",
+      "task": "P252D",
+      "module_path": "lottery_api/utils/correction_gate.py",
+      "module_exists": true,
+      "module_safe_no_db": true,
+      "import_lines": [
+        "from lottery_api.utils.correction_gate import (",
+        "from __future__ import annotations",
+        "import math",
+        "from typing import Optional, Sequence"
+      ],
+      "artifact_path": "outputs/research/p252d_correction_gate_ssot_20260607.json",
+      "artifact_classification": "CORRECTION_GATE_SSOT_IMPLEMENTED",
+      "expected_classification": "CORRECTION_GATE_SSOT_IMPLEMENTED",
+      "classification_match": true,
+      "description": "Bonferroni + BH-FDR; family-size declaration; mandatory gate"
+    },
+    {
+      "module_id": "M5",
+      "task": "P252E",
+      "module_path": "lottery_api/utils/permutation_test.py",
+      "module_exists": true,
+      "module_safe_no_db": true,
+      "import_lines": [
+        "from lottery_api.utils.permutation_test import (",
+        "from __future__ import annotations",
+        "import math",
+        "import random",
+        "import statistics",
+        "from typing import Optional, Sequence"
+      ],
+      "artifact_path": "outputs/research/p252e_permutation_test_ssot_20260607.json",
+      "artifact_classification": "PERMUTATION_TEST_SSOT_IMPLEMENTED",
+      "expected_classification": "PERMUTATION_TEST_SSOT_IMPLEMENTED",
+      "classification_match": true,
+      "description": "Phipson-Smyth plus-one; L96 warning; greater/less/two-sided"
+    },
+    {
+      "module_id": "M3",
+      "task": "P252F",
+      "module_path": "lottery_api/utils/rolling_window.py",
+      "module_exists": true,
+      "module_safe_no_db": true,
+      "import_lines": [
+        "from lottery_api.utils.rolling_window import (",
+        "from __future__ import annotations",
+        "import math",
+        "import statistics",
+        "from typing import Any, Callable, Optional, Sequence"
+      ],
+      "artifact_path": "outputs/research/p252f_rolling_window_statistics_ssot_20260607.json",
+      "artifact_classification": "ROLLING_WINDOW_STATISTICS_SSOT_IMPLEMENTED",
+      "expected_classification": "ROLLING_WINDOW_STATISTICS_SSOT_IMPLEMENTED",
+      "classification_match": true,
+      "description": "P221F frozen windows; RSM constants; tail/forward patterns"
+    }
+  ],
+  "all_ssot_modules_ok": true,
+  "ssot_artifacts_verified": {
+    "P252C": {
+      "path": "outputs/research/p252c_baseline_calculator_ssot_20260607.json",
+      "classification": "BASELINE_CALCULATOR_SSOT_IMPLEMENTED",
+      "match": true
+    },
+    "P252D": {
+      "path": "outputs/research/p252d_correction_gate_ssot_20260607.json",
+      "classification": "CORRECTION_GATE_SSOT_IMPLEMENTED",
+      "match": true
+    },
+    "P252E": {
+      "path": "outputs/research/p252e_permutation_test_ssot_20260607.json",
+      "classification": "PERMUTATION_TEST_SSOT_IMPLEMENTED",
+      "match": true
+    },
+    "P252F": {
+      "path": "outputs/research/p252f_rolling_window_statistics_ssot_20260607.json",
+      "classification": "ROLLING_WINDOW_STATISTICS_SSOT_IMPLEMENTED",
+      "match": true
+    }
+  },
+  "repository_scan_summary": {
+    "total_findings": 24,
+    "already_using_ssot": 5,
+    "active_duplicate_needs_migration": 6,
+    "historical_artifact_do_not_edit": 9,
+    "archived_or_exploratory_defer": 4,
+    "unknown_needs_scope": 0
+  },
+  "adoption_matrix": [
+    {
+      "file": "lottery_api/utils/baseline_calculator.py",
+      "domain": "baseline",
+      "classification": "ALREADY_USING_SSOT",
+      "rationale": "IS the SSOT module (P252C)",
+      "recommended_action": "No action",
+      "priority": "N/A"
+    },
+    {
+      "file": "lottery_api/utils/correction_gate.py",
+      "domain": "correction",
+      "classification": "ALREADY_USING_SSOT",
+      "rationale": "IS the SSOT module (P252D)",
+      "recommended_action": "No action",
+      "priority": "N/A"
+    },
+    {
+      "file": "lottery_api/utils/permutation_test.py",
+      "domain": "permutation",
+      "classification": "ALREADY_USING_SSOT",
+      "rationale": "IS the SSOT module (P252E)",
+      "recommended_action": "No action",
+      "priority": "N/A"
+    },
+    {
+      "file": "lottery_api/utils/rolling_window.py",
+      "domain": "rolling_window",
+      "classification": "ALREADY_USING_SSOT",
+      "rationale": "IS the SSOT module (P252F)",
+      "recommended_action": "No action",
+      "priority": "N/A"
+    },
+    {
+      "file": "scripts/p214c_3star_4star_straight_play_bonferroni_diagnostic_scan.py",
+      "domain": "correction",
+      "classification": "ACTIVE_DUPLICATE_NEEDS_MIGRATION",
+      "rationale": "Has apply_bonferroni() local function; alpha/K manually computed. Research script but referenced in P227C governance.",
+      "recommended_action": "P252H: add import comment pointing to correction_gate.py; do not rewrite — it is a completed task artifact.",
+      "priority": "P1"
+    },
+    {
+      "file": "scripts/p227c_star_box_play_dryrun_scan.py",
+      "domain": "correction+permutation",
+      "classification": "ACTIVE_DUPLICATE_NEEDS_MIGRATION",
+      "rationale": "Has bh_fdr() and block_stability() local functions; both covered by correction_gate.py and rolling_window.py.",
+      "recommended_action": "P252H: add import comment; completed task — do not rewrite.",
+      "priority": "P1"
+    },
+    {
+      "file": "scripts/p211r_short_mid_window_diagnostic.py",
+      "domain": "correction+rolling_window",
+      "classification": "ACTIVE_DUPLICATE_NEEDS_MIGRATION",
+      "rationale": "Bonferroni correction manual; uses P221F windows hardcoded. correction_gate.bonferroni_correction() and P221F_WINDOWS cover both.",
+      "recommended_action": "P252H: add comment block citing SSOT; completed task — do not rewrite.",
+      "priority": "P1"
+    },
+    {
+      "file": "scripts/p238b_nist_randomness_audit_artifact_build.py",
+      "domain": "correction+rolling_window",
+      "classification": "HISTORICAL_ARTIFACT_DO_NOT_EDIT",
+      "rationale": "Completed task (P238B NIST audit). Read-only historical artifact.",
+      "recommended_action": "Freeze. No migration. Add SSOT-reference comment only in a future doc task.",
+      "priority": "P2"
+    },
+    {
+      "file": "analysis/p219_external_method_diagnostic_sweep.py",
+      "domain": "baseline+correction+permutation+rolling_window",
+      "classification": "ACTIVE_DUPLICATE_NEEDS_MIGRATION",
+      "rationale": "Has own empirical_p(), Bonferroni, BH-FDR, rolling window patterns. The canonical multi-method reference implementation, now superseded by SSOT.",
+      "recommended_action": "P252H: add import header block; new research tasks should import SSOT. P219 itself is completed — do not modify body.",
+      "priority": "P0"
+    },
+    {
+      "file": "analysis/p252b_unified_external_method_coverage_audit.py",
+      "domain": "baseline+correction+rolling_window",
+      "classification": "HISTORICAL_ARTIFACT_DO_NOT_EDIT",
+      "rationale": "P252B audit script; documents gaps now closed by P252C-F. Completed artifact.",
+      "recommended_action": "Freeze. No migration needed.",
+      "priority": "P2"
+    },
+    {
+      "file": "lottery_api/engine/rolling_strategy_monitor.py",
+      "domain": "rolling_window",
+      "classification": "ACTIVE_DUPLICATE_NEEDS_MIGRATION",
+      "rationale": "Production RSM uses own WINDOWS dict {short:30, medium:100, long:300}. rolling_window.RSM_WINDOWS now mirrors this. RSM should import constant from SSOT to ensure single source of truth for production thresholds.",
+      "recommended_action": "P252H (Type C): replace RSM WINDOWS dict with import from rolling_window.RSM_WINDOWS. Requires careful review — production code.",
+      "priority": "P0"
+    },
+    {
+      "file": "lottery_api/utils/benchmark_framework.py",
+      "domain": "baseline",
+      "classification": "ACTIVE_DUPLICATE_NEEDS_MIGRATION",
+      "rationale": "_get_random_baseline() uses numpy + MC simulation (not pure formula). n_ticket_probability() in baseline_calculator.py gives deterministic analytic result.",
+      "recommended_action": "P252H: new backtest code should use baseline_calculator. benchmark_framework.py is a production helper — migrate carefully.",
+      "priority": "P1"
+    },
+    {
+      "file": "analysis/power_lotto/p161_effectiveness_baseline.py",
+      "domain": "baseline+correction",
+      "classification": "HISTORICAL_ARTIFACT_DO_NOT_EDIT",
+      "rationale": "zen-gates era research artifact (P161). Completed. Freeze.",
+      "recommended_action": "No action. Historical.",
+      "priority": "P2"
+    },
+    {
+      "file": "analysis/power_lotto/p167_ensemble_voting_research.py",
+      "domain": "correction+rolling_window",
+      "classification": "HISTORICAL_ARTIFACT_DO_NOT_EDIT",
+      "rationale": "zen-gates era research artifact (P167). Completed. Freeze.",
+      "recommended_action": "No action. Historical.",
+      "priority": "P2"
+    },
+    {
+      "file": "analysis/power_lotto/p173_new_strategy_minimal_prototype_read_only.py",
+      "domain": "baseline",
+      "classification": "HISTORICAL_ARTIFACT_DO_NOT_EDIT",
+      "rationale": "zen-gates era read-only prototype. Completed. Freeze.",
+      "recommended_action": "No action. Historical.",
+      "priority": "P2"
+    },
+    {
+      "file": "analysis/power_lotto/p176_advanced_feature_minimal_prototype_read_only.py",
+      "domain": "baseline+correction",
+      "classification": "HISTORICAL_ARTIFACT_DO_NOT_EDIT",
+      "rationale": "zen-gates era read-only prototype. Completed. Freeze.",
+      "recommended_action": "No action. Historical.",
+      "priority": "P2"
+    },
+    {
+      "file": "tools/p3_shuffle_permutation_test.py",
+      "domain": "permutation",
+      "classification": "HISTORICAL_ARTIFACT_DO_NOT_EDIT",
+      "rationale": "The original P3 shuffle permutation test (2026-02). Historical reference; empirical_p formula matches SSOT. Freeze.",
+      "recommended_action": "No action. SSOT now supersedes this as the reference.",
+      "priority": "P2"
+    },
+    {
+      "file": "tools/rgf_walkforward_validator.py",
+      "domain": "rolling_window+permutation",
+      "classification": "ARCHIVED_OR_EXPLORATORY_DEFER",
+      "rationale": "Exploratory walk-forward validator. Has rolling window and empirical-p style logic. Not in active research arcs.",
+      "recommended_action": "Defer. Future research tasks should use SSOT instead.",
+      "priority": "P2"
+    },
+    {
+      "file": "tools/stability_coverage_study.py",
+      "domain": "permutation+rolling_window",
+      "classification": "ARCHIVED_OR_EXPLORATORY_DEFER",
+      "rationale": "Exploratory stability study. Not in active research arcs.",
+      "recommended_action": "Defer. Future research tasks should use SSOT.",
+      "priority": "P2"
+    },
+    {
+      "file": "tools/exhaustive_nbet_benchmark.py",
+      "domain": "baseline",
+      "classification": "ARCHIVED_OR_EXPLORATORY_DEFER",
+      "rationale": "Has `1 - (1 - baseline_1bet) ** num_bets` inline. Old benchmark tool; not in active research arcs.",
+      "recommended_action": "Defer. New benchmark code should use baseline_calculator.",
+      "priority": "P2"
+    },
+    {
+      "file": "scripts/special3_oos_permutation_review.py",
+      "domain": "baseline+permutation",
+      "classification": "HISTORICAL_ARTIFACT_DO_NOT_EDIT",
+      "rationale": "Completed special3 OOS permutation review task. Uses scipy.stats binomial (analytical, not MC permutation). Different scope from permutation_test.py. Freeze.",
+      "recommended_action": "No action. Different tool scope (analytical vs MC empirical).",
+      "priority": "P2"
+    },
+    {
+      "file": "lottery_api/tools/backtest_2025_*.py (4 files)",
+      "domain": "baseline",
+      "classification": "ARCHIVED_OR_EXPLORATORY_DEFER",
+      "rationale": "Old 2025 backtest tools with inline baseline logic. Not in active research.",
+      "recommended_action": "Defer migration. Not in production path.",
+      "priority": "P2"
+    },
+    {
+      "file": "scripts/p214b_3star_4star_straight_play_readonly_diagnostic.py",
+      "domain": "baseline+correction+rolling_window",
+      "classification": "HISTORICAL_ARTIFACT_DO_NOT_EDIT",
+      "rationale": "Completed read-only diagnostic task (P214B). Freeze.",
+      "recommended_action": "No action. Historical.",
+      "priority": "P2"
+    },
+    {
+      "file": "lottery_api/diagnostics/statistical_diagnostics_schema.py",
+      "domain": "correction",
+      "classification": "ALREADY_USING_SSOT",
+      "rationale": "Schema module with CorrectionMethod enum — complements correction_gate.py but does not duplicate formulas. Coexistence is correct.",
+      "recommended_action": "No action. Different layer (schema metadata vs computation).",
+      "priority": "N/A"
+    }
+  ],
+  "active_duplicate_logic": [
+    {
+      "file": "scripts/p214c_3star_4star_straight_play_bonferroni_diagnostic_scan.py",
+      "domain": "correction",
+      "classification": "ACTIVE_DUPLICATE_NEEDS_MIGRATION",
+      "rationale": "Has apply_bonferroni() local function; alpha/K manually computed. Research script but referenced in P227C governance.",
+      "recommended_action": "P252H: add import comment pointing to correction_gate.py; do not rewrite — it is a completed task artifact.",
+      "priority": "P1"
+    },
+    {
+      "file": "scripts/p227c_star_box_play_dryrun_scan.py",
+      "domain": "correction+permutation",
+      "classification": "ACTIVE_DUPLICATE_NEEDS_MIGRATION",
+      "rationale": "Has bh_fdr() and block_stability() local functions; both covered by correction_gate.py and rolling_window.py.",
+      "recommended_action": "P252H: add import comment; completed task — do not rewrite.",
+      "priority": "P1"
+    },
+    {
+      "file": "scripts/p211r_short_mid_window_diagnostic.py",
+      "domain": "correction+rolling_window",
+      "classification": "ACTIVE_DUPLICATE_NEEDS_MIGRATION",
+      "rationale": "Bonferroni correction manual; uses P221F windows hardcoded. correction_gate.bonferroni_correction() and P221F_WINDOWS cover both.",
+      "recommended_action": "P252H: add comment block citing SSOT; completed task — do not rewrite.",
+      "priority": "P1"
+    },
+    {
+      "file": "analysis/p219_external_method_diagnostic_sweep.py",
+      "domain": "baseline+correction+permutation+rolling_window",
+      "classification": "ACTIVE_DUPLICATE_NEEDS_MIGRATION",
+      "rationale": "Has own empirical_p(), Bonferroni, BH-FDR, rolling window patterns. The canonical multi-method reference implementation, now superseded by SSOT.",
+      "recommended_action": "P252H: add import header block; new research tasks should import SSOT. P219 itself is completed — do not modify body.",
+      "priority": "P0"
+    },
+    {
+      "file": "lottery_api/engine/rolling_strategy_monitor.py",
+      "domain": "rolling_window",
+      "classification": "ACTIVE_DUPLICATE_NEEDS_MIGRATION",
+      "rationale": "Production RSM uses own WINDOWS dict {short:30, medium:100, long:300}. rolling_window.RSM_WINDOWS now mirrors this. RSM should import constant from SSOT to ensure single source of truth for production thresholds.",
+      "recommended_action": "P252H (Type C): replace RSM WINDOWS dict with import from rolling_window.RSM_WINDOWS. Requires careful review — production code.",
+      "priority": "P0"
+    },
+    {
+      "file": "lottery_api/utils/benchmark_framework.py",
+      "domain": "baseline",
+      "classification": "ACTIVE_DUPLICATE_NEEDS_MIGRATION",
+      "rationale": "_get_random_baseline() uses numpy + MC simulation (not pure formula). n_ticket_probability() in baseline_calculator.py gives deterministic analytic result.",
+      "recommended_action": "P252H: new backtest code should use baseline_calculator. benchmark_framework.py is a production helper — migrate carefully.",
+      "priority": "P1"
+    }
+  ],
+  "archived_or_deferred_logic": [
+    {
+      "file": "tools/rgf_walkforward_validator.py",
+      "domain": "rolling_window+permutation",
+      "classification": "ARCHIVED_OR_EXPLORATORY_DEFER",
+      "rationale": "Exploratory walk-forward validator. Has rolling window and empirical-p style logic. Not in active research arcs.",
+      "recommended_action": "Defer. Future research tasks should use SSOT instead.",
+      "priority": "P2"
+    },
+    {
+      "file": "tools/stability_coverage_study.py",
+      "domain": "permutation+rolling_window",
+      "classification": "ARCHIVED_OR_EXPLORATORY_DEFER",
+      "rationale": "Exploratory stability study. Not in active research arcs.",
+      "recommended_action": "Defer. Future research tasks should use SSOT.",
+      "priority": "P2"
+    },
+    {
+      "file": "tools/exhaustive_nbet_benchmark.py",
+      "domain": "baseline",
+      "classification": "ARCHIVED_OR_EXPLORATORY_DEFER",
+      "rationale": "Has `1 - (1 - baseline_1bet) ** num_bets` inline. Old benchmark tool; not in active research arcs.",
+      "recommended_action": "Defer. New benchmark code should use baseline_calculator.",
+      "priority": "P2"
+    },
+    {
+      "file": "lottery_api/tools/backtest_2025_*.py (4 files)",
+      "domain": "baseline",
+      "classification": "ARCHIVED_OR_EXPLORATORY_DEFER",
+      "rationale": "Old 2025 backtest tools with inline baseline logic. Not in active research.",
+      "recommended_action": "Defer migration. Not in production path.",
+      "priority": "P2"
+    }
+  ],
+  "historical_artifacts_do_not_edit": [
+    {
+      "file": "scripts/p238b_nist_randomness_audit_artifact_build.py",
+      "domain": "correction+rolling_window",
+      "classification": "HISTORICAL_ARTIFACT_DO_NOT_EDIT",
+      "rationale": "Completed task (P238B NIST audit). Read-only historical artifact.",
+      "recommended_action": "Freeze. No migration. Add SSOT-reference comment only in a future doc task.",
+      "priority": "P2"
+    },
+    {
+      "file": "analysis/p252b_unified_external_method_coverage_audit.py",
+      "domain": "baseline+correction+rolling_window",
+      "classification": "HISTORICAL_ARTIFACT_DO_NOT_EDIT",
+      "rationale": "P252B audit script; documents gaps now closed by P252C-F. Completed artifact.",
+      "recommended_action": "Freeze. No migration needed.",
+      "priority": "P2"
+    },
+    {
+      "file": "analysis/power_lotto/p161_effectiveness_baseline.py",
+      "domain": "baseline+correction",
+      "classification": "HISTORICAL_ARTIFACT_DO_NOT_EDIT",
+      "rationale": "zen-gates era research artifact (P161). Completed. Freeze.",
+      "recommended_action": "No action. Historical.",
+      "priority": "P2"
+    },
+    {
+      "file": "analysis/power_lotto/p167_ensemble_voting_research.py",
+      "domain": "correction+rolling_window",
+      "classification": "HISTORICAL_ARTIFACT_DO_NOT_EDIT",
+      "rationale": "zen-gates era research artifact (P167). Completed. Freeze.",
+      "recommended_action": "No action. Historical.",
+      "priority": "P2"
+    },
+    {
+      "file": "analysis/power_lotto/p173_new_strategy_minimal_prototype_read_only.py",
+      "domain": "baseline",
+      "classification": "HISTORICAL_ARTIFACT_DO_NOT_EDIT",
+      "rationale": "zen-gates era read-only prototype. Completed. Freeze.",
+      "recommended_action": "No action. Historical.",
+      "priority": "P2"
+    },
+    {
+      "file": "analysis/power_lotto/p176_advanced_feature_minimal_prototype_read_only.py",
+      "domain": "baseline+correction",
+      "classification": "HISTORICAL_ARTIFACT_DO_NOT_EDIT",
+      "rationale": "zen-gates era read-only prototype. Completed. Freeze.",
+      "recommended_action": "No action. Historical.",
+      "priority": "P2"
+    },
+    {
+      "file": "tools/p3_shuffle_permutation_test.py",
+      "domain": "permutation",
+      "classification": "HISTORICAL_ARTIFACT_DO_NOT_EDIT",
+      "rationale": "The original P3 shuffle permutation test (2026-02). Historical reference; empirical_p formula matches SSOT. Freeze.",
+      "recommended_action": "No action. SSOT now supersedes this as the reference.",
+      "priority": "P2"
+    },
+    {
+      "file": "scripts/special3_oos_permutation_review.py",
+      "domain": "baseline+permutation",
+      "classification": "HISTORICAL_ARTIFACT_DO_NOT_EDIT",
+      "rationale": "Completed special3 OOS permutation review task. Uses scipy.stats binomial (analytical, not MC permutation). Different scope from permutation_test.py. Freeze.",
+      "recommended_action": "No action. Different tool scope (analytical vs MC empirical).",
+      "priority": "P2"
+    },
+    {
+      "file": "scripts/p214b_3star_4star_straight_play_readonly_diagnostic.py",
+      "domain": "baseline+correction+rolling_window",
+      "classification": "HISTORICAL_ARTIFACT_DO_NOT_EDIT",
+      "rationale": "Completed read-only diagnostic task (P214B). Freeze.",
+      "recommended_action": "No action. Historical.",
+      "priority": "P2"
+    }
+  ],
+  "recommended_next_task": {
+    "task_id": "P252H",
+    "type": "Type C — additive comment/import block, no logic rewrite",
+    "scope": [
+      "lottery_api/engine/rolling_strategy_monitor.py: import RSM_WINDOWS from rolling_window (P0)",
+      "analysis/p219_external_method_diagnostic_sweep.py: add SSOT import header block (P0)",
+      "scripts/p214c, p211r, p227c: add governance comment referencing SSOT modules (P1)"
+    ],
+    "non_scope": [
+      "Do not modify completed task artifacts (P238B, P227C body, P214C body, special3)",
+      "Do not migrate tools/ exploratory scripts",
+      "Do not touch DB, registry, production recommendations"
+    ],
+    "priority": "P0 items first (RSM + p219)",
+    "authorization_required": "Explicit 'Authorize P252H SSOT adoption migration' phrase"
+  },
+  "no_db_write_confirmed": true,
+  "no_registry_mutation_confirmed": true,
+  "no_strategy_promotion_confirmed": true,
+  "no_betting_advice_confirmed": true,
+  "final_decision": "P252G audit complete. All four P0 SSOT modules (M3/M4/M5/M6) implemented and verified. 6 active duplicates need migration (2 P0: RSM + p219; 3 P1: completed task artifacts). 9 historical artifacts frozen. 4 deferred. Recommended next: P252H — SSOT adoption migration (additive comment/import blocks, Type C). No DB write. No strategy promotion. No betting advice."
+}

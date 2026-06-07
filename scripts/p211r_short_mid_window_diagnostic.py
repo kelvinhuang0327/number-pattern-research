@@ -5,6 +5,13 @@ Uses P221F frozen windows (short_150, mid_500, mid_1000) and P242 schema discipl
 Analyzes POWER_LOTTO and DAILY_539 strategy first-zone hit rates.
 No DB write. No production change. No strategy promotion. Read-only artifact only.
 
+P252H SSOT Governance Annotation (2026-06-07):
+This script is a COMPLETED HISTORICAL ARTIFACT. Its Bonferroni and rolling-window logic
+is retained as-is. New research code should use:
+    correction  : from lottery_api.utils.correction_gate import bonferroni_correction
+    rolling_window: from lottery_api.utils.rolling_window import P221F_WINDOWS, rolling_summary
+See P252D (correction_gate) and P252F (rolling_window) SSOT for authoritative implementations.
+
 Pre-registered scope (P244C §3 discipline):
   lotteries: POWER_LOTTO, DAILY_539
   windows: [150, 500, 1000]  (P221F short_150, mid_500, mid_1000)

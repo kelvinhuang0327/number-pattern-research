@@ -2,6 +2,12 @@
 P214C — 3_STAR / 4_STAR Straight-Play Bonferroni-Corrected Diagnostic Scan
 Type C — Read-only diagnostic scan (no DB write, no replay generation, no strategy promotion)
 
+P252H SSOT Governance Annotation (2026-06-07):
+This script is a COMPLETED HISTORICAL ARTIFACT. Its Bonferroni logic is retained as-is.
+New correction code should use:
+    from lottery_api.utils.correction_gate import bonferroni_correction, correction_gate_summary
+See P252D (correction_gate SSOT) for the authoritative implementation.
+
 Runs per-position digit uniformity chi-squared tests for 3_STAR and 4_STAR.
 Applies Bonferroni correction over the full pre-declared family.
 Walk-forward OOS check on any uncorrected-significant finding.

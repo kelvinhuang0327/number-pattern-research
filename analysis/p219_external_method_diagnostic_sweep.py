@@ -15,6 +15,22 @@ Usage:
 """
 from __future__ import annotations
 
+# ── P252H SSOT Governance Annotation (2026-06-07) ───────────────────────────
+# This script (P219) is a COMPLETED HISTORICAL ARTIFACT. Its statistical logic
+# is retained as-is. New research tasks should import from the SSOT modules:
+#   baseline     : from lottery_api.utils.baseline_calculator import (
+#                      single_ticket_probability, n_ticket_probability,
+#                      random_baseline_summary)
+#   correction   : from lottery_api.utils.correction_gate import (
+#                      bonferroni_correction, benjamini_hochberg_fdr,
+#                      correction_gate_summary)
+#   permutation  : from lottery_api.utils.permutation_test import (
+#                      empirical_p_value, permutation_summary)
+#   rolling_window: from lottery_api.utils.rolling_window import (
+#                      P221F_WINDOWS, rolling_summary, tail_window)
+# See P252C / P252D / P252E / P252F for SSOT implementations.
+# ────────────────────────────────────────────────────────────────────────────
+
 import argparse
 import json
 import math

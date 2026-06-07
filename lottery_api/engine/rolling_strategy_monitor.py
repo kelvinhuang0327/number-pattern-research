@@ -28,6 +28,14 @@ from typing import List, Dict, Optional, Callable, Tuple
 import logging
 logger = logging.getLogger(__name__)
 
+# P252H SSOT adoption (2026-06-07): RSM_WINDOWS imported from rolling_window SSOT.
+# rolling_window.RSM_WINDOWS = {'short': 30, 'medium': 100, 'long': 300} — exact match.
+# See: lottery_api/utils/rolling_window.py (P252F)
+try:
+    from lottery_api.utils.rolling_window import RSM_WINDOWS as _RSM_WINDOWS_SSOT
+except ImportError:
+    _RSM_WINDOWS_SSOT = None  # fallback: local dict remains in MultiWindowAnalyzer
+
 
 # ============================================================
 # BASELINES
@@ -264,7 +272,9 @@ class MultiWindowAnalyzer:
     同時計算 30/100/300 期三窗口的 M3+ 成績
     """
 
-    WINDOWS = {
+    # P252H: use SSOT constant if available, else fall back to local dict.
+    # Values are identical: {'short': 30, 'medium': 100, 'long': 300}.
+    WINDOWS = dict(_RSM_WINDOWS_SSOT) if _RSM_WINDOWS_SSOT is not None else {
         'short': 30,
         'medium': 100,
         'long': 300,

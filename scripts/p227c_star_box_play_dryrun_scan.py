@@ -4,6 +4,14 @@ scripts/p227c_star_box_play_dryrun_scan.py
 ==========================================
 P227C — 3_STAR / 4_STAR Box-Play Dry-Run Scan with Power Gate
 
+P252H SSOT Governance Annotation (2026-06-07):
+This script is a COMPLETED HISTORICAL ARTIFACT. Its bh_fdr() and block_stability()
+local functions are retained as-is. New research code should use:
+    correction: from lottery_api.utils.correction_gate import (
+                    bonferroni_correction, benjamini_hochberg_fdr, correction_gate_summary)
+    permutation: from lottery_api.utils.permutation_test import empirical_p_value
+See P252D (correction_gate) and P252E (permutation_test) SSOT for authoritative implementations.
+
 READ-ONLY.  This script:
   - reads draw data from the local SQLite DB
   - evaluates pre-registered box-play feature families

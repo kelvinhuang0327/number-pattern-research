@@ -1,0 +1,336 @@
+{
+  "schema_version": "1.0",
+  "task_id": "P253D",
+  "classification": "HISTORICAL_DRAW_PARSER_INVENTORY_COMPLETE",
+  "generated_at": "2026-06-07T21:11:55.595755",
+  "phase0_summary": {
+    "repo": "/Users/kelvin/Kelvin-WorkSpace/LotteryNew",
+    "status": "VERIFIED — main, HEAD aligned, P253C/P253B/P253A/P252I visible"
+  },
+  "p253a_dependency_verified": {
+    "found": true,
+    "path": "outputs/research/p253a_p1_external_method_readiness_triage_20260607.json",
+    "classification": "P1_EXTERNAL_METHOD_READINESS_TRIAGE_COMPLETE",
+    "classification_match": true,
+    "m1_readiness_status": "NEEDS_READONLY_INVENTORY"
+  },
+  "parser_inventory": [
+    {
+      "path": "lottery_api/routes/ingest.py",
+      "classification": "ACTIVE_PARSER",
+      "lottery_types": [
+        "BIG_LOTTO",
+        "POWER_LOTTO",
+        "DAILY_539"
+      ],
+      "description": "Active API router: GET /api/ingest/status, POST /api/ingest/fetch-latest, POST /api/ingest/backfill. Fetches latest draws from official Taiwan Lottery site. Supports dry_run and insert_if_new flags. No positional parsing.",
+      "numbers_positional_support": false,
+      "schema_contract": "ad-hoc (no shared parser SSOT)",
+      "notes": "Production ingest for BIG_LOTTO/POWER_LOTTO/DAILY_539. No unified schema."
+    },
+    {
+      "path": "scripts/p213g_3star_4star_dry_run_source_parser.py",
+      "classification": "OFFICIAL_DRY_RUN_PARSER",
+      "lottery_types": [
+        "3_STAR",
+        "4_STAR"
+      ],
+      "description": "P213G dry-run source parser. Validates Taiwan Lottery TXT format using mock fixtures from debug_validator.py. SOURCE_STATUS=P213G_SOURCE_FORMAT_VALIDATED_WITH_MOCK_ONLY. No production DB write.",
+      "numbers_positional_support": true,
+      "schema_contract": "mock fixtures; format confirmed but real files not used",
+      "notes": "Superseded by P213I (real source). Historical research artifact."
+    },
+    {
+      "path": "scripts/p213i_3star_4star_real_source_dry_run_validation.py",
+      "classification": "OFFICIAL_DRY_RUN_PARSER",
+      "lottery_types": [
+        "3_STAR",
+        "4_STAR"
+      ],
+      "description": "P213I real source dry-run validation. Reads 40 CSV files from 00-Plan/roadmap/number/. Parses positional draw order from 獎號1..N columns. SOURCE_STATUS=REAL_SOURCE_PRESENT_FORMAT_NEEDS_ADAPTATION. Found 11700 source rows; 7101 matched DB, 4599 MISSING_IN_DB. No production DB write.",
+      "numbers_positional_support": true,
+      "schema_contract": "Taiwan Lottery CSV: 獎號1..N columns encode draw order",
+      "notes": "source_has_draw_order_equivalent=True. P213H+P213L completed the backfill (7101 updated, 4599 inserted)."
+    },
+    {
+      "path": "scripts/p213h_3star_4star_controlled_positional_backfill.py",
+      "classification": "CONTROLLED_APPLY_COMPLETE",
+      "lottery_types": [
+        "3_STAR",
+        "4_STAR"
+      ],
+      "description": "P213H controlled positional backfill. mode=apply, rows_updated=7101. Populated numbers_positional for all matched rows. draw_rows_before=draw_rows_after=59762 (no row insertion).",
+      "numbers_positional_support": true,
+      "schema_contract": "Uses p213i source rows; updates existing DB rows only",
+      "notes": "COMPLETED. Production backfill applied. Do not re-run without explicit authorization."
+    },
+    {
+      "path": "scripts/p213l_3star_4star_controlled_missing_row_ingestion.py",
+      "classification": "CONTROLLED_APPLY_COMPLETE",
+      "lottery_types": [
+        "3_STAR",
+        "4_STAR"
+      ],
+      "description": "P213L controlled missing-row ingestion. mode=apply, rows_inserted=4599. Inserted source rows that were MISSING_IN_DB from P213I comparison.",
+      "numbers_positional_support": true,
+      "schema_contract": "Inserts rows with numbers_positional from source CSVs",
+      "notes": "COMPLETED. Together with P213H gives 100% positional coverage."
+    },
+    {
+      "path": "tools/upload_big_lotto_csv.py",
+      "classification": "HISTORICAL_IMPORT_SCRIPT",
+      "lottery_types": [
+        "BIG_LOTTO"
+      ],
+      "description": "Direct CSV import for BIG_LOTTO. Uses legacy DB path (lottery_api/data/lottery.db, not lottery_v2.db). Parses Taiwan Lottery CSV format; no positional support.",
+      "numbers_positional_support": false,
+      "schema_contract": "ad-hoc CSV columns; sorts numbers before insert",
+      "notes": "Uses stale DB path. Historical manual upload tool."
+    },
+    {
+      "path": "tools/upload_daily539_txt.py",
+      "classification": "HISTORICAL_IMPORT_SCRIPT",
+      "lottery_types": [
+        "DAILY_539"
+      ],
+      "description": "Direct TXT import for DAILY_539. Uses legacy DB path. Parses 今彩539 official TXT format; no positional support.",
+      "numbers_positional_support": false,
+      "schema_contract": "ad-hoc TXT parsing; no schema contract",
+      "notes": "Uses stale DB path. Historical manual upload tool."
+    },
+    {
+      "path": "tools/upload_lottery_data.py",
+      "classification": "HISTORICAL_IMPORT_SCRIPT",
+      "lottery_types": [
+        "BIG_LOTTO",
+        "POWER_LOTTO",
+        "DAILY_539"
+      ],
+      "description": "General lottery data upload tool. Ad-hoc format handling.",
+      "numbers_positional_support": false,
+      "schema_contract": "ad-hoc; no schema contract",
+      "notes": "Historical manual tool. No unified schema."
+    },
+    {
+      "path": "scripts/p214b_3star_4star_straight_play_readonly_diagnostic.py",
+      "classification": "ARCHIVED_OR_EXPLORATORY_DEFER",
+      "lottery_types": [
+        "3_STAR",
+        "4_STAR"
+      ],
+      "description": "P214B read-only straight-play diagnostic. Computes position-frequency baselines. power_warnings: 3_STAR exact-match MARGINAL at N=5850 (expected 5.85 hits); 4_STAR exact-match INOPERABLE (expected 0.585 hits). Per-position analysis TRACTABLE.",
+      "numbers_positional_support": true,
+      "schema_contract": "read-only; uses numbers_positional from DB",
+      "notes": "Diagnostic research artifact. Not a parser."
+    },
+    {
+      "path": "scripts/p214c_3star_4star_straight_play_bonferroni_diagnostic_scan.py",
+      "classification": "ARCHIVED_OR_EXPLORATORY_DEFER",
+      "lottery_types": [
+        "3_STAR",
+        "4_STAR"
+      ],
+      "description": "P214C Bonferroni-corrected straight-play diagnostic scan.",
+      "numbers_positional_support": true,
+      "schema_contract": "read-only research scan",
+      "notes": "Research artifact. Not a parser."
+    }
+  ],
+  "parser_inventory_summary": {
+    "total_parser_findings": 10,
+    "by_classification": {
+      "ACTIVE_PARSER": 1,
+      "OFFICIAL_DRY_RUN_PARSER": 2,
+      "CONTROLLED_APPLY_COMPLETE": 2,
+      "HISTORICAL_IMPORT_SCRIPT": 3,
+      "ARCHIVED_OR_EXPLORATORY_DEFER": 2
+    },
+    "lottery_types_in_db": 11,
+    "lottery_types_with_positional": 2
+  },
+  "db_positional_inventory": {
+    "38_LOTTO": {
+      "lottery_type": "38_LOTTO",
+      "draw_rows": 1774,
+      "numbers_positional_non_null": 0,
+      "numbers_positional_null": 1774,
+      "positional_coverage_rate": 0.0,
+      "min_draw": 96000001,
+      "max_draw": 112000104
+    },
+    "39_LOTTO": {
+      "lottery_type": "39_LOTTO",
+      "draw_rows": 4890,
+      "numbers_positional_non_null": 0,
+      "numbers_positional_null": 4890,
+      "positional_coverage_rate": 0.0,
+      "min_draw": 99000001,
+      "max_draw": 115000106
+    },
+    "3_STAR": {
+      "lottery_type": "3_STAR",
+      "draw_rows": 5850,
+      "numbers_positional_non_null": 5850,
+      "numbers_positional_null": 0,
+      "positional_coverage_rate": 100.0,
+      "min_draw": 96000001,
+      "max_draw": 115000106,
+      "positional_differs_from_sorted": 4525,
+      "draw_order_confirmed": true
+    },
+    "49_LOTTO": {
+      "lottery_type": "49_LOTTO",
+      "draw_rows": 2130,
+      "numbers_positional_non_null": 0,
+      "numbers_positional_null": 2130,
+      "positional_coverage_rate": 0.0,
+      "min_draw": 96000001,
+      "max_draw": 115000048
+    },
+    "4_STAR": {
+      "lottery_type": "4_STAR",
+      "draw_rows": 5850,
+      "numbers_positional_non_null": 5850,
+      "numbers_positional_null": 0,
+      "positional_coverage_rate": 100.0,
+      "min_draw": 96000001,
+      "max_draw": 115000106,
+      "positional_differs_from_sorted": 5427,
+      "draw_order_confirmed": true
+    },
+    "BIG_LOTTO": {
+      "lottery_type": "BIG_LOTTO",
+      "draw_rows": 22238,
+      "numbers_positional_non_null": 0,
+      "numbers_positional_null": 22238,
+      "positional_coverage_rate": 0.0,
+      "min_draw": 20090727,
+      "max_draw": 115000058
+    },
+    "BIG_LOTTO_BONUS": {
+      "lottery_type": "BIG_LOTTO_BONUS",
+      "draw_rows": 11941,
+      "numbers_positional_non_null": 0,
+      "numbers_positional_null": 11941,
+      "positional_coverage_rate": 0.0,
+      "min_draw": 113000011,
+      "max_draw": 115000032
+    },
+    "DAILY_539": {
+      "lottery_type": "DAILY_539",
+      "draw_rows": 5879,
+      "numbers_positional_non_null": 0,
+      "numbers_positional_null": 5879,
+      "positional_coverage_rate": 0.0,
+      "min_draw": 96000001,
+      "max_draw": 115000135
+    },
+    "DOUBLE_WIN": {
+      "lottery_type": "DOUBLE_WIN",
+      "draw_rows": 1782,
+      "numbers_positional_non_null": 0,
+      "numbers_positional_null": 1782,
+      "positional_coverage_rate": 0.0,
+      "min_draw": 107000001,
+      "max_draw": 112000312
+    },
+    "LOTTO_6_38": {
+      "lottery_type": "LOTTO_6_38",
+      "draw_rows": 111,
+      "numbers_positional_non_null": 0,
+      "numbers_positional_null": 111,
+      "positional_coverage_rate": 0.0,
+      "min_draw": 96000001,
+      "max_draw": 97000006
+    },
+    "POWER_LOTTO": {
+      "lottery_type": "POWER_LOTTO",
+      "draw_rows": 1916,
+      "numbers_positional_non_null": 0,
+      "numbers_positional_null": 1916,
+      "positional_coverage_rate": 0.0,
+      "min_draw": 97000001,
+      "max_draw": 115000044
+    }
+  },
+  "star_lottery_positional_status": {
+    "3_STAR": {
+      "lottery_type": "3_STAR",
+      "positional_status": "COMPLETE",
+      "draw_rows": 5850,
+      "numbers_positional_coverage": "100.0%",
+      "draw_order_preserved": true,
+      "rows_where_order_differs_from_sorted": 4525,
+      "source_format": "Taiwan Lottery CSV — 獎號1..N columns encode positional draw order",
+      "source_files_found": 40,
+      "source_verification_task": "P213I (real_source_files_found=True, 40 CSV files)",
+      "backfill_task": "P213H (7101 rows updated) + P213L (4599 rows inserted)",
+      "straight_play_usable": true
+    },
+    "4_STAR": {
+      "lottery_type": "4_STAR",
+      "positional_status": "COMPLETE",
+      "draw_rows": 5850,
+      "numbers_positional_coverage": "100.0%",
+      "draw_order_preserved": true,
+      "rows_where_order_differs_from_sorted": 5427,
+      "source_format": "Taiwan Lottery CSV — 獎號1..N columns encode positional draw order",
+      "source_files_found": 40,
+      "source_verification_task": "P213I (real_source_files_found=True, 40 CSV files)",
+      "backfill_task": "P213H (7101 rows updated) + P213L (4599 rows inserted)",
+      "straight_play_usable": true
+    },
+    "power_caveats": {
+      "3_STAR_exact_match": "At N=5850, expected exact-match hits under random = 5.85 (P214B). Bonferroni-corrected threshold (~60 hypotheses) requires ~14 hits. Exact-match power is MARGINAL — do not overclaim.",
+      "4_STAR_exact_match": "At N=5850, expected exact hits = 0.585 (P214B). 4_STAR exact-match cannot distinguish null from any moderate signal. Exact-match is INOPERABLE. Per-position analysis is TRACTABLE."
+    }
+  },
+  "straight_play_storage_caveat": {
+    "title": "Sorted storage loses draw order for straight-play analysis",
+    "description": "The `numbers` column stores draw digits in sorted ascending order for all lottery types. This is correct for pool-draw games (BIG_LOTTO, POWER_LOTTO, DAILY_539) where draw order is not meaningful. For 3_STAR and 4_STAR straight-play analysis, sorted storage loses the original positional draw order. The `numbers_positional` column preserves this order and is now 100% populated for 3_STAR/4_STAR.",
+    "affected_lottery_types": [
+      "3_STAR",
+      "4_STAR"
+    ],
+    "unaffected_lottery_types": [
+      "BIG_LOTTO",
+      "POWER_LOTTO",
+      "DAILY_539",
+      "38_LOTTO",
+      "39_LOTTO",
+      "49_LOTTO",
+      "DOUBLE_WIN",
+      "BIG_LOTTO_BONUS"
+    ],
+    "resolution": "Any straight-play or positional-frequency analysis for 3_STAR/4_STAR must use `numbers_positional`, not `numbers`. A future parser SSOT must enforce this contract.",
+    "ssot_requirement": "Future unified parser module must: (1) always populate `numbers` as sorted canonical; (2) populate `numbers_positional` as draw-order list for 3_STAR/4_STAR; (3) leave `numbers_positional` NULL for pool-draw games (not applicable)."
+  },
+  "future_parser_ssot_readiness": {
+    "decision": "READY_FOR_NEXT_TASK",
+    "rationale": "3_STAR and 4_STAR positional data is COMPLETE (100% coverage, draw order preserved). Source format is understood (40 CSV files, 獎號1..N columns, P213I). BIG_LOTTO/POWER_LOTTO/DAILY_539 use ad-hoc scripts without shared schema contract. The M1 gap is now clearly a unified parser SSOT module, not data recovery. No blocked prerequisites remain.",
+    "what_ssot_task_should_do": [
+      "Define ParsedDraw dataclass: draw_id, date, lottery_type, numbers (sorted), numbers_positional (draw-order for 3_STAR/4_STAR, None otherwise), special",
+      "Implement parse_taiwan_lottery_csv(path, lottery_type) -> List[ParsedDraw]",
+      "Implement parse_taiwan_lottery_txt(path, lottery_type) -> List[ParsedDraw]",
+      "Implement parse_ingest_api_response(data, lottery_type) -> ParsedDraw",
+      "Enforce: numbers always sorted; numbers_positional set for 3_STAR/4_STAR only",
+      "Pure stdlib only; no DB connection inside module",
+      "Schema contract: positional=None for pool-draw games (BIG_LOTTO etc.)"
+    ],
+    "risk_level": "LOW",
+    "type": "Type C (small additive, no DB schema change needed)",
+    "blocked_by": "NONE"
+  },
+  "recommended_next_task": {
+    "task_id": "P253E",
+    "title": "Implement Historical Draw Parser SSOT module (M1, Type C)",
+    "rationale": "M1 gap is now fully inventoried. 3_STAR/4_STAR positional complete. Source format understood. BIG_LOTTO/POWER_LOTTO/DAILY_539 schema contract missing. Type C implementation: ParsedDraw + per-format parse functions. Pure stdlib, no DB write, no strategy changes.",
+    "authorization_phrase": "Authorize P253E M1 historical draw parser SSOT",
+    "alternative": "HOLD — if parser standardization is not an immediate priority"
+  },
+  "no_db_write_confirmed": true,
+  "no_registry_mutation_confirmed": true,
+  "no_strategy_promotion_confirmed": true,
+  "no_betting_advice_confirmed": true,
+  "final_decision": "P253D complete. M1 parser inventory finished. 3_STAR/4_STAR: 100% positional coverage, draw order preserved in numbers_positional. BIG_LOTTO/POWER_LOTTO/DAILY_539: 0% positional (not needed — pool draw). Straight-play analysis must use numbers_positional, not numbers. Future parser SSOT: READY_FOR_NEXT_TASK (Type C, LOW risk). Edge-search conclusion unchanged: NO deployable prediction edge. GREEN randomness does not imply predictive edge. No betting advice."
+}

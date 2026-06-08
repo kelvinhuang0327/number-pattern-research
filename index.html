@@ -585,6 +585,10 @@
                     <i data-lucide="shield-check" class="icon"></i>
                     <span>CTO 審核報告</span>
                 </button>
+                <button class="nav-btn" data-section="p257-overview">
+                    <i data-lucide="bar-chart-2" class="icon"></i>
+                    <span>最佳策略總覽</span>
+                </button>
             </nav>
         </div>
     </header>
@@ -2719,6 +2723,82 @@
                     </div>
                 </section>
 
+        <!-- ===== P257B Best Strategy Overview Section ===== -->
+        <section id="p257-overview-section" class="section">
+          <div class="section-header">
+            <h2>最佳策略總覽 <span style="font-size:0.7em;color:#8b949e;font-weight:400">Best Strategy Overview</span></h2>
+            <p>歷史回測統計 — 不代表未來中獎機率，僅供歷史資料參考</p>
+          </div>
+          <div class="section-content">
+
+            <!-- Warning Banner -->
+            <div id="p257-warning-banner" style="background:rgba(187,128,9,.12);border:1px solid #e3b341;border-radius:6px;padding:10px 14px;margin-bottom:16px;font-size:12px;color:#e3b341;line-height:1.6">
+              <b>⚠️ 歷史回測聲明</b><br>
+              本頁為歷史回測統計，不代表未來中獎機率。最佳策略依歷史資料排序，可能存在過度擬合。目前沒有任何策略被證明具有可部署預測優勢。本頁僅供歷史資料參考，不作下注依據。歷史最高命中僅代表回測資料中的命中數紀錄，未必等同實際獎級或獎金。
+            </div>
+
+            <!-- Lottery Tabs -->
+            <div id="p257-lottery-tabs" style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:18px">
+              <button class="p257-tab-btn btn-sm btn-secondary active" data-lottery="BIG_LOTTO">大樂透</button>
+              <button class="p257-tab-btn btn-sm btn-secondary" data-lottery="DAILY_539">今彩539</button>
+              <button class="p257-tab-btn btn-sm btn-secondary" data-lottery="POWER_LOTTO">威力彩</button>
+              <button class="p257-tab-btn btn-sm btn-secondary" data-lottery="3_STAR">3星彩</button>
+              <button class="p257-tab-btn btn-sm btn-secondary" data-lottery="4_STAR">4星彩</button>
+            </div>
+
+            <!-- Summary Cards -->
+            <div id="p257-summary-cards" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:12px;margin-bottom:20px"></div>
+
+            <!-- Best N-bet Table -->
+            <div class="card" style="padding:14px;margin-bottom:18px">
+              <div style="font-weight:700;margin-bottom:10px;font-size:0.9rem">最佳 N 注組合 <span id="p257-lottery-label" style="color:#58a6ff;font-size:0.8em"></span></div>
+              <div style="overflow-x:auto">
+                <table id="p257-nbet-table" style="width:100%;border-collapse:collapse;font-size:0.82rem">
+                  <thead>
+                    <tr style="border-bottom:1px solid #30363d;color:#8b949e">
+                      <th style="text-align:left;padding:6px 8px">組合</th>
+                      <th style="text-align:left;padding:6px 8px">最佳策略</th>
+                      <th style="text-align:right;padding:6px 8px">回測期數</th>
+                      <th style="text-align:right;padding:6px 8px">組合成功率</th>
+                      <th style="text-align:right;padding:6px 8px">平均最佳命中</th>
+                      <th style="text-align:right;padding:6px 8px">平均總命中</th>
+                      <th style="text-align:right;padding:6px 8px">單注最高命中</th>
+                      <th style="text-align:right;padding:6px 8px">組合最高總命中</th>
+                      <th style="text-align:right;padding:6px 8px">最高命中期別</th>
+                      <th style="text-align:left;padding:6px 8px">證據標籤</th>
+                    </tr>
+                  </thead>
+                  <tbody id="p257-nbet-tbody"></tbody>
+                </table>
+              </div>
+            </div>
+
+            <!-- Historical High-Hit Events -->
+            <div class="card" style="padding:14px">
+              <div style="font-weight:700;margin-bottom:10px;font-size:0.9rem">歷史最高命中紀錄 <span style="font-size:0.75em;color:#8b949e">historical_high_hit_event — 未必等同獎級或獎金</span></div>
+              <div style="overflow-x:auto">
+                <table id="p257-hhe-table" style="width:100%;border-collapse:collapse;font-size:0.78rem">
+                  <thead>
+                    <tr style="border-bottom:1px solid #30363d;color:#8b949e">
+                      <th style="text-align:left;padding:5px 8px">期別</th>
+                      <th style="text-align:left;padding:5px 8px">組合</th>
+                      <th style="text-align:left;padding:5px 8px">注序</th>
+                      <th style="text-align:left;padding:5px 8px">策略</th>
+                      <th style="text-align:right;padding:5px 8px">單注命中</th>
+                      <th style="text-align:right;padding:5px 8px">組合總命中</th>
+                      <th style="text-align:left;padding:5px 8px">備註</th>
+                    </tr>
+                  </thead>
+                  <tbody id="p257-hhe-tbody"></tbody>
+                </table>
+              </div>
+            </div>
+
+            <div id="p257-status" style="margin-top:10px;font-size:12px;color:#8b949e"></div>
+          </div>
+        </section>
+        <!-- ===== END P257B ===== -->
+
         </div>
         </main>
 
@@ -4078,6 +4158,175 @@
   }
 
   bsoInit();
+})();
+
+// ===== P257B BEST STRATEGY OVERVIEW (historical replay, artifact-backed) =====
+(function() {
+  'use strict';
+
+  var _p257Data = null;
+  var _p257Lottery = 'BIG_LOTTO';
+
+  var LOTTERY_LABELS = {
+    BIG_LOTTO: '大樂透', DAILY_539: '今彩539',
+    POWER_LOTTO: '威力彩', '3_STAR': '3星彩', '4_STAR': '4星彩'
+  };
+  var BET_LABELS = ['', '最佳 1 注', '最佳 2 注', '最佳 3 注', '最佳 4 注', '最佳 5 注'];
+  var NO_DATA_LOTTERIES = ['3_STAR', '4_STAR'];
+
+  function fmt(v, digits) {
+    if (v == null) return '—';
+    if (typeof v === 'number') return digits != null ? v.toFixed(digits) : v;
+    return v;
+  }
+  function pct(v) { return v != null ? (v * 100).toFixed(1) + '%' : '—'; }
+
+  function setStatus(msg) {
+    var el = document.getElementById('p257-status');
+    if (el) el.textContent = msg;
+  }
+
+  function renderSummaryCards(lottery) {
+    var container = document.getElementById('p257-summary-cards');
+    if (!container) return;
+    if (NO_DATA_LOTTERIES.indexOf(lottery) !== -1) {
+      container.innerHTML = '<div style="color:#8b949e;font-size:13px">此彩種目前沒有可用回測資料。</div>';
+      return;
+    }
+    if (!_p257Data) return;
+    var best = _p257Data.best_strategy_by_lottery_and_bet_count || {};
+    var entry1 = best[lottery + '|1'];
+    var cards = [
+      { label: '歷史最佳策略', value: entry1 ? entry1.strategy_id : '—' },
+      { label: '最高組合成功率', value: entry1 ? pct(entry1.portfolio_success_rate) : '—' },
+      { label: '平均單期最佳命中', value: entry1 ? fmt(entry1.avg_best_hit_count_per_draw, 3) : '—' },
+      { label: '平均單期總命中', value: entry1 ? fmt(entry1.avg_total_hit_count_per_draw, 3) : '—' },
+      { label: '歷史最高命中', value: entry1 ? entry1.max_single_bet_hit_count : '—' },
+      { label: '回測期數', value: entry1 ? entry1.distinct_draw_count : '—' },
+    ];
+    container.innerHTML = cards.map(function(c) {
+      return '<div class="card" style="padding:10px 14px;text-align:center">' +
+        '<div style="font-size:10px;color:#8b949e;margin-bottom:4px">' + c.label + '</div>' +
+        '<div style="font-size:1.1rem;font-weight:700;color:#e6edf3">' + c.value + '</div>' +
+        '</div>';
+    }).join('');
+  }
+
+  function renderNbetTable(lottery) {
+    var tbody = document.getElementById('p257-nbet-tbody');
+    var label = document.getElementById('p257-lottery-label');
+    if (!tbody) return;
+    if (label) label.textContent = '— ' + (LOTTERY_LABELS[lottery] || lottery);
+    if (NO_DATA_LOTTERIES.indexOf(lottery) !== -1) {
+      tbody.innerHTML = '<tr><td colspan="10" style="padding:12px 8px;color:#8b949e;text-align:center">此彩種目前沒有可用回測資料。</td></tr>';
+      return;
+    }
+    if (!_p257Data) return;
+    var best = _p257Data.best_strategy_by_lottery_and_bet_count || {};
+    var rows = '';
+    for (var n = 1; n <= 5; n++) {
+      var b = best[lottery + '|' + n];
+      if (b) {
+        rows += '<tr style="border-bottom:1px solid #21262d">' +
+          '<td style="padding:6px 8px;font-weight:600;color:#58a6ff">' + BET_LABELS[n] + '</td>' +
+          '<td style="padding:6px 8px">' + b.strategy_id + '</td>' +
+          '<td style="padding:6px 8px;text-align:right">' + fmt(b.distinct_draw_count) + '</td>' +
+          '<td style="padding:6px 8px;text-align:right">' + pct(b.portfolio_success_rate) + '</td>' +
+          '<td style="padding:6px 8px;text-align:right">' + fmt(b.avg_best_hit_count_per_draw, 3) + '</td>' +
+          '<td style="padding:6px 8px;text-align:right">' + fmt(b.avg_total_hit_count_per_draw, 3) + '</td>' +
+          '<td style="padding:6px 8px;text-align:right">' + fmt(b.max_single_bet_hit_count) + '</td>' +
+          '<td style="padding:6px 8px;text-align:right">' + fmt(b.max_portfolio_total_hit_count) + '</td>' +
+          '<td style="padding:6px 8px;text-align:right">' + (b.max_hit_draw_issue || '—') + '</td>' +
+          '<td style="padding:6px 8px;font-size:10px;color:#8b949e">歷史回測</td>' +
+          '</tr>';
+      } else {
+        rows += '<tr style="border-bottom:1px solid #21262d">' +
+          '<td style="padding:6px 8px;color:#58a6ff">' + BET_LABELS[n] + '</td>' +
+          '<td colspan="9" style="padding:6px 8px;color:#8b949e">此注數組合目前資料不足。</td>' +
+          '</tr>';
+      }
+    }
+    tbody.innerHTML = rows || '<tr><td colspan="10" style="padding:12px 8px;color:#8b949e;text-align:center">無資料</td></tr>';
+  }
+
+  function renderHheTable(lottery) {
+    var tbody = document.getElementById('p257-hhe-tbody');
+    if (!tbody) return;
+    if (NO_DATA_LOTTERIES.indexOf(lottery) !== -1) {
+      tbody.innerHTML = '<tr><td colspan="7" style="padding:10px 8px;color:#8b949e;text-align:center">此彩種目前沒有可用回測資料。</td></tr>';
+      return;
+    }
+    if (!_p257Data) return;
+    var events = (_p257Data.high_hit_events_by_lottery_and_bet_count || []).filter(function(e) {
+      return e.lottery_type === lottery;
+    });
+    if (!events.length) {
+      tbody.innerHTML = '<tr><td colspan="7" style="padding:10px 8px;color:#8b949e;text-align:center">無高命中記錄。</td></tr>';
+      return;
+    }
+    tbody.innerHTML = events.map(function(e) {
+      return '<tr style="border-bottom:1px solid #21262d">' +
+        '<td style="padding:5px 8px">' + (e.target_draw || '—') + '</td>' +
+        '<td style="padding:5px 8px">' + (e.bet_count ? BET_LABELS[e.bet_count] || e.bet_count + '注' : '—') + '</td>' +
+        '<td style="padding:5px 8px">' + (e.best_single_bet_index != null ? 'bet' + e.best_single_bet_index : '—') + '</td>' +
+        '<td style="padding:5px 8px;font-size:11px">' + (e.strategy_id || '—') + '</td>' +
+        '<td style="padding:5px 8px;text-align:right;color:#3fb950;font-weight:700">' + (e.best_single_hit_count != null ? e.best_single_hit_count : '—') + '</td>' +
+        '<td style="padding:5px 8px;text-align:right">' + (e.portfolio_total_hit_count != null ? e.portfolio_total_hit_count : '—') + '</td>' +
+        '<td style="padding:5px 8px;font-size:10px;color:#8b949e">歷史最高命中；未提供獎級資料</td>' +
+        '</tr>';
+    }).join('');
+  }
+
+  function renderAll(lottery) {
+    renderSummaryCards(lottery);
+    renderNbetTable(lottery);
+    renderHheTable(lottery);
+  }
+
+  function p257Load() {
+    var base = (typeof window !== 'undefined' && window.API_BASE ? String(window.API_BASE) : '').replace(/\/$/, '');
+    var url = base + '/api/replay/best-strategy-overview';
+    setStatus('載入中…');
+    fetch(url)
+      .then(function(r) { return r.json(); })
+      .then(function(data) {
+        _p257Data = data;
+        setStatus('');
+        renderAll(_p257Lottery);
+      })
+      .catch(function(e) {
+        setStatus('載入失敗：' + e.message);
+      });
+  }
+
+  function p257Init() {
+    // Wire tab buttons
+    var tabs = document.querySelectorAll('.p257-tab-btn');
+    tabs.forEach(function(btn) {
+      btn.addEventListener('click', function() {
+        tabs.forEach(function(b) { b.classList.remove('active'); });
+        btn.classList.add('active');
+        _p257Lottery = btn.dataset.lottery;
+        if (_p257Data) {
+          renderAll(_p257Lottery);
+        } else {
+          p257Load();
+        }
+      });
+    });
+
+    // Auto-load when section becomes active
+    var navBtns = document.querySelectorAll('[data-section]');
+    navBtns.forEach(function(btn) {
+      btn.addEventListener('click', function() {
+        if (btn.dataset.section === 'p257-overview' && !_p257Data) {
+          p257Load();
+        }
+      });
+    });
+  }
+
+  p257Init();
 })();
         </script>
 </body>

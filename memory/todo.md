@@ -11,6 +11,14 @@
 
 _（目前無進行中任務）_
 
+### P254A–P254B Fetcher repair + governance closure ✅ 2026-06-08 完成
+- [x] ACCEPT_BACKFILL_DB_DRIFT_2026_0608 (PR #360): P247G constants updated to 22239/2114, acceptance artifacts created, merged
+- [x] P254A fetcher repair (PR #361): 5 modules restored, ADD_ON isdigit fix, 249 tests pass (7 skipped), merged
+- [x] P254B governance closure: JSON+MD artifacts, analysis script, tests, governance doc updates committed, PR merged
+- [x] memory/lessons.md: L_P254_01–L_P254_03 appended
+- No active follow-up unless user requests further ingest UI/monitoring work
+- 完成標準：3 PRs merged；artifacts + tests PASS；governance docs updated；no DB write in P254B；no betting advice
+
 ### P249B roadmap sync + row label 清理 ✅ 2026-06-06 完成
 - [x] Phase 0 驗證：main=f1ba0b8=origin/main，P249A merge 可見，active_task=WAITING_FOR_USER_AUTHORIZATION
 - [x] 繼續 P249B 分支（從前次中斷繼續）

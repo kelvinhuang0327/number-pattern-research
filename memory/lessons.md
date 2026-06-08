@@ -1832,3 +1832,8 @@ T4 promotion (2026-05-05)
 ## P251E evidence dashboard API runtime smoke + governance closure (2026-06-06)
 - The repo-level `.venv` can support a true FastAPI `TestClient` smoke even when system `python3` lacks `fastapi`; verify both so environment gaps do not get misreported as product failures.
 - For governance closeout tasks, keep the dashboard arc explicit end-to-end: contract artifact, dashboard artifact, API payload contract, read-only route, then runtime smoke and governance closure.
+
+## P254A–P254B Fetcher repair + governance closure (2026-06-08)
+- **L_P254_01 — Separate DB baseline acceptance from fetcher code repair.** When a fetcher endpoint is repaired, the first non-dry-run UI call can insert legitimately missing draws before the regression gate runs — silently shifting DB counts. Code repair and DB drift acceptance MUST be separate commits/PRs. Always use `dry_run=true` during regression checks; block non-dry-run calls until gate is complete. If baseline counts change unexpectedly, STOP and classify as `OUT_OF_SCOPE_DB_WRITE`.
+- **L_P254_02 — Stale BIG_LOTTO counts 22238/2113 invalidated 2026-06-08.** Accepted baseline: raw=22,239, canonical=2,114. Any test/artifact referencing 22238 or 2113 as current counts is stale. P247G guard updated in PR #360.
+- **L_P254_03 — ADD_ON draw IDs (hyphenated) must not be passed to int().** Draw IDs like `103000009-01` crash with `ValueError` if passed to `int(draw[-6:])`. Always guard with `draw.isdigit()` before numeric conversion. Fix location: `lottery_api/fetcher/missing_issue_detector._detect_internal_gaps()`.

@@ -786,3 +786,21 @@ FETCHER_REPAIR_GOVERNANCE_CLOSURE_COMPLETE_20260608
 ```text
 INGEST_WRITE_GUARD_RUNTIME_SMOKE_GOVERNANCE_CLOSURE_COMPLETE_20260608
 ```
+
+## P256A Feature-Information MI Null-Framework — CLOSED (2026-06-08)
+
+- **P256A** (PR #367, `eb3915a`): Pre-registered family of 39 MI tests (2 freq-features × 6 P221F windows + 1 lag × 3 lotteries). Monte-Carlo/Binomial null (L96 fix). Zero Bonferroni survivors. `HOLD_NULL_RESULT`. No deployable edge; prediction validity boundary unchanged. 35/35 tests PASS.
+
+```text
+P256A_FEATURE_INFORMATION_MI_NULL_ASSESSMENT_COMPLETE_NULL_RESULT_20260608
+```
+
+## P257A–P257C Best Strategy Overview Arc — CLOSED (2026-06-08)
+
+- **P257A** (PR #368, `e629e46`): Best N-Bet Strategy Overview historical replay data + UI contract. 14 best-strategy entries (BIG_LOTTO N=1–4, DAILY_539 N=1–5, POWER_LOTTO N=1–5). Portfolio metrics, high-hit events, page contract. 31/31 tests PASS. `P257A_BEST_NBET_STRATEGY_OVERVIEW_HISTORICAL_REPLAY_DATA_READY`.
+- **P257B** (PR #369, `8fa354d`): Read-only API `GET /api/replay/best-strategy-overview` + `#p257-overview-section` in index.html. 18+13 tests PASS. `P257B_BEST_STRATEGY_OVERVIEW_READONLY_UI_IMPLEMENTED`.
+- **P257C**: Runtime smoke PASS (39/39). API HTTP 200, artifact-backed. UI nav/section/tabs/labels/empty-states verified. Forbidden wording absent from P257B region. DB 94,924 unchanged. `P257C_BEST_STRATEGY_OVERVIEW_RUNTIME_SMOKE_GOVERNANCE_CLOSEOUT_COMPLETE`.
+
+```text
+P257C_BEST_STRATEGY_OVERVIEW_RUNTIME_SMOKE_GOVERNANCE_CLOSEOUT_COMPLETE_20260608
+```

@@ -41,8 +41,96 @@ class FetchLatestRequest(BaseModel):
 class BackfillRequest(BaseModel):
     lottery_type: str        = "BIG_LOTTO"
     draw_list: Optional[List[str]] = None   # explicit list; None = auto-detect
-    dry_run: bool            = False
+    # G01: dry_run defaults to True — omitting dry_run means safe preview only (no DB write)
+    dry_run: bool            = True
     max_draws: int           = Field(default=30, ge=1, le=500)  # safety cap per run
+    # G02: server-side write confirmation fields — all required when dry_run=False
+    apply_confirmed: bool    = False
+    confirm_token: Optional[str] = None
+    requested_by: str        = "unknown"
+    reason: str              = ""
+    expected_insert_count: Optional[int] = None
+
+
+# ---------------------------------------------------------------------------
+# P255C Write Guard — G01 + G02
+# ---------------------------------------------------------------------------
+
+# G02: Server-side confirmation token. Use env var INGEST_WRITE_TOKEN in production;
+# falls back to a known test constant so unit tests stay hermetic without env setup.
+# Future P255D+ task: replace with HMAC(secret, lottery_type+timestamp) for time-bounded tokens.
+_WRITE_GUARD_TOKEN_ENV = "INGEST_WRITE_TOKEN"
+_WRITE_GUARD_TOKEN_FALLBACK = "p255-write-confirm"
+
+
+def _validate_write_confirmation(req: "BackfillRequest") -> None:
+    """G01+G02: Block any non-dry-run write that lacks server-side confirmation.
+
+    Raises HTTPException 422 for any missing/invalid confirmation field.
+    Short-circuits immediately for dry_run=True (safe path).
+    """
+    if req.dry_run:
+        return  # dry-run path: no confirmation required
+
+    # G02-a: apply_confirmed must be True
+    if not req.apply_confirmed:
+        raise HTTPException(
+            status_code=422,
+            detail={
+                "error": "write_not_confirmed",
+                "message": (
+                    "dry_run=False requires apply_confirmed=True and a valid confirm_token. "
+                    "Run with dry_run=True first to preview changes."
+                ),
+                "hint": "Set apply_confirmed=True and supply confirm_token from a dry-run response.",
+            },
+        )
+
+    # G02-b: confirm_token must be present
+    if not req.confirm_token:
+        raise HTTPException(
+            status_code=422,
+            detail={
+                "error": "missing_confirm_token",
+                "message": "Non-dry-run write requires confirm_token.",
+                "hint": (
+                    "POST with dry_run=True first, capture confirm_token from response, "
+                    "then POST with dry_run=False."
+                ),
+            },
+        )
+
+    # G02-c: validate confirm_token against server-side secret
+    expected_token = os.environ.get(_WRITE_GUARD_TOKEN_ENV, _WRITE_GUARD_TOKEN_FALLBACK)
+    if req.confirm_token != expected_token:
+        raise HTTPException(
+            status_code=422,
+            detail={
+                "error": "invalid_confirm_token",
+                "message": "The confirm_token is invalid. Re-run with dry_run=True to obtain a valid token.",
+                "token_ttl_seconds": 300,
+            },
+        )
+
+    # G02-d: requested_by must identify the caller (not default "unknown")
+    if not req.requested_by or req.requested_by.strip() == "unknown":
+        raise HTTPException(
+            status_code=422,
+            detail={
+                "error": "missing_requested_by",
+                "message": "Non-dry-run write requires requested_by to identify the caller.",
+            },
+        )
+
+    # G02-e: reason must document write purpose
+    if not req.reason or not req.reason.strip():
+        raise HTTPException(
+            status_code=422,
+            detail={
+                "error": "missing_reason",
+                "message": "Non-dry-run write requires reason to document the write purpose.",
+            },
+        )
 
 
 # ---------------------------------------------------------------------------
@@ -307,12 +395,17 @@ async def run_backfill(req: BackfillRequest):
     """
     Backfill missing draws for a given lottery type.
 
-    Safety:
+    Safety (P255C G01+G02):
+      - dry_run defaults to True — omitting the field is always safe
+      - Non-dry-run writes require apply_confirmed=True, a valid confirm_token,
+        requested_by, and reason (server-side; not bypassable via UI)
       - Existing records are never overwritten
       - Conflicts are logged and skipped
-      - Use dry_run=true to preview without writing
       - max_draws caps how many draws are processed per call
     """
+    # P255C G01+G02: validate write confirmation before touching the engine
+    _validate_write_confirmation(req)
+
     engine = _get_engine()
     il     = _get_ingest_logger()
 

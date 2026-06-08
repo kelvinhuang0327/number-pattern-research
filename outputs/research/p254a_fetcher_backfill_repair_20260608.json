@@ -1,0 +1,107 @@
+{
+  "schema_version": "1.0",
+  "task_id": "P254A",
+  "classification": "FETCHER_BACKFILL_REPAIR_COMPLETE",
+  "date": "2026-06-08",
+  "branch": "p254a-fetcher-backfill-repair",
+  "base_branch": "main",
+  "base_commit": "234cc02aee1c5d7a4e7990d3195ad4d987315a70",
+  "prerequisite_pr": "#360 (ACCEPT_BACKFILL_DB_DRIFT_2026_0608 — merged before this task)",
+
+  "problem_description": "lottery_api/fetcher/* was accidentally deleted in commit 7306264. This caused ModuleNotFoundError in lottery_api/routes/ingest.py when importing fetcher modules, which propagated outside FastAPI's exception handler before CORS headers could be added. Frontend showed: 'Origin http://localhost:8081 is not allowed by Access-Control-Allow-Origin' for /api/ingest/log and /api/ingest/backfill (status 500 with no CORS headers).",
+
+  "root_cause": {
+    "deleted_commit": "7306264",
+    "restored_from_commit": "997e07a",
+    "missing_modules": [
+      "lottery_api/fetcher/__init__.py",
+      "lottery_api/fetcher/backfill_engine.py",
+      "lottery_api/fetcher/ingest_logger.py",
+      "lottery_api/fetcher/missing_issue_detector.py",
+      "lottery_api/fetcher/taiwan_lottery_fetcher.py"
+    ]
+  },
+
+  "secondary_fix": {
+    "file": "lottery_api/fetcher/missing_issue_detector.py",
+    "issue": "_detect_internal_gaps() called int(draw[-6:]) on ADD_ON draw IDs like '103000009-01', producing ValueError: invalid literal for int() with base 10: '009-01'",
+    "fix": "Added isdigit() guard in _split() helper — returns None for non-standard formats. Loop skips None pairs. Sort key hardened with try/except.",
+    "code_change": "_split() now: 'if len(draw) < 7 or not draw.isdigit(): return None'"
+  },
+
+  "files_restored": [
+    "lottery_api/fetcher/__init__.py",
+    "lottery_api/fetcher/backfill_engine.py",
+    "lottery_api/fetcher/ingest_logger.py",
+    "lottery_api/fetcher/missing_issue_detector.py",
+    "lottery_api/fetcher/taiwan_lottery_fetcher.py"
+  ],
+
+  "endpoint_verification": {
+    "method": "FastAPI TestClient (.venv python3.9)",
+    "get_ingest_log": {
+      "endpoint": "GET /api/ingest/log?limit=5",
+      "status": 200,
+      "cors_header": "*",
+      "has_entries_key": true,
+      "result": "PASS"
+    },
+    "post_ingest_backfill_dry_run": {
+      "endpoint": "POST /api/ingest/backfill",
+      "body": {"lottery_type": "BIG_LOTTO", "dry_run": true},
+      "status": 200,
+      "cors_header": "*",
+      "success": true,
+      "result": "PASS"
+    },
+    "options_preflight": {
+      "endpoint": "OPTIONS /api/ingest/backfill",
+      "origin": "http://localhost:8081",
+      "status": 200,
+      "allow_origin": "http://localhost:8081",
+      "result": "PASS"
+    },
+    "add_on_crash_test": {
+      "input_draws": ["103000008", "103000009-01", "103000010", "103000011"],
+      "crash": false,
+      "gaps_returned": [],
+      "result": "PASS"
+    }
+  },
+
+  "db_baseline_after_pr360": {
+    "BIG_LOTTO_raw": 22239,
+    "BIG_LOTTO_canonical": 2114,
+    "BIG_LOTTO_add_on": 19100,
+    "POWER_LOTTO_raw": 1917,
+    "DAILY_539_raw": 5882,
+    "strategy_prediction_replays": 94924,
+    "db_integrity": "ok"
+  },
+
+  "regression_tests": {
+    "test_p247g": {"tests": 67, "result": "PASS"},
+    "test_p253d": {"result": "PASS"},
+    "test_p253e": {"result": "PASS"},
+    "test_p253f": {"result": "PASS"},
+    "test_p251d": {"result": "PASS"},
+    "total": 221,
+    "all_pass": true
+  },
+
+  "db_write_in_this_task": false,
+  "no_new_row_insert_update_delete": true,
+  "p247g_constants_unchanged": true,
+  "fetcher_repair_only": true,
+
+  "forbidden_actions_confirmed": {
+    "DB write": "NOT PERFORMED",
+    "P247G constants modified": "NOT PERFORMED",
+    "registry files modified": "NOT PERFORMED",
+    "strategy files modified": "NOT PERFORMED",
+    "replay data modified": "NOT PERFORMED",
+    "frontend/UI modified": "NOT PERFORMED",
+    "API route behavior changed outside fetcher scope": "NOT PERFORMED",
+    "runtime dirty files staged": "NOT PERFORMED"
+  }
+}

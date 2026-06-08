@@ -1,7 +1,13 @@
 # Active Task — Today (2026-06-08)
 
 > **STATUS: `WAITING_FOR_USER_AUTHORIZATION`**
-> P255D ingest write guard runtime smoke + governance closure complete. G01 (dry_run default True) and G02 (server-side confirm token) are live in `lottery_api/routes/ingest.py` and smoke-tested via FastAPI TestClient. All 8 smoke cases pass. DB baseline confirmed: BIG_LOTTO raw=22,239 / canonical=2,114. Deferred: G03–G08 for P255E+. No DB write. No strategy promotion. P255A–P255D ingest safety arc CLOSED.
+> P257C Best Strategy Overview runtime smoke + governance closeout complete. API `GET /api/replay/best-strategy-overview` PASS (HTTP 200, artifact-backed, `historical_replay_only=true`). UI smoke PASS — nav, section, 5 tabs, N-bet labels, empty states verified. 3_STAR/4_STAR render empty state. Forbidden wording absent. DB 94,924 unchanged. 39/39 P257C tests PASS. P257A–P257C arc CLOSED. No DB write. No strategy promotion. WAITING_FOR_USER_AUTHORIZATION.
+
+> **Previous (P257B): `P257B_BEST_STRATEGY_OVERVIEW_READONLY_UI_IMPLEMENTED`** — `GET /api/replay/best-strategy-overview` + `#p257-overview-section` in index.html; PR #369 merged; 18+13 tests PASS.
+> **Previous (P257A): `P257A_BEST_NBET_STRATEGY_OVERVIEW_HISTORICAL_REPLAY_DATA_READY`** — 14 best-strategy entries; portfolio metrics, high-hit events, page contract; PR #368 merged.
+> **Previous (P256A): `P256A_FEATURE_INFORMATION_MI_NULL_ASSESSMENT_COMPLETE_NULL_RESULT`** — 39 MI tests, 0 Bonferroni survivors. Prediction validity boundary unchanged.
+
+> **Previous (P255D): `INGEST_WRITE_GUARD_RUNTIME_SMOKE_GOVERNANCE_CLOSURE_COMPLETE`** — P255D ingest write guard runtime smoke + governance closure complete. G01 (dry_run default True) and G02 (server-side confirm token) are live in `lottery_api/routes/ingest.py` and smoke-tested via FastAPI TestClient. All 8 smoke cases pass. DB baseline confirmed: BIG_LOTTO raw=22,239 / canonical=2,114. Deferred: G03–G08 for P255E+. No DB write. No strategy promotion. P255A–P255D ingest safety arc CLOSED.
 
 > **Previous (P255C): `INGEST_WRITE_GUARD_IMPLEMENTATION_COMPLETE`** — G01+G02 implemented in ingest.py; PR #365 merged; 42 tests pass.
 

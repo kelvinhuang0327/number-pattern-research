@@ -17,8 +17,8 @@ JSON_PATH = OUTPUTS / "p247g_big_lotto_canonical_isolation_final_guard_20260606.
 MD_PATH = OUTPUTS / "p247g_big_lotto_canonical_isolation_final_guard_20260606.md"
 CANONICAL_DB = REPO_ROOT / "lottery_api" / "data" / "lottery_v2.db"
 
-EXPECTED_CANONICAL = 2_113
-EXPECTED_RAW = 22_238
+EXPECTED_CANONICAL = 2_114   # updated: +1 draw 115000059 accepted 2026-06-08
+EXPECTED_RAW = 22_239        # updated: +1 draw 115000059 accepted 2026-06-08
 EXPECTED_ADD_ON = 19_100
 
 # ── Active research/analysis paths: must NOT use raw get_all_draws('BIG_LOTTO') ─
@@ -218,7 +218,7 @@ class TestP247GLiveDB:
         ).fetchone()[0]
         assert cnt == EXPECTED_CANONICAL
 
-    def test_raw_still_22238(self, db_conn):
+    def test_raw_still_22239(self, db_conn):
         cnt = db_conn.execute(
             "SELECT COUNT(*) FROM draws WHERE lottery_type='BIG_LOTTO'"
         ).fetchone()[0]

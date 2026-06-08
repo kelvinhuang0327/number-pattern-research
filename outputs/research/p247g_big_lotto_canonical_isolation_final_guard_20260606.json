@@ -6,9 +6,9 @@
   "db_path": "/Users/kelvin/Kelvin-WorkSpace/LotteryNew/lottery_api/data/lottery_v2.db",
   "read_only_confirmed": true,
   "view_name": "draws_big_lotto_canonical_main",
-  "view_row_count": 2113,
-  "helper_row_count": 2113,
-  "raw_big_lotto_count": 22238,
+  "view_row_count": 2114,
+  "helper_row_count": 2114,
+  "raw_big_lotto_count": 22239,
   "add_on_count": 19100,
   "db_integrity": "ok",
   "annotation_table_exists": false,
@@ -178,5 +178,7 @@
     "production recommendation change": "NOT PERFORMED"
   },
   "recommended_next_task": "P247 arc is complete. Remaining work is DEFERRED: (1) archived scripts in lottery_api/ — migrate if/when reactivated; (2) annotation table draw_row_family_annotations — requires separate Type D.",
-  "final_decision": "P247G final guard complete. P247 arc (A→F) fully verified. View: 2113 canonical rows. Helper: 2113. Raw: 22238 preserved. Add-on: 19100 raw-accessible. 15 active research paths verified canonical. Raw display paths preserved. Regression guard test added. No DB write. No row mutation."
+  "baseline_updated_by": "ACCEPT_BACKFILL_DB_DRIFT_2026_0608",
+  "baseline_update_reason": "Auto-backfill via /api/ingest/backfill (non-dry-run) inserted 5 draws during fetcher-repair regression session 2026-06-08. BIG_LOTTO 115000059 (2026/06/05) was backfilled and accepted as new baseline. Rollback was not chosen. P247G constants updated accordingly. No new DB write in this acceptance task.",
+  "final_decision": "P247G final guard complete. P247 arc (A→F) fully verified. View: 2114 canonical rows. Helper: 2114. Raw: 22239 preserved. Add-on: 19100 raw-accessible. 15 active research paths verified canonical. Raw display paths preserved. Regression guard test added. No DB write. No row mutation. Baseline updated 2026-06-08 by ACCEPT_BACKFILL_DB_DRIFT_2026_0608."
 }

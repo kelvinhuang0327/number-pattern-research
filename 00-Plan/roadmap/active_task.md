@@ -1,6 +1,20 @@
-# Active Task — Today (2026-06-06)
+# Active Task — Today (2026-06-08)
 
 > **STATUS: `WAITING_FOR_USER_AUTHORIZATION`**
+> P255D ingest write guard runtime smoke + governance closure complete. G01 (dry_run default True) and G02 (server-side confirm token) are live in `lottery_api/routes/ingest.py` and smoke-tested via FastAPI TestClient. All 8 smoke cases pass. DB baseline confirmed: BIG_LOTTO raw=22,239 / canonical=2,114. Deferred: G03–G08 for P255E+. No DB write. No strategy promotion. P255A–P255D ingest safety arc CLOSED.
+
+> **Previous (P255C): `INGEST_WRITE_GUARD_IMPLEMENTATION_COMPLETE`** — G01+G02 implemented in ingest.py; PR #365 merged; 42 tests pass.
+
+> **Previous (P255B): `INGEST_WRITE_GUARD_DESIGN_COMPLETE`** — G01–G08 guardrail specifications documented.
+
+> **Previous (P255A): `INGEST_BACKFILL_SAFETY_AUDIT_COMPLETE`** — 5 write-capable paths, 6 auto-trigger risks, 8 guardrails recommended.
+
+> **Previous (P254B): `FETCHER_REPAIR_GOVERNANCE_CLOSURE_COMPLETE`** — Fetcher repair arc closed; baseline accepted at 22,239/2,114.
+
+> Final Classification: `INGEST_WRITE_GUARD_RUNTIME_SMOKE_GOVERNANCE_CLOSURE_COMPLETE`
+> Recommended next: **HOLD** — No further ingest safety work authorized without explicit user authorization for P255E+ (UI confirmation modal, audit log, SHA backup, idempotency, CORS, env gate).
+
+> **Previous (P251E): `EVIDENCE_DASHBOARD_API_RUNTIME_SMOKE_GOVERNANCE_CLOSURE`**
 > P251E evidence dashboard API runtime smoke + governance closure complete. The read-only `GET /api/replay/evidence-dashboard` route is mounted on the live app, returns the published P251B artifact under the P251C contract path, and remains artifact-backed with no DB query/write, registry mutation, strategy promotion, UI work, or betting advice. Governance docs now close the P251A–P251E dashboard API arc.
 
 > **Previous (P252I): `P0_EXTERNAL_METHOD_SSOT_GOVERNANCE_CLOSURE_COMPLETE`** — P252B-H P0 SSOT arc closed. Four SSOT modules verified. P252H adoption migration complete. Deferred items documented. No DB write. No strategy promotion. WAITING_FOR_USER_AUTHORIZATION.

@@ -433,3 +433,11 @@ _（目前無進行中任務）_
 ### 2026-06-06 — P251E evidence dashboard API runtime smoke + governance closure
 - 已完成 app/TestClient smoke，確認 `GET /api/replay/evidence-dashboard` 在 live app/router 上回傳 HTTP 200，且 payload 與 P251B published artifact 完全一致。
 - 已完成 P251A–P251E dashboard API arc 治理收尾；後續若有新 dashboard 工作，應以現有 read-only artifact-backed route 為基礎，而不是重開 DB-backed 路徑。
+
+### P255A–P255D Ingest Write Guard Arc ✅ 2026-06-08 完成
+- [x] P255A (PR #363): Ingest/backfill safety audit — 5 write-capable paths, 8 guardrails recommended
+- [x] P255B (PR #364): G01–G08 design specifications documented
+- [x] P255C (PR #365): G01+G02 implemented in lottery_api/routes/ingest.py; 42 tests pass
+- [x] P255D: Runtime smoke (8 cases PASS) + governance closure; DB baseline 22,239/2,114 confirmed
+- Deferred G03–G08 (UI modal, audit log, SHA backup, idempotency, CORS, env gate): requires explicit authorization for P255E+
+- 完成標準：G01/G02 live + smoke-tested; DB unchanged; arc closed; no DB write; no strategy promotion

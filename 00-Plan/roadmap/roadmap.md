@@ -774,3 +774,15 @@ CTO_ROADMAP_UPDATED_AFTER_P196_REMOVE_DB_BINARIES_RECOMMIT_20260601
 ```text
 FETCHER_REPAIR_GOVERNANCE_CLOSURE_COMPLETE_20260608
 ```
+
+## P255A–P255D Ingest Write Guard Arc — CLOSED (2026-06-08)
+
+- **P255A** (PR #363): Ingest/backfill safety audit — 5 write-capable paths, 6 auto-trigger risks, 8 guardrails recommended. `INGEST_BACKFILL_SAFETY_AUDIT_COMPLETE`.
+- **P255B** (PR #364): Ingest write guard design — G01–G08 specifications documented. `INGEST_WRITE_GUARD_DESIGN_COMPLETE`.
+- **P255C** (PR #365, `4304a09`): G01 (dry_run default True) + G02 (server-side confirm token) implemented in `lottery_api/routes/ingest.py`. 42 new tests pass. `INGEST_WRITE_GUARD_IMPLEMENTATION_COMPLETE`.
+- **P255D**: Runtime smoke (8 cases via TestClient + mock) + governance closure. DB baseline 22,239/2,114 unchanged. Deferred G03–G08 to P255E+. `INGEST_WRITE_GUARD_RUNTIME_SMOKE_GOVERNANCE_CLOSURE_COMPLETE`.
+- **Next authorized**: P255E+ requires explicit authorization (UI confirmation, audit log, SHA backup, idempotency, CORS, env gate).
+
+```text
+INGEST_WRITE_GUARD_RUNTIME_SMOKE_GOVERNANCE_CLOSURE_COMPLETE_20260608
+```

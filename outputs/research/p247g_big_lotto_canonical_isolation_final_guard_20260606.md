@@ -6,15 +6,17 @@
 
 ## Executive Summary
 
-P247G is the final verification task in the P247 arc (A→F). The DB view, helper, and all active research/analysis/strategy paths are confirmed to use the canonical BIG_LOTTO 2,113-row main-draw sample. Raw 22,238-row access is preserved for display/history paths. A regression guard test is added to prevent future regressions. No DB write was performed.
+P247G is the final verification task in the P247 arc (A→F). The DB view, helper, and all active research/analysis/strategy paths are confirmed to use the canonical BIG_LOTTO 2,114-row main-draw sample. Raw 22,239-row access is preserved for display/history paths. A regression guard test is added to prevent future regressions. No DB write was performed in P247G.
+
+**Baseline updated 2026-06-08** by task `ACCEPT_BACKFILL_DB_DRIFT_2026_0608`: draw 115000059 (BIG_LOTTO 2026/06/05) was auto-backfilled during fetcher-repair session and accepted as new canonical baseline. No rollback. No new DB write in the acceptance task.
 
 ## Current DB/Helper State
 
 | Metric | Value | Expected |
 |--------|-------|----------|
-| View `draws_big_lotto_canonical_main` rows | 2113 | 2113 |
-| `get_canonical_draws('BIG_LOTTO')` rows | 2113 | 2113 |
-| Raw BIG_LOTTO rows | 22238 | 22238 |
+| View `draws_big_lotto_canonical_main` rows | 2114 | 2114 |
+| `get_canonical_draws('BIG_LOTTO')` rows | 2114 | 2114 |
+| Raw BIG_LOTTO rows | 22239 | 22239 |
 | ADD_ON_PRIZE_EXCLUDED raw | 19100 | 19100 |
 | DB integrity | ok | ok |
 | Annotation table | False | False |
@@ -53,7 +55,7 @@ The test `tests/test_p247g_big_lotto_canonical_isolation_final_guard.py` contain
 
 - **`test_active_paths_use_canonical`** (15 parametrized cases): fails if any active BIG_LOTTO research path uses `get_all_draws('BIG_LOTTO')` raw call.
 - **`test_active_paths_have_canonical_pattern`**: confirms each active path contains the expected canonical pattern string.
-- **`test_view_still_canonical`**: live DB check, view=2,113 rows.
+- **`test_view_still_canonical`**: live DB check, view=2,114 rows.
 - **`test_raw_preserved`**: confirms get_all_draws/get_draws still exist in database.py.
 
 Deferred archived scripts (`lottery_api/backtest_115000*.py` etc.) are explicitly excluded from the guard — they are not in the active pipeline.
@@ -65,7 +67,7 @@ Deferred archived scripts (`lottery_api/backtest_115000*.py` etc.) are explicitl
 - **`lottery_api/predict_*.py`** (DEFERRED_ARCHIVED): Archived one-off predict scripts
 - **`lottery_api/compare_*.py`** (DEFERRED_ARCHIVED): Historical comparison scripts, not in active pipeline
 
-**Risk:** If archived scripts are reactivated without migration, they will use raw `get_all_draws('BIG_LOTTO')` which returns 22,238 rows including add-on records. Mitigation: run the P247G guard tests when reactivating any archived BIG_LOTTO script.
+**Risk:** If archived scripts are reactivated without migration, they will use raw `get_all_draws('BIG_LOTTO')` which returns 22,239 rows including add-on records. Mitigation: run the P247G guard tests when reactivating any archived BIG_LOTTO script.
 
 ## Recommended Next Task
 

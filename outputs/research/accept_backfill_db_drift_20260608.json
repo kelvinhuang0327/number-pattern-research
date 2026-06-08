@@ -1,0 +1,141 @@
+{
+  "schema_version": "1.0",
+  "task_id": "ACCEPT_BACKFILL_DB_DRIFT_2026_0608",
+  "classification": "BACKFILL_DB_DRIFT_ACCEPTED_NEW_BASELINE",
+  "date": "2026-06-08",
+  "decision": "DATA_ACCEPTANCE",
+  "rollback_chosen": false,
+  "rollback_reason_not_chosen": "No safe full restore available. All named backups predate P247G canonical table creation (draws_big_lotto_canonical_main). Restoring any backup would destroy the canonical table, causing a more severe regression than accepting the 5 legitimate draws.",
+
+  "why_not_rollback": [
+    "All named backups (p247b, p213l, p213h, p188) predate P247G task (2026-06-06).",
+    "None of the backups contain the draws_big_lotto_canonical_main table.",
+    "A full restore from backup would: fix raw-row drift BUT destroy the canonical table, producing test_view_still_canonical failure of type 'table-not-found' instead of 'count mismatch'.",
+    "Surgical DELETE of 5 rows would require explicit DB write authorization in a separate task — not within scope of this verification.",
+    "All 5 inserted draws are confirmed plausible: dates 2026/06/04-2026/06/06, draw numbers sequential within each lottery type.",
+    "Decision: accept the drift, update P247G guard constants to the new legitimate baseline."
+  ],
+
+  "trigger": {
+    "session_date": "2026-06-08",
+    "trigger_event": "Fetcher repair session. lottery_api/fetcher/* restored (files had been accidentally deleted in commit 7306264). After endpoint was repaired and backend restarted, frontend auto-backfill feature triggered /api/ingest/backfill without dry_run=true.",
+    "endpoint": "POST /api/ingest/backfill",
+    "triggered_by": "Frontend auto-backfill (non-dry-run call). Worker verification calls were all dry_run=true.",
+    "fetcher_repair_status": "UNMERGED — lottery_api/fetcher/* are untracked on branch p253g-feature-bottleneck-report-inventory. Not included in this acceptance PR."
+  },
+
+  "inserted_draws": [
+    {
+      "lottery_type": "BIG_LOTTO",
+      "draw": "115000059",
+      "date": "2026/06/05",
+      "numbers": [12, 14, 25, 30, 32, 44],
+      "special": 34,
+      "insert_timestamp_utc": "2026-06-08T02:12:56+00:00",
+      "appears_official": true,
+      "note": "Sequential between 115000058 (2026/06/02) and 115000060. Draw number and date consistent with official schedule.",
+      "also_in_canonical_table": true
+    },
+    {
+      "lottery_type": "POWER_LOTTO",
+      "draw": "115000045",
+      "date": "2026/06/04",
+      "numbers": [9, 12, 17, 20, 28, 35],
+      "special": 2,
+      "insert_timestamp_utc": "2026-06-08T02:14:45+00:00",
+      "appears_official": true,
+      "note": "Sequential between 115000044 (2026/06/01) and 115000046.",
+      "also_in_canonical_table": false
+    },
+    {
+      "lottery_type": "DAILY_539",
+      "draw": "115000136",
+      "date": "2026/06/04",
+      "numbers": [2, 8, 24, 29, 35],
+      "special": 0,
+      "insert_timestamp_utc": "2026-06-08T02:14:49+00:00",
+      "appears_official": true,
+      "note": "Sequential between 115000135 (2026/06/03) and 115000137.",
+      "also_in_canonical_table": false
+    },
+    {
+      "lottery_type": "DAILY_539",
+      "draw": "115000137",
+      "date": "2026/06/05",
+      "numbers": [7, 21, 26, 27, 31],
+      "special": 0,
+      "insert_timestamp_utc": "2026-06-08T02:14:50+00:00",
+      "appears_official": true,
+      "note": "Sequential between 115000136 (2026/06/04) and 115000138.",
+      "also_in_canonical_table": false
+    },
+    {
+      "lottery_type": "DAILY_539",
+      "draw": "115000138",
+      "date": "2026/06/06",
+      "numbers": [13, 27, 30, 37, 38],
+      "special": 0,
+      "insert_timestamp_utc": "2026-06-08T02:14:50+00:00",
+      "appears_official": true,
+      "note": "Sequential between 115000137 (2026/06/05) and 115000139.",
+      "also_in_canonical_table": false
+    }
+  ],
+
+  "pre_session_counts": {
+    "BIG_LOTTO_raw": 22238,
+    "BIG_LOTTO_canonical": 2113,
+    "BIG_LOTTO_add_on": 19100,
+    "POWER_LOTTO_raw": 1916,
+    "DAILY_539_raw": 5879,
+    "strategy_prediction_replays": 94924
+  },
+
+  "post_session_counts_verified_read_only": {
+    "BIG_LOTTO_raw": 22239,
+    "BIG_LOTTO_canonical": 2114,
+    "BIG_LOTTO_add_on": 19100,
+    "POWER_LOTTO_raw": 1917,
+    "DAILY_539_raw": 5882,
+    "strategy_prediction_replays": 94924,
+    "db_integrity": "ok"
+  },
+
+  "new_baseline": {
+    "BIG_LOTTO_raw": 22239,
+    "BIG_LOTTO_canonical": 2114,
+    "BIG_LOTTO_add_on": 19100
+  },
+
+  "artifacts_updated": [
+    {
+      "file": "tests/test_p247g_big_lotto_canonical_isolation_final_guard.py",
+      "changes": "EXPECTED_CANONICAL 2113->2114, EXPECTED_RAW 22238->22239, test_raw_still_22238 renamed to test_raw_still_22239"
+    },
+    {
+      "file": "outputs/research/p247g_big_lotto_canonical_isolation_final_guard_20260606.json",
+      "changes": "view_row_count 2113->2114, helper_row_count 2113->2114, raw_big_lotto_count 22238->22239, baseline_updated_by added, final_decision updated"
+    },
+    {
+      "file": "outputs/research/p247g_big_lotto_canonical_isolation_final_guard_20260606.md",
+      "changes": "All 2113/22238 count references updated to 2114/22239"
+    }
+  ],
+
+  "db_write_in_this_task": false,
+  "no_new_row_insert_update_delete": true,
+  "fetcher_repair_included_in_this_pr": false,
+  "fetcher_repair_status": "PENDING — staged separately on p253g-feature-bottleneck-report-inventory after this acceptance PR is merged",
+
+  "forbidden_actions_confirmed": {
+    "DB write": "NOT PERFORMED",
+    "DB migration": "NOT PERFORMED",
+    "CREATE VIEW / CREATE TABLE": "NOT PERFORMED",
+    "DELETE rows": "NOT PERFORMED",
+    "UPDATE rows": "NOT PERFORMED",
+    "INSERT rows": "NOT PERFORMED",
+    "lottery_api/fetcher/* staged": "NOT PERFORMED",
+    "lottery_api/data/lottery_v2.db staged": "NOT PERFORMED",
+    "runtime dirty files staged": "NOT PERFORMED"
+  }
+}

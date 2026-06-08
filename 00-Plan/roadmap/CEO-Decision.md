@@ -1,5 +1,33 @@
 # CEO Decision - LotteryNew Replay Research Transition
 
+---
+
+## CEO Decision — 2026-06-08 (P258 round)
+
+**Final Classification:** `CEO_DECISION_PARTIALLY_APPROVED` (CTO STOP upheld, diagnosis corrected; P0 cleared; P258A executed).
+
+**Reviewed Inputs:** CTO STOP report, P256A/P257A–C handoff, `roadmap.md`, `active_task.md`, `CURRENT_STATE.md`, `ingest_log.jsonl`, live DB (read-only), P257A best-N-bet artifact.
+
+**Yesterday Work Value:** P257A–C arc = clean historical-replay presentation layer (101/101 PASS, no DB write); P256A = falsification closure (NULL, 0 survivor), not progress. No new deployable predictive power produced.
+
+**CTO Judgment Review — PARTIALLY APPROVED.** STOP was correct (dirty worktree w/ unrelated `claude-code-showcase` + ~30 uncommitted P250–P253 artifacts). But the CTO's *"draw baseline mismatch → possible data drift"* framing is **REJECTED**: the 64,361→64,366 delta is benign, explained by logged legitimate post-draw backfill (POWER 115000045 + DAILY 115000136–138); DB integrity `ok`; replay baseline `94,924` intact; per-lottery counts already matched. Real blocker = worktree hygiene + stale CURRENT_STATE total, **not** data integrity.
+
+**Roadmap Gap:** CURRENT_STATE total was stale; ~30 artifacts unclassified. Both resolved via P258-PRE0 (PR #371 merged, main `96a5175`).
+
+**CEO Priority Decision:**
+- **P0 (done):** Human-gated worktree disposition + CURRENT_STATE total reconcile → PR #371 merged.
+- **P1 (done this round):** P258A prediction-accuracy-only research intake protocol (read-only artifact).
+- **P2:** Direction-3 monitoring half — diagnostic only; **auto-adjust FORBIDDEN**.
+- **P3+:** Direction-2 ensemble deferred (no survivor to ensemble yet); UI polish / P257D browser smoke; recommendation integration gated on a corrected OOS survivor.
+
+**Risks / Blind Spots:** "Ignore EV, maximize hit rate" removes a false-positive guardrail; P256A NULL + L82/L91 mean a fast edge should **not** be expected — P258A's value is rejection discipline, not discovery. Composite-feature ML (external Direction 1) = highest overfit risk (cf. L86/L89). Drift auto-adjust (external Direction 3) = forbidden production-mutation path; admit only the diagnostic half.
+
+**CEO Final Decision:** Approve P0 cleanup + P258A intake protocol. Do **not** implement any external method until P258B (read-only proposal evaluation + pre-registration) runs on actual external-model responses. No DB/registry/recommendation/production change authorized.
+
+**10-line summary:** (1) Phase-0 re-verified: DB benign, worktree was the real blocker. (2) CTO STOP upheld, data-drift framing rejected. (3) P0 worktree disposition + total reconcile merged (PR #371). (4) P258A accuracy-only intake protocol authored (read-only). (5) All statistical gates retained — none weakened. (6) Best N-bet baseline (P257A) is the bar every proposal must beat. (7) Expect NULL, not edge — protocol value is rejection discipline. (8) ML composite = top overfit risk; drift auto-adjust forbidden. (9) Next = P258B after external responses. (10) No DB/registry/recommendation/production mutation.
+
+---
+
 ## 1. CEO Review Date
 
 2026-05-31 Asia/Taipei.

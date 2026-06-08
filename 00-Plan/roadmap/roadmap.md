@@ -804,3 +804,13 @@ P256A_FEATURE_INFORMATION_MI_NULL_ASSESSMENT_COMPLETE_NULL_RESULT_20260608
 ```text
 P257C_BEST_STRATEGY_OVERVIEW_RUNTIME_SMOKE_GOVERNANCE_CLOSEOUT_COMPLETE_20260608
 ```
+
+## P258 Prediction-Accuracy-Only Research Round — OPEN (2026-06-08)
+
+- **P258-PRE0** (PR #371, `96a5175`): Worktree disposition + CURRENT_STATE draw-total reconcile (64,361→64,366). Draw delta = legitimate post-draw backfill (`ingest_log.jsonl`), NOT data drift; DB integrity ok, replay 94,924 unchanged. Committed 16 net-new P250–P253 artifacts; reverted 25 timestamp-churned. `P258_PRE0_WORKTREE_DISPOSITION_COMPLETE`.
+- **P258A**: Prediction-accuracy-only research intake protocol (read-only). External-agent prompt (exactly 3 method directions; ignore CP/EV/payout/cost/ROI), scoring rubric, hard rejection rules, P257A best-N-bet baseline + P256A NULL risk boundary. All statistical gates retained. 22/22 tests PASS. **CEO framing: protocol value = rejection discipline, not edge discovery (P256A NULL / L82 / L91).** `P258A_PREDICTION_ACCURACY_RESEARCH_INTAKE_PROTOCOL_READY`.
+- **P258B** (next, blocked): Read-only external-proposal evaluation + pre-registration selection — only after external-model responses received. No implementation.
+
+```text
+P258A_PREDICTION_ACCURACY_RESEARCH_INTAKE_PROTOCOL_READY_20260608
+```

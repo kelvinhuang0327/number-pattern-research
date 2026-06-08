@@ -118,16 +118,28 @@ def test_module_boundaries_defined(artifact):
     assert "import_ban" in mbp
 
 
-def test_future_module_names_proposed_not_created(artifact):
+def test_future_executable_gate_modules_still_not_created(artifact):
     names = artifact["proposed_future_module_names_P258E_ONLY_NOT_CREATED_NOW"]
-    # Proposed names must reference future paths but the modules must NOT exist yet
-    for key, path in names.items():
-        if key == "note":
-            continue
+    # P258E legitimately creates the read-only schema/stub skeleton proposed by
+    # P258D. The permanent invariant is narrower: executable D3 gate modules
+    # must still not exist.
+    p258e_allowed_skeleton = {"schemas", "validation"}
+    executable_module_keys = set(names) - {"note"} - p258e_allowed_skeleton
+
+    for key in executable_module_keys:
+        path = names[key]
         assert path.endswith(".py")
         assert not os.path.exists(
             os.path.join(os.path.dirname(__file__), "..", path)
-        ), f"Future module must NOT exist yet: {path}"
+        ), f"Executable D3 gate module must NOT exist: {path}"
+
+
+def test_p258e_readonly_schema_stub_skeleton_may_exist(artifact):
+    names = artifact["proposed_future_module_names_P258E_ONLY_NOT_CREATED_NOW"]
+    allowed_skeleton_paths = [names["schemas"], names["validation"]]
+
+    for path in allowed_skeleton_paths:
+        assert path.endswith(".py")
 
 
 def test_candidate_input_contract_defined(artifact):

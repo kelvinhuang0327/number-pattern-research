@@ -1,7 +1,11 @@
 # Active Task — Today (2026-06-08)
 
-> **STATUS: `WAITING_FOR_USER_AUTHORIZATION`**
-> P257C Best Strategy Overview runtime smoke + governance closeout complete. API `GET /api/replay/best-strategy-overview` PASS (HTTP 200, artifact-backed, `historical_replay_only=true`). UI smoke PASS — nav, section, 5 tabs, N-bet labels, empty states verified. 3_STAR/4_STAR render empty state. Forbidden wording absent. DB 94,924 unchanged. 39/39 P257C tests PASS. P257A–P257C arc CLOSED. No DB write. No strategy promotion. WAITING_FOR_USER_AUTHORIZATION.
+> **STATUS: `P258A_PREDICTION_ACCURACY_RESEARCH_INTAKE_PROTOCOL_READY` → next `P258B` (waiting external-model responses)**
+> **P258-PRE0 (done):** Worktree disposition + CURRENT_STATE draw-total reconcile (64,361→64,366; legit post-draw backfill per `ingest_log.jsonl`, NOT data drift). 16 net-new P250–P253 artifacts committed; 25 timestamp-churned reverted. PR #371 merged; main `96a5175`. DB 94,924 unchanged, integrity ok.
+> **P258A (done):** Prediction-accuracy-only research intake protocol (read-only). Artifacts: `outputs/research/p258a_prediction_accuracy_research_intake_protocol_20260608.{json,md}`. External-agent prompt (exactly 3 method directions, ignore CP/EV/payout/cost/ROI), scoring rubric, hard rejection rules, P257A best-N-bet baseline + P256A NULL risk boundary. **All statistical gates retained — none weakened.** 22/22 P258A tests PASS; 39/39 P257C regression PASS. No DB write. No strategy implementation. No registry/recommendation/production change. No betting advice.
+> **Next:** `P258B` — read-only external-proposal evaluation + pre-registration selection, **only after** external-model responses are received. Do not implement any method before P258B.
+>
+> _Previous: P257C `..._RUNTIME_SMOKE_GOVERNANCE_CLOSEOUT_COMPLETE` — Best Strategy Overview read-only API/UI, P257A–C arc CLOSED._
 
 > **Previous (P257B): `P257B_BEST_STRATEGY_OVERVIEW_READONLY_UI_IMPLEMENTED`** — `GET /api/replay/best-strategy-overview` + `#p257-overview-section` in index.html; PR #369 merged; 18+13 tests PASS.
 > **Previous (P257A): `P257A_BEST_NBET_STRATEGY_OVERVIEW_HISTORICAL_REPLAY_DATA_READY`** — 14 best-strategy entries; portfolio metrics, high-hit events, page contract; PR #368 merged.

@@ -1,0 +1,201 @@
+{
+  "schema_version": "1.0",
+  "task_id": "P258C",
+  "classification": "D3_ADVERSARIAL_NULL_SURVIVOR_GATE_READ_ONLY_PREREGISTRATION_DESIGN",
+  "generated_date": "2026-06-08",
+  "task_type": "Type B read-only design artifact (no code, no DB write, no prototype)",
+  "source_decision": "P258B_READ_ONLY_PREREGISTRATION_CANDIDATE_SELECTED — D3 AdversarialNullSurvivorGate selected",
+  "phase0_summary": {
+    "repo": "/Users/kelvin/Kelvin-WorkSpace/LotteryNew",
+    "branch": "p258c-d3-adversarial-null-gate-preregistration",
+    "main_head_at_branch": "3104588249c8e95420b6e03ea74bc348df25c3aa",
+    "p258b_pr": "PR #373 merged (fast-forward, CI green)",
+    "db_integrity": "ok",
+    "replay_rows": 94924,
+    "draw_rows_total": 64366,
+    "p258a_artifacts_present": true,
+    "p258b_artifacts_present": true
+  },
+
+  "goal": "Pre-register, as a read-only design only, an adversarial-null survivor gate (D3) that strengthens FALSIFICATION of any future candidate prediction method by requiring it to beat BOTH the P257A best-N-bet baseline AND a matched adversarial-null family in paired OOS, after multiple-testing correction, across short/mid/long windows. The gate's purpose is rejection discipline: detect when an apparent edge is indistinguishable from a null artifact given the same mechanical degrees of freedom.",
+
+  "non_goals": [
+    "D3 is NOT a number-prediction model and does not generate recommended bets.",
+    "D3 does NOT improve prediction accuracy and may not be described as doing so.",
+    "D3 does NOT auto-approve or auto-promote any method; passing the gate is NOT approval.",
+    "D3 does NOT enter recommendation logic, production, registry, controlled_apply, or deployment.",
+    "D3 does NOT mutate the DB or any production state.",
+    "P258C produces design only — no prototype, no executable gate, no backtest run."
+  ],
+
+  "d3_methodology_not_predictor_caveat": "D3 AdversarialNullSurvivorGate is a VALIDATION / FALSIFICATION gate, not a number-prediction method. It proposes no number-scoring rule. It can only define stricter falsification criteria for future candidate methods and can only REJECT or mark 'not-yet-rejected' — it can never PROMOTE. All gate outputs are diagnostic_only / read_only / observation_only. A gate survivor remains observation-only and requires a separate human-authorized prototype task plus later corrected-OOS confirmation before any further consideration. Improved-accuracy claims are banned.",
+
+  "candidate_method_input_requirements": {
+    "frozen_generator": "Candidate number-generation logic and all parameters must be locked (frozen) before any OOS evaluation; freeze timestamp recorded.",
+    "output_contract": "Candidate must emit an N-bet portfolio matching the P257A baseline contract for that lottery and N (exact bet count, exact number count per bet, valid pool range).",
+    "declared_degrees_of_freedom": "Candidate must declare its mechanical degrees of freedom so the matched null can mirror them: feature dimensionality, regime/parameter count, window schedule, prediction cadence, available-information timestamp cutoff.",
+    "provenance_metadata": "Each candidate output row must carry provenance: feature source timestamps, freeze timestamp, parameter set hash, and target_draw_id — produced before outcome evaluation.",
+    "leakage_self_declaration": "Candidate must declare that every feature uses only data with source_time < target_draw_time and that no full-history normalization was fitted."
+  },
+
+  "matched_adversarial_null_family": {
+    "purpose": "For each candidate, build a family of M >= 1000 decoy strategies preserving the candidate's mechanical degrees of freedom but with predictive structure destroyed. The candidate's apparent edge is credible only if it ranks at or above the 95th percentile of its matched null family after correction.",
+    "construction_methods": [
+      "feature_time_permutation_null: break the temporal link between feature vector and target draw (shuffle feature-to-target alignment in time) while preserving feature marginal distributions and the candidate's own selection mechanism — destroys genuine feature->target signal, preserves degrees of freedom.",
+      "random_parameter_decoy_null: instantiate the candidate's own generator with randomly drawn parameters (same parameter count) without fitting on real outcomes — the 'same knobs, random settings' decoy family.",
+      "synthetic_regime_null: if the candidate uses K regimes, generate K random regime assignments with the same marginal frequencies but no link to outcomes.",
+      "per_draw_binomial_monte_carlo_null: for hit-based endpoints, draw outcomes from Binomial(1, baseline_i) per draw (L96 fix) — NOT label-shuffling, which preserves the mean and yields p=1.0 (see lesson_guards)."
+    ],
+    "family_size_min": 1000,
+    "percentile_threshold": "candidate must exceed the 95th percentile of the matched null family on the pre-registered primary metric, after correction"
+  },
+
+  "null_matching_dimensions": [
+    "lottery_type",
+    "n_bet_count",
+    "number_count_per_bet",
+    "window_schedule",
+    "candidate_feature_dimensionality",
+    "regime_count_or_parameter_count_when_applicable",
+    "prediction_cadence",
+    "available_information_timestamp_cutoff"
+  ],
+
+  "provenance_requirements": [
+    "Every candidate output and every null-decoy output carries: target_draw_id, feature source timestamps, freeze timestamp, parameter set hash.",
+    "Provenance completeness rate must be 100% before any endpoint is computed.",
+    "Null generators must record that they were frozen before OOS and were not fitted on target outcomes.",
+    "Outputs must demonstrably be produced before outcome evaluation (no post-hoc regeneration)."
+  ],
+
+  "leakage_prevention_tests": [
+    "assert every feature source_time < target_draw_time for both candidate and null generators",
+    "assert no full-history normalization or full-history quantile fitting (rolling/train-only allowed)",
+    "assert null decoys are not fitted using target outcomes",
+    "assert provenance completeness == 100% before endpoint computation",
+    "assert no same-day later draw, target draw, or post-target draw enters any feature",
+    "fail-closed: any leakage or provenance test failure invalidates the candidate's gate result (rollback trigger)"
+  ],
+
+  "oos_split_design": {
+    "type": "chronological",
+    "segments": ["train", "validation", "untouched_test"],
+    "freeze_rule": "candidate generator, parameters, null generators, regime definitions, and correction family are all locked using train/validation only; final evidence computed on untouched test.",
+    "walk_forward": "walk-forward replication required for robustness; the locked method is re-evaluated on rolling OOS windows without re-tuning.",
+    "data_constraint_flag": "minimum-draw feasibility differs by lottery: DAILY_539 = 5,882 (supports long windows), BIG_LOTTO canonical = 2,114 and POWER_LOTTO = 1,917 (long windows capped at available; any >=5000-draw assumption is INFEASIBLE for BIG_LOTTO/POWER_LOTTO and must be flagged)."
+  },
+
+  "short_mid_long_validation_schedule": {
+    "short_windows": [100, 125, 150],
+    "mid_windows": [500, 750, 1000],
+    "long_window": "1500 where draw count permits (DAILY_539); capped at all-available with explicit flag for BIG_LOTTO/POWER_LOTTO",
+    "stability_rule": "all three tiers must be non-negative vs P257A; at least two tiers must be positive with CI not crossing materially negative territory; single-window survival is rejected; result must hold across >1 calendar year / multi-era.",
+    "p221f_inheritance": "windows inherit the P221F frozen anti-overfit gate; no re-running the same sweep on the same data."
+  },
+
+  "primary_endpoints": [
+    "paired_win_rate_vs_p257a_best_nbet_baseline",
+    "candidate_percentile_vs_matched_adversarial_null_family"
+  ],
+
+  "secondary_endpoints": [
+    "hit_count_ge_1_success_rate",
+    "average_hit_count",
+    "hit_count_ge_2_corrected_diagnostic_only",
+    "hit_count_ge_3_corrected_diagnostic_only"
+  ],
+
+  "paired_test_plan": {
+    "binary_hit_count_ge_1": "McNemar paired test, per-draw, candidate vs P257A baseline; report net wins/losses/ties.",
+    "average_hit_count": "paired bootstrap confidence interval (or Wilcoxon signed-rank) for the per-draw avg-hit difference vs P257A; report effect size + CI, not only p-value.",
+    "null_percentile_endpoint": "empirical percentile of candidate metric within the matched null family distribution + corrected p-value (empirical-null based)."
+  },
+
+  "multiple_testing_correction_family": {
+    "members": [
+      "candidate_methods",
+      "null_variants",
+      "lottery_types",
+      "n_values",
+      "metrics",
+      "windows"
+    ],
+    "methods": ["BH_FDR", "Bonferroni"],
+    "rule": "the entire family of candidate x null-variant x lottery x N x metric x window combinations is pre-declared before evaluation; any combination tried but not reported still counts toward the family; uncorrected significance is diagnostic-only.",
+    "report": "empirical-null percentile and corrected p-values for every reported combination."
+  },
+
+  "acceptance_thresholds": [
+    "zero leakage / provenance failures",
+    "candidate paired win rate vs P257A > 0.50 with corrected significance on the pre-registered primary metric",
+    "candidate exceeds the 95th percentile of the matched adversarial null family after correction",
+    "short/mid/long windows all non-negative vs P257A; at least two positive with CI not crossing materially negative",
+    "average hit_count not degraded vs P257A beyond a pre-registered tolerance",
+    "result holds across >1 calendar year / multi-era OOS",
+    "candidate remains observation-only even if all thresholds are met (gate is falsification, not approval)"
+  ],
+
+  "failure_criteria": [
+    "candidate does not beat P257A on the paired primary metric",
+    "candidate does not exceed the 95th percentile of the matched null family",
+    "any leakage, provenance, or timestamp failure",
+    "survival driven by a single window, single year, or single high-hit draw",
+    "correction removes significance",
+    "null family is too weak or not matched to the candidate's degrees of freedom",
+    "the gate is used to approve production mutation directly"
+  ],
+
+  "risk_control_triggers": {
+    "observation_only": "all gate survivors remain read-only / observation-only until a SEPARATE pre-registered prototype task plus later corrected-OOS confirmation; the gate never promotes.",
+    "auto_downgrade": "if candidate percentile vs matched null falls below the 95th percentile OR rolling paired win rate <= 0.50, downgrade the candidate to observation-only.",
+    "rollback": "if the null family is found mismatched to candidate degrees of freedom, or provenance is incomplete, invalidate the gate result and revert to the P257A baseline.",
+    "stop": "if no candidate beats matched nulls after correction, stop candidate selection.",
+    "re_pre_registration": "any change to the null generator, correction family, or primary endpoint requires a new pre-registration before further testing.",
+    "ban_from_recommendation": "no gate survivor may enter recommendation logic without later corrected-OOS survivor evidence AND explicit separate authorization."
+  },
+
+  "explicit_ban": {
+    "no_db_write": true,
+    "no_production_change": true,
+    "no_registry_mutation": true,
+    "no_controlled_apply": true,
+    "no_deployment": true,
+    "no_recommendation_mutation": true,
+    "no_prototype_code": true,
+    "no_strategy_backtest": true,
+    "no_improved_accuracy_claim": true,
+    "no_auto_approval_gate": "D3 must NOT be converted into an auto-approval gate; it is falsification-only and can only reject or mark not-yet-rejected, never promote."
+  },
+
+  "lesson_guards": {
+    "L96": "Permutation by hit-label shuffling preserves the mean -> all permutations equal observed edge -> p=1.0. Use per-draw Binomial(1, baseline_i) Monte-Carlo null instead.",
+    "L86_L89": "ML/evolution feature engineering overfits catastrophically on low-base-rate pools; the matched-null family is specifically designed to expose this degrees-of-freedom overfitting.",
+    "L82_L91": "DAILY_539 signal exhausted; BIG_LOTTO 49C6 indistinguishable from fair random — the prior probability that any candidate beats the gate is LOW; expect rejection, not survival.",
+    "P256A": "Feature-information MI returned NULL (0 Bonferroni survivors) — the gate institutionalizes this null boundary as the default expectation."
+  },
+
+  "baseline_references": {
+    "P257A": "outputs/research/p257a_best_nbet_strategy_overview_historical_replay_20260608.json — best-N-bet portfolios every candidate must beat (paired).",
+    "P256A": "outputs/research/p256a_feature_information_mi_null_framework_20260608.json — NULL risk boundary.",
+    "P258A": "outputs/research/p258a_prediction_accuracy_research_intake_protocol_20260608.json — intake protocol + gates.",
+    "P258B": "outputs/research/p258b_external_response_evaluation_20260608.json — D3 selection."
+  },
+
+  "next_allowed_task": {
+    "task_id": "P258D",
+    "title": "D3 adversarial-null gate read-only IMPLEMENTATION PLAN (not prototype)",
+    "type": "read-only implementation plan only — NOT a prototype, unless explicitly authorized later",
+    "precondition": "P258C design merged",
+    "note": "P258D may only produce an implementation plan (module boundaries, test plan, data contracts). No executable gate, no backtest, no DB write. Building an executable prototype requires a separate explicit authorization."
+  },
+
+  "no_db_write_confirmed": true,
+  "no_prototype_code_confirmed": true,
+  "no_strategy_implementation_confirmed": true,
+  "no_registry_mutation_confirmed": true,
+  "no_recommendation_logic_change_confirmed": true,
+  "no_production_write_confirmed": true,
+  "no_betting_advice_confirmed": true,
+  "no_improved_accuracy_claim_confirmed": true,
+  "final_decision": "P258C_D3_READ_ONLY_PREREGISTRATION_DESIGN_READY"
+}

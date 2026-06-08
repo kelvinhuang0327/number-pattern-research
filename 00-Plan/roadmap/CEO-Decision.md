@@ -2,6 +2,12 @@
 
 ---
 
+## P258C Completion Note — 2026-06-08
+
+**P258C complete per pre-authorized protocol.** D3 `AdversarialNullSurvivorGate` read-only pre-registration design ready. The gate is **falsification-only**: a candidate must beat BOTH the P257A best-N-bet baseline AND a matched adversarial-null family (M≥1000; 8 matching dims; per-draw Binomial null per L96) in paired OOS, after BH-FDR+Bonferroni correction, across short/mid/long windows, with 100% provenance and fail-closed leakage gates. **The gate can only REJECT or mark not-yet-rejected — it NEVER promotes; it is not a predictor; it makes no accuracy claim; it must NOT be converted into an auto-approval gate.** All survivors stay observation-only pending separate human-authorized prototype + later corrected-OOS confirmation. 26/26 P258C tests PASS. No DB write / prototype / registry / recommendation / production change. Next: P258D read-only implementation plan only (executable prototype requires separate explicit authorization).
+
+---
+
 ## P258B Completion Note — 2026-06-08
 
 **P258B complete per pre-authorized protocol.** D2 `DrawSetGeometryResidualConformal` HARD_REJECT (rule 11 — L82/L91/L73/L104/L105 set-geometry re-proposal, no survival argument). D1 `CrossLotteryLaggedEntropyRegime` REJECT_INSUFFICIENT_EVIDENCE (missing P256A boundary, L106 cross-lottery NULL, L86/L89 overfit). D3 `AdversarialNullSurvivorGate` selected for read-only pre-registration — **mandatory caveat: D3 is a validation/adversarial-null gate, NOT a predictive signal or production edge.** Human-gate fork: if CEO requires a genuine predictive-signal survivor, classify as `P258B_NO_ELIGIBLE_EXTERNAL_DIRECTION`; else D3 selection stands per written decision rules. No DB write. No prototype. No registry/recommendation/production change. Next: P258C D3 read-only pre-registration design (strong model required).

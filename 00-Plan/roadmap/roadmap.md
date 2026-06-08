@@ -814,8 +814,9 @@ P257C_BEST_STRATEGY_OVERVIEW_RUNTIME_SMOKE_GOVERNANCE_CLOSEOUT_COMPLETE_20260608
 - **P258D** (PR #374 merged P258C): D3 gate read-only IMPLEMENTATION PLAN complete — module boundaries (6 layers + import-ban), proposed future P258E module names (not created), data contracts (candidate/baseline/null/provenance), 6-point validation contract, future artifact schema (gate_decision ∈ {REJECTED, NOT_YET_REJECTED}) + 8-point test plan, 8 STOP gates. Plan only — no executable gate, no backtest, no DB write; passing = not-yet-rejected, never approved. 26/26 tests PASS. `P258D_D3_READ_ONLY_IMPLEMENTATION_PLAN_READY`.
 - **P258E** (PR #376 merged): D3 gate read-only SKELETON / contract tests complete — `GateStatus` limited to `REJECTED` / `NOT_YET_REJECTED`, schema dataclasses, and validation-stub package created under `lottery_api/research/d3_gate/`. No executable gate evaluation, no backtest, no DB write. `P258E_D3_READ_ONLY_SKELETON_CONTRACT_TESTS_READY`.
 - **P258F**: D3 gate read-only CONTRACT VALIDATORS ready — schema/provenance/timestamp/baseline/matched-null/correction-family/no-approval checks only. No executable gate evaluation, no null generation, no p-values/statistical tests, no backtest, no DB/recommendation/registry/production/controlled_apply/deployment. Passing validators is not approval and not an accuracy claim. `P258F_D3_READ_ONLY_CONTRACT_VALIDATORS_READY`.
-- **P258G** (next): synthetic-fixture-only contract validator hardening. No real candidate methods, no executable gate evaluation, no null generation, no p-values, no paired tests, no backtest, no DB write. Requires separate explicit authorization.
+- **P258G** (PR #377 merged): synthetic-fixture-only contract validator hardening. Synthetic fixtures only; no real candidate methods, no executable gate evaluation, no null generation, no p-values, no paired tests, no backtest, no DB write. `P258G_D3_SYNTHETIC_FIXTURE_VALIDATOR_HARDENING_READY`.
+- **P258H** (next): read-only contract-validation integration plan only. No real candidate methods, no executable gate evaluation, no null generation, no p-values, no paired tests, no backtest, no DB write. Requires separate explicit authorization.
 
 ```text
-P258F_D3_READ_ONLY_CONTRACT_VALIDATORS_READY_20260608
+P258G_D3_SYNTHETIC_FIXTURE_VALIDATOR_HARDENING_READY_20260608
 ```

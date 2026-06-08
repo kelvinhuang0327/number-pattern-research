@@ -2,6 +2,12 @@
 
 ---
 
+## P258G Completion Note — 2026-06-08
+
+**P258G complete per explicit authorization.** D3 gate synthetic-fixture-only contract validator hardening is ready: synthetic fixture builders and edge-case tests cover complete valid contracts, missing/invalid candidate fields, timestamp violations, baseline mismatches, matched-null mismatches, correction-family omissions, and forbidden statuses. **Synthetic fixtures only — no real candidate methods, no executable gate evaluation, no null generation, no paired tests, no p-values/statistical tests, no backtest, no DB write, no recommendation/registry/production/controlled_apply/deployment integration.** Passing validators is not approval and does not imply improved prediction accuracy. Next: P258H read-only contract-validation integration plan only requires separate explicit authorization.
+
+---
+
 ## P258F Completion Note — 2026-06-08
 
 **P258F complete per explicit authorization.** D3 gate read-only CONTRACT VALIDATORS are ready: candidate/provenance completeness, timestamp cutoff ordering, P257A baseline alignment, matched-null metadata alignment, correction-family declarations, and no-approval status safety. **Contract validation only — no executable gate evaluation, no null generation, no paired tests, no p-values/statistical tests, no backtest, no DB write, no recommendation/registry/production/controlled_apply/deployment integration.** Passing validators is not approval and does not imply improved prediction accuracy. Next: P258G synthetic-fixture-only contract validator hardening requires separate explicit authorization.

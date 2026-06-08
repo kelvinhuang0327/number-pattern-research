@@ -60,6 +60,12 @@ _EVIDENCE_DASHBOARD_PATH = (
     / "research"
     / "p251b_cross_lottery_evidence_dashboard_data_20260606.json"
 )
+_BEST_STRATEGY_OVERVIEW_PATH = (
+    Path(_api_root).parent
+    / "outputs"
+    / "research"
+    / "p257a_best_nbet_strategy_overview_historical_replay_20260608.json"
+)
 
 # Conservative disclaimer used by all replay endpoints
 _DISCLAIMER = (
@@ -1099,3 +1105,57 @@ def _parse_json(val):
         return json.loads(val)
     except Exception:
         return val
+
+
+def _load_best_strategy_overview_payload() -> dict:
+    """Load the P257A best-strategy overview artifact without mutating state."""
+    if not _BEST_STRATEGY_OVERVIEW_PATH.exists():
+        raise HTTPException(
+            status_code=500,
+            detail=f"best strategy overview artifact not found: {_BEST_STRATEGY_OVERVIEW_PATH}",
+        )
+    try:
+        with _BEST_STRATEGY_OVERVIEW_PATH.open("r", encoding="utf-8") as handle:
+            payload = json.load(handle)
+    except json.JSONDecodeError as exc:
+        raise HTTPException(
+            status_code=500,
+            detail=f"best strategy overview artifact is invalid JSON: {exc}",
+        ) from exc
+    if not isinstance(payload, dict):
+        raise HTTPException(
+            status_code=500,
+            detail="best strategy overview artifact must be a JSON object",
+        )
+    return payload
+
+
+@router.get("/api/replay/best-strategy-overview")
+async def get_replay_best_strategy_overview():
+    """
+    P257B: Read-only best N-bet strategy overview payload.
+
+    Serves the published P257A historical replay artifact.
+    Data source: P257A artifact (NOT DB query, NOT registry mutation, NOT prediction generation).
+
+    Returns best N-bet portfolio rankings per lottery, historical high-hit events,
+    page contract, and warning copy. All data is historical replay only.
+
+    READ-ONLY: no DB query, no registry mutation, no strategy promotion, no betting advice.
+    """
+    try:
+        payload = _load_best_strategy_overview_payload()
+        # Wrap with explicit metadata flags for API consumers
+        return {
+            **payload,
+            "historical_replay_only": True,
+            "no_future_guarantee": True,
+            "no_betting_advice": True,
+            "no_strategy_promotion": True,
+            "source_artifact": str(_BEST_STRATEGY_OVERVIEW_PATH.name),
+        }
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.exception("get_replay_best_strategy_overview failed")
+        raise HTTPException(status_code=500, detail=str(e))

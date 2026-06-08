@@ -1,0 +1,77 @@
+{
+  "schema_version": "1.0",
+  "task_id": "P257B",
+  "classification": "P257B_BEST_STRATEGY_OVERVIEW_READONLY_UI_IMPLEMENTED",
+  "phase0_summary": {
+    "repo": "/Users/kelvin/Kelvin-WorkSpace/LotteryNew",
+    "branch_at_run_time": "p257b-best-strategy-overview-readonly-ui",
+    "DB_integrity": "ok",
+    "strategy_prediction_replays": 94924,
+    "p257a_artifact_present": true,
+    "p257a_classification": "P257A_BEST_NBET_STRATEGY_OVERVIEW_HISTORICAL_REPLAY_DATA_READY",
+    "p257a_final_decision": "BEST_NBET_STRATEGY_OVERVIEW_DATA_READY_FOR_UI_DESIGN",
+    "frontend_type": "vanilla_JS_SPA",
+    "frontend_entry": "index.html",
+    "existing_route_conflict": "none — existing /api/best-strategy-overview (P95) uses P94A/B/C artifacts; new endpoint /api/replay/best-strategy-overview uses P257A artifact"
+  },
+  "source_artifact": "p257a_best_nbet_strategy_overview_historical_replay_20260608.json",
+  "implemented_api_endpoint": "GET /api/replay/best-strategy-overview",
+  "implemented_api_file": "lottery_api/routes/replay.py",
+  "implemented_api_pattern": "artifact-backed, follows evidence-dashboard pattern (_load_best_strategy_overview_payload)",
+  "implemented_frontend_route": "data-section='p257-overview' → section id='p257-overview-section' in index.html",
+  "implemented_components": [
+    "nav button: data-section='p257-overview' (最佳策略總覽)",
+    "section: #p257-overview-section with lottery tabs, summary cards, N-bet table, high-hit event table",
+    "P257B JS block: p257Load(), renderAll(), renderSummaryCards(), renderNbetTable(), renderHheTable()",
+    "warning banner rendered prominently above tabs",
+    "lazy load: auto-loads data when section tab is first clicked"
+  ],
+  "supported_lotteries": {
+    "with_data": ["BIG_LOTTO", "DAILY_539", "POWER_LOTTO"],
+    "empty_state": ["3_STAR", "4_STAR"]
+  },
+  "empty_state_behavior": {
+    "3_STAR": "此彩種目前沒有可用回測資料。",
+    "4_STAR": "此彩種目前沒有可用回測資料。",
+    "missing_n_bet_row": "此注數組合目前資料不足。",
+    "missing_prize_tier": "未提供獎級資料，因此僅顯示命中數，不標示獎級或獎金。"
+  },
+  "warning_copy": {
+    "zh": [
+      "本頁為歷史回測統計，不代表未來中獎機率。",
+      "最佳策略依歷史資料排序，可能存在過度擬合。",
+      "目前沒有任何策略被證明具有可部署預測優勢。",
+      "本頁不提供投注建議。",
+      "歷史最高命中僅代表回測資料中的命中數紀錄，未必等同實際獎級或獎金。"
+    ],
+    "en": [
+      "This page shows historical replay statistics only; it does not represent future win probability.",
+      "Best strategies are ranked by historical data and may reflect overfitting.",
+      "No strategy has been proven to have a deployable predictive edge.",
+      "This page does not provide betting advice.",
+      "Historical high-hit events refer only to hit counts in replay data and do not imply any prize tier or payout."
+    ]
+  },
+  "tests_run": {
+    "contract_tests": "pytest tests/test_p257b_best_strategy_overview_contract.py",
+    "api_tests": "pytest tests/test_p257b_best_strategy_overview_readonly_api.py",
+    "p257a_regression": "pytest tests/test_p257a_best_nbet_strategy_overview_historical_replay.py",
+    "frontend_tests": "NOT_RUN — vanilla JS SPA; no jest/tsconfig; no frontend test runner in scope"
+  },
+  "current_accepted_baseline": {
+    "strategy_prediction_replays": 94924,
+    "BIG_LOTTO_raw": 22239,
+    "BIG_LOTTO_canonical": 2114,
+    "DAILY_539": 5882,
+    "POWER_LOTTO": 1917,
+    "3_STAR": 5850,
+    "4_STAR": 5850
+  },
+  "no_db_write_confirmed": true,
+  "no_replay_generation_confirmed": true,
+  "no_registry_mutation_confirmed": true,
+  "no_strategy_promotion_confirmed": true,
+  "no_recommendation_logic_change_confirmed": true,
+  "no_betting_advice_confirmed": true,
+  "final_decision": "BEST_STRATEGY_OVERVIEW_READONLY_UI_IMPLEMENTED"
+}

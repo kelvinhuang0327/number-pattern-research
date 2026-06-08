@@ -2,6 +2,12 @@
 
 ---
 
+## P258B Completion Note — 2026-06-08
+
+**P258B complete per pre-authorized protocol.** D2 `DrawSetGeometryResidualConformal` HARD_REJECT (rule 11 — L82/L91/L73/L104/L105 set-geometry re-proposal, no survival argument). D1 `CrossLotteryLaggedEntropyRegime` REJECT_INSUFFICIENT_EVIDENCE (missing P256A boundary, L106 cross-lottery NULL, L86/L89 overfit). D3 `AdversarialNullSurvivorGate` selected for read-only pre-registration — **mandatory caveat: D3 is a validation/adversarial-null gate, NOT a predictive signal or production edge.** Human-gate fork: if CEO requires a genuine predictive-signal survivor, classify as `P258B_NO_ELIGIBLE_EXTERNAL_DIRECTION`; else D3 selection stands per written decision rules. No DB write. No prototype. No registry/recommendation/production change. Next: P258C D3 read-only pre-registration design (strong model required).
+
+---
+
 ## CEO Decision — 2026-06-08 (P258 round)
 
 **Final Classification:** `CEO_DECISION_PARTIALLY_APPROVED` (CTO STOP upheld, diagnosis corrected; P0 cleared; P258A executed).

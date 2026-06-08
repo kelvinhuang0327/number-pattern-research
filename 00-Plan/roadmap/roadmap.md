@@ -809,8 +809,9 @@ P257C_BEST_STRATEGY_OVERVIEW_RUNTIME_SMOKE_GOVERNANCE_CLOSEOUT_COMPLETE_20260608
 
 - **P258-PRE0** (PR #371, `96a5175`): Worktree disposition + CURRENT_STATE draw-total reconcile (64,361→64,366). Draw delta = legitimate post-draw backfill (`ingest_log.jsonl`), NOT data drift; DB integrity ok, replay 94,924 unchanged. Committed 16 net-new P250–P253 artifacts; reverted 25 timestamp-churned. `P258_PRE0_WORKTREE_DISPOSITION_COMPLETE`.
 - **P258A**: Prediction-accuracy-only research intake protocol (read-only). External-agent prompt (exactly 3 method directions; ignore CP/EV/payout/cost/ROI), scoring rubric, hard rejection rules, P257A best-N-bet baseline + P256A NULL risk boundary. All statistical gates retained. 22/22 tests PASS. **CEO framing: protocol value = rejection discipline, not edge discovery (P256A NULL / L82 / L91).** `P258A_PREDICTION_ACCURACY_RESEARCH_INTAKE_PROTOCOL_READY`.
-- **P258B** (next, blocked): Read-only external-proposal evaluation + pre-registration selection — only after external-model responses received. No implementation.
+- **P258B**: External-response evaluation complete. D2 HARD_REJECT (L82/L91/L73/L104/L105 set-geometry, no survival arg). D1 REJECT_INSUFFICIENT_EVIDENCE (missing P256A boundary, L106 NULL, L86/L89 overfit). D3 `AdversarialNullSurvivorGate` ACCEPT — selected as pre-registration candidate (methodology gate only, not predictor). 40/40 tests PASS. `P258B_READ_ONLY_PREREGISTRATION_CANDIDATE_SELECTED`.
+- **P258C** (next): D3 read-only pre-registration design — strong model required. Type B artifact only. No prototype, no DB write, no recommendation/production change.
 
 ```text
-P258A_PREDICTION_ACCURACY_RESEARCH_INTAKE_PROTOCOL_READY_20260608
+P258B_READ_ONLY_PREREGISTRATION_CANDIDATE_SELECTED_20260608
 ```

@@ -2,6 +2,12 @@
 
 ---
 
+## P258D Completion Note — 2026-06-08
+
+**P258D complete per pre-authorized protocol.** D3 gate read-only IMPLEMENTATION PLAN ready — module boundaries (6 layers with an import-ban on recommendation/registry/production/controlled_apply/deployment/DB-write), proposed future P258E module names (NOT created now), data/provenance/validation contracts, a future P258E artifact schema (`gate_decision ∈ {REJECTED, NOT_YET_REJECTED}`, where **NOT_YET_REJECTED is explicitly not approval**), an 8-point future test plan, and 8 STOP gates. **Plan only — no executable gate, no backtest, no DB write; the gate may never become an approval gate.** 26/26 P258D tests PASS. No DB write / prototype / registry / recommendation / production change. Next: P258E read-only skeleton / contract tests only — requires separate explicit authorization; executable gate evaluation/backtest remains forbidden without it.
+
+---
+
 ## P258C Completion Note — 2026-06-08
 
 **P258C complete per pre-authorized protocol.** D3 `AdversarialNullSurvivorGate` read-only pre-registration design ready. The gate is **falsification-only**: a candidate must beat BOTH the P257A best-N-bet baseline AND a matched adversarial-null family (M≥1000; 8 matching dims; per-draw Binomial null per L96) in paired OOS, after BH-FDR+Bonferroni correction, across short/mid/long windows, with 100% provenance and fail-closed leakage gates. **The gate can only REJECT or mark not-yet-rejected — it NEVER promotes; it is not a predictor; it makes no accuracy claim; it must NOT be converted into an auto-approval gate.** All survivors stay observation-only pending separate human-authorized prototype + later corrected-OOS confirmation. 26/26 P258C tests PASS. No DB write / prototype / registry / recommendation / production change. Next: P258D read-only implementation plan only (executable prototype requires separate explicit authorization).

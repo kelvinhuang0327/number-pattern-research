@@ -1,0 +1,304 @@
+{
+  "schema_version": "1.0",
+  "task_id": "P255D",
+  "classification": "INGEST_WRITE_GUARD_RUNTIME_SMOKE_GOVERNANCE_CLOSURE_COMPLETE",
+  "date": "2026-06-08",
+  "task_type": "Type D runtime-smoke + governance-closure",
+  "explicit_authorization": "Authorize P255D Ingest Write Guard Runtime Smoke & Governance Closure",
+  "generated_at": "2026-06-08T04:58:28.267933+00:00",
+  "phase0_summary": {
+    "repo": "/Users/kelvin/Kelvin-WorkSpace/LotteryNew",
+    "branch": "p255d-ingest-write-guard-runtime-smoke-governance-closure",
+    "canonical_branch": "main",
+    "HEAD_equals_origin_main": true,
+    "stop_conditions_clear": true
+  },
+  "pr360_status": "MERGED",
+  "pr361_status": "MERGED",
+  "pr362_status": "MERGED",
+  "pr363_status": "MERGED",
+  "pr364_status": "MERGED",
+  "pr365_status": "MERGED",
+  "p255c_dependency_verified": true,
+  "p255c_dependency": {
+    "pr": 365,
+    "classification": "INGEST_WRITE_GUARD_IMPLEMENTATION_COMPLETE",
+    "G01_implemented": true,
+    "G02_implemented": true
+  },
+  "runtime_smoke_results": [
+    {
+      "case_id": "S01",
+      "scenario": "omitted dry_run → defaults dry_run=True (G01)",
+      "request_body": {},
+      "expected_status": 200,
+      "actual_status": 200,
+      "status_match": true,
+      "engine_called": true,
+      "engine_guard_ok": true,
+      "mock_confirmed_write": false,
+      "real_db_write_risk": false,
+      "passed": true,
+      "response_snippet": "{'success': True, 'summary': {'total': 0, 'inserted': 0, 'skipped': 0, 'conflict': 0, 'failed': 0, 'details': []}}"
+    },
+    {
+      "case_id": "S02",
+      "scenario": "explicit dry_run=true → safe preview",
+      "request_body": {
+        "dry_run": true
+      },
+      "expected_status": 200,
+      "actual_status": 200,
+      "status_match": true,
+      "engine_called": true,
+      "engine_guard_ok": true,
+      "mock_confirmed_write": false,
+      "real_db_write_risk": false,
+      "passed": true,
+      "response_snippet": "{'success': True, 'summary': {'total': 0, 'inserted': 0, 'skipped': 0, 'conflict': 0, 'failed': 0, 'details': []}}"
+    },
+    {
+      "case_id": "S03",
+      "scenario": "dry_run=false + no confirmation → 422 write_not_confirmed",
+      "request_body": {
+        "dry_run": false
+      },
+      "expected_status": 422,
+      "actual_status": 422,
+      "status_match": true,
+      "engine_called": false,
+      "engine_guard_ok": true,
+      "mock_confirmed_write": false,
+      "real_db_write_risk": false,
+      "passed": true,
+      "response_snippet": "{'detail': {'error': 'write_not_confirmed', 'message': 'dry_run=False requires apply_confirmed=True and a valid confirm_token. Run with dry_run=True first to preview changes.', 'hint': 'Set apply_conf"
+    },
+    {
+      "case_id": "S04",
+      "scenario": "dry_run=false + apply_confirmed + no token → 422 missing_confirm_token",
+      "request_body": {
+        "dry_run": false,
+        "apply_confirmed": true
+      },
+      "expected_status": 422,
+      "actual_status": 422,
+      "status_match": true,
+      "engine_called": false,
+      "engine_guard_ok": true,
+      "mock_confirmed_write": false,
+      "real_db_write_risk": false,
+      "passed": true,
+      "response_snippet": "{'detail': {'error': 'missing_confirm_token', 'message': 'Non-dry-run write requires confirm_token.', 'hint': 'POST with dry_run=True first, capture confirm_token from response, then POST with dry_run"
+    },
+    {
+      "case_id": "S05",
+      "scenario": "dry_run=false + invalid confirm_token → 422 invalid_confirm_token",
+      "request_body": {
+        "dry_run": false,
+        "apply_confirmed": true,
+        "confirm_token": "wrong-token",
+        "requested_by": "op",
+        "reason": "test"
+      },
+      "expected_status": 422,
+      "actual_status": 422,
+      "status_match": true,
+      "engine_called": false,
+      "engine_guard_ok": true,
+      "mock_confirmed_write": false,
+      "real_db_write_risk": false,
+      "passed": true,
+      "response_snippet": "{'detail': {'error': 'invalid_confirm_token', 'message': 'The confirm_token is invalid. Re-run with dry_run=True to obtain a valid token.', 'token_ttl_seconds': 300}}"
+    },
+    {
+      "case_id": "S06",
+      "scenario": "dry_run=false + valid token + missing requested_by → 422",
+      "request_body": {
+        "dry_run": false,
+        "apply_confirmed": true,
+        "confirm_token": "p255-write-confirm",
+        "reason": "test"
+      },
+      "expected_status": 422,
+      "actual_status": 422,
+      "status_match": true,
+      "engine_called": false,
+      "engine_guard_ok": true,
+      "mock_confirmed_write": false,
+      "real_db_write_risk": false,
+      "passed": true,
+      "response_snippet": "{'detail': {'error': 'missing_requested_by', 'message': 'Non-dry-run write requires requested_by to identify the caller.'}}"
+    },
+    {
+      "case_id": "S07",
+      "scenario": "dry_run=false + valid token + missing reason → 422",
+      "request_body": {
+        "dry_run": false,
+        "apply_confirmed": true,
+        "confirm_token": "p255-write-confirm",
+        "requested_by": "operator"
+      },
+      "expected_status": 422,
+      "actual_status": 422,
+      "status_match": true,
+      "engine_called": false,
+      "engine_guard_ok": true,
+      "mock_confirmed_write": false,
+      "real_db_write_risk": false,
+      "passed": true,
+      "response_snippet": "{'detail': {'error': 'missing_reason', 'message': 'Non-dry-run write requires reason to document the write purpose.'}}"
+    },
+    {
+      "case_id": "S08",
+      "scenario": "dry_run=false + full valid confirmation → passes guard, mocked engine called",
+      "request_body": {
+        "dry_run": false,
+        "apply_confirmed": true,
+        "confirm_token": "p255-write-confirm",
+        "requested_by": "operator",
+        "reason": "P255D smoke test — mock only, no real DB write"
+      },
+      "expected_status": 200,
+      "actual_status": 200,
+      "status_match": true,
+      "engine_called": true,
+      "engine_guard_ok": true,
+      "mock_confirmed_write": true,
+      "real_db_write_risk": false,
+      "passed": true,
+      "response_snippet": "{'success': True, 'summary': {'total': 0, 'inserted': 0, 'skipped': 0, 'conflict': 0, 'failed': 0, 'details': []}}"
+    }
+  ],
+  "all_smoke_passed": true,
+  "smoke_environment": "FastAPI TestClient + unittest.mock (no live server required)",
+  "blocked_write_cases": [
+    {
+      "case_id": "S03",
+      "scenario": "dry_run=false + no confirmation → 422 write_not_confirmed",
+      "status": 422,
+      "engine_called": false,
+      "passed": true
+    },
+    {
+      "case_id": "S04",
+      "scenario": "dry_run=false + apply_confirmed + no token → 422 missing_confirm_token",
+      "status": 422,
+      "engine_called": false,
+      "passed": true
+    },
+    {
+      "case_id": "S05",
+      "scenario": "dry_run=false + invalid confirm_token → 422 invalid_confirm_token",
+      "status": 422,
+      "engine_called": false,
+      "passed": true
+    },
+    {
+      "case_id": "S06",
+      "scenario": "dry_run=false + valid token + missing requested_by → 422",
+      "status": 422,
+      "engine_called": false,
+      "passed": true
+    },
+    {
+      "case_id": "S07",
+      "scenario": "dry_run=false + valid token + missing reason → 422",
+      "status": 422,
+      "engine_called": false,
+      "passed": true
+    }
+  ],
+  "dry_run_safe_cases": [
+    {
+      "case_id": "S01",
+      "scenario": "omitted dry_run → defaults dry_run=True (G01)",
+      "status": 200,
+      "passed": true
+    },
+    {
+      "case_id": "S02",
+      "scenario": "explicit dry_run=true → safe preview",
+      "status": 200,
+      "passed": true
+    }
+  ],
+  "mocked_confirmed_write_case": {
+    "case_id": "S08",
+    "scenario": "dry_run=false + full valid confirmation → passes guard, mocked engine called",
+    "status": 200,
+    "engine_called": true,
+    "mock_confirmed_write": true,
+    "real_db_write_risk": false,
+    "passed": true
+  },
+  "db_baseline_before": {
+    "BIG_LOTTO_raw": 22239,
+    "BIG_LOTTO_canonical": 2114,
+    "POWER_LOTTO_raw": 1917,
+    "DAILY_539_raw": 5882,
+    "strategy_prediction_replays": 94924
+  },
+  "db_baseline_after": {
+    "BIG_LOTTO_raw": 22239,
+    "BIG_LOTTO_canonical": 2114,
+    "POWER_LOTTO_raw": 1917,
+    "DAILY_539_raw": 5882,
+    "strategy_prediction_replays": 94924
+  },
+  "db_unchanged_confirmed": true,
+  "governance_files_updated": [
+    "00-Plan/roadmap/active_task.md",
+    "00-Plan/roadmap/agent_bootstrap/CURRENT_STATE.md",
+    "00-Plan/roadmap/roadmap.md",
+    "memory/lessons.md",
+    "memory/todo.md"
+  ],
+  "deferred_guardrails": {
+    "G03_ui_confirmation": {
+      "status": "DEFERRED",
+      "next_task": "P255E"
+    },
+    "G04_audit_log": {
+      "status": "DEFERRED",
+      "next_task": "P255E"
+    },
+    "G05_backup_sha": {
+      "status": "DEFERRED",
+      "next_task": "P255E"
+    },
+    "G06_idempotency": {
+      "status": "DEFERRED",
+      "next_task": "P255E"
+    },
+    "G07_cors_hardening": {
+      "status": "DEFERRED",
+      "next_task": "P255E"
+    },
+    "G08_env_write_gate": {
+      "status": "DEFERRED",
+      "next_task": "P255E"
+    }
+  },
+  "arc_summary": {
+    "P255A": "INGEST_BACKFILL_SAFETY_AUDIT_COMPLETE — 5 write-capable paths, 6 auto-trigger risks, 8 guardrails recommended",
+    "P255B": "INGEST_WRITE_GUARD_DESIGN_COMPLETE — G01–G08 specifications documented",
+    "P255C": "INGEST_WRITE_GUARD_IMPLEMENTATION_COMPLETE — G01+G02 implemented in lottery_api/routes/ingest.py",
+    "P255D": "INGEST_WRITE_GUARD_RUNTIME_SMOKE_GOVERNANCE_CLOSURE_COMPLETE — runtime smoke verified, arc closed"
+  },
+  "no_real_non_dry_run_backfill_confirmed": true,
+  "no_db_write_confirmed": true,
+  "no_registry_mutation_confirmed": true,
+  "no_strategy_promotion_confirmed": true,
+  "no_betting_advice_confirmed": true,
+  "non_actions": [
+    "No non-dry-run backfill against real DB",
+    "No frontend/UI modified",
+    "No fetcher code modified",
+    "No DB write",
+    "No registry mutation",
+    "No strategy promotion",
+    "No betting advice",
+    "No P247G constants changed"
+  ],
+  "final_decision": "HOLD. P255A–P255D ingest write guard arc is complete. G01 (dry_run default True) and G02 (server-side confirm token) are live and smoke-tested. Deferred G03–G08 require explicit authorization for P255E+. No DB write occurred. System returns to WAITING_FOR_USER_AUTHORIZATION."
+}

@@ -1,7 +1,7 @@
 # Current State — LotteryNew
 
-**Last Reviewed:** 2026-06-06 Asia/Taipei (P251E evidence dashboard API runtime smoke + governance closure — app/TestClient smoke passed; read-only route confirmed artifact-backed; P251A–P251E dashboard API arc closed; no DB write; WAITING_FOR_USER_AUTHORIZATION)
-**State Marker:** `EVIDENCE_DASHBOARD_API_RUNTIME_SMOKE_GOVERNANCE_CLOSURE`
+**Last Reviewed:** 2026-06-08 Asia/Taipei (P255D ingest write guard runtime smoke + governance closure — G01/G02 guards live and smoke-tested; DB baseline 22,239/2,114 unchanged; P255A–P255D arc closed; no DB write; WAITING_FOR_USER_AUTHORIZATION)
+**State Marker:** `INGEST_WRITE_GUARD_RUNTIME_SMOKE_GOVERNANCE_CLOSURE_COMPLETE`
 **Purpose:** Project-specific state for future agents. Read this after `SHARED_AGENT_BOOTSTRAP.md` and `TASK_TEMPLATES.md`.
 
 ## Canonical Execution Context
@@ -36,13 +36,13 @@ Do not dispatch or execute from:
 | Replay rows | 94,924 | [Confirmed] |
 | Draw rows (total draws table) | 64,361 | [Confirmed] |
 | BIG_LOTTO replay rows (strategy_prediction_replays) | 24,140 | [Confirmed] — **replay rows, not draw rows**; 24140+34680+36104=94924 |
-| BIG_LOTTO raw draw rows (draws table, lottery_type='BIG_LOTTO') | 22,238 | [P247G Confirmed] — includes ADD_ON/DATE_FORMAT/SMALL_POOL/CANONICAL families |
-| BIG_LOTTO canonical main-draw rows (draws_big_lotto_canonical_main view) | 2,113 | [P247G Confirmed] — research/strategy/analysis canonical sample |
+| BIG_LOTTO raw draw rows (draws table, lottery_type='BIG_LOTTO') | 22,239 | [P255D Confirmed — updated from P254A/PR #360] — includes ADD_ON/DATE_FORMAT/SMALL_POOL/CANONICAL families |
+| BIG_LOTTO canonical main-draw rows (draws_big_lotto_canonical_main view) | 2,114 | [P255D Confirmed — updated from P254A/PR #360] — research/strategy/analysis canonical sample |
 | BIG_LOTTO ADD_ON_PRIZE_EXCLUDED | 19,100 | [P247G Confirmed] — valid add-on/special prize records; raw-accessible |
 | DAILY_539 replay rows (strategy_prediction_replays) | 34,680 | [Confirmed] — **replay rows, not draw rows** |
-| DAILY_539 draw rows (draws table) | 5,879 | [P249B Confirmed] |
+| DAILY_539 draw rows (draws table) | 5,882 | [P255D Confirmed — updated from P254A] |
 | POWER_LOTTO replay rows (strategy_prediction_replays) | 36,104 | [Confirmed] — **replay rows, not draw rows** |
-| POWER_LOTTO draw rows (draws table) | 1,916 | [P249B Confirmed] |
+| POWER_LOTTO draw rows (draws table) | 1,917 | [P255D Confirmed — updated from P254A] |
 | 3_STAR draw rows | 5,850 | [Confirmed] |
 | 4_STAR draw rows | 5,850 | [Confirmed] |
 | 3_STAR/4_STAR source-to-DB match | 11,700 / 11,700 (0 mismatches, 0 missing) | [Confirmed] |

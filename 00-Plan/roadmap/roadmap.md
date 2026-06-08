@@ -764,3 +764,13 @@ Binary-heavy P191 commit replaced with non-binary recommit. Local DB and backup 
 ```text
 CTO_ROADMAP_UPDATED_AFTER_P196_REMOVE_DB_BINARIES_RECOMMIT_20260601
 ```
+
+## P254A–P254B Fetcher Repair Arc — CLOSED (2026-06-08)
+
+- **PR #360** ACCEPT_BACKFILL_DB_DRIFT_2026_0608: accepted 5 auto-backfilled draws; BIG_LOTTO baseline updated to raw=22,239 / canonical=2,114. Merged `234cc02`.
+- **PR #361** P254A repair fetcher backfill modules: restored `lottery_api/fetcher/*` (deleted in `7306264`); fixed ADD_ON `isdigit()` crash. Merged `36f6862`.
+- **P254B** governance closure: incident chain documented; lessons recorded; returns to `WAITING_FOR_USER_AUTHORIZATION`.
+
+```text
+FETCHER_REPAIR_GOVERNANCE_CLOSURE_COMPLETE_20260608
+```

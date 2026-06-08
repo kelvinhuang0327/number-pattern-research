@@ -218,6 +218,8 @@ Read-only baseline commands:
 
 ## Recommended Next Direction
 
+**P254A–P254B fetcher repair arc closed (2026-06-08).** PR #360 accepted DB drift (BIG_LOTTO raw 22238→22239, canonical 2113→2114). PR #361 restored lottery_api/fetcher/* and fixed ADD_ON crash. Accepted baseline: BIG_LOTTO raw=22,239, canonical=2,114, ADD_ON=19,100, POWER_LOTTO raw=1,917, DAILY_539 raw=5,882, replay=94,924. Stale values 22238/2113 invalidated. No DB write in governance closure.
+
 No active deployable candidate in any lottery. **The P211A–P231B arc has exhausted all current in-window candidates. P232A–P233B registry hygiene resolved LIFECYCLE_UNRESOLVED to 0. P234/P234A CTO statistical-methods analysis complete (P2.4 design-only). P235A Lofea feasibility review complete (design-inspiration only). P236A–P238D complete (NIST audit YELLOW observation-only). P240B–P240D complete (governance simplification adopted). P241A–P244C complete. P213H/P213L completed draw-side source recovery for 3_STAR/4_STAR. P214 straight-play feasibility protocol design complete. P214B straight-play descriptive diagnostic complete. P214C Bonferroni-corrected scan complete — NULL result (0/7 Bonferroni-significant; straight-play signal space consistent with uniform random). P251A–P251E evidence dashboard API arc is complete: contract artifact, dashboard data artifact, API payload contract, read-only replay route, and runtime smoke/governance closure are all merged. Governance record is complete.** Do not start new research without explicit user authorization. Queued options:
 
 1. **Remain HOLD** — no action; system stays WAITING_FOR_USER_AUTHORIZATION.

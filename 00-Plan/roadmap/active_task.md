@@ -153,6 +153,20 @@ All safety boundaries unchanged. P213L was the explicitly authorized Type D draw
 - **Lofea** — design inspiration only; no implementation authorized (CC-BY-NC; no vendoring; must pass P221F + multiple-testing + walk-forward/OOS for any future use).
 - Production / registry / DB write / recommendation / controlled apply / betting advice — all **unauthorized / frozen**.
 
+## P254A–P254B Fetcher Repair Closure (2026-06-08)
+
+| Task | Classification |
+|------|---------------|
+| PR #360 ACCEPT_BACKFILL_DB_DRIFT_2026_0608 | `BACKFILL_DB_DRIFT_ACCEPTED_NEW_BASELINE` — merged `234cc02` |
+| P254A repair fetcher backfill modules | `FETCHER_BACKFILL_REPAIR_COMPLETE` — merged `36f6862` (PR #361) |
+| P254B fetcher repair governance closure | `FETCHER_REPAIR_GOVERNANCE_CLOSURE_COMPLETE` — this PR |
+
+Accepted DB baseline (stale 22238/2113 invalidated 2026-06-08):
+- BIG_LOTTO raw = 22,239 | BIG_LOTTO canonical = 2,114 | ADD_ON = 19,100
+- POWER_LOTTO raw = 1,917 | DAILY_539 raw = 5,882 | replay = 94,924
+
+Status: **WAITING_FOR_USER_AUTHORIZATION** — no active follow-up authorized.
+
 ## Required Completion Check (for any authorized task)
 1. 是否真的完成
 2. 測試結果 PASS / FAIL / NOT RUN

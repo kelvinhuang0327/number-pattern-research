@@ -1,0 +1,246 @@
+{
+  "schema_version": "1.0",
+  "task_id": "P258D",
+  "classification": "D3_ADVERSARIAL_NULL_SURVIVOR_GATE_READ_ONLY_IMPLEMENTATION_PLAN",
+  "generated_date": "2026-06-08",
+  "task_type": "Type B read-only implementation plan (planning/schema/test-contract only — no executable code, no DB write, no backtest)",
+  "source_decision": "P258C_D3_READ_ONLY_PREREGISTRATION_DESIGN_READY — translate the merged D3 pre-registration design into a safe implementation plan",
+  "phase0_summary": {
+    "repo": "/Users/kelvin/Kelvin-WorkSpace/LotteryNew",
+    "branch": "p258d-d3-gate-readonly-implementation-plan",
+    "main_head_at_branch": "9ca9d989bf1a93f5668d8fd009dee185e7024d2e",
+    "p258c_pr": "PR #374 merged (CI green)",
+    "db_integrity": "ok",
+    "replay_rows": 94924,
+    "draw_rows_total": 64366,
+    "p258b_artifacts_present": true,
+    "p258c_artifacts_present": true
+  },
+
+  "goal": "Translate the merged P258C D3 adversarial-null survivor gate pre-registration design into a SAFE, read-only IMPLEMENTATION PLAN: module boundaries, data contracts, artifact schemas, validation contracts, a future test plan, and explicit STOP gates. The plan describes WHAT a future P258E read-only skeleton would build, without building anything executable now.",
+
+  "non_goals": [
+    "Does NOT implement the gate or any module — names are proposed for a future P258E, not created.",
+    "Does NOT run D3 against any real candidate method.",
+    "Does NOT run strategy backtests or any execution.",
+    "Does NOT write DB, mutate registry, touch recommendation logic, controlled_apply, or deployment.",
+    "Does NOT claim improved prediction accuracy.",
+    "Does NOT convert D3 into an approval gate — passing means only 'not yet rejected'."
+  ],
+
+  "d3_mandatory_interpretation": {
+    "is_validation_gate_not_predictor": true,
+    "cannot_claim_accuracy_improvement": true,
+    "cannot_approve_production": true,
+    "passing_means_only_not_yet_rejected_never_approved": true,
+    "cannot_touch_recommendation_logic": true,
+    "cannot_write_db": true,
+    "cannot_trigger_controlled_apply_or_deployment": true,
+    "cannot_run_live_or_production_like_evaluation": true,
+    "p258d_is_plan_only_not_executable": true
+  },
+
+  "source_artifacts_used": {
+    "P258B": "outputs/research/p258b_external_response_evaluation_20260608.json — D3 selection + methodology-not-predictor caveat",
+    "P258C": "outputs/research/p258c_d3_adversarial_null_gate_preregistration_20260608.json — gate pre-registration design (matched null family, endpoints, correction family, risk triggers)",
+    "P257A": "outputs/research/p257a_best_nbet_strategy_overview_historical_replay_20260608.json — best-N-bet baseline every candidate must beat",
+    "P256A": "outputs/research/p256a_feature_information_mi_null_framework_20260608.json — NULL risk boundary"
+  },
+
+  "module_boundary_proposal": {
+    "principle": "Strict separation between (a) read-only candidate/baseline INGEST adapters, (b) PURE null-construction + statistics functions with no I/O, (c) a thin ORCHESTRATOR that only reads artifacts and writes a diagnostic artifact, and (d) a VALIDATION layer that fails closed. No module may import production, registry, recommendation, controlled_apply, or DB-write code.",
+    "layers": [
+      "ingest_adapter: read-only loaders for candidate output artifacts + P257A baseline artifact; no DB write; no live fetch.",
+      "null_factory: pure functions building the matched adversarial-null family from declared degrees of freedom; deterministic given seeds.",
+      "statistics: pure McNemar / paired-bootstrap / empirical-null-percentile / BH-FDR / Bonferroni functions; no I/O.",
+      "validation: leakage/provenance/timestamp/N-bet/null-match/correction-family/no-mutation guards; fail-closed.",
+      "orchestrator: reads inputs, calls null_factory + statistics under validation, emits a diagnostic-only gate artifact; never promotes.",
+      "audit: structured audit-trail writer to the artifact only (no DB, no logs-as-state)."
+    ],
+    "import_ban": "validation layer asserts orchestrator and all gate modules do NOT import lottery_api recommendation/registry/production/controlled_apply/deployment/DB-write paths."
+  },
+
+  "proposed_future_module_names_P258E_ONLY_NOT_CREATED_NOW": {
+    "note": "These are PROPOSED names for a future P258E read-only skeleton. P258D does NOT create them.",
+    "candidate_ingest": "lottery_api/research/d3_gate/candidate_ingest.py",
+    "baseline_ingest": "lottery_api/research/d3_gate/baseline_ingest.py",
+    "null_factory": "lottery_api/research/d3_gate/null_factory.py",
+    "statistics": "lottery_api/research/d3_gate/gate_statistics.py",
+    "validation": "lottery_api/research/d3_gate/gate_validation.py",
+    "orchestrator": "lottery_api/research/d3_gate/gate_orchestrator.py",
+    "audit": "lottery_api/research/d3_gate/gate_audit.py",
+    "schemas": "lottery_api/research/d3_gate/schemas.py"
+  },
+
+  "candidate_input_data_contract": {
+    "description": "Read-only artifact contract for a candidate method's frozen OOS outputs.",
+    "required_fields": [
+      "candidate_method_name",
+      "lottery_type",
+      "n_bet_count",
+      "number_count_per_bet",
+      "frozen_parameter_set_hash",
+      "freeze_timestamp",
+      "feature_dimensionality",
+      "regime_count_or_parameter_count",
+      "window_schedule",
+      "prediction_cadence",
+      "available_information_timestamp_cutoff",
+      "per_draw_outputs"
+    ],
+    "per_draw_output_fields": [
+      "target_draw_id",
+      "target_draw_date",
+      "predicted_bets",
+      "feature_source_timestamps",
+      "generated_before_outcome_evaluation"
+    ],
+    "constraints": [
+      "predicted_bets length == n_bet_count",
+      "each bet length == number_count_per_bet and within the lottery pool range",
+      "all feature_source_timestamps < target_draw available_information_timestamp_cutoff < target_draw draw time"
+    ]
+  },
+
+  "p257a_baseline_input_contract": {
+    "description": "Read-only baseline artifact contract for paired comparison.",
+    "required_fields": [
+      "lottery_type",
+      "n_bet_count",
+      "baseline_strategy_name",
+      "per_draw_best_hit_count",
+      "draws"
+    ],
+    "alignment_rule": "Baseline per-draw rows must be alignable to candidate per-draw rows by (lottery_type, n_bet_count, target_draw_id). Any unmatched draw is excluded from paired comparison and logged in the audit trail; coverage must be reported.",
+    "source": "P257A best-N-bet historical replay artifact (HISTORICAL_REPLAY_ONLY — not a future guarantee)."
+  },
+
+  "matched_null_family_contract": {
+    "input": {
+      "candidate_degrees_of_freedom": [
+        "lottery_type",
+        "n_bet_count",
+        "number_count_per_bet",
+        "window_schedule",
+        "candidate_feature_dimensionality",
+        "regime_count_or_parameter_count",
+        "prediction_cadence",
+        "available_information_timestamp_cutoff"
+      ],
+      "family_size_min": 1000,
+      "null_construction_methods": [
+        "feature_time_permutation_null",
+        "random_parameter_decoy_null",
+        "synthetic_regime_null",
+        "per_draw_binomial_monte_carlo_null"
+      ],
+      "seeds": ["null_generation_seed", "candidate_random_seed"]
+    },
+    "output": {
+      "per_null_member": ["null_id", "construction_method", "per_draw_outputs_or_hit_series"],
+      "family_distribution": ["metric_name", "null_metric_values", "candidate_metric_value", "candidate_percentile"]
+    },
+    "matching_rule": "Each null member must mirror the candidate's declared degrees of freedom exactly; a mismatch triggers the rollback STOP gate.",
+    "lesson_guard_L96": "hit-based nulls use per-draw Binomial(1, baseline_i), NOT label-shuffle (label-shuffle preserves the mean -> p=1.0)."
+  },
+
+  "provenance_contract": {
+    "required_fields": [
+      "candidate_generation_timestamp",
+      "available_information_cutoff",
+      "lottery_type",
+      "target_draw_id",
+      "target_draw_date",
+      "n_bet_count",
+      "number_count_per_bet",
+      "feature_dimensionality",
+      "regime_count_or_parameter_count",
+      "window_schedule",
+      "random_seed",
+      "null_generation_seed"
+    ],
+    "completeness_rule": "100% provenance completeness required before any endpoint is computed; otherwise rollback STOP gate."
+  },
+
+  "validation_contract": [
+    "leakage_provenance_validation: every feature_source_timestamp < available_information_cutoff < target draw time; provenance completeness == 100%.",
+    "timestamp_cutoff_validation: no same-day later draw / target draw / post-target draw enters features.",
+    "exact_nbet_matching_validation: candidate predicted_bets length == n_bet_count and number_count_per_bet matches the lottery contract.",
+    "null_family_matching_validation: every null member mirrors candidate degrees of freedom; family_size >= 1000.",
+    "correction_family_declaration_validation: the full candidate x null x lottery x N x metric x window family is declared before evaluation; untested-but-declared combinations still count.",
+    "no_production_recommendation_mutation_validation: assert no import of / call to recommendation/registry/production/controlled_apply/deployment/DB-write paths; assert artifact-only output."
+  ],
+
+  "future_artifact_schema_proposal_P258E": {
+    "inputs": ["candidate_artifact_ref", "p257a_baseline_artifact_ref", "null_family_spec", "correction_family_spec", "window_schedule", "seeds"],
+    "outputs": ["gate_decision", "per_metric_results", "audit_trail_ref"],
+    "gate_decision_values": ["REJECTED", "NOT_YET_REJECTED"],
+    "rejection_reasons": [
+      "fails_paired_vs_p257a",
+      "below_95th_percentile_vs_matched_null",
+      "leakage_or_provenance_failure",
+      "single_window_or_year_or_draw_only",
+      "significance_removed_by_correction",
+      "null_family_too_weak_or_mismatched",
+      "used_to_approve_production_directly"
+    ],
+    "not_yet_rejected_semantics": "NOT_YET_REJECTED is explicitly NOT approval; the candidate remains observation-only pending a separate human-authorized prototype + later corrected-OOS confirmation.",
+    "metrics": ["paired_win_rate_vs_p257a", "hit_count_ge_1_rate", "average_hit_count", "hit_count_ge_2_diag", "hit_count_ge_3_diag"],
+    "corrected_p_values": ["bh_fdr_p", "bonferroni_p", "empirical_null_p"],
+    "null_percentile": "candidate_percentile_within_matched_null_family",
+    "paired_comparison_summary": ["mcnemar_net_wins_losses_ties", "paired_bootstrap_ci_avg_hit"],
+    "short_mid_long_window_summary": ["per_tier_effect_vs_p257a", "tiers_nonnegative_count", "tiers_positive_count", "calendar_year_span"],
+    "audit_trail": ["input_hashes", "seeds", "excluded_draws", "validation_results", "timestamp"]
+  },
+
+  "future_test_plan_P258E": [
+    "schema_tests: gate artifact conforms to inputs/outputs schema; gate_decision in {REJECTED, NOT_YET_REJECTED}.",
+    "leakage_guard_tests: any feature timestamp >= cutoff fails closed.",
+    "null_matching_tests: null member with mismatched degrees of freedom triggers rollback.",
+    "baseline_matching_tests: candidate/baseline aligned by (lottery,N,target_draw_id); unmatched draws excluded + reported.",
+    "correction_family_tests: corrected p-values computed over the full declared family; undeclared combination rejected.",
+    "no_auto_approval_tests: NOT_YET_REJECTED never maps to approval; no promote path exists.",
+    "no_db_write_tests: orchestrator performs zero DB writes (assert via fake/asserted no-write boundary).",
+    "no_recommendation_mutation_tests: assert no import/call into recommendation/registry/production/controlled_apply/deployment."
+  ],
+
+  "stop_gates_for_future_implementation": [
+    "missing_p257a_baseline",
+    "missing_candidate_provenance",
+    "missing_timestamp_cutoff",
+    "unmatched_null_family",
+    "unregistered_metric_window_or_n_value",
+    "production_or_recommendation_code_touched",
+    "db_write_required",
+    "broad_package_or_config_change_required"
+  ],
+
+  "next_allowed_task": {
+    "task_id": "P258E",
+    "title": "D3 gate read-only SKELETON / contract tests only (if explicitly authorized later)",
+    "type": "read-only skeleton + contract tests only — no executable gate evaluation, no backtest, no DB write",
+    "precondition": "P258D plan merged AND separate explicit authorization for P258E",
+    "note": "P258E may only create non-executing skeleton modules + schema/contract tests. It may NOT run the gate against any candidate."
+  },
+
+  "forbidden_next_tasks": [
+    "executable gate evaluation or backtest unless explicitly authorized later",
+    "production integration",
+    "recommendation mutation",
+    "DB write"
+  ],
+
+  "no_db_write_confirmed": true,
+  "no_executable_gate_code_confirmed": true,
+  "no_prototype_code_confirmed": true,
+  "no_strategy_backtest_confirmed": true,
+  "no_registry_mutation_confirmed": true,
+  "no_recommendation_logic_change_confirmed": true,
+  "no_production_write_confirmed": true,
+  "no_controlled_apply_confirmed": true,
+  "no_deployment_confirmed": true,
+  "no_betting_advice_confirmed": true,
+  "no_improved_accuracy_claim_confirmed": true,
+  "passing_gate_is_not_approval_confirmed": true,
+  "final_decision": "P258D_D3_READ_ONLY_IMPLEMENTATION_PLAN_READY"
+}

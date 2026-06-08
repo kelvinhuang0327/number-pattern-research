@@ -34,7 +34,7 @@ Do not dispatch or execute from:
 | SQLite integrity | `ok` | [Confirmed] |
 | Replay table | `strategy_prediction_replays` | [Confirmed] |
 | Replay rows | 94,924 | [Confirmed] |
-| Draw rows (total draws table) | 64,361 | [Confirmed] |
+| Draw rows (total draws table) | 64,366 | [Confirmed 2026-06-08] — reconciled after legitimate post-draw backfill (`ingest_log.jsonl`: POWER_LOTTO 115000045 + DAILY_539 115000136–138, 2026/06/04–06). Per-lottery counts already aligned; integrity `ok`; replay rows unchanged at 94,924. Prior value 64,361 was stale documentation, not data drift. |
 | BIG_LOTTO replay rows (strategy_prediction_replays) | 24,140 | [Confirmed] — **replay rows, not draw rows**; 24140+34680+36104=94924 |
 | BIG_LOTTO raw draw rows (draws table, lottery_type='BIG_LOTTO') | 22,239 | [P255D Confirmed — updated from P254A/PR #360] — includes ADD_ON/DATE_FORMAT/SMALL_POOL/CANONICAL families |
 | BIG_LOTTO canonical main-draw rows (draws_big_lotto_canonical_main view) | 2,114 | [P255D Confirmed — updated from P254A/PR #360] — research/strategy/analysis canonical sample |

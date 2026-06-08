@@ -1,0 +1,203 @@
+{
+  "schema_version": "1.0",
+  "task_id": "P253E",
+  "classification": "HISTORICAL_DRAW_PARSER_SSOT_IMPLEMENTED",
+  "generated_at": "2026-06-08T11:30:56.047120",
+  "p253d_dependency_verified": {
+    "found": true,
+    "path": "outputs/research/p253d_historical_draw_parser_inventory_20260608.json",
+    "task_id": "P253D",
+    "classification": "HISTORICAL_DRAW_PARSER_INVENTORY_COMPLETE",
+    "classification_match": true
+  },
+  "implemented_module": "lottery_api/utils/historical_draw_parser.py",
+  "implemented_constants": [
+    "PARSER_SOURCE_TYPES — active_parser, official_dry_run_parser, controlled_apply_complete, historical_import_script, archived_or_exploratory_defer, unknown_needs_scope",
+    "POSITIONAL_STATUS — complete, partial, missing, not_applicable, blocked_by_schema, unknown",
+    "SORTING_SEMANTICS — sorted_numbers, positional_numbers, pool_draw, straight_play",
+    "POOL_DRAW_LOTTERY_TYPES — frozenset of pool-draw games",
+    "POSITIONAL_LOTTERY_TYPES — frozenset of straight-play games",
+    "MODULE_VERSION = '1.0'",
+    "SCHEMA_VERSION = '1.0'"
+  ],
+  "implemented_functions": [
+    {
+      "name": "normalize_lottery_type",
+      "signature": "(lottery_type: str) -> str",
+      "description": "Normalise lottery type aliases to canonical upper-case form",
+      "note": "Handles '3_star', '3star', 'three_star' → '3_STAR' etc."
+    },
+    {
+      "name": "validate_numbers_payload",
+      "signature": "(numbers, expected_len=None, allow_empty=False) -> dict",
+      "description": "Validate sorted canonical numbers list; warns if not sorted",
+      "note": "Never raises for ordinary invalid input; returns {valid, errors, warnings, numbers, length}"
+    },
+    {
+      "name": "validate_positional_payload",
+      "signature": "(numbers_positional, expected_len=None, allow_none=True) -> dict",
+      "description": "Validate positional draw-order numbers; None is valid for pool-draw types",
+      "note": "Returns {valid, errors, warnings, numbers_positional, is_null, length}"
+    },
+    {
+      "name": "compare_sorted_vs_positional",
+      "signature": "(numbers, numbers_positional) -> dict",
+      "description": "Compare sorted canonical vs positional draw-order; confirms draw order",
+      "note": "Returns {differs, same_multiset, draw_order_confirmed, position_matches, ...}"
+    },
+    {
+      "name": "classify_positional_coverage",
+      "signature": "(row_count, positional_non_null, lottery_type=None) -> str",
+      "description": "Classify coverage status: complete/partial/missing/not_applicable/unknown",
+      "note": "Pool-draw types return not_applicable; 100% → complete; 0% → missing"
+    },
+    {
+      "name": "parser_inventory_entry",
+      "signature": "(path, classification, lottery_types, description, ...) -> dict",
+      "description": "Build structured parser inventory entry with no_edge_claim=True",
+      "note": "Validates classification against PARSER_SOURCE_TYPES"
+    },
+    {
+      "name": "parser_summary",
+      "signature": "(lottery_type, parser_source_type, row_count, positional_non_null, ...) -> dict",
+      "description": "Canonical SSOT parser summary with full schema and no_edge_claim=True",
+      "note": "Primary entry point; includes sorted_storage_caveat, straight_play_position_frequency_supported"
+    }
+  ],
+  "module_safety": {
+    "exists": true,
+    "forbidden_imports_found": [],
+    "safe": true
+  },
+  "exercise_results": {
+    "has_active_parser": true,
+    "has_official_dry_run": true,
+    "has_controlled_apply": true,
+    "has_historical_import": true,
+    "has_complete_status": true,
+    "has_partial_status": true,
+    "has_missing_status": true,
+    "has_not_applicable": true,
+    "has_blocked_by_schema": true,
+    "has_sorted_numbers": true,
+    "has_positional_numbers": true,
+    "has_pool_draw": true,
+    "has_straight_play": true,
+    "normalize_3star_lower": true,
+    "normalize_3star_alias": true,
+    "normalize_4star": true,
+    "normalize_biglotto": true,
+    "normalize_daily539": true,
+    "normalize_deterministic": true,
+    "validate_numbers_ok": true,
+    "validate_numbers_empty_invalid": true,
+    "validate_numbers_json_string": true,
+    "validate_numbers_wrong_len": true,
+    "validate_positional_none_ok": true,
+    "validate_positional_list_ok": true,
+    "validate_positional_none_disallowed": true,
+    "compare_differs_true": true,
+    "compare_same_multiset": true,
+    "compare_draw_order_confirmed": true,
+    "compare_same_no_diff": true,
+    "compare_null_positional": true,
+    "classify_complete": true,
+    "classify_missing": true,
+    "classify_partial": true,
+    "classify_not_applicable": true,
+    "classify_4star_complete": true,
+    "inventory_entry_no_edge_claim": true,
+    "inventory_entry_canonical_types": true,
+    "summary_3star_no_edge": true,
+    "summary_3star_complete": true,
+    "summary_3star_straight_play": true,
+    "summary_3star_draw_confirmed": true,
+    "summary_3star_schema_version": true,
+    "summary_3star_diag_type": true,
+    "summary_biglotto_not_applicable": true,
+    "summary_biglotto_no_straight": true,
+    "summary_biglotto_is_pool": true,
+    "schema_field_schema_version": true,
+    "schema_field_diagnostic_type": true,
+    "schema_field_family_label": true,
+    "schema_field_lottery_type": true,
+    "schema_field_parser_source_type": true,
+    "schema_field_parser_source_type_description": true,
+    "schema_field_positional_status": true,
+    "schema_field_positional_status_description": true,
+    "schema_field_row_count": true,
+    "schema_field_positional_non_null": true,
+    "schema_field_positional_null": true,
+    "schema_field_positional_coverage_rate": true,
+    "schema_field_sorted_vs_positional_diff_count": true,
+    "schema_field_draw_order_confirmed": true,
+    "schema_field_is_pool_draw": true,
+    "schema_field_is_straight_play": true,
+    "schema_field_straight_play_position_frequency_supported": true,
+    "schema_field_sorted_storage_caveat": true,
+    "schema_field_no_edge_claim": true,
+    "schema_field_no_betting_advice": true,
+    "schema_field_assumptions": true,
+    "schema_field_limitations": true,
+    "determinism_ok": true
+  },
+  "parser_summary_schema": {
+    "required_fields": [
+      "schema_version",
+      "diagnostic_type",
+      "family_label",
+      "lottery_type",
+      "parser_source_type",
+      "parser_source_type_description",
+      "positional_status",
+      "positional_status_description",
+      "row_count",
+      "positional_non_null",
+      "positional_null",
+      "positional_coverage_rate",
+      "sorted_vs_positional_diff_count",
+      "draw_order_confirmed",
+      "is_pool_draw",
+      "is_straight_play",
+      "straight_play_position_frequency_supported",
+      "sorted_storage_caveat",
+      "no_edge_claim",
+      "no_betting_advice",
+      "assumptions",
+      "limitations"
+    ],
+    "diagnostic_type_fixed_value": "historical_draw_parser_ssot",
+    "no_edge_claim_always_true": true,
+    "no_betting_advice_always_true": true,
+    "vocabulary_alignment": "PARSER_SOURCE_TYPES / POSITIONAL_STATUS / SORTING_SEMANTICS close M1 vocabulary gap from P252B"
+  },
+  "validation_examples": {
+    "3_STAR_100pct": {
+      "lottery_type": "3_STAR",
+      "row_count": 5850,
+      "positional_non_null": 5850,
+      "expected_positional_status": "complete",
+      "sorted_vs_positional_diff_count": 4525,
+      "draw_order_confirmed": true
+    },
+    "4_STAR_100pct": {
+      "lottery_type": "4_STAR",
+      "row_count": 5850,
+      "positional_non_null": 5850,
+      "expected_positional_status": "complete",
+      "sorted_vs_positional_diff_count": 5427,
+      "draw_order_confirmed": true
+    },
+    "BIG_LOTTO_not_applicable": {
+      "lottery_type": "BIG_LOTTO",
+      "row_count": 22238,
+      "positional_non_null": 0,
+      "expected_positional_status": "not_applicable"
+    }
+  },
+  "no_db_write_confirmed": true,
+  "no_registry_mutation_confirmed": true,
+  "no_strategy_promotion_confirmed": true,
+  "no_betting_advice_confirmed": true,
+  "final_decision": "P253E complete. historical_draw_parser.py SSOT implemented at lottery_api/utils/historical_draw_parser.py. Vocabulary gap closed: PARSER_SOURCE_TYPES, POSITIONAL_STATUS, SORTING_SEMANTICS. 7 pure-Python functions cover M1 parser/positional/sorted-vs-positional gap. 3_STAR/4_STAR classified complete; BIG_LOTTO/POWER_LOTTO/DAILY_539 not_applicable. No DB write. No registry mutation. No strategy promotion. No betting advice. Edge-search conclusion unchanged: NO deployable prediction edge."
+}

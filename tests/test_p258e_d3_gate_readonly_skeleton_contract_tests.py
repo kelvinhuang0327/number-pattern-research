@@ -3,7 +3,7 @@ P258E — D3 gate read-only skeleton + contract tests.
 
 Verifies the skeleton boundary and prevents accidental execution:
 - GateStatus enum has exactly REJECTED + NOT_YET_REJECTED (no approval values)
-- validation stubs raise NotImplementedError (non-executing)
+- validators remain non-executing contract checks
 - skeleton modules import no DB / recommendation / production / registry /
   controlled_apply / deployment paths
 - no backtest loop or strategy-execution function exists
@@ -143,30 +143,76 @@ def test_candidate_input_has_required_fields():
 
 
 # ---------------------------------------------------------------------------
-# Validation stubs are non-executing
+# Validators remain non-executing
 # ---------------------------------------------------------------------------
 
 
-def test_validation_stubs_raise_not_implemented():
+def test_validation_functions_accept_synthetic_contracts_without_execution():
     from lottery_api.research.d3_gate import gate_validation
+    from lottery_api.research.d3_gate.schemas import (
+        CandidateInput,
+        GateOutput,
+        GateStatus,
+        MatchedNullFamily,
+        P257ABaselineInput,
+    )
 
-    stub_names = [
-        "validate_candidate_provenance_contract",
-        "validate_timestamp_cutoff_contract",
-        "validate_p257a_baseline_contract",
-        "validate_matched_null_family_contract",
-        "validate_correction_family_contract",
-        "validate_no_approval_status_contract",
+    candidate = CandidateInput(
+        candidate_id="synthetic_candidate",
+        lottery_type="POWER_LOTTO",
+        target_draw_id="115000046",
+        target_draw_date="2026-06-09",
+        n_bet_count=3,
+        numbers_per_bet=6,
+        feature_dimensionality=12,
+        regime_count_or_parameter_count=4,
+        window_schedule="short_mid_long",
+        generated_at="2026-06-08T18:00:00",
+        available_information_cutoff="2026-06-08T12:00:00",
+        random_seed=258,
+        source_artifact_path="outputs/research/synthetic_candidate.json",
+        provenance_digest="sha256:synthetic",
+    )
+    baseline = P257ABaselineInput(
+        baseline_id="p257a_best_n_bet",
+        lottery_type=candidate.lottery_type,
+        target_draw_id=candidate.target_draw_id,
+        n_bet_count=candidate.n_bet_count,
+        source_artifact_path="outputs/research/p257a_baseline.json",
+        baseline_digest="sha256:baseline",
+    )
+    null_family = MatchedNullFamily(
+        null_family_id="synthetic_matched_null",
+        matched_lottery_type=candidate.lottery_type,
+        matched_n_bet_count=candidate.n_bet_count,
+        matched_numbers_per_bet=candidate.numbers_per_bet,
+        matched_window_schedule=candidate.window_schedule,
+        matched_feature_dimensionality=candidate.feature_dimensionality,
+        matched_regime_or_parameter_count=candidate.regime_count_or_parameter_count,
+        null_generation_seed=259,
+        null_count=1000,
+        source_artifact_path="outputs/research/synthetic_null.json",
+    )
+    correction_family = {
+        "candidate_methods": ["synthetic_candidate"],
+        "null_variants": ["matched_binomial"],
+        "lottery_types": ["POWER_LOTTO"],
+        "n_bet_counts": [3],
+        "metrics": ["paired_win_rate", "null_percentile"],
+        "windows": ["short", "mid", "long"],
+    }
+
+    results = [
+        gate_validation.validate_candidate_provenance_contract(candidate),
+        gate_validation.validate_timestamp_cutoff_contract(candidate),
+        gate_validation.validate_p257a_baseline_contract(candidate, baseline),
+        gate_validation.validate_matched_null_family_contract(candidate, null_family),
+        gate_validation.validate_correction_family_contract(correction_family),
+        gate_validation.validate_no_approval_status_contract(
+            GateOutput(gate_decision=GateStatus.NOT_YET_REJECTED)
+        ),
     ]
-    for name in stub_names:
-        assert hasattr(gate_validation, name), f"Missing validation stub: {name}"
-        stub = getattr(gate_validation, name)
-        with pytest.raises(NotImplementedError):
-            # call with Nones — stub must raise before using args
-            import inspect
-
-            argcount = len(inspect.signature(stub).parameters)
-            stub(*([None] * argcount))
+    assert all(result.checked_fields for result in results)
 
 
 # ---------------------------------------------------------------------------

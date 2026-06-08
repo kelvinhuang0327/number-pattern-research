@@ -1,0 +1,110 @@
+{
+  "schema_version": "1.0",
+  "task_id": "P258F",
+  "classification": "D3_ADVERSARIAL_NULL_SURVIVOR_GATE_READ_ONLY_CONTRACT_VALIDATORS",
+  "generated_date": "2026-06-08",
+  "task_type": "Type C small implementation - read-only contract validators only (no DB write, no executable gate, no backtest)",
+  "source_decision": "P258E_D3_READ_ONLY_SKELETON_CONTRACT_TESTS_READY - implement the existing validation stubs as pure contract checks only",
+  "phase0_summary": {
+    "repo": "/Users/kelvin/Kelvin-WorkSpace/LotteryNew",
+    "base_branch": "main",
+    "dev_branch": "codex/p258f-d3-readonly-contract-validators",
+    "main_head_at_branch": "111b0b711441f78b8c4eff8b245a16a7e2f7fd16",
+    "p258e_pr": "PR #376 merged",
+    "p258e_artifacts_present": true,
+    "p258e_skeleton_present": true
+  },
+  "d3_mandatory_interpretation": {
+    "is_validation_gate_not_predictor": true,
+    "contract_validation_is_not_strategy_evaluation": true,
+    "cannot_claim_accuracy_improvement": true,
+    "not_yet_rejected_is_not_approval": true,
+    "passing_validators_does_not_allow_production_or_recommendation_use": true,
+    "cannot_touch_recommendation_logic": true,
+    "cannot_write_db": true,
+    "cannot_trigger_controlled_apply_or_deployment": true
+  },
+  "validators_implemented": [
+    "validate_candidate_provenance_contract",
+    "validate_timestamp_cutoff_contract",
+    "validate_p257a_baseline_contract",
+    "validate_matched_null_family_contract",
+    "validate_correction_family_contract",
+    "validate_no_approval_status_contract"
+  ],
+  "validation_result_semantics": {
+    "success": "Returns an immutable ValidationResult naming the validator and checked fields. Success means only that the provided synthetic/read-only contract object is structurally complete.",
+    "failure": "Raises ContractValidationError with a deterministic message.",
+    "non_semantics": "Success is not gate survival, not candidate scoring, not improved prediction accuracy, not approval, not production readiness, and not recommendation permission."
+  },
+  "checks_implemented": {
+    "candidate_provenance": [
+      "required candidate/provenance fields are present and non-empty",
+      "N-bet count, numbers per bet, feature dimensionality, and parameter count are positive",
+      "random_seed is present as an integer"
+    ],
+    "timestamp_cutoff": [
+      "available_information_cutoff parses as a timestamp",
+      "cutoff is not after generated_at",
+      "cutoff precedes target_draw_date"
+    ],
+    "p257a_baseline": [
+      "baseline required fields are present",
+      "baseline lottery_type, target_draw_id, and n_bet_count match the candidate"
+    ],
+    "matched_null_family": [
+      "matched-null required fields are present",
+      "matched lottery, N, numbers per bet, window schedule, feature dimensionality, and parameter count match the candidate",
+      "null_count is positive",
+      "null_generation_seed is declared as an integer without generating nulls"
+    ],
+    "correction_family": [
+      "candidate_methods, null_variants, lottery_types, n_bet_counts, metrics, and windows are declared",
+      "all correction-family declarations are non-empty collections"
+    ],
+    "no_approval_status": [
+      "GateStatus enum remains exactly REJECTED and NOT_YET_REJECTED",
+      "APPROVED, PROMOTED, PRODUCTION_READY, and RECOMMENDED are rejected"
+    ]
+  },
+  "proof_no_executable_gate_evaluation": "No run_gate/evaluate/orchestrator module or candidate scoring path exists. Validators inspect metadata only and return ValidationResult or raise ContractValidationError.",
+  "proof_no_null_generation": "No null_factory module exists. The matched-null validator checks declared metadata such as null_count and null_generation_seed but does not generate any null samples.",
+  "proof_no_pvalue_statistical_test_or_backtest": "No p-value computation, paired statistical test, bootstrap, McNemar test, draw loop, strategy execution, or backtest function exists in the P258F validators.",
+  "proof_no_forbidden_paths_touched": "gate_validation.py imports only stdlib helpers and local schemas. It imports no DB, recommendation, production, registry, controlled_apply, deployment, backtest, fetcher, network, random, numpy, or scipy modules.",
+  "gate_status_enum": {
+    "allowed_values": ["REJECTED", "NOT_YET_REJECTED"],
+    "forbidden_values": ["APPROVED", "PROMOTED", "PRODUCTION_READY", "RECOMMENDED"],
+    "not_yet_rejected_semantics": "NOT_YET_REJECTED is not approval. It remains observation-only and cannot authorize recommendation or production use."
+  },
+  "next_allowed_task": {
+    "task_id": "P258G",
+    "title": "D3 synthetic-fixture-only contract validator hardening",
+    "type": "read-only synthetic-fixture hardening only; no real candidate methods, no gate evaluation, no null generation, no p-values, no paired tests, no backtest",
+    "precondition": "P258F merged and separate explicit authorization for P258G"
+  },
+  "forbidden_next_tasks": [
+    "executable gate evaluation/backtest",
+    "running D3 on real candidate methods",
+    "production integration",
+    "recommendation mutation",
+    "DB write",
+    "treating NOT_YET_REJECTED as APPROVED"
+  ],
+  "no_db_write_confirmed": true,
+  "no_executable_gate_evaluation_confirmed": true,
+  "no_null_generation_confirmed": true,
+  "no_pvalue_or_statistical_test_confirmed": true,
+  "no_paired_test_confirmed": true,
+  "no_backtest_confirmed": true,
+  "no_real_candidate_execution_confirmed": true,
+  "no_registry_mutation_confirmed": true,
+  "no_recommendation_logic_change_confirmed": true,
+  "no_production_write_confirmed": true,
+  "no_controlled_apply_confirmed": true,
+  "no_deployment_confirmed": true,
+  "no_betting_advice_confirmed": true,
+  "no_improved_accuracy_claim_confirmed": true,
+  "passing_validators_is_not_approval_confirmed": true,
+  "d3_is_not_a_prediction_model_confirmed": true,
+  "final_decision": "P258F_D3_READ_ONLY_CONTRACT_VALIDATORS_READY"
+}

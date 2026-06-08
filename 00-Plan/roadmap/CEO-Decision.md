@@ -2,6 +2,12 @@
 
 ---
 
+## P258F Completion Note — 2026-06-08
+
+**P258F complete per explicit authorization.** D3 gate read-only CONTRACT VALIDATORS are ready: candidate/provenance completeness, timestamp cutoff ordering, P257A baseline alignment, matched-null metadata alignment, correction-family declarations, and no-approval status safety. **Contract validation only — no executable gate evaluation, no null generation, no paired tests, no p-values/statistical tests, no backtest, no DB write, no recommendation/registry/production/controlled_apply/deployment integration.** Passing validators is not approval and does not imply improved prediction accuracy. Next: P258G synthetic-fixture-only contract validator hardening requires separate explicit authorization.
+
+---
+
 ## P258D Completion Note — 2026-06-08
 
 **P258D complete per pre-authorized protocol.** D3 gate read-only IMPLEMENTATION PLAN ready — module boundaries (6 layers with an import-ban on recommendation/registry/production/controlled_apply/deployment/DB-write), proposed future P258E module names (NOT created now), data/provenance/validation contracts, a future P258E artifact schema (`gate_decision ∈ {REJECTED, NOT_YET_REJECTED}`, where **NOT_YET_REJECTED is explicitly not approval**), an 8-point future test plan, and 8 STOP gates. **Plan only — no executable gate, no backtest, no DB write; the gate may never become an approval gate.** 26/26 P258D tests PASS. No DB write / prototype / registry / recommendation / production change. Next: P258E read-only skeleton / contract tests only — requires separate explicit authorization; executable gate evaluation/backtest remains forbidden without it.

@@ -1,0 +1,119 @@
+{
+  "schema_version": "1.0",
+  "task_id": "P258E",
+  "classification": "D3_ADVERSARIAL_NULL_SURVIVOR_GATE_READ_ONLY_SKELETON_CONTRACT_TESTS",
+  "generated_date": "2026-06-08",
+  "task_type": "Type C small additive implementation — non-executing skeleton + contract tests only (no DB write, no executable gate, no backtest)",
+  "source_decision": "P258D_D3_READ_ONLY_IMPLEMENTATION_PLAN_READY — instantiate the P258D-proposed skeleton as non-executing schema/stub modules",
+  "phase0_summary": {
+    "repo": "/Users/kelvin/Kelvin-WorkSpace/LotteryNew",
+    "branch": "p258e-d3-gate-readonly-skeleton-contract-tests",
+    "main_head_at_branch": "bd3a517b425405842e2f7df085b0fe7095c5282e",
+    "p258d_pr": "PR #375 merged (CI green)",
+    "db_integrity": "ok",
+    "replay_rows": 94924,
+    "draw_rows_total": 64366,
+    "p258d_artifacts_present": true
+  },
+
+  "d3_mandatory_interpretation": {
+    "is_validation_gate_not_predictor": true,
+    "cannot_claim_accuracy_improvement": true,
+    "cannot_approve_production": true,
+    "passing_means_only_not_yet_rejected_never_approved": true,
+    "cannot_touch_recommendation_logic": true,
+    "cannot_write_db": true,
+    "cannot_trigger_controlled_apply_or_deployment": true,
+    "p258e_is_skeleton_and_contract_tests_only": true
+  },
+
+  "skeleton_files_created": [
+    "lottery_api/research/__init__.py",
+    "lottery_api/research/d3_gate/__init__.py",
+    "lottery_api/research/d3_gate/schemas.py",
+    "lottery_api/research/d3_gate/gate_validation.py"
+  ],
+
+  "skeleton_path_rationale": "Path lottery_api/research/d3_gate/ was explicitly proposed by the merged P258D plan. It is a brand-new, currently-absent subpackage; nothing imports it; the production app does not load it at startup. Files use stdlib only (dataclasses, enum, typing) and contain no DB/production/recommendation imports.",
+
+  "contract_tests_added": [
+    "tests/test_p258e_d3_gate_readonly_skeleton_contract_tests.py"
+  ],
+
+  "gate_status_enum": {
+    "module": "lottery_api/research/d3_gate/schemas.py",
+    "name": "GateStatus",
+    "allowed_values": ["REJECTED", "NOT_YET_REJECTED"],
+    "explicitly_absent_values": ["APPROVED", "PROMOTED", "PRODUCTION_READY", "RECOMMENDED"],
+    "not_yet_rejected_semantics": "NOT_YET_REJECTED is explicitly NOT approval; candidate remains observation-only pending separate human-authorized prototype + later corrected-OOS confirmation."
+  },
+
+  "schemas_defined": {
+    "CandidateInput": ["candidate_id", "lottery_type", "target_draw_id", "target_draw_date", "n_bet_count", "numbers_per_bet", "feature_dimensionality", "regime_count_or_parameter_count", "window_schedule", "generated_at", "available_information_cutoff", "random_seed", "source_artifact_path", "provenance_digest"],
+    "P257ABaselineInput": ["baseline_id", "lottery_type", "target_draw_id", "n_bet_count", "source_artifact_path", "baseline_digest"],
+    "MatchedNullFamily": ["null_family_id", "matched_lottery_type", "matched_n_bet_count", "matched_numbers_per_bet", "matched_window_schedule", "matched_feature_dimensionality", "matched_regime_or_parameter_count", "null_generation_seed", "null_count", "source_artifact_path"],
+    "GateOutput": ["gate_decision", "rejection_reasons", "not_yet_rejected_reasons", "paired_baseline_summary", "null_percentile_summary", "correction_family_summary", "short_mid_long_summary", "leakage_provenance_summary", "audit_trail"]
+  },
+
+  "validation_stubs": {
+    "module": "lottery_api/research/d3_gate/gate_validation.py",
+    "names": [
+      "validate_candidate_provenance_contract",
+      "validate_timestamp_cutoff_contract",
+      "validate_p257a_baseline_contract",
+      "validate_matched_null_family_contract",
+      "validate_correction_family_contract",
+      "validate_no_approval_status_contract"
+    ],
+    "behavior": "Every stub raises NotImplementedError with a planning-only message. No real evaluation, scoring, null generation, paired testing, or p-value computation."
+  },
+
+  "proof_no_executable_gate": "No orchestrator/evaluator module was created. No function runs the gate, scores a candidate, generates nulls, computes p-values, or loops over draws. The only callable functions are validation stubs that immediately raise NotImplementedError.",
+  "proof_no_backtest": "No backtest loop, no strategy execution function, no draw iteration. schemas.py is pure dataclass/enum definitions; gate_validation.py is NotImplementedError stubs.",
+  "proof_no_forbidden_paths_touched": "Skeleton modules import only stdlib (dataclasses, enum, typing) and intra-package schemas. No import of DB, recommendation, registry, production, controlled_apply, or deployment code. Verified by contract tests scanning module source for forbidden import substrings.",
+
+  "stop_gates_inherited_from_p258d": [
+    "missing_p257a_baseline",
+    "missing_candidate_provenance",
+    "missing_timestamp_cutoff",
+    "unmatched_null_family",
+    "unregistered_metric_window_or_n_value",
+    "production_or_recommendation_code_touched",
+    "db_write_required",
+    "broad_package_or_config_change_required"
+  ],
+
+  "next_allowed_task": {
+    "task_id": "P258F",
+    "title": "D3 gate read-only CONTRACT VALIDATOR implementation only (if explicitly authorized later)",
+    "type": "read-only contract validator implementation — implements the validation stubs as pure schema/contract checks ONLY; still no scoring, null generation, paired tests, p-values, candidate evaluation, or backtest",
+    "precondition": "P258E skeleton merged AND separate explicit authorization for P258F",
+    "note": "P258F may implement only the contract/schema validation logic (e.g., field presence, timestamp ordering, N-bet matching) — NOT the statistical gate evaluation."
+  },
+
+  "forbidden_next_tasks": [
+    "executable gate evaluation or backtest",
+    "production integration",
+    "recommendation mutation",
+    "DB write",
+    "treating NOT_YET_REJECTED as APPROVED"
+  ],
+
+  "no_db_write_confirmed": true,
+  "no_executable_gate_confirmed": true,
+  "no_backtest_confirmed": true,
+  "no_null_generation_confirmed": true,
+  "no_paired_test_confirmed": true,
+  "no_pvalue_computation_confirmed": true,
+  "no_prototype_strategy_code_confirmed": true,
+  "no_registry_mutation_confirmed": true,
+  "no_recommendation_logic_change_confirmed": true,
+  "no_production_write_confirmed": true,
+  "no_controlled_apply_confirmed": true,
+  "no_deployment_confirmed": true,
+  "no_betting_advice_confirmed": true,
+  "no_improved_accuracy_claim_confirmed": true,
+  "passing_gate_is_not_approval_confirmed": true,
+  "d3_is_not_a_prediction_model_confirmed": true,
+  "final_decision": "P258E_D3_READ_ONLY_SKELETON_CONTRACT_TESTS_READY"
+}

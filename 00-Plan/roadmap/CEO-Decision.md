@@ -2,6 +2,12 @@
 
 ---
 
+## P258M API Contract Decision — 2026-06-09
+
+**P258M complete per explicit authorization.** D3 Strategy Status Audit artifact-backed API contract defines: proposed route `GET /api/replay/d3-strategy-status-audit`, 11 top-level payload fields (schema_version/generated_at/source_artifacts/route_path/page_title/summary/filters/rows/safety_disclaimers/forbidden_actions_confirmed/next_allowed_task), 15 per-row fields (including mandatory d3_not_approval_warning/no_prediction_claim/no_betting_advice on every row), data source policy (artifact-backed only for first implementation — no DB query), 5 allowed D3 contract statuses (NOT_EVALUATED_BY_D3/CONTRACT_READY/CONTRACT_BLOCKED/NOT_APPLICABLE_HISTORICAL_ARTIFACT/NOT_APPLICABLE_NO_REPLAY), 5 forbidden statuses (APPROVED/PROMOTED/PRODUCTION_READY/RECOMMENDED/PREDICTIVE_EDGE_CONFIRMED), 6 filters, 5 required safety disclaimers. **API contract only — no route implemented, no UI, no real candidate methods, no executable gate, no null generation, no p-values, no DB query/write.** D3 is not a prediction model. NOT_YET_REJECTED is not approval. Next: P258N read-only artifact-backed API route implementation only requires separate explicit authorization.
+
+---
+
 ## P258L Page Plan Decision — 2026-06-09
 
 **P258L complete per explicit authorization.** D3 Strategy Status / Contract Audit page plan defines: page title, 4-item purpose list (lifecycle/evidence status display, D3 contract-readiness display separately, approval-misinterpretation prevention, historical-only disclaimer), 4 read-only data sources (strategy registry, P251 evidence dashboard, P257 best-strategy overview, P258 artifact chain), 15 required row fields (including mandatory `d3_not_approval_warning`/`no_prediction_claim`/`no_betting_advice` on every row), 5 allowed D3 contract statuses (NOT_EVALUATED_BY_D3/CONTRACT_READY/CONTRACT_BLOCKED/NOT_APPLICABLE_HISTORICAL_ARTIFACT/NOT_APPLICABLE_NO_REPLAY), 5 forbidden statuses (APPROVED/PROMOTED/PRODUCTION_READY/RECOMMENDED/PREDICTIVE_EDGE_CONFIRMED), 6 page filters, required safety copy. **Plan only — no UI, no API route, no real candidate methods, no executable gate, no null generation, no p-values, no DB write.** Next: P258M read-only artifact-backed API contract only requires separate explicit authorization.

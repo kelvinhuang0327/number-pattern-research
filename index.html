@@ -500,6 +500,14 @@
         .p259a-rcat-has    { background:#1a3c2a;color:#3fb950; }
         .p259a-rcat-none   { background:#161b22;color:#8b949e; }
         .p259a-rcat-art    { background:#1c1c1c;color:#6e7681; }
+        /* P262B — registry status badges + coverage warning chips */
+        .p262b-reg-badge { display:inline-block;padding:1px 7px;border-radius:10px;font-size:11px;font-weight:600;white-space:nowrap; }
+        .p262b-reg-registered { background:#16304a;color:#58a6ff;border:1px solid #1f6feb; }
+        .p262b-reg-orphan     { background:#3c2a00;color:#e3a008;border:1px solid #bb8009; }
+        .p262b-reg-mismatch   { background:#3c1a1a;color:#f85149;border:1px solid #da3633; }
+        .p262b-reason { display:inline-block;font-size:11px;color:#d29922;white-space:normal;line-height:1.5; }
+        .p262b-reason--ok { color:#3fb950; }
+        .p262b-reason--warn { color:#f0883e; }
         /* P260A/P260C — circular number tokens for replay detail (legacy white/green style) */
         .replay-number-token { display:inline-flex;align-items:center;justify-content:center;width:26px;height:26px;margin:1px 2px;border-radius:50%;font-size:11px;font-family:monospace;font-weight:700;border:1px solid #d0d7de;background:#ffffff;color:#1f2328; }
         .replay-number-token--hit { background:#28a745;border-color:#28a745;color:#ffffff; }
@@ -2935,7 +2943,7 @@
         <section id="p259a-replay-overview-section" class="section">
           <div class="section-header">
             <h2>📋 歷史回放總覽 <span style="font-size:0.7em;color:#8b949e;font-weight:400">History Replay Overview</span></h2>
-            <p>查詢所有彩種、所有策略、所有注數的回放狀態 — 預設顯示 1 注策略</p>
+            <p>查詢所有彩種、所有策略、所有注數的回放狀態 — <b>P262B：</b>預設「涵蓋模式」顯示所有 known strategies（含未註冊 orphan、註冊但無 replay 資料、registry/lottery 不一致），並標示是否可開明細與缺漏原因</p>
           </div>
           <div class="section-content">
 
@@ -2994,11 +3002,15 @@
                     <th>策略名稱</th>
                     <th>strategy_id</th>
                     <th>注數</th>
+                    <th>註冊狀態</th>
                     <th>replay 期數</th>
+                    <th>不重複期數</th>
+                    <th>可用注 index</th>
                     <th>起訖 target_draw</th>
                     <th>最近 target_draw</th>
                     <th>回放狀態</th>
                     <th>生命週期</th>
+                    <th>缺漏原因 / 警告</th>
                     <th>查看明細</th>
                   </tr>
                 </thead>
@@ -4766,7 +4778,9 @@
   'use strict';
 
   var _p259aData = null;
-  var _p259aBetIndex = 1;  // default bet_index=1
+  // P262B: default to coverage view (all bet counts) so multi-bet strategies are
+  // no longer hidden by the legacy bet_index=1 filter. Bet tabs still narrow it.
+  var _p259aBetIndex = 0;
 
   var LOTTERY_LABELS = {
     'DAILY_539': '今彩539',
@@ -4781,12 +4795,44 @@
       'REJECTED':    'p259a-lc-rejected',
       'OBSERVATION': 'p259a-lc-observation',
       'RETIRED':     'p259a-lc-retired',
+      'UNREGISTERED':'p259a-lc-retired',
     }[lc] || 'p259a-lc-retired';
     var icons = {
       'ONLINE': '🟢', 'OFFLINE': '⚫', 'REJECTED': '🔴',
-      'OBSERVATION': '🟡', 'RETIRED': '⚪',
+      'OBSERVATION': '🟡', 'RETIRED': '⚪', 'UNREGISTERED': '❔',
     };
     return '<span class="p259a-lc-badge ' + cls + '">' + (icons[lc] || '') + ' ' + lc + '</span>';
+  }
+
+  // P262B: registry status badge (registered / unregistered_orphan / mismatch).
+  function regStatusBadge(status) {
+    if (status === 'unregistered_orphan') {
+      return '<span class="p262b-reg-badge p262b-reg-orphan" title="有 replay rows 但未在策略登錄表">⚠ orphan</span>';
+    }
+    if (status === 'registry_lottery_mismatch') {
+      return '<span class="p262b-reg-badge p262b-reg-mismatch" title="rows 的彩種不在登錄表 supported_lottery_types">⚠ 彩種不符</span>';
+    }
+    return '<span class="p262b-reg-badge p262b-reg-registered">已登錄</span>';
+  }
+
+  // P262B: short human label for missing_reason / coverage_warning.
+  var REASON_LABELS = {
+    'registered_without_rows': '已登錄但無 replay 資料',
+    'artifact_only':           '僅 artifact / rejected',
+    'observation_no_data':     'OBSERVATION 無資料',
+    'no_production_replay':    '無 production replay',
+  };
+  function reasonCell(row) {
+    if (row.coverage_warning) {
+      return '<span class="p262b-reason p262b-reason--warn" title="' +
+        String(row.coverage_warning).replace(/"/g, '&quot;') + '">' +
+        (row.registry_status === 'unregistered_orphan' ? '未登錄（有資料）' : '彩種登錄不一致（有資料）') +
+        '</span>';
+    }
+    if (row.missing_reason) {
+      return '<span class="p262b-reason">' + (REASON_LABELS[row.missing_reason] || row.missing_reason) + '</span>';
+    }
+    return '<span class="p262b-reason p262b-reason--ok">✓ 完整</span>';
   }
 
   function rcatBadge(rcat, totalRows) {
@@ -4820,10 +4866,18 @@
     var hasRows = filtered.filter(function(r) { return r.has_production_replay; }).length;
     var noRows = filtered.filter(function(r) { return !r.has_production_replay && r.replay_status_category !== 'artifact_only'; }).length;
     var artOnly = filtered.filter(function(r) { return r.replay_status_category === 'artifact_only'; }).length;
+    // P262B coverage counts
+    var orphanN = filtered.filter(function(r) { return r.registry_status === 'unregistered_orphan'; }).length;
+    var mismatchN = filtered.filter(function(r) { return r.registry_status === 'registry_lottery_mismatch'; }).length;
+    var strategyIds = {};
+    filtered.forEach(function(r) { strategyIds[r.strategy_id] = 1; });
     summaryBar.innerHTML =
+      '<span style="color:#58a6ff">策略數：' + Object.keys(strategyIds).length + '</span>' +
       '<span style="color:#3fb950">有回放：' + hasRows + '</span>' +
       '<span style="color:#8b949e">無 production replay：' + noRows + '</span>' +
       '<span style="color:#6e7681">僅 artifact：' + artOnly + '</span>' +
+      '<span style="color:#e3a008">未登錄 orphan：' + orphanN + '</span>' +
+      '<span style="color:#f85149">彩種不符：' + mismatchN + '</span>' +
       '<span style="color:#c9d1d9">共 ' + filtered.length + ' 筆</span>';
 
     if (filtered.length === 0) {
@@ -4838,9 +4892,13 @@
       var drawRange = r.min_target_draw && r.max_target_draw
         ? r.min_target_draw + ' – ' + r.max_target_draw
         : '—';
-      // P259B: enable 查看明細 only when the strategy has production replay rows.
+      // P262B: enable 查看明細 iff can_open_detail (== has replay rows, incl orphans).
+      // Falls back to the legacy P259B condition when the field is absent.
+      var canOpen = (r.can_open_detail !== undefined)
+        ? r.can_open_detail
+        : (r.has_production_replay && r.total_replay_rows > 0);
       var detailBtn;
-      if (r.has_production_replay && r.total_replay_rows > 0) {
+      if (canOpen) {
         detailBtn = '<button class="p259b-detail-btn" ' +
           'data-lottery="' + r.lottery_type + '" ' +
           'data-strategy="' + r.strategy_id + '" ' +
@@ -4849,18 +4907,27 @@
           'style="padding:2px 10px;font-size:11px;border-radius:3px;border:1px solid #1f6feb;background:#0d1117;color:#58a6ff;cursor:pointer" ' +
           'title="查看此策略每一期的預測與開獎比對（分頁查詢）">查看明細</button>';
       } else {
-        detailBtn = '<button disabled style="padding:2px 10px;font-size:11px;border-radius:3px;border:1px solid #30363d;background:#0d1117;color:#484f58;cursor:not-allowed" title="此策略無 production replay 資料，無明細可查">查看明細</button>';
+        var disReason = REASON_LABELS[r.missing_reason] || '此策略無 production replay 資料，無明細可查';
+        detailBtn = '<button disabled style="padding:2px 10px;font-size:11px;border-radius:3px;border:1px solid #30363d;background:#0d1117;color:#484f58;cursor:not-allowed" title="' + String(disReason).replace(/"/g, '&quot;') + '">查看明細</button>';
       }
+      var availBets = r.available_bet_indices || [];
+      var availCell = availBets.length
+        ? availBets.join('/') + ' <span style="color:#6e7681">(max ' + (r.max_bet_index || 0) + ')</span>'
+        : '—';
       html += '<tr>' +
         '<td>' + (LOTTERY_LABELS[r.lottery_type] || r.lottery_type) + '</td>' +
         '<td style="text-align:left">' + r.strategy_name + '</td>' +
         '<td style="font-family:monospace;font-size:11px;color:#8b949e">' + r.strategy_id + '</td>' +
         '<td>' + r.derived_bet_count + ' 注</td>' +
+        '<td>' + regStatusBadge(r.registry_status) + '</td>' +
         '<td>' + (r.total_replay_rows || '—') + '</td>' +
+        '<td>' + (r.distinct_draw_count || '—') + '</td>' +
+        '<td style="font-size:11px;color:#8b949e">' + availCell + '</td>' +
         '<td style="font-size:11px;color:#8b949e">' + drawRange + '</td>' +
         '<td style="font-size:11px;color:#8b949e">' + (r.latest_target_draw || '—') + '</td>' +
         '<td>' + rcatBadge(r.replay_status_category, r.total_replay_rows) + '</td>' +
         '<td>' + lcBadge(r.lifecycle_status) + '</td>' +
+        '<td>' + reasonCell(r) + '</td>' +
         '<td>' + detailBtn + '</td>' +
         '</tr>';
     });
@@ -4876,7 +4943,8 @@
     if (emptyEl)   emptyEl.style.display   = 'none';
 
     var bi = (betIndex === undefined) ? _p259aBetIndex : betIndex;
-    var url = (window.API_BASE || '') + '/api/replay/history-overview?bet_index=' + bi;
+    // P262B: coverage_mode=true surfaces orphan / mismatch / no-row strategies too.
+    var url = (window.API_BASE || '') + '/api/replay/history-overview?coverage_mode=true&bet_index=' + bi;
 
     fetch(url)
       .then(function(r) { return r.json(); })
@@ -4894,7 +4962,18 @@
       });
   }
 
+  // P262B: move the active bet tab to a given data-bet value (runtime only).
+  function setActiveBetTab(bet) {
+    document.querySelectorAll('.p259a-bet-tab').forEach(function(b) {
+      b.classList.toggle('p259a-bet-tab-active', parseInt(b.dataset.bet, 10) === bet);
+    });
+  }
+
   function p259aInit() {
+    // P262B: default the view to 全部注數 (data-bet=0) so multi-bet strategies are
+    // visible by default; the static HTML keeps data-bet=1 active for P259A.
+    setActiveBetTab(_p259aBetIndex);
+
     // Bet count tab clicks
     document.querySelectorAll('.p259a-bet-tab').forEach(function(btn) {
       btn.addEventListener('click', function() {

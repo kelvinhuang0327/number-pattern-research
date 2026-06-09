@@ -2,6 +2,12 @@
 
 ---
 
+## P258H Completion Note — 2026-06-09
+
+**P258H complete per explicit authorization.** D3 gate read-only contract-validation integration plan is ready. Plan defines: validator invocation order (6 validators, fail-closed — no-approval-status check runs first, then candidate provenance, timestamp cutoff, P257A baseline alignment, matched-null metadata alignment, correction-family declaration), allowed input contract boundaries (5 contracts), future validation report schema, import boundary plan (only `schemas.py` and `gate_validation.py` may be imported by future integration; numpy/scipy/random/DB/backtest/null_factory/gate_statistics/gate_orchestrator all forbidden), 7 STOP gates (real candidates, executable gate, null generation, p-values, paired tests, DB/production, NOT_YET_REJECTED-as-APPROVED), and future task split (P258I skeleton only, requires separate explicit authorization). **Plan only — no real candidate methods, no executable gate evaluation, no null generation, no p-values, no paired tests, no backtest, no DB write, no recommendation/registry/production/controlled_apply/deployment integration.** D3 is not a prediction model. Contract validation is not strategy evaluation. Passing validators is not approval and does not imply improved prediction accuracy. NOT_YET_REJECTED is not approval. Next: P258I read-only contract-validation integration skeleton only requires separate explicit authorization.
+
+---
+
 ## P258G Completion Note — 2026-06-08
 
 **P258G complete per explicit authorization.** D3 gate synthetic-fixture-only contract validator hardening is ready: synthetic fixture builders and edge-case tests cover complete valid contracts, missing/invalid candidate fields, timestamp violations, baseline mismatches, matched-null mismatches, correction-family omissions, and forbidden statuses. **Synthetic fixtures only — no real candidate methods, no executable gate evaluation, no null generation, no paired tests, no p-values/statistical tests, no backtest, no DB write, no recommendation/registry/production/controlled_apply/deployment integration.** Passing validators is not approval and does not imply improved prediction accuracy. Next: P258H read-only contract-validation integration plan only requires separate explicit authorization.

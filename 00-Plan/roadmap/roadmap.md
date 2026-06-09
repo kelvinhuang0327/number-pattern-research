@@ -815,8 +815,9 @@ P257C_BEST_STRATEGY_OVERVIEW_RUNTIME_SMOKE_GOVERNANCE_CLOSEOUT_COMPLETE_20260608
 - **P258E** (PR #376 merged): D3 gate read-only SKELETON / contract tests complete — `GateStatus` limited to `REJECTED` / `NOT_YET_REJECTED`, schema dataclasses, and validation-stub package created under `lottery_api/research/d3_gate/`. No executable gate evaluation, no backtest, no DB write. `P258E_D3_READ_ONLY_SKELETON_CONTRACT_TESTS_READY`.
 - **P258F**: D3 gate read-only CONTRACT VALIDATORS ready — schema/provenance/timestamp/baseline/matched-null/correction-family/no-approval checks only. No executable gate evaluation, no null generation, no p-values/statistical tests, no backtest, no DB/recommendation/registry/production/controlled_apply/deployment. Passing validators is not approval and not an accuracy claim. `P258F_D3_READ_ONLY_CONTRACT_VALIDATORS_READY`.
 - **P258G** (PR #377 merged): synthetic-fixture-only contract validator hardening. Synthetic fixtures only; no real candidate methods, no executable gate evaluation, no null generation, no p-values, no paired tests, no backtest, no DB write. `P258G_D3_SYNTHETIC_FIXTURE_VALIDATOR_HARDENING_READY`.
-- **P258H** (next): read-only contract-validation integration plan only. No real candidate methods, no executable gate evaluation, no null generation, no p-values, no paired tests, no backtest, no DB write. Requires separate explicit authorization.
+- **P258H** (2026-06-09): read-only contract-validation integration plan only. Defines validator invocation order (6 validators, fail-closed), allowed input contract boundaries (5 contracts: candidate provenance, P257A baseline, matched-null metadata, correction-family declaration, status/result), future validation report schema, import boundary plan, 7 STOP gates, and future task split. No real candidate methods, no executable gate evaluation, no null generation, no p-values, no paired tests, no backtest, no DB write. 74/74 tests PASS. `P258H_D3_READ_ONLY_CONTRACT_VALIDATION_INTEGRATION_PLAN_READY`.
+- **P258I** (next): read-only contract-validation integration skeleton only. Requires separate explicit authorization.
 
 ```text
-P258G_D3_SYNTHETIC_FIXTURE_VALIDATOR_HARDENING_READY_20260608
+P258H_D3_READ_ONLY_CONTRACT_VALIDATION_INTEGRATION_PLAN_READY_20260609
 ```

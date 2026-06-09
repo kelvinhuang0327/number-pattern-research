@@ -1,7 +1,7 @@
 # Current State — LotteryNew
 
-**Last Reviewed:** 2026-06-08 Asia/Taipei (P258G D3 synthetic-fixture-only validator hardening READY — synthetic literal fixtures/edge-case tests only; no real candidate methods, no executable gate, no null generation, no p-values/statistical tests, no backtest, no DB/recommendation/registry/production/controlled_apply/deployment; passing validators is not approval and not an accuracy claim; next P258H integration plan only requires separate authorization)
-**State Marker:** `P258G_D3_SYNTHETIC_FIXTURE_VALIDATOR_HARDENING_READY`
+**Last Reviewed:** 2026-06-09 Asia/Taipei (P258H D3 read-only contract-validation integration plan READY — plan/artifact/tests only; no real candidate methods, no executable gate, no null generation, no p-values/statistical tests, no backtest, no DB/recommendation/registry/production/controlled_apply/deployment; passing validators is not approval and not an accuracy claim; next P258I read-only contract-validation integration skeleton only requires separate authorization)
+**State Marker:** `P258H_D3_READ_ONLY_CONTRACT_VALIDATION_INTEGRATION_PLAN_READY`
 **Purpose:** Project-specific state for future agents. Read this after `SHARED_AGENT_BOOTSTRAP.md` and `TASK_TEMPLATES.md`.
 
 ## Canonical Execution Context

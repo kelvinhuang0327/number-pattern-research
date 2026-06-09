@@ -1,7 +1,7 @@
 # Current State — LotteryNew
 
-**Last Reviewed:** 2026-06-09 Asia/Taipei (P258J D3 read-only synthetic integration skeleton tests READY — synthetic dry-contract fixtures only; no real candidate methods, no strategy output artifacts, no executable gate, no null generation, no p-values/statistical tests, no backtest, no DB/recommendation/registry/production/controlled_apply/deployment; passing validators is not approval and not an accuracy claim; next P258K read-only integration contract documentation closeout only requires separate authorization)
-**State Marker:** `P258J_D3_READ_ONLY_SYNTHETIC_INTEGRATION_SKELETON_TESTS_READY`
+**Last Reviewed:** 2026-06-09 Asia/Taipei (P258K D3 integration contract documentation closeout READY — P258 arc CLOSED as read-only foundation; no executable gate, no real candidates, no null generation, no p-values, no DB write; HOLD / WAITING_FOR_USER_AUTHORIZATION)
+**State Marker:** `P258K_D3_INTEGRATION_CONTRACT_DOCUMENTATION_CLOSEOUT_READY`
 **Purpose:** Project-specific state for future agents. Read this after `SHARED_AGENT_BOOTSTRAP.md` and `TASK_TEMPLATES.md`.
 
 ## Canonical Execution Context

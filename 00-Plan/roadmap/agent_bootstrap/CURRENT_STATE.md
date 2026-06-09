@@ -1,7 +1,7 @@
 # Current State — LotteryNew
 
-**Last Reviewed:** 2026-06-09 Asia/Taipei (P258P D3 Strategy Status Audit E2E/UX/safety closeout COMPLETE — P258L→P258M→P258N→P258O→P258P arc CLOSED; API route returns 200 with 14 rows; UI panel verified with 5 disclaimers, two column groups, 3 filters; no forbidden vocabulary; no DB/D3 execution; HOLD/WAITING_FOR_USER_AUTHORIZATION)
-**State Marker:** `P258P_D3_STRATEGY_STATUS_AUDIT_E2E_UX_SAFETY_CLOSEOUT_READY`
+**Last Reviewed:** 2026-06-09 Asia/Taipei (P259A History Replay Overview Single-Bet First COMPLETE — GET /api/replay/history-overview; default bet_index=1; bet tabs 1/2/3/4/5/all; lottery isolation; replay_status_category filter; lifecycle as badge only; all strategies discoverable; 查看明細 disabled P259B deferred; 46/46 P259A tests PASS; 986 regression PASS; HOLD/WAITING_FOR_USER_AUTHORIZATION)
+**State Marker:** `P259A_HISTORY_REPLAY_OVERVIEW_SINGLE_BET_FIRST_READY`
 **Purpose:** Project-specific state for future agents. Read this after `SHARED_AGENT_BOOTSTRAP.md` and `TASK_TEMPLATES.md`.
 
 ## Canonical Execution Context

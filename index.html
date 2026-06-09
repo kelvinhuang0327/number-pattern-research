@@ -484,6 +484,22 @@
         .orc-outcome-error   { color:#f85149; font-weight:600; }
         .orc-outcome-muted   { color:#8b949e; }
         .orc-outcome-neutral { color:#c9d1d9; }
+        /* P259A — bet count tabs */
+        .p259a-bet-tab { padding:4px 12px;border-radius:4px;border:1px solid #30363d;background:#0d1117;color:#8b949e;font-size:12px;cursor:pointer;transition:background .15s,color .15s; }
+        .p259a-bet-tab:hover { background:#1c2128;color:#c9d1d9; }
+        .p259a-bet-tab-active { background:#1f6feb;border-color:#1f6feb;color:#fff;font-weight:600; }
+        /* P259A — lifecycle badges */
+        .p259a-lc-badge { display:inline-block;padding:1px 7px;border-radius:10px;font-size:11px;font-weight:600;white-space:nowrap; }
+        .p259a-lc-online   { background:#1a3c2a;color:#3fb950;border:1px solid #238636; }
+        .p259a-lc-offline  { background:#1c1c1c;color:#8b949e;border:1px solid #484f58; }
+        .p259a-lc-rejected { background:#3c1a1a;color:#f85149;border:1px solid #da3633; }
+        .p259a-lc-observation { background:#3c3100;color:#d29922;border:1px solid #9e6a03; }
+        .p259a-lc-retired  { background:#161b22;color:#8b949e;border:1px solid #30363d; }
+        /* P259A — replay category badges */
+        .p259a-rcat-badge { display:inline-block;padding:1px 7px;border-radius:10px;font-size:11px;white-space:nowrap; }
+        .p259a-rcat-has    { background:#1a3c2a;color:#3fb950; }
+        .p259a-rcat-none   { background:#161b22;color:#8b949e; }
+        .p259a-rcat-art    { background:#1c1c1c;color:#6e7681; }
     </style>
 </head>
 
@@ -592,6 +608,10 @@
                 <button class="nav-btn" data-section="p258-d3-audit">
                     <i data-lucide="shield-alert" class="icon"></i>
                     <span>D3 合約稽核</span>
+                </button>
+                <button class="nav-btn" data-section="p259a-replay-overview">
+                    <i data-lucide="layout-list" class="icon"></i>
+                    <span>回放總覽</span>
                 </button>
             </nav>
         </div>
@@ -2886,6 +2906,94 @@
         </section>
         <!-- ===== END P258O ===== -->
 
+        <!-- ===== P259A: History Replay Overview (Single-Bet First) ===== -->
+        <section id="p259a-replay-overview-section" class="section">
+          <div class="section-header">
+            <h2>📋 歷史回放總覽 <span style="font-size:0.7em;color:#8b949e;font-weight:400">History Replay Overview</span></h2>
+            <p>查詢所有彩種、所有策略、所有注數的回放狀態 — 預設顯示 1 注策略</p>
+          </div>
+          <div class="section-content">
+
+            <!-- Disclaimer -->
+            <div style="background:rgba(243,156,18,.10);border:1px solid #f39c12;border-radius:6px;padding:10px 16px;margin-bottom:16px;font-size:12px;color:#f0c040;line-height:1.8">
+              ⚠️ <b>免責聲明：</b>本頁為歷史回放總覽，純粹稽核用途；不代表提高中獎率，也不保證任何回放結果。<br>
+              ℹ️ <b>明細頁將於後續 P259B 實作，包含每一期預測比對與分頁查詢。</b>
+            </div>
+
+            <!-- Bet Count Tabs -->
+            <div id="p259a-bet-tabs" style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:14px">
+              <button class="p259a-bet-tab p259a-bet-tab-active" data-bet="1">1 注</button>
+              <button class="p259a-bet-tab" data-bet="2">2 注</button>
+              <button class="p259a-bet-tab" data-bet="3">3 注</button>
+              <button class="p259a-bet-tab" data-bet="4">4 注</button>
+              <button class="p259a-bet-tab" data-bet="5">5 注</button>
+              <button class="p259a-bet-tab" data-bet="0">全部注數</button>
+            </div>
+
+            <!-- Filters -->
+            <div style="display:flex;gap:10px;flex-wrap:wrap;margin-bottom:16px;align-items:center">
+              <label style="font-size:12px;color:#8b949e">彩種：</label>
+              <select id="p259a-filter-lottery" style="background:#161b22;border:1px solid #30363d;color:#c9d1d9;border-radius:4px;padding:4px 8px;font-size:12px">
+                <option value="">全部</option>
+                <option value="DAILY_539">今彩539</option>
+                <option value="BIG_LOTTO">大樂透</option>
+                <option value="POWER_LOTTO">威力彩</option>
+              </select>
+              <label style="font-size:12px;color:#8b949e">回放狀態：</label>
+              <select id="p259a-filter-replay-cat" style="background:#161b22;border:1px solid #30363d;color:#c9d1d9;border-radius:4px;padding:4px 8px;font-size:12px">
+                <option value="">全部</option>
+                <option value="has_rows">有 replay rows</option>
+                <option value="no_production_replay">無 production replay</option>
+                <option value="artifact_only">僅 artifact / rejected artifact</option>
+              </select>
+              <label style="font-size:12px;color:#8b949e">生命週期：</label>
+              <select id="p259a-filter-lifecycle" style="background:#161b22;border:1px solid #30363d;color:#c9d1d9;border-radius:4px;padding:4px 8px;font-size:12px">
+                <option value="">全部</option>
+                <option value="ONLINE">🟢 ONLINE</option>
+                <option value="OFFLINE">⚫ OFFLINE</option>
+                <option value="REJECTED">🔴 REJECTED</option>
+                <option value="OBSERVATION">🟡 OBSERVATION</option>
+                <option value="RETIRED">⚪ RETIRED</option>
+              </select>
+            </div>
+
+            <!-- Summary bar -->
+            <div id="p259a-summary-bar" style="display:flex;gap:10px;flex-wrap:wrap;margin-bottom:14px;font-size:12px;color:#8b949e"></div>
+
+            <!-- Main Table -->
+            <div style="overflow-x:auto">
+              <table class="data-table" style="width:100%;font-size:12px" id="p259a-table">
+                <thead>
+                  <tr>
+                    <th>彩種</th>
+                    <th>策略名稱</th>
+                    <th>strategy_id</th>
+                    <th>注數</th>
+                    <th>replay 期數</th>
+                    <th>起訖 target_draw</th>
+                    <th>最近 target_draw</th>
+                    <th>回放狀態</th>
+                    <th>生命週期</th>
+                    <th>查看明細</th>
+                  </tr>
+                </thead>
+                <tbody id="p259a-tbody"></tbody>
+              </table>
+            </div>
+
+            <!-- Empty / error states -->
+            <div id="p259a-empty" style="display:none;text-align:center;padding:24px;color:#8b949e;font-size:13px">無符合條件的策略</div>
+            <div id="p259a-error" style="display:none;color:#c0392b;font-size:12px;padding:8px 0"></div>
+            <div id="p259a-loading" style="text-align:center;padding:16px;color:#8b949e;font-size:13px">⏳ 載入中…</div>
+
+            <!-- P259B notice -->
+            <div style="margin-top:20px;padding:10px 14px;background:#0d1117;border:1px solid #30363d;border-radius:4px;font-size:11px;color:#8b949e">
+              ℹ️ <b>P259B 預告：</b>明細頁將於後續 P259B 實作，包含每一期預測比對與分頁查詢。目前「查看明細」功能尚未開放。
+            </div>
+          </div>
+        </section>
+        <!-- ===== END P259A ===== -->
+
         </div>
         </main>
 
@@ -4552,6 +4660,162 @@
   }
 
   p258Init();
+})();
+        </script>
+
+        <!-- P259A: History Replay Overview JS -->
+        <script>
+(function() {
+  'use strict';
+
+  var _p259aData = null;
+  var _p259aBetIndex = 1;  // default bet_index=1
+
+  var LOTTERY_LABELS = {
+    'DAILY_539': '今彩539',
+    'BIG_LOTTO': '大樂透',
+    'POWER_LOTTO': '威力彩',
+  };
+
+  function lcBadge(lc) {
+    var cls = {
+      'ONLINE':      'p259a-lc-online',
+      'OFFLINE':     'p259a-lc-offline',
+      'REJECTED':    'p259a-lc-rejected',
+      'OBSERVATION': 'p259a-lc-observation',
+      'RETIRED':     'p259a-lc-retired',
+    }[lc] || 'p259a-lc-retired';
+    var icons = {
+      'ONLINE': '🟢', 'OFFLINE': '⚫', 'REJECTED': '🔴',
+      'OBSERVATION': '🟡', 'RETIRED': '⚪',
+    };
+    return '<span class="p259a-lc-badge ' + cls + '">' + (icons[lc] || '') + ' ' + lc + '</span>';
+  }
+
+  function rcatBadge(rcat, totalRows) {
+    if (rcat === 'has_rows') {
+      return '<span class="p259a-rcat-badge p259a-rcat-has">有回放 (' + totalRows + ')</span>';
+    }
+    if (rcat === 'artifact_only') {
+      return '<span class="p259a-rcat-badge p259a-rcat-art">僅 artifact</span>';
+    }
+    return '<span class="p259a-rcat-badge p259a-rcat-none">無 production replay</span>';
+  }
+
+  function renderRows(rows) {
+    var tbody = document.getElementById('p259a-tbody');
+    var emptyEl = document.getElementById('p259a-empty');
+    var summaryBar = document.getElementById('p259a-summary-bar');
+    if (!tbody) return;
+
+    var lotteryFilter = (document.getElementById('p259a-filter-lottery') || {}).value || '';
+    var rcatFilter = (document.getElementById('p259a-filter-replay-cat') || {}).value || '';
+    var lcFilter = (document.getElementById('p259a-filter-lifecycle') || {}).value || '';
+
+    var filtered = rows.filter(function(r) {
+      if (lotteryFilter && r.lottery_type !== lotteryFilter) return false;
+      if (rcatFilter && r.replay_status_category !== rcatFilter) return false;
+      if (lcFilter && r.lifecycle_status !== lcFilter) return false;
+      return true;
+    });
+
+    // Summary bar
+    var hasRows = filtered.filter(function(r) { return r.has_production_replay; }).length;
+    var noRows = filtered.filter(function(r) { return !r.has_production_replay && r.replay_status_category !== 'artifact_only'; }).length;
+    var artOnly = filtered.filter(function(r) { return r.replay_status_category === 'artifact_only'; }).length;
+    summaryBar.innerHTML =
+      '<span style="color:#3fb950">有回放：' + hasRows + '</span>' +
+      '<span style="color:#8b949e">無 production replay：' + noRows + '</span>' +
+      '<span style="color:#6e7681">僅 artifact：' + artOnly + '</span>' +
+      '<span style="color:#c9d1d9">共 ' + filtered.length + ' 筆</span>';
+
+    if (filtered.length === 0) {
+      tbody.innerHTML = '';
+      emptyEl.style.display = 'block';
+      return;
+    }
+    emptyEl.style.display = 'none';
+
+    var html = '';
+    filtered.forEach(function(r) {
+      var drawRange = r.min_target_draw && r.max_target_draw
+        ? r.min_target_draw + ' – ' + r.max_target_draw
+        : '—';
+      html += '<tr>' +
+        '<td>' + (LOTTERY_LABELS[r.lottery_type] || r.lottery_type) + '</td>' +
+        '<td style="text-align:left">' + r.strategy_name + '</td>' +
+        '<td style="font-family:monospace;font-size:11px;color:#8b949e">' + r.strategy_id + '</td>' +
+        '<td>' + r.derived_bet_count + ' 注</td>' +
+        '<td>' + (r.total_replay_rows || '—') + '</td>' +
+        '<td style="font-size:11px;color:#8b949e">' + drawRange + '</td>' +
+        '<td style="font-size:11px;color:#8b949e">' + (r.latest_target_draw || '—') + '</td>' +
+        '<td>' + rcatBadge(r.replay_status_category, r.total_replay_rows) + '</td>' +
+        '<td>' + lcBadge(r.lifecycle_status) + '</td>' +
+        '<td><button disabled style="padding:2px 10px;font-size:11px;border-radius:3px;border:1px solid #30363d;background:#0d1117;color:#484f58;cursor:not-allowed" title="明細頁將於後續 P259B 實作，包含每一期預測比對與分頁查詢。">查看明細</button></td>' +
+        '</tr>';
+    });
+    tbody.innerHTML = html;
+  }
+
+  function p259aLoad(betIndex) {
+    var loadingEl = document.getElementById('p259a-loading');
+    var errorEl   = document.getElementById('p259a-error');
+    var emptyEl   = document.getElementById('p259a-empty');
+    if (loadingEl) loadingEl.style.display = 'block';
+    if (errorEl)   errorEl.style.display   = 'none';
+    if (emptyEl)   emptyEl.style.display   = 'none';
+
+    var bi = (betIndex === undefined) ? _p259aBetIndex : betIndex;
+    var url = (window.API_BASE || '') + '/api/replay/history-overview?bet_index=' + bi;
+
+    fetch(url)
+      .then(function(r) { return r.json(); })
+      .then(function(data) {
+        _p259aData = data;
+        if (loadingEl) loadingEl.style.display = 'none';
+        renderRows(data.rows || []);
+      })
+      .catch(function(e) {
+        if (loadingEl) loadingEl.style.display = 'none';
+        if (errorEl) {
+          errorEl.style.display = 'block';
+          errorEl.textContent = '⚠️ 載入失敗：' + e.message;
+        }
+      });
+  }
+
+  function p259aInit() {
+    // Bet count tab clicks
+    document.querySelectorAll('.p259a-bet-tab').forEach(function(btn) {
+      btn.addEventListener('click', function() {
+        document.querySelectorAll('.p259a-bet-tab').forEach(function(b) {
+          b.classList.remove('p259a-bet-tab-active');
+        });
+        btn.classList.add('p259a-bet-tab-active');
+        _p259aBetIndex = parseInt(btn.dataset.bet, 10);
+        p259aLoad(_p259aBetIndex);
+      });
+    });
+
+    // Filter change — re-render without API call (client-side filter)
+    ['p259a-filter-lottery', 'p259a-filter-replay-cat', 'p259a-filter-lifecycle'].forEach(function(id) {
+      var el = document.getElementById(id);
+      if (el) el.addEventListener('change', function() {
+        if (_p259aData) renderRows(_p259aData.rows || []);
+      });
+    });
+
+    // Auto-load when section becomes active
+    document.querySelectorAll('[data-section]').forEach(function(btn) {
+      btn.addEventListener('click', function() {
+        if (btn.dataset.section === 'p259a-replay-overview' && !_p259aData) {
+          p259aLoad(_p259aBetIndex);
+        }
+      });
+    });
+  }
+
+  p259aInit();
 })();
         </script>
 </body>

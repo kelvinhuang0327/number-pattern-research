@@ -1,0 +1,140 @@
+{
+  "task": "P259A",
+  "title": "History Replay Overview — Single-Bet First Query View",
+  "date": "2026-06-09",
+  "final_classification": "P259A_HISTORY_REPLAY_OVERVIEW_SINGLE_BET_FIRST_READY",
+
+  "files_modified": [
+    "lottery_api/routes/replay.py",
+    "index.html"
+  ],
+  "files_created": [
+    "tests/test_p259a_history_replay_overview.py",
+    "outputs/research/p259a_history_replay_overview_single_bet_first_20260609.json",
+    "outputs/research/p259a_history_replay_overview_single_bet_first_20260609.md"
+  ],
+
+  "api_route": {
+    "path": "GET /api/replay/history-overview",
+    "source_file": "lottery_api/routes/replay.py",
+    "query_params": {
+      "lottery_type": "optional — BIG_LOTTO | POWER_LOTTO | DAILY_539 | omit for all",
+      "bet_index": "optional int 0-5, default 1; 0 = all bet counts",
+      "replay_status_category": "optional — has_rows | no_production_replay | artifact_only"
+    },
+    "data_sources": [
+      "list_strategy_lifecycle_metadata() — in-memory registry, all lifecycle states",
+      "strategy_prediction_replays DB — read-only aggregate query (COUNT, MIN/MAX draw)"
+    ]
+  },
+
+  "ui_section": {
+    "section_id": "p259a-replay-overview-section",
+    "nav_button": "data-section=\"p259a-replay-overview\"",
+    "source_file": "index.html"
+  },
+
+  "default_bet_index_1_behavior": {
+    "api_default": "bet_index=1 when omitted",
+    "ui_default": "_p259aBetIndex=1 on page load; bet tab data-bet=1 has p259a-bet-tab-active",
+    "effect": "Only strategies with derived_bet_count=1 shown in initial view"
+  },
+
+  "bet_count_filters": {
+    "tabs": [1, 2, 3, 4, 5, "0=all"],
+    "derivation": "_derive_bet_count() extracts N from '_Nbet' suffix; biglotto_triple_strike→3; default 1",
+    "client_side_filter": false,
+    "api_side_filter": true
+  },
+
+  "lottery_type_filter_behavior": {
+    "DAILY_539_excludes_BIG_LOTTO": true,
+    "BIG_LOTTO_excludes_DAILY_539": true,
+    "all_empty_shows_all": true,
+    "verified_by_tests": [
+      "test_daily539_filter_excludes_big_lotto",
+      "test_big_lotto_filter_excludes_daily539",
+      "test_no_lottery_filter_includes_all_types"
+    ]
+  },
+
+  "replay_status_filter": {
+    "categories": ["has_rows", "no_production_replay", "artifact_only"],
+    "category_derivation": "has_rows if DB rows > 0; artifact_only if REJECTED+non-executable; else no_production_replay",
+    "verified_by_tests": [
+      "test_replay_status_filter_has_rows",
+      "test_replay_status_filter_no_production_replay",
+      "test_replay_status_filter_artifact_only",
+      "test_replay_status_no_filter_includes_all_categories"
+    ]
+  },
+
+  "lifecycle_as_badge_filter_only": {
+    "enforced": true,
+    "all_strategies_included_flag": true,
+    "lifecycle_as_badge_only_flag": true,
+    "lifecycle_statuses_discoverable": ["ONLINE", "OFFLINE", "REJECTED", "OBSERVATION", "RETIRED"],
+    "verified_by_tests": [
+      "test_all_lifecycle_statuses_discoverable",
+      "test_rejected_strategies_present",
+      "test_retired_strategies_present",
+      "test_all_strategies_included_flag",
+      "test_lifecycle_as_badge_only_flag"
+    ]
+  },
+
+  "rejected_artifact_no_adapter_handling": {
+    "approach": "Single 'artifact_only' replay_status_category badge — no long warning in main table",
+    "lifecycle_badge": "Compact colored span (p259a-lc-badge CSS class)",
+    "long_explanations_removed_from_main_table": true
+  },
+
+  "detail_page_deferred_to_p259b": {
+    "detail_page_note_in_api": "明細頁將於後續 P259B 實作，包含每一期預測比對與分頁查詢。",
+    "ui_notice_banner": true,
+    "detail_button_state": "disabled (cannot click)",
+    "detail_button_title_tooltip": "明細頁將於後續 P259B 實作，包含每一期預測比對與分頁查詢。",
+    "verified_by_tests": [
+      "test_detail_page_note_mentions_p259b",
+      "test_detail_page_note_mentions_per_draw_query",
+      "test_html_p259b_notice_present",
+      "test_html_p259b_notice_content",
+      "test_html_detail_button_disabled"
+    ]
+  },
+
+  "proof_no_db_write": {
+    "api_response_flag": "no_db_write=true",
+    "code_review": "Endpoint uses conn.execute(SELECT ...) only; no INSERT/UPDATE/DELETE",
+    "test": "test_no_db_write"
+  },
+
+  "proof_no_replay_backfill": {
+    "api_response_flag": "no_replay_backfill=true",
+    "code_review": "No replay generation logic added; read-only DB aggregate query only",
+    "test": "test_no_replay_backfill"
+  },
+
+  "proof_no_migration": "No schema changes. strategy_prediction_replays table used as-is.",
+  "proof_no_strategy_adapter_changes": "replay_strategy_registry.py not modified.",
+  "proof_no_large_per_draw_detail": {
+    "api_response_flag": "no_large_per_draw_detail=true",
+    "code_review": "Overview rows contain aggregate stats only (COUNT, MIN/MAX draw). No per-draw predicted_numbers, hit_numbers, etc.",
+    "test": "test_no_large_per_draw_detail"
+  },
+
+  "tests": {
+    "file": "tests/test_p259a_history_replay_overview.py",
+    "count": 46,
+    "result": "46/46 PASS",
+    "command": "/opt/homebrew/bin/pytest tests/test_p259a_history_replay_overview.py -v"
+  },
+
+  "regression": {
+    "command": "/opt/homebrew/bin/pytest tests/test_p258*.py tests/test_p257*.py -q",
+    "result": "986/986 PASS"
+  },
+
+  "next_allowed_task": "P259B History Replay Detail Page — paginated per-draw replay query only, if explicitly authorized",
+  "recommended_state": "HOLD / WAITING_FOR_USER_AUTHORIZATION"
+}

@@ -1,6 +1,10 @@
 # Active Task — Today (2026-06-09)
 
-> **STATUS: `P260A_REPLAY_DETAIL_UX_PARITY_MERGED_TESTS_ALL_PASS`**
+> **STATUS: `P260C_REPLAY_DETAIL_VISUAL_FIX_MERGED_TESTS_ALL_PASS`**
+> **P260D (done):** Governance closeout. PR #395 MERGED main `36d3b51`. State marker converged. No new implementation task started. WAITING_FOR_USER_AUTHORIZATION.
+> **P260C (merged):** Replay Detail Visual Fix — legacy white/green token style. `.replay-number-token` white bg `#ffffff`/dark text `#1f2328`/circular (border-radius:50%); `.replay-number-token--hit` green solid `#28a745`/white text; `.replay-number-token--special` purple pill `#6e40c9`/white text; `.replay-row--hit` light-green row bg `rgba(40,167,69,.12)`. No API changes; no DB write; no replay backfill; no migration; no adapter change. **29/29 P260C PASS; 69/69 P260A PASS; 117/117 P259A/P259B/P259C PASS.** PR #395 merged main `36d3b51`. No active implementation task. WAITING_FOR_USER_AUTHORIZATION.
+
+> **Previous STATUS: `P260A_REPLAY_DETAIL_UX_PARITY_MERGED_TESTS_ALL_PASS`**
 > **P260B (done):** Governance closeout. PR #393 MERGED main `e8dd4d27`. State marker converged. No new implementation task started. WAITING_FOR_USER_AUTHORIZATION.
 > **P260A (merged):** Replay Detail UX Parity — history-detail API page_size上限1500; quick range 100/300/500/1500 (1000期 absent); detail table columns: 期號/日期/策略/預測號碼/實際開獎/命中號碼/命中數; range info banner 前 N 期 / 共 X 筆; circular number tokens; hit token green; special token purple; overview API unchanged. No DB write, no replay backfill, no migration, no adapter change. **69/69 P260A PASS; 117/117 P259A/P259B/P259C PASS; 986/986 P257/P258 PASS.** PR #393 merged main `e8dd4d27`. No active implementation task. WAITING_FOR_USER_AUTHORIZATION.
 

@@ -66,6 +66,12 @@ _BEST_STRATEGY_OVERVIEW_PATH = (
     / "research"
     / "p257a_best_nbet_strategy_overview_historical_replay_20260608.json"
 )
+_D3_STRATEGY_STATUS_AUDIT_PATH = (
+    Path(_api_root).parent
+    / "outputs"
+    / "research"
+    / "p258n_d3_strategy_status_audit_payload_20260609.json"
+)
 
 # Conservative disclaimer used by all replay endpoints
 _DISCLAIMER = (
@@ -1158,4 +1164,51 @@ async def get_replay_best_strategy_overview():
         raise
     except Exception as e:
         logger.exception("get_replay_best_strategy_overview failed")
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+def _load_d3_strategy_status_audit_payload() -> dict:
+    """Load the P258N D3 strategy status audit artifact without mutating state."""
+    if not _D3_STRATEGY_STATUS_AUDIT_PATH.exists():
+        raise HTTPException(
+            status_code=500,
+            detail=f"D3 strategy status audit artifact not found: {_D3_STRATEGY_STATUS_AUDIT_PATH}",
+        )
+    try:
+        with _D3_STRATEGY_STATUS_AUDIT_PATH.open("r", encoding="utf-8") as handle:
+            payload = json.load(handle)
+    except json.JSONDecodeError as exc:
+        raise HTTPException(
+            status_code=500,
+            detail=f"D3 strategy status audit artifact is invalid JSON: {exc}",
+        ) from exc
+    if not isinstance(payload, dict):
+        raise HTTPException(
+            status_code=500,
+            detail="D3 strategy status audit artifact must be a JSON object",
+        )
+    return payload
+
+
+@router.get("/api/replay/d3-strategy-status-audit")
+async def get_d3_strategy_status_audit():
+    """
+    P258N: Read-only D3 strategy status / contract audit payload.
+
+    Serves the published P258N artifact payload conforming to the P258M contract.
+    Data source: P258N artifact only (NOT DB query, NOT registry mutation, NOT D3 execution).
+
+    Returns a per-strategy index showing lifecycle status, evidence status, and D3
+    contract-readiness status. D3 contract status is NOT approval and must not be
+    interpreted as strategy promotion, recommendation, or improved prediction accuracy.
+
+    READ-ONLY: no DB query, no registry mutation, no D3 execution, no null generation,
+    no p-values, no strategy promotion, no betting advice.
+    """
+    try:
+        return _load_d3_strategy_status_audit_payload()
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.exception("get_d3_strategy_status_audit failed")
         raise HTTPException(status_code=500, detail=str(e))

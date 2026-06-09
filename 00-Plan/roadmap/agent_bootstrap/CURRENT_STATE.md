@@ -1,7 +1,7 @@
 # Current State — LotteryNew
 
-**Last Reviewed:** 2026-06-09 Asia/Taipei (P258M D3 Strategy Status Audit artifact-backed API contract READY — API contract only; no API route implemented, no UI, no real candidate methods, no executable gate, no null generation, no p-values, no DB query/write; next P258N read-only artifact-backed API route implementation only requires separate explicit authorization)
-**State Marker:** `P258M_D3_STRATEGY_STATUS_AUDIT_API_CONTRACT_READY`
+**Last Reviewed:** 2026-06-09 Asia/Taipei (P258N D3 Strategy Status Audit read-only API route READY — GET /api/replay/d3-strategy-status-audit implemented in replay.py; artifact-backed payload with 14 strategy rows; no DB query, no D3 execution, no UI, no real candidate methods, no null generation, no p-values, no DB write; next P258O read-only UI display only requires separate explicit authorization)
+**State Marker:** `P258N_D3_STRATEGY_STATUS_AUDIT_READONLY_API_ROUTE_READY`
 **Purpose:** Project-specific state for future agents. Read this after `SHARED_AGENT_BOOTSTRAP.md` and `TASK_TEMPLATES.md`.
 
 ## Canonical Execution Context

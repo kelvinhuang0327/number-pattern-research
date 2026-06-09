@@ -1,0 +1,105 @@
+{
+  "task_id": "P258N",
+  "task_name": "D3 Strategy Status Audit — Read-only Artifact-Backed API Route",
+  "artifact_date": "2026-06-09",
+  "task_status": "P258N_D3_STRATEGY_STATUS_AUDIT_READONLY_API_ROUTE_READY",
+  "final_classification": "P258N_D3_STRATEGY_STATUS_AUDIT_READONLY_API_ROUTE_READY",
+
+  "route_implemented": true,
+  "route_path": "GET /api/replay/d3-strategy-status-audit",
+  "route_module": "lottery_api/routes/replay.py",
+  "route_function": "get_d3_strategy_status_audit",
+  "loader_function": "_load_d3_strategy_status_audit_payload",
+  "path_constant": "_D3_STRATEGY_STATUS_AUDIT_PATH",
+
+  "payload_artifact": "outputs/research/p258n_d3_strategy_status_audit_payload_20260609.json",
+  "contract_artifact": "outputs/research/p258m_d3_strategy_status_audit_api_contract_20260609.json",
+
+  "artifact_backed_source_policy": {
+    "data_source": "artifact-backed only",
+    "artifact_path": "outputs/research/p258n_d3_strategy_status_audit_payload_20260609.json",
+    "no_db_query": true,
+    "no_db_write": true,
+    "no_registry_mutation": true,
+    "no_production_state_mutation": true,
+    "no_d3_execution": true
+  },
+
+  "payload_contract_compliance": {
+    "has_schema_version": true,
+    "has_generated_at": true,
+    "has_source_artifacts": true,
+    "has_route_path": true,
+    "has_page_title": true,
+    "has_summary": true,
+    "has_filters": true,
+    "has_rows": true,
+    "has_safety_disclaimers": true,
+    "has_forbidden_actions_confirmed": true,
+    "has_next_allowed_task": true,
+    "row_count": 14
+  },
+
+  "row_fields_included": [
+    "lottery_type",
+    "strategy_id",
+    "strategy_name",
+    "lifecycle_status",
+    "evidence_status",
+    "replay_row_count",
+    "draw_coverage",
+    "best_n_bet_status",
+    "latest_evidence_artifact",
+    "d3_contract_status",
+    "d3_contract_reason",
+    "d3_not_approval_warning",
+    "no_prediction_claim",
+    "no_betting_advice"
+  ],
+
+  "allowed_d3_statuses_used": [
+    "NOT_EVALUATED_BY_D3",
+    "NOT_APPLICABLE_HISTORICAL_ARTIFACT"
+  ],
+
+  "forbidden_d3_statuses_confirmed_absent": [
+    "APPROVED",
+    "PROMOTED",
+    "PRODUCTION_READY",
+    "RECOMMENDED",
+    "PREDICTIVE_EDGE_CONFIRMED"
+  ],
+
+  "no_db_query_proof": "Route function _load_d3_strategy_status_audit_payload() reads only from a static JSON file at _D3_STRATEGY_STATUS_AUDIT_PATH. No sqlite3, DatabaseManager, or DB connection is imported or used within this function or the route handler.",
+  "no_ui_implementation_proof": "No UI files, index.html, or frontend assets were modified in P258N.",
+  "no_d3_execution_proof": "Route does not import or call lottery_api.research.d3_gate.integration_skeleton.run_contract_validation_flow() or any executable D3 module. No candidate methods are run.",
+  "no_real_candidate_methods_proof": "Payload is a static artifact with all d3_contract_status values set to NOT_EVALUATED_BY_D3 or NOT_APPLICABLE_HISTORICAL_ARTIFACT. No real candidate method outputs are used.",
+  "no_null_generation_proof": "No null generation code exists in the route. No random, numpy, or scipy imports are introduced.",
+  "no_p_values_proof": "No statistical computations exist in the route.",
+  "no_paired_tests_proof": "No paired tests or McNemar tests exist in the route.",
+  "no_backtests_proof": "No backtest logic exists in the route.",
+  "no_recommendation_production_registry_proof": "Route does not import recommendation, production, registry, controlled_apply, or deployment modules.",
+
+  "safety_disclaimers_present": [
+    "D3 is not a prediction model.",
+    "Contract validation is not strategy evaluation.",
+    "NOT_YET_REJECTED is not approval.",
+    "Passing contract validation does not imply improved prediction accuracy.",
+    "This API is historical/read-only evidence, not betting advice."
+  ],
+
+  "governance": {
+    "d3_is_not_approval_gate": true,
+    "d3_is_not_prediction_model": true,
+    "contract_validation_is_not_strategy_evaluation": true,
+    "not_yet_rejected_is_not_approval": true,
+    "p258n_does_not_authorize_p258o_automatically": true,
+    "p258o_requires_separate_explicit_authorization": true
+  },
+
+  "future_task_split": {
+    "next_allowed_task": "P258O: read-only UI display implementation only, if explicitly authorized",
+    "running_d3_on_real_candidate_methods": "FORBIDDEN — requires separate future task and explicit authorization beyond P258O",
+    "each_task_requires_separate_explicit_authorization": true
+  }
+}

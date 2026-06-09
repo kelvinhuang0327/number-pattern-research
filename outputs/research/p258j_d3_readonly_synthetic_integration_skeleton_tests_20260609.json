@@ -1,0 +1,158 @@
+{
+  "task_id": "P258J",
+  "task_name": "D3 Read-Only Synthetic Integration Skeleton Tests",
+  "artifact_date": "2026-06-09",
+  "task_status": "SYNTHETIC_TESTS_ONLY",
+  "final_classification": "P258J_D3_READ_ONLY_SYNTHETIC_INTEGRATION_SKELETON_TESTS_READY",
+
+  "synthetic_tests_only_declaration": {
+    "is_synthetic_tests_only": true,
+    "uses_synthetic_dry_contract_fixtures_only": true,
+    "no_real_candidate_methods_used": true,
+    "no_strategy_output_artifacts_as_fixtures": true,
+    "no_executable_gate_evaluation": true,
+    "no_null_generation": true,
+    "no_p_values_computed": true,
+    "no_paired_tests": true,
+    "no_backtests": true,
+    "no_db_write": true,
+    "no_recommendation_changes": true,
+    "no_production_changes": true,
+    "no_registry_changes": true,
+    "no_controlled_apply_changes": true,
+    "no_deployment_changes": true
+  },
+
+  "mandatory_safety_semantics": {
+    "d3_is_not_a_prediction_model": true,
+    "contract_validation_is_not_strategy_evaluation": true,
+    "passing_contract_validation_does_not_imply_improved_prediction_accuracy": true,
+    "not_yet_rejected_is_not_approval": true,
+    "passing_validators_does_not_allow_production_use": true,
+    "passing_validators_does_not_allow_recommendation_use": true,
+    "no_lottery_edge_claimed": true,
+    "no_executable_gate_evaluation_authorized": true
+  },
+
+  "synthetic_dry_contract_fixtures_added": {
+    "complete_integration_contract": {
+      "description": "A fully valid synthetic integration contract with all 5 boundary contracts populated",
+      "includes": [
+        "candidate_provenance_contract_metadata",
+        "p257a_baseline_contract_metadata",
+        "matched_null_metadata_contract",
+        "correction_family_declaration_contract",
+        "status_result_contract"
+      ],
+      "source": "synthetic literal values only — no real candidate files, no strategy output artifacts"
+    },
+    "invalid_integration_contract_cases": [
+      "missing_candidate_contract_boundary",
+      "missing_baseline_contract_boundary",
+      "missing_matched_null_contract_boundary",
+      "missing_correction_family_contract_boundary",
+      "missing_status_result_contract_boundary",
+      "validator_invocation_order_changed",
+      "no_approval_validator_not_first",
+      "correction_family_validator_not_last",
+      "fail_closed_policy_missing",
+      "failure_downgraded_to_warning_only",
+      "not_yet_rejected_treated_as_approval",
+      "forbidden_import_path_declared_as_allowed",
+      "executable_runner_path_declared_as_allowed"
+    ],
+    "static_safety_cases": [
+      "run_contract_validation_flow_still_raises_NotImplementedError",
+      "build_contract_validation_plan_returns_metadata_only",
+      "no_real_candidate_method_paths_in_fixtures",
+      "no_strategy_output_artifacts_used_as_fixtures"
+    ]
+  },
+
+  "test_coverage_added": {
+    "test_file": "tests/test_p258j_d3_readonly_synthetic_integration_skeleton_tests.py",
+    "test_categories": [
+      "artifact structure and final classification",
+      "synthetic dry-contract complete fixture round-trip",
+      "synthetic dry-contract invalid fixture cases",
+      "validator invocation order correctness",
+      "fail-closed policy metadata verification",
+      "forbidden import/path boundary verification",
+      "safety semantic constants",
+      "NotImplementedError stub safety",
+      "no executable modules created",
+      "no forbidden imports in skeleton",
+      "no forbidden function definitions"
+    ]
+  },
+
+  "validator_invocation_order_verified": [
+    {"step": 1, "name": "validate_no_approval_status_contract"},
+    {"step": 2, "name": "validate_candidate_provenance_contract"},
+    {"step": 3, "name": "validate_timestamp_cutoff_contract"},
+    {"step": 4, "name": "validate_p257a_baseline_contract"},
+    {"step": 5, "name": "validate_matched_null_family_contract"},
+    {"step": 6, "name": "validate_correction_family_contract"}
+  ],
+
+  "fail_closed_metadata_verified": {
+    "any_contract_validation_error_blocks_further_validation": true,
+    "failure_cannot_be_converted_to_warning_only": true,
+    "not_yet_rejected_remains_not_approval": true
+  },
+
+  "forbidden_import_path_boundaries_verified": {
+    "numpy_absent": true,
+    "scipy_absent": true,
+    "random_absent": true,
+    "db_absent": true,
+    "recommendation_absent": true,
+    "production_absent": true,
+    "backtest_absent": true,
+    "null_factory_absent": true,
+    "gate_statistics_absent": true,
+    "gate_orchestrator_absent": true
+  },
+
+  "proof_of_non_implementation": {
+    "executable_integration_not_implemented": true,
+    "run_contract_validation_flow_raises_NotImplementedError": true,
+    "build_contract_validation_plan_returns_static_dict_only": true,
+    "no_real_candidate_methods_used": true,
+    "no_strategy_output_artifacts_as_fixtures": true,
+    "no_executable_gate_evaluation": true,
+    "no_null_generation": true,
+    "no_p_value_or_statistical_test_or_backtest": true,
+    "no_db_recommendation_production_registry_controlled_apply_deployment": true
+  },
+
+  "forbidden_executable_modules_confirmed_absent": [
+    "candidate_ingest.py",
+    "baseline_ingest.py",
+    "null_factory.py",
+    "gate_statistics.py",
+    "gate_orchestrator.py",
+    "gate_audit.py",
+    "integration_runner.py"
+  ],
+
+  "next_allowed_task": "P258K — read-only integration contract documentation closeout only (requires separate explicit authorization)",
+
+  "forbidden_next_tasks": [
+    "executable gate evaluation or backtest",
+    "running D3 on real candidate methods",
+    "null generation",
+    "p-value or paired statistical testing",
+    "production integration",
+    "recommendation mutation",
+    "DB write",
+    "treating NOT_YET_REJECTED as APPROVED"
+  ],
+
+  "predecessor_tasks": {
+    "p258i": "P258I_D3_READ_ONLY_CONTRACT_VALIDATION_INTEGRATION_SKELETON_READY",
+    "p258h": "P258H_D3_READ_ONLY_CONTRACT_VALIDATION_INTEGRATION_PLAN_READY",
+    "p258g": "P258G_D3_SYNTHETIC_FIXTURE_VALIDATOR_HARDENING_READY",
+    "p258f": "P258F_D3_READ_ONLY_CONTRACT_VALIDATORS_READY"
+  }
+}

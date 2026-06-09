@@ -1,7 +1,7 @@
 # Current State — LotteryNew
 
-**Last Reviewed:** 2026-06-09 Asia/Taipei (P258O D3 Strategy Status Audit read-only UI display READY — index.html panel fetches GET /api/replay/d3-strategy-status-audit; 5 safety disclaimers; two column groups separating lifecycle/evidence from D3 contract; client-side filters; no forbidden D3 statuses; no DB query, no D3 execution, no API contract changes; next P258P read-only E2E/UX/safety closeout only requires separate explicit authorization)
-**State Marker:** `P258O_D3_STRATEGY_STATUS_AUDIT_READONLY_UI_DISPLAY_READY`
+**Last Reviewed:** 2026-06-09 Asia/Taipei (P258P D3 Strategy Status Audit E2E/UX/safety closeout COMPLETE — P258L→P258M→P258N→P258O→P258P arc CLOSED; API route returns 200 with 14 rows; UI panel verified with 5 disclaimers, two column groups, 3 filters; no forbidden vocabulary; no DB/D3 execution; HOLD/WAITING_FOR_USER_AUTHORIZATION)
+**State Marker:** `P258P_D3_STRATEGY_STATUS_AUDIT_E2E_UX_SAFETY_CLOSEOUT_READY`
 **Purpose:** Project-specific state for future agents. Read this after `SHARED_AGENT_BOOTSTRAP.md` and `TASK_TEMPLATES.md`.
 
 ## Canonical Execution Context

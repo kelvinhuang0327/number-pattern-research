@@ -826,8 +826,10 @@ P257C_BEST_STRATEGY_OVERVIEW_RUNTIME_SMOKE_GOVERNANCE_CLOSEOUT_COMPLETE_20260608
 - **P258M** (2026-06-09): D3 Strategy Status Audit artifact-backed API contract. Defines `GET /api/replay/d3-strategy-status-audit` contract: 11 top-level payload fields, 15 row fields, 5 allowed D3 statuses, 5 forbidden statuses, 6 filters, 5 required safety disclaimers, data source policy (artifact-backed only, no DB query in first implementation). No API route implemented, no UI, no executable gate, no DB query/write. 76/76 tests PASS. `P258M_D3_STRATEGY_STATUS_AUDIT_API_CONTRACT_READY`.
 - **P258N** (2026-06-09): D3 Strategy Status Audit read-only artifact-backed API route. Implements `GET /api/replay/d3-strategy-status-audit` in `lottery_api/routes/replay.py`. Serves 14-row payload (DAILY_539/BIG_LOTTO/POWER_LOTTO) from p258n artifact. All P258M row fields present; only allowed D3 statuses; all 5 safety disclaimers. No DB query, no D3 execution, no real candidates, no UI. 63/63 tests PASS. `P258N_D3_STRATEGY_STATUS_AUDIT_READONLY_API_ROUTE_READY`.
 - **P258O** (2026-06-09): D3 Strategy Status Audit read-only UI display. `index.html` — nav button + section `p258-d3-audit`. Fetches `GET /api/replay/d3-strategy-status-audit`. Purple safety banner (5 disclaimers). Two column groups: lifecycle/evidence (blue) vs D3 contract (purple, labeled "非核准"). Client-side filters (lottery_type/lifecycle/d3_contract_status). Only allowed D3 statuses. No DB, no D3 execution, no API changes. 47/47 tests PASS. `P258O_D3_STRATEGY_STATUS_AUDIT_READONLY_UI_DISPLAY_READY`.
-- **P258P** (next): read-only E2E / UX / safety closeout only. Requires separate explicit authorization.
+- **P258P** (2026-06-09): D3 Strategy Status Audit E2E/UX/safety closeout. API verified: 200, 14 rows, all required fields, only allowed D3 statuses, all 5 disclaimers. UI verified: nav button, section, disclaimer banner, two column groups (lifecycle/evidence vs D3 contract labeled 非核准), 3 filters, summary bar, empty/error/loading states, no forbidden vocabulary. 52/52 tests PASS. **P258L–P258P arc CLOSED.** `P258P_D3_STRATEGY_STATUS_AUDIT_E2E_UX_SAFETY_CLOSEOUT_READY`.
+
+**P258 D3 Strategy Status Audit arc status: CLOSED — HOLD / WAITING_FOR_USER_AUTHORIZATION**
 
 ```text
-P258O_D3_STRATEGY_STATUS_AUDIT_READONLY_UI_DISPLAY_READY_20260609
+P258P_D3_STRATEGY_STATUS_AUDIT_E2E_UX_SAFETY_CLOSEOUT_READY_20260609
 ```

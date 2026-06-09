@@ -2,6 +2,12 @@
 
 ---
 
+## P258N Read-only API Route Decision — 2026-06-09
+
+**P258N complete per explicit authorization.** `GET /api/replay/d3-strategy-status-audit` implemented in `lottery_api/routes/replay.py` as a read-only artifact-backed route. Serves `p258n_d3_strategy_status_audit_payload_20260609.json` — 14 strategy rows (DAILY_539: 4, BIG_LOTTO: 5, POWER_LOTTO: 5), all 15 P258M row fields present on every row (including mandatory `d3_not_approval_warning`/`no_prediction_claim`/`no_betting_advice`), only allowed D3 contract statuses (`NOT_EVALUATED_BY_D3`/`NOT_APPLICABLE_HISTORICAL_ARTIFACT`), all 5 required safety disclaimers, `forbidden_actions_confirmed` block. **No DB query, no D3 execution, no real candidate methods, no null generation, no p-values, no DB write, no UI.** D3 is not a prediction model. NOT_YET_REJECTED is not approval. Next: P258O read-only UI display only requires separate explicit authorization.
+
+---
+
 ## P258M API Contract Decision — 2026-06-09
 
 **P258M complete per explicit authorization.** D3 Strategy Status Audit artifact-backed API contract defines: proposed route `GET /api/replay/d3-strategy-status-audit`, 11 top-level payload fields (schema_version/generated_at/source_artifacts/route_path/page_title/summary/filters/rows/safety_disclaimers/forbidden_actions_confirmed/next_allowed_task), 15 per-row fields (including mandatory d3_not_approval_warning/no_prediction_claim/no_betting_advice on every row), data source policy (artifact-backed only for first implementation — no DB query), 5 allowed D3 contract statuses (NOT_EVALUATED_BY_D3/CONTRACT_READY/CONTRACT_BLOCKED/NOT_APPLICABLE_HISTORICAL_ARTIFACT/NOT_APPLICABLE_NO_REPLAY), 5 forbidden statuses (APPROVED/PROMOTED/PRODUCTION_READY/RECOMMENDED/PREDICTIVE_EDGE_CONFIRMED), 6 filters, 5 required safety disclaimers. **API contract only — no route implemented, no UI, no real candidate methods, no executable gate, no null generation, no p-values, no DB query/write.** D3 is not a prediction model. NOT_YET_REJECTED is not approval. Next: P258N read-only artifact-backed API route implementation only requires separate explicit authorization.

@@ -6,6 +6,8 @@ GET  /api/replay/history             — 分頁查詢歷史回放記錄
 GET  /api/replay/summary             — 按策略聚合命中率摘要
 GET  /api/replay/runs                — 列出 replay_run 記錄
 GET  /api/replay/run/{run_id}/status — 查詢單一 replay_run 狀態
+GET  /api/replay/history-overview    — P259A 回放總覽（策略層級摘要，預設 bet_index=1）
+GET  /api/replay/history-detail      — P259B 回放明細（單策略每期分頁查詢，server-side pagination）
 
 IMPORTANT: These endpoints are READ-ONLY audit endpoints.
   - They MUST NOT trigger any prediction generation.
@@ -1397,4 +1399,248 @@ async def get_history_replay_overview(
         raise
     except Exception as e:
         logger.exception("get_history_replay_overview failed")
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+# ─── P259B: History Replay Detail (paginated per-draw query) ─────────────────
+
+_DETAIL_SORTS = ("target_draw_desc", "target_draw_asc")
+_DETAIL_HIT_FILTERS = ("all", "hit", "miss")
+
+
+def _parse_numbers_field(raw):
+    """Parse a stored numbers TEXT field (e.g. '[1, 7, 15]') into a list of ints.
+
+    Returns [] on null/empty; falls back to the raw string wrapped in a list
+    only if it is non-empty and unparseable. Never raises.
+    """
+    if raw is None or raw == "":
+        return []
+    if isinstance(raw, list):
+        return raw
+    try:
+        val = json.loads(raw)
+        if isinstance(val, list):
+            return val
+        return [val]
+    except (json.JSONDecodeError, TypeError):
+        return [str(raw)]
+
+
+def _detail_result_label(hit_count, special_hit):
+    """Derive a factual, advisory-free result label from hit_count / special_hit.
+
+    Purely descriptive of historical replay outcome — NOT a prize tier claim,
+    NOT betting advice.
+    """
+    hc = hit_count or 0
+    if hc <= 0:
+        base = "未命中"
+    else:
+        base = f"命中 {hc} 碼"
+    if special_hit:
+        base += "＋特別號"
+    return base
+
+
+@router.get("/api/replay/history-detail")
+async def get_history_replay_detail(
+    lottery_type: str = Query(
+        ...,
+        description="BIG_LOTTO | POWER_LOTTO | DAILY_539",
+    ),
+    strategy_id: str = Query(..., description="Strategy identifier (exact match)."),
+    bet_index: int = Query(
+        1,
+        ge=1,
+        le=5,
+        description=(
+            "Strategy-level declared bet count (P259A-consistent, derived from "
+            "strategy_id naming). Confirmatory only — the replay table has no "
+            "per-bet column; rows are scoped by (lottery_type, strategy_id)."
+        ),
+    ),
+    page: int = Query(1, ge=1, description="1-based page number."),
+    page_size: int = Query(
+        100,
+        ge=1,
+        le=200,
+        description="Rows per page. Default 100, max 200. Server-side paginated.",
+    ),
+    sort: str = Query(
+        "target_draw_desc",
+        description="target_draw_desc (default, latest first) | target_draw_asc",
+    ),
+    hit_filter: str = Query(
+        "all",
+        description="all (default) | hit (hit_count>0) | miss (hit_count=0)",
+    ),
+    target_draw: Optional[str] = Query(
+        None,
+        description="Exact target_draw match (e.g. '115000037'). Safe parameterized query.",
+    ),
+):
+    """
+    P259B: Read-only paginated per-draw replay detail for one strategy.
+
+    Returns each replay draw's predicted vs actual comparison for a specific
+    (lottery_type, strategy_id), with server-side pagination (never loads all
+    rows at once), sort, hit/miss filter, and exact target_draw search.
+
+    bet_index semantics (P259A-consistent / Option A): the strategy-level declared
+    bet count derived from the strategy_id name. The replay table stores no per-bet
+    index column, so rows are scoped by (lottery_type, strategy_id). `derived_bet_count`
+    and `bet_index_matches_strategy` are returned so callers can verify consistency.
+
+    READ-ONLY. No DB write. No replay backfill/generation. No strategy adapter
+    execution. No migration. No betting advice.
+    """
+    try:
+        # ── Validate enum params ────────────────────────────────────────────
+        if sort not in _DETAIL_SORTS:
+            raise HTTPException(
+                status_code=400,
+                detail=f"invalid sort {sort!r}; allowed: {list(_DETAIL_SORTS)}",
+            )
+        if hit_filter not in _DETAIL_HIT_FILTERS:
+            raise HTTPException(
+                status_code=400,
+                detail=f"invalid hit_filter {hit_filter!r}; allowed: {list(_DETAIL_HIT_FILTERS)}",
+            )
+
+        derived_bet_count = _derive_bet_count(strategy_id)
+        bet_index_matches = (derived_bet_count == bet_index)
+
+        # ── Build WHERE clause (always scoped to lottery_type + strategy_id) ─
+        where_parts = ["lottery_type = ?", "strategy_id = ?"]
+        params: list = [lottery_type, strategy_id]
+
+        if hit_filter == "hit":
+            where_parts.append("hit_count > 0")
+        elif hit_filter == "miss":
+            where_parts.append("(hit_count = 0 OR hit_count IS NULL)")
+
+        if target_draw:
+            where_parts.append("target_draw = ?")
+            params.append(target_draw)
+
+        where_sql = " AND ".join(where_parts)
+        order_dir = "DESC" if sort == "target_draw_desc" else "ASC"
+
+        conn = _open_conn()
+        try:
+            # ── Total count for the filtered set (server-side pagination) ────
+            total_count = conn.execute(
+                f"SELECT COUNT(*) FROM strategy_prediction_replays WHERE {where_sql}",
+                params,
+            ).fetchone()[0]
+
+            offset = (page - 1) * page_size
+            page_rows = conn.execute(
+                f"""
+                SELECT
+                    lottery_type, strategy_id, strategy_name, target_draw, target_date,
+                    predicted_numbers, predicted_special, actual_numbers, actual_special,
+                    hit_count, hit_numbers, special_hit, generated_at
+                FROM strategy_prediction_replays
+                WHERE {where_sql}
+                ORDER BY CAST(target_draw AS INTEGER) {order_dir}, id {order_dir}
+                LIMIT ? OFFSET ?
+                """,
+                params + [page_size, offset],
+            ).fetchall()
+
+            rows = []
+            for r in page_rows:
+                rows.append({
+                    "lottery_type":      r["lottery_type"],
+                    "strategy_id":       r["strategy_id"],
+                    "strategy_name":     r["strategy_name"],
+                    "bet_index":         derived_bet_count,  # P259A-consistent strategy-level value
+                    "target_draw":       r["target_draw"],
+                    "draw_date":         r["target_date"],
+                    "predicted_numbers": _parse_numbers_field(r["predicted_numbers"]),
+                    "predicted_special": r["predicted_special"],
+                    "actual_numbers":    _parse_numbers_field(r["actual_numbers"]),
+                    "actual_special":    r["actual_special"],
+                    "hit_count":         r["hit_count"] or 0,
+                    "hit_numbers":       _parse_numbers_field(r["hit_numbers"]),
+                    "special_hit":       bool(r["special_hit"]),
+                    "result_label":      _detail_result_label(r["hit_count"], r["special_hit"]),
+                    "replay_created_at": r["generated_at"],
+                })
+
+            # ── Summary over the FULL (lottery, strategy) set (unfiltered) ───
+            summary_row = conn.execute(
+                """
+                SELECT
+                    COUNT(*) AS total_rows,
+                    SUM(CASE WHEN hit_count > 0 THEN 1 ELSE 0 END) AS hit_rows,
+                    MIN(CAST(target_draw AS INTEGER)) AS first_draw,
+                    MAX(CAST(target_draw AS INTEGER)) AS last_draw
+                FROM strategy_prediction_replays
+                WHERE lottery_type = ? AND strategy_id = ?
+                """,
+                [lottery_type, strategy_id],
+            ).fetchone()
+        finally:
+            conn.close()
+
+        total_replay_rows = summary_row["total_rows"] or 0
+        total_hit_rows = summary_row["hit_rows"] or 0
+        hit_rate = round(total_hit_rows / total_replay_rows, 4) if total_replay_rows else 0.0
+        first_draw = str(summary_row["first_draw"]) if summary_row["first_draw"] is not None else None
+        last_draw = str(summary_row["last_draw"]) if summary_row["last_draw"] is not None else None
+
+        has_next = (page * page_size) < total_count
+
+        return {
+            "lottery_type":      lottery_type,
+            "strategy_id":       strategy_id,
+            "bet_index":         bet_index,
+            "derived_bet_count": derived_bet_count,
+            "bet_index_matches_strategy": bet_index_matches,
+            "page":              page,
+            "page_size":         page_size,
+            "total_count":       total_count,
+            "has_next":          has_next,
+            "sort":              sort,
+            "hit_filter":        hit_filter,
+            "rows":              rows,
+            "summary": {
+                "total_replay_rows": total_replay_rows,
+                "total_hit_rows":    total_hit_rows,
+                "hit_rate":          hit_rate,
+                "first_target_draw": first_draw,
+                "last_target_draw":  last_draw,
+                "latest_target_draw": last_draw,
+                "current_filters": {
+                    "lottery_type": lottery_type,
+                    "strategy_id":  strategy_id,
+                    "bet_index":    bet_index,
+                    "sort":         sort,
+                    "hit_filter":   hit_filter,
+                    "target_draw":  target_draw or None,
+                },
+            },
+            "field_notes": {
+                "no_bet_index_column": (
+                    "replay table has no per-bet index column; bet_index is the "
+                    "strategy-level declared bet count (P259A-consistent)."
+                ),
+                "result_label_derived": "result_label is derived from hit_count / special_hit, not stored.",
+            },
+            "disclaimer":                  _DISCLAIMER,
+            "paginated":                   True,
+            "server_side_pagination":      True,
+            "no_full_load":                True,
+            "no_db_write":                 True,
+            "no_replay_backfill":          True,
+            "no_strategy_adapter_changes": True,
+        }
+
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.exception("get_history_replay_detail failed")
         raise HTTPException(status_code=500, detail=str(e))

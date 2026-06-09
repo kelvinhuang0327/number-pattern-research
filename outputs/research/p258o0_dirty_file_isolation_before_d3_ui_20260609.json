@@ -1,0 +1,82 @@
+{
+  "task_id": "P258O0",
+  "task_name": "Pre-existing Dirty File Isolation Before D3 Strategy Status Audit UI",
+  "artifact_date": "2026-06-09",
+  "task_status": "P258O0_DIRTY_FILE_ISOLATION_BEFORE_D3_UI_READY",
+  "final_classification": "P258O0_DIRTY_FILE_ISOLATION_BEFORE_D3_UI_READY",
+
+  "blocker_reason": "P258O was blocked because index.html was dirty and required for the D3 Strategy Status Audit UI implementation. The pre-existing dirty changes needed to be isolated into a separate commit before P258O could safely add D3 UI content.",
+
+  "dirty_files_observed": [
+    {
+      "file": "index.html",
+      "lines_changed": "+6 / -6",
+      "content": "Adds ui-hidden class to 6 nav buttons: simulation, next-draw, tracking, reviews, orchestration, cto-review",
+      "relation_to_p258o": "UNRELATED — nav visibility change, not D3 audit display",
+      "action": "STAGED and committed"
+    },
+    {
+      "file": "src/ui/AutoFetchManager.js",
+      "lines_changed": "+17 / -6",
+      "content": "Extends ingest backfill fetch payload with apply_confirmed, confirm_token, requested_by, reason fields; improves error message extraction",
+      "relation_to_p258o": "UNRELATED — ingest write guard UI, not D3 audit display",
+      "action": "STAGED and committed"
+    },
+    {
+      "file": "lottery_api/data/performance_history.json",
+      "lines_changed": "+1 / -1",
+      "content": "Single-line runtime data delta — runtime/data output, not intentional source-controlled work for this task",
+      "relation_to_p258o": "UNRELATED — runtime data file",
+      "action": "INTENTIONALLY LEFT UNSTAGED"
+    },
+    {
+      "file": "backend.pid",
+      "lines_changed": "runtime",
+      "content": "Process ID file",
+      "relation_to_p258o": "UNRELATED — runtime",
+      "action": "INTENTIONALLY LEFT UNSTAGED"
+    },
+    {
+      "file": "frontend.pid",
+      "lines_changed": "runtime",
+      "content": "Process ID file",
+      "relation_to_p258o": "UNRELATED — runtime",
+      "action": "INTENTIONALLY LEFT UNSTAGED"
+    }
+  ],
+
+  "exact_files_isolated": [
+    "index.html",
+    "src/ui/AutoFetchManager.js"
+  ],
+
+  "files_intentionally_left_unstaged": [
+    "lottery_api/data/performance_history.json",
+    "backend.pid",
+    "frontend.pid",
+    "data/lottery_v2.db",
+    "claude-code-showcase"
+  ],
+
+  "no_d3_ui_implemented": true,
+  "no_api_behavior_changed": true,
+  "no_db_query": true,
+  "no_db_write": true,
+  "no_recommendation_logic_modified": true,
+  "no_production_code_modified": true,
+  "no_registry_modified": true,
+  "no_controlled_apply_modified": true,
+  "no_deployment_modified": true,
+
+  "p258n_api_tests_pass": true,
+  "p258n_api_route_intact": "GET /api/replay/d3-strategy-status-audit confirmed working (63/63 tests PASS)",
+
+  "next_allowed_task": "P258O: read-only UI display implementation only, if explicitly authorized",
+  "p258o_remains_next": true,
+
+  "governance": {
+    "p258o0_is_cleanup_only": true,
+    "p258o0_does_not_authorize_p258o_automatically": true,
+    "p258o_requires_separate_explicit_authorization": true
+  }
+}

@@ -251,20 +251,31 @@ export class AutoFetchManager {
         if (this.bfResults) this.bfResults.innerHTML = '';
 
         try {
+            const payload = {
+                lottery_type: lt,
+                dry_run:      dryRun,
+                max_draws:    30,
+            };
+            if (!dryRun && confirmed) {
+                payload.apply_confirmed  = true;
+                payload.confirm_token    = 'p255-write-confirm';
+                payload.requested_by     = 'ui-user';
+                payload.reason           = 'Manual backfill from UI';
+            }
             const res = await fetch(getApiUrl('/api/ingest/backfill'), {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                    lottery_type: lt,
-                    dry_run:      dryRun,
-                    max_draws:    30,
-                }),
+                body: JSON.stringify(payload),
             });
             const json = await res.json();
 
             if (!res.ok) {
+                const detail = json.detail;
+                const msg = typeof detail === 'object' && detail !== null
+                    ? (detail.message || detail.error || JSON.stringify(detail))
+                    : (detail || res.statusText);
                 this._setStatus(this.bfStatus, 'error',
-                    `❌ 補入失敗：${json.detail || res.statusText}`);
+                    `❌ 補入失敗：${msg}`);
                 return;
             }
 

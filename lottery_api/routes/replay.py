@@ -1464,8 +1464,8 @@ async def get_history_replay_detail(
     page_size: int = Query(
         100,
         ge=1,
-        le=200,
-        description="Rows per page. Default 100, max 200. Server-side paginated.",
+        le=1500,
+        description="Rows per page. Default 100, max 1500. Server-side paginated. P260A: raised from 200 to support quick-range 100/300/500/1500.",
     ),
     sort: str = Query(
         "target_draw_desc",

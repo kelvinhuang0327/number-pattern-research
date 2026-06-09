@@ -150,8 +150,9 @@ def test_page_size_max_200_ok(client, sample):
     assert r.json()["page_size"] == 200
 
 
-def test_page_size_over_200_rejected(client, sample):
-    r = client.get(_detail_url(sample, page_size=201))
+def test_page_size_over_1500_rejected(client, sample):
+    # P260A raised the limit from 200 to 1500; 1501 must still be rejected.
+    r = client.get(_detail_url(sample, page_size=1501))
     assert r.status_code == 422
 
 

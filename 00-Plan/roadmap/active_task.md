@@ -1,6 +1,10 @@
 # Active Task — Today (2026-06-09)
 
-> **STATUS: `P259C_HIT_HIGHLIGHTING_MERGED_WAITING_FOR_USER_AUTHORIZATION`**
+> **STATUS: `P260A_REPLAY_DETAIL_UX_PARITY_MERGED_TESTS_ALL_PASS`**
+> **P260B (done):** Governance closeout. PR #393 MERGED main `e8dd4d27`. State marker converged. No new implementation task started. WAITING_FOR_USER_AUTHORIZATION.
+> **P260A (merged):** Replay Detail UX Parity — history-detail API page_size上限1500; quick range 100/300/500/1500 (1000期 absent); detail table columns: 期號/日期/策略/預測號碼/實際開獎/命中號碼/命中數; range info banner 前 N 期 / 共 X 筆; circular number tokens; hit token green; special token purple; overview API unchanged. No DB write, no replay backfill, no migration, no adapter change. **69/69 P260A PASS; 117/117 P259A/P259B/P259C PASS; 986/986 P257/P258 PASS.** PR #393 merged main `e8dd4d27`. No active implementation task. WAITING_FOR_USER_AUTHORIZATION.
+
+> **Previous STATUS: `P259C_HIT_HIGHLIGHTING_MERGED_WAITING_FOR_USER_AUTHORIZATION`**
 > **P259D (done):** Governance closeout. PR #391 MERGED main `a573fc0`. State marker converged. No new implementation task started. WAITING_FOR_USER_AUTHORIZATION.
 > **P259C (merged):** Hit highlighting in replay detail panel. `fmtNumberTokens()` renders numbers as individual badge tokens; hit numbers highlighted with `replay-number-token--hit` (green); fallback to predicted∩actual intersection if hit_numbers empty (display-only, no DB write). `renderDetailRows` uses `replay-row--hit` + `replay-result-badge--hit/miss`. No API changes; no DB write; no replay backfill; pagination unchanged; overview unchanged. **33/33 P259C PASS; 84/84 P259B+P259A PASS; 986/986 P257/P258 PASS.** PR #391 merged main `a573fc0`. No active implementation task. WAITING_FOR_USER_AUTHORIZATION.
 
@@ -225,4 +229,4 @@ Status: **WAITING_FOR_USER_AUTHORIZATION** — no active follow-up authorized.
 6. 是否允許進入下一輪
 7. Final Classification
 
-Final Classification (this file): `EVIDENCE_DASHBOARD_API_RUNTIME_SMOKE_GOVERNANCE_CLOSURE`
+Final Classification (this file): `P260A_REPLAY_DETAIL_UX_PARITY_MERGED_TESTS_ALL_PASS`

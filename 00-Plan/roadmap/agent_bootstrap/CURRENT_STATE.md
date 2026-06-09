@@ -1,7 +1,7 @@
 # Current State — LotteryNew
 
-**Last Reviewed:** 2026-06-09 Asia/Taipei (P258K D3 integration contract documentation closeout READY — P258 arc CLOSED as read-only foundation; no executable gate, no real candidates, no null generation, no p-values, no DB write; HOLD / WAITING_FOR_USER_AUTHORIZATION)
-**State Marker:** `P258K_D3_INTEGRATION_CONTRACT_DOCUMENTATION_CLOSEOUT_READY`
+**Last Reviewed:** 2026-06-09 Asia/Taipei (P258L D3 Strategy Status Audit Page plan READY — plan/artifact only; no UI, no API route, no real candidate methods, no executable gate, no null generation, no p-values, no DB write; next P258M read-only artifact-backed API contract only requires separate authorization)
+**State Marker:** `P258L_D3_STRATEGY_STATUS_AUDIT_PAGE_PLAN_READY`
 **Purpose:** Project-specific state for future agents. Read this after `SHARED_AGENT_BOOTSTRAP.md` and `TASK_TEMPLATES.md`.
 
 ## Canonical Execution Context

@@ -2,6 +2,12 @@
 
 ---
 
+## P258L Page Plan Decision — 2026-06-09
+
+**P258L complete per explicit authorization.** D3 Strategy Status / Contract Audit page plan defines: page title, 4-item purpose list (lifecycle/evidence status display, D3 contract-readiness display separately, approval-misinterpretation prevention, historical-only disclaimer), 4 read-only data sources (strategy registry, P251 evidence dashboard, P257 best-strategy overview, P258 artifact chain), 15 required row fields (including mandatory `d3_not_approval_warning`/`no_prediction_claim`/`no_betting_advice` on every row), 5 allowed D3 contract statuses (NOT_EVALUATED_BY_D3/CONTRACT_READY/CONTRACT_BLOCKED/NOT_APPLICABLE_HISTORICAL_ARTIFACT/NOT_APPLICABLE_NO_REPLAY), 5 forbidden statuses (APPROVED/PROMOTED/PRODUCTION_READY/RECOMMENDED/PREDICTIVE_EDGE_CONFIRMED), 6 page filters, required safety copy. **Plan only — no UI, no API route, no real candidate methods, no executable gate, no null generation, no p-values, no DB write.** Next: P258M read-only artifact-backed API contract only requires separate explicit authorization.
+
+---
+
 ## P258K Closeout Decision — 2026-06-09
 
 **P258 D3 arc CLOSED per documentation closeout P258K.** The P258A–P258J D3 AdversarialNullSurvivorGate contract-validation arc is complete as a read-only foundation. Deliverables: `lottery_api/research/d3_gate/` package (schemas.py / gate_validation.py / integration_skeleton.py — all non-executable), 372+ tests across P258E–P258K (all PASS on main), integration plan (P258H), and this closeout (P258K). **No executable gate evaluation exists. No real candidate methods were run. No null generation, no p-values, no DB write, no recommendation/production/registry changes.** D3 is not a prediction model. NOT_YET_REJECTED is not approval. **Recommended next state: HOLD / WAITING_FOR_USER_AUTHORIZATION.** Do not proceed automatically to executable gate evaluation. Future options (each requiring separate explicit authorization): P258L read-only audit/index, P259A new hypothesis intake, P258X executable gate evaluation design only.

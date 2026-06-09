@@ -822,6 +822,9 @@ P257C_BEST_STRATEGY_OVERVIEW_RUNTIME_SMOKE_GOVERNANCE_CLOSEOUT_COMPLETE_20260608
 
 **P258 arc status: CLOSED — HOLD / WAITING_FOR_USER_AUTHORIZATION**
 
+- **P258L** (2026-06-09): D3 Strategy Status / Contract Audit page plan. Read-only audit/index page contract with 15 row fields, 5 allowed D3 contract statuses, 5 forbidden statuses, 4 data sources, 6 filters, required safety copy. No UI, no API, no executable gate. 83/83 tests PASS. `P258L_D3_STRATEGY_STATUS_AUDIT_PAGE_PLAN_READY`.
+- **P258M** (next): read-only artifact-backed API contract only. Requires separate explicit authorization.
+
 ```text
-P258K_D3_INTEGRATION_CONTRACT_DOCUMENTATION_CLOSEOUT_READY_20260609
+P258L_D3_STRATEGY_STATUS_AUDIT_PAGE_PLAN_READY_20260609
 ```

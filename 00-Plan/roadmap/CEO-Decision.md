@@ -2,6 +2,12 @@
 
 ---
 
+## P258P E2E / UX / Safety Closeout Decision — 2026-06-09
+
+**P258P complete. P258L → P258M → P258N → P258O → P258P arc CLOSED.** E2E/UX/safety closeout verified: API `GET /api/replay/d3-strategy-status-audit` returns HTTP 200 with 14-row payload, all 15 P258M row fields, only allowed D3 statuses (`NOT_EVALUATED_BY_D3`/`CONTRACT_READY`/`CONTRACT_BLOCKED`/`NOT_APPLICABLE_HISTORICAL_ARTIFACT`/`NOT_APPLICABLE_NO_REPLAY`), all 5 required safety disclaimers, and `forbidden_actions_confirmed` block. UI panel verified: nav button, section, purple disclaimer banner (5 disclaimers including NOT_YET_REJECTED is not approval), two visually separate column groups (lifecycle/evidence blue vs D3 contract purple labeled "非核准"), 3 filters, summary bar, empty/error/loading states. Forbidden vocabulary (`APPROVED`/`PROMOTED`/`PRODUCTION_READY`/`RECOMMENDED`/`PREDICTIVE_EDGE_CONFIRMED`) confirmed absent from JS and HTML. No betting advice, no prediction claim, no improved-accuracy claim. No DB query, no D3 execution, no API contract changes, no recommendation/production/registry paths modified. **Recommended next state: HOLD / WAITING_FOR_USER_AUTHORIZATION.** D3 is not a prediction model. NOT_YET_REJECTED is not approval.
+
+---
+
 ## P258O Read-only UI Display Decision — 2026-06-09
 
 **P258O complete per explicit authorization.** D3 Strategy Status Audit read-only UI display implemented in `index.html` — nav button `data-section="p258-d3-audit"`, section `id="p258-d3-audit-section"`. Fetches `GET /api/replay/d3-strategy-status-audit`. Purple safety disclaimer banner with all 5 required safety disclaimers. Two visually separate column groups: lifecycle/evidence (blue) vs D3 contract status (purple, explicitly labeled "非核准" = not approval). Client-side filters for lottery_type, lifecycle_status, d3_contract_status. Summary bar. Only allowed D3 statuses (`NOT_EVALUATED_BY_D3`/`CONTRACT_READY`/`CONTRACT_BLOCKED`/`NOT_APPLICABLE_HISTORICAL_ARTIFACT`/`NOT_APPLICABLE_NO_REPLAY`); forbidden vocabulary (`APPROVED`/`PROMOTED`/`PRODUCTION_READY`/`RECOMMENDED`/`PREDICTIVE_EDGE_CONFIRMED`) absent. **No DB query, no D3 execution, no real candidate methods, no API contract changes, no recommendation/production/registry paths.** D3 is not a prediction model. NOT_YET_REJECTED is not approval. Next: P258P read-only E2E / UX / safety closeout only requires separate explicit authorization.

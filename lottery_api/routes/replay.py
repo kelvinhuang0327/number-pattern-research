@@ -1212,3 +1212,189 @@ async def get_d3_strategy_status_audit():
     except Exception as e:
         logger.exception("get_d3_strategy_status_audit failed")
         raise HTTPException(status_code=500, detail=str(e))
+
+
+# ─── P259A: History Replay Overview ─────────────────────────────────────────
+
+
+def _derive_bet_count(strategy_id: str) -> int:
+    """Derive declared bet count from strategy_id naming convention.
+
+    Extracts the numeric suffix before 'bet' (e.g. '_3bet' → 3).
+    Falls back to well-known special cases, then defaults to 1.
+    """
+    import re as _re
+    m = _re.search(r'[_-](\d+)bet', strategy_id)
+    if m:
+        return int(m.group(1))
+    if "triple_strike" in strategy_id:
+        return 3
+    return 1
+
+
+_REPLAY_STATUS_CATEGORIES = {
+    "has_rows":           "有 replay rows",
+    "no_production_replay": "無 production replay",
+    "artifact_only":      "僅 artifact / rejected artifact",
+}
+
+
+@router.get("/api/replay/history-overview")
+async def get_history_replay_overview(
+    lottery_type:              Optional[str] = Query(
+        None,
+        description="Filter by lottery type: BIG_LOTTO | POWER_LOTTO | DAILY_539. "
+                    "Omit or empty string for all lottery types.",
+    ),
+    bet_index:                 int           = Query(
+        1,
+        ge=0,
+        le=5,
+        description="Filter by derived bet count (1–5). Use 0 for all bet counts. Default 1.",
+    ),
+    replay_status_category:    Optional[str] = Query(
+        None,
+        description=(
+            "Filter by replay availability category: "
+            "has_rows | no_production_replay | artifact_only. "
+            "Omit for all."
+        ),
+    ),
+):
+    """
+    P259A: Read-only History Replay Overview — strategy-level summary.
+
+    Returns one row per (strategy_id × lottery_type) combination showing:
+    - Declared bet count (derived from strategy_id naming)
+    - Replay row count, target_draw range, latest target_draw
+    - Lifecycle status as badge metadata (never used to exclude strategies)
+    - Replay status category summary
+
+    All registered strategies are included regardless of lifecycle status.
+    Lifecycle is metadata only — it does NOT permanently exclude strategies.
+
+    Per-draw detail data is NOT included. Detail page deferred to P259B.
+
+    READ-ONLY. No DB write. No replay backfill. No strategy adapter execution.
+    No migration. No production deployment change.
+    """
+    try:
+        # ── 1. Get all strategies from registry (all lifecycle states) ──────
+        all_meta = list_strategy_lifecycle_metadata()
+        exec_ids = set(list_executable_strategy_ids())
+
+        # ── 2. Query DB for replay summary per (lottery_type, strategy_id) ──
+        conn = _open_conn()
+        try:
+            db_rows = conn.execute(
+                """
+                SELECT
+                    lottery_type,
+                    strategy_id,
+                    COUNT(*)  AS total_rows,
+                    MIN(CAST(target_draw AS INTEGER)) AS min_draw_int,
+                    MAX(CAST(target_draw AS INTEGER)) AS max_draw_int,
+                    SUM(CASE WHEN replay_status='PREDICTED'            THEN 1 ELSE 0 END) AS predicted_cnt,
+                    SUM(CASE WHEN replay_status='REJECTED'             THEN 1 ELSE 0 END) AS rejected_cnt,
+                    SUM(CASE WHEN replay_status='INSUFFICIENT_HISTORY' THEN 1 ELSE 0 END) AS insuf_cnt,
+                    SUM(CASE WHEN replay_status='REPLAY_ERROR'         THEN 1 ELSE 0 END) AS error_cnt,
+                    SUM(CASE WHEN replay_status='STRATEGY_UNAVAILABLE' THEN 1 ELSE 0 END) AS unavail_cnt
+                FROM strategy_prediction_replays
+                GROUP BY lottery_type, strategy_id
+                """,
+            ).fetchall()
+        finally:
+            conn.close()
+
+        # Index DB data by (lottery_type, strategy_id)
+        db_index: dict = {}
+        for r in db_rows:
+            key = (r["lottery_type"], r["strategy_id"])
+            db_index[key] = {
+                "total_rows":       r["total_rows"],
+                "min_target_draw":  str(r["min_draw_int"]) if r["min_draw_int"] else None,
+                "max_target_draw":  str(r["max_draw_int"]) if r["max_draw_int"] else None,
+                "latest_target_draw": str(r["max_draw_int"]) if r["max_draw_int"] else None,
+                "replay_status_summary": {
+                    "PREDICTED":            r["predicted_cnt"] or 0,
+                    "REJECTED":             r["rejected_cnt"] or 0,
+                    "INSUFFICIENT_HISTORY": r["insuf_cnt"] or 0,
+                    "REPLAY_ERROR":         r["error_cnt"] or 0,
+                    "STRATEGY_UNAVAILABLE": r["unavail_cnt"] or 0,
+                },
+            }
+
+        # ── 3. Build overview rows ──────────────────────────────────────────
+        rows = []
+        for meta in all_meta:
+            sid = meta["strategy_id"]
+            derived_bets = _derive_bet_count(sid)
+            is_exec = sid in exec_ids
+
+            for lt in meta["supported_lottery_types"]:
+                # lottery_type filter
+                if lottery_type and lt != lottery_type:
+                    continue
+
+                # bet_index filter (0 = all)
+                if bet_index != 0 and derived_bets != bet_index:
+                    continue
+
+                db = db_index.get((lt, sid))
+                has_rows = db is not None and db["total_rows"] > 0
+                lc = meta["lifecycle_status"]
+
+                # Determine replay_status_category
+                if has_rows:
+                    rcat = "has_rows"
+                elif lc in ("REJECTED",) and not is_exec:
+                    rcat = "artifact_only"
+                else:
+                    rcat = "no_production_replay"
+
+                # replay_status_category filter
+                if replay_status_category and rcat != replay_status_category:
+                    continue
+
+                row = {
+                    "lottery_type":           lt,
+                    "strategy_id":            sid,
+                    "strategy_name":          meta["strategy_name"],
+                    "strategy_version":       meta["strategy_version"],
+                    "derived_bet_count":      derived_bets,
+                    "lifecycle_status":       lc,
+                    "is_executable":          is_exec,
+                    "total_replay_rows":      db["total_rows"] if db else 0,
+                    "min_target_draw":        db["min_target_draw"] if db else None,
+                    "max_target_draw":        db["max_target_draw"] if db else None,
+                    "latest_target_draw":     db["latest_target_draw"] if db else None,
+                    "replay_status_summary":  db["replay_status_summary"] if db else {},
+                    "has_production_replay":  has_rows,
+                    "replay_status_category": rcat,
+                }
+                rows.append(row)
+
+        return {
+            "default_bet_index":            1,
+            "bet_index_filter":             bet_index,
+            "lottery_type_filter":          lottery_type or None,
+            "replay_status_category_filter": replay_status_category or None,
+            "total_rows":                   len(rows),
+            "rows":                         rows,
+            "all_strategies_included":      True,
+            "lifecycle_as_badge_only":      True,
+            "detail_page_note":             (
+                "明細頁將於後續 P259B 實作，包含每一期預測比對與分頁查詢。"
+            ),
+            "disclaimer":                   _DISCLAIMER,
+            "no_db_write":                  True,
+            "no_replay_backfill":           True,
+            "no_strategy_adapter_changes":  True,
+            "no_large_per_draw_detail":     True,
+        }
+
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.exception("get_history_replay_overview failed")
+        raise HTTPException(status_code=500, detail=str(e))

@@ -3025,12 +3025,13 @@
                 <button id="p259b-clear-btn" style="padding:4px 10px;font-size:12px;border-radius:4px;border:1px solid #30363d;background:#0d1117;color:#8b949e;cursor:pointer">清除</button>
               </div>
               <!-- P260A quick range -->
-              <div id="p260a-quick-range" style="display:flex;gap:6px;align-items:center;margin-bottom:12px" data-testid="p260a-quick-range">
+              <div id="p260a-quick-range" style="display:flex;gap:6px;align-items:center;margin-bottom:12px;flex-wrap:wrap" data-testid="p260a-quick-range">
                 <span style="font-size:11px;color:#8b949e">快速檢視：</span>
-                <button class="p260a-range-btn" data-ps="100"  data-testid="p260a-range-100" >100期</button>
-                <button class="p260a-range-btn" data-ps="300"  data-testid="p260a-range-300" >300期</button>
-                <button class="p260a-range-btn" data-ps="500"  data-testid="p260a-range-500" >500期</button>
-                <button class="p260a-range-btn" data-ps="1500" data-testid="p260a-range-1500">1500期</button>
+                <button class="p260a-range-btn active" data-ps="100"  data-testid="p260a-range-100" >100期</button>
+                <button class="p260a-range-btn"         data-ps="300"  data-testid="p260a-range-300" >300期</button>
+                <button class="p260a-range-btn"         data-ps="500"  data-testid="p260a-range-500" >500期</button>
+                <button class="p260a-range-btn"         data-ps="1500" data-testid="p260a-range-1500">1500期</button>
+                <span id="p260a-range-info" data-testid="p260a-range-info" style="font-size:11px;color:#6e7681;margin-left:6px"></span>
               </div>
 
               <!-- Detail table -->
@@ -3038,13 +3039,13 @@
                 <table class="data-table" style="width:100%;font-size:12px" id="p259b-detail-table">
                   <thead>
                     <tr>
-                      <th>期數</th>
-                      <th>開獎日期</th>
+                      <th>期號</th>
+                      <th>日期</th>
+                      <th>策略</th>
                       <th>預測號碼</th>
-                      <th>開獎號碼</th>
+                      <th>實際開獎</th>
                       <th>命中號碼</th>
                       <th>命中數</th>
-                      <th>結果</th>
                     </tr>
                   </thead>
                   <tbody id="p259b-detail-tbody"></tbody>
@@ -5034,16 +5035,18 @@
       var actSpecialHit  = !!(r.special_hit && r.actual_special != null);
       predictedHtml += fmtSpecialToken(r.predicted_special, predSpecialHit, '特');
       actualHtml    += fmtSpecialToken(r.actual_special,    actSpecialHit,  '特');
-      // P260A: hit numbers column
+      // P260A: hit numbers column; strategy from ctx
       var hitHtml = fmtHitTokens(r.hit_numbers);
+      var strategyLabel = '<span style="font-family:monospace;font-size:10px;color:#8b949e">' +
+        (ctx.strategy_name || ctx.strategy_id || '—') + '</span>';
       html += '<tr' + rowClass + '>' +
         '<td>' + r.target_draw + '</td>' +
         '<td style="font-size:11px;color:#8b949e">' + (r.draw_date || '—') + '</td>' +
+        '<td>' + strategyLabel + '</td>' +
         '<td>' + predictedHtml + '</td>' +
         '<td>' + actualHtml + '</td>' +
         '<td>' + hitHtml + '</td>' +
         '<td style="font-weight:600;color:' + (isHit ? '#3fb950' : '#6e7681') + '">' + r.hit_count + '</td>' +
-        '<td><span class="' + resultBadgeClass + '">' + (r.result_label || (isHit ? '命中' : '未命中')) + '</span></td>' +
         '</tr>';
     });
     tbody.innerHTML = html;
@@ -5053,10 +5056,18 @@
     var info = el('p259b-page-info');
     var prev = el('p259b-prev-btn');
     var next = el('p259b-next-btn');
+    var rangeInfo = el('p260a-range-info');
     var totalPages = ctx.page_size > 0 ? Math.max(1, Math.ceil(ctx.total_count / ctx.page_size)) : 1;
     if (info) info.textContent = '第 ' + ctx.page + ' / ' + totalPages + ' 頁（共 ' + ctx.total_count + ' 期）';
     if (prev) prev.disabled = (ctx.page <= 1);
     if (next) next.disabled = !ctx.has_next;
+    // P260A: show "前 N 期 / 共 X 筆" next to quick range
+    if (rangeInfo) {
+      var showing = Math.min(ctx.page_size, ctx.total_count);
+      rangeInfo.textContent = ctx.total_count > 0
+        ? '前 ' + ctx.page_size + ' 期 / 共 ' + ctx.total_count + ' 筆'
+        : '';
+    }
   }
 
   function loadDetail() {
@@ -5107,6 +5118,7 @@
     ctx.bet_index = parseInt(bet, 10) || 1;
     ctx.strategy_name = name || strategy;
     ctx.page = 1;
+    ctx.page_size = 100;
     ctx.sort = 'target_draw_desc';
     ctx.hit_filter = 'all';
     ctx.target_draw = '';
@@ -5114,6 +5126,13 @@
     var hf = el('p259b-hit-filter'); if (hf) hf.value = 'all';
     var so = el('p259b-sort'); if (so) so.value = 'target_draw_desc';
     var td = el('p259b-target-draw'); if (td) td.value = '';
+    // reset quick range active state to 100
+    var qr = el('p260a-quick-range');
+    if (qr) {
+      qr.querySelectorAll('.p260a-range-btn').forEach(function(b) {
+        b.classList.toggle('active', b.dataset.ps === '100');
+      });
+    }
     var panel = el('p259b-detail-panel');
     if (panel) {
       panel.style.display = 'block';

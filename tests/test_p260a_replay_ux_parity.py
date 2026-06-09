@@ -131,20 +131,52 @@ class TestQuickRangeHTML:
 # ---------------------------------------------------------------------------
 
 class TestDetailTableHTML:
-    def test_hit_numbers_column_header_present(self):
-        """命中號碼 column header must be in detail table."""
-        assert '命中號碼' in _html()
-
-    def test_detail_table_has_seven_columns(self):
-        """P259B detail table thead must have 7 <th> elements (P260A added 命中號碼)."""
+    def _thead(self) -> str:
         html = _html()
-        # Find the table section and count th elements
         table_start = html.find('id="p259b-detail-table"')
-        assert table_start != -1
+        assert table_start != -1, "p259b-detail-table not found"
         thead_start = html.find('<thead>', table_start)
         thead_end = html.find('</thead>', thead_start)
-        thead = html[thead_start:thead_end]
-        assert thead.count('<th>') == 7
+        return html[thead_start:thead_end]
+
+    def test_detail_table_has_seven_columns(self):
+        """P260A amend: 7 columns — 期號|日期|策略|預測號碼|實際開獎|命中號碼|命中數."""
+        assert self._thead().count('<th>') == 7
+
+    def test_period_number_column_header(self):
+        """Column header renamed to 期號 (was 期數)."""
+        assert '期號' in self._thead()
+
+    def test_date_column_header(self):
+        """Column header is 日期 (was 開獎日期)."""
+        assert '日期' in self._thead()
+
+    def test_strategy_column_header_present(self):
+        """P260A amend: 策略 column added to match legacy style."""
+        assert '策略' in self._thead()
+
+    def test_predicted_numbers_column_header(self):
+        assert '預測號碼' in self._thead()
+
+    def test_actual_draw_column_header(self):
+        """Column header renamed to 實際開獎 (was 開獎號碼)."""
+        assert '實際開獎' in self._thead()
+
+    def test_hit_numbers_column_header_present(self):
+        assert '命中號碼' in self._thead()
+
+    def test_hit_count_column_header(self):
+        assert '命中數' in self._thead()
+
+    def test_result_column_removed(self):
+        """結果 badge column removed in P260A amend — keep visual clean."""
+        assert '結果' not in self._thead()
+
+    def test_range_info_element_present(self):
+        """P260A: range info span shows 前 N 期 / 共 X 筆."""
+        html = _html()
+        assert 'data-testid="p260a-range-info"' in html
+        assert 'p260a-range-info' in html
 
     def test_footnote_mentions_1500(self):
         """Footnote updated to mention 1500 期 max."""
@@ -239,6 +271,11 @@ class TestJSHelpers:
         """renderDetailRows accesses r.hit_numbers for hit column."""
         assert 'r.hit_numbers' in _html()
 
+    def test_render_detail_rows_uses_strategy(self):
+        """P260A amend: renderDetailRows emits strategy column using ctx."""
+        html = _html()
+        assert 'ctx.strategy_name' in html or 'ctx.strategy_id' in html
+
     def test_quick_range_event_handler_present(self):
         """init() wires up click handler for .p260a-range-btn."""
         assert 'p260a-range-btn' in _html()
@@ -247,6 +284,19 @@ class TestJSHelpers:
     def test_quick_range_max_guard(self):
         """JS guard: ps > 1500 returns early (matches authorized limit)."""
         assert '> 1500' in _html()
+
+    def test_range_info_text_pattern_in_js(self):
+        """updatePagination writes '前 N 期 / 共 X 筆' text to range info element."""
+        html = _html()
+        assert '前 ' in html and '期 / 共' in html and '筆' in html
+
+    def test_open_detail_resets_page_size_to_100(self):
+        """openDetail resets ctx.page_size = 100 on each open."""
+        assert 'ctx.page_size = 100' in _html()
+
+    def test_open_detail_resets_active_btn(self):
+        """openDetail resets the active quick range button to 100期."""
+        assert "b.dataset.ps === '100'" in _html()
 
 
 # ---------------------------------------------------------------------------

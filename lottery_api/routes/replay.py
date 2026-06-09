@@ -8,6 +8,7 @@ GET  /api/replay/runs                — 列出 replay_run 記錄
 GET  /api/replay/run/{run_id}/status — 查詢單一 replay_run 狀態
 GET  /api/replay/history-overview    — P259A 回放總覽（策略層級摘要，預設 bet_index=1）
 GET  /api/replay/history-detail      — P259B 回放明細（單策略每期分頁查詢，server-side pagination）
+GET  /api/replay/history-detail-grouped — P261A 回放明細（依 target_draw 分組，一列一 draw，內含多注 bets[]）
 
 IMPORTANT: These endpoints are READ-ONLY audit endpoints.
   - They MUST NOT trigger any prediction generation.
@@ -1643,4 +1644,331 @@ async def get_history_replay_detail(
         raise
     except Exception as e:
         logger.exception("get_history_replay_detail failed")
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+@router.get("/api/replay/history-detail-grouped")
+async def get_history_replay_detail_grouped(
+    lottery_type: str = Query(
+        ...,
+        description="BIG_LOTTO | POWER_LOTTO | DAILY_539",
+    ),
+    strategy_id: str = Query(..., description="Strategy identifier (exact match)."),
+    bet_index: int = Query(
+        1,
+        ge=1,
+        le=5,
+        description=(
+            "Strategy-level declared bet count (P259A-consistent, derived from "
+            "strategy_id naming). CONFIRMATORY ONLY in the grouped view — it does "
+            "NOT filter rows; the grouped view always returns ALL bets per draw "
+            "in each row's bets[] array. `derived_bet_count` / "
+            "`bet_index_matches_strategy` are echoed so callers can verify."
+        ),
+    ),
+    page: int = Query(1, ge=1, description="1-based page number (paginates over distinct draws)."),
+    page_size: int = Query(
+        100,
+        ge=1,
+        le=1500,
+        description=(
+            "Number of DISTINCT DRAWS per page. Default 100, max 1500. "
+            "Server-side paginated — never loads all draws at once. "
+            "P261A: grouped view paginates over draws, not over bet-rows."
+        ),
+    ),
+    sort: str = Query(
+        "target_draw_desc",
+        description="target_draw_desc (default, latest first) | target_draw_asc",
+    ),
+    hit_filter: str = Query(
+        "all",
+        description=(
+            "all (default) | hit (draw with ANY bet hit_count>0) | "
+            "miss (draw where ALL bets hit_count=0). Applied at the DRAW level."
+        ),
+    ),
+    target_draw: Optional[str] = Query(
+        None,
+        description="Exact target_draw match (e.g. '115000037'). Safe parameterized query.",
+    ),
+):
+    """
+    P261A: Read-only DRAW-GROUPED replay detail for one strategy.
+
+    Unlike /api/replay/history-detail (which returns one row per bet-row), this
+    endpoint groups by distinct target_draw and returns ONE row per draw, with a
+    nested `bets[]` array holding every bet's per-bet predicted/actual/hit detail.
+    This is the data source for the row-expand UI: the main table shows one clean
+    row per draw, and expanding a row reveals each bet (第 1 注 / 第 2 注 / …).
+
+    Server-side pagination is over DISTINCT DRAWS (page_size = draws per page,
+    max 1500), so a 5-bet strategy at page_size=100 loads 100 draws × ≤5 bets,
+    never the full result set. The existing /history-detail endpoint and its
+    contract are unchanged.
+
+    READ-ONLY. No DB write. No replay backfill/generation. No strategy adapter
+    execution. No migration. No schema change. No betting advice.
+    """
+    try:
+        # ── Validate enum params ────────────────────────────────────────────
+        if sort not in _DETAIL_SORTS:
+            raise HTTPException(
+                status_code=400,
+                detail=f"invalid sort {sort!r}; allowed: {list(_DETAIL_SORTS)}",
+            )
+        if hit_filter not in _DETAIL_HIT_FILTERS:
+            raise HTTPException(
+                status_code=400,
+                detail=f"invalid hit_filter {hit_filter!r}; allowed: {list(_DETAIL_HIT_FILTERS)}",
+            )
+
+        derived_bet_count = _derive_bet_count(strategy_id)
+        bet_index_matches = (derived_bet_count == bet_index)
+
+        # ── Base WHERE (scoped to lottery_type + strategy_id) ────────────────
+        base_where = ["lottery_type = ?", "strategy_id = ?"]
+        base_params: list = [lottery_type, strategy_id]
+        if target_draw:
+            base_where.append("target_draw = ?")
+            base_params.append(target_draw)
+        base_where_sql = " AND ".join(base_where)
+        order_dir = "DESC" if sort == "target_draw_desc" else "ASC"
+
+        # Draw-level hit_filter applied via HAVING on the per-draw aggregate.
+        having_sql = ""
+        if hit_filter == "hit":
+            having_sql = "HAVING SUM(CASE WHEN hit_count > 0 THEN 1 ELSE 0 END) > 0"
+        elif hit_filter == "miss":
+            having_sql = "HAVING SUM(CASE WHEN hit_count > 0 THEN 1 ELSE 0 END) = 0"
+
+        conn = _open_conn()
+        try:
+            # ── Count distinct draws matching the filter ─────────────────────
+            total_count = conn.execute(
+                f"""
+                SELECT COUNT(*) FROM (
+                    SELECT target_draw
+                    FROM strategy_prediction_replays
+                    WHERE {base_where_sql}
+                    GROUP BY target_draw
+                    {having_sql}
+                )
+                """,
+                base_params,
+            ).fetchone()[0]
+
+            # ── Page of distinct draws (with per-draw aggregates) ────────────
+            offset = (page - 1) * page_size
+            draw_rows = conn.execute(
+                f"""
+                SELECT
+                    target_draw,
+                    MAX(target_date)                            AS draw_date,
+                    COUNT(*)                                    AS n_bets,
+                    SUM(CASE WHEN hit_count > 0 THEN 1 ELSE 0 END) AS hit_bets,
+                    MAX(COALESCE(hit_count, 0))                 AS max_hit_count,
+                    SUM(COALESCE(hit_count, 0))                 AS total_hit_count
+                FROM strategy_prediction_replays
+                WHERE {base_where_sql}
+                GROUP BY target_draw
+                {having_sql}
+                ORDER BY CAST(target_draw AS INTEGER) {order_dir}
+                LIMIT ? OFFSET ?
+                """,
+                base_params + [page_size, offset],
+            ).fetchall()
+
+            page_draws = [str(d["target_draw"]) for d in draw_rows]
+
+            # ── Fetch every bet row for the paginated draws ──────────────────
+            bet_rows_by_draw: dict = {}
+            if page_draws:
+                placeholders = ",".join("?" for _ in page_draws)
+                bet_rows = conn.execute(
+                    f"""
+                    SELECT
+                        target_draw, bet_index, strategy_name, target_date,
+                        predicted_numbers, predicted_special,
+                        actual_numbers, actual_special,
+                        hit_numbers, hit_count, special_hit, replay_status
+                    FROM strategy_prediction_replays
+                    WHERE lottery_type = ? AND strategy_id = ?
+                      AND target_draw IN ({placeholders})
+                    ORDER BY CAST(target_draw AS INTEGER) {order_dir}, bet_index ASC
+                    """,
+                    [lottery_type, strategy_id] + page_draws,
+                ).fetchall()
+                for br in bet_rows:
+                    bet_rows_by_draw.setdefault(str(br["target_draw"]), []).append(br)
+
+            # ── Build one row per draw, with nested bets[] ───────────────────
+            rows = []
+            for d in draw_rows:
+                td = str(d["target_draw"])
+                bet_list = bet_rows_by_draw.get(td, [])
+                bets = []
+                hit_union: set = set()
+                actual_numbers = []
+                actual_special = None
+                strategy_name = None
+                for br in bet_list:
+                    b_pred = _parse_numbers_field(br["predicted_numbers"])
+                    b_actual = _parse_numbers_field(br["actual_numbers"])
+                    b_hits = _parse_numbers_field(br["hit_numbers"])
+                    if not actual_numbers and b_actual:
+                        actual_numbers = b_actual
+                    if actual_special is None:
+                        actual_special = br["actual_special"]
+                    if strategy_name is None:
+                        strategy_name = br["strategy_name"]
+                    for n in b_hits:
+                        try:
+                            hit_union.add(int(n))
+                        except (TypeError, ValueError):
+                            hit_union.add(n)
+                    bets.append({
+                        "bet_index":         br["bet_index"],
+                        "predicted_numbers": b_pred,
+                        "predicted_special": br["predicted_special"],
+                        "actual_numbers":    b_actual,
+                        "actual_special":    br["actual_special"],
+                        "hit_numbers":       b_hits,
+                        "hit_count":         br["hit_count"] or 0,
+                        "special_hit":       bool(br["special_hit"]),
+                        "result_label":      _detail_result_label(br["hit_count"], br["special_hit"]),
+                        "strategy_name":     br["strategy_name"],
+                        "replay_status":     br["replay_status"],
+                    })
+
+                max_hit = d["max_hit_count"] or 0
+                # Draw-level summary fields (history-detail-compatible names):
+                #   predicted_numbers / predicted_special = first bet's prediction
+                #   hit_numbers = union of all bets' hit numbers for this draw
+                predicted_summary = bets[0]["predicted_numbers"] if bets else []
+                predicted_special_summary = bets[0]["predicted_special"] if bets else None
+                special_hit_any = any(b["special_hit"] for b in bets)
+                rows.append({
+                    "lottery_type":      lottery_type,
+                    "strategy_id":       strategy_id,
+                    "strategy_name":     strategy_name,
+                    "target_draw":       td,
+                    "draw_date":         d["draw_date"],
+                    "n_bets":            d["n_bets"] or len(bets),
+                    "actual_numbers":    actual_numbers,
+                    "actual_special":    actual_special,
+                    # Draw-level summary (one bet's prediction + union of hits):
+                    "predicted_numbers": predicted_summary,
+                    "predicted_special": predicted_special_summary,
+                    "hit_numbers":       sorted(hit_union, key=lambda x: (isinstance(x, str), x)),
+                    "max_hit_count":     max_hit,
+                    "total_hit_count":   d["total_hit_count"] or 0,
+                    "hit_bets":          d["hit_bets"] or 0,
+                    "any_hit":           max_hit > 0,
+                    "special_hit":       special_hit_any,
+                    "bets":              bets,
+                })
+
+            # ── Summary over the FULL (lottery, strategy) set (unfiltered) ───
+            summary_row = conn.execute(
+                """
+                SELECT
+                    COUNT(*)                                       AS total_rows,
+                    COUNT(DISTINCT target_draw)                    AS total_draws,
+                    SUM(CASE WHEN hit_count > 0 THEN 1 ELSE 0 END) AS hit_rows,
+                    MIN(CAST(target_draw AS INTEGER))              AS first_draw,
+                    MAX(CAST(target_draw AS INTEGER))              AS last_draw
+                FROM strategy_prediction_replays
+                WHERE lottery_type = ? AND strategy_id = ?
+                """,
+                [lottery_type, strategy_id],
+            ).fetchone()
+
+            # Distinct draws that have at least one bet hit (draw-level hit rate).
+            hit_draws_row = conn.execute(
+                """
+                SELECT COUNT(*) FROM (
+                    SELECT target_draw
+                    FROM strategy_prediction_replays
+                    WHERE lottery_type = ? AND strategy_id = ?
+                    GROUP BY target_draw
+                    HAVING SUM(CASE WHEN hit_count > 0 THEN 1 ELSE 0 END) > 0
+                )
+                """,
+                [lottery_type, strategy_id],
+            ).fetchone()
+        finally:
+            conn.close()
+
+        total_replay_rows = summary_row["total_rows"] or 0
+        total_draws = summary_row["total_draws"] or 0
+        total_hit_rows = summary_row["hit_rows"] or 0
+        total_hit_draws = (hit_draws_row[0] if hit_draws_row else 0) or 0
+        draw_hit_rate = round(total_hit_draws / total_draws, 4) if total_draws else 0.0
+        row_hit_rate = round(total_hit_rows / total_replay_rows, 4) if total_replay_rows else 0.0
+        first_draw = str(summary_row["first_draw"]) if summary_row["first_draw"] is not None else None
+        last_draw = str(summary_row["last_draw"]) if summary_row["last_draw"] is not None else None
+
+        has_next = (page * page_size) < total_count
+
+        return {
+            "lottery_type":      lottery_type,
+            "strategy_id":       strategy_id,
+            "bet_index":         bet_index,
+            "derived_bet_count": derived_bet_count,
+            "bet_index_matches_strategy": bet_index_matches,
+            "grouped":           True,
+            "page":              page,
+            "page_size":         page_size,
+            "total_count":       total_count,
+            "has_next":          has_next,
+            "sort":              sort,
+            "hit_filter":        hit_filter,
+            "rows":              rows,
+            "summary": {
+                "total_replay_rows": total_replay_rows,
+                "total_draws":       total_draws,
+                "total_hit_rows":    total_hit_rows,
+                "total_hit_draws":   total_hit_draws,
+                "hit_rate":          draw_hit_rate,
+                "draw_hit_rate":     draw_hit_rate,
+                "row_hit_rate":      row_hit_rate,
+                "first_target_draw": first_draw,
+                "last_target_draw":  last_draw,
+                "latest_target_draw": last_draw,
+                "current_filters": {
+                    "lottery_type": lottery_type,
+                    "strategy_id":  strategy_id,
+                    "bet_index":    bet_index,
+                    "sort":         sort,
+                    "hit_filter":   hit_filter,
+                    "target_draw":  target_draw or None,
+                },
+            },
+            "field_notes": {
+                "pagination_unit": "distinct target_draw (one row per draw)",
+                "bets_array": (
+                    "each row carries a bets[] array with every bet's per-bet "
+                    "bet_index / predicted_numbers / actual_numbers / hit_numbers / "
+                    "hit_count / special_hit; bet_index is the real per-row DB column."
+                ),
+                "bet_index_param_confirmatory": (
+                    "the bet_index query param does NOT filter; the grouped view "
+                    "always returns all bets per draw."
+                ),
+                "result_label_derived": "result_label is derived from hit_count / special_hit, not stored.",
+            },
+            "disclaimer":                  _DISCLAIMER,
+            "paginated":                   True,
+            "server_side_pagination":      True,
+            "no_full_load":                True,
+            "no_db_write":                 True,
+            "no_replay_backfill":          True,
+            "no_strategy_adapter_changes": True,
+        }
+
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.exception("get_history_replay_detail_grouped failed")
         raise HTTPException(status_code=500, detail=str(e))

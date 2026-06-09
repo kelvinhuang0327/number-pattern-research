@@ -510,6 +510,21 @@
         .replay-result-badge--miss { display:inline-block;padding:1px 8px;border-radius:10px;font-size:11px;font-weight:600;background:#f6f8fa;border:1px solid #d0d7de;color:#57606a; }
         .p260a-range-btn { font-size:11px;padding:2px 8px;border-radius:4px;border:1px solid #30363d;background:#161b22;color:#8b949e;cursor:pointer; }
         .p260a-range-btn:hover,.p260a-range-btn.active { border-color:#1f6feb;color:#58a6ff;background:#0d1117; }
+        /* P261A — row expand / collapse multi-bet detail */
+        .p261a-expand-btn { font-size:11px;padding:2px 10px;border-radius:4px;border:1px solid #30363d;background:#0d1117;color:#58a6ff;cursor:pointer;white-space:nowrap; }
+        .p261a-expand-btn:hover { border-color:#1f6feb;background:#161b22; }
+        .p261a-bet-detail-row > td { background:#f6f8fa;padding:0; }
+        .p261a-bet-detail-panel { padding:12px 14px;border-left:3px solid #1f6feb; }
+        .p261a-bet-meta { display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:8px;margin-bottom:10px; }
+        .p261a-bet-meta > div { background:#ffffff;border:1px solid #d0d7de;border-radius:6px;padding:6px 9px; }
+        .p261a-bet-meta-label { font-size:10px;color:#57606a; }
+        .p261a-bet-meta-val { font-size:13px;color:#1f2328;font-weight:600;margin-top:2px; }
+        .p261a-bet-table { width:100%;font-size:12px;border-collapse:collapse; }
+        .p261a-bet-table th { text-align:left;font-size:11px;color:#57606a;padding:4px 8px;border-bottom:1px solid #d0d7de; }
+        .p261a-bet-table td { padding:5px 8px;border-bottom:1px solid #eaeef2;color:#1f2328;vertical-align:middle; }
+        .p261a-bet-label { font-weight:700;color:#1f2328;white-space:nowrap; }
+        .p261a-bet-hitcount { font-weight:700;color:#1a7f37; }
+        .p261a-bet-hitcount--zero { font-weight:600;color:#8b949e; }
     </style>
 </head>
 
@@ -3045,7 +3060,7 @@
                       <th>預測號碼</th>
                       <th>實際開獎</th>
                       <th>命中號碼</th>
-                      <th>命中數</th>
+                      <th>明細</th>
                     </tr>
                   </thead>
                   <tbody id="p259b-detail-tbody"></tbody>
@@ -3064,7 +3079,7 @@
               <div id="p259b-detail-loading" style="display:none;text-align:center;padding:14px;color:#8b949e;font-size:13px">⏳ 載入明細中…</div>
 
               <div style="margin-top:12px;font-size:11px;color:#6e7681;line-height:1.7">
-                ℹ️ 本明細為歷史回放每期預測 vs 開獎比對，純稽核用途；server-side 分頁，快速檢視最多 1500 期，不會一次載入全部期數。注數採策略層級宣告值（與總覽一致），回放表無逐注欄位。特別號（紫色）若資料存在則顯示。
+                ℹ️ 本明細為歷史回放每期預測 vs 開獎比對，純稽核用途；server-side 分頁，快速檢視最多 1500 期，不會一次載入全部期數。<b>P261A：</b>主表一列一期（draw），點「展開」可查看該期所有注數（第 1 注～第 N 注）的逐注預測／開獎／命中號碼與命中數；命中數已從主表移至展開明細。特別號（紫色）若資料存在則顯示。
               </div>
             </div>
 
@@ -5000,18 +5015,68 @@
     var hitRatePct = (s.hit_rate != null) ? (s.hit_rate * 100).toFixed(2) + '%' : '—';
     var drawRange = (s.first_target_draw && s.last_target_draw)
       ? s.first_target_draw + ' – ' + s.last_target_draw : '—';
+    // P261A: grouped summary — prefer draw-level counts (total_draws / total_hit_draws).
+    var drawsVal = (s.total_draws != null) ? s.total_draws
+                   : (s.total_replay_rows != null ? s.total_replay_rows : '—');
+    var hitDrawsVal = (s.total_hit_draws != null) ? s.total_hit_draws
+                      : (s.total_hit_rows != null ? s.total_hit_rows : '—');
     card.innerHTML =
       cell('彩種', LOTTERY_LABELS[data.lottery_type] || data.lottery_type) +
       cell('策略', ctx.strategy_name || data.strategy_id) +
       cell('strategy_id', '<span style="font-family:monospace;font-size:11px">' + data.strategy_id + '</span>') +
       cell('注數', data.derived_bet_count + ' 注') +
-      cell('replay 期數', s.total_replay_rows != null ? s.total_replay_rows : '—') +
-      cell('命中期數', s.total_hit_rows != null ? s.total_hit_rows : '—') +
+      cell('回放期數', drawsVal) +
+      cell('命中期數', hitDrawsVal) +
       cell('命中率', hitRatePct) +
       cell('起訖期數', drawRange) +
       cell('最近回放期數', s.latest_target_draw || '—');
   }
 
+  // P261A: render the per-bet expand panel for one draw (light panel, stacked bets).
+  // Shows each bet (第 N 注) with its own predicted / actual / hit numbers + hit_count.
+  // hit_count lives HERE (expand detail), not in the main table.
+  function renderBetDetailPanel(r) {
+    var bets = r.bets || [];
+    var lotteryLabel = LOTTERY_LABELS[r.lottery_type] || r.lottery_type;
+    var strategyName = r.strategy_name || ctx.strategy_name || ctx.strategy_id || '—';
+    function metaCell(label, val) {
+      return '<div><div class="p261a-bet-meta-label">' + label + '</div>' +
+             '<div class="p261a-bet-meta-val">' + val + '</div></div>';
+    }
+    var meta = '<div class="p261a-bet-meta">' +
+      metaCell('彩種', lotteryLabel) +
+      metaCell('期號', r.target_draw) +
+      metaCell('日期', r.draw_date || '—') +
+      metaCell('策略', strategyName) +
+      metaCell('strategy_id', '<span style="font-family:monospace;font-size:11px">' + r.strategy_id + '</span>') +
+      metaCell('注數', (r.n_bets || bets.length) + ' 注') +
+      '</div>';
+    var head = '<thead><tr><th>注別</th><th>預測號碼</th><th>實際開獎</th><th>命中號碼</th><th>命中數</th></tr></thead>';
+    var body = '';
+    bets.forEach(function(b) {
+      var bPredSpecialHit = !!(b.special_hit && b.predicted_special != null);
+      var bActSpecialHit  = !!(b.special_hit && b.actual_special != null);
+      var predHtml = fmtNumberTokens(b.predicted_numbers, b.hit_numbers, b.predicted_numbers, b.actual_numbers) +
+        fmtSpecialToken(b.predicted_special, bPredSpecialHit, '特');
+      var actHtml = fmtNumberTokens(b.actual_numbers, b.hit_numbers, b.predicted_numbers, b.actual_numbers) +
+        fmtSpecialToken(b.actual_special, bActSpecialHit, '特');
+      var hitHtml = fmtHitTokens(b.hit_numbers);
+      var hc = b.hit_count || 0;
+      var hcCls = hc > 0 ? 'p261a-bet-hitcount' : 'p261a-bet-hitcount--zero';
+      body += '<tr>' +
+        '<td class="p261a-bet-label">第 ' + b.bet_index + ' 注</td>' +
+        '<td>' + predHtml + '</td>' +
+        '<td>' + actHtml + '</td>' +
+        '<td>' + hitHtml + '</td>' +
+        '<td class="' + hcCls + '">' + hc + '</td>' +
+        '</tr>';
+    });
+    return '<div class="p261a-bet-detail-panel">' + meta +
+      '<table class="p261a-bet-table">' + head + '<tbody>' + body + '</tbody></table></div>';
+  }
+
+  // P261A: one row per draw (grouped). 命中數 removed from the main table — it now
+  // lives in the per-bet expand panel. Each row gets a 展開/收起 control.
   function renderDetailRows(data) {
     var tbody = el('p259b-detail-tbody');
     var emptyEl = el('p259b-detail-empty');
@@ -5024,32 +5089,50 @@
     }
     if (emptyEl) emptyEl.style.display = 'none';
     var html = '';
-    rows.forEach(function(r) {
-      var isHit = (r.hit_count > 0);
+    rows.forEach(function(r, idx) {
+      var isHit = (r.any_hit === true) || (r.max_hit_count > 0);
       var rowClass = isHit ? ' class="replay-row--hit"' : '';
-      var resultBadgeClass = isHit ? 'replay-result-badge--hit' : 'replay-result-badge--miss';
+      // Main-table predicted summary = first bet's prediction (+N 注 hint for multi-bet)
       var predictedHtml = fmtNumberTokens(r.predicted_numbers, r.hit_numbers, r.predicted_numbers, r.actual_numbers);
-      var actualHtml    = fmtNumberTokens(r.actual_numbers,    r.hit_numbers, r.predicted_numbers, r.actual_numbers);
-      // P260A: append special number tokens (purple pill) if data present
       var predSpecialHit = !!(r.special_hit && r.predicted_special != null);
-      var actSpecialHit  = !!(r.special_hit && r.actual_special != null);
       predictedHtml += fmtSpecialToken(r.predicted_special, predSpecialHit, '特');
-      actualHtml    += fmtSpecialToken(r.actual_special,    actSpecialHit,  '特');
-      // P260A: hit numbers column; strategy from ctx
+      var nBets = r.n_bets || (r.bets ? r.bets.length : 1);
+      if (nBets > 1) {
+        predictedHtml += '<span style="font-size:10px;color:#8b949e;margin-left:4px">+' + (nBets - 1) + ' 注</span>';
+      }
+      var actualHtml = fmtNumberTokens(r.actual_numbers, r.hit_numbers, r.predicted_numbers, r.actual_numbers);
+      var actSpecialHit = !!(r.special_hit && r.actual_special != null);
+      actualHtml += fmtSpecialToken(r.actual_special, actSpecialHit, '特');
+      // 命中號碼 summary column = union of all bets' hit numbers (green tokens)
       var hitHtml = fmtHitTokens(r.hit_numbers);
       var strategyLabel = '<span style="font-family:monospace;font-size:10px;color:#8b949e">' +
         (ctx.strategy_name || ctx.strategy_id || '—') + '</span>';
-      html += '<tr' + rowClass + '>' +
+      html += '<tr' + rowClass + ' data-p261a-main="' + idx + '">' +
         '<td>' + r.target_draw + '</td>' +
         '<td style="font-size:11px;color:#8b949e">' + (r.draw_date || '—') + '</td>' +
         '<td>' + strategyLabel + '</td>' +
         '<td>' + predictedHtml + '</td>' +
         '<td>' + actualHtml + '</td>' +
         '<td>' + hitHtml + '</td>' +
-        '<td style="font-weight:600;color:' + (isHit ? '#3fb950' : '#6e7681') + '">' + r.hit_count + '</td>' +
+        '<td><button type="button" class="p261a-expand-btn" data-p261a-toggle="' + idx + '" aria-expanded="false">▸ 展開</button></td>' +
         '</tr>';
+      html += '<tr class="p261a-bet-detail-row" data-p261a-detail="' + idx + '" style="display:none">' +
+        '<td colspan="7">' + renderBetDetailPanel(r) + '</td></tr>';
     });
     tbody.innerHTML = html;
+  }
+
+  // P261A: toggle one draw's per-bet expand panel.
+  function toggleBetDetail(idx) {
+    var tbody = el('p259b-detail-tbody');
+    if (!tbody) return;
+    var detailRow = tbody.querySelector('tr.p261a-bet-detail-row[data-p261a-detail="' + idx + '"]');
+    var btn = tbody.querySelector('.p261a-expand-btn[data-p261a-toggle="' + idx + '"]');
+    if (!detailRow || !btn) return;
+    var isOpen = detailRow.style.display !== 'none';
+    detailRow.style.display = isOpen ? 'none' : '';
+    btn.setAttribute('aria-expanded', isOpen ? 'false' : 'true');
+    btn.textContent = isOpen ? '▸ 展開' : '▾ 收起';
   }
 
   function updatePagination() {
@@ -5089,7 +5172,8 @@
     });
     if (ctx.target_draw) params.set('target_draw', ctx.target_draw);
 
-    var url = (window.API_BASE || '') + '/api/replay/history-detail?' + params.toString();
+    // P261A: grouped endpoint — one row per draw, with nested per-bet detail.
+    var url = (window.API_BASE || '') + '/api/replay/history-detail-grouped?' + params.toString();
     fetch(url)
       .then(function(r) {
         if (!r.ok) throw new Error('HTTP ' + r.status);
@@ -5149,6 +5233,16 @@
         var btn = e.target.closest('.p259b-detail-btn');
         if (!btn) return;
         openDetail(btn.dataset.lottery, btn.dataset.strategy, btn.dataset.bet, btn.dataset.name);
+      });
+    }
+
+    // P261A: delegate 展開/收起 clicks from the detail table (one row per draw)
+    var detailTbody = el('p259b-detail-tbody');
+    if (detailTbody) {
+      detailTbody.addEventListener('click', function(e) {
+        var btn = e.target.closest('.p261a-expand-btn');
+        if (!btn) return;
+        toggleBetDetail(btn.dataset.p261aToggle);
       });
     }
 

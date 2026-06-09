@@ -166,7 +166,14 @@ class TestDetailTableHTML:
         assert '命中號碼' in self._thead()
 
     def test_hit_count_column_header(self):
-        assert '命中數' in self._thead()
+        """P261A: 命中數 is REMOVED from the main detail-table header — it now lives
+        in the per-bet expand panel (one row per draw). The 7th column is 明細
+        (expand control). 命中數 must no longer be a main-table column."""
+        thead = self._thead()
+        assert '命中數' not in thead, \
+            "命中數 must be removed from the main table header (P261A moved it to the expand panel)"
+        assert '明細' in thead, \
+            "P261A 明細 (expand) column must be present in the main table header"
 
     def test_result_column_removed(self):
         """結果 badge column removed in P260A amend — keep visual clean."""

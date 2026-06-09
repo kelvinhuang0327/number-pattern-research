@@ -2,6 +2,12 @@
 
 ---
 
+## P258O Read-only UI Display Decision — 2026-06-09
+
+**P258O complete per explicit authorization.** D3 Strategy Status Audit read-only UI display implemented in `index.html` — nav button `data-section="p258-d3-audit"`, section `id="p258-d3-audit-section"`. Fetches `GET /api/replay/d3-strategy-status-audit`. Purple safety disclaimer banner with all 5 required safety disclaimers. Two visually separate column groups: lifecycle/evidence (blue) vs D3 contract status (purple, explicitly labeled "非核准" = not approval). Client-side filters for lottery_type, lifecycle_status, d3_contract_status. Summary bar. Only allowed D3 statuses (`NOT_EVALUATED_BY_D3`/`CONTRACT_READY`/`CONTRACT_BLOCKED`/`NOT_APPLICABLE_HISTORICAL_ARTIFACT`/`NOT_APPLICABLE_NO_REPLAY`); forbidden vocabulary (`APPROVED`/`PROMOTED`/`PRODUCTION_READY`/`RECOMMENDED`/`PREDICTIVE_EDGE_CONFIRMED`) absent. **No DB query, no D3 execution, no real candidate methods, no API contract changes, no recommendation/production/registry paths.** D3 is not a prediction model. NOT_YET_REJECTED is not approval. Next: P258P read-only E2E / UX / safety closeout only requires separate explicit authorization.
+
+---
+
 ## P258N Read-only API Route Decision — 2026-06-09
 
 **P258N complete per explicit authorization.** `GET /api/replay/d3-strategy-status-audit` implemented in `lottery_api/routes/replay.py` as a read-only artifact-backed route. Serves `p258n_d3_strategy_status_audit_payload_20260609.json` — 14 strategy rows (DAILY_539: 4, BIG_LOTTO: 5, POWER_LOTTO: 5), all 15 P258M row fields present on every row (including mandatory `d3_not_approval_warning`/`no_prediction_claim`/`no_betting_advice`), only allowed D3 contract statuses (`NOT_EVALUATED_BY_D3`/`NOT_APPLICABLE_HISTORICAL_ARTIFACT`), all 5 required safety disclaimers, `forbidden_actions_confirmed` block. **No DB query, no D3 execution, no real candidate methods, no null generation, no p-values, no DB write, no UI.** D3 is not a prediction model. NOT_YET_REJECTED is not approval. Next: P258O read-only UI display only requires separate explicit authorization.

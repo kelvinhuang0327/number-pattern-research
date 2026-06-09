@@ -589,6 +589,10 @@
                     <i data-lucide="bar-chart-2" class="icon"></i>
                     <span>最佳策略總覽</span>
                 </button>
+                <button class="nav-btn" data-section="p258-d3-audit">
+                    <i data-lucide="shield-alert" class="icon"></i>
+                    <span>D3 合約稽核</span>
+                </button>
             </nav>
         </div>
     </header>
@@ -2799,6 +2803,89 @@
         </section>
         <!-- ===== END P257B ===== -->
 
+        <!-- ===== P258O D3 Strategy Status / Contract Audit Section ===== -->
+        <section id="p258-d3-audit-section" class="section">
+          <div class="section-header">
+            <h2>D3 策略狀態 / 合約稽核 <span style="font-size:0.7em;color:#8b949e;font-weight:400">D3 Strategy Status / Contract Audit</span></h2>
+            <p>歷史唯讀稽核頁面 — D3 不是預測模型，合約狀態不代表策略評估、核准或下注建議</p>
+          </div>
+          <div class="section-content">
+
+            <!-- Safety Disclaimer Banner -->
+            <div id="p258-disclaimer-banner" style="background:rgba(139,92,246,.10);border:1px solid #8b5cf6;border-radius:6px;padding:10px 16px;margin-bottom:16px;font-size:12px;color:#c4b5fd;line-height:1.8">
+              <b>⚠️ D3 安全聲明</b><br>
+              <span id="p258-disclaimer-list">
+                • D3 不是預測模型。<br>
+                • 合約驗證不是策略評估。<br>
+                • NOT_YET_REJECTED 不是核准（NOT_YET_REJECTED is not approval）。<br>
+                • 通過合約驗證不代表提升預測準確性。<br>
+                • 本頁為歷史唯讀資料，不作為下注建議。
+              </span>
+            </div>
+
+            <!-- Filters -->
+            <div style="display:flex;gap:10px;flex-wrap:wrap;margin-bottom:16px;align-items:center">
+              <label style="font-size:12px;color:#8b949e">彩種：</label>
+              <select id="p258-filter-lottery" style="background:#161b22;border:1px solid #30363d;color:#c9d1d9;border-radius:4px;padding:4px 8px;font-size:12px">
+                <option value="ALL">全部</option>
+                <option value="DAILY_539">今彩539</option>
+                <option value="BIG_LOTTO">大樂透</option>
+                <option value="POWER_LOTTO">威力彩</option>
+              </select>
+              <label style="font-size:12px;color:#8b949e">生命週期：</label>
+              <select id="p258-filter-lifecycle" style="background:#161b22;border:1px solid #30363d;color:#c9d1d9;border-radius:4px;padding:4px 8px;font-size:12px">
+                <option value="ALL">全部</option>
+                <option value="ADOPTED">ADOPTED</option>
+                <option value="PROVISIONAL">PROVISIONAL</option>
+                <option value="EXPERIMENTAL">EXPERIMENTAL</option>
+                <option value="HISTORICAL_ARTIFACT">HISTORICAL_ARTIFACT</option>
+                <option value="REJECTED">REJECTED</option>
+              </select>
+              <label style="font-size:12px;color:#8b949e">D3 合約狀態：</label>
+              <select id="p258-filter-d3" style="background:#161b22;border:1px solid #30363d;color:#c9d1d9;border-radius:4px;padding:4px 8px;font-size:12px">
+                <option value="ALL">全部</option>
+                <option value="NOT_EVALUATED_BY_D3">NOT_EVALUATED_BY_D3</option>
+                <option value="CONTRACT_READY">CONTRACT_READY</option>
+                <option value="CONTRACT_BLOCKED">CONTRACT_BLOCKED</option>
+                <option value="NOT_APPLICABLE_HISTORICAL_ARTIFACT">NOT_APPLICABLE_HISTORICAL_ARTIFACT</option>
+                <option value="NOT_APPLICABLE_NO_REPLAY">NOT_APPLICABLE_NO_REPLAY</option>
+              </select>
+            </div>
+
+            <!-- Summary Bar -->
+            <div id="p258-summary-bar" style="display:flex;gap:12px;flex-wrap:wrap;margin-bottom:16px"></div>
+
+            <!-- Strategy Table — two column groups: lifecycle/evidence | D3 contract -->
+            <div class="card" style="padding:14px;margin-bottom:16px;overflow-x:auto">
+              <table id="p258-rows-table" style="width:100%;border-collapse:collapse;font-size:0.80rem">
+                <thead>
+                  <tr>
+                    <!-- Group 1: Strategy identity + lifecycle/evidence -->
+                    <th colspan="6" style="text-align:left;padding:4px 8px 8px;color:#58a6ff;font-size:0.75rem;border-bottom:2px solid #21262d">策略生命週期 / 證據狀態</th>
+                    <!-- Group 2: D3 contract (visually separated) -->
+                    <th colspan="2" style="text-align:left;padding:4px 8px 8px;color:#8b5cf6;font-size:0.75rem;border-bottom:2px solid #21262d">D3 合約狀態（非核准）</th>
+                  </tr>
+                  <tr style="border-bottom:1px solid #30363d;color:#8b949e">
+                    <th style="text-align:left;padding:6px 8px">彩種</th>
+                    <th style="text-align:left;padding:6px 8px">策略 ID</th>
+                    <th style="text-align:left;padding:6px 8px">生命週期</th>
+                    <th style="text-align:left;padding:6px 8px">證據狀態</th>
+                    <th style="text-align:right;padding:6px 8px">回放筆數</th>
+                    <th style="text-align:left;padding:6px 8px">涵蓋期數</th>
+                    <!-- D3 group separator -->
+                    <th style="text-align:left;padding:6px 8px;border-left:2px solid #21262d;color:#c4b5fd">D3 合約狀態</th>
+                    <th style="text-align:left;padding:6px 8px;color:#c4b5fd">說明</th>
+                  </tr>
+                </thead>
+                <tbody id="p258-rows-tbody"></tbody>
+              </table>
+            </div>
+
+            <div id="p258-status" style="font-size:12px;color:#8b949e;margin-top:8px"></div>
+          </div>
+        </section>
+        <!-- ===== END P258O ===== -->
+
         </div>
         </main>
 
@@ -4327,6 +4414,144 @@
   }
 
   p257Init();
+})();
+
+// ===== P258O D3 STRATEGY STATUS / CONTRACT AUDIT (read-only, artifact-backed) =====
+(function () {
+  'use strict';
+
+  var _p258Data = null;
+
+  var D3_STATUS_LABELS = {
+    'NOT_EVALUATED_BY_D3': '未評估',
+    'CONTRACT_READY': '合約就緒',
+    'CONTRACT_BLOCKED': '合約阻擋',
+    'NOT_APPLICABLE_HISTORICAL_ARTIFACT': '不適用(歷史)',
+    'NOT_APPLICABLE_NO_REPLAY': '不適用(無回放)'
+  };
+
+  var D3_STATUS_COLORS = {
+    'NOT_EVALUATED_BY_D3': '#8b949e',
+    'CONTRACT_READY': '#3fb950',
+    'CONTRACT_BLOCKED': '#f85149',
+    'NOT_APPLICABLE_HISTORICAL_ARTIFACT': '#6e7681',
+    'NOT_APPLICABLE_NO_REPLAY': '#6e7681'
+  };
+
+  var LIFECYCLE_COLORS = {
+    'ADOPTED': '#3fb950',
+    'PROVISIONAL': '#d29922',
+    'EXPERIMENTAL': '#58a6ff',
+    'HISTORICAL_ARTIFACT': '#6e7681',
+    'REJECTED': '#f85149',
+    'RETIRED': '#6e7681'
+  };
+
+  function badge(text, color) {
+    return '<span style="background:' + color + '22;color:' + color + ';border:1px solid ' + color + '44;border-radius:3px;padding:1px 6px;font-size:0.75em;white-space:nowrap">' + text + '</span>';
+  }
+
+  function setStatus(msg) {
+    var el = document.getElementById('p258-status');
+    if (el) el.textContent = msg;
+  }
+
+  function renderSummaryBar(data) {
+    var el = document.getElementById('p258-summary-bar');
+    if (!el || !data || !data.summary) return;
+    var s = data.summary;
+    var parts = [
+      '<span style="font-size:12px;color:#8b949e">策略總數：<b style="color:#c9d1d9">' + (s.total_strategies || 0) + '</b></span>'
+    ];
+    var d3counts = s.by_d3_contract_status || {};
+    Object.keys(d3counts).forEach(function(k) {
+      var color = D3_STATUS_COLORS[k] || '#8b949e';
+      parts.push('<span style="font-size:12px;color:' + color + '">' + k + ': <b>' + d3counts[k] + '</b></span>');
+    });
+    el.innerHTML = parts.join('<span style="color:#30363d;margin:0 4px">|</span>');
+  }
+
+  function getFilters() {
+    var lt = (document.getElementById('p258-filter-lottery') || {}).value || 'ALL';
+    var lc = (document.getElementById('p258-filter-lifecycle') || {}).value || 'ALL';
+    var d3 = (document.getElementById('p258-filter-d3') || {}).value || 'ALL';
+    return { lt: lt, lc: lc, d3: d3 };
+  }
+
+  function renderRows(data) {
+    var tbody = document.getElementById('p258-rows-tbody');
+    if (!tbody || !data || !Array.isArray(data.rows)) return;
+    var f = getFilters();
+    var rows = data.rows.filter(function(r) {
+      if (f.lt !== 'ALL' && r.lottery_type !== f.lt) return false;
+      if (f.lc !== 'ALL' && r.lifecycle_status !== f.lc) return false;
+      if (f.d3 !== 'ALL' && r.d3_contract_status !== f.d3) return false;
+      return true;
+    });
+    if (rows.length === 0) {
+      tbody.innerHTML = '<tr><td colspan="8" style="text-align:center;padding:16px;color:#8b949e">無符合條件的策略</td></tr>';
+      return;
+    }
+    tbody.innerHTML = rows.map(function(r) {
+      var lcColor = LIFECYCLE_COLORS[r.lifecycle_status] || '#8b949e';
+      var d3Color = D3_STATUS_COLORS[r.d3_contract_status] || '#8b949e';
+      var d3Label = D3_STATUS_LABELS[r.d3_contract_status] || r.d3_contract_status;
+      var replayCount = r.replay_row_count != null ? r.replay_row_count.toLocaleString() : '—';
+      return '<tr style="border-bottom:1px solid #21262d">' +
+        '<td style="padding:6px 8px;white-space:nowrap">' + (r.lottery_type || '—') + '</td>' +
+        '<td style="padding:6px 8px;font-family:monospace;font-size:0.78em;color:#58a6ff">' + (r.strategy_id || '—') + '</td>' +
+        '<td style="padding:6px 8px">' + badge(r.lifecycle_status || '—', lcColor) + '</td>' +
+        '<td style="padding:6px 8px;color:#8b949e;font-size:0.78em">' + (r.evidence_status || '—') + '</td>' +
+        '<td style="padding:6px 8px;text-align:right;color:#8b949e">' + replayCount + '</td>' +
+        '<td style="padding:6px 8px;color:#8b949e;font-size:0.78em">' + (r.draw_coverage || '—') + '</td>' +
+        '<td style="padding:6px 8px;border-left:2px solid #21262d">' + badge(d3Label, d3Color) + '</td>' +
+        '<td style="padding:6px 8px;color:#8b949e;font-size:0.75em;max-width:260px">' + (r.d3_contract_reason || '—') + '</td>' +
+        '</tr>';
+    }).join('');
+  }
+
+  function p258Render(data) {
+    renderSummaryBar(data);
+    renderRows(data);
+  }
+
+  function p258Load() {
+    var base = (typeof window !== 'undefined' && window.API_BASE ? String(window.API_BASE) : '').replace(/\/$/, '');
+    var url = base + '/api/replay/d3-strategy-status-audit';
+    setStatus('載入中…');
+    fetch(url)
+      .then(function(r) { return r.json(); })
+      .then(function(data) {
+        _p258Data = data;
+        setStatus('');
+        p258Render(data);
+      })
+      .catch(function(e) {
+        setStatus('載入失敗：' + e.message);
+      });
+  }
+
+  function p258Init() {
+    // Wire filters
+    ['p258-filter-lottery', 'p258-filter-lifecycle', 'p258-filter-d3'].forEach(function(id) {
+      var el = document.getElementById(id);
+      if (el) el.addEventListener('change', function() {
+        if (_p258Data) renderRows(_p258Data);
+      });
+    });
+
+    // Auto-load when section becomes active
+    var navBtns = document.querySelectorAll('[data-section]');
+    navBtns.forEach(function(btn) {
+      btn.addEventListener('click', function() {
+        if (btn.dataset.section === 'p258-d3-audit' && !_p258Data) {
+          p258Load();
+        }
+      });
+    });
+  }
+
+  p258Init();
 })();
         </script>
 </body>

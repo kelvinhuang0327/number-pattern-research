@@ -1,0 +1,120 @@
+{
+  "task": "P259B",
+  "title": "History Replay Detail Page — Paginated Per-Draw Replay Query",
+  "date": "2026-06-09",
+  "final_classification": "P259B_HISTORY_REPLAY_DETAIL_PAGINATED_PR_OPEN_WAITING_CI",
+  "branch": "p259b-history-replay-detail-paginated",
+  "base_commit": "4910351",
+
+  "files_modified": [
+    "lottery_api/routes/replay.py",
+    "index.html"
+  ],
+  "files_created": [
+    "tests/test_p259b_history_replay_detail.py",
+    "outputs/research/p259b_history_replay_detail_paginated_20260609.json",
+    "outputs/research/p259b_history_replay_detail_paginated_20260609.md"
+  ],
+
+  "api_route": {
+    "path": "GET /api/replay/history-detail",
+    "source_file": "lottery_api/routes/replay.py",
+    "query_params": {
+      "lottery_type": "required — BIG_LOTTO | POWER_LOTTO | DAILY_539",
+      "strategy_id": "required — exact match",
+      "bet_index": "int 1-5, default 1 (strategy-level declared bet count, confirmatory)",
+      "page": "int >=1, default 1",
+      "page_size": "int 1-200, default 100",
+      "sort": "target_draw_desc (default) | target_draw_asc",
+      "hit_filter": "all (default) | hit | miss",
+      "target_draw": "optional exact match (parameterized, safe)"
+    },
+    "data_source": "_open_conn() -> lottery_api/data/lottery_v2.db (94,924 replay rows), read-only aggregate + paginated SELECT"
+  },
+
+  "db_path_clarification": {
+    "correct_db": "lottery_api/data/lottery_v2.db (94,924 strategy_prediction_replays rows)",
+    "accessed_via": "_open_conn() = Path(_api_root)/data/lottery_v2.db",
+    "note": "Root-level data/lottery_v2.db is a SEPARATE empty DB (0 replay rows) and is NOT used by the replay route."
+  },
+
+  "bet_index_semantics": {
+    "chosen": "Option A — strategy-level declared bet count (P259A-consistent), user-authorized",
+    "rationale": "strategy_prediction_replays has NO per-bet bet_index column. Some strategies store N rows/draw (e.g. biglotto_echo_aware_3bet=3, biglotto_ts3_markov_4bet_w30=4) but rows are NOT labeled with a bet index. bet_index is derived from strategy_id naming (P259A _derive_bet_count) and is confirmatory/scoping only. Rows are scoped by (lottery_type, strategy_id).",
+    "no_schema_change": true,
+    "fields_returned_for_consistency": ["derived_bet_count", "bet_index_matches_strategy"]
+  },
+
+  "pagination": {
+    "server_side": true,
+    "default_page": 1,
+    "default_page_size": 100,
+    "max_page_size": 200,
+    "returns_total_count": true,
+    "returns_has_next": true,
+    "never_returns_all_rows": "SQL LIMIT/OFFSET; page capped at page_size",
+    "sql_order": "ORDER BY CAST(target_draw AS INTEGER) {DESC|ASC}, id {DESC|ASC} (per DB query规范: TEXT draw column must CAST)"
+  },
+
+  "row_fields": [
+    "lottery_type", "strategy_id", "strategy_name", "bet_index",
+    "target_draw", "draw_date (= target_date)", "predicted_numbers", "predicted_special",
+    "actual_numbers", "actual_special", "hit_count", "hit_numbers", "special_hit",
+    "result_label (DERIVED from hit_count/special_hit)", "replay_created_at (= generated_at)"
+  ],
+
+  "summary_fields": [
+    "total_replay_rows", "total_hit_rows", "hit_rate",
+    "first_target_draw", "last_target_draw", "latest_target_draw", "current_filters"
+  ],
+
+  "field_differences_reported": {
+    "no_bet_index_column": "replay table has no per-bet index column; used strategy-level derived count (Option A)",
+    "no_result_label_column": "result_label is derived from hit_count/special_hit, not stored",
+    "replay_status_all_predicted": "100% of rows are PREDICTED; hit/miss derived from hit_count (>0 hit, =0 miss)",
+    "no_fabricated_data": "no values invented; missing columns handled by derivation only"
+  },
+
+  "frontend": {
+    "approach": "Inline detail panel within the P259A overview section (id=p259b-detail-panel), revealed by 查看明細 — no dependency on src/main.js section navigation",
+    "entry_point": "查看明細 button enabled only for strategies with has_production_replay && total_replay_rows>0; carries data-lottery/data-strategy/data-bet/data-name",
+    "default_load": "latest 100 draws (page=1, page_size=100, sort=target_draw_desc)",
+    "controls": ["hit_filter (all/hit/miss)", "sort (desc/asc)", "target_draw search", "pagination prev/next"],
+    "summary_card": ["彩種", "策略", "strategy_id", "注數", "replay 期數", "命中期數", "命中率", "起訖期數", "最近回放期數"],
+    "detail_table_columns": ["期數", "開獎日期", "預測號碼", "開獎號碼", "命中數", "結果"],
+    "p259b_notice_updated": "stale '尚未開放' removed; replaced with '明細頁已實作'"
+  },
+
+  "proof_no_db_write": "Detail endpoint uses conn.execute(SELECT/COUNT) only; flags no_db_write=true",
+  "proof_no_replay_backfill": "No replay generation/backfill path; flags no_replay_backfill=true",
+  "proof_no_migration": "No schema change; strategy_prediction_replays used as-is",
+  "proof_no_strategy_adapter_changes": "replay_strategy_registry.py NOT modified",
+  "proof_no_full_load_to_frontend": "SQL LIMIT/OFFSET; frontend fetches one page at a time; flags no_full_load=true, server_side_pagination=true",
+  "proof_overview_not_polluted": "test_overview_has_no_per_draw_detail asserts overview rows lack predicted_numbers/actual_numbers/hit_numbers; no_large_per_draw_detail=true",
+
+  "tests": {
+    "file": "tests/test_p259b_history_replay_detail.py",
+    "count": 38,
+    "result": "38/38 PASS",
+    "command": "/opt/homebrew/bin/pytest tests/test_p259b_history_replay_detail.py -v"
+  },
+  "regression": {
+    "p259a": {"command": "pytest tests/test_p259a_history_replay_overview.py -q", "result": "46/46 PASS"},
+    "p257_p258": {"command": "pytest tests/test_p258*.py tests/test_p257*.py -q", "result": "986/986 PASS"},
+    "ci_default_validation": {
+      "command": "python scripts/run_replay_ci_default_validation.py",
+      "result": "126 passed, 1 skipped, 1 FAILED",
+      "failure": "test_replay_freshness_cadence::test_done_run_within_cadence_window — PRE-EXISTING and UNRELATED (BIG_LOTTO latest DONE run 16.8 days old > 14-day cadence; wall-clock vs strategy_replay_runs timestamp; fails identically with P259B changes stashed; CI skips this when replay DB absent). NOT caused by P259B; not in P259B allowed scope (would require DB write/backfill)."
+    },
+    "ci_relevant": {"command": "pytest tests/test_replay_api_contract.py tests/test_replay_browser_smoke.py -q", "result": "93 passed, 1 skipped"}
+  },
+
+  "out_of_scope_not_done": [
+    "CSV export", "complex charts", "replay generation", "data backfill",
+    "strategy adapter changes", "DB schema change", "production DB write",
+    "merging per-draw detail back into overview API"
+  ],
+
+  "next_allowed_task": "P259C (if authorized) — e.g. detail enhancements (CSV export / charts) or cross-strategy comparison, requires separate explicit authorization",
+  "recommended_state": "PR open waiting CI; after merge HOLD / WAITING_FOR_USER_AUTHORIZATION"
+}

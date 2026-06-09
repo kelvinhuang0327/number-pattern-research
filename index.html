@@ -2986,9 +2986,71 @@
             <div id="p259a-error" style="display:none;color:#c0392b;font-size:12px;padding:8px 0"></div>
             <div id="p259a-loading" style="text-align:center;padding:16px;color:#8b949e;font-size:13px">⏳ 載入中…</div>
 
-            <!-- P259B notice -->
+            <!-- P259B detail panel (inline; revealed by 查看明細) -->
+            <div id="p259b-detail-panel" style="display:none;margin-top:24px;border-top:2px solid #1f6feb;padding-top:16px">
+              <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
+                <h3 style="margin:0;font-size:16px">📑 回放明細 <span style="font-size:0.7em;color:#8b949e;font-weight:400">History Replay Detail (P259B)</span></h3>
+                <button id="p259b-close-btn" style="padding:3px 12px;font-size:12px;border-radius:4px;border:1px solid #30363d;background:#0d1117;color:#8b949e;cursor:pointer">✕ 關閉明細</button>
+              </div>
+
+              <!-- Summary card -->
+              <div id="p259b-summary-card" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:10px;margin-bottom:14px"></div>
+
+              <!-- Detail controls -->
+              <div style="display:flex;gap:10px;flex-wrap:wrap;margin-bottom:12px;align-items:center">
+                <label style="font-size:12px;color:#8b949e">命中篩選：</label>
+                <select id="p259b-hit-filter" style="background:#161b22;border:1px solid #30363d;color:#c9d1d9;border-radius:4px;padding:4px 8px;font-size:12px">
+                  <option value="all">全部</option>
+                  <option value="hit">命中 (hit)</option>
+                  <option value="miss">未命中 (miss)</option>
+                </select>
+                <label style="font-size:12px;color:#8b949e">排序：</label>
+                <select id="p259b-sort" style="background:#161b22;border:1px solid #30363d;color:#c9d1d9;border-radius:4px;padding:4px 8px;font-size:12px">
+                  <option value="target_draw_desc">期數新→舊</option>
+                  <option value="target_draw_asc">期數舊→新</option>
+                </select>
+                <label style="font-size:12px;color:#8b949e">期數搜尋：</label>
+                <input id="p259b-target-draw" type="text" placeholder="如 115000037" style="background:#161b22;border:1px solid #30363d;color:#c9d1d9;border-radius:4px;padding:4px 8px;font-size:12px;width:130px">
+                <button id="p259b-search-btn" style="padding:4px 12px;font-size:12px;border-radius:4px;border:1px solid #1f6feb;background:#0d1117;color:#58a6ff;cursor:pointer">🔍 搜尋</button>
+                <button id="p259b-clear-btn" style="padding:4px 10px;font-size:12px;border-radius:4px;border:1px solid #30363d;background:#0d1117;color:#8b949e;cursor:pointer">清除</button>
+              </div>
+
+              <!-- Detail table -->
+              <div style="overflow-x:auto">
+                <table class="data-table" style="width:100%;font-size:12px" id="p259b-detail-table">
+                  <thead>
+                    <tr>
+                      <th>期數</th>
+                      <th>開獎日期</th>
+                      <th>預測號碼</th>
+                      <th>開獎號碼</th>
+                      <th>命中數</th>
+                      <th>結果</th>
+                    </tr>
+                  </thead>
+                  <tbody id="p259b-detail-tbody"></tbody>
+                </table>
+              </div>
+
+              <!-- Pagination -->
+              <div style="display:flex;gap:10px;align-items:center;justify-content:center;margin-top:14px;font-size:12px;color:#8b949e">
+                <button id="p259b-prev-btn" style="padding:4px 12px;border-radius:4px;border:1px solid #30363d;background:#0d1117;color:#c9d1d9;cursor:pointer">◀ 上一頁</button>
+                <span id="p259b-page-info">第 1 頁</span>
+                <button id="p259b-next-btn" style="padding:4px 12px;border-radius:4px;border:1px solid #30363d;background:#0d1117;color:#c9d1d9;cursor:pointer">下一頁 ▶</button>
+              </div>
+
+              <div id="p259b-detail-empty" style="display:none;text-align:center;padding:20px;color:#8b949e;font-size:13px">無符合條件的期數</div>
+              <div id="p259b-detail-error" style="display:none;color:#c0392b;font-size:12px;padding:8px 0"></div>
+              <div id="p259b-detail-loading" style="display:none;text-align:center;padding:14px;color:#8b949e;font-size:13px">⏳ 載入明細中…</div>
+
+              <div style="margin-top:12px;font-size:11px;color:#6e7681;line-height:1.7">
+                ℹ️ 本明細為歷史回放每期預測 vs 開獎比對，純稽核用途；server-side 分頁，預設每頁 100 期，不會一次載入全部期數。注數採策略層級宣告值（與總覽一致），回放表無逐注欄位。
+              </div>
+            </div>
+
+            <!-- P259B info notice -->
             <div style="margin-top:20px;padding:10px 14px;background:#0d1117;border:1px solid #30363d;border-radius:4px;font-size:11px;color:#8b949e">
-              ℹ️ <b>P259B 預告：</b>明細頁將於後續 P259B 實作，包含每一期預測比對與分頁查詢。目前「查看明細」功能尚未開放。
+              ℹ️ <b>P259B：</b>明細頁已實作，包含每一期預測比對與分頁查詢。點選任一有 replay 資料的策略「查看明細」即可開啟。
             </div>
           </div>
         </section>
@@ -4741,6 +4803,19 @@
       var drawRange = r.min_target_draw && r.max_target_draw
         ? r.min_target_draw + ' – ' + r.max_target_draw
         : '—';
+      // P259B: enable 查看明細 only when the strategy has production replay rows.
+      var detailBtn;
+      if (r.has_production_replay && r.total_replay_rows > 0) {
+        detailBtn = '<button class="p259b-detail-btn" ' +
+          'data-lottery="' + r.lottery_type + '" ' +
+          'data-strategy="' + r.strategy_id + '" ' +
+          'data-bet="' + r.derived_bet_count + '" ' +
+          'data-name="' + String(r.strategy_name).replace(/"/g, '&quot;') + '" ' +
+          'style="padding:2px 10px;font-size:11px;border-radius:3px;border:1px solid #1f6feb;background:#0d1117;color:#58a6ff;cursor:pointer" ' +
+          'title="查看此策略每一期的預測與開獎比對（分頁查詢）">查看明細</button>';
+      } else {
+        detailBtn = '<button disabled style="padding:2px 10px;font-size:11px;border-radius:3px;border:1px solid #30363d;background:#0d1117;color:#484f58;cursor:not-allowed" title="此策略無 production replay 資料，無明細可查">查看明細</button>';
+      }
       html += '<tr>' +
         '<td>' + (LOTTERY_LABELS[r.lottery_type] || r.lottery_type) + '</td>' +
         '<td style="text-align:left">' + r.strategy_name + '</td>' +
@@ -4751,7 +4826,7 @@
         '<td style="font-size:11px;color:#8b949e">' + (r.latest_target_draw || '—') + '</td>' +
         '<td>' + rcatBadge(r.replay_status_category, r.total_replay_rows) + '</td>' +
         '<td>' + lcBadge(r.lifecycle_status) + '</td>' +
-        '<td><button disabled style="padding:2px 10px;font-size:11px;border-radius:3px;border:1px solid #30363d;background:#0d1117;color:#484f58;cursor:not-allowed" title="明細頁將於後續 P259B 實作，包含每一期預測比對與分頁查詢。">查看明細</button></td>' +
+        '<td>' + detailBtn + '</td>' +
         '</tr>';
     });
     tbody.innerHTML = html;
@@ -4816,6 +4891,216 @@
   }
 
   p259aInit();
+})();
+        </script>
+
+        <!-- P259B: History Replay Detail JS -->
+        <script>
+(function() {
+  'use strict';
+
+  var LOTTERY_LABELS = {
+    'DAILY_539': '今彩539',
+    'BIG_LOTTO': '大樂透',
+    'POWER_LOTTO': '威力彩',
+  };
+
+  // Current detail query context
+  var ctx = {
+    lottery_type: null,
+    strategy_id: null,
+    bet_index: 1,
+    strategy_name: '',
+    page: 1,
+    page_size: 100,
+    sort: 'target_draw_desc',
+    hit_filter: 'all',
+    target_draw: '',
+    total_count: 0,
+    has_next: false,
+  };
+
+  function el(id) { return document.getElementById(id); }
+
+  function fmtNumbers(arr) {
+    if (!arr || !arr.length) return '—';
+    return arr.join(', ');
+  }
+
+  function renderSummary(data) {
+    var s = data.summary || {};
+    var card = el('p259b-summary-card');
+    if (!card) return;
+    function cell(label, value) {
+      return '<div style="background:#161b22;border:1px solid #30363d;border-radius:6px;padding:8px 10px">' +
+             '<div style="font-size:10px;color:#6e7681">' + label + '</div>' +
+             '<div style="font-size:14px;color:#c9d1d9;font-weight:600;margin-top:2px">' + value + '</div></div>';
+    }
+    var hitRatePct = (s.hit_rate != null) ? (s.hit_rate * 100).toFixed(2) + '%' : '—';
+    var drawRange = (s.first_target_draw && s.last_target_draw)
+      ? s.first_target_draw + ' – ' + s.last_target_draw : '—';
+    card.innerHTML =
+      cell('彩種', LOTTERY_LABELS[data.lottery_type] || data.lottery_type) +
+      cell('策略', ctx.strategy_name || data.strategy_id) +
+      cell('strategy_id', '<span style="font-family:monospace;font-size:11px">' + data.strategy_id + '</span>') +
+      cell('注數', data.derived_bet_count + ' 注') +
+      cell('replay 期數', s.total_replay_rows != null ? s.total_replay_rows : '—') +
+      cell('命中期數', s.total_hit_rows != null ? s.total_hit_rows : '—') +
+      cell('命中率', hitRatePct) +
+      cell('起訖期數', drawRange) +
+      cell('最近回放期數', s.latest_target_draw || '—');
+  }
+
+  function renderDetailRows(data) {
+    var tbody = el('p259b-detail-tbody');
+    var emptyEl = el('p259b-detail-empty');
+    if (!tbody) return;
+    var rows = data.rows || [];
+    if (!rows.length) {
+      tbody.innerHTML = '';
+      if (emptyEl) emptyEl.style.display = 'block';
+      return;
+    }
+    if (emptyEl) emptyEl.style.display = 'none';
+    var html = '';
+    rows.forEach(function(r) {
+      var hitColor = (r.hit_count > 0) ? '#3fb950' : '#8b949e';
+      html += '<tr>' +
+        '<td>' + r.target_draw + '</td>' +
+        '<td style="font-size:11px;color:#8b949e">' + (r.draw_date || '—') + '</td>' +
+        '<td style="font-family:monospace;font-size:11px">' + fmtNumbers(r.predicted_numbers) + '</td>' +
+        '<td style="font-family:monospace;font-size:11px">' + fmtNumbers(r.actual_numbers) + '</td>' +
+        '<td style="color:' + hitColor + ';font-weight:600">' + r.hit_count + '</td>' +
+        '<td style="color:' + hitColor + '">' + r.result_label + '</td>' +
+        '</tr>';
+    });
+    tbody.innerHTML = html;
+  }
+
+  function updatePagination() {
+    var info = el('p259b-page-info');
+    var prev = el('p259b-prev-btn');
+    var next = el('p259b-next-btn');
+    var totalPages = ctx.page_size > 0 ? Math.max(1, Math.ceil(ctx.total_count / ctx.page_size)) : 1;
+    if (info) info.textContent = '第 ' + ctx.page + ' / ' + totalPages + ' 頁（共 ' + ctx.total_count + ' 期）';
+    if (prev) prev.disabled = (ctx.page <= 1);
+    if (next) next.disabled = !ctx.has_next;
+  }
+
+  function loadDetail() {
+    var loadingEl = el('p259b-detail-loading');
+    var errorEl = el('p259b-detail-error');
+    var emptyEl = el('p259b-detail-empty');
+    if (loadingEl) loadingEl.style.display = 'block';
+    if (errorEl) errorEl.style.display = 'none';
+    if (emptyEl) emptyEl.style.display = 'none';
+
+    var params = new URLSearchParams({
+      lottery_type: ctx.lottery_type,
+      strategy_id: ctx.strategy_id,
+      bet_index: String(ctx.bet_index),
+      page: String(ctx.page),
+      page_size: String(ctx.page_size),
+      sort: ctx.sort,
+      hit_filter: ctx.hit_filter,
+    });
+    if (ctx.target_draw) params.set('target_draw', ctx.target_draw);
+
+    var url = (window.API_BASE || '') + '/api/replay/history-detail?' + params.toString();
+    fetch(url)
+      .then(function(r) {
+        if (!r.ok) throw new Error('HTTP ' + r.status);
+        return r.json();
+      })
+      .then(function(data) {
+        if (loadingEl) loadingEl.style.display = 'none';
+        ctx.total_count = data.total_count || 0;
+        ctx.has_next = !!data.has_next;
+        renderSummary(data);
+        renderDetailRows(data);
+        updatePagination();
+      })
+      .catch(function(e) {
+        if (loadingEl) loadingEl.style.display = 'none';
+        if (errorEl) {
+          errorEl.style.display = 'block';
+          errorEl.textContent = '⚠️ 明細載入失敗：' + e.message;
+        }
+      });
+  }
+
+  function openDetail(lottery, strategy, bet, name) {
+    ctx.lottery_type = lottery;
+    ctx.strategy_id = strategy;
+    ctx.bet_index = parseInt(bet, 10) || 1;
+    ctx.strategy_name = name || strategy;
+    ctx.page = 1;
+    ctx.sort = 'target_draw_desc';
+    ctx.hit_filter = 'all';
+    ctx.target_draw = '';
+    // reset controls
+    var hf = el('p259b-hit-filter'); if (hf) hf.value = 'all';
+    var so = el('p259b-sort'); if (so) so.value = 'target_draw_desc';
+    var td = el('p259b-target-draw'); if (td) td.value = '';
+    var panel = el('p259b-detail-panel');
+    if (panel) {
+      panel.style.display = 'block';
+      panel.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+    loadDetail();
+  }
+
+  function init() {
+    // Delegate 查看明細 clicks from the P259A overview table
+    var tbody = el('p259a-tbody');
+    if (tbody) {
+      tbody.addEventListener('click', function(e) {
+        var btn = e.target.closest('.p259b-detail-btn');
+        if (!btn) return;
+        openDetail(btn.dataset.lottery, btn.dataset.strategy, btn.dataset.bet, btn.dataset.name);
+      });
+    }
+
+    var closeBtn = el('p259b-close-btn');
+    if (closeBtn) closeBtn.addEventListener('click', function() {
+      var panel = el('p259b-detail-panel');
+      if (panel) panel.style.display = 'none';
+    });
+
+    var hf = el('p259b-hit-filter');
+    if (hf) hf.addEventListener('change', function() { ctx.hit_filter = hf.value; ctx.page = 1; loadDetail(); });
+
+    var so = el('p259b-sort');
+    if (so) so.addEventListener('change', function() { ctx.sort = so.value; ctx.page = 1; loadDetail(); });
+
+    var searchBtn = el('p259b-search-btn');
+    if (searchBtn) searchBtn.addEventListener('click', function() {
+      var td = el('p259b-target-draw');
+      ctx.target_draw = td ? td.value.trim() : '';
+      ctx.page = 1;
+      loadDetail();
+    });
+
+    var clearBtn = el('p259b-clear-btn');
+    if (clearBtn) clearBtn.addEventListener('click', function() {
+      var td = el('p259b-target-draw'); if (td) td.value = '';
+      ctx.target_draw = '';
+      ctx.page = 1;
+      loadDetail();
+    });
+
+    var prev = el('p259b-prev-btn');
+    if (prev) prev.addEventListener('click', function() {
+      if (ctx.page > 1) { ctx.page -= 1; loadDetail(); }
+    });
+
+    var next = el('p259b-next-btn');
+    if (next) next.addEventListener('click', function() {
+      if (ctx.has_next) { ctx.page += 1; loadDetail(); }
+    });
+  }
+
+  init();
 })();
         </script>
 </body>

@@ -1,7 +1,7 @@
 # Current State — LotteryNew
 
-**Last Reviewed:** 2026-06-09 Asia/Taipei (P259A History Replay Overview Single-Bet First COMPLETE — GET /api/replay/history-overview; default bet_index=1; bet tabs 1/2/3/4/5/all; lottery isolation; replay_status_category filter; lifecycle as badge only; all strategies discoverable; 查看明細 disabled P259B deferred; 46/46 P259A tests PASS; 986 regression PASS; HOLD/WAITING_FOR_USER_AUTHORIZATION)
-**State Marker:** `P259A_HISTORY_REPLAY_OVERVIEW_SINGLE_BET_FIRST_READY`
+**Last Reviewed:** 2026-06-09 Asia/Taipei (P259B History Replay Detail Page COMPLETE — GET /api/replay/history-detail; server-side pagination default page=1/page_size=100 max 200; total_count+has_next; sort desc/asc; hit_filter all/hit/miss; exact target_draw search; lottery+strategy isolation; bet_index=Option A strategy-level derived count, no schema change; result_label derived from hit_count; inline #p259b-detail-panel via 查看明細; no DB write/backfill/migration/adapter change; overview still no per-draw detail; correct DB lottery_api/data/lottery_v2.db 94,924 rows via _open_conn(); 38/38 P259B + 46/46 P259A + 986 P257/P258 tests PASS; 1 pre-existing-unrelated freshness cadence fail; branch p259b-history-replay-detail-paginated; PR open waiting CI; HOLD/WAITING_FOR_USER_AUTHORIZATION)
+**State Marker:** `P259B_HISTORY_REPLAY_DETAIL_PAGINATED_PR_OPEN_WAITING_CI`
 **Purpose:** Project-specific state for future agents. Read this after `SHARED_AGENT_BOOTSTRAP.md` and `TASK_TEMPLATES.md`.
 
 ## Canonical Execution Context

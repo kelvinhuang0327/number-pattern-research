@@ -1,0 +1,97 @@
+{
+  "schema_version": "1.0",
+  "task_id": "P262B",
+  "title": "Replay Overview Coverage Remediation — Show All Known Strategies Without Backfill",
+  "generated_at": "2026-06-09",
+  "type": "implementation (modifies existing read-only overview endpoint + UI) + targeted tests + artifact",
+  "read_only": true,
+  "no_db_write": true,
+  "no_replay_backfill": true,
+  "no_migration": true,
+  "no_strategy_adapter_change": true,
+  "no_strategy_registry_change": true,
+  "based_on": {
+    "audit_task": "P262A",
+    "main_commit": "931ea93abd75acb5bedb91e6524409c0c8116cd9"
+  },
+  "problem": {
+    "summary": "The History Replay Overview (GET /api/replay/history-overview, P259A) walked ONLY the strategy registry and defaulted to bet_index=1, so it could not surface every known strategy.",
+    "root_gaps": [
+      "registry-only walk: DB orphan strategies (replay rows but unregistered) never appear",
+      "registry/lottery mismatch: rows under a lottery_type not in registry supported_lottery_types never appear",
+      "default bet_index=1 hides all multi-bet strategies (only 13 of 38 reachable strategies visible by default)"
+    ]
+  },
+  "solution": {
+    "approach": "Opt-in coverage_mode query param (default false). Legacy P259A behaviour is byte-for-byte preserved; coverage_mode=true expands the cell universe to UNION(registry-supported cells, DB cells) and annotates every row with coverage metadata. Frontend overview now defaults to coverage_mode=true&bet_index=0.",
+    "backward_compatible": true,
+    "new_query_param": "coverage_mode: bool = false",
+    "new_row_fields": [
+      "has_replay_rows", "distinct_draw_count", "max_bet_index",
+      "available_bet_indices", "registry_status", "can_open_detail",
+      "missing_reason", "coverage_warning"
+    ],
+    "registry_status_values": ["registered", "unregistered_orphan", "registry_lottery_mismatch"],
+    "missing_reason_values": ["registered_without_rows", "artifact_only", "observation_no_data", "no_production_replay", null],
+    "can_open_detail_rule": "can_open_detail == has_replay_rows (the P259B/P261A detail endpoints scope purely by lottery_type+strategy_id and return rows whenever they exist, including for orphans)"
+  },
+  "coverage_before_after": {
+    "before": {
+      "default_view_visible_strategies": 13,
+      "orphans_visible": 0,
+      "registry_lottery_mismatch_visible": 0,
+      "registered_without_rows_flagged": "implicitly present but no reason annotation",
+      "note": "default bet_index=1 only; multi-bet hidden; orphans/mismatch unreachable"
+    },
+    "after_coverage_mode_bet_index_0": {
+      "total_known_strategies": 40,
+      "total_cells": 41,
+      "registered_cells": 38,
+      "unregistered_orphan_cells": 2,
+      "registry_lottery_mismatch_cells": 1,
+      "cells_with_replay_rows": 36,
+      "cells_without_replay_rows": 5,
+      "multi_bet_strategies_visible": true,
+      "explicit_bet_index_filter_still_works": true
+    }
+  },
+  "known_cells": {
+    "orphans": ["midfreq_fourier_mk_3bet", "pp3_freqort_4bet"],
+    "registry_lottery_mismatch": ["POWER_LOTTO:midfreq_fourier_2bet"],
+    "registered_without_replay_rows": [
+      "biglotto_ts3_acb_4bet",
+      "biglotto_ts3_markov_freq_5bet",
+      "h6_gate_mk20_ew85",
+      "p1_deviation_2bet_539",
+      "power_shlc_midfreq"
+    ],
+    "missing_reason_examples": {
+      "h6_gate_mk20_ew85": "observation_no_data",
+      "biglotto_ts3_acb_4bet": "artifact_only",
+      "biglotto_ts3_markov_freq_5bet": "artifact_only",
+      "p1_deviation_2bet_539": "artifact_only",
+      "power_shlc_midfreq": "artifact_only"
+    }
+  },
+  "files_changed": {
+    "lottery_api/routes/replay.py": "added coverage helpers (_parse_bet_indices_csv, _coverage_missing_reason, _build_overview_row) + coverage_mode param + DB query columns (distinct_draw_count, max_bet_index, GROUP_CONCAT bet_index, db strategy_name) + registry walk / coverage-universe expansion + coverage_summary",
+    "index.html": "P259A overview: 4 new coverage columns (registry status / distinct draws / available bet indices / missing reason), registry-status + reason badges, summary coverage counts, JS fetches coverage_mode=true and defaults to bet_index=0; P261A detail expand untouched",
+    "tests/test_p262b_replay_overview_coverage_remediation.py": "29 read-only tests"
+  },
+  "validation": {
+    "p262b_tests": "29 passed",
+    "regression": "P262A 14, P261A 50, P260C 29, P259C 33, P259B 38, P259A 46 — all PASS (239 total across suites)",
+    "git_diff_check": "clean",
+    "read_only_proof": "strategy_prediction_replays row count identical before/after coverage calls; registry size unchanged (38); no DB write; no backfill; no adapter/registry mutation",
+    "browser_e2e": "NOT RUN locally (running backend is stale pre-P262B; not disturbed). Covered by CI replay-browser-e2e-validation; behaviours verified at API (TestClient) + DOM-construction level."
+  },
+  "safety": {
+    "no_db_write": true,
+    "no_replay_backfill": true,
+    "no_migration": true,
+    "no_strategy_adapter_change": true,
+    "no_strategy_registry_change": true,
+    "p259a_contract_preserved": true,
+    "p261a_detail_expand_preserved": true
+  }
+}

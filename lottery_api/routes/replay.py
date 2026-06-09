@@ -1241,6 +1241,108 @@ _REPLAY_STATUS_CATEGORIES = {
     "artifact_only":      "僅 artifact / rejected artifact",
 }
 
+# ── P262B: coverage-remediation helpers (READ-ONLY) ──────────────────────────
+# These let the overview surface EVERY known strategy cell — including DB orphan
+# strategies (replay rows but unregistered) and registry/lottery mismatches
+# (rows under a lottery_type the registry does not list) — and explain WHY a
+# cell lacks coverage, without backfilling rows, writing the DB, or touching the
+# strategy registry / adapters.
+
+_REGISTRY_STATUS_REGISTERED = "registered"
+_REGISTRY_STATUS_ORPHAN     = "unregistered_orphan"
+_REGISTRY_STATUS_MISMATCH   = "registry_lottery_mismatch"
+
+
+def _parse_bet_indices_csv(csv_val) -> list:
+    """Parse a GROUP_CONCAT(DISTINCT bet_index) CSV into a sorted int list."""
+    if not csv_val:
+        return []
+    seen = set()
+    for tok in str(csv_val).split(","):
+        tok = tok.strip()
+        if tok.lstrip("-").isdigit():
+            seen.add(int(tok))
+    return sorted(seen)
+
+
+def _coverage_missing_reason(registry_status: str, has_rows: bool,
+                             lifecycle: str, replay_cat: str):
+    """Read-only classification of WHY a coverage cell lacks production replay rows.
+
+    Returns one of: registered_without_rows | artifact_only | observation_no_data
+    | no_production_replay, or None when the cell HAS rows (orphan/mismatch cells
+    have rows by definition and return None — their gap is registration, surfaced
+    via coverage_warning instead).
+    """
+    if has_rows:
+        return None
+    if registry_status in (_REGISTRY_STATUS_ORPHAN, _REGISTRY_STATUS_MISMATCH):
+        return None
+    if lifecycle == "OBSERVATION":
+        return "observation_no_data"
+    if replay_cat == "artifact_only":
+        return "artifact_only"
+    if lifecycle in ("REJECTED", "RETIRED", "OFFLINE"):
+        return "registered_without_rows"
+    return "no_production_replay"
+
+
+def _build_overview_row(*, lt: str, sid: str, strategy_name, strategy_version,
+                        derived_bets: int, lifecycle: str, is_exec: bool,
+                        db: Optional[dict], registry_status: str) -> dict:
+    """Build one overview row. Existing P259A fields are preserved verbatim; P262B
+    coverage fields are added additively. Pure function — no DB / side effects."""
+    has_rows = db is not None and db["total_rows"] > 0
+
+    # replay_status_category — identical rule to the original P259A endpoint.
+    if has_rows:
+        rcat = "has_rows"
+    elif lifecycle in ("REJECTED",) and not is_exec:
+        rcat = "artifact_only"
+    else:
+        rcat = "no_production_replay"
+
+    missing_reason = _coverage_missing_reason(registry_status, has_rows, lifecycle, rcat)
+
+    coverage_warning = None
+    if registry_status == _REGISTRY_STATUS_ORPHAN:
+        coverage_warning = (
+            "unregistered_orphan: replay rows exist but this strategy_id is not in "
+            "the strategy registry; the registry-only overview walk never surfaces it"
+        )
+    elif registry_status == _REGISTRY_STATUS_MISMATCH:
+        coverage_warning = (
+            "registry_lottery_mismatch: replay rows exist under a lottery_type not "
+            "listed in the strategy registry supported_lottery_types"
+        )
+
+    return {
+        # ── existing P259A fields (unchanged contract) ──
+        "lottery_type":           lt,
+        "strategy_id":            sid,
+        "strategy_name":          strategy_name,
+        "strategy_version":       strategy_version,
+        "derived_bet_count":      derived_bets,
+        "lifecycle_status":       lifecycle,
+        "is_executable":          is_exec,
+        "total_replay_rows":      db["total_rows"] if db else 0,
+        "min_target_draw":        db["min_target_draw"] if db else None,
+        "max_target_draw":        db["max_target_draw"] if db else None,
+        "latest_target_draw":     db["latest_target_draw"] if db else None,
+        "replay_status_summary":  db["replay_status_summary"] if db else {},
+        "has_production_replay":  has_rows,
+        "replay_status_category": rcat,
+        # ── P262B additive coverage fields ──
+        "has_replay_rows":        has_rows,
+        "distinct_draw_count":    db["distinct_draw_count"] if db else 0,
+        "max_bet_index":          db["max_bet_index"] if db else 0,
+        "available_bet_indices":  db["available_bet_indices"] if db else [],
+        "registry_status":        registry_status,
+        "can_open_detail":        has_rows,
+        "missing_reason":         missing_reason,
+        "coverage_warning":       coverage_warning,
+    }
+
 
 @router.get("/api/replay/history-overview")
 async def get_history_replay_overview(
@@ -1261,6 +1363,20 @@ async def get_history_replay_overview(
             "Filter by replay availability category: "
             "has_rows | no_production_replay | artifact_only. "
             "Omit for all."
+        ),
+    ),
+    coverage_mode:             bool          = Query(
+        False,
+        description=(
+            "P262B: when true, the overview surfaces EVERY known strategy cell — "
+            "including DB orphan strategies (replay rows but unregistered) and "
+            "registry/lottery mismatches (rows under a lottery_type the registry "
+            "does not list). Each row carries registry_status / has_replay_rows / "
+            "can_open_detail / missing_reason / coverage_warning / "
+            "available_bet_indices / max_bet_index / distinct_draw_count. "
+            "Pair with bet_index=0 to avoid hiding multi-bet strategies. "
+            "Default false preserves the original P259A registry-only behaviour. "
+            "READ-ONLY — never writes the DB, backfills rows, or mutates registry."
         ),
     ),
 ):
@@ -1294,7 +1410,11 @@ async def get_history_replay_overview(
                 SELECT
                     lottery_type,
                     strategy_id,
+                    MAX(strategy_name) AS db_strategy_name,
                     COUNT(*)  AS total_rows,
+                    COUNT(DISTINCT target_draw) AS distinct_draw_count,
+                    MAX(bet_index) AS max_bet_index,
+                    GROUP_CONCAT(DISTINCT bet_index) AS bet_indices_csv,
                     MIN(CAST(target_draw AS INTEGER)) AS min_draw_int,
                     MAX(CAST(target_draw AS INTEGER)) AS max_draw_int,
                     SUM(CASE WHEN replay_status='PREDICTED'            THEN 1 ELSE 0 END) AS predicted_cnt,
@@ -1314,7 +1434,11 @@ async def get_history_replay_overview(
         for r in db_rows:
             key = (r["lottery_type"], r["strategy_id"])
             db_index[key] = {
+                "db_strategy_name": r["db_strategy_name"],
                 "total_rows":       r["total_rows"],
+                "distinct_draw_count": r["distinct_draw_count"] or 0,
+                "max_bet_index":    r["max_bet_index"] or 0,
+                "available_bet_indices": _parse_bet_indices_csv(r["bet_indices_csv"]),
                 "min_target_draw":  str(r["min_draw_int"]) if r["min_draw_int"] else None,
                 "max_target_draw":  str(r["max_draw_int"]) if r["max_draw_int"] else None,
                 "latest_target_draw": str(r["max_draw_int"]) if r["max_draw_int"] else None,
@@ -1328,7 +1452,20 @@ async def get_history_replay_overview(
             }
 
         # ── 3. Build overview rows ──────────────────────────────────────────
+        # (a) Registry walk — IDENTICAL iteration/filters to the original P259A
+        #     endpoint (registered strategies × their supported_lottery_types).
+        # (b) P262B coverage_mode ONLY: append leftover DB cells the registry walk
+        #     can never reach — orphans (unregistered) and registry/lottery
+        #     mismatches — so the overview can show every known strategy cell.
+        registry_supported = {
+            (lt, m["strategy_id"])
+            for m in all_meta
+            for lt in m["supported_lottery_types"]
+        }
+
         rows = []
+
+        # (a) registry walk
         for meta in all_meta:
             sid = meta["strategy_id"]
             derived_bets = _derive_bet_count(sid)
@@ -1338,51 +1475,88 @@ async def get_history_replay_overview(
                 # lottery_type filter
                 if lottery_type and lt != lottery_type:
                     continue
-
                 # bet_index filter (0 = all)
                 if bet_index != 0 and derived_bets != bet_index:
                     continue
 
-                db = db_index.get((lt, sid))
-                has_rows = db is not None and db["total_rows"] > 0
-                lc = meta["lifecycle_status"]
-
-                # Determine replay_status_category
-                if has_rows:
-                    rcat = "has_rows"
-                elif lc in ("REJECTED",) and not is_exec:
-                    rcat = "artifact_only"
-                else:
-                    rcat = "no_production_replay"
-
+                row = _build_overview_row(
+                    lt=lt, sid=sid,
+                    strategy_name=meta["strategy_name"],
+                    strategy_version=meta["strategy_version"],
+                    derived_bets=derived_bets,
+                    lifecycle=meta["lifecycle_status"],
+                    is_exec=is_exec,
+                    db=db_index.get((lt, sid)),
+                    registry_status=_REGISTRY_STATUS_REGISTERED,
+                )
                 # replay_status_category filter
-                if replay_status_category and rcat != replay_status_category:
+                if replay_status_category and row["replay_status_category"] != replay_status_category:
+                    continue
+                rows.append(row)
+
+        # (b) coverage_mode universe expansion — orphan + registry/lottery mismatch
+        if coverage_mode:
+            reg_index = {m["strategy_id"]: m for m in all_meta}
+            for (lt, sid), db in db_index.items():
+                if (lt, sid) in registry_supported:
+                    continue  # already produced by the registry walk above
+                if lottery_type and lt != lottery_type:
+                    continue
+                derived_bets = _derive_bet_count(sid)
+                if bet_index != 0 and derived_bets != bet_index:
                     continue
 
-                row = {
-                    "lottery_type":           lt,
-                    "strategy_id":            sid,
-                    "strategy_name":          meta["strategy_name"],
-                    "strategy_version":       meta["strategy_version"],
-                    "derived_bet_count":      derived_bets,
-                    "lifecycle_status":       lc,
-                    "is_executable":          is_exec,
-                    "total_replay_rows":      db["total_rows"] if db else 0,
-                    "min_target_draw":        db["min_target_draw"] if db else None,
-                    "max_target_draw":        db["max_target_draw"] if db else None,
-                    "latest_target_draw":     db["latest_target_draw"] if db else None,
-                    "replay_status_summary":  db["replay_status_summary"] if db else {},
-                    "has_production_replay":  has_rows,
-                    "replay_status_category": rcat,
-                }
+                reg_meta = reg_index.get(sid)
+                if reg_meta is None:
+                    # orphan: replay rows exist but strategy_id is unregistered
+                    registry_status = _REGISTRY_STATUS_ORPHAN
+                    lifecycle       = "UNREGISTERED"
+                    strategy_name   = db.get("db_strategy_name") or sid
+                    strategy_version = None
+                    is_exec         = False
+                else:
+                    # registered, but rows exist under a lottery_type the registry
+                    # does NOT list for this strategy → coverage mismatch
+                    registry_status = _REGISTRY_STATUS_MISMATCH
+                    lifecycle       = reg_meta["lifecycle_status"]
+                    strategy_name   = reg_meta["strategy_name"]
+                    strategy_version = reg_meta["strategy_version"]
+                    is_exec         = sid in exec_ids
+
+                row = _build_overview_row(
+                    lt=lt, sid=sid,
+                    strategy_name=strategy_name,
+                    strategy_version=strategy_version,
+                    derived_bets=derived_bets,
+                    lifecycle=lifecycle,
+                    is_exec=is_exec,
+                    db=db,
+                    registry_status=registry_status,
+                )
+                if replay_status_category and row["replay_status_category"] != replay_status_category:
+                    continue
                 rows.append(row)
+
+        # P262B coverage summary (only meaningful counts; harmless in legacy mode)
+        distinct_strategy_ids = {r["strategy_id"] for r in rows}
+        coverage_summary = {
+            "registered":                sum(1 for r in rows if r["registry_status"] == _REGISTRY_STATUS_REGISTERED),
+            "unregistered_orphan":       sum(1 for r in rows if r["registry_status"] == _REGISTRY_STATUS_ORPHAN),
+            "registry_lottery_mismatch": sum(1 for r in rows if r["registry_status"] == _REGISTRY_STATUS_MISMATCH),
+            "with_replay_rows":          sum(1 for r in rows if r["has_replay_rows"]),
+            "without_replay_rows":       sum(1 for r in rows if not r["has_replay_rows"]),
+            "can_open_detail":           sum(1 for r in rows if r["can_open_detail"]),
+        }
 
         return {
             "default_bet_index":            1,
             "bet_index_filter":             bet_index,
             "lottery_type_filter":          lottery_type or None,
             "replay_status_category_filter": replay_status_category or None,
+            "coverage_mode":                coverage_mode,
             "total_rows":                   len(rows),
+            "total_known_strategies":       len(distinct_strategy_ids),
+            "coverage_summary":             coverage_summary,
             "rows":                         rows,
             "all_strategies_included":      True,
             "lifecycle_as_badge_only":      True,

@@ -1,0 +1,49 @@
+{
+  "task": "P265A",
+  "title": "D3 Success Metric Recontract — M3+ Real Replay Success Rate",
+  "date": "2026-06-10",
+  "branch": "p265a-d3-m3-real-replay-success-rate",
+  "base_commit": "635c063758a8bf011f99bb9c726b3f8ac85fefbc",
+  "scope": "D3 SSOT success metric only (/api/replay/d3-strategy-status-coverage). No DB write, no replay backfill, no registry/adapter/migration change. Legacy /api/replay/d3-strategy-status-audit contract untouched.",
+  "metric_change": {
+    "before": "any-hit draw success: MAX(hit_count >= 1 OR special_hit = 1)",
+    "after": "M3+ draw success: MAX(hit_count >= 3)",
+    "special_hit": "EXCLUDED — special_hit alone never makes a draw an M3+ success; only hit_count >= 3 counts",
+    "denominator": "distinct target_draw in the window (unchanged — GROUP BY lottery_type, strategy_id, target_draw already collapsed multi-bet cells to one entry per draw)",
+    "windows": [30, 100, 500, 1500],
+    "field_names_preserved": ["success_rate_30", "success_rate_100", "success_rate_500", "success_rate_1500", "available_draws_30", "available_draws_100", "available_draws_500", "available_draws_1500"],
+    "new_contract_fields": {
+      "success_metric": "M3_PLUS",
+      "metric_label": "M3+ 成功率",
+      "special_hit_excluded": true,
+      "special_hit_note": "special_hit alone does NOT count as M3+ success; only hit_count >= 3 counts",
+      "denominator": "distinct target_draw in the window (not replay row count)",
+      "metric_history": "P263B used any-hit (hit_count>=1 OR special_hit); P265A recontracted to M3+ (hit_count>=3)"
+    }
+  },
+  "before_after_examples": [
+    {"cell": "BIG_LOTTO/markov_single_biglotto", "bets": 1, "old_any_hit_100": "~0.54", "new_m3plus_100": 0.0, "new_m3plus_1500": 0.0153},
+    {"cell": "BIG_LOTTO/biglotto_echo_aware_3bet", "bets": 3, "old_any_hit_100": "~0.94", "new_m3plus_100": 0.05, "new_m3plus_1500": 0.0647},
+    {"cell": "BIG_LOTTO/biglotto_ts3_markov_4bet_w30", "bets": 4, "old_any_hit_100": "~0.99", "new_m3plus_100": 0.08, "new_m3plus_1500": 0.0867},
+    {"cell": "DAILY_539/daily539_f4cold_5bet", "bets": 5, "replay_rows": 7500, "available_draws_1500": 1500, "new_m3plus_100": 0.05, "new_m3plus_1500": 0.0633, "note": "denominator = 1500 distinct draws, NOT 7500 rows"}
+  ],
+  "files_modified": {
+    "lottery_api/routes/replay.py": "M3+ criterion in _d3_compute_success_rates; contract comment; _D3_SUCCESS_METRIC/_D3_SUCCESS_METRIC_LABEL constants; success_rate_contract dict (success_metric/metric_label/special_hit_excluded/denominator/metric_history); _D3_SAFETY_DISCLAIMERS M3+ lines. Legacy audit endpoint untouched.",
+    "index.html": "P263B SSOT section: column headers '30/100/500/1500期' -> '... M3+' with tooltips; section description M3+ wording; disclaimer banner M3+ definition + special_hit exclusion + not-approval/not-betting lines",
+    "tests/test_p265a_d3_m3_real_replay_success_rate.py": "NEW — 23 targeted tests",
+    "tests/test_p263b_d3_strategy_status_ssot_rebuild.py": "Aligned test_success_rate_30_matches_direct_sql (hit_count>=3) + test_success_rate_contract_declared (M3+ assertions)"
+  },
+  "validation": {
+    "test_p265a_d3_m3_real_replay_success_rate": "23/23 PASS",
+    "test_p263b_d3_strategy_status_ssot_rebuild": "PASS",
+    "test_p264a_hide_legacy_d3_artifact_default_ui": "PASS",
+    "test_p264b_hide_empty_legacy_d3_tab_default_navigation": "PASS",
+    "test_replay_api_contract": "PASS",
+    "five_suite_total": "152 passed",
+    "p258_locked_contract": "P258M/N/O/P = 238 passed (legacy contract intact)",
+    "git_diff_check": "CLEAN",
+    "api_sanity_check": "PASS — BIG_LOTTO single-bet 54%->~0-1.5% M3+; echo_aware_3bet 94%->5-6.5% M3+; multi-bet denominator = distinct draws",
+    "browser_check": "NOT RUN — live backend on the SSOT port not guaranteed; static wording verified via HTML inspection"
+  },
+  "forbidden_files_touched": []
+}

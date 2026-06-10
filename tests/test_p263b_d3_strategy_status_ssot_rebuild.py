@@ -247,12 +247,14 @@ def test_online_strategy_has_no_reject_reason(rows_by_key):
 # ── Success-rate contract correctness (spot-check vs direct SQL) ────────────
 
 def test_success_rate_30_matches_direct_sql(rows_by_key):
+    # P265A: success metric recontracted to M3+ (hit_count >= 3); special_hit
+    # no longer contributes on its own.
     lt, sid = "BIG_LOTTO", "ts3_regime_3bet"
     conn = sqlite3.connect(f"file:{DB_PATH}?mode=ro", uri=True)
     try:
         draws = conn.execute(
             """
-            SELECT MAX(CASE WHEN hit_count >= 1 OR special_hit = 1 THEN 1 ELSE 0 END) AS ds
+            SELECT MAX(CASE WHEN hit_count >= 3 THEN 1 ELSE 0 END) AS ds
             FROM strategy_prediction_replays
             WHERE lottery_type = ? AND strategy_id = ?
             GROUP BY target_draw
@@ -302,7 +304,10 @@ def test_success_rate_contract_declared(payload):
     assert sc["windows"] == [30, 100, 500, 1500]
     assert sc["display_metric_only"] is True
     assert sc["not_a_promotion_gate"] is True
-    assert "hit_count >= 1" in sc["draw_success_rule"]
+    # P265A: recontracted from any-hit to M3+ (hit_count >= 3).
+    assert "hit_count >= 3" in sc["draw_success_rule"]
+    assert sc["success_metric"] == "M3_PLUS"
+    assert sc["special_hit_excluded"] is True
 
 
 # ── No DB write (read-only) ─────────────────────────────────────────────────

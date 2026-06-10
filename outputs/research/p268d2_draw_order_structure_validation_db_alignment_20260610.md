@@ -24,7 +24,7 @@ P268D-1 (PR #409, merged) produced a registry-freeze artifact (hypotheses H1/H1_
 - DB path: `data/lottery_v2.db`
 - Opened read-only (mode=ro): True
 - Tables inspected: draws, prediction_items, prediction_results, prediction_review_status, prediction_runs, review_actions, review_findings, review_hypotheses, review_sessions, shadow_experiments, snapshot_schedule, sqlite_sequence, strategy_prediction_replays, strategy_replay_runs
-- Views inspected: 
+- Views inspected: (none)
 - Canonical BIG_LOTTO view present: False
 - `draws` table present: True, row count: 0
 - Rows available per lottery: {}

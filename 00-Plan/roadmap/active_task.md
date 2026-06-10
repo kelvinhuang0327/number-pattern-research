@@ -1,6 +1,9 @@
 # Active Task — Today (2026-06-10)
 
-> **STATUS: `P266C_REPLAY_OVERVIEW_ARC_CLOSEOUT_STATE_SYNC_COMPLETE`**
+> **STATUS: `P267C_M3PLUS_REVALIDATION_COMPLETE_NO_VALIDATED_M3_EDGE`**
+> **P267A–P267C (done — M3+ success-metric strategy revalidation, 2026-06-10):** P267A next-frontier audit確認研究空間已關閉（L131/L133/L137），唯一非重複缺口 = 既有策略證據未在 P265A M3+ SSOT 度量下驗證。P267B 強模型設計完成預註冊草案。P267C 實作（branch `p267c-m3plus-success-metric-revalidation`）：Hypothesis Registry 預註冊先行（`lottery_api/data/hypothesis_registry.jsonl`，4 entries，L138）→ 36 replay-backed cells 全量重算（1500p primary endpoint；draw-level M3+ = any bet `hit_count>=3`；special_hit 排除；1-bet exact hypergeometric baseline 539=1.0041%/BIG=1.8638%/POWER=3.8698%；multi-bet per-draw conditional MC M=10,000；L96 Bernoulli-MC null T=10,000 + exact Poisson-binomial cross-check；seed=42）。**結果：0/36 Bonferroni（α=0.00139）、0/36 BH-FDR(q=0.10) → `NO_VALIDATED_M3_EDGE`**（最佳 uncorrected：daily539_f4cold_5bet +1.32pp p=0.031；midfreq_fourier_mk_3bet +1.48pp p=0.063——均在校正後噪音帶內，與 L131/L133 一致）。McNemar：多數 group 因 non-unique ONLINE incumbent NOT_RUN（exploratory only）。**H6 `h6_gate_mk20_ew85`：`H6_EVIDENCE_NOT_REPRODUCIBLE`** — repo/git history 僅 7-line spec + leakage transcript，無 per-draw OOS 紀錄；wiki +4.00pp/3000p 宣稱不可重現，未用於任何計算（可追溯原則）。資料品質閘全過：causality violations=0、94,924 rows、全 PREDICTED/dry_run=0。Read-only mode=ro 全程；無 DB write/replay/registry/production 變更。**19/19 P267C tests + 44/44 replay_api_contract PASS；git diff --check clean。** Artifacts: `outputs/research/p267c_m3plus_strategy_revalidation_20260610.{json,md}`。本報告不構成投注建議。Recommended next: HOLD — 在 P245B bias gate 開啟或新外部資料源前，主動挖掘等同 p-hacking（L137）。
+>
+> **Previous STATUS: `P266C_REPLAY_OVERVIEW_ARC_CLOSEOUT_STATE_SYNC_COMPLETE`**
 > **P266A–P266C (done — Replay Overview arc closeout, 2026-06-10):** P266A read-only TODO audit of History Replay Overview (P259A–P265A) found no blocking or should-fix-soon code/UX items — `P266A_REPLAY_OVERVIEW_TODO_AUDIT_COMPLETE_WITH_TODOS` (sole follow-up was a local-venv `httpx` dependency gap, not a feature gap). P266B installed `httpx 0.28.1` into project local `venv/` (gitignored, no repo file change) — `P266B_LOCAL_VENV_HTTPX_DEPENDENCY_FIX_COMPLETE`; re-ran the affected suite: **352 passed, 0 failed, 0 errors** (P259A 46, P259B 38, P259C 33, P260 98, P261A 50, P262A 14, P262B 29, replay_api_contract 44). Browser check NOT RUN (not claimed PASS). P266C is this governance-only state sync, branch `chore/p266c-replay-overview-closeout-state-sync` — updated `CURRENT_STATE.md` state marker (was stuck at `P265A_..._PR_OPEN`, P265A is actually merged into HEAD `4106e4e`) and recorded P266A/P266B completion. No source/DB/test/registry/adapter change. **Replay Overview / History Replay Overview arc (P259A–P266B) CLOSED — no remaining blockers.** No active task. Recommended next: HOLD / WAITING_FOR_USER_AUTHORIZATION — no further Replay Overview work unless the user raises a new UI/product issue.
 >
 > **Previous STATUS: `P265A_D3_M3_REAL_REPLAY_SUCCESS_RATE_IMPLEMENTED_PR_OPEN`**
@@ -257,4 +260,4 @@ Status: **WAITING_FOR_USER_AUTHORIZATION** — no active follow-up authorized.
 6. 是否允許進入下一輪
 7. Final Classification
 
-Final Classification (this file): `P266C_REPLAY_OVERVIEW_ARC_CLOSEOUT_STATE_SYNC_COMPLETE`
+Final Classification (this file): `P267C_M3PLUS_REVALIDATION_COMPLETE_NO_VALIDATED_M3_EDGE`

@@ -1,0 +1,97 @@
+{
+  "task_id": "P268D1_DRAW_ORDER_REGISTRY_FREEZE_ARTIFACT",
+  "generated_at": "2026-06-10T14:10:00+00:00",
+  "type": "REGISTRY_FREEZE_SNAPSHOT_ONLY",
+  "note": "THIS IS NOT A WRITE TO THE PRODUCTION HYPOTHESIS REGISTRY (lottery_api/data/hypothesis_registry.jsonl). It is a frozen design snapshot under outputs/research/, mirroring the hypothesis_registry_draft from p268c_draw_order_full_history_feasibility_and_hypothesis_design_20260610.json, produced as P268D step 1 (freeze_registry_artifact) ahead of the bounded full-history backfill (P268D step 2, this same task). A future, separately authorized task is required to perform the actual production Hypothesis Registry write. NOT WRITTEN TO production registry; draft only.",
+  "source_design_artifact": "outputs/research/p268c_draw_order_full_history_feasibility_and_hypothesis_design_20260610.json",
+  "source_design_final_classification": "P268C_DRAW_ORDER_FULL_HISTORY_FEASIBILITY_AND_HYPOTHESIS_DESIGN_COMPLETE",
+  "p267c_conclusion_boundary": "P267C (M3+ revalidation) found NO_VALIDATED_M3_EDGE across 36/36 cells for the existing replay-backed strategy family. This does not close the broader success-rate / hit-rate research line.",
+  "p268b_conclusion_boundary": "P268B (PR #407, merged into main @ f3c933b) is a diagnostics-only prototype. drawNumberAppear field structurally valid for all 154 sampled main-pool records (BIG_LOTTO/POWER_LOTTO/DAILY_539) and 52/52 each (3_STAR/4_STAR), sorted-equivalent to drawNumberSize. DB alignment = NO_LOCAL_ROWS. No hit-rate or success-rate claim made.",
+  "track_b_isolation": "winnerCount / prize-distribution / EV (Track B, P268A Direction B) is explicitly OUT OF SCOPE for this hit-rate design line and must not be merged into H1/H2/H3 or any P268D step.",
+  "no_db_write": true,
+  "no_hypothesis_registry_write": true,
+  "no_h1_h2_h3_test_run_in_this_task": true,
+  "no_hit_rate_claim": true,
+  "primary_game": "DAILY_539",
+  "primary_game_rationale": "Largest available draw depth (~5,880 draws), maximizing statistical power for the within-draw permutation test; BIG_LOTTO and POWER_LOTTO are treated as secondary/co-primary at governance discretion.",
+  "secondary_games": ["BIG_LOTTO", "POWER_LOTTO", "3_STAR", "4_STAR"],
+  "hypotheses": [
+    {
+      "id": "H1",
+      "role": "primary",
+      "name": "per_ball_exit_rank_heterogeneity",
+      "statement": "Per-ball mean exit-rank (position within drawNumberAppear, conditional on the ball being drawn) is heterogeneous across balls, beyond what a within-draw fully-exchangeable permutation null predicts.",
+      "null_model": "Within-draw permutation null: condition on the observed drawn set per draw; all orderings of that set are equally likely. Generate >=10,000 permutation replicates per game.",
+      "test_statistic": "Dispersion (e.g., variance or chi2-style statistic) of standardized per-ball mean exit-rank across all balls in the pool.",
+      "window": "Estimation window only (see windows.estimation_window below); 2026-04 and 2026-05 EXCLUDED from any confirmatory test (already inspected in P268B).",
+      "correction": "Bonferroni across games tested (denominator = number of games included in this round; if DAILY_539-only design is chosen, no cross-game correction needed for H1 itself).",
+      "pass_criteria": "Estimation-window corrected permutation p < 0.01 AND the same direction/effect replicates with holdout-window p < 0.05 (see H1_holdout below).",
+      "fail_criteria": "Estimation-window corrected p >= 0.01, OR holdout replication fails -> classify as NULL / diagnostics-only, permanent closure artifact, H2 NOT opened.",
+      "status": "FROZEN_NOT_TESTED"
+    },
+    {
+      "id": "H1_holdout",
+      "role": "primary (gated replication of H1)",
+      "name": "exit_rank_heterogeneity_holdout_replication",
+      "statement": "The per-ball exit-rank heterogeneity pattern identified in the H1 estimation window replicates (same direction, p<0.05) in the disjoint holdout window.",
+      "gating": "Only computed if H1 estimation-window result passes its threshold. Holdout window is sealed/unopened until then.",
+      "status": "FROZEN_NOT_TESTED"
+    },
+    {
+      "id": "H2",
+      "role": "secondary, gated on H1+H1_holdout pass",
+      "name": "earliness_score_predicts_inclusion_frequency",
+      "statement": "A per-ball 'earliness score' derived strictly from the estimation window predicts the direction of inclusion-frequency deviation (vs uniform baseline) in the holdout window.",
+      "null_model": "Inclusion frequency under uniform random draw (closed-form per game, e.g., C(n-1,k-1)/C(n,k) per ball per draw).",
+      "test_design": "Single pre-registered one-tailed test of correlation (e.g., Spearman) between estimation-window earliness score and holdout-window inclusion-frequency deviation. NOT a scan over alternative score definitions.",
+      "correction": "None required if pre-registered as a single test; any deviation from the pre-registered score definition voids the test.",
+      "pass_criteria": "One-tailed p < 0.05 in the pre-registered direction.",
+      "fail_criteria": "p >= 0.05 or wrong-direction -> diagnostics-only closure; this does NOT reopen H1.",
+      "status": "FROZEN_NOT_TESTED"
+    },
+    {
+      "id": "H3",
+      "role": "secondary",
+      "name": "earliness_score_temporal_stability",
+      "statement": "The per-ball earliness score is stable across a split-half (or era-split, if any segmentation becomes possible) of the estimation window.",
+      "test_design": "Spearman rank correlation of earliness scores between the two halves.",
+      "pass_criteria": "rho > 0, p < 0.05.",
+      "fail_criteria": "Non-significant or negative correlation -> treat H1/H2 results as fragile / non-stable, do not proceed to strategy design even if H1/H2 nominally pass.",
+      "gating": "Computed alongside H1_holdout; informs robustness assessment, not a hard gate on its own but a required input to any future go/no-go.",
+      "status": "FROZEN_NOT_TESTED"
+    }
+  ],
+  "windows": {
+    "full_history_range": "2007-01 to most recent available month, EXCLUDING 2026-04 and 2026-05 (already inspected by P268B prototype -- excluded from confirmatory analysis to avoid look-ahead contamination)",
+    "split": "70% estimation / 30% holdout, split chronologically (estimation = earliest 70% of eligible draws, holdout = most recent 30% of eligible draws, both excluding 2026-04/05)",
+    "split_half_for_h3": "Estimation window further split chronologically in half for H3."
+  },
+  "baseline": {
+    "h1_baseline": "Within-draw permutation null (exchangeable ordering given the drawn set).",
+    "h2_baseline": "Closed-form uniform inclusion probability per ball given pool size and draw size."
+  },
+  "p221f_p_hacking_guardrails": [
+    "All hypotheses, windows, baselines, and pass/fail thresholds frozen BEFORE any full-history data is fetched (this artifact = registry-freeze, precedes the bounded backfill in this same task).",
+    "2026-04/05 permanently excluded from confirmatory tests (P268B already inspected this window).",
+    "Holdout window sealed/not computed until H1 estimation-window result is finalized.",
+    "H2 score definition fixed at registration time; any later change to the score definition requires a new hypothesis ID (no silent redefinition).",
+    "No scan over alternative null models, statistics, or windows after seeing results; any such exploration must be logged as a separate, clearly-labeled exploratory (non-confirmatory) note.",
+    "Single primary game (DAILY_539) for H1 minimizes multiple-testing burden; if co-primary games are added, Bonferroni applies across the co-primary set.",
+    "Track B (winnerCount/EV) variables must not be added to H1/H2/H3 feature sets."
+  ],
+  "p268d_implementation_order_reference": "outputs/research/p268c_draw_order_full_history_feasibility_and_hypothesis_design_20260610.json#p268d_implementation_order",
+  "this_task_scope": [
+    "Step 1 (freeze_registry_artifact): produced by THIS file.",
+    "Step 2 (bounded_rate_full_history_fetcher): produced by analysis/p268d1_draw_order_full_history_artifact_backfill.py and its outputs/research/p268d1_*.jsonl / .ledger.json / .summary.json artifacts.",
+    "Steps 3-10 (checkpoint resume across future runs, structure validation aggregate, ZIP/CSV cross-check, DB alignment, data-quality gate, H1 test, pass/fail branch, governance closeout) are explicitly OUT OF SCOPE for this task."
+  ],
+  "explicit_non_claims": [
+    "No claim that hit-rate / success-rate has been improved.",
+    "No new strategy proposed.",
+    "No production DB write performed or authorized by this artifact.",
+    "No Hypothesis Registry write performed (this is a design-snapshot freeze, not a registry write).",
+    "No H1/H2/H3 statistical test, permutation test, or p-value computed in this task.",
+    "Track B (winnerCount/EV/popularity) is not part of this hit-rate design line."
+  ],
+  "final_classification": "P268D1_DRAW_ORDER_REGISTRY_FREEZE_ARTIFACT_COMPLETE"
+}

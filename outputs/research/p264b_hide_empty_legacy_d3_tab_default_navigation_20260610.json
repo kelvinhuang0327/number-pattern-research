@@ -1,0 +1,54 @@
+{
+  "task": "P264B",
+  "title": "Hide Empty Legacy D3 Tab From Default Navigation",
+  "date": "2026-06-10",
+  "branch": "p264b-hide-empty-legacy-d3-tab-default-navigation",
+  "base_commit": "d32794b5d604228beb9ee653d1ee81d16f0faad6",
+  "approach": "display_none_on_legacy_nav_button",
+  "problem": "After P264A, the Legacy D3 Strategy Status / Contract Audit nav button was still visible (opacity:0.55 demotion only). Users reported seeing an apparently empty tab, causing confusion about strategy count (14 vs 40).",
+  "change": {
+    "file": "index.html",
+    "nav_button": "data-section=\"p258-d3-audit\"",
+    "before_style": "opacity:0.55;font-size:0.88em",
+    "after_style": "display:none",
+    "section_in_dom": true,
+    "endpoint_preserved": true,
+    "comment_added": "P264B: legacy D3 audit nav hidden from default navigation (display:none); section + endpoint contract preserved in DOM"
+  },
+  "p258_contract_preserved": {
+    "data-section=\"p258-d3-audit\"": true,
+    "id=\"p258-d3-audit-section\"": true,
+    "p258-disclaimer-banner": true,
+    "NOT_YET_REJECTED": true,
+    "prediction_model_disclaimer": true,
+    "api_url_/api/replay/d3-strategy-status-audit": true,
+    "p258Init()": true,
+    "details_collapse": true,
+    "legacy_warning_banner_p264a": true
+  },
+  "p263b_preserved": {
+    "id=\"p263b-d3-ssot-section\"": true,
+    "api_url_/api/replay/d3-strategy-status-coverage": true,
+    "success_rate_30_100_500_1500_cols": true,
+    "lifecycle_registry_status_can_open_detail_missing_reason": true,
+    "ssot_nav_button_visible": true
+  },
+  "test_results": {
+    "test_p264b_hide_empty_legacy_d3_tab_default_navigation": "30/30 PASS",
+    "test_p264a_hide_legacy_d3_artifact_default_ui": "31/31 PASS",
+    "test_p263b_d3_strategy_status_ssot_rebuild": "29/29 PASS",
+    "test_replay_api_contract": "44/44 PASS",
+    "total": "131/131 PASS",
+    "git_diff_check": "CLEAN"
+  },
+  "modified_files": [
+    "index.html",
+    "tests/test_p264b_hide_empty_legacy_d3_tab_default_navigation.py",
+    "tests/test_p264a_hide_legacy_d3_artifact_default_ui.py",
+    "outputs/research/p264b_hide_empty_legacy_d3_tab_default_navigation_20260610.json",
+    "outputs/research/p264b_hide_empty_legacy_d3_tab_default_navigation_20260610.md",
+    "00-Plan/roadmap/active_task.md",
+    "00-Plan/roadmap/agent_bootstrap/CURRENT_STATE.md"
+  ],
+  "forbidden_files_touched": []
+}

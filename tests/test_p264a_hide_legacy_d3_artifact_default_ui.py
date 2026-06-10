@@ -60,12 +60,11 @@ def test_ssot_nav_before_legacy_nav(html):
 
 
 def test_legacy_nav_button_visually_demoted(html):
-    """Legacy nav button must carry opacity or similar dimming style."""
+    """Legacy nav button must carry a demotion style (display:none or opacity)."""
     legacy_pos = html.find('data-section="p258-d3-audit"')
-    # Extract the button tag (up to closing >)
     btn_snippet = html[legacy_pos - 150:legacy_pos + 200]
-    assert "opacity" in btn_snippet, (
-        "Legacy nav button should have opacity styling to visually demote it"
+    assert ("opacity" in btn_snippet or "display:none" in btn_snippet), (
+        "Legacy nav button should carry opacity or display:none to demote it"
     )
 
 

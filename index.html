@@ -642,6 +642,10 @@
                     <i data-lucide="shield-alert" class="icon"></i>
                     <span>D3 合約稽核</span>
                 </button>
+                <button class="nav-btn" data-section="p263b-d3-ssot">
+                    <i data-lucide="table-2" class="icon"></i>
+                    <span>D3 策略狀態 (SSOT)</span>
+                </button>
                 <button class="nav-btn" data-section="p259a-replay-overview">
                     <i data-lucide="layout-list" class="icon"></i>
                     <span>回放總覽</span>
@@ -2939,6 +2943,86 @@
         </section>
         <!-- ===== END P258O ===== -->
 
+        <!-- ===== P263B D3 Strategy Status / Contract Audit — SSOT Coverage ===== -->
+        <section id="p263b-d3-ssot-section" class="section">
+          <div class="section-header">
+            <h2>D3 策略狀態 (SSOT) <span style="font-size:0.7em;color:#8b949e;font-weight:400">D3 Strategy Status / Contract Audit — SSOT Coverage</span></h2>
+            <p>由 SSOT（策略註冊表 ∪ 回放資料 ∪ rejected 紀錄）重建，涵蓋全部 known strategies；顯示 lifecycle、registry 狀態、reject 原因/來源，以及最近 30/100/500/1500 期成功率（唯讀稽核，非預測、非核准、非下注建議）</p>
+          </div>
+          <div class="section-content">
+
+            <!-- Safety Disclaimer Banner -->
+            <div id="p263b-disclaimer-banner" style="background:rgba(139,92,246,.10);border:1px solid #8b5cf6;border-radius:6px;padding:10px 16px;margin-bottom:16px;font-size:12px;color:#c4b5fd;line-height:1.8">
+              <b>⚠️ D3 安全聲明</b><br>
+              • D3 不是預測模型（D3 is not a prediction model）。<br>
+              • 合約驗證不是策略評估（contract validation is not strategy evaluation）。<br>
+              • NOT_YET_REJECTED 不是核准。<br>
+              • 通過合約驗證不代表提升預測準確性（does not imply improved prediction accuracy）。<br>
+              • 成功率為歷史唯讀命中率，不作為下注建議（not betting advice）。
+            </div>
+
+            <!-- Filters -->
+            <div style="display:flex;gap:10px;flex-wrap:wrap;margin-bottom:16px;align-items:center">
+              <label style="font-size:12px;color:#8b949e">彩種：</label>
+              <select id="p263b-filter-lottery" style="background:#161b22;border:1px solid #30363d;color:#c9d1d9;border-radius:4px;padding:4px 8px;font-size:12px">
+                <option value="ALL">全部</option>
+                <option value="DAILY_539">今彩539</option>
+                <option value="BIG_LOTTO">大樂透</option>
+                <option value="POWER_LOTTO">威力彩</option>
+              </select>
+              <label style="font-size:12px;color:#8b949e">生命週期：</label>
+              <select id="p263b-filter-lifecycle" style="background:#161b22;border:1px solid #30363d;color:#c9d1d9;border-radius:4px;padding:4px 8px;font-size:12px">
+                <option value="ALL">全部</option>
+                <option value="ONLINE">ONLINE</option>
+                <option value="OFFLINE">OFFLINE</option>
+                <option value="RETIRED">RETIRED</option>
+                <option value="REJECTED">REJECTED</option>
+                <option value="OBSERVATION">OBSERVATION</option>
+                <option value="UNREGISTERED">UNREGISTERED</option>
+              </select>
+              <label style="font-size:12px;color:#8b949e">註冊狀態：</label>
+              <select id="p263b-filter-registry" style="background:#161b22;border:1px solid #30363d;color:#c9d1d9;border-radius:4px;padding:4px 8px;font-size:12px">
+                <option value="ALL">全部</option>
+                <option value="registered">registered</option>
+                <option value="unregistered_orphan">unregistered_orphan</option>
+                <option value="registry_lottery_mismatch">registry_lottery_mismatch</option>
+              </select>
+            </div>
+
+            <!-- Summary Bar -->
+            <div id="p263b-summary-bar" style="display:flex;gap:12px;flex-wrap:wrap;margin-bottom:16px"></div>
+
+            <!-- Strategy Table -->
+            <div class="card" style="padding:14px;margin-bottom:16px;overflow-x:auto">
+              <table id="p263b-rows-table" style="width:100%;border-collapse:collapse;font-size:0.76rem;white-space:nowrap">
+                <thead>
+                  <tr style="border-bottom:1px solid #30363d;color:#8b949e">
+                    <th style="text-align:left;padding:6px 8px">彩種</th>
+                    <th style="text-align:left;padding:6px 8px">策略 ID</th>
+                    <th style="text-align:left;padding:6px 8px">生命週期</th>
+                    <th style="text-align:left;padding:6px 8px">註冊狀態</th>
+                    <th style="text-align:right;padding:6px 8px">回放筆數</th>
+                    <th style="text-align:right;padding:6px 8px">涵蓋期數</th>
+                    <th style="text-align:left;padding:6px 8px">注數</th>
+                    <th style="text-align:center;padding:6px 8px">可開明細</th>
+                    <th style="text-align:left;padding:6px 8px">缺漏/狀態說明</th>
+                    <th style="text-align:left;padding:6px 8px">拒絕原因/來源</th>
+                    <th style="text-align:right;padding:6px 8px">30期</th>
+                    <th style="text-align:right;padding:6px 8px">100期</th>
+                    <th style="text-align:right;padding:6px 8px">500期</th>
+                    <th style="text-align:right;padding:6px 8px">1500期</th>
+                    <th style="text-align:left;padding:6px 8px;border-left:2px solid #21262d;color:#c4b5fd">D3 合約狀態（非核准）</th>
+                  </tr>
+                </thead>
+                <tbody id="p263b-rows-tbody"></tbody>
+              </table>
+            </div>
+
+            <div id="p263b-status" style="font-size:12px;color:#8b949e;margin-top:8px"></div>
+          </div>
+        </section>
+        <!-- ===== END P263B ===== -->
+
         <!-- ===== P259A: History Replay Overview (Single-Bet First) ===== -->
         <section id="p259a-replay-overview-section" class="section">
           <div class="section-header">
@@ -4769,6 +4853,162 @@
   }
 
   p258Init();
+})();
+        </script>
+
+        <!-- ===== P263B D3 STRATEGY STATUS SSOT COVERAGE JS (read-only) ===== -->
+        <script>
+(function () {
+  'use strict';
+
+  var _p263bData = null;
+
+  var P263B_LC_COLORS = {
+    'ONLINE': '#3fb950',
+    'OFFLINE': '#6e7681',
+    'RETIRED': '#6e7681',
+    'REJECTED': '#f85149',
+    'OBSERVATION': '#d29922',
+    'UNREGISTERED': '#8957e5'
+  };
+
+  var P263B_REG_COLORS = {
+    'registered': '#3fb950',
+    'unregistered_orphan': '#8957e5',
+    'registry_lottery_mismatch': '#d29922'
+  };
+
+  function p263bBadge(text, color) {
+    return '<span style="background:' + color + '22;color:' + color + ';border:1px solid ' + color + '44;border-radius:3px;padding:1px 6px;font-size:0.74em;white-space:nowrap">' + text + '</span>';
+  }
+
+  function p263bEsc(s) {
+    return String(s == null ? '' : s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+  }
+
+  function p263bSetStatus(msg) {
+    var el = document.getElementById('p263b-status');
+    if (el) el.textContent = msg;
+  }
+
+  // Success rate cell: N/A when no data; percentage + partial-window note otherwise.
+  function p263bRate(rate, avail, window) {
+    if (rate == null || avail === 0) return '<span style="color:#6e7681">N/A</span>';
+    var pct = (rate * 100).toFixed(1) + '%';
+    var partial = avail < window ? '<span style="color:#6e7681;font-size:0.85em"> (' + avail + '/' + window + ')</span>' : '';
+    var color = rate >= 0.5 ? '#3fb950' : (rate > 0 ? '#c9d1d9' : '#6e7681');
+    return '<span style="color:' + color + '">' + pct + '</span>' + partial;
+  }
+
+  function p263bRenderSummary(data) {
+    var el = document.getElementById('p263b-summary-bar');
+    if (!el || !data || !data.summary) return;
+    var s = data.summary, c = data.coverage_summary || {};
+    var parts = [
+      '<span style="font-size:12px;color:#8b949e">cells：<b style="color:#c9d1d9">' + (s.total_cells || 0) + '</b></span>',
+      '<span style="font-size:12px;color:#8b949e">strategies：<b style="color:#c9d1d9">' + (s.total_strategies || 0) + '</b></span>',
+      '<span style="font-size:12px;color:#3fb950">registered：<b>' + (c.registered || 0) + '</b></span>',
+      '<span style="font-size:12px;color:#8957e5">orphan：<b>' + (c.unregistered_orphan || 0) + '</b></span>',
+      '<span style="font-size:12px;color:#d29922">mismatch：<b>' + (c.registry_lottery_mismatch || 0) + '</b></span>',
+      '<span style="font-size:12px;color:#8b949e">有回放：<b>' + (c.with_replay_rows || 0) + '</b></span>'
+    ];
+    el.innerHTML = parts.join('<span style="color:#30363d;margin:0 4px">|</span>');
+  }
+
+  function p263bGetFilters() {
+    return {
+      lt: (document.getElementById('p263b-filter-lottery') || {}).value || 'ALL',
+      lc: (document.getElementById('p263b-filter-lifecycle') || {}).value || 'ALL',
+      reg: (document.getElementById('p263b-filter-registry') || {}).value || 'ALL'
+    };
+  }
+
+  function p263bRenderRows(data) {
+    var tbody = document.getElementById('p263b-rows-tbody');
+    if (!tbody || !data || !Array.isArray(data.rows)) return;
+    var f = p263bGetFilters();
+    var rows = data.rows.filter(function (r) {
+      if (f.lt !== 'ALL' && r.lottery_type !== f.lt) return false;
+      if (f.lc !== 'ALL' && r.lifecycle !== f.lc) return false;
+      if (f.reg !== 'ALL' && r.registry_status !== f.reg) return false;
+      return true;
+    });
+    if (rows.length === 0) {
+      tbody.innerHTML = '<tr><td colspan="15" style="text-align:center;padding:16px;color:#8b949e">無符合條件的策略</td></tr>';
+      return;
+    }
+    tbody.innerHTML = rows.map(function (r) {
+      var lcColor = P263B_LC_COLORS[r.lifecycle] || '#8b949e';
+      var regColor = P263B_REG_COLORS[r.registry_status] || '#8b949e';
+      var bets = (r.available_bet_indices && r.available_bet_indices.length) ? r.available_bet_indices.join(',') : '—';
+      var canOpen = r.can_open_detail
+        ? '<span style="color:#3fb950">可</span>'
+        : '<span style="color:#6e7681">否</span>';
+      var statusNote = r.missing_reason ? ('缺漏：' + p263bEsc(r.missing_reason) + ' · ') : '';
+      statusNote += p263bEsc(r.status_reason || '');
+      var rejectNote = r.reject_reason
+        ? (p263bEsc(r.reject_reason) + (r.reject_source_artifact ? '<br><span style="color:#6e7681;font-size:0.85em">' + p263bEsc(r.reject_source_artifact) + (r.reject_updated_at ? ' · ' + p263bEsc(r.reject_updated_at) : '') + '</span>' : ''))
+        : '<span style="color:#6e7681">—</span>';
+      var replayCount = (r.replay_row_count != null) ? r.replay_row_count.toLocaleString() : '—';
+      return '<tr style="border-bottom:1px solid #21262d">' +
+        '<td style="padding:6px 8px">' + p263bEsc(r.lottery_type) + '</td>' +
+        '<td style="padding:6px 8px;font-family:monospace;font-size:0.8em;color:#58a6ff">' + p263bEsc(r.strategy_id) + '</td>' +
+        '<td style="padding:6px 8px">' + p263bBadge(r.lifecycle || '—', lcColor) + '</td>' +
+        '<td style="padding:6px 8px">' + p263bBadge(r.registry_status || '—', regColor) + '</td>' +
+        '<td style="padding:6px 8px;text-align:right;color:#8b949e">' + replayCount + '</td>' +
+        '<td style="padding:6px 8px;text-align:right;color:#8b949e">' + (r.distinct_draw_count != null ? r.distinct_draw_count.toLocaleString() : '—') + '</td>' +
+        '<td style="padding:6px 8px;color:#8b949e">' + bets + '</td>' +
+        '<td style="padding:6px 8px;text-align:center">' + canOpen + '</td>' +
+        '<td style="padding:6px 8px;color:#8b949e;font-size:0.82em;white-space:normal;max-width:280px">' + (statusNote || '—') + '</td>' +
+        '<td style="padding:6px 8px;color:#8b949e;font-size:0.82em;white-space:normal;max-width:260px">' + rejectNote + '</td>' +
+        '<td style="padding:6px 8px;text-align:right">' + p263bRate(r.success_rate_30, r.available_draws_30, 30) + '</td>' +
+        '<td style="padding:6px 8px;text-align:right">' + p263bRate(r.success_rate_100, r.available_draws_100, 100) + '</td>' +
+        '<td style="padding:6px 8px;text-align:right">' + p263bRate(r.success_rate_500, r.available_draws_500, 500) + '</td>' +
+        '<td style="padding:6px 8px;text-align:right">' + p263bRate(r.success_rate_1500, r.available_draws_1500, 1500) + '</td>' +
+        '<td style="padding:6px 8px;border-left:2px solid #21262d">' + p263bBadge(r.d3_contract_status || '—', '#8b949e') + '</td>' +
+        '</tr>';
+    }).join('');
+  }
+
+  function p263bRender(data) {
+    p263bRenderSummary(data);
+    p263bRenderRows(data);
+  }
+
+  function p263bLoad() {
+    var base = (typeof window !== 'undefined' && window.API_BASE ? String(window.API_BASE) : '').replace(/\/$/, '');
+    var url = base + '/api/replay/d3-strategy-status-coverage';
+    p263bSetStatus('載入中…');
+    fetch(url)
+      .then(function (r) { return r.json(); })
+      .then(function (data) {
+        _p263bData = data;
+        p263bSetStatus('');
+        p263bRender(data);
+      })
+      .catch(function (e) {
+        p263bSetStatus('載入失敗：' + e.message);
+      });
+  }
+
+  function p263bInit() {
+    ['p263b-filter-lottery', 'p263b-filter-lifecycle', 'p263b-filter-registry'].forEach(function (id) {
+      var el = document.getElementById(id);
+      if (el) el.addEventListener('change', function () {
+        if (_p263bData) p263bRenderRows(_p263bData);
+      });
+    });
+    var navBtns = document.querySelectorAll('[data-section]');
+    navBtns.forEach(function (btn) {
+      btn.addEventListener('click', function () {
+        if (btn.dataset.section === 'p263b-d3-ssot' && !_p263bData) {
+          p263bLoad();
+        }
+      });
+    });
+  }
+
+  p263bInit();
 })();
         </script>
 

@@ -2146,3 +2146,338 @@ async def get_history_replay_detail_grouped(
     except Exception as e:
         logger.exception("get_history_replay_detail_grouped failed")
         raise HTTPException(status_code=500, detail=str(e))
+
+
+# ─── P263B: D3 Strategy Status / Contract Audit — SSOT Coverage ───────────────
+# Rebuilds the D3 strategy-status view from the P262B coverage universe
+# (registry ∪ replay-store cells ∪ rejected artifacts) so every known strategy
+# cell is represented, with per-cell lifecycle (from the registry, no
+# contradiction), registry_status, per-cell replay counts (no lottery-level
+# transposition), reject reason/source provenance, and read-only success rates.
+#
+# This is an ADDITIVE, read-only endpoint. It does NOT replace the artifact-backed
+# /api/replay/d3-strategy-status-audit route (P258N) — that contract is preserved
+# verbatim. This route reads the replay store read-only via _open_conn(); it never
+# writes, backfills replay rows, mutates the registry, changes adapters, or runs a
+# migration. D3 contract status remains NOT_EVALUATED_BY_D3 for every row — it is
+# NOT approval and does NOT imply improved prediction accuracy.
+
+_REJECTED_ARTIFACT_DIR = Path(_api_root).parent / "rejected"
+
+# Success-rate contract (P263B, read-only DISPLAY metric only — NOT a promotion
+# gate and NOT a strategy ranking):
+#   windows       : the most recent N distinct target_draw per cell, taken by
+#                   CAST(target_draw AS INTEGER) DESC (newest first)
+#   draw_success  : a draw counts as a success if ANY bet_index for that draw has
+#                   hit_count >= 1 OR special_hit = 1 (no per-lottery threshold
+#                   weighting — an interpretable "hit at least one number" rate)
+#   success_rate_N: successes / available_draws_N over the most recent N draws
+#   available_N=0 : success_rate_N is null (rendered N/A)
+_D3_SUCCESS_RATE_WINDOWS = [30, 100, 500, 1500]
+
+
+def _d3_load_reject_provenance(strategy_id: str) -> dict:
+    """Read reject reason/source/date from rejected/{strategy_id}.json (read-only).
+
+    Returns reject_reason / reject_updated_at / reject_source_artifact. Missing
+    file → all None. Malformed/incomplete file → 'unknown' (never fabricated).
+    """
+    path = _REJECTED_ARTIFACT_DIR / f"{strategy_id}.json"
+    if not path.exists():
+        return {"reject_reason": None, "reject_updated_at": None,
+                "reject_source_artifact": None}
+    source = f"rejected/{strategy_id}.json"
+    try:
+        with path.open("r", encoding="utf-8") as handle:
+            data = json.load(handle)
+    except Exception:
+        # File present but unreadable/malformed — surface as unknown, never invent.
+        return {"reject_reason": "unknown", "reject_updated_at": "unknown",
+                "reject_source_artifact": source}
+    if not isinstance(data, dict):
+        return {"reject_reason": "unknown", "reject_updated_at": "unknown",
+                "reject_source_artifact": source}
+    return {
+        "reject_reason": data.get("failure_reason") or "unknown",
+        "reject_updated_at": data.get("rejected_date") or "unknown",
+        "reject_source_artifact": source,
+    }
+
+
+def _d3_compute_success_rates(conn) -> dict:
+    """Return {(lottery_type, strategy_id): {success_rate_N, available_draws_N}}.
+
+    Read-only single pass over the replay store: collapse to one row per
+    (cell, target_draw) with draw_success, ordered newest-first, then slice the
+    declared windows in Python.
+    """
+    cur = conn.execute(
+        """
+        SELECT lottery_type, strategy_id, target_draw,
+               MAX(CASE WHEN hit_count >= 1 OR special_hit = 1 THEN 1 ELSE 0 END)
+                   AS draw_success
+        FROM strategy_prediction_replays
+        GROUP BY lottery_type, strategy_id, target_draw
+        ORDER BY lottery_type, strategy_id, CAST(target_draw AS INTEGER) DESC
+        """
+    )
+    ordered: dict = {}
+    for r in cur.fetchall():
+        ordered.setdefault((r["lottery_type"], r["strategy_id"]), []).append(
+            int(r["draw_success"])
+        )
+    out: dict = {}
+    for key, successes_desc in ordered.items():
+        metrics = {}
+        for n in _D3_SUCCESS_RATE_WINDOWS:
+            window = successes_desc[:n]
+            avail = len(window)
+            metrics[f"success_rate_{n}"] = (
+                round(sum(window) / avail, 4) if avail else None
+            )
+            metrics[f"available_draws_{n}"] = avail
+        out[key] = metrics
+    return out
+
+
+def _d3_empty_success_rates() -> dict:
+    metrics = {}
+    for n in _D3_SUCCESS_RATE_WINDOWS:
+        metrics[f"success_rate_{n}"] = None
+        metrics[f"available_draws_{n}"] = 0
+    return metrics
+
+
+_D3_SAFETY_DISCLAIMERS = [
+    "D3 is not a prediction model.",
+    "Contract validation is not strategy evaluation.",
+    "NOT_YET_REJECTED is not approval.",
+    "Passing contract validation does not imply improved prediction accuracy.",
+    "Success rate is a read-only historical hit-rate display, not betting advice.",
+]
+
+
+def _build_d3_ssot_coverage_payload() -> dict:
+    """Build the P263B SSOT D3 coverage payload (read-only)."""
+    all_meta = list_strategy_lifecycle_metadata()
+    exec_ids = set(list_executable_strategy_ids())
+    reg_index = {m["strategy_id"]: m for m in all_meta}
+    registry_supported = {
+        (lt, m["strategy_id"])
+        for m in all_meta
+        for lt in m["supported_lottery_types"]
+    }
+
+    conn = _open_conn()
+    try:
+        summary_rows = conn.execute(
+            """
+            SELECT lottery_type, strategy_id,
+                   MAX(strategy_name) AS db_strategy_name,
+                   COUNT(*) AS total_rows,
+                   COUNT(DISTINCT target_draw) AS distinct_draw_count,
+                   MAX(bet_index) AS max_bet_index,
+                   GROUP_CONCAT(DISTINCT bet_index) AS bet_indices_csv
+            FROM strategy_prediction_replays
+            GROUP BY lottery_type, strategy_id
+            """
+        ).fetchall()
+        success = _d3_compute_success_rates(conn)
+    finally:
+        conn.close()
+
+    cell_index: dict = {}
+    for r in summary_rows:
+        cell_index[(r["lottery_type"], r["strategy_id"])] = {
+            "db_strategy_name": r["db_strategy_name"],
+            "total_rows": r["total_rows"],
+            "distinct_draw_count": r["distinct_draw_count"] or 0,
+            "max_bet_index": r["max_bet_index"] or 0,
+            "available_bet_indices": _parse_bet_indices_csv(r["bet_indices_csv"]),
+        }
+
+    # Universe = registry-supported cells ∪ replay-store cells.
+    universe = sorted(set(registry_supported) | set(cell_index.keys()))
+
+    rows = []
+    for (lt, sid) in universe:
+        cell = cell_index.get((lt, sid))
+        has_rows = cell is not None and cell["total_rows"] > 0
+
+        if (lt, sid) in registry_supported:
+            registry_status = _REGISTRY_STATUS_REGISTERED
+            meta = reg_index[sid]
+            lifecycle = meta["lifecycle_status"]
+            strategy_name = meta["strategy_name"]
+            strategy_version = meta["strategy_version"]
+            status_source = "replay_strategy_registry"
+            status_reason = (
+                f"lifecycle '{lifecycle}' declared in the strategy registry "
+                f"(replay_strategy_registry)"
+            )
+        elif sid in reg_index:
+            registry_status = _REGISTRY_STATUS_MISMATCH
+            meta = reg_index[sid]
+            lifecycle = meta["lifecycle_status"]
+            strategy_name = meta["strategy_name"]
+            strategy_version = meta["strategy_version"]
+            status_source = "replay_strategy_registry"
+            status_reason = (
+                "registry_lottery_mismatch: replay rows exist under a lottery_type "
+                "not listed in the registry supported_lottery_types for this strategy"
+            )
+        else:
+            registry_status = _REGISTRY_STATUS_ORPHAN
+            lifecycle = "UNREGISTERED"
+            strategy_name = (cell or {}).get("db_strategy_name") or sid
+            strategy_version = None
+            status_source = "replay_store_rows"
+            status_reason = (
+                "unregistered_orphan: replay rows exist but strategy_id is absent "
+                "from the strategy registry"
+            )
+
+        is_exec = sid in exec_ids
+        if has_rows:
+            rcat = "has_rows"
+        elif lifecycle in ("REJECTED",) and not is_exec:
+            rcat = "artifact_only"
+        else:
+            rcat = "no_production_replay"
+        missing_reason = _coverage_missing_reason(registry_status, has_rows, lifecycle, rcat)
+
+        reject = _d3_load_reject_provenance(sid)
+        rates = success.get((lt, sid), _d3_empty_success_rates())
+
+        row = {
+            # identity
+            "lottery_type": lt,
+            "strategy_id": sid,
+            "strategy_name": strategy_name,
+            "strategy_version": strategy_version,
+            "derived_bet_count": _derive_bet_count(sid),
+            # lifecycle / registry (lifecycle sourced from registry — no contradiction)
+            "lifecycle": lifecycle,
+            "lifecycle_status": lifecycle,  # alias for UI parity
+            "registry_status": registry_status,
+            "is_executable": is_exec,
+            "status_reason": status_reason,
+            "status_updated_at": None,  # registry carries no per-status timestamp
+            "status_source": status_source,
+            # replay coverage (per-cell — never lottery-level aggregate)
+            "replay_row_count": (cell or {}).get("total_rows", 0),
+            "distinct_draw_count": (cell or {}).get("distinct_draw_count", 0),
+            "max_bet_index": (cell or {}).get("max_bet_index", 0),
+            "available_bet_indices": (cell or {}).get("available_bet_indices", []),
+            "has_replay_rows": has_rows,
+            "can_open_detail": has_rows,
+            "missing_reason": missing_reason,
+            # reject provenance (from rejected/*.json, else null/unknown)
+            "reject_reason": reject["reject_reason"],
+            "reject_updated_at": reject["reject_updated_at"],
+            "reject_source_artifact": reject["reject_source_artifact"],
+            # D3 contract status (NOT approval; identical safety semantics to P258N)
+            "d3_contract_status": "NOT_EVALUATED_BY_D3",
+            "d3_contract_reason": (
+                "No D3 evaluation has been run for this strategy. D3 executable "
+                "gate evaluation requires separate explicit authorization."
+            ),
+            "d3_not_approval_warning": (
+                "D3 contract status is NOT approval. NOT_YET_REJECTED is not approval."
+            ),
+            "no_prediction_claim": (
+                "D3 is not a prediction model. Contract validation does not imply "
+                "improved prediction accuracy."
+            ),
+            "no_betting_advice": (
+                "Success rate is historical/read-only evidence only. It is not "
+                "betting advice."
+            ),
+        }
+        row.update(rates)
+        rows.append(row)
+
+    distinct_ids = {r["strategy_id"] for r in rows}
+    coverage_summary = {
+        "registered": sum(1 for r in rows if r["registry_status"] == _REGISTRY_STATUS_REGISTERED),
+        "unregistered_orphan": sum(1 for r in rows if r["registry_status"] == _REGISTRY_STATUS_ORPHAN),
+        "registry_lottery_mismatch": sum(1 for r in rows if r["registry_status"] == _REGISTRY_STATUS_MISMATCH),
+        "with_replay_rows": sum(1 for r in rows if r["has_replay_rows"]),
+        "without_replay_rows": sum(1 for r in rows if not r["has_replay_rows"]),
+        "can_open_detail": sum(1 for r in rows if r["can_open_detail"]),
+    }
+    by_lottery: dict = {}
+    for r in rows:
+        by_lottery[r["lottery_type"]] = by_lottery.get(r["lottery_type"], 0) + 1
+
+    return {
+        "schema_version": "1.0",
+        "route_path": "/api/replay/d3-strategy-status-coverage",
+        "page_title": "D3 Strategy Status / Contract Audit — SSOT Coverage",
+        "source": "ssot_registry_replay_store_rejected_artifacts",
+        "summary": {
+            "total_cells": len(rows),
+            "total_strategies": len(distinct_ids),
+            "by_lottery_type": by_lottery,
+            "by_d3_contract_status": {"NOT_EVALUATED_BY_D3": len(rows)},
+        },
+        "coverage_summary": coverage_summary,
+        "filters": {
+            "lottery_type": ["DAILY_539", "BIG_LOTTO", "POWER_LOTTO", "ALL"],
+            "lifecycle": ["ONLINE", "OFFLINE", "RETIRED", "REJECTED", "OBSERVATION",
+                          "UNREGISTERED", "ALL"],
+            "registry_status": [_REGISTRY_STATUS_REGISTERED, _REGISTRY_STATUS_ORPHAN,
+                                _REGISTRY_STATUS_MISMATCH, "ALL"],
+            "d3_contract_status": ["NOT_EVALUATED_BY_D3", "CONTRACT_READY",
+                                   "CONTRACT_BLOCKED", "NOT_APPLICABLE_HISTORICAL_ARTIFACT",
+                                   "NOT_APPLICABLE_NO_REPLAY", "ALL"],
+            "has_replay": [True, False],
+        },
+        "success_rate_contract": {
+            "windows": _D3_SUCCESS_RATE_WINDOWS,
+            "window_basis": "most recent N distinct target_draw by CAST(target_draw AS INTEGER) DESC",
+            "draw_success_rule": "any bet_index for the draw has hit_count >= 1 OR special_hit = 1",
+            "scope": "strategy_id + lottery_type",
+            "no_threshold_weighting": True,
+            "display_metric_only": True,
+            "not_a_promotion_gate": True,
+            "not_a_strategy_ranking": True,
+        },
+        "safety_disclaimers": _D3_SAFETY_DISCLAIMERS,
+        "forbidden_actions_confirmed": {
+            "no_db_write": True,
+            "no_replay_backfill": True,
+            "no_registry_mutation": True,
+            "no_adapter_change": True,
+            "no_migration": True,
+            "no_production_change": True,
+            "no_betting_advice": True,
+            "read_only_query": True,
+        },
+        "rows": rows,
+    }
+
+
+@router.get("/api/replay/d3-strategy-status-coverage")
+async def get_d3_strategy_status_coverage():
+    """
+    P263B: Read-only D3 strategy-status SSOT coverage.
+
+    Rebuilds the D3 strategy-status view over the full P262B coverage universe
+    (registry ∪ replay-store cells ∪ rejected artifacts): every known strategy
+    cell, per-cell lifecycle (from the registry), registry_status, per-cell replay
+    counts, reject reason/source provenance, and read-only success rates over the
+    most recent 30/100/500/1500 draws.
+
+    READ-ONLY: reads the replay store via SELECT only; no write, no replay
+    backfill, no registry mutation, no adapter change, no migration, no D3
+    execution, no strategy promotion, no betting advice. D3 contract status is
+    NOT_EVALUATED_BY_D3 for every row and is NOT approval.
+    """
+    try:
+        return _build_d3_ssot_coverage_payload()
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.exception("get_d3_strategy_status_coverage failed")
+        raise HTTPException(status_code=500, detail=str(e))

@@ -1,0 +1,158 @@
+{
+  "task": "P263B_D3_STRATEGY_STATUS_SSOT_REBUILD",
+  "generated_for_head": "d0e2ccb6c702232a3078e6c2d44432b2213c17ea",
+  "approach": "versioned_coexistence",
+  "rationale": "The existing /api/replay/d3-strategy-status-audit (P258N) is contract-locked by P258N/P258O/P258P tests (no_db_query=true, fixed 14-field artifact schema, source token-scan, fixed UI fetch target) that are outside the P263B editable whitelist. Per STOP #6, the existing D3 contract is preserved verbatim and the SSOT rebuild is delivered via a NEW additive endpoint + NEW UI section.",
+  "new_endpoint": "GET /api/replay/d3-strategy-status-coverage",
+  "new_ui_section": "index.html #p263b-d3-ssot-section (nav data-section=p263b-d3-ssot)",
+  "old_endpoint_preserved": "GET /api/replay/d3-strategy-status-audit (P258N artifact-backed, unchanged)",
+  "coverage_before": {
+    "source": "P258N artifact",
+    "cells_covered": 8,
+    "universe": 41,
+    "rows": 14,
+    "phantom_rows": 6
+  },
+  "coverage_after": {
+    "source": "SSOT registry∪replay_store∪rejected",
+    "cells": 41,
+    "strategies": 40,
+    "phantom_rows": 0,
+    "coverage_summary": {
+      "registered": 38,
+      "unregistered_orphan": 2,
+      "registry_lottery_mismatch": 1,
+      "with_replay_rows": 36,
+      "without_replay_rows": 5,
+      "can_open_detail": 36
+    }
+  },
+  "success_rate_contract": {
+    "windows": [
+      30,
+      100,
+      500,
+      1500
+    ],
+    "window_basis": "most recent N distinct target_draw by CAST(target_draw AS INTEGER) DESC",
+    "draw_success_rule": "any bet_index for the draw has hit_count >= 1 OR special_hit = 1",
+    "scope": "strategy_id + lottery_type",
+    "no_threshold_weighting": true,
+    "display_metric_only": true,
+    "not_a_promotion_gate": true,
+    "not_a_strategy_ranking": true
+  },
+  "bug_fixes": {
+    "lifecycle_contradiction": "FIXED — lifecycle now sourced from registry for registered cells; verified equal to registry on all registered rows",
+    "replay_row_count_transposition": "FIXED — per-cell replay_row_count from DB; lottery totals DAILY_539=34680 / POWER_LOTTO=36104 / BIG_LOTTO=24140 (un-swapped)"
+  },
+  "new_fields_added": [
+    "registry_status",
+    "distinct_draw_count",
+    "max_bet_index",
+    "available_bet_indices",
+    "can_open_detail",
+    "missing_reason",
+    "status_reason",
+    "status_updated_at",
+    "status_source",
+    "reject_reason",
+    "reject_updated_at",
+    "reject_source_artifact",
+    "success_rate_30",
+    "success_rate_100",
+    "success_rate_500",
+    "success_rate_1500",
+    "available_draws_30",
+    "available_draws_100",
+    "available_draws_500",
+    "available_draws_1500"
+  ],
+  "reject_provenance": {
+    "source": "rejected/{strategy_id}.json",
+    "fields": {
+      "reject_reason": "failure_reason",
+      "reject_updated_at": "rejected_date",
+      "reject_source_artifact": "path"
+    },
+    "missing_file": "null",
+    "malformed_file": "unknown (never fabricated)"
+  },
+  "status_provenance": {
+    "status_source": "replay_strategy_registry | replay_store_rows",
+    "status_updated_at": "null (registry carries no per-status timestamp)"
+  },
+  "orphans_with_rows": [
+    "POWER_LOTTO:midfreq_fourier_mk_3bet",
+    "POWER_LOTTO:pp3_freqort_4bet"
+  ],
+  "registered_without_rows": [
+    "BIG_LOTTO:biglotto_ts3_acb_4bet",
+    "BIG_LOTTO:biglotto_ts3_markov_freq_5bet",
+    "DAILY_539:p1_deviation_2bet_539",
+    "POWER_LOTTO:h6_gate_mk20_ew85",
+    "POWER_LOTTO:power_shlc_midfreq"
+  ],
+  "registry_lottery_mismatch": [
+    "POWER_LOTTO:midfreq_fourier_2bet"
+  ],
+  "sample_online_success_rates": [
+    {
+      "lottery_type": "BIG_LOTTO",
+      "strategy_id": "ts3_regime_3bet",
+      "lifecycle": "ONLINE",
+      "registry_status": "registered",
+      "replay_row_count": 1500,
+      "success_rate_30": 0.7333,
+      "success_rate_100": 0.56,
+      "success_rate_500": 0.546,
+      "success_rate_1500": 0.5587
+    },
+    {
+      "lottery_type": "POWER_LOTTO",
+      "strategy_id": "fourier_rhythm_3bet",
+      "lifecycle": "ONLINE",
+      "registry_status": "registered",
+      "replay_row_count": 4503,
+      "success_rate_30": 0.9,
+      "success_rate_100": 0.95,
+      "success_rate_500": 0.954,
+      "success_rate_1500": 0.9633
+    }
+  ],
+  "safety": {
+    "d3_contract_status_all": "NOT_EVALUATED_BY_D3",
+    "disclaimers_preserved": true,
+    "not_a_prediction_claim": true,
+    "not_betting_advice": true,
+    "not_a_promotion_gate": true
+  },
+  "forbidden_actions_confirmed": {
+    "no_db_write": true,
+    "no_replay_backfill": true,
+    "no_registry_mutation": true,
+    "no_adapter_change": true,
+    "no_migration": true,
+    "no_production_change": true,
+    "no_betting_advice": true,
+    "read_only_query": true
+  },
+  "read_only_proof": {
+    "no_db_write": true,
+    "no_replay_backfill": true,
+    "no_registry_mutation": true,
+    "no_adapter_change": true,
+    "no_migration": true,
+    "replay_rows_unchanged": 94924
+  },
+  "validation": {
+    "p263b_tests": "29/29 PASS",
+    "regression": "135 PASS (p263b/p263a/p262b/p262a/p261a)",
+    "replay_api_contract": "44 PASS",
+    "p258_contract_tests": "162 PASS (pre-commit)",
+    "js_syntax": "OK",
+    "git_diff_check": "clean",
+    "browser_check": "NOT RUN (no playwright; stale backend not disturbed; CI covers)"
+  },
+  "final_classification": "P263B_D3_STRATEGY_STATUS_SSOT_REBUILD_IMPLEMENTED_VERSIONED_COEXISTENCE"
+}

@@ -259,6 +259,11 @@ No active deployable candidate in any lottery. **The P211A–P231B arc has exhau
 
 Retired: DAILY_539 survivor backward-OOS extension (P1.2) — resolved; POWER_LOTTO first-zone backward-OOS (P231B) — resolved NULL.
 
+## P268A–P268B Status (2026-06-10)
+
+- P268A-S synthesized recovered external scouting: Top-1 hit-rate candidate = official `drawNumberAppear` (draw-order) field via TLCAPIWeB, a field absent from the internal sorted-number `draws` table. winnerCount/prize-distribution classified payout/EV-only (Track B), not hit-rate.
+- P268B (this branch `p268b-official-draw-order-positional-bias-audit`) ran a bounded 2-month diagnostics-only ingestion/audit prototype (`analysis/p268b_official_draw_order_positional_bias_audit.py`). Result: `drawNumberAppear` structurally valid for all 154 sampled records (BIG_LOTTO/POWER_LOTTO/DAILY_539/3_STAR/4_STAR), sorted-equivalent to `drawNumberSize`. Local `draws` table has 0 rows in this checkout — DB alignment is schema-level only (NO_LOCAL_ROWS). Position-frequency/chi2 + adjacent-diff diagnostics are descriptive only; **no hit-rate or success-rate claim made**. Local commit only; push/PR and any future full-history backfill / confirmatory hypothesis test require separate explicit authorization + P221F pre-registration + DB-write authorization.
+
 For any new research task, include:
 
 - Canonical repo / branch / HEAD / DB baseline STOP guards

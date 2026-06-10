@@ -1,0 +1,1167 @@
+{
+  "task_id": "P268B_OFFICIAL_DRAW_ORDER_INGESTION_AND_POSITIONAL_BIAS_AUDIT_PROTOTYPE",
+  "generated_at": "2026-06-10T13:10:57.521835+00:00",
+  "p267c_conclusion_boundary": "P267C (M3+ revalidation) found NO_VALIDATED_M3_EDGE across 36/36 cells for the existing replay-backed strategy family. This does NOT close the broader success-rate research line, and does NOT cover the official drawNumberAppear field, which is absent from the replay-backed family and from the internal sorted-number draws table.",
+  "p268a_top1_rationale": "P268A-S ranked 'official drawNumberAppear draw-order positional bias test' as the Top-1 hit-rate candidate because it is a genuinely new official field (physical draw-order sequence) not present in, or derivable from, the internal sorted-number `draws` table. winnerCount/prize-distribution (Direction B) is payout/EV-only and is explicitly excluded from this task.",
+  "data_sources": [
+    {
+      "lottery_type": "BIG_LOTTO",
+      "endpoint": "https://api.taiwanlottery.com/TLCAPIWeB/Lottery/Lotto649Result",
+      "array_key": "lotto649Res",
+      "status": "OK",
+      "error": null,
+      "records_fetched": 17
+    },
+    {
+      "lottery_type": "POWER_LOTTO",
+      "endpoint": "https://api.taiwanlottery.com/TLCAPIWeB/Lottery/SuperLotto638Result",
+      "array_key": "superLotto638Res",
+      "status": "OK",
+      "error": null,
+      "records_fetched": 17
+    },
+    {
+      "lottery_type": "DAILY_539",
+      "endpoint": "https://api.taiwanlottery.com/TLCAPIWeB/Lottery/Daily539Result",
+      "array_key": "daily539Res",
+      "status": "OK",
+      "error": null,
+      "records_fetched": 52
+    },
+    {
+      "lottery_type": "3_STAR",
+      "endpoint": "https://api.taiwanlottery.com/TLCAPIWeB/Lottery/3DResult",
+      "array_key": "lotto3DRes",
+      "status": "OK",
+      "error": null,
+      "records_fetched": 52
+    },
+    {
+      "lottery_type": "4_STAR",
+      "endpoint": "https://api.taiwanlottery.com/TLCAPIWeB/Lottery/4DResult",
+      "array_key": "lotto4DRes",
+      "status": "OK",
+      "error": null,
+      "records_fetched": 52
+    }
+  ],
+  "sample_scope": {
+    "months_sampled": [
+      "2026-04",
+      "2026-05"
+    ],
+    "games_sampled": [
+      "BIG_LOTTO",
+      "POWER_LOTTO",
+      "DAILY_539",
+      "3_STAR",
+      "4_STAR"
+    ],
+    "page_size": 31,
+    "note": "Bounded prototype sample: 2 calendar months per game, no full-history backfill."
+  },
+  "parse_results": {
+    "BIG_LOTTO": {
+      "n_records_sampled": 17,
+      "drawNumberAppear_present": 17,
+      "parsed_as_ordered_sequence": 17,
+      "correct_length_count": 17,
+      "expected_length": 7,
+      "drawNumberSize_present": 17,
+      "sorted_appear_matches_drawNumberSize": 17,
+      "parse_failures": [],
+      "parse_failure_count": 0
+    },
+    "POWER_LOTTO": {
+      "n_records_sampled": 17,
+      "drawNumberAppear_present": 17,
+      "parsed_as_ordered_sequence": 17,
+      "correct_length_count": 17,
+      "expected_length": 7,
+      "drawNumberSize_present": 17,
+      "sorted_appear_matches_drawNumberSize": 17,
+      "parse_failures": [],
+      "parse_failure_count": 0
+    },
+    "DAILY_539": {
+      "n_records_sampled": 52,
+      "drawNumberAppear_present": 52,
+      "parsed_as_ordered_sequence": 52,
+      "correct_length_count": 52,
+      "expected_length": 5,
+      "drawNumberSize_present": 52,
+      "sorted_appear_matches_drawNumberSize": 52,
+      "parse_failures": [],
+      "parse_failure_count": 0
+    },
+    "3_STAR": {
+      "n_records_sampled": 52,
+      "drawNumberAppear_present": 52,
+      "parsed_as_ordered_sequence": 52,
+      "correct_length_count": 52,
+      "expected_length": 3,
+      "drawNumberSize_present": null,
+      "sorted_appear_matches_drawNumberSize": null,
+      "parse_failures": [],
+      "parse_failure_count": 0
+    },
+    "4_STAR": {
+      "n_records_sampled": 52,
+      "drawNumberAppear_present": 52,
+      "parsed_as_ordered_sequence": 52,
+      "correct_length_count": 52,
+      "expected_length": 4,
+      "drawNumberSize_present": null,
+      "sorted_appear_matches_drawNumberSize": null,
+      "parse_failures": [],
+      "parse_failure_count": 0
+    }
+  },
+  "db_alignment": {
+    "BIG_LOTTO": {
+      "sample_periods_checked": 17,
+      "matched_in_local_draws_table": 0,
+      "checked": 0,
+      "status": "NO_LOCAL_ROWS"
+    },
+    "POWER_LOTTO": {
+      "sample_periods_checked": 17,
+      "matched_in_local_draws_table": 0,
+      "checked": 0,
+      "status": "NO_LOCAL_ROWS"
+    },
+    "DAILY_539": {
+      "sample_periods_checked": 52,
+      "matched_in_local_draws_table": 0,
+      "checked": 0,
+      "status": "NO_LOCAL_ROWS"
+    },
+    "3_STAR": {
+      "sample_periods_checked": 52,
+      "matched_in_local_draws_table": 0,
+      "checked": 0,
+      "status": "NO_LOCAL_ROWS"
+    },
+    "4_STAR": {
+      "sample_periods_checked": 52,
+      "matched_in_local_draws_table": 0,
+      "checked": 0,
+      "status": "NO_LOCAL_ROWS"
+    },
+    "_meta": {
+      "db_path": "data/lottery_v2.db",
+      "open_mode": "read-only (sqlite3 mode=ro URI)",
+      "local_draws_table_row_count": 0,
+      "note": "Local draws table currently has 0 rows in this checkout; alignment check is schema-level only (column structure compatible: draw/date/lottery_type/numbers/special exist), not row-level, when total_draw_rows == 0."
+    }
+  },
+  "positional_diagnostics": {
+    "BIG_LOTTO": {
+      "n_sequences_used": 17,
+      "expected_length": 7,
+      "per_position_frequency": [
+        {
+          "position": 0,
+          "n": 17,
+          "value_pool": [
+            1,
+            49
+          ],
+          "top_values": [
+            [
+              1,
+              2
+            ],
+            [
+              25,
+              1
+            ],
+            [
+              14,
+              1
+            ],
+            [
+              40,
+              1
+            ],
+            [
+              43,
+              1
+            ]
+          ]
+        },
+        {
+          "position": 1,
+          "n": 17,
+          "value_pool": [
+            1,
+            49
+          ],
+          "top_values": [
+            [
+              37,
+              2
+            ],
+            [
+              43,
+              2
+            ],
+            [
+              32,
+              1
+            ],
+            [
+              20,
+              1
+            ],
+            [
+              22,
+              1
+            ]
+          ]
+        },
+        {
+          "position": 2,
+          "n": 17,
+          "value_pool": [
+            1,
+            49
+          ],
+          "top_values": [
+            [
+              12,
+              2
+            ],
+            [
+              14,
+              1
+            ],
+            [
+              47,
+              1
+            ],
+            [
+              17,
+              1
+            ],
+            [
+              45,
+              1
+            ]
+          ]
+        },
+        {
+          "position": 3,
+          "n": 17,
+          "value_pool": [
+            1,
+            49
+          ],
+          "top_values": [
+            [
+              10,
+              2
+            ],
+            [
+              19,
+              2
+            ],
+            [
+              21,
+              2
+            ],
+            [
+              16,
+              2
+            ],
+            [
+              25,
+              2
+            ]
+          ]
+        },
+        {
+          "position": 4,
+          "n": 17,
+          "value_pool": [
+            1,
+            49
+          ],
+          "top_values": [
+            [
+              6,
+              2
+            ],
+            [
+              16,
+              2
+            ],
+            [
+              4,
+              2
+            ],
+            [
+              18,
+              2
+            ],
+            [
+              20,
+              2
+            ]
+          ]
+        },
+        {
+          "position": 5,
+          "n": 17,
+          "value_pool": [
+            1,
+            49
+          ],
+          "top_values": [
+            [
+              48,
+              2
+            ],
+            [
+              26,
+              1
+            ],
+            [
+              7,
+              1
+            ],
+            [
+              40,
+              1
+            ],
+            [
+              10,
+              1
+            ]
+          ]
+        },
+        {
+          "position": 6,
+          "n": 17,
+          "value_pool": [
+            1,
+            49
+          ],
+          "top_values": [
+            [
+              30,
+              3
+            ],
+            [
+              34,
+              2
+            ],
+            [
+              7,
+              1
+            ],
+            [
+              22,
+              1
+            ],
+            [
+              18,
+              1
+            ]
+          ]
+        }
+      ],
+      "per_position_chi2_vs_uniform": [
+        {
+          "position": 0,
+          "chi2_stat": 37.7647,
+          "df": 48,
+          "pool_size": 49
+        },
+        {
+          "position": 1,
+          "chi2_stat": 43.5294,
+          "df": 48,
+          "pool_size": 49
+        },
+        {
+          "position": 2,
+          "chi2_stat": 37.7647,
+          "df": 48,
+          "pool_size": 49
+        },
+        {
+          "position": 3,
+          "chi2_stat": 60.8235,
+          "df": 48,
+          "pool_size": 49
+        },
+        {
+          "position": 4,
+          "chi2_stat": 60.8235,
+          "df": 48,
+          "pool_size": 49
+        },
+        {
+          "position": 5,
+          "chi2_stat": 37.7647,
+          "df": 48,
+          "pool_size": 49
+        },
+        {
+          "position": 6,
+          "chi2_stat": 55.0588,
+          "df": 48,
+          "pool_size": 49
+        }
+      ],
+      "adjacent_position_diff1_count": 4,
+      "adjacent_position_pairs_total": 102,
+      "adjacent_position_diff1_rate": 0.0392,
+      "note": "Descriptive prototype diagnostic only. Sample size is small (2-month bounded sample); chi2 statistics are NOT paired with p-value thresholds or any pass/fail gate. No null-distribution calibration performed. No success-rate or betting claim."
+    },
+    "POWER_LOTTO": {
+      "n_sequences_used": 17,
+      "expected_length": 7,
+      "per_position_frequency": [
+        {
+          "position": 0,
+          "n": 17,
+          "value_pool": [
+            1,
+            38
+          ],
+          "top_values": [
+            [
+              16,
+              2
+            ],
+            [
+              29,
+              2
+            ],
+            [
+              31,
+              2
+            ],
+            [
+              1,
+              1
+            ],
+            [
+              27,
+              1
+            ]
+          ]
+        },
+        {
+          "position": 1,
+          "n": 17,
+          "value_pool": [
+            1,
+            38
+          ],
+          "top_values": [
+            [
+              6,
+              3
+            ],
+            [
+              13,
+              2
+            ],
+            [
+              38,
+              1
+            ],
+            [
+              16,
+              1
+            ],
+            [
+              34,
+              1
+            ]
+          ]
+        },
+        {
+          "position": 2,
+          "n": 17,
+          "value_pool": [
+            1,
+            38
+          ],
+          "top_values": [
+            [
+              27,
+              2
+            ],
+            [
+              33,
+              1
+            ],
+            [
+              14,
+              1
+            ],
+            [
+              7,
+              1
+            ],
+            [
+              38,
+              1
+            ]
+          ]
+        },
+        {
+          "position": 3,
+          "n": 17,
+          "value_pool": [
+            1,
+            38
+          ],
+          "top_values": [
+            [
+              35,
+              3
+            ],
+            [
+              9,
+              2
+            ],
+            [
+              24,
+              2
+            ],
+            [
+              30,
+              1
+            ],
+            [
+              33,
+              1
+            ]
+          ]
+        },
+        {
+          "position": 4,
+          "n": 17,
+          "value_pool": [
+            1,
+            38
+          ],
+          "top_values": [
+            [
+              4,
+              2
+            ],
+            [
+              8,
+              2
+            ],
+            [
+              34,
+              2
+            ],
+            [
+              29,
+              2
+            ],
+            [
+              15,
+              1
+            ]
+          ]
+        },
+        {
+          "position": 5,
+          "n": 17,
+          "value_pool": [
+            1,
+            38
+          ],
+          "top_values": [
+            [
+              38,
+              3
+            ],
+            [
+              19,
+              2
+            ],
+            [
+              34,
+              2
+            ],
+            [
+              14,
+              2
+            ],
+            [
+              6,
+              1
+            ]
+          ]
+        },
+        {
+          "position": 6,
+          "n": 17,
+          "value_pool": [
+            1,
+            8
+          ],
+          "top_values": [
+            [
+              3,
+              4
+            ],
+            [
+              8,
+              3
+            ],
+            [
+              5,
+              3
+            ],
+            [
+              2,
+              2
+            ],
+            [
+              6,
+              2
+            ]
+          ]
+        }
+      ],
+      "per_position_chi2_vs_uniform": [
+        {
+          "position": 0,
+          "chi2_stat": 34.4118,
+          "df": 37,
+          "pool_size": 38
+        },
+        {
+          "position": 1,
+          "chi2_stat": 38.8824,
+          "df": 37,
+          "pool_size": 38
+        },
+        {
+          "position": 2,
+          "chi2_stat": 25.4706,
+          "df": 37,
+          "pool_size": 38
+        },
+        {
+          "position": 3,
+          "chi2_stat": 43.3529,
+          "df": 37,
+          "pool_size": 38
+        },
+        {
+          "position": 4,
+          "chi2_stat": 38.8824,
+          "df": 37,
+          "pool_size": 38
+        },
+        {
+          "position": 5,
+          "chi2_stat": 47.8235,
+          "df": 37,
+          "pool_size": 38
+        },
+        {
+          "position": 6,
+          "chi2_stat": 5.1176,
+          "df": 7,
+          "pool_size": 8
+        }
+      ],
+      "adjacent_position_diff1_count": 2,
+      "adjacent_position_pairs_total": 102,
+      "adjacent_position_diff1_rate": 0.0196,
+      "note": "Descriptive prototype diagnostic only. Sample size is small (2-month bounded sample); chi2 statistics are NOT paired with p-value thresholds or any pass/fail gate. No null-distribution calibration performed. No success-rate or betting claim."
+    },
+    "DAILY_539": {
+      "n_sequences_used": 52,
+      "expected_length": 5,
+      "per_position_frequency": [
+        {
+          "position": 0,
+          "n": 52,
+          "value_pool": [
+            1,
+            39
+          ],
+          "top_values": [
+            [
+              21,
+              5
+            ],
+            [
+              3,
+              4
+            ],
+            [
+              23,
+              3
+            ],
+            [
+              16,
+              3
+            ],
+            [
+              9,
+              3
+            ]
+          ]
+        },
+        {
+          "position": 1,
+          "n": 52,
+          "value_pool": [
+            1,
+            39
+          ],
+          "top_values": [
+            [
+              4,
+              4
+            ],
+            [
+              31,
+              3
+            ],
+            [
+              38,
+              3
+            ],
+            [
+              20,
+              3
+            ],
+            [
+              26,
+              3
+            ]
+          ]
+        },
+        {
+          "position": 2,
+          "n": 52,
+          "value_pool": [
+            1,
+            39
+          ],
+          "top_values": [
+            [
+              25,
+              5
+            ],
+            [
+              2,
+              5
+            ],
+            [
+              13,
+              3
+            ],
+            [
+              30,
+              2
+            ],
+            [
+              36,
+              2
+            ]
+          ]
+        },
+        {
+          "position": 3,
+          "n": 52,
+          "value_pool": [
+            1,
+            39
+          ],
+          "top_values": [
+            [
+              1,
+              4
+            ],
+            [
+              29,
+              3
+            ],
+            [
+              24,
+              3
+            ],
+            [
+              36,
+              3
+            ],
+            [
+              6,
+              2
+            ]
+          ]
+        },
+        {
+          "position": 4,
+          "n": 52,
+          "value_pool": [
+            1,
+            39
+          ],
+          "top_values": [
+            [
+              6,
+              6
+            ],
+            [
+              8,
+              4
+            ],
+            [
+              9,
+              4
+            ],
+            [
+              27,
+              3
+            ],
+            [
+              2,
+              3
+            ]
+          ]
+        }
+      ],
+      "per_position_chi2_vs_uniform": [
+        {
+          "position": 0,
+          "chi2_stat": 42.5,
+          "df": 38,
+          "pool_size": 39
+        },
+        {
+          "position": 1,
+          "chi2_stat": 30.5,
+          "df": 38,
+          "pool_size": 39
+        },
+        {
+          "position": 2,
+          "chi2_stat": 38.0,
+          "df": 38,
+          "pool_size": 39
+        },
+        {
+          "position": 3,
+          "chi2_stat": 30.5,
+          "df": 38,
+          "pool_size": 39
+        },
+        {
+          "position": 4,
+          "chi2_stat": 53.0,
+          "df": 38,
+          "pool_size": 39
+        }
+      ],
+      "adjacent_position_diff1_count": 15,
+      "adjacent_position_pairs_total": 208,
+      "adjacent_position_diff1_rate": 0.0721,
+      "note": "Descriptive prototype diagnostic only. Sample size is small (2-month bounded sample); chi2 statistics are NOT paired with p-value thresholds or any pass/fail gate. No null-distribution calibration performed. No success-rate or betting claim."
+    },
+    "3_STAR": {
+      "n_sequences_used": 52,
+      "expected_length": 3,
+      "per_position_frequency": [
+        {
+          "position": 0,
+          "n": 52,
+          "value_pool": [
+            0,
+            9
+          ],
+          "top_values": [
+            [
+              6,
+              9
+            ],
+            [
+              5,
+              8
+            ],
+            [
+              2,
+              6
+            ],
+            [
+              9,
+              6
+            ],
+            [
+              1,
+              6
+            ]
+          ]
+        },
+        {
+          "position": 1,
+          "n": 52,
+          "value_pool": [
+            0,
+            9
+          ],
+          "top_values": [
+            [
+              9,
+              8
+            ],
+            [
+              4,
+              8
+            ],
+            [
+              6,
+              8
+            ],
+            [
+              5,
+              6
+            ],
+            [
+              3,
+              5
+            ]
+          ]
+        },
+        {
+          "position": 2,
+          "n": 52,
+          "value_pool": [
+            0,
+            9
+          ],
+          "top_values": [
+            [
+              8,
+              8
+            ],
+            [
+              6,
+              7
+            ],
+            [
+              2,
+              7
+            ],
+            [
+              1,
+              5
+            ],
+            [
+              3,
+              5
+            ]
+          ]
+        }
+      ],
+      "per_position_chi2_vs_uniform": [
+        {
+          "position": 0,
+          "chi2_stat": 11.0769,
+          "df": 9,
+          "pool_size": 10
+        },
+        {
+          "position": 1,
+          "chi2_stat": 8.3846,
+          "df": 9,
+          "pool_size": 10
+        },
+        {
+          "position": 2,
+          "chi2_stat": 4.5385,
+          "df": 9,
+          "pool_size": 10
+        }
+      ],
+      "adjacent_position_diff1_count": 21,
+      "adjacent_position_pairs_total": 104,
+      "adjacent_position_diff1_rate": 0.2019,
+      "note": "Descriptive prototype diagnostic only. Sample size is small (2-month bounded sample); chi2 statistics are NOT paired with p-value thresholds or any pass/fail gate. No null-distribution calibration performed. No success-rate or betting claim."
+    },
+    "4_STAR": {
+      "n_sequences_used": 52,
+      "expected_length": 4,
+      "per_position_frequency": [
+        {
+          "position": 0,
+          "n": 52,
+          "value_pool": [
+            0,
+            9
+          ],
+          "top_values": [
+            [
+              1,
+              8
+            ],
+            [
+              3,
+              7
+            ],
+            [
+              0,
+              6
+            ],
+            [
+              9,
+              6
+            ],
+            [
+              5,
+              5
+            ]
+          ]
+        },
+        {
+          "position": 1,
+          "n": 52,
+          "value_pool": [
+            0,
+            9
+          ],
+          "top_values": [
+            [
+              1,
+              9
+            ],
+            [
+              4,
+              7
+            ],
+            [
+              0,
+              7
+            ],
+            [
+              8,
+              7
+            ],
+            [
+              9,
+              5
+            ]
+          ]
+        },
+        {
+          "position": 2,
+          "n": 52,
+          "value_pool": [
+            0,
+            9
+          ],
+          "top_values": [
+            [
+              8,
+              10
+            ],
+            [
+              2,
+              7
+            ],
+            [
+              3,
+              6
+            ],
+            [
+              1,
+              6
+            ],
+            [
+              0,
+              5
+            ]
+          ]
+        },
+        {
+          "position": 3,
+          "n": 52,
+          "value_pool": [
+            0,
+            9
+          ],
+          "top_values": [
+            [
+              6,
+              10
+            ],
+            [
+              4,
+              10
+            ],
+            [
+              9,
+              7
+            ],
+            [
+              2,
+              5
+            ],
+            [
+              1,
+              5
+            ]
+          ]
+        }
+      ],
+      "per_position_chi2_vs_uniform": [
+        {
+          "position": 0,
+          "chi2_stat": 4.9231,
+          "df": 9,
+          "pool_size": 10
+        },
+        {
+          "position": 1,
+          "chi2_stat": 8.3846,
+          "df": 9,
+          "pool_size": 10
+        },
+        {
+          "position": 2,
+          "chi2_stat": 9.9231,
+          "df": 9,
+          "pool_size": 10
+        },
+        {
+          "position": 3,
+          "chi2_stat": 14.9231,
+          "df": 9,
+          "pool_size": 10
+        }
+      ],
+      "adjacent_position_diff1_count": 33,
+      "adjacent_position_pairs_total": 156,
+      "adjacent_position_diff1_rate": 0.2115,
+      "note": "Descriptive prototype diagnostic only. Sample size is small (2-month bounded sample); chi2 statistics are NOT paired with p-value thresholds or any pass/fail gate. No null-distribution calibration performed. No success-rate or betting claim."
+    }
+  },
+  "limitations": [
+    "Bounded 2-month prototype sample only; not statistically powered for any confirmatory test.",
+    "Chi-square statistics are descriptive only; no p-value table, no multiple-testing correction, no pre-registration (prototype, not a confirmatory scan).",
+    "Local draws table is empty (0 rows) in this checkout, so row-level DB alignment could not be exercised end-to-end; only schema compatibility and a query-path dry-run were verified.",
+    "3_STAR / 4_STAR draw-order positions are digit draws (0-9, with replacement); BIG_LOTTO/POWER_LOTTO/DAILY_539 positions are without-replacement draws from a larger pool, so a uniform-chi2 null is a rough descriptive diagnostic, not a calibrated test.",
+    "No success-rate / hit-rate improvement is claimed by this prototype."
+  ],
+  "next_step_recommendation": "If this prototype's structural checks (field presence, length, sorted-equivalence with drawNumberSize) hold across a larger bounded re-run, a separate, explicitly-authorized P221F-gated confirmatory task could pre-register a full-history drawNumberAppear backfill + positional-bias hypothesis test. That future task would require its own DB-write authorization (new column/table) and would be a confirmatory test, not this prototype.",
+  "disclaimer": "DIAGNOSTICS ONLY. No betting recommendation. No validated hit-rate edge. No production DB write. No replay row modification. This artifact does not claim any success-rate improvement.",
+  "overall_status": "OK",
+  "final_classification": "P268B_DRAW_ORDER_POSITIONAL_BIAS_AUDIT_PROTOTYPE_COMPLETE_DIAGNOSTICS_ONLY"
+}

@@ -292,7 +292,10 @@ def test_ui_explains_m3plus_definition(html):
 def test_ui_disclaims_not_approval_or_betting(html):
     section_start = html.find('id="p263b-d3-ssot-section"')
     section = html[section_start:section_start + 8000]
-    assert "不代表 D3 核准或投注建議" in section
+    assert "歷史唯讀統計" in section
+    assert "不代表 D3 核准" in section
+    assert "實際下注依據" in section
+    assert "投注建議" not in section
 
 
 def test_ui_special_hit_excluded_note(html):

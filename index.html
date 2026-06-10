@@ -2960,7 +2960,7 @@
         <section id="p263b-d3-ssot-section" class="section">
           <div class="section-header">
             <h2>D3 策略狀態 (SSOT) <span style="font-size:0.7em;color:#8b949e;font-weight:400">D3 Strategy Status / Contract Audit — SSOT Coverage</span></h2>
-            <p>由 SSOT（策略註冊表 ∪ 回放資料 ∪ rejected 紀錄）重建，涵蓋全部 known strategies；顯示 lifecycle、registry 狀態、reject 原因/來源，以及最近 30/100/500/1500 期成功率（唯讀稽核，非預測、非核准、非下注建議）</p>
+            <p>由 SSOT（策略註冊表 ∪ 回放資料 ∪ rejected 紀錄）重建，涵蓋全部 known strategies；顯示 lifecycle、registry 狀態、reject 原因/來源，以及最近 30/100/500/1500 期 M3+ 成功率（每期任一注命中主號 3 顆以上的比例；唯讀稽核，非預測、非核准、非下注建議）</p>
           </div>
           <div class="section-content">
 
@@ -2971,7 +2971,8 @@
               • 合約驗證不是策略評估（contract validation is not strategy evaluation）。<br>
               • NOT_YET_REJECTED 不是核准。<br>
               • 通過合約驗證不代表提升預測準確性（does not imply improved prediction accuracy）。<br>
-              • 成功率為歷史唯讀命中率，不作為下注建議（not betting advice）。
+              • <b>M3+ 成功率</b> = replay 中每期任一注<b>命中主號 3 顆以上</b>（hit_count ≥ 3）的比例；special_hit 不單獨計入 M3+。<br>
+              • M3+ 成功率為歷史唯讀 metric，<b>不代表 D3 核准或投注建議</b>（read-only, not approval, not betting advice）。
             </div>
 
             <!-- Filters -->
@@ -3020,10 +3021,10 @@
                     <th style="text-align:center;padding:6px 8px">可開明細</th>
                     <th style="text-align:left;padding:6px 8px">缺漏/狀態說明</th>
                     <th style="text-align:left;padding:6px 8px">拒絕原因/來源</th>
-                    <th style="text-align:right;padding:6px 8px">30期</th>
-                    <th style="text-align:right;padding:6px 8px">100期</th>
-                    <th style="text-align:right;padding:6px 8px">500期</th>
-                    <th style="text-align:right;padding:6px 8px">1500期</th>
+                    <th style="text-align:right;padding:6px 8px" title="M3+ 成功率：每期任一注命中主號 3 顆以上 (hit_count ≥ 3) 的比例">30期 M3+</th>
+                    <th style="text-align:right;padding:6px 8px" title="M3+ 成功率：每期任一注命中主號 3 顆以上 (hit_count ≥ 3) 的比例">100期 M3+</th>
+                    <th style="text-align:right;padding:6px 8px" title="M3+ 成功率：每期任一注命中主號 3 顆以上 (hit_count ≥ 3) 的比例">500期 M3+</th>
+                    <th style="text-align:right;padding:6px 8px" title="M3+ 成功率：每期任一注命中主號 3 顆以上 (hit_count ≥ 3) 的比例">1500期 M3+</th>
                     <th style="text-align:left;padding:6px 8px;border-left:2px solid #21262d;color:#c4b5fd">D3 合約狀態（非核准）</th>
                   </tr>
                 </thead>

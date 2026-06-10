@@ -2164,16 +2164,24 @@ async def get_history_replay_detail_grouped(
 
 _REJECTED_ARTIFACT_DIR = Path(_api_root).parent / "rejected"
 
-# Success-rate contract (P263B, read-only DISPLAY metric only — NOT a promotion
-# gate and NOT a strategy ranking):
+# Success-rate contract (P265A recontract — read-only DISPLAY metric only, NOT a
+# promotion gate and NOT a strategy ranking):
+#   metric        : M3+ real replay success rate (P265A). In P263B this column was
+#                   an any-hit rate (hit_count >= 1 OR special_hit); that overstated
+#                   BIG_LOTTO / multi-bet cells (~55% / 90%+). It is now M3+.
 #   windows       : the most recent N distinct target_draw per cell, taken by
 #                   CAST(target_draw AS INTEGER) DESC (newest first)
 #   draw_success  : a draw counts as a success if ANY bet_index for that draw has
-#                   hit_count >= 1 OR special_hit = 1 (no per-lottery threshold
-#                   weighting — an interpretable "hit at least one number" rate)
-#   success_rate_N: successes / available_draws_N over the most recent N draws
+#                   hit_count >= 3 (at least 3 main-number hits). special_hit does
+#                   NOT make a draw an M3+ success on its own — only hit_count >= 3
+#                   counts; a special-only draw with hit_count < 3 is a non-success.
+#   denominator   : distinct target_draw in the window (NOT replay row count) —
+#                   multi-bet cells collapse to one entry per draw before counting
+#   success_rate_N: M3+ successes / available_draws_N over the most recent N draws
 #   available_N=0 : success_rate_N is null (rendered N/A)
 _D3_SUCCESS_RATE_WINDOWS = [30, 100, 500, 1500]
+_D3_SUCCESS_METRIC = "M3_PLUS"
+_D3_SUCCESS_METRIC_LABEL = "M3+ 成功率"
 
 
 def _d3_load_reject_provenance(strategy_id: str) -> dict:
@@ -2208,13 +2216,19 @@ def _d3_compute_success_rates(conn) -> dict:
     """Return {(lottery_type, strategy_id): {success_rate_N, available_draws_N}}.
 
     Read-only single pass over the replay store: collapse to one row per
-    (cell, target_draw) with draw_success, ordered newest-first, then slice the
-    declared windows in Python.
+    (cell, target_draw) with M3+ draw_success, ordered newest-first, then slice
+    the declared windows in Python.
+
+    M3+ (P265A): a draw is a success iff ANY bet_index for that (cell, target_draw)
+    has hit_count >= 3 (>= 3 main-number hits). special_hit is intentionally NOT
+    part of the criterion — a special-only draw with hit_count < 3 is a non-success.
+    The GROUP BY collapses multi-bet cells to one entry per distinct target_draw,
+    so the denominator is distinct target_draw, never replay row count.
     """
     cur = conn.execute(
         """
         SELECT lottery_type, strategy_id, target_draw,
-               MAX(CASE WHEN hit_count >= 1 OR special_hit = 1 THEN 1 ELSE 0 END)
+               MAX(CASE WHEN hit_count >= 3 THEN 1 ELSE 0 END)
                    AS draw_success
         FROM strategy_prediction_replays
         GROUP BY lottery_type, strategy_id, target_draw
@@ -2253,7 +2267,12 @@ _D3_SAFETY_DISCLAIMERS = [
     "Contract validation is not strategy evaluation.",
     "NOT_YET_REJECTED is not approval.",
     "Passing contract validation does not imply improved prediction accuracy.",
-    "Success rate is a read-only historical hit-rate display, not betting advice.",
+    "M3+ success rate = share of draws where any bet hit >= 3 main numbers (hit_count >= 3).",
+    "special_hit alone does not count as M3+ success (a draw with hit_count < 3 is a non-success).",
+    "M3+ success rate is a read-only historical metric — not approval and not betting advice.",
+    "M3+ 成功率 = replay 中每期任一注命中主號 3 顆以上 (hit_count >= 3) 的比例。",
+    "special_hit 不單獨計入 M3+ success（hit_count < 3 即非成功）。",
+    "M3+ 成功率為歷史唯讀 metric，不代表 D3 核准或投注建議。",
 ]
 
 
@@ -2434,14 +2453,20 @@ def _build_d3_ssot_coverage_payload() -> dict:
             "has_replay": [True, False],
         },
         "success_rate_contract": {
+            "success_metric": _D3_SUCCESS_METRIC,
+            "metric_label": _D3_SUCCESS_METRIC_LABEL,
             "windows": _D3_SUCCESS_RATE_WINDOWS,
             "window_basis": "most recent N distinct target_draw by CAST(target_draw AS INTEGER) DESC",
-            "draw_success_rule": "any bet_index for the draw has hit_count >= 1 OR special_hit = 1",
+            "draw_success_rule": "any bet_index for the draw has hit_count >= 3 (>= 3 main-number hits)",
+            "special_hit_excluded": True,
+            "special_hit_note": "special_hit alone does NOT count as M3+ success; only hit_count >= 3 counts",
+            "denominator": "distinct target_draw in the window (not replay row count)",
             "scope": "strategy_id + lottery_type",
             "no_threshold_weighting": True,
             "display_metric_only": True,
             "not_a_promotion_gate": True,
             "not_a_strategy_ranking": True,
+            "metric_history": "P263B used any-hit (hit_count>=1 OR special_hit); P265A recontracted to M3+ (hit_count>=3)",
         },
         "safety_disclaimers": _D3_SAFETY_DISCLAIMERS,
         "forbidden_actions_confirmed": {

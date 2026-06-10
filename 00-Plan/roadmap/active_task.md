@@ -1,6 +1,9 @@
 # Active Task — Today (2026-06-10)
 
-> **STATUS: `P265A_D3_M3_REAL_REPLAY_SUCCESS_RATE_IMPLEMENTED_PR_OPEN`**
+> **STATUS: `P266C_REPLAY_OVERVIEW_ARC_CLOSEOUT_STATE_SYNC_COMPLETE`**
+> **P266A–P266C (done — Replay Overview arc closeout, 2026-06-10):** P266A read-only TODO audit of History Replay Overview (P259A–P265A) found no blocking or should-fix-soon code/UX items — `P266A_REPLAY_OVERVIEW_TODO_AUDIT_COMPLETE_WITH_TODOS` (sole follow-up was a local-venv `httpx` dependency gap, not a feature gap). P266B installed `httpx 0.28.1` into project local `venv/` (gitignored, no repo file change) — `P266B_LOCAL_VENV_HTTPX_DEPENDENCY_FIX_COMPLETE`; re-ran the affected suite: **352 passed, 0 failed, 0 errors** (P259A 46, P259B 38, P259C 33, P260 98, P261A 50, P262A 14, P262B 29, replay_api_contract 44). Browser check NOT RUN (not claimed PASS). P266C is this governance-only state sync, branch `chore/p266c-replay-overview-closeout-state-sync` — updated `CURRENT_STATE.md` state marker (was stuck at `P265A_..._PR_OPEN`, P265A is actually merged into HEAD `4106e4e`) and recorded P266A/P266B completion. No source/DB/test/registry/adapter change. **Replay Overview / History Replay Overview arc (P259A–P266B) CLOSED — no remaining blockers.** No active task. Recommended next: HOLD / WAITING_FOR_USER_AUTHORIZATION — no further Replay Overview work unless the user raises a new UI/product issue.
+>
+> **Previous STATUS: `P265A_D3_M3_REAL_REPLAY_SUCCESS_RATE_IMPLEMENTED_PR_OPEN`**
 > **P265A (done, PR open — D3 SSOT success metric recontract):** D3 SSOT 成功率從 any-hit (`hit_count>=1 OR special_hit`) 改為 **M3+ real replay success rate** (`hit_count>=3`)。`_d3_compute_success_rates` 只改 success criterion；保留 `GROUP BY lottery_type, strategy_id, target_draw`（denominator = distinct target_draw，非 replay row count）；special_hit 不單獨計入 M3+。`success_rate_{30,100,500,1500}` / `available_draws_{…}` 欄位名不變（不破壞 consumer）；新增 contract 欄位 `success_metric=M3_PLUS` / `metric_label` / `special_hit_excluded` / `denominator` / `metric_history`。UI：欄位 `30/100/500/1500期 → … M3+`（保留 `期` 子字串使既有測試綠）+ tooltip；disclaimer banner 加 M3+ 定義/special_hit 排除/不代表核准或投注建議。Legacy `/api/replay/d3-strategy-status-audit` (14 rows, no_db_query) 不變；P258N/O/P locked 全綠。API sanity：BIG_LOTTO 單注 54%→~0-1.5% M3+；echo_aware_3bet 94%→5-6.5% M3+；multi-bet denominator=1500 distinct draws。**152 passed（23 P265A + P263B + P264A + P264B + replay_api_contract）+ 238 P258M/N/O/P；git diff --check clean。** Branch `p265a-d3-m3-real-replay-success-rate`。Files: `lottery_api/routes/replay.py`, `index.html`, `tests/test_p265a_*`, `tests/test_p263b_*`, `outputs/research/p265a_*`, governance.
 
 > **Previous STATUS: `P264B_HIDE_EMPTY_LEGACY_D3_TAB_DEFAULT_NAVIGATION_MERGED`**
@@ -254,4 +257,4 @@ Status: **WAITING_FOR_USER_AUTHORIZATION** — no active follow-up authorized.
 6. 是否允許進入下一輪
 7. Final Classification
 
-Final Classification (this file): `P260A_REPLAY_DETAIL_UX_PARITY_MERGED_TESTS_ALL_PASS`
+Final Classification (this file): `P266C_REPLAY_OVERVIEW_ARC_CLOSEOUT_STATE_SYNC_COMPLETE`

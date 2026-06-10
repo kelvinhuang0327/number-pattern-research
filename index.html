@@ -638,13 +638,13 @@
                     <i data-lucide="bar-chart-2" class="icon"></i>
                     <span>最佳策略總覽</span>
                 </button>
-                <button class="nav-btn" data-section="p258-d3-audit">
-                    <i data-lucide="shield-alert" class="icon"></i>
-                    <span>D3 合約稽核</span>
-                </button>
                 <button class="nav-btn" data-section="p263b-d3-ssot">
                     <i data-lucide="table-2" class="icon"></i>
                     <span>D3 策略狀態 (SSOT)</span>
+                </button>
+                <button class="nav-btn" data-section="p258-d3-audit" style="opacity:0.55;font-size:0.88em" title="Historical Artifact — Legacy D3 Contract Audit (artifact-backed, 14 rows, 2026-06-09)">
+                    <i data-lucide="archive" class="icon"></i>
+                    <span>D3 合約稽核 (Legacy)</span>
                 </button>
                 <button class="nav-btn" data-section="p259a-replay-overview">
                     <i data-lucide="layout-list" class="icon"></i>
@@ -2863,9 +2863,20 @@
         <!-- ===== P258O D3 Strategy Status / Contract Audit Section ===== -->
         <section id="p258-d3-audit-section" class="section">
           <div class="section-header">
-            <h2>D3 策略狀態 / 合約稽核 <span style="font-size:0.7em;color:#8b949e;font-weight:400">D3 Strategy Status / Contract Audit</span></h2>
+            <h2>D3 策略狀態 / 合約稽核 <span style="font-size:0.65em;background:#6e7681;color:#fff;border-radius:3px;padding:1px 6px;margin-left:6px;font-weight:500;vertical-align:middle">Legacy</span> <span style="font-size:0.7em;color:#8b949e;font-weight:400">D3 Strategy Status / Contract Audit</span></h2>
             <p>歷史唯讀稽核頁面 — D3 不是預測模型，合約狀態不代表策略評估、核准或下注建議</p>
           </div>
+          <!-- P264A: Legacy warning banner — not a current strategy view -->
+          <div id="p258-legacy-warning-p264a" style="background:rgba(210,153,34,.12);border:1px solid #d29922;border-radius:6px;padding:10px 16px;margin:0 0 14px;font-size:12px;color:#e3b341;line-height:1.8">
+            <b>⚠️ 此區為歷史 D3 Artifact 稽核資料（Legacy / Historical Artifact）</b><br>
+            此頁顯示的是 P258N artifact-backed 靜態資料（2026-06-09 快照，14 rows = 8 mapped + 6 phantom），<b>不代表目前策略總數或最新狀態</b>。<br>
+            目前正式策略狀態請以左側「<b>D3 策略狀態 (SSOT)</b>」為準（40 strategies / 41 cells，即時從 registry ∪ replay store 建構）。
+          </div>
+          <details>
+            <summary style="cursor:pointer;color:#8b949e;font-size:12px;padding:6px 0;margin-bottom:12px;user-select:none;list-style:none;display:flex;align-items:center;gap:6px">
+              <span style="color:#6e7681">▶</span>
+              <span>展開歷史稽核資料 / Expand Legacy D3 Artifact Audit Data (artifact-backed snapshot · 14 rows · 2026-06-09)</span>
+            </summary>
           <div class="section-content">
 
             <!-- Safety Disclaimer Banner -->
@@ -2940,6 +2951,7 @@
 
             <div id="p258-status" style="font-size:12px;color:#8b949e;margin-top:8px"></div>
           </div>
+          </details>
         </section>
         <!-- ===== END P258O ===== -->
 

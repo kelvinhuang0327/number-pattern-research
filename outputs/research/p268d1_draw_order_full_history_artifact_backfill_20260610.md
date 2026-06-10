@@ -1,0 +1,54 @@
+# P268D-1: drawNumberAppear Full-History Artifact Backfill (Bounded-Rate Prototype)
+
+Generated: 2026-06-10T14:14:25.748035+00:00
+
+## Scope & Constraints
+- NO production DB write (`data/lottery_v2.db` never opened by this script).
+- NO Hypothesis Registry write (registry-freeze artifact is a design snapshot under `outputs/research/`).
+- NO H1/H2/H3 statistical test, permutation test, or p-value (reserved for P268D-3).
+- NO hit-rate / success-rate-improvement claim.
+
+## This Run
+- **max_calls_per_run**: 60
+- **calls_made_this_run**: 25
+- **months_attempted_this_run**: ['2026-01', '2026-02', '2026-03', '2026-04', '2026-05']
+- **games_attempted_this_run**: ['3_STAR', '4_STAR', 'BIG_LOTTO', 'DAILY_539', 'POWER_LOTTO']
+- **new_records_written_this_run**: 496
+- **ledger_was_newly_created**: False
+
+## Coverage
+- **start_month**: 2007-01
+- **end_month**: 2026-05
+- **games**: ['BIG_LOTTO', 'POWER_LOTTO', 'DAILY_539', '3_STAR', '4_STAR']
+- **total_ledger_cells**: 1165
+- **done_cells**: 1153
+- **empty_cells**: 12
+- **error_cells**: 0
+- **pending_cells**: 0
+
+## Parse Results (this run)
+- **records_written**: 496
+- **correct_length_count**: 496
+- **incorrect_length_or_missing_field_count**: 0
+- **schema_drift_count_this_run**: 0
+
+## Missing Months By Game (PENDING or ERROR)
+- **BIG_LOTTO**: 0 remaining (first 5: [])
+- **POWER_LOTTO**: 0 remaining (first 5: [])
+- **DAILY_539**: 0 remaining (first 5: [])
+- **3_STAR**: 0 remaining (first 5: [])
+- **4_STAR**: 0 remaining (first 5: [])
+
+## Limitations
+- Bounded-rate prototype: a single run fetches at most 60 (month, lottery_type) cells; full-history coverage requires multiple resumed runs.
+- No production DB write performed; artifacts are append-only files under outputs/research/.
+- No Hypothesis Registry write performed; the companion registry-freeze artifact is a design-snapshot under outputs/research/, not a write to lottery_api/data/hypothesis_registry.jsonl.
+- No H1/H2/H3 statistical test, no permutation test, and no significance value of any kind computed in this task. Reserved for a separate, future, explicitly-authorized confirmatory task (P268D-3).
+- No success-rate / hit-rate-improvement claim is made by this artifact.
+- On endpoint instability a (month, lottery_type) cell is marked ERROR (not aggressively retried); a future run may retry by resetting that cell's status to PENDING.
+
+## Next-Step Recommendation
+Full-history backfill ledger complete; proceed to P268D step 4 (structure_validation aggregate report) and step 6 (read-only canonical DB alignment).
+
+## Final Classification
+P268D1_DRAW_ORDER_REGISTRY_FREEZE_AND_FULL_HISTORY_ARTIFACT_BACKFILL_COMPLETE

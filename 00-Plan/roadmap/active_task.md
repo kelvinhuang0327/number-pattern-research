@@ -261,3 +261,14 @@ Status: **WAITING_FOR_USER_AUTHORIZATION** — no active follow-up authorized.
 7. Final Classification
 
 Final Classification (this file): `P267C_M3PLUS_REVALIDATION_COMPLETE_NO_VALIDATED_M3_EDGE`
+
+---
+
+## P268A–P268B External Drawn-Order Field Scouting & Audit Prototype (2026-06-10)
+
+| Task | Classification |
+|------|---------------|
+| P268A-S Synthesize recovered external scouting | `P268A_SYNTHESIZED_RECOVERED_SCOUTING_COMPLETE_WITH_HIT_RATE_TOP1` — Top-1 hit-rate candidate: official `drawNumberAppear` (draw-order) field from TLCAPIWeB, not present in internal sorted-number DB. winnerCount/prize-distribution explicitly classified payout/EV-only (not Top 1). |
+| P268B Official draw-order ingestion + positional-bias audit prototype | `P268B_DRAW_ORDER_POSITIONAL_BIAS_AUDIT_PROTOTYPE_COMPLETE_DIAGNOSTICS_ONLY` — bounded 2-month sample (2026-04/05) across BIG_LOTTO/POWER_LOTTO/DAILY_539/3_STAR/4_STAR via official TLCAPIWeB endpoints. `drawNumberAppear` confirmed present, correct length, sorted-equivalent to `drawNumberSize` for all 154 sampled records. Local `draws` table has 0 rows in this checkout (NO_LOCAL_ROWS — schema-level alignment only). Position-frequency/chi2 + adjacent-diff diagnostics are descriptive-only, no p-value gate, NO hit-rate or success-rate claim. Artifacts: `outputs/research/p268b_official_draw_order_positional_bias_audit_20260610.{json,md}`. Branch `p268b-official-draw-order-positional-bias-audit`, local commit only — push/PR not authorized. |
+
+Status: **WAITING_FOR_USER_AUTHORIZATION** — push/PR for P268B requires separate explicit authorization. Any future full-history `drawNumberAppear` backfill or confirmatory positional-bias hypothesis test requires its own explicit authorization, P221F pre-registration, and DB-write authorization (new column/table).

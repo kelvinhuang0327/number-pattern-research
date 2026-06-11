@@ -1,8 +1,8 @@
 # P269A-Lite: Next External Signal Family Candidate Matrix v0
 
-**Date:** 2026-06-11 Asia/Taipei  
-**Classification:** `P269A_LITE_NEXT_EXTERNAL_SIGNAL_REPO_ONLY_SCOUTING_COMPLETE_NO_GO`  
-**Task Type:** Type B read-only scouting artifact (repo-only, no external research)  
+**Date:** 2026-06-11 Asia/Taipei
+**Classification:** `P269A_LITE_NEXT_EXTERNAL_SIGNAL_REPO_ONLY_SCOUTING_COMPLETE_NO_GO`
+**Task Type:** Type B read-only scouting artifact (repo-only, no external research)
 **Status:** Repo-only scouting only. No DB write. No registry mutation. No statistical test. No strategy. No betting advice.
 
 **No-Claim Statement:** This artifact does not improve win rate, does not predict lottery numbers, does not authorize betting advice, and does not constitute a strategy recommendation.
@@ -70,7 +70,7 @@ This is a downgraded (Lite) version of P269A:
 ## 4. Detailed Candidate Notes
 
 ### C01 — draw-order / drawNumberAppear (ALREADY_NULL)
-P268D4 CLOSED. H1 PRIMARY_FAIL. Do not re-open without genuinely new signal source and fresh pre-registration.  
+P268D4 CLOSED. H1 PRIMARY_FAIL. Do not re-open without genuinely new signal source and fresh pre-registration.
 The P268D-1 JSONL artifact (21,682 records) remains available for a **structurally different** statistic on the same field — but that requires its own pre-registration, not a continuation of H1/H2/H3.
 
 ### C02 — prize-tier / winner-count (EV_ONLY)
@@ -83,7 +83,7 @@ The most data-rich candidate: 5,861/5,885 DAILY_539 rows with full history. Howe
 Schema column exists (`jackpot_amount`) but 0 rows populated for BIG_LOTTO/POWER_LOTTO. Would require external fetch + Type D DB write. Same EV-only logic as C03. Not recommended.
 
 ### C05 — Weekday/schedule regime (WATCHLIST)
-**Most actionable WATCHLIST candidate.** Data fully available from `draws.date`. P213 H_REGIME_SEGMENTATION identified this as a valid design direction (DAILY_539 + POWER_LOTTO). P253H confirms NOT tested in P219. Natural regime boundary: DAILY_539 Saturday (806 draws) vs weekday (1014–1015); POWER_LOTTO Mon/Thu biweekly.  
+**Most actionable WATCHLIST candidate.** Data fully available from `draws.date`. P213 H_REGIME_SEGMENTATION identified this as a valid design direction (DAILY_539 + POWER_LOTTO). P253H confirms NOT tested in P219. Natural regime boundary: DAILY_539 Saturday (806 draws) vs weekday (1014–1015); POWER_LOTTO Mon/Thu biweekly.
 **Key constraint:** Hit-rate plausibility is LOW for fair random draws (weekday doesn't causally affect ball-draw randomness; L73/L82 closure). Power per regime is lower than full-history tests that already returned null. P221F pre-registration required before any scan.
 
 ### C06 — Calendar gap (WATCHLIST, overlaps C05)

@@ -1,0 +1,525 @@
+{
+  "task_id": "P270B_OUTCOME_BLIND_PORTFOLIO_GEOMETRY_POWER_AUDIT",
+  "generated_at": "2026-06-11T08:25:17.824910+00:00",
+  "repo_head": "d4b56c8da42963d0f79110c25250d54c62fa4dca",
+  "branch": "task/p270b-outcome-blind-geometry-power-audit",
+  "mode": "outcome_blind_geometry_power_audit",
+  "outcome_columns_read": false,
+  "db_write": false,
+  "registry_write": false,
+  "strategy_generated": false,
+  "backtest_run": false,
+  "n_fixed": 3,
+  "min_pool_size": 5,
+  "lotteries_analyzed": [
+    "BIG_LOTTO",
+    "DAILY_539",
+    "POWER_LOTTO"
+  ],
+  "eligible_draw_counts": {
+    "BIG_LOTTO": 1501,
+    "DAILY_539": 1500,
+    "POWER_LOTTO": 1501
+  },
+  "ineligible_draw_counts": {
+    "BIG_LOTTO": 51,
+    "DAILY_539": 50,
+    "POWER_LOTTO": 50
+  },
+  "pool_size_histograms": {
+    "BIG_LOTTO": {
+      "2": 51,
+      "6": 1,
+      "7": 1,
+      "9": 2,
+      "10": 124,
+      "11": 1148,
+      "12": 225
+    },
+    "DAILY_539": {
+      "2": 50,
+      "8": 5,
+      "9": 87,
+      "10": 1136,
+      "11": 261,
+      "12": 11
+    },
+    "POWER_LOTTO": {
+      "1": 50,
+      "5": 1,
+      "7": 7,
+      "8": 223,
+      "9": 1032,
+      "10": 231,
+      "11": 7
+    }
+  },
+  "pool_size_time_trends": {
+    "BIG_LOTTO": {
+      "early": {
+        "n_draws": 517,
+        "mean_pool_size": 10.178,
+        "min_pool_size": 2,
+        "max_pool_size": 12,
+        "draw_range": [
+          "99000056",
+          "106000040"
+        ]
+      },
+      "mid": {
+        "n_draws": 517,
+        "mean_pool_size": 11.062,
+        "min_pool_size": 9,
+        "max_pool_size": 12,
+        "draw_range": [
+          "106000041",
+          "111000003"
+        ]
+      },
+      "late": {
+        "n_draws": 518,
+        "mean_pool_size": 11.042,
+        "min_pool_size": 7,
+        "max_pool_size": 12,
+        "draw_range": [
+          "111000004",
+          "115000055"
+        ]
+      }
+    },
+    "DAILY_539": {
+      "early": {
+        "n_draws": 516,
+        "mean_pool_size": 9.366,
+        "min_pool_size": 2,
+        "max_pool_size": 12,
+        "draw_range": [
+          "99000212",
+          "112000029"
+        ]
+      },
+      "mid": {
+        "n_draws": 516,
+        "mean_pool_size": 10.103,
+        "min_pool_size": 9,
+        "max_pool_size": 12,
+        "draw_range": [
+          "112000030",
+          "113000233"
+        ]
+      },
+      "late": {
+        "n_draws": 518,
+        "mean_pool_size": 10.116,
+        "min_pool_size": 8,
+        "max_pool_size": 12,
+        "draw_range": [
+          "113000234",
+          "115000121"
+        ]
+      }
+    },
+    "POWER_LOTTO": {
+      "early": {
+        "n_draws": 517,
+        "mean_pool_size": 8.422,
+        "min_pool_size": 1,
+        "max_pool_size": 11,
+        "draw_range": [
+          "99000055",
+          "105000050"
+        ]
+      },
+      "mid": {
+        "n_draws": 517,
+        "mean_pool_size": 8.973,
+        "min_pool_size": 7,
+        "max_pool_size": 10,
+        "draw_range": [
+          "105000051",
+          "110000045"
+        ]
+      },
+      "late": {
+        "n_draws": 517,
+        "mean_pool_size": 8.839,
+        "min_pool_size": 5,
+        "max_pool_size": 10,
+        "draw_range": [
+          "110000046",
+          "115000041"
+        ]
+      }
+    }
+  },
+  "early_thin_pool_boundary": {
+    "BIG_LOTTO": 51,
+    "DAILY_539": 50,
+    "POWER_LOTTO": 50
+  },
+  "pairwise_overlap_summary": {
+    "BIG_LOTTO": {
+      "shared_number_count": {
+        "mean": 0.957372,
+        "median": 0.0,
+        "min": 0,
+        "max": 5
+      },
+      "jaccard_similarity": {
+        "mean": 0.104394,
+        "median": 0.0,
+        "min": 0.0,
+        "max": 0.714286
+      }
+    },
+    "DAILY_539": {
+      "shared_number_count": {
+        "mean": 0.553582,
+        "median": 0,
+        "min": 0,
+        "max": 4
+      },
+      "jaccard_similarity": {
+        "mean": 0.071431,
+        "median": 0.0,
+        "min": 0.0,
+        "max": 0.666667
+      }
+    },
+    "POWER_LOTTO": {
+      "shared_number_count": {
+        "mean": 1.393076,
+        "median": 1,
+        "min": 0,
+        "max": 5
+      },
+      "jaccard_similarity": {
+        "mean": 0.151979,
+        "median": 0.090909,
+        "min": 0.0,
+        "max": 0.714286
+      }
+    }
+  },
+  "coverage_band_summary": {
+    "BIG_LOTTO": {
+      "n_portfolios_total": 254023,
+      "min_T_overall": {
+        "mean": 48.755496,
+        "median": 49,
+        "min": 34,
+        "max": 59
+      },
+      "median_T_overall": {
+        "mean": 59.935043,
+        "median": 60,
+        "min": 59.0,
+        "max": 60
+      },
+      "mean_T_overall": {
+        "mean": 58.784579,
+        "median": 58.8606,
+        "min": 56.6424,
+        "max": 59.9333
+      },
+      "max_T_overall": {
+        "mean": 60,
+        "median": 60,
+        "min": 60,
+        "max": 60
+      }
+    },
+    "DAILY_539": {
+      "n_portfolios_total": 189393,
+      "min_T_overall": {
+        "mean": 26.408,
+        "median": 26.0,
+        "min": 19,
+        "max": 30
+      },
+      "median_T_overall": {
+        "mean": 30.0,
+        "median": 30.0,
+        "min": 30.0,
+        "max": 30.0
+      },
+      "mean_T_overall": {
+        "mean": 29.665047,
+        "median": 29.6667,
+        "min": 28.75,
+        "max": 30
+      },
+      "max_T_overall": {
+        "mean": 30,
+        "median": 30.0,
+        "min": 30,
+        "max": 30
+      }
+    },
+    "POWER_LOTTO": {
+      "n_portfolios_total": 128306,
+      "min_T_overall": {
+        "mean": 48.244504,
+        "median": 49,
+        "min": 34,
+        "max": 58
+      },
+      "median_T_overall": {
+        "mean": 59.55563,
+        "median": 60.0,
+        "min": 56.0,
+        "max": 60.0
+      },
+      "mean_T_overall": {
+        "mean": 58.186131,
+        "median": 58.25,
+        "min": 55.2262,
+        "max": 59.6786
+      },
+      "max_T_overall": {
+        "mean": 60,
+        "median": 60,
+        "min": 60,
+        "max": 60
+      }
+    }
+  },
+  "g_d_enumeration_summary": {
+    "BIG_LOTTO": {
+      "n_draws": 1501,
+      "T_Gd_stats": {
+        "mean": 60,
+        "median": 60,
+        "min": 60,
+        "max": 60
+      },
+      "Gd_minus_median_stats": {
+        "mean": 0.064957,
+        "median": 0.0,
+        "min": 0,
+        "max": 1.0
+      },
+      "Gd_minus_min_stats": {
+        "mean": 11.244504,
+        "median": 11,
+        "min": 1,
+        "max": 26
+      }
+    },
+    "DAILY_539": {
+      "n_draws": 1500,
+      "T_Gd_stats": {
+        "mean": 30,
+        "median": 30.0,
+        "min": 30,
+        "max": 30
+      },
+      "Gd_minus_median_stats": {
+        "mean": 0.0,
+        "median": 0.0,
+        "min": 0.0,
+        "max": 0.0
+      },
+      "Gd_minus_min_stats": {
+        "mean": 3.592,
+        "median": 4.0,
+        "min": 0,
+        "max": 11
+      }
+    },
+    "POWER_LOTTO": {
+      "n_draws": 1501,
+      "T_Gd_stats": {
+        "mean": 60,
+        "median": 60,
+        "min": 60,
+        "max": 60
+      },
+      "Gd_minus_median_stats": {
+        "mean": 0.44437,
+        "median": 0.0,
+        "min": 0.0,
+        "max": 4.0
+      },
+      "Gd_minus_min_stats": {
+        "mean": 11.755496,
+        "median": 11,
+        "min": 2,
+        "max": 26
+      }
+    }
+  },
+  "pool_membership_roster": {
+    "BIG_LOTTO": {
+      "n_distinct_strategy_id": 11,
+      "n_distinct_strategy_bet_index_cells": 18,
+      "cells_with_observed_rows": 18,
+      "strategies_with_only_bet_index_1": [
+        "bet2_fourier_expansion_biglotto",
+        "cold_complement_biglotto",
+        "coldpool15_biglotto",
+        "fourier30_markov30_biglotto",
+        "markov_2bet_biglotto",
+        "markov_single_biglotto",
+        "ts3_regime_3bet"
+      ],
+      "n_strategies_with_only_bet_index_1": 7
+    },
+    "DAILY_539": {
+      "n_distinct_strategy_id": 15,
+      "n_distinct_strategy_bet_index_cells": 27,
+      "cells_with_observed_rows": 27,
+      "strategies_with_only_bet_index_1": [
+        "539_3bet_orthogonal",
+        "acb_1bet",
+        "acb_markov_midfreq",
+        "acb_single_539",
+        "markov_1bet_539",
+        "midfreq_acb_2bet",
+        "midfreq_fourier_2bet",
+        "p0b_539_3bet_f_cold_fmid",
+        "p0c_539_3bet_f_cold_x2",
+        "zone_gap_3bet_539"
+      ],
+      "n_strategies_with_only_bet_index_1": 10
+    },
+    "POWER_LOTTO": {
+      "n_distinct_strategy_id": 10,
+      "n_distinct_strategy_bet_index_cells": 24,
+      "cells_with_observed_rows": 24,
+      "strategies_with_only_bet_index_1": [
+        "cold_complement_2bet",
+        "fourier30_markov30_2bet",
+        "midfreq_fourier_2bet",
+        "zonal_entropy_2bet"
+      ],
+      "n_strategies_with_only_bet_index_1": 4
+    }
+  },
+  "causality_check": {
+    "rows_checked": 94924,
+    "violations_found": 0,
+    "violations": [],
+    "expected": "zero violations",
+    "result": "PASS"
+  },
+  "projected_discordance_summary": {
+    "BIG_LOTTO": {
+      "method": "union-bound on theoretical 1-bet M3+ probability times ticket-set symmetric-difference size between G_d and every alternative size-3 portfolio in the pool (per-draw mean / max / min sym-diff case, averaged over eligible draws). rule-R cannot be computed without outcome history.",
+      "p_ticket_theoretical_1bet_M3plus": 0.018638,
+      "pi_disc_central_meanSymDiff": 0.081916,
+      "pi_disc_best_case_maxSymDiff6": 0.111828,
+      "pi_disc_worst_case_minSymDiff2": 0.037276,
+      "rule_R_exact": "NOT_RUN_OUTCOME_FORBIDDEN"
+    },
+    "DAILY_539": {
+      "method": "union-bound on theoretical 1-bet M3+ probability times ticket-set symmetric-difference size between G_d and every alternative size-3 portfolio in the pool (per-draw mean / max / min sym-diff case, averaged over eligible draws). rule-R cannot be computed without outcome history.",
+      "p_ticket_theoretical_1bet_M3plus": 0.010041,
+      "pi_disc_central_meanSymDiff": 0.042695,
+      "pi_disc_best_case_maxSymDiff6": 0.060246,
+      "pi_disc_worst_case_minSymDiff2": 0.020082,
+      "rule_R_exact": "NOT_RUN_OUTCOME_FORBIDDEN"
+    },
+    "POWER_LOTTO": {
+      "method": "union-bound on theoretical 1-bet M3+ probability times ticket-set symmetric-difference size between G_d and every alternative size-3 portfolio in the pool (per-draw mean / max / min sym-diff case, averaged over eligible draws). rule-R cannot be computed without outcome history.",
+      "p_ticket_theoretical_1bet_M3plus": 0.038698,
+      "pi_disc_central_meanSymDiff": 0.156381,
+      "pi_disc_best_case_maxSymDiff6": 0.232136,
+      "pi_disc_worst_case_minSymDiff2": 0.077396,
+      "rule_R_exact": "NOT_RUN_OUTCOME_FORBIDDEN"
+    }
+  },
+  "mde_summary": {
+    "BIG_LOTTO": {
+      "n": 1000,
+      "alpha": 0.0167,
+      "power": 0.8,
+      "z_alpha_2": 2.3934,
+      "z_beta": 0.8416,
+      "mde_increment_pp_central": 2.9279,
+      "mde_increment_pp_best_case": 3.421,
+      "mde_increment_pp_worst_case": 1.9751,
+      "required_discordant_split_central": 0.6787,
+      "required_discordant_split_best_case": 0.653,
+      "required_discordant_split_worst_case": 0.7649,
+      "p267c_best_uncorrected_excess_pp": 1.23
+    },
+    "DAILY_539": {
+      "n": 1000,
+      "alpha": 0.0167,
+      "power": 0.8,
+      "z_alpha_2": 2.3934,
+      "z_beta": 0.8416,
+      "mde_increment_pp_central": 2.1138,
+      "mde_increment_pp_best_case": 2.511,
+      "mde_increment_pp_worst_case": 1.4497,
+      "required_discordant_split_central": 0.7475,
+      "required_discordant_split_best_case": 0.7084,
+      "required_discordant_split_worst_case": 0.8609,
+      "p267c_best_uncorrected_excess_pp": 1.32
+    },
+    "POWER_LOTTO": {
+      "n": 1000,
+      "alpha": 0.0167,
+      "power": 0.8,
+      "z_alpha_2": 2.3934,
+      "z_beta": 0.8416,
+      "mde_increment_pp_central": 4.0454,
+      "mde_increment_pp_best_case": 4.9289,
+      "mde_increment_pp_worst_case": 2.846,
+      "required_discordant_split_central": 0.6293,
+      "required_discordant_split_best_case": 0.6062,
+      "required_discordant_split_worst_case": 0.6839,
+      "p267c_best_uncorrected_excess_pp": 1.48
+    }
+  },
+  "kill_criterion_result": {
+    "criterion_1_mde_exceeds_p267c_excess_in_all_lotteries": {
+      "triggered": true,
+      "per_lottery": {
+        "BIG_LOTTO": {
+          "mde_increment_pp_best_case": 3.421,
+          "p267c_best_uncorrected_excess_pp": 1.23,
+          "mde_exceeds_excess": true
+        },
+        "DAILY_539": {
+          "mde_increment_pp_best_case": 2.511,
+          "p267c_best_uncorrected_excess_pp": 1.32,
+          "mde_exceeds_excess": true
+        },
+        "POWER_LOTTO": {
+          "mde_increment_pp_best_case": 4.9289,
+          "p267c_best_uncorrected_excess_pp": 1.48,
+          "mde_exceeds_excess": true
+        }
+      }
+    },
+    "criterion_2_projected_discordance_below_1pct_degenerate": {
+      "triggered_any_lottery": false,
+      "per_lottery": {
+        "BIG_LOTTO": {
+          "pi_disc_best_case": 0.111828,
+          "below_1pct": false
+        },
+        "DAILY_539": {
+          "pi_disc_best_case": 0.060246,
+          "below_1pct": false
+        },
+        "POWER_LOTTO": {
+          "pi_disc_best_case": 0.232136,
+          "below_1pct": false
+        }
+      }
+    },
+    "kill_triggered": true
+  },
+  "final_classification": "P270B_GEOMETRY_POWER_INSUFFICIENT_NO_GO",
+  "limitations": [
+    "Outcome-blind by construction: actual_numbers, hit_count, special_hit, and all derived outcome fields were never read or loaded.",
+    "rule-R (trailing per-strategy M3+ rate selector) cannot be computed without outcome history; reported as NOT_RUN_OUTCOME_FORBIDDEN in projected_discordance.",
+    "Discordance bounds use a union-bound on the THEORETICAL (closed-form hypergeometric) 1-bet M3+ probability per lottery, not an empirical estimate; they ignore positive correlation between tickets sharing numbers, which would tend to make the true discordance probability lower (i.e. MDE higher) than the union bound suggests. The bound is therefore optimistic for Direction A.",
+    "Best-case (sym_diff=6, fully-disjoint alternative portfolio) was used for the kill-criterion comparison to give Direction A the most favorable possible reading; even this optimistic bound is reported in mde_summary alongside the central and worst-case estimates.",
+    "G_d tie-breaking (max-min pairwise Jaccard distance, then lexicographic order) is deterministic and outcome-independent.",
+    "No claim of hit-rate improvement, no betting action, no strategy is implied or generated by this artifact."
+  ]
+}

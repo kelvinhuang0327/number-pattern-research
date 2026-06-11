@@ -1,0 +1,238 @@
+{
+  "task_id": "P268D3",
+  "generated_at": "2026-06-11T02:35:49.354163+00:00",
+  "boundary": "P268D-1 (PR #409, merged) produced the registry-freeze artifact (H1/H1_holdout/H2/H3, status=FROZEN_NOT_TESTED at that time) and the full-history drawNumberAppear backfill artifact (21,682 records, 2007-01..2026-05, 0 pending/error, 100% parse success). P268D-2 (PR #410, merged) ran a structure-validation aggregate (PASS) and a read-only DB alignment audit (PARTIAL_ENV_LIMITATION / NO_LOCAL_ROWS), concluding P268D-3 may proceed using the JSONL artifact (not the local DB) as the H1 data source.",
+  "registry_append": {
+    "hypothesis_id": "HR-P268D3-H1-DRAW-ORDER-EXIT-RANK-001",
+    "status": "PRE_REGISTERED_BEFORE_TEST",
+    "registered_at": "2026-06-11T02:35:36.435709+00:00",
+    "registry_path": "lottery_api/data/hypothesis_registry.jsonl"
+  },
+  "data_source": {
+    "source_artifact": "outputs/research/p268d1_draw_order_full_history_artifact_backfill_20260610.jsonl",
+    "db_used": false
+  },
+  "splits": {
+    "DAILY_539": {
+      "game": "DAILY_539",
+      "total_records": 5876,
+      "excluded_records": 52,
+      "eligible_records": 5824,
+      "estimation_records": 4076,
+      "holdout_records": 1748,
+      "estimation_date_range": [
+        "2007-01-01T00:00:00",
+        "2020-09-05T00:00:00"
+      ],
+      "holdout_date_range": [
+        "2020-09-07T00:00:00",
+        "2026-03-31T00:00:00"
+      ]
+    },
+    "BIG_LOTTO": {
+      "game": "BIG_LOTTO",
+      "total_records": 2139,
+      "excluded_records": 17,
+      "eligible_records": 2122,
+      "estimation_records": 1485,
+      "holdout_records": 637,
+      "estimation_date_range": [
+        "2007-01-02T00:00:00",
+        "2020-10-30T00:00:00"
+      ],
+      "holdout_date_range": [
+        "2020-11-03T00:00:00",
+        "2026-03-31T00:00:00"
+      ]
+    },
+    "POWER_LOTTO": {
+      "game": "POWER_LOTTO",
+      "total_records": 1915,
+      "excluded_records": 17,
+      "eligible_records": 1898,
+      "estimation_records": 1328,
+      "holdout_records": 570,
+      "estimation_date_range": [
+        "2008-01-24T00:00:00",
+        "2020-10-12T00:00:00"
+      ],
+      "holdout_date_range": [
+        "2020-10-15T00:00:00",
+        "2026-03-30T00:00:00"
+      ]
+    },
+    "3_STAR": {
+      "game": "3_STAR",
+      "total_records": 5876,
+      "excluded_records": 52,
+      "eligible_records": 5824,
+      "estimation_records": 4076,
+      "holdout_records": 1748,
+      "estimation_date_range": [
+        "2007-01-01T00:00:00",
+        "2020-09-05T00:00:00"
+      ],
+      "holdout_date_range": [
+        "2020-09-07T00:00:00",
+        "2026-03-31T00:00:00"
+      ]
+    },
+    "4_STAR": {
+      "game": "4_STAR",
+      "total_records": 5876,
+      "excluded_records": 52,
+      "eligible_records": 5824,
+      "estimation_records": 4076,
+      "holdout_records": 1748,
+      "estimation_date_range": [
+        "2007-01-01T00:00:00",
+        "2020-09-05T00:00:00"
+      ],
+      "holdout_date_range": [
+        "2020-09-07T00:00:00",
+        "2026-03-31T00:00:00"
+      ]
+    }
+  },
+  "method": {
+    "statistic_description": "Test statistic T = sum over balls b (with n_b >= 1 appearances in the estimation window) of z_b^2, where z_b = (mean_exit_rank_b - mu_k) / sqrt(sigma_k^2 / n_b), mu_k=(k+1)/2, sigma_k^2=(k^2-1)/12. Larger T indicates greater dispersion of per-ball mean exit-rank than expected under full within-draw exchangeability (heterogeneity).",
+    "null_model": "Within-draw permutation null: for each draw, the k drawn balls are assigned a uniformly random permutation of exit-ranks 1..k, independently across draws and across Monte Carlo replicates.",
+    "n_permutations": 10000,
+    "lower_power_fallback_used": false,
+    "seed": 42,
+    "probe_estimated_full_run_seconds": 3.837479200001326
+  },
+  "primary_result": {
+    "game": "DAILY_539",
+    "role": "PRIMARY",
+    "pool_min": 1,
+    "pool_max": 39,
+    "pool_size": 39,
+    "k": 5,
+    "n_draws_estimation": 4076,
+    "observed_statistic": 43.1695049944501,
+    "null_distribution_summary": {
+      "n_permutations": 10000,
+      "mean": 39.147548711980136,
+      "std": 8.902934664245356,
+      "min": 15.729771216898117,
+      "max": 78.77036020727364,
+      "p50": 38.5848554115379,
+      "p95": 54.73562957960415,
+      "p99": 62.592650709876715
+    },
+    "p_value_one_sided": 0.3050694930506949,
+    "seed": 42,
+    "elapsed_seconds": 3.779499874999601
+  },
+  "secondary_results": [
+    {
+      "game": "BIG_LOTTO",
+      "role": "SECONDARY_EXPLORATORY",
+      "pool_min": 1,
+      "pool_max": 49,
+      "pool_size": 49,
+      "k": 7,
+      "n_draws_estimation": 1485,
+      "observed_statistic": 43.086354353957894,
+      "null_distribution_summary": {
+        "n_permutations": 10000,
+        "mean": 48.821089220892624,
+        "std": 9.874608750751488,
+        "min": 16.85641567594757,
+        "max": 96.05289996012903,
+        "p50": 48.32067867826244,
+        "p95": 65.99998315425285,
+        "p99": 74.32388259929166
+      },
+      "p_value_one_sided": 0.7057294270572942,
+      "seed": 43,
+      "elapsed_seconds": 2.125508665999405
+    },
+    {
+      "game": "POWER_LOTTO",
+      "role": "SECONDARY_EXPLORATORY",
+      "pool_min": 1,
+      "pool_max": 38,
+      "pool_size": 38,
+      "k": 6,
+      "n_draws_estimation": 1328,
+      "observed_statistic": 21.648206460400456,
+      "null_distribution_summary": {
+        "n_permutations": 10000,
+        "mean": 38.177048261029405,
+        "std": 8.827851067153507,
+        "min": 12.247629913163067,
+        "max": 90.56319765848015,
+        "p50": 37.48458249933768,
+        "p95": 53.55481342723098,
+        "p99": 61.325036327977124
+      },
+      "p_value_one_sided": 0.9854014598540146,
+      "seed": 44,
+      "elapsed_seconds": 1.597003207999478
+    },
+    {
+      "game": "3_STAR",
+      "role": "SECONDARY_EXPLORATORY",
+      "pool_min": 0,
+      "pool_max": 9,
+      "pool_size": 10,
+      "k": 3,
+      "n_draws_estimation": 4076,
+      "observed_statistic": 10.316395378052906,
+      "null_distribution_summary": {
+        "n_permutations": 10000,
+        "mean": 9.007362692928472,
+        "std": 4.230595135546219,
+        "min": 0.19882424754822692,
+        "max": 33.02289561397316,
+        "p50": 8.35596468762432,
+        "p95": 17.03760979040363,
+        "p99": 21.647155772419552
+      },
+      "p_value_one_sided": 0.32126787321267875,
+      "seed": 45,
+      "elapsed_seconds": 2.201188916999854
+    },
+    {
+      "game": "4_STAR",
+      "role": "SECONDARY_EXPLORATORY",
+      "pool_min": 0,
+      "pool_max": 9,
+      "pool_size": 10,
+      "k": 4,
+      "n_draws_estimation": 4076,
+      "observed_statistic": 6.483781305395845,
+      "null_distribution_summary": {
+        "n_permutations": 10000,
+        "mean": 8.946987487563012,
+        "std": 4.232890167417268,
+        "min": 0.8455666336045122,
+        "max": 30.33952629989009,
+        "p50": 8.305717385971363,
+        "p95": 16.899063308518986,
+        "p99": 21.33791022584976
+      },
+      "p_value_one_sided": 0.6838316168383162,
+      "seed": 46,
+      "elapsed_seconds": 3.038793749999968
+    }
+  ],
+  "h1_classification": "H1_PRIMARY_FAIL",
+  "final_classification": "P268D3_H1_DRAW_ORDER_CONFIRMATORY_TEST_COMPLETE_PRIMARY_FAIL",
+  "h2_h3_run": false,
+  "db_write": false,
+  "hypothesis_registry_write": true,
+  "strategy_generated": false,
+  "hit_rate_claim": false,
+  "next_step_recommendation": "H1 estimation-window result FAILED (p >= 0.01) for DAILY_539. Per the registry-freeze, this is a diagnostics-only NULL closure for the draw-order exit-rank-heterogeneity hypothesis: H1_holdout/H2/H3 are NOT opened, and no strategy is proposed from this line.",
+  "explicit_non_claims": [
+    "No H2 or H3 statistical test was run in this task.",
+    "The holdout window (30%, chronologically most recent eligible draws) was not opened, read for statistics, or used in any computation in this task.",
+    "No production database connection of any kind (read or write) was opened in this script.",
+    "No new strategy was generated and no betting recommendation is made.",
+    "No hit-rate / success-rate-improvement claim is made by this artifact, regardless of the H1 classification.",
+    "Secondary/exploratory game results (BIG_LOTTO, POWER_LOTTO, 3_STAR, 4_STAR) cannot alone promote H1 to PASS or trigger H2/H3."
+  ]
+}

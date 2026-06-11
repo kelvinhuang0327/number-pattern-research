@@ -1,0 +1,372 @@
+{
+  "task_id": "P269B_CALENDAR_REGIME_PRE_REGISTRATION_DESIGN",
+  "generated_at": "2026-06-11",
+  "type": "pre_registration_design_artifact",
+  "schema_version": "1.0",
+
+  "inherited_boundaries": {
+    "p268d4_closure": {
+      "status": "CLOSED",
+      "classification": "P268D4_DRAW_ORDER_H1_NULL_CLOSEOUT_COMPLETE",
+      "arc": "P268A-P268D4 draw-order (drawNumberAppear exit-rank-heterogeneity)",
+      "h1_result": "H1_PRIMARY_FAIL: DAILY_539 p=0.3051 >= alpha=0.01",
+      "do_not_continue": [
+        "draw-order H2, H3",
+        "any re-parameterization of exit-rank-heterogeneity H1",
+        "re-running analysis/p268d3_h1_draw_order_confirmatory_permutation_test.py"
+      ],
+      "strategy_authorized": false
+    },
+    "p269a_lite_no_go": {
+      "status": "NO_GO",
+      "classification": "P269A_LITE_NEXT_EXTERNAL_SIGNAL_REPO_ONLY_SCOUTING_COMPLETE_NO_GO",
+      "pr": "#413 merged 2026-06-11 85b09c2",
+      "top_candidate_recommendation": "NO_GO",
+      "reason": "No high-plausibility hit-rate external signal family found from repo-only evidence. Machine/ball-set era (C07) is most interesting but data unavailable. WATCHLIST only: C05/C06 (calendar regime) with LOW hit-rate plausibility.",
+      "watchlist_candidates": ["C05 draw weekday / schedule regime", "C06 calendar gap / days_since_last_draw"]
+    }
+  },
+
+  "low_plausibility_warning": {
+    "message": "P269A-Lite top recommendation was NO_GO. P269B proceeds ONLY because the user explicitly accepted the LOW-plausibility WATCHLIST pathway. This is a one-shot pre-registration design; if H1 is null in P269C, C05 and C06 are permanently CLOSED.",
+    "plausibility_rating": "LOW",
+    "p269a_lite_top_recommendation": "NO_GO",
+    "conditions_for_high_plausibility_upgrade": [
+      "NIST gate (P238B) reaches ORANGE/RED enabling BOCPD machine-era hypothesis (C07)",
+      "Official machine/ball-set change dates confirmed from press release or official history",
+      "A new external data source beyond TLCAPIWeB is identified"
+    ],
+    "honest_prior": "Lottery ball draws are random. Weekday identity does not causally affect the physical RNG. A regime effect would require a structural confound (e.g., different ball sets on Saturdays) — no evidence for this exists. Expected result: null, consistent with L82 (signal space exhausted)."
+  },
+
+  "candidate_scope": {
+    "primary": {
+      "id": "C05",
+      "signal_family": "draw weekday / schedule regime",
+      "regime_boundary": "Saturday (day_of_week=6) vs Weekday (Mon-Fri, day_of_week=1-5)",
+      "data_source": "draws.date column in lottery_v2.db (fully available, no fetch required)"
+    },
+    "secondary_optional": {
+      "id": "C06",
+      "signal_family": "calendar gap / days_since_last_draw",
+      "regime_boundary": "gap >= 2 days vs gap = 1 day (consecutive draws)",
+      "data_source": "computed from draws.date column, same source as C05",
+      "activation_condition": "ONLY if C05 passes primary gate (p < 0.01) AND user explicitly re-authorizes C06 test",
+      "note": "C05 and C06 test DIFFERENT draw subsets: C05 targets Saturday draws (gap=1 from Friday); C06 targets Monday and post-holiday draws (gap>=2 from Saturday/holiday). No double-counting."
+    },
+    "excluded_candidates": ["C01 (ALREADY_NULL)", "C02-C04 C09 (EV_ONLY)", "C07 (DATA_UNAVAILABLE)", "C08 (DATA_UNAVAILABLE)"]
+  },
+
+  "target_lottery_types": {
+    "primary": "DAILY_539",
+    "rationale": "Only lottery with meaningful intra-week weekday variation: Sat(806) vs Mon-Fri(~5079) vs Sun(~6). POWER_LOTTO has only Mon(959)/Thu(959) — no Saturday, no within-game weekend contrast. BIG_LOTTO has Tue/Fri only — no Saturday, no natural low-volume day.",
+    "secondary": "NOT_RECOMMENDED",
+    "power_lotto_exclusion_reason": "POWER_LOTTO Mon vs Thu has no structural difference; equal draw counts (959/959); no causal mechanism distinguishing the two days. POWER_LOTTO is biweekly with a symmetric 3/4-day alternating gap — not suitable for this regime test.",
+    "big_lotto_exclusion_reason": "BIG_LOTTO is L90/L91 CLOSED (indistinguishable from fair random across 6 tests). No C05/C06 test authorized for BIG_LOTTO."
+  },
+
+  "primary_game_selection_rationale": {
+    "selected": "DAILY_539",
+    "sample_counts": {
+      "Saturday": 806,
+      "Weekday_Mon_Fri": 5079,
+      "Sunday": 6,
+      "total": 5885
+    },
+    "natural_regime_boundary": "Saturday (806 draws) is structurally distinct from weekdays: lower draw volume, weekend context, potentially different player demographics. This boundary was pre-identified in P213 H_REGIME_SEGMENTATION as a valid design direction for DAILY_539.",
+    "p213_gate_status": "P221F gate NOT yet passed (P213 recorded P221F_GATE_NOT_PASSED_PRE_REGISTRATION_REQUIRED). P269C must pass the P221F gate by writing to Hypothesis Registry BEFORE any data look at per-regime statistics."
+  },
+
+  "inclusion_exclusion_criteria": {
+    "included": {
+      "draws": "All DAILY_539 draws with a valid date and complete numbers (non-null)",
+      "saturday_regime": "draws where day_of_week(date) = Saturday (day index 6 in Python datetime.weekday, or strftime %w = 6)",
+      "weekday_regime": "draws where day_of_week(date) in {Monday=0, Tuesday=1, Wednesday=2, Thursday=3, Friday=4}",
+      "gap_regime_c06": {
+        "treatment": "draws where days_since_last_draw >= 2 (consecutive draw dates differ by >= 2 calendar days)",
+        "reference": "draws where days_since_last_draw = 1"
+      }
+    },
+    "excluded": {
+      "sunday_draws": "Exclude Sunday draws (N~=6) — too few for stable statistics; Sunday is not a standard draw day",
+      "draws_with_missing_date": "Exclude if date column is NULL or unparseable",
+      "first_draw_ever": "Exclude the earliest draw in the DB (no prior draw to compute gap for C06)",
+      "oos_period_for_is_analysis": "OOS period (last 30%) must NOT be touched during IS analysis"
+    },
+    "missing_value_handling": "If any draw in OOS window is excluded due to data quality, document but do NOT replace. Do not impute."
+  },
+
+  "oos_split_design": {
+    "method": "temporal_split",
+    "split_ratio": "70/30",
+    "rationale": "Temporal split prevents future information from leaking into IS analysis. Regime label (day_of_week) is not a learned parameter, so there is no overfitting risk in the classical sense, but the temporal split ensures the OOS period is a genuine holdout that was not visible during hypothesis formulation.",
+    "is_window": {
+      "description": "First ~70% of DAILY_539 draws ordered by CAST(draw AS INTEGER) ASC",
+      "approximate_n": 4120,
+      "role": "Directional consistency check only. IS analysis must NOT be reported as a primary gate. Any IS statistics reported must be pre-committed before OOS analysis."
+    },
+    "oos_window": {
+      "description": "Last ~30% of DAILY_539 draws ordered by CAST(draw AS INTEGER) ASC",
+      "approximate_n": 1765,
+      "role": "PRIMARY ENDPOINT. OOS p-value is the primary gate.",
+      "oos_saturday_n": "~242 (30% of 806)",
+      "oos_weekday_n": "~1524 (30% of 5079)"
+    },
+    "cutoff_declaration": "The exact IS/OOS draw number cutoff must be declared in the Hypothesis Registry entry (P269C) BEFORE any per-regime statistics are computed on ANY portion of the data.",
+    "walk_forward_note": "Full walk-forward OOS is NOT required for this design; the project 70/30 temporal split is sufficient given the non-predictive (regime comparison) nature of the test. If IS result directionally contradicts OOS result, both must be reported; neither overrides the other."
+  },
+
+  "leakage_controls": [
+    {
+      "id": "LC-1",
+      "description": "Temporal OOS split declared before data look. The exact draw cutoff (IS/OOS boundary) must be written into the Hypothesis Registry entry before any per-regime statistics are computed.",
+      "enforcement": "P269C must append to hypothesis_registry.jsonl first; the test script runs after."
+    },
+    {
+      "id": "LC-2",
+      "description": "Strategy selection is pre-specified in the registry entry. The betting strategy (e.g., acb_markov_midfreq_3bet) must be declared before any OOS data is touched. No post-hoc strategy selection based on OOS performance.",
+      "enforcement": "Registry entry must name exactly one strategy (or one strategy per authorized secondary). After registration, no strategy substitution."
+    },
+    {
+      "id": "LC-3",
+      "description": "Regime boundary is pre-specified: Saturday vs Mon-Fri. No optimization of the weekday boundary after seeing OOS data. Specifically: no testing of 'best weekday' or 'weekday with highest/lowest hit rate' post-hoc.",
+      "enforcement": "Only the binary boundary (Sat vs Mon-Fri) is authorized. Any test of individual weekday effects requires a NEW hypothesis with its own Bonferroni k."
+    },
+    {
+      "id": "LC-4",
+      "description": "C06 gap threshold is pre-specified at >= 2 days. No optimization of the threshold after data look.",
+      "enforcement": "Threshold of 2 calendar days is locked. Testing gap=3 or gap>=3 as an alternative requires its own hypothesis entry."
+    },
+    {
+      "id": "LC-5",
+      "description": "No interaction testing (C05 AND C06 combined). Testing Saturday draws that ALSO have gap>=2, or any interaction combination, requires a separate pre-registered hypothesis.",
+      "enforcement": "Treat C05 and C06 as independent tests. Combined interaction analysis is not authorized under this design."
+    },
+    {
+      "id": "LC-6",
+      "description": "Sunday draws (N~=6) are excluded before any analysis. The exclusion is pre-declared here and must be enforced identically in P269C.",
+      "enforcement": "filter WHERE day_of_week != Sunday before any statistics."
+    }
+  ],
+
+  "null_model": {
+    "type": "regime_label_permutation",
+    "description": "Shuffle the Saturday/Weekday regime labels among all draws in the OOS window, preserving the total count of Saturday and weekday draws. Compute the M3+ rate difference under each permutation.",
+    "permutation_count": 10000,
+    "seed": 42,
+    "test_statistic": "observed_saturday_m3plus_rate - observed_weekday_m3plus_rate",
+    "p_value_formula": "fraction of permuted statistics with |perm_stat| >= |observed_stat| (two-tailed)",
+    "alternative": "binomial_exact_backup",
+    "alternative_note": "If M3+ event counts in the Saturday OOS window are < 5, use Fisher's exact two-tailed test instead of permutation (permutation is unreliable for very small cell counts).",
+    "mc_crosscheck": "Binomial null MC (T=10,000, seed=42) as cross-check. If permutation p and binomial p disagree by > 0.05, report both and flag for investigation."
+  },
+
+  "primary_statistic": {
+    "metric": "M3_PLUS_hit_rate",
+    "definition": "Fraction of draws in the regime where the pre-specified strategy achieves hit_count >= 3 on at least one bet (draw-level any-bet M3+; denominator = distinct draws in regime; special_hit excluded from M3+ definition, consistent with P265A SSOT).",
+    "test_type": "two_tailed",
+    "direction_rationale": "No causal mechanism predicts the direction of any Saturday vs weekday effect. Two-tailed test required.",
+    "strategy_to_be_declared": "To be named in the P269C Hypothesis Registry entry before data look. Recommended candidates (to be confirmed): acb_markov_midfreq_3bet (primary production strategy for DAILY_539 3-bet), or acb_1bet (1-bet baseline for power comparison).",
+    "strategy_selection_rule": "Select the strategy with the highest available OOS draw count for DAILY_539 from the replay store. Do NOT select based on OOS M3+ performance.",
+    "metric_consistency": "Use the P267C/P265A SSOT M3+ definition throughout. Do not switch to M2+ or M1+ after seeing data."
+  },
+
+  "multiple_testing_correction": {
+    "primary_family": {
+      "k": 1,
+      "hypotheses": ["C05: DAILY_539 Saturday vs Weekday M3+ rate"],
+      "alpha_primary": 0.01,
+      "alpha_corrected": 0.01,
+      "correction_method": "No correction needed for k=1"
+    },
+    "if_c06_also_declared": {
+      "k": 2,
+      "hypotheses": ["C05: Saturday vs Weekday", "C06: gap>=2 vs gap=1"],
+      "alpha_family": 0.01,
+      "alpha_per_test_bonferroni": 0.005,
+      "correction_method": "Bonferroni: alpha/k = 0.01/2 = 0.005 per test",
+      "note": "C06 may ONLY be declared simultaneously with C05 in the SAME Hypothesis Registry entry. If C05 is registered alone and passes, C06 cannot be added post-hoc without a new pre-registration with k=2 correction."
+    },
+    "forbidden": [
+      "Testing individual weekdays (Mon, Tue, ...) without Bonferroni for k=7",
+      "Testing multiple gap thresholds (2, 3, 4 days) without k correction",
+      "Testing multiple lotteries (DAILY_539 + POWER_LOTTO) without k correction",
+      "Post-hoc switching between M3+, M2+, M1+ metrics"
+    ]
+  },
+
+  "pass_fail_gates": {
+    "primary_gate": {
+      "test": "OOS permutation p-value (two-tailed) < alpha_corrected",
+      "alpha_corrected": "0.01 (k=1) or 0.005 (k=2)",
+      "result_if_fail": "CLOSED — permanent null for C05 (and C06 if declared)",
+      "result_if_pass": "Proceed to secondary gates below"
+    },
+    "secondary_gates": [
+      {
+        "id": "SG-1",
+        "test": "IS directional consistency: IS regime difference must have same sign as OOS regime difference",
+        "result_if_fail": "DIAGNOSTICS_ONLY — significant OOS result but IS directionally inconsistent; flag as possible Type I error or structural break"
+      },
+      {
+        "id": "SG-2",
+        "test": "Minimum event count: OOS Saturday M3+ events >= 3 (Fisher's exact guard)",
+        "result_if_fail": "DIAGNOSTICS_ONLY — too few events to interpret; power insufficient; note sample size limitation"
+      },
+      {
+        "id": "SG-3",
+        "test": "Effect size: Cohen's h >= 0.10 for the OOS Saturday vs Weekday M3+ rate difference",
+        "result_if_fail": "DIAGNOSTICS_ONLY — statistically significant but practically negligible effect"
+      },
+      {
+        "id": "SG-4",
+        "test": "Three-window consistency: regime effect present in OOS sub-windows of 150, 500, and all-OOS draws (all three must show same direction)",
+        "result_if_fail": "DIAGNOSTICS_ONLY — effect may be driven by a single atypical sub-period"
+      }
+    ],
+    "full_pass_definition": "Primary gate + all secondary gates passed → VALIDATED regime effect → upgrade to McNemar comparison vs full-history strategy performance",
+    "diagnostics_only_definition_summary": "Any secondary gate fail → DIAGNOSTICS_ONLY (cannot be deployed as a production strategy modifier)"
+  },
+
+  "stop_rule": {
+    "rule": "IF OOS primary gate p >= alpha_corrected: the test is COMPLETE and the result is NULL. C05 is permanently CLOSED. C06 (if declared) is permanently CLOSED. No re-testing with modified regime boundaries, modified metrics, or modified strategies is authorized under the P269B pre-registration.",
+    "no_retries": "After the single OOS test, no further regime tests may be run on this hypothesis family without a new, separately authorized pre-registration with a new P221F gate.",
+    "partial_result_handling": "If the test is interrupted before OOS completion, resume from the last completed OOS draw. Do NOT restart the test.",
+    "regime_modification_after_null": "If C05 is null, C06 may NOT be tested as a 'salvage' test unless it was declared in the original Hypothesis Registry entry alongside C05."
+  },
+
+  "diagnostics_only_definition": {
+    "triggers": [
+      "OOS p < alpha_corrected but Cohen's h < 0.10 (significant but practically tiny)",
+      "OOS p < alpha_corrected but IS sign contradicts OOS sign",
+      "OOS p < alpha_corrected but three-window sub-period check fails (effect driven by one atypical block)",
+      "OOS Saturday M3+ events < 3 (Fisher's exact guard fires)"
+    ],
+    "interpretation": "DIAGNOSTICS_ONLY means the result is noted for future reference but does NOT authorize: strategy modification, production deployment, betting advice, or further hypothesis testing on this family without new pre-registration.",
+    "not_diagnostics_only": "A clean null (p >= alpha_corrected) means no signal — the result is not 'almost significant'; it is NULL."
+  },
+
+  "hit_rate_mechanism_analysis": {
+    "why_it_might_work": "If Saturday draws attract a structurally different player pool (casual vs regular players), number selection patterns may differ. This could create different crowd-coverage densities on Saturdays, potentially affecting anti-crowd strategies. Additionally, if Saturday draws use different operational procedures (e.g., different machine setup time, different staff), draw outcomes could theoretically be non-identical across weekdays. These are speculative channels; no evidence supports them.",
+    "why_it_wont": [
+      "Lottery RNG and physical ball draws are independent of day-of-week. The draw mechanism (certified RNG or physical balls) does not respond to calendar labels.",
+      "L82 found all H001-H008 null on full DAILY_539 history (5885 draws). Sub-sampling by weekday reduces power; finding significance in 806-draw subset that was null in 5885 requires an implausibly large Saturday-specific effect.",
+      "L103 (H009 Lag-1 neighbor) established that structurally plausible hypotheses (neighboring numbers returning after appearance) also fail (p=0.840). Calendar labels are less plausible than number patterns.",
+      "Anti-crowd EV (crowd selection on different days) is L101/L102 territory: unconditional edge remains negative regardless of conditioning."
+    ],
+    "honest_assessment": "The test is methodologically valid and the pre-registration design prevents p-hacking. However, the expected result is null. The primary value of running P269C is permanent closure of C05/C06, not expected discovery of a signal."
+  },
+
+  "p_hacking_controls": {
+    "regime_boundary_lock": {
+      "control": "Binary Saturday/Weekday boundary is pre-specified and locked. Testing any individual weekday (e.g., 'Mondays specifically') requires k=7 Bonferroni correction and a separate hypothesis entry.",
+      "violation_example": "Checking all 7 weekdays' M3+ rates and reporting only the best-performing one without k correction."
+    },
+    "threshold_lock_c06": {
+      "control": "Calendar gap threshold is locked at >= 2 days. No threshold optimization after seeing data.",
+      "violation_example": "Trying gap >= 2, 3, 4 and reporting the lowest p-value."
+    },
+    "metric_lock": {
+      "control": "M3+ is the pre-specified metric (consistent with P265A/P267C SSOT). Cannot switch to M2+ or M1+ after seeing OOS data.",
+      "violation_example": "Reporting M2+ instead of M3+ because M2+ was significant."
+    },
+    "strategy_lock": {
+      "control": "Strategy must be named in the Hypothesis Registry entry before any OOS statistics are computed.",
+      "violation_example": "Selecting the strategy with the best OOS Saturday performance from among all production strategies."
+    },
+    "lottery_lock": {
+      "control": "DAILY_539 is the pre-specified primary lottery. Switching to POWER_LOTTO after seeing null DAILY_539 result requires k=2 correction and a new registry entry.",
+      "violation_example": "Reporting POWER_LOTTO result after DAILY_539 was null."
+    },
+    "window_lock": {
+      "control": "OOS 30% temporal window is pre-declared. Cannot expand OOS window or shift cutoff after seeing directional result.",
+      "violation_example": "Shifting OOS cutoff to capture more Saturday draws after seeing the initial result."
+    },
+    "test_count_declaration": "Total number of distinct hypothesis tests authorized under this pre-registration: k=1 (C05 only) or k=2 (C05+C06 if declared simultaneously). All k must be declared in the single registry entry before testing begins."
+  },
+
+  "proposed_h1": {
+    "h1_id": "H1_CALENDAR_REGIME_C05_DAILY539_SAT_VS_WEEKDAY",
+    "h1_statement": "In DAILY_539, the M3+ hit rate of [to be named strategy] differs significantly between Saturday draws and weekday draws (Mon-Fri), measured in the OOS temporal window (last 30% of draws by CAST(draw AS INTEGER)).",
+    "lottery_type": "DAILY_539",
+    "regime_boundary": "Saturday (day_of_week=6) vs Weekday (Mon-Fri)",
+    "metric": "M3+ hit rate (any-bet draw-level, special_hit excluded, P265A SSOT definition)",
+    "direction": "two-tailed",
+    "alpha": 0.01,
+    "bonferroni_k": 1,
+    "alpha_corrected": 0.01,
+    "strategy": "TO_BE_DECLARED_IN_P269C_REGISTRY_ENTRY_BEFORE_DATA_LOOK",
+    "null_model": "regime_label_permutation T=10000 seed=42",
+    "oos_split": "temporal_70_30",
+    "cutoff_draw": "TO_BE_COMPUTED_AND_LOCKED_IN_P269C_REGISTRY_ENTRY",
+    "exclusions": ["Sunday draws", "draws with null date", "first draw in DB (no prior draw for gap computation)"],
+    "status": "NOT_REGISTERED — requires P269C to append to hypothesis_registry.jsonl"
+  },
+
+  "proposed_p269c_scope": {
+    "condition": "READY_FOR_REGISTRY",
+    "title": "P269C Calendar Regime H1 Registration and Test",
+    "authorized_actions": [
+      "Append H1 to lottery_api/data/hypothesis_registry.jsonl (Hypothesis Registry write)",
+      "Compute OOS temporal split cutoff draw number and lock it in registry",
+      "Declare strategy name in registry entry",
+      "Run permutation test on OOS window (T=10000, seed=42)",
+      "Compute IS directional check",
+      "Compute secondary gates (Cohen's h, three-window check)",
+      "Write test output artifact outputs/research/p269c_*.{json,md}"
+    ],
+    "forbidden_actions": [
+      "Test before registry write",
+      "Modify regime boundary after first data look",
+      "Switch strategy after first data look",
+      "Run C06 unless declared in same registry entry as C05",
+      "Test POWER_LOTTO or BIG_LOTTO without k correction",
+      "Claim hit-rate improvement before all gates pass"
+    ],
+    "model_recommendation": "Sonnet 中模型, thinking 中",
+    "task_type": "Type D (Hypothesis Registry write + statistical test)",
+    "requires_strong_model": false,
+    "requires_db_write": false,
+    "requires_external_fetch": false,
+    "requires_registry_write": true
+  },
+
+  "power_analysis_qualitative": {
+    "warning": "LOW POWER for Saturday vs Weekday comparison",
+    "oos_saturday_n": "~242 draws",
+    "oos_weekday_n": "~1524 draws",
+    "m3plus_baseline_estimate": "~1-3% per draw for a 3-bet strategy (strategy-dependent; P267C: f4cold_5bet was ~2% for M3+; acb_markov_midfreq estimates similar range)",
+    "expected_m3plus_events_in_saturday_oos": "~2-7 events (242 draws × ~1-3%)",
+    "fisher_exact_guard": "With < 5 events, Fisher's exact two-tailed test replaces permutation as primary",
+    "minimum_detectable_effect": "To achieve p=0.01 (one-tailed, approximately) with N_sat=242, N_weekday=1524, a baseline rate of 2%: requires Saturday rate >= ~5% (approximately 2.5× baseline). This is a large effect size unlikely without strong causal mechanism.",
+    "interpretation": "The test has power only for LARGE effects. Small-to-medium regime effects cannot be detected at this sample size. Null result cannot distinguish 'no effect' from 'effect too small to detect'. This is a fundamental limitation of the Saturday subsample size."
+  },
+
+  "design_verdict": {
+    "verdict": "READY_FOR_REGISTRY",
+    "reason": "The pre-registration design is technically sound and p-hacking-proof. The binary Saturday/Weekday boundary (C05) was pre-identified in P213 H_REGIME_SEGMENTATION as a valid design direction for DAILY_539. The feature (days_since_last_draw / calendar regime) is confirmed NOT tested in P219 M10 MI sweep (P253H). Data is fully available in-repo without external fetch. The OOS split, Bonferroni k, permutation null, and strategy selection rules can all be declared before any data look. The design is scientifically valid even though the expected result is null.",
+    "caveats": [
+      "Hit-rate plausibility is LOW. P269A-Lite top recommendation was NO_GO.",
+      "Power is limited: OOS Saturday N~=242 can only detect very large effects (>2× rate ratio).",
+      "Expected result: null (consistent with L82 signal space exhaustion).",
+      "This must be treated as a SINGLE-SHOT test. If null, C05/C06 are permanently closed.",
+      "READY_FOR_REGISTRY means the design is valid, NOT that the test is expected to succeed."
+    ],
+    "why_not_no_go": "NO_GO_DESIGN_TOO_WEAK would apply if: (a) the design cannot be formulated without p-hacking, (b) sample sizes are so small that no meaningful test is possible, or (c) the test is structurally identical to a prior rejection. None of these apply: the binary Saturday/Weekday boundary is pre-specified, N=242 Saturday OOS draws is sparse but testable via Fisher's exact, and L82 did not test this specific regime stratification."
+  },
+
+  "explicit_non_claims": {
+    "no_statistical_test_run": true,
+    "no_hit_rate_improvement_claim": true,
+    "no_strategy": true,
+    "no_picks": true,
+    "no_numbers_generated": true,
+    "no_betting_recommendation": true,
+    "no_db_write": true,
+    "no_registry_write": true,
+    "no_h1_test_run": true,
+    "statement": "This artifact is a pre-registration DESIGN document only. No statistical test has been run. No per-regime statistics have been computed. No hypothesis has been registered. No strategy has been promoted. This does not constitute a strategy recommendation, a betting recommendation, a hit-rate improvement claim, or an authorization to bet."
+  },
+
+  "final_classification": "P269B_CALENDAR_REGIME_PRE_REGISTRATION_DESIGN_COMPLETE_READY_FOR_REGISTRY"
+}

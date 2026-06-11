@@ -1,0 +1,81 @@
+{
+  "task_id": "P269C_CALENDAR_REGIME_REGISTRY_AND_FORMAL_H1_TEST",
+  "generated_at": "2026-06-11T13:05:05.838713",
+  "schema_version": "1.0",
+  "registry_append": {
+    "hypothesis_id": "HR-P269C-H1-DAILY539-SATURDAY-M3PLUS-001",
+    "action": "EXISTS_IDENTICAL_SKIPPED",
+    "registered_at": "2026-06-11T13:04:25.847732",
+    "registered_before_computation": true,
+    "registry_path": "lottery_api/data/hypothesis_registry.jsonl"
+  },
+  "inherited_boundaries": {
+    "p269a_lite_no_go": {
+      "status": "NO_GO",
+      "note": "P269A-Lite top recommendation was NO_GO; C05/C06 are LOW-plausibility WATCHLIST; user explicitly accepted this pathway."
+    },
+    "p269b_ready_for_registry": {
+      "classification": "P269B_CALENDAR_REGIME_PRE_REGISTRATION_DESIGN_PR414_MERGED",
+      "design_artifact": "outputs/research/p269b_calendar_regime_pre_registration_design_20260611.json"
+    },
+    "p268_draw_order": "ALREADY_NULL — not reopened (H2/H3 stay closed)"
+  },
+  "low_plausibility_warning": "LOW hit-rate plausibility pathway. Expected result was null (L82 signal space exhaustion). Single-shot test: if null, C05/C06 are permanently CLOSED.",
+  "h1_method": {
+    "candidate": "C05 draw weekday / schedule regime",
+    "primary_game": "DAILY_539",
+    "hypothesis": "Saturday vs Mon-Fri M3+ rate difference",
+    "metric": "M3+ (P265A SSOT: draw-level any-bet hit_count>=3, special_hit excluded)",
+    "strategy_id": "acb_markov_midfreq_3bet",
+    "test": "two-tailed permutation, regime labels exchangeable",
+    "permutations": 10000,
+    "seed": 42,
+    "alpha": 0.01,
+    "p_value_formula": "plain fraction of |perm_stat| >= |observed_stat| (P269B pre-registered)"
+  },
+  "endpoint": {
+    "definition": "temporal OOS last 1765 eligible DAILY_539 draws",
+    "eligible_total": 5878,
+    "oos_cutoff_draw": "109000253",
+    "oos_last_draw": "115000141",
+    "oos_n": 1765,
+    "oos_saturday_n": 294,
+    "oos_weekday_n": 1471,
+    "replay_coverage_total": 1500,
+    "evaluable_n": 1494,
+    "evaluable_saturday_n": 249,
+    "evaluable_weekday_n": 1245,
+    "coverage_note": "Replay store covers the most-recent 1,500 distinct draws; 6 of those are Sundays (excluded by pre-registered rule), leaving 1,494 evaluable OOS draws. Subset is purely temporal/structural, declared in the registry entry before any outcome look."
+  },
+  "result": {
+    "n_saturday": 249,
+    "n_weekday": 1245,
+    "m3plus_events_saturday": 8,
+    "m3plus_events_weekday": 44,
+    "saturday_rate": 0.0321285140562249,
+    "weekday_rate": 0.035341365461847386,
+    "rate_diff_sat_minus_weekday": -0.0032128514056224897,
+    "abs_statistic": 0.0032128514056224897,
+    "permutations": 10000,
+    "seed": 42,
+    "perm_ge_count": 8526,
+    "p_value": 0.8526
+  },
+  "fisher_exact_backup": {
+    "label": "NOT_TRIGGERED (Saturday M3+ events >= 5)"
+  },
+  "h1_classification": "H1_PRIMARY_FAIL",
+  "c06_secondary": "NOT_RUN",
+  "scans_performed": "NONE — single pre-registered boundary, no weekday/threshold/lottery scan",
+  "explicit_non_claims": {
+    "no_db_write": true,
+    "no_strategy": true,
+    "no_picks": true,
+    "no_numbers_generated": true,
+    "no_betting_recommendation": true,
+    "no_hit_rate_improvement_claim": true,
+    "statement": "This is a pre-registered statistical test result only. It does not improve win rate, does not predict lottery numbers, does not authorize betting advice, and does not constitute a strategy recommendation."
+  },
+  "recommended_next_task": "P269D closeout / diagnostics-only NULL",
+  "final_classification": "P269C_CALENDAR_REGIME_FORMAL_H1_COMPLETE_PRIMARY_FAIL"
+}

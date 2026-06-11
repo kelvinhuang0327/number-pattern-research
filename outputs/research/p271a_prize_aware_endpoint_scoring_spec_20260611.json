@@ -1,0 +1,460 @@
+{
+  "task_id": "P271A",
+  "generated_at": "2026-06-11T13:51:55Z",
+  "repo_head": "4435a48b7c43cad5464bb4d1cd70458e421faa90",
+  "branch": "task/p271a-prize-aware-endpoint-scoring-spec",
+  "mode": "prize_aware_endpoint_scoring_spec",
+
+  "parallel_feature_design": {
+    "principle": "Prize-aware scoring is a NEW PARALLEL feature track alongside existing M3+/replay scoring. It does NOT replace, deprecate, or modify the existing M3+ endpoint or any replay infrastructure.",
+    "existing_track_preserved": {
+      "endpoint": "M3+ (hit_count >= 3, special_hit excluded)",
+      "standard": "P265A SSOT",
+      "status": "UNCHANGED — all existing tests, API contracts, DB queries, and research pre-registered against M3+ continue to use M3+ without modification",
+      "consumers_protected": ["replay.py history-overview", "replay.py d3-strategy-status-coverage", "P267C revalidation", "P269C calendar regime H1", "P270B geometry audit", "all pre-registered hypothesis entries using M3+ as endpoint"]
+    },
+    "new_parallel_track": {
+      "endpoints": ["POWER_ANY_PRIZE_AWARE_WIN", "BIG_ANY_PRIZE_AWARE_WIN", "D539_ANY_PRIZE_AWARE_WIN", "TIER_CLASS endpoints", "Mx_PLUS_SECOND/SPECIAL variants"],
+      "implementation_mode": "Read-only computed expressions at query time — no new columns written to strategy_prediction_replays, no schema change, no existing query modified",
+      "coexistence_guarantee": "Prize-aware rates are reported as ADDITIONAL metrics alongside M3+ rates, never as substitutes. Any future report that includes prize-aware rates MUST also report the corresponding M3+ rate for the same cell.",
+      "promotion_gate": "Prize-aware endpoints are evaluation tools only. They may not be used as standalone promotion gates without going through the full P221F pre-registration process."
+    },
+    "no_migration_path": "There is no migration path from M3+ to prize-aware. Both tracks run in perpetuity. Deprecating M3+ requires a separate explicit governance decision with user authorization."
+  },
+
+  "official_sources": [
+    "https://www.taiwanlottery.com/lotto/info/super_lotto638",
+    "https://www.taiwanlottery.com/lotto/info/lotto649",
+    "https://www.taiwanlottery.com/lotto/info/daily_cash"
+  ],
+
+  "source_status_by_lottery": {
+    "POWER_LOTTO": {
+      "status": "MANUAL_VERIFICATION_REQUIRED",
+      "prize_tier_structure_source": "lottery_api/CLAUDE.md (repo documentation — complete prize table for 威力彩 extracted from calc_prize docstring)",
+      "prize_amounts_source": "NOT_MACHINE_READ — official page https://www.taiwanlottery.com/lotto/info/super_lotto638 is dynamically rendered (JavaScript SPA); curl/WebFetch returned navigation shell only; no prize amounts retrieved",
+      "game_rules_source": "lottery_api/CLAUDE.md + lottery_api/models/ultra_optimized_predictor.py + lottery_api/utils/baseline_calculator.py",
+      "notes": "Prize tier matching conditions (number-of-hits + second-zone) are sourced from internal repo documentation and are consistent with publicly known 威力彩 rules. Prize amounts (NTD) are NOT included in this spec and must be verified against https://www.taiwanlottery.com/lotto/info/super_lotto638 before any production use."
+    },
+    "BIG_LOTTO": {
+      "status": "MANUAL_VERIFICATION_REQUIRED",
+      "prize_tier_structure_source": "lottery_api/CLAUDE.md (repo documentation — complete prize table for 大樂透 extracted from calc_prize docstring)",
+      "prize_amounts_source": "NOT_MACHINE_READ — official page https://www.taiwanlottery.com/lotto/info/lotto649 is dynamically rendered; no prize amounts retrieved",
+      "game_rules_source": "lottery_api/CLAUDE.md + strategy_prediction_replays schema (actual_special present, predicted_special absent → special_hit logic confirmed as actual_special in predicted_numbers)",
+      "notes": "Prize tier matching conditions are sourced from internal repo documentation. Prize amounts must be verified against official source before production use."
+    },
+    "DAILY_539": {
+      "status": "MANUAL_VERIFICATION_REQUIRED",
+      "prize_tier_structure_source": "lottery_api/calculate_win_probability.py (explicit prize tier enumeration: 頭獎5/5, 貳獎4/5, 參獎3/5, 肆獎2/5) + lottery_api/tools/predict_539.py (confirms 'No special number') + lottery_api/CLAUDE.md (5/39 rules, no second zone)",
+      "prize_amounts_source": "NOT_MACHINE_READ — official page https://www.taiwanlottery.com/lotto/info/daily_cash is dynamically rendered; no prize amounts retrieved",
+      "game_rules_source": "Multiple repo sources confirm 5 numbers from 1-39, no special number, no second zone",
+      "notes": "Prize tier matching conditions sourced from repo code. No special/second-zone number exists for DAILY_539 (confirmed by schema: predicted_special=0, actual_special=0 across all 34,680 DAILY_539 replay rows)."
+    }
+  },
+
+  "official_rule_summary_by_lottery": {
+    "POWER_LOTTO": {
+      "game_name_tw": "威力彩",
+      "game_id": "super_lotto638",
+      "pick_rule": "Pick 6 numbers from 1-38 (first zone) + Pick 1 number from 1-8 (second zone / power number)",
+      "first_zone_pool": "1-38 (38 numbers, choose 6)",
+      "second_zone_pool": "1-8 (8 numbers, choose 1)",
+      "special_hit_logic": "predicted_special == actual_special (exact match of second-zone number prediction)",
+      "prize_tiers": [
+        {"rank": 1, "name_tw": "頭獎", "condition": "first_zone_hits=6 AND second_zone_hit=true", "hit_count": 6, "special_hit": true},
+        {"rank": 2, "name_tw": "貳獎", "condition": "first_zone_hits=6 AND second_zone_hit=false", "hit_count": 6, "special_hit": false},
+        {"rank": 3, "name_tw": "參獎", "condition": "first_zone_hits=5 AND second_zone_hit=true", "hit_count": 5, "special_hit": true},
+        {"rank": 4, "name_tw": "肆獎", "condition": "first_zone_hits=5 AND second_zone_hit=false", "hit_count": 5, "special_hit": false},
+        {"rank": 5, "name_tw": "伍獎", "condition": "first_zone_hits=4 AND second_zone_hit=true", "hit_count": 4, "special_hit": true},
+        {"rank": 6, "name_tw": "陸獎", "condition": "first_zone_hits=4 AND second_zone_hit=false", "hit_count": 4, "special_hit": false},
+        {"rank": 7, "name_tw": "柒獎", "condition": "first_zone_hits=3 AND second_zone_hit=true", "hit_count": 3, "special_hit": true},
+        {"rank": 8, "name_tw": "捌獎", "condition": "first_zone_hits=2 AND second_zone_hit=true", "hit_count": 2, "special_hit": true},
+        {"rank": 9, "name_tw": "玖獎", "condition": "first_zone_hits=3 AND second_zone_hit=false", "hit_count": 3, "special_hit": false},
+        {"rank": 10, "name_tw": "普獎", "condition": "first_zone_hits=1 AND second_zone_hit=true", "hit_count": 1, "special_hit": true}
+      ],
+      "note_prize_amounts": "NOT_VERIFIED — parimutuel jackpot structure; fixed amounts for lower tiers; must verify at https://www.taiwanlottery.com/lotto/info/super_lotto638"
+    },
+    "BIG_LOTTO": {
+      "game_name_tw": "大樂透",
+      "game_id": "lotto649",
+      "pick_rule": "Pick 6 numbers from 1-49 (main numbers); special number drawn from remaining 43 balls after main draw",
+      "main_pool": "1-49 (49 numbers, choose 6)",
+      "special_number_pool": "Drawn from remaining 43 balls (not a separate pool)",
+      "special_hit_logic": "actual_special IN predicted_numbers (the actual special number is among the 6 predicted main numbers)",
+      "prize_tiers": [
+        {"rank": 1, "name_tw": "頭獎", "condition": "main_hits=6", "hit_count": 6, "special_hit": "irrelevant"},
+        {"rank": 2, "name_tw": "貳獎", "condition": "main_hits=5 AND special_hit=true", "hit_count": 5, "special_hit": true},
+        {"rank": 3, "name_tw": "參獎", "condition": "main_hits=5 AND special_hit=false", "hit_count": 5, "special_hit": false},
+        {"rank": 4, "name_tw": "肆獎", "condition": "main_hits=4 AND special_hit=true", "hit_count": 4, "special_hit": true},
+        {"rank": 5, "name_tw": "伍獎", "condition": "main_hits=4 AND special_hit=false", "hit_count": 4, "special_hit": false},
+        {"rank": 6, "name_tw": "陸獎", "condition": "main_hits=3 AND special_hit=true", "hit_count": 3, "special_hit": true},
+        {"rank": 7, "name_tw": "柒獎", "condition": "main_hits=3 AND special_hit=false", "hit_count": 3, "special_hit": false},
+        {"rank": 8, "name_tw": "普獎", "condition": "main_hits=2 AND special_hit=true", "hit_count": 2, "special_hit": true}
+      ],
+      "note_prize_amounts": "NOT_VERIFIED — parimutuel structure for top tiers; fixed amounts for lower tiers; must verify at https://www.taiwanlottery.com/lotto/info/lotto649"
+    },
+    "DAILY_539": {
+      "game_name_tw": "今彩539",
+      "game_id": "daily_cash",
+      "pick_rule": "Pick 5 numbers from 1-39 (main numbers only; no special number; no second zone)",
+      "main_pool": "1-39 (39 numbers, choose 5)",
+      "special_number": "NONE — no special number exists for DAILY_539",
+      "second_zone": "NONE — no second zone exists for DAILY_539",
+      "special_hit_logic": "N/A — special_hit is always 0 for DAILY_539 (confirmed: 0 actual_special rows in 34,680 DAILY_539 replay rows)",
+      "prize_tiers": [
+        {"rank": 1, "name_tw": "頭獎", "condition": "main_hits=5 (all 5 match)", "hit_count": 5, "special_hit": false},
+        {"rank": 2, "name_tw": "貳獎", "condition": "main_hits=4 (4 of 5 match)", "hit_count": 4, "special_hit": false},
+        {"rank": 3, "name_tw": "參獎", "condition": "main_hits=3 (3 of 5 match)", "hit_count": 3, "special_hit": false},
+        {"rank": 4, "name_tw": "肆獎", "condition": "main_hits=2 (2 of 5 match)", "hit_count": 2, "special_hit": false}
+      ],
+      "note_prize_amounts": "NOT_VERIFIED — fixed amounts; must verify at https://www.taiwanlottery.com/lotto/info/daily_cash"
+    }
+  },
+
+  "lottery_type_mapping": {
+    "POWER_LOTTO": {
+      "internal_key": "POWER_LOTTO",
+      "game_id": "super_lotto638",
+      "display_name_tw": "威力彩",
+      "replay_row_count": 36104,
+      "draw_row_count": 1917,
+      "existing_m3plus_diagnostic_endpoint": "M3+ (hit_count>=3 for first zone, special_hit excluded from M3+ definition per P265A SSOT)"
+    },
+    "BIG_LOTTO": {
+      "internal_key": "BIG_LOTTO",
+      "game_id": "lotto649",
+      "display_name_tw": "大樂透",
+      "replay_row_count": 24140,
+      "draw_row_count": 2114,
+      "canonical_draw_view": "draws_big_lotto_canonical_main",
+      "existing_m3plus_diagnostic_endpoint": "M3+ (hit_count>=3, special_hit excluded per P265A SSOT)"
+    },
+    "DAILY_539": {
+      "internal_key": "DAILY_539",
+      "game_id": "daily_cash",
+      "display_name_tw": "今彩539",
+      "replay_row_count": 34680,
+      "draw_row_count": 5882,
+      "existing_m3plus_diagnostic_endpoint": "M3+ (hit_count>=3, no special_hit since DAILY_539 has none)"
+    }
+  },
+
+  "endpoint_definitions": {
+    "POWER_LOTTO": {
+      "POWER_M1_PLUS_SECOND": {
+        "description": "At least 1 first-zone main-number hit AND second-zone (special) hit",
+        "condition_sql": "hit_count >= 1 AND special_hit = 1",
+        "prize_tiers_covered": ["普獎", "捌獎", "柒獎", "伍獎", "參獎", "頭獎"],
+        "notes": "Covers all second-zone-inclusive prize tiers from 普獎 upward. Requires predicted_special to be populated."
+      },
+      "POWER_M2_PLUS_SECOND": {
+        "description": "At least 2 first-zone hits AND second-zone hit",
+        "condition_sql": "hit_count >= 2 AND special_hit = 1",
+        "prize_tiers_covered": ["捌獎", "柒獎", "伍獎", "參獎", "頭獎"],
+        "notes": "Covers 捌獎 (2+second) and higher with second-zone."
+      },
+      "POWER_M3_PLUS_SECOND": {
+        "description": "At least 3 first-zone hits AND second-zone hit",
+        "condition_sql": "hit_count >= 3 AND special_hit = 1",
+        "prize_tiers_covered": ["柒獎", "伍獎", "參獎", "頭獎"],
+        "notes": "Covers 柒獎 (3+second) and higher with second-zone."
+      },
+      "POWER_M4_PLUS_SECOND": {
+        "description": "At least 4 first-zone hits AND second-zone hit",
+        "condition_sql": "hit_count >= 4 AND special_hit = 1",
+        "prize_tiers_covered": ["伍獎", "參獎", "頭獎"],
+        "notes": "Covers 伍獎 (4+second) and higher with second-zone."
+      },
+      "POWER_M5_PLUS_SECOND": {
+        "description": "At least 5 first-zone hits AND second-zone hit",
+        "condition_sql": "hit_count >= 5 AND special_hit = 1",
+        "prize_tiers_covered": ["參獎", "頭獎"],
+        "notes": "Covers 參獎 (5+second) and 頭獎 (6+second)."
+      },
+      "POWER_M6_PLUS_SECOND": {
+        "description": "All 6 first-zone hits AND second-zone hit — jackpot (頭獎)",
+        "condition_sql": "hit_count = 6 AND special_hit = 1",
+        "prize_tiers_covered": ["頭獎"],
+        "notes": "Jackpot only. Extremely rare; not a useful evaluation endpoint for strategy research given low base rate."
+      },
+      "POWER_M6_NO_SECOND": {
+        "description": "All 6 first-zone hits AND no second-zone hit (貳獎)",
+        "condition_sql": "hit_count = 6 AND special_hit = 0",
+        "prize_tiers_covered": ["貳獎"],
+        "notes": "2nd prize only (all 6 first-zone, second-zone miss). Extremely rare."
+      },
+      "POWER_ANY_PRIZE_AWARE_WIN": {
+        "description": "Any prize-winning combination per official prize table",
+        "condition_sql": "hit_count >= 3 OR (hit_count >= 1 AND special_hit = 1)",
+        "derivation": "Union of all prize conditions: ranks 1-10. hit_count>=3 covers 玖獎/柒獎/肆獎/參獎/貳獎/頭獎; (hit_count>=1 AND special_hit=1) covers 普獎/捌獎/伍獎/參獎/頭獎. Their union covers all 10 prize tiers.",
+        "prize_tiers_covered": ["頭獎", "貳獎", "參獎", "肆獎", "伍獎", "陸獎", "柒獎", "捌獎", "玖獎", "普獎"],
+        "notes": "This is the most comprehensive prize-aware success endpoint for POWER_LOTTO."
+      },
+      "POWER_TIER_CLASS": {
+        "description": "Categorical prize tier classification per draw-bet",
+        "values": [
+          {"value": "NO_PRIZE", "condition": "hit_count < 3 AND NOT (hit_count >= 1 AND special_hit = 1)"},
+          {"value": "CONSOLATION_1ST_SECOND", "condition": "hit_count = 1 AND special_hit = 1", "tw": "普獎"},
+          {"value": "TIER_8_2ND_SECOND", "condition": "hit_count = 2 AND special_hit = 1", "tw": "捌獎"},
+          {"value": "TIER_9_3RD_ONLY", "condition": "hit_count = 3 AND special_hit = 0", "tw": "玖獎"},
+          {"value": "TIER_7_3RD_SECOND", "condition": "hit_count = 3 AND special_hit = 1", "tw": "柒獎"},
+          {"value": "TIER_6_4TH_ONLY", "condition": "hit_count = 4 AND special_hit = 0", "tw": "陸獎"},
+          {"value": "TIER_5_4TH_SECOND", "condition": "hit_count = 4 AND special_hit = 1", "tw": "伍獎"},
+          {"value": "TIER_4_5TH_ONLY", "condition": "hit_count = 5 AND special_hit = 0", "tw": "肆獎"},
+          {"value": "TIER_3_5TH_SECOND", "condition": "hit_count = 5 AND special_hit = 1", "tw": "參獎"},
+          {"value": "TIER_2_6TH_ONLY", "condition": "hit_count = 6 AND special_hit = 0", "tw": "貳獎"},
+          {"value": "TIER_1_JACKPOT", "condition": "hit_count = 6 AND special_hit = 1", "tw": "頭獎"}
+        ],
+        "notes": "Mutually exclusive classification. Requires both hit_count and special_hit to be populated."
+      },
+      "POWER_MAIN_M3_PLUS_DIAGNOSTIC": {
+        "description": "BACKWARD-COMPATIBLE DIAGNOSTIC ONLY: at least 3 first-zone main-number hits (special_hit excluded)",
+        "condition_sql": "hit_count >= 3",
+        "is_prize_aware": false,
+        "notes": "This is the existing P265A SSOT M3+ endpoint. It is a main-number-only diagnostic, NOT a prize-aware success endpoint. hit_count>=3 covers 玖獎(3/no-second), 柒獎(3+second), 陸獎(4/no-second), 伍獎(4+second), 肆獎(5/no-second), 參獎(5+second), 貳獎(6/no-second), 頭獎(6+second) — but MISSES 捌獎(2+second) and 普獎(1+second). Use POWER_ANY_PRIZE_AWARE_WIN for full prize coverage."
+      },
+      "POWER_MAIN_M4_PLUS_DIAGNOSTIC": {
+        "description": "BACKWARD-COMPATIBLE DIAGNOSTIC ONLY: at least 4 first-zone hits (special_hit excluded)",
+        "condition_sql": "hit_count >= 4",
+        "is_prize_aware": false,
+        "notes": "Main-number diagnostic for higher-tier coverage analysis. Not a complete prize-aware endpoint."
+      }
+    },
+
+    "BIG_LOTTO": {
+      "BIG_M2_PLUS_SPECIAL": {
+        "description": "At least 2 main-number hits AND special number hit",
+        "condition_sql": "hit_count >= 2 AND special_hit = 1",
+        "prize_tiers_covered": ["普獎", "肆獎", "貳獎"],
+        "notes": "Covers 普獎 (2+special) and higher with special. special_hit is computed as actual_special IN predicted_numbers."
+      },
+      "BIG_M3_PLUS_SPECIAL": {
+        "description": "At least 3 main-number hits AND special number hit",
+        "condition_sql": "hit_count >= 3 AND special_hit = 1",
+        "prize_tiers_covered": ["陸獎", "肆獎", "貳獎"],
+        "notes": "Covers 陸獎 (3+special) and higher with special."
+      },
+      "BIG_M4_PLUS_SPECIAL": {
+        "description": "At least 4 main-number hits AND special number hit",
+        "condition_sql": "hit_count >= 4 AND special_hit = 1",
+        "prize_tiers_covered": ["肆獎", "貳獎"],
+        "notes": "Covers 肆獎 (4+special) and higher with special."
+      },
+      "BIG_M5_PLUS_SPECIAL": {
+        "description": "At least 5 main-number hits AND special number hit",
+        "condition_sql": "hit_count >= 5 AND special_hit = 1",
+        "prize_tiers_covered": ["貳獎"],
+        "notes": "Covers 貳獎 (5+special) only — 2nd prize. Extremely rare."
+      },
+      "BIG_M6_MAIN": {
+        "description": "All 6 main-number hits — jackpot (頭獎), regardless of special",
+        "condition_sql": "hit_count = 6",
+        "prize_tiers_covered": ["頭獎"],
+        "notes": "Jackpot tier. Note: for 大樂透 the jackpot is 6/6 main match; special_hit does not distinguish sub-tiers at 6-hit level."
+      },
+      "BIG_ANY_PRIZE_AWARE_WIN": {
+        "description": "Any prize-winning combination per official prize table",
+        "condition_sql": "hit_count >= 3 OR (hit_count = 2 AND special_hit = 1)",
+        "derivation": "Union of all prize conditions: hit_count>=3 covers 柒獎/陸獎/伍獎/肆獎/參獎/貳獎/頭獎; (hit_count=2 AND special_hit=1) covers 普獎. All 8 prize tiers covered.",
+        "prize_tiers_covered": ["頭獎", "貳獎", "參獎", "肆獎", "伍獎", "陸獎", "柒獎", "普獎"],
+        "notes": "Most comprehensive prize-aware success endpoint for BIG_LOTTO."
+      },
+      "BIG_TIER_CLASS": {
+        "description": "Categorical prize tier classification per draw-bet",
+        "values": [
+          {"value": "NO_PRIZE", "condition": "hit_count < 3 AND NOT (hit_count = 2 AND special_hit = 1)"},
+          {"value": "CONSOLATION_2ND_SPECIAL", "condition": "hit_count = 2 AND special_hit = 1", "tw": "普獎"},
+          {"value": "TIER_7_3RD_ONLY", "condition": "hit_count = 3 AND special_hit = 0", "tw": "柒獎"},
+          {"value": "TIER_6_3RD_SPECIAL", "condition": "hit_count = 3 AND special_hit = 1", "tw": "陸獎"},
+          {"value": "TIER_5_4TH_ONLY", "condition": "hit_count = 4 AND special_hit = 0", "tw": "伍獎"},
+          {"value": "TIER_4_4TH_SPECIAL", "condition": "hit_count = 4 AND special_hit = 1", "tw": "肆獎"},
+          {"value": "TIER_3_5TH_ONLY", "condition": "hit_count = 5 AND special_hit = 0", "tw": "參獎"},
+          {"value": "TIER_2_5TH_SPECIAL", "condition": "hit_count = 5 AND special_hit = 1", "tw": "貳獎"},
+          {"value": "TIER_1_JACKPOT", "condition": "hit_count = 6", "tw": "頭獎"}
+        ],
+        "notes": "Mutually exclusive classification. special_hit is actual_special IN predicted_numbers; this is always available from actual_special (100% populated)."
+      },
+      "BIG_MAIN_M3_PLUS_DIAGNOSTIC": {
+        "description": "BACKWARD-COMPATIBLE DIAGNOSTIC ONLY: at least 3 main-number hits (special_hit excluded from count)",
+        "condition_sql": "hit_count >= 3",
+        "is_prize_aware": false,
+        "notes": "Existing P265A SSOT M3+ endpoint. NOT prize-aware: misses 普獎 (2+special). Use BIG_ANY_PRIZE_AWARE_WIN for full prize coverage."
+      },
+      "BIG_MAIN_M4_PLUS_DIAGNOSTIC": {
+        "description": "BACKWARD-COMPATIBLE DIAGNOSTIC ONLY: at least 4 main-number hits (special_hit excluded)",
+        "condition_sql": "hit_count >= 4",
+        "is_prize_aware": false,
+        "notes": "Main-number diagnostic for higher-tier analysis. Not a complete prize-aware endpoint."
+      }
+    },
+
+    "DAILY_539": {
+      "D539_M2_PLUS": {
+        "description": "At least 2 main-number hits — lowest prize tier (肆獎) and above",
+        "condition_sql": "hit_count >= 2",
+        "prize_tiers_covered": ["肆獎", "參獎", "貳獎", "頭獎"],
+        "notes": "Covers all prize tiers for DAILY_539 including the minimum 2-match prize."
+      },
+      "D539_M3_PLUS": {
+        "description": "At least 3 main-number hits — 參獎 and above",
+        "condition_sql": "hit_count >= 3",
+        "prize_tiers_covered": ["參獎", "貳獎", "頭獎"],
+        "notes": "Covers 3/4/5-match prize tiers. This is also the existing P265A SSOT M3+ diagnostic endpoint, which IS prize-aware for DAILY_539 (since no lower prizes are missed by M3+, except 肆獎). To count 肆獎 (2-match), use D539_M2_PLUS."
+      },
+      "D539_M4_PLUS": {
+        "description": "At least 4 main-number hits — 貳獎 and above",
+        "condition_sql": "hit_count >= 4",
+        "prize_tiers_covered": ["貳獎", "頭獎"],
+        "notes": "Covers 4-match and 5-match prizes."
+      },
+      "D539_M5": {
+        "description": "All 5 main-number hits — jackpot (頭獎) only",
+        "condition_sql": "hit_count = 5",
+        "prize_tiers_covered": ["頭獎"],
+        "notes": "Jackpot (頭獎) only. Extremely rare (1 in ~575,757 draws)."
+      },
+      "D539_ANY_PRIZE_AWARE_WIN": {
+        "description": "Any prize-winning combination for DAILY_539 (any of 4 prize tiers)",
+        "condition_sql": "hit_count >= 2",
+        "derivation": "Identical to D539_M2_PLUS since all DAILY_539 prize tiers require at least 2 main-number hits.",
+        "prize_tiers_covered": ["肆獎", "參獎", "貳獎", "頭獎"],
+        "notes": "For DAILY_539, ANY_PRIZE_AWARE_WIN == D539_M2_PLUS. No special/second zone exists."
+      },
+      "D539_TIER_CLASS": {
+        "description": "Categorical prize tier classification per draw-bet for DAILY_539",
+        "values": [
+          {"value": "NO_PRIZE", "condition": "hit_count < 2"},
+          {"value": "TIER_4_2ND", "condition": "hit_count = 2", "tw": "肆獎"},
+          {"value": "TIER_3_3RD", "condition": "hit_count = 3", "tw": "參獎"},
+          {"value": "TIER_2_4TH", "condition": "hit_count = 4", "tw": "貳獎"},
+          {"value": "TIER_1_JACKPOT", "condition": "hit_count = 5", "tw": "頭獎"}
+        ],
+        "notes": "No special_hit or second_zone involved. Fully determined by hit_count."
+      }
+    }
+  },
+
+  "tier_class_definitions": {
+    "description": "Summary mapping of TIER_CLASS values to prize rank, for all three lottery types",
+    "POWER_LOTTO_tier_class_ordered_by_rank": [
+      {"tier_class": "TIER_1_JACKPOT",    "rank": 1, "tw": "頭獎", "condition": "hit=6, second=YES"},
+      {"tier_class": "TIER_2_6TH_ONLY",   "rank": 2, "tw": "貳獎", "condition": "hit=6, second=NO"},
+      {"tier_class": "TIER_3_5TH_SECOND", "rank": 3, "tw": "參獎", "condition": "hit=5, second=YES"},
+      {"tier_class": "TIER_4_5TH_ONLY",   "rank": 4, "tw": "肆獎", "condition": "hit=5, second=NO"},
+      {"tier_class": "TIER_5_4TH_SECOND", "rank": 5, "tw": "伍獎", "condition": "hit=4, second=YES"},
+      {"tier_class": "TIER_6_4TH_ONLY",   "rank": 6, "tw": "陸獎", "condition": "hit=4, second=NO"},
+      {"tier_class": "TIER_7_3RD_SECOND", "rank": 7, "tw": "柒獎", "condition": "hit=3, second=YES"},
+      {"tier_class": "TIER_8_2ND_SECOND", "rank": 8, "tw": "捌獎", "condition": "hit=2, second=YES"},
+      {"tier_class": "TIER_9_3RD_ONLY",   "rank": 9, "tw": "玖獎", "condition": "hit=3, second=NO"},
+      {"tier_class": "CONSOLATION_1ST_SECOND", "rank": 10, "tw": "普獎", "condition": "hit=1, second=YES"},
+      {"tier_class": "NO_PRIZE",           "rank": null, "tw": "未中獎"}
+    ],
+    "BIG_LOTTO_tier_class_ordered_by_rank": [
+      {"tier_class": "TIER_1_JACKPOT",         "rank": 1, "tw": "頭獎", "condition": "hit=6"},
+      {"tier_class": "TIER_2_5TH_SPECIAL",     "rank": 2, "tw": "貳獎", "condition": "hit=5, special=YES"},
+      {"tier_class": "TIER_3_5TH_ONLY",        "rank": 3, "tw": "參獎", "condition": "hit=5, special=NO"},
+      {"tier_class": "TIER_4_4TH_SPECIAL",     "rank": 4, "tw": "肆獎", "condition": "hit=4, special=YES"},
+      {"tier_class": "TIER_5_4TH_ONLY",        "rank": 5, "tw": "伍獎", "condition": "hit=4, special=NO"},
+      {"tier_class": "TIER_6_3RD_SPECIAL",     "rank": 6, "tw": "陸獎", "condition": "hit=3, special=YES"},
+      {"tier_class": "TIER_7_3RD_ONLY",        "rank": 7, "tw": "柒獎", "condition": "hit=3, special=NO"},
+      {"tier_class": "CONSOLATION_2ND_SPECIAL","rank": 8, "tw": "普獎", "condition": "hit=2, special=YES"},
+      {"tier_class": "NO_PRIZE",               "rank": null, "tw": "未中獎"}
+    ],
+    "DAILY_539_tier_class_ordered_by_rank": [
+      {"tier_class": "TIER_1_JACKPOT", "rank": 1, "tw": "頭獎", "condition": "hit=5"},
+      {"tier_class": "TIER_2_4TH",     "rank": 2, "tw": "貳獎", "condition": "hit=4"},
+      {"tier_class": "TIER_3_3RD",     "rank": 3, "tw": "參獎", "condition": "hit=3"},
+      {"tier_class": "TIER_4_2ND",     "rank": 4, "tw": "肆獎", "condition": "hit=2"},
+      {"tier_class": "NO_PRIZE",        "rank": null, "tw": "未中獎"}
+    ]
+  },
+
+  "backward_compatibility_notes": {
+    "architectural_principle": "Prize-aware scoring is a NEW PARALLEL FEATURE, not a replacement for M3+/replay scoring. Both tracks run concurrently. M3+ is NOT deprecated.",
+    "existing_m3plus_endpoint": "The existing P265A SSOT M3+ endpoint (hit_count >= 3, special_hit excluded) remains the canonical research diagnostic endpoint. All pre-registered hypotheses, API contracts, and existing tests using M3+ continue unchanged. Prize-aware endpoints are ADDITIVE — they run in parallel and are reported alongside M3+, never instead of it.",
+    "POWER_LOTTO_M3_gap": "M3+ misses POWER_LOTTO 捌獎 (hit=2, second=YES) and 普獎 (hit=1, second=YES). POWER_ANY_PRIZE_AWARE_WIN provides full-prize coverage as a parallel metric.",
+    "BIG_LOTTO_M3_gap": "M3+ misses BIG_LOTTO 普獎 (hit=2, special=YES). BIG_ANY_PRIZE_AWARE_WIN provides full-prize coverage as a parallel metric.",
+    "DAILY_539_M3_gap": "M3+ misses DAILY_539 肆獎 (hit=2). D539_ANY_PRIZE_AWARE_WIN (= D539_M2_PLUS) provides full-prize coverage as a parallel metric. M3+ remains useful as a higher-bar diagnostic.",
+    "DAILY_539_special_note": "For DAILY_539, M3+ covers 參獎/貳獎/頭獎. The parallel prize-aware track adds 肆獎 (2-match). Both are valid concurrently.",
+    "coexistence_rule": "Any future research report including prize-aware rates MUST also include the corresponding M3+ rate for the same strategy cell. Neither track alone is sufficient.",
+    "no_replacement_allowed": "Implementing prize-aware scoring does NOT authorize removing, changing, or re-weighting M3+ in any existing endpoint, test, or API response."
+  },
+
+  "schema_inventory": {
+    "table": "strategy_prediction_replays",
+    "relevant_fields": {
+      "lottery_type": "TEXT — POWER_LOTTO | BIG_LOTTO | DAILY_539",
+      "target_draw": "TEXT — draw number (must cast to INTEGER for ordering)",
+      "strategy_id": "TEXT — strategy identifier",
+      "bet_index": "INTEGER — 1-based bet index within strategy",
+      "replay_status": "TEXT — must be PREDICTED for valid evaluation rows",
+      "predicted_numbers": "TEXT (JSON array) — predicted main numbers",
+      "predicted_special": "INTEGER or NULL — predicted second-zone number for POWER_LOTTO (populated for 9,000/36,104 rows = ~25%); NULL for BIG_LOTTO; NULL for DAILY_539",
+      "actual_numbers": "TEXT (JSON array) — actual drawn main numbers",
+      "actual_special": "INTEGER or NULL — actual special/second-zone number; populated for POWER_LOTTO (100%) and BIG_LOTTO (100%); NULL for DAILY_539",
+      "hit_count": "INTEGER — number of predicted main-number hits in actual main numbers",
+      "hit_numbers": "TEXT (JSON array) — which predicted numbers were hits",
+      "special_hit": "INTEGER (0/1) — for POWER_LOTTO: predicted_special==actual_special; for BIG_LOTTO: actual_special IN predicted_numbers; for DAILY_539: always 0",
+      "dry_run": "INTEGER — must be 0 for production evaluation rows"
+    },
+    "schema_limitations": {
+      "POWER_LOTTO_predicted_special_gap": "predicted_special is NULL for 27,104/36,104 POWER_LOTTO rows (~75%). This means POWER_ANY_PRIZE_AWARE_WIN cannot be computed for these rows when it depends on special_hit for hit_count < 3. The special_hit column reflects whether the prediction was made AND matched. For rows where predicted_special IS NULL, special_hit = 0 (default). This may undercount 普獎/捌獎 events where no second-zone prediction was made.",
+      "BIG_LOTTO_predicted_special_absent": "BIG_LOTTO has no predicted_special (0/24,140 rows). special_hit is computed post-hoc as actual_special IN predicted_numbers. This is correct and complete since BIG_LOTTO does not require predicting the special number separately.",
+      "DAILY_539_no_special": "DAILY_539 has no actual_special or predicted_special (confirmed 0/34,680 rows). All special-dependent endpoints are N/A."
+    }
+  },
+
+  "required_future_code_fields": {
+    "for_prize_aware_scoring_implementation": [
+      "hit_count — already present",
+      "special_hit — already present (with limitations noted above for POWER_LOTTO predicted_special gap)",
+      "lottery_type — already present (required to select correct endpoint logic)",
+      "tier_class — NOT YET COMPUTED in DB; must be derived from hit_count + special_hit using lottery_type-specific rules",
+      "any_prize_win — NOT YET COMPUTED; must be derived per lottery_type using POWER_ANY_PRIZE_AWARE_WIN / BIG_ANY_PRIZE_AWARE_WIN / D539_ANY_PRIZE_AWARE_WIN conditions"
+    ],
+    "recommended_future_computed_columns_or_views": [
+      "prize_tier_class TEXT — categorical tier per row (derived, not stored)",
+      "prize_aware_win INTEGER — 0/1 per row using ANY_PRIZE_AWARE_WIN condition per lottery_type"
+    ],
+    "note": "These fields should be computed at query time or in a read-only view, NOT written to strategy_prediction_replays (no DB write authorized in this task or in standard research mode)."
+  },
+
+  "forbidden_actions": [
+    "No backtest was run in this task",
+    "No DB write occurred in this task",
+    "No hypothesis_registry.jsonl mutation occurred in this task",
+    "No strategy was generated in this task",
+    "No production/API/frontend code was modified in this task",
+    "No hit-rate improvement is claimed in this task",
+    "P270C remains not authorized",
+    "P271B/P271C/P271D were not started",
+    "Prize-aware endpoints defined here are future evaluation specifications only, not betting advice"
+  ],
+
+  "no_backtest_run": true,
+  "db_write": false,
+  "registry_write": false,
+  "strategy_generated": false,
+  "hit_rate_improvement_claimed": false,
+  "p270c_allowed": false,
+
+  "next_recommended_task": {
+    "task_id": "P271B",
+    "description": "Prize-aware endpoint implementation — add prize_tier_class and any_prize_win computed logic to replay evaluation queries (read-only, no DB write). Run prize-aware success rate queries across all 36 replay-backed strategy cells. Compare prize-aware rates to existing M3+ diagnostic rates.",
+    "prerequisites": [
+      "P271A spec review and user authorization",
+      "MANUAL_VERIFICATION_REQUIRED: user or reviewer confirms prize tier structures against official Taiwan Lottery pages before P271B implementation"
+    ],
+    "authorization_required": "YES — separate explicit authorization"
+  },
+
+  "final_classification": "P271A_PRIZE_AWARE_ENDPOINT_SPEC_COMPLETE",
+
+  "limitations": [
+    "Prize amounts (NTD values) are NOT included in this spec — official Taiwan Lottery pages are dynamically rendered and could not be machine-read. Prize tier MATCHING CONDITIONS are sourced from internal repo documentation (lottery_api/CLAUDE.md, calculate_win_probability.py) which are consistent with publicly known rules.",
+    "POWER_LOTTO predicted_special gap: 75% of POWER_LOTTO replay rows have NULL predicted_special. Prize-aware endpoints requiring second-zone prediction (POWER_M1_PLUS_SECOND through POWER_M6_PLUS_SECOND) will have coverage limitations for rows without predicted_special. POWER_ANY_PRIZE_AWARE_WIN is still computable but under-represents 普獎/捌獎 for rows without predicted_special.",
+    "Prize amounts require MANUAL_VERIFICATION_REQUIRED against official Taiwan Lottery pages before any prize-amount-dependent analysis.",
+    "This spec defines evaluation endpoints only — it does NOT define which endpoints qualify for strategy promotion gates. The existing P221F gate and governance rules remain in force.",
+    "No prize-aware backtest was run. No strategy performance under prize-aware metrics is claimed."
+  ]
+}

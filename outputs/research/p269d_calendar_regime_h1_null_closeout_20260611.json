@@ -1,0 +1,140 @@
+{
+  "task_id": "P269D",
+  "task_type": "Type E — governance closeout artifact (no statistical test, no DB write, no registry write)",
+  "date": "2026-06-11 Asia/Taipei",
+  "generated_at": "2026-06-11T13:30:00",
+  "final_classification": "P269D_CALENDAR_REGIME_H1_NULL_CLOSEOUT_COMPLETE",
+  "closeout_verdict": "CALENDAR_REGIME_DIAGNOSTICS_ONLY_NULL_CLOSURE",
+  "description": "Formal closeout of the P269B/P269C calendar regime research arc. C05 (Saturday vs Mon-Fri) primary H1 failed with p=0.8526. Per the P269B pre-registered single-shot stop rule, both C05 and undeclared C06 are permanently CLOSED for this arc.",
+
+  "inherited_boundaries": {
+    "p268_draw_order": {
+      "status": "ALREADY_NULL",
+      "detail": "P268D4 draw-order (drawNumberAppear) H1 PRIMARY_FAIL (DAILY_539 p=0.3051 >= alpha=0.01). H2, H3 NOT AUTHORIZED. No re-parameterization of draw-order / exit-rank-heterogeneity is authorized.",
+      "merge_commit": "ee4a306",
+      "pr": "PR #412"
+    },
+    "p269a_lite_no_go": {
+      "status": "NO_GO",
+      "detail": "P269A-Lite repo-only scouting evaluated 9 external signal families. Top candidate recommendation: NO_GO. No high-plausibility external signal found. WATCHLIST only: C05 (weekday regime) and C06 (calendar gap) — both LOW plausibility.",
+      "final_classification": "P269A_LITE_NEXT_EXTERNAL_SIGNAL_REPO_ONLY_SCOUTING_COMPLETE_NO_GO",
+      "merge_commit": "85b09c2",
+      "pr": "PR #413"
+    },
+    "p269b_ready_for_registry": {
+      "status": "DESIGN_COMPLETE",
+      "detail": "P269B pre-registration design was READY_FOR_REGISTRY with LOW plausibility caveats. Declared single-shot primary H1: C05 Saturday vs Mon-Fri M3+ DAILY_539 two-tailed permutation. C06 was declared as secondary — NOT declared simultaneously in P269C registry entry, therefore closed alongside C05 per stop rule.",
+      "design_verdict": "READY_FOR_REGISTRY",
+      "final_classification": "P269B_CALENDAR_REGIME_PRE_REGISTRATION_DESIGN_COMPLETE_READY_FOR_REGISTRY",
+      "design_artifact": "outputs/research/p269b_calendar_regime_pre_registration_design_20260611.json",
+      "merge_commit": "71d03b2",
+      "pr": "PR #414"
+    },
+    "p269c_formal_h1": {
+      "status": "H1_PRIMARY_FAIL",
+      "hypothesis_id": "HR-P269C-H1-DAILY539-SATURDAY-M3PLUS-001",
+      "registry_status": "PRE_REGISTERED_BEFORE_TEST",
+      "final_classification": "P269C_CALENDAR_REGIME_FORMAL_H1_COMPLETE_PRIMARY_FAIL",
+      "merge_commit": "e2c2798",
+      "pr": "PR #415"
+    }
+  },
+
+  "p269c_h1_result": {
+    "primary_game": "DAILY_539",
+    "strategy": "acb_markov_midfreq_3bet",
+    "endpoint": "temporal OOS last 1765 eligible draws; evaluable (OOS intersection replay coverage) = 1494 draws",
+    "n_saturday": 249,
+    "n_weekday": 1245,
+    "permutations": 10000,
+    "seed": 42,
+    "alpha": 0.01,
+    "m3plus_events_saturday": 8,
+    "m3plus_events_weekday": 44,
+    "saturday_rate": 0.03212851,
+    "weekday_rate": 0.03534137,
+    "rate_diff_sat_minus_weekday": -0.00321285,
+    "rate_diff_pp": -0.32,
+    "p_value": 0.8526,
+    "fisher_backup_triggered": false,
+    "fisher_backup_note": "Saturday events = 8 >= 5; permutation primary used",
+    "h1_classification": "H1_PRIMARY_FAIL",
+    "c06_secondary": "NOT_RUN",
+    "scans_performed": "NONE"
+  },
+
+  "closed_candidates": {
+    "C05": {
+      "description": "Saturday vs Mon-Fri draw weekday / schedule regime",
+      "status": "CLOSED",
+      "reason": "H1_PRIMARY_FAIL: p=0.8526 >= alpha=0.01. Saturday M3+ rate (3.21%) slightly lower than Mon-Fri (3.53%) — direction is slightly negative, magnitude is trivially small. Clean null consistent with L82 DAILY_539 signal space exhaustion.",
+      "reopen_authorized": false
+    },
+    "C06": {
+      "description": "Calendar gap >= 2 days (primarily Monday draws and post-holiday draws)",
+      "status": "NOT_RUN_CLOSED_FOR_THIS_ARC",
+      "reason": "C06 was declared as secondary in P269B design but was NOT simultaneously declared in the P269C registry entry. Per P269B stop rule: 'IF OOS primary gate p >= alpha_corrected: C05 is permanently CLOSED. C06 (if declared) is permanently CLOSED.' C06 was not declared; therefore it cannot be tested in this arc without a new genuinely new signal source and fresh pre-registration.",
+      "reopen_authorized": false
+    }
+  },
+
+  "stop_rule_applied": {
+    "source": "P269B pre-registration design section 12",
+    "rule": "IF OOS primary gate p >= alpha_corrected: the test is COMPLETE and the result is NULL. C05 is permanently CLOSED. C06 (if declared) is permanently CLOSED. No re-testing with modified regime boundaries, metrics, or strategies is authorized under this pre-registration.",
+    "triggered": true,
+    "p_observed": 0.8526,
+    "alpha_corrected": 0.01,
+    "verdict": "p=0.8526 >> alpha=0.01 — stop rule fires, calendar regime arc permanently closed"
+  },
+
+  "no_signal_interpretation": {
+    "result_consistent_with": [
+      "L82: DAILY_539 H001-H008 all REJECT — signal space exhausted across 5885 draws",
+      "L103: H009 Lag-1 neighbor p=0.840 — even structurally plausible hypotheses fail",
+      "L91: BIG_LOTTO 6 randomness tests PASS — fair random process",
+      "L104/L105: Digit tail and consecutive pattern — null in 539",
+      "P267C: 0/36 cells pass Bonferroni under M3+ SSOT metric"
+    ],
+    "direction_note": "Saturday rate (3.21%) was slightly LOWER than Mon-Fri (3.53%), consistent with noise around baseline. Negative direction with p=0.8526 means no evidence for any directional effect.",
+    "power_note": "P269B power analysis: OOS Saturday N=249 can only detect very large effects (Saturday rate >= ~5%, ~2.5x baseline). A null result proves 'no large effect' — not 'no effect whatsoever'. However, per single-shot stop rule, no re-test is authorized.",
+    "causal_note": "Lottery RNG is independent of calendar labels. No causal mechanism exists for a Saturday effect on ball draw outcomes."
+  },
+
+  "future_reopen_rule": {
+    "authorized": false,
+    "conditions": "No re-test of C05/C06 calendar regime is authorized under this pre-registration. Future research would require: (1) a genuinely new external signal source beyond repo-only evidence (e.g., confirmed structural draw-day difference from Taiwan Lottery official data), (2) a fresh pre-registration with new hypothesis ID, and (3) user authorization.",
+    "forbidden": [
+      "Modified regime boundaries (e.g., weekend vs weekday, individual day testing)",
+      "Modified metrics (e.g., M2+, M1+)",
+      "Modified strategy after seeing C05 null",
+      "Modified OOS window",
+      "C06 as post-hoc salvage"
+    ]
+  },
+
+  "explicit_non_claims": {
+    "no_statistical_test_run_in_p269d": true,
+    "no_p269c_script_rerun": true,
+    "no_db_write": true,
+    "no_registry_write": true,
+    "no_strategy": true,
+    "no_picks": true,
+    "no_numbers_generated": true,
+    "no_hit_rate_improvement_claim": true,
+    "no_p268_h2_h3_reopen": true,
+    "no_c06_test": true,
+    "no_weekday_threshold_scan": true,
+    "p269d_is_closeout_only": true
+  },
+
+  "arc_summary": {
+    "arc": "P269 calendar regime (external signal scouting → design → formal H1 → closeout)",
+    "tasks": ["P269A-Lite (NO_GO scouting)", "P269B (pre-registration design)", "P269C (formal H1 test)", "P269D (null closeout)"],
+    "prs": ["PR #413 (P269A-Lite)", "PR #414 (P269B)", "PR #415 (P269C)", "P269D (this closeout)"],
+    "result": "NULL — C05 and C06 calendar regime permanently closed",
+    "lessons_consistent_with": ["L82", "L91", "L103", "L104", "L105"],
+    "recommended_next": "HOLD — per L137, no further active signal mining until P245B bias gate opens or a genuinely new external data source appears. No research is authorized within the current repo-only evidence boundary."
+  },
+
+  "not_betting_advice": "This artifact does not improve win rate, does not predict lottery numbers, does not authorize betting advice, and does not constitute a strategy recommendation. It is a governance closeout record only."
+}

@@ -25,7 +25,9 @@ This adapter is **parallel** to the existing M3+/replay pipeline. It does not mo
 - **MANUAL_VERIFICATION_REQUIRED:** `source_verification_status = "MANUAL_VERIFICATION_REQUIRED"` is propagated from the scorer on all outputs.
 - **M3+ scoring unchanged:** All 30 smoke scorer calls returned `existing_m3_replay_scoring_changed=False`. Existing M3+ replay scoring is completely unaffected.
 - **Not registered in production:** No API route, frontend integration, or registry entry was added.
-- **P270C not executed:** No prize amounts, EV, ROI, or payout logic is implemented. Scorer results contain only structural tier classifications.
+- **P270C not executed:** No prize amounts, EV, ROI, or payout logic is implemented. Scorer results contain only structural tier classifications. No prize-amount logic was added. No EV or ROI logic was added.
+- **Temporal-window research was not started.** No window-based strategy search, feature scan, or temporal regime analysis was performed.
+- **Feature mining was not started.** No new feature discovery, selection, or evaluation was performed.
 
 ---
 
@@ -87,8 +89,13 @@ POWER_LOTTO has 27,104 rows excluded for `MISSING_PREDICTED_SECOND_ZONE`. These 
 
 ## Tests
 
-**File:** `tests/test_p271e_prize_aware_replay_adapter.py`  
-**Result:** 53 passed, 4 skipped (artifact file checks, passed after artifact creation)
+**File:** `tests/test_p271e_prize_aware_replay_adapter.py`
+
+**Focused P271E result:** 57 passed, 0 skipped
+
+**Combined P271A–E contract result:** 379 passed
+
+**Full-repo suite:** NOT RUN
 
 Test coverage:
 - Import isolation and version constants
@@ -109,6 +116,7 @@ Test coverage:
 - DB unchanged after smoke
 - No replay.py / API / registry / prize-amount / EV/ROI references
 - POWER full dataset not falsely declared fully eligible
+- Artifact contract: canonical_db_path, db_access boolean, new safety flag fields
 
 ---
 

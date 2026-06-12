@@ -1,0 +1,602 @@
+{
+  "task_id": "P271F_PRIZE_AWARE_FULL_HISTORY_DESCRIPTIVE_EVALUATION",
+  "generated_at": "2026-06-12T11:52:05.893967+00:00",
+  "repo_head_before_task": "d96b2e19252954e97a2a06d42a236573a70258eb",
+  "branch": "task/p271f-prize-aware-full-history-descriptive-eval",
+  "mode": "prize_aware_full_history_descriptive_evaluation",
+  "canonical_db_path": "lottery_api/data/lottery_v2.db",
+  "db_open_mode": "sqlite3 URI mode=ro",
+  "snapshot_metadata": {
+    "data_version_start": 2,
+    "data_version_end": 2,
+    "file_size_before_bytes": 99368960,
+    "file_size_after_bytes": 99368960,
+    "sha256_before": "3209a533b15e7b12bb8336a6f0cf92114d18dc0ae544de71f04954bdaa1d430e",
+    "sha256_after": "3209a533b15e7b12bb8336a6f0cf92114d18dc0ae544de71f04954bdaa1d430e",
+    "total_rows_before": {
+      "POWER_LOTTO": 36104,
+      "BIG_LOTTO": 24140,
+      "DAILY_539": 34680
+    },
+    "total_rows_after": {
+      "POWER_LOTTO": 36104,
+      "BIG_LOTTO": 24140,
+      "DAILY_539": 34680
+    }
+  },
+  "adapter_version": "prize_aware_adapter_v1",
+  "scoring_version": "prize_aware_v1",
+  "source_verification_status": "MANUAL_VERIFICATION_REQUIRED",
+  "preregistered_metric_contract": [
+    "total_replay_rows",
+    "structurally_eligible_rows",
+    "structurally_excluded_rows",
+    "exclusion_counts_by_reason",
+    "eligible_percentage",
+    "distinct_target_draws",
+    "processed_rows",
+    "causality_violation_count",
+    "ambiguous_join_count",
+    "main_hit_count_counts",
+    "auxiliary_hit_false_count",
+    "auxiliary_hit_true_count",
+    "any_prize_aware_win_count",
+    "any_prize_aware_win_rate",
+    "prize_tier_counts",
+    "prize_tier_rates",
+    "tier_class_counts",
+    "tier_class_rates",
+    "m3_plus_false_count",
+    "m3_plus_true_count",
+    "m3_plus_rate",
+    "prize_aware_and_m3_overlap_matrix"
+  ],
+  "actual_structural_snapshot": {
+    "POWER_LOTTO": {
+      "total_replay_rows": 36104,
+      "structurally_eligible_rows": 9000,
+      "structurally_excluded_rows": 27104,
+      "scope_label": "eligible-subset-only descriptive evaluation"
+    },
+    "BIG_LOTTO": {
+      "total_replay_rows": 24140,
+      "structurally_eligible_rows": 24140,
+      "structurally_excluded_rows": 0,
+      "scope_label": "full eligible-history descriptive evaluation"
+    },
+    "DAILY_539": {
+      "total_replay_rows": 34680,
+      "structurally_eligible_rows": 34680,
+      "structurally_excluded_rows": 0,
+      "scope_label": "full eligible-history descriptive evaluation"
+    }
+  },
+  "evaluation_scope_by_lottery": {
+    "POWER_LOTTO": "eligible-subset-only descriptive evaluation",
+    "BIG_LOTTO": "full eligible-history descriptive evaluation",
+    "DAILY_539": "full eligible-history descriptive evaluation"
+  },
+  "results_by_lottery": {
+    "POWER_LOTTO": {
+      "scope_label": "eligible-subset-only descriptive evaluation",
+      "total_replay_rows": 36104,
+      "structurally_eligible_rows": 9000,
+      "structurally_excluded_rows": 27104,
+      "exclusion_counts_by_reason": {
+        "MISSING_PREDICTED_SECOND_ZONE": 27104,
+        "INVALID_PREDICTED_MAIN_NUMBERS": 0,
+        "INVALID_ACTUAL_MAIN_NUMBERS": 0,
+        "INVALID_PREDICTED_SECOND_ZONE": 0,
+        "INVALID_ACTUAL_AUXILIARY": 0,
+        "MISSING_DRAW_JOIN": 0,
+        "AMBIGUOUS_DRAW_JOIN": 0,
+        "CAUSALITY_FAILURE": 0,
+        "UNSUPPORTED_LOTTERY_TYPE": 0
+      },
+      "eligible_percentage": {
+        "numerator": 9000,
+        "denominator": 36104,
+        "rate": 0.2492798582
+      },
+      "distinct_target_draws": 1500,
+      "processed_rows": 9000,
+      "causality_violation_count": 0,
+      "ambiguous_join_count": 0,
+      "main_hit_count_counts": {
+        "0": 2803,
+        "1": 4023,
+        "2": 1786,
+        "3": 368,
+        "4": 20
+      },
+      "auxiliary_hit_false_count": 7937,
+      "auxiliary_hit_true_count": 1063,
+      "any_prize_aware_win_count": 1069,
+      "any_prize_aware_win_rate": {
+        "numerator": 1069,
+        "denominator": 9000,
+        "rate": 0.1187777778
+      },
+      "prize_tier_counts": {
+        "POWER_CONSOLATION_PRIZE": 485,
+        "POWER_EIGHTH_PRIZE": 196,
+        "POWER_FIFTH_PRIZE": 3,
+        "POWER_NINTH_PRIZE": 326,
+        "POWER_NO_PRIZE": 7931,
+        "POWER_SEVENTH_PRIZE": 42,
+        "POWER_SIXTH_PRIZE": 17
+      },
+      "prize_tier_rates": {
+        "POWER_CONSOLATION_PRIZE": {
+          "numerator": 485,
+          "denominator": 9000,
+          "rate": 0.0538888889
+        },
+        "POWER_EIGHTH_PRIZE": {
+          "numerator": 196,
+          "denominator": 9000,
+          "rate": 0.0217777778
+        },
+        "POWER_FIFTH_PRIZE": {
+          "numerator": 3,
+          "denominator": 9000,
+          "rate": 0.0003333333
+        },
+        "POWER_NINTH_PRIZE": {
+          "numerator": 326,
+          "denominator": 9000,
+          "rate": 0.0362222222
+        },
+        "POWER_NO_PRIZE": {
+          "numerator": 7931,
+          "denominator": 9000,
+          "rate": 0.8812222222
+        },
+        "POWER_SEVENTH_PRIZE": {
+          "numerator": 42,
+          "denominator": 9000,
+          "rate": 0.0046666667
+        },
+        "POWER_SIXTH_PRIZE": {
+          "numerator": 17,
+          "denominator": 9000,
+          "rate": 0.0018888889
+        }
+      },
+      "tier_class_counts": {
+        "POWER_CONSOLATION_PRIZE": 485,
+        "POWER_EIGHTH_PRIZE": 196,
+        "POWER_FIFTH_PRIZE": 3,
+        "POWER_NINTH_PRIZE": 326,
+        "POWER_NO_PRIZE": 7931,
+        "POWER_SEVENTH_PRIZE": 42,
+        "POWER_SIXTH_PRIZE": 17
+      },
+      "tier_class_rates": {
+        "POWER_CONSOLATION_PRIZE": {
+          "numerator": 485,
+          "denominator": 9000,
+          "rate": 0.0538888889
+        },
+        "POWER_EIGHTH_PRIZE": {
+          "numerator": 196,
+          "denominator": 9000,
+          "rate": 0.0217777778
+        },
+        "POWER_FIFTH_PRIZE": {
+          "numerator": 3,
+          "denominator": 9000,
+          "rate": 0.0003333333
+        },
+        "POWER_NINTH_PRIZE": {
+          "numerator": 326,
+          "denominator": 9000,
+          "rate": 0.0362222222
+        },
+        "POWER_NO_PRIZE": {
+          "numerator": 7931,
+          "denominator": 9000,
+          "rate": 0.8812222222
+        },
+        "POWER_SEVENTH_PRIZE": {
+          "numerator": 42,
+          "denominator": 9000,
+          "rate": 0.0046666667
+        },
+        "POWER_SIXTH_PRIZE": {
+          "numerator": 17,
+          "denominator": 9000,
+          "rate": 0.0018888889
+        }
+      },
+      "m3_plus_false_count": 8612,
+      "m3_plus_true_count": 388,
+      "m3_plus_rate": {
+        "numerator": 388,
+        "denominator": 9000,
+        "rate": 0.0431111111
+      },
+      "prize_aware_and_m3_overlap_matrix": {
+        "prize_false_m3_false": 7931,
+        "prize_false_m3_true": 0,
+        "prize_true_m3_false": 681,
+        "prize_true_m3_true": 388
+      }
+    },
+    "BIG_LOTTO": {
+      "scope_label": "full eligible-history descriptive evaluation",
+      "total_replay_rows": 24140,
+      "structurally_eligible_rows": 24140,
+      "structurally_excluded_rows": 0,
+      "exclusion_counts_by_reason": {
+        "MISSING_PREDICTED_SECOND_ZONE": 0,
+        "INVALID_PREDICTED_MAIN_NUMBERS": 0,
+        "INVALID_ACTUAL_MAIN_NUMBERS": 0,
+        "INVALID_PREDICTED_SECOND_ZONE": 0,
+        "INVALID_ACTUAL_AUXILIARY": 0,
+        "MISSING_DRAW_JOIN": 0,
+        "AMBIGUOUS_DRAW_JOIN": 0,
+        "CAUSALITY_FAILURE": 0,
+        "UNSUPPORTED_LOTTERY_TYPE": 0
+      },
+      "eligible_percentage": {
+        "numerator": 24140,
+        "denominator": 24140,
+        "rate": 1.0
+      },
+      "distinct_target_draws": 1552,
+      "processed_rows": 24140,
+      "causality_violation_count": 0,
+      "ambiguous_join_count": 0,
+      "main_hit_count_counts": {
+        "0": 10490,
+        "1": 10089,
+        "2": 3074,
+        "3": 449,
+        "4": 38
+      },
+      "auxiliary_hit_false_count": 21141,
+      "auxiliary_hit_true_count": 2999,
+      "any_prize_aware_win_count": 756,
+      "any_prize_aware_win_rate": {
+        "numerator": 756,
+        "denominator": 24140,
+        "rate": 0.0313173157
+      },
+      "prize_tier_counts": {
+        "BIG_CONSOLATION_PRIZE": 269,
+        "BIG_FIFTH_PRIZE": 38,
+        "BIG_NO_PRIZE": 23384,
+        "BIG_SEVENTH_PRIZE": 421,
+        "BIG_SIXTH_PRIZE": 28
+      },
+      "prize_tier_rates": {
+        "BIG_CONSOLATION_PRIZE": {
+          "numerator": 269,
+          "denominator": 24140,
+          "rate": 0.0111433306
+        },
+        "BIG_FIFTH_PRIZE": {
+          "numerator": 38,
+          "denominator": 24140,
+          "rate": 0.0015741508
+        },
+        "BIG_NO_PRIZE": {
+          "numerator": 23384,
+          "denominator": 24140,
+          "rate": 0.9686826843
+        },
+        "BIG_SEVENTH_PRIZE": {
+          "numerator": 421,
+          "denominator": 24140,
+          "rate": 0.0174399337
+        },
+        "BIG_SIXTH_PRIZE": {
+          "numerator": 28,
+          "denominator": 24140,
+          "rate": 0.0011599006
+        }
+      },
+      "tier_class_counts": {
+        "BIG_CONSOLATION_PRIZE": 269,
+        "BIG_FIFTH_PRIZE": 38,
+        "BIG_NO_PRIZE": 23384,
+        "BIG_SEVENTH_PRIZE": 421,
+        "BIG_SIXTH_PRIZE": 28
+      },
+      "tier_class_rates": {
+        "BIG_CONSOLATION_PRIZE": {
+          "numerator": 269,
+          "denominator": 24140,
+          "rate": 0.0111433306
+        },
+        "BIG_FIFTH_PRIZE": {
+          "numerator": 38,
+          "denominator": 24140,
+          "rate": 0.0015741508
+        },
+        "BIG_NO_PRIZE": {
+          "numerator": 23384,
+          "denominator": 24140,
+          "rate": 0.9686826843
+        },
+        "BIG_SEVENTH_PRIZE": {
+          "numerator": 421,
+          "denominator": 24140,
+          "rate": 0.0174399337
+        },
+        "BIG_SIXTH_PRIZE": {
+          "numerator": 28,
+          "denominator": 24140,
+          "rate": 0.0011599006
+        }
+      },
+      "m3_plus_false_count": 23653,
+      "m3_plus_true_count": 487,
+      "m3_plus_rate": {
+        "numerator": 487,
+        "denominator": 24140,
+        "rate": 0.0201739851
+      },
+      "prize_aware_and_m3_overlap_matrix": {
+        "prize_false_m3_false": 23384,
+        "prize_false_m3_true": 0,
+        "prize_true_m3_false": 269,
+        "prize_true_m3_true": 487
+      }
+    },
+    "DAILY_539": {
+      "scope_label": "full eligible-history descriptive evaluation",
+      "total_replay_rows": 34680,
+      "structurally_eligible_rows": 34680,
+      "structurally_excluded_rows": 0,
+      "exclusion_counts_by_reason": {
+        "MISSING_PREDICTED_SECOND_ZONE": 0,
+        "INVALID_PREDICTED_MAIN_NUMBERS": 0,
+        "INVALID_ACTUAL_MAIN_NUMBERS": 0,
+        "INVALID_PREDICTED_SECOND_ZONE": 0,
+        "INVALID_ACTUAL_AUXILIARY": 0,
+        "MISSING_DRAW_JOIN": 0,
+        "AMBIGUOUS_DRAW_JOIN": 0,
+        "CAUSALITY_FAILURE": 0,
+        "UNSUPPORTED_LOTTERY_TYPE": 0
+      },
+      "eligible_percentage": {
+        "numerator": 34680,
+        "denominator": 34680,
+        "rate": 1.0
+      },
+      "distinct_target_draws": 1550,
+      "processed_rows": 34680,
+      "causality_violation_count": 0,
+      "ambiguous_join_count": 0,
+      "main_hit_count_counts": {
+        "0": 16618,
+        "1": 13729,
+        "2": 3944,
+        "3": 385,
+        "4": 4
+      },
+      "auxiliary_hit_false_count": 34680,
+      "auxiliary_hit_true_count": 0,
+      "any_prize_aware_win_count": 4333,
+      "any_prize_aware_win_rate": {
+        "numerator": 4333,
+        "denominator": 34680,
+        "rate": 0.1249423299
+      },
+      "prize_tier_counts": {
+        "D539_FOURTH_PRIZE": 3944,
+        "D539_NO_PRIZE": 30347,
+        "D539_SECOND_PRIZE": 4,
+        "D539_THIRD_PRIZE": 385
+      },
+      "prize_tier_rates": {
+        "D539_FOURTH_PRIZE": {
+          "numerator": 3944,
+          "denominator": 34680,
+          "rate": 0.1137254902
+        },
+        "D539_NO_PRIZE": {
+          "numerator": 30347,
+          "denominator": 34680,
+          "rate": 0.8750576701
+        },
+        "D539_SECOND_PRIZE": {
+          "numerator": 4,
+          "denominator": 34680,
+          "rate": 0.0001153403
+        },
+        "D539_THIRD_PRIZE": {
+          "numerator": 385,
+          "denominator": 34680,
+          "rate": 0.0111014994
+        }
+      },
+      "tier_class_counts": {
+        "D539_FOURTH_PRIZE": 3944,
+        "D539_NO_PRIZE": 30347,
+        "D539_SECOND_PRIZE": 4,
+        "D539_THIRD_PRIZE": 385
+      },
+      "tier_class_rates": {
+        "D539_FOURTH_PRIZE": {
+          "numerator": 3944,
+          "denominator": 34680,
+          "rate": 0.1137254902
+        },
+        "D539_NO_PRIZE": {
+          "numerator": 30347,
+          "denominator": 34680,
+          "rate": 0.8750576701
+        },
+        "D539_SECOND_PRIZE": {
+          "numerator": 4,
+          "denominator": 34680,
+          "rate": 0.0001153403
+        },
+        "D539_THIRD_PRIZE": {
+          "numerator": 385,
+          "denominator": 34680,
+          "rate": 0.0111014994
+        }
+      },
+      "m3_plus_false_count": 34291,
+      "m3_plus_true_count": 389,
+      "m3_plus_rate": {
+        "numerator": 389,
+        "denominator": 34680,
+        "rate": 0.0112168397
+      },
+      "prize_aware_and_m3_overlap_matrix": {
+        "prize_false_m3_false": 30347,
+        "prize_false_m3_true": 0,
+        "prize_true_m3_false": 3944,
+        "prize_true_m3_true": 389
+      }
+    }
+  },
+  "invariant_checks_by_lottery": {
+    "POWER_LOTTO": {
+      "processed_eq_eligible": true,
+      "eligible_plus_excluded_eq_total": true,
+      "main_hit_sum_eq_processed": true,
+      "aux_sum_eq_processed": true,
+      "prize_tier_sum_eq_processed": true,
+      "tier_class_sum_eq_processed": true,
+      "m3_sum_eq_processed": true,
+      "overlap_sum_eq_processed": true,
+      "any_win_count_matches_non_no_prize_sum": true,
+      "any_win_rate_matches_numerator_denominator": true,
+      "m3_rate_matches_numerator_denominator": true,
+      "no_scoring_changed_violations": true,
+      "all_prize_tier_rates_in_0_1": true,
+      "all_tier_class_rates_in_0_1": true,
+      "all_invariants_pass": true
+    },
+    "BIG_LOTTO": {
+      "processed_eq_eligible": true,
+      "eligible_plus_excluded_eq_total": true,
+      "main_hit_sum_eq_processed": true,
+      "aux_sum_eq_processed": true,
+      "prize_tier_sum_eq_processed": true,
+      "tier_class_sum_eq_processed": true,
+      "m3_sum_eq_processed": true,
+      "overlap_sum_eq_processed": true,
+      "any_win_count_matches_non_no_prize_sum": true,
+      "any_win_rate_matches_numerator_denominator": true,
+      "m3_rate_matches_numerator_denominator": true,
+      "no_scoring_changed_violations": true,
+      "all_prize_tier_rates_in_0_1": true,
+      "all_tier_class_rates_in_0_1": true,
+      "all_invariants_pass": true
+    },
+    "DAILY_539": {
+      "processed_eq_eligible": true,
+      "eligible_plus_excluded_eq_total": true,
+      "main_hit_sum_eq_processed": true,
+      "aux_sum_eq_processed": true,
+      "prize_tier_sum_eq_processed": true,
+      "tier_class_sum_eq_processed": true,
+      "m3_sum_eq_processed": true,
+      "overlap_sum_eq_processed": true,
+      "any_win_count_matches_non_no_prize_sum": true,
+      "any_win_rate_matches_numerator_denominator": true,
+      "m3_rate_matches_numerator_denominator": true,
+      "no_scoring_changed_violations": true,
+      "all_prize_tier_rates_in_0_1": true,
+      "all_tier_class_rates_in_0_1": true,
+      "all_invariants_pass": true
+    }
+  },
+  "exclusion_summary_by_lottery": {
+    "POWER_LOTTO": {
+      "MISSING_PREDICTED_SECOND_ZONE": 27104,
+      "INVALID_PREDICTED_MAIN_NUMBERS": 0,
+      "INVALID_ACTUAL_MAIN_NUMBERS": 0,
+      "INVALID_PREDICTED_SECOND_ZONE": 0,
+      "INVALID_ACTUAL_AUXILIARY": 0,
+      "MISSING_DRAW_JOIN": 0,
+      "AMBIGUOUS_DRAW_JOIN": 0,
+      "CAUSALITY_FAILURE": 0,
+      "UNSUPPORTED_LOTTERY_TYPE": 0
+    },
+    "BIG_LOTTO": {
+      "MISSING_PREDICTED_SECOND_ZONE": 0,
+      "INVALID_PREDICTED_MAIN_NUMBERS": 0,
+      "INVALID_ACTUAL_MAIN_NUMBERS": 0,
+      "INVALID_PREDICTED_SECOND_ZONE": 0,
+      "INVALID_ACTUAL_AUXILIARY": 0,
+      "MISSING_DRAW_JOIN": 0,
+      "AMBIGUOUS_DRAW_JOIN": 0,
+      "CAUSALITY_FAILURE": 0,
+      "UNSUPPORTED_LOTTERY_TYPE": 0
+    },
+    "DAILY_539": {
+      "MISSING_PREDICTED_SECOND_ZONE": 0,
+      "INVALID_PREDICTED_MAIN_NUMBERS": 0,
+      "INVALID_ACTUAL_MAIN_NUMBERS": 0,
+      "INVALID_PREDICTED_SECOND_ZONE": 0,
+      "INVALID_ACTUAL_AUXILIARY": 0,
+      "MISSING_DRAW_JOIN": 0,
+      "AMBIGUOUS_DRAW_JOIN": 0,
+      "CAUSALITY_FAILURE": 0,
+      "UNSUPPORTED_LOTTERY_TYPE": 0
+    }
+  },
+  "aggregate_only_output": true,
+  "row_level_output_written": false,
+  "raw_predicted_numbers_exported": false,
+  "raw_actual_numbers_exported": false,
+  "full_eligible_history_evaluation_run": true,
+  "power_full_population_evaluation_run": false,
+  "descriptive_rates_calculated": true,
+  "random_baseline_calculated": false,
+  "inferential_test_run": false,
+  "p_value_calculated": false,
+  "confidence_interval_calculated": false,
+  "lift_calculated": false,
+  "multiple_testing_correction_run": false,
+  "strategy_comparison_run": false,
+  "strategy_ranking_run": false,
+  "temporal_window_research_started": false,
+  "feature_mining_started": false,
+  "db_access": true,
+  "db_read_only": true,
+  "db_write": false,
+  "registry_write": false,
+  "existing_replay_modified": false,
+  "existing_adapter_modified": false,
+  "existing_scorer_modified": false,
+  "existing_m3_replay_scoring_changed": false,
+  "production_integration_added": false,
+  "strategy_generated": false,
+  "hit_rate_improvement_claimed": false,
+  "prize_amount_logic_added": false,
+  "ev_roi_logic_added": false,
+  "p270c_allowed": false,
+  "tests_result": {
+    "focused_p271f_tests_passed": 81,
+    "focused_p271f_tests_skipped": 0,
+    "combined_p271a_f_tests_passed": 472,
+    "test_file": "tests/test_p271f_prize_aware_full_history_descriptive_evaluation.py",
+    "full_repo_suite": "NOT RUN"
+  },
+  "modified_files": [
+    "analysis/p271f_prize_aware_full_history_descriptive_evaluation.py",
+    "tests/test_p271f_prize_aware_full_history_descriptive_evaluation.py",
+    "outputs/research/p271f_prize_aware_full_history_descriptive_evaluation_20260612.json",
+    "outputs/research/p271f_prize_aware_full_history_descriptive_evaluation_20260612.md",
+    "00-Plan/roadmap/active_task.md",
+    "00-Plan/roadmap/agent_bootstrap/CURRENT_STATE.md"
+  ],
+  "next_recommended_task": "HOLD / WAITING_FOR_USER_AUTHORIZATION. Possible next directions: (1) temporal-window stratified analysis (requires new explicit authorization); (2) strategy-level aggregation feasibility study (requires new explicit authorization); (3) P271G prize-amount integration if official prize table is machine-verified (requires P270C authorization and MANUAL_VERIFICATION_REQUIRED resolution).",
+  "final_classification": "P271F_COMPLETE_WITH_POWER_ELIGIBLE_SUBSET_ONLY",
+  "limitations": [
+    "POWER_LOTTO results apply only to the eligible subset (rows with stored prediction-time second-zone value, ~24.93% of total rows). Results must not be generalized to the full POWER_LOTTO replay population.",
+    "Official Taiwan Lottery prize tier rules are sourced from internal repo documentation (MANUAL_VERIFICATION_REQUIRED). Prize tier counts may differ from official payouts if the internal rules diverge from the current official rules.",
+    "Descriptive observed rates do not demonstrate predictive improvement, statistical uplift, or strategy effectiveness.",
+    "No random/null baseline has been calculated. Observed rates cannot be interpreted as evidence of above-chance performance without a separate inferential analysis.",
+    "Temporal stability of rates is unknown. Rates were computed over all available eligible history as a single aggregate."
+  ]
+}

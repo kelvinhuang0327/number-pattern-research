@@ -821,8 +821,9 @@ def test_feature_mining_started_is_false(artifact):
     assert artifact["feature_mining_started"] is False
 
 
-def test_md_focused_test_count_55_passed(md_content):
-    assert "55 passed" in md_content
+def test_md_focused_test_count_81_passed(md_content):
+    assert "81 passed" in md_content
+    assert "0 skipped" in md_content
 
 
 def test_md_full_repo_suite_not_run(md_content):

@@ -1,0 +1,406 @@
+{
+  "task_id": "P271G",
+  "generated_at": "2026-06-12T12:00:00+08:00",
+  "repo_head_before_task": "6ce381e73fadb828cf0d4a367922eb400f6ea4a9",
+  "branch": "task/p271g-prize-aware-null-prospective-preregistration",
+  "mode": "prize_aware_null_and_prospective_preregistration",
+  "design_only": true,
+  "preregistration_version": "p271g_v1",
+
+  "strict_outcome_blindness": false,
+  "prior_outcome_exposure": true,
+  "exposure_source": [
+    "mandatory_governance_files",
+    "interrupted_precommit_test_draft"
+  ],
+  "historical_results_inspected": true,
+  "p271f_outcome_metrics_read": true,
+  "outcome_values_read": true,
+  "outcome_values_copied_into_final_p271g_files": false,
+  "outcome_values_used_for_endpoint_selection": false,
+  "outcome_values_used_for_null_design": false,
+  "outcome_values_used_for_threshold_selection": false,
+  "outcome_values_used_for_multiple_testing_design": false,
+  "outcome_values_used_for_sample_gate_selection": false,
+  "design_contract_fixed_externally_by_task_prompt": true,
+  "retrospective_confirmatory_claim_allowed": false,
+  "prospective_confirmatory_claim_requires_post_merge_data": true,
+
+  "prior_outcome_exposure_integrity": {
+    "p271f_result_artifacts_ingested_by_p271g": false,
+    "authorized_structural_scope_keys_used": [
+      "lottery_type",
+      "eligibility_label",
+      "total_row_count",
+      "eligible_row_count",
+      "excluded_row_count",
+      "processed_row_count"
+    ],
+    "outcome_result_fields_ingested": [],
+    "mandatory_governance_exposure_disclosed": true,
+    "interrupted_test_draft_contamination_disclosed": true,
+    "prior_outcomes_used_in_design": false,
+    "design_contract_outcome_independent": true
+  },
+
+  "contamination_recovery": {
+    "preexisting_test_source_contained_outcome_value_blacklist": true,
+    "outcome_value_blacklist_removed": true,
+    "copied_outcome_values_present_in_final_test_source": false,
+    "copied_outcome_values_present_in_final_json": false,
+    "copied_outcome_values_present_in_final_md": false,
+    "final_p271g_files_contain_p271f_outcome_values": false,
+    "replacement_guard": "semantic result-schema, ingestion-absence, and executable-absence tests",
+    "design_rule_changed_due_to_contamination": false
+  },
+
+  "retrospective_population_contract": {
+    "population_id": "retrospective_exploratory",
+    "evidence_label": "exploratory",
+    "is_confirmatory": false,
+    "source": "Existing P271F structurally eligible historical replay rows (read-only, already merged).",
+    "permitted_use": "May later be used ONLY for explicitly retrospective exploratory benchmarking.",
+    "cannot_support_untouched_confirmatory_claims": true,
+    "power_eligible_subset_only": true,
+    "no_strategy_ranking_promotion_or_production_decision_on_this_population_alone": true,
+    "structural_scope": {
+      "note": "Structural eligibility scope counts only (authorized). These are NOT outcomes. No win rate, hit distribution, prize-tier count, or M3+ rate is recorded here.",
+      "POWER_LOTTO": {
+        "eligibility_label": "POWER_ELIGIBLE_SUBSET_ONLY",
+        "total_row_count": 36104,
+        "eligible_row_count": 9000,
+        "excluded_row_count": 27104,
+        "exclusion_reason": "MISSING_PREDICTED_SECOND_ZONE"
+      },
+      "BIG_LOTTO": {
+        "eligibility_label": "FULL",
+        "total_row_count": 24140,
+        "eligible_row_count": 24140,
+        "excluded_row_count": 0
+      },
+      "DAILY_539": {
+        "eligibility_label": "FULL",
+        "total_row_count": 34680,
+        "eligible_row_count": 34680,
+        "excluded_row_count": 0
+      }
+    }
+  },
+
+  "prospective_population_contract": {
+    "population_id": "prospective_confirmatory",
+    "evidence_label": "confirmatory",
+    "is_confirmatory": true,
+    "is_only_confirmatory_population": true,
+    "inclusion_rule": "ONLY prediction records created strictly after an immutable prospective cutoff.",
+    "prediction_must_exist_before_official_draw_close": true,
+    "outcome_joined_only_after_draw_completion": true,
+    "prediction_and_result_timestamps_must_be_auditable": true,
+    "no_retrospective_row_may_migrate_into_prospective_population": true,
+    "no_post_draw_regeneration_replacement_or_amendment": true,
+    "no_strategy_addition_after_cutoff_without_new_preregistration_version": true,
+    "power_eligible_subset_only": false,
+    "power_prospective_requirement": "POWER_LOTTO prospective predictions MUST include a predicted second zone; otherwise the affected prospective target-draw cluster is invalidated by the leakage gates."
+  },
+
+  "statistical_unit_contract": {
+    "reject_replay_row_independence": true,
+    "rows_within_draw_independent": false,
+    "primary_cluster_unit": "target_draw",
+    "cluster_scope": "target_draw within lottery_type",
+    "all_tickets_strategies_and_bet_index_rows_for_one_target_draw_belong_to_one_cluster": true,
+    "naive_row_level_binomial_p_value_prohibited": true,
+    "inference_must_preserve_within_draw_dependence": true,
+    "permitted_future_primary_method": "draw-clustered randomization/permutation test with a frozen deterministic seed schedule",
+    "permitted_future_sensitivity_method": "draw-cluster bootstrap confidence interval",
+    "primary_method_executed": false,
+    "sensitivity_method_executed": false,
+    "clustering_contract_version": "p271g_cluster_v1"
+  },
+
+  "null_ticket_generator_contract": {
+    "generation_unit": "per eligible prediction row",
+    "sampling": "uniformly sample from the valid ticket space for the row's lottery type",
+    "uniform_over_valid_ticket_space": true,
+    "preserve_lottery_type": true,
+    "preserve_target_draw": true,
+    "preserve_ticket_count_per_target_draw": true,
+    "preserve_total_row_ticket_count": true,
+    "do_not_preserve_model_selected_numbers": true,
+    "do_not_use_outcomes": true,
+    "generator_executed": false,
+    "null_generator_version": "p271g_null_v1"
+  },
+
+  "deterministic_seed_contract": {
+    "seed_derivation_inputs_ordered": [
+      "preregistration_version",
+      "lottery_type",
+      "replication_index"
+    ],
+    "derivation_method": "deterministic cryptographic derivation (e.g., SHA-256 over the canonically joined inputs) — fixed, reproducible, independent of any outcome",
+    "excluded_seed_inputs": [
+      "strategy_id",
+      "winning_numbers",
+      "p271f_outcomes",
+      "observed_performance"
+    ],
+    "seeds_exclude_outcomes": true,
+    "seeds_exclude_strategy_ids": true,
+    "seed_schedule_frozen": true
+  },
+
+  "simulation_contract": {
+    "primary_repetitions": 100000,
+    "minimum_valid_repetitions": 99900,
+    "adaptive_repetitions": false,
+    "early_stopping_prohibited": true,
+    "failed_repetitions_must_be_reported": true,
+    "failed_repetitions_selective_replacement_prohibited": true,
+    "simulations_executed": false,
+    "metric_contract_version": "p271g_metrics_v1"
+  },
+
+  "primary_endpoint_contract": {
+    "definition": "For each lottery: the draw-cluster mean of the any_prize_aware_win indicator across submitted tickets.",
+    "indicator": "any_prize_aware_win",
+    "aggregation": "draw_cluster_mean",
+    "per_lottery": true,
+    "family_size": 3,
+    "strategy_specific_endpoint_allowed": false
+  },
+
+  "secondary_endpoint_contract": {
+    "definition": "For each lottery: the draw-cluster mean of the M3+ indicator across submitted tickets.",
+    "indicator": "m3_plus",
+    "aggregation": "draw_cluster_mean",
+    "per_lottery": true,
+    "family_size": 3,
+    "strategy_specific_endpoint_allowed": false,
+    "cannot_override_primary_failure": true
+  },
+
+  "descriptive_only_endpoint_contract": {
+    "endpoints": [
+      "main_hit_distribution",
+      "auxiliary_hit_distribution",
+      "prize_tier_distribution",
+      "tier_class_distribution",
+      "prize_aware_m3_plus_overlap_matrix"
+    ],
+    "receive_no_confirmatory_p_value": true,
+    "cannot_independently_trigger_go": true,
+    "cannot_be_promoted_after_results_viewed": true,
+    "is_tier_distribution_descriptive_only": true
+  },
+
+  "effect_statistic_contract": {
+    "primary_observed_statistic": "mean of target-draw cluster win proportions (across draw clusters)",
+    "null_statistic": "the same statistic recomputed for each null replication",
+    "effect_direction": "observed statistic minus median null statistic",
+    "alternative_hypothesis": "one-sided, observed greater than null",
+    "values_calculated": false
+  },
+
+  "multiple_testing_contract": {
+    "primary_family": {
+      "description": "exactly three lottery-specific primary (any_prize_aware_win) tests",
+      "n_tests": 3,
+      "lotteries": ["POWER_LOTTO", "BIG_LOTTO", "DAILY_539"],
+      "correction": "Holm",
+      "correction_scope": "family-wise error control",
+      "alpha": 0.05
+    },
+    "secondary_family": {
+      "description": "exactly three lottery-specific M3+ tests",
+      "n_tests": 3,
+      "lotteries": ["POWER_LOTTO", "BIG_LOTTO", "DAILY_539"],
+      "correction": "Holm",
+      "correction_scope": "separate family-wise error control",
+      "alpha": 0.05,
+      "separate_from_primary": true,
+      "cannot_override_primary_failure": true
+    },
+    "no_confirmatory_testing_of_descriptive_endpoints": true
+  },
+
+  "minimum_evidence_gate": {
+    "candidate_label": "PROSPECTIVE_SIGNAL_CANDIDATE",
+    "requires_all": {
+      "primary_holm_adjusted_p_value_lt_0_05": true,
+      "observed_minus_null_effect_gt_0": true,
+      "draw_cluster_bootstrap_95_ci_lower_bound_gt_0": true,
+      "min_completed_target_draws": 100,
+      "min_eligible_prediction_tickets": 500,
+      "zero_causality_or_timestamp_violations": true,
+      "power_second_zone_prediction_present_where_required": true,
+      "null_integrity_checks_pass": true,
+      "positive_under_preregistered_sensitivity_analysis": true
+    },
+    "otherwise_classify_one_of": [
+      "NO_CONFIRMED_PROSPECTIVE_SIGNAL",
+      "INSUFFICIENT_PROSPECTIVE_SAMPLE",
+      "INVALID_PROSPECTIVE_EVIDENCE"
+    ],
+    "does_not_authorize_production_deployment_or_strategy_promotion": true
+  },
+
+  "no_strategy_promotion_authorized": true,
+
+  "prospective_cutoff_contract": {
+    "preregistration_created_at": "2026-06-12T12:00:00+08:00",
+    "preregistration_commit": "PENDING_P271G_MERGE_COMMIT",
+    "prospective_prediction_start_at": "PENDING_P271G_MERGE_TIMESTAMP",
+    "minimum_draws_per_lottery": 100,
+    "minimum_tickets_per_lottery": 500,
+    "no_outcome_before_start_timestamp_is_confirmatory": true,
+    "end_condition": "sample-based (frozen sample gates), NOT time-based and NOT peeking-based",
+    "no_repeated_peeking_go_decision": true,
+    "interim_descriptive_monitoring_may_contain_no_p_values_or_go_decision": true,
+    "final_confirmatory_analysis_runs_once": true,
+    "final_confirmatory_analysis_run_count": 1,
+    "historical_or_pre_merge_start_timestamp_prohibited": true,
+    "prospective_activation_requires_separate_authorized_task_after_p271g_merges": true,
+    "prospective_protocol_version": "p271g_prospective_v1"
+  },
+
+  "leakage_integrity_gates": {
+    "fail_closed": true,
+    "fail_closed_conditions": [
+      "prediction_created_at_is_not_before_draw_close_at",
+      "timestamps_missing_or_ambiguous",
+      "source_prediction_changes_after_draw_close",
+      "actual_result_was_available_during_prediction_generation",
+      "actual_special_or_second_zone_value_populated_a_predicted_field",
+      "target_draw_join_missing_or_non_unique",
+      "prediction_identity_duplicated",
+      "prediction_amended_after_cutoff",
+      "prospective_row_manually_backfilled",
+      "power_predicted_second_zone_missing",
+      "lottery_type_unsupported"
+    ],
+    "violation_consequence": "Any violation invalidates the affected prospective target-draw cluster.",
+    "missing_timestamps_rejected": true,
+    "post_draw_amendment_rejected": true,
+    "power_missing_second_zone_rejected": true
+  },
+
+  "amendment_policy": {
+    "amendment_requires_new_version": true,
+    "cannot_silently_reinterpret_prior_evidence": true,
+    "must_state_whether_prospective_sample_collection_resets": true,
+    "cannot_modify_treatment_of_prior_confirmatory_data_without_explicit_invalidation_or_versioning": true
+  },
+
+  "versioning_contract": {
+    "preregistration_version": "p271g_v1",
+    "metric_contract_version": "p271g_metrics_v1",
+    "null_generator_version": "p271g_null_v1",
+    "clustering_contract_version": "p271g_cluster_v1",
+    "prospective_protocol_version": "p271g_prospective_v1",
+    "amendment_policy_ref": "amendment_policy"
+  },
+
+  "lottery_rule_contracts": {
+    "rule_source": "Canonical game-structure rules per the P271A–P271E contracts and the lottery_api prize-aware scorer interface (_MAIN_NUMBER_RANGE / _SECOND_ZONE_RANGE / _MAIN_PICK_COUNT). Structural ranges are standard public game rules; official prize amounts remain MANUAL_VERIFICATION_REQUIRED.",
+    "POWER_LOTTO": {
+      "main_pick_count": 6,
+      "main_number_range": [1, 38],
+      "has_second_zone": true,
+      "second_zone_pick_count": 1,
+      "second_zone_range": [1, 8],
+      "null_samples_main_zone": true,
+      "null_samples_second_zone": true,
+      "has_predicted_special_field": false
+    },
+    "BIG_LOTTO": {
+      "main_pick_count": 6,
+      "main_number_range": [1, 49],
+      "has_second_zone": false,
+      "has_predicted_special_field": false,
+      "null_samples_main_zone": true,
+      "null_samples_second_zone": false,
+      "null_includes_predicted_special": false
+    },
+    "DAILY_539": {
+      "main_pick_count": 5,
+      "main_number_range": [1, 39],
+      "has_second_zone": false,
+      "has_auxiliary_field": false,
+      "null_samples_main_zone": true,
+      "null_samples_second_zone": false,
+      "null_includes_auxiliary": false
+    }
+  },
+
+  "power_eligible_subset_limitation": {
+    "limitation": "POWER_LOTTO retrospective evaluation is eligible-subset-only because the predicted second zone is structurally present for only a subset of rows; the remainder are excluded as MISSING_PREDICTED_SECOND_ZONE (never defaulted, inferred, or manufactured).",
+    "retrospective_eligibility_is_structural_scope_not_outcome": true,
+    "prospective_requirement": "Prospective POWER_LOTTO predictions MUST carry a predicted second zone before draw close; rows without it fail the leakage gate and invalidate their cluster.",
+    "structural_scope_counts": {
+      "total_row_count": 36104,
+      "eligible_row_count": 9000,
+      "excluded_row_count": 27104,
+      "exclusion_reason": "MISSING_PREDICTED_SECOND_ZONE"
+    }
+  },
+
+  "source_verification_status": "MANUAL_VERIFICATION_REQUIRED",
+
+  "baseline_executed": false,
+  "scorer_executed": false,
+  "adapter_executed": false,
+  "evaluation_rerun": false,
+  "db_access": false,
+  "db_write": false,
+  "p_value_calculated": false,
+  "confidence_interval_calculated": false,
+  "lift_calculated": false,
+  "effect_value_calculated": false,
+  "strategy_comparison_run": false,
+  "strategy_ranking_run": false,
+  "temporal_window_research_started": false,
+  "feature_mining_started": false,
+  "production_integration_added": false,
+  "hit_rate_improvement_claimed": false,
+  "p270c_allowed": false,
+
+  "next_activation_requirement": {
+    "summary": "P271G is design-only and freezes the contract. Prospective collection and any null-baseline execution are NOT activated by this task.",
+    "prospective_activation": "Requires a separate, explicitly authorized task AFTER P271G merges; prospective_prediction_start_at resolves to the P271G merge timestamp at that time.",
+    "null_baseline_execution": "Requires its own explicit authorization and a dedicated whitelist; not authorized here.",
+    "scorer_and_adapter_execution_against_prospective_data": "Requires separate explicit authorization.",
+    "p270c": "remains unauthorized",
+    "temporal_window_research_and_feature_mining": "not started; require separate explicit authorization and pre-registration"
+  },
+
+  "tests_result": {
+    "focused_test_file": "tests/test_p271g_prize_aware_null_prospective_preregistration.py",
+    "focused_command": "./venv/bin/python -m pytest tests/test_p271g_prize_aware_null_prospective_preregistration.py -q",
+    "combined_command": "./venv/bin/python -m pytest tests/test_p271a_prize_aware_endpoint_scoring_spec.py tests/test_p271b_official_prize_rule_scoring_engine_design.py tests/test_p271c_prize_aware_scorer.py tests/test_p271d_prize_aware_replay_input_feasibility_audit.py tests/test_p271e_prize_aware_replay_adapter.py tests/test_p271f_prize_aware_full_history_descriptive_evaluation.py tests/test_p271g_prize_aware_null_prospective_preregistration.py -q",
+    "result_recording": "Exact focused and combined P271A-G pass counts are recorded in the PR body and governance files (CURRENT_STATE.md / active_task.md) after execution. This design artifact deliberately does not hardcode a numeric pass count to avoid a circular self-reference (the test suite reads this artifact)."
+  },
+
+  "modified_files": [
+    "outputs/research/p271g_prize_aware_null_prospective_preregistration_20260612.json",
+    "outputs/research/p271g_prize_aware_null_prospective_preregistration_20260612.md",
+    "tests/test_p271g_prize_aware_null_prospective_preregistration.py",
+    "00-Plan/roadmap/active_task.md",
+    "00-Plan/roadmap/agent_bootstrap/CURRENT_STATE.md"
+  ],
+
+  "final_classification": "P271G_NULL_AND_PROSPECTIVE_PREREGISTRATION_DESIGN_COMPLETE_WITH_PRIOR_OUTCOME_EXPOSURE",
+
+  "limitations": [
+    "P271G is design-only: no null tickets generated, no scorer/adapter executed, no DB accessed, no simulation run, no p-value/CI/lift/effect computed, no strategy comparison or ranking.",
+    "P271F is retrospective and exploratory: its already-existing aggregate descriptive results cannot serve as untouched confirmation of any prize-aware edge. Confirmatory claims require prospective, post-preregistration data collected after the immutable cutoff.",
+    "POWER_LOTTO retrospective evidence is eligible-subset-only (predicted second zone present for only a structural subset of rows); the excluded rows are never defaulted or inferred.",
+    "Replay rows within a single target draw are NOT independent; the frozen statistical unit is the target_draw cluster within lottery type, and naive row-level binomial p-values are prohibited.",
+    "Strategy-level comparison/ranking is excluded by design; no strategy identifier is part of any endpoint, seed, or gate.",
+    "Strict outcome blindness was not achieved because mandatory governance exposed prior P271F outcomes. The externally fixed design contract was not adapted to those outcomes, and no numerical outcome value is reproduced in the final P271G files.",
+    "An interrupted pre-commit test draft contained exact historical outcome values as blacklist fixtures. Those fixtures were removed before commit and replaced with semantic result-schema, ingestion-absence, and executable-absence guards.",
+    "Official prize amounts/tiers remain MANUAL_VERIFICATION_REQUIRED; this design relies on already-encoded tier semantics, not freshly machine-read official amounts.",
+    "No production deployment or strategy promotion is authorized by this preregistration or by passing the minimum evidence gate.",
+    "Prospective activation, null-baseline execution, temporal-window research, and feature mining are NOT started and each require separate explicit authorization. P270C remains unauthorized."
+  ]
+}

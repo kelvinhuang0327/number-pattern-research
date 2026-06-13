@@ -1,0 +1,417 @@
+{
+  "activation_timestamp_inserted": false,
+  "actual_production_schema_limitation": "ACTUAL_PRODUCTION_SCHEMA_NOT_READ_IN_P271L_PREFLIGHT",
+  "actual_production_schema_read": false,
+  "authorization_template": {
+    "copyable_template": "YES execute P271L controlled production schema deployment\nrepo=/Users/kelvin/Kelvin-WorkSpace/LotteryNew\nmain_commit=847262bd1a6efec3fcc3bff879867f71f7555ade\nproduction_db=/Users/kelvin/Kelvin-WorkSpace/LotteryNew/lottery_api/data/lottery_v2.db\nexpected_pre_apply_sha256=<fresh hash>\nbackup_path=<outside-repo path>\nmaintenance_window_confirmed=YES\nall_writers_stopped_and_verified=YES\nrollback_plan_confirmed=YES",
+    "note": "This task and this template are NOT current authorization.",
+    "required_fields": [
+      "execute_phrase",
+      "repo",
+      "main_commit",
+      "production_db",
+      "expected_pre_apply_sha256",
+      "backup_path",
+      "maintenance_window_confirmed",
+      "all_writers_stopped_and_verified",
+      "rollback_plan_confirmed"
+    ]
+  },
+  "backup_executed": false,
+  "backup_strategy": {
+    "destination_requirements": {
+      "checksum_recording": true,
+      "failure_behavior": "abort apply; do not proceed without verified backup",
+      "integrity_verification": "post-backup sqlite integrity_check + raw hash recorded (under separate authorization)",
+      "outside_repo": true,
+      "record_source_db_identity_and_hash": true,
+      "restore_rehearsal_required": true,
+      "retention_and_deletion_authorization": "explicit human gate",
+      "timestamped_immutable_filename": true,
+      "wal_handling": "checkpoint/reconcile before copy; copy sidecars only if consistent snapshot guaranteed"
+    },
+    "executed_in_p271l": false,
+    "option_A_maintenance_window": [
+      "Stop and verify all writers (writer-quiescence contract).",
+      "Verify no active DB holders (lsof).",
+      "Checkpoint WAL if authorized; confirm -wal is empty.",
+      "Create verified backup (file copy of a quiesced DB)."
+    ],
+    "option_B_online_backup_api": [
+      "Use SQLite online backup API under an explicitly authorized controlled process with validated source and destination."
+    ],
+    "raw_copy_only_while_wal_active": "REJECTED",
+    "selected_method": "A_or_B_under_separate_authorization"
+  },
+  "blockers": [
+    "actual_production_schema_not_read: separate authorization required for read-only actual production schema inspection before apply",
+    "fresh_production_db_hash_verification_required immediately before apply",
+    "verified_maintenance_window_and_writer_shutdown_required",
+    "verified_backup_destination_and_rollback_authorization_required",
+    "WAL_OR_SHM_SIDECAR_PRESENT_UNRECONCILED (writer opened DB in WAL mode; database.py sets no journal_mode)",
+    "MULTIPLE_POTENTIAL_WRITERS_NOT_CONCLUSIVELY_QUIESCED"
+  ],
+  "branch": "task/p271l-controlled-deployment-preflight",
+  "checkpoint_executed": false,
+  "combined_tests": {
+    "expected_failure": "tests/test_p271k_prospective_capture_ledger_migration_rehearsal.py::test_p271l_m_n_not_started",
+    "expected_failure_reason": "Pre-existing P271K forward-guard asserts no scripts/p271l_*.py or tests/test_p271l_*.py exist. P271L has now legitimately started under explicit authorization, so the p271l token of this guard is expectedly stale. P271K test file is NOT on the P271L whitelist and was NOT modified. p271m/p271n tokens remain clean.",
+    "failed": 1,
+    "passed": 158,
+    "result": "1_EXPECTED_FAILURE",
+    "suites": [
+      "test_p271j",
+      "test_p271k",
+      "test_p271l"
+    ],
+    "total": 159
+  },
+  "controlled_apply_manifest": {
+    "busy_locked_failure_behavior": "abort + rollback; never retry blindly",
+    "canonical_repo": "/Users/kelvin/Kelvin-WorkSpace/LotteryNew",
+    "canonical_repo_basename": "LotteryNew",
+    "current_readiness": "P271L_PREFLIGHT_COMPLETE_NOT_READY_FOR_APPLY",
+    "executable_only_when": "a future prompt contains the exact authorization phrase from authorization_template AND all pre-apply STOP gates pass",
+    "expected_pre_apply_sha256": "3209a533b15e7b12bb8336a6f0cf92114d18dc0ae544de71f04954bdaa1d430e",
+    "expected_prospective_indexes": [
+      "idx_ledger_identity",
+      "idx_batch_cluster"
+    ],
+    "expected_prospective_tables": [
+      "prospective_schema_meta",
+      "prospective_activation_registry",
+      "prospective_capture_batches",
+      "prospective_prediction_ledger",
+      "prospective_capture_events",
+      "prospective_outcome_links"
+    ],
+    "expected_trigger_count": 10,
+    "hash_revalidation_rule": "Re-hash the production DB immediately before apply; abort on any drift from the freshly-authorized expected hash.",
+    "lock_behavior": "BEGIN IMMEDIATE (acquire write lock up-front)",
+    "max_execution_boundary": "single transaction; CREATE-IF-NOT-EXISTS only; no data backfill; no DROP of legacy objects",
+    "migration_schema_version": "p271j_prospective_capture_ledger.v1",
+    "no_activation_declaration": "This apply installs schema only. It MUST NOT insert any activation record, MUST NOT set status to ACTIVE, MUST NOT write any prediction rows. Prospective tables remain empty.",
+    "non_executable": true,
+    "p271m_required_after_apply": true,
+    "p271n_separately_authorized_after_p271m": true,
+    "post_apply_checks": "delegated to P271M verification plan",
+    "production_db_canonical_realpath": "/Users/kelvin/Kelvin-WorkSpace/LotteryNew/lottery_api/data/lottery_v2.db",
+    "required_backup_evidence": "VERIFIED_BACKUP_OUTSIDE_REPO",
+    "required_main_commit": "847262bd1a6efec3fcc3bff879867f71f7555ade",
+    "required_maintenance_window_state": "CONFIRMED",
+    "required_writer_quiescence_evidence": "ALL_WRITERS_STOPPED_AND_VERIFIED",
+    "rollback_triggers": "see rollback_plan"
+  },
+  "deployment_started": false,
+  "filesystem_metadata": {
+    "exists": true,
+    "inode": 90843138,
+    "mode_octal": "0o644",
+    "mtime_epoch": 1781145804,
+    "path": "/Users/kelvin/Kelvin-WorkSpace/LotteryNew/lottery_api/data/lottery_v2.db",
+    "size_bytes": 99368960
+  },
+  "final_classification": "P271L_PREFLIGHT_COMPLETE_NOT_READY_FOR_APPLY",
+  "focused_tests": {
+    "failed": 0,
+    "passed": 50,
+    "result": "PASS",
+    "suite": "tests/test_p271l_controlled_deployment_preflight.py",
+    "total": 50
+  },
+  "full_repo_suite": "NOT RUN (not required by governance)",
+  "generated_at": "2026-06-13",
+  "governance": "HOLD / WAITING_FOR_USER_AUTHORIZATION",
+  "limitations": [
+    "ACTUAL_PRODUCTION_SCHEMA_NOT_READ_IN_P271L_PREFLIGHT — schema claims are source-grounded only (prospective_capture_ledger.py / database.py), not read from the live DB.",
+    "Production DB identity established by raw SHA-256 over bytes only; the DB was never opened via SQLite.",
+    "lsof reported no current holders of the production DB at inspection time, but a live backend (PID 1593) plus a recent -shm sidecar indicate an active/potentially-active WAL-mode writer that this read-only task may not quiesce.",
+    "Process inventory is a point-in-time snapshot; writer state may change."
+  ],
+  "maintenance_window_contract": {
+    "exit_criteria": "All writers stopped AND verified AND no DB holders.",
+    "required": true,
+    "states": [
+      "Announce maintenance window; freeze all scheduled ingest/learning jobs.",
+      "Stop backend (lottery_api/app.py) and frontend via stop_all.sh; disable launchd KeepAlive (com.kelvin.lottery.dev.plist) so it does not auto-restart during the window.",
+      "Confirm no process holds the production DB (lsof) and PID files are stale/removed.",
+      "Reconcile WAL/SHM: ensure WAL is empty and checkpointed; remove or account for any -shm/-wal sidecars before backup."
+    ]
+  },
+  "mode": "controlled_deployment_preflight",
+  "modified_files": [
+    "scripts/p271l_controlled_deployment_preflight.py",
+    "tests/test_p271l_controlled_deployment_preflight.py",
+    "outputs/research/p271l_controlled_deployment_preflight_20260613.json",
+    "outputs/research/p271l_controlled_deployment_preflight_20260613.md",
+    "00-Plan/roadmap/active_task.md",
+    "00-Plan/roadmap/agent_bootstrap/CURRENT_STATE.md"
+  ],
+  "p271k_classification": "P271K_TEMPORARY_DB_MIGRATION_REHEARSAL_COMPLETE",
+  "p271k_merge_commit": "847262bd1a6efec3fcc3bff879867f71f7555ade",
+  "p271k_source_commit": "b7b6d883bfac6881e4b60d5453ba68ae6d79675e",
+  "p271m_started": false,
+  "p271m_verification_required": true,
+  "p271n_separate_authorization_required": true,
+  "p271n_started": false,
+  "post_apply_verification_plan": {
+    "checks": [
+      "schema_version exact == p271j_prospective_capture_ledger.v1",
+      "all expected prospective tables present, exact",
+      "all expected indexes present, exact",
+      "trigger count == 10 (append-only enforced)",
+      "PRAGMA foreign_key_check passes",
+      "PRAGMA integrity_check == ok",
+      "legacy row-count / content invariants unchanged",
+      "prospective tables EMPTY (no rows) unless separately authorized",
+      "append-only triggers enforced (UPDATE/DELETE raise ABORT)",
+      "semantic uniqueness enforced (composite unique key)",
+      "no runtime integration unless separately approved",
+      "DB and backup hashes recorded",
+      "backend restart only AFTER verification passes",
+      "no activation timestamp / no activation record / no prediction capture"
+    ],
+    "executed_in_p271l": false,
+    "owner": "P271M (separate task)"
+  },
+  "pre_apply_stop_gates": [
+    "wrong repo / branch / HEAD",
+    "dirty or staged authorized files",
+    "production DB hash drift vs freshly-authorized expected hash",
+    "active or unverified writers",
+    "active DB lock holders",
+    "WAL/SHM state not reconciled",
+    "backup missing or unverified",
+    "actual production schema not inspected under separate authorization",
+    "schema collision or incompatible version detected",
+    "insufficient disk space for backup",
+    "rollback destination missing",
+    "production DB already contains unexpected prospective objects",
+    "P271M verification plan missing",
+    "P271N activation accidentally coupled to deployment"
+  ],
+  "preflight_only": true,
+  "process_inventory": {
+    "live_writer_candidate": false,
+    "missing_pid_evidence": false,
+    "pid_files": {
+      "backend.pid": {
+        "exists": true,
+        "live": false,
+        "path": "/Users/kelvin/Kelvin-WorkSpace/LotteryNew/backend.pid",
+        "pid": 3418,
+        "stale": true
+      },
+      "frontend.pid": {
+        "exists": true,
+        "live": false,
+        "path": "/Users/kelvin/Kelvin-WorkSpace/LotteryNew/frontend.pid",
+        "pid": 1952,
+        "stale": true
+      }
+    }
+  },
+  "process_inventory_note": "backend.pid(3418)/frontend.pid(1952) are STALE (not live). A LIVE LotteryNew backend exists out-of-band: PID 1593 (python app.py, cwd lottery_api). The live -shm sidecar (recent mtime) corroborates a recent WAL-mode SQLite connection against the production DB. This live writer cannot be conclusively quiesced in this read-only task.",
+  "process_stopped_or_restarted": false,
+  "production_db_copied": false,
+  "production_db_hash_matches_baseline": true,
+  "production_db_opened": false,
+  "production_db_path": "/Users/kelvin/Kelvin-WorkSpace/LotteryNew/lottery_api/data/lottery_v2.db",
+  "production_db_sha256": "3209a533b15e7b12bb8336a6f0cf92114d18dc0ae544de71f04954bdaa1d430e",
+  "production_db_sha256_after": "3209a533b15e7b12bb8336a6f0cf92114d18dc0ae544de71f04954bdaa1d430e",
+  "production_db_sha256_expected": "3209a533b15e7b12bb8336a6f0cf92114d18dc0ae544de71f04954bdaa1d430e",
+  "production_db_unchanged": true,
+  "production_db_written": false,
+  "production_migration_executed": false,
+  "production_schema_modified": false,
+  "prospective_collection_activated": false,
+  "prospective_schema_inventory": {
+    "append_only_tables": [
+      "prospective_activation_registry",
+      "prospective_capture_batches",
+      "prospective_prediction_ledger",
+      "prospective_capture_events",
+      "prospective_outcome_links"
+    ],
+    "expected_trigger_count": 10,
+    "foreign_keys_required": true,
+    "indexes": [
+      "idx_ledger_identity",
+      "idx_batch_cluster"
+    ],
+    "pragmas_required": [
+      "foreign_keys = ON",
+      "busy_timeout = 5000"
+    ],
+    "schema_version": "p271j_prospective_capture_ledger.v1",
+    "semantic_unique_key": [
+      "activation_id",
+      "lottery_type",
+      "target_draw",
+      "strategy_id",
+      "strategy_version",
+      "bet_index"
+    ],
+    "source": "lottery_api/prospective_capture_ledger.py",
+    "tables": [
+      "prospective_schema_meta",
+      "prospective_activation_registry",
+      "prospective_capture_batches",
+      "prospective_prediction_ledger",
+      "prospective_capture_events",
+      "prospective_outcome_links"
+    ],
+    "verified_against_source": true
+  },
+  "readiness_for_apply_authorization": "P271L_PREFLIGHT_COMPLETE_NOT_READY_FOR_APPLY",
+  "repo_head_before_task": "847262bd1a6efec3fcc3bff879867f71f7555ade",
+  "restore_executed": false,
+  "rollback_plan": {
+    "authorization_owner": "human operator (explicit), same gate as apply",
+    "incident_record_required": true,
+    "partial_drop_prohibition": "Manual partial DROP of prospective objects is PROHIBITED unless separately designed and authorized.",
+    "post_restore_verification": "raw hash == expected_pre_apply_sha256 AND integrity_check == ok",
+    "restore_procedure": "restore the verified pre-apply backup over the production DB path (quiesced)",
+    "triggers": [
+      "integrity_check / foreign_key_check failure post-apply",
+      "unexpected legacy row-count or content change",
+      "apply aborted mid-transaction / partial schema",
+      "collision or version mismatch discovered during apply",
+      "any unexpected prospective rows present"
+    ],
+    "wal_shm_handling": "remove stale -wal/-shm after restore; verify clean state",
+    "writer_stop_requirement": "all writers stopped before restore"
+  },
+  "runtime_db_config": {
+    "connection_style": "short_lived_per_call",
+    "note": "lottery_api/database.py:_get_connection sets NO PRAGMA (no journal_mode/WAL, no busy_timeout, no foreign_keys). Default journal mode is rollback (delete). The prospective ledger by contrast sets foreign_keys=ON and busy_timeout=5000 per write.",
+    "sets_busy_timeout": false,
+    "sets_foreign_keys_pragma": false,
+    "sets_wal": false,
+    "source": "lottery_api/database.py",
+    "uses_sqlite3_connect": true
+  },
+  "runtime_integration_added": false,
+  "schema_collision_result": {
+    "collision_free_per_source": true,
+    "legacy_tables_from_source": [
+      "draws",
+      "prediction_items",
+      "prediction_results",
+      "prediction_review_status",
+      "prediction_runs",
+      "review_actions",
+      "review_findings",
+      "review_hypotheses",
+      "review_sessions",
+      "shadow_experiments",
+      "snapshot_schedule",
+      "strategy_prediction_replays",
+      "strategy_replay_runs"
+    ],
+    "name_collisions": [],
+    "note": "Source-level only. ACTUAL production schema is NOT read in P271L. All prospective objects use a 'prospective_' prefix; no legacy table from database.py source shares a name.",
+    "prospective_tables": [
+      "prospective_activation_registry",
+      "prospective_capture_batches",
+      "prospective_capture_events",
+      "prospective_outcome_links",
+      "prospective_prediction_ledger",
+      "prospective_schema_meta"
+    ]
+  },
+  "sidecar_inventory": {
+    "journal": {
+      "exists": false,
+      "path": "/Users/kelvin/Kelvin-WorkSpace/LotteryNew/lottery_api/data/lottery_v2.db-journal"
+    },
+    "shm": {
+      "exists": true,
+      "inode": 101782512,
+      "mode_octal": "0o644",
+      "mtime_epoch": 1781353723,
+      "path": "/Users/kelvin/Kelvin-WorkSpace/LotteryNew/lottery_api/data/lottery_v2.db-shm",
+      "size_bytes": 32768
+    },
+    "shm_present": true,
+    "wal": {
+      "exists": true,
+      "inode": 101782511,
+      "mode_octal": "0o644",
+      "mtime_epoch": 1781239864,
+      "path": "/Users/kelvin/Kelvin-WorkSpace/LotteryNew/lottery_api/data/lottery_v2.db-wal",
+      "size_bytes": 0
+    },
+    "wal_or_shm_unreconciled": true,
+    "wal_present": true
+  },
+  "source_schema_inventory": {
+    "append_only_tables": [
+      "prospective_activation_registry",
+      "prospective_capture_batches",
+      "prospective_prediction_ledger",
+      "prospective_capture_events",
+      "prospective_outcome_links"
+    ],
+    "expected_trigger_count": 10,
+    "foreign_keys_required": true,
+    "indexes": [
+      "idx_ledger_identity",
+      "idx_batch_cluster"
+    ],
+    "pragmas_required": [
+      "foreign_keys = ON",
+      "busy_timeout = 5000"
+    ],
+    "schema_version": "p271j_prospective_capture_ledger.v1",
+    "semantic_unique_key": [
+      "activation_id",
+      "lottery_type",
+      "target_draw",
+      "strategy_id",
+      "strategy_version",
+      "bet_index"
+    ],
+    "source": "lottery_api/prospective_capture_ledger.py",
+    "tables": [
+      "prospective_schema_meta",
+      "prospective_activation_registry",
+      "prospective_capture_batches",
+      "prospective_prediction_ledger",
+      "prospective_capture_events",
+      "prospective_outcome_links"
+    ],
+    "verified_against_source": true
+  },
+  "source_verification_status": "MANUAL_VERIFICATION_REQUIRED",
+  "task_id": "P271L_CONTROLLED_DEPLOYMENT_PREFLIGHT_AND_AUTHORIZATION_PACKAGE",
+  "writer_inventory": {
+    "known_writer_sources": [
+      "lottery_api/database.py",
+      "lottery_api/routes/ingest.py",
+      "lottery_api/fetcher/backfill_engine.py",
+      "lottery_api/utils/scheduler.py",
+      "tools/post_draw_pipeline.py",
+      "tools/upload_lottery_data.py",
+      "tools/upload_daily539_txt.py",
+      "tools/upload_big_lotto_csv.py",
+      "scripts/p7_controlled_replay_row_apply.py",
+      "scripts/apply_p0_schema_migration.py"
+    ],
+    "multiple_writers_possible": true,
+    "note": "Backend (lottery_api/app.py), ingest/backfill HTTP routes, the scheduler/learning integrator, post_draw_pipeline, and ad-hoc upload/controlled-apply scripts can all write the production DB. More than one writer can exist concurrently. database.py sets no busy_timeout (immediate SQLITE_BUSY) and no journal_mode.",
+    "writer_count": 10
+  },
+  "writer_quiescence_contract": {
+    "conservative_rule": "If any active or potentially-active writer cannot be conclusively quiesced, the apply manifest MUST be NOT_READY_FOR_APPLY.",
+    "evidence_required": [
+      "backend.pid / frontend.pid stale or removed",
+      "no `python app.py` (cwd lottery_api) process alive",
+      "no scheduler / post_draw_pipeline / ingest job running",
+      "launchd KeepAlive disabled for the window",
+      "lsof shows zero holders of lottery_v2.db",
+      "WAL/SHM reconciled (no live writer-created sidecars)"
+    ],
+    "required": true
+  }
+}

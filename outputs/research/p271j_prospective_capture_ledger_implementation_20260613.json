@@ -1,0 +1,305 @@
+{
+  "task_id": "P271J",
+  "generated_at": "2026-06-13T05:20:00Z",
+  "repo_head_before_task": "87726a5f5067b03b7f7d0510bccc7dfc05f3cfa1",
+  "branch": "task/p271j-isolated-prospective-capture-ledger",
+  "mode": "isolated_prospective_capture_ledger_implementation",
+  "p271i_merge_commit": "87726a5f5067b03b7f7d0510bccc7dfc05f3cfa1",
+  "p271i_source_commit": "ff7c3c4840d67f736f1ae8d1a99fa83cdd54484b",
+  "p271i_classification": "P271I_PROSPECTIVE_CAPTURE_LEDGER_IMPLEMENTATION_DESIGN_COMPLETE",
+  "implementation_isolated": true,
+  "runtime_integration_added": false,
+  "production_schema_modified": false,
+  "production_db_access": false,
+  "production_db_write": false,
+  "temporary_sqlite_only": true,
+  "prospective_collection_activated": false,
+  "real_activation_created": false,
+  "activation_timestamp_inserted": false,
+  "official_source_fetch_performed": false,
+  "official_verification_claimed": false,
+  "source_verification_status": "MANUAL_VERIFICATION_REQUIRED",
+  "implemented_module": "lottery_api/prospective_capture_ledger.py",
+  "public_contract": {
+    "schema": [
+      "install_schema(conn) -> schema_version",
+      "get_schema_version(conn) -> str | None",
+      "schema_objects(conn) -> {tables, indexes, triggers}"
+    ],
+    "activation": [
+      "register_activation(conn, ...) -> activation_event_id",
+      "append_activation_lifecycle_event(conn, ...) -> event_id",
+      "deactivate_activation(conn, ...) -> event_id",
+      "is_activation_active(conn, activation_id, at_utc) -> bool"
+    ],
+    "capture": [
+      "capture_batch(conn, BatchInput, *, known_strategy_versions) -> BatchCaptureResult"
+    ],
+    "amendment": [
+      "append_amendment(conn, ...) -> AmendmentResult"
+    ],
+    "read_only_inspection": [
+      "get_ledger_row(conn, ledger_id) -> dict | None",
+      "get_batch(conn, batch_id) -> dict | None",
+      "list_ledger_rows(conn, ...) -> list[dict]",
+      "list_events(conn, event_type=None) -> list[dict]",
+      "count_eligible_rows(conn) -> int",
+      "verify_payload_hash(conn, ledger_id) -> bool"
+    ],
+    "pure_helpers": [
+      "derive_ledger_id(...) -> str",
+      "compute_payload_hash(...) -> str"
+    ],
+    "dataclasses": [
+      "DrawCloseSource",
+      "TicketInput",
+      "BatchInput",
+      "BatchCaptureResult",
+      "AmendmentResult"
+    ],
+    "exceptions": [
+      "ProspectiveCaptureError",
+      "SchemaVersionError",
+      "LedgerUsageError"
+    ]
+  },
+  "schema_objects": {
+    "schema_version": "p271j_prospective_capture_ledger.v1",
+    "tables": [
+      "prospective_schema_meta",
+      "prospective_activation_registry",
+      "prospective_capture_batches",
+      "prospective_prediction_ledger",
+      "prospective_capture_events",
+      "prospective_outcome_links"
+    ],
+    "unique_indexes": [
+      "idx_ledger_identity ON prospective_prediction_ledger(activation_id, lottery_type, target_draw, strategy_id, strategy_version, bet_index)",
+      "idx_batch_cluster ON prospective_capture_batches(activation_id, lottery_type, target_draw)"
+    ],
+    "inline_unique_constraints": [
+      "prospective_capture_batches UNIQUE(activation_id, lottery_type, target_draw)",
+      "prospective_prediction_ledger UNIQUE(activation_id, lottery_type, target_draw, strategy_id, strategy_version, bet_index)",
+      "prospective_outcome_links UNIQUE(ledger_id)"
+    ],
+    "append_only_triggers": "BEFORE UPDATE and BEFORE DELETE RAISE(ABORT) on prospective_activation_registry, prospective_capture_batches, prospective_prediction_ledger, prospective_capture_events, prospective_outcome_links",
+    "foreign_keys": [
+      "prospective_capture_batches.activation_id -> prospective_activation_registry.activation_id",
+      "prospective_prediction_ledger.batch_id -> prospective_capture_batches.batch_id",
+      "prospective_prediction_ledger.activation_id -> prospective_activation_registry.activation_id",
+      "prospective_outcome_links.ledger_id -> prospective_prediction_ledger.ledger_id"
+    ],
+    "strategy_prediction_replays_reused": false,
+    "notes": "prospective_capture_events is the unified append-only event stream (ACTIVATION, DEACTIVATION, CAPTURE, CAPTURE_REJECTED, AMENDMENT, INVALIDATION); it carries no foreign key so it can record rejections of attempted (rolled-back) entities."
+  },
+  "identity_contract": {
+    "deterministic": true,
+    "identity_tuple": [
+      "activation_id",
+      "lottery_type",
+      "target_draw",
+      "strategy_id",
+      "strategy_version",
+      "bet_index"
+    ],
+    "ledger_id_derivation": "ledger_id = 'pl_' + sha256(canonical(identity_tuple)); deterministic, caller cannot supply or override it.",
+    "payload_hash": "sha256 over canonical(activation_id, lottery_type, target_draw, strategy_id, strategy_version, bet_index, sorted(predicted_main_numbers), predicted_second_zone, prediction_created_at_utc).",
+    "manual_override_blocked": true,
+    "no_mutable_text_identity": true
+  },
+  "uniqueness_contract": {
+    "enforced_by_db_unique_constraint": true,
+    "primary_key_and_unique_index": "Both the ledger PRIMARY KEY (derived ledger_id) and a UNIQUE index over the identity tuple enforce uniqueness.",
+    "duplicate_insert_fails_closed": true,
+    "duplicate_outcome": "A conflicting insert raises sqlite3.IntegrityError, the whole transaction rolls back, and a DUPLICATE_IDENTITY rejection event is appended; no second eligible row is ever created and an existing row is never overwritten.",
+    "preflight_only_check_forbidden": true,
+    "concurrent_duplicate_cannot_both_commit": true
+  },
+  "transaction_contract": {
+    "single_transaction": true,
+    "begin_immediate": true,
+    "foreign_keys_enabled": true,
+    "busy_timeout_ms": 5000,
+    "validate_and_insert_atomic": "All batch validation occurs before opening the write transaction and the inserts run inside one BEGIN IMMEDIATE; the in-transaction unique key remains the authority on duplicates.",
+    "all_or_nothing_multi_ticket": true,
+    "no_implicit_partial_commit": true,
+    "no_retry_loop": true,
+    "busy_locked_fails_closed": true
+  },
+  "immutability_contract": {
+    "append_only": true,
+    "reject_update": true,
+    "reject_delete": true,
+    "enforcement": "Database BEFORE UPDATE / BEFORE DELETE triggers RAISE(ABORT) on all five prospective tables.",
+    "payload_cannot_change_after_insert": true,
+    "tamper_evidence": "payload_hash plus the append-only event stream make any post-insert change detectable; verify_payload_hash recomputes and compares."
+  },
+  "amendment_contract": {
+    "amendment_creates_new_record": true,
+    "no_update_in_place": true,
+    "no_delete_reinsert": true,
+    "original_remains_auditable": true,
+    "post_close_amendment_ineligible": true,
+    "rejects_identity_altering_amendment": true,
+    "mechanism": "append_amendment writes a new AMENDMENT event referencing the original ledger_id; the original row is never updated or deleted; a post-close (effective >= draw_close) amendment is rejected; an amendment that would change any identity-tuple field is rejected as AMENDMENT_ALTERS_IDENTITY."
+  },
+  "causality_contract": {
+    "rule": "prediction_created_at_utc < draw_close_at_utc - clock_skew_margin_seconds, compared as timezone-aware UTC instants (strict inequality).",
+    "clock_skew_rule_used": "clock_skew_margin_seconds is a MANDATORY, explicit, non-negative per-draw-close-source-version configuration value supplied by the caller on DrawCloseSource. P271I freezes the rule and states the margin 'is configured per draw-close source version and never silently widened'; therefore no numeric default is invented. A missing/invalid margin fails closed (SOURCE_PROVENANCE_FAILURE).",
+    "clock_skew_default_invented": false,
+    "missing_timestamp_fail_closed": true,
+    "ambiguous_timezone_fail_closed": true,
+    "boundary_behavior": "Equality (prediction == close - margin) is NOT strictly earlier and is rejected as POST_CLOSE_SUBMISSION; one unit earlier is accepted.",
+    "no_outcome_table_queried_by_capture": true
+  },
+  "timestamp_contract": {
+    "reject_naive_timestamps": true,
+    "reject_unparseable_or_ambiguous": true,
+    "tz_aware_offsets_normalized_to_utc": true,
+    "canonical_storage": "UTC ISO-8601 with explicit offset; resolution timezone Asia/Taipei is converted to UTC before comparison.",
+    "trailing_z_accepted_as_utc": true
+  },
+  "draw_close_validation_contract": {
+    "source_types": [
+      "official_machine_readable",
+      "official_published_schedule",
+      "repository_configured_deterministic_schedule",
+      "manual"
+    ],
+    "validates": [
+      "source type in supported set",
+      "source_id and source_version present",
+      "non-empty provenance mapping",
+      "explicit non-negative clock_skew_margin_seconds",
+      "freshness window when declared (stale snapshot fails closed)"
+    ],
+    "confirmatory_eligibility": "manual is never confirmatory (MANUAL_SOURCE_NOT_CONFIRMATORY); official/deterministic are confirmatory only when manually_verified=True (PENDING / ONLY_AFTER_MANUAL_VERIFICATION), otherwise SOURCE_PENDING_MANUAL_VERIFICATION.",
+    "fetch_performed": false,
+    "official_verification_claimed": false,
+    "source_verification_status": "MANUAL_VERIFICATION_REQUIRED"
+  },
+  "lottery_validation_contract": {
+    "supported": ["POWER_LOTTO", "BIG_LOTTO", "DAILY_539"],
+    "main_pick_count": {"POWER_LOTTO": 6, "BIG_LOTTO": 6, "DAILY_539": 5},
+    "main_number_range": {"POWER_LOTTO": [1, 38], "BIG_LOTTO": [1, 49], "DAILY_539": [1, 39]},
+    "second_zone_range": [1, 8],
+    "rejects": [
+      "booleans as integers",
+      "non-integer values",
+      "out-of-range values",
+      "duplicate numbers",
+      "wrong count",
+      "strings/bytes in place of a number list",
+      "unsupported lottery_type"
+    ],
+    "p271c_compatible": true,
+    "scoring_performed": false,
+    "caller_input_not_mutated": true
+  },
+  "power_second_zone_contract": {
+    "mandatory_for_power_ticket": true,
+    "validated_at_creation": true,
+    "cannot_fill_later": true,
+    "cannot_use_actual_value": true,
+    "missing_or_invalid_causes_rejection": "MISSING_OR_INVALID_PREDICTED_SECOND_ZONE; the whole POWER batch is rejected (atomic).",
+    "second_zone_forbidden_for_non_power": "SECOND_ZONE_NOT_PERMITTED for BIG_LOTTO and DAILY_539."
+  },
+  "membership_contract": {
+    "eligibility_computed_once_at_insert": true,
+    "computed_before_outcomes": true,
+    "never_upgraded_later": true,
+    "only_live_pre_close_eligible": "Only capture_mode=LIVE_PRE_CLOSE with an active activation, a confirmatory fresh source, and a passing causality gate is stored as an ELIGIBLE row.",
+    "ledger_holds_only_eligible_rows": "Rejected and non-live captures are omitted from the ledger and recorded as immutable rejection events; combined with append-only triggers and the unique key, an ineligible identity can never be upgraded to prospective.",
+    "fail_closed_rejection_reason_recorded": true
+  },
+  "backfill_exclusion_contract": {
+    "non_live_modes_excluded": ["MANUAL", "RECONSTRUCTED", "BACKFILL", "IMPORT"],
+    "rejection_reason": "BACKFILL_EXCLUDED",
+    "requires_active_activation_id": true,
+    "requires_created_after_activation_start": true,
+    "no_status_upgrade_to_prospective": true,
+    "no_retrospective_row_conversion": true
+  },
+  "outcome_separation_contract": {
+    "ledger_contains_no_results": true,
+    "no_actual_columns_in_ledger": true,
+    "separate_outcome_link_table": "prospective_outcome_links references ledger rows only; capture never writes it.",
+    "capture_service_never_reads_results": true,
+    "scorer_not_imported": true,
+    "actual_values_cannot_populate_predicted_fields": true
+  },
+  "failure_matrix_results": [
+    {"id": "F01", "condition": "missing close time", "reason": "CLOSE_TIME_MISSING", "test": "test_24_missing_close_rejected", "status": "PASS"},
+    {"id": "F02", "condition": "stale schedule", "reason": "STALE_SCHEDULE", "test": "test_25_stale_close_evidence_rejected", "status": "PASS"},
+    {"id": "F03", "condition": "unsupported lottery", "reason": "UNSUPPORTED_LOTTERY", "test": "test_39_unsupported_lottery_rejected", "status": "PASS"},
+    {"id": "F04", "condition": "invalid predicted numbers", "reason": "INVALID_PREDICTED_NUMBERS", "test": "test_19/test_38", "status": "PASS"},
+    {"id": "F05", "condition": "missing/invalid POWER second zone", "reason": "MISSING_OR_INVALID_PREDICTED_SECOND_ZONE", "test": "test_32/test_33", "status": "PASS"},
+    {"id": "F06", "condition": "duplicate identity", "reason": "DUPLICATE_IDENTITY", "test": "test_15/test_16/test_20", "status": "PASS"},
+    {"id": "F07", "condition": "clock/timezone ambiguity", "reason": "AMBIGUOUS_TIMESTAMP", "test": "test_22/test_23", "status": "PASS"},
+    {"id": "F08", "condition": "post-close submission", "reason": "POST_CLOSE_SUBMISSION", "test": "test_26/test_27", "status": "PASS"},
+    {"id": "F09", "condition": "inactive activation", "reason": "INACTIVE_ACTIVATION", "test": "test_12_inactive_activation_rejected", "status": "PASS"},
+    {"id": "F10", "condition": "unknown strategy version", "reason": "UNKNOWN_STRATEGY_VERSION", "test": "test_42_unknown_strategy_version_rejected", "status": "PASS"},
+    {"id": "F11", "condition": "transaction failure", "reason": "TRANSACTION_FAILURE", "test": "test_21b_transaction_failure_leaves_no_rows", "status": "PASS"},
+    {"id": "F12", "condition": "partial multi-ticket write", "reason": "rolled back all-or-nothing", "test": "test_19_one_invalid_ticket_rolls_back_all", "status": "PASS"},
+    {"id": "F13", "condition": "backfill/import source", "reason": "BACKFILL_EXCLUDED", "test": "test_41_backfill_import_replay_rejected", "status": "PASS"},
+    {"id": "F14", "condition": "source-provenance failure", "reason": "SOURCE_PROVENANCE_FAILURE", "test": "test_27b/test_28/test_43", "status": "PASS"}
+  ],
+  "synthetic_test_database_modes": ["sqlite3 :memory:", "pytest tmp_path file db"],
+  "production_db_sha256_before": "3209a533b15e7b12bb8336a6f0cf92114d18dc0ae544de71f04954bdaa1d430e",
+  "production_db_sha256_after": "3209a533b15e7b12bb8336a6f0cf92114d18dc0ae544de71f04954bdaa1d430e",
+  "production_db_unchanged": true,
+  "p271g_p271h_p271i_artifacts_unchanged": true,
+  "baseline_executed": false,
+  "statistical_analysis_executed": false,
+  "scorer_executed": false,
+  "adapter_executed": false,
+  "strategy_comparison_run": false,
+  "temporal_window_research_started": false,
+  "feature_mining_started": false,
+  "p270c_allowed": false,
+  "p270a_p270b_reopened": false,
+  "p271k_started": false,
+  "deployment_started": false,
+  "tests_result": {
+    "focused": {
+      "command": "./venv/bin/python -m pytest tests/test_p271j_prospective_capture_ledger_implementation.py -q",
+      "status": "PASS",
+      "passed": 59,
+      "minimum_required": 50
+    },
+    "combined_p271g_through_j": {
+      "command": "./venv/bin/python -m pytest tests/test_p271g_prize_aware_null_prospective_preregistration.py tests/test_p271h_prospective_capture_feasibility_audit.py tests/test_p271i_prospective_capture_ledger_implementation_design.py tests/test_p271j_prospective_capture_ledger_implementation.py -q",
+      "status": "PASS",
+      "passed": 223
+    },
+    "git_diff_check": "PASS",
+    "full_repo_suite": "NOT_RUN_NOT_REQUIRED",
+    "static_safety_checks": "PASS"
+  },
+  "modified_files": [
+    "lottery_api/prospective_capture_ledger.py",
+    "tests/test_p271j_prospective_capture_ledger_implementation.py",
+    "outputs/research/p271j_prospective_capture_ledger_implementation_20260613.json",
+    "outputs/research/p271j_prospective_capture_ledger_implementation_20260613.md",
+    "00-Plan/roadmap/active_task.md",
+    "00-Plan/roadmap/agent_bootstrap/CURRENT_STATE.md"
+  ],
+  "limitations": [
+    "Isolated library only: the module is not wired into any route, scheduler, ingest, replay, scorer, adapter, registry, controlled_apply, or production path.",
+    "No production database was opened or written; the production DB SHA-256 is identical before and after the task.",
+    "No production schema migration was created or executed; the schema bootstrap targets only caller-supplied synthetic/temporary SQLite connections.",
+    "No official draw-close schedule was fetched and no official verification was claimed; source_verification_status remains MANUAL_VERIFICATION_REQUIRED.",
+    "Prospective collection is inactive; no real activation record or activation timestamp was created. register_activation only writes synthetic activations to test connections.",
+    "Tests used only sqlite3 :memory: and pytest tmp_path databases; no .db/.sqlite/WAL/SHM/journal file was created under tracked repository paths.",
+    "Passing these synthetic tests does not authorize P271K migration rehearsal, P271L deployment, P271M verification, or P271N activation, and makes no prediction-success claim.",
+    "Concurrency was exercised with two connections on a tmp_path file DB; production concurrency, locking, and busy-timeout tuning are deferred to a later authorized rehearsal."
+  ],
+  "future_gates_unchanged": {
+    "p271k_temporary_db_migration_rehearsal": "NOT_AUTHORIZED",
+    "p271l_controlled_deployment": "NOT_AUTHORIZED",
+    "p271m_post_deployment_verification": "NOT_AUTHORIZED",
+    "p271n_explicit_activation": "NOT_AUTHORIZED",
+    "no_phase_implicitly_authorizes_next": true
+  },
+  "final_classification": "P271J_ISOLATED_PROSPECTIVE_CAPTURE_LEDGER_IMPLEMENTATION_COMPLETE"
+}

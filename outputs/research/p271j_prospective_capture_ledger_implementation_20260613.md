@@ -247,10 +247,77 @@ phase implicitly authorizes the next. **P271K migration rehearsal is not
 authorized.** Concurrency was exercised only with two `tmp_path` connections;
 production locking/busy-timeout tuning is deferred to an authorized rehearsal.
 
-## 22. Final classification
+## 22. Transaction-ownership hardening (corrective fix)
 
-`P271J_ISOLATED_PROSPECTIVE_CAPTURE_LEDGER_IMPLEMENTATION_COMPLETE`
+**Original defect (recorded, not erased).** The first P271J implementation
+(commit `ddb6064`) was audited and classified
+`P271J_BLOCKED_TRANSACTION_OWNERSHIP_VIOLATION`. Each write method set
+`conn.isolation_level = None` and issued its own `BEGIN IMMEDIATE`/`COMMIT`
+without checking whether the caller-supplied connection already owned an open
+transaction. When handed such a connection, the module's `COMMIT` flushed the
+caller's unrelated pending work — the module took ownership of a transaction it
+did not start.
+
+**Empirical two-connection evidence (before fix).** On a `tmp_path` file DB, a
+caller opened a transaction (`in_transaction = True`) and inserted an unrelated
+row without committing; `capture_batch` returned `accepted`, `in_transaction`
+became `False`, and a **second connection observed the caller's previously
+uncommitted row as committed** — confirming the violation. The production DB was
+never involved.
+
+**Selected fail-closed repair.** A single internal guard,
+`_reject_ambient_transaction(conn)`, is invoked at the very start of every public
+write entry point — before any `isolation_level` change, transaction-affecting
+PRAGMA, `BEGIN`, write SQL, or module-owned `COMMIT`/`ROLLBACK`. It reads
+`conn.in_transaction` (a pure property access that changes no connection state)
+and, if a transaction is already open, raises the dedicated typed exception
+`AmbientTransactionError` (reason label `AMBIENT_TRANSACTION_NOT_ALLOWED`),
+performing zero writes, zero commits, and zero rollbacks. The caller remains the
+sole owner of its transaction and is responsible for committing or rolling it
+back.
+
+**Why SAVEPOINT nesting was not introduced.** The repair policy is an
+ambient-transaction *rejection* guard, not implicit nesting. Adding
+`SAVEPOINT`-based nesting would let the module silently participate in a caller's
+transaction, blurring ownership and atomicity boundaries and expanding scope.
+Fail-closed rejection keeps the ownership contract explicit and minimal; no
+SAVEPOINT support was added and the transaction model was not redesigned.
+
+**Guarded public write methods.** `install_schema`, `register_activation`,
+`append_activation_lifecycle_event`, `deactivate_activation` (via
+`append_activation_lifecycle_event`), `capture_batch`, and `append_amendment`.
+Read-only inspection helpers do not write, transact, commit, or roll back and so
+cannot take ownership of a caller transaction.
+
+**Regression-test evidence.** `tests/test_p271j_prospective_capture_ledger_implementation.py`
+adds behavioral tests using only `:memory:`/`tmp_path`: ambient-transaction
+rejection with two-connection proof (test_60), caller-owned commit (test_61) and
+rollback (test_62), connection-attribute preservation (test_63), every write
+entry point guarded (test_64, parametrized over 6 entry points), no false
+positive without an ambient transaction (test_65), module-owned rollback still
+works (test_66), and the distinct exception type (test_67). Focused **72/72** and
+combined P271G–J **236/236** pass.
+
+**Connection-state preservation.** On rejection, `in_transaction` remains `True`,
+`isolation_level` and `row_factory` are unchanged, the caller's unrelated rows
+are untouched, and no prospective batch/ledger/activation/event row is added. The
+module never calls rollback to "clean up" a transaction it did not create.
+
+**No production DB / runtime impact.** The fix is confined to the isolated module
+and its synthetic tests. The canonical production DB
+`lottery_api/data/lottery_v2.db` SHA-256 is unchanged
+(`3209a533b15e7b12bb8336a6f0cf92114d18dc0ae544de71f04954bdaa1d430e`); no schema,
+runtime, route, migration, deployment, or activation was added.
+
+**Remaining HOLD boundary.** Merge readiness now requires a fresh read-only
+re-audit. P271K–P271N remain separately authorized and not started.
+
+## 23. Final classification
+
+`P271J_TRANSACTION_OWNERSHIP_HARDENING_COMPLETE`
+(prior audit classification: `P271J_BLOCKED_TRANSACTION_OWNERSHIP_VIOLATION`, now fixed)
 
 Official source status remains `MANUAL_VERIFICATION_REQUIRED`. Current governance
-remains **HOLD / WAITING_FOR_USER_AUTHORIZATION.** Recommended next task is the
-separately authorized P271K temporary-DB migration rehearsal.
+remains **HOLD / WAITING_FOR_USER_AUTHORIZATION.** Merge readiness requires a fresh
+read-only re-audit; the recommended next task is that re-audit, after which the
+separately authorized P271K temporary-DB migration rehearsal may be considered.

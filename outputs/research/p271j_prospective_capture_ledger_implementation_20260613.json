@@ -126,6 +126,39 @@
     "no_retry_loop": true,
     "busy_locked_fails_closed": true
   },
+  "transaction_ownership_hardening": {
+    "prior_audit_classification": "P271J_BLOCKED_TRANSACTION_OWNERSHIP_VIOLATION",
+    "transaction_ownership_fix_applied": true,
+    "ambient_transaction_policy": "reject_fail_closed",
+    "savepoint_nesting_supported": false,
+    "caller_transaction_committed_by_module": false,
+    "caller_transaction_rolled_back_by_module": false,
+    "dedicated_exception": "AmbientTransactionError (subclass of ProspectiveCaptureError); reason label AMBIENT_TRANSACTION_NOT_ALLOWED; distinct from invalid-ticket / duplicate-identity rejection reasons, ordinary sqlite3 busy/locked errors, and SchemaVersionError.",
+    "guard_helper": "_reject_ambient_transaction(conn) reads conn.in_transaction (pure property access, no state change) and raises if a transaction is already open; invoked at the very start of every write entry point before isolation_level mutation, transaction-affecting PRAGMA, BEGIN, write SQL, or module-owned COMMIT/ROLLBACK.",
+    "guarded_write_entry_points": [
+      "install_schema",
+      "register_activation",
+      "append_activation_lifecycle_event",
+      "deactivate_activation (via append_activation_lifecycle_event)",
+      "capture_batch",
+      "append_amendment"
+    ],
+    "guard_runs_before_isolation_level_and_begin": true,
+    "caller_state_preserved_on_rejection": ["in_transaction stays true", "isolation_level unchanged", "row_factory unchanged", "unrelated caller rows untouched", "no prospective batch/ledger/activation/event row added"],
+    "module_does_not_rollback_uncreated_transaction": true,
+    "ambient_transaction_regression_tests": [
+      "test_60_capture_batch_rejects_ambient_transaction (A + H: tmp_path file DB, two connections)",
+      "test_61_caller_commit_remains_caller_owned (B)",
+      "test_62_caller_rollback_remains_caller_owned (C)",
+      "test_63_connection_attributes_unchanged_on_rejection (D)",
+      "test_64_every_write_entry_point_guarded (E: parametrized over 6 write entry points)",
+      "test_65_no_false_positive_without_ambient_transaction (F)",
+      "test_66_module_owned_rollback_still_works (G)",
+      "test_67_ambient_transaction_error_is_distinct_type"
+    ],
+    "post_fix_focused_test_count": 72,
+    "post_fix_combined_test_count": 236
+  },
   "immutability_contract": {
     "append_only": true,
     "reject_update": true,
@@ -264,13 +297,13 @@
     "focused": {
       "command": "./venv/bin/python -m pytest tests/test_p271j_prospective_capture_ledger_implementation.py -q",
       "status": "PASS",
-      "passed": 59,
+      "passed": 72,
       "minimum_required": 50
     },
     "combined_p271g_through_j": {
       "command": "./venv/bin/python -m pytest tests/test_p271g_prize_aware_null_prospective_preregistration.py tests/test_p271h_prospective_capture_feasibility_audit.py tests/test_p271i_prospective_capture_ledger_implementation_design.py tests/test_p271j_prospective_capture_ledger_implementation.py -q",
       "status": "PASS",
-      "passed": 223
+      "passed": 236
     },
     "git_diff_check": "PASS",
     "full_repo_suite": "NOT_RUN_NOT_REQUIRED",
@@ -301,5 +334,6 @@
     "p271n_explicit_activation": "NOT_AUTHORIZED",
     "no_phase_implicitly_authorizes_next": true
   },
-  "final_classification": "P271J_ISOLATED_PROSPECTIVE_CAPTURE_LEDGER_IMPLEMENTATION_COMPLETE"
+  "prior_audit_classification": "P271J_BLOCKED_TRANSACTION_OWNERSHIP_VIOLATION",
+  "final_classification": "P271J_TRANSACTION_OWNERSHIP_HARDENING_COMPLETE"
 }

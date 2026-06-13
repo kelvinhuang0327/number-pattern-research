@@ -900,3 +900,166 @@ def test_52_p271g_h_i_artifacts_unchanged():
     for path, expected in ARTIFACT_HASHES.items():
         assert path.exists(), path
         assert _sha256(path) == expected, path
+
+
+# ===========================================================================
+# Transaction-ownership hardening (P271J corrective fix)
+# AMBIENT_TRANSACTION_NOT_ALLOWED: the module must never commit or roll back a
+# caller's pre-existing open transaction. All write entry points fail closed.
+# ===========================================================================
+
+
+def _file_db_with_schema(tmp_path, name="ambient.db"):
+    """A committed tmp_path file DB with schema, an active activation, and an
+    unrelated caller-owned table. Strictly under tmp_path, never the repo."""
+    db = tmp_path / name
+    setup = sqlite3.connect(str(db))
+    pcl.install_schema(setup)
+    register_default_activation(setup)
+    setup.execute("CREATE TABLE caller_unrelated (x)")
+    setup.close()
+    assert str(tmp_path) in str(db) and ROOT not in db.parents
+    return db
+
+
+def test_60_capture_batch_rejects_ambient_transaction(tmp_path):
+    # A — two-connection decisive proof that the module does not commit caller work.
+    db = _file_db_with_schema(tmp_path)
+    caller = sqlite3.connect(str(db))                      # default (deferred) isolation
+    caller.execute("INSERT INTO caller_unrelated VALUES (99)")  # opens ambient tx
+    assert caller.in_transaction is True
+    with pytest.raises(pcl.AmbientTransactionError):
+        capture(caller, make_batch(target_draw="999"))
+    assert caller.in_transaction is True                   # caller still owns its tx
+    chk = sqlite3.connect(str(db))
+    assert chk.execute("SELECT COUNT(*) FROM caller_unrelated").fetchone()[0] == 0
+    assert chk.execute("SELECT COUNT(*) FROM prospective_prediction_ledger").fetchone()[0] == 0
+    assert chk.execute("SELECT COUNT(*) FROM prospective_capture_batches").fetchone()[0] == 0
+    caller.rollback()                                      # caller-owned rollback
+    assert chk.execute("SELECT COUNT(*) FROM caller_unrelated").fetchone()[0] == 0
+    chk.close(); caller.close()
+
+
+def test_61_caller_commit_remains_caller_owned(tmp_path):
+    # B — module rejects without committing; caller's own commit later applies.
+    db = _file_db_with_schema(tmp_path, "commit.db")
+    caller = sqlite3.connect(str(db))
+    caller.execute("INSERT INTO caller_unrelated VALUES (7)")
+    with pytest.raises(pcl.AmbientTransactionError):
+        capture(caller, make_batch(target_draw="999"))
+    chk = sqlite3.connect(str(db))
+    assert chk.execute("SELECT COUNT(*) FROM caller_unrelated").fetchone()[0] == 0
+    caller.commit()                                        # caller explicitly commits
+    assert chk.execute("SELECT COUNT(*) FROM caller_unrelated").fetchone()[0] == 1
+    assert chk.execute("SELECT COUNT(*) FROM prospective_prediction_ledger").fetchone()[0] == 0
+    chk.close(); caller.close()
+
+
+def test_62_caller_rollback_remains_caller_owned(tmp_path):
+    # C — module rejects; caller's own rollback removes its row; no module row.
+    db = _file_db_with_schema(tmp_path, "rollback.db")
+    caller = sqlite3.connect(str(db))
+    caller.execute("INSERT INTO caller_unrelated VALUES (5)")
+    with pytest.raises(pcl.AmbientTransactionError):
+        capture(caller, make_batch(target_draw="999"))
+    caller.rollback()                                      # caller explicitly rolls back
+    chk = sqlite3.connect(str(db))
+    assert chk.execute("SELECT COUNT(*) FROM caller_unrelated").fetchone()[0] == 0
+    assert chk.execute("SELECT COUNT(*) FROM prospective_prediction_ledger").fetchone()[0] == 0
+    chk.close(); caller.close()
+
+
+def test_63_connection_attributes_unchanged_on_rejection(tmp_path):
+    # D — isolation_level / row_factory / in_transaction unchanged by rejection.
+    db = _file_db_with_schema(tmp_path, "attrs.db")
+    caller = sqlite3.connect(str(db))
+    caller.row_factory = sqlite3.Row
+    iso_before, rf_before = caller.isolation_level, caller.row_factory
+    caller.execute("INSERT INTO caller_unrelated VALUES (1)")
+    with pytest.raises(pcl.AmbientTransactionError):
+        capture(caller, make_batch(target_draw="999"))
+    assert caller.isolation_level == iso_before
+    assert caller.row_factory is rf_before
+    assert caller.in_transaction is True
+    caller.rollback(); caller.close()
+
+
+@pytest.mark.parametrize(
+    "entry", ["install_schema", "register_activation", "lifecycle", "deactivate", "capture", "amendment"]
+)
+def test_64_every_write_entry_point_guarded(tmp_path, entry):
+    # E — every public write entry point fails closed before owning caller's tx.
+    db = _file_db_with_schema(tmp_path, f"wp_{entry}.db")
+    led_id = None
+    if entry == "amendment":
+        clean = sqlite3.connect(str(db))                   # no ambient tx
+        led_id = capture(clean, make_batch(target_draw="555")).ledger_ids[0]
+        clean.close()
+    caller = sqlite3.connect(str(db))
+    caller.execute("INSERT INTO caller_unrelated VALUES (1)")  # ambient tx
+    assert caller.in_transaction is True
+    with pytest.raises(pcl.AmbientTransactionError):
+        if entry == "install_schema":
+            pcl.install_schema(caller)
+        elif entry == "register_activation":
+            register_default_activation(caller, activation_id="act2")
+        elif entry == "lifecycle":
+            pcl.append_activation_lifecycle_event(
+                caller, activation_id="act1", lifecycle=pcl.EVENT_DEACTIVATION,
+                effective_at_utc="2026-06-11T00:00:00+00:00",
+                recorded_at_utc="2026-06-11T00:00:00+00:00",
+                actor="o", service_identity="s", code_commit="c")
+        elif entry == "deactivate":
+            pcl.deactivate_activation(
+                caller, activation_id="act1",
+                effective_at_utc="2026-06-11T00:00:00+00:00",
+                recorded_at_utc="2026-06-11T00:00:00+00:00",
+                actor="o", service_identity="s", code_commit="c", justification="j")
+        elif entry == "capture":
+            capture(caller, make_batch(target_draw="999"))
+        elif entry == "amendment":
+            pcl.append_amendment(
+                caller, original_ledger_id=led_id, reason="r",
+                amended_payload={"note": "x"},
+                effective_at_utc="2026-06-10T11:00:00+00:00",
+                recorded_at_utc="2026-06-10T11:00:00+00:00",
+                actor="o", service_identity="s", code_commit="c")
+    assert caller.in_transaction is True                   # caller tx untouched
+    caller.rollback(); caller.close()
+
+
+def test_65_no_false_positive_without_ambient_transaction():
+    # F — a connection with no ambient transaction still works normally.
+    conn = ready_conn()
+    assert conn.in_transaction is False
+    res = capture(conn, make_batch())
+    assert res.accepted
+    assert pcl.count_eligible_rows(conn) == 1
+
+
+def test_66_module_owned_rollback_still_works(monkeypatch):
+    # G — when the MODULE owns the transaction, an injected failure rolls back
+    # only module work. (No caller transaction exists; the guard is not bypassed.)
+    conn = ready_conn()
+    assert conn.in_transaction is False
+    real = pcl._insert_event
+
+    def flaky(c, **kw):
+        if kw.get("event_type") == pcl.EVENT_CAPTURE:
+            raise RuntimeError("synthetic module-owned failure")
+        return real(c, **kw)
+
+    monkeypatch.setattr(pcl, "_insert_event", flaky)
+    res = capture(conn, make_batch())
+    assert not res.accepted
+    assert res.rejection_reason == pcl.REASON_TRANSACTION_FAILURE
+    assert pcl.count_eligible_rows(conn) == 0
+    assert conn.execute(f"SELECT COUNT(*) FROM {pcl._BATCH_TABLE}").fetchone()[0] == 0
+
+
+def test_67_ambient_transaction_error_is_distinct_type():
+    # The dedicated exception is distinguishable from other failure modes.
+    assert issubclass(pcl.AmbientTransactionError, pcl.ProspectiveCaptureError)
+    assert not issubclass(pcl.AmbientTransactionError, pcl.SchemaVersionError)
+    assert not issubclass(pcl.AmbientTransactionError, pcl.LedgerUsageError)
+    assert pcl.REASON_AMBIENT_TRANSACTION_NOT_ALLOWED == "AMBIENT_TRANSACTION_NOT_ALLOWED"

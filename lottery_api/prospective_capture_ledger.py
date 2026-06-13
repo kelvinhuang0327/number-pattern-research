@@ -117,6 +117,7 @@ REASON_EMPTY_BATCH = "EMPTY_BATCH"
 REASON_POST_CLOSE_AMENDMENT = "POST_CLOSE_AMENDMENT"
 REASON_AMENDMENT_ALTERS_IDENTITY = "AMENDMENT_ALTERS_IDENTITY"
 REASON_UNKNOWN_LEDGER_ROW = "UNKNOWN_LEDGER_ROW"
+REASON_AMBIENT_TRANSACTION_NOT_ALLOWED = "AMBIENT_TRANSACTION_NOT_ALLOWED"
 
 FAILURE_MATRIX_REASONS = (
     REASON_CLOSE_TIME_MISSING,
@@ -175,6 +176,19 @@ class SchemaVersionError(ProspectiveCaptureError):
 
 class LedgerUsageError(ProspectiveCaptureError):
     """Raised for invalid use of the public API (wrong types, missing args)."""
+
+
+class AmbientTransactionError(ProspectiveCaptureError):
+    """Raised when a write entry point is called on a connection that already
+    owns an open transaction (``conn.in_transaction`` is True).
+
+    The ledger never commits or rolls back work it did not start, so it refuses
+    fail-closed (``AMBIENT_TRANSACTION_NOT_ALLOWED``) and performs zero writes
+    and zero transaction-state or connection-setting changes. The caller remains
+    the sole owner of its open transaction. This is deliberately distinct from
+    invalid-ticket / duplicate-identity rejection reasons, ordinary SQLite
+    busy/locked failures, and schema-version incompatibility.
+    """
 
 
 class _BatchRejected(Exception):
@@ -267,6 +281,28 @@ def _require_connection(conn: object) -> sqlite3.Connection:
             "this module never opens a database path itself."
         )
     return conn
+
+
+def _reject_ambient_transaction(conn: sqlite3.Connection) -> None:
+    """Fail closed if the caller-supplied connection already owns an open
+    transaction.
+
+    Invoked at the very start of every public write entry point — before any
+    ``isolation_level`` change, transaction-affecting PRAGMA, ``BEGIN``, write
+    SQL, or module-owned ``COMMIT``/``ROLLBACK``. Reading ``conn.in_transaction``
+    is a pure property access that mutates no connection state, so a rejected
+    call leaves ``isolation_level``, ``row_factory``, and the caller's pending
+    work entirely untouched. The module must never commit or roll back a
+    transaction it did not start.
+    """
+
+    if conn.in_transaction:
+        raise AmbientTransactionError(
+            REASON_AMBIENT_TRANSACTION_NOT_ALLOWED
+            + ": the supplied connection already owns an open transaction; "
+            "commit or roll it back before calling the prospective capture "
+            "ledger. No module write, commit, or rollback was performed."
+        )
 
 
 def _ensure_pragmas(conn: sqlite3.Connection) -> None:
@@ -468,6 +504,7 @@ def install_schema(conn: sqlite3.Connection) -> str:
     """
 
     conn = _require_connection(conn)
+    _reject_ambient_transaction(conn)
     _ensure_pragmas(conn)
 
     existing_version = get_schema_version(conn)
@@ -759,6 +796,7 @@ def register_activation(
     """
 
     conn = _require_connection(conn)
+    _reject_ambient_transaction(conn)
     _ensure_pragmas(conn)
     start = _parse_utc(prospective_start_at_utc)
     merged = _parse_utc(activation_merged_at_utc)
@@ -831,6 +869,7 @@ def append_activation_lifecycle_event(
     """Append an ACTIVATION / DEACTIVATION event without rewriting history."""
 
     conn = _require_connection(conn)
+    _reject_ambient_transaction(conn)
     _ensure_pragmas(conn)
     if lifecycle not in (EVENT_ACTIVATION, EVENT_DEACTIVATION):
         raise LedgerUsageError("lifecycle must be ACTIVATION or DEACTIVATION")
@@ -1091,6 +1130,7 @@ def capture_batch(
     """
 
     conn = _require_connection(conn)
+    _reject_ambient_transaction(conn)
     _ensure_pragmas(conn)
 
     if not isinstance(batch, BatchInput):
@@ -1404,6 +1444,7 @@ def append_amendment(
     """
 
     conn = _require_connection(conn)
+    _reject_ambient_transaction(conn)
     _ensure_pragmas(conn)
 
     original = get_ledger_row(conn, original_ledger_id)

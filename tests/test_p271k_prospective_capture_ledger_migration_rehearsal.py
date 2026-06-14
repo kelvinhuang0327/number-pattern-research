@@ -16,6 +16,7 @@ from __future__ import annotations
 
 import hashlib
 import importlib
+import json
 import os
 import re
 import sqlite3
@@ -575,8 +576,59 @@ def test_preserved_artifacts_present_and_nonempty():
         assert p.stat().st_size > 0, rel
 
 
-def test_p271l_m_n_not_started():
-    for token in ("p271l", "p271m", "p271n"):
+def test_p271m_n_not_started():
+    """Forward guard for the next *unauthorized* phases — P271M and P271N.
+
+    Phase-transition history (this is a deliberate contract reconciliation, NOT
+    a suppressed failure):
+
+    * While P271K was the latest authorized phase, this guard was named
+      ``test_p271l_m_n_not_started`` and also forbade ``scripts/p271l_*.py`` /
+      ``tests/test_p271l_*.py``. That ``p271l`` prohibition was valid then.
+    * P271L (controlled-deployment *preflight*) was subsequently authorized as
+      its own phase and legitimately created those preflight files, so the
+      ``p271l`` token of this guard became obsolete and is retired here. The
+      guard was renamed and narrowed to ``p271m``/``p271n`` only — it was not
+      deleted, skipped, xfailed, or conditionalized, and no other P271K
+      invariant was weakened.
+    * Production apply is still NOT authorized: P271L is preflight-only. P271M
+      and P271N remain unstarted and unauthorized, so their forward guards stay
+      active below.
+
+    The P271L state check reads only the committed P271L artifact (a static
+    file) — it adds no dependency on a live process, PID, WAL timestamp,
+    network, or production DB connection.
+    """
+    # P271M / P271N forward guard: no implementation or test files may exist yet.
+    for token in ("p271m", "p271n"):
         hits = list((ROOT / "scripts").glob(f"{token}_*.py"))
         hits += list((ROOT / "tests").glob(f"test_{token}_*.py"))
         assert not hits, f"{token} artifacts unexpectedly present: {hits}"
+
+    # P271L preflight files are now legitimately present (allowed). Assert the
+    # committed P271L artifact still records a preflight-only, NOT-APPLIED state:
+    # production apply / schema change / deployment / activation, and the
+    # P271M/P271N phases, must all read false.
+    p271l_artifact = (
+        ROOT / "outputs" / "research"
+        / "p271l_controlled_deployment_preflight_20260613.json"
+    )
+    assert p271l_artifact.exists(), f"P271L preflight artifact missing: {p271l_artifact}"
+    p271l_state = json.loads(p271l_artifact.read_text(encoding="utf-8"))
+    assert p271l_state["preflight_only"] is True
+    assert (
+        p271l_state["final_classification"]
+        == "P271L_PREFLIGHT_COMPLETE_NOT_READY_FOR_APPLY"
+    )
+    for marker in (
+        "production_migration_executed",
+        "production_schema_modified",
+        "deployment_started",
+        "prospective_collection_activated",
+        "activation_timestamp_inserted",
+        "p271m_started",
+        "p271n_started",
+    ):
+        assert p271l_state[marker] is False, (
+            f"{marker} must remain False (P271L is preflight-only)"
+        )

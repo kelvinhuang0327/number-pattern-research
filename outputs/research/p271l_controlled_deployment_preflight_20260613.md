@@ -353,3 +353,55 @@ No prediction-success claim is made.
   `p271l` token of that guard is expectedly stale. The P271K test file is **not** on the P271L whitelist
   and was **not** modified; the `p271m`/`p271n` tokens remain clean.
 - Full-repo suite: **NOT RUN** (not required by governance).
+
+> **Note (2026-06-14):** The "**158 passed / 1 failed**" line above is the **original pre-reconciliation**
+> audit record, preserved intact. That single failure has since been reconciled under explicit
+> authorization (see §23); the current combined result is **159 passed / 0 failed**.
+
+---
+
+## 23. Forward-guard contract reconciliation (2026-06-14)
+
+This section records an authorized **phase-transition contract reconciliation**. It is a deliberate
+contract correction — **not** a suppressed or hidden test failure. No test was skipped, xfailed, deleted,
+conditionalized on an environment variable, count-lowered, or otherwise weakened.
+
+**Original state (preserved above).** The combined P271J–L suite was **158 passed / 1 failed** (159 total).
+The one failure was
+`tests/test_p271k_prospective_capture_ledger_migration_rehearsal.py::test_p271l_m_n_not_started` — the
+P271K forward guard that, while P271K was the latest authorized phase, forbade the existence of
+`scripts/p271l_*.py` and `tests/test_p271l_*.py`. That prohibition was correct at P271K time.
+
+**Why the P271L token was retired.** P271L (controlled-deployment **preflight**) was subsequently
+authorized as its own phase and legitimately created the preflight files
+`scripts/p271l_controlled_deployment_preflight.py` and
+`tests/test_p271l_controlled_deployment_preflight.py`. The `p271l` token of the P271K guard therefore
+became an obsolete phase-boundary assertion. Under explicit authorization it was reconciled by:
+
+- renaming the guard `test_p271l_m_n_not_started` → `test_p271m_n_not_started`;
+- removing **only** the obsolete `scripts/p271l_*.py` / `tests/test_p271l_*.py` prohibition;
+- **preserving** the `p271m` and `p271n` forward guards unchanged (those phases remain unstarted and
+  unauthorized); and
+- **strengthening** the guard so it now also reads the committed P271L artifact and asserts the preflight
+  is **present but NOT applied** (`preflight_only=true`; and `production_migration_executed`,
+  `production_schema_modified`, `deployment_started`, `prospective_collection_activated`,
+  `activation_timestamp_inserted`, `p271m_started`, `p271n_started` all false). The check reads a static
+  file only — no live process, PID, WAL timestamp, network, or production DB connection.
+
+No other P271K invariant was changed. The P271K artifact JSON/MD were **not** modified (not on the
+whitelist); only the P271K test file was edited, as authorized.
+
+**Phase boundaries remain intact.** Production apply is still **not** authorized — P271L is preflight-only.
+P271M (post-apply verification) and P271N (activation) remain unstarted, unauthorized, and forward-guarded.
+
+**Actual results after reconciliation (re-run 2026-06-14):**
+- P271K focused (`tests/test_p271k_prospective_capture_ledger_migration_rehearsal.py`): **37 passed / 0 failed** (37 total). PASS.
+- P271L focused (`tests/test_p271l_controlled_deployment_preflight.py`): **50 passed / 0 failed** (50 total). PASS.
+- Combined P271J–L: **159 passed / 0 failed** (159 total). PASS.
+- Full-repo suite: **NOT RUN** (not required by governance).
+
+**Unchanged governance posture.** Readiness remains `P271L_PREFLIGHT_COMPLETE_NOT_READY_FOR_APPLY`, with all
+six apply blockers from §19 still in force. Official source remains **MANUAL_VERIFICATION_REQUIRED**.
+Governance remains **HOLD / WAITING_FOR_USER_AUTHORIZATION**. The production DB was not opened, copied, or
+written; SHA-256 before == after == `3209a533b15e7b12bb8336a6f0cf92114d18dc0ae544de71f04954bdaa1d430e`.
+No prediction-success claim is made.

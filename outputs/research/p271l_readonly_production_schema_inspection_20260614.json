@@ -1,10 +1,25 @@
 {
+  "actual_production_schema_read": true,
   "actual_schema_blocker_cleared": true,
   "actual_schema_limitation_resolved": "ACTUAL_PRODUCTION_SCHEMA_NOT_READ_IN_P271L_PREFLIGHT",
+  "approved_sql_functions": [],
+  "authorizer_function_policy": {
+    "case_normalized_matching": true,
+    "default_unapproved_action": "DENY",
+    "hardcoded_queries_require_functions": false,
+    "user_provided_function_names_allowed": false
+  },
   "authorizer_installed": true,
   "backup_executed": false,
   "checkpoint_executed": false,
   "collision_result": true,
+  "combined_tests": {
+    "collected": 231,
+    "command": "./venv/bin/python -m pytest tests/test_p271j_prospective_capture_ledger_implementation.py tests/test_p271k_prospective_capture_ledger_migration_rehearsal.py tests/test_p271l_controlled_deployment_preflight.py tests/test_p271l_readonly_production_schema_inspection.py -q",
+    "failed": 0,
+    "passed": 231,
+    "status": "PASS"
+  },
   "connection_params": {
     "immutable": 1,
     "isolation_level": null,
@@ -14,6 +29,10 @@
   },
   "connection_uri": "file:/Users/kelvin/Kelvin-WorkSpace/LotteryNew/lottery_api/data/lottery_v2.db?mode=ro&immutable=1",
   "connection_uri_contract": "file:<path>?mode=ro&immutable=1",
+  "corrected_classifier_not_used_for_historical_connection": true,
+  "correction_performed_without_production_db_open": true,
+  "correction_task_id": "P271L_PR430_TRUTHFULNESS_AND_CLASSIFIER_HARDENING",
+  "corrective_classification": "P271L_PR430_TRUTHFULNESS_HARDENING_COMPLETE",
   "data_version_after": 1,
   "data_version_before": 1,
   "db_holders_absent": true,
@@ -37,17 +56,41 @@
   },
   "deployment_started": false,
   "final_classification": "P271L_PREFLIGHT_COMPLETE_NOT_READY_FOR_APPLY",
+  "fingerprint_contract": {
+    "historical_fingerprint_preserved": true,
+    "includes_internal_sqlite_sequence": true,
+    "includes_raw_sqlite_schema_objects": true,
+    "internal_objects_excluded_from_categorized_application_totals": true
+  },
+  "focused_tests": {
+    "collected": 72,
+    "command": "./venv/bin/python -m pytest tests/test_p271l_readonly_production_schema_inspection.py -q",
+    "failed": 0,
+    "passed": 72,
+    "status": "PASS"
+  },
+  "full_repo_suite": {
+    "reason": "Governance requires the focused P271L and combined P271J-L suites; full repository suite was not run.",
+    "status": "NOT_RUN"
+  },
   "generated_at": "2026-06-14",
   "governance": "HOLD / WAITING_FOR_USER_AUTHORIZATION",
+  "historical_execution_commit": "327554cb249c3c7039b3060a05c1477e8457bbbc",
+  "historical_result_revalidated_from_committed_inventory_only": true,
   "immutable_gate_passed": true,
+  "inspection_classification": "P271L_READONLY_PRODUCTION_SCHEMA_INSPECTION_COMPLETE",
   "inspection_only": true,
+  "inspection_time_operational_state": {
+    "scope": "Historical state during and at completion of the production inspection.",
+    "services_stopped": true
+  },
   "integrity": {
     "data_version_unchanged": true,
     "db_hash_unchanged": true,
     "db_stat_unchanged": true,
     "integrity_ok": true,
     "no_new_journal": true,
-    "schema_version_stable": true,
+    "schema_version_stable": "NOT_PROVEN",
     "sidecars_unchanged": true
   },
   "legacy_source_comparison": {
@@ -61,10 +104,22 @@
       "strategy_replay_runs",
       "strategy_prediction_replays"
     ],
-    "note": "Source-of-truth = lottery_api/database.py CREATE TABLE + documented ALTER-TABLE migration columns. 'extra_runtime_columns' are columns present in the deployed DB beyond the documented source set.",
+    "comparison_scope": {
+      "column_names": "CHECKED",
+      "defaults": "NOT_FULLY_VERIFIED",
+      "foreign_keys": "NOT_FULLY_VERIFIED",
+      "index_equivalence": "NOT_FULLY_VERIFIED",
+      "nullability": "NOT_FULLY_VERIFIED",
+      "primary_keys": "NOT_FULLY_VERIFIED",
+      "table_existence": "CHECKED",
+      "types": "NOT_FULLY_VERIFIED"
+    },
+    "note": "Table existence and documented source column names were checked. Type, nullability, default, primary-key, foreign-key, and index equivalence were not fully verified; no full-schema-equivalence claim is made.",
     "per_table": {
       "draws": {
         "all_source_columns_present": true,
+        "column_names_status": "CHECKED_PASS",
+        "defaults_status": "NOT_FULLY_VERIFIED",
         "deployed_columns": [
           "id",
           "draw",
@@ -82,8 +137,12 @@
           "sell_amount",
           "total_amount"
         ],
+        "foreign_key_status": "NOT_FULLY_VERIFIED",
+        "index_equivalence_status": "NOT_FULLY_VERIFIED",
         "missing_source_columns": [],
+        "nullability_status": "NOT_FULLY_VERIFIED",
         "present": true,
+        "primary_key_status": "NOT_FULLY_VERIFIED",
         "source_expected_columns": [
           "id",
           "draw",
@@ -94,10 +153,14 @@
           "jackpot_amount",
           "numbers_positional",
           "created_at"
-        ]
+        ],
+        "table_existence_status": "CHECKED_PRESENT",
+        "types_status": "NOT_FULLY_VERIFIED"
       },
       "prediction_items": {
         "all_source_columns_present": true,
+        "column_names_status": "CHECKED_PASS",
+        "defaults_status": "NOT_FULLY_VERIFIED",
         "deployed_columns": [
           "id",
           "run_id",
@@ -111,8 +174,12 @@
           "zone_coverage"
         ],
         "extra_runtime_columns": [],
+        "foreign_key_status": "NOT_FULLY_VERIFIED",
+        "index_equivalence_status": "NOT_FULLY_VERIFIED",
         "missing_source_columns": [],
+        "nullability_status": "NOT_FULLY_VERIFIED",
         "present": true,
+        "primary_key_status": "NOT_FULLY_VERIFIED",
         "source_expected_columns": [
           "id",
           "run_id",
@@ -124,10 +191,14 @@
           "zone_coverage",
           "strategy_name",
           "num_bets"
-        ]
+        ],
+        "table_existence_status": "CHECKED_PRESENT",
+        "types_status": "NOT_FULLY_VERIFIED"
       },
       "prediction_results": {
         "all_source_columns_present": true,
+        "column_names_status": "CHECKED_PASS",
+        "defaults_status": "NOT_FULLY_VERIFIED",
         "deployed_columns": [
           "id",
           "item_id",
@@ -144,8 +215,12 @@
           "split_risk"
         ],
         "extra_runtime_columns": [],
+        "foreign_key_status": "NOT_FULLY_VERIFIED",
+        "index_equivalence_status": "NOT_FULLY_VERIFIED",
         "missing_source_columns": [],
+        "nullability_status": "NOT_FULLY_VERIFIED",
         "present": true,
+        "primary_key_status": "NOT_FULLY_VERIFIED",
         "source_expected_columns": [
           "id",
           "item_id",
@@ -160,10 +235,14 @@
           "resolved_at",
           "wq_score",
           "split_risk"
-        ]
+        ],
+        "table_existence_status": "CHECKED_PRESENT",
+        "types_status": "NOT_FULLY_VERIFIED"
       },
       "prediction_runs": {
         "all_source_columns_present": true,
+        "column_names_status": "CHECKED_PASS",
+        "defaults_status": "NOT_FULLY_VERIFIED",
         "deployed_columns": [
           "id",
           "lottery_type",
@@ -178,8 +257,12 @@
           "review_json"
         ],
         "extra_runtime_columns": [],
+        "foreign_key_status": "NOT_FULLY_VERIFIED",
+        "index_equivalence_status": "NOT_FULLY_VERIFIED",
         "missing_source_columns": [],
+        "nullability_status": "NOT_FULLY_VERIFIED",
         "present": true,
+        "primary_key_status": "NOT_FULLY_VERIFIED",
         "source_expected_columns": [
           "id",
           "lottery_type",
@@ -192,10 +275,14 @@
           "analyzed",
           "analysis_note",
           "review_json"
-        ]
+        ],
+        "table_existence_status": "CHECKED_PRESENT",
+        "types_status": "NOT_FULLY_VERIFIED"
       },
       "strategy_prediction_replays": {
         "all_source_columns_present": true,
+        "column_names_status": "CHECKED_PASS",
+        "defaults_status": "NOT_FULLY_VERIFIED",
         "deployed_columns": [
           "id",
           "lottery_type",
@@ -237,8 +324,12 @@
           "prediction_generated_at",
           "bet_index"
         ],
+        "foreign_key_status": "NOT_FULLY_VERIFIED",
+        "index_equivalence_status": "NOT_FULLY_VERIFIED",
         "missing_source_columns": [],
+        "nullability_status": "NOT_FULLY_VERIFIED",
         "present": true,
+        "primary_key_status": "NOT_FULLY_VERIFIED",
         "source_expected_columns": [
           "id",
           "lottery_type",
@@ -259,10 +350,14 @@
           "special_hit",
           "replay_run_id",
           "generated_at"
-        ]
+        ],
+        "table_existence_status": "CHECKED_PRESENT",
+        "types_status": "NOT_FULLY_VERIFIED"
       },
       "strategy_replay_runs": {
         "all_source_columns_present": true,
+        "column_names_status": "CHECKED_PASS",
+        "defaults_status": "NOT_FULLY_VERIFIED",
         "deployed_columns": [
           "id",
           "lottery_type",
@@ -276,8 +371,12 @@
           "created_at"
         ],
         "extra_runtime_columns": [],
+        "foreign_key_status": "NOT_FULLY_VERIFIED",
+        "index_equivalence_status": "NOT_FULLY_VERIFIED",
         "missing_source_columns": [],
+        "nullability_status": "NOT_FULLY_VERIFIED",
         "present": true,
+        "primary_key_status": "NOT_FULLY_VERIFIED",
         "source_expected_columns": [
           "id",
           "lottery_type",
@@ -289,7 +388,9 @@
           "data_hash",
           "notes",
           "created_at"
-        ]
+        ],
+        "table_existence_status": "CHECKED_PRESENT",
+        "types_status": "NOT_FULLY_VERIFIED"
       }
     }
   },
@@ -423,8 +524,12 @@
   },
   "mode": "readonly_actual_production_schema_inspection",
   "object_counts": {
+    "categorized_total": 60,
     "indexes": 42,
+    "internal_total": 1,
     "objects": 61,
+    "raw_total": 61,
+    "reconciles": true,
     "tables": 17,
     "triggers": 0,
     "views": 1
@@ -437,6 +542,30 @@
   },
   "p271m_started": false,
   "p271n_started": false,
+  "post_inspection_operational_state": {
+    "all_eight_lottery_labels_restored": true,
+    "backend_health_http": 200,
+    "backend_ping_http": 200,
+    "backend_port": 8002,
+    "frontend_http": 200,
+    "frontend_port": 8081,
+    "labels": [
+      "com.kelvin.lottery.agent-light-worker",
+      "com.kelvin.lottery.agent-planner",
+      "com.kelvin.lottery.backend",
+      "com.kelvin.lottery.copilot-daemon",
+      "com.kelvin.lottery.agent-worker",
+      "com.kelvin.lottery.dev",
+      "com.kelvin.lottery.frontend",
+      "com.kelvin.lottery.weekly"
+    ],
+    "observed_at": "2026-06-14",
+    "production_reinspection_performed": false,
+    "restoration_changed_repository_files": false,
+    "restoration_outside_inspection_transaction": true,
+    "services_currently_running": true
+  },
+  "pr_merge_readiness": "REQUIRES_FRESH_READ_ONLY_REAUDIT",
   "prediction_success_claim": null,
   "process_signaled_or_stopped": false,
   "process_signaled_stopped_restarted_by_this_task": false,
@@ -447,12 +576,107 @@
   "production_db_path": "/Users/kelvin/Kelvin-WorkSpace/LotteryNew/lottery_api/data/lottery_v2.db",
   "production_db_written": false,
   "production_migration_executed": false,
+  "production_reinspection_performed": false,
   "prospective_collection_activated": false,
   "prospective_state": {
+    "complete_expected_namespace": false,
     "emptiness": {},
     "expected_indexes": [
       "idx_ledger_identity",
       "idx_batch_cluster"
+    ],
+    "expected_object_mismatches": [],
+    "expected_object_namespace": [
+      {
+        "name": "idx_batch_cluster",
+        "tbl_name": "prospective_capture_batches",
+        "type": "index"
+      },
+      {
+        "name": "idx_ledger_identity",
+        "tbl_name": "prospective_prediction_ledger",
+        "type": "index"
+      },
+      {
+        "name": "prospective_activation_registry",
+        "tbl_name": "prospective_activation_registry",
+        "type": "table"
+      },
+      {
+        "name": "prospective_capture_batches",
+        "tbl_name": "prospective_capture_batches",
+        "type": "table"
+      },
+      {
+        "name": "prospective_capture_events",
+        "tbl_name": "prospective_capture_events",
+        "type": "table"
+      },
+      {
+        "name": "prospective_outcome_links",
+        "tbl_name": "prospective_outcome_links",
+        "type": "table"
+      },
+      {
+        "name": "prospective_prediction_ledger",
+        "tbl_name": "prospective_prediction_ledger",
+        "type": "table"
+      },
+      {
+        "name": "prospective_schema_meta",
+        "tbl_name": "prospective_schema_meta",
+        "type": "table"
+      },
+      {
+        "name": "trg_prospective_activation_registry_no_delete",
+        "tbl_name": "prospective_activation_registry",
+        "type": "trigger"
+      },
+      {
+        "name": "trg_prospective_activation_registry_no_update",
+        "tbl_name": "prospective_activation_registry",
+        "type": "trigger"
+      },
+      {
+        "name": "trg_prospective_capture_batches_no_delete",
+        "tbl_name": "prospective_capture_batches",
+        "type": "trigger"
+      },
+      {
+        "name": "trg_prospective_capture_batches_no_update",
+        "tbl_name": "prospective_capture_batches",
+        "type": "trigger"
+      },
+      {
+        "name": "trg_prospective_capture_events_no_delete",
+        "tbl_name": "prospective_capture_events",
+        "type": "trigger"
+      },
+      {
+        "name": "trg_prospective_capture_events_no_update",
+        "tbl_name": "prospective_capture_events",
+        "type": "trigger"
+      },
+      {
+        "name": "trg_prospective_outcome_links_no_delete",
+        "tbl_name": "prospective_outcome_links",
+        "type": "trigger"
+      },
+      {
+        "name": "trg_prospective_outcome_links_no_update",
+        "tbl_name": "prospective_outcome_links",
+        "type": "trigger"
+      },
+      {
+        "name": "trg_prospective_prediction_ledger_no_delete",
+        "tbl_name": "prospective_prediction_ledger",
+        "type": "trigger"
+      },
+      {
+        "name": "trg_prospective_prediction_ledger_no_update",
+        "tbl_name": "prospective_prediction_ledger",
+        "type": "trigger"
+      }
     ],
     "expected_prospective_tables": [
       "prospective_schema_meta",
@@ -464,8 +688,21 @@
     ],
     "expected_schema_version": "p271j_prospective_capture_ledger.v1",
     "expected_trigger_count": 10,
+    "expected_triggers": [
+      "trg_prospective_activation_registry_no_update",
+      "trg_prospective_activation_registry_no_delete",
+      "trg_prospective_capture_batches_no_update",
+      "trg_prospective_capture_batches_no_delete",
+      "trg_prospective_prediction_ledger_no_update",
+      "trg_prospective_prediction_ledger_no_delete",
+      "trg_prospective_capture_events_no_update",
+      "trg_prospective_capture_events_no_delete",
+      "trg_prospective_outcome_links_no_update",
+      "trg_prospective_outcome_links_no_delete"
+    ],
     "installed_schema_version": null,
     "present_expected_indexes": [],
+    "present_expected_objects": [],
     "present_prospective_tables": [],
     "present_prospective_triggers": [],
     "state": "ABSENT_CLEAN",
@@ -481,19 +718,102 @@
   ],
   "restore_executed": false,
   "schema_collision": {
+    "collision_details": [],
     "collision_free_vs_legacy": true,
     "contract_names_already_present_in_deployed": [],
     "legacy_name_collisions": [],
-    "note": "A legacy collision = a prospective contract object name already used by a deployed non-prospective object. All prospective tables are 'prospective_'-prefixed; the two indexes are idx_ledger_identity / idx_batch_cluster.",
+    "note": "Historical committed inventory contains none of the six expected tables, two explicit indexes, ten triggers, or unexpected prospective-prefixed objects. Corrected post-inspection classifier treats any orphan expected name as fail-closed partial/collision.",
     "prospective_contract_objects": [
-      "idx_batch_cluster",
-      "idx_ledger_identity",
-      "prospective_activation_registry",
-      "prospective_capture_batches",
-      "prospective_capture_events",
-      "prospective_outcome_links",
-      "prospective_prediction_ledger",
-      "prospective_schema_meta"
+      {
+        "name": "idx_batch_cluster",
+        "tbl_name": "prospective_capture_batches",
+        "type": "index"
+      },
+      {
+        "name": "idx_ledger_identity",
+        "tbl_name": "prospective_prediction_ledger",
+        "type": "index"
+      },
+      {
+        "name": "prospective_activation_registry",
+        "tbl_name": "prospective_activation_registry",
+        "type": "table"
+      },
+      {
+        "name": "prospective_capture_batches",
+        "tbl_name": "prospective_capture_batches",
+        "type": "table"
+      },
+      {
+        "name": "prospective_capture_events",
+        "tbl_name": "prospective_capture_events",
+        "type": "table"
+      },
+      {
+        "name": "prospective_outcome_links",
+        "tbl_name": "prospective_outcome_links",
+        "type": "table"
+      },
+      {
+        "name": "prospective_prediction_ledger",
+        "tbl_name": "prospective_prediction_ledger",
+        "type": "table"
+      },
+      {
+        "name": "prospective_schema_meta",
+        "tbl_name": "prospective_schema_meta",
+        "type": "table"
+      },
+      {
+        "name": "trg_prospective_activation_registry_no_delete",
+        "tbl_name": "prospective_activation_registry",
+        "type": "trigger"
+      },
+      {
+        "name": "trg_prospective_activation_registry_no_update",
+        "tbl_name": "prospective_activation_registry",
+        "type": "trigger"
+      },
+      {
+        "name": "trg_prospective_capture_batches_no_delete",
+        "tbl_name": "prospective_capture_batches",
+        "type": "trigger"
+      },
+      {
+        "name": "trg_prospective_capture_batches_no_update",
+        "tbl_name": "prospective_capture_batches",
+        "type": "trigger"
+      },
+      {
+        "name": "trg_prospective_capture_events_no_delete",
+        "tbl_name": "prospective_capture_events",
+        "type": "trigger"
+      },
+      {
+        "name": "trg_prospective_capture_events_no_update",
+        "tbl_name": "prospective_capture_events",
+        "type": "trigger"
+      },
+      {
+        "name": "trg_prospective_outcome_links_no_delete",
+        "tbl_name": "prospective_outcome_links",
+        "type": "trigger"
+      },
+      {
+        "name": "trg_prospective_outcome_links_no_update",
+        "tbl_name": "prospective_outcome_links",
+        "type": "trigger"
+      },
+      {
+        "name": "trg_prospective_prediction_ledger_no_delete",
+        "tbl_name": "prospective_prediction_ledger",
+        "type": "trigger"
+      },
+      {
+        "name": "trg_prospective_prediction_ledger_no_update",
+        "tbl_name": "prospective_prediction_ledger",
+        "type": "trigger"
+      }
     ]
   },
   "schema_fingerprint_sha256": "af25321f7d24f3b396f183febffab261eefe3ab55dabeb5189a11ef6a074d04a",
@@ -541,6 +861,13 @@
       "sqlite_autoindex_prediction_results_1",
       "sqlite_autoindex_snapshot_schedule_1",
       "sqlite_autoindex_strategy_prediction_replays_1"
+    ],
+    "internal_objects": [
+      {
+        "name": "sqlite_sequence",
+        "tbl_name": "sqlite_sequence",
+        "type": "table"
+      }
     ],
     "objects": [
       {
@@ -3237,8 +3564,14 @@
     "sqlite_version": "3.53.0",
     "user_version": 0
   },
-  "service_restoration_requires_separate_authorization": true,
-  "services_remain_stopped": true,
+  "schema_version_after": "NOT_CAPTURED",
+  "schema_version_before": 86,
+  "schema_version_evidence": {
+    "after_value": "NOT_CAPTURED",
+    "historical_value": 86,
+    "stability": "NOT_PROVEN",
+    "status": "EVIDENCE_LIMITATION_SCHEMA_VERSION_SINGLE_READ"
+  },
   "sidecars_after": {
     "journal": {
       "exists": false,
@@ -3278,6 +3611,16 @@
       "path": "/Users/kelvin/Kelvin-WorkSpace/LotteryNew/lottery_api/data/lottery_v2.db-wal",
       "size_bytes": 0
     }
+  },
+  "single_connection_evidence": {
+    "committed_code_supported_one_bounded_path": true,
+    "connection_close_guaranteed": true,
+    "contradictory_evidence": false,
+    "exact_historical_execution_count_status": "EVIDENCE_LIMITATION",
+    "execution_reported_connection_attempts": 1,
+    "independent_execution_telemetry": false,
+    "retry_path": false,
+    "writable_fallback": false
   },
   "source_verification_status": "MANUAL_VERIFICATION_REQUIRED",
   "synthetic": false,

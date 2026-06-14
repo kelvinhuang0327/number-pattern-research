@@ -245,9 +245,34 @@ def test_authorizer_unit_denies_unknown_pragma_and_setter():
     # writes -> deny.
     for act in (9, 18, 23, 24, 25, 22, 32, 2, 11, 26):  # delete/insert/update/attach/detach/txn/savepoint/create/drop/alter
         assert A._readonly_authorizer(act, None, None, "main", None) == A._SQLITE_DENY
-    # select/read/function -> ok.
-    for act in (A._ACT_SELECT, A._ACT_READ, A._ACT_FUNCTION):
+    # select/read -> ok; functions default-deny unless explicitly allowlisted.
+    for act in (A._ACT_SELECT, A._ACT_READ):
         assert A._readonly_authorizer(act, None, None, "main", None) == A._SQLITE_OK
+    assert A._readonly_authorizer(
+        A._ACT_FUNCTION, None, "length", "main", None
+    ) == A._SQLITE_DENY
+
+
+def test_authorizer_function_allowlist_is_explicit_and_unapproved_denied(legacy_db):
+    # None of the hardcoded inspection queries requires a SQL function.
+    assert insp.APPROVED_SQL_FUNCTIONS == frozenset()
+    conn = insp.connect_readonly_immutable(legacy_db)
+    try:
+        with pytest.raises(sqlite3.DatabaseError):
+            conn.execute("SELECT length('harmless')")
+    finally:
+        conn.close()
+
+
+def test_authorizer_function_allowlist_matching_is_case_normalized(
+    legacy_db, monkeypatch
+):
+    monkeypatch.setattr(insp, "APPROVED_SQL_FUNCTIONS", frozenset({"length"}))
+    conn = insp.connect_readonly_immutable(legacy_db)
+    try:
+        assert conn.execute("SELECT LeNgTh('abc')").fetchone() == (3,)
+    finally:
+        conn.close()
 
 
 # ---------------------------------------------------------------------------
@@ -330,6 +355,30 @@ def test_inventory_counts_and_objects(legacy_db):
     assert rep["schema_meta"]["sqlite_version"] == sqlite3.sqlite_version
 
 
+def test_inventory_reconciles_internal_and_categorized_objects(legacy_db):
+    rep = insp.run_inspection(REPO_ROOT, legacy_db, synthetic=True)
+    counts = rep["object_counts"]
+    assert counts["categorized_total"] == (
+        counts["tables"] + counts["indexes"]
+        + counts["triggers"] + counts["views"]
+    )
+    assert counts["categorized_total"] + counts["internal_total"] == counts["raw_total"]
+    assert counts["reconciles"] is True
+    assert rep["schema_inventory"]["internal_objects"] == [
+        {"type": "table", "name": "sqlite_sequence", "tbl_name": "sqlite_sequence"}
+    ]
+    assert "sqlite_sequence" not in rep["schema_inventory"]["table_names"]
+
+
+def test_fingerprint_contract_explicitly_preserves_raw_internal_objects(legacy_db):
+    rep = insp.run_inspection(REPO_ROOT, legacy_db, synthetic=True)
+    assert any(
+        obj["name"] == "sqlite_sequence"
+        for obj in rep["schema_inventory"]["objects"]
+    )
+    assert "sqlite_sequence" in (insp.compute_fingerprint.__doc__ or "")
+
+
 # ---------------------------------------------------------------------------
 # 6. Prospective-state classifications (all branches).
 # ---------------------------------------------------------------------------
@@ -406,7 +455,63 @@ def test_state_present_unexpected_objects(tmp_path):
     rep = insp.run_inspection(REPO_ROOT, p, synthetic=True)
     ps = rep["prospective_state"]
     assert ps["state"] == insp.STATE_PRESENT_UNEXPECTED_OBJECTS
-    assert "prospective_mystery" in ps["unexpected_prospective_objects"]
+    assert any(
+        obj["name"] == "prospective_mystery"
+        for obj in ps["unexpected_prospective_objects"]
+    )
+
+
+def test_orphan_expected_index_is_partial_and_collision(tmp_path):
+    p = str(tmp_path / "orphan_index.db")
+    _make_legacy_db(p)
+    conn = sqlite3.connect(p)
+    conn.execute("CREATE UNIQUE INDEX idx_ledger_identity ON draws(draw)")
+    conn.commit()
+    conn.close()
+    rep = insp.run_inspection(REPO_ROOT, p, synthetic=True)
+    assert rep["prospective_state"]["state"] == insp.STATE_PRESENT_PARTIAL
+    assert rep["schema_collision"]["collision_free_vs_legacy"] is False
+    assert {
+        (d["type"], d["name"])
+        for d in rep["schema_collision"]["collision_details"]
+    } == {("index", "idx_ledger_identity")}
+
+
+def test_orphan_expected_trigger_is_partial_and_collision(tmp_path):
+    p = str(tmp_path / "orphan_trigger.db")
+    _make_legacy_db(p)
+    trigger = insp.EXPECTED_PROSPECTIVE_TRIGGERS[0]
+    conn = sqlite3.connect(p)
+    conn.execute(
+        f"CREATE TRIGGER {trigger} BEFORE UPDATE ON draws "
+        "BEGIN SELECT RAISE(ABORT, 'synthetic'); END"
+    )
+    conn.commit()
+    conn.close()
+    rep = insp.run_inspection(REPO_ROOT, p, synthetic=True)
+    assert rep["prospective_state"]["state"] == insp.STATE_PRESENT_PARTIAL
+    assert rep["schema_collision"]["collision_free_vs_legacy"] is False
+    detail = rep["schema_collision"]["collision_details"]
+    assert any(d["type"] == "trigger" and d["name"] == trigger for d in detail)
+
+
+def test_orphan_registry_version_table_is_partial_and_collision(tmp_path):
+    p = str(tmp_path / "orphan_registry.db")
+    _make_legacy_db(p)
+    conn = sqlite3.connect(p)
+    conn.execute(
+        "CREATE TABLE prospective_schema_meta "
+        "(key TEXT PRIMARY KEY, value TEXT NOT NULL)"
+    )
+    conn.commit()
+    conn.close()
+    rep = insp.run_inspection(REPO_ROOT, p, synthetic=True)
+    assert rep["prospective_state"]["state"] == insp.STATE_PRESENT_PARTIAL
+    assert rep["schema_collision"]["collision_free_vs_legacy"] is False
+    assert any(
+        d["type"] == "table" and d["name"] == "prospective_schema_meta"
+        for d in rep["schema_collision"]["collision_details"]
+    )
 
 
 # ---------------------------------------------------------------------------
@@ -446,7 +551,27 @@ def test_clean_run_reports_integrity_ok(legacy_db):
     assert integ["sidecars_unchanged"] is True
     assert integ["no_new_journal"] is True
     assert integ["data_version_unchanged"] is True
+    assert integ["schema_version_stable"] is True
+    assert rep["schema_version_before"] == rep["schema_version_after"]
     assert integ["integrity_ok"] is True
+
+
+def test_changed_schema_version_is_unstable_and_blocking(legacy_db, monkeypatch):
+    real_scalar = insp._scalar_pragma
+    schema_reads = iter((101, 101, 102))
+
+    def fake_scalar(conn, name):
+        if name == "schema_version":
+            return next(schema_reads)
+        return real_scalar(conn, name)
+
+    monkeypatch.setattr(insp, "_scalar_pragma", fake_scalar)
+    rep = insp.run_inspection(REPO_ROOT, legacy_db, synthetic=True)
+    assert rep["schema_version_before"] == 101
+    assert rep["schema_version_after"] == 102
+    assert rep["integrity"]["schema_version_stable"] is False
+    assert rep["integrity"]["integrity_ok"] is False
+    assert rep["actual_schema_blocker_cleared"] is False
 
 
 def test_concurrent_mutation_detected(legacy_db, monkeypatch):
@@ -520,6 +645,22 @@ def test_legacy_comparison_all_present(legacy_db):
         assert cmp["per_table"][t]["missing_source_columns"] == []
 
 
+def test_legacy_comparison_does_not_overstate_unimplemented_dimensions(legacy_db):
+    cmp = insp.run_inspection(REPO_ROOT, legacy_db, synthetic=True)[
+        "legacy_source_comparison"
+    ]
+    for dimension in (
+        "types", "nullability", "defaults", "primary_keys",
+        "foreign_keys", "index_equivalence",
+    ):
+        assert cmp["comparison_scope"][dimension] == "NOT_FULLY_VERIFIED"
+    for table in insp.LEGACY_COMPARISON_TABLES:
+        row = cmp["per_table"][table]
+        assert row["table_existence_status"] == "CHECKED_PRESENT"
+        assert row["column_names_status"] == "CHECKED_PASS"
+        assert row["types_status"] == "NOT_FULLY_VERIFIED"
+
+
 def test_schema_collision_free_on_legacy_only(legacy_db):
     rep = insp.run_inspection(REPO_ROOT, legacy_db, synthetic=True)
     col = rep["schema_collision"]
@@ -535,7 +676,7 @@ def test_schema_collision_free_when_prospective_installed(prospective_empty_db):
     # *legacy* collision.
     assert col["collision_free_vs_legacy"] is True
     assert set(col["contract_names_already_present_in_deployed"]) == (
-        set(insp.EXPECTED_PROSPECTIVE_TABLES) | set(insp.EXPECTED_PROSPECTIVE_INDEXES)
+        set(insp.EXPECTED_OBJECT_SPECS)
     )
 
 
@@ -560,6 +701,13 @@ def test_schema_contract_matches_ledger_source():
     assert insp.EXPECTED_SCHEMA_VERSION == pcl.SCHEMA_VERSION
     assert set(insp.EXPECTED_PROSPECTIVE_TABLES) == set(pcl.REQUIRED_TABLES)
     assert insp.EXPECTED_TRIGGER_COUNT == len(pcl._APPEND_ONLY_TABLES) * 2
+    expected_triggers = {
+        f"trg_{table}_{operation}"
+        for table in pcl._APPEND_ONLY_TABLES
+        for operation in ("no_update", "no_delete")
+    }
+    assert set(insp.EXPECTED_PROSPECTIVE_TRIGGERS) == expected_triggers
+    assert len(insp.EXPECTED_OBJECT_SPECS) == 18
 
 
 @pytest.mark.parametrize("relpath", [
@@ -607,3 +755,16 @@ def test_remaining_apply_blockers_retained(legacy_db):
     assert any("backup" in b for b in blockers)
     assert any("rollback" in b for b in blockers)
     assert any("wal_shm" in b for b in blockers)
+
+
+def test_report_records_test_and_single_connection_evidence(legacy_db):
+    rep = insp.run_inspection(REPO_ROOT, legacy_db, synthetic=True)
+    assert rep["focused_tests"]["status"] == "NOT_RUN_BY_INSPECTION_SCRIPT"
+    assert rep["combined_tests"]["status"] == "NOT_RUN_BY_INSPECTION_SCRIPT"
+    assert rep["full_repo_suite"]["status"] == "NOT_RUN"
+    evidence = rep["single_connection_evidence"]
+    assert evidence["one_bounded_code_path"] is True
+    assert evidence["connection_closed_in_finally"] is True
+    assert evidence["writable_fallback"] is False
+    assert evidence["retry_path"] is False
+    assert evidence["exact_historical_count_status"] == "EVIDENCE_LIMITATION"

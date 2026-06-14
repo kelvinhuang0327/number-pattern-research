@@ -79,7 +79,34 @@ EXPECTED_APPEND_ONLY_TABLES = (
     "prospective_capture_events",
     "prospective_outcome_links",
 )
-EXPECTED_TRIGGER_COUNT = len(EXPECTED_APPEND_ONLY_TABLES) * 2  # no_update + no_delete
+EXPECTED_PROSPECTIVE_TRIGGERS = tuple(
+    f"trg_{table}_{operation}"
+    for table in EXPECTED_APPEND_ONLY_TABLES
+    for operation in ("no_update", "no_delete")
+)
+EXPECTED_TRIGGER_COUNT = len(EXPECTED_PROSPECTIVE_TRIGGERS)
+EXPECTED_OBJECT_SPECS: Dict[str, Dict[str, str]] = {
+    **{
+        name: {"type": "table", "tbl_name": name}
+        for name in EXPECTED_PROSPECTIVE_TABLES
+    },
+    "idx_ledger_identity": {
+        "type": "index",
+        "tbl_name": "prospective_prediction_ledger",
+    },
+    "idx_batch_cluster": {
+        "type": "index",
+        "tbl_name": "prospective_capture_batches",
+    },
+    **{
+        name: {
+            "type": "trigger",
+            "tbl_name": name.removeprefix("trg_").removesuffix("_no_update")
+            .removesuffix("_no_delete"),
+        }
+        for name in EXPECTED_PROSPECTIVE_TRIGGERS
+    },
+}
 # Tables whose emptiness is probed (EXISTS only) when prospective schema present.
 PROSPECTIVE_EMPTINESS_PROBE_TABLES = (
     "prospective_activation_registry",
@@ -158,20 +185,28 @@ _SCALAR_READ_PRAGMAS = frozenset({
     "schema_version", "user_version", "application_id", "page_size",
     "page_count", "freelist_count", "journal_mode", "data_version", "encoding",
 })
+# The hardcoded inspection SQL uses no SQLite scalar/aggregate functions.
+# Keep this named allowlist explicit and empty; any future function dependency
+# must be reviewed and added here before it can execute.
+APPROVED_SQL_FUNCTIONS = frozenset()
 
 
 def _readonly_authorizer(action, arg1, arg2, db_name, trigger_or_view):
     """Fail-closed authorizer: allow only read introspection, deny all else.
 
-    Allows SELECT, READ, scalar FUNCTION calls, and a fixed allowlist of
-    read-only PRAGMAs. Denies every mutating action (INSERT/UPDATE/DELETE,
+    Allows SELECT, READ, explicitly approved FUNCTION calls, and a fixed
+    allowlist of read-only PRAGMAs. Denies every mutating action
+    (INSERT/UPDATE/DELETE,
     CREATE/DROP/ALTER, ATTACH/DETACH, TRANSACTION/SAVEPOINT, REINDEX/ANALYZE,
     vtable ops), ``wal_checkpoint``, and any PRAGMA outside the allowlist
     (including the setter form of an otherwise-readable scalar PRAGMA).
     """
 
-    if action in (_ACT_SELECT, _ACT_READ, _ACT_FUNCTION):
+    if action in (_ACT_SELECT, _ACT_READ):
         return _SQLITE_OK
+    if action == _ACT_FUNCTION:
+        name = (arg2 or arg1 or "").strip().lower()
+        return _SQLITE_OK if name in APPROVED_SQL_FUNCTIONS else _SQLITE_DENY
     if action == _ACT_PRAGMA:
         name = (arg1 or "").strip().lower()
         if name in _INTROSPECTION_PRAGMAS:
@@ -410,6 +445,19 @@ def _quote_ident(ident: str) -> str:
 def build_inventory(conn: sqlite3.Connection) -> Dict[str, object]:
     """Full deterministic schema inventory (no row payloads)."""
     objects = list_objects(conn)
+    internal_objects = sorted(
+        (
+            {
+                "type": o["type"],
+                "name": o["name"],
+                "tbl_name": o["tbl_name"],
+            }
+            for o in objects
+            if o["type"] == "table"
+            and str(o["name"]).startswith("sqlite_")
+        ),
+        key=lambda o: (str(o["type"]), str(o["name"])),
+    )
     table_names = sorted(
         o["name"] for o in objects
         if o["type"] == "table" and not str(o["name"]).startswith("sqlite_")
@@ -426,9 +474,14 @@ def build_inventory(conn: sqlite3.Connection) -> Dict[str, object]:
             "foreign_keys": table_foreign_keys(conn, t),
         }
 
+    categorized_total = (
+        len(table_names) + len(view_names) + len(trigger_names) + len(index_names)
+    )
+    raw_total = len(objects)
     return {
         "meta": schema_meta(conn),
         "objects": objects,
+        "internal_objects": internal_objects,
         "table_names": table_names,
         "view_names": view_names,
         "trigger_names": trigger_names,
@@ -438,7 +491,14 @@ def build_inventory(conn: sqlite3.Connection) -> Dict[str, object]:
             "views": len(view_names),
             "triggers": len(trigger_names),
             "indexes": len(index_names),
-            "objects": len(objects),
+            "categorized_total": categorized_total,
+            "internal_total": len(internal_objects),
+            "raw_total": raw_total,
+            # Backward-compatible alias. New consumers should use raw_total.
+            "objects": raw_total,
+            "reconciles": (
+                categorized_total + len(internal_objects) == raw_total
+            ),
         },
         "tables": tables,
     }
@@ -446,7 +506,12 @@ def build_inventory(conn: sqlite3.Connection) -> Dict[str, object]:
 
 def compute_fingerprint(inventory: Dict[str, object]) -> str:
     """Deterministic SHA-256 schema fingerprint (no row contents, no volatile
-    metadata such as data_version/freelist_count)."""
+    metadata such as data_version/freelist_count).
+
+    The raw object list intentionally includes internal ``sqlite_sequence``.
+    This preserves the historical fingerprint algorithm. Internal objects are
+    excluded only from categorized application-object counts.
+    """
     canonical = {
         "sqlite_version": inventory["meta"]["sqlite_version"],
         "objects": inventory["objects"],
@@ -483,76 +548,113 @@ def classify_prospective_state(
     conn: sqlite3.Connection, inventory: Dict[str, object]
 ) -> Dict[str, object]:
     """Classify the actual prospective_* schema state (exactly one label)."""
+    all_objects = inventory["objects"]
     all_tables = set(inventory["table_names"])
     present_prospective = sorted(
         t for t in all_tables if t.startswith("prospective_")
     )
-    expected = set(EXPECTED_PROSPECTIVE_TABLES)
+    expected_tables = set(EXPECTED_PROSPECTIVE_TABLES)
     present_set = set(present_prospective)
 
+    present_expected_objects = sorted(
+        (
+            {
+                "name": str(o["name"]),
+                "type": str(o["type"]),
+                "tbl_name": str(o["tbl_name"]),
+            }
+            for o in all_objects
+            if o.get("name") in EXPECTED_OBJECT_SPECS
+        ),
+        key=lambda o: (o["name"], o["type"], o["tbl_name"]),
+    )
+    present_expected_names = {o["name"] for o in present_expected_objects}
     present_indexes = sorted(
-        i for i in inventory["index_names"]
-        if i in set(EXPECTED_PROSPECTIVE_INDEXES)
+        name for name in present_expected_names
+        if name in EXPECTED_PROSPECTIVE_INDEXES
     )
     prospective_triggers = sorted(
-        tr for tr in inventory["trigger_names"] if tr.startswith("trg_prospective_")
+        name for name in inventory["trigger_names"]
+        if name.startswith("trg_prospective_")
+    )
+    unexpected_prospective_objects = sorted(
+        (
+            {
+                "name": str(o["name"]),
+                "type": str(o["type"]),
+                "tbl_name": str(o["tbl_name"]),
+            }
+            for o in all_objects
+            if (
+                str(o.get("name", "")).startswith("prospective_")
+                or str(o.get("name", "")).startswith("trg_prospective_")
+            )
+            and o.get("name") not in EXPECTED_OBJECT_SPECS
+        ),
+        key=lambda o: (o["name"], o["type"], o["tbl_name"]),
+    )
+    expected_object_mismatches = []
+    for obj in present_expected_objects:
+        spec = EXPECTED_OBJECT_SPECS[obj["name"]]
+        if obj["type"] != spec["type"] or obj["tbl_name"] != spec["tbl_name"]:
+            expected_object_mismatches.append({
+                **obj,
+                "expected_type": spec["type"],
+                "expected_tbl_name": spec["tbl_name"],
+            })
+    complete_expected_namespace = (
+        present_expected_names == set(EXPECTED_OBJECT_SPECS)
+        and not expected_object_mismatches
     )
 
     result: Dict[str, object] = {
         "present_prospective_tables": present_prospective,
         "expected_prospective_tables": list(EXPECTED_PROSPECTIVE_TABLES),
+        "present_expected_objects": present_expected_objects,
+        "expected_object_namespace": [
+            {"name": name, **EXPECTED_OBJECT_SPECS[name]}
+            for name in sorted(EXPECTED_OBJECT_SPECS)
+        ],
+        "expected_object_mismatches": expected_object_mismatches,
         "present_expected_indexes": present_indexes,
         "expected_indexes": list(EXPECTED_PROSPECTIVE_INDEXES),
         "present_prospective_triggers": prospective_triggers,
+        "expected_triggers": list(EXPECTED_PROSPECTIVE_TRIGGERS),
         "expected_trigger_count": EXPECTED_TRIGGER_COUNT,
         "expected_schema_version": EXPECTED_SCHEMA_VERSION,
         "installed_schema_version": None,
-        "unexpected_prospective_objects": [],
+        "unexpected_prospective_objects": unexpected_prospective_objects,
+        "complete_expected_namespace": complete_expected_namespace,
         "emptiness": {},
     }
 
-    # Unexpected prospective_* tables (present but not in the expected set).
-    unexpected = sorted(present_set - expected)
-    result["unexpected_prospective_objects"] = unexpected
-
-    # No prospective objects at all -> ABSENT_CLEAN.
-    if not present_prospective and not prospective_triggers:
+    # No prospective-prefixed or expected-name object at all -> ABSENT_CLEAN.
+    if not present_expected_objects and not unexpected_prospective_objects:
         result["state"] = STATE_ABSENT_CLEAN
         return result
 
-    # Any prospective object present but the expected core absent / partial.
-    missing_tables = sorted(expected - present_set)
-
-    if unexpected and not expected.issubset(present_set):
-        # Stray prospective_* objects without the full expected core.
+    if unexpected_prospective_objects:
         result["state"] = STATE_PRESENT_UNEXPECTED_OBJECTS
-        result["missing_expected_tables"] = missing_tables
+        result["missing_expected_objects"] = sorted(
+            set(EXPECTED_OBJECT_SPECS) - present_expected_names
+        )
         return result
 
-    if not expected.issubset(present_set):
+    if not complete_expected_namespace:
         result["state"] = STATE_PRESENT_PARTIAL
-        result["missing_expected_tables"] = missing_tables
+        result["missing_expected_tables"] = sorted(
+            expected_tables - present_set
+        )
+        result["missing_expected_objects"] = sorted(
+            set(EXPECTED_OBJECT_SPECS) - present_expected_names
+        )
         return result
 
-    # All 6 expected tables present. Check the version marker.
-    installed_version = None
-    if PROSPECTIVE_META_TABLE in present_set:
-        installed_version = _read_prospective_schema_version(conn)
+    # The complete expected namespace is present. Check the version marker.
+    installed_version = _read_prospective_schema_version(conn)
     result["installed_schema_version"] = installed_version
     if installed_version != EXPECTED_SCHEMA_VERSION:
         result["state"] = STATE_PRESENT_INCOMPATIBLE_VERSION
-        return result
-
-    # Indexes + triggers must be exact for EXACT classification.
-    if (set(present_indexes) != set(EXPECTED_PROSPECTIVE_INDEXES)
-            or len(prospective_triggers) != EXPECTED_TRIGGER_COUNT):
-        result["state"] = STATE_PRESENT_PARTIAL
-        result["missing_expected_tables"] = []
-        return result
-
-    if unexpected:
-        # All expected present + version ok, but extra prospective_* tables too.
-        result["state"] = STATE_PRESENT_UNEXPECTED_OBJECTS
         return result
 
     # Exact schema present. Probe emptiness (EXISTS only).
@@ -576,14 +678,28 @@ def classify_prospective_state(
 
 
 def compare_legacy_to_source(inventory: Dict[str, object]) -> Dict[str, object]:
-    """Compare the deployed legacy tables to the source-of-truth column sets."""
+    """Compare deployed table/column presence to documented source names.
+
+    Type/default/key/foreign-key/index equivalence is intentionally not inferred
+    from name coverage and is reported as not fully verified.
+    """
     deployed_tables = inventory["tables"]
     per_table: Dict[str, object] = {}
     all_present = True
     all_source_columns_present = True
     for table, source_cols in LEGACY_SOURCE_COLUMNS.items():
         if table not in deployed_tables:
-            per_table[table] = {"present": False}
+            per_table[table] = {
+                "present": False,
+                "table_existence_status": "CHECKED_MISSING",
+                "column_names_status": "NOT_VERIFIED_TABLE_MISSING",
+                "types_status": "NOT_FULLY_VERIFIED",
+                "nullability_status": "NOT_FULLY_VERIFIED",
+                "defaults_status": "NOT_FULLY_VERIFIED",
+                "primary_key_status": "NOT_FULLY_VERIFIED",
+                "foreign_key_status": "NOT_FULLY_VERIFIED",
+                "index_equivalence_status": "NOT_FULLY_VERIFIED",
+            }
             all_present = False
             all_source_columns_present = False
             continue
@@ -595,21 +711,43 @@ def compare_legacy_to_source(inventory: Dict[str, object]) -> Dict[str, object]:
             all_source_columns_present = False
         per_table[table] = {
             "present": True,
+            "table_existence_status": "CHECKED_PRESENT",
+            "column_names_status": (
+                "CHECKED_PASS" if not missing else "CHECKED_MISSING_COLUMNS"
+            ),
             "deployed_columns": deployed_cols,
             "source_expected_columns": list(source_cols),
             "missing_source_columns": missing,
             "extra_runtime_columns": extra,  # ALTER-added beyond documented source
             "all_source_columns_present": not missing,
+            "types_status": "NOT_FULLY_VERIFIED",
+            "nullability_status": "NOT_FULLY_VERIFIED",
+            "defaults_status": "NOT_FULLY_VERIFIED",
+            "primary_key_status": "NOT_FULLY_VERIFIED",
+            "foreign_key_status": "NOT_FULLY_VERIFIED",
+            "index_equivalence_status": "NOT_FULLY_VERIFIED",
         }
     return {
         "compared_tables": list(LEGACY_COMPARISON_TABLES),
         "all_legacy_tables_present": all_present,
         "all_source_columns_present": all_source_columns_present,
+        "comparison_scope": {
+            "table_existence": "CHECKED",
+            "column_names": "CHECKED",
+            "types": "NOT_FULLY_VERIFIED",
+            "nullability": "NOT_FULLY_VERIFIED",
+            "defaults": "NOT_FULLY_VERIFIED",
+            "primary_keys": "NOT_FULLY_VERIFIED",
+            "foreign_keys": "NOT_FULLY_VERIFIED",
+            "index_equivalence": "NOT_FULLY_VERIFIED",
+        },
         "per_table": per_table,
         "note": (
             "Source-of-truth = lottery_api/database.py CREATE TABLE + documented "
             "ALTER-TABLE migration columns. 'extra_runtime_columns' are columns "
-            "present in the deployed DB beyond the documented source set."
+            "present in the deployed DB beyond the documented source set. "
+            "This comparison does not claim full type/default/key/FK/index "
+            "equivalence."
         ),
     }
 
@@ -624,23 +762,51 @@ def compute_schema_collision(inventory: Dict[str, object]) -> Dict[str, object]:
     the deployed schema, and whether any clash with a legacy (non-prospective)
     object. A future CREATE-IF-NOT-EXISTS apply must be collision-free vs legacy.
     """
-    deployed_names = {o["name"] for o in inventory["objects"] if o.get("name")}
-    contract = set(EXPECTED_PROSPECTIVE_TABLES) | set(EXPECTED_PROSPECTIVE_INDEXES)
-    already_present = sorted(contract & deployed_names)
-    legacy_collisions = sorted(
-        n for n in already_present
-        if not (n.startswith("prospective_") or n in EXPECTED_PROSPECTIVE_INDEXES)
+    expected_present = sorted(
+        (
+            {
+                "name": str(o["name"]),
+                "type": str(o["type"]),
+                "tbl_name": str(o["tbl_name"]),
+            }
+            for o in inventory["objects"]
+            if o.get("name") in EXPECTED_OBJECT_SPECS
+        ),
+        key=lambda o: (o["name"], o["type"], o["tbl_name"]),
     )
+    present_names = {o["name"] for o in expected_present}
+    complete_namespace = present_names == set(EXPECTED_OBJECT_SPECS)
+    collision_details = []
+    for obj in expected_present:
+        spec = EXPECTED_OBJECT_SPECS[obj["name"]]
+        if obj["type"] != spec["type"] or obj["tbl_name"] != spec["tbl_name"]:
+            reason = "EXPECTED_NAME_TYPE_OR_TARGET_MISMATCH"
+        elif not complete_namespace:
+            reason = "ORPHAN_EXPECTED_OBJECT"
+        else:
+            continue
+        collision_details.append({
+            **obj,
+            "expected_type": spec["type"],
+            "expected_tbl_name": spec["tbl_name"],
+            "reason": reason,
+        })
     return {
-        "prospective_contract_objects": sorted(contract),
-        "contract_names_already_present_in_deployed": already_present,
-        "legacy_name_collisions": legacy_collisions,
-        "collision_free_vs_legacy": len(legacy_collisions) == 0,
+        "prospective_contract_objects": [
+            {"name": name, **EXPECTED_OBJECT_SPECS[name]}
+            for name in sorted(EXPECTED_OBJECT_SPECS)
+        ],
+        "contract_names_already_present_in_deployed": sorted(present_names),
+        "collision_details": collision_details,
+        "legacy_name_collisions": sorted(
+            detail["name"] for detail in collision_details
+        ),
+        "collision_free_vs_legacy": len(collision_details) == 0,
         "note": (
-            "A legacy collision = a prospective contract object name already used "
-            "by a deployed non-prospective object. All prospective tables are "
-            "'prospective_'-prefixed; the two indexes are idx_ledger_identity / "
-            "idx_batch_cluster."
+            "The namespace covers all six tables, two explicit indexes, and ten "
+            "append-only triggers. An expected name with the wrong object type/"
+            "target, or present without the complete namespace, is reported as "
+            "a fail-closed collision."
         ),
     }
 
@@ -670,9 +836,11 @@ def run_inspection(
 
     conn = connect_readonly_immutable(db_real)
     try:
+        schema_version_before = _scalar_pragma(conn, "schema_version")
         data_version_before = _scalar_pragma(conn, "data_version")
         inventory = build_inventory(conn)
         prospective = classify_prospective_state(conn, inventory)
+        schema_version_after = _scalar_pragma(conn, "schema_version")
         data_version_after = _scalar_pragma(conn, "data_version")
     finally:
         conn.close()
@@ -694,11 +862,11 @@ def run_inspection(
     sidecars_unchanged = (sidecar_before == sidecar_after)
     no_new_journal = not sidecar_after["journal"].get("exists", False)
     data_version_unchanged = (data_version_before == data_version_after)
-    schema_version_stable = True  # schema_version read once in meta; immutable RO
+    schema_version_stable = (schema_version_before == schema_version_after)
 
     integrity_ok = (
         hash_unchanged and stat_unchanged and sidecars_unchanged
-        and no_new_journal and data_version_unchanged
+        and no_new_journal and data_version_unchanged and schema_version_stable
     )
 
     # actual-schema blocker is cleared iff we actually opened RO + read the schema
@@ -719,6 +887,7 @@ def run_inspection(
             "mode": "ro", "immutable": 1,
         },
         "authorizer_installed": True,
+        "approved_sql_functions": sorted(APPROVED_SQL_FUNCTIONS),
         # Negative declarations (all must remain false).
         "production_db_opened_readonly": True,
         "production_db_opened_writable": False,
@@ -745,6 +914,8 @@ def run_inspection(
         "sidecars_after": sidecar_after,
         "data_version_before": data_version_before,
         "data_version_after": data_version_after,
+        "schema_version_before": schema_version_before,
+        "schema_version_after": schema_version_after,
         "integrity": {
             "db_hash_unchanged": hash_unchanged,
             "db_stat_unchanged": stat_unchanged,
@@ -757,6 +928,7 @@ def run_inspection(
         "schema_meta": inventory["meta"],
         "object_counts": inventory["counts"],
         "schema_inventory": {
+            "internal_objects": inventory["internal_objects"],
             "table_names": inventory["table_names"],
             "view_names": inventory["view_names"],
             "trigger_names": inventory["trigger_names"],
@@ -768,6 +940,42 @@ def run_inspection(
         "legacy_source_comparison": legacy_comparison,
         "schema_collision": collision,
         "prospective_state": prospective,
+        "single_connection_evidence": {
+            "reported_connection_attempts": 1,
+            "one_bounded_code_path": True,
+            "connection_closed_in_finally": True,
+            "writable_fallback": False,
+            "retry_path": False,
+            "independent_execution_telemetry": False,
+            "exact_historical_count_status": "EVIDENCE_LIMITATION",
+        },
+        "focused_tests": {
+            "command": (
+                "./venv/bin/python -m pytest "
+                "tests/test_p271l_readonly_production_schema_inspection.py -q"
+            ),
+            "collected": None,
+            "passed": None,
+            "failed": None,
+            "status": "NOT_RUN_BY_INSPECTION_SCRIPT",
+        },
+        "combined_tests": {
+            "command": (
+                "./venv/bin/python -m pytest "
+                "tests/test_p271j_prospective_capture_ledger_implementation.py "
+                "tests/test_p271k_prospective_capture_ledger_migration_rehearsal.py "
+                "tests/test_p271l_controlled_deployment_preflight.py "
+                "tests/test_p271l_readonly_production_schema_inspection.py -q"
+            ),
+            "collected": None,
+            "passed": None,
+            "failed": None,
+            "status": "NOT_RUN_BY_INSPECTION_SCRIPT",
+        },
+        "full_repo_suite": {
+            "status": "NOT_RUN",
+            "reason": "Task requires focused and combined P271J-L suites only.",
+        },
         "actual_schema_blocker_cleared": actual_schema_blocker_cleared,
         "actual_schema_limitation_resolved": (
             "ACTUAL_PRODUCTION_SCHEMA_NOT_READ_IN_P271L_PREFLIGHT"

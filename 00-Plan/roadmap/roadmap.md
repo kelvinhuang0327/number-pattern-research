@@ -1,6 +1,6 @@
 # Lottery Replay Roadmap
 
-**Last Updated:** 2026-06-06 Asia/Taipei (P251E evidence dashboard API runtime smoke + governance closure — P251A–P251E dashboard API arc recorded; read-only route smoke passed; no DB write; WAITING_FOR_USER_AUTHORIZATION)
+**Last Updated:** 2026-06-14 Asia/Taipei (P272B governance closeout — **PR #432 MERGED** (implementation commit `b1fc9be`; merge commit `f6533585`); CTO four-direction strategic review committed to origin/main; `WAITING_FOR_CEO_DECISION` for P273A. Prior CTO review 2026-06-14: four-direction alignment, PR #432 open at time of review). Prior: 2026-06-06 (P251E evidence dashboard API runtime smoke + governance closure)
 **Owner:** CTO agent
 **Primary Goal:** Keep LotteryNew replay, research, and product evidence truthful, reproducible, and governed. The current maturity bottleneck has shifted from migration rehearsal to short/mid-window strategy protocol design, anti-overfit validation, canonical repo dispatch safety, and honest product disclosure.
 **Repo Policy:** Use `/Users/kelvin/Kelvin-WorkSpace/LotteryNew` only. Do not create a new repo. Production DB, registry, and data writes require explicit governed authorization. CTO roadmap updates are limited to this file and `00-Plan/roadmap/CTO-Analysis.md`. CTO must not write `CEO-Decision.md`, `active_task.md`, `production/*`, `registry/*`, `data/*`, or any new repo.
@@ -10,6 +10,23 @@
 ## 0. Current Roadmap Override — 2026-06-03 (updated; originally authored 2026-06-02)
 
 This section is the current source of truth. The 2026-06-01 sections and P186-P196 appendices below are retained for history and are superseded where they conflict with this section.
+
+### 0.0 2026-06-14 CTO Review — User Four-Direction Strategic Input
+
+Owner direction (2026-06-14): exhaust every avenue to raise success rate, via four directions. CTO alignment verdicts (full analysis in `CTO-Analysis.md` 2026-06-14 section):
+
+| User Direction | Verdict | Note |
+|---|---|---|
+| **D1** demote long-term frequency to reference; decide on long≈750 / mid≈300 / short≈50 windows | `[Aligned — already adopted]` | §0.1 P221F already froze short 100/125/150 + mid 500/750/1000, all-history = reference. **Invariant frozen: windows ≤ ~50 are feature/momentum inputs only, never a standalone deployment gate** (CEO order: n=50 special-ball CI ±0.092). Exact counts → statistics-expert consult. |
+| **D2** mine all historical replay data cross-lottery for features | `[Missing → P1 research, high overfit risk]` | 94,924 replay rows + P232A scoreboard + P251 dashboard exist; no unified cross-strategy mining run. Requires pre-registered hypothesis family + P221F/Bonferroni gate (L137: undirected mining = p-hacking). → `P273B`. |
+| **D3** cross-lottery feasibility under new filter | `[Already NULL on old criteria; now dependent]` | P222/P230C scanned 3 lotteries → REJECTED (L85). Only new angle = prize-aware filter (= D4). **Gate on `P273A` result first.** |
+| **D4** per-lottery win-mode scoring — BIG **M2+special**, POWER **M1+second-zone** | `[~80% already built; inferential layer is the gap]` | Exactly the prize-aware endpoints from P271A (`BIG = hit≥3 OR (hit=2 AND special)`, `POWER = hit≥3 OR (hit≥1 AND special)`), implemented in `prize_aware_scorer.py` (P271C) and descriptively evaluated in P271F (win rates POWER 11.88% / BIG 3.13% / 539 12.49%) — **but P271F has no baseline, no p-value, no per-strategy test.** That missing inference = `P273A`. Honest prior NULL-leaning (special-ball 0.1181<0.125); second-zone stays display-only/containment (SZC2). |
+
+**Actual-state correction:** the attached P272B "interrupted" handoff is **stale** — P272B is **COMPLETE** (61 tests pass; `POWER_QUANTIFIED_THRESHOLD_NOT_GOVERNED`; **PR #432 MERGED** — implementation commit `b1fc9be`, merge commit `f6533585`). Do not restart it.
+
+**Reprioritization (this review):** P0 unchanged (anti-overfit gate; canonical-dispatch guard; CTO↔CEO task boundary; `NOT_READY_FOR_APPLY` hold). **P1-lead = `P273A` prize-aware inferential validation** (read-only diagnostic completing D4: prize-aware random baseline + per-strategy significance + three-window + permutation + Bonferroni, NULL-accepting, second-zone display-only). P1-second = `P273B` replay feature mining. P2 = D3 cross-lottery prize-aware (dependent on `P273A`), D1 window reconciliation, P272B PR **#432 MERGED** (merge commit `f6533585`) — gate closed. P3+ = deferred UI/scheduler; prospective activation P271M/P271N remains gated on an owner threshold decision (P272B B1), not on more code.
+
+**Status:** `WAITING_FOR_CEO_DECISION`. CTO does not author the worker prompt (Repo Policy + CEO line 546). No DB/registry/production write; no stage/commit/push this review.
 
 ### 0.1 Latest Phase Status
 

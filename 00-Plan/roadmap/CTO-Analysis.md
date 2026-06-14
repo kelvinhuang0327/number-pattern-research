@@ -1,5 +1,112 @@
 # CTO Analysis - Roadmap Alignment And System Optimization Direction
 
+## 2026-06-14 CTO Roadmap Alignment — User Four-Direction Strategic Review
+
+Final Classification: `CTO_ROADMAP_UPDATED_WITH_RISKS`
+
+### 0. CTO Review Date And Input Sources
+
+- [Confirmed] Review date: 2026-06-14 Asia/Taipei.
+- [Confirmed] Phase 0 actual-state verified before any write: repo `/Users/kelvin/Kelvin-WorkSpace/LotteryNew`; branch `task/p272b-prospective-oos-detectability-power` sitting **exactly at `main`/`origin/main` HEAD `8b62b358`** (no commits on the task branch **at the time of this CTO review — commit `b1fc9be` was subsequently authored by the P272B worker and merged as PR #432**); staging area **empty**; the six governance files are **byte-identical to HEAD** (clean baseline). Repo write-hook blocks `Edit|Write` only on `main`, so working-tree edits on this task branch are permitted. Dirty tree = tolerated daemon/runtime churn (pids, db, launchd logs, submodule) + untracked research outputs (P245A/P251D/P272B); no unrelated source edits.
+- [Confirmed] Read: `roadmap.md`, `active_task.md`, `agent_bootstrap/CURRENT_STATE.md`, prior `CTO-Analysis.md`, targeted `CEO-Decision.md` (second-zone / prize-aware / containment standing orders), `SHARED_AGENT_BOOTSTRAP.md`, `TASK_TEMPLATES.md`, and source `lottery_api/prize_aware_scorer.py` (functions verified at source).
+- [Confirmed] User strategic input (owner direction, 2026-06-14): "exhaust every avenue to raise success rate," via four directions — (1) demote long-term full-history frequency to reference-only and decide deployment on long≈750 / mid≈300 / short≈50 windows (period counts deferrable to a statistics-expert agent); (2) mine all historical replay comparison data across lotteries for success-improving features; (3) re-assess cross-lottery feasibility under new filter criteria; (4) per-lottery win-mode scoring — BIG_LOTTO **M2+ + special number**, POWER_LOTTO **M1+ + second-zone number**.
+- [Confirmed] This is analysis + governance documentation only. **No DB opened/queried/written, no production write, no registry mutation, no executable strategy/hypothesis created, no stage/commit/push.** CTO did not author a worker task prompt (per the standing rule in `roadmap.md` Repo Policy and `CEO-Decision.md` line 546: CTO must not write `active_task.md` authorization; the CEO/owner reserves task generation).
+- [Unknown] Full test suite not run for this doc-only review.
+
+### 1. Critical Actual-State Correction (stale handoff)
+
+- [Confirmed] The dispatch attached a P272B handoff report claiming P272B was **interrupted** mid-discovery (located at "lottery rules / draw cadence" search) with no completed files, tests, or PR. **This is stale.** Actual repo state: **P272B is COMPLETE** (`active_task.md` / `CURRENT_STATE.md` 2026-06-14): exact one-sided binomial power brief, focused **61 passed** (+ P267C 19 / P270B 12 / P271L 50+72 regressions), decision **`POWER_QUANTIFIED_THRESHOLD_NOT_GOVERNED`**, classification `P272B_PROSPECTIVE_OOS_DETECTABILITY_POWER_COMPLETE`; the four artifacts that were untracked at review time are now committed; **PR #432 MERGED** (implementation commit `b1fc9be726ce801a18e217f0918014049cc3ae10`; merge commit `f6533585c76e08852db4bc5b6957a2c6aa09523a`). Do **not** resume P272B from scratch.
+- [Confirmed] Reinforces the project rule (and memory `feedback_verify_numbers_from_source`): verify actual Git/file state; never accept an unverified handoff conclusion as current.
+
+### 2. Roadmap Alignment Assessment — The Four User Directions vs. Committed Evidence
+
+**Direction 1 — windows + demote long-term frequency:** `[Aligned — largely already adopted]`.
+- `roadmap.md` §0.1 (P221F, PR #256) froze windows at **short 100/125/150, mid 500/750/1000, all-history = reference**; CEO adopted "long-term frequency demoted to reference-only." The user's long≈750 maps to project mid-750; mid≈300 falls inside CEO's "中期 100–300 = primary stability window." The *principle* the user asks for is already in force.
+- `[Risk]` The one genuinely new element — using a **short≈50 window as a deployment go/no-go gate** — conflicts with a CEO standing order (`CEO-Decision.md`): n=50 → special-ball 95% CI ≈ ±0.092; short 10–50 windows are **feature/momentum inputs only, never a standalone estimation/decision basis** (overfit hazard; L86/L89/L100/L101 + SZC1). Residual action = route exact period counts to the statistics-expert consult the user requested, but **freeze the invariant: windows ≤ ~50 may feed features, never gate deployment.**
+
+**Direction 2 — mine historical replay data for features:** `[Missing → legitimate research, partial precedent, high overfit risk]`.
+- The corpus exists (94,924 replay rows; `strategy_prediction_replays` BIG 24,140 / 539 34,680 / POWER 36,104 per CURRENT_STATE baseline) and there are read-only surfaces — P232A all-catalog scoreboard (41 union entries), P251 evidence dashboard API. But **no unified cross-strategy / cross-bet-index feature-mining sweep over the replay corpus has been run.**
+- `[Risk]` This is the highest multiple-testing / p-hacking surface in the project. Must inherit the P221F anti-overfit gate + Bonferroni/BH, pre-registration, read-only, NULL-accepting. Memory L137: in the absence of a bias gate or new data source, undirected mining = p-hacking. Scope-vague today; needs a pre-registered hypothesis family before it is a task.
+
+**Direction 3 — cross-lottery feasibility with new filter:** `[Aligned but already NULL on old criteria; now dependent on Direction 4]`.
+- P222 already scanned 35 strategies × 14 bet-index × 3 lotteries; the sole survivor was reclassified `REJECTED_BY_BACKWARD_OOS / HISTORICAL_ARTIFACT_DIRECTION` (P230C). L85: 49C6 pool dilutes frequency signals below detection. The only *new* angle is the "new filter" = the prize-aware criteria of Direction 4. **Sequence: only re-run cross-lottery if Direction 4 first surfaces a single-lottery prize-aware signal.**
+
+**Direction 4 — per-lottery win-mode scoring (M2+special / M1+zone2):** `[~80% ALREADY BUILT; the inferential layer is the real gap]`.
+- This is exactly the prize-aware endpoint already specified and implemented in the P271A–F arc:
+  - **P271A** defined the endpoints verbatim: `BIG_ANY_PRIZE_AWARE_WIN = hit_count≥3 OR (hit_count=2 AND special_hit=1)` (= **M2 + special**); `POWER_ANY_PRIZE_AWARE_WIN = hit_count≥3 OR (hit_count≥1 AND special_hit=1)` (= **M1 + second-zone**). These match the user's request one-for-one.
+  - **P271B/C** implemented `lottery_api/prize_aware_scorer.py` (source-verified functions `classify_big_lotto_tier`, `classify_power_lotto_tier`, `score_replay_row`, `is_any_prize_aware_win`, `score_prize_aware_ticket`); all 10 POWER / 8 BIG / 4 DAILY tiers; M3+ SSOT left unchanged (`existing_m3_replay_scoring_changed=False`).
+  - **P271D/E** confirmed feasibility + built a read-only adapter: BIG/539 100% eligible; POWER 24.93% (9,000/36,104) — 27,104 rows BLOCKED for missing predicted second-zone (never manufactured).
+  - **P271F** ran the full descriptive eval: prize-aware win rates **POWER 11.88% / BIG 3.13% / DAILY_539 12.49%** (vs M3+ 4.31% / 2.02% / 1.12%). **Explicitly NO baseline, NO p-value, NO per-strategy aggregation.**
+- `[Gap]` The **inferential layer is missing**: there is no prize-aware *random baseline*, no per-strategy significance test, no three-window / permutation gate, no GO/NULL classification. That single missing step is the actionable remainder of Direction 4.
+- `[Risk — honest prior = NULL-leaning]` Special-ball/second-zone prediction is **below random** (0.1181 < 0.125, CEO re-verified; SZC1/SZC2). First-zone M3+ is already NULL across all three games (L82/L90/L91). Adding an *independent below-random* component cannot manufacture edge; prize-aware scoring re-weights the success definition toward realistic payout tiers but is unlikely to create predictability. Expected outcome = NULL — which the project treats as a **valid, valuable result** ("NULL = success" reframe, CEO).
+- `[Governance]` Second-zone stays **display-only / containment** (SZC2; CEO standing order). A prize-aware *inferential* run is permitted **only as a pre-registered, read-only diagnostic** (consistent with the P271A–F precedent) — never promotion, deployment, recommendation-logic change, or a betting-edge claim. Per P271G, a retrospective prize-aware result can **falsify or surface candidates only**; *confirmation* requires prospective data.
+
+### 3. Completed-Work Assessment (relevant arc)
+
+- [Confirmed] Prize-aware spine P271A→P271F COMPLETE (spec → scorer → feasibility → adapter → descriptive eval). Prospective-capture spine P271G→P271N **design/impl/rehearsal/preflight COMPLETE but unactivated** (P271L `PREFLIGHT_COMPLETE_NOT_READY_FOR_APPLY`; P271M/P271N unstarted, unauthorized). Power brief P272A→P272B COMPLETE (`POWER_QUANTIFIED_THRESHOLD_NOT_GOVERNED`).
+- [Confirmed] All historical first-zone M3+ strategy research = NULL/REJECTED across all three lotteries (roadmap §0; memory L82/L90/L91).
+
+### 4. Unfinished-Work Assessment
+
+- [Confirmed] Prize-aware **inference** (baseline + per-strategy significance + three-window) — never run (P271F stopped at description).
+- [Confirmed] Unified replay-corpus feature mining (Direction 2) — never run; needs pre-registered family.
+- [Confirmed] One remaining governance decision for the owner: (a) **P272B PR #432 MERGED** (merge commit `f6533585c76e08852db4bc5b6957a2c6aa09523a`) — gate closed; (b) the strategic fork the P271/P272 arc has reached — **prospective capture activation vs. continued retrospective exhaustion vs. scientific closure**. P272B shows effects are detectable within the search bound but **no governed acceptable horizon/threshold exists**, so GO/NO_GO on prospective activation is currently un-decidable without an owner-set threshold.
+
+### 5. P0 / P1 / P2 / P3+ Reprioritization
+
+- **P0 (unchanged, enforced):** anti-overfit validation gate (P221F, windows frozen, correction mandatory); canonical-dispatch / Phase-0 STOP guard; CTO↔CEO task-generation boundary; `NOT_READY_FOR_APPLY` hold (no production/DB/registry write; P271M/P271N unstarted).
+- **P1 — lead (NEW, recommended): `P273A` prize-aware inferential validation.** Read-only diagnostic completing Direction 4: prize-aware random baseline (analytic + Monte-Carlo) + per-strategy prize-aware win-rate vs baseline under the frozen three-window protocol + permutation + Bonferroni m≈3, NULL-accepting, second-zone display-only. Pending CEO authorization.
+- **P1 — second: `P273B` unified replay-corpus feature mining** (Direction 2), read-only, pre-registered hypothesis family, P221F-gated. After/parallel to P273A.
+- **P2:** cross-lottery prize-aware re-scan (Direction 3, **dependent on P273A result**); window-set reconciliation + statistics-expert consult (Direction 1 residual; freeze ≤50 = feature-only); P272B PR **#432 MERGED** (merge commit `f6533585`) — gate closed.
+- **P3+:** existing deferred UI/scheduler/worktree-cleanup items; **prospective-capture activation (P271M/P271N) remains gated** — blocked on an owner governance decision (threshold/horizon), not on more code.
+
+### 6. Critical Blockers
+
+| Blocker | Scope | Why it blocks | Owner | Acceptance to clear |
+|---|---|---|---|---|
+| B1 No governed detection threshold/horizon | Prospective activation GO/NO_GO | P272B = `POWER_QUANTIFIED_THRESHOLD_NOT_GOVERNED`; without an owner-set acceptable horizon, neither GO nor NO_GO is selectable | User/CEO | Owner commits an acceptable horizon, or accepts scientific closure |
+| B2 Production apply NOT_READY | Prospective capture deployment | WAL/SHM unreconciled; writers not conclusively quiesced; schema parity `NOT_FULLY_VERIFIED` | Ops + user | Maintenance window + writer quiescence + fresh hash + backup/rollback (P271L preflight) — **not on the retrospective-research critical path** |
+| B3 Retrospective confirmation ceiling | Direction 4 / any historical run | Per P271G, retrospective prize-aware results are exploratory; they can falsify/surface but cannot *confirm* — confirmation needs prospective data | Method | State explicitly in the task contract; do not let a non-NULL retrospective result imply deployment |
+
+### 7. Recommended System Optimization Directions
+
+1. **Prize-aware inferential validation (P273A)** — Phase: Direction-4 completion. *Why:* closes the user's strongest hypothesis with evidence the project deliberately deferred at P271F; reuses built code (P271C scorer, P271E adapter); cheapest highest-information probe. *Payoff:* a defensible GO-candidate-list or (likely) a clean NULL that justifies pivoting to prospective-vs-closure. *Risk:* NULL-leaning prior; second-zone containment — mitigated by pre-registration + diagnostic-only framing. *Acceptance:* read-only, DB never opened for writes, three-window + permutation + Bonferroni, deterministic seed=42, artifact + tests, no promotion/edge claim. **Priority P1 (lead).**
+2. **Unified replay-corpus feature mining (P273B)** — Phase: Direction-2. *Why:* the 94,924-row corpus has never been mined cross-strategy. *Payoff:* either a pre-registered feature candidate or evidence the corpus is signal-free. *Risk:* highest p-hacking surface — requires pre-registered hypothesis family + full correction. *Acceptance:* read-only, P221F-gated, Bonferroni/BH, NULL-accepting. **Priority P1 (second).**
+3. **Window-governance reconciliation (Direction 1 residual)** — Phase: protocol governance. *Why:* aligns the user's 750/300/50 framing with the frozen protocol and the CEO ≤50-is-feature-only invariant; routes exact counts to a statistics-expert consult. *Payoff:* removes ambiguity before P273A/P273B set their windows. *Risk:* low. *Acceptance:* documented window set + invariant; no code. **Priority P2.**
+4. **Cross-lottery prize-aware re-scan (Direction 3)** — Phase: cross-lottery transfer. *Why:* the only un-tried cross-lottery angle is the prize-aware filter. *Payoff:* settles transfer under the new criterion. *Risk:* P230C/L85 prior is strongly NULL; **gate on P273A first.** *Acceptance:* dependent task. **Priority P2 (dependent).**
+5. **Prospective-vs-closure decision memo** — Phase: program governance. *Why:* the P271/P272 arc has reached a fork the owner must resolve (B1). *Payoff:* converts an open-ended HOLD into a deliberate choice. *Risk:* none (memo). *Acceptance:* a CTO memo + owner decision recorded in CEO-Decision.md (owner-authored). **Priority P2.**
+
+### 8. CTO Final Recommendation
+
+- [Recommendation] **Today's single highest-value next task = `P273A` prize-aware inferential validation** — the read-only inferential layer P271F omitted, directly completing the user's Direction 4. It is bounded, reuses existing verified code, carries an honest NULL-leaning prior, and its result (NULL or candidate-list) is what determines whether Direction 3, prospective activation, or scientific closure is the right move next.
+- [Governance] Per the standing rule (Repo Policy line + CEO line 546), **CTO does not author the worker prompt**; `active_task.md` is set to `WAITING_FOR_CEO_DECISION` with this single recommendation. The owner authorizes (or redirects) before any worker runs.
+- [Guardrails to carry into P273A] read-only; production DB never opened for writes; second-zone display-only; pre-registered endpoint/baseline/windows/correction; deterministic seed; NULL = success; no prediction-success / betting-edge claim; no promotion/deployment/registry change; P271M/P271N remain unstarted.
+
+### 9. Roadmap Changes Applied (this review)
+
+- `roadmap.md`: `Last Updated` advanced to 2026-06-14; new `### 0.0` sub-section recording this CTO review, the four-direction alignment verdicts, the P0–P3 reprioritization, and the `P273A` lead recommendation. History preserved; §0.1+ untouched.
+- `CTO-Analysis.md`: this 2026-06-14 section prepended.
+- `active_task.md` / `CURRENT_STATE.md`: descriptive *deferring* updates only (CTO review note + latest user direction + recommended next direction + `WAITING_FOR_CEO_DECISION`); no task authorization, no readiness change.
+- `SHARED_AGENT_BOOTSTRAP.md` / `TASK_TEMPLATES.md`: reviewed, current as of 2026-06-05, **no change required**.
+
+### 10. Risks / Unknowns
+
+- [Risk] Reading P271F's descriptive prize-aware rates (11.88% / 3.13% / 12.49%) as "success" — they have **no baseline**; higher win rates partly reflect easier (lower) prize tiers, and the random baseline rises in lockstep. Only P273A's baseline-relative test is interpretable.
+- [Risk] Treating any non-NULL P273A retrospective result as deployment-ready (violates B3 / P271G). Retrospective = falsify/surface only.
+- [Risk] Short-window-as-gate (Direction 1) re-introducing overfit; mitigated by the ≤50-feature-only invariant.
+- [Unknown] Whether the owner intends to activate prospective capture (P271M/N) at all, or pursue scientific closure (B1). Not decidable by CTO.
+- [Unknown] Exact statistics-expert-recommended period counts for Direction 1 (deferred by user to that consult).
+
+### 11. Five-Line CTO Summary
+
+1. Handoff was stale — **P272B is COMPLETE** (`POWER_QUANTIFIED_THRESHOLD_NOT_GOVERNED`), not interrupted; do not restart it.
+2. Direction 1 (windows / demote long-term freq) is **already adopted**; only residual = freeze "≤50 = feature, never a gate" + a statistics-expert consult.
+3. Direction 4 (M2+special / M1+zone2) is **~80% built** (P271A–F); the missing piece is the **inferential baseline + per-strategy significance** P271F deliberately skipped.
+4. Recommended lead task **`P273A`** = that read-only prize-aware inferential validation; honest prior is NULL-leaning; second-zone stays display-only; result steers Direction 3 / prospective / closure.
+5. Final classification `CTO_ROADMAP_UPDATED_WITH_RISKS`; `active_task.md` = `WAITING_FOR_CEO_DECISION`; no DB/registry/production write, no commit/push, P271M/P271N unstarted.
+
+---
+
 ## 2026-06-04 CTO Statistical Methods Adoption Analysis
 
 Final Classification: `CTO_STATISTICAL_METHODS_ADOPTION_WITH_RISKS`

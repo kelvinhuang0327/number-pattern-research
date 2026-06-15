@@ -4,7 +4,7 @@
 - **Mode:** `DESIGN_AND_PREREGISTRATION_ONLY_READ_ONLY_NO_DB_NO_EXECUTION`
 - **Generated:** 2026-06-15 (Asia/Taipei)
 - **Final classification:** `P274A_PROSPECTIVE_CONFIRMATION_PROTOCOL_DESIGN_COMPLETE`
-- **Canonical payload digest:** `d04ddae248b440bf160d7b2145fd60c4a99e440dc3d10c35c4a8d7dc836d3e6b`
+- **Canonical payload digest:** `f2294716699368a9c2b21fb14301d84d70f662b882aef9eab896f96825f18ffc`
 - **Base origin/main:** `91dc783f40def5142391664fc34b7691805a745d` · **Task branch:** `task/p274a-prospective-confirmation-protocol-design`
 
 > **This document designs a protocol. It does not start the clock, create an activation record, capture any future row, or evaluate any prospective outcome.** `design_only=true`, `preregistration_only=true`, `execution_started=false`, `activation_started=false`, `production_db_accessed=false`, `prediction_success_claim=false`, `betting_advice=false`. Production apply remains `NOT_READY_FOR_APPLY`; P273B is not started.
@@ -139,4 +139,4 @@ Project class `PRIZE_AWARE_EDGE_CORRECTION_SURVIVING`; `prediction_success_claim
 
 **Tests:** design/artifact validation only. Source-focused suite **NOT RUN**; full repository suite **NOT RUN** (neither is claimed as PASS).
 
-**Canonical payload digest (recomputed twice, deterministic):** `d04ddae248b440bf160d7b2145fd60c4a99e440dc3d10c35c4a8d7dc836d3e6b`
+**Canonical payload digest (recomputed twice, deterministic):** `f2294716699368a9c2b21fb14301d84d70f662b882aef9eab896f96825f18ffc`

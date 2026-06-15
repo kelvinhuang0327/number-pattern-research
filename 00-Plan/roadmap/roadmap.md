@@ -1,6 +1,6 @@
 # Lottery Replay Roadmap
 
-**Last Updated:** 2026-06-14 Asia/Taipei (P272B governance closeout — **PR #432 MERGED** (implementation commit `b1fc9be`; merge commit `f6533585`); CTO four-direction strategic review committed to origin/main; `WAITING_FOR_CEO_DECISION` for P273A. Prior CTO review 2026-06-14: four-direction alignment, PR #432 open at time of review). Prior: 2026-06-06 (P251E evidence dashboard API runtime smoke + governance closure)
+**Last Updated:** 2026-06-15 Asia/Taipei (P273A exact distinct-ticket inference independently audited and merged via PR #437; merge commit `f2d3c4c13b256ac2a8d118270ba85f6366f33035`; research-only edge survives; production readiness unchanged; `WAITING_FOR_CEO_DECISION` on recommended P274A prospective-confirmation protocol design versus HOLD/closure)
 **Owner:** CTO agent
 **Primary Goal:** Keep LotteryNew replay, research, and product evidence truthful, reproducible, and governed. The current maturity bottleneck has shifted from migration rehearsal to short/mid-window strategy protocol design, anti-overfit validation, canonical repo dispatch safety, and honest product disclosure.
 **Repo Policy:** Use `/Users/kelvin/Kelvin-WorkSpace/LotteryNew` only. Do not create a new repo. Production DB, registry, and data writes require explicit governed authorization. CTO roadmap updates are limited to this file and `00-Plan/roadmap/CTO-Analysis.md`. CTO must not write `CEO-Decision.md`, `active_task.md`, `production/*`, `registry/*`, `data/*`, or any new repo.
@@ -11,7 +11,15 @@
 
 This section is the current source of truth. The 2026-06-01 sections and P186-P196 appendices below are retained for history and are superseded where they conflict with this section.
 
-### 0.0 2026-06-14 CTO Review — User Four-Direction Strategic Input
+### 0.0 2026-06-15 P273A Post-Merge Override
+
+P273A’s complete chain is now merged: primary-window observed-count export (50/300/750), canonical distinct-ticket identity export, exact without-replacement inference, independent audit across all 108 hypotheses, and **PR #437 merge** (`f2d3c4c13b256ac2a8d118270ba85f6366f33035`, `2026-06-15T05:11:17Z`). The final research class is `PRIZE_AWARE_EDGE_CORRECTION_SURVIVING`; three research-only candidates survive, all in DAILY_539: `acb_markov_midfreq_3bet`, `daily539_f4cold_3bet`, and `daily539_f4cold_5bet`.
+
+This result reaches the retrospective confirmation ceiling. It is stronger than the prior descriptive evidence, but it does not establish confirmed predictive success, betting value, promotion, production readiness, or deployment authorization. All survivors are DAILY_539, so Direction 3’s cross-lottery transfer question remains unresolved. Production apply remains separately blocked at `NOT_READY_FOR_APPLY`; no registry/recommendation mutation, prospective activation, P273B, or production work is authorized.
+
+**Recommended next substantive direction:** `P274A_PROSPECTIVE_CONFIRMATION_PROTOCOL_DESIGN`, design/pre-registration only. It should freeze the three candidates, a future-only boundary, sample size/horizon, correction family, sequential monitoring and early-stop rules, decision outcomes, and dependencies on the unactivated P271 prospective-capture infrastructure. This roadmap recommendation is **not worker authorization**. Current status: `WAITING_FOR_CEO_DECISION`; HOLD/scientific closure remains a valid alternative.
+
+### 0.0a 2026-06-14 CTO Review — User Four-Direction Strategic Input (historical)
 
 Owner direction (2026-06-14): exhaust every avenue to raise success rate, via four directions. CTO alignment verdicts (full analysis in `CTO-Analysis.md` 2026-06-14 section):
 
@@ -32,6 +40,7 @@ Owner direction (2026-06-14): exhaust every avenue to raise success rate, via fo
 
 | Phase / Chain | Status | Evidence | CTO Note |
 |---|---|---|---|
+| **P273A prize-aware exact-inference chain** | **[Complete / merged] `P273A_DISTINCT_TICKET_INFERENCE_COMPLETE_EDGE_SURVIVES_RESEARCH_ONLY`** | primary-window observed counts + identity export + `outputs/research/p273a_prize_aware_inferential_validation_20260615.{json,md}` (digest `5666e67c...b2fb4`); independent 108-hypothesis audit; PR #437 merge `f2d3c4c...` | 3 research-only DAILY_539 candidates; retrospective ceiling applies; D3 cross-lottery transfer unresolved; production apply `NOT_READY_FOR_APPLY`. Recommended next: P274A design-only prospective-confirmation protocol, pending owner authorization. |
 | P149-P159B replay product closure | [Confirmed] Complete | `00-Plan/roadmap/CEO-Decision.md`; prior P159B handoff | Historical product baseline accepted; now merged through the reconciliation chain. |
 | R1/R2 POWER_LOTTO research P161-P178A | [Confirmed] Closed NULL result | `outputs/research/power_lotto/p178a_r2_research_closure_archive_20260601.*` | 17 strategies/candidates produced no corrected-significant OOS edge. Do not restart old R2 candidates. |
 | P183-P188 DB migration chain | [Confirmed] Complete | `outputs/research/power_lotto/p188_production_db_migration_execution_20260601.*`; read-only SQLite check | Production local DB is now 94,924 rows with `bet_index` present and 0 duplicate keys. |

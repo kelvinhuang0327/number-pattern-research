@@ -1,5 +1,34 @@
 # CTO Analysis - Roadmap Alignment And System Optimization Direction
 
+## 2026-06-15 CTO Post-Merge Assessment — P273A Exact Inference
+
+Final Classification: `CTO_P273A_POSTMERGE_PROSPECTIVE_DESIGN_RECOMMENDED`
+
+### Assessment
+
+- [Confirmed] P273A produced a **non-NULL retrospective result** after replacing the provisional independent multi-ticket approximation with the exact distinct-ticket without-replacement null. The result was independently recomputed across all 108 hypotheses and merged through PR #437 (`f2d3c4c13b256ac2a8d118270ba85f6366f33035`, `2026-06-15T05:11:17Z`).
+- [Confirmed] This is materially stronger than P271F’s descriptive evidence: fixed 50/300/750 windows, Bonferroni `m=108`, exact binomial/Poisson-binomial inference, support gates, confidence intervals, and the ten-point stability rule were applied. Three groups pass stability and four MID/LONG windows survive correction.
+- [Risk] It does **not** overcome retrospective reuse, prior selection history, or the P271G prospective-confirmation limitation. `prediction_success_claim=false`; the result surfaces candidates for future testing, not confirmed predictive success or production readiness.
+- [Confirmed] All three survivors are DAILY_539 (`acb_markov_midfreq_3bet`, `daily539_f4cold_3bet`, `daily539_f4cold_5bet`). The result therefore does not establish cross-lottery transfer; Direction 3 remains unresolved.
+- [Confirmed] SHORT-50 remains a recent-direction guardrail. It is not an independent deployment gate and cannot trigger EDGE/GO by itself. Correction-surviving evidence at 300/750 justifies prospective testing, not deployment.
+- [Recommendation] Keep P273B replay feature mining behind the prospective-confirmation decision. Opening a broad retrospective feature-mining family now would expand the p-hacking surface before the fixed P273A candidates receive future-only validation.
+
+### Recommended Next Substantive Task
+
+Recommend `P274A_PROSPECTIVE_CONFIRMATION_PROTOCOL_DESIGN`, subject to explicit owner/CEO authorization. P274A should be design/pre-registration only:
+
+1. No production apply, ledger activation, registry/recommendation mutation, deployment, controlled apply, or retrospective re-mining.
+2. Freeze exactly the three P273A DAILY_539 candidates; no candidate substitution after future outcomes begin.
+3. Define an auditable future-only start boundary and prohibit historical rows from confirmation.
+4. Predefine sample size/horizon and the prospective correction family.
+5. Predefine sequential monitoring, alpha-spending or equivalent controls, and early-stop rules.
+6. Predefine success, failure, and insufficient-support decisions.
+7. Document dependencies on P271 prospective-capture infrastructure, which remains unactivated and `NOT_READY_FOR_APPLY`.
+
+Owner authorization remains required. HOLD/scientific closure is a valid alternative; no automatic next task follows this closeout. Production apply remains `NOT_READY_FOR_APPLY`, and P273B remains not started.
+
+---
+
 ## 2026-06-14 CTO Roadmap Alignment — User Four-Direction Strategic Review
 
 Final Classification: `CTO_ROADMAP_UPDATED_WITH_RISKS`

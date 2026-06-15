@@ -2,6 +2,20 @@
 
 ---
 
+## P274B Prospective Execution / Activation Readiness Plan — 2026-06-15
+
+**Owner authorized `P274B_PROSPECTIVE_EXECUTION_ACTIVATION_READINESS_PLAN` as design and readiness assessment only.** Authorization covered the isolated branch `task/p274b-prospective-execution-activation-readiness-plan`, exact worktree `/Users/kelvin/Kelvin-WorkSpace/LotteryNew-worktrees/p274b-prospective-execution-activation-readiness-plan`, read-only committed evidence review, two P274B artifacts, four governance updates, commit/push, and one non-draft PR to `main` left open and unmerged.
+
+**Not authorized:** implementation, production DB access, production schema/runtime/config change, deployment, controlled_apply, P271 activation, boundary assignment, prospective capture, registry/recommendation mutation, candidate/version change, P273B, retrospective re-mining, production apply, predictive-success claim, betting advice, or PR merge.
+
+Artifacts: `outputs/research/p274b_prospective_execution_activation_readiness_plan_20260615.{json,md}`; canonical payload digest `bf8ae32f8dbd208da4939ee46cdbe19125827f36c3a80aedefc8fee21a994744`.
+
+**Readiness verdict:** current position `G1_PARTIAL_PENDING_OWNER_APPROVAL`; highest fully complete gate is G0. Implementation is `NOT_READY_FOR_IMPLEMENTATION_AUTHORIZATION`; activation is `NOT_READY_FOR_ACTIVATION`; overall `HOLD_RECOMMENDED`. Confirmed evidence includes the frozen P274A contract, P271J isolated append-only ledger, P271K temporary-DB rehearsal, and P271L `ABSENT_CLEAN` inspection. Principal blockers are the absent production schema/runtime capture path, authoritative draw-close resolver, trusted-clock policy, P274A field mapping, monitoring/alerting, access control, retention/archive, restart recovery, named long-horizon ownership, governed missingness threshold, and frozen prospective evaluator.
+
+**Owner decision after review:** (a) approve G1 architecture and resolve the recorded owner decisions before any separately scoped G2 authorization, (b) HOLD, or (c) scientific closure. No option is selected automatically. P271 remains unactivated; concrete boundary values remain unset; production apply remains `NOT_READY_FOR_APPLY`; P273B remains deferred. Resulting P274B PR is open/unmerged and must not be merged by the worker.
+
+---
+
 ## P274A PR #439 Post-Merge Governance Closeout & Execution Decision Fork — 2026-06-15
 
 **PR #439 is MERGED.** Merge commit `03e151fd02bb4cb3854ee63e58a417803930dc78` at `2026-06-15T07:58:12Z` (PR head `b8e5c74062ed4b2855702095b4e66d1ccf20c662`), bringing `outputs/research/p274a_prospective_confirmation_protocol_design_20260615.{json,md}` (canonical payload digest `f2294716699368a9c2b21fb14301d84d70f662b882aef9eab896f96825f18ffc`) onto `main`. This supersedes the "Resulting PR is open and unmerged" statement at the end of the P274A authorization entry below; that entry's design/pre-registration content and all governed numbers (three frozen DAILY_539 candidates, Bonferroni m=3, common final horizon 3605 draws, future-only boundary `UNSET_PENDING_SEPARATE_ACTIVATION_AUTHORIZATION`) are unchanged and now committed to `main`.

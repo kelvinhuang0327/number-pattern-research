@@ -1,0 +1,3217 @@
+{
+  "schema_version": "p274b_prospective_execution_activation_readiness_plan_v1",
+  "task_id": "P274B_PROSPECTIVE_EXECUTION_ACTIVATION_READINESS_PLAN",
+  "generated_at": "2026-06-15T17:38:17+08:00",
+  "owner_authorization": {
+    "authorized": true,
+    "date": "2026-06-15",
+    "scope": "design_and_readiness_assessment_only",
+    "authorization_text": "YES authorize P274B_PROSPECTIVE_EXECUTION_ACTIVATION_READINESS_PLAN as design and readiness assessment only.",
+    "authorized_branch": "task/p274b-prospective-execution-activation-readiness-plan",
+    "authorized_worktree": "/Users/kelvin/Kelvin-WorkSpace/LotteryNew-worktrees/p274b-prospective-execution-activation-readiness-plan",
+    "does_not_authorize": [
+      "implementation",
+      "production schema installation",
+      "deployment",
+      "controlled_apply",
+      "activation",
+      "boundary assignment",
+      "prospective capture",
+      "production DB access",
+      "registry or recommendation mutation",
+      "P273B",
+      "merge"
+    ]
+  },
+  "source_commit": {
+    "canonical_repo": "/Users/kelvin/Kelvin-WorkSpace/LotteryNew",
+    "protected_workspace_branch": "task/p273a-prize-aware-inferential-validation",
+    "protected_workspace_head": "d2e7ecf352997950a82399051ae1f01dc37fbf5c",
+    "base_origin_main": "6d3c6f8ebda45e88f4ae7ae93bd8fcd7ae41a753",
+    "pr_440_state": "MERGED",
+    "pr_440_merge_commit": "6d3c6f8ebda45e88f4ae7ae93bd8fcd7ae41a753"
+  },
+  "source_artifacts": [
+    {
+      "name": "P274A protocol JSON",
+      "path": "outputs/research/p274a_prospective_confirmation_protocol_design_20260615.json",
+      "commit": "b8e5c74062ed4b2855702095b4e66d1ccf20c662",
+      "sha256": "b42eef3e2ac85b7174c0e3c85d94b085805f7f8bb7d71dbbc81fdf75e764d7da"
+    },
+    {
+      "name": "P274A protocol Markdown",
+      "path": "outputs/research/p274a_prospective_confirmation_protocol_design_20260615.md",
+      "commit": "b8e5c74062ed4b2855702095b4e66d1ccf20c662",
+      "sha256": "8f789a82c7632a68a5311edcd060e145fefd0d7999041024577735032cd5dcb3"
+    },
+    {
+      "name": "P271G prospective preregistration",
+      "path": "outputs/research/p271g_prize_aware_null_prospective_preregistration_20260612.json",
+      "commit": "1ff4fc385a81a20feeefaff5ebc03287087da6c4",
+      "sha256": "8ff20a9969e2e4bca3ace8fc0a6899cbafda5a31be2a9201df755704cba38092"
+    },
+    {
+      "name": "P271H capture feasibility audit",
+      "path": "outputs/research/p271h_prospective_capture_feasibility_audit_20260612.json",
+      "commit": "a5a6473348bc0daa99b0862c1fa4f4a1a0dd2545",
+      "sha256": "c95f816710c47dd418a4f4a9138c993386569ff4281a3596bb8be123f3d78b57"
+    },
+    {
+      "name": "P271I ledger implementation design",
+      "path": "outputs/research/p271i_prospective_capture_ledger_implementation_design_20260613.json",
+      "commit": "ff7c3c4840d67f736f1ae8d1a99fa83cdd54484b",
+      "sha256": "33024b09784aa66bd1a5e1995aeb1837bc174eae4d3b8f939d9a1dcee61c4a1e"
+    },
+    {
+      "name": "P271J isolated ledger implementation",
+      "path": "outputs/research/p271j_prospective_capture_ledger_implementation_20260613.json",
+      "commit": "23c35916e067b183bb7a952586ded8bf42c22ed1",
+      "sha256": "008253673c6b3abddb69270ea9d7baf455abf98ff76b712a5d105a5153c25ee5"
+    },
+    {
+      "name": "P271K temporary DB rehearsal",
+      "path": "outputs/research/p271k_prospective_capture_ledger_migration_rehearsal_20260613.json",
+      "commit": "b7b6d883bfac6881e4b60d5453ba68ae6d79675e",
+      "sha256": "a2d382fc1ea8b67d6ec698dc471db0757f9e496e8e7722eb1f8241438dc17249"
+    },
+    {
+      "name": "P271L deployment preflight",
+      "path": "outputs/research/p271l_controlled_deployment_preflight_20260613.json",
+      "commit": "4d38672f7275fa1ef3efbb5fa9d7c82eb89b9aa2",
+      "sha256": "d4b02779298d155db3091aa3500690251c5cf4440de7e195d4a045c12f421216"
+    },
+    {
+      "name": "P271L production schema inspection",
+      "path": "outputs/research/p271l_readonly_production_schema_inspection_20260614.json",
+      "commit": "f7acfdc40f5a00029ad4b0b426a37a2c6fef2c51",
+      "sha256": "c0589e0dbc1a779c67b6390866b15115be7665f9e699620c093bcaf7384c4c9b"
+    },
+    {
+      "name": "P272B detectability power",
+      "path": "outputs/research/p272b_prospective_oos_detectability_power_20260614.json",
+      "commit": "b1fc9be726ce801a18e217f0918014049cc3ae10",
+      "sha256": "8ecd39a698b3c764540f2a274351bbaa0a828dfb3198ca772db08fac80fa593a"
+    },
+    {
+      "name": "P271J ledger source",
+      "path": "lottery_api/prospective_capture_ledger.py",
+      "commit": "23c35916e067b183bb7a952586ded8bf42c22ed1",
+      "sha256": "18e221ee632a81fbdb95cab171d3c3a4bae3bf2222f9f2c58c8a3398584c71db"
+    },
+    {
+      "name": "P271K rehearsal source",
+      "path": "scripts/p271k_prospective_capture_ledger_migration_rehearsal.py",
+      "commit": "b7b6d883bfac6881e4b60d5453ba68ae6d79675e",
+      "sha256": "02105c4cea4d706f0982ffbd17b12f6630114b6d0738412cbbba257fc49b7d76"
+    },
+    {
+      "name": "P271L preflight source",
+      "path": "scripts/p271l_controlled_deployment_preflight.py",
+      "commit": "d7c45962593c40f6584046c38c364f003dc76fa3",
+      "sha256": "5803b69cff5e9f9702ffd30da4a90b53097508925e512b09513a18fa1b61e425"
+    },
+    {
+      "name": "P271L inspection source",
+      "path": "scripts/p271l_readonly_production_schema_inspection.py",
+      "commit": "f7acfdc40f5a00029ad4b0b426a37a2c6fef2c51",
+      "sha256": "3243a322bb04496a681efec1831a38b88d1b0eb9187e35f9633452cbcbdeea22"
+    },
+    {
+      "name": "P271G preregistration Markdown",
+      "path": "outputs/research/p271g_prize_aware_null_prospective_preregistration_20260612.md",
+      "commit": "1ff4fc385a81a20feeefaff5ebc03287087da6c4",
+      "sha256": "4ab9ef261303b5ac9beb11077e998977bcc9358b1bbee4fa9aea70d153f12ef9"
+    },
+    {
+      "name": "P271H feasibility Markdown",
+      "path": "outputs/research/p271h_prospective_capture_feasibility_audit_20260612.md",
+      "commit": "a5a6473348bc0daa99b0862c1fa4f4a1a0dd2545",
+      "sha256": "b2c0eb9cb7121a181b582ea29537192d0bc8a854ac5c81b31a0e0cd617da53aa"
+    },
+    {
+      "name": "P271I design Markdown",
+      "path": "outputs/research/p271i_prospective_capture_ledger_implementation_design_20260613.md",
+      "commit": "ff7c3c4840d67f736f1ae8d1a99fa83cdd54484b",
+      "sha256": "3a96c4eeef7e1b7a7b992e822252f61279ea0fe99f4b306570578715ebdd903c"
+    },
+    {
+      "name": "P271J implementation Markdown",
+      "path": "outputs/research/p271j_prospective_capture_ledger_implementation_20260613.md",
+      "commit": "23c35916e067b183bb7a952586ded8bf42c22ed1",
+      "sha256": "201e46d722608be5b95d3419fef1368730136939872f8dec5bdea9a953d74cc6"
+    },
+    {
+      "name": "P271K rehearsal Markdown",
+      "path": "outputs/research/p271k_prospective_capture_ledger_migration_rehearsal_20260613.md",
+      "commit": "b7b6d883bfac6881e4b60d5453ba68ae6d79675e",
+      "sha256": "15c2fc6625ea935ea1e685c0f2b77d260bd7087cef2c36bad777f6086aa8eb13"
+    },
+    {
+      "name": "P271L preflight Markdown",
+      "path": "outputs/research/p271l_controlled_deployment_preflight_20260613.md",
+      "commit": "4d38672f7275fa1ef3efbb5fa9d7c82eb89b9aa2",
+      "sha256": "3dc657a9ef7cb47c0f3497df2a63c674c69e47a245b5aaef3b8be327f1ef6108"
+    },
+    {
+      "name": "P271L inspection Markdown",
+      "path": "outputs/research/p271l_readonly_production_schema_inspection_20260614.md",
+      "commit": "f7acfdc40f5a00029ad4b0b426a37a2c6fef2c51",
+      "sha256": "2fa52ef01d4329aa1db058d7e41c92acb95f6c0a6d910bedbcee923746aca16a"
+    },
+    {
+      "name": "P272B power Markdown",
+      "path": "outputs/research/p272b_prospective_oos_detectability_power_20260614.md",
+      "commit": "b1fc9be726ce801a18e217f0918014049cc3ae10",
+      "sha256": "5756c3b8c727a2071d85ac98ae2e3ebf6911b89299dfadd3a5b64058d0f1d7f3"
+    }
+  ],
+  "source_digests": {
+    "outputs/research/p274a_prospective_confirmation_protocol_design_20260615.json": "b42eef3e2ac85b7174c0e3c85d94b085805f7f8bb7d71dbbc81fdf75e764d7da",
+    "outputs/research/p274a_prospective_confirmation_protocol_design_20260615.md": "8f789a82c7632a68a5311edcd060e145fefd0d7999041024577735032cd5dcb3",
+    "outputs/research/p271g_prize_aware_null_prospective_preregistration_20260612.json": "8ff20a9969e2e4bca3ace8fc0a6899cbafda5a31be2a9201df755704cba38092",
+    "outputs/research/p271h_prospective_capture_feasibility_audit_20260612.json": "c95f816710c47dd418a4f4a9138c993386569ff4281a3596bb8be123f3d78b57",
+    "outputs/research/p271i_prospective_capture_ledger_implementation_design_20260613.json": "33024b09784aa66bd1a5e1995aeb1837bc174eae4d3b8f939d9a1dcee61c4a1e",
+    "outputs/research/p271j_prospective_capture_ledger_implementation_20260613.json": "008253673c6b3abddb69270ea9d7baf455abf98ff76b712a5d105a5153c25ee5",
+    "outputs/research/p271k_prospective_capture_ledger_migration_rehearsal_20260613.json": "a2d382fc1ea8b67d6ec698dc471db0757f9e496e8e7722eb1f8241438dc17249",
+    "outputs/research/p271l_controlled_deployment_preflight_20260613.json": "d4b02779298d155db3091aa3500690251c5cf4440de7e195d4a045c12f421216",
+    "outputs/research/p271l_readonly_production_schema_inspection_20260614.json": "c0589e0dbc1a779c67b6390866b15115be7665f9e699620c093bcaf7384c4c9b",
+    "outputs/research/p272b_prospective_oos_detectability_power_20260614.json": "8ecd39a698b3c764540f2a274351bbaa0a828dfb3198ca772db08fac80fa593a",
+    "lottery_api/prospective_capture_ledger.py": "18e221ee632a81fbdb95cab171d3c3a4bae3bf2222f9f2c58c8a3398584c71db",
+    "scripts/p271k_prospective_capture_ledger_migration_rehearsal.py": "02105c4cea4d706f0982ffbd17b12f6630114b6d0738412cbbba257fc49b7d76",
+    "scripts/p271l_controlled_deployment_preflight.py": "5803b69cff5e9f9702ffd30da4a90b53097508925e512b09513a18fa1b61e425",
+    "scripts/p271l_readonly_production_schema_inspection.py": "3243a322bb04496a681efec1831a38b88d1b0eb9187e35f9633452cbcbdeea22",
+    "outputs/research/p271g_prize_aware_null_prospective_preregistration_20260612.md": "4ab9ef261303b5ac9beb11077e998977bcc9358b1bbee4fa9aea70d153f12ef9",
+    "outputs/research/p271h_prospective_capture_feasibility_audit_20260612.md": "b2c0eb9cb7121a181b582ea29537192d0bc8a854ac5c81b31a0e0cd617da53aa",
+    "outputs/research/p271i_prospective_capture_ledger_implementation_design_20260613.md": "3a96c4eeef7e1b7a7b992e822252f61279ea0fe99f4b306570578715ebdd903c",
+    "outputs/research/p271j_prospective_capture_ledger_implementation_20260613.md": "201e46d722608be5b95d3419fef1368730136939872f8dec5bdea9a953d74cc6",
+    "outputs/research/p271k_prospective_capture_ledger_migration_rehearsal_20260613.md": "15c2fc6625ea935ea1e685c0f2b77d260bd7087cef2c36bad777f6086aa8eb13",
+    "outputs/research/p271l_controlled_deployment_preflight_20260613.md": "3dc657a9ef7cb47c0f3497df2a63c674c69e47a245b5aaef3b8be327f1ef6108",
+    "outputs/research/p271l_readonly_production_schema_inspection_20260614.md": "2fa52ef01d4329aa1db058d7e41c92acb95f6c0a6d910bedbcee923746aca16a",
+    "outputs/research/p272b_prospective_oos_detectability_power_20260614.md": "5756c3b8c727a2071d85ac98ae2e3ebf6911b89299dfadd3a5b64058d0f1d7f3"
+  },
+  "immutable_p274a_contract": {
+    "canonical_payload_digest": "f2294716699368a9c2b21fb14301d84d70f662b882aef9eab896f96825f18ffc",
+    "digest_recomputed_twice_with_documented_python_canonicalizer": true,
+    "state_marker": "P271L_PREFLIGHT_COMPLETE_NOT_READY_FOR_APPLY",
+    "production_apply": "NOT_READY_FOR_APPLY",
+    "execution_started": false,
+    "activation_started": false,
+    "prospective_records_exist": false,
+    "boundary_status": "UNSET_PENDING_SEPARATE_ACTIVATION_AUTHORIZATION",
+    "p273b_started": false,
+    "prediction_success_claim": false,
+    "lottery_scope": "DAILY_539_only",
+    "candidates": [
+      {
+        "candidate_id": "C1",
+        "lottery_type": "DAILY_539",
+        "strategy_id": "acb_markov_midfreq_3bet",
+        "expected_distinct_ticket_count": 3,
+        "power80_draws": 2730,
+        "power90_draws": 3605
+      },
+      {
+        "candidate_id": "C2",
+        "lottery_type": "DAILY_539",
+        "strategy_id": "daily539_f4cold_3bet",
+        "expected_distinct_ticket_count": 3,
+        "power80_draws": 1986,
+        "power90_draws": 2612
+      },
+      {
+        "candidate_id": "C3",
+        "lottery_type": "DAILY_539",
+        "strategy_id": "daily539_f4cold_5bet",
+        "expected_distinct_ticket_count": 5,
+        "power80_draws": 695,
+        "power90_draws": 915
+      }
+    ],
+    "common_final_horizon_draws": 3605,
+    "bonferroni_m": 3,
+    "per_candidate_alpha": "0.0166666666666667",
+    "checkpoint_50": "integrity_and_data_quality_only",
+    "checkpoint_300": "non_binding_futility_only_conditional_power_below_10_percent",
+    "interim_efficacy": false,
+    "optional_extension_after_final": false,
+    "calendar_duration": "approximately 11.5 years descriptive only; draw count governs"
+  },
+  "prohibited_scope": [
+    "assign activation_timestamp_utc",
+    "assign first_eligible_target_draw",
+    "activate P274A or P271",
+    "capture prospective records",
+    "open or access production DB",
+    "modify production code, tests, CI, dependencies, schema or runtime configuration",
+    "mutate registry or recommendation state",
+    "modify candidates or versions",
+    "start P273B or retrospective re-mining",
+    "deploy or run controlled_apply",
+    "authorize production apply",
+    "claim predictive success",
+    "provide betting advice",
+    "merge the PR"
+  ],
+  "p271_dependency_inventory": [
+    {
+      "requirement_id": "P271-01",
+      "component": "Prospective boundary and preregistration",
+      "status": "CONFIRMED",
+      "paths": [
+        "outputs/research/p271g_prize_aware_null_prospective_preregistration_20260612.json"
+      ],
+      "purpose": "Freeze future-only membership and prohibit retrospective conversion.",
+      "current_implementation_state": "Design contract is committed; strict outcome blindness was not claimed because prior P271F outcomes were exposed.",
+      "current_activation_state": "Not activated; P271G marker was never itself activation.",
+      "evidence_available": "Versioning, cutoff, leakage gates, amendment policy and no-backfill rule.",
+      "missing_evidence": "Concrete P274A activation boundary remains unset.",
+      "required_before_implementation": false,
+      "required_before_activation": true,
+      "production_coupled": false,
+      "would_require_db_schema_or_runtime_changes": false,
+      "separate_owner_authorization_required": true,
+      "source_identities": [
+        {
+          "path": "outputs/research/p271g_prize_aware_null_prospective_preregistration_20260612.json",
+          "commit": "1ff4fc385a81a20feeefaff5ebc03287087da6c4",
+          "sha256": "8ff20a9969e2e4bca3ace8fc0a6899cbafda5a31be2a9201df755704cba38092",
+          "name": "P271G prospective preregistration"
+        }
+      ]
+    },
+    {
+      "requirement_id": "P271-02",
+      "component": "Ledger architecture design",
+      "status": "CONFIRMED",
+      "paths": [
+        "outputs/research/p271i_prospective_capture_ledger_implementation_design_20260613.json"
+      ],
+      "purpose": "Define separate append-only activation, batch, ticket, event and outcome-link stores.",
+      "current_implementation_state": "Design is committed with transaction, causality, uniqueness and failure contracts.",
+      "current_activation_state": "No production installation or activation.",
+      "evidence_available": "Five-stage phase separation and 14-case failure matrix.",
+      "missing_evidence": "Broader operating model, ownership, access, retention and monitoring were not completed.",
+      "required_before_implementation": false,
+      "required_before_activation": true,
+      "production_coupled": true,
+      "would_require_db_schema_or_runtime_changes": true,
+      "separate_owner_authorization_required": true,
+      "source_identities": [
+        {
+          "path": "outputs/research/p271i_prospective_capture_ledger_implementation_design_20260613.json",
+          "commit": "ff7c3c4840d67f736f1ae8d1a99fa83cdd54484b",
+          "sha256": "33024b09784aa66bd1a5e1995aeb1837bc174eae4d3b8f939d9a1dcee61c4a1e",
+          "name": "P271I ledger implementation design"
+        }
+      ]
+    },
+    {
+      "requirement_id": "P271-03",
+      "component": "Isolated ledger module",
+      "status": "CONFIRMED",
+      "paths": [
+        "lottery_api/prospective_capture_ledger.py",
+        "outputs/research/p271j_prospective_capture_ledger_implementation_20260613.json"
+      ],
+      "purpose": "Implement schema bootstrap and capture primitives on caller-supplied SQLite connections.",
+      "current_implementation_state": "Implemented and tested only as an isolated library; no route, scheduler, network, DB path or production wiring.",
+      "current_activation_state": "Inactive; no real activation record or capture.",
+      "evidence_available": "72 focused and 236 combined historical tests; source hash recorded.",
+      "missing_evidence": "P274A-specific field mapping and runtime integration are absent.",
+      "required_before_implementation": false,
+      "required_before_activation": true,
+      "production_coupled": true,
+      "would_require_db_schema_or_runtime_changes": true,
+      "separate_owner_authorization_required": true,
+      "source_identities": [
+        {
+          "path": "lottery_api/prospective_capture_ledger.py",
+          "commit": "23c35916e067b183bb7a952586ded8bf42c22ed1",
+          "sha256": "18e221ee632a81fbdb95cab171d3c3a4bae3bf2222f9f2c58c8a3398584c71db",
+          "name": "P271J ledger source"
+        },
+        {
+          "path": "outputs/research/p271j_prospective_capture_ledger_implementation_20260613.json",
+          "commit": "23c35916e067b183bb7a952586ded8bf42c22ed1",
+          "sha256": "008253673c6b3abddb69270ea9d7baf455abf98ff76b712a5d105a5153c25ee5",
+          "name": "P271J isolated ledger implementation"
+        }
+      ]
+    },
+    {
+      "requirement_id": "P271-04",
+      "component": "Temporary DB migration rehearsal",
+      "status": "CONFIRMED",
+      "paths": [
+        "scripts/p271k_prospective_capture_ledger_migration_rehearsal.py",
+        "outputs/research/p271k_prospective_capture_ledger_migration_rehearsal_20260613.json"
+      ],
+      "purpose": "Exercise additive install, rollback, idempotence, lock handling and path safety outside production.",
+      "current_implementation_state": "Temporary SQLite rehearsal passed; source-grounded legacy fixture only.",
+      "current_activation_state": "No production install or activation.",
+      "evidence_available": "37 focused historical tests and scenarios A-J pass.",
+      "missing_evidence": "Production concurrency, full schema, WAL behavior, backup and restore remain unproven.",
+      "required_before_implementation": false,
+      "required_before_activation": true,
+      "production_coupled": false,
+      "would_require_db_schema_or_runtime_changes": false,
+      "separate_owner_authorization_required": true,
+      "source_identities": [
+        {
+          "path": "scripts/p271k_prospective_capture_ledger_migration_rehearsal.py",
+          "commit": "b7b6d883bfac6881e4b60d5453ba68ae6d79675e",
+          "sha256": "02105c4cea4d706f0982ffbd17b12f6630114b6d0738412cbbba257fc49b7d76",
+          "name": "P271K rehearsal source"
+        },
+        {
+          "path": "outputs/research/p271k_prospective_capture_ledger_migration_rehearsal_20260613.json",
+          "commit": "b7b6d883bfac6881e4b60d5453ba68ae6d79675e",
+          "sha256": "a2d382fc1ea8b67d6ec698dc471db0757f9e496e8e7722eb1f8241438dc17249",
+          "name": "P271K temporary DB rehearsal"
+        }
+      ]
+    },
+    {
+      "requirement_id": "P271-05",
+      "component": "Production deployment preflight",
+      "status": "PARTIAL",
+      "paths": [
+        "scripts/p271l_controlled_deployment_preflight.py",
+        "outputs/research/p271l_controlled_deployment_preflight_20260613.json"
+      ],
+      "purpose": "Define apply-time safety gates, backup, rollback and writer quiescence.",
+      "current_implementation_state": "Preflight package exists but is explicitly NOT_READY_FOR_APPLY.",
+      "current_activation_state": "No apply, deployment or activation.",
+      "evidence_available": "14 stop gates, non-executable manifest, backup and rollback plan.",
+      "missing_evidence": "Fresh apply-time hash, maintenance window, writer shutdown, backup and WAL/SHM reconciliation.",
+      "required_before_implementation": false,
+      "required_before_activation": true,
+      "production_coupled": true,
+      "would_require_db_schema_or_runtime_changes": true,
+      "separate_owner_authorization_required": true,
+      "source_identities": [
+        {
+          "path": "scripts/p271l_controlled_deployment_preflight.py",
+          "commit": "d7c45962593c40f6584046c38c364f003dc76fa3",
+          "sha256": "5803b69cff5e9f9702ffd30da4a90b53097508925e512b09513a18fa1b61e425",
+          "name": "P271L preflight source"
+        },
+        {
+          "path": "outputs/research/p271l_controlled_deployment_preflight_20260613.json",
+          "commit": "4d38672f7275fa1ef3efbb5fa9d7c82eb89b9aa2",
+          "sha256": "d4b02779298d155db3091aa3500690251c5cf4440de7e195d4a045c12f421216",
+          "name": "P271L deployment preflight"
+        }
+      ]
+    },
+    {
+      "requirement_id": "P271-06",
+      "component": "Production schema inspection",
+      "status": "CONFIRMED",
+      "paths": [
+        "scripts/p271l_readonly_production_schema_inspection.py",
+        "outputs/research/p271l_readonly_production_schema_inspection_20260614.json"
+      ],
+      "purpose": "Establish actual production prospective namespace state without write.",
+      "current_implementation_state": "Historical read-only inspection found ABSENT_CLEAN; table/column presence only, not full schema equivalence.",
+      "current_activation_state": "No prospective schema, records or activation.",
+      "evidence_available": "17 tables, 42 indexes, 1 view, 0 triggers; no prospective objects.",
+      "missing_evidence": "Apply-time state must be reverified; this task did not reopen the DB.",
+      "required_before_implementation": false,
+      "required_before_activation": true,
+      "production_coupled": true,
+      "would_require_db_schema_or_runtime_changes": true,
+      "separate_owner_authorization_required": true,
+      "source_identities": [
+        {
+          "path": "scripts/p271l_readonly_production_schema_inspection.py",
+          "commit": "f7acfdc40f5a00029ad4b0b426a37a2c6fef2c51",
+          "sha256": "3243a322bb04496a681efec1831a38b88d1b0eb9187e35f9633452cbcbdeea22",
+          "name": "P271L inspection source"
+        },
+        {
+          "path": "outputs/research/p271l_readonly_production_schema_inspection_20260614.json",
+          "commit": "f7acfdc40f5a00029ad4b0b426a37a2c6fef2c51",
+          "sha256": "c0589e0dbc1a779c67b6390866b15115be7665f9e699620c093bcaf7384c4c9b",
+          "name": "P271L production schema inspection"
+        }
+      ]
+    },
+    {
+      "requirement_id": "P271-07",
+      "component": "Canonical ticket normalization and fingerprinting",
+      "status": "PARTIAL",
+      "paths": [
+        "lottery_api/prospective_capture_ledger.py"
+      ],
+      "purpose": "Normalize ticket payloads and derive deterministic identity/hash.",
+      "current_implementation_state": "Main numbers are sorted and payload_hash/ledger_id are deterministic.",
+      "current_activation_state": "Not used prospectively.",
+      "evidence_available": "Pure helper and synthetic tests exist.",
+      "missing_evidence": "P274A candidate_id, canonical ticket identity list, cross-ticket distinct-count proof and explicit ticket_fingerprint fields are not fully represented.",
+      "required_before_implementation": true,
+      "required_before_activation": true,
+      "production_coupled": true,
+      "would_require_db_schema_or_runtime_changes": true,
+      "separate_owner_authorization_required": true,
+      "source_identities": [
+        {
+          "path": "lottery_api/prospective_capture_ledger.py",
+          "commit": "23c35916e067b183bb7a952586ded8bf42c22ed1",
+          "sha256": "18e221ee632a81fbdb95cab171d3c3a4bae3bf2222f9f2c58c8a3398584c71db",
+          "name": "P271J ledger source"
+        }
+      ]
+    },
+    {
+      "requirement_id": "P271-08",
+      "component": "Append-only and immutability guarantees",
+      "status": "PARTIAL",
+      "paths": [
+        "lottery_api/prospective_capture_ledger.py"
+      ],
+      "purpose": "Reject update/delete and preserve event history.",
+      "current_implementation_state": "DB triggers cover all five prospective data tables in isolated schema.",
+      "current_activation_state": "Not installed in production.",
+      "evidence_available": "P271J and P271K trigger tests pass; payload hash verification exists.",
+      "missing_evidence": "No external digest anchor, WORM copy or production enforcement evidence.",
+      "required_before_implementation": false,
+      "required_before_activation": true,
+      "production_coupled": true,
+      "would_require_db_schema_or_runtime_changes": true,
+      "separate_owner_authorization_required": true,
+      "source_identities": [
+        {
+          "path": "lottery_api/prospective_capture_ledger.py",
+          "commit": "23c35916e067b183bb7a952586ded8bf42c22ed1",
+          "sha256": "18e221ee632a81fbdb95cab171d3c3a4bae3bf2222f9f2c58c8a3398584c71db",
+          "name": "P271J ledger source"
+        }
+      ]
+    },
+    {
+      "requirement_id": "P271-09",
+      "component": "Capture-before-outcome enforcement",
+      "status": "PARTIAL",
+      "paths": [
+        "lottery_api/prospective_capture_ledger.py"
+      ],
+      "purpose": "Require prediction time before draw close and keep capture independent of results.",
+      "current_implementation_state": "Strict inequality and explicit skew margin are implemented on caller-supplied values; capture imports no result path.",
+      "current_activation_state": "No live service.",
+      "evidence_available": "Fail-closed timestamp and source checks exist.",
+      "missing_evidence": "No authoritative resolver, trusted clock, drift monitor or outcome-availability oracle.",
+      "required_before_implementation": true,
+      "required_before_activation": true,
+      "production_coupled": true,
+      "would_require_db_schema_or_runtime_changes": true,
+      "separate_owner_authorization_required": true,
+      "source_identities": [
+        {
+          "path": "lottery_api/prospective_capture_ledger.py",
+          "commit": "23c35916e067b183bb7a952586ded8bf42c22ed1",
+          "sha256": "18e221ee632a81fbdb95cab171d3c3a4bae3bf2222f9f2c58c8a3398584c71db",
+          "name": "P271J ledger source"
+        }
+      ]
+    },
+    {
+      "requirement_id": "P271-10",
+      "component": "Official target-draw identity",
+      "status": "PARTIAL",
+      "paths": [
+        "lottery_api/prospective_capture_ledger.py",
+        "outputs/research/p271h_prospective_capture_feasibility_audit_20260612.json"
+      ],
+      "purpose": "Bind every capture to the correct official DAILY_539 draw.",
+      "current_implementation_state": "target_draw is persisted and unique within activation.",
+      "current_activation_state": "No authoritative resolution in operation.",
+      "evidence_available": "Schema and identity tuple support target_draw.",
+      "missing_evidence": "Official exception-aware resolver and source verification are missing.",
+      "required_before_implementation": true,
+      "required_before_activation": true,
+      "production_coupled": true,
+      "would_require_db_schema_or_runtime_changes": true,
+      "separate_owner_authorization_required": true,
+      "source_identities": [
+        {
+          "path": "lottery_api/prospective_capture_ledger.py",
+          "commit": "23c35916e067b183bb7a952586ded8bf42c22ed1",
+          "sha256": "18e221ee632a81fbdb95cab171d3c3a4bae3bf2222f9f2c58c8a3398584c71db",
+          "name": "P271J ledger source"
+        },
+        {
+          "path": "outputs/research/p271h_prospective_capture_feasibility_audit_20260612.json",
+          "commit": "a5a6473348bc0daa99b0862c1fa4f4a1a0dd2545",
+          "sha256": "c95f816710c47dd418a4f4a9138c993386569ff4281a3596bb8be123f3d78b57",
+          "name": "P271H capture feasibility audit"
+        }
+      ]
+    },
+    {
+      "requirement_id": "P271-11",
+      "component": "Strategy and candidate version pinning",
+      "status": "PARTIAL",
+      "paths": [
+        "lottery_api/prospective_capture_ledger.py"
+      ],
+      "purpose": "Accept only frozen candidate/version pairs.",
+      "current_implementation_state": "capture_batch accepts a caller-supplied known_strategy_versions set.",
+      "current_activation_state": "No P274A manifest is deployed.",
+      "evidence_available": "Unknown versions fail closed.",
+      "missing_evidence": "Immutable candidate manifest, source digest mapping and candidate_id persistence are missing.",
+      "required_before_implementation": true,
+      "required_before_activation": true,
+      "production_coupled": true,
+      "would_require_db_schema_or_runtime_changes": true,
+      "separate_owner_authorization_required": true,
+      "source_identities": [
+        {
+          "path": "lottery_api/prospective_capture_ledger.py",
+          "commit": "23c35916e067b183bb7a952586ded8bf42c22ed1",
+          "sha256": "18e221ee632a81fbdb95cab171d3c3a4bae3bf2222f9f2c58c8a3398584c71db",
+          "name": "P271J ledger source"
+        }
+      ]
+    },
+    {
+      "requirement_id": "P271-12",
+      "component": "Scorer and endpoint version pinning",
+      "status": "MISSING",
+      "paths": [
+        "outputs/research/p274a_prospective_confirmation_protocol_design_20260615.json"
+      ],
+      "purpose": "Persist the exact scorer/endpoint contract used for later evaluation.",
+      "current_implementation_state": "P271J deliberately does not import the scorer and has no scorer_endpoint_version column.",
+      "current_activation_state": "Not activated.",
+      "evidence_available": "P274A requires scorer_endpoint_version.",
+      "missing_evidence": "Schema/data contract and immutable endpoint digest mapping are absent.",
+      "required_before_implementation": true,
+      "required_before_activation": true,
+      "production_coupled": true,
+      "would_require_db_schema_or_runtime_changes": true,
+      "separate_owner_authorization_required": true,
+      "source_identities": [
+        {
+          "path": "outputs/research/p274a_prospective_confirmation_protocol_design_20260615.json",
+          "commit": "b8e5c74062ed4b2855702095b4e66d1ccf20c662",
+          "sha256": "b42eef3e2ac85b7174c0e3c85d94b085805f7f8bb7d71dbbc81fdf75e764d7da",
+          "name": "P274A protocol JSON"
+        }
+      ]
+    },
+    {
+      "requirement_id": "P271-13",
+      "component": "Activation identity and lifecycle",
+      "status": "PARTIAL",
+      "paths": [
+        "lottery_api/prospective_capture_ledger.py"
+      ],
+      "purpose": "Register immutable activation metadata and append lifecycle events.",
+      "current_implementation_state": "Synthetic activation APIs and event-derived active state exist.",
+      "current_activation_state": "No real activation; P271N unstarted.",
+      "evidence_available": "Activation registry/lifecycle tests exist.",
+      "missing_evidence": "Owner-authorized G5/G6 workflow, real boundary fields and production evidence are absent.",
+      "required_before_implementation": false,
+      "required_before_activation": true,
+      "production_coupled": true,
+      "would_require_db_schema_or_runtime_changes": true,
+      "separate_owner_authorization_required": true,
+      "source_identities": [
+        {
+          "path": "lottery_api/prospective_capture_ledger.py",
+          "commit": "23c35916e067b183bb7a952586ded8bf42c22ed1",
+          "sha256": "18e221ee632a81fbdb95cab171d3c3a4bae3bf2222f9f2c58c8a3398584c71db",
+          "name": "P271J ledger source"
+        }
+      ]
+    },
+    {
+      "requirement_id": "P271-14",
+      "component": "Outcome availability tracking",
+      "status": "MISSING",
+      "paths": [
+        "lottery_api/prospective_capture_ledger.py"
+      ],
+      "purpose": "Record whether an outcome was unavailable, available or ingested without exposing it to capture.",
+      "current_implementation_state": "An outcome-link table schema exists, but no public append API or availability-state workflow exists.",
+      "current_activation_state": "Inactive.",
+      "evidence_available": "Outcome columns are separated from prediction ledger.",
+      "missing_evidence": "Outcome availability status, trusted publication source and ingestion API are missing.",
+      "required_before_implementation": true,
+      "required_before_activation": true,
+      "production_coupled": true,
+      "would_require_db_schema_or_runtime_changes": true,
+      "separate_owner_authorization_required": true,
+      "source_identities": [
+        {
+          "path": "lottery_api/prospective_capture_ledger.py",
+          "commit": "23c35916e067b183bb7a952586ded8bf42c22ed1",
+          "sha256": "18e221ee632a81fbdb95cab171d3c3a4bae3bf2222f9f2c58c8a3398584c71db",
+          "name": "P271J ledger source"
+        }
+      ]
+    },
+    {
+      "requirement_id": "P271-15",
+      "component": "Result-ingestion separation",
+      "status": "PARTIAL",
+      "paths": [
+        "lottery_api/prospective_capture_ledger.py"
+      ],
+      "purpose": "Join results only after draw completion without changing membership.",
+      "current_implementation_state": "Separate table is designed; capture never reads or writes results.",
+      "current_activation_state": "No runtime integration.",
+      "evidence_available": "Schema separation and no-result imports are confirmed.",
+      "missing_evidence": "Result linker, authorization, idempotency and provenance implementation are missing.",
+      "required_before_implementation": true,
+      "required_before_activation": true,
+      "production_coupled": true,
+      "would_require_db_schema_or_runtime_changes": true,
+      "separate_owner_authorization_required": true,
+      "source_identities": [
+        {
+          "path": "lottery_api/prospective_capture_ledger.py",
+          "commit": "23c35916e067b183bb7a952586ded8bf42c22ed1",
+          "sha256": "18e221ee632a81fbdb95cab171d3c3a4bae3bf2222f9f2c58c8a3398584c71db",
+          "name": "P271J ledger source"
+        }
+      ]
+    },
+    {
+      "requirement_id": "P271-16",
+      "component": "Missing and late record handling",
+      "status": "MISSING",
+      "paths": [
+        "outputs/research/p274a_prospective_confirmation_protocol_design_20260615.json"
+      ],
+      "purpose": "Classify gaps and prevent retrospective repair.",
+      "current_implementation_state": "No operational policy or threshold is implemented.",
+      "current_activation_state": "Inactive.",
+      "evidence_available": "No-backfill invariant is frozen.",
+      "missing_evidence": "Maximum tolerated gaps and pause/invalidation thresholds are OWNER_DECISION_REQUIRED.",
+      "required_before_implementation": true,
+      "required_before_activation": true,
+      "production_coupled": true,
+      "would_require_db_schema_or_runtime_changes": false,
+      "separate_owner_authorization_required": true,
+      "source_identities": [
+        {
+          "path": "outputs/research/p274a_prospective_confirmation_protocol_design_20260615.json",
+          "commit": "b8e5c74062ed4b2855702095b4e66d1ccf20c662",
+          "sha256": "b42eef3e2ac85b7174c0e3c85d94b085805f7f8bb7d71dbbc81fdf75e764d7da",
+          "name": "P274A protocol JSON"
+        }
+      ]
+    },
+    {
+      "requirement_id": "P271-17",
+      "component": "Duplicate detection and idempotency",
+      "status": "CONFIRMED",
+      "paths": [
+        "lottery_api/prospective_capture_ledger.py"
+      ],
+      "purpose": "Prevent two eligible records for one semantic identity.",
+      "current_implementation_state": "Derived primary key plus semantic unique index; atomic failure and rejection event.",
+      "current_activation_state": "Not installed in production.",
+      "evidence_available": "Concurrent duplicate synthetic evidence exists.",
+      "missing_evidence": "Production behavior remains unverified until installation and preflight.",
+      "required_before_implementation": false,
+      "required_before_activation": true,
+      "production_coupled": true,
+      "would_require_db_schema_or_runtime_changes": true,
+      "separate_owner_authorization_required": true,
+      "source_identities": [
+        {
+          "path": "lottery_api/prospective_capture_ledger.py",
+          "commit": "23c35916e067b183bb7a952586ded8bf42c22ed1",
+          "sha256": "18e221ee632a81fbdb95cab171d3c3a4bae3bf2222f9f2c58c8a3398584c71db",
+          "name": "P271J ledger source"
+        }
+      ]
+    },
+    {
+      "requirement_id": "P271-18",
+      "component": "Structured provenance and source trace",
+      "status": "PARTIAL",
+      "paths": [
+        "lottery_api/prospective_capture_ledger.py"
+      ],
+      "purpose": "Trace actor, service, code, schedule and source artifact.",
+      "current_implementation_state": "Events have actor/service/code/transaction/hash; ticket source_provenance is only a non-empty string.",
+      "current_activation_state": "Inactive.",
+      "evidence_available": "Event schema is append-only.",
+      "missing_evidence": "Structured provenance schema, candidate manifest digest and official source response digest enforcement are incomplete.",
+      "required_before_implementation": true,
+      "required_before_activation": true,
+      "production_coupled": true,
+      "would_require_db_schema_or_runtime_changes": true,
+      "separate_owner_authorization_required": true,
+      "source_identities": [
+        {
+          "path": "lottery_api/prospective_capture_ledger.py",
+          "commit": "23c35916e067b183bb7a952586ded8bf42c22ed1",
+          "sha256": "18e221ee632a81fbdb95cab171d3c3a4bae3bf2222f9f2c58c8a3398584c71db",
+          "name": "P271J ledger source"
+        }
+      ]
+    },
+    {
+      "requirement_id": "P271-19",
+      "component": "Operational scheduling",
+      "status": "MISSING",
+      "paths": [
+        "outputs/research/p271h_prospective_capture_feasibility_audit_20260612.json"
+      ],
+      "purpose": "Run capture reliably before each eligible draw.",
+      "current_implementation_state": "No route, scheduler, capture worker or network integration exists.",
+      "current_activation_state": "Inactive.",
+      "evidence_available": "P271J explicitly guarantees no scheduler.",
+      "missing_evidence": "Disabled-by-default one-shot worker, scheduler policy and deployment evidence are missing.",
+      "required_before_implementation": true,
+      "required_before_activation": true,
+      "production_coupled": true,
+      "would_require_db_schema_or_runtime_changes": true,
+      "separate_owner_authorization_required": true,
+      "source_identities": [
+        {
+          "path": "outputs/research/p271h_prospective_capture_feasibility_audit_20260612.json",
+          "commit": "a5a6473348bc0daa99b0862c1fa4f4a1a0dd2545",
+          "sha256": "c95f816710c47dd418a4f4a9138c993386569ff4281a3596bb8be123f3d78b57",
+          "name": "P271H capture feasibility audit"
+        }
+      ]
+    },
+    {
+      "requirement_id": "P271-20",
+      "component": "Restart and recovery behavior",
+      "status": "MISSING",
+      "paths": [
+        "outputs/research/p271k_prospective_capture_ledger_migration_rehearsal_20260613.json"
+      ],
+      "purpose": "Recover safely after process or host failure without backfill.",
+      "current_implementation_state": "Transaction rollback is tested, but runtime restart recovery is not designed or exercised.",
+      "current_activation_state": "Inactive.",
+      "evidence_available": "Atomic write behavior is known.",
+      "missing_evidence": "Checkpointing, retry-before-close, crash reconciliation and operator runbook are missing.",
+      "required_before_implementation": true,
+      "required_before_activation": true,
+      "production_coupled": true,
+      "would_require_db_schema_or_runtime_changes": true,
+      "separate_owner_authorization_required": true,
+      "source_identities": [
+        {
+          "path": "outputs/research/p271k_prospective_capture_ledger_migration_rehearsal_20260613.json",
+          "commit": "b7b6d883bfac6881e4b60d5453ba68ae6d79675e",
+          "sha256": "a2d382fc1ea8b67d6ec698dc471db0757f9e496e8e7722eb1f8241438dc17249",
+          "name": "P271K temporary DB rehearsal"
+        }
+      ]
+    },
+    {
+      "requirement_id": "P271-21",
+      "component": "Monitoring and alerting",
+      "status": "MISSING",
+      "paths": [],
+      "purpose": "Detect silence, late capture, drift, digest mismatch and storage failures.",
+      "current_implementation_state": "No prospective monitor or alert interface is committed.",
+      "current_activation_state": "Inactive.",
+      "evidence_available": "None beyond historical test evidence.",
+      "missing_evidence": "Metrics, alert routes, escalation owner and thresholds are OWNER_DECISION_REQUIRED.",
+      "required_before_implementation": true,
+      "required_before_activation": true,
+      "production_coupled": true,
+      "would_require_db_schema_or_runtime_changes": true,
+      "separate_owner_authorization_required": true,
+      "source_identities": [
+        {
+          "path": null,
+          "commit": null,
+          "sha256": null,
+          "name": "NO_COMMITTED_COMPONENT_EVIDENCE"
+        }
+      ]
+    },
+    {
+      "requirement_id": "P271-22",
+      "component": "Audit export",
+      "status": "PARTIAL",
+      "paths": [
+        "lottery_api/prospective_capture_ledger.py"
+      ],
+      "purpose": "Export immutable evidence for independent review.",
+      "current_implementation_state": "Read-only list/get/hash helpers exist.",
+      "current_activation_state": "Inactive.",
+      "evidence_available": "Ledger and event rows can be inspected.",
+      "missing_evidence": "Canonical export schema, signed manifest, batch digest and independent verification tool are missing.",
+      "required_before_implementation": true,
+      "required_before_activation": true,
+      "production_coupled": true,
+      "would_require_db_schema_or_runtime_changes": true,
+      "separate_owner_authorization_required": true,
+      "source_identities": [
+        {
+          "path": "lottery_api/prospective_capture_ledger.py",
+          "commit": "23c35916e067b183bb7a952586ded8bf42c22ed1",
+          "sha256": "18e221ee632a81fbdb95cab171d3c3a4bae3bf2222f9f2c58c8a3398584c71db",
+          "name": "P271J ledger source"
+        }
+      ]
+    },
+    {
+      "requirement_id": "P271-23",
+      "component": "Access control",
+      "status": "MISSING",
+      "paths": [],
+      "purpose": "Restrict activation, capture, amendments, exports and result linking.",
+      "current_implementation_state": "Library accepts actor strings but performs no authentication or authorization.",
+      "current_activation_state": "Inactive.",
+      "evidence_available": "No production interface exists.",
+      "missing_evidence": "Role model, credential ownership, least privilege and incident response are missing.",
+      "required_before_implementation": true,
+      "required_before_activation": true,
+      "production_coupled": true,
+      "would_require_db_schema_or_runtime_changes": true,
+      "separate_owner_authorization_required": true,
+      "source_identities": [
+        {
+          "path": null,
+          "commit": null,
+          "sha256": null,
+          "name": "NO_COMMITTED_COMPONENT_EVIDENCE"
+        }
+      ]
+    },
+    {
+      "requirement_id": "P271-24",
+      "component": "Trusted clock and drift control",
+      "status": "MISSING",
+      "paths": [
+        "lottery_api/prospective_capture_ledger.py"
+      ],
+      "purpose": "Prove capture timestamps and enforce a trusted skew margin.",
+      "current_implementation_state": "Explicit timezone-aware timestamps and caller-supplied margin are validated.",
+      "current_activation_state": "Inactive.",
+      "evidence_available": "Naive timestamps fail closed.",
+      "missing_evidence": "Clock source, synchronization telemetry, maximum drift and outage behavior are OWNER_DECISION_REQUIRED.",
+      "required_before_implementation": true,
+      "required_before_activation": true,
+      "production_coupled": true,
+      "would_require_db_schema_or_runtime_changes": true,
+      "separate_owner_authorization_required": true,
+      "source_identities": [
+        {
+          "path": "lottery_api/prospective_capture_ledger.py",
+          "commit": "23c35916e067b183bb7a952586ded8bf42c22ed1",
+          "sha256": "18e221ee632a81fbdb95cab171d3c3a4bae3bf2222f9f2c58c8a3398584c71db",
+          "name": "P271J ledger source"
+        }
+      ]
+    },
+    {
+      "requirement_id": "P271-25",
+      "component": "Retention and archival",
+      "status": "MISSING",
+      "paths": [],
+      "purpose": "Preserve 3605-draw evidence and auditability across migrations.",
+      "current_implementation_state": "No retention, archive or legal/operational ownership contract exists.",
+      "current_activation_state": "Inactive.",
+      "evidence_available": "Append-only local schema is only a storage primitive.",
+      "missing_evidence": "Retention duration, archive format, restore tests and deletion authority are OWNER_DECISION_REQUIRED.",
+      "required_before_implementation": true,
+      "required_before_activation": true,
+      "production_coupled": true,
+      "would_require_db_schema_or_runtime_changes": true,
+      "separate_owner_authorization_required": true,
+      "source_identities": [
+        {
+          "path": null,
+          "commit": null,
+          "sha256": null,
+          "name": "NO_COMMITTED_COMPONENT_EVIDENCE"
+        }
+      ]
+    },
+    {
+      "requirement_id": "P271-26",
+      "component": "Maintenance ownership",
+      "status": "MISSING",
+      "paths": [],
+      "purpose": "Maintain the protocol over the descriptive multi-year horizon.",
+      "current_implementation_state": "No named service owner, on-call rotation or handoff process is committed.",
+      "current_activation_state": "Inactive.",
+      "evidence_available": "Governance identifies human gates only.",
+      "missing_evidence": "Primary/backup owner, succession, budget and periodic review cadence are OWNER_DECISION_REQUIRED.",
+      "required_before_implementation": true,
+      "required_before_activation": true,
+      "production_coupled": true,
+      "would_require_db_schema_or_runtime_changes": false,
+      "separate_owner_authorization_required": true,
+      "source_identities": [
+        {
+          "path": null,
+          "commit": null,
+          "sha256": null,
+          "name": "NO_COMMITTED_COMPONENT_EVIDENCE"
+        }
+      ]
+    },
+    {
+      "requirement_id": "P271-27",
+      "component": "Correction and amendment policy",
+      "status": "PARTIAL",
+      "paths": [
+        "lottery_api/prospective_capture_ledger.py"
+      ],
+      "purpose": "Preserve originals and disallow outcome-dependent correction.",
+      "current_implementation_state": "Append-only pre-close amendments are supported; post-close and identity-changing amendments are rejected.",
+      "current_activation_state": "Inactive.",
+      "evidence_available": "Synthetic amendment tests exist.",
+      "missing_evidence": "Operational approval workflow and classification of permissible pre-close corrections are missing.",
+      "required_before_implementation": true,
+      "required_before_activation": true,
+      "production_coupled": true,
+      "would_require_db_schema_or_runtime_changes": true,
+      "separate_owner_authorization_required": true,
+      "source_identities": [
+        {
+          "path": "lottery_api/prospective_capture_ledger.py",
+          "commit": "23c35916e067b183bb7a952586ded8bf42c22ed1",
+          "sha256": "18e221ee632a81fbdb95cab171d3c3a4bae3bf2222f9f2c58c8a3398584c71db",
+          "name": "P271J ledger source"
+        }
+      ]
+    },
+    {
+      "requirement_id": "P271-28",
+      "component": "Evidence digesting and tamper detection",
+      "status": "PARTIAL",
+      "paths": [
+        "lottery_api/prospective_capture_ledger.py"
+      ],
+      "purpose": "Detect alteration of ticket payloads and evidence sets.",
+      "current_implementation_state": "Per-ticket payload hashes are implemented.",
+      "current_activation_state": "Inactive.",
+      "evidence_available": "verify_payload_hash exists.",
+      "missing_evidence": "No batch Merkle/digest chain, external anchor, signing key or periodic audit exists.",
+      "required_before_implementation": true,
+      "required_before_activation": true,
+      "production_coupled": true,
+      "would_require_db_schema_or_runtime_changes": true,
+      "separate_owner_authorization_required": true,
+      "source_identities": [
+        {
+          "path": "lottery_api/prospective_capture_ledger.py",
+          "commit": "23c35916e067b183bb7a952586ded8bf42c22ed1",
+          "sha256": "18e221ee632a81fbdb95cab171d3c3a4bae3bf2222f9f2c58c8a3398584c71db",
+          "name": "P271J ledger source"
+        }
+      ]
+    },
+    {
+      "requirement_id": "P271-29",
+      "component": "Evaluation and final-analysis implementation",
+      "status": "MISSING",
+      "paths": [
+        "outputs/research/p274a_prospective_confirmation_protocol_design_20260615.json"
+      ],
+      "purpose": "Apply fixed 50/300/final rules to prospective-only records.",
+      "current_implementation_state": "Statistical protocol is designed but no prospective evaluator is implemented.",
+      "current_activation_state": "No evaluation has started.",
+      "evidence_available": "P274A fixes tests and decision classes.",
+      "missing_evidence": "Outcome linker, evaluator, conditional-power calculation and frozen analysis package are missing.",
+      "required_before_implementation": true,
+      "required_before_activation": true,
+      "production_coupled": false,
+      "would_require_db_schema_or_runtime_changes": true,
+      "separate_owner_authorization_required": true,
+      "source_identities": [
+        {
+          "path": "outputs/research/p274a_prospective_confirmation_protocol_design_20260615.json",
+          "commit": "b8e5c74062ed4b2855702095b4e66d1ccf20c662",
+          "sha256": "b42eef3e2ac85b7174c0e3c85d94b085805f7f8bb7d71dbbc81fdf75e764d7da",
+          "name": "P274A protocol JSON"
+        }
+      ]
+    },
+    {
+      "requirement_id": "P271-30",
+      "component": "Secrets or signing-key ownership",
+      "status": "NOT_APPLICABLE",
+      "paths": [],
+      "purpose": "Own keys only if evidence signing or external timestamping is selected.",
+      "current_implementation_state": "Current P271 design uses no secrets or signatures.",
+      "current_activation_state": "Inactive.",
+      "evidence_available": "No key dependency today.",
+      "missing_evidence": "If signing is chosen, key custody, rotation and revocation become OWNER_DECISION_REQUIRED.",
+      "required_before_implementation": false,
+      "required_before_activation": true,
+      "production_coupled": true,
+      "would_require_db_schema_or_runtime_changes": true,
+      "separate_owner_authorization_required": true,
+      "source_identities": [
+        {
+          "path": null,
+          "commit": null,
+          "sha256": null,
+          "name": "NO_COMMITTED_COMPONENT_EVIDENCE"
+        }
+      ]
+    }
+  ],
+  "readiness_ladder": [
+    {
+      "gate_id": "G0",
+      "name": "Protocol And Governance Frozen",
+      "status": "CONFIRMED",
+      "mandatory_inputs": [
+        "Merged P274A artifacts",
+        "Three frozen candidates",
+        "Fixed endpoint, family, horizon and boundary algorithm"
+      ],
+      "evidence_required": [
+        "P274A digest f229...8ffc",
+        "PR #439 merged",
+        "PR #440 governance closeout merged"
+      ],
+      "responsible_owner": "Owner/governance",
+      "prohibited_actions": [
+        "Boundary assignment",
+        "Capture",
+        "Candidate substitution"
+      ],
+      "exit_criteria": [
+        "Immutable facts match and concrete boundary remains unset"
+      ],
+      "invalidation_conditions": [
+        "P274A digest/facts differ",
+        "candidate or family change"
+      ],
+      "rollback_possible": "Protocol can be superseded only by an owner-approved new preregistration before activation",
+      "next_required_authorization": "G1 design review"
+    },
+    {
+      "gate_id": "G1",
+      "name": "Execution Architecture Design Approved",
+      "status": "PARTIAL",
+      "mandatory_inputs": [
+        "Implementation-neutral architecture",
+        "Data ownership",
+        "Failure modes",
+        "Operational responsibilities",
+        "Owner decisions resolved"
+      ],
+      "evidence_required": [
+        "P271I component design",
+        "P274B readiness plan",
+        "P271J source constraints"
+      ],
+      "responsible_owner": "Owner plus architecture, operations and security owners",
+      "prohibited_actions": [
+        "Implementation authorization",
+        "Production change",
+        "Activation"
+      ],
+      "exit_criteria": [
+        "Owner explicitly approves architecture and resolves required operating decisions"
+      ],
+      "invalidation_conditions": [
+        "Unresolved ownership",
+        "unverified official schedule source",
+        "material protocol mismatch"
+      ],
+      "rollback_possible": "Design may be revised while boundary remains unset",
+      "next_required_authorization": "Separate G2 implementation authorization"
+    },
+    {
+      "gate_id": "G2",
+      "name": "Implementation Authorization",
+      "status": "MISSING",
+      "mandatory_inputs": [
+        "G1 approval",
+        "Exact file/component scope",
+        "Test plan",
+        "No-production boundary"
+      ],
+      "evidence_required": [
+        "Explicit owner authorization text for a future task"
+      ],
+      "responsible_owner": "Owner",
+      "prohibited_actions": [
+        "Production activation",
+        "Unscoped code/schema changes"
+      ],
+      "exit_criteria": [
+        "Authorization names components, files, environments and forbidden actions"
+      ],
+      "invalidation_conditions": [
+        "Scope drift",
+        "new production dependency",
+        "missing whitelist"
+      ],
+      "rollback_possible": "Authorization may be withdrawn before implementation writes",
+      "next_required_authorization": "G3 implementation tasks, each separately scoped"
+    },
+    {
+      "gate_id": "G3",
+      "name": "Implementation And Isolated Validation Complete",
+      "status": "PARTIAL",
+      "mandatory_inputs": [
+        "Authorized implementation scopes",
+        "Frozen contracts",
+        "Synthetic/non-production environments"
+      ],
+      "evidence_required": [
+        "P271J isolated ledger PASS",
+        "P271K temp-DB rehearsal PASS",
+        "Future resolver/worker/monitor/export/evaluator evidence"
+      ],
+      "responsible_owner": "Engineering owners",
+      "prohibited_actions": [
+        "Production DB write unless separately authorized",
+        "Activation",
+        "Outcome-based adaptation"
+      ],
+      "exit_criteria": [
+        "All required components implemented and isolated tests, restart, fault and security evidence pass"
+      ],
+      "invalidation_conditions": [
+        "Unresolved failed tests",
+        "unimplemented component",
+        "contract drift"
+      ],
+      "rollback_possible": "Code can be reverted before production installation; evidence remains auditable",
+      "next_required_authorization": "G4 production-safety preflight authorization"
+    },
+    {
+      "gate_id": "G4",
+      "name": "Production-Safety Preflight Complete",
+      "status": "PARTIAL",
+      "mandatory_inputs": [
+        "G3 complete",
+        "Deployment and rollback plan",
+        "Monitoring and ownership",
+        "Fresh production state"
+      ],
+      "evidence_required": [
+        "P271L preflight package",
+        "P271L ABSENT_CLEAN inspection",
+        "Fresh apply-time evidence still required"
+      ],
+      "responsible_owner": "Operations plus owner",
+      "prohibited_actions": [
+        "Apply",
+        "Activation",
+        "Boundary assignment"
+      ],
+      "exit_criteria": [
+        "All apply-time blockers cleared and post-apply verification plan approved"
+      ],
+      "invalidation_conditions": [
+        "DB hash drift",
+        "writer not quiesced",
+        "backup/restore gap",
+        "monitoring or owner missing"
+      ],
+      "rollback_possible": "Preflight can be invalidated without production effect",
+      "next_required_authorization": "Separate production apply authorization, then P271M verification"
+    },
+    {
+      "gate_id": "G5",
+      "name": "Activation Authorization",
+      "status": "MISSING",
+      "mandatory_inputs": [
+        "G3 complete",
+        "G4 complete",
+        "Production verification complete",
+        "Operational commitments",
+        "Owner review"
+      ],
+      "evidence_required": [
+        "Explicit owner activation authorization"
+      ],
+      "responsible_owner": "Owner",
+      "prohibited_actions": [
+        "Boundary assignment before authorization",
+        "Capture"
+      ],
+      "exit_criteria": [
+        "Owner authorizes a separate boundary-assignment task"
+      ],
+      "invalidation_conditions": [
+        "Any prerequisite stale or missing"
+      ],
+      "rollback_possible": "Authorization can be withdrawn before boundary assignment",
+      "next_required_authorization": "G6 boundary assignment authorization"
+    },
+    {
+      "gate_id": "G6",
+      "name": "Boundary Assignment",
+      "status": "MISSING",
+      "mandatory_inputs": [
+        "G5 authorization",
+        "Verified official next-draw source",
+        "Trusted clock",
+        "Immutable activation record"
+      ],
+      "evidence_required": [
+        "activation_timestamp_utc and first_eligible_target_draw recorded before outcome exposure"
+      ],
+      "responsible_owner": "Authorized activation operator plus owner witness",
+      "prohibited_actions": [
+        "Capture or analysis before boundary",
+        "Backdating"
+      ],
+      "exit_criteria": [
+        "Boundary sealed, exported and independently verified"
+      ],
+      "invalidation_conditions": [
+        "Outcome exposure before sealing",
+        "clock/source ambiguity"
+      ],
+      "rollback_possible": "Not reversible after eligible outcome exposure; before exposure, owner may cancel without reuse",
+      "next_required_authorization": "G7 capture-start authorization"
+    },
+    {
+      "gate_id": "G7",
+      "name": "Prospective Capture Start",
+      "status": "MISSING",
+      "mandatory_inputs": [
+        "G6 sealed boundary",
+        "Live monitoring",
+        "On-call ownership",
+        "Append-only production store"
+      ],
+      "evidence_required": [
+        "Pre-outcome captures and audit exports"
+      ],
+      "responsible_owner": "Operations owner",
+      "prohibited_actions": [
+        "Retrospective backfill",
+        "candidate substitution",
+        "silent correction"
+      ],
+      "exit_criteria": [
+        "Each eligible draw is handled prospectively and evidence remains auditable"
+      ],
+      "invalidation_conditions": [
+        "Integrity breach",
+        "security breach",
+        "untrusted time/source"
+      ],
+      "rollback_possible": "Capture may pause; already valid records remain immutable",
+      "next_required_authorization": "Continue under monitoring; no efficacy authorization"
+    },
+    {
+      "gate_id": "G8",
+      "name": "Monitoring And Final Analysis",
+      "status": "MISSING",
+      "mandatory_inputs": [
+        "G7 evidence",
+        "Frozen evaluator",
+        "50/300/final calendar by draw count"
+      ],
+      "evidence_required": [
+        "Integrity reviews",
+        "non-binding futility record",
+        "one final analysis at 3605 draws"
+      ],
+      "responsible_owner": "Scientific owner plus independent auditor",
+      "prohibited_actions": [
+        "Interim efficacy",
+        "optional stopping",
+        "family shrinkage",
+        "automatic production promotion"
+      ],
+      "exit_criteria": [
+        "Protocol closes with governed candidate/project classes"
+      ],
+      "invalidation_conditions": [
+        "Integrity breach",
+        "rule change",
+        "unrecoverable evidence loss"
+      ],
+      "rollback_possible": "Statistical result is not rolled back; protocol may close or invalidate",
+      "next_required_authorization": "Any production promotion is a separate future gate"
+    }
+  ],
+  "current_gate_position": {
+    "position": "G1_PARTIAL_PENDING_OWNER_APPROVAL",
+    "highest_fully_complete_gate": "G0",
+    "evidence_based_reason": "P274A is frozen and merged. P271I/P271J/P271K provide component design and isolated ledger evidence, but G1 operating ownership and architecture choices remain unresolved; G2 has no current authorization.",
+    "not_beyond_g1": true,
+    "g2_authorized": false,
+    "g5_or_later_authorized": false
+  },
+  "execution_architecture": {
+    "design_principles": [
+      "Outcome-blind pre-close capture",
+      "Separate prediction, outcome and evaluation planes",
+      "Append-only immutable evidence",
+      "Fail closed on uncertain identity, time, source or version",
+      "No retrospective backfill",
+      "Idempotent deterministic writes",
+      "Technology-neutral until owner decisions are recorded"
+    ],
+    "components": [
+      {
+        "id": "A1",
+        "name": "Frozen candidate manifest",
+        "responsibility": "Map C1-C3 to exact strategy source digests, versions, expected ticket counts and scorer endpoint digest.",
+        "current_status": "MISSING"
+      },
+      {
+        "id": "A2",
+        "name": "Prediction producer adapter",
+        "responsibility": "Invoke frozen candidate versions without result access and return normalized ticket payloads.",
+        "current_status": "MISSING"
+      },
+      {
+        "id": "A3",
+        "name": "Official draw identity and close resolver",
+        "responsibility": "Resolve target draw, scheduled close, source version and exceptions in Asia/Taipei then UTC.",
+        "current_status": "MISSING"
+      },
+      {
+        "id": "A4",
+        "name": "Trusted time service",
+        "responsibility": "Provide capture time, drift telemetry and fail-closed trust state.",
+        "current_status": "MISSING"
+      },
+      {
+        "id": "A5",
+        "name": "Normalization and fingerprint service",
+        "responsibility": "Sort/validate ticket numbers, map bet indexes, compute distinct tickets and deterministic fingerprints.",
+        "current_status": "PARTIAL"
+      },
+      {
+        "id": "A6",
+        "name": "Append-only evidence writer",
+        "responsibility": "Atomically write activation, batch, ticket and event records with uniqueness and tamper evidence.",
+        "current_status": "CONFIRMED"
+      },
+      {
+        "id": "A7",
+        "name": "Evidence seal and audit exporter",
+        "responsibility": "Create canonical draw/batch manifests, digest them and export independently verifiable evidence.",
+        "current_status": "PARTIAL"
+      },
+      {
+        "id": "A8",
+        "name": "Outcome availability and result linker",
+        "responsibility": "Track publication separately and append result links only after official completion.",
+        "current_status": "MISSING"
+      },
+      {
+        "id": "A9",
+        "name": "Prospective evaluator",
+        "responsibility": "Read only sealed prospective records and enforce 50/300/3605 rules with m=3.",
+        "current_status": "MISSING"
+      },
+      {
+        "id": "A10",
+        "name": "Monitoring and operations plane",
+        "responsibility": "Observe schedules, capture latency, gaps, drift, duplicates, storage, digests and operator coverage.",
+        "current_status": "MISSING"
+      }
+    ],
+    "pre_outcome_capture_sequence": [
+      "Load sealed activation and candidate manifests",
+      "Resolve official target draw and close time from a verified versioned source",
+      "Verify trusted clock and drift state",
+      "Generate predictions from frozen versions without outcome access",
+      "Normalize tickets and compute distinct-ticket identities/fingerprints",
+      "Validate candidate/scorer/source versions and strict pre-close causality",
+      "Atomically append batch, ticket and event evidence",
+      "Seal and export a canonical batch digest before outcome availability",
+      "Only then mark capture complete for monitoring"
+    ],
+    "post_outcome_sequence": [
+      "Detect official outcome availability in a separate process",
+      "Append an idempotent result link with provenance",
+      "Never alter prediction membership or payload",
+      "Evaluate only through the frozen prospective evaluator",
+      "Export checkpoint/final evidence without optional stopping"
+    ],
+    "replay_resistance": {
+      "identity_key": [
+        "activation_id",
+        "lottery_type",
+        "target_draw",
+        "candidate_id",
+        "strategy_id",
+        "strategy_version",
+        "bet_index"
+      ],
+      "rules": [
+        "Reject semantic duplicates",
+        "Reject non-live modes",
+        "Reject writes after close",
+        "Reject reuse of historical rows",
+        "Never overwrite an earlier identity"
+      ]
+    },
+    "correction_policy": {
+      "allowed": "Only owner-defined, pre-close, append-only corrections that preserve identity and original evidence.",
+      "forbidden": [
+        "Post-close correction",
+        "delete/reinsert",
+        "identity substitution",
+        "outcome-dependent normalization",
+        "retrospective backfill"
+      ],
+      "owner_decision_required": "Define which pre-close correction classes, if any, are allowed."
+    },
+    "storage_options": [
+      {
+        "option": "Existing P271J SQLite append-only schema",
+        "advantages": [
+          "Already implemented and temp-DB tested",
+          "Strong local transaction and uniqueness semantics"
+        ],
+        "risks": [
+          "Production DB coupling",
+          "No external immutability anchor",
+          "Access and long-horizon migration not designed"
+        ],
+        "owner_decision": "OWNER_DECISION_REQUIRED"
+      },
+      {
+        "option": "Separate append-only evidence database or object store",
+        "advantages": [
+          "Isolation from production operational DB",
+          "Independent retention and access policy"
+        ],
+        "risks": [
+          "New technology, deployment and migration scope",
+          "Needs transaction/idempotency design"
+        ],
+        "owner_decision": "OWNER_DECISION_REQUIRED"
+      },
+      {
+        "option": "Dual evidence: transactional ledger plus WORM/signed export",
+        "advantages": [
+          "Operational writes plus independent tamper evidence",
+          "Stronger migration resilience"
+        ],
+        "risks": [
+          "Highest complexity and key/retention ownership"
+        ],
+        "owner_decision": "OWNER_DECISION_REQUIRED"
+      }
+    ],
+    "operator_boundaries": [
+      "Activation operator cannot change candidates or analysis rules",
+      "Capture service cannot read outcomes",
+      "Result linker cannot rewrite captures",
+      "Evaluator has read-only access",
+      "Manual correction requires separate audited role",
+      "Audit exporter is read-only"
+    ],
+    "secrets_and_keys": {
+      "current_need": "No secret is required by the isolated P271J library.",
+      "if_signing_selected": "Key custody, signing service, rotation, revocation and independent verifier ownership are OWNER_DECISION_REQUIRED."
+    }
+  },
+  "prospective_capture_requirements": [
+    {
+      "requirement_id": "PCR-01",
+      "requirement": "Persist protocol_version and activation_id",
+      "status": "PARTIAL",
+      "required_by_gate": "G3",
+      "notes": "P271J has protocol and activation fields; P274A mapping not deployed."
+    },
+    {
+      "requirement_id": "PCR-02",
+      "requirement": "Persist candidate_id and immutable candidate manifest digest",
+      "status": "MISSING",
+      "required_by_gate": "G3",
+      "notes": "P271J has strategy fields but no P274A candidate_id."
+    },
+    {
+      "requirement_id": "PCR-03",
+      "requirement": "Persist lottery_type, official target_draw and official scheduled timestamp",
+      "status": "PARTIAL",
+      "required_by_gate": "G3",
+      "notes": "Storage exists; authoritative resolver does not."
+    },
+    {
+      "requirement_id": "PCR-04",
+      "requirement": "Persist strategy_id and exact strategy_version/source digest",
+      "status": "PARTIAL",
+      "required_by_gate": "G3",
+      "notes": "Caller set is supported; sealed manifest absent."
+    },
+    {
+      "requirement_id": "PCR-05",
+      "requirement": "Persist scorer_endpoint_version/digest",
+      "status": "MISSING",
+      "required_by_gate": "G3",
+      "notes": "Required by P274A and absent in P271J."
+    },
+    {
+      "requirement_id": "PCR-06",
+      "requirement": "Persist normalized canonical ticket identities, bet indexes and distinct_ticket_count",
+      "status": "PARTIAL",
+      "required_by_gate": "G3",
+      "notes": "Per-ticket normalized payload exists; explicit distinct count and candidate-level set evidence absent."
+    },
+    {
+      "requirement_id": "PCR-07",
+      "requirement": "Persist deterministic ticket fingerprints and batch digest",
+      "status": "PARTIAL",
+      "required_by_gate": "G3",
+      "notes": "Per-ticket payload hash exists; canonical batch seal absent."
+    },
+    {
+      "requirement_id": "PCR-08",
+      "requirement": "Use trusted capture timestamp with drift evidence",
+      "status": "MISSING",
+      "required_by_gate": "G3",
+      "notes": "Caller timestamp validation is insufficient for production trust."
+    },
+    {
+      "requirement_id": "PCR-09",
+      "requirement": "Enforce capture before outcome availability",
+      "status": "PARTIAL",
+      "required_by_gate": "G3",
+      "notes": "Close-time check exists; outcome availability oracle absent."
+    },
+    {
+      "requirement_id": "PCR-10",
+      "requirement": "Append-only DB enforcement and tamper detection",
+      "status": "PARTIAL",
+      "required_by_gate": "G4",
+      "notes": "Confirmed in isolated schema, not production."
+    },
+    {
+      "requirement_id": "PCR-11",
+      "requirement": "Atomic idempotent capture and duplicate protection",
+      "status": "CONFIRMED",
+      "required_by_gate": "G3",
+      "notes": "Implemented and tested in isolated environments."
+    },
+    {
+      "requirement_id": "PCR-12",
+      "requirement": "Separate outcome availability, result ingestion and evaluation",
+      "status": "PARTIAL",
+      "required_by_gate": "G3",
+      "notes": "Schema separation exists; runtime services absent."
+    },
+    {
+      "requirement_id": "PCR-13",
+      "requirement": "No retrospective backfill or family replacement",
+      "status": "CONFIRMED",
+      "required_by_gate": "G0",
+      "notes": "Governance and isolated capture rules fail closed."
+    },
+    {
+      "requirement_id": "PCR-14",
+      "requirement": "Restart recovery without post-outcome retry",
+      "status": "MISSING",
+      "required_by_gate": "G3",
+      "notes": "Runtime recovery policy absent."
+    },
+    {
+      "requirement_id": "PCR-15",
+      "requirement": "Monitoring, alerting and operator escalation",
+      "status": "MISSING",
+      "required_by_gate": "G4",
+      "notes": "Interfaces and thresholds absent."
+    },
+    {
+      "requirement_id": "PCR-16",
+      "requirement": "Canonical audit export with reload/digest verification",
+      "status": "MISSING",
+      "required_by_gate": "G3",
+      "notes": "Read helpers are not an export contract."
+    },
+    {
+      "requirement_id": "PCR-17",
+      "requirement": "Role-based access and audited manual operations",
+      "status": "MISSING",
+      "required_by_gate": "G4",
+      "notes": "No authentication/authorization exists."
+    },
+    {
+      "requirement_id": "PCR-18",
+      "requirement": "Retention, archival, backup and restore across migrations",
+      "status": "MISSING",
+      "required_by_gate": "G4",
+      "notes": "OWNER_DECISION_REQUIRED."
+    },
+    {
+      "requirement_id": "PCR-19",
+      "requirement": "Frozen prospective evaluator for 50/300/final rules",
+      "status": "MISSING",
+      "required_by_gate": "G3",
+      "notes": "No prospective evaluator exists."
+    },
+    {
+      "requirement_id": "PCR-20",
+      "requirement": "Activation boundary sealed before any eligible outcome",
+      "status": "MISSING",
+      "required_by_gate": "G6",
+      "notes": "Explicitly prohibited and unset in P274B."
+    }
+  ],
+  "operational_readiness": {
+    "cadence_assumptions": {
+      "governed_unit": "eligible future DAILY_539 draws",
+      "common_horizon_draws": 3605,
+      "descriptive_regular_cadence": "approximately 6 draws/week",
+      "descriptive_duration": "approximately 11.5 years",
+      "calendar_not_governing": true,
+      "assumption_risk": "Cancellations, make-ups, rule changes and outages can change calendar duration."
+    },
+    "minimum_ongoing_maintenance_commitments": [
+      "Named primary and backup service owners",
+      "Documented on-call and escalation coverage for every scheduled draw",
+      "Verified schedule-source refresh and exception handling",
+      "Trusted-clock health and drift monitoring",
+      "Pre-draw capture health check and post-capture evidence seal verification",
+      "Daily/weekly audit of missing, duplicate, late and digest-mismatch events",
+      "Regular backup and restore rehearsal",
+      "Dependency, credential and security patch maintenance",
+      "Periodic owner-approved protocol ownership and scientific-value review",
+      "Immutable handoff package for staff or agent transitions"
+    ],
+    "maximum_tolerated_capture_gaps": {
+      "status": "OWNER_DECISION_REQUIRED",
+      "reason": "P274A freezes no numerical missingness threshold. A threshold must be pre-registered with statistical sensitivity before activation.",
+      "options": [
+        "Zero tolerated unexplained eligible-draw gaps; any gap pauses pending owner review.",
+        "A bounded missingness envelope defined before activation with sensitivity analysis and no backfill.",
+        "Scientific closure if required coverage cannot be sustained."
+      ]
+    },
+    "missingness_classifications": [
+      {
+        "class": "NOT_AN_OFFICIAL_DRAW",
+        "effect": "Not counted; require official cancellation evidence."
+      },
+      {
+        "class": "PRE_BOUNDARY",
+        "effect": "Permanently ineligible."
+      },
+      {
+        "class": "SCHEDULE_SOURCE_UNKNOWN",
+        "effect": "Pause; no capture until resolved before close."
+      },
+      {
+        "class": "CAPTURE_SERVICE_FAILURE",
+        "effect": "Eligible draw becomes missing if not recovered before close; no backfill."
+      },
+      {
+        "class": "CANDIDATE_GENERATION_FAILURE",
+        "effect": "Affected candidate/draw missing; family m remains 3."
+      },
+      {
+        "class": "LATE_OR_POST_OUTCOME_CAPTURE",
+        "effect": "Reject and treat as integrity breach, never evidence."
+      },
+      {
+        "class": "EVIDENCE_CORRUPTION",
+        "effect": "Use only an independently sealed pre-outcome copy; otherwise invalidate affected evidence."
+      },
+      {
+        "class": "OUTCOME_INGESTION_DELAY",
+        "effect": "Capture may remain valid; evaluation waits; provenance required."
+      }
+    ],
+    "pause_conditions": [
+      "Untrusted schedule or clock",
+      "Candidate/scorer/version drift",
+      "Monitoring silence",
+      "Security or access-control incident",
+      "Digest mismatch or corrupted store",
+      "Unexpected schema migration",
+      "Operator coverage unavailable",
+      "Lottery rule or calendar change pending review"
+    ],
+    "protocol_invalidation_conditions": [
+      "Outcome known before capture",
+      "Boundary/backfill violation",
+      "Unauthorized candidate substitution",
+      "Unrecoverable loss of canonical pre-outcome evidence",
+      "Outcome-dependent correction",
+      "Material lottery-rule change that alters endpoint/null without a new preregistration",
+      "Security breach that makes evidence timing or integrity unprovable"
+    ],
+    "owner_reauthorization_conditions": [
+      "Resume after prolonged outage",
+      "Change storage, schedule source, clock source or signer",
+      "Change candidate/scorer/dependency version",
+      "Infrastructure migration affecting evidence semantics",
+      "Continue after non-binding futility recommendation",
+      "Change missingness policy",
+      "Ownership transfer",
+      "Resume after security incident"
+    ],
+    "scientific_closure_conditions": [
+      "Owner declines the approximately multi-year maintenance commitment",
+      "Required integrity cannot be sustained",
+      "Missingness exceeds the owner-governed limit",
+      "Lottery rules make the frozen endpoint obsolete",
+      "Candidate implementation becomes unavailable without valid frozen replacement",
+      "Expected scientific value no longer justifies ongoing operational burden"
+    ]
+  },
+  "long_horizon_sustainability": {
+    "horizon_statement": "3605 draws govern. Approximately 11.5 years is descriptive, not exact.",
+    "risks": [
+      {
+        "area": "Maintenance ownership",
+        "status": "MISSING",
+        "mitigation": "Named primary/backup owner, succession plan and owner-approved periodic review."
+      },
+      {
+        "area": "Staff or agent handoff",
+        "status": "MISSING",
+        "mitigation": "Versioned runbook, architecture decision record, credential map and signed handoff checklist."
+      },
+      {
+        "area": "Strategy dependency drift",
+        "status": "PARTIAL",
+        "mitigation": "Frozen source/container digest and reproducible build; no silent upgrade."
+      },
+      {
+        "area": "Scorer drift",
+        "status": "MISSING",
+        "mitigation": "Persist endpoint digest and run compatibility fixtures before every release."
+      },
+      {
+        "area": "Lottery-rule change",
+        "status": "UNKNOWN",
+        "mitigation": "Pause immediately; owner decides invalidation, new protocol or closure."
+      },
+      {
+        "area": "Draw-calendar change",
+        "status": "UNKNOWN",
+        "mitigation": "Versioned official schedule resolver; draw count remains governing."
+      },
+      {
+        "area": "Infrastructure migration",
+        "status": "MISSING",
+        "mitigation": "Dual-read verification, digest reconciliation and separate owner authorization."
+      },
+      {
+        "area": "Credential rotation",
+        "status": "MISSING",
+        "mitigation": "Rotation runbook and overlap test; no missed capture during rotation."
+      },
+      {
+        "area": "Backup and restore",
+        "status": "PARTIAL",
+        "mitigation": "P271L plan exists; production restore rehearsal and recurring cadence absent."
+      },
+      {
+        "area": "Evidence durability",
+        "status": "PARTIAL",
+        "mitigation": "Append-only local design plus independent archive/digest anchor decision."
+      },
+      {
+        "area": "Monitoring fatigue",
+        "status": "MISSING",
+        "mitigation": "Actionable alerts, escalation tiers and periodic alert-quality review."
+      },
+      {
+        "area": "Extended outage",
+        "status": "MISSING",
+        "mitigation": "No backfill; classify gaps, pause, and trigger owner reauthorization/closure."
+      },
+      {
+        "area": "Candidate retirement",
+        "status": "MISSING",
+        "mitigation": "Retirement never shrinks m=3; affected candidate closes per governed class."
+      },
+      {
+        "area": "Cost and resources",
+        "status": "UNKNOWN",
+        "mitigation": "Budget storage, monitoring, maintenance, audits, migrations, security and independent review."
+      },
+      {
+        "area": "Scientific value decay",
+        "status": "UNKNOWN",
+        "mitigation": "Annual review may recommend continue, HOLD or scientific closure without peeking for efficacy."
+      }
+    ],
+    "cost_categories": [
+      "Engineering maintenance",
+      "Operations/on-call",
+      "Monitoring and alert delivery",
+      "Evidence storage and archival",
+      "Backup/restore drills",
+      "Security and credential management",
+      "Infrastructure migration",
+      "Independent audit",
+      "Final statistical analysis"
+    ],
+    "ownership_transfer_contract": [
+      "No transfer without named accepting owner",
+      "Transfer package includes manifests, keys/credentials, runbook, open incidents, evidence digests and gate state",
+      "Old and new owner jointly verify one pre-outcome rehearsal",
+      "Transfer cannot change candidate family or boundary"
+    ],
+    "temporary_suspension": "Allowed for safety. Missed draws remain missing and cannot be backfilled. Resume requires the applicable owner decision and evidence.",
+    "permanent_invalidation": "Required when timing, identity, boundary or evidence integrity cannot be proven.",
+    "candidate_retirement": "Allowed only as closure of that candidate; Bonferroni m remains 3 and no replacement enters the family."
+  },
+  "failure_mode_matrix": [
+    {
+      "failure_id": "FM-01",
+      "failure_mode": "Outcome known before capture",
+      "detection": "Outcome-availability timestamp <= capture seal or result access log",
+      "severity": "CRITICAL",
+      "affected_gate": "G7",
+      "immediate_safe_action": "Reject record, freeze candidate/family and preserve incident evidence",
+      "capture_pauses": true,
+      "record_validity": "Affected record invalid",
+      "recovery_evidence": "Independent timing audit and incident report",
+      "owner_authorization_needed": "YES",
+      "protocol_invalidated": "YES if exposure scope cannot be isolated",
+      "no_retrospective_backfill": true
+    },
+    {
+      "failure_id": "FM-02",
+      "failure_mode": "Clock drift",
+      "detection": "NTP/clock telemetry exceeds governed trust state or timestamps conflict",
+      "severity": "CRITICAL",
+      "affected_gate": "G3/G7",
+      "immediate_safe_action": "Fail closed before write",
+      "capture_pauses": true,
+      "record_validity": "Existing sealed records remain valid; uncertain interval quarantined",
+      "recovery_evidence": "Clock logs and independent source comparison",
+      "owner_authorization_needed": "YES",
+      "protocol_invalidated": "POSSIBLE",
+      "no_retrospective_backfill": true
+    },
+    {
+      "failure_id": "FM-03",
+      "failure_mode": "Scheduler outage",
+      "detection": "Missed pre-draw heartbeat or expected job absence",
+      "severity": "HIGH",
+      "affected_gate": "G7",
+      "immediate_safe_action": "Attempt recovery only before close; otherwise mark missing",
+      "capture_pauses": true,
+      "record_validity": "Prior records valid; missed draw has no record",
+      "recovery_evidence": "Job logs, host incident and gap classification",
+      "owner_authorization_needed": "YES for prolonged outage",
+      "protocol_invalidated": "NO unless missingness/integrity limit crossed",
+      "no_retrospective_backfill": true
+    },
+    {
+      "failure_id": "FM-04",
+      "failure_mode": "Duplicate capture",
+      "detection": "Semantic unique-key conflict or repeated batch digest",
+      "severity": "MEDIUM",
+      "affected_gate": "G3/G7",
+      "immediate_safe_action": "Reject duplicate idempotently and alert on conflicting payload",
+      "capture_pauses": false,
+      "record_validity": "Original valid if digest matches",
+      "recovery_evidence": "Uniqueness event and payload comparison",
+      "owner_authorization_needed": "NO unless conflict",
+      "protocol_invalidated": "NO unless conflict implies tampering",
+      "no_retrospective_backfill": true
+    },
+    {
+      "failure_id": "FM-05",
+      "failure_mode": "Missing ticket identity",
+      "detection": "Normalization or fingerprint field absent",
+      "severity": "CRITICAL",
+      "affected_gate": "G3/G7",
+      "immediate_safe_action": "Reject entire affected batch",
+      "capture_pauses": true,
+      "record_validity": "No affected record valid",
+      "recovery_evidence": "Fixed pre-close payload and passing identity audit",
+      "owner_authorization_needed": "YES if recurring",
+      "protocol_invalidated": "YES for post-outcome repair attempt",
+      "no_retrospective_backfill": true
+    },
+    {
+      "failure_id": "FM-06",
+      "failure_mode": "Unexpected distinct-ticket count",
+      "detection": "Count differs from expected 3/3/5 or duplicate collapse occurs",
+      "severity": "HIGH",
+      "affected_gate": "G7",
+      "immediate_safe_action": "Pause affected candidate and investigate before close",
+      "capture_pauses": true,
+      "record_validity": "May remain valid only if actual identities are complete and protocol test handles actual N",
+      "recovery_evidence": "Canonical tickets, reason and independent review",
+      "owner_authorization_needed": "YES",
+      "protocol_invalidated": "POSSIBLE if caused by drift",
+      "no_retrospective_backfill": true
+    },
+    {
+      "failure_id": "FM-07",
+      "failure_mode": "Candidate-version drift",
+      "detection": "Manifest digest differs from frozen candidate digest",
+      "severity": "CRITICAL",
+      "affected_gate": "G3/G7",
+      "immediate_safe_action": "Reject capture and disable candidate",
+      "capture_pauses": true,
+      "record_validity": "Affected records invalid",
+      "recovery_evidence": "Reproducible build/digest audit",
+      "owner_authorization_needed": "YES",
+      "protocol_invalidated": "YES for exposed interval",
+      "no_retrospective_backfill": true
+    },
+    {
+      "failure_id": "FM-08",
+      "failure_mode": "Scorer-version drift",
+      "detection": "Endpoint digest mismatch or fixture incompatibility",
+      "severity": "CRITICAL",
+      "affected_gate": "G3/G8",
+      "immediate_safe_action": "Pause capture/evaluation; do not rescore opportunistically",
+      "capture_pauses": true,
+      "record_validity": "Capture may be quarantined; evaluation invalid until frozen scorer restored",
+      "recovery_evidence": "Scorer digest and compatibility fixtures",
+      "owner_authorization_needed": "YES",
+      "protocol_invalidated": "POSSIBLE",
+      "no_retrospective_backfill": true
+    },
+    {
+      "failure_id": "FM-09",
+      "failure_mode": "Registry mismatch",
+      "detection": "Runtime registry identity differs from frozen manifest",
+      "severity": "HIGH",
+      "affected_gate": "G3/G7",
+      "immediate_safe_action": "Do not mutate registry; reject and alert",
+      "capture_pauses": true,
+      "record_validity": "Affected records invalid",
+      "recovery_evidence": "Manifest-to-runtime audit",
+      "owner_authorization_needed": "YES",
+      "protocol_invalidated": "POSSIBLE",
+      "no_retrospective_backfill": true
+    },
+    {
+      "failure_id": "FM-10",
+      "failure_mode": "Target-draw mismatch",
+      "detection": "Official draw resolver and payload disagree",
+      "severity": "CRITICAL",
+      "affected_gate": "G3/G7",
+      "immediate_safe_action": "Reject batch and pause resolver",
+      "capture_pauses": true,
+      "record_validity": "Affected records invalid",
+      "recovery_evidence": "Official schedule snapshot and resolver replay",
+      "owner_authorization_needed": "YES",
+      "protocol_invalidated": "YES if outcome mapping occurred",
+      "no_retrospective_backfill": true
+    },
+    {
+      "failure_id": "FM-11",
+      "failure_mode": "Official schedule change",
+      "detection": "Versioned source publishes changed/cancelled draw",
+      "severity": "HIGH",
+      "affected_gate": "G7",
+      "immediate_safe_action": "Pause until change is verified before close",
+      "capture_pauses": true,
+      "record_validity": "Earlier sealed draws valid",
+      "recovery_evidence": "New source digest and owner-approved handling",
+      "owner_authorization_needed": "YES for material change",
+      "protocol_invalidated": "POSSIBLE",
+      "no_retrospective_backfill": true
+    },
+    {
+      "failure_id": "FM-12",
+      "failure_mode": "Lottery rule change",
+      "detection": "Official game rules alter ticket space or endpoint",
+      "severity": "CRITICAL",
+      "affected_gate": "G0/G7/G8",
+      "immediate_safe_action": "Suspend protocol immediately",
+      "capture_pauses": true,
+      "record_validity": "Prior records valid under old rules; future comparability uncertain",
+      "recovery_evidence": "Official rule evidence and statistical impact review",
+      "owner_authorization_needed": "YES",
+      "protocol_invalidated": "YES unless new preregistration governs a separate family",
+      "no_retrospective_backfill": true
+    },
+    {
+      "failure_id": "FM-13",
+      "failure_mode": "DB or schema migration",
+      "detection": "Schema/version changes without prospective compatibility proof",
+      "severity": "CRITICAL",
+      "affected_gate": "G4/G7",
+      "immediate_safe_action": "Pause writes; preserve pre-migration snapshot",
+      "capture_pauses": true,
+      "record_validity": "Existing records valid only after digest reconciliation",
+      "recovery_evidence": "Migration plan, dual-read comparison and restore proof",
+      "owner_authorization_needed": "YES",
+      "protocol_invalidated": "POSSIBLE",
+      "no_retrospective_backfill": true
+    },
+    {
+      "failure_id": "FM-14",
+      "failure_mode": "Corrupted evidence",
+      "detection": "Read error, malformed row or archive checksum failure",
+      "severity": "CRITICAL",
+      "affected_gate": "G7/G8",
+      "immediate_safe_action": "Quarantine store and use only independently sealed copies",
+      "capture_pauses": true,
+      "record_validity": "Affected evidence invalid absent verified pre-outcome copy",
+      "recovery_evidence": "Restore and complete digest reconciliation",
+      "owner_authorization_needed": "YES",
+      "protocol_invalidated": "YES if unrecoverable",
+      "no_retrospective_backfill": true
+    },
+    {
+      "failure_id": "FM-15",
+      "failure_mode": "Digest mismatch",
+      "detection": "Recomputed ticket/batch/export digest differs",
+      "severity": "CRITICAL",
+      "affected_gate": "G7/G8",
+      "immediate_safe_action": "Stop capture and evaluation; preserve both versions",
+      "capture_pauses": true,
+      "record_validity": "Affected record quarantined",
+      "recovery_evidence": "Root-cause report and independent digest match",
+      "owner_authorization_needed": "YES",
+      "protocol_invalidated": "POSSIBLE",
+      "no_retrospective_backfill": true
+    },
+    {
+      "failure_id": "FM-16",
+      "failure_mode": "Unauthorized manual correction",
+      "detection": "Audit log shows unapproved amendment or direct write",
+      "severity": "CRITICAL",
+      "affected_gate": "G7",
+      "immediate_safe_action": "Freeze affected family and revoke access",
+      "capture_pauses": true,
+      "record_validity": "Affected evidence invalid",
+      "recovery_evidence": "Access logs and immutable incident report",
+      "owner_authorization_needed": "YES",
+      "protocol_invalidated": "YES",
+      "no_retrospective_backfill": true
+    },
+    {
+      "failure_id": "FM-17",
+      "failure_mode": "Partial write",
+      "detection": "Batch/event/ticket counts disagree or transaction failure",
+      "severity": "HIGH",
+      "affected_gate": "G3/G7",
+      "immediate_safe_action": "Rollback; retry only before close with same deterministic identity",
+      "capture_pauses": true,
+      "record_validity": "Failed attempt creates no eligible record",
+      "recovery_evidence": "Transaction logs and count reconciliation",
+      "owner_authorization_needed": "NO if recovered pre-close",
+      "protocol_invalidated": "NO unless repaired after outcome",
+      "no_retrospective_backfill": true
+    },
+    {
+      "failure_id": "FM-18",
+      "failure_mode": "Replay or backfill attempt",
+      "detection": "capture_mode non-live or target already closed",
+      "severity": "CRITICAL",
+      "affected_gate": "G7",
+      "immediate_safe_action": "Reject, alert and preserve rejection event",
+      "capture_pauses": false,
+      "record_validity": "No new valid record",
+      "recovery_evidence": "Rejection evidence",
+      "owner_authorization_needed": "YES if malicious/repeated",
+      "protocol_invalidated": "YES if accepted into family",
+      "no_retrospective_backfill": true
+    },
+    {
+      "failure_id": "FM-19",
+      "failure_mode": "Prolonged outage",
+      "detection": "Consecutive or cumulative gaps exceed owner-governed rule",
+      "severity": "HIGH",
+      "affected_gate": "G7",
+      "immediate_safe_action": "Remain paused; no historical substitution",
+      "capture_pauses": true,
+      "record_validity": "Prior records valid; gaps remain missing",
+      "recovery_evidence": "Outage report and statistical missingness assessment",
+      "owner_authorization_needed": "YES",
+      "protocol_invalidated": "OWNER_DECISION_REQUIRED",
+      "no_retrospective_backfill": true
+    },
+    {
+      "failure_id": "FM-20",
+      "failure_mode": "Operator absence",
+      "detection": "No qualified primary/backup responder for scheduled draw",
+      "severity": "HIGH",
+      "affected_gate": "G4/G7",
+      "immediate_safe_action": "Pause before unattended capture if safety cannot be assured",
+      "capture_pauses": true,
+      "record_validity": "Prior records valid",
+      "recovery_evidence": "Restored roster and handoff verification",
+      "owner_authorization_needed": "YES",
+      "protocol_invalidated": "NO unless gaps exceed rule",
+      "no_retrospective_backfill": true
+    },
+    {
+      "failure_id": "FM-21",
+      "failure_mode": "Monitoring silence",
+      "detection": "No heartbeat or alert telemetry",
+      "severity": "HIGH",
+      "affected_gate": "G4/G7",
+      "immediate_safe_action": "Treat system as unsafe and pause",
+      "capture_pauses": true,
+      "record_validity": "Recent records quarantined until audit",
+      "recovery_evidence": "Telemetry restoration and gap audit",
+      "owner_authorization_needed": "YES if interval uncertain",
+      "protocol_invalidated": "POSSIBLE",
+      "no_retrospective_backfill": true
+    },
+    {
+      "failure_id": "FM-22",
+      "failure_mode": "Candidate unavailable",
+      "detection": "Build/runtime cannot generate frozen candidate",
+      "severity": "HIGH",
+      "affected_gate": "G7",
+      "immediate_safe_action": "Mark candidate/draw missing; do not replace candidate",
+      "capture_pauses": false,
+      "record_validity": "Other candidates may remain valid; m stays 3",
+      "recovery_evidence": "Failure logs and owner closure decision",
+      "owner_authorization_needed": "YES for retirement",
+      "protocol_invalidated": "NO unless substitution occurs",
+      "no_retrospective_backfill": true
+    },
+    {
+      "failure_id": "FM-23",
+      "failure_mode": "Dependency deprecation",
+      "detection": "Runtime/library no longer supported or reproducible",
+      "severity": "HIGH",
+      "affected_gate": "G3/G7",
+      "immediate_safe_action": "Freeze upgrades and pause affected component",
+      "capture_pauses": true,
+      "record_validity": "Prior records valid",
+      "recovery_evidence": "Reproducible migration/compatibility evidence",
+      "owner_authorization_needed": "YES",
+      "protocol_invalidated": "POSSIBLE",
+      "no_retrospective_backfill": true
+    },
+    {
+      "failure_id": "FM-24",
+      "failure_mode": "Security or access-control breach",
+      "detection": "Unauthorized credential use, code execution or data access",
+      "severity": "CRITICAL",
+      "affected_gate": "G4/G7/G8",
+      "immediate_safe_action": "Revoke access, pause all capture and preserve forensic evidence",
+      "capture_pauses": true,
+      "record_validity": "Affected interval invalid unless integrity/timing independently proven",
+      "recovery_evidence": "Forensic report, key rotation and independent audit",
+      "owner_authorization_needed": "YES",
+      "protocol_invalidated": "POSSIBLE/YES",
+      "no_retrospective_backfill": true
+    },
+    {
+      "failure_id": "FM-25",
+      "failure_mode": "Outcome ingestion before evidence seal",
+      "detection": "Result-link timestamp precedes batch seal",
+      "severity": "CRITICAL",
+      "affected_gate": "G7",
+      "immediate_safe_action": "Reject linkage and invalidate affected draw evidence",
+      "capture_pauses": true,
+      "record_validity": "Affected draw invalid",
+      "recovery_evidence": "Independent logs and incident report",
+      "owner_authorization_needed": "YES",
+      "protocol_invalidated": "YES",
+      "no_retrospective_backfill": true
+    },
+    {
+      "failure_id": "FM-26",
+      "failure_mode": "Retention or archive loss",
+      "detection": "Required evidence unavailable after storage event",
+      "severity": "CRITICAL",
+      "affected_gate": "G8",
+      "immediate_safe_action": "Stop analysis and recover from verified archive only",
+      "capture_pauses": true,
+      "record_validity": "Lost interval invalid if no verified copy",
+      "recovery_evidence": "Restore proof and digest reconciliation",
+      "owner_authorization_needed": "YES",
+      "protocol_invalidated": "YES if unrecoverable",
+      "no_retrospective_backfill": true
+    },
+    {
+      "failure_id": "FM-27",
+      "failure_mode": "Official source unavailable",
+      "detection": "Schedule or result authority cannot be verified",
+      "severity": "HIGH",
+      "affected_gate": "G3/G7",
+      "immediate_safe_action": "Fail closed; do not use manual source as confirmatory",
+      "capture_pauses": true,
+      "record_validity": "Prior records valid",
+      "recovery_evidence": "Verified source restoration",
+      "owner_authorization_needed": "YES if prolonged",
+      "protocol_invalidated": "NO unless unverified data was accepted",
+      "no_retrospective_backfill": true
+    },
+    {
+      "failure_id": "FM-28",
+      "failure_mode": "Credential rotation failure",
+      "detection": "Capture/export/monitoring credentials unavailable or inconsistent",
+      "severity": "HIGH",
+      "affected_gate": "G4/G7",
+      "immediate_safe_action": "Pause affected operations before close",
+      "capture_pauses": true,
+      "record_validity": "Prior records valid",
+      "recovery_evidence": "Rotation audit and end-to-end rehearsal",
+      "owner_authorization_needed": "YES",
+      "protocol_invalidated": "NO unless gaps exceed rule",
+      "no_retrospective_backfill": true
+    }
+  ],
+  "evidence_matrix": [
+    {
+      "requirement_id": "EM-001",
+      "category": "Prospective boundary and preregistration",
+      "requirement": "Freeze future-only membership and prohibit retrospective conversion.",
+      "source_evidence": [
+        "outputs/research/p271g_prize_aware_null_prospective_preregistration_20260612.json"
+      ],
+      "evidence_classification": "DESIGN_OR_GOVERNANCE",
+      "current_status": "CONFIRMED",
+      "gap": "Concrete P274A activation boundary remains unset.",
+      "risk": "Residual risk is limited to production integration or staleness where noted.",
+      "required_remediation": "Concrete P274A activation boundary remains unset.",
+      "allowed_future_task_type": "Type B verification at the applicable future gate",
+      "owner_decision": "OWNER_DECISION_REQUIRED",
+      "activation_blocker": false,
+      "production_blocker": false
+    },
+    {
+      "requirement_id": "EM-002",
+      "category": "Ledger architecture design",
+      "requirement": "Define separate append-only activation, batch, ticket, event and outcome-link stores.",
+      "source_evidence": [
+        "outputs/research/p271i_prospective_capture_ledger_implementation_design_20260613.json"
+      ],
+      "evidence_classification": "DESIGN_OR_GOVERNANCE",
+      "current_status": "CONFIRMED",
+      "gap": "Broader operating model, ownership, access, retention and monitoring were not completed.",
+      "risk": "Residual risk is limited to production integration or staleness where noted.",
+      "required_remediation": "Broader operating model, ownership, access, retention and monitoring were not completed.",
+      "allowed_future_task_type": "Type B verification at the applicable future gate",
+      "owner_decision": "OWNER_DECISION_REQUIRED",
+      "activation_blocker": false,
+      "production_blocker": false
+    },
+    {
+      "requirement_id": "EM-003",
+      "category": "Isolated ledger module",
+      "requirement": "Implement schema bootstrap and capture primitives on caller-supplied SQLite connections.",
+      "source_evidence": [
+        "lottery_api/prospective_capture_ledger.py",
+        "outputs/research/p271j_prospective_capture_ledger_implementation_20260613.json"
+      ],
+      "evidence_classification": "ISOLATED_IMPLEMENTATION",
+      "current_status": "CONFIRMED",
+      "gap": "P274A-specific field mapping and runtime integration are absent.",
+      "risk": "Residual risk is limited to production integration or staleness where noted.",
+      "required_remediation": "P274A-specific field mapping and runtime integration are absent.",
+      "allowed_future_task_type": "Type B verification at the applicable future gate",
+      "owner_decision": "OWNER_DECISION_REQUIRED",
+      "activation_blocker": false,
+      "production_blocker": false
+    },
+    {
+      "requirement_id": "EM-004",
+      "category": "Temporary DB migration rehearsal",
+      "requirement": "Exercise additive install, rollback, idempotence, lock handling and path safety outside production.",
+      "source_evidence": [
+        "scripts/p271k_prospective_capture_ledger_migration_rehearsal.py",
+        "outputs/research/p271k_prospective_capture_ledger_migration_rehearsal_20260613.json"
+      ],
+      "evidence_classification": "REHEARSAL",
+      "current_status": "CONFIRMED",
+      "gap": "Production concurrency, full schema, WAL behavior, backup and restore remain unproven.",
+      "risk": "Residual risk is limited to production integration or staleness where noted.",
+      "required_remediation": "Production concurrency, full schema, WAL behavior, backup and restore remain unproven.",
+      "allowed_future_task_type": "Type B verification at the applicable future gate",
+      "owner_decision": "OWNER_DECISION_REQUIRED",
+      "activation_blocker": false,
+      "production_blocker": false
+    },
+    {
+      "requirement_id": "EM-005",
+      "category": "Production deployment preflight",
+      "requirement": "Define apply-time safety gates, backup, rollback and writer quiescence.",
+      "source_evidence": [
+        "scripts/p271l_controlled_deployment_preflight.py",
+        "outputs/research/p271l_controlled_deployment_preflight_20260613.json"
+      ],
+      "evidence_classification": "PREFLIGHT",
+      "current_status": "PARTIAL",
+      "gap": "Fresh apply-time hash, maintenance window, writer shutdown, backup and WAL/SHM reconciliation.",
+      "risk": "Treating partial evidence as complete could admit invalid or unauditable capture.",
+      "required_remediation": "Fresh apply-time hash, maintenance window, writer shutdown, backup and WAL/SHM reconciliation.",
+      "allowed_future_task_type": "Type B owner decision, then Type C isolated implementation; Type D/E only under separate production authorization",
+      "owner_decision": "OWNER_DECISION_REQUIRED",
+      "activation_blocker": true,
+      "production_blocker": true
+    },
+    {
+      "requirement_id": "EM-006",
+      "category": "Production schema inspection",
+      "requirement": "Establish actual production prospective namespace state without write.",
+      "source_evidence": [
+        "scripts/p271l_readonly_production_schema_inspection.py",
+        "outputs/research/p271l_readonly_production_schema_inspection_20260614.json"
+      ],
+      "evidence_classification": "PRODUCTION_INSPECTION",
+      "current_status": "CONFIRMED",
+      "gap": "Apply-time state must be reverified; this task did not reopen the DB.",
+      "risk": "Residual risk is limited to production integration or staleness where noted.",
+      "required_remediation": "Apply-time state must be reverified; this task did not reopen the DB.",
+      "allowed_future_task_type": "Type B verification at the applicable future gate",
+      "owner_decision": "OWNER_DECISION_REQUIRED",
+      "activation_blocker": false,
+      "production_blocker": false
+    },
+    {
+      "requirement_id": "EM-007",
+      "category": "Canonical ticket normalization and fingerprinting",
+      "requirement": "Normalize ticket payloads and derive deterministic identity/hash.",
+      "source_evidence": [
+        "lottery_api/prospective_capture_ledger.py"
+      ],
+      "evidence_classification": "ISOLATED_IMPLEMENTATION",
+      "current_status": "PARTIAL",
+      "gap": "P274A candidate_id, canonical ticket identity list, cross-ticket distinct-count proof and explicit ticket_fingerprint fields are not fully represented.",
+      "risk": "Treating partial evidence as complete could admit invalid or unauditable capture.",
+      "required_remediation": "P274A candidate_id, canonical ticket identity list, cross-ticket distinct-count proof and explicit ticket_fingerprint fields are not fully represented.",
+      "allowed_future_task_type": "Type B owner decision, then Type C isolated implementation; Type D/E only under separate production authorization",
+      "owner_decision": "OWNER_DECISION_REQUIRED",
+      "activation_blocker": true,
+      "production_blocker": true
+    },
+    {
+      "requirement_id": "EM-008",
+      "category": "Append-only and immutability guarantees",
+      "requirement": "Reject update/delete and preserve event history.",
+      "source_evidence": [
+        "lottery_api/prospective_capture_ledger.py"
+      ],
+      "evidence_classification": "ISOLATED_IMPLEMENTATION",
+      "current_status": "PARTIAL",
+      "gap": "No external digest anchor, WORM copy or production enforcement evidence.",
+      "risk": "Treating partial evidence as complete could admit invalid or unauditable capture.",
+      "required_remediation": "No external digest anchor, WORM copy or production enforcement evidence.",
+      "allowed_future_task_type": "Type B owner decision, then Type C isolated implementation; Type D/E only under separate production authorization",
+      "owner_decision": "OWNER_DECISION_REQUIRED",
+      "activation_blocker": true,
+      "production_blocker": true
+    },
+    {
+      "requirement_id": "EM-009",
+      "category": "Capture-before-outcome enforcement",
+      "requirement": "Require prediction time before draw close and keep capture independent of results.",
+      "source_evidence": [
+        "lottery_api/prospective_capture_ledger.py"
+      ],
+      "evidence_classification": "ISOLATED_IMPLEMENTATION",
+      "current_status": "PARTIAL",
+      "gap": "No authoritative resolver, trusted clock, drift monitor or outcome-availability oracle.",
+      "risk": "Treating partial evidence as complete could admit invalid or unauditable capture.",
+      "required_remediation": "No authoritative resolver, trusted clock, drift monitor or outcome-availability oracle.",
+      "allowed_future_task_type": "Type B owner decision, then Type C isolated implementation; Type D/E only under separate production authorization",
+      "owner_decision": "OWNER_DECISION_REQUIRED",
+      "activation_blocker": true,
+      "production_blocker": true
+    },
+    {
+      "requirement_id": "EM-010",
+      "category": "Official target-draw identity",
+      "requirement": "Bind every capture to the correct official DAILY_539 draw.",
+      "source_evidence": [
+        "lottery_api/prospective_capture_ledger.py",
+        "outputs/research/p271h_prospective_capture_feasibility_audit_20260612.json"
+      ],
+      "evidence_classification": "ISOLATED_IMPLEMENTATION",
+      "current_status": "PARTIAL",
+      "gap": "Official exception-aware resolver and source verification are missing.",
+      "risk": "Treating partial evidence as complete could admit invalid or unauditable capture.",
+      "required_remediation": "Official exception-aware resolver and source verification are missing.",
+      "allowed_future_task_type": "Type B owner decision, then Type C isolated implementation; Type D/E only under separate production authorization",
+      "owner_decision": "OWNER_DECISION_REQUIRED",
+      "activation_blocker": true,
+      "production_blocker": true
+    },
+    {
+      "requirement_id": "EM-011",
+      "category": "Strategy and candidate version pinning",
+      "requirement": "Accept only frozen candidate/version pairs.",
+      "source_evidence": [
+        "lottery_api/prospective_capture_ledger.py"
+      ],
+      "evidence_classification": "ISOLATED_IMPLEMENTATION",
+      "current_status": "PARTIAL",
+      "gap": "Immutable candidate manifest, source digest mapping and candidate_id persistence are missing.",
+      "risk": "Treating partial evidence as complete could admit invalid or unauditable capture.",
+      "required_remediation": "Immutable candidate manifest, source digest mapping and candidate_id persistence are missing.",
+      "allowed_future_task_type": "Type B owner decision, then Type C isolated implementation; Type D/E only under separate production authorization",
+      "owner_decision": "OWNER_DECISION_REQUIRED",
+      "activation_blocker": true,
+      "production_blocker": true
+    },
+    {
+      "requirement_id": "EM-012",
+      "category": "Scorer and endpoint version pinning",
+      "requirement": "Persist the exact scorer/endpoint contract used for later evaluation.",
+      "source_evidence": [
+        "outputs/research/p274a_prospective_confirmation_protocol_design_20260615.json"
+      ],
+      "evidence_classification": "DESIGN_OR_GOVERNANCE",
+      "current_status": "MISSING",
+      "gap": "Schema/data contract and immutable endpoint digest mapping are absent.",
+      "risk": "Proceeding without this capability could break prospective integrity or long-horizon operation.",
+      "required_remediation": "Schema/data contract and immutable endpoint digest mapping are absent.",
+      "allowed_future_task_type": "Type B owner decision, then Type C isolated implementation; Type D/E only under separate production authorization",
+      "owner_decision": "OWNER_DECISION_REQUIRED",
+      "activation_blocker": true,
+      "production_blocker": true
+    },
+    {
+      "requirement_id": "EM-013",
+      "category": "Activation identity and lifecycle",
+      "requirement": "Register immutable activation metadata and append lifecycle events.",
+      "source_evidence": [
+        "lottery_api/prospective_capture_ledger.py"
+      ],
+      "evidence_classification": "ISOLATED_IMPLEMENTATION",
+      "current_status": "PARTIAL",
+      "gap": "Owner-authorized G5/G6 workflow, real boundary fields and production evidence are absent.",
+      "risk": "Treating partial evidence as complete could admit invalid or unauditable capture.",
+      "required_remediation": "Owner-authorized G5/G6 workflow, real boundary fields and production evidence are absent.",
+      "allowed_future_task_type": "Type B owner decision, then Type C isolated implementation; Type D/E only under separate production authorization",
+      "owner_decision": "OWNER_DECISION_REQUIRED",
+      "activation_blocker": true,
+      "production_blocker": true
+    },
+    {
+      "requirement_id": "EM-014",
+      "category": "Outcome availability tracking",
+      "requirement": "Record whether an outcome was unavailable, available or ingested without exposing it to capture.",
+      "source_evidence": [
+        "lottery_api/prospective_capture_ledger.py"
+      ],
+      "evidence_classification": "ISOLATED_IMPLEMENTATION",
+      "current_status": "MISSING",
+      "gap": "Outcome availability status, trusted publication source and ingestion API are missing.",
+      "risk": "Proceeding without this capability could break prospective integrity or long-horizon operation.",
+      "required_remediation": "Outcome availability status, trusted publication source and ingestion API are missing.",
+      "allowed_future_task_type": "Type B owner decision, then Type C isolated implementation; Type D/E only under separate production authorization",
+      "owner_decision": "OWNER_DECISION_REQUIRED",
+      "activation_blocker": true,
+      "production_blocker": true
+    },
+    {
+      "requirement_id": "EM-015",
+      "category": "Result-ingestion separation",
+      "requirement": "Join results only after draw completion without changing membership.",
+      "source_evidence": [
+        "lottery_api/prospective_capture_ledger.py"
+      ],
+      "evidence_classification": "ISOLATED_IMPLEMENTATION",
+      "current_status": "PARTIAL",
+      "gap": "Result linker, authorization, idempotency and provenance implementation are missing.",
+      "risk": "Treating partial evidence as complete could admit invalid or unauditable capture.",
+      "required_remediation": "Result linker, authorization, idempotency and provenance implementation are missing.",
+      "allowed_future_task_type": "Type B owner decision, then Type C isolated implementation; Type D/E only under separate production authorization",
+      "owner_decision": "OWNER_DECISION_REQUIRED",
+      "activation_blocker": true,
+      "production_blocker": true
+    },
+    {
+      "requirement_id": "EM-016",
+      "category": "Missing and late record handling",
+      "requirement": "Classify gaps and prevent retrospective repair.",
+      "source_evidence": [
+        "outputs/research/p274a_prospective_confirmation_protocol_design_20260615.json"
+      ],
+      "evidence_classification": "DESIGN_OR_GOVERNANCE",
+      "current_status": "MISSING",
+      "gap": "Maximum tolerated gaps and pause/invalidation thresholds are OWNER_DECISION_REQUIRED.",
+      "risk": "Proceeding without this capability could break prospective integrity or long-horizon operation.",
+      "required_remediation": "Maximum tolerated gaps and pause/invalidation thresholds are OWNER_DECISION_REQUIRED.",
+      "allowed_future_task_type": "Type B owner decision, then Type C isolated implementation; Type D/E only under separate production authorization",
+      "owner_decision": "OWNER_DECISION_REQUIRED",
+      "activation_blocker": true,
+      "production_blocker": true
+    },
+    {
+      "requirement_id": "EM-017",
+      "category": "Duplicate detection and idempotency",
+      "requirement": "Prevent two eligible records for one semantic identity.",
+      "source_evidence": [
+        "lottery_api/prospective_capture_ledger.py"
+      ],
+      "evidence_classification": "ISOLATED_IMPLEMENTATION",
+      "current_status": "CONFIRMED",
+      "gap": "Production behavior remains unverified until installation and preflight.",
+      "risk": "Residual risk is limited to production integration or staleness where noted.",
+      "required_remediation": "Production behavior remains unverified until installation and preflight.",
+      "allowed_future_task_type": "Type B verification at the applicable future gate",
+      "owner_decision": "OWNER_DECISION_REQUIRED",
+      "activation_blocker": false,
+      "production_blocker": false
+    },
+    {
+      "requirement_id": "EM-018",
+      "category": "Structured provenance and source trace",
+      "requirement": "Trace actor, service, code, schedule and source artifact.",
+      "source_evidence": [
+        "lottery_api/prospective_capture_ledger.py"
+      ],
+      "evidence_classification": "ISOLATED_IMPLEMENTATION",
+      "current_status": "PARTIAL",
+      "gap": "Structured provenance schema, candidate manifest digest and official source response digest enforcement are incomplete.",
+      "risk": "Treating partial evidence as complete could admit invalid or unauditable capture.",
+      "required_remediation": "Structured provenance schema, candidate manifest digest and official source response digest enforcement are incomplete.",
+      "allowed_future_task_type": "Type B owner decision, then Type C isolated implementation; Type D/E only under separate production authorization",
+      "owner_decision": "OWNER_DECISION_REQUIRED",
+      "activation_blocker": true,
+      "production_blocker": true
+    },
+    {
+      "requirement_id": "EM-019",
+      "category": "Operational scheduling",
+      "requirement": "Run capture reliably before each eligible draw.",
+      "source_evidence": [
+        "outputs/research/p271h_prospective_capture_feasibility_audit_20260612.json"
+      ],
+      "evidence_classification": "DESIGN_OR_GOVERNANCE",
+      "current_status": "MISSING",
+      "gap": "Disabled-by-default one-shot worker, scheduler policy and deployment evidence are missing.",
+      "risk": "Proceeding without this capability could break prospective integrity or long-horizon operation.",
+      "required_remediation": "Disabled-by-default one-shot worker, scheduler policy and deployment evidence are missing.",
+      "allowed_future_task_type": "Type B owner decision, then Type C isolated implementation; Type D/E only under separate production authorization",
+      "owner_decision": "OWNER_DECISION_REQUIRED",
+      "activation_blocker": true,
+      "production_blocker": true
+    },
+    {
+      "requirement_id": "EM-020",
+      "category": "Restart and recovery behavior",
+      "requirement": "Recover safely after process or host failure without backfill.",
+      "source_evidence": [
+        "outputs/research/p271k_prospective_capture_ledger_migration_rehearsal_20260613.json"
+      ],
+      "evidence_classification": "DESIGN_OR_GOVERNANCE",
+      "current_status": "MISSING",
+      "gap": "Checkpointing, retry-before-close, crash reconciliation and operator runbook are missing.",
+      "risk": "Proceeding without this capability could break prospective integrity or long-horizon operation.",
+      "required_remediation": "Checkpointing, retry-before-close, crash reconciliation and operator runbook are missing.",
+      "allowed_future_task_type": "Type B owner decision, then Type C isolated implementation; Type D/E only under separate production authorization",
+      "owner_decision": "OWNER_DECISION_REQUIRED",
+      "activation_blocker": true,
+      "production_blocker": true
+    },
+    {
+      "requirement_id": "EM-021",
+      "category": "Monitoring and alerting",
+      "requirement": "Detect silence, late capture, drift, digest mismatch and storage failures.",
+      "source_evidence": [],
+      "evidence_classification": "DESIGN_OR_GOVERNANCE",
+      "current_status": "MISSING",
+      "gap": "Metrics, alert routes, escalation owner and thresholds are OWNER_DECISION_REQUIRED.",
+      "risk": "Proceeding without this capability could break prospective integrity or long-horizon operation.",
+      "required_remediation": "Metrics, alert routes, escalation owner and thresholds are OWNER_DECISION_REQUIRED.",
+      "allowed_future_task_type": "Type B owner decision, then Type C isolated implementation; Type D/E only under separate production authorization",
+      "owner_decision": "OWNER_DECISION_REQUIRED",
+      "activation_blocker": true,
+      "production_blocker": true
+    },
+    {
+      "requirement_id": "EM-022",
+      "category": "Audit export",
+      "requirement": "Export immutable evidence for independent review.",
+      "source_evidence": [
+        "lottery_api/prospective_capture_ledger.py"
+      ],
+      "evidence_classification": "ISOLATED_IMPLEMENTATION",
+      "current_status": "PARTIAL",
+      "gap": "Canonical export schema, signed manifest, batch digest and independent verification tool are missing.",
+      "risk": "Treating partial evidence as complete could admit invalid or unauditable capture.",
+      "required_remediation": "Canonical export schema, signed manifest, batch digest and independent verification tool are missing.",
+      "allowed_future_task_type": "Type B owner decision, then Type C isolated implementation; Type D/E only under separate production authorization",
+      "owner_decision": "OWNER_DECISION_REQUIRED",
+      "activation_blocker": true,
+      "production_blocker": true
+    },
+    {
+      "requirement_id": "EM-023",
+      "category": "Access control",
+      "requirement": "Restrict activation, capture, amendments, exports and result linking.",
+      "source_evidence": [],
+      "evidence_classification": "DESIGN_OR_GOVERNANCE",
+      "current_status": "MISSING",
+      "gap": "Role model, credential ownership, least privilege and incident response are missing.",
+      "risk": "Proceeding without this capability could break prospective integrity or long-horizon operation.",
+      "required_remediation": "Role model, credential ownership, least privilege and incident response are missing.",
+      "allowed_future_task_type": "Type B owner decision, then Type C isolated implementation; Type D/E only under separate production authorization",
+      "owner_decision": "OWNER_DECISION_REQUIRED",
+      "activation_blocker": true,
+      "production_blocker": true
+    },
+    {
+      "requirement_id": "EM-024",
+      "category": "Trusted clock and drift control",
+      "requirement": "Prove capture timestamps and enforce a trusted skew margin.",
+      "source_evidence": [
+        "lottery_api/prospective_capture_ledger.py"
+      ],
+      "evidence_classification": "ISOLATED_IMPLEMENTATION",
+      "current_status": "MISSING",
+      "gap": "Clock source, synchronization telemetry, maximum drift and outage behavior are OWNER_DECISION_REQUIRED.",
+      "risk": "Proceeding without this capability could break prospective integrity or long-horizon operation.",
+      "required_remediation": "Clock source, synchronization telemetry, maximum drift and outage behavior are OWNER_DECISION_REQUIRED.",
+      "allowed_future_task_type": "Type B owner decision, then Type C isolated implementation; Type D/E only under separate production authorization",
+      "owner_decision": "OWNER_DECISION_REQUIRED",
+      "activation_blocker": true,
+      "production_blocker": true
+    },
+    {
+      "requirement_id": "EM-025",
+      "category": "Retention and archival",
+      "requirement": "Preserve 3605-draw evidence and auditability across migrations.",
+      "source_evidence": [],
+      "evidence_classification": "DESIGN_OR_GOVERNANCE",
+      "current_status": "MISSING",
+      "gap": "Retention duration, archive format, restore tests and deletion authority are OWNER_DECISION_REQUIRED.",
+      "risk": "Proceeding without this capability could break prospective integrity or long-horizon operation.",
+      "required_remediation": "Retention duration, archive format, restore tests and deletion authority are OWNER_DECISION_REQUIRED.",
+      "allowed_future_task_type": "Type B owner decision, then Type C isolated implementation; Type D/E only under separate production authorization",
+      "owner_decision": "OWNER_DECISION_REQUIRED",
+      "activation_blocker": true,
+      "production_blocker": true
+    },
+    {
+      "requirement_id": "EM-026",
+      "category": "Maintenance ownership",
+      "requirement": "Maintain the protocol over the descriptive multi-year horizon.",
+      "source_evidence": [],
+      "evidence_classification": "DESIGN_OR_GOVERNANCE",
+      "current_status": "MISSING",
+      "gap": "Primary/backup owner, succession, budget and periodic review cadence are OWNER_DECISION_REQUIRED.",
+      "risk": "Proceeding without this capability could break prospective integrity or long-horizon operation.",
+      "required_remediation": "Primary/backup owner, succession, budget and periodic review cadence are OWNER_DECISION_REQUIRED.",
+      "allowed_future_task_type": "Type B owner decision, then Type C isolated implementation; Type D/E only under separate production authorization",
+      "owner_decision": "OWNER_DECISION_REQUIRED",
+      "activation_blocker": true,
+      "production_blocker": true
+    },
+    {
+      "requirement_id": "EM-027",
+      "category": "Correction and amendment policy",
+      "requirement": "Preserve originals and disallow outcome-dependent correction.",
+      "source_evidence": [
+        "lottery_api/prospective_capture_ledger.py"
+      ],
+      "evidence_classification": "ISOLATED_IMPLEMENTATION",
+      "current_status": "PARTIAL",
+      "gap": "Operational approval workflow and classification of permissible pre-close corrections are missing.",
+      "risk": "Treating partial evidence as complete could admit invalid or unauditable capture.",
+      "required_remediation": "Operational approval workflow and classification of permissible pre-close corrections are missing.",
+      "allowed_future_task_type": "Type B owner decision, then Type C isolated implementation; Type D/E only under separate production authorization",
+      "owner_decision": "OWNER_DECISION_REQUIRED",
+      "activation_blocker": true,
+      "production_blocker": true
+    },
+    {
+      "requirement_id": "EM-028",
+      "category": "Evidence digesting and tamper detection",
+      "requirement": "Detect alteration of ticket payloads and evidence sets.",
+      "source_evidence": [
+        "lottery_api/prospective_capture_ledger.py"
+      ],
+      "evidence_classification": "ISOLATED_IMPLEMENTATION",
+      "current_status": "PARTIAL",
+      "gap": "No batch Merkle/digest chain, external anchor, signing key or periodic audit exists.",
+      "risk": "Treating partial evidence as complete could admit invalid or unauditable capture.",
+      "required_remediation": "No batch Merkle/digest chain, external anchor, signing key or periodic audit exists.",
+      "allowed_future_task_type": "Type B owner decision, then Type C isolated implementation; Type D/E only under separate production authorization",
+      "owner_decision": "OWNER_DECISION_REQUIRED",
+      "activation_blocker": true,
+      "production_blocker": true
+    },
+    {
+      "requirement_id": "EM-029",
+      "category": "Evaluation and final-analysis implementation",
+      "requirement": "Apply fixed 50/300/final rules to prospective-only records.",
+      "source_evidence": [
+        "outputs/research/p274a_prospective_confirmation_protocol_design_20260615.json"
+      ],
+      "evidence_classification": "DESIGN_OR_GOVERNANCE",
+      "current_status": "MISSING",
+      "gap": "Outcome linker, evaluator, conditional-power calculation and frozen analysis package are missing.",
+      "risk": "Proceeding without this capability could break prospective integrity or long-horizon operation.",
+      "required_remediation": "Outcome linker, evaluator, conditional-power calculation and frozen analysis package are missing.",
+      "allowed_future_task_type": "Type B decision/design or Type C isolated implementation under separate authorization",
+      "owner_decision": "OWNER_DECISION_REQUIRED",
+      "activation_blocker": true,
+      "production_blocker": false
+    },
+    {
+      "requirement_id": "EM-030",
+      "category": "Secrets or signing-key ownership",
+      "requirement": "Own keys only if evidence signing or external timestamping is selected.",
+      "source_evidence": [],
+      "evidence_classification": "DESIGN_OR_GOVERNANCE",
+      "current_status": "NOT_APPLICABLE",
+      "gap": "If signing is chosen, key custody, rotation and revocation become OWNER_DECISION_REQUIRED.",
+      "risk": "No current blocker unless the optional design choice is selected.",
+      "required_remediation": "If signing is chosen, key custody, rotation and revocation become OWNER_DECISION_REQUIRED.",
+      "allowed_future_task_type": "Type B owner decision, then Type C isolated implementation; Type D/E only under separate production authorization",
+      "owner_decision": "OWNER_DECISION_REQUIRED",
+      "activation_blocker": true,
+      "production_blocker": true
+    },
+    {
+      "requirement_id": "EM-031",
+      "category": "Long-horizon service ownership",
+      "requirement": "Name primary/backup owners and succession",
+      "source_evidence": "No committed owner or on-call roster",
+      "evidence_classification": "NONE",
+      "current_status": "MISSING",
+      "gap": "No committed owner or on-call roster",
+      "risk": "Protocol may silently fail over years",
+      "required_remediation": "Record accountable owners and handoff cadence",
+      "allowed_future_task_type": "Type B governance decision",
+      "owner_decision": "OWNER_DECISION_REQUIRED",
+      "activation_blocker": true,
+      "production_blocker": true
+    },
+    {
+      "requirement_id": "EM-032",
+      "category": "Gap threshold",
+      "requirement": "Pre-register maximum tolerated missingness",
+      "source_evidence": "No numerical threshold exists",
+      "evidence_classification": "GOVERNANCE",
+      "current_status": "MISSING",
+      "gap": "No numerical threshold exists",
+      "risk": "Post-hoc missingness rules enable bias",
+      "required_remediation": "Commission sensitivity analysis and owner decision before activation",
+      "allowed_future_task_type": "Type B design/statistical decision",
+      "owner_decision": "OWNER_DECISION_REQUIRED",
+      "activation_blocker": true,
+      "production_blocker": false
+    },
+    {
+      "requirement_id": "EM-033",
+      "category": "Scientific value review",
+      "requirement": "Decide whether 3605 draws justify approximately multi-year operations",
+      "source_evidence": "P274A duration is descriptive only",
+      "evidence_classification": "GOVERNANCE",
+      "current_status": "UNKNOWN",
+      "gap": "P274A duration is descriptive only",
+      "risk": "Resource commitment may outlive scientific value",
+      "required_remediation": "Owner selects proceed, HOLD or scientific closure",
+      "allowed_future_task_type": "Type A/B decision support",
+      "owner_decision": "OWNER_DECISION_REQUIRED",
+      "activation_blocker": true,
+      "production_blocker": false
+    },
+    {
+      "requirement_id": "EM-034",
+      "category": "Cost and resource plan",
+      "requirement": "Budget maintenance, storage, audits and migrations",
+      "source_evidence": "No budget evidence",
+      "evidence_classification": "NONE",
+      "current_status": "UNKNOWN",
+      "gap": "No budget evidence",
+      "risk": "Underfunding creates gaps and monitoring fatigue",
+      "required_remediation": "Record resource owner and minimum budget categories",
+      "allowed_future_task_type": "Type B governance decision",
+      "owner_decision": "OWNER_DECISION_REQUIRED",
+      "activation_blocker": true,
+      "production_blocker": true
+    },
+    {
+      "requirement_id": "EM-035",
+      "category": "Lottery rule surveillance",
+      "requirement": "Detect endpoint or ticket-space changes",
+      "source_evidence": "No dedicated surveillance process",
+      "evidence_classification": "NONE",
+      "current_status": "MISSING",
+      "gap": "No dedicated surveillance process",
+      "risk": "Rule change can invalidate null and endpoint",
+      "required_remediation": "Assign owner and official-source monitoring",
+      "allowed_future_task_type": "Type C isolated monitor then production gate",
+      "owner_decision": "OWNER_DECISION_REQUIRED",
+      "activation_blocker": true,
+      "production_blocker": true
+    },
+    {
+      "requirement_id": "EM-036",
+      "category": "Dependency reproducibility",
+      "requirement": "Rebuild frozen candidates/scorer years later",
+      "source_evidence": "Partial strategy version strings only",
+      "evidence_classification": "ISOLATED_IMPLEMENTATION",
+      "current_status": "PARTIAL",
+      "gap": "Partial strategy version strings only",
+      "risk": "Dependency drift may make candidate irreproducible",
+      "required_remediation": "Seal source/container/dependency digests and compatibility fixtures",
+      "allowed_future_task_type": "Type C isolated implementation",
+      "owner_decision": "OWNER_DECISION_REQUIRED",
+      "activation_blocker": true,
+      "production_blocker": true
+    },
+    {
+      "requirement_id": "EM-037",
+      "category": "Independent evidence durability",
+      "requirement": "Preserve evidence outside the operational store",
+      "source_evidence": "Per-ticket hash only",
+      "evidence_classification": "ISOLATED_IMPLEMENTATION",
+      "current_status": "PARTIAL",
+      "gap": "Per-ticket hash only",
+      "risk": "Single-store corruption can destroy confirmatory evidence",
+      "required_remediation": "Choose and validate independent archive/WORM/signing option",
+      "allowed_future_task_type": "Type B decision then Type C implementation",
+      "owner_decision": "OWNER_DECISION_REQUIRED",
+      "activation_blocker": true,
+      "production_blocker": true
+    },
+    {
+      "requirement_id": "EM-038",
+      "category": "Operational runbooks",
+      "requirement": "Document pause, recovery, outage and incident procedures",
+      "source_evidence": "P271L covers apply only, not live capture",
+      "evidence_classification": "PREFLIGHT",
+      "current_status": "MISSING",
+      "gap": "P271L covers apply only, not live capture",
+      "risk": "Operators may make inconsistent or retrospective repairs",
+      "required_remediation": "Create and rehearse capture operations runbook",
+      "allowed_future_task_type": "Type B plan then Type C rehearsal",
+      "owner_decision": "OWNER_DECISION_REQUIRED",
+      "activation_blocker": true,
+      "production_blocker": true
+    },
+    {
+      "requirement_id": "EM-039",
+      "category": "Security model",
+      "requirement": "Authenticate and authorize activation/capture/export/result-link actions",
+      "source_evidence": "No access-control implementation",
+      "evidence_classification": "NONE",
+      "current_status": "MISSING",
+      "gap": "No access-control implementation",
+      "risk": "Unauthorized changes can invalidate evidence",
+      "required_remediation": "Define roles, credentials, logs and incident response",
+      "allowed_future_task_type": "Type B security design then Type C implementation",
+      "owner_decision": "OWNER_DECISION_REQUIRED",
+      "activation_blocker": true,
+      "production_blocker": true
+    },
+    {
+      "requirement_id": "EM-040",
+      "category": "Final analysis reproducibility",
+      "requirement": "Freeze prospective evaluator and independent verifier",
+      "source_evidence": "Statistical protocol only",
+      "evidence_classification": "DESIGN_OR_GOVERNANCE",
+      "current_status": "MISSING",
+      "gap": "Statistical protocol only",
+      "risk": "Analysis adaptation or implementation error at final look",
+      "required_remediation": "Implement and validate evaluator before activation",
+      "allowed_future_task_type": "Type C isolated implementation",
+      "owner_decision": "OWNER_DECISION_REQUIRED",
+      "activation_blocker": true,
+      "production_blocker": false
+    }
+  ],
+  "evidence_matrix_summary": {
+    "counts": {
+      "CONFIRMED": 6,
+      "PARTIAL": 14,
+      "MISSING": 17,
+      "CONFLICT": 0,
+      "NOT_APPLICABLE": 1,
+      "UNKNOWN": 2
+    },
+    "confirmed_capabilities": [
+      "Prospective boundary and preregistration",
+      "Ledger architecture design",
+      "Isolated ledger module",
+      "Temporary DB migration rehearsal",
+      "Production schema inspection",
+      "Duplicate detection and idempotency"
+    ],
+    "partial_capabilities": [
+      "Production deployment preflight",
+      "Canonical ticket normalization and fingerprinting",
+      "Append-only and immutability guarantees",
+      "Capture-before-outcome enforcement",
+      "Official target-draw identity",
+      "Strategy and candidate version pinning",
+      "Activation identity and lifecycle",
+      "Result-ingestion separation",
+      "Structured provenance and source trace",
+      "Audit export",
+      "Correction and amendment policy",
+      "Evidence digesting and tamper detection",
+      "Dependency reproducibility",
+      "Independent evidence durability"
+    ],
+    "missing_capabilities": [
+      "Scorer and endpoint version pinning",
+      "Outcome availability tracking",
+      "Missing and late record handling",
+      "Operational scheduling",
+      "Restart and recovery behavior",
+      "Monitoring and alerting",
+      "Access control",
+      "Trusted clock and drift control",
+      "Retention and archival",
+      "Maintenance ownership",
+      "Evaluation and final-analysis implementation",
+      "Long-horizon service ownership",
+      "Gap threshold",
+      "Lottery rule surveillance",
+      "Operational runbooks",
+      "Security model",
+      "Final analysis reproducibility"
+    ],
+    "conflicts": [],
+    "unknowns": [
+      "Scientific value review",
+      "Cost and resource plan"
+    ]
+  },
+  "implementation_prerequisites": [
+    "Owner approves G1 architecture and selects the evidence-store pattern.",
+    "Owner names service, operations, security and scientific owners with backups.",
+    "Official target-draw/close source hierarchy and exception policy are selected and manually verified.",
+    "Trusted clock source, drift telemetry and fail-closed policy are defined; numerical drift threshold is OWNER_DECISION_REQUIRED.",
+    "A sealed P274A candidate manifest maps C1-C3 to exact source/dependency digests and expected ticket semantics.",
+    "P271J contract is extended or adapted to persist candidate_id, scorer_endpoint_version, explicit canonical ticket fingerprints, distinct_ticket_count and outcome availability status.",
+    "Disabled-by-default prediction producer, draw resolver and one-shot capture worker are implemented without result access.",
+    "Outcome availability/result linker and prospective evaluator are implemented as separate read-only/write-limited components.",
+    "Canonical audit export, batch digest and independent verifier are implemented.",
+    "Monitoring, alerting, access control, restart recovery, retention and migration interfaces are implemented.",
+    "Synthetic fault, concurrency, restart, security and long-horizon migration tests pass with no production DB access.",
+    "Operations runbooks and missingness policy are approved before any production preflight."
+  ],
+  "activation_prerequisites": [
+    "G1 through G4 exit criteria are complete with current evidence.",
+    "A separate owner decision authorizes production installation/apply; P274B does not.",
+    "Prospective schema/runtime deployment is verified under P271M or equivalent post-apply evidence.",
+    "P271N-style activation authorization is explicitly granted after evidence review.",
+    "Official schedule source and trusted clock are healthy and independently checked.",
+    "Candidate, strategy, scorer and dependency manifests are sealed and reproducible.",
+    "Monitoring, on-call, backup, restore, access-control and security incident processes are active.",
+    "Maximum tolerated capture gaps and missingness classifications are owner-governed.",
+    "A separate G6 task records activation_timestamp_utc and first_eligible_target_draw before outcome exposure.",
+    "Boundary export/digest is independently verified before G7 capture begins.",
+    "No production apply, activation or capture is inferred from implementation completion."
+  ],
+  "production_blockers": [
+    "Production prospective namespace is ABSENT_CLEAN; schema is not installed.",
+    "Production apply remains NOT_READY_FOR_APPLY and unauthorized.",
+    "Fresh apply-time DB hash, maintenance window, writer quiescence, backup/restore and WAL/SHM evidence are absent.",
+    "P271M post-apply verification and P271N activation are unstarted.",
+    "No production capture worker, scheduler or authoritative draw-close resolver exists.",
+    "Official schedule source remains MANUAL_VERIFICATION_REQUIRED.",
+    "No trusted clock/drift monitoring contract is approved.",
+    "P274A-required candidate_id, scorer endpoint version, explicit distinct-ticket evidence and outcome availability status are incomplete in P271J.",
+    "No live monitoring, alert escalation, restart recovery, access control or security model exists.",
+    "No long-horizon retention, independent archive or migration continuity evidence exists.",
+    "No named maintenance/on-call ownership or gap threshold exists.",
+    "No frozen prospective evaluator or audit-export interface exists.",
+    "Concrete activation boundary remains unset and unauthorized."
+  ],
+  "owner_decision_points": [
+    {
+      "id": "OD-01",
+      "decision": "Proceed to G1 approval, HOLD, or scientific closure",
+      "status": "OWNER_DECISION_REQUIRED",
+      "options": [
+        "Approve architecture only and resolve blockers before G2",
+        "HOLD with no implementation",
+        "Scientific closure without activation"
+      ]
+    },
+    {
+      "id": "OD-02",
+      "decision": "Evidence-store architecture",
+      "status": "OWNER_DECISION_REQUIRED",
+      "options": [
+        "P271J in production DB",
+        "Separate evidence store",
+        "Transactional ledger plus independent WORM/signed archive"
+      ]
+    },
+    {
+      "id": "OD-03",
+      "decision": "Official schedule authority and fallback",
+      "status": "OWNER_DECISION_REQUIRED",
+      "options": [
+        "Official machine-readable",
+        "Official published schedule",
+        "Verified deterministic configuration; manual remains non-confirmatory"
+      ]
+    },
+    {
+      "id": "OD-04",
+      "decision": "Trusted clock and maximum drift",
+      "status": "OWNER_DECISION_REQUIRED",
+      "options": [
+        "Host NTP with independent telemetry",
+        "External trusted timestamp",
+        "Fail closed whenever trust cannot be proven"
+      ]
+    },
+    {
+      "id": "OD-05",
+      "decision": "Maximum tolerated capture gaps and missingness rule",
+      "status": "OWNER_DECISION_REQUIRED",
+      "options": [
+        "Zero unexplained gaps",
+        "Pre-registered bounded envelope with sensitivity analysis",
+        "Close protocol when coverage cannot be sustained"
+      ]
+    },
+    {
+      "id": "OD-06",
+      "decision": "Service/on-call/scientific/security ownership",
+      "status": "OWNER_DECISION_REQUIRED",
+      "options": [
+        "Name primary and backup humans/teams",
+        "Do not proceed"
+      ]
+    },
+    {
+      "id": "OD-07",
+      "decision": "Retention and independent evidence durability",
+      "status": "OWNER_DECISION_REQUIRED",
+      "options": [
+        "Protocol lifetime plus owner-defined audit period",
+        "Longer archival",
+        "Scientific closure if durable retention cannot be funded"
+      ]
+    },
+    {
+      "id": "OD-08",
+      "decision": "Signing and key custody",
+      "status": "OWNER_DECISION_REQUIRED",
+      "options": [
+        "No signing with independently stored hashes",
+        "Signed manifests with managed key ownership",
+        "External timestamp/WORM service"
+      ]
+    },
+    {
+      "id": "OD-09",
+      "decision": "Permissible pre-close correction classes",
+      "status": "OWNER_DECISION_REQUIRED",
+      "options": [
+        "No corrections after initial seal",
+        "Append-only pre-close correction with dual approval",
+        "Pause and mark missing"
+      ]
+    },
+    {
+      "id": "OD-10",
+      "decision": "Infrastructure migration and dependency upgrade policy",
+      "status": "OWNER_DECISION_REQUIRED",
+      "options": [
+        "Frozen environment until closure",
+        "Pre-approved reproducible migrations with dual verification",
+        "Close affected candidate rather than upgrade"
+      ]
+    },
+    {
+      "id": "OD-11",
+      "decision": "Prolonged outage resume/closure rule",
+      "status": "OWNER_DECISION_REQUIRED",
+      "options": [
+        "Resume only after reauthorization",
+        "Permanent closure after owner-governed missingness limit",
+        "Scientific closure"
+      ]
+    },
+    {
+      "id": "OD-12",
+      "decision": "Cost/resource commitment for 3605 draws",
+      "status": "OWNER_DECISION_REQUIRED",
+      "options": [
+        "Fund minimum commitments",
+        "HOLD",
+        "Scientific closure"
+      ]
+    },
+    {
+      "id": "OD-13",
+      "decision": "Periodic non-efficacy scientific-value review cadence",
+      "status": "OWNER_DECISION_REQUIRED",
+      "options": [
+        "Continue operations without efficacy peeking",
+        "HOLD safely",
+        "Scientific closure"
+      ]
+    },
+    {
+      "id": "OD-14",
+      "decision": "Future G2 implementation scope",
+      "status": "OWNER_DECISION_REQUIRED",
+      "options": [
+        "Authorize isolated resolver/worker/monitor/export/evaluator only after OD-02 through OD-13",
+        "Do not authorize implementation yet"
+      ]
+    }
+  ],
+  "readiness_verdict": {
+    "overall": "HOLD_RECOMMENDED",
+    "implementation": "NOT_READY_FOR_IMPLEMENTATION_AUTHORIZATION",
+    "activation": "NOT_READY_FOR_ACTIVATION",
+    "production_apply": "NOT_READY_FOR_APPLY",
+    "basis": "G0 is confirmed, G1 is partial pending owner approval and operating decisions, G2 is unauthorized, and critical production/operational capabilities are missing.",
+    "does_not_authorize_any_action": true
+  },
+  "recommended_next_gate": {
+    "gate": "G1_OWNER_REVIEW_AND_DECISION",
+    "recommendation": "Review and approve or reject the architecture, resolve owner decision points, then issue a separately scoped G2 authorization only if the evidence becomes complete.",
+    "automatic_next_task": false,
+    "alternatives": [
+      "HOLD_RECOMMENDED",
+      "SCIENTIFIC_CLOSURE_RECOMMENDED"
+    ]
+  },
+  "execution_readiness": {
+    "ready": false,
+    "classification": "NOT_READY_FOR_IMPLEMENTATION_AUTHORIZATION",
+    "highest_complete_gate": "G0",
+    "blocking_gate": "G1",
+    "implementation_started": false
+  },
+  "activation_readiness": {
+    "ready": false,
+    "classification": "NOT_READY_FOR_ACTIVATION",
+    "activation_authorized": false,
+    "boundary_assignment_authorized": false,
+    "prospective_capture_authorized": false
+  },
+  "safety_claims": {
+    "design_only": true,
+    "readiness_assessment_only": true,
+    "implementation_started": false,
+    "activation_started": false,
+    "activation_timestamp_assigned": false,
+    "first_eligible_target_draw_assigned": false,
+    "prospective_capture_started": false,
+    "prospective_records_exist": false,
+    "production_db_accessed": false,
+    "production_write": false,
+    "p271_activated": false,
+    "registry_mutated": false,
+    "recommendation_logic_changed": false,
+    "retrospective_remining_performed": false,
+    "p273b_started": false,
+    "deployment_started": false,
+    "controlled_apply_started": false,
+    "production_apply_authorized": false,
+    "prediction_success_claim": false,
+    "betting_advice": false,
+    "no_retrospective_backfill_path": true
+  },
+  "final_classification": "P274B_PROSPECTIVE_EXECUTION_ACTIVATION_READINESS_PLAN_COMPLETE",
+  "canonicalization": {
+    "method": "SHA-256 over UTF-8 JSON of the full result object after recursively sorting object keys, preserving array order, using compact separators and no ASCII escaping.",
+    "volatile_fields_excluded": [
+      "generated_at",
+      "canonical_payload_digest"
+    ],
+    "recomputed_twice_independently": true,
+    "reload_and_recompute_identity": true,
+    "note": "Only generated_at and canonical_payload_digest are excluded."
+  },
+  "canonical_payload_digest": "bf8ae32f8dbd208da4939ee46cdbe19125827f36c3a80aedefc8fee21a994744"
+}

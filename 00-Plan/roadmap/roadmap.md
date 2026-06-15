@@ -1,6 +1,6 @@
 # Lottery Replay Roadmap
 
-**Last Updated:** 2026-06-15 Asia/Taipei (P274A prospective-confirmation protocol **DESIGN COMPLETE & PR #439 MERGED** — merge commit `03e151fd02bb4cb3854ee63e58a417803930dc78` at `2026-06-15T07:58:12Z`; design/pre-registration only; three frozen DAILY_539 candidates; future-only boundary remains `UNSET_PENDING_SEPARATE_ACTIVATION_AUTHORIZATION`; power-derived common final horizon 3605 draws; Bonferroni m=3; no interim efficacy; production readiness unchanged `NOT_READY_FOR_APPLY`; next owner decision is a three-way execution/HOLD/scientific-closure fork — see §0.0-P274A-POSTMERGE and CEO-Decision.md; P273B deferred. Prior line: P273A exact distinct-ticket inference audited & merged via PR #437, merge commit `f2d3c4c13b256ac2a8d118270ba85f6366f33035`.)
+**Last Updated:** 2026-06-15 Asia/Taipei (P274B execution/activation readiness plan complete — design/readiness only; digest `bf8ae32f8dbd208da4939ee46cdbe19125827f36c3a80aedefc8fee21a994744`; current gate `G1_PARTIAL_PENDING_OWNER_APPROVAL`; implementation `NOT_READY_FOR_IMPLEMENTATION_AUTHORIZATION`; activation `NOT_READY_FOR_ACTIVATION`; overall `HOLD_RECOMMENDED`; P271 unactivated; production apply `NOT_READY_FOR_APPLY`; P273B deferred; next fork requires owner decision. Prior: P274A protocol PR #439 merged.)
 **Owner:** CTO agent
 **Primary Goal:** Keep LotteryNew replay, research, and product evidence truthful, reproducible, and governed. The current maturity bottleneck has shifted from migration rehearsal to short/mid-window strategy protocol design, anti-overfit validation, canonical repo dispatch safety, and honest product disclosure.
 **Repo Policy:** Use `/Users/kelvin/Kelvin-WorkSpace/LotteryNew` only. Do not create a new repo. Production DB, registry, and data writes require explicit governed authorization. CTO roadmap updates are limited to this file and `00-Plan/roadmap/CTO-Analysis.md`. CTO must not write `CEO-Decision.md`, `active_task.md`, `production/*`, `registry/*`, `data/*`, or any new repo.
@@ -10,6 +10,16 @@
 ## 0. Current Roadmap Override — 2026-06-03 (updated; originally authored 2026-06-02)
 
 This section is the current source of truth. The 2026-06-01 sections and P186-P196 appendices below are retained for history and are superseded where they conflict with this section.
+
+### 0.0-P274B 2026-06-15 Prospective Execution / Activation Readiness Plan
+
+P274B is complete as a Type-B design/readiness assessment only. Artifacts: `outputs/research/p274b_prospective_execution_activation_readiness_plan_20260615.{json,md}`, canonical digest `bf8ae32f8dbd208da4939ee46cdbe19125827f36c3a80aedefc8fee21a994744`. Current position is `G1_PARTIAL_PENDING_OWNER_APPROVAL`; G0 is complete, G2 is not authorized, and no G5+ activation gate is authorized.
+
+Confirmed dependencies: frozen P274A protocol, P271J isolated append-only ledger, P271K temporary-DB migration rehearsal, and P271L read-only `ABSENT_CLEAN` production inspection/preflight. Principal gaps: no production prospective schema or runtime capture worker; no authoritative draw-close resolver or trusted-clock policy; incomplete P274A field/version mapping; no monitoring, access control, retention/archive, restart recovery, named long-horizon ownership, governed capture-gap threshold, or frozen prospective evaluator.
+
+**Verdict:** implementation `NOT_READY_FOR_IMPLEMENTATION_AUTHORIZATION`; activation `NOT_READY_FOR_ACTIVATION`; production apply remains `NOT_READY_FOR_APPLY`; `HOLD_RECOMMENDED`. P271 remains unactivated, the concrete boundary remains unset, P273B stays deferred, and no prediction-success claim is allowed.
+
+**Next strategic fork:** owner may (a) approve G1 architecture and resolve the recorded decision points before issuing a separately scoped G2 authorization, (b) HOLD, or (c) choose scientific closure. No next task is automatic.
 
 ### 0.0 2026-06-15 P273A Post-Merge Override
 

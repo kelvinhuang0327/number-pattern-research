@@ -1,6 +1,6 @@
 # Lottery Replay Roadmap
 
-**Last Updated:** 2026-06-15 Asia/Taipei (P274B PR #441 post-merge governance closeout — PR #441 MERGED at `2026-06-15T10:14:49Z`; merge commit `fa896035a2c6d5980c3e82276ebb87a7205672bc`; readiness-plan artifacts now on `main`; current gate `G1_PARTIAL_PENDING_OWNER_APPROVAL`; implementation `NOT_READY_FOR_IMPLEMENTATION_AUTHORIZATION`; activation `NOT_READY_FOR_ACTIVATION`; overall `HOLD_RECOMMENDED`; P271 unactivated; production apply `NOT_READY_FOR_APPLY`; P273B deferred; closeout PR open/unmerged. Prior: P274B execution/activation readiness plan complete; prior: P274A protocol PR #439 merged.)
+**Last Updated:** 2026-06-15 Asia/Taipei (P274C exhaustive G1 design and owner-decision resolution complete — all 14 canonical decisions and 8 additional mandatory decisions resolved; selected `RECOMMENDED_RESILIENT_LONG_HORIZON`; outcome `G1_COMPLETE_READY_FOR_SEPARATE_G2_AUTHORIZATION`; G2 and activation remain separately gated; State Marker unchanged; P271 unactivated; production apply `NOT_READY_FOR_APPLY`; P273B deferred; P274C PR open/unmerged. Prior: P274B PR #441 merged; P274A protocol PR #439 merged.)
 **Owner:** CTO agent
 **Primary Goal:** Keep LotteryNew replay, research, and product evidence truthful, reproducible, and governed. The current maturity bottleneck has shifted from migration rehearsal to short/mid-window strategy protocol design, anti-overfit validation, canonical repo dispatch safety, and honest product disclosure.
 **Repo Policy:** Use `/Users/kelvin/Kelvin-WorkSpace/LotteryNew` only. Do not create a new repo. Production DB, registry, and data writes require explicit governed authorization. CTO roadmap updates are limited to this file and `00-Plan/roadmap/CTO-Analysis.md`. CTO must not write `CEO-Decision.md`, `active_task.md`, `production/*`, `registry/*`, `data/*`, or any new repo.
@@ -10,6 +10,14 @@
 ## 0. Current Roadmap Override — 2026-06-03 (updated; originally authored 2026-06-02)
 
 This section is the current source of truth. The 2026-06-01 sections and P186-P196 appendices below are retained for history and are superseded where they conflict with this section.
+
+### 0.0-P274C 2026-06-15 G1 Prospective Execution Decision Resolution
+
+The owner superseded the prior P274B HOLD selection and authorized exhaustive G1 decision resolution, with the explicit principle that necessary governed option exploration is not redundant and workload alone cannot justify HOLD. P274C completed comprehensive design only: all 14 canonical P274B decisions were dispositioned as resolved (0 deferred), 8 additional mandatory decisions were identified and resolved (0 deferred), and 89 options were evaluated (67 rejected; 14 conditional selections with explicit pre-G2 acceptance-evidence gates).
+
+Artifacts: `outputs/research/p274c_g1_prospective_execution_decision_resolution_design_20260615.{json,md}`; canonical digest `873dc804130ca1e737e6430ac114791c15277a2799b7567279d809f8b7fc51a6`. The selected reference architecture is `RECOMMENDED_RESILIENT_LONG_HORIZON`, separating candidate generation, pre-outcome capture/sealing, immutable evidence, outcome linkage, and frozen evaluation while preserving fail-closed clock/resolver behavior and a governed missingness envelope.
+
+**G1 outcome:** `G1_COMPLETE_READY_FOR_SEPARATE_G2_AUTHORIZATION`. G2 remains a separate owner gate and may be considered only after the recorded pre-G2 evidence is attached and verified. Activation, boundary assignment, and capture remain separately gated. P274A and its frozen scientific contract are unchanged; P271 remains unactivated; P273B remains deferred; production apply remains `NOT_READY_FOR_APPLY`; `prediction_success_claim=false`. No implementation, production DB access, registry/recommendation mutation, deployment, or `controlled_apply` occurred. The resulting P274C PR is open/unmerged; no next task is automatic.
 
 ### 0.0-P274B-POSTMERGE 2026-06-15 P274B PR #441 Merged — Post-Merge Governance Closeout
 

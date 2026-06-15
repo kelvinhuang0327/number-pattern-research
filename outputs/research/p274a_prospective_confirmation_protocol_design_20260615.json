@@ -1,0 +1,627 @@
+{
+  "schema_version": "p274a_prospective_confirmation_protocol_design_v1",
+  "task_id": "P274A_PROSPECTIVE_CONFIRMATION_PROTOCOL_DESIGN",
+  "generated_at": "2026-06-15",
+  "mode": "DESIGN_AND_PREREGISTRATION_ONLY_READ_ONLY_NO_DB_NO_EXECUTION",
+  "canonicalization": {
+    "method": "sha256 of json.dumps(payload, sort_keys=True, ensure_ascii=False, separators=(',',':'))",
+    "volatile_fields_excluded": [
+      "generated_at",
+      "canonical_payload_digest"
+    ],
+    "recomputed_twice_identical": true,
+    "mirrors_p273a_observed_style_canonicalization": true
+  },
+  "owner_authorization": {
+    "authorized": true,
+    "date": "2026-06-15",
+    "authorization_text": "YES authorize P274A_PROSPECTIVE_CONFIRMATION_PROTOCOL_DESIGN as design and pre-registration only.",
+    "scope": "design_and_preregistration_only",
+    "authorized_branch": "task/p274a-prospective-confirmation-protocol-design",
+    "authorized_worktree": "/Users/kelvin/Kelvin-WorkSpace/LotteryNew-worktrees/p274a-prospective-confirmation-protocol-design",
+    "branch_created_from_origin_main": "91dc783f40def5142391664fc34b7691805a745d",
+    "supersedes_stale_statement": "The prior governance statement that P274A is 'recommended, not authorized' is stale after this owner authorization and is updated truthfully within the four-file whitelist.",
+    "does_not_authorize": "any execution, activation, prospective capture, infrastructure activation, P271 controlled apply, registry/recommendation mutation, P273B, deployment, or production apply."
+  },
+  "source_commits": {
+    "canonical_repo": "/Users/kelvin/Kelvin-WorkSpace/LotteryNew",
+    "base_origin_main": "91dc783f40def5142391664fc34b7691805a745d",
+    "task_branch": "task/p274a-prospective-confirmation-protocol-design",
+    "protected_workspace_branch": "task/p273a-prize-aware-inferential-validation",
+    "protected_workspace_head": "d2e7ecf352997950a82399051ae1f01dc37fbf5c",
+    "pr_438_merge_commit": "91dc783f40def5142391664fc34b7691805a745d",
+    "pr_438_state": "MERGED",
+    "p273a_identity_export_commit": "be6365da947922807c1e302a296400661287beab",
+    "p273a_identity_merge_commit": "63452e7d589739b5ec3eb58035e7b8aff9014639"
+  },
+  "source_artifacts": {
+    "p273a_inference": {
+      "path": "outputs/research/p273a_prize_aware_inferential_validation_20260615.json",
+      "canonical_payload_digest": "5666e67c88e5f3b1233f2d6d5a5f86746c4f7605ae98bda3f2d59ec5aa0b2fb4",
+      "canonical_digest_verified": true,
+      "raw_sha256": "ab923a06327afcc8595f224e65bcd98fec0cfdeaf31b10aeeb86ac54ed6648fe"
+    },
+    "p273a_primary_window_observed_counts_50_300_750": {
+      "path": "outputs/research/p273a_primary_window_observed_counts_20260615.json",
+      "canonical_payload_digest": "65a4cc59f5ab64d685890566e38493b0295e622f351e0527782f1dce2f38645f",
+      "canonical_digest_verified": true,
+      "raw_sha256": "14b2ed29628111f32925909ba07e9be0b3de48a04ee4b0877e39c1dfa4e51b73"
+    },
+    "p273a_distinct_ticket_identity": {
+      "path": "outputs/research/p273a_distinct_ticket_identity_20260615.json",
+      "canonical_payload_digest": "ad85e447dfc7db7afd70e9fdde928bb12a2ae367d6c1f23f14b7e3504701ae51",
+      "canonical_digest_verified": true,
+      "raw_sha256": "b10b916c00f807ace7342250b788dbf1d62c12a0b8e2d5aa627b5a4eb25089b0"
+    },
+    "p273a_reference_only_100_500_1500_counts": {
+      "path": "outputs/research/p273a_prizeaware_observed_counts_20260614.json",
+      "canonical_payload_digest": "859c3889f2c698a27d16caf4195bbd0fd032cad80d8c44e990958658624b3103",
+      "canonical_digest_verified": true,
+      "raw_sha256": "ee5cc98a4c0b673e1172d4478e72bced50167e7f206acf25fe170eee0ece7bd9"
+    },
+    "p271_prospective_capture_lineage": [
+      {
+        "path": "outputs/research/p271h_prospective_capture_feasibility_audit_20260612.json",
+        "final_classification": "P271H_PROSPECTIVE_CAPTURE_BLOCKED_SCHEMA_OR_CAUSALITY_GAP",
+        "purpose": "prospective-capture feasibility audit (15 blocked dimensions)",
+        "raw_sha256": "c95f816710c47dd418a4f4a9138c993386569ff4281a3596bb8be123f3d78b57"
+      },
+      {
+        "path": "outputs/research/p271i_prospective_capture_ledger_implementation_design_20260613.json",
+        "final_classification": "P271I_PROSPECTIVE_CAPTURE_LEDGER_IMPLEMENTATION_DESIGN_COMPLETE",
+        "purpose": "append-only prospective ledger schema + causality + failure matrix design",
+        "raw_sha256": "33024b09784aa66bd1a5e1995aeb1837bc174eae4d3b8f939d9a1dcee61c4a1e"
+      },
+      {
+        "path": "outputs/research/p271j_prospective_capture_ledger_implementation_20260613.json",
+        "final_classification": "P271J_TRANSACTION_OWNERSHIP_HARDENING_COMPLETE",
+        "purpose": "isolated ledger module + synthetic tests (no production DB)",
+        "raw_sha256": "008253673c6b3abddb69270ea9d7baf455abf98ff76b712a5d105a5153c25ee5"
+      },
+      {
+        "path": "outputs/research/p271k_prospective_capture_ledger_migration_rehearsal_20260613.json",
+        "final_classification": "P271K_TEMPORARY_DB_MIGRATION_REHEARSAL_COMPLETE",
+        "purpose": "temp-DB additive migration rehearsal (production DB untouched)",
+        "raw_sha256": "a2d382fc1ea8b67d6ec698dc471db0757f9e496e8e7722eb1f8241438dc17249"
+      },
+      {
+        "path": "outputs/research/p271l_controlled_deployment_preflight_20260613.json",
+        "final_classification": "P271L_PREFLIGHT_COMPLETE_NOT_READY_FOR_APPLY",
+        "purpose": "controlled-deployment preflight; production apply NOT authorized",
+        "raw_sha256": "d4b02779298d155db3091aa3500690251c5cf4440de7e195d4a045c12f421216"
+      },
+      {
+        "path": "outputs/research/p271l_readonly_production_schema_inspection_20260614.json",
+        "final_classification": "P271L_PREFLIGHT_COMPLETE_NOT_READY_FOR_APPLY",
+        "purpose": "read-only production schema inspection; prospective state ABSENT_CLEAN",
+        "raw_sha256": "c0589e0dbc1a779c67b6390866b15115be7665f9e699620c093bcaf7384c4c9b"
+      }
+    ],
+    "p272b_prospective_detectability_power": {
+      "path": "outputs/research/p272b_prospective_oos_detectability_power_20260614.json",
+      "raw_sha256": "8ecd39a698b3c764540f2a274351bbaa0a828dfb3198ca772db08fac80fa593a",
+      "decision_classification": "POWER_QUANTIFIED_THRESHOLD_NOT_GOVERNED"
+    },
+    "draw_cadence_evidence": {
+      "source_path": "outputs/research/p268d1_draw_order_full_history_artifact_backfill_20260610.jsonl",
+      "source_sha256": "f4accb6f527694e739689242c929e87e4b031a364becb4fadb4aaea50ef2e3f8",
+      "daily_539_draws_per_week": 6,
+      "daily_539_weekdays": "Mon-Sat",
+      "daily_539_draws_per_year": 313.0714,
+      "cited_via": "P272B (not re-opened; production DB never accessed)",
+      "use": "DESCRIPTIVE_CALENDAR_ESTIMATE_ONLY"
+    }
+  },
+  "frozen_candidates": {
+    "count": 3,
+    "lottery_scope": "DAILY_539_only",
+    "candidates": [
+      {
+        "candidate_id": "C1",
+        "lottery_type": "DAILY_539",
+        "strategy_id": "acb_markov_midfreq_3bet",
+        "expected_distinct_ticket_N": 3
+      },
+      {
+        "candidate_id": "C2",
+        "lottery_type": "DAILY_539",
+        "strategy_id": "daily539_f4cold_3bet",
+        "expected_distinct_ticket_N": 3
+      },
+      {
+        "candidate_id": "C3",
+        "lottery_type": "DAILY_539",
+        "strategy_id": "daily539_f4cold_5bet",
+        "expected_distinct_ticket_N": 5
+      }
+    ],
+    "rules": [
+      "Exactly these three; no substitution, addition, or retrospective-preference removal.",
+      "No cross-lottery candidate; cross-lottery transfer remains unresolved and outside P274A.",
+      "No strategy-version substitution without a future separate protocol amendment authorized BEFORE prospective outcomes begin.",
+      "Candidate order must not affect statistical treatment."
+    ],
+    "provenance": "All three are GO_CANDIDATE_RESEARCH_ONLY / STABILITY_PASS DAILY_539 cells in the merged P273A inference artifact; the only authorized prospective candidates."
+  },
+  "prohibited_scope": [
+    "modifying the protected inference workspace",
+    "branch switch in the protected workspace",
+    "production DB access of any kind",
+    "SQLite connection to the production DB (incl. read-only)",
+    "prospective ledger activation",
+    "production schema installation",
+    "registry mutation",
+    "recommendation-logic mutation",
+    "prediction-algorithm modification",
+    "retrospective outcome re-mining",
+    "P273B",
+    "candidate substitution",
+    "adding another lottery or strategy",
+    "deployment",
+    "controlled_apply",
+    "production apply",
+    "migration",
+    "service/process control",
+    "future prediction execution",
+    "prospective data capture",
+    "activation timestamp creation",
+    "declaring predictive success",
+    "betting advice",
+    "merge of the resulting PR"
+  ],
+  "endpoint_contract": {
+    "lottery": "DAILY_539",
+    "endpoint_name": "D539_ANY_PRIZE_AWARE_WIN",
+    "definition": "draw-level any-bet prize-aware success",
+    "daily_539_success_condition": "at least two main-number hits (hit_count >= 2) under the committed scorer semantics; identical to D539_M2_PLUS",
+    "special_role": "none (no special number / no second zone for DAILY_539)",
+    "statistical_unit": "one per target draw",
+    "ticket_count_rule": "actual distinct-ticket count per draw from canonical ticket identities",
+    "prohibitions": [
+      "no replay-row pseudo-replication",
+      "no outcome-dependent ticket deduplication"
+    ],
+    "scorer_source": "lottery_api/prize_aware_scorer.py (committed; P271A/P271C endpoint spec)",
+    "endpoint_source_spec": {
+      "md": "outputs/research/p271a_prize_aware_endpoint_scoring_spec_20260611.md",
+      "json": "outputs/research/p271a_prize_aware_endpoint_scoring_spec_20260611.json"
+    }
+  },
+  "exact_null_contract": {
+    "formula": "q_N = 1 - C(T-W,N) / C(T,N)",
+    "T_total_ticket_identities": 575757,
+    "T_basis": "C(39,5)",
+    "W_winning_ticket_identities": 65621,
+    "q_for_N1": 0.11397342976290345,
+    "q_for_N3": 0.304431435742626,
+    "q_for_N5": 0.453949563749733,
+    "N_rule": "actual distinct-ticket count from prospective canonical ticket identities (expected 3/3/5; MUST be verified per draw, not inferred from strategy name).",
+    "independent_with_replacement_approximation": "REJECTED for final confirmation; 1-(1-W/T)^N may appear only as a non-final diagnostic.",
+    "varying_q_rule": "constant-N draws -> exact one-sided binomial; if per-draw N varies -> exact one-sided Poisson-binomial over the actual per-draw q values."
+  },
+  "future_only_boundary_contract": {
+    "rule": [
+      "No historical or already-observed draw may count toward prospective confirmation.",
+      "A separately authorized activation task must write concrete activation_timestamp_utc and first_eligible_target_draw BEFORE any eligible outcome is observed or ingested.",
+      "first_eligible_target_draw = the first official DAILY_539 draw whose scheduled draw time is strictly later than BOTH (1) the P274A protocol merge timestamp AND (2) the separately recorded activation_timestamp_utc.",
+      "All target draws earlier than first_eligible_target_draw are permanently excluded.",
+      "No backfill across the boundary; no replacement of missing future draws with historical draws.",
+      "A delayed ingestion remains eligible only when its official draw identity is after the frozen boundary.",
+      "Boundary amendments after any eligible outcome becomes observable are prohibited."
+    ],
+    "deterministic": true,
+    "selection_algorithm_frozen": true
+  },
+  "concrete_boundary_status": {
+    "activation_timestamp_utc": "UNSET_PENDING_SEPARATE_ACTIVATION_AUTHORIZATION",
+    "first_eligible_target_draw": "UNSET_PENDING_SEPARATE_ACTIVATION_AUTHORIZATION",
+    "note": "This is NOT an incomplete design: the deterministic boundary-selection algorithm is fully frozen. Execution readiness remains false until a future authorized task records the concrete values BEFORE outcome exposure.",
+    "execution_readiness": false
+  },
+  "prospective_capture_contract": {
+    "minimum_fields_required_before_outcome_publication": [
+      "protocol_version",
+      "activation_id",
+      "candidate_id",
+      "lottery_type",
+      "strategy_id",
+      "strategy_version",
+      "target_draw",
+      "ticket_generation_timestamp_utc",
+      "official_scheduled_draw_timestamp_utc",
+      "normalized_canonical_ticket_identities",
+      "ticket_fingerprints",
+      "bet_index_association",
+      "distinct_ticket_count",
+      "scorer_endpoint_version",
+      "source_provenance",
+      "capture_status",
+      "outcome_availability_status",
+      "immutable_record_timestamp"
+    ],
+    "invariants": [
+      "ticket capture must precede outcome availability",
+      "append-only semantics",
+      "deterministic identity",
+      "no historical backfill into the prospective family",
+      "no candidate substitution",
+      "no silent missing-ticket inference",
+      "no outcome-dependent correction",
+      "all future evaluation derives from prospective records only"
+    ],
+    "infrastructure_basis": "P271I/P271J ledger design (unactivated). P274A defines the contract only; it does not create, install, or activate any schema."
+  },
+  "primary_hypothesis_family": {
+    "size": 3,
+    "one_final_confirmatory_test_per_candidate": true,
+    "hypotheses": [
+      {
+        "candidate_id": "C1",
+        "strategy_id": "acb_markov_midfreq_3bet",
+        "H0": "prospective draw-level prize-aware success rate <= q_N (N=3)",
+        "H1": "prospective draw-level prize-aware success rate > q_N (N=3)",
+        "test": "exact one-sided upper binomial (or exact Poisson-binomial if per-draw N varies)"
+      },
+      {
+        "candidate_id": "C2",
+        "strategy_id": "daily539_f4cold_3bet",
+        "H0": "prospective draw-level prize-aware success rate <= q_N (N=3)",
+        "H1": "prospective draw-level prize-aware success rate > q_N (N=3)",
+        "test": "exact one-sided upper binomial (or exact Poisson-binomial if per-draw N varies)"
+      },
+      {
+        "candidate_id": "C3",
+        "strategy_id": "daily539_f4cold_5bet",
+        "H0": "prospective draw-level prize-aware success rate <= q_N (N=5)",
+        "H1": "prospective draw-level prize-aware success rate > q_N (N=5)",
+        "test": "exact one-sided upper binomial (or exact Poisson-binomial if per-draw N varies)"
+      }
+    ],
+    "no_confirmatory_subfamily_from": [
+      "50-draw monitoring",
+      "300-draw monitoring",
+      "bet slots",
+      "alternative historical windows",
+      "special candidate subsets",
+      "retrospective feature filters"
+    ]
+  },
+  "correction_contract": {
+    "method": "Bonferroni",
+    "family_m": 3,
+    "family_alpha": 0.05,
+    "per_candidate_final_alpha": 0.016666666666666666,
+    "per_candidate_final_alpha_exact": "0.05/3 = 0.0166666666666667",
+    "bh_fdr": "descriptive_only",
+    "no_post_outcome_family_shrinkage": true,
+    "stopped_or_insufficient_candidates_remain_part_of_m": true
+  },
+  "power_design": {
+    "primary_alternative": "candidate-specific 50%-shrunken retrospective excess at the 750 window: p_alt = q_N + 0.5 * (obs_rate_750 - q_N)",
+    "governed_primary_assumption_excludes_unshrunk_effect": true,
+    "test": "exact one-sided binomial at per-candidate alpha = 0.05/3",
+    "power_definition": "P(X >= k* | n, p_alt) where k* = smallest k with P(X>=k | n, q_N) <= alpha",
+    "search_start_draws": 300,
+    "search_max_bound_draws": 6000,
+    "search_max_bound_at_least_5000": true,
+    "power_targets": [
+      0.8,
+      0.9
+    ],
+    "common_horizon_rule": "max over candidates of the candidate-specific 90%-power N (NOT reduced because another candidate has a larger observed effect).",
+    "fail_closed_classification_if_unreached": "P274A_BLOCKED_POWER_HORIZON_NOT_ESTABLISHED",
+    "draw_counts_are_primary_calendar_is_descriptive": true,
+    "numerical_method_independent_crosscheck": {
+      "method_a": "regularized incomplete beta continued fraction (Numerical Recipes betai)",
+      "method_b": "direct log-pmf summation via math.lgamma",
+      "worst_abs_difference": 1.7926771178622403e-12
+    }
+  },
+  "candidate_specific_power_results": [
+    {
+      "candidate_id": "C1",
+      "lottery_type": "DAILY_539",
+      "strategy_id": "acb_markov_midfreq_3bet",
+      "strategy_version": "as_frozen_in_P273A_p267c_cell_set (sha256 3769596d…)",
+      "distinct_ticket_count_N_expected": 3,
+      "distinct_ticket_count_N_must_be_verified_from_prospective_identities": true,
+      "exact_null_q_N": 0.304431435742626,
+      "retrospective_observed_counts_primary_windows": {
+        "50": 18,
+        "300": 120,
+        "750": 268
+      },
+      "retrospective_observed_rate_750": 0.35733333333333334,
+      "retrospective_absolute_excess_750": 0.05290189759070735,
+      "conservative_50pct_shrunken_excess": 0.026450948795353674,
+      "governed_primary_alternative_rate": 0.3308823845379797,
+      "n_draws_power80_shrunken": 2730,
+      "n_draws_power90_shrunken": 3605,
+      "calendar_years_power80_descriptive": 8.72,
+      "calendar_years_power90_descriptive": 11.515,
+      "at_common_final_horizon": {
+        "horizon_draws": 3605,
+        "final_critical_successes_k_min": 1157,
+        "final_critical_success_rate": 0.32094313453536755,
+        "achieved_power_under_shrunken_alt_primary": 0.90100991965962,
+        "achieved_exact_one_sided_typeI": 0.016660128565089777,
+        "achieved_power_under_unshrunk_effect_secondary_descriptive": 0.9999980118977496
+      },
+      "secondary_cp95_lower_scenario_descriptive_only": {
+        "note": "NON-GOVERNING. Clopper-Pearson 95% lower bound of the retrospective 750-window rate as alternative; reported for sensitivity only; does not set the horizon.",
+        "alternative_rate": 0.322989135282,
+        "implied_excess": 0.01855769953937403,
+        "n_draws_power80": 5504,
+        "n_draws_power90": 7262,
+        "search_bound": 20000
+      }
+    },
+    {
+      "candidate_id": "C2",
+      "lottery_type": "DAILY_539",
+      "strategy_id": "daily539_f4cold_3bet",
+      "strategy_version": "as_frozen_in_P273A_p267c_cell_set (sha256 3769596d…)",
+      "distinct_ticket_count_N_expected": 3,
+      "distinct_ticket_count_N_must_be_verified_from_prospective_identities": true,
+      "exact_null_q_N": 0.304431435742626,
+      "retrospective_observed_counts_primary_windows": {
+        "50": 23,
+        "300": 101,
+        "750": 275
+      },
+      "retrospective_observed_rate_750": 0.36666666666666664,
+      "retrospective_absolute_excess_750": 0.06223523092404065,
+      "conservative_50pct_shrunken_excess": 0.031117615462020326,
+      "governed_primary_alternative_rate": 0.3355490512046463,
+      "n_draws_power80_shrunken": 1986,
+      "n_draws_power90_shrunken": 2612,
+      "calendar_years_power80_descriptive": 6.344,
+      "calendar_years_power90_descriptive": 8.343,
+      "at_common_final_horizon": {
+        "horizon_draws": 3605,
+        "final_critical_successes_k_min": 1157,
+        "final_critical_success_rate": 0.32094313453536755,
+        "achieved_power_under_shrunken_alt_primary": 0.9699407493725729,
+        "achieved_exact_one_sided_typeI": 0.016660128565089777,
+        "achieved_power_under_unshrunk_effect_secondary_descriptive": 0.9999999959982626
+      },
+      "secondary_cp95_lower_scenario_descriptive_only": {
+        "note": "NON-GOVERNING. Clopper-Pearson 95% lower bound of the retrospective 750-window rate as alternative; reported for sensitivity only; does not set the horizon.",
+        "alternative_rate": 0.33209436608,
+        "implied_excess": 0.027662930337373992,
+        "n_draws_power80": 2507,
+        "n_draws_power90": 3298,
+        "search_bound": 20000
+      }
+    },
+    {
+      "candidate_id": "C3",
+      "lottery_type": "DAILY_539",
+      "strategy_id": "daily539_f4cold_5bet",
+      "strategy_version": "as_frozen_in_P273A_p267c_cell_set (sha256 3769596d…)",
+      "distinct_ticket_count_N_expected": 5,
+      "distinct_ticket_count_N_must_be_verified_from_prospective_identities": true,
+      "exact_null_q_N": 0.453949563749733,
+      "retrospective_observed_counts_primary_windows": {
+        "50": 35,
+        "300": 170,
+        "750": 425
+      },
+      "retrospective_observed_rate_750": 0.5666666666666667,
+      "retrospective_absolute_excess_750": 0.11271710291693365,
+      "conservative_50pct_shrunken_excess": 0.05635855145846683,
+      "governed_primary_alternative_rate": 0.5103081152081999,
+      "n_draws_power80_shrunken": 695,
+      "n_draws_power90_shrunken": 915,
+      "calendar_years_power80_descriptive": 2.22,
+      "calendar_years_power90_descriptive": 2.923,
+      "at_common_final_horizon": {
+        "horizon_draws": 3605,
+        "final_critical_successes_k_min": 1701,
+        "final_critical_success_rate": 0.47184466019417476,
+        "achieved_power_under_shrunken_alt_primary": 0.9999982265818649,
+        "achieved_exact_one_sided_typeI": 0.01618992747562288,
+        "achieved_power_under_unshrunk_effect_secondary_descriptive": 1.0
+      },
+      "secondary_cp95_lower_scenario_descriptive_only": {
+        "note": "NON-GOVERNING. Clopper-Pearson 95% lower bound of the retrospective 750-window rate as alternative; reported for sensitivity only; does not set the horizon.",
+        "alternative_rate": 0.530331695627,
+        "implied_excess": 0.076382131877267,
+        "n_draws_power80": 390,
+        "n_draws_power90": 509,
+        "search_bound": 20000
+      }
+    }
+  ],
+  "common_final_horizon": {
+    "draws": 3605,
+    "equals_max_candidate_90pct_power_N": true,
+    "binding_candidate": "C1 (acb_markov_midfreq_3bet)",
+    "achieved_power_all_candidates_at_horizon_shrunken": {
+      "C1": 0.90100991965962,
+      "C2": 0.9699407493725729,
+      "C3": 0.9999982265818649
+    },
+    "all_candidates_reach_0_90_at_horizon": true,
+    "calendar_years_descriptive": 11.515,
+    "calendar_basis": "committed P268D1 cadence: DAILY_539 6 draws/week, 313.0714 draws/year (via P272B); descriptive only, not governing."
+  },
+  "monitoring_checkpoints": {
+    "checkpoint_A_50_future_draws": {
+      "role": "operational / data-integrity review only",
+      "efficacy_declaration": false,
+      "p_value_based_promotion": false,
+      "candidate_success_declaration": false,
+      "checks": [
+        "support",
+        "identity traceability",
+        "candidate version",
+        "boundary adherence",
+        "missingness"
+      ],
+      "note": "SHORT-50 remains a guardrail only."
+    },
+    "checkpoint_B_300_future_draws": {
+      "role": "operational review + NON-BINDING futility analysis",
+      "early_efficacy_declaration": false,
+      "alpha_spent": 0.0,
+      "go_or_confirmation_decision": false,
+      "conditional_power_uses": "pre-registered 50%-shrunken alternative + accumulated data",
+      "futility_recommendation_only_when": "conditional power below the frozen futility threshold"
+    },
+    "final_checkpoint": {
+      "horizon_draws": 3605,
+      "only_checkpoint_that_can_confirm": true,
+      "test": "exact one-sided binomial (constant N) or exact one-sided Poisson-binomial (varying N)",
+      "correction": "Bonferroni m=3 fixed",
+      "optional_extension_after_inspecting_results": false
+    }
+  },
+  "alpha_control": {
+    "design": "equivalent-control: ALL efficacy alpha preserved for the final analysis",
+    "interim_efficacy_allowed": false,
+    "alpha_spent_at_checkpoint_A": 0.0,
+    "alpha_spent_at_checkpoint_B": 0.0,
+    "final_per_candidate_alpha": 0.016666666666666666,
+    "family_alpha": 0.05,
+    "family_m": 3
+  },
+  "futility_contract": {
+    "frozen_threshold": "conditional power < 10% (0.10), evaluated at checkpoint B (300 draws) under the pre-registered 50%-shrunken alternative",
+    "binding_for_type_I_error": false,
+    "stopping_one_candidate_reduces_m": false,
+    "continuation_despite_non_binding_futility": "requires documented owner decision BEFORE the next outcome look; cannot change final alpha"
+  },
+  "integrity_stop_rules": {
+    "note": "Integrity failure is classified SEPARATELY from statistical failure (it is not PROSPECTIVE_NULL/FAILED).",
+    "rules": [
+      "boundary violation",
+      "retrospective row leakage",
+      "candidate/version substitution",
+      "missing canonical ticket identity",
+      "untraceable distinct-ticket count",
+      "duplicated target draw",
+      "outcome available before ticket capture",
+      "scorer/endpoint drift",
+      "registry/recommendation mutation",
+      "production-capture schema mismatch",
+      "unauthorized manual correction",
+      "insufficient provenance"
+    ]
+  },
+  "candidate_decision_classes": {
+    "PROSPECTIVE_CONFIRMED_RESEARCH_EDGE": {
+      "requirements": [
+        "governed final horizon reached",
+        "support complete",
+        "integrity/provenance gates pass",
+        "observed excess > 0",
+        "one-sided exact final p <= 0.05/3",
+        "lower confidence bound exceeds exact null",
+        "no protocol amendment after boundary activation"
+      ],
+      "meaning": "future-only statistical confirmation FOR RESEARCH; NOT betting advice, NOT automatic production promotion, NOT registry/recommendation authorization."
+    },
+    "PROSPECTIVE_NULL": {
+      "requirements": [
+        "evaluable final horizon reached",
+        "integrity gates pass",
+        "confirmation requirements not met",
+        "no significant negative result requiring failure class"
+      ]
+    },
+    "PROSPECTIVE_FAILED_DIRECTION": {
+      "requirements": [
+        "governed final analysis shows non-positive excess, OR",
+        "a separately pre-registered significantly-below-null criterion is met, OR",
+        "candidate closed under the pre-registered futility rule and owner accepts closure"
+      ]
+    },
+    "PROSPECTIVE_INSUFFICIENT_SUPPORT": {
+      "requirements": [
+        "final horizon/support cannot be reached within the governed observation period",
+        "missingness is not imputable",
+        "no historical data substitution"
+      ]
+    },
+    "PROTOCOL_INVALIDATED": {
+      "requirements": [
+        "leakage, identity, boundary, version, provenance or endpoint integrity breach"
+      ]
+    }
+  },
+  "project_decision_classes": {
+    "AT_LEAST_ONE_PROSPECTIVE_RESEARCH_CONFIRMATION": ">=1 candidate PROSPECTIVE_CONFIRMED_RESEARCH_EDGE",
+    "PROSPECTIVE_NULL_ALL_EVALUABLE": "all evaluable candidates PROSPECTIVE_NULL",
+    "MIXED_RESULT": "a mix across candidate classes",
+    "INSUFFICIENT_SUPPORT": "evaluation cannot be completed within the governed observation period",
+    "PROTOCOL_INVALIDATED": "any integrity/provenance breach invalidating the family",
+    "no_project_outcome_authorizes_production_apply": true
+  },
+  "P271_dependencies": {
+    "prospective_capture_design_referenced": true,
+    "infrastructure_state": "UNACTIVATED",
+    "production_apply_state": "NOT_READY_FOR_APPLY",
+    "prospective_production_schema_state": "ABSENT_CLEAN (per P271L read-only inspection)",
+    "P271M_started": false,
+    "P271N_started": false,
+    "controlled_apply_started": false,
+    "p274a_authorizes_p271_controlled_apply": false,
+    "execution_requires": "a future separate owner decision covering infrastructure, activation, maintenance, and production safety.",
+    "protocol_design_completion_is_not_execution_readiness": true
+  },
+  "execution_prerequisites": {
+    "execution_readiness": false,
+    "required_before_any_execution": [
+      "separate owner authorization to execute/activate",
+      "separately authorized activation task writes concrete activation_timestamp_utc + first_eligible_target_draw BEFORE outcome exposure",
+      "P271 prospective-capture infrastructure activation (separately authorized)",
+      "maintenance/production-safety governance for any schema/runtime change"
+    ],
+    "this_task_does_not": [
+      "start the clock",
+      "create an activation record",
+      "capture future rows",
+      "evaluate prospective outcomes"
+    ]
+  },
+  "preliminary_result_reconciliation": {
+    "vs_P272B": "P272B quantified prospective detectability for the M3+ (hit>=3) any-bet endpoint, lottery-wide, under a P267C-derived +1.32pp scenario on a ~1.0% base (p1~2.32%), finding DAILY_539 N*(0.9)=1013 draws and decision POWER_QUANTIFIED_THRESHOLD_NOT_GOVERNED.",
+    "P274A_difference": "P274A targets the prize-aware M2+ endpoint (q_N ~0.30-0.45), is per-candidate (the three frozen P273A survivors), grounds the alternative in P273A's own 750-window excess with 50% shrinkage, and the threshold is now governed by explicit owner authorization.",
+    "why_horizon_larger": "P274A's larger common horizon (3605 draws) vs P272B's 1013 reflects a small RELATIVE lift (~1.18-1.25x) on a high base rate, not the ~2.3x lift of a rare event P272B modeled; same exact-binomial method and same alpha=0.05/3."
+  },
+  "safety_claims": {
+    "design_only": true,
+    "preregistration_only": true,
+    "execution_started": false,
+    "activation_started": false,
+    "production_db_accessed": false,
+    "production_write": false,
+    "registry_mutated": false,
+    "recommendation_logic_changed": false,
+    "retrospective_remining_performed": false,
+    "p273b_started": false,
+    "deployment_started": false,
+    "controlled_apply_started": false,
+    "production_apply_authorized": false,
+    "prediction_success_claim": false,
+    "betting_advice": false
+  },
+  "validation_summary": {
+    "source_artifact_canonical_digests_verified": 4,
+    "exact_null_values_independently_recomputed": true,
+    "power_search_independently_recomputed_two_methods": true,
+    "common_horizon_equals_max_candidate_90pct_N": true,
+    "no_interim_efficacy": true,
+    "tests_note": "Design/artifact validation only; source focused suite NOT RUN; full repository suite NOT RUN."
+  },
+  "disclaimers": [
+    "Design and pre-registration only; no execution, activation, or prospective data capture occurred.",
+    "Retrospective P273A evidence is NOT prospective confirmation; the future-only boundary has not been activated.",
+    "prediction_success_claim=false; this is not betting advice and not a deployment/production authorization.",
+    "Production apply remains NOT_READY_FOR_APPLY; P273B is not started.",
+    "Execution requires a separate owner authorization covering activation, infrastructure, and production safety."
+  ],
+  "final_classification": "P274A_PROSPECTIVE_CONFIRMATION_PROTOCOL_DESIGN_COMPLETE",
+  "canonical_payload_digest": "d04ddae248b440bf160d7b2145fd60c4a99e440dc3d10c35c4a8d7dc836d3e6b"
+}

@@ -2,6 +2,22 @@
 
 ---
 
+## P274A PR #439 Post-Merge Governance Closeout & Execution Decision Fork — 2026-06-15
+
+**PR #439 is MERGED.** Merge commit `03e151fd02bb4cb3854ee63e58a417803930dc78` at `2026-06-15T07:58:12Z` (PR head `b8e5c74062ed4b2855702095b4e66d1ccf20c662`), bringing `outputs/research/p274a_prospective_confirmation_protocol_design_20260615.{json,md}` (canonical payload digest `f2294716699368a9c2b21fb14301d84d70f662b882aef9eab896f96825f18ffc`) onto `main`. This supersedes the "Resulting PR is open and unmerged" statement at the end of the P274A authorization entry below; that entry's design/pre-registration content and all governed numbers (three frozen DAILY_539 candidates, Bonferroni m=3, common final horizon 3605 draws, future-only boundary `UNSET_PENDING_SEPARATE_ACTIVATION_AUTHORIZATION`) are unchanged and now committed to `main`.
+
+This governance-only closeout (branch `chore/p274a-pr439-postmerge-governance-closeout`) independently re-verified the merged artifacts: the JSON's embedded `canonical_payload_digest` matches an independent recomputation and equals the digest above; the invalid superseded digest `d04ddae248b440bf160d7b2145fd60c4a99e440dc3d10c35c4a8d7dc836d3e6b` is absent from both merged P274A files; and the four cited P273A source-artifact digests are unchanged. No protocol, statistical, candidate, or digest change was made. `execution_readiness=false`; production apply remains `NOT_READY_FOR_APPLY`; P271M/P271N and P273B remain unstarted; no prospective record, production DB access, registry/recommendation mutation, or prediction-success claim.
+
+**Next owner decision — three-way fork (none selected by this closeout):**
+
+1. **Execution/activation path** — separately authorize a future task to record concrete `activation_timestamp_utc` and `first_eligible_target_draw` per the frozen future-only boundary algorithm and begin the P274A prospective-confirmation clock, contingent on a separate P271 prospective-capture infrastructure activation decision.
+2. **HOLD** — take no further P274A action pending additional evidence, resources, or a future roadmap review.
+3. **Scientific closure** — formally close the P274A protocol arc as a completed design/pre-registration artifact without activation, documenting the rationale.
+
+This entry records the fork for owner consideration only; it does not authorize any of the three paths. `final_classification=P274A_PR439_POSTMERGE_GOVERNANCE_CLOSEOUT_COMPLETE`. The resulting governance PR must not be merged by the worker — awaiting separate owner merge authorization.
+
+---
+
 ## P274A Prospective Confirmation Protocol — Owner Authorization (design & pre-registration only) — 2026-06-15
 
 **Owner authorizes `P274A_PROSPECTIVE_CONFIRMATION_PROTOCOL_DESIGN` as design and pre-registration only.** This supersedes the prior "P274A recommended, not authorized" closeout statement, which is now stale. Authorization covers exactly: creating the task branch `task/p274a-prospective-confirmation-protocol-design` (created directly from `origin/main` `91dc783f40def5142391664fc34b7691805a745d`) and its isolated worktree, read-only consumption of committed source/governance, deterministic read-only power/design calculations, creation of the two P274A artifacts, updates to exactly four governance files, staging exactly six whitelisted files, one commit, push of only the task branch, and **one PR to `main` that must NOT be merged**. **No branch or worktree existed before this task; the task-specific prompt authorizes the isolated branch/worktree.**

@@ -1,6 +1,6 @@
 # Lottery Replay Roadmap
 
-**Last Updated:** 2026-06-15 Asia/Taipei (P274B execution/activation readiness plan complete — design/readiness only; digest `bf8ae32f8dbd208da4939ee46cdbe19125827f36c3a80aedefc8fee21a994744`; current gate `G1_PARTIAL_PENDING_OWNER_APPROVAL`; implementation `NOT_READY_FOR_IMPLEMENTATION_AUTHORIZATION`; activation `NOT_READY_FOR_ACTIVATION`; overall `HOLD_RECOMMENDED`; P271 unactivated; production apply `NOT_READY_FOR_APPLY`; P273B deferred; next fork requires owner decision. Prior: P274A protocol PR #439 merged.)
+**Last Updated:** 2026-06-15 Asia/Taipei (P274B PR #441 post-merge governance closeout — PR #441 MERGED at `2026-06-15T10:14:49Z`; merge commit `fa896035a2c6d5980c3e82276ebb87a7205672bc`; readiness-plan artifacts now on `main`; current gate `G1_PARTIAL_PENDING_OWNER_APPROVAL`; implementation `NOT_READY_FOR_IMPLEMENTATION_AUTHORIZATION`; activation `NOT_READY_FOR_ACTIVATION`; overall `HOLD_RECOMMENDED`; P271 unactivated; production apply `NOT_READY_FOR_APPLY`; P273B deferred; closeout PR open/unmerged. Prior: P274B execution/activation readiness plan complete; prior: P274A protocol PR #439 merged.)
 **Owner:** CTO agent
 **Primary Goal:** Keep LotteryNew replay, research, and product evidence truthful, reproducible, and governed. The current maturity bottleneck has shifted from migration rehearsal to short/mid-window strategy protocol design, anti-overfit validation, canonical repo dispatch safety, and honest product disclosure.
 **Repo Policy:** Use `/Users/kelvin/Kelvin-WorkSpace/LotteryNew` only. Do not create a new repo. Production DB, registry, and data writes require explicit governed authorization. CTO roadmap updates are limited to this file and `00-Plan/roadmap/CTO-Analysis.md`. CTO must not write `CEO-Decision.md`, `active_task.md`, `production/*`, `registry/*`, `data/*`, or any new repo.
@@ -10,6 +10,10 @@
 ## 0. Current Roadmap Override — 2026-06-03 (updated; originally authored 2026-06-02)
 
 This section is the current source of truth. The 2026-06-01 sections and P186-P196 appendices below are retained for history and are superseded where they conflict with this section.
+
+### 0.0-P274B-POSTMERGE 2026-06-15 P274B PR #441 Merged — Post-Merge Governance Closeout
+
+**PR #441 is MERGED** — merge commit `fa896035a2c6d5980c3e82276ebb87a7205672bc` at `2026-06-15T10:14:49Z` (PR head `38edcd408741371a21852e521156522b26de0813`, branch `task/p274b-prospective-execution-activation-readiness-plan`), bringing `outputs/research/p274b_prospective_execution_activation_readiness_plan_20260615.{json,md}` onto `main`. Canonical payload digest `bf8ae32f8dbd208da4939ee46cdbe19125827f36c3a80aedefc8fee21a994744` is unchanged. This governance-only closeout independently re-verified the merged artifacts and confirms no protocol, digest, or blocker change. `current position` remains `G1_PARTIAL_PENDING_OWNER_APPROVAL`; implementation remains `NOT_READY_FOR_IMPLEMENTATION_AUTHORIZATION`; activation remains `NOT_READY_FOR_ACTIVATION`; production apply remains `NOT_READY_FOR_APPLY`; `HOLD_RECOMMENDED`; P271 remains unactivated; P273B stays deferred. No implementation, activation, capture, registry/recommendation mutation, deployment, controlled_apply, or predictive-success claim occurred. `final_classification=P274B_PR441_POSTMERGE_GOVERNANCE_CLOSEOUT_COMPLETE`.
 
 ### 0.0-P274B 2026-06-15 Prospective Execution / Activation Readiness Plan
 

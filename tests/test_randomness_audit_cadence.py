@@ -31,7 +31,6 @@ Acceptance criteria:
 from __future__ import annotations
 
 import re
-import tempfile
 from datetime import datetime, timedelta, timezone
 from pathlib import Path
 
@@ -41,6 +40,10 @@ import pytest
 
 CADENCE_MAX_CALENDAR_DAYS: int = 14
 CADENCE_MAX_NEW_DRAWS: int = 50  # trigger if this many new draws exist since last audit
+CADENCE_MAX_FUTURE_SKEW_HOURS: int = 24  # re-attestation timestamps this far in the future are rejected
+
+# Original statistical run timestamp — must never change without a real audit rerun
+_ORIGINAL_RUN_TIMESTAMP = "2026-06-02T06:57:02.982982"
 
 # ─── Paths ────────────────────────────────────────────────────────────────────
 
@@ -103,19 +106,33 @@ def _parse_re_attestation_time(text: str) -> datetime:
     return dt
 
 
-def _check_cadence(last_run: datetime, now: datetime) -> tuple[bool, str]:
+def _check_cadence(reattest_time: datetime, now: datetime) -> tuple[bool, str]:
     """
     Returns (is_stale, reason).
-    stale = True means the audit should be re-run.
+    stale = True means the re-attestation is overdue or the timestamp is implausibly far in the future.
+
+    Inputs:
+      reattest_time — the Re-attestation timestamp (human review time, not statistical run time)
+      now           — current UTC time
+
+    A future timestamp within CADENCE_MAX_FUTURE_SKEW_HOURS (24 h) is accepted as clock skew.
+    A future timestamp beyond that tolerance is rejected as implausible.
     """
-    age_days = (now - last_run).total_seconds() / 86400.0
+    age_days = (now - reattest_time).total_seconds() / 86400.0
+    max_future_days = CADENCE_MAX_FUTURE_SKEW_HOURS / 24.0
+    if age_days < -max_future_days:
+        return True, (
+            f"Re-attestation timestamp is {-age_days:.2f} days in the future "
+            f"(tolerance: {CADENCE_MAX_FUTURE_SKEW_HOURS} hours). "
+            "Clock skew exceeds maximum tolerance."
+        )
     if age_days > CADENCE_MAX_CALENDAR_DAYS:
         return True, (
-            f"Audit is {age_days:.1f} calendar days old "
+            f"Re-attestation is {age_days:.1f} calendar days old "
             f"(policy limit: {CADENCE_MAX_CALENDAR_DAYS} days). "
-            "Re-run scripts/randomness_audit.py."
+            "Human review of committed evidence required."
         )
-    return False, f"Audit is {age_days:.1f} days old — within {CADENCE_MAX_CALENDAR_DAYS}-day policy."
+    return False, f"Re-attestation is {age_days:.1f} days old — within {CADENCE_MAX_CALENDAR_DAYS}-day policy."
 
 
 # ─── Tests ────────────────────────────────────────────────────────────────────
@@ -245,6 +262,33 @@ class TestSummaryFileParsing:
         stale, _ = _check_cadence(reattest, now)
         assert not stale, "Future re-attestation (clock skew < 1 day) must not be treated as stale"
 
+    def test_re_attestation_exactly_24h_future_accepted(self):
+        """Exactly 24 hours in the future is at the tolerance boundary — must be accepted."""
+        now = datetime(2026, 5, 8, tzinfo=timezone.utc)
+        reattest = now + timedelta(hours=CADENCE_MAX_FUTURE_SKEW_HOURS)
+        stale, reason = _check_cadence(reattest, now)
+        assert not stale, (
+            f"Re-attestation exactly {CADENCE_MAX_FUTURE_SKEW_HOURS}h in future must be accepted. "
+            f"reason={reason}"
+        )
+
+    def test_re_attestation_beyond_24h_future_rejected(self):
+        """More than 24 hours in the future must be rejected as implausible clock skew."""
+        now = datetime(2026, 5, 8, tzinfo=timezone.utc)
+        reattest = now + timedelta(hours=CADENCE_MAX_FUTURE_SKEW_HOURS, seconds=1)
+        stale, reason = _check_cadence(reattest, now)
+        assert stale, (
+            f"Re-attestation {CADENCE_MAX_FUTURE_SKEW_HOURS}h+1s in future must be rejected. "
+            f"reason={reason}"
+        )
+
+    def test_re_attestation_exactly_24h_plus_1s_future_rejected(self):
+        """Alias: 24 hours + 1 second in the future must fail the cadence gate."""
+        now = datetime(2026, 5, 8, tzinfo=timezone.utc)
+        reattest = now + timedelta(hours=24, seconds=1)
+        stale, reason = _check_cadence(reattest, now)
+        assert stale, f"24h+1s future must be stale. reason={reason}"
+
 
 class TestFixtureStaleness:
     """
@@ -341,7 +385,7 @@ class TestRealSummaryFile:
     def test_summary_file_exists(self):
         assert SUMMARY_FILE.exists(), (
             f"Randomness audit summary not found: {SUMMARY_FILE}\n"
-            "Fix: run scripts/randomness_audit.py to generate it."
+            "This is a static committed artifact. Restore it from git history."
         )
 
     def test_summary_is_readable(self):
@@ -403,10 +447,15 @@ class TestRealSummaryFile:
         assert reattest_time.year >= 2026, f"Re-attestation timestamp looks wrong: {reattest_time}"
 
     def test_original_run_timestamp_preserved(self):
-        """The original Run timestamp must remain unchanged after re-attestation."""
+        """The original Run timestamp must equal the known value from the statistical run."""
         text = SUMMARY_FILE.read_text(encoding="utf-8")
         run_time = _parse_last_run(text)
-        assert run_time.year >= 2026, f"Run timestamp looks wrong: {run_time}"
+        expected = datetime.fromisoformat(_ORIGINAL_RUN_TIMESTAMP).replace(tzinfo=timezone.utc)
+        assert run_time == expected, (
+            f"Run timestamp must be exactly {_ORIGINAL_RUN_TIMESTAMP!r}. "
+            f"Got {run_time.isoformat()!r}. "
+            "Do not change the original Run timestamp."
+        )
         reattest_time = _parse_re_attestation_time(text)
         assert reattest_time >= run_time, (
             f"Re-attestation time {reattest_time} must not precede Run timestamp {run_time}"

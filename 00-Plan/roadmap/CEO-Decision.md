@@ -2,6 +2,18 @@
 
 ---
 
+## P274C G1 Prospective Execution Decision Resolution — Owner Authorization & Outcome — 2026-06-15
+
+**The owner superseded the prior P274B HOLD selection and selected exhaustive G1 decision resolution.** Necessary governed exploration is not redundant: P274C was authorized to examine every reasonable architecture option, resolve or truthfully defer every mandatory decision, and recommend HOLD or scientific closure only if the evidence required it. This authorization was for comprehensive G1 design and owner-decision resolution only.
+
+Artifacts: `outputs/research/p274c_g1_prospective_execution_decision_resolution_design_20260615.{json,md}`; canonical payload digest `873dc804130ca1e737e6430ac114791c15277a2799b7567279d809f8b7fc51a6`. All 14 canonical P274B decisions were examined: 14 resolved, 0 deferred. Eight additional mandatory decisions were identified and resolved, with 89 total options evaluated (67 rejected; 14 conditional selections with explicit pre-G2 evidence gates). The selected reference architecture is `RECOMMENDED_RESILIENT_LONG_HORIZON`.
+
+**G1 outcome:** `G1_COMPLETE_READY_FOR_SEPARATE_G2_AUTHORIZATION`. This means a separate G2 authorization may be considered only after the recorded pre-G2 acceptance evidence is attached and verified. P274C does **not** authorize G2 implementation, activation, an activation timestamp, a first eligible target draw, prospective capture, production DB access or inspection, P271 activation, registry/recommendation mutation, P273B, deployment, `controlled_apply`, or production apply. The P274A protocol and frozen candidate set are unchanged; `prediction_success_claim=false`; production apply remains `NOT_READY_FOR_APPLY`.
+
+The resulting P274C PR is open and unmerged and must remain so until a separate owner merge decision.
+
+---
+
 ## P274B PR #441 Post-Merge Governance Closeout — 2026-06-15
 
 **PR #441 is MERGED.** Merge commit `fa896035a2c6d5980c3e82276ebb87a7205672bc` at `2026-06-15T10:14:49Z` (PR head `38edcd408741371a21852e521156522b26de0813`, branch `task/p274b-prospective-execution-activation-readiness-plan`) brought `outputs/research/p274b_prospective_execution_activation_readiness_plan_20260615.{json,md}` onto `main`; the canonical payload digest remains `bf8ae32f8dbd208da4939ee46cdbe19125827f36c3a80aedefc8fee21a994744`. This governance-only closeout independently re-verified the merged artifacts and confirms the readiness-plan contents are unchanged.

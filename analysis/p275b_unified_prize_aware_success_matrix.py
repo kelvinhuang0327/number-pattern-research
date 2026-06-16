@@ -630,6 +630,14 @@ def _build_summary(rows: List[Dict[str, Any]], groups: List[Dict[str, Any]],
 # --------------------------------------------------------------------------- #
 
 def _git_head(default: str = "UNKNOWN") -> str:
+    """Live execution HEAD of the working tree (new-build convenience only).
+
+    Used solely as the default for ``source_commit`` when no explicit
+    provenance is pinned. It deliberately reflects the *live* HEAD and must NOT
+    be used to reproduce a previously committed artifact: a branch update
+    advances HEAD without changing the source snapshot a committed artifact
+    pins. See :func:`_resolve_source_commit`.
+    """
     try:
         out = subprocess.run(
             ["git", "-C", str(REPO_ROOT), "rev-parse", "HEAD"],
@@ -639,10 +647,49 @@ def _git_head(default: str = "UNKNOWN") -> str:
         return default
 
 
+def _resolve_source_commit(source_commit: Optional[str]) -> str:
+    """Resolve the immutable source-snapshot provenance for a build.
+
+    ``source_commit`` records the *source tree snapshot* an artifact is derived
+    from — the commit whose tree produced the three P273A inputs, the lifecycle
+    registry module and the reused helpers. It is NOT the commit that will
+    eventually carry the committed artifact, and it is NOT necessarily the live
+    execution HEAD: a branch update advances HEAD while the committed
+    artifact's pinned snapshot is unchanged.
+
+    Resolution semantics:
+      * explicit value -> pinned provenance, used verbatim. This is the path
+        that *reproduces* a committed artifact: pass the artifact's stored
+        ``source_commit``.
+      * ``None``       -> new-build convenience default: the live execution
+        HEAD via :func:`_git_head`.
+
+    An explicitly-supplied but empty / whitespace-only value is rejected as
+    malformed provenance — it is not a request for the live-HEAD default, which
+    is expressed only by ``None``.
+    """
+    if source_commit is None:
+        return _git_head()
+    if not isinstance(source_commit, str) or not source_commit.strip():
+        raise ValueError(
+            "source_commit must be a non-empty source-snapshot provenance "
+            f"string when explicitly supplied; got {source_commit!r}. Pass "
+            "None to fall back to the live execution HEAD for a new build.")
+    return source_commit
+
+
 def build_artifact(*, generated_at: Optional[str] = None,
                    source_commit: Optional[str] = None) -> Dict[str, Any]:
+    """Build the P275B unified prize-aware success matrix artifact.
+
+    ``source_commit`` is the immutable source-snapshot provenance for the build
+    and stays inside the canonical payload and digest (never excluded). Pass a
+    committed artifact's stored ``source_commit`` to reproduce it byte-for-byte;
+    leave it ``None`` for a fresh build to default to the live execution HEAD.
+    See :func:`_resolve_source_commit`.
+    """
     generated_at = generated_at or _dt.datetime.now(_dt.timezone.utc).isoformat()
-    source_commit = source_commit or _git_head()
+    source_commit = _resolve_source_commit(source_commit)
 
     guard = _DBGuard()
     with guard:

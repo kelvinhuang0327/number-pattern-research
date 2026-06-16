@@ -348,10 +348,79 @@ def test_committed_artifact_digest_matches_fresh_build():
     if not committed_path.exists():
         pytest.skip("committed artifact not present in this tree")
     committed = json.loads(committed_path.read_text(encoding="utf-8"))
-    fresh = p275b.build_artifact(generated_at=committed["generated_at"])
+    # Reproduce the committed artifact from its *pinned* source snapshot, not
+    # the live HEAD: a branch update advances HEAD without changing the source
+    # snapshot the committed artifact records, so source_commit must be replayed
+    # explicitly rather than re-derived from the current working tree.
+    fresh = p275b.build_artifact(
+        generated_at=committed["generated_at"],
+        source_commit=committed["source_commit"])
     assert committed["canonical_payload_digest"] == fresh["canonical_payload_digest"]
     assert committed["canonical_payload_digest"] == p275b.canonical_digest(
         committed, p275b.SELF_DIGEST_EXCLUDE)
+
+
+# --------------------------------------------------------------------------- #
+# Source-snapshot provenance (source_commit) semantics                        #
+#                                                                             #
+# source_commit is the immutable source snapshot a build is derived from —    #
+# not the artifact-carrying commit and not necessarily the live HEAD. It must #
+# stay digest-covered and be replayable for historical reproduction.          #
+# --------------------------------------------------------------------------- #
+
+# A second well-formed (but distinct) snapshot id, used to prove the digest is
+# sensitive to source_commit. Value is synthetic; the builder only embeds it as
+# provenance and never resolves it against git.
+_PINNED_SOURCE_A = "77994824d1c1e5e4d4db14f0c7d5cb64bf933ead"
+_PINNED_SOURCE_B = "0123456789abcdef0123456789abcdef01234567"
+
+
+def test_explicit_pinned_source_commit_is_preserved():
+    art = p275b.build_artifact(generated_at=PINNED_AT, source_commit=_PINNED_SOURCE_A)
+    assert art["source_commit"] == _PINNED_SOURCE_A
+    # Every row carries the same pinned snapshot, and it is never excluded from
+    # the canonical digest.
+    assert all(r["source_commit"] == _PINNED_SOURCE_A for r in art["matrix_rows"])
+    assert "source_commit" not in p275b.SELF_DIGEST_EXCLUDE
+
+
+def test_pinned_reproduction_matches_committed_digest():
+    committed_path = (_MODULE_PATH.parents[1] / "outputs" / "research"
+                      / "p275b_unified_prize_aware_success_matrix_20260616.json")
+    if not committed_path.exists():
+        pytest.skip("committed artifact not present in this tree")
+    committed = json.loads(committed_path.read_text(encoding="utf-8"))
+    fresh = p275b.build_artifact(
+        generated_at=committed["generated_at"],
+        source_commit=committed["source_commit"])
+    assert fresh["source_commit"] == committed["source_commit"]
+    assert fresh["canonical_payload_digest"] == committed["canonical_payload_digest"]
+
+
+def test_changing_pinned_source_commit_changes_digest():
+    a = p275b.build_artifact(generated_at=PINNED_AT, source_commit=_PINNED_SOURCE_A)
+    b = p275b.build_artifact(generated_at=PINNED_AT, source_commit=_PINNED_SOURCE_B)
+    assert _PINNED_SOURCE_A != _PINNED_SOURCE_B
+    assert a["source_commit"] != b["source_commit"]
+    # source_commit is inside the canonical payload, so a different snapshot
+    # must yield a different canonical digest.
+    assert a["canonical_payload_digest"] != b["canonical_payload_digest"]
+
+
+def test_default_source_commit_uses_live_head():
+    # The None default documents new-build behaviour: the live execution HEAD.
+    # This path stays separately testable from the pinned-replay path above.
+    art = p275b.build_artifact(generated_at=PINNED_AT)
+    assert art["source_commit"] == p275b._git_head()
+
+
+@pytest.mark.parametrize("bad", ["", "   ", "\t\n"])
+def test_empty_source_commit_rejected(bad):
+    # Explicit but empty/whitespace provenance is malformed — it must be
+    # rejected rather than silently falling back to the live HEAD (which is
+    # expressed only by None).
+    with pytest.raises(ValueError):
+        p275b.build_artifact(generated_at=PINNED_AT, source_commit=bad)
 
 
 # --------------------------------------------------------------------------- #

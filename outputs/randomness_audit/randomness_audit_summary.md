@@ -1,10 +1,31 @@
 # Lottery Randomness Audit Report
 
 **Run timestamp:** 2026-06-02T06:57:02.982982
+**Re-attestation timestamp:** 2026-06-16T10:24:11.889860
 **Simulations:** 2,000 (seed=42)
 **Alpha:** 0.05
 **Total confirmatory tests:** 44
 **Bonferroni threshold:** 1.1364e-03
+
+---
+### Re-attestation Disclosure (P275E-A, 2026-06-16)
+
+This document is a **human re-attestation** of unchanged committed statistical evidence.
+It is **not** a new statistical analysis or a new audit run.
+
+| Field | Value |
+|---|---|
+| Original audit run | 2026-06-02T06:57:02.982982 (Run timestamp above) |
+| Re-attestation performed | 2026-06-16T10:24:11.889860 (Re-attestation timestamp above) |
+| Reanalysis performed | **NO** — statistical values were not recomputed |
+| New draws analyzed | **NO** — data through 2026-04-29 only |
+| Audit script status | `scripts/randomness_audit.py` is absent from this repository (never existed) |
+| Re-attestation basis | Human review confirmed the committed statistical evidence remains the current committed state. Precedent: P203 commit `d119ea6`. |
+
+**Limitation:** This re-attestation does not establish that the prior verdict
+(`WEAK_DEVIATIONS_NOT_SIGNIFICANT_AFTER_CORRECTION`) holds for draws added after
+the original audit date (through 2026-04-29). Draws ingested since that date have
+not been statistically tested.
 
 ---
 ## FINAL VERDICT

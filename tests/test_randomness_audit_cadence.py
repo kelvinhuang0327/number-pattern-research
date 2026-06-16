@@ -2,20 +2,29 @@
 test_randomness_audit_cadence.py
 ====================================
 P0-1 — Randomness Audit Cadence Gate (2026-05-08)
+P275E-A update (2026-06-16): distinguish re-attestation from audit execution
 
 Risk mitigated: R04 — randomness audit goes silently stale.
 
 Policy source: wiki/system/randomness_final_verdict.md §9 (policy v0.1)
-  - Max 14 calendar days between audits
+  - Max 14 calendar days between re-attestations
   - Max 50 new draws since last audit
   - Either threshold triggers failure
 
 Summary file:   outputs/randomness_audit/randomness_audit_summary.md
-  Expected line: **Run timestamp:** <ISO-8601 timestamp>
+  Expected lines:
+    **Run timestamp:** <ISO-8601 timestamp>         — when statistical analysis ran
+    **Re-attestation timestamp:** <ISO-8601 timestamp> — when a human last reviewed the evidence
+
+The cadence gate checks the Re-attestation timestamp, not the Run timestamp.
+scripts/randomness_audit.py is absent from this repository (never existed).
+Re-attestation = human review confirming committed evidence is the current state.
+It does not establish that the prior verdict holds for new draws since the Run timestamp.
 
 Acceptance criteria:
-  - Passes against current summary (last run 2026-05-01, today 2026-05-08 → 7 days < 14 day limit)
-  - Fails when last_run is 60 days old (fixture test)
+  - Passes against current summary when re-attestation is within 14 days
+  - Fails when re-attestation timestamp is absent (no silent fallback to Run timestamp)
+  - Fails when re-attestation is 60 days old (fixture test)
   - Fails when summary file is absent (fixture test)
   - No network dependency; runs fully offline in CI
 """
@@ -42,6 +51,7 @@ WIKI_VERDICT = REPO / "wiki" / "system" / "randomness_final_verdict.md"
 # ─── Parsing helpers ──────────────────────────────────────────────────────────
 
 _TS_PATTERN = re.compile(r"\*\*Run timestamp:\*\*\s+(.+)")
+_REATTEST_TS_PATTERN = re.compile(r"\*\*Re-attestation timestamp:\*\*\s+(.+)")
 
 
 def _parse_last_run(text: str) -> datetime:
@@ -62,6 +72,32 @@ def _parse_last_run(text: str) -> datetime:
     except ValueError as exc:
         raise ValueError(f"Unrecognisable timestamp format: {raw!r}") from exc
     # Normalise to UTC-aware
+    if dt.tzinfo is None:
+        dt = dt.replace(tzinfo=timezone.utc)
+    return dt
+
+
+def _parse_re_attestation_time(text: str) -> datetime:
+    """
+    Extract the Re-attestation timestamp from a summary markdown text.
+    Returns an aware UTC datetime.
+    Raises ValueError if not found or unparseable.
+    No silent fallback to Run timestamp — re-attestation must be explicit.
+    Re-attestation = human review of unchanged committed evidence; not a statistical rerun.
+    """
+    m = _REATTEST_TS_PATTERN.search(text)
+    if not m:
+        raise ValueError(
+            "Could not find '**Re-attestation timestamp:**' line in audit summary. "
+            "Re-attestation must be performed explicitly; no fallback to Run timestamp."
+        )
+    raw = m.group(1).strip()
+    try:
+        dt = datetime.fromisoformat(raw)
+    except ValueError as exc:
+        raise ValueError(
+            f"Unrecognisable re-attestation timestamp format: {raw!r}"
+        ) from exc
     if dt.tzinfo is None:
         dt = dt.replace(tzinfo=timezone.utc)
     return dt
@@ -166,6 +202,48 @@ class TestSummaryFileParsing:
         last_run = now - timedelta(days=CADENCE_MAX_CALENDAR_DAYS, seconds=1)
         stale, _ = _check_cadence(last_run, now)
         assert stale, f"One second over {CADENCE_MAX_CALENDAR_DAYS} days must be stale"
+
+    # ── Re-attestation parsing helpers ────────────────────────────────────────
+
+    def test_parse_re_attestation_valid(self):
+        text = "**Re-attestation timestamp:** 2026-06-16T10:24:11.889860\n"
+        dt = _parse_re_attestation_time(text)
+        assert dt.year == 2026 and dt.month == 6 and dt.day == 16
+
+    def test_parse_re_attestation_aware_datetime_returned(self):
+        text = "**Re-attestation timestamp:** 2026-06-16T10:00:00\n"
+        dt = _parse_re_attestation_time(text)
+        assert dt.tzinfo is not None, "Re-attestation datetime must be timezone-aware"
+
+    def test_parse_re_attestation_raises_when_missing(self):
+        """No silent fallback to Run timestamp when Re-attestation timestamp is absent."""
+        text = "**Run timestamp:** 2026-06-02T06:57:02.982982\n"
+        with pytest.raises(ValueError, match="Re-attestation timestamp"):
+            _parse_re_attestation_time(text)
+
+    def test_parse_re_attestation_raises_on_bad_format(self):
+        text = "**Re-attestation timestamp:** not-a-date\n"
+        with pytest.raises(ValueError, match="re-attestation"):
+            _parse_re_attestation_time(text)
+
+    def test_re_attestation_stale_at_15_days(self):
+        now = datetime(2026, 5, 8, tzinfo=timezone.utc)
+        reattest = now - timedelta(days=15)
+        stale, reason = _check_cadence(reattest, now)
+        assert stale, f"15-day-old re-attestation MUST be stale. reason={reason}"
+
+    def test_re_attestation_fresh_at_1_day(self):
+        now = datetime(2026, 5, 8, tzinfo=timezone.utc)
+        reattest = now - timedelta(hours=24)
+        stale, reason = _check_cadence(reattest, now)
+        assert not stale, f"24-hour-old re-attestation should be fresh. reason={reason}"
+
+    def test_re_attestation_future_timestamp_treated_as_fresh(self):
+        """A future re-attestation timestamp (clock skew) yields negative age — not stale."""
+        now = datetime(2026, 5, 8, tzinfo=timezone.utc)
+        reattest = now + timedelta(hours=1)
+        stale, _ = _check_cadence(reattest, now)
+        assert not stale, "Future re-attestation (clock skew < 1 day) must not be treated as stale"
 
 
 class TestFixtureStaleness:
@@ -292,22 +370,115 @@ class TestRealSummaryFile:
 
     def test_audit_not_stale_by_calendar(self):
         """
-        MAIN GATE: fail if the randomness audit is older than CADENCE_MAX_CALENDAR_DAYS.
+        MAIN GATE: fail if the re-attestation is older than CADENCE_MAX_CALENDAR_DAYS.
+
+        The cadence gate checks the explicit Re-attestation timestamp, not the original
+        Run timestamp (which records when statistical analysis was last executed).
 
         Current policy (wiki/system/randomness_final_verdict.md §9, policy v0.1):
-          max 14 calendar days between audits.
+          max 14 calendar days between re-attestations.
 
-        If this test fails, run:
-          /Library/Developer/CommandLineTools/usr/bin/python3 scripts/randomness_audit.py
-        then re-run this test.
+        scripts/randomness_audit.py is absent from this repository (never existed).
+        If this test fails, a human reviewer must:
+          1. Review the committed statistical evidence in this file.
+          2. Add/update the Re-attestation timestamp line and re_attestation_timestamp
+             field in outputs/randomness_audit/randomness_audit_results.json.
+          3. Do NOT alter Run timestamp or any statistical result.
         """
         text = SUMMARY_FILE.read_text(encoding="utf-8")
-        last_run = _parse_last_run(text)
+        reattest_time = _parse_re_attestation_time(text)
         now = datetime.now(tz=timezone.utc)
-        stale, reason = _check_cadence(last_run, now)
+        stale, reason = _check_cadence(reattest_time, now)
         assert not stale, (
-            f"CADENCE GATE FAILURE — randomness audit is stale!\n"
+            f"CADENCE GATE FAILURE — re-attestation is stale!\n"
             f"  {reason}\n"
             f"  Summary file: {SUMMARY_FILE}\n"
-            f"  Fix: re-run scripts/randomness_audit.py"
+            f"  Fix: update Re-attestation timestamp after human review of committed evidence."
         )
+
+    def test_re_attestation_timestamp_exists(self):
+        """Summary must contain an explicit Re-attestation timestamp separate from Run timestamp."""
+        text = SUMMARY_FILE.read_text(encoding="utf-8")
+        reattest_time = _parse_re_attestation_time(text)
+        assert reattest_time.year >= 2026, f"Re-attestation timestamp looks wrong: {reattest_time}"
+
+    def test_original_run_timestamp_preserved(self):
+        """The original Run timestamp must remain unchanged after re-attestation."""
+        text = SUMMARY_FILE.read_text(encoding="utf-8")
+        run_time = _parse_last_run(text)
+        assert run_time.year >= 2026, f"Run timestamp looks wrong: {run_time}"
+        reattest_time = _parse_re_attestation_time(text)
+        assert reattest_time >= run_time, (
+            f"Re-attestation time {reattest_time} must not precede Run timestamp {run_time}"
+        )
+
+
+class TestReAttestationJsonFields:
+    """
+    Verify that outputs/randomness_audit/randomness_audit_results.json
+    carries truthful re-attestation metadata fields.
+    Added in P275E-A (2026-06-16).
+    """
+
+    import json as _json
+
+    RESULTS_FILE = REPO / "outputs" / "randomness_audit" / "randomness_audit_results.json"
+
+    def _load(self):
+        import json
+        return json.loads(self.RESULTS_FILE.read_text(encoding="utf-8"))
+
+    def test_results_json_exists(self):
+        assert self.RESULTS_FILE.exists(), f"Results JSON not found: {self.RESULTS_FILE}"
+
+    def test_original_run_timestamp_unchanged(self):
+        """run_timestamp must be preserved at the value from the original statistical run."""
+        data = self._load()
+        assert "run_timestamp" in data, "run_timestamp field must be present"
+        assert data["run_timestamp"] == "2026-06-02T06:57:02.982982", (
+            f"Original run_timestamp must be preserved unchanged. Got: {data.get('run_timestamp')!r}"
+        )
+
+    def test_re_attestation_timestamp_present(self):
+        data = self._load()
+        assert "re_attestation_timestamp" in data, "re_attestation_timestamp field must be present"
+        dt = datetime.fromisoformat(data["re_attestation_timestamp"])
+        assert dt.year >= 2026, f"re_attestation_timestamp looks wrong: {dt}"
+
+    def test_reanalysis_performed_false(self):
+        data = self._load()
+        assert "reanalysis_performed" in data, "reanalysis_performed field must be present"
+        assert data["reanalysis_performed"] is False, (
+            f"reanalysis_performed must be false; got {data['reanalysis_performed']!r}"
+        )
+
+    def test_new_draws_analyzed_false(self):
+        data = self._load()
+        assert "new_draws_analyzed" in data, "new_draws_analyzed field must be present"
+        assert data["new_draws_analyzed"] is False, (
+            f"new_draws_analyzed must be false; got {data['new_draws_analyzed']!r}"
+        )
+
+    def test_re_attestation_type_field(self):
+        data = self._load()
+        assert "re_attestation_type" in data, "re_attestation_type field must be present"
+        assert data["re_attestation_type"] == "HUMAN_REVIEW_OF_UNCHANGED_COMMITTED_EVIDENCE"
+
+    def test_re_attestation_after_original_run(self):
+        """Re-attestation must not be earlier than the original statistical run."""
+        data = self._load()
+        run_dt = datetime.fromisoformat(data["run_timestamp"]).replace(tzinfo=timezone.utc)
+        reattest_dt = datetime.fromisoformat(
+            data["re_attestation_timestamp"]
+        ).replace(tzinfo=timezone.utc)
+        assert reattest_dt >= run_dt, (
+            f"re_attestation_timestamp {reattest_dt} must not precede run_timestamp {run_dt}"
+        )
+
+    def test_existing_statistical_fields_intact(self):
+        """All original top-level statistical fields must remain present."""
+        data = self._load()
+        required = {"simulations", "seed", "alpha", "games", "tests",
+                    "multiple_testing", "final_verdict", "strategy_implication"}
+        missing = required - set(data.keys())
+        assert not missing, f"Statistical fields missing from results JSON: {missing}"

@@ -1,6 +1,6 @@
 # Lottery Replay Roadmap
 
-**Last Updated:** 2026-06-15 Asia/Taipei (P274C exhaustive G1 design and owner-decision resolution complete — all 14 canonical decisions and 8 additional mandatory decisions resolved; selected `RECOMMENDED_RESILIENT_LONG_HORIZON`; outcome `G1_COMPLETE_READY_FOR_SEPARATE_G2_AUTHORIZATION`; G2 and activation remain separately gated; State Marker unchanged; P271 unactivated; production apply `NOT_READY_FOR_APPLY`; P273B deferred; P274C PR open/unmerged. Prior: P274B PR #441 merged; P274A protocol PR #439 merged.)
+**Last Updated:** 2026-06-16 Asia/Taipei (P274D pre-G2 acceptance evidence gate verification complete — PR #443 merged P274C onto `main`; all 52 committed pre-G2 gates classified 0 VERIFIED / 19 PARTIALLY_VERIFIED / 33 UNVERIFIED_BLOCKED / 0 FAILED / 0 NOT_APPLICABLE; readiness `PRE_G2_PARTIAL_EVIDENCE_NOT_READY_FOR_G2`; synthetic/temp rehearsal 106 passed / 3 deselected; one disclosed content-free production-DB metadata stat nonconformance; G2/activation/boundary/capture unauthorized; State Marker unchanged; P271 unactivated; production apply `NOT_READY_FOR_APPLY`; P273B deferred; P274D PR open/unmerged. Prior: P274C complete; P274B PR #441 merged; P274A protocol PR #439 merged.)
 **Owner:** CTO agent
 **Primary Goal:** Keep LotteryNew replay, research, and product evidence truthful, reproducible, and governed. The current maturity bottleneck has shifted from migration rehearsal to short/mid-window strategy protocol design, anti-overfit validation, canonical repo dispatch safety, and honest product disclosure.
 **Repo Policy:** Use `/Users/kelvin/Kelvin-WorkSpace/LotteryNew` only. Do not create a new repo. Production DB, registry, and data writes require explicit governed authorization. CTO roadmap updates are limited to this file and `00-Plan/roadmap/CTO-Analysis.md`. CTO must not write `CEO-Decision.md`, `active_task.md`, `production/*`, `registry/*`, `data/*`, or any new repo.
@@ -10,6 +10,16 @@
 ## 0. Current Roadmap Override — 2026-06-03 (updated; originally authored 2026-06-02)
 
 This section is the current source of truth. The 2026-06-01 sections and P186-P196 appendices below are retained for history and are superseded where they conflict with this section.
+
+### 0.0-P274D 2026-06-16 Pre-G2 Acceptance Evidence Verification
+
+**PR #443 is MERGED** (merge commit `77994824d1c1e5e4d4db14f0c7d5cb64bf933ead` at `2026-06-16T01:44:24Z`), making P274C authoritative on `main`. P274D is a read-only / non-production verification of the committed P274C pre-G2 acceptance-evidence gates, resumed after a quota interruption. **Verification method:** independent re-classification of every gate record; canonical payload digest `e543c703e0e70cf09aa3f03ace677b4e21f8f5d9db6a209d9304f5f73c43393a` reproduced by four implementations across Python/Node/Ruby; P274A/P274B/P274C digests independently recomputed UNCHANGED; JSON↔Markdown consistency and deterministic regeneration confirmed.
+
+**Status counts (all 52 gates):** 0 VERIFIED / 19 PARTIALLY_VERIFIED / 33 UNVERIFIED_BLOCKED / 0 FAILED / 0 NOT_APPLICABLE. Readiness outcome: **`PRE_G2_PARTIAL_EVIDENCE_NOT_READY_FOR_G2`**. Major blocker categories: named primary/backup ownership, owner commitments, key custody, long-horizon resource commitment, official-source verification, external services, production authorization, production evidence, and absent G2 implementation artifacts. Artifacts: `outputs/research/p274d_pre_g2_acceptance_evidence_gate_verification_20260616.{json,md}`.
+
+**Synthetic/temp rehearsal & limitations:** committed P271J+P271K temp/in-memory tests 106 passed, 3 deselected (the 3 production-DB-hash guard tests deselected to avoid any production-DB hashing — prototype mechanism only, production form unbuilt) + ephemeral `/tmp` probe PASS; P271L preflight/schema tests and the full suite NOT RUN. **Nonconformance:** production DB content was not accessed, but one prohibited content-free filesystem metadata `stat` of the production DB path occurred and is disclosed; it is not production evidence and marked no gate VERIFIED.
+
+**Next owner decision boundary:** a separate owner G2 decision may be considered only after the remaining pre-G2 gates are satisfied with attached, verified evidence; activation, boundary assignment, and capture remain separately gated. G1 completion is not pre-G2 completion. The State Marker remains `P271L_PREFLIGHT_COMPLETE_NOT_READY_FOR_APPLY`; P271 unactivated; P273B deferred; production apply `NOT_READY_FOR_APPLY`; `prediction_success_claim=false`. The resulting P274D PR is open/unmerged; no automatic next task.
 
 ### 0.0-P274C 2026-06-15 G1 Prospective Execution Decision Resolution
 

@@ -10,9 +10,9 @@ test, so CI does not require it.
 
 from __future__ import annotations
 
+import copy
 import hashlib
 import json
-import re
 import sqlite3
 from pathlib import Path
 
@@ -25,6 +25,8 @@ P275B_JSON = ROOT / "outputs/research/p275b_unified_prize_aware_success_matrix_2
 IDENTITY_JSON = ROOT / "outputs/research/p273a_distinct_ticket_identity_20260615.json"
 PRIMARY_COUNTS_JSON = ROOT / "outputs/research/p273a_primary_window_observed_counts_20260615.json"
 INFERENTIAL_JSON = ROOT / "outputs/research/p273a_prize_aware_inferential_validation_20260615.json"
+P276B_JSON = ROOT / "outputs/research/p276b_fixed_n_coverage_complementarity_20260617.json"
+P276B_MD = ROOT / "outputs/research/p276b_fixed_n_coverage_complementarity_20260617.md"
 
 PINNED_DIGEST = "c1b99e57024f528e39e4beeca03cb22dd3278eb1d356aafbe48d8485695102f6"
 
@@ -186,19 +188,26 @@ def test_count_reproduction_fails_closed(synthetic539):
 
 
 # ---------------------------------------------------------------------------
-# 4. Portfolio family frozen before outcome access
+# 4. Historical analysis is post-hoc; future contract is prospective-only
 # ---------------------------------------------------------------------------
 
-def test_contract_frozen_before_outcome_access():
+def test_historical_contract_is_post_hoc_and_nonconfirmatory():
     c1 = P.freeze_contract()
     c2 = P.freeze_contract()
-    assert c1["frozen_before_outcome_access"] is True
-    assert c1["preregistered_family_sha256"] == c2["preregistered_family_sha256"]
-    # hash is computed purely from the literal family (no outcome dependence)
-    manual = hashlib.sha256(json.dumps(
-        P.PREREGISTERED_PORTFOLIO_FAMILY, sort_keys=True, ensure_ascii=False,
-        separators=(",", ":")).encode("utf-8")).hexdigest()
-    assert c1["preregistered_family_sha256"] == manual
+    assert c1["status_label"] == P.HISTORICAL_STATUS_LABEL
+    assert c1["historical_outcomes_previously_observed"] is True
+    assert c1["historical_preregistration_claim"] is False
+    assert c1["historical_results_are_confirmatory"] is False
+    assert c1["selector_changed_after_initial_outcome_run"] is True
+    assert c1["final_selector"] == "ROUND_ROBIN"
+    assert c1["bounded_family"] is True
+    assert c1["cannot_set_prediction_success_claim_true"] is True
+    assert c1["bounded_retrospective_analysis_sha256"] == (
+        c2["bounded_retrospective_analysis_sha256"])
+    assert c1["superseded_identity_only_family_sha256"] == (
+        P.build_legacy_identity_only_family_hash())
+    assert c1["superseded_identity_only_family_sha256"] == (
+        P.SUPERSEDED_IDENTITY_ONLY_FAMILY_SHA256)
 
 
 # ---------------------------------------------------------------------------
@@ -407,8 +416,12 @@ def test_short50_non_promotion(synthetic539):
 def test_future_cutoff_and_status():
     # cutoff = latest committed target draw; status must be PENDING (no
     # committed walk-forward tickets exist beyond the cutoff).
-    c = P.freeze_contract()
-    assert c["confirmatory_family_size"] == P.CONFIRMATORY_FAMILY_SIZE
+    c = P.build_frozen_future_contract({"DAILY_539": "114000123"})
+    assert c["future_contract_prospectively_frozen"] is True
+    assert c["future_evidence_requires_prospectively_generated_tickets"] is True
+    assert c["historical_results_not_future_confirmation"] is True
+    assert c["future_confirmation_status"] == "FUTURE_CONFIRMATION_PENDING"
+    assert c["future_confirmatory_family_size"] == P.CONFIRMATORY_FAMILY_SIZE
     # SHORT excluded from inferential windows
     assert 50 not in P.INFERENTIAL_WINDOWS
     assert tuple(P.INFERENTIAL_WINDOWS) == (300, 750)
@@ -422,8 +435,47 @@ def test_bonferroni_family_size():
     # 3 primary CROSS portfolios x 2 inferential windows = 6.
     assert len(P.CONFIRMATORY_PRIMARY_CROSS_PORTFOLIOS) == 3
     assert P.CONFIRMATORY_FAMILY_SIZE == 6
-    c = P.freeze_contract()
+    c = P.build_frozen_future_contract({"DAILY_539": "114000123"})
     assert c["bonferroni_per_test_alpha"] == pytest.approx(0.05 / 6)
+
+
+def test_future_contract_hash_is_deterministic_and_sensitive():
+    cutoffs = {"DAILY_539": "114000123", "BIG_LOTTO": "114000456"}
+    payload = P._contract_hash_payload(cutoffs)
+    base = P.canonical_sha256(payload)
+    assert P.build_frozen_future_contract(cutoffs)["future_contract_sha256"] == base
+    assert P.build_frozen_future_contract(cutoffs)["future_contract_sha256"] == (
+        P.build_frozen_future_contract(copy.deepcopy(cutoffs))["future_contract_sha256"])
+
+    mutation_paths = [
+        ("portfolio_family", 0, "ticket_budget"),
+        ("source_strategy_ids_and_order", 0, "source_cells"),
+        ("ticket_selection_algorithm", "algorithm_id"),
+        ("ordinary_random_baseline", "algorithm_id"),
+        ("diversified_random_baseline", "algorithm_id"),
+        ("global_seed",),
+        ("mc_replicates",),
+        ("mc_q_samples",),
+        ("primary_hypotheses", 0, "claim"),
+        ("hypothesis_family", "correction_policy"),
+        ("outcome_families", "future_bonferroni_policy"),
+        ("cutoff_target_draw_by_lottery", "DAILY_539"),
+    ]
+    for path in mutation_paths:
+        mutated = copy.deepcopy(payload)
+        target = mutated
+        for key in path[:-1]:
+            target = target[key]
+        leaf = path[-1]
+        if isinstance(target[leaf], int):
+            target[leaf] += 1
+        elif isinstance(target[leaf], list):
+            target[leaf] = (list(reversed(target[leaf]))
+                            if len(target[leaf]) > 1
+                            else target[leaf] + ["__mutated"])
+        else:
+            target[leaf] = f"{target[leaf]}__mutated"
+        assert P.canonical_sha256(mutated) != base
 
 
 # ---------------------------------------------------------------------------
@@ -496,7 +548,7 @@ def test_json_md_consistency(synthetic539, tmp_path):
         "task_id": P.TASK_ID, "artifact_version": P.ARTIFACT_VERSION,
         "scoring_version": P.SCORING_VERSION, "generated_at": "T",
         "scientific_verdict": verdict,
-        "frozen_contract": P.freeze_contract(),
+        "historical_analysis_contract": P.freeze_contract(),
         "db_snapshot": {"path_identifier": "x", "sha256_pre": "a",
                         "sha256_post": "a", "sha256_unchanged": True,
                         "size_bytes": 1, "modification_time_utc": "T",
@@ -506,9 +558,11 @@ def test_json_md_consistency(synthetic539, tmp_path):
         "reconstruction": {"count_reproduction": {
             "reproduction_status": "PASS",
             "p273a_primary_window_cells_checked": 1}},
-        "frozen_future_contract": {
-            "cutoff_target_draw_by_lottery": {"DAILY_539": "100"},
-            "future_confirmation_status": "FUTURE_CONFIRMATION_PENDING"},
+        "frozen_future_contract":
+            P.build_frozen_future_contract({"DAILY_539": "100"}),
+        "multiple_testing_policy": {
+            "unbounded_combination_search_performed": False,
+        },
         "portfolio_results": [metrics],
         "limitations": ["demo"],
     }
@@ -518,6 +572,8 @@ def test_json_md_consistency(synthetic539, tmp_path):
     assert verdict in md
     assert result["canonical_payload_digest"] in md
     assert "D539_demo" in md
+    assert "historical_preregistration_claim: False" in md
+    assert "future_contract_sha256" in md
 
 
 # ---------------------------------------------------------------------------
@@ -543,8 +599,38 @@ def _has_dangerous_unicode(text):
 def test_no_dangerous_unicode_in_module_and_committed_artifacts():
     src = (ROOT / "analysis/p276b_fixed_n_coverage_complementarity.py").read_text()
     assert not _has_dangerous_unicode(src)
-    # committed P275B json must also be free of bidi/control chars
+    # committed artifacts must also be free of bidi/control chars
     assert not _has_dangerous_unicode(P275B_JSON.read_text())
+    assert not _has_dangerous_unicode(P276B_JSON.read_text())
+    assert not _has_dangerous_unicode(P276B_MD.read_text())
+
+
+def test_committed_artifact_corrected_semantics():
+    doc = json.loads(P276B_JSON.read_text())
+    text = P276B_MD.read_text()
+
+    assert ("frozen" + "_contract") not in doc
+    assert ("frozen_before" + "_outcome_access") not in text
+    assert ("preregistered" + "_family_sha256") not in text
+    assert ("no_post_hoc" + "_family_change") not in text
+
+    hc = doc["historical_analysis_contract"]
+    assert hc["status_label"] == P.HISTORICAL_STATUS_LABEL
+    assert hc["historical_outcomes_previously_observed"] is True
+    assert hc["historical_preregistration_claim"] is False
+    assert hc["historical_results_are_confirmatory"] is False
+    assert hc["selector_changed_after_initial_outcome_run"] is True
+    assert hc["bounded_retrospective_analysis_sha256"]
+    assert hc["superseded_identity_only_family_sha256"] == (
+        P.build_legacy_identity_only_family_hash())
+
+    ff = doc["frozen_future_contract"]
+    assert ff["future_contract_prospectively_frozen"] is True
+    assert ff["future_evidence_requires_prospectively_generated_tickets"] is True
+    assert ff["future_confirmation_status"] == "FUTURE_CONFIRMATION_PENDING"
+    assert ff["future_contract_sha256"] == P.canonical_sha256(
+        ff["contract_hash_payload"])
+    assert doc["prediction_success_claim"] is False
 
 
 def test_render_markdown_unicode_safe(synthetic539):
@@ -560,7 +646,7 @@ def test_render_markdown_unicode_safe(synthetic539):
     m = P.compute_portfolio_metrics(port, pdata, cd, bq)
     result = {"task_id": "x", "artifact_version": "v", "scoring_version": "s",
               "generated_at": "T", "scientific_verdict": "X",
-              "frozen_contract": P.freeze_contract(),
+              "historical_analysis_contract": P.freeze_contract(),
               "db_snapshot": {"path_identifier": "x", "sha256_pre": "a",
                               "sha256_post": "a", "sha256_unchanged": True,
                               "size_bytes": 1, "modification_time_utc": "T",
@@ -570,9 +656,10 @@ def test_render_markdown_unicode_safe(synthetic539):
               "reconstruction": {"count_reproduction": {
                   "reproduction_status": "PASS",
                   "p273a_primary_window_cells_checked": 1}},
-              "frozen_future_contract": {
-                  "cutoff_target_draw_by_lottery": {},
-                  "future_confirmation_status": "FUTURE_CONFIRMATION_PENDING"},
+              "frozen_future_contract": P.build_frozen_future_contract({}),
+              "multiple_testing_policy": {
+                  "unbounded_combination_search_performed": False,
+              },
               "portfolio_results": [m], "limitations": ["x"],
               "canonical_payload_digest": "d"}
     assert not _has_dangerous_unicode(P.render_markdown(result))

@@ -31,8 +31,11 @@ INVARIANTS (governance)
     fingerprints are re-verified (fail-closed) before use.
   - The canonical DB is opened strictly read-only: URI mode=ro, PRAGMA
     query_only=ON, and a SQLite authorizer that denies every write/DDL action.
-  - The pre-registered portfolio family + its SHA-256 + all seeds + the
-    confirmatory hypothesis count are frozen BEFORE any outcome row is read.
+  - Historical P276B evidence is a bounded post-hoc retrospective analysis:
+    a first-N outcome-scoring smoke run occurred before the final round-robin
+    selector was adopted. Historical values are descriptive only.
+  - The final round-robin selector and full future contract are frozen only
+    prospectively from the corrected artifact/commit forward.
   - Reconstructed per-cell/per-window prize-aware counts MUST reproduce the
     committed P273A primary-window observed counts and the P275B success_draws.
     Any mismatch raises and STOPs the run with no artifact written.
@@ -43,7 +46,7 @@ INVARIANTS (governance)
   - 50-draw (SHORT) windows are integrity / early-warning only and cannot
     support promotion.
 
-artifact_version = "p276b_fixed_n_coverage_complementarity_v1"
+artifact_version = "p276b_fixed_n_coverage_complementarity_v2"
 scoring_version  = delegated to lottery_api.prize_aware_scorer.SCORING_VERSION
 source_verification_status = "MANUAL_VERIFICATION_REQUIRED"
 """
@@ -78,7 +81,7 @@ from lottery_api.prize_aware_scorer import (
 # ---------------------------------------------------------------------------
 
 TASK_ID = "P276B_FIXED_N_COVERAGE_COMPLEMENTARITY_BUILD"
-ARTIFACT_VERSION = "p276b_fixed_n_coverage_complementarity_v1"
+ARTIFACT_VERSION = "p276b_fixed_n_coverage_complementarity_v2"
 
 CANONICAL_DB_PATH = "lottery_api/data/lottery_v2.db"
 DB_OPEN_MODE = "sqlite3 URI mode=ro + PRAGMA query_only=ON + write-denying authorizer"
@@ -132,7 +135,7 @@ MC_REPLICATES = 10000
 MC_Q_SAMPLES = 200000  # samples to estimate per-draw union-win probability Q
 
 # ---------------------------------------------------------------------------
-# Pre-registered portfolio family (FROZEN before any outcome access).
+# Bounded retrospective portfolio family (post-hoc for historical evidence).
 # Each portfolio pools the per-draw committed tickets of its source cells in
 # the listed priority order, dedupes by canonical fingerprint preserving first
 # occurrence, and selects exactly `ticket_budget` distinct tickets. A draw with
@@ -140,7 +143,7 @@ MC_Q_SAMPLES = 200000  # samples to estimate per-draw union-win probability Q
 # (never back-filled). Selection is deterministic and outcome-blind.
 # ---------------------------------------------------------------------------
 
-PREREGISTERED_PORTFOLIO_FAMILY = [
+BOUNDED_RETROSPECTIVE_PORTFOLIO_FAMILY = [
     # --- PRIMARY: DAILY_539 (max six primary portfolios) ---
     {"portfolio_id": "D539_N3_f4cold3", "lottery_type": "DAILY_539",
      "ticket_budget": 3, "tier": "PRIMARY", "kind": "SINGLE",
@@ -176,13 +179,62 @@ PREREGISTERED_PORTFOLIO_FAMILY = [
 # SECONDARY families are descriptive and excluded from the confirmatory family.
 # Frozen size = (#primary CROSS portfolios) x len(INFERENTIAL_WINDOWS).
 CONFIRMATORY_PRIMARY_CROSS_PORTFOLIOS = [
-    p["portfolio_id"] for p in PREREGISTERED_PORTFOLIO_FAMILY
+    p["portfolio_id"] for p in BOUNDED_RETROSPECTIVE_PORTFOLIO_FAMILY
     if p["tier"] == "PRIMARY" and p["kind"] == "CROSS"
 ]
 CONFIRMATORY_FAMILY_SIZE = (
     len(CONFIRMATORY_PRIMARY_CROSS_PORTFOLIOS) * len(INFERENTIAL_WINDOWS)
 )
 FAMILY_ALPHA = 0.05
+HISTORICAL_STATUS_LABEL = (
+    "RETROSPECTIVE_POST_HOC_BOUNDED_EXPLORATORY_NONCONFIRMATORY"
+)
+HISTORICAL_BONFERRONI_ROLE = "DESCRIPTIVE_MULTIPLICITY_ADJUSTED_ONLY"
+SUPERSEDED_IDENTITY_ONLY_FAMILY_SHA256 = (
+    "48d0c30d7c7643204a76bd0c6b30823c9d74b3061f10e81042bc2399eeb38440"
+)
+
+TICKET_SELECTION_ALGORITHM = {
+    "algorithm_id": "ROUND_ROBIN_INTERLEAVE_V1",
+    "version": "p276d_corrected_semantics",
+    "rules": [
+        "iterate ticket positions 0,1,2,...",
+        "within each position, visit source strategies in declared source order",
+        "dedupe by canonical ticket fingerprint preserving first occurrence",
+        "stop exactly at ticket_budget N",
+        "draw is ineligible when fewer than N distinct tickets remain",
+        "never back-fill with random or outcome-aware tickets",
+    ],
+    "supersedes_historical_smoke_selector": "FIRST_N_CONCAT_V0",
+}
+
+ORDINARY_RANDOM_BASELINE = {
+    "algorithm_id": "ORDINARY_RANDOM_DISTINCT_LEGAL_TICKETS_V1",
+    "version": "p276b_v1",
+    "description":
+        "N distinct legal tickets sampled uniformly without replacement; "
+        "POWER second zone uniform 1-8.",
+}
+
+DIVERSIFIED_RANDOM_BASELINE = {
+    "algorithm_id": "MAXIMALLY_DIVERSIFIED_RANDOM_V1",
+    "version": "p276b_v1",
+    "description":
+        "Seeded universe-permutation disjoint blocks maximizing number coverage "
+        "and minimizing pairwise overlap; POWER second zone seeded "
+        "coverage-maximizing.",
+}
+
+PRIMARY_HYPOTHESES = [
+    {
+        "hypothesis_id": "P276D-FUTURE-H1-PRIZE-AWARE-CROSS-BEATS-CONSTITUENTS-AND-DIVERSIFIED",
+        "outcome_family": "prize_aware",
+        "claim":
+            "A fixed-N strategy portfolio has higher prize-aware union success "
+            "than both every required equal-N constituent comparator and the "
+            "maximally-diversified-random equal-N baseline.",
+    }
+]
 
 
 class P276BError(RuntimeError):
@@ -380,34 +432,187 @@ def load_and_verify_inputs(p275b_path=P275B_MATRIX_JSON,
     }
 
 
-def freeze_contract() -> dict:
-    """Freeze + hash the pre-registered family BEFORE any outcome access."""
-    family_canonical = json.dumps(
-        PREREGISTERED_PORTFOLIO_FAMILY, sort_keys=True, ensure_ascii=False,
-        separators=(",", ":"))
-    family_hash = hashlib.sha256(family_canonical.encode("utf-8")).hexdigest()
+def canonical_sha256(obj) -> str:
+    """Deterministic SHA-256 over a canonical JSON object."""
+    blob = json.dumps(obj, sort_keys=True, ensure_ascii=False,
+                      separators=(",", ":"))
+    return hashlib.sha256(blob.encode("utf-8")).hexdigest()
+
+
+def _contract_hash_payload(cutoffs=None) -> dict:
+    """Full future-contract payload covered by future_contract_sha256."""
     return {
-        "preregistered_portfolio_family": copy.deepcopy(
-            PREREGISTERED_PORTFOLIO_FAMILY),
-        "preregistered_family_sha256": family_hash,
-        "fixed_ticket_budgets": [3, 5],
-        "primary_lottery": PRIMARY_LOTTERY,
-        "primary_windows": list(PRIMARY_WINDOWS),
-        "short_non_promoting_window": SHORT_NON_PROMOTING_WINDOW,
-        "inferential_windows": list(INFERENTIAL_WINDOWS),
+        "artifact_version": ARTIFACT_VERSION,
+        "portfolio_family": copy.deepcopy(
+            BOUNDED_RETROSPECTIVE_PORTFOLIO_FAMILY),
+        "source_strategy_ids_and_order": [
+            {
+                "portfolio_id": p["portfolio_id"],
+                "source_cells": list(p["source_cells"]),
+            }
+            for p in BOUNDED_RETROSPECTIVE_PORTFOLIO_FAMILY
+        ],
+        "fixed_ticket_budgets": sorted({
+            p["ticket_budget"] for p in BOUNDED_RETROSPECTIVE_PORTFOLIO_FAMILY
+        }),
+        "primary_fixed_ticket_budgets": [3, 5],
+        "ticket_selection_algorithm": copy.deepcopy(TICKET_SELECTION_ALGORITHM),
+        "ordinary_random_baseline": copy.deepcopy(ORDINARY_RANDOM_BASELINE),
+        "diversified_random_baseline": copy.deepcopy(DIVERSIFIED_RANDOM_BASELINE),
         "global_seed": GLOBAL_SEED,
         "mc_replicates": MC_REPLICATES,
         "mc_q_samples": MC_Q_SAMPLES,
-        "confirmatory_primary_cross_portfolios":
-            list(CONFIRMATORY_PRIMARY_CROSS_PORTFOLIOS),
-        "confirmatory_family_size": CONFIRMATORY_FAMILY_SIZE,
-        "family_alpha": FAMILY_ALPHA,
-        "bonferroni_per_test_alpha": FAMILY_ALPHA / CONFIRMATORY_FAMILY_SIZE,
-        "correction_confirmatory": "BONFERRONI",
-        "correction_descriptive_secondary": "BH_FDR",
-        "prize_aware_and_m3plus_separate_families": True,
-        "frozen_before_outcome_access": True,
+        "primary_hypotheses": copy.deepcopy(PRIMARY_HYPOTHESES),
+        "hypothesis_family": {
+            "family_id": "P276D_FUTURE_CONFIRMATORY_CROSS_PORTFOLIO_FAMILY",
+            "primary_cross_portfolios":
+                list(CONFIRMATORY_PRIMARY_CROSS_PORTFOLIOS),
+            "future_confirmatory_family_size": CONFIRMATORY_FAMILY_SIZE,
+            "lotteries": list(LOTTERY_TYPES),
+            "primary_lottery": PRIMARY_LOTTERY,
+            "primary_windows": list(PRIMARY_WINDOWS),
+            "inferential_windows": list(INFERENTIAL_WINDOWS),
+            "short_non_promotion_rule":
+                "SHORT_50 is integrity / early-warning only and cannot promote.",
+            "correction_policy": "BONFERRONI",
+            "bonferroni_per_test_alpha":
+                FAMILY_ALPHA / CONFIRMATORY_FAMILY_SIZE,
+        },
+        "outcome_families": {
+            "prize_aware_and_m3plus_separate": True,
+            "historical_bonferroni_role": HISTORICAL_BONFERRONI_ROLE,
+            "future_bonferroni_policy": "BONFERRONI",
+        },
+        "cutoff_rule":
+            "latest committed-ticket target draw per lottery at contract freeze",
+        "cutoff_target_draw_by_lottery": copy.deepcopy(cutoffs),
+        "future_eligibility_rule":
+            "only draws strictly after both the cutoff target draw and corrected "
+            "contract freeze are eligible, and only with prospectively generated "
+            "committed tickets",
+        "contract_reset_rule":
+            "any family, selector, baseline, seed, hypothesis, or correction "
+            "change resets the future clock",
     }
+
+
+def build_bounded_retrospective_analysis_contract() -> dict:
+    """Truthful historical contract: bounded, post-hoc, non-confirmatory."""
+    identity_only_hash = canonical_sha256(
+        BOUNDED_RETROSPECTIVE_PORTFOLIO_FAMILY)
+    analysis_payload = {
+        "status_label": HISTORICAL_STATUS_LABEL,
+        "portfolio_family": copy.deepcopy(
+            BOUNDED_RETROSPECTIVE_PORTFOLIO_FAMILY),
+        "ticket_selection_algorithm": copy.deepcopy(TICKET_SELECTION_ALGORITHM),
+        "historical_bonferroni_role": HISTORICAL_BONFERRONI_ROLE,
+        "historical_outcomes_previously_observed": True,
+        "selector_changed_after_initial_outcome_run": True,
+        "final_selector": "ROUND_ROBIN",
+        "bounded_family": True,
+        "unbounded_combination_search_performed": False,
+        "primary_lottery": PRIMARY_LOTTERY,
+        "primary_windows": list(PRIMARY_WINDOWS),
+        "fixed_ticket_budgets": [3, 5],
+        "global_seed": GLOBAL_SEED,
+        "mc_replicates": MC_REPLICATES,
+        "mc_q_samples": MC_Q_SAMPLES,
+    }
+    return {
+        "status_label": HISTORICAL_STATUS_LABEL,
+        "bounded_family": True,
+        "historical_outcomes_previously_observed": True,
+        "selector_changed_after_initial_outcome_run": True,
+        "execution_chronology": [
+            "P276A selected the candidate direction and source strategies after "
+            "reviewing prior historical P275B outcome evidence.",
+            "An initial first-N ticket selector was used in a historical "
+            "outcome-scoring smoke run.",
+            "That run showed CROSS portfolio degeneration to the first source "
+            "with b/c=0/0.",
+            "The selector was then changed to ROUND_ROBIN after those outcomes "
+            "had been observed.",
+            "Final historical results were generated using ROUND_ROBIN and are "
+            "post-hoc descriptive evidence.",
+        ],
+        "final_selector": "ROUND_ROBIN",
+        "ticket_selection_algorithm": copy.deepcopy(TICKET_SELECTION_ALGORITHM),
+        "historical_preregistration_claim": False,
+        "historical_bonferroni_role": HISTORICAL_BONFERRONI_ROLE,
+        "historical_results_are_confirmatory": False,
+        "bounded_retrospective_analysis_sha256":
+            canonical_sha256(analysis_payload),
+        "superseded_identity_only_family_sha256": identity_only_hash,
+        "superseded_identity_only_family_hash_note":
+            "This hash covers only the portfolio identity list and is retained "
+            "for provenance; it is not a historical preregistration hash.",
+        "portfolio_family": copy.deepcopy(
+            BOUNDED_RETROSPECTIVE_PORTFOLIO_FAMILY),
+        "portfolio_family_size": len(BOUNDED_RETROSPECTIVE_PORTFOLIO_FAMILY),
+        "fixed_ticket_budgets": [3, 5],
+        "descriptive_multiplicity_family_size": CONFIRMATORY_FAMILY_SIZE,
+        "descriptive_bonferroni_per_test_alpha":
+            FAMILY_ALPHA / CONFIRMATORY_FAMILY_SIZE,
+        "short_50_is_integrity_early_warning_only": True,
+        "cannot_promote_or_activate": True,
+        "cannot_set_prediction_success_claim_true": True,
+    }
+
+
+def build_frozen_future_contract(cutoffs: dict) -> dict:
+    """Prospective-only future confirmation contract."""
+    payload = _contract_hash_payload(cutoffs)
+    return {
+        "status": "FUTURE_CONFIRMATION_PENDING",
+        "future_confirmation_status": "FUTURE_CONFIRMATION_PENDING",
+        "future_contract_prospectively_frozen": True,
+        "future_contract_sha256": canonical_sha256(payload),
+        "future_contract_hash_coverage": sorted(payload.keys()),
+        "cutoff_target_draw_by_lottery": copy.deepcopy(cutoffs),
+        "cutoff_note":
+            "latest committed-ticket target draw per lottery; genuine "
+            "confirmation requires walk-forward strategy predictions for draws "
+            "strictly later than the cutoff and after the corrected contract "
+            "freeze.",
+        "future_evidence_requires_prospectively_generated_tickets": True,
+        "historical_results_not_future_confirmation": True,
+        "any_contract_change_resets_future_clock": True,
+        "future_primary_H1": PRIMARY_HYPOTHESES[0]["claim"],
+        "future_H0":
+            "The observed union advantage is fully explained by ticket count or "
+            "number coverage.",
+        "future_confirmatory_family_size": CONFIRMATORY_FAMILY_SIZE,
+        "future_bonferroni_policy": "BONFERRONI",
+        "bonferroni_per_test_alpha": FAMILY_ALPHA / CONFIRMATORY_FAMILY_SIZE,
+        "checkpoints": {
+            "future_50": "integrity / early-warning only",
+            "future_300": "first inferential checkpoint",
+            "future_750": "long inferential checkpoint",
+        },
+        "ticket_selection_algorithm": copy.deepcopy(TICKET_SELECTION_ALGORITHM),
+        "contract_hash_payload": payload,
+    }
+
+
+def build_legacy_identity_only_family_hash() -> str:
+    """Provenance hash retained for comparison with the superseded artifact."""
+    return canonical_sha256(BOUNDED_RETROSPECTIVE_PORTFOLIO_FAMILY)
+
+
+def freeze_contract() -> dict:
+    """Backward-compatible alias for tests that need the historical contract."""
+    return build_bounded_retrospective_analysis_contract()
+
+
+def build_historical_and_future_contracts(cutoffs=None) -> dict:
+    """Build both corrected semantic contracts."""
+    historical = build_bounded_retrospective_analysis_contract()
+    contracts = {"historical_analysis_contract": historical}
+    if cutoffs is not None:
+        contracts["frozen_future_contract"] = build_frozen_future_contract(cutoffs)
+    else:
+        contracts["future_contract_hash_payload_template"] = _contract_hash_payload()
+    return contracts
 
 
 # ---------------------------------------------------------------------------
@@ -1109,8 +1314,9 @@ DESCRIPTIVE_ALPHA = 0.05  # retrospective descriptive threshold (exploratory)
 def derive_verdict(portfolio_metrics):
     """Pick exactly one scientific verdict from PRIMARY CROSS portfolios.
 
-    Significance-based (descriptive alpha = 0.05; the FUTURE confirmatory family
-    uses Bonferroni). For each PRIMARY CROSS portfolio at an inferential window
+    Significance-based for historical description (alpha = 0.05). Future-only
+    confirmation uses the separate frozen future contract. For each PRIMARY
+    CROSS portfolio at an inferential window
     (300/750), the prize-aware family is judged:
       * complementary_over_constituent: union rate strictly above the best
         equal-budget constituent AND McNemar favours the portfolio (b > c) with
@@ -1179,7 +1385,7 @@ def run_study(db_path=CANONICAL_DB_PATH, mc_replicates=MC_REPLICATES,
     MC_Q_SAMPLES = mc_q_samples
 
     inputs = load_and_verify_inputs(**input_paths)
-    contract = freeze_contract()  # frozen BEFORE any outcome access
+    historical_contract = build_bounded_retrospective_analysis_contract()
 
     # Determine the (lottery, draw) outcomes needed from the committed identities.
     needed = defaultdict(set)
@@ -1216,7 +1422,7 @@ def run_study(db_path=CANONICAL_DB_PATH, mc_replicates=MC_REPLICATES,
     portfolio_metrics = []
     baseline_Q = {}
     cutoffs = {}
-    for portfolio in PREREGISTERED_PORTFOLIO_FAMILY:
+    for portfolio in BOUNDED_RETROSPECTIVE_PORTFOLIO_FAMILY:
         lt = portfolio["lottery_type"]
         n = portfolio["ticket_budget"]
         if (lt, n) not in baseline_Q:
@@ -1234,6 +1440,7 @@ def run_study(db_path=CANONICAL_DB_PATH, mc_replicates=MC_REPLICATES,
     for lt in LOTTERY_TYPES:
         draws = sorted(needed[lt], key=lambda d: int(d)) if needed[lt] else []
         cutoffs[lt] = draws[-1] if draws else None
+    future_contract = build_frozen_future_contract(cutoffs)
 
     verdict = derive_verdict(portfolio_metrics)
 
@@ -1264,7 +1471,10 @@ def run_study(db_path=CANONICAL_DB_PATH, mc_replicates=MC_REPLICATES,
             "primary_lottery": PRIMARY_LOTTERY,
             "lotteries": list(LOTTERY_TYPES),
             "primary_windows": {WINDOW_LABELS[w]: w for w in PRIMARY_WINDOWS},
-            "fixed_ticket_budgets": [3, 5],
+            "primary_fixed_ticket_budgets": [3, 5],
+            "all_fixed_ticket_budgets": sorted({
+                p["ticket_budget"] for p in BOUNDED_RETROSPECTIVE_PORTFOLIO_FAMILY
+            }),
             "max_primary_portfolios": 6,
             "performs_unbounded_combination_search": False,
         },
@@ -1280,7 +1490,7 @@ def run_study(db_path=CANONICAL_DB_PATH, mc_replicates=MC_REPLICATES,
             "second_zone_manufactured": False,
             "prize_aware_and_m3plus_correction_families_separate": True,
         },
-        "frozen_contract": contract,
+        "historical_analysis_contract": historical_contract,
         "input_provenance": {
             "source_main_commit_expected":
                 "b9c70cc413969dd0c0b22b2c5b606ddb31980a6b",
@@ -1311,13 +1521,8 @@ def run_study(db_path=CANONICAL_DB_PATH, mc_replicates=MC_REPLICATES,
             "outcomes_loaded": len(outcomes),
         },
         "baseline_specification": {
-            "ordinary_random":
-                "N distinct legal tickets, uniform without-replacement; "
-                "POWER second zone uniform 1-8.",
-            "diversified_random":
-                "N distinct legal tickets from a seeded universe permutation, "
-                "disjoint blocks maximizing number coverage / minimizing "
-                "pairwise overlap; POWER second zone seeded coverage-maximizing.",
+            "ordinary_random": ORDINARY_RANDOM_BASELINE["description"],
+            "diversified_random": DIVERSIFIED_RANDOM_BASELINE["description"],
             "per_draw_union_win_probability_Q":
                 "MC-estimated; per-draw union win is iid Bernoulli(Q) by "
                 "outcome symmetry, so window null = Binomial(support, Q).",
@@ -1327,47 +1532,18 @@ def run_study(db_path=CANONICAL_DB_PATH, mc_replicates=MC_REPLICATES,
             "overlap_report": overlap_report,
             "baseline_Q": serializable_baseline_Q,
         },
-        "retrospective_evidence_contract": {
-            "status_label": "RETROSPECTIVE_EXPLORATORY_NONCONFIRMATORY",
-            "mid_long_are_research_guidance_only": True,
-            "short_50_is_integrity_early_warning_only": True,
-            "cannot_set_prediction_success_claim_true": True,
-            "cannot_promote_or_activate": True,
-        },
-        "frozen_future_contract": {
-            "cutoff_target_draw_by_lottery": cutoffs,
-            "cutoff_note":
-                "latest committed-ticket target draw per lottery; genuine "
-                "confirmation requires walk-forward strategy predictions for "
-                "draws strictly later than the cutoff.",
-            "family_hash_frozen": contract["preregistered_family_sha256"],
-            "checkpoints": {
-                "future_50": "integrity / early-warning only",
-                "future_300": "first inferential checkpoint",
-                "future_750": "long inferential checkpoint",
-            },
-            "future_primary_H1":
-                "A fixed-N strategy portfolio has higher prize-aware union "
-                "success than BOTH every required equal-N constituent comparator "
-                "AND the maximally-diversified-random equal-N baseline.",
-            "future_H0":
-                "The observed union advantage is fully explained by ticket "
-                "count or number coverage.",
-            "confirmatory_family_size": CONFIRMATORY_FAMILY_SIZE,
-            "bonferroni_per_test_alpha": FAMILY_ALPHA / CONFIRMATORY_FAMILY_SIZE,
-            "future_confirmation_status": "FUTURE_CONFIRMATION_PENDING",
-            "future_confirmation_basis":
-                "No committed walk-forward strategy tickets exist for any "
-                "post-cutoff draw; settled post-cutoff draws in the DB are not "
-                "eligible without future-generated predictions.",
-        },
+        "frozen_future_contract": future_contract,
         "multiple_testing_policy": {
-            "confirmatory_correction": "BONFERRONI",
-            "confirmatory_family_size": CONFIRMATORY_FAMILY_SIZE,
+            "historical_bonferroni_role": HISTORICAL_BONFERRONI_ROLE,
+            "historical_descriptive_multiplicity_family_size":
+                CONFIRMATORY_FAMILY_SIZE,
+            "future_bonferroni_policy": "BONFERRONI",
+            "future_confirmatory_family_size": CONFIRMATORY_FAMILY_SIZE,
             "descriptive_secondary_correction": "BH_FDR",
-            "no_post_hoc_family_change": True,
+            "historical_family_changed_after_initial_outcome_run": True,
+            "unbounded_combination_search_performed": False,
             "prize_aware_and_m3plus_separate_families": True,
-            "short_50_excluded_from_confirmatory_family": True,
+            "short_50_excluded_from_future_confirmatory_family": True,
         },
         "promotion_boundary": {
             "max_classification": "GO_CANDIDATE_RESEARCH_ONLY",
@@ -1380,8 +1556,9 @@ def run_study(db_path=CANONICAL_DB_PATH, mc_replicates=MC_REPLICATES,
         "portfolio_results": portfolio_metrics,
         "scientific_verdict": verdict,
         "limitations": [
-            "Retrospective evidence only; not confirmatory and not a future-only "
-            "result; no claim of improved future prediction success.",
+            "Retrospective post-hoc bounded evidence only; not confirmatory and "
+            "not a future-only result; no claim of improved future prediction "
+            "success.",
             "Prize-tier semantics carry source_verification_status="
             "MANUAL_VERIFICATION_REQUIRED (P271B/P271C).",
             "50-draw (SHORT) windows are integrity guardrails and cannot support "
@@ -1413,11 +1590,13 @@ def render_markdown(result: dict) -> str:
     a = []
     a.append("# P276B — Fixed-N Cross-Strategy Coverage & Complementarity Study")
     a.append("")
-    a.append("> **Read-only, retrospective, non-confirmatory.** Reuses frozen "
-             "committed P273A ticket identities + read-only settled draw "
-             "outcomes. `prediction_success_claim=false`; no strategy promotion, "
-             "no registry mutation, no DB write, no activation. True confirmation "
-             "begins only with draws strictly later than the frozen cutoff.")
+    a.append("> **Read-only, bounded retrospective, post-hoc, "
+             "non-confirmatory.** Reuses committed P273A ticket identities + "
+             "read-only settled draw outcomes. `prediction_success_claim=false`; "
+             "no strategy promotion, no registry mutation, no DB content write, "
+             "no activation. True future confirmation begins only with "
+             "prospectively generated committed tickets for draws strictly later "
+             "than the corrected future-contract freeze and cutoff.")
     a.append("")
     a.append("## Run metadata")
     a.append(f"- task_id: `{result['task_id']}`")
@@ -1428,18 +1607,28 @@ def render_markdown(result: dict) -> str:
     a.append(f"- canonical_payload_digest: "
              f"`{result['canonical_payload_digest']}`")
     a.append("")
-    a.append("## Frozen contract")
-    fc = result["frozen_contract"]
-    a.append(f"- preregistered_family_sha256: "
-             f"`{fc['preregistered_family_sha256']}`")
-    a.append(f"- fixed_ticket_budgets: {fc['fixed_ticket_budgets']}")
-    a.append(f"- confirmatory_family_size: {fc['confirmatory_family_size']} "
-             f"(Bonferroni per-test alpha "
-             f"{fc['bonferroni_per_test_alpha']:.5f})")
-    a.append(f"- global_seed: {fc['global_seed']}, mc_replicates: "
-             f"{fc['mc_replicates']}, mc_q_samples: {fc['mc_q_samples']}")
-    a.append(f"- frozen_before_outcome_access: "
-             f"{fc['frozen_before_outcome_access']}")
+    a.append("## Bounded retrospective exploratory analysis")
+    hc = result["historical_analysis_contract"]
+    a.append(f"- status_label: `{hc['status_label']}`")
+    a.append("- chronology: first-N historical outcome scoring occurred before "
+             "the final round-robin selector was selected; final round-robin "
+             "historical results are post-hoc.")
+    a.append(f"- bounded_family: {hc['bounded_family']}; "
+             f"unbounded_combination_search_performed: "
+             f"{result['multiple_testing_policy']['unbounded_combination_search_performed']}")
+    a.append(f"- historical_preregistration_claim: "
+             f"{hc['historical_preregistration_claim']}")
+    a.append(f"- historical_bonferroni_role: "
+             f"`{hc['historical_bonferroni_role']}`")
+    a.append(f"- descriptive_multiplicity_family_size: "
+             f"{hc['descriptive_multiplicity_family_size']} "
+             f"(descriptive Bonferroni alpha "
+             f"{hc['descriptive_bonferroni_per_test_alpha']:.5f})")
+    a.append(f"- bounded_retrospective_analysis_sha256: "
+             f"`{hc['bounded_retrospective_analysis_sha256']}`")
+    a.append(f"- superseded_identity_only_family_sha256: "
+             f"`{hc['superseded_identity_only_family_sha256']}`")
+    a.append(f"- fixed_ticket_budgets: {hc['fixed_ticket_budgets']}")
     a.append("")
     a.append("## DB snapshot (read-only)")
     db = result["db_snapshot"]
@@ -1458,10 +1647,20 @@ def render_markdown(result: dict) -> str:
              f"({rep['p273a_primary_window_cells_checked']} primary-window "
              f"cells checked)")
     a.append("")
-    a.append("## Frozen future contract")
+    a.append("## Prospectively frozen future contract")
     ff = result["frozen_future_contract"]
     a.append(f"- cutoff_target_draw_by_lottery: "
              f"`{ff['cutoff_target_draw_by_lottery']}`")
+    a.append(f"- future_contract_sha256: "
+             f"`{ff['future_contract_sha256']}`")
+    a.append(f"- future_confirmatory_family_size: "
+             f"{ff['future_confirmatory_family_size']} "
+             f"(Bonferroni per-test alpha "
+             f"{ff['bonferroni_per_test_alpha']:.5f})")
+    a.append("- future evidence requires prospectively generated committed "
+             "tickets; historical results are not future confirmation; any "
+             "family, selector, baseline, seed, hypothesis, or correction change "
+             "resets the future clock.")
     a.append(f"- future_confirmation_status: "
              f"**{ff['future_confirmation_status']}**")
     a.append("")
@@ -1492,6 +1691,9 @@ def render_markdown(result: dict) -> str:
                 f"{_f(div['mc_p_value_one_sided_upper'])} |")
     a.append("")
     a.append("## Limitations")
+    a.append("- The negative verdict applies only to this final evaluated "
+             "round-robin family; it does not prove all possible combinations "
+             "fail and does not prove future failure or success.")
     for lim in result["limitations"]:
         a.append(f"- {lim}")
     return "\n".join(a)

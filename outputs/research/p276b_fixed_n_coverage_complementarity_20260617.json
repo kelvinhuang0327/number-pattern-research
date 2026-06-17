@@ -1,6 +1,6 @@
 {
   "adapter_version": "prize_aware_adapter_v1",
-  "artifact_version": "p276b_fixed_n_coverage_complementarity_v1",
+  "artifact_version": "p276b_fixed_n_coverage_complementarity_v2",
   "baseline_specification": {
     "baseline_Q": {
       "BIG_LOTTO|N3": {
@@ -61,10 +61,10 @@
       }
     },
     "diversified_overlap_not_worse_than_ordinary": true,
-    "diversified_random": "N distinct legal tickets from a seeded universe permutation, disjoint blocks maximizing number coverage / minimizing pairwise overlap; POWER second zone seeded coverage-maximizing.",
+    "diversified_random": "Seeded universe-permutation disjoint blocks maximizing number coverage and minimizing pairwise overlap; POWER second zone seeded coverage-maximizing.",
     "mc_q_samples": 200000,
     "mc_replicates": 10000,
-    "ordinary_random": "N distinct legal tickets, uniform without-replacement; POWER second zone uniform 1-8.",
+    "ordinary_random": "N distinct legal tickets sampled uniformly without replacement; POWER second zone uniform 1-8.",
     "overlap_report": {
       "BIG_LOTTO_N3": {
         "diversified": 0.0,
@@ -89,7 +89,7 @@
     },
     "per_draw_union_win_probability_Q": "MC-estimated; per-draw union win is iid Bernoulli(Q) by outcome symmetry, so window null = Binomial(support, Q)."
   },
-  "canonical_payload_digest": "2fbaa331eead6702c8da5dbae539405979573ce064301582d940af0d52d6ff39",
+  "canonical_payload_digest": "438dca463edb574a3ed346ac616728d4621e669d25f010efeb9909478d68657e",
   "db_snapshot": {
     "db_open_mode": "sqlite3 URI mode=ro + PRAGMA query_only=ON + write-denying authorizer",
     "draws_row_counts": {
@@ -119,31 +119,314 @@
     "size_bytes": 99368960
   },
   "final_classification": "P276B_FIXED_N_COVERAGE_COMPLEMENTARITY_COMPLETE",
-  "frozen_contract": {
+  "frozen_future_contract": {
+    "any_contract_change_resets_future_clock": true,
     "bonferroni_per_test_alpha": 0.008333333333333333,
-    "confirmatory_family_size": 6,
-    "confirmatory_primary_cross_portfolios": [
-      "D539_N3_f4cold3_x_acbmm3",
-      "D539_N5_f4cold5_x_acbmm3",
-      "D539_N5_f4cold5_x_f4cold3_x_acbmm3"
+    "checkpoints": {
+      "future_300": "first inferential checkpoint",
+      "future_50": "integrity / early-warning only",
+      "future_750": "long inferential checkpoint"
+    },
+    "contract_hash_payload": {
+      "artifact_version": "p276b_fixed_n_coverage_complementarity_v2",
+      "contract_reset_rule": "any family, selector, baseline, seed, hypothesis, or correction change resets the future clock",
+      "cutoff_rule": "latest committed-ticket target draw per lottery at contract freeze",
+      "cutoff_target_draw_by_lottery": {
+        "BIG_LOTTO": "115000055",
+        "DAILY_539": "115000121",
+        "POWER_LOTTO": "115000040"
+      },
+      "diversified_random_baseline": {
+        "algorithm_id": "MAXIMALLY_DIVERSIFIED_RANDOM_V1",
+        "description": "Seeded universe-permutation disjoint blocks maximizing number coverage and minimizing pairwise overlap; POWER second zone seeded coverage-maximizing.",
+        "version": "p276b_v1"
+      },
+      "fixed_ticket_budgets": [
+        3,
+        4,
+        5
+      ],
+      "future_eligibility_rule": "only draws strictly after both the cutoff target draw and corrected contract freeze are eligible, and only with prospectively generated committed tickets",
+      "global_seed": 20260617,
+      "hypothesis_family": {
+        "bonferroni_per_test_alpha": 0.008333333333333333,
+        "correction_policy": "BONFERRONI",
+        "family_id": "P276D_FUTURE_CONFIRMATORY_CROSS_PORTFOLIO_FAMILY",
+        "future_confirmatory_family_size": 6,
+        "inferential_windows": [
+          300,
+          750
+        ],
+        "lotteries": [
+          "DAILY_539",
+          "BIG_LOTTO",
+          "POWER_LOTTO"
+        ],
+        "primary_cross_portfolios": [
+          "D539_N3_f4cold3_x_acbmm3",
+          "D539_N5_f4cold5_x_acbmm3",
+          "D539_N5_f4cold5_x_f4cold3_x_acbmm3"
+        ],
+        "primary_lottery": "DAILY_539",
+        "primary_windows": [
+          50,
+          300,
+          750
+        ],
+        "short_non_promotion_rule": "SHORT_50 is integrity / early-warning only and cannot promote."
+      },
+      "mc_q_samples": 200000,
+      "mc_replicates": 10000,
+      "ordinary_random_baseline": {
+        "algorithm_id": "ORDINARY_RANDOM_DISTINCT_LEGAL_TICKETS_V1",
+        "description": "N distinct legal tickets sampled uniformly without replacement; POWER second zone uniform 1-8.",
+        "version": "p276b_v1"
+      },
+      "outcome_families": {
+        "future_bonferroni_policy": "BONFERRONI",
+        "historical_bonferroni_role": "DESCRIPTIVE_MULTIPLICITY_ADJUSTED_ONLY",
+        "prize_aware_and_m3plus_separate": true
+      },
+      "portfolio_family": [
+        {
+          "kind": "SINGLE",
+          "lottery_type": "DAILY_539",
+          "portfolio_id": "D539_N3_f4cold3",
+          "source_cells": [
+            "daily539_f4cold_3bet"
+          ],
+          "ticket_budget": 3,
+          "tier": "PRIMARY"
+        },
+        {
+          "kind": "SINGLE",
+          "lottery_type": "DAILY_539",
+          "portfolio_id": "D539_N3_acbmm3",
+          "source_cells": [
+            "acb_markov_midfreq_3bet"
+          ],
+          "ticket_budget": 3,
+          "tier": "PRIMARY"
+        },
+        {
+          "kind": "CROSS",
+          "lottery_type": "DAILY_539",
+          "portfolio_id": "D539_N3_f4cold3_x_acbmm3",
+          "source_cells": [
+            "daily539_f4cold_3bet",
+            "acb_markov_midfreq_3bet"
+          ],
+          "ticket_budget": 3,
+          "tier": "PRIMARY"
+        },
+        {
+          "kind": "SINGLE",
+          "lottery_type": "DAILY_539",
+          "portfolio_id": "D539_N5_f4cold5",
+          "source_cells": [
+            "daily539_f4cold_5bet"
+          ],
+          "ticket_budget": 5,
+          "tier": "PRIMARY"
+        },
+        {
+          "kind": "CROSS",
+          "lottery_type": "DAILY_539",
+          "portfolio_id": "D539_N5_f4cold5_x_acbmm3",
+          "source_cells": [
+            "daily539_f4cold_5bet",
+            "acb_markov_midfreq_3bet"
+          ],
+          "ticket_budget": 5,
+          "tier": "PRIMARY"
+        },
+        {
+          "kind": "CROSS",
+          "lottery_type": "DAILY_539",
+          "portfolio_id": "D539_N5_f4cold5_x_f4cold3_x_acbmm3",
+          "source_cells": [
+            "daily539_f4cold_5bet",
+            "daily539_f4cold_3bet",
+            "acb_markov_midfreq_3bet"
+          ],
+          "ticket_budget": 5,
+          "tier": "PRIMARY"
+        },
+        {
+          "kind": "SINGLE",
+          "lottery_type": "BIG_LOTTO",
+          "portfolio_id": "BIG_N3_echo3",
+          "source_cells": [
+            "biglotto_echo_aware_3bet"
+          ],
+          "ticket_budget": 3,
+          "tier": "SECONDARY"
+        },
+        {
+          "kind": "SINGLE",
+          "lottery_type": "BIG_LOTTO",
+          "portfolio_id": "BIG_N4_ts3markov4",
+          "source_cells": [
+            "biglotto_ts3_markov_4bet_w30"
+          ],
+          "ticket_budget": 4,
+          "tier": "SECONDARY"
+        }
+      ],
+      "primary_fixed_ticket_budgets": [
+        3,
+        5
+      ],
+      "primary_hypotheses": [
+        {
+          "claim": "A fixed-N strategy portfolio has higher prize-aware union success than both every required equal-N constituent comparator and the maximally-diversified-random equal-N baseline.",
+          "hypothesis_id": "P276D-FUTURE-H1-PRIZE-AWARE-CROSS-BEATS-CONSTITUENTS-AND-DIVERSIFIED",
+          "outcome_family": "prize_aware"
+        }
+      ],
+      "source_strategy_ids_and_order": [
+        {
+          "portfolio_id": "D539_N3_f4cold3",
+          "source_cells": [
+            "daily539_f4cold_3bet"
+          ]
+        },
+        {
+          "portfolio_id": "D539_N3_acbmm3",
+          "source_cells": [
+            "acb_markov_midfreq_3bet"
+          ]
+        },
+        {
+          "portfolio_id": "D539_N3_f4cold3_x_acbmm3",
+          "source_cells": [
+            "daily539_f4cold_3bet",
+            "acb_markov_midfreq_3bet"
+          ]
+        },
+        {
+          "portfolio_id": "D539_N5_f4cold5",
+          "source_cells": [
+            "daily539_f4cold_5bet"
+          ]
+        },
+        {
+          "portfolio_id": "D539_N5_f4cold5_x_acbmm3",
+          "source_cells": [
+            "daily539_f4cold_5bet",
+            "acb_markov_midfreq_3bet"
+          ]
+        },
+        {
+          "portfolio_id": "D539_N5_f4cold5_x_f4cold3_x_acbmm3",
+          "source_cells": [
+            "daily539_f4cold_5bet",
+            "daily539_f4cold_3bet",
+            "acb_markov_midfreq_3bet"
+          ]
+        },
+        {
+          "portfolio_id": "BIG_N3_echo3",
+          "source_cells": [
+            "biglotto_echo_aware_3bet"
+          ]
+        },
+        {
+          "portfolio_id": "BIG_N4_ts3markov4",
+          "source_cells": [
+            "biglotto_ts3_markov_4bet_w30"
+          ]
+        }
+      ],
+      "ticket_selection_algorithm": {
+        "algorithm_id": "ROUND_ROBIN_INTERLEAVE_V1",
+        "rules": [
+          "iterate ticket positions 0,1,2,...",
+          "within each position, visit source strategies in declared source order",
+          "dedupe by canonical ticket fingerprint preserving first occurrence",
+          "stop exactly at ticket_budget N",
+          "draw is ineligible when fewer than N distinct tickets remain",
+          "never back-fill with random or outcome-aware tickets"
+        ],
+        "supersedes_historical_smoke_selector": "FIRST_N_CONCAT_V0",
+        "version": "p276d_corrected_semantics"
+      }
+    },
+    "cutoff_note": "latest committed-ticket target draw per lottery; genuine confirmation requires walk-forward strategy predictions for draws strictly later than the cutoff and after the corrected contract freeze.",
+    "cutoff_target_draw_by_lottery": {
+      "BIG_LOTTO": "115000055",
+      "DAILY_539": "115000121",
+      "POWER_LOTTO": "115000040"
+    },
+    "future_H0": "The observed union advantage is fully explained by ticket count or number coverage.",
+    "future_bonferroni_policy": "BONFERRONI",
+    "future_confirmation_status": "FUTURE_CONFIRMATION_PENDING",
+    "future_confirmatory_family_size": 6,
+    "future_contract_hash_coverage": [
+      "artifact_version",
+      "contract_reset_rule",
+      "cutoff_rule",
+      "cutoff_target_draw_by_lottery",
+      "diversified_random_baseline",
+      "fixed_ticket_budgets",
+      "future_eligibility_rule",
+      "global_seed",
+      "hypothesis_family",
+      "mc_q_samples",
+      "mc_replicates",
+      "ordinary_random_baseline",
+      "outcome_families",
+      "portfolio_family",
+      "primary_fixed_ticket_budgets",
+      "primary_hypotheses",
+      "source_strategy_ids_and_order",
+      "ticket_selection_algorithm"
     ],
-    "correction_confirmatory": "BONFERRONI",
-    "correction_descriptive_secondary": "BH_FDR",
-    "family_alpha": 0.05,
+    "future_contract_prospectively_frozen": true,
+    "future_contract_sha256": "229ecd041430909969fb064ff1e2fdddca126cb1a07412763ff89166105638d4",
+    "future_evidence_requires_prospectively_generated_tickets": true,
+    "future_primary_H1": "A fixed-N strategy portfolio has higher prize-aware union success than both every required equal-N constituent comparator and the maximally-diversified-random equal-N baseline.",
+    "historical_results_not_future_confirmation": true,
+    "status": "FUTURE_CONFIRMATION_PENDING",
+    "ticket_selection_algorithm": {
+      "algorithm_id": "ROUND_ROBIN_INTERLEAVE_V1",
+      "rules": [
+        "iterate ticket positions 0,1,2,...",
+        "within each position, visit source strategies in declared source order",
+        "dedupe by canonical ticket fingerprint preserving first occurrence",
+        "stop exactly at ticket_budget N",
+        "draw is ineligible when fewer than N distinct tickets remain",
+        "never back-fill with random or outcome-aware tickets"
+      ],
+      "supersedes_historical_smoke_selector": "FIRST_N_CONCAT_V0",
+      "version": "p276d_corrected_semantics"
+    }
+  },
+  "generated_at": "2026-06-17T04:24:16.485063+00:00",
+  "historical_analysis_contract": {
+    "bounded_family": true,
+    "bounded_retrospective_analysis_sha256": "3e2aa62c54e2d004b562d72dca8138fc1620ab6d0068874224cc97a9d1469d6e",
+    "cannot_promote_or_activate": true,
+    "cannot_set_prediction_success_claim_true": true,
+    "descriptive_bonferroni_per_test_alpha": 0.008333333333333333,
+    "descriptive_multiplicity_family_size": 6,
+    "execution_chronology": [
+      "P276A selected the candidate direction and source strategies after reviewing prior historical P275B outcome evidence.",
+      "An initial first-N ticket selector was used in a historical outcome-scoring smoke run.",
+      "That run showed CROSS portfolio degeneration to the first source with b/c=0/0.",
+      "The selector was then changed to ROUND_ROBIN after those outcomes had been observed.",
+      "Final historical results were generated using ROUND_ROBIN and are post-hoc descriptive evidence."
+    ],
+    "final_selector": "ROUND_ROBIN",
     "fixed_ticket_budgets": [
       3,
       5
     ],
-    "frozen_before_outcome_access": true,
-    "global_seed": 20260617,
-    "inferential_windows": [
-      300,
-      750
-    ],
-    "mc_q_samples": 200000,
-    "mc_replicates": 10000,
-    "preregistered_family_sha256": "48d0c30d7c7643204a76bd0c6b30823c9d74b3061f10e81042bc2399eeb38440",
-    "preregistered_portfolio_family": [
+    "historical_bonferroni_role": "DESCRIPTIVE_MULTIPLICITY_ADJUSTED_ONLY",
+    "historical_outcomes_previously_observed": true,
+    "historical_preregistration_claim": false,
+    "historical_results_are_confirmatory": false,
+    "portfolio_family": [
       {
         "kind": "SINGLE",
         "lottery_type": "DAILY_539",
@@ -229,36 +512,26 @@
         "tier": "SECONDARY"
       }
     ],
-    "primary_lottery": "DAILY_539",
-    "primary_windows": [
-      50,
-      300,
-      750
-    ],
-    "prize_aware_and_m3plus_separate_families": true,
-    "short_non_promoting_window": 50
+    "portfolio_family_size": 8,
+    "selector_changed_after_initial_outcome_run": true,
+    "short_50_is_integrity_early_warning_only": true,
+    "status_label": "RETROSPECTIVE_POST_HOC_BOUNDED_EXPLORATORY_NONCONFIRMATORY",
+    "superseded_identity_only_family_hash_note": "This hash covers only the portfolio identity list and is retained for provenance; it is not a historical preregistration hash.",
+    "superseded_identity_only_family_sha256": "48d0c30d7c7643204a76bd0c6b30823c9d74b3061f10e81042bc2399eeb38440",
+    "ticket_selection_algorithm": {
+      "algorithm_id": "ROUND_ROBIN_INTERLEAVE_V1",
+      "rules": [
+        "iterate ticket positions 0,1,2,...",
+        "within each position, visit source strategies in declared source order",
+        "dedupe by canonical ticket fingerprint preserving first occurrence",
+        "stop exactly at ticket_budget N",
+        "draw is ineligible when fewer than N distinct tickets remain",
+        "never back-fill with random or outcome-aware tickets"
+      ],
+      "supersedes_historical_smoke_selector": "FIRST_N_CONCAT_V0",
+      "version": "p276d_corrected_semantics"
+    }
   },
-  "frozen_future_contract": {
-    "bonferroni_per_test_alpha": 0.008333333333333333,
-    "checkpoints": {
-      "future_300": "first inferential checkpoint",
-      "future_50": "integrity / early-warning only",
-      "future_750": "long inferential checkpoint"
-    },
-    "confirmatory_family_size": 6,
-    "cutoff_note": "latest committed-ticket target draw per lottery; genuine confirmation requires walk-forward strategy predictions for draws strictly later than the cutoff.",
-    "cutoff_target_draw_by_lottery": {
-      "BIG_LOTTO": "115000055",
-      "DAILY_539": "115000121",
-      "POWER_LOTTO": "115000040"
-    },
-    "family_hash_frozen": "48d0c30d7c7643204a76bd0c6b30823c9d74b3061f10e81042bc2399eeb38440",
-    "future_H0": "The observed union advantage is fully explained by ticket count or number coverage.",
-    "future_confirmation_basis": "No committed walk-forward strategy tickets exist for any post-cutoff draw; settled post-cutoff draws in the DB are not eligible without future-generated predictions.",
-    "future_confirmation_status": "FUTURE_CONFIRMATION_PENDING",
-    "future_primary_H1": "A fixed-N strategy portfolio has higher prize-aware union success than BOTH every required equal-N constituent comparator AND the maximally-diversified-random equal-N baseline."
-  },
-  "generated_at": "2026-06-17T03:46:51.512525+00:00",
   "input_provenance": {
     "committed_input_hashes": {
       "p271c_scorer_src_sha256": "907bdfa514aa18b33defe44869673cf43ce82fe143260564635cfc7284a76659",
@@ -277,7 +550,7 @@
     "source_main_commit_expected": "b9c70cc413969dd0c0b22b2c5b606ddb31980a6b"
   },
   "limitations": [
-    "Retrospective evidence only; not confirmatory and not a future-only result; no claim of improved future prediction success.",
+    "Retrospective post-hoc bounded evidence only; not confirmatory and not a future-only result; no claim of improved future prediction success.",
     "Prize-tier semantics carry source_verification_status=MANUAL_VERIFICATION_REQUIRED (P271B/P271C).",
     "50-draw (SHORT) windows are integrity guardrails and cannot support promotion.",
     "Tickets are the frozen committed P273A identities; portfolios reuse existing strategy tickets without any refitting.",
@@ -287,12 +560,15 @@
     "BIG_LOTTO / POWER_LOTTO portfolios are secondary generalization checks (descriptive only, no promotion verdict)."
   ],
   "multiple_testing_policy": {
-    "confirmatory_correction": "BONFERRONI",
-    "confirmatory_family_size": 6,
     "descriptive_secondary_correction": "BH_FDR",
-    "no_post_hoc_family_change": true,
+    "future_bonferroni_policy": "BONFERRONI",
+    "future_confirmatory_family_size": 6,
+    "historical_bonferroni_role": "DESCRIPTIVE_MULTIPLICITY_ADJUSTED_ONLY",
+    "historical_descriptive_multiplicity_family_size": 6,
+    "historical_family_changed_after_initial_outcome_run": true,
     "prize_aware_and_m3plus_separate_families": true,
-    "short_50_excluded_from_confirmatory_family": true
+    "short_50_excluded_from_future_confirmatory_family": true,
+    "unbounded_combination_search_performed": false
   },
   "portfolio_results": [
     {
@@ -371,7 +647,7 @@
               "unique_complementary_wins_portfolio_only": 0
             },
             "clopper_pearson_ci_95": [
-              0.31814917856860864,
+              0.3181491785686087,
               0.6067580238830776
             ],
             "random_baselines": {
@@ -467,7 +743,7 @@
             },
             "clopper_pearson_ci_95": [
               0.28337398827011695,
-              0.3932230179847071
+              0.39322301798470716
             ],
             "random_baselines": {
               "diversified": {
@@ -518,7 +794,7 @@
               "unique_complementary_wins_portfolio_only": 0
             },
             "clopper_pearson_ci_95": [
-              0.022767985299463767,
+              0.02276798529946376,
               0.05038390456279091
             ],
             "random_baselines": {
@@ -561,8 +837,8 @@
               "unique_complementary_wins_portfolio_only": 0
             },
             "clopper_pearson_ci_95": [
-              0.3320943660627327,
-              0.40229213212745624
+              0.33209436606273274,
+              0.4022921321274561
             ],
             "random_baselines": {
               "diversified": {
@@ -771,8 +1047,8 @@
               "unique_complementary_wins_portfolio_only": 0
             },
             "clopper_pearson_ci_95": [
-              0.34412903508639053,
-              0.45786643956551054
+              0.3441290350863905,
+              0.4578664395655106
             ],
             "random_baselines": {
               "diversified": {
@@ -823,7 +1099,7 @@
               "unique_complementary_wins_portfolio_only": 0
             },
             "clopper_pearson_ci_95": [
-              0.02168544629107527,
+              0.02168544629107526,
               0.04881500734104549
             ],
             "random_baselines": {
@@ -866,8 +1142,8 @@
               "unique_complementary_wins_portfolio_only": 0
             },
             "clopper_pearson_ci_95": [
-              0.3229891353089802,
-              0.3928045715952446
+              0.32298913530898016,
+              0.3928045715952445
             ],
             "random_baselines": {
               "diversified": {
@@ -1142,7 +1418,7 @@
           "prize_aware": {
             "best_equal_budget_constituent": {
               "mcnemar_discordant": 109,
-              "mcnemar_p_value_exact": 0.007040750835507648,
+              "mcnemar_p_value_exact": 0.007040750835507646,
               "portfolio_minus_constituent_abs": -0.09666666666666668,
               "strategy_id": "acb_markov_midfreq_3bet",
               "union_success_draws": 120,
@@ -1233,7 +1509,7 @@
               "unique_complementary_wins_portfolio_only": 7
             },
             "clopper_pearson_ci_95": [
-              0.020608439034469243,
+              0.02060843903446925,
               0.04724086350338657
             ],
             "marginal_coverage_gain": [
@@ -1288,7 +1564,7 @@
           "prize_aware": {
             "best_equal_budget_constituent": {
               "mcnemar_discordant": 133,
-              "mcnemar_p_value_exact": 0.03702851006414845,
+              "mcnemar_p_value_exact": 0.037028510064148513,
               "portfolio_minus_constituent_abs": -0.033333333333333326,
               "strategy_id": "daily539_f4cold_3bet",
               "union_success_draws": 275,
@@ -1297,8 +1573,8 @@
               "unique_complementary_wins_portfolio_only": 54
             },
             "clopper_pearson_ci_95": [
-              0.29964120337989314,
-              0.3683426342362803
+              0.2996412033798931,
+              0.36834263423628033
             ],
             "marginal_coverage_gain": [
               {
@@ -1399,7 +1675,7 @@
               "unique_complementary_wins_portfolio_only": 0
             },
             "clopper_pearson_ci_95": [
-              0.0005062279830408291,
+              0.000506227983040829,
               0.1064695457114999
             ],
             "random_baselines": {
@@ -1494,7 +1770,7 @@
               "unique_complementary_wins_portfolio_only": 0
             },
             "clopper_pearson_ci_95": [
-              0.030788319773478054,
+              0.03078831977347806,
               0.08516676490951426
             ],
             "random_baselines": {
@@ -1538,7 +1814,7 @@
             },
             "clopper_pearson_ci_95": [
               0.5085004794599521,
-              0.6235030950045904
+              0.6235030950045907
             ],
             "random_baselines": {
               "diversified": {
@@ -1589,8 +1865,8 @@
               "unique_complementary_wins_portfolio_only": 0
             },
             "clopper_pearson_ci_95": [
-              0.045249969866845104,
-              0.08096564938236753
+              0.04524996986684508,
+              0.0809656493823675
             ],
             "random_baselines": {
               "diversified": {
@@ -1632,8 +1908,8 @@
               "unique_complementary_wins_portfolio_only": 0
             },
             "clopper_pearson_ci_95": [
-              0.5303316956145101,
-              0.6024754092775984
+              0.53033169561451,
+              0.602475409277598
             ],
             "random_baselines": {
               "diversified": {
@@ -1706,7 +1982,7 @@
               "unique_complementary_wins_portfolio_only": 0
             },
             "clopper_pearson_ci_95": [
-              0.0005062279830408291,
+              0.000506227983040829,
               0.1064695457114999
             ],
             "marginal_coverage_gain": [
@@ -1770,7 +2046,7 @@
               "unique_complementary_wins_portfolio_only": 5
             },
             "clopper_pearson_ci_95": [
-              0.4320604350655657,
+              0.43206043506556574,
               0.7181177588763025
             ],
             "marginal_coverage_gain": [
@@ -1916,7 +2192,7 @@
               "unique_complementary_wins_portfolio_only": 31
             },
             "clopper_pearson_ci_95": [
-              0.432108643853167,
+              0.43210864385316705,
               0.548090756496924
             ],
             "marginal_coverage_gain": [
@@ -1998,8 +2274,8 @@
               "unique_complementary_wins_portfolio_only": 13
             },
             "clopper_pearson_ci_95": [
-              0.038371912448889135,
-              0.07191978240857945
+              0.03837191244888915,
+              0.07191978240857946
             ],
             "marginal_coverage_gain": [
               {
@@ -2063,7 +2339,7 @@
             },
             "clopper_pearson_ci_95": [
               0.46095406947463424,
-              0.5337336418683554
+              0.5337336418683556
             ],
             "marginal_coverage_gain": [
               {
@@ -2168,7 +2444,7 @@
               "unique_complementary_wins_portfolio_only": 0
             },
             "clopper_pearson_ci_95": [
-              0.0005062279830408291,
+              0.000506227983040829,
               0.1064695457114999
             ],
             "marginal_coverage_gain": [
@@ -2244,7 +2520,7 @@
             },
             "clopper_pearson_ci_95": [
               0.4125441229416732,
-              0.7000927790724563
+              0.7000927790724565
             ],
             "marginal_coverage_gain": [
               {
@@ -2425,8 +2701,8 @@
               "unique_complementary_wins_portfolio_only": 28
             },
             "clopper_pearson_ci_95": [
-              0.4255284033988776,
-              0.5414706014606284
+              0.42552840339887743,
+              0.5414706014606286
             ],
             "marginal_coverage_gain": [
               {
@@ -2532,8 +2808,8 @@
               "unique_complementary_wins_portfolio_only": 10
             },
             "clopper_pearson_ci_95": [
-              0.03723487947163407,
-              0.07040311938094952
+              0.03723487947163403,
+              0.07040311938094954
             ],
             "marginal_coverage_gain": [
               {
@@ -2598,7 +2874,7 @@
           "prize_aware": {
             "best_equal_budget_constituent": {
               "mcnemar_discordant": 188,
-              "mcnemar_p_value_exact": 0.00010023481098260428,
+              "mcnemar_p_value_exact": 0.00010023481098260429,
               "portfolio_minus_constituent_abs": -0.07200000000000001,
               "strategy_id": "daily539_f4cold_5bet",
               "union_success_draws": 425,
@@ -2607,8 +2883,8 @@
               "unique_complementary_wins_portfolio_only": 67
             },
             "clopper_pearson_ci_95": [
-              0.4582994469050286,
-              0.5310759758232779
+              0.4582994469050284,
+              0.5310759758232778
             ],
             "marginal_coverage_gain": [
               {
@@ -2925,7 +3201,7 @@
             },
             "clopper_pearson_ci_95": [
               0.0522115240259173,
-              0.08993039182437074
+              0.08993039182437075
             ],
             "random_baselines": {
               "diversified": {
@@ -2967,8 +3243,8 @@
               "unique_complementary_wins_portfolio_only": 0
             },
             "clopper_pearson_ci_95": [
-              0.07947022648479371,
-              0.12373562854689286
+              0.07947022648479377,
+              0.12373562854689288
             ],
             "random_baselines": {
               "diversified": {
@@ -3134,7 +3410,7 @@
               "unique_complementary_wins_portfolio_only": 0
             },
             "clopper_pearson_ci_95": [
-              0.057394832547051126,
+              0.057394832547051106,
               0.12440736286509173
             ],
             "random_baselines": {
@@ -3177,8 +3453,8 @@
               "unique_complementary_wins_portfolio_only": 0
             },
             "clopper_pearson_ci_95": [
-              0.09121842374575385,
-              0.16969290735849538
+              0.09121842374575388,
+              0.16969290735849535
             ],
             "random_baselines": {
               "diversified": {
@@ -3229,8 +3505,8 @@
               "unique_complementary_wins_portfolio_only": 0
             },
             "clopper_pearson_ci_95": [
-              0.07109326293148026,
-              0.11352630342012358
+              0.07109326293148027,
+              0.11352630342012361
             ],
             "random_baselines": {
               "diversified": {
@@ -3272,7 +3548,7 @@
               "unique_complementary_wins_portfolio_only": 0
             },
             "clopper_pearson_ci_95": [
-              0.1085935571381935,
+              0.10859355713819338,
               0.15834306018399072
             ],
             "random_baselines": {
@@ -3332,13 +3608,6 @@
     "per_draw_outcome_source": "draws table (read-only)",
     "ticket_source": "committed P273A distinct-ticket identities (frozen)"
   },
-  "retrospective_evidence_contract": {
-    "cannot_promote_or_activate": true,
-    "cannot_set_prediction_success_claim_true": true,
-    "mid_long_are_research_guidance_only": true,
-    "short_50_is_integrity_early_warning_only": true,
-    "status_label": "RETROSPECTIVE_EXPLORATORY_NONCONFIRMATORY"
-  },
   "safety_flags": {
     "activation_or_deployment_performed": false,
     "controlled_apply_performed": false,
@@ -3351,11 +3620,12 @@
     "second_zone_manufactured": false,
     "strategy_promoted": false
   },
-  "schema_version": "p276b_fixed_n_coverage_complementarity_v1",
+  "schema_version": "p276b_fixed_n_coverage_complementarity_v2",
   "scientific_verdict": "NO_RETROSPECTIVE_COMPLEMENTARITY_EVIDENCE",
   "scope": {
-    "fixed_ticket_budgets": [
+    "all_fixed_ticket_budgets": [
       3,
+      4,
       5
     ],
     "lotteries": [
@@ -3365,6 +3635,10 @@
     ],
     "max_primary_portfolios": 6,
     "performs_unbounded_combination_search": false,
+    "primary_fixed_ticket_budgets": [
+      3,
+      5
+    ],
     "primary_lottery": "DAILY_539",
     "primary_windows": {
       "LONG": 750,

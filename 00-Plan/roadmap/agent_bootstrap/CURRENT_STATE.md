@@ -2,6 +2,27 @@
 
 **State Marker:** `P271L_PREFLIGHT_COMPLETE_NOT_READY_FOR_APPLY`
 
+> **CURRENT P275B STATE (2026-06-17) — unified prize-aware success matrix merged and post-merge verified:**
+>
+> **Prerequisite (P275E / PR #446) MERGED** at merge commit `52adc88a6fe39ebb3f6351735e435aa2635fedf0` (`2026-06-16T14:12:39Z`). This established the cadence re-attestation gate (43/43 cadence tests PASS; `run_timestamp` preserved; `re_attestation_timestamp` added) that unblocked PR #445.
+>
+> **P275B / PR #445 MERGED** at merge commit `80b7e99f1b5f96f75b0019004bc915bf523fdebe` (`2026-06-17T01:22:00Z`). Current `origin/main` HEAD is `80b7e99f1b5f96f75b0019004bc915bf523fdebe`. Note: this is distinct from the artifact's `source_commit` `77994824d1c1e5e4d4db14f0c7d5cb64bf933ead`, which records the specific commit the artifact was built from (pinned replay semantics).
+>
+> **Matrix artifact (byte-unchanged on main):**
+> - Path: `outputs/research/p275b_unified_prize_aware_success_matrix_20260616.{json,md}`
+> - JSON SHA-256: `0a81b9e652b5d84e80ebf16e9d5c5ff625746d8c46e6cfe5d38e6cfe312cf964`
+> - MD SHA-256: `b2467682d9a1fe0550a15ac11a2b44502d9e5526cea878d7a8a6862d15da9352`
+> - Canonical payload digest: `c1b99e57024f528e39e4beeca03cb22dd3278eb1d356aafbe48d8485695102f6`
+> - `source_commit`: `77994824d1c1e5e4d4db14f0c7d5cb64bf933ead` — explicit pinned replay; `None` means live HEAD for a new build; empty provenance is rejected by the builder
+> - Dimensions: 108 rows (`matrix_rows`), 36 frozen cells (`group_decisions`), windows SHORT=50 / MID=300 / LONG=750
+> - DB-free import verified; unresolved cells use sentinel; production DB not opened/written
+>
+> **Test state post-merge:** 33/33 P275B PASS; 43/43 cadence PASS; 76/76 combined PASS.
+>
+> **Limitations:** The matrix unifies retrospective prize-aware evidence only. It does not prove future predictive success, does not activate any candidate, does not modify the production registry or DB, and does not constitute promotion or deployment authorization. `prediction_success_claim=false`; `production_db_opened=false`. Additional draws after the artifact build date do not validate the historical audit verdict; prospective confirmation remains separately gated under P274A.
+>
+> **No active P275B implementation work remains. Next research direction awaits explicit Owner/CTO selection.** `final_classification=P275B_PR445_POSTMERGE_GOVERNANCE_CLOSEOUT_COMPLETE`. HOLD / WAITING_FOR_USER_AUTHORIZATION.
+
 > **CURRENT P274C STATE (2026-06-15) — exhaustive G1 design complete; separate G2 decision may be considered:** The owner superseded the prior P274B HOLD selection and completed `P274C_G1_PROSPECTIVE_EXECUTION_DECISION_RESOLUTION_DESIGN`. Artifacts: `outputs/research/p274c_g1_prospective_execution_decision_resolution_design_20260615.{json,md}`; canonical digest `873dc804130ca1e737e6430ac114791c15277a2799b7567279d809f8b7fc51a6`. All 14 canonical P274B decisions were examined and resolved (0 deferred); 8 additional mandatory decisions were resolved (0 deferred); 89 options were evaluated, with 67 rejected and 14 conditional selections carrying explicit pre-G2 evidence gates. Selected reference architecture: `RECOMMENDED_RESILIENT_LONG_HORIZON`. G1 outcome: `G1_COMPLETE_READY_FOR_SEPARATE_G2_AUTHORIZATION`. The **State Marker remains `P271L_PREFLIGHT_COMPLETE_NOT_READY_FOR_APPLY`**. P274C authorizes no G2 implementation, activation, boundary assignment, capture, production DB access, P271 activation, registry/recommendation mutation, P273B, deployment, `controlled_apply`, or production apply. P274A and its three frozen candidates remain unchanged; P271 is unactivated; P273B is not started; `prediction_success_claim=false`. No automatic next task; G2 and activation each require separate explicit owner authorization. Resulting PR is open/unmerged.
 
 > **CURRENT P274B STATE (2026-06-15) — readiness plan merged; blocked gaps still await owner decision:** **PR #441 is MERGED** at `2026-06-15T10:14:49Z`, merge commit `fa896035a2c6d5980c3e82276ebb87a7205672bc` (PR head `38edcd408741371a21852e521156522b26de0813`). The P274B readiness-plan artifacts `outputs/research/p274b_prospective_execution_activation_readiness_plan_20260615.{json,md}` now live on `main`; canonical digest `bf8ae32f8dbd208da4939ee46cdbe19125827f36c3a80aedefc8fee21a994744` is unchanged and was independently re-verified by this closeout. The **State Marker remains `P271L_PREFLIGHT_COMPLETE_NOT_READY_FOR_APPLY`**. Current position `G1_PARTIAL_PENDING_OWNER_APPROVAL`; implementation `NOT_READY_FOR_IMPLEMENTATION_AUTHORIZATION`; activation `NOT_READY_FOR_ACTIVATION`; overall `HOLD_RECOMMENDED`. The future-only boundary remains `UNSET_PENDING_SEPARATE_ACTIVATION_AUTHORIZATION`; no prospective records exist; P271 remains unactivated; production apply remains `NOT_READY_FOR_APPLY`; P273B is not started; `prediction_success_claim=false`. Confirmed isolated evidence must not be overstated: P271J is a caller-supplied ledger library, P271K is temp-DB rehearsal, and P271L is preflight/inspection with production state `ABSENT_CLEAN`. No implementation, production DB access, activation, capture, registry/recommendation mutation, deployment, or controlled_apply occurred. No active worker task. `final_classification=P274B_PR441_POSTMERGE_GOVERNANCE_CLOSEOUT_COMPLETE`. HOLD / WAITING_FOR_USER_AUTHORIZATION.

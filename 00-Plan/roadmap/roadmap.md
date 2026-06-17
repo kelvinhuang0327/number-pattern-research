@@ -1,6 +1,6 @@
 # Lottery Replay Roadmap
 
-**Last Updated:** 2026-06-15 Asia/Taipei (P274C exhaustive G1 design and owner-decision resolution complete — all 14 canonical decisions and 8 additional mandatory decisions resolved; selected `RECOMMENDED_RESILIENT_LONG_HORIZON`; outcome `G1_COMPLETE_READY_FOR_SEPARATE_G2_AUTHORIZATION`; G2 and activation remain separately gated; State Marker unchanged; P271 unactivated; production apply `NOT_READY_FOR_APPLY`; P273B deferred; P274C PR open/unmerged. Prior: P274B PR #441 merged; P274A protocol PR #439 merged.)
+**Last Updated:** 2026-06-17 Asia/Taipei (P275B unified prize-aware success matrix COMPLETE — PR #446 prerequisite merged at `52adc88`, PR #445 merged at `80b7e99`; 33/33 P275B + 43/43 cadence tests PASS; matrix 108 rows / 36 frozen cells / windows 50/300/750; digest `c1b99e...`; provenance reproducibility fix merged; no candidate promoted; next success-rate research direction awaits explicit Owner/CTO selection. Prior: P274C exhaustive G1 design complete — all 14 canonical decisions and 8 additional mandatory decisions resolved; selected `RECOMMENDED_RESILIENT_LONG_HORIZON`; outcome `G1_COMPLETE_READY_FOR_SEPARATE_G2_AUTHORIZATION`; G2 and activation remain separately gated; State Marker unchanged; P271 unactivated; production apply `NOT_READY_FOR_APPLY`; P273B deferred; P274C PR open/unmerged. Prior: P274B PR #441 merged; P274A protocol PR #439 merged.)
 **Owner:** CTO agent
 **Primary Goal:** Keep LotteryNew replay, research, and product evidence truthful, reproducible, and governed. The current maturity bottleneck has shifted from migration rehearsal to short/mid-window strategy protocol design, anti-overfit validation, canonical repo dispatch safety, and honest product disclosure.
 **Repo Policy:** Use `/Users/kelvin/Kelvin-WorkSpace/LotteryNew` only. Do not create a new repo. Production DB, registry, and data writes require explicit governed authorization. CTO roadmap updates are limited to this file and `00-Plan/roadmap/CTO-Analysis.md`. CTO must not write `CEO-Decision.md`, `active_task.md`, `production/*`, `registry/*`, `data/*`, or any new repo.
@@ -10,6 +10,25 @@
 ## 0. Current Roadmap Override — 2026-06-03 (updated; originally authored 2026-06-02)
 
 This section is the current source of truth. The 2026-06-01 sections and P186-P196 appendices below are retained for history and are superseded where they conflict with this section.
+
+### 0.0-P275B 2026-06-17 Unified Prize-Aware Success Matrix — COMPLETE
+
+**PR #446 (P275E cadence re-attestation prerequisite) MERGED** at merge commit `52adc88a6fe39ebb3f6351735e435aa2635fedf0` (`2026-06-16T14:12:39Z`). This cadence gate (43/43 cadence tests PASS; `run_timestamp` preserved; `re_attestation_timestamp` added) was a required prerequisite for PR #445.
+
+**PR #445 (P275B unified prize-aware success matrix) MERGED** at merge commit `80b7e99f1b5f96f75b0019004bc915bf523fdebe` (`2026-06-17T01:22:00Z`). The unified matrix artifact `outputs/research/p275b_unified_prize_aware_success_matrix_20260616.{json,md}` is byte-unchanged on `main`:
+- JSON SHA-256: `0a81b9e652b5d84e80ebf16e9d5c5ff625746d8c46e6cfe5d38e6cfe312cf964`
+- MD SHA-256: `b2467682d9a1fe0550a15ac11a2b44502d9e5526cea878d7a8a6862d15da9352`
+- Canonical payload digest: `c1b99e57024f528e39e4beeca03cb22dd3278eb1d356aafbe48d8485695102f6`
+- Dimensions: 108 rows, 36 frozen group decisions, windows SHORT=50 / MID=300 / LONG=750
+- `source_commit=77994824d1c1e5e4d4db14f0c7d5cb64bf933ead` (pinned replay; distinct from current `main` HEAD `80b7e99`)
+
+The provenance reproducibility fix was merged as part of P275B: `source_commit` is now explicit and pinned, enabling deterministic artifact replay without weakening digest coverage. `None` means live HEAD for a new build; empty provenance is rejected.
+
+Tests: **33/33 P275B PASS; 43/43 cadence PASS; 76/76 combined PASS.**
+
+This milestone completes the prize-aware evidence-infrastructure layer. The matrix unifies retrospective evidence and runs in parallel with existing M3+ research. It does not establish confirmed predictive advantage; `prediction_success_claim=false`. No candidate has been promoted; no production activation, DB write, or registry mutation occurred.
+
+**The next success-rate research direction (including whether to proceed to P274A execution/activation, P273B replay mining, or another direction) awaits explicit Owner/CTO selection. No automatic next task.**
 
 ### 0.0-P274C 2026-06-15 G1 Prospective Execution Decision Resolution
 

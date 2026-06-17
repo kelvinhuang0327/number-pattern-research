@@ -509,11 +509,31 @@ def test_second_zone_component_counts_still_unavailable(payload):
 
 
 def test_no_m0m1m2m3_spectrum_established(payload):
-    """P278C must not establish any exact M0/M1/M2/M3+ hit spectrum in any row."""
+    """P278C must not establish any exact M0/M1/M2/M3+ hit spectrum in any row.
+
+    Uses the real schema field names (m0_count / m1_count / m2_count / m3plus_count)
+    so that injecting a numeric value into any bucket causes this test to fail.
+    """
+    real_buckets = ("m0_count", "m1_count", "m2_count", "m3plus_count")
     for r in payload["rows"]:
-        spectrum = r.get("hit_spectrum", {})
-        for bucket in ("m0", "m1", "m2", "m3_plus"):
-            assert spectrum.get(bucket) is None, (
-                f"Row {r['cell_id']} has hit_spectrum.{bucket}={spectrum.get(bucket)!r}; "
+        spectrum = r["hit_spectrum"]
+        for bucket in real_buckets:
+            assert spectrum[bucket] is None, (
+                f"Row {r['cell_id']} has hit_spectrum.{bucket}={spectrum[bucket]!r}; "
                 "P278C must not have introduced spectrum data."
             )
+
+    # In-memory tamper: injecting a numeric value into a real bucket must be caught.
+    import copy
+    tampered = copy.deepcopy(payload)
+    tampered["rows"][0]["hit_spectrum"]["m0_count"] = 1
+    tampered_row = tampered["rows"][0]
+    found_violation = False
+    for bucket in real_buckets:
+        if tampered_row["hit_spectrum"][bucket] is not None:
+            found_violation = True
+            break
+    assert found_violation, (
+        "Tamper assertion failed: injecting m0_count=1 was not detected — "
+        "the test would not catch a real M-spectrum value being introduced."
+    )

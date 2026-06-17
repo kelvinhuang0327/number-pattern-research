@@ -2,6 +2,32 @@
 
 **State Marker:** `P271L_PREFLIGHT_COMPLETE_NOT_READY_FOR_APPLY`
 
+> **CURRENT P277 STATE (2026-06-17) — P277 observation-status audit arc MERGED via PR #450; P277F governance closeout PR OPEN:**
+>
+> **PR #450 MERGED** at merge commit `eb032ac37993eeaa5e228e8de0b77c59ca7e45ec` (`2026-06-17T08:47:07Z`). Merge parent 1 `b6dd42f14e822a186187b90c50acdfedebe3fd07`, parent 2 `9000bb510c79478647e3dcdf3360af08a806bf0c`. `origin/main` is now at `eb032ac`.
+>
+> **Arc summary:** P277A completed the historical observation-status audit; P277B identified a path-dependent canonical digest (absolute paths in manifest); P277C fixed serialization to repository-relative POSIX paths; P277D independently verified path independence and merge-readiness; P277E merged PR #450 and completed post-merge verification; P277F (this task) records the governance closeout.
+>
+> **Canonical artifact:** `outputs/research/p277a_historical_observation_status_reclassification_20260617.{json,md}`, canonical payload digest `d75f8383c5029c5024279f9e3792d417885cecc202f25740f10406a701f14284`. Universe: 36 strategy cells / 8 portfolios / 3 endpoints / 18 source artifacts.
+>
+> **Taxonomy (36 cells):**
+> - OBSERVATION_SUPPORTED_ABOVE_RANDOM = 3
+> - OBSERVATION_POTENTIAL_ABOVE_RANDOM = 12
+> - COMPETITIVE_OBSERVATION_STRATEGY = 0
+> - STRONG_RESEARCH_CANDIDATE = 0
+> - UNDERPOWERED_OBSERVATION_POTENTIAL = 1
+> - HISTORICAL_OBSERVATION_SUPERSEDED_BY_OOS_NULL = 1
+> - NO_EVIDENCE_OVER_RANDOM = 15
+> - INSUFFICIENT_RANDOM_BASELINE_EVIDENCE = 4
+> - INSUFFICIENT_SUPPORT = 0
+> - NOT_APPLICABLE_ENDPOINT = 0
+>
+> **Tests:** P277A post-merge targeted **83 PASS**. Regression verification **107 PASS and 3 ENVIRONMENT_BLOCKED** (temporary-clone origin configuration limitations, not assertion failures; P277D independently ran the relevant regression set without failures). Full repository suite **NOT RUN**.
+>
+> **Scientific boundaries:** beating an appropriate random baseline may retain an observation candidate; beating the best equal-budget strategy is a separate, stronger gate; observation retention is not prediction-success confirmation; P276B still preserves `NO_RETROSPECTIVE_COMPLEMENTARITY_EVIDENCE`; later OOS/backward-OOS evidence may supersede current mapping without erasing history. `prediction_success_claim=false`; `strategy_promoted=false`; `database_opened=false`; `database_write=false`. No registry mutation, ONLINE classification, deployment, or production write was authorized.
+>
+> **Owner gate:** P277 technical and governance evidence package is complete after P277F governance PR is reviewed and merged. P277F does not authorize merging its own governance PR. Hit-spectrum implementation **NOT AUTHORIZED**. Feature mining, new portfolio optimization, future-only execution, registry changes, and PR #444/P274D remain separate Owner decisions. HOLD / WAITING_FOR_USER_AUTHORIZATION.
+
 > **CURRENT P276B STATE (2026-06-17) - fixed-N cross-strategy study merged; P276G governance package pushed with PR #449 OPEN and UNMERGED:**
 >
 > **PR #448 is MERGED** at merge commit `74913fc0d2cef586ba477fb0785f05936d289c5d` (`2026-06-17T04:45:46Z`). `origin/main` currently remains at that merge commit.

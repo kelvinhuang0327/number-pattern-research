@@ -1,5 +1,31 @@
 # CTO Analysis - Roadmap Alignment And System Optimization Direction
 
+## 2026-06-17 CTO Post-Merge Assessment — P276B Fixed-N Cross-Strategy Coverage & Complementarity
+
+Final Classification: `CTO_P276B_POSTMERGE_GOVERNANCE_CLOSEOUT_VERIFIED`
+
+### Assessment
+
+- [Confirmed] **PR #448 is MERGED** at `74913fc0d2cef586ba477fb0785f05936d289c5d` (`2026-06-17T04:45:46Z`). The merged artifact bundle is `outputs/research/p276b_fixed_n_coverage_complementarity_20260617.{json,md}`.
+- [Confirmed] The committed artifact bundle reports `scientific_verdict = NO_RETROSPECTIVE_COMPLEMENTARITY_EVIDENCE`; the bounded retrospective analysis hash is `3e2aa62c54e2d004b562d72dca8138fc1620ab6d0068874224cc97a9d1469d6e`; the future contract hash is `229ecd041430909969fb064ff1e2fdddca126cb1a07412763ff89166105638d4`; the superseded identity-only family hash is `48d0c30d7c7643204a76bd0c6b30823c9d74b3061f10e81042bc2399eeb38440`.
+- [Confirmed] Count reproduction passed for 108 primary-window cells, and the DB SHA `4c8736caab661088c8430908ae4423a73522619f7521fb64e2c6f1affd20b056` remained unchanged.
+- [Confirmed] The evaluated bounded family did not exceed its best equal-budget constituent. That negative result is specific to this bounded post-hoc family; it does not prove all combinations fail and does not prove future failure or success.
+- [Confirmed] The historical result is descriptive and post-hoc. `prediction_success_claim=false`; no strategy promotion, registry mutation, production write, or activation occurred.
+- [Confirmed] The future contract remains frozen, but there is no future evidence yet. Future confirmation remains separately gated and can only begin with prospectively generated committed tickets after the corrected freeze and cutoff.
+
+### Interpretation
+
+Fixed-N cross-strategy mixing is not the next preferred implementation because the strongest single-strategy rows remain distinct from the failed CROSS portfolios within the evaluated bounded family. The study is useful as a negative historical boundary, but it does not justify activation or a promotion claim. It only tells us where this evaluated family failed to add value.
+
+If the owner wants additional research, the later directions should stay options only and remain separately pre-registered:
+
+1. replay feature mining
+2. cross-lottery transfer
+3. prize-aware candidate refinement
+4. future-only validation of frozen contracts
+
+Do not select any of those options here. No activation recommendation follows from P276B.
+
 ## 2026-06-17 CTO Closeout Assessment — P275B Unified Prize-Aware Success Matrix
 
 Final Classification: `CTO_P275B_POSTMERGE_GOVERNANCE_CLOSEOUT_VERIFIED`

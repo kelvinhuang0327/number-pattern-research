@@ -2,6 +2,28 @@
 
 **State Marker:** `P271L_PREFLIGHT_COMPLETE_NOT_READY_FOR_APPLY`
 
+> **CURRENT P276B STATE (2026-06-17) - fixed-N cross-strategy study merged and closeout complete:**
+>
+> **PR #448 is MERGED** at merge commit `74913fc0d2cef586ba477fb0785f05936d289c5d` (`2026-06-17T04:45:46Z`). `origin/main` now points at that merge commit.
+>
+> **Artifact bundle (byte-verified on main):**
+> - Path: `outputs/research/p276b_fixed_n_coverage_complementarity_20260617.{json,md}`
+> - Canonical payload digest: `438dca463edb574a3ed346ac616728d4621e669d25f010efeb9909478d68657e`
+> - Bounded retrospective analysis hash: `3e2aa62c54e2d004b562d72dca8138fc1620ab6d0068874224cc97a9d1469d6e`
+> - Future contract hash: `229ecd041430909969fb064ff1e2fdddca126cb1a07412763ff89166105638d4`
+> - Superseded identity-only family hash: `48d0c30d7c7643204a76bd0c6b30823c9d74b3061f10e81042bc2399eeb38440`
+> - DB SHA: `4c8736caab661088c8430908ae4423a73522619f7521fb64e2c6f1affd20b056` (unchanged)
+> - Dimensions: 108 primary-window cells; fixed ticket budgets 3 and 5; windows 50/300/750
+>
+> **Semantic boundary:** historical evaluated round-robin family is `RETROSPECTIVE_POST_HOC_BOUNDED_EXPLORATORY_NONCONFIRMATORY`; future confirmation remains `FUTURE_CONFIRMATION_PENDING` and requires prospectively generated committed tickets after the corrected future-contract freeze and cutoff.
+>
+> **Verdict:** `NO_RETROSPECTIVE_COMPLEMENTARITY_EVIDENCE`. The evaluated bounded family did not exceed its best equal-budget constituent. This does not prove all combinations fail and does not prove future failure or success. `prediction_success_claim=false`; no strategy promotion, registry mutation, production write, or activation occurred.
+>
+> **Completion chain:** the P276B study, its P276D future-confirmatory family contract, and the downstream P276E/P276F validation and closeout checks are complete and merged. PR #444 / P274D remains separate and untouched.
+>
+> **Protected work:** the protected worktrees/branches listed below remain unchanged.
+
+
 > **CURRENT P275B STATE (2026-06-17) — unified prize-aware success matrix merged and post-merge verified:**
 >
 > **Prerequisite (P275E / PR #446) MERGED** at merge commit `52adc88a6fe39ebb3f6351735e435aa2635fedf0` (`2026-06-16T14:12:39Z`). This established the cadence re-attestation gate (43/43 cadence tests PASS; `run_timestamp` preserved; `re_attestation_timestamp` added) that unblocked PR #445.

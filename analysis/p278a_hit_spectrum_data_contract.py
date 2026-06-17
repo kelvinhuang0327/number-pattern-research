@@ -911,8 +911,22 @@ def render_markdown(payload: dict) -> str:
                  "committed evidence only exposes the combined ANY_PRIZE_AWARE_WIN "
                  "aggregate — the per-component (special / second-zone) hit counts are "
                  "`NOT_AVAILABLE` and must not be inferred.")
-    lines.append("- At the primary windows (50/300/750) POWER_LOTTO second-zone rows are "
-                 "fully populated (0 missing-second-zone exclusions).")
+    # Derive POWER second-zone exclusion facts from the payload (data-derived, not hardcoded).
+    _egm_rows = [r for r in payload["rows"] if r.get("ui_readiness_status") == "SOURCE_GAP_ENDPOINT_MAPPING"]
+    _egm_count = len(_egm_rows)
+    _egm_strategies = sorted(set(r["strategy_id"] for r in _egm_rows))
+    _strategy_list = ", ".join(f"`{s}`" for s in _egm_strategies)
+    lines.append(
+        f"- POWER_LOTTO **missing-predicted-second-zone exclusions exist** at the "
+        f"primary windows (50/300/750). {_egm_count} cell-window rows across "
+        f"{len(_egm_strategies)} strategies ({_strategy_list}) have zero scoreable "
+        f"draws and are classified `SOURCE_GAP_ENDPOINT_MAPPING` — these strategies "
+        f"are completely unscoreable across all three primary windows. Additional "
+        f"scoreable POWER_LOTTO rows may still contain excluded bet rows where only "
+        f"a subset of bets had a stored predicted second-zone. Second-zone component "
+        f"hit counts remain unavailable. This correction does not establish any exact "
+        f"M0/M1/M2/M3+ hit spectrum."
+    )
     lines.append("")
     lines.append("## Prize-aware availability")
     lines.append("")

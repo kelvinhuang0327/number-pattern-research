@@ -70,7 +70,7 @@ Every one of the 108 `(cell × window)` rows is therefore classified `SOURCE_GAP
 ## Special-number and second-zone cautions
 
 - BIG_LOTTO encodes a special-number component and POWER_LOTTO a second-zone component **inside** the prize-aware win condition. The committed evidence only exposes the combined ANY_PRIZE_AWARE_WIN aggregate — the per-component (special / second-zone) hit counts are `NOT_AVAILABLE` and must not be inferred.
-- At the primary windows (50/300/750) POWER_LOTTO second-zone rows are fully populated (0 missing-second-zone exclusions).
+- POWER_LOTTO **missing-predicted-second-zone exclusions exist** at the primary windows (50/300/750). 12 cell-window rows across 4 strategies (`fourier_rhythm_3bet`, `power_fourier_rhythm_2bet`, `power_orthogonal_5bet`, `power_precision_3bet`) have zero scoreable draws and are classified `SOURCE_GAP_ENDPOINT_MAPPING` — these strategies are completely unscoreable across all three primary windows. Additional scoreable POWER_LOTTO rows may still contain excluded bet rows where only a subset of bets had a stored predicted second-zone. Second-zone component hit counts remain unavailable. This correction does not establish any exact M0/M1/M2/M3+ hit spectrum.
 
 ## Prize-aware availability
 

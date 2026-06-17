@@ -394,3 +394,126 @@ def test_unscoreable_power_rows_are_endpoint_mapping_gap(payload):
         assert r["game"] == "POWER_LOTTO"
         assert r["ui_readiness_status"] == "SOURCE_GAP_ENDPOINT_MAPPING"
         assert "SOURCE_GAP_ENDPOINT_MAPPING" in r["traceability"]["source_gap_codes"]
+
+
+# ---------------------------------------------------------------------------
+# P278C Narrative Truthfulness Regression Tests
+# ---------------------------------------------------------------------------
+
+# Expected four affected POWER strategy identities (must remain stable).
+_EXPECTED_POWER_EGM_STRATEGIES = frozenset({
+    "fourier_rhythm_3bet",
+    "power_fourier_rhythm_2bet",
+    "power_orthogonal_5bet",
+    "power_precision_3bet",
+})
+
+
+def test_markdown_does_not_claim_zero_power_second_zone_exclusions():
+    """Markdown must not contain the previously false zero-exclusion claim."""
+    md = MD_PATH.read_text(encoding="utf-8")
+    assert "0 missing-second-zone exclusions" not in md, (
+        "Markdown still contains the false claim that POWER second-zone rows have "
+        "zero missing-second-zone exclusions; this was confirmed false by P278C."
+    )
+    assert "fully populated (0" not in md, (
+        "Markdown still contains a 'fully populated (0...' pattern implying zero "
+        "POWER second-zone exclusions."
+    )
+
+
+def test_markdown_reflects_nonzero_power_second_zone_exclusions():
+    """Markdown must positively assert that POWER second-zone exclusions exist."""
+    md = MD_PATH.read_text(encoding="utf-8")
+    assert "SOURCE_GAP_ENDPOINT_MAPPING" in md, (
+        "Markdown must mention SOURCE_GAP_ENDPOINT_MAPPING to reflect the nonzero "
+        "POWER second-zone exclusion rows."
+    )
+    assert "missing-predicted-second-zone" in md or "missing predicted second-zone" in md.lower(), (
+        "Markdown must state that POWER missing-predicted-second-zone exclusions exist."
+    )
+
+
+def test_markdown_twelve_endpoint_mapping_rows_consistent_with_json(committed):
+    """12 SOURCE_GAP_ENDPOINT_MAPPING rows in JSON must be reflected in the Markdown."""
+    json_count = committed["summaries"]["summary_by_ui_readiness"]["SOURCE_GAP_ENDPOINT_MAPPING"]
+    assert json_count == 12
+    md = MD_PATH.read_text(encoding="utf-8")
+    assert "SOURCE_GAP_ENDPOINT_MAPPING`: 12" in md or "SOURCE_GAP_ENDPOINT_MAPPING: 12" in md, (
+        f"Markdown must consistently report {json_count} SOURCE_GAP_ENDPOINT_MAPPING rows "
+        "as recorded in the committed JSON."
+    )
+
+
+def test_four_affected_power_strategy_identities_unchanged(payload):
+    """The four affected POWER strategies must still be the SOURCE_GAP_ENDPOINT_MAPPING set."""
+    egm_rows = [r for r in payload["rows"] if r.get("ui_readiness_status") == "SOURCE_GAP_ENDPOINT_MAPPING"]
+    actual_strategies = frozenset(r["strategy_id"] for r in egm_rows)
+    assert actual_strategies == _EXPECTED_POWER_EGM_STRATEGIES, (
+        f"Affected POWER strategy set changed. Expected {_EXPECTED_POWER_EGM_STRATEGIES}, "
+        f"got {actual_strategies}."
+    )
+    assert len(egm_rows) == 12, (
+        f"Expected exactly 12 SOURCE_GAP_ENDPOINT_MAPPING rows, got {len(egm_rows)}."
+    )
+
+
+def test_power_second_zone_narrative_is_data_derived(payload):
+    """render_markdown must derive POWER second-zone exclusion narrative from payload rows."""
+    md_text = mod.render_markdown(payload)
+    egm_rows = [r for r in payload["rows"] if r.get("ui_readiness_status") == "SOURCE_GAP_ENDPOINT_MAPPING"]
+    egm_count = len(egm_rows)
+    egm_strategies = sorted(set(r["strategy_id"] for r in egm_rows))
+    # The generated Markdown must reference the data-derived count and each affected strategy.
+    assert str(egm_count) in md_text, (
+        f"Generated Markdown must contain the data-derived SOURCE_GAP_ENDPOINT_MAPPING count ({egm_count})."
+    )
+    for strat in egm_strategies:
+        assert strat in md_text, (
+            f"Generated Markdown must name affected strategy '{strat}' in the second-zone narrative."
+        )
+
+
+def test_json_bytes_unchanged_after_narrative_fix(committed, payload):
+    """JSON must remain byte-identical to the committed PR head artifact.
+
+    Uses the module's own compute_canonical_digest to verify the pinned digest
+    still holds after the P278C render_markdown correction (JSON must not have
+    been modified by the narrative fix).
+    """
+    # Verify the pinned canonical digest using the module's own function.
+    recomputed = mod.compute_canonical_digest(committed)
+    assert recomputed == committed["canonical_payload_digest"], (
+        f"Canonical digest mismatch after P278C: computed={recomputed}, "
+        f"expected={committed['canonical_payload_digest']}"
+    )
+    # The pinned value itself must not have drifted.
+    assert committed["canonical_payload_digest"] == (
+        "4ad80e9c84b70a3382161587fabf150da134c8bf416bd7be28fab19c2419062e"
+    ), "Canonical digest value differs from the PR-head pinned value."
+    # The fresh build payload must still match the committed JSON byte-for-byte.
+    assert json.dumps(committed, sort_keys=True) == json.dumps(payload, sort_keys=True), (
+        "Fresh build payload differs from committed JSON — JSON has been modified."
+    )
+
+
+def test_second_zone_component_counts_still_unavailable(payload):
+    """P278C must not have introduced second-zone component hit counts."""
+    for r in payload["rows"]:
+        if r.get("endpoint_specific", {}).get("second_zone_applicable"):
+            hit_counts = r["endpoint_specific"].get("second_zone_hit_counts")
+            assert hit_counts is None, (
+                f"Row {r['cell_id']} now has second_zone_hit_counts={hit_counts!r}; "
+                "second-zone component hit counts must remain unavailable (None)."
+            )
+
+
+def test_no_m0m1m2m3_spectrum_established(payload):
+    """P278C must not establish any exact M0/M1/M2/M3+ hit spectrum in any row."""
+    for r in payload["rows"]:
+        spectrum = r.get("hit_spectrum", {})
+        for bucket in ("m0", "m1", "m2", "m3_plus"):
+            assert spectrum.get(bucket) is None, (
+                f"Row {r['cell_id']} has hit_spectrum.{bucket}={spectrum.get(bucket)!r}; "
+                "P278C must not have introduced spectrum data."
+            )

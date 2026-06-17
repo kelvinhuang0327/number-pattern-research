@@ -1,5 +1,31 @@
 # CTO Analysis - Roadmap Alignment And System Optimization Direction
 
+## 2026-06-17 CTO Post-Merge Assessment — P277 Historical Observation-Status Reclassification
+
+Final Classification: `CTO_P277_POSTMERGE_GOVERNANCE_CLOSEOUT_VERIFIED`
+
+### Assessment
+
+- [Confirmed] **PR #450 MERGED** at merge commit `eb032ac37993eeaa5e228e8de0b77c59ca7e45ec` (`2026-06-17T08:47:07Z`). Merge parent 1 `b6dd42f14e822a186187b90c50acdfedebe3fd07`, parent 2 `9000bb510c79478647e3dcdf3360af08a806bf0c`. The merge first-parent diff contains exactly the four P277A files: `analysis/p277a_historical_observation_status_reclassification.py`, `outputs/research/p277a_historical_observation_status_reclassification_20260617.json`, `outputs/research/p277a_historical_observation_status_reclassification_20260617.md`, and `tests/test_p277a_historical_observation_status_reclassification.py`.
+- [Confirmed] Canonical payload digest `d75f8383c5029c5024279f9e3792d417885cecc202f25740f10406a701f14284` verified from committed artifact on `origin/main`. Universe: 36 strategy cells / 8 portfolios / 3 endpoints / 18 source artifacts.
+- [Confirmed] Taxonomy from committed artifact: OBSERVATION_SUPPORTED_ABOVE_RANDOM=3, OBSERVATION_POTENTIAL_ABOVE_RANDOM=12, COMPETITIVE_OBSERVATION_STRATEGY=0, STRONG_RESEARCH_CANDIDATE=0, UNDERPOWERED_OBSERVATION_POTENTIAL=1, HISTORICAL_OBSERVATION_SUPERSEDED_BY_OOS_NULL=1, NO_EVIDENCE_OVER_RANDOM=15, INSUFFICIENT_RANDOM_BASELINE_EVIDENCE=4, INSUFFICIENT_SUPPORT=0, NOT_APPLICABLE_ENDPOINT=0.
+- [Confirmed] `prediction_success_claim=false`; `strategy_promoted=false`; `database_opened=false`; `database_write=false`. No registry mutation, ONLINE classification, deployment, or production write was authorized by PR #450 or by this governance closeout.
+- [Confirmed] P277A post-merge targeted tests: **83 PASS**. P277E regression verification: **107 PASS and 3 ENVIRONMENT_BLOCKED** — the three blocked cases are temporary-clone origin configuration limitations, not assertion failures; P277D independently ran the relevant regression set without failures. Full repository suite **NOT RUN**.
+- [Confirmed] Arc path-dependence issue was correctly diagnosed and resolved: P277B found the manifest embedded absolute paths, P277C replaced them with repository-relative POSIX paths, P277D confirmed the digest is now path-independent and reproducible from any clean clone.
+- [Confirmed] The Owner dual-gate rule embedded in the audit: beating-random is the retention gate; beating-best-equal-budget is the separate, stronger promotion gate. The two gates are not conflated.
+- [Risk — unchanged] This audit is retrospective and historical. Observation retention (beating-random) is **not** prediction-success confirmation. Three cells categorized as OBSERVATION_SUPPORTED_ABOVE_RANDOM have surviving corrected evidence under the P273A exact inference; that is retrospective statistical evidence only — no deployment, production, or betting-advice authorization follows. Later OOS or backward-OOS evidence may supersede the current mapping without erasing historical observations.
+- [Confirmed] P276B `NO_RETROSPECTIVE_COMPLEMENTARITY_EVIDENCE` verdict is unchanged and still applies to the eight evaluated P276B portfolios. The P277A audit reconciles portfolio-level evidence with individual cell observations but does not overturn P276B.
+
+### Interpretation
+
+The P277 arc closes the observation-status mapping layer: all 36 strategy cells and 8 portfolios now carry a governed observation-status label grounded in the P273A exact inference and P276B complementarity study. This is housekeeping — it does not change the state of any strategy with respect to production activation, promotion, or recommendation. The three OBSERVATION_SUPPORTED_ABOVE_RANDOM cells remain research candidates only; they have not cleared the separate beating-best-equal-budget gate and have no prospective confirmation evidence yet (P274A confirmation protocol is frozen but unactivated, and the P274A execution/activation gate has not been passed).
+
+### Next Direction
+
+Hit-spectrum implementation remains NOT AUTHORIZED. Feature mining, portfolio optimization, future-only execution, registry changes, and PR #444/P274D are each a separate Owner decision. The P277F governance closeout PR is OPEN and requires separate Owner authorization to merge. No automatic next task follows this assessment.
+
+---
+
 ## 2026-06-17 CTO Post-Merge Assessment — P276B Fixed-N Cross-Strategy Coverage & Complementarity
 
 Final Classification: `CTO_P276B_POSTMERGE_GOVERNANCE_CLOSEOUT_VERIFIED`

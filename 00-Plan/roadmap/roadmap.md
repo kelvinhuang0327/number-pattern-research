@@ -1,6 +1,6 @@
 # Lottery Replay Roadmap
 
-**Last Updated:** 2026-06-17 Asia/Taipei (P276B fixed-N cross-strategy coverage/complementarity research COMPLETE on `main` via PR #448 merged at `74913fc` / `2026-06-17T04:45:46Z`; canonical payload digest `438dca...`; bounded retrospective analysis hash `3e2aa6...`; future contract hash `229ecd...`; 108-cell reproduction PASS; scientific verdict `NO_RETROSPECTIVE_COMPLEMENTARITY_EVIDENCE`; future confirmation pending. P276G governance package is prepared on branch `task/p276g-p276b-governance-closeout`, but PR #449 remains OPEN and UNMERGED pending independent audit and explicit Owner merge authorization. Prior: P275B unified prize-aware success matrix COMPLETE - PR #446 prerequisite merged at `52adc88`, PR #445 merged at `80b7e99`; 33/33 P275B + 43/43 cadence tests PASS; matrix 108 rows / 36 frozen cells / windows 50/300/750; digest `c1b99e...`; provenance reproducibility fix merged; no candidate promoted; next success-rate research direction awaits explicit Owner/CTO selection. Prior: P274C exhaustive G1 design complete - all 14 canonical decisions and 8 additional mandatory decisions resolved; selected `RECOMMENDED_RESILIENT_LONG_HORIZON`; outcome `G1_COMPLETE_READY_FOR_SEPARATE_G2_AUTHORIZATION`; G2 and activation remain separately gated; State Marker unchanged; P271 unactivated; production apply `NOT_READY_FOR_APPLY`; P273B deferred; P274C PR open/unmerged. Prior: P274B PR #441 merged; P274A protocol PR #439 merged.)
+**Last Updated:** 2026-06-17 Asia/Taipei (P277 historical observation-status reclassification arc COMPLETE — PR #450 MERGED at merge commit `eb032ac` / `2026-06-17T08:47:07Z`; canonical payload digest `d75f8383...`; 36 cells / 8 portfolios / 3 endpoints / 18 source artifacts; OBSERVATION_SUPPORTED_ABOVE_RANDOM=3, OBSERVATION_POTENTIAL_ABOVE_RANDOM=12, NO_EVIDENCE_OVER_RANDOM=15; P277F governance closeout PR OPEN; hit-spectrum NOT AUTHORIZED. Prior: P276B fixed-N cross-strategy coverage/complementarity research COMPLETE on `main` via PR #448 merged at `74913fc` / `2026-06-17T04:45:46Z`; canonical payload digest `438dca...`; bounded retrospective analysis hash `3e2aa6...`; future contract hash `229ecd...`; 108-cell reproduction PASS; scientific verdict `NO_RETROSPECTIVE_COMPLEMENTARITY_EVIDENCE`; future confirmation pending. P276G governance package is prepared on branch `task/p276g-p276b-governance-closeout`, but PR #449 remains OPEN and UNMERGED pending independent audit and explicit Owner merge authorization. Prior: P275B unified prize-aware success matrix COMPLETE - PR #446 prerequisite merged at `52adc88`, PR #445 merged at `80b7e99`; 33/33 P275B + 43/43 cadence tests PASS; matrix 108 rows / 36 frozen cells / windows 50/300/750; digest `c1b99e...`; provenance reproducibility fix merged; no candidate promoted; next success-rate research direction awaits explicit Owner/CTO selection. Prior: P274C exhaustive G1 design complete - all 14 canonical decisions and 8 additional mandatory decisions resolved; selected `RECOMMENDED_RESILIENT_LONG_HORIZON`; outcome `G1_COMPLETE_READY_FOR_SEPARATE_G2_AUTHORIZATION`; G2 and activation remain separately gated; State Marker unchanged; P271 unactivated; production apply `NOT_READY_FOR_APPLY`; P273B deferred; P274C PR open/unmerged. Prior: P274B PR #441 merged; P274A protocol PR #439 merged.)
 **Owner:** CTO agent
 **Primary Goal:** Keep LotteryNew replay, research, and product evidence truthful, reproducible, and governed. The current maturity bottleneck has shifted from migration rehearsal to short/mid-window strategy protocol design, anti-overfit validation, canonical repo dispatch safety, and honest product disclosure.
 **Repo Policy:** Use `/Users/kelvin/Kelvin-WorkSpace/LotteryNew` only. Do not create a new repo. Production DB, registry, and data writes require explicit governed authorization. CTO roadmap updates are limited to this file and `00-Plan/roadmap/CTO-Analysis.md`. CTO must not write `CEO-Decision.md`, `active_task.md`, `production/*`, `registry/*`, `data/*`, or any new repo.
@@ -10,6 +10,31 @@
 ## 0. Current Roadmap Override — 2026-06-03 (updated; originally authored 2026-06-02)
 
 This section is the current source of truth. The 2026-06-01 sections and P186-P196 appendices below are retained for history and are superseded where they conflict with this section.
+
+### 0.0-P277A 2026-06-17 Historical Observation-Status Reclassification — COMPLETE
+
+**PR #450 MERGED** at merge commit `eb032ac37993eeaa5e228e8de0b77c59ca7e45ec` (`2026-06-17T08:47:07Z`); merge parent 1 `b6dd42f14e822a186187b90c50acdfedebe3fd07`, parent 2 `9000bb510c79478647e3dcdf3360af08a806bf0c`. The arc spanned five sub-tasks: P277A completed the historical observation-status audit; P277B identified a path-dependent canonical digest caused by absolute paths in the manifest; P277C fixed manifest serialization to repository-relative POSIX paths; P277D independently verified path independence and confirmed merge-readiness; P277E merged PR #450 and completed post-merge verification. P277F records the governance closeout via a separate governance-only PR.
+
+The canonical artifact `outputs/research/p277a_historical_observation_status_reclassification_20260617.{json,md}` (canonical payload digest `d75f8383c5029c5024279f9e3792d417885cecc202f25740f10406a701f14284`) covers all **36 strategy cells**, **8 portfolios**, **3 endpoints**, and **18 source artifacts**. Taxonomy:
+
+| Status | Count |
+|---|---|
+| OBSERVATION_SUPPORTED_ABOVE_RANDOM | 3 |
+| OBSERVATION_POTENTIAL_ABOVE_RANDOM | 12 |
+| COMPETITIVE_OBSERVATION_STRATEGY | 0 |
+| STRONG_RESEARCH_CANDIDATE | 0 |
+| UNDERPOWERED_OBSERVATION_POTENTIAL | 1 |
+| HISTORICAL_OBSERVATION_SUPERSEDED_BY_OOS_NULL | 1 |
+| NO_EVIDENCE_OVER_RANDOM | 15 |
+| INSUFFICIENT_RANDOM_BASELINE_EVIDENCE | 4 |
+| INSUFFICIENT_SUPPORT | 0 |
+| NOT_APPLICABLE_ENDPOINT | 0 |
+
+Scientific boundaries: beating an appropriate random baseline may retain an observation candidate; beating the best equal-budget strategy is a separate, stronger gate that requires the same-budget best to be individually characterized; observation retention is **not** prediction-success confirmation; P276B still preserves `NO_RETROSPECTIVE_COMPLEMENTARITY_EVIDENCE`; later OOS/backward-OOS evidence may supersede the current mapping without erasing history.
+
+Tests: P277A post-merge targeted **83 PASS**. Regression verification **107 PASS and 3 ENVIRONMENT_BLOCKED** — the three blocked cases are temporary-clone origin configuration limitations, not assertion failures; P277D independently ran the relevant regression set without failures. Full repository suite **NOT RUN**. `prediction_success_claim=false`; `strategy_promoted=false`; `database_opened=false`; `database_write=false`. No registry mutation, ONLINE classification, deployment, or production write was authorized. Hit-spectrum implementation remains **NOT AUTHORIZED**; feature mining, new portfolio optimization, future-only execution, registry changes, and PR #444/P274D remain separate Owner decisions.
+
+**The P277F governance closeout PR is OPEN and UNMERGED and requires separate Owner authorization to merge.**
 
 ### 0.0-P276B 2026-06-17 Fixed-N Cross-Strategy Coverage & Complementarity Study
 

@@ -2,9 +2,9 @@
 
 **State Marker:** `P271L_PREFLIGHT_COMPLETE_NOT_READY_FOR_APPLY`
 
-> **CURRENT P276B STATE (2026-06-17) - fixed-N cross-strategy study merged and closeout complete:**
+> **CURRENT P276B STATE (2026-06-17) - fixed-N cross-strategy study merged; P276G governance package pushed with PR #449 OPEN and UNMERGED:**
 >
-> **PR #448 is MERGED** at merge commit `74913fc0d2cef586ba477fb0785f05936d289c5d` (`2026-06-17T04:45:46Z`). `origin/main` now points at that merge commit.
+> **PR #448 is MERGED** at merge commit `74913fc0d2cef586ba477fb0785f05936d289c5d` (`2026-06-17T04:45:46Z`). `origin/main` currently remains at that merge commit.
 >
 > **Artifact bundle (byte-verified on main):**
 > - Path: `outputs/research/p276b_fixed_n_coverage_complementarity_20260617.{json,md}`
@@ -19,7 +19,7 @@
 >
 > **Verdict:** `NO_RETROSPECTIVE_COMPLEMENTARITY_EVIDENCE`. The evaluated bounded family did not exceed its best equal-budget constituent. This does not prove all combinations fail and does not prove future failure or success. `prediction_success_claim=false`; no strategy promotion, registry mutation, production write, or activation occurred.
 >
-> **Completion chain:** the P276B study, its P276D future-confirmatory family contract, and the downstream P276E/P276F validation and closeout checks are complete and merged. PR #444 / P274D remains separate and untouched.
+> **Completion chain:** the P276B study, its P276D future-confirmatory family contract, and the downstream P276E/P276F validation and closeout checks are complete and merged through **PR #448**. The follow-on **P276G governance package** is committed and pushed on branch `task/p276g-p276b-governance-closeout`, but **PR #449 is OPEN and UNMERGED**, so those governance edits are not yet on `main`. A later independent audit and explicit Owner merge authorization are still required. PR #444 / P274D remains separate and untouched.
 >
 > **Protected work:** the protected worktrees/branches listed below remain unchanged.
 

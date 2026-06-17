@@ -3,24 +3,24 @@
   "generated_at": "2026-06-17T00:00:00+00:00",
   "source_commit": "b6dd42f14e822a186187b90c50acdfedebe3fd07",
   "source_artifact_manifest": [
-    "/Users/kelvin/Kelvin-WorkSpace/LotteryNew-p277a/outputs/research/p222_cross_lottery_feature_discovery_scan_20260603.json",
-    "/Users/kelvin/Kelvin-WorkSpace/LotteryNew-p277a/outputs/research/p223b_candidate_oos_cross_year_validation_20260603.json",
-    "/Users/kelvin/Kelvin-WorkSpace/LotteryNew-p277a/outputs/research/p224_daily539_midfreq_fourier_2bet_deeper_validation_20260603.json",
-    "/Users/kelvin/Kelvin-WorkSpace/LotteryNew-p277a/outputs/research/p224b_daily539_survivor_future_oos_monitoring_protocol_20260603.json",
-    "/Users/kelvin/Kelvin-WorkSpace/LotteryNew-p277a/outputs/research/p227c_star_box_play_dryrun_scan_20260603.json",
-    "/Users/kelvin/Kelvin-WorkSpace/LotteryNew-p277a/outputs/research/p230b1_daily539_backward_oos_dryrun_20260603.json",
-    "/Users/kelvin/Kelvin-WorkSpace/LotteryNew-p277a/outputs/research/p231b_powerlotto_first_zone_backward_oos_dryrun_20260604.json",
-    "/Users/kelvin/Kelvin-WorkSpace/LotteryNew-p277a/outputs/research/p252c_baseline_calculator_ssot_20260607.json",
-    "/Users/kelvin/Kelvin-WorkSpace/LotteryNew-p277a/outputs/research/p252d_correction_gate_ssot_20260607.json",
-    "/Users/kelvin/Kelvin-WorkSpace/LotteryNew-p277a/outputs/research/p252e_permutation_test_ssot_20260607.json",
-    "/Users/kelvin/Kelvin-WorkSpace/LotteryNew-p277a/outputs/research/p252f_rolling_window_statistics_ssot_20260607.json",
-    "/Users/kelvin/Kelvin-WorkSpace/LotteryNew-p277a/outputs/research/p267c_m3plus_strategy_revalidation_20260610.json",
-    "/Users/kelvin/Kelvin-WorkSpace/LotteryNew-p277a/outputs/research/p273a_distinct_ticket_identity_20260615.json",
-    "/Users/kelvin/Kelvin-WorkSpace/LotteryNew-p277a/outputs/research/p273a_primary_window_observed_counts_20260615.json",
-    "/Users/kelvin/Kelvin-WorkSpace/LotteryNew-p277a/outputs/research/p273a_prize_aware_inferential_validation_20260615.json",
-    "/Users/kelvin/Kelvin-WorkSpace/LotteryNew-p277a/outputs/research/p273a_prizeaware_observed_counts_20260614.json",
-    "/Users/kelvin/Kelvin-WorkSpace/LotteryNew-p277a/outputs/research/p275b_unified_prize_aware_success_matrix_20260616.json",
-    "/Users/kelvin/Kelvin-WorkSpace/LotteryNew-p277a/outputs/research/p276b_fixed_n_coverage_complementarity_20260617.json"
+    "outputs/research/p222_cross_lottery_feature_discovery_scan_20260603.json",
+    "outputs/research/p223b_candidate_oos_cross_year_validation_20260603.json",
+    "outputs/research/p224_daily539_midfreq_fourier_2bet_deeper_validation_20260603.json",
+    "outputs/research/p224b_daily539_survivor_future_oos_monitoring_protocol_20260603.json",
+    "outputs/research/p227c_star_box_play_dryrun_scan_20260603.json",
+    "outputs/research/p230b1_daily539_backward_oos_dryrun_20260603.json",
+    "outputs/research/p231b_powerlotto_first_zone_backward_oos_dryrun_20260604.json",
+    "outputs/research/p252c_baseline_calculator_ssot_20260607.json",
+    "outputs/research/p252d_correction_gate_ssot_20260607.json",
+    "outputs/research/p252e_permutation_test_ssot_20260607.json",
+    "outputs/research/p252f_rolling_window_statistics_ssot_20260607.json",
+    "outputs/research/p267c_m3plus_strategy_revalidation_20260610.json",
+    "outputs/research/p273a_distinct_ticket_identity_20260615.json",
+    "outputs/research/p273a_primary_window_observed_counts_20260615.json",
+    "outputs/research/p273a_prize_aware_inferential_validation_20260615.json",
+    "outputs/research/p273a_prizeaware_observed_counts_20260614.json",
+    "outputs/research/p275b_unified_prize_aware_success_matrix_20260616.json",
+    "outputs/research/p276b_fixed_n_coverage_complementarity_20260617.json"
   ],
   "source_artifact_hashes": {
     "p222": "5e0d9e5fee38de6d15400bc76e29bd20a2c8a8cae391908d043263db5507d9a8",
@@ -3289,5 +3289,5 @@
       "priority": "LOW"
     }
   ],
-  "canonical_payload_digest": "644119f63065e9dd288999251720a80127a3b571647744255bfe62564ff8d167"
+  "canonical_payload_digest": "d75f8383c5029c5024279f9e3792d417885cecc202f25740f10406a701f14284"
 }

@@ -1391,7 +1391,9 @@ def build_artifact(generated_at: str = GENERATED_AT_PINNED) -> dict:
         "task_id": TASK_ID,
         "generated_at": generated_at,
         "source_commit": SOURCE_COMMIT,
-        "source_artifact_manifest": sorted(str(p) for p in SOURCE_ARTIFACTS.values()),
+        "source_artifact_manifest": sorted(
+            p.relative_to(ROOT).as_posix() for p in SOURCE_ARTIFACTS.values()
+        ),
         "source_artifact_hashes": artifact_hashes,
         "universe_definition": (
             "All committed strategy-cell and portfolio evidence under "
@@ -1488,13 +1490,13 @@ def render_markdown(payload: dict) -> str:
     lines += [
         "# P277A — Historical Observation Status Reclassification Audit",
         "",
-        f"**Generated:** {payload['generated_at']}  ",
-        f"**Source commit (origin/main):** `{sc}`  ",
-        f"**Canonical payload digest:** `{dg}`  ",
-        f"**prediction_success_claim:** {payload['prediction_success_claim']}  ",
-        f"**strategy_promoted:** {payload['strategy_promoted']}  ",
-        f"**database_opened:** {payload['database_opened']}  ",
-        f"**database_write:** {payload['database_write']}  ",
+        f"**Generated:** {payload['generated_at']}",
+        f"**Source commit (origin/main):** `{sc}`",
+        f"**Canonical payload digest:** `{dg}`",
+        f"**prediction_success_claim:** {payload['prediction_success_claim']}",
+        f"**strategy_promoted:** {payload['strategy_promoted']}",
+        f"**database_opened:** {payload['database_opened']}",
+        f"**database_write:** {payload['database_write']}",
         "",
         "---",
         "",

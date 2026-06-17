@@ -53,7 +53,7 @@ M = importlib.util.module_from_spec(spec)
 spec.loader.exec_module(M)
 
 PINNED_GENERATED_AT = "2026-06-17T00:00:00+00:00"
-PINNED_DIGEST = "644119f63065e9dd288999251720a80127a3b571647744255bfe62564ff8d167"
+PINNED_DIGEST = "d75f8383c5029c5024279f9e3792d417885cecc202f25740f10406a701f14284"
 
 JSON_PATH = ROOT / "outputs" / "research" / "p277a_historical_observation_status_reclassification_20260617.json"
 MD_PATH = ROOT / "outputs" / "research" / "p277a_historical_observation_status_reclassification_20260617.md"
@@ -881,3 +881,135 @@ def test_p276b_hash_in_committed_json(committed_json):
     assert actual == recorded, (
         f"P276B hash mismatch: actual={actual} recorded={recorded}"
     )
+
+
+# ---------------------------------------------------------------------------
+# P277C Remediation: Path-independence tests (added 2026-06-17)
+# These verify that source_artifact_manifest uses repo-relative POSIX paths
+# so the canonical digest is identical regardless of checkout/worktree location.
+# ---------------------------------------------------------------------------
+
+def test_manifest_paths_are_relative_posix(artifact):
+    """All manifest paths must be relative POSIX — no leading '/'."""
+    for p in artifact["source_artifact_manifest"]:
+        assert not Path(p).is_absolute(), (
+            f"Absolute path leaked into manifest: {p!r}. "
+            "source_artifact_manifest must use repo-relative POSIX paths."
+        )
+
+
+def test_manifest_no_host_specific_prefix(artifact):
+    """Manifest paths must not contain any host-specific directory component."""
+    forbidden_prefixes = ("/Users/", "/home/", "/root/", "/tmp/", "C:\\", "LotteryNew-p277a")
+    for p in artifact["source_artifact_manifest"]:
+        for prefix in forbidden_prefixes:
+            assert prefix not in p, (
+                f"Host-specific prefix {prefix!r} found in manifest path {p!r}"
+            )
+
+
+def test_manifest_paths_under_outputs_research(artifact):
+    """All manifest paths must be under 'outputs/research/' (repo-relative)."""
+    for p in artifact["source_artifact_manifest"]:
+        assert p.startswith("outputs/research/"), (
+            f"Manifest path not under outputs/research/: {p!r}"
+        )
+
+
+def test_manifest_paths_unique_and_deterministic(artifact):
+    """Manifest paths must be unique and sorted deterministically."""
+    paths = artifact["source_artifact_manifest"]
+    assert len(paths) == len(set(paths)), "Duplicate manifest paths found"
+    assert paths == sorted(paths), "Manifest paths are not sorted deterministically"
+
+
+def test_canonical_digest_two_root_independence(artifact):
+    """
+    Path-independence core property: manifest uses repo-relative POSIX paths,
+    so any two checkouts at different absolute roots produce identical manifests
+    and thus identical canonical digests.
+
+    Verifies that relative paths → same digest, and that absolute paths from
+    two different roots → different digests (proving regression detection works).
+    """
+    current_manifest = artifact["source_artifact_manifest"]
+    # All paths relative → digest is root-independent
+    payload_copy = dict(artifact)
+    payload_copy["canonical_payload_digest"] = ""
+    recomputed = M.compute_canonical_digest(payload_copy)
+    assert recomputed == artifact["canonical_payload_digest"], (
+        "Recomputed digest does not match stored — path-independence broken"
+    )
+
+    # Negative property: absolute paths from two different fake roots → different digests
+    fake_a = "/fake/root_a"
+    fake_b = "/fake/root_b"
+    manifest_abs_a = sorted(f"{fake_a}/{p}" for p in current_manifest)
+    manifest_abs_b = sorted(f"{fake_b}/{p}" for p in current_manifest)
+
+    payload_a = dict(artifact)
+    payload_a["source_artifact_manifest"] = manifest_abs_a
+    payload_a["canonical_payload_digest"] = ""
+    digest_a = M.compute_canonical_digest(payload_a)
+
+    payload_b = dict(artifact)
+    payload_b["source_artifact_manifest"] = manifest_abs_b
+    payload_b["canonical_payload_digest"] = ""
+    digest_b = M.compute_canonical_digest(payload_b)
+
+    assert digest_a != digest_b, (
+        "Absolute-path manifests from two different roots produced identical digests "
+        "— the negative-case property is broken"
+    )
+    assert recomputed != digest_a, (
+        "Relative-path digest equals absolute-path digest — path-independence fix has no effect"
+    )
+
+
+def test_absolute_path_reintroduction_detected(artifact):
+    """
+    If absolute paths are reintroduced, digest must differ from the pinned value.
+    This ensures the test suite catches any future regression.
+    """
+    current_manifest = artifact["source_artifact_manifest"]
+    # Construct a payload with absolute paths (simulating regression)
+    abs_manifest = sorted(f"/some/fake/root/{p}" for p in current_manifest)
+    payload_regression = dict(artifact)
+    payload_regression["source_artifact_manifest"] = abs_manifest
+    payload_regression["canonical_payload_digest"] = ""
+    digest_regression = M.compute_canonical_digest(payload_regression)
+    assert digest_regression != PINNED_DIGEST, (
+        "Absolute-path manifest produced the same pinned digest — "
+        "path-independence fix has no effect or test is broken"
+    )
+
+
+def test_committed_json_manifest_no_absolute_paths(committed_json):
+    """Committed JSON file must not contain absolute manifest paths."""
+    for p in committed_json.get("source_artifact_manifest", []):
+        assert not Path(p).is_absolute(), (
+            f"Committed JSON still has absolute manifest path: {p!r}. "
+            "Regenerate artifacts after applying the path-independence fix."
+        )
+
+
+def test_committed_json_manifest_no_worktree_path(committed_json):
+    """Committed JSON must not contain the worktree directory path."""
+    raw_json = json.dumps(committed_json)
+    worktree_fragments = ["LotteryNew-p277a", "/Users/kelvin", "/home/kelvin"]
+    for fragment in worktree_fragments:
+        assert fragment not in raw_json, (
+            f"Host-specific fragment {fragment!r} found in committed JSON. "
+            "Regenerate artifacts with the path-independence fix applied."
+        )
+
+
+def test_markdown_no_absolute_paths():
+    """Committed Markdown file must not contain absolute paths from the manifest."""
+    content = MD_PATH.read_text(encoding="utf-8")
+    fragments = ["LotteryNew-p277a", "/Users/kelvin", "/home/kelvin"]
+    for fragment in fragments:
+        assert fragment not in content, (
+            f"Host-specific fragment {fragment!r} found in Markdown artifact. "
+            "Regenerate Markdown with the path-independence fix applied."
+        )

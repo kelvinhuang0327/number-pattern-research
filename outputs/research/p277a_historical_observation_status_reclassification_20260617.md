@@ -1,12 +1,12 @@
 # P277A — Historical Observation Status Reclassification Audit
 
-**Generated:** 2026-06-17T00:00:00+00:00  
-**Source commit (origin/main):** `b6dd42f14e822a186187b90c50acdfedebe3fd07`  
-**Canonical payload digest:** `644119f63065e9dd288999251720a80127a3b571647744255bfe62564ff8d167`  
-**prediction_success_claim:** False  
-**strategy_promoted:** False  
-**database_opened:** False  
-**database_write:** False  
+**Generated:** 2026-06-17T00:00:00+00:00
+**Source commit (origin/main):** `b6dd42f14e822a186187b90c50acdfedebe3fd07`
+**Canonical payload digest:** `d75f8383c5029c5024279f9e3792d417885cecc202f25740f10406a701f14284`
+**prediction_success_claim:** False
+**strategy_promoted:** False
+**database_opened:** False
+**database_write:** False
 
 ---
 
@@ -361,4 +361,4 @@ BIG_LOTTO all strategies: No corrected-significant cells found under prize-aware
 - No strategy promotion. No registry mutation. No controlled_apply.
 - No historical artifact modified.
 - prediction_success_claim=false; strategy_promoted=false.
-- Canonical payload digest: `644119f63065e9dd288999251720a80127a3b571647744255bfe62564ff8d167`
+- Canonical payload digest: `d75f8383c5029c5024279f9e3792d417885cecc202f25740f10406a701f14284`

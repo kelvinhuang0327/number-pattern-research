@@ -1251,3 +1251,14 @@ Create a feature branch from the current clean local commit, push it to origin, 
 ```text
 CTO_ROADMAP_UPDATED_AFTER_P196_REMOVE_DB_BINARIES_RECOMMIT_20260601
 ```
+
+## P280K Readiness Closeout Note
+
+- P280K is a readiness / owner-decision package only.
+- P280D cleanup is complete; the worktree is removed and the branch is retained.
+- PR #457 is merged and anchors the exact seven-file P280D protocol scope on `main`.
+- The BIG 6/49 future-only protocol is implemented but not activated.
+- No real target draw, real ticket, deadline lookup, or future evaluation is authorized yet.
+- Historical 750 evidence remains post-hoc and cannot be used for candidate selection.
+- Any next publication task still requires a separate owner decision for target selection, manifest generation, branch retention, and post-draw evaluation planning.
+- Do not interpret this package as publication authorization.

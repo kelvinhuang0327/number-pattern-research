@@ -31,7 +31,13 @@ Scientific boundaries: The current committed evidence does not provide a matchin
 
 Tests: P278A targeted **38 PASS**. Related regression **268 PASS**. Dedicated-DB CI lane **SKIPPED** (workflow_dispatch-gated, not counted as PASS). Full repository suite **NOT RUN**. `prediction_success_claim=false`; `strategy_promoted=false`; `database_opened=false`; `database_write=false`. No registry mutation, ONLINE classification, deployment, or production write occurred.
 
-**Authorization boundaries remain in effect:** Read-only DB extraction NOT AUTHORIZED. Hit-spectrum frontend/page/API implementation NOT AUTHORIZED. Strategy/portfolio search NOT AUTHORIZED by this task. P274D/PR #444 remains outside scope. P278A worktree cleanup requires separate authorization after P278H governance PR is merged and verified. The next research/product direction requires separate Owner authorization.
+**P278I/P278J governance remediation:** P278I independently audited PR #453, found governance-document omissions plus one historical Markdown structural issue, and classified PR #453 as not merge-ready. It found no defect in any research artifact, digest, strategy result, DB state, or P278A scientific conclusion. P278J performs only this four-document remediation.
+
+**PR #453 gate:** PR #453 is OPEN and UNMERGED; base = `main`; head branch = `task/p278h-p278-governance-closeout-sync`; merging PR #453 requires separate explicit Owner authorization; P278J does not authorize merge, and PR #453 remains OPEN and unmerged after P278J.
+
+**Missing-value semantics:** Unsupported or unavailable M-spectrum, prize-tier, special-number, and second-zone component values remain `null`/`NOT_AVAILABLE`. Unavailable evidence must never be represented or inferred as zero. Zero is a measured value and is semantically different from missing evidence; null values do not prove zero hits.
+
+**Authorization boundaries remain in effect:** Read-only DB extraction NOT AUTHORIZED. Hit-spectrum frontend/page/API implementation NOT AUTHORIZED. Strategy/portfolio search NOT AUTHORIZED by this task. Registry mutation, ONLINE classification/activation, production write, deployment, and `controlled_apply` remain untouched and unauthorized. P274D/PR #444 remains outside scope. Cleanup of `/Users/kelvin/Kelvin-WorkSpace/LotteryNew-p278a` requires separate authorization. Cleanup of `/Users/kelvin/Kelvin-WorkSpace/LotteryNew-p278h` requires separate authorization. Either cleanup may occur only after PR #453 is merged and post-merge verification passes; P278J authorizes no cleanup. The next research/product direction requires separate Owner authorization.
 
 ### 0.0-P277A 2026-06-17 Historical Observation-Status Reclassification — COMPLETE
 

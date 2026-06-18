@@ -1,0 +1,180 @@
+{
+  "schema_version": "p280d_big649_future_only_freeze_v1",
+  "freeze_id": "P280D_BIG649_FUTURE_ONLY_FREEZE_20260618",
+  "freeze_created_at": "2026-06-18T18:00:00+08:00",
+  "freeze_status": "PROTOCOL_FROZEN_NOT_ACTIVATED",
+  "origin_main_sha": "fc8225222430f2bfde3b480df75441c8e93ed05b",
+  "protocol_source_sha256": "c5c004044b44599c7ff6d6d3bc424dda02885d721e38caeb7138be9772cf649f",
+  "game": {
+    "id": "BIG",
+    "label": "大樂透",
+    "rule": "6-49"
+  },
+  "strategy_ids": [
+    "bet2_fourier_expansion_biglotto",
+    "biglotto_deviation_2bet",
+    "biglotto_echo_aware_3bet",
+    "biglotto_triple_strike",
+    "biglotto_ts3_markov_4bet_w30",
+    "cold_complement_biglotto",
+    "coldpool15_biglotto",
+    "fourier30_markov30_biglotto",
+    "markov_2bet_biglotto",
+    "markov_single_biglotto",
+    "ts3_regime_3bet"
+  ],
+  "strategies": [
+    {
+      "strategy_id": "bet2_fourier_expansion_biglotto",
+      "source_path": "lottery_api/models/p42_wave3_biglotto_adapters.py",
+      "git_blob_sha1": "ce6911405c15656fbfe35733edbe4e51938afdbd",
+      "sha256": "19c8458421112f61137f96a7de92a7734b525d8cbd0673c65d4c09f94b3b664b",
+      "generator_identity": "lottery_api.models.p42_wave3_biglotto_adapters:predict_fourier_expansion_bet1"
+    },
+    {
+      "strategy_id": "biglotto_deviation_2bet",
+      "source_path": "tools/predict_biglotto_deviation_2bet.py",
+      "git_blob_sha1": "1ea8ad13aa2d26a8f7e64845b21d104542fcab4f",
+      "sha256": "bb97c0bf044c5f9f37de7c6f27629e479bda650ca33dfeb7d0fbff840537bfba",
+      "generator_identity": "tools.predict_biglotto_deviation_2bet:deviation_complement_2bet[bet_index=1]"
+    },
+    {
+      "strategy_id": "biglotto_echo_aware_3bet",
+      "source_path": "tools/predict_biglotto_echo_3bet.py",
+      "git_blob_sha1": "a1852cb7d63b995c3e05935425a31160cc434faa",
+      "sha256": "ed4878fb59e22c44f26313646a762e034c7f92355e5df56a6f72eed887d11320",
+      "generator_identity": "tools.predict_biglotto_echo_3bet:echo_aware_mixed_3bet(window=50,echo_weight=0.25)[bet_index=1]"
+    },
+    {
+      "strategy_id": "biglotto_triple_strike",
+      "source_path": "tools/predict_biglotto_triple_strike.py",
+      "git_blob_sha1": "dd6c2cd5bc7e4957b42761309593d4874e58a5db",
+      "sha256": "236fe529c01f1c39f4297258db6dc591e4612365720245fc8051540ed69954b7",
+      "generator_identity": "tools.predict_biglotto_triple_strike:generate_triple_strike[bet_index=1]"
+    },
+    {
+      "strategy_id": "biglotto_ts3_markov_4bet_w30",
+      "source_path": "tools/backtest_biglotto_5bet_ts3markov.py",
+      "git_blob_sha1": "817a43b92d21e5f74fc18b980994aa4e99cc494e",
+      "sha256": "25760472baa09835b560f146ff4a0ce23fa2f2373a75d60c64ed557286dfbc2a",
+      "generator_identity": "tools.backtest_biglotto_5bet_ts3markov:generate_ts3_markov_4bet(markov_window=30)[bet_index=1]"
+    },
+    {
+      "strategy_id": "cold_complement_biglotto",
+      "source_path": "lottery_api/models/p42_wave3_biglotto_adapters.py",
+      "git_blob_sha1": "ce6911405c15656fbfe35733edbe4e51938afdbd",
+      "sha256": "19c8458421112f61137f96a7de92a7734b525d8cbd0673c65d4c09f94b3b664b",
+      "generator_identity": "lottery_api.models.p42_wave3_biglotto_adapters:predict_cold_complement_bet1"
+    },
+    {
+      "strategy_id": "coldpool15_biglotto",
+      "source_path": "lottery_api/models/p42_wave3_biglotto_adapters.py",
+      "git_blob_sha1": "ce6911405c15656fbfe35733edbe4e51938afdbd",
+      "sha256": "19c8458421112f61137f96a7de92a7734b525d8cbd0673c65d4c09f94b3b664b",
+      "generator_identity": "lottery_api.models.p42_wave3_biglotto_adapters:predict_coldpool15"
+    },
+    {
+      "strategy_id": "fourier30_markov30_biglotto",
+      "source_path": "lottery_api/models/p42_wave3_biglotto_adapters.py",
+      "git_blob_sha1": "ce6911405c15656fbfe35733edbe4e51938afdbd",
+      "sha256": "19c8458421112f61137f96a7de92a7734b525d8cbd0673c65d4c09f94b3b664b",
+      "generator_identity": "lottery_api.models.p42_wave3_biglotto_adapters:predict_fourier30_markov30_bet1"
+    },
+    {
+      "strategy_id": "markov_2bet_biglotto",
+      "source_path": "lottery_api/models/p42_wave3_biglotto_adapters.py",
+      "git_blob_sha1": "ce6911405c15656fbfe35733edbe4e51938afdbd",
+      "sha256": "19c8458421112f61137f96a7de92a7734b525d8cbd0673c65d4c09f94b3b664b",
+      "generator_identity": "lottery_api.models.p42_wave3_biglotto_adapters:predict_markov_2bet_bet1"
+    },
+    {
+      "strategy_id": "markov_single_biglotto",
+      "source_path": "lottery_api/models/p42_wave3_biglotto_adapters.py",
+      "git_blob_sha1": "ce6911405c15656fbfe35733edbe4e51938afdbd",
+      "sha256": "19c8458421112f61137f96a7de92a7734b525d8cbd0673c65d4c09f94b3b664b",
+      "generator_identity": "lottery_api.models.p42_wave3_biglotto_adapters:predict_markov_single"
+    },
+    {
+      "strategy_id": "ts3_regime_3bet",
+      "source_path": "tools/backtest_biglotto_enhancements.py",
+      "git_blob_sha1": "18a48fd216b4cc213cb505d069a6be98ce09fe68",
+      "sha256": "088e0815a0f1afb2aa884b0215882090efa72afeea0cc020d6ec8145cb143260",
+      "generator_identity": "tools.backtest_biglotto_enhancements:fourier_rhythm_bet via ts3_regime_3bet[bet_index=1]"
+    }
+  ],
+  "research_contract": {
+    "strategy_count": 11,
+    "primary_budget_n": 1,
+    "bet_index": 1,
+    "ticket_size": 6,
+    "number_min": 1,
+    "number_max": 49,
+    "endpoint_id": "BIG_ANY_PRIZE_AWARE_WIN",
+    "endpoint_semantics": "hit_count >= 3 OR (hit_count == 2 AND special_hit == true); hit_count uses the six actual main numbers; special_hit means the actual special number is present in the predicted six main numbers; no special number is predicted",
+    "native_n3_n4_portfolios_in_scope": false
+  },
+  "selection_policy": {
+    "freeze_all_11": true,
+    "strategy_ranking": "NONE",
+    "historical_candidate_selection": "NONE",
+    "outcome_based_exclusion": false
+  },
+  "claims": {
+    "prediction_success_claim": false,
+    "strategy_promoted": false,
+    "activation_authorized": false
+  },
+  "historical_evidence_boundary": {
+    "classification": "P280C_BIG649_POST_HOC_ARTIFACT_TIMING_NOT_VERIFIED",
+    "strategy_by_draw_cells": 8250,
+    "verified_pre_draw_publication_cells": 0,
+    "ticket_artifact_status": "POST_HOC_ARTIFACT_NOT_READY",
+    "source_cutoff_guard_status": "PASS_SOURCE_SEMANTICS_ONLY",
+    "historical_evidence_eligible_for_future_confirmation": false,
+    "retrospective_candidate_selection_prohibited": true
+  },
+  "manifest_contract": {
+    "manifest_schema_version": "p280d_big649_prediction_manifest_v1",
+    "publication_status": "UNPUBLISHED_LOCAL_DRAFT",
+    "canonical_json": {
+      "encoding": "UTF-8",
+      "keys": "lexical ascending",
+      "separators": "comma and colon without insignificant whitespace",
+      "line_ending": "LF",
+      "manifest_sha256_excludes": [
+        "manifest_sha256"
+      ]
+    },
+    "local_generated_at_is_publication_evidence": false,
+    "fail_closed": true
+  },
+  "publication_protocol": {
+    "design_only": true,
+    "execution_authorized": false,
+    "protocol_commit_must_be_merged_first": true,
+    "target_outcome_must_not_exist": true,
+    "history_cutoff_strictly_before_target": true,
+    "one_generation_only_no_rerun_selection": true,
+    "prediction_branch_per_target": true,
+    "normal_push_only": true,
+    "force_push_prohibited": true,
+    "github_pr_required_before_deadline": true,
+    "github_server_time_authoritative": true,
+    "immutable_evidence": [
+      "GitHub PR createdAt",
+      "exact prediction branch head SHA",
+      "manifest Git blob SHA",
+      "manifest SHA-256"
+    ],
+    "pr_head_change_after_creation_prohibited": true,
+    "branch_and_pr_retained_until_evaluation_closeout": true,
+    "outcome_written_to_prediction_manifest": false,
+    "missing_or_late_pr_classification": "NO_VALID_PRE_DRAW_PUBLICATION",
+    "post_deadline_backfill_prohibited": true,
+    "post_draw_evaluation_separate_artifact_required": true
+  },
+  "formal_future_evaluation_status": "NOT_STARTED_NOT_AUTHORIZED",
+  "real_target_selected": false,
+  "real_future_ticket_published": false,
+  "final_classification": "P280D_BIG649_FUTURE_ONLY_FREEZE_PROTOCOL_IMPLEMENTED_NOT_ACTIVATED"
+}

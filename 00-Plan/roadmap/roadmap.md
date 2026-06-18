@@ -1,6 +1,6 @@
 # Lottery Replay Roadmap
 
-**Last Updated:** 2026-06-18 Asia/Taipei (P278 hit-spectrum data contract arc COMPLETE — PR #452 MERGED at merge commit `f20b3acd` / `2026-06-18T01:37:51Z`; canonical digest `4ad80e9c...`; 36 strategy cells × 3 windows = 108 rows; 96 SOURCE_GAP_HIT_BUCKETS + 12 SOURCE_GAP_ENDPOINT_MAPPING; zero full/partial spectrum identities; `prediction_success_claim=false`; hit-spectrum page/DB extraction NOT AUTHORIZED; P278H governance closeout PR OPEN. Prior: P277 historical observation-status reclassification arc COMPLETE — PR #450 MERGED at merge commit `eb032ac` / `2026-06-17T08:47:07Z`; canonical payload digest `d75f8383...`; 36 cells / 8 portfolios / 3 endpoints / 18 source artifacts; OBSERVATION_SUPPORTED_ABOVE_RANDOM=3, OBSERVATION_POTENTIAL_ABOVE_RANDOM=12, NO_EVIDENCE_OVER_RANDOM=15; P277F governance closeout PR OPEN; hit-spectrum NOT AUTHORIZED. Prior: P276B fixed-N cross-strategy coverage/complementarity research COMPLETE on `main` via PR #448 merged at `74913fc` / `2026-06-17T04:45:46Z`; canonical payload digest `438dca...`; scientific verdict `NO_RETROSPECTIVE_COMPLEMENTARITY_EVIDENCE`; future confirmation pending. P276G governance package is prepared on branch `task/p276g-p276b-governance-closeout`, but PR #449 remains OPEN and UNMERGED pending independent audit and explicit Owner merge authorization. Prior: P275B unified prize-aware success matrix COMPLETE - PR #445 merged at `80b7e99`; 108 rows / 36 frozen cells / windows 50/300/750; digest `c1b99e...`; no candidate promoted. Prior: P274C exhaustive G1 design complete; G2 and activation remain separately gated; P271 unactivated; production apply `NOT_READY_FOR_APPLY`.)
+**Last Updated:** 2026-06-18 Asia/Taipei (P279 disjoint-block falsification arc COMPLETE — PR #454 MERGED at merge commit `46962007` / `2026-06-18T04:50:40Z`; canonical digest `88e57394...`; FALSIFIED=1 (daily539_f4cold_3bet); INCONCLUSIVE=2; RETAINED=0; `prediction_success_claim=false`; P279F governance closeout PR OPEN. Prior: P278 hit-spectrum data contract arc COMPLETE — PR #452 MERGED at merge commit `f20b3acd` / `2026-06-18T01:37:51Z`; canonical digest `4ad80e9c...`; 36 strategy cells × 3 windows = 108 rows; 96 SOURCE_GAP_HIT_BUCKETS + 12 SOURCE_GAP_ENDPOINT_MAPPING; zero full/partial spectrum identities; `prediction_success_claim=false`; hit-spectrum page/DB extraction NOT AUTHORIZED; P278H/J governance closeout MERGED (PR #453 MERGED at `8004c32c` / `2026-06-18T02:47:50Z`). Prior: P277 historical observation-status reclassification arc COMPLETE — PR #450 MERGED at merge commit `eb032ac` / `2026-06-17T08:47:07Z`; canonical payload digest `d75f8383...`; 36 cells / 8 portfolios / 3 endpoints / 18 source artifacts; OBSERVATION_SUPPORTED_ABOVE_RANDOM=3, OBSERVATION_POTENTIAL_ABOVE_RANDOM=12, NO_EVIDENCE_OVER_RANDOM=15; P277F governance closeout PR OPEN; hit-spectrum NOT AUTHORIZED. Prior: P276B fixed-N cross-strategy coverage/complementarity research COMPLETE on `main` via PR #448 merged at `74913fc` / `2026-06-17T04:45:46Z`; canonical payload digest `438dca...`; scientific verdict `NO_RETROSPECTIVE_COMPLEMENTARITY_EVIDENCE`; future confirmation pending. P276G governance package is prepared on branch `task/p276g-p276b-governance-closeout`, but PR #449 remains OPEN and UNMERGED pending independent audit and explicit Owner merge authorization. Prior: P275B unified prize-aware success matrix COMPLETE - PR #445 merged at `80b7e99`; 108 rows / 36 frozen cells / windows 50/300/750; digest `c1b99e...`; no candidate promoted. Prior: P274C exhaustive G1 design complete; G2 and activation remain separately gated; P271 unactivated; production apply `NOT_READY_FOR_APPLY`.)
 **Owner:** CTO agent
 **Primary Goal:** Keep LotteryNew replay, research, and product evidence truthful, reproducible, and governed. The current maturity bottleneck has shifted from migration rehearsal to short/mid-window strategy protocol design, anti-overfit validation, canonical repo dispatch safety, and honest product disclosure.
 **Repo Policy:** Use `/Users/kelvin/Kelvin-WorkSpace/LotteryNew` only. Do not create a new repo. Production DB, registry, and data writes require explicit governed authorization. CTO roadmap updates are limited to this file and `00-Plan/roadmap/CTO-Analysis.md`. CTO must not write `CEO-Decision.md`, `active_task.md`, `production/*`, `registry/*`, `data/*`, or any new repo.
@@ -10,6 +10,34 @@
 ## 0. Current Roadmap Override — 2026-06-03 (updated; originally authored 2026-06-02)
 
 This section is the current source of truth. The 2026-06-01 sections and P186-P196 appendices below are retained for history and are superseded where they conflict with this section.
+
+### 0.0-P279B 2026-06-18 Disjoint-Block Diversified-Baseline Falsification — COMPLETE
+
+**PR #454 MERGED** at merge commit `46962007789fa73cf2b92ea0fd942a8c8bc319e9` (`2026-06-18T04:50:40Z`); merge parent 1 `8004c32c47cb99576ef5689f967c05306a83670c`, parent 2 `d4aa3dde814eadaee4c728be7dc9fb55eaa80baf`. The arc spanned six sub-tasks: P279A selected the frozen DAILY_539 disjoint-block diversified-baseline falsification study; P279B created the deterministic retrospective falsification artifact; P279C independently audited and classified PR #454 as merge-ready; P279D merged PR #454 and completed post-merge verification; P279E safely removed the P279B worktree while retaining branches; P279F records the governance closeout.
+
+The canonical artifact is `outputs/research/p279b_disjoint_block_diversified_baseline_falsification_20260618.{json,md}`, canonical payload digest `88e573947825c321bc8513f06dcfbe9b860445c688a30cbb32002900b604775e`.
+
+| Dimension | Value |
+|---|---|
+| Frozen GO candidates evaluated | 3 |
+| N=3 exact diversified baseline | 187563/575757 ≈ 0.325767641557115 (stored reduced 62521/191919) |
+| N=5 exact diversified baseline | 297105/575757 ≈ 0.516024989709200 (stored reduced 99035/191919) |
+| acb_markov_midfreq_3bet decision | INCONCLUSIVE |
+| daily539_f4cold_3bet decision | FALSIFIED |
+| daily539_f4cold_5bet decision | INCONCLUSIVE |
+| Retained | 0 |
+| Inconclusive | 2 |
+| Falsified | 1 |
+
+Research verdict: `ONE_FALSIFIED_TWO_INCONCLUSIVE_ZERO_RETAINED`.
+
+Scientific boundaries: This is a retrospective study only — it is not OOS confirmation. The FALSIFIED verdict is scoped to the P279B disjoint-block rule with N-block constraint as specified and does not generalize beyond that rule. INCONCLUSIVE results are not retained or promoted; zero candidates passed the retain gate. Non-blocking observations (not remediated): (1) aggregate-only analysis cannot verify the draw-level disjoint property; (2) no negative mutation cases were tested. No prediction-success claim was established. No strategy was promoted.
+
+Tests: P279B targeted **22 PASS**. Regression **216 PASS**. Dedicated-DB CI lane **SKIPPED** (workflow_dispatch-gated, not counted as PASS). Full repository suite **NOT RUN**. `prediction_success_claim=false`; `strategy_promoted=false`; `database_opened=false`; `database_write=false`. No registry mutation, ONLINE classification, deployment, or production write occurred.
+
+**P279E worktree cleanup:** P279B worktree safely removed by non-force `git worktree remove`. Local branch `task/p279b-frozen-daily539-disjoint-block-diversified-baseline-falsification` and remote `origin/task/p279b-frozen-daily539-disjoint-block-diversified-baseline-falsification` both retained at HEAD `d4aa3dde814eadaee4c728be7dc9fb55eaa80baf`. P279F worktree cleanup requires separate authorization after this governance PR is merged and verified.
+
+**Authorization boundaries remain in effect:** P279F PR is OPEN and UNMERGED. Merging requires separate Owner authorization. No next research/product direction is automatically selected. All production, activation, DB, API, registry, and deployment remain unauthorized. P274D/PR #444 remains outside scope.
 
 ### 0.0-P278A 2026-06-18 Hit-Spectrum Data Contract — COMPLETE
 
@@ -33,7 +61,7 @@ Tests: P278A targeted **38 PASS**. Related regression **268 PASS**. Dedicated-DB
 
 **P278I/P278J governance remediation:** P278I independently audited PR #453, found governance-document omissions plus one historical Markdown structural issue, and classified PR #453 as not merge-ready. It found no defect in any research artifact, digest, strategy result, DB state, or P278A scientific conclusion. P278J performs only this four-document remediation.
 
-**PR #453 gate:** PR #453 is OPEN and UNMERGED; base = `main`; head branch = `task/p278h-p278-governance-closeout-sync`; merging PR #453 requires separate explicit Owner authorization; P278J does not authorize merge, and PR #453 remains OPEN and unmerged after P278J.
+**PR #453 gate:** **PR #453 MERGED** at merge commit `8004c32c47cb99576ef5689f967c05306a83670c` (`2026-06-18T02:47:50Z`); base = `main`; head branch = `task/p278h-p278-governance-closeout-sync`.
 
 **Missing-value semantics:** Unsupported or unavailable M-spectrum, prize-tier, special-number, and second-zone component values remain `null`/`NOT_AVAILABLE`. Unavailable evidence must never be represented or inferred as zero. Zero is a measured value and is semantically different from missing evidence; null values do not prove zero hits.
 

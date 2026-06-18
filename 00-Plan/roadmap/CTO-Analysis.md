@@ -1,5 +1,32 @@
 # CTO Analysis - Roadmap Alignment And System Optimization Direction
 
+## 2026-06-18 CTO Post-Merge Assessment — P279 Falsification Arc
+
+Final Classification: `CTO_P279_POSTMERGE_GOVERNANCE_CLOSEOUT_VERIFIED`
+
+### Assessment
+
+- [Confirmed] **PR #454 MERGED** at merge commit `46962007789fa73cf2b92ea0fd942a8c8bc319e9` (`2026-06-18T04:50:40Z`). Merge parent 1 `8004c32c47cb99576ef5689f967c05306a83670c`, parent 2 `d4aa3dde814eadaee4c728be7dc9fb55eaa80baf`. The merge first-parent diff contains exactly the four P279B files: `analysis/p279b_disjoint_block_diversified_baseline_falsification.py`, `outputs/research/p279b_disjoint_block_diversified_baseline_falsification_20260618.json`, `outputs/research/p279b_disjoint_block_diversified_baseline_falsification_20260618.md`, and `tests/test_p279b_disjoint_block_diversified_baseline_falsification.py`.
+- [Confirmed] Canonical payload digest `88e573947825c321bc8513f06dcfbe9b860445c688a30cbb32002900b604775e` verified from committed artifact on `origin/main`.
+- [Confirmed] N=3 exact diversified baseline: 187563/575757 ≈ 0.325767641557115 (stored reduced: 62521/191919). N=5 exact diversified baseline: 297105/575757 ≈ 0.516024989709200 (stored reduced: 99035/191919).
+- [Confirmed] Candidate decisions: `acb_markov_midfreq_3bet` = INCONCLUSIVE; `daily539_f4cold_3bet` = FALSIFIED; `daily539_f4cold_5bet` = INCONCLUSIVE.
+- [Confirmed] Summary counts: Retained = 0; Inconclusive = 2; Falsified = 1. Research verdict: `ONE_FALSIFIED_TWO_INCONCLUSIVE_ZERO_RETAINED`.
+- [Confirmed] No-claim booleans: `prediction_success_claim=false`, `strategy_promoted=false`, `database_opened=false`, `database_write=false`. No registry mutation, ONLINE classification, deployment, or production write was authorized by PR #454 or by this governance closeout.
+- [Confirmed] P279B post-merge targeted tests: **22 PASS**. Regression tests: **216 PASS**. Dedicated-DB CI lane: **SKIPPED** (workflow_dispatch-gated, not counted as PASS). Full repository suite: **NOT RUN**.
+- [Confirmed] P279E safely removed the P279B worktree using non-force `git worktree remove`. Local branch `task/p279b-frozen-daily539-disjoint-block-diversified-baseline-falsification` and remote `origin/task/p279b-frozen-daily539-disjoint-block-diversified-baseline-falsification` both retained at HEAD `d4aa3dde814eadaee4c728be7dc9fb55eaa80baf`.
+- [Non-blocking] Two non-blocking observations identified and not remediated: (1) aggregate-only analysis cannot verify the draw-level disjoint property; (2) no negative mutation cases were tested.
+- [Confirmed] **PR #453 MERGED** at merge commit `8004c32c47cb99576ef5689f967c05306a83670c` (`2026-06-18T02:47:50Z`); head branch `task/p278h-p278-governance-closeout-sync`; base `main`. This corrects the stale state recorded in the preceding P278J governance entry which described PR #453 as OPEN and UNMERGED.
+
+### Interpretation
+
+The P279 falsification arc establishes that the disjoint-block diversified-baseline rule falsifies `daily539_f4cold_3bet` under the specified N=3 block constraint, and leaves `acb_markov_midfreq_3bet` and `daily539_f4cold_5bet` inconclusive. The FALSIFIED verdict is scoped to the P279B disjoint-block rule and does not imply broader strategy elimination. INCONCLUSIVE results are not retained, promoted, or interpreted as positive evidence. The retrospective design cannot substitute for OOS confirmation. Zero candidates were retained. The P278A hit-spectrum and P277A observation-status reclassification results are unchanged by this study.
+
+### Next Direction
+
+**P279F PR is OPEN and UNMERGED; merging requires separate Owner authorization.** No next research/product direction is automatically selected. All production, activation, DB, API, registry, and deployment remain unauthorized. P274D/PR #444 remains outside scope. Cleanup of P279F worktree requires separate authorization after this governance PR is merged and verified. No automatic next task follows this assessment.
+
+---
+
 ## 2026-06-18 CTO Post-Merge Assessment — P278A Hit-Spectrum Data Contract
 
 Final Classification: `CTO_P278_POSTMERGE_GOVERNANCE_CLOSEOUT_VERIFIED`
@@ -25,7 +52,7 @@ The P278A hit-spectrum data contract completes the committed evidence-infrastruc
 
 ### Next Direction
 
-**PR #453 is OPEN and UNMERGED; base = `main`; head branch = `task/p278h-p278-governance-closeout-sync`; merging PR #453 requires separate explicit Owner authorization; P278J does not authorize merge, and PR #453 remains OPEN and unmerged after P278J.** Read-only DB extraction remains NOT AUTHORIZED. Hit-spectrum frontend/page/API implementation remains NOT AUTHORIZED. Strategy/portfolio search is NOT AUTHORIZED by this task. Registry mutation, ONLINE classification/activation, production write, deployment, and `controlled_apply` remain untouched and unauthorized. P274D/PR #444 remains outside scope. Cleanup of `/Users/kelvin/Kelvin-WorkSpace/LotteryNew-p278a` requires separate authorization. Cleanup of `/Users/kelvin/Kelvin-WorkSpace/LotteryNew-p278h` requires separate authorization. Either cleanup may occur only after PR #453 is merged and post-merge verification passes; P278J authorizes no cleanup. The next research/product direction requires separate Owner authorization. No automatic next task follows this assessment.
+**PR #453 MERGED** at merge commit `8004c32c47cb99576ef5689f967c05306a83670c` (`2026-06-18T02:47:50Z`); base = `main`; head branch = `task/p278h-p278-governance-closeout-sync`. Read-only DB extraction remains NOT AUTHORIZED. Hit-spectrum frontend/page/API implementation remains NOT AUTHORIZED. Strategy/portfolio search is NOT AUTHORIZED by this task. Registry mutation, ONLINE classification/activation, production write, deployment, and `controlled_apply` remain untouched and unauthorized. P274D/PR #444 remains outside scope. Cleanup of `/Users/kelvin/Kelvin-WorkSpace/LotteryNew-p278a` requires separate authorization. Cleanup of `/Users/kelvin/Kelvin-WorkSpace/LotteryNew-p278h` requires separate authorization. Either cleanup may occur only after PR #453 is merged and post-merge verification passes; P278J authorizes no cleanup. The next research/product direction requires separate Owner authorization. No automatic next task follows this assessment.
 
 ---
 

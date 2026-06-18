@@ -929,6 +929,18 @@ Binary-heavy P191 commit replaced with non-binary recommit. Local DB and backup 
 CTO_ROADMAP_UPDATED_AFTER_P196_REMOVE_DB_BINARIES_RECOMMIT_20260601
 ```
 
+## P280K — BIG 6/49 First Future-Publication Readiness and Owner Decision Package (2026-06-19)
+
+- **P280K**: readiness / owner-decision package complete. PR #457 is MERGED at merge SHA `aa9ea86338f6af0211c638ad3f449bdead84d1d0` with parents `fc8225222430f2bfde3b480df75441c8e93ed05b` and `5efcc1e480e6a1aebda47cd76a0b2115f7d9d469`.
+- **P280J**: P280D worktree cleanup complete. `/Users/kelvin/Kelvin-WorkSpace/LotteryNew-p280d` was removed with `git worktree remove`; the local and remote branch `task/p280d-big649-future-only-freeze-protocol` remain retained at `5efcc1e480e6a1aebda47cd76a0b2115f7d9d469`.
+- The exact seven-file P280D protocol scope remains frozen on `main`; zero-DB protocol merged; all 11 BIG strategies remain frozen under the future-only protocol.
+- Future publication remains unauthorized: no real target draw selected, no real ticket published, no deadline looked up, no future evaluation started, no activation.
+- Historical 750 evidence remains post-hoc only and cannot be used for candidate selection.
+- Required next owner decision items: target draw selection, deadline lookup authorization, one-time manifest generation, target-specific prediction branch, immutable pre-deadline PR, branch/PR retention to closeout, and separate post-draw evaluator planning.
+- Fallback if declined: `P280L_BIG649_PUBLICATION_DRY_RUN_REHEARSAL_ONLY`.
+- Protocol status booleans: `prediction_success_claim=false`, `strategy_promoted=false`, `activation_authorized=false`.
+- Recommended next state: `WAITING_FOR_USER_AUTHORIZATION`.
+
 ## P254A–P254B Fetcher Repair Arc — CLOSED (2026-06-08)
 
 - **PR #360** ACCEPT_BACKFILL_DB_DRIFT_2026_0608: accepted 5 auto-backfilled draws; BIG_LOTTO baseline updated to raw=22,239 / canonical=2,114. Merged `234cc02`.

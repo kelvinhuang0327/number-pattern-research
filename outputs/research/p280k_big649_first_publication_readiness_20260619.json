@@ -1,0 +1,97 @@
+{
+  "task_id": "P280K",
+  "task_name": "BIG 6/49 First Future-Publication Readiness and Owner Decision Package",
+  "final_classification": "P280K_BIG649_FIRST_FUTURE_PUBLICATION_READINESS_AND_OWNER_DECISION_PACKAGE",
+  "status": "OWNER_DECISION_REQUIRED",
+  "repo": "/Users/kelvin/Kelvin-WorkSpace/LotteryNew",
+  "branch": "task/p280k-big649-first-publication-readiness",
+  "canonical_branch": "main",
+  "origin_main": "aa9ea86338f6af0211c638ad3f449bdead84d1d0",
+  "pr_457": {
+    "state": "MERGED",
+    "merged_at": "2026-06-18T15:50:34Z",
+    "merge_sha": "aa9ea86338f6af0211c638ad3f449bdead84d1d0",
+    "parent1": "fc8225222430f2bfde3b480df75441c8e93ed05b",
+    "parent2": "5efcc1e480e6a1aebda47cd76a0b2115f7d9d469"
+  },
+  "p280d": {
+    "worktree_path": "/Users/kelvin/Kelvin-WorkSpace/LotteryNew-p280d",
+    "worktree_present": false,
+    "local_branch": "task/p280d-big649-future-only-freeze-protocol",
+    "local_branch_sha": "5efcc1e480e6a1aebda47cd76a0b2115f7d9d469",
+    "remote_branch": "origin/task/p280d-big649-future-only-freeze-protocol",
+    "remote_branch_sha": "5efcc1e480e6a1aebda47cd76a0b2115f7d9d469",
+    "protocol_merged": true,
+    "zero_db_protocol_merged": true,
+    "future_only_protocol_implemented": true,
+    "future_only_protocol_activated": false,
+    "big_strategy_count_frozen": 11
+  },
+  "decision_packet": {
+    "current_authorization": [
+      "protocol implemented",
+      "merge verified",
+      "cleanup done",
+      "real publication not authorized"
+    ],
+    "required_owner_decisions": [
+      "authorize selecting the next BIG target draw",
+      "authorize official deadline lookup in the future task",
+      "authorize one-time real manifest generation",
+      "authorize creating a target-specific prediction branch",
+      "authorize an immutable PR before the deadline",
+      "authorize retaining prediction branch and PR until closeout",
+      "authorize a separate post-draw evaluator task"
+    ],
+    "explicitly_not_authorized": [
+      "real ticket generation",
+      "target selection",
+      "deadline lookup",
+      "future outcome evaluation",
+      "activation",
+      "registry changes",
+      "ONLINE changes",
+      "page/API changes",
+      "scheduler changes",
+      "production changes",
+      "deployment changes",
+      "controlled_apply"
+    ],
+    "proposed_next_task": "P280L_BIG649_FIRST_REAL_PRE_DRAW_PUBLICATION_EXECUTION",
+    "proposed_fallback": "P280L_BIG649_PUBLICATION_DRY_RUN_REHEARSAL_ONLY"
+  },
+  "risk_controls": [
+    "protocol commit already merged on main",
+    "exact target draw identity must be fixed before generation",
+    "official deadline source must be primary and cited in the future task",
+    "target outcome must not exist",
+    "history cutoff must be strictly before target draw",
+    "manifest generation once only",
+    "no rerun selection",
+    "prediction branch per target",
+    "normal push only",
+    "no force push",
+    "GitHub PR created before deadline",
+    "GitHub server-side PR createdAt controls timing",
+    "exact head SHA, blob SHA, and manifest SHA-256 recorded",
+    "head change after publication invalidates publication",
+    "late or missing PR equals NO_VALID_PRE_DRAW_PUBLICATION",
+    "branch and PR retained until evaluation closeout",
+    "post-draw evaluation remains a separate artifact",
+    "no backfill",
+    "no activation based on the first draw"
+  ],
+  "verifications": {
+    "launch_dirty_count": 23,
+    "launch_fingerprint": "6f8f18f9c2fcdb41501088bad1cec0fb40f1393e2d096fc079a557a14c543c80",
+    "origin_main_verified": true,
+    "p280j_final_classification": "P280J_P280D_WORKTREE_REMOVED_BRANCH_RETAINED",
+    "p280i_final_classification": "P280I_PR457_MERGED_ALL11_ZERO_DB_POST_MERGE_VERIFIED_NOT_ACTIVATED",
+    "real_target_selected": false,
+    "real_ticket_published": false,
+    "future_evaluation_started": false,
+    "prediction_success_claim": false,
+    "strategy_promoted": false,
+    "activation_authorized": false
+  }
+}

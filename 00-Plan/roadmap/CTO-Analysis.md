@@ -1,5 +1,34 @@
 # CTO Analysis - Roadmap Alignment And System Optimization Direction
 
+## 2026-06-18 CTO Post-Merge Assessment — P278A Hit-Spectrum Data Contract
+
+Final Classification: `CTO_P278_POSTMERGE_GOVERNANCE_CLOSEOUT_VERIFIED`
+
+### Assessment
+
+- [Confirmed] **PR #452 MERGED** at merge commit `f20b3acd43325c1b47a0c9a76aabb1745098a0ca` (`2026-06-18T01:37:51Z`). Merge parent 1 `8ece9c6b078c6e90a0bc2c340b727c9b7f7909fe`, parent 2 `7607bc2822f071294e310daf4bb1a57761caba25`. The merge first-parent diff contains exactly the four P278A files: `analysis/p278a_hit_spectrum_data_contract.py`, `outputs/research/p278a_hit_spectrum_data_contract_20260617.json`, `outputs/research/p278a_hit_spectrum_data_contract_20260617.md`, and `tests/test_p278a_hit_spectrum_data_contract.py`.
+- [Confirmed] Canonical payload digest `4ad80e9c84b70a3382161587fabf150da134c8bf416bd7be28fab19c2419062e` verified from committed artifact on `origin/main`. Universe: 36 strategy cells × 3 primary windows = 108 rows.
+- [Confirmed] Source-gap counts from committed artifact: 96 SOURCE_GAP_HIT_BUCKETS + 12 SOURCE_GAP_ENDPOINT_MAPPING = 108 total rows, consistent with the artifact's `summary_by_ui_readiness` field.
+- [Confirmed] Spectrum identity counts: `full_spectrum_identities=[]` (zero), `partial_spectrum_identities=[]` (zero). No M0/M1/M2/M3+ hit-spectrum is committed for any row; all spectrum fields are null/NOT_AVAILABLE.
+- [Confirmed] No-claim booleans: `prediction_success_claim=false`, `strategy_promoted=false`, `database_opened=false`, `database_write=false`. No registry mutation, ONLINE classification, deployment, or production write was authorized by PR #452 or by this governance closeout.
+- [Confirmed] Arc quality: P278B correctly identified a false Markdown claim (zero missing-second-zone exclusions); P278C corrected the narrative while preserving byte-identical JSON and unchanged digest; P278D verified remediation; P278E replaced the tautological M-spectrum test with real-field checks (m0_count, m1_count, m2_count, m3plus_count) and added substantive in-memory tamper validation without changing the artifact; P278F independently verified merge-readiness. The arc enforced multiple independent review and correction cycles before merge, consistent with the P278 governance protocol.
+- [Confirmed] P278A post-merge targeted tests: **38 PASS**. Related regression tests: **268 PASS**. Dedicated-DB CI lane: **SKIPPED** (workflow_dispatch-gated, not counted as PASS). Full repository suite: **NOT RUN**.
+- [Confirmed] POWER second-zone missing-prediction exclusions exist in the committed data. Four POWER strategies produce the 12 SOURCE_GAP_ENDPOINT_MAPPING rows because the endpoint requires a stored predicted second-zone value that is absent for those cells. This is a data availability limitation, not a contract defect.
+- [Risk — structural, unchanged] The contract provides binary ANY_PRIZE_AWARE_WIN evidence only. The exact M0/M1/M2/M3+ per-strategy per-window spectrum is unavailable without a separately authorized read-only DB extraction. No consumer of this artifact should infer exact bucket counts from the contract alone.
+- [Risk — unchanged] The P273A prize-aware inference already covered the primary evidence layer. The P278A contract adds UI readiness taxonomy and source-gap labeling; it does not change or extend the P273A statistical findings. The three DAILY_539 research-only GO candidates (`acb_markov_midfreq_3bet`, `daily539_f4cold_3bet`, `daily539_f4cold_5bet`) retain their P273A status and remain research candidates only, not deployed or promoted.
+- [Confirmed] P278I independently audited PR #453, found governance-document omissions plus one historical Markdown structural issue, and classified PR #453 as not merge-ready. It found no defect in any research artifact, digest, strategy result, DB state, or P278A scientific conclusion. P278J performs only this four-document remediation.
+- [Confirmed] Unsupported or unavailable M-spectrum, prize-tier, special-number, and second-zone component values remain `null`/`NOT_AVAILABLE`. Unavailable evidence must never be represented or inferred as zero. Zero is a measured value and is semantically different from missing evidence; null values do not prove zero hits.
+
+### Interpretation
+
+The P278A hit-spectrum data contract completes the committed evidence-infrastructure layer for the prize-aware hit-spectrum view. It truthfully labels every row's UI readiness status and documents exactly what is and is not available from committed sources alone. The 96 SOURCE_GAP_HIT_BUCKETS rows confirm that a full hit-spectrum display requires a separately authorized DB extraction that has not yet occurred. The 12 SOURCE_GAP_ENDPOINT_MAPPING rows are expected given POWER second-zone data availability constraints established in P271A and P273A. This is governance infrastructure only — it does not change any strategy's observational status, P273A findings, P276B complementarity verdict, P277A reclassification, or P274A confirmation protocol.
+
+### Next Direction
+
+**PR #453 is OPEN and UNMERGED; base = `main`; head branch = `task/p278h-p278-governance-closeout-sync`; merging PR #453 requires separate explicit Owner authorization; P278J does not authorize merge, and PR #453 remains OPEN and unmerged after P278J.** Read-only DB extraction remains NOT AUTHORIZED. Hit-spectrum frontend/page/API implementation remains NOT AUTHORIZED. Strategy/portfolio search is NOT AUTHORIZED by this task. Registry mutation, ONLINE classification/activation, production write, deployment, and `controlled_apply` remain untouched and unauthorized. P274D/PR #444 remains outside scope. Cleanup of `/Users/kelvin/Kelvin-WorkSpace/LotteryNew-p278a` requires separate authorization. Cleanup of `/Users/kelvin/Kelvin-WorkSpace/LotteryNew-p278h` requires separate authorization. Either cleanup may occur only after PR #453 is merged and post-merge verification passes; P278J authorizes no cleanup. The next research/product direction requires separate Owner authorization. No automatic next task follows this assessment.
+
+---
+
 ## 2026-06-17 CTO Post-Merge Assessment — P277 Historical Observation-Status Reclassification
 
 Final Classification: `CTO_P277_POSTMERGE_GOVERNANCE_CLOSEOUT_VERIFIED`
@@ -971,7 +1000,6 @@ Before any git stage/commit/push: review which files should be committed togethe
 
 ```text
 CTO_ROADMAP_UPDATED_AFTER_P189_POST_MIGRATION_VERIFICATION_20260601
-```
 ```
 
 ---

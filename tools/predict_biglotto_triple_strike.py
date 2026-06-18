@@ -27,8 +27,6 @@ project_root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 sys.path.insert(0, project_root)
 sys.path.insert(0, os.path.join(project_root, 'lottery_api'))
 
-from lottery_api.database import DatabaseManager
-
 MAX_NUM = 49
 _SUM_WIN = 300   # sum 統計動態窗口
 
@@ -173,6 +171,8 @@ def generate_triple_strike(history):
 
 
 def main():
+    from lottery_api.database import DatabaseManager
+
     db_path = os.path.join(project_root, 'lottery_api', 'data', 'lottery_v2.db')
     db = DatabaseManager(db_path)
     draws = sorted(db.get_all_draws('BIG_LOTTO'), key=lambda x: (x['date'], x['draw']))

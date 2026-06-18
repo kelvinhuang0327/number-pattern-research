@@ -48,15 +48,15 @@
     {
       "strategy_id": "biglotto_triple_strike",
       "source_path": "tools/predict_biglotto_triple_strike.py",
-      "git_blob_sha1": "f765dc91a9bc0b64f6e1dd93fa7215d20c1d9690",
-      "sha256": "dad1c50d1504971a51b6ec860178f6d6c27469315b02573d73fd20593c2c73db",
+      "git_blob_sha1": "dd6c2cd5bc7e4957b42761309593d4874e58a5db",
+      "sha256": "236fe529c01f1c39f4297258db6dc591e4612365720245fc8051540ed69954b7",
       "generator_identity": "tools.predict_biglotto_triple_strike:generate_triple_strike[bet_index=1]"
     },
     {
       "strategy_id": "biglotto_ts3_markov_4bet_w30",
       "source_path": "tools/backtest_biglotto_5bet_ts3markov.py",
-      "git_blob_sha1": "8d36639fea68013ccf2edadb517410308dbc92cd",
-      "sha256": "11910680542f91c8ec242cad53d9a759b216669c9eaf05805751cb7a3b6ad431",
+      "git_blob_sha1": "817a43b92d21e5f74fc18b980994aa4e99cc494e",
+      "sha256": "25760472baa09835b560f146ff4a0ce23fa2f2373a75d60c64ed557286dfbc2a",
       "generator_identity": "tools.backtest_biglotto_5bet_ts3markov:generate_ts3_markov_4bet(markov_window=30)[bet_index=1]"
     },
     {

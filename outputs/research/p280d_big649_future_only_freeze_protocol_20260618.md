@@ -56,8 +56,8 @@ Each strategy record in the JSON artifact binds a repository-relative source pat
 | `bet2_fourier_expansion_biglotto` | `predict_fourier_expansion_bet1` | `19c8458421112f61137f96a7de92a7734b525d8cbd0673c65d4c09f94b3b664b` |
 | `biglotto_deviation_2bet` | `deviation_complement_2bet[bet_index=1]` | `bb97c0bf044c5f9f37de7c6f27629e479bda650ca33dfeb7d0fbff840537bfba` |
 | `biglotto_echo_aware_3bet` | `echo_aware_mixed_3bet(...)[bet_index=1]` | `ed4878fb59e22c44f26313646a762e034c7f92355e5df56a6f72eed887d11320` |
-| `biglotto_triple_strike` | `generate_triple_strike[bet_index=1]` | `dad1c50d1504971a51b6ec860178f6d6c27469315b02573d73fd20593c2c73db` |
-| `biglotto_ts3_markov_4bet_w30` | `generate_ts3_markov_4bet(...)[bet_index=1]` | `11910680542f91c8ec242cad53d9a759b216669c9eaf05805751cb7a3b6ad431` |
+| `biglotto_triple_strike` | `generate_triple_strike[bet_index=1]` | `236fe529c01f1c39f4297258db6dc591e4612365720245fc8051540ed69954b7` |
+| `biglotto_ts3_markov_4bet_w30` | `generate_ts3_markov_4bet(...)[bet_index=1]` | `25760472baa09835b560f146ff4a0ce23fa2f2373a75d60c64ed557286dfbc2a` |
 | `cold_complement_biglotto` | `predict_cold_complement_bet1` | `19c8458421112f61137f96a7de92a7734b525d8cbd0673c65d4c09f94b3b664b` |
 | `coldpool15_biglotto` | `predict_coldpool15` | `19c8458421112f61137f96a7de92a7734b525d8cbd0673c65d4c09f94b3b664b` |
 | `fourier30_markov30_biglotto` | `predict_fourier30_markov30_bet1` | `19c8458421112f61137f96a7de92a7734b525d8cbd0673c65d4c09f94b3b664b` |

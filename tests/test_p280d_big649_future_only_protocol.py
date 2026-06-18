@@ -19,6 +19,10 @@ ROOT = Path(__file__).resolve().parents[1]
 ARTIFACT_JSON = ROOT / "outputs/research/p280d_big649_future_only_freeze_protocol_20260618.json"
 ARTIFACT_MD = ROOT / "outputs/research/p280d_big649_future_only_freeze_protocol_20260618.md"
 GENERATOR_SOURCE = ROOT / "tools/backtest_biglotto_enhancements.py"
+REMEDIATED_GENERATOR_SOURCES = (
+    ROOT / "tools/predict_biglotto_triple_strike.py",
+    ROOT / "tools/backtest_biglotto_5bet_ts3markov.py",
+)
 
 
 def independent_bytes(value):
@@ -297,6 +301,37 @@ def test_generator_database_dependency_is_cli_local_only():
     )
 
 
+@pytest.mark.parametrize("source_path", REMEDIATED_GENERATOR_SOURCES)
+def test_remaining_generator_database_dependency_is_cli_local_only(source_path):
+    tree = ast.parse(source_path.read_text(encoding="utf-8"))
+    module_imports = [
+        node for node in tree.body
+        if isinstance(node, (ast.Import, ast.ImportFrom))
+    ]
+    assert not any(
+        isinstance(node, ast.ImportFrom)
+        and node.module == "lottery_api.database"
+        for node in module_imports
+    )
+    assert not any(
+        isinstance(node, ast.Expr)
+        and isinstance(node.value, ast.Call)
+        and getattr(node.value.func, "id", None) == "DatabaseManager"
+        for node in tree.body
+    )
+
+    main = next(
+        node for node in tree.body
+        if isinstance(node, ast.FunctionDef) and node.name == "main"
+    )
+    assert any(
+        isinstance(node, ast.ImportFrom)
+        and node.module == "lottery_api.database"
+        and [alias.name for alias in node.names] == ["DatabaseManager"]
+        for node in main.body
+    )
+
+
 def test_generator_import_and_n1_call_are_db_side_effect_free(tmp_path):
     expected = [
         {
@@ -412,6 +447,266 @@ def test_generator_import_and_n1_call_are_db_side_effect_free(tmp_path):
         text=True,
     )
     assert json.loads(result.stdout) == expected
+
+
+def _run_all_11_guarded(tmp_path):
+    script = textwrap.dedent(
+        """
+        import hashlib
+        import importlib.abc
+        import json
+        import os
+        import sqlite3
+        import sys
+
+        try:
+            import sqlalchemy
+            from sqlalchemy.engine import Engine
+        except ModuleNotFoundError:
+            sqlalchemy = None
+            Engine = None
+
+        events = {
+            "database_import": 0,
+            "sqlalchemy_import": 0,
+            "sqlite_connect": 0,
+            "sqlalchemy_connect": 0,
+            "db_file_open": 0,
+        }
+
+        class DatabaseBlocker(importlib.abc.MetaPathFinder):
+            def find_spec(self, fullname, path=None, target=None):
+                if fullname == "lottery_api.database":
+                    events["database_import"] += 1
+                    raise RuntimeError(f"forbidden database import: {fullname}")
+                if fullname.startswith("sqlalchemy"):
+                    events["sqlalchemy_import"] += 1
+                    raise RuntimeError(f"forbidden SQLAlchemy import: {fullname}")
+                return None
+
+        def blocked_path(value):
+            try:
+                path = os.fspath(value)
+            except TypeError:
+                return False
+            if isinstance(path, bytes):
+                path = os.fsdecode(path)
+            return path.lower().split("?", 1)[0].endswith((".db", ".sqlite", ".sqlite3"))
+
+        def audit(event, args):
+            if event.startswith("sqlite3.connect"):
+                events["sqlite_connect"] += 1
+                raise RuntimeError(f"forbidden sqlite connection: {args!r}")
+            if event == "open" and args and blocked_path(args[0]):
+                events["db_file_open"] += 1
+                raise RuntimeError(f"forbidden database path access: {args[0]!r}")
+
+        def blocked_sqlite(*args, **kwargs):
+            events["sqlite_connect"] += 1
+            raise RuntimeError("forbidden sqlite3.connect")
+
+        def blocked_sqlalchemy(*args, **kwargs):
+            events["sqlalchemy_connect"] += 1
+            raise RuntimeError("forbidden SQLAlchemy engine/connect")
+
+        sqlite3.connect = blocked_sqlite
+        if sqlalchemy is not None:
+            sqlalchemy.create_engine = blocked_sqlalchemy
+            Engine.connect = blocked_sqlalchemy
+        sys.meta_path.insert(0, DatabaseBlocker())
+        sys.addaudithook(audit)
+
+        from analysis import p280d_big649_future_only_protocol as protocol
+        from lottery_api.models.p42_wave3_biglotto_adapters import WAVE3_ADAPTER_MAP
+        from lottery_api.models.p93_tierb_replay_adapters import get_p93_adapter
+        from lottery_api.models.replay_strategy_registry import get_adapter
+
+        def canonical_bytes(value):
+            return json.dumps(
+                value, ensure_ascii=False, sort_keys=True, separators=(",", ":")
+            ).encode("utf-8")
+
+        def digest(value):
+            return hashlib.sha256(canonical_bytes(value)).hexdigest()
+
+        def history(length, multiplier, offset):
+            rows = []
+            for index in range(length):
+                base = (index * multiplier + offset) % 49
+                rows.append({
+                    "draw": str(900000000 + index),
+                    "date": f"2024-{(index % 12) + 1:02d}-{(index % 28) + 1:02d}",
+                    "numbers": sorted({
+                        ((base + step * 7) % 49) + 1 for step in range(6)
+                    }),
+                    "special": ((base + 43) % 49) + 1,
+                })
+            return rows
+
+        def adapter_for(strategy_id):
+            if strategy_id in WAVE3_ADAPTER_MAP:
+                return WAVE3_ADAPTER_MAP[strategy_id]
+            if strategy_id in {
+                "biglotto_echo_aware_3bet",
+                "biglotto_ts3_markov_4bet_w30",
+            }:
+                return get_p93_adapter(strategy_id)
+            return get_adapter(strategy_id)
+
+        canonical = sorted(
+            reversed(history(211, 9, 23)), key=lambda row: int(row["draw"])
+        )
+        strategy_results = []
+        for strategy_id in protocol.STRATEGY_IDS:
+            adapter = adapter_for(strategy_id)
+            first, special = adapter.get_one_bet(canonical, "BIG_LOTTO")
+            rerun, rerun_special = adapter.get_one_bet(canonical, "BIG_LOTTO")
+            assert (first, special) == (rerun, rerun_special)
+            assert special is None
+            assert first == sorted(first)
+            assert len(first) == len(set(first)) == 6
+            assert all(isinstance(number, int) and 1 <= number <= 49 for number in first)
+            strategy_results.append({
+                "strategy_id": strategy_id,
+                "bet_index": 1,
+                "ticket": first,
+            })
+
+        golden_results = []
+        cases = [
+            ("synthetic_100", history(100, 3, 1)),
+            ("synthetic_137", history(137, 5, 11)),
+            (
+                "synthetic_211_reversed_then_canonicalized",
+                list(reversed(history(211, 9, 23))),
+            ),
+        ]
+        for strategy_id in (
+            "biglotto_triple_strike",
+            "biglotto_ts3_markov_4bet_w30",
+        ):
+            adapter = adapter_for(strategy_id)
+            for name, raw in cases:
+                case_history = sorted(raw, key=lambda row: int(row["draw"]))
+                first, special = adapter.get_one_bet(case_history, "BIG_LOTTO")
+                rerun, rerun_special = adapter.get_one_bet(case_history, "BIG_LOTTO")
+                assert (first, special) == (rerun, rerun_special)
+                golden_results.append({
+                    "strategy_id": strategy_id,
+                    "case": name,
+                    "input_sha256": digest(case_history),
+                    "output_sha256": digest({
+                        "bet_index": 1,
+                        "predicted_main_numbers": first,
+                    }),
+                    "ticket": first,
+                    "bet_index": 1,
+                })
+
+        assert events == {
+            "database_import": 0,
+            "sqlalchemy_import": 0,
+            "sqlite_connect": 0,
+            "sqlalchemy_connect": 0,
+            "db_file_open": 0,
+        }
+        print(json.dumps({
+            "events": events,
+            "strategies": strategy_results,
+            "goldens": golden_results,
+        }, sort_keys=True))
+        """
+    )
+    env = os.environ.copy()
+    env.update({
+        "PYTHONDONTWRITEBYTECODE": "1",
+        "PYTHONPYCACHEPREFIX": str(tmp_path / "pycache"),
+        "XDG_CACHE_HOME": str(tmp_path / "cache"),
+        "MPLCONFIGDIR": str(tmp_path / "mpl"),
+        "PYTHONPATH": str(ROOT),
+    })
+    before = subprocess.run(
+        ["git", "status", "--porcelain=v1", "--untracked-files=all"],
+        cwd=ROOT,
+        check=True,
+        capture_output=True,
+        text=True,
+    ).stdout
+    result = subprocess.run(
+        [sys.executable, "-c", script],
+        cwd=tmp_path,
+        env=env,
+        check=True,
+        capture_output=True,
+        text=True,
+    )
+    after = subprocess.run(
+        ["git", "status", "--porcelain=v1", "--untracked-files=all"],
+        cwd=ROOT,
+        check=True,
+        capture_output=True,
+        text=True,
+    ).stdout
+    assert after == before
+    return json.loads(result.stdout)
+
+
+@pytest.fixture(scope="module")
+def all_11_guarded_result(tmp_path_factory):
+    return _run_all_11_guarded(tmp_path_factory.mktemp("p280g_all11"))
+
+
+def test_all_11_guarded_import_and_call_zero_db(all_11_guarded_result):
+    records = all_11_guarded_result["strategies"]
+    assert [record["strategy_id"] for record in records] == list(protocol.STRATEGY_IDS)
+    assert len(records) == 11
+    assert all(record["bet_index"] == 1 for record in records)
+    assert all(len(record["ticket"]) == len(set(record["ticket"])) == 6 for record in records)
+    assert all_11_guarded_result["events"] == {
+        "database_import": 0,
+        "sqlalchemy_import": 0,
+        "sqlite_connect": 0,
+        "sqlalchemy_connect": 0,
+        "db_file_open": 0,
+    }
+
+
+@pytest.mark.parametrize("strategy_id", [
+    "biglotto_triple_strike",
+    "biglotto_ts3_markov_4bet_w30",
+])
+def test_remediated_generator_import_blocker_and_semantic_goldens(
+    strategy_id, all_11_guarded_result,
+):
+    expected = [
+        {
+            "case": "synthetic_100",
+            "input_sha256": "9fd3aa40efdc293685e98a41f4b5f66f5b779c0196b94dbd17f9d2efd75c32f0",
+            "output_sha256": "d7d49072b0c5a16d99f8699f3e7497ea2c330bf1d28ec6736262d610c59a2c7f",
+            "ticket": [6, 13, 20, 27, 34, 48],
+            "bet_index": 1,
+        },
+        {
+            "case": "synthetic_137",
+            "input_sha256": "e58ce6151e770017212ef67d54f4c210f96a7a4c7b16bde84daed5b578f71226",
+            "output_sha256": "b5c1f222987b1a9de4dd959b66f1e41d6bcf8be932ac6e764690c742c21a5497",
+            "ticket": [7, 14, 21, 35, 42, 49],
+            "bet_index": 1,
+        },
+        {
+            "case": "synthetic_211_reversed_then_canonicalized",
+            "input_sha256": "13fb148c7c64e358cbee02440e6709882d1ac545565b68a156805dc518d7a91a",
+            "output_sha256": "7fa1e45d759c24a8ade99de1680e5f740cfad3bd1aaa444a1f0887690aec820e",
+            "ticket": [5, 12, 26, 36, 45, 47],
+            "bet_index": 1,
+        },
+    ]
+    observed = [
+        {key: value for key, value in record.items() if key != "strategy_id"}
+        for record in all_11_guarded_result["goldens"]
+        if record["strategy_id"] == strategy_id
+    ]
+    assert observed == expected
 
 
 def git_blob_sha1(data: bytes) -> str:

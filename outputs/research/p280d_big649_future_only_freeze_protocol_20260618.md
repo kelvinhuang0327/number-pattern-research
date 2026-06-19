@@ -53,17 +53,40 @@ Each strategy record in the JSON artifact binds a repository-relative source pat
 
 | Strategy | Canonical generator identity | Source SHA-256 |
 |---|---|---|
-| `bet2_fourier_expansion_biglotto` | `predict_fourier_expansion_bet1` | `19c8458421112f61137f96a7de92a7734b525d8cbd0673c65d4c09f94b3b664b` |
+| `bet2_fourier_expansion_biglotto` | `predict_fourier_expansion_bet1` | `f53dd87d98ba5ae6d3434b656e1e025b16b1bbc318696039e8c9b0887d1313da` |
 | `biglotto_deviation_2bet` | `deviation_complement_2bet[bet_index=1]` | `bb97c0bf044c5f9f37de7c6f27629e479bda650ca33dfeb7d0fbff840537bfba` |
 | `biglotto_echo_aware_3bet` | `echo_aware_mixed_3bet(...)[bet_index=1]` | `ed4878fb59e22c44f26313646a762e034c7f92355e5df56a6f72eed887d11320` |
 | `biglotto_triple_strike` | `generate_triple_strike[bet_index=1]` | `236fe529c01f1c39f4297258db6dc591e4612365720245fc8051540ed69954b7` |
 | `biglotto_ts3_markov_4bet_w30` | `generate_ts3_markov_4bet(...)[bet_index=1]` | `25760472baa09835b560f146ff4a0ce23fa2f2373a75d60c64ed557286dfbc2a` |
-| `cold_complement_biglotto` | `predict_cold_complement_bet1` | `19c8458421112f61137f96a7de92a7734b525d8cbd0673c65d4c09f94b3b664b` |
-| `coldpool15_biglotto` | `predict_coldpool15` | `19c8458421112f61137f96a7de92a7734b525d8cbd0673c65d4c09f94b3b664b` |
-| `fourier30_markov30_biglotto` | `predict_fourier30_markov30_bet1` | `19c8458421112f61137f96a7de92a7734b525d8cbd0673c65d4c09f94b3b664b` |
-| `markov_2bet_biglotto` | `predict_markov_2bet_bet1` | `19c8458421112f61137f96a7de92a7734b525d8cbd0673c65d4c09f94b3b664b` |
-| `markov_single_biglotto` | `predict_markov_single` | `19c8458421112f61137f96a7de92a7734b525d8cbd0673c65d4c09f94b3b664b` |
-| `ts3_regime_3bet` | `fourier_rhythm_bet via ts3_regime_3bet[bet_index=1]` | `088e0815a0f1afb2aa884b0215882090efa72afeea0cc020d6ec8145cb143260` |
+| `cold_complement_biglotto` | `predict_cold_complement_bet1` | `f53dd87d98ba5ae6d3434b656e1e025b16b1bbc318696039e8c9b0887d1313da` |
+| `coldpool15_biglotto` | `predict_coldpool15` | `f53dd87d98ba5ae6d3434b656e1e025b16b1bbc318696039e8c9b0887d1313da` |
+| `fourier30_markov30_biglotto` | `predict_fourier30_markov30_bet1` | `f53dd87d98ba5ae6d3434b656e1e025b16b1bbc318696039e8c9b0887d1313da` |
+| `markov_2bet_biglotto` | `predict_markov_2bet_bet1` | `f53dd87d98ba5ae6d3434b656e1e025b16b1bbc318696039e8c9b0887d1313da` |
+| `markov_single_biglotto` | `predict_markov_single` | `f53dd87d98ba5ae6d3434b656e1e025b16b1bbc318696039e8c9b0887d1313da` |
+| `ts3_regime_3bet` | `fourier_rhythm_bet via ts3_regime_3bet[bet_index=1]` | `b0bf78ef7e32ef1e07825251af45846076dbd331f6a1f2f8c89a08a1f301696e` |
+
+### P280AJ Publication-Interface Revision (2026-06-19)
+
+The frozen `bet_index=1` outputs structurally duplicate sibling strategies, so the
+no-DB publication adapter cannot emit eleven unique complete tickets. Under explicit
+Owner authorization, two frozen source files gained additive deterministic
+candidate callables and the source SHA-256 values above were reconciled to the new
+bytes. This is a forward publication-interface revision, **not** retroactive
+evidence: the `bet_index=1` semantics and the P280D semantic goldens are unchanged.
+
+| Source file | Previous SHA-256 | Current SHA-256 | Additive callables |
+|---|---|---|---|
+| `lottery_api/models/p42_wave3_biglotto_adapters.py` | `19c8458421112f61137f96a7de92a7734b525d8cbd0673c65d4c09f94b3b664b` | `f53dd87d98ba5ae6d3434b656e1e025b16b1bbc318696039e8c9b0887d1313da` | `predict_markov_2bet_candidates`, `predict_coldpool15_candidates` |
+| `tools/backtest_biglotto_enhancements.py` | `088e0815a0f1afb2aa884b0215882090efa72afeea0cc020d6ec8145cb143260` | `b0bf78ef7e32ef1e07825251af45846076dbd331f6a1f2f8c89a08a1f301696e` | `ts3_regime_candidates` |
+
+Per-strategy publication rebind: `markov_2bet_biglotto` publishes Markov bet-2
+(next-6 by score) while `markov_single_biglotto` keeps the top-6 bet-1 identity;
+`coldpool15_biglotto` publishes a distinct 6-of-15 from the same ranked cold pool
+while `cold_complement_biglotto` keeps the coldest-6 identity; `ts3_regime_3bet`
+publishes the next TS3-family bet when the fourier bet-1 collides with a sibling.
+The adapter selects the first non-duplicate candidate deterministically and fails
+closed if none remain. No fabricated fallback, no outcome-aware selection, no
+historical-best selection, no registry mutation, no DB access, no network access.
 
 ## Historical Evidence Boundary
 

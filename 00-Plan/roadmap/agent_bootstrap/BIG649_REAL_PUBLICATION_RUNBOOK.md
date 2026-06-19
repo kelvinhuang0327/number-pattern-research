@@ -26,6 +26,43 @@ requires separate explicit Owner authorization for one bounded target attempt.
   `BIG_ANY_PRIZE_AWARE_WIN`, ticket shape, official source metadata, deadline,
   source/tool digests, and manifest self-hash before write.
 
+## No-DB Strategy-Output Adapter
+
+- Before manifest construction, run the no-DB strategy-output adapter against
+  caller-supplied history and cutoff data.
+- The adapter must supply the exact 11 frozen strategy outputs at `bet_index=1`.
+- Missing any frozen strategy callable or output = STOP.
+- Any adapter DB access = STOP.
+- Any target outcome or result access = STOP.
+- Target selection or deadline lookup inside the adapter = STOP.
+- Invented or fallback output = STOP.
+- Stochastic output without seed and policy = STOP.
+- Duplicate complete-ticket conflict = STOP unless a future protocol change is
+  separately and explicitly authorized.
+- Real target selection, deadline lookup, and publication remain a separate
+  explicit Owner authorization.
+
+### P280AJ Deterministic Source-Candidate Selection
+
+Authorized by Owner under P280AJ for the BIG no-DB adapter only:
+
+- Deterministic source-candidate selection is allowed **only** when explicitly
+  authorized. When the frozen `bet_index=1` output of a strategy structurally
+  duplicates a sibling strategy, the adapter may publish a deterministic
+  alternate candidate exposed by that strategy's own scoring/ranking family.
+- Each strategy exposes an ordered candidate list; the adapter selects the first
+  complete ticket not already claimed by an earlier frozen strategy and fails
+  closed (`UNRESOLVED_DUPLICATE_STOP`) if none remain.
+- Candidate provenance is required: source callable, candidate index, candidate
+  count, selection rule, source digest, and the old/new source hash for every
+  changed source file.
+- P280D freeze reconciliation is required whenever the source-interface files
+  change: update the frozen source `sha256`/`git_blob_sha1` and record the change
+  as a forward publication-interface revision, never as retroactive evidence.
+- No fabricated or fake fallback output. No outcome-aware selection. No
+  historical-best (past-performance) selection. No registry mutation.
+- The first real publication remains a separate explicit Owner authorization.
+
 ## Artifact Convention
 
 - JSON: `outputs/publications/big649/pre_draw/<target_draw>/manifest.json`

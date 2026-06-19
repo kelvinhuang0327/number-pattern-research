@@ -52,6 +52,10 @@ P280D_ARTIFACT_JSON = (
 P280AG_ARTIFACT_JSON = (
     REPO_ROOT / "outputs/research/p280ag_big649_no_db_strategy_output_adapter_20260619.json"
 )
+P280AQ_ARTIFACT_JSON = (
+    REPO_ROOT
+    / "outputs/research/p280aq_big649_private_strategy_pack_duplicate_remediation_20260619.json"
+)
 EXPECTED_IDS = (
     "bet2_fourier_expansion_biglotto",
     "biglotto_deviation_2bet",
@@ -80,6 +84,10 @@ BLOCKED_CANDIDATE_FUNCTIONS = {
     "markov_2bet_biglotto": "predict_markov_2bet_candidates",
     "coldpool15_biglotto": "predict_coldpool15_candidates",
     "ts3_regime_3bet": "ts3_regime_candidates",
+}
+CANDIDATE_FUNCTIONS = {
+    **BLOCKED_CANDIDATE_FUNCTIONS,
+    "fourier30_markov30_biglotto": "predict_fourier30_markov30_candidates",
 }
 TARGET_METADATA = {
     "target_draw": "SYNTHETIC_BIG649_TARGET_DO_NOT_PUBLISH",
@@ -187,7 +195,7 @@ def test_frozen_primary_duplicate_groups_reproduced(execution_evidence):
 
 def test_new_candidate_interfaces_exist_for_blocked_strategies():
     discovered = {record["strategy_id"]: record for record in discover_strategy_adapters()}
-    for strategy_id, candidate_function in BLOCKED_CANDIDATE_FUNCTIONS.items():
+    for strategy_id, candidate_function in CANDIDATE_FUNCTIONS.items():
         record = discovered[strategy_id]
         assert record["candidate_function"] == candidate_function
         # the candidate interface is genuinely distinct from the frozen bet-1 one
@@ -199,7 +207,11 @@ def test_new_candidate_interfaces_exist_for_blocked_strategies():
         ))
         if isinstance(node, ast.FunctionDef)
     }
-    assert {"predict_markov_2bet_candidates", "predict_coldpool15_candidates"} <= wave3_fns
+    assert {
+        "predict_markov_2bet_candidates",
+        "predict_coldpool15_candidates",
+        "predict_fourier30_markov30_candidates",
+    } <= wave3_fns
     enh_fns = {
         node.name
         for node in ast.walk(ast.parse(
@@ -208,6 +220,18 @@ def test_new_candidate_interfaces_exist_for_blocked_strategies():
         if isinstance(node, ast.FunctionDef)
     }
     assert "ts3_regime_candidates" in enh_fns
+
+
+def test_fourier30_markov30_candidates_preserve_primary_and_family_contract(
+    execution_evidence,
+):
+    history = execution_evidence["history"]
+    candidates = wave3.predict_fourier30_markov30_candidates(history)
+    assert candidates[0] == wave3.predict_fourier30_markov30_bet1(history)
+    assert len(candidates) == 2
+    assert candidates == wave3.predict_fourier30_markov30_candidates(history)
+    assert len(set(candidates[0]) & set(candidates[1])) <= 3
+    assert all(len(ticket) == 6 and len(set(ticket)) == 6 for ticket in candidates)
 
 
 # ── Req 3: candidate interface uses caller-supplied history ─────────────────────
@@ -595,3 +619,42 @@ def test_research_artifact_records_resolution_and_no_actions():
         "written": False,
     }
     assert artifact["activation_authorized"] is False
+
+
+def test_p280aq_private_pack_artifact_is_complete_and_publication_free():
+    artifact = json.loads(P280AQ_ARTIFACT_JSON.read_text(encoding="utf-8"))
+    assert artifact["final_classification"] == (
+        "P280AQ_PRIVATE_BIG649_STRATEGY_PACK_DUPLICATE_REMEDIATED_PR_OPEN_NO_PUBLICATION"
+    )
+    assert artifact["root_cause_classification"] == (
+        "SAFE_ADDITIVE_CANDIDATE_INTERFACE_NEEDED"
+    )
+    pack = artifact["strategy_adapter_pack"]
+    assert [item["strategy_id"] for item in pack["tickets"]] == list(EXPECTED_IDS)
+    outputs = [
+        {
+            "strategy_id": item["strategy_id"],
+            "bet_index": 1,
+            "predicted_main_numbers": item["ticket"],
+        }
+        for item in pack["tickets"]
+    ]
+    assert compute_strategy_output_digest(outputs) == pack["adapter_digest"]
+    validate_strategy_outputs(outputs)
+    assert artifact["diversified_random_pack"]["seed_material"] == (
+        "P280AP|25e7f8520164aaf61f440a866a11eca403bb76a3|115000062"
+    )
+    assert artifact["database_access"]["copied"] is False
+    assert artifact["database_access"]["written"] is False
+    assert all(
+        value is False
+        for key, value in artifact["safety"].items()
+        if key.endswith("performed") or key in {
+            "pre_draw_manifest_created",
+            "prediction_success_claim",
+            "strategy_promoted",
+            "activation",
+            "production_or_controlled_apply",
+            "outcome_used",
+        }
+    )

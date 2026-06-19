@@ -260,6 +260,54 @@ def predict_coldpool15(history: List[dict]) -> List[int]:
     return sorted(ranked[:_PICK])
 
 
+# ─── P280AJ deterministic publication-candidate interfaces ─────────────────────
+# These callables expose ordered alternate candidates for the duplicate-producing
+# strategy interfaces (markov_2bet, coldpool15). They are derived ONLY from the
+# existing Markov / cold-frequency scoring above: no DB, no network, no outcome
+# access, no fabricated output. The frozen bet-1 identities (predict_markov_single
+# and the coldest-6 of predict_coldpool15) are preserved unchanged; these helpers
+# only publish ranked siblings from the same scoring family so the no-DB adapter
+# can fail-closed select one non-duplicate complete ticket per strategy.
+
+
+def predict_markov_2bet_candidates(history: List[dict]) -> List[List[int]]:
+    """
+    Ordered Markov candidates for markov_2bet_biglotto.
+
+    markov_single_biglotto keeps the top-6 (bet-1) Markov identity. markov_2bet
+    publishes the documented bet-2 (next-6 by Markov score) and further ranked
+    6-number blocks from the *same* Markov transition scoring, deterministically.
+    The top-6 bet-1 block is intentionally excluded so the markov_2bet identity
+    never collides with the markov_single bet-1 identity.
+    """
+    scores = _markov_scores(history, window=_MARKOV_WINDOW)
+    ranked = [int(idx + 1) for idx in np.argsort(-scores)]
+    blocks = [
+        sorted(ranked[start:start + _PICK])
+        for start in (_PICK, 2 * _PICK, 3 * _PICK)
+    ]
+    return [block for block in blocks if len(block) == _PICK]
+
+
+def predict_coldpool15_candidates(history: List[dict]) -> List[List[int]]:
+    """
+    Ordered distinct 6-of-15 candidates for coldpool15_biglotto.
+
+    Candidate 0 is the frozen coldest-6 (identical to predict_coldpool15 /
+    cold_complement bet-1). Subsequent candidates are other deterministic 6-of-15
+    picks from the *same* ranked cold pool of 15 (next-coldest 6, then the warmest
+    6 within the pool), so the no-DB adapter can rebind coldpool15 to a distinct
+    ticket while cold_complement keeps the coldest-6 identity.
+    """
+    scores = _cold_freq_scores(history, window=_COLD_WINDOW)
+    pool = sorted(range(1, _POOL + 1), key=lambda n: scores[n])[:15]  # ascending freq
+    return [
+        sorted(pool[:_PICK]),        # coldest 6 (frozen primary)
+        sorted(pool[_PICK:12]),      # next-coldest 6 within the pool
+        sorted(pool[9:15]),          # warmest 6 within the cold pool
+    ]
+
+
 # ─── Adapter class wrappers ───────────────────────────────────────────────────
 
 class _P42AdapterMeta:

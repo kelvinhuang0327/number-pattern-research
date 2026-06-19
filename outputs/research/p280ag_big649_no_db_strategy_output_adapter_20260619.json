@@ -1,9 +1,10 @@
 {
-  "task": "P280AG",
+  "task": "P280AJ",
+  "supersedes": "P280AG / P280AH / P280AI",
   "origin_main": "3087c57edd6332d5dc1c7880417816171a41a956",
-  "final_classification": "P280AG_NO_DB_ADAPTER_BLOCKED_BY_STRATEGY_INTERFACE_GAP_NO_ACTIVATION",
+  "final_classification": "P280AJ_BIG649_STRATEGY_INTERFACE_AND_FREEZE_REMEDIATED_PR461_UPDATED_NOT_ACTIVATED",
   "adapter_implemented": true,
-  "publication_compatible": false,
+  "publication_compatible": true,
   "strategy_count": 11,
   "strategy_ids": [
     "bet2_fourier_expansion_biglotto",
@@ -18,134 +19,248 @@
     "markov_single_biglotto",
     "ts3_regime_3bet"
   ],
-  "contract": {
-    "N": 1,
-    "bet_index": 1,
-    "endpoint": "BIG_ANY_PRIZE_AWARE_WIN",
-    "history_source": "caller_supplied_only",
-    "cutoff_source": "caller_supplied_only",
-    "target_metadata_source": "caller_supplied_only",
-    "no_fabricated_fallback": true
+  "original_root_cause": "Frozen bet_index=1 outputs produce three duplicate complete-ticket groups, so the no-DB adapter could not emit 11 unique tickets (P280AG/P280AH).",
+  "p280ai_freeze_scope_blocker": "Source-interface remediation changes the P280D-pinned source hashes for p42_wave3_biglotto_adapters.py and backtest_biglotto_enhancements.py, which required authorized P280D freeze reconciliation (P280AI STOP).",
+  "interface_changes": {
+    "lottery_api/models/p42_wave3_biglotto_adapters.py": {
+      "additive_callables": [
+        "predict_markov_2bet_candidates",
+        "predict_coldpool15_candidates"
+      ],
+      "previous_sha256": "19c8458421112f61137f96a7de92a7734b525d8cbd0673c65d4c09f94b3b664b",
+      "current_sha256": "f53dd87d98ba5ae6d3434b656e1e025b16b1bbc318696039e8c9b0887d1313da",
+      "previous_git_blob_sha1": "ce6911405c15656fbfe35733edbe4e51938afdbd",
+      "current_git_blob_sha1": "37aaf7eb94625a16887412f8fd96c864eb6cdab8"
+    },
+    "tools/backtest_biglotto_enhancements.py": {
+      "additive_callables": [
+        "ts3_regime_candidates"
+      ],
+      "previous_sha256": "088e0815a0f1afb2aa884b0215882090efa72afeea0cc020d6ec8145cb143260",
+      "current_sha256": "b0bf78ef7e32ef1e07825251af45846076dbd331f6a1f2f8c89a08a1f301696e",
+      "previous_git_blob_sha1": "18a48fd216b4cc213cb505d069a6be98ce09fe68",
+      "current_git_blob_sha1": "9f293c05a9e50a21bdbf8cafeb372931ee789f21"
+    }
   },
-  "capabilities": [
+  "strategy_source_algorithm_changed": false,
+  "bet1_semantics_preserved": true,
+  "registry_mutated": false,
+  "duplicate_groups_before": [
+    [
+      "bet2_fourier_expansion_biglotto",
+      "biglotto_triple_strike",
+      "biglotto_ts3_markov_4bet_w30",
+      "ts3_regime_3bet"
+    ],
+    [
+      "cold_complement_biglotto",
+      "coldpool15_biglotto"
+    ],
+    [
+      "markov_2bet_biglotto",
+      "markov_single_biglotto"
+    ]
+  ],
+  "duplicate_groups_after": [],
+  "selection_rule": "first deterministic source candidate whose complete ticket is not already claimed by an earlier frozen strategy in canonical order; fail closed if none remain",
+  "selection_provenance": [
     {
       "strategy_id": "bet2_fourier_expansion_biglotto",
-      "callable": "lottery_api.models.p42_wave3_biglotto_adapters:predict_fourier_expansion_bet1",
-      "source_path": "lottery_api/models/p42_wave3_biglotto_adapters.py",
-      "capability_status": "SAFE_CALLABLE_FOUND",
-      "zero_db_import_result": "PASS_GUARDED_IMPORT_AND_CALL_NO_DB_OPEN",
-      "output_generation_result": "VALID_TICKET_DUPLICATE_GROUP_FOURIER_FIRST"
+      "source_callable": "lottery_api.models.p42_wave3_biglotto_adapters:predict_fourier_expansion_bet1",
+      "source_sha256": "f53dd87d98ba5ae6d3434b656e1e025b16b1bbc318696039e8c9b0887d1313da",
+      "candidate_count": 1,
+      "selected_candidate_index": 0,
+      "rebound_off_frozen_primary": false,
+      "published_ticket": [
+        8,
+        9,
+        16,
+        30,
+        44,
+        45
+      ]
     },
     {
       "strategy_id": "biglotto_deviation_2bet",
-      "callable": "tools.predict_biglotto_deviation_2bet:deviation_complement_2bet(window=50)[0]",
-      "source_path": "tools/predict_biglotto_deviation_2bet.py",
-      "capability_status": "SAFE_CALLABLE_FOUND",
-      "zero_db_import_result": "PASS_GUARDED_IMPORT_AND_CALL_NO_DB_OPEN_DORMANT_CLI_DB_LOADER",
-      "output_generation_result": "PASS_UNIQUE_VALID_TICKET"
+      "source_callable": "tools.predict_biglotto_deviation_2bet:deviation_complement_2bet",
+      "source_sha256": "bb97c0bf044c5f9f37de7c6f27629e479bda650ca33dfeb7d0fbff840537bfba",
+      "candidate_count": 2,
+      "selected_candidate_index": 0,
+      "rebound_off_frozen_primary": false,
+      "published_ticket": [
+        5,
+        8,
+        29,
+        30,
+        32,
+        35
+      ]
     },
     {
       "strategy_id": "biglotto_echo_aware_3bet",
-      "callable": "tools.predict_biglotto_echo_3bet:echo_aware_mixed_3bet(window=50,echo_weight=0.25)[0]",
-      "source_path": "tools/predict_biglotto_echo_3bet.py",
-      "capability_status": "SAFE_CALLABLE_FOUND",
-      "zero_db_import_result": "PASS_GUARDED_IMPORT_AND_CALL_NO_DB_OPEN_DORMANT_CLI_DB_LOADER",
-      "output_generation_result": "PASS_UNIQUE_VALID_TICKET"
+      "source_callable": "tools.predict_biglotto_echo_3bet:echo_aware_mixed_3bet",
+      "source_sha256": "ed4878fb59e22c44f26313646a762e034c7f92355e5df56a6f72eed887d11320",
+      "candidate_count": 3,
+      "selected_candidate_index": 0,
+      "rebound_off_frozen_primary": false,
+      "published_ticket": [
+        2,
+        5,
+        9,
+        20,
+        26,
+        30
+      ]
     },
     {
       "strategy_id": "biglotto_triple_strike",
-      "callable": "tools.predict_biglotto_triple_strike:generate_triple_strike[0]",
-      "source_path": "tools/predict_biglotto_triple_strike.py",
-      "capability_status": "SAFE_CALLABLE_FOUND",
-      "zero_db_import_result": "PASS_GUARDED_IMPORT_AND_CALL_NO_DB_OPEN",
-      "output_generation_result": "VALID_TICKET_DUPLICATE_GROUP_FOURIER_FIRST"
+      "source_callable": "tools.predict_biglotto_triple_strike:generate_triple_strike",
+      "source_sha256": "236fe529c01f1c39f4297258db6dc591e4612365720245fc8051540ed69954b7",
+      "candidate_count": 3,
+      "selected_candidate_index": 1,
+      "rebound_off_frozen_primary": true,
+      "published_ticket": [
+        10,
+        19,
+        23,
+        26,
+        27,
+        40
+      ]
     },
     {
       "strategy_id": "biglotto_ts3_markov_4bet_w30",
-      "callable": "tools.backtest_biglotto_5bet_ts3markov:generate_ts3_markov_4bet(markov_window=30)[0]",
-      "source_path": "tools/backtest_biglotto_5bet_ts3markov.py",
-      "capability_status": "SAFE_CALLABLE_FOUND",
-      "zero_db_import_result": "PASS_GUARDED_IMPORT_AND_CALL_NO_DB_OPEN",
-      "output_generation_result": "VALID_TICKET_DUPLICATE_GROUP_FOURIER_FIRST"
+      "source_callable": "tools.backtest_biglotto_5bet_ts3markov:generate_ts3_markov_4bet",
+      "source_sha256": "25760472baa09835b560f146ff4a0ce23fa2f2373a75d60c64ed557286dfbc2a",
+      "candidate_count": 4,
+      "selected_candidate_index": 2,
+      "rebound_off_frozen_primary": true,
+      "published_ticket": [
+        4,
+        5,
+        12,
+        20,
+        39,
+        41
+      ]
     },
     {
       "strategy_id": "cold_complement_biglotto",
-      "callable": "lottery_api.models.p42_wave3_biglotto_adapters:predict_cold_complement_bet1",
-      "source_path": "lottery_api/models/p42_wave3_biglotto_adapters.py",
-      "capability_status": "SAFE_CALLABLE_FOUND",
-      "zero_db_import_result": "PASS_GUARDED_IMPORT_AND_CALL_NO_DB_OPEN",
-      "output_generation_result": "VALID_TICKET_DUPLICATE_GROUP_COLD"
+      "source_callable": "lottery_api.models.p42_wave3_biglotto_adapters:predict_cold_complement_bet1",
+      "source_sha256": "f53dd87d98ba5ae6d3434b656e1e025b16b1bbc318696039e8c9b0887d1313da",
+      "candidate_count": 1,
+      "selected_candidate_index": 0,
+      "rebound_off_frozen_primary": false,
+      "published_ticket": [
+        4,
+        5,
+        20,
+        30,
+        39,
+        44
+      ]
     },
     {
       "strategy_id": "coldpool15_biglotto",
-      "callable": "lottery_api.models.p42_wave3_biglotto_adapters:predict_coldpool15",
-      "source_path": "lottery_api/models/p42_wave3_biglotto_adapters.py",
-      "capability_status": "SAFE_CALLABLE_FOUND",
-      "zero_db_import_result": "PASS_GUARDED_IMPORT_AND_CALL_NO_DB_OPEN",
-      "output_generation_result": "VALID_TICKET_DUPLICATE_GROUP_COLD"
+      "source_callable": "lottery_api.models.p42_wave3_biglotto_adapters:predict_coldpool15_candidates",
+      "source_sha256": "f53dd87d98ba5ae6d3434b656e1e025b16b1bbc318696039e8c9b0887d1313da",
+      "candidate_count": 3,
+      "selected_candidate_index": 1,
+      "rebound_off_frozen_primary": true,
+      "published_ticket": [
+        8,
+        9,
+        12,
+        29,
+        32,
+        35
+      ]
     },
     {
       "strategy_id": "fourier30_markov30_biglotto",
-      "callable": "lottery_api.models.p42_wave3_biglotto_adapters:predict_fourier30_markov30_bet1",
-      "source_path": "lottery_api/models/p42_wave3_biglotto_adapters.py",
-      "capability_status": "SAFE_CALLABLE_FOUND",
-      "zero_db_import_result": "PASS_GUARDED_IMPORT_AND_CALL_NO_DB_OPEN",
-      "output_generation_result": "PASS_UNIQUE_VALID_TICKET"
+      "source_callable": "lottery_api.models.p42_wave3_biglotto_adapters:predict_fourier30_markov30_bet1",
+      "source_sha256": "f53dd87d98ba5ae6d3434b656e1e025b16b1bbc318696039e8c9b0887d1313da",
+      "candidate_count": 1,
+      "selected_candidate_index": 0,
+      "rebound_off_frozen_primary": false,
+      "published_ticket": [
+        2,
+        5,
+        9,
+        20,
+        30,
+        35
+      ]
     },
     {
       "strategy_id": "markov_2bet_biglotto",
-      "callable": "lottery_api.models.p42_wave3_biglotto_adapters:predict_markov_2bet_bet1",
-      "source_path": "lottery_api/models/p42_wave3_biglotto_adapters.py",
-      "capability_status": "SAFE_CALLABLE_FOUND",
-      "zero_db_import_result": "PASS_GUARDED_IMPORT_AND_CALL_NO_DB_OPEN",
-      "output_generation_result": "VALID_TICKET_DUPLICATE_GROUP_MARKOV"
+      "source_callable": "lottery_api.models.p42_wave3_biglotto_adapters:predict_markov_2bet_candidates",
+      "source_sha256": "f53dd87d98ba5ae6d3434b656e1e025b16b1bbc318696039e8c9b0887d1313da",
+      "candidate_count": 3,
+      "selected_candidate_index": 0,
+      "rebound_off_frozen_primary": true,
+      "published_ticket": [
+        8,
+        9,
+        18,
+        25,
+        39,
+        41
+      ]
     },
     {
       "strategy_id": "markov_single_biglotto",
-      "callable": "lottery_api.models.p42_wave3_biglotto_adapters:predict_markov_single",
-      "source_path": "lottery_api/models/p42_wave3_biglotto_adapters.py",
-      "capability_status": "SAFE_CALLABLE_FOUND",
-      "zero_db_import_result": "PASS_GUARDED_IMPORT_AND_CALL_NO_DB_OPEN",
-      "output_generation_result": "VALID_TICKET_DUPLICATE_GROUP_MARKOV"
+      "source_callable": "lottery_api.models.p42_wave3_biglotto_adapters:predict_markov_single",
+      "source_sha256": "f53dd87d98ba5ae6d3434b656e1e025b16b1bbc318696039e8c9b0887d1313da",
+      "candidate_count": 1,
+      "selected_candidate_index": 0,
+      "rebound_off_frozen_primary": false,
+      "published_ticket": [
+        4,
+        5,
+        7,
+        20,
+        30,
+        44
+      ]
     },
     {
       "strategy_id": "ts3_regime_3bet",
-      "callable": "tools.backtest_biglotto_enhancements:fourier_rhythm_bet(window=500)",
-      "source_path": "tools/backtest_biglotto_enhancements.py",
-      "capability_status": "SAFE_CALLABLE_FOUND",
-      "zero_db_import_result": "PASS_GUARDED_IMPORT_AND_CALL_NO_DB_OPEN",
-      "output_generation_result": "VALID_TICKET_DUPLICATE_GROUP_FOURIER_FIRST"
+      "source_callable": "tools.backtest_biglotto_enhancements:ts3_regime_candidates",
+      "source_sha256": "b0bf78ef7e32ef1e07825251af45846076dbd331f6a1f2f8c89a08a1f301696e",
+      "candidate_count": 3,
+      "selected_candidate_index": 1,
+      "rebound_off_frozen_primary": true,
+      "published_ticket": [
+        23,
+        26,
+        27,
+        31,
+        34,
+        40
+      ]
     }
   ],
   "generation": {
-    "status": "EXACT_FROZEN_SOURCE_OUTPUTS_GENERATED_FROM_SYNTHETIC_HISTORY",
+    "status": "EXACT_FROZEN_SOURCE_CANDIDATES_RESOLVED_FROM_CALLER_HISTORY",
     "ticket_shape_status": "PASS_11_OF_11",
-    "strategy_output_digest": "21c8b0bd5e00e7607c770b5b07a45fd9c066245dd7c6bc699a109272c791cd14",
+    "strategy_output_digest": "65917f6ed24122c4dbd08932730965e5752c8f8da5591e21f44840f66c6b5e32",
     "deterministic_rerun_status": "PASS_BYTE_STABLE_DIGEST",
-    "randomness_policy_status": "DETERMINISTIC_NO_RANDOMNESS",
-    "duplicate_complete_ticket_groups": [
-      [
-        "bet2_fourier_expansion_biglotto",
-        "biglotto_triple_strike",
-        "biglotto_ts3_markov_4bet_w30",
-        "ts3_regime_3bet"
-      ],
-      [
-        "cold_complement_biglotto",
-        "coldpool15_biglotto"
-      ],
-      [
-        "markov_2bet_biglotto",
-        "markov_single_biglotto"
-      ]
-    ],
-    "validation_status": "DUPLICATE_COMPLETE_TICKET_STOP"
+    "resolved_unique_ticket_count": 11,
+    "validation_status": "PASS"
   },
   "p280ad_runner_compatibility": {
+    "status": "PASS_SAFE_VALIDATE_ONLY",
     "mode": "SAFE_VALIDATE_ONLY",
     "synthetic_target": "SYNTHETIC_BIG649_TARGET_DO_NOT_PUBLISH",
-    "status": "BLOCKED_DUPLICATE_COMPLETE_TICKETS",
-    "reason": "P280AD requires 11 unique complete tickets"
+    "error": null
+  },
+  "p280d_freeze_reconciliation": {
+    "status": "RECONCILED_AND_TEST_PASS",
+    "freeze_artifact_updated": true,
+    "freeze_test_updated": false,
+    "revision_kind": "FORWARD_PUBLICATION_INTERFACE_REVISION_NOT_RETROACTIVE_EVIDENCE",
+    "p280d_freeze_reconcile_test": "PASS"
   },
   "database_access": {
     "opened": false,
@@ -161,10 +276,13 @@
   "publication_pr_created": false,
   "future_evaluation_started": false,
   "outcome_used": false,
+  "fabricated_fallback_output": false,
+  "outcome_aware_selection": false,
+  "historical_best_past_selection": false,
   "prediction_success_claim": false,
   "strategy_promoted": false,
   "activation_authorized": false,
   "production_ready_claim": false,
-  "remaining_blocker": "Exact frozen bet_index=1 source identities produce duplicate complete tickets, while P280AD requires 11 unique complete tickets. No fallback, alternate bet, or algorithm rewrite is authorized.",
-  "next_recommended_step": "Request Owner authorization for minimum strategy-interface remediation, then independently audit the revised adapter before merge or real publication."
+  "remaining_blocker": null,
+  "next_recommended_step": "Independent audit of the P280AJ strategy-interface and freeze reconciliation, then separate Owner authorization for the first real publication. No activation performed."
 }

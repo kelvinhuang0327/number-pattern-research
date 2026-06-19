@@ -262,8 +262,9 @@ def predict_coldpool15(history: List[dict]) -> List[int]:
 
 # ─── P280AJ deterministic publication-candidate interfaces ─────────────────────
 # These callables expose ordered alternate candidates for the duplicate-producing
-# strategy interfaces (markov_2bet, coldpool15). They are derived ONLY from the
-# existing Markov / cold-frequency scoring above: no DB, no network, no outcome
+# strategy interfaces (markov_2bet, coldpool15, Fourier30+Markov30). They are
+# derived ONLY from the existing Markov / Fourier30 / cold-frequency scoring above:
+# no DB, no network, no outcome
 # access, no fabricated output. The frozen bet-1 identities (predict_markov_single
 # and the coldest-6 of predict_coldpool15) are preserved unchanged; these helpers
 # only publish ranked siblings from the same scoring family so the no-DB adapter
@@ -306,6 +307,31 @@ def predict_coldpool15_candidates(history: List[dict]) -> List[List[int]]:
         sorted(pool[_PICK:12]),      # next-coldest 6 within the pool
         sorted(pool[9:15]),          # warmest 6 within the cold pool
     ]
+
+
+def predict_fourier30_markov30_candidates(history: List[dict]) -> List[List[int]]:
+    """Ordered candidates for fourier30_markov30_biglotto.
+
+    Candidate 0 preserves the frozen Fourier30 bet-1 identity. Candidate 1 is
+    the documented Markov30 sibling, ranked by the existing Markov transition
+    scores and deterministically constrained to overlap bet-1 by at most three
+    numbers. No fallback outside the strategy's scoring family is introduced.
+    """
+    bet1 = predict_fourier30_markov30_bet1(history)
+    scores = _markov_scores(history, window=_FOURIER30_WINDOW)
+    ranked = [int(index + 1) for index in np.argsort(-scores)]
+    bet1_set = set(bet1)
+    bet2: List[int] = []
+    overlap_count = 0
+    for number in ranked:
+        if number in bet1_set:
+            if overlap_count >= 3:
+                continue
+            overlap_count += 1
+        bet2.append(number)
+        if len(bet2) == _PICK:
+            break
+    return [bet1, sorted(bet2)]
 
 
 # ─── Adapter class wrappers ───────────────────────────────────────────────────

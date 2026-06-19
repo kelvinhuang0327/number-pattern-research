@@ -26,6 +26,22 @@ requires separate explicit Owner authorization for one bounded target attempt.
   `BIG_ANY_PRIZE_AWARE_WIN`, ticket shape, official source metadata, deadline,
   source/tool digests, and manifest self-hash before write.
 
+## No-DB Strategy-Output Adapter
+
+- Before manifest construction, run the no-DB strategy-output adapter against
+  caller-supplied history and cutoff data.
+- The adapter must supply the exact 11 frozen strategy outputs at `bet_index=1`.
+- Missing any frozen strategy callable or output = STOP.
+- Any adapter DB access = STOP.
+- Any target outcome or result access = STOP.
+- Target selection or deadline lookup inside the adapter = STOP.
+- Invented or fallback output = STOP.
+- Stochastic output without seed and policy = STOP.
+- Duplicate complete-ticket conflict = STOP unless a future protocol change is
+  separately and explicitly authorized.
+- Real target selection, deadline lookup, and publication remain a separate
+  explicit Owner authorization.
+
 ## Artifact Convention
 
 - JSON: `outputs/publications/big649/pre_draw/<target_draw>/manifest.json`

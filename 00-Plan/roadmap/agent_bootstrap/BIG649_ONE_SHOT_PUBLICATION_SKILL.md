@@ -43,3 +43,9 @@ This skill is only for dry-run publication planning and manifest validation.
 
 This skill is a runbook, not a source-of-truth for strategy logic, target selection, or publication.
 It is only a guardrail for the dry-run-only runner.
+
+## Real-Publication Pointer
+
+- P280X is dry-run planning.
+- For real-publication tooling, see `BIG649_REAL_PUBLICATION_RUNBOOK.md`.
+- Real publication remains separate Owner authorization.

@@ -1,0 +1,1472 @@
+{
+  "anti_leakage_evidence": {
+    "causality_violations_cutoff_ge_target": 0,
+    "deduplication_adds_or_replaces_tickets": false,
+    "deduplication_basis": "exact canonical ticket-content identity only",
+    "deduplication_reads_outcomes": false,
+    "deterministic_rows_checked": 23804,
+    "live_or_future_tickets_emitted": false,
+    "null_history_cutoff_rows": 0,
+    "outcome_source": "draws_big_lotto_canonical_main",
+    "outcome_used_only_for_scoring": true,
+    "random_construction_reads_outcomes": false,
+    "random_construction_signature": "sample_*(rng, budget) -- no actuals argument",
+    "ticket_replacement_count": 0
+  },
+  "canonical_db_path_policy": "canonical lottery_api/data/lottery_v2.db (gitignored, absent in worktrees) opened read-only mode=ro + PRAGMA query_only=ON, single connection",
+  "current_or_future_live_tickets_output": false,
+  "db_copied": false,
+  "db_drift": false,
+  "db_opened": true,
+  "db_path_basename": "lottery_v2.db",
+  "db_queried": true,
+  "db_sha256_post": "539efda5874b08f7b7e25b36cd0c70e4d4d582c8df9541eec73eaa0e373650d2",
+  "db_sha256_pre": "539efda5874b08f7b7e25b36cd0c70e4d4d582c8df9541eec73eaa0e373650d2",
+  "db_stat": {
+    "mtime": 1781851991,
+    "size": 99368960
+  },
+  "db_written": false,
+  "deterministic_digest": "09303593cf7e577476c79d66cfc0dd3827c56404d623144b701dfc4af068865c",
+  "diversity_constraint": {
+    "max_attempts_per_ticket": 4000,
+    "max_pairwise_main_overlap": 2,
+    "on_infeasible": "mark draw UNDERFILLED (never relax, never replace)"
+  },
+  "duplicate_unique_coverage_overlap_summary": {
+    "deterministic_overall_duplicate_rate": 0.307973,
+    "deterministic_total_duplicates_removed": 7331,
+    "deterministic_total_tickets": 23804,
+    "deterministic_total_unique": 16473,
+    "draws_with_at_least_one_duplicate": 1500,
+    "draws_with_duplicate_fraction": 0.979752
+  },
+  "eligibility_and_exclusion_rules": {
+    "all_loaded_rows_status": "PREDICTED",
+    "exclude": "target_draw absent from canonical view (no canonical outcome)",
+    "include": "replay_status='PREDICTED' AND target_draw in canonical view"
+  },
+  "execution_branch": "task/p282b-big649-deduplicated-portfolio-replay",
+  "final_classification": "P282B_BIG649_DEDUP_REPLAY_PR_OPEN_NULL_NO_PUBLICATION",
+  "frozen_seeds": {
+    "diversified_psuccess_seed_full": 293,
+    "diversified_psuccess_seed_matched": 292,
+    "master_seed": 282,
+    "mc_seed_c_vs_a": 284,
+    "mc_seed_c_vs_b": 286,
+    "mc_seed_d_vs_a": 283,
+    "mc_seed_d_vs_b": 285,
+    "realized_portfolio_seed": 282
+  },
+  "frozen_windows": {
+    "ALL": 1531,
+    "LONG": 1500,
+    "MID": 500,
+    "SHORT": 100
+  },
+  "group_definitions": {
+    "A_INDEPENDENT_RANDOM": "B_d i.i.d. uniform 6/49 tickets; natural duplicates/overlap allowed",
+    "B_DIVERSIFIED_RANDOM": "B_d random tickets with pairwise main-overlap <= 2; rejection sampling (<= 4000 attempts/ticket); UNDERFILLED rather than relaxing the constraint",
+    "C_RAW_DETERMINISTIC_PORTFOLIO": "frozen per-draw strategy replay tickets, as stored (no outcome-based re-rank or selection)",
+    "D_DEDUPLICATED_DETERMINISTIC_PORTFOLIO": "Group C with exact-duplicate canonical ticket contents removed; no replacement; reduced-budget draws marked UNDERFILLED"
+  },
+  "group_window_metrics": {
+    "A_INDEPENDENT_RANDOM": {
+      "ALL": {
+        "best_main_hit_distribution": {
+          "0": 10,
+          "1": 126,
+          "2": 1040,
+          "3": 325,
+          "4": 30
+        },
+        "draw_count": 1531,
+        "duplicate_rate": 0.0,
+        "m3_plus_success_count": 355,
+        "m3_plus_success_rate": 0.231875,
+        "mean_main_coverage": 41.965382,
+        "mean_max_overlap": 2.957544,
+        "mean_pairwise_overlap": 0.734058,
+        "mean_produced_budget": 15.548008,
+        "mean_requested_budget": 15.548008,
+        "mean_unique_tickets": 15.548008,
+        "prize_aware_success_count": 557,
+        "prize_aware_success_rate": 0.363815,
+        "total_underfilled_tickets": 0,
+        "underfilled_rate": 0.0
+      },
+      "LONG": {
+        "best_main_hit_distribution": {
+          "0": 2,
+          "1": 114,
+          "2": 1030,
+          "3": 324,
+          "4": 30
+        },
+        "draw_count": 1500,
+        "duplicate_rate": 0.0,
+        "m3_plus_success_count": 354,
+        "m3_plus_success_rate": 0.236,
+        "mean_main_coverage": 42.592667,
+        "mean_max_overlap": 3.004,
+        "mean_pairwise_overlap": 0.735451,
+        "mean_produced_budget": 15.826667,
+        "mean_requested_budget": 15.826667,
+        "mean_unique_tickets": 15.826667,
+        "prize_aware_success_count": 556,
+        "prize_aware_success_rate": 0.370667,
+        "total_underfilled_tickets": 0,
+        "underfilled_rate": 0.0
+      },
+      "MID": {
+        "best_main_hit_distribution": {
+          "1": 35,
+          "2": 358,
+          "3": 94,
+          "4": 13
+        },
+        "draw_count": 500,
+        "duplicate_rate": 0.0,
+        "m3_plus_success_count": 107,
+        "m3_plus_success_rate": 0.214,
+        "mean_main_coverage": 42.948,
+        "mean_max_overlap": 3.022,
+        "mean_pairwise_overlap": 0.734159,
+        "mean_produced_budget": 15.976,
+        "mean_requested_budget": 15.976,
+        "mean_unique_tickets": 15.976,
+        "prize_aware_success_count": 170,
+        "prize_aware_success_rate": 0.34,
+        "total_underfilled_tickets": 0,
+        "underfilled_rate": 0.0
+      },
+      "SHORT": {
+        "best_main_hit_distribution": {
+          "1": 8,
+          "2": 64,
+          "3": 26,
+          "4": 2
+        },
+        "draw_count": 100,
+        "duplicate_rate": 0.0,
+        "m3_plus_success_count": 28,
+        "m3_plus_success_rate": 0.28,
+        "mean_main_coverage": 43.08,
+        "mean_max_overlap": 3.05,
+        "mean_pairwise_overlap": 0.731128,
+        "mean_produced_budget": 15.88,
+        "mean_requested_budget": 15.88,
+        "mean_unique_tickets": 15.88,
+        "prize_aware_success_count": 39,
+        "prize_aware_success_rate": 0.39,
+        "total_underfilled_tickets": 0,
+        "underfilled_rate": 0.0
+      }
+    },
+    "B_DIVERSIFIED_RANDOM": {
+      "ALL": {
+        "best_main_hit_distribution": {
+          "0": 8,
+          "1": 111,
+          "2": 1020,
+          "3": 366,
+          "4": 26
+        },
+        "draw_count": 1531,
+        "duplicate_rate": 0.0,
+        "m3_plus_success_count": 392,
+        "m3_plus_success_rate": 0.256042,
+        "mean_main_coverage": 42.857609,
+        "mean_max_overlap": 1.966035,
+        "mean_pairwise_overlap": 0.687828,
+        "mean_produced_budget": 15.548008,
+        "mean_requested_budget": 15.548008,
+        "mean_unique_tickets": 15.548008,
+        "prize_aware_success_count": 601,
+        "prize_aware_success_rate": 0.392554,
+        "total_underfilled_tickets": 0,
+        "underfilled_rate": 0.0
+      },
+      "LONG": {
+        "best_main_hit_distribution": {
+          "1": 94,
+          "2": 1014,
+          "3": 366,
+          "4": 26
+        },
+        "draw_count": 1500,
+        "duplicate_rate": 0.0,
+        "m3_plus_success_count": 392,
+        "m3_plus_success_rate": 0.261333,
+        "mean_main_coverage": 43.500667,
+        "mean_max_overlap": 1.994,
+        "mean_pairwise_overlap": 0.690376,
+        "mean_produced_budget": 15.826667,
+        "mean_requested_budget": 15.826667,
+        "mean_unique_tickets": 15.826667,
+        "prize_aware_success_count": 601,
+        "prize_aware_success_rate": 0.400667,
+        "total_underfilled_tickets": 0,
+        "underfilled_rate": 0.0
+      },
+      "MID": {
+        "best_main_hit_distribution": {
+          "1": 29,
+          "2": 338,
+          "3": 122,
+          "4": 11
+        },
+        "draw_count": 500,
+        "duplicate_rate": 0.0,
+        "m3_plus_success_count": 133,
+        "m3_plus_success_rate": 0.266,
+        "mean_main_coverage": 43.916,
+        "mean_max_overlap": 2.0,
+        "mean_pairwise_overlap": 0.685918,
+        "mean_produced_budget": 15.976,
+        "mean_requested_budget": 15.976,
+        "mean_unique_tickets": 15.976,
+        "prize_aware_success_count": 210,
+        "prize_aware_success_rate": 0.42,
+        "total_underfilled_tickets": 0,
+        "underfilled_rate": 0.0
+      },
+      "SHORT": {
+        "best_main_hit_distribution": {
+          "1": 8,
+          "2": 68,
+          "3": 21,
+          "4": 3
+        },
+        "draw_count": 100,
+        "duplicate_rate": 0.0,
+        "m3_plus_success_count": 24,
+        "m3_plus_success_rate": 0.24,
+        "mean_main_coverage": 43.73,
+        "mean_max_overlap": 2.0,
+        "mean_pairwise_overlap": 0.680922,
+        "mean_produced_budget": 15.88,
+        "mean_requested_budget": 15.88,
+        "mean_unique_tickets": 15.88,
+        "prize_aware_success_count": 43,
+        "prize_aware_success_rate": 0.43,
+        "total_underfilled_tickets": 0,
+        "underfilled_rate": 0.0
+      }
+    },
+    "C_RAW_DETERMINISTIC_PORTFOLIO": {
+      "ALL": {
+        "best_main_hit_distribution": {
+          "0": 5,
+          "1": 349,
+          "2": 900,
+          "3": 253,
+          "4": 24
+        },
+        "draw_count": 1531,
+        "duplicate_rate": 0.307973,
+        "m3_plus_success_count": 277,
+        "m3_plus_success_rate": 0.180927,
+        "mean_main_coverage": 34.346179,
+        "mean_max_overlap": 5.899412,
+        "mean_pairwise_overlap": 1.285132,
+        "mean_produced_budget": 15.548008,
+        "mean_requested_budget": 15.548008,
+        "mean_unique_tickets": 10.759634,
+        "prize_aware_success_count": 414,
+        "prize_aware_success_rate": 0.270411,
+        "total_underfilled_tickets": 0,
+        "underfilled_rate": 0.0
+      },
+      "LONG": {
+        "best_main_hit_distribution": {
+          "0": 2,
+          "1": 331,
+          "2": 892,
+          "3": 251,
+          "4": 24
+        },
+        "draw_count": 1500,
+        "duplicate_rate": 0.308719,
+        "m3_plus_success_count": 275,
+        "m3_plus_success_rate": 0.183333,
+        "mean_main_coverage": 34.827333,
+        "mean_max_overlap": 5.998667,
+        "mean_pairwise_overlap": 1.291247,
+        "mean_produced_budget": 15.826667,
+        "mean_requested_budget": 15.826667,
+        "mean_unique_tickets": 10.940667,
+        "prize_aware_success_count": 411,
+        "prize_aware_success_rate": 0.274,
+        "total_underfilled_tickets": 0,
+        "underfilled_rate": 0.0
+      },
+      "MID": {
+        "best_main_hit_distribution": {
+          "1": 124,
+          "2": 273,
+          "3": 97,
+          "4": 6
+        },
+        "draw_count": 500,
+        "duplicate_rate": 0.308463,
+        "m3_plus_success_count": 103,
+        "m3_plus_success_rate": 0.206,
+        "mean_main_coverage": 35.164,
+        "mean_max_overlap": 5.996,
+        "mean_pairwise_overlap": 1.276187,
+        "mean_produced_budget": 15.976,
+        "mean_requested_budget": 15.976,
+        "mean_unique_tickets": 11.048,
+        "prize_aware_success_count": 146,
+        "prize_aware_success_rate": 0.292,
+        "total_underfilled_tickets": 0,
+        "underfilled_rate": 0.0
+      },
+      "SHORT": {
+        "best_main_hit_distribution": {
+          "1": 27,
+          "2": 59,
+          "3": 14
+        },
+        "draw_count": 100,
+        "duplicate_rate": 0.321159,
+        "m3_plus_success_count": 14,
+        "m3_plus_success_rate": 0.14,
+        "mean_main_coverage": 35.24,
+        "mean_max_overlap": 5.98,
+        "mean_pairwise_overlap": 1.247183,
+        "mean_produced_budget": 15.88,
+        "mean_requested_budget": 15.88,
+        "mean_unique_tickets": 10.78,
+        "prize_aware_success_count": 24,
+        "prize_aware_success_rate": 0.24,
+        "total_underfilled_tickets": 0,
+        "underfilled_rate": 0.0
+      }
+    },
+    "D_DEDUPLICATED_DETERMINISTIC_PORTFOLIO": {
+      "ALL": {
+        "best_main_hit_distribution": {
+          "0": 5,
+          "1": 349,
+          "2": 900,
+          "3": 253,
+          "4": 24
+        },
+        "draw_count": 1531,
+        "duplicate_rate": 0.0,
+        "m3_plus_success_count": 277,
+        "m3_plus_success_rate": 0.180927,
+        "mean_main_coverage": 34.346179,
+        "mean_max_overlap": 4.503592,
+        "mean_pairwise_overlap": 0.953036,
+        "mean_produced_budget": 10.759634,
+        "mean_requested_budget": 15.548008,
+        "mean_unique_tickets": 10.759634,
+        "prize_aware_success_count": 414,
+        "prize_aware_success_rate": 0.270411,
+        "total_underfilled_tickets": 7331,
+        "underfilled_rate": 0.979752
+      },
+      "LONG": {
+        "best_main_hit_distribution": {
+          "0": 2,
+          "1": 331,
+          "2": 892,
+          "3": 251,
+          "4": 24
+        },
+        "draw_count": 1500,
+        "duplicate_rate": 0.0,
+        "m3_plus_success_count": 275,
+        "m3_plus_success_rate": 0.183333,
+        "mean_main_coverage": 34.827333,
+        "mean_max_overlap": 4.577333,
+        "mean_pairwise_overlap": 0.953399,
+        "mean_produced_budget": 10.940667,
+        "mean_requested_budget": 15.826667,
+        "mean_unique_tickets": 10.940667,
+        "prize_aware_success_count": 411,
+        "prize_aware_success_rate": 0.274,
+        "total_underfilled_tickets": 7329,
+        "underfilled_rate": 0.999333
+      },
+      "MID": {
+        "best_main_hit_distribution": {
+          "1": 124,
+          "2": 273,
+          "3": 97,
+          "4": 6
+        },
+        "draw_count": 500,
+        "duplicate_rate": 0.0,
+        "m3_plus_success_count": 103,
+        "m3_plus_success_rate": 0.206,
+        "mean_main_coverage": 35.164,
+        "mean_max_overlap": 4.664,
+        "mean_pairwise_overlap": 0.963203,
+        "mean_produced_budget": 11.048,
+        "mean_requested_budget": 15.976,
+        "mean_unique_tickets": 11.048,
+        "prize_aware_success_count": 146,
+        "prize_aware_success_rate": 0.292,
+        "total_underfilled_tickets": 2464,
+        "underfilled_rate": 0.998
+      },
+      "SHORT": {
+        "best_main_hit_distribution": {
+          "1": 27,
+          "2": 59,
+          "3": 14
+        },
+        "draw_count": 100,
+        "duplicate_rate": 0.0,
+        "m3_plus_success_count": 14,
+        "m3_plus_success_rate": 0.14,
+        "mean_main_coverage": 35.24,
+        "mean_max_overlap": 4.7,
+        "mean_pairwise_overlap": 0.925377,
+        "mean_produced_budget": 10.78,
+        "mean_requested_budget": 15.88,
+        "mean_unique_tickets": 10.78,
+        "prize_aware_success_count": 24,
+        "prize_aware_success_rate": 0.24,
+        "total_underfilled_tickets": 510,
+        "underfilled_rate": 0.99
+      }
+    }
+  },
+  "lottery": "BIG_LOTTO",
+  "no_activation": true,
+  "no_db_write_or_copy": true,
+  "no_official_target_or_deadline_lookup": true,
+  "no_pre_draw_manifest": true,
+  "no_prediction_success_claim": true,
+  "no_real_publication": true,
+  "no_strategy_promoted": true,
+  "per_draw_aggregate_metrics": {
+    "budget_distribution": {
+      "13": 1,
+      "16": 1477,
+      "2": 30,
+      "3": 1,
+      "4": 20,
+      "7": 1,
+      "9": 1
+    },
+    "duplicates_removed_distribution": {
+      "0": 31,
+      "1": 1,
+      "2": 20,
+      "3": 2,
+      "4": 224,
+      "5": 1132,
+      "6": 119,
+      "7": 2
+    },
+    "eligible_draw_count": 1531,
+    "sample_per_draw_records_recent": [
+      {
+        "draw": "115000055",
+        "groups": {
+          "A_INDEPENDENT_RANDOM": {
+            "best_main_hit": 2,
+            "best_special_hit": 0,
+            "duplicate_count": 0,
+            "m3_plus_success": false,
+            "main_coverage": 30,
+            "max_pairwise_overlap": 2,
+            "mean_pairwise_overlap": 0.666667,
+            "prize_aware_success": false,
+            "produced_count": 7,
+            "requested_budget": 7,
+            "ticket_digest": "df5091fb49c95f3f",
+            "underfilled_count": 0,
+            "unique_count": 7
+          },
+          "B_DIVERSIFIED_RANDOM": {
+            "best_main_hit": 2,
+            "best_special_hit": 0,
+            "duplicate_count": 0,
+            "m3_plus_success": false,
+            "main_coverage": 28,
+            "max_pairwise_overlap": 2,
+            "mean_pairwise_overlap": 0.809524,
+            "prize_aware_success": false,
+            "produced_count": 7,
+            "requested_budget": 7,
+            "ticket_digest": "635265a02bd1eb73",
+            "underfilled_count": 0,
+            "unique_count": 7
+          },
+          "C_RAW_DETERMINISTIC_PORTFOLIO": {
+            "best_main_hit": 2,
+            "best_special_hit": 0,
+            "duplicate_count": 0,
+            "duplicate_identities_present": 0,
+            "m3_plus_success": false,
+            "main_coverage": 33,
+            "max_pairwise_overlap": 4,
+            "mean_pairwise_overlap": 0.428571,
+            "prize_aware_success": false,
+            "produced_count": 7,
+            "raw_strategy_ticket_source_count": 7,
+            "requested_budget": 7,
+            "ticket_digest": "765006254e70b9d5",
+            "underfilled_count": 0,
+            "unique_count": 7
+          },
+          "D_DEDUPLICATED_DETERMINISTIC_PORTFOLIO": {
+            "best_main_hit": 2,
+            "best_special_hit": 0,
+            "budget_loss_from_deduplication": 0,
+            "duplicate_count": 0,
+            "duplicate_identities_removed": 0,
+            "m3_plus_success": false,
+            "main_coverage": 33,
+            "max_pairwise_overlap": 4,
+            "mean_pairwise_overlap": 0.428571,
+            "no_replacement_count": 0,
+            "prize_aware_success": false,
+            "produced_count": 7,
+            "raw_strategy_ticket_source_count": 7,
+            "requested_budget": 7,
+            "retained_unique_tickets": 7,
+            "ticket_digest": "765006254e70b9d5",
+            "underfilled_count": 0,
+            "unique_count": 7
+          }
+        },
+        "requested_budget": 7
+      },
+      {
+        "draw": "115000054",
+        "groups": {
+          "A_INDEPENDENT_RANDOM": {
+            "best_main_hit": 2,
+            "best_special_hit": 0,
+            "duplicate_count": 0,
+            "m3_plus_success": false,
+            "main_coverage": 43,
+            "max_pairwise_overlap": 4,
+            "mean_pairwise_overlap": 0.679487,
+            "prize_aware_success": false,
+            "produced_count": 13,
+            "requested_budget": 13,
+            "ticket_digest": "fae8d4be4a1228e6",
+            "underfilled_count": 0,
+            "unique_count": 13
+          },
+          "B_DIVERSIFIED_RANDOM": {
+            "best_main_hit": 2,
+            "best_special_hit": 0,
+            "duplicate_count": 0,
+            "m3_plus_success": false,
+            "main_coverage": 40,
+            "max_pairwise_overlap": 2,
+            "mean_pairwise_overlap": 0.807692,
+            "prize_aware_success": false,
+            "produced_count": 13,
+            "requested_budget": 13,
+            "ticket_digest": "dbe62cced45f3c96",
+            "underfilled_count": 0,
+            "unique_count": 13
+          },
+          "C_RAW_DETERMINISTIC_PORTFOLIO": {
+            "best_main_hit": 2,
+            "best_special_hit": 0,
+            "duplicate_count": 3,
+            "duplicate_identities_present": 3,
+            "m3_plus_success": false,
+            "main_coverage": 36,
+            "max_pairwise_overlap": 6,
+            "mean_pairwise_overlap": 0.923077,
+            "prize_aware_success": false,
+            "produced_count": 13,
+            "raw_strategy_ticket_source_count": 13,
+            "requested_budget": 13,
+            "ticket_digest": "4d3c933390b6efd7",
+            "underfilled_count": 0,
+            "unique_count": 10
+          },
+          "D_DEDUPLICATED_DETERMINISTIC_PORTFOLIO": {
+            "best_main_hit": 2,
+            "best_special_hit": 0,
+            "budget_loss_from_deduplication": 3,
+            "duplicate_count": 0,
+            "duplicate_identities_removed": 3,
+            "m3_plus_success": false,
+            "main_coverage": 36,
+            "max_pairwise_overlap": 4,
+            "mean_pairwise_overlap": 0.666667,
+            "no_replacement_count": 0,
+            "prize_aware_success": false,
+            "produced_count": 10,
+            "raw_strategy_ticket_source_count": 13,
+            "requested_budget": 13,
+            "retained_unique_tickets": 10,
+            "ticket_digest": "2dd323a638c995d5",
+            "underfilled_count": 3,
+            "unique_count": 10
+          }
+        },
+        "requested_budget": 13
+      },
+      {
+        "draw": "115000053",
+        "groups": {
+          "A_INDEPENDENT_RANDOM": {
+            "best_main_hit": 3,
+            "best_special_hit": 0,
+            "duplicate_count": 0,
+            "m3_plus_success": true,
+            "main_coverage": 45,
+            "max_pairwise_overlap": 3,
+            "mean_pairwise_overlap": 0.641667,
+            "prize_aware_success": true,
+            "produced_count": 16,
+            "requested_budget": 16,
+            "ticket_digest": "cdf4b1ed06f37b6a",
+            "underfilled_count": 0,
+            "unique_count": 16
+          },
+          "B_DIVERSIFIED_RANDOM": {
+            "best_main_hit": 2,
+            "best_special_hit": 0,
+            "duplicate_count": 0,
+            "m3_plus_success": false,
+            "main_coverage": 42,
+            "max_pairwise_overlap": 2,
+            "mean_pairwise_overlap": 0.708333,
+            "prize_aware_success": false,
+            "produced_count": 16,
+            "requested_budget": 16,
+            "ticket_digest": "02fa1c7626ce24e9",
+            "underfilled_count": 0,
+            "unique_count": 16
+          },
+          "C_RAW_DETERMINISTIC_PORTFOLIO": {
+            "best_main_hit": 2,
+            "best_special_hit": 1,
+            "duplicate_count": 5,
+            "duplicate_identities_present": 5,
+            "m3_plus_success": false,
+            "main_coverage": 37,
+            "max_pairwise_overlap": 6,
+            "mean_pairwise_overlap": 1.133333,
+            "prize_aware_success": true,
+            "produced_count": 16,
+            "raw_strategy_ticket_source_count": 16,
+            "requested_budget": 16,
+            "ticket_digest": "ce2814db249c1b08",
+            "underfilled_count": 0,
+            "unique_count": 11
+          },
+          "D_DEDUPLICATED_DETERMINISTIC_PORTFOLIO": {
+            "best_main_hit": 2,
+            "best_special_hit": 1,
+            "budget_loss_from_deduplication": 5,
+            "duplicate_count": 0,
+            "duplicate_identities_removed": 5,
+            "m3_plus_success": false,
+            "main_coverage": 37,
+            "max_pairwise_overlap": 5,
+            "mean_pairwise_overlap": 0.909091,
+            "no_replacement_count": 0,
+            "prize_aware_success": true,
+            "produced_count": 11,
+            "raw_strategy_ticket_source_count": 16,
+            "requested_budget": 16,
+            "retained_unique_tickets": 11,
+            "ticket_digest": "53d00bc85855b0af",
+            "underfilled_count": 5,
+            "unique_count": 11
+          }
+        },
+        "requested_budget": 16
+      },
+      {
+        "draw": "115000052",
+        "groups": {
+          "A_INDEPENDENT_RANDOM": {
+            "best_main_hit": 3,
+            "best_special_hit": 0,
+            "duplicate_count": 0,
+            "m3_plus_success": true,
+            "main_coverage": 44,
+            "max_pairwise_overlap": 3,
+            "mean_pairwise_overlap": 0.8,
+            "prize_aware_success": true,
+            "produced_count": 16,
+            "requested_budget": 16,
+            "ticket_digest": "12bc38c99746df86",
+            "underfilled_count": 0,
+            "unique_count": 16
+          },
+          "B_DIVERSIFIED_RANDOM": {
+            "best_main_hit": 3,
+            "best_special_hit": 0,
+            "duplicate_count": 0,
+            "m3_plus_success": true,
+            "main_coverage": 46,
+            "max_pairwise_overlap": 2,
+            "mean_pairwise_overlap": 0.641667,
+            "prize_aware_success": true,
+            "produced_count": 16,
+            "requested_budget": 16,
+            "ticket_digest": "40f65387a8482e06",
+            "underfilled_count": 0,
+            "unique_count": 16
+          },
+          "C_RAW_DETERMINISTIC_PORTFOLIO": {
+            "best_main_hit": 1,
+            "best_special_hit": 1,
+            "duplicate_count": 5,
+            "duplicate_identities_present": 5,
+            "m3_plus_success": false,
+            "main_coverage": 35,
+            "max_pairwise_overlap": 6,
+            "mean_pairwise_overlap": 1.283333,
+            "prize_aware_success": false,
+            "produced_count": 16,
+            "raw_strategy_ticket_source_count": 16,
+            "requested_budget": 16,
+            "ticket_digest": "46c486232cfde6a5",
+            "underfilled_count": 0,
+            "unique_count": 11
+          },
+          "D_DEDUPLICATED_DETERMINISTIC_PORTFOLIO": {
+            "best_main_hit": 1,
+            "best_special_hit": 1,
+            "budget_loss_from_deduplication": 5,
+            "duplicate_count": 0,
+            "duplicate_identities_removed": 5,
+            "m3_plus_success": false,
+            "main_coverage": 35,
+            "max_pairwise_overlap": 4,
+            "mean_pairwise_overlap": 0.872727,
+            "no_replacement_count": 0,
+            "prize_aware_success": false,
+            "produced_count": 11,
+            "raw_strategy_ticket_source_count": 16,
+            "requested_budget": 16,
+            "retained_unique_tickets": 11,
+            "ticket_digest": "8f1ec223d6a48542",
+            "underfilled_count": 5,
+            "unique_count": 11
+          }
+        },
+        "requested_budget": 16
+      },
+      {
+        "draw": "115000051",
+        "groups": {
+          "A_INDEPENDENT_RANDOM": {
+            "best_main_hit": 2,
+            "best_special_hit": 0,
+            "duplicate_count": 0,
+            "m3_plus_success": false,
+            "main_coverage": 43,
+            "max_pairwise_overlap": 3,
+            "mean_pairwise_overlap": 0.666667,
+            "prize_aware_success": false,
+            "produced_count": 16,
+            "requested_budget": 16,
+            "ticket_digest": "571daf7139079215",
+            "underfilled_count": 0,
+            "unique_count": 16
+          },
+          "B_DIVERSIFIED_RANDOM": {
+            "best_main_hit": 2,
+            "best_special_hit": 0,
+            "duplicate_count": 0,
+            "m3_plus_success": false,
+            "main_coverage": 45,
+            "max_pairwise_overlap": 2,
+            "mean_pairwise_overlap": 0.691667,
+            "prize_aware_success": false,
+            "produced_count": 16,
+            "requested_budget": 16,
+            "ticket_digest": "9e15495681ef7834",
+            "underfilled_count": 0,
+            "unique_count": 16
+          },
+          "C_RAW_DETERMINISTIC_PORTFOLIO": {
+            "best_main_hit": 2,
+            "best_special_hit": 1,
+            "duplicate_count": 5,
+            "duplicate_identities_present": 5,
+            "m3_plus_success": false,
+            "main_coverage": 34,
+            "max_pairwise_overlap": 6,
+            "mean_pairwise_overlap": 1.208333,
+            "prize_aware_success": true,
+            "produced_count": 16,
+            "raw_strategy_ticket_source_count": 16,
+            "requested_budget": 16,
+            "ticket_digest": "71299b6ca68e5b6d",
+            "underfilled_count": 0,
+            "unique_count": 11
+          },
+          "D_DEDUPLICATED_DETERMINISTIC_PORTFOLIO": {
+            "best_main_hit": 2,
+            "best_special_hit": 1,
+            "budget_loss_from_deduplication": 5,
+            "duplicate_count": 0,
+            "duplicate_identities_removed": 5,
+            "m3_plus_success": false,
+            "main_coverage": 34,
+            "max_pairwise_overlap": 5,
+            "mean_pairwise_overlap": 0.836364,
+            "no_replacement_count": 0,
+            "prize_aware_success": true,
+            "produced_count": 11,
+            "raw_strategy_ticket_source_count": 16,
+            "requested_budget": 16,
+            "retained_unique_tickets": 11,
+            "ticket_digest": "89132d7c43ce251c",
+            "underfilled_count": 5,
+            "unique_count": 11
+          }
+        },
+        "requested_budget": 16
+      },
+      {
+        "draw": "115000050",
+        "groups": {
+          "A_INDEPENDENT_RANDOM": {
+            "best_main_hit": 4,
+            "best_special_hit": 0,
+            "duplicate_count": 0,
+            "m3_plus_success": true,
+            "main_coverage": 44,
+            "max_pairwise_overlap": 3,
+            "mean_pairwise_overlap": 0.683333,
+            "prize_aware_success": true,
+            "produced_count": 16,
+            "requested_budget": 16,
+            "ticket_digest": "b5ccbf519167020f",
+            "underfilled_count": 0,
+            "unique_count": 16
+          },
+          "B_DIVERSIFIED_RANDOM": {
+            "best_main_hit": 2,
+            "best_special_hit": 0,
+            "duplicate_count": 0,
+            "m3_plus_success": false,
+            "main_coverage": 41,
+            "max_pairwise_overlap": 2,
+            "mean_pairwise_overlap": 0.7,
+            "prize_aware_success": false,
+            "produced_count": 16,
+            "requested_budget": 16,
+            "ticket_digest": "95d591437ab3cc01",
+            "underfilled_count": 0,
+            "unique_count": 16
+          },
+          "C_RAW_DETERMINISTIC_PORTFOLIO": {
+            "best_main_hit": 3,
+            "best_special_hit": 1,
+            "duplicate_count": 5,
+            "duplicate_identities_present": 5,
+            "m3_plus_success": true,
+            "main_coverage": 31,
+            "max_pairwise_overlap": 6,
+            "mean_pairwise_overlap": 1.291667,
+            "prize_aware_success": true,
+            "produced_count": 16,
+            "raw_strategy_ticket_source_count": 16,
+            "requested_budget": 16,
+            "ticket_digest": "5066866a356b6634",
+            "underfilled_count": 0,
+            "unique_count": 11
+          },
+          "D_DEDUPLICATED_DETERMINISTIC_PORTFOLIO": {
+            "best_main_hit": 3,
+            "best_special_hit": 1,
+            "budget_loss_from_deduplication": 5,
+            "duplicate_count": 0,
+            "duplicate_identities_removed": 5,
+            "m3_plus_success": true,
+            "main_coverage": 31,
+            "max_pairwise_overlap": 5,
+            "mean_pairwise_overlap": 1.0,
+            "no_replacement_count": 0,
+            "prize_aware_success": true,
+            "produced_count": 11,
+            "raw_strategy_ticket_source_count": 16,
+            "requested_budget": 16,
+            "retained_unique_tickets": 11,
+            "ticket_digest": "3e61f975fd31fd28",
+            "underfilled_count": 5,
+            "unique_count": 11
+          }
+        },
+        "requested_budget": 16
+      },
+      {
+        "draw": "115000049",
+        "groups": {
+          "A_INDEPENDENT_RANDOM": {
+            "best_main_hit": 3,
+            "best_special_hit": 0,
+            "duplicate_count": 0,
+            "m3_plus_success": true,
+            "main_coverage": 42,
+            "max_pairwise_overlap": 3,
+            "mean_pairwise_overlap": 0.741667,
+            "prize_aware_success": true,
+            "produced_count": 16,
+            "requested_budget": 16,
+            "ticket_digest": "e3567e9eeede4838",
+            "underfilled_count": 0,
+            "unique_count": 16
+          },
+          "B_DIVERSIFIED_RANDOM": {
+            "best_main_hit": 2,
+            "best_special_hit": 0,
+            "duplicate_count": 0,
+            "m3_plus_success": false,
+            "main_coverage": 45,
+            "max_pairwise_overlap": 2,
+            "mean_pairwise_overlap": 0.625,
+            "prize_aware_success": false,
+            "produced_count": 16,
+            "requested_budget": 16,
+            "ticket_digest": "37ae4ae417b0ab97",
+            "underfilled_count": 0,
+            "unique_count": 16
+          },
+          "C_RAW_DETERMINISTIC_PORTFOLIO": {
+            "best_main_hit": 2,
+            "best_special_hit": 1,
+            "duplicate_count": 5,
+            "duplicate_identities_present": 5,
+            "m3_plus_success": false,
+            "main_coverage": 36,
+            "max_pairwise_overlap": 6,
+            "mean_pairwise_overlap": 1.1,
+            "prize_aware_success": true,
+            "produced_count": 16,
+            "raw_strategy_ticket_source_count": 16,
+            "requested_budget": 16,
+            "ticket_digest": "63947d5229ff875c",
+            "underfilled_count": 0,
+            "unique_count": 11
+          },
+          "D_DEDUPLICATED_DETERMINISTIC_PORTFOLIO": {
+            "best_main_hit": 2,
+            "best_special_hit": 1,
+            "budget_loss_from_deduplication": 5,
+            "duplicate_count": 0,
+            "duplicate_identities_removed": 5,
+            "m3_plus_success": false,
+            "main_coverage": 36,
+            "max_pairwise_overlap": 5,
+            "mean_pairwise_overlap": 0.927273,
+            "no_replacement_count": 0,
+            "prize_aware_success": true,
+            "produced_count": 11,
+            "raw_strategy_ticket_source_count": 16,
+            "requested_budget": 16,
+            "retained_unique_tickets": 11,
+            "ticket_digest": "074b539f65fd691c",
+            "underfilled_count": 5,
+            "unique_count": 11
+          }
+        },
+        "requested_budget": 16
+      },
+      {
+        "draw": "115000048",
+        "groups": {
+          "A_INDEPENDENT_RANDOM": {
+            "best_main_hit": 2,
+            "best_special_hit": 0,
+            "duplicate_count": 0,
+            "m3_plus_success": false,
+            "main_coverage": 42,
+            "max_pairwise_overlap": 4,
+            "mean_pairwise_overlap": 0.75,
+            "prize_aware_success": false,
+            "produced_count": 16,
+            "requested_budget": 16,
+            "ticket_digest": "c71b98de46b53f53",
+            "underfilled_count": 0,
+            "unique_count": 16
+          },
+          "B_DIVERSIFIED_RANDOM": {
+            "best_main_hit": 3,
+            "best_special_hit": 0,
+            "duplicate_count": 0,
+            "m3_plus_success": true,
+            "main_coverage": 45,
+            "max_pairwise_overlap": 2,
+            "mean_pairwise_overlap": 0.683333,
+            "prize_aware_success": true,
+            "produced_count": 16,
+            "requested_budget": 16,
+            "ticket_digest": "66cce7c46672c5b0",
+            "underfilled_count": 0,
+            "unique_count": 16
+          },
+          "C_RAW_DETERMINISTIC_PORTFOLIO": {
+            "best_main_hit": 2,
+            "best_special_hit": 0,
+            "duplicate_count": 5,
+            "duplicate_identities_present": 5,
+            "m3_plus_success": false,
+            "main_coverage": 36,
+            "max_pairwise_overlap": 6,
+            "mean_pairwise_overlap": 1.125,
+            "prize_aware_success": false,
+            "produced_count": 16,
+            "raw_strategy_ticket_source_count": 16,
+            "requested_budget": 16,
+            "ticket_digest": "eec37923635fb6c8",
+            "underfilled_count": 0,
+            "unique_count": 11
+          },
+          "D_DEDUPLICATED_DETERMINISTIC_PORTFOLIO": {
+            "best_main_hit": 2,
+            "best_special_hit": 0,
+            "budget_loss_from_deduplication": 5,
+            "duplicate_count": 0,
+            "duplicate_identities_removed": 5,
+            "m3_plus_success": false,
+            "main_coverage": 36,
+            "max_pairwise_overlap": 5,
+            "mean_pairwise_overlap": 0.854545,
+            "no_replacement_count": 0,
+            "prize_aware_success": false,
+            "produced_count": 11,
+            "raw_strategy_ticket_source_count": 16,
+            "requested_budget": 16,
+            "retained_unique_tickets": 11,
+            "ticket_digest": "fdc7763d6f87da12",
+            "underfilled_count": 5,
+            "unique_count": 11
+          }
+        },
+        "requested_budget": 16
+      }
+    ],
+    "unique_count_distribution": {
+      "10": 120,
+      "11": 1132,
+      "12": 224,
+      "2": 51,
+      "6": 1,
+      "7": 1,
+      "9": 2
+    }
+  },
+  "primary_comparison_d_vs_a": {
+    "budget_policy": "EQUAL budget U_d for both D and the A baseline",
+    "method": "paired same-draw observations; D fixed (U_d unique deterministic tickets) vs A budget-matched at U_d i.i.d. random; seed-fixed Bernoulli Monte Carlo over EXACT per-draw success probabilities, with an exact Poisson-binomial normal-approximation cross-check; one-sided test for D above the random baseline",
+    "results_by_window": {
+      "ALL": {
+        "comparison_label": "D_DEDUP vs A_INDEPENDENT_RANDOM (budget-matched U_d)",
+        "effect_direction": "fixed_below_random",
+        "fixed_success_rate": 0.270411,
+        "mc_iterations": 2000,
+        "mc_seed": 283,
+        "observed_difference": -0.015015,
+        "p_value_exact_poisson_binomial": 0.91113864,
+        "p_value_mc_one_sided_fixed_better": 0.917041,
+        "random_baseline_ci95": [
+          0.263227,
+          0.308295
+        ],
+        "random_baseline_exact_mean_rate": 0.285904,
+        "random_baseline_mean_rate": 0.285426,
+        "window_draws": 1531
+      },
+      "LONG": {
+        "comparison_label": "D_DEDUP vs A_INDEPENDENT_RANDOM (budget-matched U_d)",
+        "effect_direction": "fixed_below_random",
+        "fixed_success_rate": 0.274,
+        "mc_iterations": 2000,
+        "mc_seed": 283,
+        "observed_difference": -0.016089,
+        "p_value_exact_poisson_binomial": 0.92146151,
+        "p_value_mc_one_sided_fixed_better": 0.923538,
+        "random_baseline_ci95": [
+          0.267333,
+          0.313333
+        ],
+        "random_baseline_exact_mean_rate": 0.290553,
+        "random_baseline_mean_rate": 0.290089,
+        "window_draws": 1500
+      },
+      "MID": {
+        "comparison_label": "D_DEDUP vs A_INDEPENDENT_RANDOM (budget-matched U_d)",
+        "effect_direction": "fixed_below_random",
+        "fixed_success_rate": 0.292,
+        "mc_iterations": 2000,
+        "mc_seed": 283,
+        "observed_difference": -0.001299,
+        "p_value_exact_poisson_binomial": 0.52648766,
+        "p_value_mc_one_sided_fixed_better": 0.552224,
+        "random_baseline_ci95": [
+          0.254,
+          0.332
+        ],
+        "random_baseline_exact_mean_rate": 0.293352,
+        "random_baseline_mean_rate": 0.293299,
+        "window_draws": 500
+      },
+      "SHORT": {
+        "comparison_label": "D_DEDUP vs A_INDEPENDENT_RANDOM (budget-matched U_d)",
+        "effect_direction": "fixed_below_random",
+        "fixed_success_rate": 0.24,
+        "mc_iterations": 2000,
+        "mc_seed": 283,
+        "observed_difference": -0.047195,
+        "p_value_exact_poisson_binomial": 0.8524638,
+        "p_value_mc_one_sided_fixed_better": 0.870565,
+        "random_baseline_ci95": [
+          0.2,
+          0.38
+        ],
+        "random_baseline_exact_mean_rate": 0.287365,
+        "random_baseline_mean_rate": 0.287195,
+        "window_draws": 100
+      }
+    }
+  },
+  "prize_aware_endpoint": {
+    "definition": "BIG draw-level success: any portfolio ticket with main_hits>=3 OR (main_hits==2 AND special_hit)",
+    "scorer": "lottery_api.prize_aware_scorer.score_prize_aware_ticket (P271C, frozen)",
+    "scoring_version": "prize_aware_v1",
+    "special_hit_definition": "actual special number present in the predicted six"
+  },
+  "recommendation_next_research_step": "No edge: deduplication reduces duplicate exposure / wasted budget but does not beat the matched random baseline. Treat dedup as a budget-efficiency control only; HOLD per maintenance mode (L90/L91). No further mining without a new external data source or explicit authorization.",
+  "research_only": true,
+  "secondary_comparisons": {
+    "c_vs_a": {
+      "method": "paired; C (=D success) vs full-budget B_d random baseline",
+      "results_by_window": {
+        "ALL": {
+          "comparison_label": "C_RAW vs A_INDEPENDENT_RANDOM (full budget B_d)",
+          "effect_direction": "fixed_below_random",
+          "fixed_success_rate": 0.270411,
+          "mc_iterations": 2000,
+          "mc_seed": 284,
+          "observed_difference": -0.114631,
+          "p_value_exact_poisson_binomial": 1.0,
+          "p_value_mc_one_sided_fixed_better": 1.0,
+          "random_baseline_ci95": [
+            0.360549,
+            0.408883
+          ],
+          "random_baseline_exact_mean_rate": 0.384682,
+          "random_baseline_mean_rate": 0.385042,
+          "window_draws": 1531
+        },
+        "LONG": {
+          "comparison_label": "C_RAW vs A_INDEPENDENT_RANDOM (full budget B_d)",
+          "effect_direction": "fixed_below_random",
+          "fixed_success_rate": 0.274,
+          "mc_iterations": 2000,
+          "mc_seed": 284,
+          "observed_difference": -0.11772,
+          "p_value_exact_poisson_binomial": 1.0,
+          "p_value_mc_one_sided_fixed_better": 1.0,
+          "random_baseline_ci95": [
+            0.367333,
+            0.416
+          ],
+          "random_baseline_exact_mean_rate": 0.391334,
+          "random_baseline_mean_rate": 0.39172,
+          "window_draws": 1500
+        },
+        "MID": {
+          "comparison_label": "C_RAW vs A_INDEPENDENT_RANDOM (full budget B_d)",
+          "effect_direction": "fixed_below_random",
+          "fixed_success_rate": 0.292,
+          "mc_iterations": 2000,
+          "mc_seed": 284,
+          "observed_difference": -0.103129,
+          "p_value_exact_poisson_binomial": 0.99999872,
+          "p_value_mc_one_sided_fixed_better": 1.0,
+          "random_baseline_ci95": [
+            0.354,
+            0.438
+          ],
+          "random_baseline_exact_mean_rate": 0.394804,
+          "random_baseline_mean_rate": 0.395129,
+          "window_draws": 500
+        },
+        "SHORT": {
+          "comparison_label": "C_RAW vs A_INDEPENDENT_RANDOM (full budget B_d)",
+          "effect_direction": "fixed_below_random",
+          "fixed_success_rate": 0.24,
+          "mc_iterations": 2000,
+          "mc_seed": 284,
+          "observed_difference": -0.152965,
+          "p_value_exact_poisson_binomial": 0.99912726,
+          "p_value_mc_one_sided_fixed_better": 1.0,
+          "random_baseline_ci95": [
+            0.3,
+            0.49
+          ],
+          "random_baseline_exact_mean_rate": 0.392743,
+          "random_baseline_mean_rate": 0.392965,
+          "window_draws": 100
+        }
+      }
+    },
+    "c_vs_b": {
+      "method": "paired; C vs full-budget diversified-random baseline",
+      "results_by_window": {
+        "ALL": {
+          "comparison_label": "C_RAW vs B_DIVERSIFIED_RANDOM (full budget B_d)",
+          "effect_direction": "fixed_below_random",
+          "fixed_success_rate": 0.270411,
+          "mc_iterations": 2000,
+          "mc_seed": 286,
+          "observed_difference": -0.121312,
+          "p_value_exact_poisson_binomial": 1.0,
+          "p_value_mc_one_sided_fixed_better": 1.0,
+          "random_baseline_ci95": [
+            0.367734,
+            0.416721
+          ],
+          "random_baseline_exact_mean_rate": 0.391584,
+          "random_baseline_mean_rate": 0.391723,
+          "window_draws": 1531
+        },
+        "LONG": {
+          "comparison_label": "C_RAW vs B_DIVERSIFIED_RANDOM (full budget B_d)",
+          "effect_direction": "fixed_below_random",
+          "fixed_success_rate": 0.274,
+          "mc_iterations": 2000,
+          "mc_seed": 286,
+          "observed_difference": -0.124586,
+          "p_value_exact_poisson_binomial": 1.0,
+          "p_value_mc_one_sided_fixed_better": 1.0,
+          "random_baseline_ci95": [
+            0.374,
+            0.424
+          ],
+          "random_baseline_exact_mean_rate": 0.398463,
+          "random_baseline_mean_rate": 0.398586,
+          "window_draws": 1500
+        },
+        "MID": {
+          "comparison_label": "C_RAW vs B_DIVERSIFIED_RANDOM (full budget B_d)",
+          "effect_direction": "fixed_below_random",
+          "fixed_success_rate": 0.292,
+          "mc_iterations": 2000,
+          "mc_seed": 286,
+          "observed_difference": -0.108751,
+          "p_value_exact_poisson_binomial": 0.9999997,
+          "p_value_mc_one_sided_fixed_better": 1.0,
+          "random_baseline_ci95": [
+            0.358,
+            0.444
+          ],
+          "random_baseline_exact_mean_rate": 0.40134,
+          "random_baseline_mean_rate": 0.400751,
+          "window_draws": 500
+        },
+        "SHORT": {
+          "comparison_label": "C_RAW vs B_DIVERSIFIED_RANDOM (full budget B_d)",
+          "effect_direction": "fixed_below_random",
+          "fixed_success_rate": 0.24,
+          "mc_iterations": 2000,
+          "mc_seed": 286,
+          "observed_difference": -0.157615,
+          "p_value_exact_poisson_binomial": 0.99942922,
+          "p_value_mc_one_sided_fixed_better": 1.0,
+          "random_baseline_ci95": [
+            0.3,
+            0.5
+          ],
+          "random_baseline_exact_mean_rate": 0.399025,
+          "random_baseline_mean_rate": 0.397615,
+          "window_draws": 100
+        }
+      }
+    },
+    "d_vs_b": {
+      "method": "paired; D vs diversified-random baseline matched at U_d (B success prob estimated by resampling)",
+      "results_by_window": {
+        "ALL": {
+          "comparison_label": "D_DEDUP vs B_DIVERSIFIED_RANDOM (budget-matched U_d)",
+          "effect_direction": "fixed_below_random",
+          "fixed_success_rate": 0.270411,
+          "mc_iterations": 2000,
+          "mc_seed": 285,
+          "observed_difference": -0.019899,
+          "p_value_exact_poisson_binomial": 0.95553212,
+          "p_value_mc_one_sided_fixed_better": 0.95902,
+          "random_baseline_ci95": [
+            0.267799,
+            0.312214
+          ],
+          "random_baseline_exact_mean_rate": 0.29002,
+          "random_baseline_mean_rate": 0.290311,
+          "window_draws": 1531
+        },
+        "LONG": {
+          "comparison_label": "D_DEDUP vs B_DIVERSIFIED_RANDOM (budget-matched U_d)",
+          "effect_direction": "fixed_below_random",
+          "fixed_success_rate": 0.274,
+          "mc_iterations": 2000,
+          "mc_seed": 285,
+          "observed_difference": -0.021003,
+          "p_value_exact_poisson_binomial": 0.96138029,
+          "p_value_mc_one_sided_fixed_better": 0.966517,
+          "random_baseline_ci95": [
+            0.272,
+            0.317333
+          ],
+          "random_baseline_exact_mean_rate": 0.294728,
+          "random_baseline_mean_rate": 0.295003,
+          "window_draws": 1500
+        },
+        "MID": {
+          "comparison_label": "D_DEDUP vs B_DIVERSIFIED_RANDOM (budget-matched U_d)",
+          "effect_direction": "fixed_below_random",
+          "fixed_success_rate": 0.292,
+          "mc_iterations": 2000,
+          "mc_seed": 285,
+          "observed_difference": -0.005409,
+          "p_value_exact_poisson_binomial": 0.58847551,
+          "p_value_mc_one_sided_fixed_better": 0.621189,
+          "random_baseline_ci95": [
+            0.258,
+            0.338
+          ],
+          "random_baseline_exact_mean_rate": 0.29656,
+          "random_baseline_mean_rate": 0.297409,
+          "window_draws": 500
+        },
+        "SHORT": {
+          "comparison_label": "D_DEDUP vs B_DIVERSIFIED_RANDOM (budget-matched U_d)",
+          "effect_direction": "fixed_below_random",
+          "fixed_success_rate": 0.24,
+          "mc_iterations": 2000,
+          "mc_seed": 285,
+          "observed_difference": -0.050415,
+          "p_value_exact_poisson_binomial": 0.86303061,
+          "p_value_mc_one_sided_fixed_better": 0.901549,
+          "random_baseline_ci95": [
+            0.21,
+            0.38
+          ],
+          "random_baseline_exact_mean_rate": 0.28955,
+          "random_baseline_mean_rate": 0.290415,
+          "window_draws": 100
+        }
+      }
+    },
+    "d_vs_c": {
+      "method": "descriptive; success identical by construction",
+      "results_by_window": {
+        "ALL": {
+          "C_duplicate_rate": 0.307973,
+          "C_mean_produced_budget": 15.548008,
+          "C_success_rate": 0.270411,
+          "D_duplicate_rate": 0.0,
+          "D_mean_produced_budget": 10.759634,
+          "D_success_rate": 0.270411,
+          "mean_budget_saved_by_dedup": 4.788374,
+          "method": "descriptive (D is the unique subset of C; removing exact duplicates cannot change the winning set)",
+          "success_identical_by_construction": true,
+          "success_rate_difference": 0.0,
+          "window_draws": 1531
+        },
+        "LONG": {
+          "C_duplicate_rate": 0.308719,
+          "C_mean_produced_budget": 15.826667,
+          "C_success_rate": 0.274,
+          "D_duplicate_rate": 0.0,
+          "D_mean_produced_budget": 10.940667,
+          "D_success_rate": 0.274,
+          "mean_budget_saved_by_dedup": 4.886,
+          "method": "descriptive (D is the unique subset of C; removing exact duplicates cannot change the winning set)",
+          "success_identical_by_construction": true,
+          "success_rate_difference": 0.0,
+          "window_draws": 1500
+        },
+        "MID": {
+          "C_duplicate_rate": 0.308463,
+          "C_mean_produced_budget": 15.976,
+          "C_success_rate": 0.292,
+          "D_duplicate_rate": 0.0,
+          "D_mean_produced_budget": 11.048,
+          "D_success_rate": 0.292,
+          "mean_budget_saved_by_dedup": 4.928,
+          "method": "descriptive (D is the unique subset of C; removing exact duplicates cannot change the winning set)",
+          "success_identical_by_construction": true,
+          "success_rate_difference": 0.0,
+          "window_draws": 500
+        },
+        "SHORT": {
+          "C_duplicate_rate": 0.321159,
+          "C_mean_produced_budget": 15.88,
+          "C_success_rate": 0.24,
+          "D_duplicate_rate": 0.0,
+          "D_mean_produced_budget": 10.78,
+          "D_success_rate": 0.24,
+          "mean_budget_saved_by_dedup": 5.1,
+          "method": "descriptive (D is the unique subset of C; removing exact duplicates cannot change the winning set)",
+          "success_identical_by_construction": true,
+          "success_rate_difference": 0.0,
+          "window_draws": 100
+        }
+      }
+    }
+  },
+  "source_main_sha": "8b62b358aef3e9fce8962054c166e80c1944d00c",
+  "statistical_method_and_limitations": {
+    "diversified_success_resamples_per_draw": 400,
+    "limitations": [
+      "Retrospective replay over historical draws; NOT prospective / out-of-sample.",
+      "Deduplication cannot raise draw-level success vs the raw portfolio (D's winning set equals C's); any gain is budget/duplicate-exposure only.",
+      "Diversified-random success probability is estimated (resampling), not closed-form; D-vs-B / C-vs-B are secondary.",
+      "Source prize-tier mapping is MANUAL_VERIFICATION_REQUIRED (P271B/C).",
+      "21 replay target_draws excluded as non-canonical (no canonical outcome)."
+    ],
+    "mc_iterations": 2000,
+    "not_a_betting_recommendation": true,
+    "primary_test": "seed-fixed Bernoulli Monte Carlo (paired by draw) + exact Poisson-binomial cross-check; one-sided (fixed > random)"
+  },
+  "target_draw_universe": {
+    "canonical_view_draws": 2117,
+    "definition": "BIG_LOTTO strategy_prediction_replays target_draws that join to draws_big_lotto_canonical_main (canonical 6/49 main draws)",
+    "deterministic_source_table": "strategy_prediction_replays",
+    "eligible_draw_count": 1531,
+    "excluded_non_canonical_count": 21,
+    "excluded_non_canonical_sample": [
+      "102000043",
+      "102000098",
+      "103000033",
+      "103000070",
+      "104000003",
+      "104000029",
+      "104000106",
+      "106000010",
+      "107000086",
+      "107000101",
+      "110000073",
+      "111000010",
+      "111000030",
+      "111000045",
+      "112000007"
+    ],
+    "exclusion_reason": "NON_CANONICAL_OUTCOME_UNRESOLVABLE (target_draw not in draws_big_lotto_canonical_main)",
+    "outcome_source_view": "draws_big_lotto_canonical_main",
+    "replay_distinct_target_draws": 1552
+  },
+  "task_id": "P282B",
+  "task_name": "BIG649_DEDUPLICATED_PORTFOLIO_REPLAY_AND_DIVERSIFIED_RANDOM_FALSIFICATION",
+  "ticket_canonicalization_rules": "sorted tuple of 6 distinct ints in [1,49]; malformed tickets raise; identity = canonical content",
+  "ticket_replacement_count": 0,
+  "underfilled_policy": "Group D underfilled by removed exact duplicates; Group B underfilled if the diversity constraint cannot be satisfied within max_attempts. Underfilled draws are reported and never silently repaired or backfilled.",
+  "window_definition": "most-recent N eligible draws (by CAST(draw AS INTEGER) DESC)"
+}

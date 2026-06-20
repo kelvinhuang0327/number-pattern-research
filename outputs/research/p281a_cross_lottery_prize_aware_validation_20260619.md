@@ -8,7 +8,7 @@
 - origin_main: `3fdc07fd2e27e64460c134acc433b5cfe0dd2da3`
 - scoring_version: `prize_aware_v1` / source_verification_status: `MANUAL_VERIFICATION_REQUIRED`
 - frozen cells: **36** (DAILY_539, BIG_LOTTO, POWER_LOTTO); inferential windows: 100, 500, 1500 (+ ALL_AVAILABLE supplementary)
-- canonical_payload_digest: `064c447d4558deb9645ea316d7a595d6102b7528b97d0787b5bc537a93596c60`
+- canonical_payload_digest: `4031800e030fd7ecda253cbf31f465a2edc96f8b960fe82e92a08e2d94a6934d`
 
 ## Reconciliation with P273A
 
@@ -116,11 +116,11 @@
 
 ## Cross-lottery summary
 
-| lottery | cells | mean prize−legacy Δ (LONG) | missing 2nd-zone rows | ranking changes |
-|---|---:|---:|---:|:--:|
-| DAILY_539 | 15 | +0.16742 | 0 | yes |
-| BIG_LOTTO | 11 | +0.01606 | 0 | yes |
-| POWER_LOTTO | 10 | +0.07568 | 27104 | yes |
+| lottery | cells | mean prize−legacy Δ (LONG) | missing 2nd-zone rows | top strategy changed? | full order changed? |
+|---|---:|---:|---:|:--:|:--:|
+| DAILY_539 | 15 | +0.16742 | 0 | no | yes |
+| BIG_LOTTO | 11 | +0.01606 | 0 | no | yes |
+| POWER_LOTTO | 10 | +0.07568 | 27104 | no | yes |
 
 - success-def differs most from M3+: **DAILY_539**
 - most affected by missing second-zone: **POWER_LOTTO**

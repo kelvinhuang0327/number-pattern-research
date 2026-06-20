@@ -376,3 +376,87 @@ def test_committed_artifact_matches_recompute(result):
     on_disk = json.loads(artifact.read_text(encoding="utf-8"))
     assert on_disk["canonical_payload_digest"] == result["canonical_payload_digest"]
     assert on_disk["final_classification"] == result["final_classification"]
+
+
+# --------------------------------------------------------------------------- #
+# Semantic ranking-change tests (P281C remediation)                           #
+# --------------------------------------------------------------------------- #
+
+def _make_rank_summary(order_prize, order_legacy):
+    """Simulate the per_lottery block produced by cross_lottery_summary for one
+    lottery, given pre-sorted strategy-id lists. Calls the actual production
+    function logic rather than duplicating it, so we test the real field names."""
+    # Build minimal cell + long-window stubs that reproduce the ranking lists.
+    cells = []
+    all_strategies = list(dict.fromkeys(order_prize + order_legacy))
+    prize_rank = {s: i for i, s in enumerate(order_prize)}
+    legacy_rank = {s: i for i, s in enumerate(order_legacy)}
+    for s in all_strategies:
+        # obs_rate drives prize-aware rank; legacy_m3plus_rate drives legacy rank.
+        # Higher index -> lower rank (farther from 0); we invert to get a rate.
+        n = len(all_strategies)
+        obs = (n - prize_rank.get(s, n)) / n
+        leg = (n - legacy_rank.get(s, n)) / n
+        cells.append({
+            "lottery_type": "DAILY_539",
+            "strategy_id": s,
+            "support": {"missing_second_zone_rows": 0},
+            "windows": [{
+                "window_label": "LONG",
+                "observed_success_rate": obs,
+                "legacy_m3plus_success_rate": leg,
+                "prize_aware_minus_legacy_delta": obs - leg,
+            }],
+        })
+    summary = P281.cross_lottery_summary(cells)
+    return summary["per_lottery"]["DAILY_539"]
+
+
+def test_ranking_top_unchanged_full_order_changed():
+    """Same top strategy but lower positions differ:
+    top_change must be False; full_order_change must be True."""
+    prize_order = ["A", "B", "C"]
+    legacy_order = ["A", "C", "B"]   # A is still top, B and C swap
+    p = _make_rank_summary(prize_order, legacy_order)
+    assert p["ranking_top_strategy_prize_aware"] == "A"
+    assert p["ranking_top_strategy_legacy_m3plus"] == "A"
+    assert p["ranking_top_changes_prize_vs_legacy"] is False
+    assert p["ranking_full_order_changes_prize_vs_legacy"] is True
+
+
+def test_ranking_top_changed():
+    """Different top strategy: both top_change and full_order_change must be True."""
+    prize_order = ["B", "A", "C"]
+    legacy_order = ["A", "B", "C"]   # A leads in legacy, B leads in prize-aware
+    p = _make_rank_summary(prize_order, legacy_order)
+    assert p["ranking_top_strategy_prize_aware"] == "B"
+    assert p["ranking_top_strategy_legacy_m3plus"] == "A"
+    assert p["ranking_top_changes_prize_vs_legacy"] is True
+    assert p["ranking_full_order_changes_prize_vs_legacy"] is True
+
+
+def test_ranking_identical():
+    """Identical rankings: both top_change and full_order_change must be False."""
+    same_order = ["A", "B", "C"]
+    p = _make_rank_summary(same_order, same_order)
+    assert p["ranking_top_strategy_prize_aware"] == "A"
+    assert p["ranking_top_strategy_legacy_m3plus"] == "A"
+    assert p["ranking_top_changes_prize_vs_legacy"] is False
+    assert p["ranking_full_order_changes_prize_vs_legacy"] is False
+
+
+def test_ranking_top_flag_equals_top_strategy_field_comparison(result):
+    """Invariant: for every lottery in the artifact, ranking_top_changes_prize_vs_legacy
+    must equal (ranking_top_strategy_prize_aware != ranking_top_strategy_legacy_m3plus).
+    This test is DB-gated (runs with the full computed result)."""
+    for lt, p in result["cross_lottery_summary"]["per_lottery"].items():
+        top_p = p["ranking_top_strategy_prize_aware"]
+        top_l = p["ranking_top_strategy_legacy_m3plus"]
+        if top_p is not None and top_l is not None:
+            expected = top_p != top_l
+        else:
+            expected = False
+        assert p["ranking_top_changes_prize_vs_legacy"] == expected, (
+            f"{lt}: top_change flag {p['ranking_top_changes_prize_vs_legacy']!r} "
+            f"!= ({top_p!r} != {top_l!r}) = {expected!r}"
+        )

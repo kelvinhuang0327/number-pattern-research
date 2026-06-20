@@ -766,6 +766,11 @@ def cross_lottery_summary(cells: list) -> dict:
             missing_second_zone += c["support"]["missing_second_zone_rows"]
         order_prize = [s for _, s in sorted(rank_prize, reverse=True)]
         order_legacy = [s for _, s in sorted(rank_legacy, reverse=True)]
+        # Compare only the #1 (top) strategy between prize-aware and legacy.
+        # A change in lower-rank positions does NOT mean the top changed.
+        top_prize = order_prize[0] if order_prize else None
+        top_legacy = order_legacy[0] if order_legacy else None
+        top_changed = (top_prize != top_legacy) if (top_prize and top_legacy) else False
         per_lottery[lt] = {
             "cells": len(group),
             "mean_prize_aware_minus_legacy_delta_long": (
@@ -773,9 +778,10 @@ def cross_lottery_summary(cells: list) -> dict:
             "max_prize_aware_minus_legacy_delta_long": (
                 _r(max(deltas)) if deltas else None),
             "total_missing_second_zone_rows": missing_second_zone,
-            "ranking_top_changes_prize_vs_legacy": order_prize != order_legacy,
-            "ranking_top_strategy_prize_aware": order_prize[0] if order_prize else None,
-            "ranking_top_strategy_legacy_m3plus": order_legacy[0] if order_legacy else None,
+            "ranking_top_changes_prize_vs_legacy": top_changed,
+            "ranking_full_order_changes_prize_vs_legacy": order_prize != order_legacy,
+            "ranking_top_strategy_prize_aware": top_prize,
+            "ranking_top_strategy_legacy_m3plus": top_legacy,
         }
     deltas_named = [(per_lottery[lt]["mean_prize_aware_minus_legacy_delta_long"], lt)
                     for lt in LOTTERY_TYPES
@@ -789,11 +795,12 @@ def cross_lottery_summary(cells: list) -> dict:
         "lottery_success_def_differs_most_from_m3plus": most_diff,
         "lottery_most_affected_by_missing_second_zone": most_second_zone_loss,
         "ranking_staleness_note": (
-            "A cell's prize-aware ranking can differ from its legacy M3+ ranking "
-            "where lower-tier wins (M2+special / M1+second / M2) are material; any "
-            "prior ranking built on M3+-only scoring is potentially stale for that "
-            "lottery. This is descriptive only — no strategy is re-ranked for "
-            "deployment here."),
+            "ranking_top_changes_prize_vs_legacy = prize_aware_top_strategy != "
+            "legacy_top_strategy (the #1 position only). "
+            "ranking_full_order_changes_prize_vs_legacy = full ranked list differs "
+            "(lower positions may differ even when the top is identical). "
+            "Lower-rank movement does NOT imply the top strategy changed. "
+            "Descriptive only — no strategy is re-ranked for deployment here."),
         "big_runner_note": (
             "BIG already uses M2+special (P280AT). P281A does not change the BIG "
             "NULL/no-edge conclusion; the BIG runner remains no-edge / no-claim."),
@@ -1147,14 +1154,15 @@ def render_markdown(result: dict) -> str:
     cs = result["cross_lottery_summary"]
     A("")
     A("| lottery | cells | mean prize−legacy Δ (LONG) | missing 2nd-zone rows | "
-      "ranking changes |")
-    A("|---|---:|---:|---:|:--:|")
+      "top strategy changed? | full order changed? |")
+    A("|---|---:|---:|---:|:--:|:--:|")
     for lt in result["meta"]["lotteries"]:
         p = cs["per_lottery"][lt]
         md = (f"{p['mean_prize_aware_minus_legacy_delta_long']:+.5f}"
               if p["mean_prize_aware_minus_legacy_delta_long"] is not None else "—")
         A(f"| {lt} | {p['cells']} | {md} | {p['total_missing_second_zone_rows']} | "
-          f"{'yes' if p['ranking_top_changes_prize_vs_legacy'] else 'no'} |")
+          f"{'yes' if p['ranking_top_changes_prize_vs_legacy'] else 'no'} | "
+          f"{'yes' if p['ranking_full_order_changes_prize_vs_legacy'] else 'no'} |")
     A("")
     A(f"- success-def differs most from M3+: **{cs['lottery_success_def_differs_most_from_m3plus']}**")
     A(f"- most affected by missing second-zone: **{cs['lottery_most_affected_by_missing_second_zone']}**")

@@ -5,7 +5,7 @@
     "scoring_version": "prize_aware_v1",
     "adapter_version": "prize_aware_adapter_v1",
     "source_verification_status": "MANUAL_VERIFICATION_REQUIRED",
-    "generated_at": "2026-06-19T15:28:56.552648+00:00",
+    "generated_at": "2026-06-20T02:49:25.335282+00:00",
     "generated_date_fixed": "2026-06-19",
     "branch": "task/p281a-cross-lottery-prize-aware-validation",
     "origin_main": "3fdc07fd2e27e64460c134acc433b5cfe0dd2da3",
@@ -445,8 +445,8 @@
     },
     "single_snapshot": true,
     "single_connection": true,
-    "transaction_start_at": "2026-06-19T15:28:52.676099+00:00",
-    "transaction_end_at": "2026-06-19T15:28:56.552543+00:00",
+    "transaction_start_at": "2026-06-20T02:49:19.351634+00:00",
+    "transaction_end_at": "2026-06-20T02:49:25.335137+00:00",
     "permitted_tables": [
       "draws",
       "strategy_prediction_replays"
@@ -17028,7 +17028,8 @@
         "mean_prize_aware_minus_legacy_delta_long": 0.167422222222,
         "max_prize_aware_minus_legacy_delta_long": 0.490666666667,
         "total_missing_second_zone_rows": 0,
-        "ranking_top_changes_prize_vs_legacy": true,
+        "ranking_top_changes_prize_vs_legacy": false,
+        "ranking_full_order_changes_prize_vs_legacy": true,
         "ranking_top_strategy_prize_aware": "daily539_f4cold_5bet",
         "ranking_top_strategy_legacy_m3plus": "daily539_f4cold_5bet"
       },
@@ -17037,7 +17038,8 @@
         "mean_prize_aware_minus_legacy_delta_long": 0.016060606061,
         "max_prize_aware_minus_legacy_delta_long": 0.044,
         "total_missing_second_zone_rows": 0,
-        "ranking_top_changes_prize_vs_legacy": true,
+        "ranking_top_changes_prize_vs_legacy": false,
+        "ranking_full_order_changes_prize_vs_legacy": true,
         "ranking_top_strategy_prize_aware": "biglotto_ts3_markov_4bet_w30",
         "ranking_top_strategy_legacy_m3plus": "biglotto_ts3_markov_4bet_w30"
       },
@@ -17046,14 +17048,15 @@
         "mean_prize_aware_minus_legacy_delta_long": 0.075675783856,
         "max_prize_aware_minus_legacy_delta_long": 0.084,
         "total_missing_second_zone_rows": 27104,
-        "ranking_top_changes_prize_vs_legacy": true,
+        "ranking_top_changes_prize_vs_legacy": false,
+        "ranking_full_order_changes_prize_vs_legacy": true,
         "ranking_top_strategy_prize_aware": "pp3_freqort_4bet",
         "ranking_top_strategy_legacy_m3plus": "pp3_freqort_4bet"
       }
     },
     "lottery_success_def_differs_most_from_m3plus": "DAILY_539",
     "lottery_most_affected_by_missing_second_zone": "POWER_LOTTO",
-    "ranking_staleness_note": "A cell's prize-aware ranking can differ from its legacy M3+ ranking where lower-tier wins (M2+special / M1+second / M2) are material; any prior ranking built on M3+-only scoring is potentially stale for that lottery. This is descriptive only — no strategy is re-ranked for deployment here.",
+    "ranking_staleness_note": "ranking_top_changes_prize_vs_legacy = prize_aware_top_strategy != legacy_top_strategy (the #1 position only). ranking_full_order_changes_prize_vs_legacy = full ranked list differs (lower positions may differ even when the top is identical). Lower-rank movement does NOT imply the top strategy changed. Descriptive only — no strategy is re-ranked for deployment here.",
     "big_runner_note": "BIG already uses M2+special (P280AT). P281A does not change the BIG NULL/no-edge conclusion; the BIG runner remains no-edge / no-claim.",
     "power_runner_note": "POWER ranking should be treated as BLOCKED pending adequate predicted second-zone support wherever NO_SECOND_ZONE_SUPPORT / heavy missing-second-zone exclusion is observed.",
     "daily539_note": "DAILY_539 is validatable with the M2+ (>=2 main) baseline; it carries the most lower-tier contribution."
@@ -17066,5 +17069,5 @@
     "all_available window is descriptive only and excluded from the Bonferroni family."
   ],
   "next_recommended_research_step": "Independent audit of this validation PR; then, only if observation candidates exist, a separately-authorized prospective / out-of-sample validation. POWER strategy ranking should remain blocked pending a separate predicted-second-zone data-support task. No promotion, activation, or publication without explicit Owner authorization.",
-  "canonical_payload_digest": "064c447d4558deb9645ea316d7a595d6102b7528b97d0787b5bc537a93596c60"
+  "canonical_payload_digest": "4031800e030fd7ecda253cbf31f465a2edc96f8b960fe82e92a08e2d94a6934d"
 }

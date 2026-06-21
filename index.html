@@ -651,6 +651,10 @@
                     <i data-lucide="layout-list" class="icon"></i>
                     <span>回放總覽</span>
                 </button>
+                <button class="nav-btn" data-section="big649-measurement">
+                    <i data-lucide="ruler" class="icon"></i>
+                    <span>大樂透命中量測</span>
+                </button>
             </nav>
         </div>
     </header>
@@ -3200,6 +3204,212 @@
           </div>
         </section>
         <!-- ===== END P259A ===== -->
+
+        <!-- ===== BIG649 MEASUREMENT (read-only, artifact-backed) ===== -->
+        <section id="big649-measurement-section" class="section">
+          <div class="section-header">
+            <h2>📐 大樂透命中量測 <span style="font-size:0.7em;color:#8b949e;font-weight:400">BIG649 Hit-Distribution &amp; Redundancy Measurement (read-only)</span></h2>
+            <p>大樂透 11 個凍結回放策略的歷史命中分布、特別號 / 局部 prize-aware、覆蓋與重複票、以及兩兩策略交疊度量測 — 來源為已提交量測產物（frozen contract <code>big649_measurement_contract_v1</code>），唯讀、按字典序排列、不排名。</p>
+          </div>
+          <div class="section-content">
+
+            <style>
+              #big649m-window-tabs .big649m-win-btn, #big649m-scope-tabs .big649m-scope-btn{
+                background:#161b22;border:1px solid #30363d;color:#c9d1d9;border-radius:4px;
+                padding:4px 10px;font-size:12px;cursor:pointer;margin:2px;
+              }
+              #big649m-window-tabs .big649m-win-btn.active, #big649m-scope-tabs .big649m-scope-btn.active{
+                border-color:#1f6feb;color:#58a6ff;font-weight:600;
+              }
+              #big649-measurement-section #big649m-table th, #big649-measurement-section #big649m-table td{
+                border-bottom:1px solid #21262d;
+              }
+            </style>
+
+            <!-- Safety / local historical measurement banner (non-promotional) -->
+            <div id="big649m-disclaimer" style="background:rgba(243,156,18,.10);border:1px solid #f39c12;border-radius:6px;padding:10px 16px;margin-bottom:16px;font-size:12px;color:#f0c040;line-height:1.8">
+              ⚠️ <b>本地歷史量測聲明：</b>本頁為本地歷史回放量測 (local historical measurement)，<b>非預測、非推薦、非候選、非下注建議</b>，不含隨機基準、p 值、賠率、ROI 或官方獎金推斷；策略與配對皆按字典序排列、不排名。<br>
+              ℹ️ 全部歷史窗格 (REFERENCE_ALL_ELIGIBLE) <b>僅供參考</b>，不得用於策略晉級、挑選或部署。<b>票數分母</b> (VALID_SUBMITTED_TICKET_SLOTS) 與 <b>期數分母</b> (COVERED_TARGETS_ONLY) 不可混用；缺失 target 不視為 0，顯示 <b>N/A</b>。<code>EXACT_PRIZE_TIER = PARTIALLY_SUPPORTED</code>；<code>PAYOUT_EV_ROI = UNSUPPORTED</code>。
+            </div>
+
+            <!-- Window selector -->
+            <div id="big649m-window-tabs" style="display:flex;gap:4px;flex-wrap:wrap;align-items:center;margin-bottom:10px">
+              <span style="font-size:12px;color:#8b949e;margin-right:4px">觀測窗格：</span>
+              <button class="big649m-win-btn active" data-window="all_reference">全部歷史（僅參考）</button>
+              <button class="big649m-win-btn" data-window="recent_750">最近 750 期</button>
+              <button class="big649m-win-btn" data-window="recent_300">最近 300 期</button>
+              <button class="big649m-win-btn" data-window="recent_50">最近 50 期</button>
+            </div>
+
+            <!-- Metric scope selector -->
+            <div id="big649m-scope-tabs" style="display:flex;gap:4px;flex-wrap:wrap;align-items:center;margin-bottom:14px">
+              <span style="font-size:12px;color:#8b949e;margin-right:4px">量測面向：</span>
+              <button class="big649m-scope-btn active" data-scope="ticket_slot">每票命中分布 (M0–M6 / M1+–M6+)</button>
+              <button class="big649m-scope-btn" data-scope="target_level">每期任一票命中</button>
+              <button class="big649m-scope-btn" data-scope="prize_aware">特別號 · M2+特別號 · LOCAL_PRIZE_AWARE_V1</button>
+              <button class="big649m-scope-btn" data-scope="redundancy">覆蓋率 · 缺失 target · 重複票</button>
+              <button class="big649m-scope-btn" data-scope="pairwise_overlap">兩策略交疊度</button>
+            </div>
+
+            <!-- Window info + endpoint-support badges -->
+            <div id="big649m-window-info" style="font-size:12px;color:#8b949e;margin-bottom:6px"></div>
+            <div id="big649m-support-badges" style="font-size:11px;margin-bottom:12px;line-height:2"></div>
+
+            <!-- Measurement table -->
+            <div style="overflow-x:auto">
+              <table id="big649m-table" style="width:100%;border-collapse:collapse;font-size:12px;white-space:nowrap">
+                <thead id="big649m-thead"></thead>
+                <tbody id="big649m-tbody"></tbody>
+              </table>
+            </div>
+
+            <!-- Load / error / empty states -->
+            <div id="big649m-empty" style="display:none;text-align:center;padding:20px;color:#8b949e;font-size:13px">無資料 (N/A)</div>
+            <div id="big649m-error" style="display:none;color:#c0392b;font-size:12px;padding:8px 0"></div>
+            <div id="big649m-loading" style="text-align:center;padding:16px;color:#8b949e;font-size:13px">⏳ 載入中…</div>
+
+            <!-- Footnote -->
+            <div style="margin-top:14px;font-size:11px;color:#6e7681;line-height:1.7">
+              ℹ️ 量測定義：<b>special_hit</b> = 實際特別號 ∈ 預測 6 主號；<b>LOCAL_PRIZE_AWARE_V1</b> = 主號命中 ≥ 3 <b>或</b>（主號命中 = 2 且特別號命中）。票面分母 = 有效投注票格 (VALID_SUBMITTED_TICKET_SLOTS)；期面分母 = 已覆蓋期 (COVERED_TARGETS_ONLY)；兩者不可混用。缺失 target 維持缺失（顯示 N/A），不回填、不視為 0。本頁為唯讀歷史量測，非排名、非推薦、非下注建議。
+            </div>
+          </div>
+
+          <script>
+          (function () {
+            var SEC = 'big649-measurement';
+            var ROUTE = '/api/replay/big649-measurement-export';
+            var state = { window: 'all_reference', scope: 'ticket_slot' };
+            var loaded = false;
+            function el(id) { return document.getElementById(id); }
+            function esc(s) {
+              return String(s == null ? '' : s).replace(/[&<>"]/g, function (c) {
+                return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c];
+              });
+            }
+            function apiBase() {
+              return (typeof window !== 'undefined' && window.API_BASE ? String(window.API_BASE) : '').replace(/\/$/, '');
+            }
+            // N/A for null / missing; never coerce missing to 0.
+            function num(v) { return (v == null) ? 'N/A' : (typeof v === 'number' ? v.toLocaleString() : esc(v)); }
+            function pct(v) { return (v == null) ? 'N/A' : (v * 100).toFixed(2) + '%'; }
+            function setLoading(on) { var n = el('big649m-loading'); if (n) n.style.display = on ? '' : 'none'; }
+            function setError(msg) { var e = el('big649m-error'); if (!e) return; e.style.display = msg ? '' : 'none'; if (msg) e.textContent = '載入失敗：' + msg; }
+            function setActive(containerId, cls, btn) {
+              var nodes = document.querySelectorAll('#' + containerId + ' .' + cls);
+              for (var i = 0; i < nodes.length; i++) nodes[i].classList.remove('active');
+              btn.classList.add('active');
+            }
+            function th(cols) {
+              return '<tr>' + cols.map(function (c) {
+                return '<th style="text-align:left;padding:5px 8px;color:#8b949e">' + c + '</th>';
+              }).join('') + '</tr>';
+            }
+            function td(v, align) {
+              return '<td style="padding:5px 8px' + (align ? (';text-align:' + align) : '') + '">' + v + '</td>';
+            }
+            function renderInfo(d) {
+              var w = d.window_definition || {};
+              var refOnly = w.is_reference_only ? ' · <b style="color:#f0c040">僅供參考</b>' : '';
+              var info = el('big649m-window-info');
+              if (info) info.innerHTML =
+                '窗格 ' + esc(d.window) + ' (' + esc(d.window_internal) + ')：選取規則 ' + esc(w.selection_rule) +
+                ' · target 數 ' + num(w.target_count) + ' · 範圍 ' + esc(w.oldest_target) + ' → ' + esc(w.newest_target) + refOnly;
+              var s = d.endpoint_support_status || {};
+              function badge(k) {
+                var v = s[k];
+                var col = v === 'SUPPORTED' ? '#3fb950' : (v === 'PARTIALLY_SUPPORTED' ? '#d29922' : '#8b949e');
+                return '<span style="border:1px solid ' + col + ';color:' + col + ';border-radius:4px;padding:1px 6px;margin-right:6px">' + esc(k) + '：' + esc(v) + '</span>';
+              }
+              var badges = el('big649m-support-badges');
+              if (badges) badges.innerHTML =
+                badge('MAIN_HIT_DISTRIBUTION_M0_M6') + badge('SPECIAL_HIT') + badge('M2_AND_SPECIAL') +
+                badge('LOCAL_PRIZE_AWARE_V1_ANY_WIN') + badge('EXACT_PRIZE_TIER') + badge('PAYOUT_EV_ROI');
+            }
+            function statusCell(stat) {
+              var col = stat === 'COMPLETE' ? '#3fb950' : '#d29922';
+              return '<span style="color:' + col + '">' + esc(stat) + '</span>';
+            }
+            function render(d) {
+              renderInfo(d);
+              var thead = el('big649m-thead'), tbody = el('big649m-tbody'), empty = el('big649m-empty');
+              if (!thead || !tbody) return;
+              var scope = d.metric_scope, rows = [];
+              if (scope === 'pairwise_overlap') {
+                thead.innerHTML = th(['策略 A | 策略 B', '共同 target', 'A 獨有', 'B 獨有', '完全重複票', '聯集票數', '主號 Jaccard 平均']);
+                (d.pairs || []).forEach(function (p) {
+                  var c = p.cell || {};
+                  rows.push('<tr>' + td(esc(p.pair_key)) + td(num(c.shared_covered_target_count), 'right') +
+                    td(num(c.a_only_covered_target_count), 'right') + td(num(c.b_only_covered_target_count), 'right') +
+                    td(num(c.exact_cross_strategy_duplicate_ticket_count), 'right') + td(num(c.pairwise_unique_ticket_union_count), 'right') +
+                    td(pct(c.main_number_set_jaccard_mean), 'right') + '</tr>');
+                });
+              } else if (scope === 'ticket_slot') {
+                thead.innerHTML = th(['策略', '票數分母', 'M0', 'M1', 'M2', 'M3', 'M4', 'M5', 'M6', 'M1+', 'M2+', 'M3+', '特別號', 'M2+特別', 'PRIZE_AWARE_V1']);
+                (d.strategy_order_lexical || []).forEach(function (sid) {
+                  var c = (d.by_strategy || {})[sid] || {};
+                  rows.push('<tr>' + td(esc(sid)) + td(num(c.submitted_valid_ticket_slots), 'right') +
+                    [0, 1, 2, 3, 4, 5, 6].map(function (k) { return td(num(c['m' + k + '_count']), 'right'); }).join('') +
+                    td(num(c.m1_plus_count), 'right') + td(num(c.m2_plus_count), 'right') + td(num(c.m3_plus_count), 'right') +
+                    td(num(c.special_hit_count), 'right') + td(num(c.m2_and_special_count), 'right') + td(num(c.local_prize_aware_v1_any_win_count), 'right') + '</tr>');
+                });
+              } else if (scope === 'target_level') {
+                thead.innerHTML = th(['策略', '期數分母', '覆蓋 target', '缺失 target', '覆蓋狀態', '任一票 M1+', 'M2+', 'M3+', 'M4+', 'M5+', 'M6+', '特別號期', 'M2+特別期', 'PRIZE_AWARE 期']);
+                (d.strategy_order_lexical || []).forEach(function (sid) {
+                  var c = (d.by_strategy || {})[sid] || {};
+                  rows.push('<tr>' + td(esc(sid)) + td(num(c.window_target_count), 'right') + td(num(c.covered_target_count), 'right') +
+                    td(num(c.missing_target_count), 'right') + td(statusCell(c.coverage_status)) +
+                    td(num(c.any_ticket_m1_plus_count), 'right') + td(num(c.any_ticket_m2_plus_count), 'right') + td(num(c.any_ticket_m3_plus_count), 'right') +
+                    td(num(c.any_ticket_m4_plus_count), 'right') + td(num(c.any_ticket_m5_plus_count), 'right') + td(num(c.any_ticket_m6_plus_count), 'right') +
+                    td(num(c.target_special_hit_any_ticket_count), 'right') + td(num(c.target_m2_and_special_any_ticket_count), 'right') + td(num(c.target_local_prize_aware_v1_any_win_count), 'right') + '</tr>');
+                });
+              } else if (scope === 'prize_aware') {
+                thead.innerHTML = th(['策略', '票面 特別號', '票面 M2+特別', '票面 PRIZE_AWARE', '期面 覆蓋', '期面 缺失', '期面 狀態', '期面 特別號', '期面 M2+特別', '期面 PRIZE_AWARE']);
+                (d.strategy_order_lexical || []).forEach(function (sid) {
+                  var c = (d.by_strategy || {})[sid] || {}; var t = c.ticket_slot_level || {}, g = c.target_any_ticket_level || {};
+                  rows.push('<tr>' + td(esc(sid)) + td(num(t.special_hit_count), 'right') + td(num(t.m2_and_special_count), 'right') + td(num(t.local_prize_aware_v1_any_win_count), 'right') +
+                    td(num(g.covered_target_count), 'right') + td(num(g.missing_target_count), 'right') + td(statusCell(g.coverage_status)) +
+                    td(num(g.target_special_hit_any_ticket_count), 'right') + td(num(g.target_m2_and_special_any_ticket_count), 'right') + td(num(g.target_local_prize_aware_v1_any_win_count), 'right') + '</tr>');
+                });
+              } else if (scope === 'redundancy') {
+                thead.innerHTML = th(['策略', '覆蓋 target', '投注票數', '期內不重複票', '重複票數', '重複比率', '含重複的 target', '全域不重複票']);
+                (d.strategy_order_lexical || []).forEach(function (sid) {
+                  var c = (d.by_strategy || {})[sid] || {};
+                  rows.push('<tr>' + td(esc(sid)) + td(num(c.covered_target_count), 'right') + td(num(c.submitted_ticket_slot_count), 'right') +
+                    td(num(c.within_target_unique_ticket_count), 'right') + td(num(c.duplicate_ticket_slot_count), 'right') + td(pct(c.duplicate_slot_ratio), 'right') +
+                    td(num(c.targets_with_one_or_more_duplicate_slots), 'right') + td(num(c.global_unique_exact_ticket_count), 'right') + '</tr>');
+                });
+              }
+              tbody.innerHTML = rows.join('');
+              if (empty) empty.style.display = rows.length ? 'none' : '';
+            }
+            function load() {
+              setLoading(true); setError(null);
+              var empty = el('big649m-empty'); if (empty) empty.style.display = 'none';
+              var url = apiBase() + ROUTE + '?window=' + encodeURIComponent(state.window) + '&metric_scope=' + encodeURIComponent(state.scope);
+              fetch(url)
+                .then(function (r) { if (!r.ok) throw new Error('HTTP ' + r.status); return r.json(); })
+                .then(function (d) { loaded = true; setLoading(false); render(d); })
+                .catch(function (e) { setLoading(false); setError(e.message); });
+            }
+            function wire() {
+              var wb = document.querySelectorAll('#big649m-window-tabs .big649m-win-btn');
+              for (var i = 0; i < wb.length; i++) {
+                (function (b) { b.addEventListener('click', function () { state.window = b.getAttribute('data-window'); setActive('big649m-window-tabs', 'big649m-win-btn', b); load(); }); })(wb[i]);
+              }
+              var sb = document.querySelectorAll('#big649m-scope-tabs .big649m-scope-btn');
+              for (var j = 0; j < sb.length; j++) {
+                (function (b) { b.addEventListener('click', function () { state.scope = b.getAttribute('data-scope'); setActive('big649m-scope-tabs', 'big649m-scope-btn', b); load(); }); })(sb[j]);
+              }
+              var nav = document.querySelectorAll('[data-section="' + SEC + '"]');
+              for (var k = 0; k < nav.length; k++) {
+                nav[k].addEventListener('click', function () { if (!loaded) load(); });
+              }
+            }
+            if (document.readyState !== 'loading') wire(); else document.addEventListener('DOMContentLoaded', wire);
+          })();
+          </script>
+        </section>
+        <!-- ===== END BIG649 MEASUREMENT ===== -->
 
         </div>
         </main>

@@ -75,6 +75,12 @@ _D3_STRATEGY_STATUS_AUDIT_PATH = (
     / "research"
     / "p258n_d3_strategy_status_audit_payload_20260609.json"
 )
+_BIG649_MEASUREMENT_EXPORT_PATH = (
+    Path(_api_root).parent
+    / "outputs"
+    / "research"
+    / "big649_measurement_export_20260621.json"
+)
 
 # Conservative disclaimer used by all replay endpoints
 _DISCLAIMER = (
@@ -1214,6 +1220,168 @@ async def get_d3_strategy_status_audit():
         raise
     except Exception as e:
         logger.exception("get_d3_strategy_status_audit failed")
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+# ─── BIG649 Measurement Export (read-only, artifact-backed) ──────────────────
+
+_BIG649_MEASUREMENT_EXPORT_ROUTE = "/api/replay/big649-measurement-export"
+# API window query value -> internal frozen window name.
+_BIG649_MEASUREMENT_WINDOWS = {
+    "all_reference": "REFERENCE_ALL_ELIGIBLE",
+    "recent_750": "RECENT_750",
+    "recent_300": "RECENT_300",
+    "recent_50": "RECENT_50",
+}
+# Metric scope query value -> measurement sub-payload key.
+_BIG649_MEASUREMENT_SCOPES = {
+    "ticket_slot": "per_strategy_ticket_level_distribution",
+    "target_level": "per_strategy_target_level_distribution",
+    "prize_aware": "per_strategy_prize_aware_distribution",
+    "redundancy": "per_strategy_redundancy_diagnostics",
+    "pairwise_overlap": "pairwise_ticket_overlap_diagnostics",
+}
+
+
+def _load_big649_measurement_export_payload() -> dict:
+    """Load the committed BIG649 measurement-export artifact without mutating state.
+
+    READ-ONLY: reads the committed artifact file only; performs NO DB query.
+    """
+    if not _BIG649_MEASUREMENT_EXPORT_PATH.exists():
+        raise HTTPException(
+            status_code=500,
+            detail=f"big649 measurement export artifact not found: {_BIG649_MEASUREMENT_EXPORT_PATH}",
+        )
+    try:
+        with _BIG649_MEASUREMENT_EXPORT_PATH.open("r", encoding="utf-8") as handle:
+            payload = json.load(handle)
+    except json.JSONDecodeError as exc:
+        raise HTTPException(
+            status_code=500,
+            detail=f"big649 measurement export artifact is invalid JSON: {exc}",
+        ) from exc
+    if not isinstance(payload, dict):
+        raise HTTPException(
+            status_code=500,
+            detail="big649 measurement export artifact must be a JSON object",
+        )
+    if not isinstance(payload.get("payload"), dict):
+        raise HTTPException(
+            status_code=500,
+            detail="big649 measurement export artifact missing 'payload' object",
+        )
+    return payload
+
+
+@router.get("/api/replay/big649-measurement-export")
+async def get_big649_measurement_export(
+    window: str = Query(
+        "all_reference",
+        description="Measurement window: all_reference | recent_750 | recent_300 | recent_50.",
+    ),
+    metric_scope: str = Query(
+        "ticket_slot",
+        description=(
+            "Metric scope: ticket_slot | target_level | prize_aware | redundancy "
+            "| pairwise_overlap."
+        ),
+    ),
+):
+    """
+    BIG649 read-only measurement export (artifact-backed).
+
+    Serves a window + metric-scope slice of the committed BIG649 hit-distribution &
+    redundancy measurement artifact (frozen contract ``big649_measurement_contract_v1``).
+    Data source: the committed artifact ONLY (NOT a DB query, NOT registry mutation,
+    NOT prediction generation). Strategy and pair rows are LEXICAL and unranked.
+
+    READ-ONLY and MEASUREMENT-ONLY: this is a local historical measurement. It is NOT
+    a ranking, recommendation, candidate classification, random baseline, p-value,
+    payout, ROI, or official-prize statement, and it returns none of those.
+    """
+    if window not in _BIG649_MEASUREMENT_WINDOWS:
+        raise HTTPException(
+            status_code=400,
+            detail=f"invalid window {window!r}; allowed: {sorted(_BIG649_MEASUREMENT_WINDOWS)}",
+        )
+    if metric_scope not in _BIG649_MEASUREMENT_SCOPES:
+        raise HTTPException(
+            status_code=400,
+            detail=(
+                f"invalid metric_scope {metric_scope!r}; "
+                f"allowed: {sorted(_BIG649_MEASUREMENT_SCOPES)}"
+            ),
+        )
+    try:
+        artifact = _load_big649_measurement_export_payload()
+        internal_window = _BIG649_MEASUREMENT_WINDOWS[window]
+        sub_key = _BIG649_MEASUREMENT_SCOPES[metric_scope]
+        sub = artifact["payload"].get(sub_key)
+        if not isinstance(sub, dict):
+            raise HTTPException(
+                status_code=500,
+                detail=f"big649 measurement export artifact missing sub-payload {sub_key!r}",
+            )
+
+        window_def = (artifact.get("window_definitions") or {}).get(internal_window)
+        result = {
+            "route_path": _BIG649_MEASUREMENT_EXPORT_ROUTE,
+            "schema_version": artifact.get("schema_version"),
+            "lottery_type": artifact.get("lottery_type"),
+            "measurement_only_notice": artifact.get("measurement_only_notice"),
+            "local_historical_measurement_disclaimer": artifact.get(
+                "local_historical_measurement_disclaimer"
+            ),
+            "endpoint_support_status": artifact.get("endpoint_support_status"),
+            "safety_limitations": artifact.get("safety_limitations"),
+            "coverage_denominators": artifact.get("coverage_denominators"),
+            "window_order": artifact.get("window_order"),
+            "window": window,
+            "window_internal": internal_window,
+            "window_definition": window_def,
+            "metric_scope": metric_scope,
+            "source_artifact": _BIG649_MEASUREMENT_EXPORT_PATH.name,
+            "historical_replay_only": True,
+            "no_recommendation": True,
+            "no_ranking": True,
+            "no_betting_advice": True,
+        }
+
+        if metric_scope == "pairwise_overlap":
+            pairs_out = []
+            for row in sub.get("pairs", []):
+                cell = (row.get("by_window") or {}).get(internal_window)
+                pairs_out.append({"pair_key": row.get("pair_key"), "cell": cell})
+            result["level"] = "STRUCTURAL_DIAGNOSTIC_PAIRWISE"
+            result["pair_count"] = sub.get("pair_count")
+            result["pairs_lexical"] = sub.get("pairs_lexical", [])
+            result["pairs"] = pairs_out
+            if "note" in sub:
+                result["note"] = sub.get("note")
+            return result
+
+        # Per-strategy scopes: ticket_slot / target_level / prize_aware / redundancy.
+        by_strategy_full = sub.get("by_strategy", {})
+        strategy_order = sub.get("strategy_order_lexical", [])
+        sliced = {}
+        for sid in strategy_order:
+            sliced[sid] = (by_strategy_full.get(sid) or {}).get(internal_window)
+        result["strategy_order_lexical"] = strategy_order
+        result["by_strategy"] = sliced
+        if "level" in sub:
+            result["level"] = sub.get("level")
+        if "denominator_kind" in sub:
+            result["denominator_kind"] = sub.get("denominator_kind")
+        if metric_scope == "prize_aware" and "endpoint_definitions" in sub:
+            result["endpoint_definitions"] = sub.get("endpoint_definitions")
+        if metric_scope == "redundancy" and "note" in sub:
+            result["note"] = sub.get("note")
+        return result
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.exception("get_big649_measurement_export failed")
         raise HTTPException(status_code=500, detail=str(e))
 
 

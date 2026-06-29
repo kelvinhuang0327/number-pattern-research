@@ -5425,19 +5425,60 @@
     rows.forEach(function(r, idx) {
       var isHit = (r.any_hit === true) || (r.max_hit_count > 0);
       var rowClass = isHit ? ' class="replay-row--hit"' : '';
+
+      var bets = r.bets || [];
+      var bestBet = null;
+      if (bets && bets.length > 0) {
+        bets.forEach(function(b) {
+          if (!bestBet) {
+            bestBet = b;
+          } else {
+            var bHc = b.hit_count || 0;
+            var bestHc = bestBet.hit_count || 0;
+            if (bHc > bestHc) {
+              bestBet = b;
+            } else if (bHc === bestHc) {
+              if (b.bet_index < bestBet.bet_index) {
+                bestBet = b;
+              }
+            }
+          }
+        });
+      }
+
+      var activeHitNumbers = (bets.length > 1 && bestBet) ? bestBet.hit_numbers : r.hit_numbers;
+
       // Main-table predicted summary = first bet's prediction (+N 注 hint for multi-bet)
-      var predictedHtml = fmtNumberTokens(r.predicted_numbers, r.hit_numbers, r.predicted_numbers, r.actual_numbers);
+      var predictedHtml = fmtNumberTokens(
+        r.predicted_numbers,
+        activeHitNumbers,
+        bets.length > 1 ? null : r.predicted_numbers,
+        bets.length > 1 ? null : r.actual_numbers
+      );
       var predSpecialHit = !!(r.special_hit && r.predicted_special != null);
       predictedHtml += fmtSpecialToken(r.predicted_special, predSpecialHit, '特');
-      var nBets = r.n_bets || (r.bets ? r.bets.length : 1);
+      var nBets = r.n_bets || (bets.length || 1);
       if (nBets > 1) {
         predictedHtml += '<span style="font-size:10px;color:#8b949e;margin-left:4px">+' + (nBets - 1) + ' 注</span>';
       }
-      var actualHtml = fmtNumberTokens(r.actual_numbers, r.hit_numbers, r.predicted_numbers, r.actual_numbers);
+      var actualHtml = fmtNumberTokens(
+        r.actual_numbers,
+        activeHitNumbers,
+        bets.length > 1 ? null : r.predicted_numbers,
+        bets.length > 1 ? null : r.actual_numbers
+      );
       var actSpecialHit = !!(r.special_hit && r.actual_special != null);
       actualHtml += fmtSpecialToken(r.actual_special, actSpecialHit, '特');
-      // 命中號碼 summary column = union of all bets' hit numbers (green tokens)
-      var hitHtml = fmtHitTokens(r.hit_numbers);
+
+      // 命中號碼 summary column
+      var hitHtml = '';
+      if (bets.length > 1 && bestBet) {
+        var labelHtml = '<div style="font-size:11px;color:#8b949e;margin-bottom:2px">最佳命中：第 ' + bestBet.bet_index + ' 注｜' + (bestBet.hit_count || 0) + ' 個</div>';
+        hitHtml = labelHtml + fmtHitTokens(bestBet.hit_numbers);
+      } else {
+        hitHtml = fmtHitTokens(r.hit_numbers);
+      }
+
       var strategyLabel = '<span style="font-family:monospace;font-size:10px;color:#8b949e">' +
         (ctx.strategy_name || ctx.strategy_id || '—') + '</span>';
       html += '<tr' + rowClass + ' data-p261a-main="' + idx + '">' +
@@ -5446,7 +5487,7 @@
         '<td>' + strategyLabel + '</td>' +
         '<td>' + predictedHtml + '</td>' +
         '<td>' + actualHtml + '</td>' +
-        '<td>' + hitHtml + '</td>' +
+        '<td' + ((bets.length > 1 && bestBet) ? ' data-role="replay-best-hit-summary"' : '') + '>' + hitHtml + '</td>' +
         '<td><button type="button" class="p261a-expand-btn" data-p261a-toggle="' + idx + '" aria-expanded="false">▸ 展開</button></td>' +
         '</tr>';
       html += '<tr class="p261a-bet-detail-row" data-p261a-detail="' + idx + '" style="display:none">' +

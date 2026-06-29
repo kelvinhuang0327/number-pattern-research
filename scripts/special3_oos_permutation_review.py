@@ -13,13 +13,32 @@ import sqlite3
 import json
 import math
 import pathlib
+
+
+def _repo_root():
+    return Path(__file__).resolve().parent.parent
+
+
+def _canonical_db_path():
+    return _repo_root() / "lottery_api" / "data" / "lottery_v2.db"
+
+
+def _resolve_db_path(db_path=None):
+    candidate = _canonical_db_path() if db_path is None else Path(db_path)
+    if db_path is not None and not candidate.is_absolute():
+        raise ValueError("db_path must be absolute; use None for the canonical lottery_v2.db")
+    if not candidate.exists():
+        raise FileNotFoundError(f"Lottery DB path does not exist: {candidate}")
+    if not candidate.is_file():
+        raise FileNotFoundError(f"Lottery DB path is not a regular file: {candidate}")
+    return str(candidate)
 import itertools
 import datetime
 from collections import Counter, defaultdict
 from scipy import stats
 
 DRY_RUN = True
-DB_PATH = "lottery_api/data/lottery_v2.db"
+DB_PATH = None
 OUT_PATH = pathlib.Path("outputs/replay/special3_oos_permutation_review_20260527.json")
 TODAY = "20260527"
 RANDOM_SEED = 42
@@ -49,7 +68,7 @@ OOS_FOLDS = [
 # ── Data loading ──────────────────────────────────────────────────────────────
 
 def load_draws():
-    conn = sqlite3.connect(DB_PATH)
+    conn = sqlite3.connect(_resolve_db_path(DB_PATH))
     rows = conn.execute(
         "SELECT draw, date, numbers FROM draws WHERE lottery_type='3_STAR' "
         "ORDER BY CAST(draw AS INTEGER)"

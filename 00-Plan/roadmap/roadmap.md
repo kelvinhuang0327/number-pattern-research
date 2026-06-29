@@ -11,6 +11,22 @@
 
 This section is the current source of truth. The 2026-06-01 sections and P186-P196 appendices below are retained for history and are superseded where they conflict with this section.
 
+### 0.0-P291AB 2026-06-25 P291 Accepted-Batch Governance Closeout — COMPLETE (Owner integration decision required)
+
+Under the Owner closeout decision `FORMAL_P291_CLOSEOUT_ACCEPT_ACCEPTED_BATCHES_ONLY`, the independently verified P291U-A/B/C/D mechanical Policy-A `sqlite3.connect` remediation batches are recorded as **governance-closed (accepted-batches-only)**.
+
+| Batch | Accepted | Independent acceptance |
+|---|---|---|
+| P291U-A | 76 records / 76 files | P291V |
+| P291U-B | 2 records / 2 files | P291W-R2 |
+| P291U-C | 24 records / 9 files | P291X-R2 |
+| P291U-D | 18 records / 18 files | P291Z-R1 |
+| **Accepted total** | **120 records / 105 distinct files** | no cross-batch overlap |
+
+The remaining **57 records / 23 files** are an Owner-policy semantics-controlled population (apply 9 / temporary 10 / ingestion 3 / repair 1) and remain **explicitly deferred — not accepted, not remediated, not waived, and not safe-by-default**. Acceptance basis = static census + determinism + independent verification (repository tests NOT RUN); source count 1,597; P291-lineage `sqlite3.connect` AST count 900 (exact-name 899; the +1 is the alias-aware `_sqlite3.connect` in `tests/test_p36_wave2_daily539_dryrun_rehearsal.py:280`; the P291U-D 18-file AST delta is 0); automatic protected-primary / S1–S4 / CWD / unresolved-non-owner counts all 0. The audit-local designated DB remained invariant under filesystem-only verification and is not a permanent DB rebaseline. This closeout edited only the four governance files; the 145 modified Python files plus untracked `lottery_api/canonical_db_path.py` remain uncommitted, and no source integration commit, push, PR, merge, or worktree cleanup was performed.
+
+**Gated follow-on decision (required before any later integration/commit decision):** the Owner must choose **either** a separately authorized Owner-policy semantic remediation of the deferred 57 records / 23 files, **or** an explicit documented exclusion / no-change decision for them. BIG649 research is **not** scheduled by this closeout and remains a separate Owner authorization.
+
 ### 0.0-P279B 2026-06-18 Disjoint-Block Diversified-Baseline Falsification — COMPLETE
 
 **PR #454 MERGED** at merge commit `46962007789fa73cf2b92ea0fd942a8c8bc319e9` (`2026-06-18T04:50:40Z`); merge parent 1 `8004c32c47cb99576ef5689f967c05306a83670c`, parent 2 `d4aa3dde814eadaee4c728be7dc9fb55eaa80baf`. The arc spanned six sub-tasks: P279A selected the frozen DAILY_539 disjoint-block diversified-baseline falsification study; P279B created the deterministic retrospective falsification artifact; P279C independently audited and classified PR #454 as merge-ready; P279D merged PR #454 and completed post-merge verification; P279E safely removed the P279B worktree while retaining branches; P279F records the governance closeout.

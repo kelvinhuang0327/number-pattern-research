@@ -19,6 +19,43 @@ import sys
 from datetime import datetime, timezone
 from unittest.mock import MagicMock, patch
 
+from pathlib import Path
+
+
+def _p291u_repo_root():
+    current = Path(__file__)
+    if not current.is_absolute():
+        raise FileNotFoundError(f"Source file path is not absolute: {current}")
+    for parent in (current.parent, *current.parents):
+        if (parent / "lottery_api").is_dir():
+            return parent
+    raise FileNotFoundError(f"Unable to locate repository root from source file: {current}")
+
+
+def _p291u_default_db_path():
+    db_path = _p291u_repo_root() / "lottery_api" / "data" / "lottery_v2.db"
+    if not db_path.is_file():
+        raise FileNotFoundError(f"Default lottery DB path is missing or non-regular: {db_path}")
+    return db_path
+
+
+def _p291u_resolve_db_path(db_path=None):
+    if db_path is None:
+        return _p291u_default_db_path()
+    path = Path(db_path)
+    if not path.is_absolute():
+        raise ValueError(f"Explicit DB path must be absolute: {db_path}")
+    if not path.is_file():
+        raise FileNotFoundError(f"Explicit DB path is missing or non-regular: {path}")
+    return path
+
+
+def _p291u_connect_resolved(db_path, *, uri=False):
+    if uri:
+        return sqlite3.connect(f"file:{db_path}?mode=ro", uri=True)
+    return sqlite3.connect(str(db_path))
+
+
 _REPO_ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 _API_ROOT  = os.path.join(_REPO_ROOT, "lottery_api")
 if _API_ROOT not in sys.path:
@@ -48,10 +85,11 @@ _ACCEPTED_BASELINE = {
 # ---------------------------------------------------------------------------
 
 def _db_baseline() -> dict:
+    _p291u_db_path = _p291u_resolve_db_path()
     if not os.path.exists(_DB_PATH):
         return {"error": "DB not found"}
     try:
-        conn = sqlite3.connect(f"file:{_DB_PATH}?mode=ro", uri=True)
+        conn = _p291u_connect_resolved(_p291u_db_path, uri=True)
         cur  = conn.cursor()
         def count(sql):
             cur.execute(sql)

@@ -155,17 +155,9 @@ class MissingIssueDetector:
         sorted ascending by integer value.
         """
         import sqlite3
-        import os
-        import sys
+        from lottery_api.canonical_db_path import resolve_db_path
 
-        # Locate the DB file (works whether called from lottery_api/ or project root)
-        candidates = [
-            os.path.join(os.path.dirname(os.path.dirname(__file__)), "data", "lottery_v2.db"),
-            "lottery_api/data/lottery_v2.db",
-            "data/lottery_v2.db",
-        ]
-        db_path = next((p for p in candidates if os.path.exists(p)), candidates[0])
-
+        db_path = resolve_db_path()
         conn = sqlite3.connect(db_path)
         try:
             cursor = conn.cursor()

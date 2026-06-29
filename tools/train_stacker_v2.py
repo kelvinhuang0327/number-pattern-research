@@ -9,6 +9,7 @@ import os
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..'))
 
 import json
+from lottery_api.canonical_db_path import resolve_db_path
 import logging
 from typing import List, Dict, Tuple
 from collections import Counter
@@ -26,14 +27,7 @@ def load_power_lotto_history(max_records: int = 2000) -> List[Dict]:
     """Load Power Lotto historical data from SQLite database"""
     import sqlite3
     
-    db_path = 'lottery_api/data/lottery_v2.db'
-    if not os.path.exists(db_path):
-        db_path = 'lottery_api/data/lottery.db'
-    
-    if not os.path.exists(db_path):
-        logger.error(f"❌ Database file not found")
-        return []
-    
+    db_path = resolve_db_path()
     conn = sqlite3.connect(db_path)
     cursor = conn.cursor()
     

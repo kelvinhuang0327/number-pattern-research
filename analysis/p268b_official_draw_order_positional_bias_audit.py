@@ -39,10 +39,39 @@ from collections import Counter
 from datetime import datetime, timezone
 from pathlib import Path
 
-REPO_ROOT = Path(__file__).resolve().parents[1]
-DB_PATH = REPO_ROOT / "data" / "lottery_v2.db"
+
+def _p291u_repo_root():
+    current = Path(__file__)
+    if not current.is_absolute():
+        raise FileNotFoundError(f"Source file path is not absolute: {current}")
+    for parent in (current.parent, *current.parents):
+        if (parent / "lottery_api").is_dir():
+            return parent
+    raise FileNotFoundError(f"Unable to locate repository root from source file: {current}")
+
+
+REPO_ROOT = _p291u_repo_root()
+DB_PATH = REPO_ROOT / "lottery_api" / "data" / "lottery_v2.db"
 ARTIFACT_JSON = REPO_ROOT / "outputs" / "research" / "p268b_official_draw_order_positional_bias_audit_20260610.json"
 ARTIFACT_MD = REPO_ROOT / "outputs" / "research" / "p268b_official_draw_order_positional_bias_audit_20260610.md"
+
+
+def _p291u_default_db_path():
+    db_path = DB_PATH
+    if not db_path.is_file():
+        raise FileNotFoundError(f"Default lottery DB path is missing or non-regular: {db_path}")
+    return db_path
+
+
+def _p291u_resolve_db_path(db_path=None):
+    if db_path is None:
+        return _p291u_default_db_path()
+    path = Path(db_path)
+    if not path.is_absolute():
+        raise ValueError(f"Explicit DB path must be absolute: {db_path}")
+    if not path.is_file():
+        raise FileNotFoundError(f"Explicit DB path is missing or non-regular: {path}")
+    return path
 
 API_BASE = "https://api.taiwanlottery.com/TLCAPIWeB/Lottery"
 TIMEOUT_SECONDS = 20
@@ -269,62 +298,60 @@ def main() -> dict:
         }
 
     # --- DB alignment check (read-only) ---
-    db_exists = DB_PATH.exists()
-    if db_exists:
-        try:
-            db_uri = f"file:{DB_PATH}?mode=ro"
-            conn = sqlite3.connect(db_uri, uri=True)
-            cur = conn.cursor()
-            cur.execute("SELECT COUNT(*) FROM draws")
-            total_draw_rows = cur.fetchone()[0]
+    db_path = _p291u_resolve_db_path()
 
-            for lottery_type, cfg in GAMES.items():
-                records = raw_records_by_game.get(lottery_type, [])
-                periods = [str(rec.get("period")) for rec in records if rec.get("period") is not None]
-                matched = 0
-                checked = 0
-                if total_draw_rows > 0 and periods:
-                    placeholders = ",".join("?" for _ in periods)
-                    cur.execute(
-                        f"SELECT draw FROM draws WHERE lottery_type = ? AND draw IN ({placeholders})",
-                        [lottery_type, *periods],
-                    )
-                    matched_draws = {r[0] for r in cur.fetchall()}
-                    checked = len(periods)
-                    matched = len(matched_draws)
+    try:
+        db_uri = f"file:{db_path}?mode=ro"
+        conn = sqlite3.connect(db_uri, uri=True)
+        cur = conn.cursor()
+        cur.execute("SELECT COUNT(*) FROM draws")
+        total_draw_rows = cur.fetchone()[0]
 
-                db_alignment[lottery_type] = {
-                    "sample_periods_checked": len(periods),
-                    "matched_in_local_draws_table": matched,
-                    "checked": checked,
-                    "status": (
-                        "NO_LOCAL_ROWS"
-                        if total_draw_rows == 0
-                        else ("ALIGNED" if matched == checked and checked > 0 else "PARTIAL_OR_NO_MATCH")
-                    ),
-                }
-            conn.close()
-            db_alignment["_meta"] = {
-                "db_path": str(DB_PATH.relative_to(REPO_ROOT)),
-                "open_mode": "read-only (sqlite3 mode=ro URI)",
-                "local_draws_table_row_count": total_draw_rows,
-                "note": (
-                    "Local draws table currently has 0 rows in this checkout; "
-                    "alignment check is schema-level only (column structure "
-                    "compatible: draw/date/lottery_type/numbers/special exist), "
-                    "not row-level, when total_draw_rows == 0."
+        for lottery_type, cfg in GAMES.items():
+            records = raw_records_by_game.get(lottery_type, [])
+            periods = [str(rec.get("period")) for rec in records if rec.get("period") is not None]
+            matched = 0
+            checked = 0
+            if total_draw_rows > 0 and periods:
+                placeholders = ",".join("?" for _ in periods)
+                cur.execute(
+                    f"SELECT draw FROM draws WHERE lottery_type = ? AND draw IN ({placeholders})",
+                    [lottery_type, *periods],
+                )
+                matched_draws = {r[0] for r in cur.fetchall()}
+                checked = len(periods)
+                matched = len(matched_draws)
+
+            db_alignment[lottery_type] = {
+                "sample_periods_checked": len(periods),
+                "matched_in_local_draws_table": matched,
+                "checked": checked,
+                "status": (
+                    "NO_LOCAL_ROWS"
                     if total_draw_rows == 0
-                    else "Row-level alignment checked by matching `draw` (period) + lottery_type."
+                    else ("ALIGNED" if matched == checked and checked > 0 else "PARTIAL_OR_NO_MATCH")
                 ),
             }
-        except sqlite3.Error as exc:
-            db_alignment["_meta"] = {
-                "db_path": str(DB_PATH.relative_to(REPO_ROOT)),
-                "open_mode": "read-only (sqlite3 mode=ro URI)",
-                "error": f"{type(exc).__name__}: {exc}",
-            }
-    else:
-        db_alignment["_meta"] = {"db_path": str(DB_PATH.relative_to(REPO_ROOT)), "error": "DB file not found"}
+        conn.close()
+        db_alignment["_meta"] = {
+            "db_path": str(db_path.relative_to(REPO_ROOT)),
+            "open_mode": "read-only (sqlite3 mode=ro URI)",
+            "local_draws_table_row_count": total_draw_rows,
+            "note": (
+                "Local draws table currently has 0 rows in this checkout; "
+                "alignment check is schema-level only (column structure "
+                "compatible: draw/date/lottery_type/numbers/special exist), "
+                "not row-level, when total_draw_rows == 0."
+                if total_draw_rows == 0
+                else "Row-level alignment checked by matching `draw` (period) + lottery_type."
+            ),
+        }
+    except sqlite3.Error as exc:
+        db_alignment["_meta"] = {
+            "db_path": str(db_path.relative_to(REPO_ROOT)),
+            "open_mode": "read-only (sqlite3 mode=ro URI)",
+            "error": f"{type(exc).__name__}: {exc}",
+        }
 
     # --- Minimal positional-bias diagnostic ---
     for lottery_type, cfg in GAMES.items():

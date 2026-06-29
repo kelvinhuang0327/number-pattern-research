@@ -25,6 +25,7 @@ import os
 import json
 import math
 import sqlite3
+from lottery_api.canonical_db_path import resolve_db_path
 import numpy as np
 from datetime import datetime
 from typing import Dict, List, Tuple, Optional
@@ -67,7 +68,7 @@ def _load_draws(lottery_type: str, limit: int = 3000) -> List[List[int]]:
       - SMALL_POOL_ALIEN: max(numbers) <= 25 (Python-level post-filter)
     Raw records remain accessible via get_all_draws() for display/history.
     """
-    conn = sqlite3.connect(DB_PATH)
+    conn = sqlite3.connect(resolve_db_path(DB_PATH))
     c = conn.cursor()
     if lottery_type == 'BIG_LOTTO':
         # SQL-level canonical filter for BIG_LOTTO

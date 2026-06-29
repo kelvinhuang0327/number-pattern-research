@@ -51,6 +51,7 @@ import sqlite3
 from collections import Counter
 from datetime import datetime, timezone
 
+from lottery_api.canonical_db_path import resolve_db_path
 from lottery_api.prize_aware_replay_adapter import (
     ADAPTER_VERSION,
     EXCLUSION_MISSING_PREDICTED_SECOND_ZONE,
@@ -278,13 +279,14 @@ def verify_endpoints_against_p271a(p271a_path: str) -> dict:
 # Read-only connection management (single connection, single snapshot)
 # ---------------------------------------------------------------------------
 
-def open_readonly_connection(db_path: str) -> tuple:
+def open_readonly_connection(db_path: str | None = None) -> tuple:
     """Open the DB strictly read-only and enforce PRAGMA query_only=ON.
 
     Returns (connection, query_only_evidence_dict). Raises QueryOnlyError if
     query_only cannot be confirmed enabled.
     """
-    uri = f"file:{db_path}?mode=ro"
+    resolved_db_path = resolve_db_path(db_path)
+    uri = f"file:{resolved_db_path}?mode=ro"
     conn = sqlite3.connect(uri, uri=True)
     # Manual transaction control so all reads share one snapshot.
     conn.isolation_level = None
@@ -656,7 +658,7 @@ def render_markdown(result: dict) -> str:
 # Orchestration
 # ---------------------------------------------------------------------------
 
-def run_export(db_path: str = CANONICAL_DB_PATH,
+def run_export(db_path: str | None = None,
                p267c_path: str = P267C_JSON_PATH,
                p271a_path: str = P271A_JSON_PATH,
                scorer_path: str = P271C_SOURCE_PATH,
@@ -736,7 +738,7 @@ def run_export(db_path: str = CANONICAL_DB_PATH,
             "second_zone_manufactured": False,
         },
         "provenance": {
-            "source_db_path": db_path,
+            "source_db_path": resolve_db_path(db_path),
             "db_open_mode": DB_OPEN_MODE,
             "query_only_evidence": query_only_evidence,
             "single_snapshot": True,
@@ -780,7 +782,7 @@ def main(argv=None) -> int:
     parser = argparse.ArgumentParser(
         description="P273A read-only prize-aware observed-counts export"
     )
-    parser.add_argument("--db", default=CANONICAL_DB_PATH,
+    parser.add_argument("--db", default=None,
                         help="path to the canonical SQLite DB (opened mode=ro)")
     parser.add_argument("--p267c", default=P267C_JSON_PATH)
     parser.add_argument("--p271a", default=P271A_JSON_PATH)

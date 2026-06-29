@@ -298,15 +298,9 @@ class BackfillEngine:
         """Return existing DB record or None."""
         import sqlite3
         import json
-        import os
+        from lottery_api.canonical_db_path import resolve_db_path
 
-        candidates = [
-            os.path.join(os.path.dirname(os.path.dirname(__file__)), "data", "lottery_v2.db"),
-            "lottery_api/data/lottery_v2.db",
-            "data/lottery_v2.db",
-        ]
-        db_path = next((p for p in candidates if os.path.exists(p)), candidates[0])
-
+        db_path = resolve_db_path()
         conn = sqlite3.connect(db_path)
         conn.row_factory = sqlite3.Row
         try:

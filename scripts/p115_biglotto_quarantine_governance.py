@@ -22,6 +22,25 @@ from datetime import datetime
 from pathlib import Path
 
 
+def _repo_root():
+    return Path(__file__).resolve().parent.parent
+
+
+def _canonical_db_path():
+    return _repo_root() / "lottery_api" / "data" / "lottery_v2.db"
+
+
+def _resolve_db_path(db_path=None):
+    candidate = _canonical_db_path() if db_path is None else Path(db_path)
+    if db_path is not None and not candidate.is_absolute():
+        raise ValueError("db_path must be absolute; use None for the canonical lottery_v2.db")
+    if not candidate.exists():
+        raise FileNotFoundError(f"Lottery DB path does not exist: {candidate}")
+    if not candidate.is_file():
+        raise FileNotFoundError(f"Lottery DB path is not a regular file: {candidate}")
+    return str(candidate)
+
+
 # ── Artifact paths ────────────────────────────────────────────────────────────
 P112_ARTIFACT = "outputs/replay/p112_cross_lottery_prediction_helpfulness_audit_20260527.json"
 P113_ARTIFACT = "outputs/replay/p113_p112_action_decision_matrix_20260527.json"
@@ -47,9 +66,9 @@ VALID_CLASSIFICATIONS = {
 
 
 # ── DB read-only helper ───────────────────────────────────────────────────────
-def open_db_readonly(db_path: str) -> sqlite3.Connection:
+def open_db_readonly(db_path=None) -> sqlite3.Connection:
     """Open SQLite DB in read-only mode via URI. No writes possible."""
-    uri = Path(db_path).resolve().as_uri() + "?mode=ro"
+    uri = Path(_resolve_db_path(db_path)).as_uri() + "?mode=ro"
     return sqlite3.connect(uri, uri=True)
 
 
@@ -458,7 +477,7 @@ def print_summary(artifact: dict) -> None:
 def main():
     parser = argparse.ArgumentParser(description="P115: BIG_LOTTO Quarantine Governance Design")
     parser.add_argument("--json-out", required=True, help="Path to write JSON artifact")
-    parser.add_argument("--db", default="lottery_api/data/lottery_v2.db", help="Path to SQLite DB")
+    parser.add_argument("--db", default=None, help="Absolute path to SQLite DB")
     parser.add_argument("--p112-artifact", default=P112_ARTIFACT)
     parser.add_argument("--p113-artifact", default=P113_ARTIFACT)
     parser.add_argument("--p114-artifact", default=P114_ARTIFACT)

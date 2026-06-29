@@ -37,10 +37,11 @@ import os
 import sqlite3
 
 # --------------------------------------------------------------------------
-# Frozen configuration (Phase 0B verified anchors). These strings are part of
-# the digest-bearing payload and MUST match the frozen contract verbatim.
+# Frozen configuration (Phase 0B verified anchors). These values are part of
+# the digest-bearing payload and MUST match the frozen contract semantics.
 # --------------------------------------------------------------------------
-DB_PATH = "/Users/kelvin/Kelvin-WorkSpace/LotteryNew/lottery_api/data/lottery_v2.db"
+_REPO_ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+DB_PATH = os.path.join(_REPO_ROOT, "lottery_api", "data", "lottery_v2.db")
 LOTTERY = "BIG_LOTTO"
 CANONICAL_VIEW = "draws_big_lotto_canonical_main"
 REPLAY_TABLE = "strategy_prediction_replays"
@@ -152,7 +153,20 @@ def _neumaier_sum(values):
 # --------------------------------------------------------------------------
 # Read-only DB access
 # --------------------------------------------------------------------------
-def connect_ro(db_path=DB_PATH):
+def resolve_db_path(db_path=None):
+    if db_path is None:
+        candidate = DB_PATH
+    else:
+        candidate = os.fspath(db_path)
+        if not os.path.isabs(candidate):
+            raise ValueError("db_path must be an absolute path")
+    if not os.path.isfile(candidate):
+        raise FileNotFoundError("canonical DB not found: %s" % candidate)
+    return candidate
+
+
+def connect_ro(db_path=None):
+    db_path = resolve_db_path(db_path)
     con = sqlite3.connect("file:%s?mode=ro" % db_path, uri=True)
     con.execute("PRAGMA query_only=ON")
     qo = con.execute("PRAGMA query_only").fetchone()[0]
@@ -863,11 +877,10 @@ def _window_definitions_summary(payload):
     return out
 
 
-def build_export(db_path=DB_PATH):
+def build_export(db_path=None):
     """Open the canonical DB read-only, re-derive the measurement, and return
     (export_dict, canonical_payload_digest). Raises (STOP) on any anchor drift."""
-    if not os.path.exists(db_path):
-        raise RuntimeError("canonical DB not found: %s" % db_path)
+    db_path = resolve_db_path(db_path)
     stat_before = _db_stat(db_path)
     if stat_before["sha256"] != EXPECTED_DB_SHA256:
         raise RuntimeError("DB sha256 mismatch: expected %s got %s"
@@ -926,7 +939,7 @@ def build_export(db_path=DB_PATH):
             "notes": notes,
         },
         "source_anchor": {
-            "db_path": DB_PATH,
+            "db_path": db_path,
             "db_sha256": EXPECTED_DB_SHA256,
             "size_bytes": stat_before["size_bytes"],
             "wal_size_bytes": stat_before["wal_size_bytes"],
@@ -942,7 +955,6 @@ def build_export(db_path=DB_PATH):
 
 
 # Default committed artifact location (repo-root relative to this file).
-_REPO_ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 DEFAULT_OUTPUT = os.path.join(
     _REPO_ROOT, "outputs", "research", "big649_measurement_export_20260621.json")
 

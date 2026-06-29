@@ -20,6 +20,7 @@ import os
 import json
 import hashlib
 import sqlite3
+from lottery_api.canonical_db_path import resolve_db_path
 from datetime import datetime
 from typing import Optional, Dict, List, Any
 
@@ -52,11 +53,8 @@ _KNOWN_FAILURE_PATTERNS = [
 
 def _compute_data_hash(lottery_type: str, n_periods: int) -> str:
     """計算資料庫目前最新期數的 hash，作為資料快照識別"""
-    db_path = os.path.join(
-        os.path.dirname(os.path.dirname(__file__)),
-        'data', 'lottery_v2.db'
-    )
     try:
+        db_path = resolve_db_path()
         conn = sqlite3.connect(db_path)
         c = conn.cursor()
         c.execute(

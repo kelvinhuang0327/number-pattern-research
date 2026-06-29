@@ -34,6 +34,7 @@ import subprocess
 from collections import defaultdict
 from datetime import datetime, timezone
 
+from lottery_api.canonical_db_path import resolve_db_path
 from lottery_api.prize_aware_replay_adapter import (
     ADAPTER_VERSION,
     SUPPORTED_LOTTERY_TYPES,
@@ -114,8 +115,9 @@ ALLOWED_FINAL_CLASSIFICATIONS = (
 # DB helpers (read-only only)
 # ---------------------------------------------------------------------------
 
-def _open_ro(db_path: str) -> sqlite3.Connection:
-    uri = f"file:{db_path}?mode=ro"
+def _open_ro(db_path: str | None = None) -> sqlite3.Connection:
+    resolved_db_path = resolve_db_path(db_path)
+    uri = f"file:{resolved_db_path}?mode=ro"
     return sqlite3.connect(uri, uri=True)
 
 
@@ -187,7 +189,7 @@ def _make_rate(numerator: int, denominator: int) -> dict:
     }
 
 
-def run_full_evaluation(db_path: str = CANONICAL_DB_PATH) -> dict:
+def run_full_evaluation(db_path: str | None = None) -> dict:
     """Run the full eligible-history descriptive evaluation.
 
     Returns aggregate results as a plain dict.
@@ -197,11 +199,12 @@ def run_full_evaluation(db_path: str = CANONICAL_DB_PATH) -> dict:
     No INSERT, UPDATE, DELETE, or DDL is issued.
     """
     started_at = datetime.now(timezone.utc).isoformat()
+    resolved_db_path = resolve_db_path(db_path)
 
-    file_size_before = os.path.getsize(db_path)
-    sha256_before = _sha256_file(db_path)
+    file_size_before = os.path.getsize(resolved_db_path)
+    sha256_before = _sha256_file(resolved_db_path)
 
-    conn_pre = _open_ro(db_path)
+    conn_pre = _open_ro(resolved_db_path)
     try:
         data_version_start = _get_data_version(conn_pre)
         total_rows_before = _count_all_eligible_candidates(conn_pre)
@@ -209,7 +212,7 @@ def run_full_evaluation(db_path: str = CANONICAL_DB_PATH) -> dict:
         conn_pre.close()
 
     # Structural exclusion summary (read-only scan, no row-level export)
-    exclusion_summary = summarize_structural_exclusions(db_path)
+    exclusion_summary = summarize_structural_exclusions(resolved_db_path)
 
     # Per-lottery accumulators (aggregate only — no row-level storage)
     aggs: dict[str, dict] = {
@@ -236,7 +239,7 @@ def run_full_evaluation(db_path: str = CANONICAL_DB_PATH) -> dict:
     for lt in SUPPORTED_LOTTERY_TYPES:
         agg = aggs[lt]
         for row in iter_structurally_eligible_rows(
-            db_path,
+            resolved_db_path,
             lottery_type=lt,
             limit=_FULL_EVAL_LIMIT_PER_LOTTERY,
         ):
@@ -284,10 +287,10 @@ def run_full_evaluation(db_path: str = CANONICAL_DB_PATH) -> dict:
 
     finished_at = datetime.now(timezone.utc).isoformat()
 
-    file_size_after = os.path.getsize(db_path)
-    sha256_after = _sha256_file(db_path)
+    file_size_after = os.path.getsize(resolved_db_path)
+    sha256_after = _sha256_file(resolved_db_path)
 
-    conn_post = _open_ro(db_path)
+    conn_post = _open_ro(resolved_db_path)
     try:
         data_version_end = _get_data_version(conn_post)
         total_rows_after = _count_all_eligible_candidates(conn_post)
@@ -871,7 +874,7 @@ def write_artifacts(
 # Entry point
 # ---------------------------------------------------------------------------
 
-def main(db_path: str = CANONICAL_DB_PATH) -> None:
+def main(db_path: str | None = None) -> None:
     git_head = _get_git_head()
     git_branch = _get_git_branch()
 

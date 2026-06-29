@@ -25,7 +25,7 @@ class Daily539Predictor310:
         self.min_num = 1
         self.max_num = 39
         self.pick_count = 5
-        self.db = DatabaseManager(db_path="data/lottery_v2.db")
+        self.db = DatabaseManager()
 
     def get_probabilities(self, history, window=100):
         recent = history[-window:]

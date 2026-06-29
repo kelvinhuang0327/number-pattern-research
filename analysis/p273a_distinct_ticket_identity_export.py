@@ -67,8 +67,8 @@ PRIMARY_EXPORT_COMMIT = "a144bb0ed5a42e985b5acb84e53471ecb725e47e"
 REFERENCE_EXPORT_COMMIT = "445587e0147cab8af54594aa0cfa5fe83f0353fa"
 TASK_BRANCH = "task/p273a-distinct-ticket-identity-export"
 
-PRODUCTION_DB_PATH = (
-    "/Users/kelvin/Kelvin-WorkSpace/LotteryNew/lottery_api/data/lottery_v2.db"
+PRODUCTION_DB_PATH = os.path.join(
+    _REPO_ROOT, "lottery_api", "data", "lottery_v2.db"
 )
 PRIMARY_ARTIFACT_PATH = (
     "outputs/research/p273a_primary_window_observed_counts_20260615.json"
@@ -118,6 +118,18 @@ class BetIndexContentConflict(IdentityExportError):
 
 class IdentityArtifactAlignmentError(IdentityExportError):
     """Computed identity aggregates disagree with the immutable source artifact."""
+
+
+def resolve_db_path(db_path: str | None = None) -> str:
+    if db_path is None:
+        candidate = PRODUCTION_DB_PATH
+    else:
+        candidate = os.fspath(db_path)
+        if not os.path.isabs(candidate):
+            raise ValueError("db_path must be an absolute path")
+    if not os.path.isfile(candidate):
+        raise FileNotFoundError("canonical DB not found: %s" % candidate)
+    return candidate
 
 
 def verify_source_artifact(
@@ -490,7 +502,7 @@ def compute_cell_identity(
 
 
 def run_export(
-    db_path: str = PRODUCTION_DB_PATH,
+    db_path: str | None = None,
     primary_path: str = PRIMARY_ARTIFACT_PATH,
     reference_path: str = REFERENCE_ARTIFACT_PATH,
     p267c_path: str = P267C_JSON_PATH,
@@ -503,6 +515,7 @@ def run_export(
     reference_expected_canonical: str = REFERENCE_CANONICAL_DIGEST,
 ) -> dict:
     """Build one canonical identity result from one read-only DB snapshot."""
+    db_path = resolve_db_path(db_path)
     primary = verify_source_artifact(
         primary_path, primary_expected_raw, primary_expected_canonical
     )
@@ -867,7 +880,7 @@ def main(argv=None) -> int:
     parser = argparse.ArgumentParser(
         description="P273A read-only distinct-ticket identity export"
     )
-    parser.add_argument("--db", default=PRODUCTION_DB_PATH)
+    parser.add_argument("--db", default=None)
     parser.add_argument("--primary", default=PRIMARY_ARTIFACT_PATH)
     parser.add_argument("--reference", default=REFERENCE_ARTIFACT_PATH)
     parser.add_argument("--p267c", default=P267C_JSON_PATH)

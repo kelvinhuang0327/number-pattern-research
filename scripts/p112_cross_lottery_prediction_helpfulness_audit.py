@@ -17,10 +17,29 @@ import json
 import sqlite3
 from pathlib import Path
 
+
+def _repo_root():
+    return Path(__file__).resolve().parent.parent
+
+
+def _canonical_db_path():
+    return _repo_root() / "lottery_api" / "data" / "lottery_v2.db"
+
+
+def _resolve_db_path(db_path=None):
+    candidate = _canonical_db_path() if db_path is None else Path(db_path)
+    if db_path is not None and not candidate.is_absolute():
+        raise ValueError("db_path must be absolute; use None for the canonical lottery_v2.db")
+    if not candidate.exists():
+        raise FileNotFoundError(f"Lottery DB path does not exist: {candidate}")
+    if not candidate.is_file():
+        raise FileNotFoundError(f"Lottery DB path is not a regular file: {candidate}")
+    return str(candidate)
+
 # ---------------------------------------------------------------------------
 # Constants
 # ---------------------------------------------------------------------------
-DB_PATH = Path("lottery_api/data/lottery_v2.db")
+DB_PATH = None
 
 # Game rules (confirmed from DB inspection)
 # POWER_LOTTO: 6 main from 1-38, 1 special from 1-8
@@ -75,8 +94,8 @@ AUDIT_SCOPE = ["POWER_LOTTO", "DAILY_539", "BIG_LOTTO"]
 # ---------------------------------------------------------------------------
 # DB helpers (read-only; no write SQL verbs)
 # ---------------------------------------------------------------------------
-def open_db(db_path: Path) -> sqlite3.Connection:
-    resolved = db_path.resolve()
+def open_db(db_path=None) -> sqlite3.Connection:
+    resolved = Path(_resolve_db_path(db_path))
     uri = resolved.as_uri() + "?mode=ro"
     return sqlite3.connect(uri, uri=True)
 
@@ -274,7 +293,7 @@ def recommend(classification: str, lottery_type: str, strategy_id: str) -> str:
 # ---------------------------------------------------------------------------
 # Main audit
 # ---------------------------------------------------------------------------
-def run_audit(db_path: Path) -> dict:
+def run_audit(db_path=None) -> dict:
     conn = open_db(db_path)
 
     replay_rows = query_replay_total(conn)
@@ -539,7 +558,7 @@ def print_summary(artifact: dict) -> None:
 def main() -> None:
     parser = argparse.ArgumentParser(description="P112 Cross-Lottery Prediction-Helpfulness Audit")
     parser.add_argument("--json-out", type=Path, default=None, help="Path to write JSON artifact")
-    parser.add_argument("--db", type=Path, default=DB_PATH, help="Path to lottery_v2.db")
+    parser.add_argument("--db", type=Path, default=None, help="Absolute path to lottery_v2.db")
     args = parser.parse_args()
 
     artifact = run_audit(args.db)

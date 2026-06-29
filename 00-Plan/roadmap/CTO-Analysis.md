@@ -1,5 +1,28 @@
 # CTO Analysis - Roadmap Alignment And System Optimization Direction
 
+## 2026-06-25 CTO Assessment — P291 Accepted-Batch Governance Closeout
+
+Final Classification: `CTO_P291AB_ACCEPTED_BATCH_GOVERNANCE_CLOSEOUT_RECORDED`
+
+### Assessment
+
+- [Confirmed] Under the Owner closeout decision `FORMAL_P291_CLOSEOUT_ACCEPT_ACCEPTED_BATCHES_ONLY`, the P291U-A/B/C/D mechanical Policy-A `sqlite3.connect` remediation batches were independently accepted: P291U-A 76 records / 76 files (P291V), P291U-B 2 records / 2 files (P291W-R2), P291U-C 24 records / 9 files (P291X-R2), P291U-D 18 records / 18 files (P291Z-R1).
+- [Confirmed] Accepted total = 120 records / 105 distinct files; no cross-batch file overlap; no accepted target remains deferred.
+- [Confirmed] The remaining 57 records / 23 files are a semantics-controlled Owner-policy population (apply 9 / temporary 10 / ingestion 3 / repair 1). It is **deferred only** — not accepted, not remediated, not waived, and not safe-by-default.
+- [Confirmed] Static census on the current tree: source count 1,597; P291-lineage `sqlite3.connect` AST count 900; automatic protected-primary / S1–S4 / CWD / production-unresolved-non-owner counts all 0.
+- [Confirmed] The 899→900 census difference is explained and non-blocking: P291X-R2 reported the exact-name count 899, while the P291Z / P291AA alias-aware census additionally counts `_sqlite3.connect` in `tests/test_p36_wave2_daily539_dryrun_rehearsal.py:280`; the P291U-D 18-file source AST delta itself is 0.
+- [Confirmed] The audit-local designated DB (`lottery_api/data/lottery_v2.db`, SHA `c6feae0f…`) was verified by filesystem SHA/stat/lsof only and remained invariant with zero holders; this is an audit-local baseline, not a permanent DB rebaseline.
+- [Confirmed] Acceptance basis = static census + determinism + independent verification (P291V / P291W-R2 / P291X-R2 / P291Z-R1 / P291AA). Repository tests were NOT RUN. No production or runtime DB testing was performed. `database_opened=false`; `database_write=false`.
+- [Confirmed] This closeout edited only the four governance files; the 145 modified Python files plus untracked `lottery_api/canonical_db_path.py` remain uncommitted. No source integration commit, push, PR, merge, or worktree cleanup was performed.
+
+### Interpretation
+
+The accepted-batches-only closeout records that the four independently verified mechanical Policy-A batches resolve 120 records / 105 files. It does **not** assert that the P291 program is fully remediated: the 57 records / 23 Owner-policy files are a distinct semantics-controlled population whose treatment is an Owner decision, and their deferral confers no safety, correctness, or acceptance status. The census mechanism delta is explained and does not change any acceptance conclusion.
+
+### Next Direction — Remaining Owner Decisions
+
+No next task is automatically selected. The following remain separate explicit Owner decisions: (1) Owner-policy treatment — a separately authorized semantic remediation of the 57 records / 23 files or a documented exclusion / no-change decision; (2) source integration / commit of the accepted working-tree changes; (3) optional later worktree cleanup; (4) P291A re-attestation; (5) BIG649 research authorization. All production, activation, DB maintenance, registry, push/PR/merge, and deployment remain unauthorized.
+
 ## 2026-06-18 CTO Post-Merge Assessment — P279 Falsification Arc
 
 Final Classification: `CTO_P279_POSTMERGE_GOVERNANCE_CLOSEOUT_VERIFIED`

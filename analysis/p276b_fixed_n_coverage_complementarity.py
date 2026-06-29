@@ -66,6 +66,7 @@ from datetime import datetime, timezone
 import numpy as np
 from scipy import stats
 
+from lottery_api.canonical_db_path import resolve_db_path
 from lottery_api.prize_aware_replay_adapter import (
     ADAPTER_VERSION,
     _check_eligibility,
@@ -656,13 +657,14 @@ def _deny_writes_authorizer(action, arg1, arg2, dbname, source):
     return sqlite3.SQLITE_OK
 
 
-def open_readonly_connection(db_path: str):
+def open_readonly_connection(db_path: str | None = None):
     """Open the DB strictly read-only with three layered guards.
 
     URI mode=ro, PRAGMA query_only=ON (verified), and a write/DDL-denying
     authorizer. Returns (conn, evidence). Raises DBReadOnlyError on failure.
     """
-    uri = f"file:{db_path}?mode=ro"
+    resolved_db_path = resolve_db_path(db_path)
+    uri = f"file:{resolved_db_path}?mode=ro"
     conn = sqlite3.connect(uri, uri=True)
     conn.isolation_level = None
     conn.execute("PRAGMA query_only=ON")
@@ -684,11 +686,12 @@ def open_readonly_connection(db_path: str):
     return conn, evidence
 
 
-def db_file_metadata(db_path: str) -> dict:
-    st = os.stat(db_path)
+def db_file_metadata(db_path: str | None = None) -> dict:
+    resolved_db_path = resolve_db_path(db_path)
+    st = os.stat(resolved_db_path)
     return {
-        "path_identifier": os.path.basename(db_path),
-        "sha256": sha256_file(db_path),
+        "path_identifier": os.path.basename(resolved_db_path),
+        "sha256": sha256_file(resolved_db_path),
         "size_bytes": st.st_size,
         "modification_time_utc":
             datetime.fromtimestamp(st.st_mtime, timezone.utc).isoformat(),
@@ -1377,7 +1380,7 @@ def derive_verdict(portfolio_metrics):
     return "NO_RETROSPECTIVE_COMPLEMENTARITY_EVIDENCE"
 
 
-def run_study(db_path=CANONICAL_DB_PATH, mc_replicates=MC_REPLICATES,
+def run_study(db_path=None, mc_replicates=MC_REPLICATES,
               mc_q_samples=MC_Q_SAMPLES, **input_paths):
     """Full read-only study. Returns one canonical result dict (no file write)."""
     global MC_REPLICATES, MC_Q_SAMPLES
@@ -1711,7 +1714,7 @@ def write_artifacts(result: dict, out_json: str, out_md: str) -> None:
 def main(argv=None) -> int:
     parser = argparse.ArgumentParser(
         description="P276B fixed-N coverage/complementarity study (read-only)")
-    parser.add_argument("--db", default=CANONICAL_DB_PATH)
+    parser.add_argument("--db", default=None)
     parser.add_argument("--out-json", default=DEFAULT_OUT_JSON)
     parser.add_argument("--out-md", default=DEFAULT_OUT_MD)
     parser.add_argument("--mc-replicates", type=int, default=MC_REPLICATES)

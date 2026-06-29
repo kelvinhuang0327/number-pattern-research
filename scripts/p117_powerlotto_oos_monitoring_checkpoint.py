@@ -11,6 +11,41 @@ import json
 import sqlite3
 from pathlib import Path
 
+
+def _p291u_repo_root():
+    current = Path(__file__)
+    if not current.is_absolute():
+        raise FileNotFoundError(f"Source file path is not absolute: {current}")
+    for parent in (current.parent, *current.parents):
+        if (parent / "lottery_api").is_dir():
+            return parent
+    raise FileNotFoundError(f"Unable to locate repository root from source file: {current}")
+
+
+def _p291u_default_db_path():
+    db_path = _p291u_repo_root() / "lottery_api" / "data" / "lottery_v2.db"
+    if not db_path.is_file():
+        raise FileNotFoundError(f"Default lottery DB path is missing or non-regular: {db_path}")
+    return db_path
+
+
+def _p291u_resolve_db_path(db_path=None):
+    if db_path is None:
+        return _p291u_default_db_path()
+    path = Path(db_path)
+    if not path.is_absolute():
+        raise ValueError(f"Explicit DB path must be absolute: {db_path}")
+    if not path.is_file():
+        raise FileNotFoundError(f"Explicit DB path is missing or non-regular: {path}")
+    return path
+
+
+def _p291u_connect_resolved(db_path, *, uri=False):
+    if uri:
+        return sqlite3.connect(f"file:{db_path}?mode=ro", uri=True)
+    return sqlite3.connect(str(db_path))
+
+
 PROJECT_ROOT = Path(__file__).parent.parent
 DB_PATH = PROJECT_ROOT / "lottery_api" / "data" / "lottery_v2.db"
 
@@ -52,7 +87,8 @@ def load_p115():
 
 
 def get_db_state():
-    conn = sqlite3.connect(str(DB_PATH))
+    _p291u_db_path = _p291u_resolve_db_path()
+    conn = _p291u_connect_resolved(_p291u_db_path)
     cur = conn.cursor()
     cur.execute("SELECT COUNT(*) FROM strategy_prediction_replays")
     replay_rows = cur.fetchone()[0]
@@ -79,7 +115,8 @@ def count_new_draws(baseline_draw_str, current_draw_str):
     if current <= baseline:
         return 0
     # Count actual draws between baseline+1 and current
-    conn = sqlite3.connect(str(DB_PATH))
+    _p291u_db_path = _p291u_resolve_db_path()
+    conn = _p291u_connect_resolved(_p291u_db_path)
     cur = conn.cursor()
     cur.execute(
         "SELECT COUNT(*) FROM draws WHERE lottery_type='POWER_LOTTO' "

@@ -24,12 +24,31 @@ import itertools
 import json
 import math
 import pathlib
+
+
+def _repo_root():
+    return Path(__file__).resolve().parent.parent
+
+
+def _canonical_db_path():
+    return _repo_root() / "lottery_api" / "data" / "lottery_v2.db"
+
+
+def _resolve_db_path(db_path=None):
+    candidate = _canonical_db_path() if db_path is None else Path(db_path)
+    if db_path is not None and not candidate.is_absolute():
+        raise ValueError("db_path must be absolute; use None for the canonical lottery_v2.db")
+    if not candidate.exists():
+        raise FileNotFoundError(f"Lottery DB path does not exist: {candidate}")
+    if not candidate.is_file():
+        raise FileNotFoundError(f"Lottery DB path is not a regular file: {candidate}")
+    return str(candidate)
 import sqlite3
 from collections import Counter, defaultdict
 
 # ── Constants ─────────────────────────────────────────────────────────────────
 
-DB_PATH          = "lottery_api/data/lottery_v2.db"
+DB_PATH          = None
 P99_ARTIFACT     = "outputs/replay/special3_prospective_dryrun_plan_20260527.json"
 OUT_JSON         = pathlib.Path(
     "outputs/replay/p106_special3_prospective_evaluation_rerun_20260527.json"
@@ -212,7 +231,7 @@ STRATEGY_FUNCS = {
 
 def load_all_3star_draws() -> list:
     """Load all 3_STAR draws sorted ascending. READ-ONLY."""
-    conn = sqlite3.connect(DB_PATH)
+    conn = sqlite3.connect(_resolve_db_path(DB_PATH))
     rows = conn.execute(
         "SELECT CAST(draw AS INTEGER), draw, date, numbers "
         "FROM draws WHERE lottery_type='3_STAR' "
@@ -527,7 +546,7 @@ def main(extra_json_out: str = None) -> dict:
     now_ts = datetime.datetime.now(datetime.timezone.utc).isoformat()
 
     # Governance check
-    conn = sqlite3.connect(DB_PATH)
+    conn = sqlite3.connect(_resolve_db_path(DB_PATH))
     replay_rows_before = verify_governance(conn)
     conn.close()
 
@@ -552,7 +571,7 @@ def main(extra_json_out: str = None) -> dict:
     classification = determine_classification(n_draws, n_passed)
 
     # Post-check governance (no DB writes occurred)
-    conn2 = sqlite3.connect(DB_PATH)
+    conn2 = sqlite3.connect(_resolve_db_path(DB_PATH))
     replay_rows_after = conn2.execute(
         "SELECT COUNT(*) FROM strategy_prediction_replays"
     ).fetchone()[0]

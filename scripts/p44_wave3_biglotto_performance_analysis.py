@@ -16,8 +16,28 @@ import json
 import random
 import math
 from datetime import datetime
+from pathlib import Path
 
-DB_PATH = "lottery_api/data/lottery_v2.db"
+
+def _repo_root():
+    return Path(__file__).resolve().parent.parent
+
+
+def _canonical_db_path():
+    return _repo_root() / "lottery_api" / "data" / "lottery_v2.db"
+
+
+def _resolve_db_path(db_path=None):
+    candidate = _canonical_db_path() if db_path is None else Path(db_path)
+    if db_path is not None and not candidate.is_absolute():
+        raise ValueError("db_path must be absolute; use None for the canonical lottery_v2.db")
+    if not candidate.exists():
+        raise FileNotFoundError(f"Lottery DB path does not exist: {candidate}")
+    if not candidate.is_file():
+        raise FileNotFoundError(f"Lottery DB path is not a regular file: {candidate}")
+    return str(candidate)
+
+DB_PATH = None
 
 WAVE3_STRATEGIES = [
     "markov_single_biglotto",
@@ -183,7 +203,7 @@ def analyze_strategy(conn, strategy_id):
 
 
 def main():
-    conn = sqlite3.connect(DB_PATH)
+    conn = sqlite3.connect(_resolve_db_path(DB_PATH))
     conn.row_factory = sqlite3.Row
 
     # Verify production row count before analysis

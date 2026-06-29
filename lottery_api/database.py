@@ -7,7 +7,11 @@ import json
 import logging
 from typing import List, Dict, Optional, Tuple
 from datetime import datetime
-import os
+
+try:
+    from .canonical_db_path import resolve_db_path
+except ImportError:  # top-level import context
+    from canonical_db_path import resolve_db_path
 
 logger = logging.getLogger(__name__)
 
@@ -36,22 +40,19 @@ def _normalize_special_for_output(lottery_type: Optional[str], special):
 class DatabaseManager:
     """SQLite 數據庫管理器"""
     
-    def __init__(self, db_path: str = "data/lottery_v2.db"):
+    def __init__(self, db_path: Optional[str] = None):
         """
         初始化數據庫管理器
         
         Args:
-            db_path: 數據庫文件路徑
+            db_path: 絕對數據庫文件路徑；None 使用 canonical 路徑
         """
-        self.db_path = db_path
-        
-        # 確保數據目錄存在
-        os.makedirs(os.path.dirname(db_path), exist_ok=True)
-        
+        self.db_path = resolve_db_path(db_path)
+
         # 初始化數據庫
         self._init_database()
         
-        logger.info(f"✅ Database initialized at {db_path}")
+        logger.info(f"✅ Database initialized at {self.db_path}")
     
     def _get_connection(self) -> sqlite3.Connection:
         """獲取數據庫連接"""

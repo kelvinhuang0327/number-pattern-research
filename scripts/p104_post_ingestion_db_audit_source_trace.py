@@ -8,6 +8,42 @@ import sqlite3
 import json
 import os
 import sys
+from pathlib import Path
+
+
+def _p291u_repo_root():
+    current = Path(__file__)
+    if not current.is_absolute():
+        raise FileNotFoundError(f"Source file path is not absolute: {current}")
+    for parent in (current.parent, *current.parents):
+        if (parent / "lottery_api").is_dir():
+            return parent
+    raise FileNotFoundError(f"Unable to locate repository root from source file: {current}")
+
+
+def _p291u_default_db_path():
+    db_path = _p291u_repo_root() / "lottery_api" / "data" / "lottery_v2.db"
+    if not db_path.is_file():
+        raise FileNotFoundError(f"Default lottery DB path is missing or non-regular: {db_path}")
+    return db_path
+
+
+def _p291u_resolve_db_path(db_path=None):
+    if db_path is None:
+        return _p291u_default_db_path()
+    path = Path(db_path)
+    if not path.is_absolute():
+        raise ValueError(f"Explicit DB path must be absolute: {db_path}")
+    if not path.is_file():
+        raise FileNotFoundError(f"Explicit DB path is missing or non-regular: {path}")
+    return path
+
+
+def _p291u_connect_resolved(db_path, *, uri=False):
+    if uri:
+        return sqlite3.connect(f"file:{db_path}?mode=ro", uri=True)
+    return sqlite3.connect(str(db_path))
+
 
 DB_PATH = os.path.join(os.path.dirname(__file__), '..', 'lottery_api', 'data', 'lottery_v2.db')
 
@@ -17,7 +53,8 @@ STAR4_OLD_COUNT = 0
 
 
 def get_db_snapshot():
-    conn = sqlite3.connect(DB_PATH)
+    _p291u_db_path = _p291u_resolve_db_path()
+    conn = _p291u_connect_resolved(_p291u_db_path)
     c = conn.cursor()
 
     c.execute('SELECT COUNT(*) FROM strategy_prediction_replays')
@@ -51,7 +88,8 @@ def get_db_snapshot():
 
 
 def get_star3_new_rows():
-    conn = sqlite3.connect(DB_PATH)
+    _p291u_db_path = _p291u_resolve_db_path()
+    conn = _p291u_connect_resolved(_p291u_db_path)
     c = conn.cursor()
     c.execute(
         "SELECT draw, date, numbers FROM draws WHERE lottery_type='3_STAR' AND CAST(draw AS INTEGER) > ? ORDER BY CAST(draw AS INTEGER) ASC",
@@ -63,7 +101,8 @@ def get_star3_new_rows():
 
 
 def validate_star3_integrity():
-    conn = sqlite3.connect(DB_PATH)
+    _p291u_db_path = _p291u_resolve_db_path()
+    conn = _p291u_connect_resolved(_p291u_db_path)
     c = conn.cursor()
 
     c.execute("SELECT draw, COUNT(*) FROM draws WHERE lottery_type='3_STAR' GROUP BY draw HAVING COUNT(*) > 1")
@@ -99,7 +138,8 @@ def validate_star3_integrity():
 
 
 def validate_star4_integrity():
-    conn = sqlite3.connect(DB_PATH)
+    _p291u_db_path = _p291u_resolve_db_path()
+    conn = _p291u_connect_resolved(_p291u_db_path)
     c = conn.cursor()
 
     c.execute("SELECT draw, COUNT(*) FROM draws WHERE lottery_type='4_STAR' GROUP BY draw HAVING COUNT(*) > 1")

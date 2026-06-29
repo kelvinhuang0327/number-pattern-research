@@ -18,6 +18,41 @@ sys.path.insert(0, str(PROJECT_ROOT / 'lottery_api'))
 
 from tools.predict_power_quad_strike import generate_power_quad_strike
 
+
+def _p291u_repo_root():
+    current = Path(__file__)
+    if not current.is_absolute():
+        raise FileNotFoundError(f"Source file path is not absolute: {current}")
+    for parent in (current.parent, *current.parents):
+        if (parent / "lottery_api").is_dir():
+            return parent
+    raise FileNotFoundError(f"Unable to locate repository root from source file: {current}")
+
+
+def _p291u_default_db_path():
+    db_path = _p291u_repo_root() / "lottery_api" / "data" / "lottery_v2.db"
+    if not db_path.is_file():
+        raise FileNotFoundError(f"Default lottery DB path is missing or non-regular: {db_path}")
+    return db_path
+
+
+def _p291u_resolve_db_path(db_path=None):
+    if db_path is None:
+        return _p291u_default_db_path()
+    path = Path(db_path)
+    if not path.is_absolute():
+        raise ValueError(f"Explicit DB path must be absolute: {db_path}")
+    if not path.is_file():
+        raise FileNotFoundError(f"Explicit DB path is missing or non-regular: {path}")
+    return path
+
+
+def _p291u_connect_resolved(db_path, *, uri=False):
+    if uri:
+        return sqlite3.connect(f"file:{db_path}?mode=ro", uri=True)
+    return sqlite3.connect(str(db_path))
+
+
 # 威力彩 4 注隨機基準 (1-38選6)
 # P(1注中3+) = 3.87%
 # P(4注中3+) = 1 - (1 - 0.0387)^4 = 1 - 0.8539 = 14.61%
@@ -25,12 +60,13 @@ from tools.predict_power_quad_strike import generate_power_quad_strike
 BASELINE_4BET = 14.60
 
 def load_history():
+    _p291u_db_path = _p291u_resolve_db_path()
     db_path = PROJECT_ROOT / 'lottery_api' / 'data' / 'lottery_v2.db'
     if not db_path.exists():
         # Fallback to older db if needed
         db_path = PROJECT_ROOT / 'lottery_api' / 'data' / 'lottery.db'
     
-    conn = sqlite3.connect(str(db_path))
+    conn = _p291u_connect_resolved(_p291u_db_path)
     cursor = conn.cursor()
     cursor.execute(
         "SELECT draw, date, numbers, special FROM draws WHERE lottery_type=? ORDER BY date ASC",

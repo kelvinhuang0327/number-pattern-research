@@ -10,6 +10,7 @@ sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..'))
 
 import json
 import sqlite3
+from lottery_api.canonical_db_path import resolve_db_path
 import logging
 from datetime import datetime
 from collections import Counter
@@ -24,10 +25,7 @@ from tools.edge_monitor import EdgeMonitor, CONFIG
 
 def load_power_lotto_history(max_records: int = 1500) -> List[Dict]:
     """Load Power Lotto historical data."""
-    db_path = 'lottery_api/data/lottery_v2.db'
-    if not os.path.exists(db_path):
-        db_path = 'lottery_api/data/lottery.db'
-    
+    db_path = resolve_db_path()
     conn = sqlite3.connect(db_path)
     cursor = conn.cursor()
     

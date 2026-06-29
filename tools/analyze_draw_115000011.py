@@ -5,9 +5,29 @@ Numbers: [7, 22, 28, 34, 36, 37], Special: 7
 """
 import sqlite3
 import json
+from pathlib import Path
 from collections import Counter, defaultdict
 
-DB_PATH = "lottery_api/data/lottery_v2.db"
+def _repo_root():
+    return Path(__file__).resolve().parent.parent
+
+
+def _canonical_db_path():
+    return _repo_root() / "lottery_api" / "data" / "lottery_v2.db"
+
+
+def _resolve_db_path(db_path=None):
+    candidate = _canonical_db_path() if db_path is None else Path(db_path)
+    if db_path is not None and not candidate.is_absolute():
+        raise ValueError("db_path must be absolute; use None for the canonical lottery_v2.db")
+    if not candidate.exists():
+        raise FileNotFoundError(f"Lottery DB path does not exist: {candidate}")
+    if not candidate.is_file():
+        raise FileNotFoundError(f"Lottery DB path is not a regular file: {candidate}")
+    return str(candidate)
+
+
+DB_PATH = None
 TARGET_DRAW = "115000011"
 TARGET_NUMBERS = [7, 22, 28, 34, 36, 37]
 TARGET_SPECIAL = 7
@@ -16,7 +36,7 @@ PREV_NUMBERS = [1, 12, 14, 15, 27, 29]
 PREV_SPECIAL = 5
 
 def load_draws(n=None):
-    conn = sqlite3.connect(DB_PATH)
+    conn = sqlite3.connect(_resolve_db_path(DB_PATH))
     cur = conn.cursor()
     query = """SELECT draw, date, numbers, special FROM draws 
                WHERE lottery_type='POWER_LOTTO' ORDER BY date DESC"""

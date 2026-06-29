@@ -18,12 +18,12 @@ logger = logging.getLogger(__name__)
 class BacktestFramework:
     """回測框架 - 用於驗證預測方法的實際表現"""
 
-    def __init__(self, db_path: str = "data/lottery_v2.db"):
+    def __init__(self, db_path: Optional[str] = None):
         """
         初始化回測框架
 
         Args:
-            db_path: 數據庫路徑
+            db_path: 絕對數據庫路徑；None 使用 canonical 路徑
         """
         self.db = DatabaseManager(db_path)
         self.predictor = UnifiedPredictionEngine()

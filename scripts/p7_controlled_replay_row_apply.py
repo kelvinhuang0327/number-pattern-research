@@ -42,6 +42,7 @@ P7_JSON   = REPO_ROOT / "outputs" / "replay" / "p7_controlled_apply_dry_run_2026
 
 sys.path.insert(0, str(REPO_ROOT))
 
+from lottery_api.canonical_db_path import resolve_db_path
 from lottery_api.models.replay_p7_apply_plan_contract import P7ApplyDecision, P7ApplyScope
 
 TRUTH_LEVEL_APPLIED = "RECONSTRUCTED_FROM_DB_PREDICTION_PAYLOAD"
@@ -57,14 +58,14 @@ def _open_readonly(path: pathlib.Path) -> sqlite3.Connection:
     Uses PRAGMA query_only to refuse writes at the SQLite level.
     URI mode=ro is avoided due to cross-platform path encoding edge cases.
     """
-    conn = sqlite3.connect(str(path.resolve()))
+    conn = sqlite3.connect(resolve_db_path(path))
     conn.execute("PRAGMA query_only = ON")
     conn.row_factory = sqlite3.Row
     return conn
 
 
 def _open_readwrite(path: pathlib.Path) -> sqlite3.Connection:
-    conn = sqlite3.connect(str(path))
+    conn = sqlite3.connect(resolve_db_path(path))
     conn.row_factory = sqlite3.Row
     conn.execute("PRAGMA journal_mode=WAL")
     conn.execute("PRAGMA foreign_keys=ON")
@@ -146,7 +147,7 @@ def _preflight(args: argparse.Namespace, conn_ro: sqlite3.Connection) -> None:
 
     # 1. Backup required for actual apply
     if args.apply:
-        backup_path = pathlib.Path(args.backup)
+        backup_path = _resolve_backup_path(args.backup)
         if not backup_path.exists():
             raise RuntimeError(
                 f"SAFETY STOP: --apply requires backup file, not found: {backup_path}\n"
@@ -183,6 +184,17 @@ def _preflight(args: argparse.Namespace, conn_ro: sqlite3.Connection) -> None:
                 "SAFETY STOP: --scope INCLUDE_RETIRED_WITH_WARNING requires "
                 "--include-retired-reviewed flag to confirm human review."
             )
+
+
+def _resolve_backup_path(path: str) -> pathlib.Path:
+    backup_path = pathlib.Path(path)
+    if not backup_path.is_absolute():
+        raise ValueError("backup path must be absolute")
+    if not backup_path.exists():
+        raise FileNotFoundError(f"Backup DB path does not exist: {backup_path}")
+    if not backup_path.is_file():
+        raise FileNotFoundError(f"Backup DB path is not a regular file: {backup_path}")
+    return backup_path
 
 
 # ---------------------------------------------------------------------------
@@ -314,12 +326,12 @@ def main() -> None:
     )
     parser.add_argument(
         "--db",
-        default=str(DB_PATH),
-        help="Target DB path (default: production DB).",
+        default=None,
+        help="Absolute target DB path (default: canonical production DB).",
     )
     parser.add_argument(
         "--backup",
-        default="backups/lottery_v2_pre_p7_controlled_apply_20260520.db",
+        default=str(REPO_ROOT / "backups" / "lottery_v2_pre_p7_controlled_apply_20260520.db"),
         help="Path to backup DB (required for --apply).",
     )
     parser.add_argument(
@@ -351,10 +363,7 @@ def main() -> None:
     )
     args = parser.parse_args()
 
-    db_path = pathlib.Path(args.db)
-    if not db_path.exists():
-        print(f"STOP: DB not found: {db_path}")
-        sys.exit(1)
+    db_path = pathlib.Path(resolve_db_path(args.db))
 
     # ── Rollback plan (dry-run display) ───────────────────────────────────────
     if args.rollback_plan:
@@ -530,7 +539,7 @@ def _show_rollback_plan(
 
     if execute:
         print("[ROLLBACK APPLY] Deleting rows...")
-        conn_rw = sqlite3.connect(str(db_path))
+        conn_rw = _open_readwrite(db_path)
         conn_rw.execute(
             "DELETE FROM strategy_prediction_replays WHERE controlled_apply_id=?",
             (controlled_apply_id,),

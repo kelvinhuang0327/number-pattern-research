@@ -35,6 +35,7 @@ if str(_REPO_ROOT) not in sys.path:
 # ---------------------------------------------------------------------------
 # SSOT imports
 # ---------------------------------------------------------------------------
+from lottery_api.canonical_db_path import resolve_db_path
 from lottery_api.utils.baseline_calculator import (
     baseline_hit_rate,
     random_baseline_summary,
@@ -66,7 +67,7 @@ from lottery_api.utils.historical_draw_parser import (
 SEED = 20260608
 B_NULL = 500          # Monte-Carlo null draws — keep fast; enough for p-floor 1/(B+1)≈0.002
 ALPHA = 0.05
-DB_PATH = Path("lottery_api/data/lottery_v2.db")
+DB_PATH = None
 OUTPUT_DIR = Path("outputs/research")
 OUTPUT_JSON = OUTPUT_DIR / "p256a_feature_information_mi_null_framework_20260608.json"
 OUTPUT_MD   = OUTPUT_DIR / "p256a_feature_information_mi_null_framework_20260608.md"
@@ -363,7 +364,7 @@ def run_assessment() -> dict:
     # ------------------------------------------------------------------
     # Open DB (read-only)
     # ------------------------------------------------------------------
-    conn = sqlite3.connect(f"file:{DB_PATH}?mode=ro", uri=True)
+    conn = sqlite3.connect(f"file:{resolve_db_path(DB_PATH)}?mode=ro", uri=True)
 
     per_lottery_results: list[dict] = []
     all_p_values: list[float] = []

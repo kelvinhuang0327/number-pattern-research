@@ -18,9 +18,42 @@ from collections import Counter
 from datetime import datetime
 import copy
 
-DB_PATH = os.path.join(os.path.dirname(__file__), '..', 'lottery_api', 'data', 'lottery_v2.db')
-if not os.path.exists(DB_PATH):
-    DB_PATH = os.path.join(os.path.dirname(__file__), '..', 'lottery_v2.db')
+from pathlib import Path
+
+
+def _p291u_repo_root():
+    current = Path(__file__)
+    if not current.is_absolute():
+        raise FileNotFoundError(f"Source file path is not absolute: {current}")
+    for parent in (current.parent, *current.parents):
+        if (parent / "lottery_api").is_dir():
+            return parent
+    raise FileNotFoundError(f"Unable to locate repository root from source file: {current}")
+
+
+def _p291u_default_db_path():
+    db_path = _p291u_repo_root() / "lottery_api" / "data" / "lottery_v2.db"
+    if not db_path.is_file():
+        raise FileNotFoundError(f"Default lottery DB path is missing or non-regular: {db_path}")
+    return db_path
+
+
+def _p291u_resolve_db_path(db_path=None):
+    if db_path is None:
+        return _p291u_default_db_path()
+    path = Path(db_path)
+    if not path.is_absolute():
+        raise ValueError(f"Explicit DB path must be absolute: {db_path}")
+    if not path.is_file():
+        raise FileNotFoundError(f"Explicit DB path is missing or non-regular: {path}")
+    return path
+
+
+def _p291u_connect_resolved(db_path):
+    return sqlite3.connect(str(_p291u_resolve_db_path(db_path)))
+
+
+DB_PATH = str(_p291u_resolve_db_path())
 
 POOL = 39
 PICK = 5
@@ -35,7 +68,7 @@ BASELINE_1BET_GE2 = sum(comb(PICK, k) * comb(POOL - PICK, PICK - k) / comb(POOL,
                         for k in range(2, PICK + 1))
 
 def load_draws():
-    conn = sqlite3.connect(DB_PATH)
+    conn = _p291u_connect_resolved(DB_PATH)
     cursor = conn.cursor()
     cursor.execute("""
         SELECT draw, date, numbers FROM draws

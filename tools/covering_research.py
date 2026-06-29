@@ -1,11 +1,31 @@
 import sqlite3
 import json
 import random
+from pathlib import Path
+
+def _repo_root():
+    return Path(__file__).resolve().parent.parent
+
+
+def _canonical_db_path():
+    return _repo_root() / "lottery_api" / "data" / "lottery_v2.db"
+
+
+def _resolve_db_path(db_path=None):
+    candidate = _canonical_db_path() if db_path is None else Path(db_path)
+    if db_path is not None and not candidate.is_absolute():
+        raise ValueError("db_path must be absolute; use None for the canonical lottery_v2.db")
+    if not candidate.exists():
+        raise FileNotFoundError(f"Lottery DB path does not exist: {candidate}")
+    if not candidate.is_file():
+        raise FileNotFoundError(f"Lottery DB path is not a regular file: {candidate}")
+    return str(candidate)
+
 import numpy as np
 from collections import Counter, defaultdict
 
 def load_data():
-    p = "lottery_api/data/lottery_v2.db"
+    p = _resolve_db_path()
     conn = sqlite3.connect(p)
     cursor = conn.cursor()
     cursor.execute("SELECT draw, date, numbers FROM draws WHERE lottery_type IN ('BIG_LOTTO', 'BIG_LOTTO_BONUS') ORDER BY CAST(draw AS INTEGER) ASC")

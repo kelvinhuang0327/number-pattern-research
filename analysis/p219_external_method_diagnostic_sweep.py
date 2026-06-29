@@ -44,17 +44,24 @@ from collections import Counter, defaultdict
 SEED = 20260605
 
 # --- DB resolution (read-only) ---------------------------------------------
-_CANDIDATE_DBS = [
-    os.path.join(os.path.dirname(__file__), "..", "lottery_api", "data", "lottery_v2.db"),
-    "/Users/kelvin/Kelvin-WorkSpace/LotteryNew/lottery_api/data/lottery_v2.db",
-]
+def _default_db_path() -> str:
+    repo_root = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
+    return os.path.join(repo_root, "lottery_api", "data", "lottery_v2.db")
 
 
 def resolve_db(explicit: str | None = None) -> str:
-    for cand in ([explicit] if explicit else []) + _CANDIDATE_DBS:
-        if cand and os.path.exists(cand):
-            return os.path.abspath(cand)
-    raise FileNotFoundError("lottery_v2.db not found in candidate paths")
+    if explicit is None:
+        db_path = _default_db_path()
+        if not os.path.isfile(db_path):
+            raise FileNotFoundError(f"default lottery_v2.db not found: {db_path}")
+        return db_path
+
+    db_path = os.fspath(explicit)
+    if not os.path.isabs(db_path):
+        raise ValueError(f"explicit DB path must be absolute: {db_path}")
+    if not os.path.isfile(db_path):
+        raise FileNotFoundError(f"explicit lottery_v2.db not found: {db_path}")
+    return db_path
 
 
 # game -> (sql filter, pool size, draw size, kind)

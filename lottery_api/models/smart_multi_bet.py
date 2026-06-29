@@ -12,6 +12,7 @@ import numpy as np
 from collections import Counter
 from typing import List, Dict, Set, Tuple
 import random
+from pathlib import Path
 from itertools import combinations
 
 
@@ -372,6 +373,26 @@ class SmartMultiBetSystem:
 
         return score
 
+# Policy-A DB resolver for direct module smoke helpers.
+
+def _repo_root():
+    return Path(__file__).resolve().parents[2]
+
+
+def _canonical_db_path():
+    return _repo_root() / "lottery_api" / "data" / "lottery_v2.db"
+
+
+def _resolve_db_path(db_path=None):
+    candidate = _canonical_db_path() if db_path is None else Path(db_path)
+    if db_path is not None and not candidate.is_absolute():
+        raise ValueError("db_path must be absolute; use None for the canonical lottery_v2.db")
+    if not candidate.exists():
+        raise FileNotFoundError(f"Lottery DB path does not exist: {candidate}")
+    if not candidate.is_file():
+        raise FileNotFoundError(f"Lottery DB path is not a regular file: {candidate}")
+    return str(candidate)
+
 
 def generate_recommendations(num_bets: int = 5):
     """生成推薦號碼"""
@@ -379,7 +400,7 @@ def generate_recommendations(num_bets: int = 5):
     import json
 
     # 載入數據
-    conn = sqlite3.connect('data/lottery.db')
+    conn = sqlite3.connect(_resolve_db_path())
     cursor = conn.cursor()
     cursor.execute("""
         SELECT draw, numbers, special, date

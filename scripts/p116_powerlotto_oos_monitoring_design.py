@@ -16,6 +16,25 @@ import sys
 from datetime import datetime, timezone
 from pathlib import Path
 
+
+def _repo_root():
+    return Path(__file__).resolve().parent.parent
+
+
+def _canonical_db_path():
+    return _repo_root() / "lottery_api" / "data" / "lottery_v2.db"
+
+
+def _resolve_db_path(db_path=None):
+    candidate = _canonical_db_path() if db_path is None else Path(db_path)
+    if db_path is not None and not candidate.is_absolute():
+        raise ValueError("db_path must be absolute; use None for the canonical lottery_v2.db")
+    if not candidate.exists():
+        raise FileNotFoundError(f"Lottery DB path does not exist: {candidate}")
+    if not candidate.is_file():
+        raise FileNotFoundError(f"Lottery DB path is not a regular file: {candidate}")
+    return str(candidate)
+
 TASK_ID = "P116_POWERLOTTO_OOS_MONITORING_DESIGN"
 GENERATED_DATE = "20260527"
 
@@ -42,8 +61,8 @@ VALID_CLASSIFICATIONS = {
 }
 
 
-def open_db_readonly(db_path: str):
-    uri = Path(db_path).resolve().as_uri() + "?mode=ro"
+def open_db_readonly(db_path=None):
+    uri = Path(_resolve_db_path(db_path)).as_uri() + "?mode=ro"
     return sqlite3.connect(uri, uri=True)
 
 
@@ -396,8 +415,8 @@ def main():
     parser.add_argument("--json-out", required=True, help="Output path for JSON artifact")
     parser.add_argument(
         "--db",
-        default="lottery_api/data/lottery_v2.db",
-        help="Path to lottery_v2.db (read-only access for invariant check)",
+        default=None,
+        help="Absolute path to lottery_v2.db (read-only access for invariant check)",
     )
     parser.add_argument(
         "--p112-artifact",

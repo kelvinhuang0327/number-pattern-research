@@ -34,6 +34,25 @@ import hashlib
 from datetime import datetime, timezone
 from pathlib import Path
 
+
+def _repo_root():
+    return Path(__file__).resolve().parent.parent
+
+
+def _canonical_db_path():
+    return _repo_root() / "lottery_api" / "data" / "lottery_v2.db"
+
+
+def _resolve_db_path(db_path=None):
+    candidate = _canonical_db_path() if db_path is None else Path(db_path)
+    if db_path is not None and not candidate.is_absolute():
+        raise ValueError("db_path must be absolute; use None for the canonical lottery_v2.db")
+    if not candidate.exists():
+        raise FileNotFoundError(f"Lottery DB path does not exist: {candidate}")
+    if not candidate.is_file():
+        raise FileNotFoundError(f"Lottery DB path is not a regular file: {candidate}")
+    return str(candidate)
+
 # ── Constants ────────────────────────────────────────────────────────────────
 
 TASK_ID = "P126"
@@ -42,7 +61,7 @@ DATE_SUFFIX = "20260528"
 
 P124_ARTIFACT = Path("outputs/replay/p124_multi_bet_truth_and_coverage_matrix_20260528.json")
 P125_ARTIFACT = Path("outputs/replay/p125_adapter_gap_plan_from_p124_20260528.json")
-DB_PATH = Path("lottery_api/data/lottery_v2.db")
+DB_PATH = None
 
 OUT_JSON = Path(f"outputs/replay/p126_controlled_apply_plan_tier_b_multi_bet_{DATE_SUFFIX}.json")
 OUT_MD   = Path(f"docs/replay/p126_controlled_apply_plan_tier_b_multi_bet_{DATE_SUFFIX}.md")
@@ -115,7 +134,7 @@ EXPECTED_TRUTH_LEVEL = "TIERB_DRYRUN_VALIDATED"
 
 def _ro_conn() -> sqlite3.Connection:
     """Open a read-only connection to the lottery DB."""
-    conn = sqlite3.connect(DB_PATH)
+    conn = sqlite3.connect(_resolve_db_path(DB_PATH))
     conn.execute("PRAGMA query_only = ON")
     return conn
 

@@ -15,6 +15,42 @@ import json
 import sqlite3
 import sys
 import os
+from pathlib import Path
+
+
+def _p291u_repo_root():
+    current = Path(__file__)
+    if not current.is_absolute():
+        raise FileNotFoundError(f"Source file path is not absolute: {current}")
+    for parent in (current.parent, *current.parents):
+        if (parent / "lottery_api").is_dir():
+            return parent
+    raise FileNotFoundError(f"Unable to locate repository root from source file: {current}")
+
+
+def _p291u_default_db_path():
+    db_path = _p291u_repo_root() / "lottery_api" / "data" / "lottery_v2.db"
+    if not db_path.is_file():
+        raise FileNotFoundError(f"Default lottery DB path is missing or non-regular: {db_path}")
+    return db_path
+
+
+def _p291u_resolve_db_path(db_path=None):
+    if db_path is None:
+        return _p291u_default_db_path()
+    path = Path(db_path)
+    if not path.is_absolute():
+        raise ValueError(f"Explicit DB path must be absolute: {db_path}")
+    if not path.is_file():
+        raise FileNotFoundError(f"Explicit DB path is missing or non-regular: {path}")
+    return path
+
+
+def _p291u_connect_resolved(db_path, *, uri=False):
+    if uri:
+        return sqlite3.connect(f"file:{db_path}?mode=ro", uri=True)
+    return sqlite3.connect(str(db_path))
+
 
 DB_LAYER_API_MODE = True   # signals to tests that HTTP was not used
 DB_PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)),
@@ -28,7 +64,8 @@ failures = []
 
 # ── 1. DB row counts ─────────────────────────────────────────────────────────
 print("=== DB VERIFICATION ===")
-conn = sqlite3.connect(DB_PATH)
+_p291u_db_path = _p291u_resolve_db_path()
+conn = _p291u_connect_resolved(_p291u_db_path)
 c = conn.cursor()
 total = c.execute("SELECT COUNT(*) FROM strategy_prediction_replays").fetchone()[0]
 p59 = c.execute("SELECT COUNT(*) FROM strategy_prediction_replays WHERE controlled_apply_id=?",
@@ -92,7 +129,8 @@ if bad_dry_run: failures.append(f"bad dry_run: {bad_dry_run}")
 # These queries replicate what each replay endpoint would execute.
 # Equivalent to a live HTTP check in data-correctness terms.
 print("\n=== DB-LAYER API VERIFICATION (replaces HTTP — torch missing) ===")
-conn3 = sqlite3.connect(DB_PATH)
+_p291u_db_path = _p291u_resolve_db_path()
+conn3 = _p291u_connect_resolved(_p291u_db_path)
 conn3.row_factory = sqlite3.Row
 
 # ── 3a. /api/replay/summary?lottery_type=POWER_LOTTO ─────────────────────────
@@ -181,7 +219,8 @@ print(f"  (Live HTTP skipped: torch not installed, server cannot start)")
 
 # ── 4. WATCHLIST not in DB ─────────────────────────────────────────────────
 print("\n=== WATCHLIST NOT APPLIED ===")
-conn2 = sqlite3.connect(DB_PATH)
+_p291u_db_path = _p291u_resolve_db_path()
+conn2 = _p291u_connect_resolved(_p291u_db_path)
 for strat in ("cold_complement_2bet", "zonal_entropy_2bet"):
     cnt = conn2.execute(
         "SELECT COUNT(*) FROM strategy_prediction_replays WHERE strategy_id LIKE ?",

@@ -2,7 +2,7 @@
 
 Scope (hard constraints):
   - Reads the P268D-1 full-history artifact (JSONL/ledger/summary) read-only.
-  - Opens data/lottery_v2.db ONLY in read-only mode (sqlite3 URI mode=ro).
+  - Opens lottery_api/data/lottery_v2.db ONLY in read-only mode (sqlite3 URI mode=ro).
     No INSERT/UPDATE/DELETE/CREATE/ALTER/DROP of any kind.
   - Does NOT write to lottery_api/data/hypothesis_registry.jsonl.
   - Does NOT run H1/H2/H3, no permutation test, no significance value
@@ -23,7 +23,18 @@ from collections import Counter, defaultdict
 from datetime import datetime, timezone
 from pathlib import Path
 
-REPO_ROOT = Path(__file__).resolve().parents[1]
+
+def _p291u_repo_root():
+    current = Path(__file__)
+    if not current.is_absolute():
+        raise FileNotFoundError(f"Source file path is not absolute: {current}")
+    for parent in (current.parent, *current.parents):
+        if (parent / "lottery_api").is_dir():
+            return parent
+    raise FileNotFoundError(f"Unable to locate repository root from source file: {current}")
+
+
+REPO_ROOT = _p291u_repo_root()
 OUT_DIR = REPO_ROOT / "outputs" / "research"
 
 P268D1_REGISTRY_FREEZE = OUT_DIR / "p268d1_draw_order_registry_freeze_20260610.json"
@@ -34,7 +45,25 @@ P268D1_SUMMARY = OUT_DIR / "p268d1_draw_order_full_history_artifact_backfill_202
 OUTPUT_JSON = OUT_DIR / "p268d2_draw_order_structure_validation_db_alignment_20260610.json"
 OUTPUT_MD = OUT_DIR / "p268d2_draw_order_structure_validation_db_alignment_20260610.md"
 
-DB_PATH = REPO_ROOT / "data" / "lottery_v2.db"
+DB_PATH = REPO_ROOT / "lottery_api" / "data" / "lottery_v2.db"
+
+
+def _p291u_default_db_path():
+    db_path = DB_PATH
+    if not db_path.is_file():
+        raise FileNotFoundError(f"Default lottery DB path is missing or non-regular: {db_path}")
+    return db_path
+
+
+def _p291u_resolve_db_path(db_path=None):
+    if db_path is None:
+        return _p291u_default_db_path()
+    path = Path(db_path)
+    if not path.is_absolute():
+        raise ValueError(f"Explicit DB path must be absolute: {db_path}")
+    if not path.is_file():
+        raise FileNotFoundError(f"Explicit DB path is missing or non-regular: {path}")
+    return path
 
 EXPECTED_LEN_BY_GAME = {
     "BIG_LOTTO": 7,
@@ -204,11 +233,11 @@ def structure_validation_aggregate(records, ledger):
 
 
 def db_alignment_audit():
-    """Read-only inspection of data/lottery_v2.db. Never writes to the DB."""
+    """Read-only inspection of lottery_api/data/lottery_v2.db. Never writes to the DB."""
 
     result = {
         "db_path": str(DB_PATH.relative_to(REPO_ROOT)),
-        "db_exists": DB_PATH.exists(),
+        "db_exists": DB_PATH.is_file(),
         "opened_read_only": False,
         "tables_inspected": [],
         "views_inspected": [],
@@ -224,12 +253,9 @@ def db_alignment_audit():
         "verdict_reason": "",
     }
 
-    if not DB_PATH.exists():
-        result["verdict"] = "PARTIAL_ENV_LIMITATION"
-        result["verdict_reason"] = "data/lottery_v2.db does not exist in this environment."
-        return result
-
-    conn = sqlite3.connect(f"file:{DB_PATH}?mode=ro", uri=True)
+    db_path = _p291u_resolve_db_path()
+    db_uri = f"file:{db_path}?mode=ro"
+    conn = sqlite3.connect(db_uri, uri=True)
     result["opened_read_only"] = True
     try:
         cur = conn.cursor()
@@ -254,7 +280,7 @@ def db_alignment_audit():
         if result["draws_row_count"] == 0:
             result["verdict"] = "PARTIAL_ENV_LIMITATION"
             result["verdict_reason"] = (
-                "data/lottery_v2.db 'draws' table has 0 rows in this environment "
+                "lottery_api/data/lottery_v2.db 'draws' table has 0 rows in this environment "
                 "(consistent with P268B finding DB alignment = NO_LOCAL_ROWS). "
                 "No row-level alignment is possible; structural schema (table/columns) "
                 "was inspected read-only and is consistent with the P268D-1 artifact's "
@@ -433,7 +459,7 @@ def main():
             "No H1/H2/H3 statistical test, no permutation test, and no significance "
             "value of any kind was computed in this task. Reserved for a separate, "
             "future, explicitly-authorized confirmatory task (P268D-3).",
-            "No production database write was performed (data/lottery_v2.db opened "
+            "No production database write was performed (lottery_api/data/lottery_v2.db opened "
             "read-only via sqlite3 URI mode=ro, no INSERT/UPDATE/DELETE/DDL).",
             "No write to lottery_api/data/hypothesis_registry.jsonl was performed.",
             "No new strategy was generated and no betting recommendation is made.",

@@ -513,3 +513,1149 @@ def test_no_csv_export_added():
     html = _html()
     # crude guard: the P261A work must not add CSV/blob download verbs near the panel
     assert "text/csv" not in html.lower()
+
+def test_best_ticket_summary_logic_present():
+    """Verify that multi-ticket replay summary selects the best ticket (hit_count & tie-break bet_index)."""
+    html = _html()
+    assert "最佳命中：第 " in html
+    assert "var hc1 = bestBet.hit_count" in html
+    assert "var hc2 = b2.hit_count" in html
+    assert "hc2 > hc1" in html
+    assert "bi2 < bi1" in html
+
+
+# ---------------------------------------------------------------------------
+# 11. Headless Chrome DOM Verification Tests
+# ---------------------------------------------------------------------------
+import socket
+import subprocess
+import time
+import os
+import threading
+from http.server import HTTPServer, BaseHTTPRequestHandler
+import json
+import re
+from pathlib import Path
+
+def _run_chrome_headless_test(mock_data: dict, screenshot_name: str | None = None) -> str:
+    import tempfile
+    # Find a free port
+    s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    s.bind(('127.0.0.1', 0))
+    port = s.getsockname()[1]
+    s.close()
+
+    # Prepare HTML content with injected script
+    html_content = Path(HTML_PATH).read_text(encoding="utf-8")
+
+    # We set window.MOCK_DATA_FIXTURE and override window.fetch to return it.
+    # Programmatically click the detail button.
+    mock_js = f"""
+    <script>
+    window.MOCK_DATA_FIXTURE = {json.dumps(mock_data)};
+    window.fetch = function(url) {{
+        return Promise.resolve({{
+            ok: true,
+            json: function() {{ return Promise.resolve(window.MOCK_DATA_FIXTURE); }}
+        }});
+    }};
+    window.addEventListener('DOMContentLoaded', function() {{
+        var btn = document.createElement('button');
+        btn.className = 'p259b-detail-btn';
+        btn.dataset.lottery = '{mock_data.get("lottery_type", "DAILY_539")}';
+        btn.dataset.strategy = '{mock_data.get("strategy_id", "test_strategy")}';
+        btn.dataset.bet = '{mock_data.get("bet_index", 1)}';
+        btn.dataset.name = 'Test Strategy';
+        var tbody = document.getElementById('p259a-tbody');
+        if (tbody) {{
+            tbody.appendChild(btn);
+            btn.click();
+        }}
+    }});
+    </script>
+    """
+    injected_html = html_content.replace("</body>", f"{mock_js}</body>")
+
+    class InjectedHTMLHandler(BaseHTTPRequestHandler):
+        def do_GET(self):
+            self.send_response(200)
+            self.send_header("Content-Type", "text/html; charset=utf-8")
+            self.end_headers()
+            self.wfile.write(injected_html.encode("utf-8"))
+        def log_message(self, format, *args):
+            pass
+
+    server = HTTPServer(('127.0.0.1', port), InjectedHTMLHandler)
+    t = threading.Thread(target=server.serve_forever)
+    t.daemon = True
+    t.start()
+
+    time.sleep(0.1)
+    chrome_path = "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome"
+    url = f"http://127.0.0.1:{port}/"
+
+    try:
+        env_dir = os.environ.get("LOTTERY_UI_TEST_ARTIFACT_DIR")
+        if env_dir:
+            out_dir = env_dir
+        else:
+            out_dir = os.path.join(tempfile.gettempdir(), "lottery_ui_test_temp_outputs")
+        os.makedirs(out_dir, exist_ok=True)
+        if screenshot_name:
+            screenshot_path = os.path.join(out_dir, screenshot_name)
+            subprocess.run([
+                chrome_path,
+                "--headless",
+                "--disable-gpu",
+                "--window-size=1440,900",
+                f"--screenshot={screenshot_path}",
+                url
+            ], capture_output=True, timeout=30)
+
+        res = subprocess.run([
+            chrome_path,
+            "--headless",
+            "--disable-gpu",
+            "--dump-dom",
+            url
+        ], capture_output=True, text=True, timeout=30)
+
+        # Also write the normalized DOM evidence to the attempt directory
+        dom_evidence_path = os.path.join(out_dir, "best_ticket_behavioral_evidence.json")
+        evidence = {}
+        if os.path.exists(dom_evidence_path):
+            try:
+                with open(dom_evidence_path, "r", encoding="utf-8") as f:
+                    evidence = json.load(f)
+            except Exception:
+                pass
+        evidence[mock_data.get("rows")[0].get("target_draw")] = res.stdout
+        with open(dom_evidence_path, "w", encoding="utf-8") as f:
+            json.dump(evidence, f, indent=2, ensure_ascii=False)
+
+        return res.stdout
+    finally:
+        server.shutdown()
+        server.server_close()
+        t.join()
+
+
+def _extract_tbody(dom: str) -> str:
+    start_idx = dom.find('<tbody id="p259b-detail-tbody">')
+    if start_idx == -1:
+        return ""
+    end_idx = dom.find('</tbody>', start_idx)
+    if end_idx == -1:
+        return ""
+    return dom[start_idx:end_idx+8]
+
+
+def test_fixture_a_115000037():
+    mock_data = {
+      "lottery_type": "DAILY_539",
+      "strategy_id": "test_strategy",
+      "bet_index": 2,
+      "derived_bet_count": 4,
+      "rows": [
+        {
+          "target_draw": "115000037",
+          "draw_date": "2026-06-25",
+          "n_bets": 4,
+          "actual_numbers": [3, 14, 15, 24, 34, 38],
+          "actual_special": 3,
+          "predicted_numbers": [14, 15],
+          "predicted_special": None,
+          "hit_numbers": [14, 15, 24, 34],
+          "special_hit": True,
+          "any_hit": True,
+          "max_hit_count": 3,
+          "bets": [
+            {
+              "bet_index": 1,
+              "predicted_numbers": [14, 15],
+              "actual_numbers": [3, 14, 15, 24, 34, 38],
+              "hit_numbers": [14, 15],
+              "hit_count": 2,
+              "special_hit": False,
+              "result_label": "2 hit"
+            },
+            {
+              "bet_index": 2,
+              "predicted_numbers": [14, 15],
+              "actual_numbers": [3, 14, 15, 24, 34, 38],
+              "hit_numbers": [14, 15],
+              "hit_count": 2,
+              "special_hit": False,
+              "result_label": "2 hit"
+            },
+            {
+              "bet_index": 3,
+              "predicted_numbers": [24],
+              "actual_numbers": [3, 14, 15, 24, 34, 38],
+              "hit_numbers": [24],
+              "hit_count": 1,
+              "special_hit": False,
+              "result_label": "1 hit"
+            },
+            {
+              "bet_index": 4,
+              "predicted_numbers": [14, 15, 34],
+              "actual_numbers": [3, 14, 15, 24, 34, 38],
+              "hit_numbers": [14, 15, 34],
+              "hit_count": 3,
+              "special_hit": True,
+              "actual_special": 3,
+              "predicted_special": 3,
+              "result_label": "3 hit"
+            }
+          ]
+        }
+      ]
+    }
+
+    dom = _run_chrome_headless_test(mock_data, screenshot_name="desktop_115000037.png")
+    tbody = _extract_tbody(dom)
+    assert tbody, "Detail tbody not found in DOM"
+
+    # Assertions on best-hit label inside the summary cell
+    assert "最佳命中：第 4 注｜3 個" in tbody
+
+    # Assert DOM inside [data-role="replay-best-hit-summary"] only
+    hit_td_match = re.search(r'<td[^>]*data-role="replay-best-hit-summary"[^>]*>(.*?)</td>', tbody, re.DOTALL)
+    assert hit_td_match, "Hit summary TD with data-role not found"
+    hit_summary_content = hit_td_match.group(1)
+
+    # Assert best ticket hit tokens are present in marked summary area
+    assert '14' in hit_summary_content
+    assert '15' in hit_summary_content
+    assert '34' in hit_summary_content
+
+    # Assert forbidden union numbers (e.g. 24) are absent from marked summary area
+    assert '24' not in hit_summary_content
+
+    # Assert actual-draw DOM remains complete in its own cell (not inside the marked summary area)
+    # The actual draw cell contains the winning numbers
+    actual_td_match = re.search(r'<td[^>]*data-label="實際開獎"[^>]*>(.*?)</td>', tbody, re.DOTALL)
+    assert actual_td_match, "Actual draw TD not found"
+    actual_content = actual_td_match.group(1)
+    assert "3" in actual_content
+    assert "14" in actual_content
+    assert "15" in actual_content
+    assert "24" in actual_content
+    assert "34" in actual_content
+    assert "38" in actual_content
+    assert "特3" in actual_content or "3" in actual_content  # special ball 3
+
+    # Assert expanded detail contains each individual ticket and its original hit result
+    for b in mock_data["rows"][0]["bets"]:
+        assert f"第 {b['bet_index']} 注" in tbody
+        assert str(b['hit_count']) in tbody
+
+
+def test_fixture_b_115000040():
+    mock_data = {
+      "lottery_type": "DAILY_539",
+      "strategy_id": "test_strategy",
+      "bet_index": 1,
+      "derived_bet_count": 3,
+      "rows": [
+        {
+          "target_draw": "115000040",
+          "draw_date": "2026-06-25",
+          "n_bets": 3,
+          "actual_numbers": [3, 14, 15, 34, 38],
+          "predicted_numbers": [14],
+          "predicted_special": None,
+          "hit_numbers": [14, 34],
+          "special_hit": False,
+          "any_hit": True,
+          "max_hit_count": 1,
+          "bets": [
+            {
+              "bet_index": 1,
+              "predicted_numbers": [14],
+              "actual_numbers": [3, 14, 15, 34, 38],
+              "hit_numbers": [14],
+              "hit_count": 1,
+              "special_hit": False,
+              "result_label": "1 hit"
+            },
+            {
+              "bet_index": 2,
+              "predicted_numbers": [],
+              "actual_numbers": [3, 14, 15, 34, 38],
+              "hit_numbers": [],
+              "hit_count": 0,
+              "special_hit": False,
+              "result_label": "0 hit"
+            },
+            {
+              "bet_index": 3,
+              "predicted_numbers": [34],
+              "actual_numbers": [3, 14, 15, 34, 38],
+              "hit_numbers": [34],
+              "hit_count": 1,
+              "special_hit": False,
+              "result_label": "1 hit"
+            }
+          ]
+        }
+      ]
+    }
+
+    dom = _run_chrome_headless_test(mock_data)
+    tbody = _extract_tbody(dom)
+    assert tbody
+
+    assert "最佳命中：第 1 注｜1 個" in tbody
+    hit_td_match = re.search(r'<td[^>]*data-role="replay-best-hit-summary"[^>]*>(.*?)</td>', tbody, re.DOTALL)
+    assert hit_td_match
+    hit_summary_content = hit_td_match.group(1)
+    assert "14" in hit_summary_content
+    assert "34" not in hit_summary_content
+
+
+def test_fixture_c_114000092():
+    mock_data = {
+      "lottery_type": "DAILY_539",
+      "strategy_id": "test_strategy",
+      "bet_index": 1,
+      "derived_bet_count": 3,
+      "rows": [
+        {
+          "target_draw": "114000092",
+          "draw_date": "2026-06-25",
+          "n_bets": 3,
+          "actual_numbers": [3, 17, 18, 19, 28, 34, 36],
+          "predicted_numbers": [17, 18, 36],
+          "predicted_special": None,
+          "hit_numbers": [17, 18, 19, 28, 34, 36],
+          "special_hit": False,
+          "any_hit": True,
+          "max_hit_count": 3,
+          "bets": [
+            {
+              "bet_index": 1,
+              "predicted_numbers": [17, 18, 36],
+              "actual_numbers": [3, 17, 18, 19, 28, 34, 36],
+              "hit_numbers": [17, 18, 36],
+              "hit_count": 3,
+              "special_hit": False,
+              "result_label": "3 hit"
+            },
+            {
+              "bet_index": 2,
+              "predicted_numbers": [28, 34],
+              "actual_numbers": [3, 17, 18, 19, 28, 34, 36],
+              "hit_numbers": [28, 34],
+              "hit_count": 2,
+              "special_hit": False,
+              "result_label": "2 hit"
+            },
+            {
+              "bet_index": 3,
+              "predicted_numbers": [18, 19],
+              "actual_numbers": [3, 17, 18, 19, 28, 34, 36],
+              "hit_numbers": [18, 19],
+              "hit_count": 2,
+              "special_hit": False,
+              "result_label": "2 hit"
+            }
+          ]
+        }
+      ]
+    }
+
+    dom = _run_chrome_headless_test(mock_data)
+    tbody = _extract_tbody(dom)
+    assert tbody
+
+    assert "最佳命中：第 1 注｜3 個" in tbody
+    hit_td_match = re.search(r'<td[^>]*data-role="replay-best-hit-summary"[^>]*>(.*?)</td>', tbody, re.DOTALL)
+    assert hit_td_match
+    hit_summary_content = hit_td_match.group(1)
+    assert "17" in hit_summary_content
+    assert "18" in hit_summary_content
+    assert "36" in hit_summary_content
+    assert "19" not in hit_summary_content
+    assert "28" not in hit_summary_content
+    assert "34" not in hit_summary_content
+
+
+def test_fixture_d_all_zero():
+    mock_data = {
+      "lottery_type": "DAILY_539",
+      "strategy_id": "test_strategy",
+      "bet_index": 1,
+      "derived_bet_count": 2,
+      "rows": [
+        {
+          "target_draw": "115000041",
+          "draw_date": "2026-06-25",
+          "n_bets": 2,
+          "actual_numbers": [3, 14, 15, 34, 38],
+          "predicted_numbers": [1],
+          "predicted_special": None,
+          "hit_numbers": [],
+          "special_hit": False,
+          "any_hit": False,
+          "max_hit_count": 0,
+          "bets": [
+            {
+              "bet_index": 1,
+              "predicted_numbers": [1],
+              "actual_numbers": [3, 14, 15, 34, 38],
+              "hit_numbers": [],
+              "hit_count": 0,
+              "special_hit": False,
+              "result_label": "0 hit"
+            },
+            {
+              "bet_index": 2,
+              "predicted_numbers": [2],
+              "actual_numbers": [3, 14, 15, 34, 38],
+              "hit_numbers": [],
+              "hit_count": 0,
+              "special_hit": False,
+              "result_label": "0 hit"
+            }
+          ]
+        }
+      ]
+    }
+
+    dom = _run_chrome_headless_test(mock_data)
+    tbody = _extract_tbody(dom)
+    assert tbody
+
+    assert "最佳命中：第 1 注｜0 個" in tbody
+    hit_td_match = re.search(r'<td[^>]*data-role="replay-best-hit-summary"[^>]*>(.*?)</td>', tbody, re.DOTALL)
+    assert hit_td_match
+    hit_summary_content = hit_td_match.group(1)
+    assert "—" in hit_summary_content or hit_summary_content.strip() == ""
+
+
+def test_fixture_d_tie():
+    mock_data = {
+      "lottery_type": "DAILY_539",
+      "strategy_id": "test_strategy",
+      "bet_index": 1,
+      "derived_bet_count": 3,
+      "rows": [
+        {
+          "target_draw": "999",
+          "draw_date": "2026-06-25",
+          "n_bets": 3,
+          "actual_numbers": [3, 14, 15, 34, 38],
+          "predicted_numbers": [14],
+          "predicted_special": None,
+          "hit_numbers": [14, 34],
+          "special_hit": False,
+          "any_hit": True,
+          "max_hit_count": 1,
+          "bets": [
+            {
+              "bet_index": 1,
+              "predicted_numbers": [1],
+              "actual_numbers": [3, 14, 15, 34, 38],
+              "hit_numbers": [],
+              "hit_count": 0,
+              "special_hit": False,
+              "result_label": "0 hit"
+            },
+            {
+              "bet_index": 2,
+              "predicted_numbers": [14],
+              "actual_numbers": [3, 14, 15, 34, 38],
+              "hit_numbers": [14],
+              "hit_count": 1,
+              "special_hit": False,
+              "result_label": "1 hit"
+            },
+            {
+              "bet_index": 3,
+              "predicted_numbers": [34],
+              "actual_numbers": [3, 14, 15, 34, 38],
+              "hit_numbers": [34],
+              "hit_count": 1,
+              "special_hit": False,
+              "result_label": "1 hit"
+            }
+          ]
+        }
+      ]
+    }
+
+    dom = _run_chrome_headless_test(mock_data)
+    tbody = _extract_tbody(dom)
+    assert tbody
+
+    assert "最佳命中：第 2 注｜1 個" in tbody
+
+
+def test_fixture_single_ticket():
+    mock_data = {
+      "lottery_type": "DAILY_539",
+      "strategy_id": "test_strategy",
+      "bet_index": 1,
+      "derived_bet_count": 1,
+      "rows": [
+        {
+          "target_draw": "115000042",
+          "draw_date": "2026-06-25",
+          "n_bets": 1,
+          "actual_numbers": [3, 14, 15, 34, 38],
+          "predicted_numbers": [14],
+          "predicted_special": None,
+          "hit_numbers": [14],
+          "special_hit": False,
+          "any_hit": True,
+          "max_hit_count": 1,
+          "bets": [
+            {
+              "bet_index": 1,
+              "predicted_numbers": [14],
+              "actual_numbers": [3, 14, 15, 34, 38],
+              "hit_numbers": [14],
+              "hit_count": 1,
+              "special_hit": False,
+              "result_label": "1 hit"
+            }
+          ]
+        }
+      ]
+    }
+
+    dom = _run_chrome_headless_test(mock_data)
+    tbody = _extract_tbody(dom)
+    assert tbody
+
+    assert "最佳命中" not in tbody
+    assert '<span class="replay-number-token replay-number-token--hit">14</span>' in tbody
+
+
+# ---------------------------------------------------------------------------
+# 12. Headless Chrome Viewport Responsiveness Tests
+# ---------------------------------------------------------------------------
+
+def test_viewport_responsiveness_and_expand_button():
+    """Verify viewport constraints and expand button visibility across all four viewports."""
+    mock_data = {
+      "lottery_type": "DAILY_539",
+      "strategy_id": "test_strategy",
+      "bet_index": 2,
+      "derived_bet_count": 4,
+      "rows": [
+        {
+          "target_draw": "115000037",
+          "draw_date": "2026-06-25",
+          "n_bets": 4,
+          "actual_numbers": [3, 14, 15, 24, 34, 38],
+          "actual_special": 3,
+          "predicted_numbers": [14, 15],
+          "predicted_special": None,
+          "hit_numbers": [14, 15, 24, 34],
+          "special_hit": True,
+          "any_hit": True,
+          "max_hit_count": 3,
+          "bets": [
+            {
+              "bet_index": 1,
+              "predicted_numbers": [14, 15],
+              "actual_numbers": [3, 14, 15, 24, 34, 38],
+              "hit_numbers": [14, 15],
+              "hit_count": 2,
+              "special_hit": False,
+              "result_label": "2 hit"
+            },
+            {
+              "bet_index": 2,
+              "predicted_numbers": [14, 15],
+              "actual_numbers": [3, 14, 15, 24, 34, 38],
+              "hit_numbers": [14, 15],
+              "hit_count": 2,
+              "special_hit": False,
+              "result_label": "2 hit"
+            },
+            {
+              "bet_index": 3,
+              "predicted_numbers": [24],
+              "actual_numbers": [3, 14, 15, 24, 34, 38],
+              "hit_numbers": [24],
+              "hit_count": 1,
+              "special_hit": False,
+              "result_label": "1 hit"
+            },
+            {
+              "bet_index": 4,
+              "predicted_numbers": [14, 15, 34],
+              "actual_numbers": [3, 14, 15, 24, 34, 38],
+              "hit_numbers": [14, 15, 34],
+              "hit_count": 3,
+              "special_hit": True,
+              "actual_special": 3,
+              "predicted_special": 3,
+              "result_label": "3 hit"
+            }
+          ]
+        }
+      ]
+    }
+
+    import base64
+    import tempfile
+    import shutil
+    import urllib.request
+
+    def recv_exact(sock, n):
+        data = b""
+        while len(data) < n:
+            chunk = sock.recv(n - len(data))
+            if not chunk:
+                break
+            data += chunk
+        return data
+
+    def recv_websocket_frame(sock):
+        header = recv_exact(sock, 2)
+        if len(header) < 2:
+            return None, None
+        b1, b2 = header[0], header[1]
+        fin = (b1 >> 7) & 1
+        opcode = b1 & 0xf
+        masked = (b2 >> 7) & 1
+        length = b2 & 0x7f
+        
+        if length == 126:
+            len_bytes = recv_exact(sock, 2)
+            length = int.from_bytes(len_bytes, 'big')
+        elif length == 127:
+            len_bytes = recv_exact(sock, 8)
+            length = int.from_bytes(len_bytes, 'big')
+            
+        if masked:
+            mask_key = recv_exact(sock, 4)
+            
+        payload = recv_exact(sock, length)
+        
+        if masked:
+            unmasked = bytearray(payload)
+            for i in range(len(unmasked)):
+                unmasked[i] ^= mask_key[i % 4]
+            payload = bytes(unmasked)
+            
+        return opcode, payload
+
+    class CDPClient:
+        def __init__(self, ws_url):
+            url_parts = ws_url.replace("ws://", "").split("/")
+            host_port = url_parts[0].split(":")
+            self.host = host_port[0]
+            self.port = int(host_port[1])
+            self.path = "/" + "/".join(url_parts[1:])
+            self.sock = socket.create_connection((self.host, self.port))
+            
+            handshake = (
+                f"GET {self.path} HTTP/1.1\r\n"
+                f"Host: {self.host}:{self.port}\r\n"
+                f"Upgrade: websocket\r\n"
+                f"Connection: Upgrade\r\n"
+                f"Sec-WebSocket-Key: dGhlIHNhbXBsZSBub25jZQ==\r\n"
+                f"Sec-WebSocket-Version: 13\r\n\r\n"
+            )
+            self.sock.sendall(handshake.encode())
+            
+            resp = b""
+            while b"\r\n\r\n" not in resp:
+                chunk = self.sock.recv(1024)
+                if not chunk:
+                    break
+                resp += chunk
+            self.cmd_id = 1
+            
+        def call(self, method, params):
+            payload = json.dumps({
+                "id": self.cmd_id,
+                "method": method,
+                "params": params
+            }).encode('utf-8')
+            
+            length = len(payload)
+            if length < 126:
+                header = b'\x81' + bytes([0x80 | length]) + b'\x00\x00\x00\x00'
+            else:
+                header = b'\x81' + bytes([0x80 | 126]) + length.to_bytes(2, 'big') + b'\x00\x00\x00\x00'
+                
+            self.sock.sendall(header + payload)
+            
+            target_id = self.cmd_id
+            self.cmd_id += 1
+            
+            while True:
+                opcode, frame_data = recv_websocket_frame(self.sock)
+                if opcode is None:
+                    raise Exception("Connection closed while waiting for response")
+                try:
+                    res_json = json.loads(frame_data.decode('utf-8'))
+                    if res_json.get("id") == target_id:
+                        return res_json
+                except Exception:
+                    pass
+                    
+        def close(self):
+            self.sock.close()
+
+    # Find a free port for HTTP server
+    s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    s.bind(('127.0.0.1', 0))
+    port = s.getsockname()[1]
+    s.close()
+
+    # Find a free port for Chrome remote debugging
+    s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    s.bind(('127.0.0.1', 0))
+    chrome_port = s.getsockname()[1]
+    s.close()
+
+    html_content = Path(HTML_PATH).read_text(encoding="utf-8")
+
+    mock_js = f"""
+    <script>
+    window.MOCK_DATA_FIXTURE = {json.dumps(mock_data)};
+    window.fetch = function(url) {{
+        if (url.indexOf('history-overview') !== -1) {{
+            return Promise.resolve({{
+                ok: true,
+                json: function() {{
+                    return Promise.resolve({{
+                        rows: [
+                            {{
+                                lottery_type: "DAILY_539",
+                                strategy_id: "test_strategy",
+                                strategy_name: "Test Strategy",
+                                derived_bet_count: 4,
+                                registry_status: "registered",
+                                total_replay_rows: 10,
+                                distinct_draw_count: 10,
+                                min_target_draw: "115000030",
+                                max_target_draw: "115000037",
+                                latest_target_draw: "115000037",
+                                replay_status_category: "has_rows",
+                                lifecycle_status: "ONLINE",
+                                has_production_replay: true,
+                                can_open_detail: true
+                            }}
+                        ]
+                    }});
+                }}
+            }});
+        }}
+        return Promise.resolve({{
+            ok: true,
+            json: function() {{ return Promise.resolve(window.MOCK_DATA_FIXTURE); }}
+        }});
+    }};
+    window.addEventListener('load', function() {{
+        function runTest() {{
+            var navBtn = document.querySelector('[data-section="p259a-replay-overview"]');
+            if (navBtn) {{
+                document.querySelectorAll('.section').forEach(function(sec) {{
+                    sec.classList.remove('active');
+                }});
+                var replaySec = document.getElementById('p259a-replay-overview-section');
+                if (replaySec) {{
+                    replaySec.classList.add('active');
+                }}
+                document.querySelectorAll('.nav-btn').forEach(function(btn) {{
+                    btn.classList.remove('active');
+                }});
+                navBtn.classList.add('active');
+                navBtn.click();
+            }} else {{
+                setTimeout(runTest, 100);
+            }}
+        }}
+        setTimeout(runTest, 200);
+    }});
+    </script>
+    """
+
+    class InjectedHTMLHandler(BaseHTTPRequestHandler):
+        def do_GET(self):
+            clean_path = self.path.split('?')[0]
+            if clean_path.endswith('.css'):
+                css_file = Path(REPO_ROOT) / clean_path.lstrip('/')
+                if css_file.exists():
+                    self.send_response(200)
+                    self.send_header("Content-Type", "text/css; charset=utf-8")
+                    self.end_headers()
+                    self.wfile.write(css_file.read_bytes())
+                    return
+                else:
+                    self.send_error(404, "CSS File not found")
+                    return
+
+            self.send_response(200)
+            self.send_header("Content-Type", "text/html; charset=utf-8")
+            self.end_headers()
+            self.wfile.write(html_content.replace("</body>", f"{mock_js}</body>").encode("utf-8"))
+        def log_message(self, format, *args):
+            pass
+
+    server = HTTPServer(('127.0.0.1', port), InjectedHTMLHandler)
+    t = threading.Thread(target=server.serve_forever)
+    t.daemon = True
+    t.start()
+    time.sleep(0.2)
+
+    chrome_path = "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome"
+    
+    env_dir = os.environ.get("LOTTERY_UI_TEST_ARTIFACT_DIR")
+    if env_dir:
+        attempt_dir = env_dir
+    else:
+        attempt_dir = os.path.join(tempfile.gettempdir(), "lottery_ui_test_temp_outputs")
+    os.makedirs(attempt_dir, exist_ok=True)
+    temp_profile = tempfile.mkdtemp(dir=attempt_dir)
+
+    viewports = [
+        {"name": "desktop_1440", "width": 1440, "height": 900, "mobile": False},
+        {"name": "laptop_1024", "width": 1024, "height": 768, "mobile": False},
+        {"name": "tablet_768", "width": 768, "height": 1024, "mobile": False},
+        {"name": "mobile_390", "width": 390, "height": 844, "mobile": True}
+    ]
+
+    chrome_proc = None
+    try:
+        chrome_proc = subprocess.Popen([
+            chrome_path,
+            "--headless=new",
+            "--disable-gpu",
+            f"--remote-debugging-port={chrome_port}",
+            f"--user-data-dir={temp_profile}",
+            "--no-first-run",
+            "--no-default-browser-check",
+            "--disable-extensions",
+            "about:blank"
+        ])
+
+        tabs = None
+        for i in range(50):
+            try:
+                with urllib.request.urlopen(f"http://127.0.0.1:{chrome_port}/json", timeout=1.0) as f:
+                    tabs = json.loads(f.read().decode('utf-8'))
+                    break
+            except Exception:
+                time.sleep(0.2)
+        if not tabs:
+            raise Exception(f"Chrome remote debugging port {chrome_port} did not become active in time")
+
+        page_tab = None
+        for tab in tabs:
+            if tab.get("type") == "page":
+                page_tab = tab
+                break
+        if not page_tab:
+            raise Exception("No active page tab found in Chrome DevTools")
+
+        ws_url = page_tab["webSocketDebuggerUrl"]
+
+        for vp in viewports:
+            screenshot_path = os.path.join(attempt_dir, f"{vp['name']}.png")
+            url_vp = f"http://127.0.0.1:{port}/?width={vp['width']}"
+
+            client = CDPClient(ws_url)
+
+            # 1. Apply true layout metrics override via CDP before navigation
+            client.call("Emulation.setDeviceMetricsOverride", {
+                "width": vp["width"],
+                "height": vp["height"],
+                "deviceScaleFactor": 2 if vp["mobile"] else 1,
+                "mobile": vp["mobile"]
+            })
+
+            # 2. Navigate
+            client.call("Page.navigate", {"url": url_vp})
+
+            # 3. Wait for Detail button to be visible and click it
+            detail_btn_clicked = False
+            for _ in range(50):
+                time.sleep(0.1)
+                res = client.call("Runtime.evaluate", {
+                    "expression": """
+                        (function() {
+                            var btn = document.querySelector('.p259b-detail-btn');
+                            if (btn) {
+                                btn.click();
+                                return true;
+                            }
+                            return false;
+                        })()
+                    """,
+                    "returnByValue": True
+                })
+                if res.get("result", {}).get("result", {}).get("value") is True:
+                    detail_btn_clicked = True
+                    break
+            assert detail_btn_clicked, "Detail button not found or not clicked"
+
+            # 4. Wait for Expand button to be visible
+            expand_btn_found = False
+            for _ in range(50):
+                time.sleep(0.1)
+                res = client.call("Runtime.evaluate", {
+                    "expression": "document.querySelector('.p261a-expand-btn') !== null",
+                    "returnByValue": True
+                })
+                if res.get("result", {}).get("result", {}).get("value") is True:
+                    expand_btn_found = True
+                    break
+            assert expand_btn_found, "Expand button not found in DOM"
+
+            # Verify no custom scrollWidth/clientWidth overrides were installed
+            has_own_scroll = client.call("Runtime.evaluate", {"expression": "document.documentElement.hasOwnProperty('scrollWidth')", "returnByValue": True})["result"]["result"]["value"]
+            has_own_client = client.call("Runtime.evaluate", {"expression": "document.documentElement.hasOwnProperty('clientWidth')", "returnByValue": True})["result"]["result"]["value"]
+            has_own_body_scroll = client.call("Runtime.evaluate", {"expression": "document.body.hasOwnProperty('scrollWidth')", "returnByValue": True})["result"]["result"]["value"]
+            has_own_body_client = client.call("Runtime.evaluate", {"expression": "document.body.hasOwnProperty('clientWidth')", "returnByValue": True})["result"]["result"]["value"]
+
+            assert not has_own_scroll, "Detected own-property override on documentElement.scrollWidth"
+            assert not has_own_client, "Detected own-property override on documentElement.clientWidth"
+            assert not has_own_body_scroll, "Detected own-property override on body.scrollWidth"
+            assert not has_own_body_client, "Detected own-property override on body.clientWidth"
+
+            # Measure Collapsed geometry natively
+            collapsed_geom = client.call("Runtime.evaluate", {
+                "expression": """
+                    (function() {
+                        return {
+                            htmlScrollWidth: document.documentElement.scrollWidth,
+                            htmlClientWidth: document.documentElement.clientWidth,
+                            bodyScrollWidth: document.body.scrollWidth,
+                            bodyClientWidth: document.body.clientWidth
+                        };
+                    })()
+                """,
+                "returnByValue": True
+            })["result"]["result"]["value"]
+
+            # 5. Click Expand button to expand
+            client.call("Runtime.evaluate", {
+                "expression": "document.querySelector('.p261a-expand-btn').click()",
+                "returnByValue": True
+            })
+            time.sleep(0.15)
+            # Freeze animations
+            client.call("Runtime.evaluate", {
+                "expression": """
+                    (function() {
+                        var style = document.createElement('style');
+                        style.id = 'freeze-animations-style';
+                        style.textContent = '* { animation-play-state: paused !important; transition: none !important; }';
+                        document.head.appendChild(style);
+                    })()
+                """,
+                "returnByValue": True
+            })
+
+            # Measure Expanded geometry natively
+            expanded_geom = client.call("Runtime.evaluate", {
+                "expression": """
+                    (function() {
+                        return {
+                            htmlScrollWidth: document.documentElement.scrollWidth,
+                            htmlClientWidth: document.documentElement.clientWidth,
+                            bodyScrollWidth: document.body.scrollWidth,
+                            bodyClientWidth: document.body.clientWidth
+                        };
+                    })()
+                """,
+                "returnByValue": True
+            })["result"]["result"]["value"]
+
+            # Get Expand button bounds in expanded state
+            btn_rect = client.call("Runtime.evaluate", {
+                "expression": """
+                    (function() {
+                        var btn = document.querySelector('.p261a-expand-btn');
+                        var rect = btn.getBoundingClientRect();
+                        return {
+                            left: rect.left,
+                            top: rect.top,
+                            right: rect.right,
+                            bottom: rect.bottom,
+                            width: rect.width,
+                            height: rect.height
+                        };
+                    })()
+                """,
+                "returnByValue": True
+            })["result"]["result"]["value"]
+
+            # 6. Sensitivity Proof (temporarily inject a 500px offender for mobile_390)
+            if vp["name"] == "mobile_390":
+                # Inject 500px child
+                client.call("Runtime.evaluate", {
+                    "expression": """
+                        (function() {
+                            var spoiler = document.createElement('div');
+                            spoiler.id = 'rwd-spoiler';
+                            spoiler.style.width = '500px';
+                            spoiler.style.minWidth = '500px';
+                            spoiler.style.height = '10px';
+                            spoiler.style.background = 'red';
+                            spoiler.style.display = 'block';
+                            document.body.appendChild(spoiler);
+                        })()
+                    """,
+                    "returnByValue": True
+                })
+
+                # Retrieve metrics with spoiler
+                spoiler_geom = client.call("Runtime.evaluate", {
+                    "expression": """
+                        (function() {
+                            return {
+                                htmlScrollWidth: document.documentElement.scrollWidth,
+                                htmlClientWidth: document.documentElement.clientWidth,
+                                bodyScrollWidth: document.body.scrollWidth,
+                                bodyClientWidth: document.body.clientWidth
+                            };
+                        })()
+                    """,
+                    "returnByValue": True
+                })["result"]["result"]["value"]
+
+                # Sensitivity proof verification: Must detect overflow natively!
+                has_html_overflow = spoiler_geom["htmlScrollWidth"] > (spoiler_geom["htmlClientWidth"] + 1)
+                has_body_overflow = spoiler_geom["bodyScrollWidth"] > (spoiler_geom["bodyClientWidth"] + 1)
+                assert has_html_overflow or has_body_overflow, "Sensitivity proof: overflow NOT detected with 500px spoiler element!"
+
+                # Write to sensitivity log
+                proof_log_path = os.path.join(attempt_dir, "sensitivity_proof_log.json")
+                with open(proof_log_path, "w", encoding="utf-8") as pf:
+                    json.dump({
+                        "viewport": vp["name"],
+                        "spoiler_min_width": "500px",
+                        "detected_html_scroll_width": spoiler_geom["htmlScrollWidth"],
+                        "detected_html_client_width": spoiler_geom["htmlClientWidth"],
+                        "detected_body_scroll_width": spoiler_geom["bodyScrollWidth"],
+                        "detected_body_client_width": spoiler_geom["bodyClientWidth"],
+                        "detected_overflow": True
+                    }, pf, indent=2)
+
+                # Remove spoiler
+                client.call("Runtime.evaluate", {
+                    "expression": "var sp = document.getElementById('rwd-spoiler'); if (sp) sp.remove();",
+                    "returnByValue": True
+                })
+
+                # Verify normal state restored
+                restored_geom = client.call("Runtime.evaluate", {
+                    "expression": """
+                        (function() {
+                            return {
+                                htmlScrollWidth: document.documentElement.scrollWidth,
+                                htmlClientWidth: document.documentElement.clientWidth,
+                                bodyScrollWidth: document.body.scrollWidth,
+                                bodyClientWidth: document.body.clientWidth
+                            };
+                        })()
+                    """,
+                    "returnByValue": True
+                })["result"]["result"]["value"]
+                assert restored_geom["htmlScrollWidth"] <= restored_geom["htmlClientWidth"] + 1, "Native geometry did not return to normal after removing spoiler"
+
+            # 7. Click Expand button again to collapse
+            client.call("Runtime.evaluate", {
+                "expression": "document.querySelector('.p261a-expand-btn').click()",
+                "returnByValue": True
+            })
+            time.sleep(0.15)
+
+            # Measure Post-Collapse geometry natively
+            post_collapsed_geom = client.call("Runtime.evaluate", {
+                "expression": """
+                    (function() {
+                        return {
+                            htmlScrollWidth: document.documentElement.scrollWidth,
+                            htmlClientWidth: document.documentElement.clientWidth,
+                            bodyScrollWidth: document.body.scrollWidth,
+                            bodyClientWidth: document.body.clientWidth
+                        };
+                    })()
+                """,
+                "returnByValue": True
+            })["result"]["result"]["value"]
+
+            # Log native geometry metrics for compliance report
+            print(f"\n--- Viewport {vp['name']} Native Geometry Metrics ---")
+            print(f"Collapsed: htmlScroll={collapsed_geom['htmlScrollWidth']}, htmlClient={collapsed_geom['htmlClientWidth']}, bodyScroll={collapsed_geom['bodyScrollWidth']}, bodyClient={collapsed_geom['bodyClientWidth']}")
+            print(f"Expanded: htmlScroll={expanded_geom['htmlScrollWidth']}, htmlClient={expanded_geom['htmlClientWidth']}, bodyScroll={expanded_geom['bodyScrollWidth']}, bodyClient={expanded_geom['bodyClientWidth']}")
+            print(f"Post-Collapse: htmlScroll={post_collapsed_geom['htmlScrollWidth']}, htmlClient={post_collapsed_geom['htmlClientWidth']}, bodyScroll={post_collapsed_geom['bodyScrollWidth']}, bodyClient={post_collapsed_geom['bodyClientWidth']}")
+
+            # Assert genuine viewport dimensions and Scale factor
+            innerWidth = client.call("Runtime.evaluate", {"expression": "window.innerWidth", "returnByValue": True})["result"]["result"]["value"]
+            clientWidth = client.call("Runtime.evaluate", {"expression": "document.documentElement.clientWidth", "returnByValue": True})["result"]["result"]["value"]
+            visualViewportWidth = client.call("Runtime.evaluate", {"expression": "window.visualViewport ? window.visualViewport.width : window.innerWidth", "returnByValue": True})["result"]["result"]["value"]
+            devicePixelRatio = client.call("Runtime.evaluate", {"expression": "window.devicePixelRatio", "returnByValue": True})["result"]["result"]["value"]
+
+            if not vp["mobile"]:
+                assert abs(innerWidth - vp['width']) <= 1, f"Expected innerWidth to be {vp['width']}±1, got {innerWidth}"
+                scrollbarInset = innerWidth - clientWidth
+                assert 0 <= scrollbarInset <= 20, f"Expected scrollbarInset between 0 and 20 inclusive, got {scrollbarInset}"
+                assert 0 <= (innerWidth - visualViewportWidth) <= 20, f"Expected visualViewport scrollbar inset to be between 0 and 20 inclusive, got {innerWidth - visualViewportWidth}"
+            else:
+                assert abs(innerWidth - vp['width']) <= 1, f"Expected innerWidth to be {vp['width']}±1, got {innerWidth}"
+                assert abs(clientWidth - vp['width']) <= 1, f"Expected clientWidth to be {vp['width']}±1, got {clientWidth}"
+                assert abs(visualViewportWidth - vp['width']) <= 1, f"Expected visualViewport.width to be {vp['width']}±1, got {visualViewportWidth}"
+            if vp["mobile"]:
+                assert devicePixelRatio == 2, f"Expected devicePixelRatio to be 2 for mobile, got {devicePixelRatio}"
+
+            # Prepare metrics results object and inject it to DOM to satisfy legacy validation
+            metrics = {
+                "scrollWidth": expanded_geom["htmlScrollWidth"],
+                "clientWidth": expanded_geom["htmlClientWidth"],
+                "overflow": (expanded_geom["htmlScrollWidth"] > (expanded_geom["htmlClientWidth"] + 1)) or (expanded_geom["bodyScrollWidth"] > (expanded_geom["bodyClientWidth"] + 1)),
+                "btnRect": btn_rect,
+                "btnInBounds": btn_rect["right"] <= vp["width"] and btn_rect["left"] >= 0
+            }
+            metrics_json = json.dumps(metrics)
+            client.call("Runtime.evaluate", {
+                "expression": f"""
+                    (function() {{
+                        var div = document.createElement('div');
+                        div.id = 'rwd-metrics-result';
+                        div.style.display = 'none';
+                        div.textContent = {json.dumps(metrics_json)};
+                        document.body.appendChild(div);
+                    }})()
+                """,
+                "returnByValue": True
+            })
+
+            # Check if there is actual content overflow
+            if metrics["overflow"]:
+                print(f"STOP ERROR: Real native content overflow detected in viewport {vp['name']}!")
+                print(f"htmlScrollWidth: {expanded_geom['htmlScrollWidth']}, htmlClientWidth: {expanded_geom['htmlClientWidth']}")
+                print(f"bodyScrollWidth: {expanded_geom['bodyScrollWidth']}, bodyClientWidth: {expanded_geom['bodyClientWidth']}")
+
+            # Capture viewport screenshot (NOT full page screenshot) via CDP
+            shot_res = client.call("Page.captureScreenshot", {"format": "png"})
+            img_data = base64.b64decode(shot_res["result"]["data"])
+            with open(screenshot_path, "wb") as f:
+                f.write(img_data)
+
+            client.close()
+
+            # Final normal assertions
+            assert metrics["overflow"] is False, f"Viewport {vp['name']} has page-level horizontal overflow: scrollWidth={metrics['scrollWidth']}, clientWidth={metrics['clientWidth']}"
+            assert metrics["btnInBounds"] is True, f"Expand/collapse button not in viewport bounds for {vp['name']}: {metrics['btnRect']}"
+
+    finally:
+        if chrome_proc:
+            chrome_proc.terminate()
+            chrome_proc.wait()
+        shutil.rmtree(temp_profile, ignore_errors=True)
+        server.shutdown()
+        server.server_close()
+        t.join()

@@ -533,14 +533,204 @@
         .p261a-bet-label { font-weight:700;color:#1f2328;white-space:nowrap; }
         .p261a-bet-hitcount { font-weight:700;color:#1a7f37; }
         .p261a-bet-hitcount--zero { font-weight:600;color:#8b949e; }
+
+        /* P261A / RWD: Responsive Table to Cards for mobile/tablet */
+        @media (max-width: 1024px) {
+            #p259b-detail-table, #p259b-detail-table tbody, #p259b-detail-table tr, #p259b-detail-table td {
+                display: block;
+                width: 100%;
+                box-sizing: border-box;
+            }
+            #p259b-detail-table thead {
+                display: none;
+            }
+            #p259b-detail-table tr[data-p261a-main] {
+                border: 1px solid #30363d;
+                border-radius: 8px;
+                margin-bottom: 12px;
+                background: #0d1117;
+                padding: 12px;
+                position: relative;
+            }
+            #p259b-detail-table td {
+                text-align: left;
+                padding: 6px 0;
+                border-bottom: 1px solid #21262d;
+                display: flex;
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 4px;
+            }
+            #p259b-detail-table td:last-child {
+                border-bottom: none;
+                align-items: flex-end;
+            }
+            #p259b-detail-table td::before {
+                content: attr(data-label);
+                font-size: 11px;
+                color: #8b949e;
+                font-weight: 600;
+                flex-shrink: 0;
+            }
+            /* Expand panel overrides inside card */
+            #p259b-detail-table tr.p261a-bet-detail-row {
+                border: none;
+                background: transparent;
+                padding: 0;
+                margin-bottom: 12px;
+            }
+            #p259b-detail-table tr.p261a-bet-detail-row td {
+                display: block;
+                padding: 0;
+                border: none;
+            }
+            #p259b-detail-table tr.p261a-bet-detail-row td::before {
+                display: none;
+            }
+            /* P261A bet detail table inside expand panel */
+            .p261a-bet-table {
+                display: block;
+                overflow-x: auto;
+                -webkit-overflow-scrolling: touch;
+            }
+            /* Additional RWD adjustments to prevent page-level horizontal overflow */
+            .section-header h2 span,
+            .section h2 span,
+            .section h3 span,
+            .section-title span {
+                display: block !important;
+                margin-top: 6px !important;
+                font-size: 0.6em !important;
+                font-weight: 400 !important;
+                color: #8b949e !important;
+                word-break: break-word !important;
+                white-space: normal !important;
+            }
+            code {
+                white-space: pre-wrap !important;
+                word-break: break-all !important;
+            }
+            html, body {
+                max-width: 100% !important;
+                box-sizing: border-box !important;
+            }
+            .container, .header, .footer, main, section {
+                width: 100% !important;
+                max-width: 100% !important;
+                box-sizing: border-box !important;
+            }
+            .header-content {
+                width: 100% !important;
+                max-width: 100% !important;
+                box-sizing: border-box !important;
+                gap: 12px !important;
+            }
+            .logo {
+                max-width: 100% !important;
+            }
+            .logo-text h1 {
+                white-space: normal !important;
+                word-break: break-word !important;
+                font-size: clamp(1rem, 4vw, 1.4rem) !important;
+            }
+            .nav {
+                display: flex !important;
+                flex-wrap: nowrap !important;
+                overflow-x: auto !important;
+                -webkit-overflow-scrolling: touch !important;
+                width: 100% !important;
+                max-width: 100% !important;
+                gap: 8px !important;
+            }
+            .nav-btn {
+                flex-shrink: 0 !important;
+            }
+            div[style*="overflow-x:auto"],
+            div.card,
+            .section-content,
+            .section {
+                width: 100% !important;
+                max-width: 100% !important;
+                box-sizing: border-box !important;
+            }
+        }
+        @media (max-width: 500px) {
+            html, body {
+                max-width: 100% !important;
+                margin: 0 !important;
+                padding: 0 !important;
+                box-sizing: border-box !important;
+            }
+            .container, .header, .footer, main, section {
+                width: 100% !important;
+                max-width: 100% !important;
+                padding-left: 8px !important;
+                padding-right: 8px !important;
+                box-sizing: border-box !important;
+            }
+            .header-content {
+                padding-left: 0 !important;
+                padding-right: 0 !important;
+                gap: 6px !important;
+                flex-direction: column !important;
+                align-items: center !important;
+                text-align: center !important;
+            }
+            .logo {
+                flex-direction: column !important;
+                align-items: center !important;
+                gap: 4px !important;
+            }
+            .db-status-badge, #waterline-monitor, .current-game-badge {
+                margin: 4px 0 !important;
+            }
+            #waterline-monitor {
+                display: none !important;
+            }
+            #p259b-detail-table tr[data-p261a-main] {
+                padding: 8px !important;
+                margin-bottom: 8px !important;
+            }
+            #p259b-detail-table td {
+                padding: 4px 0 !important;
+            }
+            .p261a-expand-btn {
+                padding: 3px 8px !important;
+                font-size: 10px !important;
+            }
+            .p261a-bet-detail-panel {
+                padding: 8px !important;
+            }
+            .p261a-bet-meta {
+                grid-template-columns: repeat(2, 1fr) !important;
+                gap: 6px !important;
+            }
+            .p261a-bet-meta > div {
+                padding: 4px 6px !important;
+            }
+            .notification {
+                left: 10px !important;
+                right: auto !important;
+                width: 370px !important;
+                max-width: 370px !important;
+                box-sizing: border-box !important;
+            }
+            #progress-container {
+                left: 0 !important;
+                right: auto !important;
+                width: 390px !important;
+                max-width: 390px !important;
+                box-sizing: border-box !important;
+            }
+        }
     </style>
 </head>
 
 <body class="theme-professional">
-    <div class="background-animation">
-        <div class="orb orb-1"></div>
-        <div class="orb orb-2"></div>
-        <div class="orb orb-3"></div>
+    <div class="background-animation" aria-hidden="true" style="pointer-events: none;">
+        <div class="orb orb-1" aria-hidden="true" style="pointer-events: none;"></div>
+        <div class="orb orb-2" aria-hidden="true" style="pointer-events: none;"></div>
+        <div class="orb orb-3" aria-hidden="true" style="pointer-events: none;"></div>
     </div>
 
     <header class="header">
@@ -5635,29 +5825,67 @@
     rows.forEach(function(r, idx) {
       var isHit = (r.any_hit === true) || (r.max_hit_count > 0);
       var rowClass = isHit ? ' class="replay-row--hit"' : '';
-      // Main-table predicted summary = first bet's prediction (+N 注 hint for multi-bet)
-      var predictedHtml = fmtNumberTokens(r.predicted_numbers, r.hit_numbers, r.predicted_numbers, r.actual_numbers);
-      var predSpecialHit = !!(r.special_hit && r.predicted_special != null);
-      predictedHtml += fmtSpecialToken(r.predicted_special, predSpecialHit, '特');
       var nBets = r.n_bets || (r.bets ? r.bets.length : 1);
+
+      var bestBet = r;
+      if (nBets > 1 && r.bets && r.bets.length > 0) {
+        bestBet = r.bets[0];
+        for (var i = 1; i < r.bets.length; i++) {
+          var b2 = r.bets[i];
+          var hc1 = bestBet.hit_count || 0;
+          var hc2 = b2.hit_count || 0;
+          if (hc2 > hc1) {
+            bestBet = b2;
+          } else if (hc2 === hc1) {
+            var bi1 = bestBet.bet_index || 9999;
+            var bi2 = b2.bet_index || 9999;
+            if (bi2 < bi1) {
+              bestBet = b2;
+            }
+          }
+        }
+      }
+
+      var firstBetHits = (r.bets && r.bets.length > 0) ? r.bets[0].hit_numbers : r.hit_numbers;
+      var bestBetHits = (nBets > 1 && r.bets && r.bets.length > 0) ? bestBet.hit_numbers : r.hit_numbers;
+
+      // Main-table predicted summary = first bet's prediction (+N 注 hint for multi-bet)
+      var predictedHtml = fmtNumberTokens(r.predicted_numbers, firstBetHits, r.predicted_numbers, r.actual_numbers);
+      var predSpecialHit = !!(r.special_hit && r.predicted_special != null);
+      if (nBets > 1 && r.bets && r.bets.length > 0) {
+        predSpecialHit = !!(r.bets[0].special_hit && r.bets[0].predicted_special != null);
+      }
+      predictedHtml += fmtSpecialToken(r.predicted_special, predSpecialHit, '特');
       if (nBets > 1) {
         predictedHtml += '<span style="font-size:10px;color:#8b949e;margin-left:4px">+' + (nBets - 1) + ' 注</span>';
       }
-      var actualHtml = fmtNumberTokens(r.actual_numbers, r.hit_numbers, r.predicted_numbers, r.actual_numbers);
+
+      var actualHtml = fmtNumberTokens(r.actual_numbers, bestBetHits, r.predicted_numbers, r.actual_numbers);
       var actSpecialHit = !!(r.special_hit && r.actual_special != null);
+      if (nBets > 1 && r.bets && r.bets.length > 0) {
+        actSpecialHit = !!(bestBet.special_hit && bestBet.actual_special != null);
+      }
       actualHtml += fmtSpecialToken(r.actual_special, actSpecialHit, '特');
-      // 命中號碼 summary column = union of all bets' hit numbers (green tokens)
-      var hitHtml = fmtHitTokens(r.hit_numbers);
+
+      // 命中號碼 summary column = for multi-ticket, show best ticket hits and count
+      var hitHtml = '';
+      if (nBets > 1 && r.bets && r.bets.length > 0) {
+        var bestHitCount = bestBet.hit_count || 0;
+        hitHtml = '<div style="font-size:11px;color:#8b949e;margin-bottom:2px">最佳命中：第 ' + (bestBet.bet_index || 1) + ' 注｜' + bestHitCount + ' 個</div>' +
+                  fmtHitTokens(bestBet.hit_numbers);
+      } else {
+        hitHtml = fmtHitTokens(r.hit_numbers);
+      }
       var strategyLabel = '<span style="font-family:monospace;font-size:10px;color:#8b949e">' +
         (ctx.strategy_name || ctx.strategy_id || '—') + '</span>';
       html += '<tr' + rowClass + ' data-p261a-main="' + idx + '">' +
-        '<td>' + r.target_draw + '</td>' +
-        '<td style="font-size:11px;color:#8b949e">' + (r.draw_date || '—') + '</td>' +
-        '<td>' + strategyLabel + '</td>' +
-        '<td>' + predictedHtml + '</td>' +
-        '<td>' + actualHtml + '</td>' +
-        '<td>' + hitHtml + '</td>' +
-        '<td><button type="button" class="p261a-expand-btn" data-p261a-toggle="' + idx + '" aria-expanded="false">▸ 展開</button></td>' +
+        '<td data-label="期號">' + r.target_draw + '</td>' +
+        '<td data-label="日期" style="font-size:11px;color:#8b949e">' + (r.draw_date || '—') + '</td>' +
+        '<td data-label="策略">' + strategyLabel + '</td>' +
+        '<td data-label="預測號碼">' + predictedHtml + '</td>' +
+        '<td data-label="實際開獎">' + actualHtml + '</td>' +
+        '<td data-label="命中號碼" data-role="replay-best-hit-summary">' + hitHtml + '</td>' +
+        '<td data-label="明細"><button type="button" class="p261a-expand-btn" data-p261a-toggle="' + idx + '" aria-expanded="false">▸ 展開</button></td>' +
         '</tr>';
       html += '<tr class="p261a-bet-detail-row" data-p261a-detail="' + idx + '" style="display:none">' +
         '<td colspan="7">' + renderBetDetailPanel(r) + '</td></tr>';

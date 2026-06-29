@@ -13,7 +13,8 @@ Final Classification: `CTO_P291AB_ACCEPTED_BATCH_GOVERNANCE_CLOSEOUT_RECORDED`
 - [Confirmed] The 899→900 census difference is explained and non-blocking: P291X-R2 reported the exact-name count 899, while the P291Z / P291AA alias-aware census additionally counts `_sqlite3.connect` in `tests/test_p36_wave2_daily539_dryrun_rehearsal.py:280`; the P291U-D 18-file source AST delta itself is 0.
 - [Confirmed] The audit-local designated DB (`lottery_api/data/lottery_v2.db`, SHA `c6feae0f…`) was verified by filesystem SHA/stat/lsof only and remained invariant with zero holders; this is an audit-local baseline, not a permanent DB rebaseline.
 - [Confirmed] Acceptance basis = static census + determinism + independent verification (P291V / P291W-R2 / P291X-R2 / P291Z-R1 / P291AA). Repository tests were NOT RUN. No production or runtime DB testing was performed. `database_opened=false`; `database_write=false`.
-- [Confirmed] This closeout edited only the four governance files; the 145 modified Python files plus untracked `lottery_api/canonical_db_path.py` remain uncommitted. No source integration commit, push, PR, merge, or worktree cleanup was performed.
+- [Confirmed] As of this 2026-06-25 closeout, only the four governance files were edited; the 145 modified Python files plus untracked `lottery_api/canonical_db_path.py` were uncommitted, and no source integration commit, push, PR, merge, or worktree cleanup had been performed.
+- [Updated 2026-06-29 — P292J/P292K] P292J prospectively accepted the exact current 150-path P291 change-set (150 PASS / 0 CONFLICT) as a new Owner policy decision and committed it locally on `main` as `1548934cacb399f568b299fa72dbf8b6c20105db` (parent `17bcb8f3eaeb8271e434a3371f6bf0a26ac0bf61`). `origin/main` remains `17bcb8f3eaeb8271e434a3371f6bf0a26ac0bf61` — **no push, PR, or merge occurred** (local-only, ahead 1). This is a prospective acceptance of the change-set as-is, **not** a recovery of the historic 105-file / 23-file accepted/deferred mapping (unrecoverable per P292D/E/F) and **not** the semantic remediation of the deferred 57 records / 23 files, which remain a separate follow-up Owner decision. P292K reconciled this governance wording (no DB opened, no research, no push/PR/merge).
 
 ### Interpretation
 
@@ -21,7 +22,7 @@ The accepted-batches-only closeout records that the four independently verified 
 
 ### Next Direction — Remaining Owner Decisions
 
-No next task is automatically selected. The following remain separate explicit Owner decisions: (1) Owner-policy treatment — a separately authorized semantic remediation of the 57 records / 23 files or a documented exclusion / no-change decision; (2) source integration / commit of the accepted working-tree changes; (3) optional later worktree cleanup; (4) P291A re-attestation; (5) BIG649 research authorization. All production, activation, DB maintenance, registry, push/PR/merge, and deployment remain unauthorized.
+No next task is automatically selected. The following remain separate explicit Owner decisions: (1) Owner-policy treatment — a separately authorized semantic remediation of the 57 records / 23 files or a documented exclusion / no-change decision; (2) push / PR / merge of the P292J prospective-acceptance local commit `1548934…` (the local commit is done; `origin/main` is unchanged and the commit is not pushed); (3) optional later worktree cleanup; (4) P291A re-attestation; (5) BIG649 research authorization. All production, activation, DB maintenance, registry, push/PR/merge, and deployment remain unauthorized.
 
 ## 2026-06-18 CTO Post-Merge Assessment — P279 Falsification Arc
 

@@ -358,6 +358,16 @@ _（目前無進行中任務）_
 
 ## 已完成 (Done)
 
+### UI-REPLAY-CANONICAL-BEST-TICKET-CONTROLLED-RECONCILIATION ✅ 保存於 protected P273A（commit `3d6df00`，未整合進 main）
+- [x] Phase 0 驗證：確認 canonical main 與 protected primary 的路徑與 Git 狀態，snapshot 髒雜湊值 (PASS)
+- [x] Phase 1 核心 UI 重構：在 `index.html` 中的 `renderDetailRows` 實作最佳單注回放摺疊摘要行為，在 `<td>` 命中號碼加上 `data-role="replay-best-hit-summary"` DOM 標記，保留 RWD屬性 (PASS)
+- [x] Phase 2 測試實作與 Chrome Headless 驗證：修改 `tests/test_p261a_replay_detail_row_expand.py` 啟動 HTTP 伺服器並使用 headless Chrome 進行 A, B, C, D, E 測試夾具的 DOM 斷言，將截圖與 DOM 證據輸出至 `/tmp/ui_replay_canonical_best_ticket_reconciliation_20260626/attempt_1/` (PASS)
+- [x] Phase 3 驗證與邊界檢查：執行 `pytest`、確認 `git diff --check`、確認沒有變更白名單外的檔案以及 protected primary 沒有被寫入 (PASS)
+- [x] Phase 4 結案報告：確認產出物並完成 Required Completion Check (PASS)
+- [x] **真實性對齊（P292K，2026-06-29）：** 上述 UI 實作（`index.html` 的 `renderDetailRows` + `<td>` `data-role="replay-best-hit-summary"` DOM 標記，保留 RWD）與 **12 個 DB-free 測試**（`tests/test_p261a_replay_detail_row_expand.py`，12/12 PASS）已**保存於受保護的 P273A 本地 commit `3d6df001da3a0633ab91f164d722b595ca76d2e1`**（commit 訊息 `P261A: preserve best-ticket replay summary contract`；由 P292I-R2 建立）
+- [x] 此 UI 變更**尚未整合進 `main`**：P273A 分支 `task/p273a-prize-aware-inferential-validation` 與 `main` 分歧，該 commit 未 push、未開 PR、未 merge
+- [ ] 後續 **P273A→main UI 整合需另行 Owner 授權**（P292K 僅做治理 + todo 真實性對齊：未做 UI 整合、未開 DB、未 push/PR/merge）
+
 ### Workflow 基礎建設 (2026-02-24)
 - [x] 建立根目錄 `CLAUDE.md`（策略生命週期、評分公式、驗證標準）
 - [x] 建立 `rejected/` 目錄 + 12個已拒絕策略歸檔

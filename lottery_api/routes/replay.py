@@ -29,11 +29,6 @@ from typing import Optional
 
 from fastapi import APIRouter, HTTPException, Query
 
-try:
-    from database import DatabaseManager
-except ImportError:
-    from lottery_api.database import DatabaseManager
-
 from lottery_api.models.replay_strategy_registry import (
     get_strategy_lifecycle_status,
     list_strategies,
@@ -127,6 +122,10 @@ _DISCLAIMER = (
 
 def _get_db():
     """Returns a DatabaseManager instance."""
+    try:
+        from database import DatabaseManager
+    except ImportError:
+        from lottery_api.database import DatabaseManager
     return DatabaseManager()
 
 

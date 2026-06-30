@@ -1,0 +1,99 @@
+{
+  "task_id": "P299A_D5_BIG_DAILY_STRATEGY_HIT_RATE_MATRIX_ARTIFACT_MVP",
+  "created_at_taipei": "2026-06-30 16:09:28 UTC+0800",
+  "evidence_root": "/Users/kelvin/Kelvin-WorkSpace/p299a_d5_big_daily_hit_rate_matrix_mvp_20260630_160533",
+  "manifest_self_hash": "excluded; manifest covers all non-manifest files present at generation time",
+  "sqlite_read_mode": "mode=ro&immutable=1",
+  "scope": {
+    "included_lotteries": [
+      "BIG_LOTTO",
+      "DAILY_539"
+    ],
+    "excluded_lotteries": [
+      "POWER_LOTTO full prize-aware scoring"
+    ]
+  },
+  "artifacts": [
+    {
+      "path": "commands.log",
+      "sha256": "5bcde62791c455372bf53a70ff608610a7128be4a20dba5c3426cd327681ca4d",
+      "bytes": 1634
+    },
+    {
+      "path": "d5_hit_rate_matrix.csv",
+      "sha256": "046b7284ccc858f3f3368b4f05f31b6eee2853f27932a209e6e62d641367b66a",
+      "bytes": 42468
+    },
+    {
+      "path": "d5_hit_rate_matrix.md",
+      "sha256": "fb58256ebece564abb95844703c9331b80f7428635383e4faeb18dbb3c20a41e",
+      "bytes": 1415
+    },
+    {
+      "path": "db_sidecars_after.tsv",
+      "sha256": "6587a1301db0028cab51f2e4e4a52db9bca5b687f04a89f302faefd0e11ac81d",
+      "bytes": 22222
+    },
+    {
+      "path": "db_sidecars_before.tsv",
+      "sha256": "6587a1301db0028cab51f2e4e4a52db9bca5b687f04a89f302faefd0e11ac81d",
+      "bytes": 22222
+    },
+    {
+      "path": "db_sidecars_diff.txt",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    {
+      "path": "handoff_report.md",
+      "sha256": "b0b1d8e06630c0a4173c2ddc36a2abba92fbe03941a10ce575f180993b0c190f",
+      "bytes": 7102
+    },
+    {
+      "path": "limitations.md",
+      "sha256": "e28282b7f5f06b6f269caf53478a5696ef6393d8e0719922919cfd605fbd0cb0",
+      "bytes": 808
+    },
+    {
+      "path": "optimizer_input_contract.json",
+      "sha256": "7cabf347a60df0972c090b0a69b5ddfbd38979cb243c409053176aa3192d8b0b",
+      "bytes": 2423
+    },
+    {
+      "path": "phase0_state.md",
+      "sha256": "1a6325b98554025e93eacfb7080cb9729f391f043e074923b06708bdf35b72ff",
+      "bytes": 51114
+    },
+    {
+      "path": "powerlotto_exclusion_note.md",
+      "sha256": "19e17e7be5dd2505dbce77a7ac5170763f0e70da0f422b94707cd96407b48385",
+      "bytes": 1257
+    },
+    {
+      "path": "source_artifact_excerpts.txt",
+      "sha256": "3f5150d783dd869841d7d8bc2e7b039395ee7924663cbd45f87d201c26e493bb",
+      "bytes": 84606
+    },
+    {
+      "path": "source_artifact_read_list.csv",
+      "sha256": "0904d14cd8f866aef960e071dc3353fe1b893019625f9f74b771add7ececadf5",
+      "bytes": 3865
+    },
+    {
+      "path": "sqlite_readonly_schema_excerpt.json",
+      "sha256": "177c32e7779c52c1b3a324cd28c468e78b35f6b7c0a923ca14d7364565c1cd75",
+      "bytes": 2211
+    },
+    {
+      "path": "strategy_coverage_summary.csv",
+      "sha256": "46a29f0b75f707ac4d862b60fc5b1e77acd999c305f831563fdfb045fa13f41b",
+      "bytes": 3831
+    },
+    {
+      "path": "validation_report.md",
+      "sha256": "399c2de3dcecd33b06407b09df256ba3090a92f756b59a3c94f331affe56265b",
+      "bytes": 815
+    }
+  ],
+  "final_classification": "P299A_D5_HIT_RATE_MATRIX_MVP_COMPLETE_WITH_RISKS"
+}

@@ -25,6 +25,7 @@
     <!-- Style Systems -->
     <link rel="stylesheet" href="styles.css?v=18">
     <link rel="stylesheet" href="src/ui/progress.css">
+    <link rel="stylesheet" href="src/apps/lottery-d5/lottery-d5.css?v=1">
     
     <!-- Visibility Guard -->
     <style>
@@ -840,6 +841,10 @@
                 <button class="nav-btn" data-section="p259a-replay-overview">
                     <i data-lucide="layout-list" class="icon"></i>
                     <span>回放總覽</span>
+                </button>
+                <button class="nav-btn" data-section="lottery-d5">
+                    <i data-lucide="table-2" class="icon"></i>
+                    <span>D5 命中矩陣</span>
                 </button>
                 <button class="nav-btn" data-section="big649-measurement">
                     <i data-lucide="ruler" class="icon"></i>
@@ -3395,6 +3400,172 @@
         </section>
         <!-- ===== END P259A ===== -->
 
+        <!-- ===== P300A D5 Strategy Hit-Rate Matrix MVP (artifact-backed, read-only) ===== -->
+        <section id="lottery-d5-section" class="section d5-app" data-artifact-root="public/demo-data/lottery-d5/p299a">
+          <div class="section-header">
+            <h2>D5 Strategy Hit-Rate Matrix MVP</h2>
+            <p>P299A artifact-backed demo slice for BIG_LOTTO and DAILY_539 retrospective hit-rate review.</p>
+          </div>
+
+          <div class="d5-section-content">
+            <div class="d5-provenance" id="d5-provenance">
+              <span>P299A_D5_HIT_RATE_MATRIX_MVP_COMPLETE_WITH_RISKS</span>
+              <span>Artifact-backed demo slice</span>
+              <span>Read-only static files</span>
+            </div>
+
+            <div class="d5-summary-grid" aria-label="D5 summary cards">
+              <div class="d5-summary-card">
+                <span>Matrix rows</span>
+                <strong id="d5-summary-matrix-rows">130</strong>
+              </div>
+              <div class="d5-summary-card">
+                <span>BIG_LOTTO rows</span>
+                <strong id="d5-summary-big-rows">55</strong>
+              </div>
+              <div class="d5-summary-card">
+                <span>DAILY_539 rows</span>
+                <strong id="d5-summary-daily-rows">75</strong>
+              </div>
+              <div class="d5-summary-card">
+                <span>Strategies total</span>
+                <strong id="d5-summary-strategies">29</strong>
+              </div>
+              <div class="d5-summary-card d5-summary-card-muted">
+                <span>Baseline status</span>
+                <strong id="d5-summary-baseline">not computed</strong>
+              </div>
+              <div class="d5-summary-card d5-summary-card-blocked">
+                <span>POWER_LOTTO</span>
+                <strong id="d5-summary-powerlotto">excluded / blocked</strong>
+              </div>
+            </div>
+
+            <div id="d5-load-error" class="d5-error" hidden></div>
+
+            <div class="d5-tabs" role="tablist" aria-label="D5 artifact sections">
+              <button type="button" class="d5-tab active" role="tab" aria-selected="true" data-d5-tab="matrix">Matrix table</button>
+              <button type="button" class="d5-tab" role="tab" aria-selected="false" data-d5-tab="coverage">Strategy coverage</button>
+              <button type="button" class="d5-tab" role="tab" aria-selected="false" data-d5-tab="contract">Optimizer input contract</button>
+              <button type="button" class="d5-tab" role="tab" aria-selected="false" data-d5-tab="powerlotto">POWER_LOTTO exclusion</button>
+              <button type="button" class="d5-tab" role="tab" aria-selected="false" data-d5-tab="limitations">Limitations / non-claims</button>
+            </div>
+
+            <section class="d5-panel active" id="d5-panel-matrix" data-d5-panel="matrix">
+              <div class="d5-toolbar">
+                <label for="d5-matrix-lottery-filter">Lottery</label>
+                <select id="d5-matrix-lottery-filter" class="d5-select">
+                  <option value="">All</option>
+                  <option value="BIG_LOTTO">BIG_LOTTO</option>
+                  <option value="DAILY_539">DAILY_539</option>
+                </select>
+                <label for="d5-matrix-window-filter">Window</label>
+                <select id="d5-matrix-window-filter" class="d5-select">
+                  <option value="">All windows</option>
+                </select>
+              </div>
+              <div class="d5-note">
+                Retrospective matrix rows are shown in artifact order. Baseline and delta NULL values display as Not computed.
+              </div>
+              <div class="d5-table-wrap">
+                <table class="d5-table" id="d5-matrix-table">
+                  <thead>
+                    <tr>
+                      <th>lottery</th>
+                      <th>strategy_id</th>
+                      <th>window_segment</th>
+                      <th>top_k</th>
+                      <th>sample_size_draws</th>
+                      <th>sample_size_rows</th>
+                      <th>m1_rate</th>
+                      <th>m2_rate</th>
+                      <th>m3_rate</th>
+                      <th>m3plus_hit_rate</th>
+                      <th>baseline_mode</th>
+                      <th>baseline_value</th>
+                      <th>delta</th>
+                      <th>delta_pp</th>
+                      <th>inferential_status</th>
+                      <th>readiness_status</th>
+                    </tr>
+                  </thead>
+                  <tbody id="d5-matrix-body">
+                    <tr><td colspan="16">Loading verified P299A matrix...</td></tr>
+                  </tbody>
+                </table>
+              </div>
+            </section>
+
+            <section class="d5-panel" id="d5-panel-coverage" data-d5-panel="coverage">
+              <div class="d5-toolbar">
+                <label for="d5-coverage-lottery-filter">Lottery</label>
+                <select id="d5-coverage-lottery-filter" class="d5-select">
+                  <option value="">All</option>
+                  <option value="BIG_LOTTO">BIG_LOTTO</option>
+                  <option value="DAILY_539">DAILY_539</option>
+                </select>
+              </div>
+              <div class="d5-note">
+                Coverage is retrospective-only and not a strategy ranking.
+              </div>
+              <div class="d5-table-wrap">
+                <table class="d5-table" id="d5-coverage-table">
+                  <thead>
+                    <tr>
+                      <th>lottery</th>
+                      <th>strategy_id</th>
+                      <th>rows</th>
+                      <th>distinct_draws</th>
+                      <th>available_windows</th>
+                      <th>available_top_k</th>
+                      <th>readiness</th>
+                      <th>blocked_reason</th>
+                    </tr>
+                  </thead>
+                  <tbody id="d5-coverage-body">
+                    <tr><td colspan="8">Loading verified P299A coverage...</td></tr>
+                  </tbody>
+                </table>
+              </div>
+            </section>
+
+            <section class="d5-panel" id="d5-panel-contract" data-d5-panel="contract">
+              <div class="d5-contract-grid">
+                <div>
+                  <h3>Readiness gates</h3>
+                  <ul id="d5-readiness-gates" class="d5-list"></ul>
+                </div>
+                <div>
+                  <h3>Required optimizer fields</h3>
+                  <div id="d5-required-fields" class="d5-chip-list"></div>
+                </div>
+              </div>
+              <pre id="d5-contract-json" class="d5-code-block"></pre>
+            </section>
+
+            <section class="d5-panel" id="d5-panel-powerlotto" data-d5-panel="powerlotto">
+              <div class="d5-warning">
+                POWER_LOTTO full scoring is excluded because P298A found no POWER_LOTTO canonical DB view/source contract and missing predicted_special rows. The 9,000-row subset is research-only and is not full POWER_LOTTO readiness.
+              </div>
+              <div id="d5-powerlotto-note" class="d5-markdown-block"></div>
+            </section>
+
+            <section class="d5-panel" id="d5-panel-limitations" data-d5-panel="limitations">
+              <ul class="d5-limitations">
+                <li>Retrospective-only.</li>
+                <li>No future prediction ability claimed.</li>
+                <li>No betting recommendation.</li>
+                <li>No production readiness.</li>
+                <li>Baselines not computed.</li>
+                <li>Deltas are NULL.</li>
+                <li>POWER_LOTTO full scoring excluded.</li>
+                <li>This UI is an artifact-backed demo slice, not a production optimizer.</li>
+              </ul>
+            </section>
+          </div>
+        </section>
+        <!-- ===== END P300A D5 ===== -->
+
         <!-- ===== BIG649 MEASUREMENT (read-only, artifact-backed) ===== -->
         <section id="big649-measurement-section" class="section">
           <div class="section-header">
@@ -3678,6 +3849,7 @@
             lucide.createIcons();
         </script>
         <script type="module" src="src/main.js?v=24"></script>
+        <script type="module" src="src/apps/lottery-d5/lottery-d5.js?v=1"></script>
         <script>
 // ===== REPLAY PAGE JS =====
 (function() {

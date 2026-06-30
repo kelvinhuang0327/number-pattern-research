@@ -3463,6 +3463,29 @@
               <button type="button" class="d5-tab" role="tab" aria-selected="false" data-d5-tab="limitations">Limitations / non-claims</button>
             </div>
 
+            <aside id="d5-strategy-detail-drawer" class="d5-detail-drawer" aria-labelledby="d5-detail-title" hidden>
+              <div class="d5-detail-header">
+                <div>
+                  <span class="d5-detail-kicker">Strategy detail</span>
+                  <h3 id="d5-detail-title">Select a strategy row</h3>
+                  <p id="d5-detail-subtitle">Click a matrix or coverage row to review artifact-backed historical metrics.</p>
+                </div>
+                <button id="d5-detail-close" class="d5-icon-button" type="button" aria-label="Close strategy detail drawer">x</button>
+              </div>
+              <div id="d5-detail-body" class="d5-detail-body" aria-live="polite"></div>
+              <div class="d5-detail-caveats" aria-label="Strategy detail caveats">
+                <strong>Caveats</strong>
+                <ul>
+                  <li>Retrospective-only.</li>
+                  <li>No future prediction.</li>
+                  <li>No betting recommendation.</li>
+                  <li>No production readiness.</li>
+                  <li>Baselines/deltas not computed.</li>
+                  <li>POWER_LOTTO full scoring excluded.</li>
+                </ul>
+              </div>
+            </aside>
+
             <section class="d5-panel active" id="d5-panel-matrix" data-d5-panel="matrix">
               <div class="d5-toolbar">
                 <label for="d5-matrix-lottery-filter">Lottery</label>

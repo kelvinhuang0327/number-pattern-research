@@ -39,6 +39,19 @@ const DATA_FILES = {
 const NOT_COMPUTED_COLUMNS = new Set(['baseline_value', 'delta', 'delta_pp']);
 const RATE_COLUMNS = new Set(['m1_rate', 'm2_rate', 'm3_rate', 'm3plus_hit_rate']);
 const INTEGER_COLUMNS = new Set(['top_k', 'sample_size_draws', 'sample_size_rows', 'rows', 'distinct_draws']);
+const DETAIL_RATE_COLUMNS = ['m1_rate', 'm2_rate', 'm3_rate', 'm3plus_hit_rate'];
+const DETAIL_STATUS_COLUMNS = [
+  'inferential_status',
+  'readiness_status',
+  'eligibility_status',
+  'exclusion_reason',
+];
+const DETAIL_RATE_LABELS = {
+  m1_rate: 'm1_rate summary',
+  m2_rate: 'm2_rate summary',
+  m3_rate: 'm3_rate summary',
+  m3plus_hit_rate: 'm3plus_hit_rate summary',
+};
 
 let state = {
   matrixRows: [],
@@ -158,6 +171,74 @@ function uniqueValues(rows, key) {
   return [...new Set(rows.map((row) => row[key]).filter(Boolean))];
 }
 
+function uniqueDisplayValues(rows, key) {
+  const values = rows.map((row) => displayValue(row, key)).filter(Boolean);
+  return [...new Set(values)];
+}
+
+function splitPipeValues(value) {
+  if (isNullish(value)) return [];
+  return String(value).split('|').map((item) => item.trim()).filter(Boolean);
+}
+
+function formatList(values, emptyLabel = 'None') {
+  if (!values.length) return emptyLabel;
+  return values.map((value) => escapeHtml(value)).join(', ');
+}
+
+function summarizeNumbers(rows, key) {
+  const numbers = rows
+    .map((row) => Number(row[key]))
+    .filter((value) => Number.isFinite(value));
+  if (!numbers.length) return 'Not available';
+  const min = Math.min(...numbers);
+  const max = Math.max(...numbers);
+  if (min === max) return min.toLocaleString();
+  return `${min.toLocaleString()} - ${max.toLocaleString()}`;
+}
+
+function summarizeRates(rows, key) {
+  const values = rows
+    .map((row) => Number(row[key]))
+    .filter((value) => Number.isFinite(value))
+    .map((value) => value * 100);
+  if (!values.length) return 'Not available';
+  const min = Math.min(...values);
+  const max = Math.max(...values);
+  if (min === max) return `${min.toFixed(2)}%`;
+  return `${min.toFixed(2)}% - ${max.toFixed(2)}%`;
+}
+
+function detailKey(lottery, strategyId) {
+  return `${lottery || ''}::${strategyId || ''}`;
+}
+
+function findCoverageRow(lottery, strategyId) {
+  return state.coverageRows.find((row) => row.lottery === lottery && row.strategy_id === strategyId) || null;
+}
+
+function findMatrixRows(lottery, strategyId) {
+  return state.matrixRows.filter((row) => row.lottery === lottery && row.strategy_id === strategyId);
+}
+
+function detailMetric(label, value) {
+  return `
+    <div class="d5-detail-metric">
+      <span>${escapeHtml(label)}</span>
+      <strong>${value}</strong>
+    </div>
+  `;
+}
+
+function detailField(label, value) {
+  return `
+    <div class="d5-detail-field">
+      <span>${escapeHtml(label)}</span>
+      <strong>${value}</strong>
+    </div>
+  `;
+}
+
 function renderOptions(select, values, allLabel) {
   if (!select) return;
   select.innerHTML = `<option value="">${escapeHtml(allLabel)}</option>` +
@@ -182,6 +263,115 @@ function strategyMatches(row, query) {
 
 function rowCountLabel(filtered, total) {
   return `Showing ${filtered.toLocaleString()} of ${total.toLocaleString()} rows`;
+}
+
+function renderDetailWindowRows(rows) {
+  if (!rows.length) {
+    return '<p class="d5-detail-empty">No matrix rows are available for this strategy in the copied artifact.</p>';
+  }
+
+  return `
+    <div class="d5-detail-table-wrap">
+      <table class="d5-detail-table">
+        <thead>
+          <tr>
+            <th>window_segment</th>
+            <th>top_k</th>
+            <th>sample_size_draws</th>
+            <th>sample_size_rows</th>
+            <th>m1_rate</th>
+            <th>m2_rate</th>
+            <th>m3_rate</th>
+            <th>m3plus_hit_rate</th>
+            <th>baseline_value</th>
+            <th>delta_pp</th>
+          </tr>
+        </thead>
+        <tbody>
+          ${rows.map((row) => `
+            <tr>
+              <td>${displayValue(row, 'window_segment')}</td>
+              <td>${displayValue(row, 'top_k')}</td>
+              <td>${displayValue(row, 'sample_size_draws')}</td>
+              <td>${displayValue(row, 'sample_size_rows')}</td>
+              <td>${displayValue(row, 'm1_rate')}</td>
+              <td>${displayValue(row, 'm2_rate')}</td>
+              <td>${displayValue(row, 'm3_rate')}</td>
+              <td>${displayValue(row, 'm3plus_hit_rate')}</td>
+              <td>${displayValue(row, 'baseline_value')}</td>
+              <td>${displayValue(row, 'delta_pp')}</td>
+            </tr>
+          `).join('')}
+        </tbody>
+      </table>
+    </div>
+  `;
+}
+
+function renderStrategyDetail(lottery, strategyId, source = 'row') {
+  const drawer = byId('d5-strategy-detail-drawer');
+  const body = byId('d5-detail-body');
+  const title = byId('d5-detail-title');
+  const subtitle = byId('d5-detail-subtitle');
+  if (!drawer || !body || !title || !subtitle) return;
+
+  const matrixRows = findMatrixRows(lottery, strategyId);
+  const coverageRow = findCoverageRow(lottery, strategyId);
+  const windows = matrixRows.length
+    ? uniqueValues(matrixRows, 'window_segment')
+    : splitPipeValues(coverageRow?.available_windows);
+  const topKValues = matrixRows.length
+    ? sortMaybeNumeric(uniqueValues(matrixRows, 'top_k'))
+    : sortMaybeNumeric(splitPipeValues(coverageRow?.available_top_k));
+  const baselineModes = uniqueDisplayValues(matrixRows, 'baseline_mode');
+  const baselineValues = uniqueDisplayValues(matrixRows, 'baseline_value');
+  const deltaValues = uniqueDisplayValues(matrixRows, 'delta');
+  const deltaPpValues = uniqueDisplayValues(matrixRows, 'delta_pp');
+  const totalRows = coverageRow ? displayValue(coverageRow, 'rows') : matrixRows.length.toLocaleString();
+  const distinctDraws = coverageRow ? displayValue(coverageRow, 'distinct_draws') : summarizeNumbers(matrixRows, 'sample_size_draws');
+
+  title.textContent = strategyId;
+  subtitle.textContent = `${lottery} historical strategy metrics from ${source === 'coverage' ? 'coverage' : 'matrix'} artifact rows.`;
+  body.innerHTML = `
+    <div class="d5-detail-metrics" aria-label="Selected strategy summary">
+      ${detailMetric('strategy_id', escapeHtml(strategyId))}
+      ${detailMetric('lottery', escapeHtml(lottery))}
+      ${detailMetric('Total rows available', totalRows)}
+      ${detailMetric('Matrix rows', matrixRows.length.toLocaleString())}
+      ${detailMetric('Distinct draws', distinctDraws || 'Not available')}
+      ${detailMetric('Distinct window segments', windows.length.toLocaleString())}
+      ${detailMetric('Distinct top_k values', topKValues.length.toLocaleString())}
+    </div>
+
+    <div class="d5-detail-grid">
+      ${detailField('Window segments', formatList(windows, 'Not available'))}
+      ${detailField('top_k values', formatList(topKValues, 'Not available'))}
+      ${detailField('sample_size_draws summary', summarizeNumbers(matrixRows, 'sample_size_draws'))}
+      ${detailField('sample_size_rows summary', summarizeNumbers(matrixRows, 'sample_size_rows'))}
+      ${DETAIL_RATE_COLUMNS.map((key) => detailField(DETAIL_RATE_LABELS[key], summarizeRates(matrixRows, key))).join('')}
+      ${detailField('baseline_mode status', formatList(baselineModes, 'Not available'))}
+      ${detailField('baseline_value status', formatList(baselineValues, 'Not computed'))}
+      ${detailField('delta status', formatList(deltaValues, 'Not computed'))}
+      ${detailField('delta_pp status', formatList(deltaPpValues, 'Not computed'))}
+      ${DETAIL_STATUS_COLUMNS.map((key) => detailField(key, formatList(uniqueDisplayValues(matrixRows, key), 'Not available'))).join('')}
+      ${detailField('coverage readiness', coverageRow ? displayValue(coverageRow, 'readiness') : 'Not available')}
+      ${detailField('coverage blocked_reason', coverageRow ? (displayValue(coverageRow, 'blocked_reason') || 'None') : 'Not available')}
+    </div>
+
+    <div class="d5-detail-section">
+      <h4>Historical windows/top_k rows</h4>
+      ${renderDetailWindowRows(matrixRows)}
+    </div>
+  `;
+  drawer.hidden = false;
+  drawer.classList.add('is-open');
+}
+
+function closeStrategyDetail() {
+  const drawer = byId('d5-strategy-detail-drawer');
+  if (!drawer) return;
+  drawer.classList.remove('is-open');
+  drawer.hidden = true;
 }
 
 function renderSummary() {
@@ -243,7 +433,7 @@ function renderMatrix() {
   }
 
   body.innerHTML = rows.map((row) => `
-    <tr>
+    <tr class="d5-clickable-row" role="button" tabindex="0" data-detail-source="matrix" data-detail-key="${escapeHtml(detailKey(row.lottery, row.strategy_id))}" aria-label="Open strategy detail for ${escapeHtml(row.strategy_id)} ${escapeHtml(row.lottery)}">
       ${MATRIX_COLUMNS.map((key) => `<td data-label="${escapeHtml(key)}">${displayValue(row, key)}</td>`).join('')}
     </tr>
   `).join('');
@@ -268,7 +458,7 @@ function renderCoverage() {
   }
 
   body.innerHTML = rows.map((row) => `
-    <tr class="${row.readiness === 'NOT_READY' ? 'd5-row-muted' : ''}">
+    <tr class="d5-clickable-row ${row.readiness === 'NOT_READY' ? 'd5-row-muted' : ''}" role="button" tabindex="0" data-detail-source="coverage" data-detail-key="${escapeHtml(detailKey(row.lottery, row.strategy_id))}" aria-label="Open strategy detail for ${escapeHtml(row.strategy_id)} ${escapeHtml(row.lottery)}">
       ${COVERAGE_COLUMNS.map((key) => `<td data-label="${escapeHtml(key)}">${displayValue(row, key)}</td>`).join('')}
     </tr>
   `).join('');
@@ -365,6 +555,33 @@ function wireFilters() {
   byId('d5-coverage-strategy-search')?.addEventListener('input', renderCoverage);
 }
 
+function openDetailFromEvent(event) {
+  const row = event.target.closest?.('.d5-clickable-row');
+  if (!row) return;
+  const [lottery, strategyId] = String(row.dataset.detailKey || '').split('::');
+  if (!lottery || !strategyId) return;
+  renderStrategyDetail(lottery, strategyId, row.dataset.detailSource || 'row');
+}
+
+function openDetailFromKeyboard(event) {
+  if (event.key !== 'Enter' && event.key !== ' ') return;
+  const row = event.target.closest?.('.d5-clickable-row');
+  if (!row) return;
+  event.preventDefault();
+  openDetailFromEvent(event);
+}
+
+function wireDetailDrawer() {
+  byId('d5-matrix-body')?.addEventListener('click', openDetailFromEvent);
+  byId('d5-matrix-body')?.addEventListener('keydown', openDetailFromKeyboard);
+  byId('d5-coverage-body')?.addEventListener('click', openDetailFromEvent);
+  byId('d5-coverage-body')?.addEventListener('keydown', openDetailFromKeyboard);
+  byId('d5-detail-close')?.addEventListener('click', closeStrategyDetail);
+  document.addEventListener('keydown', (event) => {
+    if (event.key === 'Escape') closeStrategyDetail();
+  });
+}
+
 async function loadD5Artifacts() {
   const section = byId('lottery-d5-section');
   if (!section) return;
@@ -404,6 +621,7 @@ function initLotteryD5() {
   if (!byId('lottery-d5-section')) return;
   wireTabs();
   wireFilters();
+  wireDetailDrawer();
   loadD5Artifacts();
 }
 

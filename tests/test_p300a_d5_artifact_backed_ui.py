@@ -101,6 +101,8 @@ def test_required_visible_summary_and_sections_exist():
         "Baselines/deltas not computed.",
         "Search strategy_id",
         "All top_k",
+        "Strategy detail",
+        "Click a matrix or coverage row to review artifact-backed historical metrics.",
         "Showing 130 of 130 rows",
         "Showing 29 of 29 rows",
     ]:
@@ -120,6 +122,10 @@ def test_review_filters_and_counts_are_wired():
         "d5-coverage-lottery-filter",
         "d5-coverage-strategy-search",
         "d5-coverage-row-count",
+        "d5-strategy-detail-drawer",
+        "d5-detail-title",
+        "d5-detail-body",
+        "d5-detail-close",
     ]:
         assert f'id="{element_id}"' in region
 
@@ -131,8 +137,64 @@ def test_review_filters_and_counts_are_wired():
         "d5-coverage-strategy-search",
         "No matrix rows match the current filters.",
         "No coverage rows match the current filters.",
+        "d5-clickable-row",
+        "data-detail-source=\"matrix\"",
+        "data-detail-source=\"coverage\"",
+        "wireDetailDrawer",
+        "renderStrategyDetail",
     ]:
         assert expected in module
+
+
+def test_strategy_detail_drawer_is_readonly_and_artifact_backed():
+    region = _d5_region()
+    module = D5_JS.read_text(encoding="utf-8")
+    css = D5_CSS.read_text(encoding="utf-8")
+
+    for expected in [
+        "Selected strategy summary",
+        "Total rows available",
+        "Distinct window segments",
+        "Distinct top_k values",
+        "sample_size_draws summary",
+        "sample_size_rows summary",
+        "m1_rate summary",
+        "m2_rate summary",
+        "m3_rate summary",
+        "m3plus_hit_rate summary",
+        "baseline_mode status",
+        "baseline_value status",
+        "delta status",
+        "delta_pp status",
+        "inferential_status",
+        "readiness_status",
+        "eligibility_status",
+        "exclusion_reason",
+        "Historical windows/top_k rows",
+        "Not computed",
+        "No matrix rows are available for this strategy in the copied artifact.",
+    ]:
+        assert expected in module
+
+    for expected in [
+        "Retrospective-only.",
+        "No future prediction.",
+        "No betting recommendation.",
+        "No production readiness.",
+        "Baselines/deltas not computed.",
+        "POWER_LOTTO full scoring excluded.",
+    ]:
+        assert expected in region
+
+    for expected in [
+        "role=\"button\"",
+        "tabindex=\"0\"",
+        "aria-label=\"Open strategy detail",
+        "d5-detail-drawer",
+        "d5-detail-caveats",
+        "d5-detail-table",
+    ]:
+        assert expected in module + "\n" + css
 
 
 def test_matrix_artifact_counts_columns_and_null_baselines():

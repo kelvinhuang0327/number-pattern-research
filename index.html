@@ -3470,7 +3470,10 @@
                   <h3 id="d5-detail-title">Select a strategy row</h3>
                   <p id="d5-detail-subtitle">Click a matrix or coverage row to review artifact-backed historical metrics.</p>
                 </div>
-                <button id="d5-detail-close" class="d5-icon-button" type="button" aria-label="Close strategy detail drawer">x</button>
+                <div class="d5-detail-actions">
+                  <button id="d5-detail-add-compare" class="d5-secondary-button" type="button" disabled>Add to compare</button>
+                  <button id="d5-detail-close" class="d5-icon-button" type="button" aria-label="Close strategy detail drawer">x</button>
+                </div>
               </div>
               <div id="d5-detail-body" class="d5-detail-body" aria-live="polite"></div>
               <div class="d5-detail-caveats" aria-label="Strategy detail caveats">
@@ -3485,6 +3488,30 @@
                 </ul>
               </div>
             </aside>
+
+            <section id="d5-compare-panel" class="d5-compare-panel" aria-labelledby="d5-compare-title">
+              <div class="d5-compare-header">
+                <div>
+                  <span class="d5-detail-kicker">Selected strategy comparison</span>
+                  <h3 id="d5-compare-title">Compare selected strategies</h3>
+                  <p>Select 2-4 strategies from the matrix, coverage, or detail drawer for side-by-side retrospective review.</p>
+                </div>
+                <span id="d5-compare-count" class="d5-row-count" aria-live="polite">0 selected</span>
+              </div>
+              <div id="d5-compare-status" class="d5-compare-status" aria-live="polite">Select at least 2 strategies to compare.</div>
+              <div id="d5-compare-grid" class="d5-compare-grid" aria-label="Selected strategies side-by-side"></div>
+              <div class="d5-compare-caveats" aria-label="Strategy comparison caveats">
+                <strong>Compare panel caveats</strong>
+                <ul>
+                  <li>Retrospective-only.</li>
+                  <li>No future prediction.</li>
+                  <li>No betting recommendation.</li>
+                  <li>No production readiness.</li>
+                  <li>Baselines/deltas not computed.</li>
+                  <li>POWER_LOTTO full scoring excluded.</li>
+                </ul>
+              </div>
+            </section>
 
             <section class="d5-panel active" id="d5-panel-matrix" data-d5-panel="matrix">
               <div class="d5-toolbar">
@@ -3513,6 +3540,7 @@
                 <table class="d5-table" id="d5-matrix-table">
                   <thead>
                     <tr>
+                      <th>compare</th>
                       <th>lottery</th>
                       <th>strategy_id</th>
                       <th>window_segment</th>
@@ -3532,7 +3560,7 @@
                     </tr>
                   </thead>
                   <tbody id="d5-matrix-body">
-                    <tr><td colspan="16">Loading verified P299A matrix...</td></tr>
+                    <tr><td colspan="17">Loading verified P299A matrix...</td></tr>
                   </tbody>
                 </table>
               </div>
@@ -3557,6 +3585,7 @@
                 <table class="d5-table" id="d5-coverage-table">
                   <thead>
                     <tr>
+                      <th>compare</th>
                       <th>lottery</th>
                       <th>strategy_id</th>
                       <th>rows</th>
@@ -3568,7 +3597,7 @@
                     </tr>
                   </thead>
                   <tbody id="d5-coverage-body">
-                    <tr><td colspan="8">Loading verified P299A coverage...</td></tr>
+                    <tr><td colspan="9">Loading verified P299A coverage...</td></tr>
                   </tbody>
                 </table>
               </div>

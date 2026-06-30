@@ -52,6 +52,7 @@ const DETAIL_RATE_LABELS = {
   m3_rate: 'm3_rate summary',
   m3plus_hit_rate: 'm3plus_hit_rate summary',
 };
+const COMPARE_LIMIT = 4;
 
 let state = {
   matrixRows: [],
@@ -60,6 +61,9 @@ let state = {
   powerlottoNote: '',
   manifest: null,
 };
+
+let compareKeys = [];
+let activeDetailKey = '';
 
 function byId(id) {
   return document.getElementById(id);
@@ -221,6 +225,46 @@ function findMatrixRows(lottery, strategyId) {
   return state.matrixRows.filter((row) => row.lottery === lottery && row.strategy_id === strategyId);
 }
 
+function selectedStrategySummary(lottery, strategyId) {
+  const matrixRows = findMatrixRows(lottery, strategyId);
+  const coverageRow = findCoverageRow(lottery, strategyId);
+  const windows = matrixRows.length
+    ? uniqueValues(matrixRows, 'window_segment')
+    : splitPipeValues(coverageRow?.available_windows);
+  const topKValues = matrixRows.length
+    ? sortMaybeNumeric(uniqueValues(matrixRows, 'top_k'))
+    : sortMaybeNumeric(splitPipeValues(coverageRow?.available_top_k));
+  const baselineModes = uniqueDisplayValues(matrixRows, 'baseline_mode');
+  const baselineValues = uniqueDisplayValues(matrixRows, 'baseline_value');
+  const deltaValues = uniqueDisplayValues(matrixRows, 'delta');
+  const deltaPpValues = uniqueDisplayValues(matrixRows, 'delta_pp');
+
+  return {
+    key: detailKey(lottery, strategyId),
+    lottery,
+    strategyId,
+    matrixRows,
+    coverageRow,
+    windows,
+    topKValues,
+    totalRows: coverageRow ? displayValue(coverageRow, 'rows') : matrixRows.length.toLocaleString(),
+    distinctDraws: coverageRow ? displayValue(coverageRow, 'distinct_draws') : summarizeNumbers(matrixRows, 'sample_size_draws'),
+    sampleDraws: summarizeNumbers(matrixRows, 'sample_size_draws'),
+    sampleRows: summarizeNumbers(matrixRows, 'sample_size_rows'),
+    rates: Object.fromEntries(DETAIL_RATE_COLUMNS.map((key) => [key, summarizeRates(matrixRows, key)])),
+    baselineMode: formatList(baselineModes, 'Not available'),
+    baselineValue: formatList(baselineValues, 'Not computed'),
+    delta: formatList(deltaValues, 'Not computed'),
+    deltaPp: formatList(deltaPpValues, 'Not computed'),
+    statuses: Object.fromEntries(DETAIL_STATUS_COLUMNS.map((key) => [
+      key,
+      formatList(uniqueDisplayValues(matrixRows, key), 'Not available'),
+    ])),
+    coverageReadiness: coverageRow ? displayValue(coverageRow, 'readiness') : 'Not available',
+    coverageBlockedReason: coverageRow ? (displayValue(coverageRow, 'blocked_reason') || 'None') : 'Not available',
+  };
+}
+
 function detailMetric(label, value) {
   return `
     <div class="d5-detail-metric">
@@ -313,22 +357,12 @@ function renderStrategyDetail(lottery, strategyId, source = 'row') {
   const body = byId('d5-detail-body');
   const title = byId('d5-detail-title');
   const subtitle = byId('d5-detail-subtitle');
+  const addButton = byId('d5-detail-add-compare');
   if (!drawer || !body || !title || !subtitle) return;
 
-  const matrixRows = findMatrixRows(lottery, strategyId);
-  const coverageRow = findCoverageRow(lottery, strategyId);
-  const windows = matrixRows.length
-    ? uniqueValues(matrixRows, 'window_segment')
-    : splitPipeValues(coverageRow?.available_windows);
-  const topKValues = matrixRows.length
-    ? sortMaybeNumeric(uniqueValues(matrixRows, 'top_k'))
-    : sortMaybeNumeric(splitPipeValues(coverageRow?.available_top_k));
-  const baselineModes = uniqueDisplayValues(matrixRows, 'baseline_mode');
-  const baselineValues = uniqueDisplayValues(matrixRows, 'baseline_value');
-  const deltaValues = uniqueDisplayValues(matrixRows, 'delta');
-  const deltaPpValues = uniqueDisplayValues(matrixRows, 'delta_pp');
-  const totalRows = coverageRow ? displayValue(coverageRow, 'rows') : matrixRows.length.toLocaleString();
-  const distinctDraws = coverageRow ? displayValue(coverageRow, 'distinct_draws') : summarizeNumbers(matrixRows, 'sample_size_draws');
+  const summary = selectedStrategySummary(lottery, strategyId);
+  activeDetailKey = summary.key;
+  updateDetailCompareButton();
 
   title.textContent = strategyId;
   subtitle.textContent = `${lottery} historical strategy metrics from ${source === 'coverage' ? 'coverage' : 'matrix'} artifact rows.`;
@@ -336,33 +370,34 @@ function renderStrategyDetail(lottery, strategyId, source = 'row') {
     <div class="d5-detail-metrics" aria-label="Selected strategy summary">
       ${detailMetric('strategy_id', escapeHtml(strategyId))}
       ${detailMetric('lottery', escapeHtml(lottery))}
-      ${detailMetric('Total rows available', totalRows)}
-      ${detailMetric('Matrix rows', matrixRows.length.toLocaleString())}
-      ${detailMetric('Distinct draws', distinctDraws || 'Not available')}
-      ${detailMetric('Distinct window segments', windows.length.toLocaleString())}
-      ${detailMetric('Distinct top_k values', topKValues.length.toLocaleString())}
+      ${detailMetric('Total rows available', summary.totalRows)}
+      ${detailMetric('Matrix rows', summary.matrixRows.length.toLocaleString())}
+      ${detailMetric('Distinct draws', summary.distinctDraws || 'Not available')}
+      ${detailMetric('Distinct window segments', summary.windows.length.toLocaleString())}
+      ${detailMetric('Distinct top_k values', summary.topKValues.length.toLocaleString())}
     </div>
 
     <div class="d5-detail-grid">
-      ${detailField('Window segments', formatList(windows, 'Not available'))}
-      ${detailField('top_k values', formatList(topKValues, 'Not available'))}
-      ${detailField('sample_size_draws summary', summarizeNumbers(matrixRows, 'sample_size_draws'))}
-      ${detailField('sample_size_rows summary', summarizeNumbers(matrixRows, 'sample_size_rows'))}
-      ${DETAIL_RATE_COLUMNS.map((key) => detailField(DETAIL_RATE_LABELS[key], summarizeRates(matrixRows, key))).join('')}
-      ${detailField('baseline_mode status', formatList(baselineModes, 'Not available'))}
-      ${detailField('baseline_value status', formatList(baselineValues, 'Not computed'))}
-      ${detailField('delta status', formatList(deltaValues, 'Not computed'))}
-      ${detailField('delta_pp status', formatList(deltaPpValues, 'Not computed'))}
-      ${DETAIL_STATUS_COLUMNS.map((key) => detailField(key, formatList(uniqueDisplayValues(matrixRows, key), 'Not available'))).join('')}
-      ${detailField('coverage readiness', coverageRow ? displayValue(coverageRow, 'readiness') : 'Not available')}
-      ${detailField('coverage blocked_reason', coverageRow ? (displayValue(coverageRow, 'blocked_reason') || 'None') : 'Not available')}
+      ${detailField('Window segments', formatList(summary.windows, 'Not available'))}
+      ${detailField('top_k values', formatList(summary.topKValues, 'Not available'))}
+      ${detailField('sample_size_draws summary', summary.sampleDraws)}
+      ${detailField('sample_size_rows summary', summary.sampleRows)}
+      ${DETAIL_RATE_COLUMNS.map((key) => detailField(DETAIL_RATE_LABELS[key], summary.rates[key])).join('')}
+      ${detailField('baseline_mode status', summary.baselineMode)}
+      ${detailField('baseline_value status', summary.baselineValue)}
+      ${detailField('delta status', summary.delta)}
+      ${detailField('delta_pp status', summary.deltaPp)}
+      ${DETAIL_STATUS_COLUMNS.map((key) => detailField(key, summary.statuses[key])).join('')}
+      ${detailField('coverage readiness', summary.coverageReadiness)}
+      ${detailField('coverage blocked_reason', summary.coverageBlockedReason)}
     </div>
 
     <div class="d5-detail-section">
       <h4>Historical windows/top_k rows</h4>
-      ${renderDetailWindowRows(matrixRows)}
+      ${renderDetailWindowRows(summary.matrixRows)}
     </div>
   `;
+  if (addButton) addButton.dataset.detailKey = summary.key;
   drawer.hidden = false;
   drawer.classList.add('is-open');
 }
@@ -372,6 +407,117 @@ function closeStrategyDetail() {
   if (!drawer) return;
   drawer.classList.remove('is-open');
   drawer.hidden = true;
+}
+
+function compareLabel() {
+  return `${compareKeys.length} selected`;
+}
+
+function updateDetailCompareButton() {
+  const button = byId('d5-detail-add-compare');
+  if (!button) return;
+  const isSelected = activeDetailKey && compareKeys.includes(activeDetailKey);
+  const limitReached = compareKeys.length >= COMPARE_LIMIT && !isSelected;
+  button.disabled = !activeDetailKey || limitReached;
+  button.textContent = isSelected ? 'Selected for compare' : 'Add to compare';
+}
+
+function updateCompareRowButtons() {
+  document.querySelectorAll('[data-compare-key]').forEach((button) => {
+    const key = button.dataset.compareKey || '';
+    const isSelected = compareKeys.includes(key);
+    const limitReached = compareKeys.length >= COMPARE_LIMIT && !isSelected;
+    button.disabled = limitReached;
+    button.textContent = isSelected ? 'Selected' : 'Compare';
+    button.setAttribute('aria-pressed', isSelected ? 'true' : 'false');
+  });
+}
+
+function compareField(label, value) {
+  return `
+    <div class="d5-compare-field">
+      <span>${escapeHtml(label)}</span>
+      <strong>${value}</strong>
+    </div>
+  `;
+}
+
+function renderCompareCard(summary) {
+  return `
+    <article class="d5-compare-card" data-selected-key="${escapeHtml(summary.key)}">
+      <div class="d5-compare-card-header">
+        <div>
+          <span>${escapeHtml(summary.lottery)}</span>
+          <h4>${escapeHtml(summary.strategyId)}</h4>
+        </div>
+        <button class="d5-compare-remove" type="button" data-remove-compare-key="${escapeHtml(summary.key)}" aria-label="Remove ${escapeHtml(summary.strategyId)} from compare">Remove</button>
+      </div>
+      <div class="d5-compare-card-grid">
+        ${compareField('row count', summary.totalRows)}
+        ${compareField('matrix rows', summary.matrixRows.length.toLocaleString())}
+        ${compareField('distinct window segments', summary.windows.length.toLocaleString())}
+        ${compareField('window segments', formatList(summary.windows, 'Not available'))}
+        ${compareField('distinct top_k values', summary.topKValues.length.toLocaleString())}
+        ${compareField('top_k values', formatList(summary.topKValues, 'Not available'))}
+        ${compareField('sample_size_draws summary', summary.sampleDraws)}
+        ${compareField('sample_size_rows summary', summary.sampleRows)}
+        ${DETAIL_RATE_COLUMNS.map((key) => compareField(DETAIL_RATE_LABELS[key], summary.rates[key])).join('')}
+        ${compareField('baseline_mode status', summary.baselineMode)}
+        ${compareField('baseline_value status', summary.baselineValue)}
+        ${compareField('delta status', summary.delta)}
+        ${compareField('delta_pp status', summary.deltaPp)}
+        ${DETAIL_STATUS_COLUMNS.map((key) => compareField(key, summary.statuses[key])).join('')}
+        ${compareField('coverage readiness', summary.coverageReadiness)}
+        ${compareField('coverage blocked_reason', summary.coverageBlockedReason)}
+      </div>
+    </article>
+  `;
+}
+
+function renderComparePanel() {
+  const count = byId('d5-compare-count');
+  const status = byId('d5-compare-status');
+  const grid = byId('d5-compare-grid');
+  if (!count || !status || !grid) return;
+
+  count.textContent = compareLabel();
+  if (compareKeys.length < 2) {
+    status.textContent = 'Select at least 2 strategies to compare.';
+  } else if (compareKeys.length >= COMPARE_LIMIT) {
+    status.textContent = 'Compare selection is full at 4 strategies.';
+  } else {
+    status.textContent = 'Selected strategies are shown side-by-side for retrospective review only.';
+  }
+
+  if (!compareKeys.length) {
+    grid.innerHTML = '<p class="d5-compare-empty">No strategies selected yet.</p>';
+  } else {
+    grid.innerHTML = compareKeys.map((key) => {
+      const [lottery, strategyId] = key.split('::');
+      return renderCompareCard(selectedStrategySummary(lottery, strategyId));
+    }).join('');
+  }
+
+  updateCompareRowButtons();
+  updateDetailCompareButton();
+}
+
+function addCompareStrategy(key) {
+  if (!key || compareKeys.includes(key)) {
+    renderComparePanel();
+    return;
+  }
+  if (compareKeys.length >= COMPARE_LIMIT) {
+    renderComparePanel();
+    return;
+  }
+  compareKeys = [...compareKeys, key];
+  renderComparePanel();
+}
+
+function removeCompareStrategy(key) {
+  compareKeys = compareKeys.filter((selectedKey) => selectedKey !== key);
+  renderComparePanel();
 }
 
 function renderSummary() {
@@ -428,15 +574,17 @@ function renderMatrix() {
   setText('d5-matrix-row-count', rowCountLabel(rows.length, state.matrixRows.length));
 
   if (rows.length === 0) {
-    body.innerHTML = `<tr><td colspan="${MATRIX_COLUMNS.length}">No matrix rows match the current filters.</td></tr>`;
+    body.innerHTML = `<tr><td colspan="${MATRIX_COLUMNS.length + 1}">No matrix rows match the current filters.</td></tr>`;
     return;
   }
 
   body.innerHTML = rows.map((row) => `
     <tr class="d5-clickable-row" role="button" tabindex="0" data-detail-source="matrix" data-detail-key="${escapeHtml(detailKey(row.lottery, row.strategy_id))}" aria-label="Open strategy detail for ${escapeHtml(row.strategy_id)} ${escapeHtml(row.lottery)}">
+      <td data-label="compare"><button class="d5-compare-toggle" type="button" data-compare-key="${escapeHtml(detailKey(row.lottery, row.strategy_id))}" aria-pressed="false">Compare</button></td>
       ${MATRIX_COLUMNS.map((key) => `<td data-label="${escapeHtml(key)}">${displayValue(row, key)}</td>`).join('')}
     </tr>
   `).join('');
+  updateCompareRowButtons();
 }
 
 function renderCoverage() {
@@ -453,15 +601,17 @@ function renderCoverage() {
   setText('d5-coverage-row-count', rowCountLabel(rows.length, state.coverageRows.length));
 
   if (rows.length === 0) {
-    body.innerHTML = `<tr><td colspan="${COVERAGE_COLUMNS.length}">No coverage rows match the current filters.</td></tr>`;
+    body.innerHTML = `<tr><td colspan="${COVERAGE_COLUMNS.length + 1}">No coverage rows match the current filters.</td></tr>`;
     return;
   }
 
   body.innerHTML = rows.map((row) => `
     <tr class="d5-clickable-row ${row.readiness === 'NOT_READY' ? 'd5-row-muted' : ''}" role="button" tabindex="0" data-detail-source="coverage" data-detail-key="${escapeHtml(detailKey(row.lottery, row.strategy_id))}" aria-label="Open strategy detail for ${escapeHtml(row.strategy_id)} ${escapeHtml(row.lottery)}">
+      <td data-label="compare"><button class="d5-compare-toggle" type="button" data-compare-key="${escapeHtml(detailKey(row.lottery, row.strategy_id))}" aria-pressed="false">Compare</button></td>
       ${COVERAGE_COLUMNS.map((key) => `<td data-label="${escapeHtml(key)}">${displayValue(row, key)}</td>`).join('')}
     </tr>
   `).join('');
+  updateCompareRowButtons();
 }
 
 function renderContract() {
@@ -556,6 +706,7 @@ function wireFilters() {
 }
 
 function openDetailFromEvent(event) {
+  if (event.target.closest?.('[data-compare-key]')) return;
   const row = event.target.closest?.('.d5-clickable-row');
   if (!row) return;
   const [lottery, strategyId] = String(row.dataset.detailKey || '').split('::');
@@ -577,8 +728,30 @@ function wireDetailDrawer() {
   byId('d5-coverage-body')?.addEventListener('click', openDetailFromEvent);
   byId('d5-coverage-body')?.addEventListener('keydown', openDetailFromKeyboard);
   byId('d5-detail-close')?.addEventListener('click', closeStrategyDetail);
+  byId('d5-detail-add-compare')?.addEventListener('click', (event) => {
+    const key = event.currentTarget.dataset.detailKey || activeDetailKey;
+    addCompareStrategy(key);
+  });
   document.addEventListener('keydown', (event) => {
     if (event.key === 'Escape') closeStrategyDetail();
+  });
+}
+
+function wireComparePanel() {
+  const section = byId('lottery-d5-section');
+  section?.addEventListener('click', (event) => {
+    const compareButton = event.target.closest?.('[data-compare-key]');
+    if (compareButton) {
+      event.stopPropagation();
+      addCompareStrategy(compareButton.dataset.compareKey || '');
+      return;
+    }
+
+    const removeButton = event.target.closest?.('[data-remove-compare-key]');
+    if (removeButton) {
+      event.stopPropagation();
+      removeCompareStrategy(removeButton.dataset.removeCompareKey || '');
+    }
   });
 }
 
@@ -612,6 +785,7 @@ async function loadD5Artifacts() {
     renderCoverage();
     renderContract();
     renderPowerlottoNote();
+    renderComparePanel();
   } catch (error) {
     setError(`Failed to load verified P299A artifacts: ${error.message}`);
   }
@@ -622,6 +796,7 @@ function initLotteryD5() {
   wireTabs();
   wireFilters();
   wireDetailDrawer();
+  wireComparePanel();
   loadD5Artifacts();
 }
 

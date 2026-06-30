@@ -103,6 +103,9 @@ def test_required_visible_summary_and_sections_exist():
         "All top_k",
         "Strategy detail",
         "Click a matrix or coverage row to review artifact-backed historical metrics.",
+        "Selected strategy comparison",
+        "Compare selected strategies",
+        "Select 2-4 strategies from the matrix, coverage, or detail drawer",
         "Showing 130 of 130 rows",
         "Showing 29 of 29 rows",
     ]:
@@ -126,6 +129,12 @@ def test_review_filters_and_counts_are_wired():
         "d5-detail-title",
         "d5-detail-body",
         "d5-detail-close",
+        "d5-detail-add-compare",
+        "d5-compare-panel",
+        "d5-compare-title",
+        "d5-compare-count",
+        "d5-compare-status",
+        "d5-compare-grid",
     ]:
         assert f'id="{element_id}"' in region
 
@@ -142,6 +151,10 @@ def test_review_filters_and_counts_are_wired():
         "data-detail-source=\"coverage\"",
         "wireDetailDrawer",
         "renderStrategyDetail",
+        "wireComparePanel",
+        "renderComparePanel",
+        "addCompareStrategy",
+        "removeCompareStrategy",
     ]:
         assert expected in module
 
@@ -195,6 +208,66 @@ def test_strategy_detail_drawer_is_readonly_and_artifact_backed():
         "d5-detail-table",
     ]:
         assert expected in module + "\n" + css
+
+
+def test_selected_strategy_compare_panel_is_readonly_and_non_ranking():
+    region = _d5_region()
+    module = D5_JS.read_text(encoding="utf-8")
+    css = D5_CSS.read_text(encoding="utf-8")
+    combined = region + "\n" + module + "\n" + css
+
+    for expected in [
+        "Compare selected strategies",
+        "Selected strategies side-by-side",
+        "Select at least 2 strategies to compare.",
+        "Compare selection is full at 4 strategies.",
+        "Selected strategies are shown side-by-side for retrospective review only.",
+        "No strategies selected yet.",
+        "row count",
+        "distinct window segments",
+        "distinct top_k values",
+        "sample_size_draws summary",
+        "sample_size_rows summary",
+        "m1_rate summary",
+        "m2_rate summary",
+        "m3_rate summary",
+        "m3plus_hit_rate summary",
+        "baseline_mode status",
+        "baseline_value status",
+        "delta status",
+        "delta_pp status",
+        "inferential_status",
+        "readiness_status",
+        "eligibility_status",
+        "exclusion_reason",
+        "Not computed",
+    ]:
+        assert expected in combined
+
+    for expected in [
+        "data-compare-key",
+        "data-remove-compare-key",
+        "data-detail-key",
+        "d5-compare-toggle",
+        "d5-compare-remove",
+        "d5-compare-card",
+        "COMPARE_LIMIT = 4",
+        "activeDetailKey",
+    ]:
+        assert expected in module + "\n" + css
+
+    for expected in [
+        "Retrospective-only.",
+        "No future prediction.",
+        "No betting recommendation.",
+        "No production readiness.",
+        "Baselines/deltas not computed.",
+        "POWER_LOTTO full scoring excluded.",
+    ]:
+        assert expected in region
+
+    assert "best strategy" not in combined.lower()
+    assert "recommendation" not in module.lower()
 
 
 def test_matrix_artifact_counts_columns_and_null_baselines():

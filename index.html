@@ -3414,6 +3414,18 @@
               <span>Read-only static files</span>
             </div>
 
+            <div class="d5-no-claims-banner" aria-label="D5 demo non-claims">
+              <strong>Review-only demo constraints</strong>
+              <ul>
+                <li>Retrospective-only.</li>
+                <li>No future prediction.</li>
+                <li>No betting recommendation.</li>
+                <li>No production readiness.</li>
+                <li>Baselines/deltas not computed.</li>
+                <li>POWER_LOTTO full scoring excluded.</li>
+              </ul>
+            </div>
+
             <div class="d5-summary-grid" aria-label="D5 summary cards">
               <div class="d5-summary-card">
                 <span>Matrix rows</span>
@@ -3463,6 +3475,13 @@
                 <select id="d5-matrix-window-filter" class="d5-select">
                   <option value="">All windows</option>
                 </select>
+                <label for="d5-matrix-topk-filter">top_k</label>
+                <select id="d5-matrix-topk-filter" class="d5-select">
+                  <option value="">All top_k</option>
+                </select>
+                <label for="d5-matrix-strategy-search">Strategy</label>
+                <input id="d5-matrix-strategy-search" class="d5-input" type="search" placeholder="Search strategy_id" autocomplete="off">
+                <span id="d5-matrix-row-count" class="d5-row-count" aria-live="polite">Showing 130 of 130 rows</span>
               </div>
               <div class="d5-note">
                 Retrospective matrix rows are shown in artifact order. Baseline and delta NULL values display as Not computed.
@@ -3504,6 +3523,9 @@
                   <option value="BIG_LOTTO">BIG_LOTTO</option>
                   <option value="DAILY_539">DAILY_539</option>
                 </select>
+                <label for="d5-coverage-strategy-search">Strategy</label>
+                <input id="d5-coverage-strategy-search" class="d5-input" type="search" placeholder="Search strategy_id" autocomplete="off">
+                <span id="d5-coverage-row-count" class="d5-row-count" aria-live="polite">Showing 29 of 29 rows</span>
               </div>
               <div class="d5-note">
                 Coverage is retrospective-only and not a strategy ranking.
@@ -3556,8 +3578,7 @@
                 <li>No future prediction ability claimed.</li>
                 <li>No betting recommendation.</li>
                 <li>No production readiness.</li>
-                <li>Baselines not computed.</li>
-                <li>Deltas are NULL.</li>
+                <li>Baselines/deltas not computed.</li>
                 <li>POWER_LOTTO full scoring excluded.</li>
                 <li>This UI is an artifact-backed demo slice, not a production optimizer.</li>
               </ul>

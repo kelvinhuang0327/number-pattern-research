@@ -96,8 +96,43 @@ def test_required_visible_summary_and_sections_exist():
         "Optimizer input contract",
         "POWER_LOTTO exclusion",
         "Limitations / non-claims",
+        "Review-only demo constraints",
+        "No future prediction.",
+        "Baselines/deltas not computed.",
+        "Search strategy_id",
+        "All top_k",
+        "Showing 130 of 130 rows",
+        "Showing 29 of 29 rows",
     ]:
         assert text in region
+
+
+def test_review_filters_and_counts_are_wired():
+    region = _d5_region()
+    module = D5_JS.read_text(encoding="utf-8")
+
+    for element_id in [
+        "d5-matrix-lottery-filter",
+        "d5-matrix-window-filter",
+        "d5-matrix-topk-filter",
+        "d5-matrix-strategy-search",
+        "d5-matrix-row-count",
+        "d5-coverage-lottery-filter",
+        "d5-coverage-strategy-search",
+        "d5-coverage-row-count",
+    ]:
+        assert f'id="{element_id}"' in region
+
+    for expected in [
+        "populateTopKFilter",
+        "strategyMatches",
+        "rowCountLabel",
+        "d5-matrix-strategy-search",
+        "d5-coverage-strategy-search",
+        "No matrix rows match the current filters.",
+        "No coverage rows match the current filters.",
+    ]:
+        assert expected in module
 
 
 def test_matrix_artifact_counts_columns_and_null_baselines():

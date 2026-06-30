@@ -154,6 +154,36 @@ function setText(id, value) {
   if (node) node.textContent = value;
 }
 
+function uniqueValues(rows, key) {
+  return [...new Set(rows.map((row) => row[key]).filter(Boolean))];
+}
+
+function renderOptions(select, values, allLabel) {
+  if (!select) return;
+  select.innerHTML = `<option value="">${escapeHtml(allLabel)}</option>` +
+    values.map((value) => `<option value="${escapeHtml(value)}">${escapeHtml(value)}</option>`).join('');
+}
+
+function sortMaybeNumeric(values) {
+  return [...values].sort((left, right) => {
+    const leftNumber = Number(left);
+    const rightNumber = Number(right);
+    if (Number.isFinite(leftNumber) && Number.isFinite(rightNumber)) {
+      return leftNumber - rightNumber;
+    }
+    return String(left).localeCompare(String(right));
+  });
+}
+
+function strategyMatches(row, query) {
+  if (!query) return true;
+  return String(row.strategy_id || '').toLowerCase().includes(query.trim().toLowerCase());
+}
+
+function rowCountLabel(filtered, total) {
+  return `Showing ${filtered.toLocaleString()} of ${total.toLocaleString()} rows`;
+}
+
 function renderSummary() {
   const matrixRows = state.matrixRows.length;
   const bigRows = state.matrixRows.filter((row) => row.lottery === 'BIG_LOTTO').length;
@@ -182,10 +212,12 @@ function renderSummary() {
 
 function populateWindowFilter() {
   const select = byId('d5-matrix-window-filter');
-  if (!select) return;
-  const windows = [...new Set(state.matrixRows.map((row) => row.window_segment).filter(Boolean))];
-  select.innerHTML = '<option value="">All windows</option>' +
-    windows.map((windowSegment) => `<option value="${escapeHtml(windowSegment)}">${escapeHtml(windowSegment)}</option>`).join('');
+  renderOptions(select, uniqueValues(state.matrixRows, 'window_segment'), 'All windows');
+}
+
+function populateTopKFilter() {
+  const select = byId('d5-matrix-topk-filter');
+  renderOptions(select, sortMaybeNumeric(uniqueValues(state.matrixRows, 'top_k')), 'All top_k');
 }
 
 function renderMatrix() {
@@ -194,14 +226,19 @@ function renderMatrix() {
 
   const lotteryFilter = byId('d5-matrix-lottery-filter')?.value || '';
   const windowFilter = byId('d5-matrix-window-filter')?.value || '';
+  const topKFilter = byId('d5-matrix-topk-filter')?.value || '';
+  const strategySearch = byId('d5-matrix-strategy-search')?.value || '';
   const rows = state.matrixRows.filter((row) => {
     if (lotteryFilter && row.lottery !== lotteryFilter) return false;
     if (windowFilter && row.window_segment !== windowFilter) return false;
+    if (topKFilter && row.top_k !== topKFilter) return false;
+    if (!strategyMatches(row, strategySearch)) return false;
     return true;
   });
+  setText('d5-matrix-row-count', rowCountLabel(rows.length, state.matrixRows.length));
 
   if (rows.length === 0) {
-    body.innerHTML = `<tr><td colspan="${MATRIX_COLUMNS.length}">No rows for current filters.</td></tr>`;
+    body.innerHTML = `<tr><td colspan="${MATRIX_COLUMNS.length}">No matrix rows match the current filters.</td></tr>`;
     return;
   }
 
@@ -217,10 +254,16 @@ function renderCoverage() {
   if (!body) return;
 
   const lotteryFilter = byId('d5-coverage-lottery-filter')?.value || '';
-  const rows = state.coverageRows.filter((row) => !lotteryFilter || row.lottery === lotteryFilter);
+  const strategySearch = byId('d5-coverage-strategy-search')?.value || '';
+  const rows = state.coverageRows.filter((row) => {
+    if (lotteryFilter && row.lottery !== lotteryFilter) return false;
+    if (!strategyMatches(row, strategySearch)) return false;
+    return true;
+  });
+  setText('d5-coverage-row-count', rowCountLabel(rows.length, state.coverageRows.length));
 
   if (rows.length === 0) {
-    body.innerHTML = `<tr><td colspan="${COVERAGE_COLUMNS.length}">No rows for current filters.</td></tr>`;
+    body.innerHTML = `<tr><td colspan="${COVERAGE_COLUMNS.length}">No coverage rows match the current filters.</td></tr>`;
     return;
   }
 
@@ -316,7 +359,10 @@ function wireTabs() {
 function wireFilters() {
   byId('d5-matrix-lottery-filter')?.addEventListener('change', renderMatrix);
   byId('d5-matrix-window-filter')?.addEventListener('change', renderMatrix);
+  byId('d5-matrix-topk-filter')?.addEventListener('change', renderMatrix);
+  byId('d5-matrix-strategy-search')?.addEventListener('input', renderMatrix);
   byId('d5-coverage-lottery-filter')?.addEventListener('change', renderCoverage);
+  byId('d5-coverage-strategy-search')?.addEventListener('input', renderCoverage);
 }
 
 async function loadD5Artifacts() {
@@ -344,6 +390,7 @@ async function loadD5Artifacts() {
     setError('');
     renderSummary();
     populateWindowFilter();
+    populateTopKFilter();
     renderMatrix();
     renderCoverage();
     renderContract();

@@ -1,7 +1,7 @@
 # Lottery Randomness Audit Report
 
 **Run timestamp:** 2026-06-02T06:57:02.982982
-**Re-attestation timestamp:** 2026-06-16T10:24:11.889860
+**Re-attestation timestamp:** 2026-06-30T13:42:02.321987
 **Simulations:** 2,000 (seed=42)
 **Alpha:** 0.05
 **Total confirmatory tests:** 44
@@ -16,7 +16,7 @@ It is **not** a new statistical analysis or a new audit run.
 | Field | Value |
 |---|---|
 | Original audit run | 2026-06-02T06:57:02.982982 (Run timestamp above) |
-| Re-attestation performed | 2026-06-16T10:24:11.889860 (Re-attestation timestamp above) |
+| Re-attestation performed | 2026-06-30T13:42:02.321987 (Re-attestation timestamp above) |
 | Reanalysis performed | **NO** — statistical values were not recomputed |
 | New draws analyzed | **NO** — data through 2026-04-29 only |
 | Audit script status | `scripts/randomness_audit.py` is absent from this repository (never existed) |

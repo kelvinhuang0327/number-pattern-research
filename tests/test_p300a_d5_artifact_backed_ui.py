@@ -241,6 +241,15 @@ def test_selected_strategy_compare_panel_is_readonly_and_non_ranking():
         "eligibility_status",
         "exclusion_reason",
         "Not computed",
+        "Comparison snapshot",
+        "Copy comparison snapshot",
+        "Manual comparison snapshot copy fallback",
+        "Clipboard API unavailable",
+        "generated_at",
+        "source_label",
+        "P299A static artifact-backed D5 demo",
+        "selected_strategy_count",
+        "No-claims caveats",
     ]:
         assert expected in combined
 
@@ -251,6 +260,10 @@ def test_selected_strategy_compare_panel_is_readonly_and_non_ranking():
         "d5-compare-toggle",
         "d5-compare-remove",
         "d5-compare-card",
+        "d5-compare-snapshot",
+        "d5-compare-snapshot-output",
+        "buildCompareSnapshot",
+        "copyCompareSnapshot",
         "COMPARE_LIMIT = 4",
         "activeDetailKey",
     ]:
@@ -267,7 +280,9 @@ def test_selected_strategy_compare_panel_is_readonly_and_non_ranking():
         assert expected in region
 
     assert "best strategy" not in combined.lower()
-    assert "recommendation" not in module.lower()
+    assert "recommended strategy" not in combined.lower()
+    assert "betting pick" not in combined.lower()
+    assert "No betting recommendation." in module
 
 
 def test_matrix_artifact_counts_columns_and_null_baselines():

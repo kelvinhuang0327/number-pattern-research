@@ -53,6 +53,15 @@ const DETAIL_RATE_LABELS = {
   m3plus_hit_rate: 'm3plus_hit_rate summary',
 };
 const COMPARE_LIMIT = 4;
+const SNAPSHOT_SOURCE_LABEL = 'P299A static artifact-backed D5 demo';
+const SNAPSHOT_CAVEATS = [
+  'Retrospective-only.',
+  'No future prediction.',
+  'No betting recommendation.',
+  'No production readiness.',
+  'Baselines/deltas not computed.',
+  'POWER_LOTTO full scoring excluded.',
+];
 
 let state = {
   matrixRows: [],
@@ -442,6 +451,191 @@ function compareField(label, value) {
   `;
 }
 
+function compareSnapshotSectionMarkup() {
+  return `
+    <div class="d5-compare-snapshot" aria-label="Comparison snapshot export">
+      <div class="d5-compare-snapshot-header">
+        <div>
+          <h4>Comparison snapshot</h4>
+          <p>Copyable review text generated from the selected static artifact rows only.</p>
+        </div>
+        <button id="d5-compare-snapshot-copy" class="d5-secondary-button" type="button" disabled>Copy comparison snapshot</button>
+      </div>
+      <div id="d5-compare-snapshot-status" class="d5-compare-snapshot-status" aria-live="polite">Select at least 2 strategies to enable snapshot copy.</div>
+      <pre id="d5-compare-snapshot-output" class="d5-compare-snapshot-output" tabindex="0" aria-label="Manual comparison snapshot copy fallback">Select 2-4 strategies to generate a review-safe comparison snapshot.</pre>
+    </div>
+  `;
+}
+
+function ensureCompareSnapshotSection() {
+  if (byId('d5-compare-snapshot-output')) return;
+  const panel = byId('d5-compare-panel');
+  const caveats = panel?.querySelector('.d5-compare-caveats');
+  if (!panel || !caveats) return;
+  caveats.insertAdjacentHTML('beforebegin', compareSnapshotSectionMarkup());
+}
+
+function localGeneratedAt() {
+  return new Date().toLocaleString(undefined, {
+    year: 'numeric',
+    month: '2-digit',
+    day: '2-digit',
+    hour: '2-digit',
+    minute: '2-digit',
+    second: '2-digit',
+    hour12: false,
+    timeZoneName: 'short',
+  });
+}
+
+function selectedSummaries() {
+  return compareKeys.map((key) => {
+    const [lottery, strategyId] = key.split('::');
+    return selectedStrategySummary(lottery, strategyId);
+  });
+}
+
+function snapshotStrategyPayload(summary) {
+  return {
+    strategy_id: summary.strategyId,
+    lottery: summary.lottery,
+    row_count: summary.totalRows,
+    matrix_rows: summary.matrixRows.length,
+    distinct_window_segments: summary.windows.length,
+    window_segments: summary.windows,
+    distinct_top_k_values: summary.topKValues.length,
+    top_k_values: summary.topKValues,
+    sample_size_draws_summary: summary.sampleDraws,
+    sample_size_rows_summary: summary.sampleRows,
+    rates: {
+      m1_rate: summary.rates.m1_rate,
+      m2_rate: summary.rates.m2_rate,
+      m3_rate: summary.rates.m3_rate,
+      m3plus_hit_rate: summary.rates.m3plus_hit_rate,
+    },
+    baseline_mode_status: summary.baselineMode,
+    baseline_value_status: summary.baselineValue,
+    delta_status: summary.delta,
+    delta_pp_status: summary.deltaPp,
+    inferential_status: summary.statuses.inferential_status,
+    readiness_status: summary.statuses.readiness_status,
+    eligibility_status: summary.statuses.eligibility_status,
+    exclusion_reason: summary.statuses.exclusion_reason,
+    coverage_readiness: summary.coverageReadiness,
+    coverage_blocked_reason: summary.coverageBlockedReason,
+  };
+}
+
+function buildCompareSnapshot() {
+  if (compareKeys.length < 2) {
+    return 'Select 2-4 strategies to generate a review-safe comparison snapshot.';
+  }
+
+  const generatedAt = localGeneratedAt();
+  const strategies = selectedSummaries().map(snapshotStrategyPayload);
+  const payload = {
+    generated_at: generatedAt,
+    source_label: SNAPSHOT_SOURCE_LABEL,
+    selected_strategy_count: strategies.length,
+    caveats: SNAPSHOT_CAVEATS,
+    strategies,
+  };
+
+  const lines = [
+    '# D5 selected strategy comparison snapshot',
+    '',
+    `generated_at: ${generatedAt}`,
+    `source_label: ${SNAPSHOT_SOURCE_LABEL}`,
+    `selected_strategy_count: ${strategies.length}`,
+    '',
+    '## No-claims caveats',
+    ...SNAPSHOT_CAVEATS.map((caveat) => `- ${caveat}`),
+    '',
+    '## Selected strategies',
+  ];
+
+  strategies.forEach((strategy, index) => {
+    lines.push(
+      '',
+      `### ${index + 1}. ${strategy.strategy_id}`,
+      `- lottery: ${strategy.lottery}`,
+      `- row count: ${strategy.row_count}`,
+      `- matrix rows: ${strategy.matrix_rows}`,
+      `- distinct window segments: ${strategy.distinct_window_segments}`,
+      `- window segments: ${strategy.window_segments.join(', ') || 'Not available'}`,
+      `- distinct top_k values: ${strategy.distinct_top_k_values}`,
+      `- top_k values: ${strategy.top_k_values.join(', ') || 'Not available'}`,
+      `- sample_size_draws summary: ${strategy.sample_size_draws_summary}`,
+      `- sample_size_rows summary: ${strategy.sample_size_rows_summary}`,
+      `- m1_rate summary: ${strategy.rates.m1_rate}`,
+      `- m2_rate summary: ${strategy.rates.m2_rate}`,
+      `- m3_rate summary: ${strategy.rates.m3_rate}`,
+      `- m3plus_hit_rate summary: ${strategy.rates.m3plus_hit_rate}`,
+      `- baseline_mode status: ${strategy.baseline_mode_status}`,
+      `- baseline_value status: ${strategy.baseline_value_status}`,
+      `- delta status: ${strategy.delta_status}`,
+      `- delta_pp status: ${strategy.delta_pp_status}`,
+      `- inferential_status: ${strategy.inferential_status}`,
+      `- readiness_status: ${strategy.readiness_status}`,
+      `- eligibility_status: ${strategy.eligibility_status}`,
+      `- exclusion_reason: ${strategy.exclusion_reason}`,
+      `- coverage readiness: ${strategy.coverage_readiness}`,
+      `- coverage blocked_reason: ${strategy.coverage_blocked_reason}`,
+    );
+  });
+
+  lines.push('', '## JSON', '```json', JSON.stringify(payload, null, 2), '```');
+  return lines.join('\n');
+}
+
+function renderCompareSnapshot() {
+  ensureCompareSnapshotSection();
+  const output = byId('d5-compare-snapshot-output');
+  const button = byId('d5-compare-snapshot-copy');
+  const status = byId('d5-compare-snapshot-status');
+  if (!output || !button || !status) return;
+
+  output.textContent = buildCompareSnapshot();
+  button.disabled = compareKeys.length < 2;
+  status.textContent = compareKeys.length < 2
+    ? 'Select at least 2 strategies to enable snapshot copy.'
+    : 'Snapshot includes selected strategies only and can be copied manually from the visible text block.';
+}
+
+async function copyCompareSnapshot() {
+  const output = byId('d5-compare-snapshot-output');
+  const status = byId('d5-compare-snapshot-status');
+  if (!output || !status || compareKeys.length < 2) return;
+
+  const selectAndCopy = () => {
+    const selection = window.getSelection?.();
+    if (!selection || !document.createRange || !document.execCommand) return false;
+    const range = document.createRange();
+    range.selectNodeContents(output);
+    selection.removeAllRanges();
+    selection.addRange(range);
+    const copied = document.execCommand('copy');
+    selection.removeAllRanges();
+    return copied;
+  };
+
+  if (!navigator.clipboard?.writeText) {
+    status.textContent = selectAndCopy()
+      ? 'Comparison snapshot copied.'
+      : 'Clipboard API unavailable; use the visible snapshot text block.';
+    return;
+  }
+
+  try {
+    await navigator.clipboard.writeText(output.textContent || '');
+    status.textContent = 'Comparison snapshot copied.';
+  } catch (error) {
+    status.textContent = selectAndCopy()
+      ? 'Comparison snapshot copied.'
+      : 'Clipboard copy failed; use the visible snapshot text block.';
+  }
+}
+
 function renderCompareCard(summary) {
   return `
     <article class="d5-compare-card" data-selected-key="${escapeHtml(summary.key)}">
@@ -498,6 +692,7 @@ function renderComparePanel() {
     }).join('');
   }
 
+  renderCompareSnapshot();
   updateCompareRowButtons();
   updateDetailCompareButton();
 }
@@ -740,6 +935,13 @@ function wireDetailDrawer() {
 function wireComparePanel() {
   const section = byId('lottery-d5-section');
   section?.addEventListener('click', (event) => {
+    const snapshotButton = event.target.closest?.('#d5-compare-snapshot-copy');
+    if (snapshotButton) {
+      event.stopPropagation();
+      copyCompareSnapshot();
+      return;
+    }
+
     const compareButton = event.target.closest?.('[data-compare-key]');
     if (compareButton) {
       event.stopPropagation();

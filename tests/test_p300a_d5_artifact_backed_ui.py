@@ -224,6 +224,55 @@ def test_demo_review_presets_are_static_filter_shortcuts():
     assert "d5-preset-button" in css
 
 
+def test_demo_walkthrough_panel_is_review_only_checklist():
+    region = _d5_region()
+    css = D5_CSS.read_text(encoding="utf-8")
+    walkthrough = re.search(
+        r'<details class="d5-walkthrough" open>.*?</details>',
+        region,
+        re.DOTALL,
+    )
+    assert walkthrough, "D5 demo walkthrough panel is missing"
+    panel = walkthrough.group(0)
+
+    for expected in [
+        "Demo walkthrough / reviewer checklist",
+        "Open D5 and confirm the no-claims banner is visible.",
+        "Click Review BIG_LOTTO triple rows.",
+        "Click Review DAILY_539 ACB rows.",
+        "Click Show POWER_LOTTO exclusion.",
+        "Click Reset review filters.",
+        "Open and close one strategy detail.",
+        "Select two strategies for compare and verify the snapshot fallback.",
+        "Retrospective-only.",
+        "No future prediction.",
+        "No betting recommendation.",
+        "No production readiness.",
+    ]:
+        assert expected in panel
+
+    assert len(re.findall(r"<li>", panel)) == 7
+    assert "d5-walkthrough" in css
+    assert "d5-walkthrough-limits" in css
+
+    normalized = panel.lower()
+    for allowed_negation in [
+        "no future prediction.",
+        "no betting recommendation.",
+        "no production readiness.",
+    ]:
+        normalized = normalized.replace(allowed_negation, "")
+    for forbidden in [
+        "best strategy",
+        "recommendation",
+        "prediction",
+        "betting pick",
+        "production optimizer",
+        "production-ready",
+    ]:
+        assert forbidden not in normalized
+
+
 def test_strategy_detail_drawer_is_readonly_and_artifact_backed():
     region = _d5_region()
     module = D5_JS.read_text(encoding="utf-8")

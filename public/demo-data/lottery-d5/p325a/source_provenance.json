@@ -1,0 +1,55 @@
+{
+  "task_id": "P326A_D5_BASELINE_RESULTS_STATIC_UI_IMPORT",
+  "source_task_id": "P325A_D5_EQUAL_BUDGET_BASELINE_ANALYSIS_READ_ONLY",
+  "source_classification": "P325A_D5_EQUAL_BUDGET_BASELINE_COMPLETE_WITH_LIMITATIONS",
+  "source_evidence_root": "/Users/kelvin/Kelvin-WorkSpace/p325a_d5_equal_budget_baseline_analysis_20260701_145150",
+  "source_repo_head": "fce02f0dc271274f7cffc54de527f0262e4f4830",
+  "source_manifest_sha256": "4f70f257eefe5bd165c88e6579e9f97047139d80e884c3621e9163ebd36466d7",
+  "copy_mode": "byte-for-byte unchanged static files",
+  "derived_files": [
+    {
+      "path": "baseline_summary.json",
+      "derivation": "Deterministic recomputation of P325A descriptive aggregates from the copied equal_budget_baseline_metrics.csv via tools/lottery-d5/build_p326a_baseline_summary.py. No conclusion changed."
+    }
+  ],
+  "artifacts": [
+    {
+      "path": "baseline_method.md",
+      "source_sha256": "8b1d5f1a62592e870b94af0e2e17249edf3fb640e0a27563965dc1b647bdbe92",
+      "copied_sha256": "8b1d5f1a62592e870b94af0e2e17249edf3fb640e0a27563965dc1b647bdbe92"
+    },
+    {
+      "path": "budget_bias_diagnostics.csv",
+      "source_sha256": "e49f1909463fe976f7504bf0cae0d5efe7e469cae33dc4b957cdc152ccd69d50",
+      "copied_sha256": "e49f1909463fe976f7504bf0cae0d5efe7e469cae33dc4b957cdc152ccd69d50"
+    },
+    {
+      "path": "equal_budget_baseline_metrics.csv",
+      "source_sha256": "74bd38c01b6b1e24cf3ead12d64528ce048f4585aae3b3fb712564b8ffbe3932",
+      "copied_sha256": "74bd38c01b6b1e24cf3ead12d64528ce048f4585aae3b3fb712564b8ffbe3932"
+    },
+    {
+      "path": "equal_budget_baseline_summary.md",
+      "source_sha256": "e7af4c900db3929d4417173c8a910c3931e306cbfdcd73b5e23ad04ee75cea38",
+      "copied_sha256": "e7af4c900db3929d4417173c8a910c3931e306cbfdcd73b5e23ad04ee75cea38"
+    },
+    {
+      "path": "handoff_report.md",
+      "source_sha256": "3b428898fa5939e65e0dabc8f206c67f310ac333f8a7cb8296f6850e4888f57a",
+      "copied_sha256": "3b428898fa5939e65e0dabc8f206c67f310ac333f8a7cb8296f6850e4888f57a"
+    },
+    {
+      "path": "limitations.md",
+      "source_sha256": "4902a3f35028278fa70154621df7d9a6696d00662b2a022e020fc41ef31d9af2",
+      "copied_sha256": "4902a3f35028278fa70154621df7d9a6696d00662b2a022e020fc41ef31d9af2"
+    },
+    {
+      "path": "random_baseline_reference.csv",
+      "source_sha256": "2fe10a459c2abb0c8ef9853458095621f9ce0004095b7eae0d380f18de28e01b",
+      "copied_sha256": "2fe10a459c2abb0c8ef9853458095621f9ce0004095b7eae0d380f18de28e01b"
+    }
+  ],
+  "baseline_mode": "computed_matched_budget_random_reference",
+  "inferential_status": "DESCRIPTIVE_ONLY",
+  "power_lotto_scoring": "NOT RUN"
+}

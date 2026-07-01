@@ -3401,7 +3401,7 @@
         <!-- ===== END P259A ===== -->
 
         <!-- ===== P300A D5 Strategy Hit-Rate Matrix MVP (artifact-backed, read-only) ===== -->
-        <section id="lottery-d5-section" class="section d5-app" data-artifact-root="public/demo-data/lottery-d5/p299a" data-combination-artifact-root="public/demo-data/lottery-d5/p320a">
+        <section id="lottery-d5-section" class="section d5-app" data-artifact-root="public/demo-data/lottery-d5/p299a" data-combination-artifact-root="public/demo-data/lottery-d5/p320a" data-baseline-artifact-root="public/demo-data/lottery-d5/p325a">
           <div class="section-header">
             <h2>D5 Strategy Hit-Rate Matrix MVP</h2>
             <p>P299A artifact-backed demo slice for BIG_LOTTO and DAILY_539 retrospective hit-rate review.</p>
@@ -3546,6 +3546,41 @@
               <div class="d5-combination-caveat">
                 Historical descriptive replay result only. No random baseline or statistical inference computed. Not a prediction or betting recommendation.
               </div>
+
+              <section class="d5-baseline-panel" id="d5-baseline-panel" aria-labelledby="d5-baseline-title">
+                <div class="d5-baseline-header">
+                  <div>
+                    <span class="d5-detail-kicker">P325A equal-budget baseline (read-only import)</span>
+                    <h4 id="d5-baseline-title">Budget Bias Check &mdash; Equal-Budget Baseline</h4>
+                    <p>Correction imported from the P325A read-only analysis: the combination hit rates above rise mainly with ticket budget, not with combination structure.</p>
+                  </div>
+                  <div class="d5-baseline-statuses" aria-label="Equal-budget baseline statuses">
+                    <span class="d5-status-chip">DESCRIPTIVE_ONLY</span>
+                    <span class="d5-status-chip">matched-budget random baseline: computed</span>
+                    <span class="d5-status-excluded">raw per-draw equal-budget subsampling: insufficient raw data</span>
+                  </div>
+                </div>
+
+                <div class="d5-baseline-callout">
+                  Raw combination hit-rate gains mostly reflect more tickets. At equal ticket budget, larger combinations do not show a clear advantage.
+                </div>
+
+                <dl class="d5-baseline-facts" id="d5-baseline-facts">
+                  <div><dt>Ticket budget (rows per draw)</dt><dd id="d5-baseline-budget">Loading verified P325A baseline summary&hellip;</dd></div>
+                  <div><dt>Mean matched-budget delta (observed &minus; equal-budget random)</dt><dd id="d5-baseline-mean-delta"></dd></div>
+                  <div><dt>Same-budget cross-size check</dt><dd id="d5-baseline-same-budget"></dd></div>
+                  <div><dt>&#22823;&#27138;&#36879; BIG_LOTTO</dt><dd id="d5-baseline-biglotto"></dd></div>
+                  <div><dt>&#20170;&#24425;539 DAILY_539 concentration</dt><dd id="d5-baseline-carrier"></dd></div>
+                </dl>
+
+                <p class="d5-baseline-nonclaim">
+                  This is a descriptive baseline check only &mdash; not a prediction, not a betting recommendation, and it does not recommend any numbers to play. A baseline result does not prove any future edge.
+                </p>
+
+                <p class="d5-combination-source">
+                  Static source: P325A equal-budget baseline, SHA-256-verified byte-identical copies under <code>p325a/</code>; import + provenance in <code>p325a/source_provenance.json</code>. Render payload <code>p325a/baseline_summary.json</code> is derived deterministically from <code>p325a/equal_budget_baseline_metrics.csv</code> by <code>tools/lottery-d5/build_p326a_baseline_summary.py</code>.
+                </p>
+              </section>
 
               <div class="d5-toolbar">
                 <label for="d5-combination-lottery-filter">Lottery</label>

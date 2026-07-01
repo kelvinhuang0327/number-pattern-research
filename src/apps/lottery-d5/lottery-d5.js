@@ -43,6 +43,8 @@ const COMBINATION_DATA_FILES = {
   summary: 'window_summary.csv',
 };
 
+const BASELINE_DATA_FILE = 'baseline_summary.json';
+
 const NOT_COMPUTED_COLUMNS = new Set(['baseline_value', 'delta', 'delta_pp']);
 const RATE_COLUMNS = new Set(['m1_rate', 'm2_rate', 'm3_rate', 'm3plus_hit_rate']);
 const INTEGER_COLUMNS = new Set(['top_k', 'sample_size_draws', 'sample_size_rows', 'rows', 'distinct_draws']);
@@ -117,6 +119,7 @@ let state = {
   combinationMetricRows: [],
   combinationCandidateRows: [],
   combinationSummaryRows: [],
+  baselineSummary: null,
 };
 
 let compareKeys = [];
@@ -1025,6 +1028,69 @@ function renderCombinationResults() {
   `).join('');
 }
 
+function formatSignedRate(value) {
+  const parsed = Number(value);
+  if (!Number.isFinite(parsed)) return escapeHtml(value);
+  // 4 dp preserves the source-reported delta precision (e.g. +0.0075 must not floor to +0.007).
+  const sign = parsed > 0 ? '+' : (parsed < 0 ? '-' : '');
+  return `${sign}${Math.abs(parsed).toFixed(4)}`;
+}
+
+function formatPercent1(value) {
+  const parsed = Number(value);
+  return Number.isFinite(parsed) ? `${(parsed * 100).toFixed(1)}%` : escapeHtml(value);
+}
+
+const BASELINE_FACT_IDS = [
+  'd5-baseline-budget',
+  'd5-baseline-mean-delta',
+  'd5-baseline-same-budget',
+  'd5-baseline-biglotto',
+  'd5-baseline-carrier',
+];
+
+function renderBaselineBudgetBias() {
+  const setFact = (id, html) => {
+    const node = byId(id);
+    if (node) node.innerHTML = html;
+  };
+  const summary = state.baselineSummary;
+  if (!summary) {
+    BASELINE_FACT_IDS.forEach((id) => setFact(id, 'Not available'));
+    return;
+  }
+
+  const delta = summary.mean_matched_budget_delta || {};
+  const sameBudget = summary.same_budget_example || {};
+  const screen = summary.inferential_screen || {};
+  const bigLotto = summary.big_lotto_summary || {};
+  const totalRows = Number(summary.n_metric_rows).toLocaleString();
+
+  setFact('d5-baseline-budget', escapeHtml(summary.budget_definition));
+
+  setFact('d5-baseline-mean-delta',
+    `hit&ge;1 <strong>${formatSignedRate(delta.hit_at_least_1)}</strong> &middot; `
+    + `hit&ge;2 <strong>${formatSignedRate(delta.hit_at_least_2)}</strong> &middot; `
+    + `hit&ge;3 <strong>${formatSignedRate(delta.hit_at_least_3)}</strong> `
+    + `<small>mean over ${totalRows} rows &asymp; 0 &mdash; the raw climb is bought with extra tickets, not structure.</small>`);
+
+  setFact('d5-baseline-same-budget',
+    `${escapeHtml(sameBudget.lottery)} ${escapeHtml(sameBudget.window)}, budget m=${escapeHtml(String(sameBudget.budget_m))}: `
+    + `single hit&ge;2 <strong>${formatPercent1(sameBudget.single_rate)}</strong> vs triple <strong>${formatPercent1(sameBudget.triple_rate)}</strong>. `
+    + `${escapeHtml(sameBudget.conclusion)}`);
+
+  setFact('d5-baseline-biglotto',
+    `${escapeHtml(bigLotto.label)} `
+    + `<small>${Number(bigLotto.rows_passing_screen).toLocaleString()} rows pass the equal-budget screen.</small>`);
+
+  setFact('d5-baseline-carrier',
+    `${Number(screen.signal_carrier_rows).toLocaleString()} / ${Number(screen.signal_carrier_of_passing).toLocaleString()} `
+    + `equal-budget-screen survivors carry <code>${escapeHtml(screen.signal_carrier_strategy)}</code> `
+    + `(observed single-strategy signal carrier). All ${Number(screen.rows_passing).toLocaleString()} survivors are DAILY_539 at k=2; `
+    + `${Number(screen.non_carrier_passing).toLocaleString()} are non-carrier. `
+    + `<small>Inherited single-strategy signal, not combination synergy.</small>`);
+}
+
 function populateWindowFilter() {
   const select = byId('d5-matrix-window-filter');
   renderOptions(select, uniqueValues(state.matrixRows, 'window_segment'), 'All windows');
@@ -1299,6 +1365,7 @@ async function loadD5Artifacts() {
   if (!section) return;
   const root = section.dataset.artifactRoot || 'public/demo-data/lottery-d5/p299a';
   const combinationRoot = section.dataset.combinationArtifactRoot || 'public/demo-data/lottery-d5/p320a';
+  const baselineRoot = section.dataset.baselineArtifactRoot || 'public/demo-data/lottery-d5/p325a';
 
   try {
     const [
@@ -1311,6 +1378,7 @@ async function loadD5Artifacts() {
       combinationMetricsText,
       combinationCandidatesText,
       combinationSummaryText,
+      baselineSummaryText,
     ] = await Promise.all([
       fetchText(root, DATA_FILES.manifest),
       fetchText(root, DATA_FILES.matrix),
@@ -1321,6 +1389,7 @@ async function loadD5Artifacts() {
       fetchText(combinationRoot, COMBINATION_DATA_FILES.metrics),
       fetchText(combinationRoot, COMBINATION_DATA_FILES.candidates),
       fetchText(combinationRoot, COMBINATION_DATA_FILES.summary),
+      fetchText(baselineRoot, BASELINE_DATA_FILE),
     ]);
 
     state = {
@@ -1333,6 +1402,7 @@ async function loadD5Artifacts() {
       combinationMetricRows: csvToObjects(combinationMetricsText),
       combinationCandidateRows: csvToObjects(combinationCandidatesText),
       combinationSummaryRows: csvToObjects(combinationSummaryText),
+      baselineSummary: JSON.parse(baselineSummaryText),
     };
 
     setError('');
@@ -1344,6 +1414,7 @@ async function loadD5Artifacts() {
     renderContract();
     renderPowerlottoNote();
     renderCombinationResults();
+    renderBaselineBudgetBias();
     renderComparePanel();
     if (!restoreDemoStateFromUrl()) {
       updateReviewLinkOutput();

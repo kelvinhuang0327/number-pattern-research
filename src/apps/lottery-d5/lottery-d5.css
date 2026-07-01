@@ -259,6 +259,72 @@
   color: #79c0ff;
 }
 
+.d5-demo-launcher {
+  border-top: 1px solid #21262d;
+  display: grid;
+  gap: 10px;
+  margin-top: 12px;
+  padding-top: 12px;
+}
+
+.d5-demo-launcher-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.d5-demo-launcher-header h4 {
+  color: #f0f6fc;
+  font-size: 13px;
+  line-height: 1.3;
+  margin: 0;
+}
+
+.d5-demo-launcher-header p {
+  color: #8b949e;
+  font-size: 12px;
+  line-height: 1.5;
+  margin: 4px 0 0;
+}
+
+.d5-demo-launcher-header span {
+  border: 1px solid #30363d;
+  border-radius: 999px;
+  background: #111820;
+  color: #c9d1d9;
+  font-size: 12px;
+  padding: 5px 9px;
+  white-space: nowrap;
+}
+
+.d5-demo-launcher-actions {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+  gap: 8px;
+}
+
+.d5-demo-launcher-link {
+  border: 1px solid #30363d;
+  border-radius: 6px;
+  background: #161b22;
+  color: #c9d1d9;
+  display: flex;
+  align-items: center;
+  min-height: 34px;
+  padding: 7px 10px;
+  text-decoration: none;
+  font-size: 12px;
+  line-height: 1.25;
+}
+
+.d5-demo-launcher-link:hover,
+.d5-demo-launcher-link:focus {
+  border-color: #58a6ff;
+  color: #79c0ff;
+  outline: none;
+}
+
 .d5-share-link {
   border-top: 1px solid #21262d;
   display: grid;
@@ -995,6 +1061,7 @@
   .d5-detail-actions,
   .d5-compare-header,
   .d5-presets-header,
+  .d5-demo-launcher-header,
   .d5-share-link-header,
   .d5-compare-snapshot-header {
     align-items: stretch;

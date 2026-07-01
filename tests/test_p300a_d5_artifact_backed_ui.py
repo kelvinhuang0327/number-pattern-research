@@ -102,6 +102,13 @@ def test_required_visible_summary_and_sections_exist():
         "Review DAILY_539 ACB rows",
         "Show POWER_LOTTO exclusion",
         "Reset review filters",
+        "Demo URL Launcher",
+        "Verified review/demo shortcuts for opening copied static artifact states directly.",
+        "Default walkthrough review",
+        "BIG_LOTTO triple review",
+        "DAILY_539 ACB review",
+        "POWER_LOTTO exclusion review",
+        "Compare restore review",
         "Demo state review link",
         "Copy review link",
         "Review link mirrors the current demo state.",
@@ -232,6 +239,40 @@ def test_demo_review_presets_are_static_filter_shortcuts():
     assert all(term not in preset_region.lower() for term in forbidden_terms)
     assert "d5-presets" in css
     assert "d5-preset-button" in css
+
+
+def test_demo_url_launcher_exposes_verified_review_state_fragments():
+    region = _d5_region()
+    css = D5_CSS.read_text(encoding="utf-8")
+
+    expected_links = {
+        "Default walkthrough review": "#d5-review?v=1&amp;tab=matrix",
+        "BIG_LOTTO triple review": "#d5-review?v=1&amp;tab=matrix&amp;ml=BIG_LOTTO&amp;ms=triple&amp;cl=BIG_LOTTO&amp;cs=triple",
+        "DAILY_539 ACB review": "#d5-review?v=1&amp;tab=matrix&amp;ml=DAILY_539&amp;ms=acb&amp;cl=DAILY_539&amp;cs=acb",
+        "POWER_LOTTO exclusion review": "#d5-review?v=1&amp;tab=powerlotto",
+        "Compare restore review": "#d5-review?v=1&amp;tab=matrix&amp;cmp=BIG_LOTTO%3A%3Abet2_fourier_expansion_biglotto&amp;cmp=BIG_LOTTO%3A%3Abiglotto_deviation_2bet",
+    }
+
+    launcher = re.search(
+        r'<div class="d5-demo-launcher".*?</div>\s*</div>',
+        region,
+        re.DOTALL,
+    )
+    assert launcher, "D5 demo URL launcher panel is missing"
+    panel = launcher.group(0)
+
+    assert "Demo URL Launcher" in panel
+    assert "Verified review/demo shortcuts" in panel
+    assert "Static fragments" in panel
+    assert len(re.findall(r'class="d5-demo-launcher-link"', panel)) == 5
+    for label, href in expected_links.items():
+        assert f'href="{href}"' in panel
+        assert label in panel
+
+    forbidden_terms = ["best strategy", "recommended strategy", "betting pick"]
+    assert all(term not in panel.lower() for term in forbidden_terms)
+    assert "d5-demo-launcher" in css
+    assert "d5-demo-launcher-link" in css
 
 
 def test_demo_state_review_links_are_hash_backed_and_readonly():

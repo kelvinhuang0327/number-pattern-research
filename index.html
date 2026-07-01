@@ -25,7 +25,7 @@
     <!-- Style Systems -->
     <link rel="stylesheet" href="styles.css?v=18">
     <link rel="stylesheet" href="src/ui/progress.css">
-    <link rel="stylesheet" href="src/apps/lottery-d5/lottery-d5.css?v=1">
+    <link rel="stylesheet" href="src/apps/lottery-d5/lottery-d5.css?v=2">
     
     <!-- Visibility Guard -->
     <style>
@@ -3455,6 +3455,22 @@
 
             <div id="d5-load-error" class="d5-error" hidden></div>
 
+            <section class="d5-presets" aria-labelledby="d5-presets-title">
+              <div class="d5-presets-header">
+                <div>
+                  <h3 id="d5-presets-title">Demo review presets</h3>
+                  <p>Shortcut filters for reviewing copied static artifact rows only.</p>
+                </div>
+                <span id="d5-preset-status" class="d5-preset-status" aria-live="polite">No preset applied.</span>
+              </div>
+              <div class="d5-preset-actions" role="group" aria-label="Demo review preset filters">
+                <button type="button" class="d5-preset-button" data-d5-preset="biglotto-triple">Review BIG_LOTTO triple rows</button>
+                <button type="button" class="d5-preset-button" data-d5-preset="daily539-acb">Review DAILY_539 ACB rows</button>
+                <button type="button" class="d5-preset-button" data-d5-preset="powerlotto-exclusion">Show POWER_LOTTO exclusion</button>
+                <button type="button" class="d5-preset-button" data-d5-preset="reset">Reset review filters</button>
+              </div>
+            </section>
+
             <div class="d5-tabs" role="tablist" aria-label="D5 artifact sections">
               <button type="button" class="d5-tab active" role="tab" aria-selected="true" data-d5-tab="matrix">Matrix table</button>
               <button type="button" class="d5-tab" role="tab" aria-selected="false" data-d5-tab="coverage">Strategy coverage</button>
@@ -3922,7 +3938,7 @@
             lucide.createIcons();
         </script>
         <script type="module" src="src/main.js?v=24"></script>
-        <script type="module" src="src/apps/lottery-d5/lottery-d5.js?v=1"></script>
+        <script type="module" src="src/apps/lottery-d5/lottery-d5.js?v=2"></script>
         <script>
 // ===== REPLAY PAGE JS =====
 (function() {

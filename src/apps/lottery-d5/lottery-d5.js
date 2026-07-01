@@ -62,6 +62,40 @@ const SNAPSHOT_CAVEATS = [
   'Baselines/deltas not computed.',
   'POWER_LOTTO full scoring excluded.',
 ];
+const REVIEW_PRESETS = {
+  'biglotto-triple': {
+    tab: 'matrix',
+    matrixLottery: 'BIG_LOTTO',
+    matrixSearch: 'triple',
+    coverageLottery: 'BIG_LOTTO',
+    coverageSearch: 'triple',
+    status: 'Preset applied: BIG_LOTTO rows filtered by strategy_id search term "triple".',
+  },
+  'daily539-acb': {
+    tab: 'matrix',
+    matrixLottery: 'DAILY_539',
+    matrixSearch: 'acb',
+    coverageLottery: 'DAILY_539',
+    coverageSearch: 'acb',
+    status: 'Preset applied: DAILY_539 rows filtered by strategy_id search term "acb".',
+  },
+  'powerlotto-exclusion': {
+    tab: 'powerlotto',
+    matrixLottery: '',
+    matrixSearch: '',
+    coverageLottery: '',
+    coverageSearch: '',
+    status: 'Preset applied: POWER_LOTTO exclusion note is visible.',
+  },
+  reset: {
+    tab: 'matrix',
+    matrixLottery: '',
+    matrixSearch: '',
+    coverageLottery: '',
+    coverageSearch: '',
+    status: 'Review filters reset.',
+  },
+};
 
 let state = {
   matrixRows: [],
@@ -178,6 +212,11 @@ function setError(message) {
 function setText(id, value) {
   const node = byId(id);
   if (node) node.textContent = value;
+}
+
+function setControlValue(id, value) {
+  const node = byId(id);
+  if (node) node.value = value;
 }
 
 function uniqueValues(rows, key) {
@@ -837,6 +876,37 @@ function renderPowerlottoNote() {
   target.innerHTML = markdownLite(state.powerlottoNote);
 }
 
+function activateTab(tab) {
+  document.querySelectorAll('.d5-tab').forEach((node) => {
+    const active = node.dataset.d5Tab === tab;
+    node.classList.toggle('active', active);
+    node.setAttribute('aria-selected', active ? 'true' : 'false');
+  });
+  document.querySelectorAll('.d5-panel').forEach((panel) => {
+    panel.classList.toggle('active', panel.dataset.d5Panel === tab);
+  });
+}
+
+function clearMatrixSecondaryFilters() {
+  setControlValue('d5-matrix-window-filter', '');
+  setControlValue('d5-matrix-topk-filter', '');
+}
+
+function applyReviewPreset(presetName) {
+  const preset = REVIEW_PRESETS[presetName];
+  if (!preset) return;
+
+  clearMatrixSecondaryFilters();
+  setControlValue('d5-matrix-lottery-filter', preset.matrixLottery);
+  setControlValue('d5-matrix-strategy-search', preset.matrixSearch);
+  setControlValue('d5-coverage-lottery-filter', preset.coverageLottery);
+  setControlValue('d5-coverage-strategy-search', preset.coverageSearch);
+  activateTab(preset.tab);
+  renderMatrix();
+  renderCoverage();
+  setText('d5-preset-status', preset.status);
+}
+
 function markdownLite(markdown) {
   const html = [];
   let inList = false;
@@ -878,15 +948,7 @@ function formatInline(text) {
 function wireTabs() {
   document.querySelectorAll('.d5-tab').forEach((button) => {
     button.addEventListener('click', () => {
-      const tab = button.dataset.d5Tab;
-      document.querySelectorAll('.d5-tab').forEach((node) => {
-        const active = node === button;
-        node.classList.toggle('active', active);
-        node.setAttribute('aria-selected', active ? 'true' : 'false');
-      });
-      document.querySelectorAll('.d5-panel').forEach((panel) => {
-        panel.classList.toggle('active', panel.dataset.d5Panel === tab);
-      });
+      activateTab(button.dataset.d5Tab);
     });
   });
 }
@@ -898,6 +960,14 @@ function wireFilters() {
   byId('d5-matrix-strategy-search')?.addEventListener('input', renderMatrix);
   byId('d5-coverage-lottery-filter')?.addEventListener('change', renderCoverage);
   byId('d5-coverage-strategy-search')?.addEventListener('input', renderCoverage);
+}
+
+function wireReviewPresets() {
+  byId('lottery-d5-section')?.addEventListener('click', (event) => {
+    const button = event.target.closest?.('[data-d5-preset]');
+    if (!button) return;
+    applyReviewPreset(button.dataset.d5Preset || '');
+  });
 }
 
 function openDetailFromEvent(event) {
@@ -997,6 +1067,7 @@ function initLotteryD5() {
   if (!byId('lottery-d5-section')) return;
   wireTabs();
   wireFilters();
+  wireReviewPresets();
   wireDetailDrawer();
   wireComparePanel();
   loadD5Artifacts();

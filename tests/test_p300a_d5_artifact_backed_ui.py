@@ -96,6 +96,13 @@ def test_required_visible_summary_and_sections_exist():
         "Optimizer input contract",
         "POWER_LOTTO exclusion",
         "Limitations / non-claims",
+        "Demo review presets",
+        "Shortcut filters for reviewing copied static artifact rows only.",
+        "Review BIG_LOTTO triple rows",
+        "Review DAILY_539 ACB rows",
+        "Show POWER_LOTTO exclusion",
+        "Reset review filters",
+        "No preset applied.",
         "Review-only demo constraints",
         "No future prediction.",
         "Baselines/deltas not computed.",
@@ -135,10 +142,21 @@ def test_review_filters_and_counts_are_wired():
         "d5-compare-count",
         "d5-compare-status",
         "d5-compare-grid",
+        "d5-preset-status",
     ]:
         assert f'id="{element_id}"' in region
 
     for expected in [
+        "REVIEW_PRESETS",
+        "applyReviewPreset",
+        "wireReviewPresets",
+        "activateTab",
+        "clearMatrixSecondaryFilters",
+        "data-d5-preset",
+        "biglotto-triple",
+        "daily539-acb",
+        "powerlotto-exclusion",
+        "Review filters reset.",
         "populateTopKFilter",
         "strategyMatches",
         "rowCountLabel",
@@ -157,6 +175,53 @@ def test_review_filters_and_counts_are_wired():
         "removeCompareStrategy",
     ]:
         assert expected in module
+
+
+def test_demo_review_presets_are_static_filter_shortcuts():
+    region = _d5_region()
+    module = D5_JS.read_text(encoding="utf-8")
+    css = D5_CSS.read_text(encoding="utf-8")
+
+    for expected in [
+        'data-d5-preset="biglotto-triple"',
+        'data-d5-preset="daily539-acb"',
+        'data-d5-preset="powerlotto-exclusion"',
+        'data-d5-preset="reset"',
+        "Review BIG_LOTTO triple rows",
+        "Review DAILY_539 ACB rows",
+        "Show POWER_LOTTO exclusion",
+        "Reset review filters",
+    ]:
+        assert expected in region
+
+    for expected in [
+        "matrixLottery: 'BIG_LOTTO'",
+        "matrixSearch: 'triple'",
+        "coverageLottery: 'BIG_LOTTO'",
+        "coverageSearch: 'triple'",
+        "matrixLottery: 'DAILY_539'",
+        "matrixSearch: 'acb'",
+        "coverageLottery: 'DAILY_539'",
+        "coverageSearch: 'acb'",
+        "tab: 'powerlotto'",
+        "POWER_LOTTO exclusion note is visible.",
+        "setControlValue('d5-matrix-window-filter', '')",
+        "setControlValue('d5-matrix-topk-filter', '')",
+        "renderMatrix();",
+        "renderCoverage();",
+        "setText('d5-preset-status', preset.status)",
+    ]:
+        assert expected in module
+
+    preset_region = re.search(
+        r'<section class="d5-presets".*?</section>',
+        region,
+        re.DOTALL,
+    ).group(0)
+    forbidden_terms = ["best", "recommend", "prediction", "betting pick"]
+    assert all(term not in preset_region.lower() for term in forbidden_terms)
+    assert "d5-presets" in css
+    assert "d5-preset-button" in css
 
 
 def test_strategy_detail_drawer_is_readonly_and_artifact_backed():

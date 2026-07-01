@@ -53,6 +53,9 @@ const DETAIL_RATE_LABELS = {
   m3plus_hit_rate: 'm3plus_hit_rate summary',
 };
 const COMPARE_LIMIT = 4;
+const REVIEW_STATE_HASH_PREFIX = 'd5-review';
+const REVIEW_STATE_VERSION = '1';
+const VALID_TABS = new Set(['matrix', 'coverage', 'contract', 'powerlotto', 'limitations']);
 const SNAPSHOT_SOURCE_LABEL = 'P299A static artifact-backed D5 demo';
 const SNAPSHOT_CAVEATS = [
   'Retrospective-only.',
@@ -217,6 +220,14 @@ function setText(id, value) {
 function setControlValue(id, value) {
   const node = byId(id);
   if (node) node.value = value;
+}
+
+function setSelectValue(id, value) {
+  const node = byId(id);
+  if (!node) return;
+  const nextValue = String(value || '');
+  if (nextValue && ![...node.options].some((option) => option.value === nextValue)) return;
+  node.value = nextValue;
 }
 
 function uniqueValues(rows, key) {
@@ -734,6 +745,7 @@ function renderComparePanel() {
   renderCompareSnapshot();
   updateCompareRowButtons();
   updateDetailCompareButton();
+  updateReviewLinkOutput();
 }
 
 function addCompareStrategy(key) {
@@ -752,6 +764,155 @@ function addCompareStrategy(key) {
 function removeCompareStrategy(key) {
   compareKeys = compareKeys.filter((selectedKey) => selectedKey !== key);
   renderComparePanel();
+}
+
+function activeTabName() {
+  return document.querySelector('.d5-tab.active')?.dataset.d5Tab || 'matrix';
+}
+
+function normalizeReviewTab(tab) {
+  return VALID_TABS.has(tab) ? tab : 'matrix';
+}
+
+function normalizeReviewSearch(value) {
+  return String(value || '').trim().slice(0, 80);
+}
+
+function isKnownStrategyKey(key) {
+  const [lottery, strategyId] = String(key || '').split('::');
+  if (!lottery || !strategyId) return false;
+  return Boolean(findCoverageRow(lottery, strategyId) || findMatrixRows(lottery, strategyId).length);
+}
+
+function sanitizeCompareKeys(keys) {
+  const seen = new Set();
+  const safeKeys = [];
+  keys.forEach((key) => {
+    const value = String(key || '');
+    if (!value || seen.has(value) || !isKnownStrategyKey(value)) return;
+    seen.add(value);
+    safeKeys.push(value);
+  });
+  return safeKeys.slice(0, COMPARE_LIMIT);
+}
+
+function currentDemoState() {
+  return {
+    tab: activeTabName(),
+    matrixLottery: byId('d5-matrix-lottery-filter')?.value || '',
+    matrixWindow: byId('d5-matrix-window-filter')?.value || '',
+    matrixTopK: byId('d5-matrix-topk-filter')?.value || '',
+    matrixSearch: byId('d5-matrix-strategy-search')?.value || '',
+    coverageLottery: byId('d5-coverage-lottery-filter')?.value || '',
+    coverageSearch: byId('d5-coverage-strategy-search')?.value || '',
+    compareKeys: [...compareKeys],
+  };
+}
+
+function encodeDemoStateHash(demoState = currentDemoState()) {
+  const params = new URLSearchParams();
+  params.set('v', REVIEW_STATE_VERSION);
+  params.set('tab', normalizeReviewTab(demoState.tab || 'matrix'));
+  [
+    ['ml', demoState.matrixLottery],
+    ['mw', demoState.matrixWindow],
+    ['mt', demoState.matrixTopK],
+    ['ms', normalizeReviewSearch(demoState.matrixSearch)],
+    ['cl', demoState.coverageLottery],
+    ['cs', normalizeReviewSearch(demoState.coverageSearch)],
+  ].forEach(([key, value]) => {
+    if (value) params.set(key, value);
+  });
+  sanitizeCompareKeys(demoState.compareKeys || []).forEach((key) => params.append('cmp', key));
+  return `#${REVIEW_STATE_HASH_PREFIX}?${params.toString()}`;
+}
+
+function parseDemoStateFromHash(hash = window.location.hash) {
+  const rawHash = String(hash || '').replace(/^#/, '');
+  if (!rawHash.startsWith(`${REVIEW_STATE_HASH_PREFIX}?`)) return null;
+
+  const params = new URLSearchParams(rawHash.slice(`${REVIEW_STATE_HASH_PREFIX}?`.length));
+  return {
+    tab: normalizeReviewTab(params.get('tab') || 'matrix'),
+    matrixLottery: params.get('ml') || '',
+    matrixWindow: params.get('mw') || '',
+    matrixTopK: params.get('mt') || '',
+    matrixSearch: normalizeReviewSearch(params.get('ms') || ''),
+    coverageLottery: params.get('cl') || '',
+    coverageSearch: normalizeReviewSearch(params.get('cs') || ''),
+    compareKeys: sanitizeCompareKeys(params.getAll('cmp')),
+  };
+}
+
+function applyDemoState(demoState, statusText = 'Demo state restored from review link.') {
+  if (!demoState) return false;
+
+  setSelectValue('d5-matrix-lottery-filter', demoState.matrixLottery);
+  setSelectValue('d5-matrix-window-filter', demoState.matrixWindow);
+  setSelectValue('d5-matrix-topk-filter', demoState.matrixTopK);
+  setControlValue('d5-matrix-strategy-search', normalizeReviewSearch(demoState.matrixSearch));
+  setSelectValue('d5-coverage-lottery-filter', demoState.coverageLottery);
+  setControlValue('d5-coverage-strategy-search', normalizeReviewSearch(demoState.coverageSearch));
+  compareKeys = sanitizeCompareKeys(demoState.compareKeys || []);
+  activateTab(normalizeReviewTab(demoState.tab));
+  renderMatrix();
+  renderCoverage();
+  renderComparePanel();
+  setText('d5-preset-status', statusText);
+  return true;
+}
+
+function showD5SectionForReviewLink() {
+  document.querySelectorAll('.nav-btn').forEach((button) => {
+    button.classList.toggle('active', button.dataset.section === 'lottery-d5');
+  });
+  document.querySelectorAll('.section').forEach((section) => {
+    section.classList.toggle('active', section.id === 'lottery-d5-section');
+  });
+}
+
+function restoreDemoStateFromUrl() {
+  const demoState = parseDemoStateFromHash(window.location.hash);
+  if (!demoState) return false;
+  showD5SectionForReviewLink();
+  return applyDemoState(demoState);
+}
+
+function buildDemoStateLink() {
+  const url = new URL(window.location.href);
+  url.hash = encodeDemoStateHash();
+  return url.toString();
+}
+
+function updateReviewLinkOutput() {
+  const output = byId('d5-review-link-output');
+  if (!output) return;
+  output.value = buildDemoStateLink();
+}
+
+async function copyReviewLink() {
+  const output = byId('d5-review-link-output');
+  const status = byId('d5-review-link-status');
+  if (!output || !status) return;
+
+  updateReviewLinkOutput();
+  output.focus();
+  output.select();
+
+  const link = output.value;
+  const fallbackMessage = 'Clipboard API unavailable; copy the visible demo state link text.';
+
+  if (!navigator.clipboard?.writeText) {
+    status.textContent = fallbackMessage;
+    return;
+  }
+
+  try {
+    await navigator.clipboard.writeText(link);
+    status.textContent = 'Review link copied.';
+  } catch (error) {
+    status.textContent = 'Clipboard copy failed; copy the visible demo state link text.';
+  }
 }
 
 function renderSummary() {
@@ -905,6 +1066,7 @@ function applyReviewPreset(presetName) {
   renderMatrix();
   renderCoverage();
   setText('d5-preset-status', preset.status);
+  updateReviewLinkOutput();
 }
 
 function markdownLite(markdown) {
@@ -949,17 +1111,26 @@ function wireTabs() {
   document.querySelectorAll('.d5-tab').forEach((button) => {
     button.addEventListener('click', () => {
       activateTab(button.dataset.d5Tab);
+      updateReviewLinkOutput();
     });
   });
 }
 
 function wireFilters() {
-  byId('d5-matrix-lottery-filter')?.addEventListener('change', renderMatrix);
-  byId('d5-matrix-window-filter')?.addEventListener('change', renderMatrix);
-  byId('d5-matrix-topk-filter')?.addEventListener('change', renderMatrix);
-  byId('d5-matrix-strategy-search')?.addEventListener('input', renderMatrix);
-  byId('d5-coverage-lottery-filter')?.addEventListener('change', renderCoverage);
-  byId('d5-coverage-strategy-search')?.addEventListener('input', renderCoverage);
+  const renderMatrixAndLink = () => {
+    renderMatrix();
+    updateReviewLinkOutput();
+  };
+  const renderCoverageAndLink = () => {
+    renderCoverage();
+    updateReviewLinkOutput();
+  };
+  byId('d5-matrix-lottery-filter')?.addEventListener('change', renderMatrixAndLink);
+  byId('d5-matrix-window-filter')?.addEventListener('change', renderMatrixAndLink);
+  byId('d5-matrix-topk-filter')?.addEventListener('change', renderMatrixAndLink);
+  byId('d5-matrix-strategy-search')?.addEventListener('input', renderMatrixAndLink);
+  byId('d5-coverage-lottery-filter')?.addEventListener('change', renderCoverageAndLink);
+  byId('d5-coverage-strategy-search')?.addEventListener('input', renderCoverageAndLink);
 }
 
 function wireReviewPresets() {
@@ -1027,6 +1198,15 @@ function wireComparePanel() {
   });
 }
 
+function wireReviewLink() {
+  byId('d5-copy-review-link')?.addEventListener('click', copyReviewLink);
+  window.addEventListener('hashchange', () => {
+    if (restoreDemoStateFromUrl()) {
+      updateReviewLinkOutput();
+    }
+  });
+}
+
 async function loadD5Artifacts() {
   const section = byId('lottery-d5-section');
   if (!section) return;
@@ -1058,6 +1238,9 @@ async function loadD5Artifacts() {
     renderContract();
     renderPowerlottoNote();
     renderComparePanel();
+    if (!restoreDemoStateFromUrl()) {
+      updateReviewLinkOutput();
+    }
   } catch (error) {
     setError(`Failed to load verified P299A artifacts: ${error.message}`);
   }
@@ -1070,6 +1253,7 @@ function initLotteryD5() {
   wireReviewPresets();
   wireDetailDrawer();
   wireComparePanel();
+  wireReviewLink();
   loadD5Artifacts();
 }
 

@@ -102,6 +102,10 @@ def test_required_visible_summary_and_sections_exist():
         "Review DAILY_539 ACB rows",
         "Show POWER_LOTTO exclusion",
         "Reset review filters",
+        "Demo state review link",
+        "Copy review link",
+        "Review link mirrors the current demo state.",
+        "Clipboard fallback: copy the visible demo state link text if browser copy is unavailable.",
         "No preset applied.",
         "Review-only demo constraints",
         "No future prediction.",
@@ -143,6 +147,9 @@ def test_review_filters_and_counts_are_wired():
         "d5-compare-status",
         "d5-compare-grid",
         "d5-preset-status",
+        "d5-copy-review-link",
+        "d5-review-link-status",
+        "d5-review-link-output",
     ]:
         assert f'id="{element_id}"' in region
 
@@ -173,6 +180,9 @@ def test_review_filters_and_counts_are_wired():
         "renderComparePanel",
         "addCompareStrategy",
         "removeCompareStrategy",
+        "wireReviewLink",
+        "copyReviewLink",
+        "restoreDemoStateFromUrl",
     ]:
         assert expected in module
 
@@ -222,6 +232,69 @@ def test_demo_review_presets_are_static_filter_shortcuts():
     assert all(term not in preset_region.lower() for term in forbidden_terms)
     assert "d5-presets" in css
     assert "d5-preset-button" in css
+
+
+def test_demo_state_review_links_are_hash_backed_and_readonly():
+    region = _d5_region()
+    module = D5_JS.read_text(encoding="utf-8")
+    css = D5_CSS.read_text(encoding="utf-8")
+    combined = region + "\n" + module + "\n" + css
+
+    for expected in [
+        "Demo state review link",
+        "Copy review link",
+        "walkthrough shortcut",
+        "current tab, filters, and compare selection",
+        "Manual demo state link copy fallback",
+        "Clipboard API unavailable; copy the visible demo state link text.",
+        "Clipboard copy failed; copy the visible demo state link text.",
+        "Review link copied.",
+        "Demo state restored from review link.",
+        "Review link mirrors the current demo state.",
+        "hashchange",
+    ]:
+        assert expected in combined
+
+    for expected in [
+        "REVIEW_STATE_HASH_PREFIX = 'd5-review'",
+        "REVIEW_STATE_VERSION = '1'",
+        "VALID_TABS",
+        "currentDemoState",
+        "encodeDemoStateHash",
+        "parseDemoStateFromHash",
+        "applyDemoState",
+        "showD5SectionForReviewLink",
+        "restoreDemoStateFromUrl",
+        "buildDemoStateLink",
+        "updateReviewLinkOutput",
+        "copyReviewLink",
+        "sanitizeCompareKeys",
+        "setSelectValue",
+        "URLSearchParams",
+        "params.set('tab'",
+        "['ml', demoState.matrixLottery]",
+        "['mw', demoState.matrixWindow]",
+        "['mt', demoState.matrixTopK]",
+        "['ms', normalizeReviewSearch(demoState.matrixSearch)]",
+        "['cl', demoState.coverageLottery]",
+        "['cs', normalizeReviewSearch(demoState.coverageSearch)]",
+        "params.append('cmp'",
+        "button.dataset.section === 'lottery-d5'",
+        "section.id === 'lottery-d5-section'",
+        "url.hash = encodeDemoStateHash();",
+        "navigator.clipboard?.writeText",
+    ]:
+        assert expected in module
+
+    assert "#${REVIEW_STATE_HASH_PREFIX}?" in module
+    assert "d5-share-link" in css
+    assert "d5-share-link-output" in css
+    assert "method: 'POST'" not in module
+    assert 'method: "POST"' not in module
+    assert "sqlite3" not in module
+    assert "best strategy" not in combined.lower()
+    assert "recommended strategy" not in combined.lower()
+    assert "betting pick" not in combined.lower()
 
 
 def test_demo_walkthrough_panel_is_review_only_checklist():

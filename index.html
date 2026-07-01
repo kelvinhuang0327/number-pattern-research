@@ -3469,6 +3469,18 @@
                 <button type="button" class="d5-preset-button" data-d5-preset="powerlotto-exclusion">Show POWER_LOTTO exclusion</button>
                 <button type="button" class="d5-preset-button" data-d5-preset="reset">Reset review filters</button>
               </div>
+              <div class="d5-share-link" aria-label="Demo state review link">
+                <div class="d5-share-link-header">
+                  <div>
+                    <h4>Demo state review link</h4>
+                    <p>Copy a walkthrough shortcut for the current tab, filters, and compare selection.</p>
+                  </div>
+                  <button id="d5-copy-review-link" class="d5-secondary-button" type="button">Copy review link</button>
+                </div>
+                <p id="d5-review-link-status" class="d5-review-link-status" aria-live="polite">Review link mirrors the current demo state.</p>
+                <p class="d5-review-link-fallback">Clipboard fallback: copy the visible demo state link text if browser copy is unavailable.</p>
+                <input id="d5-review-link-output" class="d5-share-link-output" type="text" readonly aria-label="Manual demo state link copy fallback">
+              </div>
             </section>
 
             <details class="d5-walkthrough" open>

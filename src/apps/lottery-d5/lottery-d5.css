@@ -259,6 +259,59 @@
   color: #79c0ff;
 }
 
+.d5-share-link {
+  border-top: 1px solid #21262d;
+  display: grid;
+  gap: 8px;
+  margin-top: 12px;
+  padding-top: 12px;
+}
+
+.d5-share-link-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.d5-share-link-header h4 {
+  color: #f0f6fc;
+  font-size: 13px;
+  line-height: 1.3;
+  margin: 0;
+}
+
+.d5-share-link-header p,
+.d5-review-link-status,
+.d5-review-link-fallback {
+  color: #8b949e;
+  font-size: 12px;
+  line-height: 1.5;
+  margin: 4px 0 0;
+}
+
+.d5-review-link-fallback {
+  color: #c9d1d9;
+}
+
+.d5-share-link-output {
+  width: 100%;
+  box-sizing: border-box;
+  border: 1px solid #30363d;
+  border-radius: 6px;
+  background: #010409;
+  color: #c9d1d9;
+  font: 12px/1.45 "Fira Code", monospace;
+  min-height: 34px;
+  padding: 7px 9px;
+}
+
+.d5-share-link-output:focus {
+  border-color: #58a6ff;
+  outline: none;
+  box-shadow: 0 0 0 2px rgba(88, 166, 255, 0.14);
+}
+
 .d5-walkthrough {
   border: 1px solid #30363d;
   border-radius: 8px;
@@ -942,6 +995,7 @@
   .d5-detail-actions,
   .d5-compare-header,
   .d5-presets-header,
+  .d5-share-link-header,
   .d5-compare-snapshot-header {
     align-items: stretch;
     flex-direction: column;

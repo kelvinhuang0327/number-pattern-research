@@ -148,6 +148,92 @@
   display: block;
 }
 
+.d5-combination-panel {
+  border-color: rgba(88, 166, 255, 0.5);
+}
+
+.d5-combination-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 18px;
+  margin-bottom: 12px;
+}
+
+.d5-combination-header h3 {
+  color: #f0f6fc;
+  font-size: 19px;
+  margin: 4px 0 6px;
+}
+
+.d5-combination-header p,
+.d5-combination-window-summary,
+.d5-combination-source {
+  color: #8b949e;
+  font-size: 12px;
+  line-height: 1.55;
+  margin: 0;
+}
+
+.d5-combination-statuses {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 6px;
+}
+
+.d5-combination-statuses span,
+.d5-status-chip {
+  border: 1px solid rgba(63, 185, 80, 0.45);
+  border-radius: 999px;
+  background: rgba(46, 160, 67, 0.12);
+  color: #7ee787;
+  display: inline-block;
+  font-size: 11px;
+  padding: 4px 8px;
+  white-space: nowrap;
+}
+
+.d5-combination-statuses .d5-status-excluded {
+  border-color: rgba(248, 81, 73, 0.45);
+  background: rgba(248, 81, 73, 0.12);
+  color: #ffa198;
+}
+
+.d5-combination-caveat {
+  border: 1px solid rgba(210, 153, 34, 0.55);
+  border-radius: 6px;
+  background: rgba(210, 153, 34, 0.1);
+  color: #f0d58c;
+  font-size: 13px;
+  line-height: 1.5;
+  margin-bottom: 12px;
+  padding: 9px 11px;
+}
+
+.d5-combination-window-summary {
+  margin: -2px 0 10px;
+}
+
+.d5-combination-source {
+  margin-top: 10px;
+  overflow-wrap: anywhere;
+}
+
+#d5-combination-table code {
+  color: #c9d1d9;
+  font-size: 11px;
+  line-height: 1.5;
+  white-space: nowrap;
+}
+
+#d5-combination-table small {
+  color: #8b949e;
+  display: inline-block;
+  margin-top: 4px;
+  white-space: nowrap;
+}
+
 .d5-toolbar {
   display: flex;
   flex-wrap: wrap;
@@ -1060,12 +1146,17 @@
 
   .d5-detail-actions,
   .d5-compare-header,
+  .d5-combination-header,
   .d5-presets-header,
   .d5-demo-launcher-header,
   .d5-share-link-header,
   .d5-compare-snapshot-header {
     align-items: stretch;
     flex-direction: column;
+  }
+
+  .d5-combination-statuses {
+    justify-content: flex-start;
   }
 
   .d5-icon-button {

@@ -36,6 +36,13 @@ const DATA_FILES = {
   powerlotto: 'powerlotto_exclusion_note.md',
 };
 
+const COMBINATION_DATA_FILES = {
+  manifest: 'source_provenance.json',
+  metrics: 'strategy_combination_metrics.csv',
+  candidates: 'top_descriptive_candidates.csv',
+  summary: 'window_summary.csv',
+};
+
 const NOT_COMPUTED_COLUMNS = new Set(['baseline_value', 'delta', 'delta_pp']);
 const RATE_COLUMNS = new Set(['m1_rate', 'm2_rate', 'm3_rate', 'm3plus_hit_rate']);
 const INTEGER_COLUMNS = new Set(['top_k', 'sample_size_draws', 'sample_size_rows', 'rows', 'distinct_draws']);
@@ -55,7 +62,7 @@ const DETAIL_RATE_LABELS = {
 const COMPARE_LIMIT = 4;
 const REVIEW_STATE_HASH_PREFIX = 'd5-review';
 const REVIEW_STATE_VERSION = '1';
-const VALID_TABS = new Set(['matrix', 'coverage', 'contract', 'powerlotto', 'limitations']);
+const VALID_TABS = new Set(['combination', 'matrix', 'coverage', 'contract', 'powerlotto', 'limitations']);
 const SNAPSHOT_SOURCE_LABEL = 'P299A static artifact-backed D5 demo';
 const SNAPSHOT_CAVEATS = [
   'Retrospective-only.',
@@ -106,6 +113,10 @@ let state = {
   contract: null,
   powerlottoNote: '',
   manifest: null,
+  combinationManifest: null,
+  combinationMetricRows: [],
+  combinationCandidateRows: [],
+  combinationSummaryRows: [],
 };
 
 let compareKeys = [];
@@ -941,6 +952,79 @@ function renderSummary() {
   }
 }
 
+function combinationSizeLabel(value) {
+  return ({ '1': 'single', '2': 'pair', '3': 'triple' })[String(value)] || String(value);
+}
+
+function formatCombinationRate(value) {
+  const parsed = Number(value);
+  return Number.isFinite(parsed) ? `${(parsed * 100).toFixed(2)}%` : escapeHtml(value);
+}
+
+function compareCombinationRows(left, right) {
+  return Number(right.hit_at_least_3_rate) - Number(left.hit_at_least_3_rate)
+    || Number(right.hit_at_least_2_rate) - Number(left.hit_at_least_2_rate)
+    || Number(left.mean_number_overlap_fraction) - Number(right.mean_number_overlap_fraction)
+    || String(left.strategy_ids).localeCompare(String(right.strategy_ids));
+}
+
+function singleCombinationRows(lotteryFilter, windowFilter) {
+  const lotteries = lotteryFilter ? [lotteryFilter] : ['BIG_LOTTO', 'DAILY_539'];
+  return lotteries.flatMap((lottery) => state.combinationMetricRows
+    .filter((row) => row.lottery_type === lottery
+      && row.window === windowFilter
+      && row.combination_size === '1')
+    .sort(compareCombinationRows)
+    .slice(0, 5));
+}
+
+function selectedCombinationRows(lotteryFilter, windowFilter, sizeFilter) {
+  if (sizeFilter === '1') return singleCombinationRows(lotteryFilter, windowFilter);
+  return state.combinationCandidateRows.filter((row) => {
+    if (lotteryFilter && row.lottery_type !== lotteryFilter) return false;
+    return row.window === windowFilter && row.combination_size === sizeFilter;
+  });
+}
+
+function renderCombinationResults() {
+  const body = byId('d5-combination-body');
+  if (!body) return;
+
+  const lotteryFilter = byId('d5-combination-lottery-filter')?.value || '';
+  const windowFilter = byId('d5-combination-window-filter')?.value || 'recent_750';
+  const sizeFilter = byId('d5-combination-size-filter')?.value || '3';
+  const rows = selectedCombinationRows(lotteryFilter, windowFilter, sizeFilter);
+  const windowRows = state.combinationSummaryRows.filter((row) => {
+    if (lotteryFilter && row.lottery_type !== lotteryFilter) return false;
+    return row.window === windowFilter;
+  });
+
+  setText('d5-combination-row-count', `${rows.length} descriptive rows`);
+  setText('d5-combination-window-summary', windowRows.map((row) => (
+    `${row.lottery_type}: ${Number(row.common_draw_count_available).toLocaleString()} available draws; displayed sample denominator ${windowFilter.replace('recent_', '')}`
+  )).join(' | '));
+
+  if (!rows.length) {
+    body.innerHTML = '<tr><td colspan="10">No P320A descriptive rows match these selectors.</td></tr>';
+    return;
+  }
+
+  body.innerHTML = rows.map((row) => `
+    <tr>
+      <td data-label="lottery">${escapeHtml(row.lottery_type)}</td>
+      <td data-label="combination size">${escapeHtml(combinationSizeLabel(row.combination_size))}</td>
+      <td data-label="strategy IDs"><code>${escapeHtml(row.strategy_ids).split('|').join('<br>')}</code></td>
+      <td data-label="window">${escapeHtml(row.window)}</td>
+      <td data-label="sample draws">${Number(row.sample_size_draws).toLocaleString()}</td>
+      <td data-label="sample rows">${Number(row.sample_size_rows).toLocaleString()}</td>
+      <td data-label="hit >= 1">${formatCombinationRate(row.hit_at_least_1_rate)}</td>
+      <td data-label="hit >= 2">${formatCombinationRate(row.hit_at_least_2_rate)}</td>
+      <td data-label="hit >= 3">${formatCombinationRate(row.hit_at_least_3_rate)}</td>
+      <td data-label="status"><span class="d5-status-chip">${escapeHtml(row.inferential_status)}</span><br><small>baseline_mode=${escapeHtml(row.baseline_mode)}</small></td>
+    </tr>
+  `).join('');
+}
+
 function populateWindowFilter() {
   const select = byId('d5-matrix-window-filter');
   renderOptions(select, uniqueValues(state.matrixRows, 'window_segment'), 'All windows');
@@ -1131,6 +1215,9 @@ function wireFilters() {
   byId('d5-matrix-strategy-search')?.addEventListener('input', renderMatrixAndLink);
   byId('d5-coverage-lottery-filter')?.addEventListener('change', renderCoverageAndLink);
   byId('d5-coverage-strategy-search')?.addEventListener('input', renderCoverageAndLink);
+  byId('d5-combination-lottery-filter')?.addEventListener('change', renderCombinationResults);
+  byId('d5-combination-window-filter')?.addEventListener('change', renderCombinationResults);
+  byId('d5-combination-size-filter')?.addEventListener('change', renderCombinationResults);
 }
 
 function wireReviewPresets() {
@@ -1211,14 +1298,29 @@ async function loadD5Artifacts() {
   const section = byId('lottery-d5-section');
   if (!section) return;
   const root = section.dataset.artifactRoot || 'public/demo-data/lottery-d5/p299a';
+  const combinationRoot = section.dataset.combinationArtifactRoot || 'public/demo-data/lottery-d5/p320a';
 
   try {
-    const [manifestText, matrixText, coverageText, contractText, powerlottoText] = await Promise.all([
+    const [
+      manifestText,
+      matrixText,
+      coverageText,
+      contractText,
+      powerlottoText,
+      combinationManifestText,
+      combinationMetricsText,
+      combinationCandidatesText,
+      combinationSummaryText,
+    ] = await Promise.all([
       fetchText(root, DATA_FILES.manifest),
       fetchText(root, DATA_FILES.matrix),
       fetchText(root, DATA_FILES.coverage),
       fetchText(root, DATA_FILES.contract),
       fetchText(root, DATA_FILES.powerlotto),
+      fetchText(combinationRoot, COMBINATION_DATA_FILES.manifest),
+      fetchText(combinationRoot, COMBINATION_DATA_FILES.metrics),
+      fetchText(combinationRoot, COMBINATION_DATA_FILES.candidates),
+      fetchText(combinationRoot, COMBINATION_DATA_FILES.summary),
     ]);
 
     state = {
@@ -1227,6 +1329,10 @@ async function loadD5Artifacts() {
       coverageRows: csvToObjects(coverageText),
       contract: JSON.parse(contractText),
       powerlottoNote: powerlottoText,
+      combinationManifest: JSON.parse(combinationManifestText),
+      combinationMetricRows: csvToObjects(combinationMetricsText),
+      combinationCandidateRows: csvToObjects(combinationCandidatesText),
+      combinationSummaryRows: csvToObjects(combinationSummaryText),
     };
 
     setError('');
@@ -1237,12 +1343,13 @@ async function loadD5Artifacts() {
     renderCoverage();
     renderContract();
     renderPowerlottoNote();
+    renderCombinationResults();
     renderComparePanel();
     if (!restoreDemoStateFromUrl()) {
       updateReviewLinkOutput();
     }
   } catch (error) {
-    setError(`Failed to load verified P299A artifacts: ${error.message}`);
+    setError(`Failed to load verified D5 artifacts: ${error.message}`);
   }
 }
 

@@ -3401,7 +3401,7 @@
         <!-- ===== END P259A ===== -->
 
         <!-- ===== P300A D5 Strategy Hit-Rate Matrix MVP (artifact-backed, read-only) ===== -->
-        <section id="lottery-d5-section" class="section d5-app" data-artifact-root="public/demo-data/lottery-d5/p299a">
+        <section id="lottery-d5-section" class="section d5-app" data-artifact-root="public/demo-data/lottery-d5/p299a" data-combination-artifact-root="public/demo-data/lottery-d5/p320a">
           <div class="section-header">
             <h2>D5 Strategy Hit-Rate Matrix MVP</h2>
             <p>P299A artifact-backed demo slice for BIG_LOTTO and DAILY_539 retrospective hit-rate review.</p>
@@ -3521,12 +3521,80 @@
             </details>
 
             <div class="d5-tabs" role="tablist" aria-label="D5 artifact sections">
-              <button type="button" class="d5-tab active" role="tab" aria-selected="true" data-d5-tab="matrix">Matrix table</button>
+              <button type="button" class="d5-tab active" role="tab" aria-selected="true" data-d5-tab="combination">Combination Results</button>
+              <button type="button" class="d5-tab" role="tab" aria-selected="false" data-d5-tab="matrix">Matrix table</button>
               <button type="button" class="d5-tab" role="tab" aria-selected="false" data-d5-tab="coverage">Strategy coverage</button>
               <button type="button" class="d5-tab" role="tab" aria-selected="false" data-d5-tab="contract">Optimizer input contract</button>
               <button type="button" class="d5-tab" role="tab" aria-selected="false" data-d5-tab="powerlotto">POWER_LOTTO exclusion</button>
               <button type="button" class="d5-tab" role="tab" aria-selected="false" data-d5-tab="limitations">Limitations / non-claims</button>
             </div>
+
+            <section class="d5-panel active d5-combination-panel" id="d5-panel-combination" data-d5-panel="combination">
+              <div class="d5-combination-header">
+                <div>
+                  <span class="d5-detail-kicker">P320A historical descriptive replay</span>
+                  <h3>Historical Combination Metrics</h3>
+                  <p>Exact per-draw metrics for BIG_LOTTO and DAILY_539. Pair and triple views use the P320A descriptive shortlist; the single view applies the same display ordering to exact source rows.</p>
+                </div>
+                <div class="d5-combination-statuses" aria-label="Combination result statuses">
+                  <span>DESCRIPTIVE_ONLY</span>
+                  <span>baseline_mode=not_computed</span>
+                  <span class="d5-status-excluded">POWER_LOTTO: NOT RUN / excluded</span>
+                </div>
+              </div>
+
+              <div class="d5-combination-caveat">
+                Historical descriptive replay result only. No random baseline or statistical inference computed. Not a prediction or betting recommendation.
+              </div>
+
+              <div class="d5-toolbar">
+                <label for="d5-combination-lottery-filter">Lottery</label>
+                <select id="d5-combination-lottery-filter" class="d5-select">
+                  <option value="">BIG_LOTTO + DAILY_539</option>
+                  <option value="BIG_LOTTO">BIG_LOTTO</option>
+                  <option value="DAILY_539">DAILY_539</option>
+                </select>
+                <label for="d5-combination-window-filter">Window</label>
+                <select id="d5-combination-window-filter" class="d5-select">
+                  <option value="recent_50">recent_50</option>
+                  <option value="recent_300">recent_300</option>
+                  <option value="recent_750" selected>recent_750</option>
+                </select>
+                <label for="d5-combination-size-filter">Combination size</label>
+                <select id="d5-combination-size-filter" class="d5-select">
+                  <option value="1">single</option>
+                  <option value="2">pair</option>
+                  <option value="3" selected>triple</option>
+                </select>
+                <span id="d5-combination-row-count" class="d5-row-count" aria-live="polite">10 descriptive rows</span>
+              </div>
+
+              <p id="d5-combination-window-summary" class="d5-combination-window-summary" aria-live="polite"></p>
+              <div class="d5-table-wrap">
+                <table class="d5-table" id="d5-combination-table">
+                  <thead>
+                    <tr>
+                      <th>lottery</th>
+                      <th>combination size</th>
+                      <th>strategy IDs</th>
+                      <th>window</th>
+                      <th>sample_size_draws</th>
+                      <th>sample_size_rows</th>
+                      <th>hit&gt;=1 rate</th>
+                      <th>hit&gt;=2 rate</th>
+                      <th>hit&gt;=3 rate</th>
+                      <th>status</th>
+                    </tr>
+                  </thead>
+                  <tbody id="d5-combination-body">
+                    <tr><td colspan="10">Loading verified P320A combination metrics...</td></tr>
+                  </tbody>
+                </table>
+              </div>
+              <p class="d5-combination-source">
+                Static source: <code>p320a/strategy_combination_metrics.csv</code> SHA-256 <code>0141b53f135a456fb3c2d02fe15f17aa5728a7ff8f47c88d26777c025e855ec5</code>. Import details: <code>p320a/source_provenance.json</code>.
+              </p>
+            </section>
 
             <aside id="d5-strategy-detail-drawer" class="d5-detail-drawer" aria-labelledby="d5-detail-title" hidden>
               <div class="d5-detail-header">
@@ -3578,7 +3646,7 @@
               </div>
             </section>
 
-            <section class="d5-panel active" id="d5-panel-matrix" data-d5-panel="matrix">
+            <section class="d5-panel" id="d5-panel-matrix" data-d5-panel="matrix">
               <div class="d5-toolbar">
                 <label for="d5-matrix-lottery-filter">Lottery</label>
                 <select id="d5-matrix-lottery-filter" class="d5-select">

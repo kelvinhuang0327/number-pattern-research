@@ -42,27 +42,55 @@ class DatabaseManager:
     
     def __init__(self, db_path: Optional[str] = None):
         """
-        初始化數據庫管理器
-        
+        初始化數據庫管理器（惰性）
+
+        Construction performs no filesystem or SQLite I/O, so importing this
+        module (or the module-level `db_manager` singleton below) never
+        requires the canonical DB to exist. Path resolution and schema
+        initialization are deferred to the first real connection request, so
+        artifact-only callers that never touch the DB can boot cleanly, while
+        DB-backed callers still fail closed (FileNotFoundError) on first use
+        if the DB is absent.
+
         Args:
             db_path: 絕對數據庫文件路徑；None 使用 canonical 路徑
         """
-        self.db_path = resolve_db_path(db_path)
+        self._db_path_arg = db_path
+        self.db_path: Optional[str] = None
+        self._initialized = False
 
-        # 初始化數據庫
+    def _ensure_ready(self):
+        """Resolve the DB path and initialize schema on first real use."""
+        if self._initialized:
+            return
+        if self.db_path is None:
+            self.db_path = resolve_db_path(self._db_path_arg)
         self._init_database()
-        
+        self._initialized = True
         logger.info(f"✅ Database initialized at {self.db_path}")
-    
+
     def _get_connection(self) -> sqlite3.Connection:
         """獲取數據庫連接"""
+        self._ensure_ready()
         conn = sqlite3.connect(self.db_path)
         conn.row_factory = sqlite3.Row  # 使用字典式訪問
         return conn
-    
+
+    def _raw_connection(self) -> sqlite3.Connection:
+        """Open a connection directly against self.db_path, bypassing _ensure_ready().
+
+        _init_database() runs *during* _ensure_ready(), before _initialized is
+        set to True. If it opened its connection via _get_connection(), that
+        would re-enter _ensure_ready() -> _init_database() -> _get_connection()
+        indefinitely. Callers must guarantee self.db_path is already resolved.
+        """
+        conn = sqlite3.connect(self.db_path)
+        conn.row_factory = sqlite3.Row  # 使用字典式訪問
+        return conn
+
     def _init_database(self):
         """初始化數據庫表結構"""
-        conn = self._get_connection()
+        conn = self._raw_connection()
         cursor = conn.cursor()
         
         try:

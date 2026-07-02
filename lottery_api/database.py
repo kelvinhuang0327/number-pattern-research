@@ -75,10 +75,22 @@ class DatabaseManager:
         conn = sqlite3.connect(self.db_path)
         conn.row_factory = sqlite3.Row  # 使用字典式訪問
         return conn
-    
+
+    def _raw_connection(self) -> sqlite3.Connection:
+        """Open a connection directly against self.db_path, bypassing _ensure_ready().
+
+        _init_database() runs *during* _ensure_ready(), before _initialized is
+        set to True. If it opened its connection via _get_connection(), that
+        would re-enter _ensure_ready() -> _init_database() -> _get_connection()
+        indefinitely. Callers must guarantee self.db_path is already resolved.
+        """
+        conn = sqlite3.connect(self.db_path)
+        conn.row_factory = sqlite3.Row  # 使用字典式訪問
+        return conn
+
     def _init_database(self):
         """初始化數據庫表結構"""
-        conn = self._get_connection()
+        conn = self._raw_connection()
         cursor = conn.cursor()
         
         try:

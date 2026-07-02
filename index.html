@@ -829,6 +829,10 @@
                     <i data-lucide="bar-chart-2" class="icon"></i>
                     <span>最佳策略總覽</span>
                 </button>
+                <button class="nav-btn" data-section="p333-scoreboard">
+                    <i data-lucide="chart-no-axes-combined" class="icon"></i>
+                    <span>策略組合命中率</span>
+                </button>
                 <button class="nav-btn" data-section="p263b-d3-ssot">
                     <i data-lucide="table-2" class="icon"></i>
                     <span>D3 策略狀態 (SSOT)</span>
@@ -3059,6 +3063,100 @@
           </div>
         </section>
         <!-- ===== END P257B ===== -->
+
+        <!-- ===== P333 Strategy Pick / Combination Scoreboard ===== -->
+        <section id="p333-scoreboard-section" class="section">
+          <div class="section-header">
+            <h2>策略組合命中率 <span style="font-size:0.7em;color:#8b949e;font-weight:400">Pick / Combination Scoreboard</span></h2>
+            <p>50 / 300 / 750 視窗，含大樂透特別號與威力彩第二區的歷史回放比對</p>
+          </div>
+          <div class="section-content">
+            <div style="background:rgba(187,128,9,.12);border:1px solid #e3b341;border-radius:6px;padding:10px 14px;margin-bottom:16px;font-size:12px;color:#e3b341;line-height:1.6">
+              <b>歷史回放聲明</b><br>
+              本頁只描述既有 replay 的過去表現，不代表未來中獎率，也不可作為任何實際行動依據。
+            </div>
+
+            <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px">
+              <button class="p333-lottery-btn btn-sm btn-secondary active" data-lottery="BIG_LOTTO">大樂透</button>
+              <button class="p333-lottery-btn btn-sm btn-secondary" data-lottery="DAILY_539">今彩539</button>
+              <button class="p333-lottery-btn btn-sm btn-secondary" data-lottery="POWER_LOTTO">威力彩</button>
+              <select id="p333-window-select" class="select-input" style="max-width:120px">
+                <option value="750" selected>750期</option>
+                <option value="300">300期</option>
+                <option value="50">50期</option>
+              </select>
+            </div>
+
+            <div id="p333-summary-cards" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:12px;margin-bottom:18px"></div>
+
+            <div class="card" style="padding:14px;margin-bottom:18px">
+              <div style="font-weight:700;margin-bottom:10px;font-size:0.9rem">等預算最佳策略組合 <span id="p333-combo-label" style="color:#58a6ff;font-size:0.8em"></span></div>
+              <div style="overflow-x:auto">
+                <table style="width:100%;border-collapse:collapse;font-size:0.8rem">
+                  <thead>
+                    <tr style="border-bottom:1px solid #30363d;color:#8b949e">
+                      <th style="text-align:right;padding:6px 8px">預算</th>
+                      <th style="text-align:left;padding:6px 8px">組合</th>
+                      <th style="text-align:right;padding:6px 8px">期數</th>
+                      <th style="text-align:right;padding:6px 8px">中1+率</th>
+                      <th style="text-align:right;padding:6px 8px">獎規訊號率</th>
+                      <th style="text-align:right;padding:6px 8px">中1+ Edge</th>
+                      <th style="text-align:right;padding:6px 8px">獎規 Edge</th>
+                    </tr>
+                  </thead>
+                  <tbody id="p333-combo-tbody"></tbody>
+                </table>
+              </div>
+            </div>
+
+            <div class="card" style="padding:14px;margin-bottom:18px">
+              <div style="font-weight:700;margin-bottom:10px;font-size:0.9rem">單策略取 K 號最佳表現</div>
+              <div style="overflow-x:auto">
+                <table style="width:100%;border-collapse:collapse;font-size:0.8rem">
+                  <thead>
+                    <tr style="border-bottom:1px solid #30363d;color:#8b949e">
+                      <th style="text-align:right;padding:6px 8px">K</th>
+                      <th style="text-align:left;padding:6px 8px">策略</th>
+                      <th style="text-align:right;padding:6px 8px">期數</th>
+                      <th style="text-align:right;padding:6px 8px">中1+率</th>
+                      <th style="text-align:right;padding:6px 8px">獎規訊號率</th>
+                      <th style="text-align:right;padding:6px 8px">中1+ Edge</th>
+                      <th style="text-align:right;padding:6px 8px">獎規 Edge</th>
+                    </tr>
+                  </thead>
+                  <tbody id="p333-pick-tbody"></tbody>
+                </table>
+              </div>
+            </div>
+
+            <div class="card" style="padding:14px;margin-bottom:18px">
+              <div style="font-weight:700;margin-bottom:10px;font-size:0.9rem">指定例子：傅立葉2 + 冷號2 + Deviation2</div>
+              <div id="p333-example"></div>
+            </div>
+
+            <div class="card" style="padding:14px">
+              <div style="font-weight:700;margin-bottom:10px;font-size:0.9rem">跨彩種特徵族參考 <span style="font-size:0.75em;color:#8b949e">750期、取2號</span></div>
+              <div style="overflow-x:auto">
+                <table style="width:100%;border-collapse:collapse;font-size:0.78rem">
+                  <thead>
+                    <tr style="border-bottom:1px solid #30363d;color:#8b949e">
+                      <th style="text-align:left;padding:5px 8px">彩種</th>
+                      <th style="text-align:left;padding:5px 8px">特徵族</th>
+                      <th style="text-align:right;padding:5px 8px">策略數</th>
+                      <th style="text-align:right;padding:5px 8px">平均中1+率</th>
+                      <th style="text-align:right;padding:5px 8px">平均獎規訊號率</th>
+                      <th style="text-align:right;padding:5px 8px">平均中1+ Edge</th>
+                    </tr>
+                  </thead>
+                  <tbody id="p333-family-tbody"></tbody>
+                </table>
+              </div>
+            </div>
+
+            <div id="p333-status" style="margin-top:10px;font-size:12px;color:#8b949e"></div>
+          </div>
+        </section>
+        <!-- ===== END P333 ===== -->
 
         <!-- ===== P258O D3 Strategy Status / Contract Audit Section ===== -->
         <section id="p258-d3-audit-section" class="section">
@@ -5542,6 +5640,199 @@
   }
 
   p257Init();
+})();
+
+// ===== P333 STRATEGY PICK / COMBINATION SCOREBOARD =====
+(function() {
+  'use strict';
+
+  var _p333Data = null;
+  var _p333Lottery = 'BIG_LOTTO';
+  var _p333Window = 750;
+  var PICK_COUNTS = { BIG_LOTTO: 6, DAILY_539: 5, POWER_LOTTO: 6 };
+  var LOTTERY_LABELS = { BIG_LOTTO: '大樂透', DAILY_539: '今彩539', POWER_LOTTO: '威力彩' };
+
+  function esc(value) {
+    return String(value == null ? '—' : value).replace(/[&<>"']/g, function(ch) {
+      return ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[ch];
+    });
+  }
+  function pct(value) {
+    return value == null ? '—' : (Number(value) * 100).toFixed(2) + '%';
+  }
+  function pp(value) {
+    return value == null ? '—' : (Number(value) >= 0 ? '+' : '') + Number(value).toFixed(2) + 'pp';
+  }
+  function setStatus(text) {
+    var el = document.getElementById('p333-status');
+    if (el) el.textContent = text || '';
+  }
+
+  function card(label, value) {
+    return '<div class="card" style="padding:10px 14px;text-align:center">' +
+      '<div style="font-size:10px;color:#8b949e;margin-bottom:4px">' + esc(label) + '</div>' +
+      '<div style="font-size:1.05rem;font-weight:700;color:#e6edf3">' + esc(value) + '</div>' +
+      '</div>';
+  }
+
+  function comboKey(budget) {
+    return _p333Lottery + '|' + _p333Window + '|' + budget;
+  }
+  function pickKey(k) {
+    return _p333Lottery + '|' + _p333Window + '|' + k;
+  }
+
+  function renderSummary() {
+    var el = document.getElementById('p333-summary-cards');
+    if (!el || !_p333Data) return;
+    var budget = PICK_COUNTS[_p333Lottery] || 6;
+    var bestCombo = (_p333Data.best_combination_by_lottery_window_budget || {})[comboKey(budget)];
+    var decisions = _p333Data.summary && _p333Data.summary.strategy_window_decision_counts || {};
+    el.innerHTML = [
+      card('彩種 / 視窗', (LOTTERY_LABELS[_p333Lottery] || _p333Lottery) + ' / ' + _p333Window + '期'),
+      card('滿額最佳組合中1+率', bestCombo ? pct(bestCombo.any_main_hit_rate) : '—'),
+      card('滿額最佳組合獎規訊號', bestCombo ? pct(bestCombo.prize_signal_rate) : '—'),
+      card('視窗通過策略數', decisions.HISTORICAL_WINDOW_PASS || 0),
+      card('取號矩陣筆數', _p333Data.summary ? _p333Data.summary.strategy_pick_records : '—'),
+      card('組合排行榜筆數', _p333Data.summary ? _p333Data.summary.combination_leaderboard_records : '—')
+    ].join('');
+  }
+
+  function renderCombos() {
+    var tbody = document.getElementById('p333-combo-tbody');
+    var label = document.getElementById('p333-combo-label');
+    if (!tbody || !_p333Data) return;
+    if (label) label.textContent = '— ' + (LOTTERY_LABELS[_p333Lottery] || _p333Lottery) + ' / ' + _p333Window + '期';
+    var best = _p333Data.best_combination_by_lottery_window_budget || {};
+    var maxBudget = PICK_COUNTS[_p333Lottery] || 6;
+    var rows = [];
+    for (var budget = 1; budget <= maxBudget; budget++) {
+      var rec = best[comboKey(budget)];
+      if (!rec) continue;
+      rows.push('<tr style="border-bottom:1px solid #21262d">' +
+        '<td style="padding:6px 8px;text-align:right;color:#58a6ff;font-weight:700">' + budget + '</td>' +
+        '<td style="padding:6px 8px;font-size:11px">' + esc(rec.combo_id) + '</td>' +
+        '<td style="padding:6px 8px;text-align:right">' + esc(rec.support_draws) + '</td>' +
+        '<td style="padding:6px 8px;text-align:right;color:#3fb950;font-weight:700">' + pct(rec.any_main_hit_rate) + '</td>' +
+        '<td style="padding:6px 8px;text-align:right">' + pct(rec.prize_signal_rate) + '</td>' +
+        '<td style="padding:6px 8px;text-align:right">' + pp(rec.any_main_hit_edge_pp) + '</td>' +
+        '<td style="padding:6px 8px;text-align:right">' + pp(rec.prize_signal_edge_pp) + '</td>' +
+        '</tr>');
+    }
+    tbody.innerHTML = rows.join('') || '<tr><td colspan="7" style="padding:12px 8px;text-align:center;color:#8b949e">無資料</td></tr>';
+  }
+
+  function renderPicks() {
+    var tbody = document.getElementById('p333-pick-tbody');
+    if (!tbody || !_p333Data) return;
+    var top = _p333Data.top_strategy_pick_by_lottery_window_pick || {};
+    var maxK = PICK_COUNTS[_p333Lottery] || 6;
+    var rows = [];
+    for (var k = 1; k <= maxK; k++) {
+      var rec = top[pickKey(k)];
+      if (!rec) continue;
+      rows.push('<tr style="border-bottom:1px solid #21262d">' +
+        '<td style="padding:6px 8px;text-align:right;color:#58a6ff;font-weight:700">' + k + '</td>' +
+        '<td style="padding:6px 8px;font-size:11px">' + esc(rec.strategy_id) + '</td>' +
+        '<td style="padding:6px 8px;text-align:right">' + esc(rec.support_draws) + '</td>' +
+        '<td style="padding:6px 8px;text-align:right;color:#3fb950;font-weight:700">' + pct(rec.any_main_hit_rate) + '</td>' +
+        '<td style="padding:6px 8px;text-align:right">' + pct(rec.prize_signal_rate) + '</td>' +
+        '<td style="padding:6px 8px;text-align:right">' + pp(rec.any_main_hit_edge_pp) + '</td>' +
+        '<td style="padding:6px 8px;text-align:right">' + pp(rec.prize_signal_edge_pp) + '</td>' +
+        '</tr>');
+    }
+    tbody.innerHTML = rows.join('') || '<tr><td colspan="7" style="padding:12px 8px;text-align:center;color:#8b949e">無資料</td></tr>';
+  }
+
+  function renderExample() {
+    var el = document.getElementById('p333-example');
+    if (!el || !_p333Data) return;
+    var ex = _p333Data.requested_example_fourier2_cold2_deviation2 || {};
+    if (ex.status !== 'EVALUATED') {
+      el.innerHTML = '<div style="font-size:12px;color:#8b949e">指定組合目前無法評估：' + esc(ex.status) + '</div>';
+      return;
+    }
+    var rec = ex.windows && ex.windows[String(_p333Window)];
+    if (!rec) {
+      el.innerHTML = '<div style="font-size:12px;color:#8b949e">此視窗無資料</div>';
+      return;
+    }
+    el.innerHTML = '<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px">' +
+      card('期數', rec.support_draws) +
+      card('中1+率', pct(rec.any_main_hit_rate)) +
+      card('獎規訊號率', pct(rec.prize_signal_rate)) +
+      card('中1+ Edge', pp(rec.any_main_hit_edge_pp)) +
+      card('獎規 Edge', pp(rec.prize_signal_edge_pp)) +
+      '</div>';
+  }
+
+  function renderFamilies() {
+    var tbody = document.getElementById('p333-family-tbody');
+    if (!tbody || !_p333Data) return;
+    var rows = (_p333Data.feature_family_summary || []).filter(function(r) {
+      return r.lottery_type === _p333Lottery;
+    }).slice(0, 10);
+    tbody.innerHTML = rows.map(function(r) {
+      return '<tr style="border-bottom:1px solid #21262d">' +
+        '<td style="padding:5px 8px">' + esc(r.lottery_type) + '</td>' +
+        '<td style="padding:5px 8px">' + esc(r.feature_family) + '</td>' +
+        '<td style="padding:5px 8px;text-align:right">' + esc(r.strategy_count) + '</td>' +
+        '<td style="padding:5px 8px;text-align:right">' + pct(r.avg_any_main_hit_rate) + '</td>' +
+        '<td style="padding:5px 8px;text-align:right">' + pct(r.avg_prize_signal_rate) + '</td>' +
+        '<td style="padding:5px 8px;text-align:right">' + pp(r.avg_any_main_hit_edge_pp) + '</td>' +
+        '</tr>';
+    }).join('') || '<tr><td colspan="6" style="padding:10px 8px;text-align:center;color:#8b949e">無資料</td></tr>';
+  }
+
+  function renderAll() {
+    renderSummary();
+    renderCombos();
+    renderPicks();
+    renderExample();
+    renderFamilies();
+  }
+
+  function loadP333() {
+    var base = (typeof window !== 'undefined' && window.API_BASE ? String(window.API_BASE) : '').replace(/\/$/, '');
+    setStatus('載入中…');
+    fetch(base + '/api/replay/strategy-pick-scoreboard')
+      .then(function(r) { return r.json(); })
+      .then(function(data) {
+        _p333Data = data;
+        setStatus('');
+        renderAll();
+      })
+      .catch(function(e) {
+        setStatus('載入失敗：' + e.message);
+      });
+  }
+
+  function initP333() {
+    document.querySelectorAll('.p333-lottery-btn').forEach(function(btn) {
+      btn.addEventListener('click', function() {
+        document.querySelectorAll('.p333-lottery-btn').forEach(function(b) { b.classList.remove('active'); });
+        btn.classList.add('active');
+        _p333Lottery = btn.dataset.lottery;
+        if (_p333Data) renderAll();
+      });
+    });
+    var winSelect = document.getElementById('p333-window-select');
+    if (winSelect) {
+      winSelect.addEventListener('change', function() {
+        _p333Window = Number(winSelect.value || 750);
+        if (_p333Data) renderAll();
+      });
+    }
+    document.querySelectorAll('[data-section]').forEach(function(btn) {
+      btn.addEventListener('click', function() {
+        if (btn.dataset.section === 'p333-scoreboard' && !_p333Data) {
+          loadP333();
+        }
+      });
+    });
+  }
+
+  initP333();
 })();
 
 // ===== P258O D3 STRATEGY STATUS / CONTRACT AUDIT (read-only, artifact-backed) =====

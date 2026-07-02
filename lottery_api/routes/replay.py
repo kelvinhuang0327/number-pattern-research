@@ -105,6 +105,12 @@ _D3_STRATEGY_STATUS_AUDIT_PATH = (
     / "research"
     / "p258n_d3_strategy_status_audit_payload_20260609.json"
 )
+_STRATEGY_PICK_SCOREBOARD_PATH = (
+    Path(_api_root).parent
+    / "outputs"
+    / "research"
+    / "p333_strategy_pick_combination_scoreboard_20260702.json"
+)
 _BIG649_MEASUREMENT_EXPORT_PATH = (
     Path(_api_root).parent
     / "outputs"
@@ -1208,6 +1214,54 @@ async def get_replay_best_strategy_overview():
         raise
     except Exception as e:
         logger.exception("get_replay_best_strategy_overview failed")
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+def _load_strategy_pick_scoreboard_payload() -> dict:
+    """Load the P333 strategy pick/combination scoreboard artifact."""
+    if not _STRATEGY_PICK_SCOREBOARD_PATH.exists():
+        raise HTTPException(
+            status_code=500,
+            detail=f"strategy pick scoreboard artifact not found: {_STRATEGY_PICK_SCOREBOARD_PATH}",
+        )
+    try:
+        with _STRATEGY_PICK_SCOREBOARD_PATH.open("r", encoding="utf-8") as handle:
+            payload = json.load(handle)
+    except json.JSONDecodeError as exc:
+        raise HTTPException(
+            status_code=500,
+            detail=f"strategy pick scoreboard artifact is invalid JSON: {exc}",
+        ) from exc
+    if not isinstance(payload, dict):
+        raise HTTPException(
+            status_code=500,
+            detail="strategy pick scoreboard artifact must be a JSON object",
+        )
+    return payload
+
+
+@router.get("/api/replay/strategy-pick-scoreboard")
+async def get_replay_strategy_pick_scoreboard():
+    """
+    P333: Read-only strategy pick / combination scoreboard.
+
+    Serves a generated artifact built from existing replay rows.  No DB write,
+    replay generation, model training, registry mutation, or strategy promotion.
+    """
+    try:
+        payload = _load_strategy_pick_scoreboard_payload()
+        return {
+            **payload,
+            "historical_replay_only": True,
+            "no_future_guarantee": True,
+            "no_betting_advice": True,
+            "no_strategy_promotion": True,
+            "source_artifact": str(_STRATEGY_PICK_SCOREBOARD_PATH.name),
+        }
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.exception("get_replay_strategy_pick_scoreboard failed")
         raise HTTPException(status_code=500, detail=str(e))
 
 

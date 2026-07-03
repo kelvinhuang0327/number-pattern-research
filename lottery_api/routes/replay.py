@@ -29,11 +29,6 @@ from typing import Optional
 
 from fastapi import APIRouter, HTTPException, Query
 
-try:
-    from database import DatabaseManager
-except ImportError:
-    from lottery_api.database import DatabaseManager
-
 from lottery_api.models.replay_strategy_registry import (
     get_strategy_lifecycle_status,
     list_strategies,
@@ -90,6 +85,11 @@ _REGENERATED_TRUTH_LEVEL = "REGENERATED_RETROSPECTIVE"
 
 def _get_db():
     """Returns a DatabaseManager instance."""
+    try:
+        from database import DatabaseManager
+    except ImportError:
+        from lottery_api.database import DatabaseManager
+
     return DatabaseManager()
 
 
@@ -1203,8 +1203,90 @@ def _load_best_strategy_overview_payload() -> dict:
     return payload
 
 
+def _best_strategy_overview_lotteries(payload: dict) -> list[str]:
+    supported = payload.get("supported_lotteries") or {}
+    lotteries: set[str] = set()
+    if isinstance(supported, dict):
+        for key in ("with_data", "no_data"):
+            values = supported.get(key) or []
+            if isinstance(values, list):
+                lotteries.update(str(v).upper() for v in values)
+    for row in payload.get("portfolio_metrics_by_lottery_strategy_and_bet_count") or []:
+        if isinstance(row, dict) and row.get("lottery_type"):
+            lotteries.add(str(row["lottery_type"]).upper())
+    for row in payload.get("high_hit_events_by_lottery") or []:
+        if isinstance(row, dict) and row.get("lottery_type"):
+            lotteries.add(str(row["lottery_type"]).upper())
+    return sorted(lotteries)
+
+
+def _filter_best_strategy_overview_payload(payload: dict, lottery_type: Optional[str]) -> dict:
+    """Return a display-filtered copy of the artifact payload for one lottery."""
+    if not lottery_type:
+        return payload
+
+    canonical = lottery_type.strip().upper()
+    available = _best_strategy_overview_lotteries(payload)
+    if canonical not in available:
+        raise HTTPException(
+            status_code=400,
+            detail={
+                "error": "invalid_lottery_type",
+                "lottery_type": lottery_type,
+                "allowed_lottery_types": available,
+            },
+        )
+
+    filtered = dict(payload)
+    filtered["applied_lottery_type_filter"] = canonical
+    filtered["available_lottery_type_filters"] = available
+
+    supported = payload.get("supported_lotteries") or {}
+    if isinstance(supported, dict):
+        with_data = supported.get("with_data") or []
+        no_data = supported.get("no_data") or []
+        filtered["supported_lotteries"] = {
+            "with_data": [v for v in with_data if str(v).upper() == canonical],
+            "no_data": [v for v in no_data if str(v).upper() == canonical],
+        }
+
+    filtered["portfolio_metrics_by_lottery_strategy_and_bet_count"] = [
+        row
+        for row in payload.get("portfolio_metrics_by_lottery_strategy_and_bet_count") or []
+        if isinstance(row, dict) and str(row.get("lottery_type", "")).upper() == canonical
+    ]
+    filtered["high_hit_events_by_lottery"] = [
+        row
+        for row in payload.get("high_hit_events_by_lottery") or []
+        if isinstance(row, dict) and str(row.get("lottery_type", "")).upper() == canonical
+    ]
+    filtered["high_hit_events_by_lottery_and_bet_count"] = [
+        row
+        for row in payload.get("high_hit_events_by_lottery_and_bet_count") or []
+        if isinstance(row, dict) and str(row.get("lottery_type", "")).upper() == canonical
+    ]
+
+    best = payload.get("best_strategy_by_lottery_and_bet_count") or {}
+    if isinstance(best, dict):
+        filtered["best_strategy_by_lottery_and_bet_count"] = {
+            key: value
+            for key, value in best.items()
+            if (
+                isinstance(value, dict)
+                and str(value.get("lottery_type", "")).upper() == canonical
+            )
+        }
+
+    return filtered
+
+
 @router.get("/api/replay/best-strategy-overview")
-async def get_replay_best_strategy_overview():
+async def get_replay_best_strategy_overview(
+    lottery_type: Optional[str] = Query(
+        None,
+        description="Optional display filter: BIG_LOTTO, DAILY_539, POWER_LOTTO, 3_STAR, or 4_STAR.",
+    ),
+):
     """
     P257B: Read-only historical N-bet strategy overview payload.
 
@@ -1217,7 +1299,10 @@ async def get_replay_best_strategy_overview():
     READ-ONLY: no DB query, no registry mutation, no strategy promotion, no betting advice.
     """
     try:
-        payload = _load_best_strategy_overview_payload()
+        payload = _filter_best_strategy_overview_payload(
+            _load_best_strategy_overview_payload(),
+            lottery_type,
+        )
         # Wrap with explicit metadata flags for API consumers
         return {
             **payload,

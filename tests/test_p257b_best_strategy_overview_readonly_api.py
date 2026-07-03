@@ -146,3 +146,49 @@ def test_no_db_write_flag():
     with ARTIFACT_PATH.open() as f:
         data = json.load(f)
     assert data.get("no_db_write_confirmed") is True
+
+
+# ---------------------------------------------------------------------------
+# 5. Optional lottery_type display filter
+# ---------------------------------------------------------------------------
+
+def test_lottery_type_filter_limits_populated_sections(client):
+    r = client.get("/api/replay/best-strategy-overview?lottery_type=BIG_LOTTO")
+    assert r.status_code == 200
+    data = r.json()
+    assert data["applied_lottery_type_filter"] == "BIG_LOTTO"
+    assert data["supported_lotteries"]["with_data"] == ["BIG_LOTTO"]
+    assert data["supported_lotteries"]["no_data"] == []
+
+    metrics = data["portfolio_metrics_by_lottery_strategy_and_bet_count"]
+    best = data["best_strategy_by_lottery_and_bet_count"]
+    hhe = data["high_hit_events_by_lottery"]
+    hhe_by_bet = data["high_hit_events_by_lottery_and_bet_count"]
+
+    assert metrics, "BIG_LOTTO filter should retain populated metrics"
+    assert best, "BIG_LOTTO filter should retain best-strategy rows"
+    assert all(row["lottery_type"] == "BIG_LOTTO" for row in metrics)
+    assert all(row["lottery_type"] == "BIG_LOTTO" for row in best.values())
+    assert all(row["lottery_type"] == "BIG_LOTTO" for row in hhe)
+    assert all(row["lottery_type"] == "BIG_LOTTO" for row in hhe_by_bet)
+
+
+def test_lottery_type_filter_supports_no_data_lottery(client):
+    r = client.get("/api/replay/best-strategy-overview?lottery_type=3_star")
+    assert r.status_code == 200
+    data = r.json()
+    assert data["applied_lottery_type_filter"] == "3_STAR"
+    assert data["supported_lotteries"]["with_data"] == []
+    assert data["supported_lotteries"]["no_data"] == ["3_STAR"]
+    assert data["portfolio_metrics_by_lottery_strategy_and_bet_count"] == []
+    assert data["best_strategy_by_lottery_and_bet_count"] == {}
+    assert data["high_hit_events_by_lottery"] == []
+    assert data["high_hit_events_by_lottery_and_bet_count"] == []
+
+
+def test_invalid_lottery_type_filter_rejected(client):
+    r = client.get("/api/replay/best-strategy-overview?lottery_type=UNKNOWN_LOTTO")
+    assert r.status_code == 400
+    detail = r.json()["detail"]
+    assert detail["error"] == "invalid_lottery_type"
+    assert "BIG_LOTTO" in detail["allowed_lottery_types"]

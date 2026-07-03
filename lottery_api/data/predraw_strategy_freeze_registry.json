@@ -1,0 +1,67 @@
+{
+  "registry_schema_version": "p360a-freeze-v1",
+  "frozen_by_task": "P360A_PREDRAW_METADATA_INSTRUMENTATION_IMPLEMENTATION_NO_CANONICAL_DB_WRITE",
+  "frozen_at": "2026-07-03T14:37:22Z",
+  "honesty_note": "This is NOT a historical adoption/activation date -- P359 established that no such date exists anywhere in this codebase for any of these 8 candidates. This registry instead marks the moment P360A froze each candidate's identity (code_git_sha_at_freeze + strategy_version) for future OOS-eligibility purposes. Any future code or parameter change to a listed strategy_id requires a strategy_version bump AND a new freeze entry (append, do not edit in place) -- the strategy's OOS eligibility clock restarts from the new freeze, not the original one.",
+  "code_git_sha_at_freeze": "3d6df001da3a0633ab91f164d722b595ca76d2e1",
+  "code_git_branch_at_freeze": "task/p273a-prize-aware-inferential-validation",
+  "source_registry_module": "lottery_api/models/replay_strategy_registry.py",
+  "candidates": [
+    {
+      "strategy_id": "power_precision_3bet",
+      "strategy_name": "威力彩 Precision 3注",
+      "lottery_type": "POWER_LOTTO",
+      "strategy_version": "v0.1",
+      "min_history": 100
+    },
+    {
+      "strategy_id": "power_orthogonal_5bet",
+      "strategy_name": "威力彩 Orthogonal 5注",
+      "lottery_type": "POWER_LOTTO",
+      "strategy_version": "v0.1",
+      "min_history": 100
+    },
+    {
+      "strategy_id": "fourier_rhythm_3bet",
+      "strategy_name": "威力彩 Fourier Rhythm 3注",
+      "lottery_type": "POWER_LOTTO",
+      "strategy_version": "v0.1",
+      "min_history": 100
+    },
+    {
+      "strategy_id": "biglotto_triple_strike",
+      "strategy_name": "大樂透 Triple Strike",
+      "lottery_type": "BIG_LOTTO",
+      "strategy_version": "v0.1",
+      "min_history": 100
+    },
+    {
+      "strategy_id": "biglotto_deviation_2bet",
+      "strategy_name": "大樂透 Deviation 2注",
+      "lottery_type": "BIG_LOTTO",
+      "strategy_version": "v0.1",
+      "min_history": 100
+    },
+    {
+      "strategy_id": "ts3_regime_3bet",
+      "strategy_name": "大樂透 TS3+Regime 3注",
+      "lottery_type": "BIG_LOTTO",
+      "strategy_version": "v0.1",
+      "min_history": 100
+    },
+    {
+      "strategy_id": "daily539_f4cold",
+      "strategy_name": "今彩539 F4 Cold",
+      "lottery_type": "DAILY_539",
+      "strategy_version": "v0.1",
+      "min_history": 100
+    },
+    {
+      "strategy_id": "daily539_markov_cold",
+      "strategy_name": "今彩539 Markov Cold",
+      "lottery_type": "DAILY_539",
+      "strategy_version": "v0.1",
+      "min_history": 100
+    }
+  ]
+}

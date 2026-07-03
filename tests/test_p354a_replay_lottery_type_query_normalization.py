@@ -5,6 +5,7 @@ endpoints without changing DB state.
 """
 from __future__ import annotations
 
+import asyncio
 import sys
 from pathlib import Path
 
@@ -12,6 +13,31 @@ import pytest
 
 REPO_ROOT = Path(__file__).resolve().parent.parent
 STRATEGY_ID = "biglotto_case_2bet"
+
+
+class _SyncASGIClient:
+    """Synchronous facade over httpx's ASGI transport.
+
+    starlette.testclient.TestClient (0.27.0) constructs its underlying
+    httpx.Client with the removed `app=` kwarg, raising TypeError under
+    httpx>=0.28. This bridges httpx.AsyncClient + ASGITransport through
+    asyncio.run so existing `client.get(...)` call sites are unchanged.
+    """
+
+    def __init__(self, app, base_url="http://testserver"):
+        import httpx
+
+        self._transport = httpx.ASGITransport(app=app)
+        self._base_url = base_url
+
+    def get(self, url, params=None):
+        import httpx
+
+        async def _get():
+            async with httpx.AsyncClient(transport=self._transport, base_url=self._base_url) as ac:
+                return await ac.get(url, params=params)
+
+        return asyncio.run(_get())
 
 
 class _Rows:
@@ -197,16 +223,15 @@ def replay_mod(monkeypatch):
 def client(replay_mod):
     try:
         from fastapi import FastAPI
-        from fastapi.testclient import TestClient
     except ImportError as exc:
         pytest.skip(f"fastapi/httpx not available: {exc}")
 
     app = FastAPI()
     app.include_router(replay_mod.router)
     try:
-        return TestClient(app)
-    except TypeError:
-        pytest.skip("TestClient version incompatibility")
+        return _SyncASGIClient(app)
+    except ImportError as exc:
+        pytest.skip(f"fastapi/httpx not available: {exc}")
 
 
 @pytest.fixture()

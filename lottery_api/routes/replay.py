@@ -1384,6 +1384,14 @@ def _derive_bet_count(strategy_id: str) -> int:
     return 1
 
 
+def _normalise_lottery_type_query(lottery_type: Optional[str]) -> Optional[str]:
+    """Return the canonical replay lottery_type query value."""
+    if not isinstance(lottery_type, str):
+        return None
+    canonical = lottery_type.strip().upper()
+    return canonical or None
+
+
 _REPLAY_STATUS_CATEGORIES = {
     "has_rows":           "有 replay rows",
     "no_production_replay": "無 production replay",
@@ -1549,6 +1557,8 @@ async def get_history_replay_overview(
     No migration. No production deployment change.
     """
     try:
+        lottery_type_filter = _normalise_lottery_type_query(lottery_type)
+
         # ── 1. Get all strategies from registry (all lifecycle states) ──────
         all_meta = list_strategy_lifecycle_metadata()
         exec_ids = set(list_executable_strategy_ids())
@@ -1624,7 +1634,7 @@ async def get_history_replay_overview(
 
             for lt in meta["supported_lottery_types"]:
                 # lottery_type filter
-                if lottery_type and lt != lottery_type:
+                if lottery_type_filter and lt != lottery_type_filter:
                     continue
                 # bet_index filter (0 = all)
                 if bet_index != 0 and derived_bets != bet_index:
@@ -1651,7 +1661,7 @@ async def get_history_replay_overview(
             for (lt, sid), db in db_index.items():
                 if (lt, sid) in registry_supported:
                     continue  # already produced by the registry walk above
-                if lottery_type and lt != lottery_type:
+                if lottery_type_filter and lt != lottery_type_filter:
                     continue
                 derived_bets = _derive_bet_count(sid)
                 if bet_index != 0 and derived_bets != bet_index:
@@ -1702,7 +1712,7 @@ async def get_history_replay_overview(
         return {
             "default_bet_index":            1,
             "bet_index_filter":             bet_index,
-            "lottery_type_filter":          lottery_type or None,
+            "lottery_type_filter":          lottery_type_filter,
             "replay_status_category_filter": replay_status_category or None,
             "coverage_mode":                coverage_mode,
             "total_rows":                   len(rows),
@@ -1822,6 +1832,8 @@ async def get_history_replay_detail(
     execution. No migration. No betting advice.
     """
     try:
+        canonical_lottery_type = _normalise_lottery_type_query(lottery_type) or lottery_type
+
         # ── Validate enum params ────────────────────────────────────────────
         if sort not in _DETAIL_SORTS:
             raise HTTPException(
@@ -1843,7 +1855,7 @@ async def get_history_replay_detail(
 
         # ── Build WHERE clause (always scoped to lottery_type + strategy_id) ─
         where_parts = ["lottery_type = ?", "strategy_id = ?"]
-        params: list = [lottery_type, strategy_id]
+        params: list = [canonical_lottery_type, strategy_id]
 
         if hit_filter == "hit":
             where_parts.append("hit_count > 0")
@@ -1857,7 +1869,7 @@ async def get_history_replay_detail(
         where_sql = " AND ".join(where_parts)
         if display_depth_sql:
             where_sql += display_depth_sql
-            params.extend([lottery_type, strategy_id, display_depth_limit])
+            params.extend([canonical_lottery_type, strategy_id, display_depth_limit])
         order_dir = "DESC" if sort == "target_draw_desc" else "ASC"
 
         conn = _open_conn()
@@ -1927,7 +1939,7 @@ async def get_history_replay_detail(
                 FROM strategy_prediction_replays
                 WHERE lottery_type = ? AND strategy_id = ?
                 """,
-                [lottery_type, strategy_id],
+                [canonical_lottery_type, strategy_id],
             ).fetchone()
         finally:
             conn.close()
@@ -1941,7 +1953,7 @@ async def get_history_replay_detail(
         has_next = (page * page_size) < total_count
 
         return {
-            "lottery_type":      lottery_type,
+            "lottery_type":      canonical_lottery_type,
             "strategy_id":       strategy_id,
             "bet_index":         bet_index,
             "derived_bet_count": derived_bet_count,
@@ -1967,7 +1979,7 @@ async def get_history_replay_detail(
                 "last_target_draw":  last_draw,
                 "latest_target_draw": last_draw,
                 "current_filters": {
-                    "lottery_type": lottery_type,
+                    "lottery_type": canonical_lottery_type,
                     "strategy_id":  strategy_id,
                     "bet_index":    bet_index,
                     "sort":         sort,
@@ -2062,6 +2074,8 @@ async def get_history_replay_detail_grouped(
     execution. No migration. No schema change. No betting advice.
     """
     try:
+        canonical_lottery_type = _normalise_lottery_type_query(lottery_type) or lottery_type
+
         # ── Validate enum params ────────────────────────────────────────────
         if sort not in _DETAIL_SORTS:
             raise HTTPException(
@@ -2083,14 +2097,14 @@ async def get_history_replay_detail_grouped(
 
         # ── Base WHERE (scoped to lottery_type + strategy_id) ────────────────
         base_where = ["lottery_type = ?", "strategy_id = ?"]
-        base_params: list = [lottery_type, strategy_id]
+        base_params: list = [canonical_lottery_type, strategy_id]
         if target_draw:
             base_where.append("target_draw = ?")
             base_params.append(target_draw)
         base_where_sql = " AND ".join(base_where)
         if display_depth_sql:
             base_where_sql += display_depth_sql
-            base_params.extend([lottery_type, strategy_id, display_depth_limit])
+            base_params.extend([canonical_lottery_type, strategy_id, display_depth_limit])
         order_dir = "DESC" if sort == "target_draw_desc" else "ASC"
 
         # Draw-level hit_filter applied via HAVING on the per-draw aggregate.
@@ -2157,7 +2171,7 @@ async def get_history_replay_detail_grouped(
                       AND target_draw IN ({placeholders})
                     ORDER BY CAST(target_draw AS INTEGER) {order_dir}, bet_index ASC
                     """,
-                    [lottery_type, strategy_id] + page_draws,
+                    [canonical_lottery_type, strategy_id] + page_draws,
                 ).fetchall()
                 for br in bet_rows:
                     bet_rows_by_draw.setdefault(str(br["target_draw"]), []).append(br)
@@ -2233,7 +2247,7 @@ async def get_history_replay_detail_grouped(
                 )
                 row_trust = _display_trust_for_row(lifecycle_status, row_truth_level)
                 rows.append({
-                    "lottery_type":      lottery_type,
+                    "lottery_type":      canonical_lottery_type,
                     "strategy_id":       strategy_id,
                     "strategy_name":     strategy_name,
                     "lifecycle_status":  lifecycle_status,
@@ -2275,7 +2289,7 @@ async def get_history_replay_detail_grouped(
                 FROM strategy_prediction_replays
                 WHERE lottery_type = ? AND strategy_id = ?
                 """,
-                [lottery_type, strategy_id],
+                [canonical_lottery_type, strategy_id],
             ).fetchone()
 
             # Distinct draws that have at least one bet hit (draw-level hit rate).
@@ -2289,7 +2303,7 @@ async def get_history_replay_detail_grouped(
                     HAVING SUM(CASE WHEN hit_count > 0 THEN 1 ELSE 0 END) > 0
                 )
                 """,
-                [lottery_type, strategy_id],
+                [canonical_lottery_type, strategy_id],
             ).fetchone()
         finally:
             conn.close()
@@ -2306,7 +2320,7 @@ async def get_history_replay_detail_grouped(
         has_next = (page * page_size) < total_count
 
         return {
-            "lottery_type":      lottery_type,
+            "lottery_type":      canonical_lottery_type,
             "strategy_id":       strategy_id,
             "bet_index":         bet_index,
             "derived_bet_count": derived_bet_count,
@@ -2337,7 +2351,7 @@ async def get_history_replay_detail_grouped(
                 "last_target_draw":  last_draw,
                 "latest_target_draw": last_draw,
                 "current_filters": {
-                    "lottery_type": lottery_type,
+                    "lottery_type": canonical_lottery_type,
                     "strategy_id":  strategy_id,
                     "bet_index":    bet_index,
                     "sort":         sort,

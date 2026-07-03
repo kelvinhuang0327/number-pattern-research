@@ -1744,6 +1744,18 @@ _DETAIL_SORTS = ("target_draw_desc", "target_draw_asc")
 _DETAIL_HIT_FILTERS = ("all", "hit", "miss")
 
 
+def _normalise_detail_enum_query(value: str, allowed: tuple[str, ...], param_name: str) -> str:
+    """Return canonical detail enum query values while preserving strict validation."""
+    original = value
+    canonical = value.strip().lower() if isinstance(value, str) else value
+    if canonical not in allowed:
+        raise HTTPException(
+            status_code=400,
+            detail=f"invalid {param_name} {original!r}; allowed: {list(allowed)}",
+        )
+    return canonical
+
+
 def _parse_numbers_field(raw):
     """Parse a stored numbers TEXT field (e.g. '[1, 7, 15]') into a list of ints.
 
@@ -1835,16 +1847,8 @@ async def get_history_replay_detail(
         canonical_lottery_type = _normalise_lottery_type_query(lottery_type) or lottery_type
 
         # ── Validate enum params ────────────────────────────────────────────
-        if sort not in _DETAIL_SORTS:
-            raise HTTPException(
-                status_code=400,
-                detail=f"invalid sort {sort!r}; allowed: {list(_DETAIL_SORTS)}",
-            )
-        if hit_filter not in _DETAIL_HIT_FILTERS:
-            raise HTTPException(
-                status_code=400,
-                detail=f"invalid hit_filter {hit_filter!r}; allowed: {list(_DETAIL_HIT_FILTERS)}",
-            )
+        sort = _normalise_detail_enum_query(sort, _DETAIL_SORTS, "sort")
+        hit_filter = _normalise_detail_enum_query(hit_filter, _DETAIL_HIT_FILTERS, "hit_filter")
 
         derived_bet_count = _derive_bet_count(strategy_id)
         bet_index_matches = (derived_bet_count == bet_index)
@@ -2077,16 +2081,8 @@ async def get_history_replay_detail_grouped(
         canonical_lottery_type = _normalise_lottery_type_query(lottery_type) or lottery_type
 
         # ── Validate enum params ────────────────────────────────────────────
-        if sort not in _DETAIL_SORTS:
-            raise HTTPException(
-                status_code=400,
-                detail=f"invalid sort {sort!r}; allowed: {list(_DETAIL_SORTS)}",
-            )
-        if hit_filter not in _DETAIL_HIT_FILTERS:
-            raise HTTPException(
-                status_code=400,
-                detail=f"invalid hit_filter {hit_filter!r}; allowed: {list(_DETAIL_HIT_FILTERS)}",
-            )
+        sort = _normalise_detail_enum_query(sort, _DETAIL_SORTS, "sort")
+        hit_filter = _normalise_detail_enum_query(hit_filter, _DETAIL_HIT_FILTERS, "hit_filter")
 
         derived_bet_count = _derive_bet_count(strategy_id)
         bet_index_matches = (derived_bet_count == bet_index)

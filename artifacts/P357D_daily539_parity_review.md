@@ -80,4 +80,3 @@ The required validation commands for P357D are:
 - artifact completeness check for:
   - `artifacts/P357D_daily539_parity_review.md`
   - `artifacts/P357D_daily539_parity_matrix.csv`
-

@@ -1,0 +1,89 @@
+{
+  "generated_at": "DETERMINISTIC_PLACEHOLDER",
+  "prompts": [
+    {
+      "intended_agent": "Planner or Worker",
+      "prompt": "Task: Read-only API exploration\n\n        Objective: Inspect the P367 Big Lotto no-DB evidence API facade and summarize available functions and output shapes for handoff use.\n\n        Constraints: No DB open/write. No adapter calls. No new scoring. No deploy. No betting advice. No future prediction guarantee. Historical descriptive evidence only. No production registry import. No blended leaderboard. Shape-only and blocked targets remain excluded.\n\n        Allowed actions:\n        - Run `python3 -m recovered_strategies.biglotto.no_db_evidence_api --help`.\n- Use only facade calls that read committed artifacts.\n- Report function names, arguments, and output schemas.\n\n        Stop if the task would require DB access, adapter execution, new scoring, deploy, force operations, betting advice, or future-performance claims.",
+      "prompt_id": "read_only_api_exploration",
+      "required_constraints": [
+        "No DB open/write.",
+        "No adapter calls.",
+        "No new scoring.",
+        "No deploy.",
+        "No betting advice.",
+        "No future prediction guarantee."
+      ],
+      "title": "Read-only API exploration"
+    },
+    {
+      "intended_agent": "Planner or Worker",
+      "prompt": "Task: No-DB artifact audit\n\n        Objective: Check that required P367/P368 evidence artifacts exist, parse, and have stable SHA256 values.\n\n        Constraints: No DB open/write. No adapter calls. No new scoring. No deploy. No betting advice. No future prediction guarantee. Historical descriptive evidence only. No production registry import. No blended leaderboard. Shape-only and blocked targets remain excluded.\n\n        Allowed actions:\n        - Read JSON and CSV artifacts with stdlib parsers.\n- Compare manifest paths and source SHA256 values.\n- Report only historical artifact availability and parse status.\n\n        Stop if the task would require DB access, adapter execution, new scoring, deploy, force operations, betting advice, or future-performance claims.",
+      "prompt_id": "no_db_artifact_audit",
+      "required_constraints": [
+        "No DB open/write.",
+        "No adapter calls.",
+        "No new scoring.",
+        "No deploy.",
+        "No betting advice.",
+        "No future prediction guarantee."
+      ],
+      "title": "No-DB artifact audit"
+    },
+    {
+      "intended_agent": "Planner or Worker",
+      "prompt": "Task: No-DB dashboard smoke check\n\n        Objective: Smoke check committed dashboard and explorer artifacts without importing production registries or executing adapters.\n\n        Constraints: No DB open/write. No adapter calls. No new scoring. No deploy. No betting advice. No future prediction guarantee. Historical descriptive evidence only. No production registry import. No blended leaderboard. Shape-only and blocked targets remain excluded.\n\n        Allowed actions:\n        - Inspect committed HTML/JSON/CSV artifacts under `artifacts/`.\n- Confirm static links and evidence tables are present.\n- Avoid runtime services and DB-backed routes.\n\n        Stop if the task would require DB access, adapter execution, new scoring, deploy, force operations, betting advice, or future-performance claims.",
+      "prompt_id": "no_db_dashboard_smoke_check",
+      "required_constraints": [
+        "No DB open/write.",
+        "No adapter calls.",
+        "No new scoring.",
+        "No deploy.",
+        "No betting advice.",
+        "No future prediction guarantee."
+      ],
+      "title": "No-DB dashboard smoke check"
+    },
+    {
+      "intended_agent": "Planner or Worker",
+      "prompt": "Task: No-DB compatibility revalidation\n\n        Objective: Revalidate P367 API compatibility with P368 golden snapshots and report any contract drift.\n\n        Constraints: No DB open/write. No adapter calls. No new scoring. No deploy. No betting advice. No future prediction guarantee. Historical descriptive evidence only. No production registry import. No blended leaderboard. Shape-only and blocked targets remain excluded.\n\n        Allowed actions:\n        - Run `python3 -m recovered_strategies.biglotto.no_db_evidence_api_snapshots --validate`.\n- Inspect compatibility matrix rows for incompatible entries.\n- Inspect contract drift rows for FAIL status.\n\n        Stop if the task would require DB access, adapter execution, new scoring, deploy, force operations, betting advice, or future-performance claims.",
+      "prompt_id": "no_db_compatibility_revalidation",
+      "required_constraints": [
+        "No DB open/write.",
+        "No adapter calls.",
+        "No new scoring.",
+        "No deploy.",
+        "No betting advice.",
+        "No future prediction guarantee."
+      ],
+      "title": "No-DB compatibility revalidation"
+    },
+    {
+      "intended_agent": "Planner or Worker",
+      "prompt": "Task: No-DB CLI usage examples\n\n        Objective: Generate safe local CLI examples for future workers using the P367/P368 evidence API only.\n\n        Constraints: No DB open/write. No adapter calls. No new scoring. No deploy. No betting advice. No future prediction guarantee. Historical descriptive evidence only. No production registry import. No blended leaderboard. Shape-only and blocked targets remain excluded.\n\n        Allowed actions:\n        - Use `--list-adapters`, `--get-adapter`, `--compact-shortlist`, and `--validate` examples.\n- Label outputs as historical descriptive evidence.\n- Include no-betting and no-future-prediction disclaimers.\n\n        Stop if the task would require DB access, adapter execution, new scoring, deploy, force operations, betting advice, or future-performance claims.",
+      "prompt_id": "no_db_cli_usage_examples",
+      "required_constraints": [
+        "No DB open/write.",
+        "No adapter calls.",
+        "No new scoring.",
+        "No deploy.",
+        "No betting advice.",
+        "No future prediction guarantee."
+      ],
+      "title": "No-DB CLI usage examples"
+    }
+  ],
+  "statements": {
+    "adapter_calls": false,
+    "betting_advice": false,
+    "blended_leaderboard": false,
+    "db_opened": false,
+    "db_written": false,
+    "deployed": false,
+    "future_prediction_guarantee": false,
+    "historical_descriptive_evidence_only": true,
+    "new_scoring_cohort": false,
+    "production_registry_imported": false,
+    "shape_only_and_blocked_targets_excluded": true
+  },
+  "task": "P369_biglotto_evidence_agent_pack"
+}

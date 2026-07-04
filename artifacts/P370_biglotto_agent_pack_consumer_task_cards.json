@@ -1,0 +1,90 @@
+{
+  "generated_at": "DETERMINISTIC_PLACEHOLDER",
+  "statements": {
+    "adapter_calls": false,
+    "betting_advice": false,
+    "blended_leaderboard": false,
+    "db_opened": false,
+    "db_written": false,
+    "deployed": false,
+    "future_prediction_guarantee": false,
+    "generated_prompts_templates_not_standing_authorization": true,
+    "historical_descriptive_evidence_only": true,
+    "new_scoring_cohort": false,
+    "production_registry_imported": false,
+    "shape_only_and_blocked_targets_excluded": true
+  },
+  "task": "P370_biglotto_agent_pack_consumer",
+  "task_cards": [
+    {
+      "card_id": "read_only_api_exploration",
+      "copy_paste_prompt": "Task: Read-only API exploration\n\nObjective: Use the P367 no-DB facade to list supported functions, inspect one adapter, and summarize output shapes.\n\nConstraints: Historical descriptive evidence only. No future prediction guarantee. No betting advice. No DB open/write. No production registry import. No deploy. No adapter calls. No new scoring. No new scoring cohort. No blended leaderboard. Generated prompts are templates, not standing authorization. Shape-only and blocked targets remain excluded.\n\nLocal command:\npython3 -m recovered_strategies.biglotto.no_db_evidence_api --help\n\nThis prompt is a copy-paste template only, not standing authorization. Stop before any DB write, migration, backfill, deploy, force operation, production registry import, strategy status change, adapter call, new scoring cohort, betting advice, or future-performance claim.",
+      "intended_agent": "Future Worker",
+      "no_adapter_calls": true,
+      "no_db_open_write": true,
+      "no_new_scoring": true,
+      "source_artifacts": [
+        "artifacts/P369_biglotto_evidence_agent_pack_task_prompts.json",
+        "artifacts/P369_biglotto_evidence_agent_pack_query_recipes.json"
+      ],
+      "template_not_standing_authorization": true,
+      "title": "Read-only API exploration"
+    },
+    {
+      "card_id": "artifact_inventory_audit",
+      "copy_paste_prompt": "Task: Artifact inventory audit\n\nObjective: Read the P367/P368/P369 manifests and confirm artifact paths, SHA256 values, and parseable JSON/CSV shapes.\n\nConstraints: Historical descriptive evidence only. No future prediction guarantee. No betting advice. No DB open/write. No production registry import. No deploy. No adapter calls. No new scoring. No new scoring cohort. No blended leaderboard. Generated prompts are templates, not standing authorization. Shape-only and blocked targets remain excluded.\n\nLocal command:\npython3 -m recovered_strategies.biglotto.no_db_evidence_agent_pack_consumer --manifest\n\nThis prompt is a copy-paste template only, not standing authorization. Stop before any DB write, migration, backfill, deploy, force operation, production registry import, strategy status change, adapter call, new scoring cohort, betting advice, or future-performance claim.",
+      "intended_agent": "Future Worker",
+      "no_adapter_calls": true,
+      "no_db_open_write": true,
+      "no_new_scoring": true,
+      "source_artifacts": [
+        "artifacts/P369_biglotto_evidence_agent_pack_task_prompts.json",
+        "artifacts/P369_biglotto_evidence_agent_pack_query_recipes.json"
+      ],
+      "template_not_standing_authorization": true,
+      "title": "Artifact inventory audit"
+    },
+    {
+      "card_id": "compatibility_revalidation",
+      "copy_paste_prompt": "Task: Compatibility revalidation\n\nObjective: Run the no-DB compatibility and drift checks and report only PASS/WARN/FAIL rows from committed evidence.\n\nConstraints: Historical descriptive evidence only. No future prediction guarantee. No betting advice. No DB open/write. No production registry import. No deploy. No adapter calls. No new scoring. No new scoring cohort. No blended leaderboard. Generated prompts are templates, not standing authorization. Shape-only and blocked targets remain excluded.\n\nLocal command:\npython3 -m recovered_strategies.biglotto.no_db_evidence_api_snapshots --validate\n\nThis prompt is a copy-paste template only, not standing authorization. Stop before any DB write, migration, backfill, deploy, force operation, production registry import, strategy status change, adapter call, new scoring cohort, betting advice, or future-performance claim.",
+      "intended_agent": "Future Worker",
+      "no_adapter_calls": true,
+      "no_db_open_write": true,
+      "no_new_scoring": true,
+      "source_artifacts": [
+        "artifacts/P369_biglotto_evidence_agent_pack_task_prompts.json",
+        "artifacts/P369_biglotto_evidence_agent_pack_query_recipes.json"
+      ],
+      "template_not_standing_authorization": true,
+      "title": "Compatibility revalidation"
+    },
+    {
+      "card_id": "dashboard_explorer_smoke_check",
+      "copy_paste_prompt": "Task: Dashboard/explorer smoke check\n\nObjective: Inspect committed dashboard and explorer HTML/JSON/CSV artifacts without runtime services or DB-backed routes.\n\nConstraints: Historical descriptive evidence only. No future prediction guarantee. No betting advice. No DB open/write. No production registry import. No deploy. No adapter calls. No new scoring. No new scoring cohort. No blended leaderboard. Generated prompts are templates, not standing authorization. Shape-only and blocked targets remain excluded.\n\nLocal command:\npython3 -m recovered_strategies.biglotto.no_db_evidence_agent_pack_consumer --run-recipes\n\nThis prompt is a copy-paste template only, not standing authorization. Stop before any DB write, migration, backfill, deploy, force operation, production registry import, strategy status change, adapter call, new scoring cohort, betting advice, or future-performance claim.",
+      "intended_agent": "Future Worker",
+      "no_adapter_calls": true,
+      "no_db_open_write": true,
+      "no_new_scoring": true,
+      "source_artifacts": [
+        "artifacts/P369_biglotto_evidence_agent_pack_task_prompts.json",
+        "artifacts/P369_biglotto_evidence_agent_pack_query_recipes.json"
+      ],
+      "template_not_standing_authorization": true,
+      "title": "Dashboard/explorer smoke check"
+    },
+    {
+      "card_id": "local_evidence_query_examples",
+      "copy_paste_prompt": "Task: Local evidence query examples\n\nObjective: Use P369 recipes through the P370 consumer to produce deterministic transcript examples for future Workers.\n\nConstraints: Historical descriptive evidence only. No future prediction guarantee. No betting advice. No DB open/write. No production registry import. No deploy. No adapter calls. No new scoring. No new scoring cohort. No blended leaderboard. Generated prompts are templates, not standing authorization. Shape-only and blocked targets remain excluded.\n\nLocal command:\npython3 -m recovered_strategies.biglotto.no_db_evidence_agent_pack_consumer --transcripts\n\nThis prompt is a copy-paste template only, not standing authorization. Stop before any DB write, migration, backfill, deploy, force operation, production registry import, strategy status change, adapter call, new scoring cohort, betting advice, or future-performance claim.",
+      "intended_agent": "Future Worker",
+      "no_adapter_calls": true,
+      "no_db_open_write": true,
+      "no_new_scoring": true,
+      "source_artifacts": [
+        "artifacts/P369_biglotto_evidence_agent_pack_task_prompts.json",
+        "artifacts/P369_biglotto_evidence_agent_pack_query_recipes.json"
+      ],
+      "template_not_standing_authorization": true,
+      "title": "Local evidence query examples"
+    }
+  ]
+}

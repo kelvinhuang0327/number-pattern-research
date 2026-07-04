@@ -1,0 +1,322 @@
+[
+  {
+    "adapter_function": "adapt_predict_biglotto_echo_mixed_3bet",
+    "bet_count": "3",
+    "caveats": [
+      "Historical descriptive evidence only.",
+      "No future prediction guarantee.",
+      "No betting advice.",
+      "No DB open/write.",
+      "No production registry import.",
+      "No deploy.",
+      "No new scoring cohort.",
+      "No adapter calls.",
+      "No blended leaderboard.",
+      "Shape-only and blocked targets remain excluded."
+    ],
+    "p360_performance_summary": {
+      "windows": {
+        "150": {
+          "edge": "0.01845643",
+          "hit_rate": "0.07333333"
+        },
+        "1500": {
+          "edge": "0.00978976",
+          "hit_rate": "0.06466667"
+        },
+        "30": {
+          "edge": "0.01178976",
+          "hit_rate": "0.06666667"
+        },
+        "750": {
+          "edge": "0.01445643",
+          "hit_rate": "0.06933333"
+        }
+      },
+      "windows_present": "30;150;750;1500"
+    },
+    "p361_contribution_redundancy": {
+      "candidate_marginal_share_full_context": "0.04807692",
+      "redundancy_note": "High overlap screen: max Jaccard 0.85185185 versus adapt_predict_biglotto_echo_phase2_3bet.",
+      "total_hit_count": "104",
+      "unique_hit_count": "5"
+    },
+    "p362_stability": {
+      "singleton_average_rank_by_coverage_rate": "14.0000",
+      "singleton_top_3_window_count": "1",
+      "singleton_within_3_hits_window_count": "1",
+      "stability_note": "Singleton evaluated across 4 windows; top-3 in 1 window(s)."
+    },
+    "scope": {
+      "adapter_calls": false,
+      "betting_advice": false,
+      "blended_leaderboard": false,
+      "db_opened": false,
+      "db_written": false,
+      "deployed": false,
+      "future_prediction_guarantee": false,
+      "historical_descriptive_evidence_only": true,
+      "new_scoring_cohort": false,
+      "production_registry_imported": false,
+      "shape_only_and_blocked_targets_excluded": true
+    },
+    "source_caveat": "Historical descriptive evidence only; no betting advice or future prediction guarantee.",
+    "strategy_id": "predict_biglotto_echo_mixed_3bet"
+  },
+  {
+    "adapter_function": "adapt_predict_biglotto_echo_phase2_3bet",
+    "bet_count": "3",
+    "caveats": [
+      "Historical descriptive evidence only.",
+      "No future prediction guarantee.",
+      "No betting advice.",
+      "No DB open/write.",
+      "No production registry import.",
+      "No deploy.",
+      "No new scoring cohort.",
+      "No adapter calls.",
+      "No blended leaderboard.",
+      "Shape-only and blocked targets remain excluded."
+    ],
+    "p360_performance_summary": {
+      "windows": {
+        "150": {
+          "edge": "0.01845643",
+          "hit_rate": "0.07333333"
+        },
+        "1500": {
+          "edge": "0.00378976",
+          "hit_rate": "0.05866667"
+        },
+        "30": {
+          "edge": "0.01178976",
+          "hit_rate": "0.06666667"
+        },
+        "750": {
+          "edge": "0.01312310",
+          "hit_rate": "0.06800000"
+        }
+      },
+      "windows_present": "30;150;750;1500"
+    },
+    "p361_contribution_redundancy": {
+      "candidate_marginal_share_full_context": "0.01041667",
+      "redundancy_note": "High overlap screen: max Jaccard 0.85185185 versus adapt_predict_biglotto_echo_mixed_3bet.",
+      "total_hit_count": "96",
+      "unique_hit_count": "1"
+    },
+    "p362_stability": {
+      "singleton_average_rank_by_coverage_rate": "16.5000",
+      "singleton_top_3_window_count": "1",
+      "singleton_within_3_hits_window_count": "1",
+      "stability_note": "Singleton evaluated across 4 windows; top-3 in 1 window(s)."
+    },
+    "scope": {
+      "adapter_calls": false,
+      "betting_advice": false,
+      "blended_leaderboard": false,
+      "db_opened": false,
+      "db_written": false,
+      "deployed": false,
+      "future_prediction_guarantee": false,
+      "historical_descriptive_evidence_only": true,
+      "new_scoring_cohort": false,
+      "production_registry_imported": false,
+      "shape_only_and_blocked_targets_excluded": true
+    },
+    "source_caveat": "Historical descriptive evidence only; no betting advice or future prediction guarantee.",
+    "strategy_id": "predict_biglotto_echo_phase2"
+  },
+  {
+    "adapter_function": "adapt_biglotto_p0_2bet",
+    "bet_count": "2",
+    "caveats": [
+      "Historical descriptive evidence only.",
+      "No future prediction guarantee.",
+      "No betting advice.",
+      "No DB open/write.",
+      "No production registry import.",
+      "No deploy.",
+      "No new scoring cohort.",
+      "No adapter calls.",
+      "No blended leaderboard.",
+      "Shape-only and blocked targets remain excluded."
+    ],
+    "p360_performance_summary": {
+      "windows": {
+        "150": {
+          "edge": "-0.01026098",
+          "hit_rate": "0.02666667"
+        },
+        "1500": {
+          "edge": "0.00907236",
+          "hit_rate": "0.04600000"
+        },
+        "30": {
+          "edge": "-0.03692764",
+          "hit_rate": "0.00000000"
+        },
+        "750": {
+          "edge": "0.01107236",
+          "hit_rate": "0.04800000"
+        }
+      },
+      "windows_present": "30;150;750;1500"
+    },
+    "p361_contribution_redundancy": {
+      "candidate_marginal_share_full_context": "0.86301370",
+      "redundancy_note": "No near-duplicate screen hit; max pairwise Jaccard 0.07692308 versus adapt_predict_biglotto_echo_phase2_2bet.",
+      "total_hit_count": "73",
+      "unique_hit_count": "63"
+    },
+    "p362_stability": {
+      "singleton_average_rank_by_coverage_rate": "29.5000",
+      "singleton_top_3_window_count": "0",
+      "singleton_within_3_hits_window_count": "1",
+      "stability_note": "Singleton evaluated across 4 windows; top-3 in 0 window(s)."
+    },
+    "scope": {
+      "adapter_calls": false,
+      "betting_advice": false,
+      "blended_leaderboard": false,
+      "db_opened": false,
+      "db_written": false,
+      "deployed": false,
+      "future_prediction_guarantee": false,
+      "historical_descriptive_evidence_only": true,
+      "new_scoring_cohort": false,
+      "production_registry_imported": false,
+      "shape_only_and_blocked_targets_excluded": true
+    },
+    "source_caveat": "Historical descriptive evidence only; no betting advice or future prediction guarantee.",
+    "strategy_id": "biglotto_p0_2bet"
+  },
+  {
+    "adapter_function": "adapt_predict_biglotto_echo_2bet",
+    "bet_count": "2",
+    "caveats": [
+      "Historical descriptive evidence only.",
+      "No future prediction guarantee.",
+      "No betting advice.",
+      "No DB open/write.",
+      "No production registry import.",
+      "No deploy.",
+      "No new scoring cohort.",
+      "No adapter calls.",
+      "No blended leaderboard.",
+      "Shape-only and blocked targets remain excluded."
+    ],
+    "p360_performance_summary": {
+      "windows": {
+        "150": {
+          "edge": "0.00307236",
+          "hit_rate": "0.04000000"
+        },
+        "1500": {
+          "edge": "0.00773902",
+          "hit_rate": "0.04466667"
+        },
+        "30": {
+          "edge": "-0.00359431",
+          "hit_rate": "0.03333333"
+        },
+        "750": {
+          "edge": "0.01107236",
+          "hit_rate": "0.04800000"
+        }
+      },
+      "windows_present": "30;150;750;1500"
+    },
+    "p361_contribution_redundancy": {
+      "candidate_marginal_share_full_context": "0.00000000",
+      "redundancy_note": "High overlap screen: max Jaccard 0.86486486 versus adapt_predict_biglotto_echo_phase2_2bet.",
+      "total_hit_count": "71",
+      "unique_hit_count": "0"
+    },
+    "p362_stability": {
+      "singleton_average_rank_by_coverage_rate": "28.0000",
+      "singleton_top_3_window_count": "0",
+      "singleton_within_3_hits_window_count": "1",
+      "stability_note": "Singleton evaluated across 4 windows; top-3 in 0 window(s)."
+    },
+    "scope": {
+      "adapter_calls": false,
+      "betting_advice": false,
+      "blended_leaderboard": false,
+      "db_opened": false,
+      "db_written": false,
+      "deployed": false,
+      "future_prediction_guarantee": false,
+      "historical_descriptive_evidence_only": true,
+      "new_scoring_cohort": false,
+      "production_registry_imported": false,
+      "shape_only_and_blocked_targets_excluded": true
+    },
+    "source_caveat": "Historical descriptive evidence only; no betting advice or future prediction guarantee.",
+    "strategy_id": "predict_biglotto_echo_2bet"
+  },
+  {
+    "adapter_function": "adapt_predict_biglotto_echo_phase2_2bet",
+    "bet_count": "2",
+    "caveats": [
+      "Historical descriptive evidence only.",
+      "No future prediction guarantee.",
+      "No betting advice.",
+      "No DB open/write.",
+      "No production registry import.",
+      "No deploy.",
+      "No new scoring cohort.",
+      "No adapter calls.",
+      "No blended leaderboard.",
+      "Shape-only and blocked targets remain excluded."
+    ],
+    "p360_performance_summary": {
+      "windows": {
+        "150": {
+          "edge": "0.00307236",
+          "hit_rate": "0.04000000"
+        },
+        "1500": {
+          "edge": "0.00440569",
+          "hit_rate": "0.04133333"
+        },
+        "30": {
+          "edge": "-0.00359431",
+          "hit_rate": "0.03333333"
+        },
+        "750": {
+          "edge": "0.01107236",
+          "hit_rate": "0.04800000"
+        }
+      },
+      "windows_present": "30;150;750;1500"
+    },
+    "p361_contribution_redundancy": {
+      "candidate_marginal_share_full_context": "0.00000000",
+      "redundancy_note": "High overlap screen: max Jaccard 0.86486486 versus adapt_predict_biglotto_echo_2bet.",
+      "total_hit_count": "67",
+      "unique_hit_count": "0"
+    },
+    "p362_stability": {
+      "singleton_average_rank_by_coverage_rate": "29.0000",
+      "singleton_top_3_window_count": "0",
+      "singleton_within_3_hits_window_count": "1",
+      "stability_note": "Singleton evaluated across 4 windows; top-3 in 0 window(s)."
+    },
+    "scope": {
+      "adapter_calls": false,
+      "betting_advice": false,
+      "blended_leaderboard": false,
+      "db_opened": false,
+      "db_written": false,
+      "deployed": false,
+      "future_prediction_guarantee": false,
+      "historical_descriptive_evidence_only": true,
+      "new_scoring_cohort": false,
+      "production_registry_imported": false,
+      "shape_only_and_blocked_targets_excluded": true
+    },
+    "source_caveat": "Historical descriptive evidence only; no betting advice or future prediction guarantee.",
+    "strategy_id": "predict_biglotto_echo_phase2"
+  }
+]

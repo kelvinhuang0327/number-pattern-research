@@ -21,6 +21,8 @@ import argparse
 import datetime as dt
 import json
 import sqlite3
+import uuid
+from pathlib import Path
 import numpy as np
 from numpy.fft import fft, fftfreq
 from collections import Counter
@@ -457,6 +459,116 @@ def format_numbers(numbers):
     return ', '.join([f'{n:02d}' for n in sorted(numbers)])
 
 
+# ========== P360B: opt-in predraw ledger integration ==========
+#
+# Disabled by default. Enabling requires --write-predraw-ledger (or the
+# LOTTERY_PREDRAW_LEDGER_PATH env var) and only appends LIVE_PREDRAW records
+# to the P360A append-only JSONL sidecar (lottery_api/engine/predraw_ledger.py).
+# It never opens lottery_v2.db for write; source-draw lookups go through
+# predraw_ledger's own read-only (mode=ro) helpers.
+
+_PREDRAW_LEDGER_ENV_PATH = 'LOTTERY_PREDRAW_LEDGER_PATH'
+
+_PREDRAW_STRATEGY_ID_MAP = {
+    ('BIG_LOTTO', 2): 'biglotto_p0_2bet',
+    ('BIG_LOTTO', 3): 'biglotto_triple_strike',
+    ('BIG_LOTTO', 4): 'biglotto_ts3_markov_4bet',
+    ('BIG_LOTTO', 5): 'biglotto_ts3_markov_freqort_5bet',
+    ('POWER_LOTTO', 1): 'power_fourier_rhythm_2bet',
+    ('POWER_LOTTO', 2): 'power_fourier_rhythm_2bet',
+    ('POWER_LOTTO', 3): 'power_precision_3bet',
+    ('DAILY_539', 3): 'daily539_sumrange_bayesian_zonebalance',
+}
+
+
+def predraw_ledger_enabled(args):
+    """Opt-in only: explicit CLI flag or explicit env var. No flag => no-op."""
+    return bool(getattr(args, 'write_predraw_ledger', False)) or bool(
+        os.environ.get(_PREDRAW_LEDGER_ENV_PATH)
+    )
+
+
+def resolve_predraw_ledger_path(args):
+    """CLI flag path > env var path > module default (None lets the writer decide)."""
+    cli_path = getattr(args, 'predraw_ledger_path', None)
+    if cli_path:
+        return cli_path
+    return os.environ.get(_PREDRAW_LEDGER_ENV_PATH) or None
+
+
+def compute_next_scheduled_draw_date(last_date_str, lottery_type, schedule_config):
+    """
+    Forward-only: the next calendar date (>= last known draw date + 1 day)
+    whose weekday is in this lottery_type's draw_weekdays, per the
+    Owner-reviewable predraw_schedule_config.json. Mirrors the existing
+    per-lottery weekday logic in lottery_api/predict_next_power_lotto.py but
+    reads weekdays from the shared schedule config instead of hardcoding them
+    a second time.
+    """
+    rule = schedule_config.get('rules', {}).get(lottery_type, {})
+    weekdays = set(rule.get('draw_weekdays', range(7)))
+    last_date = dt.datetime.strptime(str(last_date_str), '%Y-%m-%d')
+    next_date = last_date + dt.timedelta(days=1)
+    while next_date.weekday() not in weekdays:
+        next_date += dt.timedelta(days=1)
+    return next_date.strftime('%Y-%m-%d')
+
+
+def write_predraw_ledger_for_prediction(lottery_type, bets, num_bets, history, run_id, ledger_path):
+    """
+    Appends one LIVE_PREDRAW record per bet for this prediction to the P360A
+    ledger. Never raises out to the caller -- an ineligible/failed ledger
+    write must never break the existing prediction output. Backfill/replay
+    tooling is untouched by this function and has no path to call it.
+    """
+    from lottery_api.engine import predraw_ledger as pl
+
+    if not history:
+        print(f'  [predraw-ledger] {lottery_type}: no history available, skipped')
+        return
+    try:
+        max_source_draw = pl.compute_max_source_draw(DB_PATH, lottery_type)
+        if max_source_draw is None:
+            print(f'  [predraw-ledger] {lottery_type}: no source draws found in DB, skipped')
+            return
+
+        target_draw = int(get_next_draw_number(history))
+        last_date = history[-1].get('date')
+        schedule_config = pl.load_schedule_config()
+        target_draw_date = compute_next_scheduled_draw_date(last_date, lottery_type, schedule_config)
+
+        writer = pl.PredrawLedgerWriter(ledger_path=Path(ledger_path) if ledger_path else None)
+        strategy_id = _PREDRAW_STRATEGY_ID_MAP.get(
+            (lottery_type, num_bets), f'{lottery_type.lower()}_{num_bets}bet'
+        )
+
+        for bet_index, bet in enumerate(bets):
+            writer.write_live_prediction(
+                lottery_type=lottery_type,
+                target_draw=target_draw,
+                target_draw_date=target_draw_date,
+                strategy_id=strategy_id,
+                strategy_version='quick_predict_2026_02',
+                predicted_numbers=bet.get('numbers', []),
+                predicted_special=bet.get('special'),
+                bet_index=bet_index,
+                n_bets_total=len(bets),
+                run_id=run_id,
+                generation_source='tools/quick_predict.py',
+                max_source_draw_at_generation=max_source_draw,
+                max_source_draw_date_at_generation=last_date,
+                schedule_config=schedule_config,
+            )
+        print(
+            f'  [predraw-ledger] wrote {len(bets)} LIVE_PREDRAW record(s) for '
+            f'{lottery_type} target_draw={target_draw} -> {writer.ledger_path}'
+        )
+    except pl.LiveEligibilityError as e:
+        print(f'  [predraw-ledger] {lottery_type}: not LIVE-eligible, skipped ({e})')
+    except Exception as e:
+        print(f'  [predraw-ledger] {lottery_type}: ledger write failed, skipped ({e})')
+
+
 def print_prediction(lottery_type, bets, strategy, history, num_bets):
     """打印預測結果並回傳摘要。"""
     summary = build_prediction_summary(lottery_type, bets, strategy, history, num_bets)
@@ -552,6 +664,14 @@ def main():
                         help='要預測的彩票類型')
     parser.add_argument('--bets', dest='bets_opt', type=int,
                         help='要預測的注數')
+    parser.add_argument('--write-predraw-ledger', action='store_true',
+                        help='(opt-in, default off) append LIVE_PREDRAW records to the '
+                             'P360A predraw ledger (lottery_api/engine/predraw_ledger.py). '
+                             'Never writes the canonical DB.')
+    parser.add_argument('--predraw-ledger-path',
+                        help='Override the predraw ledger JSONL path (requires --write-predraw-ledger '
+                             'or LOTTERY_PREDRAW_LEDGER_PATH to take effect). Defaults to the module '
+                             'default sidecar path.')
     parser.add_argument('lottery', nargs='?', default=None,
                         help='彩票類型 (大樂透/威力彩/今彩539/all)')
     parser.add_argument('bets', nargs='?', type=int, default=None,
@@ -568,6 +688,10 @@ def main():
 
     predictions = []
     warnings = []
+
+    ledger_enabled = predraw_ledger_enabled(args)
+    ledger_path = resolve_predraw_ledger_path(args) if ledger_enabled else None
+    ledger_run_id = f'quick_predict-{uuid.uuid4()}' if ledger_enabled else None
 
     # 確定要預測的彩票類型
     if requested_lottery == 'ALL':
@@ -609,6 +733,11 @@ def main():
             if args.dry_run:
                 predictions.append(summary)
                 warnings.extend(summary.get('warnings', []))
+
+            if ledger_enabled:
+                write_predraw_ledger_for_prediction(
+                    lottery_type, bets, num_bets, history, ledger_run_id, ledger_path
+                )
 
         except Exception as e:
             print(f'  {lottery_type} 預測失敗: {e}')

@@ -1,0 +1,47 @@
+check_name,status,expected,actual,details
+required_file_exists:artifacts/P363_biglotto_evidence_pack_summary.csv,PASS,exists,True,P363/P364/P365 source evidence file is present.
+csv_parses:artifacts/P363_biglotto_evidence_pack_summary.csv,PASS,parseable csv,24,CSV parsed with csv.DictReader.
+required_file_exists:artifacts/P363_biglotto_evidence_pack_adapter_cards.csv,PASS,exists,True,P363/P364/P365 source evidence file is present.
+csv_parses:artifacts/P363_biglotto_evidence_pack_adapter_cards.csv,PASS,parseable csv,5,CSV parsed with csv.DictReader.
+required_file_exists:artifacts/P363_biglotto_evidence_pack_subset_cards.csv,PASS,exists,True,P363/P364/P365 source evidence file is present.
+csv_parses:artifacts/P363_biglotto_evidence_pack_subset_cards.csv,PASS,parseable csv,31,CSV parsed with csv.DictReader.
+required_file_exists:artifacts/P363_biglotto_evidence_pack_consistency_checks.csv,PASS,exists,True,P363/P364/P365 source evidence file is present.
+csv_parses:artifacts/P363_biglotto_evidence_pack_consistency_checks.csv,PASS,parseable csv,9,CSV parsed with csv.DictReader.
+required_file_exists:artifacts/P363_biglotto_evidence_pack_manifest.csv,PASS,exists,True,P363/P364/P365 source evidence file is present.
+csv_parses:artifacts/P363_biglotto_evidence_pack_manifest.csv,PASS,parseable csv,14,CSV parsed with csv.DictReader.
+required_file_exists:artifacts/P363_biglotto_evidence_pack_report.md,PASS,exists,True,P363/P364/P365 source evidence file is present.
+required_file_exists:artifacts/P364_biglotto_evidence_dashboard_index.json,PASS,exists,True,P363/P364/P365 source evidence file is present.
+json_parses:artifacts/P364_biglotto_evidence_dashboard_index.json,PASS,parseable json,dict,JSON parsed with json.load.
+required_file_exists:artifacts/P364_biglotto_evidence_dashboard_adapter_table.csv,PASS,exists,True,P363/P364/P365 source evidence file is present.
+csv_parses:artifacts/P364_biglotto_evidence_dashboard_adapter_table.csv,PASS,parseable csv,5,CSV parsed with csv.DictReader.
+required_file_exists:artifacts/P364_biglotto_evidence_dashboard_subset_table.csv,PASS,exists,True,P363/P364/P365 source evidence file is present.
+csv_parses:artifacts/P364_biglotto_evidence_dashboard_subset_table.csv,PASS,parseable csv,31,CSV parsed with csv.DictReader.
+required_file_exists:artifacts/P364_biglotto_evidence_dashboard.html,PASS,exists,True,P363/P364/P365 source evidence file is present.
+required_file_exists:artifacts/P364_biglotto_evidence_dashboard_manifest.csv,PASS,exists,True,P363/P364/P365 source evidence file is present.
+csv_parses:artifacts/P364_biglotto_evidence_dashboard_manifest.csv,PASS,parseable csv,12,CSV parsed with csv.DictReader.
+required_file_exists:artifacts/P365_biglotto_evidence_explorer_adapter_detail_cards.json,PASS,exists,True,P363/P364/P365 source evidence file is present.
+json_parses:artifacts/P365_biglotto_evidence_explorer_adapter_detail_cards.json,PASS,parseable json,list,JSON parsed with json.load.
+required_file_exists:artifacts/P365_biglotto_evidence_explorer_subset_detail_cards.json,PASS,exists,True,P363/P364/P365 source evidence file is present.
+json_parses:artifacts/P365_biglotto_evidence_explorer_subset_detail_cards.json,PASS,parseable json,list,JSON parsed with json.load.
+required_file_exists:artifacts/P365_biglotto_evidence_explorer_pairwise_comparison.csv,PASS,exists,True,P363/P364/P365 source evidence file is present.
+csv_parses:artifacts/P365_biglotto_evidence_explorer_pairwise_comparison.csv,PASS,parseable csv,10,CSV parsed with csv.DictReader.
+required_file_exists:artifacts/P365_biglotto_evidence_explorer_compact_shortlist.csv,PASS,exists,True,P363/P364/P365 source evidence file is present.
+csv_parses:artifacts/P365_biglotto_evidence_explorer_compact_shortlist.csv,PASS,parseable csv,8,CSV parsed with csv.DictReader.
+required_file_exists:artifacts/P365_biglotto_evidence_explorer_query_snapshots.json,PASS,exists,True,P363/P364/P365 source evidence file is present.
+json_parses:artifacts/P365_biglotto_evidence_explorer_query_snapshots.json,PASS,parseable json,dict,JSON parsed with json.load.
+required_file_exists:artifacts/P365_biglotto_evidence_explorer.html,PASS,exists,True,P363/P364/P365 source evidence file is present.
+required_file_exists:artifacts/P365_biglotto_evidence_explorer_manifest.csv,PASS,exists,True,P363/P364/P365 source evidence file is present.
+csv_parses:artifacts/P365_biglotto_evidence_explorer_manifest.csv,PASS,parseable csv,20,CSV parsed with csv.DictReader.
+required_file_exists:recovered_strategies/biglotto/no_db_evidence_pack.py,PASS,exists,True,P363/P364/P365 source evidence file is present.
+required_file_exists:recovered_strategies/biglotto/no_db_evidence_dashboard.py,PASS,exists,True,P363/P364/P365 source evidence file is present.
+required_file_exists:recovered_strategies/biglotto/no_db_evidence_explorer.py,PASS,exists,True,P363/P364/P365 source evidence file is present.
+required_file_exists:tests/test_p365_biglotto_evidence_explorer.py,PASS,exists,True,P363/P364/P365 source evidence file is present.
+html_disclaimers:artifacts/P364_biglotto_evidence_dashboard.html,PASS,all disclaimer lines,present,HTML contains required scope and disclaimer banner text.
+html_disclaimers:artifacts/P365_biglotto_evidence_explorer.html,PASS,all disclaimer lines,present,HTML contains required scope and disclaimer banner text.
+html_disclaimers:artifacts/P366_biglotto_evidence_release_bundle_landing.html,PASS,all disclaimer lines,present,P366 landing page contains required scope and disclaimer text.
+cli_help_works:p366,PASS,exit 0 with usage,0,P366 CLI help returned deterministic argparse help.
+cli_help_works:p365_explorer,PASS,exit 0 with usage,0,P365 explorer help captured for release examples.
+example_commands_deterministic,PASS,same example JSON,True,CLI example output was regenerated and compared byte-for-byte at object level.
+validate_entry_file:recovered_strategies/biglotto/no_db_evidence_dashboard.py,PASS,no direct DB open marker,entry file contains no direct DB open marker,Dashboard/explorer entry file validation.
+validate_entry_file:recovered_strategies/biglotto/no_db_evidence_explorer.py,PASS,no direct DB open marker,entry file contains no direct DB open marker,Dashboard/explorer entry file validation.
+forbidden_promotional_phrases_absent,PASS,absent,absent,Checks for language suggesting betting advice or future guarantees.

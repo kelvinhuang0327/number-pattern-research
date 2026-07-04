@@ -514,12 +514,15 @@ def compute_next_scheduled_draw_date(last_date_str, lottery_type, schedule_confi
     return next_date.strftime('%Y-%m-%d')
 
 
-def write_predraw_ledger_for_prediction(lottery_type, bets, num_bets, history, run_id, ledger_path):
+def write_predraw_ledger_for_prediction(lottery_type, bets, num_bets, history, run_id, ledger_path,
+                                        generation_source='tools/quick_predict.py'):
     """
     Appends one LIVE_PREDRAW record per bet for this prediction to the P360A
     ledger. Never raises out to the caller -- an ineligible/failed ledger
     write must never break the existing prediction output. Backfill/replay
     tooling is untouched by this function and has no path to call it.
+    generation_source identifies the invoking entrypoint for audit provenance
+    (default: this script; tools/predraw_capture_runner.py passes its own).
     """
     from lottery_api.engine import predraw_ledger as pl
 
@@ -554,7 +557,7 @@ def write_predraw_ledger_for_prediction(lottery_type, bets, num_bets, history, r
                 bet_index=bet_index,
                 n_bets_total=len(bets),
                 run_id=run_id,
-                generation_source='tools/quick_predict.py',
+                generation_source=generation_source,
                 max_source_draw_at_generation=max_source_draw,
                 max_source_draw_date_at_generation=last_date,
                 schedule_config=schedule_config,

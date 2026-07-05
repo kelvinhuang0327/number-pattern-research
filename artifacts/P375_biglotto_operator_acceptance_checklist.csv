@@ -1,0 +1,13 @@
+check_id,check_group,description,source_artifact,expected,observed,status,blocking
+P375-CHECK-001,source,"All required P371/P372/P373/P374 modules, tests, and artifacts are present.",P371/P372/P373/P374 source inventory,34,34,PASS,true
+P375-CHECK-002,p371_command_center,P371 command center is ready.,artifacts/P371_biglotto_command_center_status.json,command_center_ready=True,command_center_ready=True,PASS,true
+P375-CHECK-003,p371_command_center,P371 smoke rows have no FAIL status.,artifacts/P371_biglotto_command_center_smoke_results.csv,0 fail rows,0 fail rows,PASS,true
+P375-CHECK-004,p372_route_replay,All P371 command-center routes were replayed.,artifacts/P372_biglotto_command_center_route_coverage.csv,coverage_rate=1.0000 and fail_count=0,coverage_rate=1.0000 fail_count=0,PASS,true
+P375-CHECK-005,p372_route_replay,Route health has no FAIL rows.,artifacts/P372_biglotto_command_center_route_health.csv,0 FAIL rows,0 FAIL rows,PASS,true
+P375-CHECK-006,p373_operator_console,Operator console health is PASS.,artifacts/P373_biglotto_command_center_operator_status.json,overall_operator_health=PASS,overall_operator_health=PASS,PASS,true
+P375-CHECK-007,p373_operator_console,Operator console has no FAIL or WARN issues.,artifacts/P373_biglotto_command_center_operator_issues.csv,FAIL=0 WARN=0,FAIL=0 WARN=0 rows=1,PASS,true
+P375-CHECK-008,p374_operator_history,P374 snapshot health is PASS.,artifacts/P374_biglotto_operator_health_snapshot.json,overall_operator_health=PASS,overall_operator_health=PASS,PASS,true
+P375-CHECK-009,p374_operator_history,P374 history comparison is an unchanged initial snapshot.,artifacts/P374_biglotto_operator_snapshot_comparison.json,INITIAL_SNAPSHOT_NO_CHANGES,INITIAL_SNAPSHOT_NO_CHANGES,PASS,false
+P375-CHECK-010,p374_operator_history,P374 status delta rows are PASS.,artifacts/P374_biglotto_operator_status_delta.csv,all PASS,0 non-PASS rows,PASS,true
+P375-CHECK-011,safety_constraints,"No DB, adapter, scoring, registry, deploy, status-change, force, betting, or future-claim action is authorized.",artifacts/P374_biglotto_operator_health_snapshot.json,all restricted statements false,"{'adapter_calls': False, 'betting_advice': False, 'blended_leaderboard': False, 'db_opened': False, 'db_written': False, 'deployed': False, 'force_operations': False, 'future_prediction_guarantee': False, 'generated_db_rows': False, 'new_scoring': False, 'new_scoring_cohort': False, 'production_registry_imported': False, 'strategy_status_changes': False}",PASS,true
+P375-CHECK-012,acceptance_gate,P375 acceptance gate is generated from read-only committed artifacts.,P375 generator,read-only no-DB aggregation,read-only no-DB aggregation,PASS,true

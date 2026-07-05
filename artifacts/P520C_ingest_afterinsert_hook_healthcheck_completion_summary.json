@@ -1,0 +1,23 @@
+{
+  "artifact_prefix": "P520C_ingest_afterinsert_hook_healthcheck",
+  "completion_status": "PASS",
+  "executes_draw_insert": false,
+  "expected_artifact_count": 6,
+  "implements_replacement_scheduler_or_tracker": false,
+  "imports_lottery_api_routes_ingest": false,
+  "live_hook_references_visible": true,
+  "notices": [
+    "source/AST-only healthcheck",
+    "does not import lottery_api.routes.ingest",
+    "does not execute draw inserts",
+    "no canonical DB open/write",
+    "no migration/backfill",
+    "no deploy",
+    "does not implement replacement scheduler/tracker",
+    "no betting/future prediction claims"
+  ],
+  "opens_or_writes_db": false,
+  "removed_dead_hooks_absent": true,
+  "runs_migration_backfill_or_deploy": false,
+  "source_ast_only": true
+}

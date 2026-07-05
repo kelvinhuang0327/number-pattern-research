@@ -1,0 +1,80 @@
+{
+  "failure_taxonomy_classes": [
+    "missing_artifact",
+    "parse_failure",
+    "unsafe_route",
+    "forbidden_language",
+    "db_touch_attempt",
+    "adapter_call_attempt",
+    "scoring_attempt",
+    "deploy_attempt"
+  ],
+  "generated_at": "DETERMINISTIC_PLACEHOLDER",
+  "recommended_safe_next_checks": [
+    "Run P372 --validate after artifact regeneration.",
+    "Run the focused P372 pytest file.",
+    "Review route_health FAIL/WARN rows before any downstream handoff."
+  ],
+  "route_coverage": [
+    {
+      "coverage_rate": "1.0000",
+      "fail_count": "0",
+      "pass_count": "9",
+      "replayed_routes": "9",
+      "skipped_routes": "0",
+      "total_routes": "9",
+      "warn_count": "0"
+    }
+  ],
+  "route_health_summary": {
+    "fail_count": 0,
+    "pass_count": 9,
+    "route_count": 9,
+    "warn_count": 0
+  },
+  "scope_lines": [
+    "Historical descriptive evidence only.",
+    "No future prediction guarantee.",
+    "No betting advice.",
+    "No DB open/write.",
+    "No adapter calls.",
+    "No new scoring.",
+    "No production registry import.",
+    "No deploy.",
+    "No new scoring cohort.",
+    "No blended leaderboard."
+  ],
+  "source_artifacts": [
+    "recovered_strategies/biglotto/no_db_evidence_command_center.py",
+    "artifacts/P371_biglotto_command_center_index.json",
+    "artifacts/P371_biglotto_command_center_routes.csv",
+    "artifacts/P371_biglotto_command_center_status.json",
+    "artifacts/P371_biglotto_command_center_smoke_results.csv",
+    "artifacts/P371_biglotto_command_center_task_cards.json",
+    "artifacts/P371_biglotto_command_center_launchpad.html",
+    "artifacts/P371_biglotto_command_center_quickstart.md",
+    "artifacts/P371_biglotto_command_center_manifest.csv",
+    "tests/test_p371_biglotto_evidence_command_center.py"
+  ],
+  "source_baseline": "1a971bd14a11de3e6e5967cfb543ab7069e97100",
+  "source_route_count": 9,
+  "source_task": "P371_biglotto_command_center",
+  "statements": {
+    "adapter_calls": false,
+    "betting_advice": false,
+    "blended_leaderboard": false,
+    "db_opened": false,
+    "db_written": false,
+    "deployed": false,
+    "future_prediction_guarantee": false,
+    "historical_descriptive_evidence_only": true,
+    "new_scoring": false,
+    "production_registry_imported": false
+  },
+  "task": "P372_biglotto_command_center_route_replay",
+  "transcripts_summary": {
+    "fail_count": 0,
+    "pass_count": 9,
+    "route_count": 9
+  }
+}

@@ -8,13 +8,26 @@ lottery_v2.db, and no test invokes DB-backed prediction generation.
 """
 from __future__ import annotations
 
+import ast
 import datetime as _dt
 import json
+from pathlib import Path
 
 import pytest
 
 import tools.predraw_ledger_verify as plv
 from lottery_api.engine import predraw_ledger as pl
+
+_PROJECT_ROOT = Path(__file__).resolve().parents[1]
+_FOCUSED_VERIFIER_SOURCES = (
+    Path(__file__),
+    _PROJECT_ROOT / "tools" / "predraw_ledger_verify.py",
+)
+_FORBIDDEN_DB_BACKED_IMPORTS = (
+    "tools.predraw_capture_runner",
+    "tools.quick_predict",
+)
+_DB_MANAGER_SYMBOL = "DatabaseManager"
 
 
 @pytest.fixture
@@ -39,6 +52,44 @@ def captured_ledger(tmp_path):
             predicted_at=predicted_at,
         )
     return ledger_path
+
+
+# ─── 0. Regression guard: focused verifier path stays DB-free ───────────────
+
+def _imported_module_names(tree: ast.AST) -> set[str]:
+    imported: set[str] = set()
+    for node in ast.walk(tree):
+        if isinstance(node, ast.Import):
+            imported.update(alias.name for alias in node.names)
+        elif isinstance(node, ast.ImportFrom):
+            module = node.module or ""
+            imported.add(module)
+            imported.update(f"{module}.{alias.name}" if module else alias.name for alias in node.names)
+    return imported
+
+
+def test_focused_verifier_path_has_no_db_backed_imports_or_db_manager_usage():
+    for source_path in _FOCUSED_VERIFIER_SOURCES:
+        tree = ast.parse(source_path.read_text(encoding="utf-8"), filename=str(source_path))
+
+        imported = _imported_module_names(tree)
+        forbidden_imports = {
+            name
+            for name in imported
+            for forbidden in _FORBIDDEN_DB_BACKED_IMPORTS
+            if name == forbidden or name.startswith(f"{forbidden}.")
+        }
+        assert not forbidden_imports, f"{source_path} imports DB-backed prediction path(s): {sorted(forbidden_imports)}"
+
+        db_manager_refs = [
+            (node.lineno, node.col_offset)
+            for node in ast.walk(tree)
+            if (
+                (isinstance(node, ast.Name) and node.id == _DB_MANAGER_SYMBOL)
+                or (isinstance(node, ast.Attribute) and node.attr == _DB_MANAGER_SYMBOL)
+            )
+        ]
+        assert not db_manager_refs, f"{source_path} directly references {_DB_MANAGER_SYMBOL}: {db_manager_refs}"
 
 
 # ─── 1. Valid ledger from the writer passes verification ───────────────────

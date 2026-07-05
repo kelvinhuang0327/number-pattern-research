@@ -76,6 +76,8 @@ def _call_api(endpoint: str, params: Dict) -> Optional[Dict]:
     """Call API endpoint with retry logic. Returns parsed JSON content or None."""
     try:
         import requests
+        import urllib3
+        urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
     except ImportError:
         logger.error("❌ 'requests' library not installed.")
         return None
@@ -84,7 +86,7 @@ def _call_api(endpoint: str, params: Dict) -> Optional[Dict]:
     for attempt in range(1, RETRY_MAX + 1):
         try:
             resp = requests.get(url, params=params, headers=HEADERS,
-                                timeout=FETCH_TIMEOUT)
+                                timeout=FETCH_TIMEOUT, verify=False)
             if resp.status_code == 200:
                 data = resp.json()
                 if data.get("rtCode") == 0:

@@ -1,6 +1,6 @@
 {
   "lottery_type": "BIG_LOTTO",
-  "last_updated": "2026-05-17T10:20:29.000047",
+  "last_updated": "2026-07-28T16:13:06.582902",
   "records": {
     "fourier_rhythm_2bet": [
       {
@@ -12679,6 +12679,804 @@
         "match_counts": [
           1,
           0
+        ],
+        "best_match": 1,
+        "is_m3plus": false,
+        "is_m2plus": false,
+        "num_bets": 2
+      },
+      {
+        "draw_id": "115000053",
+        "date": "2026/05/15",
+        "predicted_bets": [
+          [
+            7,
+            14,
+            20,
+            21,
+            47,
+            48
+          ],
+          [
+            8,
+            13,
+            30,
+            31,
+            42,
+            44
+          ]
+        ],
+        "actual": [
+          16,
+          29,
+          30,
+          35,
+          42,
+          43
+        ],
+        "match_counts": [
+          0,
+          2
+        ],
+        "best_match": 2,
+        "is_m3plus": false,
+        "is_m2plus": true,
+        "num_bets": 2
+      },
+      {
+        "draw_id": "115000054",
+        "date": "2026/05/19",
+        "predicted_bets": [
+          [
+            1,
+            14,
+            17,
+            21,
+            22,
+            33
+          ],
+          [
+            3,
+            8,
+            29,
+            30,
+            31,
+            34
+          ]
+        ],
+        "actual": [
+          4,
+          20,
+          22,
+          26,
+          38,
+          47
+        ],
+        "match_counts": [
+          1,
+          0
+        ],
+        "best_match": 1,
+        "is_m3plus": false,
+        "is_m2plus": false,
+        "num_bets": 2
+      },
+      {
+        "draw_id": "115000055",
+        "date": "2026/05/22",
+        "predicted_bets": [
+          [
+            1,
+            10,
+            17,
+            23,
+            37,
+            39
+          ],
+          [
+            8,
+            13,
+            29,
+            30,
+            34,
+            38
+          ]
+        ],
+        "actual": [
+          12,
+          13,
+          16,
+          21,
+          28,
+          48
+        ],
+        "match_counts": [
+          0,
+          1
+        ],
+        "best_match": 1,
+        "is_m3plus": false,
+        "is_m2plus": false,
+        "num_bets": 2
+      },
+      {
+        "draw_id": "115000056",
+        "date": "2026/05/26",
+        "predicted_bets": [
+          [
+            6,
+            18,
+            25,
+            29,
+            39,
+            43
+          ],
+          [
+            3,
+            8,
+            30,
+            31,
+            34,
+            46
+          ]
+        ],
+        "actual": [
+          3,
+          27,
+          29,
+          37,
+          47,
+          48
+        ],
+        "match_counts": [
+          1,
+          1
+        ],
+        "best_match": 1,
+        "is_m3plus": false,
+        "is_m2plus": false,
+        "num_bets": 2
+      },
+      {
+        "draw_id": "115000057",
+        "date": "2026/05/29",
+        "predicted_bets": [
+          [
+            6,
+            19,
+            26,
+            30,
+            42,
+            43
+          ],
+          [
+            3,
+            9,
+            21,
+            31,
+            34,
+            38
+          ]
+        ],
+        "actual": [
+          20,
+          26,
+          29,
+          31,
+          37,
+          49
+        ],
+        "match_counts": [
+          1,
+          1
+        ],
+        "best_match": 1,
+        "is_m3plus": false,
+        "is_m2plus": false,
+        "num_bets": 2
+      },
+      {
+        "draw_id": "115000058",
+        "date": "2026/06/02",
+        "predicted_bets": [
+          [
+            6,
+            12,
+            19,
+            22,
+            30,
+            42
+          ],
+          [
+            3,
+            8,
+            9,
+            34,
+            38,
+            44
+          ]
+        ],
+        "actual": [
+          8,
+          9,
+          16,
+          20,
+          37,
+          49
+        ],
+        "match_counts": [
+          0,
+          2
+        ],
+        "best_match": 2,
+        "is_m3plus": false,
+        "is_m2plus": true,
+        "num_bets": 2
+      },
+      {
+        "draw_id": "115000059",
+        "date": "2026/06/05",
+        "predicted_bets": [
+          [
+            12,
+            22,
+            29,
+            30,
+            31,
+            48
+          ],
+          [
+            2,
+            9,
+            21,
+            34,
+            42,
+            44
+          ]
+        ],
+        "actual": [
+          12,
+          14,
+          25,
+          30,
+          32,
+          44
+        ],
+        "match_counts": [
+          2,
+          1
+        ],
+        "best_match": 2,
+        "is_m3plus": false,
+        "is_m2plus": true,
+        "num_bets": 2
+      },
+      {
+        "draw_id": "115000060",
+        "date": "2026/06/09",
+        "predicted_bets": [
+          [
+            22,
+            26,
+            28,
+            29,
+            31,
+            48
+          ],
+          [
+            1,
+            3,
+            30,
+            34,
+            38,
+            46
+          ]
+        ],
+        "actual": [
+          13,
+          18,
+          25,
+          39,
+          40,
+          46
+        ],
+        "match_counts": [
+          0,
+          1
+        ],
+        "best_match": 1,
+        "is_m3plus": false,
+        "is_m2plus": false,
+        "num_bets": 2
+      },
+      {
+        "draw_id": "115000061",
+        "date": "2026/06/12",
+        "predicted_bets": [
+          [
+            9,
+            26,
+            28,
+            29,
+            31,
+            48
+          ],
+          [
+            1,
+            8,
+            21,
+            30,
+            34,
+            42
+          ]
+        ],
+        "actual": [
+          1,
+          6,
+          16,
+          20,
+          34,
+          49
+        ],
+        "match_counts": [
+          0,
+          2
+        ],
+        "best_match": 2,
+        "is_m3plus": false,
+        "is_m2plus": true,
+        "num_bets": 2
+      },
+      {
+        "draw_id": "115000062",
+        "date": "2026/06/16",
+        "predicted_bets": [
+          [
+            9,
+            28,
+            37,
+            38,
+            44,
+            47
+          ],
+          [
+            1,
+            21,
+            30,
+            34,
+            36,
+            46
+          ]
+        ],
+        "actual": [
+          1,
+          2,
+          9,
+          11,
+          28,
+          36
+        ],
+        "match_counts": [
+          2,
+          2
+        ],
+        "best_match": 2,
+        "is_m3plus": false,
+        "is_m2plus": true,
+        "num_bets": 2
+      },
+      {
+        "draw_id": "115000063",
+        "date": "2026/06/19",
+        "predicted_bets": [
+          [
+            8,
+            12,
+            37,
+            38,
+            44,
+            47
+          ],
+          [
+            2,
+            29,
+            30,
+            31,
+            34,
+            42
+          ]
+        ],
+        "actual": [
+          4,
+          12,
+          28,
+          29,
+          35,
+          48
+        ],
+        "match_counts": [
+          1,
+          1
+        ],
+        "best_match": 1,
+        "is_m3plus": false,
+        "is_m2plus": false,
+        "num_bets": 2
+      },
+      {
+        "draw_id": "115000064",
+        "date": "2026/06/23",
+        "predicted_bets": [
+          [
+            8,
+            18,
+            30,
+            39,
+            40,
+            46
+          ],
+          [
+            3,
+            19,
+            21,
+            31,
+            34,
+            44
+          ]
+        ],
+        "actual": [
+          12,
+          18,
+          29,
+          33,
+          34,
+          39
+        ],
+        "match_counts": [
+          2,
+          1
+        ],
+        "best_match": 2,
+        "is_m3plus": false,
+        "is_m2plus": true,
+        "num_bets": 2
+      },
+      {
+        "draw_id": "115000065",
+        "date": "2026/06/26",
+        "predicted_bets": [
+          [
+            6,
+            14,
+            16,
+            21,
+            25,
+            27
+          ],
+          [
+            3,
+            8,
+            30,
+            31,
+            34,
+            46
+          ]
+        ],
+        "actual": [
+          11,
+          19,
+          23,
+          24,
+          29,
+          41
+        ],
+        "match_counts": [
+          0,
+          0
+        ],
+        "best_match": 0,
+        "is_m3plus": false,
+        "is_m2plus": false,
+        "num_bets": 2
+      },
+      {
+        "draw_id": "115000066",
+        "date": "2026/06/30",
+        "predicted_bets": [
+          [
+            1,
+            2,
+            6,
+            9,
+            20,
+            21
+          ],
+          [
+            5,
+            8,
+            30,
+            31,
+            34,
+            44
+          ]
+        ],
+        "actual": [
+          4,
+          10,
+          16,
+          29,
+          36,
+          45
+        ],
+        "match_counts": [
+          0,
+          0
+        ],
+        "best_match": 0,
+        "is_m3plus": false,
+        "is_m2plus": false,
+        "num_bets": 2
+      },
+      {
+        "draw_id": "115000067",
+        "date": "2026/07/03",
+        "predicted_bets": [
+          [
+            2,
+            13,
+            18,
+            20,
+            48,
+            49
+          ],
+          [
+            3,
+            8,
+            30,
+            31,
+            34,
+            46
+          ]
+        ],
+        "actual": [
+          11,
+          16,
+          19,
+          23,
+          39,
+          47
+        ],
+        "match_counts": [
+          0,
+          0
+        ],
+        "best_match": 0,
+        "is_m3plus": false,
+        "is_m2plus": false,
+        "num_bets": 2
+      },
+      {
+        "draw_id": "115000068",
+        "date": "2026/07/07",
+        "predicted_bets": [
+          [
+            12,
+            13,
+            18,
+            33,
+            48,
+            49
+          ],
+          [
+            3,
+            8,
+            30,
+            31,
+            34,
+            46
+          ]
+        ],
+        "actual": [
+          8,
+          13,
+          15,
+          18,
+          19,
+          42
+        ],
+        "match_counts": [
+          2,
+          1
+        ],
+        "best_match": 2,
+        "is_m3plus": false,
+        "is_m2plus": true,
+        "num_bets": 2
+      },
+      {
+        "draw_id": "115000069",
+        "date": "2026/07/10",
+        "predicted_bets": [
+          [
+            12,
+            28,
+            29,
+            33,
+            45,
+            49
+          ],
+          [
+            8,
+            21,
+            30,
+            31,
+            34,
+            44
+          ]
+        ],
+        "actual": [
+          3,
+          4,
+          15,
+          18,
+          29,
+          49
+        ],
+        "match_counts": [
+          2,
+          0
+        ],
+        "best_match": 2,
+        "is_m3plus": false,
+        "is_m2plus": true,
+        "num_bets": 2
+      },
+      {
+        "draw_id": "115000070",
+        "date": "2026/07/14",
+        "predicted_bets": [
+          [
+            12,
+            16,
+            28,
+            39,
+            42,
+            45
+          ],
+          [
+            8,
+            21,
+            30,
+            31,
+            34,
+            44
+          ]
+        ],
+        "actual": [
+          10,
+          25,
+          34,
+          36,
+          45,
+          46
+        ],
+        "match_counts": [
+          1,
+          1
+        ],
+        "best_match": 1,
+        "is_m3plus": false,
+        "is_m2plus": false,
+        "num_bets": 2
+      },
+      {
+        "draw_id": "115000071",
+        "date": "2026/07/17",
+        "predicted_bets": [
+          [
+            16,
+            18,
+            19,
+            29,
+            39,
+            42
+          ],
+          [
+            1,
+            8,
+            21,
+            30,
+            31,
+            44
+          ]
+        ],
+        "actual": [
+          1,
+          6,
+          12,
+          14,
+          17,
+          26
+        ],
+        "match_counts": [
+          0,
+          1
+        ],
+        "best_match": 1,
+        "is_m3plus": false,
+        "is_m2plus": false,
+        "num_bets": 2
+      },
+      {
+        "draw_id": "115000072",
+        "date": "2026/07/21",
+        "predicted_bets": [
+          [
+            18,
+            19,
+            29,
+            32,
+            39,
+            42
+          ],
+          [
+            8,
+            21,
+            30,
+            31,
+            34,
+            44
+          ]
+        ],
+        "actual": [
+          2,
+          8,
+          15,
+          26,
+          35,
+          46
+        ],
+        "match_counts": [
+          0,
+          1
+        ],
+        "best_match": 1,
+        "is_m3plus": false,
+        "is_m2plus": false,
+        "num_bets": 2
+      },
+      {
+        "draw_id": "115000073",
+        "date": "2026/07/24",
+        "predicted_bets": [
+          [
+            10,
+            18,
+            29,
+            32,
+            45,
+            47
+          ],
+          [
+            3,
+            21,
+            30,
+            31,
+            37,
+            46
+          ]
+        ],
+        "actual": [
+          3,
+          15,
+          27,
+          34,
+          35,
+          44
+        ],
+        "match_counts": [
+          0,
+          1
         ],
         "best_match": 1,
         "is_m3plus": false,
@@ -25363,6 +26161,804 @@
         "match_counts": [
           1,
           0
+        ],
+        "best_match": 1,
+        "is_m3plus": false,
+        "is_m2plus": false,
+        "num_bets": 2
+      },
+      {
+        "draw_id": "115000053",
+        "date": "2026/05/15",
+        "predicted_bets": [
+          [
+            6,
+            22,
+            25,
+            39,
+            45,
+            48
+          ],
+          [
+            3,
+            8,
+            9,
+            30,
+            31,
+            42
+          ]
+        ],
+        "actual": [
+          16,
+          29,
+          30,
+          35,
+          42,
+          43
+        ],
+        "match_counts": [
+          0,
+          2
+        ],
+        "best_match": 2,
+        "is_m3plus": false,
+        "is_m2plus": true,
+        "num_bets": 2
+      },
+      {
+        "draw_id": "115000054",
+        "date": "2026/05/19",
+        "predicted_bets": [
+          [
+            6,
+            7,
+            22,
+            25,
+            39,
+            48
+          ],
+          [
+            3,
+            8,
+            9,
+            30,
+            31,
+            42
+          ]
+        ],
+        "actual": [
+          4,
+          20,
+          22,
+          26,
+          38,
+          47
+        ],
+        "match_counts": [
+          1,
+          0
+        ],
+        "best_match": 1,
+        "is_m3plus": false,
+        "is_m2plus": false,
+        "num_bets": 2
+      },
+      {
+        "draw_id": "115000055",
+        "date": "2026/05/22",
+        "predicted_bets": [
+          [
+            6,
+            22,
+            25,
+            39,
+            47,
+            48
+          ],
+          [
+            3,
+            8,
+            9,
+            30,
+            34,
+            42
+          ]
+        ],
+        "actual": [
+          12,
+          13,
+          16,
+          21,
+          28,
+          48
+        ],
+        "match_counts": [
+          1,
+          0
+        ],
+        "best_match": 1,
+        "is_m3plus": false,
+        "is_m2plus": false,
+        "num_bets": 2
+      },
+      {
+        "draw_id": "115000056",
+        "date": "2026/05/26",
+        "predicted_bets": [
+          [
+            6,
+            22,
+            25,
+            39,
+            47,
+            48
+          ],
+          [
+            2,
+            3,
+            8,
+            9,
+            34,
+            42
+          ]
+        ],
+        "actual": [
+          3,
+          27,
+          29,
+          37,
+          47,
+          48
+        ],
+        "match_counts": [
+          2,
+          1
+        ],
+        "best_match": 2,
+        "is_m3plus": false,
+        "is_m2plus": true,
+        "num_bets": 2
+      },
+      {
+        "draw_id": "115000057",
+        "date": "2026/05/29",
+        "predicted_bets": [
+          [
+            6,
+            22,
+            25,
+            39,
+            47,
+            48
+          ],
+          [
+            2,
+            3,
+            8,
+            9,
+            34,
+            42
+          ]
+        ],
+        "actual": [
+          20,
+          26,
+          29,
+          31,
+          37,
+          49
+        ],
+        "match_counts": [
+          0,
+          0
+        ],
+        "best_match": 0,
+        "is_m3plus": false,
+        "is_m2plus": false,
+        "num_bets": 2
+      },
+      {
+        "draw_id": "115000058",
+        "date": "2026/06/02",
+        "predicted_bets": [
+          [
+            6,
+            22,
+            25,
+            39,
+            47,
+            48
+          ],
+          [
+            2,
+            3,
+            9,
+            34,
+            42,
+            44
+          ]
+        ],
+        "actual": [
+          8,
+          9,
+          16,
+          20,
+          37,
+          49
+        ],
+        "match_counts": [
+          0,
+          1
+        ],
+        "best_match": 1,
+        "is_m3plus": false,
+        "is_m2plus": false,
+        "num_bets": 2
+      },
+      {
+        "draw_id": "115000059",
+        "date": "2026/06/05",
+        "predicted_bets": [
+          [
+            6,
+            16,
+            22,
+            25,
+            47,
+            48
+          ],
+          [
+            2,
+            3,
+            9,
+            34,
+            42,
+            44
+          ]
+        ],
+        "actual": [
+          12,
+          14,
+          25,
+          30,
+          32,
+          44
+        ],
+        "match_counts": [
+          1,
+          1
+        ],
+        "best_match": 1,
+        "is_m3plus": false,
+        "is_m2plus": false,
+        "num_bets": 2
+      },
+      {
+        "draw_id": "115000060",
+        "date": "2026/06/09",
+        "predicted_bets": [
+          [
+            6,
+            12,
+            16,
+            22,
+            47,
+            48
+          ],
+          [
+            2,
+            3,
+            9,
+            30,
+            34,
+            42
+          ]
+        ],
+        "actual": [
+          13,
+          18,
+          25,
+          39,
+          40,
+          46
+        ],
+        "match_counts": [
+          0,
+          0
+        ],
+        "best_match": 0,
+        "is_m3plus": false,
+        "is_m2plus": false,
+        "num_bets": 2
+      },
+      {
+        "draw_id": "115000061",
+        "date": "2026/06/12",
+        "predicted_bets": [
+          [
+            6,
+            12,
+            16,
+            25,
+            47,
+            48
+          ],
+          [
+            2,
+            3,
+            9,
+            30,
+            34,
+            42
+          ]
+        ],
+        "actual": [
+          1,
+          6,
+          16,
+          20,
+          34,
+          49
+        ],
+        "match_counts": [
+          2,
+          1
+        ],
+        "best_match": 2,
+        "is_m3plus": false,
+        "is_m2plus": true,
+        "num_bets": 2
+      },
+      {
+        "draw_id": "115000062",
+        "date": "2026/06/16",
+        "predicted_bets": [
+          [
+            6,
+            12,
+            16,
+            25,
+            47,
+            48
+          ],
+          [
+            2,
+            3,
+            9,
+            30,
+            31,
+            42
+          ]
+        ],
+        "actual": [
+          1,
+          2,
+          9,
+          11,
+          28,
+          36
+        ],
+        "match_counts": [
+          0,
+          2
+        ],
+        "best_match": 2,
+        "is_m3plus": false,
+        "is_m2plus": true,
+        "num_bets": 2
+      },
+      {
+        "draw_id": "115000063",
+        "date": "2026/06/19",
+        "predicted_bets": [
+          [
+            6,
+            16,
+            20,
+            22,
+            47,
+            48
+          ],
+          [
+            2,
+            3,
+            9,
+            30,
+            31,
+            42
+          ]
+        ],
+        "actual": [
+          4,
+          12,
+          28,
+          29,
+          35,
+          48
+        ],
+        "match_counts": [
+          1,
+          0
+        ],
+        "best_match": 1,
+        "is_m3plus": false,
+        "is_m2plus": false,
+        "num_bets": 2
+      },
+      {
+        "draw_id": "115000064",
+        "date": "2026/06/23",
+        "predicted_bets": [
+          [
+            6,
+            12,
+            16,
+            22,
+            47,
+            48
+          ],
+          [
+            2,
+            3,
+            9,
+            21,
+            30,
+            42
+          ]
+        ],
+        "actual": [
+          12,
+          18,
+          29,
+          33,
+          34,
+          39
+        ],
+        "match_counts": [
+          1,
+          0
+        ],
+        "best_match": 1,
+        "is_m3plus": false,
+        "is_m2plus": false,
+        "num_bets": 2
+      },
+      {
+        "draw_id": "115000065",
+        "date": "2026/06/26",
+        "predicted_bets": [
+          [
+            6,
+            12,
+            16,
+            18,
+            47,
+            48
+          ],
+          [
+            2,
+            3,
+            8,
+            9,
+            21,
+            42
+          ]
+        ],
+        "actual": [
+          11,
+          19,
+          23,
+          24,
+          29,
+          41
+        ],
+        "match_counts": [
+          0,
+          0
+        ],
+        "best_match": 0,
+        "is_m3plus": false,
+        "is_m2plus": false,
+        "num_bets": 2
+      },
+      {
+        "draw_id": "115000066",
+        "date": "2026/06/30",
+        "predicted_bets": [
+          [
+            6,
+            11,
+            12,
+            16,
+            47,
+            48
+          ],
+          [
+            2,
+            3,
+            8,
+            9,
+            21,
+            42
+          ]
+        ],
+        "actual": [
+          4,
+          10,
+          16,
+          29,
+          36,
+          45
+        ],
+        "match_counts": [
+          1,
+          0
+        ],
+        "best_match": 1,
+        "is_m3plus": false,
+        "is_m2plus": false,
+        "num_bets": 2
+      },
+      {
+        "draw_id": "115000067",
+        "date": "2026/07/03",
+        "predicted_bets": [
+          [
+            6,
+            12,
+            16,
+            29,
+            47,
+            48
+          ],
+          [
+            2,
+            3,
+            8,
+            9,
+            21,
+            42
+          ]
+        ],
+        "actual": [
+          11,
+          16,
+          19,
+          23,
+          39,
+          47
+        ],
+        "match_counts": [
+          2,
+          0
+        ],
+        "best_match": 2,
+        "is_m3plus": false,
+        "is_m2plus": true,
+        "num_bets": 2
+      },
+      {
+        "draw_id": "115000068",
+        "date": "2026/07/07",
+        "predicted_bets": [
+          [
+            12,
+            16,
+            29,
+            37,
+            47,
+            48
+          ],
+          [
+            2,
+            3,
+            8,
+            9,
+            21,
+            42
+          ]
+        ],
+        "actual": [
+          8,
+          13,
+          15,
+          18,
+          19,
+          42
+        ],
+        "match_counts": [
+          0,
+          2
+        ],
+        "best_match": 2,
+        "is_m3plus": false,
+        "is_m2plus": true,
+        "num_bets": 2
+      },
+      {
+        "draw_id": "115000069",
+        "date": "2026/07/10",
+        "predicted_bets": [
+          [
+            12,
+            16,
+            29,
+            37,
+            47,
+            48
+          ],
+          [
+            2,
+            3,
+            9,
+            21,
+            30,
+            31
+          ]
+        ],
+        "actual": [
+          3,
+          4,
+          15,
+          18,
+          29,
+          49
+        ],
+        "match_counts": [
+          1,
+          1
+        ],
+        "best_match": 1,
+        "is_m3plus": false,
+        "is_m2plus": false,
+        "num_bets": 2
+      },
+      {
+        "draw_id": "115000070",
+        "date": "2026/07/14",
+        "predicted_bets": [
+          [
+            4,
+            12,
+            16,
+            29,
+            47,
+            48
+          ],
+          [
+            2,
+            3,
+            9,
+            21,
+            30,
+            46
+          ]
+        ],
+        "actual": [
+          10,
+          25,
+          34,
+          36,
+          45,
+          46
+        ],
+        "match_counts": [
+          0,
+          1
+        ],
+        "best_match": 1,
+        "is_m3plus": false,
+        "is_m2plus": false,
+        "num_bets": 2
+      },
+      {
+        "draw_id": "115000071",
+        "date": "2026/07/17",
+        "predicted_bets": [
+          [
+            4,
+            12,
+            16,
+            29,
+            47,
+            48
+          ],
+          [
+            2,
+            3,
+            9,
+            21,
+            30,
+            31
+          ]
+        ],
+        "actual": [
+          1,
+          6,
+          12,
+          14,
+          17,
+          26
+        ],
+        "match_counts": [
+          1,
+          0
+        ],
+        "best_match": 1,
+        "is_m3plus": false,
+        "is_m2plus": false,
+        "num_bets": 2
+      },
+      {
+        "draw_id": "115000072",
+        "date": "2026/07/21",
+        "predicted_bets": [
+          [
+            4,
+            12,
+            16,
+            29,
+            47,
+            48
+          ],
+          [
+            2,
+            3,
+            9,
+            21,
+            30,
+            31
+          ]
+        ],
+        "actual": [
+          2,
+          8,
+          15,
+          26,
+          35,
+          46
+        ],
+        "match_counts": [
+          0,
+          1
+        ],
+        "best_match": 1,
+        "is_m3plus": false,
+        "is_m2plus": false,
+        "num_bets": 2
+      },
+      {
+        "draw_id": "115000073",
+        "date": "2026/07/24",
+        "predicted_bets": [
+          [
+            4,
+            12,
+            16,
+            29,
+            47,
+            48
+          ],
+          [
+            3,
+            9,
+            21,
+            30,
+            31,
+            32
+          ]
+        ],
+        "actual": [
+          3,
+          15,
+          27,
+          34,
+          35,
+          44
+        ],
+        "match_counts": [
+          0,
+          1
         ],
         "best_match": 1,
         "is_m3plus": false,
@@ -41130,6 +42726,993 @@
         "is_m3plus": false,
         "is_m2plus": false,
         "num_bets": 3
+      },
+      {
+        "draw_id": "115000053",
+        "date": "2026/05/15",
+        "predicted_bets": [
+          [
+            7,
+            14,
+            20,
+            21,
+            47,
+            48
+          ],
+          [
+            8,
+            13,
+            30,
+            31,
+            42,
+            44
+          ],
+          [
+            6,
+            22,
+            24,
+            25,
+            39,
+            41
+          ]
+        ],
+        "actual": [
+          16,
+          29,
+          30,
+          35,
+          42,
+          43
+        ],
+        "match_counts": [
+          0,
+          2,
+          0
+        ],
+        "best_match": 2,
+        "is_m3plus": false,
+        "is_m2plus": true,
+        "num_bets": 3
+      },
+      {
+        "draw_id": "115000054",
+        "date": "2026/05/19",
+        "predicted_bets": [
+          [
+            1,
+            14,
+            17,
+            21,
+            22,
+            33
+          ],
+          [
+            3,
+            8,
+            29,
+            30,
+            31,
+            34
+          ],
+          [
+            16,
+            20,
+            25,
+            39,
+            41,
+            47
+          ]
+        ],
+        "actual": [
+          4,
+          20,
+          22,
+          26,
+          38,
+          47
+        ],
+        "match_counts": [
+          1,
+          0,
+          2
+        ],
+        "best_match": 2,
+        "is_m3plus": false,
+        "is_m2plus": true,
+        "num_bets": 3
+      },
+      {
+        "draw_id": "115000055",
+        "date": "2026/05/22",
+        "predicted_bets": [
+          [
+            1,
+            10,
+            17,
+            23,
+            37,
+            39
+          ],
+          [
+            8,
+            13,
+            29,
+            30,
+            34,
+            38
+          ],
+          [
+            14,
+            20,
+            22,
+            25,
+            41,
+            47
+          ]
+        ],
+        "actual": [
+          12,
+          13,
+          16,
+          21,
+          28,
+          48
+        ],
+        "match_counts": [
+          0,
+          1,
+          0
+        ],
+        "best_match": 1,
+        "is_m3plus": false,
+        "is_m2plus": false,
+        "num_bets": 3
+      },
+      {
+        "draw_id": "115000056",
+        "date": "2026/05/26",
+        "predicted_bets": [
+          [
+            6,
+            18,
+            25,
+            29,
+            39,
+            43
+          ],
+          [
+            3,
+            8,
+            30,
+            31,
+            34,
+            46
+          ],
+          [
+            14,
+            16,
+            20,
+            22,
+            41,
+            47
+          ]
+        ],
+        "actual": [
+          3,
+          27,
+          29,
+          37,
+          47,
+          48
+        ],
+        "match_counts": [
+          1,
+          1,
+          1
+        ],
+        "best_match": 1,
+        "is_m3plus": false,
+        "is_m2plus": false,
+        "num_bets": 3
+      },
+      {
+        "draw_id": "115000057",
+        "date": "2026/05/29",
+        "predicted_bets": [
+          [
+            6,
+            19,
+            26,
+            30,
+            42,
+            43
+          ],
+          [
+            3,
+            9,
+            21,
+            31,
+            34,
+            38
+          ],
+          [
+            20,
+            22,
+            25,
+            39,
+            41,
+            47
+          ]
+        ],
+        "actual": [
+          20,
+          26,
+          29,
+          31,
+          37,
+          49
+        ],
+        "match_counts": [
+          1,
+          1,
+          1
+        ],
+        "best_match": 1,
+        "is_m3plus": false,
+        "is_m2plus": false,
+        "num_bets": 3
+      },
+      {
+        "draw_id": "115000058",
+        "date": "2026/06/02",
+        "predicted_bets": [
+          [
+            6,
+            12,
+            19,
+            22,
+            30,
+            42
+          ],
+          [
+            3,
+            8,
+            9,
+            34,
+            38,
+            44
+          ],
+          [
+            16,
+            20,
+            25,
+            39,
+            41,
+            47
+          ]
+        ],
+        "actual": [
+          8,
+          9,
+          16,
+          20,
+          37,
+          49
+        ],
+        "match_counts": [
+          0,
+          2,
+          2
+        ],
+        "best_match": 2,
+        "is_m3plus": false,
+        "is_m2plus": true,
+        "num_bets": 3
+      },
+      {
+        "draw_id": "115000059",
+        "date": "2026/06/05",
+        "predicted_bets": [
+          [
+            12,
+            22,
+            29,
+            30,
+            31,
+            48
+          ],
+          [
+            2,
+            9,
+            21,
+            34,
+            42,
+            44
+          ],
+          [
+            16,
+            20,
+            25,
+            39,
+            41,
+            47
+          ]
+        ],
+        "actual": [
+          12,
+          14,
+          25,
+          30,
+          32,
+          44
+        ],
+        "match_counts": [
+          2,
+          1,
+          1
+        ],
+        "best_match": 2,
+        "is_m3plus": false,
+        "is_m2plus": true,
+        "num_bets": 3
+      },
+      {
+        "draw_id": "115000060",
+        "date": "2026/06/09",
+        "predicted_bets": [
+          [
+            22,
+            26,
+            28,
+            29,
+            31,
+            48
+          ],
+          [
+            1,
+            3,
+            30,
+            34,
+            38,
+            46
+          ],
+          [
+            16,
+            20,
+            25,
+            39,
+            41,
+            47
+          ]
+        ],
+        "actual": [
+          13,
+          18,
+          25,
+          39,
+          40,
+          46
+        ],
+        "match_counts": [
+          0,
+          1,
+          2
+        ],
+        "best_match": 2,
+        "is_m3plus": false,
+        "is_m2plus": true,
+        "num_bets": 3
+      },
+      {
+        "draw_id": "115000061",
+        "date": "2026/06/12",
+        "predicted_bets": [
+          [
+            9,
+            26,
+            28,
+            29,
+            31,
+            48
+          ],
+          [
+            1,
+            8,
+            21,
+            30,
+            34,
+            42
+          ],
+          [
+            16,
+            20,
+            22,
+            25,
+            39,
+            47
+          ]
+        ],
+        "actual": [
+          1,
+          6,
+          16,
+          20,
+          34,
+          49
+        ],
+        "match_counts": [
+          0,
+          2,
+          2
+        ],
+        "best_match": 2,
+        "is_m3plus": false,
+        "is_m2plus": true,
+        "num_bets": 3
+      },
+      {
+        "draw_id": "115000062",
+        "date": "2026/06/16",
+        "predicted_bets": [
+          [
+            9,
+            28,
+            37,
+            38,
+            44,
+            47
+          ],
+          [
+            1,
+            21,
+            30,
+            34,
+            36,
+            46
+          ],
+          [
+            16,
+            18,
+            20,
+            22,
+            25,
+            39
+          ]
+        ],
+        "actual": [
+          1,
+          2,
+          9,
+          11,
+          28,
+          36
+        ],
+        "match_counts": [
+          2,
+          2,
+          0
+        ],
+        "best_match": 2,
+        "is_m3plus": false,
+        "is_m2plus": true,
+        "num_bets": 3
+      },
+      {
+        "draw_id": "115000063",
+        "date": "2026/06/19",
+        "predicted_bets": [
+          [
+            8,
+            12,
+            37,
+            38,
+            44,
+            47
+          ],
+          [
+            2,
+            29,
+            30,
+            31,
+            34,
+            42
+          ],
+          [
+            16,
+            18,
+            20,
+            22,
+            25,
+            39
+          ]
+        ],
+        "actual": [
+          4,
+          12,
+          28,
+          29,
+          35,
+          48
+        ],
+        "match_counts": [
+          1,
+          1,
+          0
+        ],
+        "best_match": 1,
+        "is_m3plus": false,
+        "is_m2plus": false,
+        "num_bets": 3
+      },
+      {
+        "draw_id": "115000064",
+        "date": "2026/06/23",
+        "predicted_bets": [
+          [
+            8,
+            18,
+            30,
+            39,
+            40,
+            46
+          ],
+          [
+            3,
+            19,
+            21,
+            31,
+            34,
+            44
+          ],
+          [
+            11,
+            16,
+            20,
+            22,
+            25,
+            47
+          ]
+        ],
+        "actual": [
+          12,
+          18,
+          29,
+          33,
+          34,
+          39
+        ],
+        "match_counts": [
+          2,
+          1,
+          0
+        ],
+        "best_match": 2,
+        "is_m3plus": false,
+        "is_m2plus": true,
+        "num_bets": 3
+      },
+      {
+        "draw_id": "115000065",
+        "date": "2026/06/26",
+        "predicted_bets": [
+          [
+            6,
+            14,
+            16,
+            21,
+            25,
+            27
+          ],
+          [
+            3,
+            8,
+            30,
+            31,
+            34,
+            46
+          ],
+          [
+            11,
+            18,
+            20,
+            22,
+            39,
+            47
+          ]
+        ],
+        "actual": [
+          11,
+          19,
+          23,
+          24,
+          29,
+          41
+        ],
+        "match_counts": [
+          0,
+          0,
+          1
+        ],
+        "best_match": 1,
+        "is_m3plus": false,
+        "is_m2plus": false,
+        "num_bets": 3
+      },
+      {
+        "draw_id": "115000066",
+        "date": "2026/06/30",
+        "predicted_bets": [
+          [
+            1,
+            2,
+            6,
+            9,
+            20,
+            21
+          ],
+          [
+            5,
+            8,
+            30,
+            31,
+            34,
+            44
+          ],
+          [
+            11,
+            16,
+            18,
+            22,
+            25,
+            39
+          ]
+        ],
+        "actual": [
+          4,
+          10,
+          16,
+          29,
+          36,
+          45
+        ],
+        "match_counts": [
+          0,
+          0,
+          1
+        ],
+        "best_match": 1,
+        "is_m3plus": false,
+        "is_m2plus": false,
+        "num_bets": 3
+      },
+      {
+        "draw_id": "115000067",
+        "date": "2026/07/03",
+        "predicted_bets": [
+          [
+            2,
+            13,
+            18,
+            20,
+            48,
+            49
+          ],
+          [
+            3,
+            8,
+            30,
+            31,
+            34,
+            46
+          ],
+          [
+            11,
+            16,
+            22,
+            24,
+            25,
+            39
+          ]
+        ],
+        "actual": [
+          11,
+          16,
+          19,
+          23,
+          39,
+          47
+        ],
+        "match_counts": [
+          0,
+          0,
+          3
+        ],
+        "best_match": 3,
+        "is_m3plus": true,
+        "is_m2plus": true,
+        "num_bets": 3
+      },
+      {
+        "draw_id": "115000068",
+        "date": "2026/07/07",
+        "predicted_bets": [
+          [
+            12,
+            13,
+            18,
+            33,
+            48,
+            49
+          ],
+          [
+            3,
+            8,
+            30,
+            31,
+            34,
+            46
+          ],
+          [
+            11,
+            16,
+            20,
+            22,
+            25,
+            39
+          ]
+        ],
+        "actual": [
+          8,
+          13,
+          15,
+          18,
+          19,
+          42
+        ],
+        "match_counts": [
+          2,
+          1,
+          0
+        ],
+        "best_match": 2,
+        "is_m3plus": false,
+        "is_m2plus": true,
+        "num_bets": 3
+      },
+      {
+        "draw_id": "115000069",
+        "date": "2026/07/10",
+        "predicted_bets": [
+          [
+            12,
+            28,
+            29,
+            33,
+            45,
+            49
+          ],
+          [
+            8,
+            21,
+            30,
+            31,
+            34,
+            44
+          ],
+          [
+            11,
+            16,
+            18,
+            20,
+            25,
+            39
+          ]
+        ],
+        "actual": [
+          3,
+          4,
+          15,
+          18,
+          29,
+          49
+        ],
+        "match_counts": [
+          2,
+          0,
+          1
+        ],
+        "best_match": 2,
+        "is_m3plus": false,
+        "is_m2plus": true,
+        "num_bets": 3
+      },
+      {
+        "draw_id": "115000070",
+        "date": "2026/07/14",
+        "predicted_bets": [
+          [
+            12,
+            16,
+            28,
+            39,
+            42,
+            45
+          ],
+          [
+            8,
+            21,
+            30,
+            31,
+            34,
+            44
+          ],
+          [
+            11,
+            18,
+            20,
+            22,
+            25,
+            47
+          ]
+        ],
+        "actual": [
+          10,
+          25,
+          34,
+          36,
+          45,
+          46
+        ],
+        "match_counts": [
+          1,
+          1,
+          1
+        ],
+        "best_match": 1,
+        "is_m3plus": false,
+        "is_m2plus": false,
+        "num_bets": 3
+      },
+      {
+        "draw_id": "115000071",
+        "date": "2026/07/17",
+        "predicted_bets": [
+          [
+            16,
+            18,
+            19,
+            29,
+            39,
+            42
+          ],
+          [
+            1,
+            8,
+            21,
+            30,
+            31,
+            44
+          ],
+          [
+            11,
+            12,
+            20,
+            24,
+            25,
+            47
+          ]
+        ],
+        "actual": [
+          1,
+          6,
+          12,
+          14,
+          17,
+          26
+        ],
+        "match_counts": [
+          0,
+          1,
+          1
+        ],
+        "best_match": 1,
+        "is_m3plus": false,
+        "is_m2plus": false,
+        "num_bets": 3
+      },
+      {
+        "draw_id": "115000072",
+        "date": "2026/07/21",
+        "predicted_bets": [
+          [
+            18,
+            19,
+            29,
+            32,
+            39,
+            42
+          ],
+          [
+            8,
+            21,
+            30,
+            31,
+            34,
+            44
+          ],
+          [
+            11,
+            12,
+            16,
+            20,
+            25,
+            47
+          ]
+        ],
+        "actual": [
+          2,
+          8,
+          15,
+          26,
+          35,
+          46
+        ],
+        "match_counts": [
+          0,
+          1,
+          0
+        ],
+        "best_match": 1,
+        "is_m3plus": false,
+        "is_m2plus": false,
+        "num_bets": 3
+      },
+      {
+        "draw_id": "115000073",
+        "date": "2026/07/24",
+        "predicted_bets": [
+          [
+            10,
+            18,
+            29,
+            32,
+            45,
+            47
+          ],
+          [
+            3,
+            21,
+            30,
+            31,
+            37,
+            46
+          ],
+          [
+            11,
+            12,
+            16,
+            20,
+            25,
+            39
+          ]
+        ],
+        "actual": [
+          3,
+          15,
+          27,
+          34,
+          35,
+          44
+        ],
+        "match_counts": [
+          0,
+          1,
+          0
+        ],
+        "best_match": 1,
+        "is_m3plus": false,
+        "is_m2plus": false,
+        "num_bets": 3
       }
     ],
     "echo_aware_3bet": [
@@ -56886,6 +59469,993 @@
         "match_counts": [
           1,
           1,
+          1
+        ],
+        "best_match": 1,
+        "is_m3plus": false,
+        "is_m2plus": false,
+        "num_bets": 3
+      },
+      {
+        "draw_id": "115000053",
+        "date": "2026/05/15",
+        "predicted_bets": [
+          [
+            6,
+            10,
+            14,
+            25,
+            26,
+            43
+          ],
+          [
+            3,
+            9,
+            30,
+            31,
+            34,
+            46
+          ],
+          [
+            1,
+            13,
+            16,
+            24,
+            32,
+            35
+          ]
+        ],
+        "actual": [
+          16,
+          29,
+          30,
+          35,
+          42,
+          43
+        ],
+        "match_counts": [
+          1,
+          1,
+          2
+        ],
+        "best_match": 2,
+        "is_m3plus": false,
+        "is_m2plus": true,
+        "num_bets": 3
+      },
+      {
+        "draw_id": "115000054",
+        "date": "2026/05/19",
+        "predicted_bets": [
+          [
+            7,
+            22,
+            27,
+            35,
+            43,
+            48
+          ],
+          [
+            3,
+            9,
+            31,
+            34,
+            44,
+            46
+          ],
+          [
+            1,
+            5,
+            24,
+            30,
+            32,
+            42
+          ]
+        ],
+        "actual": [
+          4,
+          20,
+          22,
+          26,
+          38,
+          47
+        ],
+        "match_counts": [
+          1,
+          0,
+          0
+        ],
+        "best_match": 1,
+        "is_m3plus": false,
+        "is_m2plus": false,
+        "num_bets": 3
+      },
+      {
+        "draw_id": "115000055",
+        "date": "2026/05/22",
+        "predicted_bets": [
+          [
+            4,
+            6,
+            10,
+            22,
+            43,
+            47
+          ],
+          [
+            3,
+            9,
+            31,
+            34,
+            46,
+            49
+          ],
+          [
+            5,
+            14,
+            27,
+            30,
+            37,
+            42
+          ]
+        ],
+        "actual": [
+          12,
+          13,
+          16,
+          21,
+          28,
+          48
+        ],
+        "match_counts": [
+          0,
+          0,
+          0
+        ],
+        "best_match": 0,
+        "is_m3plus": false,
+        "is_m2plus": false,
+        "num_bets": 3
+      },
+      {
+        "draw_id": "115000056",
+        "date": "2026/05/26",
+        "predicted_bets": [
+          [
+            4,
+            6,
+            16,
+            22,
+            43,
+            48
+          ],
+          [
+            3,
+            9,
+            31,
+            34,
+            46,
+            49
+          ],
+          [
+            14,
+            19,
+            27,
+            32,
+            37,
+            42
+          ]
+        ],
+        "actual": [
+          3,
+          27,
+          29,
+          37,
+          47,
+          48
+        ],
+        "match_counts": [
+          1,
+          1,
+          2
+        ],
+        "best_match": 2,
+        "is_m3plus": false,
+        "is_m2plus": true,
+        "num_bets": 3
+      },
+      {
+        "draw_id": "115000057",
+        "date": "2026/05/29",
+        "predicted_bets": [
+          [
+            4,
+            16,
+            37,
+            43,
+            47,
+            48
+          ],
+          [
+            9,
+            31,
+            34,
+            44,
+            46,
+            49
+          ],
+          [
+            3,
+            14,
+            19,
+            32,
+            38,
+            45
+          ]
+        ],
+        "actual": [
+          20,
+          26,
+          29,
+          31,
+          37,
+          49
+        ],
+        "match_counts": [
+          1,
+          2,
+          0
+        ],
+        "best_match": 2,
+        "is_m3plus": false,
+        "is_m2plus": true,
+        "num_bets": 3
+      },
+      {
+        "draw_id": "115000058",
+        "date": "2026/06/02",
+        "predicted_bets": [
+          [
+            26,
+            27,
+            29,
+            37,
+            47,
+            48
+          ],
+          [
+            3,
+            9,
+            34,
+            41,
+            44,
+            46
+          ],
+          [
+            7,
+            11,
+            14,
+            31,
+            33,
+            38
+          ]
+        ],
+        "actual": [
+          8,
+          9,
+          16,
+          20,
+          37,
+          49
+        ],
+        "match_counts": [
+          1,
+          1,
+          0
+        ],
+        "best_match": 1,
+        "is_m3plus": false,
+        "is_m2plus": false,
+        "num_bets": 3
+      },
+      {
+        "draw_id": "115000059",
+        "date": "2026/06/05",
+        "predicted_bets": [
+          [
+            16,
+            20,
+            26,
+            29,
+            37,
+            49
+          ],
+          [
+            2,
+            31,
+            34,
+            41,
+            44,
+            46
+          ],
+          [
+            7,
+            9,
+            17,
+            23,
+            36,
+            38
+          ]
+        ],
+        "actual": [
+          12,
+          14,
+          25,
+          30,
+          32,
+          44
+        ],
+        "match_counts": [
+          0,
+          1,
+          0
+        ],
+        "best_match": 1,
+        "is_m3plus": false,
+        "is_m2plus": false,
+        "num_bets": 3
+      },
+      {
+        "draw_id": "115000060",
+        "date": "2026/06/09",
+        "predicted_bets": [
+          [
+            12,
+            16,
+            20,
+            25,
+            26,
+            37
+          ],
+          [
+            2,
+            15,
+            34,
+            41,
+            42,
+            46
+          ],
+          [
+            7,
+            8,
+            17,
+            21,
+            35,
+            44
+          ]
+        ],
+        "actual": [
+          13,
+          18,
+          25,
+          39,
+          40,
+          46
+        ],
+        "match_counts": [
+          1,
+          1,
+          0
+        ],
+        "best_match": 1,
+        "is_m3plus": false,
+        "is_m2plus": false,
+        "num_bets": 3
+      },
+      {
+        "draw_id": "115000061",
+        "date": "2026/06/12",
+        "predicted_bets": [
+          [
+            12,
+            16,
+            18,
+            25,
+            37,
+            40
+          ],
+          [
+            2,
+            5,
+            15,
+            34,
+            41,
+            42
+          ],
+          [
+            7,
+            8,
+            17,
+            21,
+            30,
+            46
+          ]
+        ],
+        "actual": [
+          1,
+          6,
+          16,
+          20,
+          34,
+          49
+        ],
+        "match_counts": [
+          1,
+          1,
+          0
+        ],
+        "best_match": 1,
+        "is_m3plus": false,
+        "is_m2plus": false,
+        "num_bets": 3
+      },
+      {
+        "draw_id": "115000062",
+        "date": "2026/06/16",
+        "predicted_bets": [
+          [
+            6,
+            16,
+            20,
+            25,
+            37,
+            49
+          ],
+          [
+            2,
+            5,
+            8,
+            9,
+            31,
+            41
+          ],
+          [
+            7,
+            17,
+            21,
+            29,
+            30,
+            34
+          ]
+        ],
+        "actual": [
+          1,
+          2,
+          9,
+          11,
+          28,
+          36
+        ],
+        "match_counts": [
+          0,
+          2,
+          0
+        ],
+        "best_match": 2,
+        "is_m3plus": false,
+        "is_m2plus": true,
+        "num_bets": 3
+      },
+      {
+        "draw_id": "115000063",
+        "date": "2026/06/19",
+        "predicted_bets": [
+          [
+            6,
+            16,
+            20,
+            25,
+            28,
+            37
+          ],
+          [
+            5,
+            15,
+            24,
+            33,
+            41,
+            42
+          ],
+          [
+            2,
+            7,
+            17,
+            30,
+            34,
+            35
+          ]
+        ],
+        "actual": [
+          4,
+          12,
+          28,
+          29,
+          35,
+          48
+        ],
+        "match_counts": [
+          1,
+          0,
+          1
+        ],
+        "best_match": 1,
+        "is_m3plus": false,
+        "is_m2plus": false,
+        "num_bets": 3
+      },
+      {
+        "draw_id": "115000064",
+        "date": "2026/06/23",
+        "predicted_bets": [
+          [
+            6,
+            12,
+            16,
+            20,
+            28,
+            48
+          ],
+          [
+            5,
+            15,
+            24,
+            33,
+            41,
+            42
+          ],
+          [
+            2,
+            7,
+            10,
+            27,
+            32,
+            43
+          ]
+        ],
+        "actual": [
+          12,
+          18,
+          29,
+          33,
+          34,
+          39
+        ],
+        "match_counts": [
+          1,
+          1,
+          0
+        ],
+        "best_match": 1,
+        "is_m3plus": false,
+        "is_m2plus": false,
+        "num_bets": 3
+      },
+      {
+        "draw_id": "115000065",
+        "date": "2026/06/26",
+        "predicted_bets": [
+          [
+            4,
+            12,
+            28,
+            29,
+            35,
+            48
+          ],
+          [
+            3,
+            5,
+            15,
+            24,
+            41,
+            42
+          ],
+          [
+            10,
+            13,
+            27,
+            32,
+            43,
+            46
+          ]
+        ],
+        "actual": [
+          11,
+          19,
+          23,
+          24,
+          29,
+          41
+        ],
+        "match_counts": [
+          1,
+          2,
+          0
+        ],
+        "best_match": 2,
+        "is_m3plus": false,
+        "is_m2plus": true,
+        "num_bets": 3
+      },
+      {
+        "draw_id": "115000066",
+        "date": "2026/06/30",
+        "predicted_bets": [
+          [
+            12,
+            16,
+            18,
+            28,
+            29,
+            48
+          ],
+          [
+            3,
+            5,
+            15,
+            38,
+            42,
+            45
+          ],
+          [
+            14,
+            22,
+            27,
+            32,
+            41,
+            43
+          ]
+        ],
+        "actual": [
+          4,
+          10,
+          16,
+          29,
+          36,
+          45
+        ],
+        "match_counts": [
+          2,
+          1,
+          0
+        ],
+        "best_match": 2,
+        "is_m3plus": false,
+        "is_m2plus": true,
+        "num_bets": 3
+      },
+      {
+        "draw_id": "115000067",
+        "date": "2026/07/03",
+        "predicted_bets": [
+          [
+            4,
+            12,
+            16,
+            28,
+            29,
+            48
+          ],
+          [
+            3,
+            5,
+            15,
+            21,
+            38,
+            42
+          ],
+          [
+            13,
+            22,
+            27,
+            34,
+            35,
+            41
+          ]
+        ],
+        "actual": [
+          11,
+          16,
+          19,
+          23,
+          39,
+          47
+        ],
+        "match_counts": [
+          1,
+          0,
+          0
+        ],
+        "best_match": 1,
+        "is_m3plus": false,
+        "is_m2plus": false,
+        "num_bets": 3
+      },
+      {
+        "draw_id": "115000068",
+        "date": "2026/07/07",
+        "predicted_bets": [
+          [
+            11,
+            16,
+            19,
+            23,
+            24,
+            29
+          ],
+          [
+            3,
+            5,
+            15,
+            21,
+            41,
+            42
+          ],
+          [
+            13,
+            22,
+            26,
+            27,
+            34,
+            43
+          ]
+        ],
+        "actual": [
+          8,
+          13,
+          15,
+          18,
+          19,
+          42
+        ],
+        "match_counts": [
+          1,
+          2,
+          1
+        ],
+        "best_match": 2,
+        "is_m3plus": false,
+        "is_m2plus": true,
+        "num_bets": 3
+      },
+      {
+        "draw_id": "115000069",
+        "date": "2026/07/10",
+        "predicted_bets": [
+          [
+            12,
+            16,
+            18,
+            19,
+            29,
+            39
+          ],
+          [
+            3,
+            5,
+            7,
+            21,
+            31,
+            38
+          ],
+          [
+            15,
+            22,
+            24,
+            26,
+            33,
+            43
+          ]
+        ],
+        "actual": [
+          3,
+          4,
+          15,
+          18,
+          29,
+          49
+        ],
+        "match_counts": [
+          2,
+          1,
+          1
+        ],
+        "best_match": 2,
+        "is_m3plus": false,
+        "is_m2plus": true,
+        "num_bets": 3
+      },
+      {
+        "draw_id": "115000070",
+        "date": "2026/07/14",
+        "predicted_bets": [
+          [
+            4,
+            13,
+            16,
+            18,
+            19,
+            29
+          ],
+          [
+            5,
+            7,
+            8,
+            21,
+            38,
+            42
+          ],
+          [
+            10,
+            15,
+            33,
+            34,
+            36,
+            45
+          ]
+        ],
+        "actual": [
+          10,
+          25,
+          34,
+          36,
+          45,
+          46
+        ],
+        "match_counts": [
+          0,
+          0,
+          4
+        ],
+        "best_match": 4,
+        "is_m3plus": true,
+        "is_m2plus": true,
+        "num_bets": 3
+      },
+      {
+        "draw_id": "115000071",
+        "date": "2026/07/17",
+        "predicted_bets": [
+          [
+            4,
+            10,
+            16,
+            18,
+            29,
+            36
+          ],
+          [
+            5,
+            7,
+            17,
+            21,
+            31,
+            38
+          ],
+          [
+            3,
+            6,
+            8,
+            20,
+            42,
+            45
+          ]
+        ],
+        "actual": [
+          1,
+          6,
+          12,
+          14,
+          17,
+          26
+        ],
+        "match_counts": [
+          0,
+          1,
+          1
+        ],
+        "best_match": 1,
+        "is_m3plus": false,
+        "is_m2plus": false,
+        "num_bets": 3
+      },
+      {
+        "draw_id": "115000072",
+        "date": "2026/07/21",
+        "predicted_bets": [
+          [
+            6,
+            12,
+            16,
+            18,
+            29,
+            49
+          ],
+          [
+            5,
+            7,
+            21,
+            31,
+            38,
+            44
+          ],
+          [
+            3,
+            8,
+            20,
+            37,
+            42,
+            46
+          ]
+        ],
+        "actual": [
+          2,
+          8,
+          15,
+          26,
+          35,
+          46
+        ],
+        "match_counts": [
+          0,
+          0,
+          2
+        ],
+        "best_match": 2,
+        "is_m3plus": false,
+        "is_m2plus": true,
+        "num_bets": 3
+      },
+      {
+        "draw_id": "115000073",
+        "date": "2026/07/24",
+        "predicted_bets": [
+          [
+            12,
+            13,
+            15,
+            18,
+            19,
+            29
+          ],
+          [
+            5,
+            7,
+            21,
+            31,
+            38,
+            42
+          ],
+          [
+            3,
+            8,
+            20,
+            28,
+            37,
+            48
+          ]
+        ],
+        "actual": [
+          3,
+          15,
+          27,
+          34,
+          35,
+          44
+        ],
+        "match_counts": [
+          1,
+          0,
           1
         ],
         "best_match": 1,
@@ -75012,6 +78582,1182 @@
           0,
           0,
           0
+        ],
+        "best_match": 1,
+        "is_m3plus": false,
+        "is_m2plus": false,
+        "num_bets": 4
+      },
+      {
+        "draw_id": "115000053",
+        "date": "2026/05/15",
+        "predicted_bets": [
+          [
+            7,
+            14,
+            20,
+            21,
+            47,
+            48
+          ],
+          [
+            8,
+            13,
+            30,
+            31,
+            42,
+            44
+          ],
+          [
+            6,
+            22,
+            24,
+            25,
+            39,
+            41
+          ],
+          [
+            15,
+            16,
+            17,
+            27,
+            37,
+            45
+          ]
+        ],
+        "actual": [
+          16,
+          29,
+          30,
+          35,
+          42,
+          43
+        ],
+        "match_counts": [
+          0,
+          2,
+          0,
+          1
+        ],
+        "best_match": 2,
+        "is_m3plus": false,
+        "is_m2plus": true,
+        "num_bets": 4
+      },
+      {
+        "draw_id": "115000054",
+        "date": "2026/05/19",
+        "predicted_bets": [
+          [
+            1,
+            14,
+            17,
+            21,
+            22,
+            33
+          ],
+          [
+            3,
+            8,
+            29,
+            30,
+            31,
+            34
+          ],
+          [
+            16,
+            20,
+            25,
+            39,
+            41,
+            47
+          ],
+          [
+            4,
+            5,
+            10,
+            11,
+            12,
+            40
+          ]
+        ],
+        "actual": [
+          4,
+          20,
+          22,
+          26,
+          38,
+          47
+        ],
+        "match_counts": [
+          1,
+          0,
+          2,
+          1
+        ],
+        "best_match": 2,
+        "is_m3plus": false,
+        "is_m2plus": true,
+        "num_bets": 4
+      },
+      {
+        "draw_id": "115000055",
+        "date": "2026/05/22",
+        "predicted_bets": [
+          [
+            1,
+            10,
+            17,
+            23,
+            37,
+            39
+          ],
+          [
+            8,
+            13,
+            29,
+            30,
+            34,
+            38
+          ],
+          [
+            14,
+            20,
+            22,
+            25,
+            41,
+            47
+          ],
+          [
+            5,
+            11,
+            19,
+            40,
+            45,
+            48
+          ]
+        ],
+        "actual": [
+          12,
+          13,
+          16,
+          21,
+          28,
+          48
+        ],
+        "match_counts": [
+          0,
+          1,
+          0,
+          1
+        ],
+        "best_match": 1,
+        "is_m3plus": false,
+        "is_m2plus": false,
+        "num_bets": 4
+      },
+      {
+        "draw_id": "115000056",
+        "date": "2026/05/26",
+        "predicted_bets": [
+          [
+            6,
+            18,
+            25,
+            29,
+            39,
+            43
+          ],
+          [
+            3,
+            8,
+            30,
+            31,
+            34,
+            46
+          ],
+          [
+            14,
+            16,
+            20,
+            22,
+            41,
+            47
+          ],
+          [
+            2,
+            4,
+            10,
+            26,
+            40,
+            45
+          ]
+        ],
+        "actual": [
+          3,
+          27,
+          29,
+          37,
+          47,
+          48
+        ],
+        "match_counts": [
+          1,
+          1,
+          1,
+          0
+        ],
+        "best_match": 1,
+        "is_m3plus": false,
+        "is_m2plus": false,
+        "num_bets": 4
+      },
+      {
+        "draw_id": "115000057",
+        "date": "2026/05/29",
+        "predicted_bets": [
+          [
+            6,
+            19,
+            26,
+            30,
+            42,
+            43
+          ],
+          [
+            3,
+            9,
+            21,
+            31,
+            34,
+            38
+          ],
+          [
+            20,
+            22,
+            25,
+            39,
+            41,
+            47
+          ],
+          [
+            4,
+            5,
+            10,
+            12,
+            45,
+            48
+          ]
+        ],
+        "actual": [
+          20,
+          26,
+          29,
+          31,
+          37,
+          49
+        ],
+        "match_counts": [
+          1,
+          1,
+          1,
+          0
+        ],
+        "best_match": 1,
+        "is_m3plus": false,
+        "is_m2plus": false,
+        "num_bets": 4
+      },
+      {
+        "draw_id": "115000058",
+        "date": "2026/06/02",
+        "predicted_bets": [
+          [
+            6,
+            12,
+            19,
+            22,
+            30,
+            42
+          ],
+          [
+            3,
+            8,
+            9,
+            34,
+            38,
+            44
+          ],
+          [
+            16,
+            20,
+            25,
+            39,
+            41,
+            47
+          ],
+          [
+            4,
+            5,
+            7,
+            13,
+            40,
+            48
+          ]
+        ],
+        "actual": [
+          8,
+          9,
+          16,
+          20,
+          37,
+          49
+        ],
+        "match_counts": [
+          0,
+          2,
+          2,
+          0
+        ],
+        "best_match": 2,
+        "is_m3plus": false,
+        "is_m2plus": true,
+        "num_bets": 4
+      },
+      {
+        "draw_id": "115000059",
+        "date": "2026/06/05",
+        "predicted_bets": [
+          [
+            12,
+            22,
+            29,
+            30,
+            31,
+            48
+          ],
+          [
+            2,
+            9,
+            21,
+            34,
+            42,
+            44
+          ],
+          [
+            16,
+            20,
+            25,
+            39,
+            41,
+            47
+          ],
+          [
+            4,
+            7,
+            10,
+            37,
+            40,
+            49
+          ]
+        ],
+        "actual": [
+          12,
+          14,
+          25,
+          30,
+          32,
+          44
+        ],
+        "match_counts": [
+          2,
+          1,
+          1,
+          0
+        ],
+        "best_match": 2,
+        "is_m3plus": false,
+        "is_m2plus": true,
+        "num_bets": 4
+      },
+      {
+        "draw_id": "115000060",
+        "date": "2026/06/09",
+        "predicted_bets": [
+          [
+            22,
+            26,
+            28,
+            29,
+            31,
+            48
+          ],
+          [
+            1,
+            3,
+            30,
+            34,
+            38,
+            46
+          ],
+          [
+            16,
+            20,
+            25,
+            39,
+            41,
+            47
+          ],
+          [
+            4,
+            6,
+            7,
+            27,
+            35,
+            43
+          ]
+        ],
+        "actual": [
+          13,
+          18,
+          25,
+          39,
+          40,
+          46
+        ],
+        "match_counts": [
+          0,
+          1,
+          2,
+          0
+        ],
+        "best_match": 2,
+        "is_m3plus": false,
+        "is_m2plus": true,
+        "num_bets": 4
+      },
+      {
+        "draw_id": "115000061",
+        "date": "2026/06/12",
+        "predicted_bets": [
+          [
+            9,
+            26,
+            28,
+            29,
+            31,
+            48
+          ],
+          [
+            1,
+            8,
+            21,
+            30,
+            34,
+            42
+          ],
+          [
+            16,
+            20,
+            22,
+            25,
+            39,
+            47
+          ],
+          [
+            5,
+            6,
+            12,
+            18,
+            19,
+            27
+          ]
+        ],
+        "actual": [
+          1,
+          6,
+          16,
+          20,
+          34,
+          49
+        ],
+        "match_counts": [
+          0,
+          2,
+          2,
+          1
+        ],
+        "best_match": 2,
+        "is_m3plus": false,
+        "is_m2plus": true,
+        "num_bets": 4
+      },
+      {
+        "draw_id": "115000062",
+        "date": "2026/06/16",
+        "predicted_bets": [
+          [
+            9,
+            28,
+            37,
+            38,
+            44,
+            47
+          ],
+          [
+            1,
+            21,
+            30,
+            34,
+            36,
+            46
+          ],
+          [
+            16,
+            18,
+            20,
+            22,
+            25,
+            39
+          ],
+          [
+            4,
+            7,
+            10,
+            12,
+            14,
+            15
+          ]
+        ],
+        "actual": [
+          1,
+          2,
+          9,
+          11,
+          28,
+          36
+        ],
+        "match_counts": [
+          2,
+          2,
+          0,
+          0
+        ],
+        "best_match": 2,
+        "is_m3plus": false,
+        "is_m2plus": true,
+        "num_bets": 4
+      },
+      {
+        "draw_id": "115000063",
+        "date": "2026/06/19",
+        "predicted_bets": [
+          [
+            8,
+            12,
+            37,
+            38,
+            44,
+            47
+          ],
+          [
+            2,
+            29,
+            30,
+            31,
+            34,
+            42
+          ],
+          [
+            16,
+            18,
+            20,
+            22,
+            25,
+            39
+          ],
+          [
+            1,
+            5,
+            6,
+            10,
+            40,
+            48
+          ]
+        ],
+        "actual": [
+          4,
+          12,
+          28,
+          29,
+          35,
+          48
+        ],
+        "match_counts": [
+          1,
+          1,
+          0,
+          1
+        ],
+        "best_match": 1,
+        "is_m3plus": false,
+        "is_m2plus": false,
+        "num_bets": 4
+      },
+      {
+        "draw_id": "115000064",
+        "date": "2026/06/23",
+        "predicted_bets": [
+          [
+            8,
+            18,
+            30,
+            39,
+            40,
+            46
+          ],
+          [
+            3,
+            19,
+            21,
+            31,
+            34,
+            44
+          ],
+          [
+            11,
+            16,
+            20,
+            22,
+            25,
+            47
+          ],
+          [
+            4,
+            26,
+            28,
+            29,
+            37,
+            48
+          ]
+        ],
+        "actual": [
+          12,
+          18,
+          29,
+          33,
+          34,
+          39
+        ],
+        "match_counts": [
+          2,
+          1,
+          0,
+          1
+        ],
+        "best_match": 2,
+        "is_m3plus": false,
+        "is_m2plus": true,
+        "num_bets": 4
+      },
+      {
+        "draw_id": "115000065",
+        "date": "2026/06/26",
+        "predicted_bets": [
+          [
+            6,
+            14,
+            16,
+            21,
+            25,
+            27
+          ],
+          [
+            3,
+            8,
+            30,
+            31,
+            34,
+            46
+          ],
+          [
+            11,
+            18,
+            20,
+            22,
+            39,
+            47
+          ],
+          [
+            1,
+            10,
+            12,
+            26,
+            29,
+            36
+          ]
+        ],
+        "actual": [
+          11,
+          19,
+          23,
+          24,
+          29,
+          41
+        ],
+        "match_counts": [
+          0,
+          0,
+          1,
+          1
+        ],
+        "best_match": 1,
+        "is_m3plus": false,
+        "is_m2plus": false,
+        "num_bets": 4
+      },
+      {
+        "draw_id": "115000066",
+        "date": "2026/06/30",
+        "predicted_bets": [
+          [
+            1,
+            2,
+            6,
+            9,
+            20,
+            21
+          ],
+          [
+            5,
+            8,
+            30,
+            31,
+            34,
+            44
+          ],
+          [
+            11,
+            16,
+            18,
+            22,
+            25,
+            39
+          ],
+          [
+            4,
+            29,
+            40,
+            45,
+            47,
+            48
+          ]
+        ],
+        "actual": [
+          4,
+          10,
+          16,
+          29,
+          36,
+          45
+        ],
+        "match_counts": [
+          0,
+          0,
+          1,
+          3
+        ],
+        "best_match": 3,
+        "is_m3plus": true,
+        "is_m2plus": true,
+        "num_bets": 4
+      },
+      {
+        "draw_id": "115000067",
+        "date": "2026/07/03",
+        "predicted_bets": [
+          [
+            2,
+            13,
+            18,
+            20,
+            48,
+            49
+          ],
+          [
+            3,
+            8,
+            30,
+            31,
+            34,
+            46
+          ],
+          [
+            11,
+            16,
+            22,
+            24,
+            25,
+            39
+          ],
+          [
+            4,
+            6,
+            12,
+            29,
+            40,
+            47
+          ]
+        ],
+        "actual": [
+          11,
+          16,
+          19,
+          23,
+          39,
+          47
+        ],
+        "match_counts": [
+          0,
+          0,
+          3,
+          1
+        ],
+        "best_match": 3,
+        "is_m3plus": true,
+        "is_m2plus": true,
+        "num_bets": 4
+      },
+      {
+        "draw_id": "115000068",
+        "date": "2026/07/07",
+        "predicted_bets": [
+          [
+            12,
+            13,
+            18,
+            33,
+            48,
+            49
+          ],
+          [
+            3,
+            8,
+            30,
+            31,
+            34,
+            46
+          ],
+          [
+            11,
+            16,
+            20,
+            22,
+            25,
+            39
+          ],
+          [
+            4,
+            6,
+            10,
+            14,
+            29,
+            36
+          ]
+        ],
+        "actual": [
+          8,
+          13,
+          15,
+          18,
+          19,
+          42
+        ],
+        "match_counts": [
+          2,
+          1,
+          0,
+          0
+        ],
+        "best_match": 2,
+        "is_m3plus": false,
+        "is_m2plus": true,
+        "num_bets": 4
+      },
+      {
+        "draw_id": "115000069",
+        "date": "2026/07/10",
+        "predicted_bets": [
+          [
+            12,
+            28,
+            29,
+            33,
+            45,
+            49
+          ],
+          [
+            8,
+            21,
+            30,
+            31,
+            34,
+            44
+          ],
+          [
+            11,
+            16,
+            18,
+            20,
+            25,
+            39
+          ],
+          [
+            1,
+            4,
+            6,
+            10,
+            19,
+            47
+          ]
+        ],
+        "actual": [
+          3,
+          4,
+          15,
+          18,
+          29,
+          49
+        ],
+        "match_counts": [
+          2,
+          0,
+          1,
+          1
+        ],
+        "best_match": 2,
+        "is_m3plus": false,
+        "is_m2plus": true,
+        "num_bets": 4
+      },
+      {
+        "draw_id": "115000070",
+        "date": "2026/07/14",
+        "predicted_bets": [
+          [
+            12,
+            16,
+            28,
+            39,
+            42,
+            45
+          ],
+          [
+            8,
+            21,
+            30,
+            31,
+            34,
+            44
+          ],
+          [
+            11,
+            18,
+            20,
+            22,
+            25,
+            47
+          ],
+          [
+            4,
+            10,
+            19,
+            23,
+            29,
+            49
+          ]
+        ],
+        "actual": [
+          10,
+          25,
+          34,
+          36,
+          45,
+          46
+        ],
+        "match_counts": [
+          1,
+          1,
+          1,
+          1
+        ],
+        "best_match": 1,
+        "is_m3plus": false,
+        "is_m2plus": false,
+        "num_bets": 4
+      },
+      {
+        "draw_id": "115000071",
+        "date": "2026/07/17",
+        "predicted_bets": [
+          [
+            16,
+            18,
+            19,
+            29,
+            39,
+            42
+          ],
+          [
+            1,
+            8,
+            21,
+            30,
+            31,
+            44
+          ],
+          [
+            11,
+            12,
+            20,
+            24,
+            25,
+            47
+          ],
+          [
+            2,
+            6,
+            23,
+            35,
+            36,
+            43
+          ]
+        ],
+        "actual": [
+          1,
+          6,
+          12,
+          14,
+          17,
+          26
+        ],
+        "match_counts": [
+          0,
+          1,
+          1,
+          1
+        ],
+        "best_match": 1,
+        "is_m3plus": false,
+        "is_m2plus": false,
+        "num_bets": 4
+      },
+      {
+        "draw_id": "115000072",
+        "date": "2026/07/21",
+        "predicted_bets": [
+          [
+            18,
+            19,
+            29,
+            32,
+            39,
+            42
+          ],
+          [
+            8,
+            21,
+            30,
+            31,
+            34,
+            44
+          ],
+          [
+            11,
+            12,
+            16,
+            20,
+            25,
+            47
+          ],
+          [
+            4,
+            7,
+            10,
+            35,
+            43,
+            48
+          ]
+        ],
+        "actual": [
+          2,
+          8,
+          15,
+          26,
+          35,
+          46
+        ],
+        "match_counts": [
+          0,
+          1,
+          0,
+          1
+        ],
+        "best_match": 1,
+        "is_m3plus": false,
+        "is_m2plus": false,
+        "num_bets": 4
+      },
+      {
+        "draw_id": "115000073",
+        "date": "2026/07/24",
+        "predicted_bets": [
+          [
+            10,
+            18,
+            29,
+            32,
+            45,
+            47
+          ],
+          [
+            3,
+            21,
+            30,
+            31,
+            37,
+            46
+          ],
+          [
+            11,
+            12,
+            16,
+            20,
+            25,
+            39
+          ],
+          [
+            4,
+            8,
+            15,
+            22,
+            26,
+            49
+          ]
+        ],
+        "actual": [
+          3,
+          15,
+          27,
+          34,
+          35,
+          44
+        ],
+        "match_counts": [
+          0,
+          1,
+          0,
+          1
         ],
         "best_match": 1,
         "is_m3plus": false,
@@ -96098,6 +100844,1371 @@
           0,
           0,
           1
+        ],
+        "best_match": 1,
+        "is_m3plus": false,
+        "is_m2plus": false,
+        "num_bets": 5
+      },
+      {
+        "draw_id": "115000053",
+        "date": "2026/05/15",
+        "predicted_bets": [
+          [
+            7,
+            14,
+            20,
+            21,
+            47,
+            48
+          ],
+          [
+            8,
+            13,
+            30,
+            31,
+            42,
+            44
+          ],
+          [
+            6,
+            22,
+            24,
+            25,
+            39,
+            41
+          ],
+          [
+            15,
+            16,
+            17,
+            27,
+            37,
+            45
+          ],
+          [
+            5,
+            11,
+            18,
+            19,
+            33,
+            40
+          ]
+        ],
+        "actual": [
+          16,
+          29,
+          30,
+          35,
+          42,
+          43
+        ],
+        "match_counts": [
+          0,
+          2,
+          0,
+          1,
+          0
+        ],
+        "best_match": 2,
+        "is_m3plus": false,
+        "is_m2plus": true,
+        "num_bets": 5
+      },
+      {
+        "draw_id": "115000054",
+        "date": "2026/05/19",
+        "predicted_bets": [
+          [
+            1,
+            14,
+            17,
+            21,
+            22,
+            33
+          ],
+          [
+            3,
+            8,
+            29,
+            30,
+            31,
+            34
+          ],
+          [
+            16,
+            20,
+            25,
+            39,
+            41,
+            47
+          ],
+          [
+            4,
+            5,
+            10,
+            11,
+            12,
+            40
+          ],
+          [
+            6,
+            7,
+            15,
+            18,
+            24,
+            45
+          ]
+        ],
+        "actual": [
+          4,
+          20,
+          22,
+          26,
+          38,
+          47
+        ],
+        "match_counts": [
+          1,
+          0,
+          2,
+          1,
+          0
+        ],
+        "best_match": 2,
+        "is_m3plus": false,
+        "is_m2plus": true,
+        "num_bets": 5
+      },
+      {
+        "draw_id": "115000055",
+        "date": "2026/05/22",
+        "predicted_bets": [
+          [
+            1,
+            10,
+            17,
+            23,
+            37,
+            39
+          ],
+          [
+            8,
+            13,
+            29,
+            30,
+            34,
+            38
+          ],
+          [
+            14,
+            20,
+            22,
+            25,
+            41,
+            47
+          ],
+          [
+            5,
+            11,
+            19,
+            40,
+            45,
+            48
+          ],
+          [
+            6,
+            7,
+            16,
+            18,
+            24,
+            33
+          ]
+        ],
+        "actual": [
+          12,
+          13,
+          16,
+          21,
+          28,
+          48
+        ],
+        "match_counts": [
+          0,
+          1,
+          0,
+          1,
+          1
+        ],
+        "best_match": 1,
+        "is_m3plus": false,
+        "is_m2plus": false,
+        "num_bets": 5
+      },
+      {
+        "draw_id": "115000056",
+        "date": "2026/05/26",
+        "predicted_bets": [
+          [
+            6,
+            18,
+            25,
+            29,
+            39,
+            43
+          ],
+          [
+            3,
+            8,
+            30,
+            31,
+            34,
+            46
+          ],
+          [
+            14,
+            16,
+            20,
+            22,
+            41,
+            47
+          ],
+          [
+            2,
+            4,
+            10,
+            26,
+            40,
+            45
+          ],
+          [
+            5,
+            7,
+            11,
+            17,
+            19,
+            24
+          ]
+        ],
+        "actual": [
+          3,
+          27,
+          29,
+          37,
+          47,
+          48
+        ],
+        "match_counts": [
+          1,
+          1,
+          1,
+          0,
+          0
+        ],
+        "best_match": 1,
+        "is_m3plus": false,
+        "is_m2plus": false,
+        "num_bets": 5
+      },
+      {
+        "draw_id": "115000057",
+        "date": "2026/05/29",
+        "predicted_bets": [
+          [
+            6,
+            19,
+            26,
+            30,
+            42,
+            43
+          ],
+          [
+            3,
+            9,
+            21,
+            31,
+            34,
+            38
+          ],
+          [
+            20,
+            22,
+            25,
+            39,
+            41,
+            47
+          ],
+          [
+            4,
+            5,
+            10,
+            12,
+            45,
+            48
+          ],
+          [
+            7,
+            11,
+            14,
+            16,
+            18,
+            24
+          ]
+        ],
+        "actual": [
+          20,
+          26,
+          29,
+          31,
+          37,
+          49
+        ],
+        "match_counts": [
+          1,
+          1,
+          1,
+          0,
+          0
+        ],
+        "best_match": 1,
+        "is_m3plus": false,
+        "is_m2plus": false,
+        "num_bets": 5
+      },
+      {
+        "draw_id": "115000058",
+        "date": "2026/06/02",
+        "predicted_bets": [
+          [
+            6,
+            12,
+            19,
+            22,
+            30,
+            42
+          ],
+          [
+            3,
+            8,
+            9,
+            34,
+            38,
+            44
+          ],
+          [
+            16,
+            20,
+            25,
+            39,
+            41,
+            47
+          ],
+          [
+            4,
+            5,
+            7,
+            13,
+            40,
+            48
+          ],
+          [
+            11,
+            14,
+            15,
+            18,
+            24,
+            45
+          ]
+        ],
+        "actual": [
+          8,
+          9,
+          16,
+          20,
+          37,
+          49
+        ],
+        "match_counts": [
+          0,
+          2,
+          2,
+          0,
+          0
+        ],
+        "best_match": 2,
+        "is_m3plus": false,
+        "is_m2plus": true,
+        "num_bets": 5
+      },
+      {
+        "draw_id": "115000059",
+        "date": "2026/06/05",
+        "predicted_bets": [
+          [
+            12,
+            22,
+            29,
+            30,
+            31,
+            48
+          ],
+          [
+            2,
+            9,
+            21,
+            34,
+            42,
+            44
+          ],
+          [
+            16,
+            20,
+            25,
+            39,
+            41,
+            47
+          ],
+          [
+            4,
+            7,
+            10,
+            37,
+            40,
+            49
+          ],
+          [
+            6,
+            11,
+            14,
+            18,
+            24,
+            45
+          ]
+        ],
+        "actual": [
+          12,
+          14,
+          25,
+          30,
+          32,
+          44
+        ],
+        "match_counts": [
+          2,
+          1,
+          1,
+          0,
+          1
+        ],
+        "best_match": 2,
+        "is_m3plus": false,
+        "is_m2plus": true,
+        "num_bets": 5
+      },
+      {
+        "draw_id": "115000060",
+        "date": "2026/06/09",
+        "predicted_bets": [
+          [
+            22,
+            26,
+            28,
+            29,
+            31,
+            48
+          ],
+          [
+            1,
+            3,
+            30,
+            34,
+            38,
+            46
+          ],
+          [
+            16,
+            20,
+            25,
+            39,
+            41,
+            47
+          ],
+          [
+            4,
+            6,
+            7,
+            27,
+            35,
+            43
+          ],
+          [
+            11,
+            12,
+            14,
+            18,
+            24,
+            40
+          ]
+        ],
+        "actual": [
+          13,
+          18,
+          25,
+          39,
+          40,
+          46
+        ],
+        "match_counts": [
+          0,
+          1,
+          2,
+          0,
+          2
+        ],
+        "best_match": 2,
+        "is_m3plus": false,
+        "is_m2plus": true,
+        "num_bets": 5
+      },
+      {
+        "draw_id": "115000061",
+        "date": "2026/06/12",
+        "predicted_bets": [
+          [
+            9,
+            26,
+            28,
+            29,
+            31,
+            48
+          ],
+          [
+            1,
+            8,
+            21,
+            30,
+            34,
+            42
+          ],
+          [
+            16,
+            20,
+            22,
+            25,
+            39,
+            47
+          ],
+          [
+            5,
+            6,
+            12,
+            18,
+            19,
+            27
+          ],
+          [
+            7,
+            11,
+            14,
+            24,
+            40,
+            41
+          ]
+        ],
+        "actual": [
+          1,
+          6,
+          16,
+          20,
+          34,
+          49
+        ],
+        "match_counts": [
+          0,
+          2,
+          2,
+          1,
+          0
+        ],
+        "best_match": 2,
+        "is_m3plus": false,
+        "is_m2plus": true,
+        "num_bets": 5
+      },
+      {
+        "draw_id": "115000062",
+        "date": "2026/06/16",
+        "predicted_bets": [
+          [
+            9,
+            28,
+            37,
+            38,
+            44,
+            47
+          ],
+          [
+            1,
+            21,
+            30,
+            34,
+            36,
+            46
+          ],
+          [
+            16,
+            18,
+            20,
+            22,
+            25,
+            39
+          ],
+          [
+            4,
+            7,
+            10,
+            12,
+            14,
+            15
+          ],
+          [
+            6,
+            11,
+            17,
+            24,
+            41,
+            48
+          ]
+        ],
+        "actual": [
+          1,
+          2,
+          9,
+          11,
+          28,
+          36
+        ],
+        "match_counts": [
+          2,
+          2,
+          0,
+          0,
+          1
+        ],
+        "best_match": 2,
+        "is_m3plus": false,
+        "is_m2plus": true,
+        "num_bets": 5
+      },
+      {
+        "draw_id": "115000063",
+        "date": "2026/06/19",
+        "predicted_bets": [
+          [
+            8,
+            12,
+            37,
+            38,
+            44,
+            47
+          ],
+          [
+            2,
+            29,
+            30,
+            31,
+            34,
+            42
+          ],
+          [
+            16,
+            18,
+            20,
+            22,
+            25,
+            39
+          ],
+          [
+            1,
+            5,
+            6,
+            10,
+            40,
+            48
+          ],
+          [
+            7,
+            11,
+            14,
+            15,
+            24,
+            41
+          ]
+        ],
+        "actual": [
+          4,
+          12,
+          28,
+          29,
+          35,
+          48
+        ],
+        "match_counts": [
+          1,
+          1,
+          0,
+          1,
+          0
+        ],
+        "best_match": 1,
+        "is_m3plus": false,
+        "is_m2plus": false,
+        "num_bets": 5
+      },
+      {
+        "draw_id": "115000064",
+        "date": "2026/06/23",
+        "predicted_bets": [
+          [
+            8,
+            18,
+            30,
+            39,
+            40,
+            46
+          ],
+          [
+            3,
+            19,
+            21,
+            31,
+            34,
+            44
+          ],
+          [
+            11,
+            16,
+            20,
+            22,
+            25,
+            47
+          ],
+          [
+            4,
+            26,
+            28,
+            29,
+            37,
+            48
+          ],
+          [
+            6,
+            7,
+            12,
+            14,
+            24,
+            41
+          ]
+        ],
+        "actual": [
+          12,
+          18,
+          29,
+          33,
+          34,
+          39
+        ],
+        "match_counts": [
+          2,
+          1,
+          0,
+          1,
+          1
+        ],
+        "best_match": 2,
+        "is_m3plus": false,
+        "is_m2plus": true,
+        "num_bets": 5
+      },
+      {
+        "draw_id": "115000065",
+        "date": "2026/06/26",
+        "predicted_bets": [
+          [
+            6,
+            14,
+            16,
+            21,
+            25,
+            27
+          ],
+          [
+            3,
+            8,
+            30,
+            31,
+            34,
+            46
+          ],
+          [
+            11,
+            18,
+            20,
+            22,
+            39,
+            47
+          ],
+          [
+            1,
+            10,
+            12,
+            26,
+            29,
+            36
+          ],
+          [
+            24,
+            28,
+            33,
+            40,
+            41,
+            48
+          ]
+        ],
+        "actual": [
+          11,
+          19,
+          23,
+          24,
+          29,
+          41
+        ],
+        "match_counts": [
+          0,
+          0,
+          1,
+          1,
+          2
+        ],
+        "best_match": 2,
+        "is_m3plus": false,
+        "is_m2plus": true,
+        "num_bets": 5
+      },
+      {
+        "draw_id": "115000066",
+        "date": "2026/06/30",
+        "predicted_bets": [
+          [
+            1,
+            2,
+            6,
+            9,
+            20,
+            21
+          ],
+          [
+            5,
+            8,
+            30,
+            31,
+            34,
+            44
+          ],
+          [
+            11,
+            16,
+            18,
+            22,
+            25,
+            39
+          ],
+          [
+            4,
+            29,
+            40,
+            45,
+            47,
+            48
+          ],
+          [
+            12,
+            14,
+            24,
+            26,
+            28,
+            41
+          ]
+        ],
+        "actual": [
+          4,
+          10,
+          16,
+          29,
+          36,
+          45
+        ],
+        "match_counts": [
+          0,
+          0,
+          1,
+          3,
+          0
+        ],
+        "best_match": 3,
+        "is_m3plus": true,
+        "is_m2plus": true,
+        "num_bets": 5
+      },
+      {
+        "draw_id": "115000067",
+        "date": "2026/07/03",
+        "predicted_bets": [
+          [
+            2,
+            13,
+            18,
+            20,
+            48,
+            49
+          ],
+          [
+            3,
+            8,
+            30,
+            31,
+            34,
+            46
+          ],
+          [
+            11,
+            16,
+            22,
+            24,
+            25,
+            39
+          ],
+          [
+            4,
+            6,
+            12,
+            29,
+            40,
+            47
+          ],
+          [
+            10,
+            14,
+            26,
+            28,
+            41,
+            45
+          ]
+        ],
+        "actual": [
+          11,
+          16,
+          19,
+          23,
+          39,
+          47
+        ],
+        "match_counts": [
+          0,
+          0,
+          3,
+          1,
+          0
+        ],
+        "best_match": 3,
+        "is_m3plus": true,
+        "is_m2plus": true,
+        "num_bets": 5
+      },
+      {
+        "draw_id": "115000068",
+        "date": "2026/07/07",
+        "predicted_bets": [
+          [
+            12,
+            13,
+            18,
+            33,
+            48,
+            49
+          ],
+          [
+            3,
+            8,
+            30,
+            31,
+            34,
+            46
+          ],
+          [
+            11,
+            16,
+            20,
+            22,
+            25,
+            39
+          ],
+          [
+            4,
+            6,
+            10,
+            14,
+            29,
+            36
+          ],
+          [
+            19,
+            24,
+            26,
+            28,
+            41,
+            47
+          ]
+        ],
+        "actual": [
+          8,
+          13,
+          15,
+          18,
+          19,
+          42
+        ],
+        "match_counts": [
+          2,
+          1,
+          0,
+          0,
+          1
+        ],
+        "best_match": 2,
+        "is_m3plus": false,
+        "is_m2plus": true,
+        "num_bets": 5
+      },
+      {
+        "draw_id": "115000069",
+        "date": "2026/07/10",
+        "predicted_bets": [
+          [
+            12,
+            28,
+            29,
+            33,
+            45,
+            49
+          ],
+          [
+            8,
+            21,
+            30,
+            31,
+            34,
+            44
+          ],
+          [
+            11,
+            16,
+            18,
+            20,
+            25,
+            39
+          ],
+          [
+            1,
+            4,
+            6,
+            10,
+            19,
+            47
+          ],
+          [
+            14,
+            22,
+            24,
+            26,
+            41,
+            48
+          ]
+        ],
+        "actual": [
+          3,
+          4,
+          15,
+          18,
+          29,
+          49
+        ],
+        "match_counts": [
+          2,
+          0,
+          1,
+          1,
+          0
+        ],
+        "best_match": 2,
+        "is_m3plus": false,
+        "is_m2plus": true,
+        "num_bets": 5
+      },
+      {
+        "draw_id": "115000070",
+        "date": "2026/07/14",
+        "predicted_bets": [
+          [
+            12,
+            16,
+            28,
+            39,
+            42,
+            45
+          ],
+          [
+            8,
+            21,
+            30,
+            31,
+            34,
+            44
+          ],
+          [
+            11,
+            18,
+            20,
+            22,
+            25,
+            47
+          ],
+          [
+            4,
+            10,
+            19,
+            23,
+            29,
+            49
+          ],
+          [
+            6,
+            14,
+            15,
+            24,
+            41,
+            48
+          ]
+        ],
+        "actual": [
+          10,
+          25,
+          34,
+          36,
+          45,
+          46
+        ],
+        "match_counts": [
+          1,
+          1,
+          1,
+          1,
+          0
+        ],
+        "best_match": 1,
+        "is_m3plus": false,
+        "is_m2plus": false,
+        "num_bets": 5
+      },
+      {
+        "draw_id": "115000071",
+        "date": "2026/07/17",
+        "predicted_bets": [
+          [
+            16,
+            18,
+            19,
+            29,
+            39,
+            42
+          ],
+          [
+            1,
+            8,
+            21,
+            30,
+            31,
+            44
+          ],
+          [
+            11,
+            12,
+            20,
+            24,
+            25,
+            47
+          ],
+          [
+            2,
+            6,
+            23,
+            35,
+            36,
+            43
+          ],
+          [
+            4,
+            10,
+            22,
+            41,
+            45,
+            48
+          ]
+        ],
+        "actual": [
+          1,
+          6,
+          12,
+          14,
+          17,
+          26
+        ],
+        "match_counts": [
+          0,
+          1,
+          1,
+          1,
+          0
+        ],
+        "best_match": 1,
+        "is_m3plus": false,
+        "is_m2plus": false,
+        "num_bets": 5
+      },
+      {
+        "draw_id": "115000072",
+        "date": "2026/07/21",
+        "predicted_bets": [
+          [
+            18,
+            19,
+            29,
+            32,
+            39,
+            42
+          ],
+          [
+            8,
+            21,
+            30,
+            31,
+            34,
+            44
+          ],
+          [
+            11,
+            12,
+            16,
+            20,
+            25,
+            47
+          ],
+          [
+            4,
+            7,
+            10,
+            35,
+            43,
+            48
+          ],
+          [
+            6,
+            14,
+            15,
+            22,
+            24,
+            41
+          ]
+        ],
+        "actual": [
+          2,
+          8,
+          15,
+          26,
+          35,
+          46
+        ],
+        "match_counts": [
+          0,
+          1,
+          0,
+          1,
+          1
+        ],
+        "best_match": 1,
+        "is_m3plus": false,
+        "is_m2plus": false,
+        "num_bets": 5
+      },
+      {
+        "draw_id": "115000073",
+        "date": "2026/07/24",
+        "predicted_bets": [
+          [
+            10,
+            18,
+            29,
+            32,
+            45,
+            47
+          ],
+          [
+            3,
+            21,
+            30,
+            31,
+            37,
+            46
+          ],
+          [
+            11,
+            12,
+            16,
+            20,
+            25,
+            39
+          ],
+          [
+            4,
+            8,
+            15,
+            22,
+            26,
+            49
+          ],
+          [
+            6,
+            14,
+            24,
+            36,
+            41,
+            48
+          ]
+        ],
+        "actual": [
+          3,
+          15,
+          27,
+          34,
+          35,
+          44
+        ],
+        "match_counts": [
+          0,
+          1,
+          0,
+          1,
+          0
         ],
         "best_match": 1,
         "is_m3plus": false,

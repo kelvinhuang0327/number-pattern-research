@@ -1,0 +1,95 @@
+{
+  "generated_at": "DETERMINISTIC_PLACEHOLDER",
+  "no_db_no_adapter_no_scoring_no_deploy_statement": "No DB was opened or written; no adapters were called; no new scoring, scoring cohort, shape-only scoring, blocked-target scoring, or blended leaderboard was created; no production registry import or deploy was performed.",
+  "p377_artifact_count": 50,
+  "p377_artifact_sha256_inventory": [
+    {
+      "artifact_role": "module",
+      "path": "recovered_strategies/biglotto/no_db_command_center_regression_runner.py",
+      "row_or_object_count": "text_lines=821",
+      "sha256": "244609d4779cc9b03c2d764df20504a8a7a2cf30f8f959ca251ffa9946b9ad84"
+    },
+    {
+      "artifact_role": "results",
+      "path": "artifacts/P377_biglotto_command_center_regression_results.json",
+      "row_or_object_count": "json_keys=13",
+      "sha256": "d942491e194bca420e10e79a41711410e7d20ca5b59ab2621b9dc1ede54c3d5f"
+    },
+    {
+      "artifact_role": "commands",
+      "path": "artifacts/P377_biglotto_command_center_regression_commands.csv",
+      "row_or_object_count": "csv_rows=6",
+      "sha256": "992143bb909c115bc41ffa758867086ea08c834374b8b8b1ad5b9fd7752b3dcd"
+    },
+    {
+      "artifact_role": "failures",
+      "path": "artifacts/P377_biglotto_command_center_regression_failures.csv",
+      "row_or_object_count": "csv_rows=1",
+      "sha256": "84ce4b84ae641d99518c65b4117fe25a1fdf0db3b9feb9e7a4987bc1967e0e3f"
+    },
+    {
+      "artifact_role": "freshness",
+      "path": "artifacts/P377_biglotto_command_center_regression_artifact_freshness.csv",
+      "row_or_object_count": "csv_rows=50",
+      "sha256": "1c6784a8046f2cddb7a03435f0321451aca3280ebd9acc9e9570c3ffee40284a"
+    },
+    {
+      "artifact_role": "report",
+      "path": "artifacts/P377_biglotto_command_center_regression_report.html",
+      "row_or_object_count": "text_lines=88",
+      "sha256": "7e8e8cc7dc1df4f3a010f80e5f35895d152085d2fa6bd01d6721d7cb715bb6c7"
+    },
+    {
+      "artifact_role": "manifest",
+      "path": "artifacts/P377_biglotto_command_center_regression_manifest.csv",
+      "row_or_object_count": "csv_rows=60",
+      "sha256": "43f803c4d4b46542cba9be5891f4b56cdfd5b963bccb8a773de2e118397a862b"
+    }
+  ],
+  "p377_command_count": 6,
+  "p377_fail_count": 0,
+  "p377_overall_status": "PASS",
+  "p377_pass_count": 6,
+  "p377_warn_count": 0,
+  "scope_lines": [
+    "Historical descriptive evidence only.",
+    "No future prediction guarantee.",
+    "No betting advice.",
+    "No DB open/write.",
+    "No adapter calls.",
+    "No new scoring.",
+    "No new scoring cohort.",
+    "No production registry import.",
+    "No deploy.",
+    "No generated DB rows.",
+    "No strategy status changes.",
+    "No blended leaderboard.",
+    "No force operations.",
+    "Not production release approval.",
+    "P378 reads only merged P377 regression artifacts and writes only P378-prefixed archive artifacts."
+  ],
+  "snapshot_id": "P378-P377-0fd6dfb95fcb",
+  "source_baseline": {
+    "archive_mode": "read_only_no_db_p377_artifact_snapshot_and_comparison",
+    "required_origin_main_merge_commit": "0fd6dfb95fcb8389519aee6359e91696119da649",
+    "source_task": "P377_biglotto_command_center_regression_runner"
+  },
+  "statements": {
+    "adapter_calls": false,
+    "betting_advice": false,
+    "blended_leaderboard": false,
+    "db_opened": false,
+    "db_written": false,
+    "deployed": false,
+    "force_operations": false,
+    "future_prediction_guarantee": false,
+    "generated_db_rows": false,
+    "historical_descriptive_evidence_only": true,
+    "new_scoring": false,
+    "new_scoring_cohort": false,
+    "production_registry_imported": false,
+    "production_release_approval": false,
+    "strategy_status_changes": false
+  },
+  "task": "P378_biglotto_regression_run_archive"
+}

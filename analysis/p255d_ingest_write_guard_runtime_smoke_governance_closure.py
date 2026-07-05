@@ -143,7 +143,6 @@ def _make_client():
         patch.object(ingest_mod, "_get_ingest_logger",     return_value=mock_logger),
         patch.object(ingest_mod, "_get_detector",          return_value=mock_detector),
         patch.object(ingest_mod, "_refresh_after_insert",  return_value=None),
-        patch.object(ingest_mod, "_schedule_after_insert", return_value=None),
     ]
     for p in patches:
         p.start()

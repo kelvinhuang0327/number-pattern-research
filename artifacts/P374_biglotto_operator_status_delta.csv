@@ -1,0 +1,16 @@
+metric_name,baseline_value,current_value,delta,status,notes
+overall_operator_health,PASS,PASS,unchanged,PASS,Initial snapshot baseline=current. P373 compact operator health.
+route_coverage_rate,1.0000,1.0000,0,PASS,Initial snapshot baseline=current. P372 replay coverage rate surfaced through P373.
+route_health_pass_count,9,9,0,PASS,Initial snapshot baseline=current. P372 route health PASS count.
+route_health_warn_count,0,0,0,PASS,Initial snapshot baseline=current. P372 route health WARN count.
+route_health_fail_count,0,0,0,PASS,Initial snapshot baseline=current. P372 route health FAIL count.
+p371_smoke_pass_count,6,6,0,PASS,Initial snapshot baseline=current. P371 smoke PASS count.
+p371_smoke_fail_count,0,0,0,PASS,Initial snapshot baseline=current. P371 smoke FAIL count.
+issue_info_count,1,1,0,PASS,Initial snapshot baseline=current. P373 operator INFO issue count.
+issue_warn_count,0,0,0,PASS,Initial snapshot baseline=current. P373 operator WARN issue count.
+issue_fail_count,0,0,0,PASS,Initial snapshot baseline=current. P373 operator FAIL issue count.
+badge_pass_count,5,5,0,PASS,Initial snapshot baseline=current. P373 PASS badge count.
+badge_warn_count,0,0,0,PASS,Initial snapshot baseline=current. P373 WARN badge count.
+badge_fail_count,0,0,0,PASS,Initial snapshot baseline=current. P373 FAIL badge count.
+action_count,5,5,0,PASS,Initial snapshot baseline=current. P373 template-only action card count.
+required_source_artifact_count,26,26,0,PASS,Initial snapshot baseline=current. P374 source inventory row count.

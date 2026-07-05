@@ -1,0 +1,213 @@
+{
+  "action_count": 5,
+  "badge_summary": {
+    "badge_count": 5,
+    "badges": [
+      {
+        "badge_id": "overall_health",
+        "label": "Overall",
+        "severity": "low",
+        "status": "PASS",
+        "summary": "Operator health is PASS."
+      },
+      {
+        "badge_id": "route_replay_health",
+        "label": "Route replay",
+        "severity": "low",
+        "status": "PASS",
+        "summary": "9 pass, 0 fail."
+      },
+      {
+        "badge_id": "smoke_health",
+        "label": "Smoke",
+        "severity": "low",
+        "status": "PASS",
+        "summary": "6 P371 smoke rows pass; 0 fail."
+      },
+      {
+        "badge_id": "artifact_health",
+        "label": "Artifacts",
+        "severity": "low",
+        "status": "PASS",
+        "summary": "18 of 18 source artifacts present."
+      },
+      {
+        "badge_id": "prompt_template_safety",
+        "label": "Prompt safety",
+        "severity": "low",
+        "status": "PASS",
+        "summary": "0 prompt-safety failures; action cards are templates only."
+      }
+    ],
+    "fail_count": 0,
+    "pass_count": 5,
+    "warn_count": 0
+  },
+  "generated_at": "DETERMINISTIC_PLACEHOLDER",
+  "history_mode": "initial_snapshot",
+  "issue_counts": {
+    "FAIL": 0,
+    "INFO": 1,
+    "WARN": 0
+  },
+  "metric_summary": [
+    {
+      "metric_name": "overall_operator_health",
+      "notes": "P373 compact operator health.",
+      "value": "PASS"
+    },
+    {
+      "metric_name": "route_coverage_rate",
+      "notes": "P372 replay coverage rate surfaced through P373.",
+      "value": "1.0000"
+    },
+    {
+      "metric_name": "route_health_pass_count",
+      "notes": "P372 route health PASS count.",
+      "value": 9
+    },
+    {
+      "metric_name": "route_health_warn_count",
+      "notes": "P372 route health WARN count.",
+      "value": 0
+    },
+    {
+      "metric_name": "route_health_fail_count",
+      "notes": "P372 route health FAIL count.",
+      "value": 0
+    },
+    {
+      "metric_name": "p371_smoke_pass_count",
+      "notes": "P371 smoke PASS count.",
+      "value": 6
+    },
+    {
+      "metric_name": "p371_smoke_fail_count",
+      "notes": "P371 smoke FAIL count.",
+      "value": 0
+    },
+    {
+      "metric_name": "issue_info_count",
+      "notes": "P373 operator INFO issue count.",
+      "value": 1
+    },
+    {
+      "metric_name": "issue_warn_count",
+      "notes": "P373 operator WARN issue count.",
+      "value": 0
+    },
+    {
+      "metric_name": "issue_fail_count",
+      "notes": "P373 operator FAIL issue count.",
+      "value": 0
+    },
+    {
+      "metric_name": "badge_pass_count",
+      "notes": "P373 PASS badge count.",
+      "value": 5
+    },
+    {
+      "metric_name": "badge_warn_count",
+      "notes": "P373 WARN badge count.",
+      "value": 0
+    },
+    {
+      "metric_name": "badge_fail_count",
+      "notes": "P373 FAIL badge count.",
+      "value": 0
+    },
+    {
+      "metric_name": "action_count",
+      "notes": "P373 template-only action card count.",
+      "value": 5
+    },
+    {
+      "metric_name": "required_source_artifact_count",
+      "notes": "P374 source inventory row count.",
+      "value": 26
+    }
+  ],
+  "notes": "Initial P374 snapshot: deterministic baseline equals current. It compares committed command-center artifacts only and does not create a new scoring cohort.",
+  "operator_health": {
+    "overall_operator_health": "PASS",
+    "p371_command_center_ready": true,
+    "p373_required_source_file_count": 18,
+    "p373_required_source_files_present": 18
+  },
+  "route_coverage": {
+    "coverage_rate": "1.0000",
+    "fail_count": "0",
+    "pass_count": "9",
+    "replayed_routes": "9",
+    "skipped_routes": "0",
+    "total_routes": "9",
+    "warn_count": "0"
+  },
+  "scope_lines": [
+    "Historical descriptive evidence only.",
+    "No future prediction guarantee.",
+    "No betting advice.",
+    "No DB open/write.",
+    "No adapter calls.",
+    "No new scoring.",
+    "No new scoring cohort.",
+    "No production registry import.",
+    "No deploy.",
+    "No generated DB rows.",
+    "No strategy status changes.",
+    "No blended leaderboard.",
+    "Snapshot comparison is baseline-current descriptive evidence only."
+  ],
+  "snapshot_id": "e298409a1dda6f57",
+  "source_artifact_sha256": {
+    "artifacts/P371_biglotto_command_center_index.json": "f1bf524acedfea30f75cf19709ef0869aced16095b44dc75ee747a5fff234b9f",
+    "artifacts/P371_biglotto_command_center_launchpad.html": "00dec1483f17ba9fc42de4fde3bdbdbc0bb18f5acb9dcac93cb461e856de536d",
+    "artifacts/P371_biglotto_command_center_manifest.csv": "114096125d7a973efe255664550031639d0b6876ff2d5949b319f9a309143760",
+    "artifacts/P371_biglotto_command_center_quickstart.md": "f2cf31fb5c57d363d380355d10eceecede9d5cc4596d080d40354b4581cf1fd7",
+    "artifacts/P371_biglotto_command_center_routes.csv": "08c9f5cedf92268d9dbfb6740e1827dd86ec11414f5e44ebe18c9e553f7fe104",
+    "artifacts/P371_biglotto_command_center_smoke_results.csv": "fe31a743c888af2ba300abe0589c2baff72040a30c4c8e9d02dd8fa6c92f1f08",
+    "artifacts/P371_biglotto_command_center_status.json": "37597330481efd3e2e762bfbd361e9a912d40b03e2f24e798b1fd4e5260c26c7",
+    "artifacts/P371_biglotto_command_center_task_cards.json": "c87132e3727a367fe14301905b4f43590b08399d67736741257d0a2ac3120720",
+    "artifacts/P372_biglotto_command_center_failure_taxonomy.csv": "59552aab968bf21fc1dd21715fb09faf31d0c411e49d25d92a6f7f49ecfb6865",
+    "artifacts/P372_biglotto_command_center_manifest.csv": "a0d55f3cec173b5c157613273dbc086efe97b4c9946d48662e394ccd4cca4b2e",
+    "artifacts/P372_biglotto_command_center_route_coverage.csv": "04322aae46ef9f67c8bf67f8394bf15d1a947af1e09c8dcbe365264b2a0b45fb",
+    "artifacts/P372_biglotto_command_center_route_health.csv": "554870db1600c55b7041898b5df9082ed40d5509e8933493a3d983d925ebe9cb",
+    "artifacts/P372_biglotto_command_center_route_transcripts.json": "c6150cc091520ed258bc4ab10dbf63654dff9ad9eaf1c1a402a9ad630b861af3",
+    "artifacts/P372_biglotto_command_center_smoke_bundle.json": "90d5d7d3899bfa388682859e35fa7fe9f75bab445e1e187cbd23aa7883175fa8",
+    "artifacts/P373_biglotto_command_center_operator_actions.json": "33b824ed1b5b6fd84f215ef26400e14b5e926a0e81a80e824b2ea8ca77dbe5a2",
+    "artifacts/P373_biglotto_command_center_operator_badges.json": "a820a08a5db18afeb81035f5a6dbcabc2a98367c8697c9e65c87c2c8b573fa22",
+    "artifacts/P373_biglotto_command_center_operator_console.html": "b01190a2489df67b371549fcc296e766f59b8dff1cc5a5b9d1135259be92c884",
+    "artifacts/P373_biglotto_command_center_operator_issues.csv": "dd2562ba396395cdaa1e7feba5e7e4cd62e1d7f61e7130787f30d87a66c02ad0",
+    "artifacts/P373_biglotto_command_center_operator_manifest.csv": "cd0e0df278e3396762959fdc1d6be97b948f6a24ebaabac821eaff1ecf425dc9",
+    "artifacts/P373_biglotto_command_center_operator_status.json": "7192d74f45ec6e979a5c3c98313b43d1e219e1a675bb112b53426e5d55a9ce82",
+    "recovered_strategies/biglotto/no_db_command_center_operator_console.py": "2f479404f4540e7a7e3b5bbba64a85ca341ba1ac3adf5c84cff955b065b9b4f4",
+    "recovered_strategies/biglotto/no_db_command_center_route_replay.py": "15467be027a8a9edad39c21c19a0cd6c90c4c20da555ce22cf8511eb693e5f88",
+    "recovered_strategies/biglotto/no_db_evidence_command_center.py": "0f7de06b5b20ea764afa3027ab90ddcbe2901403814cd28d9305229b1095fd41",
+    "tests/test_p371_biglotto_evidence_command_center.py": "371f4a7713504f5e6e41aae046fb50d3958ca715054f6f0687fe514abc90498f",
+    "tests/test_p372_biglotto_command_center_route_replay.py": "e8da656070bdf43a0436f764b1aa39596998d25248d5f31926a7d620d6970d59",
+    "tests/test_p373_biglotto_command_center_operator_console.py": "395a0c7e10835cabb897cd00ee868876df66c4d2b55a6c7bc92552f1a5f88eec"
+  },
+  "source_baseline": {
+    "history_mode": "initial_snapshot_baseline_equals_current",
+    "p371_source_merge_baseline": "30e4120060e41e8a6f7cf529c28d9b490c01f70b",
+    "p372_source_baseline": "1a971bd14a11de3e6e5967cfb543ab7069e97100",
+    "p373_source_merge_baseline": "992c0c33ca9e3db1bbe81914cd1de82b21c06bde",
+    "required_origin_main_merge_commit": "992c0c33ca9e3db1bbe81914cd1de82b21c06bde"
+  },
+  "statements": {
+    "adapter_calls": false,
+    "betting_advice": false,
+    "blended_leaderboard": false,
+    "db_opened": false,
+    "db_written": false,
+    "deployed": false,
+    "future_prediction_guarantee": false,
+    "generated_db_rows": false,
+    "historical_descriptive_evidence_only": true,
+    "new_scoring": false,
+    "new_scoring_cohort": false,
+    "production_registry_imported": false,
+    "strategy_status_changes": false
+  },
+  "task": "P374_biglotto_operator_history"
+}

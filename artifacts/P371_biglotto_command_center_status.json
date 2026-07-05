@@ -1,0 +1,65 @@
+{
+  "command_center_ready": true,
+  "db_registry_deploy_status": {
+    "adapter_calls": "NO",
+    "db_open_write": "NO",
+    "deploy": "NO",
+    "generated_db_rows": "NO",
+    "new_scoring": "NO",
+    "production_registry_import": "NO",
+    "task_cards_standing_authorization": "NO"
+  },
+  "generated_at": "DETERMINISTIC_PLACEHOLDER",
+  "missing_source_files": [],
+  "p367_validation": {
+    "fail_count": 0,
+    "row_count": 58
+  },
+  "p368_compatibility": {
+    "drift_fail_count": 0,
+    "incompatible_count": 0,
+    "row_count": 9
+  },
+  "p369_validation": {
+    "fail_count": 0,
+    "row_count": 13
+  },
+  "p370_consumer": {
+    "prompt_safety_fail_count": 0,
+    "recipe_fail_count": 0,
+    "recipe_result_count": 6
+  },
+  "required_source_file_count": 66,
+  "required_source_files_present": 66,
+  "route_count": 9,
+  "scope_lines": [
+    "Historical descriptive evidence only.",
+    "No future prediction guarantee.",
+    "No betting advice.",
+    "No DB open/write.",
+    "No adapter calls.",
+    "No new scoring.",
+    "No new scoring cohort.",
+    "No production registry import.",
+    "No deploy.",
+    "No generated DB rows.",
+    "Generated task cards are templates, not standing authorization."
+  ],
+  "source_merge_baseline": "30e4120060e41e8a6f7cf529c28d9b490c01f70b",
+  "statements": {
+    "adapter_calls": false,
+    "betting_advice": false,
+    "db_opened": false,
+    "db_written": false,
+    "deployed": false,
+    "future_prediction_guarantee": false,
+    "generated_db_rows": false,
+    "generated_task_cards_templates_not_standing_authorization": true,
+    "historical_descriptive_evidence_only": true,
+    "new_scoring": false,
+    "new_scoring_cohort": false,
+    "production_registry_imported": false
+  },
+  "task": "P371_biglotto_command_center",
+  "tool_family_count": 5
+}

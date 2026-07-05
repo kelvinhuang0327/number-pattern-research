@@ -1,0 +1,501 @@
+{
+  "generated_at": "DETERMINISTIC_PLACEHOLDER",
+  "generated_outputs": [
+    "artifacts/P371_biglotto_command_center_index.json",
+    "artifacts/P371_biglotto_command_center_routes.csv",
+    "artifacts/P371_biglotto_command_center_status.json",
+    "artifacts/P371_biglotto_command_center_smoke_results.csv",
+    "artifacts/P371_biglotto_command_center_task_cards.json",
+    "artifacts/P371_biglotto_command_center_launchpad.html",
+    "artifacts/P371_biglotto_command_center_quickstart.md",
+    "artifacts/P371_biglotto_command_center_manifest.csv"
+  ],
+  "routes": [
+    {
+      "artifact_inputs": "P363-P370 committed artifacts",
+      "command": "python3 -m recovered_strategies.biglotto.no_db_evidence_command_center --status",
+      "no_adapter_calls": "YES",
+      "no_betting_advice": "YES",
+      "no_db_open_write": "YES",
+      "no_deploy": "YES",
+      "no_future_prediction_guarantee": "YES",
+      "no_new_scoring": "YES",
+      "no_production_registry_import": "YES",
+      "output_format": "json",
+      "route_id": "status",
+      "scope_statement": "Historical descriptive evidence only. No future prediction guarantee. No betting advice. No DB open/write. No adapter calls. No new scoring. No new scoring cohort. No production registry import. No deploy. No generated DB rows. Generated task cards are templates, not standing authorization.",
+      "source_stage": "P371",
+      "task_cards_template_only": "YES",
+      "title": "Command center status",
+      "underlying_tool": "build_status"
+    },
+    {
+      "artifact_inputs": "P363-P370 committed artifacts",
+      "command": "python3 -m recovered_strategies.biglotto.no_db_evidence_command_center --routes",
+      "no_adapter_calls": "YES",
+      "no_betting_advice": "YES",
+      "no_db_open_write": "YES",
+      "no_deploy": "YES",
+      "no_future_prediction_guarantee": "YES",
+      "no_new_scoring": "YES",
+      "no_production_registry_import": "YES",
+      "output_format": "csv",
+      "route_id": "routes",
+      "scope_statement": "Historical descriptive evidence only. No future prediction guarantee. No betting advice. No DB open/write. No adapter calls. No new scoring. No new scoring cohort. No production registry import. No deploy. No generated DB rows. Generated task cards are templates, not standing authorization.",
+      "source_stage": "P371",
+      "task_cards_template_only": "YES",
+      "title": "Route catalog",
+      "underlying_tool": "build_routes"
+    },
+    {
+      "artifact_inputs": "P367-P370 no-DB helper outputs",
+      "command": "python3 -m recovered_strategies.biglotto.no_db_evidence_command_center --smoke",
+      "no_adapter_calls": "YES",
+      "no_betting_advice": "YES",
+      "no_db_open_write": "YES",
+      "no_deploy": "YES",
+      "no_future_prediction_guarantee": "YES",
+      "no_new_scoring": "YES",
+      "no_production_registry_import": "YES",
+      "output_format": "csv",
+      "route_id": "smoke",
+      "scope_statement": "Historical descriptive evidence only. No future prediction guarantee. No betting advice. No DB open/write. No adapter calls. No new scoring. No new scoring cohort. No production registry import. No deploy. No generated DB rows. Generated task cards are templates, not standing authorization.",
+      "source_stage": "P371",
+      "task_cards_template_only": "YES",
+      "title": "No-DB command center smoke",
+      "underlying_tool": "run_smoke"
+    },
+    {
+      "artifact_inputs": "P367 contract, P368 snapshots, P369 recipes, P370 consumer",
+      "command": "python3 -m recovered_strategies.biglotto.no_db_evidence_command_center --list-tools",
+      "no_adapter_calls": "YES",
+      "no_betting_advice": "YES",
+      "no_db_open_write": "YES",
+      "no_deploy": "YES",
+      "no_future_prediction_guarantee": "YES",
+      "no_new_scoring": "YES",
+      "no_production_registry_import": "YES",
+      "output_format": "json",
+      "route_id": "list_tools",
+      "scope_statement": "Historical descriptive evidence only. No future prediction guarantee. No betting advice. No DB open/write. No adapter calls. No new scoring. No new scoring cohort. No production registry import. No deploy. No generated DB rows. Generated task cards are templates, not standing authorization.",
+      "source_stage": "P367-P371",
+      "task_cards_template_only": "YES",
+      "title": "Unified tool list",
+      "underlying_tool": "build_tool_catalog"
+    },
+    {
+      "artifact_inputs": "P363-P370 committed artifacts and P371 output definitions",
+      "command": "python3 -m recovered_strategies.biglotto.no_db_evidence_command_center --list-artifacts",
+      "no_adapter_calls": "YES",
+      "no_betting_advice": "YES",
+      "no_db_open_write": "YES",
+      "no_deploy": "YES",
+      "no_future_prediction_guarantee": "YES",
+      "no_new_scoring": "YES",
+      "no_production_registry_import": "YES",
+      "output_format": "csv",
+      "route_id": "list_artifacts",
+      "scope_statement": "Historical descriptive evidence only. No future prediction guarantee. No betting advice. No DB open/write. No adapter calls. No new scoring. No new scoring cohort. No production registry import. No deploy. No generated DB rows. Generated task cards are templates, not standing authorization.",
+      "source_stage": "P363-P371",
+      "task_cards_template_only": "YES",
+      "title": "Source and output artifact list",
+      "underlying_tool": "build_manifest_rows"
+    },
+    {
+      "artifact_inputs": "P369 recipes and P370 task cards",
+      "command": "python3 -m recovered_strategies.biglotto.no_db_evidence_command_center --show-task-cards",
+      "no_adapter_calls": "YES",
+      "no_betting_advice": "YES",
+      "no_db_open_write": "YES",
+      "no_deploy": "YES",
+      "no_future_prediction_guarantee": "YES",
+      "no_new_scoring": "YES",
+      "no_production_registry_import": "YES",
+      "output_format": "json",
+      "route_id": "task_cards",
+      "scope_statement": "Historical descriptive evidence only. No future prediction guarantee. No betting advice. No DB open/write. No adapter calls. No new scoring. No new scoring cohort. No production registry import. No deploy. No generated DB rows. Generated task cards are templates, not standing authorization.",
+      "source_stage": "P370-P371",
+      "task_cards_template_only": "YES",
+      "title": "Safe task-card templates",
+      "underlying_tool": "build_task_cards"
+    },
+    {
+      "artifact_inputs": "P367-P370 validation outputs and deterministic P371 artifacts",
+      "command": "python3 -m recovered_strategies.biglotto.no_db_evidence_command_center --validate",
+      "no_adapter_calls": "YES",
+      "no_betting_advice": "YES",
+      "no_db_open_write": "YES",
+      "no_deploy": "YES",
+      "no_future_prediction_guarantee": "YES",
+      "no_new_scoring": "YES",
+      "no_production_registry_import": "YES",
+      "output_format": "csv",
+      "route_id": "validate",
+      "scope_statement": "Historical descriptive evidence only. No future prediction guarantee. No betting advice. No DB open/write. No adapter calls. No new scoring. No new scoring cohort. No production registry import. No deploy. No generated DB rows. Generated task cards are templates, not standing authorization.",
+      "source_stage": "P371",
+      "task_cards_template_only": "YES",
+      "title": "Command center validation",
+      "underlying_tool": "validate_command_center"
+    },
+    {
+      "artifact_inputs": "P369 recipe executed through P370 consumer against P367 no-DB facade",
+      "command": "python3 -m recovered_strategies.biglotto.no_db_evidence_command_center --query list_adapters",
+      "no_adapter_calls": "YES",
+      "no_betting_advice": "YES",
+      "no_db_open_write": "YES",
+      "no_deploy": "YES",
+      "no_future_prediction_guarantee": "YES",
+      "no_new_scoring": "YES",
+      "no_production_registry_import": "YES",
+      "output_format": "json",
+      "route_id": "query_list_adapters",
+      "scope_statement": "Historical descriptive evidence only. No future prediction guarantee. No betting advice. No DB open/write. No adapter calls. No new scoring. No new scoring cohort. No production registry import. No deploy. No generated DB rows. Generated task cards are templates, not standing authorization.",
+      "source_stage": "P367/P369/P370",
+      "task_cards_template_only": "YES",
+      "title": "Query P369 list_adapters recipe",
+      "underlying_tool": "query_command_center"
+    },
+    {
+      "artifact_inputs": "P369 recipe executed through P370 consumer against P367 no-DB facade",
+      "command": "python3 -m recovered_strategies.biglotto.no_db_evidence_command_center --query list_compact_shortlist",
+      "no_adapter_calls": "YES",
+      "no_betting_advice": "YES",
+      "no_db_open_write": "YES",
+      "no_deploy": "YES",
+      "no_future_prediction_guarantee": "YES",
+      "no_new_scoring": "YES",
+      "no_production_registry_import": "YES",
+      "output_format": "json",
+      "route_id": "query_compact_shortlist",
+      "scope_statement": "Historical descriptive evidence only. No future prediction guarantee. No betting advice. No DB open/write. No adapter calls. No new scoring. No new scoring cohort. No production registry import. No deploy. No generated DB rows. Generated task cards are templates, not standing authorization.",
+      "source_stage": "P367/P369/P370",
+      "task_cards_template_only": "YES",
+      "title": "Query P369 list_compact_shortlist recipe",
+      "underlying_tool": "query_command_center"
+    }
+  ],
+  "scope_lines": [
+    "Historical descriptive evidence only.",
+    "No future prediction guarantee.",
+    "No betting advice.",
+    "No DB open/write.",
+    "No adapter calls.",
+    "No new scoring.",
+    "No new scoring cohort.",
+    "No production registry import.",
+    "No deploy.",
+    "No generated DB rows.",
+    "Generated task cards are templates, not standing authorization."
+  ],
+  "smoke_summary": {
+    "fail_count": 0,
+    "row_count": 6
+  },
+  "source_merge_baseline": "30e4120060e41e8a6f7cf529c28d9b490c01f70b",
+  "statements": {
+    "adapter_calls": false,
+    "betting_advice": false,
+    "db_opened": false,
+    "db_written": false,
+    "deployed": false,
+    "future_prediction_guarantee": false,
+    "generated_db_rows": false,
+    "generated_task_cards_templates_not_standing_authorization": true,
+    "historical_descriptive_evidence_only": true,
+    "new_scoring": false,
+    "new_scoring_cohort": false,
+    "production_registry_imported": false
+  },
+  "status_summary": {
+    "command_center_ready": true,
+    "p367_validation_fail_count": 0,
+    "p368_drift_fail_count": 0,
+    "p368_incompatible_count": 0,
+    "p369_validation_fail_count": 0,
+    "p370_prompt_safety_fail_count": 0,
+    "p370_recipe_fail_count": 0,
+    "required_source_file_count": 66,
+    "route_count": 9
+  },
+  "task": "P371_biglotto_command_center",
+  "tools": {
+    "p367_facade_functions": [
+      {
+        "input_arguments": [],
+        "name": "load_release_manifest",
+        "output_schema_name": "P366ReleaseManifest"
+      },
+      {
+        "input_arguments": [],
+        "name": "load_inventory",
+        "output_schema_name": "ReleaseInventoryRows"
+      },
+      {
+        "input_arguments": [],
+        "name": "list_adapters",
+        "output_schema_name": "AdapterFunctionList"
+      },
+      {
+        "input_arguments": [
+          "adapter_function"
+        ],
+        "name": "get_adapter",
+        "output_schema_name": "AdapterDetailCard"
+      },
+      {
+        "input_arguments": [
+          "subset_size"
+        ],
+        "name": "list_subsets",
+        "output_schema_name": "SubsetDetailCardList"
+      },
+      {
+        "input_arguments": [
+          "adapter_subset"
+        ],
+        "name": "get_subset",
+        "output_schema_name": "SubsetDetailCard"
+      },
+      {
+        "input_arguments": [
+          "adapter_a",
+          "adapter_b"
+        ],
+        "name": "compare_adapters",
+        "output_schema_name": "PairwiseComparisonRow"
+      },
+      {
+        "input_arguments": [],
+        "name": "get_compact_shortlist",
+        "output_schema_name": "CompactShortlistRows"
+      },
+      {
+        "input_arguments": [],
+        "name": "validate_evidence_stack",
+        "output_schema_name": "ValidationRows"
+      }
+    ],
+    "p368_snapshot_routes": [
+      "emit_golden_snapshots",
+      "compatibility_matrix",
+      "contract_drift",
+      "cli_transcripts",
+      "validate"
+    ],
+    "p369_query_recipes": [
+      {
+        "cli": "python3 -m recovered_strategies.biglotto.no_db_evidence_api --list-adapters",
+        "expected_result": "JSON array of adapter_function strings.",
+        "purpose": "List adapter function names exposed by the P367 facade.",
+        "python_api": "api.list_adapters()",
+        "recipe_id": "list_adapters"
+      },
+      {
+        "cli": "python3 -m recovered_strategies.biglotto.no_db_evidence_api --get-adapter adapt_predict_biglotto_echo_mixed_3bet",
+        "expected_result": "JSON object for one adapter detail card.",
+        "purpose": "Inspect one adapter detail card from committed evidence.",
+        "python_api": "api.get_adapter(adapter_function)",
+        "recipe_id": "inspect_one_adapter"
+      },
+      {
+        "cli": "python3 -m recovered_strategies.biglotto.no_db_evidence_api --compact-shortlist",
+        "expected_result": "CSV rows for compact historical evidence candidates.",
+        "purpose": "List the compact shortlist rows from P365 evidence through P367.",
+        "python_api": "api.get_compact_shortlist()",
+        "recipe_id": "list_compact_shortlist"
+      },
+      {
+        "cli": "python3 -m recovered_strategies.biglotto.no_db_evidence_api --compare-adapters adapt_biglotto_p0_2bet adapt_predict_biglotto_echo_2bet",
+        "expected_result": "JSON object for one pairwise historical comparison.",
+        "purpose": "Read one pairwise comparison row for two adapter names.",
+        "python_api": "api.compare_adapters(adapter_a, adapter_b)",
+        "recipe_id": "compare_two_adapters"
+      },
+      {
+        "cli": "python3 -m recovered_strategies.biglotto.no_db_evidence_api --validate",
+        "expected_result": "CSV validation rows with PASS status.",
+        "purpose": "Validate required source artifacts and P367 generated shapes.",
+        "python_api": "api.validate_evidence_stack()",
+        "recipe_id": "validate_evidence_stack"
+      },
+      {
+        "cli": "python3 -m recovered_strategies.biglotto.no_db_evidence_api_snapshots --compatibility-matrix",
+        "expected_result": "CSV compatibility rows with compatible TRUE and no drift FAIL rows.",
+        "purpose": "Inspect P368 compatibility and drift without new scoring.",
+        "python_api": "snapshots.build_compatibility_matrix(); snapshots.build_contract_drift_rows()",
+        "recipe_id": "inspect_snapshot_compatibility"
+      }
+    ],
+    "p370_consumer_routes": [
+      "run_recipes",
+      "transcripts",
+      "prompt_safety_audit",
+      "task_cards",
+      "validate"
+    ],
+    "p371_command_center_routes": [
+      {
+        "artifact_inputs": "P363-P370 committed artifacts",
+        "command": "python3 -m recovered_strategies.biglotto.no_db_evidence_command_center --status",
+        "no_adapter_calls": "YES",
+        "no_betting_advice": "YES",
+        "no_db_open_write": "YES",
+        "no_deploy": "YES",
+        "no_future_prediction_guarantee": "YES",
+        "no_new_scoring": "YES",
+        "no_production_registry_import": "YES",
+        "output_format": "json",
+        "route_id": "status",
+        "scope_statement": "Historical descriptive evidence only. No future prediction guarantee. No betting advice. No DB open/write. No adapter calls. No new scoring. No new scoring cohort. No production registry import. No deploy. No generated DB rows. Generated task cards are templates, not standing authorization.",
+        "source_stage": "P371",
+        "task_cards_template_only": "YES",
+        "title": "Command center status",
+        "underlying_tool": "build_status"
+      },
+      {
+        "artifact_inputs": "P363-P370 committed artifacts",
+        "command": "python3 -m recovered_strategies.biglotto.no_db_evidence_command_center --routes",
+        "no_adapter_calls": "YES",
+        "no_betting_advice": "YES",
+        "no_db_open_write": "YES",
+        "no_deploy": "YES",
+        "no_future_prediction_guarantee": "YES",
+        "no_new_scoring": "YES",
+        "no_production_registry_import": "YES",
+        "output_format": "csv",
+        "route_id": "routes",
+        "scope_statement": "Historical descriptive evidence only. No future prediction guarantee. No betting advice. No DB open/write. No adapter calls. No new scoring. No new scoring cohort. No production registry import. No deploy. No generated DB rows. Generated task cards are templates, not standing authorization.",
+        "source_stage": "P371",
+        "task_cards_template_only": "YES",
+        "title": "Route catalog",
+        "underlying_tool": "build_routes"
+      },
+      {
+        "artifact_inputs": "P367-P370 no-DB helper outputs",
+        "command": "python3 -m recovered_strategies.biglotto.no_db_evidence_command_center --smoke",
+        "no_adapter_calls": "YES",
+        "no_betting_advice": "YES",
+        "no_db_open_write": "YES",
+        "no_deploy": "YES",
+        "no_future_prediction_guarantee": "YES",
+        "no_new_scoring": "YES",
+        "no_production_registry_import": "YES",
+        "output_format": "csv",
+        "route_id": "smoke",
+        "scope_statement": "Historical descriptive evidence only. No future prediction guarantee. No betting advice. No DB open/write. No adapter calls. No new scoring. No new scoring cohort. No production registry import. No deploy. No generated DB rows. Generated task cards are templates, not standing authorization.",
+        "source_stage": "P371",
+        "task_cards_template_only": "YES",
+        "title": "No-DB command center smoke",
+        "underlying_tool": "run_smoke"
+      },
+      {
+        "artifact_inputs": "P367 contract, P368 snapshots, P369 recipes, P370 consumer",
+        "command": "python3 -m recovered_strategies.biglotto.no_db_evidence_command_center --list-tools",
+        "no_adapter_calls": "YES",
+        "no_betting_advice": "YES",
+        "no_db_open_write": "YES",
+        "no_deploy": "YES",
+        "no_future_prediction_guarantee": "YES",
+        "no_new_scoring": "YES",
+        "no_production_registry_import": "YES",
+        "output_format": "json",
+        "route_id": "list_tools",
+        "scope_statement": "Historical descriptive evidence only. No future prediction guarantee. No betting advice. No DB open/write. No adapter calls. No new scoring. No new scoring cohort. No production registry import. No deploy. No generated DB rows. Generated task cards are templates, not standing authorization.",
+        "source_stage": "P367-P371",
+        "task_cards_template_only": "YES",
+        "title": "Unified tool list",
+        "underlying_tool": "build_tool_catalog"
+      },
+      {
+        "artifact_inputs": "P363-P370 committed artifacts and P371 output definitions",
+        "command": "python3 -m recovered_strategies.biglotto.no_db_evidence_command_center --list-artifacts",
+        "no_adapter_calls": "YES",
+        "no_betting_advice": "YES",
+        "no_db_open_write": "YES",
+        "no_deploy": "YES",
+        "no_future_prediction_guarantee": "YES",
+        "no_new_scoring": "YES",
+        "no_production_registry_import": "YES",
+        "output_format": "csv",
+        "route_id": "list_artifacts",
+        "scope_statement": "Historical descriptive evidence only. No future prediction guarantee. No betting advice. No DB open/write. No adapter calls. No new scoring. No new scoring cohort. No production registry import. No deploy. No generated DB rows. Generated task cards are templates, not standing authorization.",
+        "source_stage": "P363-P371",
+        "task_cards_template_only": "YES",
+        "title": "Source and output artifact list",
+        "underlying_tool": "build_manifest_rows"
+      },
+      {
+        "artifact_inputs": "P369 recipes and P370 task cards",
+        "command": "python3 -m recovered_strategies.biglotto.no_db_evidence_command_center --show-task-cards",
+        "no_adapter_calls": "YES",
+        "no_betting_advice": "YES",
+        "no_db_open_write": "YES",
+        "no_deploy": "YES",
+        "no_future_prediction_guarantee": "YES",
+        "no_new_scoring": "YES",
+        "no_production_registry_import": "YES",
+        "output_format": "json",
+        "route_id": "task_cards",
+        "scope_statement": "Historical descriptive evidence only. No future prediction guarantee. No betting advice. No DB open/write. No adapter calls. No new scoring. No new scoring cohort. No production registry import. No deploy. No generated DB rows. Generated task cards are templates, not standing authorization.",
+        "source_stage": "P370-P371",
+        "task_cards_template_only": "YES",
+        "title": "Safe task-card templates",
+        "underlying_tool": "build_task_cards"
+      },
+      {
+        "artifact_inputs": "P367-P370 validation outputs and deterministic P371 artifacts",
+        "command": "python3 -m recovered_strategies.biglotto.no_db_evidence_command_center --validate",
+        "no_adapter_calls": "YES",
+        "no_betting_advice": "YES",
+        "no_db_open_write": "YES",
+        "no_deploy": "YES",
+        "no_future_prediction_guarantee": "YES",
+        "no_new_scoring": "YES",
+        "no_production_registry_import": "YES",
+        "output_format": "csv",
+        "route_id": "validate",
+        "scope_statement": "Historical descriptive evidence only. No future prediction guarantee. No betting advice. No DB open/write. No adapter calls. No new scoring. No new scoring cohort. No production registry import. No deploy. No generated DB rows. Generated task cards are templates, not standing authorization.",
+        "source_stage": "P371",
+        "task_cards_template_only": "YES",
+        "title": "Command center validation",
+        "underlying_tool": "validate_command_center"
+      },
+      {
+        "artifact_inputs": "P369 recipe executed through P370 consumer against P367 no-DB facade",
+        "command": "python3 -m recovered_strategies.biglotto.no_db_evidence_command_center --query list_adapters",
+        "no_adapter_calls": "YES",
+        "no_betting_advice": "YES",
+        "no_db_open_write": "YES",
+        "no_deploy": "YES",
+        "no_future_prediction_guarantee": "YES",
+        "no_new_scoring": "YES",
+        "no_production_registry_import": "YES",
+        "output_format": "json",
+        "route_id": "query_list_adapters",
+        "scope_statement": "Historical descriptive evidence only. No future prediction guarantee. No betting advice. No DB open/write. No adapter calls. No new scoring. No new scoring cohort. No production registry import. No deploy. No generated DB rows. Generated task cards are templates, not standing authorization.",
+        "source_stage": "P367/P369/P370",
+        "task_cards_template_only": "YES",
+        "title": "Query P369 list_adapters recipe",
+        "underlying_tool": "query_command_center"
+      },
+      {
+        "artifact_inputs": "P369 recipe executed through P370 consumer against P367 no-DB facade",
+        "command": "python3 -m recovered_strategies.biglotto.no_db_evidence_command_center --query list_compact_shortlist",
+        "no_adapter_calls": "YES",
+        "no_betting_advice": "YES",
+        "no_db_open_write": "YES",
+        "no_deploy": "YES",
+        "no_future_prediction_guarantee": "YES",
+        "no_new_scoring": "YES",
+        "no_production_registry_import": "YES",
+        "output_format": "json",
+        "route_id": "query_compact_shortlist",
+        "scope_statement": "Historical descriptive evidence only. No future prediction guarantee. No betting advice. No DB open/write. No adapter calls. No new scoring. No new scoring cohort. No production registry import. No deploy. No generated DB rows. Generated task cards are templates, not standing authorization.",
+        "source_stage": "P367/P369/P370",
+        "task_cards_template_only": "YES",
+        "title": "Query P369 list_compact_shortlist recipe",
+        "underlying_tool": "query_command_center"
+      }
+    ]
+  }
+}

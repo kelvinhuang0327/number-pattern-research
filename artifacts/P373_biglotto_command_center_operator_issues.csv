@@ -1,0 +1,2 @@
+issue_id,source,severity,route_id,issue_type,description,suggested_next_check,status
+P373-INFO-001,P373 operator console,INFO,,no_operator_blocking_issues,No FAIL or WARN operator-console issues were detected in merged P371/P372 artifacts.,Continue with read-only artifact inspection or rerun focused regression tests if source artifacts change.,INFO

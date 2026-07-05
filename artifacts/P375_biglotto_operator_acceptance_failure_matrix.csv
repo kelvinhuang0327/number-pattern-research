@@ -1,0 +1,12 @@
+failure_class,source_stage,detection_artifact,severity,blocking,remediation_hint,current_count
+missing_artifact,P372 route replay,artifacts/P372_biglotto_command_center_failure_taxonomy.csv,FAIL,true,Stop and regenerate or restore P371 evidence before replay.,0
+parse_failure,P372 route replay,artifacts/P372_biglotto_command_center_failure_taxonomy.csv,FAIL,true,Stop and inspect the P371 route output shape.,0
+unsafe_route,P372 route replay,artifacts/P372_biglotto_command_center_failure_taxonomy.csv,FAIL,true,Do not replay that route until the route catalog is corrected.,0
+forbidden_language,P372 route replay,artifacts/P372_biglotto_command_center_failure_taxonomy.csv,FAIL,true,Remove the phrase and rerun deterministic validation.,0
+db_touch_attempt,P372 route replay,artifacts/P372_biglotto_command_center_failure_taxonomy.csv,FAIL,true,Stop; P372 is artifact-only and must not open or write DB files.,0
+adapter_call_attempt,P372 route replay,artifacts/P372_biglotto_command_center_failure_taxonomy.csv,FAIL,true,Stop; P372 may read evidence naming adapters but must not execute adapters.,0
+scoring_attempt,P372 route replay,artifacts/P372_biglotto_command_center_failure_taxonomy.csv,FAIL,true,Stop; P372 only replays historical P371 route outputs.,0
+deploy_attempt,P372 route replay,artifacts/P372_biglotto_command_center_failure_taxonomy.csv,FAIL,true,Stop; P372 has no deploy or registry side effects.,0
+operator_console_fail_or_warn_issue,P373 operator console,artifacts/P373_biglotto_command_center_operator_issues.csv,FAIL,true,Inspect P373 issue rows and regenerate read-only operator-console artifacts after the source issue is fixed.,0
+operator_history_status_delta_failure,P374 operator history,artifacts/P374_biglotto_operator_status_delta.csv,FAIL,true,Inspect P374 delta rows; acceptance remains blocked until all read-only history deltas are PASS.,0
+acceptance_gate_forbidden_language,P375 acceptance gate,artifacts/P375_biglotto_operator_acceptance_*,FAIL,true,Remove authorization-style wording and rerun deterministic P375 validation.,0

@@ -10,58 +10,40 @@ from __future__ import annotations
 
 import datetime as _dt
 import json
-import sqlite3
-from pathlib import Path
 
 import pytest
 
-import tools.predraw_capture_runner as pcr
 import tools.predraw_ledger_verify as plv
 from lottery_api.engine import predraw_ledger as pl
 
 
-def _make_synthetic_biglotto_db(db_path: Path, n_rows: int = 60,
-                                 last_draw: int = 114000100, last_date: str = "2099-01-01") -> None:
-    conn = sqlite3.connect(str(db_path))
-    conn.execute(
-        "CREATE TABLE draws (id INTEGER PRIMARY KEY, draw TEXT, date TEXT, "
-        "lottery_type TEXT, numbers TEXT, special INTEGER, jackpot_amount INTEGER)"
-    )
-    base_date = _dt.datetime.strptime(last_date, "%Y-%m-%d")
-    rows = []
-    for i in range(n_rows):
-        offset = n_rows - 1 - i
-        draw_num = last_draw - offset
-        date_str = (base_date - _dt.timedelta(days=offset)).strftime("%Y-%m-%d")
-        numbers = sorted(((draw_num + k * 7) % 49) + 1 for k in range(6))
-        rows.append((str(draw_num), date_str, "BIG_LOTTO", json.dumps(numbers), None, 0))
-    conn.executemany(
-        "INSERT INTO draws (draw, date, lottery_type, numbers, special, jackpot_amount) "
-        "VALUES (?, ?, ?, ?, ?, ?)",
-        rows,
-    )
-    conn.commit()
-    conn.close()
-
-
 @pytest.fixture
-def captured_ledger(tmp_path, monkeypatch):
-    """A real ledger produced end-to-end by the P364 capture runner."""
-    db_path = tmp_path / "synthetic_source.db"
-    _make_synthetic_biglotto_db(db_path)
-    monkeypatch.setattr(pcr.qp, "DB_PATH", str(db_path))
-    monkeypatch.delenv("LOTTERY_PREDRAW_LEDGER_PATH", raising=False)
-
+def captured_ledger(tmp_path):
+    """A chain-valid ledger produced by the P360A writer without DB imports."""
     ledger_path = tmp_path / "ledger.jsonl"
-    rc = pcr.main(["--lottery", "BIG_LOTTO", "--bets", "2",
-                   "--write-predraw-ledger", "--predraw-ledger-path", str(ledger_path)])
-    assert rc == pcr.EXIT_OK
+    writer = pl.PredrawLedgerWriter(ledger_path)
+    predicted_at = _dt.datetime(2020, 1, 1, tzinfo=_dt.timezone.utc)
+    for bet_index, numbers in enumerate(([1, 2, 3, 4, 5, 6], [7, 8, 9, 10, 11, 12])):
+        writer.write_retrospective_record(
+            generation_mode="BACKFILL",
+            lottery_type="BIG_LOTTO",
+            target_draw=114000101,
+            strategy_id="test-strategy",
+            strategy_version="v1",
+            predicted_numbers=numbers,
+            predicted_special=None,
+            bet_index=bet_index,
+            n_bets_total=2,
+            run_id="test-run",
+            generation_source="tests/test_p365_predraw_ledger_verify.py",
+            predicted_at=predicted_at,
+        )
     return ledger_path
 
 
-# ─── 1. Valid ledger from the real runner passes verification ───────────────
+# ─── 1. Valid ledger from the writer passes verification ───────────────────
 
-def test_valid_ledger_from_runner_passes_verification(captured_ledger, capsys):
+def test_valid_writer_ledger_passes_verification(captured_ledger, capsys):
     rc = plv.main([str(captured_ledger)])
     assert rc == plv.EXIT_OK
     out = capsys.readouterr().out

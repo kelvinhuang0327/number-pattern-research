@@ -1,0 +1,8 @@
+scenario_id,required_answer_type,matched_answer_id,coverage_status,notes
+overall_status,overall_status,overall_status;latest_durable_baseline;safety_status,PASS,P381 answer card coverage is sufficient for this deterministic scenario.
+safe_next_actions,safe_next_action,safe_next_actions;safety_status;protected_worktree_warnings,PASS,P381 answer card coverage is sufficient for this deterministic scenario.
+cto_technical_risk,technical_risk,non_pass_commands;stale_or_missing_artifacts;warn_fail_deltas;safety_status,PASS,P381 answer card coverage is sufficient for this deterministic scenario.
+ceo_nontechnical_summary,nontechnical_summary,overall_status;safety_status;safe_next_actions,PASS,P381 answer card coverage is sufficient for this deterministic scenario.
+planner_model_need,model_need,safe_next_actions;latest_durable_baseline;safety_status,PASS,P381 answer card coverage is sufficient for this deterministic scenario.
+safety_boundary,safety_boundary,safety_status;safe_next_actions,PASS,P381 answer card coverage is sufficient for this deterministic scenario.
+protected_worktree_warnings,protected_worktree_warning,protected_worktree_warnings;safety_status,PASS,P381 answer card coverage is sufficient for this deterministic scenario.

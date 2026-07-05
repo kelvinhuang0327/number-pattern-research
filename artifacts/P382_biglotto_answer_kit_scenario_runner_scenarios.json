@@ -1,0 +1,134 @@
+{
+  "generated_at": "DETERMINISTIC_PLACEHOLDER",
+  "scenario_ids": [
+    "overall_status",
+    "safe_next_actions",
+    "cto_technical_risk",
+    "ceo_nontechnical_summary",
+    "planner_model_need",
+    "safety_boundary",
+    "protected_worktree_warnings"
+  ],
+  "scenarios": [
+    {
+      "audience": "Worker",
+      "intent": "Summarize the durable historical status from P381 answer cards.",
+      "prompt": "What is the current overall Big Lotto regression archive status?",
+      "required_answer_type": "overall_status",
+      "scenario_id": "overall_status",
+      "selected_answer_ids": [
+        "overall_status",
+        "latest_durable_baseline",
+        "safety_status"
+      ]
+    },
+    {
+      "audience": "Worker",
+      "intent": "Provide a bounded handoff step and restate prohibited actions.",
+      "prompt": "What safe next action should the worker take without crossing boundaries?",
+      "required_answer_type": "safe_next_action",
+      "scenario_id": "safe_next_actions",
+      "selected_answer_ids": [
+        "safe_next_actions",
+        "safety_status",
+        "protected_worktree_warnings"
+      ]
+    },
+    {
+      "audience": "CTO",
+      "intent": "Explain command, artifact, delta, and execution-boundary risk.",
+      "prompt": "What are the technical risks shown by the archive evidence?",
+      "required_answer_type": "technical_risk",
+      "scenario_id": "cto_technical_risk",
+      "selected_answer_ids": [
+        "non_pass_commands",
+        "stale_or_missing_artifacts",
+        "warn_fail_deltas",
+        "safety_status"
+      ]
+    },
+    {
+      "audience": "CEO",
+      "intent": "Translate the answer kit into non-technical status and boundary language.",
+      "prompt": "Give a non-technical summary of what this evidence means.",
+      "required_answer_type": "nontechnical_summary",
+      "scenario_id": "ceo_nontechnical_summary",
+      "selected_answer_ids": [
+        "overall_status",
+        "safety_status",
+        "safe_next_actions"
+      ]
+    },
+    {
+      "audience": "Planner",
+      "intent": "State that P381 evidence is enough for these handoff scenarios without new analysis.",
+      "prompt": "Do we need more Fable5 analysis before answering these handoff questions?",
+      "required_answer_type": "model_need",
+      "scenario_id": "planner_model_need",
+      "selected_answer_ids": [
+        "safe_next_actions",
+        "latest_durable_baseline",
+        "safety_status"
+      ]
+    },
+    {
+      "audience": "Worker",
+      "intent": "Reject DB, adapter, scoring, registry, deployment, betting, and prediction actions.",
+      "prompt": "Can I open the DB, call adapters, score strategies, or deploy from this answer kit?",
+      "required_answer_type": "safety_boundary",
+      "scenario_id": "safety_boundary",
+      "selected_answer_ids": [
+        "safety_status",
+        "safe_next_actions"
+      ]
+    },
+    {
+      "audience": "Worker",
+      "intent": "Report read-only path warning status and cleanup restrictions.",
+      "prompt": "What should I know about P379 and protected historical worktree warnings?",
+      "required_answer_type": "protected_worktree_warning",
+      "scenario_id": "protected_worktree_warnings",
+      "selected_answer_ids": [
+        "protected_worktree_warnings",
+        "safety_status"
+      ]
+    }
+  ],
+  "scope_lines": [
+    "Historical descriptive evidence only.",
+    "No future prediction guarantee.",
+    "No betting advice.",
+    "No DB open/write.",
+    "No adapter calls.",
+    "No new scoring.",
+    "No new scoring cohort.",
+    "No production registry import.",
+    "No deploy.",
+    "No generated DB rows.",
+    "No strategy status changes.",
+    "No blended leaderboard.",
+    "No force operations.",
+    "No external publication.",
+    "Not production release approval.",
+    "P382 reads only merged P380/P381 query and answer evidence and writes only P382-prefixed scenario runner artifacts."
+  ],
+  "statements": {
+    "adapter_calls": false,
+    "betting_advice": false,
+    "blended_leaderboard": false,
+    "db_opened": false,
+    "db_written": false,
+    "deployed": false,
+    "external_publication": false,
+    "force_operations": false,
+    "future_prediction_guarantee": false,
+    "generated_db_rows": false,
+    "historical_descriptive_evidence_only": true,
+    "new_scoring": false,
+    "new_scoring_cohort": false,
+    "production_registry_imported": false,
+    "production_release_approval": false,
+    "strategy_status_changes": false
+  },
+  "task": "P382_biglotto_answer_kit_scenario_runner"
+}

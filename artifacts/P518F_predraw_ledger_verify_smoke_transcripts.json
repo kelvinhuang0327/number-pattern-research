@@ -1,0 +1,53 @@
+{
+  "artifact_prefix": "P518F_predraw_ledger_verify_smoke",
+  "notices": [
+    "no canonical DB open/write",
+    "no migration/backfill",
+    "no deploy",
+    "synthetic fixtures only",
+    "not production release approval",
+    "no betting/future prediction claims"
+  ],
+  "transcripts": [
+    {
+      "argv": [
+        "tools.predraw_ledger_verify",
+        "${P518F_SMOKE_TMP}/synthetic_valid_ledger.jsonl"
+      ],
+      "case_id": "valid_synthetic_ledger",
+      "exit_code": 0,
+      "stderr": "",
+      "stdout": "[predraw-verify] ledger_path=${P518F_SMOKE_TMP}/synthetic_valid_ledger.jsonl\n[predraw-verify] validation_status=VALID\n[predraw-verify] chain_ok=True chain_total_records=2\n[predraw-verify] record_count=2 record_kind_counts={'PREDICTION': 2}\n[predraw-verify] generation_mode_counts={'RETROSPECTIVE_REPLAY': 2}\n[predraw-verify] lottery_type=BIG_LOTTO record_count=2 target_draw_range=[114000101, 114000101]\n[predraw-verify] disclaimer: This is a structural/hash-chain validity check only. It is NOT a prediction, betting recommendation, evidence of strategy edge, or out-of-sample (OOS) performance proof.\n"
+    },
+    {
+      "argv": [
+        "tools.predraw_ledger_verify",
+        "${P518F_SMOKE_TMP}/synthetic_tampered_ledger.jsonl"
+      ],
+      "case_id": "tampered_chain_invalid",
+      "exit_code": 1,
+      "stderr": "",
+      "stdout": "[predraw-verify] ledger_path=${P518F_SMOKE_TMP}/synthetic_tampered_ledger.jsonl\n[predraw-verify] validation_status=INVALID\n[predraw-verify] chain_ok=False chain_total_records=2\n[predraw-verify] chain_first_broken_index=1 chain_reason=record_hash mismatch at index 1 (tampered content)\n[predraw-verify] record_count=0 record_kind_counts={}\n[predraw-verify] generation_mode_counts={}\n[predraw-verify] disclaimer: This is a structural/hash-chain validity check only. It is NOT a prediction, betting recommendation, evidence of strategy edge, or out-of-sample (OOS) performance proof.\n"
+    },
+    {
+      "argv": [
+        "tools.predraw_ledger_verify",
+        "${P518F_SMOKE_TMP}/synthetic_missing_ledger.jsonl"
+      ],
+      "case_id": "missing_ledger_path",
+      "exit_code": 2,
+      "stderr": "[predraw-verify] ERROR: ledger file does not exist: ${P518F_SMOKE_TMP}/synthetic_missing_ledger.jsonl\n",
+      "stdout": ""
+    },
+    {
+      "argv": [
+        "tools.predraw_ledger_verify",
+        "${P518F_SMOKE_TMP}/lottery_v2.db"
+      ],
+      "case_id": "canonical_db_basename_refusal",
+      "exit_code": 3,
+      "stderr": "[predraw-verify] REFUSED ledger path: Refusing to use canonical DB basename as a ledger path: /private${P518F_SMOKE_TMP}/lottery_v2.db\n",
+      "stdout": ""
+    }
+  ]
+}

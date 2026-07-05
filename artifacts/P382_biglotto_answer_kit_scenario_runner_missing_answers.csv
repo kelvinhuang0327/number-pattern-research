@@ -1,0 +1,2 @@
+gap_id,scenario_id,missing_answer_type,severity,blocking,suggested_followup
+none,none,none,none,NO,No missing or weak answer coverage found for required P382 scenarios.

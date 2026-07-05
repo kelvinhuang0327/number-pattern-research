@@ -173,11 +173,6 @@ def _refresh_after_insert():
         refresh_hedge_fund_outputs(project_root)
     except Exception as e:
         logger.warning(f"refresh_hedge_fund_outputs() failed: {e}")
-    try:
-        from engine.prediction_tracker import resolve_pending
-        resolve_pending(dry_run=False)
-    except Exception as e:
-        logger.warning(f"auto resolve_pending after insert failed: {e}")
     # ── 策略權重自動調整（閉環回饋） ──
     try:
         from engine.weight_adjuster import adjust_all_types
@@ -196,15 +191,6 @@ def _refresh_after_insert():
                 logger.info(f"[LearningIntegrator] {lt}: research_mult={r.get('global_multiplier')}")
     except Exception as e:
         logger.warning(f"learning_integrator after weight_adjuster failed: {e}")
-
-
-def _schedule_after_insert(lottery_type: str, draw_number: str):
-    """新開獎入庫後：標記本期排程 MISSED_WINDOW，建立下一期排程。"""
-    try:
-        from engine.snapshot_scheduler import ensure_next_schedule
-        ensure_next_schedule(lottery_type, draw_number)
-    except Exception as e:
-        logger.warning(f"ensure_next_schedule failed: {e}")
 
 
 # ---------------------------------------------------------------------------
@@ -319,7 +305,6 @@ async def fetch_latest(req: FetchLatestRequest):
             inserted, _ = db_manager.insert_draws([draw_data])
             if inserted > 0:
                 _refresh_after_insert()
-                _schedule_after_insert(lt, draw_num)
                 il.log("fetch_latest", lt, draw_num, "ok",
                        f"Inserted: {draw_data}")
                 return {
@@ -423,14 +408,6 @@ async def run_backfill(req: BackfillRequest):
 
     if summary.get("inserted", 0) > 0 and not req.dry_run:
         _refresh_after_insert()
-        # 取最新入庫的期號觸發排程更新
-        try:
-            from database import db_manager as _dbm
-            latest = _dbm.get_all_draws(req.lottery_type)
-            if latest:
-                _schedule_after_insert(req.lottery_type, latest[0]["draw"])
-        except Exception as e:
-            logger.warning(f"_schedule_after_insert (backfill) failed: {e}")
 
     return {
         "success": True,

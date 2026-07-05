@@ -343,8 +343,7 @@ class TestLiveSmoke:
 
         with patch.object(ingest_mod, "_get_engine",            return_value=mock_engine), \
              patch.object(ingest_mod, "_get_ingest_logger",     return_value=mock_logger), \
-             patch.object(ingest_mod, "_refresh_after_insert",  return_value=None), \
-             patch.object(ingest_mod, "_schedule_after_insert", return_value=None):
+             patch.object(ingest_mod, "_refresh_after_insert",  return_value=None):
             request.cls.client = TestClient(app)
             request.cls.mock_engine = mock_engine
             request.cls.token = _WRITE_GUARD_TOKEN_FALLBACK

@@ -1,0 +1,82 @@
+{
+  "artifact_prefix": "P518J_predraw_ledger_verify_healthcheck",
+  "notices": [
+    "no canonical DB open/write",
+    "no migration/backfill",
+    "no deploy",
+    "synthetic fixture evidence only",
+    "not production release approval",
+    "no betting/future prediction claims"
+  ],
+  "p518j_runner_invariant": {
+    "canonical_db_hash_computed_by_runner": false,
+    "canonical_db_opened": false,
+    "canonical_db_path": "data/lottery_v2.db",
+    "canonical_db_written": false,
+    "fixture_scope": "committed P518I/P518H/P518F/P518G artifacts only",
+    "migration_backfill_deploy_run": false,
+    "status": "PASS"
+  },
+  "source_invariants": {
+    "P518F_no_db_evidence": {
+      "canonical_db_exists_after": true,
+      "canonical_db_exists_before": true,
+      "canonical_db_opened": false,
+      "canonical_db_path": "/Users/kelvin/Kelvin-WorkSpace/LotteryNew.worktrees/P518F-predraw-ledger-verifier-smoke/data/lottery_v2.db",
+      "canonical_db_written": false,
+      "fixture_root": "${P518F_SMOKE_TMP}",
+      "fixture_scope": "temporary synthetic JSONL files only",
+      "migration_backfill_deploy_run": false
+    },
+    "P518F_no_db_evidence_status": "PASS",
+    "P518G_no_db_evidence": {
+      "canonical_db_exists_after": true,
+      "canonical_db_exists_before": true,
+      "canonical_db_opened": false,
+      "canonical_db_path": "/Users/kelvin/Kelvin-WorkSpace/LotteryNew.worktrees/P518G-predraw-ledger-verifier-edge-matrix/data/lottery_v2.db",
+      "canonical_db_written": false,
+      "fixture_root": "${P518G_EDGE_TMP}",
+      "fixture_scope": "temporary synthetic JSONL files only",
+      "migration_backfill_deploy_run": false
+    },
+    "P518G_no_db_evidence_status": "PASS",
+    "P518H_checks": [
+      {
+        "canonical_db_exists_after": true,
+        "canonical_db_exists_before": true,
+        "canonical_db_opened": false,
+        "canonical_db_path": "/Users/kelvin/Kelvin-WorkSpace/LotteryNew.worktrees/P518F-predraw-ledger-verifier-smoke/data/lottery_v2.db",
+        "canonical_db_written": false,
+        "fixture_scope": "temporary synthetic JSONL files only",
+        "migration_backfill_deploy_run": false,
+        "source": "P518F_smoke",
+        "status": "PASS"
+      },
+      {
+        "canonical_db_exists_after": true,
+        "canonical_db_exists_before": true,
+        "canonical_db_opened": false,
+        "canonical_db_path": "/Users/kelvin/Kelvin-WorkSpace/LotteryNew.worktrees/P518G-predraw-ledger-verifier-edge-matrix/data/lottery_v2.db",
+        "canonical_db_written": false,
+        "fixture_scope": "temporary synthetic JSONL files only",
+        "migration_backfill_deploy_run": false,
+        "source": "P518G_edge_matrix",
+        "status": "PASS"
+      },
+      {
+        "canonical_db_exists_after": "not inspected by P518H",
+        "canonical_db_exists_before": "not inspected by P518H",
+        "canonical_db_opened": false,
+        "canonical_db_path": "data/lottery_v2.db",
+        "canonical_db_written": false,
+        "fixture_scope": "committed P518F/P518G artifacts only",
+        "migration_backfill_deploy_run": false,
+        "source": "P518H_acceptance",
+        "status": "PASS"
+      }
+    ],
+    "P518H_db_invariant_status": "PASS",
+    "P518I_db_invariant_status": "PASS"
+  },
+  "status": "PASS"
+}

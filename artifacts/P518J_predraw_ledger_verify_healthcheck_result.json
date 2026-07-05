@@ -1,0 +1,48 @@
+{
+  "artifact_prefix": "P518J_predraw_ledger_verify_healthcheck",
+  "canonical_db_refusal_status": "PASS",
+  "component_statuses": {
+    "DB invariant status": "PASS",
+    "P518F smoke status": "PASS",
+    "P518G edge matrix status": "PASS",
+    "P518H acceptance decision": "PASS",
+    "P518I compact status": "PASS",
+    "canonical DB refusal status": "PASS",
+    "required notice status": "PASS",
+    "source manifest status": "PASS"
+  },
+  "db_invariant_status": "PASS",
+  "db_side_effect_scope": {
+    "canonical_db_hash_computed_by_runner": false,
+    "canonical_db_opened": false,
+    "canonical_db_path": "data/lottery_v2.db",
+    "canonical_db_written": false,
+    "fixture_scope": "committed P518I/P518H/P518F/P518G artifacts only",
+    "migration_backfill_deploy_run": false,
+    "status": "PASS"
+  },
+  "failed_count": 0,
+  "final_verifier_health": "PASS",
+  "missing_artifact_count": 0,
+  "missing_artifacts": [],
+  "notices": [
+    "no canonical DB open/write",
+    "no migration/backfill",
+    "no deploy",
+    "synthetic fixture evidence only",
+    "not production release approval",
+    "no betting/future prediction claims"
+  ],
+  "p518f_smoke_status": "PASS",
+  "p518g_edge_matrix_status": "PASS",
+  "p518h_acceptance_decision": "PASS",
+  "p518i_compact_status": "PASS",
+  "scope": "P518J reads committed P518I/P518H/P518F/P518G artifacts only; no verifier, smoke, edge, acceptance, or status CLI execution; no canonical DB open/write; no migration/backfill; no deploy; synthetic fixture evidence only; not production release approval; no betting/future prediction claims.",
+  "source_artifact_count": 23,
+  "source_case_failure_count": 0,
+  "source_manifest_check_count": 23,
+  "source_manifest_failures": [],
+  "suggested_next_command": "python3 -m tools.predraw_ledger_verify_healthcheck --status-block",
+  "warning_count": 0,
+  "warnings": []
+}

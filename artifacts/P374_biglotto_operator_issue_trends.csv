@@ -1,0 +1,2 @@
+issue_type,current_count,baseline_count,trend,severity,notes
+no_operator_blocking_issues,1,1,initial_snapshot,INFO,Initial P374 trend row; deterministic baseline equals current.

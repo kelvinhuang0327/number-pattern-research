@@ -1,0 +1,225 @@
+{
+  "answer_ids": [
+    "overall_status",
+    "non_pass_commands",
+    "stale_or_missing_artifacts",
+    "warn_fail_deltas",
+    "protected_worktree_warnings",
+    "safety_status",
+    "latest_durable_baseline",
+    "safe_next_actions"
+  ],
+  "cards": [
+    {
+      "answer_id": "overall_status",
+      "audience": [
+        "Worker",
+        "CTO",
+        "CEO"
+      ],
+      "caveats": [
+        "Historical descriptive evidence only.",
+        "No future prediction guarantee.",
+        "No betting advice.",
+        "Not production release approval."
+      ],
+      "copy_paste_text": "Big Lotto no-DB regression archive answer: P377 overall_status=PASS; P380 indexed 6 archived commands, 24 source artifacts, and 56 deltas. This is historical descriptive evidence only, with no future prediction guarantee, no betting advice, and no production release approval.",
+      "evidence_artifacts": [
+        "artifacts/P377_biglotto_command_center_regression_results.json",
+        "artifacts/P380_biglotto_regression_archive_query_index.json",
+        "artifacts/P380_biglotto_regression_archive_query_command_results.csv",
+        "artifacts/P380_biglotto_regression_archive_query_delta_results.csv"
+      ],
+      "summary": "P377 recorded overall_status=PASS across 6 command rows; P380 indexed 24 source artifacts and 56 deltas.",
+      "title": "Overall regression archive status"
+    },
+    {
+      "answer_id": "non_pass_commands",
+      "audience": [
+        "Worker",
+        "CTO"
+      ],
+      "caveats": [
+        "Historical descriptive evidence only.",
+        "No future prediction guarantee.",
+        "No betting advice.",
+        "Not production release approval."
+      ],
+      "copy_paste_text": "Non-pass command answer: 0 real non-PASS command rows are present in committed P380 query evidence. P381 did not execute P371-P380 commands; it transformed existing archive artifacts only.",
+      "evidence_artifacts": [
+        "artifacts/P380_biglotto_regression_archive_query_command_results.csv",
+        "artifacts/P378_biglotto_regression_run_archive_command_delta.csv",
+        "artifacts/P377_biglotto_command_center_regression_commands.csv"
+      ],
+      "summary": "Committed P380 query evidence contains 0 real non-PASS command rows.",
+      "title": "Non-pass commands"
+    },
+    {
+      "answer_id": "stale_or_missing_artifacts",
+      "audience": [
+        "Worker",
+        "CTO"
+      ],
+      "caveats": [
+        "Historical descriptive evidence only.",
+        "No future prediction guarantee.",
+        "No betting advice.",
+        "Not production release approval."
+      ],
+      "copy_paste_text": "Stale/missing artifact answer: 0 real stale or missing source artifact rows are present in committed P380 query evidence. All P381 output is a no-DB answer transformation.",
+      "evidence_artifacts": [
+        "artifacts/P380_biglotto_regression_archive_query_artifact_results.csv",
+        "artifacts/P378_biglotto_regression_run_archive_freshness_delta.csv",
+        "artifacts/P377_biglotto_command_center_regression_artifact_freshness.csv"
+      ],
+      "summary": "Committed P380 query evidence contains 0 real stale or missing source artifact rows.",
+      "title": "Stale or missing artifacts"
+    },
+    {
+      "answer_id": "warn_fail_deltas",
+      "audience": [
+        "Worker",
+        "CTO"
+      ],
+      "caveats": [
+        "Historical descriptive evidence only.",
+        "No future prediction guarantee.",
+        "No betting advice.",
+        "Not production release approval."
+      ],
+      "copy_paste_text": "WARN/FAIL delta answer: 0 real WARN/FAIL delta rows are present in committed P380 query evidence. This does not authorize DB writes, adapter execution, new scoring, or deploy.",
+      "evidence_artifacts": [
+        "artifacts/P380_biglotto_regression_archive_query_delta_results.csv",
+        "artifacts/P378_biglotto_regression_run_archive_command_delta.csv",
+        "artifacts/P378_biglotto_regression_run_archive_freshness_delta.csv"
+      ],
+      "summary": "Committed P380 query evidence contains 0 real WARN/FAIL delta rows.",
+      "title": "Warn/fail deltas"
+    },
+    {
+      "answer_id": "protected_worktree_warnings",
+      "audience": [
+        "Worker"
+      ],
+      "caveats": [
+        "Historical descriptive evidence only.",
+        "No future prediction guarantee.",
+        "No betting advice.",
+        "Not production release approval.",
+        "Read-only presence check only.",
+        "Do not use or clean /Users/kelvin/Kelvin-WorkSpace/LotteryNew-p379.",
+        "Do not recreate, repair, delete, or clean absent protected historical paths."
+      ],
+      "copy_paste_text": "Path warning answer: /Users/kelvin/Kelvin-WorkSpace/LotteryNew-p379 is PRESENT. Protected historical worktree warning is P381_WARN_PROTECTED_WORKTREES_ABSENT. No protected path was used, cleaned, recreated, or repaired by P381.",
+      "evidence_artifacts": [
+        "artifacts/P380_biglotto_regression_archive_query_index.json"
+      ],
+      "summary": "/Users/kelvin/Kelvin-WorkSpace/LotteryNew-p379 is PRESENT; protected historical worktree status is P381_WARN_PROTECTED_WORKTREES_ABSENT.",
+      "title": "Protected worktree warnings"
+    },
+    {
+      "answer_id": "safety_status",
+      "audience": [
+        "Worker",
+        "CTO",
+        "CEO"
+      ],
+      "caveats": [
+        "Historical descriptive evidence only.",
+        "No future prediction guarantee.",
+        "No betting advice.",
+        "Not production release approval.",
+        "No production registry import.",
+        "No strategy status changes.",
+        "No blended leaderboard."
+      ],
+      "copy_paste_text": "Safety answer: No DB was opened or written; no adapters were called; no new scoring, scoring cohort, shape-only scoring, blocked-target scoring, or blended leaderboard was created; no production registry import, deploy, or external publication was performed. P381 is not production release approval.",
+      "evidence_artifacts": [
+        "artifacts/P380_biglotto_regression_archive_query_manifest.csv",
+        "P381_biglotto_regression_archive_answer_kit_manifest.csv"
+      ],
+      "summary": "No DB was opened or written; no adapters were called; no new scoring, scoring cohort, shape-only scoring, blocked-target scoring, or blended leaderboard was created; no production registry import, deploy, or external publication was performed.",
+      "title": "DB / adapter / scoring / deploy safety status"
+    },
+    {
+      "answer_id": "latest_durable_baseline",
+      "audience": [
+        "Worker",
+        "CTO"
+      ],
+      "caveats": [
+        "Historical descriptive evidence only.",
+        "No future prediction guarantee.",
+        "No betting advice.",
+        "Not production release approval."
+      ],
+      "copy_paste_text": "Latest durable baseline answer: P381 source baseline is 4cf6a00362b05917638e2ae77d06fd596ac224ea. P380 query evidence references prior archive baseline e09c8cb6de9d95ff1e381104425bbbcc5c79b781. This is historical evidence packaging only.",
+      "evidence_artifacts": [
+        "artifacts/P380_biglotto_regression_archive_query_index.json",
+        "artifacts/P380_biglotto_regression_archive_query_transcripts.json"
+      ],
+      "summary": "P381 is built on merged P380 query API evidence at baseline 4cf6a00362b05917638e2ae77d06fd596ac224ea; P380 source evidence names prior archive baseline e09c8cb6de9d95ff1e381104425bbbcc5c79b781.",
+      "title": "Latest durable baseline"
+    },
+    {
+      "answer_id": "safe_next_actions",
+      "audience": [
+        "Worker",
+        "Planner"
+      ],
+      "caveats": [
+        "Historical descriptive evidence only.",
+        "No future prediction guarantee.",
+        "No betting advice.",
+        "Not production release approval.",
+        "No standing authorization is created by this answer kit."
+      ],
+      "copy_paste_text": "Safe next action answer: hand off the P381 answer pack as descriptive archive evidence. No DB open/write; do not call adapters, create scoring cohorts, import production registries, deploy, force operations, give betting advice, or make future-performance claims.",
+      "evidence_artifacts": [
+        "artifacts/P381_biglotto_regression_archive_answer_kit_answer_cards.json",
+        "artifacts/P381_biglotto_regression_archive_answer_kit_status_block.md",
+        "artifacts/P381_biglotto_regression_archive_answer_kit_portal.html"
+      ],
+      "summary": "Use the P381 answer cards, status block, briefings, lookup transcripts, portal, and manifest for handoff. Keep all DB, adapter, scoring, registry, and deploy actions out of scope.",
+      "title": "Safe next action summary"
+    }
+  ],
+  "generated_at": "DETERMINISTIC_PLACEHOLDER",
+  "scope_lines": [
+    "Historical descriptive evidence only.",
+    "No future prediction guarantee.",
+    "No betting advice.",
+    "No DB open/write.",
+    "No adapter calls.",
+    "No new scoring.",
+    "No new scoring cohort.",
+    "No production registry import.",
+    "No deploy.",
+    "No generated DB rows.",
+    "No strategy status changes.",
+    "No blended leaderboard.",
+    "No force operations.",
+    "No external publication.",
+    "Not production release approval.",
+    "P381 reads only merged P377/P378/P379/P380 regression archive artifacts and writes only P381-prefixed answer artifacts."
+  ],
+  "statements": {
+    "adapter_calls": false,
+    "betting_advice": false,
+    "blended_leaderboard": false,
+    "db_opened": false,
+    "db_written": false,
+    "deployed": false,
+    "external_publication": false,
+    "force_operations": false,
+    "future_prediction_guarantee": false,
+    "generated_db_rows": false,
+    "historical_descriptive_evidence_only": true,
+    "new_scoring": false,
+    "new_scoring_cohort": false,
+    "production_registry_imported": false,
+    "production_release_approval": false,
+    "strategy_status_changes": false
+  },
+  "task": "P381_biglotto_regression_archive_answer_kit"
+}

@@ -1,0 +1,125 @@
+{
+  "generated_at": "DETERMINISTIC_PLACEHOLDER",
+  "lookup_transcripts": {
+    "non_pass_commands": {
+      "answer_id": "non_pass_commands",
+      "caveats": [
+        "Historical descriptive evidence only.",
+        "No future prediction guarantee.",
+        "No betting advice.",
+        "Not production release approval."
+      ],
+      "command": "python3 -m recovered_strategies.biglotto.no_db_regression_archive_answer_kit --answer non_pass_commands",
+      "evidence_artifacts": [
+        "artifacts/P380_biglotto_regression_archive_query_command_results.csv",
+        "artifacts/P378_biglotto_regression_run_archive_command_delta.csv",
+        "artifacts/P377_biglotto_command_center_regression_commands.csv"
+      ],
+      "stdout": "Non-pass command answer: 0 real non-PASS command rows are present in committed P380 query evidence. P381 did not execute P371-P380 commands; it transformed existing archive artifacts only."
+    },
+    "overall_status": {
+      "answer_id": "overall_status",
+      "caveats": [
+        "Historical descriptive evidence only.",
+        "No future prediction guarantee.",
+        "No betting advice.",
+        "Not production release approval."
+      ],
+      "command": "python3 -m recovered_strategies.biglotto.no_db_regression_archive_answer_kit --answer overall_status",
+      "evidence_artifacts": [
+        "artifacts/P377_biglotto_command_center_regression_results.json",
+        "artifacts/P380_biglotto_regression_archive_query_index.json",
+        "artifacts/P380_biglotto_regression_archive_query_command_results.csv",
+        "artifacts/P380_biglotto_regression_archive_query_delta_results.csv"
+      ],
+      "stdout": "Big Lotto no-DB regression archive answer: P377 overall_status=PASS; P380 indexed 6 archived commands, 24 source artifacts, and 56 deltas. This is historical descriptive evidence only, with no future prediction guarantee, no betting advice, and no production release approval."
+    },
+    "protected_worktree_warnings": {
+      "answer_id": "protected_worktree_warnings",
+      "caveats": [
+        "Historical descriptive evidence only.",
+        "No future prediction guarantee.",
+        "No betting advice.",
+        "Not production release approval.",
+        "Read-only presence check only.",
+        "Do not use or clean /Users/kelvin/Kelvin-WorkSpace/LotteryNew-p379.",
+        "Do not recreate, repair, delete, or clean absent protected historical paths."
+      ],
+      "command": "python3 -m recovered_strategies.biglotto.no_db_regression_archive_answer_kit --answer protected_worktree_warnings",
+      "evidence_artifacts": [
+        "artifacts/P380_biglotto_regression_archive_query_index.json"
+      ],
+      "stdout": "Path warning answer: /Users/kelvin/Kelvin-WorkSpace/LotteryNew-p379 is PRESENT. Protected historical worktree warning is P381_WARN_PROTECTED_WORKTREES_ABSENT. No protected path was used, cleaned, recreated, or repaired by P381."
+    },
+    "safe_next_actions": {
+      "answer_id": "safe_next_actions",
+      "caveats": [
+        "Historical descriptive evidence only.",
+        "No future prediction guarantee.",
+        "No betting advice.",
+        "Not production release approval.",
+        "No standing authorization is created by this answer kit."
+      ],
+      "command": "python3 -m recovered_strategies.biglotto.no_db_regression_archive_answer_kit --answer safe_next_actions",
+      "evidence_artifacts": [
+        "artifacts/P381_biglotto_regression_archive_answer_kit_answer_cards.json",
+        "artifacts/P381_biglotto_regression_archive_answer_kit_status_block.md",
+        "artifacts/P381_biglotto_regression_archive_answer_kit_portal.html"
+      ],
+      "stdout": "Safe next action answer: hand off the P381 answer pack as descriptive archive evidence. No DB open/write; do not call adapters, create scoring cohorts, import production registries, deploy, force operations, give betting advice, or make future-performance claims."
+    },
+    "stale_or_missing_artifacts": {
+      "answer_id": "stale_or_missing_artifacts",
+      "caveats": [
+        "Historical descriptive evidence only.",
+        "No future prediction guarantee.",
+        "No betting advice.",
+        "Not production release approval."
+      ],
+      "command": "python3 -m recovered_strategies.biglotto.no_db_regression_archive_answer_kit --answer stale_or_missing_artifacts",
+      "evidence_artifacts": [
+        "artifacts/P380_biglotto_regression_archive_query_artifact_results.csv",
+        "artifacts/P378_biglotto_regression_run_archive_freshness_delta.csv",
+        "artifacts/P377_biglotto_command_center_regression_artifact_freshness.csv"
+      ],
+      "stdout": "Stale/missing artifact answer: 0 real stale or missing source artifact rows are present in committed P380 query evidence. All P381 output is a no-DB answer transformation."
+    }
+  },
+  "scope_lines": [
+    "Historical descriptive evidence only.",
+    "No future prediction guarantee.",
+    "No betting advice.",
+    "No DB open/write.",
+    "No adapter calls.",
+    "No new scoring.",
+    "No new scoring cohort.",
+    "No production registry import.",
+    "No deploy.",
+    "No generated DB rows.",
+    "No strategy status changes.",
+    "No blended leaderboard.",
+    "No force operations.",
+    "No external publication.",
+    "Not production release approval.",
+    "P381 reads only merged P377/P378/P379/P380 regression archive artifacts and writes only P381-prefixed answer artifacts."
+  ],
+  "statements": {
+    "adapter_calls": false,
+    "betting_advice": false,
+    "blended_leaderboard": false,
+    "db_opened": false,
+    "db_written": false,
+    "deployed": false,
+    "external_publication": false,
+    "force_operations": false,
+    "future_prediction_guarantee": false,
+    "generated_db_rows": false,
+    "historical_descriptive_evidence_only": true,
+    "new_scoring": false,
+    "new_scoring_cohort": false,
+    "production_registry_imported": false,
+    "production_release_approval": false,
+    "strategy_status_changes": false
+  },
+  "task": "P381_biglotto_regression_archive_answer_kit"
+}

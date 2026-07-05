@@ -1,0 +1,101 @@
+{
+  "artifact_prefix": "P520F_ingest_afterinsert_hook_candidate_resolver",
+  "best_confidence_by_hook": {
+    "learning_integrator": "MEDIUM",
+    "refresh_hedge_fund_outputs": "MEDIUM",
+    "weight_adjuster": "MEDIUM"
+  },
+  "candidate_count": 145,
+  "candidate_count_by_hook": {
+    "learning_integrator": 19,
+    "refresh_hedge_fund_outputs": 59,
+    "weight_adjuster": 67
+  },
+  "component_statuses": {
+    "DB side effects avoided": "PASS",
+    "P520E result artifact read": "PASS",
+    "P520E unresolved artifact read": "PASS",
+    "repo Python source scan": "PASS",
+    "runtime import avoided": "PASS",
+    "source AST evaluation": "WARN",
+    "target confirmation conservative": "PASS"
+  },
+  "confidence_counts": {
+    "HIGH": 0,
+    "LOW": 139,
+    "MEDIUM": 6
+  },
+  "fail_count": 0,
+  "failure_count": 0,
+  "failures": [],
+  "final_status": "WARN",
+  "notices": [
+    "source/AST-only candidate resolver",
+    "reads P520E unresolved artifacts",
+    "repo-wide Python source scan only",
+    "does not import lottery_api.routes.ingest",
+    "does not import live hook target modules",
+    "does not execute after-insert hooks",
+    "does not execute draw inserts",
+    "no canonical DB open/write",
+    "no migration/backfill",
+    "no deploy",
+    "does not implement or modify hooks",
+    "no betting/future prediction claims"
+  ],
+  "p520e_summary": {
+    "db_indicator_count": 0,
+    "file_indicator_count": 9,
+    "final_status": "WARN",
+    "result_artifact": "artifacts/P520E_ingest_afterinsert_hook_target_audit_result.json",
+    "result_present": true,
+    "runtime_indicator_count": 8,
+    "target_symbol_found_count": 1,
+    "unresolved_source_count": 3
+  },
+  "parse_error_count": 3,
+  "parse_errors": [
+    {
+      "parse_error": "IndentationError: unexpected indent",
+      "source_path": "lottery_api/models/autogluon_model_extensions.py"
+    },
+    {
+      "parse_error": "SyntaxError: f-string expression part cannot include a backslash",
+      "source_path": "scripts/p211r_short_mid_window_diagnostic.py"
+    },
+    {
+      "parse_error": "SyntaxError: invalid syntax",
+      "source_path": "tools/backtest_strategy_2.py"
+    }
+  ],
+  "pass_count": 0,
+  "reference_count": 148,
+  "reference_count_by_hook": {
+    "learning_integrator": 20,
+    "refresh_hedge_fund_outputs": 60,
+    "weight_adjuster": 68
+  },
+  "scope": "P520F reads P520E artifacts and parses repository Python source as text/AST only; no app runtime import; no live target module import; no after-insert hook execution; no draw insert execution; no canonical DB open/write; no migration/backfill; no deploy; does not implement or modify hooks; no betting/future prediction claims.",
+  "source_files_parsed_count": 1691,
+  "source_files_scanned_count": 1694,
+  "source_path": "lottery_api/routes/ingest.py",
+  "suggested_next_command": "python -m tools.ingest_afterinsert_hook_candidate_resolver --status-block",
+  "target_confirmed_by_hook": {
+    "learning_integrator": false,
+    "refresh_hedge_fund_outputs": false,
+    "weight_adjuster": false
+  },
+  "unresolved_hook_count": 3,
+  "unresolved_hooks": [
+    "learning_integrator",
+    "refresh_hedge_fund_outputs",
+    "weight_adjuster"
+  ],
+  "warn_count": 3,
+  "warning_count": 3,
+  "warnings": [
+    "learning_integrator: static candidates only; target remains unconfirmed without direct HIGH evidence",
+    "refresh_hedge_fund_outputs: static candidates only; target remains unconfirmed without direct HIGH evidence",
+    "weight_adjuster: static candidates only; target remains unconfirmed without direct HIGH evidence"
+  ]
+}

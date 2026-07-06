@@ -3142,9 +3142,16 @@
                 <tbody id="p251f-tbody"></tbody>
               </table>
             </div>
-            <div id="p251f-empty" style="display:none;text-align:center;padding:20px;color:#8b949e;font-size:13px">無符合條件的策略</div>
-            <div id="p251f-error" style="display:none;color:#c0392b;font-size:12px;padding:8px 0"></div>
-            <div id="p251f-loading" style="text-align:center;padding:16px;color:#8b949e;font-size:13px">載入中...</div>
+            <div id="p251f-empty" role="status" style="display:none;text-align:center;padding:20px;color:#8b949e;font-size:13px">
+              沒有符合目前篩選條件的歷史證據結果，請調整篩選條件。
+            </div>
+            <div id="p251f-error" role="alert" style="display:none;color:#f85149;font-size:12px;padding:12px 0">
+              <span id="p251f-error-message">證據儀表板載入失敗，請稍後重試。</span>
+              <button id="p251f-retry" type="button" class="btn-sm btn-secondary" style="margin-left:8px">重新載入</button>
+            </div>
+            <div id="p251f-loading" role="status" aria-live="polite" style="text-align:center;padding:16px;color:#8b949e;font-size:13px">
+              正在載入證據儀表板，請稍候...
+            </div>
 
             <div style="margin-top:14px;font-size:11px;color:#6e7681;line-height:1.7">
               來源端點：<code>/api/replay/evidence-dashboard</code>。此 UI 不查詢 DB、不修改 registry、不產生策略、不部署；缺失資料維持缺失，不推論為 0。預設篩選狀態為 <code>include_all_rows=true</code>、<code>exclude_by_lifecycle=false</code>。
@@ -3165,8 +3172,27 @@
             }
             function num(v) { return v == null ? 'N/A' : (typeof v === 'number' ? v.toLocaleString() : esc(v)); }
             function badge(v) { return '<span class="p251f-badge">' + esc(v || 'UNKNOWN') + '</span>'; }
-            function setLoading(on) { var n = el('p251f-loading'); if (n) n.style.display = on ? '' : 'none'; }
-            function setError(msg) { var e = el('p251f-error'); if (!e) return; e.style.display = msg ? '' : 'none'; if (msg) e.textContent = '載入失敗：' + msg; }
+            function setLoading(on) {
+              var n = el('p251f-loading');
+              var retry = el('p251f-retry');
+              if (n) n.style.display = on ? '' : 'none';
+              if (retry) retry.disabled = on;
+            }
+            function setError(msg) {
+              var box = el('p251f-error');
+              var message = el('p251f-error-message');
+              if (!box || !message) return;
+              box.style.display = msg ? '' : 'none';
+              message.textContent = msg ? '證據儀表板載入失敗：' + msg : '';
+            }
+            function validatePayload(d) {
+              if (!d || typeof d !== 'object' || Array.isArray(d) ||
+                  !Array.isArray(d.strategy_rows) || !Array.isArray(d.lottery_cards) ||
+                  !Array.isArray(d.lifecycle_filter_options)) {
+                throw new Error('伺服器回應格式無效');
+              }
+              return d;
+            }
             function renderSummary(d) {
               var g = d.global_summary || {};
               var cards = [
@@ -3243,17 +3269,25 @@
               renderRows();
             }
             function load() {
-              setLoading(true); setError(null);
+              loaded = false;
+              setLoading(true);
+              setError(null);
               fetch((window.API_BASE || '') + ROUTE)
                 .then(function (r) { if (!r.ok) throw new Error('HTTP ' + r.status); return r.json(); })
+                .then(validatePayload)
                 .then(function (d) { loaded = true; setLoading(false); render(d); })
-                .catch(function (e) { setLoading(false); setError(e.message); });
+                .catch(function (e) {
+                  setLoading(false);
+                  setError((e && e.message) || '未知錯誤');
+                });
             }
             function wire() {
               ['p251f-filter-lottery', 'p251f-filter-lifecycle', 'p251f-filter-artifact-only'].forEach(function (id) {
                 var n = el(id);
                 if (n) n.addEventListener('change', renderRows);
               });
+              var retry = el('p251f-retry');
+              if (retry) retry.addEventListener('click', load);
               document.querySelectorAll('[data-section="' + SEC + '"]').forEach(function (btn) {
                 btn.addEventListener('click', function () { if (!loaded) load(); });
               });

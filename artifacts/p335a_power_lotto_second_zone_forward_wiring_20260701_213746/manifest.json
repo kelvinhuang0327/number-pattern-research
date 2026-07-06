@@ -1,0 +1,88 @@
+{
+  "task_id": "P335A_POWER_LOTTO_SECOND_ZONE_FORWARD_WIRING_IMPLEMENTATION",
+  "classification": "P335A_POWER_LOTTO_SECOND_ZONE_FORWARD_WIRING_IMPLEMENTED_WITH_LIMITATIONS",
+  "datetime": "2026-07-01T21:36:05+08:00",
+  "timezone": "Asia/Taipei",
+  "mode": "forward-only minimal code change; no DB write, no backfill, no prediction, no pipeline resume, no push",
+  "evidence_root": "/Users/kelvin/Kelvin-WorkSpace/p335a_power_lotto_second_zone_forward_wiring_20260701_213746",
+  "git": {
+    "origin_main_head": "ce2c042e7f4967841e6b31e17552d55bf4717f91",
+    "required_predecessor_head": "ce2c042e7f4967841e6b31e17552d55bf4717f91",
+    "predecessor_match": true,
+    "implementation_worktree": "/Users/kelvin/Kelvin-WorkSpace/LotteryNew-p335a",
+    "implementation_branch": "task/p335a-power-lotto-second-zone-forward-wiring",
+    "head_equals_origin_main": true,
+    "staged_files": 0,
+    "commit_created": false,
+    "pushed": false
+  },
+  "repo_files_changed": [
+    {
+      "path": "lottery_api/models/power_lotto_second_zone.py",
+      "status": "added",
+      "lines": 169,
+      "sha256": "15b60f2cdf95bb965c089a5c6f25181349b3f3170cb2f2569736895cdbdc1fe8"
+    },
+    {
+      "path": "tests/test_p335a_power_lotto_second_zone_forward_wiring.py",
+      "status": "added",
+      "lines": 173,
+      "sha256": "5e34c360617555355010760c73c96ae292e3c8449fd9a1a424fb5e576a2d60c5"
+    }
+  ],
+  "repo_files_modified_count": 0,
+  "db_invariance": {
+    "canonical": {
+      "path": "/Users/kelvin/Kelvin-WorkSpace/LotteryNew/lottery_api/data/lottery_v2.db",
+      "baseline_size": 99368960,
+      "baseline_mtime": "Jun 30 13:38:50 2026",
+      "baseline_sha256": "9956c3bc303f2e38ea2cd777367f6205cf23bc2fa6f2c40e0f09213ca5c1ee95",
+      "after_size": 99368960,
+      "after_mtime": "Jun 30 13:38:50 2026",
+      "after_sha256": "9956c3bc303f2e38ea2cd777367f6205cf23bc2fa6f2c40e0f09213ca5c1ee95",
+      "unchanged": true
+    },
+    "root": {
+      "path": "/Users/kelvin/Kelvin-WorkSpace/LotteryNew/data/lottery_v2.db",
+      "baseline_sha256": "2095c687ede4111090daf858e64f6a33569d2d8d68f1f2ec60fae7f5c6366c96",
+      "after_sha256": "2095c687ede4111090daf858e64f6a33569d2d8d68f1f2ec60fae7f5c6366c96",
+      "unchanged": true
+    }
+  },
+  "tests": {
+    "runner": "/Users/kelvin/Kelvin-WorkSpace/LotteryNew/venv/bin/python -m pytest",
+    "runner_versions": {"python": "3.14.4", "pytest": "9.0.3", "numpy": "2.4.4"},
+    "p335a_guard_suite": {"file": "tests/test_p335a_power_lotto_second_zone_forward_wiring.py", "result": "PASS", "passed": 20, "failed": 0},
+    "reuse_fidelity_check": {"result": "PASS", "detail": "second_zone_predict == PowerLottoSpecialPredictor.predict_top_n(n=3)[0]"},
+    "existing_relevant_non_db": {"result": "PASS", "passed": 32, "skipped": 1},
+    "existing_relevant_db_backed": {"result": "NOT_RUN", "failed_due_to_missing_db": 6, "reason": "canonical 99MB DB untracked/absent in fresh origin/main worktree", "non_causation_proven": true}
+  },
+  "validation": {
+    "clean_branch_from_origin_main": "PASS",
+    "p333a_p334a_evidence_read": "PASS",
+    "changed_files_minimal_and_in_scope": "PASS",
+    "no_db_write_migration_checkpoint_restore": "PASS",
+    "no_historical_backfill": "PASS",
+    "null_guard_tests_pass": "PASS",
+    "relevant_existing_tests": "PASS (non-DB) / NOT_RUN (DB-backed, DB absent)",
+    "no_recommended_numbers_betting_prediction_wording": "PASS",
+    "push": "NOT_RUN"
+  },
+  "predecessor_evidence": {
+    "p333a_root": "/Users/kelvin/Kelvin-WorkSpace/p333a_prize_aware_success_reconciliation_audit_20260701_205132",
+    "p334a_root": "/Users/kelvin/Kelvin-WorkSpace/p334a_power_lotto_second_zone_coverage_feasibility_20260701_210705"
+  },
+  "artifacts": [
+    {"name": "phase0_state.md", "sha256": "cafa77ecce91a8c27fdaf53f53a8258f323f1391462abaecb4bc92bf115ab1ec"},
+    {"name": "p333a_p334a_dependency_summary.md", "sha256": "3f7d664e254c0fac383b43407aa668d3aadd308a2371227a45019d0fab6d5187"},
+    {"name": "implementation_plan.md", "sha256": "961aab768d89cb417e13e622bc3b08e8444e8ebb38a23471d5e063ba98cec207"},
+    {"name": "changed_files.md", "sha256": "9f847ea160194e6a7ae6f8c13ab8de30c08e07c62011708be99316756fbb0c39"},
+    {"name": "test_plan.md", "sha256": "4eccc2d42c79a060f12ebc8655e9bd8987a55435d505dbb9cf90dc94ca403dd0"},
+    {"name": "test_results.md", "sha256": "2ab616cc25e6075ad23a8e96c349d98af9e2c57a21e3f29799246c3789a199d4"},
+    {"name": "db_invariance.md", "sha256": "a0d63f94d93eb2b9668afac31d72b4785d6952ca66cec9f7394141ab97b98c82"},
+    {"name": "no_backfill_confirmation.md", "sha256": "49b3e26567b84c5e01c5784c7cdea36b11ab8ed21e3223515975d7d10b24a19e"},
+    {"name": "commands.log", "sha256": "fd638e92151dcfecf6ac37a652c1f4945e3666df13c40d220be11bf7c3e92b28"},
+    {"name": "handoff_report.md", "sha256": "5c710dab677cb72c96a6044fe19462678a527f839e62d07c8796cd33ac9ef265"}
+  ],
+  "manifest_note": "artifacts[] excludes manifest.json itself (standard self-exclusion). Recompute with: shasum -a 256 <name>"
+}

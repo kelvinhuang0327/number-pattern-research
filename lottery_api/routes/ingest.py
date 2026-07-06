@@ -157,40 +157,43 @@ def _get_db_manager():
     from database import db_manager
     return db_manager
 
+_MISSING_AFTERINSERT_HOOKS_ENABLED = False
+
 def _refresh_after_insert():
-    """Trigger scheduler + hedge fund refresh after new data inserted."""
+    """Trigger scheduler refresh after new data inserted."""
     try:
         from utils.scheduler import scheduler
         scheduler.load_data()
     except Exception as e:
         logger.warning(f"scheduler.load_data() failed: {e}")
-    try:
-        import os as _os
-        project_root = _os.path.dirname(_os.path.dirname(_os.path.dirname(
-            _os.path.abspath(__file__)
-        )))
-        from analysis.payout.sync import refresh_hedge_fund_outputs
-        refresh_hedge_fund_outputs(project_root)
-    except Exception as e:
-        logger.warning(f"refresh_hedge_fund_outputs() failed: {e}")
-    # ── 策略權重自動調整（閉環回饋） ──
-    try:
-        from engine.weight_adjuster import adjust_all_types
-        adj_result = adjust_all_types(dry_run=False)
-        for lt, r in adj_result.items():
-            if isinstance(r, dict) and r.get('adjusted', 0) > 0:
-                logger.info(f"[WeightAdjuster] {lt}: adjusted {r['adjusted']} strategies")
-    except Exception as e:
-        logger.warning(f"weight_adjuster after resolve failed: {e}")
-    # ── 研究結果 → 決策層整合（學習閉環） ──
-    try:
-        from engine.learning_integrator import apply_all_types as apply_learning
-        learn_result = apply_learning(dry_run=False)
-        for lt, r in learn_result.items():
-            if isinstance(r, dict) and r.get('status') == 'applied':
-                logger.info(f"[LearningIntegrator] {lt}: research_mult={r.get('global_multiplier')}")
-    except Exception as e:
-        logger.warning(f"learning_integrator after weight_adjuster failed: {e}")
+    if _MISSING_AFTERINSERT_HOOKS_ENABLED:
+        try:
+            import os as _os
+            project_root = _os.path.dirname(_os.path.dirname(_os.path.dirname(
+                _os.path.abspath(__file__)
+            )))
+            from analysis.payout.sync import refresh_hedge_fund_outputs
+            refresh_hedge_fund_outputs(project_root)
+        except Exception as e:
+            logger.warning(f"refresh_hedge_fund_outputs() failed: {e}")
+        # ── 策略權重自動調整（閉環回饋） ──
+        try:
+            from engine.weight_adjuster import adjust_all_types
+            adj_result = adjust_all_types(dry_run=False)
+            for lt, r in adj_result.items():
+                if isinstance(r, dict) and r.get('adjusted', 0) > 0:
+                    logger.info(f"[WeightAdjuster] {lt}: adjusted {r['adjusted']} strategies")
+        except Exception as e:
+            logger.warning(f"weight_adjuster after resolve failed: {e}")
+        # ── 研究結果 → 決策層整合（學習閉環） ──
+        try:
+            from engine.learning_integrator import apply_all_types as apply_learning
+            learn_result = apply_learning(dry_run=False)
+            for lt, r in learn_result.items():
+                if isinstance(r, dict) and r.get('status') == 'applied':
+                    logger.info(f"[LearningIntegrator] {lt}: research_mult={r.get('global_multiplier')}")
+        except Exception as e:
+            logger.warning(f"learning_integrator after weight_adjuster failed: {e}")
 
 
 # ---------------------------------------------------------------------------

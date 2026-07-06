@@ -1,0 +1,2 @@
+hook_name,status,import_module,imported_symbol,local_symbol,import_line,call_line,warning_line,reason
+scheduler.load_data,RETAINED,utils.scheduler,scheduler,scheduler,165,166,168,confirmed scheduler refresh path remains outside disabled missing-target guard

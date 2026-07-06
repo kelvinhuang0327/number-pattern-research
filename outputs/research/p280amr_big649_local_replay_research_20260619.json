@@ -1,6 +1,7 @@
 {
   "task_id": "P280AM-R",
   "schema_version": "p280amr_big649_local_replay_research_v1",
+  "final_classification": "P280AMR_BIG649_LOCAL_REPLAY_RESEARCH_PR_OPEN_NO_PUBLICATION",
   "origin_main": "25e7f8520164aaf61f440a866a11eca403bb76a3",
   "research_only": true,
   "db_read_policy": "READ_ONLY_URI_MODE_RO_PLUS_QUERY_ONLY_ONE_SNAPSHOT",

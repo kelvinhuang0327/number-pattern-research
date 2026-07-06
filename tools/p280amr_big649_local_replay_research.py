@@ -56,6 +56,7 @@ from tools.big649_no_db_strategy_output_adapter import (  # noqa: E402
 TASK_ID = "P280AM-R"
 ORIGIN_MAIN = "25e7f8520164aaf61f440a866a11eca403bb76a3"
 SCHEMA_VERSION = "p280amr_big649_local_replay_research_v1"
+FINAL_CLASSIFICATION = "P280AMR_BIG649_LOCAL_REPLAY_RESEARCH_PR_OPEN_NO_PUBLICATION"
 
 TICKET_SIZE = 6
 NUMBER_MIN = 1
@@ -802,6 +803,7 @@ def build_report(
     report = {
         "task_id": TASK_ID,
         "schema_version": SCHEMA_VERSION,
+        "final_classification": FINAL_CLASSIFICATION,
         "origin_main": ORIGIN_MAIN,
         "research_only": True,
         "db_read_policy": "READ_ONLY_URI_MODE_RO_PLUS_QUERY_ONLY_ONE_SNAPSHOT",
@@ -996,6 +998,7 @@ def render_markdown(report: Mapping[str, Any]) -> str:
       "target/deadline lookup, or publication PR was performed.")
     a("")
     a(f"- task_id: `{report['task_id']}`")
+    a(f"- final_classification: `{report['final_classification']}`")
     a(f"- origin/main: `{report['origin_main']}`")
     a(f"- DB read policy: `{report['db_read_policy']}`")
     da = report["database_access"]

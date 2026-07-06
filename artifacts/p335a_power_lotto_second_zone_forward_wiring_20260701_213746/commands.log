@@ -1,0 +1,47 @@
+# P335A — commands.log (key commands, chronological)
+# worktree venv python = /Users/kelvin/Kelvin-WorkSpace/LotteryNew/venv/bin/python (pytest 9.0.3)
+
+## Phase 0 — state
+date "+%Y-%m-%d %H:%M:%S %Z (%z)"                       # 2026-07-01 21:36:05 CST (+0800), Asia/Taipei
+git -C /Users/kelvin/Kelvin-WorkSpace/LotteryNew rev-parse --show-toplevel
+ls -la <P333A evidence root> ; ls -la <P334A evidence root>   # both present
+git fetch origin                                        # exit 0
+git rev-parse origin/main                               # ce2c042e7f4967841e6b31e17552d55bf4717f91
+git merge-base --is-ancestor ce2c042… origin/main       # YES (== HEAD)
+git branch --show-current                               # task/p273a-... (stale; not used)
+git diff --cached --name-only | wc -l                   # 0
+stat/shasum lottery_api/data/lottery_v2.db              # 99368960, 9956c3bc…  (baseline)
+stat/shasum data/lottery_v2.db                          # 217088,  2095c687…  (baseline)
+git worktree add -b task/p335a-power-lotto-second-zone-forward-wiring \
+    /Users/kelvin/Kelvin-WorkSpace/LotteryNew-p335a ce2c042…   # clean worktree, HEAD==origin/main
+mkdir -p /Users/kelvin/Kelvin-WorkSpace/p335a_power_lotto_second_zone_forward_wiring_20260701_213746
+
+## Inventory (read-only, against origin/main)
+git grep -n '"predicted_special": *None' -- '*.py'
+git grep -nE 'def get_all_bets' -- '*.py'
+git grep -nE 'predicted_special|special|POWER' -- lottery_api/models/p93_tierb_replay_adapters.py
+for n in p132 p133 p134 p140 p141; do git ls-files "scripts/${n}_*.py"; done   # NONE in-tree
+git log --all --format='%H' -1 -- scripts/p132_apply_midfreq_fourier_mk_3bet.py # 436b2ca (branch claude/zen-gates-ff6802)
+git merge-base --is-ancestor 436b2ca origin/main         # NO (not on origin/main)
+git grep -nE 'class PowerLottoSpecialPredictor|def predict' -- lottery_api/models/special_predictor.py
+sed/Read power_special_v3 (tools/quick_predict.py), _P47BaseAdapter.get_one_bet, test_p48_...null_policy.py
+
+## Implementation (2 new files)
+write lottery_api/models/power_lotto_second_zone.py
+write tests/test_p335a_power_lotto_second_zone_forward_wiring.py
+
+## Verification
+$VENV/python -m pytest tests/test_p335a_power_lotto_second_zone_forward_wiring.py -v   # 20 passed
+git status --short                                       # only the 2 new files; git diff --stat empty
+$VENV/python - <<'PY' ... second_zone_predict(hist)=8 == predict_top_n[0]  # reuse fidelity PASS
+$VENV/python -m pytest tests/test_p93_..._dryrun.py tests/test_p48_...null_policy.py -q  # 32 pass,1 skip,6 DB-absent fail
+# non-causation proof: mv 2 new files aside; rerun same 2 files -> identical 6 failed/32 passed/1 skipped; restore
+rm -f lottery_api/data/lottery_v2.db                     # remove stray 0-byte sqlite stub (gitignored)
+
+## DB invariance (after all work)
+stat/shasum <canonical> lottery_api/data/lottery_v2.db   # 99368960, 9956c3bc…  (UNCHANGED)
+stat/shasum data/lottery_v2.db                           # 217088,  2095c687…  (UNCHANGED)
+shasum -a 256 lottery_api/models/power_lotto_second_zone.py \
+              tests/test_p335a_power_lotto_second_zone_forward_wiring.py
+#   15b60f2c… power_lotto_second_zone.py   |   5e34c360… test file
+git rev-parse HEAD ; git rev-parse origin/main           # both ce2c042…  ; staged files: 0

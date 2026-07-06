@@ -1,0 +1,93 @@
+{
+  "artifact_prefix": "P520I_ingest_afterinsert_hook_static_binding_resolver",
+  "binding_chain_row_count": 3,
+  "component_statuses": {
+    "DB side effects avoided": "PASS",
+    "P520E artifact context read": "PASS",
+    "P520F artifact context read": "PASS",
+    "P520G artifact context read": "PASS",
+    "P520H matrix artifact read": "PASS",
+    "P520H result artifact read": "PASS",
+    "P520H unresolved artifact read": "PASS",
+    "ingest source AST evaluation": "PASS",
+    "runtime import avoided": "PASS",
+    "static binding resolution": "WARN",
+    "target confirmation conservative": "PASS"
+  },
+  "confirmed_hook_count": 0,
+  "confirmed_hooks": [],
+  "fail_count": 0,
+  "failure_count": 0,
+  "failures": [],
+  "final_status": "WARN",
+  "focused_reference_count": 3,
+  "inspected_file_row_count": 18,
+  "max_follow_depth": 5,
+  "notices": [
+    "source/AST/text-only static binding resolver",
+    "reads committed P520H/P520G/P520F/P520E artifacts",
+    "parses lottery_api/routes/ingest.py without importing it",
+    "does not import live hook target modules",
+    "does not execute after-insert hooks",
+    "does not execute draw inserts",
+    "no canonical DB open/write",
+    "no migration/backfill",
+    "no deploy",
+    "does not implement or modify hooks",
+    "does not modify prediction/strategy/scoring logic",
+    "no betting/future prediction claims"
+  ],
+  "p520e_summary": {
+    "final_status": "WARN",
+    "result_artifact": "artifacts/P520E_ingest_afterinsert_hook_target_audit_result.json",
+    "result_present": true,
+    "unresolved_source_count": 3
+  },
+  "p520f_summary": {
+    "candidate_count": 145,
+    "final_status": "WARN",
+    "result_artifact": "artifacts/P520F_ingest_afterinsert_hook_candidate_resolver_result.json",
+    "result_present": true
+  },
+  "p520g_summary": {
+    "final_status": "WARN",
+    "probable_upgrade_count": 3,
+    "result_artifact": "artifacts/P520G_ingest_afterinsert_hook_candidate_triage_result.json",
+    "result_present": true
+  },
+  "p520h_summary": {
+    "final_status": "WARN",
+    "probable_hook_count": 3,
+    "result_artifact": "artifacts/P520H_ingest_afterinsert_hook_import_chain_resolver_result.json",
+    "result_present": true,
+    "target_source_unresolved_count": 3
+  },
+  "pass_count": 0,
+  "probable_hook_count": 0,
+  "probable_hooks": [],
+  "scope": "P520I reads committed P520H/P520G/P520F/P520E artifacts, parses lottery_api/routes/ingest.py, follows direct import/alias/from-import/module-assignment/__init__.py re-export/static __all__ chains up to depth 5 as source/AST/text only; no app runtime import; no live target module import; no after-insert hook execution; no draw insert execution; no canonical DB open/write; no migration/backfill; no deploy.",
+  "source_path": "lottery_api/routes/ingest.py",
+  "status_counts": {
+    "CONFIRMED": 0,
+    "PROBABLE": 0,
+    "UNRESOLVED": 3
+  },
+  "suggested_next_command": "python -m tools.ingest_afterinsert_hook_static_binding_resolver --status-block",
+  "unresolved_hook_count": 3,
+  "unresolved_hooks": [
+    "learning_integrator",
+    "refresh_hedge_fund_outputs",
+    "weight_adjuster"
+  ],
+  "unresolved_reasons": [
+    "source file missing"
+  ],
+  "unresolved_summary_row_count": 3,
+  "warn_count": 3,
+  "warning_count": 3,
+  "warnings": [
+    "learning_integrator: source file missing",
+    "refresh_hedge_fund_outputs: source file missing",
+    "weight_adjuster: source file missing"
+  ]
+}

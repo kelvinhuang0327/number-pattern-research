@@ -1,0 +1,19 @@
+hook_name,depth,module,symbol,candidate_path,exists,parsed,inspection_kind,evidence,reason
+learning_integrator,0,engine.learning_integrator,apply_all_types,engine/__init__.py,False,False,package-init-reexport-candidate,,source file missing
+learning_integrator,0,engine.learning_integrator,apply_all_types,engine/learning_integrator.py,False,False,module-path-candidate,,source file missing
+learning_integrator,0,engine.learning_integrator,apply_all_types,engine/learning_integrator/__init__.py,False,False,module-path-candidate,,source file missing
+learning_integrator,0,engine.learning_integrator,apply_all_types,lottery_api/engine/__init__.py,False,False,package-init-reexport-candidate,,source file missing
+learning_integrator,0,engine.learning_integrator,apply_all_types,lottery_api/engine/learning_integrator.py,False,False,module-path-candidate,,source file missing
+learning_integrator,0,engine.learning_integrator,apply_all_types,lottery_api/engine/learning_integrator/__init__.py,False,False,module-path-candidate,,source file missing
+refresh_hedge_fund_outputs,0,analysis.payout.sync,refresh_hedge_fund_outputs,analysis/payout/__init__.py,False,False,package-init-reexport-candidate,,source file missing
+refresh_hedge_fund_outputs,0,analysis.payout.sync,refresh_hedge_fund_outputs,analysis/payout/sync.py,False,False,module-path-candidate,,source file missing
+refresh_hedge_fund_outputs,0,analysis.payout.sync,refresh_hedge_fund_outputs,analysis/payout/sync/__init__.py,False,False,module-path-candidate,,source file missing
+refresh_hedge_fund_outputs,0,analysis.payout.sync,refresh_hedge_fund_outputs,lottery_api/analysis/payout/__init__.py,False,False,package-init-reexport-candidate,,source file missing
+refresh_hedge_fund_outputs,0,analysis.payout.sync,refresh_hedge_fund_outputs,lottery_api/analysis/payout/sync.py,False,False,module-path-candidate,,source file missing
+refresh_hedge_fund_outputs,0,analysis.payout.sync,refresh_hedge_fund_outputs,lottery_api/analysis/payout/sync/__init__.py,False,False,module-path-candidate,,source file missing
+weight_adjuster,0,engine.weight_adjuster,adjust_all_types,engine/__init__.py,False,False,package-init-reexport-candidate,,source file missing
+weight_adjuster,0,engine.weight_adjuster,adjust_all_types,engine/weight_adjuster.py,False,False,module-path-candidate,,source file missing
+weight_adjuster,0,engine.weight_adjuster,adjust_all_types,engine/weight_adjuster/__init__.py,False,False,module-path-candidate,,source file missing
+weight_adjuster,0,engine.weight_adjuster,adjust_all_types,lottery_api/engine/__init__.py,False,False,package-init-reexport-candidate,,source file missing
+weight_adjuster,0,engine.weight_adjuster,adjust_all_types,lottery_api/engine/weight_adjuster.py,False,False,module-path-candidate,,source file missing
+weight_adjuster,0,engine.weight_adjuster,adjust_all_types,lottery_api/engine/weight_adjuster/__init__.py,False,False,module-path-candidate,,source file missing

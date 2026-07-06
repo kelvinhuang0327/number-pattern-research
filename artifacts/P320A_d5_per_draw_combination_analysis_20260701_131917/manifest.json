@@ -1,0 +1,64 @@
+{
+  "artifact_count": 11,
+  "artifacts": [
+    {
+      "bytes": 17059,
+      "path": "build_analysis.py",
+      "sha256": "1db20230c7c175bca2785a8288c67148e58dfa756a5b57c805fa2be79bba69e0"
+    },
+    {
+      "bytes": 1339,
+      "path": "commands.log",
+      "sha256": "9287bcb72aea98d5e75389ebad89d07fad1ae355d9f4ae2cfc261148d3311042"
+    },
+    {
+      "bytes": 3635,
+      "path": "handoff_report.md",
+      "sha256": "2092e5cac52c339f2f02cae3d4d68d2bf21b4ce58e1431357921c3fd27789b4b"
+    },
+    {
+      "bytes": 802,
+      "path": "limitations.md",
+      "sha256": "ee0db63e6528724bd0859ded2858c81fafc7d322346da03d9c86fc0ddc76bce2"
+    },
+    {
+      "bytes": 1217,
+      "path": "phase0_state.md",
+      "sha256": "9c8f4457cee0e0fd5a66d0fccedc8457f7eeca7d31b756d0373b4f6ecaaa86be"
+    },
+    {
+      "bytes": 328,
+      "path": "powerlotto_scope_note.md",
+      "sha256": "01ff2d04c3d72a09184157def62a482ea805bee35fb11e1d7f3f5474a8569c13"
+    },
+    {
+      "bytes": 2497,
+      "path": "source_readiness.md",
+      "sha256": "fd977cd160a7e3ce828ccba9a8a1fe3d668b8eee8fca9dc756fa9520c49eed5e"
+    },
+    {
+      "bytes": 1115084,
+      "path": "strategy_combination_metrics.csv",
+      "sha256": "0141b53f135a456fb3c2d02fe15f17aa5728a7ff8f47c88d26777c025e855ec5"
+    },
+    {
+      "bytes": 10498,
+      "path": "strategy_combination_metrics.md",
+      "sha256": "19ae60505641a51e38cb6ee1bad9aaec8ccc09725d878af086364ddd31b92b91"
+    },
+    {
+      "bytes": 32781,
+      "path": "top_descriptive_candidates.csv",
+      "sha256": "e1b074aed742eab0306cdcd002082635899c215e289d2dd1208a61353087cabd"
+    },
+    {
+      "bytes": 850,
+      "path": "window_summary.csv",
+      "sha256": "63e72bf7362542e072e4244361a1bc9b70fd5dd01e0067ff64a697c8e785a985"
+    }
+  ],
+  "classification": "P320A_D5_COMBINATION_ANALYSIS_COMPLETE_WITH_RISKS",
+  "generated_at": "2026-07-01T05:22:25.312318+00:00",
+  "manifest_scope": "all regular files in evidence root except manifest.json (self-reference exclusion)",
+  "task_id": "P320A_D5_PER_DRAW_STRATEGY_COMBINATION_ANALYSIS_READ_ONLY"
+}

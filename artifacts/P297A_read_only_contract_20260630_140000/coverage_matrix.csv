@@ -1,0 +1,5 @@
+downstream,use_case,required_metrics,covered_by_contract,notes
+D2,per-strategy hit-rate matrix,lottery/strategy/window/top_k/draw_range/sample_size/M1/M2/M3/hit-rate/baseline/delta/confidence/inferential_status,YES,Needs producer implementation against this contract; P267C covers M3+ subset but not all M1/M2/M3 matrices.
+D3,prize-tier scoring,prize_tier_id/any_prize_aware_win/special_or_zone/eligibility/exclusion/scorer provenance,YES_WITH_RISK,P271D/P273A prove structure and observed counts; POWER_LOTTO is partial due missing predicted second zone.
+D4,cross-lottery feasibility,canonical_source_status/sample sizes/lottery enum/prize-aware availability/blocked reasons,YES,POWER_LOTTO canonical view absent must stay NOT_READY until resolved.
+D5,combination optimizer,top_k/draw windows/hit-rate/baseline/delta/confidence/readiness status,YES_WITH_RISK,Contract blocks optimizer use of NULL/NOT_READY cells; prospective threshold/horizon absent.

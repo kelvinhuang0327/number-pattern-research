@@ -131,8 +131,8 @@ _SPECS = (
         "candidate_function": "deviation_complement_2bet",
         "candidate_multi": True,
         "kwargs": {"window": 50},
-        "git_blob_sha1": "1ea8ad13aa2d26a8f7e64845b21d104542fcab4f",
-        "sha256": "bb97c0bf044c5f9f37de7c6f27629e479bda650ca33dfeb7d0fbff840537bfba",
+        "git_blob_sha1": "aa0bfda1b24f356368e9664568796a009f77dbc0",
+        "sha256": "c7a82149da625ab7bb8ddfc824192b66e4998c98d0c0f18b99dca17a9786d601",
     },
     {
         "strategy_id": "biglotto_echo_aware_3bet",

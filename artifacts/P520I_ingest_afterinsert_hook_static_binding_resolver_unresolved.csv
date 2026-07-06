@@ -1,0 +1,4 @@
+hook_name,original_p520h_status,terminal_symbol_status,import_module,imported_symbol,local_symbol,ingest_call_site_line,terminal_source_file_path,reason,reason_category,recommended_next_action
+learning_integrator,PROBABLE,UNRESOLVED,engine.learning_integrator,apply_all_types,apply_learning,188,,source file missing,source file missing,source-path-followup-required
+refresh_hedge_fund_outputs,PROBABLE,UNRESOLVED,analysis.payout.sync,refresh_hedge_fund_outputs,refresh_hedge_fund_outputs,173,,source file missing,source file missing,source-path-followup-required
+weight_adjuster,PROBABLE,UNRESOLVED,engine.weight_adjuster,adjust_all_types,adjust_all_types,179,,source file missing,source file missing,source-path-followup-required

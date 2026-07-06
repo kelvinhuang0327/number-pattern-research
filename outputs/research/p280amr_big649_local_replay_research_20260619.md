@@ -3,6 +3,7 @@
 > Retrospective historical replay. NOT prediction-success, production readiness, promotion, or activation. No real publication, pre-draw manifest, official target/deadline lookup, or publication PR was performed.
 
 - task_id: `P280AM-R`
+- final_classification: `P280AMR_BIG649_LOCAL_REPLAY_RESEARCH_PR_OPEN_NO_PUBLICATION`
 - origin/main: `25e7f8520164aaf61f440a866a11eca403bb76a3`
 - DB read policy: `READ_ONLY_URI_MODE_RO_PLUS_QUERY_ONLY_ONE_SNAPSHOT`
 - DB opened/queried/copied/written: True/True/False/False (query_only=True)

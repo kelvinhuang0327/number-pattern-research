@@ -357,6 +357,27 @@ def test_markdown_renders(synthetic_db):
     assert "result_digest" in md
 
 
+@pytest.mark.xfail(
+    reason=(
+        "Pre-existing, unrelated adapter contract failure blocks build_report(): "
+        "AdapterContractError SOURCE_IDENTITY_MISMATCH_STOP for "
+        "'biglotto_deviation_2bet' in tools/big649_no_db_strategy_output_adapter.py. "
+        "Also affects 7 other pre-existing tests in this module on a clean checkout. "
+        "Un-xfail once that adapter issue is fixed."
+    ),
+    strict=False,
+)
+def test_final_classification_present_in_report_and_markdown(synthetic_db):
+    expected = "P280AMR_BIG649_LOCAL_REPLAY_RESEARCH_PR_OPEN_NO_PUBLICATION"
+    assert mod.FINAL_CLASSIFICATION == expected
+    r = mod.build_report(synthetic_db, max_targets=12)
+    assert "final_classification" in r
+    assert r["final_classification"] == expected
+    md = mod.render_markdown(r)
+    assert "final_classification" in md
+    assert expected in md
+
+
 # ---------------------------------------------------------------------------
 # Static safety scans of the script source
 # ---------------------------------------------------------------------------

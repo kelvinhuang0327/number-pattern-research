@@ -77,6 +77,17 @@ def _replay_section(html: str) -> str:
     return m.group(0) if m else html
 
 
+def _increase_winning_rate_violations(html: str) -> list[str]:
+    violations = []
+    for match in re.finditer('提高中獎率', html):
+        start = match.start()
+        context = html[max(0, start - 20): start + 10]
+        has_negation = '不代表' in context or '不是' in context or '不得' in context
+        if not has_negation:
+            violations.append(html[max(0, start - 30): start + 20])
+    return violations
+
+
 @contextmanager
 def _serve_repo(root: Path):
     handler = partial(SimpleHTTPRequestHandler, directory=str(root))
@@ -616,14 +627,16 @@ class TestReplayBrowserSmoke:
         assert len(occurrences) > 0, (
             "No '提高中獎率' found at all — expected at least one negation disclaimer"
         )
-        for pos in occurrences:
-            # Check 20-char window before the match for negation markers
-            context = self.html[max(0, pos - 20): pos + 10]
-            has_negation = '不代表' in context or '不是' in context or '不得' in context
-            assert has_negation, (
-                f"'提高中獎率' found outside negation context near: "
-                f"...{self.html[max(0,pos-30):pos+20]}..."
-            )
+        violations = _increase_winning_rate_violations(self.html)
+        assert not violations, (
+            "'提高中獎率' found outside negation context near: "
+            + "; ".join(f"...{v}..." for v in violations)
+        )
+
+    def test_bare_increase_winning_rate_claim_rejected(self):
+        """Bare promotional 「提高中獎率」 remains forbidden."""
+        assert _increase_winning_rate_violations('此策略可提高中獎率') == ['此策略可提高中獎率']
+        assert _increase_winning_rate_violations('不代表提高中獎率') == []
 
     # ------------------------------------------------------------------ #
     # Check 23 — No SIGNAL / NO_SIGNAL / NO_VALIDATED_EDGE in replay JS

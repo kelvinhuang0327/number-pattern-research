@@ -1,0 +1,14 @@
+lottery_type,strategy_id,sample_size_rows,distinct_target_draws,min_target_draw,max_target_draw,min_target_date,max_target_date,max_bet_index,predicted_special_null_rows,predicted_special_nonnull_rows,row_scope
+POWER_LOTTO,__ALL_POWER_LOTTO__,36104,1551,101000002,99000104,,,5,27104,9000,all POWER_LOTTO replay rows in strategy_prediction_replays
+POWER_LOTTO,cold_complement_2bet,1500,1500,101000002,115000040,2012/01/05,2026/05/18,1,0,1500,strategy_prediction_replays grouped by strategy_id
+POWER_LOTTO,fourier30_markov30_2bet,1501,1501,101000002,115000041,2012/01/05,2026/05/21,1,1,1500,strategy_prediction_replays grouped by strategy_id
+POWER_LOTTO,fourier_rhythm_3bet,4503,1501,101000002,115000041,2012/01/05,2026/05/21,3,4503,0,strategy_prediction_replays grouped by strategy_id
+POWER_LOTTO,midfreq_fourier_2bet,1500,1500,101000002,115000040,2012/01/05,2026/05/18,1,0,1500,strategy_prediction_replays grouped by strategy_id
+POWER_LOTTO,midfreq_fourier_mk_3bet,4500,1500,101000002,115000040,2012/01/05,2026/05/18,3,3000,1500,strategy_prediction_replays grouped by strategy_id
+POWER_LOTTO,power_fourier_rhythm_2bet,3000,1500,101000003,115000041,2012/01/09,2026/05/21,2,3000,0,strategy_prediction_replays grouped by strategy_id
+POWER_LOTTO,power_orthogonal_5bet,7550,1550,101000002,99000104,2010/07/12,2026/05/18,5,7550,0,strategy_prediction_replays grouped by strategy_id
+POWER_LOTTO,power_precision_3bet,4550,1550,101000002,99000104,2010/07/12,2026/05/18,3,4550,0,strategy_prediction_replays grouped by strategy_id
+POWER_LOTTO,pp3_freqort_4bet,6000,1500,101000002,115000040,2012/01/05,2026/05/18,4,4500,1500,strategy_prediction_replays grouped by strategy_id
+POWER_LOTTO,zonal_entropy_2bet,1500,1500,101000002,115000040,2012/01/05,2026/05/18,1,0,1500,strategy_prediction_replays grouped by strategy_id
+POWER_LOTTO,__NONNULL_SUBSET__,9000,1500,101000002,115000040,2012/01/05,2026/05/18,,0,9000,valid research-only subset where predicted_special IS NOT NULL; no missing values filled or substituted
+POWER_LOTTO,__NULL_EXCLUDED_SUBSET__,,,,,,,,,0,excluded subset where predicted_special IS NULL; must not be filled or substituted

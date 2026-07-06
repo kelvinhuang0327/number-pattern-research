@@ -1,0 +1,61 @@
+{
+  "task_id": "P334A_POWER_LOTTO_PREDICTED_SECOND_ZONE_COVERAGE_FEASIBILITY_AUDIT_READ_ONLY",
+  "authorization_phrase": "AUTHORIZE_P334A_POWER_LOTTO_SECOND_ZONE_COVERAGE_FEASIBILITY_READ_ONLY_NO_REPO_CHANGE_NO_DB_WRITE_NO_BACKFILL_NO_PREDICTION",
+  "generated_at_local": "2026-07-01T21:07:05+08:00",
+  "generated_at_utc": "2026-07-01T13:07:05Z",
+  "evidence_root": "/Users/kelvin/Kelvin-WorkSpace/p334a_power_lotto_second_zone_coverage_feasibility_20260701_210705",
+  "predecessor_task": {
+    "task_id": "P333A_PRIZE_AWARE_SUCCESS_RECONCILIATION_AUDIT_READ_ONLY",
+    "evidence_root": "/Users/kelvin/Kelvin-WorkSpace/p333a_prize_aware_success_reconciliation_audit_20260701_205132"
+  },
+  "canonical_origin_main_head": "ce2c042e7f4967841e6b31e17552d55bf4717f91",
+  "repo_root": "/Users/kelvin/Kelvin-WorkSpace/LotteryNew",
+  "db_baseline": {
+    "canonical_db_path": "lottery_api/data/lottery_v2.db",
+    "sha256_before": "9956c3bc303f2e38ea2cd777367f6205cf23bc2fa6f2c40e0f09213ca5c1ee95",
+    "sha256_after": "9956c3bc303f2e38ea2cd777367f6205cf23bc2fa6f2c40e0f09213ca5c1ee95",
+    "size_bytes": 99368960,
+    "mtime": "Jun 30 13:38:50 2026",
+    "db_unchanged": true,
+    "benign_copy_path": "data/lottery_v2.db",
+    "benign_copy_sha256_before": "2095c687ede4111090daf858e64f6a33569d2d8d68f1f2ec60fae7f5c6366c9",
+    "benign_copy_sha256_after": "2095c687ede4111090daf858e64f6a33569d2d8d68f1f2ec60fae7f5c6366c9",
+    "benign_copy_unchanged": true
+  },
+  "git_state": {
+    "branch": "task/p273a-prize-aware-inferential-validation",
+    "dirty_entry_count_before": 18,
+    "dirty_entry_count_after": 18,
+    "staged_count": 0,
+    "repo_final_state_unchanged": true
+  },
+  "power_lotto_predicted_special_coverage": {
+    "total_rows": 36104,
+    "with_predicted_special": 9000,
+    "null_predicted_special": 27104,
+    "coverage_pct": 24.928,
+    "root_cause_pattern_1_never_wired_rows": 17603,
+    "root_cause_pattern_2_lost_in_multibet_extension_rows": 7500,
+    "root_cause_pattern_3_small_gaps_and_legacy_rows": 2001
+  },
+  "classification": "P334A_POWER_LOTTO_SECOND_ZONE_COVERAGE_FEASIBILITY_COMPLETE_WITH_BLOCKERS",
+  "payload_files": [
+    {"file": "phase0_state.md", "sha256": "47ef58a9f1a21811d7e330718a4691a5ee811134a9f418f7ae247b4d1686cd93"},
+    {"file": "p333a_dependency_summary.md", "sha256": "2c431bf9fd8d62f169fed27d0f292f99c42c4cb2eb8469801741b715a0c4f133"},
+    {"file": "power_lotto_pipeline_inventory.md", "sha256": "8247beffaef00b0b6473a35567a6aae17d77d9495c2751adff0710c0984918d5"},
+    {"file": "predicted_special_gap_analysis.md", "sha256": "0a67599c3b22a465624803defe7c5be7589889809f5cf69db5fffab2ea1f7aea"},
+    {"file": "forward_only_second_zone_design.md", "sha256": "dcd21feccada1be84c18f006e2625f866ba6f8c5360673066cbd3c82930f5fff"},
+    {"file": "no_backfill_policy.md", "sha256": "bba9cfb5663384d5cdab0623232327a5bd7d49d7ecea7dae7a74ae023b093b3d"},
+    {"file": "implementation_options.md", "sha256": "3cee203b7cf7bb933f5628a05e32a24b2224b4de413739d814c21f5164f551bb"},
+    {"file": "risk_assessment.md", "sha256": "e6a0327c1827eb309ed6ee308be0c2acf52506cfd901586da0119eb0b3221f1a"},
+    {"file": "blockers.md", "sha256": "c4ad5bc82c2b22c0012e7b5d51ae06a2c760c527bbcc17cd08359300ddd977f3"},
+    {"file": "validation.md", "sha256": "d3d3ed2a5e45d02438f67e9a319d8d917c047148bf5d949102da3819f70682a6"},
+    {"file": "commands.log", "sha256": "102c793cc61064fe9446d1e13955c1e39c739491892c1ae891316dbe2bc3aa31"},
+    {"file": "handoff_report.md", "sha256": "9491fa2eb1b455fa8505481356cb2384c88d33577b690032d1ee03cab4c1d06e"}
+  ],
+  "note_on_manifest_self_hash": "manifest.json is not self-hashed (standard convention: a manifest cannot embed its own post-write hash); its own integrity is the file object itself, verifiable by direct read.",
+  "no_repo_write": true,
+  "no_db_write": true,
+  "no_historical_backfill": true,
+  "no_recommended_numbers_or_predictions": true
+}

@@ -1,0 +1,1534 @@
+{
+  "task_id": "P280AM-R",
+  "schema_version": "p280amr_big649_local_replay_research_v1",
+  "origin_main": "25e7f8520164aaf61f440a866a11eca403bb76a3",
+  "research_only": true,
+  "db_read_policy": "READ_ONLY_URI_MODE_RO_PLUS_QUERY_ONLY_ONE_SNAPSHOT",
+  "database_access": {
+    "db_path": "/Users/kelvin/Kelvin-WorkSpace/LotteryNew/lottery_api/data/lottery_v2.db",
+    "uri": "file:/Users/kelvin/Kelvin-WorkSpace/LotteryNew/lottery_api/data/lottery_v2.db?mode=ro",
+    "mode_ro": true,
+    "query_only_enabled": true,
+    "opened": true,
+    "queried": true,
+    "copied": false,
+    "written": false,
+    "source_object": "draws_big_lotto_canonical_main"
+  },
+  "dataset": {
+    "row_count": 2117,
+    "first_draw": "96000001",
+    "first_date": "2007/01/02",
+    "last_draw": "115000062",
+    "last_date": "2026/06/16",
+    "duplicate_draw_ids": 0,
+    "duplicate_dates": 0,
+    "ordering": "DATE_ORDER_EQUALS_DRAW_INT_ORDER",
+    "invalid_tickets": 0,
+    "special_in_main_count": 0,
+    "min_history": 500,
+    "eligible_target_count": 1617
+  },
+  "dataset_source": "BIG_LOTTO canonical view draws_big_lotto_canonical_main",
+  "history_cutoff_rule": "history strictly before target draw; cutoff = previous draw id",
+  "outcome_leakage_guard": "target outcome never passed to adapter; adapter rejects target-in-history and forbidden metadata keys",
+  "strategy_ids": [
+    "bet2_fourier_expansion_biglotto",
+    "biglotto_deviation_2bet",
+    "biglotto_echo_aware_3bet",
+    "biglotto_triple_strike",
+    "biglotto_ts3_markov_4bet_w30",
+    "cold_complement_biglotto",
+    "coldpool15_biglotto",
+    "fourier30_markov30_biglotto",
+    "markov_2bet_biglotto",
+    "markov_single_biglotto",
+    "ts3_regime_3bet"
+  ],
+  "strategy_count": 11,
+  "exact_11_strategy_replay": true,
+  "replay_target_indices": [
+    500,
+    2116
+  ],
+  "replay_target_count": 1617,
+  "horizons": [
+    {
+      "name": "short",
+      "requested_targets": 100,
+      "applied_targets": 100,
+      "capped": false
+    },
+    {
+      "name": "medium",
+      "requested_targets": 300,
+      "applied_targets": 300,
+      "capped": false
+    },
+    {
+      "name": "long",
+      "requested_targets": 750,
+      "applied_targets": 750,
+      "capped": false
+    }
+  ],
+  "analytic_single_ticket_random_prize_prob": {
+    "p_hit_ge_3": 0.01863754500202234,
+    "p_two_plus_special": 0.012314235255955885,
+    "p_prize_aware_win": 0.030951780257978224
+  },
+  "random_baseline_config": {
+    "seed": 42,
+    "replicates": 200,
+    "equal_budget_k": [
+      1,
+      3,
+      5,
+      7,
+      11
+    ],
+    "diversified_random_k": [
+      3,
+      5,
+      7,
+      11
+    ],
+    "diversified_method": "seeded shuffle-and-chunk of 1..49 into disjoint sixes",
+    "generation": "uniform 6-of-49 without replacement per ticket; deterministic per (seed,target,replicate)"
+  },
+  "combination_definitions": {
+    "all_11_adapter_unique": "All eleven remediated (candidate-selected) tickets at bet_index=1.",
+    "top_k_by_historical_training_only": "Top-k strategies ranked by walk-forward expanding-window prize-aware win rate over draws strictly before each evaluation target (research observation layer; not adapter/registry selection).",
+    "diversity_greedy_overlap_minimized": "Greedy selection of k tickets minimizing pairwise number overlap; seeded by canonical-order strategy 0; no training, no outcome use.",
+    "per_family_cap_derived_heuristic": "Tickets capped at 1 per DERIVED keyword family (family metadata not authoritative); canonical order; variable budget.",
+    "equal_budget_random": "k uniform 6-of-49 tickets per draw (seeded replicate distribution).",
+    "diversified_random": "k low-overlap random tickets greedily chosen from a seeded random pool."
+  },
+  "duplicate_ticket_findings": {
+    "full_replay": {
+      "n": 1617,
+      "avg_frozen_unique_tickets": 6.14100185528757,
+      "avg_remediated_unique_tickets": 10.876932591218306,
+      "min_frozen_unique_tickets": 5,
+      "max_frozen_unique_tickets": 7,
+      "avg_frozen_duplicate_groups": 3.0272108843537415,
+      "draws_with_frozen_duplicates": 1617,
+      "draws_with_remediated_duplicates": 190,
+      "remediated_resolved_11_unique": 1427,
+      "remediated_unresolved_best_effort": 190,
+      "avg_coverage_gain_unique_tickets": 4.7359307359307365
+    },
+    "per_horizon": {
+      "short": {
+        "n": 100,
+        "avg_frozen_unique_tickets": 6.04,
+        "avg_remediated_unique_tickets": 10.85,
+        "min_frozen_unique_tickets": 5,
+        "max_frozen_unique_tickets": 7,
+        "avg_frozen_duplicate_groups": 3.04,
+        "draws_with_frozen_duplicates": 100,
+        "draws_with_remediated_duplicates": 14,
+        "remediated_resolved_11_unique": 86,
+        "remediated_unresolved_best_effort": 14,
+        "avg_coverage_gain_unique_tickets": 4.81
+      },
+      "medium": {
+        "n": 300,
+        "avg_frozen_unique_tickets": 6.1,
+        "avg_remediated_unique_tickets": 10.843333333333334,
+        "min_frozen_unique_tickets": 5,
+        "max_frozen_unique_tickets": 7,
+        "avg_frozen_duplicate_groups": 3.0433333333333334,
+        "draws_with_frozen_duplicates": 300,
+        "draws_with_remediated_duplicates": 45,
+        "remediated_resolved_11_unique": 255,
+        "remediated_unresolved_best_effort": 45,
+        "avg_coverage_gain_unique_tickets": 4.743333333333334
+      },
+      "long": {
+        "n": 750,
+        "avg_frozen_unique_tickets": 6.1066666666666665,
+        "avg_remediated_unique_tickets": 10.858666666666666,
+        "min_frozen_unique_tickets": 5,
+        "max_frozen_unique_tickets": 7,
+        "avg_frozen_duplicate_groups": 3.026666666666667,
+        "draws_with_frozen_duplicates": 750,
+        "draws_with_remediated_duplicates": 101,
+        "remediated_resolved_11_unique": 649,
+        "remediated_unresolved_best_effort": 101,
+        "avg_coverage_gain_unique_tickets": 4.752
+      }
+    }
+  },
+  "horizon_results": [
+    {
+      "name": "short",
+      "requested_targets": 100,
+      "applied_targets": 100,
+      "capped": false,
+      "aggregate": {
+        "horizon_targets": 100,
+        "n": 100,
+        "eval_first_draw": "114000078",
+        "eval_last_draw": "115000062",
+        "combinations": {
+          "all_11_adapter_unique": {
+            "11": {
+              "k": 11,
+              "prize_aware_win_rate": 0.17,
+              "wins": 17,
+              "n": 100,
+              "ci95": {
+                "low": 0.1,
+                "high": 0.25
+              },
+              "avg_best_hit": 1.83,
+              "avg_mean_hit": 0.7563636363636363,
+              "avg_coverage": 32.29,
+              "avg_duplicate_tickets": 0.15
+            }
+          },
+          "top_k_by_historical_training_only": {
+            "1": {
+              "k": 1,
+              "prize_aware_win_rate": 0.01,
+              "wins": 1,
+              "n": 100,
+              "ci95": {
+                "low": 0.0,
+                "high": 0.03
+              },
+              "avg_best_hit": 0.79,
+              "avg_mean_hit": 0.79,
+              "avg_coverage": 6.0,
+              "avg_duplicate_tickets": 0.0
+            },
+            "3": {
+              "k": 3,
+              "prize_aware_win_rate": 0.05,
+              "wins": 5,
+              "n": 100,
+              "ci95": {
+                "low": 0.01,
+                "high": 0.1
+              },
+              "avg_best_hit": 1.37,
+              "avg_mean_hit": 0.81,
+              "avg_coverage": 14.64,
+              "avg_duplicate_tickets": 0.0
+            },
+            "5": {
+              "k": 5,
+              "prize_aware_win_rate": 0.1,
+              "wins": 10,
+              "n": 100,
+              "ci95": {
+                "low": 0.049750000000000016,
+                "high": 0.16
+              },
+              "avg_best_hit": 1.63,
+              "avg_mean_hit": 0.7759999999999999,
+              "avg_coverage": 22.22,
+              "avg_duplicate_tickets": 0.0
+            },
+            "7": {
+              "k": 7,
+              "prize_aware_win_rate": 0.12,
+              "wins": 12,
+              "n": 100,
+              "ci95": {
+                "low": 0.06,
+                "high": 0.19
+              },
+              "avg_best_hit": 1.72,
+              "avg_mean_hit": 0.77,
+              "avg_coverage": 26.45,
+              "avg_duplicate_tickets": 0.08
+            },
+            "11": {
+              "k": 11,
+              "prize_aware_win_rate": 0.17,
+              "wins": 17,
+              "n": 100,
+              "ci95": {
+                "low": 0.1,
+                "high": 0.24
+              },
+              "avg_best_hit": 1.83,
+              "avg_mean_hit": 0.7563636363636363,
+              "avg_coverage": 32.29,
+              "avg_duplicate_tickets": 0.15
+            }
+          },
+          "diversity_greedy_overlap_minimized": {
+            "3": {
+              "k": 3,
+              "prize_aware_win_rate": 0.05,
+              "wins": 5,
+              "n": 100,
+              "ci95": {
+                "low": 0.01,
+                "high": 0.09
+              },
+              "avg_best_hit": 1.46,
+              "avg_mean_hit": 0.79,
+              "avg_coverage": 17.98,
+              "avg_duplicate_tickets": 0.0
+            },
+            "5": {
+              "k": 5,
+              "prize_aware_win_rate": 0.12,
+              "wins": 12,
+              "n": 100,
+              "ci95": {
+                "low": 0.06,
+                "high": 0.19
+              },
+              "avg_best_hit": 1.66,
+              "avg_mean_hit": 0.768,
+              "avg_coverage": 26.16,
+              "avg_duplicate_tickets": 0.0
+            },
+            "7": {
+              "k": 7,
+              "prize_aware_win_rate": 0.16,
+              "wins": 16,
+              "n": 100,
+              "ci95": {
+                "low": 0.09,
+                "high": 0.24
+              },
+              "avg_best_hit": 1.77,
+              "avg_mean_hit": 0.77,
+              "avg_coverage": 30.49,
+              "avg_duplicate_tickets": 0.0
+            },
+            "11": {
+              "k": 11,
+              "prize_aware_win_rate": 0.17,
+              "wins": 17,
+              "n": 100,
+              "ci95": {
+                "low": 0.1,
+                "high": 0.24024999999999863
+              },
+              "avg_best_hit": 1.83,
+              "avg_mean_hit": 0.7563636363636363,
+              "avg_coverage": 32.29,
+              "avg_duplicate_tickets": 0.15
+            }
+          },
+          "per_family_cap_derived_heuristic": {
+            "7": {
+              "k": 7,
+              "prize_aware_win_rate": 0.09,
+              "wins": 9,
+              "n": 100,
+              "ci95": {
+                "low": 0.04,
+                "high": 0.15
+              },
+              "avg_best_hit": 1.65,
+              "avg_mean_hit": 0.76,
+              "avg_coverage": 26.05,
+              "avg_duplicate_tickets": 0.07
+            }
+          }
+        },
+        "random_baselines": {
+          "equal_budget_random": {
+            "1": {
+              "k": 1,
+              "replicates": 200,
+              "mean_prize_aware_win_rate": 0.029449999999999997,
+              "p2_5": 0.0,
+              "p97_5": 0.06,
+              "max_rate": 0.09,
+              "avg_best_hit": 0.73245,
+              "avg_coverage": 6.0,
+              "avg_duplicate_tickets": 0.0
+            },
+            "3": {
+              "k": 3,
+              "replicates": 200,
+              "mean_prize_aware_win_rate": 0.08735,
+              "p2_5": 0.04,
+              "p97_5": 0.14025000000000007,
+              "max_rate": 0.17,
+              "avg_best_hit": 1.3606,
+              "avg_coverage": 15.8807,
+              "avg_duplicate_tickets": 0.0
+            },
+            "5": {
+              "k": 5,
+              "replicates": 200,
+              "mean_prize_aware_win_rate": 0.14245000000000002,
+              "p2_5": 0.07,
+              "p97_5": 0.22,
+              "max_rate": 0.27,
+              "avg_best_hit": 1.63425,
+              "avg_coverage": 23.50075,
+              "avg_duplicate_tickets": 0.0
+            },
+            "7": {
+              "k": 7,
+              "replicates": 200,
+              "mean_prize_aware_win_rate": 0.19755,
+              "p2_5": 0.12,
+              "p97_5": 0.28,
+              "max_rate": 0.32,
+              "avg_best_hit": 1.8075,
+              "avg_coverage": 29.3595,
+              "avg_duplicate_tickets": 0.0
+            },
+            "11": {
+              "k": 11,
+              "replicates": 200,
+              "mean_prize_aware_win_rate": 0.29055,
+              "p2_5": 0.2,
+              "p97_5": 0.38,
+              "max_rate": 0.4,
+              "avg_best_hit": 2.0329,
+              "avg_coverage": 37.3195,
+              "avg_duplicate_tickets": 0.0
+            }
+          },
+          "diversified_random": {
+            "3": {
+              "k": 3,
+              "replicates": 200,
+              "mean_prize_aware_win_rate": 0.0919,
+              "p2_5": 0.04,
+              "p97_5": 0.16,
+              "max_rate": 0.17,
+              "avg_best_hit": 1.42095,
+              "avg_coverage": 18.0,
+              "avg_duplicate_tickets": 0.0
+            },
+            "5": {
+              "k": 5,
+              "replicates": 200,
+              "mean_prize_aware_win_rate": 0.15380000000000002,
+              "p2_5": 0.08,
+              "p97_5": 0.22,
+              "max_rate": 0.26,
+              "avg_best_hit": 1.734,
+              "avg_coverage": 30.0,
+              "avg_duplicate_tickets": 0.0
+            },
+            "7": {
+              "k": 7,
+              "replicates": 200,
+              "mean_prize_aware_win_rate": 0.21355000000000002,
+              "p2_5": 0.13,
+              "p97_5": 0.3,
+              "max_rate": 0.32,
+              "avg_best_hit": 1.94195,
+              "avg_coverage": 42.0,
+              "avg_duplicate_tickets": 0.0
+            },
+            "11": {
+              "k": 11,
+              "replicates": 200,
+              "mean_prize_aware_win_rate": 0.3108,
+              "p2_5": 0.21975,
+              "p97_5": 0.4,
+              "max_rate": 0.44,
+              "avg_best_hit": 2.1332,
+              "avg_coverage": 48.36685,
+              "avg_duplicate_tickets": 0.0
+            }
+          }
+        }
+      },
+      "comparisons": [
+        {
+          "combination": "all_11_adapter_unique",
+          "k": 11,
+          "prize_aware_win_rate": 0.17,
+          "ci95": {
+            "low": 0.1,
+            "high": 0.25
+          },
+          "random_mean_rate": 0.29055,
+          "p_value_vs_equal_budget_random": 1.0,
+          "beats_random_baseline": false,
+          "effect_vs_random": -0.12054999999999996,
+          "beats_all_11_adapter_unique": null,
+          "effect_vs_all_11": null
+        },
+        {
+          "combination": "top_k_by_historical_training_only",
+          "k": 1,
+          "prize_aware_win_rate": 0.01,
+          "ci95": {
+            "low": 0.0,
+            "high": 0.03
+          },
+          "random_mean_rate": 0.029449999999999997,
+          "p_value_vs_equal_budget_random": 0.9502487562189055,
+          "beats_random_baseline": false,
+          "effect_vs_random": -0.019449999999999995,
+          "beats_all_11_adapter_unique": false,
+          "effect_vs_all_11": -0.16
+        },
+        {
+          "combination": "top_k_by_historical_training_only",
+          "k": 3,
+          "prize_aware_win_rate": 0.05,
+          "ci95": {
+            "low": 0.01,
+            "high": 0.1
+          },
+          "random_mean_rate": 0.08735,
+          "p_value_vs_equal_budget_random": 0.9651741293532339,
+          "beats_random_baseline": false,
+          "effect_vs_random": -0.037349999999999994,
+          "beats_all_11_adapter_unique": false,
+          "effect_vs_all_11": -0.12000000000000001
+        },
+        {
+          "combination": "top_k_by_historical_training_only",
+          "k": 5,
+          "prize_aware_win_rate": 0.1,
+          "ci95": {
+            "low": 0.049750000000000016,
+            "high": 0.16
+          },
+          "random_mean_rate": 0.14245000000000002,
+          "p_value_vs_equal_budget_random": 0.9353233830845771,
+          "beats_random_baseline": false,
+          "effect_vs_random": -0.042450000000000015,
+          "beats_all_11_adapter_unique": false,
+          "effect_vs_all_11": -0.07
+        },
+        {
+          "combination": "top_k_by_historical_training_only",
+          "k": 7,
+          "prize_aware_win_rate": 0.12,
+          "ci95": {
+            "low": 0.06,
+            "high": 0.19
+          },
+          "random_mean_rate": 0.19755,
+          "p_value_vs_equal_budget_random": 0.9950248756218906,
+          "beats_random_baseline": false,
+          "effect_vs_random": -0.07755000000000001,
+          "beats_all_11_adapter_unique": false,
+          "effect_vs_all_11": -0.05000000000000002
+        },
+        {
+          "combination": "top_k_by_historical_training_only",
+          "k": 11,
+          "prize_aware_win_rate": 0.17,
+          "ci95": {
+            "low": 0.1,
+            "high": 0.24
+          },
+          "random_mean_rate": 0.29055,
+          "p_value_vs_equal_budget_random": 1.0,
+          "beats_random_baseline": false,
+          "effect_vs_random": -0.12054999999999996,
+          "beats_all_11_adapter_unique": false,
+          "effect_vs_all_11": 0.0
+        },
+        {
+          "combination": "diversity_greedy_overlap_minimized",
+          "k": 3,
+          "prize_aware_win_rate": 0.05,
+          "ci95": {
+            "low": 0.01,
+            "high": 0.09
+          },
+          "random_mean_rate": 0.08735,
+          "p_value_vs_equal_budget_random": 0.9651741293532339,
+          "beats_random_baseline": false,
+          "effect_vs_random": -0.037349999999999994,
+          "beats_all_11_adapter_unique": false,
+          "effect_vs_all_11": -0.12000000000000001
+        },
+        {
+          "combination": "diversity_greedy_overlap_minimized",
+          "k": 5,
+          "prize_aware_win_rate": 0.12,
+          "ci95": {
+            "low": 0.06,
+            "high": 0.19
+          },
+          "random_mean_rate": 0.14245000000000002,
+          "p_value_vs_equal_budget_random": 0.7910447761194029,
+          "beats_random_baseline": false,
+          "effect_vs_random": -0.022450000000000025,
+          "beats_all_11_adapter_unique": false,
+          "effect_vs_all_11": -0.05000000000000002
+        },
+        {
+          "combination": "diversity_greedy_overlap_minimized",
+          "k": 7,
+          "prize_aware_win_rate": 0.16,
+          "ci95": {
+            "low": 0.09,
+            "high": 0.24
+          },
+          "random_mean_rate": 0.19755,
+          "p_value_vs_equal_budget_random": 0.8805970149253731,
+          "beats_random_baseline": false,
+          "effect_vs_random": -0.03755,
+          "beats_all_11_adapter_unique": false,
+          "effect_vs_all_11": -0.010000000000000009
+        },
+        {
+          "combination": "diversity_greedy_overlap_minimized",
+          "k": 11,
+          "prize_aware_win_rate": 0.17,
+          "ci95": {
+            "low": 0.1,
+            "high": 0.24024999999999863
+          },
+          "random_mean_rate": 0.29055,
+          "p_value_vs_equal_budget_random": 1.0,
+          "beats_random_baseline": false,
+          "effect_vs_random": -0.12054999999999996,
+          "beats_all_11_adapter_unique": false,
+          "effect_vs_all_11": 0.0
+        },
+        {
+          "combination": "per_family_cap_derived_heuristic",
+          "k": 7,
+          "prize_aware_win_rate": 0.09,
+          "ci95": {
+            "low": 0.04,
+            "high": 0.15
+          },
+          "random_mean_rate": 0.19755,
+          "p_value_vs_equal_budget_random": 1.0,
+          "beats_random_baseline": false,
+          "effect_vs_random": -0.10755,
+          "beats_all_11_adapter_unique": false,
+          "effect_vs_all_11": -0.08000000000000002
+        }
+      ]
+    },
+    {
+      "name": "medium",
+      "requested_targets": 300,
+      "applied_targets": 300,
+      "capped": false,
+      "aggregate": {
+        "horizon_targets": 300,
+        "n": 300,
+        "eval_first_draw": "112000110",
+        "eval_last_draw": "115000062",
+        "combinations": {
+          "all_11_adapter_unique": {
+            "11": {
+              "k": 11,
+              "prize_aware_win_rate": 0.24,
+              "wins": 72,
+              "n": 300,
+              "ci95": {
+                "low": 0.19,
+                "high": 0.29
+              },
+              "avg_best_hit": 1.9,
+              "avg_mean_hit": 0.7484848484848484,
+              "avg_coverage": 31.866666666666667,
+              "avg_duplicate_tickets": 0.15666666666666668
+            }
+          },
+          "top_k_by_historical_training_only": {
+            "1": {
+              "k": 1,
+              "prize_aware_win_rate": 0.03333333333333333,
+              "wins": 10,
+              "n": 300,
+              "ci95": {
+                "low": 0.016666666666666666,
+                "high": 0.05341666666666621
+              },
+              "avg_best_hit": 0.7133333333333334,
+              "avg_mean_hit": 0.7133333333333334,
+              "avg_coverage": 6.0,
+              "avg_duplicate_tickets": 0.0
+            },
+            "3": {
+              "k": 3,
+              "prize_aware_win_rate": 0.09333333333333334,
+              "wins": 28,
+              "n": 300,
+              "ci95": {
+                "low": 0.06,
+                "high": 0.12666666666666668
+              },
+              "avg_best_hit": 1.35,
+              "avg_mean_hit": 0.7588888888888888,
+              "avg_coverage": 14.79,
+              "avg_duplicate_tickets": 0.0
+            },
+            "5": {
+              "k": 5,
+              "prize_aware_win_rate": 0.14,
+              "wins": 42,
+              "n": 300,
+              "ci95": {
+                "low": 0.10333333333333333,
+                "high": 0.18
+              },
+              "avg_best_hit": 1.6233333333333333,
+              "avg_mean_hit": 0.7466666666666667,
+              "avg_coverage": 22.07,
+              "avg_duplicate_tickets": 0.0
+            },
+            "7": {
+              "k": 7,
+              "prize_aware_win_rate": 0.17666666666666667,
+              "wins": 53,
+              "n": 300,
+              "ci95": {
+                "low": 0.13333333333333333,
+                "high": 0.22
+              },
+              "avg_best_hit": 1.7533333333333334,
+              "avg_mean_hit": 0.7485714285714286,
+              "avg_coverage": 26.333333333333332,
+              "avg_duplicate_tickets": 0.06
+            },
+            "11": {
+              "k": 11,
+              "prize_aware_win_rate": 0.24,
+              "wins": 72,
+              "n": 300,
+              "ci95": {
+                "low": 0.19,
+                "high": 0.29
+              },
+              "avg_best_hit": 1.9,
+              "avg_mean_hit": 0.7484848484848484,
+              "avg_coverage": 31.866666666666667,
+              "avg_duplicate_tickets": 0.15666666666666668
+            }
+          },
+          "diversity_greedy_overlap_minimized": {
+            "3": {
+              "k": 3,
+              "prize_aware_win_rate": 0.09333333333333334,
+              "wins": 28,
+              "n": 300,
+              "ci95": {
+                "low": 0.06,
+                "high": 0.12666666666666668
+              },
+              "avg_best_hit": 1.4766666666666666,
+              "avg_mean_hit": 0.7655555555555555,
+              "avg_coverage": 17.963333333333335,
+              "avg_duplicate_tickets": 0.0
+            },
+            "5": {
+              "k": 5,
+              "prize_aware_win_rate": 0.14333333333333334,
+              "wins": 43,
+              "n": 300,
+              "ci95": {
+                "low": 0.10333333333333333,
+                "high": 0.18
+              },
+              "avg_best_hit": 1.6933333333333334,
+              "avg_mean_hit": 0.746,
+              "avg_coverage": 25.903333333333332,
+              "avg_duplicate_tickets": 0.0
+            },
+            "7": {
+              "k": 7,
+              "prize_aware_win_rate": 0.18666666666666668,
+              "wins": 56,
+              "n": 300,
+              "ci95": {
+                "low": 0.14333333333333334,
+                "high": 0.23
+              },
+              "avg_best_hit": 1.7933333333333332,
+              "avg_mean_hit": 0.7428571428571429,
+              "avg_coverage": 29.99,
+              "avg_duplicate_tickets": 0.0033333333333333335
+            },
+            "11": {
+              "k": 11,
+              "prize_aware_win_rate": 0.24,
+              "wins": 72,
+              "n": 300,
+              "ci95": {
+                "low": 0.19333333333333333,
+                "high": 0.29
+              },
+              "avg_best_hit": 1.9,
+              "avg_mean_hit": 0.7484848484848484,
+              "avg_coverage": 31.866666666666667,
+              "avg_duplicate_tickets": 0.15666666666666668
+            }
+          },
+          "per_family_cap_derived_heuristic": {
+            "7": {
+              "k": 7,
+              "prize_aware_win_rate": 0.17666666666666667,
+              "wins": 53,
+              "n": 300,
+              "ci95": {
+                "low": 0.13666666666666666,
+                "high": 0.22008333333333288
+              },
+              "avg_best_hit": 1.7433333333333334,
+              "avg_mean_hit": 0.7547619047619047,
+              "avg_coverage": 26.006666666666668,
+              "avg_duplicate_tickets": 0.09
+            }
+          }
+        },
+        "random_baselines": {
+          "equal_budget_random": {
+            "1": {
+              "k": 1,
+              "replicates": 200,
+              "mean_prize_aware_win_rate": 0.030433333333333333,
+              "p2_5": 0.013333333333333334,
+              "p97_5": 0.05,
+              "max_rate": 0.06,
+              "avg_best_hit": 0.7305166666666667,
+              "avg_coverage": 6.0,
+              "avg_duplicate_tickets": 0.0
+            },
+            "3": {
+              "k": 3,
+              "replicates": 200,
+              "mean_prize_aware_win_rate": 0.08915000000000001,
+              "p2_5": 0.056666666666666664,
+              "p97_5": 0.12,
+              "max_rate": 0.12666666666666668,
+              "avg_best_hit": 1.35915,
+              "avg_coverage": 15.882383333333333,
+              "avg_duplicate_tickets": 0.0
+            },
+            "5": {
+              "k": 5,
+              "replicates": 200,
+              "mean_prize_aware_win_rate": 0.14363333333333334,
+              "p2_5": 0.10333333333333333,
+              "p97_5": 0.17666666666666667,
+              "max_rate": 0.19,
+              "avg_best_hit": 1.6353166666666668,
+              "avg_coverage": 23.501633333333334,
+              "avg_duplicate_tickets": 0.0
+            },
+            "7": {
+              "k": 7,
+              "replicates": 200,
+              "mean_prize_aware_win_rate": 0.1960333333333333,
+              "p2_5": 0.1565,
+              "p97_5": 0.24008333333333334,
+              "max_rate": 0.2633333333333333,
+              "avg_best_hit": 1.8082,
+              "avg_coverage": 29.365283333333334,
+              "avg_duplicate_tickets": 0.0
+            },
+            "11": {
+              "k": 11,
+              "replicates": 200,
+              "mean_prize_aware_win_rate": 0.2894833333333333,
+              "p2_5": 0.23333333333333334,
+              "p97_5": 0.34016666666666673,
+              "max_rate": 0.37,
+              "avg_best_hit": 2.0308166666666665,
+              "avg_coverage": 37.35103333333333,
+              "avg_duplicate_tickets": 0.0
+            }
+          },
+          "diversified_random": {
+            "3": {
+              "k": 3,
+              "replicates": 200,
+              "mean_prize_aware_win_rate": 0.09154999999999999,
+              "p2_5": 0.06333333333333334,
+              "p97_5": 0.12,
+              "max_rate": 0.14,
+              "avg_best_hit": 1.4193333333333333,
+              "avg_coverage": 18.0,
+              "avg_duplicate_tickets": 0.0
+            },
+            "5": {
+              "k": 5,
+              "replicates": 200,
+              "mean_prize_aware_win_rate": 0.1517,
+              "p2_5": 0.11666666666666667,
+              "p97_5": 0.19008333333333335,
+              "max_rate": 0.20666666666666667,
+              "avg_best_hit": 1.7274666666666667,
+              "avg_coverage": 30.0,
+              "avg_duplicate_tickets": 0.0
+            },
+            "7": {
+              "k": 7,
+              "replicates": 200,
+              "mean_prize_aware_win_rate": 0.21145,
+              "p2_5": 0.17,
+              "p97_5": 0.2633333333333333,
+              "max_rate": 0.2733333333333333,
+              "avg_best_hit": 1.9391833333333333,
+              "avg_coverage": 42.0,
+              "avg_duplicate_tickets": 0.0
+            },
+            "11": {
+              "k": 11,
+              "replicates": 200,
+              "mean_prize_aware_win_rate": 0.31096666666666667,
+              "p2_5": 0.25666666666666665,
+              "p97_5": 0.36674999999999996,
+              "max_rate": 0.38666666666666666,
+              "avg_best_hit": 2.1320333333333332,
+              "avg_coverage": 48.3671,
+              "avg_duplicate_tickets": 0.0
+            }
+          }
+        }
+      },
+      "comparisons": [
+        {
+          "combination": "all_11_adapter_unique",
+          "k": 11,
+          "prize_aware_win_rate": 0.24,
+          "ci95": {
+            "low": 0.19,
+            "high": 0.29
+          },
+          "random_mean_rate": 0.2894833333333333,
+          "p_value_vs_equal_budget_random": 0.9651741293532339,
+          "beats_random_baseline": false,
+          "effect_vs_random": -0.049483333333333324,
+          "beats_all_11_adapter_unique": null,
+          "effect_vs_all_11": null
+        },
+        {
+          "combination": "top_k_by_historical_training_only",
+          "k": 1,
+          "prize_aware_win_rate": 0.03333333333333333,
+          "ci95": {
+            "low": 0.016666666666666666,
+            "high": 0.05341666666666621
+          },
+          "random_mean_rate": 0.030433333333333333,
+          "p_value_vs_equal_budget_random": 0.44776119402985076,
+          "beats_random_baseline": false,
+          "effect_vs_random": 0.0029,
+          "beats_all_11_adapter_unique": false,
+          "effect_vs_all_11": -0.20666666666666667
+        },
+        {
+          "combination": "top_k_by_historical_training_only",
+          "k": 3,
+          "prize_aware_win_rate": 0.09333333333333334,
+          "ci95": {
+            "low": 0.06,
+            "high": 0.12666666666666668
+          },
+          "random_mean_rate": 0.08915000000000001,
+          "p_value_vs_equal_budget_random": 0.4527363184079602,
+          "beats_random_baseline": false,
+          "effect_vs_random": 0.004183333333333331,
+          "beats_all_11_adapter_unique": false,
+          "effect_vs_all_11": -0.14666666666666667
+        },
+        {
+          "combination": "top_k_by_historical_training_only",
+          "k": 5,
+          "prize_aware_win_rate": 0.14,
+          "ci95": {
+            "low": 0.10333333333333333,
+            "high": 0.18
+          },
+          "random_mean_rate": 0.14363333333333334,
+          "p_value_vs_equal_budget_random": 0.6517412935323383,
+          "beats_random_baseline": false,
+          "effect_vs_random": -0.0036333333333333218,
+          "beats_all_11_adapter_unique": false,
+          "effect_vs_all_11": -0.09999999999999998
+        },
+        {
+          "combination": "top_k_by_historical_training_only",
+          "k": 7,
+          "prize_aware_win_rate": 0.17666666666666667,
+          "ci95": {
+            "low": 0.13333333333333333,
+            "high": 0.22
+          },
+          "random_mean_rate": 0.1960333333333333,
+          "p_value_vs_equal_budget_random": 0.8706467661691543,
+          "beats_random_baseline": false,
+          "effect_vs_random": -0.019366666666666643,
+          "beats_all_11_adapter_unique": false,
+          "effect_vs_all_11": -0.06333333333333332
+        },
+        {
+          "combination": "top_k_by_historical_training_only",
+          "k": 11,
+          "prize_aware_win_rate": 0.24,
+          "ci95": {
+            "low": 0.19,
+            "high": 0.29
+          },
+          "random_mean_rate": 0.2894833333333333,
+          "p_value_vs_equal_budget_random": 0.9651741293532339,
+          "beats_random_baseline": false,
+          "effect_vs_random": -0.049483333333333324,
+          "beats_all_11_adapter_unique": false,
+          "effect_vs_all_11": 0.0
+        },
+        {
+          "combination": "diversity_greedy_overlap_minimized",
+          "k": 3,
+          "prize_aware_win_rate": 0.09333333333333334,
+          "ci95": {
+            "low": 0.06,
+            "high": 0.12666666666666668
+          },
+          "random_mean_rate": 0.08915000000000001,
+          "p_value_vs_equal_budget_random": 0.4527363184079602,
+          "beats_random_baseline": false,
+          "effect_vs_random": 0.004183333333333331,
+          "beats_all_11_adapter_unique": false,
+          "effect_vs_all_11": -0.14666666666666667
+        },
+        {
+          "combination": "diversity_greedy_overlap_minimized",
+          "k": 5,
+          "prize_aware_win_rate": 0.14333333333333334,
+          "ci95": {
+            "low": 0.10333333333333333,
+            "high": 0.18
+          },
+          "random_mean_rate": 0.14363333333333334,
+          "p_value_vs_equal_budget_random": 0.572139303482587,
+          "beats_random_baseline": false,
+          "effect_vs_random": -0.0002999999999999947,
+          "beats_all_11_adapter_unique": false,
+          "effect_vs_all_11": -0.09666666666666665
+        },
+        {
+          "combination": "diversity_greedy_overlap_minimized",
+          "k": 7,
+          "prize_aware_win_rate": 0.18666666666666668,
+          "ci95": {
+            "low": 0.14333333333333334,
+            "high": 0.23
+          },
+          "random_mean_rate": 0.1960333333333333,
+          "p_value_vs_equal_budget_random": 0.7114427860696517,
+          "beats_random_baseline": false,
+          "effect_vs_random": -0.009366666666666634,
+          "beats_all_11_adapter_unique": false,
+          "effect_vs_all_11": -0.053333333333333316
+        },
+        {
+          "combination": "diversity_greedy_overlap_minimized",
+          "k": 11,
+          "prize_aware_win_rate": 0.24,
+          "ci95": {
+            "low": 0.19333333333333333,
+            "high": 0.29
+          },
+          "random_mean_rate": 0.2894833333333333,
+          "p_value_vs_equal_budget_random": 0.9651741293532339,
+          "beats_random_baseline": false,
+          "effect_vs_random": -0.049483333333333324,
+          "beats_all_11_adapter_unique": false,
+          "effect_vs_all_11": 0.0
+        },
+        {
+          "combination": "per_family_cap_derived_heuristic",
+          "k": 7,
+          "prize_aware_win_rate": 0.17666666666666667,
+          "ci95": {
+            "low": 0.13666666666666666,
+            "high": 0.22008333333333288
+          },
+          "random_mean_rate": 0.1960333333333333,
+          "p_value_vs_equal_budget_random": 0.8706467661691543,
+          "beats_random_baseline": false,
+          "effect_vs_random": -0.019366666666666643,
+          "beats_all_11_adapter_unique": false,
+          "effect_vs_all_11": -0.06333333333333332
+        }
+      ]
+    },
+    {
+      "name": "long",
+      "requested_targets": 750,
+      "applied_targets": 750,
+      "capped": false,
+      "aggregate": {
+        "horizon_targets": 750,
+        "n": 750,
+        "eval_first_draw": "108000106",
+        "eval_last_draw": "115000062",
+        "combinations": {
+          "all_11_adapter_unique": {
+            "11": {
+              "k": 11,
+              "prize_aware_win_rate": 0.24666666666666667,
+              "wins": 185,
+              "n": 750,
+              "ci95": {
+                "low": 0.216,
+                "high": 0.2786666666666667
+              },
+              "avg_best_hit": 1.9253333333333333,
+              "avg_mean_hit": 0.7543030303030304,
+              "avg_coverage": 31.904,
+              "avg_duplicate_tickets": 0.14133333333333334
+            }
+          },
+          "top_k_by_historical_training_only": {
+            "1": {
+              "k": 1,
+              "prize_aware_win_rate": 0.032,
+              "wins": 24,
+              "n": 750,
+              "ci95": {
+                "low": 0.02,
+                "high": 0.044
+              },
+              "avg_best_hit": 0.7253333333333334,
+              "avg_mean_hit": 0.7253333333333334,
+              "avg_coverage": 6.0,
+              "avg_duplicate_tickets": 0.0
+            },
+            "3": {
+              "k": 3,
+              "prize_aware_win_rate": 0.096,
+              "wins": 72,
+              "n": 750,
+              "ci95": {
+                "low": 0.07596666666666667,
+                "high": 0.11736666666666648
+              },
+              "avg_best_hit": 1.3973333333333333,
+              "avg_mean_hit": 0.7697777777777778,
+              "avg_coverage": 14.954666666666666,
+              "avg_duplicate_tickets": 0.0
+            },
+            "5": {
+              "k": 5,
+              "prize_aware_win_rate": 0.152,
+              "wins": 114,
+              "n": 750,
+              "ci95": {
+                "low": 0.12666666666666668,
+                "high": 0.17866666666666667
+              },
+              "avg_best_hit": 1.6533333333333333,
+              "avg_mean_hit": 0.7637333333333333,
+              "avg_coverage": 21.901333333333334,
+              "avg_duplicate_tickets": 0.0
+            },
+            "7": {
+              "k": 7,
+              "prize_aware_win_rate": 0.18666666666666668,
+              "wins": 140,
+              "n": 750,
+              "ci95": {
+                "low": 0.15733333333333333,
+                "high": 0.21466666666666667
+              },
+              "avg_best_hit": 1.7693333333333334,
+              "avg_mean_hit": 0.7596190476190475,
+              "avg_coverage": 26.288,
+              "avg_duplicate_tickets": 0.037333333333333336
+            },
+            "11": {
+              "k": 11,
+              "prize_aware_win_rate": 0.24666666666666667,
+              "wins": 185,
+              "n": 750,
+              "ci95": {
+                "low": 0.2173,
+                "high": 0.2786666666666667
+              },
+              "avg_best_hit": 1.9253333333333333,
+              "avg_mean_hit": 0.7543030303030304,
+              "avg_coverage": 31.904,
+              "avg_duplicate_tickets": 0.14133333333333334
+            }
+          },
+          "diversity_greedy_overlap_minimized": {
+            "3": {
+              "k": 3,
+              "prize_aware_win_rate": 0.104,
+              "wins": 78,
+              "n": 750,
+              "ci95": {
+                "low": 0.08266666666666667,
+                "high": 0.12533333333333332
+              },
+              "avg_best_hit": 1.492,
+              "avg_mean_hit": 0.7697777777777778,
+              "avg_coverage": 17.970666666666666,
+              "avg_duplicate_tickets": 0.0
+            },
+            "5": {
+              "k": 5,
+              "prize_aware_win_rate": 0.15066666666666667,
+              "wins": 113,
+              "n": 750,
+              "ci95": {
+                "low": 0.124,
+                "high": 0.176
+              },
+              "avg_best_hit": 1.6933333333333334,
+              "avg_mean_hit": 0.7485333333333333,
+              "avg_coverage": 25.878666666666668,
+              "avg_duplicate_tickets": 0.0
+            },
+            "7": {
+              "k": 7,
+              "prize_aware_win_rate": 0.19466666666666665,
+              "wins": 146,
+              "n": 750,
+              "ci95": {
+                "low": 0.16666666666666666,
+                "high": 0.22266666666666668
+              },
+              "avg_best_hit": 1.828,
+              "avg_mean_hit": 0.7523809523809523,
+              "avg_coverage": 29.914666666666665,
+              "avg_duplicate_tickets": 0.006666666666666667
+            },
+            "11": {
+              "k": 11,
+              "prize_aware_win_rate": 0.24666666666666667,
+              "wins": 185,
+              "n": 750,
+              "ci95": {
+                "low": 0.216,
+                "high": 0.2773333333333333
+              },
+              "avg_best_hit": 1.9253333333333333,
+              "avg_mean_hit": 0.7543030303030304,
+              "avg_coverage": 31.904,
+              "avg_duplicate_tickets": 0.14133333333333334
+            }
+          },
+          "per_family_cap_derived_heuristic": {
+            "7": {
+              "k": 7,
+              "prize_aware_win_rate": 0.17733333333333334,
+              "wins": 133,
+              "n": 750,
+              "ci95": {
+                "low": 0.14933333333333335,
+                "high": 0.204
+              },
+              "avg_best_hit": 1.7626666666666666,
+              "avg_mean_hit": 0.758095238095238,
+              "avg_coverage": 26.076,
+              "avg_duplicate_tickets": 0.092
+            }
+          }
+        },
+        "random_baselines": {
+          "equal_budget_random": {
+            "1": {
+              "k": 1,
+              "replicates": 200,
+              "mean_prize_aware_win_rate": 0.0308,
+              "p2_5": 0.018666666666666668,
+              "p97_5": 0.0427,
+              "max_rate": 0.048,
+              "avg_best_hit": 0.7349333333333333,
+              "avg_coverage": 6.0,
+              "avg_duplicate_tickets": 0.0
+            },
+            "3": {
+              "k": 3,
+              "replicates": 200,
+              "mean_prize_aware_win_rate": 0.09011333333333332,
+              "p2_5": 0.06793333333333333,
+              "p97_5": 0.11066666666666666,
+              "max_rate": 0.12266666666666666,
+              "avg_best_hit": 1.3622266666666667,
+              "avg_coverage": 15.884653333333333,
+              "avg_duplicate_tickets": 0.0
+            },
+            "5": {
+              "k": 5,
+              "replicates": 200,
+              "mean_prize_aware_win_rate": 0.14566666666666667,
+              "p2_5": 0.11860000000000001,
+              "p97_5": 0.17073333333333335,
+              "max_rate": 0.176,
+              "avg_best_hit": 1.63798,
+              "avg_coverage": 23.49484,
+              "avg_duplicate_tickets": 0.0
+            },
+            "7": {
+              "k": 7,
+              "replicates": 200,
+              "mean_prize_aware_win_rate": 0.19646,
+              "p2_5": 0.17066666666666666,
+              "p97_5": 0.2240666666666667,
+              "max_rate": 0.24,
+              "avg_best_hit": 1.8088533333333334,
+              "avg_coverage": 29.36064,
+              "avg_duplicate_tickets": 0.0
+            },
+            "11": {
+              "k": 11,
+              "replicates": 200,
+              "mean_prize_aware_win_rate": 0.29046,
+              "p2_5": 0.25593333333333335,
+              "p97_5": 0.3227,
+              "max_rate": 0.3466666666666667,
+              "avg_best_hit": 2.0306866666666665,
+              "avg_coverage": 37.35522666666667,
+              "avg_duplicate_tickets": 0.0
+            }
+          },
+          "diversified_random": {
+            "3": {
+              "k": 3,
+              "replicates": 200,
+              "mean_prize_aware_win_rate": 0.09326000000000001,
+              "p2_5": 0.07193333333333332,
+              "p97_5": 0.11336666666666667,
+              "max_rate": 0.11866666666666667,
+              "avg_best_hit": 1.4221466666666667,
+              "avg_coverage": 18.0,
+              "avg_duplicate_tickets": 0.0
+            },
+            "5": {
+              "k": 5,
+              "replicates": 200,
+              "mean_prize_aware_win_rate": 0.15374666666666667,
+              "p2_5": 0.12663333333333335,
+              "p97_5": 0.17480000000000004,
+              "max_rate": 0.18266666666666667,
+              "avg_best_hit": 1.73026,
+              "avg_coverage": 30.0,
+              "avg_duplicate_tickets": 0.0
+            },
+            "7": {
+              "k": 7,
+              "replicates": 200,
+              "mean_prize_aware_win_rate": 0.21316,
+              "p2_5": 0.18393333333333334,
+              "p97_5": 0.2413666666666667,
+              "max_rate": 0.25066666666666665,
+              "avg_best_hit": 1.9422533333333334,
+              "avg_coverage": 42.0,
+              "avg_duplicate_tickets": 0.0
+            },
+            "11": {
+              "k": 11,
+              "replicates": 200,
+              "mean_prize_aware_win_rate": 0.31222,
+              "p2_5": 0.2785666666666667,
+              "p97_5": 0.3466666666666667,
+              "max_rate": 0.3626666666666667,
+              "avg_best_hit": 2.133706666666667,
+              "avg_coverage": 48.367913333333334,
+              "avg_duplicate_tickets": 0.0
+            }
+          }
+        }
+      },
+      "comparisons": [
+        {
+          "combination": "all_11_adapter_unique",
+          "k": 11,
+          "prize_aware_win_rate": 0.24666666666666667,
+          "ci95": {
+            "low": 0.216,
+            "high": 0.2786666666666667
+          },
+          "random_mean_rate": 0.29046,
+          "p_value_vs_equal_budget_random": 0.9950248756218906,
+          "beats_random_baseline": false,
+          "effect_vs_random": -0.04379333333333332,
+          "beats_all_11_adapter_unique": null,
+          "effect_vs_all_11": null
+        },
+        {
+          "combination": "top_k_by_historical_training_only",
+          "k": 1,
+          "prize_aware_win_rate": 0.032,
+          "ci95": {
+            "low": 0.02,
+            "high": 0.044
+          },
+          "random_mean_rate": 0.0308,
+          "p_value_vs_equal_budget_random": 0.4577114427860697,
+          "beats_random_baseline": false,
+          "effect_vs_random": 0.0011999999999999997,
+          "beats_all_11_adapter_unique": false,
+          "effect_vs_all_11": -0.21466666666666667
+        },
+        {
+          "combination": "top_k_by_historical_training_only",
+          "k": 3,
+          "prize_aware_win_rate": 0.096,
+          "ci95": {
+            "low": 0.07596666666666667,
+            "high": 0.11736666666666648
+          },
+          "random_mean_rate": 0.09011333333333332,
+          "p_value_vs_equal_budget_random": 0.31840796019900497,
+          "beats_random_baseline": false,
+          "effect_vs_random": 0.005886666666666679,
+          "beats_all_11_adapter_unique": false,
+          "effect_vs_all_11": -0.15066666666666667
+        },
+        {
+          "combination": "top_k_by_historical_training_only",
+          "k": 5,
+          "prize_aware_win_rate": 0.152,
+          "ci95": {
+            "low": 0.12666666666666668,
+            "high": 0.17866666666666667
+          },
+          "random_mean_rate": 0.14566666666666667,
+          "p_value_vs_equal_budget_random": 0.3582089552238806,
+          "beats_random_baseline": false,
+          "effect_vs_random": 0.00633333333333333,
+          "beats_all_11_adapter_unique": false,
+          "effect_vs_all_11": -0.09466666666666668
+        },
+        {
+          "combination": "top_k_by_historical_training_only",
+          "k": 7,
+          "prize_aware_win_rate": 0.18666666666666668,
+          "ci95": {
+            "low": 0.15733333333333333,
+            "high": 0.21466666666666667
+          },
+          "random_mean_rate": 0.19646,
+          "p_value_vs_equal_budget_random": 0.7562189054726368,
+          "beats_random_baseline": false,
+          "effect_vs_random": -0.00979333333333332,
+          "beats_all_11_adapter_unique": false,
+          "effect_vs_all_11": -0.06
+        },
+        {
+          "combination": "top_k_by_historical_training_only",
+          "k": 11,
+          "prize_aware_win_rate": 0.24666666666666667,
+          "ci95": {
+            "low": 0.2173,
+            "high": 0.2786666666666667
+          },
+          "random_mean_rate": 0.29046,
+          "p_value_vs_equal_budget_random": 0.9950248756218906,
+          "beats_random_baseline": false,
+          "effect_vs_random": -0.04379333333333332,
+          "beats_all_11_adapter_unique": false,
+          "effect_vs_all_11": 0.0
+        },
+        {
+          "combination": "diversity_greedy_overlap_minimized",
+          "k": 3,
+          "prize_aware_win_rate": 0.104,
+          "ci95": {
+            "low": 0.08266666666666667,
+            "high": 0.12533333333333332
+          },
+          "random_mean_rate": 0.09011333333333332,
+          "p_value_vs_equal_budget_random": 0.11442786069651742,
+          "beats_random_baseline": false,
+          "effect_vs_random": 0.013886666666666672,
+          "beats_all_11_adapter_unique": false,
+          "effect_vs_all_11": -0.14266666666666666
+        },
+        {
+          "combination": "diversity_greedy_overlap_minimized",
+          "k": 5,
+          "prize_aware_win_rate": 0.15066666666666667,
+          "ci95": {
+            "low": 0.124,
+            "high": 0.176
+          },
+          "random_mean_rate": 0.14566666666666667,
+          "p_value_vs_equal_budget_random": 0.38308457711442784,
+          "beats_random_baseline": false,
+          "effect_vs_random": 0.0050000000000000044,
+          "beats_all_11_adapter_unique": false,
+          "effect_vs_all_11": -0.096
+        },
+        {
+          "combination": "diversity_greedy_overlap_minimized",
+          "k": 7,
+          "prize_aware_win_rate": 0.19466666666666665,
+          "ci95": {
+            "low": 0.16666666666666666,
+            "high": 0.22266666666666668
+          },
+          "random_mean_rate": 0.19646,
+          "p_value_vs_equal_budget_random": 0.5373134328358209,
+          "beats_random_baseline": false,
+          "effect_vs_random": -0.0017933333333333412,
+          "beats_all_11_adapter_unique": false,
+          "effect_vs_all_11": -0.05200000000000002
+        },
+        {
+          "combination": "diversity_greedy_overlap_minimized",
+          "k": 11,
+          "prize_aware_win_rate": 0.24666666666666667,
+          "ci95": {
+            "low": 0.216,
+            "high": 0.2773333333333333
+          },
+          "random_mean_rate": 0.29046,
+          "p_value_vs_equal_budget_random": 0.9950248756218906,
+          "beats_random_baseline": false,
+          "effect_vs_random": -0.04379333333333332,
+          "beats_all_11_adapter_unique": false,
+          "effect_vs_all_11": 0.0
+        },
+        {
+          "combination": "per_family_cap_derived_heuristic",
+          "k": 7,
+          "prize_aware_win_rate": 0.17733333333333334,
+          "ci95": {
+            "low": 0.14933333333333335,
+            "high": 0.204
+          },
+          "random_mean_rate": 0.19646,
+          "p_value_vs_equal_budget_random": 0.9353233830845771,
+          "beats_random_baseline": false,
+          "effect_vs_random": -0.019126666666666653,
+          "beats_all_11_adapter_unique": false,
+          "effect_vs_all_11": -0.06933333333333333
+        }
+      ]
+    }
+  ],
+  "best_observation_only_candidates": [],
+  "multiple_testing_warning": "Many combinations x k x horizons were compared. Monte-Carlo p-values are uncorrected; apply Bonferroni/BH before any inferential claim. Treat all results as observation-only research.",
+  "limitations": [
+    "Retrospective replay against historical outcomes is not prospective/future-only validation.",
+    "Multiple combinations x k x horizons were compared; p-values are uncorrected (multiple-testing risk).",
+    "top_k_by_historical_training_only uses expanding-window training but remains susceptible to limited training tails.",
+    "Random baselines estimate expected portfolio behaviour via 200 seeded replicates, not exhaustively.",
+    "BIG 6/49 first-zone signal has prior NULL findings (L82/L90/L91); replay edges may be statistical noise.",
+    "Adapter candidate selection is deterministic canonical-order, not outcome-aware; this is preserved unchanged."
+  ],
+  "next_recommended_research_step": "If any observation-only candidate beats both the equal-budget random baseline and all_11_adapter_unique with stability across horizons, request separate Owner authorization for an independent leakage/multiple-testing audit before any future-only/OOS evaluation. No publication or activation is implied.",
+  "no_publication_statement": "No real publication, pre-draw manifest, or publication PR was created.",
+  "no_official_target_or_deadline_statement": "No official target draw or deadline was looked up. No network access.",
+  "prediction_success_claim": false,
+  "strategy_promoted": false,
+  "activation_authorized": false,
+  "registry_mutated": false,
+  "production_write": false,
+  "real_publication_performed": false,
+  "official_target_lookup": false,
+  "official_deadline_lookup": false,
+  "pre_draw_manifest_created": false,
+  "publication_pr_created": false,
+  "post_draw_evaluation_of_real_publication": false,
+  "result_digest": "ecf422f17db35d54dc31eb0be35f59ab4491935d0668c2d40784697ed9e969e3"
+}

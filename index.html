@@ -835,6 +835,10 @@
                     <i data-lucide="bar-chart-2" class="icon"></i>
                     <span>歷史策略統計</span>
                 </button>
+                <button class="nav-btn" data-section="p251-evidence-dashboard">
+                    <i data-lucide="layout-dashboard" class="icon"></i>
+                    <span>證據儀表板</span>
+                </button>
                 <button class="nav-btn" data-section="p333-scoreboard">
                     <i data-lucide="chart-no-axes-combined" class="icon"></i>
                     <span>策略組合命中率</span>
@@ -3069,6 +3073,196 @@
           </div>
         </section>
         <!-- ===== END P257B ===== -->
+
+        <!-- ===== P251F: Evidence Dashboard UI (read-only, artifact-backed) ===== -->
+        <section id="p251-evidence-dashboard-section" class="section">
+          <div class="section-header">
+            <h2>證據儀表板 <span style="font-size:0.7em;color:#8b949e;font-weight:400">Evidence Dashboard (artifact-backed)</span></h2>
+            <p>以已提交的 P251B 跨彩種證據資料為來源，呈現策略生命週期、回放覆蓋與資料狀態。生命週期只作為標籤與篩選，不作為預設排除規則。</p>
+          </div>
+          <div class="section-content">
+            <div id="p251f-disclaimer" style="background:rgba(243,156,18,.10);border:1px solid #f39c12;border-radius:6px;padding:10px 16px;margin-bottom:16px;font-size:12px;color:#f0c040;line-height:1.8">
+              <b>證據用途聲明：</b>本頁只展示已提交 artifact 的歷史證據與資料覆蓋狀態；不宣稱預測優勢、不晉級策略、不更動 production recommendation，也不提供實際行動指引。GREEN canonical randomness 是資料品質結果，不是訊號。
+            </div>
+
+            <style>
+              #p251f-filters .p251f-filter,
+              #p251f-filters .p251f-toggle{
+                background:#161b22;border:1px solid #30363d;color:#c9d1d9;border-radius:4px;
+                padding:4px 8px;font-size:12px;
+              }
+              #p251f-summary-cards{
+                display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px;margin-bottom:14px;
+              }
+              #p251f-summary-cards .p251f-card{
+                background:#0d1117;border:1px solid #30363d;border-radius:6px;padding:10px 12px;
+              }
+              #p251f-summary-cards .p251f-card span{display:block;font-size:11px;color:#8b949e;margin-bottom:4px}
+              #p251f-summary-cards .p251f-card strong{font-size:18px;color:#c9d1d9}
+              #p251f-table th,#p251f-table td{border-bottom:1px solid #21262d}
+              .p251f-badge{border:1px solid #30363d;border-radius:999px;padding:1px 7px;font-size:11px;white-space:nowrap}
+            </style>
+
+            <div id="p251f-summary-cards"></div>
+
+            <div id="p251f-filters" style="display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-bottom:12px">
+              <label style="font-size:12px;color:#8b949e">彩種：</label>
+              <select id="p251f-filter-lottery" class="p251f-filter">
+                <option value="">全部</option>
+                <option value="BIG_LOTTO">BIG_LOTTO</option>
+                <option value="DAILY_539">DAILY_539</option>
+                <option value="POWER_LOTTO">POWER_LOTTO</option>
+              </select>
+              <label style="font-size:12px;color:#8b949e">生命週期：</label>
+              <select id="p251f-filter-lifecycle" class="p251f-filter">
+                <option value="">全部</option>
+              </select>
+              <label style="display:flex;gap:6px;align-items:center;font-size:12px;color:#8b949e">
+                <input id="p251f-filter-artifact-only" class="p251f-toggle" type="checkbox">
+                只看 artifact-only
+              </label>
+            </div>
+
+            <div id="p251f-lottery-cards" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:10px;margin-bottom:16px"></div>
+
+            <div style="overflow-x:auto">
+              <table id="p251f-table" style="width:100%;border-collapse:collapse;font-size:12px;white-space:nowrap">
+                <thead>
+                  <tr style="color:#8b949e">
+                    <th style="text-align:left;padding:6px 8px">彩種</th>
+                    <th style="text-align:left;padding:6px 8px">策略 ID</th>
+                    <th style="text-align:left;padding:6px 8px">目前生命週期</th>
+                    <th style="text-align:left;padding:6px 8px">歷史快照</th>
+                    <th style="text-align:right;padding:6px 8px">replay rows</th>
+                    <th style="text-align:right;padding:6px 8px">distinct draws</th>
+                    <th style="text-align:left;padding:6px 8px">證據狀態</th>
+                    <th style="text-align:left;padding:6px 8px">可見性</th>
+                  </tr>
+                </thead>
+                <tbody id="p251f-tbody"></tbody>
+              </table>
+            </div>
+            <div id="p251f-empty" style="display:none;text-align:center;padding:20px;color:#8b949e;font-size:13px">無符合條件的策略</div>
+            <div id="p251f-error" style="display:none;color:#c0392b;font-size:12px;padding:8px 0"></div>
+            <div id="p251f-loading" style="text-align:center;padding:16px;color:#8b949e;font-size:13px">載入中...</div>
+
+            <div style="margin-top:14px;font-size:11px;color:#6e7681;line-height:1.7">
+              來源端點：<code>/api/replay/evidence-dashboard</code>。此 UI 不查詢 DB、不修改 registry、不產生策略、不部署；缺失資料維持缺失，不推論為 0。預設篩選狀態為 <code>include_all_rows=true</code>、<code>exclude_by_lifecycle=false</code>。
+            </div>
+          </div>
+
+          <script>
+          (function () {
+            var SEC = 'p251-evidence-dashboard';
+            var ROUTE = '/api/replay/evidence-dashboard';
+            var loaded = false;
+            var data = null;
+            function el(id) { return document.getElementById(id); }
+            function esc(s) {
+              return String(s == null ? '' : s).replace(/[&<>"]/g, function (c) {
+                return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c];
+              });
+            }
+            function num(v) { return v == null ? 'N/A' : (typeof v === 'number' ? v.toLocaleString() : esc(v)); }
+            function badge(v) { return '<span class="p251f-badge">' + esc(v || 'UNKNOWN') + '</span>'; }
+            function setLoading(on) { var n = el('p251f-loading'); if (n) n.style.display = on ? '' : 'none'; }
+            function setError(msg) { var e = el('p251f-error'); if (!e) return; e.style.display = msg ? '' : 'none'; if (msg) e.textContent = '載入失敗：' + msg; }
+            function renderSummary(d) {
+              var g = d.global_summary || {};
+              var cards = [
+                ['Registry entries', g.current_registry_entries],
+                ['Historical inventory', g.historical_inventory_entries],
+                ['Artifact-only entries', g.artifact_only_entries],
+                ['Replay rows', g.replay_rows_total],
+                ['Draw rows', g.draw_rows_total],
+                ['No deployable candidate', g.no_deployable_candidate ? 'true' : 'false']
+              ];
+              var box = el('p251f-summary-cards');
+              if (box) box.innerHTML = cards.map(function (c) {
+                return '<div class="p251f-card"><span>' + esc(c[0]) + '</span><strong>' + num(c[1]) + '</strong></div>';
+              }).join('');
+            }
+            function renderLifecycleOptions(d) {
+              var sel = el('p251f-filter-lifecycle');
+              if (!sel || sel.options.length > 1) return;
+              (d.lifecycle_filter_options || []).forEach(function (o) {
+                var opt = document.createElement('option');
+                opt.value = o.status;
+                opt.textContent = o.status + ' - ' + o.label;
+                sel.appendChild(opt);
+              });
+            }
+            function renderLotteryCards(d) {
+              var box = el('p251f-lottery-cards');
+              if (!box) return;
+              box.innerHTML = (d.lottery_cards || []).map(function (c) {
+                return '<div class="p251f-card" style="background:#0d1117;border:1px solid #30363d;border-radius:6px;padding:10px 12px">' +
+                  '<div style="font-weight:700;margin-bottom:6px">' + esc(c.lottery_type) + '</div>' +
+                  '<div style="font-size:12px;color:#8b949e;line-height:1.7">strategies ' + num(c.strategy_cards_visible) +
+                  ' · replay rows ' + num(c.replay_rows) + ' · draw rows ' + num(c.draw_rows) +
+                  ' · canonical rows ' + num(c.canonical_rows) + '</div>' +
+                  '<div style="font-size:11px;color:#6e7681;margin-top:6px">' + esc(c.lifecycle_visibility_rule) + '</div>' +
+                  '</div>';
+              }).join('');
+            }
+            function renderRows() {
+              var tbody = el('p251f-tbody');
+              var empty = el('p251f-empty');
+              if (!tbody || !data) return;
+              var lottery = (el('p251f-filter-lottery') || {}).value || '';
+              var lifecycle = (el('p251f-filter-lifecycle') || {}).value || '';
+              var artifactOnly = !!((el('p251f-filter-artifact-only') || {}).checked);
+              var rows = (data.strategy_rows || []).filter(function (r) {
+                if (lottery && r.lottery_type !== lottery) return false;
+                if (lifecycle && r.current_registry_lifecycle_status !== lifecycle && r.historical_snapshot_lifecycle_status !== lifecycle) return false;
+                if (artifactOnly && !r.artifact_only_flag) return false;
+                return true;
+              });
+              tbody.innerHTML = rows.map(function (r) {
+                var state = r.evidence_state || {};
+                var visibility = r.row_visibility || {};
+                return '<tr>' +
+                  '<td style="padding:6px 8px">' + esc(r.lottery_type) + '</td>' +
+                  '<td style="padding:6px 8px;font-family:monospace;color:#c9d1d9">' + esc(r.strategy_id) + '</td>' +
+                  '<td style="padding:6px 8px">' + badge(r.current_registry_lifecycle_status) + '</td>' +
+                  '<td style="padding:6px 8px">' + badge(r.historical_snapshot_lifecycle_status) + '</td>' +
+                  '<td style="padding:6px 8px;text-align:right">' + num(r.replay_rows) + '</td>' +
+                  '<td style="padding:6px 8px;text-align:right">' + num(state.distinct_target_draws) + '</td>' +
+                  '<td style="padding:6px 8px;color:#8b949e">' + esc(state.status_note || r.latest_classification || '') + '</td>' +
+                  '<td style="padding:6px 8px;color:#8b949e">default_visible=' + esc(visibility.default_visible) +
+                  ' · lifecycle_filtered=' + esc(visibility.lifecycle_filtered) + '</td>' +
+                  '</tr>';
+              }).join('');
+              if (empty) empty.style.display = rows.length ? 'none' : '';
+            }
+            function render(d) {
+              data = d;
+              renderSummary(d);
+              renderLifecycleOptions(d);
+              renderLotteryCards(d);
+              renderRows();
+            }
+            function load() {
+              setLoading(true); setError(null);
+              fetch((window.API_BASE || '') + ROUTE)
+                .then(function (r) { if (!r.ok) throw new Error('HTTP ' + r.status); return r.json(); })
+                .then(function (d) { loaded = true; setLoading(false); render(d); })
+                .catch(function (e) { setLoading(false); setError(e.message); });
+            }
+            function wire() {
+              ['p251f-filter-lottery', 'p251f-filter-lifecycle', 'p251f-filter-artifact-only'].forEach(function (id) {
+                var n = el(id);
+                if (n) n.addEventListener('change', renderRows);
+              });
+              document.querySelectorAll('[data-section="' + SEC + '"]').forEach(function (btn) {
+                btn.addEventListener('click', function () { if (!loaded) load(); });
+              });
+            }
+            if (document.readyState !== 'loading') wire(); else document.addEventListener('DOMContentLoaded', wire);
+          })();
+          </script>
+        </section>
+        <!-- ===== END P251F ===== -->
 
         <!-- ===== P333 Strategy Pick / Combination Scoreboard ===== -->
         <section id="p333-scoreboard-section" class="section">

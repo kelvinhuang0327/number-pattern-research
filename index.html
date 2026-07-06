@@ -3121,6 +3121,15 @@
                 <input id="p251f-filter-artifact-only" class="p251f-toggle" type="checkbox">
                 只看 artifact-only
               </label>
+              <label for="p251f-sort" style="font-size:12px;color:#8b949e">排序：</label>
+              <select id="p251f-sort" class="p251f-filter">
+                <option value="default">預設順序</option>
+                <option value="lottery-name">彩種／策略名稱</option>
+                <option value="status">生命週期／證據狀態</option>
+              </select>
+              <span id="p251f-result-count" role="status" aria-live="polite" style="font-size:12px;color:#8b949e">
+                尚未載入證據列
+              </span>
             </div>
 
             <div id="p251f-lottery-cards" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:10px;margin-bottom:16px"></div>
@@ -3172,6 +3181,7 @@
             }
             function num(v) { return v == null ? 'N/A' : (typeof v === 'number' ? v.toLocaleString() : esc(v)); }
             function badge(v) { return '<span class="p251f-badge">' + esc(v || 'UNKNOWN') + '</span>'; }
+            function textSortValue(v) { return v == null ? '' : String(v).toLocaleLowerCase(); }
             function setLoading(on) {
               var n = el('p251f-loading');
               var retry = el('p251f-retry');
@@ -3238,12 +3248,31 @@
               var lottery = (el('p251f-filter-lottery') || {}).value || '';
               var lifecycle = (el('p251f-filter-lifecycle') || {}).value || '';
               var artifactOnly = !!((el('p251f-filter-artifact-only') || {}).checked);
+              var sort = (el('p251f-sort') || {}).value || 'default';
               var rows = (data.strategy_rows || []).filter(function (r) {
                 if (lottery && r.lottery_type !== lottery) return false;
                 if (lifecycle && r.current_registry_lifecycle_status !== lifecycle && r.historical_snapshot_lifecycle_status !== lifecycle) return false;
                 if (artifactOnly && !r.artifact_only_flag) return false;
                 return true;
               });
+              rows = rows.map(function (row, index) { return { row: row, index: index }; });
+              if (sort !== 'default') {
+                rows.sort(function (a, b) {
+                  var aKey = '';
+                  var bKey = '';
+                  if (sort === 'lottery-name') {
+                    aKey = textSortValue(a.row.lottery_type) + '\u0000' + textSortValue(a.row.strategy_id);
+                    bKey = textSortValue(b.row.lottery_type) + '\u0000' + textSortValue(b.row.strategy_id);
+                  } else if (sort === 'status') {
+                    aKey = textSortValue(a.row.current_registry_lifecycle_status) + '\u0000' +
+                      textSortValue(a.row.latest_classification);
+                    bKey = textSortValue(b.row.current_registry_lifecycle_status) + '\u0000' +
+                      textSortValue(b.row.latest_classification);
+                  }
+                  return aKey < bKey ? -1 : (aKey > bKey ? 1 : a.index - b.index);
+                });
+              }
+              rows = rows.map(function (entry) { return entry.row; });
               tbody.innerHTML = rows.map(function (r) {
                 var state = r.evidence_state || {};
                 var visibility = r.row_visibility || {};
@@ -3260,6 +3289,9 @@
                   '</tr>';
               }).join('');
               if (empty) empty.style.display = rows.length ? 'none' : '';
+              var count = el('p251f-result-count');
+              if (count) count.textContent = '已載入證據列 ' + data.strategy_rows.length + ' 筆；目前顯示 ' +
+                rows.length + ' 筆；彩種卡 ' + data.lottery_cards.length + ' 張。';
             }
             function render(d) {
               data = d;
@@ -3282,7 +3314,7 @@
                 });
             }
             function wire() {
-              ['p251f-filter-lottery', 'p251f-filter-lifecycle', 'p251f-filter-artifact-only'].forEach(function (id) {
+              ['p251f-filter-lottery', 'p251f-filter-lifecycle', 'p251f-filter-artifact-only', 'p251f-sort'].forEach(function (id) {
                 var n = el(id);
                 if (n) n.addEventListener('change', renderRows);
               });

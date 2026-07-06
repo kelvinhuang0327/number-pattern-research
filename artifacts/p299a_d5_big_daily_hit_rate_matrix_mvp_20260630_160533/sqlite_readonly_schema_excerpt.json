@@ -1,0 +1,21 @@
+{
+  "db_path": "/Users/kelvin/Kelvin-WorkSpace/LotteryNew/lottery_api/data/lottery_v2.db",
+  "sqlite_uri_mode": "mode=ro&immutable=1",
+  "objects": [
+    {
+      "type": "table",
+      "name": "draws",
+      "sql": "CREATE TABLE draws (\n                    id INTEGER PRIMARY KEY AUTOINCREMENT,\n                    draw TEXT NOT NULL,\n                    date TEXT NOT NULL,\n                    lottery_type TEXT NOT NULL,\n                    numbers TEXT NOT NULL,\n                    special INTEGER DEFAULT 0,\n                    created_at TEXT DEFAULT CURRENT_TIMESTAMP, jackpot_amount REAL DEFAULT NULL, sell_amount REAL DEFAULT NULL, total_amount REAL DEFAULT NULL, numbers_positional TEXT DEFAULT NULL,\n                    UNIQUE(draw, lottery_type)\n                )"
+    },
+    {
+      "type": "table",
+      "name": "strategy_prediction_replays",
+      "sql": "CREATE TABLE \"strategy_prediction_replays\" (\n  id INTEGER PRIMARY KEY AUTOINCREMENT, lottery_type TEXT NOT NULL,\n  target_draw TEXT NOT NULL, target_date TEXT, strategy_id TEXT NOT NULL,\n  strategy_name TEXT, strategy_version TEXT, history_cutoff_draw TEXT,\n  replay_status TEXT NOT NULL, reject_reason TEXT, predicted_numbers TEXT,\n  predicted_special INTEGER, actual_numbers TEXT, actual_special INTEGER,\n  hit_numbers TEXT, hit_count INTEGER DEFAULT 0, special_hit INTEGER DEFAULT 0,\n  replay_run_id TEXT, generated_at TEXT DEFAULT (datetime('now')),\n  truth_level TEXT DEFAULT NULL, controlled_apply_id TEXT DEFAULT NULL,\n  source TEXT DEFAULT NULL, provenance_hash TEXT DEFAULT NULL,\n  provenance_source TEXT DEFAULT NULL, dry_run INTEGER DEFAULT 0,\n  prediction_cutoff_date TEXT, prediction_generated_at TEXT,\n  bet_index INTEGER NOT NULL DEFAULT 1,\n  UNIQUE(lottery_type, target_draw, strategy_id, bet_index)\n)"
+    },
+    {
+      "type": "view",
+      "name": "draws_big_lotto_canonical_main",
+      "sql": "CREATE VIEW draws_big_lotto_canonical_main AS\nSELECT d.*\nFROM draws d\nWHERE d.lottery_type = 'BIG_LOTTO'\n  AND d.draw NOT LIKE '%-%'\n  AND NOT (LENGTH(d.draw) = 8 AND d.draw LIKE '20%')\n  AND (\n    SELECT MAX(CAST(j.value AS INTEGER))\n    FROM json_each(d.numbers) j\n  ) > 25"
+    }
+  ]
+}

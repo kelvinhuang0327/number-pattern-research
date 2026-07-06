@@ -3140,10 +3140,13 @@
                 尚未載入證據列
               </span>
               <button id="p251f-clear-filters" type="button" class="btn-sm btn-secondary">清除篩選</button>
+              <button id="p251f-copy-share-link" type="button" class="btn-sm btn-secondary" aria-label="複製證據儀表板分享連結">複製分享連結</button>
             </div>
             <div id="p251f-active-filters" role="status" aria-live="polite">
               <span>顯示全部證據（無啟用中的篩選）</span>
             </div>
+            <div id="p251f-share-status" role="status" aria-live="polite" style="display:none;font-size:12px;color:#8b949e;margin:-2px 0 12px"></div>
+            <input id="p251f-share-url-fallback" type="text" readonly style="display:none;width:100%;margin:-2px 0 12px;font-size:11px;background:#0d1117;color:#c9d1d9;border:1px solid #30363d;border-radius:4px;padding:4px 6px">
 
             <div id="p251f-lottery-cards" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:10px;margin-bottom:16px"></div>
 
@@ -3248,6 +3251,35 @@
                 window.history.replaceState(null, '', url.toString());
               } catch (e) {
                 // URL state is an enhancement; filtering and sorting remain usable if history is unavailable.
+              }
+            }
+            function showShareStatus(msg) {
+              var box = el('p251f-share-status');
+              if (!box) return;
+              box.textContent = msg;
+              box.style.display = msg ? '' : 'none';
+            }
+            function showShareUrlFallback(url) {
+              var input = el('p251f-share-url-fallback');
+              if (!input) return;
+              input.style.display = '';
+              input.value = url;
+              input.focus();
+              input.select();
+            }
+            function copyShareLink() {
+              updateDashboardUrlState();
+              var url = window.location.href;
+              if (navigator.clipboard && navigator.clipboard.writeText) {
+                navigator.clipboard.writeText(url).then(function () {
+                  showShareStatus('已複製目前的證據儀表板分享連結（含篩選與排序條件）。');
+                }).catch(function () {
+                  showShareUrlFallback(url);
+                  showShareStatus('自動複製失敗，請從下方欄位手動複製分享連結。');
+                });
+              } else {
+                showShareUrlFallback(url);
+                showShareStatus('此瀏覽器不支援自動複製，請從下方欄位手動複製分享連結。');
               }
             }
             function detailValue(v) {
@@ -3451,6 +3483,8 @@
                 if (artifactOnly) artifactOnly.checked = false;
                 renderRows();
               });
+              var copyShare = el('p251f-copy-share-link');
+              if (copyShare) copyShare.addEventListener('click', copyShareLink);
               renderActiveFilters();
               document.querySelectorAll('[data-section="' + SEC + '"]').forEach(function (btn) {
                 btn.addEventListener('click', function () { if (!loaded) load(); });

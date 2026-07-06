@@ -1,0 +1,4 @@
+unresolved_hook_name,top_candidates,medium_candidate_count,low_candidate_count,remaining_unresolved_count,probable_upgrade,probable_upgrade_reason,confirmed,recommendation
+learning_integrator,learning_integrator#006;learning_integrator#007,2,17,1,probable,direct live ingest import/call pair found; target implementation remains source-unresolved,False,runtime-instrumentation-required
+refresh_hedge_fund_outputs,refresh_hedge_fund_outputs#005;refresh_hedge_fund_outputs#006,2,57,1,probable,direct live ingest import/call pair found; target implementation remains source-unresolved,False,runtime-instrumentation-required
+weight_adjuster,weight_adjuster#043;weight_adjuster#044,2,65,1,probable,direct live ingest import/call pair found; target implementation remains source-unresolved,False,runtime-instrumentation-required

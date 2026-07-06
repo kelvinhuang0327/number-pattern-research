@@ -6582,13 +6582,14 @@
       }
       var strategyLabel = '<span style="font-family:monospace;font-size:10px;color:#8b949e">' +
         (ctx.strategy_name || ctx.strategy_id || '—') + '</span>';
+      var bestHitRoleAttr = (nBets > 1 && r.bets && r.bets.length > 0) ? ' data-role="replay-best-hit-summary"' : '';
       html += '<tr' + rowClass + ' data-p261a-main="' + idx + '">' +
         '<td data-label="期號">' + r.target_draw + '</td>' +
         '<td data-label="日期" style="font-size:11px;color:#8b949e">' + (r.draw_date || '—') + '</td>' +
         '<td data-label="策略">' + strategyLabel + '</td>' +
         '<td data-label="預測號碼">' + predictedHtml + '</td>' +
         '<td data-label="實際開獎">' + actualHtml + '</td>' +
-        '<td data-label="命中號碼" data-role="replay-best-hit-summary">' + hitHtml + '</td>' +
+        '<td data-label="命中號碼"' + bestHitRoleAttr + '>' + hitHtml + '</td>' +
         '<td data-label="明細"><button type="button" class="p261a-expand-btn" data-p261a-toggle="' + idx + '" aria-expanded="false">▸ 展開</button></td>' +
         '</tr>';
       html += '<tr class="p261a-bet-detail-row" data-p261a-detail="' + idx + '" style="display:none">' +

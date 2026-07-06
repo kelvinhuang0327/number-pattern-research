@@ -1,0 +1,19 @@
+{
+  "acceptance_status": "PASS",
+  "active_completion_surface": [
+    "scheduler.load_data"
+  ],
+  "active_completion_surface_count": 1,
+  "artifact_prefix": "P520K_ingest_afterinsert_active_surface_acceptance",
+  "disabled_missing_target_surface": [
+    "refresh_hedge_fund_outputs",
+    "weight_adjuster",
+    "learning_integrator"
+  ],
+  "disabled_missing_target_surface_count": 3,
+  "final_status": "WARN",
+  "missing_target_hooks_counted_as_active_completion_surface": [],
+  "missing_target_hooks_no_longer_active_completion_surface": true,
+  "removed_dead_hook_symbols_present": [],
+  "scheduler_refresh_retained": true
+}

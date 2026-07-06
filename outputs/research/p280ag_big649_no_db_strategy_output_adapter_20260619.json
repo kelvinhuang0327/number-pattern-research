@@ -83,7 +83,7 @@
     {
       "strategy_id": "biglotto_deviation_2bet",
       "source_callable": "tools.predict_biglotto_deviation_2bet:deviation_complement_2bet",
-      "source_sha256": "bb97c0bf044c5f9f37de7c6f27629e479bda650ca33dfeb7d0fbff840537bfba",
+      "source_sha256": "c7a82149da625ab7bb8ddfc824192b66e4998c98d0c0f18b99dca17a9786d601",
       "candidate_count": 2,
       "selected_candidate_index": 0,
       "rebound_off_frozen_primary": false,

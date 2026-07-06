@@ -54,7 +54,7 @@ Each strategy record in the JSON artifact binds a repository-relative source pat
 | Strategy | Canonical generator identity | Source SHA-256 |
 |---|---|---|
 | `bet2_fourier_expansion_biglotto` | `predict_fourier_expansion_bet1` | `d07b1c90f6971c01729d94919d7070ee23d45bf5357d3faf1f2f5b047dd2bb79` |
-| `biglotto_deviation_2bet` | `deviation_complement_2bet[bet_index=1]` | `bb97c0bf044c5f9f37de7c6f27629e479bda650ca33dfeb7d0fbff840537bfba` |
+| `biglotto_deviation_2bet` | `deviation_complement_2bet[bet_index=1]` | `c7a82149da625ab7bb8ddfc824192b66e4998c98d0c0f18b99dca17a9786d601` |
 | `biglotto_echo_aware_3bet` | `echo_aware_mixed_3bet(...)[bet_index=1]` | `ed4878fb59e22c44f26313646a762e034c7f92355e5df56a6f72eed887d11320` |
 | `biglotto_triple_strike` | `generate_triple_strike[bet_index=1]` | `236fe529c01f1c39f4297258db6dc591e4612365720245fc8051540ed69954b7` |
 | `biglotto_ts3_markov_4bet_w30` | `generate_ts3_markov_4bet(...)[bet_index=1]` | `25760472baa09835b560f146ff4a0ce23fa2f2373a75d60c64ed557286dfbc2a` |

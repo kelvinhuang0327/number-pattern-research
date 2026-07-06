@@ -1,7 +1,7 @@
 # P282B — BIG 6/49 Deduplicated Portfolio Replay & Diversified-Random Falsification
 
 - **Final classification:** `P282B_BIG649_DEDUP_REPLAY_PR_OPEN_NULL_NO_PUBLICATION`
-- **Deterministic digest:** `09303593cf7e577476c79d66cfc0dd3827c56404d623144b701dfc4af068865c`
+- **Deterministic digest:** `3fd3904548357472ffffac6018202e93451d3b3353e328a6a199f3f5ee8df50a`
 - **Source main SHA:** `8b62b358aef3e9fce8962054c166e80c1944d00c`
 - **Branch:** `task/p282b-big649-deduplicated-portfolio-replay`
 
@@ -13,7 +13,7 @@ Does deduplicating deterministic strategy tickets reduce duplicate exposure and 
 ## Headline answer
 - **Duplicate exposure:** the raw deterministic portfolio has an overall duplicate rate of **0.3080** (7331 of 23804 tickets); 1500/1531 draws carry >=1 duplicate. Deduplication removes all of it (D duplicate rate 0).
 - **Dedup vs raw success (D vs C):** success rates are identical by construction (LONG: D=0.2740, C=0.2740); dedup saves on average 4.886 tickets/draw without changing coverage.
-- **Dedup vs random (D vs A, budget-matched, LONG):** D success 0.2740 vs random 0.2901 (diff -0.0161, MC p=0.9235, exact p=0.9215, fixed_below_random).
+- **Dedup vs random (D vs A, budget-matched, LONG):** D success 0.2740 vs random 0.2901 (diff -0.0161, MC p=0.9235, normal-approx p=0.9215, fixed_below_random).
 
 ## Target draw universe
 - Deterministic source: `strategy_prediction_replays` (BIG_LOTTO, all PREDICTED).
@@ -68,9 +68,9 @@ Budget rule: every group requested the same per-draw budget B_d (the raw determi
 
 ## Primary comparison — D (dedup) vs A (independent random), budget-matched
 
-paired same-draw observations; D fixed (U_d unique deterministic tickets) vs A budget-matched at U_d i.i.d. random; seed-fixed Bernoulli Monte Carlo over EXACT per-draw success probabilities, with an exact Poisson-binomial normal-approximation cross-check; one-sided test for D above the random baseline
+paired same-draw observations; D fixed (U_d unique deterministic tickets) vs A budget-matched at U_d i.i.d. random; seed-fixed Bernoulli Monte Carlo over EXACT per-draw success probabilities, with a normal-approximation cross-check (using the exact Poisson-binomial mean/std); one-sided test for D above the random baseline
 
-| Window | D rate | random rate | diff | MC p (D>rand) | exact p | direction |
+| Window | D rate | random rate | diff | MC p (D>rand) | normal-approx p | direction |
 |---|--:|--:|--:|--:|--:|---|
 | SHORT | 0.2400 | 0.2872 | -0.0472 | 0.8706 | 0.8525 | fixed_below_random |
 | MID | 0.2920 | 0.2933 | -0.0013 | 0.5522 | 0.5265 | fixed_below_random |

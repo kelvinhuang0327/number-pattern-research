@@ -27,7 +27,7 @@
     "size": 99368960
   },
   "db_written": false,
-  "deterministic_digest": "09303593cf7e577476c79d66cfc0dd3827c56404d623144b701dfc4af068865c",
+  "deterministic_digest": "3fd3904548357472ffffac6018202e93451d3b3353e328a6a199f3f5ee8df50a",
   "diversity_constraint": {
     "max_attempts_per_ticket": 4000,
     "max_pairwise_main_overlap": 2,
@@ -1064,7 +1064,7 @@
   },
   "primary_comparison_d_vs_a": {
     "budget_policy": "EQUAL budget U_d for both D and the A baseline",
-    "method": "paired same-draw observations; D fixed (U_d unique deterministic tickets) vs A budget-matched at U_d i.i.d. random; seed-fixed Bernoulli Monte Carlo over EXACT per-draw success probabilities, with an exact Poisson-binomial normal-approximation cross-check; one-sided test for D above the random baseline",
+    "method": "paired same-draw observations; D fixed (U_d unique deterministic tickets) vs A budget-matched at U_d i.i.d. random; seed-fixed Bernoulli Monte Carlo over EXACT per-draw success probabilities, with a normal-approximation cross-check (using the exact Poisson-binomial mean/std); one-sided test for D above the random baseline",
     "results_by_window": {
       "ALL": {
         "comparison_label": "D_DEDUP vs A_INDEPENDENT_RANDOM (budget-matched U_d)",
@@ -1073,7 +1073,7 @@
         "mc_iterations": 2000,
         "mc_seed": 283,
         "observed_difference": -0.015015,
-        "p_value_exact_poisson_binomial": 0.91113864,
+        "p_value_normal_approx_poisson_binomial": 0.91113864,
         "p_value_mc_one_sided_fixed_better": 0.917041,
         "random_baseline_ci95": [
           0.263227,
@@ -1090,7 +1090,7 @@
         "mc_iterations": 2000,
         "mc_seed": 283,
         "observed_difference": -0.016089,
-        "p_value_exact_poisson_binomial": 0.92146151,
+        "p_value_normal_approx_poisson_binomial": 0.92146151,
         "p_value_mc_one_sided_fixed_better": 0.923538,
         "random_baseline_ci95": [
           0.267333,
@@ -1107,7 +1107,7 @@
         "mc_iterations": 2000,
         "mc_seed": 283,
         "observed_difference": -0.001299,
-        "p_value_exact_poisson_binomial": 0.52648766,
+        "p_value_normal_approx_poisson_binomial": 0.52648766,
         "p_value_mc_one_sided_fixed_better": 0.552224,
         "random_baseline_ci95": [
           0.254,
@@ -1124,7 +1124,7 @@
         "mc_iterations": 2000,
         "mc_seed": 283,
         "observed_difference": -0.047195,
-        "p_value_exact_poisson_binomial": 0.8524638,
+        "p_value_normal_approx_poisson_binomial": 0.8524638,
         "p_value_mc_one_sided_fixed_better": 0.870565,
         "random_baseline_ci95": [
           0.2,
@@ -1155,7 +1155,7 @@
           "mc_iterations": 2000,
           "mc_seed": 284,
           "observed_difference": -0.114631,
-          "p_value_exact_poisson_binomial": 1.0,
+          "p_value_normal_approx_poisson_binomial": 1.0,
           "p_value_mc_one_sided_fixed_better": 1.0,
           "random_baseline_ci95": [
             0.360549,
@@ -1172,7 +1172,7 @@
           "mc_iterations": 2000,
           "mc_seed": 284,
           "observed_difference": -0.11772,
-          "p_value_exact_poisson_binomial": 1.0,
+          "p_value_normal_approx_poisson_binomial": 1.0,
           "p_value_mc_one_sided_fixed_better": 1.0,
           "random_baseline_ci95": [
             0.367333,
@@ -1189,7 +1189,7 @@
           "mc_iterations": 2000,
           "mc_seed": 284,
           "observed_difference": -0.103129,
-          "p_value_exact_poisson_binomial": 0.99999872,
+          "p_value_normal_approx_poisson_binomial": 0.99999872,
           "p_value_mc_one_sided_fixed_better": 1.0,
           "random_baseline_ci95": [
             0.354,
@@ -1206,7 +1206,7 @@
           "mc_iterations": 2000,
           "mc_seed": 284,
           "observed_difference": -0.152965,
-          "p_value_exact_poisson_binomial": 0.99912726,
+          "p_value_normal_approx_poisson_binomial": 0.99912726,
           "p_value_mc_one_sided_fixed_better": 1.0,
           "random_baseline_ci95": [
             0.3,
@@ -1228,7 +1228,7 @@
           "mc_iterations": 2000,
           "mc_seed": 286,
           "observed_difference": -0.121312,
-          "p_value_exact_poisson_binomial": 1.0,
+          "p_value_normal_approx_poisson_binomial": 1.0,
           "p_value_mc_one_sided_fixed_better": 1.0,
           "random_baseline_ci95": [
             0.367734,
@@ -1245,7 +1245,7 @@
           "mc_iterations": 2000,
           "mc_seed": 286,
           "observed_difference": -0.124586,
-          "p_value_exact_poisson_binomial": 1.0,
+          "p_value_normal_approx_poisson_binomial": 1.0,
           "p_value_mc_one_sided_fixed_better": 1.0,
           "random_baseline_ci95": [
             0.374,
@@ -1262,7 +1262,7 @@
           "mc_iterations": 2000,
           "mc_seed": 286,
           "observed_difference": -0.108751,
-          "p_value_exact_poisson_binomial": 0.9999997,
+          "p_value_normal_approx_poisson_binomial": 0.9999997,
           "p_value_mc_one_sided_fixed_better": 1.0,
           "random_baseline_ci95": [
             0.358,
@@ -1279,7 +1279,7 @@
           "mc_iterations": 2000,
           "mc_seed": 286,
           "observed_difference": -0.157615,
-          "p_value_exact_poisson_binomial": 0.99942922,
+          "p_value_normal_approx_poisson_binomial": 0.99942922,
           "p_value_mc_one_sided_fixed_better": 1.0,
           "random_baseline_ci95": [
             0.3,
@@ -1301,7 +1301,7 @@
           "mc_iterations": 2000,
           "mc_seed": 285,
           "observed_difference": -0.019899,
-          "p_value_exact_poisson_binomial": 0.95553212,
+          "p_value_normal_approx_poisson_binomial": 0.95553212,
           "p_value_mc_one_sided_fixed_better": 0.95902,
           "random_baseline_ci95": [
             0.267799,
@@ -1318,7 +1318,7 @@
           "mc_iterations": 2000,
           "mc_seed": 285,
           "observed_difference": -0.021003,
-          "p_value_exact_poisson_binomial": 0.96138029,
+          "p_value_normal_approx_poisson_binomial": 0.96138029,
           "p_value_mc_one_sided_fixed_better": 0.966517,
           "random_baseline_ci95": [
             0.272,
@@ -1335,7 +1335,7 @@
           "mc_iterations": 2000,
           "mc_seed": 285,
           "observed_difference": -0.005409,
-          "p_value_exact_poisson_binomial": 0.58847551,
+          "p_value_normal_approx_poisson_binomial": 0.58847551,
           "p_value_mc_one_sided_fixed_better": 0.621189,
           "random_baseline_ci95": [
             0.258,
@@ -1352,7 +1352,7 @@
           "mc_iterations": 2000,
           "mc_seed": 285,
           "observed_difference": -0.050415,
-          "p_value_exact_poisson_binomial": 0.86303061,
+          "p_value_normal_approx_poisson_binomial": 0.86303061,
           "p_value_mc_one_sided_fixed_better": 0.901549,
           "random_baseline_ci95": [
             0.21,
@@ -1434,7 +1434,7 @@
     ],
     "mc_iterations": 2000,
     "not_a_betting_recommendation": true,
-    "primary_test": "seed-fixed Bernoulli Monte Carlo (paired by draw) + exact Poisson-binomial cross-check; one-sided (fixed > random)"
+    "primary_test": "seed-fixed Bernoulli Monte Carlo (paired by draw) + normal-approximation cross-check using the exact Poisson-binomial mean/std; one-sided (fixed > random)"
   },
   "target_draw_universe": {
     "canonical_view_draws": 2117,

@@ -1,5 +1,5 @@
 hook_name,expected,present,status,line,evidence_type,evidence,notes
 scheduler.load_data,True,True,PASS,164,call,scheduler.load_data(),expected live hook reference present
-refresh_hedge_fund_outputs,True,True,PASS,173,call_or_name,refresh_hedge_fund_outputs(project_root),expected live hook reference present
-weight_adjuster,True,True,PASS,178,import_from,from engine.weight_adjuster import adjust_all_types,expected live hook reference present
-learning_integrator,True,True,PASS,187,import_from,from engine.learning_integrator import apply_all_types as apply_learning,expected live hook reference present
+refresh_hedge_fund_outputs,False,False,PASS,,call_or_name,,removed / no longer part of active or disabled surface
+weight_adjuster,False,False,PASS,,import_from,,removed / no longer part of active or disabled surface
+learning_integrator,False,False,PASS,,import_from,,removed / no longer part of active or disabled surface

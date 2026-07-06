@@ -4,26 +4,26 @@
     "DB side effects avoided": "PASS",
     "_refresh_after_insert present": "PASS",
     "expected live hooks visible": "PASS",
+    "missing-target hook residue absent": "PASS",
     "removed dead hooks absent": "PASS",
     "runtime import avoided": "PASS",
     "source AST evaluation": "PASS"
   },
   "dead_hook_absence_status": "PASS",
-  "detected_live_hook_count": 4,
+  "detected_live_hook_count": 1,
   "expected_live_hooks": [
-    "scheduler.load_data",
-    "refresh_hedge_fund_outputs",
-    "weight_adjuster",
-    "learning_integrator"
+    "scheduler.load_data"
   ],
   "failure_count": 0,
   "failures": [],
   "final_status": "PASS",
   "missing_or_renamed_live_hooks": [],
+  "missing_target_residue_status": "PASS",
   "notices": [
     "source/AST-only healthcheck",
     "does not import lottery_api.routes.ingest",
     "does not execute draw inserts",
+    "historical missing-target hooks are removed from active and disabled surface",
     "no canonical DB open/write",
     "no migration/backfill",
     "no deploy",
@@ -31,8 +31,8 @@
     "no betting/future prediction claims"
   ],
   "refresh_after_insert_call_site_lines": [
-    307,
-    410
+    280,
+    383
   ],
   "refresh_after_insert_line": 160,
   "refresh_after_insert_present": true,
@@ -41,9 +41,15 @@
     "snapshot_scheduler",
     "prediction_tracker"
   ],
+  "removed_missing_target_hook_count": 3,
+  "removed_missing_target_hooks": [
+    "refresh_hedge_fund_outputs",
+    "weight_adjuster",
+    "learning_integrator"
+  ],
   "scope": "P520C parses lottery_api/routes/ingest.py as text/AST only; no app runtime import; no draw insert execution; no canonical DB open/write; no migration/backfill; no deploy; does not implement replacement scheduler/tracker; no betting/future prediction claims.",
   "source_path": "lottery_api/routes/ingest.py",
-  "source_sha256": "c8e0eb9c519736eac679c21521d3e546de448553bfd682f88eac18e94bb0c35b",
+  "source_sha256": "ccd103e48de4294cc2ebd9fc75172fd2aefa89f3deb0ed7d23a1909f43f2034a",
   "suggested_next_command": "python -m tools.ingest_afterinsert_hook_healthcheck --status-block",
   "warning_count": 0,
   "warnings": []

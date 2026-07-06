@@ -41,6 +41,7 @@ def test_live_after_insert_hooks_preserved():
         if isinstance(node, (ast.FunctionDef, ast.AsyncFunctionDef))
     }
     assert "_refresh_after_insert" in fn_names
-    for kept_hook in ("scheduler.load_data", "refresh_hedge_fund_outputs",
-                      "weight_adjuster", "learning_integrator"):
-        assert kept_hook in src
+    assert "scheduler.load_data" in src
+    for removed_hook in ("refresh_hedge_fund_outputs",
+                         "weight_adjuster", "learning_integrator"):
+        assert removed_hook not in src

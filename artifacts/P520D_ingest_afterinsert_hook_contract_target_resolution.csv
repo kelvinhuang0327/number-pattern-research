@@ -1,5 +1,2 @@
 hook_reference,import_module,imported_symbol,local_symbol,target_attribute,target_path,target_path_exists,target_symbol_found,target_symbol_line,target_attribute_found,target_attribute_line,static_target_resolution,notes
 scheduler.load_data,utils.scheduler,scheduler,scheduler,load_data,lottery_api/utils/scheduler.py,True,True,468,True,321,PASS,"target module, imported instance symbol, and called class method resolved by source/AST"
-refresh_hedge_fund_outputs,analysis.payout.sync,refresh_hedge_fund_outputs,refresh_hedge_fund_outputs,,,False,False,,False,,WARN,import target module path not found by source-only resolution; runtime import not attempted
-weight_adjuster,engine.weight_adjuster,adjust_all_types,adjust_all_types,,,False,False,,False,,WARN,import target module path not found by source-only resolution; runtime import not attempted
-learning_integrator,engine.learning_integrator,apply_all_types,apply_learning,,,False,False,,False,,WARN,import target module path not found by source-only resolution; runtime import not attempted

@@ -1,4 +1,1 @@
 hook_name,import_module,imported_symbol,source_file_path,definition_line,definition_kind,definition_evidence,reexport_depth,reexport_module,reexport_symbol,status,reason
-learning_integrator,engine.learning_integrator,apply_all_types,,,,,0,,,SOURCE_PATH_UNRESOLVED,source path unresolved by static module-to-file mapping; runtime import not attempted
-refresh_hedge_fund_outputs,analysis.payout.sync,refresh_hedge_fund_outputs,,,,,0,,,SOURCE_PATH_UNRESOLVED,source path unresolved by static module-to-file mapping; runtime import not attempted
-weight_adjuster,engine.weight_adjuster,adjust_all_types,,,,,0,,,SOURCE_PATH_UNRESOLVED,source path unresolved by static module-to-file mapping; runtime import not attempted

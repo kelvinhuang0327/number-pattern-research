@@ -1,18 +1,18 @@
 # P520H ingest after-insert hook import-chain resolver status
 
-- Final status: `WARN`
-- Probable live reference count from P520G: `3`
+- Final status: `PASS`
+- Probable live reference count from P520G: `0`
 - Confirmed hook count: `0`
-- Probable hook count: `3`
+- Probable hook count: `0`
 - Unresolved hook count: `0`
-- Target source unresolved count: `3`
-- Import-chain matrix rows: `3`
-- Target definition rows: `3`
-- PASS/WARN/FAIL counts: `0/3/0`
+- Target source unresolved count: `0`
+- Import-chain matrix rows: `0`
+- Target definition rows: `0`
+- PASS/WARN/FAIL counts: `0/0/0`
 
 ## Status Summary
 - Confirmed: ``
-- Probable: `learning_integrator;refresh_hedge_fund_outputs;weight_adjuster`
+- Probable: ``
 - Unresolved: ``
 
 ## Scope notices

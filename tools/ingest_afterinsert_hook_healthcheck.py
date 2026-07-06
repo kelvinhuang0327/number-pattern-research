@@ -30,8 +30,9 @@ COMPLETION_SUMMARY_PATH = ARTIFACTS_DIR / f"{ARTIFACT_PREFIX}_completion_summary
 STATUS_BLOCK_PATH = ARTIFACTS_DIR / f"{ARTIFACT_PREFIX}_status_block.md"
 MANIFEST_PATH = ARTIFACTS_DIR / f"{ARTIFACT_PREFIX}_manifest.csv"
 
-EXPECTED_LIVE_HOOKS: Sequence[str] = (
-    "scheduler.load_data",
+EXPECTED_LIVE_HOOKS: Sequence[str] = ("scheduler.load_data",)
+
+REMOVED_MISSING_TARGET_HOOKS: Sequence[str] = (
     "refresh_hedge_fund_outputs",
     "weight_adjuster",
     "learning_integrator",
@@ -47,6 +48,7 @@ NOTICE_LINES = (
     "source/AST-only healthcheck",
     "does not import lottery_api.routes.ingest",
     "does not execute draw inserts",
+    "historical missing-target hooks are removed from active and disabled surface",
     "no canonical DB open/write",
     "no migration/backfill",
     "no deploy",
@@ -228,6 +230,25 @@ def _detect_live_hook(function_node: ast.AST | None, source: str, hook_name: str
     }
 
 
+def _detect_removed_missing_hook(function_node: ast.AST | None, source: str, hook_name: str) -> Dict[str, Any]:
+    row = _detect_live_hook(function_node, source, hook_name)
+    present = bool(row["present"])
+    return {
+        "hook_name": hook_name,
+        "expected": False,
+        "present": present,
+        "status": "FAIL" if present else "PASS",
+        "line": row["line"],
+        "evidence_type": row["evidence_type"],
+        "evidence": row["evidence"],
+        "notes": (
+            "removed missing-target hook residue found"
+            if present
+            else "removed / no longer part of active or disabled surface"
+        ),
+    }
+
+
 def _call_sites(tree: ast.AST, function_name: str) -> List[int]:
     lines: List[int] = []
     for node in ast.walk(tree):
@@ -266,12 +287,22 @@ def analyze_ingest_source(path: Path = INGEST_ROUTE_PATH) -> Dict[str, Any]:
     function_source = _node_source(source, refresh_function) if refresh_function is not None else ""
 
     hook_rows = [_detect_live_hook(refresh_function, source, hook) for hook in EXPECTED_LIVE_HOOKS]
+    removed_missing_rows = [
+        _detect_removed_missing_hook(refresh_function, source, hook)
+        for hook in REMOVED_MISSING_TARGET_HOOKS
+    ]
+    all_hook_rows = hook_rows + removed_missing_rows
     dead_rows = _dead_hook_rows(source, tree)
     missing_or_renamed = [row["hook_name"] for row in hook_rows if row["status"] != "PASS"]
     warnings = [f"expected live hook missing or renamed: {hook}" for hook in missing_or_renamed]
     failures: List[str] = []
     if not refresh_present:
         failures.append("_refresh_after_insert missing")
+    failures.extend(
+        f"removed missing-target hook residue found: {row['hook_name']}"
+        for row in removed_missing_rows
+        if row["status"] != "PASS"
+    )
     failures.extend(f"removed dead hook reference found: {row['symbol']}" for row in dead_rows if row["status"] != "PASS")
 
     final_status = "FAIL" if failures else "WARN" if warnings else "PASS"
@@ -288,12 +319,17 @@ def analyze_ingest_source(path: Path = INGEST_ROUTE_PATH) -> Dict[str, Any]:
         "expected_live_hooks": list(EXPECTED_LIVE_HOOKS),
         "detected_live_hook_count": sum(1 for row in hook_rows if row["present"]),
         "missing_or_renamed_live_hooks": missing_or_renamed,
+        "removed_missing_target_hooks": list(REMOVED_MISSING_TARGET_HOOKS),
+        "removed_missing_target_hook_count": sum(1 for row in removed_missing_rows if not row["present"]),
+        "missing_target_residue_status": "PASS"
+        if all(row["status"] == "PASS" for row in removed_missing_rows)
+        else "FAIL",
         "removed_dead_hooks": list(REMOVED_DEAD_HOOKS),
         "dead_hook_absence_status": "PASS" if all(row["status"] == "PASS" for row in dead_rows) else "FAIL",
         "final_status": final_status,
         "warnings": warnings,
         "failures": failures,
-        "hook_inventory": hook_rows,
+        "hook_inventory": all_hook_rows,
         "dead_hooks": dead_rows,
         "notices": list(NOTICE_LINES),
     }
@@ -304,6 +340,7 @@ def build_healthcheck_bundle() -> Dict[str, Any]:
     component_statuses = {
         "_refresh_after_insert present": "PASS" if analysis["refresh_after_insert_present"] else "FAIL",
         "expected live hooks visible": "PASS" if not analysis["missing_or_renamed_live_hooks"] else "WARN",
+        "missing-target hook residue absent": analysis["missing_target_residue_status"],
         "removed dead hooks absent": analysis["dead_hook_absence_status"],
         "source AST evaluation": "PASS",
         "runtime import avoided": "PASS",
@@ -320,6 +357,9 @@ def build_healthcheck_bundle() -> Dict[str, Any]:
         "expected_live_hooks": analysis["expected_live_hooks"],
         "detected_live_hook_count": analysis["detected_live_hook_count"],
         "missing_or_renamed_live_hooks": analysis["missing_or_renamed_live_hooks"],
+        "removed_missing_target_hooks": analysis["removed_missing_target_hooks"],
+        "removed_missing_target_hook_count": analysis["removed_missing_target_hook_count"],
+        "missing_target_residue_status": analysis["missing_target_residue_status"],
         "removed_dead_hooks": analysis["removed_dead_hooks"],
         "dead_hook_absence_status": analysis["dead_hook_absence_status"],
         "warning_count": len(analysis["warnings"]),
@@ -345,6 +385,7 @@ def build_healthcheck_bundle() -> Dict[str, Any]:
         "runs_migration_backfill_or_deploy": False,
         "implements_replacement_scheduler_or_tracker": False,
         "live_hook_references_visible": analysis["detected_live_hook_count"] == len(EXPECTED_LIVE_HOOKS),
+        "missing_target_hooks_removed": analysis["missing_target_residue_status"] == "PASS",
         "removed_dead_hooks_absent": analysis["dead_hook_absence_status"] == "PASS",
         "expected_artifact_count": 6,
         "notices": list(NOTICE_LINES),
@@ -369,6 +410,8 @@ def _status_block_md(health: Mapping[str, Any]) -> str:
         f"- `_refresh_after_insert` call sites: `{health['refresh_after_insert_call_site_lines']}`",
         f"- Detected live hook count: `{health['detected_live_hook_count']}`",
         f"- Missing or renamed live hooks: `{health['missing_or_renamed_live_hooks']}`",
+        f"- Removed missing-target hooks: `{health['removed_missing_target_hooks']}`",
+        f"- Missing-target residue status: `{health['missing_target_residue_status']}`",
         f"- Dead hook absence status: `{health['dead_hook_absence_status']}`",
         f"- Warning count: `{health['warning_count']}`",
         f"- Failure count: `{health['failure_count']}`",

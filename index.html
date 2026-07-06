@@ -3103,6 +3103,7 @@
               .p251f-badge{border:1px solid #30363d;border-radius:999px;padding:1px 7px;font-size:11px;white-space:nowrap}
               #p251f-active-filters{display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin:-2px 0 12px;font-size:12px;color:#8b949e}
               #p251f-active-filters .p251f-filter-chip{border:1px solid #388bfd;border-radius:999px;padding:2px 8px;color:#79c0ff;background:rgba(56,139,253,.10)}
+              #p251f-visible-stats .p251f-stats-chip{border:1px solid #30363d;border-radius:999px;padding:2px 8px;color:#8b949e;background:rgba(139,148,158,.08);margin-right:4px}
               #p251f-lottery-cards .p251f-card-details{margin-top:8px;border-top:1px solid #21262d;padding-top:8px;font-size:11px;color:#8b949e}
               #p251f-lottery-cards .p251f-card-details summary{cursor:pointer;color:#79c0ff;font-weight:600}
               #p251f-lottery-cards .p251f-card-details dl{display:grid;grid-template-columns:max-content 1fr;gap:4px 8px;margin:8px 0 0}
@@ -3150,6 +3151,14 @@
             <input id="p251f-share-url-fallback" type="text" readonly style="display:none;width:100%;margin:-2px 0 12px;font-size:11px;background:#0d1117;color:#c9d1d9;border:1px solid #30363d;border-radius:4px;padding:4px 6px">
             <div id="p251f-export-status" role="status" aria-live="polite" style="display:none;font-size:12px;color:#8b949e;margin:-2px 0 12px"></div>
             <textarea id="p251f-export-fallback" readonly style="display:none;width:100%;height:90px;margin:-2px 0 12px;font-size:11px;background:#0d1117;color:#c9d1d9;border:1px solid #30363d;border-radius:4px;padding:4px 6px"></textarea>
+
+            <div id="p251f-visible-stats" role="status" aria-live="polite" style="display:flex;gap:14px;flex-wrap:wrap;align-items:center;margin:-2px 0 12px;font-size:12px;color:#8b949e">
+              <span>可見結果統計：</span>
+              <span id="p251f-stats-count">可見筆數 0</span>
+              <span id="p251f-stats-lottery-count">彩種數 0</span>
+              <span id="p251f-stats-artifact-only-count">Artifact-only 0</span>
+              <span id="p251f-stats-lifecycle-breakdown"></span>
+            </div>
 
             <div id="p251f-lottery-cards" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:10px;margin-bottom:16px"></div>
 
@@ -3351,6 +3360,40 @@
               showExportFallback(csv);
               showExportStatus('此瀏覽器不支援自動下載，請從下方欄位手動複製匯出內容。');
             }
+            function computeVisibleStats(rows) {
+              var lotterySet = {};
+              var artifactOnlyCount = 0;
+              var lifecycleCounts = {};
+              (rows || []).forEach(function (r) {
+                if (r.lottery_type) lotterySet[r.lottery_type] = true;
+                if (r.artifact_only_flag) artifactOnlyCount++;
+                var status = r.current_registry_lifecycle_status || 'UNKNOWN';
+                lifecycleCounts[status] = (lifecycleCounts[status] || 0) + 1;
+              });
+              return {
+                count: (rows || []).length,
+                lotteryCount: Object.keys(lotterySet).length,
+                artifactOnlyCount: artifactOnlyCount,
+                lifecycleCounts: lifecycleCounts
+              };
+            }
+            function renderVisibleStats() {
+              var stats = computeVisibleStats(lastVisibleRows);
+              var countEl = el('p251f-stats-count');
+              if (countEl) countEl.textContent = '可見筆數 ' + stats.count;
+              var lotteryEl = el('p251f-stats-lottery-count');
+              if (lotteryEl) lotteryEl.textContent = '彩種數 ' + stats.lotteryCount;
+              var artifactEl = el('p251f-stats-artifact-only-count');
+              if (artifactEl) artifactEl.textContent = 'Artifact-only ' + stats.artifactOnlyCount;
+              var lifecycleEl = el('p251f-stats-lifecycle-breakdown');
+              if (!lifecycleEl) return;
+              var keys = Object.keys(stats.lifecycleCounts).sort();
+              lifecycleEl.innerHTML = keys.length
+                ? keys.map(function (k) {
+                    return '<span class="p251f-stats-chip">' + esc(k) + '×' + stats.lifecycleCounts[k] + '</span>';
+                  }).join('')
+                : '<span class="p251f-no-additional-details">無可見資料</span>';
+            }
             function detailValue(v) {
               return v == null || v === ''
                 ? '<span class="p251f-no-additional-details">No additional details available.</span>'
@@ -3494,6 +3537,7 @@
               }
               rows = rows.map(function (entry) { return entry.row; });
               lastVisibleRows = rows;
+              renderVisibleStats();
               tbody.innerHTML = rows.map(function (r) {
                 var state = r.evidence_state || {};
                 var visibility = r.row_visibility || {};

@@ -28,7 +28,7 @@ Covers all 23 P0-4 required smoke checks:
 19.  Page does not contain strategy promotion wording
 20.  Page does not contain 最佳策略推薦 / best strategy recommendation
 21.  Page does not contain edge ranking text
-22.  「提高中獎率」only appears in negation context (not as a claim)
+22.  Page does not contain forbidden win-rate promotion wording
 23.  replay 結論 JS does not output SIGNAL / NO_SIGNAL / NO_VALIDATED_EDGE
 
 Hard rules (enforced):
@@ -122,7 +122,7 @@ def _freshness_payload():
                 "error_count": 0,
             }
         ],
-        "disclaimer": "本頁為歷史預測回放，用於稽核，不代表提高中獎率。",
+        "disclaimer": "本頁為歷史預測回放，用於稽核；不代表未來結果。",
     }
 
 
@@ -145,7 +145,7 @@ def _summary_payload(lifecycle_status: str):
                 "error_count": 0,
             }
         ],
-        "disclaimer": "本摘要為歷史預測回放統計，只用於查詢與稽核；不代表提高中獎率，也不保證任何回放結果。",
+        "disclaimer": "本摘要為歷史預測回放統計，只用於查詢與稽核；不代表未來結果，也不保證任何回放結果。",
         "data_scope": "ALL_REPLAY_ROWS",
         "legacy_error_count": 0,
         "has_legacy_errors": False,
@@ -543,8 +543,8 @@ class TestReplayBrowserSmoke:
         assert '本頁為歷史預測回放' in self.html, (
             "Conservative disclaimer '本頁為歷史預測回放' not found in index.html"
         )
-        assert '不代表提高中獎率' in self.html, (
-            "Disclaimer '不代表提高中獎率' not found in index.html"
+        assert '不代表未來結果' in self.html, (
+            "Disclaimer '不代表未來結果' not found in index.html"
         )
 
     # ------------------------------------------------------------------ #
@@ -606,24 +606,13 @@ class TestReplayBrowserSmoke:
         )
 
     # ------------------------------------------------------------------ #
-    # Check 22 — 提高中獎率 only in negation context
+    # Check 22 — no forbidden win-rate promotion wording
     # ------------------------------------------------------------------ #
-    def test_increase_winning_only_in_negation(self):
-        """「提高中獎率」must only appear in negation context (不代表/不是), never as a claim."""
-        occurrences = [
-            m.start() for m in re.finditer('提高中獎率', self.html)
-        ]
-        assert len(occurrences) > 0, (
-            "No '提高中獎率' found at all — expected at least one negation disclaimer"
+    def test_no_increase_winning_rate_wording(self):
+        """「提高中獎率」must not appear on replay display surfaces."""
+        assert '提高中獎率' not in self.html, (
+            "Replay display surfaces must not contain '提高中獎率'"
         )
-        for pos in occurrences:
-            # Check 20-char window before the match for negation markers
-            context = self.html[max(0, pos - 20): pos + 10]
-            has_negation = '不代表' in context or '不是' in context or '不得' in context
-            assert has_negation, (
-                f"'提高中獎率' found outside negation context near: "
-                f"...{self.html[max(0,pos-30):pos+20]}..."
-            )
 
     # ------------------------------------------------------------------ #
     # Check 23 — No SIGNAL / NO_SIGNAL / NO_VALIDATED_EDGE in replay JS

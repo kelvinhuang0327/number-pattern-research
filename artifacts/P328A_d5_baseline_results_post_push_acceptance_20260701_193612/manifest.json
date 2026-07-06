@@ -1,0 +1,10 @@
+{
+  "evidence_root": "/Users/kelvin/Kelvin-WorkSpace/p328a_d5_baseline_results_post_push_acceptance_20260701_193612",
+  "sha256": {
+    "phase0_state.md": "fd48442cfccbcf23bd614375541eae4ffca4543f21da2fc2378c5269af40f854",
+    "commands.log": "f0e16083fa9fdb273ad181d19bd6911da8297e7c4c1c152a7fba4fbd0dadaee6",
+    "post_push_acceptance.md": "4680b373e1ea2bcd004a5ec1a9d2170a6ebec829ec85203f52cb21ffbe8fa033",
+    "browser_smoke.md": "764cbfb5558265736f5eb0dd4f41b1caf7ea2168b24ee803027cd18732820cff",
+    "validation_summary.md": "4af8054036b0c7df7da8c79e7a608eccc3784b61ad4ac37aebc762536d33a2dc"
+  }
+}

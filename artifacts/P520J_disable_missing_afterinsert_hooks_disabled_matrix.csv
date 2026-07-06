@@ -1,0 +1,4 @@
+hook_name,status,guard_symbol,guard_value,guard_line,import_module,imported_symbol,local_symbol,import_line,call_line,warning_line,p520i_terminal_status,p520i_unresolved_reason,scheduler_load_data_affected
+refresh_hedge_fund_outputs,DISABLED,_MISSING_AFTERINSERT_HOOKS_ENABLED,False,160,analysis.payout.sync,refresh_hedge_fund_outputs,refresh_hedge_fund_outputs,175,176,178,UNRESOLVED,source file missing,False
+weight_adjuster,DISABLED,_MISSING_AFTERINSERT_HOOKS_ENABLED,False,160,engine.weight_adjuster,adjust_all_types,adjust_all_types,181,182,187,UNRESOLVED,source file missing,False
+learning_integrator,DISABLED,_MISSING_AFTERINSERT_HOOKS_ENABLED,False,160,engine.learning_integrator,apply_all_types,apply_learning,190,191,196,UNRESOLVED,source file missing,False

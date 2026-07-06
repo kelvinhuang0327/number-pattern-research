@@ -1,0 +1,48 @@
+{
+  "artifact_prefix": "P520J_disable_missing_afterinsert_hooks_warning_only_evidence",
+  "hooks": {
+    "learning_integrator": {
+      "call_line": 191,
+      "catches_exception": true,
+      "disabled_by_guard": true,
+      "guard_symbol": "_MISSING_AFTERINSERT_HOOKS_ENABLED",
+      "guard_value": false,
+      "import_line": 190,
+      "p520i_terminal_symbol_status": "UNRESOLVED",
+      "p520i_unresolved_reason": "source file missing",
+      "warning_line": 196,
+      "warning_message_fragment": "learning_integrator after weight_adjuster failed"
+    },
+    "refresh_hedge_fund_outputs": {
+      "call_line": 176,
+      "catches_exception": true,
+      "disabled_by_guard": true,
+      "guard_symbol": "_MISSING_AFTERINSERT_HOOKS_ENABLED",
+      "guard_value": false,
+      "import_line": 175,
+      "p520i_terminal_symbol_status": "UNRESOLVED",
+      "p520i_unresolved_reason": "source file missing",
+      "warning_line": 178,
+      "warning_message_fragment": "refresh_hedge_fund_outputs() failed"
+    },
+    "weight_adjuster": {
+      "call_line": 182,
+      "catches_exception": true,
+      "disabled_by_guard": true,
+      "guard_symbol": "_MISSING_AFTERINSERT_HOOKS_ENABLED",
+      "guard_value": false,
+      "import_line": 181,
+      "p520i_terminal_symbol_status": "UNRESOLVED",
+      "p520i_unresolved_reason": "source file missing",
+      "warning_line": 187,
+      "warning_message_fragment": "weight_adjuster after resolve failed"
+    }
+  },
+  "scheduler_load_data": {
+    "call_line": 166,
+    "disabled_by_guard": false,
+    "import_line": 165,
+    "retained": true,
+    "warning_line": 168
+  }
+}

@@ -17,14 +17,18 @@ import tools.ingest_afterinsert_hook_contract as contract
 def test_contract_reports_current_live_hook_surface_without_failures():
     result = contract.build_contract_bundle()["result"]
 
-    assert result["final_status"] == "WARN"
+    assert result["final_status"] == "PASS"
     assert result["refresh_after_insert_present"] is True
     assert result["detected_live_hook_count"] == len(contract.EXPECTED_HOOKS)
     assert result["call_like_live_hook_count"] == len(contract.EXPECTED_HOOKS)
     assert result["target_resolution_pass_count"] == 1
-    assert result["target_resolution_warn_count"] == 3
+    assert result["target_resolution_warn_count"] == 0
+    assert result["removed_missing_target_hooks"] == list(contract.REMOVED_MISSING_TARGET_HOOKS)
+    assert result["removed_missing_target_hook_count"] == len(contract.REMOVED_MISSING_TARGET_HOOKS)
+    assert result["missing_target_residue_status"] == "PASS"
+    assert result["missing_target_residue"] == []
     assert result["dead_hook_absence_status"] == "PASS"
-    assert result["warning_count"] == 3
+    assert result["warning_count"] == 0
     assert result["failure_count"] == 0
     assert result["component_statuses"]["runtime import avoided"] == "PASS"
     assert result["component_statuses"]["DB side effects avoided"] == "PASS"
@@ -62,11 +66,7 @@ def test_target_resolution_distinguishes_static_pass_from_unresolved_warnings():
     assert scheduler["target_attribute_found"] == "True"
     assert scheduler["target_attribute_line"]
 
-    for hook in ("refresh_hedge_fund_outputs", "weight_adjuster", "learning_integrator"):
-        row = by_hook[hook]
-        assert row["static_target_resolution"] == "WARN"
-        assert row["target_path_exists"] == "False"
-        assert "runtime import not attempted" in row["notes"]
+    assert set(by_hook) == {"scheduler.load_data"}
 
 
 def test_dead_hook_check_pins_removed_symbols_absent():
@@ -88,15 +88,16 @@ def test_result_reads_p520c_artifact_summary_as_prior_evidence():
     assert summary["result_present"] is True
     assert summary["final_status"] == "PASS"
     assert summary["expected_live_hooks"] == [spec.hook_reference for spec in contract.EXPECTED_HOOKS]
-    assert summary["hook_inventory_rows"] == len(contract.EXPECTED_HOOKS)
+    assert summary["hook_inventory_rows"] == len(contract.EXPECTED_HOOKS) + len(contract.REMOVED_MISSING_TARGET_HOOKS)
     assert summary["dead_hook_rows"] == len(contract.REMOVED_DEAD_HOOKS)
 
 
 def test_status_block_is_copy_paste_friendly_and_scoped():
     block = contract.build_contract_bundle()["status_block"]
 
-    assert "Final status: `WARN`" in block
-    assert "Static target resolution WARN count: `3`" in block
+    assert "Final status: `PASS`" in block
+    assert "Static target resolution WARN count: `0`" in block
+    assert "Missing-target residue status: `PASS`" in block
     assert "Dead hook absence status: `PASS`" in block
     for notice in contract.NOTICE_LINES:
         assert notice in block
@@ -175,7 +176,7 @@ def test_generated_json_and_manifest_are_parseable():
     result = json.loads(rendered[contract.RESULT_PATH])
     manifest_rows = list(csv.DictReader(rendered[contract.MANIFEST_PATH].splitlines()))
 
-    assert result["final_status"] == "WARN"
+    assert result["final_status"] == "PASS"
     assert result["failure_count"] == 0
     assert len(manifest_rows) == 6
     assert manifest_rows[-1]["sha256"] == ""

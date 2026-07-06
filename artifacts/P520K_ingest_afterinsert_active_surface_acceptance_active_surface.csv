@@ -1,2 +1,2 @@
 surface_name,status,active,guard_symbol,guard_value,import_module,imported_symbol,local_symbol,import_line,call_line,call_evidence,guarded_by_missing_hook_flag,completion_surface_counted,reason
-scheduler.load_data,ACTIVE,True,,,utils.scheduler,scheduler,scheduler,165,166,scheduler.load_data(),False,True,scheduler refresh retained outside disabled missing-hook guard
+scheduler.load_data,ACTIVE,True,,,utils.scheduler,scheduler,scheduler,163,164,scheduler.load_data(),False,True,scheduler refresh retained outside missing-hook guard

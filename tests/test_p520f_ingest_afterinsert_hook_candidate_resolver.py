@@ -15,11 +15,7 @@ from pathlib import Path
 import tools.ingest_afterinsert_hook_candidate_resolver as resolver
 
 
-EXPECTED_UNRESOLVED = {
-    "refresh_hedge_fund_outputs",
-    "weight_adjuster",
-    "learning_integrator",
-}
+EXPECTED_UNRESOLVED = set()
 
 
 def test_candidate_resolver_reads_p520e_unresolved_hooks_without_failures():
@@ -27,9 +23,9 @@ def test_candidate_resolver_reads_p520e_unresolved_hooks_without_failures():
 
     assert result["final_status"] == "WARN"
     assert set(result["unresolved_hooks"]) == EXPECTED_UNRESOLVED
-    assert result["unresolved_hook_count"] == 3
-    assert result["candidate_count"] >= 3
-    assert result["reference_count"] >= result["candidate_count"]
+    assert result["unresolved_hook_count"] == 0
+    assert result["candidate_count"] == 0
+    assert result["reference_count"] == 0
     assert result["failure_count"] == 0
     assert result["component_statuses"]["runtime import avoided"] == "PASS"
     assert result["component_statuses"]["DB side effects avoided"] == "PASS"
@@ -37,41 +33,26 @@ def test_candidate_resolver_reads_p520e_unresolved_hooks_without_failures():
     assert result["p520e_summary"]["final_status"] == "WARN"
 
 
-def test_candidates_include_live_ingest_import_and_call_evidence():
+def test_candidates_are_empty_after_missing_hooks_are_removed():
     rendered = resolver.render_artifacts()
     rows = list(csv.DictReader(rendered[resolver.CANDIDATES_PATH].splitlines()))
-    by_hook = {hook: [row for row in rows if row["hook_reference"] == hook] for hook in EXPECTED_UNRESOLVED}
 
-    assert all(by_hook.values())
-    for hook, hook_rows in by_hook.items():
-        ingest_rows = [row for row in hook_rows if row["source_path"] == "lottery_api/routes/ingest.py"]
-        assert ingest_rows, hook
-        assert any(row["evidence_kind"] == "import" for row in ingest_rows)
-        assert any(row["evidence_kind"] == "call" for row in ingest_rows)
-        assert all(row["target_confirmed"] == "False" for row in hook_rows)
+    assert rows == []
 
 
-def test_weight_adjuster_has_related_source_definition_candidate():
+def test_removed_weight_adjuster_no_longer_has_candidate_rows():
     rendered = resolver.render_artifacts()
     rows = list(csv.DictReader(rendered[resolver.CANDIDATES_PATH].splitlines()))
     weight_rows = [row for row in rows if row["hook_reference"] == "weight_adjuster"]
 
-    assert any(row["source_path"] == "lottery_api/models/dynamic_weight_adjuster.py" for row in weight_rows)
-    assert any(row["matched_name"] == "DynamicWeightAdjuster" for row in weight_rows)
-    assert not any(row["confidence"] == "HIGH" for row in weight_rows)
+    assert weight_rows == []
 
 
-def test_reference_inventory_contains_ast_rows_for_each_unresolved_hook():
+def test_reference_inventory_is_empty_after_missing_hooks_are_removed():
     rendered = resolver.render_artifacts()
     rows = list(csv.DictReader(rendered[resolver.REFERENCES_PATH].splitlines()))
-    by_hook = {hook: [row for row in rows if row["hook_reference"] == hook] for hook in EXPECTED_UNRESOLVED}
 
-    assert all(by_hook.values())
-    assert any(row["reference_kind"] == "name" and row["matched_name"] == "apply_learning" for row in by_hook["learning_integrator"])
-    assert any(
-        row["reference_kind"] == "import" and row["matched_name"] == "analysis.payout.sync"
-        for row in by_hook["refresh_hedge_fund_outputs"]
-    )
+    assert rows == []
 
 
 def test_confidence_summary_is_warn_and_conservative():
@@ -83,15 +64,15 @@ def test_confidence_summary_is_warn_and_conservative():
     assert set(summary["target_confirmed_by_hook"]) == EXPECTED_UNRESOLVED
     assert not any(summary["target_confirmed_by_hook"].values())
     assert set(summary["no_high_confidence_hooks"]) == EXPECTED_UNRESOLVED
-    assert summary["confidence_counts"]["MEDIUM"] >= 3
+    assert summary["confidence_counts"] == {"HIGH": 0, "MEDIUM": 0, "LOW": 0}
 
 
 def test_status_block_is_copy_paste_friendly_and_scoped():
     block = resolver.build_candidate_resolver_bundle()["status_block"]
 
     assert "Final status: `WARN`" in block
-    assert "Unresolved hook count: `3`" in block
-    assert "Target confirmed by hook:" in block
+    assert "Unresolved hook count: `0`" in block
+    assert "no unresolved hooks found in P520E artifacts" in block
     for notice in resolver.NOTICE_LINES:
         assert notice in block
 

@@ -1,20 +1,20 @@
 # P520I ingest after-insert hook static binding resolver status
 
-- Final status: `WARN`
-- Focused P520H unresolved probable reference count: `3`
+- Final status: `PASS`
+- Focused P520H unresolved probable reference count: `0`
 - Confirmed hook count: `0`
 - Probable hook count: `0`
-- Unresolved hook count: `3`
-- Binding chain rows: `3`
-- Inspected file rows: `18`
-- Unresolved summary rows: `3`
-- PASS/WARN/FAIL counts: `0/3/0`
+- Unresolved hook count: `0`
+- Binding chain rows: `0`
+- Inspected file rows: `0`
+- Unresolved summary rows: `0`
+- PASS/WARN/FAIL counts: `0/0/0`
 
 ## Status Summary
 - Confirmed: ``
 - Probable: ``
-- Unresolved: `learning_integrator;refresh_hedge_fund_outputs;weight_adjuster`
-- Unresolved reasons: `source file missing`
+- Unresolved: ``
+- Unresolved reasons: ``
 
 ## Scope notices
 - source/AST/text-only static binding resolver

@@ -6,10 +6,12 @@
   "implements_replacement_scheduler_or_tracker": false,
   "imports_lottery_api_routes_ingest": false,
   "live_hook_references_visible": true,
+  "missing_target_hooks_removed": true,
   "notices": [
     "source/AST-only healthcheck",
     "does not import lottery_api.routes.ingest",
     "does not execute draw inserts",
+    "historical missing-target hooks are removed from active and disabled surface",
     "no canonical DB open/write",
     "no migration/backfill",
     "no deploy",

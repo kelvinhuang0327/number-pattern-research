@@ -1,12 +1,12 @@
-# P520J disable missing after-insert hooks status
+# P520J removed missing after-insert hooks status
 
 - Final status: `PASS`
 - Source path: `lottery_api/routes/ingest.py`
-- Disabled guard: `_MISSING_AFTERINSERT_HOOKS_ENABLED = False`
-- Disabled missing-target hooks: `refresh_hedge_fund_outputs;weight_adjuster;learning_integrator`
+- Disabled guard: `removed`
+- Disabled missing-target hook count: `0`
+- Removed missing-target hooks: `refresh_hedge_fund_outputs;weight_adjuster;learning_integrator`
 - Retained hook: `scheduler.load_data`
-- P520I unresolved reason: `source file missing`
-- Warning-only proof: `all three disabled blocks catch Exception and log logger.warning`
+- Missing-target residue status: `PASS`
 - Runtime import avoided: `True`
 - DB side effects avoided: `True`
 - Scheduler refresh untouched: `True`
@@ -14,11 +14,12 @@
 
 ## Scope notices
 - source/AST/text-only proof
-- reads committed P520I/P520H/P520G/P520F/P520E artifacts
+- reads committed P520I/P520H/P520G/P520F/P520E historical artifacts
 - parses lottery_api/routes/ingest.py without importing it
 - does not import live hook target modules
 - does not execute after-insert hooks
 - does not execute draw inserts
+- historical missing-target hooks are removed from active and disabled surface
 - no canonical DB open/write
 - no migration/backfill
 - no deploy

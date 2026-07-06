@@ -5,29 +5,30 @@
     "P520D contract artifact read": "PASS",
     "_refresh_after_insert present": "PASS",
     "expected live hooks audited": "PASS",
+    "missing-target hook residue absent": "PASS",
     "runtime import avoided": "PASS",
     "source AST evaluation": "PASS",
-    "source path resolution": "WARN",
-    "target symbol resolution": "WARN"
+    "source path resolution": "PASS",
+    "target symbol resolution": "PASS"
   },
   "db_indicator_count": 0,
   "expected_live_hooks": [
-    "scheduler.load_data",
-    "refresh_hedge_fund_outputs",
-    "weight_adjuster",
-    "learning_integrator"
+    "scheduler.load_data"
   ],
   "fail_count": 0,
   "failure_count": 0,
   "failures": [],
   "file_indicator_count": 9,
   "final_status": "WARN",
+  "missing_target_residue": [],
+  "missing_target_residue_status": "PASS",
   "notices": [
     "source/AST-only target audit",
     "does not import lottery_api.routes.ingest",
     "does not import live hook target modules",
     "does not execute after-insert hooks",
     "does not execute draw inserts",
+    "historical missing-target hooks are removed from active and disabled surface",
     "no canonical DB open/write",
     "no migration/backfill",
     "no deploy",
@@ -35,42 +36,42 @@
     "no betting/future prediction claims"
   ],
   "p520d_summary": {
-    "call_like_live_hook_count": 4,
-    "detected_live_hook_count": 4,
+    "call_like_live_hook_count": 1,
+    "detected_live_hook_count": 1,
     "expected_live_hooks": [
-      "scheduler.load_data",
-      "refresh_hedge_fund_outputs",
-      "weight_adjuster",
-      "learning_integrator"
+      "scheduler.load_data"
     ],
     "failure_count": 0,
-    "final_status": "WARN",
+    "final_status": "PASS",
     "matrix_artifact": "artifacts/P520D_ingest_afterinsert_hook_contract_matrix.csv",
-    "matrix_rows": 4,
+    "matrix_rows": 1,
     "result_artifact": "artifacts/P520D_ingest_afterinsert_hook_contract_result.json",
     "result_present": true,
     "target_resolution_artifact": "artifacts/P520D_ingest_afterinsert_hook_contract_target_resolution.csv",
-    "target_resolution_rows": 4,
-    "warning_count": 3
+    "target_resolution_rows": 1,
+    "warning_count": 0
   },
   "pass_count": 0,
   "refresh_after_insert_line": "160",
   "refresh_after_insert_present": true,
+  "removed_missing_target_hook_count": 3,
+  "removed_missing_target_hooks": [
+    "refresh_hedge_fund_outputs",
+    "weight_adjuster",
+    "learning_integrator"
+  ],
   "resolved_source_count": 1,
   "runtime_indicator_count": 8,
   "scope": "P520E parses lottery_api/routes/ingest.py, P520D artifacts, and statically resolvable target source files as text/AST only; no app runtime import; no live target module import; no after-insert hook execution; no draw insert execution; no canonical DB open/write; no migration/backfill; no deploy; does not implement or modify hooks; no betting/future prediction claims.",
   "source_path": "lottery_api/routes/ingest.py",
-  "source_sha256": "c8e0eb9c519736eac679c21521d3e546de448553bfd682f88eac18e94bb0c35b",
+  "source_sha256": "ccd103e48de4294cc2ebd9fc75172fd2aefa89f3deb0ed7d23a1909f43f2034a",
   "suggested_next_command": "python -m tools.ingest_afterinsert_hook_target_audit --status-block",
-  "target_audit_row_count": 4,
+  "target_audit_row_count": 1,
   "target_symbol_found_count": 1,
-  "unresolved_source_count": 3,
-  "warn_count": 4,
-  "warning_count": 4,
+  "unresolved_source_count": 0,
+  "warn_count": 1,
+  "warning_count": 1,
   "warnings": [
-    "scheduler.load_data: target source resolved with side-effect indicators; review matrix/risk CSV",
-    "refresh_hedge_fund_outputs: source path unresolved by static source mapping; runtime import not attempted",
-    "weight_adjuster: source path unresolved by static source mapping; runtime import not attempted",
-    "learning_integrator: source path unresolved by static source mapping; runtime import not attempted"
+    "scheduler.load_data: target source resolved with side-effect indicators; review matrix/risk CSV"
   ]
 }

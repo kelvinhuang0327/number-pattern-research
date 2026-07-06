@@ -28,12 +28,15 @@ def test_acceptance_result_keeps_scheduler_active_and_missing_hooks_out_of_compl
     summary = bundle["completion_summary"]
 
     assert result["acceptance_status"] == "PASS"
-    assert result["final_status"] == "WARN"
+    assert result["final_status"] == "PASS"
     assert result["scheduler_load_data_active"] is True
     assert result["scheduler_load_data_outside_missing_hook_guard"] is True
     assert result["active_completion_surface"] == ["scheduler.load_data"]
     assert result["active_completion_surface_count"] == 1
-    assert set(result["disabled_missing_target_surface"]) == EXPECTED_DISABLED_HOOKS
+    assert result["disabled_missing_target_surface"] == []
+    assert result["disabled_missing_target_surface_count"] == 0
+    assert set(result["removed_missing_target_surface"]) == EXPECTED_DISABLED_HOOKS
+    assert result["removed_missing_target_surface_count"] == 3
     assert result["missing_target_hooks_counted_as_active_completion_surface"] == []
     assert summary["missing_target_hooks_no_longer_active_completion_surface"] is True
     assert summary["scheduler_refresh_retained"] is True
@@ -55,23 +58,11 @@ def test_active_surface_csv_contains_only_scheduler_completion_surface():
     assert row["call_line"].isdigit()
 
 
-def test_disabled_surface_csv_maps_p520j_and_p520i_missing_targets_to_false_guard():
+def test_disabled_surface_csv_is_empty_after_p520l_removal():
     rendered = acceptance.render_artifacts()
     rows = list(csv.DictReader(rendered[acceptance.DISABLED_SURFACE_PATH].splitlines()))
-    by_hook = {row["hook_name"]: row for row in rows}
 
-    assert set(by_hook) == EXPECTED_DISABLED_HOOKS
-    for hook_name, row in by_hook.items():
-        assert row["status"] == "DISABLED", hook_name
-        assert row["active"] == "False", hook_name
-        assert row["guard_symbol"] == acceptance.DISABLED_FLAG, hook_name
-        assert row["guard_value"] == "False", hook_name
-        assert row["guard_line"].isdigit(), hook_name
-        assert row["import_line"].isdigit(), hook_name
-        assert row["call_line"].isdigit(), hook_name
-        assert row["p520i_terminal_status"] == "UNRESOLVED", hook_name
-        assert row["p520i_unresolved_reason"] == "source file missing", hook_name
-        assert row["completion_surface_counted"] == "False", hook_name
+    assert rows == []
 
 
 def test_ingest_source_guard_scheduler_and_removed_symbols_are_static_only():
@@ -83,13 +74,15 @@ def test_ingest_source_guard_scheduler_and_removed_symbols_are_static_only():
     parents = acceptance._parent_map(tree)
     scheduler_call = acceptance._find_call(refresh_function, "scheduler.load_data")
 
-    assert guard_assign is not None
-    assert guard_value is False
-    assert guard is not None
+    assert guard_assign is None
+    assert guard_value is None
+    assert guard is None
     assert scheduler_call is not None
-    assert guard not in acceptance._ancestors(scheduler_call, parents)
+    assert acceptance.DISABLED_FLAG not in source
     for symbol in acceptance.REMOVED_DEAD_SYMBOLS:
         assert symbol not in source
+    for hook_name in EXPECTED_DISABLED_HOOKS:
+        assert hook_name not in source
 
 
 def test_generated_artifacts_are_parseable_and_manifest_is_complete():
@@ -102,9 +95,10 @@ def test_generated_artifacts_are_parseable_and_manifest_is_complete():
 
     assert result["artifact_prefix"] == acceptance.ARTIFACT_PREFIX
     assert result["acceptance_status"] == "PASS"
+    assert result["final_status"] == "PASS"
     assert summary["active_completion_surface"] == ["scheduler.load_data"]
     assert len(active_rows) == 1
-    assert len(disabled_rows) == 3
+    assert len(disabled_rows) == 0
     assert len(manifest_rows) == 6
     assert manifest_rows[-1]["sha256"] == ""
 

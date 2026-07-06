@@ -1,4 +1,1 @@
 hook_name,status,import_module,imported_symbol,local_symbol,ingest_call_site_line,candidate_source_file_path,reason,recommended_next_action
-learning_integrator,PROBABLE,engine.learning_integrator,apply_all_types,apply_learning,188,,"direct live ingest import/call pair found, but target source path was not found by static module-to-file mapping; runtime import not attempted",runtime-instrumentation-required
-refresh_hedge_fund_outputs,PROBABLE,analysis.payout.sync,refresh_hedge_fund_outputs,refresh_hedge_fund_outputs,173,,"direct live ingest import/call pair found, but target source path was not found by static module-to-file mapping; runtime import not attempted",runtime-instrumentation-required
-weight_adjuster,PROBABLE,engine.weight_adjuster,adjust_all_types,adjust_all_types,179,,"direct live ingest import/call pair found, but target source path was not found by static module-to-file mapping; runtime import not attempted",runtime-instrumentation-required

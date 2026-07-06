@@ -42,11 +42,18 @@ REMOVED_DEAD_HOOKS: Sequence[str] = (
     "prediction_tracker",
 )
 
+REMOVED_MISSING_TARGET_HOOKS: Sequence[str] = (
+    "refresh_hedge_fund_outputs",
+    "weight_adjuster",
+    "learning_integrator",
+)
+
 NOTICE_LINES: Sequence[str] = (
     "source/AST-only contract evaluation",
     "does not import lottery_api.routes.ingest",
     "does not execute after-insert hooks",
     "does not execute draw inserts",
+    "historical missing-target hooks are removed from active and disabled surface",
     "no canonical DB open/write",
     "no migration/backfill",
     "no deploy",
@@ -117,27 +124,6 @@ EXPECTED_HOOKS: Sequence[HookSpec] = (
         local_symbol="scheduler",
         call_name="scheduler.load_data",
         target_attribute="load_data",
-    ),
-    HookSpec(
-        hook_reference="refresh_hedge_fund_outputs",
-        import_module="analysis.payout.sync",
-        imported_symbol="refresh_hedge_fund_outputs",
-        local_symbol="refresh_hedge_fund_outputs",
-        call_name="refresh_hedge_fund_outputs",
-    ),
-    HookSpec(
-        hook_reference="weight_adjuster",
-        import_module="engine.weight_adjuster",
-        imported_symbol="adjust_all_types",
-        local_symbol="adjust_all_types",
-        call_name="adjust_all_types",
-    ),
-    HookSpec(
-        hook_reference="learning_integrator",
-        import_module="engine.learning_integrator",
-        imported_symbol="apply_all_types",
-        local_symbol="apply_learning",
-        call_name="apply_learning",
     ),
 )
 
@@ -475,6 +461,9 @@ def analyze_contract(path: Path = INGEST_ROUTE_PATH) -> Dict[str, Any]:
         for spec in EXPECTED_HOOKS
     ]
     dead_rows = _dead_hook_rows(source, tree)
+    removed_missing_residue = [
+        hook_name for hook_name in REMOVED_MISSING_TARGET_HOOKS if hook_name in source
+    ]
     warnings = [
         f"{row['hook_reference']}: {row['notes']}"
         for row in contract_rows
@@ -486,6 +475,10 @@ def analyze_contract(path: Path = INGEST_ROUTE_PATH) -> Dict[str, Any]:
         if row["status"] == "FAIL"
     ]
     failures.extend(f"removed dead hook reference found: {row['symbol']}" for row in dead_rows if row["status"] != "PASS")
+    failures.extend(
+        f"removed missing-target hook residue found: {hook_name}"
+        for hook_name in removed_missing_residue
+    )
     if refresh_function is None:
         failures.append("_refresh_after_insert missing")
 
@@ -501,6 +494,10 @@ def analyze_contract(path: Path = INGEST_ROUTE_PATH) -> Dict[str, Any]:
         "expected_live_hooks": [spec.hook_reference for spec in EXPECTED_HOOKS],
         "contract_matrix": contract_rows,
         "target_resolution": target_rows,
+        "removed_missing_target_hooks": list(REMOVED_MISSING_TARGET_HOOKS),
+        "removed_missing_target_hook_count": len(REMOVED_MISSING_TARGET_HOOKS) - len(removed_missing_residue),
+        "missing_target_residue_status": "PASS" if not removed_missing_residue else "FAIL",
+        "missing_target_residue": removed_missing_residue,
         "dead_hooks": dead_rows,
         "detected_live_hook_count": sum(1 for row in contract_rows if row["reference_found"]),
         "call_like_live_hook_count": sum(1 for row in contract_rows if row["call_like_in_refresh_after_insert"]),
@@ -527,6 +524,7 @@ def build_contract_bundle() -> Dict[str, Any]:
         if analysis["call_like_live_hook_count"] == len(EXPECTED_HOOKS)
         else "WARN",
         "static target resolution": "WARN" if analysis["target_resolution_warn_count"] else "PASS",
+        "missing-target hook residue absent": analysis["missing_target_residue_status"],
         "removed dead hooks absent": analysis["dead_hook_absence_status"],
         "source AST evaluation": "PASS",
         "runtime import avoided": "PASS",
@@ -545,6 +543,10 @@ def build_contract_bundle() -> Dict[str, Any]:
         "call_like_live_hook_count": analysis["call_like_live_hook_count"],
         "target_resolution_pass_count": analysis["target_resolution_pass_count"],
         "target_resolution_warn_count": analysis["target_resolution_warn_count"],
+        "removed_missing_target_hooks": analysis["removed_missing_target_hooks"],
+        "removed_missing_target_hook_count": analysis["removed_missing_target_hook_count"],
+        "missing_target_residue_status": analysis["missing_target_residue_status"],
+        "missing_target_residue": analysis["missing_target_residue"],
         "removed_dead_hooks": list(REMOVED_DEAD_HOOKS),
         "dead_hook_absence_status": analysis["dead_hook_absence_status"],
         "warning_count": analysis["warning_count"],
@@ -585,6 +587,8 @@ def _status_block_md(result: Mapping[str, Any]) -> str:
         f"- Call-like live hooks: `{result['call_like_live_hook_count']}`",
         f"- Static target resolution PASS count: `{result['target_resolution_pass_count']}`",
         f"- Static target resolution WARN count: `{result['target_resolution_warn_count']}`",
+        f"- Removed missing-target hooks: `{result['removed_missing_target_hooks']}`",
+        f"- Missing-target residue status: `{result['missing_target_residue_status']}`",
         f"- Dead hook absence status: `{result['dead_hook_absence_status']}`",
         f"- Warning count: `{result['warning_count']}`",
         f"- Failure count: `{result['failure_count']}`",

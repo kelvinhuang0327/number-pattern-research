@@ -22,8 +22,12 @@ def test_target_audit_reports_current_live_hook_targets_without_failures():
     assert result["refresh_after_insert_present"] is True
     assert result["target_audit_row_count"] == len(audit.EXPECTED_HOOKS)
     assert result["resolved_source_count"] == 1
-    assert result["unresolved_source_count"] == 3
+    assert result["unresolved_source_count"] == 0
     assert result["target_symbol_found_count"] == 1
+    assert result["removed_missing_target_hooks"] == list(audit.REMOVED_MISSING_TARGET_HOOKS)
+    assert result["removed_missing_target_hook_count"] == len(audit.REMOVED_MISSING_TARGET_HOOKS)
+    assert result["missing_target_residue_status"] == "PASS"
+    assert result["missing_target_residue"] == []
     assert result["db_indicator_count"] == 0
     assert result["file_indicator_count"] > 0
     assert result["runtime_indicator_count"] > 0
@@ -54,14 +58,7 @@ def test_target_audit_matrix_contains_expected_target_evidence():
     assert "AsyncIOScheduler" in scheduler["runtime_side_effect_indicators"]
     assert scheduler["target_audit_status"] == "WARN"
 
-    for hook in ("refresh_hedge_fund_outputs", "weight_adjuster", "learning_integrator"):
-        row = by_hook[hook]
-        assert row["found_in_p520d_contract"] == "True"
-        assert row["source_path_resolved"] == "False"
-        assert row["target_symbol_found"] == "False"
-        assert row["function_class_presence"] == "unresolved"
-        assert row["target_audit_status"] == "WARN"
-        assert "runtime import not attempted" in row["notes"]
+    assert set(by_hook) == {"scheduler.load_data"}
 
 
 def test_risk_indicator_csv_is_source_only_and_specific_to_resolved_target():
@@ -84,16 +81,7 @@ def test_risk_indicator_csv_is_source_only_and_specific_to_resolved_target():
 def test_unresolved_csv_lists_targets_that_require_runtime_import_to_resolve():
     rendered = audit.render_artifacts()
     rows = list(csv.DictReader(rendered[audit.UNRESOLVED_PATH].splitlines()))
-    by_hook = {row["hook_reference"]: row for row in rows}
-
-    assert set(by_hook) == {"refresh_hedge_fund_outputs", "weight_adjuster", "learning_integrator"}
-    assert by_hook["refresh_hedge_fund_outputs"]["import_module"] == "analysis.payout.sync"
-    assert by_hook["weight_adjuster"]["import_module"] == "engine.weight_adjuster"
-    assert by_hook["learning_integrator"]["import_module"] == "engine.learning_integrator"
-    for row in rows:
-        assert row["reason"] == "source_path_unresolved"
-        assert row["status"] == "WARN"
-        assert "runtime import not attempted" in row["notes"]
+    assert rows == []
 
 
 def test_result_reads_p520d_artifact_summary_as_prior_evidence():
@@ -101,7 +89,7 @@ def test_result_reads_p520d_artifact_summary_as_prior_evidence():
     summary = result["p520d_summary"]
 
     assert summary["result_present"] is True
-    assert summary["final_status"] == "WARN"
+    assert summary["final_status"] == "PASS"
     assert summary["expected_live_hooks"] == [spec.hook_reference for spec in audit.EXPECTED_HOOKS]
     assert summary["matrix_rows"] == len(audit.EXPECTED_HOOKS)
     assert summary["target_resolution_rows"] == len(audit.EXPECTED_HOOKS)
@@ -111,9 +99,10 @@ def test_status_block_is_copy_paste_friendly_and_scoped():
     block = audit.build_target_audit_bundle()["status_block"]
 
     assert "Final status: `WARN`" in block
-    assert "Unresolved source count: `3`" in block
+    assert "Unresolved source count: `0`" in block
+    assert "Missing-target residue status: `PASS`" in block
     assert "DB indicator count: `0`" in block
-    assert "PASS/WARN/FAIL counts: `0/4/0`" in block
+    assert "PASS/WARN/FAIL counts: `0/1/0`" in block
     for notice in audit.NOTICE_LINES:
         assert notice in block
 

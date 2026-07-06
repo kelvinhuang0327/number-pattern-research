@@ -1,78 +1,18 @@
 {
   "artifact_prefix": "P520F_ingest_afterinsert_hook_candidate_resolver",
-  "best_confidence_by_hook": {
-    "learning_integrator": "MEDIUM",
-    "refresh_hedge_fund_outputs": "MEDIUM",
-    "weight_adjuster": "MEDIUM"
-  },
-  "by_hook": {
-    "learning_integrator": {
-      "best_confidence": "MEDIUM",
-      "candidate_count": 19,
-      "confidence_counts": {
-        "HIGH": 0,
-        "LOW": 17,
-        "MEDIUM": 2
-      },
-      "notes": "candidate evidence only; no target confirmed unless HIGH direct source evidence exists",
-      "reference_count": 20,
-      "status": "WARN",
-      "target_confirmed": false
-    },
-    "refresh_hedge_fund_outputs": {
-      "best_confidence": "MEDIUM",
-      "candidate_count": 59,
-      "confidence_counts": {
-        "HIGH": 0,
-        "LOW": 57,
-        "MEDIUM": 2
-      },
-      "notes": "candidate evidence only; no target confirmed unless HIGH direct source evidence exists",
-      "reference_count": 60,
-      "status": "WARN",
-      "target_confirmed": false
-    },
-    "weight_adjuster": {
-      "best_confidence": "MEDIUM",
-      "candidate_count": 67,
-      "confidence_counts": {
-        "HIGH": 0,
-        "LOW": 65,
-        "MEDIUM": 2
-      },
-      "notes": "candidate evidence only; no target confirmed unless HIGH direct source evidence exists",
-      "reference_count": 68,
-      "status": "WARN",
-      "target_confirmed": false
-    }
-  },
-  "candidate_count": 145,
-  "candidate_count_by_hook": {
-    "learning_integrator": 19,
-    "refresh_hedge_fund_outputs": 59,
-    "weight_adjuster": 67
-  },
+  "best_confidence_by_hook": {},
+  "by_hook": {},
+  "candidate_count": 0,
+  "candidate_count_by_hook": {},
   "confidence_counts": {
     "HIGH": 0,
-    "LOW": 139,
-    "MEDIUM": 6
+    "LOW": 0,
+    "MEDIUM": 0
   },
   "final_status": "WARN",
-  "no_high_confidence_hooks": [
-    "learning_integrator",
-    "refresh_hedge_fund_outputs",
-    "weight_adjuster"
-  ],
-  "reference_count": 148,
-  "reference_count_by_hook": {
-    "learning_integrator": 20,
-    "refresh_hedge_fund_outputs": 60,
-    "weight_adjuster": 68
-  },
-  "target_confirmed_by_hook": {
-    "learning_integrator": false,
-    "refresh_hedge_fund_outputs": false,
-    "weight_adjuster": false
-  },
-  "unresolved_hook_count": 3
+  "no_high_confidence_hooks": [],
+  "reference_count": 0,
+  "reference_count_by_hook": {},
+  "target_confirmed_by_hook": {},
+  "unresolved_hook_count": 0
 }

@@ -1,6 +1,6 @@
 {
   "artifact_prefix": "P520G_ingest_afterinsert_hook_candidate_triage",
-  "candidate_count": 145,
+  "candidate_count": 0,
   "component_statuses": {
     "DB side effects avoided": "PASS",
     "P520D artifact context read": "PASS",
@@ -16,10 +16,10 @@
   "failure_count": 0,
   "failures": [],
   "final_status": "WARN",
-  "low_candidate_count": 139,
-  "low_summary_row_count": 3,
-  "medium_candidate_count": 6,
-  "medium_card_count": 6,
+  "low_candidate_count": 0,
+  "low_summary_row_count": 0,
+  "medium_candidate_count": 0,
+  "medium_card_count": 0,
   "notices": [
     "source/AST/text-only candidate triage",
     "reads committed P520F resolver artifacts",
@@ -37,8 +37,8 @@
     "no betting/future prediction claims"
   ],
   "p520d_summary": {
-    "detected_live_hook_count": 4,
-    "final_status": "WARN",
+    "detected_live_hook_count": 1,
+    "final_status": "PASS",
     "result_artifact": "artifacts/P520D_ingest_afterinsert_hook_contract_result.json",
     "result_present": true
   },
@@ -46,23 +46,19 @@
     "final_status": "WARN",
     "result_artifact": "artifacts/P520E_ingest_afterinsert_hook_target_audit_result.json",
     "result_present": true,
-    "unresolved_source_count": 3
+    "unresolved_source_count": 0
   },
-  "p520e_unresolved_row_count": 3,
+  "p520e_unresolved_row_count": 0,
   "p520f_confidence_summary_final_status": "WARN",
   "p520f_confidence_summary_present": true,
   "p520f_summary": {
-    "candidate_count": 145,
-    "candidate_count_by_hook": {
-      "learning_integrator": 19,
-      "refresh_hedge_fund_outputs": 59,
-      "weight_adjuster": 67
-    },
+    "candidate_count": 0,
+    "candidate_count_by_hook": {},
     "candidates_artifact": "artifacts/P520F_ingest_afterinsert_hook_candidate_resolver_candidates.csv",
     "confidence_counts": {
       "HIGH": 0,
-      "LOW": 139,
-      "MEDIUM": 6
+      "LOW": 0,
+      "MEDIUM": 0
     },
     "confidence_summary_artifact": "artifacts/P520F_ingest_afterinsert_hook_candidate_resolver_confidence_summary.json",
     "final_status": "WARN",
@@ -72,18 +68,14 @@
   "parse_note_count": 0,
   "parse_notes": [],
   "pass_count": 0,
-  "probable_upgrade_count": 3,
+  "probable_upgrade_count": 0,
   "scope": "P520G reads committed P520F/P520E/P520D artifacts and parses source as text/AST only; no app runtime import; no live target module import; no after-insert hook execution; no draw insert execution; no canonical DB open/write; no migration/backfill; no deploy; does not implement or modify hooks; does not change P520F scoring.",
   "source_path": "lottery_api/routes/ingest.py",
   "suggested_next_command": "python -m tools.ingest_afterinsert_hook_candidate_triage --status-block",
-  "unresolved_hook_count": 3,
-  "unresolved_hooks": [
-    "learning_integrator",
-    "refresh_hedge_fund_outputs",
-    "weight_adjuster"
-  ],
-  "warn_count": 3,
-  "warning_count": 3,
+  "unresolved_hook_count": 0,
+  "unresolved_hooks": [],
+  "warn_count": 1,
+  "warning_count": 1,
   "warnings": [
     "MEDIUM candidates support probable live ingest references but target implementations remain unconfirmed"
   ]

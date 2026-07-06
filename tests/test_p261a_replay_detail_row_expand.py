@@ -1031,6 +1031,7 @@ def test_fixture_single_ticket():
     assert tbody
 
     assert "最佳命中" not in tbody
+    assert 'data-role="replay-best-hit-summary"' not in tbody
     assert '<span class="replay-number-token replay-number-token--hit">14</span>' in tbody
 
 

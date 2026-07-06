@@ -3184,8 +3184,18 @@
           (function () {
             var SEC = 'p251-evidence-dashboard';
             var ROUTE = '/api/replay/evidence-dashboard';
+            // Supported shareable dashboard query keys. Unknown query parameters are preserved.
+            var URL_KEYS = {
+              lottery: 'evidence_lottery',
+              lifecycle: 'evidence_lifecycle',
+              artifactOnly: 'evidence_artifact_only',
+              sort: 'evidence_sort'
+            };
+            var LOTTERY_VALUES = ['', 'BIG_LOTTO', 'DAILY_539', 'POWER_LOTTO'];
+            var SORT_VALUES = ['default', 'lottery-name', 'status'];
             var loaded = false;
             var data = null;
+            var initialUrlState = readDashboardUrlState();
             function el(id) { return document.getElementById(id); }
             function esc(s) {
               return String(s == null ? '' : s).replace(/[&<>"]/g, function (c) {
@@ -3195,6 +3205,51 @@
             function num(v) { return v == null ? 'N/A' : (typeof v === 'number' ? v.toLocaleString() : esc(v)); }
             function badge(v) { return '<span class="p251f-badge">' + esc(v || 'UNKNOWN') + '</span>'; }
             function textSortValue(v) { return v == null ? '' : String(v).toLocaleLowerCase(); }
+            function supportedValue(value, supported, fallback) {
+              return supported.indexOf(value) !== -1 ? value : fallback;
+            }
+            function readDashboardUrlState() {
+              try {
+                var params = new URLSearchParams(window.location.search);
+                return {
+                  lottery: supportedValue(params.get(URL_KEYS.lottery) || '', LOTTERY_VALUES, ''),
+                  lifecycle: params.get(URL_KEYS.lifecycle) || '',
+                  artifactOnly: params.get(URL_KEYS.artifactOnly) === '1',
+                  sort: supportedValue(params.get(URL_KEYS.sort) || 'default', SORT_VALUES, 'default')
+                };
+              } catch (e) {
+                return { lottery: '', lifecycle: '', artifactOnly: false, sort: 'default' };
+              }
+            }
+            function applyDashboardUrlState(state, d) {
+              var lottery = el('p251f-filter-lottery');
+              var lifecycle = el('p251f-filter-lifecycle');
+              var artifactOnly = el('p251f-filter-artifact-only');
+              var sort = el('p251f-sort');
+              if (lottery) lottery.value = state.lottery;
+              if (artifactOnly) artifactOnly.checked = state.artifactOnly;
+              if (sort) sort.value = state.sort;
+              if (lifecycle && d) {
+                var lifecycleValues = [''].concat((d.lifecycle_filter_options || []).map(function (o) { return o.status; }));
+                lifecycle.value = supportedValue(state.lifecycle, lifecycleValues, '');
+              }
+            }
+            function updateDashboardUrlState() {
+              try {
+                var url = new URL(window.location.href);
+                var lottery = (el('p251f-filter-lottery') || {}).value || '';
+                var lifecycle = (el('p251f-filter-lifecycle') || {}).value || '';
+                var artifactOnly = !!((el('p251f-filter-artifact-only') || {}).checked);
+                var sort = (el('p251f-sort') || {}).value || 'default';
+                lottery ? url.searchParams.set(URL_KEYS.lottery, lottery) : url.searchParams.delete(URL_KEYS.lottery);
+                lifecycle ? url.searchParams.set(URL_KEYS.lifecycle, lifecycle) : url.searchParams.delete(URL_KEYS.lifecycle);
+                artifactOnly ? url.searchParams.set(URL_KEYS.artifactOnly, '1') : url.searchParams.delete(URL_KEYS.artifactOnly);
+                sort !== 'default' ? url.searchParams.set(URL_KEYS.sort, sort) : url.searchParams.delete(URL_KEYS.sort);
+                window.history.replaceState(null, '', url.toString());
+              } catch (e) {
+                // URL state is an enhancement; filtering and sorting remain usable if history is unavailable.
+              }
+            }
             function detailValue(v) {
               return v == null || v === ''
                 ? '<span class="p251f-no-additional-details">No additional details available.</span>'
@@ -3306,6 +3361,7 @@
             function renderRows() {
               var tbody = el('p251f-tbody');
               var empty = el('p251f-empty');
+              updateDashboardUrlState();
               if (!tbody || !data) return;
               var lottery = (el('p251f-filter-lottery') || {}).value || '';
               var lifecycle = (el('p251f-filter-lifecycle') || {}).value || '';
@@ -3360,6 +3416,7 @@
               data = d;
               renderSummary(d);
               renderLifecycleOptions(d);
+              applyDashboardUrlState(initialUrlState, d);
               renderLotteryCards(d);
               renderRows();
             }
@@ -3377,6 +3434,7 @@
                 });
             }
             function wire() {
+              applyDashboardUrlState(initialUrlState, null);
               ['p251f-filter-lottery', 'p251f-filter-lifecycle', 'p251f-filter-artifact-only', 'p251f-sort'].forEach(function (id) {
                 var n = el(id);
                 if (n) n.addEventListener('change', renderRows);

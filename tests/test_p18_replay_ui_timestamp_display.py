@@ -114,6 +114,7 @@ def test_output_classification(output: dict):
 # ── API field tests ───────────────────────────────────────────────────────────
 
 # 1. API response includes prediction_cutoff_date
+@pytest.mark.requires_db
 @pytest.mark.parametrize("strategy_id", STRATEGIES)
 def test_api_includes_prediction_cutoff_date(strategy_id):
     r = _history(strategy_id)
@@ -122,6 +123,7 @@ def test_api_includes_prediction_cutoff_date(strategy_id):
 
 
 # 2. API response includes prediction_generated_at
+@pytest.mark.requires_db
 @pytest.mark.parametrize("strategy_id", STRATEGIES)
 def test_api_includes_prediction_generated_at(strategy_id):
     r = _history(strategy_id)
@@ -129,6 +131,7 @@ def test_api_includes_prediction_generated_at(strategy_id):
 
 
 # 3. ts3_regime_3bet records have non-NULL cutoff (post-P17B)
+@pytest.mark.requires_db
 def test_ts3_cutoff_date_populated(ts3_records):
     for rec in ts3_records:
         assert rec["prediction_cutoff_date"] is not None, \
@@ -136,12 +139,14 @@ def test_ts3_cutoff_date_populated(ts3_records):
 
 
 # 4. ts3_regime_3bet records have non-NULL generated_at (post-P17B)
+@pytest.mark.requires_db
 def test_ts3_generated_at_populated(ts3_records):
     for rec in ts3_records:
         assert rec["prediction_generated_at"] is not None
 
 
 # 5. P16 records have non-NULL cutoff
+@pytest.mark.requires_db
 def test_p16_cutoff_date_populated(triple_records):
     p16_recs = [r for r in triple_records
                 if r.get("controlled_apply_id") == P16_APPLY_ID]
@@ -150,6 +155,7 @@ def test_p16_cutoff_date_populated(triple_records):
 
 
 # 6. truth_level field present in all records
+@pytest.mark.requires_db
 @pytest.mark.parametrize("strategy_id", STRATEGIES)
 def test_api_includes_truth_level(strategy_id):
     r = _history(strategy_id)
@@ -158,6 +164,7 @@ def test_api_includes_truth_level(strategy_id):
 
 
 # 7. display_status present
+@pytest.mark.requires_db
 @pytest.mark.parametrize("strategy_id", STRATEGIES)
 def test_api_includes_display_status(strategy_id):
     r = _history(strategy_id)
@@ -229,6 +236,7 @@ def test_ui_p16_truth_badge_defined(html: str):
 
 # DB and production safety ────────────────────────────────────────────────────
 
+@pytest.mark.requires_db
 def test_production_rows_4960():
     conn = sqlite3.connect(str(_PROD_DB))
     try:
@@ -240,6 +248,7 @@ def test_production_rows_4960():
     assert count == PROD_ROWS
 
 
+@pytest.mark.requires_db
 def test_no_db_writes():
     conn = sqlite3.connect(str(_PROD_DB))
     try:

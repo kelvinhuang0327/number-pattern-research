@@ -576,6 +576,19 @@ class TestCrossSwitching:
 # ---------------------------------------------------------------------------
 # Section 5: API contract checks (always run, no Playwright required)
 # ---------------------------------------------------------------------------
+def _server_available() -> bool:
+    try:
+        urllib.request.urlopen(f"{BACKEND_URL}/health", timeout=3)
+        return True
+    except Exception:
+        return False
+
+
+@pytest.mark.skipif(
+    not _server_available(),
+    reason=f"lottery_api server not reachable at {BACKEND_URL} — start the backend "
+           "before running live API contract checks",
+)
 class TestAPIContract:
     """Live API contract checks against a running backend."""
 

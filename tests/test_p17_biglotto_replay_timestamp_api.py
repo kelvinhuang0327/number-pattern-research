@@ -138,6 +138,7 @@ def test_output_classification(output: dict):
 
 # ── DB schema tests ───────────────────────────────────────────────────────────
 
+@pytest.mark.requires_db
 def test_db_schema_has_prediction_cutoff_date():
     conn = sqlite3.connect(str(_PROD_DB))
     try:
@@ -149,6 +150,7 @@ def test_db_schema_has_prediction_cutoff_date():
     assert "prediction_cutoff_date" in cols
 
 
+@pytest.mark.requires_db
 def test_db_schema_has_prediction_generated_at():
     conn = sqlite3.connect(str(_PROD_DB))
     try:
@@ -162,6 +164,7 @@ def test_db_schema_has_prediction_generated_at():
 
 # ── DB data tests ─────────────────────────────────────────────────────────────
 
+@pytest.mark.requires_db
 def test_p16_timestamp_rows_in_db():
     conn = sqlite3.connect(str(_PROD_DB))
     try:
@@ -177,6 +180,7 @@ def test_p16_timestamp_rows_in_db():
     assert count == P16_TIMESTAMP_ROWS
 
 
+@pytest.mark.requires_db
 def test_p14d_timestamp_rows_in_db():
     conn = sqlite3.connect(str(_PROD_DB))
     try:
@@ -191,6 +195,7 @@ def test_p14d_timestamp_rows_in_db():
     assert count == P14D_TIMESTAMP_ROWS  # known legacy gap, not fabricated
 
 
+@pytest.mark.requires_db
 def test_p16_cutoff_no_future_violations():
     conn = sqlite3.connect(str(_PROD_DB))
     try:
@@ -205,6 +210,7 @@ def test_p16_cutoff_no_future_violations():
     assert bad == 0
 
 
+@pytest.mark.requires_db
 def test_production_rows_4960():
     conn = sqlite3.connect(str(_PROD_DB))
     try:
@@ -218,6 +224,7 @@ def test_production_rows_4960():
 
 # ── per-strategy API tests ────────────────────────────────────────────────────
 
+@pytest.mark.requires_db
 @pytest.mark.parametrize("strategy_id,min_rows", [
     ("ts3_regime_3bet",     1500),
     ("biglotto_triple_strike", 1500),
@@ -229,6 +236,7 @@ def test_api_strategy_row_count(strategy_id, min_rows):
         f"{strategy_id}: expected >= {min_rows} rows, got {r['total']}"
 
 
+@pytest.mark.requires_db
 def test_api_ts3_returns_timestamp_fields(ts3_page: dict):
     rec = ts3_page["records"][0]
     assert "prediction_cutoff_date" in rec
@@ -240,6 +248,7 @@ def test_api_ts3_returns_timestamp_fields(ts3_page: dict):
         "P14D timestamps should be populated after P17B backfill"
 
 
+@pytest.mark.requires_db
 def test_api_triple_strike_has_timestamps(triple_page: dict):
     # P16 rows should have timestamps
     p16_recs = [r for r in triple_page["records"]
@@ -251,6 +260,7 @@ def test_api_triple_strike_has_timestamps(triple_page: dict):
             f"draw={rec['target_draw']}: expected non-NULL prediction_generated_at"
 
 
+@pytest.mark.requires_db
 def test_api_deviation_has_timestamps(deviation_page: dict):
     p16_recs = [r for r in deviation_page["records"]
                 if r.get("controlled_apply_id") == P16_APPLY_ID]
@@ -261,6 +271,7 @@ def test_api_deviation_has_timestamps(deviation_page: dict):
 
 # ── general API field / quality tests ────────────────────────────────────────
 
+@pytest.mark.requires_db
 def test_api_hit_count_consistent_first_pages():
     for sid in STRATEGIES:
         r = _history(sid, page_size=50)
@@ -271,6 +282,7 @@ def test_api_hit_count_consistent_first_pages():
                 f"{sid} draw={rec['target_draw']}: hit_count={hc} len_hit_numbers={len(hn)}"
 
 
+@pytest.mark.requires_db
 def test_api_pagination_supported():
     r1 = _history("biglotto_triple_strike", page=1, page_size=10)
     r2 = _history("biglotto_triple_strike", page=2, page_size=10)
@@ -281,18 +293,21 @@ def test_api_pagination_supported():
     assert d1.isdisjoint(d2), "Pages 1 and 2 must not overlap"
 
 
+@pytest.mark.requires_db
 def test_api_display_status_present():
     r = _history("biglotto_triple_strike", page_size=5)
     for rec in r["records"]:
         assert rec.get("display_status") == "SHOW_REPLAY_RESULT"
 
 
+@pytest.mark.requires_db
 def test_api_visibility_state_present():
     r = _history("biglotto_triple_strike", page_size=5)
     for rec in r["records"]:
         assert rec.get("visibility_state") == "ROW_BACKED"
 
 
+@pytest.mark.requires_db
 def test_no_db_writes():
     conn = sqlite3.connect(str(_PROD_DB))
     try:

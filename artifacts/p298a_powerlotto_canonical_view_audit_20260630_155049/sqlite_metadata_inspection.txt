@@ -1,0 +1,87 @@
+{
+  "db_path": "/Users/kelvin/Kelvin-WorkSpace/LotteryNew/lottery_api/data/lottery_v2.db",
+  "sqlite_uri_mode": "mode=ro&immutable=1",
+  "object_count": 19
+}
+
+OBJECTS
+table	agent_locks	agent_locks
+table	agent_task_runs	agent_task_runs
+table	agent_tasks	agent_tasks
+table	draws	draws
+table	prediction_explanations	prediction_explanations
+table	prediction_items	prediction_items
+table	prediction_results	prediction_results
+table	prediction_review_status	prediction_review_status
+table	prediction_runs	prediction_runs
+table	review_actions	review_actions
+table	review_findings	review_findings
+table	review_hypotheses	review_hypotheses
+table	review_sessions	review_sessions
+table	shadow_experiments	shadow_experiments
+table	snapshot_schedule	snapshot_schedule
+table	sqlite_sequence	sqlite_sequence
+table	strategy_prediction_replays	strategy_prediction_replays
+table	strategy_replay_runs	strategy_replay_runs
+view	draws_big_lotto_canonical_main	draws_big_lotto_canonical_main
+
+VIEWS
+VIEW	draws_big_lotto_canonical_main	CREATE VIEW draws_big_lotto_canonical_main AS SELECT d.* FROM draws d WHERE d.lottery_type = 'BIG_LOTTO'   AND d.draw NOT LIKE '%-%'   AND NOT (LENGTH(d.draw) = 8 AND d.draw LIKE '20%')   AND (     SELECT MAX(CAST(j.value AS INTEGER))     FROM json_each(d.numbers) j   ) > 25
+
+RELEVANT_COLUMNS
+agent_tasks	id,slot_key,date_folder,title,slug,status,previous_task_id,prompt_file_path,prompt_text,completed_file_path,completed_text,changed_files_json,worker_pid,started_at,completed_at,duration_seconds,error_message,created_at,updated_at
+draws	id,draw,date,lottery_type,numbers,special,created_at,jackpot_amount,sell_amount,total_amount,numbers_positional
+prediction_explanations	id,prediction_run_id,lottery_type,profile,explanation_json,created_at
+prediction_items	id,run_id,bet_index,numbers,special,status,created_at,strategy_name,num_bets,zone_coverage
+prediction_results	id,item_id,actual_draw,actual_date,actual_numbers,actual_special,hit_count,matched_numbers,special_hit,resolved_at,researched,wq_score,split_risk
+prediction_review_status	id,prediction_run_id,review_session_id,review_status,resolved_at,notes
+prediction_runs	id,lottery_type,latest_known_draw,latest_known_date,strategy_name,notes,created_at,snapshot_source,analyzed,analysis_note,review_json
+review_actions	id,session_id,priority,action_title,action_description,expected_gain,cost_level,risk_level,validation_method,stop_condition,status,created_at,updated_at
+review_hypotheses	id,session_id,hypothesis_type,description,expected_impact,validation_method,kill_condition,status,created_at,updated_at
+review_sessions	id,game,draw,draw_date,session_type,created_at,updated_at,summary,final_decision,confidence_level,raw_report_text,parsed_successfully,status
+shadow_experiments	id,session_id,game,experiment_name,base_strategy,experiment_strategy,experiment_config_json,status,notes,created_at,updated_at
+snapshot_schedule	id,lottery_type,target_draw,target_date,scheduled_at,status,run_id,notes
+strategy_prediction_replays	id,lottery_type,target_draw,target_date,strategy_id,strategy_name,strategy_version,history_cutoff_draw,replay_status,reject_reason,predicted_numbers,predicted_special,actual_numbers,actual_special,hit_numbers,hit_count,special_hit,replay_run_id,generated_at,truth_level,controlled_apply_id,source,provenance_hash,provenance_source,dry_run,prediction_cutoff_date,prediction_generated_at,bet_index
+strategy_replay_runs	id,lottery_type,strategy_scope,started_at,finished_at,status,generator_version,data_hash,notes,created_at
+draws_big_lotto_canonical_main	id,draw,date,lottery_type,numbers,special,created_at,jackpot_amount,sell_amount,total_amount,numbers_positional
+
+DRAW_TABLE_LOTTERY_COUNTS
+TABLE	draws	COLS	['id', 'draw', 'date', 'lottery_type', 'numbers', 'special', 'created_at', 'jackpot_amount', 'sell_amount', 'total_amount', 'numbers_positional']
+{'lottery_type': '38_LOTTO', 'rows': 1774}
+{'lottery_type': '39_LOTTO', 'rows': 4890}
+{'lottery_type': '3_STAR', 'rows': 5850}
+{'lottery_type': '49_LOTTO', 'rows': 2130}
+{'lottery_type': '4_STAR', 'rows': 5850}
+{'lottery_type': 'BIG_LOTTO', 'rows': 22245}
+{'lottery_type': 'BIG_LOTTO_BONUS', 'rows': 11941}
+{'lottery_type': 'DAILY_539', 'rows': 5901}
+{'lottery_type': 'DOUBLE_WIN', 'rows': 1782}
+{'lottery_type': 'LOTTO_6_38', 'rows': 111}
+{'lottery_type': 'POWER_LOTTO', 'rows': 1924}
+
+REPLAY_LOTTERY_SUMMARY
+REPLAY_COLUMNS	id,lottery_type,target_draw,target_date,strategy_id,strategy_name,strategy_version,history_cutoff_draw,replay_status,reject_reason,predicted_numbers,predicted_special,actual_numbers,actual_special,hit_numbers,hit_count,special_hit,replay_run_id,generated_at,truth_level,controlled_apply_id,source,provenance_hash,provenance_source,dry_run,prediction_cutoff_date,prediction_generated_at,bet_index
+{'lottery_type': 'BIG_LOTTO', 'replay_rows': 24140, 'strategy_count': 11, 'distinct_target_draws': 1552, 'min_draw': '102000010', 'max_draw': '99000105', 'max_bet_index': 4, 'predicted_special_null_rows': 24140, 'predicted_special_nonnull_rows': 0}
+{'lottery_type': 'DAILY_539', 'replay_rows': 34680, 'strategy_count': 15, 'distinct_target_draws': 1550, 'min_draw': '110000190', 'max_draw': '99000261', 'max_bet_index': 5, 'predicted_special_null_rows': 34680, 'predicted_special_nonnull_rows': 0}
+{'lottery_type': 'POWER_LOTTO', 'replay_rows': 36104, 'strategy_count': 10, 'distinct_target_draws': 1551, 'min_draw': '101000002', 'max_draw': '99000104', 'max_bet_index': 5, 'predicted_special_null_rows': 27104, 'predicted_special_nonnull_rows': 9000}
+
+POWER_LOTTO_PREDICTED_SPECIAL_BY_STRATEGY
+{'strategy_id': 'cold_complement_2bet', 'sample_size_rows': 1500, 'distinct_target_draws': 1500, 'min_target_draw': '101000002', 'max_target_draw': '115000040', 'min_target_date': '2012/01/05', 'max_target_date': '2026/05/18', 'max_bet_index': 1, 'predicted_special_null_rows': 0, 'predicted_special_nonnull_rows': 1500}
+{'strategy_id': 'fourier30_markov30_2bet', 'sample_size_rows': 1501, 'distinct_target_draws': 1501, 'min_target_draw': '101000002', 'max_target_draw': '115000041', 'min_target_date': '2012/01/05', 'max_target_date': '2026/05/21', 'max_bet_index': 1, 'predicted_special_null_rows': 1, 'predicted_special_nonnull_rows': 1500}
+{'strategy_id': 'fourier_rhythm_3bet', 'sample_size_rows': 4503, 'distinct_target_draws': 1501, 'min_target_draw': '101000002', 'max_target_draw': '115000041', 'min_target_date': '2012/01/05', 'max_target_date': '2026/05/21', 'max_bet_index': 3, 'predicted_special_null_rows': 4503, 'predicted_special_nonnull_rows': 0}
+{'strategy_id': 'midfreq_fourier_2bet', 'sample_size_rows': 1500, 'distinct_target_draws': 1500, 'min_target_draw': '101000002', 'max_target_draw': '115000040', 'min_target_date': '2012/01/05', 'max_target_date': '2026/05/18', 'max_bet_index': 1, 'predicted_special_null_rows': 0, 'predicted_special_nonnull_rows': 1500}
+{'strategy_id': 'midfreq_fourier_mk_3bet', 'sample_size_rows': 4500, 'distinct_target_draws': 1500, 'min_target_draw': '101000002', 'max_target_draw': '115000040', 'min_target_date': '2012/01/05', 'max_target_date': '2026/05/18', 'max_bet_index': 3, 'predicted_special_null_rows': 3000, 'predicted_special_nonnull_rows': 1500}
+{'strategy_id': 'power_fourier_rhythm_2bet', 'sample_size_rows': 3000, 'distinct_target_draws': 1500, 'min_target_draw': '101000003', 'max_target_draw': '115000041', 'min_target_date': '2012/01/09', 'max_target_date': '2026/05/21', 'max_bet_index': 2, 'predicted_special_null_rows': 3000, 'predicted_special_nonnull_rows': 0}
+{'strategy_id': 'power_orthogonal_5bet', 'sample_size_rows': 7550, 'distinct_target_draws': 1550, 'min_target_draw': '101000002', 'max_target_draw': '99000104', 'min_target_date': '2010/07/12', 'max_target_date': '2026/05/18', 'max_bet_index': 5, 'predicted_special_null_rows': 7550, 'predicted_special_nonnull_rows': 0}
+{'strategy_id': 'power_precision_3bet', 'sample_size_rows': 4550, 'distinct_target_draws': 1550, 'min_target_draw': '101000002', 'max_target_draw': '99000104', 'min_target_date': '2010/07/12', 'max_target_date': '2026/05/18', 'max_bet_index': 3, 'predicted_special_null_rows': 4550, 'predicted_special_nonnull_rows': 0}
+{'strategy_id': 'pp3_freqort_4bet', 'sample_size_rows': 6000, 'distinct_target_draws': 1500, 'min_target_draw': '101000002', 'max_target_draw': '115000040', 'min_target_date': '2012/01/05', 'max_target_date': '2026/05/18', 'max_bet_index': 4, 'predicted_special_null_rows': 4500, 'predicted_special_nonnull_rows': 1500}
+{'strategy_id': 'zonal_entropy_2bet', 'sample_size_rows': 1500, 'distinct_target_draws': 1500, 'min_target_draw': '101000002', 'max_target_draw': '115000040', 'min_target_date': '2012/01/05', 'max_target_date': '2026/05/18', 'max_bet_index': 1, 'predicted_special_null_rows': 0, 'predicted_special_nonnull_rows': 1500}
+
+POWER_LOTTO_NONNULL_SUBSET
+{'subset_rows': 9000, 'strategy_count': 6, 'distinct_target_draws': 1500, 'min_target_draw': '101000002', 'max_target_draw': '115000040', 'min_target_date': '2012/01/05', 'max_target_date': '2026/05/18', 'min_predicted_special': 1, 'max_predicted_special': 8}
+
+POWER_LOTTO_NULL_SUBSET
+{'missing_rows': 27104, 'strategy_count': 7, 'distinct_target_draws': 1551, 'min_target_draw': '101000002', 'max_target_draw': '99000104', 'min_target_date': '2010/07/12', 'max_target_date': '2026/05/21'}
+
+CANONICAL_VIEW_CHECK
+{'type': 'view', 'name': 'draws_big_lotto_canonical_main', 'sql': "CREATE VIEW draws_big_lotto_canonical_main AS\nSELECT d.*\nFROM draws d\nWHERE d.lottery_type = 'BIG_LOTTO'\n  AND d.draw NOT LIKE '%-%'\n  AND NOT (LENGTH(d.draw) = 8 AND d.draw LIKE '20%')\n  AND (\n    SELECT MAX(CAST(j.value AS INTEGER))\n    FROM json_each(d.numbers) j\n  ) > 25"}

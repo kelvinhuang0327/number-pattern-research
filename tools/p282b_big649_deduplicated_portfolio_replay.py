@@ -556,7 +556,8 @@ def _normal_sf(z):
 def paired_random_baseline_test(observed_success_bits_recent_first, probs_recent_first,
                                 window_sizes, iters, seed, label):
     """One-sided paired test: is the FIXED group's success rate above the matched
-    random baseline? Reports MC p-value and an exact Poisson-binomial cross-check.
+    random baseline? Reports MC p-value and a normal-approximation cross-check
+    (using the exact Poisson-binomial mean/std).
 
     ``observed_success_bits_recent_first`` are the deterministic group's per-draw 0/1
     successes (recent-first); ``probs_recent_first`` are the matched random group's
@@ -573,10 +574,10 @@ def paired_random_baseline_test(observed_success_bits_recent_first, probs_recent
         srt = sorted(sr_samples)
         lo = srt[max(0, int(0.025 * len(srt)) - 1)]
         hi = srt[min(len(srt) - 1, int(0.975 * len(srt)))]
-        # exact Poisson-binomial cross-check
+        # normal-approximation cross-check (exact Poisson-binomial mean/std)
         pmean, pstd = poisson_binomial_mean_std(probs_recent_first[:size])
         z = (obs_rate - pmean) / pstd if pstd > 0 else float("inf")
-        p_exact = _normal_sf(z)
+        p_normal_approx = _normal_sf(z)
         result[w] = {
             "window_draws": size,
             "fixed_success_rate": round(obs_rate, 6),
@@ -587,7 +588,7 @@ def paired_random_baseline_test(observed_success_bits_recent_first, probs_recent
             "mc_iterations": iters,
             "mc_seed": seed,
             "p_value_mc_one_sided_fixed_better": round(p_mc, 6),
-            "p_value_exact_poisson_binomial": round(p_exact, 8),
+            "p_value_normal_approx_poisson_binomial": round(p_normal_approx, 8),
             "effect_direction": (
                 "fixed_above_random" if obs_rate > rnd_mean
                 else ("fixed_below_random" if obs_rate < rnd_mean else "equal")
@@ -890,8 +891,9 @@ def run_research(db_path, iters=MC_ITERS, master_seed=MASTER_SEED,
             "method": "paired same-draw observations; D fixed (U_d unique deterministic "
                       "tickets) vs A budget-matched at U_d i.i.d. random; seed-fixed "
                       "Bernoulli Monte Carlo over EXACT per-draw success probabilities, "
-                      "with an exact Poisson-binomial normal-approximation cross-check; "
-                      "one-sided test for D above the random baseline",
+                      "with a normal-approximation cross-check (using the exact "
+                      "Poisson-binomial mean/std); one-sided test for D above the "
+                      "random baseline",
             "budget_policy": "EQUAL budget U_d for both D and the A baseline",
             "results_by_window": d_vs_a,
         },
@@ -908,8 +910,9 @@ def run_research(db_path, iters=MC_ITERS, master_seed=MASTER_SEED,
         },
 
         "statistical_method_and_limitations": {
-            "primary_test": "seed-fixed Bernoulli Monte Carlo (paired by draw) + exact "
-                            "Poisson-binomial cross-check; one-sided (fixed > random)",
+            "primary_test": "seed-fixed Bernoulli Monte Carlo (paired by draw) + "
+                            "normal-approximation cross-check using the exact "
+                            "Poisson-binomial mean/std; one-sided (fixed > random)",
             "mc_iterations": iters,
             "diversified_success_resamples_per_draw": diversity_resamples,
             "limitations": [
@@ -1028,7 +1031,7 @@ def render_markdown(results):
                  f"{dva_long['random_baseline_mean_rate']:.4f} "
                  f"(diff {dva_long['observed_difference']:+.4f}, "
                  f"MC p={dva_long['p_value_mc_one_sided_fixed_better']:.4f}, "
-                 f"exact p={dva_long['p_value_exact_poisson_binomial']:.4g}, "
+                 f"normal-approx p={dva_long['p_value_normal_approx_poisson_binomial']:.4g}, "
                  f"{dva_long['effect_direction']}).")
     L.append("")
     L.append("## Target draw universe")
@@ -1073,7 +1076,7 @@ def render_markdown(results):
     L.append("")
     L.append(R["primary_comparison_d_vs_a"]["method"])
     L.append("")
-    L.append("| Window | D rate | random rate | diff | MC p (D>rand) | exact p | direction |")
+    L.append("| Window | D rate | random rate | diff | MC p (D>rand) | normal-approx p | direction |")
     L.append("|---|--:|--:|--:|--:|--:|---|")
     for name, _ in WINDOWS:
         r = R["primary_comparison_d_vs_a"]["results_by_window"].get(name)
@@ -1083,7 +1086,7 @@ def render_markdown(results):
                  f"{r['random_baseline_mean_rate']:.4f} | "
                  f"{r['observed_difference']:+.4f} | "
                  f"{r['p_value_mc_one_sided_fixed_better']:.4f} | "
-                 f"{r['p_value_exact_poisson_binomial']:.4g} | {r['effect_direction']} |")
+                 f"{r['p_value_normal_approx_poisson_binomial']:.4g} | {r['effect_direction']} |")
     L.append("")
     L.append("## Secondary comparisons")
     for key, lbl in (("d_vs_b", "D vs B (diversified random, matched)"),

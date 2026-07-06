@@ -2,15 +2,15 @@
 
 - Final status: `WARN`
 - P520E final status: `WARN`
-- Unresolved hook count: `3`
-- Candidate count: `145`
-- Reference count: `148`
-- Source files scanned: `1694`
-- Parse error count: `3`
-- Confidence counts: `{'HIGH': 0, 'MEDIUM': 6, 'LOW': 139}`
-- Candidate count by hook: `{'learning_integrator': 19, 'refresh_hedge_fund_outputs': 59, 'weight_adjuster': 67}`
-- Target confirmed by hook: `{'learning_integrator': False, 'refresh_hedge_fund_outputs': False, 'weight_adjuster': False}`
-- PASS/WARN/FAIL counts: `0/3/0`
+- Unresolved hook count: `0`
+- Candidate count: `0`
+- Reference count: `0`
+- Source files scanned: `1709`
+- Parse error count: `2`
+- Confidence counts: `{'HIGH': 0, 'MEDIUM': 0, 'LOW': 0}`
+- Candidate count by hook: `{}`
+- Target confirmed by hook: `{}`
+- PASS/WARN/FAIL counts: `0/0/0`
 
 ## Scope notices
 - source/AST-only candidate resolver
@@ -27,6 +27,4 @@
 - no betting/future prediction claims
 
 ## Warnings
-- learning_integrator: static candidates only; target remains unconfirmed without direct HIGH evidence
-- refresh_hedge_fund_outputs: static candidates only; target remains unconfirmed without direct HIGH evidence
-- weight_adjuster: static candidates only; target remains unconfirmed without direct HIGH evidence
+- no unresolved hooks found in P520E artifacts

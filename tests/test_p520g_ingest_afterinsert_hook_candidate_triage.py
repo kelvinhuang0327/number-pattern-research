@@ -15,11 +15,7 @@ from pathlib import Path
 import tools.ingest_afterinsert_hook_candidate_triage as triage
 
 
-EXPECTED_HOOKS = {
-    "refresh_hedge_fund_outputs",
-    "weight_adjuster",
-    "learning_integrator",
-}
+EXPECTED_HOOKS = set()
 
 
 def test_triage_reads_p520f_candidates_and_keeps_conservative_status():
@@ -27,35 +23,22 @@ def test_triage_reads_p520f_candidates_and_keeps_conservative_status():
 
     assert result["final_status"] == "WARN"
     assert set(result["unresolved_hooks"]) == EXPECTED_HOOKS
-    assert result["candidate_count"] == 145
-    assert result["medium_candidate_count"] == 6
-    assert result["low_candidate_count"] == 139
+    assert result["candidate_count"] == 0
+    assert result["medium_candidate_count"] == 0
+    assert result["low_candidate_count"] == 0
     assert result["confirmed_hook_count"] == 0
-    assert result["probable_upgrade_count"] == 3
+    assert result["probable_upgrade_count"] == 0
     assert result["component_statuses"]["runtime import avoided"] == "PASS"
     assert result["component_statuses"]["DB side effects avoided"] == "PASS"
     assert result["component_statuses"]["target confirmation conservative"] == "PASS"
-    assert result["p520f_summary"]["confidence_counts"] == {"HIGH": 0, "MEDIUM": 6, "LOW": 139}
+    assert result["p520f_summary"]["confidence_counts"] == {"HIGH": 0, "MEDIUM": 0, "LOW": 0}
 
 
 def test_medium_cards_cover_only_p520f_medium_candidates_with_required_fields():
     rendered = triage.render_artifacts()
     cards = json.loads(rendered[triage.MEDIUM_CARDS_PATH])
 
-    assert len(cards) == 6
-    assert {card["unresolved_hook_name"] for card in cards} == EXPECTED_HOOKS
-    assert {card["candidate_confidence"] for card in cards} == {"MEDIUM"}
-    assert {card["candidate_file_path"] for card in cards} == {"lottery_api/routes/ingest.py"}
-    for card in cards:
-        assert set(triage.MEDIUM_CARD_FIELDS).issubset(card)
-        assert card["line_number"].isdigit()
-        assert card["ast_node_type"] in {"ImportFrom", "Call"}
-        assert card["matched_symbol_reference"]
-        assert card["supporting_source_snippet"]
-        assert len(card["supporting_source_snippet"]) <= 180
-        assert "remains source-unresolved" not in card["why_it_may_match"]
-        assert "target implementation evidence" in card["why_it_remains_unconfirmed"]
-        assert card["recommended_next_action"] == "runtime-instrumentation-required"
+    assert cards == []
 
 
 def test_by_hook_recommendation_marks_probable_but_not_confirmed():
@@ -64,13 +47,6 @@ def test_by_hook_recommendation_marks_probable_but_not_confirmed():
     by_hook = {row["unresolved_hook_name"]: row for row in rows}
 
     assert set(by_hook) == EXPECTED_HOOKS
-    for hook, row in by_hook.items():
-        assert row["medium_candidate_count"] == "2", hook
-        assert row["remaining_unresolved_count"] == "1"
-        assert row["probable_upgrade"] == "probable"
-        assert row["confirmed"] == "False"
-        assert row["recommendation"] == "runtime-instrumentation-required"
-        assert "target implementation remains source-unresolved" in row["probable_upgrade_reason"]
 
 
 def test_low_summary_is_by_hook_context_not_expanded_cards():
@@ -79,21 +55,14 @@ def test_low_summary_is_by_hook_context_not_expanded_cards():
     by_hook = {row["unresolved_hook_name"]: row for row in rows}
 
     assert set(by_hook) == EXPECTED_HOOKS
-    assert by_hook["learning_integrator"]["low_candidate_count"] == "17"
-    assert by_hook["refresh_hedge_fund_outputs"]["low_candidate_count"] == "57"
-    assert by_hook["weight_adjuster"]["low_candidate_count"] == "65"
-    for row in rows:
-        assert int(row["source_path_count"]) > 0
-        assert row["evidence_kinds"]
-        assert "do not confirm the hook target" in row["summary"]
 
 
 def test_status_block_is_copy_paste_friendly_and_scoped():
     block = triage.build_triage_bundle()["status_block"]
 
     assert "Final status: `WARN`" in block
-    assert "MEDIUM evidence card count: `6`" in block
-    assert "LOW summary count: `139`" in block
+    assert "MEDIUM evidence card count: `0`" in block
+    assert "LOW summary count: `0`" in block
     assert "Confirmed hook count: `0`" in block
     for notice in triage.NOTICE_LINES:
         assert notice in block
@@ -183,6 +152,6 @@ def test_generated_json_and_manifest_are_parseable():
 
     assert result["final_status"] == "WARN"
     assert result["failure_count"] == 0
-    assert len(cards) == 6
+    assert cards == []
     assert len(manifest_rows) == 6
     assert manifest_rows[-1]["sha256"] == ""

@@ -21,6 +21,9 @@ def test_healthcheck_reports_pass_for_current_ingest_hook_surface():
     assert result["refresh_after_insert_present"] is True
     assert result["detected_live_hook_count"] == len(healthcheck.EXPECTED_LIVE_HOOKS)
     assert result["missing_or_renamed_live_hooks"] == []
+    assert result["removed_missing_target_hooks"] == list(healthcheck.REMOVED_MISSING_TARGET_HOOKS)
+    assert result["removed_missing_target_hook_count"] == len(healthcheck.REMOVED_MISSING_TARGET_HOOKS)
+    assert result["missing_target_residue_status"] == "PASS"
     assert result["dead_hook_absence_status"] == "PASS"
     assert result["warning_count"] == 0
     assert result["failure_count"] == 0
@@ -33,13 +36,20 @@ def test_hook_inventory_lists_expected_live_hook_references():
     rows = list(csv.DictReader(rendered[healthcheck.HOOK_INVENTORY_PATH].splitlines()))
     by_hook = {row["hook_name"]: row for row in rows}
 
-    assert set(by_hook) == set(healthcheck.EXPECTED_LIVE_HOOKS)
+    assert set(by_hook) == set(healthcheck.EXPECTED_LIVE_HOOKS) | set(healthcheck.REMOVED_MISSING_TARGET_HOOKS)
     for hook_name in healthcheck.EXPECTED_LIVE_HOOKS:
         assert by_hook[hook_name]["expected"] == "True"
         assert by_hook[hook_name]["present"] == "True"
         assert by_hook[hook_name]["status"] == "PASS"
         assert by_hook[hook_name]["line"]
         assert by_hook[hook_name]["evidence"]
+    for hook_name in healthcheck.REMOVED_MISSING_TARGET_HOOKS:
+        assert by_hook[hook_name]["expected"] == "False"
+        assert by_hook[hook_name]["present"] == "False"
+        assert by_hook[hook_name]["status"] == "PASS"
+        assert by_hook[hook_name]["line"] == ""
+        assert by_hook[hook_name]["evidence"] == ""
+        assert "removed / no longer part" in by_hook[hook_name]["notes"]
 
 
 def test_dead_hook_check_pins_removed_symbols_absent():
@@ -66,6 +76,7 @@ def test_completion_summary_records_no_db_no_runtime_import_scope():
     assert summary["runs_migration_backfill_or_deploy"] is False
     assert summary["implements_replacement_scheduler_or_tracker"] is False
     assert summary["live_hook_references_visible"] is True
+    assert summary["missing_target_hooks_removed"] is True
     assert summary["removed_dead_hooks_absent"] is True
 
 
@@ -74,6 +85,7 @@ def test_status_block_is_copy_paste_friendly_and_scoped():
 
     assert "Final status: `PASS`" in block
     assert "`_refresh_after_insert` present: `True`" in block
+    assert "Missing-target residue status: `PASS`" in block
     assert "Dead hook absence status: `PASS`" in block
     for notice in healthcheck.NOTICE_LINES:
         assert notice in block

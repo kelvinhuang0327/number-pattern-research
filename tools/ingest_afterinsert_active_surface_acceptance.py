@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""P520K source/AST/text-only active after-insert surface acceptance.
+"""P520K/P520L source/AST/text-only active after-insert surface acceptance.
 
 This module parses ``lottery_api/routes/ingest.py`` and committed P520J/P520I
 artifacts only. It does not import ``lottery_api.routes.ingest``, does not
@@ -46,7 +46,7 @@ REMOVED_DEAD_SYMBOLS: Sequence[str] = (
 )
 NOTICE_LINES: Sequence[str] = (
     "source/AST/text-only active surface acceptance",
-    "reads committed P520J/P520I artifacts",
+    "reads committed P520J/P520I historical artifacts",
     "parses lottery_api/routes/ingest.py without importing it",
     "does not import live hook target modules",
     "does not execute after-insert hooks",
@@ -55,7 +55,7 @@ NOTICE_LINES: Sequence[str] = (
     "no migration/backfill",
     "no deploy",
     "does not modify hook implementation files",
-    "does not modify lottery_api/routes/ingest.py",
+    "post-P520L acceptance expects no gated missing-hook residue in lottery_api/routes/ingest.py",
     "no betting/future prediction claims",
 )
 
@@ -268,6 +268,30 @@ def _line_int(value: str) -> int:
     return int(value) if str(value).isdigit() else 0
 
 
+def _missing_hook_residue_terms(
+    disabled_rows: Sequence[Mapping[str, str]],
+    p520i_rows: Sequence[Mapping[str, str]],
+) -> Dict[str, List[str]]:
+    terms_by_hook: Dict[str, List[str]] = {}
+    p520i_by_hook = {row.get("hook_name", ""): row for row in p520i_rows}
+    for row in disabled_rows:
+        hook_name = row.get("hook_name", "")
+        if not hook_name:
+            continue
+        p520i_row = p520i_by_hook.get(hook_name, {})
+        terms = [
+            hook_name,
+            row.get("import_module", ""),
+            row.get("imported_symbol", ""),
+            row.get("local_symbol", ""),
+            p520i_row.get("import_module", ""),
+            p520i_row.get("imported_symbol", ""),
+            p520i_row.get("local_symbol", ""),
+        ]
+        terms_by_hook[hook_name] = sorted({term for term in terms if term})
+    return terms_by_hook
+
+
 def _build_bundle() -> Dict[str, Any]:
     source, tree, parse_error = _parse_ingest()
     refresh_function = _refresh_function(tree)
@@ -283,6 +307,7 @@ def _build_bundle() -> Dict[str, Any]:
     p520i_rows = _load_csv_rows(P520I_BINDING_PATH)
     p520i_by_hook = {row.get("hook_name", ""): row for row in p520i_rows}
     disabled_by_hook = {row.get("hook_name", ""): row for row in p520j_disabled_rows}
+    residue_terms_by_hook = _missing_hook_residue_terms(p520j_disabled_rows, p520i_rows)
 
     scheduler_call = _find_call(refresh_function, "scheduler.load_data")
     scheduler_guarded = bool(scheduler_call is not None and guard is not None and guard in _ancestors(scheduler_call, parents))
@@ -304,12 +329,14 @@ def _build_bundle() -> Dict[str, Any]:
             "call_evidence": _node_source(source, scheduler_call),
             "guarded_by_missing_hook_flag": str(bool(scheduler_guarded)),
             "completion_surface_counted": str(bool(scheduler_active)),
-            "reason": "scheduler refresh retained outside disabled missing-hook guard" if scheduler_active else "scheduler refresh is missing or gated",
+            "reason": "scheduler refresh retained outside missing-hook guard" if scheduler_active else "scheduler refresh is missing or gated",
         }
     ]
 
     disabled_rows: List[Dict[str, Any]] = []
     active_missing_hooks: List[str] = []
+    removed_missing_hooks: List[str] = []
+    residue_present_by_hook: Dict[str, List[str]] = {}
     disabled_hook_order = _missing_hook_order(p520j_result, p520j_disabled_rows)
     for hook_name in disabled_hook_order:
         p520j_row = disabled_by_hook.get(hook_name, {})
@@ -332,31 +359,34 @@ def _build_bundle() -> Dict[str, Any]:
             )
         )
         safely_disabled = guard_value is False and guarded_call and guarded_import
-        active = not safely_disabled
-        if active:
+        residue_terms_present = [
+            term for term in residue_terms_by_hook.get(hook_name, []) if term in source
+        ]
+        if residue_terms_present:
             active_missing_hooks.append(hook_name)
-        disabled_rows.append(
-            {
-                "hook_name": hook_name,
-                "status": "DISABLED" if safely_disabled else "ACTIVE_OR_UNRESOLVED",
-                "active": str(bool(active)),
-                "guard_symbol": DISABLED_FLAG if guard is not None else "",
-                "guard_value": str(guard_value) if guard_value is not None else "",
-                "guard_line": _line(guard_assign),
-                "import_module": import_module,
-                "imported_symbol": imported_symbol,
-                "local_symbol": local_symbol,
-                "import_line": import_binding.get("import_line", p520j_row.get("import_line", "")),
-                "call_line": _line(call) or p520j_row.get("call_line", ""),
-                "warning_line": p520j_row.get("warning_line", ""),
-                "p520i_terminal_status": p520i_row.get("terminal_symbol_status", ""),
-                "p520i_unresolved_reason": p520i_row.get("unresolved_reason", ""),
-                "completion_surface_counted": str(False if safely_disabled else True),
-                "reason": "missing-target hook remains in source but is gated by false missing-hook flag"
-                if safely_disabled
-                else "missing-target hook is not safely gated by false missing-hook flag",
-            }
-        )
+            residue_present_by_hook[hook_name] = residue_terms_present
+            disabled_rows.append(
+                {
+                    "hook_name": hook_name,
+                    "status": "DISABLED" if safely_disabled else "ACTIVE_OR_UNRESOLVED",
+                    "active": str(bool(not safely_disabled)),
+                    "guard_symbol": DISABLED_FLAG if guard is not None else "",
+                    "guard_value": str(guard_value) if guard_value is not None else "",
+                    "guard_line": _line(guard_assign),
+                    "import_module": import_module,
+                    "imported_symbol": imported_symbol,
+                    "local_symbol": local_symbol,
+                    "import_line": import_binding.get("import_line", p520j_row.get("import_line", "")),
+                    "call_line": _line(call) or p520j_row.get("call_line", ""),
+                    "warning_line": p520j_row.get("warning_line", ""),
+                    "p520i_terminal_status": p520i_row.get("terminal_symbol_status", ""),
+                    "p520i_unresolved_reason": p520i_row.get("unresolved_reason", ""),
+                    "completion_surface_counted": str(False if safely_disabled else True),
+                    "reason": "missing-target hook residue remains in source",
+                }
+            )
+        else:
+            removed_missing_hooks.append(hook_name)
 
     removed_dead_symbols_present = sorted(symbol for symbol in REMOVED_DEAD_SYMBOLS if symbol in source)
     missing_artifacts = [
@@ -378,27 +408,22 @@ def _build_bundle() -> Dict[str, Any]:
         failures.append(f"ingest source parse failed: {parse_error}")
     if refresh_function is None:
         failures.append("_refresh_after_insert missing")
-    if guard_assign is None or guard_value is not False:
-        failures.append(f"{DISABLED_FLAG} is missing or not constant False")
-    if guard is None:
-        failures.append("disabled missing-hook guard not found")
+    if guard_assign is not None or guard is not None or DISABLED_FLAG in source:
+        failures.append(f"{DISABLED_FLAG} residue remains in source")
     if not scheduler_active:
         failures.append("scheduler.load_data is missing or gated by missing-hook flag")
     if active_missing_hooks:
-        failures.append("missing-target hooks active: " + ";".join(sorted(active_missing_hooks)))
+        failures.append("missing-target hook residue remains: " + ";".join(sorted(active_missing_hooks)))
     if removed_dead_symbols_present:
         failures.append("removed dead hook symbols present: " + ";".join(removed_dead_symbols_present))
 
-    disabled_hook_count = sum(1 for row in disabled_rows if row["status"] == "DISABLED")
     active_completion_surface = [
         row["surface_name"] for row in active_rows if row["completion_surface_counted"] == "True"
     ]
     disabled_completion_surface = [
         row["hook_name"] for row in disabled_rows if row["completion_surface_counted"] == "False"
     ]
-    warnings = []
-    if disabled_rows and not failures:
-        warnings.append("disabled missing-target hook blocks remain in source but are gated false")
+    warnings: List[str] = []
 
     final_status = "FAIL" if failures else "WARN" if warnings else "PASS"
     acceptance_status = "PASS" if not failures and scheduler_active and not active_missing_hooks else "FAIL"
@@ -409,9 +434,9 @@ def _build_bundle() -> Dict[str, Any]:
         "P520J warning evidence artifact read": "PASS" if P520J_WARNING_EVIDENCE_PATH.exists() else "FAIL",
         "P520I binding artifact read": "PASS" if P520I_BINDING_PATH.exists() else "FAIL",
         "ingest source AST evaluation": "PASS" if not parse_error else "FAIL",
-        "disabled missing-target hook guard": "PASS" if guard_value is False else "FAIL",
+        "gated missing-hook guard removed": "PASS" if guard_assign is None and guard is None and DISABLED_FLAG not in source else "FAIL",
         "scheduler.load_data active": "PASS" if scheduler_active else "FAIL",
-        "missing-target hooks not active": "PASS" if not active_missing_hooks else "FAIL",
+        "missing-target hook residue absent": "PASS" if not active_missing_hooks else "FAIL",
         "removed dead hook symbols absent": "PASS" if not removed_dead_symbols_present else "FAIL",
         "runtime import avoided": "PASS",
         "DB side effects avoided": "PASS",
@@ -425,9 +450,12 @@ def _build_bundle() -> Dict[str, Any]:
         "source_path": _artifact_label(INGEST_ROUTE_PATH),
         "active_completion_surface_count": len(active_completion_surface),
         "active_completion_surface": active_completion_surface,
-        "disabled_missing_target_surface_count": disabled_hook_count,
+        "disabled_missing_target_surface_count": len(disabled_completion_surface),
         "disabled_missing_target_surface": disabled_completion_surface,
         "missing_target_hooks_counted_as_active_completion_surface": sorted(active_missing_hooks),
+        "removed_missing_target_surface_count": len(removed_missing_hooks),
+        "removed_missing_target_surface": sorted(removed_missing_hooks),
+        "residue_present_by_hook": residue_present_by_hook,
         "scheduler_load_data_active": scheduler_active,
         "scheduler_load_data_line": _line(scheduler_call),
         "scheduler_load_data_outside_missing_hook_guard": scheduler_active,
@@ -463,8 +491,9 @@ def _build_bundle() -> Dict[str, Any]:
         "scope": (
             "P520K parses lottery_api/routes/ingest.py and committed P520J/P520I artifacts only. "
             "scheduler.load_data is counted as retained active completion surface when outside "
-            "the false missing-hook guard. Missing-target hooks are excluded from active completion "
-            "surface when their import and call are inside _MISSING_AFTERINSERT_HOOKS_ENABLED = False."
+            "any missing-hook guard. P520L acceptance passes when historical missing-target hooks "
+            "from P520J/P520I are absent from source and therefore no disabled missing-target "
+            "surface remains."
         ),
         "suggested_next_command": "python -m tools.ingest_afterinsert_active_surface_acceptance --status-block",
     }
@@ -475,9 +504,11 @@ def _build_bundle() -> Dict[str, Any]:
         "acceptance_status": acceptance_status,
         "active_completion_surface_count": len(active_completion_surface),
         "active_completion_surface": active_completion_surface,
-        "disabled_missing_target_surface_count": disabled_hook_count,
+        "disabled_missing_target_surface_count": len(disabled_completion_surface),
         "disabled_missing_target_surface": disabled_completion_surface,
         "missing_target_hooks_counted_as_active_completion_surface": sorted(active_missing_hooks),
+        "removed_missing_target_surface_count": len(removed_missing_hooks),
+        "removed_missing_target_surface": sorted(removed_missing_hooks),
         "scheduler_refresh_retained": scheduler_active,
         "missing_target_hooks_no_longer_active_completion_surface": not active_missing_hooks,
         "removed_dead_hook_symbols_present": removed_dead_symbols_present,
@@ -516,7 +547,7 @@ def _status_block(result: Mapping[str, Any]) -> str:
             "",
             "## Recommendation",
             "- Treat scheduler.load_data as the retained active after-insert completion surface.",
-            "- Treat the missing-target hooks as disabled warning-only source blocks, not active completion surface.",
+            "- Treat the historical missing-target hooks as removed source residue, not active completion surface.",
             "- Runtime import, hook execution, draw insertion, DB access, migration, backfill, and deploy were not attempted.",
         ]
     )

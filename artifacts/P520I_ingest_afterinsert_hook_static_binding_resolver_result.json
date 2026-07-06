@@ -1,6 +1,6 @@
 {
   "artifact_prefix": "P520I_ingest_afterinsert_hook_static_binding_resolver",
-  "binding_chain_row_count": 3,
+  "binding_chain_row_count": 0,
   "component_statuses": {
     "DB side effects avoided": "PASS",
     "P520E artifact context read": "PASS",
@@ -11,7 +11,7 @@
     "P520H unresolved artifact read": "PASS",
     "ingest source AST evaluation": "PASS",
     "runtime import avoided": "PASS",
-    "static binding resolution": "WARN",
+    "static binding resolution": "PASS",
     "target confirmation conservative": "PASS"
   },
   "confirmed_hook_count": 0,
@@ -19,9 +19,9 @@
   "fail_count": 0,
   "failure_count": 0,
   "failures": [],
-  "final_status": "WARN",
-  "focused_reference_count": 3,
-  "inspected_file_row_count": 18,
+  "final_status": "PASS",
+  "focused_reference_count": 0,
+  "inspected_file_row_count": 0,
   "max_follow_depth": 5,
   "notices": [
     "source/AST/text-only static binding resolver",
@@ -41,26 +41,26 @@
     "final_status": "WARN",
     "result_artifact": "artifacts/P520E_ingest_afterinsert_hook_target_audit_result.json",
     "result_present": true,
-    "unresolved_source_count": 3
+    "unresolved_source_count": 0
   },
   "p520f_summary": {
-    "candidate_count": 145,
+    "candidate_count": 0,
     "final_status": "WARN",
     "result_artifact": "artifacts/P520F_ingest_afterinsert_hook_candidate_resolver_result.json",
     "result_present": true
   },
   "p520g_summary": {
     "final_status": "WARN",
-    "probable_upgrade_count": 3,
+    "probable_upgrade_count": 0,
     "result_artifact": "artifacts/P520G_ingest_afterinsert_hook_candidate_triage_result.json",
     "result_present": true
   },
   "p520h_summary": {
-    "final_status": "WARN",
-    "probable_hook_count": 3,
+    "final_status": "PASS",
+    "probable_hook_count": 0,
     "result_artifact": "artifacts/P520H_ingest_afterinsert_hook_import_chain_resolver_result.json",
     "result_present": true,
-    "target_source_unresolved_count": 3
+    "target_source_unresolved_count": 0
   },
   "pass_count": 0,
   "probable_hook_count": 0,
@@ -70,24 +70,14 @@
   "status_counts": {
     "CONFIRMED": 0,
     "PROBABLE": 0,
-    "UNRESOLVED": 3
+    "UNRESOLVED": 0
   },
   "suggested_next_command": "python -m tools.ingest_afterinsert_hook_static_binding_resolver --status-block",
-  "unresolved_hook_count": 3,
-  "unresolved_hooks": [
-    "learning_integrator",
-    "refresh_hedge_fund_outputs",
-    "weight_adjuster"
-  ],
-  "unresolved_reasons": [
-    "source file missing"
-  ],
-  "unresolved_summary_row_count": 3,
-  "warn_count": 3,
-  "warning_count": 3,
-  "warnings": [
-    "learning_integrator: source file missing",
-    "refresh_hedge_fund_outputs: source file missing",
-    "weight_adjuster: source file missing"
-  ]
+  "unresolved_hook_count": 0,
+  "unresolved_hooks": [],
+  "unresolved_reasons": [],
+  "unresolved_summary_row_count": 0,
+  "warn_count": 0,
+  "warning_count": 0,
+  "warnings": []
 }

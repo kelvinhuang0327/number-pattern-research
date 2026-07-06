@@ -1,4 +1,1 @@
 hook_reference,import_module,imported_symbol,local_symbol,target_attribute,reason,status,notes
-refresh_hedge_fund_outputs,analysis.payout.sync,refresh_hedge_fund_outputs,refresh_hedge_fund_outputs,,source_path_unresolved,WARN,source path unresolved by static source mapping; runtime import not attempted
-weight_adjuster,engine.weight_adjuster,adjust_all_types,adjust_all_types,,source_path_unresolved,WARN,source path unresolved by static source mapping; runtime import not attempted
-learning_integrator,engine.learning_integrator,apply_all_types,apply_learning,,source_path_unresolved,WARN,source path unresolved by static source mapping; runtime import not attempted

@@ -1,16 +1,8 @@
 {
   "artifact_prefix": "P520F_ingest_afterinsert_hook_candidate_resolver",
-  "best_confidence_by_hook": {
-    "learning_integrator": "MEDIUM",
-    "refresh_hedge_fund_outputs": "MEDIUM",
-    "weight_adjuster": "MEDIUM"
-  },
-  "candidate_count": 145,
-  "candidate_count_by_hook": {
-    "learning_integrator": 19,
-    "refresh_hedge_fund_outputs": 59,
-    "weight_adjuster": 67
-  },
+  "best_confidence_by_hook": {},
+  "candidate_count": 0,
+  "candidate_count_by_hook": {},
   "component_statuses": {
     "DB side effects avoided": "PASS",
     "P520E result artifact read": "PASS",
@@ -22,8 +14,8 @@
   },
   "confidence_counts": {
     "HIGH": 0,
-    "LOW": 139,
-    "MEDIUM": 6
+    "LOW": 0,
+    "MEDIUM": 0
   },
   "fail_count": 0,
   "failure_count": 0,
@@ -51,17 +43,13 @@
     "result_present": true,
     "runtime_indicator_count": 8,
     "target_symbol_found_count": 1,
-    "unresolved_source_count": 3
+    "unresolved_source_count": 0
   },
-  "parse_error_count": 3,
+  "parse_error_count": 2,
   "parse_errors": [
     {
       "parse_error": "IndentationError: unexpected indent",
       "source_path": "lottery_api/models/autogluon_model_extensions.py"
-    },
-    {
-      "parse_error": "SyntaxError: f-string expression part cannot include a backslash",
-      "source_path": "scripts/p211r_short_mid_window_diagnostic.py"
     },
     {
       "parse_error": "SyntaxError: invalid syntax",
@@ -69,33 +57,19 @@
     }
   ],
   "pass_count": 0,
-  "reference_count": 148,
-  "reference_count_by_hook": {
-    "learning_integrator": 20,
-    "refresh_hedge_fund_outputs": 60,
-    "weight_adjuster": 68
-  },
+  "reference_count": 0,
+  "reference_count_by_hook": {},
   "scope": "P520F reads P520E artifacts and parses repository Python source as text/AST only; no app runtime import; no live target module import; no after-insert hook execution; no draw insert execution; no canonical DB open/write; no migration/backfill; no deploy; does not implement or modify hooks; no betting/future prediction claims.",
-  "source_files_parsed_count": 1691,
-  "source_files_scanned_count": 1694,
+  "source_files_parsed_count": 1707,
+  "source_files_scanned_count": 1709,
   "source_path": "lottery_api/routes/ingest.py",
   "suggested_next_command": "python -m tools.ingest_afterinsert_hook_candidate_resolver --status-block",
-  "target_confirmed_by_hook": {
-    "learning_integrator": false,
-    "refresh_hedge_fund_outputs": false,
-    "weight_adjuster": false
-  },
-  "unresolved_hook_count": 3,
-  "unresolved_hooks": [
-    "learning_integrator",
-    "refresh_hedge_fund_outputs",
-    "weight_adjuster"
-  ],
-  "warn_count": 3,
-  "warning_count": 3,
+  "target_confirmed_by_hook": {},
+  "unresolved_hook_count": 0,
+  "unresolved_hooks": [],
+  "warn_count": 0,
+  "warning_count": 0,
   "warnings": [
-    "learning_integrator: static candidates only; target remains unconfirmed without direct HIGH evidence",
-    "refresh_hedge_fund_outputs: static candidates only; target remains unconfirmed without direct HIGH evidence",
-    "weight_adjuster: static candidates only; target remains unconfirmed without direct HIGH evidence"
+    "no unresolved hooks found in P520E artifacts"
   ]
 }

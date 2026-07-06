@@ -42,6 +42,7 @@ NOTICE_LINES: Sequence[str] = (
     "does not import live hook target modules",
     "does not execute after-insert hooks",
     "does not execute draw inserts",
+    "historical missing-target hooks are removed from active and disabled surface",
     "no canonical DB open/write",
     "no migration/backfill",
     "no deploy",
@@ -76,6 +77,12 @@ RUNTIME_PATTERNS: Sequence[str] = (
     ".start(",
     "Thread(",
     "Process(",
+)
+
+REMOVED_MISSING_TARGET_HOOKS: Sequence[str] = (
+    "refresh_hedge_fund_outputs",
+    "weight_adjuster",
+    "learning_integrator",
 )
 
 TARGET_AUDIT_FIELDS: Sequence[str] = (
@@ -143,27 +150,6 @@ EXPECTED_HOOKS: Sequence[HookSpec] = (
         local_symbol="scheduler",
         call_name="scheduler.load_data",
         target_attribute="load_data",
-    ),
-    HookSpec(
-        hook_reference="refresh_hedge_fund_outputs",
-        import_module="analysis.payout.sync",
-        imported_symbol="refresh_hedge_fund_outputs",
-        local_symbol="refresh_hedge_fund_outputs",
-        call_name="refresh_hedge_fund_outputs",
-    ),
-    HookSpec(
-        hook_reference="weight_adjuster",
-        import_module="engine.weight_adjuster",
-        imported_symbol="adjust_all_types",
-        local_symbol="adjust_all_types",
-        call_name="adjust_all_types",
-    ),
-    HookSpec(
-        hook_reference="learning_integrator",
-        import_module="engine.learning_integrator",
-        imported_symbol="apply_all_types",
-        local_symbol="apply_learning",
-        call_name="apply_learning",
     ),
 )
 
@@ -545,6 +531,9 @@ def analyze_targets(path: Path = INGEST_ROUTE_PATH) -> Dict[str, Any]:
     ingest_tree = ast.parse(ingest_source, filename=str(path))
     refresh_function = _function_defs(ingest_tree).get("_refresh_after_insert")
     p520d_status_by_hook = _p520d_contract_status_by_hook()
+    removed_missing_residue = [
+        hook_name for hook_name in REMOVED_MISSING_TARGET_HOOKS if hook_name in ingest_source
+    ]
 
     matrix_rows: List[Dict[str, Any]] = []
     risk_rows: List[Dict[str, Any]] = []
@@ -563,6 +552,10 @@ def analyze_targets(path: Path = INGEST_ROUTE_PATH) -> Dict[str, Any]:
         for row in matrix_rows
         if row["target_audit_status"] == "FAIL"
     ]
+    failures.extend(
+        f"removed missing-target hook residue found: {hook_name}"
+        for hook_name in removed_missing_residue
+    )
     warnings = [
         f"{row['hook_reference']}: {row['notes']}"
         for row in matrix_rows
@@ -575,6 +568,10 @@ def analyze_targets(path: Path = INGEST_ROUTE_PATH) -> Dict[str, Any]:
         "refresh_after_insert_present": refresh_function is not None,
         "refresh_after_insert_line": _line(refresh_function),
         "expected_live_hooks": [spec.hook_reference for spec in EXPECTED_HOOKS],
+        "removed_missing_target_hooks": list(REMOVED_MISSING_TARGET_HOOKS),
+        "removed_missing_target_hook_count": len(REMOVED_MISSING_TARGET_HOOKS) - len(removed_missing_residue),
+        "missing_target_residue_status": "PASS" if not removed_missing_residue else "FAIL",
+        "missing_target_residue": removed_missing_residue,
         "target_audit_matrix": matrix_rows,
         "risk_indicators": _dedupe_indicator_rows(risk_rows),
         "unresolved_targets": unresolved_rows,
@@ -608,6 +605,7 @@ def build_target_audit_bundle() -> Dict[str, Any]:
         "target symbol resolution": "WARN"
         if analysis["target_symbol_found_count"] < len(EXPECTED_HOOKS)
         else "PASS",
+        "missing-target hook residue absent": analysis["missing_target_residue_status"],
         "DB side effects avoided": "PASS",
         "runtime import avoided": "PASS",
         "source AST evaluation": "PASS",
@@ -620,6 +618,10 @@ def build_target_audit_bundle() -> Dict[str, Any]:
         "refresh_after_insert_present": analysis["refresh_after_insert_present"],
         "refresh_after_insert_line": analysis["refresh_after_insert_line"],
         "expected_live_hooks": analysis["expected_live_hooks"],
+        "removed_missing_target_hooks": analysis["removed_missing_target_hooks"],
+        "removed_missing_target_hook_count": analysis["removed_missing_target_hook_count"],
+        "missing_target_residue_status": analysis["missing_target_residue_status"],
+        "missing_target_residue": analysis["missing_target_residue"],
         "target_audit_row_count": len(analysis["target_audit_matrix"]),
         "resolved_source_count": analysis["resolved_source_count"],
         "unresolved_source_count": analysis["unresolved_source_count"],
@@ -664,6 +666,8 @@ def _status_block_md(result: Mapping[str, Any]) -> str:
         f"- `_refresh_after_insert` present: `{result['refresh_after_insert_present']}`",
         f"- `_refresh_after_insert` line: `{result['refresh_after_insert_line']}`",
         f"- Expected live hooks: `{result['expected_live_hooks']}`",
+        f"- Removed missing-target hooks: `{result['removed_missing_target_hooks']}`",
+        f"- Missing-target residue status: `{result['missing_target_residue_status']}`",
         f"- Target audit rows: `{result['target_audit_row_count']}`",
         f"- Resolved source count: `{result['resolved_source_count']}`",
         f"- Unresolved source count: `{result['unresolved_source_count']}`",

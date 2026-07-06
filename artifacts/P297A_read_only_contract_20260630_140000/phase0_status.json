@@ -1,0 +1,28 @@
+{
+  "generated_at": "2026-06-30T07:38:29.278339+00:00",
+  "authorization_phrase": "AUTHORIZE_P297A_READ_ONLY_INVENTORY_AND_CONTRACT",
+  "task": "P297A_BIG649_UNIFIED_REPLAY_METRICS_CONTRACT_AND_STRATEGY_INVENTORY",
+  "current": {
+    "pwd": "/Users/kelvin/Kelvin-WorkSpace/LotteryNew",
+    "repo_root": "/Users/kelvin/Kelvin-WorkSpace/LotteryNew",
+    "branch": "task/p273a-prize-aware-inferential-validation",
+    "head": "3d6df001da3a0633ab91f164d722b595ca76d2e1",
+    "status_short_branch": "## task/p273a-prize-aware-inferential-validation...origin/task/p273a-prize-aware-inferential-validation [ahead 1]\n M 00-Plan/roadmap/agent_bootstrap/SHARED_AGENT_BOOTSTRAP.md\n M 00-Plan/roadmap/agent_bootstrap/TASK_TEMPLATES.md\n M backend.pid\n M claude-code-showcase\n M data/lottery_v2.db\n M frontend.pid\n M lottery_api/data/performance_history.json\n?? .gstack/\n?? \".schema strategy_replay_runs\"\n?? claude-code-showcase.worktrees/\n?? data/performance_history.json\n?? lottery_api/data/ingest_log.jsonl\n?? outputs/research/p245a_external_predictive_method_scouting_20260605.json\n?? outputs/research/p245a_external_predictive_method_scouting_20260605.md\n?? outputs/research/p251d_evidence_dashboard_readonly_api_route_20260609.json\n?? outputs/research/p251d_evidence_dashboard_readonly_api_route_20260609.md\n?? runtime/\n?? tests/test_p245a_external_predictive_method_scouting.py",
+    "upstream": "origin/task/p273a-prize-aware-inferential-validation",
+    "ahead_behind": "1\t0",
+    "staged_files": "",
+    "unstaged_files": "00-Plan/roadmap/agent_bootstrap/SHARED_AGENT_BOOTSTRAP.md\n00-Plan/roadmap/agent_bootstrap/TASK_TEMPLATES.md\nbackend.pid\nclaude-code-showcase\ndata/lottery_v2.db\nfrontend.pid\nlottery_api/data/performance_history.json"
+  },
+  "worktrees": "worktree /Users/kelvin/Kelvin-WorkSpace/LotteryNew\nHEAD 3d6df001da3a0633ab91f164d722b595ca76d2e1\nbranch refs/heads/task/p273a-prize-aware-inferential-validation\n\nworktree /Users/kelvin/Kelvin-WorkSpace/LotteryNew-main\nHEAD afac66b26858527be161f64a58ddde5213f8e202\nbranch refs/heads/task/cto-roadmap-alignment-20260630\n\nworktree /Users/kelvin/Kelvin-WorkSpace/LotteryNew-p277a\nHEAD 9000bb510c79478647e3dcdf3360af08a806bf0c\nbranch refs/heads/task/p277a-historical-observation-status-reclassification\n\nworktree /Users/kelvin/Kelvin-WorkSpace/LotteryNew-p280amr\nHEAD eac749327218b839a8b81d369831c64f7edab95a\nbranch refs/heads/task/p280amr-big649-local-replay-research\n\nworktree /Users/kelvin/Kelvin-WorkSpace/LotteryNew-p280aw\nHEAD d9306bb69478097b08a876ab8bd633631f5a0da7\nbranch refs/heads/task/p280aw-big649-private-ticket-decision-runner\n\nworktree /Users/kelvin/Kelvin-WorkSpace/LotteryNew-p282b\nHEAD e0210462735b7f9e43c02700fe02ebf01dade63c\nbranch refs/heads/task/p282b-big649-deduplicated-portfolio-replay\n\nworktree /Users/kelvin/Kelvin-WorkSpace/LotteryNew-worktrees/p274d-pre-g2-acceptance-evidence-gate-verification\nHEAD 3349631c9ec1f974f4b43bcca870ecf07620db1d\nbranch refs/heads/task/p274d-pre-g2-acceptance-evidence-gate-verification\n\nworktree /Users/kelvin/Kelvin-WorkSpace/LotteryNew/.claude/worktrees/amazing-jepsen-b0a5b8\nHEAD d1a6817c47ee5378d3eb5b1c03c5514c99f46531\ndetached\n\nworktree /Users/kelvin/Kelvin-WorkSpace/LotteryNew/.claude/worktrees/clever-villani-2f0ef7\nHEAD 7cd02b069407a3823b37d4da4157df666a03db4a\nbranch refs/heads/claude/clever-villani-2f0ef7\n\nworktree /Users/kelvin/Kelvin-WorkSpace/LotteryNew/.claude/worktrees/gallant-taussig-6b9a4d\nHEAD d1a6817c47ee5378d3eb5b1c03c5514c99f46531\ndetached\n\nworktree /Users/kelvin/Kelvin-WorkSpace/LotteryNew/.claude/worktrees/p218-external-methods-scouting\nHEAD 2478909a92d94397e4d188271972f1ca5bdd3d45\nbranch refs/heads/worktree-p218-external-methods-scouting\n\nworktree /Users/kelvin/Kelvin-WorkSpace/LotteryNew/.claude/worktrees/peaceful-burnell-898024\nHEAD d1a6817c47ee5378d3eb5b1c03c5514c99f46531\ndetached\n\nworktree /Users/kelvin/Kelvin-WorkSpace/LotteryNew/.claude/worktrees/trusting-chaum-8cc8c5\nHEAD 684bffcea3080f8f1f31c5b9acc3a572907ec4f3\nbranch refs/heads/claude/trusting-chaum-8cc8c5\n\nworktree /Users/kelvin/Kelvin-WorkSpace/LotteryNew/.claude/worktrees/zen-gates-ff6802\nHEAD c8b423d0c1de26253be4cec79ae6de77719d1074\nbranch refs/heads/claude/zen-gates-ff6802",
+  "canonical": {
+    "expected_path": "/Users/kelvin/Kelvin-WorkSpace/LotteryNew-main",
+    "exists": true,
+    "repo_root": "/Users/kelvin/Kelvin-WorkSpace/LotteryNew-main",
+    "branch": "task/cto-roadmap-alignment-20260630",
+    "head": "afac66b26858527be161f64a58ddde5213f8e202",
+    "status_short_branch": "## task/cto-roadmap-alignment-20260630\n M 00-Plan/roadmap/CTO-Analysis.md\n M 00-Plan/roadmap/active_task.md\n M 00-Plan/roadmap/agent_bootstrap/CURRENT_STATE.md\n M 00-Plan/roadmap/agent_bootstrap/SHARED_AGENT_BOOTSTRAP.md\n M 00-Plan/roadmap/agent_bootstrap/TASK_TEMPLATES.md\n M 00-Plan/roadmap/roadmap.md",
+    "upstream": "fatal: no upstream configured for branch 'task/cto-roadmap-alignment-20260630'",
+    "ahead_behind": "fatal: no upstream configured for branch 'task/cto-roadmap-alignment-20260630'",
+    "staged_files": ""
+  }
+}

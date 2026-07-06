@@ -121,8 +121,12 @@ _BIG649_MEASUREMENT_EXPORT_PATH = (
 # Conservative disclaimer used by all replay endpoints
 _DISCLAIMER = (
     "本資料為歷史預測回放資料，用於查詢與稽核；"
-    "不代表提高中獎率，也不保證任何回放結果。"
+    "不代表未來結果，也不保證任何回放結果。"
 )
+
+_DISPLAY_DEPTH_REJECTED_DRAWS = 300
+_ARTIFACT_RECONSTRUCTED_TRUTH_LEVEL = "ARTIFACT_RECONSTRUCTED_RETROSPECTIVE"
+_REGENERATED_TRUTH_LEVEL = "REGENERATED_RETROSPECTIVE"
 
 # ─── DB access ────────────────────────────────────────────────────────────────
 
@@ -136,12 +140,71 @@ def _get_db():
 
 
 def _open_conn():
-    """Returns a raw sqlite3 connection to the lottery DB."""
+    """Returns a raw read-only sqlite3 connection to the lottery DB."""
     _p291u_db_path = _p291u_resolve_db_path()
-    db_path = Path(_api_root) / "data" / "lottery_v2.db"
-    conn = _p291u_connect_resolved(_p291u_db_path)
+    conn = _p291u_connect_resolved(_p291u_db_path, uri=True)
     conn.row_factory = sqlite3.Row
+    conn.execute("PRAGMA query_only = ON")
     return conn
+
+
+def _display_lifecycle_for_strategy(strategy_id: str) -> Optional[str]:
+    lifecycle = get_strategy_lifecycle_status(strategy_id)
+    return normalise_lifecycle_status(lifecycle) if lifecycle else None
+
+
+def _display_depth_clause(lifecycle_status: Optional[str]) -> tuple[str, int, str]:
+    """Return deterministic display-depth SQL for strategy detail endpoints."""
+    if lifecycle_status == "REJECTED":
+        return (
+            """
+            AND target_draw IN (
+                SELECT target_draw FROM (
+                    SELECT DISTINCT target_draw
+                    FROM strategy_prediction_replays
+                    WHERE lottery_type = ? AND strategy_id = ?
+                    ORDER BY CAST(target_draw AS INTEGER) DESC, target_draw DESC
+                    LIMIT ?
+                )
+            )
+            """,
+            _DISPLAY_DEPTH_REJECTED_DRAWS,
+            "LATEST_300_PERIODS_FOR_REJECTED",
+        )
+    return "", 0, "ALL_LEGALLY_AVAILABLE_ROWS"
+
+
+def _display_trust_for_row(lifecycle_status: Optional[str], truth_level: Optional[str]) -> dict:
+    """Map persisted row provenance to display-only trust semantics."""
+    if truth_level == _ARTIFACT_RECONSTRUCTED_TRUTH_LEVEL:
+        return {
+            "label": "RETROSPECTIVE",
+            "detail": "Artifact Reconstructed",
+            "is_live": False,
+        }
+    if truth_level == _REGENERATED_TRUTH_LEVEL:
+        return {
+            "label": "RETROSPECTIVE",
+            "detail": "Regenerated Historical",
+            "is_live": False,
+        }
+    if truth_level in ("LIVE", "LIVE_MONITOR", "DRAW_TIME_LIVE_MONITOR"):
+        return {
+            "label": "LIVE",
+            "detail": "Draw-time monitor",
+            "is_live": True,
+        }
+    if lifecycle_status == "OBSERVATION":
+        return {
+            "label": "OBSERVATION",
+            "detail": "Shadow / monitoring context",
+            "is_live": False,
+        }
+    return {
+        "label": "PROVENANCE_UNSET",
+        "detail": "No row truth_level is persisted",
+        "is_live": False,
+    }
 
 
 def _normalise_lifecycle_filter(lifecycle_status: Optional[str]) -> Optional[str]:
@@ -676,7 +739,7 @@ async def get_replay_summary(
                         "summaries":    [],
                         "disclaimer":   (
                             "本摘要為歷史預測回放統計，只用於查詢與稽核；"
-                            "不代表提高中獎率，也不保證任何回放結果。"
+                            "不代表未來結果，也不保證任何回放結果。"
                         ),
                         "data_scope":         "ALL_REPLAY_ROWS",
                         "legacy_error_count": 0,
@@ -735,7 +798,7 @@ async def get_replay_summary(
 
             disclaimer = (
                 "本摘要為歷史預測回放統計，只用於查詢與稽核；"
-                "不代表提高中獎率，也不保證任何回放結果。"
+                "不代表未來結果，也不保證任何回放結果。"
             )
 
             # Count legacy errors for this lottery type (from FAILED_LEGACY runs only)
@@ -895,7 +958,7 @@ async def get_replay_freshness(
     Returns data freshness / coverage status for the replay store.
 
     Reads from DB only — NOT from outputs/.
-    Does NOT emit SIGNAL / NO_SIGNAL / NO_VALIDATED_EDGE.
+    Does not emit promotion or decision verdict labels.
     Use this endpoint to build the UI freshness badge and coverage advisory.
     """
     try:
@@ -1164,11 +1227,11 @@ def _parse_json(val):
 
 
 def _load_best_strategy_overview_payload() -> dict:
-    """Load the P257A best-strategy overview artifact without mutating state."""
+    """Load the P257A historical strategy overview artifact without mutating state."""
     if not _BEST_STRATEGY_OVERVIEW_PATH.exists():
         raise HTTPException(
             status_code=500,
-            detail=f"best strategy overview artifact not found: {_BEST_STRATEGY_OVERVIEW_PATH}",
+            detail=f"historical strategy overview artifact not found: {_BEST_STRATEGY_OVERVIEW_PATH}",
         )
     try:
         with _BEST_STRATEGY_OVERVIEW_PATH.open("r", encoding="utf-8") as handle:
@@ -1176,12 +1239,12 @@ def _load_best_strategy_overview_payload() -> dict:
     except json.JSONDecodeError as exc:
         raise HTTPException(
             status_code=500,
-            detail=f"best strategy overview artifact is invalid JSON: {exc}",
+            detail=f"historical strategy overview artifact is invalid JSON: {exc}",
         ) from exc
     if not isinstance(payload, dict):
         raise HTTPException(
             status_code=500,
-            detail="best strategy overview artifact must be a JSON object",
+            detail="historical strategy overview artifact must be a JSON object",
         )
     return payload
 
@@ -1189,12 +1252,12 @@ def _load_best_strategy_overview_payload() -> dict:
 @router.get("/api/replay/best-strategy-overview")
 async def get_replay_best_strategy_overview():
     """
-    P257B: Read-only best N-bet strategy overview payload.
+    P257B: Read-only historical N-bet strategy overview payload.
 
     Serves the published P257A historical replay artifact.
     Data source: P257A artifact (NOT DB query, NOT registry mutation, NOT prediction generation).
 
-    Returns best N-bet portfolio rankings per lottery, historical high-hit events,
+    Returns N-bet portfolio rankings per lottery, historical high-hit events,
     page contract, and warning copy. All data is historical replay only.
 
     READ-ONLY: no DB query, no registry mutation, no strategy promotion, no betting advice.
@@ -1527,7 +1590,7 @@ def _coverage_missing_reason(registry_status: str, has_rows: bool,
     """Read-only classification of WHY a coverage cell lacks production replay rows.
 
     Returns one of: registered_without_rows | artifact_only | observation_no_data
-    | no_production_replay, or None when the cell HAS rows (orphan/mismatch cells
+    | retired_no_rows | no_production_replay, or None when the cell HAS rows (orphan/mismatch cells
     have rows by definition and return None — their gap is registration, surfaced
     via coverage_warning instead).
     """
@@ -1537,9 +1600,11 @@ def _coverage_missing_reason(registry_status: str, has_rows: bool,
         return None
     if lifecycle == "OBSERVATION":
         return "observation_no_data"
+    if lifecycle == "RETIRED":
+        return "retired_no_rows"
     if replay_cat == "artifact_only":
         return "artifact_only"
-    if lifecycle in ("REJECTED", "RETIRED", "OFFLINE"):
+    if lifecycle in ("REJECTED", "OFFLINE"):
         return "registered_without_rows"
     return "no_production_replay"
 
@@ -1942,6 +2007,10 @@ async def get_history_replay_detail(
 
         derived_bet_count = _derive_bet_count(strategy_id)
         bet_index_matches = (derived_bet_count == bet_index)
+        lifecycle_status = _display_lifecycle_for_strategy(strategy_id)
+        display_depth_sql, display_depth_limit, display_depth_policy = (
+            _display_depth_clause(lifecycle_status)
+        )
 
         # ── Build WHERE clause (always scoped to lottery_type + strategy_id) ─
         where_parts = ["lottery_type = ?", "strategy_id = ?"]
@@ -1957,6 +2026,9 @@ async def get_history_replay_detail(
             params.append(target_draw)
 
         where_sql = " AND ".join(where_parts)
+        if display_depth_sql:
+            where_sql += display_depth_sql
+            params.extend([lottery_type, strategy_id, display_depth_limit])
         order_dir = "DESC" if sort == "target_draw_desc" else "ASC"
 
         conn = _open_conn()
@@ -1973,7 +2045,9 @@ async def get_history_replay_detail(
                 SELECT
                     lottery_type, strategy_id, strategy_name, target_draw, target_date,
                     predicted_numbers, predicted_special, actual_numbers, actual_special,
-                    hit_count, hit_numbers, special_hit, generated_at
+                    hit_count, hit_numbers, special_hit, generated_at,
+                    truth_level, controlled_apply_id, source,
+                    provenance_hash, provenance_source
                 FROM strategy_prediction_replays
                 WHERE {where_sql}
                 ORDER BY CAST(target_draw AS INTEGER) {order_dir}, id {order_dir}
@@ -1984,10 +2058,13 @@ async def get_history_replay_detail(
 
             rows = []
             for r in page_rows:
+                trust = _display_trust_for_row(lifecycle_status, r["truth_level"])
                 rows.append({
                     "lottery_type":      r["lottery_type"],
                     "strategy_id":       r["strategy_id"],
                     "strategy_name":     r["strategy_name"],
+                    "lifecycle_status":  lifecycle_status,
+                    "strategy_lifecycle_status": lifecycle_status,
                     "bet_index":         derived_bet_count,  # P259A-consistent strategy-level value
                     "target_draw":       r["target_draw"],
                     "draw_date":         r["target_date"],
@@ -2000,6 +2077,14 @@ async def get_history_replay_detail(
                     "special_hit":       bool(r["special_hit"]),
                     "result_label":      _detail_result_label(r["hit_count"], r["special_hit"]),
                     "replay_created_at": r["generated_at"],
+                    "truth_level":       r["truth_level"],
+                    "controlled_apply_id": r["controlled_apply_id"],
+                    "source":            r["source"],
+                    "provenance_hash":   r["provenance_hash"],
+                    "provenance_source": r["provenance_source"],
+                    "display_trust_label": trust["label"],
+                    "display_trust_detail": trust["detail"],
+                    "display_trust_is_live": trust["is_live"],
                 })
 
             # ── Summary over the FULL (lottery, strategy) set (unfiltered) ───
@@ -2032,6 +2117,12 @@ async def get_history_replay_detail(
             "bet_index":         bet_index,
             "derived_bet_count": derived_bet_count,
             "bet_index_matches_strategy": bet_index_matches,
+            "lifecycle_status":  lifecycle_status,
+            "strategy_lifecycle_status": lifecycle_status,
+            "display_depth_policy": display_depth_policy,
+            "display_depth_limit": (
+                display_depth_limit if display_depth_policy == "LATEST_300_PERIODS_FOR_REJECTED" else None
+            ),
             "page":              page,
             "page_size":         page_size,
             "total_count":       total_count,
@@ -2156,6 +2247,10 @@ async def get_history_replay_detail_grouped(
 
         derived_bet_count = _derive_bet_count(strategy_id)
         bet_index_matches = (derived_bet_count == bet_index)
+        lifecycle_status = _display_lifecycle_for_strategy(strategy_id)
+        display_depth_sql, display_depth_limit, display_depth_policy = (
+            _display_depth_clause(lifecycle_status)
+        )
 
         # ── Base WHERE (scoped to lottery_type + strategy_id) ────────────────
         base_where = ["lottery_type = ?", "strategy_id = ?"]
@@ -2164,6 +2259,9 @@ async def get_history_replay_detail_grouped(
             base_where.append("target_draw = ?")
             base_params.append(target_draw)
         base_where_sql = " AND ".join(base_where)
+        if display_depth_sql:
+            base_where_sql += display_depth_sql
+            base_params.extend([lottery_type, strategy_id, display_depth_limit])
         order_dir = "DESC" if sort == "target_draw_desc" else "ASC"
 
         # Draw-level hit_filter applied via HAVING on the per-draw aggregate.
@@ -2222,7 +2320,9 @@ async def get_history_replay_detail_grouped(
                         target_draw, bet_index, strategy_name, target_date,
                         predicted_numbers, predicted_special,
                         actual_numbers, actual_special,
-                        hit_numbers, hit_count, special_hit, replay_status
+                        hit_numbers, hit_count, special_hit, replay_status,
+                        truth_level, controlled_apply_id, source,
+                        provenance_hash, provenance_source
                     FROM strategy_prediction_replays
                     WHERE lottery_type = ? AND strategy_id = ?
                       AND target_draw IN ({placeholders})
@@ -2243,10 +2343,16 @@ async def get_history_replay_detail_grouped(
                 actual_numbers = []
                 actual_special = None
                 strategy_name = None
+                row_truth_levels = []
+                row_controlled_apply_ids = []
+                row_sources = []
+                row_provenance_hashes = []
+                row_provenance_sources = []
                 for br in bet_list:
                     b_pred = _parse_numbers_field(br["predicted_numbers"])
                     b_actual = _parse_numbers_field(br["actual_numbers"])
                     b_hits = _parse_numbers_field(br["hit_numbers"])
+                    trust = _display_trust_for_row(lifecycle_status, br["truth_level"])
                     if not actual_numbers and b_actual:
                         actual_numbers = b_actual
                     if actual_special is None:
@@ -2270,7 +2376,20 @@ async def get_history_replay_detail_grouped(
                         "result_label":      _detail_result_label(br["hit_count"], br["special_hit"]),
                         "strategy_name":     br["strategy_name"],
                         "replay_status":     br["replay_status"],
+                        "truth_level":       br["truth_level"],
+                        "controlled_apply_id": br["controlled_apply_id"],
+                        "source":            br["source"],
+                        "provenance_hash":   br["provenance_hash"],
+                        "provenance_source": br["provenance_source"],
+                        "display_trust_label": trust["label"],
+                        "display_trust_detail": trust["detail"],
+                        "display_trust_is_live": trust["is_live"],
                     })
+                    row_truth_levels.append(br["truth_level"])
+                    row_controlled_apply_ids.append(br["controlled_apply_id"])
+                    row_sources.append(br["source"])
+                    row_provenance_hashes.append(br["provenance_hash"])
+                    row_provenance_sources.append(br["provenance_source"])
 
                 max_hit = d["max_hit_count"] or 0
                 # Draw-level summary fields (history-detail-compatible names):
@@ -2279,10 +2398,17 @@ async def get_history_replay_detail_grouped(
                 predicted_summary = bets[0]["predicted_numbers"] if bets else []
                 predicted_special_summary = bets[0]["predicted_special"] if bets else None
                 special_hit_any = any(b["special_hit"] for b in bets)
+                distinct_truth = {v for v in row_truth_levels if v is not None}
+                row_truth_level = next(iter(distinct_truth)) if len(distinct_truth) == 1 else (
+                    "MIXED_PROVENANCE" if len(distinct_truth) > 1 else None
+                )
+                row_trust = _display_trust_for_row(lifecycle_status, row_truth_level)
                 rows.append({
                     "lottery_type":      lottery_type,
                     "strategy_id":       strategy_id,
                     "strategy_name":     strategy_name,
+                    "lifecycle_status":  lifecycle_status,
+                    "strategy_lifecycle_status": lifecycle_status,
                     "target_draw":       td,
                     "draw_date":         d["draw_date"],
                     "n_bets":            d["n_bets"] or len(bets),
@@ -2297,6 +2423,14 @@ async def get_history_replay_detail_grouped(
                     "hit_bets":          d["hit_bets"] or 0,
                     "any_hit":           max_hit > 0,
                     "special_hit":       special_hit_any,
+                    "truth_level":       row_truth_level,
+                    "controlled_apply_id": next((v for v in row_controlled_apply_ids if v), None),
+                    "source":            next((v for v in row_sources if v), None),
+                    "provenance_hash":   next((v for v in row_provenance_hashes if v), None),
+                    "provenance_source": next((v for v in row_provenance_sources if v), None),
+                    "display_trust_label": row_trust["label"],
+                    "display_trust_detail": row_trust["detail"],
+                    "display_trust_is_live": row_trust["is_live"],
                     "bets":              bets,
                 })
 
@@ -2348,6 +2482,12 @@ async def get_history_replay_detail_grouped(
             "bet_index":         bet_index,
             "derived_bet_count": derived_bet_count,
             "bet_index_matches_strategy": bet_index_matches,
+            "lifecycle_status":  lifecycle_status,
+            "strategy_lifecycle_status": lifecycle_status,
+            "display_depth_policy": display_depth_policy,
+            "display_depth_limit": (
+                display_depth_limit if display_depth_policy == "LATEST_300_PERIODS_FOR_REJECTED" else None
+            ),
             "grouped":           True,
             "page":              page,
             "page_size":         page_size,

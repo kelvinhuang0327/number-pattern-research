@@ -501,6 +501,12 @@
         .p259a-rcat-has    { background:#1a3c2a;color:#3fb950; }
         .p259a-rcat-none   { background:#161b22;color:#8b949e; }
         .p259a-rcat-art    { background:#1c1c1c;color:#6e7681; }
+        .p351f-trust-badge { display:inline-block;margin-top:3px;padding:1px 6px;border-radius:8px;font-size:10px;font-weight:700;white-space:nowrap;border:1px solid #30363d;background:#161b22;color:#8b949e; }
+        .p351f-trust-badge--retro { border-color:#8b5cf6;background:rgba(139,92,246,.14);color:#c4b5fd; }
+        .p351f-trust-badge--artifact { border-color:#a371f7;background:rgba(163,113,247,.16);color:#d8b4fe; }
+        .p351f-trust-badge--obs { border-color:#9e6a03;background:rgba(187,128,9,.14);color:#d29922; }
+        .p351f-trust-badge--no-data { border-color:#484f58;background:#161b22;color:#8b949e; }
+        .p351f-trust-note { display:block;margin-top:2px;font-size:10px;color:#8b949e;line-height:1.35; }
         /* P262B — registry status badges + coverage warning chips */
         .p262b-reg-badge { display:inline-block;padding:1px 7px;border-radius:10px;font-size:11px;font-weight:600;white-space:nowrap; }
         .p262b-reg-registered { background:#16304a;color:#58a6ff;border:1px solid #1f6feb; }
@@ -803,7 +809,7 @@
                 </button>
                 <button class="nav-btn ui-hidden" data-section="next-draw">
                     <i data-lucide="zap" class="icon"></i>
-                    <span>最佳策略總覽</span>
+                    <span>歷史策略統計</span>
                 </button>
                 <button class="nav-btn ui-hidden" data-section="tracking">
                     <i data-lucide="bar-chart-2" class="icon"></i>
@@ -827,7 +833,7 @@
                 </button>
                 <button class="nav-btn" data-section="p257-overview">
                     <i data-lucide="bar-chart-2" class="icon"></i>
-                    <span>最佳策略總覽</span>
+                    <span>歷史策略統計</span>
                 </button>
                 <button class="nav-btn" data-section="p333-scoreboard">
                     <i data-lucide="chart-no-axes-combined" class="icon"></i>
@@ -1712,16 +1718,16 @@
                         <div class="progress-text ui-text-light" id="evaluation-status">準備中...</div>
                     </div>
 
-                    <!-- 最佳策略信息 -->
+                    <!-- 策略評估摘要 -->
                     <div id="best-strategy-info" class="ui-subtle-panel-strong ui-hidden ui-mt-15">
-                        <h4 class="ui-title-light ui-m-0 ui-mb-10">🏆 最佳策略</h4>
+                        <h4 class="ui-title-light ui-m-0 ui-mb-10">🏆 策略評估摘要</h4>
                         <div id="best-strategy-content" class="ui-text-light"></div>
                     </div>
                 </div>
 
                 <!-- 🆕 雙注優化預測結果 -->
                 <div class="autolearning-card full-width ui-hidden" id="eval-dual-bet-card">
-                    <h3>🎯 雙注優化預測（基於最佳策略）</h3>
+                    <h3>🎯 雙注優化預測（基於歷史評估）</h3>
                     <div class="ui-grid-2 ui-grid-no-margin">
                         <div class="ui-dualbet-panel ui-dualbet-panel-a">
                             <h4 class="ui-dualbet-title-a">第一注（最高信心）</h4>
@@ -2017,15 +2023,15 @@
         <!-- Next Draw Prediction Section -->
         <section id="next-draw-section" class="section">
             <div class="section-header">
-                <h2>目前最佳策略總覽</h2>
-                <p>顯示各彩種正式驗證中的最佳策略與策略排名；下方區塊為即時下一期預測。</p>
+                <h2>目前策略歷史統計</h2>
+                <p>顯示各彩種正式驗證中的策略歷史統計與排序；下方區塊為即時下一期預測。</p>
             </div>
 
-            <!-- P95 Best Strategy Overview Panel -->
+            <!-- P95 Historical Strategy Overview Panel -->
             <div id="decision-v3-panel" style="margin-bottom:20px">
                 <div class="card">
                     <div class="card-header" style="display:flex;align-items:center;gap:8px;justify-content:space-between;flex-wrap:wrap">
-                        <span>🏆 最佳策略排名 (P95 Benchmark)</span>
+                        <span>🏆 策略歷史排序 (P95 Benchmark)</span>
                         <button id="decision-refresh-btn" class="btn btn-secondary" style="font-size:12px;padding:4px 10px">🔄 重新整理</button>
                     </div>
                     <!-- Filter bar -->
@@ -2111,7 +2117,7 @@
                   <thead>
                     <tr>
                       <th>注數</th>
-                      <th>目前最佳策略</th>
+                      <th>目前歷史排序策略</th>
                       <th>狀態</th>
                       <th>已解析期數</th>
                       <th>成功期數</th>
@@ -2140,7 +2146,7 @@
                       <th>彩種</th>
                       <th>日期</th>
                       <th>期數</th>
-                      <th>最佳策略</th>
+                      <th>歷史排序策略</th>
                       <th>預測號碼</th>
                       <th>實際開獎號碼</th>
                       <th>最佳命中</th>
@@ -2197,7 +2203,7 @@
             <div class="card mb-16" style="border-left:4px solid #f39c12;background:#fffbf0">
               <div class="card-body" style="padding:12px 16px;color:#7d4e00;font-size:13px">
                 ⚠️ <strong>免責聲明：</strong>
-                                本頁為歷史預測回放，只用於查詢與稽核；不代表提高中獎率，也不保證任何回放結果。
+                                本頁為歷史預測回放，只用於查詢與稽核；不代表未來結果，也不保證任何回放結果。
               </div>
             </div>
 
@@ -2246,7 +2252,7 @@
                   <li>目前 coverage mode 可能是 LIMITED，不代表全量歷史資料。</li>
                   <li>舊版 FAILED_LEGACY run 的 error records 保留供稽核，不代表最新 run 有錯誤。</li>
                   <li>replay summary 只是歷史統計，不是 governance verdict。</li>
-                                    <li>replay 結果不保證任何回放結果，也不代表提高中獎率。</li>
+                                    <li>replay 結果不保證任何回放結果，也不代表未來結果。</li>
                   <li>若 causal metadata 缺失，系統顯示「Causal metadata unavailable」，不假裝 PASS。</li>
                 </ol>
               </div>
@@ -2988,10 +2994,10 @@
                     </div>
                 </section>
 
-        <!-- ===== P257B Best Strategy Overview Section ===== -->
+        <!-- ===== P257B Historical Strategy Overview Section ===== -->
         <section id="p257-overview-section" class="section">
           <div class="section-header">
-            <h2>最佳策略總覽 <span style="font-size:0.7em;color:#8b949e;font-weight:400">Best Strategy Overview</span></h2>
+            <h2>策略歷史統計 <span style="font-size:0.7em;color:#8b949e;font-weight:400">Historical Strategy Overview</span></h2>
             <p>歷史回測統計 — 不代表未來中獎機率，僅供歷史資料參考</p>
           </div>
           <div class="section-content">
@@ -2999,7 +3005,7 @@
             <!-- Warning Banner -->
             <div id="p257-warning-banner" style="background:rgba(187,128,9,.12);border:1px solid #e3b341;border-radius:6px;padding:10px 14px;margin-bottom:16px;font-size:12px;color:#e3b341;line-height:1.6">
               <b>⚠️ 歷史回測聲明</b><br>
-              本頁為歷史回測統計，不代表未來中獎機率。最佳策略依歷史資料排序，可能存在過度擬合。目前沒有任何策略被證明具有可部署預測優勢。本頁僅供歷史資料參考，不作下注依據。歷史最高命中僅代表回測資料中的命中數紀錄，未必等同實際獎級或獎金。
+              本頁為歷史回測統計，不代表未來中獎機率。策略依歷史資料排序，可能存在過度擬合。目前沒有任何策略被證明具有可部署預測優勢。本頁僅供歷史資料參考，不作下注依據。歷史最高命中僅代表回測資料中的命中數紀錄，未必等同實際獎級或獎金。
             </div>
 
             <!-- Lottery Tabs -->
@@ -3022,7 +3028,7 @@
                   <thead>
                     <tr style="border-bottom:1px solid #30363d;color:#8b949e">
                       <th style="text-align:left;padding:6px 8px">組合</th>
-                      <th style="text-align:left;padding:6px 8px">最佳策略</th>
+                      <th style="text-align:left;padding:6px 8px">歷史排序策略</th>
                       <th style="text-align:right;padding:6px 8px">回測期數</th>
                       <th style="text-align:right;padding:6px 8px">組合成功率</th>
                       <th style="text-align:right;padding:6px 8px">平均最佳命中</th>
@@ -3090,7 +3096,7 @@
             <div id="p333-summary-cards" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:12px;margin-bottom:18px"></div>
 
             <div class="card" style="padding:14px;margin-bottom:18px">
-              <div style="font-weight:700;margin-bottom:10px;font-size:0.9rem">等預算最佳策略組合 <span id="p333-combo-label" style="color:#58a6ff;font-size:0.8em"></span></div>
+              <div style="font-weight:700;margin-bottom:10px;font-size:0.9rem">等預算歷史策略組合 <span id="p333-combo-label" style="color:#58a6ff;font-size:0.8em"></span></div>
               <div style="overflow-x:auto">
                 <table style="width:100%;border-collapse:collapse;font-size:0.8rem">
                   <thead>
@@ -3344,7 +3350,7 @@
 
             <!-- Disclaimer -->
             <div style="background:rgba(243,156,18,.10);border:1px solid #f39c12;border-radius:6px;padding:10px 16px;margin-bottom:16px;font-size:12px;color:#f0c040;line-height:1.8">
-              ⚠️ <b>免責聲明：</b>本頁為歷史回放總覽，純粹稽核用途；不代表提高中獎率，也不保證任何回放結果。<br>
+              ⚠️ <b>免責聲明：</b>本頁為歷史回放總覽，純粹稽核用途；不代表未來結果，也不保證任何回放結果。<br>
               ℹ️ <b>明細頁將於後續 P259B 實作，包含每一期預測比對與分頁查詢。</b>
             </div>
 
@@ -5317,7 +5323,7 @@
         </script>
 
         <script>
-// ===== P95 BEST STRATEGY OVERVIEW JS =====
+// ===== P95 HISTORICAL STRATEGY OVERVIEW JS =====
 (function() {
   'use strict';
 
@@ -5473,7 +5479,7 @@
   bsoInit();
 })();
 
-// ===== P257B BEST STRATEGY OVERVIEW (historical replay, artifact-backed) =====
+// ===== P257B HISTORICAL STRATEGY OVERVIEW (artifact-backed) =====
 (function() {
   'use strict';
 
@@ -5510,7 +5516,7 @@
     var best = _p257Data.best_strategy_by_lottery_and_bet_count || {};
     var entry1 = best[lottery + '|1'];
     var cards = [
-      { label: '歷史最佳策略', value: entry1 ? entry1.strategy_id : '—' },
+      { label: '歷史排序策略', value: entry1 ? entry1.strategy_id : '—' },
       { label: '最高組合成功率', value: entry1 ? pct(entry1.portfolio_success_rate) : '—' },
       { label: '平均單期最佳命中', value: entry1 ? fmt(entry1.avg_best_hit_count_per_draw, 3) : '—' },
       { label: '平均單期總命中', value: entry1 ? fmt(entry1.avg_total_hit_count_per_draw, 3) : '—' },
@@ -6177,7 +6183,8 @@
   var REASON_LABELS = {
     'registered_without_rows': '已登錄但無 replay 資料',
     'artifact_only':           '僅 artifact / rejected',
-    'observation_no_data':     'OBSERVATION 無資料',
+    'observation_no_data':     'NO_DATA：OBSERVATION 無資料',
+    'retired_no_rows':         'TOMBSTONE：RETIRED 無回放資料',
     'no_production_replay':    '無 production replay',
   };
   function reasonCell(row) {
@@ -6261,12 +6268,15 @@
           'data-lottery="' + r.lottery_type + '" ' +
           'data-strategy="' + r.strategy_id + '" ' +
           'data-bet="' + r.derived_bet_count + '" ' +
+          'data-lifecycle="' + (r.lifecycle_status || '') + '" ' +
           'data-name="' + String(r.strategy_name).replace(/"/g, '&quot;') + '" ' +
           'style="padding:2px 10px;font-size:11px;border-radius:3px;border:1px solid #1f6feb;background:#0d1117;color:#58a6ff;cursor:pointer" ' +
           'title="查看此策略每一期的預測與開獎比對（分頁查詢）">查看明細</button>';
       } else {
         var disReason = REASON_LABELS[r.missing_reason] || '此策略無 production replay 資料，無明細可查';
-        detailBtn = '<button disabled style="padding:2px 10px;font-size:11px;border-radius:3px;border:1px solid #30363d;background:#0d1117;color:#484f58;cursor:not-allowed" title="' + String(disReason).replace(/"/g, '&quot;') + '">查看明細</button>';
+        var disabledLabel = (r.lifecycle_status === 'OBSERVATION') ? 'NO_DATA' :
+          (r.lifecycle_status === 'RETIRED' ? 'TOMBSTONE' : '無明細');
+        detailBtn = '<button disabled style="padding:2px 10px;font-size:11px;border-radius:3px;border:1px solid #30363d;background:#0d1117;color:#484f58;cursor:not-allowed" title="' + String(disReason).replace(/"/g, '&quot;') + '">' + disabledLabel + '</button>';
       }
       var availBets = r.available_bet_indices || [];
       var availCell = availBets.length
@@ -6390,13 +6400,46 @@
     target_draw: '',
     total_count: 0,
     has_next: false,
+    lifecycle_status: '',
   };
 
   function el(id) { return document.getElementById(id); }
 
+  function escHtml(v) {
+    return String(v == null ? '' : v)
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;')
+      .replace(/'/g, '&#39;');
+  }
+
   function fmtNumbers(arr) {
     if (!arr || !arr.length) return '—';
     return arr.join(', ');
+  }
+
+  function trustBadge(item) {
+    item = item || {};
+    var label = item.display_trust_label || (item.truth_level ? 'RETROSPECTIVE' : '');
+    var detail = item.display_trust_detail || item.truth_level || '';
+    var truth = item.truth_level || '';
+    var cls = 'p351f-trust-badge';
+    var text = label || 'PROVENANCE_UNSET';
+    if (truth === 'ARTIFACT_RECONSTRUCTED_RETROSPECTIVE' || detail === 'Artifact Reconstructed') {
+      cls += ' p351f-trust-badge--artifact';
+      text = 'RETROSPECTIVE';
+      detail = 'Artifact Reconstructed';
+    } else if (label === 'RETROSPECTIVE') {
+      cls += ' p351f-trust-badge--retro';
+    } else if (label === 'OBSERVATION') {
+      cls += ' p351f-trust-badge--obs';
+    } else {
+      cls += ' p351f-trust-badge--no-data';
+    }
+    var title = detail || 'Row provenance is displayed from persisted replay metadata';
+    return '<span class="' + cls + '" title="' + escHtml(title) + '">' + escHtml(text) + '</span>' +
+      (detail ? '<span class="p351f-trust-note">' + escHtml(detail) + '</span>' : '');
   }
 
   // P259C: render a number array as individual circular badge tokens.
@@ -6501,7 +6544,7 @@
       var hc = b.hit_count || 0;
       var hcCls = hc > 0 ? 'p261a-bet-hitcount' : 'p261a-bet-hitcount--zero';
       body += '<tr>' +
-        '<td class="p261a-bet-label">第 ' + b.bet_index + ' 注</td>' +
+        '<td class="p261a-bet-label">第 ' + b.bet_index + ' 注<br>' + trustBadge(b) + '</td>' +
         '<td>' + predHtml + '</td>' +
         '<td>' + actHtml + '</td>' +
         '<td>' + hitHtml + '</td>' +
@@ -6581,7 +6624,7 @@
         hitHtml = fmtHitTokens(r.hit_numbers);
       }
       var strategyLabel = '<span style="font-family:monospace;font-size:10px;color:#8b949e">' +
-        (ctx.strategy_name || ctx.strategy_id || '—') + '</span>';
+        escHtml(ctx.strategy_name || ctx.strategy_id || '—') + '</span><br>' + trustBadge(r);
       var bestHitRoleAttr = (nBets > 1 && r.bets && r.bets.length > 0) ? ' data-role="replay-best-hit-summary"' : '';
       html += '<tr' + rowClass + ' data-p261a-main="' + idx + '">' +
         '<td data-label="期號">' + r.target_draw + '</td>' +
@@ -6623,8 +6666,9 @@
     // P260A: show "前 N 期 / 共 X 筆" next to quick range
     if (rangeInfo) {
       var showing = Math.min(ctx.page_size, ctx.total_count);
+      var depthNote = ctx.lifecycle_status === 'REJECTED' ? '（REJECTED 僅顯示最新 300 期）' : '';
       rangeInfo.textContent = ctx.total_count > 0
-        ? '前 ' + ctx.page_size + ' 期 / 共 ' + ctx.total_count + ' 筆'
+        ? '前 ' + ctx.page_size + ' 期 / 共 ' + ctx.total_count + ' 筆' + depthNote
         : '';
     }
   }
@@ -6659,6 +6703,7 @@
         if (loadingEl) loadingEl.style.display = 'none';
         ctx.total_count = data.total_count || 0;
         ctx.has_next = !!data.has_next;
+        ctx.lifecycle_status = data.lifecycle_status || data.strategy_lifecycle_status || ctx.lifecycle_status || '';
         renderSummary(data);
         renderDetailRows(data);
         updatePagination();
@@ -6672,11 +6717,12 @@
       });
   }
 
-  function openDetail(lottery, strategy, bet, name) {
+  function openDetail(lottery, strategy, bet, name, lifecycle) {
     ctx.lottery_type = lottery;
     ctx.strategy_id = strategy;
     ctx.bet_index = parseInt(bet, 10) || 1;
     ctx.strategy_name = name || strategy;
+    ctx.lifecycle_status = lifecycle || '';
     ctx.page = 1;
     ctx.page_size = 100;
     ctx.sort = 'target_draw_desc';
@@ -6708,7 +6754,7 @@
       tbody.addEventListener('click', function(e) {
         var btn = e.target.closest('.p259b-detail-btn');
         if (!btn) return;
-        openDetail(btn.dataset.lottery, btn.dataset.strategy, btn.dataset.bet, btn.dataset.name);
+        openDetail(btn.dataset.lottery, btn.dataset.strategy, btn.dataset.bet, btn.dataset.name, btn.dataset.lifecycle);
       });
     }
 

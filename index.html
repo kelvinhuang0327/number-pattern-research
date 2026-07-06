@@ -3101,6 +3101,8 @@
               #p251f-summary-cards .p251f-card strong{font-size:18px;color:#c9d1d9}
               #p251f-table th,#p251f-table td{border-bottom:1px solid #21262d}
               .p251f-badge{border:1px solid #30363d;border-radius:999px;padding:1px 7px;font-size:11px;white-space:nowrap}
+              #p251f-active-filters{display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin:-2px 0 12px;font-size:12px;color:#8b949e}
+              #p251f-active-filters .p251f-filter-chip{border:1px solid #388bfd;border-radius:999px;padding:2px 8px;color:#79c0ff;background:rgba(56,139,253,.10)}
             </style>
 
             <div id="p251f-summary-cards"></div>
@@ -3130,6 +3132,10 @@
               <span id="p251f-result-count" role="status" aria-live="polite" style="font-size:12px;color:#8b949e">
                 尚未載入證據列
               </span>
+              <button id="p251f-clear-filters" type="button" class="btn-sm btn-secondary">清除篩選</button>
+            </div>
+            <div id="p251f-active-filters" role="status" aria-live="polite">
+              <span>顯示全部證據（無啟用中的篩選）</span>
             </div>
 
             <div id="p251f-lottery-cards" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:10px;margin-bottom:16px"></div>
@@ -3152,7 +3158,7 @@
               </table>
             </div>
             <div id="p251f-empty" role="status" style="display:none;text-align:center;padding:20px;color:#8b949e;font-size:13px">
-              沒有符合目前篩選條件的歷史證據結果，請調整篩選條件。
+              沒有符合目前篩選條件的歷史證據結果；清除篩選後可能會顯示其他結果。
             </div>
             <div id="p251f-error" role="alert" style="display:none;color:#f85149;font-size:12px;padding:12px 0">
               <span id="p251f-error-message">證據儀表板載入失敗，請稍後重試。</span>
@@ -3182,6 +3188,27 @@
             function num(v) { return v == null ? 'N/A' : (typeof v === 'number' ? v.toLocaleString() : esc(v)); }
             function badge(v) { return '<span class="p251f-badge">' + esc(v || 'UNKNOWN') + '</span>'; }
             function textSortValue(v) { return v == null ? '' : String(v).toLocaleLowerCase(); }
+            function renderActiveFilters() {
+              var lottery = (el('p251f-filter-lottery') || {}).value || '';
+              var lifecycleSelect = el('p251f-filter-lifecycle');
+              var lifecycle = (lifecycleSelect || {}).value || '';
+              var artifactOnly = !!((el('p251f-filter-artifact-only') || {}).checked);
+              var filters = [];
+              if (lottery) filters.push('彩種：' + lottery);
+              if (lifecycle) {
+                var selected = lifecycleSelect.options[lifecycleSelect.selectedIndex];
+                filters.push('生命週期：' + (selected ? selected.textContent : lifecycle));
+              }
+              if (artifactOnly) filters.push('只看 artifact-only');
+              var box = el('p251f-active-filters');
+              if (box) box.innerHTML = filters.length
+                ? '<span>啟用中的篩選：</span>' + filters.map(function (label) {
+                    return '<span class="p251f-filter-chip">' + esc(label) + '</span>';
+                  }).join('')
+                : '<span>顯示全部證據（無啟用中的篩選）</span>';
+              var clear = el('p251f-clear-filters');
+              if (clear) clear.disabled = filters.length === 0;
+            }
             function setLoading(on) {
               var n = el('p251f-loading');
               var retry = el('p251f-retry');
@@ -3249,6 +3276,7 @@
               var lifecycle = (el('p251f-filter-lifecycle') || {}).value || '';
               var artifactOnly = !!((el('p251f-filter-artifact-only') || {}).checked);
               var sort = (el('p251f-sort') || {}).value || 'default';
+              renderActiveFilters();
               var rows = (data.strategy_rows || []).filter(function (r) {
                 if (lottery && r.lottery_type !== lottery) return false;
                 if (lifecycle && r.current_registry_lifecycle_status !== lifecycle && r.historical_snapshot_lifecycle_status !== lifecycle) return false;
@@ -3320,6 +3348,17 @@
               });
               var retry = el('p251f-retry');
               if (retry) retry.addEventListener('click', load);
+              var clear = el('p251f-clear-filters');
+              if (clear) clear.addEventListener('click', function () {
+                var lottery = el('p251f-filter-lottery');
+                var lifecycle = el('p251f-filter-lifecycle');
+                var artifactOnly = el('p251f-filter-artifact-only');
+                if (lottery) lottery.value = '';
+                if (lifecycle) lifecycle.value = '';
+                if (artifactOnly) artifactOnly.checked = false;
+                renderRows();
+              });
+              renderActiveFilters();
               document.querySelectorAll('[data-section="' + SEC + '"]').forEach(function (btn) {
                 btn.addEventListener('click', function () { if (!loaded) load(); });
               });

@@ -133,7 +133,7 @@ def _freshness_payload():
                 "error_count": 0,
             }
         ],
-        "disclaimer": "本頁為歷史預測回放，用於稽核，不代表提高中獎率。",
+        "disclaimer": "本頁為歷史預測回放，用於稽核；不代表未來結果。",
     }
 
 
@@ -156,7 +156,7 @@ def _summary_payload(lifecycle_status: str):
                 "error_count": 0,
             }
         ],
-        "disclaimer": "本摘要為歷史預測回放統計，只用於查詢與稽核；不代表提高中獎率，也不保證任何回放結果。",
+        "disclaimer": "本摘要為歷史預測回放統計，只用於查詢與稽核；不代表未來結果，也不保證任何回放結果。",
         "data_scope": "ALL_REPLAY_ROWS",
         "legacy_error_count": 0,
         "has_legacy_errors": False,

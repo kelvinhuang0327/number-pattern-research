@@ -2464,11 +2464,14 @@
               <div class="card-body" style="padding:14px 16px">
                 <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;flex-wrap:wrap;gap:8px">
                   <strong style="font-size:14px">📋 策略生命週期登錄表</strong>
-                  <div id="rp-lc-badges" style="display:flex;gap:8px;flex-wrap:wrap">
-                    <span id="rp-lc-badge-online"  style="padding:2px 10px;border-radius:12px;font-size:12px;font-weight:600;background:#1a7f37;color:#fff">ONLINE 0</span>
-                    <span id="rp-lc-badge-rejected" style="padding:2px 10px;border-radius:12px;font-size:12px;font-weight:600;background:#6e3737;color:#fff">REJECTED 0</span>
-                    <span id="rp-lc-badge-retired"  style="padding:2px 10px;border-radius:12px;font-size:12px;font-weight:600;background:#4a4a4a;color:#ccc">RETIRED 0</span>
-                    <span id="rp-lc-badge-obs"      style="padding:2px 10px;border-radius:12px;font-size:12px;font-weight:600;background:#7d5a00;color:#fff">OBS 0</span>
+                  <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">
+                    <button id="refresh-rp-lifecycle-btn" class="btn btn-sm btn-secondary" type="button">刷新登錄表</button>
+                    <div id="rp-lc-badges" style="display:flex;gap:8px;flex-wrap:wrap">
+                      <span id="rp-lc-badge-online"  style="padding:2px 10px;border-radius:12px;font-size:12px;font-weight:600;background:#1a7f37;color:#fff">ONLINE 0</span>
+                      <span id="rp-lc-badge-rejected" style="padding:2px 10px;border-radius:12px;font-size:12px;font-weight:600;background:#6e3737;color:#fff">REJECTED 0</span>
+                      <span id="rp-lc-badge-retired"  style="padding:2px 10px;border-radius:12px;font-size:12px;font-weight:600;background:#4a4a4a;color:#ccc">RETIRED 0</span>
+                      <span id="rp-lc-badge-obs"      style="padding:2px 10px;border-radius:12px;font-size:12px;font-weight:600;background:#7d5a00;color:#fff">OBS 0</span>
+                    </div>
                   </div>
                 </div>
                                 <div style="display:flex;flex-wrap:wrap;gap:10px 12px;align-items:flex-end;margin-bottom:10px">
@@ -5769,6 +5772,10 @@
         if (lcSearch) {
             lcSearch.addEventListener('input', rpRenderLifecycleRegistryRows);
         }
+        const lifecycleRefreshBtn = document.getElementById('refresh-rp-lifecycle-btn');
+        if (lifecycleRefreshBtn) {
+            lifecycleRefreshBtn.addEventListener('click', rpLoadLifecycleRegistry);
+        }
 
     // Toggle drilldown rows via event delegation on the tbody
     const histBody = document.getElementById('rp-hist-body');
@@ -5832,11 +5839,13 @@
     const errEl    = document.getElementById('rp-lc-error');
     const tableWrap= document.getElementById('rp-lc-table-wrap');
     const tbody    = document.getElementById('rp-lc-tbody');
+    const refresh  = document.getElementById('refresh-rp-lifecycle-btn');
     if (!loading || !errEl || !tableWrap || !tbody) return;
 
     loading.style.display  = '';
     errEl.style.display    = 'none';
     tableWrap.style.display= 'none';
+    if (refresh) refresh.disabled = true;
 
     try {
       const resp = await fetch(`${API_BASE}/api/replay/strategy-lifecycle`);
@@ -5881,6 +5890,8 @@
       loading.style.display = 'none';
       errEl.style.display   = '';
       console.warn('[P7] lifecycle registry load error:', err);
+    } finally {
+      if (refresh) refresh.disabled = false;
     }
   }
 

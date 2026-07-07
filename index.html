@@ -2277,6 +2277,13 @@
                 <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap">
                   <strong style="font-size:14px">🕘 最近 Replay Runs</strong>
                   <span id="replay-runs-summary" style="font-weight:600">讀取中…</span>
+                  <label for="replay-runs-lottery-filter" style="font-size:12px;font-weight:600">彩種</label>
+                  <select id="replay-runs-lottery-filter" class="form-control" style="min-width:120px">
+                    <option value="">全部</option>
+                    <option value="BIG_LOTTO">大樂透</option>
+                    <option value="POWER_LOTTO">威力彩</option>
+                    <option value="DAILY_539">今彩539</option>
+                  </select>
                   <button class="btn btn-secondary btn-sm" id="refresh-replay-runs-btn" type="button">↻ 刷新 Runs</button>
                 </div>
                 <div id="replay-runs-detail" style="margin-top:6px;color:#555;font-size:12px">正在讀取唯讀 Run 紀錄</div>
@@ -7757,12 +7764,19 @@
     var summary = replayRunsEl('replay-runs-summary');
     var detail = replayRunsEl('replay-runs-detail');
     var refresh = replayRunsEl('refresh-replay-runs-btn');
+    var lotteryFilter = replayRunsEl('replay-runs-lottery-filter');
     if (summary) summary.textContent = '讀取中…';
     if (detail) detail.textContent = '正在讀取唯讀 Run 紀錄';
     if (refresh) refresh.disabled = true;
+    if (lotteryFilter) lotteryFilter.disabled = true;
     try {
       var base = (window.API_BASE || '').replace(/\/$/, '');
-      var response = await fetch(base + '/api/replay/runs?page=1&page_size=5');
+      var response;
+      if (lotteryFilter && lotteryFilter.value) {
+        response = await fetch(base + '/api/replay/runs?page=1&page_size=5&lottery_type=' + encodeURIComponent(lotteryFilter.value));
+      } else {
+        response = await fetch(base + '/api/replay/runs?page=1&page_size=5');
+      }
       if (!response.ok) throw new Error('HTTP ' + response.status);
       renderReplayRuns(await response.json());
     } catch (error) {
@@ -7771,11 +7785,14 @@
       console.warn('[replay-runs] load failed', error);
     } finally {
       if (refresh) refresh.disabled = false;
+      if (lotteryFilter) lotteryFilter.disabled = false;
     }
   }
 
   var refresh = replayRunsEl('refresh-replay-runs-btn');
   if (refresh) refresh.addEventListener('click', loadReplayRuns);
+  var lotteryFilter = replayRunsEl('replay-runs-lottery-filter');
+  if (lotteryFilter) lotteryFilter.addEventListener('change', loadReplayRuns);
   loadReplayRuns();
 
   // P526A_FAST: read-only status counts for a selected existing Replay run.

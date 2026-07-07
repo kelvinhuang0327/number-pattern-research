@@ -3145,6 +3145,8 @@
                 尚未載入證據列
               </span>
               <button id="p251f-clear-filters" type="button" class="btn-sm btn-secondary">清除篩選</button>
+              <button id="p251f-expand-all-details" type="button" class="btn-sm btn-secondary">展開全部明細</button>
+              <button id="p251f-collapse-all-details" type="button" class="btn-sm btn-secondary">收合全部明細</button>
               <button id="p251f-copy-share-link" type="button" class="btn-sm btn-secondary" aria-label="複製證據儀表板分享連結">複製分享連結</button>
               <button id="p251f-export-visible-results" type="button" class="btn-sm btn-secondary" aria-label="匯出目前顯示的證據儀表板結果">匯出目前顯示結果</button>
             </div>
@@ -3544,6 +3546,13 @@
               }).join('');
               return cards.length;
             }
+            function setVisibleDetailsOpen(open) {
+              var box = el('p251f-lottery-cards');
+              if (!box) return;
+              box.querySelectorAll('details.p251f-card-details').forEach(function (detail) {
+                detail.open = open;
+              });
+            }
             function renderRows() {
               var tbody = el('p251f-tbody');
               var empty = el('p251f-empty');
@@ -3641,6 +3650,14 @@
               });
               var retry = el('p251f-retry');
               if (retry) retry.addEventListener('click', load);
+              var expandAllDetails = el('p251f-expand-all-details');
+              if (expandAllDetails) expandAllDetails.addEventListener('click', function () {
+                setVisibleDetailsOpen(true);
+              });
+              var collapseAllDetails = el('p251f-collapse-all-details');
+              if (collapseAllDetails) collapseAllDetails.addEventListener('click', function () {
+                setVisibleDetailsOpen(false);
+              });
               var clear = el('p251f-clear-filters');
               if (clear) clear.addEventListener('click', function () {
                 var keyword = el('p251f-keyword-search');

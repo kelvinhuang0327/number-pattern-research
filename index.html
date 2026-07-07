@@ -5657,6 +5657,16 @@
       legacyCount.toLocaleString() + scopeNote + (disclaimer ? ' · ' + disclaimer : '');
   }
 
+  // P529_FAST: compare predicted rows against the total replay-row denominator.
+  function rpFormatSummaryPredictedCoverage(row) {
+    const predicted = Number(row && row.predicted_count) || 0;
+    const total = Number(row && row.total_rows) || 0;
+    if (total <= 0) return predicted.toLocaleString() + ' / 0 (coverage N/A)';
+    const pct = (predicted / total) * 100;
+    return predicted.toLocaleString() + ' / ' + total.toLocaleString() +
+      ' (' + pct.toFixed(1) + '% coverage)';
+  }
+
   async function rpLoadSummary() {
     const lt = document.getElementById('rp-lottery-select').value;
         const lc = document.getElementById('rp-lifecycle-select') ? document.getElementById('rp-lifecycle-select').value : '';
@@ -5682,7 +5692,7 @@
         <td style="font-size:11px">${r.strategy_id}</td>
         <td>${r.strategy_name || ''}</td>
         <td style="text-align:center">${r.total_rows != null ? r.total_rows : '—'}</td>
-        <td style="text-align:center">${r.predicted_count}</td>
+        <td style="text-align:center">${rpFormatSummaryPredictedCoverage({ predicted_count: r.predicted_count, total_rows: r.total_rows })}</td>
         <td style="text-align:center">${r.avg_hit_count != null ? r.avg_hit_count.toFixed(2) : '—'}</td>
         <td style="text-align:center">${r.hit_3plus_count != null ? r.hit_3plus_count : '—'}</td>
         <td style="text-align:center">${r.special_hit_count != null ? r.special_hit_count : '—'}</td>

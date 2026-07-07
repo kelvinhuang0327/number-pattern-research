@@ -1,0 +1,98 @@
+{
+  "branch": "task/p335a-power-lotto-second-zone-forward-wiring",
+  "changed_files": {
+    "lottery_api/models/power_lotto_forward_replay_row.py": {
+      "bytes": 8942,
+      "lines": 196,
+      "sha256": "1cdccb004bb6da23e935791f7958428f7512104d4a03c60f632313b608fc0e24"
+    },
+    "tests/test_p336a_power_lotto_forward_row_generation_path.py": {
+      "bytes": 8487,
+      "lines": 221,
+      "sha256": "0e91bb5806803ca4d5c7873109c4e73e60d53f9a15ed4423f6d0aaf7dd0ad020"
+    }
+  },
+  "classification": "P336A_ONE_POWER_LOTTO_FORWARD_ROW_GENERATION_PATH_IMPLEMENTED_WITH_LIMITATIONS",
+  "commit": "NOT_RUN",
+  "db_invariance": {
+    "canonical_bytes": 99368960,
+    "canonical_path": "lottery_api/data/lottery_v2.db (main repo)",
+    "canonical_sha256": "9956c3bc303f2e38ea2cd777367f6205cf23bc2fa6f2c40e0f09213ca5c1ee95",
+    "stray_db_created": false,
+    "unchanged": true,
+    "worktree_stub_sha256": "a552351a5c7d77a6e678c5636fb2da6d2fc8814eaa9f79241b4b9fc4faa83554",
+    "worktree_stub_unchanged": true
+  },
+  "evidence_artifacts": {
+    "changed_files.md": {
+      "bytes": 2134,
+      "sha256": "aac700eac9ef7a88c824b0aebb2bf79c4942a10585a38553806570c2abd38d03"
+    },
+    "commands.log": {
+      "bytes": 2883,
+      "sha256": "8e251c50c6a0ad81f83dc18db5516f83b73d94a384f82f761fe84a801c454f12"
+    },
+    "db_invariance.md": {
+      "bytes": 1627,
+      "sha256": "4815a4e8a259c23f5c2b4516191fc4e4219df3cf56424f0ae61bbf579c4fef76"
+    },
+    "handoff_report.md": {
+      "bytes": 5495,
+      "sha256": "1bca18b4f9c3d428020742d39ee9290ec0aff9044aaaa1304580504f3f93db28"
+    },
+    "implementation_plan.md": {
+      "bytes": 3258,
+      "sha256": "50da83a564027eef3d91e76f1cdfa1d8011b492f428b0fb104c8eaa911c768eb"
+    },
+    "limitations.md": {
+      "bytes": 2171,
+      "sha256": "6da93ed1d8f69427d8d7932525bcf6a5c831aa574af3fc498843b9b49ccb33fb"
+    },
+    "no_backfill_confirmation.md": {
+      "bytes": 1399,
+      "sha256": "6d2d03002c9135de0a801afe6381594ec85570a74b78a5e6349662b7b9876a8e"
+    },
+    "p335a_dependency_summary.md": {
+      "bytes": 3029,
+      "sha256": "5533f3e48b92fbdfe89913028bb20efb381a97aba183031247fe985bef72c69b"
+    },
+    "phase0_state.md": {
+      "bytes": 2546,
+      "sha256": "025a7507e20317d7e2e27fd223cf7fab86b2eb5e49ffa20c5bd42ad2093bb73f"
+    },
+    "selected_path_rationale.md": {
+      "bytes": 4440,
+      "sha256": "5eec5d9aed02167018b3035c4995c0d8b2565615a5faa891f25972b13fd09ba9"
+    },
+    "test_plan.md": {
+      "bytes": 2233,
+      "sha256": "eaf5f0ce3376a4a380bf798abd59630173d8dd0d102f471bc06dd6b4b4be32e4"
+    },
+    "test_results.md": {
+      "bytes": 2691,
+      "sha256": "31bd7b016f15697563f39991de18622daa2d296653bfdeb7bda9641b096df1f5"
+    }
+  },
+  "evidence_root": "/Users/kelvin/Kelvin-WorkSpace/p336a_one_power_lotto_forward_row_generation_path_20260701_221919",
+  "generated_at": "2026-07-01T14:39:40.554824+00:00",
+  "head": "ce2c042e7f4967841e6b31e17552d55bf4717f91",
+  "origin_main": "ce2c042e7f4967841e6b31e17552d55bf4717f91",
+  "preserved_p335a_files": {
+    "lottery_api/models/power_lotto_second_zone.py": {
+      "bytes": 7703,
+      "sha256": "15b60f2cdf95bb965c089a5c6f25181349b3f3170cb2f2569736895cdbdc1fe8"
+    },
+    "tests/test_p335a_power_lotto_second_zone_forward_wiring.py": {
+      "bytes": 6633,
+      "sha256": "5e34c360617555355010760c73c96ae292e3c8449fd9a1a424fb5e576a2d60c5"
+    }
+  },
+  "push": "NOT_RUN",
+  "task_id": "P336A_ONE_POWER_LOTTO_FORWARD_ROW_GENERATION_PATH_WITH_P335A_HELPER",
+  "tests": {
+    "p335a": "20 passed",
+    "p336a": "21 passed",
+    "regression": "88 passed,3 skipped,1 error(missing-DB,non-causal)"
+  },
+  "worktree": "/Users/kelvin/Kelvin-WorkSpace/LotteryNew-p335a"
+}

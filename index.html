@@ -2243,6 +2243,18 @@
               </div>
             </div>
 
+            <!-- Read-only model cache monitor -->
+            <div id="cache-stats-panel" class="card mb-16" aria-live="polite" style="border-left:4px solid #6f42c1">
+              <div class="card-body" style="padding:12px 16px;font-size:13px">
+                <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap">
+                  <strong style="font-size:14px">🧠 模型快取狀態</strong>
+                  <span id="cache-stats-total" style="font-weight:600">讀取中…</span>
+                  <button class="btn btn-secondary btn-sm" id="refresh-cache-stats-btn" type="button">↻ 刷新快取統計</button>
+                </div>
+                <div id="cache-stats-detail" style="margin-top:6px;color:#888;font-size:11px">正在讀取唯讀快取統計</div>
+              </div>
+            </div>
+
             <!-- Data Explanation Panel -->
             <details class="card mb-16" id="rp-info-panel" style="border-left:4px solid #3498db">
               <summary style="cursor:pointer;padding:12px 16px;font-weight:600;font-size:13px;list-style:none;display:flex;align-items:center;gap:8px;user-select:none">
@@ -7457,6 +7469,51 @@
   }
 
   init();
+})();
+        </script>
+        <script>
+// P523A_FAST: read-only cache monitoring for the existing System Status card.
+(function () {
+  'use strict';
+
+  function cacheStatsEl(id) { return document.getElementById(id); }
+
+  function renderCacheStats(payload) {
+    var total = cacheStatsEl('cache-stats-total');
+    var detail = cacheStatsEl('cache-stats-detail');
+    var models = Array.isArray(payload.cached_models) ? payload.cached_models : [];
+    var ttl = Number(payload.cache_ttl_hours);
+    if (total) total.textContent = String(Number(payload.total_cached) || 0) + ' 筆';
+    if (detail) {
+      var ttlLabel = Number.isFinite(ttl) ? ttl + ' 小時 TTL' : 'TTL 未提供';
+      detail.textContent = ttlLabel + ' · ' + (models.length ? models.join('、') : '目前沒有快取模型');
+    }
+  }
+
+  async function loadCacheStats() {
+    var total = cacheStatsEl('cache-stats-total');
+    var detail = cacheStatsEl('cache-stats-detail');
+    var refresh = cacheStatsEl('refresh-cache-stats-btn');
+    if (total) total.textContent = '讀取中…';
+    if (detail) detail.textContent = '正在讀取唯讀快取統計';
+    if (refresh) refresh.disabled = true;
+    try {
+      var base = (window.API_BASE || '').replace(/\/$/, '');
+      var response = await fetch(base + '/api/cache/stats');
+      if (!response.ok) throw new Error('HTTP ' + response.status);
+      renderCacheStats(await response.json());
+    } catch (error) {
+      if (total) total.textContent = '無法讀取';
+      if (detail) detail.textContent = '快取統計暫時無法使用，不影響其他功能';
+      console.warn('[cache-stats] load failed', error);
+    } finally {
+      if (refresh) refresh.disabled = false;
+    }
+  }
+
+  var refresh = cacheStatsEl('refresh-cache-stats-btn');
+  if (refresh) refresh.addEventListener('click', loadCacheStats);
+  loadCacheStats();
 })();
         </script>
 </body>

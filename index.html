@@ -2219,6 +2219,7 @@
                   <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:8px">
                     <strong style="font-size:14px">📡 資料覆蓋狀態</strong>
                     <span id="rp-coverage-badge" style="padding:2px 10px;border-radius:12px;font-size:12px;font-weight:600"></span>
+                    <button class="btn btn-secondary btn-sm" id="refresh-rp-freshness-btn" type="button">↻ 刷新覆蓋狀態</button>
                   </div>
                   <div id="rp-legacy-error-note" style="display:none;color:#7d4e00;background:#fffbf0;border:1px solid #f39c12;border-radius:4px;padding:8px 12px;margin-bottom:8px;font-size:12px">
                     ⚠️ 系統偵測到舊 replay error records（已標記為 FAILED_LEGACY），已保留供稽核，不代表最新 coverage run 失敗。
@@ -5950,11 +5951,13 @@
     const loading = document.getElementById('rp-freshness-loading');
     const content = document.getElementById('rp-freshness-content');
     const errEl   = document.getElementById('rp-freshness-error');
+    const refresh = document.getElementById('refresh-rp-freshness-btn');
     if (!loading || !content || !errEl) return;
 
     loading.style.display = '';
     content.style.display = 'none';
     errEl.style.display   = 'none';
+    if (refresh) refresh.disabled = true;
 
     try {
       const resp = await fetch(BASE + '/freshness');
@@ -6006,8 +6009,13 @@
       loading.style.display = 'none';
       errEl.style.display   = '';
       console.warn('[replay] freshness load failed', e);
+    } finally {
+      if (refresh) refresh.disabled = false;
     }
   }
+
+  const refreshFreshness = document.getElementById('refresh-rp-freshness-btn');
+  if (refreshFreshness) refreshFreshness.addEventListener('click', rpLoadFreshness);
 })();
         </script>
 

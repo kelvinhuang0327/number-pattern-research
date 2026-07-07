@@ -835,10 +835,10 @@
                     <i data-lucide="bar-chart-2" class="icon"></i>
                     <span>歷史策略統計</span>
                 </button>
-                <button class="nav-btn" data-section="p251-evidence-dashboard">
+                <a id="p251f-quick-jump" class="nav-btn" data-section="p251-evidence-dashboard" href="#evidence-dashboard" aria-controls="p251-evidence-dashboard-section" style="text-decoration:none">
                     <i data-lucide="layout-dashboard" class="icon"></i>
                     <span>證據儀表板</span>
-                </button>
+                </a>
                 <button class="nav-btn" data-section="p333-scoreboard">
                     <i data-lucide="chart-no-axes-combined" class="icon"></i>
                     <span>策略組合命中率</span>
@@ -3077,7 +3077,7 @@
         <!-- ===== P251F: Evidence Dashboard UI (read-only, artifact-backed) ===== -->
         <section id="p251-evidence-dashboard-section" class="section">
           <div class="section-header">
-            <h2>證據儀表板 <span style="font-size:0.7em;color:#8b949e;font-weight:400">Evidence Dashboard (artifact-backed)</span></h2>
+            <h2 id="evidence-dashboard" tabindex="-1">證據儀表板 <span style="font-size:0.7em;color:#8b949e;font-weight:400">Evidence Dashboard (artifact-backed)</span></h2>
             <p>以已提交的 P251B 跨彩種證據資料為來源，呈現策略生命週期、回放覆蓋與資料狀態。生命週期只作為標籤與篩選，不作為預設排除規則。</p>
           </div>
           <div class="section-content">
@@ -3605,6 +3605,22 @@
               document.querySelectorAll('[data-section="' + SEC + '"]').forEach(function (btn) {
                 btn.addEventListener('click', function () { if (!loaded) load(); });
               });
+              function activateDashboardAnchor() {
+                if (window.location.hash !== '#evidence-dashboard') return;
+                document.querySelectorAll('.nav-btn').forEach(function (btn) {
+                  btn.classList.toggle('active', btn.getAttribute('data-section') === SEC);
+                });
+                document.querySelectorAll('.section').forEach(function (section) {
+                  section.classList.toggle('active', section.id === SEC + '-section');
+                });
+                var target = el('evidence-dashboard');
+                if (target) {
+                  target.focus({ preventScroll: true });
+                  target.scrollIntoView();
+                }
+              }
+              window.addEventListener('hashchange', activateDashboardAnchor);
+              setTimeout(activateDashboardAnchor, 0);
             }
             if (document.readyState !== 'loading') wire(); else document.addEventListener('DOMContentLoaded', wire);
           })();

@@ -7,6 +7,8 @@ legacy_warning: "COPY-IN from legacy workspace-AI overlay; may be stale. Source 
 
 # Startup And Health
 
+> [過時 2026-07-07] This legacy overlay page was initialized on 2026-04-27. At baseline `ac8ff5a`, `start_all.sh` starts FastAPI on 8002 and a static frontend on 8081, writes pid/log files, and does not contain the previously described orchestrator launchd reload or `tools/verify_prediction_api.py` step. Use `.ai/ai-context/RUNBOOK.md` as the current source of truth.
+
 Intent: bring up frontend, backend, and orchestrator services for local operation.
 
 Flow:

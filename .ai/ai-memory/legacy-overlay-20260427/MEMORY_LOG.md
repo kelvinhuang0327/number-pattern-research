@@ -7,6 +7,8 @@ legacy_warning: "COPY-IN from legacy workspace-AI overlay; may be stale. Source 
 
 # MEMORY_LOG
 
+> [過時 2026-07-07] Historical legacy overlay memory only. Do not merge this into the active `.ai/ai-memory/MEMORY_LOG.md` without an approved Update Manifest.
+
 ## 2026-04-27
 
 Initialization:

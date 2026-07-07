@@ -7,6 +7,8 @@ legacy_warning: "COPY-IN from legacy workspace-AI overlay; may be stale. Source 
 
 # Orchestration ExecPlan
 
+> [過時 2026-07-07] Historical overlay-only plan. It is retained for traceability but is not an approved current implementation plan. `orchestrator/` was not present in the `ac8ff5a` static scan; any orchestration disposition belongs in a separate E8 task.
+
 Date: 2026-04-27
 Project: LotteryNew
 Mode: overlay-only

@@ -20,6 +20,14 @@ paths:
   workspace_path: /Users/kelvin/Kelvin-WorkSpace/LotteryNew/.ai
   bootstrap_worktree_path: /Users/kelvin/Kelvin-WorkSpace/LotteryNew.worktrees/ai-flow-bootstrap
   canonical_branch: main
+  current_branch: ai-flow/bootstrap
+git:
+  baseline_commit: ac8ff5a54fb90c04c9d0ed201b6b82e2e836a783
+  bootstrap_commit: 1594987cc73b802b64e89433c9da397e18039461
+  origin_main_at_reanalysis: 18c0d25
+status:
+  production_ready: false
+  diagnostic_only: true
 stack:
   language: Python, JavaScript, HTML/CSS
   framework: FastAPI backend; static frontend served by Python HTTP server; research scripts
@@ -29,11 +37,13 @@ commands:
   test_single: pytest <path>
   run: ./start_all.sh
   stop: ./stop_all.sh
+  quick_predict: "[未驗證] python3 tools/quick_predict.py <lottery|all> [bets]；預設會解析 lottery_api/data/lottery_v2.db，dry-run/read-only 使用方式需逐次確認"
   build: N/A
 freshness:
   last_bootstrap: 2026-07-07
-  last_analysis: N/A
+  last_analysis: 2026-07-07
   last_verified: 2026-07-07
+  last_reanalysis_update: 2026-07-07
 research_governance: 研究線維持既有治理流程與文件脈絡（例如 00-Plan/roadmap、docs/replay、memory/、研究報告與任務證據）。personal-ai-flow 2.5 只接工程任務；不得自動取代既有研究治理。
 ```
 
@@ -55,6 +65,12 @@ risk_domains:
 ```yaml
 hard_gates:
   - canonical DB 寫入需使用者具名確認該次寫入；分析/回測一律使用唯讀連線或副本。
+  - `tools/quick_predict.py` 等 CLI 若會接觸 `lottery_api/data/lottery_v2.db`，需先確認 dry-run/唯讀連線或取得 canonical DB 寫入具名授權。
+  - replay/evidence dashboard 相關變更只能在授權任務中修改；不得由 Bootstrap/Re-Analysis 順手改 production UI/API。
+  - replay/evidence dashboard static tests 未實際執行並留下證據前，不得宣稱該 dashboard 可用或已驗證。
+  - replay/evidence dashboard 的分母、scope、freshness、filter 行為屬使用者可見語義，不得由 AI 自行改動；需核准計畫與驗證證據。
+  - tests / services / scheduler / DB writes 均需明確授權；未授權時只允許靜態讀取與文件更新。
+  - legacy overlay 內容不得當 canonical；與 PROJECT_CONTEXT / RUNBOOK 衝突時，以 PROJECT_CONTEXT / RUNBOOK 為準。
   - worktree / branch / stash 清理一律另立 Task，需隔離優先與逐項具名確認；不得併入 Bootstrap 或順手處理。
   - DB / pid / runtime / outputs / artifacts 不得由 Bootstrap 觸碰；涉及資料寫入、migration、seed、匯入、回補皆需另立 Task 並通過資料寫入 Gate。
   - 研究線維持既有治理流程；personal-ai-flow 2.5 只接工程任務，不自動取代研究流程。
@@ -68,22 +84,22 @@ hard_gates:
 ```yaml
 do_not_touch:
   - path: lottery_api/data/lottery_v2.db
-    reason: canonical DB / 正本資料高風險。
+    reason: canonical DB / 正本資料高風險；任何 AI workflow 階段不得推定可寫。
     exception: 僅在獨立 Task 中經使用者具名確認該次寫入。
   - path: data/*.db
     reason: 本地資料庫與可能副本，Bootstrap 不得讀寫變更。
     exception: 僅在獨立 Task 中以唯讀或副本方式處理；寫入需具名確認。
   - path: "*.pid"
-    reason: runtime process 狀態檔；Bootstrap 不得啟停服務或清理 pid。
+    reason: runtime process 狀態檔；AI workflow 不得未授權啟停服務或清理 pid。
     exception: 獨立維運 Task 並逐項確認。
   - path: runtime/
-    reason: runtime 狀態與輸出禁區。
+    reason: runtime 狀態與輸出禁區；排程/服務實況需另立維運 Task。
     exception: 獨立 Task。
   - path: outputs/
-    reason: 研究與執行輸出禁區；不得由 Bootstrap 清理或改寫。
+    reason: 研究與執行輸出禁區；不得由 Bootstrap/Re-Analysis 清理或改寫。
     exception: 獨立 Task。
   - path: artifacts/
-    reason: 既有任務證據與 artifact 禁區；不得由 Bootstrap 清理或改寫。
+    reason: 既有任務證據與 artifact 禁區；不得由 Bootstrap/Re-Analysis 清理或改寫。
     exception: 獨立 Task。
   - path: worktree / branch / stash
     reason: agent 殘留債清理具破壞性與歷史追溯風險。

@@ -35,3 +35,4 @@ Key integrations:
 Notes:
 - `tools/` is very large and heterogeneous; this page intentionally stays high-level.
 - Lightweight scan only captured the main operational scripts and broad script categories.
+- RE-ANALYSIS 2026-07-07: `tools/quick_predict.py` defaults to `lottery_api/data/lottery_v2.db`; only its dry-run/read-only path should be used without canonical DB write authorization. Treat prediction/backtest scripts as DB/output-risk until inspected per task.

@@ -2269,6 +2269,19 @@
               </div>
             </div>
 
+            <!-- Read-only recent Replay runs monitor -->
+            <div id="replay-runs-panel" class="card mb-16" aria-live="polite" style="border-left:4px solid #0969da">
+              <div class="card-body" style="padding:12px 16px;font-size:13px">
+                <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap">
+                  <strong style="font-size:14px">🕘 最近 Replay Runs</strong>
+                  <span id="replay-runs-summary" style="font-weight:600">讀取中…</span>
+                  <button class="btn btn-secondary btn-sm" id="refresh-replay-runs-btn" type="button">↻ 刷新 Runs</button>
+                </div>
+                <div id="replay-runs-detail" style="margin-top:6px;color:#555;font-size:12px">正在讀取唯讀 Run 紀錄</div>
+                <div style="margin-top:6px;color:#888;font-size:11px">只顯示最近 5 筆執行紀錄；僅供歷史稽核，不會啟動、修改或刪除 Replay。</div>
+              </div>
+            </div>
+
             <!-- Data Explanation Panel -->
             <details class="card mb-16" id="rp-info-panel" style="border-left:4px solid #3498db">
               <summary style="cursor:pointer;padding:12px 16px;font-weight:600;font-size:13px;list-style:none;display:flex;align-items:center;gap:8px;user-select:none">
@@ -7589,6 +7602,60 @@
   var refresh = evidenceDashboardEl('refresh-evidence-dashboard-btn');
   if (refresh) refresh.addEventListener('click', loadEvidenceDashboard);
   loadEvidenceDashboard();
+})();
+        </script>
+        <script>
+// P525A_FAST: read-only monitoring for the existing Replay runs API.
+(function () {
+  'use strict';
+
+  function replayRunsEl(id) { return document.getElementById(id); }
+
+  function formatReplayRun(run) {
+    var id = run && run.id != null ? '#' + String(run.id) : '#?';
+    var lottery = String(run && run.lottery_type || 'UNKNOWN');
+    var status = String(run && run.status || 'UNKNOWN');
+    var timestamp = run && (run.finished_at || run.started_at || run.created_at);
+    return id + ' ' + lottery + ' · ' + status + (timestamp ? ' · ' + String(timestamp) : '');
+  }
+
+  function renderReplayRuns(payload) {
+    var summary = replayRunsEl('replay-runs-summary');
+    var detail = replayRunsEl('replay-runs-detail');
+    var runs = Array.isArray(payload && payload.runs) ? payload.runs : [];
+    var total = Number(payload && payload.total) || 0;
+    if (summary) summary.textContent = total + ' 筆 Run 紀錄';
+    if (detail) {
+      detail.textContent = runs.length
+        ? runs.map(formatReplayRun).join(' ｜ ')
+        : '目前沒有 Replay Run 紀錄';
+    }
+  }
+
+  async function loadReplayRuns() {
+    var summary = replayRunsEl('replay-runs-summary');
+    var detail = replayRunsEl('replay-runs-detail');
+    var refresh = replayRunsEl('refresh-replay-runs-btn');
+    if (summary) summary.textContent = '讀取中…';
+    if (detail) detail.textContent = '正在讀取唯讀 Run 紀錄';
+    if (refresh) refresh.disabled = true;
+    try {
+      var base = (window.API_BASE || '').replace(/\/$/, '');
+      var response = await fetch(base + '/api/replay/runs?page=1&page_size=5');
+      if (!response.ok) throw new Error('HTTP ' + response.status);
+      renderReplayRuns(await response.json());
+    } catch (error) {
+      if (summary) summary.textContent = '無法讀取';
+      if (detail) detail.textContent = 'Replay Run 紀錄暫時無法使用，不影響其他查詢功能';
+      console.warn('[replay-runs] load failed', error);
+    } finally {
+      if (refresh) refresh.disabled = false;
+    }
+  }
+
+  var refresh = replayRunsEl('refresh-replay-runs-btn');
+  if (refresh) refresh.addEventListener('click', loadReplayRuns);
+  loadReplayRuns();
 })();
         </script>
 </body>

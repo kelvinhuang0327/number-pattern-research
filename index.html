@@ -5653,14 +5653,18 @@
 
   // Load summary
   // P528B_FAST: expose replay summary scope, legacy caveat, and row denominator.
+  // P530_FAST: include API-returned lottery/lifecycle baseline context.
   function rpRenderSummaryScope(data) {
     const note = document.getElementById('rp-summary-scope-note');
     if (!note) return;
+    const lottery = data && data.lottery_type ? data.lottery_type : 'UNKNOWN_LOTTERY';
+    const lifecycle = data && data.filter_lifecycle_status ? data.filter_lifecycle_status : 'ALL_LIFECYCLES';
     const dataScope = data && data.data_scope ? data.data_scope : 'UNKNOWN_SCOPE';
     const legacyCount = Number(data && data.legacy_error_count) || 0;
     const disclaimer = data && data.disclaimer ? String(data.disclaimer) : '';
     const scopeNote = data && data.scope_note ? ' · ' + String(data.scope_note) : '';
-    note.textContent = 'Scope=' + dataScope + ' · denominator=total replay rows; hit metrics use predicted rows only · legacy errors=' +
+    note.textContent = 'Lottery=' + lottery + ' · lifecycle=' + lifecycle + ' · Scope=' + dataScope +
+      ' · denominator=total replay rows; hit metrics use predicted rows only · legacy errors=' +
       legacyCount.toLocaleString() + scopeNote + (disclaimer ? ' · ' + disclaimer : '');
   }
 

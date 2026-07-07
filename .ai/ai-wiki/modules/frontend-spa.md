@@ -34,5 +34,6 @@ Key integrations:
 - Lucide Icons
 
 Notes:
-- README describes this layer as a vanilla JS SPA with no bundler.
+- RE-ANALYSIS 2026-07-07: root `package.json` and `vite.config.*` were not found in the bootstrap worktree. Treat the frontend as `index.html` + `src/main.js` served by the static server unless a later task verifies otherwise.
+- README contains older framework wording; use PROJECT_CONTEXT / RUNBOOK for current bootstrap facts.
 - SYSTEM_MAP.md indicates section-based routing and internal state management.

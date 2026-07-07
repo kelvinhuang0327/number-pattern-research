@@ -7,6 +7,8 @@ legacy_warning: "COPY-IN from legacy workspace-AI overlay; may be stale. Source 
 
 # LLM Execution Control
 
+> [過時 2026-07-07] This legacy overlay page references `orchestrator/`, runtime DB/log paths, and orchestrator API/CLI surfaces that were not confirmed by the `ac8ff5a` static scan. Runtime paths are do-not-touch for Bootstrap/Re-Analysis. Treat this page as historical context only until a separate orchestration audit verifies it.
+
 Intent: govern whether orchestrator and backend LLM paths are allowed to execute.
 
 Flow:

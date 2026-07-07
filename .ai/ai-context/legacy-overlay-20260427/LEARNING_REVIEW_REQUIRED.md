@@ -7,6 +7,8 @@ legacy_warning: "COPY-IN from legacy workspace-AI overlay; may be stale. Source 
 
 # LEARNING_REVIEW_REQUIRED
 
+> [過時 2026-07-07] Historical legacy overlay audit from 2026-04-27. Runtime/orchestration findings here were not promoted to current canonical knowledge during Bootstrap; use PROJECT_CONTEXT / RUNBOOK unless a separate orchestration audit revalidates them.
+
 Date: 2026-04-27
 Project: LotteryNew
 Topic: Orchestration + CTO review audit

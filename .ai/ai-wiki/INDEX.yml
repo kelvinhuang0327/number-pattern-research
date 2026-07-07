@@ -11,9 +11,13 @@ project:
   workspace_overlay: /Users/kelvin/Kelvin-WorkSpace/workspace-AI/LotteryNew
   scan_mode: lightweight
   last_initialized: 2026-04-27
+  status: legacy-overlay-stale
+  stale_as_of: 2026-07-07
   notes:
     - Derived from README.md, SYSTEM_MAP.md, top-level directory listing, src/, lottery_api/, tools/, and start_all.sh.
     - Not exhaustive. No deep repository scan performed.
+    - RE-ANALYSIS 2026-07-07: treat this index as historical legacy overlay; use .ai/ai-context/PROJECT_CONTEXT.md and RUNBOOK.md for current bootstrap facts.
+    - Orchestration paths and runtime claims were not confirmed at baseline ac8ff5a and must not be treated as canonical.
 
 modules:
   - name: frontend-spa

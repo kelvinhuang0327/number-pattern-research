@@ -7,6 +7,8 @@ legacy_warning: "COPY-IN from legacy workspace-AI overlay; may be stale. Source 
 
 # Orchestration Runtime
 
+> [過時 2026-07-07] `orchestrator/` was not present in the `ac8ff5a` worktree static scan, and `runtime/agent_orchestrator/**` is a do-not-touch runtime path. This page is retained as legacy overlay context, not as current canonical architecture.
+
 Scope: local orchestrator control, execution policy, and launchd-managed agent jobs.
 
 Primary paths:

@@ -7,6 +7,8 @@ legacy_warning: "COPY-IN from legacy workspace-AI overlay; may be stale. Source 
 
 # MEMORY_SYSTEM
 
+> [過時 2026-07-07] Historical legacy overlay memory system. Frontend/backend facts are partly useful, but orchestration runtime claims are unverified at baseline `ac8ff5a` and are not canonical.
+
 Project: LotteryNew
 Initialized: 2026-04-27
 Mode: safe overlay

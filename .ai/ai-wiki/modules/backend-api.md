@@ -37,4 +37,5 @@ Key integrations:
 
 Notes:
 - Startup behavior confirmed from `start_all.sh`.
-- README identifies this as the main backend boundary.
+- RE-ANALYSIS 2026-07-07: `lottery_api/app.py` runs FastAPI via uvicorn on port 8002, and `start_all.sh` uses that path. `lottery_api/README.md` still mentions port 5000 and root README contains older Flask wording; treat those as production-doc mismatches until separately fixed.
+- Startup loads scheduler data in `app.py`, so service start remains outside Bootstrap/Re-Analysis.

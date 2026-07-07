@@ -2278,6 +2278,14 @@
                   <button class="btn btn-secondary btn-sm" id="refresh-replay-runs-btn" type="button">↻ 刷新 Runs</button>
                 </div>
                 <div id="replay-runs-detail" style="margin-top:6px;color:#555;font-size:12px">正在讀取唯讀 Run 紀錄</div>
+                <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-top:8px">
+                  <label for="replay-run-select" style="font-size:12px;font-weight:600">Run 明細</label>
+                  <select id="replay-run-select" class="form-control" style="min-width:210px" disabled>
+                    <option value="">正在載入最近 Runs…</option>
+                  </select>
+                  <button class="btn btn-secondary btn-sm" id="load-replay-run-status-btn" type="button" disabled>查看狀態計數</button>
+                </div>
+                <div id="replay-run-status-detail" style="margin-top:6px;color:#555;font-size:12px">選擇 Run 後查看唯讀狀態計數</div>
                 <div style="margin-top:6px;color:#888;font-size:11px">只顯示最近 5 筆執行紀錄；僅供歷史稽核，不會啟動、修改或刪除 Replay。</div>
               </div>
             </div>
@@ -7632,6 +7640,9 @@
   function renderReplayRuns(payload) {
     var summary = replayRunsEl('replay-runs-summary');
     var detail = replayRunsEl('replay-runs-detail');
+    var select = replayRunsEl('replay-run-select');
+    var loadStatus = replayRunsEl('load-replay-run-status-btn');
+    var statusDetail = replayRunsEl('replay-run-status-detail');
     var runs = Array.isArray(payload && payload.runs) ? payload.runs : [];
     var total = Number(payload && payload.total) || 0;
     if (summary) summary.textContent = total + ' 筆 Run 紀錄';
@@ -7640,6 +7651,28 @@
         ? runs.map(formatReplayRun).join(' ｜ ')
         : '目前沒有 Replay Run 紀錄';
     }
+    if (select) {
+      select.textContent = '';
+      runs.forEach(function (run) {
+        if (run && run.id != null) {
+          var option = document.createElement('option');
+          option.value = String(run.id);
+          option.textContent = formatReplayRun(run);
+          select.appendChild(option);
+        }
+      });
+      if (!select.options.length) {
+        var emptyOption = document.createElement('option');
+        emptyOption.value = '';
+        emptyOption.textContent = '沒有可查看的 Run';
+        select.appendChild(emptyOption);
+      }
+      select.disabled = !runs.length;
+    }
+    if (loadStatus) loadStatus.disabled = !runs.length;
+    if (statusDetail) statusDetail.textContent = runs.length
+      ? '已選擇最近 Run；按「查看狀態計數」讀取明細'
+      : '目前沒有可查看的 Run 狀態';
   }
 
   async function loadReplayRuns() {
@@ -7666,6 +7699,49 @@
   var refresh = replayRunsEl('refresh-replay-runs-btn');
   if (refresh) refresh.addEventListener('click', loadReplayRuns);
   loadReplayRuns();
+
+  // P526A_FAST: read-only status counts for a selected existing Replay run.
+  function renderReplayRunStatus(payload) {
+    var statusDetail = replayRunsEl('replay-run-status-detail');
+    var run = payload && payload.run ? payload.run : {};
+    var counts = payload && payload.status_counts && typeof payload.status_counts === 'object'
+      ? payload.status_counts : {};
+    var countLabels = Object.keys(counts).sort().map(function (status) {
+      return status + ' ' + (Number(counts[status]) || 0).toLocaleString() + ' 筆';
+    });
+    if (statusDetail) {
+      statusDetail.textContent = 'Run #' + String(run.id == null ? '?' : run.id) +
+        ' · ' + String(run.status || 'UNKNOWN') + ' · ' +
+        (countLabels.length ? countLabels.join(' / ') : '沒有狀態計數');
+    }
+  }
+
+  async function loadReplayRunStatus() {
+    var select = replayRunsEl('replay-run-select');
+    var loadStatus = replayRunsEl('load-replay-run-status-btn');
+    var statusDetail = replayRunsEl('replay-run-status-detail');
+    var runId = select ? String(select.value || '') : '';
+    if (!/^\d+$/.test(runId)) {
+      if (statusDetail) statusDetail.textContent = '請先選擇有效的 Run';
+      return;
+    }
+    if (statusDetail) statusDetail.textContent = '正在讀取 Run #' + runId + ' 唯讀狀態計數…';
+    if (loadStatus) loadStatus.disabled = true;
+    try {
+      var base = (window.API_BASE || '').replace(/\/$/, '');
+      var response = await fetch(base + '/api/replay/run/' + encodeURIComponent(runId) + '/status');
+      if (!response.ok) throw new Error('HTTP ' + response.status);
+      renderReplayRunStatus(await response.json());
+    } catch (error) {
+      if (statusDetail) statusDetail.textContent = 'Run 狀態計數暫時無法使用，不影響其他查詢功能';
+      console.warn('[replay-run-status] load failed', error);
+    } finally {
+      if (loadStatus) loadStatus.disabled = !(select && select.value);
+    }
+  }
+
+  var loadStatus = replayRunsEl('load-replay-run-status-btn');
+  if (loadStatus) loadStatus.addEventListener('click', loadReplayRunStatus);
 })();
         </script>
 </body>

@@ -2334,6 +2334,10 @@
                     <option value="RETIRED">⚪ 退役 (RETIRED)</option>
                   </select>
                 </div>
+                <div style="display:flex;align-items:center;gap:6px;min-height:38px;margin-top:18px">
+                  <input type="checkbox" id="rp-public-only-strategies">
+                  <label for="rp-public-only-strategies" style="font-size:12px;color:#555">策略清單只顯示公開狀態</label>
+                </div>
                 <div>
                   <label style="display:block;font-size:12px;margin-bottom:4px">策略</label>
                   <select id="rp-strategy-select" class="form-control" style="min-width:200px">
@@ -4947,11 +4951,16 @@
   async function rpLoadStrategies() {
     const lt = document.getElementById('rp-lottery-select').value;
     const lc = document.getElementById('rp-lifecycle-select') ? document.getElementById('rp-lifecycle-select').value : '';
+    const publicOnly = document.getElementById('rp-public-only-strategies') ? document.getElementById('rp-public-only-strategies').checked : false;
     const sel = document.getElementById('rp-strategy-select');
     sel.innerHTML = '<option value="">全部</option>';
     try {
       let url = `${BASE}/strategies?lottery_type=${lt}`;
-      if (lc) url += `&lifecycle_status=${encodeURIComponent(lc)}`;
+      if (publicOnly) {
+        url += '&public_only=true';
+      } else if (lc) {
+        url += `&lifecycle_status=${encodeURIComponent(lc)}`;
+      }
       const res = await fetch(url);
       if (!res.ok) return;
       const data = await res.json();
@@ -5329,6 +5338,7 @@
       const lt     = document.getElementById('rp-lottery-select').value;
       const lc     = document.getElementById('rp-lifecycle-select') ? document.getElementById('rp-lifecycle-select').value : '';
       const sid    = document.getElementById('rp-strategy-select').value;
+      const publicOnly = document.getElementById('rp-public-only-strategies') ? document.getElementById('rp-public-only-strategies').checked : false;
       const status = document.getElementById('rp-status-select').value;
       const df     = document.getElementById('rp-date-from').value;
       const dt     = document.getElementById('rp-date-to').value;
@@ -5336,6 +5346,7 @@
       params.set('rp_lt', lt);
       if (lc)     params.set('rp_lc', lc);
       if (sid)    params.set('rp_sid', sid);
+      if (publicOnly) params.set('rp_public_only', 'true');
       if (status) params.set('rp_status', status);
       if (df)     params.set('rp_df', df);
       if (dt)     params.set('rp_dt', dt);
@@ -5358,6 +5369,9 @@
       const lc = params.get('rp_lc');
       const lcSel = document.getElementById('rp-lifecycle-select');
       if (lc && validLC.includes(lc) && lcSel) lcSel.value = lc;
+      const publicOnly = params.get('rp_public_only');
+      const publicOnlyToggle = document.getElementById('rp-public-only-strategies');
+      if (publicOnlyToggle) publicOnlyToggle.checked = !!(publicOnly && validFixtureMode.includes(String(publicOnly).toLowerCase()));
             const fixtureMode = params.get('rp_fixture_mode');
             rpFixtureMode = !!(fixtureMode && validFixtureMode.includes(String(fixtureMode).toLowerCase()));
             rpSetFixtureModeBanner(rpFixtureMode);
@@ -5673,6 +5687,13 @@
     const lifecycleSelect = document.getElementById('rp-lifecycle-select');
     if (lifecycleSelect) {
       lifecycleSelect.addEventListener('change', rpLoadStrategies);
+    }
+    const publicOnlyStrategies = document.getElementById('rp-public-only-strategies');
+    if (publicOnlyStrategies) {
+      publicOnlyStrategies.addEventListener('change', function() {
+        rpLoadStrategies();
+        rpUpdateURL();
+      });
     }
     const queryBtn = document.getElementById('rp-query-btn');
     if (queryBtn) {

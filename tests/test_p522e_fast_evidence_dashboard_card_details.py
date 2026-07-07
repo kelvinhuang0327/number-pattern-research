@@ -29,7 +29,8 @@ def test_each_lottery_card_renders_collapsed_accessible_details(section: str) ->
     assert "<summary>查看 " in section
     assert " 證據明細</summary>" in section
     assert '<details class="p251f-card-details" open>' not in section
-    assert "(d.lottery_cards || []).map" in section
+    assert "(d.lottery_cards || []).filter" in section
+    assert "box.innerHTML = cards.map" in section
 
 
 def test_details_expose_only_artifact_backed_card_fields(section: str) -> None:

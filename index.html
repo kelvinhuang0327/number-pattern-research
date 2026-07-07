@@ -2264,6 +2264,7 @@
                   <button class="btn btn-secondary btn-sm" id="refresh-evidence-dashboard-btn" type="button">↻ 刷新證據概況</button>
                 </div>
                 <div id="evidence-dashboard-detail" style="margin-top:6px;color:#888;font-size:11px">正在讀取唯讀證據資料</div>
+                <div id="evidence-dashboard-row-semantics" style="margin-top:6px;color:#888;font-size:11px">Replay rows 與 draw rows 語意讀取中…</div>
                 <div id="evidence-dashboard-warning" style="display:none;margin-top:8px;color:#7d4e00;background:#fffbf0;border:1px solid #f39c12;border-radius:4px;padding:8px 12px;font-size:12px"></div>
                 <div style="margin-top:6px;color:#888;font-size:11px">僅供歷史證據稽核，不代表策略建議或可部署狀態。</div>
               </div>
@@ -7563,14 +7564,17 @@
         </script>
         <script>
 // P524A_FAST: read-only monitoring for the existing evidence dashboard API.
+// P524B_FAST: expose row-semantics context already present in the evidence payload.
 (function () {
   'use strict';
 
   function evidenceDashboardEl(id) { return document.getElementById(id); }
+  function evidenceDashboardCount(value) { return (Number(value) || 0).toLocaleString(); }
 
   function renderEvidenceDashboard(payload) {
     var summary = evidenceDashboardEl('evidence-dashboard-summary');
     var detail = evidenceDashboardEl('evidence-dashboard-detail');
+    var rowSemantics = evidenceDashboardEl('evidence-dashboard-row-semantics');
     var warning = evidenceDashboardEl('evidence-dashboard-warning');
     var global = payload && payload.global_summary ? payload.global_summary : {};
     var lotteries = Array.isArray(payload && payload.lottery_cards) ? payload.lottery_cards : [];
@@ -7578,14 +7582,27 @@
     var historical = Number(global.historical_inventory_entries) || 0;
     var artifactOnly = Number(global.artifact_only_entries) || 0;
     var replayRows = Number(global.replay_rows_total) || 0;
+    var drawRows = Number(global.draw_rows_total) || 0;
 
     if (summary) summary.textContent = current + ' 筆目前登錄 · ' + historical + ' 筆歷史證據';
     if (detail) {
       var lotteryLabels = lotteries.map(function (card) {
-        return String(card.lottery_type || 'UNKNOWN') + ' ' + (Number(card.replay_rows) || 0).toLocaleString() + ' replay rows';
+        return String(card.lottery_type || 'UNKNOWN') + ' ' + evidenceDashboardCount(card.replay_rows) + ' replay rows';
       });
-      detail.textContent = replayRows.toLocaleString() + ' replay rows · ' + artifactOnly + ' 筆僅存於 artifact' +
+      detail.textContent = evidenceDashboardCount(replayRows) + ' replay rows · ' + artifactOnly + ' 筆僅存於 artifact' +
         (lotteryLabels.length ? ' · ' + lotteryLabels.join(' / ') : ' · 無彩種明細');
+    }
+    if (rowSemantics) {
+      var rowLabels = lotteries.map(function (card) {
+        var drawLabel = evidenceDashboardCount(card.draw_rows) + ' draw rows';
+        var canonical = Number(card.canonical_rows);
+        if (Number.isFinite(canonical) && canonical > 0) {
+          drawLabel += ' / ' + canonical.toLocaleString() + ' canonical rows';
+        }
+        return String(card.lottery_type || 'UNKNOWN') + ' ' + drawLabel;
+      });
+      rowSemantics.textContent = 'Replay rows 是回放紀錄，不是 draw rows；全域 draw rows ' +
+        evidenceDashboardCount(drawRows) + (rowLabels.length ? ' · ' + rowLabels.join(' / ') : '');
     }
     if (warning) {
       var message = payload && payload.stale_snapshot_warning && payload.stale_snapshot_warning.message;
@@ -7597,10 +7614,12 @@
   async function loadEvidenceDashboard() {
     var summary = evidenceDashboardEl('evidence-dashboard-summary');
     var detail = evidenceDashboardEl('evidence-dashboard-detail');
+    var rowSemantics = evidenceDashboardEl('evidence-dashboard-row-semantics');
     var warning = evidenceDashboardEl('evidence-dashboard-warning');
     var refresh = evidenceDashboardEl('refresh-evidence-dashboard-btn');
     if (summary) summary.textContent = '讀取中…';
     if (detail) detail.textContent = '正在讀取唯讀證據資料';
+    if (rowSemantics) rowSemantics.textContent = 'Replay rows 與 draw rows 語意讀取中…';
     if (warning) warning.style.display = 'none';
     if (refresh) refresh.disabled = true;
     try {
@@ -7611,6 +7630,7 @@
     } catch (error) {
       if (summary) summary.textContent = '無法讀取';
       if (detail) detail.textContent = '證據概況暫時無法使用，不影響其他查詢功能';
+      if (rowSemantics) rowSemantics.textContent = 'row semantics 暫時無法讀取，不影響其他查詢功能';
       console.warn('[evidence-dashboard] load failed', error);
     } finally {
       if (refresh) refresh.disabled = false;

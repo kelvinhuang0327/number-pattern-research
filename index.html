@@ -3103,6 +3103,7 @@
               .p251f-badge{border:1px solid #30363d;border-radius:999px;padding:1px 7px;font-size:11px;white-space:nowrap}
               #p251f-active-filters{display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin:-2px 0 12px;font-size:12px;color:#8b949e}
               #p251f-active-filters .p251f-filter-chip{border:1px solid #388bfd;border-radius:999px;padding:2px 8px;color:#79c0ff;background:rgba(56,139,253,.10)}
+              .p251f-search-match-badge{display:inline-block;margin-left:6px;border:1px solid #2ea043;border-radius:999px;padding:1px 6px;font-size:10px;color:#7ee787;background:rgba(46,160,67,.10);white-space:nowrap}
               #p251f-visible-stats .p251f-stats-chip{border:1px solid #30363d;border-radius:999px;padding:2px 8px;color:#8b949e;background:rgba(139,148,158,.08);margin-right:4px}
               #p251f-lottery-cards .p251f-card-details{margin-top:8px;border-top:1px solid #21262d;padding-top:8px;font-size:11px;color:#8b949e}
               #p251f-lottery-cards .p251f-card-details summary{cursor:pointer;color:#79c0ff;font-weight:600}
@@ -3118,6 +3119,7 @@
             <div id="p251f-filters" style="display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-bottom:12px">
               <label for="p251f-keyword-search" style="font-size:12px;color:#8b949e">關鍵字：</label>
               <input id="p251f-keyword-search" class="p251f-filter" type="search" aria-label="搜尋證據儀表板結果" placeholder="彩種、策略、狀態或備註">
+              <button id="p251f-clear-search" type="button" class="btn-sm btn-secondary" aria-label="清除證據儀表板關鍵字搜尋" disabled>清除搜尋</button>
               <label style="font-size:12px;color:#8b949e">彩種：</label>
               <select id="p251f-filter-lottery" class="p251f-filter">
                 <option value="">全部</option>
@@ -3235,6 +3237,11 @@
             }
             function matchesKeyword(record, keyword) {
               return !keyword || collectSearchText(record).toLocaleLowerCase().indexOf(keyword) !== -1;
+            }
+            function matchBadge(keyword, matched) {
+              return keyword && matched
+                ? '<span class="p251f-search-match-badge" aria-label="符合搜尋關鍵字">符合關鍵字</span>'
+                : '';
             }
             function supportedValue(value, supported, fallback) {
               return supported.indexOf(value) !== -1 ? value : fallback;
@@ -3451,6 +3458,8 @@
                 : '<span>顯示全部證據（無啟用中的篩選）</span>';
               var clear = el('p251f-clear-filters');
               if (clear) clear.disabled = filters.length === 0;
+              var clearSearch = el('p251f-clear-search');
+              if (clearSearch) clearSearch.disabled = !keyword;
             }
             function setLoading(on) {
               var n = el('p251f-loading');
@@ -3512,8 +3521,9 @@
               });
               box.innerHTML = cards.map(function (c) {
                 var lotteryLabel = c.lottery_type || 'Unknown lottery';
+                var searchBadge = matchBadge(keyword, matchesKeyword(c, keyword));
                 return '<div class="p251f-card" style="background:#0d1117;border:1px solid #30363d;border-radius:6px;padding:10px 12px">' +
-                  '<div style="font-weight:700;margin-bottom:6px">' + esc(lotteryLabel) + '</div>' +
+                  '<div style="font-weight:700;margin-bottom:6px">' + esc(lotteryLabel) + searchBadge + '</div>' +
                   '<div style="font-size:12px;color:#8b949e;line-height:1.7">strategies ' + num(c.strategy_cards_visible) +
                   ' · replay rows ' + num(c.replay_rows) + ' · draw rows ' + num(c.draw_rows) +
                   ' · canonical rows ' + num(c.canonical_rows) + '</div>' +
@@ -3578,7 +3588,7 @@
                 var visibility = r.row_visibility || {};
                 return '<tr>' +
                   '<td style="padding:6px 8px">' + esc(r.lottery_type) + '</td>' +
-                  '<td style="padding:6px 8px;font-family:monospace;color:#c9d1d9">' + esc(r.strategy_id) + '</td>' +
+                  '<td style="padding:6px 8px;font-family:monospace;color:#c9d1d9">' + esc(r.strategy_id) + matchBadge(keyword, true) + '</td>' +
                   '<td style="padding:6px 8px">' + badge(r.current_registry_lifecycle_status) + '</td>' +
                   '<td style="padding:6px 8px">' + badge(r.historical_snapshot_lifecycle_status) + '</td>' +
                   '<td style="padding:6px 8px;text-align:right">' + num(r.replay_rows) + '</td>' +
@@ -3617,6 +3627,14 @@
               applyDashboardUrlState(initialUrlState, null);
               var keyword = el('p251f-keyword-search');
               if (keyword) keyword.addEventListener('input', renderRows);
+              var clearSearch = el('p251f-clear-search');
+              if (clearSearch) clearSearch.addEventListener('click', function () {
+                if (keyword) {
+                  keyword.value = '';
+                  keyword.focus();
+                }
+                renderRows();
+              });
               ['p251f-filter-lottery', 'p251f-filter-lifecycle', 'p251f-filter-artifact-only', 'p251f-sort'].forEach(function (id) {
                 var n = el(id);
                 if (n) n.addEventListener('change', renderRows);

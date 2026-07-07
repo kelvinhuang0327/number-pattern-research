@@ -2255,6 +2255,20 @@
               </div>
             </div>
 
+            <!-- Read-only cross-lottery evidence dashboard monitor -->
+            <div id="evidence-dashboard-panel" class="card mb-16" aria-live="polite" style="border-left:4px solid #2da44e">
+              <div class="card-body" style="padding:12px 16px;font-size:13px">
+                <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap">
+                  <strong style="font-size:14px">🧾 跨彩種證據概況</strong>
+                  <span id="evidence-dashboard-summary" style="font-weight:600">讀取中…</span>
+                  <button class="btn btn-secondary btn-sm" id="refresh-evidence-dashboard-btn" type="button">↻ 刷新證據概況</button>
+                </div>
+                <div id="evidence-dashboard-detail" style="margin-top:6px;color:#888;font-size:11px">正在讀取唯讀證據資料</div>
+                <div id="evidence-dashboard-warning" style="display:none;margin-top:8px;color:#7d4e00;background:#fffbf0;border:1px solid #f39c12;border-radius:4px;padding:8px 12px;font-size:12px"></div>
+                <div style="margin-top:6px;color:#888;font-size:11px">僅供歷史證據稽核，不代表策略建議或可部署狀態。</div>
+              </div>
+            </div>
+
             <!-- Data Explanation Panel -->
             <details class="card mb-16" id="rp-info-panel" style="border-left:4px solid #3498db">
               <summary style="cursor:pointer;padding:12px 16px;font-weight:600;font-size:13px;list-style:none;display:flex;align-items:center;gap:8px;user-select:none">
@@ -7514,6 +7528,67 @@
   var refresh = cacheStatsEl('refresh-cache-stats-btn');
   if (refresh) refresh.addEventListener('click', loadCacheStats);
   loadCacheStats();
+})();
+        </script>
+        <script>
+// P524A_FAST: read-only monitoring for the existing evidence dashboard API.
+(function () {
+  'use strict';
+
+  function evidenceDashboardEl(id) { return document.getElementById(id); }
+
+  function renderEvidenceDashboard(payload) {
+    var summary = evidenceDashboardEl('evidence-dashboard-summary');
+    var detail = evidenceDashboardEl('evidence-dashboard-detail');
+    var warning = evidenceDashboardEl('evidence-dashboard-warning');
+    var global = payload && payload.global_summary ? payload.global_summary : {};
+    var lotteries = Array.isArray(payload && payload.lottery_cards) ? payload.lottery_cards : [];
+    var current = Number(global.current_registry_entries) || 0;
+    var historical = Number(global.historical_inventory_entries) || 0;
+    var artifactOnly = Number(global.artifact_only_entries) || 0;
+    var replayRows = Number(global.replay_rows_total) || 0;
+
+    if (summary) summary.textContent = current + ' 筆目前登錄 · ' + historical + ' 筆歷史證據';
+    if (detail) {
+      var lotteryLabels = lotteries.map(function (card) {
+        return String(card.lottery_type || 'UNKNOWN') + ' ' + (Number(card.replay_rows) || 0).toLocaleString() + ' replay rows';
+      });
+      detail.textContent = replayRows.toLocaleString() + ' replay rows · ' + artifactOnly + ' 筆僅存於 artifact' +
+        (lotteryLabels.length ? ' · ' + lotteryLabels.join(' / ') : ' · 無彩種明細');
+    }
+    if (warning) {
+      var message = payload && payload.stale_snapshot_warning && payload.stale_snapshot_warning.message;
+      warning.textContent = message ? '⚠️ ' + message : '';
+      warning.style.display = message ? 'block' : 'none';
+    }
+  }
+
+  async function loadEvidenceDashboard() {
+    var summary = evidenceDashboardEl('evidence-dashboard-summary');
+    var detail = evidenceDashboardEl('evidence-dashboard-detail');
+    var warning = evidenceDashboardEl('evidence-dashboard-warning');
+    var refresh = evidenceDashboardEl('refresh-evidence-dashboard-btn');
+    if (summary) summary.textContent = '讀取中…';
+    if (detail) detail.textContent = '正在讀取唯讀證據資料';
+    if (warning) warning.style.display = 'none';
+    if (refresh) refresh.disabled = true;
+    try {
+      var base = (window.API_BASE || '').replace(/\/$/, '');
+      var response = await fetch(base + '/api/replay/evidence-dashboard');
+      if (!response.ok) throw new Error('HTTP ' + response.status);
+      renderEvidenceDashboard(await response.json());
+    } catch (error) {
+      if (summary) summary.textContent = '無法讀取';
+      if (detail) detail.textContent = '證據概況暫時無法使用，不影響其他查詢功能';
+      console.warn('[evidence-dashboard] load failed', error);
+    } finally {
+      if (refresh) refresh.disabled = false;
+    }
+  }
+
+  var refresh = evidenceDashboardEl('refresh-evidence-dashboard-btn');
+  if (refresh) refresh.addEventListener('click', loadEvidenceDashboard);
+  loadEvidenceDashboard();
 })();
         </script>
 </body>

@@ -1,0 +1,38 @@
+---
+source_path: /Users/kelvin/Kelvin-WorkSpace/workspace-AI/LotteryNew/ai-wiki/INDEX.yml
+source_mtime: 2026-04-27T17:57:35+0800
+source_sha256: 1f54ef40fb6a45735e7d29741eec61b79cfdea62e5ba2eedf71e039789568d8a
+legacy_warning: "COPY-IN from legacy workspace-AI overlay; may be stale. Source retained in place; do not treat as canonical without re-analysis."
+---
+
+project:
+  name: LotteryNew
+  source_repo: /Users/kelvin/Kelvin-WorkSpace/LotteryNew
+  workspace_overlay: /Users/kelvin/Kelvin-WorkSpace/workspace-AI/LotteryNew
+  scan_mode: lightweight
+  last_initialized: 2026-04-27
+  notes:
+    - Derived from README.md, SYSTEM_MAP.md, top-level directory listing, src/, lottery_api/, tools/, and start_all.sh.
+    - Not exhaustive. No deep repository scan performed.
+
+modules:
+  - name: frontend-spa
+    path: ai-wiki/modules/frontend-spa.md
+  - name: backend-api
+    path: ai-wiki/modules/backend-api.md
+  - name: research-tooling
+    path: ai-wiki/modules/research-tooling.md
+  - name: orchestration-runtime
+    path: ai-wiki/modules/orchestration-runtime.md
+  - name: data-assets
+    path: ai-wiki/modules/data-assets.md
+
+flows:
+  - name: startup-and-health
+    path: ai-wiki/flows/startup-and-health.md
+  - name: prediction-request
+    path: ai-wiki/flows/prediction-request.md
+  - name: strategy-research-cycle
+    path: ai-wiki/flows/strategy-research-cycle.md
+  - name: llm-execution-control
+    path: ai-wiki/flows/llm-execution-control.md

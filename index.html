@@ -2385,11 +2385,13 @@
               <div class="card mb-16">
                 <div class="card-header">📊 命中率摘要（歷史回放）</div>
                 <div class="card-body" style="overflow-x:auto">
+                  <div id="rp-summary-scope-note" style="margin-bottom:8px;color:#666;font-size:11px">摘要 scope / denominator 尚未載入</div>
                   <table class="data-table" style="width:100%">
                     <thead>
                       <tr>
                         <th>策略 ID</th>
                         <th>策略名稱</th>
+                        <th>總 replay rows</th>
                         <th>已預測期數</th>
                         <th>平均命中數</th>
                         <th>3+ 命中期數</th>
@@ -2400,7 +2402,7 @@
                       </tr>
                     </thead>
                     <tbody id="rp-summary-body">
-                      <tr><td colspan="9" style="text-align:center;color:#888">尚無摘要資料</td></tr>
+                      <tr><td colspan="10" style="text-align:center;color:#888">尚無摘要資料</td></tr>
                     </tbody>
                   </table>
                 </div>
@@ -5643,27 +5645,43 @@
   }
 
   // Load summary
+  // P528B_FAST: expose replay summary scope, legacy caveat, and row denominator.
+  function rpRenderSummaryScope(data) {
+    const note = document.getElementById('rp-summary-scope-note');
+    if (!note) return;
+    const dataScope = data && data.data_scope ? data.data_scope : 'UNKNOWN_SCOPE';
+    const legacyCount = Number(data && data.legacy_error_count) || 0;
+    const disclaimer = data && data.disclaimer ? String(data.disclaimer) : '';
+    const scopeNote = data && data.scope_note ? ' · ' + String(data.scope_note) : '';
+    note.textContent = 'Scope=' + dataScope + ' · denominator=total replay rows; hit metrics use predicted rows only · legacy errors=' +
+      legacyCount.toLocaleString() + scopeNote + (disclaimer ? ' · ' + disclaimer : '');
+  }
+
   async function rpLoadSummary() {
     const lt = document.getElementById('rp-lottery-select').value;
         const lc = document.getElementById('rp-lifecycle-select') ? document.getElementById('rp-lifecycle-select').value : '';
     const cards = document.getElementById('rp-summary-cards');
     const tbody = document.getElementById('rp-summary-body');
+    const scopeNote = document.getElementById('rp-summary-scope-note');
     cards.style.display = '';
-    tbody.innerHTML = '<tr><td colspan="9" style="text-align:center;color:#888">載入中…</td></tr>';
+    if (scopeNote) scopeNote.textContent = '摘要 scope / denominator 載入中…';
+    tbody.innerHTML = '<tr><td colspan="10" style="text-align:center;color:#888">載入中…</td></tr>';
     try {
             let url = `${BASE}/summary?lottery_type=${lt}`;
             if (lc) url += `&lifecycle_status=${encodeURIComponent(lc)}`;
             const res = await fetch(url);
       if (!res.ok) throw new Error(`HTTP ${res.status}`);
       const data = await res.json();
+      rpRenderSummaryScope(data);
       const rows = data.summaries || [];
       if (!rows.length) {
-        tbody.innerHTML = '<tr><td colspan="9" style="text-align:center;color:#888">尚無資料</td></tr>';
+        tbody.innerHTML = '<tr><td colspan="10" style="text-align:center;color:#888">尚無資料</td></tr>';
         return;
       }
       tbody.innerHTML = rows.map(r => `<tr>
         <td style="font-size:11px">${r.strategy_id}</td>
         <td>${r.strategy_name || ''}</td>
+        <td style="text-align:center">${r.total_rows != null ? r.total_rows : '—'}</td>
         <td style="text-align:center">${r.predicted_count}</td>
         <td style="text-align:center">${r.avg_hit_count != null ? r.avg_hit_count.toFixed(2) : '—'}</td>
         <td style="text-align:center">${r.hit_3plus_count != null ? r.hit_3plus_count : '—'}</td>
@@ -5673,7 +5691,8 @@
         <td style="text-align:center">${r.error_count}</td>
       </tr>`).join('');
     } catch (e) {
-      tbody.innerHTML = `<tr><td colspan="9" style="text-align:center;color:red">錯誤：${e.message}</td></tr>`;
+      if (scopeNote) scopeNote.textContent = '摘要 scope / denominator 暫時無法讀取，不影響其他查詢功能';
+      tbody.innerHTML = `<tr><td colspan="10" style="text-align:center;color:red">錯誤：${e.message}</td></tr>`;
     }
   }
 

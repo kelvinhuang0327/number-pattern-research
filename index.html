@@ -7729,18 +7729,31 @@
   loadReplayRuns();
 
   // P526A_FAST: read-only status counts for a selected existing Replay run.
+  // P526B_FAST: expose status-count denominator and run sample-scope metadata.
+  function formatReplayRunScope(run, countTotal) {
+    var scope = String(run && run.strategy_scope || 'UNKNOWN_SCOPE');
+    var version = String(run && run.generator_version || 'UNKNOWN_VERSION');
+    var notes = run && run.notes ? String(run.notes) : '無 run notes';
+    return '狀態計數分母=' + countTotal.toLocaleString() + ' rows · scope=' + scope +
+      ' · generator=' + version + ' · notes=' + notes;
+  }
+
   function renderReplayRunStatus(payload) {
     var statusDetail = replayRunsEl('replay-run-status-detail');
     var run = payload && payload.run ? payload.run : {};
     var counts = payload && payload.status_counts && typeof payload.status_counts === 'object'
       ? payload.status_counts : {};
+    var countTotal = Object.keys(counts).reduce(function (total, status) {
+      return total + (Number(counts[status]) || 0);
+    }, 0);
     var countLabels = Object.keys(counts).sort().map(function (status) {
       return status + ' ' + (Number(counts[status]) || 0).toLocaleString() + ' 筆';
     });
     if (statusDetail) {
       statusDetail.textContent = 'Run #' + String(run.id == null ? '?' : run.id) +
         ' · ' + String(run.status || 'UNKNOWN') + ' · ' +
-        (countLabels.length ? countLabels.join(' / ') : '沒有狀態計數');
+        (countLabels.length ? countLabels.join(' / ') : '沒有狀態計數') + ' · ' +
+        formatReplayRunScope(run, countTotal);
     }
   }
 

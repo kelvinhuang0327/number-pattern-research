@@ -26,6 +26,17 @@ def test_simulation_loading_panel_is_announced_as_progress_status() -> None:
     assert 'aria-busy="false"' in markup
 
 
+def test_simulation_progress_bar_exposes_accessible_value_contract() -> None:
+    markup = _simulation_loading_markup()
+
+    assert 'id="sim-progress-bar"' in markup
+    assert 'role="progressbar"' in markup
+    assert 'aria-label="模擬完成進度"' in markup
+    assert 'aria-valuemin="0"' in markup
+    assert 'aria-valuemax="100"' in markup
+    assert 'aria-valuenow="0"' in markup
+
+
 def test_simulation_loading_helper_toggles_visibility_and_progress() -> None:
     script = APP_JS.read_text(encoding="utf-8")
     helper = script.split("setSimulationLoading(isLoading, current = 0, total = 0) {", 1)[1].split(
@@ -37,6 +48,7 @@ def test_simulation_loading_helper_toggles_visibility_and_progress() -> None:
     assert "loading.setAttribute('aria-busy', isLoading ? 'true' : 'false')" in helper
     assert "progress.textContent = total > 0 ? `${current} / ${total} 期` : '準備模擬資料...'" in helper
     assert "progressBar.style.width = `${percentage}%`" in helper
+    assert "progressBar.setAttribute('aria-valuenow', percentage.toString())" in helper
 
 
 def test_run_simulation_activates_and_clears_loading_panel() -> None:

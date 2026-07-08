@@ -7499,6 +7499,13 @@
     if (el) el.textContent = msg;
   }
 
+  function getErrorMessageP536L(data, fallback) {
+    if (data && data.detail) return String(data.detail);
+    if (data && data.message) return String(data.message);
+    if (data && data.error) return String(data.error);
+    return fallback;
+  }
+
   function renderProvenance(data) {
     var el = document.getElementById('p536l-provenance');
     if (!el) return;
@@ -7588,7 +7595,12 @@
     var base = (typeof window !== 'undefined' && window.API_BASE ? String(window.API_BASE) : '').replace(/\/$/, '');
     setStatus('載入中…');
     fetch(base + '/api/replay/lift-candidate-shortlist')
-      .then(function(r) { return r.json(); })
+      .then(function(r) {
+        if (r.ok) return r.json();
+        return r.json().catch(function() { return null; }).then(function(data) {
+          throw new Error(getErrorMessageP536L(data, 'HTTP ' + r.status));
+        });
+      })
       .then(function(data) {
         renderProvenance(data);
         renderSummaryCounts(data);
@@ -7600,7 +7612,7 @@
         setStatus('');
       })
       .catch(function(e) {
-        setStatus('載入失敗：' + e.message);
+        setStatus('載入失敗：' + (e && e.message ? e.message : 'unknown error'));
       });
   }
 

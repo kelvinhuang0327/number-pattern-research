@@ -1,0 +1,27 @@
+# Canonical before
+task/p273a-prize-aware-inferential-validation
+ M 00-Plan/roadmap/agent_bootstrap/SHARED_AGENT_BOOTSTRAP.md
+ M 00-Plan/roadmap/agent_bootstrap/TASK_TEMPLATES.md
+ M backend.pid
+ M claude-code-showcase
+ M data/lottery_v2.db
+ M frontend.pid
+ M index.html
+ M lottery_api/data/performance_history.json
+ M lottery_api/routes/replay.py
+?? .gstack/
+?? ".schema strategy_replay_runs"
+?? analysis/p333_strategy_pick_combination_scoreboard.py
+?? artifacts/
+?? claude-code-showcase.worktrees/
+?? data/performance_history.json
+?? lottery_api/data/ingest_log.jsonl
+?? outputs/research/p245a_external_predictive_method_scouting_20260605.json
+?? outputs/research/p245a_external_predictive_method_scouting_20260605.md
+?? outputs/research/p251d_evidence_dashboard_readonly_api_route_20260609.json
+?? outputs/research/p251d_evidence_dashboard_readonly_api_route_20260609.md
+?? outputs/research/p333_strategy_pick_combination_scoreboard_20260702.json
+?? outputs/research/p333_strategy_pick_combination_scoreboard_20260702.md
+?? runtime/
+?? tests/test_p245a_external_predictive_method_scouting.py
+?? tests/test_p333_strategy_pick_combination_scoreboard.py

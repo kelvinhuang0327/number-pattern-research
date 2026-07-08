@@ -70,9 +70,8 @@ export class UIManager {
         const notification = document.createElement('div');
         notification.className = `notification notification-${type}`;
 
-        // 處理多行訊息
-        const formattedMessage = message.replace(/\n/g, '<br>');
-        notification.innerHTML = formattedMessage;
+        // Render notification details as text; whiteSpace below preserves newlines.
+        notification.textContent = String(message ?? '');
 
         Object.assign(notification.style, {
             position: 'fixed',

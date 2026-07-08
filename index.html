@@ -7675,6 +7675,7 @@
 // P524A_FAST: read-only monitoring for the existing evidence dashboard API.
 // P524B_FAST: expose row-semantics context already present in the evidence payload.
 // P532_NEXT_FAST: expose evidence artifact identity already present in the payload.
+// P533_NEXT_FAST: expose per-lottery replay strategy coverage denominators.
 (function () {
   'use strict';
 
@@ -7703,7 +7704,14 @@
     if (summary) summary.textContent = current + ' 筆目前登錄 · ' + historical + ' 筆歷史證據';
     if (detail) {
       var lotteryLabels = lotteries.map(function (card) {
-        return String(card.lottery_type || 'UNKNOWN') + ' ' + evidenceDashboardCount(card.replay_rows) + ' replay rows';
+        var replayStrategies = Number(card.replay_strategy_entries);
+        var visibleStrategies = Number(card.strategy_cards_visible);
+        var strategyCoverage = Number.isFinite(replayStrategies) && replayStrategies >= 0 &&
+          Number.isFinite(visibleStrategies) && visibleStrategies > 0
+          ? replayStrategies.toLocaleString() + '/' + visibleStrategies.toLocaleString() + ' strategies'
+          : '';
+        return String(card.lottery_type || 'UNKNOWN') + ' ' + evidenceDashboardCount(card.replay_rows) + ' replay rows' +
+          (strategyCoverage ? ' · ' + strategyCoverage : '');
       });
       detail.textContent = evidenceDashboardCount(replayRows) + ' replay rows · ' + artifactOnly + ' 筆僅存於 artifact' +
         (lotteryLabels.length ? ' · ' + lotteryLabels.join(' / ') : ' · 無彩種明細') +

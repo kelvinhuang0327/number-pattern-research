@@ -618,6 +618,8 @@ export class AutoFetchManager {
     _setStatus(el, type, msg) {
         if (!el) return;
         el.className = `af-status af-status--${type}`;
+        el.setAttribute('role', type === 'error' ? 'alert' : 'status');
+        el.setAttribute('aria-live', type === 'error' ? 'assertive' : 'polite');
         el.style.display  = 'block';
         el.style.whiteSpace = 'pre-wrap';
         el.textContent = msg;

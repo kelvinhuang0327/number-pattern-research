@@ -3988,6 +3988,32 @@
 
             <div id="p536e-provenance" style="font-size:12px;color:#8b949e;margin-bottom:16px"></div>
 
+            <!-- Filters (client-side only; operate on already-loaded route response) -->
+            <div id="p536e-filter-bar" style="display:flex;gap:10px;flex-wrap:wrap;margin-bottom:12px;align-items:center">
+              <label style="font-size:12px;color:#8b949e">彩種：</label>
+              <select id="p536e-filter-lottery" style="background:#161b22;border:1px solid #30363d;color:#c9d1d9;border-radius:4px;padding:4px 8px;font-size:12px">
+                <option value="ALL">全部</option>
+                <option value="DAILY_539">今彩539</option>
+                <option value="BIG_LOTTO">大樂透</option>
+                <option value="POWER_LOTTO">威力彩</option>
+              </select>
+              <label style="font-size:12px;color:#8b949e">視窗：</label>
+              <select id="p536e-filter-window" style="background:#161b22;border:1px solid #30363d;color:#c9d1d9;border-radius:4px;padding:4px 8px;font-size:12px">
+                <option value="ALL">全部</option>
+                <option value="50">50期</option>
+                <option value="300">300期</option>
+                <option value="750">750期</option>
+              </select>
+              <label style="font-size:12px;color:#8b949e">最小 Lift：</label>
+              <input id="p536e-filter-min-lift" type="number" step="0.01" placeholder="例如 1.0" style="background:#161b22;border:1px solid #30363d;color:#c9d1d9;border-radius:4px;padding:4px 8px;font-size:12px;width:90px">
+              <label style="font-size:12px;color:#8b949e">策略/特徵族/組合搜尋：</label>
+              <input id="p536e-filter-search" type="text" placeholder="輸入關鍵字" style="background:#161b22;border:1px solid #30363d;color:#c9d1d9;border-radius:4px;padding:4px 8px;font-size:12px;width:180px">
+              <button id="p536e-filter-reset" class="btn-sm btn-secondary">重設篩選 / Reset</button>
+              <button id="p536e-export-csv" class="btn-sm btn-secondary">匯出可見資料列 CSV / Export CSV</button>
+            </div>
+            <div id="p536e-export-status" style="display:none;font-size:12px;color:#8b949e;margin-bottom:10px"></div>
+            <textarea id="p536e-export-fallback" style="display:none;width:100%;height:80px;font-size:11px;margin-bottom:10px;background:#161b22;border:1px solid #30363d;color:#c9d1d9" readonly></textarea>
+
             <div class="card" style="padding:14px;margin-bottom:18px">
               <div style="font-weight:700;margin-bottom:10px;font-size:0.9rem">各彩種 × 視窗 最佳 Lift 儲存格 <span style="color:#58a6ff;font-size:0.8em">Top Lift Cells by Lottery × Window</span></div>
               <div style="overflow-x:auto">
@@ -6796,6 +6822,8 @@
     'POWER_LOTTO': '威力彩'
   };
 
+  var _p536eData = null;
+
   function fmtPct(v) {
     if (v === null || v === undefined) return '—';
     return (v * 100).toFixed(1) + '%';
@@ -6873,16 +6901,167 @@
     }).join('');
   }
 
+  function getP536EFilters() {
+    var lotteryEl = document.getElementById('p536e-filter-lottery');
+    var windowEl = document.getElementById('p536e-filter-window');
+    var minLiftEl = document.getElementById('p536e-filter-min-lift');
+    var searchEl = document.getElementById('p536e-filter-search');
+    return {
+      lottery: (lotteryEl || {}).value || 'ALL',
+      window: (windowEl || {}).value || 'ALL',
+      minLift: minLiftEl && minLiftEl.value !== '' ? parseFloat(minLiftEl.value) : null,
+      search: ((searchEl || {}).value || '').trim().toLowerCase()
+    };
+  }
+
+  function matchesSearchP536E(text, search) {
+    return !search || String(text || '').toLowerCase().indexOf(search) !== -1;
+  }
+
+  function getFilteredTopCellsP536E() {
+    var f = getP536EFilters();
+    var rows = (_p536eData && _p536eData.top_lift_cells) || [];
+    return rows.filter(function(r) {
+      if (f.lottery !== 'ALL' && r.lottery_type !== f.lottery) return false;
+      if (f.window !== 'ALL' && String(r.window) !== f.window) return false;
+      if (f.minLift != null && !isNaN(f.minLift) && !(r.any_main_hit_lift != null && r.any_main_hit_lift >= f.minLift)) return false;
+      if (f.search && !matchesSearchP536E(r.strategy_id, f.search) && !matchesSearchP536E(r.feature_family, f.search)) return false;
+      return true;
+    });
+  }
+
+  function getFilteredCrossLotteryP536E() {
+    var f = getP536EFilters();
+    var rows = (_p536eData && _p536eData.cross_lottery_normalized_lift_summary) || [];
+    return rows.filter(function(r) {
+      if (f.window !== 'ALL' && String(r.window) !== f.window) return false;
+      if (f.lottery !== 'ALL' && !(r.lotteries && Object.prototype.hasOwnProperty.call(r.lotteries, f.lottery))) return false;
+      if (f.search && !matchesSearchP536E(r.feature_family, f.search)) return false;
+      return true;
+    });
+  }
+
+  function getFilteredStabilityRankP536E() {
+    var f = getP536EFilters();
+    var rows = (_p536eData && _p536eData.combination_stability_rank_summary) || [];
+    return rows.filter(function(r) {
+      if (f.lottery !== 'ALL' && r.lottery_type !== f.lottery) return false;
+      if (f.search && !matchesSearchP536E(r.combo_id, f.search)) return false;
+      return true;
+    });
+  }
+
+  function renderFilteredP536E() {
+    if (!_p536eData) return;
+    renderTopCells({ top_lift_cells: getFilteredTopCellsP536E() });
+    renderCrossLottery({ cross_lottery_normalized_lift_summary: getFilteredCrossLotteryP536E() });
+    renderStabilityRank({ combination_stability_rank_summary: getFilteredStabilityRankP536E() });
+  }
+
+  function resetFiltersP536E() {
+    var lotteryEl = document.getElementById('p536e-filter-lottery');
+    var windowEl = document.getElementById('p536e-filter-window');
+    var minLiftEl = document.getElementById('p536e-filter-min-lift');
+    var searchEl = document.getElementById('p536e-filter-search');
+    if (lotteryEl) lotteryEl.value = 'ALL';
+    if (windowEl) windowEl.value = 'ALL';
+    if (minLiftEl) minLiftEl.value = '';
+    if (searchEl) searchEl.value = '';
+    renderFilteredP536E();
+  }
+
+  function csvEscapeP536E(v) {
+    var s = v == null ? '' : String(v);
+    return /[",\n]/.test(s) ? '"' + s.replace(/"/g, '""') + '"' : s;
+  }
+
+  function buildVisibleCsvP536E() {
+    var header = [
+      'section', 'lottery_type', 'window', 'strategy_id', 'feature_family',
+      'combo_id', 'support_draws', 'any_main_hit_rate', 'baseline_any_main_hit_rate',
+      'lift', 'stability_rank', 'windows_present_count'
+    ];
+    var lines = [header.map(csvEscapeP536E).join(',')];
+    var rowCount = 0;
+
+    getFilteredTopCellsP536E().forEach(function(r) {
+      lines.push([
+        'top_lift_cell', r.lottery_type, r.window, r.strategy_id, r.feature_family,
+        '', r.support_draws, r.any_main_hit_rate, r.baseline_any_main_hit_rate,
+        r.any_main_hit_lift, '', ''
+      ].map(csvEscapeP536E).join(','));
+      rowCount++;
+    });
+
+    getFilteredCrossLotteryP536E().forEach(function(r) {
+      var lotteries = r.lotteries || {};
+      Object.keys(lotteries).forEach(function(lt) {
+        var stats = lotteries[lt] || {};
+        lines.push([
+          'cross_lottery_normalized_lift', lt, r.window, '', r.feature_family,
+          '', stats.strategy_count, '', '',
+          stats.avg_any_main_hit_lift, '', ''
+        ].map(csvEscapeP536E).join(','));
+        rowCount++;
+      });
+    });
+
+    getFilteredStabilityRankP536E().forEach(function(r) {
+      lines.push([
+        'combination_stability_rank', r.lottery_type, '', '', '',
+        r.combo_id, '', '', '',
+        '', r.stability_rank, r.windows_present_count
+      ].map(csvEscapeP536E).join(','));
+      rowCount++;
+    });
+
+    return { csv: lines.join('\n'), rowCount: rowCount };
+  }
+
+  function exportVisibleCsvP536E() {
+    var statusBox = document.getElementById('p536e-export-status');
+    var fallbackBox = document.getElementById('p536e-export-fallback');
+    if (!_p536eData) {
+      if (statusBox) { statusBox.style.display = ''; statusBox.textContent = '尚未載入資料，無法匯出。'; }
+      return;
+    }
+    var built = buildVisibleCsvP536E();
+    if (typeof Blob !== 'undefined' && typeof URL !== 'undefined' && URL.createObjectURL) {
+      try {
+        var blob = new Blob([built.csv], { type: 'text/csv;charset=utf-8;' });
+        var blobUrl = URL.createObjectURL(blob);
+        var a = document.createElement('a');
+        a.href = blobUrl;
+        a.download = 'p536e-lift-extension-visible-rows.csv';
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(blobUrl);
+        if (fallbackBox) fallbackBox.style.display = 'none';
+        if (statusBox) { statusBox.style.display = ''; statusBox.textContent = '已匯出目前顯示的 ' + built.rowCount + ' 筆資料列為 CSV 檔案。'; }
+        return;
+      } catch (e) {
+        // fall through to manual-copy fallback
+      }
+    }
+    if (fallbackBox) {
+      fallbackBox.style.display = '';
+      fallbackBox.value = built.csv;
+      fallbackBox.focus();
+      fallbackBox.select();
+    }
+    if (statusBox) { statusBox.style.display = ''; statusBox.textContent = '此瀏覽器不支援自動下載，請從下方欄位手動複製匯出內容。'; }
+  }
+
   function loadP536E() {
     var base = (typeof window !== 'undefined' && window.API_BASE ? String(window.API_BASE) : '').replace(/\/$/, '');
     setStatus('載入中…');
     fetch(base + '/api/replay/strategy-lift-extension')
       .then(function(r) { return r.json(); })
       .then(function(data) {
+        _p536eData = data;
         renderProvenance(data);
-        renderTopCells(data);
-        renderCrossLottery(data);
-        renderStabilityRank(data);
+        renderFilteredP536E();
         setStatus('');
       })
       .catch(function(e) {
@@ -6893,6 +7072,21 @@
   function initP536E() {
     var btn = document.getElementById('p536e-load-btn');
     if (btn) btn.addEventListener('click', loadP536E);
+
+    ['p536e-filter-lottery', 'p536e-filter-window'].forEach(function(id) {
+      var el = document.getElementById(id);
+      if (el) el.addEventListener('change', renderFilteredP536E);
+    });
+    var minLiftEl = document.getElementById('p536e-filter-min-lift');
+    if (minLiftEl) minLiftEl.addEventListener('input', renderFilteredP536E);
+    var searchEl = document.getElementById('p536e-filter-search');
+    if (searchEl) searchEl.addEventListener('input', renderFilteredP536E);
+
+    var resetBtn = document.getElementById('p536e-filter-reset');
+    if (resetBtn) resetBtn.addEventListener('click', resetFiltersP536E);
+
+    var exportBtn = document.getElementById('p536e-export-csv');
+    if (exportBtn) exportBtn.addEventListener('click', exportVisibleCsvP536E);
   }
 
   initP536E();

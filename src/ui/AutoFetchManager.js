@@ -626,7 +626,14 @@ export class AutoFetchManager {
     _setBtnLoading(btn, loading) {
         if (!btn) return;
         btn.disabled = loading;
-        if (loading) btn.dataset._origText = btn.textContent;
-        btn.textContent = loading ? '處理中...' : (btn.dataset._origText || btn.textContent);
+        if (loading) {
+            if (!('originalHtml' in btn.dataset)) btn.dataset.originalHtml = btn.innerHTML;
+            btn.textContent = '處理中...';
+            return;
+        }
+        if ('originalHtml' in btn.dataset) {
+            btn.innerHTML = btn.dataset.originalHtml;
+            delete btn.dataset.originalHtml;
+        }
     }
 }

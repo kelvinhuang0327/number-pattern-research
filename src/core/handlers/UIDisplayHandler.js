@@ -448,7 +448,14 @@ export class UIDisplayHandler {
         const methodDiv = document.getElementById('smart-dual-bet-method');
         if (methodDiv) {
             const specialNote = (result.bet1.special || result.bet2.special) ? ' (含特別號預測)' : '';
-            methodDiv.innerHTML = `使用策略：<strong>${result.method}</strong>${specialNote} | 基於全部歷史數據分析`;
+            methodDiv.textContent = '';
+            methodDiv.appendChild(document.createTextNode('使用策略：'));
+
+            const methodName = document.createElement('strong');
+            methodName.textContent = String(result.method ?? '');
+            methodDiv.appendChild(methodName);
+
+            methodDiv.appendChild(document.createTextNode(`${specialNote} | 基於全部歷史數據分析`));
         }
 
         // 滾動到結果區域

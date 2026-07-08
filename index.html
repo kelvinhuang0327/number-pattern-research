@@ -5791,7 +5791,7 @@
       }
       tbody.innerHTML = rpBuildHistoryRows(allRecords);
     } catch (e) {
-      tbody.innerHTML = `<tr><td colspan="9" style="text-align:center;color:red">錯誤：${e.message}</td></tr>`;
+      tbody.innerHTML = `<tr><td colspan="9" style="text-align:center;color:red">錯誤：${rpEscapeHtml(e.message)}</td></tr>`;
     }
   }
 
@@ -5844,7 +5844,7 @@
       }
       tbody.innerHTML = rpBuildHistoryRows(records);
     } catch (e) {
-            tbody.innerHTML = `<tr><td colspan="9" style="text-align:center;color:red">錯誤：${e.message}</td></tr>`;
+            tbody.innerHTML = `<tr><td colspan="9" style="text-align:center;color:red">錯誤：${rpEscapeHtml(e.message)}</td></tr>`;
     }
   }
 
@@ -5910,7 +5910,7 @@
       </tr>`).join('');
     } catch (e) {
       if (scopeNote) scopeNote.textContent = '摘要 scope / denominator 暫時無法讀取，不影響其他查詢功能';
-      tbody.innerHTML = `<tr><td colspan="10" style="text-align:center;color:red">錯誤：${e.message}</td></tr>`;
+      tbody.innerHTML = `<tr><td colspan="10" style="text-align:center;color:red">錯誤：${rpEscapeHtml(e.message)}</td></tr>`;
     }
   }
 

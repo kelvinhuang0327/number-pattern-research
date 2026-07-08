@@ -2546,7 +2546,10 @@
               <div class="card-body" style="padding:14px 16px">
                 <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;flex-wrap:wrap;gap:8px">
                   <strong style="font-size:14px" data-testid="rp-catalog-title">📊 策略狀態總覽</strong>
-                  <span id="rp-catalog-total-badge" data-testid="rp-catalog-total-badge" style="padding:2px 10px;border-radius:12px;font-size:12px;font-weight:600;background:#8b5cf6;color:#fff">— 策略</span>
+                  <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">
+                    <button id="refresh-rp-catalog-btn" class="btn btn-sm btn-secondary" type="button">刷新策略目錄</button>
+                    <span id="rp-catalog-total-badge" data-testid="rp-catalog-total-badge" style="padding:2px 10px;border-radius:12px;font-size:12px;font-weight:600;background:#8b5cf6;color:#fff">— 策略</span>
+                  </div>
                 </div>
 
                 <!-- Summary counts row -->
@@ -5830,6 +5833,10 @@
     rpSyncFixtureModeToggle();
     // P29: initialize catalog click handler and load catalog on page entry
     rpInitCatalogClickHandler();
+    const catalogRefreshBtn = document.getElementById('refresh-rp-catalog-btn');
+    if (catalogRefreshBtn) {
+      catalogRefreshBtn.addEventListener('click', rpLoadCatalog);
+    }
     rpLoadCatalog();
   });
 
@@ -5909,12 +5916,14 @@
     const totalBadge = document.getElementById('rp-catalog-total-badge');
     const countChips = document.getElementById('rp-catalog-count-chips');
     const footnote   = document.getElementById('rp-catalog-coverage-footnote');
+    const refresh    = document.getElementById('refresh-rp-catalog-btn');
     if (!loading || !errEl || !listWrap || !tbody) return;
 
     loading.style.display = '';
     errEl.style.display   = 'none';
     listWrap.style.display = 'none';
     if (summary) summary.style.display = 'none';
+    if (refresh) refresh.disabled = true;
 
     try {
       const resp = await fetch(`${API_BASE}/api/replay/strategy-catalog`);
@@ -5986,6 +5995,8 @@
       errEl.style.display   = '';
       // non-blocking: warn only (never error)
       console.warn('[P29] catalog load failed (non-blocking):', err);
+    } finally {
+      if (refresh) refresh.disabled = false;
     }
   }
 

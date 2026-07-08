@@ -37,6 +37,12 @@ export class AutoFetchManager {
         this.fetchDryRunCheck  = document.getElementById('af-fetch-dryrun');
         this.fetchBtn          = document.getElementById('af-fetch-btn');
         this.fetchStatus       = document.getElementById('af-fetch-status');
+        this.fetchConfirmModal   = document.getElementById('af-fetch-confirm-modal');
+        this.fetchConfirmSummary = document.getElementById('af-fetch-confirm-summary');
+        this.fetchConfirmAck     = document.getElementById('af-fetch-confirm-ack');
+        this.fetchConfirmApply   = document.getElementById('af-fetch-confirm-apply');
+        this.fetchConfirmCancel  = document.getElementById('af-fetch-confirm-cancel');
+        this.fetchConfirmClose   = document.getElementById('af-fetch-confirm-close');
 
         // Scan Missing
         this.scanTypeSelect    = document.getElementById('af-scan-type');
@@ -72,6 +78,9 @@ export class AutoFetchManager {
 
     _bindEvents() {
         this.fetchBtn?.addEventListener('click',      () => this._onFetchLatest());
+        this.fetchConfirmApply?.addEventListener('click', () => this._confirmFetchLatestModal());
+        this.fetchConfirmCancel?.addEventListener('click', () => this._closeFetchLatestConfirmModal());
+        this.fetchConfirmClose?.addEventListener('click', () => this._closeFetchLatestConfirmModal());
         this.scanBtn?.addEventListener('click',       () => this._onScanMissing());
         this.bfBtn?.addEventListener('click',         () => this._onBackfill());
         this.bfConfirmApply?.addEventListener('click', () => this._confirmBackfillModal());
@@ -85,6 +94,7 @@ export class AutoFetchManager {
         this._logOffset   = 0;
         this._logPageSize = 20;
         this._logTotal    = 0;
+        this._pendingFetchLatestPayload = null;
         this._pendingBackfillPayload = null;
 
         // Auto-load log on init
@@ -97,7 +107,57 @@ export class AutoFetchManager {
         const lt        = this.fetchTypeSelect?.value || 'BIG_LOTTO';
         const insertNew = this.fetchInsertCheck?.checked || false;
         const dryRun    = this.fetchDryRunCheck?.checked || false;
+        const payload = {
+            lottery_type:  lt,
+            insert_if_new: insertNew,
+            dry_run:       dryRun,
+        };
 
+        if (insertNew && !dryRun) {
+            this._openFetchLatestConfirmModal(payload);
+            return;
+        }
+
+        await this._submitFetchLatest(payload);
+    }
+
+    _openFetchLatestConfirmModal(payload) {
+        this._pendingFetchLatestPayload = payload;
+        if (this.fetchConfirmSummary) {
+            const label = LOTTERY_LABELS[payload.lottery_type] || payload.lottery_type;
+            this.fetchConfirmSummary.textContent = `${label} / insert_if_new=true / dry_run=false`;
+        }
+        if (this.fetchConfirmAck) this.fetchConfirmAck.value = '';
+        if (this.fetchConfirmModal) {
+            this.fetchConfirmModal.setAttribute('aria-hidden', 'false');
+            this.fetchConfirmAck?.focus();
+        }
+    }
+
+    _closeFetchLatestConfirmModal() {
+        this._pendingFetchLatestPayload = null;
+        if (this.fetchConfirmModal) {
+            this.fetchConfirmModal.setAttribute('aria-hidden', 'true');
+        }
+    }
+
+    async _confirmFetchLatestModal() {
+        const ack = (this.fetchConfirmAck?.value || '').trim();
+        if (!this._pendingFetchLatestPayload) {
+            this._closeFetchLatestConfirmModal();
+            return;
+        }
+        if (ack !== 'INSERT') {
+            this._setStatus(this.fetchStatus, 'warn',
+                '⚠️ 若要抓取並寫入，請在確認視窗輸入 INSERT');
+            return;
+        }
+        const payload = { ...this._pendingFetchLatestPayload };
+        this._closeFetchLatestConfirmModal();
+        await this._submitFetchLatest(payload);
+    }
+
+    async _submitFetchLatest(payload) {
         this._setBtnLoading(this.fetchBtn, true);
         this._setStatus(this.fetchStatus, 'loading', '⏳ 正在從台灣彩券官網抓取最新開獎...');
 
@@ -105,11 +165,7 @@ export class AutoFetchManager {
             const res = await fetch(getApiUrl('/api/ingest/fetch-latest'), {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                    lottery_type:  lt,
-                    insert_if_new: insertNew,
-                    dry_run:       dryRun,
-                }),
+                body: JSON.stringify(payload),
             });
             const json = await res.json();
 

@@ -628,6 +628,7 @@ export class AutoFetchManager {
         btn.disabled = loading;
         if (loading) {
             if (!('originalHtml' in btn.dataset)) btn.dataset.originalHtml = btn.innerHTML;
+            btn.setAttribute('aria-busy', 'true');
             btn.textContent = '處理中...';
             return;
         }
@@ -635,5 +636,6 @@ export class AutoFetchManager {
             btn.innerHTML = btn.dataset.originalHtml;
             delete btn.dataset.originalHtml;
         }
+        btn.removeAttribute('aria-busy');
     }
 }

@@ -120,3 +120,14 @@ def test_loading_button_state_restores_icon_markup_after_request() -> None:
     assert "btn.innerHTML = btn.dataset.originalHtml" in helper
     assert "delete btn.dataset.originalHtml" in helper
     assert "dataset._origText" not in helper
+
+
+def test_loading_button_state_exposes_busy_state_to_assistive_tech() -> None:
+    script = _js()
+    helper = script.split("_setBtnLoading(btn, loading) {", 1)[1].split(
+        "\n    }\n}", 1
+    )[0]
+
+    assert "btn.disabled = loading" in helper
+    assert "btn.setAttribute('aria-busy', 'true')" in helper
+    assert "btn.removeAttribute('aria-busy')" in helper

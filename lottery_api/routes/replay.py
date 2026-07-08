@@ -111,6 +111,12 @@ _STRATEGY_PICK_SCOREBOARD_PATH = (
     / "research"
     / "p333_strategy_pick_combination_scoreboard_20260702.json"
 )
+_LIFT_EXTENSION_PATH = (
+    Path(_api_root).parent
+    / "outputs"
+    / "research"
+    / "p536c_success_matrix_lift_extension_20260708.json"
+)
 _BIG649_MEASUREMENT_EXPORT_PATH = (
     Path(_api_root).parent
     / "outputs"
@@ -1325,6 +1331,156 @@ async def get_replay_strategy_pick_scoreboard():
         raise
     except Exception as e:
         logger.exception("get_replay_strategy_pick_scoreboard failed")
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+def _load_lift_extension_payload() -> dict:
+    """Load the P536C success-rate matrix lift extension artifact."""
+    if not _LIFT_EXTENSION_PATH.exists():
+        raise HTTPException(
+            status_code=500,
+            detail=f"lift extension artifact not found: {_LIFT_EXTENSION_PATH}",
+        )
+    try:
+        with _LIFT_EXTENSION_PATH.open("r", encoding="utf-8") as handle:
+            payload = json.load(handle)
+    except json.JSONDecodeError as exc:
+        raise HTTPException(
+            status_code=500,
+            detail=f"lift extension artifact is invalid JSON: {exc}",
+        ) from exc
+    if not isinstance(payload, dict):
+        raise HTTPException(
+            status_code=500,
+            detail="lift extension artifact must be a JSON object",
+        )
+    return payload
+
+
+def _top_lift_cells_by_lottery_window(matrix: list, per_group_limit: int = 3) -> list:
+    """Top cells per (lottery_type, window), ranked by any_main_hit_lift desc."""
+    groups: dict = {}
+    for row in matrix:
+        key = (row.get("lottery_type"), row.get("window"))
+        groups.setdefault(key, []).append(row)
+
+    top_cells = []
+    for (lottery_type, window) in sorted(groups.keys(), key=lambda k: (str(k[0]), k[1] if k[1] is not None else -1)):
+        ranked = sorted(
+            (r for r in groups[(lottery_type, window)] if r.get("any_main_hit_lift") is not None),
+            key=lambda r: r["any_main_hit_lift"],
+            reverse=True,
+        )
+        for row in ranked[:per_group_limit]:
+            top_cells.append({
+                "lottery_type": lottery_type,
+                "window": window,
+                "strategy_id": row.get("strategy_id"),
+                "feature_family": row.get("feature_family"),
+                "pick_k": row.get("pick_k"),
+                "support_draws": row.get("support_draws"),
+                "any_main_hit_rate": row.get("any_main_hit_rate"),
+                "baseline_any_main_hit_rate": row.get("baseline_any_main_hit_rate"),
+                "any_main_hit_lift": row.get("any_main_hit_lift"),
+                "m3_plus_lift": row.get("m3_plus_lift"),
+                "prize_signal_lift": row.get("prize_signal_lift"),
+            })
+    return top_cells
+
+
+def _top_cross_lottery_normalized_lift(rows: list, limit: int = 10) -> list:
+    """Top cross-lottery normalized lift rows, ranked by best avg_any_main_hit_lift among lotteries."""
+    def _best_lift(row):
+        best = None
+        for stats in (row.get("lotteries") or {}).values():
+            value = stats.get("avg_any_main_hit_lift")
+            if value is not None and (best is None or value > best):
+                best = value
+        return best
+
+    ranked = sorted(
+        (r for r in rows if _best_lift(r) is not None),
+        key=_best_lift,
+        reverse=True,
+    )
+    return [
+        {
+            "feature_family": row.get("feature_family"),
+            "pick_k": row.get("pick_k"),
+            "window": row.get("window"),
+            "lotteries": row.get("lotteries"),
+        }
+        for row in ranked[:limit]
+    ]
+
+
+def _top_combination_stability_rank(rows: list, limit: int = 15) -> list:
+    """Top combination-stability rows, ranked by stability_rank ascending (1 = most stable)."""
+    ranked = sorted(
+        (r for r in rows if r.get("stability_rank") is not None),
+        key=lambda r: r["stability_rank"],
+    )
+    return [
+        {
+            "lottery_type": row.get("lottery_type"),
+            "combo_id": row.get("combo_id"),
+            "stability_rank": row.get("stability_rank"),
+            "windows_present": row.get("windows_present"),
+            "windows_present_count": row.get("windows_present_count"),
+            "avg_prize_signal_lift_across_present_windows": row.get(
+                "avg_prize_signal_lift_across_present_windows"
+            ),
+        }
+        for row in ranked[:limit]
+    ]
+
+
+@router.get("/api/replay/strategy-lift-extension")
+async def get_replay_strategy_lift_extension():
+    """
+    P536E: Read-only strategy success-rate matrix lift extension summary.
+
+    Serves a compact subset of the already-committed P536C artifact
+    (top lift cells by lottery x window, cross-lottery normalized lift,
+    combination stability rank) for UI display. No DB access, no
+    recomputation of P536C, no artifact regeneration, no betting advice.
+    """
+    try:
+        payload = _load_lift_extension_payload()
+        source = payload.get("source") or {}
+        return {
+            "artifact_version": payload.get("schema_version"),
+            "generated_at": payload.get("generated_at"),
+            "source": {
+                "db_open_mode": source.get("db_open_mode"),
+                "data_hash_sha256": source.get("data_hash_sha256"),
+                "row_counts_by_lottery": source.get("row_counts_by_lottery"),
+                "filters": source.get("filters"),
+            },
+            "record_counts": payload.get("summary"),
+            "top_lift_cells": _top_lift_cells_by_lottery_window(
+                payload.get("strategy_pick_matrix_lift_extension") or []
+            ),
+            "cross_lottery_normalized_lift_summary": _top_cross_lottery_normalized_lift(
+                payload.get("cross_lottery_normalized_lift") or []
+            ),
+            "combination_stability_rank_summary": _top_combination_stability_rank(
+                payload.get("combination_stability_rank") or []
+            ),
+            "disclaimer": (
+                "Retrospective historical replay evidence only; no prediction, "
+                "betting, edge, future-winning, or production-readiness claim."
+            ),
+            "historical_replay_only": True,
+            "no_future_guarantee": True,
+            "no_betting_advice": True,
+            "no_strategy_promotion": True,
+            "source_artifact": str(_LIFT_EXTENSION_PATH.name),
+        }
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.exception("get_replay_strategy_lift_extension failed")
         raise HTTPException(status_code=500, detail=str(e))
 
 

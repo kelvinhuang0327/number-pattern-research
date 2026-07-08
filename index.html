@@ -6834,6 +6834,23 @@
     return Number(v).toFixed(3) + 'x';
   }
 
+  function escP536E(v) {
+    var s = v == null ? '' : String(v);
+    return s.replace(/[&<>"']/g, function(ch) {
+      return {
+        '&': '&amp;',
+        '<': '&lt;',
+        '>': '&gt;',
+        '"': '&quot;',
+        "'": '&#39;'
+      }[ch];
+    });
+  }
+
+  function textP536E(v) {
+    return escP536E(v === null || v === undefined || v === '' ? '—' : v);
+  }
+
   function setStatus(msg) {
     var el = document.getElementById('p536e-status');
     if (el) el.textContent = msg;
@@ -6857,11 +6874,11 @@
     var rows = data.top_lift_cells || [];
     tbody.innerHTML = rows.map(function(r) {
       return '<tr>' +
-        '<td style="padding:4px 8px">' + (LOTTERY_LABELS_P536E[r.lottery_type] || r.lottery_type || '—') + '</td>' +
-        '<td style="padding:4px 8px">' + (r.window != null ? r.window : '—') + '期</td>' +
-        '<td style="padding:4px 8px">' + (r.strategy_id || '—') + '</td>' +
-        '<td style="padding:4px 8px">' + (r.feature_family || '—') + '</td>' +
-        '<td style="text-align:right;padding:4px 8px">' + (r.support_draws != null ? r.support_draws : '—') + '</td>' +
+        '<td style="padding:4px 8px">' + textP536E(LOTTERY_LABELS_P536E[r.lottery_type] || r.lottery_type) + '</td>' +
+        '<td style="padding:4px 8px">' + textP536E(r.window != null ? String(r.window) + '期' : null) + '</td>' +
+        '<td style="padding:4px 8px">' + textP536E(r.strategy_id) + '</td>' +
+        '<td style="padding:4px 8px">' + textP536E(r.feature_family) + '</td>' +
+        '<td style="text-align:right;padding:4px 8px">' + textP536E(r.support_draws) + '</td>' +
         '<td style="text-align:right;padding:4px 8px">' + fmtPct(r.any_main_hit_rate) + '</td>' +
         '<td style="text-align:right;padding:4px 8px">' + fmtPct(r.baseline_any_main_hit_rate) + '</td>' +
         '<td style="text-align:right;padding:4px 8px">' + fmtLift(r.any_main_hit_lift) + '</td>' +
@@ -6876,12 +6893,12 @@
     el.innerHTML = rows.map(function(r) {
       var lotteryParts = Object.keys(r.lotteries || {}).map(function(lt) {
         var stats = r.lotteries[lt] || {};
-        return (LOTTERY_LABELS_P536E[lt] || lt) + ' ' + fmtLift(stats.avg_any_main_hit_lift);
+        return textP536E(LOTTERY_LABELS_P536E[lt] || lt) + ' ' + fmtLift(stats.avg_any_main_hit_lift);
       });
       return '<div style="padding:4px 0;border-bottom:1px solid rgba(255,255,255,.06)">' +
-        '<b>' + (r.feature_family || '—') + '</b>' +
-        ' · pick_k=' + (r.pick_k != null ? r.pick_k : '—') +
-        ' · ' + (r.window != null ? r.window : '—') + '期' +
+        '<b>' + textP536E(r.feature_family) + '</b>' +
+        ' · pick_k=' + textP536E(r.pick_k) +
+        ' · ' + textP536E(r.window != null ? String(r.window) + '期' : null) +
         ' — ' + lotteryParts.join(' / ') +
       '</div>';
     }).join('');
@@ -6893,10 +6910,10 @@
     var rows = data.combination_stability_rank_summary || [];
     tbody.innerHTML = rows.map(function(r) {
       return '<tr>' +
-        '<td style="text-align:right;padding:4px 8px">' + (r.stability_rank != null ? r.stability_rank : '—') + '</td>' +
-        '<td style="padding:4px 8px">' + (LOTTERY_LABELS_P536E[r.lottery_type] || r.lottery_type || '—') + '</td>' +
-        '<td style="padding:4px 8px">' + (r.combo_id || '—') + '</td>' +
-        '<td style="text-align:right;padding:4px 8px">' + (r.windows_present_count != null ? r.windows_present_count : '—') + '</td>' +
+        '<td style="text-align:right;padding:4px 8px">' + textP536E(r.stability_rank) + '</td>' +
+        '<td style="padding:4px 8px">' + textP536E(LOTTERY_LABELS_P536E[r.lottery_type] || r.lottery_type) + '</td>' +
+        '<td style="padding:4px 8px">' + textP536E(r.combo_id) + '</td>' +
+        '<td style="text-align:right;padding:4px 8px">' + textP536E(r.windows_present_count) + '</td>' +
       '</tr>';
     }).join('');
   }

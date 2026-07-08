@@ -85,6 +85,28 @@ def test_csv_export_builds_from_filtered_in_memory_rows_not_dom():
     assert "text/csv" in script
 
 
+def test_rendered_artifact_strings_are_html_escaped():
+    script = _script()
+    assert "function escP536E" in script
+    assert "function textP536E" in script
+    for field in (
+        "r.strategy_id",
+        "r.feature_family",
+        "r.combo_id",
+    ):
+        assert f"textP536E({field}" in script
+    assert "textP536E(LOTTERY_LABELS_P536E[r.lottery_type] || r.lottery_type)" in script
+    assert "textP536E(LOTTERY_LABELS_P536E[lt] || lt)" in script
+    for unsafe_pattern in (
+        "+ (r.strategy_id ||",
+        "+ (r.feature_family ||",
+        "+ (r.combo_id ||",
+        "+ (LOTTERY_LABELS_P536E[lt] || lt)",
+        "+ (LOTTERY_LABELS_P536E[r.lottery_type] || r.lottery_type",
+    ):
+        assert unsafe_pattern not in script
+
+
 def test_provenance_rendering_unaffected_by_filters():
     script = _script()
     # renderProvenance must still be called with the full raw payload on load,

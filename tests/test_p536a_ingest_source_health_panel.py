@@ -107,3 +107,16 @@ def test_source_health_change_stays_no_db_non_mutating_and_non_predictive() -> N
         "betting",
     ):
         assert forbidden not in script
+
+
+def test_loading_button_state_restores_icon_markup_after_request() -> None:
+    script = _js()
+    helper = script.split("_setBtnLoading(btn, loading) {", 1)[1].split(
+        "\n    }\n}", 1
+    )[0]
+
+    assert "btn.dataset.originalHtml = btn.innerHTML" in helper
+    assert "btn.textContent = '處理中...'" in helper
+    assert "btn.innerHTML = btn.dataset.originalHtml" in helper
+    assert "delete btn.dataset.originalHtml" in helper
+    assert "dataset._origText" not in helper

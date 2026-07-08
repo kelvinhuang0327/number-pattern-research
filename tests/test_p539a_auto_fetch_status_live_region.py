@@ -6,6 +6,7 @@ from pathlib import Path
 
 
 REPO_ROOT = Path(__file__).resolve().parent.parent
+INDEX_HTML = REPO_ROOT / "index.html"
 AUTO_FETCH_JS = REPO_ROOT / "src" / "ui" / "AutoFetchManager.js"
 
 
@@ -31,3 +32,20 @@ def test_status_helper_preserves_existing_visual_and_text_behavior() -> None:
     assert "el.style.whiteSpace = 'pre-wrap'" in helper
     assert "el.textContent = msg" in helper
 
+
+def test_auto_fetch_status_placeholders_are_static_live_regions() -> None:
+    html = INDEX_HTML.read_text(encoding="utf-8")
+    auto_fetch = html.split('class="af-section"', 1)[1].split(
+        '<!-- P535A/G03: fetch-latest write-capable insert confirmation modal -->', 1
+    )[0]
+
+    for status_id in (
+        "af-source-health-status",
+        "af-fetch-status",
+        "af-scan-status",
+        "af-bf-status",
+    ):
+        status_markup = auto_fetch.split(f'id="{status_id}"', 1)[1].split(">", 1)[0]
+        assert 'class="af-status"' in status_markup
+        assert 'role="status"' in status_markup
+        assert 'aria-live="polite"' in status_markup

@@ -109,7 +109,14 @@ export class SmartBettingComponent {
             generateBtn.innerHTML = '<span class="btn-icon">⏳</span> 運算中...';
 
             // 調用後端實際的旋轉矩陣生成接口
-            const response = await fetch(`/api/wheel/generate?pool=${JSON.stringify(nums)}&guarantee_t=${guarantee_t || 3}&condition_m=${condition_m || 4}`);
+            const wheelParams = new URLSearchParams({
+                pool: JSON.stringify(nums),
+                guarantee_t: String(guarantee_t || 3),
+                condition_m: String(condition_m || 4)
+            });
+            const response = await fetch(`/api/wheel/generate?${wheelParams.toString()}`, {
+                method: 'POST'
+            });
             const data = await response.json();
 
             if (!response.ok) throw new Error(data.detail || '生成失敗');

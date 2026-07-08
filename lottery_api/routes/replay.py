@@ -117,6 +117,12 @@ _LIFT_EXTENSION_PATH = (
     / "research"
     / "p536c_success_matrix_lift_extension_20260708.json"
 )
+_LIFT_CANDIDATE_SHORTLIST_PATH = (
+    Path(_api_root).parent
+    / "outputs"
+    / "research"
+    / "p536k_lift_candidate_shortlist_20260708.json"
+)
 _BIG649_MEASUREMENT_EXPORT_PATH = (
     Path(_api_root).parent
     / "outputs"
@@ -1481,6 +1487,76 @@ async def get_replay_strategy_lift_extension():
         raise
     except Exception as e:
         logger.exception("get_replay_strategy_lift_extension failed")
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+def _load_lift_candidate_shortlist_payload() -> dict:
+    """Load the P536K lift candidate shortlist artifact."""
+    if not _LIFT_CANDIDATE_SHORTLIST_PATH.exists():
+        raise HTTPException(
+            status_code=500,
+            detail=f"lift candidate shortlist artifact not found: {_LIFT_CANDIDATE_SHORTLIST_PATH}",
+        )
+    try:
+        with _LIFT_CANDIDATE_SHORTLIST_PATH.open("r", encoding="utf-8") as handle:
+            payload = json.load(handle)
+    except json.JSONDecodeError as exc:
+        raise HTTPException(
+            status_code=500,
+            detail=f"lift candidate shortlist artifact is invalid JSON: {exc}",
+        ) from exc
+    if not isinstance(payload, dict):
+        raise HTTPException(
+            status_code=500,
+            detail="lift candidate shortlist artifact must be a JSON object",
+        )
+    return payload
+
+
+@router.get("/api/replay/lift-candidate-shortlist")
+async def get_replay_lift_candidate_shortlist():
+    """
+    P536L: Read-only lift candidate shortlist summary.
+
+    Serves the already-committed P536K artifact (itself a deterministic,
+    read-only filter over the committed P536C artifact) for UI display.
+    No DB access, no recomputation of P536K/P536C, no new ranking/metric,
+    no betting advice.
+    """
+    try:
+        payload = _load_lift_candidate_shortlist_payload()
+        section_keys = [
+            "stable_300_750_review_candidates",
+            "short_window_spike_review_candidates",
+            "combination_review_candidates",
+            "cross_lottery_review_candidates",
+        ]
+        return {
+            "artifact_version": payload.get("schema_version"),
+            "task_id": payload.get("task_id"),
+            "extends_task_id": payload.get("extends_task_id"),
+            "generated_at": payload.get("generated_at"),
+            "classification": payload.get("classification"),
+            "counts": {key: len(payload.get(key) or []) for key in section_keys},
+            "stable_300_750_review_candidates": payload.get("stable_300_750_review_candidates") or [],
+            "short_window_spike_review_candidates": payload.get("short_window_spike_review_candidates") or [],
+            "combination_review_candidates": payload.get("combination_review_candidates") or [],
+            "cross_lottery_review_candidates": payload.get("cross_lottery_review_candidates") or [],
+            "provenance_and_limits": payload.get("provenance_and_limits") or {},
+            "disclaimer": (
+                "Historical replay review artifact only; not a prediction, "
+                "betting edge, future-winning, or production-readiness claim."
+            ),
+            "historical_replay_only": True,
+            "no_future_guarantee": True,
+            "no_betting_advice": True,
+            "no_strategy_promotion": True,
+            "source_artifact": _LIFT_CANDIDATE_SHORTLIST_PATH.name,
+        }
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.exception("get_replay_lift_candidate_shortlist failed")
         raise HTTPException(status_code=500, detail=str(e))
 
 

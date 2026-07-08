@@ -869,6 +869,10 @@
                     <i data-lucide="trending-up" class="icon"></i>
                     <span>策略 Lift 延伸</span>
                 </button>
+                <button class="nav-btn" data-section="p536l-lift-candidate-shortlist">
+                    <i data-lucide="list-checks" class="icon"></i>
+                    <span>Lift 候選清單</span>
+                </button>
                 <button class="nav-btn" data-section="p263b-d3-ssot">
                     <i data-lucide="table-2" class="icon"></i>
                     <span>D3 策略狀態 (SSOT)</span>
@@ -4087,6 +4091,91 @@
           </div>
         </section>
         <!-- ===== END P536E ===== -->
+
+        <!-- ===== P536L Lift Candidate Shortlist ===== -->
+        <section id="p536l-lift-candidate-shortlist-section" class="section">
+          <div class="section-header">
+            <h2>Lift 候選清單 <span style="font-size:0.7em;color:#8b949e;font-weight:400">Lift Candidate Shortlist</span></h2>
+            <p>基於 P536C 成功率提升倍數延伸資料的已計算候選清單，唯讀，不涉及資料庫存取</p>
+          </div>
+          <div class="section-content">
+            <div style="background:rgba(187,128,9,.12);border:1px solid #e3b341;border-radius:6px;padding:10px 14px;margin-bottom:16px;font-size:12px;color:#e3b341;line-height:1.6">
+              <b>歷史回放聲明</b><br>
+              Historical replay review artifact only; not a prediction, betting edge, future-winning, or production-readiness claim.
+            </div>
+
+            <button id="p536l-load-btn" class="btn-sm btn-secondary" style="margin-bottom:14px">載入候選清單 / Load</button>
+
+            <div id="p536l-provenance" style="font-size:12px;color:#8b949e;margin-bottom:16px"></div>
+
+            <div id="p536l-summary-counts" style="display:flex;gap:16px;flex-wrap:wrap;margin-bottom:18px"></div>
+
+            <div class="card" style="padding:14px;margin-bottom:18px">
+              <div style="font-weight:700;margin-bottom:10px;font-size:0.9rem">穩定 300/750 候選 <span style="color:#58a6ff;font-size:0.8em">Stable 300/750 Review Candidates</span></div>
+              <div style="overflow-x:auto;max-height:320px;overflow-y:auto">
+                <table style="width:100%;border-collapse:collapse;font-size:0.8rem">
+                  <thead>
+                    <tr>
+                      <th style="text-align:left;padding:4px 8px">彩種</th>
+                      <th style="text-align:left;padding:4px 8px">視窗</th>
+                      <th style="text-align:left;padding:4px 8px">策略</th>
+                      <th style="text-align:left;padding:4px 8px">特徵族</th>
+                      <th style="text-align:right;padding:4px 8px">樣本數</th>
+                      <th style="text-align:right;padding:4px 8px">Lift</th>
+                    </tr>
+                  </thead>
+                  <tbody id="p536l-stable-tbody"></tbody>
+                </table>
+              </div>
+            </div>
+
+            <div class="card" style="padding:14px;margin-bottom:18px">
+              <div style="font-weight:700;margin-bottom:10px;font-size:0.9rem">短期高峰候選 <span style="color:#58a6ff;font-size:0.8em">Short-Window Spike Review Candidates</span><span style="font-size:11px;color:#e3b341;margin-left:8px">（50期短窗參考用，非穩定型態 / short-window review only, not a stable pattern）</span></div>
+              <div style="overflow-x:auto;max-height:320px;overflow-y:auto">
+                <table style="width:100%;border-collapse:collapse;font-size:0.8rem">
+                  <thead>
+                    <tr>
+                      <th style="text-align:left;padding:4px 8px">彩種</th>
+                      <th style="text-align:left;padding:4px 8px">視窗</th>
+                      <th style="text-align:left;padding:4px 8px">策略</th>
+                      <th style="text-align:left;padding:4px 8px">特徵族</th>
+                      <th style="text-align:right;padding:4px 8px">樣本數</th>
+                      <th style="text-align:right;padding:4px 8px">Lift</th>
+                    </tr>
+                  </thead>
+                  <tbody id="p536l-spike-tbody"></tbody>
+                </table>
+              </div>
+            </div>
+
+            <div class="card" style="padding:14px;margin-bottom:18px">
+              <div style="font-weight:700;margin-bottom:10px;font-size:0.9rem">組合候選 <span style="color:#58a6ff;font-size:0.8em">Combination Review Candidates</span></div>
+              <div style="overflow-x:auto;max-height:320px;overflow-y:auto">
+                <table style="width:100%;border-collapse:collapse;font-size:0.8rem">
+                  <thead>
+                    <tr>
+                      <th style="text-align:left;padding:4px 8px">彩種</th>
+                      <th style="text-align:left;padding:4px 8px">組合</th>
+                      <th style="text-align:right;padding:4px 8px">穩定排名</th>
+                      <th style="text-align:right;padding:4px 8px">涵蓋視窗數</th>
+                    </tr>
+                  </thead>
+                  <tbody id="p536l-combo-tbody"></tbody>
+                </table>
+              </div>
+            </div>
+
+            <div class="card" style="padding:14px;margin-bottom:18px">
+              <div style="font-weight:700;margin-bottom:10px;font-size:0.9rem">跨彩種候選 <span style="color:#58a6ff;font-size:0.8em">Cross-Lottery Review Candidates</span></div>
+              <div id="p536l-cross-lottery-list" style="font-size:0.8rem;line-height:1.8;max-height:320px;overflow-y:auto"></div>
+            </div>
+
+            <div id="p536l-provenance-detail" style="font-size:11px;color:#8b949e;margin-bottom:10px;line-height:1.6"></div>
+
+            <div id="p536l-status" style="margin-top:10px;font-size:12px;color:#8b949e"></div>
+          </div>
+        </section>
+        <!-- ===== END P536L ===== -->
 
         <!-- ===== P258O D3 Strategy Status / Contract Audit Section ===== -->
         <section id="p258-d3-audit-section" class="section">
@@ -7364,6 +7453,163 @@
   }
 
   initP536E();
+})();
+
+// ===== P536L LIFT CANDIDATE SHORTLIST (read-only, artifact-backed, no DB) =====
+(function() {
+  'use strict';
+
+  var LOTTERY_LABELS_P536L = {
+    'DAILY_539': '今彩539',
+    'BIG_LOTTO': '大樂透',
+    'POWER_LOTTO': '威力彩'
+  };
+
+  var SECTION_LABELS_P536L = {
+    'stable_300_750_review_candidates': '穩定 300/750 候選',
+    'short_window_spike_review_candidates': '短期高峰候選',
+    'combination_review_candidates': '組合候選',
+    'cross_lottery_review_candidates': '跨彩種候選'
+  };
+
+  function fmtLiftP536L(v) {
+    if (v === null || v === undefined) return '—';
+    return Number(v).toFixed(3) + 'x';
+  }
+
+  function escP536L(v) {
+    var s = v == null ? '' : String(v);
+    return s.replace(/[&<>"']/g, function(ch) {
+      return {
+        '&': '&amp;',
+        '<': '&lt;',
+        '>': '&gt;',
+        '"': '&quot;',
+        "'": '&#39;'
+      }[ch];
+    });
+  }
+
+  function textP536L(v) {
+    return escP536L(v === null || v === undefined || v === '' ? '—' : v);
+  }
+
+  function setStatus(msg) {
+    var el = document.getElementById('p536l-status');
+    if (el) el.textContent = msg;
+  }
+
+  function renderProvenance(data) {
+    var el = document.getElementById('p536l-provenance');
+    if (!el) return;
+    var parts = [];
+    if (data.artifact_version) parts.push('artifact_version: ' + data.artifact_version);
+    if (data.task_id) parts.push('task_id: ' + data.task_id);
+    if (data.extends_task_id) parts.push('extends_task_id: ' + data.extends_task_id);
+    if (data.generated_at) parts.push('generated_at: ' + data.generated_at);
+    el.textContent = parts.join(' · ');
+  }
+
+  function renderSummaryCounts(data) {
+    var el = document.getElementById('p536l-summary-counts');
+    if (!el) return;
+    var counts = data.counts || {};
+    el.innerHTML = Object.keys(SECTION_LABELS_P536L).map(function(key) {
+      return '<div style="font-size:12px;color:#8b949e">' + textP536L(SECTION_LABELS_P536L[key]) +
+        '：<b style="color:#c9d1d9">' + textP536L(counts[key] != null ? counts[key] : 0) + '</b></div>';
+    }).join('');
+  }
+
+  function renderStableAndSpike(rows, tbodyId) {
+    var tbody = document.getElementById(tbodyId);
+    if (!tbody) return;
+    tbody.innerHTML = (rows || []).map(function(r) {
+      return '<tr>' +
+        '<td style="padding:4px 8px">' + textP536L(LOTTERY_LABELS_P536L[r.lottery_type] || r.lottery_type) + '</td>' +
+        '<td style="padding:4px 8px">' + textP536L(r.window != null ? String(r.window) + '期' : null) + '</td>' +
+        '<td style="padding:4px 8px">' + textP536L(r.strategy_id) + '</td>' +
+        '<td style="padding:4px 8px">' + textP536L(r.feature_family) + '</td>' +
+        '<td style="text-align:right;padding:4px 8px">' + textP536L(r.support_draws) + '</td>' +
+        '<td style="text-align:right;padding:4px 8px">' + fmtLiftP536L(r.lift) + '</td>' +
+      '</tr>';
+    }).join('');
+  }
+
+  function renderCombination(rows) {
+    var tbody = document.getElementById('p536l-combo-tbody');
+    if (!tbody) return;
+    tbody.innerHTML = (rows || []).map(function(r) {
+      return '<tr>' +
+        '<td style="padding:4px 8px">' + textP536L(LOTTERY_LABELS_P536L[r.lottery_type] || r.lottery_type) + '</td>' +
+        '<td style="padding:4px 8px">' + textP536L(r.combo_id) + '</td>' +
+        '<td style="text-align:right;padding:4px 8px">' + textP536L(r.stability_rank) + '</td>' +
+        '<td style="text-align:right;padding:4px 8px">' + textP536L(r.windows_present_count) + '</td>' +
+      '</tr>';
+    }).join('');
+  }
+
+  function renderCrossLottery(rows) {
+    var el = document.getElementById('p536l-cross-lottery-list');
+    if (!el) return;
+    el.innerHTML = (rows || []).map(function(r) {
+      var lotteryParts = Object.keys(r.lotteries || {}).map(function(lt) {
+        var stats = r.lotteries[lt] || {};
+        return textP536L(LOTTERY_LABELS_P536L[lt] || lt) + ' ' + fmtLiftP536L(stats.avg_any_main_hit_lift);
+      });
+      return '<div style="padding:4px 0;border-bottom:1px solid rgba(255,255,255,.06)">' +
+        '<b>' + textP536L(r.feature_family) + '</b>' +
+        ' · pick_k=' + textP536L(r.pick_k) +
+        ' · ' + textP536L(r.window != null ? String(r.window) + '期' : null) +
+        ' — ' + lotteryParts.join(' / ') +
+      '</div>';
+    }).join('');
+  }
+
+  function renderProvenanceDetail(data) {
+    var el = document.getElementById('p536l-provenance-detail');
+    if (!el) return;
+    var prov = data.provenance_and_limits || {};
+    var parts = [];
+    if (prov.derived_from_artifact) parts.push('來源 artifact / source: ' + escP536L(prov.derived_from_artifact));
+    if (prov.derived_from_task_id) parts.push('來源任務 / source task: ' + escP536L(prov.derived_from_task_id));
+    if (prov.source_data_hash_sha256) {
+      parts.push('data_hash: ' + escP536L(String(prov.source_data_hash_sha256).slice(0, 16)) + '…');
+    }
+    var html = parts.join(' · ');
+    if (Array.isArray(prov.limitations) && prov.limitations.length) {
+      html += '<ul style="margin:6px 0 0 18px;padding:0">' +
+        prov.limitations.map(function(l) { return '<li>' + escP536L(l) + '</li>'; }).join('') +
+        '</ul>';
+    }
+    el.innerHTML = html;
+  }
+
+  function loadP536L() {
+    var base = (typeof window !== 'undefined' && window.API_BASE ? String(window.API_BASE) : '').replace(/\/$/, '');
+    setStatus('載入中…');
+    fetch(base + '/api/replay/lift-candidate-shortlist')
+      .then(function(r) { return r.json(); })
+      .then(function(data) {
+        renderProvenance(data);
+        renderSummaryCounts(data);
+        renderStableAndSpike(data.stable_300_750_review_candidates, 'p536l-stable-tbody');
+        renderStableAndSpike(data.short_window_spike_review_candidates, 'p536l-spike-tbody');
+        renderCombination(data.combination_review_candidates);
+        renderCrossLottery(data.cross_lottery_review_candidates);
+        renderProvenanceDetail(data);
+        setStatus('');
+      })
+      .catch(function(e) {
+        setStatus('載入失敗：' + e.message);
+      });
+  }
+
+  function initP536L() {
+    var btn = document.getElementById('p536l-load-btn');
+    if (btn) btn.addEventListener('click', loadP536L);
+  }
+
+  initP536L();
 })();
 
 // ===== P258O D3 STRATEGY STATUS / CONTRACT AUDIT (read-only, artifact-backed) =====

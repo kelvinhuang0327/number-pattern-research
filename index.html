@@ -7823,12 +7823,15 @@
 
   // P526A_FAST: read-only status counts for a selected existing Replay run.
   // P526B_FAST: expose status-count denominator and run sample-scope metadata.
+  // P531_FAST: expose existing replay-run data hash provenance.
   function formatReplayRunScope(run, countTotal) {
     var scope = String(run && run.strategy_scope || 'UNKNOWN_SCOPE');
     var version = String(run && run.generator_version || 'UNKNOWN_VERSION');
+    var dataHash = run && run.data_hash != null ? String(run.data_hash).trim() : '';
+    var hashContext = dataHash ? ' · data_hash=' + dataHash : '';
     var notes = run && run.notes ? String(run.notes) : '無 run notes';
     return '狀態計數分母=' + countTotal.toLocaleString() + ' rows · scope=' + scope +
-      ' · generator=' + version + ' · notes=' + notes;
+      ' · generator=' + version + hashContext + ' · notes=' + notes;
   }
 
   function renderReplayRunStatus(payload) {
@@ -7843,6 +7846,7 @@
       return status + ' ' + (Number(counts[status]) || 0).toLocaleString() + ' 筆';
     });
     if (statusDetail) {
+      // textContent safely renders API-provided provenance without HTML interpretation.
       statusDetail.textContent = 'Run #' + String(run.id == null ? '?' : run.id) +
         ' · ' + String(run.status || 'UNKNOWN') + ' · ' +
         (countLabels.length ? countLabels.join(' / ') : '沒有狀態計數') + ' · ' +

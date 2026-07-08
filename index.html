@@ -4099,6 +4099,7 @@
                 <option value="OBSERVATION">🟡 OBSERVATION</option>
                 <option value="RETIRED">⚪ RETIRED</option>
               </select>
+              <button id="refresh-p259a-overview-btn" class="btn btn-secondary btn-sm" type="button">刷新回放總覽</button>
             </div>
 
             <!-- Summary bar -->
@@ -7094,9 +7095,11 @@
     var loadingEl = document.getElementById('p259a-loading');
     var errorEl   = document.getElementById('p259a-error');
     var emptyEl   = document.getElementById('p259a-empty');
+    var refresh   = document.getElementById('refresh-p259a-overview-btn');
     if (loadingEl) loadingEl.style.display = 'block';
     if (errorEl)   errorEl.style.display   = 'none';
     if (emptyEl)   emptyEl.style.display   = 'none';
+    if (refresh)   refresh.disabled = true;
 
     var bi = (betIndex === undefined) ? _p259aBetIndex : betIndex;
     // P262B: coverage_mode=true surfaces orphan / mismatch / no-row strategies too.
@@ -7115,6 +7118,9 @@
           errorEl.style.display = 'block';
           errorEl.textContent = '⚠️ 載入失敗：' + e.message;
         }
+      })
+      .finally(function() {
+        if (refresh) refresh.disabled = false;
       });
   }
 
@@ -7148,6 +7154,10 @@
       if (el) el.addEventListener('change', function() {
         if (_p259aData) renderRows(_p259aData.rows || []);
       });
+    });
+    var refresh = document.getElementById('refresh-p259a-overview-btn');
+    if (refresh) refresh.addEventListener('click', function() {
+      p259aLoad(_p259aBetIndex);
     });
 
     // Auto-load when section becomes active

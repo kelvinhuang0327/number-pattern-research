@@ -1564,12 +1564,8 @@ export class AutoLearningManager {
                 btn.disabled = true;
                 btn.innerHTML = '⏳ 優化中...';
             }
-            if (progressDiv) {
-                progressDiv.style.display = 'block';
-            }
-            if (resultDiv) {
-                resultDiv.style.display = 'none';
-            }
+            this.setAdvancedPanelVisible(progressDiv, true);
+            this.setAdvancedPanelVisible(resultDiv, false);
 
             console.log('🚀 開始多階段優化...');
             this.uiManager.showNotification(
@@ -1607,7 +1603,7 @@ export class AutoLearningManager {
 
             // 隱藏進度，恢復按鈕
             const progressDiv = document.getElementById('advanced-optimization-progress');
-            if (progressDiv) progressDiv.style.display = 'none';
+            this.setAdvancedPanelVisible(progressDiv, false);
 
             const btn = document.getElementById('advanced-multi-stage-btn');
             if (btn) {
@@ -1654,12 +1650,8 @@ export class AutoLearningManager {
                 btn.disabled = true;
                 btn.innerHTML = '⏳ 優化中...';
             }
-            if (progressDiv) {
-                progressDiv.style.display = 'block';
-            }
-            if (resultDiv) {
-                resultDiv.style.display = 'none';
-            }
+            this.setAdvancedPanelVisible(progressDiv, true);
+            this.setAdvancedPanelVisible(resultDiv, false);
 
             console.log('🔍 開始自適應窗口優化...');
             this.uiManager.showNotification(
@@ -1697,7 +1689,7 @@ export class AutoLearningManager {
 
             // 隱藏進度，恢復按鈕
             const progressDiv = document.getElementById('advanced-optimization-progress');
-            if (progressDiv) progressDiv.style.display = 'none';
+            this.setAdvancedPanelVisible(progressDiv, false);
 
             const btn = document.getElementById('advanced-adaptive-window-btn');
             if (btn) {
@@ -1732,6 +1724,15 @@ export class AutoLearningManager {
             const methodName = method === 'multi_stage' ? '多階段優化' : '自適應窗口優化';
             progressTitle.textContent = `${methodName}進行中...`;
         }
+    }
+
+    setAdvancedPanelVisible(panel, visible) {
+        if (!panel) {
+            return;
+        }
+
+        panel.classList.toggle('ui-hidden', !visible);
+        panel.style.display = visible ? 'block' : 'none';
     }
 
     /**
@@ -1839,7 +1840,7 @@ export class AutoLearningManager {
 
                 // 恢復UI
                 const progressDiv = document.getElementById('advanced-optimization-progress');
-                if (progressDiv) progressDiv.style.display = 'none';
+                this.setAdvancedPanelVisible(progressDiv, false);
 
                 const btn = document.getElementById(
                     method === 'multi_stage' ? 'advanced-multi-stage-btn' : 'advanced-adaptive-window-btn'
@@ -1862,8 +1863,8 @@ export class AutoLearningManager {
         const resultDiv = document.getElementById('advanced-optimization-result');
 
         // 隱藏進度，顯示結果
-        if (progressDiv) progressDiv.style.display = 'none';
-        if (resultDiv) resultDiv.style.display = 'block';
+        this.setAdvancedPanelVisible(progressDiv, false);
+        this.setAdvancedPanelVisible(resultDiv, true);
 
         // 更新結果數據
         const fitnessEl = document.getElementById('advanced-result-fitness');
@@ -1974,7 +1975,7 @@ export class AutoLearningManager {
 
             // 顯示加載狀態
             content.innerHTML = '<div style="text-align: center; padding: 20px;">⏳ 正在載入優化結果...</div>';
-            panel.style.display = 'block';
+            this.setAdvancedPanelVisible(panel, true);
 
             // 調用後端 API
             const response = await fetch(

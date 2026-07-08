@@ -1012,6 +1012,23 @@
 
                     <div class="af-cards">
 
+                        <!-- P536A_FAST: read-only official source health panel -->
+                        <div class="af-card">
+                            <div class="af-card-title">
+                                <i data-lucide="activity" style="width:15px;height:15px;"></i>
+                                官網來源狀態
+                            </div>
+                            <p style="font-size:.78rem;color:#8b949e;margin:0 0 12px;">
+                                檢查台灣彩券官網來源是否可讀取（不查詢 DB、不寫入）
+                            </p>
+                            <button class="btn af-btn af-btn-primary" id="af-source-health-btn">
+                                <i data-lucide="radio-tower" style="width:13px;height:13px;vertical-align:middle;margin-right:4px;"></i>
+                                檢查來源
+                            </button>
+                            <div id="af-source-health-status" class="af-status"></div>
+                            <div id="af-source-health-results" style="overflow-x:auto;margin-top:6px;"></div>
+                        </div>
+
                         <!-- ── 1. 自動抓取最新開獎 ── -->
                         <div class="af-card">
                             <div class="af-card-title">

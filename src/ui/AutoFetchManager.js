@@ -1,7 +1,8 @@
 /**
  * AutoFetchManager — 自動抓取 / 掃描缺漏 / 補入回填 UI 控制器
  *
- * 管理三個面板：
+ * 管理四個面板：
+ *   0. 官網來源狀態   (ingest status)
  *   1. 自動抓取最新開獎 (fetch-latest)
  *   2. 掃描缺漏期數   (scan-missing)
  *   3. 自動補入缺漏   (backfill)
@@ -31,6 +32,11 @@ export class AutoFetchManager {
     // ─── Element binding ────────────────────────────────────────────────
 
     _bindElements() {
+        // Source Health
+        this.sourceHealthBtn     = document.getElementById('af-source-health-btn');
+        this.sourceHealthStatus  = document.getElementById('af-source-health-status');
+        this.sourceHealthResults = document.getElementById('af-source-health-results');
+
         // Fetch Latest
         this.fetchTypeSelect   = document.getElementById('af-fetch-type');
         this.fetchInsertCheck  = document.getElementById('af-fetch-insert');
@@ -77,6 +83,7 @@ export class AutoFetchManager {
     }
 
     _bindEvents() {
+        this.sourceHealthBtn?.addEventListener('click', () => this._onSourceHealth());
         this.fetchBtn?.addEventListener('click',      () => this._onFetchLatest());
         this.fetchConfirmApply?.addEventListener('click', () => this._confirmFetchLatestModal());
         this.fetchConfirmCancel?.addEventListener('click', () => this._closeFetchLatestConfirmModal());
@@ -99,6 +106,76 @@ export class AutoFetchManager {
 
         // Auto-load log on init
         this._loadLog();
+    }
+
+    // ─── Source Health ─────────────────────────────────────────────────
+
+    // P536A_FAST: read-only source health panel for existing ingest status endpoint.
+    async _onSourceHealth() {
+        this._setBtnLoading(this.sourceHealthBtn, true);
+        this._setStatus(this.sourceHealthStatus, 'loading', '⏳ 正在檢查台灣彩券官網來源...');
+        if (this.sourceHealthResults) this.sourceHealthResults.innerHTML = '';
+
+        try {
+            const res = await fetch(getApiUrl('/api/ingest/status'));
+            const json = await res.json();
+
+            if (!res.ok) {
+                this._setStatus(this.sourceHealthStatus, 'error',
+                    `❌ 來源狀態讀取失敗：${json.detail || res.statusText}`);
+                return;
+            }
+
+            const sources = json.sources || {};
+            const okCount = Object.values(sources).filter(s => s?.ok).length;
+            const total = Object.keys(sources).length;
+            const allOk = Boolean(json.overall_ok);
+            this._setStatus(this.sourceHealthStatus, allOk ? 'success' : 'warn',
+                allOk
+                    ? `✅ ${okCount}/${total} 個官網來源可讀取`
+                    : `⚠️ ${okCount}/${total} 個官網來源可讀取，請查看明細`);
+
+            if (this.sourceHealthResults) {
+                this.sourceHealthResults.innerHTML = this._buildSourceHealthHtml(sources);
+            }
+        } catch (err) {
+            this._setStatus(this.sourceHealthStatus, 'error', `❌ 網路錯誤：${err.message}`);
+        } finally {
+            this._setBtnLoading(this.sourceHealthBtn, false);
+        }
+    }
+
+    _buildSourceHealthHtml(sources) {
+        const rows = Object.entries(sources).map(([lt, source]) => {
+            const label = LOTTERY_LABELS[lt] || lt;
+            const latest = source?.latest_draw || {};
+            const statusText = source?.ok ? '✅ 可讀取' : '❌ 無法讀取';
+            const latestDraw = latest.draw || '—';
+            const latestDate = latest.date || '—';
+            const parsedCount = source?.parsed_count ?? '—';
+            const error = source?.error || '';
+
+            return `
+            <tr>
+              <td><strong>${_esc(label)}</strong></td>
+              <td>${statusText}</td>
+              <td>${_esc(latestDraw)}</td>
+              <td class="af-muted">${_esc(latestDate)}</td>
+              <td>${_esc(parsedCount)}</td>
+              <td class="af-err">${_esc(error)}</td>
+            </tr>`;
+        }).join('');
+
+        return `
+        <table class="af-scan-table">
+          <thead>
+            <tr>
+              <th>彩種</th><th>來源狀態</th><th>最新期</th>
+              <th>日期</th><th>解析筆數</th><th>錯誤</th>
+            </tr>
+          </thead>
+          <tbody>${rows || '<tr><td colspan="6" class="af-muted" style="text-align:center">無來源狀態</td></tr>'}</tbody>
+        </table>`;
     }
 
     // ─── Fetch Latest ───────────────────────────────────────────────────

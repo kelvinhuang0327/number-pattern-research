@@ -70,6 +70,24 @@ def test_script_fetches_the_new_readonly_route_only():
     assert "method:" not in script
 
 
+def test_script_treats_non_ok_route_response_as_error_status():
+    script = _script()
+    assert "if (r.ok) return r.json();" in script
+    assert "throw new Error(getErrorMessageP536L(data, 'HTTP ' + r.status));" in script
+    assert "setStatus('載入失敗：' + (e && e.message ? e.message : 'unknown error'))" in script
+
+
+def test_script_uses_route_json_error_detail_without_inner_html():
+    script = _script()
+    error_helper = script.split("function getErrorMessageP536L", 1)[1].split(
+        "function renderProvenance", 1
+    )[0]
+    assert "if (data && data.detail) return String(data.detail);" in error_helper
+    assert "if (data && data.message) return String(data.message);" in error_helper
+    assert "if (data && data.error) return String(data.error);" in error_helper
+    assert "innerHTML" not in error_helper
+
+
 def test_script_does_not_add_db_prediction_or_mutation_behavior():
     script = _script()
     for forbidden in (

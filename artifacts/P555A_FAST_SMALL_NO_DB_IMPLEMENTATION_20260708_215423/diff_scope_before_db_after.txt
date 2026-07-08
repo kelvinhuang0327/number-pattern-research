@@ -1,0 +1,7 @@
+# Git status
+ M index.html
+ M tests/test_p536l_shortlist_ui_contract.py
+?? artifacts/P555A_FAST_SMALL_NO_DB_IMPLEMENTATION_20260708_215423/
+# Diff name-status
+M	index.html
+M	tests/test_p536l_shortlist_ui_contract.py

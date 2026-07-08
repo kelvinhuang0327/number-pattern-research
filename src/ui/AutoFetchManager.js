@@ -51,6 +51,14 @@ export class AutoFetchManager {
         this.bfBtn             = document.getElementById('af-bf-btn');
         this.bfStatus          = document.getElementById('af-bf-status');
         this.bfResults         = document.getElementById('af-bf-results');
+        this.bfConfirmModal    = document.getElementById('af-bf-confirm-modal');
+        this.bfConfirmSummary  = document.getElementById('af-bf-confirm-summary');
+        this.bfConfirmToken    = document.getElementById('af-bf-confirm-token');
+        this.bfConfirmBy       = document.getElementById('af-bf-confirm-requested-by');
+        this.bfConfirmReason   = document.getElementById('af-bf-confirm-reason');
+        this.bfConfirmApply    = document.getElementById('af-bf-confirm-apply');
+        this.bfConfirmCancel   = document.getElementById('af-bf-confirm-cancel');
+        this.bfConfirmClose    = document.getElementById('af-bf-confirm-close');
 
         // Log panel
         this.logRefreshBtn     = document.getElementById('af-log-refresh');
@@ -66,6 +74,9 @@ export class AutoFetchManager {
         this.fetchBtn?.addEventListener('click',      () => this._onFetchLatest());
         this.scanBtn?.addEventListener('click',       () => this._onScanMissing());
         this.bfBtn?.addEventListener('click',         () => this._onBackfill());
+        this.bfConfirmApply?.addEventListener('click', () => this._confirmBackfillModal());
+        this.bfConfirmCancel?.addEventListener('click', () => this._closeBackfillConfirmModal());
+        this.bfConfirmClose?.addEventListener('click', () => this._closeBackfillConfirmModal());
         this.logRefreshBtn?.addEventListener('click', () => { this._logOffset = 0; this._loadLog(); });
         this.logPrevBtn?.addEventListener('click',    () => this._logPagePrev());
         this.logNextBtn?.addEventListener('click',    () => this._logPageNext());
@@ -74,6 +85,7 @@ export class AutoFetchManager {
         this._logOffset   = 0;
         this._logPageSize = 20;
         this._logTotal    = 0;
+        this._pendingBackfillPayload = null;
 
         // Auto-load log on init
         this._loadLog();
@@ -237,6 +249,11 @@ export class AutoFetchManager {
         const lt     = this.bfTypeSelect?.value || 'BIG_LOTTO';
         const dryRun = this.bfDryRunCheck?.checked || false;
         const confirmed = this.bfConfirmCheck?.checked || false;
+        const payload = {
+            lottery_type: lt,
+            dry_run:      dryRun,
+            max_draws:    30,
+        };
 
         if (!dryRun && !confirmed) {
             this._setStatus(this.bfStatus, 'warn',
@@ -244,6 +261,63 @@ export class AutoFetchManager {
             return;
         }
 
+        if (!dryRun) {
+            this._openBackfillConfirmModal(payload);
+            return;
+        }
+
+        await this._submitBackfill(payload, true);
+    }
+
+    _openBackfillConfirmModal(payload) {
+        this._pendingBackfillPayload = payload;
+        if (this.bfConfirmSummary) {
+            const label = LOTTERY_LABELS[payload.lottery_type] || payload.lottery_type;
+            this.bfConfirmSummary.textContent = `${label} / dry_run=false / max_draws=${payload.max_draws}`;
+        }
+        if (this.bfConfirmToken) this.bfConfirmToken.value = '';
+        if (this.bfConfirmBy) this.bfConfirmBy.value = '';
+        if (this.bfConfirmReason) this.bfConfirmReason.value = '';
+        if (this.bfConfirmModal) {
+            this.bfConfirmModal.setAttribute('aria-hidden', 'false');
+            this.bfConfirmToken?.focus();
+        }
+    }
+
+    _closeBackfillConfirmModal() {
+        this._pendingBackfillPayload = null;
+        if (this.bfConfirmModal) {
+            this.bfConfirmModal.setAttribute('aria-hidden', 'true');
+        }
+    }
+
+    async _confirmBackfillModal() {
+        const token = (this.bfConfirmToken?.value || '').trim();
+        const requestedBy = (this.bfConfirmBy?.value || '').trim();
+        const reason = (this.bfConfirmReason?.value || '').trim();
+
+        if (!this._pendingBackfillPayload) {
+            this._closeBackfillConfirmModal();
+            return;
+        }
+        if (!token || !requestedBy || requestedBy === 'unknown' || !reason) {
+            this._setStatus(this.bfStatus, 'warn',
+                '⚠️ 非 Dry-Run 補入需要 confirm_token、requested_by 與 reason');
+            return;
+        }
+
+        const payload = {
+            ...this._pendingBackfillPayload,
+            apply_confirmed: true,
+            confirm_token: token,
+            requested_by: requestedBy,
+            reason,
+        };
+        this._closeBackfillConfirmModal();
+        await this._submitBackfill(payload, false);
+    }
+
+    async _submitBackfill(payload, dryRun) {
         this._setBtnLoading(this.bfBtn, true);
         this._setStatus(this.bfStatus, 'loading',
             dryRun ? '⏳ DRY-RUN 模式：預覽缺漏期數（不寫入）...'
@@ -251,17 +325,6 @@ export class AutoFetchManager {
         if (this.bfResults) this.bfResults.innerHTML = '';
 
         try {
-            const payload = {
-                lottery_type: lt,
-                dry_run:      dryRun,
-                max_draws:    30,
-            };
-            if (!dryRun && confirmed) {
-                payload.apply_confirmed  = true;
-                payload.confirm_token    = 'p255-write-confirm';
-                payload.requested_by     = 'ui-user';
-                payload.reason           = 'Manual backfill from UI';
-            }
             const res = await fetch(getApiUrl('/api/ingest/backfill'), {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },

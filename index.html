@@ -545,6 +545,8 @@
         .replay-result-badge--miss { display:inline-block;padding:1px 8px;border-radius:10px;font-size:11px;font-weight:600;background:#f6f8fa;border:1px solid #d0d7de;color:#57606a; }
         .p260a-range-btn { font-size:11px;padding:2px 8px;border-radius:4px;border:1px solid #30363d;background:#161b22;color:#8b949e;cursor:pointer; }
         .p260a-range-btn:hover,.p260a-range-btn.active { border-color:#1f6feb;color:#58a6ff;background:#0d1117; }
+        /* P536H — Strategy Lift Extension review presets (client-side only) */
+        .p536h-preset-btn.active { border-color:#1f6feb;color:#58a6ff;background:#0d1117; }
         /* P261A — row expand / collapse multi-bet detail */
         .p261a-expand-btn { font-size:11px;padding:2px 10px;border-radius:4px;border:1px solid #30363d;background:#0d1117;color:#58a6ff;cursor:pointer;white-space:nowrap; }
         .p261a-expand-btn:hover { border-color:#1f6feb;background:#161b22; }
@@ -4014,8 +4016,20 @@
             <div id="p536e-export-status" style="display:none;font-size:12px;color:#8b949e;margin-bottom:10px"></div>
             <textarea id="p536e-export-fallback" style="display:none;width:100%;height:80px;font-size:11px;margin-bottom:10px;background:#161b22;border:1px solid #30363d;color:#c9d1d9" readonly></textarea>
 
+            <!-- P536H: Review presets (client-side only; narrow the already-loaded response, no refetch) -->
+            <div id="p536h-preset-bar" style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:8px;align-items:center">
+              <label style="font-size:12px;color:#8b949e">審視預設 / Review Presets：</label>
+              <button id="p536h-preset-stable" type="button" class="btn-sm btn-secondary p536h-preset-btn">穩定 300/750 候選 / Stable 300/750</button>
+              <button id="p536h-preset-spike" type="button" class="btn-sm btn-secondary p536h-preset-btn">短期高峰 / Short-term Spike (50)</button>
+              <button id="p536h-preset-combo" type="button" class="btn-sm btn-secondary p536h-preset-btn">組合候選 / Combination Candidates</button>
+            </div>
+            <div id="p536h-preset-note" style="font-size:11px;color:#8b949e;margin-bottom:16px;line-height:1.5">
+              僅供歷史回放審視預設；非預測或晉升判準。<br>
+              Historical replay review preset only; not a prediction or promotion gate.
+            </div>
+
             <div class="card" style="padding:14px;margin-bottom:18px">
-              <div style="font-weight:700;margin-bottom:10px;font-size:0.9rem">各彩種 × 視窗 最佳 Lift 儲存格 <span style="color:#58a6ff;font-size:0.8em">Top Lift Cells by Lottery × Window</span></div>
+              <div style="font-weight:700;margin-bottom:10px;font-size:0.9rem">各彩種 × 視窗 最佳 Lift 儲存格 <span style="color:#58a6ff;font-size:0.8em">Top Lift Cells by Lottery × Window</span><span id="p536h-spike-badge-cells" style="display:none;font-size:11px;color:#e3b341;margin-left:8px">（50期短窗參考用，非穩定型態 / 50-window review only, not a stable pattern）</span></div>
               <div style="overflow-x:auto">
                 <table style="width:100%;border-collapse:collapse;font-size:0.8rem">
                   <thead>
@@ -4036,7 +4050,7 @@
             </div>
 
             <div class="card" style="padding:14px;margin-bottom:18px">
-              <div style="font-weight:700;margin-bottom:10px;font-size:0.9rem">跨彩種標準化 Lift <span style="color:#58a6ff;font-size:0.8em">Cross-Lottery Normalized Lift</span></div>
+              <div style="font-weight:700;margin-bottom:10px;font-size:0.9rem">跨彩種標準化 Lift <span style="color:#58a6ff;font-size:0.8em">Cross-Lottery Normalized Lift</span><span id="p536h-spike-badge-cross" style="display:none;font-size:11px;color:#e3b341;margin-left:8px">（50期短窗參考用，非穩定型態 / 50-window review only, not a stable pattern）</span></div>
               <div id="p536e-cross-lottery-list" style="font-size:0.8rem;line-height:1.8"></div>
             </div>
 
@@ -4050,6 +4064,7 @@
                       <th style="text-align:left;padding:4px 8px">彩種</th>
                       <th style="text-align:left;padding:4px 8px">組合</th>
                       <th style="text-align:right;padding:4px 8px">涵蓋視窗數</th>
+                      <th style="text-align:right;padding:4px 8px">平均中獎訊號 Lift（可用視窗）</th>
                     </tr>
                   </thead>
                   <tbody id="p536e-stability-tbody"></tbody>
@@ -6823,6 +6838,7 @@
   };
 
   var _p536eData = null;
+  var _p536hPreset = null; // null | 'stable_300_750' | 'spike_50' | 'combo'
 
   function fmtPct(v) {
     if (v === null || v === undefined) return '—';
@@ -6914,6 +6930,7 @@
         '<td style="padding:4px 8px">' + textP536E(LOTTERY_LABELS_P536E[r.lottery_type] || r.lottery_type) + '</td>' +
         '<td style="padding:4px 8px">' + textP536E(r.combo_id) + '</td>' +
         '<td style="text-align:right;padding:4px 8px">' + textP536E(r.windows_present_count) + '</td>' +
+        '<td style="text-align:right;padding:4px 8px">' + fmtLift(r.avg_prize_signal_lift_across_present_windows) + '</td>' +
       '</tr>';
     }).join('');
   }
@@ -6935,6 +6952,42 @@
     return !search || String(text || '').toLowerCase().indexOf(search) !== -1;
   }
 
+  // P536H review presets: narrow rows already in _p536eData further. Presets
+  // never fetch new data, never recompute P536C, and are not a prediction or
+  // promotion gate — see the disclaimer rendered next to the preset buttons.
+  function passesPresetTopCellP536H(r) {
+    if (_p536hPreset === 'stable_300_750') {
+      return (r.window === 300 || r.window === 750) && r.any_main_hit_lift != null && r.any_main_hit_lift > 1;
+    }
+    if (_p536hPreset === 'spike_50') {
+      return r.window === 50;
+    }
+    return true;
+  }
+
+  function passesPresetCrossLotteryP536H(r) {
+    if (_p536hPreset === 'stable_300_750') {
+      if (r.window !== 300 && r.window !== 750) return false;
+      var lotteries = r.lotteries || {};
+      return Object.keys(lotteries).some(function(lt) {
+        var stats = lotteries[lt] || {};
+        if (stats.avg_any_main_hit_log10_lift != null) return stats.avg_any_main_hit_log10_lift > 0;
+        return stats.avg_any_main_hit_lift != null && stats.avg_any_main_hit_lift > 1;
+      });
+    }
+    if (_p536hPreset === 'spike_50') {
+      return r.window === 50;
+    }
+    return true;
+  }
+
+  function passesPresetStabilityP536H(r) {
+    if (_p536hPreset === 'combo') {
+      return (r.windows_present_count || 0) >= 2;
+    }
+    return true;
+  }
+
   function getFilteredTopCellsP536E() {
     var f = getP536EFilters();
     var rows = (_p536eData && _p536eData.top_lift_cells) || [];
@@ -6943,6 +6996,7 @@
       if (f.window !== 'ALL' && String(r.window) !== f.window) return false;
       if (f.minLift != null && !isNaN(f.minLift) && !(r.any_main_hit_lift != null && r.any_main_hit_lift >= f.minLift)) return false;
       if (f.search && !matchesSearchP536E(r.strategy_id, f.search) && !matchesSearchP536E(r.feature_family, f.search)) return false;
+      if (!passesPresetTopCellP536H(r)) return false;
       return true;
     });
   }
@@ -6954,6 +7008,7 @@
       if (f.window !== 'ALL' && String(r.window) !== f.window) return false;
       if (f.lottery !== 'ALL' && !(r.lotteries && Object.prototype.hasOwnProperty.call(r.lotteries, f.lottery))) return false;
       if (f.search && !matchesSearchP536E(r.feature_family, f.search)) return false;
+      if (!passesPresetCrossLotteryP536H(r)) return false;
       return true;
     });
   }
@@ -6964,6 +7019,7 @@
     return rows.filter(function(r) {
       if (f.lottery !== 'ALL' && r.lottery_type !== f.lottery) return false;
       if (f.search && !matchesSearchP536E(r.combo_id, f.search)) return false;
+      if (!passesPresetStabilityP536H(r)) return false;
       return true;
     });
   }
@@ -6973,6 +7029,34 @@
     renderTopCells({ top_lift_cells: getFilteredTopCellsP536E() });
     renderCrossLottery({ cross_lottery_normalized_lift_summary: getFilteredCrossLotteryP536E() });
     renderStabilityRank({ combination_stability_rank_summary: getFilteredStabilityRankP536E() });
+    updatePresetButtonsP536H();
+  }
+
+  function updatePresetButtonsP536H() {
+    var map = {
+      'stable_300_750': 'p536h-preset-stable',
+      'spike_50': 'p536h-preset-spike',
+      'combo': 'p536h-preset-combo'
+    };
+    Object.keys(map).forEach(function(key) {
+      var btn = document.getElementById(map[key]);
+      if (!btn) return;
+      if (_p536hPreset === key) {
+        btn.classList.add('active');
+      } else {
+        btn.classList.remove('active');
+      }
+    });
+    var showSpikeBadge = _p536hPreset === 'spike_50' ? '' : 'none';
+    var spikeBadgeCells = document.getElementById('p536h-spike-badge-cells');
+    var spikeBadgeCross = document.getElementById('p536h-spike-badge-cross');
+    if (spikeBadgeCells) spikeBadgeCells.style.display = showSpikeBadge;
+    if (spikeBadgeCross) spikeBadgeCross.style.display = showSpikeBadge;
+  }
+
+  function togglePresetP536H(name) {
+    _p536hPreset = (_p536hPreset === name) ? null : name;
+    renderFilteredP536E();
   }
 
   function resetFiltersP536E() {
@@ -6984,6 +7068,7 @@
     if (windowEl) windowEl.value = 'ALL';
     if (minLiftEl) minLiftEl.value = '';
     if (searchEl) searchEl.value = '';
+    _p536hPreset = null;
     renderFilteredP536E();
   }
 
@@ -7027,7 +7112,7 @@
       lines.push([
         'combination_stability_rank', r.lottery_type, '', '', '',
         r.combo_id, '', '', '',
-        '', r.stability_rank, r.windows_present_count
+        r.avg_prize_signal_lift_across_present_windows, r.stability_rank, r.windows_present_count
       ].map(csvEscapeP536E).join(','));
       rowCount++;
     });
@@ -7104,6 +7189,15 @@
 
     var exportBtn = document.getElementById('p536e-export-csv');
     if (exportBtn) exportBtn.addEventListener('click', exportVisibleCsvP536E);
+
+    [
+      ['p536h-preset-stable', 'stable_300_750'],
+      ['p536h-preset-spike', 'spike_50'],
+      ['p536h-preset-combo', 'combo']
+    ].forEach(function(pair) {
+      var el = document.getElementById(pair[0]);
+      if (el) el.addEventListener('click', function() { togglePresetP536H(pair[1]); });
+    });
   }
 
   initP536E();

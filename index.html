@@ -1113,6 +1113,31 @@
 
                     </div><!-- /.af-cards -->
 
+                    <!-- P535A/G03: fetch-latest write-capable insert confirmation modal -->
+                    <div id="af-fetch-confirm-modal" class="af-confirm-modal" role="dialog" aria-modal="true" aria-hidden="true" aria-labelledby="af-fetch-confirm-title">
+                        <div class="af-confirm-dialog">
+                            <div class="af-confirm-header">
+                                <div id="af-fetch-confirm-title" class="af-confirm-title">抓取並寫入確認</div>
+                                <button id="af-fetch-confirm-close" class="af-confirm-close" type="button" aria-label="關閉">×</button>
+                            </div>
+                            <div class="af-confirm-warning">
+                                這會送出 <code>insert_if_new=true</code> 且 <code>dry_run=false</code>。請先用 Dry-Run 預覽；此 UI 只做一次性人工確認，不會繞過後端資料寫入 Gate。
+                            </div>
+                            <div class="af-row">
+                                <label>彩種 / 模式</label>
+                                <div id="af-fetch-confirm-summary" class="af-muted">—</div>
+                            </div>
+                            <div class="af-row">
+                                <label for="af-fetch-confirm-ack">確認文字</label>
+                                <input id="af-fetch-confirm-ack" type="text" autocomplete="off" placeholder="輸入 INSERT 以確認">
+                            </div>
+                            <div class="af-confirm-actions">
+                                <button id="af-fetch-confirm-cancel" class="btn btn-secondary" type="button">取消</button>
+                                <button id="af-fetch-confirm-apply" class="btn af-btn-secondary" type="button">抓取並寫入</button>
+                            </div>
+                        </div>
+                    </div>
+
                     <!-- P255E/G03: non-dry-run backfill one-time confirmation modal -->
                     <div id="af-bf-confirm-modal" class="af-confirm-modal" role="dialog" aria-modal="true" aria-hidden="true" aria-labelledby="af-bf-confirm-title">
                         <div class="af-confirm-dialog">

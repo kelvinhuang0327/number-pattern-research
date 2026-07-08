@@ -103,6 +103,8 @@ export class AutoFetchManager {
         this._logTotal    = 0;
         this._pendingFetchLatestPayload = null;
         this._pendingBackfillPayload = null;
+        this._fetchConfirmReturnFocus = null;
+        this._backfillConfirmReturnFocus = null;
 
         // Auto-load log on init
         this._loadLog();
@@ -200,6 +202,7 @@ export class AutoFetchManager {
 
     _openFetchLatestConfirmModal(payload) {
         this._pendingFetchLatestPayload = payload;
+        this._fetchConfirmReturnFocus = document.activeElement;
         if (this.fetchConfirmSummary) {
             const label = LOTTERY_LABELS[payload.lottery_type] || payload.lottery_type;
             this.fetchConfirmSummary.textContent = `${label} / insert_if_new=true / dry_run=false`;
@@ -216,6 +219,7 @@ export class AutoFetchManager {
         if (this.fetchConfirmModal) {
             this.fetchConfirmModal.setAttribute('aria-hidden', 'true');
         }
+        this._restoreModalFocus('_fetchConfirmReturnFocus');
     }
 
     async _confirmFetchLatestModal() {
@@ -404,6 +408,7 @@ export class AutoFetchManager {
 
     _openBackfillConfirmModal(payload) {
         this._pendingBackfillPayload = payload;
+        this._backfillConfirmReturnFocus = document.activeElement;
         if (this.bfConfirmSummary) {
             const label = LOTTERY_LABELS[payload.lottery_type] || payload.lottery_type;
             this.bfConfirmSummary.textContent = `${label} / dry_run=false / max_draws=${payload.max_draws}`;
@@ -422,6 +427,7 @@ export class AutoFetchManager {
         if (this.bfConfirmModal) {
             this.bfConfirmModal.setAttribute('aria-hidden', 'true');
         }
+        this._restoreModalFocus('_backfillConfirmReturnFocus');
     }
 
     async _confirmBackfillModal() {
@@ -639,5 +645,13 @@ export class AutoFetchManager {
             delete btn.dataset.originalHtml;
         }
         btn.removeAttribute('aria-busy');
+    }
+
+    _restoreModalFocus(slot) {
+        const target = this[slot];
+        this[slot] = null;
+        if (target && typeof target.focus === 'function' && document.contains(target)) {
+            target.focus();
+        }
     }
 }

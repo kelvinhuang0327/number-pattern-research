@@ -4147,6 +4147,7 @@
                       <th style="text-align:left;padding:4px 8px">特徵族</th>
                       <th style="text-align:right;padding:4px 8px">樣本數</th>
                       <th style="text-align:right;padding:4px 8px">Lift</th>
+                      <th style="text-align:center;padding:4px 8px">詳情</th>
                     </tr>
                   </thead>
                   <tbody id="p536l-stable-tbody"></tbody>
@@ -4166,6 +4167,7 @@
                       <th style="text-align:left;padding:4px 8px">特徵族</th>
                       <th style="text-align:right;padding:4px 8px">樣本數</th>
                       <th style="text-align:right;padding:4px 8px">Lift</th>
+                      <th style="text-align:center;padding:4px 8px">詳情</th>
                     </tr>
                   </thead>
                   <tbody id="p536l-spike-tbody"></tbody>
@@ -4183,6 +4185,7 @@
                       <th style="text-align:left;padding:4px 8px">組合</th>
                       <th style="text-align:right;padding:4px 8px">穩定排名</th>
                       <th style="text-align:right;padding:4px 8px">涵蓋視窗數</th>
+                      <th style="text-align:center;padding:4px 8px">詳情</th>
                     </tr>
                   </thead>
                   <tbody id="p536l-combo-tbody"></tbody>
@@ -7531,6 +7534,118 @@
     return escP536L(v === null || v === undefined || v === '' ? '—' : v);
   }
 
+  // P536P: row-level candidate detail panel — formats fields already present
+  // in the loaded /api/replay/lift-candidate-shortlist response only.
+  function fmtPctP536P(v) {
+    if (v === null || v === undefined) return '—';
+    return (Number(v) * 100).toFixed(2) + '%';
+  }
+
+  function fmtNumP536P(v, decimals) {
+    if (v === null || v === undefined) return '—';
+    return Number(v).toFixed(decimals == null ? 4 : decimals);
+  }
+
+  function detailFieldRowP536P(label, valueHtml) {
+    return '<div><span style="color:#8b949e">' + escP536L(label) + '：</span>' + valueHtml + '</div>';
+  }
+
+  var P536P_CAUTION_TEXT =
+    '<div style="margin-top:6px;color:#e3b341">Historical replay review detail only; not a prediction or promotion gate.</div>';
+
+  function buildStableSpikeDetailHtmlP536P(r, sectionLabel) {
+    var rows = [];
+    rows.push(detailFieldRowP536P('分類 / Section', textP536L(sectionLabel)));
+    rows.push(detailFieldRowP536P('彩種 / Lottery', textP536L(LOTTERY_LABELS_P536L[r.lottery_type] || r.lottery_type)));
+    rows.push(detailFieldRowP536P('視窗 / Window', textP536L(r.window != null ? String(r.window) + '期' : null)));
+    rows.push(detailFieldRowP536P('策略 / Strategy', textP536L(r.strategy_id)));
+    rows.push(detailFieldRowP536P('特徵族 / Feature Family', textP536L(r.feature_family)));
+    if (r.pick_k !== undefined) rows.push(detailFieldRowP536P('Pick K', textP536L(r.pick_k)));
+    if (r.metric !== undefined) rows.push(detailFieldRowP536P('Metric', textP536L(r.metric)));
+    rows.push(detailFieldRowP536P('觀測率 / Observed Rate', fmtPctP536P(r.observed_rate)));
+    rows.push(detailFieldRowP536P('基準率 / Baseline Rate', fmtPctP536P(r.baseline_rate)));
+    rows.push(detailFieldRowP536P('Lift', fmtLiftP536L(r.lift)));
+    rows.push(detailFieldRowP536P('log10(Lift)', fmtNumP536P(r.log10_lift)));
+    rows.push(detailFieldRowP536P('樣本數 / Support Draws', textP536L(r.support_draws)));
+    rows.push(detailFieldRowP536P('納入原因 / Why Included', textP536L(r.why_included)));
+    rows.push(detailFieldRowP536P('注意事項 / Caution', textP536L(r.caution_label)));
+    rows.push(P536P_CAUTION_TEXT);
+    return rows.join('');
+  }
+
+  function buildComboDetailHtmlP536P(r) {
+    var rows = [];
+    rows.push(detailFieldRowP536P('分類 / Section', textP536L(SECTION_LABELS_P536L.combination_review_candidates)));
+    rows.push(detailFieldRowP536P('彩種 / Lottery', textP536L(LOTTERY_LABELS_P536L[r.lottery_type] || r.lottery_type)));
+    rows.push(detailFieldRowP536P('組合 / Combo ID', textP536L(r.combo_id)));
+    if (r.requested_budget !== undefined) rows.push(detailFieldRowP536P('注數 / Requested Budget', textP536L(r.requested_budget)));
+    if (r.metric !== undefined) rows.push(detailFieldRowP536P('Metric', textP536L(r.metric)));
+    rows.push(detailFieldRowP536P('涵蓋視窗 / Windows Present', textP536L(Array.isArray(r.windows_present) ? r.windows_present.join(', ') : r.windows_present)));
+    rows.push(detailFieldRowP536P('涵蓋視窗數 / Windows Present Count', textP536L(r.windows_present_count)));
+    rows.push(detailFieldRowP536P('穩定排名 / Stability Rank', textP536L(r.stability_rank)));
+    rows.push(detailFieldRowP536P(
+      '平均 Prize-Signal Lift',
+      r.avg_prize_signal_lift_across_present_windows == null ? '—' : fmtLiftP536L(r.avg_prize_signal_lift_across_present_windows)
+    ));
+    if (r.per_window && typeof r.per_window === 'object') {
+      var perWindowHtml = Object.keys(r.per_window).map(function(w) {
+        var pw = r.per_window[w] || {};
+        return '視窗' + escP536L(w) + '：prize_signal_rate=' + fmtPctP536P(pw.prize_signal_rate) +
+          ', prize_signal_lift=' + (pw.prize_signal_lift == null ? '—' : fmtLiftP536L(pw.prize_signal_lift)) +
+          ', any_main_hit_lift=' + (pw.any_main_hit_lift == null ? '—' : fmtLiftP536L(pw.any_main_hit_lift)) +
+          ', support_draws=' + textP536L(pw.support_draws);
+      }).join('<br>');
+      rows.push(detailFieldRowP536P('逐視窗明細 / Per-Window Detail', perWindowHtml));
+    }
+    rows.push(detailFieldRowP536P('納入原因 / Why Included', textP536L(r.why_included)));
+    rows.push(detailFieldRowP536P('注意事項 / Caution', textP536L(r.caution_label)));
+    rows.push(P536P_CAUTION_TEXT);
+    return rows.join('');
+  }
+
+  function buildCrossDetailHtmlP536P(r) {
+    var rows = [];
+    rows.push(detailFieldRowP536P('分類 / Section', textP536L(SECTION_LABELS_P536L.cross_lottery_review_candidates)));
+    rows.push(detailFieldRowP536P('特徵族 / Feature Family', textP536L(r.feature_family)));
+    if (r.pick_k !== undefined) rows.push(detailFieldRowP536P('Pick K', textP536L(r.pick_k)));
+    rows.push(detailFieldRowP536P('視窗 / Window', textP536L(r.window != null ? String(r.window) + '期' : null)));
+    var lotteries = r.lotteries || {};
+    var lotteryHtml = Object.keys(lotteries).map(function(lt) {
+      var s = lotteries[lt] || {};
+      return '<div style="margin-top:2px"><b>' + textP536L(LOTTERY_LABELS_P536L[lt] || lt) + '</b>：strategy_count=' + textP536L(s.strategy_count) +
+        ', avg_any_main_hit_lift=' + (s.avg_any_main_hit_lift == null ? '—' : fmtLiftP536L(s.avg_any_main_hit_lift)) +
+        ', avg_any_main_hit_log10_lift=' + fmtNumP536P(s.avg_any_main_hit_log10_lift) +
+        (s.avg_m2_plus_lift != null ? ', avg_m2_plus_lift=' + fmtLiftP536L(s.avg_m2_plus_lift) : '') +
+        (s.avg_m3_plus_lift != null ? ', avg_m3_plus_lift=' + fmtLiftP536L(s.avg_m3_plus_lift) : '') +
+        (s.avg_prize_signal_lift != null ? ', avg_prize_signal_lift=' + fmtLiftP536L(s.avg_prize_signal_lift) : '') +
+        (s.avg_prize_signal_log10_lift != null ? ', avg_prize_signal_log10_lift=' + fmtNumP536P(s.avg_prize_signal_log10_lift) : '') +
+      '</div>';
+    }).join('');
+    rows.push(detailFieldRowP536P('逐彩種明細 / Per-Lottery Detail', lotteryHtml));
+    rows.push(detailFieldRowP536P('納入原因 / Why Included', textP536L(r.why_included)));
+    rows.push(detailFieldRowP536P('注意事項 / Caution', textP536L(r.caution_label)));
+    rows.push(P536P_CAUTION_TEXT);
+    return rows.join('');
+  }
+
+  // Event delegation: container persists across re-renders, so this only
+  // needs to be bound once per container in initP536L().
+  function bindP536PToggle(containerId) {
+    var el = document.getElementById(containerId);
+    if (!el) return;
+    el.addEventListener('click', function(e) {
+      var target = e.target.closest('[data-p536p-toggle]');
+      if (!target || !el.contains(target)) return;
+      var toggleId = target.getAttribute('data-p536p-toggle');
+      var detailEl = document.getElementById('p536p-detail-' + toggleId);
+      if (!detailEl) return;
+      var isHidden = detailEl.style.display === 'none';
+      detailEl.style.display = isHidden ? '' : 'none';
+      var arrow = target.querySelector('.p536p-toggle-arrow');
+      if (arrow) arrow.textContent = isHidden ? '▾ 詳情' : '▸ 詳情';
+    });
+  }
+
   function setStatus(msg) {
     var el = document.getElementById('p536l-status');
     if (el) el.textContent = msg;
@@ -7564,17 +7679,24 @@
     }).join('');
   }
 
-  function renderStableAndSpike(rows, tbodyId) {
+  function renderStableAndSpike(rows, tbodyId, sectionLabel) {
     var tbody = document.getElementById(tbodyId);
     if (!tbody) return;
-    tbody.innerHTML = (rows || []).map(function(r) {
-      return '<tr>' +
+    tbody.innerHTML = (rows || []).map(function(r, idx) {
+      var toggleId = tbodyId + '-' + idx;
+      return '<tr class="p536p-row" data-p536p-toggle="' + toggleId + '" style="cursor:pointer">' +
         '<td style="padding:4px 8px">' + textP536L(LOTTERY_LABELS_P536L[r.lottery_type] || r.lottery_type) + '</td>' +
         '<td style="padding:4px 8px">' + textP536L(r.window != null ? String(r.window) + '期' : null) + '</td>' +
         '<td style="padding:4px 8px">' + textP536L(r.strategy_id) + '</td>' +
         '<td style="padding:4px 8px">' + textP536L(r.feature_family) + '</td>' +
         '<td style="text-align:right;padding:4px 8px">' + textP536L(r.support_draws) + '</td>' +
         '<td style="text-align:right;padding:4px 8px">' + fmtLiftP536L(r.lift) + '</td>' +
+        '<td class="p536p-toggle-arrow" style="text-align:center;padding:4px 8px;color:#58a6ff">▸ 詳情</td>' +
+      '</tr>' +
+      '<tr id="p536p-detail-' + toggleId + '" class="p536p-detail-row" style="display:none">' +
+        '<td colspan="7" style="padding:8px 12px;background:rgba(255,255,255,.03);font-size:11px;line-height:1.8">' +
+          buildStableSpikeDetailHtmlP536P(r, sectionLabel) +
+        '</td>' +
       '</tr>';
     }).join('');
   }
@@ -7582,12 +7704,19 @@
   function renderCombination(rows) {
     var tbody = document.getElementById('p536l-combo-tbody');
     if (!tbody) return;
-    tbody.innerHTML = (rows || []).map(function(r) {
-      return '<tr>' +
+    tbody.innerHTML = (rows || []).map(function(r, idx) {
+      var toggleId = 'p536l-combo-tbody-' + idx;
+      return '<tr class="p536p-row" data-p536p-toggle="' + toggleId + '" style="cursor:pointer">' +
         '<td style="padding:4px 8px">' + textP536L(LOTTERY_LABELS_P536L[r.lottery_type] || r.lottery_type) + '</td>' +
         '<td style="padding:4px 8px">' + textP536L(r.combo_id) + '</td>' +
         '<td style="text-align:right;padding:4px 8px">' + textP536L(r.stability_rank) + '</td>' +
         '<td style="text-align:right;padding:4px 8px">' + textP536L(r.windows_present_count) + '</td>' +
+        '<td class="p536p-toggle-arrow" style="text-align:center;padding:4px 8px;color:#58a6ff">▸ 詳情</td>' +
+      '</tr>' +
+      '<tr id="p536p-detail-' + toggleId + '" class="p536p-detail-row" style="display:none">' +
+        '<td colspan="5" style="padding:8px 12px;background:rgba(255,255,255,.03);font-size:11px;line-height:1.8">' +
+          buildComboDetailHtmlP536P(r) +
+        '</td>' +
       '</tr>';
     }).join('');
   }
@@ -7595,16 +7724,21 @@
   function renderCrossLottery(rows) {
     var el = document.getElementById('p536l-cross-lottery-list');
     if (!el) return;
-    el.innerHTML = (rows || []).map(function(r) {
+    el.innerHTML = (rows || []).map(function(r, idx) {
       var lotteryParts = Object.keys(r.lotteries || {}).map(function(lt) {
         var stats = r.lotteries[lt] || {};
         return textP536L(LOTTERY_LABELS_P536L[lt] || lt) + ' ' + fmtLiftP536L(stats.avg_any_main_hit_lift);
       });
-      return '<div style="padding:4px 0;border-bottom:1px solid rgba(255,255,255,.06)">' +
+      var toggleId = 'p536l-cross-lottery-list-' + idx;
+      return '<div class="p536p-row" data-p536p-toggle="' + toggleId + '" style="padding:4px 0;border-bottom:1px solid rgba(255,255,255,.06);cursor:pointer">' +
         '<b>' + textP536L(r.feature_family) + '</b>' +
         ' · pick_k=' + textP536L(r.pick_k) +
         ' · ' + textP536L(r.window != null ? String(r.window) + '期' : null) +
         ' — ' + lotteryParts.join(' / ') +
+        ' <span class="p536p-toggle-arrow" style="color:#58a6ff">▸ 詳情</span>' +
+      '</div>' +
+      '<div id="p536p-detail-' + toggleId + '" class="p536p-detail-row" style="display:none;padding:6px 12px;margin:-1px 0 4px;background:rgba(255,255,255,.03);font-size:11px;line-height:1.8">' +
+        buildCrossDetailHtmlP536P(r) +
       '</div>';
     }).join('');
   }
@@ -7707,8 +7841,8 @@
 
   function renderFilteredP536L() {
     if (!_p536lData) return;
-    renderStableAndSpike(getFilteredStableP536N(), 'p536l-stable-tbody');
-    renderStableAndSpike(getFilteredSpikeP536N(), 'p536l-spike-tbody');
+    renderStableAndSpike(getFilteredStableP536N(), 'p536l-stable-tbody', SECTION_LABELS_P536L.stable_300_750_review_candidates);
+    renderStableAndSpike(getFilteredSpikeP536N(), 'p536l-spike-tbody', SECTION_LABELS_P536L.short_window_spike_review_candidates);
     renderCombination(getFilteredComboP536N());
     renderCrossLottery(getFilteredCrossP536N());
     updateCardVisibilityP536N();
@@ -7847,6 +7981,10 @@
 
     var exportBtn = document.getElementById('p536n-export-csv');
     if (exportBtn) exportBtn.addEventListener('click', exportVisibleCsvP536N);
+
+    // P536P: row-level candidate detail panel toggles (event delegation,
+    // bound once — survives re-renders triggered by filter changes).
+    ['p536l-stable-tbody', 'p536l-spike-tbody', 'p536l-combo-tbody', 'p536l-cross-lottery-list'].forEach(bindP536PToggle);
   }
 
   initP536L();

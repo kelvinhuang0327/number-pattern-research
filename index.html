@@ -6451,6 +6451,11 @@
 
   function pct(v) { return v != null ? (v * 100).toFixed(1) + '%' : '—'; }
   function num(v) { return v != null ? Number(v).toFixed(3) : '—'; }
+  function bsoEscapeHtml(value) {
+    return String(value ?? '').replace(/[&<>"']/g, function(ch) {
+      return ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[ch];
+    });
+  }
 
   function renderWarningBanner(caveat) {
     if (!caveat) return '';
@@ -6558,10 +6563,13 @@
       const status = data.generation_status || 'UNKNOWN';
       if (status === 'READY') {
         const bets = (data.predicted_bets || []).map((b, i) => {
-          const sp = data.predicted_special && lottery === 'POWER_LOTTO' ? ` 特:${data.predicted_special}` : '';
-          return `<div>注${i+1}: [${b.join(', ')}]${sp}</div>`;
+          const numbers = Array.isArray(b) ? b.map(bsoEscapeHtml).join(', ') : bsoEscapeHtml(b);
+          const specialValue = bsoEscapeHtml(data.predicted_special);
+          const sp = specialValue && lottery === 'POWER_LOTTO' ? ` 特:${specialValue}` : '';
+          return `<div>注${i+1}: [${numbers}]${sp}</div>`;
         }).join('');
-        el.innerHTML = `<div style="color:#3fb950">${bets || '(無號碼)'}</div><div style="font-size:10px;color:#8b949e;margin-top:4px">${data.disclaimer}</div>`;
+        const disclaimer = bsoEscapeHtml(data.disclaimer || '');
+        el.innerHTML = `<div style="color:#3fb950">${bets || '(無號碼)'}</div><div style="font-size:10px;color:#8b949e;margin-top:4px">${disclaimer}</div>`;
       } else {
         const msgs = {
           ADAPTER_MISSING: '無適配器',
@@ -6569,7 +6577,9 @@
           REJECTED_REPLAY_ONLY: '策略已淘汰，僅歷史參考',
           SOURCE_UNAVAILABLE: '資料來源不可用',
         };
-        el.innerHTML = `<span style="color:#e3b341">${msgs[status] || status}</span><div style="font-size:10px;color:#8b949e;margin-top:2px">${data.disclaimer || ''}</div>`;
+        const statusLabel = bsoEscapeHtml(msgs[status] || status);
+        const disclaimer = bsoEscapeHtml(data.disclaimer || '');
+        el.innerHTML = `<span style="color:#e3b341">${statusLabel}</span><div style="font-size:10px;color:#8b949e;margin-top:2px">${disclaimer}</div>`;
       }
     } catch (e) {
       el.textContent = `錯誤：${e.message}`;

@@ -7730,6 +7730,7 @@
 // P532_NEXT_FAST: expose evidence artifact identity already present in the payload.
 // P533_NEXT_FAST: expose per-lottery replay strategy coverage denominators.
 // P534_NEXT_FAST: expose evidence source-of-truth context already present in the payload.
+// P535_NEXT_FAST: expose lifecycle no-exclusion context already present in the payload.
 (function () {
   'use strict';
 
@@ -7742,6 +7743,7 @@
     var rowSemantics = evidenceDashboardEl('evidence-dashboard-row-semantics');
     var warning = evidenceDashboardEl('evidence-dashboard-warning');
     var global = payload && payload.global_summary ? payload.global_summary : {};
+    var defaultFilter = payload && payload.default_filter_state ? payload.default_filter_state : {};
     var lotteries = Array.isArray(payload && payload.lottery_cards) ? payload.lottery_cards : [];
     var current = Number(global.current_registry_entries) || 0;
     var historical = Number(global.historical_inventory_entries) || 0;
@@ -7754,11 +7756,16 @@
       ? payload.schema_version.trim() : '';
     var artifactIdentity = [];
     var sourceContext = [];
+    var lifecycleContext = [];
     if (taskId) artifactIdentity.push('artifact=' + taskId);
     if (schemaVersion) artifactIdentity.push('schema=' + schemaVersion);
     if (sourceOfTruth) sourceContext.push('source=' + sourceOfTruth);
     if (global.current_registry_is_live_ssot === true) sourceContext.push('live registry SSOT');
     if (global.historical_scoreboard_is_snapshot === true) sourceContext.push('historical snapshot context');
+    if (global.lifecycle_is_label_not_exclusion === true) lifecycleContext.push('lifecycle=label/filter only');
+    if (defaultFilter.exclude_by_lifecycle === false) lifecycleContext.push('no lifecycle exclusion');
+    if (defaultFilter.historical_rows_visible === true) lifecycleContext.push('historical rows visible');
+    if (defaultFilter.artifact_only_visible === true) lifecycleContext.push('artifact-only visible');
 
     if (summary) summary.textContent = current + ' 筆目前登錄 · ' + historical + ' 筆歷史證據';
     if (detail) {
@@ -7775,7 +7782,8 @@
       detail.textContent = evidenceDashboardCount(replayRows) + ' replay rows · ' + artifactOnly + ' 筆僅存於 artifact' +
         (lotteryLabels.length ? ' · ' + lotteryLabels.join(' / ') : ' · 無彩種明細') +
         (artifactIdentity.length ? ' · ' + artifactIdentity.join(' · ') : '') +
-        (sourceContext.length ? ' · ' + sourceContext.join(' · ') : '');
+        (sourceContext.length ? ' · ' + sourceContext.join(' · ') : '') +
+        (lifecycleContext.length ? ' · ' + lifecycleContext.join(' · ') : '');
     }
     if (rowSemantics) {
       var rowLabels = lotteries.map(function (card) {

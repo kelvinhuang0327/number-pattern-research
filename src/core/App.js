@@ -112,6 +112,7 @@ export class App {
         if (progressBar) {
             const percentage = total > 0 ? Math.min(100, Math.round((current / total) * 100)) : 0;
             progressBar.style.width = `${percentage}%`;
+            progressBar.setAttribute('aria-valuenow', percentage.toString());
         }
     }
 

@@ -1715,12 +1715,15 @@ export class AutoLearningManager {
         const progressPercentage = document.getElementById('advanced-progress-percentage');
         const progressStatus = document.getElementById('advanced-progress-status');
         const progressTitle = document.getElementById('advanced-progress-title');
+        const safePercentage = Math.max(0, Math.min(100, Number.isFinite(Number(percentage)) ? Number(percentage) : 0));
+        const roundedPercentage = Math.round(safePercentage);
 
         if (progressBar) {
-            progressBar.style.width = `${percentage}%`;
+            progressBar.style.width = `${safePercentage}%`;
+            progressBar.setAttribute('aria-valuenow', roundedPercentage.toString());
         }
         if (progressPercentage) {
-            progressPercentage.textContent = `${Math.round(percentage)}%`;
+            progressPercentage.textContent = `${roundedPercentage}%`;
         }
         if (progressStatus) {
             progressStatus.textContent = status;
@@ -2151,4 +2154,3 @@ export class AutoLearningManager {
         return html;
     }
 }
-

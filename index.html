@@ -4013,6 +4013,7 @@
                 <option value="unregistered_orphan">unregistered_orphan</option>
                 <option value="registry_lottery_mismatch">registry_lottery_mismatch</option>
               </select>
+              <button id="refresh-p263b-coverage-btn" class="btn btn-secondary btn-sm" type="button">刷新 SSOT 稽核</button>
             </div>
 
             <!-- Summary Bar -->
@@ -6882,7 +6883,9 @@
   function p263bLoad() {
     var base = (typeof window !== 'undefined' && window.API_BASE ? String(window.API_BASE) : '').replace(/\/$/, '');
     var url = base + '/api/replay/d3-strategy-status-coverage';
+    var refresh = document.getElementById('refresh-p263b-coverage-btn');
     p263bSetStatus('載入中…');
+    if (refresh) refresh.disabled = true;
     fetch(url)
       .then(function (r) { return r.json(); })
       .then(function (data) {
@@ -6892,6 +6895,9 @@
       })
       .catch(function (e) {
         p263bSetStatus('載入失敗：' + e.message);
+      })
+      .finally(function () {
+        if (refresh) refresh.disabled = false;
       });
   }
 
@@ -6902,6 +6908,8 @@
         if (_p263bData) p263bRenderRows(_p263bData);
       });
     });
+    var refresh = document.getElementById('refresh-p263b-coverage-btn');
+    if (refresh) refresh.addEventListener('click', p263bLoad);
     var navBtns = document.querySelectorAll('[data-section]');
     navBtns.forEach(function (btn) {
       btn.addEventListener('click', function () {

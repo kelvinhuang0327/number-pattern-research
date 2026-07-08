@@ -7676,6 +7676,7 @@
 // P524B_FAST: expose row-semantics context already present in the evidence payload.
 // P532_NEXT_FAST: expose evidence artifact identity already present in the payload.
 // P533_NEXT_FAST: expose per-lottery replay strategy coverage denominators.
+// P534_NEXT_FAST: expose evidence source-of-truth context already present in the payload.
 (function () {
   'use strict';
 
@@ -7694,12 +7695,17 @@
     var artifactOnly = Number(global.artifact_only_entries) || 0;
     var replayRows = Number(global.replay_rows_total) || 0;
     var drawRows = Number(global.draw_rows_total) || 0;
+    var sourceOfTruth = typeof global.source_of_truth === 'string' ? global.source_of_truth.trim() : '';
     var taskId = payload && typeof payload.task_id === 'string' ? payload.task_id.trim() : '';
     var schemaVersion = payload && typeof payload.schema_version === 'string'
       ? payload.schema_version.trim() : '';
     var artifactIdentity = [];
+    var sourceContext = [];
     if (taskId) artifactIdentity.push('artifact=' + taskId);
     if (schemaVersion) artifactIdentity.push('schema=' + schemaVersion);
+    if (sourceOfTruth) sourceContext.push('source=' + sourceOfTruth);
+    if (global.current_registry_is_live_ssot === true) sourceContext.push('live registry SSOT');
+    if (global.historical_scoreboard_is_snapshot === true) sourceContext.push('historical snapshot context');
 
     if (summary) summary.textContent = current + ' 筆目前登錄 · ' + historical + ' 筆歷史證據';
     if (detail) {
@@ -7715,7 +7721,8 @@
       });
       detail.textContent = evidenceDashboardCount(replayRows) + ' replay rows · ' + artifactOnly + ' 筆僅存於 artifact' +
         (lotteryLabels.length ? ' · ' + lotteryLabels.join(' / ') : ' · 無彩種明細') +
-        (artifactIdentity.length ? ' · ' + artifactIdentity.join(' · ') : '');
+        (artifactIdentity.length ? ' · ' + artifactIdentity.join(' · ') : '') +
+        (sourceContext.length ? ' · ' + sourceContext.join(' · ') : '');
     }
     if (rowSemantics) {
       var rowLabels = lotteries.map(function (card) {

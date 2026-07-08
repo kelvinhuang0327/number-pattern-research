@@ -94,6 +94,27 @@ export class App {
         }
     }
 
+    setSimulationLoading(isLoading, current = 0, total = 0) {
+        const loading = document.getElementById('sim-loading');
+        const progress = document.getElementById('sim-loading-progress');
+        const progressBar = document.getElementById('sim-progress-bar');
+
+        if (loading) {
+            loading.classList.toggle('is-active', isLoading);
+            loading.setAttribute('aria-hidden', isLoading ? 'false' : 'true');
+            loading.setAttribute('aria-busy', isLoading ? 'true' : 'false');
+        }
+
+        if (progress) {
+            progress.textContent = total > 0 ? `${current} / ${total} 期` : '準備模擬資料...';
+        }
+
+        if (progressBar) {
+            const percentage = total > 0 ? Math.min(100, Math.round((current / total) * 100)) : 0;
+            progressBar.style.width = `${percentage}%`;
+        }
+    }
+
     /**
      * 檢查檔名是否應該被忽略（委託給 FileUploadHandler）
      */
@@ -1279,6 +1300,7 @@ export class App {
 
         try {
             this.setButtonLoading(simulationBtn, true);
+            this.setSimulationLoading(true);
             this.uiManager.showNotification('正在進行模擬測試...', 'info');
 
             // 清除 auto_optimize 緩存（確保每次模擬都是全新的評估）
@@ -1322,9 +1344,12 @@ export class App {
             // -------------------------------------------------
             const results = [];
             let successCount = 0;
+            this.setSimulationLoading(true, 0, testTargets.length);
 
-            for (const targetDraw of testTargets) {
-                console.log(`\n🔄 ========== 模擬測試階段：第 ${testTargets.indexOf(targetDraw) + 1}/${testTargets.length} 期 ==========`);
+            for (let index = 0; index < testTargets.length; index++) {
+                const targetDraw = testTargets[index];
+                this.setSimulationLoading(true, index + 1, testTargets.length);
+                console.log(`\n🔄 ========== 模擬測試階段：第 ${index + 1}/${testTargets.length} 期 ==========`);
                 // 取得該期之前的所有資料作為訓練集
                 const targetDate = targetDraw.date.replace(/\//g, '-');
                 const trainingData = allData.filter(d => {
@@ -1430,6 +1455,7 @@ export class App {
             console.error(error);
         } finally {
             this.setButtonLoading(simulationBtn, false);
+            this.setSimulationLoading(false);
         }
     }
 

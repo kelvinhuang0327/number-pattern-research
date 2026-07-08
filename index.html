@@ -4072,6 +4072,17 @@
               </div>
             </div>
 
+            <!-- P536I: Candidate detail / why-included panel (client-side only; fields already present in loaded response) -->
+            <div class="card" id="p536i-detail-panel" style="padding:14px;margin-bottom:18px;display:none">
+              <div style="font-weight:700;margin-bottom:10px;font-size:0.9rem">候選詳情 <span style="color:#58a6ff;font-size:0.8em">Candidate Detail</span></div>
+              <div id="p536i-detail-body" style="font-size:0.8rem;line-height:1.9"></div>
+              <div style="font-size:11px;color:#8b949e;margin-top:10px;line-height:1.5">
+                僅供歷史回放審視細節；非預測或晉升判準。<br>
+                Historical replay review detail only; not a prediction or promotion gate.
+              </div>
+            </div>
+            <div id="p536i-detail-placeholder" style="font-size:12px;color:#8b949e;margin-bottom:18px">點選上方任一資料列以檢視候選詳情 / Click a row above to view candidate detail.</div>
+
             <div id="p536e-status" style="margin-top:10px;font-size:12px;color:#8b949e"></div>
           </div>
         </section>
@@ -6839,6 +6850,9 @@
 
   var _p536eData = null;
   var _p536hPreset = null; // null | 'stable_300_750' | 'spike_50' | 'combo'
+  var _p536iLastTopCells = [];
+  var _p536iLastCrossLottery = [];
+  var _p536iLastStability = [];
 
   function fmtPct(v) {
     if (v === null || v === undefined) return '—';
@@ -6888,8 +6902,9 @@
     var tbody = document.getElementById('p536e-top-cells-tbody');
     if (!tbody) return;
     var rows = data.top_lift_cells || [];
-    tbody.innerHTML = rows.map(function(r) {
-      return '<tr>' +
+    _p536iLastTopCells = rows;
+    tbody.innerHTML = rows.map(function(r, i) {
+      return '<tr data-p536i-type="top_cell" data-p536i-idx="' + i + '" style="cursor:pointer">' +
         '<td style="padding:4px 8px">' + textP536E(LOTTERY_LABELS_P536E[r.lottery_type] || r.lottery_type) + '</td>' +
         '<td style="padding:4px 8px">' + textP536E(r.window != null ? String(r.window) + '期' : null) + '</td>' +
         '<td style="padding:4px 8px">' + textP536E(r.strategy_id) + '</td>' +
@@ -6906,12 +6921,13 @@
     var el = document.getElementById('p536e-cross-lottery-list');
     if (!el) return;
     var rows = data.cross_lottery_normalized_lift_summary || [];
-    el.innerHTML = rows.map(function(r) {
+    _p536iLastCrossLottery = rows;
+    el.innerHTML = rows.map(function(r, i) {
       var lotteryParts = Object.keys(r.lotteries || {}).map(function(lt) {
         var stats = r.lotteries[lt] || {};
         return textP536E(LOTTERY_LABELS_P536E[lt] || lt) + ' ' + fmtLift(stats.avg_any_main_hit_lift);
       });
-      return '<div style="padding:4px 0;border-bottom:1px solid rgba(255,255,255,.06)">' +
+      return '<div data-p536i-type="cross_lottery" data-p536i-idx="' + i + '" style="padding:4px 0;border-bottom:1px solid rgba(255,255,255,.06);cursor:pointer">' +
         '<b>' + textP536E(r.feature_family) + '</b>' +
         ' · pick_k=' + textP536E(r.pick_k) +
         ' · ' + textP536E(r.window != null ? String(r.window) + '期' : null) +
@@ -6924,8 +6940,9 @@
     var tbody = document.getElementById('p536e-stability-tbody');
     if (!tbody) return;
     var rows = data.combination_stability_rank_summary || [];
-    tbody.innerHTML = rows.map(function(r) {
-      return '<tr>' +
+    _p536iLastStability = rows;
+    tbody.innerHTML = rows.map(function(r, i) {
+      return '<tr data-p536i-type="stability" data-p536i-idx="' + i + '" style="cursor:pointer">' +
         '<td style="text-align:right;padding:4px 8px">' + textP536E(r.stability_rank) + '</td>' +
         '<td style="padding:4px 8px">' + textP536E(LOTTERY_LABELS_P536E[r.lottery_type] || r.lottery_type) + '</td>' +
         '<td style="padding:4px 8px">' + textP536E(r.combo_id) + '</td>' +
@@ -6933,6 +6950,123 @@
         '<td style="text-align:right;padding:4px 8px">' + fmtLift(r.avg_prize_signal_lift_across_present_windows) + '</td>' +
       '</tr>';
     }).join('');
+  }
+
+  // P536I: "why included" preset-reason labels. Mirrors the existing P536H
+  // preset predicates (read-only, same fields) but evaluated independently of
+  // the currently active toggle, so the detail panel can show which review
+  // preset(s) a candidate would match regardless of what's selected.
+  function presetReasonsTopCellP536I(r) {
+    var reasons = [];
+    if ((r.window === 300 || r.window === 750) && r.any_main_hit_lift != null && r.any_main_hit_lift > 1) {
+      reasons.push('穩定 300/750 候選 / Stable 300/750');
+    }
+    if (r.window === 50) {
+      reasons.push('短期高峰 / Short-term Spike (50)');
+    }
+    return reasons;
+  }
+
+  function presetReasonsCrossLotteryP536I(r) {
+    var reasons = [];
+    if (r.window === 300 || r.window === 750) {
+      var lotteries = r.lotteries || {};
+      var stable = Object.keys(lotteries).some(function(lt) {
+        var stats = lotteries[lt] || {};
+        if (stats.avg_any_main_hit_log10_lift != null) return stats.avg_any_main_hit_log10_lift > 0;
+        return stats.avg_any_main_hit_lift != null && stats.avg_any_main_hit_lift > 1;
+      });
+      if (stable) reasons.push('穩定 300/750 候選 / Stable 300/750');
+    }
+    if (r.window === 50) {
+      reasons.push('短期高峰 / Short-term Spike (50)');
+    }
+    return reasons;
+  }
+
+  function presetReasonsStabilityP536I(r) {
+    var reasons = [];
+    if ((r.windows_present_count || 0) >= 2) {
+      reasons.push('組合候選 / Combination Candidate');
+    }
+    return reasons;
+  }
+
+  function detailRowP536I(label, valueHtml) {
+    return '<div style="display:flex;gap:8px;padding:2px 0">' +
+      '<span style="color:#8b949e;min-width:180px">' + escP536E(label) + '</span>' +
+      '<span>' + valueHtml + '</span>' +
+    '</div>';
+  }
+
+  function hideCandidateDetailP536I() {
+    var panel = document.getElementById('p536i-detail-panel');
+    var placeholder = document.getElementById('p536i-detail-placeholder');
+    if (panel) panel.style.display = 'none';
+    if (placeholder) placeholder.style.display = '';
+  }
+
+  function renderCandidateDetailP536I(type, idx) {
+    var panel = document.getElementById('p536i-detail-panel');
+    var placeholder = document.getElementById('p536i-detail-placeholder');
+    var body = document.getElementById('p536i-detail-body');
+    if (!panel || !body) return;
+
+    var reasonLabel = '審視預設原因 / Preset Reason';
+    var noReason = '未符合任何審視預設 / Does not match any review preset';
+    var html;
+
+    if (type === 'top_cell') {
+      var r = _p536iLastTopCells[idx];
+      if (!r) return;
+      var reasons = presetReasonsTopCellP536I(r);
+      html =
+        detailRowP536I('彩種 / Lottery', textP536E(LOTTERY_LABELS_P536E[r.lottery_type] || r.lottery_type)) +
+        detailRowP536I('視窗 / Window', textP536E(r.window != null ? String(r.window) + '期' : null)) +
+        detailRowP536I('策略 / Strategy', textP536E(r.strategy_id)) +
+        detailRowP536I('特徵族 / Feature Family', textP536E(r.feature_family)) +
+        detailRowP536I('樣本數 / Support', textP536E(r.support_draws)) +
+        detailRowP536I('觀察命中率 / Observed Rate', fmtPct(r.any_main_hit_rate)) +
+        detailRowP536I('基準命中率 / Baseline', fmtPct(r.baseline_any_main_hit_rate)) +
+        detailRowP536I('Lift', fmtLift(r.any_main_hit_lift)) +
+        detailRowP536I(reasonLabel, reasons.length ? escP536E(reasons.join('、')) : noReason);
+    } else if (type === 'cross_lottery') {
+      var rc = _p536iLastCrossLottery[idx];
+      if (!rc) return;
+      var reasonsC = presetReasonsCrossLotteryP536I(rc);
+      var lotteries = rc.lotteries || {};
+      var perLottery = Object.keys(lotteries).map(function(lt) {
+        var stats = lotteries[lt] || {};
+        return '<div style="padding:2px 0 2px 12px">' + textP536E(LOTTERY_LABELS_P536E[lt] || lt) +
+          ' — Lift ' + fmtLift(stats.avg_any_main_hit_lift) +
+          (stats.avg_any_main_hit_log10_lift != null ? ' · log10-lift ' + Number(stats.avg_any_main_hit_log10_lift).toFixed(3) : '') +
+          (stats.strategy_count != null ? ' · 策略數 / Strategy Count ' + textP536E(stats.strategy_count) : '') +
+        '</div>';
+      }).join('');
+      html =
+        detailRowP536I('特徵族 / Feature Family', textP536E(rc.feature_family)) +
+        detailRowP536I('Pick K', textP536E(rc.pick_k)) +
+        detailRowP536I('視窗 / Window', textP536E(rc.window != null ? String(rc.window) + '期' : null)) +
+        detailRowP536I('各彩種明細 / Per-Lottery Breakdown', perLottery || '—') +
+        detailRowP536I(reasonLabel, reasonsC.length ? escP536E(reasonsC.join('、')) : noReason);
+    } else if (type === 'stability') {
+      var rs = _p536iLastStability[idx];
+      if (!rs) return;
+      var reasonsS = presetReasonsStabilityP536I(rs);
+      html =
+        detailRowP536I('排名 / Rank', textP536E(rs.stability_rank)) +
+        detailRowP536I('彩種 / Lottery', textP536E(LOTTERY_LABELS_P536E[rs.lottery_type] || rs.lottery_type)) +
+        detailRowP536I('組合 / Combo', textP536E(rs.combo_id)) +
+        detailRowP536I('涵蓋視窗數 / Windows Present', textP536E(rs.windows_present_count)) +
+        detailRowP536I('平均 Lift / Avg Lift', fmtLift(rs.avg_prize_signal_lift_across_present_windows)) +
+        detailRowP536I(reasonLabel, reasonsS.length ? escP536E(reasonsS.join('、')) : noReason);
+    } else {
+      return;
+    }
+
+    body.innerHTML = html;
+    panel.style.display = '';
+    if (placeholder) placeholder.style.display = 'none';
   }
 
   function getP536EFilters() {
@@ -7030,6 +7164,7 @@
     renderCrossLottery({ cross_lottery_normalized_lift_summary: getFilteredCrossLotteryP536E() });
     renderStabilityRank({ combination_stability_rank_summary: getFilteredStabilityRankP536E() });
     updatePresetButtonsP536H();
+    hideCandidateDetailP536I();
   }
 
   function updatePresetButtonsP536H() {
@@ -7198,6 +7333,34 @@
       var el = document.getElementById(pair[0]);
       if (el) el.addEventListener('click', function() { togglePresetP536H(pair[1]); });
     });
+
+    // P536I: candidate detail panel — delegated row click on each rendered
+    // container (rows are re-rendered on every filter change, so the
+    // listener is attached to the stable parent, not the individual rows).
+    var topCellsTbody = document.getElementById('p536e-top-cells-tbody');
+    if (topCellsTbody) {
+      topCellsTbody.addEventListener('click', function(e) {
+        var tr = e.target.closest('tr[data-p536i-idx]');
+        if (!tr || !topCellsTbody.contains(tr)) return;
+        renderCandidateDetailP536I('top_cell', parseInt(tr.getAttribute('data-p536i-idx'), 10));
+      });
+    }
+    var crossLotteryList = document.getElementById('p536e-cross-lottery-list');
+    if (crossLotteryList) {
+      crossLotteryList.addEventListener('click', function(e) {
+        var item = e.target.closest('[data-p536i-idx]');
+        if (!item || !crossLotteryList.contains(item)) return;
+        renderCandidateDetailP536I('cross_lottery', parseInt(item.getAttribute('data-p536i-idx'), 10));
+      });
+    }
+    var stabilityTbody = document.getElementById('p536e-stability-tbody');
+    if (stabilityTbody) {
+      stabilityTbody.addEventListener('click', function(e) {
+        var tr = e.target.closest('tr[data-p536i-idx]');
+        if (!tr || !stabilityTbody.contains(tr)) return;
+        renderCandidateDetailP536I('stability', parseInt(tr.getAttribute('data-p536i-idx'), 10));
+      });
+    }
   }
 
   initP536E();

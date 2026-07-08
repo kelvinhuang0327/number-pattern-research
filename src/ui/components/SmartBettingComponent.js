@@ -181,15 +181,27 @@ export class SmartBettingComponent {
         const isVerified = metadata.coverage_verified ? '✅ 已通過組合數學驗證' : '⚠️ 隨機優化結果 (未完全覆蓋)';
         const source = metadata.source === 'lookup_table' ? '精確矩陣 (Optimal Table)' : '啟發式搜索 (Heuristic)';
 
-        metaInfo.innerHTML = `
-            <div style="display: flex; justify-content: space-between;">
-                <span>策略來源: <b>${source}</b></span>
-                <span style="color: ${metadata.coverage_verified ? '#10B981' : '#F59E0B'}">${isVerified}</span>
-            </div>
-            <div style="margin-top: 5px; opacity: 0.8; font-size: 0.85em;">
-                ${metadata.honest_disclaimer || ''}
-            </div>
-        `;
+        const metaHeader = document.createElement('div');
+        metaHeader.style.cssText = 'display: flex; justify-content: space-between;';
+
+        const sourceLabel = document.createElement('span');
+        sourceLabel.appendChild(document.createTextNode('策略來源: '));
+        const sourceValue = document.createElement('b');
+        sourceValue.textContent = source;
+        sourceLabel.appendChild(sourceValue);
+
+        const verifiedLabel = document.createElement('span');
+        verifiedLabel.style.color = metadata.coverage_verified ? '#10B981' : '#F59E0B';
+        verifiedLabel.textContent = isVerified;
+
+        metaHeader.appendChild(sourceLabel);
+        metaHeader.appendChild(verifiedLabel);
+        metaInfo.appendChild(metaHeader);
+
+        const disclaimer = document.createElement('div');
+        disclaimer.style.cssText = 'margin-top: 5px; opacity: 0.8; font-size: 0.85em;';
+        disclaimer.textContent = metadata.honest_disclaimer || '';
+        metaInfo.appendChild(disclaimer);
         combinationsDiv.appendChild(metaInfo);
 
         if (combinations.length === 0) {

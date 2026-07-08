@@ -87,13 +87,12 @@ def test_script_does_not_add_db_prediction_or_mutation_behavior():
         assert forbidden not in script
 
 
-def test_no_new_charting_library_filter_or_export_added():
+def test_no_new_charting_library_added():
     section = _section()
     script = _script()
     for forbidden in ("<script src=", "chart.js", "Chart(", "d3.js", "plotly"):
         assert forbidden not in section
         assert forbidden not in script
-    # Task scope explicitly excludes filters/export in this minimal UI.
-    for forbidden in ("export", "Export", "filter", "Filter"):
-        assert forbidden not in section
-        assert forbidden not in script
+    # P536N added client-side filter/export controls on top of this minimal
+    # UI (see tests/test_p536n_shortlist_ui_filter_export.py); this contract
+    # test now only guards against a new charting dependency being pulled in.

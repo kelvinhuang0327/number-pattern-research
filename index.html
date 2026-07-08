@@ -4108,9 +4108,34 @@
 
             <div id="p536l-provenance" style="font-size:12px;color:#8b949e;margin-bottom:16px"></div>
 
+            <!-- P536N: client-side filters + CSV export; operate only on the already-loaded response in browser memory -->
+            <div id="p536n-filter-bar" style="display:flex;gap:10px;flex-wrap:wrap;margin-bottom:12px;align-items:center">
+              <label style="font-size:12px;color:#8b949e">分類：</label>
+              <select id="p536n-filter-category" style="background:#161b22;border:1px solid #30363d;color:#c9d1d9;border-radius:4px;padding:4px 8px;font-size:12px">
+                <option value="ALL">全部</option>
+                <option value="stable_300_750">穩定 300/750</option>
+                <option value="short_window_spike">短期高峰</option>
+                <option value="combination">組合</option>
+                <option value="cross_lottery">跨彩種</option>
+              </select>
+              <label style="font-size:12px;color:#8b949e">彩種：</label>
+              <select id="p536n-filter-lottery" style="background:#161b22;border:1px solid #30363d;color:#c9d1d9;border-radius:4px;padding:4px 8px;font-size:12px">
+                <option value="ALL">全部</option>
+                <option value="DAILY_539">今彩539</option>
+                <option value="BIG_LOTTO">大樂透</option>
+                <option value="POWER_LOTTO">威力彩</option>
+              </select>
+              <label style="font-size:12px;color:#8b949e">策略/特徵族/組合/原因搜尋：</label>
+              <input id="p536n-filter-search" type="text" placeholder="輸入關鍵字" style="background:#161b22;border:1px solid #30363d;color:#c9d1d9;border-radius:4px;padding:4px 8px;font-size:12px;width:200px">
+              <button id="p536n-filter-reset" class="btn-sm btn-secondary">重設篩選 / Reset</button>
+              <button id="p536n-export-csv" class="btn-sm btn-secondary">匯出可見資料列 CSV / Export CSV</button>
+            </div>
+            <div id="p536n-export-status" style="display:none;font-size:12px;color:#8b949e;margin-bottom:10px"></div>
+            <textarea id="p536n-export-fallback" style="display:none;width:100%;height:80px;font-size:11px;margin-bottom:10px;background:#161b22;border:1px solid #30363d;color:#c9d1d9" readonly></textarea>
+
             <div id="p536l-summary-counts" style="display:flex;gap:16px;flex-wrap:wrap;margin-bottom:18px"></div>
 
-            <div class="card" style="padding:14px;margin-bottom:18px">
+            <div class="card" id="p536l-card-stable" style="padding:14px;margin-bottom:18px">
               <div style="font-weight:700;margin-bottom:10px;font-size:0.9rem">穩定 300/750 候選 <span style="color:#58a6ff;font-size:0.8em">Stable 300/750 Review Candidates</span></div>
               <div style="overflow-x:auto;max-height:320px;overflow-y:auto">
                 <table style="width:100%;border-collapse:collapse;font-size:0.8rem">
@@ -4129,7 +4154,7 @@
               </div>
             </div>
 
-            <div class="card" style="padding:14px;margin-bottom:18px">
+            <div class="card" id="p536l-card-spike" style="padding:14px;margin-bottom:18px">
               <div style="font-weight:700;margin-bottom:10px;font-size:0.9rem">短期高峰候選 <span style="color:#58a6ff;font-size:0.8em">Short-Window Spike Review Candidates</span><span style="font-size:11px;color:#e3b341;margin-left:8px">（50期短窗參考用，非穩定型態 / short-window review only, not a stable pattern）</span></div>
               <div style="overflow-x:auto;max-height:320px;overflow-y:auto">
                 <table style="width:100%;border-collapse:collapse;font-size:0.8rem">
@@ -4148,7 +4173,7 @@
               </div>
             </div>
 
-            <div class="card" style="padding:14px;margin-bottom:18px">
+            <div class="card" id="p536l-card-combo" style="padding:14px;margin-bottom:18px">
               <div style="font-weight:700;margin-bottom:10px;font-size:0.9rem">組合候選 <span style="color:#58a6ff;font-size:0.8em">Combination Review Candidates</span></div>
               <div style="overflow-x:auto;max-height:320px;overflow-y:auto">
                 <table style="width:100%;border-collapse:collapse;font-size:0.8rem">
@@ -4165,7 +4190,7 @@
               </div>
             </div>
 
-            <div class="card" style="padding:14px;margin-bottom:18px">
+            <div class="card" id="p536l-card-cross" style="padding:14px;margin-bottom:18px">
               <div style="font-weight:700;margin-bottom:10px;font-size:0.9rem">跨彩種候選 <span style="color:#58a6ff;font-size:0.8em">Cross-Lottery Review Candidates</span></div>
               <div id="p536l-cross-lottery-list" style="font-size:0.8rem;line-height:1.8;max-height:320px;overflow-y:auto"></div>
             </div>
@@ -7459,6 +7484,8 @@
 (function() {
   'use strict';
 
+  var _p536lData = null;
+
   var LOTTERY_LABELS_P536L = {
     'DAILY_539': '今彩539',
     'BIG_LOTTO': '大樂透',
@@ -7584,18 +7611,196 @@
     el.innerHTML = html;
   }
 
+  // P536N: client-side filters + CSV export. All filtering happens against
+  // _p536lData already sitting in browser memory — no refetch, no route
+  // change, no new metric/ranking formula (only reads existing fields).
+  function getP536NFilters() {
+    var categoryEl = document.getElementById('p536n-filter-category');
+    var lotteryEl = document.getElementById('p536n-filter-lottery');
+    var searchEl = document.getElementById('p536n-filter-search');
+    return {
+      category: (categoryEl || {}).value || 'ALL',
+      lottery: (lotteryEl || {}).value || 'ALL',
+      search: ((searchEl || {}).value || '').trim().toLowerCase()
+    };
+  }
+
+  function matchesSearchP536N(text, search) {
+    return !search || String(text || '').toLowerCase().indexOf(search) !== -1;
+  }
+
+  function getFilteredStableP536N() {
+    var f = getP536NFilters();
+    var rows = (_p536lData && _p536lData.stable_300_750_review_candidates) || [];
+    if (f.category !== 'ALL' && f.category !== 'stable_300_750') return [];
+    return rows.filter(function(r) {
+      if (f.lottery !== 'ALL' && r.lottery_type !== f.lottery) return false;
+      if (f.search && !matchesSearchP536N([r.strategy_id, r.feature_family, r.why_included, r.caution_label].join(' '), f.search)) return false;
+      return true;
+    });
+  }
+
+  function getFilteredSpikeP536N() {
+    var f = getP536NFilters();
+    var rows = (_p536lData && _p536lData.short_window_spike_review_candidates) || [];
+    if (f.category !== 'ALL' && f.category !== 'short_window_spike') return [];
+    return rows.filter(function(r) {
+      if (f.lottery !== 'ALL' && r.lottery_type !== f.lottery) return false;
+      if (f.search && !matchesSearchP536N([r.strategy_id, r.feature_family, r.why_included, r.caution_label].join(' '), f.search)) return false;
+      return true;
+    });
+  }
+
+  function getFilteredComboP536N() {
+    var f = getP536NFilters();
+    var rows = (_p536lData && _p536lData.combination_review_candidates) || [];
+    if (f.category !== 'ALL' && f.category !== 'combination') return [];
+    return rows.filter(function(r) {
+      if (f.lottery !== 'ALL' && r.lottery_type !== f.lottery) return false;
+      if (f.search && !matchesSearchP536N([r.combo_id, r.why_included, r.caution_label].join(' '), f.search)) return false;
+      return true;
+    });
+  }
+
+  function getFilteredCrossP536N() {
+    var f = getP536NFilters();
+    var rows = (_p536lData && _p536lData.cross_lottery_review_candidates) || [];
+    if (f.category !== 'ALL' && f.category !== 'cross_lottery') return [];
+    return rows.filter(function(r) {
+      if (f.lottery !== 'ALL' && !(r.lotteries && Object.prototype.hasOwnProperty.call(r.lotteries, f.lottery))) return false;
+      if (f.search && !matchesSearchP536N([r.feature_family, r.why_included, r.caution_label].join(' '), f.search)) return false;
+      return true;
+    });
+  }
+
+  function updateCardVisibilityP536N() {
+    var f = getP536NFilters();
+    var map = {
+      stable_300_750: 'p536l-card-stable',
+      short_window_spike: 'p536l-card-spike',
+      combination: 'p536l-card-combo',
+      cross_lottery: 'p536l-card-cross'
+    };
+    Object.keys(map).forEach(function(key) {
+      var el = document.getElementById(map[key]);
+      if (!el) return;
+      el.style.display = (f.category === 'ALL' || f.category === key) ? '' : 'none';
+    });
+  }
+
+  function renderFilteredP536L() {
+    if (!_p536lData) return;
+    renderStableAndSpike(getFilteredStableP536N(), 'p536l-stable-tbody');
+    renderStableAndSpike(getFilteredSpikeP536N(), 'p536l-spike-tbody');
+    renderCombination(getFilteredComboP536N());
+    renderCrossLottery(getFilteredCrossP536N());
+    updateCardVisibilityP536N();
+  }
+
+  function resetFiltersP536N() {
+    var categoryEl = document.getElementById('p536n-filter-category');
+    var lotteryEl = document.getElementById('p536n-filter-lottery');
+    var searchEl = document.getElementById('p536n-filter-search');
+    if (categoryEl) categoryEl.value = 'ALL';
+    if (lotteryEl) lotteryEl.value = 'ALL';
+    if (searchEl) searchEl.value = '';
+    renderFilteredP536L();
+  }
+
+  function csvEscapeP536N(v) {
+    var s = v == null ? '' : String(v);
+    return /[",\n]/.test(s) ? '"' + s.replace(/"/g, '""') + '"' : s;
+  }
+
+  function buildVisibleCsvP536N() {
+    var header = [
+      'category', 'lottery_type', 'window', 'strategy_or_combo_id', 'feature_family',
+      'support_draws_or_windows_present_count', 'lift_or_avg_lift', 'why_included', 'caution_label'
+    ];
+    var lines = [header.map(csvEscapeP536N).join(',')];
+    var rowCount = 0;
+
+    getFilteredStableP536N().forEach(function(r) {
+      lines.push([
+        'stable_300_750', r.lottery_type, r.window, r.strategy_id, r.feature_family,
+        r.support_draws, r.lift, r.why_included, r.caution_label
+      ].map(csvEscapeP536N).join(','));
+      rowCount++;
+    });
+
+    getFilteredSpikeP536N().forEach(function(r) {
+      lines.push([
+        'short_window_spike', r.lottery_type, r.window, r.strategy_id, r.feature_family,
+        r.support_draws, r.lift, r.why_included, r.caution_label
+      ].map(csvEscapeP536N).join(','));
+      rowCount++;
+    });
+
+    getFilteredComboP536N().forEach(function(r) {
+      lines.push([
+        'combination', r.lottery_type, '', r.combo_id, '',
+        r.windows_present_count, r.avg_prize_signal_lift_across_present_windows, r.why_included, r.caution_label
+      ].map(csvEscapeP536N).join(','));
+      rowCount++;
+    });
+
+    getFilteredCrossP536N().forEach(function(r) {
+      var lotteries = Object.keys(r.lotteries || {}).join('|');
+      lines.push([
+        'cross_lottery', lotteries, r.window, '', r.feature_family,
+        '', '', r.why_included, r.caution_label
+      ].map(csvEscapeP536N).join(','));
+      rowCount++;
+    });
+
+    return { csv: lines.join('\n'), rowCount: rowCount };
+  }
+
+  function exportVisibleCsvP536N() {
+    var statusBox = document.getElementById('p536n-export-status');
+    var fallbackBox = document.getElementById('p536n-export-fallback');
+    if (!_p536lData) {
+      if (statusBox) { statusBox.style.display = ''; statusBox.textContent = '尚未載入資料，無法匯出。'; }
+      return;
+    }
+    var built = buildVisibleCsvP536N();
+    if (typeof Blob !== 'undefined' && typeof URL !== 'undefined' && URL.createObjectURL) {
+      try {
+        var blob = new Blob([built.csv], { type: 'text/csv;charset=utf-8;' });
+        var blobUrl = URL.createObjectURL(blob);
+        var a = document.createElement('a');
+        a.href = blobUrl;
+        a.download = 'p536l-lift-candidate-shortlist-visible-rows.csv';
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(blobUrl);
+        if (fallbackBox) fallbackBox.style.display = 'none';
+        if (statusBox) { statusBox.style.display = ''; statusBox.textContent = '已匯出目前顯示的 ' + built.rowCount + ' 筆資料列為 CSV 檔案。'; }
+        return;
+      } catch (e) {
+        // fall through to manual-copy fallback
+      }
+    }
+    if (fallbackBox) {
+      fallbackBox.style.display = '';
+      fallbackBox.value = built.csv;
+      fallbackBox.focus();
+      fallbackBox.select();
+    }
+    if (statusBox) { statusBox.style.display = ''; statusBox.textContent = '此瀏覽器不支援自動下載，請從下方欄位手動複製匯出內容。'; }
+  }
+
   function loadP536L() {
     var base = (typeof window !== 'undefined' && window.API_BASE ? String(window.API_BASE) : '').replace(/\/$/, '');
     setStatus('載入中…');
     fetch(base + '/api/replay/lift-candidate-shortlist')
       .then(function(r) { return r.json(); })
       .then(function(data) {
+        _p536lData = data;
         renderProvenance(data);
         renderSummaryCounts(data);
-        renderStableAndSpike(data.stable_300_750_review_candidates, 'p536l-stable-tbody');
-        renderStableAndSpike(data.short_window_spike_review_candidates, 'p536l-spike-tbody');
-        renderCombination(data.combination_review_candidates);
-        renderCrossLottery(data.cross_lottery_review_candidates);
+        renderFilteredP536L();
         renderProvenanceDetail(data);
         setStatus('');
       })
@@ -7607,6 +7812,19 @@
   function initP536L() {
     var btn = document.getElementById('p536l-load-btn');
     if (btn) btn.addEventListener('click', loadP536L);
+
+    ['p536n-filter-category', 'p536n-filter-lottery'].forEach(function(id) {
+      var el = document.getElementById(id);
+      if (el) el.addEventListener('change', renderFilteredP536L);
+    });
+    var searchEl = document.getElementById('p536n-filter-search');
+    if (searchEl) searchEl.addEventListener('input', renderFilteredP536L);
+
+    var resetBtn = document.getElementById('p536n-filter-reset');
+    if (resetBtn) resetBtn.addEventListener('click', resetFiltersP536N);
+
+    var exportBtn = document.getElementById('p536n-export-csv');
+    if (exportBtn) exportBtn.addEventListener('click', exportVisibleCsvP536N);
   }
 
   initP536L();

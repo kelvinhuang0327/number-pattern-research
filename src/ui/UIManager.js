@@ -108,6 +108,16 @@ export class UIManager {
         }, 5000); // 延長顯示時間到 5 秒以便閱讀詳細信息
     }
 
+    _escapeHtml(value) {
+        return String(value ?? '').replace(/[&<>"']/g, (char) => ({
+            '&': '&amp;',
+            '<': '&lt;',
+            '>': '&gt;',
+            '"': '&quot;',
+            "'": '&#39;'
+        }[char]));
+    }
+
     updateLotteryTypeSelector(stats, currentType) {
         const container = document.getElementById('lottery-type-container');
         const grid = document.getElementById('lottery-type-grid');
@@ -137,7 +147,7 @@ export class UIManager {
                                  onclick="document.getElementById('lottery-type-filter').value = '${type}'; document.getElementById('lottery-type-filter').dispatchEvent(new Event('change'));">
                                 <div class="type-icon">${lotteryType.icon}</div>
                                 <div class="type-name">${lotteryType.displayName}</div>
-                                <div class="type-count">${count} 期</div>
+                                <div class="type-count">${this._escapeHtml(count)} 期</div>
                                 <div class="type-description">${lotteryType.description}</div>
                             </div>
                         `;
@@ -238,7 +248,7 @@ export class UIManager {
                             <div class="dropdown-item-icon">${lotteryType.icon}</div>
                             <div class="dropdown-item-info">
                                 <span class="dropdown-item-name">${lotteryType.displayName}</span>
-                                <span class="dropdown-item-count">${count} 期</span>
+                                <span class="dropdown-item-count">${this._escapeHtml(count)} 期</span>
                             </div>
                         </div>
                     `;
@@ -263,15 +273,15 @@ export class UIManager {
         summaryContent.innerHTML = `
             <div class="stat-card">
                 <div class="stat-label">總期數</div>
-                <div class="stat-value">${stats.totalDraws}</div>
+                <div class="stat-value">${this._escapeHtml(stats.totalDraws)}</div>
             </div>
             <div class="stat-card">
                 <div class="stat-label">日期範圍</div>
-                <div class="stat-value">${stats.dateRange.start} ~ ${stats.dateRange.end}</div>
+                <div class="stat-value">${this._escapeHtml(stats.dateRange.start)} ~ ${this._escapeHtml(stats.dateRange.end)}</div>
             </div>
             <div class="stat-card">
                 <div class="stat-label">最新期數</div>
-                <div class="stat-value">${stats.latestDraw}</div>
+                <div class="stat-value">${this._escapeHtml(stats.latestDraw)}</div>
             </div>
         `;
 

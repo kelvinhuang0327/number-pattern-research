@@ -2549,7 +2549,7 @@ export class App {
         if (report) {
             let methodInfo = '';
             if (result.method) {
-                methodInfo = `<strong>使用策略：</strong> ${result.method}<br>`;
+                methodInfo = `<strong>使用策略：</strong> ${this._escapePredictionReportHtml(result.method)}<br>`;
             }
 
             // 如果有詳細信息 (集成預測會返回 details)
@@ -2557,12 +2557,22 @@ export class App {
             if (result.details && Array.isArray(result.details)) {
                 detailsInfo = `<br><div style="font-size: 0.9em; margin-top: 8px; color: #aaa;">
                     <strong>策略詳情：</strong><br>
-                    ${result.details.join('<br>')}
+                    ${result.details.map(detail => this._escapePredictionReportHtml(detail)).join('<br>')}
                 </div>`;
             }
 
-            report.innerHTML = `${methodInfo}${result.report || '分析完成'}${detailsInfo}`;
+            report.innerHTML = `${methodInfo}${this._escapePredictionReportHtml(result.report || '分析完成')}${detailsInfo}`;
         }
+    }
+
+    _escapePredictionReportHtml(value) {
+        return String(value ?? '').replace(/[&<>"']/g, char => ({
+            '&': '&amp;',
+            '<': '&lt;',
+            '>': '&gt;',
+            '"': '&quot;',
+            "'": '&#39;'
+        }[char]));
     }
 
     async displayHistory() {

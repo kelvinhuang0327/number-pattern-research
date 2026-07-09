@@ -6670,7 +6670,8 @@
       if (!res.ok) throw new Error(`HTTP ${res.status}`);
       const data = await res.json();
       if (data.generation_status === 'SOURCE_UNAVAILABLE') {
-        content.innerHTML = `<div style="text-align:center;color:#888;padding:20px;grid-column:1/-1">📭 ${LOTTERY_LABELS[lottery] || lottery} 基準資料尚未就緒</div>`;
+        const lotteryLabel = bsoEscapeHtml(LOTTERY_LABELS[lottery] || lottery);
+        content.innerHTML = `<div style="text-align:center;color:#888;padding:20px;grid-column:1/-1">📭 ${lotteryLabel} 基準資料尚未就緒</div>`;
         return;
       }
       const cards = data.cards || [];

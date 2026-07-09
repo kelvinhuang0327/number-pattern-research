@@ -312,32 +312,7 @@ export class FileUploadHandler {
 
             const fileInfo = document.getElementById('file-info');
             if (fileInfo) {
-                const successFiles = fileResults.filter(f => f.success);
-                const failedFiles = fileResults.filter(f => !f.success);
-
-                let html = `<div style="color: #22c55e; font-weight: 500;">`;
-                html += `✓ 已批次載入 ${successCount} 個檔案<br>`;
-                html += `<div style="font-size: 0.85em; margin-top: 8px; line-height: 1.6;">`;
-
-                successFiles.forEach(f => {
-                    const displayCount = f.parsed || f.count;
-                    html += `• ${f.name}: ${displayCount} 筆`;
-                    if (f.parsed && f.parsed > f.count) {
-                        html += ` <span style="color: #f59e0b;">(${f.count} 新增)</span>`;
-                    }
-                    html += `<br>`;
-                });
-
-                if (failedFiles.length > 0) {
-                    html += `</div><div style="color: #ef4444; margin-top: 8px;">`;
-                    html += `✗ 失敗 ${failedFiles.length} 個檔案<br>`;
-                    failedFiles.forEach(f => {
-                        html += `• ${f.name}<br>`;
-                    });
-                }
-
-                html += `</div></div>`;
-                fileInfo.innerHTML = html;
+                this.renderBatchFileInfo(fileInfo, fileResults, successCount);
             }
 
         } catch (error) {
@@ -345,6 +320,64 @@ export class FileUploadHandler {
             this.uiManager.showNotification('批次載入失敗: ' + error.message, 'error');
             console.error(error);
         }
+    }
+
+    /**
+     * Render batch upload result details without treating file names as HTML.
+     */
+    renderBatchFileInfo(fileInfo, fileResults, successCount) {
+        const successFiles = fileResults.filter(f => f.success);
+        const failedFiles = fileResults.filter(f => !f.success);
+
+        const container = document.createElement('div');
+        container.style.color = '#22c55e';
+        container.style.fontWeight = '500';
+
+        const summary = document.createElement('div');
+        summary.textContent = `✓ 已批次載入 ${successCount} 個檔案`;
+        container.appendChild(summary);
+
+        const successList = document.createElement('div');
+        successList.style.fontSize = '0.85em';
+        successList.style.marginTop = '8px';
+        successList.style.lineHeight = '1.6';
+
+        successFiles.forEach(f => {
+            const row = document.createElement('div');
+            const displayCount = f.parsed || f.count;
+            row.appendChild(document.createTextNode(`• ${f.name}: ${displayCount} 筆`));
+
+            if (f.parsed && f.parsed > f.count) {
+                const added = document.createElement('span');
+                added.style.color = '#f59e0b';
+                added.textContent = ` (${f.count} 新增)`;
+                row.appendChild(added);
+            }
+
+            successList.appendChild(row);
+        });
+        container.appendChild(successList);
+
+        if (failedFiles.length > 0) {
+            const failedList = document.createElement('div');
+            failedList.style.color = '#ef4444';
+            failedList.style.marginTop = '8px';
+
+            const failedSummary = document.createElement('div');
+            failedSummary.textContent = `✗ 失敗 ${failedFiles.length} 個檔案`;
+            failedList.appendChild(failedSummary);
+
+            failedFiles.forEach(f => {
+                const row = document.createElement('div');
+                row.textContent = `• ${f.name}`;
+                failedList.appendChild(row);
+            });
+
+            container.appendChild(failedList);
+        }
+
+        fileInfo.textContent = '';
+        fileInfo.appendChild(container);
     }
 
     /**

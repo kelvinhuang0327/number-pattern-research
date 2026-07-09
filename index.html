@@ -873,6 +873,10 @@
                     <i data-lucide="list-checks" class="icon"></i>
                     <span>Lift 候選清單</span>
                 </button>
+                <button class="nav-btn" data-section="p537b-robustness-review">
+                    <i data-lucide="shield-check" class="icon"></i>
+                    <span>穩定性審閱</span>
+                </button>
                 <button class="nav-btn" data-section="p263b-d3-ssot">
                     <i data-lucide="table-2" class="icon"></i>
                     <span>D3 策略狀態 (SSOT)</span>
@@ -4204,6 +4208,113 @@
           </div>
         </section>
         <!-- ===== END P536L ===== -->
+
+        <!-- ===== P537B Robustness Review (read-only, artifact-backed, no DB) ===== -->
+        <section id="p537b-robustness-review-section" class="section">
+          <div class="section-header">
+            <h2>穩定性審閱 <span style="font-size:0.7em;color:#8b949e;font-weight:400">Robustness Review</span></h2>
+            <p>基於 P537A 對 P536K Lift 候選清單的重新分類審閱，唯讀，不涉及資料庫存取</p>
+          </div>
+          <div class="section-content">
+            <div style="background:rgba(187,128,9,.12);border:1px solid #e3b341;border-radius:6px;padding:10px 14px;margin-bottom:16px;font-size:12px;color:#e3b341;line-height:1.6">
+              <b>歷史回放聲明</b><br>
+              Historical replay review artifact only; not a prediction, betting edge, future-winning, or production-readiness claim.
+            </div>
+
+            <button id="p537b-load-btn" class="btn-sm btn-secondary" style="margin-bottom:14px">載入審閱結果 / Load</button>
+
+            <div id="p537b-provenance" style="font-size:12px;color:#8b949e;margin-bottom:16px"></div>
+
+            <div id="p537b-summary-counts" style="display:flex;gap:16px;flex-wrap:wrap;margin-bottom:18px"></div>
+
+            <div class="card" id="p537b-card-stable" style="padding:14px;margin-bottom:18px">
+              <div style="font-weight:700;margin-bottom:10px;font-size:0.9rem">穩定候選 <span style="color:#58a6ff;font-size:0.8em">Stable Candidates for Owner Review</span></div>
+              <div style="overflow-x:auto;max-height:280px;overflow-y:auto">
+                <table style="width:100%;border-collapse:collapse;font-size:0.8rem">
+                  <thead>
+                    <tr>
+                      <th style="text-align:left;padding:4px 8px">彩種</th>
+                      <th style="text-align:left;padding:4px 8px">視窗</th>
+                      <th style="text-align:left;padding:4px 8px">策略</th>
+                      <th style="text-align:right;padding:4px 8px">Lift</th>
+                    </tr>
+                  </thead>
+                  <tbody id="p537b-stable-tbody"></tbody>
+                </table>
+              </div>
+            </div>
+
+            <div class="card" id="p537b-card-spike" style="padding:14px;margin-bottom:18px">
+              <div style="font-weight:700;margin-bottom:10px;font-size:0.9rem">短期高峰注意清單 <span style="color:#58a6ff;font-size:0.8em">Short-Window Spike Caution List</span><span style="font-size:11px;color:#e3b341;margin-left:8px">（短窗參考用，非穩定型態 / review only, not a stable pattern）</span></div>
+              <div style="overflow-x:auto;max-height:280px;overflow-y:auto">
+                <table style="width:100%;border-collapse:collapse;font-size:0.8rem">
+                  <thead>
+                    <tr>
+                      <th style="text-align:left;padding:4px 8px">彩種</th>
+                      <th style="text-align:left;padding:4px 8px">視窗</th>
+                      <th style="text-align:left;padding:4px 8px">策略</th>
+                      <th style="text-align:right;padding:4px 8px">Lift</th>
+                    </tr>
+                  </thead>
+                  <tbody id="p537b-spike-tbody"></tbody>
+                </table>
+              </div>
+            </div>
+
+            <div class="card" id="p537b-card-combo" style="padding:14px;margin-bottom:18px">
+              <div style="font-weight:700;margin-bottom:10px;font-size:0.9rem">組合追蹤候選 <span style="color:#58a6ff;font-size:0.8em">Combination Candidates for Followup</span></div>
+              <div style="overflow-x:auto;max-height:280px;overflow-y:auto">
+                <table style="width:100%;border-collapse:collapse;font-size:0.8rem">
+                  <thead>
+                    <tr>
+                      <th style="text-align:left;padding:4px 8px">彩種</th>
+                      <th style="text-align:left;padding:4px 8px">組合</th>
+                      <th style="text-align:right;padding:4px 8px">涵蓋視窗數</th>
+                    </tr>
+                  </thead>
+                  <tbody id="p537b-combo-tbody"></tbody>
+                </table>
+              </div>
+            </div>
+
+            <div class="card" id="p537b-card-cross" style="padding:14px;margin-bottom:18px">
+              <div style="font-weight:700;margin-bottom:10px;font-size:0.9rem">跨彩種追蹤候選 <span style="color:#58a6ff;font-size:0.8em">Cross-Lottery Candidates for Followup</span></div>
+              <div style="overflow-x:auto;max-height:280px;overflow-y:auto">
+                <table style="width:100%;border-collapse:collapse;font-size:0.8rem">
+                  <thead>
+                    <tr>
+                      <th style="text-align:left;padding:4px 8px">特徵族</th>
+                      <th style="text-align:left;padding:4px 8px">視窗</th>
+                      <th style="text-align:right;padding:4px 8px">涵蓋彩種數</th>
+                    </tr>
+                  </thead>
+                  <tbody id="p537b-cross-tbody"></tbody>
+                </table>
+              </div>
+            </div>
+
+            <div class="card" id="p537b-card-insufficient" style="padding:14px;margin-bottom:18px">
+              <div style="font-weight:700;margin-bottom:10px;font-size:0.9rem">資料不足／模糊候選 <span style="color:#58a6ff;font-size:0.8em">Insufficient or Ambiguous Candidates</span></div>
+              <div style="overflow-x:auto;max-height:280px;overflow-y:auto">
+                <table style="width:100%;border-collapse:collapse;font-size:0.8rem">
+                  <thead>
+                    <tr>
+                      <th style="text-align:left;padding:4px 8px">彩種</th>
+                      <th style="text-align:left;padding:4px 8px">組合</th>
+                      <th style="text-align:left;padding:4px 8px">不足原因</th>
+                    </tr>
+                  </thead>
+                  <tbody id="p537b-insufficient-tbody"></tbody>
+                </table>
+              </div>
+            </div>
+
+            <div id="p537b-provenance-detail" style="font-size:11px;color:#8b949e;margin-bottom:10px;line-height:1.6"></div>
+
+            <div id="p537b-status" style="margin-top:10px;font-size:12px;color:#8b949e"></div>
+          </div>
+        </section>
+        <!-- ===== END P537B ===== -->
 
         <!-- ===== P258O D3 Strategy Status / Contract Audit Section ===== -->
         <section id="p258-d3-audit-section" class="section">
@@ -7988,6 +8099,185 @@
   }
 
   initP536L();
+})();
+
+// ===== P537B SHORTLIST ROBUSTNESS REVIEW (read-only, artifact-backed, no DB) =====
+(function() {
+  'use strict';
+
+  var LOTTERY_LABELS_P537B = {
+    'DAILY_539': '今彩539',
+    'BIG_LOTTO': '大樂透',
+    'POWER_LOTTO': '威力彩'
+  };
+
+  function escP537B(v) {
+    var s = v == null ? '' : String(v);
+    return s.replace(/[&<>"']/g, function(ch) {
+      return {
+        '&': '&amp;',
+        '<': '&lt;',
+        '>': '&gt;',
+        '"': '&quot;',
+        "'": '&#39;'
+      }[ch];
+    });
+  }
+
+  function textP537B(v) {
+    return escP537B(v === null || v === undefined || v === '' ? '—' : v);
+  }
+
+  function fmtLiftP537B(v) {
+    if (v === null || v === undefined) return '—';
+    return Number(v).toFixed(3) + 'x';
+  }
+
+  function setStatus(msg) {
+    var el = document.getElementById('p537b-status');
+    if (el) el.textContent = msg;
+  }
+
+  function renderSummaryCounts(data) {
+    var el = document.getElementById('p537b-summary-counts');
+    if (!el) return;
+    var counts = data.counts || {};
+    var labels = {
+      stable_candidates_for_owner_review: '穩定候選',
+      short_window_spike_caution_list: '短期高峰',
+      combination_candidates_for_followup: '組合追蹤',
+      cross_lottery_candidates_for_followup: '跨彩種追蹤',
+      insufficient_or_ambiguous_candidates: '資料不足'
+    };
+    el.innerHTML = Object.keys(labels).map(function(key) {
+      return '<span style="font-size:12px;color:#8b949e">' + labels[key] + '：<b style="color:#c9d1d9">' + (counts[key] || 0) + '</b></span>';
+    }).join('<span style="color:#30363d;margin:0 4px">|</span>');
+  }
+
+  function renderProvenance(data) {
+    var el = document.getElementById('p537b-provenance');
+    if (!el) return;
+    el.innerHTML =
+      '版本 / Version: ' + textP537B(data.artifact_version) +
+      ' ｜ 任務 / Task: ' + textP537B(data.task_id) +
+      ' (extends ' + textP537B(data.extends_task_id) + ', upstream ' + textP537B(data.upstream_task_id) + ')' +
+      ' ｜ 產生時間 / Generated: ' + textP537B(data.generated_at) +
+      ' ｜ 分類 / Classification: ' + textP537B(data.classification);
+  }
+
+  function renderProvenanceDetail(data) {
+    var el = document.getElementById('p537b-provenance-detail');
+    if (!el) return;
+    var p = data.provenance_and_limits || {};
+    var lines = [];
+    lines.push('來源 artifact / Source: ' + textP537B(p.derived_from_artifact));
+    lines.push('上游 artifact / Upstream: ' + textP537B(p.upstream_artifact));
+    lines.push('雜湊鏈驗證 / Hash Chain Verified: ' + (p.hash_chain_verified ? '✓' : '—'));
+    if (Array.isArray(p.limitations) && p.limitations.length) {
+      lines.push('限制 / Limitations:');
+      p.limitations.forEach(function(l) { lines.push('• ' + textP537B(l)); });
+    }
+    el.innerHTML = lines.map(function(l) { return '<div>' + l + '</div>'; }).join('');
+  }
+
+  function renderStableSpikeTable(tbodyId, rows) {
+    var tbody = document.getElementById(tbodyId);
+    if (!tbody) return;
+    if (!rows || !rows.length) {
+      tbody.innerHTML = '<tr><td colspan="4" style="padding:8px;color:#8b949e">無資料 / No rows</td></tr>';
+      return;
+    }
+    tbody.innerHTML = rows.map(function(r) {
+      return '<tr>' +
+        '<td style="padding:4px 8px">' + textP537B(LOTTERY_LABELS_P537B[r.lottery_type] || r.lottery_type) + '</td>' +
+        '<td style="padding:4px 8px">' + textP537B(r.window != null ? String(r.window) + '期' : null) + '</td>' +
+        '<td style="padding:4px 8px">' + textP537B(r.strategy_id) + '</td>' +
+        '<td style="padding:4px 8px;text-align:right">' + fmtLiftP537B(r.lift) + '</td>' +
+      '</tr>';
+    }).join('');
+  }
+
+  function renderComboTable(rows) {
+    var tbody = document.getElementById('p537b-combo-tbody');
+    if (!tbody) return;
+    if (!rows || !rows.length) {
+      tbody.innerHTML = '<tr><td colspan="3" style="padding:8px;color:#8b949e">無資料 / No rows</td></tr>';
+      return;
+    }
+    tbody.innerHTML = rows.map(function(r) {
+      return '<tr>' +
+        '<td style="padding:4px 8px">' + textP537B(LOTTERY_LABELS_P537B[r.lottery_type] || r.lottery_type) + '</td>' +
+        '<td style="padding:4px 8px">' + textP537B(r.combo_id) + '</td>' +
+        '<td style="padding:4px 8px;text-align:right">' + textP537B(r.windows_present_count) + '</td>' +
+      '</tr>';
+    }).join('');
+  }
+
+  function renderCrossTable(rows) {
+    var tbody = document.getElementById('p537b-cross-tbody');
+    if (!tbody) return;
+    if (!rows || !rows.length) {
+      tbody.innerHTML = '<tr><td colspan="3" style="padding:8px;color:#8b949e">無資料 / No rows</td></tr>';
+      return;
+    }
+    tbody.innerHTML = rows.map(function(r) {
+      var lotteryCount = r.lotteries ? Object.keys(r.lotteries).length : 0;
+      return '<tr>' +
+        '<td style="padding:4px 8px">' + textP537B(r.feature_family) + '</td>' +
+        '<td style="padding:4px 8px">' + textP537B(r.window != null ? String(r.window) + '期' : null) + '</td>' +
+        '<td style="padding:4px 8px;text-align:right">' + textP537B(lotteryCount) + '</td>' +
+      '</tr>';
+    }).join('');
+  }
+
+  function renderInsufficientTable(rows) {
+    var tbody = document.getElementById('p537b-insufficient-tbody');
+    if (!tbody) return;
+    if (!rows || !rows.length) {
+      tbody.innerHTML = '<tr><td colspan="3" style="padding:8px;color:#8b949e">無資料 / No rows</td></tr>';
+      return;
+    }
+    tbody.innerHTML = rows.map(function(r) {
+      return '<tr>' +
+        '<td style="padding:4px 8px">' + textP537B(LOTTERY_LABELS_P537B[r.lottery_type] || r.lottery_type) + '</td>' +
+        '<td style="padding:4px 8px">' + textP537B(r.combo_id) + '</td>' +
+        '<td style="padding:4px 8px">' + textP537B(r.insufficient_reason) + '</td>' +
+      '</tr>';
+    }).join('');
+  }
+
+  function loadP537B() {
+    var base = (typeof window !== 'undefined' && window.API_BASE ? String(window.API_BASE) : '').replace(/\/$/, '');
+    setStatus('載入中…');
+    fetch(base + '/api/replay/shortlist-robustness-review')
+      .then(function(r) {
+        if (r.ok) return r.json();
+        return r.json().catch(function() { return null; }).then(function(data) {
+          throw new Error((data && data.detail) ? data.detail : ('HTTP ' + r.status));
+        });
+      })
+      .then(function(data) {
+        renderProvenance(data);
+        renderSummaryCounts(data);
+        renderStableSpikeTable('p537b-stable-tbody', data.stable_candidates_for_owner_review);
+        renderStableSpikeTable('p537b-spike-tbody', data.short_window_spike_caution_list);
+        renderComboTable(data.combination_candidates_for_followup);
+        renderCrossTable(data.cross_lottery_candidates_for_followup);
+        renderInsufficientTable(data.insufficient_or_ambiguous_candidates);
+        renderProvenanceDetail(data);
+        setStatus('');
+      })
+      .catch(function(e) {
+        setStatus('載入失敗：' + (e && e.message ? e.message : 'unknown error'));
+      });
+  }
+
+  function initP537B() {
+    var btn = document.getElementById('p537b-load-btn');
+    if (btn) btn.addEventListener('click', loadP537B);
+  }
+
+  initP537B();
 })();
 
 // ===== P258O D3 STRATEGY STATUS / CONTRACT AUDIT (read-only, artifact-backed) =====

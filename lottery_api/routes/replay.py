@@ -123,6 +123,12 @@ _LIFT_CANDIDATE_SHORTLIST_PATH = (
     / "research"
     / "p536k_lift_candidate_shortlist_20260708.json"
 )
+_SHORTLIST_ROBUSTNESS_REVIEW_PATH = (
+    Path(_api_root).parent
+    / "outputs"
+    / "research"
+    / "p537a_shortlist_robustness_review_20260709.json"
+)
 _BIG649_MEASUREMENT_EXPORT_PATH = (
     Path(_api_root).parent
     / "outputs"
@@ -1557,6 +1563,80 @@ async def get_replay_lift_candidate_shortlist():
         raise
     except Exception as e:
         logger.exception("get_replay_lift_candidate_shortlist failed")
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+def _load_shortlist_robustness_review_payload() -> dict:
+    """Load the P537A shortlist robustness review artifact."""
+    if not _SHORTLIST_ROBUSTNESS_REVIEW_PATH.exists():
+        raise HTTPException(
+            status_code=500,
+            detail=f"shortlist robustness review artifact not found: {_SHORTLIST_ROBUSTNESS_REVIEW_PATH}",
+        )
+    try:
+        with _SHORTLIST_ROBUSTNESS_REVIEW_PATH.open("r", encoding="utf-8") as handle:
+            payload = json.load(handle)
+    except json.JSONDecodeError as exc:
+        raise HTTPException(
+            status_code=500,
+            detail=f"shortlist robustness review artifact is invalid JSON: {exc}",
+        ) from exc
+    if not isinstance(payload, dict):
+        raise HTTPException(
+            status_code=500,
+            detail="shortlist robustness review artifact must be a JSON object",
+        )
+    return payload
+
+
+@router.get("/api/replay/shortlist-robustness-review")
+async def get_replay_shortlist_robustness_review():
+    """
+    P537B: Read-only shortlist robustness review summary.
+
+    Serves the already-committed P537A artifact (itself a deterministic,
+    read-only relabeling/re-bucketing over the committed P536K shortlist,
+    which in turn derives from P536C) for UI display. No DB access, no
+    recomputation of P537A/P536K/P536C, no new ranking/metric, no betting
+    advice.
+    """
+    try:
+        payload = _load_shortlist_robustness_review_payload()
+        section_keys = [
+            "stable_candidates_for_owner_review",
+            "short_window_spike_caution_list",
+            "combination_candidates_for_followup",
+            "cross_lottery_candidates_for_followup",
+            "insufficient_or_ambiguous_candidates",
+        ]
+        return {
+            "artifact_version": payload.get("schema_version"),
+            "task_id": payload.get("task_id"),
+            "extends_task_id": payload.get("extends_task_id"),
+            "upstream_task_id": payload.get("upstream_task_id"),
+            "generated_at": payload.get("generated_at"),
+            "classification": payload.get("classification"),
+            "counts": {key: len(payload.get(key) or []) for key in section_keys},
+            "stable_candidates_for_owner_review": payload.get("stable_candidates_for_owner_review") or [],
+            "short_window_spike_caution_list": payload.get("short_window_spike_caution_list") or [],
+            "combination_candidates_for_followup": payload.get("combination_candidates_for_followup") or [],
+            "cross_lottery_candidates_for_followup": payload.get("cross_lottery_candidates_for_followup") or [],
+            "insufficient_or_ambiguous_candidates": payload.get("insufficient_or_ambiguous_candidates") or [],
+            "provenance_and_limits": payload.get("provenance_and_limits") or {},
+            "disclaimer": (
+                "Historical replay review artifact only; not a prediction, "
+                "betting edge, future-winning, or production-readiness claim."
+            ),
+            "historical_replay_only": True,
+            "no_future_guarantee": True,
+            "no_betting_advice": True,
+            "no_strategy_promotion": True,
+            "source_artifact": _SHORTLIST_ROBUSTNESS_REVIEW_PATH.name,
+        }
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.exception("get_replay_shortlist_robustness_review failed")
         raise HTTPException(status_code=500, detail=str(e))
 
 

@@ -10,6 +10,16 @@ const API_BASE_URL = (window.location.hostname === 'localhost' || window.locatio
     ? 'http://localhost:8002/api/auto-learning'
     : 'https://your-api-domain.com/api/auto-learning';
 
+function autoLearningEscapeHtml(value) {
+    return String(value ?? '').replace(/[&<>"']/g, char => ({
+        '&': '&amp;',
+        '<': '&lt;',
+        '>': '&gt;',
+        '"': '&quot;',
+        "'": '&#39;'
+    }[char]));
+}
+
 export class AutoLearningManager {
     constructor(dataProcessor, uiManager) {
         this.dataProcessor = dataProcessor;
@@ -1227,13 +1237,14 @@ export class AutoLearningManager {
             // 顯示最佳策略
             const best = result.best_strategy;
             const metrics = best.metrics;
+            const bestStrategyName = autoLearningEscapeHtml(best.strategy_name);
 
             bestContent.innerHTML = `
                 <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px;">
                     <div>
                         <div style="font-size: 0.9em; opacity: 0.8;">策略名稱</div>
                         <div style="font-size: 1.5em; font-weight: bold; margin-top: 5px;">
-                            ${best.strategy_name}
+                            ${bestStrategyName}
                         </div>
                     </div>
                     <div>
@@ -1293,10 +1304,11 @@ export class AutoLearningManager {
                 const rowStyle = rank === 1 ? 'background: rgba(255, 215, 0, 0.1); font-weight: bold;' : '';
 
                 if (isError) {
+                    const strategyName = autoLearningEscapeHtml(data.name);
                     tableHTML += `
                         <tr style="${rowStyle}">
                             <td style="padding: 10px;">${rank}</td>
-                            <td style="padding: 10px;">${data.name}</td>
+                            <td style="padding: 10px;">${strategyName}</td>
                             <td style="padding: 10px; text-align: right;" colspan="4">
                                 <span style="color: #ef4444;">評估失敗</span>
                             </td>
@@ -1304,12 +1316,13 @@ export class AutoLearningManager {
                     `;
                 } else {
                     const m = data.metrics;
+                    const strategyName = autoLearningEscapeHtml(data.name);
                     tableHTML += `
                         <tr style="${rowStyle}">
                             <td style="padding: 10px;">
                                 ${rank === 1 ? '🏆' : rank === 2 ? '🥈' : rank === 3 ? '🥉' : rank}
                             </td>
-                            <td style="padding: 10px;">${data.name}</td>
+                            <td style="padding: 10px;">${strategyName}</td>
                             <td style="padding: 10px; text-align: right;">${data.score.toFixed(2)}</td>
                             <td style="padding: 10px; text-align: right;">${(m.success_rate * 100).toFixed(2)}%</td>
                             <td style="padding: 10px; text-align: right;">${m.avg_hits.toFixed(2)}</td>
@@ -1495,11 +1508,12 @@ export class AutoLearningManager {
             // 填充報告
             const reportEl = document.getElementById('eval-dual-bet-report');
             if (reportEl) {
+                const strategyName = autoLearningEscapeHtml(bestStrategy.strategy_name);
                 reportEl.innerHTML = `
                     <div style="background: rgba(0,0,0,0.2); padding: 15px; border-radius: 8px; margin-top: 10px;">
                         <h4 style="margin: 0 0 10px 0; color: #e5e7eb;">📋 預測報告</h4>
                         <p style="margin: 5px 0; color: #d1d5db;">
-                            ✅ 使用評估中表現最佳的 <strong>${bestStrategy.strategy_name}</strong> 策略生成預測
+                            ✅ 使用評估中表現最佳的 <strong>${strategyName}</strong> 策略生成預測
                         </p>
                         <p style="margin: 5px 0; color: #d1d5db;">
                             📊 該策略在測試中的成功率: <strong>${(bestStrategy.metrics.success_rate * 100).toFixed(2)}%</strong>

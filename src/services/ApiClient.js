@@ -23,10 +23,11 @@ export class ApiClient {
         const baseDelay = 1000; // 1 second
 
         for (let attempt = 0; attempt <= maxRetries; attempt++) {
+            let timeoutId = null;
             try {
                 // 創建超時控制
                 const controller = new AbortController();
-                const timeoutId = setTimeout(() => controller.abort(), this.requestTimeout);
+                timeoutId = setTimeout(() => controller.abort(), this.requestTimeout);
 
                 const response = await fetch(url, {
                     ...options,
@@ -36,8 +37,6 @@ export class ApiClient {
                     },
                     signal: controller.signal
                 });
-
-                clearTimeout(timeoutId);
 
                 if (!response.ok) {
                     const error = await response.json().catch(() => ({ detail: response.statusText }));
@@ -81,6 +80,10 @@ export class ApiClient {
 
                 console.error(`API request failed: ${endpoint}`, error);
                 throw error;
+            } finally {
+                if (timeoutId) {
+                    clearTimeout(timeoutId);
+                }
             }
         }
     }

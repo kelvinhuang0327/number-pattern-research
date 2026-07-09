@@ -80,6 +80,7 @@ export class App {
 
         if (isLoading) {
             button.disabled = true;
+            button.setAttribute('aria-busy', 'true');
             button.dataset.originalText = button.innerHTML;
             const icon = button.querySelector('.btn-icon');
             if (icon) {
@@ -87,6 +88,7 @@ export class App {
             }
         } else {
             button.disabled = false;
+            button.removeAttribute('aria-busy');
             if (button.dataset.originalText) {
                 button.innerHTML = button.dataset.originalText;
                 delete button.dataset.originalText;

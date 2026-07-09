@@ -149,7 +149,7 @@ export class DataProcessor {
             const line = lines[i].trim();
             if (!line) continue;
 
-            let parts = line.split(',').map(p => p.trim().replace(/^"|"$/g, ''));
+            let parts = this.splitCSVLine(line);
 
             // 嘗試使用空白分隔（如果逗號分隔無效）
             if (parts.length <= 1) {
@@ -208,6 +208,38 @@ export class DataProcessor {
             }
         }
         return data;
+    }
+
+    splitCSVLine(line) {
+        const values = [];
+        let current = '';
+        let inQuotes = false;
+
+        for (let i = 0; i < line.length; i++) {
+            const char = line[i];
+            const nextChar = line[i + 1];
+
+            if (char === '"') {
+                if (inQuotes && nextChar === '"') {
+                    current += '"';
+                    i++;
+                } else {
+                    inQuotes = !inQuotes;
+                }
+                continue;
+            }
+
+            if (char === ',' && !inQuotes) {
+                values.push(current.trim());
+                current = '';
+                continue;
+            }
+
+            current += char;
+        }
+
+        values.push(current.trim());
+        return values;
     }
 
     parseHeuristic(lines) {

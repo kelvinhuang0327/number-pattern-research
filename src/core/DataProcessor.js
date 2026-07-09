@@ -106,7 +106,7 @@ export class DataProcessor {
                 text = await this.readFileContent(file, 'Big5');
             }
 
-            const lines = text.split(/\r?\n/).filter(line => line.trim());
+            const lines = this.splitCSVRecords(text);
             if (lines.length < 2) throw new Error('檔案內容為空');
 
             let data = [];
@@ -240,6 +240,47 @@ export class DataProcessor {
 
         values.push(current.trim());
         return values;
+    }
+
+    splitCSVRecords(text) {
+        const records = [];
+        let current = '';
+        let inQuotes = false;
+
+        for (let i = 0; i < text.length; i++) {
+            const char = text[i];
+            const nextChar = text[i + 1];
+
+            if (char === '"') {
+                current += char;
+                if (inQuotes && nextChar === '"') {
+                    current += nextChar;
+                    i++;
+                } else {
+                    inQuotes = !inQuotes;
+                }
+                continue;
+            }
+
+            if ((char === '\n' || char === '\r') && !inQuotes) {
+                if (current.trim()) {
+                    records.push(current.trim());
+                }
+                current = '';
+                if (char === '\r' && nextChar === '\n') {
+                    i++;
+                }
+                continue;
+            }
+
+            current += char;
+        }
+
+        if (current.trim()) {
+            records.push(current.trim());
+        }
+
+        return records;
     }
 
     parseHeuristic(lines) {

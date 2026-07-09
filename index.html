@@ -4225,6 +4225,32 @@
 
             <div id="p537b-provenance" style="font-size:12px;color:#8b949e;margin-bottom:16px"></div>
 
+            <!-- P537D: client-side filters + CSV export; operate only on the already-loaded response in browser memory -->
+            <div id="p537d-filter-bar" style="display:flex;gap:10px;flex-wrap:wrap;margin-bottom:12px;align-items:center">
+              <label style="font-size:12px;color:#8b949e">分類：</label>
+              <select id="p537d-filter-category" style="background:#161b22;border:1px solid #30363d;color:#c9d1d9;border-radius:4px;padding:4px 8px;font-size:12px">
+                <option value="ALL">全部</option>
+                <option value="stable">穩定候選</option>
+                <option value="short_window_spike">短期高峰</option>
+                <option value="combination">組合追蹤</option>
+                <option value="cross_lottery">跨彩種追蹤</option>
+                <option value="insufficient">資料不足</option>
+              </select>
+              <label style="font-size:12px;color:#8b949e">彩種：</label>
+              <select id="p537d-filter-lottery" style="background:#161b22;border:1px solid #30363d;color:#c9d1d9;border-radius:4px;padding:4px 8px;font-size:12px">
+                <option value="ALL">全部</option>
+                <option value="DAILY_539">今彩539</option>
+                <option value="BIG_LOTTO">大樂透</option>
+                <option value="POWER_LOTTO">威力彩</option>
+              </select>
+              <label style="font-size:12px;color:#8b949e">策略/特徵族/組合/原因搜尋：</label>
+              <input id="p537d-filter-search" type="text" placeholder="輸入關鍵字" style="background:#161b22;border:1px solid #30363d;color:#c9d1d9;border-radius:4px;padding:4px 8px;font-size:12px;width:200px">
+              <button id="p537d-filter-reset" class="btn-sm btn-secondary">重設篩選 / Reset</button>
+              <button id="p537d-export-csv" class="btn-sm btn-secondary">匯出可見資料列 CSV / Export CSV</button>
+            </div>
+            <div id="p537d-export-status" style="display:none;font-size:12px;color:#8b949e;margin-bottom:10px"></div>
+            <textarea id="p537d-export-fallback" style="display:none;width:100%;height:80px;font-size:11px;margin-bottom:10px;background:#161b22;border:1px solid #30363d;color:#c9d1d9" readonly></textarea>
+
             <div id="p537b-summary-counts" style="display:flex;gap:16px;flex-wrap:wrap;margin-bottom:18px"></div>
 
             <div class="card" id="p537b-card-stable" style="padding:14px;margin-bottom:18px">
@@ -8105,6 +8131,8 @@
 (function() {
   'use strict';
 
+  var _p537bData = null;
+
   var LOTTERY_LABELS_P537B = {
     'DAILY_539': '今彩539',
     'BIG_LOTTO': '大樂透',
@@ -8246,6 +8274,207 @@
     }).join('');
   }
 
+  // P537D: client-side filters + CSV export. All filtering happens against
+  // _p537bData already sitting in browser memory — no refetch, no route
+  // change, no new metric/ranking formula (only reads existing fields).
+  function getP537DFilters() {
+    var categoryEl = document.getElementById('p537d-filter-category');
+    var lotteryEl = document.getElementById('p537d-filter-lottery');
+    var searchEl = document.getElementById('p537d-filter-search');
+    return {
+      category: (categoryEl || {}).value || 'ALL',
+      lottery: (lotteryEl || {}).value || 'ALL',
+      search: ((searchEl || {}).value || '').trim().toLowerCase()
+    };
+  }
+
+  function matchesSearchP537D(text, search) {
+    return !search || String(text || '').toLowerCase().indexOf(search) !== -1;
+  }
+
+  function getFilteredStableP537D() {
+    var f = getP537DFilters();
+    var rows = (_p537bData && _p537bData.stable_candidates_for_owner_review) || [];
+    if (f.category !== 'ALL' && f.category !== 'stable') return [];
+    return rows.filter(function(r) {
+      if (f.lottery !== 'ALL' && r.lottery_type !== f.lottery) return false;
+      if (f.search && !matchesSearchP537D([r.strategy_id, r.feature_family, r.why_included, r.caution_label].join(' '), f.search)) return false;
+      return true;
+    });
+  }
+
+  function getFilteredSpikeP537D() {
+    var f = getP537DFilters();
+    var rows = (_p537bData && _p537bData.short_window_spike_caution_list) || [];
+    if (f.category !== 'ALL' && f.category !== 'short_window_spike') return [];
+    return rows.filter(function(r) {
+      if (f.lottery !== 'ALL' && r.lottery_type !== f.lottery) return false;
+      if (f.search && !matchesSearchP537D([r.strategy_id, r.feature_family, r.why_included, r.caution_label].join(' '), f.search)) return false;
+      return true;
+    });
+  }
+
+  function getFilteredComboP537D() {
+    var f = getP537DFilters();
+    var rows = (_p537bData && _p537bData.combination_candidates_for_followup) || [];
+    if (f.category !== 'ALL' && f.category !== 'combination') return [];
+    return rows.filter(function(r) {
+      if (f.lottery !== 'ALL' && r.lottery_type !== f.lottery) return false;
+      if (f.search && !matchesSearchP537D([r.combo_id, r.why_included, r.caution_label].join(' '), f.search)) return false;
+      return true;
+    });
+  }
+
+  function getFilteredCrossP537D() {
+    var f = getP537DFilters();
+    var rows = (_p537bData && _p537bData.cross_lottery_candidates_for_followup) || [];
+    if (f.category !== 'ALL' && f.category !== 'cross_lottery') return [];
+    return rows.filter(function(r) {
+      if (f.lottery !== 'ALL' && !(r.lotteries && Object.prototype.hasOwnProperty.call(r.lotteries, f.lottery))) return false;
+      if (f.search && !matchesSearchP537D([r.feature_family, r.why_included, r.caution_label].join(' '), f.search)) return false;
+      return true;
+    });
+  }
+
+  function getFilteredInsufficientP537D() {
+    var f = getP537DFilters();
+    var rows = (_p537bData && _p537bData.insufficient_or_ambiguous_candidates) || [];
+    if (f.category !== 'ALL' && f.category !== 'insufficient') return [];
+    return rows.filter(function(r) {
+      if (f.lottery !== 'ALL' && r.lottery_type !== f.lottery) return false;
+      if (f.search && !matchesSearchP537D([r.combo_id, r.why_included, r.caution_label, r.insufficient_reason].join(' '), f.search)) return false;
+      return true;
+    });
+  }
+
+  function updateCardVisibilityP537D() {
+    var f = getP537DFilters();
+    var map = {
+      stable: 'p537b-card-stable',
+      short_window_spike: 'p537b-card-spike',
+      combination: 'p537b-card-combo',
+      cross_lottery: 'p537b-card-cross',
+      insufficient: 'p537b-card-insufficient'
+    };
+    Object.keys(map).forEach(function(key) {
+      var el = document.getElementById(map[key]);
+      if (!el) return;
+      el.style.display = (f.category === 'ALL' || f.category === key) ? '' : 'none';
+    });
+  }
+
+  function renderFilteredP537B() {
+    if (!_p537bData) return;
+    renderStableSpikeTable('p537b-stable-tbody', getFilteredStableP537D());
+    renderStableSpikeTable('p537b-spike-tbody', getFilteredSpikeP537D());
+    renderComboTable(getFilteredComboP537D());
+    renderCrossTable(getFilteredCrossP537D());
+    renderInsufficientTable(getFilteredInsufficientP537D());
+    updateCardVisibilityP537D();
+  }
+
+  function resetFiltersP537D() {
+    var categoryEl = document.getElementById('p537d-filter-category');
+    var lotteryEl = document.getElementById('p537d-filter-lottery');
+    var searchEl = document.getElementById('p537d-filter-search');
+    if (categoryEl) categoryEl.value = 'ALL';
+    if (lotteryEl) lotteryEl.value = 'ALL';
+    if (searchEl) searchEl.value = '';
+    renderFilteredP537B();
+  }
+
+  function csvEscapeP537D(v) {
+    var s = v == null ? '' : String(v);
+    return /[",\n]/.test(s) ? '"' + s.replace(/"/g, '""') + '"' : s;
+  }
+
+  function buildVisibleCsvP537D() {
+    var header = [
+      'category', 'lottery_type', 'window', 'strategy_or_combo_id', 'feature_family',
+      'support_draws_or_windows_present_count', 'lift_or_avg_lift', 'why_included', 'caution_label'
+    ];
+    var lines = [header.map(csvEscapeP537D).join(',')];
+    var rowCount = 0;
+
+    getFilteredStableP537D().forEach(function(r) {
+      lines.push([
+        'stable', r.lottery_type, r.window, r.strategy_id, r.feature_family,
+        r.support_draws, r.lift, r.why_included, r.caution_label
+      ].map(csvEscapeP537D).join(','));
+      rowCount++;
+    });
+
+    getFilteredSpikeP537D().forEach(function(r) {
+      lines.push([
+        'short_window_spike', r.lottery_type, r.window, r.strategy_id, r.feature_family,
+        r.support_draws, r.lift, r.why_included, r.caution_label
+      ].map(csvEscapeP537D).join(','));
+      rowCount++;
+    });
+
+    getFilteredComboP537D().forEach(function(r) {
+      lines.push([
+        'combination', r.lottery_type, '', r.combo_id, '',
+        r.windows_present_count, r.avg_prize_signal_lift_across_present_windows, r.why_included, r.caution_label
+      ].map(csvEscapeP537D).join(','));
+      rowCount++;
+    });
+
+    getFilteredCrossP537D().forEach(function(r) {
+      var lotteries = Object.keys(r.lotteries || {}).join('|');
+      lines.push([
+        'cross_lottery', lotteries, r.window, '', r.feature_family,
+        '', '', r.why_included, r.caution_label
+      ].map(csvEscapeP537D).join(','));
+      rowCount++;
+    });
+
+    getFilteredInsufficientP537D().forEach(function(r) {
+      lines.push([
+        'insufficient', r.lottery_type, '', r.combo_id, '',
+        r.windows_present_count, r.avg_prize_signal_lift_across_present_windows, r.why_included, r.caution_label
+      ].map(csvEscapeP537D).join(','));
+      rowCount++;
+    });
+
+    return { csv: lines.join('\n'), rowCount: rowCount };
+  }
+
+  function exportVisibleCsvP537D() {
+    var statusBox = document.getElementById('p537d-export-status');
+    var fallbackBox = document.getElementById('p537d-export-fallback');
+    if (!_p537bData) {
+      if (statusBox) { statusBox.style.display = ''; statusBox.textContent = '尚未載入資料，無法匯出。'; }
+      return;
+    }
+    var built = buildVisibleCsvP537D();
+    if (typeof Blob !== 'undefined' && typeof URL !== 'undefined' && URL.createObjectURL) {
+      try {
+        var blob = new Blob([built.csv], { type: 'text/csv;charset=utf-8;' });
+        var blobUrl = URL.createObjectURL(blob);
+        var a = document.createElement('a');
+        a.href = blobUrl;
+        a.download = 'p537b-shortlist-robustness-review-visible-rows.csv';
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(blobUrl);
+        if (fallbackBox) fallbackBox.style.display = 'none';
+        if (statusBox) { statusBox.style.display = ''; statusBox.textContent = '已匯出目前顯示的 ' + built.rowCount + ' 筆資料列為 CSV 檔案。'; }
+        return;
+      } catch (e) {
+        // fall through to manual-copy fallback
+      }
+    }
+    if (fallbackBox) {
+      fallbackBox.style.display = '';
+      fallbackBox.value = built.csv;
+      fallbackBox.focus();
+      fallbackBox.select();
+    }
+    if (statusBox) { statusBox.style.display = ''; statusBox.textContent = '此瀏覽器不支援自動下載，請從下方欄位手動複製匯出內容。'; }
+  }
+
   function loadP537B() {
     var base = (typeof window !== 'undefined' && window.API_BASE ? String(window.API_BASE) : '').replace(/\/$/, '');
     setStatus('載入中…');
@@ -8257,13 +8486,10 @@
         });
       })
       .then(function(data) {
+        _p537bData = data;
         renderProvenance(data);
         renderSummaryCounts(data);
-        renderStableSpikeTable('p537b-stable-tbody', data.stable_candidates_for_owner_review);
-        renderStableSpikeTable('p537b-spike-tbody', data.short_window_spike_caution_list);
-        renderComboTable(data.combination_candidates_for_followup);
-        renderCrossTable(data.cross_lottery_candidates_for_followup);
-        renderInsufficientTable(data.insufficient_or_ambiguous_candidates);
+        renderFilteredP537B();
         renderProvenanceDetail(data);
         setStatus('');
       })
@@ -8275,6 +8501,19 @@
   function initP537B() {
     var btn = document.getElementById('p537b-load-btn');
     if (btn) btn.addEventListener('click', loadP537B);
+
+    ['p537d-filter-category', 'p537d-filter-lottery'].forEach(function(id) {
+      var el = document.getElementById(id);
+      if (el) el.addEventListener('change', renderFilteredP537B);
+    });
+    var searchEl = document.getElementById('p537d-filter-search');
+    if (searchEl) searchEl.addEventListener('input', renderFilteredP537B);
+
+    var resetBtn = document.getElementById('p537d-filter-reset');
+    if (resetBtn) resetBtn.addEventListener('click', resetFiltersP537D);
+
+    var exportBtn = document.getElementById('p537d-export-csv');
+    if (exportBtn) exportBtn.addEventListener('click', exportVisibleCsvP537D);
   }
 
   initP537B();

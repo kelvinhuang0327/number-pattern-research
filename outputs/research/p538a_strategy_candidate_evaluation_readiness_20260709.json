@@ -1,0 +1,1039 @@
+{
+  "schema_version": "1.0",
+  "task_id": "P538A",
+  "source_task_ids": [
+    "P537A",
+    "P536K",
+    "P536C"
+  ],
+  "generated_at": "2026-07-09T03:54:18.970763+00:00",
+  "classification": "P538A_STRATEGY_CANDIDATE_EVALUATION_READINESS_READY",
+  "artifact_schema_capability_map": {
+    "P537A": {
+      "artifact_path": "outputs/research/p537a_shortlist_robustness_review_20260709.json",
+      "task_id": "P537A",
+      "extends_task_id": "P536K",
+      "upstream_task_id": "P536C",
+      "generated_at": "2026-07-09T02:23:29.040633+00:00",
+      "top_level_keys": [
+        "classification",
+        "combination_candidates_for_followup",
+        "cross_lottery_candidates_for_followup",
+        "extends_task_id",
+        "generated_at",
+        "insufficient_or_ambiguous_candidates",
+        "provenance_and_limits",
+        "schema_version",
+        "short_window_spike_caution_list",
+        "stable_candidates_for_owner_review",
+        "task_id",
+        "upstream_task_id"
+      ],
+      "sections": {
+        "stable_candidates_for_owner_review": {
+          "row_count": 177,
+          "fields_present": [
+            "baseline_rate",
+            "caution_label",
+            "feature_family",
+            "lift",
+            "log10_lift",
+            "lottery_type",
+            "metric",
+            "observed_rate",
+            "pick_k",
+            "review_label",
+            "strategy_id",
+            "support_draws",
+            "why_included",
+            "window"
+          ]
+        },
+        "short_window_spike_caution_list": {
+          "row_count": 90,
+          "fields_present": [
+            "baseline_rate",
+            "caution_label",
+            "feature_family",
+            "lift",
+            "log10_lift",
+            "lottery_type",
+            "metric",
+            "observed_rate",
+            "pick_k",
+            "review_label",
+            "strategy_id",
+            "support_draws",
+            "why_included",
+            "window"
+          ]
+        },
+        "combination_candidates_for_followup": {
+          "row_count": 102,
+          "fields_present": [
+            "avg_prize_signal_lift_across_present_windows",
+            "caution_label",
+            "combo_id",
+            "lottery_type",
+            "metric",
+            "per_window",
+            "requested_budget",
+            "review_label",
+            "stability_rank",
+            "why_included",
+            "windows_present",
+            "windows_present_count"
+          ]
+        },
+        "cross_lottery_candidates_for_followup": {
+          "row_count": 60,
+          "fields_present": [
+            "caution_label",
+            "feature_family",
+            "lotteries",
+            "pick_k",
+            "review_label",
+            "why_included",
+            "window"
+          ]
+        },
+        "insufficient_or_ambiguous_candidates": {
+          "row_count": 31,
+          "fields_present": [
+            "avg_prize_signal_lift_across_present_windows",
+            "caution_label",
+            "combo_id",
+            "insufficient_reason",
+            "lottery_type",
+            "metric",
+            "per_window",
+            "requested_budget",
+            "review_label",
+            "stability_rank",
+            "why_included",
+            "windows_present",
+            "windows_present_count"
+          ]
+        }
+      }
+    },
+    "P536K": {
+      "artifact_path": "outputs/research/p536k_lift_candidate_shortlist_20260708.json",
+      "task_id": "P536K",
+      "extends_task_id": "P536C",
+      "generated_at": "2026-07-08T13:12:26.151998+00:00",
+      "top_level_keys": [
+        "classification",
+        "combination_review_candidates",
+        "cross_lottery_review_candidates",
+        "extends_task_id",
+        "generated_at",
+        "provenance_and_limits",
+        "schema_version",
+        "short_window_spike_review_candidates",
+        "stable_300_750_review_candidates",
+        "task_id"
+      ],
+      "sections": {
+        "stable_300_750_review_candidates": {
+          "row_count": 177,
+          "fields_present": [
+            "baseline_rate",
+            "caution_label",
+            "feature_family",
+            "lift",
+            "log10_lift",
+            "lottery_type",
+            "metric",
+            "observed_rate",
+            "pick_k",
+            "strategy_id",
+            "support_draws",
+            "why_included",
+            "window"
+          ]
+        },
+        "short_window_spike_review_candidates": {
+          "row_count": 90,
+          "fields_present": [
+            "baseline_rate",
+            "caution_label",
+            "feature_family",
+            "lift",
+            "log10_lift",
+            "lottery_type",
+            "metric",
+            "observed_rate",
+            "pick_k",
+            "strategy_id",
+            "support_draws",
+            "why_included",
+            "window"
+          ]
+        },
+        "combination_review_candidates": {
+          "row_count": 133,
+          "fields_present": [
+            "avg_prize_signal_lift_across_present_windows",
+            "caution_label",
+            "combo_id",
+            "lottery_type",
+            "metric",
+            "per_window",
+            "requested_budget",
+            "stability_rank",
+            "why_included",
+            "windows_present",
+            "windows_present_count"
+          ]
+        },
+        "cross_lottery_review_candidates": {
+          "row_count": 60,
+          "fields_present": [
+            "caution_label",
+            "feature_family",
+            "lotteries",
+            "pick_k",
+            "why_included",
+            "window"
+          ]
+        }
+      }
+    },
+    "P536C": {
+      "artifact_path": "outputs/research/p536c_success_matrix_lift_extension_20260708.json",
+      "task_id": "P536C",
+      "extends_task_id": "P333",
+      "generated_at": "2026-07-08T07:42:01.782116+00:00",
+      "top_level_keys": [
+        "classification",
+        "combination_leaderboard_with_lift",
+        "combination_stability_rank",
+        "cross_lottery_normalized_lift",
+        "disclaimer_en",
+        "extends_task_id",
+        "generated_at",
+        "methodology_notes",
+        "metric_definitions",
+        "safety_flags",
+        "schema_version",
+        "source",
+        "strategy_pick_matrix_lift_extension",
+        "summary",
+        "task_id",
+        "window_policy"
+      ],
+      "sections": {
+        "strategy_pick_matrix_lift_extension": {
+          "row_count": 603,
+          "fields_present": [
+            "any_main_hit_count",
+            "any_main_hit_edge_pp",
+            "any_main_hit_lift",
+            "any_main_hit_log10_lift",
+            "any_main_hit_rate",
+            "baseline_any_main_hit_rate",
+            "baseline_m2_plus_rate",
+            "baseline_m3_plus_rate",
+            "baseline_prize_signal_rate",
+            "earliest_target_draw",
+            "feature_family",
+            "latest_target_draw",
+            "lottery_type",
+            "m2_plus_count",
+            "m2_plus_edge_pp",
+            "m2_plus_lift",
+            "m2_plus_log10_lift",
+            "m2_plus_rate",
+            "m3_plus_count",
+            "m3_plus_edge_pp",
+            "m3_plus_lift",
+            "m3_plus_log10_lift",
+            "m3_plus_rate",
+            "pick_k",
+            "prize_signal_count",
+            "prize_signal_edge_pp",
+            "prize_signal_lift",
+            "prize_signal_log10_lift",
+            "prize_signal_rate",
+            "strategy_id",
+            "support_draws",
+            "window"
+          ]
+        },
+        "cross_lottery_normalized_lift": {
+          "row_count": 195,
+          "fields_present": [
+            "feature_family",
+            "lotteries",
+            "pick_k",
+            "window"
+          ]
+        },
+        "combination_leaderboard_with_lift": {
+          "row_count": 510,
+          "fields_present": [
+            "any_main_hit_count",
+            "any_main_hit_edge_pp",
+            "any_main_hit_lift",
+            "any_main_hit_log10_lift",
+            "any_main_hit_rate",
+            "avg_main_hits",
+            "avg_second_zone_candidates",
+            "avg_selected_count",
+            "baseline_any_main_rate",
+            "baseline_prize_signal_rate",
+            "bucket_key",
+            "combo",
+            "combo_id",
+            "earliest_target_draw",
+            "latest_target_draw",
+            "lottery_type",
+            "m2_plus_count",
+            "m2_plus_rate",
+            "prize_signal_count",
+            "prize_signal_edge_pp",
+            "prize_signal_lift",
+            "prize_signal_log10_lift",
+            "prize_signal_rate",
+            "rank_in_bucket",
+            "requested_budget",
+            "second_zone_hit_count",
+            "second_zone_hit_rate",
+            "special_hit_count",
+            "special_hit_rate",
+            "support_draws",
+            "window"
+          ]
+        },
+        "combination_stability_rank": {
+          "row_count": 170,
+          "fields_present": [
+            "avg_prize_signal_lift_across_present_windows",
+            "combo_id",
+            "lottery_type",
+            "per_window",
+            "requested_budget",
+            "stability_rank",
+            "windows_present",
+            "windows_present_count"
+          ]
+        }
+      },
+      "window_policy": {
+        "primary_windows": [
+          50,
+          300,
+          750
+        ],
+        "long_history_reference_role": "reference_only_not_decision_gate",
+        "minimum_support_draws": 30,
+        "cross_lottery_common_pick_max": 5
+      }
+    }
+  },
+  "candidate_groups_for_next_stage_review": {
+    "stable_review_candidates": {
+      "source_field_in_p537a": "stable_candidates_for_owner_review",
+      "count": 177,
+      "lottery_type_breakdown": {
+        "BIG_LOTTO": 62,
+        "DAILY_539": 62,
+        "POWER_LOTTO": 53
+      },
+      "distinct_strategy_id_count": 31,
+      "distinct_feature_families": [
+        "acb",
+        "cold",
+        "deviation",
+        "echo",
+        "entropy",
+        "fourier",
+        "frequency",
+        "markov",
+        "orthogonal",
+        "other",
+        "precision",
+        "ts3",
+        "zone"
+      ],
+      "distinct_windows": [
+        300,
+        750
+      ],
+      "sample_rows_verbatim": [
+        {
+          "lottery_type": "BIG_LOTTO",
+          "window": 300,
+          "strategy_id": "bet2_fourier_expansion_biglotto",
+          "feature_family": "fourier",
+          "pick_k": 1,
+          "metric": "any_main_hit",
+          "observed_rate": 0.13333333333333333,
+          "baseline_rate": 0.12244897959183715,
+          "lift": 1.0888888888888852,
+          "log10_lift": 0.03698356625316853,
+          "support_draws": 300,
+          "why_included": "window∈{300,750} with any_main_hit_lift > 1 (positive lift over the hypergeometric baseline)",
+          "caution_label": "Historical replay review only; not a prediction or betting edge.",
+          "review_label": "stable_review_candidate"
+        },
+        {
+          "lottery_type": "BIG_LOTTO",
+          "window": 300,
+          "strategy_id": "bet2_fourier_expansion_biglotto",
+          "feature_family": "fourier",
+          "pick_k": 5,
+          "metric": "any_main_hit",
+          "observed_rate": 0.5066666666666667,
+          "baseline_rate": 0.495198449407515,
+          "lift": 1.023158831116844,
+          "log10_lift": 0.009943057097568401,
+          "support_draws": 300,
+          "why_included": "window∈{300,750} with any_main_hit_lift > 1 (positive lift over the hypergeometric baseline)",
+          "caution_label": "Historical replay review only; not a prediction or betting edge.",
+          "review_label": "stable_review_candidate"
+        },
+        {
+          "lottery_type": "BIG_LOTTO",
+          "window": 300,
+          "strategy_id": "bet2_fourier_expansion_biglotto",
+          "feature_family": "fourier",
+          "pick_k": 6,
+          "metric": "any_main_hit",
+          "observed_rate": 0.57,
+          "baseline_rate": 0.5640350244883059,
+          "lift": 1.0105755409730193,
+          "log10_lift": 0.00456878277120338,
+          "support_draws": 300,
+          "why_included": "window∈{300,750} with any_main_hit_lift > 1 (positive lift over the hypergeometric baseline)",
+          "caution_label": "Historical replay review only; not a prediction or betting edge.",
+          "review_label": "stable_review_candidate"
+        }
+      ]
+    },
+    "short_window_spike_cautions": {
+      "source_field_in_p537a": "short_window_spike_caution_list",
+      "count": 90,
+      "lottery_type_breakdown": {
+        "BIG_LOTTO": 42,
+        "DAILY_539": 36,
+        "POWER_LOTTO": 12
+      },
+      "distinct_strategy_id_count": 31,
+      "distinct_feature_families": [
+        "acb",
+        "cold",
+        "deviation",
+        "echo",
+        "entropy",
+        "fourier",
+        "markov",
+        "orthogonal",
+        "other",
+        "precision",
+        "ts3",
+        "zone"
+      ],
+      "distinct_windows": [
+        50
+      ],
+      "sample_rows_verbatim": [
+        {
+          "lottery_type": "BIG_LOTTO",
+          "window": 50,
+          "strategy_id": "bet2_fourier_expansion_biglotto",
+          "feature_family": "fourier",
+          "pick_k": 1,
+          "metric": "any_main_hit",
+          "observed_rate": 0.16,
+          "baseline_rate": 0.12244897959183669,
+          "lift": 1.306666666666667,
+          "log10_lift": 0.11616481230079495,
+          "support_draws": 50,
+          "why_included": "window=50 (short-window) with any_main_hit_lift > 1; short-window-review-only, may not persist at 300/750",
+          "caution_label": "SHORT-WINDOW SPIKE — review only, not a stable pattern; do not treat as a validated edge.",
+          "review_label": "short_window_caution"
+        },
+        {
+          "lottery_type": "BIG_LOTTO",
+          "window": 50,
+          "strategy_id": "bet2_fourier_expansion_biglotto",
+          "feature_family": "fourier",
+          "pick_k": 2,
+          "metric": "any_main_hit",
+          "observed_rate": 0.28,
+          "baseline_rate": 0.23214285714285718,
+          "lift": 1.2061538461538461,
+          "log10_lift": 0.08140270604158285,
+          "support_draws": 50,
+          "why_included": "window=50 (short-window) with any_main_hit_lift > 1; short-window-review-only, may not persist at 300/750",
+          "caution_label": "SHORT-WINDOW SPIKE — review only, not a stable pattern; do not treat as a validated edge.",
+          "review_label": "short_window_caution"
+        },
+        {
+          "lottery_type": "BIG_LOTTO",
+          "window": 50,
+          "strategy_id": "bet2_fourier_expansion_biglotto",
+          "feature_family": "fourier",
+          "pick_k": 4,
+          "metric": "any_main_hit",
+          "observed_rate": 0.46,
+          "baseline_rate": 0.41753667239328635,
+          "lift": 1.1016996360183582,
+          "log10_lift": 0.04206320594913471,
+          "support_draws": 50,
+          "why_included": "window=50 (short-window) with any_main_hit_lift > 1; short-window-review-only, may not persist at 300/750",
+          "caution_label": "SHORT-WINDOW SPIKE — review only, not a stable pattern; do not treat as a validated edge.",
+          "review_label": "short_window_caution"
+        }
+      ]
+    },
+    "combination_followup_candidates": {
+      "source_field_in_p537a": "combination_candidates_for_followup",
+      "count": 102,
+      "lottery_type_breakdown": {
+        "BIG_LOTTO": 26,
+        "DAILY_539": 32,
+        "POWER_LOTTO": 44
+      },
+      "distinct_combo_id_count": 102,
+      "sample_rows_verbatim": [
+        {
+          "lottery_type": "BIG_LOTTO",
+          "combo_id": "biglotto_echo_aware_3bet:2 + biglotto_ts3_markov_4bet_w30:1",
+          "requested_budget": 3,
+          "windows_present": [
+            50,
+            300
+          ],
+          "windows_present_count": 2,
+          "metric": "prize_signal_and_any_main_hit_per_window",
+          "avg_prize_signal_lift_across_present_windows": 0.0,
+          "per_window": {
+            "50": {
+              "prize_signal_rate": 0.0,
+              "prize_signal_lift": 0.0,
+              "any_main_hit_lift": 1.3355240902720729,
+              "support_draws": 50
+            },
+            "300": {
+              "prize_signal_rate": 0.0,
+              "prize_signal_lift": 0.0,
+              "any_main_hit_lift": 1.0447429424279975,
+              "support_draws": 300
+            }
+          },
+          "stability_rank": 1,
+          "why_included": "combo already present in P333's own top-10-per-bucket leaderboard for >=2 of the 3 windows (multi-window stability signal, no new search)",
+          "caution_label": "Historical replay review only; not a prediction or betting edge.",
+          "review_label": "combination_review_candidate"
+        },
+        {
+          "lottery_type": "BIG_LOTTO",
+          "combo_id": "bet2_fourier_expansion_biglotto:2 + biglotto_deviation_2bet:2",
+          "requested_budget": 4,
+          "windows_present": [
+            50,
+            300,
+            750
+          ],
+          "windows_present_count": 3,
+          "metric": "prize_signal_and_any_main_hit_per_window",
+          "avg_prize_signal_lift_across_present_windows": 1.5433472211384822,
+          "per_window": {
+            "50": {
+              "prize_signal_rate": 0.02,
+              "prize_signal_lift": 3.6087034277198247,
+              "any_main_hit_lift": 1.1754910444799977,
+              "support_draws": 50
+            },
+            "300": {
+              "prize_signal_rate": 0.0033333333333333335,
+              "prize_signal_lift": 0.5643592970680071,
+              "any_main_hit_lift": 1.0567587978651314,
+              "support_draws": 300
+            },
+            "750": {
+              "prize_signal_rate": 0.0026666666666666666,
+              "prize_signal_lift": 0.4569789386276154,
+              "any_main_hit_lift": 1.026745173956024,
+              "support_draws": 750
+            }
+          },
+          "stability_rank": 1,
+          "why_included": "combo already present in P333's own top-10-per-bucket leaderboard for >=2 of the 3 windows (multi-window stability signal, no new search)",
+          "caution_label": "Historical replay review only; not a prediction or betting edge.",
+          "review_label": "combination_review_candidate"
+        },
+        {
+          "lottery_type": "BIG_LOTTO",
+          "combo_id": "bet2_fourier_expansion_biglotto:2 + biglotto_deviation_2bet:2 + markov_single_biglotto:1",
+          "requested_budget": 5,
+          "windows_present": [
+            300,
+            750
+          ],
+          "windows_present_count": 2,
+          "metric": "prize_signal_and_any_main_hit_per_window",
+          "avg_prize_signal_lift_across_present_windows": 0.9209300995288203,
+          "per_window": {
+            "300": {
+              "prize_signal_rate": 0.01,
+              "prize_signal_lift": 0.8561084607697117,
+              "any_main_hit_lift": 1.0189412727845792,
+              "support_draws": 300
+            },
+            "750": {
+              "prize_signal_rate": 0.010666666666666666,
+              "prize_signal_lift": 0.985751738287929,
+              "any_main_hit_lift": 1.0361019443021935,
+              "support_draws": 750
+            }
+          },
+          "stability_rank": 1,
+          "why_included": "combo already present in P333's own top-10-per-bucket leaderboard for >=2 of the 3 windows (multi-window stability signal, no new search)",
+          "caution_label": "Historical replay review only; not a prediction or betting edge.",
+          "review_label": "combination_review_candidate"
+        }
+      ]
+    },
+    "cross_lottery_followup_candidates": {
+      "source_field_in_p537a": "cross_lottery_candidates_for_followup",
+      "count": 60,
+      "lottery_type_participation_counts": {
+        "BIG_LOTTO": 45,
+        "DAILY_539": 60,
+        "POWER_LOTTO": 45
+      },
+      "distinct_feature_families": [
+        "cold",
+        "fourier",
+        "markov",
+        "orthogonal"
+      ],
+      "distinct_windows": [
+        50,
+        300,
+        750
+      ],
+      "sample_rows_verbatim": [
+        {
+          "feature_family": "cold",
+          "window": 50,
+          "pick_k": 1,
+          "lotteries": {
+            "BIG_LOTTO": {
+              "strategy_count": 2,
+              "avg_any_main_hit_lift": 0.16333333333333339,
+              "avg_any_main_hit_log10_lift": -0.7869251746911486,
+              "avg_m2_plus_lift": null,
+              "avg_m3_plus_lift": null,
+              "avg_prize_signal_lift": null,
+              "avg_prize_signal_log10_lift": null
+            },
+            "DAILY_539": {
+              "strategy_count": 6,
+              "avg_any_main_hit_lift": 1.3000000000000018,
+              "avg_any_main_hit_log10_lift": 0.10482169027656939,
+              "avg_m2_plus_lift": null,
+              "avg_m3_plus_lift": null,
+              "avg_prize_signal_lift": null,
+              "avg_prize_signal_log10_lift": null
+            },
+            "POWER_LOTTO": {
+              "strategy_count": 1,
+              "avg_any_main_hit_lift": 0.5066666666666665,
+              "avg_any_main_hit_log10_lift": -0.29527766677489004,
+              "avg_m2_plus_lift": null,
+              "avg_m3_plus_lift": null,
+              "avg_prize_signal_lift": 1.013333333333333,
+              "avg_prize_signal_log10_lift": 0.0057523288890911515
+            }
+          },
+          "why_included": "normalized lift record present for >=2 lotteries at this feature_family/window/pick_k, shown side-by-side (never pooled)",
+          "caution_label": "Historical replay review only; not a prediction or betting edge. Cross-lottery comparison uses each lottery's own baseline; rates are never pooled across games.",
+          "review_label": "cross_lottery_review_candidate"
+        },
+        {
+          "feature_family": "cold",
+          "window": 50,
+          "pick_k": 2,
+          "lotteries": {
+            "BIG_LOTTO": {
+              "strategy_count": 2,
+              "avg_any_main_hit_lift": 0.43076923076923074,
+              "avg_any_main_hit_log10_lift": -0.36575532530063637,
+              "avg_m2_plus_lift": 1.5680000000000012,
+              "avg_m3_plus_lift": null,
+              "avg_prize_signal_lift": null,
+              "avg_prize_signal_log10_lift": null
+            },
+            "DAILY_539": {
+              "strategy_count": 6,
+              "avg_any_main_hit_lift": 1.0977777777777777,
+              "avg_any_main_hit_log10_lift": 0.03734906160520159,
+              "avg_m2_plus_lift": 1.2349999999999992,
+              "avg_m3_plus_lift": null,
+              "avg_prize_signal_lift": 1.2349999999999992,
+              "avg_prize_signal_log10_lift": 0.1708482036433091
+            },
+            "POWER_LOTTO": {
+              "strategy_count": 1,
+              "avg_any_main_hit_lift": 0.7471497584541068,
+              "avg_any_main_hit_log10_lift": -0.12659233961488725,
+              "avg_m2_plus_lift": 0.9373333333333331,
+              "avg_m3_plus_lift": null,
+              "avg_prize_signal_lift": 1.0867632850241553,
+              "avg_prize_signal_log10_lift": 0.03613495788281247
+            }
+          },
+          "why_included": "normalized lift record present for >=2 lotteries at this feature_family/window/pick_k, shown side-by-side (never pooled)",
+          "caution_label": "Historical replay review only; not a prediction or betting edge. Cross-lottery comparison uses each lottery's own baseline; rates are never pooled across games.",
+          "review_label": "cross_lottery_review_candidate"
+        },
+        {
+          "feature_family": "cold",
+          "window": 50,
+          "pick_k": 3,
+          "lotteries": {
+            "BIG_LOTTO": {
+              "strategy_count": 2,
+              "avg_any_main_hit_lift": 0.7269044879171462,
+              "avg_any_main_hit_log10_lift": -0.1385226497951425,
+              "avg_m2_plus_lift": 0.5541052631578948,
+              "avg_m3_plus_lift": 0.0,
+              "avg_prize_signal_lift": 0.0,
+              "avg_prize_signal_log10_lift": null
+            },
+            "DAILY_539": {
+              "strategy_count": 6,
+              "avg_any_main_hit_lift": 0.9365905969360805,
+              "avg_any_main_hit_log10_lift": -0.028562551479861437,
+              "avg_m2_plus_lift": 0.9574190476190472,
+              "avg_m3_plus_lift": 0.0,
+              "avg_prize_signal_lift": 0.9574190476190472,
+              "avg_prize_signal_log10_lift": -0.031281041639649614
+            },
+            "POWER_LOTTO": {
+              "strategy_count": 1,
+              "avg_any_main_hit_lift": 0.9707710011507483,
+              "avg_any_main_hit_log10_lift": -0.012883205381217532,
+              "avg_m2_plus_lift": 0.6748800000000005,
+              "avg_m3_plus_lift": 8.436,
+              "avg_prize_signal_lift": 1.1198230088495573,
+              "avg_prize_signal_log10_lift": 0.049149386639710226
+            }
+          },
+          "why_included": "normalized lift record present for >=2 lotteries at this feature_family/window/pick_k, shown side-by-side (never pooled)",
+          "caution_label": "Historical replay review only; not a prediction or betting edge. Cross-lottery comparison uses each lottery's own baseline; rates are never pooled across games.",
+          "review_label": "cross_lottery_review_candidate"
+        }
+      ]
+    },
+    "insufficient_context_candidates": {
+      "source_field_in_p537a": "insufficient_or_ambiguous_candidates",
+      "count": 31,
+      "lottery_type_breakdown": {
+        "BIG_LOTTO": 17,
+        "DAILY_539": 10,
+        "POWER_LOTTO": 4
+      },
+      "distinct_combo_id_count": 31,
+      "sample_rows_verbatim": [
+        {
+          "lottery_type": "BIG_LOTTO",
+          "combo_id": "ts3_regime_3bet:1",
+          "requested_budget": 1,
+          "windows_present": [
+            50,
+            300,
+            750
+          ],
+          "windows_present_count": 3,
+          "metric": "prize_signal_and_any_main_hit_per_window",
+          "avg_prize_signal_lift_across_present_windows": null,
+          "per_window": {
+            "50": {
+              "prize_signal_rate": 0.0,
+              "prize_signal_lift": null,
+              "any_main_hit_lift": 1.306666666666667,
+              "support_draws": 50
+            },
+            "300": {
+              "prize_signal_rate": 0.0,
+              "prize_signal_lift": null,
+              "any_main_hit_lift": 1.0616666666666632,
+              "support_draws": 300
+            },
+            "750": {
+              "prize_signal_rate": 0.0,
+              "prize_signal_lift": null,
+              "any_main_hit_lift": 1.0671111111111065,
+              "support_draws": 750
+            }
+          },
+          "stability_rank": 1,
+          "why_included": "combo already present in P333's own top-10-per-bucket leaderboard for >=2 of the 3 windows (multi-window stability signal, no new search)",
+          "caution_label": "Historical replay review only; not a prediction or betting edge.",
+          "review_label": "insufficient_context",
+          "insufficient_reason": "avg_prize_signal_lift_across_present_windows is null in the source P536K row; the primary combination metric (prize_signal_and_any_main_hit_per_window) is not fully computable from existing fields, even though a secondary any_main_hit_lift value may still be present per-window. Not classified into combination_candidates_for_followup to avoid overstating robustness."
+        },
+        {
+          "lottery_type": "BIG_LOTTO",
+          "combo_id": "biglotto_deviation_2bet:2",
+          "requested_budget": 2,
+          "windows_present": [
+            50,
+            300,
+            750
+          ],
+          "windows_present_count": 3,
+          "metric": "prize_signal_and_any_main_hit_per_window",
+          "avg_prize_signal_lift_across_present_windows": null,
+          "per_window": {
+            "50": {
+              "prize_signal_rate": 0.0,
+              "prize_signal_lift": null,
+              "any_main_hit_lift": 1.1199999999999999,
+              "support_draws": 50
+            },
+            "300": {
+              "prize_signal_rate": 0.0,
+              "prize_signal_lift": null,
+              "any_main_hit_lift": 1.0625641025641068,
+              "support_draws": 300
+            },
+            "750": {
+              "prize_signal_rate": 0.0,
+              "prize_signal_lift": null,
+              "any_main_hit_lift": 1.0797948717948622,
+              "support_draws": 750
+            }
+          },
+          "stability_rank": 1,
+          "why_included": "combo already present in P333's own top-10-per-bucket leaderboard for >=2 of the 3 windows (multi-window stability signal, no new search)",
+          "caution_label": "Historical replay review only; not a prediction or betting edge.",
+          "review_label": "insufficient_context",
+          "insufficient_reason": "avg_prize_signal_lift_across_present_windows is null in the source P536K row; the primary combination metric (prize_signal_and_any_main_hit_per_window) is not fully computable from existing fields, even though a secondary any_main_hit_lift value may still be present per-window. Not classified into combination_candidates_for_followup to avoid overstating robustness."
+        },
+        {
+          "lottery_type": "BIG_LOTTO",
+          "combo_id": "biglotto_ts3_markov_4bet_w30:1",
+          "requested_budget": 1,
+          "windows_present": [
+            50,
+            300,
+            750
+          ],
+          "windows_present_count": 3,
+          "metric": "prize_signal_and_any_main_hit_per_window",
+          "avg_prize_signal_lift_across_present_windows": null,
+          "per_window": {
+            "50": {
+              "prize_signal_rate": 0.0,
+              "prize_signal_lift": null,
+              "any_main_hit_lift": 1.306666666666667,
+              "support_draws": 50
+            },
+            "300": {
+              "prize_signal_rate": 0.0,
+              "prize_signal_lift": null,
+              "any_main_hit_lift": 1.0616666666666632,
+              "support_draws": 300
+            },
+            "750": {
+              "prize_signal_rate": 0.0,
+              "prize_signal_lift": null,
+              "any_main_hit_lift": 1.0671111111111065,
+              "support_draws": 750
+            }
+          },
+          "stability_rank": 2,
+          "why_included": "combo already present in P333's own top-10-per-bucket leaderboard for >=2 of the 3 windows (multi-window stability signal, no new search)",
+          "caution_label": "Historical replay review only; not a prediction or betting edge.",
+          "review_label": "insufficient_context",
+          "insufficient_reason": "avg_prize_signal_lift_across_present_windows is null in the source P536K row; the primary combination metric (prize_signal_and_any_main_hit_per_window) is not fully computable from existing fields, even though a secondary any_main_hit_lift value may still be present per-window. Not classified into combination_candidates_for_followup to avoid overstating robustness."
+        }
+      ]
+    }
+  },
+  "rolling_or_out_of_sample_feasibility": {
+    "stable_review_candidates": {
+      "feasible_directly_from_p537a_or_p536k": false,
+      "feasible_via_join_to_p536c": true,
+      "join_key_if_via_p536c": [
+        "lottery_type",
+        "strategy_id",
+        "window",
+        "pick_k"
+      ],
+      "join_target": "P536C.strategy_pick_matrix_lift_extension",
+      "recoverable_fields_via_join": [
+        "earliest_target_draw",
+        "latest_target_draw"
+      ],
+      "residual_gap": "P537A/P536K rows carry support_draws (a count) but not the actual earliest_target_draw/latest_target_draw values; those exist only in the upstream P536C strategy_pick_matrix_lift_extension row and must be recovered by joining on (lottery_type, strategy_id, window, pick_k). Even after the join, only the already-replayed draw range is known -- none of the three committed artifacts contain per-draw outcome rows, so no new walk-forward window can be computed without a further read-only DB export restricted to target_draw values after the recovered latest_target_draw."
+    },
+    "short_window_spike_cautions": {
+      "feasible_directly_from_p537a_or_p536k": false,
+      "feasible_via_join_to_p536c": true,
+      "join_key_if_via_p536c": [
+        "lottery_type",
+        "strategy_id",
+        "window",
+        "pick_k"
+      ],
+      "join_target": "P536C.strategy_pick_matrix_lift_extension",
+      "recoverable_fields_via_join": [
+        "earliest_target_draw",
+        "latest_target_draw"
+      ],
+      "residual_gap": "Same join path and same residual gap as stable_review_candidates. Short-window (50-draw) rows are additionally cautioned against reversal in the source artifacts, so even a feasible OOS join should not be read as evidence the pattern will hold."
+    },
+    "combination_followup_candidates": {
+      "feasible_directly_from_p537a_or_p536k": false,
+      "feasible_via_join_to_p536c": true,
+      "join_key_if_via_p536c": [
+        "lottery_type",
+        "combo_id",
+        "window"
+      ],
+      "join_target": "P536C.combination_leaderboard_with_lift",
+      "recoverable_fields_via_join": [
+        "earliest_target_draw",
+        "latest_target_draw"
+      ],
+      "residual_gap": "combo_id + lottery_type + window join to P536C's combination_leaderboard_with_lift recovers the replayed draw range per window, but per_window in the P537A/P536K rows only carries support_draws, not the range itself. No per-draw outcome rows exist in any committed artifact, so a further read-only DB export is still required before any new OOS window can be run."
+    },
+    "cross_lottery_followup_candidates": {
+      "feasible_directly_from_p537a_or_p536k": false,
+      "feasible_via_join_to_p536c": false,
+      "join_key_if_via_p536c": null,
+      "join_target": null,
+      "recoverable_fields_via_join": [],
+      "residual_gap": "cross_lottery_normalized_lift rows are pre-aggregated (avg_* across strategy_count strategies per lottery) at generation time and do not carry strategy_id or target_draw range -- confirmed by strategy_id absent in the committed P536C cross_lottery_normalized_lift row. Recovering an OOS-testable identity would require re-deriving the underlying strategy_id set from strategy_pick_matrix_lift_extension by (feature_family, window, pick_k, lottery_type), which yields multiple strategies with potentially different draw ranges each, not a single walk-forward-able series. Treat this group as NOT feasible for rolling/OOS evaluation without a new aggregation-identity task."
+    },
+    "insufficient_context_candidates": {
+      "feasible_directly_from_p537a_or_p536k": false,
+      "feasible_via_join_to_p536c": false,
+      "join_key_if_via_p536c": null,
+      "join_target": null,
+      "recoverable_fields_via_join": [],
+      "residual_gap": "These rows were excluded upstream specifically because avg_prize_signal_lift_across_present_windows is null in the P536K source -- the primary combination metric is not fully computable from existing fields. OOS evaluation is not meaningful until the missing upstream metric is resolved (a P536C/P536K-level fix), which is out of scope for this read-only readiness pass."
+    },
+    "artifact_wide_note": "No committed artifact among P537A/P536K/P536C contains per-draw outcome rows (one row per target_draw with hit/miss). All feasibility above is about whether a draw-range cutoff can be recovered to avoid lookahead when defining a new OOS window -- not about whether the OOS window can actually be computed from these artifacts alone. Actually running a new rolling/OOS window always requires a further read-only DB export scoped to target_draw values after the recovered cutoff, which this task does not perform (no DB open permitted)."
+  },
+  "missing_fields_or_blockers": {
+    "field_presence_checklist": [
+      {
+        "required_field": "strategy / family / combo identity",
+        "present_in_stable_short_window_groups": true,
+        "present_in_combination_group": true,
+        "present_in_cross_lottery_group": true,
+        "note": "cross_lottery rows carry feature_family only, not individual strategy_id -- identity is at the family level, not the strategy level, for that group."
+      },
+      {
+        "required_field": "lottery_type",
+        "present_in_stable_short_window_groups": true,
+        "present_in_combination_group": true,
+        "present_in_cross_lottery_group": false,
+        "note": "cross_lottery rows are keyed by feature_family/window/pick_k with a nested lotteries dict; lottery_type is a nested key, not a top-level field."
+      },
+      {
+        "required_field": "window",
+        "present_in_stable_short_window_groups": true,
+        "present_in_combination_group": true,
+        "present_in_cross_lottery_group": true,
+        "note": "window is a draw-count bucket label (50/300/750), not a calendar date range."
+      },
+      {
+        "required_field": "target draw or draw index",
+        "present_in_stable_short_window_groups": false,
+        "present_in_combination_group": false,
+        "present_in_cross_lottery_group": false,
+        "note": "Absent from all P537A groups and from P536K. Present only in upstream P536C's strategy_pick_matrix_lift_extension and combination_leaderboard_with_lift as earliest_target_draw/latest_target_draw; recoverable via join, not carried forward by the shortlist/review artifacts themselves. Never present for the cross-lottery group at any level (see rolling_or_out_of_sample_feasibility)."
+      },
+      {
+        "required_field": "observed rate / baseline / lift",
+        "present_in_stable_short_window_groups": true,
+        "present_in_combination_group": true,
+        "present_in_cross_lottery_group": true,
+        "note": null
+      },
+      {
+        "required_field": "support / sample size",
+        "present_in_stable_short_window_groups": true,
+        "present_in_combination_group": true,
+        "present_in_cross_lottery_group": true,
+        "note": "cross_lottery support is strategy_count (strategies averaged), not a draw-count sample size."
+      },
+      {
+        "required_field": "source artifact data_hash / provenance",
+        "present_in_stable_short_window_groups": true,
+        "present_in_combination_group": true,
+        "present_in_cross_lottery_group": true,
+        "note": "Provenance is at the artifact level (provenance_and_limits.source_data_hash_sha256 / hash_chain_verified), not per-row."
+      },
+      {
+        "required_field": "temporal information to avoid lookahead leakage",
+        "present_in_stable_short_window_groups": false,
+        "present_in_combination_group": false,
+        "present_in_cross_lottery_group": false,
+        "note": "No committed artifact records an explicit 'as of' cutoff at the shortlist/review level. earliest_target_draw/latest_target_draw exist upstream in P536C only (see target-draw row above) and must be joined back per candidate before defining any new OOS window; window_policy.minimum_support_draws=30 (P536C) is the only explicit sample-size floor found."
+      }
+    ],
+    "hard_blockers_for_rolling_or_out_of_sample_evaluation": [
+      "No per-draw outcome rows (one row per target_draw with hit/miss) exist in any of P537A/P536K/P536C; only pre-aggregated window-level rates. A new rolling/OOS window cannot be computed from these three artifacts alone regardless of identity/draw-range availability.",
+      "cross_lottery_followup_candidates rows lose strategy_id and target_draw range entirely during upstream aggregation in P536C; this group is not traceable back to a single walk-forward-able series without a new aggregation-identity task.",
+      "insufficient_context_candidates rows are excluded specifically because a required upstream metric (avg_prize_signal_lift_across_present_windows) is null; this is an upstream data gap in P536K/P536C, not something this read-only readiness pass can resolve.",
+      "target_draw range (earliest_target_draw/latest_target_draw) is present in upstream P536C rows but is not carried into the P536K/P537A shortlist/review rows -- any consumer of P537A alone would need to re-join to P536C to know where a new OOS window could safely start."
+    ],
+    "db_access_required_for_full_resolution": true,
+    "db_access_performed_in_this_task": false
+  },
+  "recommended_next_single_worker_task": {
+    "proposed_task_id": "P539A (proposed, not yet authorized)",
+    "title": "Read-only per-draw replay export for stable/combination candidate draw-range cutoffs",
+    "scope": "Open lottery_api/data/lottery_v2.db read-only (sqlite3 URI mode=ro + PRAGMA query_only=ON, matching P536C's own source.db_open_mode) and, restricted to the strategy_ids/combo_ids already present in P537A's stable_review_candidates and combination_followup_candidates groups, export one row per target_draw (hit/miss, prize_signal boolean) for target_draw values strictly after each candidate's earliest/latest_target_draw range recovered from P536C -- to check whether enough NEW draws now exist to support even a first out-of-sample window (P536C's own window_policy.minimum_support_draws=30).",
+    "why_smallest_next_step": "This answers the binary question 'is OOS evaluation possible today' before any actual walk-forward statistical test is attempted, and stays strictly read-only (no DB write, no new strategy, no promotion gate) -- consistent with this task's own DB-write prohibition, which is why it is proposed rather than executed here.",
+    "excluded_from_this_proposed_task": [
+      "cross_lottery_followup_candidates (no recoverable strategy identity; needs a separate aggregation-identity task first)",
+      "insufficient_context_candidates (blocked on an upstream P536K/P536C metric gap, not a DB export)"
+    ],
+    "not_run_in_this_task": true
+  },
+  "provenance_and_limits": {
+    "source_artifacts": {
+      "P537A": {
+        "path": "outputs/research/p537a_shortlist_robustness_review_20260709.json",
+        "file_sha256": "a2e5658ef40462d9e9bf5aac5429e9acc965f3b6ac2439a9d3e49492fe946a56",
+        "generated_at": "2026-07-09T02:23:29.040633+00:00"
+      },
+      "P536K": {
+        "path": "outputs/research/p536k_lift_candidate_shortlist_20260708.json",
+        "file_sha256": "07de31005900cce5192597ff48f684078a9b3a699aa8dd8320b98be06b62b768",
+        "generated_at": "2026-07-08T13:12:26.151998+00:00"
+      },
+      "P536C": {
+        "path": "outputs/research/p536c_success_matrix_lift_extension_20260708.json",
+        "file_sha256": "e98443bbe549ec23d46187689bd810423bfa07d2626fa2b98d919c96b54ac316",
+        "generated_at": "2026-07-08T07:42:01.782116+00:00"
+      }
+    },
+    "replay_data_hash_chain": {
+      "P537A_source_data_hash_sha256": "46d49ea1fc20e240205ab6fa87b70800e6dbfabfee927fc06e532b4b61b4c8d2",
+      "P536K_source_data_hash_sha256": "46d49ea1fc20e240205ab6fa87b70800e6dbfabfee927fc06e532b4b61b4c8d2",
+      "P536C_source_data_hash_sha256": "46d49ea1fc20e240205ab6fa87b70800e6dbfabfee927fc06e532b4b61b4c8d2",
+      "verified_equal_across_all_three": true
+    },
+    "selection_method": "Descriptive read-only synthesis over fields already present in the committed P537A/P536K/P536C artifacts only. No database access, no route/API/UI change, no new statistical metric, and no artifact regeneration -- every count and sample row is copied verbatim or derived by simple counting/grouping over existing fields. Feasibility findings are computed by checking for field presence in the loaded artifacts, not asserted from memory.",
+    "limitations": [
+      "Retrospective replay evidence only; does not imply future performance.",
+      "This artifact does not open the database, does not recompute P536C/P536K/P537A, and does not perform any rolling/out-of-sample statistical test itself -- it only assesses whether the committed artifacts contain enough fields to attempt one.",
+      "candidate_groups_for_next_stage_review samples are the first rows in each source section's existing order, not a re-ranking by any new or existing metric.",
+      "rolling_or_out_of_sample_feasibility describes whether a draw-range cutoff can be recovered to avoid lookahead, not whether an OOS window can actually be computed from these three artifacts alone -- that always requires a further read-only DB export, proposed but not performed here."
+    ],
+    "disclaimer_en": "Historical replay review artifact only; not a prediction, betting edge, future-winning, or production-readiness claim."
+  }
+}

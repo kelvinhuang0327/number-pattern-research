@@ -95,9 +95,12 @@ def test_script_does_not_add_db_prediction_or_mutation_behavior():
         assert forbidden not in script
 
 
-def test_no_new_charting_library_or_export_added():
+def test_no_new_charting_library_added():
+    # P537D layered client-side filter/CSV export controls on top of this
+    # section under a separate gate (tests/test_p537d_robustness_review_ui_filter_export.py);
+    # this guard now only protects against external charting dependencies.
     section = _section()
     script = _script()
-    for forbidden in ("<script src=", "chart.js", "Chart(", "d3.js", "plotly", "csv", "CSV", "export", "filter"):
+    for forbidden in ("<script src=", "chart.js", "Chart(", "d3.js", "plotly"):
         assert forbidden not in section
         assert forbidden not in script

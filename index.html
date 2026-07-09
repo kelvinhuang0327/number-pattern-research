@@ -6680,7 +6680,7 @@
       }
       content.innerHTML = cards.map(c => renderCard(c, lottery)).join('');
     } catch (e) {
-      content.innerHTML = `<div style="text-align:center;color:#f85149;padding:20px;grid-column:1/-1">載入失敗：${e.message}</div>`;
+      content.innerHTML = `<div style="text-align:center;color:#f85149;padding:20px;grid-column:1/-1">載入失敗：${bsoEscapeHtml(e.message)}</div>`;
     }
   }
 

@@ -100,11 +100,29 @@ export class FileUploadHandler {
 
         const guidanceContent = guidanceElement.querySelector('.guidance-content');
         if (guidanceContent) {
-            guidanceContent.innerHTML = `
-                <h4>✨ 上傳成功！下一步：</h4>
-                <p>系統已識別出 <strong>${typeCount}</strong> 種彩券類型，共 <strong>${totalDraws}</strong> 筆數據。<br>
-                請在下方選擇您要分析的彩券類型。</p>
-            `;
+            const title = document.createElement('h4');
+            title.textContent = '✨ 上傳成功！下一步：';
+
+            const description = document.createElement('p');
+            description.appendChild(document.createTextNode('系統已識別出 '));
+
+            const typeCountText = document.createElement('strong');
+            typeCountText.textContent = String(typeCount);
+            description.appendChild(typeCountText);
+
+            description.appendChild(document.createTextNode(' 種彩券類型，共 '));
+
+            const totalDrawsText = document.createElement('strong');
+            totalDrawsText.textContent = String(totalDraws);
+            description.appendChild(totalDrawsText);
+
+            description.appendChild(document.createTextNode(' 筆數據。'));
+            description.appendChild(document.createElement('br'));
+            description.appendChild(document.createTextNode('請在下方選擇您要分析的彩券類型。'));
+
+            guidanceContent.textContent = '';
+            guidanceContent.appendChild(title);
+            guidanceContent.appendChild(description);
         }
 
         // 3秒後淡出引導

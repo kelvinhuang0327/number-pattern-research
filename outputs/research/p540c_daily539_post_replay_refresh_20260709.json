@@ -1,0 +1,548 @@
+{
+  "task_id": "P540C",
+  "schema_version": "p540c.v1",
+  "generated_at": "2026-07-09T09:39:00.794479+00:00",
+  "classification": "P540C_DAILY539_POST_REPLAY_REFRESH_READY",
+  "summary": {
+    "purpose": "Read-only verification that the P540B DAILY_539 incremental replay rows are present, queryable, manifest-exact, and DAILY_539-scoped in the canonical DB, with BIG_LOTTO / POWER_LOTTO at the P540B post-write invariant.",
+    "p540b_rows_queryable": true,
+    "p540b_manifest_exact_match": true,
+    "daily539_scope_only": true,
+    "big_lotto_power_lotto_unchanged_from_p540b_invariant": true,
+    "db_unchanged_during_task": true,
+    "verdict": "P540C_DAILY539_POST_REPLAY_REFRESH_READY"
+  },
+  "p540b_manifest_match": {
+    "controlled_apply_id": "P540B_DAILY539_INCREMENTAL_20260709",
+    "checks": [
+      {
+        "check": "spec_pin_expected_rows_agrees_with_p540b_manifest",
+        "expected": 528,
+        "observed": 528,
+        "match": true
+      },
+      {
+        "check": "spec_pin_draw_count_agrees_with_p540b_manifest",
+        "expected": 44,
+        "observed": 44,
+        "match": true
+      },
+      {
+        "check": "spec_pin_strategy_count_agrees_with_p540b_manifest",
+        "expected": 12,
+        "observed": 12,
+        "match": true
+      },
+      {
+        "check": "apply_id_total_rows",
+        "expected": 528,
+        "observed": 528,
+        "match": true
+      },
+      {
+        "check": "apply_id_rows_daily539_only",
+        "expected": {
+          "DAILY_539": 528
+        },
+        "observed": {
+          "DAILY_539": 528
+        },
+        "match": true
+      },
+      {
+        "check": "apply_id_rows_in_big_lotto_or_power_lotto",
+        "expected": 0,
+        "observed": 0,
+        "match": true
+      },
+      {
+        "check": "distinct_target_draw_count",
+        "expected": 44,
+        "observed": 44,
+        "match": true
+      },
+      {
+        "check": "target_draw_ids_exact_set",
+        "expected": [
+          "115000122",
+          "115000123",
+          "115000124",
+          "115000125",
+          "115000126",
+          "115000127",
+          "115000128",
+          "115000129",
+          "115000130",
+          "115000131",
+          "115000132",
+          "115000133",
+          "115000134",
+          "115000135",
+          "115000136",
+          "115000137",
+          "115000138",
+          "115000139",
+          "115000140",
+          "115000141",
+          "115000142",
+          "115000143",
+          "115000144",
+          "115000145",
+          "115000146",
+          "115000147",
+          "115000148",
+          "115000149",
+          "115000150",
+          "115000151",
+          "115000152",
+          "115000153",
+          "115000154",
+          "115000155",
+          "115000156",
+          "115000157",
+          "115000158",
+          "115000159",
+          "115000160",
+          "115000161",
+          "115000162",
+          "115000163",
+          "115000164",
+          "115000165"
+        ],
+        "observed": [
+          "115000122",
+          "115000123",
+          "115000124",
+          "115000125",
+          "115000126",
+          "115000127",
+          "115000128",
+          "115000129",
+          "115000130",
+          "115000131",
+          "115000132",
+          "115000133",
+          "115000134",
+          "115000135",
+          "115000136",
+          "115000137",
+          "115000138",
+          "115000139",
+          "115000140",
+          "115000141",
+          "115000142",
+          "115000143",
+          "115000144",
+          "115000145",
+          "115000146",
+          "115000147",
+          "115000148",
+          "115000149",
+          "115000150",
+          "115000151",
+          "115000152",
+          "115000153",
+          "115000154",
+          "115000155",
+          "115000156",
+          "115000157",
+          "115000158",
+          "115000159",
+          "115000160",
+          "115000161",
+          "115000162",
+          "115000163",
+          "115000164",
+          "115000165"
+        ],
+        "match": true
+      },
+      {
+        "check": "rows_by_target_draw_match_p540b_inserted_rows_by_draw",
+        "expected": {
+          "115000122": 12,
+          "115000123": 12,
+          "115000124": 12,
+          "115000125": 12,
+          "115000126": 12,
+          "115000127": 12,
+          "115000128": 12,
+          "115000129": 12,
+          "115000130": 12,
+          "115000131": 12,
+          "115000132": 12,
+          "115000133": 12,
+          "115000134": 12,
+          "115000135": 12,
+          "115000136": 12,
+          "115000137": 12,
+          "115000138": 12,
+          "115000139": 12,
+          "115000140": 12,
+          "115000141": 12,
+          "115000142": 12,
+          "115000143": 12,
+          "115000144": 12,
+          "115000145": 12,
+          "115000146": 12,
+          "115000147": 12,
+          "115000148": 12,
+          "115000149": 12,
+          "115000150": 12,
+          "115000151": 12,
+          "115000152": 12,
+          "115000153": 12,
+          "115000154": 12,
+          "115000155": 12,
+          "115000156": 12,
+          "115000157": 12,
+          "115000158": 12,
+          "115000159": 12,
+          "115000160": 12,
+          "115000161": 12,
+          "115000162": 12,
+          "115000163": 12,
+          "115000164": 12,
+          "115000165": 12
+        },
+        "observed": {
+          "115000122": 12,
+          "115000123": 12,
+          "115000124": 12,
+          "115000125": 12,
+          "115000126": 12,
+          "115000127": 12,
+          "115000128": 12,
+          "115000129": 12,
+          "115000130": 12,
+          "115000131": 12,
+          "115000132": 12,
+          "115000133": 12,
+          "115000134": 12,
+          "115000135": 12,
+          "115000136": 12,
+          "115000137": 12,
+          "115000138": 12,
+          "115000139": 12,
+          "115000140": 12,
+          "115000141": 12,
+          "115000142": 12,
+          "115000143": 12,
+          "115000144": 12,
+          "115000145": 12,
+          "115000146": 12,
+          "115000147": 12,
+          "115000148": 12,
+          "115000149": 12,
+          "115000150": 12,
+          "115000151": 12,
+          "115000152": 12,
+          "115000153": 12,
+          "115000154": 12,
+          "115000155": 12,
+          "115000156": 12,
+          "115000157": 12,
+          "115000158": 12,
+          "115000159": 12,
+          "115000160": 12,
+          "115000161": 12,
+          "115000162": 12,
+          "115000163": 12,
+          "115000164": 12,
+          "115000165": 12
+        },
+        "match": true
+      },
+      {
+        "check": "strategy_id_exact_set",
+        "expected": [
+          "539_3bet_orthogonal",
+          "acb_1bet",
+          "acb_markov_midfreq",
+          "acb_markov_midfreq_3bet",
+          "acb_single_539",
+          "daily539_f4cold",
+          "markov_1bet_539",
+          "midfreq_acb_2bet",
+          "midfreq_fourier_2bet",
+          "p0b_539_3bet_f_cold_fmid",
+          "p0c_539_3bet_f_cold_x2",
+          "zone_gap_3bet_539"
+        ],
+        "observed": [
+          "539_3bet_orthogonal",
+          "acb_1bet",
+          "acb_markov_midfreq",
+          "acb_markov_midfreq_3bet",
+          "acb_single_539",
+          "daily539_f4cold",
+          "markov_1bet_539",
+          "midfreq_acb_2bet",
+          "midfreq_fourier_2bet",
+          "p0b_539_3bet_f_cold_fmid",
+          "p0c_539_3bet_f_cold_x2",
+          "zone_gap_3bet_539"
+        ],
+        "match": true
+      },
+      {
+        "check": "rows_per_strategy_uniform",
+        "expected": {
+          "539_3bet_orthogonal": 44,
+          "acb_1bet": 44,
+          "acb_markov_midfreq": 44,
+          "acb_markov_midfreq_3bet": 44,
+          "acb_single_539": 44,
+          "daily539_f4cold": 44,
+          "markov_1bet_539": 44,
+          "midfreq_acb_2bet": 44,
+          "midfreq_fourier_2bet": 44,
+          "p0b_539_3bet_f_cold_fmid": 44,
+          "p0c_539_3bet_f_cold_x2": 44,
+          "zone_gap_3bet_539": 44
+        },
+        "observed": {
+          "539_3bet_orthogonal": 44,
+          "acb_1bet": 44,
+          "acb_markov_midfreq": 44,
+          "acb_markov_midfreq_3bet": 44,
+          "acb_single_539": 44,
+          "daily539_f4cold": 44,
+          "markov_1bet_539": 44,
+          "midfreq_acb_2bet": 44,
+          "midfreq_fourier_2bet": 44,
+          "p0b_539_3bet_f_cold_fmid": 44,
+          "p0c_539_3bet_f_cold_x2": 44,
+          "zone_gap_3bet_539": 44
+        },
+        "match": true
+      },
+      {
+        "check": "bet_index_scope",
+        "expected": {
+          "1": 528
+        },
+        "observed": {
+          "1": 528
+        },
+        "match": true
+      },
+      {
+        "check": "duplicate_target_draw_strategy_bet_index_groups",
+        "expected": 0,
+        "observed": 0,
+        "match": true
+      },
+      {
+        "check": "table_totals_match_p540b_post_write_snapshot",
+        "expected": {
+          "BIG_LOTTO": 24140,
+          "DAILY_539": 35208,
+          "POWER_LOTTO": 36104
+        },
+        "observed": {
+          "BIG_LOTTO": 24140,
+          "DAILY_539": 35208,
+          "POWER_LOTTO": 36104
+        },
+        "match": true
+      },
+      {
+        "check": "table_total_matches_p540b_post_write_total",
+        "expected": 95452,
+        "observed": 95452,
+        "match": true
+      }
+    ],
+    "all_checks_pass": true,
+    "failed_checks": []
+  },
+  "readonly_db_snapshot": {
+    "db_path": "/Users/kelvin/Kelvin-WorkSpace/LotteryNew/lottery_api/data/lottery_v2.db",
+    "access_mode": "sqlite URI mode=ro + PRAGMA query_only=ON",
+    "before": {
+      "sha256": "a9994f5d75e6024f3fd9b7af1d23de4a1189516e5df9a494fefd75978e2cd87d",
+      "mtime_epoch": 1783584248,
+      "size_bytes": 99368960
+    },
+    "after": {
+      "sha256": "a9994f5d75e6024f3fd9b7af1d23de4a1189516e5df9a494fefd75978e2cd87d",
+      "mtime_epoch": 1783584248,
+      "size_bytes": 99368960
+    },
+    "db_unchanged_during_task": true,
+    "db_sha256_matches_p540b_recorded_post_write_hash": true,
+    "note": "Hash equality with the P540B post-write hash is informational provenance (a later authorized write elsewhere in the DB would break it without touching P540B rows); the manifest checks above are the gating evidence."
+  },
+  "daily539_post_replay_coverage": {
+    "controlled_apply_id": "P540B_DAILY539_INCREMENTAL_20260709",
+    "target_draw_range": {
+      "min": "115000122",
+      "max": "115000165"
+    },
+    "target_draw_count": 44,
+    "strategy_ids_included": [
+      "539_3bet_orthogonal",
+      "acb_1bet",
+      "acb_markov_midfreq",
+      "acb_markov_midfreq_3bet",
+      "acb_single_539",
+      "daily539_f4cold",
+      "markov_1bet_539",
+      "midfreq_acb_2bet",
+      "midfreq_fourier_2bet",
+      "p0b_539_3bet_f_cold_fmid",
+      "p0c_539_3bet_f_cold_x2",
+      "zone_gap_3bet_539"
+    ],
+    "strategies_excluded_by_p540b_with_reasons": {
+      "daily539_f4cold_3bet": "Generating adapter (lottery_api/models/p93_tierb_replay_adapters.py) carries an explicit module-level governance statement: 'These adapters ... must NOT be used for live prediction, strategy promotion, or production replay row insertion' and 'All rows generated using these adapters are dry_run=1, temp-DB only.' Existing production rows for this strategy_id were produced by a separate, explicitly authorized script (P94); reusing the adapter here for a new production write would need the same kind of explicit override, which is out of scope for this incremental task.",
+      "daily539_f4cold_5bet": "Same p93_tierb_replay_adapters.py governance restriction as daily539_f4cold_3bet above.",
+      "daily539_markov_cold": "Adapter's underlying tools/backtest_39lotto_comprehensive.py resolves its own default DB path relative to its own __file__ at import time (a known multi-sink DB-path-resolution pattern; the repo has 24+ such sinks per project history) and raises FileNotFoundError when imported from a git worktree that intentionally has no DB file checked out. This is an environment artifact, not a prediction-logic defect -- get_one_bet's own math only depends on the `history` argument. A symlink workaround was considered and rejected: it would create an unguarded default-path write route into the canonical DB, bypassing this task's manifested/transactional write path. Excluded from this run; a follow-up task should either run from an environment where the module's default path resolves, or fix the module to accept an explicit db_path override."
+    },
+    "bet_index_carveouts_documented_by_p540b": {
+      "acb_markov_midfreq_3bet": "p31a_wave1_retired_adapters.AcbMarkovMidfreq3BetAdapter is bet-1-only by design ('Replay records bet-1 only = pure ACB bet'); this matches how P31A/P31B originally scoped this strategy. Historical bet_index 2-3 rows for this strategy_id were generated by a separate module (p128_wave2_phase2_adapters.py) that is not present on origin/main (orphaned commit) -- not regenerated here.",
+      "daily539_f4cold": "replay_strategy_registry._Daily539F4ColdAdapter.get_one_bet returns exactly one bet. Historical bet_index 2-3 rows for this strategy_id were produced by a mechanism not confirmed reusable within this task's scope -- not regenerated here."
+    },
+    "rows_by_target_draw_uniform_12": true,
+    "rows_by_target_draw": {
+      "115000122": 12,
+      "115000123": 12,
+      "115000124": 12,
+      "115000125": 12,
+      "115000126": 12,
+      "115000127": 12,
+      "115000128": 12,
+      "115000129": 12,
+      "115000130": 12,
+      "115000131": 12,
+      "115000132": 12,
+      "115000133": 12,
+      "115000134": 12,
+      "115000135": 12,
+      "115000136": 12,
+      "115000137": 12,
+      "115000138": 12,
+      "115000139": 12,
+      "115000140": 12,
+      "115000141": 12,
+      "115000142": 12,
+      "115000143": 12,
+      "115000144": 12,
+      "115000145": 12,
+      "115000146": 12,
+      "115000147": 12,
+      "115000148": 12,
+      "115000149": 12,
+      "115000150": 12,
+      "115000151": 12,
+      "115000152": 12,
+      "115000153": 12,
+      "115000154": 12,
+      "115000155": 12,
+      "115000156": 12,
+      "115000157": 12,
+      "115000158": 12,
+      "115000159": 12,
+      "115000160": 12,
+      "115000161": 12,
+      "115000162": 12,
+      "115000163": 12,
+      "115000164": 12,
+      "115000165": 12
+    },
+    "rows_by_strategy": {
+      "539_3bet_orthogonal": 44,
+      "acb_1bet": 44,
+      "acb_markov_midfreq": 44,
+      "acb_markov_midfreq_3bet": 44,
+      "acb_single_539": 44,
+      "daily539_f4cold": 44,
+      "markov_1bet_539": 44,
+      "midfreq_acb_2bet": 44,
+      "midfreq_fourier_2bet": 44,
+      "p0b_539_3bet_f_cold_fmid": 44,
+      "p0c_539_3bet_f_cold_x2": 44,
+      "zone_gap_3bet_539": 44
+    },
+    "bet_index_counts": {
+      "1": 528
+    },
+    "replay_status_counts": {
+      "PREDICTED": 528
+    },
+    "hit_count_distribution": {
+      "0": 252,
+      "1": 215,
+      "2": 54,
+      "3": 7
+    },
+    "special_fields": {
+      "note": "DAILY_539 has no special-number zone; special columns are expected to be inert on these rows.",
+      "special_hit_distribution": {
+        "0": 528
+      },
+      "predicted_special_null_rows": 528
+    },
+    "provenance_fields": {
+      "source_values": {
+        "P540B_DAILY539_INCREMENTAL_REPLAY_GENERATION": 528
+      },
+      "truth_level_values": {
+        "DAILY539_P540B_INCREMENTAL_BACKFILL_VERIFIED": 528
+      },
+      "dry_run_counts": {
+        "0": 528
+      },
+      "provenance_hash_populated_rows": 528
+    },
+    "daily539_table_total_rows": 35208
+  },
+  "downstream_feasibility": {
+    "success_matrix_refresh": "FEASIBLE read-only: the P536B/P536C success-matrix methodology can now be refreshed over DAILY_539 replay coverage extended through draw 115000165 (528 new rows, 12 strategies, bet_index 1). Comparisons must scope to the 12 in-scope strategy_ids at bet_index 1; the 3 P540B-excluded strategy_ids and 2 bet-index carve-outs remain absent for the new draws.",
+    "oos_first_window_data_availability": "The 44 newly replayed draws meet the MINIMUM_SUPPORT_DRAWS_FLOOR (30) that P539B/P540A identified for a first DAILY_539 OOS window in terms of data availability only. Running any OOS evaluator or strategy scoring remains out of scope here and needs its own authorized task.",
+    "per_draw_export_refresh": "FEASIBLE read-only: the P539A per-draw export shape can be regenerated to include the 44 new target draws if a future task is authorized to do so (P539A artifacts themselves are not recomputed by P540C).",
+    "big_lotto_power_lotto": "NOT unlocked by P540B/P540C: both remain short of the minimum support floor per P540A and received no new replay rows."
+  },
+  "excluded_scope": {
+    "not_performed_by_this_task": [
+      "DB writes of any kind (verified by before/after sha256+mtime)",
+      "replay row generation (DAILY_539, BIG_LOTTO, or POWER_LOTTO)",
+      "OOS evaluator runs, strategy scoring, or promotion gating",
+      "recomputation or overwrite of P536/P537/P538/P539/P540A/P540B artifacts",
+      "route/API/UI changes",
+      "full-history replay rerun"
+    ],
+    "not_yet_validated": [
+      "hit-rate/lift semantics of the 528 new rows (descriptive distribution reported only; no statistical claim)",
+      "the 3 P540B-excluded strategy_ids (daily539_f4cold_3bet, daily539_f4cold_5bet, daily539_markov_cold) for the new draws",
+      "bet_index 2-3 carve-outs (acb_markov_midfreq_3bet, daily539_f4cold) for the new draws",
+      "any predictive value of any strategy (explicitly out of scope)"
+    ]
+  },
+  "recommended_next_single_worker_task": {
+    "proposed_task_id": "P540D_DAILY539_POST_REPLAY_SUCCESS_MATRIX_REFRESH_NO_DB_WRITE",
+    "why": "Success-matrix refresh is the smallest genuinely new read-only step that consumes the now-verified rows: it extends the already-merged P536B/P536C descriptive methodology over the 44 new draws without touching the DB or any evaluator. The alternative (P540D_DAILY539_OOS_READINESS_GATE_NO_DB_WRITE) is largely redundant with this artifact, which already documents post-replay availability (missing draws = 0; 44 >= 30 floor).",
+    "not_run_in_this_task": true
+  },
+  "provenance_and_limits": {
+    "upstream_artifacts_read": [
+      "outputs/research/p540b_daily539_incremental_replay_generation_20260709.json",
+      "outputs/research/p540a_full_replay_regeneration_readiness_20260709.json",
+      "outputs/research/p539b_oos_availability_ingest_gap_gate_20260709.json",
+      "outputs/research/p539a_readonly_per_draw_replay_export_20260709.json",
+      "outputs/research/p536c_success_matrix_lift_extension_20260708.json"
+    ],
+    "p540b_manifest_source": "/Users/kelvin/Kelvin-WorkSpace/LotteryNew.worktrees/P540C-daily539-post-replay-refresh/outputs/research/p540b_daily539_incremental_replay_generation_20260709.json",
+    "p540b_classification": "P540B_DB_WRITE_COMPLETE_PR_OPENED_WAITING_OWNER_MERGE_AUTHORIZATION",
+    "replay_table": "strategy_prediction_replays",
+    "python_version": "3.9.6",
+    "limits": [
+      "Read-only descriptive verification; no statistical inference, no ROI/edge computation, no strategy comparison.",
+      "Draw ordering uses CAST(target_draw AS INTEGER) per repo DB conventions (draw columns are TEXT).",
+      "hit_count distribution covers bet_index 1 rows of the 12 in-scope strategies only.",
+      "An external writer changing the DB mid-task would surface as a before/after hash mismatch and void this artifact."
+    ]
+  },
+  "disclaimer_en": "Historical post-replay refresh only; not a prediction, betting edge, future-winning, or production-readiness claim."
+}

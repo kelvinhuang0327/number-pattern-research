@@ -52,7 +52,7 @@ export class ApiClient {
                     throw new Error(error.detail || `HTTP ${response.status}`);
                 }
 
-                return await response.json();
+                return await this._parseResponseBody(response);
             } catch (error) {
                 if (error.name === 'AbortError') {
                     console.error(`API request timeout: ${endpoint}`);
@@ -112,6 +112,22 @@ export class ApiClient {
      */
     async delete(endpoint) {
         return this.request(endpoint, { method: 'DELETE' });
+    }
+
+    /**
+     * Parse successful response bodies while accepting no-content success.
+     */
+    async _parseResponseBody(response) {
+        if (response.status === 204 || response.status === 205) {
+            return null;
+        }
+
+        const body = await response.text();
+        if (!body.trim()) {
+            return null;
+        }
+
+        return JSON.parse(body);
     }
 
     // ===== 數據管理 API =====

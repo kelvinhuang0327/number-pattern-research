@@ -513,6 +513,27 @@ def test_selected_strategy_compare_panel_is_readonly_and_non_ranking():
     assert "No betting recommendation." in module
 
 
+def test_detail_key_parsing_preserves_strategy_ids_with_delimiter():
+    module = D5_JS.read_text(encoding="utf-8")
+
+    assert "function parseDetailKey(key)" in module
+    assert "const delimiterIndex = value.indexOf('::');" in module
+    assert "value.slice(0, delimiterIndex)" in module
+    assert "value.slice(delimiterIndex + 2)" in module
+
+    for caller in [
+        "selectedSummaries",
+        "renderComparePanel",
+        "isKnownStrategyKey",
+        "openDetailFromEvent",
+    ]:
+        assert caller in module
+
+    assert "parseDetailKey(key)" in module
+    assert "parseDetailKey(row.dataset.detailKey)" in module
+    assert ".split('::')" not in module
+
+
 def test_matrix_artifact_counts_columns_and_null_baselines():
     rows = _read_csv("d5_hit_rate_matrix.csv")
     assert len(rows) == 130

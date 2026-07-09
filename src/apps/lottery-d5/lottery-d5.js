@@ -290,6 +290,16 @@ function detailKey(lottery, strategyId) {
   return `${lottery || ''}::${strategyId || ''}`;
 }
 
+function parseDetailKey(key) {
+  const value = String(key || '');
+  const delimiterIndex = value.indexOf('::');
+  if (delimiterIndex < 0) return ['', ''];
+  return [
+    value.slice(0, delimiterIndex),
+    value.slice(delimiterIndex + 2),
+  ];
+}
+
 function findCoverageRow(lottery, strategyId) {
   return state.coverageRows.find((row) => row.lottery === lottery && row.strategy_id === strategyId) || null;
 }
@@ -554,7 +564,7 @@ function localGeneratedAt() {
 
 function selectedSummaries() {
   return compareKeys.map((key) => {
-    const [lottery, strategyId] = key.split('::');
+    const [lottery, strategyId] = parseDetailKey(key);
     return selectedStrategySummary(lottery, strategyId);
   });
 }
@@ -751,7 +761,7 @@ function renderComparePanel() {
     grid.innerHTML = '<p class="d5-compare-empty">No strategies selected yet.</p>';
   } else {
     grid.innerHTML = compareKeys.map((key) => {
-      const [lottery, strategyId] = key.split('::');
+      const [lottery, strategyId] = parseDetailKey(key);
       return renderCompareCard(selectedStrategySummary(lottery, strategyId));
     }).join('');
   }
@@ -793,7 +803,7 @@ function normalizeReviewSearch(value) {
 }
 
 function isKnownStrategyKey(key) {
-  const [lottery, strategyId] = String(key || '').split('::');
+  const [lottery, strategyId] = parseDetailKey(key);
   if (!lottery || !strategyId) return false;
   return Boolean(findCoverageRow(lottery, strategyId) || findMatrixRows(lottery, strategyId).length);
 }
@@ -1298,7 +1308,7 @@ function openDetailFromEvent(event) {
   if (event.target.closest?.('[data-compare-key]')) return;
   const row = event.target.closest?.('.d5-clickable-row');
   if (!row) return;
-  const [lottery, strategyId] = String(row.dataset.detailKey || '').split('::');
+  const [lottery, strategyId] = parseDetailKey(row.dataset.detailKey);
   if (!lottery || !strategyId) return;
   renderStrategyDetail(lottery, strategyId, row.dataset.detailSource || 'row');
 }

@@ -92,9 +92,19 @@ export class ApiClient {
      * GET 請求
      */
     async get(endpoint, params = {}) {
-        const queryString = new URLSearchParams(params).toString();
+        const queryString = this._buildQueryString(params);
         const fullEndpoint = queryString ? `${endpoint}?${queryString}` : endpoint;
         return this.request(fullEndpoint, { method: 'GET' });
+    }
+
+    _buildQueryString(params = {}) {
+        const queryParams = {};
+        Object.entries(params || {}).forEach(([key, value]) => {
+            if (value !== null && value !== undefined) {
+                queryParams[key] = value;
+            }
+        });
+        return new URLSearchParams(queryParams).toString();
     }
 
     /**

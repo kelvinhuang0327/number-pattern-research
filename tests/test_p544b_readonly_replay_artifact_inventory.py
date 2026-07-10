@@ -124,6 +124,19 @@ def test_canonical_payload_digest_excludes_volatile_fields():
     assert digest != inv.canonical_payload_digest(dict(base, value=2))
 
 
+def test_canonical_source_has_no_wall_clock_or_sqlite_access():
+    source = Path(inv.__file__).read_text(encoding="utf-8")
+    forbidden = (
+        "datetime.now(",
+        "datetime.utcnow(",
+        "time.time(",
+        "getmtime(",
+        "st_mtime",
+        "sqlite3",
+    )
+    assert all(token not in source for token in forbidden)
+
+
 # ---------------------------------------------------------------------------
 # committed artifact integration (git required, read-only)
 # ---------------------------------------------------------------------------
@@ -157,6 +170,20 @@ def test_committed_artifact_scope_and_safety_invariants():
     )
 
 
+def test_committed_artifact_semantic_metrics_unchanged():
+    payload = _load_artifact()
+    assert payload["corpus_summary"]["total_files"] == 497
+    assert payload["replay_summary"]["replay_related_files"] == 361
+    assert payload["replay_summary"]["replay_related_bytes"] == 48_718_778
+    assert len([key for key in payload["lineage_summary"] if key != "unparsed"]) == 180
+    assert payload["link_summary"]["replay_owned_links"] == 115
+    counts = payload["link_summary"]["verification_counts"]
+    assert counts["verified_raw_bytes"] == 98
+    assert counts["digest_mismatch"] == 1
+    assert counts["path_not_relative"] == 9
+    assert len(payload["unpaired_artifacts"]) == 21
+
+
 def test_committed_artifact_known_mismatch_is_explained():
     payload = _load_artifact()
     mismatches = [
@@ -181,7 +208,23 @@ def test_markdown_consistent_with_json():
     assert f"**{payload['corpus_summary']['total_files']}**" in md
 
 
-def test_rebuild_at_recorded_commit_is_byte_reproducible():
+def test_repeated_rebuild_is_byte_reproducible_and_matches_committed():
     payload = _load_artifact()
-    rebuilt = inv.build_inventory(REPO_ROOT, payload["head_commit"])
-    assert rebuilt["canonical_payload_digest"] == payload["canonical_payload_digest"]
+    rebuilt_1 = inv.build_inventory(REPO_ROOT, payload["head_commit"])
+    rebuilt_2 = inv.build_inventory(REPO_ROOT, payload["head_commit"])
+
+    expected_timestamp = inv.commit_timestamp_utc(REPO_ROOT, payload["head_commit"])
+    assert rebuilt_1["generated_at_utc"] == expected_timestamp
+    assert rebuilt_2["generated_at_utc"] == expected_timestamp
+
+    json_1 = inv.serialize_json(rebuilt_1)
+    json_2 = inv.serialize_json(rebuilt_2)
+    committed_json = (REPO_ROOT / f"{ARTIFACT_STEM}.json").read_text(encoding="utf-8")
+    assert json_1 == json_2 == committed_json
+
+    markdown_1 = inv.render_markdown(rebuilt_1)
+    markdown_2 = inv.render_markdown(rebuilt_2)
+    committed_markdown = (REPO_ROOT / f"{ARTIFACT_STEM}.md").read_text(encoding="utf-8")
+    assert markdown_1 == markdown_2 == committed_markdown
+    assert rebuilt_1["canonical_payload_digest"] == payload["canonical_payload_digest"]
+    assert rebuilt_2["canonical_payload_digest"] == payload["canonical_payload_digest"]

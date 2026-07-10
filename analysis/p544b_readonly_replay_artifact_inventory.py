@@ -15,10 +15,12 @@ Read-only guarantees:
 - The only writes are the two whitelisted output files
   ``outputs/research/p544b_readonly_replay_artifact_inventory_<date>.{json,md}``.
 
-Determinism: the canonical payload digest is the SHA-256 of the sorted-key
-compact JSON payload excluding the volatile fields ``generated_at_utc`` and
-``canonical_payload_digest`` itself. ``main()`` builds the payload twice and
-refuses to write on any digest disagreement.
+Determinism: ``generated_at_utc`` is the pinned commit's committer timestamp,
+normalized to UTC seconds.  The canonical payload digest remains the SHA-256
+of the sorted-key compact JSON payload excluding ``generated_at_utc`` and
+``canonical_payload_digest`` itself for schema compatibility. ``main()``
+builds the payload twice and refuses to write unless both complete JSON and
+Markdown serializations are byte-identical.
 """
 
 from __future__ import annotations
@@ -175,6 +177,11 @@ def canonical_payload_digest(payload: dict) -> str:
     return hashlib.sha256(encoded.encode("utf-8")).hexdigest()
 
 
+def serialize_json(payload: dict) -> str:
+    """Return the canonical on-disk JSON representation."""
+    return json.dumps(payload, sort_keys=True, indent=1, ensure_ascii=False) + "\n"
+
+
 # ---------------------------------------------------------------------------
 # git access (read-only)
 # ---------------------------------------------------------------------------
@@ -183,6 +190,15 @@ def _git_text(repo_root: Path, *args: str) -> str:
     return subprocess.run(
         ["git", "-C", str(repo_root), *args], check=True, capture_output=True, text=True
     ).stdout
+
+
+def commit_timestamp_utc(repo_root: Path, commit: str) -> str:
+    """Return a commit's committer timestamp normalized to UTC seconds."""
+    raw = _git_text(repo_root, "show", "-s", "--format=%cI", commit).strip()
+    parsed = datetime.fromisoformat(raw.replace("Z", "+00:00"))
+    if parsed.tzinfo is None:
+        raise ValueError(f"commit timestamp has no timezone: {raw!r}")
+    return parsed.astimezone(timezone.utc).isoformat(timespec="seconds")
 
 
 class BlobReader:
@@ -381,7 +397,7 @@ def build_inventory(repo_root: Path, commit: str = "HEAD") -> dict:
         payload = {
             "schema": SCHEMA,
             "task": "P544B_READONLY_REPLAY_ARTIFACT_INVENTORY",
-            "generated_at_utc": datetime.now(timezone.utc).isoformat(timespec="seconds"),
+            "generated_at_utc": commit_timestamp_utc(repo_root, head_commit),
             "head_commit": head_commit,
             "scope": {
                 "prefix": SCOPE_PREFIX,
@@ -567,18 +583,17 @@ def main() -> None:
     repo_root = Path(__file__).resolve().parents[1]
     payload = build_inventory(repo_root, args.commit)
     recheck = build_inventory(repo_root, args.commit)
-    if payload["canonical_payload_digest"] != recheck["canonical_payload_digest"]:
-        raise SystemExit("non-deterministic payload; refusing to write artifacts")
+    json_text = serialize_json(payload)
+    markdown_text = render_markdown(payload)
+    if json_text != serialize_json(recheck) or markdown_text != render_markdown(recheck):
+        raise SystemExit("non-deterministic artifact bytes; refusing to write artifacts")
 
     out_dir = repo_root / "outputs" / "research"
     stem = f"p544b_readonly_replay_artifact_inventory_{args.date}"
     json_path = out_dir / f"{stem}.json"
     md_path = out_dir / f"{stem}.md"
-    json_path.write_text(
-        json.dumps(payload, sort_keys=True, indent=1, ensure_ascii=False) + "\n",
-        encoding="utf-8",
-    )
-    md_path.write_text(render_markdown(payload), encoding="utf-8")
+    json_path.write_text(json_text, encoding="utf-8")
+    md_path.write_text(markdown_text, encoding="utf-8")
     print(f"wrote {json_path}")
     print(f"wrote {md_path}")
     print(f"canonical_payload_digest={payload['canonical_payload_digest']}")

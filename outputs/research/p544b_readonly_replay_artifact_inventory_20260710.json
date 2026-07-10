@@ -3748,7 +3748,7 @@
   "total_files": 497
  },
  "final_classification": "P544B_READONLY_REPLAY_ARTIFACT_INVENTORY_COMPLETE",
- "generated_at_utc": "2026-07-10T08:47:00+00:00",
+ "generated_at_utc": "2026-07-10T08:15:21+00:00",
  "head_commit": "28fa79055c9cad6ea182e942570e58d5508462cc",
  "limitations": [
   "Descriptive inventory only: no statistical, predictive, betting, or deployment claim.",

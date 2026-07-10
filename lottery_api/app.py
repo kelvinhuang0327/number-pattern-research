@@ -6,7 +6,7 @@ import logging
 import os
 
 # Import Routers
-from routes import prediction, data, optimization, admin, backtest, replay, ingest
+from routes import prediction, data, optimization, admin, backtest, replay, ingest, p542b_scoreboard
 from routes import best_strategy_overview
 
 # Import System Utilities
@@ -73,6 +73,9 @@ app.include_router(backtest.router, tags=["Backtest"])
 
 # replay: /api/replay/* — strategy historical prediction replay (read-only audit)
 app.include_router(replay.router, tags=["Replay"])
+
+# p542b_scoreboard: /api/research/p542a/scoreboard — committed descriptive artifact only
+app.include_router(p542b_scoreboard.router, tags=["Research"])
 
 # ingest: /api/ingest/* — draw ingestion / backfill / log
 app.include_router(ingest.router, tags=["Ingest"])

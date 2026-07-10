@@ -1,5 +1,14 @@
 # CTO Analysis - Roadmap Alignment And System Optimization Direction
 
+## Historical CTO Roadmap Review — 2026-06-30
+
+> **Historical snapshot only; not a current assessment or task authorization.** This note is selectively preserved from the uncommitted working-tree draft on `task/cto-roadmap-alignment-20260630`, based on `afac66b26858527be161f64a58ddde5213f8e202`. Review-time branch, OID, PR, task, blocker, completion, and “current/next” claims were not revalidated by this promotion.
+
+- The review introduced D5: a per-strategy hit-rate matrix and strategy-combination comparison surface backed by one deterministic replay-metrics contract across the primary 50/300/750 windows and prize-aware endpoints.
+- Durable controls carried forward: descriptive evidence is not confirmation; combinations require preregistration, equal-budget and diversified-random baselines, multiplicity correction, permutation/McNemar checks, walk-forward evidence, and multi-window stability. Unavailable evidence remains blocked or null rather than fabricated.
+- The review identified stale-worktree governance drift as a process hazard. Shared governance must be edited only from a working copy whose base is verified against the canonical tip.
+- The original “D1 fully delivered” and “P297A next” statements were later corrected or superseded within the draft history and are not promoted as current truth. The P297A label was also used for different work items and requires Owner disambiguation before reuse.
+
 ## 2026-06-25 CTO Assessment — P291 Accepted-Batch Governance Closeout
 
 Final Classification: `CTO_P291AB_ACCEPTED_BATCH_GOVERNANCE_CLOSEOUT_RECORDED`

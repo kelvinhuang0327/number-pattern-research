@@ -136,6 +136,7 @@ Minimum checks:
 * Forbidden path check
 * Unrelated dirty-file assessment
 * Allowed-file whitelist availability
+* Governance-base freshness: before editing shared governance, roadmap, decision, or planning files, resolve the canonical-tip OID during Phase 0 from an Owner-pinned OID or an authoritative remote read, not only a branch name or pre-existing local tracking ref; require `HEAD == <canonical-tip-oid>` or verify `git merge-base --is-ancestor <canonical-tip-oid> HEAD`
 
 If the project has DB, critical data, or governed artifacts, perform only the read-only checks explicitly required by the task or current state.
 
@@ -160,6 +161,7 @@ STOP immediately if:
 * The task needs a DB write, production write, registry mutation, controlled apply, deployment, or destructive action without explicit authorization.
 * The task needs branch, checkout, merge, rebase, reset, cherry-pick, commit, push, or force-push without explicit authorization.
 * The task scope is unclear, unsafe, or materially different from actual evidence.
+* The task would edit shared governance, roadmap, decision, or planning files, but the canonical-tip OID or required equality/ancestry check cannot be verified.
 
 ## 8. Forbidden Actions Unless Explicitly Authorized
 

@@ -3888,16 +3888,16 @@
         </section>
         <!-- ===== END P251F ===== -->
 
-        <!-- ===== P333 Strategy Pick / Combination Scoreboard ===== -->
+        <!-- ===== P542C Strategy Pick / Combination Scoreboard (P542B API) ===== -->
         <section id="p333-scoreboard-section" class="section">
           <div class="section-header">
-            <h2>策略組合命中率 <span style="font-size:0.7em;color:#8b949e;font-weight:400">Pick / Combination Scoreboard</span></h2>
-            <p>50 / 300 / 750 視窗，含大樂透特別號與威力彩第二區的歷史回放比對</p>
+            <h2>Strategy Pick / Combination Scoreboard <span style="font-size:0.7em;color:#8b949e;font-weight:400">歷史描述資料</span></h2>
+            <p>50 / 300 / 750 視窗的已提交歷史統計，包含隨機基準與威力彩第二區描述。</p>
           </div>
           <div class="section-content">
             <div style="background:rgba(187,128,9,.12);border:1px solid #e3b341;border-radius:6px;padding:10px 14px;margin-bottom:16px;font-size:12px;color:#e3b341;line-height:1.6">
-              <b>歷史回放聲明</b><br>
-              本頁只描述既有 replay 的過去表現，不代表未來中獎率，也不可作為任何實際行動依據。
+              <b>描述性資料聲明</b><br>
+              本頁只呈現已提交 artifact 的歷史資料與同預算隨機基準；不推論未來，亦非任何建議或核准狀態。
             </div>
 
             <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px">
@@ -3909,6 +3909,7 @@
                 <option value="300">300期</option>
                 <option value="50">50期</option>
               </select>
+              <button id="p542c-refresh-btn" class="btn-sm btn-secondary" type="button">重新讀取描述資料</button>
             </div>
 
             <div id="p333-summary-cards" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:12px;margin-bottom:18px"></div>
@@ -3924,7 +3925,7 @@
                       <th style="text-align:right;padding:6px 8px">期數</th>
                       <th style="text-align:right;padding:6px 8px">中1+率</th>
                       <th style="text-align:right;padding:6px 8px">獎規訊號率</th>
-                      <th style="text-align:right;padding:6px 8px">中1+ Edge</th>
+                      <th style="text-align:right;padding:6px 8px">隨機獎規基準</th>
                       <th style="text-align:right;padding:6px 8px">獎規 Edge</th>
                     </tr>
                   </thead>
@@ -3944,7 +3945,7 @@
                       <th style="text-align:right;padding:6px 8px">期數</th>
                       <th style="text-align:right;padding:6px 8px">中1+率</th>
                       <th style="text-align:right;padding:6px 8px">獎規訊號率</th>
-                      <th style="text-align:right;padding:6px 8px">中1+ Edge</th>
+                      <th style="text-align:right;padding:6px 8px">隨機獎規基準</th>
                       <th style="text-align:right;padding:6px 8px">獎規 Edge</th>
                     </tr>
                   </thead>
@@ -3954,33 +3955,35 @@
             </div>
 
             <div class="card" style="padding:14px;margin-bottom:18px">
-              <div style="font-weight:700;margin-bottom:10px;font-size:0.9rem">指定例子：傅立葉2 + 冷號2 + Deviation2</div>
-              <div id="p333-example"></div>
+              <div style="font-weight:700;margin-bottom:10px;font-size:0.9rem">Artifact / Report Metadata</div>
+              <div id="p542c-artifact-metadata" style="font-size:12px;color:#8b949e;line-height:1.7">UNKNOWN — 尚未載入 metadata。</div>
             </div>
 
             <div class="card" style="padding:14px">
-              <div style="font-weight:700;margin-bottom:10px;font-size:0.9rem">跨彩種特徵族參考 <span style="font-size:0.75em;color:#8b949e">750期、取2號</span></div>
+              <div style="font-weight:700;margin-bottom:10px;font-size:0.9rem">威力彩第二區描述 <span style="font-size:0.75em;color:#8b949e">缺失值維持 UNKNOWN</span></div>
               <div style="overflow-x:auto">
                 <table style="width:100%;border-collapse:collapse;font-size:0.78rem">
                   <thead>
                     <tr style="border-bottom:1px solid #30363d;color:#8b949e">
-                      <th style="text-align:left;padding:5px 8px">彩種</th>
-                      <th style="text-align:left;padding:5px 8px">特徵族</th>
-                      <th style="text-align:right;padding:5px 8px">策略數</th>
-                      <th style="text-align:right;padding:5px 8px">平均中1+率</th>
-                      <th style="text-align:right;padding:5px 8px">平均獎規訊號率</th>
-                      <th style="text-align:right;padding:5px 8px">平均中1+ Edge</th>
+                      <th style="text-align:left;padding:5px 8px">範圍</th>
+                      <th style="text-align:left;padding:5px 8px">策略／組合</th>
+                      <th style="text-align:right;padding:5px 8px">期數</th>
+                      <th style="text-align:right;padding:5px 8px">第二區命中率</th>
+                      <th style="text-align:right;padding:5px 8px">隨機第二區基準</th>
+                      <th style="text-align:right;padding:5px 8px">第二區 Edge</th>
                     </tr>
                   </thead>
-                  <tbody id="p333-family-tbody"></tbody>
+                  <tbody id="p542c-zone2-tbody"></tbody>
                 </table>
               </div>
             </div>
 
-            <div id="p333-status" style="margin-top:10px;font-size:12px;color:#8b949e"></div>
+            <div id="p542c-loading" role="status" aria-live="polite" style="margin-top:10px;font-size:12px;color:#8b949e">尚未讀取描述資料。</div>
+            <div id="p542c-error" role="alert" hidden style="margin-top:10px;font-size:12px;color:#f85149">資料暫時無法安全顯示。</div>
+            <div id="p333-status" aria-live="polite" style="margin-top:10px;font-size:12px;color:#8b949e"></div>
           </div>
         </section>
-        <!-- ===== END P333 ===== -->
+        <!-- ===== END P542C ===== -->
 
         <!-- ===== P536E Strategy Lift Extension ===== -->
         <section id="p536e-lift-extension-section" class="section">
@@ -6910,11 +6913,12 @@
   p257Init();
 })();
 
-// ===== P333 STRATEGY PICK / COMBINATION SCOREBOARD =====
+// ===== P542C STRATEGY PICK / COMBINATION SCOREBOARD (P542B API) =====
 (function() {
   'use strict';
 
   var _p333Data = null;
+  var _p542cMeta = null;
   var _p333Lottery = 'BIG_LOTTO';
   var _p333Window = 750;
   var PICK_COUNTS = { BIG_LOTTO: 6, DAILY_539: 5, POWER_LOTTO: 6 };
@@ -6935,6 +6939,16 @@
     var el = document.getElementById('p333-status');
     if (el) el.textContent = text || '';
   }
+  function setLoading(on, text) {
+    var el = document.getElementById('p542c-loading');
+    if (!el) return;
+    el.hidden = !on;
+    if (text) el.textContent = text;
+  }
+  function setError(on) {
+    var el = document.getElementById('p542c-error');
+    if (el) el.hidden = !on;
+  }
 
   function card(label, value) {
     return '<div class="card" style="padding:10px 14px;text-align:center">' +
@@ -6949,20 +6963,38 @@
   function pickKey(k) {
     return _p333Lottery + '|' + _p333Window + '|' + k;
   }
+  function rankings() {
+    return (_p333Data && _p333Data.descriptive_rankings) || {};
+  }
+  function unknown(value) {
+    return value == null || value === '' ? 'UNKNOWN' : value;
+  }
+  function setFallback() {
+    var summary = document.getElementById('p333-summary-cards');
+    var combo = document.getElementById('p333-combo-tbody');
+    var pick = document.getElementById('p333-pick-tbody');
+    var meta = document.getElementById('p542c-artifact-metadata');
+    var zone2 = document.getElementById('p542c-zone2-tbody');
+    if (summary) summary.innerHTML = card('資料狀態', 'UNKNOWN');
+    if (combo) combo.innerHTML = '<tr><td colspan="7" style="padding:12px 8px;text-align:center;color:#8b949e">UNKNOWN — 無法安全顯示資料</td></tr>';
+    if (pick) pick.innerHTML = '<tr><td colspan="7" style="padding:12px 8px;text-align:center;color:#8b949e">UNKNOWN — 無法安全顯示資料</td></tr>';
+    if (meta) meta.textContent = 'UNKNOWN — 無法取得 artifact metadata。';
+    if (zone2) zone2.innerHTML = '<tr><td colspan="6" style="padding:10px 8px;text-align:center;color:#8b949e">UNKNOWN — 無法安全顯示資料</td></tr>';
+  }
 
   function renderSummary() {
     var el = document.getElementById('p333-summary-cards');
     if (!el || !_p333Data) return;
     var budget = PICK_COUNTS[_p333Lottery] || 6;
-    var bestCombo = (_p333Data.best_combination_by_lottery_window_budget || {})[comboKey(budget)];
-    var decisions = _p333Data.summary && _p333Data.summary.strategy_window_decision_counts || {};
+    var bestCombo = (rankings().best_combination_by_lottery_window_budget || {})[comboKey(budget)];
+    var summary = _p333Data.summary || {};
     el.innerHTML = [
       card('彩種 / 視窗', (LOTTERY_LABELS[_p333Lottery] || _p333Lottery) + ' / ' + _p333Window + '期'),
-      card('滿額最佳組合中1+率', bestCombo ? pct(bestCombo.any_main_hit_rate) : '—'),
-      card('滿額最佳組合獎規訊號', bestCombo ? pct(bestCombo.prize_signal_rate) : '—'),
-      card('視窗通過策略數', decisions.HISTORICAL_WINDOW_PASS || 0),
-      card('取號矩陣筆數', _p333Data.summary ? _p333Data.summary.strategy_pick_records : '—'),
-      card('組合排行榜筆數', _p333Data.summary ? _p333Data.summary.combination_leaderboard_records : '—')
+      card('滿額組合中1+率', bestCombo ? pct(bestCombo.any_main_hit_rate) : 'UNKNOWN'),
+      card('滿額組合獎規訊號', bestCombo ? pct(bestCombo.prize_signal_rate) : 'UNKNOWN'),
+      card('隨機獎規基準', bestCombo ? pct(bestCombo.baseline_prize_signal_rate) : 'UNKNOWN'),
+      card('取號矩陣筆數', unknown(summary.strategy_pick_records)),
+      card('組合排行榜筆數', unknown(summary.combination_leaderboard_records))
     ].join('');
   }
 
@@ -6971,7 +7003,7 @@
     var label = document.getElementById('p333-combo-label');
     if (!tbody || !_p333Data) return;
     if (label) label.textContent = '— ' + (LOTTERY_LABELS[_p333Lottery] || _p333Lottery) + ' / ' + _p333Window + '期';
-    var best = _p333Data.best_combination_by_lottery_window_budget || {};
+    var best = rankings().best_combination_by_lottery_window_budget || {};
     var maxBudget = PICK_COUNTS[_p333Lottery] || 6;
     var rows = [];
     for (var budget = 1; budget <= maxBudget; budget++) {
@@ -6983,7 +7015,7 @@
         '<td style="padding:6px 8px;text-align:right">' + esc(rec.support_draws) + '</td>' +
         '<td style="padding:6px 8px;text-align:right;color:#3fb950;font-weight:700">' + pct(rec.any_main_hit_rate) + '</td>' +
         '<td style="padding:6px 8px;text-align:right">' + pct(rec.prize_signal_rate) + '</td>' +
-        '<td style="padding:6px 8px;text-align:right">' + pp(rec.any_main_hit_edge_pp) + '</td>' +
+        '<td style="padding:6px 8px;text-align:right">' + pct(rec.baseline_prize_signal_rate) + '</td>' +
         '<td style="padding:6px 8px;text-align:right">' + pp(rec.prize_signal_edge_pp) + '</td>' +
         '</tr>');
     }
@@ -6993,7 +7025,7 @@
   function renderPicks() {
     var tbody = document.getElementById('p333-pick-tbody');
     if (!tbody || !_p333Data) return;
-    var top = _p333Data.top_strategy_pick_by_lottery_window_pick || {};
+    var top = rankings().top_strategy_pick_by_lottery_window_pick || {};
     var maxK = PICK_COUNTS[_p333Lottery] || 6;
     var rows = [];
     for (var k = 1; k <= maxK; k++) {
@@ -7005,73 +7037,101 @@
         '<td style="padding:6px 8px;text-align:right">' + esc(rec.support_draws) + '</td>' +
         '<td style="padding:6px 8px;text-align:right;color:#3fb950;font-weight:700">' + pct(rec.any_main_hit_rate) + '</td>' +
         '<td style="padding:6px 8px;text-align:right">' + pct(rec.prize_signal_rate) + '</td>' +
-        '<td style="padding:6px 8px;text-align:right">' + pp(rec.any_main_hit_edge_pp) + '</td>' +
+        '<td style="padding:6px 8px;text-align:right">' + pct(rec.baseline_prize_signal_rate) + '</td>' +
         '<td style="padding:6px 8px;text-align:right">' + pp(rec.prize_signal_edge_pp) + '</td>' +
         '</tr>');
     }
     tbody.innerHTML = rows.join('') || '<tr><td colspan="7" style="padding:12px 8px;text-align:center;color:#8b949e">無資料</td></tr>';
   }
 
-  function renderExample() {
-    var el = document.getElementById('p333-example');
-    if (!el || !_p333Data) return;
-    var ex = _p333Data.requested_example_fourier2_cold2_deviation2 || {};
-    if (ex.status !== 'EVALUATED') {
-      el.innerHTML = '<div style="font-size:12px;color:#8b949e">指定組合目前無法評估：' + esc(ex.status) + '</div>';
-      return;
-    }
-    var rec = ex.windows && ex.windows[String(_p333Window)];
-    if (!rec) {
-      el.innerHTML = '<div style="font-size:12px;color:#8b949e">此視窗無資料</div>';
-      return;
-    }
-    el.innerHTML = '<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px">' +
-      card('期數', rec.support_draws) +
-      card('中1+率', pct(rec.any_main_hit_rate)) +
-      card('獎規訊號率', pct(rec.prize_signal_rate)) +
-      card('中1+ Edge', pp(rec.any_main_hit_edge_pp)) +
-      card('獎規 Edge', pp(rec.prize_signal_edge_pp)) +
-      '</div>';
+  function renderMetadata() {
+    var el = document.getElementById('p542c-artifact-metadata');
+    if (!el || !_p333Data || !_p542cMeta) return;
+    var source = _p333Data.source || {};
+    var windows = ((_p333Data.window_policy || {}).draw_windows || []).join(' / ') || 'UNKNOWN';
+    var items = [
+      ['來源 artifact', _p542cMeta.source_artifact],
+      ['SHA256', _p542cMeta.artifact_sha256],
+      ['bytes', _p542cMeta.artifact_bytes],
+      ['report task', _p333Data.task_id],
+      ['schema', _p333Data.schema_version],
+      ['classification', _p333Data.classification],
+      ['draw windows', windows],
+      ['source kind', source.source_kind]
+    ];
+    el.innerHTML = '<dl style="display:grid;grid-template-columns:max-content 1fr;gap:4px 10px;margin:0">' +
+      items.map(function(item) {
+        return '<dt style="color:#8b949e">' + esc(item[0]) + '</dt><dd style="margin:0;overflow-wrap:anywhere">' + esc(unknown(item[1])) + '</dd>';
+      }).join('') + '</dl>';
   }
 
-  function renderFamilies() {
-    var tbody = document.getElementById('p333-family-tbody');
+  function renderZone2() {
+    var tbody = document.getElementById('p542c-zone2-tbody');
     if (!tbody || !_p333Data) return;
-    var rows = (_p333Data.feature_family_summary || []).filter(function(r) {
-      return r.lottery_type === _p333Lottery;
-    }).slice(0, 10);
-    tbody.innerHTML = rows.map(function(r) {
+    var rows = (_p333Data.power_lotto_zone2_metrics || []).filter(function(row) {
+      return Number(row.window) === _p333Window && row.scope === 'combination';
+    }).slice(0, 8);
+    tbody.innerHTML = rows.map(function(row) {
       return '<tr style="border-bottom:1px solid #21262d">' +
-        '<td style="padding:5px 8px">' + esc(r.lottery_type) + '</td>' +
-        '<td style="padding:5px 8px">' + esc(r.feature_family) + '</td>' +
-        '<td style="padding:5px 8px;text-align:right">' + esc(r.strategy_count) + '</td>' +
-        '<td style="padding:5px 8px;text-align:right">' + pct(r.avg_any_main_hit_rate) + '</td>' +
-        '<td style="padding:5px 8px;text-align:right">' + pct(r.avg_prize_signal_rate) + '</td>' +
-        '<td style="padding:5px 8px;text-align:right">' + pp(r.avg_any_main_hit_edge_pp) + '</td>' +
+        '<td style="padding:5px 8px">' + esc(unknown(row.scope)) + '</td>' +
+        '<td style="padding:5px 8px;font-size:11px">' + esc(unknown(row.identifier)) + '</td>' +
+        '<td style="padding:5px 8px;text-align:right">' + esc(unknown(row.support_draws)) + '</td>' +
+        '<td style="padding:5px 8px;text-align:right">' + pct(row.zone2_hit_rate) + '</td>' +
+        '<td style="padding:5px 8px;text-align:right">' + pct(row.random_zone2_hit_rate) + '</td>' +
+        '<td style="padding:5px 8px;text-align:right">' + pp(row.zone2_hit_edge_pp) + '</td>' +
         '</tr>';
-    }).join('') || '<tr><td colspan="6" style="padding:10px 8px;text-align:center;color:#8b949e">無資料</td></tr>';
+    }).join('') || '<tr><td colspan="6" style="padding:10px 8px;text-align:center;color:#8b949e">UNKNOWN — 此視窗沒有第二區描述資料</td></tr>';
   }
 
   function renderAll() {
+    if (!_p333Data) {
+      setFallback();
+      return;
+    }
     renderSummary();
     renderCombos();
     renderPicks();
-    renderExample();
-    renderFamilies();
+    renderMetadata();
+    renderZone2();
   }
 
-  function loadP333() {
+  function loadP542C() {
     var base = (typeof window !== 'undefined' && window.API_BASE ? String(window.API_BASE) : '').replace(/\/$/, '');
+    _p333Data = null;
+    _p542cMeta = null;
+    setError(false);
+    setLoading(true, '正在讀取已提交的描述資料…');
     setStatus('載入中…');
-    fetch(base + '/api/replay/strategy-pick-scoreboard')
-      .then(function(r) { return r.json(); })
-      .then(function(data) {
-        _p333Data = data;
-        setStatus('');
+    renderAll();
+    fetch(base + '/api/research/p542a/scoreboard')
+      .then(function(r) {
+        return r.json().catch(function() { return null; }).then(function(payload) {
+          if (!r.ok) throw new Error('artifact response unavailable');
+          return payload;
+        });
+      })
+      .then(function(payload) {
+        if (!payload || payload.ok !== true || payload.descriptive_only !== true ||
+            !payload.data || typeof payload.data !== 'object' || Array.isArray(payload.data)) {
+          throw new Error('artifact response is invalid');
+        }
+        _p333Data = payload.data;
+        _p542cMeta = {
+          source_artifact: payload.source_artifact,
+          artifact_sha256: payload.artifact_sha256,
+          artifact_bytes: payload.artifact_bytes
+        };
+        setLoading(false);
+        setStatus('已載入歷史描述資料；缺失欄位維持 UNKNOWN。');
         renderAll();
       })
-      .catch(function(e) {
-        setStatus('載入失敗：' + e.message);
+      .catch(function() {
+        _p333Data = null;
+        _p542cMeta = null;
+        setLoading(false);
+        setError(true);
+        setStatus('UNKNOWN — 資料暫時無法安全顯示。');
+        renderAll();
       });
   }
 
@@ -7091,10 +7151,12 @@
         if (_p333Data) renderAll();
       });
     }
+    var refresh = document.getElementById('p542c-refresh-btn');
+    if (refresh) refresh.addEventListener('click', loadP542C);
     document.querySelectorAll('[data-section]').forEach(function(btn) {
       btn.addEventListener('click', function() {
         if (btn.dataset.section === 'p333-scoreboard' && !_p333Data) {
-          loadP333();
+          loadP542C();
         }
       });
     });

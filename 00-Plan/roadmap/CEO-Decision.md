@@ -12,6 +12,46 @@
 
 ---
 
+## Historical decision record — 2026-05-28: Replay-Coverage Governance
+
+> **Historical note — 2026-05-28 (Asia/Taipei).** Selectively preserved from an untracked CEO review draft associated with `claude/trusting-chaum-8cc8c5` at `684bffcea3080f8f1f31c5b9acc3a572907ec4f3`. The date, mandate, rationale, and governance lessons below are provenance, not a revalidation of the draft's operational claims.
+>
+> **Not current execution authorization.** References to P124 and P125 describe the decision made on 2026-05-28; they do not identify a current task, next task, roadmap priority, branch state, PR state, scheduler state, database state, or trigger disposition. **Requires fresh canonical validation before reuse.**
+
+### CEO product mandate at the time
+
+The CEO mandate recorded on 2026-05-28 was: “目前最高優先目標是讓系統上所有實作過的策略進行歷史回放，其中包含所有彩種和1-5注數的組合” (historical replay for every implemented strategy, across every lottery type and the one-to-five-bet combinations).
+
+The review translated that mandate into a governance requirement: replay coverage had to be measurable and truth-labelled. A row count alone could not establish whether evidence represented first-bet-only behavior, native multi-bet behavior, or complete product coverage, and coverage could not be treated as strategy quality, promotion eligibility, or predictive usefulness.
+
+### Durable rationale and governance lessons
+
+- The CEO partially approved the CTO direction while combining the proposed replay truth model and coverage matrix. The stated rationale was that a matrix without truth labels is only a count report, while a truth model without a matrix is not operationally useful.
+- A prior worker stop caused by an invalid worktree/branch context was treated as evidence that execution-context controls must be explicit and centralized rather than reconstructed independently for each task.
+- Every governed task should declare its project and execution context, an exact allowed-files whitelist, forbidden staging classes, and mutation boundaries. These controls should be checked before implementation and again before commit.
+- Read-only audit work must remain distinct from gap-filling or controlled apply. Discovering absent replay coverage does not itself authorize database writes, replay insertion or deletion, registry/lifecycle mutation, champion promotion, backtesting of separately gated paths, or scheduler installation.
+- Coverage scope should distinguish implemented strategies with usable adapters from implemented strategies lacking adapters. Retired, rejected, or never-implemented entries should not silently expand an audit's execution scope.
+- Repeated no-change governance checks should be consolidated into a reusable, authorization-bounded mechanism instead of generating indefinite review churn. Any reuse of the historical mechanism or its classifications requires fresh canonical validation.
+- Historical evidence and test results may explain why a decision was made, but must not be presented as current health, cleanliness, invariant, or authorization evidence.
+
+### Dated priority decision and guardrails
+
+On 2026-05-28, the CEO selected a single read-only P124 audit: a multi-bet replay truth model plus an implemented-strategy × lottery × one-to-five-bet coverage matrix. The record anticipated a separate P125 adapter-gap plan derived from that audit. These were dated planning decisions only; neither designation is promoted here as current or executable.
+
+The historical decision required the audit to remain read-only, constrained to an explicit file whitelist, and separated from database mutation, opportunistic execution of other gated paths, operating-system scheduler installation, and cross-project work. It also withheld authorization for provenance-dependent backtesting and treated prediction-helpfulness safeguards as independent from coverage expansion.
+
+### Historical risks and unknowns
+
+- Accidental staging of database, history, runtime, or process artifacts was identified as a high-impact risk pattern; the durable response is explicit allowlisting, not reliance on repository cleanliness.
+- Audit language could be misread as an instruction to fill gaps rather than report them, or could expand into retired, rejected, or unimplemented strategies.
+- The proportion of first-bet-only versus native multi-bet replay evidence was unknown at the time of the review.
+- Whether some retired strategies should later be archived was also unknown and expressly outside the selected audit.
+- Proposed follow-up ordering depended on the audit's evidence and was not an enduring roadmap commitment.
+
+**Historical CEO outcome:** `CEO_DECISION_PARTIALLY_APPROVED`. The useful preservation is the decision method: combine truth semantics with coverage evidence, keep coverage separate from quality and authorization, centralize execution/staging guards, and require a new canonical check before acting on dated conclusions.
+
+---
+
 ## P292J Zero-Conflict Prospective Acceptance of the P291 Canonical-DB-Path Remediation (150-Path Set) — 2026-06-29
 
 **Owner authorization `P292J-ZERO-CONFLICT-P291-PROSPECTIVE-ACCEPTANCE-LOCAL-COMMIT`.** After a read-only, DB-free, zero-conflict-gated validation, the Owner accepts — **prospectively, as a new policy decision dated today (2026-06-29)** — the exact current 150-path P291 canonical-DB-path remediation change-set enumerated by the manifest-verified P292C audit whitelist (`/tmp/p292c_p291_main_wip_disposition_audit_20260629/attempt_1/PROPOSED_FUTURE_INTEGRATION_WHITELIST.txt`): 145 modified `.py`, the four P291AB governance `.md` (`active_task.md`, `CTO-Analysis.md`, `agent_bootstrap/CURRENT_STATE.md`, `roadmap.md`), and the untracked pure-stdlib resolver module `lottery_api/canonical_db_path.py`. This same commit stages exactly those 150 paths plus this `CEO-Decision.md`.

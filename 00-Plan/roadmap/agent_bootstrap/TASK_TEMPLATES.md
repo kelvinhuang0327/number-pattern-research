@@ -62,6 +62,7 @@ Phase 0 and STOP conditions:
 
 * Verify the canonical repo, branch, HEAD or other required baseline, staged state, dirty-path allowance, and forbidden execution paths.
 * STOP on a context mismatch, pre-existing staged files, an unauthorized dirty path, a required non-whitelisted write, or any required Git, DB, production, registry, worktree, or destructive action outside explicit scope.
+* For governance, roadmap, decision, or planning writes, resolve the canonical-tip OID during Phase 0 from an Owner-pinned OID or an authoritative remote read; require `HEAD == <canonical-tip-oid>` or verify `git merge-base --is-ancestor <canonical-tip-oid> HEAD`, and STOP if the tip or ancestry cannot be established.
 
 Allowed actions:
 

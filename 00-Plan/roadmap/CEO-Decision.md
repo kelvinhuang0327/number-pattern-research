@@ -2,6 +2,16 @@
 
 ---
 
+## Historical CEO Roadmap Reviews — 2026-07-01/02
+
+> **Historical snapshot only; not current execution authority.** This note is selectively preserved from the uncommitted working-tree draft on `task/cto-roadmap-alignment-20260630`, based on `afac66b26858527be161f64a58ddde5213f8e202`. Branch, OID, PR, task, completion, authorization, and “current/next” claims in the original draft were not revalidated by this promotion and are omitted here.
+
+- The reviews recorded D5's transition from a descriptive UI shell toward per-draw combination analysis. Their durable scientific finding was that raw gains from larger combinations may be ticket-budget effects; equal-ticket-budget and diversified-random baselines are required.
+- They recorded the P333A/P334A–P340A audit and safety work and a separate P333 scoreboard as review-time work. The present disposition of those items, including any proposed P341A follow-up, requires fresh canonical evidence and Owner direction.
+- Durable controls carried forward: retrospective results are not predictive edge; combination analysis requires per-draw predicted sets, preregistration, multiplicity correction, permutation/McNemar checks, and multi-window stability. Missing per-draw sets cause STOP, and a 50-draw window cannot independently authorize deployment. Missing POWER evidence must remain blocked or null rather than be fabricated or backfilled.
+
+---
+
 ## P292J Zero-Conflict Prospective Acceptance of the P291 Canonical-DB-Path Remediation (150-Path Set) — 2026-06-29
 
 **Owner authorization `P292J-ZERO-CONFLICT-P291-PROSPECTIVE-ACCEPTANCE-LOCAL-COMMIT`.** After a read-only, DB-free, zero-conflict-gated validation, the Owner accepts — **prospectively, as a new policy decision dated today (2026-06-29)** — the exact current 150-path P291 canonical-DB-path remediation change-set enumerated by the manifest-verified P292C audit whitelist (`/tmp/p292c_p291_main_wip_disposition_audit_20260629/attempt_1/PROPOSED_FUTURE_INTEGRATION_WHITELIST.txt`): 145 modified `.py`, the four P291AB governance `.md` (`active_task.md`, `CTO-Analysis.md`, `agent_bootstrap/CURRENT_STATE.md`, `roadmap.md`), and the untracked pure-stdlib resolver module `lottery_api/canonical_db_path.py`. This same commit stages exactly those 150 paths plus this `CEO-Decision.md`.

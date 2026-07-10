@@ -11,6 +11,12 @@
 
 This section is the current source of truth. The 2026-06-01 sections and P186-P196 appendices below are retained for history and are superseded where they conflict with this section.
 
+### 0.0-HIST-2026-06-30 D5 Direction — Historical Record
+
+The 2026-06-30 CTO review recorded Owner direction D5: a per-strategy hit-rate matrix plus strategy-combination analysis. This is preserved as historical context, not as a current task, status, completion claim, or authorization statement. See the dated historical entries in `CTO-Analysis.md` and `CEO-Decision.md`; current status must be re-established from canonical evidence and explicit Owner direction.
+
+Any combination claim must use an equal-ticket-budget and diversified-random baseline; raw gains from larger combinations may be ticket-budget artifacts. A retrospective `HISTORICAL_WINDOW_PASS` is descriptive, not predictive, and requires separately preregistered, multiplicity-controlled validation before promotion. UI/API wording must remain descriptive and avoid “best,” “recommend,” and “prediction” claims.
+
 ### 0.0-P291AB 2026-06-25 P291 Accepted-Batch Governance Closeout — COMPLETE (Owner integration decision RESOLVED 2026-06-29 via P292J prospective acceptance + local commit `1548934…`; not pushed)
 
 Under the Owner closeout decision `FORMAL_P291_CLOSEOUT_ACCEPT_ACCEPTED_BATCHES_ONLY`, the independently verified P291U-A/B/C/D mechanical Policy-A `sqlite3.connect` remediation batches are recorded as **governance-closed (accepted-batches-only)**.

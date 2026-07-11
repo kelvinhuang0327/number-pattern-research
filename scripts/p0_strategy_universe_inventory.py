@@ -9,8 +9,8 @@ All paths and provenance values are explicit CLI inputs. The default mode is
 ``PLAN_ONLY_NO_DB_NO_WRITE``: it validates configuration, but does not scan the
 repository, hash or open the DB, generate an inventory, create directories, or
 write output files. Full collection requires ``--execute-readonly``; output files
-also require ``--write-outputs``. Existing outputs additionally require
-``--overwrite-existing``.
+also require ``--write-outputs``. Output paths must be new;
+``--overwrite-existing`` is rejected fail-closed.
 """
 
 from __future__ import annotations
@@ -192,7 +192,7 @@ def build_parser() -> argparse.ArgumentParser:
     parser.add_argument(
         "--overwrite-existing",
         action="store_true",
-        help="Permit replacing existing output files; requires --write-outputs.",
+        help="Disabled fail-closed; output paths must be new.",
     )
     return parser
 
@@ -238,8 +238,8 @@ def validate_config(args: argparse.Namespace) -> Config:
         raise SafetyError("--expected-db-sha256 must be exactly 64 hexadecimal characters")
     if config.write_outputs and not config.execute_readonly:
         raise SafetyError("--write-outputs requires --execute-readonly")
-    if config.overwrite_existing and not config.write_outputs:
-        raise SafetyError("--overwrite-existing requires --write-outputs")
+    if config.overwrite_existing:
+        raise SafetyError("--overwrite-existing is disabled; output paths must be new")
     if config.output_json == config.output_markdown:
         raise SafetyError("JSON and Markdown output paths must be distinct")
     if config.output_json == config.db_path or config.output_markdown == config.db_path:
@@ -253,8 +253,8 @@ def validate_config(args: argparse.Namespace) -> Config:
     for output in (config.output_json, config.output_markdown):
         if not _is_within(output, config.repo_root):
             raise SafetyError(f"output path is outside --repo-root: {output}")
-        if output.exists() and not config.overwrite_existing:
-            raise SafetyError(f"output already exists; refusing overwrite: {output}")
+        if os.path.lexists(output):
+            raise SafetyError(f"output already exists; new output path required: {output}")
 
     live_paths = {
         _resolve(config.repo_root / "lottery_api" / "data" / "lottery_v2.db"),
@@ -342,14 +342,23 @@ def canonicalize(raw: str, source_hint: str = "") -> str:
             }.get(parts[1])
             if prefix_spec:
                 prefix, equivalents = prefix_spec
-                for equivalent in equivalents:
-                    marker = equivalent + "_"
-                    if slug == equivalent:
-                        slug = prefix
+                suffix = slug
+                stripped_prefix = False
+                while suffix:
+                    for equivalent in equivalents:
+                        marker = equivalent + "_"
+                        if suffix == equivalent:
+                            suffix = ""
+                            stripped_prefix = True
+                            break
+                        if suffix.startswith(marker):
+                            suffix = suffix[len(marker):]
+                            stripped_prefix = True
+                            break
+                    else:
                         break
-                    if slug.startswith(marker):
-                        slug = prefix + "_" + slug[len(marker):]
-                        break
+                if stripped_prefix:
+                    slug = prefix if not suffix else f"{prefix}_{suffix}"
             if prefix_spec and slug != prefix and not slug.startswith(prefix + "_"):
                 return f"{prefix}_{slug}"
     return slug
@@ -1032,12 +1041,12 @@ def build_report(payload: Dict[str, Any]) -> str:
 def write_outputs(config: Config, payload: Dict[str, Any]) -> None:
     if not config.execute_readonly or not config.write_outputs:
         raise SafetyError("output writing requires --execute-readonly and --write-outputs")
+    if config.overwrite_existing:
+        raise SafetyError("--overwrite-existing is disabled; output paths must be new")
     outputs = (config.output_json, config.output_markdown)
     for output in outputs:
-        if output.exists() and not config.overwrite_existing:
-            raise SafetyError(f"output appeared after validation; refusing overwrite: {output}")
-        if output.exists() and not output.is_file():
-            raise SafetyError(f"output exists but is not a regular file: {output}")
+        if os.path.lexists(output):
+            raise SafetyError(f"output appeared after validation; new path required: {output}")
 
     content = {
         config.output_json: json.dumps(payload, ensure_ascii=False, indent=2) + "\n",
@@ -1045,10 +1054,7 @@ def write_outputs(config: Config, payload: Dict[str, Any]) -> None:
     }
     transaction_id = uuid.uuid4().hex
     staged: Dict[Path, Path] = {}
-    backups: Dict[Path, Path] = {}
-    original_outputs: Set[Path] = set()
-    published: Set[Path] = set()
-    rollback_failed: Set[Path] = set()
+    published: Dict[Path, Tuple[int, int]] = {}
     publish_error: Optional[BaseException] = None
     rollback_errors: List[str] = []
     cleanup_errors: List[str] = []
@@ -1068,44 +1074,41 @@ def write_outputs(config: Config, payload: Dict[str, Any]) -> None:
         # Re-establish the pair baseline only after both staged payloads are
         # durable, immediately before the first destination mutation.
         for output in outputs:
-            if output.exists():
-                if not output.is_file():
-                    raise SafetyError(f"output exists but is not a regular file: {output}")
-                if not config.overwrite_existing:
-                    raise SafetyError(
-                        f"output appeared before publication; refusing overwrite: {output}"
-                    )
-                original_outputs.add(output)
+            resolved_output = _resolve(output)
+            resolved_stage = _resolve(staged[output])
+            if resolved_output != output or not _is_within(resolved_output, config.repo_root):
+                raise SafetyError(f"output containment changed before publication: {output}")
+            if not _is_within(resolved_stage, config.repo_root):
+                raise SafetyError(f"staged output escaped --repo-root: {staged[output]}")
+            if os.path.lexists(output):
+                raise SafetyError(f"output appeared before publication; new path required: {output}")
 
-        # Preserve the prior pair, then publish each staged file atomically.
-        if config.overwrite_existing:
-            for output in outputs:
-                if output in original_outputs:
-                    backup = output.with_name(f".{output.name}.{transaction_id}.rollback")
-                    os.replace(output, backup)
-                    backups[output] = backup
+        # Publish new paths with atomic no-clobber links. This is staged,
+        # pair-consistent publication with compensating rollback, not a literal
+        # cross-directory transaction.
         for output in outputs:
-            if config.overwrite_existing:
-                os.replace(staged[output], output)
-            else:
-                # Hard-link creation is atomic and fails rather than clobbering
-                # a destination that appears after the baseline check.
-                os.link(staged[output], output)
-            published.add(output)
-            if not config.overwrite_existing:
-                staged[output].unlink()
+            stage_stat = os.stat(staged[output], follow_symlinks=False)
+            os.link(staged[output], output)
+            published[output] = (stage_stat.st_dev, stage_stat.st_ino)
+            staged[output].unlink()
 
     except BaseException as error:
         publish_error = error
         for output in reversed(outputs):
-            backup = backups.get(output)
             try:
-                if backup is not None and backup.exists():
-                    os.replace(backup, output)
-                elif output in published and output not in original_outputs:
-                    output.unlink(missing_ok=True)
+                if output in published:
+                    try:
+                        current_stat = os.stat(output, follow_symlinks=False)
+                    except FileNotFoundError:
+                        continue
+                    current_identity = (current_stat.st_dev, current_stat.st_ino)
+                    if current_identity != published[output]:
+                        rollback_errors.append(
+                            f"{output}: ownership changed; refusing rollback unlink"
+                        )
+                        continue
+                    output.unlink()
             except OSError as rollback_error:
-                rollback_failed.add(output)
                 rollback_errors.append(f"{output}: {rollback_error}")
     finally:
         for stage in staged.values():
@@ -1113,13 +1116,6 @@ def write_outputs(config: Config, payload: Dict[str, Any]) -> None:
                 stage.unlink(missing_ok=True)
             except OSError as cleanup_error:
                 cleanup_errors.append(f"{stage}: {cleanup_error}")
-        for output, backup in backups.items():
-            if output in rollback_failed:
-                continue
-            try:
-                backup.unlink(missing_ok=True)
-            except OSError as cleanup_error:
-                cleanup_errors.append(f"{backup}: {cleanup_error}")
 
     if publish_error is not None:
         detail = f"output pair publication failed; rollback attempted: {publish_error}"
@@ -1130,7 +1126,7 @@ def write_outputs(config: Config, payload: Dict[str, Any]) -> None:
         raise SafetyError(detail) from publish_error
     if cleanup_errors:
         raise SafetyError(
-            "output pair published but transaction cleanup failed: "
+            "new output pair published but transaction cleanup failed: "
             + "; ".join(cleanup_errors)
         )
 

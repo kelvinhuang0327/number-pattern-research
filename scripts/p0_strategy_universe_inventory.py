@@ -40,6 +40,8 @@ HEURISTIC_CAVEAT = (
     "This inventory is heuristic evidence, not governance ground truth; "
     "classifications require independent review."
 )
+STAGE_REQUIRE_COMPLETE = "REQUIRE_COMPLETE_FOR_PUBLICATION"
+STAGE_OWNERSHIP_ONLY = "OWNERSHIP_ONLY_FOR_FAILURE_CLEANUP"
 
 LIFECYCLE_ORDER = [
     "PRODUCTION",
@@ -165,6 +167,37 @@ class EntryState:
     rsm_referenced: bool = False
     notes: Set[str] = dataclasses.field(default_factory=set)
     aliases: Set[str] = dataclasses.field(default_factory=set)
+
+
+@dataclasses.dataclass(frozen=True)
+class StagedFileFacts:
+    output: Path
+    parent_fd: int
+    staged_name: str
+    staged_fd: int
+    expected_final_name: str
+    creation_dev: int
+    creation_ino: int
+    expected_size: int
+
+    @property
+    def creation_identity(self) -> Tuple[int, int]:
+        return self.creation_dev, self.creation_ino
+
+
+@dataclasses.dataclass
+class StagedFileState:
+    facts: StagedFileFacts
+    created: bool = True
+    descriptor_open: bool = True
+    payload_complete: bool = False
+    final_link_succeeded: bool = False
+    final_identity_verified: bool = False
+    published_identity: Optional[Tuple[int, int]] = None
+    staged_name_expected_to_remain: bool = True
+    staged_name_intentionally_removed: bool = False
+    cleanup_complete: bool = False
+    cleanup_conflict: bool = False
 
 
 def build_parser() -> argparse.ArgumentParser:
@@ -1060,13 +1093,7 @@ def write_outputs(config: Config, payload: Dict[str, Any]) -> None:
     parent_fds: Dict[Path, int] = {}
     parent_paths: Dict[Path, Path] = {}
     parent_identities: Dict[Path, Tuple[int, int]] = {}
-    staged_names: Dict[Path, str] = {}
-    staged_fds: Dict[Path, int] = {}
-    staged_identities: Dict[Path, Tuple[int, int]] = {}
-    staged_created: Set[Path] = set()
-    staged_intentionally_removed: Set[Path] = set()
-    staged_cleanup_complete: Set[Path] = set()
-    published: Dict[Path, Tuple[int, int]] = {}
+    stage_states: Dict[Path, StagedFileState] = {}
     repo_path: Optional[Path] = None
     repo_identity: Optional[Tuple[int, int]] = None
     publish_error: Optional[BaseException] = None
@@ -1083,24 +1110,54 @@ def write_outputs(config: Config, payload: Dict[str, Any]) -> None:
             return False
         return True
 
-    def _validate_staged_entry(output: Path) -> Tuple[int, int]:
-        parent_fd = parent_fds[output]
-        stage_name = staged_names[output]
-        captured_identity = staged_identities[output]
-        descriptor_identity = _identity(os.fstat(staged_fds[output]))
+    def _validate_staged_entry(
+        stage: StagedFileState, *, mode: str
+    ) -> Tuple[int, int]:
+        if mode not in {STAGE_REQUIRE_COMPLETE, STAGE_OWNERSHIP_ONLY}:
+            raise SafetyError(f"invalid staged validation mode: {mode}")
+        if not stage.created or not stage.descriptor_open:
+            raise SafetyError(
+                f"staged lifecycle conflict; descriptor is not retained: "
+                f"{stage.facts.output}"
+            )
+        facts = stage.facts
+        descriptor_metadata = os.fstat(facts.staged_fd)
+        descriptor_identity = _identity(descriptor_metadata)
         try:
-            entry_identity = _identity(
-                os.stat(stage_name, dir_fd=parent_fd, follow_symlinks=False)
+            entry_metadata = os.stat(
+                facts.staged_name,
+                dir_fd=facts.parent_fd,
+                follow_symlinks=False,
             )
         except FileNotFoundError as error:
             raise SafetyError(
-                f"staged entry ownership conflict; entry disappeared: {output}"
+                f"staged entry ownership conflict; entry disappeared: {facts.output}"
             ) from error
-        if descriptor_identity != captured_identity or entry_identity != captured_identity:
+        entry_identity = _identity(entry_metadata)
+        if (
+            not stat.S_ISREG(descriptor_metadata.st_mode)
+            or not stat.S_ISREG(entry_metadata.st_mode)
+            or descriptor_identity != facts.creation_identity
+            or entry_identity != facts.creation_identity
+        ):
             raise SafetyError(
-                f"staged entry ownership conflict; identity changed: {output}"
+                f"staged entry ownership conflict; type or identity changed: {facts.output}"
             )
-        return captured_identity
+        if mode == STAGE_REQUIRE_COMPLETE:
+            if not stage.payload_complete:
+                raise SafetyError(
+                    f"staged payload completeness conflict; payload is incomplete: "
+                    f"{facts.output}"
+                )
+            if (
+                descriptor_metadata.st_size != facts.expected_size
+                or entry_metadata.st_size != facts.expected_size
+            ):
+                raise SafetyError(
+                    f"staged payload completeness conflict; byte size changed: "
+                    f"{facts.output}"
+                )
+        return facts.creation_identity
 
     def _validate_parent_anchors(*, require_final_absent: bool) -> None:
         if repo_path is None or repo_identity is None:
@@ -1178,77 +1235,116 @@ def write_outputs(config: Config, payload: Dict[str, Any]) -> None:
                 | getattr(os, "O_NOFOLLOW", 0)
             )
             stage_fd = os.open(stage_name, stage_flags, 0o600, dir_fd=parent_fd)
-            staged_names[output] = stage_name
-            staged_fds[output] = stage_fd
-            staged_created.add(output)
             stage_metadata = os.fstat(stage_fd)
+            stage = StagedFileState(
+                facts=StagedFileFacts(
+                    output=output,
+                    parent_fd=parent_fd,
+                    staged_name=stage_name,
+                    staged_fd=stage_fd,
+                    expected_final_name=output.name,
+                    creation_dev=stage_metadata.st_dev,
+                    creation_ino=stage_metadata.st_ino,
+                    expected_size=len(serialized_content[output]),
+                )
+            )
+            stage_states[output] = stage
             if not stat.S_ISREG(stage_metadata.st_mode):
                 raise SafetyError(f"staged output is not a regular file: {output}")
-            staged_identities[output] = _identity(stage_metadata)
             expected_payload = serialized_content[output]
             with os.fdopen(os.dup(stage_fd), "wb") as target:
                 bytes_written = target.write(expected_payload)
-                if bytes_written != len(expected_payload):
+                if bytes_written != stage.facts.expected_size:
                     raise SafetyError(f"staged output write was incomplete: {output}")
                 target.flush()
                 os.fsync(target.fileno())
             post_write_metadata = os.fstat(stage_fd)
-            if _identity(post_write_metadata) != staged_identities[output]:
-                raise SafetyError(f"staged descriptor identity changed: {output}")
-            if post_write_metadata.st_size != len(expected_payload):
-                raise SafetyError(f"staged output byte size mismatch: {output}")
+            if (
+                not stat.S_ISREG(post_write_metadata.st_mode)
+                or _identity(post_write_metadata) != stage.facts.creation_identity
+                or post_write_metadata.st_size != stage.facts.expected_size
+            ):
+                raise SafetyError(
+                    f"staged payload completeness conflict after fsync: {output}"
+                )
+            stage.payload_complete = True
 
         # Re-establish the pair baseline only after both staged payloads are
         # durable, immediately before the first destination mutation.
+        if len(stage_states) != len(outputs) or not all(
+            stage.payload_complete for stage in stage_states.values()
+        ):
+            raise SafetyError("both staged payloads must be complete before publication")
         _validate_parent_anchors(require_final_absent=True)
         for output in outputs:
-            _validate_staged_entry(output)
+            _validate_staged_entry(
+                stage_states[output], mode=STAGE_REQUIRE_COMPLETE
+            )
 
         # Publish through anchored directory descriptors. Both staged names are
         # retained until both no-clobber links succeed. This is staged,
         # pair-consistent publication with compensating rollback, not literal
         # two-file transaction atomicity.
         for output in outputs:
-            parent_fd = parent_fds[output]
-            stage_name = staged_names[output]
-            expected_stage_identity = _validate_staged_entry(output)
+            stage = stage_states[output]
+            facts = stage.facts
+            expected_stage_identity = _validate_staged_entry(
+                stage, mode=STAGE_REQUIRE_COMPLETE
+            )
             os.link(
-                stage_name,
-                output.name,
-                src_dir_fd=parent_fd,
-                dst_dir_fd=parent_fd,
+                facts.staged_name,
+                facts.expected_final_name,
+                src_dir_fd=facts.parent_fd,
+                dst_dir_fd=facts.parent_fd,
                 follow_symlinks=False,
             )
-            final_identity = _identity(
-                os.stat(output.name, dir_fd=parent_fd, follow_symlinks=False)
+            stage.final_link_succeeded = True
+            final_metadata = os.stat(
+                facts.expected_final_name,
+                dir_fd=facts.parent_fd,
+                follow_symlinks=False,
             )
-            if final_identity != expected_stage_identity:
+            final_identity = _identity(final_metadata)
+            if (
+                not stat.S_ISREG(final_metadata.st_mode)
+                or final_identity != expected_stage_identity
+            ):
                 raise SafetyError(f"final link does not match staged identity: {output}")
-            published[output] = final_identity
-            _validate_staged_entry(output)
+            stage.published_identity = final_identity
+            stage.final_identity_verified = True
+            _validate_staged_entry(stage, mode=STAGE_REQUIRE_COMPLETE)
 
         # Detect namespace replacement that raced with the link operations and
         # compensate through the still-open parent descriptors if necessary.
         _validate_parent_anchors(require_final_absent=False)
         for output in outputs:
-            expected_stage_identity = _validate_staged_entry(output)
-            final_identity = _identity(
-                os.stat(
-                    output.name,
-                    dir_fd=parent_fds[output],
-                    follow_symlinks=False,
-                )
+            stage = stage_states[output]
+            facts = stage.facts
+            expected_stage_identity = _validate_staged_entry(
+                stage, mode=STAGE_REQUIRE_COMPLETE
             )
+            final_metadata = os.stat(
+                facts.expected_final_name,
+                dir_fd=facts.parent_fd,
+                follow_symlinks=False,
+            )
+            final_identity = _identity(final_metadata)
             if (
-                final_identity != published[output]
+                not stat.S_ISREG(final_metadata.st_mode)
+                or not stage.final_link_succeeded
+                or not stage.final_identity_verified
+                or final_identity != stage.published_identity
                 or final_identity != expected_stage_identity
             ):
                 raise SafetyError(f"published output ownership changed: {output}")
 
         for output in outputs:
-            _validate_staged_entry(output)
-            os.unlink(staged_names[output], dir_fd=parent_fds[output])
-            staged_intentionally_removed.add(output)
+            stage = stage_states[output]
+            facts = stage.facts
+            _validate_staged_entry(stage, mode=STAGE_REQUIRE_COMPLETE)
+            os.unlink(facts.staged_name, dir_fd=facts.parent_fd)
+            stage.staged_name_intentionally_removed = True
+            stage.staged_name_expected_to_remain = False
 
         _validate_parent_anchors(require_final_absent=False)
 
@@ -1256,85 +1352,126 @@ def write_outputs(config: Config, payload: Dict[str, Any]) -> None:
         publish_error = error
         for output in reversed(outputs):
             try:
-                if output in published:
-                    parent_fd = parent_fds[output]
+                stage = stage_states.get(output)
+                if stage is not None and stage.final_link_succeeded:
+                    facts = stage.facts
                     try:
                         current_stat = os.stat(
-                            output.name,
-                            dir_fd=parent_fd,
+                            facts.expected_final_name,
+                            dir_fd=facts.parent_fd,
                             follow_symlinks=False,
                         )
                     except FileNotFoundError:
                         continue
                     current_identity = (current_stat.st_dev, current_stat.st_ino)
-                    if current_identity != published[output]:
+                    if (
+                        not stat.S_ISREG(current_stat.st_mode)
+                        or current_identity != facts.creation_identity
+                    ):
                         rollback_errors.append(
                             f"{output}: ownership changed; refusing rollback unlink"
                         )
                         continue
-                    os.unlink(output.name, dir_fd=parent_fd)
+                    os.unlink(facts.expected_final_name, dir_fd=facts.parent_fd)
             except OSError as rollback_error:
                 rollback_errors.append(f"{output}: {rollback_error}")
     finally:
-        for output, stage_name in staged_names.items():
-            parent_fd = parent_fds.get(output)
-            captured_identity = staged_identities.get(output)
-            if parent_fd is None:
-                continue
-            if output not in staged_created:
-                cleanup_errors.append(
-                    f"{output.parent / stage_name}: staged creation state unavailable; "
-                    "refusing cleanup unlink"
-                )
-                continue
-            if captured_identity is None:
-                cleanup_errors.append(
-                    f"{output.parent / stage_name}: staged identity unavailable; "
-                    "refusing cleanup unlink"
-                )
-                continue
+        for stage in stage_states.values():
+            facts = stage.facts
+            display_path = facts.output.parent / facts.staged_name
             try:
                 try:
-                    current_identity = _identity(
-                        os.stat(stage_name, dir_fd=parent_fd, follow_symlinks=False)
+                    os.stat(
+                        facts.staged_name,
+                        dir_fd=facts.parent_fd,
+                        follow_symlinks=False,
                     )
                 except FileNotFoundError:
-                    if output in staged_intentionally_removed:
-                        staged_cleanup_complete.add(output)
+                    if (
+                        stage.staged_name_intentionally_removed
+                        and not stage.staged_name_expected_to_remain
+                    ):
+                        stage.cleanup_complete = True
                         continue
+                    stage.cleanup_conflict = True
                     cleanup_errors.append(
-                        f"{output.parent / stage_name}: staged entry ownership conflict; "
+                        f"{display_path}: staged entry ownership conflict; "
                         "entry disappeared unexpectedly"
                     )
                     continue
-                if current_identity != captured_identity:
-                    cleanup_errors.append(
-                        f"{output.parent / stage_name}: ownership changed; "
-                        "refusing cleanup unlink"
-                    )
-                    continue
+                _validate_staged_entry(
+                    stage,
+                    mode=(
+                        STAGE_REQUIRE_COMPLETE
+                        if publish_error is None
+                        else STAGE_OWNERSHIP_ONLY
+                    ),
+                )
                 try:
-                    os.unlink(stage_name, dir_fd=parent_fd)
+                    os.unlink(facts.staged_name, dir_fd=facts.parent_fd)
                 except FileNotFoundError:
+                    if (
+                        stage.staged_name_intentionally_removed
+                        and not stage.staged_name_expected_to_remain
+                    ):
+                        stage.cleanup_complete = True
+                        continue
+                    stage.cleanup_conflict = True
                     cleanup_errors.append(
-                        f"{output.parent / stage_name}: staged entry ownership conflict; "
+                        f"{display_path}: staged entry ownership conflict; "
                         "entry disappeared before cleanup unlink"
                     )
                     continue
-                staged_intentionally_removed.add(output)
-                staged_cleanup_complete.add(output)
-            except OSError as cleanup_error:
-                cleanup_errors.append(f"{output.parent / stage_name}: {cleanup_error}")
-        for output, stage_fd in staged_fds.items():
+                stage.staged_name_intentionally_removed = True
+                stage.staged_name_expected_to_remain = False
+                stage.cleanup_complete = True
+            except (OSError, SafetyError) as cleanup_error:
+                stage.cleanup_conflict = True
+                cleanup_errors.append(f"{display_path}: {cleanup_error}")
+        for stage in stage_states.values():
             try:
-                os.close(stage_fd)
+                os.close(stage.facts.staged_fd)
+                stage.descriptor_open = False
             except OSError as cleanup_error:
-                cleanup_errors.append(f"{output}: staged close failed: {cleanup_error}")
+                cleanup_errors.append(
+                    f"{stage.facts.output}: staged close failed: {cleanup_error}"
+                )
         for output, parent_fd in parent_fds.items():
             try:
                 os.close(parent_fd)
             except OSError as cleanup_error:
                 cleanup_errors.append(f"{output.parent}: close failed: {cleanup_error}")
+        for stage in stage_states.values():
+            facts = stage.facts
+            if stage.descriptor_open:
+                cleanup_errors.append(
+                    f"{facts.output}: staged descriptor remained open at final invariant"
+                )
+            if stage.cleanup_complete == stage.cleanup_conflict:
+                if not stage.cleanup_complete:
+                    stage.cleanup_conflict = True
+                cleanup_errors.append(
+                    f"{facts.output.parent / facts.staged_name}: invalid final "
+                    "staged-cleanup lifecycle state"
+                )
+            if (
+                stage.staged_name_intentionally_removed
+                and not stage.cleanup_complete
+            ):
+                cleanup_errors.append(
+                    f"{facts.output.parent / facts.staged_name}: intentional staged "
+                    "removal did not reach cleanup-complete state"
+                )
+        if publish_error is None and (
+            len(stage_states) != len(outputs)
+            or not all(
+                stage.final_link_succeeded and stage.final_identity_verified
+                for stage in stage_states.values()
+            )
+        ):
+            cleanup_errors.append(
+                "published output pair lacks complete final-link identity state"
+            )
 
     if publish_error is not None:
         detail = f"output pair publication failed; rollback attempted: {publish_error}"

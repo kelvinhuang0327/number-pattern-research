@@ -74,17 +74,27 @@ ALIAS_TO_CANONICAL = {
     "大樂透 Deviation 2注": "biglotto_deviation_2bet",
     "今彩539 F4 Cold": "daily539_f4cold",
     "今彩539 Markov Cold": "daily539_markov_cold",
-    "TS3+Markov(w=30)+頻率正交 5注": "biglotto_5bet_ts3_markov_freq",
-    "PP3+頻率正交 5注": "powerlotto_5bet_orthogonal",
+    "TS3+Markov(w=30)+頻率正交 5注": "biglotto_ts3_markov_freq_5bet",
+    "PP3+頻率正交 5注": "power_orthogonal_5bet",
     "TS3+Regime 3注": "ts3_regime_3bet",
+    "3bet_triple_strike_v2": "biglotto_triple_strike",
+    "biglotto_3bet_triple_strike_v2": "biglotto_triple_strike",
+    "Triple Strike v2 3注": "biglotto_triple_strike",
     "biglotto_triple_strike": "biglotto_triple_strike",
+    "biglotto_2bet_deviation_complement": "biglotto_deviation_2bet",
+    "biglotto_4bet_ts3_markov_w30": "biglotto_ts3_markov_4bet_w30",
+    "biglotto_5bet_ts3_markov_freq": "biglotto_ts3_markov_freq_5bet",
+    "TS3+Markov(w=30) 4注": "biglotto_ts3_markov_4bet_w30",
+    "daily539_5bet_fourier4_cold": "daily539_f4cold_5bet",
+    "daily_539_5bet_fourier4_cold": "daily539_f4cold_5bet",
+    "powerlotto_2bet_fourier_rhythm": "power_fourier_rhythm_2bet",
+    "power_lotto_2bet_fourier_rhythm": "power_fourier_rhythm_2bet",
+    "powerlotto_3bet_power_precision": "power_precision_3bet",
+    "Power Precision (F2+Echo/Cold) 3注": "power_precision_3bet",
+    "powerlotto_5bet_orthogonal": "power_orthogonal_5bet",
     "power_precision_3bet": "power_precision_3bet",
-}
-
-# Strategy packages predate the replay registry naming contract. Keep the
-# package path-to-ID relationship explicit so a package and its corresponding
-# registry entry contribute evidence to one inventory row.
-STRATEGY_PACKAGE_REGISTRY_IDS = {
+    # Exact package-path aliases are intentional where directory names predate
+    # registry IDs or are ambiguous without their lottery context.
     "strategies/big_lotto/2bet_deviation_complement": "biglotto_deviation_2bet",
     "strategies/big_lotto/3bet_triple_strike_v2": "biglotto_triple_strike",
     "strategies/big_lotto/4bet_ts3_markov_w30": "biglotto_ts3_markov_4bet_w30",
@@ -307,20 +317,40 @@ def is_strategy_like(text: str) -> bool:
 
 def canonicalize(raw: str, source_hint: str = "") -> str:
     raw_norm = raw.strip()
-    if raw_norm in ALIAS_TO_CANONICAL:
-        return ALIAS_TO_CANONICAL[raw_norm]
+    source_norm = source_hint.strip()
+    strategy_yaml_suffix = "/strategy.yaml"
+    source_parent = (
+        source_norm[:-len(strategy_yaml_suffix)]
+        if source_norm.endswith(strategy_yaml_suffix)
+        else source_norm
+    )
+    for alias in (raw_norm, source_norm, source_parent):
+        if alias in ALIAS_TO_CANONICAL:
+            return ALIAS_TO_CANONICAL[alias]
     if raw_norm in LESSON_ALIAS_HINTS:
         return LESSON_ALIAS_HINTS[raw_norm]
     slug = slugify(raw_norm)
-    if source_hint.startswith("strategies/"):
-        parts = source_hint.split("/")
+    if slug in ALIAS_TO_CANONICAL:
+        return ALIAS_TO_CANONICAL[slug]
+    if source_norm.startswith("strategies/"):
+        parts = source_norm.split("/")
         if len(parts) > 1:
-            prefix = {
-                "big_lotto": "biglotto",
-                "power_lotto": "powerlotto",
-                "daily_539": "daily539",
+            prefix_spec = {
+                "big_lotto": ("biglotto", ("biglotto", "big_lotto")),
+                "power_lotto": ("powerlotto", ("powerlotto", "power_lotto")),
+                "daily_539": ("daily539", ("daily539", "daily_539")),
             }.get(parts[1])
-            if prefix and not slug.startswith(prefix + "_"):
+            if prefix_spec:
+                prefix, equivalents = prefix_spec
+                for equivalent in equivalents:
+                    marker = equivalent + "_"
+                    if slug == equivalent:
+                        slug = prefix
+                        break
+                    if slug.startswith(marker):
+                        slug = prefix + "_" + slug[len(marker):]
+                        break
+            if prefix_spec and slug != prefix and not slug.startswith(prefix + "_"):
                 return f"{prefix}_{slug}"
     return slug
 
@@ -476,7 +506,7 @@ def collect_registry(entries: Dict[str, EntryState], repo_root: Path) -> None:
         sid_match = re.search(r'strategy_id="([^"]+)"', block)
         if not sid_match:
             continue
-        sid = sid_match.group(1)
+        sid = canonicalize(sid_match.group(1), str(path.relative_to(repo_root)))
         name_match = re.search(r'strategy_name="([^"]+)"', block)
         status_match = re.search(r'status="([^"]+)"', block)
         status = status_match.group(1) if status_match else "UNKNOWN"
@@ -499,10 +529,7 @@ def collect_strategy_packages(entries: Dict[str, EntryState], repo_root: Path) -
             continue
         rel = str(path.relative_to(repo_root))
         raw_id = str(data.get("strategy_id") or path.parent.name)
-        package_key = str(path.parent.relative_to(repo_root))
-        sid = STRATEGY_PACKAGE_REGISTRY_IDS.get(
-            package_key, canonicalize(raw_id, rel)
-        )
+        sid = canonicalize(raw_id, rel)
         status = str(data.get("status") or "UNKNOWN").split()[0].upper()
         lottery = str(data.get("lottery") or data.get("lottery_type") or infer_lottery(rel))
         sibling_names = (
@@ -523,7 +550,7 @@ def collect_strategy_packages(entries: Dict[str, EntryState], repo_root: Path) -
             lottery=lottery,
             historical_source="simulation_log" if has_history else "none",
             note=f"strategy_package_status:{status}",
-            alias=raw_id if sid != canonicalize(raw_id, rel) else None,
+            alias=raw_id if slugify(raw_id) != sid else None,
         )
         for sibling_name in sibling_names:
             sibling = path.parent / sibling_name
@@ -1019,7 +1046,12 @@ def write_outputs(config: Config, payload: Dict[str, Any]) -> None:
     transaction_id = uuid.uuid4().hex
     staged: Dict[Path, Path] = {}
     backups: Dict[Path, Path] = {}
-    original_outputs = {output for output in outputs if output.exists()}
+    original_outputs: Set[Path] = set()
+    published: Set[Path] = set()
+    rollback_failed: Set[Path] = set()
+    publish_error: Optional[BaseException] = None
+    rollback_errors: List[str] = []
+    cleanup_errors: List[str] = []
 
     try:
         # Both complete files must be durable in their destination directories
@@ -1033,36 +1065,74 @@ def write_outputs(config: Config, payload: Dict[str, Any]) -> None:
                 target.flush()
                 os.fsync(target.fileno())
 
-        # Preserve the prior pair, then publish each staged file atomically.
+        # Re-establish the pair baseline only after both staged payloads are
+        # durable, immediately before the first destination mutation.
         for output in outputs:
-            if output in original_outputs:
-                backup = output.with_name(f".{output.name}.{transaction_id}.rollback")
-                os.replace(output, backup)
-                backups[output] = backup
-        for output in outputs:
-            os.replace(staged[output], output)
+            if output.exists():
+                if not output.is_file():
+                    raise SafetyError(f"output exists but is not a regular file: {output}")
+                if not config.overwrite_existing:
+                    raise SafetyError(
+                        f"output appeared before publication; refusing overwrite: {output}"
+                    )
+                original_outputs.add(output)
 
-    except BaseException as publish_error:
-        rollback_errors: List[str] = []
+        # Preserve the prior pair, then publish each staged file atomically.
+        if config.overwrite_existing:
+            for output in outputs:
+                if output in original_outputs:
+                    backup = output.with_name(f".{output.name}.{transaction_id}.rollback")
+                    os.replace(output, backup)
+                    backups[output] = backup
+        for output in outputs:
+            if config.overwrite_existing:
+                os.replace(staged[output], output)
+            else:
+                # Hard-link creation is atomic and fails rather than clobbering
+                # a destination that appears after the baseline check.
+                os.link(staged[output], output)
+            published.add(output)
+            if not config.overwrite_existing:
+                staged[output].unlink()
+
+    except BaseException as error:
+        publish_error = error
         for output in reversed(outputs):
             backup = backups.get(output)
             try:
                 if backup is not None and backup.exists():
                     os.replace(backup, output)
-                elif output not in original_outputs and output.exists():
-                    output.unlink()
+                elif output in published and output not in original_outputs:
+                    output.unlink(missing_ok=True)
             except OSError as rollback_error:
+                rollback_failed.add(output)
                 rollback_errors.append(f"{output}: {rollback_error}")
-        detail = f"output pair publication failed and was rolled back: {publish_error}"
-        if rollback_errors:
-            detail += "; rollback errors: " + "; ".join(rollback_errors)
-        raise SafetyError(detail) from publish_error
-    else:
-        for backup in backups.values():
-            backup.unlink(missing_ok=True)
     finally:
         for stage in staged.values():
-            stage.unlink(missing_ok=True)
+            try:
+                stage.unlink(missing_ok=True)
+            except OSError as cleanup_error:
+                cleanup_errors.append(f"{stage}: {cleanup_error}")
+        for output, backup in backups.items():
+            if output in rollback_failed:
+                continue
+            try:
+                backup.unlink(missing_ok=True)
+            except OSError as cleanup_error:
+                cleanup_errors.append(f"{backup}: {cleanup_error}")
+
+    if publish_error is not None:
+        detail = f"output pair publication failed; rollback attempted: {publish_error}"
+        if rollback_errors:
+            detail += "; rollback errors: " + "; ".join(rollback_errors)
+        if cleanup_errors:
+            detail += "; cleanup errors: " + "; ".join(cleanup_errors)
+        raise SafetyError(detail) from publish_error
+    if cleanup_errors:
+        raise SafetyError(
+            "output pair published but transaction cleanup failed: "
+            + "; ".join(cleanup_errors)
+        )
 
 
 def plan_summary(config: Config) -> Dict[str, Any]:

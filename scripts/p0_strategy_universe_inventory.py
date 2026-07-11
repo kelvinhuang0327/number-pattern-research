@@ -1058,6 +1058,8 @@ def write_outputs(config: Config, payload: Dict[str, Any]) -> None:
     parent_paths: Dict[Path, Path] = {}
     parent_identities: Dict[Path, Tuple[int, int]] = {}
     staged_names: Dict[Path, str] = {}
+    staged_fds: Dict[Path, int] = {}
+    staged_identities: Dict[Path, Tuple[int, int]] = {}
     published: Dict[Path, Tuple[int, int]] = {}
     repo_path: Optional[Path] = None
     repo_identity: Optional[Tuple[int, int]] = None
@@ -1074,6 +1076,21 @@ def write_outputs(config: Config, payload: Dict[str, Any]) -> None:
         except FileNotFoundError:
             return False
         return True
+
+    def _validate_staged_entry(output: Path) -> Tuple[int, int]:
+        parent_fd = parent_fds[output]
+        stage_name = staged_names[output]
+        captured_identity = staged_identities[output]
+        descriptor_identity = _identity(os.fstat(staged_fds[output]))
+        try:
+            entry_identity = _identity(
+                os.stat(stage_name, dir_fd=parent_fd, follow_symlinks=False)
+            )
+        except FileNotFoundError as error:
+            raise SafetyError(f"staged entry disappeared: {output}") from error
+        if descriptor_identity != captured_identity or entry_identity != captured_identity:
+            raise SafetyError(f"staged entry identity changed: {output}")
+        return captured_identity
 
     def _validate_parent_anchors(*, require_final_absent: bool) -> None:
         if repo_path is None or repo_identity is None:
@@ -1151,14 +1168,23 @@ def write_outputs(config: Config, payload: Dict[str, Any]) -> None:
             )
             stage_fd = os.open(stage_name, stage_flags, 0o666, dir_fd=parent_fd)
             staged_names[output] = stage_name
-            with os.fdopen(stage_fd, "w", encoding="utf-8") as target:
+            staged_fds[output] = stage_fd
+            stage_metadata = os.fstat(stage_fd)
+            if not stat.S_ISREG(stage_metadata.st_mode):
+                raise SafetyError(f"staged output is not a regular file: {output}")
+            staged_identities[output] = _identity(stage_metadata)
+            with os.fdopen(os.dup(stage_fd), "w", encoding="utf-8") as target:
                 target.write(content[output])
                 target.flush()
                 os.fsync(target.fileno())
+            if _identity(os.fstat(stage_fd)) != staged_identities[output]:
+                raise SafetyError(f"staged descriptor identity changed: {output}")
 
         # Re-establish the pair baseline only after both staged payloads are
         # durable, immediately before the first destination mutation.
         _validate_parent_anchors(require_final_absent=True)
+        for output in outputs:
+            _validate_staged_entry(output)
 
         # Publish through anchored directory descriptors. Both staged names are
         # retained until both no-clobber links succeed. This is staged,
@@ -1167,9 +1193,7 @@ def write_outputs(config: Config, payload: Dict[str, Any]) -> None:
         for output in outputs:
             parent_fd = parent_fds[output]
             stage_name = staged_names[output]
-            stage_metadata = os.stat(
-                stage_name, dir_fd=parent_fd, follow_symlinks=False
-            )
+            expected_stage_identity = _validate_staged_entry(output)
             os.link(
                 stage_name,
                 output.name,
@@ -1177,12 +1201,19 @@ def write_outputs(config: Config, payload: Dict[str, Any]) -> None:
                 dst_dir_fd=parent_fd,
                 follow_symlinks=False,
             )
-            published[output] = _identity(stage_metadata)
+            final_identity = _identity(
+                os.stat(output.name, dir_fd=parent_fd, follow_symlinks=False)
+            )
+            if final_identity != expected_stage_identity:
+                raise SafetyError(f"final link does not match staged identity: {output}")
+            published[output] = final_identity
+            _validate_staged_entry(output)
 
         # Detect namespace replacement that raced with the link operations and
         # compensate through the still-open parent descriptors if necessary.
         _validate_parent_anchors(require_final_absent=False)
         for output in outputs:
+            expected_stage_identity = _validate_staged_entry(output)
             final_identity = _identity(
                 os.stat(
                     output.name,
@@ -1190,10 +1221,14 @@ def write_outputs(config: Config, payload: Dict[str, Any]) -> None:
                     follow_symlinks=False,
                 )
             )
-            if final_identity != published[output]:
+            if (
+                final_identity != published[output]
+                or final_identity != expected_stage_identity
+            ):
                 raise SafetyError(f"published output ownership changed: {output}")
 
         for output in outputs:
+            _validate_staged_entry(output)
             os.unlink(staged_names[output], dir_fd=parent_fds[output])
 
         _validate_parent_anchors(require_final_absent=False)
@@ -1224,14 +1259,36 @@ def write_outputs(config: Config, payload: Dict[str, Any]) -> None:
     finally:
         for output, stage_name in staged_names.items():
             parent_fd = parent_fds.get(output)
+            captured_identity = staged_identities.get(output)
             if parent_fd is None:
                 continue
+            if captured_identity is None:
+                cleanup_errors.append(
+                    f"{output.parent / stage_name}: staged identity unavailable; "
+                    "refusing cleanup unlink"
+                )
+                continue
             try:
+                try:
+                    current_identity = _identity(
+                        os.stat(stage_name, dir_fd=parent_fd, follow_symlinks=False)
+                    )
+                except FileNotFoundError:
+                    continue
+                if current_identity != captured_identity:
+                    cleanup_errors.append(
+                        f"{output.parent / stage_name}: ownership changed; "
+                        "refusing cleanup unlink"
+                    )
+                    continue
                 os.unlink(stage_name, dir_fd=parent_fd)
-            except FileNotFoundError:
-                pass
             except OSError as cleanup_error:
                 cleanup_errors.append(f"{output.parent / stage_name}: {cleanup_error}")
+        for output, stage_fd in staged_fds.items():
+            try:
+                os.close(stage_fd)
+            except OSError as cleanup_error:
+                cleanup_errors.append(f"{output}: staged close failed: {cleanup_error}")
         for output, parent_fd in parent_fds.items():
             try:
                 os.close(parent_fd)

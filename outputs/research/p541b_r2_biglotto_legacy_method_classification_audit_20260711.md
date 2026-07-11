@@ -15,7 +15,9 @@
 - Schema: `p541b-r2-evidence-v1`
 - Detector: `p541b-r2-detector-v2`
 - Every evidence family publishes `state`, `scope`, `detector_id`, and deterministic `findings`.
+- Every finding publishes separate `resolved_api` and `resolved_syntax` fields plus `imported_module_path`; exactly one resolved field is populated.
 - States are exactly `detected`, `not_detected`, and `unknown`.
+- Scan-status taxonomy (ordered): `complete`, `syntax_error`, `unreadable`, `unsupported`.
 - Read/decode, AST parse, unsupported-structure, provenance, and ambiguous one-hop failures fail closed.
 - Only an exact top-level `__name__ == '__main__'` comparison is a valid guard; it mitigates import-time reachability only.
 
@@ -72,7 +74,7 @@
 
 ## Frozen Provenance
 
-- Generator SHA-256: `d0799ec6f07731dbff28f0c54205d1ee0d4af066d9196711970fb7ac644ef0b8`
+- Generator SHA-256: `0cccda9da05b416f1cc5efb9284a8f9c926b4a24190f272a89908194b6d063b9`
 - Historical P541B JSON blob: `12f1595c96e3f9deddc7a7d2d9549c03144635f0` — verification **PASS**
 - Historical P541B Markdown blob: `3b28e39bfe747c5f196b9aec6610284709466cf8` — verification **PASS**
 - Historical P541A JSON blob: `7557f364160dc09c91a19c07b370cb4b231c0194` — verification **PASS**

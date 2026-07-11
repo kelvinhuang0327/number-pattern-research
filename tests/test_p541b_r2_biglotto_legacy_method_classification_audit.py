@@ -65,6 +65,24 @@ def _one_hop(repo: Path, commit: str, source_path: str):
     return mod.one_hop_transitive_evidence(source_path, raw, repo, commit)
 
 
+def _frozen_analysis(source_path: str):
+    mod = _module()
+    entries = mod.git_tree_entries(REPO_ROOT, mod.FROZEN_SOURCE_COMMIT, [source_path])
+    entry = entries[source_path]
+    raw = mod.git_blob(REPO_ROOT, entry["blob_id"])
+    return mod.analyze_source_bytes(
+        source_path,
+        raw,
+        entry["blob_id"],
+        transitive_evidence=mod.complete_transitive_absence(),
+    )
+
+
+def _generator_source_tree():
+    source = inspect.getsource(_module())
+    return source, ast.parse(source)
+
+
 @pytest.fixture(scope="module")
 def artifact():
     return _module().build_artifact(REPO_ROOT)
@@ -113,10 +131,17 @@ def test_boolean_combination_main_guard_rejected():
     assert _state(result, "valid_main_guard") == "not_detected"
 
 
-def test_comments_and_docstrings_do_not_create_effect_findings():
+def test_comments_do_not_create_executable_effect_findings():
+    result = _analyze(
+        "# sqlite3.connect; subprocess.run; Path('x').write_text('x')\n"
+        "def choose(values):\n    return values[:6]\n"
+    )
+    assert all(_state(result, key) == "not_detected" for key in _module().RISK_EVIDENCE_KEYS)
+
+
+def test_docstrings_do_not_create_executable_effect_findings():
     result = _analyze(
         '"""sqlite3.connect; https://api.example; /Users/demo/file.db"""\n'
-        "# subprocess.run and Path('x').write_text('x')\n"
         "def choose(values):\n    return values[:6]\n"
     )
     assert all(_state(result, key) == "not_detected" for key in _module().RISK_EVIDENCE_KEYS)
@@ -189,6 +214,11 @@ def test_database_operation_read_and_write_are_distinguished():
 
 def test_path_write_text_detected():
     result = _analyze("from pathlib import Path\ndef f():\n    Path('x').write_text('x')\n")
+    assert _state(result, "filesystem_write") == "detected"
+
+
+def test_path_write_bytes_detected():
+    result = _analyze("from pathlib import Path\ndef f():\n    Path('x').write_bytes(b'x')\n")
     assert _state(result, "filesystem_write") == "detected"
 
 
@@ -278,6 +308,21 @@ def test_no_low_risk_result_with_unknown_safety_flag():
     assert result["safety_classification"]["low_risk_eligible"] is False
 
 
+def test_frozen_malformed_main_guard_fixture_is_fail_closed():
+    result = _frozen_analysis("lottery_api/models/biglotto_2bet_final.py")
+    assert _state(result, "valid_main_guard") == "not_detected"
+    assert _state(result, "malformed_main_guard") == "detected"
+    assert _state(result, "database_access") == "detected"
+    assert result["safety_classification"]["low_risk_eligible"] is False
+
+
+def test_frozen_http_backend_fixture_detects_network_activity():
+    result = _frozen_analysis("lottery_api/tools/rolling_backtest_2025.py")
+    assert _state(result, "network_io") == "detected"
+    assert _state(result, "external_service_url") == "detected"
+    assert result["safety_classification"]["low_risk_eligible"] is False
+
+
 def test_one_hop_db_coupled_import_detected(tmp_path):
     repo, commit = _synthetic_repo(
         tmp_path,
@@ -288,7 +333,8 @@ def test_one_hop_db_coupled_import_detected(tmp_path):
     )
     result = _one_hop(repo, commit, "main.py")
     assert result["state"] == "detected"
-    assert result["findings"][0]["imported_module_source"] == "helper.py"
+    assert result["findings"][0]["imported_module_path"] == "helper.py"
+    assert "imported_module_source" not in result["findings"][0]
 
 
 def test_one_hop_clean_import_remains_clean(tmp_path):
@@ -398,6 +444,70 @@ def test_strict_json_rejects_duplicate_and_nonfinite_values():
         mod.strict_json_bytes(b'{"value":NaN}')
 
 
+def test_findings_publish_separate_resolved_api_and_syntax_fields():
+    api = _analyze("import sqlite3\ndef f():\n    sqlite3.connect('x.db')\n")
+    api_finding = api["evidence"]["database_access"]["findings"][0]
+    assert api_finding["resolved_api"] == "sqlite3.connect"
+    assert api_finding["resolved_syntax"] is None
+    assert api_finding["imported_module_path"] is None
+    assert "resolved_api_or_syntax" not in api_finding
+
+    syntax = _analyze("if __name__ == '__main__':\n    pass\n")
+    syntax_finding = syntax["evidence"]["valid_main_guard"]["findings"][0]
+    assert syntax_finding["resolved_api"] is None
+    assert syntax_finding["resolved_syntax"] == "__name__ == '__main__'"
+    assert syntax_finding["imported_module_path"] is None
+    assert "resolved_api_or_syntax" not in syntax_finding
+
+
+def test_exact_scan_status_taxonomy_is_published_in_order(artifact):
+    mod = _module()
+    expected = ["complete", "syntax_error", "unreadable", "unsupported"]
+    assert list(mod.SCAN_STATUS_TAXONOMY) == expected
+    assert artifact["scan_status_taxonomy"] == expected
+    assert artifact["detector_contract"]["scan_status_taxonomy"] == expected
+
+
+def test_all_record_scan_statuses_belong_to_published_taxonomy(artifact):
+    taxonomy = set(artifact["scan_status_taxonomy"])
+    assert {
+        record["scan_status"] for record in artifact["method_classification_records"]
+    } <= taxonomy
+
+
+def test_unrecognized_record_scan_status_fails_closed(artifact):
+    mod = _module()
+    forged = copy.deepcopy(artifact)
+    forged["method_classification_records"][0]["scan_status"] = "future_status"
+    with pytest.raises(mod.P541BR2Error, match="scan status mismatch"):
+        mod.validate_artifact(forged)
+
+
+def test_absent_record_scan_status_fails_closed(artifact):
+    mod = _module()
+    forged = copy.deepcopy(artifact)
+    del forged["method_classification_records"][0]["scan_status"]
+    with pytest.raises(mod.P541BR2Error, match="scan status mismatch"):
+        mod.validate_artifact(forged)
+
+
+def test_all_artifact_findings_use_exact_field_names(artifact):
+    required = {"resolved_api", "resolved_syntax", "imported_module_path"}
+    forbidden = {"resolved_api_or_syntax", "imported_module_source"}
+    for record in artifact["method_classification_records"]:
+        for evidence in record["evidence"].values():
+            for finding in evidence["findings"]:
+                assert required <= set(finding)
+                assert forbidden.isdisjoint(finding)
+                assert (finding["resolved_api"] is None) != (
+                    finding["resolved_syntax"] is None
+                )
+                if finding["direct_or_transitive"] == "transitive":
+                    assert finding["imported_module_path"]
+                else:
+                    assert finding["imported_module_path"] is None
+
+
 def test_artifact_contract_is_complete(artifact):
     mod = _module()
     assert artifact["schema_version"] == mod.SCHEMA_VERSION
@@ -419,6 +529,17 @@ def test_markdown_regeneration_equals_committed_markdown(artifact):
     assert (REPO_ROOT / mod.OUTPUT_MARKDOWN).read_text(encoding="utf-8") == mod.render_markdown(artifact)
 
 
+def test_json_and_markdown_describe_the_same_finding_and_status_schema(artifact):
+    mod = _module()
+    markdown = mod.render_markdown(artifact)
+    for field in ("resolved_api", "resolved_syntax", "imported_module_path"):
+        assert field in artifact["detector_contract"]["finding_fields"]
+        assert f"`{field}`" in markdown
+    taxonomy = "`complete`, `syntax_error`, `unreadable`, `unsupported`"
+    assert artifact["scan_status_taxonomy"] == list(mod.SCAN_STATUS_TAXONOMY)
+    assert taxonomy in markdown
+
+
 def test_historical_p541b_artifacts_remain_unchanged():
     mod = _module()
     for identity in mod.HISTORICAL_INPUTS.values():
@@ -427,19 +548,50 @@ def test_historical_p541b_artifacts_remain_unchanged():
         assert hashlib.sha256(raw).hexdigest() == identity["sha256"]
 
 
-def test_generator_never_imports_db_or_executes_target_modules():
-    mod = _module()
-    source = inspect.getsource(mod)
-    tree = ast.parse(source)
+def test_generator_opens_no_project_database():
+    _source, tree = _generator_source_tree()
     imported = {
         alias.name
         for node in ast.walk(tree)
         if isinstance(node, ast.Import)
         for alias in node.names
+    } | {
+        node.module
+        for node in ast.walk(tree)
+        if isinstance(node, ast.ImportFrom) and node.module
     }
-    assert "sqlite3" not in imported
-    assert "sqlalchemy" not in imported
-    assert "importlib" not in imported
+    assert {"sqlite3", "sqlalchemy", "lottery_api.database"}.isdisjoint(imported)
+
+
+def test_generator_does_not_import_target_modules():
+    _source, tree = _generator_source_tree()
+    allowed_roots = {
+        "__future__", "ast", "hashlib", "json", "posixpath", "re",
+        "subprocess", "collections", "pathlib", "typing",
+    }
+    imported_roots = {
+        alias.name.split(".", 1)[0]
+        for node in ast.walk(tree)
+        if isinstance(node, ast.Import)
+        for alias in node.names
+    } | {
+        node.module.split(".", 1)[0]
+        for node in ast.walk(tree)
+        if isinstance(node, ast.ImportFrom) and node.module
+    }
+    assert imported_roots <= allowed_roots
+
+
+def test_generator_does_not_execute_target_modules():
+    source, tree = _generator_source_tree()
+    call_names = {
+        ast.unparse(node.func)
+        for node in ast.walk(tree)
+        if isinstance(node, ast.Call)
+    }
+    assert {"exec", "eval", "compile", "__import__", "importlib.import_module"}.isdisjoint(
+        call_names
+    )
     assert "__import__(" not in source
     assert "exec(" not in source
     assert "git_tree_entries" in source and "git_blob" in source

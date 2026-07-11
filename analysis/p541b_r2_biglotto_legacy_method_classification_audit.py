@@ -70,7 +70,13 @@ OUTPUT_MARKDOWN = Path(
 )
 
 TRI_STATES = frozenset({"detected", "not_detected", "unknown"})
-SCAN_STATUSES = frozenset({"complete", "syntax_error", "unreadable", "unsupported"})
+SCAN_STATUS_TAXONOMY = (
+    "complete",
+    "syntax_error",
+    "unreadable",
+    "unsupported",
+)
+SCAN_STATUSES = frozenset(SCAN_STATUS_TAXONOMY)
 EFFECT_KEYS = (
     "database_access",
     "filesystem_write",
@@ -497,20 +503,20 @@ def _call_finding(
     family: str,
     *,
     classification: str = "direct",
-    imported_module_source: str | None = None,
+    imported_module_path: str | None = None,
     operation: str | None = None,
 ) -> dict[str, Any]:
     finding: dict[str, Any] = {
         "line": getattr(call, "lineno", None),
         "column": getattr(call, "col_offset", None),
         "rule_id": f"{classification}.{family}",
-        "resolved_api_or_syntax": resolved,
+        "resolved_api": resolved,
+        "resolved_syntax": None,
         "scope": scope,
         "direct_or_transitive": classification,
         "source_path": source_path,
+        "imported_module_path": imported_module_path,
     }
-    if imported_module_source is not None:
-        finding["imported_module_source"] = imported_module_source
     if operation is not None:
         finding["operation"] = operation
     return finding
@@ -607,8 +613,9 @@ def _evidence(
                 item.get("line") if item.get("line") is not None else -1,
                 item.get("column") if item.get("column") is not None else -1,
                 item.get("rule_id", ""),
-                item.get("resolved_api_or_syntax", ""),
-                item.get("imported_module_source", ""),
+                item.get("resolved_api") or "",
+                item.get("resolved_syntax") or "",
+                item.get("imported_module_path") or "",
             ),
         )[:100],
     }
@@ -683,10 +690,12 @@ def _literal_findings(
                     "line": getattr(node, "lineno", None),
                     "column": getattr(node, "col_offset", 0) + match.start(),
                     "rule_id": f"direct.{family}",
-                    "resolved_api_or_syntax": match.group(0)[:160],
+                    "resolved_api": None,
+                    "resolved_syntax": match.group(0)[:160],
                     "scope": "whole_file",
                     "direct_or_transitive": "direct",
                     "source_path": source_path,
+                    "imported_module_path": None,
                 }
             )
     return findings
@@ -847,10 +856,12 @@ def analyze_source_bytes(
             "line": node.lineno,
             "column": node.col_offset,
             "rule_id": "direct.valid_main_guard",
-            "resolved_api_or_syntax": "__name__ == '__main__'",
+            "resolved_api": None,
+            "resolved_syntax": "__name__ == '__main__'",
             "scope": "main_guard",
             "direct_or_transitive": "direct",
             "source_path": source_path,
+            "imported_module_path": None,
             "executable_statements": any(
                 not isinstance(statement, ast.Pass)
                 and not (
@@ -868,10 +879,12 @@ def analyze_source_bytes(
             "line": node.lineno,
             "column": node.col_offset,
             "rule_id": "direct.malformed_main_guard",
-            "resolved_api_or_syntax": ast.dump(node.test, include_attributes=False),
+            "resolved_api": None,
+            "resolved_syntax": ast.dump(node.test, include_attributes=False),
             "scope": "module_load",
             "direct_or_transitive": "direct",
             "source_path": source_path,
+            "imported_module_path": None,
         }
         for node in malformed_guards
     ]
@@ -1096,7 +1109,7 @@ def _definition_effect_findings(
                         importing_path,
                         category,
                         classification="transitive",
-                        imported_module_source=imported_path,
+                        imported_module_path=imported_path,
                         operation=_db_operation(node, resolved) if category == "database_access" else None,
                     )
                 )
@@ -1167,7 +1180,7 @@ def one_hop_transitive_evidence(
                         "scope": "transitive",
                         "direct_or_transitive": "transitive",
                         "source_path": source_path,
-                        "imported_module_source": resolved_path,
+                        "imported_module_path": resolved_path,
                         "import_line": binding["line"],
                     }
                 )
@@ -1226,6 +1239,8 @@ def validate_artifact(artifact: dict[str, Any]) -> None:
     validate_consumer_contract(
         str(artifact.get("schema_version")), str(artifact.get("detector_version"))
     )
+    if artifact.get("scan_status_taxonomy") != list(SCAN_STATUS_TAXONOMY):
+        raise P541BR2Error("scan status taxonomy mismatch")
     if artifact.get("task_id") != TASK_ID:
         raise P541BR2Error("artifact identity mismatch")
     records = artifact.get("method_classification_records")
@@ -1254,11 +1269,33 @@ def validate_artifact(artifact: dict[str, Any]) -> None:
                 raise P541BR2Error(f"detector evidence identity mismatch: {record.get('source_path')}")
             for finding in item["findings"]:
                 required = {
-                    "line", "column", "rule_id", "resolved_api_or_syntax",
-                    "scope", "direct_or_transitive", "source_path",
+                    "line", "column", "rule_id", "resolved_api", "resolved_syntax",
+                    "scope", "direct_or_transitive", "source_path", "imported_module_path",
                 }
-                if not required <= set(finding):
+                if (
+                    not required <= set(finding)
+                    or "resolved_api_or_syntax" in finding
+                    or "imported_module_source" in finding
+                ):
                     raise P541BR2Error(f"finding contract mismatch: {record.get('source_path')}")
+                resolved_api = finding["resolved_api"]
+                resolved_syntax = finding["resolved_syntax"]
+                if (
+                    (resolved_api is None) == (resolved_syntax is None)
+                    or (resolved_api is not None and not isinstance(resolved_api, str))
+                    or (resolved_syntax is not None and not isinstance(resolved_syntax, str))
+                ):
+                    raise P541BR2Error(f"finding resolution mismatch: {record.get('source_path')}")
+                classification = finding["direct_or_transitive"]
+                imported_module_path = finding["imported_module_path"]
+                if classification == "direct" and imported_module_path is not None:
+                    raise P541BR2Error(f"direct finding import mismatch: {record.get('source_path')}")
+                if classification == "transitive":
+                    if not isinstance(imported_module_path, str) or not imported_module_path:
+                        raise P541BR2Error(f"transitive finding import mismatch: {record.get('source_path')}")
+                    _safe_repo_path(imported_module_path)
+                elif classification != "direct":
+                    raise P541BR2Error(f"finding classification mismatch: {record.get('source_path')}")
         scan_complete = record.get("scan", {}).get("complete") is True
         low_risk = record.get("safety_classification", {}).get("low_risk_eligible") is True
         if low_risk and (
@@ -1353,6 +1390,7 @@ def build_artifact(repo_root: Path = REPO_ROOT) -> dict[str, Any]:
     artifact = {
         "schema_version": SCHEMA_VERSION,
         "detector_version": DETECTOR_VERSION,
+        "scan_status_taxonomy": list(SCAN_STATUS_TAXONOMY),
         "task_id": TASK_ID,
         "generated_at_utc": GENERATED_AT_UTC,
         "implementation_base_oid": BASE_MAIN_COMMIT,
@@ -1372,6 +1410,18 @@ def build_artifact(repo_root: Path = REPO_ROOT) -> dict[str, Any]:
         "detector_contract": {
             "detector_version": DETECTOR_VERSION,
             "evidence_states": sorted(TRI_STATES),
+            "scan_status_taxonomy": list(SCAN_STATUS_TAXONOMY),
+            "finding_fields": [
+                "line",
+                "column",
+                "rule_id",
+                "resolved_api",
+                "resolved_syntax",
+                "scope",
+                "direct_or_transitive",
+                "source_path",
+                "imported_module_path",
+            ],
             "fail_closed_conditions": [
                 "UTF-8 decode failure",
                 "AST parse failure",
@@ -1464,7 +1514,9 @@ def render_markdown(artifact: dict[str, Any]) -> str:
         f"- Schema: `{artifact['schema_version']}`",
         f"- Detector: `{artifact['detector_version']}`",
         "- Every evidence family publishes `state`, `scope`, `detector_id`, and deterministic `findings`.",
+        "- Every finding publishes separate `resolved_api` and `resolved_syntax` fields plus `imported_module_path`; exactly one resolved field is populated.",
         "- States are exactly `detected`, `not_detected`, and `unknown`.",
+        "- Scan-status taxonomy (ordered): `complete`, `syntax_error`, `unreadable`, `unsupported`.",
         "- Read/decode, AST parse, unsupported-structure, provenance, and ambiguous one-hop failures fail closed.",
         "- Only an exact top-level `__name__ == '__main__'` comparison is a valid guard; it mitigates import-time reachability only.",
         "",

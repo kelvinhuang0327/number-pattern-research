@@ -23,7 +23,7 @@ REPO_ROOT = Path(__file__).resolve().parents[1]
 
 TASK_ID = "P541B_R2_BIG_LOTTO_LEGACY_METHOD_CLASSIFICATION_AUDIT"
 SCHEMA_VERSION = "p541b-r2-evidence-v1"
-DETECTOR_VERSION = "p541b-r2-detector-v2"
+DETECTOR_VERSION = "p541b-r2-detector-v3"
 BASE_MAIN_COMMIT = "c50137583243d4f9f4915a3e1d9babee50b5bbd7"
 FROZEN_SOURCE_COMMIT = "49a25effa62fc24f40789c16be6f11bdfb41a4a9"
 GENERATED_AT_UTC = "2026-07-11T12:43:50Z"
@@ -123,6 +123,7 @@ DATABASE_LEAF_CALLS = {
     "raw_connection",
 }
 FILESYSTEM_LEAF_CALLS = {
+    "save",
     "write_text",
     "write_bytes",
     "touch",
@@ -483,8 +484,34 @@ def guarded_calls(tree: ast.Module) -> list[ast.Call]:
     return visitor.calls
 
 
-def _call_mode(call: ast.Call) -> str | None:
-    value: ast.AST | None = call.args[1] if len(call.args) >= 2 else None
+def _call_mode(call: ast.Call, resolved: str) -> str | None:
+    # A ``**kwargs`` expansion can supply or override the mode in ways that
+    # static inspection cannot resolve, so it must fail closed.
+    if any(keyword.arg is None for keyword in call.keywords):
+        return None
+
+    normalized = resolved.lower()
+    module_open_apis = {
+        "open",
+        "builtins.open",
+        "bz2.open",
+        "codecs.open",
+        "gzip.open",
+        "io.open",
+        "lzma.open",
+        "tarfile.open",
+    }
+    if normalized in module_open_apis or normalized == "pathlib.path.open":
+        positional_mode_index = 1
+    else:
+        # Bound ``Path.open`` and other instance ``.open`` methods accept mode
+        # as their first positional argument.
+        positional_mode_index = 0
+    value: ast.AST | None = (
+        call.args[positional_mode_index]
+        if len(call.args) > positional_mode_index
+        else None
+    )
     for keyword in call.keywords:
         if keyword.arg == "mode":
             value = keyword.value
@@ -550,7 +577,7 @@ def classify_call(
 
     is_open = leaf == "open"
     if is_open:
-        mode = _call_mode(call)
+        mode = _call_mode(call, resolved)
         if mode is None:
             unsupported.append(f"dynamic file mode at line {getattr(call, 'lineno', '?')}")
         elif any(character in mode for character in "wax+"):

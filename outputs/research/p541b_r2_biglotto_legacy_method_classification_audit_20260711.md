@@ -13,7 +13,7 @@
 ## Evidence Schema and Fail-Closed Rules
 
 - Schema: `p541b-r2-evidence-v1`
-- Detector: `p541b-r2-detector-v2`
+- Detector: `p541b-r2-detector-v3`
 - Every evidence family publishes `state`, `scope`, `detector_id`, and deterministic `findings`.
 - Every finding publishes separate `resolved_api` and `resolved_syntax` fields plus `imported_module_path`; exactly one resolved field is populated.
 - States are exactly `detected`, `not_detected`, and `unknown`.
@@ -37,13 +37,13 @@
 | Frozen source records | 580 |
 | Complete scans | 554 |
 | Unknown scans | 26 |
-| Direct findings | 3498 |
+| Direct findings | 3508 |
 | Transitive findings | 77 |
 | Scan `complete` | 554 |
 | Scan `syntax_error` | 1 |
 | Scan `unsupported` | 25 |
-| Risk `high` | 427 |
-| Risk `low` | 58 |
+| Risk `high` | 430 |
+| Risk `low` | 55 |
 | Risk `medium` | 9 |
 | Risk `unknown` | 86 |
 
@@ -52,7 +52,7 @@
 | Evidence | detected | not_detected | unknown |
 |---|---:|---:|---:|
 | `database_access` | 379 | 171 | 30 |
-| `filesystem_write` | 147 | 407 | 26 |
+| `filesystem_write` | 151 | 403 | 26 |
 | `network_io` | 17 | 537 | 26 |
 | `process_execution` | 12 | 542 | 26 |
 | `other_external_effect` | 32 | 522 | 26 |
@@ -62,7 +62,7 @@
 | `hardcoded_draw_or_date` | 42 | 512 | 26 |
 | `database_like_path` | 379 | 175 | 26 |
 | `external_service_url` | 21 | 533 | 26 |
-| `filesystem_read` | 162 | 392 | 26 |
+| `filesystem_read` | 161 | 393 | 26 |
 | `valid_main_guard` | 523 | 31 | 26 |
 | `malformed_main_guard` | 1 | 553 | 26 |
 
@@ -74,7 +74,7 @@
 
 ## Frozen Provenance
 
-- Generator SHA-256: `0cccda9da05b416f1cc5efb9284a8f9c926b4a24190f272a89908194b6d063b9`
+- Generator SHA-256: `1d8c4ba57735b9b268bc4e00cf7df1a76424632b0552310cbd76874966f00ab8`
 - Historical P541B JSON blob: `12f1595c96e3f9deddc7a7d2d9549c03144635f0` — verification **PASS**
 - Historical P541B Markdown blob: `3b28e39bfe747c5f196b9aec6610284709466cf8` — verification **PASS**
 - Historical P541A JSON blob: `7557f364160dc09c91a19c07b370cb4b231c0194` — verification **PASS**

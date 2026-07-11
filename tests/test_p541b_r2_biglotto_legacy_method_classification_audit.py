@@ -222,6 +222,35 @@ def test_path_write_bytes_detected():
     assert _state(result, "filesystem_write") == "detected"
 
 
+def test_path_open_positional_write_mode_detected():
+    result = _analyze("from pathlib import Path\ndef f():\n    Path('x').open('wb')\n")
+    assert _state(result, "filesystem_write") == "detected"
+    assert _state(result, "filesystem_read") == "not_detected"
+
+
+def test_unbound_path_open_positional_write_mode_detected():
+    result = _analyze(
+        "from pathlib import Path\ndef f(path):\n    Path.open(path, 'w')\n"
+    )
+    assert _state(result, "filesystem_write") == "detected"
+
+
+def test_module_open_positional_write_mode_detected():
+    result = _analyze("import gzip\ndef f():\n    gzip.open('x.gz', 'wb')\n")
+    assert _state(result, "filesystem_write") == "detected"
+
+
+def test_dynamic_open_keyword_expansion_fails_closed():
+    result = _analyze("def f(path, options):\n    open(path, **options)\n")
+    assert result["scan_status"] == "unsupported"
+    assert result["safety_classification"]["risk_level"] == "unknown"
+
+
+def test_model_save_detected_as_filesystem_write():
+    result = _analyze("import torch\ndef f(model):\n    torch.save(model, 'model.pt')\n")
+    assert _state(result, "filesystem_write") == "detected"
+
+
 def test_aliased_filesystem_mutation_detected():
     result = _analyze("from pathlib import Path as P\ndef f():\n    P('x').unlink()\n")
     assert _state(result, "filesystem_write") == "detected"
@@ -321,6 +350,14 @@ def test_frozen_http_backend_fixture_detects_network_activity():
     assert _state(result, "network_io") == "detected"
     assert _state(result, "external_service_url") == "detected"
     assert result["safety_classification"]["low_risk_eligible"] is False
+
+
+def test_frozen_torch_save_fixture_detects_filesystem_write():
+    result = _frozen_analysis("ai_lab/scripts/train_critic.py")
+    assert _state(result, "filesystem_write") == "detected"
+    finding = result["evidence"]["filesystem_write"]["findings"][0]
+    assert finding["resolved_api"] == "torch.save"
+    assert result["safety_classification"]["risk_level"] == "high"
 
 
 def test_one_hop_db_coupled_import_detected(tmp_path):

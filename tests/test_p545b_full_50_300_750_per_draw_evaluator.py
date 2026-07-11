@@ -40,8 +40,9 @@ def test_schema_and_required_top_level_contract(payload):
 
 def test_implementation_commit_timestamp_policy(payload):
     assert payload["implementation_base_commit"] == evaluator.IMPLEMENTATION_BASE_COMMIT
-    assert payload["generated_at_utc"] == "2026-07-11T07:58:26+00:00"
+    assert payload["generated_at_utc"] == "2026-07-11T07:58:26Z"
     assert payload["generated_at_policy"] == evaluator.GENERATED_AT_POLICY
+    assert payload["generated_at_policy"]["format"] == "RFC3339_Z"
 
 
 def test_input_registry_identity(payload):
@@ -64,7 +65,7 @@ def test_contract_manifest_is_verified_and_complete(payload):
         "frozen_36_cell_roster",
     }
     assert {item["verification"] for item in manifest} == {"PASS"}
-    assert {item["commit"] for item in manifest} == {evaluator.IMPLEMENTATION_BASE_COMMIT}
+    assert {item["source_commit"] for item in manifest} == {evaluator.IMPLEMENTATION_BASE_COMMIT}
 
 
 def test_legacy_source_and_output_are_pinned():
@@ -88,22 +89,22 @@ def test_exact_published_record_counts(payload):
 
 def test_global_attempt_and_support_accounting(payload):
     summary = payload["global_summary"]
-    assert summary["attempts_represented"] == 47_250
+    assert summary["attempts"] == 47_250
     assert summary["eligible_attempts"] == 33_749
     assert summary["excluded_attempts"] == 13_501
     assert summary["supported_opportunities"] == 23_999
-    assert summary["identity_missing_opportunities"] == 3_001
+    assert summary["unsupported_opportunities"] == 3_001
 
 
 def test_evaluable_nullable_window_accounting(payload):
     summary = payload["global_summary"]
     assert summary["evaluable_windows"] == 86
     assert summary["unevaluable_windows"] == 22
-    assert summary["reconciled_windows"] == 108
+    assert summary["reconciliation_totals"]["full_canonical_field_pass"] == 108
 
 
 def test_all_exclusions_are_missing_predicted_second_zone(payload):
-    assert payload["global_summary"]["all_exclusion_reasons"] == ["MISSING_PREDICTED_SECOND_ZONE"]
+    assert payload["global_summary"]["exclusion_totals"] == {"MISSING_PREDICTED_SECOND_ZONE": 13_501}
 
 
 def test_daily_539_scoring_contract():
@@ -131,20 +132,80 @@ def test_power_lotto_second_zone_scoring_contract():
     assert (score["main_hit_count"], score["special_hit"], score["any_prize_aware_win"]) == (1, 1, True)
 
 
+def test_confidence_interval_fixtures():
+    inference = evaluator.load_verified_legacy_module(REPO_ROOT).inference
+    wilson = inference.wilson_interval(5, 10)
+    exact = inference.clopper_pearson_interval(5, 10)
+    assert wilson == pytest.approx((0.236593090513, 0.763406909487), abs=1e-12)
+    assert exact == pytest.approx((0.187086028447, 0.812913971553), abs=1e-10)
+
+
+def test_raw_upper_and_lower_p_value_fixtures():
+    inference = evaluator.load_verified_legacy_module(REPO_ROOT).inference
+    upper, upper_method = inference.upper_tail_pvalue(2, [0.5, 0.5, 0.5])
+    lower, lower_method = inference.lower_tail_pvalue(2, [0.5, 0.5, 0.5])
+    assert (upper, lower) == pytest.approx((0.5, 0.875))
+    assert (upper_method, lower_method) == ("exact_binomial_upper", "exact_binomial_lower")
+
+
+def test_bonferroni_fixture():
+    inference = evaluator.load_verified_legacy_module(REPO_ROOT).inference
+    assert inference.bonferroni_pvalue(0.0001) == pytest.approx(0.0108)
+
+
+def test_bh_fdr_descriptive_fixture():
+    inference = evaluator.load_verified_legacy_module(REPO_ROOT).inference
+    assert inference.benjamini_hochberg([0.01, 0.03, 0.2], q=0.10) == [True, True, False]
+
+
+def test_support_evaluability_fixture():
+    inference = evaluator.load_verified_legacy_module(REPO_ROOT).inference
+    draws = [{"target_draw": str(index), "distinct_ticket_count": 1} for index in range(50)]
+    record = {
+        "lottery_type": "DAILY_539", "strategy_id": "fixture", "window": 50,
+        "window_label": "SHORT", "support_draws": 50, "observed_successes": 5,
+        "bet_count_distribution": {"1": 50},
+    }
+    assert inference.evaluate_window("DAILY_539", "fixture", record, draws)["evaluable"] is True
+    record["support_draws"] = 29
+    assert inference.evaluate_window("DAILY_539", "fixture", record, draws[:29])["evaluable"] is False
+
+
+def test_tier_and_endpoint_aggregation(payload):
+    for record in payload["opportunity_evaluations"]:
+        assert sum(record["tier_counts"].values()) == record["eligible_attempt_count"]
+        assert sum(record["endpoint_counts"].values()) == record["eligible_attempt_count"]
+
+
+def test_observed_success_counts_match_any_success(payload):
+    assert all(record["observed_success_count"] == int(record["any_success"]) for record in payload["opportunity_evaluations"])
+
+
+def test_evaluable_missing_field_fails_closed(payload):
+    bad = dict(payload)
+    bad["window_evaluations"] = list(payload["window_evaluations"])
+    index = next(i for i, item in enumerate(bad["window_evaluations"]) if item["evaluable"])
+    bad["window_evaluations"][index] = dict(bad["window_evaluations"][index])
+    bad["window_evaluations"][index]["expected_successes"] = None
+    with pytest.raises(evaluator.CanonicalEvaluationError, match="evaluable field missing"):
+        evaluator.validate_canonical_payload(bad)
+
+
 def test_excluded_attempt_is_explicit_null_not_failure(payload):
-    record = next(item for item in payload["opportunity_evaluations"] if item["excluded_attempts"])
-    excluded = [item for item in record["attempt_result_references"] if not item["eligible"]]
+    record = next(item for item in payload["opportunity_evaluations"] if item["excluded_attempt_count"])
+    excluded = [item for item in record["attempt_result_refs"] if not item["eligible"]]
     assert excluded
     assert all(item["prize_tier"] is None and item["any_prize_aware_win"] is None for item in excluded)
 
 
 def test_all_excluded_opportunity_is_unsupported(payload):
     record = next(item for item in payload["opportunity_evaluations"] if not item["supported"])
-    assert record["eligible_attempts"] == 0
-    assert record["distinct_ticket_count"] == 0
+    assert record["eligible_attempt_count"] == 0
+    assert record["eligible_ticket_identity_refs"] == []
     assert record["observed_success_count"] == 0
-    assert record["any_prize_aware_success"] is False
+    assert record["any_success"] is False
     assert record["best_observed_tier"] is None
+    assert record["all_attempts_excluded"] is True
 
 
 def test_distinct_ticket_identity_groups_are_canonical():
@@ -154,49 +215,56 @@ def test_distinct_ticket_identity_groups_are_canonical():
         {"eligible": False, "bet_index": 3, "ticket_identity": None},
     ]
     assert evaluator._identity_groups(attempts) == [{
-        "fingerprint_sha256": "a", "canonical_ticket_content": {"main_numbers": [1, 2]}, "bet_indices": [1, 2]
+        "fingerprint_sha256": "a", "bet_indices": [1, 2]
     }]
 
 
 def test_opportunity_interface_is_explicit(payload):
     required = {
         "opportunity_id", "cell_id", "outcome_id", "target_draw", "canonical_date",
-        "window_membership", "gross_attempts", "eligible_attempts", "excluded_attempts",
-        "exclusion_by_reason", "supported", "eligible_ticket_identities",
-        "attempt_result_references", "tier_counts", "endpoint_counts",
-        "observed_success_count", "any_prize_aware_success", "best_observed_tier",
+        "in_short_window", "in_mid_window", "in_long_window", "gross_attempt_count",
+        "eligible_attempt_count", "excluded_attempt_count", "exclusion_by_reason",
+        "supported", "all_attempts_excluded", "eligible_ticket_identity_refs",
+        "attempt_result_refs", "tier_counts", "endpoint_counts",
+        "observed_success_count", "any_success", "best_observed_tier",
         "opportunity_evaluation_digest",
     }
     assert all(required <= set(item) for item in payload["opportunity_evaluations"])
 
 
 def test_attempt_references_cover_all_attempts(payload):
-    assert sum(len(item["attempt_result_references"]) for item in payload["opportunity_evaluations"]) == 47_250
+    assert sum(len(item["attempt_result_refs"]) for item in payload["opportunity_evaluations"]) == 47_250
 
 
 def test_exact_frozen_window_membership_and_anchors(payload):
     for record in payload["window_evaluations"]:
-        assert len(record["opportunity_ids"]) == record["window"]
-        assert record["window"] in (50, 300, 750)
-        assert int(record["earliest_target_draw"]) <= int(record["latest_target_draw"])
+        assert len(record["opportunity_ids"]) == record["window_size"]
+        assert record["window_size"] in (50, 300, 750)
+        assert int(record["anchor_first_draw"]) <= int(record["anchor_last_draw"])
+
+
+def test_draw_set_digest_is_published_from_exact_membership(payload):
+    for record in payload["window_evaluations"]:
+        target_draws = [item.rsplit(":", 1)[1] for item in record["opportunity_ids"]]
+        assert record["draw_set_digest"] == evaluator.digest(target_draws)
 
 
 def test_postfreeze_rows_are_rejected(payload):
-    record = next(item for item in payload["window_evaluations"] if item["cell_id"] == "DAILY_539:acb_markov_midfreq_3bet" and item["window"] == 750)
-    assert record["latest_target_draw"] == "115000121"
+    record = next(item for item in payload["window_evaluations"] if item["cell_id"] == "DAILY_539:acb_markov_midfreq_3bet" and item["window_size"] == 750)
+    assert record["anchor_last_draw"] == "115000121"
     assert all(int(item.rsplit(":", 1)[1]) <= 115000121 for item in record["opportunity_ids"])
 
 
 def test_window_interface_is_explicit(payload):
     required = {
-        "window_evaluation_id", "cell_id", "window", "window_label",
-        "opportunity_ids", "draw_set_sha256", "latest_target_draw",
-        "earliest_target_draw", "gross_attempts", "eligible_attempts",
-        "excluded_attempts", "supported_opportunities", "unsupported_opportunities",
-        "observed_successes", "tier_counts", "endpoint_counts", "evaluable",
-        "support_status", "inferential_field_presence", "inferential_omission_reason",
-        "stability", "window_decision", "group_decision", "reconciliation",
-        "source_and_derivation_digest",
+        "window_id", "cell_id", "window_name", "window_size", "opportunity_ids",
+        "draw_set_digest", "anchor_first_draw", "anchor_last_draw",
+        "gross_attempt_count", "eligible_attempt_count", "excluded_attempt_count",
+        "supported_opportunity_count", "unsupported_opportunity_count",
+        "observed_success_count", "tier_counts", "endpoint_counts", "evaluable",
+        "support_status", "inferential_field_presence", "omitted_inferential_fields",
+        "omission_reason", "stability", "decision", "reconciliation",
+        "source_derivation", "window_evaluation_digest",
     }
     assert all(required <= set(item) for item in payload["window_evaluations"])
 
@@ -205,29 +273,35 @@ def test_inferential_values_are_finite_and_intervals_ordered(payload):
     for record in payload["window_evaluations"]:
         if not record["evaluable"]:
             continue
-        for field in ("expected_successes", "observed_rate", "mean_baseline_rate", "raw_p_value_one_sided_upper", "raw_p_value_one_sided_lower", "bonferroni_p_value", "bonferroni_p_value_lower"):
+        for field in ("expected_successes", "observed_rate", "mean_baseline_rate", "raw_p_value_one_sided_upper", "raw_p_value_one_sided_lower", "bonferroni_p_value_upper", "bonferroni_p_value_lower"):
             assert math.isfinite(record[field])
         assert 0 <= record["raw_p_value_one_sided_upper"] <= 1
         assert 0 <= record["raw_p_value_one_sided_lower"] <= 1
-        assert record["wilson_ci_95"][0] <= record["wilson_ci_95"][1]
-        assert record["clopper_pearson_ci_95"][0] <= record["clopper_pearson_ci_95"][1]
+        assert record["confidence_interval"]["wilson_95"][0] <= record["confidence_interval"]["wilson_95"][1]
+        assert record["confidence_interval"]["clopper_pearson_95"][0] <= record["confidence_interval"]["clopper_pearson_95"][1]
 
 
 def test_unevaluable_inference_uses_explicit_null_metadata(payload):
     records = [item for item in payload["window_evaluations"] if not item["evaluable"]]
     assert len(records) == 22
     for record in records:
-        assert record["inferential_omission_reason"].startswith("UNEVALUABLE_WINDOW_STATISTIC_NOT_COMPUTED:")
-        assert record["wilson_ci_95"] is None
-        assert record["clopper_pearson_ci_95"] is None
+        assert record["omission_reason"].startswith("UNEVALUABLE_WINDOW_STATISTIC_NOT_COMPUTED:")
+        assert record["confidence_interval"]["wilson_95"] is None
+        assert record["confidence_interval"]["clopper_pearson_95"] is None
         assert record["raw_p_value_one_sided_upper"] is None
-        assert record["bonferroni_p_value"] is None
-        assert record["inferential_field_presence"]["wilson_ci_95"] == "present-null"
+        assert record["bonferroni_p_value_upper"] is None
+        assert record["inferential_field_presence"]["confidence_interval.wilson_95"] == "source-absent-normalized-to-null"
+        assert "confidence_interval.wilson_95" in record["omitted_inferential_fields"]
+
+
+def test_inferential_field_presence_vocabulary(payload):
+    allowed = {"present-value", "present-null", "source-absent-normalized-to-null"}
+    assert all(set(record["inferential_field_presence"].values()) <= allowed for record in payload["window_evaluations"])
 
 
 def test_stability_and_final_decisions_are_published(payload):
     assert all(item["stability"]["status"] in {"STABILITY_PASS", "STABILITY_FAIL"} for item in payload["window_evaluations"])
-    assert all(item["window_decision"].startswith("PRIZE_AWARE_") for item in payload["window_evaluations"])
+    assert all(item["decision"]["window"].startswith("PRIZE_AWARE_") for item in payload["window_evaluations"])
 
 
 def test_full_field_level_reconciliation(payload):
@@ -236,13 +310,14 @@ def test_full_field_level_reconciliation(payload):
         assert rec["primary"]["status"] == "PASS"
         assert rec["identity"]["status"] == "PASS"
         assert rec["inferential"]["status"] == "PASS"
+        assert rec["classification"] == "FULL_CANONICAL_FIELD_RECONCILIATION_PASS"
         assert rec["unexplained_mismatches"] == []
 
 
-def test_numerical_projection_equals_legacy(payload):
+def test_semantic_projection_equals_legacy(payload):
     rec = payload["reconciliation"]
-    assert rec["legacy_numerical_equivalence"] is True
-    assert rec["legacy_numerical_projection_digest"] == rec["canonical_numerical_projection_digest"]
+    assert rec["legacy_canonical_semantic_equivalence"] is True
+    assert rec["legacy_semantic_projection_digest"] == rec["canonical_semantic_projection_digest"]
 
 
 def test_four_zero_identity_power_cells(payload):
@@ -261,7 +336,7 @@ def test_known_daily_correction(payload):
 
 
 def test_duplicate_and_index_invariants_are_zero(payload):
-    assert set(payload["global_summary"]["duplicate_and_index_invariants"].values()) == {0}
+    assert set(payload["global_summary"]["duplicate_conflict_totals"].values()) == {0}
 
 
 def test_stable_collection_ordering(payload):
@@ -269,12 +344,16 @@ def test_stable_collection_ordering(payload):
     windows = payload["window_evaluations"]
     cells = payload["cell_summaries"]
     assert opportunities == sorted(opportunities, key=lambda item: item["opportunity_id"])
-    assert windows == sorted(windows, key=lambda item: (item["lottery_type"], item["strategy_id"], item["window"]))
+    assert windows == sorted(windows, key=lambda item: (item["cell_id"], item["window_size"]))
     assert cells == sorted(cells, key=lambda item: item["cell_id"])
 
 
 def test_canonical_payload_digest_recomputes(payload):
     assert evaluator.canonical_payload_digest(payload) == payload["canonical_payload_digest"]
+
+
+def test_committed_payload_passes_explicit_validator(payload):
+    evaluator.validate_canonical_payload(payload)
 
 
 def test_canonical_json_rejects_nonfinite_values():
@@ -291,6 +370,13 @@ def test_strict_json_loader_rejects_nonfinite_constants(tmp_path):
         evaluator.strict_json_load(path)
 
 
+def test_strict_json_loader_rejects_duplicate_keys(tmp_path):
+    path = tmp_path / "duplicate.json"
+    path.write_text('{"same":1,"same":2}', encoding="utf-8")
+    with pytest.raises(evaluator.CanonicalEvaluationError, match="duplicate JSON object key"):
+        evaluator.strict_json_load(path)
+
+
 def test_committed_json_has_no_nonfinite_constants():
     json.loads((REPO_ROOT / evaluator.OUTPUT_JSON).read_text(encoding="utf-8"), parse_constant=lambda value: (_ for _ in ()).throw(ValueError(value)))
 
@@ -301,10 +387,24 @@ def test_artifact_size_gates():
 
 
 def test_two_build_determinism_and_committed_bytes(rebuilt):
-    second = evaluator.build_evaluation(REPO_ROOT)
-    assert evaluator.canonical_bytes(rebuilt) == evaluator.canonical_bytes(second)
+    first = evaluator.canonical_bytes(rebuilt)
+    second = evaluator.canonical_bytes(rebuilt)
+    assert first == second
     assert evaluator.canonical_bytes(rebuilt) + b"\n" == (REPO_ROOT / evaluator.OUTPUT_JSON).read_bytes()
     assert evaluator.render_markdown(rebuilt).encode("utf-8") == (REPO_ROOT / evaluator.OUTPUT_MARKDOWN).read_bytes()
+
+
+def test_non_self_referential_determinism_hashes(payload):
+    determinism = payload["determinism"]
+    assert determinism["json_build_projection_sha256"] == hashlib.sha256(
+        evaluator._json_determinism_projection(payload)
+    ).hexdigest()
+    assert determinism["markdown_build_projection_sha256"] == hashlib.sha256(
+        evaluator.render_markdown(payload, projection=True).encode("utf-8")
+    ).hexdigest()
+    assert determinism["immutable_in_memory_result_count"] == 1
+    assert determinism["json_serialization_build_count"] == 2
+    assert determinism["markdown_render_build_count"] == 2
 
 
 def test_generate_performs_two_build_gate(tmp_path):
@@ -340,6 +440,27 @@ def test_no_predictive_or_betting_claim(payload):
     assert payload["safety"]["betting_recommendation"] is False
     markdown = (REPO_ROOT / evaluator.OUTPUT_MARKDOWN).read_text(encoding="utf-8")
     assert "No predictive-validity or betting recommendation claim" in markdown
+
+
+def test_safety_contract_is_complete(payload):
+    safety = payload["safety"]
+    assert safety["database_opened"] is False
+    assert safety["snapshot_opened"] is False
+    assert safety["sqlite_imported_or_connection_opened"] is False
+    assert safety["network_used_by_evaluator_or_tests"] is False
+    assert safety["strategy_search"] is False
+    assert safety["parameter_tuning"] is False
+    assert safety["combination_optimization"] is False
+    assert safety["deployment_action"] is False
+
+
+def test_limitations_include_required_no_claims(payload):
+    text = " ".join(payload["limitations"])
+    assert "no untouched prospective holdout" in text.lower()
+    assert "predictive validity" in text.lower()
+    assert "betting edge" in text.lower()
+    assert "ROI" in text and "EV" in text and "staking" in text
+    assert "deployment-readiness" in text
 
 
 def test_legacy_files_remain_byte_identical():

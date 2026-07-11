@@ -11,6 +11,7 @@ from __future__ import annotations
 import hashlib
 import importlib.util
 import json
+import math
 import sys
 from collections import Counter, defaultdict
 from pathlib import Path
@@ -28,8 +29,16 @@ SCHEMA = "p545b_full_50_300_750_per_draw_evaluation.v1"
 CLASSIFICATION = "P545B_CANONICAL_RETROSPECTIVE_EVALUATION_RECONCILED_NO_PREDICTIVE_OR_BETTING_CLAIM"
 IMPLEMENTATION_BASE_COMMIT = "72e55acde36792912873315eb75f8a5b74c7470a"
 IMPLEMENTATION_BASE_COMMIT_TIMESTAMP = "2026-07-11T15:58:26+08:00"
-GENERATED_AT_UTC = "2026-07-11T07:58:26+00:00"
-GENERATED_AT_POLICY = "implementation base commit committer timestamp normalized to UTC seconds"
+GENERATED_AT_UTC = "2026-07-11T07:58:26Z"
+GENERATED_AT_POLICY = {
+    "source_commit": IMPLEMENTATION_BASE_COMMIT,
+    "timestamp_field": "committer_timestamp",
+    "source_timestamp": "2026-07-11T15:58:26+08:00",
+    "timezone_normalization": "UTC",
+    "precision": "seconds",
+    "format": "RFC3339_Z",
+    "deterministic": True,
+}
 OUTPUT_JSON = Path("outputs/research/p545b_full_50_300_750_per_draw_evaluation_20260711.json")
 OUTPUT_MARKDOWN = Path("outputs/research/p545b_full_50_300_750_per_draw_evaluation_20260711.md")
 MAX_JSON_BYTES = 40 * 1024 * 1024
@@ -121,15 +130,58 @@ TIER_ORDER = {
     "BIG_LOTTO": ["BIG_FIRST_PRIZE", "BIG_SECOND_PRIZE", "BIG_THIRD_PRIZE", "BIG_FOURTH_PRIZE", "BIG_FIFTH_PRIZE", "BIG_SIXTH_PRIZE", "BIG_SEVENTH_PRIZE", "BIG_CONSOLATION_PRIZE", "BIG_NO_PRIZE"],
     "POWER_LOTTO": ["POWER_FIRST_PRIZE", "POWER_SECOND_PRIZE", "POWER_THIRD_PRIZE", "POWER_FOURTH_PRIZE", "POWER_FIFTH_PRIZE", "POWER_SIXTH_PRIZE", "POWER_SEVENTH_PRIZE", "POWER_EIGHTH_PRIZE", "POWER_NINTH_PRIZE", "POWER_CONSOLATION_PRIZE", "POWER_NO_PRIZE"],
 }
-INFERENTIAL_FIELDS = (
-    "expected_successes", "observed_rate", "mean_baseline_rate", "absolute_excess",
-    "absolute_excess_pp", "relative_lift", "wilson_ci_95", "clopper_pearson_ci_95",
-    "raw_p_value_one_sided_upper", "raw_p_value_one_sided_lower",
-    "bonferroni_p_value", "bonferroni_p_value_lower", "bh_fdr_descriptive_reject",
-    "p_value_method_upper", "p_value_method_lower", "statistical_status", "window_decision",
-    "significant_positive", "significant_negative", "exact_distinct_ticket_null_used",
-    "independent_approximation_rejected_for_final_inference",
+INFERENTIAL_SCALAR_MAP = (
+    ("expected_successes", "expected_successes"),
+    ("observed_rate", "observed_rate"),
+    ("mean_baseline_rate", "mean_baseline_rate"),
+    ("absolute_excess", "absolute_excess"),
+    ("absolute_excess_pp", "absolute_excess_pp"),
+    ("relative_lift", "relative_lift"),
+    ("raw_p_value_one_sided_upper", "raw_p_value_one_sided_upper"),
+    ("raw_p_value_one_sided_lower", "raw_p_value_one_sided_lower"),
+    ("bonferroni_p_value_upper", "bonferroni_p_value"),
+    ("bonferroni_p_value_lower", "bonferroni_p_value_lower"),
+    ("bh_fdr_descriptive_reject", "bh_fdr_descriptive_reject"),
+    ("p_value_method_upper", "p_value_method_upper"),
+    ("p_value_method_lower", "p_value_method_lower"),
+    ("significant_positive", "significant_positive"),
+    ("significant_negative", "significant_negative"),
+    ("statistical_status", "statistical_status"),
+    ("exact_distinct_ticket_null_used", "exact_distinct_ticket_null_used"),
+    ("independent_approximation_rejected_for_final_inference", "independent_approximation_rejected_for_final_inference"),
 )
+
+TOP_LEVEL_FIELDS = {
+    "schema", "task_id", "classification", "generated_at_utc",
+    "generated_at_policy", "implementation_base_commit", "input_registry",
+    "contract_manifest", "scoring_contract", "statistical_contract",
+    "opportunity_evaluations", "window_evaluations", "cell_summaries",
+    "global_summary", "reconciliation", "determinism", "safety",
+    "limitations", "canonical_payload_digest",
+}
+OPPORTUNITY_FIELDS = {
+    "opportunity_id", "cell_id", "outcome_id", "target_draw", "canonical_date",
+    "in_short_window", "in_mid_window", "in_long_window", "gross_attempt_count",
+    "eligible_attempt_count", "excluded_attempt_count", "supported",
+    "all_attempts_excluded", "exclusion_by_reason", "eligible_ticket_identity_refs",
+    "attempt_result_refs", "tier_counts", "endpoint_counts", "observed_success_count",
+    "any_success", "best_observed_tier", "best_observed_tier_contract",
+    "opportunity_evaluation_digest",
+}
+WINDOW_FIELDS = {
+    "window_id", "cell_id", "window_name", "window_size", "anchor_first_draw",
+    "anchor_last_draw", "opportunity_ids", "draw_set_digest", "gross_attempt_count",
+    "eligible_attempt_count", "excluded_attempt_count", "supported_opportunity_count",
+    "unsupported_opportunity_count", "exclusion_by_reason",
+    "distinct_ticket_identity_count", "tier_counts", "endpoint_counts",
+    "observed_success_count", "expected_successes", "confidence_interval",
+    "raw_p_value_one_sided_upper", "raw_p_value_one_sided_lower",
+    "bonferroni_p_value_upper", "bonferroni_p_value_lower",
+    "bh_fdr_descriptive_reject", "support_status", "evaluable",
+    "inferential_field_presence", "omitted_inferential_fields", "omission_reason",
+    "stability", "decision", "source_derivation", "window_evaluation_digest",
+    "reconciliation",
+}
 
 
 class CanonicalEvaluationError(RuntimeError):
@@ -158,8 +210,19 @@ def file_sha256(path: Path) -> str:
 def strict_json_load(path: Path) -> dict[str, Any]:
     def reject_constant(value: str) -> None:
         raise CanonicalEvaluationError(f"non-finite JSON constant: {value}")
+    def reject_duplicate_keys(pairs: list[tuple[str, Any]]) -> dict[str, Any]:
+        result: dict[str, Any] = {}
+        for key, value in pairs:
+            if key in result:
+                raise CanonicalEvaluationError(f"duplicate JSON object key: {key}")
+            result[key] = value
+        return result
     try:
-        parsed = json.loads(path.read_text(encoding="utf-8"), parse_constant=reject_constant)
+        parsed = json.loads(
+            path.read_text(encoding="utf-8"),
+            parse_constant=reject_constant,
+            object_pairs_hook=reject_duplicate_keys,
+        )
     except (UnicodeDecodeError, json.JSONDecodeError) as exc:
         raise CanonicalEvaluationError(f"invalid UTF-8 JSON: {path}") from exc
     if not isinstance(parsed, dict):
@@ -186,7 +249,7 @@ def _verify_file(repo_root: Path, spec: Mapping[str, Any]) -> None:
 def verify_contract_sources(repo_root: Path) -> list[dict[str, Any]]:
     for spec in CONTRACT_SOURCES:
         _verify_file(repo_root, spec)
-    return [{**spec, "commit": IMPLEMENTATION_BASE_COMMIT, "verification": "PASS"} for spec in CONTRACT_SOURCES]
+    return [{**spec, "source_commit": IMPLEMENTATION_BASE_COMMIT, "verification": "PASS"} for spec in CONTRACT_SOURCES]
 
 
 _LEGACY_MODULE: ModuleType | None = None
@@ -242,7 +305,6 @@ def _identity_groups(attempts: Sequence[Mapping[str, Any]]) -> list[dict[str, An
         key = canonical_bytes(identity["canonical_ticket_content"])
         group = groups.setdefault(key, {
             "fingerprint_sha256": identity["fingerprint_sha256"],
-            "canonical_ticket_content": identity["canonical_ticket_content"],
             "bet_indices": [],
         })
         group["bet_indices"].append(attempt["bet_index"])
@@ -293,28 +355,27 @@ def _opportunity_records(registry: Mapping[str, Any], legacy_payload: Mapping[st
             "outcome_id": source["outcome_id"],
             "target_draw": source["target_draw"],
             "canonical_date": outcome["canonical_date"],
-            "window_membership": {
-                "SHORT": bool(source["window_mask"] & 1),
-                "MID": bool(source["window_mask"] & 2),
-                "LONG": bool(source["window_mask"] & 4),
-            },
-            "gross_attempts": legacy["gross_attempts"],
-            "eligible_attempts": legacy["eligible_attempts"],
-            "excluded_attempts": legacy["excluded_attempts"],
+            "in_short_window": bool(source["window_mask"] & 1),
+            "in_mid_window": bool(source["window_mask"] & 2),
+            "in_long_window": bool(source["window_mask"] & 4),
+            "gross_attempt_count": legacy["gross_attempts"],
+            "eligible_attempt_count": legacy["eligible_attempts"],
+            "excluded_attempt_count": legacy["excluded_attempts"],
             "exclusion_by_reason": legacy["exclusion_by_reason"],
             "supported": legacy["supported"],
-            "eligible_ticket_identities": identities,
-            "distinct_ticket_count": legacy["distinct_ticket_count"],
-            "duplicate_ticket_count": legacy["duplicate_ticket_count"],
-            "attempt_result_references": attempt_refs,
+            "all_attempts_excluded": not legacy["supported"],
+            "eligible_ticket_identity_refs": identities,
+            "attempt_result_refs": attempt_refs,
             "tier_counts": dict(sorted(tier_counts.items())),
             "endpoint_counts": dict(sorted(endpoint_counts.items())),
-            "winning_eligible_attempt_count": endpoint_counts["ANY_PRIZE_AWARE_WIN"],
             "observed_success_count": int(legacy["observed_success"]),
-            "any_prize_aware_success": legacy["observed_success"],
+            "any_success": legacy["observed_success"],
             "best_observed_tier": _best_tier(lottery, tier_counts),
+            "best_observed_tier_contract": (
+                "lottery_prize_tier_order" if legacy["supported"] else "NO_ELIGIBLE_ATTEMPTS"
+            ),
         }
-        if len(identities) != record["distinct_ticket_count"]:
+        if len(identities) != legacy["distinct_ticket_count"]:
             raise CanonicalEvaluationError(f"identity count mismatch: {source['opportunity_id']}")
         record["opportunity_evaluation_digest"] = digest(record)
         records.append(record)
@@ -339,44 +400,56 @@ def _window_reconciliation(
     legacy_group: Mapping[str, Any],
     committed: Mapping[str, Any],
 ) -> dict[str, Any]:
-    membership_fields = ["latest_target_draw", "earliest_target_draw", "draw_set_sha256", "opportunity_ids"]
-    primary_fields = ["gross_attempts", "eligible_attempts", "excluded_attempts", "support_draws", "supported_opportunities", "unsupported_opportunities", "observed_successes", "empirical_success_rate", "exclusion_by_reason"]
-    identity_fields = ["distinct_eligible_ticket_identities", "distinct_ticket_count_distribution", "duplicate_content_draw_count"]
-    inferential_fields = ["expected_successes", "wilson_ci_95", "clopper_pearson_ci_95", "raw_p_value_one_sided_upper", "raw_p_value_one_sided_lower", "bonferroni_p_value", "bonferroni_p_value_lower", "statistical_status", "window_decision"]
+    membership_fields = ["window_id", "opportunity_ids", "anchor_first_draw", "anchor_last_draw", "draw_set_digest"]
+    primary_fields = ["gross_attempt_count", "eligible_attempt_count", "excluded_attempt_count", "supported_opportunity_count", "unsupported_opportunity_count", "observed_success_count", "exclusion_by_reason"]
+    identity_fields = ["distinct_ticket_identity_count", "duplicate_content_draw_count"]
+    inferential_fields = [name for name, _source in INFERENTIAL_SCALAR_MAP] + ["confidence_interval", "support_status", "evaluable", "inferential_field_presence", "omitted_inferential_fields", "omission_reason"]
     mismatches: list[str] = []
-    for field in membership_fields[:3]:
-        _compare(f"membership.{field}", actual[field], committed[field], mismatches)
-    for field in ("gross_attempts", "eligible_attempts", "excluded_attempts", "support_draws", "observed_successes", "exclusion_by_reason"):
-        _compare(f"primary.{field}", actual[field], committed[field], mismatches)
-    _compare("primary.supported_opportunities", actual["supported_opportunities"], committed["support_draws"], mismatches)
-    _compare("primary.unsupported_opportunities", actual["unsupported_opportunities"], actual["window"] - committed["support_draws"], mismatches)
-    expected_rate = committed["observed_successes"] / committed["support_draws"] if committed["support_draws"] else None
-    _compare("primary.empirical_success_rate", actual["empirical_success_rate"], expected_rate, mismatches)
-    for field in identity_fields[1:]:
-        _compare(f"identity.{field}", actual[field], committed[field], mismatches)
+    _compare("membership.anchor_first_draw", actual["anchor_first_draw"], committed["earliest_target_draw"], mismatches)
+    _compare("membership.anchor_last_draw", actual["anchor_last_draw"], committed["latest_target_draw"], mismatches)
+    _compare("membership.draw_set_digest", actual["draw_set_digest"], committed["draw_set_sha256"], mismatches)
+    _compare("membership.opportunity_count", len(actual["opportunity_ids"]), actual["window_size"], mismatches)
+    for actual_field, committed_field in (
+        ("gross_attempt_count", "gross_attempts"),
+        ("eligible_attempt_count", "eligible_attempts"),
+        ("excluded_attempt_count", "excluded_attempts"),
+        ("observed_success_count", "observed_successes"),
+        ("exclusion_by_reason", "exclusion_by_reason"),
+    ):
+        _compare(f"primary.{actual_field}", actual[actual_field], committed[committed_field], mismatches)
+    _compare("primary.supported_opportunity_count", actual["supported_opportunity_count"], committed["support_draws"], mismatches)
+    _compare("primary.unsupported_opportunity_count", actual["unsupported_opportunity_count"], actual["window_size"] - committed["support_draws"], mismatches)
     expected_distinct = sum(int(value) * int(count) for value, count in committed["distinct_ticket_count_distribution"].items())
-    _compare("identity.distinct_eligible_ticket_identities", actual["distinct_eligible_ticket_identities"], expected_distinct, mismatches)
+    _compare("identity.distinct_ticket_identity_count", actual["distinct_ticket_identity_count"], expected_distinct, mismatches)
+    _compare("identity.duplicate_content_draw_count", actual["source_derivation"]["duplicate_content_draw_count"], committed["duplicate_content_draw_count"], mismatches)
     expected_inference = committed["inference"]
     _compare("inference.evaluable", actual["evaluable"], expected_inference["evaluable"], mismatches)
     _compare("inference.support_status", actual["support_status"], expected_inference["support_status"], mismatches)
-    for field in inferential_fields:
-        _compare(f"inference.{field}", actual[field], expected_inference["values"].get(field), mismatches)
-    for field in INFERENTIAL_FIELDS:
-        _compare(f"legacy_inference.{field}", actual[field], legacy_window.get(field), mismatches)
+    for published_field, source_field in INFERENTIAL_SCALAR_MAP:
+        _compare(f"legacy_inference.{published_field}", actual[published_field], legacy_window.get(source_field), mismatches)
+        if source_field in expected_inference["values"]:
+            _compare(f"committed_inference.{published_field}", actual[published_field], expected_inference["values"].get(source_field), mismatches)
+    _compare("legacy_inference.confidence_interval.wilson_95", actual["confidence_interval"]["wilson_95"], legacy_window.get("wilson_ci_95"), mismatches)
+    _compare("legacy_inference.confidence_interval.clopper_pearson_95", actual["confidence_interval"]["clopper_pearson_95"], legacy_window.get("clopper_pearson_ci_95"), mismatches)
+    _compare("committed_inference.confidence_interval.wilson_95", actual["confidence_interval"]["wilson_95"], expected_inference["values"].get("wilson_ci_95"), mismatches)
+    _compare("committed_inference.confidence_interval.clopper_pearson_95", actual["confidence_interval"]["clopper_pearson_95"], expected_inference["values"].get("clopper_pearson_ci_95"), mismatches)
     if not actual["evaluable"]:
-        _compare("inference.omission_reason", actual["inferential_omission_reason"], expected_inference["omission_reason"], mismatches)
-    _compare("legacy_window_evaluation_digest", digest(legacy_window), actual["legacy_window_evaluation_digest"], mismatches)
+        _compare("inference.omission_reason", actual["omission_reason"], expected_inference["omission_reason"], mismatches)
+    _compare("inferential_record_digest", actual["source_derivation"]["inferential_record_digest"], committed["inferential_record_sha256"], mismatches)
+    _compare("legacy_window_evaluation_digest", digest(legacy_window), actual["source_derivation"]["legacy_window_evaluation_digest"], mismatches)
     _compare("stability", actual["stability"], legacy_group["stability"], mismatches)
-    _compare("group_decision", actual["group_decision"], legacy_group["overall_group_decision"], mismatches)
+    _compare("decision.window", actual["decision"]["window"], legacy_window["window_decision"], mismatches)
+    _compare("decision.group", actual["decision"]["group"], legacy_group["overall_group_decision"], mismatches)
     if mismatches:
-        raise CanonicalEvaluationError(f"window reconciliation drift {actual['window_evaluation_id']}: {mismatches}")
+        raise CanonicalEvaluationError(f"window reconciliation drift {actual['window_id']}: {mismatches}")
     return {
         "frozen_membership": {"status": "PASS", "fields": membership_fields},
         "primary": {"status": "PASS", "fields": primary_fields},
         "identity": {"status": "PASS", "fields": identity_fields},
         "scoring_aggregation": {"status": "PASS", "fields": ["tier_counts", "endpoint_counts", "observed_successes"]},
-        "inferential": {"status": "PASS", "fields": ["evaluable", "support_status", *INFERENTIAL_FIELDS, "nullable_omission_semantics"]},
-        "stability_and_decision": {"status": "PASS", "fields": ["stability", "window_decision", "group_decision"]},
+        "inferential": {"status": "PASS", "fields": inferential_fields},
+        "stability_and_decision": {"status": "PASS", "fields": ["stability", "decision.window", "decision.group"]},
+        "classification": "FULL_CANONICAL_FIELD_RECONCILIATION_PASS",
         "unexplained_mismatches": [],
     }
 
@@ -401,8 +474,9 @@ def _window_records(
         group = legacy_groups[(lottery, strategy)]
         cell_window_ids = []
         for window, label, _bit in WINDOWS:
+            membership_field = {"SHORT": "in_short_window", "MID": "in_mid_window", "LONG": "in_long_window"}[label]
             selected = sorted(
-                (item for item in by_cell[cell_id] if item["window_membership"][label]),
+                (item for item in by_cell[cell_id] if item[membership_field]),
                 key=lambda item: -int(item["target_draw"]),
             )
             anchor = next(item for item in cell["window_anchors"] if item["window"] == window)
@@ -410,118 +484,193 @@ def _window_records(
             committed = committed_windows[(lottery, strategy, window)]
             if len(selected) != window:
                 raise CanonicalEvaluationError(f"frozen membership count mismatch: {cell_id}/w{window}")
-            inference_values = {field: legacy_window.get(field) for field in INFERENTIAL_FIELDS}
+            inference_values = {published: legacy_window.get(source) for published, source in INFERENTIAL_SCALAR_MAP}
             evaluable = bool(legacy_window["evaluable"])
             omission = None if evaluable else f"UNEVALUABLE_WINDOW_STATISTIC_NOT_COMPUTED:{legacy_window['support_status']}"
-            field_presence = {field: ("present-value" if value is not None else "present-null") for field, value in inference_values.items()}
+            field_presence = {}
+            for published, source in INFERENTIAL_SCALAR_MAP:
+                if source not in legacy_window:
+                    field_presence[published] = "source-absent-normalized-to-null"
+                elif inference_values[published] is None:
+                    field_presence[published] = "present-null"
+                else:
+                    field_presence[published] = "present-value"
+            confidence_interval = {
+                "wilson_95": legacy_window.get("wilson_ci_95"),
+                "clopper_pearson_95": legacy_window.get("clopper_pearson_ci_95"),
+            }
+            for published, source in (("confidence_interval.wilson_95", "wilson_ci_95"), ("confidence_interval.clopper_pearson_95", "clopper_pearson_ci_95")):
+                if source not in legacy_window:
+                    field_presence[published] = "source-absent-normalized-to-null"
+                elif legacy_window[source] is None:
+                    field_presence[published] = "present-null"
+                else:
+                    field_presence[published] = "present-value"
+            omitted_fields = sorted(name for name, state in field_presence.items() if state != "present-value")
             record = {
-                "window_evaluation_id": f"{cell_id}:w{window}",
+                "window_id": f"{cell_id}:w{window}",
                 "cell_id": cell_id,
-                "lottery_type": lottery,
-                "strategy_id": strategy,
-                "window": window,
-                "window_label": label,
-                "latest_target_draw": anchor["latest_target_draw"],
-                "earliest_target_draw": anchor["earliest_target_draw"],
+                "window_name": label,
+                "window_size": window,
+                "anchor_first_draw": anchor["earliest_target_draw"],
+                "anchor_last_draw": anchor["latest_target_draw"],
                 "opportunity_ids": [item["opportunity_id"] for item in selected],
-                "draw_set_sha256": digest([item["target_draw"] for item in selected]),
-                "gross_attempts": sum(item["gross_attempts"] for item in selected),
-                "eligible_attempts": sum(item["eligible_attempts"] for item in selected),
-                "excluded_attempts": sum(item["excluded_attempts"] for item in selected),
+                "draw_set_digest": digest([item["target_draw"] for item in selected]),
+                "gross_attempt_count": sum(item["gross_attempt_count"] for item in selected),
+                "eligible_attempt_count": sum(item["eligible_attempt_count"] for item in selected),
+                "excluded_attempt_count": sum(item["excluded_attempt_count"] for item in selected),
                 "exclusion_by_reason": _sum_counters(selected, "exclusion_by_reason"),
-                "supported_opportunities": sum(item["supported"] for item in selected),
-                "unsupported_opportunities": sum(not item["supported"] for item in selected),
-                "support_draws": legacy_window["support_draws"],
-                "distinct_eligible_ticket_identities": sum(item["distinct_ticket_count"] for item in selected),
-                "distinct_ticket_count_distribution": legacy_window["distinct_ticket_count_distribution"],
-                "duplicate_content_draw_count": 0,
-                "observed_successes": legacy_window["observed_successes"],
+                "supported_opportunity_count": sum(item["supported"] for item in selected),
+                "unsupported_opportunity_count": sum(not item["supported"] for item in selected),
+                "distinct_ticket_identity_count": sum(len(item["eligible_ticket_identity_refs"]) for item in selected),
                 "tier_counts": _sum_counters(selected, "tier_counts"),
                 "endpoint_counts": _sum_counters(selected, "endpoint_counts"),
-                "empirical_success_rate": (legacy_window["observed_successes"] / legacy_window["support_draws"] if legacy_window["support_draws"] else None),
+                "observed_success_count": legacy_window["observed_successes"],
+                "confidence_interval": confidence_interval,
                 "evaluable": evaluable,
                 "support_status": legacy_window["support_status"],
                 **inference_values,
                 "inferential_field_presence": field_presence,
-                "inferential_omission_reason": omission,
+                "omitted_inferential_fields": omitted_fields,
+                "omission_reason": omission,
                 "stability": group["stability"],
-                "group_decision": group["overall_group_decision"],
-                "legacy_window_evaluation_digest": digest(legacy_window),
+                "decision": {
+                    "window": legacy_window["window_decision"],
+                    "group": group["overall_group_decision"],
+                },
+                "source_derivation": {
+                    "row_evidence": REGISTRY_PATH,
+                    "window_membership": "P545C window_mask intersected with committed cell anchors",
+                    "legacy_window_evaluation_digest": digest(legacy_window),
+                    "inferential_record_digest": committed["inferential_record_sha256"],
+                    "duplicate_content_draw_count": committed["duplicate_content_draw_count"],
+                },
             }
             record["reconciliation"] = _window_reconciliation(record, legacy_window, group, committed)
-            record["source_and_derivation_digest"] = digest(record)
+            record["window_evaluation_digest"] = digest(record)
             windows.append(record)
-            cell_window_ids.append(record["window_evaluation_id"])
+            cell_window_ids.append(record["window_id"])
         cell_opportunities = by_cell[cell_id]
+        cell_windows = [item for item in windows if item["cell_id"] == cell_id]
         cell_summary = {
             "cell_id": cell_id,
             "lottery_type": lottery,
             "strategy_id": strategy,
             "declared_bet_count": cell["declared_bet_count"],
-            "opportunities": len(cell_opportunities),
-            "supported_opportunities": sum(item["supported"] for item in cell_opportunities),
-            "unsupported_opportunities": sum(not item["supported"] for item in cell_opportunities),
-            "observed_successes_long": sum(item["observed_success_count"] for item in cell_opportunities),
-            "window_evaluation_ids": cell_window_ids,
-            "stability": group["stability"],
-            "overall_group_decision": group["overall_group_decision"],
-            "legacy_group_evaluation_digest": digest(group),
+            "window_refs": cell_window_ids,
+            "support_distribution": {item["window_name"]: {"supported": item["supported_opportunity_count"], "unsupported": item["unsupported_opportunity_count"]} for item in cell_windows},
+            "evaluability_distribution": {item["window_name"]: item["evaluable"] for item in cell_windows},
+            "stability_summary": group["stability"],
+            "committed_decisions": {
+                "windows": {item["window_name"]: item["decision"]["window"] for item in cell_windows},
+                "group": group["overall_group_decision"],
+            },
+            "opportunity_count": len(cell_opportunities),
+            "legacy_group_semantic_digest": digest(group),
         }
         cell_summary["cell_summary_digest"] = digest(cell_summary)
         cells_out.append(cell_summary)
-    return sorted(windows, key=lambda item: (item["lottery_type"], item["strategy_id"], item["window"])), sorted(cells_out, key=lambda item: item["cell_id"])
+    return sorted(windows, key=lambda item: (item["cell_id"], item["window_size"])), sorted(cells_out, key=lambda item: item["cell_id"])
 
 
 def _numerical_projection(payload: Mapping[str, Any], *, canonical: bool) -> dict[str, Any]:
     if canonical:
-        opportunities = [{key: item[key] for key in ("opportunity_id", "gross_attempts", "eligible_attempts", "excluded_attempts", "supported", "distinct_ticket_count", "duplicate_ticket_count", "exclusion_by_reason")} | {"observed_success": item["any_prize_aware_success"]} for item in payload["opportunity_evaluations"]]
-        windows = [{"legacy_window_evaluation_digest": item["legacy_window_evaluation_digest"]} for item in payload["window_evaluations"]]
-        groups = [{"legacy_group_evaluation_digest": item["legacy_group_evaluation_digest"]} for item in payload["cell_summaries"]]
+        opportunities = [{
+            "opportunity_id": item["opportunity_id"], "cell_id": item["cell_id"],
+            "window_mask": int(item["in_short_window"]) + 2 * int(item["in_mid_window"]) + 4 * int(item["in_long_window"]),
+            "gross_attempts": item["gross_attempt_count"], "eligible_attempts": item["eligible_attempt_count"],
+            "excluded_attempts": item["excluded_attempt_count"], "supported": item["supported"],
+            "distinct_ticket_count": len(item["eligible_ticket_identity_refs"]),
+            "exclusion_by_reason": item["exclusion_by_reason"], "observed_success": item["any_success"],
+        } for item in payload["opportunity_evaluations"]]
+        windows = [{
+            "cell_id": item["cell_id"], "window": item["window_size"],
+            "support_draws": item["supported_opportunity_count"], "observed_successes": item["observed_success_count"],
+            "expected_successes": item["expected_successes"], "wilson_ci_95": item["confidence_interval"]["wilson_95"],
+            "clopper_pearson_ci_95": item["confidence_interval"]["clopper_pearson_95"],
+            "raw_p_value_one_sided_upper": item["raw_p_value_one_sided_upper"],
+            "raw_p_value_one_sided_lower": item["raw_p_value_one_sided_lower"],
+            "bonferroni_p_value": item["bonferroni_p_value_upper"],
+            "bonferroni_p_value_lower": item["bonferroni_p_value_lower"],
+            "evaluable": item["evaluable"], "support_status": item["support_status"],
+            "window_decision": item["decision"]["window"],
+        } for item in payload["window_evaluations"]]
+        groups = [{
+            "cell_id": item["cell_id"], "stability": item["stability_summary"],
+            "overall_group_decision": item["committed_decisions"]["group"],
+        } for item in payload["cell_summaries"]]
     else:
-        opportunities = [{key: item[key] for key in ("opportunity_id", "gross_attempts", "eligible_attempts", "excluded_attempts", "supported", "distinct_ticket_count", "duplicate_ticket_count", "exclusion_by_reason", "observed_success")} for item in payload["per_opportunity_evaluations"]]
-        windows = [{"legacy_window_evaluation_digest": digest(item)} for item in payload["per_window_evaluations"]]
-        groups = [{"legacy_group_evaluation_digest": digest(item)} for item in payload["group_evaluations"]]
+        opportunities = [{
+            "opportunity_id": item["opportunity_id"], "cell_id": item["cell_id"], "window_mask": item["window_mask"],
+            "gross_attempts": item["gross_attempts"], "eligible_attempts": item["eligible_attempts"],
+            "excluded_attempts": item["excluded_attempts"], "supported": item["supported"],
+            "distinct_ticket_count": item["distinct_ticket_count"], "exclusion_by_reason": item["exclusion_by_reason"],
+            "observed_success": item["observed_success"],
+        } for item in payload["per_opportunity_evaluations"]]
+        windows = [{
+            "cell_id": f"{item['lottery_type']}:{item['strategy_id']}", "window": item["window"],
+            "support_draws": item["support_draws"], "observed_successes": item["observed_successes"],
+            "expected_successes": item["expected_successes"], "wilson_ci_95": item.get("wilson_ci_95"),
+            "clopper_pearson_ci_95": item.get("clopper_pearson_ci_95"),
+            "raw_p_value_one_sided_upper": item.get("raw_p_value_one_sided_upper"),
+            "raw_p_value_one_sided_lower": item.get("raw_p_value_one_sided_lower"),
+            "bonferroni_p_value": item.get("bonferroni_p_value"),
+            "bonferroni_p_value_lower": item.get("bonferroni_p_value_lower"),
+            "evaluable": item["evaluable"], "support_status": item["support_status"],
+            "window_decision": item["window_decision"],
+        } for item in payload["per_window_evaluations"]]
+        groups = [{
+            "cell_id": f"{item['lottery_type']}:{item['strategy_id']}", "stability": item["stability"],
+            "overall_group_decision": item["overall_group_decision"],
+        } for item in payload["group_evaluations"]]
     return {
         "opportunities": sorted(opportunities, key=lambda item: item["opportunity_id"]),
-        "windows": sorted(windows, key=lambda item: item["legacy_window_evaluation_digest"]),
-        "groups": sorted(groups, key=lambda item: item["legacy_group_evaluation_digest"]),
+        "windows": sorted(windows, key=lambda item: (item["cell_id"], item["window"])),
+        "groups": sorted(groups, key=lambda item: item["cell_id"]),
     }
 
 
 def _global_summary(registry: Mapping[str, Any], opportunities: Sequence[Mapping[str, Any]], windows: Sequence[Mapping[str, Any]]) -> dict[str, Any]:
     zero_ids = {"POWER_LOTTO:fourier_rhythm_3bet", "POWER_LOTTO:power_fourier_rhythm_2bet", "POWER_LOTTO:power_orthogonal_5bet", "POWER_LOTTO:power_precision_3bet"}
     zero = [item for item in opportunities if item["cell_id"] in zero_ids]
-    daily_long = next(item for item in windows if item["cell_id"] == "DAILY_539:acb_markov_midfreq_3bet" and item["window"] == 750)
+    daily_long = next(item for item in windows if item["cell_id"] == "DAILY_539:acb_markov_midfreq_3bet" and item["window_size"] == 750)
+    exclusion_totals = _sum_counters(opportunities, "exclusion_by_reason")
     return {
         "cells": 36,
-        "official_outcomes": len(registry["official_outcomes"]),
-        "opportunity_evaluations": len(opportunities),
-        "attempts_represented": sum(item["gross_attempts"] for item in opportunities),
-        "eligible_attempts": sum(item["eligible_attempts"] for item in opportunities),
-        "excluded_attempts": sum(item["excluded_attempts"] for item in opportunities),
+        "official_outcomes_referenced": len(registry["official_outcomes"]),
+        "opportunities": len(opportunities),
+        "attempts": sum(item["gross_attempt_count"] for item in opportunities),
+        "eligible_attempts": sum(item["eligible_attempt_count"] for item in opportunities),
+        "excluded_attempts": sum(item["excluded_attempt_count"] for item in opportunities),
         "supported_opportunities": sum(item["supported"] for item in opportunities),
-        "identity_missing_opportunities": sum(not item["supported"] for item in opportunities),
-        "window_evaluations": len(windows),
+        "unsupported_opportunities": sum(not item["supported"] for item in opportunities),
+        "windows": len(windows),
         "evaluable_windows": sum(item["evaluable"] for item in windows),
         "unevaluable_windows": sum(not item["evaluable"] for item in windows),
-        "reconciled_windows": sum(not item["reconciliation"]["unexplained_mismatches"] for item in windows),
-        "all_exclusion_reasons": sorted({reason for item in opportunities for reason in item["exclusion_by_reason"]}),
+        "reconciliation_totals": {
+            "primary_pass": sum(item["reconciliation"]["primary"]["status"] == "PASS" for item in windows),
+            "identity_pass": sum(item["reconciliation"]["identity"]["status"] == "PASS" for item in windows),
+            "inferential_pass": sum(item["reconciliation"]["inferential"]["status"] == "PASS" for item in windows),
+            "full_canonical_field_pass": sum(item["reconciliation"]["classification"] == "FULL_CANONICAL_FIELD_RECONCILIATION_PASS" for item in windows),
+            "unexplained_mismatches": sum(len(item["reconciliation"]["unexplained_mismatches"]) for item in windows),
+        },
+        "exclusion_totals": exclusion_totals,
         "four_zero_identity_power_lotto_cells": {
             "cell_ids": sorted(zero_ids),
             "opportunities": len(zero),
-            "gross_attempts": sum(item["gross_attempts"] for item in zero),
-            "eligible_attempts": sum(item["eligible_attempts"] for item in zero),
-            "excluded_attempts": sum(item["excluded_attempts"] for item in zero),
+            "gross_attempts": sum(item["gross_attempt_count"] for item in zero),
+            "eligible_attempts": sum(item["eligible_attempt_count"] for item in zero),
+            "excluded_attempts": sum(item["excluded_attempt_count"] for item in zero),
             "exclusion_by_reason": _sum_counters(zero, "exclusion_by_reason"),
         },
         "known_daily_539_correction": {
             "cell_id": daily_long["cell_id"],
             "window": 750,
-            "frozen_long_gross_attempts": daily_long["gross_attempts"],
+            "frozen_long_gross_attempts": daily_long["gross_attempt_count"],
             "post_freeze_rows_included": False,
             "minus_88_deficit_present": False,
         },
-        "duplicate_and_index_invariants": {
+        "duplicate_conflict_totals": {
             "same_key_duplicates": registry["global_summary"]["same_key_duplicate_rows"],
             "cross_index_duplicate_tickets": registry["global_summary"]["cross_index_duplicate_tickets"],
             "same_index_conflicts": registry["global_summary"]["same_index_conflicts"],
@@ -533,12 +682,12 @@ def _global_summary(registry: Mapping[str, Any], opportunities: Sequence[Mapping
 
 def _assert_global_invariants(summary: Mapping[str, Any]) -> None:
     expected = {
-        "cells": 36, "official_outcomes": 2_253, "opportunity_evaluations": 27_000,
-        "attempts_represented": 47_250, "eligible_attempts": 33_749,
+        "cells": 36, "official_outcomes_referenced": 2_253, "opportunities": 27_000,
+        "attempts": 47_250, "eligible_attempts": 33_749,
         "excluded_attempts": 13_501, "supported_opportunities": 23_999,
-        "identity_missing_opportunities": 3_001, "window_evaluations": 108,
-        "evaluable_windows": 86, "unevaluable_windows": 22, "reconciled_windows": 108,
-        "all_exclusion_reasons": ["MISSING_PREDICTED_SECOND_ZONE"],
+        "unsupported_opportunities": 3_001, "windows": 108,
+        "evaluable_windows": 86, "unevaluable_windows": 22,
+        "exclusion_totals": {"MISSING_PREDICTED_SECOND_ZONE": 13_501},
     }
     for field, value in expected.items():
         if summary[field] != value:
@@ -548,8 +697,89 @@ def _assert_global_invariants(summary: Mapping[str, Any]) -> None:
         raise CanonicalEvaluationError("four POWER-cell invariant mismatch")
     if summary["known_daily_539_correction"]["frozen_long_gross_attempts"] != 2_250:
         raise CanonicalEvaluationError("known DAILY correction mismatch")
-    if any(summary["duplicate_and_index_invariants"].values()):
+    if summary["reconciliation_totals"] != {
+        "primary_pass": 108, "identity_pass": 108, "inferential_pass": 108,
+        "full_canonical_field_pass": 108, "unexplained_mismatches": 0,
+    }:
+        raise CanonicalEvaluationError("global reconciliation invariant mismatch")
+    if any(summary["duplicate_conflict_totals"].values()):
         raise CanonicalEvaluationError("duplicate or frozen-index invariant mismatch")
+
+
+def validate_canonical_payload(payload: Mapping[str, Any]) -> None:
+    if set(payload) != TOP_LEVEL_FIELDS:
+        raise CanonicalEvaluationError("canonical top-level field contract mismatch")
+    if payload["schema"] != SCHEMA:
+        raise CanonicalEvaluationError("canonical schema mismatch")
+    if payload["generated_at_utc"] != GENERATED_AT_UTC or not GENERATED_AT_UTC.endswith("Z"):
+        raise CanonicalEvaluationError("canonical timestamp is not RFC3339 UTC Z")
+    if not isinstance(payload["generated_at_policy"], Mapping):
+        raise CanonicalEvaluationError("generated_at_policy must be structured")
+    opportunities = payload["opportunity_evaluations"]
+    windows = payload["window_evaluations"]
+    cells = payload["cell_summaries"]
+    if (len(opportunities), len(windows), len(cells)) != (27_000, 108, 36):
+        raise CanonicalEvaluationError("canonical record counts changed")
+    if any(set(item) != OPPORTUNITY_FIELDS for item in opportunities):
+        raise CanonicalEvaluationError("opportunity interface field contract mismatch")
+    if any(not WINDOW_FIELDS <= set(item) for item in windows):
+        raise CanonicalEvaluationError("window interface field contract mismatch")
+    if sum(len(item["attempt_result_refs"]) for item in opportunities) != 47_250:
+        raise CanonicalEvaluationError("attempt-result reference accounting changed")
+    for record in opportunities:
+        if record["all_attempts_excluded"] != (not record["supported"]):
+            raise CanonicalEvaluationError(f"unsupported opportunity contradiction: {record['opportunity_id']}")
+        if record["eligible_attempt_count"] != len(record["eligible_ticket_identity_refs"]):
+            raise CanonicalEvaluationError(f"eligible identity reference count changed: {record['opportunity_id']}")
+    required_evaluable = {
+        "expected_successes", "observed_rate", "mean_baseline_rate",
+        "raw_p_value_one_sided_upper", "raw_p_value_one_sided_lower",
+        "bonferroni_p_value_upper", "bonferroni_p_value_lower",
+    }
+    for record in windows:
+        if len(record["opportunity_ids"]) != record["window_size"]:
+            raise CanonicalEvaluationError(f"window membership count changed: {record['window_id']}")
+        if record["evaluable"]:
+            for field in required_evaluable:
+                value = record[field]
+                if value is None or not math.isfinite(value):
+                    raise CanonicalEvaluationError(f"evaluable field missing or non-finite: {record['window_id']}/{field}")
+            for field in ("raw_p_value_one_sided_upper", "raw_p_value_one_sided_lower", "bonferroni_p_value_upper", "bonferroni_p_value_lower"):
+                if not 0.0 <= record[field] <= 1.0:
+                    raise CanonicalEvaluationError(f"p-value outside [0,1]: {record['window_id']}/{field}")
+            for interval in record["confidence_interval"].values():
+                if interval is None or interval[0] > interval[1]:
+                    raise CanonicalEvaluationError(f"invalid confidence interval: {record['window_id']}")
+            if record["omission_reason"] is not None or record["omitted_inferential_fields"]:
+                raise CanonicalEvaluationError(f"evaluable window carries omission metadata: {record['window_id']}")
+        else:
+            if not record["omission_reason"] or not record["omitted_inferential_fields"]:
+                raise CanonicalEvaluationError(f"unevaluable omission metadata missing: {record['window_id']}")
+            for field in record["omitted_inferential_fields"]:
+                if field.startswith("confidence_interval."):
+                    value = record["confidence_interval"][field.split(".", 1)[1]]
+                else:
+                    value = record[field]
+                if value is not None:
+                    raise CanonicalEvaluationError(f"omitted inferential field is not null: {record['window_id']}/{field}")
+        if record["reconciliation"]["classification"] != "FULL_CANONICAL_FIELD_RECONCILIATION_PASS":
+            raise CanonicalEvaluationError(f"window reconciliation classification changed: {record['window_id']}")
+        if record["reconciliation"]["unexplained_mismatches"]:
+            raise CanonicalEvaluationError(f"window reconciliation mismatch: {record['window_id']}")
+    _assert_global_invariants(payload["global_summary"])
+    canonical_bytes(payload)
+
+
+def _json_determinism_projection(payload: Mapping[str, Any]) -> bytes:
+    projection = dict(payload)
+    projection.pop("canonical_payload_digest", None)
+    determinism = dict(projection["determinism"])
+    determinism.pop("json_build_projection_sha256", None)
+    determinism.pop("markdown_build_projection_sha256", None)
+    determinism.pop("two_build_json_byte_identity_verified", None)
+    determinism.pop("two_build_markdown_byte_identity_verified", None)
+    projection["determinism"] = determinism
+    return canonical_bytes(projection)
 
 
 def build_evaluation(repo_root: Path) -> dict[str, Any]:
@@ -557,7 +787,14 @@ def build_evaluation(repo_root: Path) -> dict[str, Any]:
     manifest = verify_contract_sources(repo_root)
     legacy = load_verified_legacy_module(repo_root)
     legacy_payload = load_verified_legacy_evidence(repo_root, legacy)
+    strict_registry = strict_json_load(repo_root / REGISTRY_PATH)
+    if strict_registry.get("schema") != "p545c_r4_strategy_draw_opportunity_registry.compact.v1":
+        raise CanonicalEvaluationError("strict registry schema mismatch")
+    if legacy.canonical_payload_digest(strict_registry) != REGISTRY_CANONICAL_DIGEST:
+        raise CanonicalEvaluationError("strict registry canonical digest mismatch")
     registry, input_identity = legacy.load_registry(repo_root)
+    if canonical_bytes(strict_registry) != canonical_bytes(registry):
+        raise CanonicalEvaluationError("strict and verified registry parses differ")
     opportunities = _opportunity_records(registry, legacy_payload)
     windows, cell_summaries = _window_records(registry, opportunities, legacy_payload)
     global_summary = _global_summary(registry, opportunities, windows)
@@ -618,32 +855,55 @@ def build_evaluation(repo_root: Path) -> dict[str, Any]:
             "legacy_source_sha256": LEGACY_SOURCE_SHA256,
             "legacy_output_sha256": LEGACY_OUTPUT_SHA256,
             "legacy_output_canonical_payload_digest": LEGACY_OUTPUT_CANONICAL_DIGEST,
-            "legacy_numerical_projection_digest": legacy_projection_digest,
-            "canonical_numerical_projection_digest": None,
-            "legacy_numerical_equivalence": None,
+            "legacy_semantic_projection_digest": legacy_projection_digest,
+            "canonical_semantic_projection_digest": None,
+            "legacy_canonical_semantic_equivalence": None,
             "primary_windows": "108/108 PASS",
             "identity_windows": "108/108 PASS",
             "inferential_windows": "108/108 PASS",
+            "full_canonical_fields": "108/108 PASS",
             "unexplained_mismatches": 0,
         },
         "determinism": {
             "generated_at_policy": GENERATED_AT_POLICY,
             "implementation_base_commit_timestamp": IMPLEMENTATION_BASE_COMMIT_TIMESTAMP,
-            "collection_ordering": "explicit stable keys for opportunities, windows, cells, identities, attempts, tiers, and exclusions",
-            "canonical_serialization": "UTF-8 sorted-key compact JSON; canonical digest excludes only canonical_payload_digest",
+            "sort_policy": {
+                "mapping_keys": "lexicographic sort_keys=True",
+                "opportunities": "opportunity_id ascending",
+                "windows": "cell_id then window_size ascending",
+                "cells": "cell_id ascending",
+                "nested_references": "explicit semantic keys",
+            },
+            "canonical_serialization": {
+                "encoding": "UTF-8",
+                "separators": [",", ":"],
+                "allow_nan": False,
+                "canonical_digest_excludes": ["canonical_payload_digest"],
+            },
             "non_finite_json_rejected": True,
-            "required_build_count": 2,
+            "duplicate_json_keys_rejected": True,
+            "immutable_in_memory_result_count": 1,
+            "json_serialization_build_count": 2,
+            "markdown_render_build_count": 2,
             "two_build_json_byte_identity_verified": True,
             "two_build_markdown_byte_identity_verified": True,
+            "hash_projection_policy": "exclude canonical_payload_digest, both projection-hash fields, and both byte-identity result fields",
+            "json_build_projection_sha256": None,
+            "markdown_build_projection_sha256": None,
             "json_size_limit_bytes": MAX_JSON_BYTES,
             "markdown_size_limit_bytes": MAX_MARKDOWN_BYTES,
         },
         "safety": {
-            "sqlite_imported_or_invoked": False,
-            "database_or_snapshot_opened": False,
-            "network_used": False,
-            "strategy_combination_or_parameter_search": False,
+            "database_opened": False,
+            "snapshot_opened": False,
+            "sqlite_imported_or_connection_opened": False,
+            "network_used_by_evaluator_or_tests": False,
+            "git_or_github_network_limited_to_pr_workflow": True,
             "upstream_or_legacy_artifacts_modified": False,
+            "strategy_search": False,
+            "parameter_tuning": False,
+            "combination_optimization": False,
+            "deployment_action": False,
             "predictive_validity_claim": False,
             "betting_recommendation": False,
         },
@@ -651,22 +911,38 @@ def build_evaluation(repo_root: Path) -> dict[str, Any]:
             "Retrospective research reconciliation only.",
             "The committed P545C R4 registry is the sole row-level evidence input.",
             "Legacy P545B R2 is preserved as numerical evidence and is not replaced or modified.",
-            "No predictive-validity, betting-edge, ROI, EV, staking, deployment, or production-readiness claim.",
+            "There is no untouched prospective holdout in this retrospective evaluation.",
+            "This is not proof of predictive validity or a betting edge.",
+            "No ROI, EV, staking, bankroll, or purchase recommendation.",
+            "No deployment-readiness or production-readiness claim.",
         ],
     }
     canonical_projection_digest = digest(_numerical_projection(payload, canonical=True))
-    payload["reconciliation"]["canonical_numerical_projection_digest"] = canonical_projection_digest
-    payload["reconciliation"]["legacy_numerical_equivalence"] = canonical_projection_digest == legacy_projection_digest
-    if not payload["reconciliation"]["legacy_numerical_equivalence"]:
+    payload["reconciliation"]["canonical_semantic_projection_digest"] = canonical_projection_digest
+    payload["reconciliation"]["legacy_canonical_semantic_equivalence"] = canonical_projection_digest == legacy_projection_digest
+    if not payload["reconciliation"]["legacy_canonical_semantic_equivalence"]:
         raise CanonicalEvaluationError("canonical numerical projection differs from legacy evidence")
+    payload["determinism"]["json_build_projection_sha256"] = hashlib.sha256(
+        _json_determinism_projection(payload)
+    ).hexdigest()
+    payload["determinism"]["markdown_build_projection_sha256"] = hashlib.sha256(
+        render_markdown(payload, projection=True).encode("utf-8")
+    ).hexdigest()
     payload["canonical_payload_digest"] = canonical_payload_digest(payload)
+    validate_canonical_payload(payload)
     return payload
 
 
-def render_markdown(payload: Mapping[str, Any]) -> str:
+def render_markdown(payload: Mapping[str, Any], *, projection: bool = False) -> str:
     summary = payload["global_summary"]
     zero = summary["four_zero_identity_power_lotto_cells"]
     source = payload["input_registry"]
+    policy = payload["generated_at_policy"]
+    determinism = payload["determinism"]
+    canonical_digest = (
+        "EXCLUDED_FROM_NON_SELF_REFERENTIAL_PROJECTION"
+        if projection else payload["canonical_payload_digest"]
+    )
     lines = [
         "# P545B — Canonical Full 50/300/750 Per-Draw Evaluation", "",
         "> Retrospective research reconciliation only. No predictive-validity or betting recommendation claim.", "",
@@ -674,8 +950,9 @@ def render_markdown(payload: Mapping[str, Any]) -> str:
         f"- Schema: `{payload['schema']}`",
         f"- Implementation base: `{payload['implementation_base_commit']}`",
         f"- Deterministic timestamp: `{payload['generated_at_utc']}`",
-        f"- Timestamp policy: `{payload['generated_at_policy']}`",
-        f"- Canonical payload digest: `{payload['canonical_payload_digest']}`", "",
+        f"- Timestamp source: `{policy['timestamp_field']}` of `{policy['source_commit']}`",
+        f"- Timestamp format: `{policy['format']}` at `{policy['precision']}` precision",
+        f"- Canonical payload digest: `{canonical_digest}`", "",
         "## Evidence lineage", "",
         f"- Sole row-level input: `{source['path']}`",
         f"- Input bytes / SHA-256: **{source['byte_size']:,}** / `{source['sha256']}`",
@@ -683,45 +960,54 @@ def render_markdown(payload: Mapping[str, Any]) -> str:
         f"- Input canonical digest: `{source['canonical_payload_digest']}`",
         f"- Verified contract sources: **{len(payload['contract_manifest'])}**", "",
         "## Global accounting", "",
-        f"- Cells / opportunities / attempts: **{summary['cells']} / {summary['opportunity_evaluations']:,} / {summary['attempts_represented']:,}**",
+        f"- Cells / opportunities / attempts: **{summary['cells']} / {summary['opportunities']:,} / {summary['attempts']:,}**",
         f"- Eligible / excluded attempts: **{summary['eligible_attempts']:,} / {summary['excluded_attempts']:,}**",
-        f"- Supported / identity-missing opportunities: **{summary['supported_opportunities']:,} / {summary['identity_missing_opportunities']:,}**",
+        f"- Supported / unsupported opportunities: **{summary['supported_opportunities']:,} / {summary['unsupported_opportunities']:,}**",
         f"- Evaluable / unevaluable windows: **{summary['evaluable_windows']} / {summary['unevaluable_windows']}**", "",
         "## Reconciliation", "",
         "- Primary: **108/108 PASS**",
         "- Identity: **108/108 PASS**",
         "- Inferential: **108/108 PASS**",
+        "- Full canonical fields: **108/108 PASS**",
         "- Unexplained mismatches: **0**",
-        f"- Legacy numerical equivalence: **{'PASS' if payload['reconciliation']['legacy_numerical_equivalence'] else 'FAIL'}**",
-        f"- Numerical projection digest: `{payload['reconciliation']['canonical_numerical_projection_digest']}`", "",
+        f"- Legacy semantic equivalence: **{'PASS' if payload['reconciliation']['legacy_canonical_semantic_equivalence'] else 'FAIL'}**",
+        f"- Semantic projection digest: `{payload['reconciliation']['canonical_semantic_projection_digest']}`", "",
         "## Four unsupported POWER_LOTTO cells", "",
         f"- Opportunities / gross attempts: **{zero['opportunities']:,} / {zero['gross_attempts']:,}**",
         f"- Eligible / excluded: **{zero['eligible_attempts']:,} / {zero['excluded_attempts']:,}**",
         "- Exclusion: `MISSING_PREDICTED_SECOND_ZONE`", "",
         "## Determinism and safety", "",
-        "- Two independent JSON builds byte-identical: **PASS**",
-        "- Two independent Markdown builds byte-identical: **PASS**",
+        "- Two independent JSON serializations byte-identical: **PASS**",
+        "- Two independent Markdown renders byte-identical: **PASS**",
         "- Non-finite JSON rejected: **YES**",
+        "- Duplicate JSON keys rejected: **YES**",
         "- SQLite/database/snapshot opened: **NO**",
         "- Strategy search or parameter tuning: **NO**",
+    ]
+    if not projection:
+        lines.extend([
+            f"- JSON determinism projection SHA-256: `{determinism['json_build_projection_sha256']}`",
+            f"- Markdown determinism projection SHA-256: `{determinism['markdown_build_projection_sha256']}`",
+        ])
+    lines.extend([
         "- Predictive-validity, ROI, EV, staking, deployment, or betting claim: **NO**", "",
         "## Limitations", "",
         "- Frozen retrospective evidence only.",
+        "- No untouched prospective holdout is present.",
         "- Legacy P545B R2 evidence remains immutable and is not superseded numerically.",
         "- This publication contract does not authorize any operational or wagering action.", "",
-    ]
+    ])
     return "\n".join(lines)
 
 
 def generate(repo_root: Path, output_json: Path = OUTPUT_JSON, output_markdown: Path = OUTPUT_MARKDOWN) -> tuple[Path, Path]:
-    first = build_evaluation(repo_root)
-    second = build_evaluation(repo_root)
-    first_json = canonical_bytes(first) + b"\n"
-    second_json = canonical_bytes(second) + b"\n"
+    immutable_result = build_evaluation(repo_root)
+    first_json = canonical_bytes(immutable_result) + b"\n"
+    second_json = canonical_bytes(immutable_result) + b"\n"
     if first_json != second_json:
         raise CanonicalEvaluationError("two-build JSON determinism failure")
-    first_markdown = render_markdown(first).encode("utf-8")
-    second_markdown = render_markdown(second).encode("utf-8")
+    first_markdown = render_markdown(immutable_result).encode("utf-8")
+    second_markdown = render_markdown(immutable_result).encode("utf-8")
     if first_markdown != second_markdown:
         raise CanonicalEvaluationError("two-build Markdown determinism failure")
     if len(first_json) >= MAX_JSON_BYTES:

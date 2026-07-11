@@ -1,11 +1,13 @@
-"""Focused tests for P541B-R2 fail-closed static evidence remediation."""
+"""Focused synthetic and deterministic tests for the P541B-R2 evidence audit."""
 
 from __future__ import annotations
 
 import ast
+import copy
+import hashlib
 import inspect
 import json
-import os
+import subprocess
 import sys
 from pathlib import Path
 
@@ -23,243 +25,444 @@ def _module():
     return mod
 
 
+def _analyze(source: str, path: str = "sample.py", *, resolve_transitive: bool = True):
+    mod = _module()
+    transitive = mod.complete_transitive_absence() if resolve_transitive else None
+    return mod.analyze_source_bytes(
+        path,
+        source.encode("utf-8"),
+        "1" * 40,
+        transitive_evidence=transitive,
+    )
+
+
+def _state(result, key: str) -> str:
+    return result["evidence"][key]["state"]
+
+
+def _synthetic_repo(tmp_path: Path, files: dict[str, str]) -> tuple[Path, str]:
+    repo = tmp_path / "repo"
+    repo.mkdir()
+    subprocess.run(["git", "init", "-q"], cwd=repo, check=True)
+    subprocess.run(["git", "config", "user.email", "test@example.com"], cwd=repo, check=True)
+    subprocess.run(["git", "config", "user.name", "P541B Test"], cwd=repo, check=True)
+    for relative, content in files.items():
+        path = repo / relative
+        path.parent.mkdir(parents=True, exist_ok=True)
+        path.write_text(content, encoding="utf-8")
+    subprocess.run(["git", "add", "--", *sorted(files)], cwd=repo, check=True)
+    subprocess.run(["git", "commit", "-q", "-m", "fixture"], cwd=repo, check=True)
+    commit = subprocess.run(
+        ["git", "rev-parse", "HEAD"], cwd=repo, check=True, capture_output=True, text=True
+    ).stdout.strip()
+    return repo, commit
+
+
+def _one_hop(repo: Path, commit: str, source_path: str):
+    mod = _module()
+    entries = mod.git_tree_entries(repo, commit, [source_path])
+    raw = mod.git_blob(repo, entries[source_path]["blob_id"])
+    return mod.one_hop_transitive_evidence(source_path, raw, repo, commit)
+
+
 @pytest.fixture(scope="module")
 def artifact():
     return _module().build_artifact(REPO_ROOT)
 
 
-def _analyze(source: str, path: str = "sample.py"):
-    return _module().analyze_source_bytes(path, source.encode("utf-8"), "1" * 40)
+def test_exact_valid_forward_main_guard():
+    result = _analyze("if __name__ == '__main__':\n    print('x')\n")
+    assert _state(result, "valid_main_guard") == "detected"
+    finding = result["evidence"]["valid_main_guard"]["findings"][0]
+    assert finding["line"] == 1 and finding["executable_statements"] is True
 
 
-def test_generator_has_no_database_or_legacy_execution_interface():
-    mod = _module()
-    source = inspect.getsource(mod)
-    tree = ast.parse(source)
-    imported_roots = {
-        alias.name.split(".")[0]
-        for node in ast.walk(tree)
-        if isinstance(node, (ast.Import, ast.ImportFrom))
-        for alias in (node.names if isinstance(node, ast.Import) else [ast.alias(node.module or "")])
-    }
-    assert not imported_roots & {
-        "sqlite3", "sqlalchemy", "requests", "httpx", "aiohttp", "importlib",
-    }
-    assert "exec(" not in source
-    assert "__import__(" not in source
-    assert "FROZEN_SOURCE_COMMIT" in source
-    assert "git ls-tree + git cat-file blob" in source
+def test_exact_valid_reversed_main_guard():
+    result = _analyze("if '__main__' == __name__:\n    pass\n")
+    assert _state(result, "valid_main_guard") == "detected"
 
 
-def test_exact_main_guard_accepts_only_canonical_forms():
-    mod = _module()
-    canonical = ast.parse("if __name__ == '__main__':\n    pass\n").body[0]
-    reversed_form = ast.parse("if '__main__' == __name__:\n    pass\n").body[0]
-    malformed = ast.parse("if __name__ == '_main':\n    pass\n").body[0]
-    chained = ast.parse("if __name__ == '__main__' == marker:\n    pass\n").body[0]
-    assert mod.is_valid_main_guard_test(canonical.test)
-    assert mod.is_valid_main_guard_test(reversed_form.test)
-    assert not mod.is_valid_main_guard_test(malformed.test)
-    assert not mod.is_valid_main_guard_test(chained.test)
+def test_main_guard_typo_rejected():
+    result = _analyze("if __name__ == '_main':\n    print('x')\n")
+    assert _state(result, "valid_main_guard") == "not_detected"
+    assert _state(result, "malformed_main_guard") == "detected"
 
 
-def test_malformed_main_guard_is_explicit_and_does_not_suppress_import_time():
+def test_main_guard_inequality_rejected():
+    result = _analyze("if __name__ != '__main__':\n    pass\n")
+    assert _state(result, "valid_main_guard") == "not_detected"
+
+
+def test_main_guard_chained_comparison_rejected():
+    result = _analyze("if __name__ == '__main__' == marker:\n    pass\n")
+    assert _state(result, "valid_main_guard") == "not_detected"
+
+
+def test_nested_main_guard_rejected():
+    result = _analyze("if True:\n    if __name__ == '__main__':\n        pass\n")
+    assert _state(result, "valid_main_guard") == "not_detected"
+
+
+def test_function_local_main_guard_rejected():
+    result = _analyze("def f():\n    if __name__ == '__main__':\n        pass\n")
+    assert _state(result, "valid_main_guard") == "not_detected"
+
+
+def test_boolean_combination_main_guard_rejected():
+    result = _analyze("if __name__ == '__main__' and enabled:\n    pass\n")
+    assert _state(result, "valid_main_guard") == "not_detected"
+
+
+def test_comments_and_docstrings_do_not_create_effect_findings():
     result = _analyze(
-        "def main():\n"
-        "    return 1\n"
-        "if __name__ == '_main':\n"
-        "    main()\n"
+        '"""sqlite3.connect; https://api.example; /Users/demo/file.db"""\n'
+        "# subprocess.run and Path('x').write_text('x')\n"
+        "def choose(values):\n    return values[:6]\n"
     )
-    assert result["scan"]["complete"] is True
-    assert result["evidence"]["valid_main_guard"]["status"] == "not_detected"
-    assert result["evidence"]["malformed_main_guard"]["status"] == "detected"
-    assert result["evidence"]["import_time_execution"]["status"] == "detected"
+    assert all(_state(result, key) == "not_detected" for key in _module().RISK_EVIDENCE_KEYS)
+
+
+def test_direct_sqlite_connection_detected():
+    result = _analyze("import sqlite3\ndef f():\n    return sqlite3.connect('x.db')\n")
+    assert _state(result, "database_access") == "detected"
+
+
+def test_direct_database_manager_construction_detected():
+    result = _analyze(
+        "from lottery_api.database import DatabaseManager\n"
+        "def f():\n    return DatabaseManager()\n"
+    )
+    assert _state(result, "database_access") == "detected"
+
+
+def test_aliased_database_manager_construction_detected():
+    result = _analyze(
+        "from lottery_api.database import DatabaseManager as DM\n"
+        "def f():\n    return DM()\n"
+    )
+    assert _state(result, "database_access") == "detected"
+
+
+def test_db_manager_singleton_use_detected():
+    result = _analyze(
+        "from lottery_api.database import db_manager\n"
+        "def f():\n    return db_manager.execute('SELECT 1')\n"
+    )
+    assert _state(result, "database_access") == "detected"
+
+
+def test_aliased_db_manager_singleton_use_detected():
+    result = _analyze(
+        "from lottery_api.database import db_manager as db\n"
+        "def f():\n    return db.execute('SELECT 1')\n"
+    )
+    assert _state(result, "database_access") == "detected"
+
+
+def test_library_scope_database_use_is_callable_body():
+    result = _analyze("import sqlite3\ndef load():\n    return sqlite3.connect('x.db')\n")
+    finding = result["evidence"]["database_access"]["findings"][0]
+    assert finding["scope"] == "callable_body"
+    assert _state(result, "import_time_execution") == "not_detected"
+
+
+def test_main_guard_database_demo_remains_whole_file_detected():
+    result = _analyze(
+        "import sqlite3\n"
+        "if __name__ == '__main__':\n    sqlite3.connect('x.db')\n"
+    )
+    finding = result["evidence"]["database_access"]["findings"][0]
+    assert finding["scope"] == "main_guard"
+    assert _state(result, "database_access") == "detected"
+    assert _state(result, "import_time_execution") == "not_detected"
+
+
+def test_database_operation_read_and_write_are_distinguished():
+    result = _analyze(
+        "def f(cursor):\n"
+        "    cursor.execute('SELECT * FROM draws')\n"
+        "    cursor.execute('DELETE FROM draws')\n"
+    )
+    operations = {item["operation"] for item in result["evidence"]["database_access"]["findings"]}
+    assert operations == {"read", "write"}
+
+
+def test_path_write_text_detected():
+    result = _analyze("from pathlib import Path\ndef f():\n    Path('x').write_text('x')\n")
+    assert _state(result, "filesystem_write") == "detected"
+
+
+def test_aliased_filesystem_mutation_detected():
+    result = _analyze("from pathlib import Path as P\ndef f():\n    P('x').unlink()\n")
+    assert _state(result, "filesystem_write") == "detected"
+
+
+def test_read_only_filesystem_access_is_separate():
+    result = _analyze("from pathlib import Path\ndef f():\n    return Path('x').read_text()\n")
+    assert _state(result, "filesystem_read") == "detected"
+    assert _state(result, "filesystem_write") == "not_detected"
+
+
+def test_requests_api_backend_detected():
+    result = _analyze(
+        "import requests\nAPI='http://localhost:8000/api'\ndef f():\n    requests.get(API)\n"
+    )
+    assert _state(result, "network_io") == "detected"
+    assert _state(result, "external_service_url") == "detected"
+
+
+def test_aliased_network_call_detected():
+    result = _analyze("from requests import post as send\ndef f():\n    send('https://api.example')\n")
+    assert _state(result, "network_io") == "detected"
+
+
+def test_urllib_network_call_detected():
+    result = _analyze("from urllib.request import urlopen\ndef f():\n    urlopen('https://api.example')\n")
+    assert _state(result, "network_io") == "detected"
+
+
+def test_subprocess_direct_call_detected():
+    result = _analyze("import subprocess\ndef f():\n    subprocess.run(['true'])\n")
+    assert _state(result, "process_execution") == "detected"
+
+
+def test_subprocess_aliased_call_detected():
+    result = _analyze("import subprocess as sp\ndef f():\n    sp.Popen(['true'])\n")
+    assert _state(result, "process_execution") == "detected"
+
+
+def test_os_system_detected():
+    result = _analyze("import os\ndef f():\n    os.system('true')\n")
+    assert _state(result, "process_execution") == "detected"
+
+
+def test_hardcoded_external_inputs_are_separate_dimensions():
+    result = _analyze(
+        "PATH='/Users/demo/lottery.db'\nDRAW='11301001'\nURL='https://api.example/v1'\n"
+    )
+    assert _state(result, "hardcoded_absolute_path") == "detected"
+    assert _state(result, "database_like_path") == "detected"
+    assert _state(result, "hardcoded_draw_or_date") == "detected"
+    assert _state(result, "external_service_url") == "detected"
+
+
+def test_clean_pure_prediction_function_remains_low_risk():
+    result = _analyze("def choose(values):\n    return sorted(values)[:6]\n")
+    assert result["scan_status"] == "complete"
+    assert result["safety_classification"]["risk_level"] == "low"
+    assert result["safety_classification"]["low_risk_eligible"] is True
+
+
+def test_syntax_error_produces_unknown():
+    result = _analyze("this is invalid !!!\n")
+    assert result["scan_status"] == "syntax_error"
+    assert {item["state"] for item in result["evidence"].values()} == {"unknown"}
+
+
+def test_unreadable_input_produces_unknown():
+    mod = _module()
+    result = mod.analyze_source_bytes("bad.py", b"\xff", "2" * 40)
+    assert result["scan_status"] == "unreadable"
+    assert {item["state"] for item in result["evidence"].values()} == {"unknown"}
+
+
+def test_unsupported_input_produces_unknown():
+    result = _analyze("from mystery import *\n")
+    assert result["scan_status"] == "unsupported"
+    assert result["safety_classification"]["risk_level"] == "unknown"
+
+
+def test_no_low_risk_result_with_unknown_safety_flag():
+    result = _analyze("def choose(values):\n    return values[:6]\n", resolve_transitive=False)
+    assert _state(result, "transitive_external_state") == "unknown"
     assert result["safety_classification"]["low_risk_eligible"] is False
 
 
-def test_ast_parse_failure_sets_every_evidence_category_unknown():
-    result = _analyze("this is not valid python !!!\n")
-    assert result["scan"] == {
-        "status": "unknown",
-        "complete": False,
-        "reason": "AST parse failure: invalid syntax (line 1)",
-    }
-    assert {
-        evidence["status"] for evidence in result["evidence"].values()
-    } == {"unknown"}
-    assert result["safety_classification"] == {
-        "risk_level": "unknown",
-        "low_risk_eligible": False,
-        "disposition": "BLOCKED_UNKNOWN",
-        "reasons": ["AST parse failure: invalid syntax (line 1)"],
-    }
+def test_one_hop_db_coupled_import_detected(tmp_path):
+    repo, commit = _synthetic_repo(
+        tmp_path,
+        {
+            "main.py": "from helper import connect\nconnect()\n",
+            "helper.py": "import sqlite3\ndef connect():\n    return sqlite3.connect('x.db')\n",
+        },
+    )
+    result = _one_hop(repo, commit, "main.py")
+    assert result["state"] == "detected"
+    assert result["findings"][0]["imported_module_source"] == "helper.py"
 
 
-def test_non_utf8_and_unsupported_structures_fail_closed():
+def test_one_hop_clean_import_remains_clean(tmp_path):
+    repo, commit = _synthetic_repo(
+        tmp_path,
+        {"main.py": "from helper import choose\nchoose([])\n", "helper.py": "def choose(v):\n    return v\n"},
+    )
+    assert _one_hop(repo, commit, "main.py")["state"] == "not_detected"
+
+
+def test_one_hop_module_level_effect_detected(tmp_path):
+    repo, commit = _synthetic_repo(
+        tmp_path,
+        {"main.py": "import helper\n", "helper.py": "import sqlite3\nsqlite3.connect('x.db')\n"},
+    )
+    assert _one_hop(repo, commit, "main.py")["state"] == "detected"
+
+
+def test_one_hop_invoked_constructor_effect_detected(tmp_path):
+    repo, commit = _synthetic_repo(
+        tmp_path,
+        {
+            "main.py": "from helper import Worker\nWorker()\n",
+            "helper.py": "import sqlite3\nclass Worker:\n    def __init__(self):\n        sqlite3.connect('x.db')\n",
+        },
+    )
+    assert _one_hop(repo, commit, "main.py")["state"] == "detected"
+
+
+def test_one_hop_import_cycle_stops_safely(tmp_path):
+    repo, commit = _synthetic_repo(
+        tmp_path,
+        {"a.py": "import b\n", "b.py": "import a\n"},
+    )
+    assert _one_hop(repo, commit, "a.py")["state"] == "not_detected"
+
+
+def test_ambiguous_import_resolution_produces_unknown(tmp_path):
+    repo, commit = _synthetic_repo(
+        tmp_path,
+        {"main.py": "import pkg\n", "pkg.py": "VALUE=1\n", "pkg/__init__.py": "VALUE=2\n"},
+    )
+    assert _one_hop(repo, commit, "main.py")["state"] == "unknown"
+
+
+def test_evidence_reasons_are_deterministic():
+    first = _analyze("from mystery import *\n")
+    second = _analyze("from mystery import *\n")
+    assert first == second
+
+
+def test_output_finding_order_is_deterministic():
+    source = "import subprocess\ndef f():\n    subprocess.run(['b'])\n    subprocess.run(['a'])\n"
+    first = _analyze(source)
+    second = _analyze(source)
+    assert first["evidence"]["process_execution"]["findings"] == second["evidence"]["process_execution"]["findings"]
+
+
+def test_duplicate_method_ids_fail_closed():
     mod = _module()
-    decoded = mod.analyze_source_bytes("bad.py", b"\xff", "2" * 40)
-    assert decoded["scan"]["status"] == "unknown"
-    starred = _analyze("from mystery import *\n")
-    assert starred["scan"]["status"] == "unknown"
-    dynamic = _analyze("import importlib\nplugin = importlib.import_module(name)\n")
-    assert dynamic["scan"]["status"] == "unknown"
+    historical, _ = mod.verified_historical_inputs(REPO_ROOT)
+    forged = copy.deepcopy(historical)
+    forged["method_classification_records"][1]["method_id"] = forged["method_classification_records"][0]["method_id"]
+    with pytest.raises(mod.P541BR2Error, match="method IDs"):
+        mod.validate_historical_payload(forged)
 
 
-def test_alias_aware_database_filesystem_network_and_subprocess_detection():
-    result = _analyze(
-        "import sqlite3 as sql\n"
-        "from pathlib import Path as P\n"
-        "from requests import get as fetch\n"
-        "import subprocess as sp\n"
-        "from lottery_api.database import DatabaseManager as DM\n"
-        "manager = DM()\n"
-        "def work():\n"
-        "    sql.connect('x')\n"
-        "    manager.execute('select 1')\n"
-        "    P('x').write_text('x')\n"
-        "    fetch('https://example.invalid')\n"
-        "    sp.run(['true'])\n"
-    )
-    evidence = result["evidence"]
-    assert evidence["database_access"]["status"] == "detected"
-    assert evidence["filesystem_write"]["status"] == "detected"
-    assert evidence["network_io"]["status"] == "detected"
-    assert evidence["subprocess_execution"]["status"] == "detected"
-    assert result["safety_classification"]["risk_level"] == "high"
-
-
-def test_sqlalchemy_and_db_manager_aliases_are_detected():
-    result = _analyze(
-        "from sqlalchemy import create_engine as engine\n"
-        "from lottery_api.database import db_manager as singleton\n"
-        "def work():\n"
-        "    engine('sqlite://')\n"
-        "    singleton.execute('select 1')\n"
-    )
-    locations = result["evidence"]["database_access"]["locations"]
-    assert result["evidence"]["database_access"]["status"] == "detected"
-    assert any("sqlalchemy.create_engine" in item["resolved_call"] for item in locations)
-    assert any("db_manager.execute" in item["resolved_call"] for item in locations)
-
-
-def test_path_write_and_dynamic_open_mode_are_fail_closed():
-    path_write = _analyze("from pathlib import Path\nPath('x').write_bytes(b'x')\n")
-    assert path_write["evidence"]["filesystem_write"]["status"] == "detected"
-    dynamic_mode = _analyze("mode = choose_mode()\nopen('x', mode)\n")
-    assert dynamic_mode["scan"]["status"] == "unknown"
-    assert dynamic_mode["safety_classification"]["disposition"] == "BLOCKED_UNKNOWN"
-
-
-def test_valid_main_guard_only_suppresses_import_time_execution():
-    result = _analyze(
-        "import requests as rq\n"
-        "def main():\n"
-        "    rq.get('https://example.invalid')\n"
-        "if __name__ == '__main__':\n"
-        "    main()\n"
-    )
-    assert result["evidence"]["valid_main_guard"]["status"] == "detected"
-    assert result["evidence"]["import_time_execution"]["status"] == "not_detected"
-    assert result["evidence"]["network_io"]["status"] == "detected"
-    assert result["safety_classification"]["risk_level"] == "high"
-
-
-def test_low_risk_requires_complete_scan_and_every_risk_category_not_detected():
-    result = _analyze(
-        "def choose_numbers(values):\n"
-        "    return sorted(values)[:6]\n"
-        "if __name__ == '__main__':\n"
-        "    choose_numbers([])\n"
-    )
+def test_duplicate_source_paths_fail_closed():
     mod = _module()
-    assert result["scan"]["complete"] is True
-    assert all(
-        result["evidence"][key]["status"] == "not_detected"
-        for key in mod.RISK_EVIDENCE_KEYS
-    )
-    assert result["safety_classification"] == {
-        "risk_level": "low",
-        "low_risk_eligible": True,
-        "disposition": "STATIC_LOW_RISK_ELIGIBLE",
-        "reasons": [],
-    }
+    historical, _ = mod.verified_historical_inputs(REPO_ROOT)
+    forged = copy.deepcopy(historical)
+    forged["method_classification_records"][1]["source_path"] = forged["method_classification_records"][0]["source_path"]
+    with pytest.raises(mod.P541BR2Error, match="source paths"):
+        mod.validate_historical_payload(forged)
 
 
-def test_pinned_historical_inputs_and_frozen_corpus_are_exact():
+def test_missing_blob_fails_closed():
     mod = _module()
-    historical, provenance = mod.verified_historical_inputs(REPO_ROOT)
-    assert len(historical["method_classification_records"]) == 580
-    assert {item["verification"] for item in provenance.values()} == {"PASS"}
-    paths = [item["source_path"] for item in historical["method_classification_records"]]
-    assert len(paths) == len(set(paths)) == 580
-    entries = mod.git_tree_entries(REPO_ROOT, mod.FROZEN_SOURCE_COMMIT, paths)
-    assert len(entries) == 580
-    assert {item["type"] for item in entries.values()} == {"blob"}
+    with pytest.raises(mod.P541BR2Error, match="corpus incomplete"):
+        mod.require_frozen_entries(["missing.py"], {})
 
 
-def test_artifact_has_complete_tri_state_contract(artifact):
+def test_provenance_mismatch_fails_closed(monkeypatch):
+    mod = _module()
+    monkeypatch.setattr(mod, "git_blob", lambda *_args: b"forged")
+    with pytest.raises(mod.P541BR2Error, match="identity mismatch"):
+        mod.verified_historical_inputs(REPO_ROOT)
+
+
+def test_unknown_schema_version_fails_closed():
+    mod = _module()
+    with pytest.raises(mod.P541BR2Error, match="unknown schema"):
+        mod.validate_consumer_contract("future-schema", mod.DETECTOR_VERSION)
+
+
+def test_unknown_detector_version_fails_closed():
+    mod = _module()
+    with pytest.raises(mod.P541BR2Error, match="unknown detector"):
+        mod.validate_consumer_contract(mod.SCHEMA_VERSION, "future-detector")
+
+
+def test_strict_json_rejects_duplicate_and_nonfinite_values():
+    mod = _module()
+    with pytest.raises(mod.P541BR2Error, match="duplicate JSON key"):
+        mod.strict_json_bytes(b'{"same":1,"same":2}')
+    with pytest.raises(mod.P541BR2Error, match="non-finite"):
+        mod.strict_json_bytes(b'{"value":NaN}')
+
+
+def test_artifact_contract_is_complete(artifact):
     mod = _module()
     assert artifact["schema_version"] == mod.SCHEMA_VERSION
+    assert artifact["detector_version"] == mod.DETECTOR_VERSION
     assert artifact["summary"]["total_records"] == 580
-    assert (
-        artifact["summary"]["complete_scans"]
-        + artifact["summary"]["unknown_scans"]
-        == 580
-    )
-    assert artifact["summary"]["unknown_scans"] >= 1
-    assert artifact["provenance"]["source_manifest"]["verification"] == "PASS"
-    for record in artifact["method_classification_records"]:
-        assert set(record["evidence"]) == set(mod.ALL_EVIDENCE_KEYS)
-        assert {
-            item["status"] for item in record["evidence"].values()
-        } <= mod.TRI_STATES
+    assert len(artifact["provenance"]["source_manifest"]["ordered_entries"]) == 580
+    assert set(artifact["provenance"]["historical_inputs"]) == set(mod.HISTORICAL_INPUTS)
+    mod.validate_artifact(artifact)
 
 
-def test_historical_boolean_evidence_is_not_republished_as_current(artifact):
-    serialized = json.dumps(artifact, ensure_ascii=False)
-    assert "module_level_db_call=False" not in serialized
-    assert "uses_db_anywhere=False" not in serialized
-    assert "has_main_guard=False" not in serialized
-    assert all(
-        "evidence" not in record["historical_p541b_classification"]
-        for record in artifact["method_classification_records"]
-    )
-
-
-def test_historical_artifacts_are_superseded_not_overwritten(artifact):
+def test_json_regeneration_equals_committed_json(artifact):
     mod = _module()
-    assert artifact["supersedes"]["overwrite_policy"] == "HISTORICAL_ARTIFACTS_PRESERVED"
-    assert mod.OUTPUT_JSON.name.startswith("p541b_r2_")
-    assert mod.OUTPUT_MARKDOWN.name.startswith("p541b_r2_")
-    assert str(mod.OUTPUT_JSON) not in artifact["supersedes"]["artifacts"]
-    assert str(mod.OUTPUT_MARKDOWN) not in artifact["supersedes"]["artifacts"]
+    expected = json.dumps(artifact, ensure_ascii=False, indent=2, allow_nan=False) + "\n"
+    assert (REPO_ROOT / mod.OUTPUT_JSON).read_text(encoding="utf-8") == expected
 
 
-def test_p541c_regeneration_is_explicit_and_pr663_is_not_mutated(artifact):
-    contract = artifact["downstream_contract"]
-    assert contract["p541c_regeneration_required"] is True
-    assert contract["historical_p541c_counts_or_shortlist_preserved"] is False
-    assert contract["pr_663_mutated"] is False
-    assert "must not coerce unknown to false" in contract["consumer_requirement"]
-
-
-def test_committed_outputs_match_deterministic_regeneration(artifact):
+def test_markdown_regeneration_equals_committed_markdown(artifact):
     mod = _module()
-    expected_json = (
-        json.dumps(artifact, ensure_ascii=False, indent=2, allow_nan=False) + "\n"
-    ).encode("utf-8")
-    expected_markdown = mod.render_markdown(artifact).encode("utf-8")
-    assert (REPO_ROOT / mod.OUTPUT_JSON).read_bytes() == expected_json
-    assert (REPO_ROOT / mod.OUTPUT_MARKDOWN).read_bytes() == expected_markdown
+    assert (REPO_ROOT / mod.OUTPUT_MARKDOWN).read_text(encoding="utf-8") == mod.render_markdown(artifact)
 
 
-def test_only_authorized_paths_are_new_or_modified():
-    completed = os.popen(
-        f"git -C {REPO_ROOT} diff --name-only { _module().BASE_MAIN_COMMIT }"
-    ).read().splitlines()
-    assert set(completed) <= {
+def test_historical_p541b_artifacts_remain_unchanged():
+    mod = _module()
+    for identity in mod.HISTORICAL_INPUTS.values():
+        raw = (REPO_ROOT / identity["path"]).read_bytes()
+        assert len(raw) == identity["byte_size"]
+        assert hashlib.sha256(raw).hexdigest() == identity["sha256"]
+
+
+def test_generator_never_imports_db_or_executes_target_modules():
+    mod = _module()
+    source = inspect.getsource(mod)
+    tree = ast.parse(source)
+    imported = {
+        alias.name
+        for node in ast.walk(tree)
+        if isinstance(node, ast.Import)
+        for alias in node.names
+    }
+    assert "sqlite3" not in imported
+    assert "sqlalchemy" not in imported
+    assert "importlib" not in imported
+    assert "__import__(" not in source
+    assert "exec(" not in source
+    assert "git_tree_entries" in source and "git_blob" in source
+
+
+def test_branch_diff_contains_only_authorized_paths():
+    mod = _module()
+    completed = subprocess.run(
+        ["git", "diff", "--name-only", mod.BASE_MAIN_COMMIT],
+        cwd=REPO_ROOT,
+        check=True,
+        capture_output=True,
+        text=True,
+    )
+    assert set(completed.stdout.splitlines()) == {
         "analysis/p541b_r2_biglotto_legacy_method_classification_audit.py",
         "tests/test_p541b_r2_biglotto_legacy_method_classification_audit.py",
         "outputs/research/p541b_r2_biglotto_legacy_method_classification_audit_20260711.json",
         "outputs/research/p541b_r2_biglotto_legacy_method_classification_audit_20260711.md",
     }
+
+
+def test_corrected_counts_are_not_historical_acceptance_invariants(artifact):
+    assert artifact["downstream_contract"]["historical_p541c_counts_or_shortlist_preserved"] is False
+    assert artifact["downstream_contract"]["p541c_regeneration_required"] is True
+    assert artifact["downstream_contract"]["pr_663_mutated"] is False

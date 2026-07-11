@@ -1053,6 +1053,9 @@ def write_outputs(config: Config, payload: Dict[str, Any]) -> None:
         config.output_json: json.dumps(payload, ensure_ascii=False, indent=2) + "\n",
         config.output_markdown: build_report(payload),
     }
+    serialized_content = {
+        output: value.encode("utf-8") for output, value in content.items()
+    }
     transaction_id = uuid.uuid4().hex
     parent_fds: Dict[Path, int] = {}
     parent_paths: Dict[Path, Path] = {}
@@ -1060,6 +1063,9 @@ def write_outputs(config: Config, payload: Dict[str, Any]) -> None:
     staged_names: Dict[Path, str] = {}
     staged_fds: Dict[Path, int] = {}
     staged_identities: Dict[Path, Tuple[int, int]] = {}
+    staged_created: Set[Path] = set()
+    staged_intentionally_removed: Set[Path] = set()
+    staged_cleanup_complete: Set[Path] = set()
     published: Dict[Path, Tuple[int, int]] = {}
     repo_path: Optional[Path] = None
     repo_identity: Optional[Tuple[int, int]] = None
@@ -1087,9 +1093,13 @@ def write_outputs(config: Config, payload: Dict[str, Any]) -> None:
                 os.stat(stage_name, dir_fd=parent_fd, follow_symlinks=False)
             )
         except FileNotFoundError as error:
-            raise SafetyError(f"staged entry disappeared: {output}") from error
+            raise SafetyError(
+                f"staged entry ownership conflict; entry disappeared: {output}"
+            ) from error
         if descriptor_identity != captured_identity or entry_identity != captured_identity:
-            raise SafetyError(f"staged entry identity changed: {output}")
+            raise SafetyError(
+                f"staged entry ownership conflict; identity changed: {output}"
+            )
         return captured_identity
 
     def _validate_parent_anchors(*, require_final_absent: bool) -> None:
@@ -1165,20 +1175,28 @@ def write_outputs(config: Config, payload: Dict[str, Any]) -> None:
                 | os.O_CREAT
                 | os.O_EXCL
                 | getattr(os, "O_CLOEXEC", 0)
+                | getattr(os, "O_NOFOLLOW", 0)
             )
-            stage_fd = os.open(stage_name, stage_flags, 0o666, dir_fd=parent_fd)
+            stage_fd = os.open(stage_name, stage_flags, 0o600, dir_fd=parent_fd)
             staged_names[output] = stage_name
             staged_fds[output] = stage_fd
+            staged_created.add(output)
             stage_metadata = os.fstat(stage_fd)
             if not stat.S_ISREG(stage_metadata.st_mode):
                 raise SafetyError(f"staged output is not a regular file: {output}")
             staged_identities[output] = _identity(stage_metadata)
-            with os.fdopen(os.dup(stage_fd), "w", encoding="utf-8") as target:
-                target.write(content[output])
+            expected_payload = serialized_content[output]
+            with os.fdopen(os.dup(stage_fd), "wb") as target:
+                bytes_written = target.write(expected_payload)
+                if bytes_written != len(expected_payload):
+                    raise SafetyError(f"staged output write was incomplete: {output}")
                 target.flush()
                 os.fsync(target.fileno())
-            if _identity(os.fstat(stage_fd)) != staged_identities[output]:
+            post_write_metadata = os.fstat(stage_fd)
+            if _identity(post_write_metadata) != staged_identities[output]:
                 raise SafetyError(f"staged descriptor identity changed: {output}")
+            if post_write_metadata.st_size != len(expected_payload):
+                raise SafetyError(f"staged output byte size mismatch: {output}")
 
         # Re-establish the pair baseline only after both staged payloads are
         # durable, immediately before the first destination mutation.
@@ -1230,6 +1248,7 @@ def write_outputs(config: Config, payload: Dict[str, Any]) -> None:
         for output in outputs:
             _validate_staged_entry(output)
             os.unlink(staged_names[output], dir_fd=parent_fds[output])
+            staged_intentionally_removed.add(output)
 
         _validate_parent_anchors(require_final_absent=False)
 
@@ -1262,6 +1281,12 @@ def write_outputs(config: Config, payload: Dict[str, Any]) -> None:
             captured_identity = staged_identities.get(output)
             if parent_fd is None:
                 continue
+            if output not in staged_created:
+                cleanup_errors.append(
+                    f"{output.parent / stage_name}: staged creation state unavailable; "
+                    "refusing cleanup unlink"
+                )
+                continue
             if captured_identity is None:
                 cleanup_errors.append(
                     f"{output.parent / stage_name}: staged identity unavailable; "
@@ -1274,6 +1299,13 @@ def write_outputs(config: Config, payload: Dict[str, Any]) -> None:
                         os.stat(stage_name, dir_fd=parent_fd, follow_symlinks=False)
                     )
                 except FileNotFoundError:
+                    if output in staged_intentionally_removed:
+                        staged_cleanup_complete.add(output)
+                        continue
+                    cleanup_errors.append(
+                        f"{output.parent / stage_name}: staged entry ownership conflict; "
+                        "entry disappeared unexpectedly"
+                    )
                     continue
                 if current_identity != captured_identity:
                     cleanup_errors.append(
@@ -1281,7 +1313,16 @@ def write_outputs(config: Config, payload: Dict[str, Any]) -> None:
                         "refusing cleanup unlink"
                     )
                     continue
-                os.unlink(stage_name, dir_fd=parent_fd)
+                try:
+                    os.unlink(stage_name, dir_fd=parent_fd)
+                except FileNotFoundError:
+                    cleanup_errors.append(
+                        f"{output.parent / stage_name}: staged entry ownership conflict; "
+                        "entry disappeared before cleanup unlink"
+                    )
+                    continue
+                staged_intentionally_removed.add(output)
+                staged_cleanup_complete.add(output)
             except OSError as cleanup_error:
                 cleanup_errors.append(f"{output.parent / stage_name}: {cleanup_error}")
         for output, stage_fd in staged_fds.items():

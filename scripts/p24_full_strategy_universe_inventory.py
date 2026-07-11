@@ -10,7 +10,18 @@ Sources consulted (in priority order):
   1. lottery_api/models/replay_strategy_registry.py  — authoritative registry (18)
   2. strategy_prediction_replays DB table            — row counts + truth stats
   3. rejected/ directory                             — rejected governance artifacts (42)
-  4. outputs/replay/p0_strategy_universe_inventory_20260517.json  — reference (512)
+  4. outputs/replay/p0_strategy_universe_inventory_20260711.json  — reference (524)
+
+P0 reference consumption caveat:
+  P24 uses the P0 artifact only as heuristic reference evidence, not as ground
+  truth. It consumes only ``total_count`` and ``by_lifecycle``; it does not
+  consume ``strategies[]``, ``source_path``, ``by_lottery``, or
+  ``coverage_gap_analysis``. The 20260711 P0 output reports total_count = 524,
+  with 417/524 entries having no historical records anywhere. In addition,
+  41/524 entries contain hardcoded ``source_path`` labels naming
+  ``lottery_api/data/lottery_v2.db::...``, while the W1V8 run used a verified
+  DB snapshot. See the provenance sidecar at
+  docs/replay/p0_strategy_universe_inventory_20260711_provenance_caveat.md.
 
 Replay visibility state values (P24):
   ONLINE_ROW_BACKED      — ONLINE in registry AND has rows in DB
@@ -44,7 +55,7 @@ REPO_ROOT   = pathlib.Path(__file__).resolve().parent.parent
 DB_PATH     = REPO_ROOT / "lottery_api" / "data" / "lottery_v2.db"
 REJECTED_DIR = REPO_ROOT / "rejected"
 OUTPUT_PATH  = REPO_ROOT / "outputs" / "replay" / "p24_full_strategy_universe_inventory_20260521.json"
-P0_PATH      = REPO_ROOT / "outputs" / "replay" / "p0_strategy_universe_inventory_20260517.json"
+P0_PATH      = REPO_ROOT / "outputs" / "replay" / "p0_strategy_universe_inventory_20260711.json"
 
 sys.path.insert(0, str(REPO_ROOT))
 

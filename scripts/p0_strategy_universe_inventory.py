@@ -23,6 +23,7 @@ import json
 import os
 import re
 import sqlite3
+import stat
 import uuid
 from collections import Counter
 from contextlib import closing
@@ -1053,52 +1054,162 @@ def write_outputs(config: Config, payload: Dict[str, Any]) -> None:
         config.output_markdown: build_report(payload),
     }
     transaction_id = uuid.uuid4().hex
-    staged: Dict[Path, Path] = {}
+    parent_fds: Dict[Path, int] = {}
+    parent_paths: Dict[Path, Path] = {}
+    parent_identities: Dict[Path, Tuple[int, int]] = {}
+    staged_names: Dict[Path, str] = {}
     published: Dict[Path, Tuple[int, int]] = {}
+    repo_path: Optional[Path] = None
+    repo_identity: Optional[Tuple[int, int]] = None
     publish_error: Optional[BaseException] = None
     rollback_errors: List[str] = []
     cleanup_errors: List[str] = []
 
+    def _identity(metadata: os.stat_result) -> Tuple[int, int]:
+        return metadata.st_dev, metadata.st_ino
+
+    def _entry_exists(name: str, parent_fd: int) -> bool:
+        try:
+            os.stat(name, dir_fd=parent_fd, follow_symlinks=False)
+        except FileNotFoundError:
+            return False
+        return True
+
+    def _validate_parent_anchors(*, require_final_absent: bool) -> None:
+        if repo_path is None or repo_identity is None:
+            raise SafetyError("repository identity was not captured")
+        current_repo = config.repo_root.resolve(strict=True)
+        current_repo_identity = _identity(os.stat(current_repo, follow_symlinks=False))
+        if current_repo != repo_path or current_repo_identity != repo_identity:
+            raise SafetyError("--repo-root identity changed during publication")
+        for output in outputs:
+            parent_fd = parent_fds[output]
+            captured_parent = parent_paths[output]
+            captured_identity = parent_identities[output]
+            current_parent = output.parent.resolve(strict=True)
+            current_path_identity = _identity(
+                os.stat(current_parent, follow_symlinks=False)
+            )
+            current_fd_identity = _identity(os.fstat(parent_fd))
+            if (
+                current_parent != captured_parent
+                or current_path_identity != captured_identity
+                or current_fd_identity != captured_identity
+            ):
+                raise SafetyError(f"output parent identity changed: {output.parent}")
+            if not _is_within(current_parent, current_repo):
+                raise SafetyError(f"output parent escaped --repo-root: {current_parent}")
+            if current_parent / output.name != output:
+                raise SafetyError(f"output path no longer matches captured parent: {output}")
+            if require_final_absent and _entry_exists(output.name, parent_fd):
+                raise SafetyError(f"output appeared before publication; new path required: {output}")
+
     try:
+        repo_path = config.repo_root.resolve(strict=True)
+        repo_metadata = os.stat(repo_path, follow_symlinks=False)
+        if not stat.S_ISDIR(repo_metadata.st_mode):
+            raise SafetyError("--repo-root must remain a directory")
+        repo_identity = _identity(repo_metadata)
+
+        # Parent directories are materialized only in authorized write mode,
+        # then strictly resolved and held open for the full transaction.
+        directory_flags = (
+            os.O_RDONLY
+            | getattr(os, "O_DIRECTORY", 0)
+            | getattr(os, "O_CLOEXEC", 0)
+        )
+        for output in outputs:
+            output.parent.mkdir(parents=True, exist_ok=True)
+            resolved_parent = output.parent.resolve(strict=True)
+            if not _is_within(resolved_parent, repo_path):
+                raise SafetyError(f"output parent is outside --repo-root: {resolved_parent}")
+            if resolved_parent / output.name != output:
+                raise SafetyError(f"output path changed during parent creation: {output}")
+            parent_fd = os.open(resolved_parent, directory_flags)
+            parent_fds[output] = parent_fd
+            fd_metadata = os.fstat(parent_fd)
+            path_metadata = os.stat(resolved_parent, follow_symlinks=False)
+            if not stat.S_ISDIR(fd_metadata.st_mode):
+                raise SafetyError(f"output parent is not a directory: {resolved_parent}")
+            if _identity(fd_metadata) != _identity(path_metadata):
+                raise SafetyError(f"output parent changed while opening: {resolved_parent}")
+            parent_paths[output] = resolved_parent
+            parent_identities[output] = _identity(fd_metadata)
+
+        _validate_parent_anchors(require_final_absent=True)
+
         # Both complete files must be durable in their destination directories
         # before either public output is changed.
         for output in outputs:
-            output.parent.mkdir(parents=True, exist_ok=True)
-            stage = output.with_name(f".{output.name}.{transaction_id}.staged")
-            with stage.open("x", encoding="utf-8") as target:
-                staged[output] = stage
+            parent_fd = parent_fds[output]
+            stage_name = f".{output.name}.{transaction_id}.staged"
+            stage_flags = (
+                os.O_WRONLY
+                | os.O_CREAT
+                | os.O_EXCL
+                | getattr(os, "O_CLOEXEC", 0)
+            )
+            stage_fd = os.open(stage_name, stage_flags, 0o666, dir_fd=parent_fd)
+            staged_names[output] = stage_name
+            with os.fdopen(stage_fd, "w", encoding="utf-8") as target:
                 target.write(content[output])
                 target.flush()
                 os.fsync(target.fileno())
 
         # Re-establish the pair baseline only after both staged payloads are
         # durable, immediately before the first destination mutation.
-        for output in outputs:
-            resolved_output = _resolve(output)
-            resolved_stage = _resolve(staged[output])
-            if resolved_output != output or not _is_within(resolved_output, config.repo_root):
-                raise SafetyError(f"output containment changed before publication: {output}")
-            if not _is_within(resolved_stage, config.repo_root):
-                raise SafetyError(f"staged output escaped --repo-root: {staged[output]}")
-            if os.path.lexists(output):
-                raise SafetyError(f"output appeared before publication; new path required: {output}")
+        _validate_parent_anchors(require_final_absent=True)
 
-        # Publish new paths with atomic no-clobber links. This is staged,
-        # pair-consistent publication with compensating rollback, not a literal
-        # cross-directory transaction.
+        # Publish through anchored directory descriptors. Both staged names are
+        # retained until both no-clobber links succeed. This is staged,
+        # pair-consistent publication with compensating rollback, not literal
+        # two-file transaction atomicity.
         for output in outputs:
-            stage_stat = os.stat(staged[output], follow_symlinks=False)
-            os.link(staged[output], output)
-            published[output] = (stage_stat.st_dev, stage_stat.st_ino)
-            staged[output].unlink()
+            parent_fd = parent_fds[output]
+            stage_name = staged_names[output]
+            stage_metadata = os.stat(
+                stage_name, dir_fd=parent_fd, follow_symlinks=False
+            )
+            os.link(
+                stage_name,
+                output.name,
+                src_dir_fd=parent_fd,
+                dst_dir_fd=parent_fd,
+                follow_symlinks=False,
+            )
+            published[output] = _identity(stage_metadata)
+
+        # Detect namespace replacement that raced with the link operations and
+        # compensate through the still-open parent descriptors if necessary.
+        _validate_parent_anchors(require_final_absent=False)
+        for output in outputs:
+            final_identity = _identity(
+                os.stat(
+                    output.name,
+                    dir_fd=parent_fds[output],
+                    follow_symlinks=False,
+                )
+            )
+            if final_identity != published[output]:
+                raise SafetyError(f"published output ownership changed: {output}")
+
+        for output in outputs:
+            os.unlink(staged_names[output], dir_fd=parent_fds[output])
+
+        _validate_parent_anchors(require_final_absent=False)
 
     except BaseException as error:
         publish_error = error
         for output in reversed(outputs):
             try:
                 if output in published:
+                    parent_fd = parent_fds[output]
                     try:
-                        current_stat = os.stat(output, follow_symlinks=False)
+                        current_stat = os.stat(
+                            output.name,
+                            dir_fd=parent_fd,
+                            follow_symlinks=False,
+                        )
                     except FileNotFoundError:
                         continue
                     current_identity = (current_stat.st_dev, current_stat.st_ino)
@@ -1107,15 +1218,25 @@ def write_outputs(config: Config, payload: Dict[str, Any]) -> None:
                             f"{output}: ownership changed; refusing rollback unlink"
                         )
                         continue
-                    output.unlink()
+                    os.unlink(output.name, dir_fd=parent_fd)
             except OSError as rollback_error:
                 rollback_errors.append(f"{output}: {rollback_error}")
     finally:
-        for stage in staged.values():
+        for output, stage_name in staged_names.items():
+            parent_fd = parent_fds.get(output)
+            if parent_fd is None:
+                continue
             try:
-                stage.unlink(missing_ok=True)
+                os.unlink(stage_name, dir_fd=parent_fd)
+            except FileNotFoundError:
+                pass
             except OSError as cleanup_error:
-                cleanup_errors.append(f"{stage}: {cleanup_error}")
+                cleanup_errors.append(f"{output.parent / stage_name}: {cleanup_error}")
+        for output, parent_fd in parent_fds.items():
+            try:
+                os.close(parent_fd)
+            except OSError as cleanup_error:
+                cleanup_errors.append(f"{output.parent}: close failed: {cleanup_error}")
 
     if publish_error is not None:
         detail = f"output pair publication failed; rollback attempted: {publish_error}"

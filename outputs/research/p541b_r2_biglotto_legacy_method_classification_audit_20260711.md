@@ -18,7 +18,11 @@
 - Every finding publishes separate `resolved_api` and `resolved_syntax` fields plus `imported_module_path`; exactly one resolved field is populated.
 - States are exactly `detected`, `not_detected`, and `unknown`.
 - Scan-status taxonomy (ordered): `complete`, `syntax_error`, `unreadable`, `unsupported`.
-- Read/decode, AST parse, unsupported-structure, provenance, and ambiguous one-hop failures fail closed.
+- Each record publishes truthful Git-read, UTF-8 decode, AST parse, and scan-completion statuses.
+- Recoverable per-file blob-read, decode, parse, detector, category-detector, unsupported-structure, and ambiguous one-hop failures retain the original manifest record as `unknown` and continue in original order.
+- Completed `detected` evidence is preserved when another detector category fails; an incomplete scan can never be low risk.
+- Failure reasons use bounded deterministic codes and exclude exception text and private host paths.
+- Repository/Git unavailability, baseline or frozen-manifest failure, duplicates, top-level invariants, and serialization failures remain terminal.
 - Only an exact top-level `__name__ == '__main__'` comparison is a valid guard; it mitigates import-time reachability only.
 
 ## Detector Families
@@ -35,36 +39,37 @@
 | Metric | Value |
 |---|---:|
 | Frozen source records | 580 |
-| Complete scans | 554 |
-| Unknown scans | 26 |
-| Direct findings | 3508 |
+| Complete scans | 544 |
+| Unknown scans | 36 |
+| Direct findings | 3545 |
 | Transitive findings | 77 |
-| Scan `complete` | 554 |
+| Scan `complete` | 544 |
 | Scan `syntax_error` | 1 |
-| Scan `unsupported` | 25 |
-| Risk `high` | 430 |
-| Risk `low` | 55 |
+| Scan `unreadable` | 0 |
+| Scan `unsupported` | 35 |
+| Risk `high` | 419 |
+| Risk `low` | 52 |
 | Risk `medium` | 9 |
-| Risk `unknown` | 86 |
+| Risk `unknown` | 100 |
 
 ## Tri-State Evidence
 
 | Evidence | detected | not_detected | unknown |
 |---|---:|---:|---:|
-| `database_access` | 379 | 171 | 30 |
-| `filesystem_write` | 151 | 403 | 26 |
-| `network_io` | 17 | 537 | 26 |
-| `process_execution` | 12 | 542 | 26 |
-| `other_external_effect` | 32 | 522 | 26 |
-| `transitive_external_state` | 34 | 464 | 82 |
-| `import_time_execution` | 8 | 546 | 26 |
-| `hardcoded_absolute_path` | 56 | 498 | 26 |
-| `hardcoded_draw_or_date` | 42 | 512 | 26 |
-| `database_like_path` | 379 | 175 | 26 |
-| `external_service_url` | 21 | 533 | 26 |
-| `filesystem_read` | 161 | 393 | 26 |
-| `valid_main_guard` | 523 | 31 | 26 |
-| `malformed_main_guard` | 1 | 553 | 26 |
+| `database_access` | 390 | 169 | 21 |
+| `filesystem_write` | 160 | 394 | 26 |
+| `network_io` | 17 | 527 | 36 |
+| `process_execution` | 12 | 532 | 36 |
+| `other_external_effect` | 57 | 512 | 11 |
+| `transitive_external_state` | 33 | 451 | 96 |
+| `import_time_execution` | 12 | 536 | 32 |
+| `hardcoded_absolute_path` | 56 | 489 | 35 |
+| `hardcoded_draw_or_date` | 42 | 503 | 35 |
+| `database_like_path` | 390 | 174 | 16 |
+| `external_service_url` | 22 | 523 | 35 |
+| `filesystem_read` | 166 | 385 | 29 |
+| `valid_main_guard` | 539 | 30 | 11 |
+| `malformed_main_guard` | 1 | 543 | 36 |
 
 ## Superseded Historical Artifacts
 
@@ -74,12 +79,13 @@
 
 ## Frozen Provenance
 
-- Generator SHA-256: `1d8c4ba57735b9b268bc4e00cf7df1a76424632b0552310cbd76874966f00ab8`
+- Generator SHA-256: `77c9059ef8ccd5ce86c30bdf5392944ef89b8364b0761383599bd407864aec0d`
 - Historical P541B JSON blob: `12f1595c96e3f9deddc7a7d2d9549c03144635f0` — verification **PASS**
 - Historical P541B Markdown blob: `3b28e39bfe747c5f196b9aec6610284709466cf8` — verification **PASS**
 - Historical P541A JSON blob: `7557f364160dc09c91a19c07b370cb4b231c0194` — verification **PASS**
 - Historical P541A Markdown blob: `7c2574dd80e8fbef147da0d4477a0c8eda56afe0` — verification **PASS**
-- Frozen manifest: 580 Git blobs, canonical SHA-256 `002ece91381453954911397608f2899b1eec0b5fc299521500b39ea469f227e7` — verification **PASS**
+- Frozen manifest: 580 Git blobs, canonical SHA-256 `ca0f84b23f1a3f6613c5f78d6020ec954a3e28fb702152fbf1fa1fb53dbf4e40` — verification **PASS**
+- Recovered source blob-read failures: **0**
 - Source discovery from the current working tree is prohibited.
 
 ## Downstream Requirement

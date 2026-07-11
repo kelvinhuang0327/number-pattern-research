@@ -195,6 +195,38 @@ class P541BR2Error(RuntimeError):
     """Raised when pinned provenance or the fail-closed contract is violated."""
 
 
+class GitUnavailableError(P541BR2Error):
+    """Raised when Git itself cannot be executed; this remains terminal."""
+
+
+FAILURE_REASON_CODES = frozenset(
+    {
+        "ast_parse_failed",
+        "category_detector_failed",
+        "detector_failed",
+        "git_blob_read_failed",
+        "import_resolution_incomplete",
+        "imported_blob_invalid",
+        "imported_scan_incomplete",
+        "transitive_detector_failed",
+        "unsupported_static_structure",
+        "utf8_decode_failed",
+    }
+)
+
+
+def _failure_reason(code: str, *, line: int | None = None, byte: int | None = None) -> str:
+    """Return a bounded deterministic reason containing no exception or host-path text."""
+    if code not in FAILURE_REASON_CODES:
+        raise P541BR2Error(f"unknown failure reason code: {code}")
+    fields = [code]
+    if line is not None:
+        fields.append(f"line={max(0, int(line))}")
+    if byte is not None:
+        fields.append(f"byte={max(0, int(byte))}")
+    return ":".join(fields)
+
+
 def canonical_bytes(value: Any) -> bytes:
     try:
         return json.dumps(
@@ -252,14 +284,17 @@ def _safe_repo_path(path: str) -> None:
 
 
 def run_git(repo_root: Path, arguments: Sequence[str], *, stdin: bytes | None = None) -> bytes:
-    completed = subprocess.run(
-        ["git", *arguments],
-        cwd=repo_root,
-        input=stdin,
-        stdout=subprocess.PIPE,
-        stderr=subprocess.PIPE,
-        check=False,
-    )
+    try:
+        completed = subprocess.run(
+            ["git", *arguments],
+            cwd=repo_root,
+            input=stdin,
+            stdout=subprocess.PIPE,
+            stderr=subprocess.PIPE,
+            check=False,
+        )
+    except OSError as exc:
+        raise GitUnavailableError("Git is unavailable") from exc
     if completed.returncode:
         detail = completed.stderr.decode("utf-8", errors="replace").strip()
         raise P541BR2Error(f"git {' '.join(arguments[:2])} failed: {detail}")
@@ -653,13 +688,38 @@ def _evidence(
 
 def unknown_analysis(
     source_path: str,
-    raw: bytes,
+    raw: bytes | None,
     blob_id: str,
     reason: str,
     scan_status: str,
+    *,
+    reason_code: str,
+    preserved_evidence: dict[str, dict[str, Any]] | None = None,
 ) -> dict[str, Any]:
     if scan_status not in SCAN_STATUSES or scan_status == "complete":
         raise P541BR2Error(f"invalid incomplete scan status: {scan_status}")
+    if reason_code not in FAILURE_REASON_CODES or not reason.startswith(reason_code):
+        raise P541BR2Error(f"invalid bounded failure reason: {reason_code}")
+    evidence = {
+        key: _evidence("unknown", scope="unknown", reason=reason)
+        for key in ALL_EVIDENCE_KEYS
+    }
+    for key, item in (preserved_evidence or {}).items():
+        if key in evidence and item.get("state") == "detected":
+            evidence[key] = _evidence(
+                "detected",
+                scope=str(item.get("scope", "whole_file")),
+                findings=item.get("findings", ()),
+            )
+    read_status = "succeeded" if raw is not None else "failed"
+    if raw is None:
+        decode_status, parse_status = "not_attempted", "not_attempted"
+    elif scan_status == "unreadable":
+        decode_status, parse_status = "failed", "not_attempted"
+    elif scan_status == "syntax_error":
+        decode_status, parse_status = "succeeded", "failed"
+    else:
+        decode_status, parse_status = "succeeded", "succeeded"
     return {
         "schema_version": SCHEMA_VERSION,
         "detector_version": DETECTOR_VERSION,
@@ -667,20 +727,21 @@ def unknown_analysis(
             "source_path": source_path,
             "source_commit": FROZEN_SOURCE_COMMIT,
             "blob_id": blob_id,
-            "byte_size": len(raw),
-            "sha256": sha256_bytes(raw),
-            "utf8_decoding_status": "failed" if scan_status == "unreadable" else "succeeded",
+            "byte_size": len(raw) if raw is not None else None,
+            "sha256": sha256_bytes(raw) if raw is not None else None,
+            "git_blob_read_status": read_status,
+            "utf8_decoding_status": decode_status,
         },
         "scan_status": scan_status,
         "scan": {
             "status": scan_status,
             "complete": False,
-            "error": {"type": scan_status, "message": reason},
+            "read_status": read_status,
+            "decode_status": decode_status,
+            "parse_status": parse_status,
+            "error": {"type": scan_status, "code": reason_code, "message": reason},
         },
-        "evidence": {
-            key: _evidence("unknown", scope="unknown", reason=reason)
-            for key in ALL_EVIDENCE_KEYS
-        },
+        "evidence": evidence,
         "safety_classification": {
             "risk_level": "unknown",
             "low_risk_eligible": False,
@@ -795,27 +856,49 @@ def analyze_source_bytes(
     try:
         content = raw.decode("utf-8")
     except UnicodeDecodeError as exc:
-        return unknown_analysis(
-            source_path, raw, blob_id, f"UTF-8 decode failure at byte {exc.start}", "unreadable"
-        )
-    try:
-        tree = ast.parse(content, filename=source_path)
-    except SyntaxError as exc:
+        reason = _failure_reason("utf8_decode_failed", byte=exc.start)
         return unknown_analysis(
             source_path,
             raw,
             blob_id,
-            f"AST parse failure: {exc.msg} (line {exc.lineno})",
+            reason,
+            "unreadable",
+            reason_code="utf8_decode_failed",
+        )
+    try:
+        tree = ast.parse(content, filename=source_path)
+    except SyntaxError as exc:
+        reason = _failure_reason("ast_parse_failed", line=exc.lineno)
+        return unknown_analysis(
+            source_path,
+            raw,
+            blob_id,
+            reason,
             "syntax_error",
+            reason_code="ast_parse_failed",
         )
 
-    aliases = collect_aliases(tree)
-    runtime_call_ids = {id(call) for call in import_time_calls(tree)}
-    guarded_call_ids = {id(call) for call in guarded_calls(tree)}
+    try:
+        aliases = collect_aliases(tree)
+        runtime_call_ids = {id(call) for call in import_time_calls(tree)}
+        guarded_call_ids = {id(call) for call in guarded_calls(tree)}
+    except P541BR2Error:
+        raise
+    except Exception:
+        reason = _failure_reason("detector_failed")
+        return unknown_analysis(
+            source_path,
+            raw,
+            blob_id,
+            reason,
+            "unsupported",
+            reason_code="detector_failed",
+        )
     findings: dict[str, list[dict[str, Any]]] = {
         key: [] for key in (*EFFECT_KEYS, "filesystem_read")
     }
     unsupported: list[str] = []
+    category_detector_failed = False
     ambiguous_database: list[dict[str, Any]] = []
     for node in ast.walk(tree):
         if isinstance(node, ast.ImportFrom) and any(alias.name == "*" for alias in node.names):
@@ -823,7 +906,15 @@ def analyze_source_bytes(
         if not isinstance(node, ast.Call):
             continue
         resolved = _dotted_name(node.func, aliases) or "<unresolved>"
-        categories, call_unsupported = classify_call(node, resolved)
+        if resolved == "<unresolved>":
+            unsupported.append(f"unresolved call target at line {getattr(node, 'lineno', 0)}")
+        try:
+            categories, call_unsupported = classify_call(node, resolved)
+        except P541BR2Error:
+            raise
+        except Exception:
+            category_detector_failed = True
+            continue
         unsupported.extend(call_unsupported)
         if id(node) in runtime_call_ids:
             scope = "module_load"
@@ -858,15 +949,6 @@ def analyze_source_bytes(
                     operation="unknown",
                 )
             )
-
-    if unsupported:
-        reason = f"unsupported static structure: {'; '.join(sorted(set(unsupported)))}"
-        result = unknown_analysis(source_path, raw, blob_id, reason, "unsupported")
-        for key, partial in findings.items():
-            result["evidence"][key]["findings"] = _evidence(
-                "unknown", scope="unknown", findings=partial, reason=reason
-            )["findings"]
-        return result
 
     valid_guards = [
         node for node in tree.body
@@ -956,12 +1038,23 @@ def analyze_source_bytes(
         ("database_like_path", DATABASE_LIKE_PATH_RE),
         ("external_service_url", EXTERNAL_URL_RE),
     ):
-        text_findings = _literal_findings(tree, pattern, source_path, key)
-        evidence[key] = _evidence(
-            "detected" if text_findings else "not_detected",
-            scope="whole_file",
-            findings=text_findings,
-        )
+        try:
+            text_findings = _literal_findings(tree, pattern, source_path, key)
+        except P541BR2Error:
+            raise
+        except Exception:
+            category_detector_failed = True
+            evidence[key] = _evidence(
+                "unknown",
+                scope="whole_file",
+                reason=_failure_reason("category_detector_failed"),
+            )
+        else:
+            evidence[key] = _evidence(
+                "detected" if text_findings else "not_detected",
+                scope="whole_file",
+                findings=text_findings,
+            )
     evidence["valid_main_guard"] = _evidence(
         "detected" if valid_guard_findings else "not_detected",
         scope="main_guard",
@@ -973,6 +1066,23 @@ def analyze_source_bytes(
         findings=malformed_findings,
     )
 
+    if unsupported or category_detector_failed:
+        reason_code = (
+            "category_detector_failed"
+            if category_detector_failed
+            else "unsupported_static_structure"
+        )
+        reason = _failure_reason(reason_code)
+        return unknown_analysis(
+            source_path,
+            raw,
+            blob_id,
+            reason,
+            "unsupported",
+            reason_code=reason_code,
+            preserved_evidence=evidence,
+        )
+
     result = {
         "schema_version": SCHEMA_VERSION,
         "detector_version": DETECTOR_VERSION,
@@ -982,12 +1092,16 @@ def analyze_source_bytes(
             "blob_id": blob_id,
             "byte_size": len(raw),
             "sha256": sha256_bytes(raw),
+            "git_blob_read_status": "succeeded",
             "utf8_decoding_status": "succeeded",
         },
         "scan_status": "complete",
         "scan": {
             "status": "complete",
             "complete": True,
+            "read_status": "succeeded",
+            "decode_status": "succeeded",
+            "parse_status": "succeeded",
             "encoding": "UTF-8",
             "parser": "python ast.parse",
             "error": None,
@@ -1159,7 +1273,7 @@ def one_hop_transitive_evidence(
         return _evidence(
             "unknown",
             scope="transitive",
-            reason=f"importing source unavailable for one-hop analysis: {type(exc).__name__}",
+            reason=_failure_reason("imported_scan_incomplete"),
         )
     resolution_cache = resolution_cache if resolution_cache is not None else {}
     blob_cache = blob_cache if blob_cache is not None else {}
@@ -1172,29 +1286,43 @@ def one_hop_transitive_evidence(
         if resolved_path == "external":
             continue
         if resolved_path == "unknown":
-            unknown_reasons.append(issue or "ambiguous import resolution")
+            unknown_reasons.append(_failure_reason("import_resolution_incomplete"))
             continue
         if resolved_path == source_path:  # One-hop cycle stops without recursion.
             continue
         entries = git_tree_entries(repo_root, commit, [resolved_path])
         entry = entries.get(resolved_path)
         if not entry or entry["type"] != "blob" or entry["mode"] not in {"100644", "100755"}:
-            unknown_reasons.append(f"imported project module is not a regular blob: {resolved_path}")
+            unknown_reasons.append(_failure_reason("imported_blob_invalid"))
             continue
         imported_raw = blob_cache.get(entry["blob_id"])
         if imported_raw is None:
-            imported_raw = git_blob(repo_root, entry["blob_id"])
+            try:
+                imported_raw = git_blob(repo_root, entry["blob_id"])
+            except GitUnavailableError:
+                raise
+            except Exception:
+                unknown_reasons.append(
+                    _failure_reason("git_blob_read_failed")
+                )
+                continue
             blob_cache[entry["blob_id"]] = imported_raw
-        imported = analyze_source_bytes(
-            resolved_path,
-            imported_raw,
-            entry["blob_id"],
-            transitive_evidence=complete_transitive_absence(),
-        )
-        if imported["scan_status"] != "complete":
-            unknown_reasons.append(
-                f"imported module {resolved_path} scan_status={imported['scan_status']}"
+        try:
+            imported = analyze_source_bytes(
+                resolved_path,
+                imported_raw,
+                entry["blob_id"],
+                transitive_evidence=complete_transitive_absence(),
             )
+        except P541BR2Error:
+            raise
+        except Exception:
+            unknown_reasons.append(
+                _failure_reason("detector_failed")
+            )
+            continue
+        if imported["scan_status"] != "complete":
+            unknown_reasons.append(_failure_reason("imported_scan_incomplete"))
             continue
         for family in EFFECT_KEYS:
             for direct in imported["evidence"][family]["findings"]:
@@ -1216,18 +1344,23 @@ def one_hop_transitive_evidence(
             try:
                 imported_tree = ast.parse(imported_raw.decode("utf-8"), filename=resolved_path)
             except (UnicodeDecodeError, SyntaxError) as exc:
-                unknown_reasons.append(
-                    f"invoked imported definition unavailable in {resolved_path}: {type(exc).__name__}"
-                )
+                unknown_reasons.append(_failure_reason("imported_scan_incomplete"))
             else:
-                findings.extend(
-                    _definition_effect_findings(
-                        imported_tree,
-                        resolved_path,
-                        source_path,
-                        definition_names,
+                try:
+                    findings.extend(
+                        _definition_effect_findings(
+                            imported_tree,
+                            resolved_path,
+                            source_path,
+                            definition_names,
+                        )
                     )
-                )
+                except P541BR2Error:
+                    raise
+                except Exception:
+                    unknown_reasons.append(
+                        _failure_reason("category_detector_failed")
+                    )
     if unknown_reasons:
         return _evidence(
             "unknown",
@@ -1283,6 +1416,48 @@ def validate_artifact(artifact: dict[str, Any]) -> None:
         )
         if record.get("scan_status") not in SCAN_STATUSES:
             raise P541BR2Error(f"scan status mismatch: {record.get('source_path')}")
+        identity = record.get("source_identity", {})
+        if (
+            identity.get("source_path") != record.get("source_path")
+            or identity.get("source_commit") != FROZEN_SOURCE_COMMIT
+            or identity.get("git_blob_read_status") not in {"succeeded", "failed"}
+            or identity.get("utf8_decoding_status")
+            not in {"succeeded", "failed", "not_attempted"}
+        ):
+            raise P541BR2Error(f"source identity status mismatch: {record.get('source_path')}")
+        scan = record.get("scan", {})
+        if (
+            scan.get("status") != record.get("scan_status")
+            or scan.get("read_status") not in {"succeeded", "failed"}
+            or scan.get("decode_status") not in {"succeeded", "failed", "not_attempted"}
+            or scan.get("parse_status") not in {"succeeded", "failed", "not_attempted"}
+        ):
+            raise P541BR2Error(f"scan phase status mismatch: {record.get('source_path')}")
+        if record["scan_status"] == "complete":
+            if (
+                scan.get("complete") is not True
+                or scan.get("error") is not None
+                or {scan["read_status"], scan["decode_status"], scan["parse_status"]}
+                != {"succeeded"}
+            ):
+                raise P541BR2Error(f"complete scan status mismatch: {record.get('source_path')}")
+        else:
+            error = scan.get("error", {})
+            reason_code = error.get("code")
+            reason = error.get("message")
+            if (
+                scan.get("complete") is not False
+                or reason_code not in FAILURE_REASON_CODES
+                or not isinstance(reason, str)
+                or not reason.startswith(reason_code)
+                or HARD_CODED_PATH_RE.search(reason)
+            ):
+                raise P541BR2Error(f"incomplete scan status mismatch: {record.get('source_path')}")
+            if (
+                record.get("safety_classification", {}).get("risk_level") != "unknown"
+                or record.get("safety_classification", {}).get("low_risk_eligible") is not False
+            ):
+                raise P541BR2Error(f"incomplete scan safety mismatch: {record.get('source_path')}")
         evidence = record.get("evidence")
         if not isinstance(evidence, dict) or set(evidence) != set(ALL_EVIDENCE_KEYS):
             raise P541BR2Error(f"evidence schema mismatch: {record.get('source_path')}")
@@ -1330,6 +1505,10 @@ def validate_artifact(artifact: dict[str, Any]) -> None:
             or any(evidence[key]["state"] != "not_detected" for key in RISK_EVIDENCE_KEYS)
         ):
             raise P541BR2Error(f"unsafe low-risk classification: {record.get('source_path')}")
+        if not scan_complete and any(
+            item["state"] == "not_detected" for item in evidence.values()
+        ):
+            raise P541BR2Error(f"incomplete scan published false absence: {record.get('source_path')}")
     manifest = artifact.get("provenance", {}).get("source_manifest", {})
     identities = [record["source_identity"] for record in records]
     digest = sha256_bytes(canonical_bytes(identities))
@@ -1338,8 +1517,54 @@ def validate_artifact(artifact: dict[str, Any]) -> None:
         or manifest.get("canonical_sha256") != digest
         or manifest.get("verification") != "PASS"
         or manifest.get("ordered_entries") != identities
+        or manifest.get("content_read_failures")
+        != sum(identity["git_blob_read_status"] == "failed" for identity in identities)
     ):
         raise P541BR2Error("source manifest invariant mismatch")
+    summary = artifact.get("summary", {})
+    scan_counts = summary.get("scan_status_counts", {})
+    if (
+        summary.get("total_records") != 580
+        or list(scan_counts) != list(SCAN_STATUS_TAXONOMY)
+        or sum(scan_counts.values()) != 580
+        or summary.get("complete_scans") != scan_counts["complete"]
+        or summary.get("unknown_scans") != 580 - scan_counts["complete"]
+    ):
+        raise P541BR2Error("scan aggregate reconciliation mismatch")
+    for key in ALL_EVIDENCE_KEYS:
+        expected = Counter(record["evidence"][key]["state"] for record in records)
+        published = summary.get("evidence_status_counts", {}).get(key, {})
+        if (
+            set(published) != set(TRI_STATES)
+            or sum(published.values()) != 580
+            or any(published[state] != expected.get(state, 0) for state in TRI_STATES)
+        ):
+            raise P541BR2Error(f"evidence aggregate reconciliation mismatch: {key}")
+    expected_risks = Counter(
+        record["safety_classification"]["risk_level"] for record in records
+    )
+    expected_dispositions = Counter(
+        record["safety_classification"]["disposition"] for record in records
+    )
+    if summary.get("risk_level_counts") != dict(sorted(expected_risks.items())):
+        raise P541BR2Error("risk aggregate reconciliation mismatch")
+    if summary.get("disposition_counts") != dict(sorted(expected_dispositions.items())):
+        raise P541BR2Error("disposition aggregate reconciliation mismatch")
+    expected_direct_findings = sum(
+        finding["direct_or_transitive"] == "direct"
+        for record in records
+        for item in record["evidence"].values()
+        for finding in item["findings"]
+    )
+    expected_transitive_findings = sum(
+        len(record["evidence"]["transitive_external_state"]["findings"])
+        for record in records
+    )
+    if (
+        summary.get("direct_finding_count") != expected_direct_findings
+        or summary.get("transitive_finding_count") != expected_transitive_findings
+    ):
+        raise P541BR2Error("finding aggregate reconciliation mismatch")
     canonical_bytes(artifact)
 
 
@@ -1364,23 +1589,80 @@ def build_artifact(repo_root: Path = REPO_ROOT) -> dict[str, Any]:
             or entry["mode"] not in {"100644", "100755"}
         ):
             raise P541BR2Error(f"frozen source is not a regular Python blob: {source_path}")
-        raw = git_blob(repo_root, entry["blob_id"])
+        try:
+            raw = git_blob(repo_root, entry["blob_id"])
+        except GitUnavailableError:
+            raise
+        except Exception:
+            reason = _failure_reason("git_blob_read_failed")
+            analysis = unknown_analysis(
+                source_path,
+                None,
+                entry["blob_id"],
+                reason,
+                "unreadable",
+                reason_code="git_blob_read_failed",
+            )
+            records.append(
+                {
+                    "method_id": historical_record["method_id"],
+                    "source_path": source_path,
+                    **analysis,
+                    "historical_p541b_classification": _historical_context(historical_record),
+                }
+            )
+            continue
         raw_by_path[source_path] = raw
         blob_cache[entry["blob_id"]] = raw
-        transitive = one_hop_transitive_evidence(
-            source_path,
-            raw,
-            repo_root,
-            FROZEN_SOURCE_COMMIT,
-            resolution_cache=resolution_cache,
-            blob_cache=blob_cache,
-        )
-        analysis = analyze_source_bytes(
-            source_path,
-            raw,
-            entry["blob_id"],
-            transitive_evidence=transitive,
-        )
+        transitive_failed = False
+        try:
+            transitive = one_hop_transitive_evidence(
+                source_path,
+                raw,
+                repo_root,
+                FROZEN_SOURCE_COMMIT,
+                resolution_cache=resolution_cache,
+                blob_cache=blob_cache,
+            )
+        except P541BR2Error:
+            raise
+        except Exception:
+            transitive_failed = True
+            transitive = _evidence(
+                "unknown",
+                scope="transitive",
+                reason=_failure_reason("transitive_detector_failed"),
+            )
+        try:
+            analysis = analyze_source_bytes(
+                source_path,
+                raw,
+                entry["blob_id"],
+                transitive_evidence=transitive,
+            )
+        except P541BR2Error:
+            raise
+        except Exception:
+            reason = _failure_reason("detector_failed")
+            analysis = unknown_analysis(
+                source_path,
+                raw,
+                entry["blob_id"],
+                reason,
+                "unsupported",
+                reason_code="detector_failed",
+            )
+        if transitive_failed and analysis["scan"]["complete"] is True:
+            reason = _failure_reason("transitive_detector_failed")
+            analysis = unknown_analysis(
+                source_path,
+                raw,
+                entry["blob_id"],
+                reason,
+                "unsupported",
+                reason_code="transitive_detector_failed",
+                preserved_evidence=analysis["evidence"],
+            )
         records.append(
             {
                 "method_id": historical_record["method_id"],
@@ -1396,11 +1678,14 @@ def build_artifact(repo_root: Path = REPO_ROOT) -> dict[str, Any]:
     disposition_counts = Counter(
         record["safety_classification"]["disposition"] for record in records
     )
-    evidence_counts = {
-        key: dict(sorted(Counter(record["evidence"][key]["state"] for record in records).items()))
-        for key in ALL_EVIDENCE_KEYS
+    evidence_counts = {}
+    for key in ALL_EVIDENCE_KEYS:
+        counts = Counter(record["evidence"][key]["state"] for record in records)
+        evidence_counts[key] = {state: counts.get(state, 0) for state in sorted(TRI_STATES)}
+    observed_scan_statuses = Counter(record["scan_status"] for record in records)
+    scan_status_counts = {
+        status: observed_scan_statuses.get(status, 0) for status in SCAN_STATUS_TAXONOMY
     }
-    scan_status_counts = dict(sorted(Counter(record["scan_status"] for record in records).items()))
     direct_finding_count = sum(
         1
         for record in records
@@ -1438,6 +1723,10 @@ def build_artifact(repo_root: Path = REPO_ROOT) -> dict[str, Any]:
             "detector_version": DETECTOR_VERSION,
             "evidence_states": sorted(TRI_STATES),
             "scan_status_taxonomy": list(SCAN_STATUS_TAXONOMY),
+            "failure_reason_codes": sorted(FAILURE_REASON_CODES),
+            "failure_reason_policy": (
+                "bounded deterministic codes only; exception text and private host paths are excluded"
+            ),
             "finding_fields": [
                 "line",
                 "column",
@@ -1450,8 +1739,12 @@ def build_artifact(repo_root: Path = REPO_ROOT) -> dict[str, Any]:
                 "imported_module_path",
             ],
             "fail_closed_conditions": [
+                "Git blob-read failure",
                 "UTF-8 decode failure",
                 "AST parse failure",
+                "detector exception",
+                "category-detector exception",
+                "incomplete alias resolution",
                 "star import",
                 "dynamic code or import",
                 "dynamic file mode",
@@ -1487,12 +1780,16 @@ def build_artifact(repo_root: Path = REPO_ROOT) -> dict[str, Any]:
                 "record_count": 580,
                 "entry_fields": [
                     "source_path", "source_commit", "blob_id", "byte_size", "sha256",
+                    "git_blob_read_status", "utf8_decoding_status",
                 ],
                 "entries_embedded_at": "method_classification_records[*].source_identity",
                 "canonicalization": "UTF-8 compact sorted-key JSON in historical record order",
                 "canonical_sha256": sha256_bytes(canonical_bytes(identities)),
                 "ordered_entries": identities,
                 "verification": "PASS",
+                "content_read_failures": sum(
+                    identity["git_blob_read_status"] == "failed" for identity in identities
+                ),
             },
             "no_database_access": True,
             "no_database_hashing": True,
@@ -1544,7 +1841,11 @@ def render_markdown(artifact: dict[str, Any]) -> str:
         "- Every finding publishes separate `resolved_api` and `resolved_syntax` fields plus `imported_module_path`; exactly one resolved field is populated.",
         "- States are exactly `detected`, `not_detected`, and `unknown`.",
         "- Scan-status taxonomy (ordered): `complete`, `syntax_error`, `unreadable`, `unsupported`.",
-        "- Read/decode, AST parse, unsupported-structure, provenance, and ambiguous one-hop failures fail closed.",
+        "- Each record publishes truthful Git-read, UTF-8 decode, AST parse, and scan-completion statuses.",
+        "- Recoverable per-file blob-read, decode, parse, detector, category-detector, unsupported-structure, and ambiguous one-hop failures retain the original manifest record as `unknown` and continue in original order.",
+        "- Completed `detected` evidence is preserved when another detector category fails; an incomplete scan can never be low risk.",
+        "- Failure reasons use bounded deterministic codes and exclude exception text and private host paths.",
+        "- Repository/Git unavailability, baseline or frozen-manifest failure, duplicates, top-level invariants, and serialization failures remain terminal.",
         "- Only an exact top-level `__name__ == '__main__'` comparison is a valid guard; it mitigates import-time reachability only.",
         "",
         "## Detector Families",
@@ -1599,6 +1900,7 @@ def render_markdown(artifact: dict[str, Any]) -> str:
         f"- Historical P541A JSON blob: `{artifact['provenance']['historical_inputs']['p541a_json']['blob_id']}` — verification **PASS**",
         f"- Historical P541A Markdown blob: `{artifact['provenance']['historical_inputs']['p541a_markdown']['blob_id']}` — verification **PASS**",
         f"- Frozen manifest: 580 Git blobs, canonical SHA-256 `{artifact['provenance']['source_manifest']['canonical_sha256']}` — verification **PASS**",
+        f"- Recovered source blob-read failures: **{artifact['provenance']['source_manifest']['content_read_failures']}**",
         "- Source discovery from the current working tree is prohibited.",
         "",
         "## Downstream Requirement",

@@ -7,6 +7,7 @@ import copy
 import hashlib
 import inspect
 import json
+import re
 import subprocess
 import sys
 from pathlib import Path
@@ -315,6 +316,11 @@ def test_clean_pure_prediction_function_remains_low_risk():
 def test_syntax_error_produces_unknown():
     result = _analyze("this is invalid !!!\n")
     assert result["scan_status"] == "syntax_error"
+    assert result["scan"]["complete"] is False
+    assert result["scan"]["read_status"] == "succeeded"
+    assert result["scan"]["decode_status"] == "succeeded"
+    assert result["scan"]["parse_status"] == "failed"
+    assert result["scan"]["error"]["code"] == "ast_parse_failed"
     assert {item["state"] for item in result["evidence"].values()} == {"unknown"}
 
 
@@ -322,13 +328,77 @@ def test_unreadable_input_produces_unknown():
     mod = _module()
     result = mod.analyze_source_bytes("bad.py", b"\xff", "2" * 40)
     assert result["scan_status"] == "unreadable"
+    assert result["scan"]["read_status"] == "succeeded"
+    assert result["scan"]["decode_status"] == "failed"
+    assert result["scan"]["parse_status"] == "not_attempted"
+    assert result["scan"]["error"]["code"] == "utf8_decode_failed"
     assert {item["state"] for item in result["evidence"].values()} == {"unknown"}
 
 
 def test_unsupported_input_produces_unknown():
-    result = _analyze("from mystery import *\n")
+    result = _analyze("from mystery import *\nopen('result.txt', 'w')\n")
     assert result["scan_status"] == "unsupported"
+    assert result["scan"]["complete"] is False
+    assert _state(result, "filesystem_write") == "detected"
+    assert all(
+        item["state"] in {"detected", "unknown"}
+        for item in result["evidence"].values()
+    )
     assert result["safety_classification"]["risk_level"] == "unknown"
+    assert result["safety_classification"]["low_risk_eligible"] is False
+
+
+def test_incomplete_alias_resolution_is_truthful_unknown():
+    result = _analyze("(lambda: None)()\n")
+    assert result["scan_status"] == "unsupported"
+    assert result["scan"]["error"]["code"] == "unsupported_static_structure"
+    assert result["scan"]["complete"] is False
+    assert result["safety_classification"]["low_risk_eligible"] is False
+
+
+def test_detector_exception_becomes_bounded_unknown(monkeypatch):
+    mod = _module()
+    monkeypatch.setattr(
+        mod,
+        "collect_aliases",
+        lambda _tree: (_ for _ in ()).throw(RuntimeError("/Users/private/secret")),
+    )
+    result = mod.analyze_source_bytes(
+        "sample.py",
+        b"print('safe')\n",
+        "1" * 40,
+        transitive_evidence=mod.complete_transitive_absence(),
+    )
+    assert result["scan_status"] == "unsupported"
+    assert result["scan"]["error"] == {
+        "type": "unsupported",
+        "code": "detector_failed",
+        "message": "detector_failed",
+    }
+    assert "/Users/" not in json.dumps(result)
+
+
+def test_category_detector_exception_preserves_completed_detected_evidence(monkeypatch):
+    mod = _module()
+    original = mod.classify_call
+
+    def injected(call, resolved):
+        if resolved == "sqlite3.connect":
+            raise RuntimeError("category failed")
+        return original(call, resolved)
+
+    monkeypatch.setattr(mod, "classify_call", injected)
+    result = mod.analyze_source_bytes(
+        "sample.py",
+        b"import sqlite3\nopen('result.txt', 'w')\nsqlite3.connect('x')\n",
+        "1" * 40,
+        transitive_evidence=mod.complete_transitive_absence(),
+    )
+    assert result["scan_status"] == "unsupported"
+    assert result["scan"]["error"]["code"] == "category_detector_failed"
+    assert _state(result, "filesystem_write") == "detected"
+    assert _state(result, "database_access") == "unknown"
+    assert result["safety_classification"]["low_risk_eligible"] is False
 
 
 def test_no_low_risk_result_with_unknown_safety_flag():
@@ -448,10 +518,21 @@ def test_duplicate_source_paths_fail_closed():
         mod.validate_historical_payload(forged)
 
 
-def test_missing_blob_fails_closed():
+def test_missing_frozen_manifest_entry_remains_terminal():
     mod = _module()
     with pytest.raises(mod.P541BR2Error, match="corpus incomplete"):
         mod.require_frozen_entries(["missing.py"], {})
+
+
+def test_repository_or_git_failure_remains_terminal(monkeypatch):
+    mod = _module()
+    monkeypatch.setattr(
+        mod,
+        "git_tree_entries",
+        lambda *_args, **_kwargs: (_ for _ in ()).throw(mod.GitUnavailableError("Git unavailable")),
+    )
+    with pytest.raises(mod.GitUnavailableError, match="Git unavailable"):
+        mod.build_artifact(REPO_ROOT)
 
 
 def test_provenance_mismatch_fails_closed(monkeypatch):
@@ -551,8 +632,73 @@ def test_artifact_contract_is_complete(artifact):
     assert artifact["detector_version"] == mod.DETECTOR_VERSION
     assert artifact["summary"]["total_records"] == 580
     assert len(artifact["provenance"]["source_manifest"]["ordered_entries"]) == 580
+    assert artifact["provenance"]["source_manifest"]["content_read_failures"] == 0
+    assert list(artifact["summary"]["scan_status_counts"]) == list(mod.SCAN_STATUS_TAXONOMY)
+    assert sum(artifact["summary"]["scan_status_counts"].values()) == 580
+    for counts in artifact["summary"]["evidence_status_counts"].values():
+        assert set(counts) == set(mod.TRI_STATES)
+        assert sum(counts.values()) == 580
     assert set(artifact["provenance"]["historical_inputs"]) == set(mod.HISTORICAL_INPUTS)
     mod.validate_artifact(artifact)
+
+
+def test_aggregate_mismatch_remains_terminal(artifact):
+    mod = _module()
+    forged = copy.deepcopy(artifact)
+    forged["summary"]["risk_level_counts"]["unknown"] += 1
+    with pytest.raises(mod.P541BR2Error, match="risk aggregate reconciliation"):
+        mod.validate_artifact(forged)
+
+
+def test_blob_read_failure_retains_order_continues_and_is_byte_deterministic(
+    artifact, monkeypatch
+):
+    mod = _module()
+    identities = artifact["provenance"]["source_manifest"]["ordered_entries"]
+    blob_counts = {}
+    for identity in identities:
+        blob_counts[identity["blob_id"]] = blob_counts.get(identity["blob_id"], 0) + 1
+    target_index = next(
+        index
+        for index in range(len(identities) - 2, 9, -1)
+        if blob_counts[identities[index]["blob_id"]] == 1
+    )
+    target = identities[target_index]
+    original = mod.git_blob
+
+    def injected(repo_root, blob_id):
+        if blob_id == target["blob_id"]:
+            raise RuntimeError("injected /Users/private/blob failure")
+        return original(repo_root, blob_id)
+
+    monkeypatch.setattr(mod, "git_blob", injected)
+    first = mod.build_artifact(REPO_ROOT)
+    second = mod.build_artifact(REPO_ROOT)
+    assert mod.canonical_bytes(first) == mod.canonical_bytes(second)
+
+    expected_paths = [record["source_path"] for record in artifact["method_classification_records"]]
+    actual_paths = [record["source_path"] for record in first["method_classification_records"]]
+    assert actual_paths == expected_paths
+    failed = first["method_classification_records"][target_index]
+    assert failed["source_path"] == target["source_path"]
+    assert failed["source_identity"]["git_blob_read_status"] == "failed"
+    assert failed["source_identity"]["byte_size"] is None
+    assert failed["source_identity"]["sha256"] is None
+    assert failed["scan_status"] == "unreadable"
+    assert failed["scan"]["complete"] is False
+    assert failed["scan"]["error"]["code"] == "git_blob_read_failed"
+    assert {item["state"] for item in failed["evidence"].values()} == {"unknown"}
+    assert failed["safety_classification"]["low_risk_eligible"] is False
+    assert first["method_classification_records"][target_index + 1]["source_path"] == expected_paths[
+        target_index + 1
+    ]
+    assert first["provenance"]["source_manifest"]["content_read_failures"] == 1
+    assert sum(first["summary"]["scan_status_counts"].values()) == 580
+    assert first["summary"]["unknown_scans"] == sum(
+        record["scan"]["complete"] is False
+        for record in first["method_classification_records"]
+    )
+    mod.validate_artifact(first)
 
 
 def test_json_regeneration_equals_committed_json(artifact):
@@ -586,7 +732,7 @@ def test_historical_p541b_artifacts_remain_unchanged():
 
 
 def test_generator_opens_no_project_database():
-    _source, tree = _generator_source_tree()
+    source, tree = _generator_source_tree()
     imported = {
         alias.name
         for node in ast.walk(tree)
@@ -598,6 +744,47 @@ def test_generator_opens_no_project_database():
         if isinstance(node, ast.ImportFrom) and node.module
     }
     assert {"sqlite3", "sqlalchemy", "lottery_api.database"}.isdisjoint(imported)
+    call_names = {
+        ast.unparse(node.func)
+        for node in ast.walk(tree)
+        if isinstance(node, ast.Call)
+    }
+    assert {"open", "builtins.open", "connect", "execute", "executemany", "cursor"}.isdisjoint(
+        call_names
+    )
+
+    db_suffix = re.compile(r"(?i)(?:^|[/\\])[^/\\\s]+\.(?:db|sqlite|sqlite3)$")
+    path_arguments = [
+        argument.value
+        for node in ast.walk(tree)
+        if isinstance(node, ast.Call)
+        and ast.unparse(node.func).rsplit(".", 1)[-1]
+        in {"Path", "open", "read_bytes", "read_text", "write_bytes", "write_text"}
+        for argument in node.args
+        if isinstance(argument, ast.Constant) and isinstance(argument.value, str)
+    ]
+    assert not [value for value in path_arguments if db_suffix.search(value)]
+
+    subprocess_calls = [
+        node
+        for node in ast.walk(tree)
+        if isinstance(node, ast.Call) and ast.unparse(node.func).startswith("subprocess.")
+    ]
+    assert subprocess_calls
+    for call in subprocess_calls:
+        assert ast.unparse(call.func) == "subprocess.run"
+        assert isinstance(call.args[0], ast.List)
+        assert isinstance(call.args[0].elts[0], ast.Constant)
+        assert call.args[0].elts[0].value == "git"
+        assert not any(
+            keyword.arg == "shell"
+            and isinstance(keyword.value, ast.Constant)
+            and keyword.value.value is True
+            for keyword in call.keywords
+        )
+    assert "sqlite3" not in imported
+    assert "sqlalchemy" not in imported
+    assert "lottery_v2.db" not in source
 
 
 def test_generator_does_not_import_target_modules():
@@ -626,11 +813,38 @@ def test_generator_does_not_execute_target_modules():
         for node in ast.walk(tree)
         if isinstance(node, ast.Call)
     }
-    assert {"exec", "eval", "compile", "__import__", "importlib.import_module"}.isdisjoint(
-        call_names
-    )
+    forbidden_calls = {
+        "exec",
+        "eval",
+        "compile",
+        "__import__",
+        "importlib.import_module",
+        "runpy.run_module",
+        "runpy.run_path",
+        "os.system",
+        "os.popen",
+    }
+    assert forbidden_calls.isdisjoint(call_names)
     assert "__import__(" not in source
     assert "exec(" not in source
+    imported_roots = {
+        alias.name.split(".", 1)[0]
+        for node in ast.walk(tree)
+        if isinstance(node, ast.Import)
+        for alias in node.names
+    } | {
+        node.module.split(".", 1)[0]
+        for node in ast.walk(tree)
+        if isinstance(node, ast.ImportFrom) and node.module
+    }
+    assert {"importlib", "runpy"}.isdisjoint(imported_roots)
+    for node in ast.walk(tree):
+        if not isinstance(node, ast.Call) or ast.unparse(node.func) != "subprocess.run":
+            continue
+        assert isinstance(node.args[0], ast.List)
+        assert isinstance(node.args[0].elts[0], ast.Constant)
+        assert node.args[0].elts[0].value == "git"
+        assert not any(keyword.arg == "shell" for keyword in node.keywords)
     assert "git_tree_entries" in source and "git_blob" in source
 
 

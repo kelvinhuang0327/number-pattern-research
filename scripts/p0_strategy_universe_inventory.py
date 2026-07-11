@@ -94,10 +94,11 @@ STRATEGY_WORDS = {
     "frequency", "trend", "bayesian", "markov", "montecarlo", "monte_carlo",
     "deviation", "ensemble", "optimized", "hybrid", "hot_cold", "sum_range",
     "wheeling", "number_pairs", "statistical", "odd_even", "zone", "cluster",
-    "entropy", "temporal", "random_forest", "xgboost", "lstm", "transformer",
+    "entropy", "temporal", "feature_engineering", "random_forest", "ai_prophet",
+    "xgboost", "lstm", "transformer", "ai_maml",
     "apriori", "acb", "pp3", "f4cold", "fourier", "orthogonal", "ts3",
     "regime", "midfreq", "echo", "pivot", "streak", "gap", "cold", "hot",
-    "precision", "triple", "residue", "dispersion", "microfish", "power",
+    "precision", "triple", "residue", "dispersion", "odd_tail", "microfish", "power",
     "biglotto", "daily539", "strategy",
 }
 
@@ -273,6 +274,16 @@ def is_strategy_like(text: str) -> bool:
         return False
     if " vs " in lowered or "monitor" in lowered:
         return False
+    if lowered in {
+        "big lotto", "power lotto", "daily 539", "big_lotto", "power_lotto",
+        "daily_539", "biglotto", "powerlotto", "daily539",
+    }:
+        return False
+    if lowered in {
+        "multi_strategy", "coordinator-direct (7 agents)",
+        "coordinator-direct (6 agents)",
+    }:
+        return False
     if any(word in lowered for word in STRATEGY_WORDS):
         return True
     return bool(re.search(r"\b\d+bet\b|\b(f4cold|ts3|pp3|acb|midfreq)\b", lowered))
@@ -352,12 +363,61 @@ def attach(
         entry.aliases.add(alias)
 
 
+def _relax_json_adjacent(text: str) -> str:
+    """Remove only JSON-adjacent // comments and trailing commas outside strings."""
+    relaxed: List[str] = []
+    in_string = False
+    escaped = False
+    index = 0
+    while index < len(text):
+        character = text[index]
+        if in_string:
+            relaxed.append(character)
+            if escaped:
+                escaped = False
+            elif character == "\\":
+                escaped = True
+            elif character == '"':
+                in_string = False
+            index += 1
+            continue
+        if character == '"':
+            in_string = True
+            relaxed.append(character)
+            index += 1
+            continue
+        if character == "/" and index + 1 < len(text) and text[index + 1] == "/":
+            index += 2
+            while index < len(text) and text[index] not in "\r\n":
+                index += 1
+            continue
+        if character == ",":
+            lookahead = index + 1
+            while lookahead < len(text) and text[lookahead].isspace():
+                lookahead += 1
+            if lookahead < len(text) and text[lookahead] in "}]":
+                index += 1
+                continue
+        relaxed.append(character)
+        index += 1
+    return "".join(relaxed)
+
+
 def _read_json_or_yaml(path: Path) -> Any:
     text = path.read_text(encoding="utf-8")
+    # Bounded fallback order: strict JSON, relaxed JSON-adjacent syntax,
+    # optional PyYAML safe_load, then simple top-level YAML text extraction.
     try:
         return json.loads(text)
     except json.JSONDecodeError:
         pass
+
+    relaxed = _relax_json_adjacent(text)
+    if relaxed != text:
+        try:
+            return json.loads(relaxed)
+        except json.JSONDecodeError:
+            pass
 
     try:
         import yaml  # type: ignore
@@ -371,18 +431,8 @@ def _read_json_or_yaml(path: Path) -> Any:
         except Exception:
             pass
 
-    # Some research artifacts are JSON-adjacent with // comments or trailing
-    # commas. Relax only those two constructs for read-only inventory parsing.
-    stripped_lines = []
-    for raw in text.splitlines():
-        line = raw.split("//", 1)[0] if "//" in raw else raw
-        stripped_lines.append(line)
-    relaxed = "\n".join(stripped_lines)
-    relaxed = re.sub(r",(\s*[}\]])", r"\1", relaxed)
-    try:
-        return json.loads(relaxed)
-    except json.JSONDecodeError:
-        pass
+    if text.lstrip().startswith(("{", "[")):
+        raise SafetyError(f"cannot parse JSON/YAML artifact: {path}")
 
     # Dependency-free fallback for simple top-level strategy metadata YAML.
     data: Dict[str, str] = {}
@@ -406,24 +456,7 @@ def collect_registry(entries: Dict[str, EntryState], repo_root: Path) -> None:
     if not path.is_file():
         return
     text = path.read_text(encoding="utf-8")
-    blocks: List[str] = []
-    current: List[str] = []
-    depth = 0
-    in_block = False
-    for line in text.splitlines():
-        if "_StrategyMeta(" in line:
-            in_block = True
-            current = [line]
-            depth = line.count("(") - line.count(")")
-            continue
-        if in_block:
-            current.append(line)
-            depth += line.count("(") - line.count(")")
-            if depth <= 0:
-                blocks.append("\n".join(current))
-                current = []
-                in_block = False
-    for block in blocks:
+    for block in re.findall(r"_StrategyMeta\((.*?)\n\s*\)", text, re.DOTALL):
         sid_match = re.search(r'strategy_id="([^"]+)"', block)
         if not sid_match:
             continue
@@ -454,6 +487,15 @@ def collect_strategy_packages(entries: Dict[str, EntryState], repo_root: Path) -
         sid = canonicalize(raw_id, rel)
         status = str(data.get("status") or "UNKNOWN").split()[0].upper()
         lottery = str(data.get("lottery") or data.get("lottery_type") or infer_lottery(rel))
+        sibling_names = (
+            "sim_result.json", "performance_log.json", "backtest_report.md",
+            "stat_test.txt", "version_tag.txt",
+        )
+        has_history = any(
+            (path.parent / name).exists()
+            for name in sibling_names
+            if name != "version_tag.txt"
+        )
         attach(
             entries,
             sid,
@@ -461,13 +503,10 @@ def collect_strategy_packages(entries: Dict[str, EntryState], repo_root: Path) -
             source_path=rel,
             lifecycle=STATUS_MAP.get(status, "UNKNOWN"),
             lottery=lottery,
-            historical_source="simulation_log",
+            historical_source="simulation_log" if has_history else "none",
             note=f"strategy_package_status:{status}",
         )
-        for sibling_name in (
-            "sim_result.json", "performance_log.json", "backtest_report.md",
-            "stat_test.txt", "version_tag.txt",
-        ):
+        for sibling_name in sibling_names:
             sibling = path.parent / sibling_name
             if sibling.exists():
                 attach(entries, sid, source_path=str(sibling.relative_to(repo_root)))
@@ -589,7 +628,38 @@ def collect_lessons(entries: Dict[str, EntryState], repo_root: Path) -> None:
         if not path.is_file():
             continue
         for line_number, line in enumerate(path.read_text(encoding="utf-8").splitlines(), 1):
-            for token in set(re.findall(r"`([^`]+)`", line)):
+            tokens = set(re.findall(r"`([^`]+)`", line))
+            for match in re.findall(
+                r"([A-Za-z][A-Za-z0-9_+\-]+(?: [A-Za-z][A-Za-z0-9_+\-]+){0,4})",
+                line,
+            ):
+                if len(match) >= 3 and (
+                    is_strategy_like(match) or match in LESSON_ALIAS_HINTS
+                ):
+                    tokens.add(match)
+            lifecycle_evidence = any(
+                marker in line
+                for marker in (
+                    "REJECT", "WATCH", "OBSERVE", "PROVISIONAL", "OFFLINE",
+                    "RETIRED", "生產策略", "production", "現役",
+                )
+            )
+            if line_number > 107 and not lifecycle_evidence:
+                continue
+            for token in tokens:
+                if token in {"M3+", "M2+", "OOS", "Edge", "p"}:
+                    continue
+                if (
+                    len(token.split()) == 1
+                    and token not in LESSON_ALIAS_HINTS
+                    and not re.search(r"[_\-0-9]", token)
+                ):
+                    continue
+                if any(
+                    noise in token.lower()
+                    for noise in ("grid_search", "report", "analysis", "benchmark", "study")
+                ):
+                    continue
                 if not is_strategy_like(token) and token not in LESSON_ALIAS_HINTS:
                     continue
                 upper = line.upper()
@@ -625,7 +695,15 @@ def collect_tools(entries: Dict[str, EntryState], repo_root: Path) -> None:
         if not path.is_file() or path.suffix not in {".py", ".js", ".cjs", ".json", ".md", ".txt"}:
             continue
         name = path.name.lower()
-        if "strategy" not in name and "predict" not in name and "backtest" not in name:
+        prefixes = (
+            "predict_", "backtest_", "optimize_", "generate_", "audit_",
+            "verify_", "review_", "discover_", "power_", "biglotto_", "p3_",
+        )
+        if (
+            not name.startswith(prefixes)
+            and "strategy" not in name
+            and "bet" not in name
+        ):
             continue
         rel = str(path.relative_to(repo_root))
         try:
@@ -633,9 +711,15 @@ def collect_tools(entries: Dict[str, EntryState], repo_root: Path) -> None:
         except (OSError, UnicodeError):
             continue
         candidates = set(re.findall(r"strategy_(?:id|name)\s*[:=]\s*['\"]([^'\"]+)['\"]", text))
+        candidates.update(re.findall(r"\bname\s*[:=]\s*['\"]([^'\"]+)['\"]", text))
+        candidates.update(re.findall(r"def\s+([A-Za-z0-9_]+)\s*\(", text))
         candidates.update(re.findall(r"class\s+([A-Za-z0-9_]+Strategy)\b", text))
-        for raw in candidates:
-            if not is_strategy_like(raw) and raw not in ALIAS_TO_CANONICAL:
+        for raw in sorted(candidates):
+            if (
+                not is_strategy_like(raw)
+                and raw not in ALIAS_TO_CANONICAL
+                and raw not in LESSON_ALIAS_HINTS
+            ):
                 continue
             attach(
                 entries,

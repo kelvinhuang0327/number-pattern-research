@@ -19,14 +19,26 @@
 | medium_priority_candidates | 36 |
 | low_priority_candidates | 32 |
 
+## Verified Input Provenance
+
+- Implementation base commit: `0e895497f7a309c1b9f9e8801480fb498a63eef2`
+- Strict JSON policy: duplicate keys and non-finite constants are rejected.
+- Consumed artifacts (exact committed byte identities):
+  - `p541b_json`: `outputs/research/p541b_biglotto_legacy_method_classification_audit_20260709.json` — 1,120,976 bytes, SHA-256 `4828e67b06fe43e8db661c4a96fdaf37e25cef500759f7825ad96eeea1971f35`, verification **PASS**
+  - `p541b_markdown`: `outputs/research/p541b_biglotto_legacy_method_classification_audit_20260709.md` — 14,737 bytes, SHA-256 `a39131ba7d4536e39a07f36314870ba210e280d6d4c71e3046f82994733ed0a9`, verification **PASS**
+  - `p541a_json`: `outputs/research/p541a_biglotto_strategy_inventory_replay_coverage_audit_20260709.json` — 52,406 bytes, SHA-256 `52a90c714b495dde43db25f5d29aa6c4f3f2442e9225cd347b6ff4cde2cb3a47`, verification **PASS**
+  - `p541a_markdown`: `outputs/research/p541a_biglotto_strategy_inventory_replay_coverage_audit_20260709.md` — 5,224 bytes, SHA-256 `d05e2e78e0378ffcb81d8e8e416aeed714d834f9ae82b43f84af4fbcda2cd34e`, verification **PASS**
+- Source manifest: **580** repository-contained Python files / **7,149,566** bytes / SHA-256 `d863872664166bfdc06f79fcef51ca5c5ef1c6b39f60e35426abff5fb89fd69e` / verification **PASS**.
+- Fail-closed behavior: any input hash, schema, record, evidence flag, source path, or source-manifest mismatch aborts generation.
+
 ## Selection Policy
 
-- **method**: Deterministic re-bucketing of P541B's 580 method_classification_records using only fields P541B already computed (recommended_action, runnable_status, is_actual_prediction_method, confidence, evidence flags) plus one limited static re-check per record: does source_path still exist on disk. No file contents were re-read; no new static analysis was performed beyond what P541B already recorded.
+- **method**: Deterministic re-bucketing of P541B's 580 method_classification_records using only fields P541B already computed (recommended_action, runnable_status, is_actual_prediction_method, confidence, evidence flags), after exact size/SHA-256 verification of all four consumed P541A/P541B artifacts. Each repository-relative Python source is then existence-, boundary-, type-, size-, and SHA-256-verified into one pinned 580-entry manifest; no source is imported or executed.
 - **bucket_A_ready_for_replay_readiness_now**: P541B's own 'runnable_as_is'/'runnable_with_existing_adapter' records (5 total) are all mark_duplicate of an already-replayed strategy id, so bucket A is legitimately empty: P541B did not surface any candidate that needs zero further work.
 - **bucket_B_needs_adapter_before_readiness**: P541B recommended_action=include_in_replay_readiness (142, all is_actual_prediction_method=True, all needs_adapter_wrapper/small effort) PLUS the exclude_from_replay/hardcoded_paths_or_dates records with is_actual_prediction_method=True (31): both are confirmed real prediction methods where the only blocker is a wrapper or parameterization, matching bucket B's definition verbatim.
 - **bucket_C_needs_refactor_before_readiness**: exclude_from_replay/needs_refactor_to_pure_function and exclude_from_replay/needs_db_safety_refactor records with is_actual_prediction_method=True: confirmed real methods that need pure-function extraction or DB-safety refactor before they can be safely wrapped.
 - **bucket_D_needs_cto_review**: P541B's own needs_cto_review bucket (167) is carried through unchanged (P541C found no additional resolving evidence), PLUS any exclude_from_replay record whose is_actual_prediction_method is 'unknown' (identity itself, not just readiness, is unresolved): deferring these to CTO review instead of silently excluding them or silently promoting them without confirmed identity.
-- **bucket_E_exclude_from_replay**: mark_not_strategy, mark_duplicate, mark_deprecated (57 total), plus exclude_from_replay/unsafe_side_effects and exclude_from_replay/imports_db_or_runs_work_at_module_load (25, excluded regardless of identity confidence because the blocker is a code-safety fact, not an identity judgment), plus any record whose source_path no longer exists on disk (phantom).
+- **bucket_E_exclude_from_replay**: mark_not_strategy, mark_duplicate, mark_deprecated (57 total), plus exclude_from_replay/unsafe_side_effects and exclude_from_replay/imports_db_or_runs_work_at_module_load (25, excluded regardless of identity confidence because the blocker is a code-safety fact, not an identity judgment). Missing, unsafe, or identity-mismatched source files fail the entire build closed.
 - **risk_level_rule**: high if evidence flag uses_db_anywhere=True; medium if writes_files_anywhere=True or hardcoded_abs_path=True (and not already high); else low.
 - **priority_rule**: Bucket B: high if confidence=high and risk=low; medium if confidence in (high, medium) and risk<=medium; low otherwise; risk=high always caps at low. Bucket C: medium if confidence=high and risk!=high, else low. Bucket D/A: unknown/n-a. Bucket E: exclude.
 - **shortlist_rule**: Bucket B members with priority=high and risk=low only (guarantees no DB import/write risk and no unsafe side effects by construction), deduplicated by method_id, round-robin diversified across method_family, capped at 20, sorted deterministically by method_id within each family.
@@ -70,7 +82,7 @@
 
 ## Provenance and Limits
 
-- **method**: Static, read-only re-bucketing of the P541B classification artifact. No DB access. No file content re-reads beyond an os.path.isfile() existence check per reviewed record. No replay generation, no OOS evaluation, no scoring/promotion gate.
+- **method**: Static, read-only re-bucketing of exactly pinned P541A/P541B artifacts. Strict JSON rejects duplicate keys and non-finite values. Every source is a repository-contained, non-symlink Python file whose size/SHA-256 participates in the pinned source-manifest digest. No source is imported or executed; no DB access, replay generation, OOS evaluation, or scoring/promotion gate.
 - **p541b_artifacts_consumed**:
   - outputs/research/p541b_biglotto_legacy_method_classification_audit_20260709.json
   - outputs/research/p541b_biglotto_legacy_method_classification_audit_20260709.md
@@ -85,6 +97,6 @@
   - No adapter code was written; only the decision to route a method to needs_adapter_before_readiness / needs_refactor_before_readiness.
 - **known_limits**:
   - The 167 needs_cto_review records inherited from P541B were not further resolved: P541B's own static evidence already shows 'no strong static signal either way' for all of them (or a syntax error for the one broken_or_import_error record), so no additional P541C-level static heuristic was applied on top of evidence P541B already weighed and found inconclusive.
-  - source_path existence was the only new static check performed; 0 of 580 reviewed source paths were missing at P541C review time.
+  - Source identity verification reads raw bytes only to compute size and SHA-256; all 580 sources matched the pinned manifest. This does not constitute new semantic or runtime analysis.
   - Risk/priority scoring is a deterministic function of P541B's own evidence flags; it is a triage aid for the next task, not a safety guarantee, and does not itself verify runtime behavior.
 - **disclaimer**: Historical legacy method review and replay-readiness selection only; not a prediction, betting edge, future-winning, or production-readiness claim.

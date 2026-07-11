@@ -7,10 +7,10 @@ does not recompute any P536-P541B artifact.
 from __future__ import annotations
 
 import json
-import os
+import hashlib
 import re
-from datetime import datetime, timezone
 from pathlib import Path
+from typing import Any
 
 REPO_ROOT = Path(__file__).resolve().parents[1]
 
@@ -18,6 +18,47 @@ P541B_JSON = REPO_ROOT / "outputs/research/p541b_biglotto_legacy_method_classifi
 P541B_MD = REPO_ROOT / "outputs/research/p541b_biglotto_legacy_method_classification_audit_20260709.md"
 P541A_JSON = REPO_ROOT / "outputs/research/p541a_biglotto_strategy_inventory_replay_coverage_audit_20260709.json"
 P541A_MD = REPO_ROOT / "outputs/research/p541a_biglotto_strategy_inventory_replay_coverage_audit_20260709.md"
+
+IMPLEMENTATION_BASE_COMMIT = "0e895497f7a309c1b9f9e8801480fb498a63eef2"
+GENERATED_AT = "2026-07-10T02:12:56.834011+00:00"
+SOURCE_MANIFEST_COUNT = 580
+SOURCE_MANIFEST_TOTAL_BYTES = 7_149_566
+SOURCE_MANIFEST_SHA256 = "d863872664166bfdc06f79fcef51ca5c5ef1c6b39f60e35426abff5fb89fd69e"
+
+INPUT_ARTIFACTS = {
+    "p541b_json": {
+        "path": "outputs/research/p541b_biglotto_legacy_method_classification_audit_20260709.json",
+        "byte_size": 1_120_976,
+        "sha256": "4828e67b06fe43e8db661c4a96fdaf37e25cef500759f7825ad96eeea1971f35",
+        "git_blob_id": "12f1595c96e3f9deddc7a7d2d9549c03144635f0",
+        "source_commit": "49a25effa62fc24f40789c16be6f11bdfb41a4a9",
+        "schema_version": "1.0",
+        "task_id": "P541B_BIG_LOTTO_LEGACY_METHOD_CLASSIFICATION_AUDIT",
+    },
+    "p541b_markdown": {
+        "path": "outputs/research/p541b_biglotto_legacy_method_classification_audit_20260709.md",
+        "byte_size": 14_737,
+        "sha256": "a39131ba7d4536e39a07f36314870ba210e280d6d4c71e3046f82994733ed0a9",
+        "git_blob_id": "3b28e39bfe747c5f196b9aec6610284709466cf8",
+        "source_commit": "49a25effa62fc24f40789c16be6f11bdfb41a4a9",
+    },
+    "p541a_json": {
+        "path": "outputs/research/p541a_biglotto_strategy_inventory_replay_coverage_audit_20260709.json",
+        "byte_size": 52_406,
+        "sha256": "52a90c714b495dde43db25f5d29aa6c4f3f2442e9225cd347b6ff4cde2cb3a47",
+        "git_blob_id": "7557f364160dc09c91a19c07b370cb4b231c0194",
+        "source_commit": "a0d6d925dbc70cceda98a10a4e0404ed35bf138c",
+        "schema_version": "1.0",
+        "task_id": "P541A",
+    },
+    "p541a_markdown": {
+        "path": "outputs/research/p541a_biglotto_strategy_inventory_replay_coverage_audit_20260709.md",
+        "byte_size": 5_224,
+        "sha256": "d05e2e78e0378ffcb81d8e8e416aeed714d834f9ae82b43f84af4fbcda2cd34e",
+        "git_blob_id": "7c2574dd80e8fbef147da0d4477a0c8eda56afe0",
+        "source_commit": "a0d6d925dbc70cceda98a10a4e0404ed35bf138c",
+    },
+}
 
 DISCLAIMER = (
     "Historical legacy method review and replay-readiness selection only; "
@@ -41,11 +82,163 @@ NEXT_TASK_OPTIONS = (
 )
 
 _EVIDENCE_BOOL_RE = re.compile(r"^([a-zA-Z_]+)=(True|False)$")
+REQUIRED_EVIDENCE_FLAGS = {
+    "module_level_db_call", "module_level_write_or_sideeffect",
+    "uses_db_anywhere", "writes_files_anywhere", "hardcoded_abs_path",
+    "hardcoded_draw_or_date", "has_main_guard",
+}
+ALLOWED_RECOMMENDED_ACTIONS = {
+    "exclude_from_replay", "include_in_replay_readiness", "mark_deprecated",
+    "mark_duplicate", "mark_not_strategy", "needs_cto_review",
+}
+ALLOWED_RUNNABLE_STATUSES = {
+    "ambiguous_needs_cto_review", "broken_or_import_error",
+    "hardcoded_paths_or_dates", "imports_db_or_runs_work_at_module_load",
+    "needs_adapter_wrapper", "needs_db_safety_refactor",
+    "needs_refactor_to_pure_function", "not_a_strategy",
+    "obsolete_or_deprecated", "runnable_with_existing_adapter",
+    "unsafe_side_effects",
+}
 
 
-def load_json(path: Path) -> dict:
-    with open(path, "r", encoding="utf-8") as f:
-        return json.load(f)
+class P541CValidationError(ValueError):
+    """Raised when committed provenance or a fail-closed contract is violated."""
+
+
+def canonical_bytes(value: Any) -> bytes:
+    try:
+        return json.dumps(
+            value, ensure_ascii=False, sort_keys=True, separators=(",", ":"),
+            allow_nan=False,
+        ).encode("utf-8")
+    except (TypeError, ValueError) as exc:
+        raise P541CValidationError("value is not finite canonical JSON") from exc
+
+
+def file_sha256(path: Path) -> str:
+    value = hashlib.sha256()
+    with path.open("rb") as handle:
+        for chunk in iter(lambda: handle.read(1024 * 1024), b""):
+            value.update(chunk)
+    return value.hexdigest()
+
+
+def _reject_duplicate_object_pairs(pairs: list[tuple[str, Any]]) -> dict[str, Any]:
+    result: dict[str, Any] = {}
+    for key, value in pairs:
+        if key in result:
+            raise P541CValidationError(f"duplicate JSON key: {key}")
+        result[key] = value
+    return result
+
+
+def strict_json_load(path: Path) -> dict[str, Any]:
+    def reject_constant(value: str) -> None:
+        raise P541CValidationError(f"non-finite JSON constant: {value}")
+
+    try:
+        with path.open("r", encoding="utf-8") as handle:
+            value = json.load(
+                handle,
+                object_pairs_hook=_reject_duplicate_object_pairs,
+                parse_constant=reject_constant,
+            )
+    except (OSError, UnicodeError, json.JSONDecodeError) as exc:
+        raise P541CValidationError(f"cannot load strict JSON: {path}") from exc
+    if not isinstance(value, dict):
+        raise P541CValidationError(f"top-level JSON object required: {path}")
+    return value
+
+
+def verify_file_identity(repo_root: Path, identity: dict[str, Any]) -> dict[str, Any]:
+    repo_root = repo_root.resolve()
+    relative = Path(identity["path"])
+    if relative.is_absolute() or ".." in relative.parts:
+        raise P541CValidationError(f"unsafe input path: {identity['path']!r}")
+    unresolved = repo_root / relative
+    if unresolved.is_symlink():
+        raise P541CValidationError(f"symlink input rejected: {identity['path']!r}")
+    try:
+        path = unresolved.resolve(strict=True)
+        if repo_root not in path.parents or not path.is_file():
+            raise P541CValidationError(f"input escapes repository: {identity['path']!r}")
+        size = path.stat().st_size
+    except OSError as exc:
+        raise P541CValidationError(f"required input missing: {identity['path']}") from exc
+    actual_sha256 = file_sha256(path)
+    if size != identity["byte_size"] or actual_sha256 != identity["sha256"]:
+        raise P541CValidationError(
+            f"committed input identity mismatch: {identity['path']} "
+            f"({size}/{actual_sha256})"
+        )
+    return {**identity, "verification": "PASS"}
+
+
+def load_json(path: Path) -> dict[str, Any]:
+    """Compatibility name for the strict, duplicate/non-finite rejecting loader."""
+    return strict_json_load(path)
+
+
+def validate_upstream_contracts(p541b: dict[str, Any], p541a: dict[str, Any]) -> None:
+    if (p541b.get("schema_version"), p541b.get("task_id")) != (
+        INPUT_ARTIFACTS["p541b_json"]["schema_version"],
+        INPUT_ARTIFACTS["p541b_json"]["task_id"],
+    ):
+        raise P541CValidationError("P541B schema/task identity mismatch")
+    if (p541a.get("schema_version"), p541a.get("task_id")) != (
+        INPUT_ARTIFACTS["p541a_json"]["schema_version"],
+        INPUT_ARTIFACTS["p541a_json"]["task_id"],
+    ):
+        raise P541CValidationError("P541A schema/task identity mismatch")
+    records = p541b.get("method_classification_records")
+    if not isinstance(records, list) or len(records) != SOURCE_MANIFEST_COUNT:
+        raise P541CValidationError("P541B must contain exactly 580 method records")
+    required = {
+        "method_id", "source_path", "method_family", "recommended_action",
+        "runnable_status", "is_actual_prediction_method", "confidence",
+        "evidence", "why_not_runnable",
+    }
+    method_ids: set[str] = set()
+    source_paths: set[str] = set()
+    for index, record in enumerate(records):
+        if not isinstance(record, dict) or not required <= set(record):
+            raise P541CValidationError(f"P541B record contract mismatch at index {index}")
+        method_id = record["method_id"]
+        source_path = record["source_path"]
+        if not isinstance(method_id, str) or not method_id or method_id in method_ids:
+            raise P541CValidationError(f"invalid or duplicate method_id at index {index}")
+        if not isinstance(source_path, str) or not source_path or source_path in source_paths:
+            raise P541CValidationError(f"invalid or duplicate source_path at index {index}")
+        method_ids.add(method_id)
+        source_paths.add(source_path)
+        if record["recommended_action"] not in ALLOWED_RECOMMENDED_ACTIONS:
+            raise P541CValidationError(f"unknown recommended_action: {record['recommended_action']}")
+        if record["runnable_status"] not in ALLOWED_RUNNABLE_STATUSES:
+            raise P541CValidationError(f"unknown runnable_status: {record['runnable_status']}")
+        identity = record["is_actual_prediction_method"]
+        if identity is not True and identity is not False and identity != "unknown":
+            raise P541CValidationError(f"unknown method identity: {method_id}")
+        if record["confidence"] not in ("high", "medium", "low"):
+            raise P541CValidationError(f"unknown confidence: {method_id}")
+        if not isinstance(record["evidence"], list):
+            raise P541CValidationError(f"evidence list required: {method_id}")
+        flags = parse_evidence_flags(record["evidence"])
+        if set(flags) != REQUIRED_EVIDENCE_FLAGS:
+            raise P541CValidationError(f"evidence flag contract mismatch: {method_id}")
+
+
+def load_verified_inputs(
+    repo_root: Path = REPO_ROOT,
+) -> tuple[dict[str, Any], dict[str, Any], dict[str, Any]]:
+    repo_root = repo_root.resolve()
+    provenance = {
+        name: verify_file_identity(repo_root, identity)
+        for name, identity in INPUT_ARTIFACTS.items()
+    }
+    p541b = strict_json_load(repo_root / INPUT_ARTIFACTS["p541b_json"]["path"])
+    p541a = strict_json_load(repo_root / INPUT_ARTIFACTS["p541a_json"]["path"])
+    validate_upstream_contracts(p541b, p541a)
+    return p541b, p541a, provenance
 
 
 def parse_evidence_flags(evidence: list) -> dict:
@@ -54,6 +247,8 @@ def parse_evidence_flags(evidence: list) -> dict:
     for line in evidence:
         m = _EVIDENCE_BOOL_RE.match(line)
         if m:
+            if m.group(1) in flags:
+                raise P541CValidationError(f"duplicate evidence flag: {m.group(1)}")
             flags[m.group(1)] = m.group(2) == "True"
     return flags
 
@@ -84,8 +279,36 @@ def _priority_for_refactor(confidence: str, risk: str) -> str:
     return "low"
 
 
+def source_file_identity(source_path: str, repo_root: Path = REPO_ROOT) -> dict[str, Any]:
+    repo_root = repo_root.resolve()
+    if not isinstance(source_path, str) or not source_path:
+        raise P541CValidationError(f"unsafe source_path: {source_path!r}")
+    relative = Path(source_path)
+    if relative.is_absolute() or ".." in relative.parts or relative.suffix != ".py":
+        raise P541CValidationError(f"unsafe source_path: {source_path!r}")
+    unresolved = repo_root / relative
+    if unresolved.is_symlink():
+        raise P541CValidationError(f"symlink source_path rejected: {source_path!r}")
+    try:
+        resolved = unresolved.resolve(strict=True)
+    except OSError as exc:
+        raise P541CValidationError(f"source_path missing: {source_path!r}") from exc
+    if repo_root not in resolved.parents or not resolved.is_file():
+        raise P541CValidationError(f"source_path escapes repository: {source_path!r}")
+    byte_size = resolved.stat().st_size
+    return {
+        "source_path": source_path,
+        "byte_size": byte_size,
+        "sha256": file_sha256(resolved),
+    }
+
+
 def source_exists(source_path: str, repo_root: Path = REPO_ROOT) -> bool:
-    return (repo_root / source_path).is_file()
+    try:
+        source_file_identity(source_path, repo_root)
+    except P541CValidationError:
+        return False
+    return True
 
 
 def classify_record(rec: dict, repo_root: Path = REPO_ROOT) -> dict:
@@ -95,27 +318,16 @@ def classify_record(rec: dict, repo_root: Path = REPO_ROOT) -> dict:
     iapm = rec["is_actual_prediction_method"]
     confidence = rec["confidence"]
     flags = parse_evidence_flags(rec["evidence"])
+    if set(flags) != REQUIRED_EVIDENCE_FLAGS:
+        raise P541CValidationError(f"evidence flag contract mismatch: {rec['method_id']}")
     risk = compute_risk_level(flags)
     if rs in ("unsafe_side_effects", "imports_db_or_runs_work_at_module_load"):
         # Safety-blocking is a fact about the code regardless of which P541B
         # bucket (duplicate/not-strategy/exclude) ultimately routes it.
         risk = "high"
-    exists = source_exists(rec["source_path"], repo_root)
+    source_identity = source_file_identity(rec["source_path"], repo_root)
 
-    if not exists:
-        decision = dict(
-            p541c_decision=DECISION_EXCLUDE,
-            required_change_before_replay="unknown",
-            replay_readiness_priority="exclude",
-            risk_level=risk,
-            decision_reason=(
-                f"source_path '{rec['source_path']}' not found on disk during P541C "
-                "limited static re-check (phantom); cannot be a runnable replay "
-                "candidate regardless of P541B classification."
-            ),
-            confidence="high",
-        )
-    elif ra == "mark_duplicate":
+    if ra == "mark_duplicate":
         dup = rec.get("duplicate_of_existing_strategy")
         decision = dict(
             p541c_decision=DECISION_EXCLUDE,
@@ -261,14 +473,8 @@ def classify_record(rec: dict, repo_root: Path = REPO_ROOT) -> dict:
             confidence=confidence,
         )
     else:
-        # Defensive fallback; not expected given P541B's 6 known recommended_action values.
-        decision = dict(
-            p541c_decision=DECISION_CTO,
-            required_change_before_replay="unknown",
-            replay_readiness_priority="unknown",
-            risk_level=risk,
-            decision_reason=f"Unrecognized P541B recommended_action='{ra}'; defaulting to CTO review.",
-            confidence="low",
+        raise P541CValidationError(
+            f"unrecognized classification tuple for {rec['method_id']}: {ra}/{rs}/{iapm!r}"
         )
 
     return {
@@ -288,7 +494,8 @@ def classify_record(rec: dict, repo_root: Path = REPO_ROOT) -> dict:
         "replay_readiness_priority": decision["replay_readiness_priority"],
         "risk_level": decision["risk_level"],
         "evidence": {
-            "source_path_exists": exists,
+            "source_path_exists": True,
+            "source_file_identity": source_identity,
             "static_flags": flags,
             "p541b_evidence": rec["evidence"],
         },
@@ -362,22 +569,107 @@ def summarize(decisions: list) -> dict:
     }
 
 
-def build_artifact(p541b: dict, p541a: dict, repo_root: Path = REPO_ROOT, generated_at: str | None = None) -> dict:
+def validate_artifact(artifact: dict[str, Any]) -> None:
+    expected_summary = {
+        "total_reviewed_from_p541b": 580,
+        "ready_for_replay_readiness_now": 0,
+        "needs_adapter_before_readiness": 173,
+        "needs_refactor_before_readiness": 35,
+        "needs_cto_review": 290,
+        "exclude_from_replay": 82,
+        "high_priority_candidates": 140,
+        "medium_priority_candidates": 36,
+        "low_priority_candidates": 32,
+    }
+    if artifact.get("summary") != expected_summary:
+        raise P541CValidationError("numerical classification invariant mismatch")
+    decisions = artifact.get("reviewed_method_decisions")
+    if not isinstance(decisions, list) or len(decisions) != SOURCE_MANIFEST_COUNT:
+        raise P541CValidationError("reviewed decision count mismatch")
+    method_ids = [decision.get("method_id") for decision in decisions]
+    if len(set(method_ids)) != SOURCE_MANIFEST_COUNT:
+        raise P541CValidationError("reviewed method IDs are not unique")
+    categorized = sum(
+        (
+            artifact[key]
+            for key in (
+                "ready_for_replay_readiness_now", "needs_adapter_before_readiness",
+                "needs_refactor_before_readiness", "needs_cto_review", "excluded_methods",
+            )
+        ),
+        [],
+    )
+    if sorted(item["method_id"] for item in categorized) != sorted(method_ids):
+        raise P541CValidationError("decision bucket partition mismatch")
+    manifest = artifact.get("input_provenance", {}).get("source_manifest", {})
+    if manifest.get("sha256") != SOURCE_MANIFEST_SHA256 or manifest.get("verification") != "PASS":
+        raise P541CValidationError("source manifest provenance missing or changed")
+    if artifact.get("implementation_base_commit") != IMPLEMENTATION_BASE_COMMIT:
+        raise P541CValidationError("implementation provenance mismatch")
+    canonical_bytes(artifact)
+
+
+def build_artifact(
+    p541b: dict,
+    p541a: dict,
+    input_provenance: dict[str, Any],
+    repo_root: Path = REPO_ROOT,
+    generated_at: str | None = None,
+) -> dict:
+    validate_upstream_contracts(p541b, p541a)
+    if set(input_provenance) != set(INPUT_ARTIFACTS):
+        raise P541CValidationError("complete four-artifact input provenance required")
+    expected_provenance = {
+        name: {**identity, "verification": "PASS"}
+        for name, identity in INPUT_ARTIFACTS.items()
+    }
+    if input_provenance != expected_provenance:
+        raise P541CValidationError("input provenance identity contract mismatch")
     decisions = classify_all(p541b, repo_root)
+    source_manifest = sorted(
+        (decision["evidence"]["source_file_identity"] for decision in decisions),
+        key=lambda item: item["source_path"],
+    )
+    source_manifest_digest = hashlib.sha256(canonical_bytes(source_manifest)).hexdigest()
+    source_manifest_total_bytes = sum(item["byte_size"] for item in source_manifest)
+    if (
+        len(source_manifest) != SOURCE_MANIFEST_COUNT
+        or source_manifest_total_bytes != SOURCE_MANIFEST_TOTAL_BYTES
+        or source_manifest_digest != SOURCE_MANIFEST_SHA256
+    ):
+        raise P541CValidationError(
+            "source manifest identity mismatch: "
+            f"{len(source_manifest)}/{source_manifest_total_bytes}/{source_manifest_digest}"
+        )
     shortlist = build_shortlist(decisions)
     next_task = determine_next_task(decisions, shortlist)
-    assert next_task in NEXT_TASK_OPTIONS
+    if next_task not in NEXT_TASK_OPTIONS:
+        raise P541CValidationError(f"unknown next-task classification: {next_task}")
 
     by_decision = {k: [] for k in ALL_DECISIONS}
     for d in decisions:
         by_decision[d["p541c_decision"]].append(d)
 
-    generated_at = generated_at or datetime.now(timezone.utc).isoformat()
+    generated_at = generated_at or GENERATED_AT
 
-    return {
-        "schema_version": "1.0",
+    artifact = {
+        "schema_version": "1.1",
         "task_id": "P541C_BIG_LOTTO_LEGACY_METHOD_REVIEW_AND_REPLAY_READINESS_SELECTION",
         "generated_at": generated_at,
+        "implementation_base_commit": IMPLEMENTATION_BASE_COMMIT,
+        "input_provenance": {
+            "artifacts": input_provenance,
+            "source_manifest": {
+                "record_count": len(source_manifest),
+                "total_bytes": source_manifest_total_bytes,
+                "sha256": source_manifest_digest,
+                "canonicalization": "UTF-8 compact sorted-key JSON ordered by source_path",
+                "entry_fields": ["source_path", "byte_size", "sha256"],
+                "entries_embedded_at": "reviewed_method_decisions[*].evidence.source_file_identity",
+                "verification": "PASS",
+            },
+            "fail_closed": True,
+        },
         "summary": summarize(decisions),
         "p541b_context": {
             "p541b_json_path": "outputs/research/p541b_biglotto_legacy_method_classification_audit_20260709.json",
@@ -394,9 +686,10 @@ def build_artifact(p541b: dict, p541a: dict, repo_root: Path = REPO_ROOT, genera
                 "Deterministic re-bucketing of P541B's 580 method_classification_records "
                 "using only fields P541B already computed (recommended_action, "
                 "runnable_status, is_actual_prediction_method, confidence, evidence "
-                "flags) plus one limited static re-check per record: does source_path "
-                "still exist on disk. No file contents were re-read; no new static "
-                "analysis was performed beyond what P541B already recorded."
+                "flags), after exact size/SHA-256 verification of all four consumed "
+                "P541A/P541B artifacts. Each repository-relative Python source is "
+                "then existence-, boundary-, type-, size-, and SHA-256-verified into "
+                "one pinned 580-entry manifest; no source is imported or executed."
             ),
             "bucket_A_ready_for_replay_readiness_now": (
                 "P541B's own 'runnable_as_is'/'runnable_with_existing_adapter' records "
@@ -432,8 +725,8 @@ def build_artifact(p541b: dict, p541a: dict, repo_root: Path = REPO_ROOT, genera
                 "exclude_from_replay/unsafe_side_effects and "
                 "exclude_from_replay/imports_db_or_runs_work_at_module_load (25, "
                 "excluded regardless of identity confidence because the blocker is a "
-                "code-safety fact, not an identity judgment), plus any record whose "
-                "source_path no longer exists on disk (phantom)."
+                "code-safety fact, not an identity judgment). Missing, unsafe, or "
+                "identity-mismatched source files fail the entire build closed."
             ),
             "risk_level_rule": (
                 "high if evidence flag uses_db_anywhere=True; medium if "
@@ -464,10 +757,12 @@ def build_artifact(p541b: dict, p541a: dict, repo_root: Path = REPO_ROOT, genera
         "next_task_recommendation": next_task,
         "provenance_and_limits": {
             "method": (
-                "Static, read-only re-bucketing of the P541B classification artifact. "
-                "No DB access. No file content re-reads beyond an os.path.isfile() "
-                "existence check per reviewed record. No replay generation, no OOS "
-                "evaluation, no scoring/promotion gate."
+                "Static, read-only re-bucketing of exactly pinned P541A/P541B "
+                "artifacts. Strict JSON rejects duplicate keys and non-finite values. "
+                "Every source is a repository-contained, non-symlink Python file "
+                "whose size/SHA-256 participates in the pinned source-manifest digest. "
+                "No source is imported or executed; no DB access, replay generation, "
+                "OOS evaluation, or scoring/promotion gate."
             ),
             "p541b_artifacts_consumed": [
                 "outputs/research/p541b_biglotto_legacy_method_classification_audit_20260709.json",
@@ -492,8 +787,9 @@ def build_artifact(p541b: dict, p541a: dict, repo_root: Path = REPO_ROOT, genera
                 "error for the one broken_or_import_error record), so no additional "
                 "P541C-level static heuristic was applied on top of evidence P541B "
                 "already weighed and found inconclusive.",
-                "source_path existence was the only new static check performed; 0 of "
-                "580 reviewed source paths were missing at P541C review time.",
+                "Source identity verification reads raw bytes only to compute size and "
+                "SHA-256; all 580 sources matched the pinned manifest. This does not "
+                "constitute new semantic or runtime analysis.",
                 "Risk/priority scoring is a deterministic function of P541B's own "
                 "evidence flags; it is a triage aid for the next task, not a safety "
                 "guarantee, and does not itself verify runtime behavior.",
@@ -502,6 +798,8 @@ def build_artifact(p541b: dict, p541a: dict, repo_root: Path = REPO_ROOT, genera
         },
         "disclaimer": DISCLAIMER,
     }
+    validate_artifact(artifact)
+    return artifact
 
 
 def render_markdown(artifact: dict) -> str:
@@ -520,6 +818,24 @@ def render_markdown(artifact: dict) -> str:
     lines.append("|---|---|")
     for k, v in s.items():
         lines.append(f"| {k} | {v} |")
+    lines.append("")
+    lines.append("## Verified Input Provenance")
+    lines.append("")
+    lines.append(f"- Implementation base commit: `{artifact['implementation_base_commit']}`")
+    lines.append("- Strict JSON policy: duplicate keys and non-finite constants are rejected.")
+    lines.append("- Consumed artifacts (exact committed byte identities):")
+    for name, identity in artifact["input_provenance"]["artifacts"].items():
+        lines.append(
+            f"  - `{name}`: `{identity['path']}` — {identity['byte_size']:,} bytes, "
+            f"SHA-256 `{identity['sha256']}`, verification **{identity['verification']}**"
+        )
+    manifest = artifact["input_provenance"]["source_manifest"]
+    lines.append(
+        f"- Source manifest: **{manifest['record_count']}** repository-contained Python "
+        f"files / **{manifest['total_bytes']:,}** bytes / SHA-256 `{manifest['sha256']}` / "
+        f"verification **{manifest['verification']}**."
+    )
+    lines.append("- Fail-closed behavior: any input hash, schema, record, evidence flag, source path, or source-manifest mismatch aborts generation.")
     lines.append("")
     lines.append("## Selection Policy")
     lines.append("")
@@ -560,16 +876,15 @@ def render_markdown(artifact: dict) -> str:
 
 
 def main() -> None:
-    p541b = load_json(P541B_JSON)
-    p541a = load_json(P541A_JSON)
-    artifact = build_artifact(p541b, p541a)
+    p541b, p541a, input_provenance = load_verified_inputs(REPO_ROOT)
+    artifact = build_artifact(p541b, p541a, input_provenance)
 
     date_tag = "20260710"
     out_json = REPO_ROOT / f"outputs/research/p541c_biglotto_legacy_method_review_readiness_selection_{date_tag}.json"
     out_md = REPO_ROOT / f"outputs/research/p541c_biglotto_legacy_method_review_readiness_selection_{date_tag}.md"
 
     with open(out_json, "w", encoding="utf-8") as f:
-        json.dump(artifact, f, ensure_ascii=False, indent=2)
+        json.dump(artifact, f, ensure_ascii=False, indent=2, allow_nan=False)
         f.write("\n")
 
     with open(out_md, "w", encoding="utf-8") as f:

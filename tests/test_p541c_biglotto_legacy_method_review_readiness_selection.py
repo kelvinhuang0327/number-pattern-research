@@ -1,12 +1,13 @@
 """P541C — read-only tests for the BIG_LOTTO legacy method review and
 replay-readiness selection artifact.
 
-The module under test only reads the P541B/P541A JSON artifacts and does a
-single `os.path.isfile()` existence check per reviewed record. It never
-opens a DB connection, never imports or executes a classified script, and
-never writes to `outputs/` except through `main()`.
+The module pins and strictly parses the P541B/P541A artifacts, then hashes
+repository-contained Python sources without importing or executing them.
+It never opens a DB connection and never writes to `outputs/` except through
+`main()`.
 """
 import ast
+import copy
 import inspect
 import json
 import os
@@ -66,19 +67,111 @@ def test_p541b_and_p541a_artifacts_exist():
 
 
 @pytest.fixture(scope="module")
-def p541b():
+def verified_inputs():
     mod = _module()
-    return mod.load_json(mod.P541B_JSON)
+    return mod.load_verified_inputs()
 
 
 @pytest.fixture(scope="module")
-def p541a():
-    mod = _module()
-    return mod.load_json(mod.P541A_JSON)
+def p541b(verified_inputs):
+    return verified_inputs[0]
+
+
+@pytest.fixture(scope="module")
+def p541a(verified_inputs):
+    return verified_inputs[1]
+
+
+@pytest.fixture(scope="module")
+def input_provenance(verified_inputs):
+    return verified_inputs[2]
 
 
 def test_p541b_has_580_records(p541b):
     assert len(p541b["method_classification_records"]) == 580
+
+
+def test_all_four_consumed_artifacts_match_pinned_identity(input_provenance):
+    mod = _module()
+    assert set(input_provenance) == set(mod.INPUT_ARTIFACTS)
+    assert {item["verification"] for item in input_provenance.values()} == {"PASS"}
+    assert {
+        name: (item["byte_size"], item["sha256"])
+        for name, item in input_provenance.items()
+    } == {
+        name: (item["byte_size"], item["sha256"])
+        for name, item in mod.INPUT_ARTIFACTS.items()
+    }
+
+
+def test_strict_json_rejects_duplicate_keys_and_nonfinite(tmp_path):
+    mod = _module()
+    duplicate = tmp_path / "duplicate.json"
+    duplicate.write_text('{"same":1,"same":2}', encoding="utf-8")
+    with pytest.raises(mod.P541CValidationError, match="duplicate JSON key"):
+        mod.strict_json_load(duplicate)
+    for token in ("NaN", "Infinity", "-Infinity"):
+        nonfinite = tmp_path / f"nonfinite-{token.replace('-', 'minus')}.json"
+        nonfinite.write_text('{"value":' + token + '}', encoding="utf-8")
+        with pytest.raises(mod.P541CValidationError, match="non-finite JSON"):
+            mod.strict_json_load(nonfinite)
+
+
+def test_input_hash_mismatch_fails_closed(tmp_path):
+    mod = _module()
+    path = tmp_path / "input.json"
+    path.write_text("{}", encoding="utf-8")
+    identity = {"path": "input.json", "byte_size": 2, "sha256": "0" * 64}
+    with pytest.raises(mod.P541CValidationError, match="identity mismatch"):
+        mod.verify_file_identity(tmp_path, identity)
+    with pytest.raises(mod.P541CValidationError, match="unsafe input path"):
+        mod.verify_file_identity(tmp_path, {**identity, "path": "../input.json"})
+
+
+def test_build_rejects_forged_input_provenance(p541b, p541a, input_provenance):
+    mod = _module()
+    forged = copy.deepcopy(input_provenance)
+    forged["p541b_json"]["sha256"] = "0" * 64
+    with pytest.raises(mod.P541CValidationError, match="input provenance identity contract mismatch"):
+        mod.build_artifact(p541b, p541a, forged)
+
+
+def test_unknown_upstream_action_and_missing_evidence_flag_fail_closed(p541b, p541a):
+    mod = _module()
+    unknown = copy.deepcopy(p541b)
+    unknown["method_classification_records"][0]["recommended_action"] = "silently_promote"
+    with pytest.raises(mod.P541CValidationError, match="unknown recommended_action"):
+        mod.validate_upstream_contracts(unknown, p541a)
+
+    missing_flag = copy.deepcopy(p541b)
+    record = missing_flag["method_classification_records"][0]
+    record["evidence"] = [line for line in record["evidence"] if not line.startswith("uses_db_anywhere=")]
+    with pytest.raises(mod.P541CValidationError, match="evidence flag contract mismatch"):
+        mod.validate_upstream_contracts(missing_flag, p541a)
+
+    duplicate_flag = copy.deepcopy(p541b)
+    duplicate_flag["method_classification_records"][0]["evidence"].append("uses_db_anywhere=False")
+    with pytest.raises(mod.P541CValidationError, match="duplicate evidence flag"):
+        mod.validate_upstream_contracts(duplicate_flag, p541a)
+
+    numeric_identity = copy.deepcopy(p541b)
+    numeric_identity["method_classification_records"][0]["is_actual_prediction_method"] = 1
+    with pytest.raises(mod.P541CValidationError, match="unknown method identity"):
+        mod.validate_upstream_contracts(numeric_identity, p541a)
+
+
+def test_source_path_escape_missing_and_symlink_fail_closed(tmp_path):
+    mod = _module()
+    with pytest.raises(mod.P541CValidationError, match="unsafe source_path"):
+        mod.source_file_identity("../escape.py", tmp_path)
+    with pytest.raises(mod.P541CValidationError, match="source_path missing"):
+        mod.source_file_identity("missing.py", tmp_path)
+    target = tmp_path / "target.py"
+    target.write_text("pass\n", encoding="utf-8")
+    link = tmp_path / "link.py"
+    link.symlink_to(target)
+    with pytest.raises(mod.P541CValidationError, match="symlink source_path rejected"):
+        mod.source_file_identity("link.py", tmp_path)
 
 
 # ── evidence parsing ────────────────────────────────────────────────────
@@ -301,23 +394,23 @@ def test_next_task_recommendation_is_one_of_allowed_values(p541b):
 # ── full artifact build ──────────────────────────────────────────────────
 
 
-def test_build_artifact_has_all_required_sections(p541b, p541a):
+def test_build_artifact_has_all_required_sections(p541b, p541a, input_provenance):
     mod = _module()
-    artifact = mod.build_artifact(p541b, p541a, generated_at="TEST")
+    artifact = mod.build_artifact(p541b, p541a, input_provenance, generated_at="TEST")
     required_sections = [
         "summary", "p541b_context", "selection_policy", "reviewed_method_decisions",
         "ready_for_replay_readiness_now", "needs_adapter_before_readiness",
         "needs_refactor_before_readiness", "needs_cto_review", "excluded_methods",
         "high_priority_candidate_shortlist", "next_task_recommendation",
-        "provenance_and_limits", "disclaimer",
+        "input_provenance", "provenance_and_limits", "disclaimer",
     ]
     for section in required_sections:
         assert section in artifact, f"missing section: {section}"
 
 
-def test_build_artifact_disclaimer_text(p541b, p541a):
+def test_build_artifact_disclaimer_text(p541b, p541a, input_provenance):
     mod = _module()
-    artifact = mod.build_artifact(p541b, p541a, generated_at="TEST")
+    artifact = mod.build_artifact(p541b, p541a, input_provenance, generated_at="TEST")
     expected = (
         "Historical legacy method review and replay-readiness selection only; "
         "not a prediction, betting edge, future-winning, or production-readiness claim."
@@ -326,26 +419,69 @@ def test_build_artifact_disclaimer_text(p541b, p541a):
     assert artifact["provenance_and_limits"]["disclaimer"] == expected
 
 
-def test_build_artifact_reviewed_method_decisions_length_matches_p541b(p541b, p541a):
+def test_build_artifact_reviewed_method_decisions_length_matches_p541b(p541b, p541a, input_provenance):
     mod = _module()
-    artifact = mod.build_artifact(p541b, p541a, generated_at="TEST")
+    artifact = mod.build_artifact(p541b, p541a, input_provenance, generated_at="TEST")
     assert len(artifact["reviewed_method_decisions"]) == 580
 
 
-def test_build_artifact_is_json_serializable(p541b, p541a):
+def test_build_artifact_is_json_serializable(p541b, p541a, input_provenance):
     mod = _module()
-    artifact = mod.build_artifact(p541b, p541a, generated_at="TEST")
+    artifact = mod.build_artifact(p541b, p541a, input_provenance, generated_at="TEST")
     serialized = json.dumps(artifact, ensure_ascii=False)
     reloaded = json.loads(serialized)
     assert reloaded["summary"]["total_reviewed_from_p541b"] == 580
 
 
-def test_render_markdown_contains_key_sections(p541b, p541a):
+def test_render_markdown_contains_key_sections(p541b, p541a, input_provenance):
     mod = _module()
-    artifact = mod.build_artifact(p541b, p541a, generated_at="TEST")
+    artifact = mod.build_artifact(p541b, p541a, input_provenance, generated_at="TEST")
     md = mod.render_markdown(artifact)
     assert "# P541C" in md
     assert "## Summary" in md
+    assert "## Verified Input Provenance" in md
     assert "## High-Priority Candidate Shortlist" in md
     assert artifact["next_task_recommendation"] in md
     assert artifact["disclaimer"] in md
+
+
+def test_source_manifest_and_per_record_provenance_are_complete(p541b, p541a, input_provenance):
+    mod = _module()
+    artifact = mod.build_artifact(p541b, p541a, input_provenance)
+    manifest = artifact["input_provenance"]["source_manifest"]
+    assert manifest == {
+        "record_count": 580,
+        "total_bytes": mod.SOURCE_MANIFEST_TOTAL_BYTES,
+        "sha256": mod.SOURCE_MANIFEST_SHA256,
+        "canonicalization": "UTF-8 compact sorted-key JSON ordered by source_path",
+        "entry_fields": ["source_path", "byte_size", "sha256"],
+        "entries_embedded_at": "reviewed_method_decisions[*].evidence.source_file_identity",
+        "verification": "PASS",
+    }
+    identities = [
+        decision["evidence"]["source_file_identity"]
+        for decision in artifact["reviewed_method_decisions"]
+    ]
+    assert len(identities) == len({item["source_path"] for item in identities}) == 580
+    assert all(len(item["sha256"]) == 64 and item["byte_size"] > 0 for item in identities)
+
+
+def test_default_build_is_deterministic_and_matches_committed_artifacts(p541b, p541a, input_provenance):
+    mod = _module()
+    first = mod.build_artifact(p541b, p541a, input_provenance)
+    second = mod.build_artifact(p541b, p541a, input_provenance)
+    assert first == second
+    assert first["generated_at"] == mod.GENERATED_AT
+    expected_json = (
+        json.dumps(first, ensure_ascii=False, indent=2, allow_nan=False) + "\n"
+    ).encode("utf-8")
+    committed_json = os.path.join(
+        REPO_ROOT,
+        "outputs/research/p541c_biglotto_legacy_method_review_readiness_selection_20260710.json",
+    )
+    committed_md = os.path.join(
+        REPO_ROOT,
+        "outputs/research/p541c_biglotto_legacy_method_review_readiness_selection_20260710.md",
+    )
+    assert open(committed_json, "rb").read() == expected_json
+    assert open(committed_md, "rb").read() == mod.render_markdown(first).encode("utf-8")

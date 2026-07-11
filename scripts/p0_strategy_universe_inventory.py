@@ -188,6 +188,10 @@ class StagedFileState:
     creation_dev: Optional[int] = None
     creation_ino: Optional[int] = None
     identity_verified: bool = False
+    identity_recovery_required: bool = False
+    identity_recovery_attempted: bool = False
+    identity_recovery_succeeded: bool = False
+    recovered_identity: Optional[Tuple[int, int]] = None
     payload_complete: bool = False
     final_link_succeeded: bool = False
     final_identity_verified: bool = False
@@ -1119,7 +1123,16 @@ def write_outputs(config: Config, payload: Dict[str, Any]) -> None:
                 f"staged lifecycle conflict; creation identity unavailable: "
                 f"{stage.facts.output}"
             )
-        return stage.creation_dev, stage.creation_ino
+        identity = (stage.creation_dev, stage.creation_ino)
+        if (
+            stage.identity_recovery_succeeded
+            and stage.recovered_identity != identity
+        ):
+            raise SafetyError(
+                f"staged lifecycle conflict; recovered identity is inconsistent: "
+                f"{stage.facts.output}"
+            )
+        return identity
 
     def _verify_or_recover_stage_identity(
         stage: StagedFileState, *, allow_recovery: bool
@@ -1134,17 +1147,30 @@ def write_outputs(config: Config, payload: Dict[str, Any]) -> None:
                 f"staged lifecycle conflict; opened descriptor unavailable: "
                 f"{stage.facts.output}"
             )
+        recovering = not stage.identity_verified
+        if recovering and not allow_recovery:
+            raise SafetyError(
+                f"staged lifecycle conflict; creation identity is not verified: "
+                f"{stage.facts.output}"
+            )
+        if recovering:
+            stage.identity_recovery_required = True
+            stage.identity_recovery_attempted = True
         try:
             descriptor_metadata = os.fstat(stage.stage_fd)
         except OSError as error:
+            if recovering:
+                stage.cleanup_conflict = True
             raise SafetyError(
                 f"early-stage ownership conflict; retained descriptor cannot be "
-                f"statted: {stage.facts.output}"
+                f"statted and a staged artifact may remain: {stage.facts.output}"
             ) from error
         if not stat.S_ISREG(descriptor_metadata.st_mode):
+            if recovering:
+                stage.cleanup_conflict = True
             raise SafetyError(
                 f"early-stage ownership conflict; retained descriptor is not a "
-                f"regular file: {stage.facts.output}"
+                f"regular file and a staged artifact may remain: {stage.facts.output}"
             )
         descriptor_identity = _identity(descriptor_metadata)
         if stage.identity_verified:
@@ -1153,14 +1179,40 @@ def write_outputs(config: Config, payload: Dict[str, Any]) -> None:
                     f"staged entry ownership conflict; descriptor identity changed: "
                     f"{stage.facts.output}"
                 )
-        elif allow_recovery:
+        else:
             stage.creation_dev, stage.creation_ino = descriptor_identity
             stage.identity_verified = True
-        else:
+            stage.recovered_identity = descriptor_identity
+            stage.identity_recovery_succeeded = True
+            stage.identity_recovery_required = False
+        return descriptor_metadata
+
+    def _initialize_stage_identity(stage: StagedFileState) -> os.stat_result:
+        if (
+            not stage.registered
+            or not stage.created
+            or not stage.descriptor_open
+            or stage.stage_fd is None
+        ):
             raise SafetyError(
-                f"staged lifecycle conflict; creation identity is not verified: "
+                f"staged lifecycle conflict; opened descriptor unavailable: "
                 f"{stage.facts.output}"
             )
+        stage.identity_recovery_required = True
+        try:
+            descriptor_metadata = os.fstat(stage.stage_fd)
+        except OSError as error:
+            raise SafetyError(
+                f"staged identity initialization failed: {stage.facts.output}"
+            ) from error
+        if not stat.S_ISREG(descriptor_metadata.st_mode):
+            raise SafetyError(
+                f"staged identity initialization found a non-regular file: "
+                f"{stage.facts.output}"
+            )
+        stage.creation_dev, stage.creation_ino = _identity(descriptor_metadata)
+        stage.identity_verified = True
+        stage.identity_recovery_required = False
         return descriptor_metadata
 
     def _validate_staged_entry(
@@ -1300,7 +1352,7 @@ def write_outputs(config: Config, payload: Dict[str, Any]) -> None:
             )
             stage.created = True
             stage.descriptor_open = True
-            _verify_or_recover_stage_identity(stage, allow_recovery=True)
+            _initialize_stage_identity(stage)
             expected_payload = serialized_content[output]
             with os.fdopen(os.dup(stage.stage_fd), "wb") as target:
                 bytes_written = target.write(expected_payload)
@@ -1453,6 +1505,15 @@ def write_outputs(config: Config, payload: Dict[str, Any]) -> None:
                     f"{display_path}: created stage lost its retained descriptor"
                 )
                 continue
+            if stage.identity_recovery_required or not stage.identity_verified:
+                try:
+                    _verify_or_recover_stage_identity(
+                        stage, allow_recovery=True
+                    )
+                except SafetyError as recovery_error:
+                    stage.cleanup_conflict = True
+                    cleanup_errors.append(f"{display_path}: {recovery_error}")
+                    continue
             try:
                 try:
                     os.stat(
@@ -1471,6 +1532,13 @@ def write_outputs(config: Config, payload: Dict[str, Any]) -> None:
                     cleanup_errors.append(
                         f"{display_path}: staged entry ownership conflict; "
                         "entry disappeared unexpectedly"
+                    )
+                    continue
+                except OSError as inspection_error:
+                    stage.cleanup_conflict = True
+                    cleanup_errors.append(
+                        f"{display_path}: staged-entry inspection conflict; "
+                        f"a staged artifact may remain: {inspection_error}"
                     )
                     continue
                 _validate_staged_entry(
@@ -1527,6 +1595,30 @@ def write_outputs(config: Config, payload: Dict[str, Any]) -> None:
                 cleanup_errors.append(f"{output.parent}: close failed: {cleanup_error}")
         for stage in stage_states.values():
             facts = stage.facts
+            if stage.identity_recovery_attempted:
+                if stage.identity_recovery_succeeded:
+                    if (
+                        stage.identity_recovery_required
+                        or not stage.identity_verified
+                        or stage.recovered_identity != _creation_identity(stage)
+                    ):
+                        stage.cleanup_conflict = True
+                        cleanup_errors.append(
+                            f"{facts.output}: successful identity recovery has "
+                            "inconsistent lifecycle state"
+                        )
+                elif not stage.cleanup_conflict:
+                    stage.cleanup_conflict = True
+                    cleanup_errors.append(
+                        f"{facts.output}: failed identity recovery was not recorded "
+                        "as a cleanup conflict"
+                    )
+            elif stage.created and stage.identity_recovery_required:
+                stage.cleanup_conflict = True
+                cleanup_errors.append(
+                    f"{facts.output}: required retained-FD identity recovery was "
+                    "not attempted"
+                )
             if (
                 stage.staged_entry_cleanup_complete
                 and not stage.descriptor_open

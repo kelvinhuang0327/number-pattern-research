@@ -20,8 +20,10 @@ import dataclasses
 import datetime as dt
 import hashlib
 import json
+import os
 import re
 import sqlite3
+import uuid
 from collections import Counter
 from contextlib import closing
 from pathlib import Path
@@ -77,6 +79,20 @@ ALIAS_TO_CANONICAL = {
     "TS3+Regime 3注": "ts3_regime_3bet",
     "biglotto_triple_strike": "biglotto_triple_strike",
     "power_precision_3bet": "power_precision_3bet",
+}
+
+# Strategy packages predate the replay registry naming contract. Keep the
+# package path-to-ID relationship explicit so a package and its corresponding
+# registry entry contribute evidence to one inventory row.
+STRATEGY_PACKAGE_REGISTRY_IDS = {
+    "strategies/big_lotto/2bet_deviation_complement": "biglotto_deviation_2bet",
+    "strategies/big_lotto/3bet_triple_strike_v2": "biglotto_triple_strike",
+    "strategies/big_lotto/4bet_ts3_markov_w30": "biglotto_ts3_markov_4bet_w30",
+    "strategies/big_lotto/5bet_ts3_markov_freq": "biglotto_ts3_markov_freq_5bet",
+    "strategies/daily_539/5bet_fourier4_cold": "daily539_f4cold_5bet",
+    "strategies/power_lotto/2bet_fourier_rhythm": "power_fourier_rhythm_2bet",
+    "strategies/power_lotto/3bet_power_precision": "power_precision_3bet",
+    "strategies/power_lotto/5bet_orthogonal": "power_orthogonal_5bet",
 }
 
 LESSON_ALIAS_HINTS = {
@@ -471,8 +487,7 @@ def collect_registry(entries: Dict[str, EntryState], repo_root: Path) -> None:
             source_path=str(path.relative_to(repo_root)),
             lifecycle=STATUS_MAP.get(status, "UNKNOWN"),
             lottery=infer_lottery(block),
-            historical_source="prediction_runs",
-            rsm_referenced=status in {"ACTIVE", "ONLINE"},
+            historical_source="none",
             note="replay_registry",
         )
 
@@ -484,7 +499,10 @@ def collect_strategy_packages(entries: Dict[str, EntryState], repo_root: Path) -
             continue
         rel = str(path.relative_to(repo_root))
         raw_id = str(data.get("strategy_id") or path.parent.name)
-        sid = canonicalize(raw_id, rel)
+        package_key = str(path.parent.relative_to(repo_root))
+        sid = STRATEGY_PACKAGE_REGISTRY_IDS.get(
+            package_key, canonicalize(raw_id, rel)
+        )
         status = str(data.get("status") or "UNKNOWN").split()[0].upper()
         lottery = str(data.get("lottery") or data.get("lottery_type") or infer_lottery(rel))
         sibling_names = (
@@ -505,6 +523,7 @@ def collect_strategy_packages(entries: Dict[str, EntryState], repo_root: Path) -
             lottery=lottery,
             historical_source="simulation_log" if has_history else "none",
             note=f"strategy_package_status:{status}",
+            alias=raw_id if sid != canonicalize(raw_id, rel) else None,
         )
         for sibling_name in sibling_names:
             sibling = path.parent / sibling_name
@@ -860,7 +879,7 @@ def derive_summary(
             "has_historical_predictions": has_history,
             "historical_record_source": historical_source,
             "lessons_reference": sorted(entry.lessons_refs),
-            "rsm_referenced": bool(entry.rsm_referenced or lifecycle == "PRODUCTION"),
+            "rsm_referenced": entry.rsm_referenced,
             "notes": "; ".join(notes),
         })
         lifecycle_counts[lifecycle] += 1
@@ -986,15 +1005,64 @@ def build_report(payload: Dict[str, Any]) -> str:
 def write_outputs(config: Config, payload: Dict[str, Any]) -> None:
     if not config.execute_readonly or not config.write_outputs:
         raise SafetyError("output writing requires --execute-readonly and --write-outputs")
-    for output in (config.output_json, config.output_markdown):
+    outputs = (config.output_json, config.output_markdown)
+    for output in outputs:
         if output.exists() and not config.overwrite_existing:
             raise SafetyError(f"output appeared after validation; refusing overwrite: {output}")
-    json_text = json.dumps(payload, ensure_ascii=False, indent=2) + "\n"
-    markdown_text = build_report(payload)
-    config.output_json.parent.mkdir(parents=True, exist_ok=True)
-    config.output_markdown.parent.mkdir(parents=True, exist_ok=True)
-    config.output_json.write_text(json_text, encoding="utf-8")
-    config.output_markdown.write_text(markdown_text, encoding="utf-8")
+        if output.exists() and not output.is_file():
+            raise SafetyError(f"output exists but is not a regular file: {output}")
+
+    content = {
+        config.output_json: json.dumps(payload, ensure_ascii=False, indent=2) + "\n",
+        config.output_markdown: build_report(payload),
+    }
+    transaction_id = uuid.uuid4().hex
+    staged: Dict[Path, Path] = {}
+    backups: Dict[Path, Path] = {}
+    original_outputs = {output for output in outputs if output.exists()}
+
+    try:
+        # Both complete files must be durable in their destination directories
+        # before either public output is changed.
+        for output in outputs:
+            output.parent.mkdir(parents=True, exist_ok=True)
+            stage = output.with_name(f".{output.name}.{transaction_id}.staged")
+            with stage.open("x", encoding="utf-8") as target:
+                staged[output] = stage
+                target.write(content[output])
+                target.flush()
+                os.fsync(target.fileno())
+
+        # Preserve the prior pair, then publish each staged file atomically.
+        for output in outputs:
+            if output in original_outputs:
+                backup = output.with_name(f".{output.name}.{transaction_id}.rollback")
+                os.replace(output, backup)
+                backups[output] = backup
+        for output in outputs:
+            os.replace(staged[output], output)
+
+    except BaseException as publish_error:
+        rollback_errors: List[str] = []
+        for output in reversed(outputs):
+            backup = backups.get(output)
+            try:
+                if backup is not None and backup.exists():
+                    os.replace(backup, output)
+                elif output not in original_outputs and output.exists():
+                    output.unlink()
+            except OSError as rollback_error:
+                rollback_errors.append(f"{output}: {rollback_error}")
+        detail = f"output pair publication failed and was rolled back: {publish_error}"
+        if rollback_errors:
+            detail += "; rollback errors: " + "; ".join(rollback_errors)
+        raise SafetyError(detail) from publish_error
+    else:
+        for backup in backups.values():
+            backup.unlink(missing_ok=True)
+    finally:
+        for stage in staged.values():
+            stage.unlink(missing_ok=True)
 
 
 def plan_summary(config: Config) -> Dict[str, Any]:

@@ -174,28 +174,27 @@ class StagedFileFacts:
     output: Path
     parent_fd: int
     staged_name: str
-    staged_fd: int
     expected_final_name: str
-    creation_dev: int
-    creation_ino: int
     expected_size: int
-
-    @property
-    def creation_identity(self) -> Tuple[int, int]:
-        return self.creation_dev, self.creation_ino
 
 
 @dataclasses.dataclass
 class StagedFileState:
     facts: StagedFileFacts
-    created: bool = True
-    descriptor_open: bool = True
+    registered: bool = True
+    created: bool = False
+    stage_fd: Optional[int] = None
+    descriptor_open: bool = False
+    creation_dev: Optional[int] = None
+    creation_ino: Optional[int] = None
+    identity_verified: bool = False
     payload_complete: bool = False
     final_link_succeeded: bool = False
     final_identity_verified: bool = False
     published_identity: Optional[Tuple[int, int]] = None
     staged_name_expected_to_remain: bool = True
     staged_name_intentionally_removed: bool = False
+    staged_entry_cleanup_complete: bool = False
     cleanup_complete: bool = False
     cleanup_conflict: bool = False
 
@@ -1110,18 +1109,70 @@ def write_outputs(config: Config, payload: Dict[str, Any]) -> None:
             return False
         return True
 
+    def _creation_identity(stage: StagedFileState) -> Tuple[int, int]:
+        if (
+            not stage.identity_verified
+            or stage.creation_dev is None
+            or stage.creation_ino is None
+        ):
+            raise SafetyError(
+                f"staged lifecycle conflict; creation identity unavailable: "
+                f"{stage.facts.output}"
+            )
+        return stage.creation_dev, stage.creation_ino
+
+    def _verify_or_recover_stage_identity(
+        stage: StagedFileState, *, allow_recovery: bool
+    ) -> os.stat_result:
+        if (
+            not stage.registered
+            or not stage.created
+            or not stage.descriptor_open
+            or stage.stage_fd is None
+        ):
+            raise SafetyError(
+                f"staged lifecycle conflict; opened descriptor unavailable: "
+                f"{stage.facts.output}"
+            )
+        try:
+            descriptor_metadata = os.fstat(stage.stage_fd)
+        except OSError as error:
+            raise SafetyError(
+                f"early-stage ownership conflict; retained descriptor cannot be "
+                f"statted: {stage.facts.output}"
+            ) from error
+        if not stat.S_ISREG(descriptor_metadata.st_mode):
+            raise SafetyError(
+                f"early-stage ownership conflict; retained descriptor is not a "
+                f"regular file: {stage.facts.output}"
+            )
+        descriptor_identity = _identity(descriptor_metadata)
+        if stage.identity_verified:
+            if descriptor_identity != _creation_identity(stage):
+                raise SafetyError(
+                    f"staged entry ownership conflict; descriptor identity changed: "
+                    f"{stage.facts.output}"
+                )
+        elif allow_recovery:
+            stage.creation_dev, stage.creation_ino = descriptor_identity
+            stage.identity_verified = True
+        else:
+            raise SafetyError(
+                f"staged lifecycle conflict; creation identity is not verified: "
+                f"{stage.facts.output}"
+            )
+        return descriptor_metadata
+
     def _validate_staged_entry(
         stage: StagedFileState, *, mode: str
     ) -> Tuple[int, int]:
         if mode not in {STAGE_REQUIRE_COMPLETE, STAGE_OWNERSHIP_ONLY}:
             raise SafetyError(f"invalid staged validation mode: {mode}")
-        if not stage.created or not stage.descriptor_open:
-            raise SafetyError(
-                f"staged lifecycle conflict; descriptor is not retained: "
-                f"{stage.facts.output}"
-            )
         facts = stage.facts
-        descriptor_metadata = os.fstat(facts.staged_fd)
+        descriptor_metadata = _verify_or_recover_stage_identity(
+            stage,
+            allow_recovery=mode == STAGE_OWNERSHIP_ONLY,
+        )
         descriptor_identity = _identity(descriptor_metadata)
         try:
             entry_metadata = os.stat(
@@ -1137,8 +1188,8 @@ def write_outputs(config: Config, payload: Dict[str, Any]) -> None:
         if (
             not stat.S_ISREG(descriptor_metadata.st_mode)
             or not stat.S_ISREG(entry_metadata.st_mode)
-            or descriptor_identity != facts.creation_identity
-            or entry_identity != facts.creation_identity
+            or descriptor_identity != _creation_identity(stage)
+            or entry_identity != _creation_identity(stage)
         ):
             raise SafetyError(
                 f"staged entry ownership conflict; type or identity changed: {facts.output}"
@@ -1157,7 +1208,7 @@ def write_outputs(config: Config, payload: Dict[str, Any]) -> None:
                     f"staged payload completeness conflict; byte size changed: "
                     f"{facts.output}"
                 )
-        return facts.creation_identity
+        return _creation_identity(stage)
 
     def _validate_parent_anchors(*, require_final_absent: bool) -> None:
         if repo_path is None or repo_identity is None:
@@ -1227,6 +1278,16 @@ def write_outputs(config: Config, payload: Dict[str, Any]) -> None:
         for output in outputs:
             parent_fd = parent_fds[output]
             stage_name = f".{output.name}.{transaction_id}.staged"
+            stage = StagedFileState(
+                facts=StagedFileFacts(
+                    output=output,
+                    parent_fd=parent_fd,
+                    staged_name=stage_name,
+                    expected_final_name=output.name,
+                    expected_size=len(serialized_content[output]),
+                )
+            )
+            stage_states[output] = stage
             stage_flags = (
                 os.O_WRONLY
                 | os.O_CREAT
@@ -1234,34 +1295,25 @@ def write_outputs(config: Config, payload: Dict[str, Any]) -> None:
                 | getattr(os, "O_CLOEXEC", 0)
                 | getattr(os, "O_NOFOLLOW", 0)
             )
-            stage_fd = os.open(stage_name, stage_flags, 0o600, dir_fd=parent_fd)
-            stage_metadata = os.fstat(stage_fd)
-            stage = StagedFileState(
-                facts=StagedFileFacts(
-                    output=output,
-                    parent_fd=parent_fd,
-                    staged_name=stage_name,
-                    staged_fd=stage_fd,
-                    expected_final_name=output.name,
-                    creation_dev=stage_metadata.st_dev,
-                    creation_ino=stage_metadata.st_ino,
-                    expected_size=len(serialized_content[output]),
-                )
+            stage.stage_fd = os.open(
+                stage_name, stage_flags, 0o600, dir_fd=parent_fd
             )
-            stage_states[output] = stage
-            if not stat.S_ISREG(stage_metadata.st_mode):
-                raise SafetyError(f"staged output is not a regular file: {output}")
+            stage.created = True
+            stage.descriptor_open = True
+            _verify_or_recover_stage_identity(stage, allow_recovery=True)
             expected_payload = serialized_content[output]
-            with os.fdopen(os.dup(stage_fd), "wb") as target:
+            with os.fdopen(os.dup(stage.stage_fd), "wb") as target:
                 bytes_written = target.write(expected_payload)
                 if bytes_written != stage.facts.expected_size:
                     raise SafetyError(f"staged output write was incomplete: {output}")
                 target.flush()
                 os.fsync(target.fileno())
-            post_write_metadata = os.fstat(stage_fd)
+            post_write_metadata = _verify_or_recover_stage_identity(
+                stage, allow_recovery=False
+            )
             if (
                 not stat.S_ISREG(post_write_metadata.st_mode)
-                or _identity(post_write_metadata) != stage.facts.creation_identity
+                or _identity(post_write_metadata) != _creation_identity(stage)
                 or post_write_metadata.st_size != stage.facts.expected_size
             ):
                 raise SafetyError(
@@ -1366,7 +1418,7 @@ def write_outputs(config: Config, payload: Dict[str, Any]) -> None:
                     current_identity = (current_stat.st_dev, current_stat.st_ino)
                     if (
                         not stat.S_ISREG(current_stat.st_mode)
-                        or current_identity != facts.creation_identity
+                        or current_identity != _creation_identity(stage)
                     ):
                         rollback_errors.append(
                             f"{output}: ownership changed; refusing rollback unlink"
@@ -1379,6 +1431,28 @@ def write_outputs(config: Config, payload: Dict[str, Any]) -> None:
         for stage in stage_states.values():
             facts = stage.facts
             display_path = facts.output.parent / facts.staged_name
+            if not stage.registered:
+                stage.cleanup_conflict = True
+                cleanup_errors.append(
+                    f"{display_path}: staged lifecycle state was not registered"
+                )
+                continue
+            if not stage.created:
+                if stage.stage_fd is None and not stage.descriptor_open:
+                    stage.staged_name_expected_to_remain = False
+                    stage.staged_entry_cleanup_complete = True
+                else:
+                    stage.cleanup_conflict = True
+                    cleanup_errors.append(
+                        f"{display_path}: unopened staged lifecycle retained an FD"
+                    )
+                continue
+            if stage.stage_fd is None or not stage.descriptor_open:
+                stage.cleanup_conflict = True
+                cleanup_errors.append(
+                    f"{display_path}: created stage lost its retained descriptor"
+                )
+                continue
             try:
                 try:
                     os.stat(
@@ -1391,7 +1465,7 @@ def write_outputs(config: Config, payload: Dict[str, Any]) -> None:
                         stage.staged_name_intentionally_removed
                         and not stage.staged_name_expected_to_remain
                     ):
-                        stage.cleanup_complete = True
+                        stage.staged_entry_cleanup_complete = True
                         continue
                     stage.cleanup_conflict = True
                     cleanup_errors.append(
@@ -1414,7 +1488,7 @@ def write_outputs(config: Config, payload: Dict[str, Any]) -> None:
                         stage.staged_name_intentionally_removed
                         and not stage.staged_name_expected_to_remain
                     ):
-                        stage.cleanup_complete = True
+                        stage.staged_entry_cleanup_complete = True
                         continue
                     stage.cleanup_conflict = True
                     cleanup_errors.append(
@@ -1424,15 +1498,25 @@ def write_outputs(config: Config, payload: Dict[str, Any]) -> None:
                     continue
                 stage.staged_name_intentionally_removed = True
                 stage.staged_name_expected_to_remain = False
-                stage.cleanup_complete = True
+                stage.staged_entry_cleanup_complete = True
             except (OSError, SafetyError) as cleanup_error:
                 stage.cleanup_conflict = True
                 cleanup_errors.append(f"{display_path}: {cleanup_error}")
         for stage in stage_states.values():
+            if stage.stage_fd is None:
+                if stage.created:
+                    stage.cleanup_conflict = True
+                    cleanup_errors.append(
+                        f"{stage.facts.output}: created stage has no retained FD to close"
+                    )
+                continue
+            if not stage.descriptor_open:
+                continue
             try:
-                os.close(stage.facts.staged_fd)
+                os.close(stage.stage_fd)
                 stage.descriptor_open = False
             except OSError as cleanup_error:
+                stage.cleanup_conflict = True
                 cleanup_errors.append(
                     f"{stage.facts.output}: staged close failed: {cleanup_error}"
                 )
@@ -1443,7 +1527,14 @@ def write_outputs(config: Config, payload: Dict[str, Any]) -> None:
                 cleanup_errors.append(f"{output.parent}: close failed: {cleanup_error}")
         for stage in stage_states.values():
             facts = stage.facts
+            if (
+                stage.staged_entry_cleanup_complete
+                and not stage.descriptor_open
+                and not stage.cleanup_conflict
+            ):
+                stage.cleanup_complete = True
             if stage.descriptor_open:
+                stage.cleanup_conflict = True
                 cleanup_errors.append(
                     f"{facts.output}: staged descriptor remained open at final invariant"
                 )
@@ -1461,6 +1552,23 @@ def write_outputs(config: Config, payload: Dict[str, Any]) -> None:
                 cleanup_errors.append(
                     f"{facts.output.parent / facts.staged_name}: intentional staged "
                     "removal did not reach cleanup-complete state"
+                )
+            if not stage.created and (
+                stage.stage_fd is not None
+                or stage.descriptor_open
+                or not stage.cleanup_complete
+            ):
+                cleanup_errors.append(
+                    f"{facts.output.parent / facts.staged_name}: never-opened stage "
+                    "did not reach its final lifecycle state"
+                )
+            if stage.created and not (
+                stage.cleanup_complete or stage.cleanup_conflict
+            ):
+                stage.cleanup_conflict = True
+                cleanup_errors.append(
+                    f"{facts.output.parent / facts.staged_name}: created stage was "
+                    "not accounted for at final lifecycle invariant"
                 )
         if publish_error is None and (
             len(stage_states) != len(outputs)

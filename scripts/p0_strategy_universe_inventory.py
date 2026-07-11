@@ -94,10 +94,11 @@ STRATEGY_WORDS = {
     "frequency", "trend", "bayesian", "markov", "montecarlo", "monte_carlo",
     "deviation", "ensemble", "optimized", "hybrid", "hot_cold", "sum_range",
     "wheeling", "number_pairs", "statistical", "odd_even", "zone", "cluster",
-    "entropy", "temporal", "random_forest", "xgboost", "lstm", "transformer",
+    "entropy", "temporal", "feature_engineering", "random_forest", "prophet",
+    "xgboost", "lstm", "transformer", "maml",
     "apriori", "acb", "pp3", "f4cold", "fourier", "orthogonal", "ts3",
     "regime", "midfreq", "echo", "pivot", "streak", "gap", "cold", "hot",
-    "precision", "triple", "residue", "dispersion", "microfish", "power",
+    "precision", "triple", "residue", "dispersion", "odd_tail", "microfish", "power",
     "biglotto", "daily539", "strategy",
 }
 
@@ -273,6 +274,16 @@ def is_strategy_like(text: str) -> bool:
         return False
     if " vs " in lowered or "monitor" in lowered:
         return False
+    if lowered in {
+        "big lotto", "power lotto", "daily 539", "big_lotto", "power_lotto",
+        "daily_539", "biglotto", "powerlotto", "daily539",
+    }:
+        return False
+    if lowered in {
+        "multi_strategy", "coordinator-direct (7 agents)",
+        "coordinator-direct (6 agents)",
+    }:
+        return False
     if any(word in lowered for word in STRATEGY_WORDS):
         return True
     return bool(re.search(r"\b\d+bet\b|\b(f4cold|ts3|pp3|acb|midfreq)\b", lowered))
@@ -306,6 +317,37 @@ def infer_lottery(text: str) -> str:
         return "BIG_LOTTO"
     if "daily_539" in lowered or "daily539" in lowered or "539" in text or "今彩" in text:
         return "DAILY_539"
+    return "UNSPECIFIED"
+
+
+def infer_lottery_from_id(strategy_id: str) -> str:
+    sid = strategy_id.lower()
+    if (
+        "539" in sid
+        or sid.startswith("daily539")
+        or sid == "acb_1bet"
+        or "midfreq_acb" in sid
+        or "f4cold" in sid
+    ):
+        return "DAILY_539"
+    if any(
+        marker in sid
+        for marker in (
+            "power", "pp3", "orthogonal", "fourier_rhythm_3bet", "ts3", "h6_gate",
+        )
+    ):
+        return "POWER_LOTTO"
+    if any(
+        marker in sid
+        for marker in ("biglotto", "triple_strike", "deviation", "echo", "regime_2bet")
+    ):
+        return "BIG_LOTTO"
+    if sid in {
+        "frequency", "trend", "bayesian", "markov", "montecarlo", "ensemble",
+        "statistical", "hot_cold", "sum_range", "number_pairs", "wheeling",
+        "odd_even", "zone_balance", "zone_split", "core_satellite",
+    }:
+        return "CROSS_GAME"
     return "UNSPECIFIED"
 
 
@@ -357,11 +399,34 @@ def _read_json_or_yaml(path: Path) -> Any:
     try:
         return json.loads(text)
     except json.JSONDecodeError:
+        pass
+
+    try:
+        import yaml  # type: ignore
+    except ImportError:
+        yaml = None
+    if yaml is not None:
         try:
-            import yaml  # type: ignore
-        except ImportError as exc:
-            raise SafetyError(f"cannot parse non-JSON artifact without PyYAML: {path}") from exc
-        return yaml.safe_load(text)
+            return yaml.safe_load(text)
+        except Exception:
+            pass
+
+    # Preserve the orphan generator's dependency-free fallback for the simple,
+    # top-level strategy metadata files used by this collector.
+    data: Dict[str, str] = {}
+    for raw in text.splitlines():
+        line = raw.strip()
+        if not line or line.startswith("#") or ":" not in line:
+            continue
+        key, value = line.split(":", 1)
+        key = key.strip()
+        value = value.strip().split("#", 1)[0].strip()
+        if value.startswith(("'", '"')) and value.endswith(("'", '"')):
+            value = value[1:-1]
+        data[key] = value
+    if data:
+        return data
+    raise SafetyError(f"cannot parse JSON/YAML artifact: {path}")
 
 
 def collect_registry(entries: Dict[str, EntryState], repo_root: Path) -> None:
@@ -369,7 +434,24 @@ def collect_registry(entries: Dict[str, EntryState], repo_root: Path) -> None:
     if not path.is_file():
         return
     text = path.read_text(encoding="utf-8")
-    for block in re.findall(r"_StrategyMeta\((.*?)\n\s*\)", text, re.DOTALL):
+    blocks: List[str] = []
+    current: List[str] = []
+    depth = 0
+    in_block = False
+    for line in text.splitlines():
+        if "_StrategyMeta(" in line:
+            in_block = True
+            current = [line]
+            depth = line.count("(") - line.count(")")
+            continue
+        if in_block:
+            current.append(line)
+            depth += line.count("(") - line.count(")")
+            if depth <= 0:
+                blocks.append("\n".join(current))
+                current = []
+                in_block = False
+    for block in blocks:
         sid_match = re.search(r'strategy_id="([^"]+)"', block)
         if not sid_match:
             continue
@@ -400,53 +482,89 @@ def collect_strategy_packages(entries: Dict[str, EntryState], repo_root: Path) -
         sid = canonicalize(raw_id, rel)
         status = str(data.get("status") or "UNKNOWN").split()[0].upper()
         lottery = str(data.get("lottery") or data.get("lottery_type") or infer_lottery(rel))
+        sibling_names = (
+            "sim_result.json", "performance_log.json", "backtest_report.md",
+            "stat_test.txt", "version_tag.txt",
+        )
+        has_history = any(
+            (path.parent / name).exists()
+            for name in sibling_names
+            if name != "version_tag.txt"
+        )
+        lifecycle = STATUS_MAP.get(status, "UNKNOWN")
         attach(
             entries,
             sid,
             display_name=str(data.get("name") or sid),
             source_path=rel,
-            lifecycle=STATUS_MAP.get(status, "UNKNOWN"),
+            lifecycle=lifecycle,
             lottery=lottery,
-            historical_source="simulation_log",
+            historical_source="simulation_log" if has_history else "none",
+            rsm_referenced=lifecycle == "PRODUCTION",
             note=f"strategy_package_status:{status}",
         )
-        for sibling_name in (
-            "sim_result.json", "performance_log.json", "backtest_report.md",
-            "stat_test.txt", "version_tag.txt",
-        ):
+        for sibling_name in sibling_names:
             sibling = path.parent / sibling_name
             if sibling.exists():
                 attach(entries, sid, source_path=str(sibling.relative_to(repo_root)))
 
 
 def collect_frontend(entries: Dict[str, EntryState], repo_root: Path) -> None:
-    for rel in ("src/core/App.js", "src/engine/PredictionEngine.js"):
-        path = repo_root / rel
-        if not path.is_file():
-            continue
-        text = path.read_text(encoding="utf-8")
-        for raw, display in re.findall(r"['\"]([^'\"]+)['\"]\s*:\s*['\"]([^'\"]+)['\"]", text):
-            if not is_strategy_like(raw) and not is_strategy_like(display):
-                continue
-            attach(
-                entries,
-                canonicalize(raw, rel),
-                display_name=display,
-                source_path=rel,
-                lifecycle="EXPERIMENTAL",
-                lottery=infer_lottery(rel + " " + raw),
-                historical_source="none",
-                note="frontend_strategy_definition",
-            )
+    app_rel = "src/core/App.js"
+    engine_rel = "src/engine/PredictionEngine.js"
+    app_path = repo_root / app_rel
+    engine_path = repo_root / engine_rel
+    if not app_path.is_file():
+        return
+    text = app_path.read_text(encoding="utf-8")
+    match = re.search(r"const\s+strategyNames\s*=\s*\{(.*?)\n\s*\};", text, re.DOTALL)
+    if not match:
+        return
+    pairs = re.findall(
+        r"['\"]([^'\"]+)['\"]\s*:\s*['\"]([^'\"]+)['\"]", match.group(1)
+    )
+    for raw, display in pairs:
+        attach(
+            entries,
+            canonicalize(raw, app_rel),
+            display_name=display,
+            source_path=app_rel,
+            lifecycle="EXPERIMENTAL",
+            lottery="CROSS_GAME",
+            historical_source="none",
+            note="frontend_strategy_definition",
+        )
+        if engine_path.is_file():
+            attach(entries, canonicalize(raw, app_rel), source_path=engine_rel)
 
 
 def collect_models(entries: Dict[str, EntryState], repo_root: Path) -> None:
     model_root = repo_root / "lottery_api" / "models"
-    if not model_root.is_dir():
-        return
-    for path in sorted(model_root.glob("*.py")):
+    model_names = (
+        "unified_predictor.py", "special_predictor.py", "fourier_rhythm.py",
+        "orthogonal_2bet.py", "dual_bet_strategy.py", "bayesian_ensemble.py",
+        "selective_ensemble.py", "constraint_filter_predictor.py",
+        "arima_predictor.py", "attention_lstm_torch.py",
+        "dynamic_ensemble_predictor.py", "optimized_bayesian_predictor.py",
+        "advanced_bayesian_analyzer.py", "meta_predictor.py",
+        "ensemble_predictor.py", "auto_optimizer.py", "big_lotto_optimizer.py",
+        "biglotto_tme_optimizer.py", "regime_monitor.py",
+    )
+    for path in (model_root / name for name in model_names):
+        if not path.is_file():
+            continue
         text = path.read_text(encoding="utf-8")
         rel = str(path.relative_to(repo_root))
+        attach(
+            entries,
+            canonicalize(path.stem, rel),
+            display_name=path.stem,
+            source_path=rel,
+            lifecycle="EXPERIMENTAL",
+            lottery=infer_lottery(rel),
+            historical_source="none",
+            note="model_module",
+        )
         candidates = set(re.findall(r"def\s+([A-Za-z0-9_]+_predict)\s*\(", text))
         candidates.update(re.findall(r"strategy_(?:id|name)\s*=\s*['\"]([^'\"]+)['\"]", text))
         for raw in candidates:
@@ -472,7 +590,9 @@ def collect_rejected(entries: Dict[str, EntryState], repo_root: Path) -> Set[str
         text = path.read_text(encoding="utf-8")
         sid = canonicalize(path.stem, rel)
         rejected_ids.add(sid)
-        display_match = re.search(r'"(?:strategy|name)"\s*:\s*"([^"]+)"', text)
+        display_match = re.search(
+            r'"(?:strategy|name|failure_reason|reason)"\s*:\s*"([^"]+)"', text
+        )
         display = display_match.group(1) if display_match else path.stem
         attach(
             entries,
@@ -535,7 +655,38 @@ def collect_lessons(entries: Dict[str, EntryState], repo_root: Path) -> None:
         if not path.is_file():
             continue
         for line_number, line in enumerate(path.read_text(encoding="utf-8").splitlines(), 1):
-            for token in set(re.findall(r"`([^`]+)`", line)):
+            tokens = set(re.findall(r"`([^`]+)`", line))
+            for match in re.findall(
+                r"([A-Za-z][A-Za-z0-9_+\-]+(?: [A-Za-z][A-Za-z0-9_+\-]+){0,4})",
+                line,
+            ):
+                if len(match) >= 3 and (
+                    is_strategy_like(match) or match in LESSON_ALIAS_HINTS
+                ):
+                    tokens.add(match)
+            lifecycle_evidence = any(
+                marker in line
+                for marker in (
+                    "REJECT", "WATCH", "OBSERVE", "PROVISIONAL", "OFFLINE",
+                    "RETIRED", "生產策略", "production", "現役",
+                )
+            )
+            if line_number > 107 and not lifecycle_evidence:
+                continue
+            for token in tokens:
+                if token in {"M3+", "M2+", "OOS", "Edge", "p"}:
+                    continue
+                if (
+                    len(token.split()) == 1
+                    and token not in LESSON_ALIAS_HINTS
+                    and not re.search(r"[_\-0-9]", token)
+                ):
+                    continue
+                if any(
+                    noise in token.lower()
+                    for noise in ("grid_search", "report", "analysis", "benchmark", "study")
+                ):
+                    continue
                 if not is_strategy_like(token) and token not in LESSON_ALIAS_HINTS:
                     continue
                 upper = line.upper()
@@ -571,7 +722,15 @@ def collect_tools(entries: Dict[str, EntryState], repo_root: Path) -> None:
         if not path.is_file() or path.suffix not in {".py", ".js", ".cjs", ".json", ".md", ".txt"}:
             continue
         name = path.name.lower()
-        if "strategy" not in name and "predict" not in name and "backtest" not in name:
+        prefixes = (
+            "predict_", "backtest_", "optimize_", "generate_", "audit_",
+            "verify_", "review_", "discover_", "power_", "biglotto_", "p3_",
+        )
+        if (
+            not name.startswith(prefixes)
+            and "strategy" not in name
+            and "bet" not in name
+        ):
             continue
         rel = str(path.relative_to(repo_root))
         try:
@@ -579,18 +738,34 @@ def collect_tools(entries: Dict[str, EntryState], repo_root: Path) -> None:
         except (OSError, UnicodeError):
             continue
         candidates = set(re.findall(r"strategy_(?:id|name)\s*[:=]\s*['\"]([^'\"]+)['\"]", text))
+        candidates.update(re.findall(r"\bname\s*[:=]\s*['\"]([^'\"]+)['\"]", text))
+        candidates.update(re.findall(r"def\s+([A-Za-z0-9_]+)\s*\(", text))
         candidates.update(re.findall(r"class\s+([A-Za-z0-9_]+Strategy)\b", text))
         for raw in candidates:
             if not is_strategy_like(raw) and raw not in ALIAS_TO_CANONICAL:
                 continue
+            lowered_text = text.lower()
+            lifecycle = "EXPERIMENTAL"
+            if "rejected" in lowered_text:
+                lifecycle = "REJECTED"
+            elif "provisional" in lowered_text:
+                lifecycle = "PROVISIONAL"
+            elif "watch" in lowered_text or "observe" in lowered_text:
+                lifecycle = "WATCHING"
+            elif "active" in lowered_text or "production" in lowered_text or "現役" in text:
+                lifecycle = "PRODUCTION"
             attach(
                 entries,
                 canonicalize(raw, rel),
                 display_name=raw,
                 source_path=rel,
-                lifecycle="EXPERIMENTAL",
-                lottery=infer_lottery(rel + " " + raw),
-                historical_source="simulation_log" if "backtest" in name else "none",
+                lifecycle=lifecycle,
+                lottery=infer_lottery(rel + " " + raw + " " + text[:3000]),
+                historical_source=(
+                    "simulation_log"
+                    if any(marker in name for marker in ("backtest", "sim", "benchmark"))
+                    else "none"
+                ),
                 note="tools_candidate",
             )
 
@@ -657,7 +832,15 @@ def collect_db_names(
 
 def _pick_lifecycle(votes: Sequence[str], paths: Iterable[str]) -> str:
     if not votes:
-        return "OFFLINE" if any("offline" in p.lower() or "retired" in p.lower() for p in paths) else "UNKNOWN"
+        return (
+            "OFFLINE"
+            if any(
+                marker in path.lower()
+                for path in paths
+                for marker in ("offline", "retired", "deprecated")
+            )
+            else "UNKNOWN"
+        )
     priority = {state: index for index, state in enumerate(LIFECYCLE_ORDER)}
     return min(votes, key=lambda state: priority.get(state, len(priority)))
 
@@ -666,7 +849,16 @@ def _pick_lottery(votes: Sequence[str], strategy_id: str, paths: Iterable[str]) 
     normalized = [vote if vote in LOTTERY_ORDER else infer_lottery(vote) for vote in votes]
     normalized = [vote for vote in normalized if vote in LOTTERY_ORDER]
     if normalized:
-        return Counter(normalized).most_common(1)[0][0]
+        counts = Counter(normalized)
+        best = counts.most_common()
+        if len(best) == 1 or best[0][1] > best[1][1]:
+            return best[0][0]
+        for preferred in LOTTERY_ORDER:
+            if preferred in counts:
+                return preferred
+    inferred = infer_lottery_from_id(strategy_id)
+    if inferred != "UNSPECIFIED":
+        return inferred
     return infer_lottery(" ".join([strategy_id, *paths]))
 
 

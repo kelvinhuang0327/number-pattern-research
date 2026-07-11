@@ -7,9 +7,10 @@
 - Schema: `p545b_full_50_300_750_per_draw_evaluation.v1`
 - Implementation base: `72e55acde36792912873315eb75f8a5b74c7470a`
 - Deterministic timestamp: `2026-07-11T07:58:26Z`
-- Timestamp source: `committer_timestamp` of `72e55acde36792912873315eb75f8a5b74c7470a`
-- Timestamp format: `RFC3339_Z` at `seconds` precision
-- Canonical payload digest: `adcf4cd2dab60b63a7709fb88cbc7f90438c5f26a4306e1f7057c2cd84aa7f5a`
+- Timestamp source: `committer timestamp` of `72e55acde36792912873315eb75f8a5b74c7470a`
+- Timestamp format: `RFC 3339 with trailing Z` at `seconds` precision
+- Wall clock used: **NO**
+- Canonical payload digest: `f409e0c0d28ff13a95aa29f6e17186b4e109524c66fac7835912609884d78d9f`
 
 ## Evidence lineage
 
@@ -50,8 +51,11 @@
 - Duplicate JSON keys rejected: **YES**
 - SQLite/database/snapshot opened: **NO**
 - Strategy search or parameter tuning: **NO**
-- JSON determinism projection SHA-256: `3b32d22523d6406c405187ad7334c42530da24199c35645fd6ab7d018705a477`
-- Markdown determinism projection SHA-256: `d1a01bd4d283fa5847463e1f4be41dba46788d44aa6749f0409bf5600672b934`
+- JSON build-A projection SHA-256: `0d86a4a73f66d78984da7b188d8d8f0c4b0ed96972a0b25ff427919b5a9c6652`
+- JSON build-B projection SHA-256: `0d86a4a73f66d78984da7b188d8d8f0c4b0ed96972a0b25ff427919b5a9c6652`
+- Markdown build-A SHA-256: `3c3fd5bfd4b2846c18ff732a019854628d9afb12779a28ffa89bc6701d702a69`
+- Markdown build-B SHA-256: `3c3fd5bfd4b2846c18ff732a019854628d9afb12779a28ffa89bc6701d702a69`
+- Ordered test-contract cases: **60**
 - Predictive-validity, ROI, EV, staking, deployment, or betting claim: **NO**
 
 ## Limitations

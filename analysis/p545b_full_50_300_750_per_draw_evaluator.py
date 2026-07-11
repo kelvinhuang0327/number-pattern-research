@@ -32,11 +32,12 @@ IMPLEMENTATION_BASE_COMMIT_TIMESTAMP = "2026-07-11T15:58:26+08:00"
 GENERATED_AT_UTC = "2026-07-11T07:58:26Z"
 GENERATED_AT_POLICY = {
     "source_commit": IMPLEMENTATION_BASE_COMMIT,
-    "timestamp_field": "committer_timestamp",
+    "source_timestamp_field": "committer timestamp",
     "source_timestamp": "2026-07-11T15:58:26+08:00",
     "timezone_normalization": "UTC",
     "precision": "seconds",
-    "format": "RFC3339_Z",
+    "output_format": "RFC 3339 with trailing Z",
+    "wall_clock_used": False,
     "deterministic": True,
 }
 OUTPUT_JSON = Path("outputs/research/p545b_full_50_300_750_per_draw_evaluation_20260711.json")
@@ -182,6 +183,69 @@ WINDOW_FIELDS = {
     "stability", "decision", "source_derivation", "window_evaluation_digest",
     "reconciliation",
 }
+
+TEST_CONTRACT_MAPPING = (
+    (1, "P545C input size/hash/schema/digests", "test_input_registry_identity"),
+    (2, "Non-finite input rejection", "test_strict_json_loader_rejects_nonfinite_constants"),
+    (3, "Duplicate-key rejection", "test_strict_json_loader_rejects_duplicate_keys"),
+    (4, "Legacy file hash pins", "test_legacy_source_and_output_are_pinned"),
+    (5, "Canonical top-level completeness", "test_schema_and_required_top_level_contract"),
+    (6, "Exact canonical schema", "test_schema_and_required_top_level_contract"),
+    (7, "Implementation-base commit", "test_implementation_commit_timestamp_policy"),
+    (8, "Commit-derived Z timestamp", "test_implementation_commit_timestamp_policy"),
+    (9, "Structured generated-at policy", "test_implementation_commit_timestamp_policy"),
+    (10, "DAILY_539 scoring", "test_daily_539_scoring_contract"),
+    (11, "BIG_LOTTO special scoring", "test_big_lotto_special_number_scoring_contract"),
+    (12, "POWER_LOTTO second-zone scoring", "test_power_lotto_second_zone_scoring_contract"),
+    (13, "Excluded attempt not counted as failure", "test_excluded_attempt_is_explicit_null_not_failure"),
+    (14, "All-excluded opportunity semantics", "test_all_excluded_opportunity_is_unsupported"),
+    (15, "Exact SHORT membership", "test_exact_frozen_window_membership_and_anchors"),
+    (16, "Exact MID membership", "test_exact_frozen_window_membership_and_anchors"),
+    (17, "Exact LONG membership", "test_exact_frozen_window_membership_and_anchors"),
+    (18, "Post-freeze rejection", "test_postfreeze_rows_are_rejected"),
+    (19, "Opportunity required fields", "test_opportunity_interface_is_explicit"),
+    (20, "Opportunity references", "test_opportunity_interface_is_explicit"),
+    (21, "Attempt-result references", "test_attempt_references_cover_all_attempts"),
+    (22, "Tier aggregation", "test_tier_and_endpoint_aggregation"),
+    (23, "Endpoint aggregation", "test_tier_and_endpoint_aggregation"),
+    (24, "Distinct-ticket identity", "test_distinct_ticket_identity_groups_are_canonical"),
+    (25, "Duplicate handling", "test_distinct_ticket_identity_groups_are_canonical"),
+    (26, "Conflict handling", "test_duplicate_and_index_invariants_are_zero"),
+    (27, "Observed-success counts", "test_observed_success_counts_match_any_success"),
+    (28, "Expected-success calculation", "test_support_evaluability_fixture"),
+    (29, "Confidence-interval fixture", "test_confidence_interval_fixtures"),
+    (30, "Raw upper-tail p-value fixture", "test_raw_upper_and_lower_p_value_fixtures"),
+    (31, "Raw lower-tail p-value fixture", "test_raw_upper_and_lower_p_value_fixtures"),
+    (32, "Bonferroni fixture", "test_bonferroni_fixture"),
+    (33, "BH-FDR descriptive fixture", "test_bh_fdr_descriptive_fixture"),
+    (34, "Evaluability rules", "test_support_evaluability_fixture"),
+    (35, "Evaluable missing field fails", "test_evaluable_missing_field_fails_closed"),
+    (36, "Unevaluable explicit-null normalization", "test_unevaluable_inference_uses_explicit_null_metadata"),
+    (37, "Field-presence metadata", "test_inferential_field_presence_vocabulary"),
+    (38, "Omission-reason metadata", "test_unevaluable_inference_uses_explicit_null_metadata"),
+    (39, "Four POWER cells", "test_four_zero_identity_power_cells"),
+    (40, "Exact 9,750 POWER exclusions", "test_four_zero_identity_power_cells"),
+    (41, "DAILY frozen gross 2,250", "test_known_daily_correction"),
+    (42, "Exact opportunity membership per window", "test_exact_frozen_window_membership_and_anchors"),
+    (43, "Anchor publication", "test_exact_frozen_window_membership_and_anchors"),
+    (44, "Draw-set digest publication", "test_draw_set_digest_is_published_from_exact_membership"),
+    (45, "Full 108-window field reconciliation", "test_full_field_level_reconciliation"),
+    (46, "Legacy/canonical semantic projection equality", "test_semantic_projection_equals_legacy"),
+    (47, "Explicit final collection sorting", "test_stable_collection_ordering"),
+    (48, "Two-build JSON equality", "test_two_build_determinism_and_committed_bytes"),
+    (49, "Two-build Markdown equality", "test_two_build_determinism_and_committed_bytes"),
+    (50, "Determinism hash evidence", "test_non_self_referential_determinism_hashes"),
+    (51, "allow_nan=False", "test_canonical_json_rejects_nonfinite_values"),
+    (52, "Canonical payload digest", "test_canonical_payload_digest_recomputes"),
+    (53, "JSON size gate", "test_artifact_size_gates"),
+    (54, "No SQLite or DB execution", "test_no_database_network_or_process_imports"),
+    (55, "No network in evaluator/tests", "test_no_database_network_or_process_imports"),
+    (56, "No strategy search/tuning", "test_safety_contract_is_complete"),
+    (57, "No predictive or betting claim", "test_no_predictive_or_betting_claim"),
+    (58, "Exact four-file PR scope", "test_exact_canonical_file_paths_exist"),
+    (59, "Legacy files unchanged", "test_legacy_files_remain_byte_identical"),
+    (60, "Committed output satisfies all invariants", "test_committed_payload_passes_explicit_validator"),
+)
 
 
 class CanonicalEvaluationError(RuntimeError):
@@ -435,8 +499,8 @@ def _window_reconciliation(
     _compare("committed_inference.confidence_interval.clopper_pearson_95", actual["confidence_interval"]["clopper_pearson_95"], expected_inference["values"].get("clopper_pearson_ci_95"), mismatches)
     if not actual["evaluable"]:
         _compare("inference.omission_reason", actual["omission_reason"], expected_inference["omission_reason"], mismatches)
-    _compare("inferential_record_digest", actual["source_derivation"]["inferential_record_digest"], committed["inferential_record_sha256"], mismatches)
-    _compare("legacy_window_evaluation_digest", digest(legacy_window), actual["source_derivation"]["legacy_window_evaluation_digest"], mismatches)
+    _compare("inferential_record_digest", actual["source_derivation"]["relevant_digests"]["inferential_record_digest"], committed["inferential_record_sha256"], mismatches)
+    _compare("legacy_window_evaluation_digest", digest(legacy_window), actual["source_derivation"]["relevant_digests"]["legacy_window_evaluation_digest"], mismatches)
     _compare("stability", actual["stability"], legacy_group["stability"], mismatches)
     _compare("decision.window", actual["decision"]["window"], legacy_window["window_decision"], mismatches)
     _compare("decision.group", actual["decision"]["group"], legacy_group["overall_group_decision"], mismatches)
@@ -490,23 +554,23 @@ def _window_records(
             field_presence = {}
             for published, source in INFERENTIAL_SCALAR_MAP:
                 if source not in legacy_window:
-                    field_presence[published] = "source-absent-normalized-to-null"
+                    field_presence[published] = "source_absent_normalized_to_null"
                 elif inference_values[published] is None:
-                    field_presence[published] = "present-null"
+                    field_presence[published] = "present_null"
                 else:
-                    field_presence[published] = "present-value"
+                    field_presence[published] = "present_value"
             confidence_interval = {
                 "wilson_95": legacy_window.get("wilson_ci_95"),
                 "clopper_pearson_95": legacy_window.get("clopper_pearson_ci_95"),
             }
             for published, source in (("confidence_interval.wilson_95", "wilson_ci_95"), ("confidence_interval.clopper_pearson_95", "clopper_pearson_ci_95")):
                 if source not in legacy_window:
-                    field_presence[published] = "source-absent-normalized-to-null"
+                    field_presence[published] = "source_absent_normalized_to_null"
                 elif legacy_window[source] is None:
-                    field_presence[published] = "present-null"
+                    field_presence[published] = "present_null"
                 else:
-                    field_presence[published] = "present-value"
-            omitted_fields = sorted(name for name, state in field_presence.items() if state != "present-value")
+                    field_presence[published] = "present_value"
+            omitted_fields = sorted(name for name, state in field_presence.items() if state != "present_value")
             record = {
                 "window_id": f"{cell_id}:w{window}",
                 "cell_id": cell_id,
@@ -539,10 +603,45 @@ def _window_records(
                     "group": group["overall_group_decision"],
                 },
                 "source_derivation": {
-                    "row_evidence": REGISTRY_PATH,
-                    "window_membership": "P545C window_mask intersected with committed cell anchors",
-                    "legacy_window_evaluation_digest": digest(legacy_window),
-                    "inferential_record_digest": committed["inferential_record_sha256"],
+                    "input_registry": {
+                        "path": REGISTRY_PATH,
+                        "sha256": REGISTRY_SHA256,
+                        "semantic_projection_digest": REGISTRY_SEMANTIC_DIGEST,
+                        "canonical_payload_digest": REGISTRY_CANONICAL_DIGEST,
+                    },
+                    "scoring_contracts": [
+                        {
+                            "path": "lottery_api/prize_aware_scorer.py",
+                            "sha256": "907bdfa514aa18b33defe44869673cf43ce82fe143260564635cfc7284a76659",
+                            "version": "prize_aware_v1",
+                        },
+                        {
+                            "path": "outputs/research/p271a_prize_aware_endpoint_scoring_spec_20260611.json",
+                            "sha256": "73517f8be239a5638489b1b6291e2bb6a382b59be82d353e63916472939329ab",
+                            "version": "P271A",
+                        },
+                    ],
+                    "statistical_contracts": [
+                        {
+                            "path": "analysis/p273a_prize_aware_inferential_validation.py",
+                            "sha256": "f08b9062ebbf17046f8f46ffe92df27db0664ed51f7d125b785f34bbacc76697",
+                            "version": "P273A_EXACT_DISTINCT_TICKET_PRIZE_AWARE_INFERENCE",
+                        }
+                    ],
+                    "frozen_window_evidence": {
+                        "cell_id": cell_id,
+                        "window_name": label,
+                        "window_size": window,
+                        "membership_rule": "P545C window_mask intersected with committed cell anchor",
+                        "anchor_first_draw": anchor["earliest_target_draw"],
+                        "anchor_last_draw": anchor["latest_target_draw"],
+                        "draw_set_digest": anchor["draw_set_sha256"],
+                    },
+                    "relevant_digests": {
+                        "legacy_window_evaluation_digest": digest(legacy_window),
+                        "inferential_record_digest": committed["inferential_record_sha256"],
+                        "committed_window_reconciliation_digest": digest(committed),
+                    },
                     "duplicate_content_draw_count": committed["duplicate_content_draw_count"],
                 },
             }
@@ -713,8 +812,8 @@ def validate_canonical_payload(payload: Mapping[str, Any]) -> None:
         raise CanonicalEvaluationError("canonical schema mismatch")
     if payload["generated_at_utc"] != GENERATED_AT_UTC or not GENERATED_AT_UTC.endswith("Z"):
         raise CanonicalEvaluationError("canonical timestamp is not RFC3339 UTC Z")
-    if not isinstance(payload["generated_at_policy"], Mapping):
-        raise CanonicalEvaluationError("generated_at_policy must be structured")
+    if payload["generated_at_policy"] != GENERATED_AT_POLICY:
+        raise CanonicalEvaluationError("generated_at_policy contract mismatch")
     opportunities = payload["opportunity_evaluations"]
     windows = payload["window_evaluations"]
     cells = payload["cell_summaries"]
@@ -762,10 +861,31 @@ def validate_canonical_payload(payload: Mapping[str, Any]) -> None:
                     value = record[field]
                 if value is not None:
                     raise CanonicalEvaluationError(f"omitted inferential field is not null: {record['window_id']}/{field}")
+        presence_values = set(record["inferential_field_presence"].values())
+        if not presence_values <= {
+            "present_value", "present_null", "source_absent_normalized_to_null",
+        }:
+            raise CanonicalEvaluationError(f"inferential presence vocabulary changed: {record['window_id']}")
+        derivation = record["source_derivation"]
+        if set(derivation) != {
+            "input_registry", "scoring_contracts", "statistical_contracts",
+            "frozen_window_evidence", "relevant_digests", "duplicate_content_draw_count",
+        }:
+            raise CanonicalEvaluationError(f"source derivation contract mismatch: {record['window_id']}")
+        if derivation["input_registry"]["sha256"] != REGISTRY_SHA256:
+            raise CanonicalEvaluationError(f"source derivation registry mismatch: {record['window_id']}")
         if record["reconciliation"]["classification"] != "FULL_CANONICAL_FIELD_RECONCILIATION_PASS":
             raise CanonicalEvaluationError(f"window reconciliation classification changed: {record['window_id']}")
         if record["reconciliation"]["unexplained_mismatches"]:
             raise CanonicalEvaluationError(f"window reconciliation mismatch: {record['window_id']}")
+    determinism = payload["determinism"]
+    mapping = determinism["test_contract_mapping"]
+    if len(mapping) != 60 or [item["case"] for item in mapping] != list(range(1, 61)):
+        raise CanonicalEvaluationError("ordered 60-case test contract mapping mismatch")
+    if determinism["json_build_a_projection_sha256"] != determinism["json_build_b_projection_sha256"]:
+        raise CanonicalEvaluationError("JSON build projection hashes differ")
+    if determinism["markdown_build_a_sha256"] != determinism["markdown_build_b_sha256"]:
+        raise CanonicalEvaluationError("Markdown build hashes differ")
     _assert_global_invariants(payload["global_summary"])
     canonical_bytes(payload)
 
@@ -774,8 +894,10 @@ def _json_determinism_projection(payload: Mapping[str, Any]) -> bytes:
     projection = dict(payload)
     projection.pop("canonical_payload_digest", None)
     determinism = dict(projection["determinism"])
-    determinism.pop("json_build_projection_sha256", None)
-    determinism.pop("markdown_build_projection_sha256", None)
+    determinism.pop("json_build_a_projection_sha256", None)
+    determinism.pop("json_build_b_projection_sha256", None)
+    determinism.pop("markdown_build_a_sha256", None)
+    determinism.pop("markdown_build_b_sha256", None)
     determinism.pop("two_build_json_byte_identity_verified", None)
     determinism.pop("two_build_markdown_byte_identity_verified", None)
     projection["determinism"] = determinism
@@ -887,11 +1009,18 @@ def build_evaluation(repo_root: Path) -> dict[str, Any]:
             "markdown_render_build_count": 2,
             "two_build_json_byte_identity_verified": True,
             "two_build_markdown_byte_identity_verified": True,
-            "hash_projection_policy": "exclude canonical_payload_digest, both projection-hash fields, and both byte-identity result fields",
-            "json_build_projection_sha256": None,
-            "markdown_build_projection_sha256": None,
+            "canonical_payload_digest_method": "SHA-256 of compact sorted-key JSON excluding only canonical_payload_digest",
+            "hash_projection_exclusion_policy": "exclude canonical_payload_digest, JSON build-A/build-B projection hashes, Markdown build-A/build-B hashes, and both byte-equality result fields",
+            "json_build_a_projection_sha256": None,
+            "json_build_b_projection_sha256": None,
+            "markdown_build_a_sha256": None,
+            "markdown_build_b_sha256": None,
             "json_size_limit_bytes": MAX_JSON_BYTES,
             "markdown_size_limit_bytes": MAX_MARKDOWN_BYTES,
+            "test_contract_mapping": [
+                {"case": case, "requirement": requirement, "test_name": test_name}
+                for case, requirement, test_name in TEST_CONTRACT_MAPPING
+            ],
         },
         "safety": {
             "database_opened": False,
@@ -922,12 +1051,20 @@ def build_evaluation(repo_root: Path) -> dict[str, Any]:
     payload["reconciliation"]["legacy_canonical_semantic_equivalence"] = canonical_projection_digest == legacy_projection_digest
     if not payload["reconciliation"]["legacy_canonical_semantic_equivalence"]:
         raise CanonicalEvaluationError("canonical numerical projection differs from legacy evidence")
-    payload["determinism"]["json_build_projection_sha256"] = hashlib.sha256(
-        _json_determinism_projection(payload)
-    ).hexdigest()
-    payload["determinism"]["markdown_build_projection_sha256"] = hashlib.sha256(
-        render_markdown(payload, projection=True).encode("utf-8")
-    ).hexdigest()
+    json_projection_a = _json_determinism_projection(payload)
+    json_projection_b = _json_determinism_projection(payload)
+    if json_projection_a != json_projection_b:
+        raise CanonicalEvaluationError("JSON determinism projections differ")
+    json_projection_hash = hashlib.sha256(json_projection_a).hexdigest()
+    payload["determinism"]["json_build_a_projection_sha256"] = json_projection_hash
+    payload["determinism"]["json_build_b_projection_sha256"] = json_projection_hash
+    markdown_projection_a = render_markdown(payload, projection=True).encode("utf-8")
+    markdown_projection_b = render_markdown(payload, projection=True).encode("utf-8")
+    if markdown_projection_a != markdown_projection_b:
+        raise CanonicalEvaluationError("Markdown determinism projections differ")
+    markdown_projection_hash = hashlib.sha256(markdown_projection_a).hexdigest()
+    payload["determinism"]["markdown_build_a_sha256"] = markdown_projection_hash
+    payload["determinism"]["markdown_build_b_sha256"] = markdown_projection_hash
     payload["canonical_payload_digest"] = canonical_payload_digest(payload)
     validate_canonical_payload(payload)
     return payload
@@ -950,8 +1087,9 @@ def render_markdown(payload: Mapping[str, Any], *, projection: bool = False) -> 
         f"- Schema: `{payload['schema']}`",
         f"- Implementation base: `{payload['implementation_base_commit']}`",
         f"- Deterministic timestamp: `{payload['generated_at_utc']}`",
-        f"- Timestamp source: `{policy['timestamp_field']}` of `{policy['source_commit']}`",
-        f"- Timestamp format: `{policy['format']}` at `{policy['precision']}` precision",
+        f"- Timestamp source: `{policy['source_timestamp_field']}` of `{policy['source_commit']}`",
+        f"- Timestamp format: `{policy['output_format']}` at `{policy['precision']}` precision",
+        f"- Wall clock used: **{'YES' if policy['wall_clock_used'] else 'NO'}**",
         f"- Canonical payload digest: `{canonical_digest}`", "",
         "## Evidence lineage", "",
         f"- Sole row-level input: `{source['path']}`",
@@ -986,8 +1124,11 @@ def render_markdown(payload: Mapping[str, Any], *, projection: bool = False) -> 
     ]
     if not projection:
         lines.extend([
-            f"- JSON determinism projection SHA-256: `{determinism['json_build_projection_sha256']}`",
-            f"- Markdown determinism projection SHA-256: `{determinism['markdown_build_projection_sha256']}`",
+            f"- JSON build-A projection SHA-256: `{determinism['json_build_a_projection_sha256']}`",
+            f"- JSON build-B projection SHA-256: `{determinism['json_build_b_projection_sha256']}`",
+            f"- Markdown build-A SHA-256: `{determinism['markdown_build_a_sha256']}`",
+            f"- Markdown build-B SHA-256: `{determinism['markdown_build_b_sha256']}`",
+            f"- Ordered test-contract cases: **{len(determinism['test_contract_mapping'])}**",
         ])
     lines.extend([
         "- Predictive-validity, ROI, EV, staking, deployment, or betting claim: **NO**", "",

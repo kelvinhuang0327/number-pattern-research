@@ -42,7 +42,10 @@ def test_implementation_commit_timestamp_policy(payload):
     assert payload["implementation_base_commit"] == evaluator.IMPLEMENTATION_BASE_COMMIT
     assert payload["generated_at_utc"] == "2026-07-11T07:58:26Z"
     assert payload["generated_at_policy"] == evaluator.GENERATED_AT_POLICY
-    assert payload["generated_at_policy"]["format"] == "RFC3339_Z"
+    policy = payload["generated_at_policy"]
+    assert policy["source_timestamp_field"] == "committer timestamp"
+    assert policy["output_format"] == "RFC 3339 with trailing Z"
+    assert policy["wall_clock_used"] is False
 
 
 def test_input_registry_identity(payload):
@@ -290,13 +293,40 @@ def test_unevaluable_inference_uses_explicit_null_metadata(payload):
         assert record["confidence_interval"]["clopper_pearson_95"] is None
         assert record["raw_p_value_one_sided_upper"] is None
         assert record["bonferroni_p_value_upper"] is None
-        assert record["inferential_field_presence"]["confidence_interval.wilson_95"] == "source-absent-normalized-to-null"
+        assert record["inferential_field_presence"]["confidence_interval.wilson_95"] == "source_absent_normalized_to_null"
         assert "confidence_interval.wilson_95" in record["omitted_inferential_fields"]
 
 
 def test_inferential_field_presence_vocabulary(payload):
-    allowed = {"present-value", "present-null", "source-absent-normalized-to-null"}
+    allowed = {"present_value", "present_null", "source_absent_normalized_to_null"}
     assert all(set(record["inferential_field_presence"].values()) <= allowed for record in payload["window_evaluations"])
+
+
+def test_window_source_derivation_is_explicit_and_pinned(payload):
+    for record in payload["window_evaluations"]:
+        derivation = record["source_derivation"]
+        assert set(derivation) == {
+            "input_registry", "scoring_contracts", "statistical_contracts",
+            "frozen_window_evidence", "relevant_digests", "duplicate_content_draw_count",
+        }
+        assert derivation["input_registry"] == {
+            "path": evaluator.REGISTRY_PATH,
+            "sha256": evaluator.REGISTRY_SHA256,
+            "semantic_projection_digest": evaluator.REGISTRY_SEMANTIC_DIGEST,
+            "canonical_payload_digest": evaluator.REGISTRY_CANONICAL_DIGEST,
+        }
+        assert len(derivation["scoring_contracts"]) == 2
+        assert len(derivation["statistical_contracts"]) == 1
+        frozen = derivation["frozen_window_evidence"]
+        assert (frozen["cell_id"], frozen["window_name"], frozen["window_size"]) == (
+            record["cell_id"], record["window_name"], record["window_size"],
+        )
+        assert frozen["anchor_first_draw"] == record["anchor_first_draw"]
+        assert frozen["anchor_last_draw"] == record["anchor_last_draw"]
+        assert set(derivation["relevant_digests"]) == {
+            "legacy_window_evaluation_digest", "inferential_record_digest",
+            "committed_window_reconciliation_digest",
+        }
 
 
 def test_stability_and_final_decisions_are_published(payload):
@@ -396,15 +426,30 @@ def test_two_build_determinism_and_committed_bytes(rebuilt):
 
 def test_non_self_referential_determinism_hashes(payload):
     determinism = payload["determinism"]
-    assert determinism["json_build_projection_sha256"] == hashlib.sha256(
-        evaluator._json_determinism_projection(payload)
-    ).hexdigest()
-    assert determinism["markdown_build_projection_sha256"] == hashlib.sha256(
+    json_hash = hashlib.sha256(evaluator._json_determinism_projection(payload)).hexdigest()
+    assert determinism["json_build_a_projection_sha256"] == json_hash
+    assert determinism["json_build_b_projection_sha256"] == json_hash
+    markdown_hash = hashlib.sha256(
         evaluator.render_markdown(payload, projection=True).encode("utf-8")
     ).hexdigest()
+    assert determinism["markdown_build_a_sha256"] == markdown_hash
+    assert determinism["markdown_build_b_sha256"] == markdown_hash
     assert determinism["immutable_in_memory_result_count"] == 1
     assert determinism["json_serialization_build_count"] == 2
     assert determinism["markdown_render_build_count"] == 2
+
+
+def test_ordered_60_case_test_contract_mapping(payload):
+    mapping = payload["determinism"]["test_contract_mapping"]
+    assert len(mapping) == 60
+    assert [item["case"] for item in mapping] == list(range(1, 61))
+    assert all(set(item) == {"case", "requirement", "test_name"} for item in mapping)
+    test_tree = ast.parse(Path(__file__).read_text(encoding="utf-8"))
+    test_names = {
+        node.name for node in test_tree.body
+        if isinstance(node, (ast.FunctionDef, ast.AsyncFunctionDef))
+    }
+    assert all(item["requirement"] and item["test_name"] in test_names for item in mapping)
 
 
 def test_generate_performs_two_build_gate(tmp_path):

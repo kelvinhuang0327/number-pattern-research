@@ -24,7 +24,7 @@ REPO_ROOT = Path(__file__).resolve().parents[1]
 
 TASK_ID = "P541B_R2_BIG_LOTTO_LEGACY_METHOD_CLASSIFICATION_AUDIT"
 SCHEMA_VERSION = "p541b-r2-evidence-v1"
-DETECTOR_VERSION = "p541b-r2-detector-v4"
+DETECTOR_VERSION = "p541b-r2-detector-v5"
 CANONICAL_RUNTIME_IMPLEMENTATION = "CPython"
 CANONICAL_RUNTIME_VERSION = "3.9.6"
 BASE_MAIN_COMMIT = "c50137583243d4f9f4915a3e1d9babee50b5bbd7"
@@ -2322,6 +2322,173 @@ def _invoked_local_definition_reachability(
     return reached, unknown, known
 
 
+def _eager_execution_nodes(
+    definition: ast.FunctionDef | ast.AsyncFunctionDef,
+) -> list[ast.AST]:
+    """Nodes that unconditionally execute whenever ``definition`` runs.
+
+    Mirrors ``ast.walk`` breadth-first order exactly when there is nothing to
+    bound. A nested ``FunctionDef``/``AsyncFunctionDef``/``Lambda`` body is
+    dormant code — defining it does not run it — so traversal does not
+    descend into it here; only its decorator/default expressions, which
+    evaluate eagerly at definition time, are included. A nested ``ClassDef``
+    does execute its own body immediately (defining a class runs it once),
+    so its decorators/bases/keywords/body are included, recursively applying
+    the same dormant-body rule to any methods nested inside it.
+    """
+    nodes: list[ast.AST] = []
+    todo: list[ast.AST] = [definition]
+    while todo:
+        node = todo.pop(0)
+        nodes.append(node)
+        if node is not definition and isinstance(
+            node, (ast.FunctionDef, ast.AsyncFunctionDef)
+        ):
+            todo.extend(node.decorator_list)
+            todo.extend(
+                default
+                for default in (*node.args.defaults, *node.args.kw_defaults)
+                if default is not None
+            )
+            continue
+        if isinstance(node, ast.Lambda):
+            todo.extend(
+                default
+                for default in (*node.args.defaults, *node.args.kw_defaults)
+                if default is not None
+            )
+            continue
+        if node is not definition and isinstance(node, ast.ClassDef):
+            todo.extend(node.decorator_list)
+            todo.extend(node.bases)
+            todo.extend(kw.value for kw in node.keywords)
+            todo.extend(node.body)
+            continue
+        todo.extend(ast.iter_child_nodes(node))
+    return nodes
+
+
+def _definition_execution_nodes(
+    definition: ast.FunctionDef | ast.AsyncFunctionDef,
+    aliases: dict[str, str],
+    owner_class: ast.ClassDef | None,
+) -> tuple[list[ast.AST], set[int]]:
+    """Expand only nested callable bodies proven invoked by a reached scope."""
+    parents = _ast_parent_map(definition)
+    nodes: list[ast.AST] = []
+    added: set[int] = set()
+    locally_resolved_calls: set[int] = set()
+    queue: list[
+        tuple[ast.FunctionDef | ast.AsyncFunctionDef, ast.ClassDef | None]
+    ] = [(definition, owner_class)]
+    visited_definitions: set[int] = set()
+
+    def add_nodes(candidates: list[ast.AST]) -> None:
+        for candidate in candidates:
+            if id(candidate) not in added:
+                added.add(id(candidate))
+                nodes.append(candidate)
+
+    def enclosing_class(
+        node: ast.AST,
+        stop: ast.FunctionDef | ast.AsyncFunctionDef,
+    ) -> ast.ClassDef | None:
+        current = node
+        while id(current) in parents:
+            current = parents[id(current)]
+            if isinstance(current, ast.ClassDef):
+                return current
+            if current is stop:
+                return None
+        return None
+
+    while queue:
+        current_definition, current_owner = queue.pop(0)
+        if id(current_definition) in visited_definitions:
+            continue
+        visited_definitions.add(id(current_definition))
+        eager_nodes = _eager_execution_nodes(current_definition)
+        add_nodes(eager_nodes)
+
+        nested_classes = {
+            node.name: node
+            for node in eager_nodes
+            if isinstance(node, ast.ClassDef)
+        }
+        nested_functions = {
+            node.name: node
+            for node in eager_nodes
+            if isinstance(node, (ast.FunctionDef, ast.AsyncFunctionDef))
+            and node is not current_definition
+            and enclosing_class(node, current_definition) is None
+        }
+
+        for node in eager_nodes:
+            if not isinstance(node, ast.Call):
+                continue
+            raw = (_dotted_name(node.func, {}) or "").replace("()", "")
+            resolved = (_dotted_name(node.func, aliases) or "").replace("()", "")
+            candidates = {raw, resolved}
+            targets: list[
+                tuple[ast.FunctionDef | ast.AsyncFunctionDef, ast.ClassDef | None]
+            ] = []
+
+            for candidate in candidates:
+                nested_function = nested_functions.get(candidate)
+                if nested_function is not None:
+                    targets.append((nested_function, None))
+
+                nested_class = nested_classes.get(candidate)
+                if nested_class is not None:
+                    constructor, _owner, _incomplete = _resolve_imported_method(
+                        {nested_class.name: nested_class},
+                        nested_class.name,
+                        "__init__",
+                    )
+                    if constructor is not None:
+                        targets.append((constructor, nested_class))
+
+                method_match = re.fullmatch(
+                    r"([A-Za-z_]\w*)\.([A-Za-z_]\w*)", candidate
+                )
+                if method_match and method_match.group(1) in nested_classes:
+                    nested_class = nested_classes[method_match.group(1)]
+                    method, _owner, _incomplete = _resolve_imported_method(
+                        {nested_class.name: nested_class},
+                        nested_class.name,
+                        method_match.group(2),
+                    )
+                    if method is not None:
+                        targets.append((method, nested_class))
+
+                if current_owner and candidate.startswith(("self.", "cls.")):
+                    method_name = candidate.split(".", 1)[1].split(".", 1)[0]
+                    method, _owner, _incomplete = _resolve_imported_method(
+                        {current_owner.name: current_owner},
+                        current_owner.name,
+                        method_name,
+                    )
+                    if method is not None:
+                        targets.append((method, current_owner))
+
+            call_owner = enclosing_class(node, current_definition)
+            if call_owner is not None:
+                for item in call_owner.body:
+                    if (
+                        isinstance(item, (ast.FunctionDef, ast.AsyncFunctionDef))
+                        and item.name in candidates
+                    ):
+                        targets.append((item, call_owner))
+
+            if targets:
+                locally_resolved_calls.add(id(node))
+                for target in targets:
+                    if id(target[0]) not in visited_definitions:
+                        queue.append(target)
+
+    return nodes, locally_resolved_calls
+
+
 def _definition_effect_findings(
     imported_tree: ast.Module,
     imported_path: str,
@@ -2366,16 +2533,21 @@ def _definition_effect_findings(
             incomplete = incomplete or method_incomplete
             if definition is None:
                 continue
+        effect_nodes, locally_resolved_calls = _definition_execution_nodes(
+            definition,
+            aliases,
+            classes.get(owner) if owner is not None else None,
+        )
         if any(
             isinstance(node, (ast.Import, ast.ImportFrom))
             and _node_position(node) in dependency_positions
-            for node in ast.walk(definition)
+            for node in effect_nodes
         ):
             # Import execution itself loads the deeper repository module.  The
             # one-hop detector must therefore fail closed even when no symbol
             # from that module is subsequently called by the reached definition.
             incomplete = True
-        for node in ast.walk(definition):
+        for node in effect_nodes:
             if not isinstance(node, ast.Call):
                 continue
             resolved = _dotted_name(node.func, aliases) or "<unresolved>"
@@ -2408,6 +2580,8 @@ def _definition_effect_findings(
                 for binding in project_dependencies
             ):
                 incomplete = True
+            if id(node) in locally_resolved_calls:
+                continue
             raw = (_dotted_name(node.func, {}) or "").replace("()", "")
             resolved_clean = resolved.replace("()", "")
             if raw in functions:

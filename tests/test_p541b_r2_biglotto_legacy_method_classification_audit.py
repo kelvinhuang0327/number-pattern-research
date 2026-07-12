@@ -1128,6 +1128,209 @@ def test_uninvoked_definition_deeper_project_import_remains_dormant(tmp_path):
     assert _one_hop(repo, commit, "main.py")["state"] == "not_detected"
 
 
+def test_reached_outer_function_uncalled_nested_helper_import_is_dormant(tmp_path):
+    repo, commit = _synthetic_repo(
+        tmp_path,
+        {
+            "main.py": "from helper import run\nrun()\n",
+            "helper.py": (
+                "def run():\n"
+                "    def never_called():\n"
+                "        import deeper\n"
+                "    return 1\n"
+            ),
+            "deeper.py": "VALUE = 1\n",
+        },
+    )
+    assert _one_hop(repo, commit, "main.py")["state"] == "not_detected"
+
+
+def test_reached_outer_function_uncalled_nested_method_import_is_dormant(tmp_path):
+    repo, commit = _synthetic_repo(
+        tmp_path,
+        {
+            "main.py": "from helper import run\nrun()\n",
+            "helper.py": (
+                "def run():\n"
+                "    class Nested:\n"
+                "        def never_called(self):\n"
+                "            import deeper\n"
+                "    return 1\n"
+            ),
+            "deeper.py": "VALUE = 1\n",
+        },
+    )
+    assert _one_hop(repo, commit, "main.py")["state"] == "not_detected"
+
+
+def test_reached_outer_function_invoked_nested_helper_import_is_unknown(tmp_path):
+    repo, commit = _synthetic_repo(
+        tmp_path,
+        {
+            "main.py": "from helper import run\nrun()\n",
+            "helper.py": (
+                "def run():\n"
+                "    def called():\n"
+                "        import deeper\n"
+                "    called()\n"
+            ),
+            "deeper.py": "VALUE = 1\n",
+        },
+    )
+    result = _one_hop(repo, commit, "main.py")
+    assert result["state"] == "unknown"
+    assert result["reason"] == "import_resolution_incomplete"
+
+
+def test_reached_outer_function_invoked_nested_method_import_is_unknown(tmp_path):
+    repo, commit = _synthetic_repo(
+        tmp_path,
+        {
+            "main.py": "from helper import run\nrun()\n",
+            "helper.py": (
+                "def run():\n"
+                "    class Nested:\n"
+                "        def called(self):\n"
+                "            import deeper\n"
+                "    Nested().called()\n"
+            ),
+            "deeper.py": "VALUE = 1\n",
+        },
+    )
+    result = _one_hop(repo, commit, "main.py")
+    assert result["state"] == "unknown"
+    assert result["reason"] == "import_resolution_incomplete"
+
+
+def test_reached_outer_function_nested_class_body_import_is_unknown(tmp_path):
+    repo, commit = _synthetic_repo(
+        tmp_path,
+        {
+            "main.py": "from helper import run\nrun()\n",
+            "helper.py": "def run():\n    class Nested:\n        import deeper\n",
+            "deeper.py": "VALUE = 1\n",
+        },
+    )
+    result = _one_hop(repo, commit, "main.py")
+    assert result["state"] == "unknown"
+    assert result["reason"] == "import_resolution_incomplete"
+
+
+def test_nested_function_definition_time_dependency_is_unknown(tmp_path):
+    repo, commit = _synthetic_repo(
+        tmp_path,
+        {
+            "main.py": "from helper import run\nrun()\n",
+            "helper.py": (
+                "def run():\n"
+                "    from deeper import decorate, default\n"
+                "    @decorate\n"
+                "    def nested(value=default()):\n"
+                "        return value\n"
+                "    return 1\n"
+            ),
+            "deeper.py": "def decorate(value):\n    return value\ndef default():\n    return 1\n",
+        },
+    )
+    result = _one_hop(repo, commit, "main.py")
+    assert result["state"] == "unknown"
+    assert result["reason"] == "import_resolution_incomplete"
+
+
+@pytest.mark.parametrize(
+    "class_statement",
+    [
+        "@deeper.decorate\n    class Nested:\n        pass",
+        "class Nested(deeper.Base):\n        pass",
+        "class Nested(metaclass=deeper.Meta):\n        pass",
+    ],
+)
+def test_nested_class_definition_time_dependency_is_unknown(tmp_path, class_statement):
+    repo, commit = _synthetic_repo(
+        tmp_path,
+        {
+            "main.py": "from helper import run\nrun()\n",
+            "helper.py": (
+                "def run():\n"
+                "    import deeper\n"
+                f"    {class_statement}\n"
+                "    return 1\n"
+            ),
+            "deeper.py": (
+                "def decorate(value):\n    return value\n"
+                "class Base:\n    pass\n"
+                "class Meta(type):\n    pass\n"
+            ),
+        },
+    )
+    result = _one_hop(repo, commit, "main.py")
+    assert result["state"] == "unknown"
+    assert result["reason"] == "import_resolution_incomplete"
+
+
+@pytest.mark.parametrize("module_name", ["json", "requests"])
+def test_reached_definition_nonrepository_import_does_not_taint(tmp_path, module_name):
+    repo, commit = _synthetic_repo(
+        tmp_path,
+        {
+            "main.py": "from helper import run\nrun()\n",
+            "helper.py": f"def run():\n    import {module_name}\n    return 1\n",
+        },
+    )
+    assert _one_hop(repo, commit, "main.py")["state"] == "not_detected"
+
+
+@pytest.mark.parametrize(
+    ("main_source", "helper_source"),
+    [
+        (
+            "from helper import run\nrun()\n",
+            "def run():\n    import deeper\n",
+        ),
+        (
+            "from helper import Worker\nWorker().run()\n",
+            "class Worker:\n    def run(self):\n        import deeper\n",
+        ),
+    ],
+)
+def test_existing_direct_reached_definition_imports_remain_unknown(
+    tmp_path, main_source, helper_source
+):
+    repo, commit = _synthetic_repo(
+        tmp_path,
+        {
+            "main.py": main_source,
+            "helper.py": helper_source,
+            "deeper.py": "VALUE = 1\n",
+        },
+    )
+    result = _one_hop(repo, commit, "main.py")
+    assert result["state"] == "unknown"
+    assert result["reason"] == "import_resolution_incomplete"
+
+
+def test_nested_import_unknown_preserves_reached_known_finding(tmp_path):
+    repo, commit = _synthetic_repo(
+        tmp_path,
+        {
+            "main.py": "from helper import run\nrun()\n",
+            "helper.py": (
+                "import sqlite3\n"
+                "def run():\n"
+                "    sqlite3.connect('x.db')\n"
+                "    def called():\n"
+                "        import deeper\n"
+                "    called()\n"
+            ),
+            "deeper.py": "VALUE = 1\n",
+        },
+    )
+    result = _one_hop(repo, commit, "main.py")
+    assert result["state"] == "unknown"
+    assert result["reason"] == "import_resolution_incomplete"
+    assert any(finding["resolved_api"] == "sqlite3.connect" for finding in result["findings"])
+
+
 def test_uninvoked_imported_callable_effect_is_not_promoted(tmp_path):
     repo, commit = _synthetic_repo(
         tmp_path,

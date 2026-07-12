@@ -143,6 +143,13 @@ def test_upstream_schema_mismatch_fails_closed(p541b_r2):
     with pytest.raises(mod.P541CR2ValidationError, match="low_risk_eligible/risk_level invariant"):
         mod.validate_upstream_contract(invariant_break)
 
+    non_boolean_eligibility = copy.deepcopy(p541b_r2)
+    rec = non_boolean_eligibility["method_classification_records"][0]
+    rec["safety_classification"]["risk_level"] = "medium"
+    rec["safety_classification"]["low_risk_eligible"] = "false"
+    with pytest.raises(mod.P541CR2ValidationError, match="low_risk_eligible must be boolean"):
+        mod.validate_upstream_contract(non_boolean_eligibility)
+
 
 def test_source_path_escape_missing_and_symlink_fail_closed(tmp_path):
     mod = _module()
@@ -207,6 +214,16 @@ def test_classify_record_ready_requires_explicit_upstream_ready_status():
     d = mod.classify_record(rec, mod.REPO_ROOT)
     assert d["p541c_r2_bucket"] == mod.BUCKET_READY
     assert d["required_change_before_replay"] == "none"
+
+
+def test_classify_record_medium_risk_never_becomes_ready():
+    mod = _module()
+    rec = _synthetic_record(
+        "medium", False, True, runnable_status="runnable_with_existing_adapter"
+    )
+    d = mod.classify_record(rec, mod.REPO_ROOT)
+    assert d["p541c_r2_bucket"] == mod.BUCKET_NEEDS_CTO_REVIEW
+    assert d["required_change_before_replay"] == "safety_review"
 
 
 def test_classify_record_low_risk_identity_unresolved_needs_cto_review():
@@ -428,6 +445,41 @@ def test_build_artifact_is_json_serializable(p541b_r2, input_provenance):
     serialized = json.dumps(artifact, ensure_ascii=False)
     reloaded = json.loads(serialized)
     assert reloaded["summary"]["total_reviewed_from_p541b_r2"] == 580
+
+
+def test_validate_artifact_rejects_noncanonical_projections(p541b_r2, input_provenance):
+    mod = _module()
+    artifact = mod.build_artifact(p541b_r2, input_provenance, generated_at="TEST")
+
+    bad_summary = copy.deepcopy(artifact)
+    bad_summary["summary"][mod.BUCKET_NEEDS_ADAPTER] += 1
+    with pytest.raises(mod.P541CR2ValidationError, match="summary does not match"):
+        mod.validate_artifact(bad_summary)
+
+    bad_partition = copy.deepcopy(artifact)
+    bad_partition[mod.BUCKET_NEEDS_ADAPTER].append(
+        bad_partition[mod.BUCKET_NEEDS_ADAPTER][0]
+    )
+    with pytest.raises(mod.P541CR2ValidationError, match="bucket partition mismatch"):
+        mod.validate_artifact(bad_partition)
+
+    bad_shortlist = copy.deepcopy(artifact)
+    bad_shortlist["high_priority_candidate_shortlist"] = []
+    with pytest.raises(mod.P541CR2ValidationError, match="canonical selection"):
+        mod.validate_artifact(bad_shortlist)
+
+
+def test_validate_artifact_rejects_safety_bucket_drift(p541b_r2, input_provenance):
+    mod = _module()
+    artifact = mod.build_artifact(p541b_r2, input_provenance, generated_at="TEST")
+    unknown = next(
+        d for d in artifact["reviewed_method_decisions"]
+        if d["p541b_r2_status"]["risk_level"] == "unknown"
+    )
+    unknown["p541c_r2_bucket"] = mod.BUCKET_READY
+    unknown["p541c_decision"] = mod.BUCKET_READY
+    with pytest.raises(mod.P541CR2ValidationError, match="unknown risk routed"):
+        mod.validate_artifact(artifact)
 
 
 def test_render_markdown_contains_key_sections(p541b_r2, input_provenance):

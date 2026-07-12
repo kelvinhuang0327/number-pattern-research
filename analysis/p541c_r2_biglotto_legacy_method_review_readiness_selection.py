@@ -65,6 +65,7 @@ ALLOWED_RUNNABLE_STATUSES = {
 }
 
 SHORTLIST_MAX = 20
+RECONCILIATION_TASK_ID = "P541C_R2_PR686_CONTRACT_RECONCILIATION_R2"
 
 
 class P541CR2ValidationError(ValueError):
@@ -189,6 +190,14 @@ def validate_upstream_contract(p541b_r2: dict[str, Any]) -> None:
             raise P541CR2ValidationError(f"unknown risk_level: {method_id}")
         if (safety["risk_level"] == "low") != (safety["low_risk_eligible"] is True):
             raise P541CR2ValidationError(f"low_risk_eligible/risk_level invariant violated: {method_id}")
+        if not isinstance(safety["low_risk_eligible"], bool):
+            raise P541CR2ValidationError(f"low_risk_eligible must be boolean: {method_id}")
+        if not isinstance(safety["disposition"], str) or not safety["disposition"]:
+            raise P541CR2ValidationError(f"invalid safety disposition: {method_id}")
+        if not isinstance(safety["reasons"], list) or not all(
+            isinstance(reason, str) for reason in safety["reasons"]
+        ):
+            raise P541CR2ValidationError(f"invalid safety reasons: {method_id}")
         historical = record["historical_p541b_classification"]
         if not isinstance(historical, dict) or not required_historical <= set(historical):
             raise P541CR2ValidationError(f"historical_p541b_classification contract mismatch: {method_id}")
@@ -201,6 +210,10 @@ def validate_upstream_contract(p541b_r2: dict[str, Any]) -> None:
             raise P541CR2ValidationError(f"unknown runnable_status: {method_id}")
         if historical["confidence"] not in ("high", "medium", "low"):
             raise P541CR2ValidationError(f"unknown confidence: {method_id}")
+        if not isinstance(historical["method_family"], str) or not historical["method_family"]:
+            raise P541CR2ValidationError(f"invalid method_family: {method_id}")
+        if not isinstance(historical["why_not_runnable"], str):
+            raise P541CR2ValidationError(f"invalid why_not_runnable: {method_id}")
 
 
 def source_file_identity(source_path: str, repo_root: Path = REPO_ROOT) -> dict[str, Any]:
@@ -294,9 +307,18 @@ def classify_record(rec: dict[str, Any], repo_root: Path = REPO_ROOT) -> dict[st
     else:
         runnable_status = historical["runnable_status"]
         confidence = historical["confidence"]
-        if runnable_status == "runnable_with_existing_adapter":
+        if runnable_status == "runnable_with_existing_adapter" and risk == "low":
             bucket = BUCKET_READY
             required_change = "none"
+        elif runnable_status == "runnable_with_existing_adapter":
+            bucket = BUCKET_NEEDS_CTO_REVIEW
+            priority = "unknown"
+            required_change = "safety_review"
+            reason = (
+                f"P541B_R2: risk_level={risk} ({safety['disposition']}); historical "
+                "adapter readiness does not satisfy the low-risk safety prerequisite. "
+                "Fail-closed CTO safety review required."
+            )
         elif runnable_status == "needs_adapter_wrapper":
             bucket = BUCKET_NEEDS_ADAPTER
             required_change = "adapter_wrapper"
@@ -417,6 +439,13 @@ def summarize(decisions: list[dict[str, Any]]) -> dict[str, Any]:
 
 
 def validate_artifact(artifact: dict[str, Any]) -> None:
+    if artifact.get("schema_version") != "p541c-r2-selection-v3":
+        raise P541CR2ValidationError("artifact schema_version mismatch")
+    reconciliation = artifact.get("contract_reconciliation")
+    if not isinstance(reconciliation, dict) or reconciliation.get("task_id") != RECONCILIATION_TASK_ID:
+        raise P541CR2ValidationError("contract reconciliation task mismatch")
+    if reconciliation.get("status") != "PASS":
+        raise P541CR2ValidationError("contract reconciliation not PASS")
     decisions = artifact.get("reviewed_method_decisions")
     if not isinstance(decisions, list) or len(decisions) != SOURCE_MANIFEST_COUNT:
         raise P541CR2ValidationError("reviewed decision count mismatch")
@@ -424,30 +453,45 @@ def validate_artifact(artifact: dict[str, Any]) -> None:
     if len(set(method_ids)) != SOURCE_MANIFEST_COUNT:
         raise P541CR2ValidationError("reviewed method IDs are not unique")
     for d in decisions:
-        if d["p541b_r2_status"]["risk_level"] == "unknown" and d["p541c_r2_bucket"] != BUCKET_NEEDS_CTO_REVIEW:
+        bucket = d["p541c_r2_bucket"]
+        if bucket not in ALL_BUCKETS or d.get("p541c_decision") != bucket:
+            raise P541CR2ValidationError(f"decision bucket mismatch: {d['method_id']}")
+        risk = d["p541b_r2_status"]["risk_level"]
+        if risk == "unknown" and bucket != BUCKET_NEEDS_CTO_REVIEW:
             raise P541CR2ValidationError(
-                f"fail-closed invariant violated: unknown risk routed to {d['p541c_r2_bucket']}: {d['method_id']}"
+                f"fail-closed invariant violated: unknown risk routed to {bucket}: {d['method_id']}"
             )
-    shortlist_ids = {d["method_id"] for d in artifact["high_priority_candidate_shortlist"]}
-    for d in decisions:
-        if d["method_id"] in shortlist_ids:
-            if d["p541c_r2_bucket"] != BUCKET_NEEDS_ADAPTER:
-                raise P541CR2ValidationError(f"shortlist contains non-adapter record: {d['method_id']}")
-            if d["historical_p541b_status"]["is_actual_prediction_method"] is not True:
-                raise P541CR2ValidationError(f"shortlist contains identity-unresolved record: {d['method_id']}")
-            if d["required_change_before_replay"] == "none":
-                raise P541CR2ValidationError(f"shortlist loses readiness requirement: {d['method_id']}")
-            if d["replay_readiness_priority"] != "high":
-                raise P541CR2ValidationError(f"shortlist contains non-high-priority record: {d['method_id']}")
-    by_bucket_total = (
-        len(artifact[BUCKET_READY])
-        + len(artifact[BUCKET_NEEDS_ADAPTER])
-        + len(artifact[BUCKET_NEEDS_REFACTOR])
-        + len(artifact[BUCKET_NEEDS_CTO_REVIEW])
-        + len(artifact["excluded_methods"])
-    )
-    if by_bucket_total != SOURCE_MANIFEST_COUNT:
-        raise P541CR2ValidationError("bucket partition does not sum to 580")
+        if risk == "high" and bucket != BUCKET_EXCLUDED:
+            raise P541CR2ValidationError(
+                f"fail-closed invariant violated: high risk routed to {bucket}: {d['method_id']}"
+            )
+        if bucket == BUCKET_READY and (
+            risk != "low"
+            or d["historical_p541b_status"]["is_actual_prediction_method"] is not True
+            or d["historical_p541b_status"]["runnable_status"] != "runnable_with_existing_adapter"
+            or d["required_change_before_replay"] != "none"
+        ):
+            raise P541CR2ValidationError(f"ready contract mismatch: {d['method_id']}")
+
+    expected_summary = summarize(decisions)
+    if artifact.get("summary") != expected_summary:
+        raise P541CR2ValidationError("summary does not match reviewed decisions")
+
+    bucket_keys = {
+        BUCKET_READY: BUCKET_READY,
+        BUCKET_NEEDS_ADAPTER: BUCKET_NEEDS_ADAPTER,
+        BUCKET_NEEDS_REFACTOR: BUCKET_NEEDS_REFACTOR,
+        BUCKET_NEEDS_CTO_REVIEW: BUCKET_NEEDS_CTO_REVIEW,
+        BUCKET_EXCLUDED: "excluded_methods",
+    }
+    for bucket, artifact_key in bucket_keys.items():
+        expected = [d for d in decisions if d["p541c_r2_bucket"] == bucket]
+        if artifact.get(artifact_key) != expected:
+            raise P541CR2ValidationError(f"bucket partition mismatch: {bucket}")
+
+    expected_shortlist = build_shortlist(decisions)
+    if artifact.get("high_priority_candidate_shortlist") != expected_shortlist:
+        raise P541CR2ValidationError("shortlist does not match canonical selection")
     canonical_bytes(artifact)
 
 
@@ -477,7 +521,7 @@ def build_artifact(
     generated_at = generated_at or GENERATED_AT
 
     artifact = {
-        "schema_version": "p541c-r2-selection-v2",
+        "schema_version": "p541c-r2-selection-v3",
         "task_id": "P541C_R2_BIG_LOTTO_LEGACY_METHOD_REVIEW_READINESS_SELECTION_REPLACEMENT",
         "generated_at": generated_at,
         "implementation_base_commit": IMPLEMENTATION_BASE_COMMIT,
@@ -501,16 +545,17 @@ def build_artifact(
             "fail_closed": True,
         },
         "contract_reconciliation": {
-            "task_id": "P541C_R2_PR686_CONTRACT_RECONCILIATION_R1",
+            "task_id": RECONCILIATION_TASK_ID,
             "status": "PASS",
             "reconciled_invariant": (
-                "P541B_R2 safety risk and historical replay readiness are orthogonal: "
-                "risk_level=low does not erase runnable_status or required change."
+                "Ready requires both low safety risk and explicit historical adapter "
+                "readiness; summary, bucket partitions, and shortlist must be exact "
+                "canonical projections of the reviewed decisions."
             ),
             "prior_drift": (
-                "PR #686 v1 labeled 12 low-risk confirmed methods safe_confirmed_method "
-                "with required_change_before_replay=none even though all 12 upstream "
-                "records say runnable_status=needs_adapter_wrapper."
+                "R1 corrected readiness labels but its artifact validator still accepted "
+                "a drifted summary, duplicated or misplaced bucket members, a non-canonical "
+                "shortlist, and medium-risk records in the ready bucket."
             ),
         },
         "summary": summarize(decisions),
@@ -530,14 +575,15 @@ def build_artifact(
             ),
             BUCKET_NEEDS_CTO_REVIEW: (
                 "P541B_R2 risk_level=unknown (any identity), unresolved historical identity "
-                "at low/medium risk, or a confirmed method with a non-actionable readiness "
-                "status. Unresolved risk is never resolved to safe."
+                "at low/medium risk, a medium-risk method otherwise adapter-ready, or a "
+                "confirmed method with a non-actionable readiness status. Unresolved or "
+                "non-low risk is never resolved to ready."
             ),
             BUCKET_EXCLUDED: (
                 "P541B_R2 risk_level=high (any identity, safety-blocking regardless of "
                 "confidence), OR P541B historical recommended_action is mark_duplicate/"
-                "mark_not_strategy/mark_deprecated, OR risk_level=low with "
-                "is_actual_prediction_method=False (safe but not a prediction method)."
+                "mark_not_strategy/mark_deprecated, OR risk_level=low/medium with "
+                "is_actual_prediction_method=False (not a prediction method)."
             ),
         },
         "selection_policy": {
@@ -546,8 +592,9 @@ def build_artifact(
                 "high routes to exclusion before historical identity/readiness can refine a bucket."
             ),
             "readiness_rule": (
-                "For low/medium-risk confirmed methods, historical runnable_status maps to "
-                "ready, adapter, or refactor without being erased by the safety tier."
+                "For confirmed methods, ready additionally requires low risk; adapter and "
+                "refactor requirements remain explicit at low/medium risk, while an otherwise "
+                "adapter-ready medium-risk method routes to CTO safety review."
             ),
             "priority_rule": (
                 "Adapter: high only when confidence=high and risk=low; medium when confidence "
@@ -587,12 +634,13 @@ def build_artifact(
                 "No recomputation of P536-P541B_R2 artifacts.",
                 "No route/API/UI changes.",
                 "No adapter code was written; only the decision to route a method to "
-                "needs_adapter_or_refactor_before_readiness / needs_cto_review.",
+                "needs_adapter_before_readiness / needs_refactor_before_readiness / "
+                "needs_cto_review.",
             ],
             "known_limits": [
-                "needs_cto_review records (from unknown risk or unresolved/negative "
-                "identity at medium risk) were not further resolved; P541B_R2's own "
-                "evidence already represents the limit of static analysis.",
+                "needs_cto_review records (from unknown risk, unresolved identity, or a "
+                "non-actionable safety/readiness combination) were not further resolved; "
+                "P541B_R2's own evidence already represents the limit of static analysis.",
                 "Source identity verification reads raw bytes only to compute size and "
                 "SHA-256; this does not constitute new semantic or runtime analysis.",
                 "Bucket/priority assignment is a deterministic function of P541B_R2's "
